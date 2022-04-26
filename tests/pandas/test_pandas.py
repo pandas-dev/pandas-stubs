@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Union
 
 from pandas.io.parsers import TextFileReader
 
+import numpy as np
 import pandas as pd
 
 from . import check_series_result, check_dataframe_result
@@ -85,10 +86,19 @@ def test_types_read_csv() -> None:
         df5: pd.DataFrame = pd.read_csv(file.name, engine="python", true_values=[0, 1, 3], na_filter=False)
         df6: pd.DataFrame = pd.read_csv(file.name, skiprows=lambda x: x in [0, 2], skip_blank_lines=True, dayfirst=False)
         df7: pd.DataFrame = pd.read_csv(file.name, nrows=2)
-        dtypemap = {"a": float, "b": int}
-        df8: pd.DataFrame = pd.read_csv(file.name, dtype=dtypemap)
+        df8: pd.DataFrame = pd.read_csv(file.name, dtype={"a": float, "b": int})
 
         tfr1: TextFileReader = pd.read_csv(file.name, nrows=2, iterator=True, chunksize=3)
         tfr2: TextFileReader = pd.read_csv(file.name, nrows=2, chunksize=1)
         tfr3: TextFileReader = pd.read_csv(file.name, nrows=2, iterator=False, chunksize=1)
         tfr4: TextFileReader = pd.read_csv(file.name, nrows=2, iterator=True)
+
+
+def test_isna() -> None:
+    s = pd.Series([1, np.nan, 3.2])
+    check_series_result(pd.isna(s), bool)
+    b: bool = pd.isna(np.nan)
+    ar: np.ndarray = pd.isna(list(s))
+    check_series_result(pd.notna(s), bool)
+    b2: bool = pd.notna(np.nan)
+    ar2: np.ndarray = pd.notna(list(s))
