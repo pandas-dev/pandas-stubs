@@ -81,7 +81,9 @@ class _iLocIndexerFrame(_iLocIndexer):
     @overload
     def __getitem__(self, idx: Tuple[int, Union[IndexType, MaskType]]) -> Series: ...
     @overload
-    def __getitem__(self, idx: Tuple[Union[IndexType, MaskType], Union[IndexType, MaskType]]) -> DataFrame: ...
+    def __getitem__(self, idx: Union[IndexType, MaskType,
+                                     Tuple[Union[IndexType, MaskType], 
+                                           Union[IndexType, MaskType]]]) -> DataFrame: ...
     def __setitem__(
         self,
         idx: Union[
@@ -1123,13 +1125,6 @@ class DataFrame(NDFrame, OpsMixin):
         inplace: _bool = ...,
         *args,
         **kwargs,
-    ) -> DataFrame: ...
-    def convert_dtypes(
-        self,
-        infer_objects: _bool = ...,
-        convert_string: _bool = ...,
-        convert_integer: _bool = ...,
-        convert__boolean: _bool = ...,
     ) -> DataFrame: ...
     def copy(self, deep: _bool = ...) -> DataFrame: ...
     def cummax(self, axis: Optional[AxisType] = ..., skipna: _bool = ..., *args, **kwargs) -> DataFrame: ...

@@ -104,7 +104,7 @@ np_ndarray_int64 = npt.NDArray[np.int64]
 np_ndarray_bool = npt.NDArray[np.bool_]
 np_ndarray_str = npt.NDArray[np.str_]
 IndexType = Union[slice, np_ndarray_int64, Index, List[int], Series[int]]
-MaskType = Union[Series[bool], np_ndarray_bool, Sequence[bool]]
+MaskType = Union[Series[bool], np_ndarray_bool, List[bool]]
 # Scratch types for generics
 S1 = TypeVar(
     "S1",
