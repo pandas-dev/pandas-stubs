@@ -3,6 +3,7 @@
 import tempfile
 from pathlib import Path
 from typing import List, Union, TYPE_CHECKING
+from typing_extensions import assert_type
 
 from pandas._typing import Scalar
 from pandas.api.extensions import ExtensionArray
@@ -588,7 +589,14 @@ def test_series_min_max_sub_axis() -> None:
     df = pd.DataFrame({"x": [1, 2, 3, 4, 5], "y": [5, 4, 3, 2, 1]})
     s1 = df.min(axis=1)
     s2 = df.max(axis=1)
-    s3 = s2 - s1
+    sa = s1 + s2
+    ss = s1 - s2
+    sm = s1 * s2
+    sd = s1 / s2
+    assert_type(sa, "pd.Series")
+    assert_type(ss, "pd.Series")
+    assert_type(sm, "pd.Series")
+    assert_type(sd, "pd.Series")
 
 
 def test_series_index_isin() -> None:
@@ -606,7 +614,7 @@ def test_series_index_isin() -> None:
 def test_series_invert() -> None:
     s1 = pd.Series([True, False, True])
     s2 = ~s1
-    check_series_result(s2, bool)
+    assert_type(s2, "pd.Series[bool]")
     s3 = pd.Series([1, 2, 3])
     check_series_result(s3[s2])
     check_series_result(s3.loc[s2])

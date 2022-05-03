@@ -4,7 +4,7 @@ from typing import Literal, Optional, Union, overload
 from pandas._libs.tslibs import Timedelta
 from pandas._libs.tslibs.timedeltas import UnitChoices
 from pandas._typing import DateTimeErrorChoices, ArrayLike, Index as Index
-from pandas.core.frame import Series as Series
+from pandas.core.series import Series as Series, TimedeltaSeries
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 
 # Copied from pandas/_libs/tslibs/timedeltas.pyx
@@ -20,7 +20,7 @@ def to_timedelta(
     arg: Series,
     unit: Optional[UnitChoices] = ...,
     errors: DateTimeErrorChoices = ...,
-) -> Series[Timedelta]: ...
+) -> TimedeltaSeries: ...
 @overload
 def to_timedelta(
     arg: Union[list, tuple, range, ArrayLike, Index],

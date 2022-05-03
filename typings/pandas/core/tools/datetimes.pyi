@@ -14,7 +14,7 @@ from pandas.core.dtypes.generic import ABCSeries as ABCSeries
 from pandas.core.generic import NDFrame as NDFrame
 from pandas.core.indexes.datetimes import DatetimeIndex as DatetimeIndex
 from pandas.core.frame import DataFrame as DataFrame
-from pandas.core.series import Series as Series
+from pandas.core.series import Series as Series, TimestampSeries
 from typing import List, Optional, Tuple, TypedDict, Union, overload
 
 ArrayConvertible = Union[List, Tuple, AnyArrayLike]
@@ -71,7 +71,7 @@ def to_datetime(
     infer_datetime_format: bool = ...,
     origin=...,
     cache: bool = ...,
-) -> Series[Timestamp]: ...
+) -> TimestampSeries: ...
 @overload
 def to_datetime(
     arg: list | tuple | np.ndarray | Index | ExtensionArray,

@@ -1,11 +1,16 @@
 # flake8: noqa: F841
 
+from typing import TYPE_CHECKING
 import pandas as pd
 import datetime as dt
+from typing_extensions import assert_type
 
 from pandas.testing import assert_series_equal
 
 from . import check_datetimeindex_result, check_series_result
+
+if TYPE_CHECKING:
+    from pandas.core.series import TimedeltaSeries, TimestampSeries
 
 
 def test_types_init() -> None:
@@ -79,6 +84,7 @@ def test_timestamp_timedelta_series_arithmetic() -> None:
     td1 = pd.to_timedelta([2, 3], "seconds")
     ts2 = pd.to_datetime(pd.Series(["2022-03-08", "2022-03-10"]))
     r1 = ts1 - ts2
+    assert_type(r1, "TimedeltaSeries")
     check_series_result(r1, td1.dtype)  # type: ignore
     r2 = r1 / td1
     check_series_result(r2, float)
@@ -123,6 +129,7 @@ def test_timestamp_plus_timedelta_series() -> None:
     ts = pd.Timestamp("2022-03-05")
     td = pd.to_timedelta(pd.Series([10, 20]), "minutes")
     r3 = td + ts
+    assert_type(r3, "TimestampSeries")
     # ignore type on next, because `tscheck` has Unknown dtype
     check_series_result(r3, tscheck.dtype)  # type: ignore
 
@@ -130,7 +137,7 @@ def test_timestamp_plus_timedelta_series() -> None:
 def test_timedelta_series_mult() -> None:
     df = pd.DataFrame({"x": [1, 3, 5], "y": [2, 2, 6]})
     std = (df["x"] < df["y"]) * pd.Timedelta(10, "minutes")
-    check_series_result(std, pd.to_timedelta(pd.Series([10]), "minutes").dtype)
+    assert_type(std, "TimedeltaSeries")
 
 def test_timedelta_series_sum() -> None:
     s = pd.Series(pd.to_datetime(["04/05/2022 11:00", "04/03/2022 10:00"])) - pd.Series(pd.to_datetime(["04/05/2022 08:00", "04/03/2022 09:00"]))
