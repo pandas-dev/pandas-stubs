@@ -1,6 +1,12 @@
 import numpy as np
 from typing import Union, overload, List
-from pandas._typing import Scalar as Scalar, Series as Series, Index as Index, ArrayLike as ArrayLike, DataFrame as DataFrame
+from pandas._typing import (
+    Scalar as Scalar,
+    Series as Series,
+    Index as Index,
+    ArrayLike as ArrayLike,
+    DataFrame as DataFrame,
+)
 
 isposinf_scalar = ...
 isneginf_scalar = ...

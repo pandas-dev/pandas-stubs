@@ -1,5 +1,14 @@
 from pandas import DataFrame as DataFrame, Series as Series
-from typing import Hashable, Iterable, Mapping, Optional, Union, overload, Literal, TypeVar
+from typing import (
+    Hashable,
+    Iterable,
+    Mapping,
+    Optional,
+    Union,
+    overload,
+    Literal,
+    TypeVar,
+)
 
 HashableT = TypeVar("HashableT", bound=Hashable)
 
@@ -31,7 +40,10 @@ def concat(
 ) -> DataFrame: ...
 @overload
 def concat(
-    objs: Union[Iterable[Optional[Union[DataFrame, Series]]], Mapping[HashableT, Optional[Union[DataFrame, Series]]]],
+    objs: Union[
+        Iterable[Optional[Union[DataFrame, Series]]],
+        Mapping[HashableT, Optional[Union[DataFrame, Series]]],
+    ],
     axis: Literal[0, "index", 1, "columns"] = ...,
     join: str = ...,
     ignore_index: bool = ...,

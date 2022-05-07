@@ -1,5 +1,8 @@
 from pandas.core.accessor import PandasDelegate as PandasDelegate
-from pandas.core.base import NoNewAttributesMixin as NoNewAttributesMixin, PandasObject as PandasObject
+from pandas.core.base import (
+    NoNewAttributesMixin as NoNewAttributesMixin,
+    PandasObject as PandasObject,
+)
 from pandas.core.series import Series
 
 class Properties(PandasDelegate, PandasObject, NoNewAttributesMixin):
@@ -21,5 +24,7 @@ class TimedeltaProperties(Properties):
 
 class PeriodProperties(Properties): ...
 
-class CombinedDatetimelikeProperties(DatetimeProperties, TimedeltaProperties, PeriodProperties):
+class CombinedDatetimelikeProperties(
+    DatetimeProperties, TimedeltaProperties, PeriodProperties
+):
     def __new__(cls, data: Series): ...

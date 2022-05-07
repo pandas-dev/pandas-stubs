@@ -18,7 +18,12 @@ def test_types_init() -> None:
     pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]}, index=[2, 1])
     pd.DataFrame(data=[1, 2, 3, 4], dtype=np.int8)
-    pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=["a", "b", "c"], dtype=np.int8, copy=True)
+    pd.DataFrame(
+        np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]),
+        columns=["a", "b", "c"],
+        dtype=np.int8,
+        copy=True,
+    )
 
 
 def test_types_append() -> None:
@@ -32,7 +37,9 @@ def test_types_append() -> None:
     res5: pd.DataFrame = df.append({1: [1, 2, 3]}, ignore_index=True)
     res6: pd.DataFrame = df.append({1: [1, 2, 3], "col2": [1, 2, 3]}, ignore_index=True)
     res7: pd.DataFrame = df.append(pd.Series([5, 6]), ignore_index=True)
-    res8: pd.DataFrame = df.append(pd.Series([5, 6], index=["col1", "col2"]), ignore_index=True)
+    res8: pd.DataFrame = df.append(
+        pd.Series([5, 6], index=["col1", "col2"]), ignore_index=True
+    )
 
 
 def test_types_to_csv() -> None:
@@ -226,7 +233,9 @@ def test_types_sort_index_with_key() -> None:
 
 
 def test_types_set_index() -> None:
-    df = pd.DataFrame(data={"col1": [1, 2, 3, 4], "col2": ["a", "b", "c", "d"]}, index=[5, 1, 3, 2])
+    df = pd.DataFrame(
+        data={"col1": [1, 2, 3, 4], "col2": ["a", "b", "c", "d"]}, index=[5, 1, 3, 2]
+    )
     res: pd.DataFrame = df.set_index("col1")
     res2: pd.DataFrame = df.set_index("col1", drop=False)
     res3: pd.DataFrame = df.set_index("col1", append=True)
@@ -383,14 +392,14 @@ def test_types_unique() -> None:
 
 def test_types_apply() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    df.apply(lambda x: x ** 2)
+    df.apply(lambda x: x**2)
     df.apply(np.exp)
     df.apply(str)
 
 
 def test_types_applymap() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    df.applymap(lambda x: x ** 2)
+    df.applymap(lambda x: x**2)
     df.applymap(np.exp)
     df.applymap(str)
     # na_action parameter was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
@@ -420,7 +429,7 @@ def test_types_element_wise_arithmetic() -> None:
     res_mod: pd.DataFrame = df % df2
     res_mod2: pd.DataFrame = df.mod(df2, fill_value=0)
 
-    res_pow: pd.DataFrame = df2 ** df
+    res_pow: pd.DataFrame = df2**df
     res_pow2: pd.DataFrame = df2.pow(df, fill_value=0)
 
     # divmod operation was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
@@ -451,9 +460,9 @@ def test_types_scalar_arithmetic() -> None:
     res_mod: pd.DataFrame = df % 2
     res_mod2: pd.DataFrame = df.mod(2, fill_value=0)
 
-    res_pow: pd.DataFrame = df ** 2
-    res_pow1: pd.DataFrame = df ** 0
-    res_pow2: pd.DataFrame = df ** 0.213
+    res_pow: pd.DataFrame = df**2
+    res_pow1: pd.DataFrame = df**0
+    res_pow2: pd.DataFrame = df**0.213
     res_pow3: pd.DataFrame = df.pow(0.5)
 
 
@@ -461,11 +470,22 @@ def test_types_melt() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df.melt()
     df.melt(id_vars=["col1"], value_vars=["col2"])
-    df.melt(id_vars=["col1"], value_vars=["col2"], var_name="someVariable", value_name="someValue")
+    df.melt(
+        id_vars=["col1"],
+        value_vars=["col2"],
+        var_name="someVariable",
+        value_name="someValue",
+    )
 
     pd.melt(df)
     pd.melt(df, id_vars=["col1"], value_vars=["col2"])
-    pd.melt(df, id_vars=["col1"], value_vars=["col2"], var_name="someVariable", value_name="someValue")
+    pd.melt(
+        df,
+        id_vars=["col1"],
+        value_vars=["col2"],
+        var_name="someVariable",
+        value_name="someValue",
+    )
 
 
 def test_types_pivot() -> None:
@@ -492,7 +512,9 @@ def test_types_groupby() -> None:
 
     df1: pd.DataFrame = df.groupby(by="col1").agg("sum")
     df2: pd.DataFrame = df.groupby(level="ind").aggregate("sum")
-    df3: pd.DataFrame = df.groupby(by="col1", sort=False, as_index=True).transform(lambda x: x.max())
+    df3: pd.DataFrame = df.groupby(by="col1", sort=False, as_index=True).transform(
+        lambda x: x.max()
+    )
     df4: pd.DataFrame = df.groupby(by=["col1", "col2"]).count()
     df5: pd.DataFrame = df.groupby(by=["col1", "col2"]).filter(lambda x: x["col1"] > 0)
     df6: pd.DataFrame = df.groupby(by=["col1", "col2"]).nunique()
@@ -506,14 +528,22 @@ def test_types_groupby() -> None:
 
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
 def test_types_group_by_with_dropna_keyword() -> None:
-    df = pd.DataFrame(data={"col1": [1, 1, 2, 1], "col2": [2, None, 1, 2], "col3": [3, 4, 3, 2]})
+    df = pd.DataFrame(
+        data={"col1": [1, 1, 2, 1], "col2": [2, None, 1, 2], "col3": [3, 4, 3, 2]}
+    )
     df.groupby(by="col2", dropna=True).sum()
     df.groupby(by="col2", dropna=False).sum()
     df.groupby(by="col2").sum()
 
 
 def test_types_groupby_any() -> None:
-    df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [True, False, False], "col3": [False, False, False]})
+    df = pd.DataFrame(
+        data={
+            "col1": [1, 1, 2],
+            "col2": [True, False, False],
+            "col3": [False, False, False],
+        }
+    )
     check_dataframe_result(df.groupby("col1").any())
     check_dataframe_result(df.groupby("col1").all())
     check_series_result(df.groupby("col1")["col2"].any())
@@ -594,8 +624,12 @@ def test_types_to_feather() -> None:
 
 # compare() method added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
 def test_types_compare() -> None:
-    df1 = pd.DataFrame(data={"col1": [1, 1, 2, 1], "col2": [2, None, 1, 2], "col3": [3, 4, 3, 2]})
-    df2 = pd.DataFrame(data={"col1": [1, 2, 5, 6], "col2": [3, 4, 1, 1], "col3": [3, 4, 3, 2]})
+    df1 = pd.DataFrame(
+        data={"col1": [1, 1, 2, 1], "col2": [2, None, 1, 2], "col3": [3, 4, 3, 2]}
+    )
+    df2 = pd.DataFrame(
+        data={"col1": [1, 2, 5, 6], "col2": [3, 4, 1, 1], "col3": [3, 4, 3, 2]}
+    )
     df1.compare(df2)
     df2.compare(df1, align_axis=0, keep_shape=True, keep_equal=True)
 
@@ -609,7 +643,14 @@ def test_types_agg() -> None:
 
 def test_types_describe() -> None:
     df = pd.DataFrame(
-        data={"col1": [1, 2, -4], "col2": [np.datetime64("2000-01-01"), np.datetime64("2010-01-01"), np.datetime64("2010-01-01")]}
+        data={
+            "col1": [1, 2, -4],
+            "col2": [
+                np.datetime64("2000-01-01"),
+                np.datetime64("2010-01-01"),
+                np.datetime64("2010-01-01"),
+            ],
+        }
     )
     df.describe()
     df.describe(percentiles=[0.5], include="all")
@@ -622,7 +663,11 @@ def test_types_to_string() -> None:
     df = pd.DataFrame(
         data={
             "col1": [1, None, -4],
-            "col2": [np.datetime64("2000-01-01"), np.datetime64("2010-01-01"), np.datetime64("2010-01-01")],
+            "col2": [
+                np.datetime64("2000-01-01"),
+                np.datetime64("2010-01-01"),
+                np.datetime64("2010-01-01"),
+            ],
         }
     )
     df.to_string(
@@ -646,10 +691,23 @@ def test_types_to_html() -> None:
     df = pd.DataFrame(
         data={
             "col1": [1, None, -4],
-            "col2": [np.datetime64("2000-01-01"), np.datetime64("2010-01-01"), np.datetime64("2010-01-01")],
+            "col2": [
+                np.datetime64("2000-01-01"),
+                np.datetime64("2010-01-01"),
+                np.datetime64("2010-01-01"),
+            ],
         }
     )
-    df.to_html(index=True, col_space=2, header=True, na_rep="0", justify="left", max_rows=2, max_cols=2, show_dimensions=True)
+    df.to_html(
+        index=True,
+        col_space=2,
+        header=True,
+        na_rep="0",
+        justify="left",
+        max_rows=2,
+        max_cols=2,
+        show_dimensions=True,
+    )
     # col_space accepting list or dict added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
     df.to_html(col_space=[1, 2])
     df.to_html(col_space={"col1": 1, "col2": 3})
@@ -669,7 +727,9 @@ def test_types_from_dict() -> None:
     pd.DataFrame.from_dict({"a": {1: 2}, "b": {3: 4, 1: 4}}, orient="index")
     pd.DataFrame.from_dict({"a": {"row1": 2}, "b": {"row2": 4, "row1": 4}})
     pd.DataFrame.from_dict({"a": (1, 2, 3), "b": (2, 4, 5)})
-    pd.DataFrame.from_dict(data={"col_1": {"a": 1}, "col_2": {"a": 1, "b": 2}}, orient="columns")
+    pd.DataFrame.from_dict(
+        data={"col_1": {"a": 1}, "col_2": {"a": 1, "b": 2}}, orient="columns"
+    )
 
 
 def test_pipe() -> None:
@@ -681,7 +741,12 @@ def test_pipe() -> None:
     df1: pd.DataFrame = pd.DataFrame({"a": [1]}).pipe(foo)
 
     df2: pd.DataFrame = (
-        pd.DataFrame({"price": [10, 11, 9, 13, 14, 18, 17, 19], "volume": [50, 60, 40, 100, 50, 100, 40, 50]})
+        pd.DataFrame(
+            {
+                "price": [10, 11, 9, 13, 14, 18, 17, 19],
+                "volume": [50, 60, 40, 100, 50, 100, 40, 50],
+            }
+        )
         .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
         .resample("M", on="week_starting")
         .pipe(foo)
@@ -694,15 +759,21 @@ def test_pipe() -> None:
 
 # set_flags() method added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
 def test_types_set_flags() -> None:
-    pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"]).set_flags(allows_duplicate_labels=False)
-    pd.DataFrame([[1, 2], [8, 9]], columns=["A", "A"]).set_flags(allows_duplicate_labels=True)
+    pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"]).set_flags(
+        allows_duplicate_labels=False
+    )
+    pd.DataFrame([[1, 2], [8, 9]], columns=["A", "A"]).set_flags(
+        allows_duplicate_labels=True
+    )
     pd.DataFrame([[1, 2], [8, 9]], columns=["A", "A"])
 
 
 def test_types_to_parquet() -> None:
     pytest.importorskip("pyarrow")
     pytest.importorskip("fastparquet")
-    df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"]).set_flags(allows_duplicate_labels=False)
+    df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"]).set_flags(
+        allows_duplicate_labels=False
+    )
     with tempfile.NamedTemporaryFile(delete=False) as file:
         df.to_parquet(Path(file.name))
         file.close()
@@ -712,7 +783,9 @@ def test_types_to_parquet() -> None:
 
 def test_types_to_latex() -> None:
     df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
-    df.to_latex(columns=["A"], label="some_label", caption="some_caption", multirow=True)
+    df.to_latex(
+        columns=["A"], label="some_label", caption="some_caption", multirow=True
+    )
     df.to_latex(escape=False, decimal=",", column_format="r")
     # position param was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
     df.to_latex(position="some")
@@ -738,8 +811,6 @@ def test_types_rename() -> None:
     df.rename(columns={type("AnyObject")(): "b"})
     df.rename(columns={(2, 1): "b"})
     df.rename(columns=lambda s: s.upper())
-    f = lambda s: s.upper()
-    df.rename(columns=f)
 
 
 def test_types_eq() -> None:
@@ -801,7 +872,13 @@ def test_types_regressions() -> None:
     column1: pd.DataFrame = df.iloc[:, [0]]
     column2: pd.Series = df.iloc[:, 0]
 
-    df = pd.DataFrame({"a_col": list(range(10)), "a_nother": list(range(10)), "b_col": list(range(10))})
+    df = pd.DataFrame(
+        {
+            "a_col": list(range(10)),
+            "a_nother": list(range(10)),
+            "b_col": list(range(10)),
+        }
+    )
     df.loc[:, lambda df: df.columns.str.startswith("a_")]
 
     df = df[::-1]
@@ -825,7 +902,9 @@ def test_types_regressions() -> None:
 
     # https://github.com/microsoft/python-type-stubs/issues/115
     df = pd.DataFrame({"A": [1, 2, 3], "B": [5, 6, 7]})
-    pd.DatetimeIndex(data=df["A"], tz=None, normalize=False, closed=None, ambiguous="NaT", copy=True)
+    pd.DatetimeIndex(
+        data=df["A"], tz=None, normalize=False, closed=None, ambiguous="NaT", copy=True
+    )
 
 
 def test_read_csv() -> None:
@@ -870,7 +949,9 @@ def test_groupby_series_methods() -> None:
 
 
 def test_indexslice_setitem():
-    df = pd.DataFrame({"x": [1, 2, 2, 3], "y": [1, 2, 3, 4], "z": [10, 20, 30, 40]}).set_index(["x", "y"])
+    df = pd.DataFrame(
+        {"x": [1, 2, 2, 3], "y": [1, 2, 3, 4], "z": [10, 20, 30, 40]}
+    ).set_index(["x", "y"])
     s = pd.Series([-1, -2])
     df.loc[pd.IndexSlice[2, :]] = s.values
     df.loc[pd.IndexSlice[2, :], "z"] = [200, 300]
@@ -908,7 +989,9 @@ def test_getmultiindex_columns() -> None:
     li: List[Tuple[int, str]] = [(1, "a"), (2, "b")]
     res1: pd.DataFrame = df[[(1, "a"), (2, "b")]]
     res2: pd.DataFrame = df[li]
-    res3: pd.DataFrame = df[[(i, s) for i in [1] for s in df.columns.get_level_values(1)]]
+    res3: pd.DataFrame = df[
+        [(i, s) for i in [1] for s in df.columns.get_level_values(1)]
+    ]
     ndf: pd.DataFrame = df[[df.columns[0]]]
 
 

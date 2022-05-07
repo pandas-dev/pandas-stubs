@@ -30,13 +30,19 @@ def test_interval_arithmetic() -> None:
 
 
 def test_max_intervals() -> None:
-    i1 = pd.Interval(pd.Timestamp("2000-01-01"), pd.Timestamp("2000-01-02"), closed="both")
-    i2 = pd.Interval(pd.Timestamp("2000-01-01T12:00:00"), pd.Timestamp("2000-01-02"), closed="both")
+    i1 = pd.Interval(
+        pd.Timestamp("2000-01-01"), pd.Timestamp("2000-01-02"), closed="both"
+    )
+    i2 = pd.Interval(
+        pd.Timestamp("2000-01-01T12:00:00"), pd.Timestamp("2000-01-02"), closed="both"
+    )
     print(max(i1.left, i2.left))
 
 
 def test_interval_length() -> None:
-    i1 = pd.Interval(pd.Timestamp("2000-01-01"), pd.Timestamp("2000-01-03"), closed="both")
+    i1 = pd.Interval(
+        pd.Timestamp("2000-01-01"), pd.Timestamp("2000-01-03"), closed="both"
+    )
     check_timedelta_result(i1.length)
     check_timestamp_result(i1.left)
     check_timestamp_result(i1.right)

@@ -62,10 +62,22 @@ class DatetimeArray(dtl.DatetimeLikeArrayMixin, dtl.TimelikeOps, dtl.DatelikeOps
     def to_julian_date(self): ...
 
 def sequence_to_dt64ns(
-    data, dtype=..., copy: bool = ..., tz=..., dayfirst: bool = ..., yearfirst: bool = ..., ambiguous: str = ...
+    data,
+    dtype=...,
+    copy: bool = ...,
+    tz=...,
+    dayfirst: bool = ...,
+    yearfirst: bool = ...,
+    ambiguous: str = ...,
 ): ...
 def objects_to_datetime64ns(
-    data, dayfirst, yearfirst, utc: bool = ..., errors: str = ..., require_iso8601: bool = ..., allow_object: bool = ...
+    data,
+    dayfirst,
+    yearfirst,
+    utc: bool = ...,
+    errors: str = ...,
+    require_iso8601: bool = ...,
+    allow_object: bool = ...,
 ): ...
 def maybe_convert_dtype(data, copy): ...
 def maybe_infer_tz(tz, inferred_tz): ...

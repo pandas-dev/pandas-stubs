@@ -47,7 +47,9 @@ PandasScalar = Union[bytes, datetime.date, datetime.datetime, datetime.timedelta
 # Scalar = Union[PythonScalar, PandasScalar]
 
 # dtypes
-NpDtype = Union[str, np.dtype[np.generic], Type[Union[str, float, int, complex, bool, object]]]
+NpDtype = Union[
+    str, np.dtype[np.generic], Type[Union[str, float, int, complex, bool, object]]
+]
 Dtype = Union[ExtensionDtype, NpDtype]
 AstypeArg = Union[ExtensionDtype, npt.DTypeLike]
 # DtypeArg specifies all allowable dtypes in a functions its dtype argument
@@ -98,7 +100,19 @@ DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
 KeysArgType = Any
 ListLike = TypeVar("ListLike", Sequence, np.ndarray, "Series")
 StrLike = Union[str, np.str_]
-Scalar = Union[str, bytes, datetime.date, datetime.datetime, datetime.timedelta, bool, int, float, complex, Timestamp, Timedelta]
+Scalar = Union[
+    str,
+    bytes,
+    datetime.date,
+    datetime.datetime,
+    datetime.timedelta,
+    bool,
+    int,
+    float,
+    complex,
+    Timestamp,
+    Timedelta,
+]
 # Refine the next 3 in 3.9 to use the specialized type.
 np_ndarray_int64 = npt.NDArray[np.int64]
 np_ndarray_bool = npt.NDArray[np.bool_]
@@ -121,7 +135,9 @@ S1 = TypeVar(
     Timedelta,
     np.datetime64,
 )
-T1 = TypeVar("T1", str, int, np.int64, np.uint64, np.float64, float, np.dtype[np.generic])
+T1 = TypeVar(
+    "T1", str, int, np.int64, np.uint64, np.float64, float, np.dtype[np.generic]
+)
 T2 = TypeVar("T2", str, int)
 
 # Interval closed type
@@ -138,4 +154,6 @@ StorageOptions = Optional[Dict[str, Any]]
 
 # compression keywords and compression
 CompressionDict = Dict[str, Any]
-CompressionOptions = Optional[Union[Literal["infer", "gzip", "bz2", "zip", "xz", "zstd"], CompressionDict]]
+CompressionOptions = Optional[
+    Union[Literal["infer", "gzip", "bz2", "zip", "xz", "zstd"], CompressionDict]
+]

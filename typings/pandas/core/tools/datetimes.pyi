@@ -43,7 +43,9 @@ class FulldatetimeDict(YearMonthDayDict, total=False):
 
 DictConvertible = Union[FulldatetimeDict, "DataFrame"]
 
-def should_cache(arg: ArrayConvertible, unique_share: float = ..., check_count: Optional[int] = ...) -> bool: ...
+def should_cache(
+    arg: ArrayConvertible, unique_share: float = ..., check_count: Optional[int] = ...
+) -> bool: ...
 @overload
 def to_datetime(
     arg: DatetimeScalar,

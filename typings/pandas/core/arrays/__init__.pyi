@@ -1,7 +1,8 @@
 from .base import (
     ExtensionArray as ExtensionArray,
     ExtensionOpsMixin as ExtensionOpsMixin,
-    ExtensionScalarOpsMixin as ExtensionScalarOpsMixin)
+    ExtensionScalarOpsMixin as ExtensionScalarOpsMixin,
+)
 from .boolean import BooleanArray as BooleanArray
 from .categorical import Categorical as Categorical
 from .datetimes import DatetimeArray as DatetimeArray

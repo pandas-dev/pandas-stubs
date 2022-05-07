@@ -156,7 +156,8 @@ def test_types_drop() -> None:
 
 def test_types_drop_multilevel() -> None:
     index = pd.MultiIndex(
-        levels=[["top", "bottom"], ["first", "second", "third"]], codes=[[0, 0, 0, 1, 1, 1], [0, 1, 2, 0, 1, 2]]
+        levels=[["top", "bottom"], ["first", "second", "third"]],
+        codes=[[0, 0, 0, 1, 1, 1], [0, 1, 2, 0, 1, 2]],
     )
     s = pd.Series(data=[1, 2, 3, 4, 5, 6], index=index)
     res: pd.Series = s.drop(labels="first", level=1)
@@ -327,7 +328,7 @@ def test_types_unique() -> None:
 
 def test_types_apply() -> None:
     s = pd.Series([-10, 2, 2, 3, 10, 10])
-    s.apply(lambda x: x ** 2)
+    s.apply(lambda x: x**2)
     s.apply(np.exp)
     s.apply(str)
 
@@ -354,8 +355,8 @@ def test_types_element_wise_arithmetic() -> None:
     res_mod: pd.Series = s % s2
     res_mod2: pd.Series = s.mod(s2, fill_value=0)
 
-    res_pow: pd.Series = s ** abs(s2)
-    res_pow2: pd.Series = s.pow(abs(s2), fill_value=0)
+    res_pow: pd.Series = s ** s2.abs()
+    res_pow2: pd.Series = s.pow(s2.abs(), fill_value=0)
 
 
 def test_types_scalar_arithmetic() -> None:
@@ -379,9 +380,9 @@ def test_types_scalar_arithmetic() -> None:
     res_mod: pd.Series = s % 2
     res_mod2: pd.Series = s.mod(2, fill_value=0)
 
-    res_pow: pd.Series = s ** 2
-    res_pow1: pd.Series = s ** 0
-    res_pow2: pd.Series = s ** 0.213
+    res_pow: pd.Series = s**2
+    res_pow1: pd.Series = s**0
+    res_pow2: pd.Series = s**0.213
     res_pow3: pd.Series = s.pow(0.5)
 
 
@@ -502,8 +503,12 @@ def test_types_rename_axis() -> None:
 def test_types_values() -> None:
     n1: Union[np.ndarray, ExtensionArray] = pd.Series([1, 2, 3]).values
     n2: Union[np.ndarray, ExtensionArray] = pd.Series(list("aabc")).values
-    n3: Union[np.ndarray, ExtensionArray] = pd.Series(list("aabc")).astype("category").values
-    n4: Union[np.ndarray, ExtensionArray] = pd.Series(pd.date_range("20130101", periods=3, tz="US/Eastern")).values
+    n3: Union[np.ndarray, ExtensionArray] = (
+        pd.Series(list("aabc")).astype("category").values
+    )
+    n4: Union[np.ndarray, ExtensionArray] = pd.Series(
+        pd.date_range("20130101", periods=3, tz="US/Eastern")
+    ).values
 
 
 def test_types_rename() -> None:
@@ -549,7 +554,9 @@ def test_types_bfill() -> None:
 
 def test_types_ewm() -> None:
     s1 = pd.Series([1, 2, 3])
-    w1: ExponentialMovingWindow = s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True, axis=0)
+    w1: ExponentialMovingWindow = s1.ewm(
+        com=0.3, min_periods=0, adjust=False, ignore_na=True, axis=0
+    )
     w2: ExponentialMovingWindow = s1.ewm(alpha=0.4)
     w3: ExponentialMovingWindow = s1.ewm(span=1.6)
     w4: ExponentialMovingWindow = s1.ewm(halflife=0.7)
@@ -621,7 +628,9 @@ def test_series_invert() -> None:
 
 
 def test_series_multiindex_getitem() -> None:
-    s = pd.Series([1, 2, 3, 4], index=pd.MultiIndex.from_product([["a", "b"], ["x", "y"]]))
+    s = pd.Series(
+        [1, 2, 3, 4], index=pd.MultiIndex.from_product([["a", "b"], ["x", "y"]])
+    )
     s1: pd.Series = s["a", :]
 
 
@@ -638,7 +647,10 @@ def test_series_mul() -> None:
 
 
 def test_reset_index() -> None:
-    s = pd.Series([1, 2, 3, 4], index=pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"]))
+    s = pd.Series(
+        [1, 2, 3, 4],
+        index=pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"]),
+    )
     r1 = s.reset_index()
     check_dataframe_result(r1)
     r2 = s.reset_index(["ab"])
@@ -649,13 +661,14 @@ def test_reset_index() -> None:
     check_series_result(r4)
     r5 = s.reset_index(["ab"], drop=True)
     check_series_result(r5)
-    
+
+
 def test_series_add_str() -> None:
     s = pd.Series(["abc", "def"])
     check_series_result(s + "x")
     check_series_result("x" + s)
-    
+
+
 def test_series_dtype() -> None:
     s = pd.Series(["abc", "def"], dtype=str)
     check_series_result(s, object)
-    

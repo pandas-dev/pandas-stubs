@@ -23,7 +23,9 @@ def test_types_init() -> None:
     ts6: pd.Timestamp = pd.Timestamp(1515590000100000000)  # plain integer (nanosecond)
     ts7: pd.Timestamp = pd.Timestamp(2021, 3, 10, 12)
     ts8: pd.Timestamp = pd.Timestamp(year=2021, month=3, day=10, hour=12)
-    ts9: pd.Timestamp = pd.Timestamp(year=2021, month=3, day=10, hour=12, tz="US/Pacific")
+    ts9: pd.Timestamp = pd.Timestamp(
+        year=2021, month=3, day=10, hour=12, tz="US/Pacific"
+    )
 
 
 def test_types_arithmetic() -> None:
@@ -139,12 +141,13 @@ def test_timedelta_series_mult() -> None:
     std = (df["x"] < df["y"]) * pd.Timedelta(10, "minutes")
     assert_type(std, "TimedeltaSeries")
 
+
 def test_timedelta_series_sum() -> None:
-    s = pd.Series(pd.to_datetime(["04/05/2022 11:00", "04/03/2022 10:00"])) - pd.Series(pd.to_datetime(["04/05/2022 08:00", "04/03/2022 09:00"]))
+    s = pd.Series(pd.to_datetime(["04/05/2022 11:00", "04/03/2022 10:00"])) - pd.Series(
+        pd.to_datetime(["04/05/2022 08:00", "04/03/2022 09:00"])
+    )
     ssum = s.sum()
     ires: int = ssum.days
-    
+
     sf = pd.Series([1.0, 2.2, 3.3])
     sfsum: float = sf.sum()
-    
-    

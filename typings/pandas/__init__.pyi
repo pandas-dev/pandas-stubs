@@ -4,7 +4,8 @@ from ._config import (
     option_context as option_context,
     options as options,
     reset_option as reset_option,
-    set_option as set_option)
+    set_option as set_option,
+)
 from .core.api import (
     BooleanDtype as BooleanDtype,
     Categorical as Categorical,
@@ -58,11 +59,9 @@ from .core.api import (
     timedelta_range as timedelta_range,
     to_numeric as to_numeric,
     unique as unique,
-    value_counts as value_counts)
-from .core.tools import (
-    to_datetime as to_datetime,
-    to_timedelta as to_timedelta
+    value_counts as value_counts,
 )
+from .core.tools import to_datetime as to_datetime, to_timedelta as to_timedelta
 from .core.arrays.sparse import SparseDtype as SparseDtype
 from .tseries import offsets as offsets
 from .tseries.api import infer_freq as infer_freq
@@ -80,7 +79,8 @@ from .core.reshape.api import (
     pivot as pivot,
     pivot_table as pivot_table,
     qcut as qcut,
-    wide_to_long as wide_to_long)
+    wide_to_long as wide_to_long,
+)
 from .util._print_versions import show_versions as show_versions
 from .io.json import json_normalize as json_normalize
 from .io.api import (
@@ -106,11 +106,11 @@ from .io.api import (
     read_sql_table as read_sql_table,
     read_stata as read_stata,
     read_table as read_table,
-    to_pickle as to_pickle)
-
+    to_pickle as to_pickle,
+)
 
 from .util._tester import test as test
 
 import pandas.testing as testing
 
-__version__ : str
+__version__: str

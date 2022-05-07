@@ -90,7 +90,9 @@ def read_json(
     encoding: Optional[str] = ...,
     lines: bool = ...,
     chunksize: Optional[int] = ...,
-    compression: Optional[Union[str, Literal["infer", "gzip", "bz2", "zip", "xz"]]] = ...,
+    compression: Optional[
+        Union[str, Literal["infer", "gzip", "bz2", "zip", "xz"]]
+    ] = ...,
     *,
     typ: Literal["series"],
 ) -> Series: ...
@@ -108,7 +110,9 @@ def read_json(
     encoding: Optional[str] = ...,
     lines: bool = ...,
     chunksize: Optional[int] = ...,
-    compression: Optional[Union[str, Literal["infer", "gzip", "bz2", "zip", "xz"]]] = ...,
+    compression: Optional[
+        Union[str, Literal["infer", "gzip", "bz2", "zip", "xz"]]
+    ] = ...,
     *,
     typ: Literal["frame"],
 ) -> DataFrame: ...
@@ -127,7 +131,9 @@ def read_json(
     encoding: Optional[str] = ...,
     lines: bool = ...,
     chunksize: Optional[int] = ...,
-    compression: Optional[Union[str, Literal["infer", "gzip", "bz2", "zip", "xz"]]] = ...,
+    compression: Optional[
+        Union[str, Literal["infer", "gzip", "bz2", "zip", "xz"]]
+    ] = ...,
 ) -> Union[Series, DataFrame]: ...
 
 class JsonReader(abc.Iterator):

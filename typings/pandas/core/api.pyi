@@ -20,13 +20,24 @@ from pandas.core.dtypes.dtypes import (
     IntervalDtype as IntervalDtype,
     PeriodDtype as PeriodDtype,
 )
-from pandas.core.dtypes.missing import isna as isna, isnull as isnull, notna as notna, notnull as notnull
-from pandas.core.indexes.datetimes import bdate_range as bdate_range, date_range as date_range
+from pandas.core.dtypes.missing import (
+    isna as isna,
+    isnull as isnull,
+    notna as notna,
+    notnull as notnull,
+)
+from pandas.core.indexes.datetimes import (
+    bdate_range as bdate_range,
+    date_range as date_range,
+)
 from pandas.core.tools import to_datetime as to_datetime
 from pandas.core.tools.numeric import to_numeric as to_numeric
 from pandas.core.tools.timedeltas import to_timedelta as to_timedelta
 from pandas.io.formats.format import set_eng_float_format as set_eng_float_format
-from pandas.core.indexes.interval import Interval as Interval, interval_range as interval_range
+from pandas.core.indexes.interval import (
+    Interval as Interval,
+    interval_range as interval_range,
+)
 from pandas.core.indexes.period import period_range as period_range
 from pandas.core.indexes.timedeltas import timedelta_range as timedelta_range
 from pandas.core.arrays import Categorical as Categorical
@@ -49,4 +60,8 @@ from pandas.core.indexing import IndexSlice as IndexSlice
 from pandas.core.series import Series as Series
 from pandas.core.frame import DataFrame as DataFrame
 from pandas.tseries.offsets import DateOffset as DateOffset
-from pandas.core.algorithms import factorize as factorize, unique as unique, value_counts as value_counts
+from pandas.core.algorithms import (
+    factorize as factorize,
+    unique as unique,
+    value_counts as value_counts,
+)

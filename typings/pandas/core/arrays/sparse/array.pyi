@@ -1,7 +1,14 @@
 import numpy as np
-from pandas._libs.sparse import BlockIndex as BlockIndex, IntIndex as IntIndex, SparseIndex as SparseIndex
+from pandas._libs.sparse import (
+    BlockIndex as BlockIndex,
+    IntIndex as IntIndex,
+    SparseIndex as SparseIndex,
+)
 from pandas._libs.tslibs import NaT as NaT
-from pandas.core.arrays import ExtensionArray as ExtensionArray, ExtensionOpsMixin as ExtensionOpsMixin
+from pandas.core.arrays import (
+    ExtensionArray as ExtensionArray,
+    ExtensionOpsMixin as ExtensionOpsMixin,
+)
 from pandas.core.arrays.sparse.dtype import SparseDtype as SparseDtype
 from pandas.core.base import PandasObject as PandasObject
 from pandas.core.construction import sanitize_array as sanitize_array
@@ -22,8 +29,16 @@ from pandas.core.dtypes.common import (
     is_string_dtype as is_string_dtype,
     pandas_dtype as pandas_dtype,
 )
-from pandas.core.dtypes.generic import ABCIndexClass as ABCIndexClass, ABCSeries as ABCSeries, ABCSparseArray as ABCSparseArray
-from pandas.core.dtypes.missing import isna as isna, na_value_for_dtype as na_value_for_dtype, notna as notna
+from pandas.core.dtypes.generic import (
+    ABCIndexClass as ABCIndexClass,
+    ABCSeries as ABCSeries,
+    ABCSparseArray as ABCSparseArray,
+)
+from pandas.core.dtypes.missing import (
+    isna as isna,
+    na_value_for_dtype as na_value_for_dtype,
+    notna as notna,
+)
 from pandas.core.indexers import check_array_indexer as check_array_indexer
 from pandas.core.missing import interpolate_2d as interpolate_2d
 from pandas.core.ops.common import unpack_zerodim_and_defer as unpack_zerodim_and_defer
@@ -31,7 +46,14 @@ from pandas.errors import PerformanceWarning as PerformanceWarning
 
 class SparseArray(PandasObject, ExtensionArray, ExtensionOpsMixin):
     def __init__(
-        self, data, sparse_index=..., index=..., fill_value=..., kind: str = ..., dtype=..., copy: bool = ...
+        self,
+        data,
+        sparse_index=...,
+        index=...,
+        fill_value=...,
+        kind: str = ...,
+        dtype=...,
+        copy: bool = ...,
     ) -> None: ...
     @classmethod
     def from_spmatrix(cls, data): ...
