@@ -1,10 +1,16 @@
 # pandas-stubs
 
-## Public type stubs for pandas - WORK IN PROGRESS!
+## Public type stubs for pandas
 
-This will be the home for the typing stubs supported by the pandas core team.
+This is the home for pandas typing stubs supported by the pandas core team.  The stubs are likely incomplete in terms of covering the published API of pandas.
 
-The current version of these stubs was copied/forked from the project https://github.com/microsoft/python-type-stubs as of commit `3ea7eb74b1143fc19d3cde337a4ca04dfaa81f66` plus https://github.com/microsoft/python-type-stubs/pull/196
+### Development Paradigm
+
+To contribute changes to the stubs, you must include an appropriate test.  See `pandas-stubs/tests` for examples.
+
+## Evolution
+
+The current version of these stubs was copied/forked from the project https://github.com/microsoft/python-type-stubs as of commit `6b800063bde687cd1846122431e2a729a9de625a`
 
 As both projects move forward, this page will track what the differences are (if any).
 
@@ -12,4 +18,5 @@ As both projects move forward, this page will track what the differences are (if
 
 We are indebted to Microsoft and that project for the initial set of public type stubs.  We are also grateful for the original pandas-stubs project at https://github.com/VirtusLab/pandas-stubs that created the framework for testing the stubs.
 
-Last update to README: 5/3/2022: 12:31 EDT 
+Last update to README: 5/7/2022: 2:18 EDT
+
