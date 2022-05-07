@@ -10,13 +10,12 @@ To contribute changes to the stubs, you must include an appropriate test.  See `
 
 ## Evolution
 
-The current version of these stubs was copied/forked from the project https://github.com/microsoft/python-type-stubs as of commit `6b800063bde687cd1846122431e2a729a9de625a`
+These stubs were forked from the project <https://github.com/microsoft/python-type-stubs> as of commit `6b800063bde687cd1846122431e2a729a9de625a`
 
-As both projects move forward, this page will track what the differences are (if any).
+As both projects move forward, this page will track what the differences are (if any).  There is an expectation that, in the near future, the Microsoft project will start pulling these stubs for inclusion in Visual Studio Code releases.
 
 ## Thanks
 
-We are indebted to Microsoft and that project for the initial set of public type stubs.  We are also grateful for the original pandas-stubs project at https://github.com/VirtusLab/pandas-stubs that created the framework for testing the stubs.
+We are indebted to Microsoft and that project for the initial set of public type stubs.  We are also grateful for the original pandas-stubs project at <https://github.com/VirtusLab/pandas-stubs> that created the framework for testing the stubs.
 
 Last update to README: 5/7/2022: 2:18 EDT
-

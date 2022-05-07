@@ -9,20 +9,19 @@ def pivot_table(
     values: Optional[str] = ...,
     index: Optional[Union[str, Sequence, Grouper]] = ...,
     columns: Optional[Union[str, Sequence, Grouper]] = ...,
-    aggfunc = ...,
+    aggfunc=...,
     fill_value: Optional[Scalar] = ...,
     margins: bool = ...,
     dropna: bool = ...,
     margins_name: str = ...,
-    observed: bool = ...) -> DataFrame: ...
-
+    observed: bool = ...,
+) -> DataFrame: ...
 def pivot(
     data: DataFrame,
     index: Optional[str] = ...,
     columns: Optional[str] = ...,
     values: Optional[Union[str, Sequence[str]]] = ...,
 ) -> DataFrame: ...
-
 def crosstab(
     index: Union[Sequence, Series],
     columns: Union[Sequence, Series],
@@ -33,4 +32,5 @@ def crosstab(
     margins: bool = ...,
     margins_name: str = ...,
     dropna: bool = ...,
-    normalize: bool = ...) -> DataFrame: ...
+    normalize: bool = ...,
+) -> DataFrame: ...

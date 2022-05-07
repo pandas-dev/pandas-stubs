@@ -1,6 +1,9 @@
 import numpy as np
 from pandas._libs import NaT as NaT, NaTType as NaTType, Timestamp as Timestamp
-from pandas.core.arrays.base import ExtensionArray as ExtensionArray, ExtensionOpsMixin as ExtensionOpsMixin
+from pandas.core.arrays.base import (
+    ExtensionArray as ExtensionArray,
+    ExtensionOpsMixin as ExtensionOpsMixin,
+)
 from typing import Sequence, Union
 
 class AttributesMixin: ...

@@ -39,4 +39,5 @@ from pandas.core.dtypes.common import (
     is_timedelta64_dtype as is_timedelta64_dtype,
     is_timedelta64_ns_dtype as is_timedelta64_ns_dtype,
     is_unsigned_integer_dtype as is_unsigned_integer_dtype,
-    pandas_dtype as pandas_dtype)
+    pandas_dtype as pandas_dtype,
+)

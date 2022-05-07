@@ -3,8 +3,13 @@ from pandas._typing import Scalar as Scalar
 from typing import Any, Dict, List, Optional, Union
 
 def convert_to_line_delimits(s: Any): ...
-def nested_to_record(ds: Any, prefix: str=..., sep: str=..., level: int=..., max_level: Optional[int]=...) -> Any: ...
-
+def nested_to_record(
+    ds: Any,
+    prefix: str = ...,
+    sep: str = ...,
+    level: int = ...,
+    max_level: Optional[int] = ...,
+) -> Any: ...
 def json_normalize(
     data: Union[Dict, List[Dict]],
     record_path: Optional[Union[str, List]] = None,

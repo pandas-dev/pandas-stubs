@@ -80,7 +80,10 @@ def check_datetimeindex_result(result: pd.DatetimeIndex):
     assert isinstance(result, pd.DatetimeIndex)
 
 
-def check_numpy_result(result: np.ndarray, dtype: Optional[Union[Type[np.int64], Type[np.bool_], Type[np.str_]]] = None):
+def check_numpy_result(
+    result: np.ndarray,
+    dtype: Optional[Union[Type[np.int64], Type[np.bool_], Type[np.str_]]] = None,
+):
     assert isinstance(result, np.ndarray)
     if dtype is not None:
         assert result.dtype == dtype
@@ -95,7 +98,10 @@ def check_timestamp_result(result: pd.Timestamp):
 
 
 def check_interval_result(
-    result: pd.Interval, dtype: Optional[Union[Type[pd.Timestamp], Type[pd.Timedelta], Type[int], Type[float]]]
+    result: pd.Interval,
+    dtype: Optional[
+        Union[Type[pd.Timestamp], Type[pd.Timedelta], Type[int], Type[float]]
+    ],
 ):
     assert isinstance(result, pd.Interval)
     if dtype is not None:

@@ -34,8 +34,8 @@ def test_multiindex_get_level_values():
     i1 = mi.get_level_values("ab")
     check_index_result(i1)
 
+
 def test_index_tolist() -> None:
-    i1 = pd.Index([1,2,3])
+    i1 = pd.Index([1, 2, 3])
     l1 = i1.tolist()
     i2 = i1.to_list()
-    

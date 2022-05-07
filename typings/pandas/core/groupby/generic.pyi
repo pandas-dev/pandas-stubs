@@ -1,12 +1,35 @@
 from matplotlib.axes import Axes as PlotAxes, SubplotBase as AxesSubplot
 import numpy as np
 import sys
-from pandas._typing import FrameOrSeries as FrameOrSeries, AxisType, Dtype, Level, F, AggFuncType, S1
+from pandas._typing import (
+    FrameOrSeries as FrameOrSeries,
+    AxisType,
+    Dtype,
+    Level,
+    F,
+    AggFuncType,
+    S1,
+)
 from pandas.core.frame import DataFrame as DataFrame
-from pandas.core.groupby.groupby import GroupBy as GroupBy  # , get_groupby as get_groupby
+from pandas.core.groupby.groupby import (
+    GroupBy as GroupBy,
+)  # , get_groupby as get_groupby
 from pandas.core.groupby.grouper import Grouper as Grouper
 from pandas.core.series import Series as Series
-from typing import Any, Callable, Dict, FrozenSet, List, NamedTuple, Optional, Sequence, Tuple, Type, Union, overload
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    FrozenSet,
+    List,
+    NamedTuple,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    Union,
+    overload,
+)
 
 if sys.version_info >= (3, 8):
     from typing import Literal
@@ -21,7 +44,9 @@ class NamedAgg(NamedTuple):
     aggfunc: AggScalar = ...
 
 def generate_property(name: str, klass: Type[FrameOrSeries]): ...
-def pin_whitelisted_properties(klass: Type[FrameOrSeries], whitelist: FrozenSet[str]): ...
+def pin_whitelisted_properties(
+    klass: Type[FrameOrSeries], whitelist: FrozenSet[str]
+): ...
 
 class SeriesGroupBy(GroupBy):
     def any(self, skipna: bool = ...) -> Series[bool]: ...
@@ -73,7 +98,9 @@ class SeriesGroupBy(GroupBy):
     def min(self, **kwargs) -> Series[S1]: ...
     def nlargest(self, n: int = ..., keep: str = ...) -> Series[S1]: ...
     def nsmallest(self, n: int = ..., keep: str = ...) -> Series[S1]: ...
-    def nth(self, n: Union[int, Sequence[int]], dropna: Optional[str] = ...) -> Series[S1]: ...
+    def nth(
+        self, n: Union[int, Sequence[int]], dropna: Optional[str] = ...
+    ) -> Series[S1]: ...
 
 class DataFrameGroupBy(GroupBy):
     def any(self, skipna: bool = ...) -> DataFrame: ...
@@ -92,7 +119,9 @@ class DataFrameGroupBy(GroupBy):
     @overload
     def agg(self, arg: F, *args, **kwargs) -> DataFrame: ...
     def transform(self, func, *args, **kwargs): ...
-    def filter(self, func: Callable, dropna: bool = ..., *args, **kwargs) -> DataFrame: ...
+    def filter(
+        self, func: Callable, dropna: bool = ..., *args, **kwargs
+    ) -> DataFrame: ...
     def nunique(self, dropna: bool = ...) -> DataFrame: ...
     @overload
     def __getitem__(self, item: str) -> SeriesGroupBy: ...
@@ -118,7 +147,9 @@ class DataFrameGroupBy(GroupBy):
     ) -> Union[AxesSubplot, Sequence[AxesSubplot]]: ...
     # Overrides and others from original pylance stubs
     ## These are "properties" but properties can't have all these arguments?!
-    def corr(self, method: Union[str, Callable], min_periods: int = ...) -> DataFrame: ...
+    def corr(
+        self, method: Union[str, Callable], min_periods: int = ...
+    ) -> DataFrame: ...
     def cov(self, min_periods: int = ...) -> DataFrame: ...
     def diff(self, periods: int = ..., axis: AxisType = ...) -> DataFrame: ...
     def bfill(self, limit: Optional[int] = ...) -> DataFrame: ...
@@ -193,17 +224,30 @@ class DataFrameGroupBy(GroupBy):
     def last(self, **kwargs) -> DataFrame: ...
     @overload
     def mad(
-        self, axis: AxisType = ..., skipna: bool = ..., numeric_only: Optional[bool] = ..., *, level: Level, **kwargs
+        self,
+        axis: AxisType = ...,
+        skipna: bool = ...,
+        numeric_only: Optional[bool] = ...,
+        *,
+        level: Level,
+        **kwargs,
     ) -> DataFrame: ...
     @overload
     def mad(
-        self, axis: AxisType = ..., skipna: bool = ..., level: None = ..., numeric_only: Optional[bool] = ..., **kwargs
+        self,
+        axis: AxisType = ...,
+        skipna: bool = ...,
+        level: None = ...,
+        numeric_only: Optional[bool] = ...,
+        **kwargs,
     ) -> Series: ...
     def max(self, **kwargs) -> DataFrame: ...
     def mean(self, **kwargs) -> DataFrame: ...
     def median(self, **kwargs) -> DataFrame: ...
     def min(self, **kwargs) -> DataFrame: ...
-    def nth(self, n: Union[int, Sequence[int]], dropna: Optional[str] = ...) -> DataFrame: ...
+    def nth(
+        self, n: Union[int, Sequence[int]], dropna: Optional[str] = ...
+    ) -> DataFrame: ...
     def pct_change(
         self,
         periods: int = ...,
@@ -226,10 +270,23 @@ class DataFrameGroupBy(GroupBy):
     def size(self) -> Series[int]: ...
     @overload
     def skew(
-        self, axis: AxisType = ..., skipna: bool = ..., numeric_only: bool = ..., *, level: Level, **kwargs
+        self,
+        axis: AxisType = ...,
+        skipna: bool = ...,
+        numeric_only: bool = ...,
+        *,
+        level: Level,
+        **kwargs,
     ) -> DataFrame: ...
     @overload
-    def skew(self, axis: AxisType = ..., skipna: bool = ..., level: None = ..., numeric_only: bool = ..., **kwargs) -> Series: ...
+    def skew(
+        self,
+        axis: AxisType = ...,
+        skipna: bool = ...,
+        level: None = ...,
+        numeric_only: bool = ...,
+        **kwargs,
+    ) -> Series: ...
     def std(self, ddof: int = ...) -> DataFrame: ...
     def sum(self, **kwargs) -> DataFrame: ...
     def tail(self, n: int = ...) -> DataFrame: ...

@@ -1,6 +1,14 @@
 import numpy as np
-from pandas._typing import Axis as Axis, FrameOrSeriesUnion as FrameOrSeries, Scalar as Scalar
-from pandas.core.base import PandasObject as PandasObject, SelectionMixin as SelectionMixin, ShallowMixin as ShallowMixin
+from pandas._typing import (
+    Axis as Axis,
+    FrameOrSeriesUnion as FrameOrSeries,
+    Scalar as Scalar,
+)
+from pandas.core.base import (
+    PandasObject as PandasObject,
+    SelectionMixin as SelectionMixin,
+    ShallowMixin as ShallowMixin,
+)
 from pandas.core.indexes.api import Index as Index
 from pandas.core.window.common import WindowGroupByMixin as WindowGroupByMixin
 from typing import Callable, Dict, Mapping, Optional, Sequence, Set, Tuple, Union
@@ -35,7 +43,9 @@ class _Window(PandasObject, ShallowMixin, SelectionMixin):
     def validate(self) -> None: ...
     def __getattr__(self, attr: str): ...
     def __iter__(self): ...
-    def aggregate(self, func: Optional[Callable] = ..., *args, **kwargs) -> Union[Scalar, FrameOrSeries]: ...
+    def aggregate(
+        self, func: Optional[Callable] = ..., *args, **kwargs
+    ) -> Union[Scalar, FrameOrSeries]: ...
     agg = aggregate
 
 class Window(_Window):
@@ -67,12 +77,21 @@ class _Rolling_and_Expanding(_Rolling):
     def var(self, ddof: int = ..., *args, **kwargs) -> FrameOrSeries: ...
     def skew(self, **kwargs) -> FrameOrSeries: ...
     def kurt(self, **kwargs) -> FrameOrSeries: ...
-    def quantile(self, quantile: float, interpolation: str = ..., **kwargs) -> FrameOrSeries: ...
+    def quantile(
+        self, quantile: float, interpolation: str = ..., **kwargs
+    ) -> FrameOrSeries: ...
     def cov(
-        self, other: Optional[Union[FrameOrSeries, np.ndarray]] = ..., pairwise: Optional[bool] = ..., ddof: int = ..., **kwargs
+        self,
+        other: Optional[Union[FrameOrSeries, np.ndarray]] = ...,
+        pairwise: Optional[bool] = ...,
+        ddof: int = ...,
+        **kwargs,
     ) -> FrameOrSeries: ...
     def corr(
-        self, other: Optional[Union[FrameOrSeries, np.ndarray]] = ..., pairwise: Optional[bool] = ..., **kwargs
+        self,
+        other: Optional[Union[FrameOrSeries, np.ndarray]] = ...,
+        pairwise: Optional[bool] = ...,
+        **kwargs,
     ) -> FrameOrSeries: ...
 
 class Rolling(_Rolling_and_Expanding):
@@ -83,6 +102,14 @@ class Rolling(_Rolling_and_Expanding):
     min_periods: int = ...
     def validate(self) -> None: ...
     def count(self) -> FrameOrSeries: ...
-    def apply(self, func, raw: bool = ..., engine: str = ..., engine_kwargs=..., args=..., kwargs=...): ...
+    def apply(
+        self,
+        func,
+        raw: bool = ...,
+        engine: str = ...,
+        engine_kwargs=...,
+        args=...,
+        kwargs=...,
+    ): ...
 
 class RollingGroupby(WindowGroupByMixin, Rolling): ...

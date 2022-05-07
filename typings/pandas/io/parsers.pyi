@@ -12,7 +12,18 @@ from pandas._typing import (
     StorageOptions as StorageOptions,
 )
 from pandas.core.frame import DataFrame as DataFrame
-from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence, Union, overload, Protocol
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    List,
+    Mapping,
+    Optional,
+    Sequence,
+    Union,
+    overload,
+    Protocol,
+)
 
 if sys.version_info >= (3, 8):
     from typing import Literal
@@ -487,7 +498,13 @@ def read_table(
     float_precision: Optional[Literal["high", "legacy"]] = ...,
     storage_options: Optional[StorageOptions] = ...,
 ) -> DataFrame | TextFileReader: ...
-def read_fwf(filepath_or_buffer: FilePathOrBuffer, colspecs=..., widths=..., infer_nrows=..., **kwds): ...
+def read_fwf(
+    filepath_or_buffer: FilePathOrBuffer,
+    colspecs=...,
+    widths=...,
+    infer_nrows=...,
+    **kwds,
+): ...
 
 class TextFileReader(abc.Iterator):
     f = ...
@@ -586,7 +603,9 @@ class FixedWidthReader(abc.Iterator):
     delimiter = ...
     comment = ...
     colspecs = ...
-    def __init__(self, f, colspecs, delimiter, comment, skiprows=..., infer_nrows: int = ...) -> None: ...
+    def __init__(
+        self, f, colspecs, delimiter, comment, skiprows=..., infer_nrows: int = ...
+    ) -> None: ...
     def get_rows(self, infer_nrows, skiprows=...): ...
     def detect_colspecs(self, infer_nrows: int = ..., skiprows=...): ...
     def __next__(self): ...

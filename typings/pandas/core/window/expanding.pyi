@@ -4,7 +4,9 @@ from pandas.core.window.common import WindowGroupByMixin as WindowGroupByMixin
 from pandas.core.window.rolling import _Rolling_and_Expanding
 
 class Expanding(_Rolling_and_Expanding):
-    def __init__(self, obj, min_periods: int = ..., center: bool = ..., axis: int = ..., **kwargs) -> None: ...
+    def __init__(
+        self, obj, min_periods: int = ..., center: bool = ..., axis: int = ..., **kwargs
+    ) -> None: ...
     def count(self, **kwargs) -> FrameOrSeries: ...
     def apply(
         self,
