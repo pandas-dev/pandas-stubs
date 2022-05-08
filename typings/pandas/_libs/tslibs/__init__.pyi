@@ -8,7 +8,7 @@ __all__ = [
     "nat_strings",
     "BaseOffset",
     "Tick",
-    "OutofBoundsDatetime",
+    "OutOfBoundsDatetime",
 ]
 
 from .period import Period

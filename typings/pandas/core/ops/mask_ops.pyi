@@ -1,5 +1,5 @@
 import numpy as np
-from pandas._libs import lib as lib, missing as libmissing
+from pandas._libs import missing as libmissing
 from typing import Optional, Union
 
 def kleene_or(

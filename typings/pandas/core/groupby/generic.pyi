@@ -6,8 +6,7 @@ from pandas._typing import (
     AxisType,
     Dtype,
     Level,
-    F,
-    AggFuncType,
+    FuncType,
     S1,
 )
 from pandas.core.frame import DataFrame as DataFrame
@@ -117,7 +116,7 @@ class DataFrameGroupBy(GroupBy):
     @overload
     def agg(self, arg: Dict, *args, **kwargs) -> DataFrame: ...
     @overload
-    def agg(self, arg: F, *args, **kwargs) -> DataFrame: ...
+    def agg(self, arg: FuncType, *args, **kwargs) -> DataFrame: ...
     def transform(self, func, *args, **kwargs): ...
     def filter(
         self, func: Callable, dropna: bool = ..., *args, **kwargs
