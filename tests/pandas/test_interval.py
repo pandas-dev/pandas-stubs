@@ -1,15 +1,7 @@
 # flake8: noqa: F841
 from typing import TYPE_CHECKING
+from typing_extensions import assert_type
 import pandas as pd
-
-from . import (
-    check_bool_result,
-    check_timedelta_result,
-    check_timestamp_result,
-    check_interval_result,
-    check_int_result,
-    check_float_result,
-)
 
 
 def test_interval_init() -> None:
@@ -43,16 +35,16 @@ def test_interval_length() -> None:
     i1 = pd.Interval(
         pd.Timestamp("2000-01-01"), pd.Timestamp("2000-01-03"), closed="both"
     )
-    check_timedelta_result(i1.length)
-    check_timestamp_result(i1.left)
-    check_timestamp_result(i1.right)
-    check_timestamp_result(i1.mid)
+    assert_type(i1.length, "pd.Timedelta")
+    assert_type(i1.left, "pd.Timestamp")
+    assert_type(i1.right, "pd.Timestamp")
+    assert_type(i1.mid, "pd.Timestamp")
     i1.length.total_seconds()
     inres = pd.Timestamp("2001-01-02") in i1
-    check_bool_result(inres)
+    assert_type(inres, "bool")
     idres = i1 + pd.Timedelta(seconds=20)
 
-    check_interval_result(idres, pd.Timestamp)
+    assert_type(idres, "pd.Interval[pd.Timestamp]")
     if TYPE_CHECKING:
         20 in i1  # type: ignore
         i1 + pd.Timestamp("2000-03-03")  # type: ignore
@@ -60,32 +52,32 @@ def test_interval_length() -> None:
         i1 * pd.Timedelta(seconds=20)  # type: ignore
 
     i2 = pd.Interval(10, 20)
-    check_int_result(i2.length)
-    check_int_result(i2.left)
-    check_int_result(i2.right)
-    check_float_result(i2.mid)
+    assert_type(i2.length, "int")
+    assert_type(i2.left, "int")
+    assert_type(i2.right, "int")
+    assert_type(i2.mid, "float")
 
     i2inres = 15 in i2
-    check_bool_result(i2inres)
-    check_interval_result(i2 + 3, int)
-    check_interval_result(i2 + 3.2, float)
-    check_interval_result(i2 * 4, int)
-    check_interval_result(i2 * 4.2, float)
+    assert_type(i2inres, "bool")
+    assert_type(i2 + 3, "pd.Interval[int]")
+    assert_type(i2 + 3.2, "pd.Interval[float]")
+    assert_type(i2 * 4, "pd.Interval[int]")
+    assert_type(i2 * 4.2, "pd.Interval[float]")
 
     if TYPE_CHECKING:
         pd.Timestamp("2001-01-02") in i2  # type: ignore
         i2 + pd.Timedelta(seconds=20)  # type: ignore
 
     i3 = pd.Interval(13.2, 19.5)
-    check_float_result(i3.length)
-    check_float_result(i3.left)
-    check_float_result(i3.right)
-    check_float_result(i3.mid)
+    assert_type(i3.length, "float")
+    assert_type(i3.left, "float")
+    assert_type(i3.right, "float")
+    assert_type(i3.mid, "float")
 
     i3inres = 15.4 in i3
-    check_bool_result(i3inres)
-    check_interval_result(i3 + 3, float)
-    check_interval_result(i3 * 3, float)
+    assert_type(i3inres, "bool")
+    assert_type(i3 + 3, "pd.Interval[float]")
+    assert_type(i3 * 3, "pd.Interval[float]")
     if TYPE_CHECKING:
         pd.Timestamp("2001-01-02") in i3  # type: ignore
         i3 + pd.Timedelta(seconds=20)  # type: ignore
