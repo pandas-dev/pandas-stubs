@@ -1,7 +1,6 @@
 from __future__ import annotations
 import datetime
 import numpy as np
-import sys
 
 from pandas.core.indexing import _iLocIndexer, _LocIndexer
 from matplotlib.axes import Axes as PlotAxes
@@ -55,10 +54,10 @@ from typing import (
     Iterable,
     Iterator,
     List,
+    Literal,
     Mapping,
     Optional,
     Sequence,
-    Set,
     Tuple,
     Type,
     Union,
@@ -66,10 +65,7 @@ from typing import (
     Pattern,
 )
 
-if sys.version_info >= (3, 8):
-    from typing import Literal
-else:
-    from typing_extensions import Literal
+
 
 import numpy as _np
 import datetime as _dt

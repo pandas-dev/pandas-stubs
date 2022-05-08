@@ -2,7 +2,6 @@ import numpy as np
 from datetime import time, date
 
 from matplotlib.axes import Axes as PlotAxes, SubplotBase as SubplotBase
-import sys
 from .base import IndexOpsMixin
 from .generic import NDFrame
 from .indexes.multi import MultiIndex

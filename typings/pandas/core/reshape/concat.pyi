@@ -1,9 +1,8 @@
-from pandas import DataFrame as DataFrame, Series as Series
+from pandas._typing import DataFrame as DataFrame, Series as Series, Axis as Axis
 from typing import (
     Hashable,
     Iterable,
     Mapping,
-    Optional,
     Union,
     overload,
     Literal,
@@ -14,7 +13,8 @@ HashableT = TypeVar("HashableT", bound=Hashable)
 
 @overload
 def concat(
-    objs: Union[Iterable[Optional[Series]], Mapping[HashableT, Optional[Series]]],
+    objs: Union[Iterable[DataFrame], Mapping[HashableT, DataFrame]],
+    axis: Literal[0, "index"] = ...,
     join: str = ...,
     ignore_index: bool = ...,
     keys=...,
@@ -23,11 +23,25 @@ def concat(
     verify_integrity: bool = ...,
     sort: bool = ...,
     copy: bool = ...,
+) -> DataFrame: ...
+@overload
+def concat(
+    objs: Union[Iterable[Series], Mapping[HashableT, Series]],
     axis: Literal[0, "index"] = ...,
+    join: str = ...,
+    ignore_index: bool = ...,
+    keys=...,
+    levels=...,
+    names=...,
+    verify_integrity: bool = ...,
+    sort: bool = ...,
+    copy: bool = ...,
 ) -> Series: ...
 @overload
 def concat(
-    objs: Union[Iterable[Optional[Series]], Mapping[HashableT, Optional[Series]]],
+    objs: Union[
+        Iterable[Union[Series, DataFrame]], Mapping[HashableT, Union[Series, DataFrame]]
+    ],
     axis: Literal[1, "columns"],
     join: str = ...,
     ignore_index: bool = ...,
@@ -38,19 +52,41 @@ def concat(
     sort: bool = ...,
     copy: bool = ...,
 ) -> DataFrame: ...
-@overload
-def concat(
-    objs: Union[
-        Iterable[Optional[Union[DataFrame, Series]]],
-        Mapping[HashableT, Optional[Union[DataFrame, Series]]],
-    ],
-    axis: Literal[0, "index", 1, "columns"] = ...,
-    join: str = ...,
-    ignore_index: bool = ...,
-    keys=...,
-    levels=...,
-    names=...,
-    verify_integrity: bool = ...,
-    sort: bool = ...,
-    copy: bool = ...,
-) -> DataFrame: ...
+
+# Including either of the next 2 overloads causes mypy to complain about
+# test_pandas.py:test_types_concat() in assert_type(pd.concat([s, s2]), "pd.Series")
+# It thinks that pd.concat([s, s2]) is Any .  May be due to Series being
+# Generic, or the axis argument being unspecified, and then there is partial
+# overlap with the first 2 overloads.
+#
+# @overload
+# def concat(
+#     objs: Union[
+#         Iterable[Union[Series, DataFrame]], Mapping[HashableT, Union[Series, DataFrame]]
+#     ],
+#     axis: Literal[0, "index"] = ...,
+#     join: str = ...,
+#     ignore_index: bool = ...,
+#     keys=...,
+#     levels=...,
+#     names=...,
+#     verify_integrity: bool = ...,
+#     sort: bool = ...,
+#     copy: bool = ...,
+# ) -> Union[DataFrame, Series]: ...
+
+# @overload
+# def concat(
+#     objs: Union[
+#         Iterable[Union[Series, DataFrame]], Mapping[HashableT, Union[Series, DataFrame]]
+#     ],
+#     axis: Axis = ...,
+#     join: str = ...,
+#     ignore_index: bool = ...,
+#     keys=...,
+#     levels=...,
+#     names=...,
+#     verify_integrity: bool = ...,
+#     sort: bool = ...,
+#     copy: bool = ...,
+# ) -> Union[DataFrame, Series]: ...
