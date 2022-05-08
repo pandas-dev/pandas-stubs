@@ -26,7 +26,6 @@ from pandas.core.strings import StringMethods
 from typing import (
     Callable,
     Dict,
-    Generic,
     Hashable,
     Iterable,
     Iterator,

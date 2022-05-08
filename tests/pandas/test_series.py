@@ -1,5 +1,3 @@
-# flake8: noqa: F841
-
 import tempfile
 from pathlib import Path
 from typing import List, Union, TYPE_CHECKING
@@ -12,7 +10,6 @@ import pandas as pd
 import numpy as np
 
 from pandas.core.window import ExponentialMovingWindow
-from . import check_dataframe_result, check_series_result
 
 import pytest
 
@@ -91,8 +88,8 @@ def test_types_loc_at() -> None:
 
 def test_multiindex_loc() -> None:
     s = pd.Series([1, 2, 3, 4], index=pd.MultiIndex.from_product([[1, 2], ["a", "b"]]))
-    check_series_result(s.loc[1, :])
-    check_series_result(s.loc[pd.Index([1]), :])
+    assert_type(s.loc[1, :], "pd.Series")
+    assert_type(s.loc[pd.Index([1]), :], "pd.Series")
 
 
 def test_types_boolean_indexing() -> None:
@@ -514,25 +511,25 @@ def test_types_values() -> None:
 def test_types_rename() -> None:
     # Scalar
     s1 = pd.Series([1, 2, 3]).rename("A")
-    check_series_result(s1)
+    assert_type(s1, "pd.Series")
     # Hashable Sequence
     s2 = pd.Series([1, 2, 3]).rename(("A", "B"))
-    check_series_result(s2)
+    assert_type(s2, "pd.Series")
 
     # Optional
     s3 = pd.Series([1, 2, 3]).rename(None)
-    check_series_result(s3)
+    assert_type(s3, "pd.Series")
 
     # Functions
     def add1(x: int) -> int:
         return x + 1
 
     s4 = pd.Series([1, 2, 3]).rename(add1)
-    check_series_result(s4)
+    assert_type(s4, "pd.Series")
 
     # Dictionary
     s5 = pd.Series([1, 2, 3]).rename({1: 10})
-    check_series_result(s5)
+    assert_type(s5, "pd.Series")
     # inplace
     s6: None = pd.Series([1, 2, 3]).rename("A", inplace=True)
 
@@ -612,10 +609,10 @@ def test_series_index_isin() -> None:
     t2 = s.loc[~s.index.isin([1, 3])]
     t3 = s[s.index.isin([1, 3])]
     t4 = s[~s.index.isin([1, 3])]
-    check_series_result(t1)
-    check_series_result(t2)
-    check_series_result(t3)
-    check_series_result(t4)
+    assert_type(t1, "pd.Series")
+    assert_type(t2, "pd.Series")
+    assert_type(t3, "pd.Series")
+    assert_type(t4, "pd.Series")
 
 
 def test_series_invert() -> None:
@@ -623,8 +620,8 @@ def test_series_invert() -> None:
     s2 = ~s1
     assert_type(s2, "pd.Series[bool]")
     s3 = pd.Series([1, 2, 3])
-    check_series_result(s3[s2])
-    check_series_result(s3.loc[s2])
+    assert_type(s3[s2], "pd.Series")
+    assert_type(s3.loc[s2], "pd.Series")
 
 
 def test_series_multiindex_getitem() -> None:
@@ -637,13 +634,13 @@ def test_series_multiindex_getitem() -> None:
 def test_series_mul() -> None:
     s = pd.Series([1, 2, 3])
     sm = s * 4
-    check_series_result(sm)
+    assert_type(sm, "pd.Series")
     ss = s - 4
-    check_series_result(ss)
+    assert_type(ss, "pd.Series")
     sm2 = s * s
-    check_series_result(sm2)
+    assert_type(sm2, "pd.Series")
     sp = s + 4
-    check_series_result(sp)
+    assert_type(sp, "pd.Series")
 
 
 def test_reset_index() -> None:
@@ -652,23 +649,23 @@ def test_reset_index() -> None:
         index=pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"]),
     )
     r1 = s.reset_index()
-    check_dataframe_result(r1)
+    assert_type(r1, "pd.DataFrame")
     r2 = s.reset_index(["ab"])
-    check_dataframe_result(r2)
+    assert_type(r2, "pd.DataFrame")
     r3 = s.reset_index("ab")
-    check_dataframe_result(r3)
+    assert_type(r3, "pd.DataFrame")
     r4 = s.reset_index(drop=True)
-    check_series_result(r4)
+    assert_type(r4, "pd.Series")
     r5 = s.reset_index(["ab"], drop=True)
-    check_series_result(r5)
+    assert_type(r5, "pd.Series")
 
 
 def test_series_add_str() -> None:
     s = pd.Series(["abc", "def"])
-    check_series_result(s + "x")
-    check_series_result("x" + s)
+    assert_type(s + "x", "pd.Series")
+    assert_type("x" + s, "pd.Series")
 
 
 def test_series_dtype() -> None:
     s = pd.Series(["abc", "def"], dtype=str)
-    check_series_result(s, object)
+    assert_type(s, "pd.Series[str]")

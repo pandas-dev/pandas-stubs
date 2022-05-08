@@ -4,12 +4,11 @@ import io
 import tempfile
 from pathlib import Path
 from typing import List, Tuple, Iterable, Any, Dict, Hashable
+from typing_extensions import assert_type
 
 import pandas as pd
 from pandas.io.parsers import TextFileReader
 import numpy as np
-
-from . import check_dataframe_result, check_series_result
 
 import pytest
 
@@ -544,10 +543,10 @@ def test_types_groupby_any() -> None:
             "col3": [False, False, False],
         }
     )
-    check_dataframe_result(df.groupby("col1").any())
-    check_dataframe_result(df.groupby("col1").all())
-    check_series_result(df.groupby("col1")["col2"].any())
-    check_series_result(df.groupby("col1")["col2"].any())
+    assert_type(df.groupby("col1").any(), "pd.DataFrame")
+    assert_type(df.groupby("col1").all(), "pd.DataFrame")
+    assert_type(df.groupby("col1")["col2"].any(), "pd.Series[bool]")
+    assert_type(df.groupby("col1")["col2"].any(), "pd.Series[bool]")
 
 
 def test_types_merge() -> None:
@@ -927,7 +926,7 @@ def test_read_csv() -> None:
 def test_groupby_series_methods() -> None:
     df = pd.DataFrame({"x": [1, 2, 2, 3, 3], "y": [10, 20, 30, 40, 50]})
     gb = df.groupby("x")["y"]
-    check_dataframe_result(gb.describe())
+    assert_type(gb.describe(), "pd.DataFrame")
     gb.count().loc[2]
     gb.pct_change().loc[2]
     gb.bfill().loc[2]
@@ -967,9 +966,9 @@ def test_compute_values():
 def test_sum_get_add() -> None:
     df = pd.DataFrame({"x": [1, 2, 3, 4, 5], "y": [10, 20, 30, 40, 50]})
     s = df["x"]
-    check_series_result(s)
-    summer: pd.Series = df.sum(axis=1)
-    check_series_result(summer)
+    assert_type(s, "pd.Series")
+    summer = df.sum(axis=1)
+    assert_type(summer, "pd.Series")
 
     s2: pd.Series = s + summer
     s3: pd.Series = s + df["y"]
@@ -997,4 +996,4 @@ def test_getmultiindex_columns() -> None:
 
 def test_frame_getitem_isin() -> None:
     df = pd.DataFrame({"x": [1, 2, 3, 4, 5]}, index=[1, 2, 3, 4, 5])
-    check_dataframe_result(df[df.index.isin([1, 3, 5])])
+    assert_type(df[df.index.isin([1, 3, 5])], "pd.DataFrame")

@@ -1,38 +1,39 @@
+from typing_extensions import assert_type
 import numpy as np
 import pandas as pd
 
-
-from . import check_index_result, check_multiindex_result, check_numpy_result
+from numpy import typing as npt
 
 
 def test_index_unique():
 
     df = pd.DataFrame({"x": [1, 2, 3, 4]}, index=pd.Index([1, 2, 3, 2]))
     ind = df.index
+    assert_type(ind, "pd.Index")
     i2 = ind.unique()
-    check_index_result(i2)
+    assert_type(i2, "pd.Index")
 
 
 def test_index_isin():
     ind = pd.Index([1, 2, 3, 4, 5])
     isin = ind.isin([2, 4])
-    check_numpy_result(isin, np.bool_)
+    assert_type(isin, "npt.NDArray[np.bool_]")
 
 
 def test_index_astype():
     indi = pd.Index([1, 2, 3])
     inds = pd.Index(["a", "b", "c"])
     indc = indi.astype(inds.dtype)
-    check_index_result(indc)
+    assert_type(indc, "pd.Index")
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
     mia = mi.astype(object)  # object is only valid parameter for MultiIndex.astype()
-    check_multiindex_result(mia)
+    assert_type(mia, "pd.MultiIndex")
 
 
 def test_multiindex_get_level_values():
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
     i1 = mi.get_level_values("ab")
-    check_index_result(i1)
+    assert_type(i1, "pd.Index")
 
 
 def test_index_tolist() -> None:
