@@ -7,7 +7,6 @@ from typing_extensions import assert_type
 
 from pandas.testing import assert_series_equal
 
-from . import check_datetimeindex_result, check_series_result
 
 if TYPE_CHECKING:
     from pandas.core.series import TimedeltaSeries, TimestampSeries
@@ -87,19 +86,18 @@ def test_timestamp_timedelta_series_arithmetic() -> None:
     ts2 = pd.to_datetime(pd.Series(["2022-03-08", "2022-03-10"]))
     r1 = ts1 - ts2
     assert_type(r1, "TimedeltaSeries")
-    check_series_result(r1, td1.dtype)  # type: ignore
     r2 = r1 / td1
-    check_series_result(r2, float)
+    assert_type(r2, "pd.Series[float]")
     r3 = r1 - td1
-    check_series_result(r3, td1.dtype)  # type: ignore
+    assert_type(r3, "TimedeltaSeries")
     r4 = pd.Timedelta(5, "days") / r1
-    check_series_result(r4, float)
+    assert_type(r4, "pd.Series[float]")
     sb = pd.Series([1, 2]) == pd.Series([1, 3])
-    check_series_result(sb, bool)
+    assert_type(sb, "pd.Series[bool]")
     r5 = sb * r1
-    check_series_result(r5, r1.dtype)
+    assert_type(r5, "TimedeltaSeries")
     r6 = r1 * 4
-    check_series_result(r6, r1.dtype)
+    assert_type(r6, "TimedeltaSeries")
 
 
 def test_timestamp_dateoffset_arithmetic() -> None:
@@ -113,17 +111,16 @@ def test_datetimeindex_plus_timedelta() -> None:
     dti = pd.to_datetime(["2022-03-08", "2022-03-15"])
     td_s = pd.to_timedelta(pd.Series([10, 20]), "minutes")
     dti_td_s = dti + td_s
-    # ignore type on next, because `tscheck` has Unknown dtype
-    check_series_result(dti_td_s, tscheck.dtype)  # type: ignore
+    assert_type(dti_td_s, "TimestampSeries")
     td_dti_s = td_s + dti
-    check_series_result(td_dti_s, tscheck.dtype)  # type: ignore
+    assert_type(td_dti_s, "TimestampSeries")
     tdi = pd.to_timedelta([10, 20], "minutes")
     dti_tdi_dti = dti + tdi
-    check_datetimeindex_result(dti_tdi_dti)
+    assert_type(dti_tdi_dti, "pd.DatetimeIndex")
     tdi_dti_dti = tdi + dti
-    check_datetimeindex_result(tdi_dti_dti)
+    assert_type(tdi_dti_dti, "pd.DatetimeIndex")
     dti_td_dti = dti + pd.Timedelta(10, "minutes")
-    check_datetimeindex_result(dti_td_dti)
+    assert_type(dti_td_dti, "pd.DatetimeIndex")
 
 
 def test_timestamp_plus_timedelta_series() -> None:
@@ -133,7 +130,7 @@ def test_timestamp_plus_timedelta_series() -> None:
     r3 = td + ts
     assert_type(r3, "TimestampSeries")
     # ignore type on next, because `tscheck` has Unknown dtype
-    check_series_result(r3, tscheck.dtype)  # type: ignore
+    assert_type(r3, "TimestampSeries")
 
 
 def test_timedelta_series_mult() -> None:
