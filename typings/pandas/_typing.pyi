@@ -45,6 +45,7 @@ PythonScalar = Union[str, int, float, bool, complex]
 DatetimeLikeScalar = TypeVar("DatetimeLikeScalar", Period, Timestamp, Timedelta)
 PandasScalar = Union[bytes, datetime.date, datetime.datetime, datetime.timedelta]
 # Scalar = Union[PythonScalar, PandasScalar]
+IntStrT = TypeVar("IntStrT", int, str)
 
 # dtypes
 NpDtype = Union[

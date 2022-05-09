@@ -40,5 +40,5 @@ jobs:
           
       - name: Run mypy
         run:
-          mypy tests/pandas
+          mypy tests/pandas typings/pandas
           

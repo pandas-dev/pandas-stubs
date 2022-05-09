@@ -1,6 +1,6 @@
 {
     "typeCheckingMode": "basic",
-    "include": [ "tests" ],
+    "include": [ "tests", "typings/pandas" ],
     "reportMissingModuleSource": false,
     "reportUnusedVariable": false,
     "useLibraryCodeForTypes": true,
