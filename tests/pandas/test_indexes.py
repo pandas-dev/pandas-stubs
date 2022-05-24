@@ -40,3 +40,22 @@ def test_index_tolist() -> None:
     i1 = pd.Index([1, 2, 3])
     l1 = i1.tolist()
     i2 = i1.to_list()
+
+
+def test_column_getitem() -> None:
+    # https://github.com/microsoft/python-type-stubs/issues/199#issuecomment-1132806594
+    df = pd.DataFrame([[1, 2, 3]], columns=["a", "b", "c"])
+
+    column = df.columns[0]
+    a = df[column]
+    
+def test_column_contains() -> None:
+    # https://github.com/microsoft/python-type-stubs/issues/199
+    df = pd.DataFrame({'A': [1, 2], 'B': ['c', 'd'], 'E': [3, 4]})
+
+    collist = [column for column in df.columns]
+ 
+    collist2 = [column for column in df.columns[df.columns.str.contains('A|B')]]
+
+    length = len(df.columns[df.columns.str.contains('A|B')])
+    
