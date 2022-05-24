@@ -356,7 +356,7 @@ class DataFrame(NDFrame, OpsMixin):
             Series[_bool],
             DataFrame,
             List[_str],
-            List[Hashable],
+            List[Scalar],
             Index,
             np_ndarray_str,
             np_ndarray_bool,
