@@ -48,14 +48,19 @@ def test_column_getitem() -> None:
 
     column = df.columns[0]
     a = df[column]
-    
+
+
 def test_column_contains() -> None:
     # https://github.com/microsoft/python-type-stubs/issues/199
-    df = pd.DataFrame({'A': [1, 2], 'B': ['c', 'd'], 'E': [3, 4]})
+    df = pd.DataFrame({"A": [1, 2], "B": ["c", "d"], "E": [3, 4]})
 
     collist = [column for column in df.columns]
- 
-    collist2 = [column for column in df.columns[df.columns.str.contains('A|B')]]
 
-    length = len(df.columns[df.columns.str.contains('A|B')])
-    
+    collist2 = [column for column in df.columns[df.columns.str.contains("A|B")]]
+
+    length = len(df.columns[df.columns.str.contains("A|B")])
+
+
+def test_difference_none() -> None:
+    ind = pd.Index([1, 2, 3])
+    id = ind.difference([1, None])
