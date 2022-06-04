@@ -1,7 +1,7 @@
 from pandas._libs.tslibs import Timedelta
 from pandas import DataFrame as DataFrame, Series as Series
 from pandas._typing import Label
-from typing import Optional, Sequence, Union
+from typing import Optional, List, Sequence, Union
 
 def merge(
     left: Union[DataFrame, Series],
@@ -24,8 +24,8 @@ def merge_ordered(
     on: Optional[Union[Label, Sequence]] = ...,
     left_on: Optional[Union[Label, Sequence]] = ...,
     right_on: Optional[Union[Label, Sequence]] = ...,
-    left_by: Optional[Union[str, Sequence[str]]] = ...,
-    right_by: Optional[Union[str, Sequence[str]]] = ...,
+    left_by: Optional[Union[str, List[str]]] = ...,
+    right_by: Optional[Union[str, List[str]]] = ...,
     fill_method: Optional[str] = ...,
     suffixes: Sequence[Union[str, None]] = ...,
     how: str = ...,
@@ -38,7 +38,7 @@ def merge_asof(
     right_on: Optional[Label] = ...,
     left_index: bool = ...,
     right_index: bool = ...,
-    by: Optional[Union[str, Sequence[str]]] = ...,
+    by: Optional[Union[str, List[str]]] = ...,
     left_by: Optional[str] = ...,
     right_by: Optional[str] = ...,
     suffixes: Sequence[Union[str, None]] = ...,

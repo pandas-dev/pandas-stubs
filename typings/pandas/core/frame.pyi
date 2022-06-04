@@ -33,7 +33,7 @@ from pandas._typing import (
     Timestamp as Timestamp,
     Timedelta as Timedelta,
 )
-from pandas._typing import IndexLevel as IndexLevel, IgnoreRaise as IgnoreRaise
+from pandas._typing import IndexLabel as IndexLabel, IgnoreRaise as IgnoreRaise
 from pandas.core.arraylike import OpsMixin
 from pandas.core.generic import NDFrame as NDFrame
 from pandas.core.groupby.generic import DataFrameGroupBy as DataFrameGroupBy
@@ -966,9 +966,9 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         right: Union[DataFrame, Series],
         how: Union[_str, Literal["left", "right", "inner", "outer"]] = ...,
-        on: Optional[IndexLevel] = ...,
-        left_on: Optional[Union[Level, Sequence[Level]]] = ...,
-        right_on: Optional[Union[Level, Sequence[Level]]] = ...,
+        on: Optional[IndexLabel] = ...,
+        left_on: Optional[IndexLabel] = ...,
+        right_on: Optional[IndexLabel] = ...,
         left_index: _bool = ...,
         right_index: _bool = ...,
         sort: _bool = ...,

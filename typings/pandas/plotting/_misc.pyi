@@ -3,7 +3,7 @@ from matplotlib.figure import Figure
 import numpy as np
 from pandas.core.series import Series
 from pandas.core.frame import DataFrame
-from typing import Any, Dict, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
 def table(
     ax,
@@ -29,7 +29,7 @@ def radviz(
     frame: DataFrame,
     class_column: str,
     ax: Optional[PlotAxes] = ...,
-    color: Optional[Union[Sequence[str], Tuple[str]]] = ...,
+    color: Optional[Union[List[str], Tuple[str]]] = ...,
     colormap=...,
 ) -> PlotAxes: ...
 def andrews_curves(
@@ -37,7 +37,7 @@ def andrews_curves(
     class_column: str,
     ax: Optional[PlotAxes] = ...,
     samples: int = ...,
-    color: Optional[Union[Sequence[str], Tuple[str]]] = ...,
+    color: Optional[Union[List[str], Tuple[str]]] = ...,
     colormap=...,
 ) -> PlotAxes: ...
 def bootstrap_plot(
@@ -49,9 +49,9 @@ def bootstrap_plot(
 def parallel_coordinates(
     frame: DataFrame,
     class_column: str,
-    cols: Optional[Sequence[str]] = ...,
+    cols: Optional[List[str]] = ...,
     ax: Optional[PlotAxes] = ...,
-    color: Optional[Union[Sequence[str], Tuple[str]]] = ...,
+    color: Optional[Union[List[str], Tuple[str]]] = ...,
     use_columns: bool = ...,
     xticks: Optional[Union[Sequence, Tuple]] = ...,
     colormap=...,

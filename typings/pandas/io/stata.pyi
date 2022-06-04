@@ -2,7 +2,7 @@ import datetime
 from collections import abc
 from pandas._typing import FilePathOrBuffer as FilePathOrBuffer
 from pandas.core.frame import DataFrame as DataFrame
-from typing import Dict, Hashable, Optional, Sequence
+from typing import Dict, Hashable, List, Optional, Sequence
 
 def read_stata(
     path: FilePathOrBuffer,
@@ -11,7 +11,7 @@ def read_stata(
     index_col: Optional[str] = ...,
     convert_missing: bool = ...,
     preserve_dtypes: bool = ...,
-    columns: Optional[Sequence[str]] = ...,
+    columns: Optional[List[str]] = ...,
     order_categoricals: bool = ...,
     chunksize: Optional[int] = ...,
     iterator: bool = ...,
