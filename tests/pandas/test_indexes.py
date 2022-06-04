@@ -62,5 +62,6 @@ def test_column_contains() -> None:
 
 
 def test_difference_none() -> None:
+    # https://github.com/pandas-dev/pandas-stubs/issues/17
     ind = pd.Index([1, 2, 3])
     id = ind.difference([1, None])
