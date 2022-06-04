@@ -1,7 +1,7 @@
 from pandas.core.series import Series
 from pandas.core.frame import DataFrame
 from pandas.core.groupby.grouper import Grouper
-from pandas._typing import Scalar
+from pandas._typing import IndexLabel, Scalar
 from typing import Callable, Optional, Sequence, Union
 
 def pivot_table(
@@ -20,7 +20,7 @@ def pivot(
     data: DataFrame,
     index: Optional[str] = ...,
     columns: Optional[str] = ...,
-    values: Optional[Union[str, Sequence[str]]] = ...,
+    values: Optional[IndexLabel] = ...,
 ) -> DataFrame: ...
 def crosstab(
     index: Union[Sequence, Series],

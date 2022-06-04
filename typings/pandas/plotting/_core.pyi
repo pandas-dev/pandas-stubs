@@ -1,7 +1,7 @@
 from matplotlib.axes import Axes as PlotAxes
 from pandas.core.base import PandasObject as PandasObject
 from pandas.core.frame import DataFrame
-from typing import Optional, Sequence, Tuple, Union
+from typing import Optional, List, Tuple, Union
 
 def hist_series(
     self,
@@ -37,8 +37,8 @@ def hist_frame(
 ): ...
 def boxplot(
     data: DataFrame,
-    column: Optional[Union[str, Sequence[str]]] = ...,
-    by: Optional[Union[str, Sequence[str]]] = ...,
+    column: Optional[Union[str, List[str]]] = ...,
+    by: Optional[Union[str, List[str]]] = ...,
     ax: Optional[PlotAxes] = ...,
     fontsize: Optional[Union[float, str]] = ...,
     rot: float = ...,
