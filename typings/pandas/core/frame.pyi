@@ -65,8 +65,6 @@ from typing import (
     Pattern,
 )
 
-
-
 import numpy as _np
 import datetime as _dt
 
@@ -178,8 +176,8 @@ class DataFrame(NDFrame, OpsMixin):
     def __new__(
         cls,
         data: Optional[Union[_ListLike, DataFrame, Dict[Any, Any]]] = ...,
-        index: Optional[Union[Index, _ListLike]] = ...,
-        columns: Optional[_ListLike] = ...,
+        index: Optional[Axes] = ...,
+        columns: Optional[Axes] = ...,
         dtype=...,
         copy: _bool = ...,
     ) -> DataFrame: ...
