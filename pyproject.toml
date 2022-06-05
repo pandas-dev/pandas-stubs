@@ -11,13 +11,12 @@ packages = [
 python = ">=3.8"
 
 [tool.poetry.dev-dependencies]
-pandas = "1.4.2"
-mypy = "0.960"
-typing-extensions = "4.2.0"
-matplotlib = "^3.3.2"
-numpy = "^1.22.3"
-pytest = "^7.1.2"
-pyright = "^1.1.251"
+pandas = ">=1.4.2"
+mypy = ">=0.960"
+typing-extensions = ">=4.2.0"
+matplotlib = ">=3.3.2"
+pytest = ">=7.1.2"
+pyright = ">=1.1.251"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
