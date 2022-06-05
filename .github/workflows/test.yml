@@ -47,7 +47,7 @@ jobs:
           python setup.py build bdist_wheel
           find ./dist/*.whl | xargs pip install
           rm -rf typings
-          ls -lR /opt/hostedtoolcache/Python/3.9.13/x64/lib/python3.9/site-packages/pandas-stubs
+          rm -rf /opt/hostedtoolcache/Python/3.9.13/x64/lib/python3.9/site-packages/pandas/_libs/tslibs/*.pyi
           pip install pyright
       
       - name: run pyright command line
