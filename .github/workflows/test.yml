@@ -47,6 +47,7 @@ jobs:
           python setup.py build bdist_wheel
           find ./dist/*.whl | xargs pip install
           rm -rf typings
+          ls /opt/hostedtoolcache/Python/3.9.13/x64/lib/python3.9/site-packages
 
       - name: Run pyright against dist
         uses: gramster/pyright-action@main
