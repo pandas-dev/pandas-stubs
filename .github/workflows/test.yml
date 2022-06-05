@@ -48,13 +48,18 @@ jobs:
           find ./dist/*.whl | xargs pip install
           rm -rf typings
           ls /opt/hostedtoolcache/Python/3.9.13/x64/lib/python3.9/site-packages/pandas-stubs
+          pip install pyright
+      
+      - name: run pyright command line
+        run:
+          pyright -p pyrightdistconfig.json
 
-      - name: Run pyright against dist
-        uses: gramster/pyright-action@main
-        with:
-          project: pyrightdistconfig.json
-          extra-args: --dependencies
-          warn-partial: true
+      # - name: Run pyright against dist
+      #   uses: gramster/pyright-action@main
+      #   with:
+      #     project: pyrightdistconfig.json
+      #     extra-args: --dependencies
+      #     warn-partial: true
 
       - name: Run mypy against dist
         run:
