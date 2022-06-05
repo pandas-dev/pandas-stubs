@@ -5,3 +5,4 @@ mypy==0.960
 typing_extensions==4.2.0
 matplotlib>=3.3.2
 numpy>=1.22.3
+setuptools>=62.3.2

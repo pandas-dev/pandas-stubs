@@ -42,3 +42,21 @@ jobs:
         run:
           mypy tests/pandas typings/pandas
           
+      - name: Build wheel and install
+        run:
+          python setup.py build bdist_wheel
+          find ./dist/*.whl | xargs pip install
+
+      - name: Remove typings
+        run:
+          rm -rf typings
+
+      - name: Run pyright against dist
+        uses: gramster/pyright-action@main
+        with:
+          project: pyrightdistconfig.json
+          warn-partial: true
+
+      - name: Run mypy against dist
+        run:
+          mypy tests/pandas
