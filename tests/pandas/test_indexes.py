@@ -5,7 +5,7 @@ import pandas as pd
 from numpy import typing as npt
 
 
-def test_index_unique():
+def test_index_unique() -> None:
 
     df = pd.DataFrame({"x": [1, 2, 3, 4]}, index=pd.Index([1, 2, 3, 2]))
     ind = df.index
@@ -14,13 +14,13 @@ def test_index_unique():
     assert_type(i2, "pd.Index")
 
 
-def test_index_isin():
+def test_index_isin() -> None:
     ind = pd.Index([1, 2, 3, 4, 5])
     isin = ind.isin([2, 4])
     assert_type(isin, "npt.NDArray[np.bool_]")
 
 
-def test_index_astype():
+def test_index_astype() -> None:
     indi = pd.Index([1, 2, 3])
     inds = pd.Index(["a", "b", "c"])
     indc = indi.astype(inds.dtype)
@@ -30,7 +30,7 @@ def test_index_astype():
     assert_type(mia, "pd.MultiIndex")
 
 
-def test_multiindex_get_level_values():
+def test_multiindex_get_level_values() -> None:
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
     i1 = mi.get_level_values("ab")
     assert_type(i1, "pd.Index")
