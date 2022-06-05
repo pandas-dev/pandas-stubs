@@ -52,7 +52,7 @@ jobs:
       
       - name: run pyright command line
         run:
-          pyright -p pyrightdistconfig.json
+          pyright -p pyrightdistconfig.json tests
 
       # - name: Run pyright against dist
       #   uses: gramster/pyright-action@main
