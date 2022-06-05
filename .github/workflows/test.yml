@@ -28,31 +28,30 @@ jobs:
         run:
           python -m pip install -r tests/requirements.txt
 
-      # - name: Run pyright tests
-      #   uses: gramster/pyright-action@main
-      #   with:
-      #     project: pyrighttestconfig.json
-      #     warn-partial: true
+      - name: Run pyright tests
+        uses: gramster/pyright-action@main
+        with:
+          project: pyrighttestconfig.json
+          warn-partial: true
 
-      # - name: Run pytest
-      #   run:
-      #     pytest tests/pandas
+      - name: Run pytest
+        run:
+          pytest tests/pandas
           
-      # - name: Run mypy
-      #   run:
-      #     mypy tests/pandas typings/pandas
+      - name: Run mypy
+        run:
+          mypy tests/pandas typings/pandas
           
       - name: Build wheel and install and remove typings
         run: |
           python setup.py build bdist_wheel
           find ./dist/*.whl | xargs pip install
           rm -rf typings
-          rm -rf /opt/hostedtoolcache/Python/3.9.13/x64/lib/python3.9/site-packages/pandas/_libs/tslibs/*.pyi
           pip install pyright
       
-      - name: run pyright command line
-        run:
-          pyright -p pyrightdistconfig.json --dependencies
+      # - name: run pyright command line
+      #   run:
+      #     pyright -p pyrightdistconfig.json --dependencies
 
       # - name: Run pyright against dist
       #   uses: gramster/pyright-action@main
