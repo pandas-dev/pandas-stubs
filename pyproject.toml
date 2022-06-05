@@ -1,3 +1,29 @@
+[tool.poetry]
+name = "pandas-stubs"
+version = "0.0.1"
+description = "Stubs for pandas"
+authors = ["Breno Fernandes <brenojesusfernandes@pm.com>"]
+packages = [
+    { "include" = "pandas-stubs"}
+]
+
+[tool.poetry.dependencies]
+python = ">=3.8"
+
+[tool.poetry.dev-dependencies]
+pandas = "1.4.2"
+mypy = "0.960"
+typing-extensions = "4.2.0"
+matplotlib = "^3.3.2"
+numpy = "^1.22.3"
+pytest = "^7.1.2"
+pyright = "^1.1.251"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
 [tool.black]
 line_length = 88
 target_version = ["py39"]
@@ -41,7 +67,7 @@ extra_standard_library = [
 
 [tool.mypy]
 # Import discovery
-mypy_path = "typings"
+mypy_path = "pandas-stubs"
 namespace_packages = false
 explicit_package_bases = false
 ignore_missing_imports = true
@@ -86,3 +112,8 @@ strict_equality = true
 show_error_context = false
 show_column_numbers = false
 show_error_codes = true
+
+[tool.pyright]
+typeCheckingMode = "basic"
+stubPath = "pandas-stubs"
+include = [ "tests", "pandas-stubs" ]
