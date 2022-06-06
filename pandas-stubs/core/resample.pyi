@@ -1,8 +1,8 @@
+from pandas._typing import FrameOrSeriesUnion
 from pandas.core.base import ShallowMixin as ShallowMixin
 from pandas.core.groupby.base import GroupByMixin as GroupByMixin
 from pandas.core.groupby.groupby import _GroupBy
 from pandas.core.groupby.grouper import Grouper as Grouper
-from pandas._typing import FrameOrSeriesUnion
 
 class Resampler(_GroupBy, ShallowMixin):
     def __init__(

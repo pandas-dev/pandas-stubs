@@ -1,5 +1,6 @@
+from typing import IO, Any, Optional, Tuple
+
 from pandas._typing import FilePathOrBuffer as FilePathOrBuffer
-from typing import Any, IO, Optional, Tuple
 
 s3fs = ...
 

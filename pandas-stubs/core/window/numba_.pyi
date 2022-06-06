@@ -1,5 +1,6 @@
-from pandas._typing import Scalar as Scalar
 from typing import Any, Callable, Dict, Optional, Tuple
+
+from pandas._typing import Scalar as Scalar
 
 def make_rolling_apply(
     func: Callable[..., Scalar],

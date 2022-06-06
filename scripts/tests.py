@@ -3,11 +3,11 @@ import subprocess
 
 def test_all():
 
-    cmd = ['mypy', 'pandas-stubs', 'tests']
+    cmd = ["mypy", "pandas-stubs", "tests"]
     subprocess.run(cmd)
 
-    cmd = ['pytest']
+    cmd = ["pytest"]
     subprocess.run(cmd)
 
-    cmd = ['pyright']
+    cmd = ["pyright"]
     subprocess.run(cmd)

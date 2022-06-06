@@ -1,4 +1,5 @@
 from typing import List, Optional, Type
+
 from pandas._typing import ExtensionArray
 
 class ExtensionDtype:

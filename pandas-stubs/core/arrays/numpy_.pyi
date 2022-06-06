@@ -1,3 +1,5 @@
+from typing import Union
+
 import numpy as np
 from numpy.lib.mixins import NDArrayOperatorsMixin
 from pandas.core.arrays.base import (
@@ -5,7 +7,6 @@ from pandas.core.arrays.base import (
     ExtensionOpsMixin as ExtensionOpsMixin,
 )
 from pandas.core.dtypes.dtypes import ExtensionDtype as ExtensionDtype
-from typing import Union
 
 class PandasDtype(ExtensionDtype):
     def __init__(self, dtype) -> None: ...

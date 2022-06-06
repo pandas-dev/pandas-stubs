@@ -1,6 +1,7 @@
+from typing import Generic, List, TypeVar
+
 from pandas.core.base import NoNewAttributesMixin as NoNewAttributesMixin
 from pandas.core.series import Series
-from typing import List, Generic, TypeVar
 
 def cat_core(list_of_columns: List, sep: str): ...
 def cat_safe(list_of_columns: List, sep: str): ...
