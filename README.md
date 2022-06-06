@@ -8,9 +8,14 @@ This is the home for pandas typing stubs supported by the pandas core team.  The
 
 To contribute changes to the stubs, you must include an appropriate test.  See `pandas-stubs/tests` for examples.
 
-## Build instructions
+### Documentation
 
-Use `python setup.py build bdist_wheel` to build the wheel.  NOTE:  `setuptools 62.3.2` is required!
+- Enter in docs to see:
+    - 1 - How to setup the enviroment
+    - 2 - How to test the project
+    - 3 - How to follow the code style 
+    - 4 - Security stuffs
+    - 5 - How to publish
 
 ## Evolution
 
@@ -24,11 +29,3 @@ We are indebted to Microsoft and that project for the initial set of public type
 
 Last update to README: 6/4/2022: 11:35 EDT
 
-## Documentation
-
-- Enter in docs to see:
-    - 1 - How to setup the enviroment
-    - 2 - How to test the project
-    - 3 - How to follow the code style 
-    - 4 - Security stuffs
-    - 5 - How to publish
