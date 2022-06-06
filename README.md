@@ -23,3 +23,12 @@ As both projects move forward, this page will track what the differences are (if
 We are indebted to Microsoft and that project for the initial set of public type stubs.  We are also grateful for the original pandas-stubs project at <https://github.com/VirtusLab/pandas-stubs> that created the framework for testing the stubs.
 
 Last update to README: 6/4/2022: 11:35 EDT
+
+## Documentation
+
+- Enter in docs to see:
+    - 1 - How to setup the enviroment
+    - 2 - How to test the project
+    - 3 - How to follow the code style 
+    - 4 - Security stuffs
+    - 5 - How to publish
