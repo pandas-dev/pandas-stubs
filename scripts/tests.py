@@ -19,7 +19,7 @@ def install_wheel():
     subprocess.run(cmd)
 
     path = next(Path("dist/").glob("*.whl"))
-    cmd = ["pip", "install", str(path)]
+    cmd = ["pip", "install", str(path), '--force-reinstall']
     subprocess.run(cmd)
 
 
@@ -31,6 +31,9 @@ def __clean_env():
     cmd = ["pip", "uninstall", "-y", "pandas-stubs"]
     subprocess.run(cmd)
 
+    cmd = ["git", "checkout", "HEAD", "pandas-stubs"]
+    subprocess.run(cmd)
+
     cmd = ["poetry", "install"]
     subprocess.run(cmd)
 
@@ -40,8 +43,9 @@ def run_all():
     __test_all()
 
     install_wheel()
+    remove_src_code()
 
-    cmd = ["pyright"]
+    cmd = ["pyright", "tests"]
     subprocess.run(cmd)
 
     cmd = ["mypy", "tests"]
