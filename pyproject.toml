@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pandas-stubs"
-version = "1.4.2.20220608"
+version = "1.4.2.220608"
 description = "Type annotations for pandas"
 authors = ["The Pandas Development Team <pandas-dev@python.org>"]
 license = "BSD-3-Clause"
@@ -42,15 +42,23 @@ pytest = ">=7.1.2"
 pyright = ">=1.1.251"
 black = ">=22.3.0"
 isort = ">=5.10.1"
+poethepoet = "^0.13.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.poetry.scripts]
-all_tests = "scripts.tests:run_all"
-install_wheel = "scripts.tests:install_wheel"
-rm_src_code = "scripts.tests:remove_src_code"
+[tool.poe.tasks.all_tests]
+script = "scripts.tests:run_all"
+help   = "Run all tests"
+
+[tool.poe.tasks.install_wheel]
+script = "scripts.tests:install_wheel"
+help   = "Install the stub wheel"
+
+[tool.poe.tasks.rm_src_code]
+script = "scripts.tests:remove_src_code"
+help   = "Delete source code"
 
 [tool.black]
 line_length = 88

@@ -40,10 +40,10 @@ jobs:
       run: poetry run mypy pandas-stubs tests
 
     - name: Install wheel
-      run: poetry run install_wheel
+      run: poetry run poe install_wheel
 
     - name: Remove Source Code
-      run: poetry run rm_src_code
+      run: poetry run poe rm_src_code
 
     - name: Run Pyright against dist
       run: poetry run pyright
