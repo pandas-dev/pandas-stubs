@@ -8,9 +8,13 @@ This is the home for pandas typing stubs supported by the pandas core team.  The
 
 To contribute changes to the stubs, you must include an appropriate test.  See `pandas-stubs/tests` for examples.
 
-## Build instructions
+## Documentation
 
-Use `python setup.py build bdist_wheel` to build the wheel.  NOTE:  `setuptools 62.3.2` is required!
+- [How to setup the enviroment](docs/1%20-%20setup.md)
+- [How to test the project](docs/2%20-%20tests.md)
+- [How to follow the code style](docs/3%20-%20style.md)
+- [Security stuffs](docs/4%20-%20security.md)
+- [How to publish](docs/5%20-%20publish.md)
 
 ## Evolution
 
