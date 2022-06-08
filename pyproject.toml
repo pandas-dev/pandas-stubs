@@ -1,11 +1,34 @@
 [tool.poetry]
 name = "pandas-stubs"
 version = "1.4.2.20220608"
-description = "Stubs for pandas"
-authors = ["The Pandas Development Team"]
+description = "Type annotations for pandas"
+authors = ["The Pandas Development Team <pandas-dev@python.org>"]
+license = "BSD-3-Clause"
+readme = "README.md"
+homepage = "https://pandas.pydata.org"
+repository = "https://github.com/pandas-dev/pandas-stubs"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering"
+]
 packages = [
     { "include" = "pandas-stubs"}
 ]
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/pandas-dev/pandas-stubs/issues"
+"Documentation" = "https://pandas.pydata.org/pandas-docs/stable"
+"Source Code" = "https://github.com/pandas-dev/pandas-stubs"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"
