@@ -119,9 +119,5 @@ show_error_codes = true
 [tool.pyright]
 typeCheckingMode = "basic"
 stubPath = "."
-include = [ "tests", "pandas-stubs" ]
-reportMissingModuleSource = false
-reportUnusedVariable = false
-reportGeneralTypeIssues = false
-reportUnknownArgumentType = false
+include = ["tests", "pandas-stubs"]
 useLibraryCodeForTypes = true
