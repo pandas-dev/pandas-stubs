@@ -49,17 +49,16 @@ jobs:
           rm -rf typings
           pip install pyright
       
-      - name: run pyright command line
-        run: |
-          pyright --version
-          pyright --dependencies tests/pandas/test_timefuncs.py
+      # - name: run pyright command line
+      #   run: |
+      #     pyright --version
+      #     pyright --dependencies tests/pandas/test_timefuncs.py
 
-      # - name: Run pyright against dist
-      #   uses: gramster/pyright-action@main
-      #   with:
-      #     project: pyrightdistconfig.json
-      #     extra-args: --dependencies
-      #     warn-partial: true
+      - name: Run pyright against dist
+        uses: gramster/pyright-action@main
+        with:
+          project: pyrightdistconfig.json
+          warn-partial: true
 
       - name: Run mypy against dist
         run:
