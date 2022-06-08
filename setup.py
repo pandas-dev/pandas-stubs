@@ -40,6 +40,6 @@ setup(
     package_dir={"": "src.tmp"},
     version=version,
     packages=list(list_packages()),
-    package_data={"pandas-stubs": ["py.typed", "*.pyi", "**/*.pyi"]},
+    package_data={"pandas-stubs": ["*.pyi", "**/*.pyi"]},
     install_requires=['typing_extensions>=4.2;python_version>="3.8"'],
 )
