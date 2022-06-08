@@ -30,23 +30,20 @@ jobs:
         pip install poetry
         poetry install
 
-    - name: Run Pyright without wheel
+    - name: Run Pyright
       run: poetry run pyright
 
-    - name: Run Pytest without wheel
+    - name: Run Pytest
       run: poetry run pytest
 
-    - name: Run MyPy without wheel
+    - name: Run MyPy
       run: poetry run mypy pandas-stubs tests
 
     - name: Install wheel
       run: poetry run install_wheel
 
-    - name: Run Pyright with wheel
+    - name: Run Pyright against dist
       run: poetry run pyright
 
-    - name: Run Pytest with wheel
-      run: poetry run pytest
-
-    - name: Run MyPy with wheel
-      run: poetry run mypy pandas-stubs tests
+    - name: Run MyPy against dist
+      run: poetry run mypy tests

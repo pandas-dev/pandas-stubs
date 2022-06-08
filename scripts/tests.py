@@ -36,6 +36,10 @@ def run_all():
 
     install_wheel()
 
-    __test_all()
+    cmd = ["pyright"]
+    subprocess.run(cmd)
+
+    cmd = ["mypy", "tests"]
+    subprocess.run(cmd)
 
     __clean_env()
