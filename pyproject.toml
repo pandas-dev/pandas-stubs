@@ -1,17 +1,17 @@
 [tool.poetry]
 name = "pandas-stubs"
-version = "0.0.1"
+version = "1.4.2.20220608"
 description = "Stubs for pandas"
-authors = ["Breno Fernandes <brenojesusfernandes@pm.com>"]
+authors = ["The Pandas Development Team"]
 packages = [
     { "include" = "pandas-stubs"}
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<4.0"
+python = ">=3.8,<=3.10.*"
 
 [tool.poetry.dev-dependencies]
-pandas = ">=1.4.2"
+pandas = "1.4.*"
 mypy = ">=0.960"
 typing-extensions = ">=4.2.0"
 matplotlib = ">=3.3.2"
