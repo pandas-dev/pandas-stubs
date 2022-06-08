@@ -1,5 +1,6 @@
 import subprocess
 from pathlib import Path
+import shutil
 
 
 def __test_all():
@@ -23,7 +24,7 @@ def install_wheel():
 
 
 def remove_src_code():
-    Path("pandas-stubs").unlink()
+    shutil.rmtree(r'pandas-stubs')
 
 
 def __clean_env():
