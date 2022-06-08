@@ -27,6 +27,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 all_tests = "scripts.tests:run_all"
 install_wheel = "scripts.tests:install_wheel"
+rm_src_code = "scripts.tests:remove_src_code"
 
 [tool.black]
 line_length = 88

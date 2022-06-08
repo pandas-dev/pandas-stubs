@@ -22,6 +22,10 @@ def install_wheel():
     subprocess.run(cmd)
 
 
+def remove_src_code():
+    Path("pandas-stubs").unlink()
+
+
 def __clean_env():
     cmd = ["pip", "uninstall", "-y", "pandas-stubs"]
     subprocess.run(cmd)
