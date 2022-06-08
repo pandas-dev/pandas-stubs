@@ -25,7 +25,8 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-all_tests = "scripts.tests:test_all"
+all_tests = "scripts.tests:run_all"
+install_wheel = "scripts.tests:install_wheel"
 
 [tool.black]
 line_length = 88
