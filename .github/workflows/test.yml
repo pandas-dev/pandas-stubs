@@ -1,7 +1,14 @@
 name: 'Test'
 
-on: [push, pull_request, workflow_dispatch]
-
+on:
+  push:
+    paths:
+      - /**/*.py
+      - /**/*.pyi
+      - pyproject.toml
+      - .github/workflows/test.yml
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   test:
