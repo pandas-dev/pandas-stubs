@@ -1,8 +1,8 @@
-from scripts._job import run_job, Step
-
+import shutil
 import subprocess
 from pathlib import Path
-import shutil
+
+from scripts._job import Step, run_job
 
 
 def run_mypy_src():
@@ -29,17 +29,17 @@ def test_src(profile):
     pytest_step = Step(name="Run Pytest Against Source Code", run=run_pytest_src)
 
     # Defining which test is going to run according to a profile
-    if profile in (None, '', 'default'):
+    if profile in (None, "", "default"):
         steps.append(mypy_step)
         steps.append(pyright_step)
-    elif profile == 'pytest':
+    elif profile == "pytest":
         steps.append(Step(name="Run Pytest Against Source Code", run=run_pytest_src))
-    elif profile == 'full':
+    elif profile == "full":
         steps.append(mypy_step)
         steps.append(pyright_step)
         steps.append(pytest_step)
     else:
-        raise Exception('Profile not found!')
+        raise Exception("Profile not found!")
 
     run_job(steps)
 
@@ -56,7 +56,7 @@ def install_dist():
 
 
 def remove_src():
-    shutil.rmtree(r'pandas-stubs')
+    shutil.rmtree(r"pandas-stubs")
 
 
 def run_mypy_dist():
@@ -85,18 +85,20 @@ def install_poetry():
 
 
 def test_dist():
-    steps = [Step(name="Build Dist", run=build_dist),
-             Step(name="Install Dist", run=install_dist),
-             Step(name="Remove Source Code", run=remove_src),
-             Step(name="Run MyPy Against Dist", run=run_mypy_dist),
-             Step(name="Run Pyright Against Dist", run=run_pyright_dist),
-             Step(name="Uninstall Dist", run=uninstall_dist),
-             Step(name="Restore Source Code", run=restore_src),
-             Step(name="Install Poetry", run=install_poetry)]
+    steps = [
+        Step(name="Build Dist", run=build_dist),
+        Step(name="Install Dist", run=install_dist),
+        Step(name="Remove Source Code", run=remove_src),
+        Step(name="Run MyPy Against Dist", run=run_mypy_dist),
+        Step(name="Run Pyright Against Dist", run=run_pyright_dist),
+        Step(name="Uninstall Dist", run=uninstall_dist),
+        Step(name="Restore Source Code", run=restore_src),
+        Step(name="Install Poetry", run=install_poetry),
+    ]
 
     run_job(steps)
 
 
 def test_all():
-    test_src('full')
+    test_src("full")
     test_dist()

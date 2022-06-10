@@ -1,8 +1,9 @@
 import time
-from loguru import logger
 from dataclasses import dataclass
-from typing import Callable, List
 from subprocess import CalledProcessError
+from typing import Callable, List
+
+from loguru import logger
 
 
 @dataclass
@@ -13,7 +14,7 @@ class Step:
 
 def run_job(steps: List[Step]) -> None:
     """
-        Responsible to run procedures with logs
+    Responsible to run procedures with logs
     """
 
     for step in steps:
