@@ -1,4 +1,4 @@
-## Setup Environment
+## Set Up Environment
 
 - Make sure you have `python >= 3.8` installed. </br></br>
 - Install poetry if you still don't have: </br> `pip install poetry`</br> </br>

@@ -10,7 +10,7 @@ To contribute changes to the stubs, you must include an appropriate test.  See `
 
 ## Documentation
 
-- [How to setup the enviroment](docs/1%20-%20setup.md)
+- [How to set up the environment](docs/1%20-%20setup.md)
 - [How to test the project](docs/2%20-%20tests.md)
 - [How to follow the code style](docs/3%20-%20style.md)
 - [Security stuffs](docs/4%20-%20security.md)
