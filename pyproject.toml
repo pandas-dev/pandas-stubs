@@ -50,55 +50,54 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks.test_src]
+help = "LOCAL TEST | Run tests against source code version: 'poe test_src -p=<profile>'"
 script = "scripts.test:test_src(profile)"
-help = "Local Test:  Run tests against source code version"
 
     [[tool.poe.tasks.test_src.args]]
+    help = "pytest (pytest only), full(mypy + pyright + pytest)"
     name = "profile"
     options = ["-p", "--profile"]
     default = "default"
-    help = "Profiles: default (mypy+pyright), pytest (pytest only), full(mypy+pyright+pytest)"
-
 
 [tool.poe.tasks.test_dist]
+help = "Local Test | Run tests against distribuition version: 'poe test_dist'"
 script = "scripts.test:test_dist"
-help = "Local Test: Run tests against distribuition version"
 
 [tool.poe.tasks.test_all]
+help = "Local Test | Run tests against source code and distribuition version: 'poe test_all'"
 script = "scripts.test:test_all"
-help = "Local Test: Run tests against source code and distribuition version"
 
 [tool.poe.tasks.run_mypy_src]
+help = "CI Test | Run mypy against source code"
 script = "scripts.test:run_mypy_src"
-help = "CI Test: Run mypy against source code"
 
 [tool.poe.tasks.run_pyright_src]
+help = "CI Test | Run pyright against source code"
 script = "scripts.test:run_pyright_src"
-help = "CI Test: Run pyright against source code"
 
 [tool.poe.tasks.run_pytest_src]
+help = "CI Test | Run pytest against source code"
 script = "scripts.test:run_pytest_src"
-help = "CI Test: Run pytest against source code"
 
 [tool.poe.tasks.build_dist]
+help = "CI Test | Build distribuition"
 script = "scripts.test:build_dist"
-help = "CI Test: Build distribuition"
 
 [tool.poe.tasks.install_dist]
+help = "CI Test | Install distribuition"
 script = "scripts.test:install_dist"
-help = "CI Test: Install distribuition"
 
 [tool.poe.tasks.remove_src]
+help = "CI Test | Remove source code"
 script = "scripts.test:remove_src"
-help = "CI Test: Remove source code"
 
 [tool.poe.tasks.run_mypy_dist]
+help = "CI Test | Run mypy against distribuition"
 script = "scripts.test:run_mypy_dist"
-help = "CI Test: Run mypy against distribuition"
 
 [tool.poe.tasks.run_pyright_dist]
+help = "CI Test | Run pyright against distribuition"
 script = "scripts.test:run_pyright_dist"
-help = "CI Test: Run pyright against distribuition"
 
 [tool.black]
 line_length = 88
