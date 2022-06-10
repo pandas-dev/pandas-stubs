@@ -50,21 +50,21 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks.test_src]
-help = "LOCAL TEST | Run tests against source code version: 'poe test_src -p=<profile>'"
+help = "LOCAL TEST | Run tests against source code version: \"poe test_src -p=<profile>\""
 script = "scripts.test:test_src(profile)"
 
     [[tool.poe.tasks.test_src.args]]
-    help = "pytest (pytest only), full(mypy + pyright + pytest)"
+    help = "\"default\" (mypy + pyright) or \"pytest\" (pytest only) or \"full\" (mypy + pyright + pytest)"
     name = "profile"
     options = ["-p", "--profile"]
     default = "default"
 
 [tool.poe.tasks.test_dist]
-help = "Local Test | Run tests against distribuition version: 'poe test_dist'"
+help = "Local Test | Run tests against distribuition version: \"poe test_dist\""
 script = "scripts.test:test_dist"
 
 [tool.poe.tasks.test_all]
-help = "Local Test | Run tests against source code and distribuition version: 'poe test_all'"
+help = "Local Test | Run tests against source code and distribuition version: \"poe test_all\""
 script = "scripts.test:test_all"
 
 [tool.poe.tasks.run_mypy_src]
