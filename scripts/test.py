@@ -23,15 +23,21 @@ def run_pytest_src():
 def test_src(profile):
     steps = []
 
+    # Possible steps
+    mypy_step = Step(name="Run Mypy Against Source Code", run=run_mypy_src)
+    pyright_step = Step(name="Run Pyright Against Source Code", run=run_pyright_src)
+    pytest_step = Step(name="Run Pytest Against Source Code", run=run_pytest_src)
+
+    # Defining which test is going to run according to a profile
     if profile in (None, '', 'default'):
-        steps.append(Step(name="Run Mypy Against Source Code", run=run_mypy_src))
-        steps.append(Step(name="Run Pyright Against Source Code", run=run_pyright_src))
+        steps.append(mypy_step)
+        steps.append(pyright_step)
     elif profile == 'pytest':
         steps.append(Step(name="Run Pytest Against Source Code", run=run_pytest_src))
     elif profile == 'full':
-        steps.append(Step(name="Run Mypy Against Source Code", run=run_mypy_src))
-        steps.append(Step(name="Run Pyright Against Source Code", run=run_pyright_src))
-        steps.append(Step(name="Run Pytest Against Source Code", run=run_pytest_src))
+        steps.append(mypy_step)
+        steps.append(pyright_step)
+        steps.append(pytest_step)
     else:
         raise Exception('Profile not found!')
 
