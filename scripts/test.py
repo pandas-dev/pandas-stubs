@@ -79,11 +79,6 @@ def restore_src():
     subprocess.run(cmd, check=True)
 
 
-def install_poetry():
-    cmd = ["poetry", "update", "-vvv"]
-    subprocess.run(cmd, check=True)
-
-
 def test_dist():
     steps = [
         Step(name="Build Dist", run=build_dist),
@@ -92,8 +87,7 @@ def test_dist():
         Step(name="Run MyPy Against Dist", run=run_mypy_dist),
         Step(name="Run Pyright Against Dist", run=run_pyright_dist),
         Step(name="Uninstall Dist", run=uninstall_dist),
-        Step(name="Restore Source Code", run=restore_src),
-        Step(name="Install Poetry", run=install_poetry),
+        Step(name="Restore Source Code", run=restore_src)
     ]
 
     run_job(steps)
