@@ -142,7 +142,6 @@ extra_standard_library = [
 
 [tool.mypy]
 # Import discovery
-mypy_path = "."
 namespace_packages = false
 explicit_package_bases = false
 ignore_missing_imports = true

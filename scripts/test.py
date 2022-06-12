@@ -6,7 +6,7 @@ from scripts._job import Step, run_job
 
 
 def run_mypy_src():
-    cmd = ["mypy", "pandas-stubs", "tests"]
+    cmd = ["mypy", "pandas-stubs", "tests", "--no-incremental"]
     subprocess.run(cmd, check=True)
 
 
@@ -22,7 +22,6 @@ def run_pytest_src():
 
 def test_src(profile):
     steps = []
-
     # Possible steps
     mypy_step = Step(name="Run Mypy Against Source Code", run=run_mypy_src)
     pyright_step = Step(name="Run Pyright Against Source Code", run=run_pyright_src)
@@ -60,7 +59,7 @@ def remove_src():
 
 
 def run_mypy_dist():
-    cmd = ["mypy", "tests"]
+    cmd = ["mypy", "tests", "--no-incremental"]
     subprocess.run(cmd, check=True)
 
 
