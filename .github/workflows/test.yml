@@ -35,7 +35,7 @@ jobs:
       run: pip install poetry
 
     - name: Install project dependencies
-      run: poetry install -vvv
+      run: poetry install -vvv --no-root
 
     - name: Run MyPy Against Source Code
       run: poetry run poe run_mypy_src
