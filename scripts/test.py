@@ -51,7 +51,7 @@ def build_dist():
 
 def install_dist():
     path = next(Path("dist/").glob("*.whl"))
-    cmd = ["pip", "install", str(path), "--force-reinstall"]
+    cmd = ["pip", "install", str(path)]
     subprocess.run(cmd, check=True)
 
 
@@ -110,8 +110,7 @@ def test_all():
         Step(name="Run MyPy Against Dist", run=run_mypy_dist),
         Step(name="Run Pyright Against Dist", run=run_pyright_dist),
         Step(name="Uninstall Dist", run=uninstall_dist),
-        Step(name="Restore Source Code", run=restore_src),
-        Step(name="Install Poetry", run=install_poetry),
+        Step(name="Restore Source Code", run=restore_src)
     ]
 
     run_job(steps)
