@@ -18,14 +18,15 @@ def __rollback_job(steps: Deque[Step]):
     Responsible to run rollback of steps.
     """
 
-    if len(steps) > 0:
-        while len(steps) > 0:
-            step = steps.pop()
-            if step.rollback is not None:
-                logger.warning(f"Undoing step: {step.name}")
+    while steps:
+        step = steps.pop()
+        if step.rollback is not None:
+            logger.warning(f"Undoing: {step.name}")
+            try:
                 step.rollback()
+            except Exception:
+                logger.error(f"Rollback of Step: '{step.name}' failed!")
 
-    logger.success(f"End of rollback with success")
 
 
 def run_job(steps: List[Step]) -> None:
