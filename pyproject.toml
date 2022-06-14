@@ -49,8 +49,12 @@ loguru = ">=0.6.0"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.poe.tasks.check_style]
+help = "Local Style Check"
+script = "scripts.style:check_style"
+
 [tool.poe.tasks.test_src]
-help = "LOCAL TEST | Run tests against source code version: \"poe test_src -p=<profile>\""
+help = "LOCAL Test | Run tests against source code version: \"poe test_src -p=<profile>\""
 script = "scripts.test:test_src(profile)"
 
     [[tool.poe.tasks.test_src.args]]
