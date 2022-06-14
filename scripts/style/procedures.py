@@ -7,5 +7,5 @@ def run_black_check():
 
 
 def run_isort_check():
-    cmd = ["isort", "--check", "pandas-stubs", "tests"]
+    cmd = ["isort", "--check-only", "pandas-stubs", "tests"]
     subprocess.run(cmd, check=True)
