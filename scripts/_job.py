@@ -1,10 +1,10 @@
 import time
 from dataclasses import dataclass
 from subprocess import CalledProcessError
-from typing import Callable, List, Union, Optional
+from typing import Callable, List, Optional, Deque
 
 from loguru import logger
-
+from collections import deque
 
 @dataclass
 class Step:
@@ -13,17 +13,17 @@ class Step:
     rollback: Optional[Callable[[], None]] = None
 
 
-def __rollback_job(steps: List[Step]):
+def __rollback_job(steps: Deque[Step]):
     """
-    Resposible to run rollback of steps.
+    Responsible to run rollback of steps.
     """
 
     if len(steps) > 0:
-        for step in steps[-1:]:
-            logger.warning(f"Undoing step: {step.name}")
+        while len(steps) > 0:
+            step = steps.pop()
             if step.rollback is not None:
-                step.rollback()
                 logger.warning(f"Undoing step: {step.name}")
+                step.rollback()
 
     logger.success(f"End of rollback with success")
 
@@ -33,22 +33,20 @@ def run_job(steps: List[Step]) -> None:
     Responsible to run steps with logs.
     """
 
-    rollback_steps: List[Step] = []
+    rollback_steps = Deque[Step]()
 
     for step in steps:
         start = time.perf_counter()
         logger.info(f"Beginning: '{step.name}'")
 
         try:
-
-            if step.rollback is not None:
-                rollback_steps.append(step)
-
+                            
+            rollback_steps.append(step)
             step.run()
 
         except CalledProcessError:
 
-            logger.error(f"'{step.name}' failed!")
+            logger.error(f"Step: '{step.name}' failed!")
             __rollback_job(rollback_steps)
             
             break

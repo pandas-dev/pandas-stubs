@@ -27,8 +27,8 @@ def test_src(profile):
 def test_dist():
     steps = [
         Step(name="Build Dist", run=procedures.build_dist),
-        Step(name="Install Dist", run=procedures.install_dist),
-        Step(name="Remove Source Code", run=procedures.remove_src),
+        Step(name="Install Dist", run=procedures.install_dist, rollback=procedures.uninstall_dist),
+        Step(name="Remove Source Code", run=procedures.remove_src, rollback=procedures.restore_src),
         Step(name="Run MyPy Against Dist", run=procedures.run_mypy_dist),
         Step(name="Run Pyright Against Dist", run=procedures.run_pyright_dist),
         Step(name="Uninstall Dist", run=procedures.uninstall_dist),
