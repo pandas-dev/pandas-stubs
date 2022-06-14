@@ -50,12 +50,12 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks.check_style]
-help = "Local Style Check"
+help = "Local Code Style Check"
 script = "scripts.style:check_style"
 
 [tool.poe.tasks.test_src]
 help = "LOCAL Test | Run tests against source code version: \"poe test_src -p=<profile>\""
-script = "scripts.test:test_src(profile)"
+script = "scripts.test:test_src(profile, clean_cache)"
 
     [[tool.poe.tasks.test_src.args]]
     help = "\"default\" (mypy + pyright) or \"pytest\" (pytest only) or \"full\" (mypy + pyright + pytest)"
@@ -63,13 +63,31 @@ script = "scripts.test:test_src(profile)"
     options = ["-p", "--profile"]
     default = "default"
 
+    [[tool.poe.tasks.test_src.args]]
+    help = "remove mypy and pytest cache folders"
+    name = "clean-cache"
+    options = ["-c", "--clean_cache"]
+    default = false
+
 [tool.poe.tasks.test_dist]
 help = "Local Test | Run tests against distribuition version: \"poe test_dist\""
-script = "scripts.test:test_dist"
+script = "scripts.test:test_dist(clean_cache)"
+
+    [[tool.poe.tasks.test_dist.args]]
+    help = "remove mypy and pytest cache folders"
+    name = "clean-cache"
+    options = ["-c", "--clean_cache"]
+    default = false
 
 [tool.poe.tasks.test_all]
 help = "Local Test | Run tests against source code and distribuition version: \"poe test_all\""
-script = "scripts.test:test_all"
+script = "scripts.test:test_all(clean_cache)"
+
+    [[tool.poe.tasks.test_all.args]]
+    help = "remove mypy and pytest cache folders"
+    name = "clean-cache"
+    options = ["-c", "--clean_cache"]
+    default = false
 
 [tool.poe.tasks.run_mypy_src]
 help = "CI Test | Run mypy against source code"
