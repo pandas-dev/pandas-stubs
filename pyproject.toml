@@ -32,7 +32,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"
-pandas = "1.4.*"
+pandas = "1.4.2"
 typing-extensions = ">=4.2.0"
 matplotlib = ">=3.3.2"
 
@@ -69,35 +69,35 @@ script = "scripts.test:test_all"
 
 [tool.poe.tasks.run_mypy_src]
 help = "CI Test | Run mypy against source code"
-script = "scripts.test:run_mypy_src"
+script = "scripts.test.procedures:run_mypy_src"
 
 [tool.poe.tasks.run_pyright_src]
 help = "CI Test | Run pyright against source code"
-script = "scripts.test:run_pyright_src"
+script = "scripts.test.procedures:run_pyright_src"
 
 [tool.poe.tasks.run_pytest_src]
 help = "CI Test | Run pytest against source code"
-script = "scripts.test:run_pytest_src"
+script = "scripts.test.procedures:run_pytest_src"
 
 [tool.poe.tasks.build_dist]
 help = "CI Test | Build distribuition"
-script = "scripts.test:build_dist"
+script = "scripts.test.procedures:build_dist"
 
 [tool.poe.tasks.install_dist]
 help = "CI Test | Install distribuition"
-script = "scripts.test:install_dist"
+script = "scripts.test.procedures:install_dist"
 
 [tool.poe.tasks.remove_src]
 help = "CI Test | Remove source code"
-script = "scripts.test:remove_src"
+script = "scripts.test.procedures:remove_src"
 
 [tool.poe.tasks.run_mypy_dist]
 help = "CI Test | Run mypy against distribuition"
-script = "scripts.test:run_mypy_dist"
+script = "scripts.test.procedures:run_mypy_dist"
 
 [tool.poe.tasks.run_pyright_dist]
 help = "CI Test | Run pyright against distribuition"
-script = "scripts.test:run_pyright_dist"
+script = "scripts.test.procedures:run_pyright_dist"
 
 [tool.black]
 line_length = 88

@@ -76,34 +76,3 @@ def uninstall_dist():
 def restore_src():
     cmd = ["git", "checkout", "HEAD", "pandas-stubs"]
     subprocess.run(cmd, check=True)
-
-
-def test_dist():
-    steps = [
-        Step(name="Build Dist", run=build_dist),
-        Step(name="Install Dist", run=install_dist),
-        Step(name="Remove Source Code", run=remove_src),
-        Step(name="Run MyPy Against Dist", run=run_mypy_dist),
-        Step(name="Run Pyright Against Dist", run=run_pyright_dist),
-        Step(name="Uninstall Dist", run=uninstall_dist),
-        Step(name="Restore Source Code", run=restore_src)
-    ]
-
-    run_job(steps)
-
-
-def test_all():
-    steps = [
-        Step(name="Run Mypy Against Source Code", run=run_mypy_src),
-        Step(name="Run Pyright Against Source Code", run=run_pyright_src),
-        Step(name="Run Pytest Against Source Code", run=run_pytest_src),
-        Step(name="Build Dist", run=build_dist),
-        Step(name="Install Dist", run=install_dist),
-        Step(name="Remove Source Code", run=remove_src),
-        Step(name="Run MyPy Against Dist", run=run_mypy_dist),
-        Step(name="Run Pyright Against Dist", run=run_pyright_dist),
-        Step(name="Uninstall Dist", run=uninstall_dist),
-        Step(name="Restore Source Code", run=restore_src)
-    ]
-
-    run_job(steps)
