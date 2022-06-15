@@ -1,60 +1,62 @@
 name: 'Test'
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    paths:
+      - /**/*.py
+      - /**/*.pyi
+      - pyproject.toml
+      - .github/workflows/test.yml
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   test:
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 10
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.8', '3.9', '3.10']
 
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
 
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.9"
+    - uses: actions/checkout@v2
 
-      - name: Cache pip
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
-        run:
-          python -m pip install -r tests/requirements.txt
+    - name: Upgrade pip
+      run: python -m pip install --upgrade pip
 
-      - name: Run pyright tests
-        uses: gramster/pyright-action@main
-        with:
-          project: pyrighttestconfig.json
-          warn-partial: true
+    - name: Install Poetry
+      run: pip install poetry
 
-      - name: Run pytest
-        run:
-          pytest tests/pandas
-          
-      - name: Run mypy
-        run:
-          mypy tests/pandas typings/pandas
-          
-      - name: Build wheel and install and remove typings
-        run: |
-          python setup.py build bdist_wheel
-          find ./dist/*.whl | xargs pip install
-          rm -rf typings
-          pip install pyright
-      
-      - name: Run pyright against dist
-        uses: gramster/pyright-action@main
-        with:
-          project: pyrightdistconfig.json
-          warn-partial: true
+    - name: Install project dependencies
+      run: poetry install -vvv --no-root
 
-      - name: Run mypy against dist
-        run:
-          mypy tests/pandas
+    - name: Run MyPy Against Source Code
+      run: poetry run poe run_mypy_src
+
+    - name: Run Pyright Against Source Code
+      run: poetry run poe run_pyright_src
+
+    - name: Run Pytest Against Source Code
+      run: poetry run poe run_pytest_src
+
+    - name: Build Distribution
+      run: poetry run poe build_dist
+
+    - name: Install Distribution
+      run: poetry run poe install_dist
+
+    - name: Remove Source Code
+      run: poetry run poe remove_src
+
+    - name: Run Pyright Against Distribution
+      run: poetry run poe run_pyright_dist
+
+    - name: Run MyPy Against Distribution
+      run: poetry run poe run_mypy_dist

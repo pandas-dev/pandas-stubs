@@ -1,8 +1,0 @@
-{
-    "typeCheckingMode": "basic",
-    "include": [ "tests", "typings/pandas" ],
-    "reportMissingModuleSource": false,
-    "reportUnusedVariable": false,
-    "useLibraryCodeForTypes": true,
-    "reportUnknownArgumentType": true
-}

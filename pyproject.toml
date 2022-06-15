@@ -1,3 +1,126 @@
+[tool.poetry]
+name = "pandas-stubs"
+version = "1.4.2.220608"
+description = "Type annotations for pandas"
+authors = ["The Pandas Development Team <pandas-dev@python.org>"]
+license = "BSD-3-Clause"
+readme = "README.md"
+homepage = "https://pandas.pydata.org"
+repository = "https://github.com/pandas-dev/pandas-stubs"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering"
+]
+packages = [
+    { "include" = "pandas-stubs"}
+]
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/pandas-dev/pandas-stubs/issues"
+"Documentation" = "https://pandas.pydata.org/pandas-docs/stable"
+"Source Code" = "https://github.com/pandas-dev/pandas-stubs"
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.11"
+pandas = "1.4.2"
+typing-extensions = ">=4.2.0"
+matplotlib = ">=3.3.2"
+
+[tool.poetry.dev-dependencies]
+mypy = ">=0.960"
+pytest = ">=7.1.2"
+pyright = ">=1.1.251"
+black = ">=22.3.0"
+isort = ">=5.10.1"
+poethepoet = ">=0.13.1"
+loguru = ">=0.6.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poe.tasks.check_style]
+help = "Local Code Style Check"
+script = "scripts.style:check_style"
+
+[tool.poe.tasks.test_src]
+help = "LOCAL Test | Run tests against source code version: \"poe test_src -p=<profile>\""
+script = "scripts.test:test_src(profile, clean_cache)"
+
+    [[tool.poe.tasks.test_src.args]]
+    help = "\"default\" (mypy + pyright) or \"pytest\" (pytest only) or \"full\" (mypy + pyright + pytest)"
+    name = "profile"
+    options = ["-p", "--profile"]
+    default = "default"
+
+    [[tool.poe.tasks.test_src.args]]
+    help = "remove mypy and pytest cache folders"
+    name = "clean-cache"
+    options = ["-c", "--clean_cache"]
+    default = false
+
+[tool.poe.tasks.test_dist]
+help = "Local Test | Run tests against distribuition version: \"poe test_dist\""
+script = "scripts.test:test_dist(clean_cache)"
+
+    [[tool.poe.tasks.test_dist.args]]
+    help = "remove mypy and pytest cache folders"
+    name = "clean-cache"
+    options = ["-c", "--clean_cache"]
+    default = false
+
+[tool.poe.tasks.test_all]
+help = "Local Test | Run tests against source code and distribuition version: \"poe test_all\""
+script = "scripts.test:test_all(clean_cache)"
+
+    [[tool.poe.tasks.test_all.args]]
+    help = "remove mypy and pytest cache folders"
+    name = "clean-cache"
+    options = ["-c", "--clean_cache"]
+    default = false
+
+[tool.poe.tasks.run_mypy_src]
+help = "CI Test | Run mypy against source code"
+script = "scripts.test.procedures:run_mypy_src"
+
+[tool.poe.tasks.run_pyright_src]
+help = "CI Test | Run pyright against source code"
+script = "scripts.test.procedures:run_pyright_src"
+
+[tool.poe.tasks.run_pytest_src]
+help = "CI Test | Run pytest against source code"
+script = "scripts.test.procedures:run_pytest_src"
+
+[tool.poe.tasks.build_dist]
+help = "CI Test | Build distribuition"
+script = "scripts.test.procedures:build_dist"
+
+[tool.poe.tasks.install_dist]
+help = "CI Test | Install distribuition"
+script = "scripts.test.procedures:install_dist"
+
+[tool.poe.tasks.remove_src]
+help = "CI Test | Remove source code"
+script = "scripts.test.procedures:remove_src"
+
+[tool.poe.tasks.run_mypy_dist]
+help = "CI Test | Run mypy against distribuition"
+script = "scripts.test.procedures:run_mypy_dist"
+
+[tool.poe.tasks.run_pyright_dist]
+help = "CI Test | Run pyright against distribuition"
+script = "scripts.test.procedures:run_pyright_dist"
+
 [tool.black]
 line_length = 88
 target_version = ["py39"]
@@ -41,7 +164,6 @@ extra_standard_library = [
 
 [tool.mypy]
 # Import discovery
-mypy_path = "typings"
 namespace_packages = false
 explicit_package_bases = false
 ignore_missing_imports = true
@@ -86,3 +208,9 @@ strict_equality = true
 show_error_context = false
 show_column_numbers = false
 show_error_codes = true
+
+[tool.pyright]
+typeCheckingMode = "basic"
+stubPath = "."
+include = ["tests", "pandas-stubs"]
+useLibraryCodeForTypes = true
