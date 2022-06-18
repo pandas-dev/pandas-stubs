@@ -62,13 +62,13 @@ patterns = ["(^##\\sRelease\\sNotes\\s*(?::.*?)?\\s*\\s)[^\\s]*(['\\s])"]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.poe.tasks.build]
+help = "Update version and build the project"
+script = "scripts.build:run_build"
+
 [tool.poe.tasks.check_style]
 help = "Local Code Style Check"
 script = "scripts.style:check_style"
-
-[tool.poe.tasks.build]
-help = "Build project"
-script = "scripts.build:run_build"
 
 [tool.poe.tasks.test_src]
 help = "LOCAL Test | Run tests against source code version: \"poe test_src -p=<profile>\""
