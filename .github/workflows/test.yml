@@ -1,4 +1,4 @@
-name: 'Test'
+name: 'Pipeline'
 
 on:
   push:
@@ -6,11 +6,38 @@ on:
       - /**/*.py
       - /**/*.pyi
       - pyproject.toml
-      - .github/workflows/test.yml
+      - .github/workflows/pipeline.yml
   pull_request:
   workflow_dispatch:
 
 jobs:
+  style-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.10"
+
+    - name: Upgrade pip
+      run: python -m pip install --upgrade pip
+
+    - name: Install Poetry
+      run: pip install poetry
+
+    - name: Install project dependencies
+      run: poetry update -vvv
+
+    - name: Check style with black
+      run: poetry run poe run_black_check
+
+    - name: Check style with isort
+      run: poetry run poe run_isort_check
+
   test:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
@@ -18,6 +45,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ['3.8', '3.9', '3.10']
+    needs: style-check
 
     steps:
 
@@ -35,7 +63,7 @@ jobs:
       run: pip install poetry
 
     - name: Install project dependencies
-      run: poetry install -vvv --no-root
+      run: poetry update -vvv
 
     - name: Run MyPy Against Source Code
       run: poetry run poe run_mypy_src
@@ -60,3 +88,125 @@ jobs:
 
     - name: Run MyPy Against Distribution
       run: poetry run poe run_mypy_dist
+
+  publish-pypi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: test
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install project dependencies
+        run: poetry update -vvv
+
+#      - name: Update distribution version
+#        run: poetry run poe build
+#
+#      - name: Publish PyPi
+#        run: poetry publish --username ${{ secrets.PYPI_TOKEN_NAME }} --password ${{ secrets.PYPI_TOKEN }}
+#
+
+  publish-conda:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: test
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install project dependencies
+        run: poetry update -vvv
+
+  publish-github:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: test
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install project dependencies
+        run: poetry update -vvv
+#
+#      - name: Update distribution version
+#        run: poetry run poetry-dynamic-versioning
+#
+#      - name: Build Distribution
+#        run: poetry build
+#
+#      - name: Set version and dist files
+#        id: vars
+#        run: |
+#          echo ::set-output name=version::"$(poetry version -s)"
+#          wheel_path=(dist/*.whl)
+#          echo ::set-output name=wheel_path::$wheel_path
+#          echo ::set-output name=wheel_file::$(basename "$wheel_path")
+#          sdist_path=(dist/*.tar.gz)
+#          echo ::set-output name=sdist_path::$sdist_path
+#          echo ::set-output name=sdist_file::$(basename "$sdist_path")
+#
+#      - name: Create Release
+#        id: create_release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag_name: ${{ steps.vars.outputs.version }}
+#          release_name: Release ${{ steps.vars.outputs.version }}
+#          body_path: "docs/6 - release.md"
+#          draft: false
+#          prerelease: true
+#
+#      - name: Upload Release Wheel
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }}
+#          asset_path: ${{ steps.vars.outputs.wheel_path }}
+#          asset_name: ${{ steps.vars.outputs.wheel_file }}
+#          asset_content_type: application/whl
+#
+#      - name: Upload Release Sdist
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }}
+#          asset_path: ${{ steps.vars.outputs.sdist_path }}
+#          asset_name: ${{ steps.vars.outputs.sdist_file }}
+#          asset_content_type: application/gzip
