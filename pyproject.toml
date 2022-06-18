@@ -102,6 +102,14 @@ script = "scripts.test:test_all(clean_cache)"
     options = ["-c", "--clean_cache"]
     default = false
 
+[tool.poe.tasks.run_black_check]
+help = "CI Style Check | Check code style with black"
+script = "scripts.style.procedures:run_black_check"
+
+[tool.poe.tasks.run_isort_check]
+help = "CI Style Check | Check code style with isort"
+script = "scripts.style.procedures:run_isort_check"
+
 [tool.poe.tasks.run_mypy_src]
 help = "CI Test | Run mypy against source code"
 script = "scripts.test.procedures:run_mypy_src"
