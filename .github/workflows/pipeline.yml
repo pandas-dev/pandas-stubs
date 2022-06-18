@@ -166,10 +166,7 @@ jobs:
         run: poetry update -vvv
 #
 #      - name: Update distribution version
-#        run: poetry run poetry-dynamic-versioning
-#
-#      - name: Build Distribution
-#        run: poetry build
+#        run: poetry run poe build
 #
 #      - name: Set version and dist files
 #        id: vars
