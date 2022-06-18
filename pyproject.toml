@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pandas-stubs"
-version = "1.4.2.220608"
+version = "1.4.2.220618153002"
 description = "Type annotations for pandas"
 authors = ["The Pandas Development Team <pandas-dev@python.org>"]
 license = "BSD-3-Clause"
@@ -44,6 +44,15 @@ black = ">=22.3.0"
 isort = ">=5.10.1"
 poethepoet = ">=0.13.1"
 loguru = ">=0.6.0"
+poetry-dynamic-versioning = ">=0.17.1"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+format-jinja-imports = [
+    { module = "pandas" },
+    { module = "datetime", item = "datetime" }
+]
+format-jinja = """{{ pandas.__version__}}.{{ datetime.now().strftime('%y%m%d%H%M%S') }}"""
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
