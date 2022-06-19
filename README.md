@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://pandas.pydata.org/static/img/pandas.svg"><br>
+  <img style="border-radius: 1%; background-color: #ffffff; background-color:rgba(255,255,255, 0.1);" src="https://pandas.pydata.org/static/img/pandas.svg"><br>
 </div>
 
 -----------------
