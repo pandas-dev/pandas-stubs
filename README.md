@@ -5,12 +5,11 @@
 -----------------
 
 # pandas-stubs: Type annotations for pandas
-[![PyPI Latest Release](https://img.shields.io/pypi/v/pandas-stubs.svg)](https://pypi.org/project/pandas-stubs/)
-[![Conda Latest Release](https://anaconda.org/conda-forge/pandas-stubs/badges/version.svg)](https://anaconda.org/anaconda/pandas-stubs/)
-[![Package Status](https://img.shields.io/pypi/status/pandas-stubs.svg)](https://pypi.org/project/pandas-stubs/)
-[![License](https://img.shields.io/pypi/l/pandas-stubs.svg)](https://github.com/pandas-dev/pandas-stubs/blob/main/LICENSE)
-[![Coverage](https://codecov.io/github/pandas-dev/pandas-stubs/coverage.svg?branch=main)](https://codecov.io/gh/pandas-dev/pandas-stubs)
-[![Downloads](https://static.pepy.tech/personalized-badge/pandas-stubs?period=month&units=international_system&left_color=black&right_color=orange&left_text=PyPI%20downloads%20per%20month)](https://pepy.tech/project/pandas-stubs)
+[![PyPI Latest Release](https://img.shields.io/pypi/v/pandas-stubs-official.svg)](https://pypi.org/project/pandas-stubs-official/)
+[![Conda Latest Release](https://anaconda.org/conda-forge/pandas-stubs-official/badges/version.svg)](https://anaconda.org/anaconda/pandas-stubs-official/)
+[![Package Status](https://img.shields.io/pypi/status/pandas-stubs-official.svg)](https://pypi.org/project/pandas-stubs-official/)
+[![License](https://img.shields.io/pypi/l/pandas-stubs-official.svg)](https://github.com/pandas-dev/pandas-stubs/blob/main/LICENSE)
+[![Downloads](https://static.pepy.tech/personalized-badge/pandas-stubs-official?period=month&units=international_system&left_color=black&right_color=orange&left_text=PyPI%20downloads%20per%20month)](https://pepy.tech/project/pandas-stubs-official)
 [![Powered by NumFOCUS](https://img.shields.io/badge/powered%20by-NumFOCUS-orange.svg?style=flat&colorA=E1523D&colorB=007D8A)](https://numfocus.org)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)

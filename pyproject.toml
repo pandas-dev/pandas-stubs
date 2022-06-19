@@ -52,7 +52,7 @@ format-jinja-imports = [
     { module = "pandas" },
     { module = "datetime", item = "datetime" }
 ]
-format-jinja = """{{ pandas.__version__}}.{{ datetime.now().strftime('%y%m%d') }}"""
+format-jinja = """{{ pandas.__version__ }}.{{ datetime.now().strftime('%y%m%d') }}"""
 
 [tool.poetry-dynamic-versioning.substitution]
 files = ["docs/6 - release.md"]
