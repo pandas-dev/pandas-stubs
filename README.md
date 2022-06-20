@@ -1,5 +1,4 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://www.kindpng.com/picc/m/574-5747046_python-pandas-logo-transparent-hd-png-download.png">
   <img src="https://pandas.pydata.org/static/img/pandas.svg">
 </picture>
 
