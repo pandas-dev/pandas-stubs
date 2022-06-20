@@ -1,5 +1,5 @@
 <picture>
-  <img src="https://pandas.pydata.org/static/img/pandas.svg">
+  <img src="https://github.com/BrenoJesusFernandes/brenojesusfernandes/blob/117db89bf200f7620a4c459fbae271e13bedc55a/img/pandas-logo.png">
 </picture>
 
 -----------------
