@@ -148,3 +148,9 @@ def test_timedelta_series_sum() -> None:
 
     sf = pd.Series([1.0, 2.2, 3.3])
     sfsum: float = sf.sum()
+
+
+def test_iso_calendar() -> None:
+    # GH 31
+    dates = pd.date_range(start="2012-01-01", end="2019-12-31", freq="W-MON")
+    dates.isocalendar()
