@@ -134,6 +134,7 @@ def test_types_loc_at() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df.loc[[0], "col1"]
     df.at[0, "col1"]
+    df.loc[0, "col1"]
 
 
 def test_types_boolean_indexing() -> None:
