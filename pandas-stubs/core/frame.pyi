@@ -955,7 +955,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def join(
         self,
-        other: Union[DataFrame, Series, List[DataFrame]],
+        other: Union[DataFrame, Series, List[Union[DataFrame, Series]]],
         on: Optional[Union[_str, List[_str]]] = ...,
         how: Union[_str, Literal["left", "right", "outer", "inner"]] = ...,
         lsuffix: _str = ...,
