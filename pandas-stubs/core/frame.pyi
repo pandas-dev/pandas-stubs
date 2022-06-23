@@ -215,7 +215,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def to_dict(
         self,
-        orient: Literal["dict", "list", "series", "split", "index"] = ...,
+        orient: Literal["dict", "list", "series", "split", "tight", "index"] = ...,
         into: Hashable = ...,
     ) -> Dict[_str, Any]: ...
     def to_gbq(
