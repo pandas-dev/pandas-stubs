@@ -48,7 +48,7 @@ jobs:
     - name: Check style with isort
       run: poetry run poe run_isort_check
 
-  test:
+  stub-tests:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     strategy:
@@ -102,7 +102,7 @@ jobs:
   publish-pypi:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: test
+    needs: stub-tests
     if: github.ref == 'refs/heads/main'
 
     steps:
@@ -132,7 +132,7 @@ jobs:
   publish-conda:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: test
+    needs: stub-tests
     if: github.ref == 'refs/heads/main'
 
     steps:
@@ -155,7 +155,7 @@ jobs:
   publish-github:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: test
+    needs: stub-tests
     if: github.ref == 'refs/heads/main'
     
     steps:
