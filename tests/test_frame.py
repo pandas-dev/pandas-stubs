@@ -3,10 +3,11 @@ from datetime import date, datetime
 import io
 import tempfile
 from pathlib import Path
-from typing import List, Tuple, Iterable, Any, Dict, Hashable
+from typing import List, Tuple, Iterable, Any, Union
 from typing_extensions import assert_type
 
 import pandas as pd
+from pandas._testing import getSeriesData
 from pandas.io.parsers import TextFileReader
 import numpy as np
 
@@ -133,6 +134,7 @@ def test_types_loc_at() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df.loc[[0], "col1"]
     df.at[0, "col1"]
+    df.loc[0, "col1"]
 
 
 def test_types_boolean_indexing() -> None:
@@ -997,3 +999,13 @@ def test_getmultiindex_columns() -> None:
 def test_frame_getitem_isin() -> None:
     df = pd.DataFrame({"x": [1, 2, 3, 4, 5]}, index=[1, 2, 3, 4, 5])
     assert_type(df[df.index.isin([1, 3, 5])], "pd.DataFrame")
+
+
+def test_join() -> None:
+    float_frame = pd.DataFrame(getSeriesData())
+    # GH 29
+    left = float_frame["A"].to_frame()
+    seriesB = float_frame["B"]
+    frameCD = float_frame[["C", "D"]]
+    right: List[Union[pd.Series, pd.DataFrame]] = [seriesB, frameCD]
+    result = left.join(right)
