@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pandas-stubs"
-version = "1.4.2.220618"
+version = "1.4.2.220625"
 description = "Type annotations for pandas"
 authors = ["The Pandas Development Team <pandas-dev@python.org>"]
 license = "BSD-3-Clause"
@@ -69,6 +69,10 @@ script = "scripts.build:run_build"
 [tool.poe.tasks.check_style]
 help = "Local Code Style Check"
 script = "scripts.style:check_style"
+
+[tool.poe.tasks.format_style]
+help = "Apply Black and Isort Format"
+script = "scripts.style:format_style"
 
 [tool.poe.tasks.test_src]
 help = "LOCAL Test | Run tests against source code version: \"poe test_src -p=<profile>\""

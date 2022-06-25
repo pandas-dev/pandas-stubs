@@ -9,3 +9,13 @@ def run_black_check():
 def run_isort_check():
     cmd = ["isort", "--check-only", "pandas-stubs", "tests"]
     subprocess.run(cmd, check=True)
+
+
+def run_format_black():
+    cmd = ["black", "pandas-stubs", "tests"]
+    subprocess.run(cmd, check=True)
+
+
+def run_format_isort():
+    cmd = ["isort", "pandas-stubs", "tests"]
+    subprocess.run(cmd, check=True)
