@@ -101,8 +101,6 @@ Ask questions and report issues on the [pandas-stubs repository](https://github.
 
 ## Discussion and Development
 
-Development instructions can be found in the [pandas-stubs repository](https://github.com/Dr-Irv/pandas-stubs/tree/readme/docs).
-
 Most development discussions take place on GitHub in the [pandas-stubs repository](https://github.com/pandas-dev/pandas-stubs/). Further, the [pandas-dev mailing list](https://mail.python.org/mailman/listinfo/pandas-dev) can also be used for specialized discussions or design issues, and a [Gitter channel](https://gitter.im/pydata/pandas) is available for quick development related questions.
 
 ## Contributing to pandas-stubs
