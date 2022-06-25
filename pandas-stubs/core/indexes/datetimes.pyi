@@ -1,11 +1,17 @@
 from datetime import tzinfo as tzinfo
 from typing import Optional, Union, overload
 
+
+from pandas.core.indexes.api import (
+    PeriodIndex as PeriodIndex,
+    Float64Index as Float64Index,
+)
+
 import numpy as np
-from pandas._typing import Timedelta as Timedelta, Timestamp as Timestamp
+from pandas._typing import Timedelta as Timedelta, Timestamp as Timestamp, DataFrame as DataFrame
 from pandas.core.indexes.datetimelike import (
     DatetimelikeDelegateMixin as DatetimelikeDelegateMixin,
-    DatetimeTimedeltaMixin as DatetimeTimedeltaMixin,
+    DatetimeTimedeltaMixin as DatetimeTimedeltaMixin
 )
 from pandas.core.indexes.timedeltas import TimedeltaIndex as TimedeltaIndex
 from pandas.core.series import Series as Series, TimedeltaSeries, TimestampSeries
@@ -51,6 +57,12 @@ class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeDelegateMixin):
         self, start_time, end_time, include_start: bool = ..., include_end: bool = ...
     ): ...
     def strftime(self, date_format: str = ...) -> np.ndarray: ...
+    def tz_convert(self, tz) -> DatetimeIndex: ...
+    def tz_localize(self, tz, ambiguous=..., nonexistent=...) -> DatetimeIndex: ...
+    def to_period(self, freq) -> PeriodIndex: ...
+    def to_perioddelta(self, freq) -> TimedeltaIndex: ...
+    def to_julian_date(self) -> Float64Index: ...
+    def isocalendar(self) -> DataFrame: ...
 
 def date_range(
     start=...,

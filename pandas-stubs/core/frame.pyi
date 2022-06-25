@@ -121,7 +121,7 @@ class _LocIndexerFrame(_LocIndexer):
     @overload
     def __getitem__(
         self,
-        idx: Tuple[Union[StrLike, Tuple[StrLike, ...]], StrLike],
+        idx: Tuple[Union[Union[int, StrLike], Tuple[StrLike, ...]], StrLike],
     ) -> Scalar: ...
     @overload
     def __getitem__(
@@ -952,7 +952,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def join(
         self,
-        other: Union[DataFrame, Series, List[DataFrame]],
+        other: Union[DataFrame, Series, List[Union[DataFrame, Series]]],
         on: Optional[Union[_str, List[_str]]] = ...,
         how: Union[_str, Literal["left", "right", "outer", "inner"]] = ...,
         lsuffix: _str = ...,
@@ -1101,7 +1101,7 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level = ...,
         fill_value: Union[None, float] = ...,
     ) -> DataFrame: ...
-    def __iter__(self) -> Iterator: ...
+    def __iter__(self) -> Iterator[Hashable]: ...
     # properties
     @property
     def at(self): ...  # Not sure what to do with this yet; look at source
