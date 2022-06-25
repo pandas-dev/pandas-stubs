@@ -8,7 +8,7 @@
 -----------------
 
 # pandas-stubs: type annotations for pandas
-[![Test Status](https://github.com/pandas-dev/pandas-stubs/actions/workflows/test.yml/badge.svg)](https://github.com/pandas-dev/pandas-stubs/actions/workflows/test.yml)
+[![CI/CD](https://github.com/BrenoJesusFernandes/pandas-stubs/actions/workflows/pipeline.yml/badge.svg)](https://github.com/BrenoJesusFernandes/pandas-stubs/actions/workflows/pipeline.yml)
 [![PyPI Latest Release](https://img.shields.io/pypi/v/pandas-stubs-official.svg)](https://pypi.org/project/pandas-stubs-official/)
 [![Package Status](https://img.shields.io/pypi/status/pandas-stubs-official.svg)](https://pypi.org/project/pandas-stubs-official/)
 [![License](https://img.shields.io/pypi/l/pandas.svg)](https://github.com/pandas-dev/pandas-stubs/blob/main/LICENSE)
