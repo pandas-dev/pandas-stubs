@@ -1,4 +1,5 @@
-from typing import Callable, Any, Dict, Tuple, Optional
+from typing import Any, Callable, Dict, Optional, Tuple
+
 from pandas._typing import FrameOrSeriesUnion as FrameOrSeries
 from pandas.core.window.common import WindowGroupByMixin as WindowGroupByMixin
 from pandas.core.window.rolling import _Rolling_and_Expanding

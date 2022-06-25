@@ -1,5 +1,6 @@
-from pandas.tseries.offsets import DateOffset as DateOffset
 from typing import Optional
+
+from pandas.tseries.offsets import DateOffset as DateOffset
 
 def get_period_alias(offset_str: str) -> Optional[str]: ...
 def to_offset(freq) -> Optional[DateOffset]: ...

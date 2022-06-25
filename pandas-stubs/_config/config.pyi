@@ -1,5 +1,5 @@
 from contextlib import ContextDecorator
-from typing import Any, Union, overload, Literal
+from typing import Any, Literal, Union, overload
 
 def get_option(pat: str) -> Any: ...
 def set_option(pat: str, val: object) -> None: ...

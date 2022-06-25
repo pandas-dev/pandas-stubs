@@ -1,9 +1,10 @@
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
+
+import numpy as np
 from matplotlib.axes import Axes as PlotAxes
 from matplotlib.figure import Figure
-import numpy as np
-from pandas.core.series import Series
 from pandas.core.frame import DataFrame
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
+from pandas.core.series import Series
 
 def table(
     ax,

@@ -6,21 +6,10 @@ from datetime import (
     tzinfo as _tzinfo,
 )
 from time import struct_time
-from typing import (
-    ClassVar,
-    TypeVar,
-    overload,
-)
+from typing import ClassVar, TypeVar, overload
 
 import numpy as np
-
-from pandas._libs.tslibs import (
-    BaseOffset,
-    NaTType,
-    Period,
-    Tick,
-    Timedelta,
-)
+from pandas._libs.tslibs import BaseOffset, NaTType, Period, Tick, Timedelta
 
 _DatetimeT = TypeVar("_DatetimeT", bound=datetime)
 

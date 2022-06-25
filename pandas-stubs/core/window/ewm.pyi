@@ -1,7 +1,7 @@
-from typing import Union, Optional, Callable
-from pandas.core.window.rolling import _Rolling
+from typing import Callable, Optional, Union
 
-from pandas._typing import Scalar, Series, DataFrame
+from pandas._typing import DataFrame, Scalar, Series
+from pandas.core.window.rolling import _Rolling
 
 class ExponentialMovingWindow(_Rolling):
     obj = ...

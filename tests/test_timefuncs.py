@@ -1,12 +1,11 @@
 # flake8: noqa: F841
 
-from typing import TYPE_CHECKING
-import pandas as pd
 import datetime as dt
+from typing import TYPE_CHECKING
 from typing_extensions import assert_type
 
+import pandas as pd
 from pandas.testing import assert_series_equal
-
 
 if TYPE_CHECKING:
     from pandas.core.series import TimedeltaSeries, TimestampSeries

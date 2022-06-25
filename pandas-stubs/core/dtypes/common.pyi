@@ -1,3 +1,5 @@
+from typing import Callable, Union
+
 import numpy as np
 from pandas._typing import ArrayLike as ArrayLike
 from pandas.core.dtypes.inference import (
@@ -18,7 +20,6 @@ from pandas.core.dtypes.inference import (
     is_re_compilable as is_re_compilable,
     is_scalar as is_scalar,
 )
-from typing import Callable, Union
 
 ensure_float64 = ...
 ensure_float32 = ...

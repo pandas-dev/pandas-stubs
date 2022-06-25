@@ -1,7 +1,8 @@
-import numpy as np
-from pandas.core.indexes.base import Index as Index
 from typing import Callable, Hashable, List, Optional, Sequence, Union
-from pandas._typing import np_ndarray_bool, DtypeArg as DtypeArg, T1 as T1
+
+import numpy as np
+from pandas._typing import T1 as T1, DtypeArg as DtypeArg, np_ndarray_bool
+from pandas.core.indexes.base import Index as Index
 
 class MultiIndex(Index):
     def __new__(

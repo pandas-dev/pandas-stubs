@@ -1,5 +1,6 @@
 import subprocess
 
+
 def run_build():
     # Update project version
     cmd = ["poetry-dynamic-versioning"]

@@ -1,7 +1,8 @@
+from typing import List, Optional, Tuple, Union
+
 from matplotlib.axes import Axes as PlotAxes
 from pandas.core.base import PandasObject as PandasObject
 from pandas.core.frame import DataFrame
-from typing import Optional, List, Tuple, Union
 
 def hist_series(
     self,

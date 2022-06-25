@@ -1,5 +1,7 @@
 # merged types from pylance
 
+from typing import Optional
+
 from pandas._typing import Dtype as Dtype, Scalar
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
 from pandas.core.dtypes.cast import astype_nansafe as astype_nansafe
@@ -17,7 +19,6 @@ from pandas.core.dtypes.missing import (
     isna as isna,
     na_value_for_dtype as na_value_for_dtype,
 )
-from typing import Optional
 
 class SparseDtype(ExtensionDtype):
     def __init__(

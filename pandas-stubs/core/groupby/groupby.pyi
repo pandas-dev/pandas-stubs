@@ -1,9 +1,11 @@
+from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Union
+
 from pandas._typing import (
+    AxisType as AxisType,
     FrameOrSeries as FrameOrSeries,
     FrameOrSeriesUnion as FrameOrSeriesUnion,
-    Scalar as Scalar,
-    AxisType as AxisType,
     KeysArgType,
+    Scalar as Scalar,
 )
 from pandas.core.base import (
     PandasObject as PandasObject,
@@ -11,11 +13,9 @@ from pandas.core.base import (
 )
 from pandas.core.frame import DataFrame as DataFrame
 from pandas.core.generic import NDFrame as NDFrame
-
 from pandas.core.groupby import ops as ops
 from pandas.core.indexes.api import Index as Index
 from pandas.core.series import Series as Series
-from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Union
 
 class GroupByPlot(PandasObject):
     def __init__(self, groupby) -> None: ...
