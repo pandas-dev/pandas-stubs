@@ -8,7 +8,17 @@ on:
       - pyproject.toml
       - .github/workflows/pipeline.yml
   pull_request:
+    paths:
+      - /**/*.py
+      - /**/*.pyi
+      - pyproject.toml
+      - .github/workflows/pipeline.yml
   workflow_dispatch:
+    paths:
+      - /**/*.py
+      - /**/*.pyi
+      - pyproject.toml
+      - .github/workflows/pipeline.yml
 
 jobs:
   style-check:
