@@ -46,6 +46,17 @@ def test_types_comparison() -> None:
     tsr2: bool = ts > ts2
 
 
+def test_tupes_timestamp_series_comparisons()->None:
+    df =  pd.DataFrame(['2020-01-01','2019-01-01'])
+    tss = pd.to_datetime(df[0], format = '%Y-%m-%d')
+    ts = pd.to_datetime('2019-02-01', format = '%Y-%m-%d')
+    tssr = tss <= ts
+    tssr2 = tss >= ts
+    tssr3 = tss == ts
+    assert_type(tssr,'pd.Series[bool]')
+    assert_type(tssr2,'pd.Series[bool]')
+    assert_type(tssr3,'pd.Series[bool]')
+
 def test_types_pydatetime() -> None:
     ts: pd.Timestamp = pd.Timestamp("2021-03-01T12")
 
