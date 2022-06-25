@@ -1,5 +1,5 @@
 <picture>
-  <img src="https://github.com/BrenoJesusFernandes/brenojesusfernandes/blob/main/img/pandas-dak.svg">
+  <img src="https://github.com/BrenoJesusFernandes/brenojesusfernandes/blob/main/img/pandas.svg">
 </picture>
 
 -----------------
