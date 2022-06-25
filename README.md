@@ -23,21 +23,11 @@
 This is the home for pandas typing stubs supported by the pandas core team.  The stubs are likely incomplete in terms of covering the published API of pandas.
 
 
-## Documentation
-
-The official documentation is hosted on: https://github.com/pandas-dev/pandas-stubs/tree/main/docs
-
-- [How to set up the environment](docs/1%20-%20setup.md)
-- [How to test the project](docs/2%20-%20tests.md)
-- [How to follow the code style](docs/3%20-%20style.md)
-- [Security stuffs](docs/4%20-%20security.md)
-- [How to publish](docs/5%20-%20publish.md)
-
 ## Where to get it
 The source code is currently hosted on GitHub at:
 https://github.com/pandas-dev/pandas-stubs
 
-Binary installers for the latest released version are still not avaible, but the goal is to be available on [Python
+Binary installers for the latest released version are still not avaible, but the future goal is to be on [Python
 Package Index (PyPI)](https://pypi.org/project/pandas-stubs-official) and on [Conda](https://docs.conda.io/en/latest/).
 
 ```sh
@@ -50,17 +40,38 @@ conda install pandas-stubs-official
 pip install pandas-stubs-official
 ```
 
-## Dependencies
-- [Pandas - a fast, powerful, flexible and easy to use open source data analysis and manipulation tool,
-built on top of the Python programming language.](https://pandas.pydata.org/)
+After installed, you already could enjoy the new type annotations.
 
+## Development
 
+You can easily help the project development. If you saw something that does not make sense in our documentation, or you found a new issue. Here how you can contribute:
 
-## Getting Help
-For usage questions, the best place to go to is [StackOverflow](https://stackoverflow.com/questions/tagged/pandas).
-Further, general questions and discussions can also take place on the [pydata mailing list](https://groups.google.com/forum/?fromgroups#!forum/pydata).
+### Set up your environment
 
-All contributions, bug reports, bug fixes, documentation improvements, enhancements, and ideas are welcome.
+- Make sure you have `python ">=3.8", "<3.11"` installed.
+- Install poetry if you still don't have:  `pip install poetry`.
+- Install the project dependencies with: `poetry update -vvv`.
+- Enter the virtual environment: `poetry shell`.
+
+More details on [Setup Docs](https://github.com/pandas-dev/pandas-stubs/blob/main/docs/1%20-%20setup.md)
+
+### Develop a feature
+
+- Run the  local style test to see if the project is following the black and isort style: `poe check_style`. 
+- Run all stubs tests to check if your current project is ok: `poe test_all`.
+- Create a new feature in the stubs files.
+- Write a new test to validate what you've implemented. New PR must include an appropriate test. See `pandas-stubs\tests` for examples.
+
+More details on [Tests Docs](https://github.com/pandas-dev/pandas-stubs/blob/main/docs/2%20-%20tests.md) or [Code Style Docs](https://github.com/pandas-dev/pandas-stubs/blob/main/docs/3%20-%20style.md)
+
+### Submit your Pull Request
+
+- Pull your changes to your forked project.
+- Wait the CI/CD pipeline runs
+- If everything is ok you can finally make your PR, make sure to describe what the new feature is about.
+
+More details on [CI/CD Docs](https://github.com/pandas-dev/pandas-stubs/blob/main/docs/2%20-%20tests.md)
+
 
 ## Background
 
@@ -68,25 +79,6 @@ These stubs were forked from the project <https://github.com/microsoft/python-ty
 
 As both projects move forward, this page will track what the differences are (if any).  There is an expectation that, in the near future, the Microsoft project will start pulling these stubs for inclusion in Visual Studio Code releases.
 
-
-## Contributing to pandas [![Open Source Helpers](https://www.codetriage.com/pandas-dev/pandas/badges/users.svg)](https://www.codetriage.com/pandas-dev/pandas)
-
-All contributions, bug reports, bug fixes, documentation improvements, enhancements, and ideas are welcome.
-
-A detailed overview on how to contribute can be found in the **[contributing guide](https://pandas.pydata.org/docs/dev/development/contributing.html)**.
-
-If you are simply looking to start working with the pandas codebase, navigate to the [GitHub "issues" tab](https://github.com/pandas-dev/pandas/issues) and start looking through interesting issues. There are a number of issues listed under [Docs](https://github.com/pandas-dev/pandas/issues?labels=Docs&sort=updated&state=open) and [good first issue](https://github.com/pandas-dev/pandas/issues?labels=good+first+issue&sort=updated&state=open) where you could start out.
-
-You can also triage issues which may include reproducing bug reports, or asking for vital information such as version numbers or reproduction instructions. If you would like to start triaging issues, one easy way to get started is to [subscribe to pandas on CodeTriage](https://www.codetriage.com/pandas-dev/pandas).
-
-Or maybe through using pandas you have an idea of your own or are looking for something in the documentation and thinking ‘this can be improved’...you can do something about it!
-
-Feel free to ask questions on the [mailing list](https://groups.google.com/forum/?fromgroups#!forum/pydata) or on [Gitter](https://gitter.im/pydata/pandas).
-
-As contributors and maintainers to this project, you are expected to abide by pandas' code of conduct. More information can be found at: [Contributor Code of Conduct](https://github.com/pandas-dev/pandas/blob/main/.github/CODE_OF_CONDUCT.md)
-
-## License
-[BSD 3](LICENSE)
 
 ## Thanks
 

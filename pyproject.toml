@@ -55,7 +55,7 @@ format-jinja-imports = [
 format-jinja = """{{ pandas.__version__ }}.{{ datetime.now().strftime('%y%m%d') }}"""
 
 [tool.poetry-dynamic-versioning.substitution]
-files = ["docs/6 - release.md"]
+files = ["RELEASE.md"]
 patterns = ["(^##\\sRelease\\sNotes\\s*(?::.*?)?\\s*\\s)[^\\s]*(['\\s])"]
 
 [build-system]

@@ -197,7 +197,7 @@ jobs:
 #        with:
 #          tag_name: ${{ steps.vars.outputs.version }}
 #          release_name: Release ${{ steps.vars.outputs.version }}
-#          body_path: "docs/6 - release.md"
+#          body_path: "RELEASE.md"
 #          draft: false
 #          prerelease: true
 #
