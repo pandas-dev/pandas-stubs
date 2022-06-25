@@ -1,7 +1,9 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/BrenoJesusFernandes/brenojesusfernandes/blob/main/img/pandas.svg">
-  <img src="https://pandas.pydata.org/static/img/pandas.svg">
-</picture>
+ <div>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/BrenoJesusFernandes/brenojesusfernandes/blob/main/img/pandas.svg">
+    <img src="https://pandas.pydata.org/static/img/pandas.svg">
+  </picture> <br>
+</div>
 
 -----------------
 
