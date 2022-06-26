@@ -46,7 +46,8 @@ def test_types_comparison() -> None:
     tsr2: bool = ts > ts2
 
 
-def test_tupes_timestamp_series_comparisons()->None:
+def test_types_timestamp_series_comparisons()->None:
+    #GH 27
     df =  pd.DataFrame(['2020-01-01','2019-01-01'])
     tss = pd.to_datetime(df[0], format = '%Y-%m-%d')
     ts = pd.to_datetime('2019-02-01', format = '%Y-%m-%d')
