@@ -22,6 +22,55 @@ The stubs are likely incomplete in terms of covering the published API of pandas
 The stubs are tested with [mypy](http://mypy-lang.org/) and [pyright](https://github.com/microsoft/pyright#readme) and are currently shipped with the Visual Studio Code extension
 [pylance](https://github.com/microsoft/pylance-release#readme).
 
+## Usage
+
+Let’s take this example piece of code in file `round.py`
+
+```python
+import pandas as pd
+
+decimals = pd.DataFrame({'TSLA': 2, 'AMZN': 1})
+prices = pd.DataFrame(data={'date': ['2021-08-13', '2021-08-07', '2021-08-21'],
+                            'TSLA': [720.13, 716.22, 731.22], 'AMZN': [3316.50, 3200.50, 3100.23]})
+rounded_prices = prices.round(decimals=decimals)
+```
+
+Mypy won't see any issues with that, but after installing pandas-stubs and running it again:
+
+```sh
+mypy round.py
+```
+
+we get the following error message:
+
+```text
+round.py:6: error: Argument "decimals" to "round" of "DataFrame" has incompatible type "DataFrame"; expected "Union[int, Dict[Any, Any], Series[Any]]"  [arg-type]
+Found 1 error in 1 file (checked 1 source file)
+```
+
+And, if you use pyright:
+
+```sh
+pyright round.py
+```
+
+you get the following error message:
+
+```text
+ round.py:6:40 - error: Argument of type "DataFrame" cannot be assigned to parameter "decimals" of type "int | Dict[Unknown, Unknown] | Series[Unknown]" in function "round"
+    Type "DataFrame" cannot be assigned to type "int | Dict[Unknown, Unknown] | Series[Unknown]"
+      "DataFrame" is incompatible with "int"
+      "DataFrame" is incompatible with "Dict[Unknown, Unknown]"
+      "DataFrame" is incompatible with "Series[Unknown]" (reportGeneralTypeIssues)
+```
+
+And after confirming with the [docs](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.round.html)
+we can fix the code:
+
+```python
+decimals = pd.Series({'TSLA': 2, 'AMZN': 1})
+```
+
 ## Version Numbering Convention
 
 The version number x.y.z.yymmdd corresponds to a test done with pandas version x.y.z, with the stubs released on the date mm/yy/dd.
