@@ -175,7 +175,7 @@ jobs:
 #          release_name: Release ${{ steps.vars.outputs.version }}
 #          body_path: "RELEASE.md"
 #          draft: false
-#          prerelease: true
+#          prerelease: false
 #
 #      - name: Upload Release Wheel
 #        uses: actions/upload-release-asset@v1
