@@ -1,24 +1,7 @@
 name: 'CI/CD'
 
 on:
-  push:
-    paths:
-      - /**/*.py
-      - /**/*.pyi
-      - pyproject.toml
-      - .github/workflows/pipeline.yml
-  pull_request:
-    paths:
-      - /**/*.py
-      - /**/*.pyi
-      - pyproject.toml
-      - .github/workflows/pipeline.yml
-  workflow_dispatch:
-    paths:
-      - /**/*.py
-      - /**/*.pyi
-      - pyproject.toml
-      - .github/workflows/pipeline.yml
+  [push, pull_request, workflow_dispatch]
 
 jobs:
   style-check:
