@@ -127,13 +127,13 @@ jobs:
 #
 #      - name: Publish PyPi
 #        run: poetry publish --username ${{ secrets.PYPI_TOKEN_NAME }} --password ${{ secrets.PYPI_TOKEN }}
-#
-    publish-github:
+
+  publish-github:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: stub-tests
     if: github.ref == 'refs/heads/main'
-    
+
     steps:
       - uses: actions/checkout@v2
 

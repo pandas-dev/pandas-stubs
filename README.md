@@ -1,5 +1,6 @@
 # pandas-stubs: Public type stubs for pandas
 
+[![.github/workflows/pipeline.yml](https://github.com/BrenoJesusFernandes/pandas-stubs/actions/workflows/pipeline.yml/badge.svg?branch=feature%2Fci-cd)](https://github.com/BrenoJesusFernandes/pandas-stubs/actions/workflows/pipeline.yml)
 [![PyPI Latest Release](https://img.shields.io/pypi/v/pandas-stubs.svg)](https://pypi.org/project/pandas-stubs/)
 [![Conda Latest Release](https://anaconda.org/conda-forge/pandas-stubs/badges/version.svg)](https://anaconda.org/conda-forge/pandas-stubs)
 [![Package Status](https://img.shields.io/pypi/status/pandas-stubs.svg)](https://pypi.org/project/pandas-stubs/)
