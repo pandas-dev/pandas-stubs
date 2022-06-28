@@ -200,6 +200,8 @@ def test_types_drop() -> None:
     res6: pd.DataFrame = df.drop(index=1)
     res7: pd.DataFrame = df.drop(labels=0)
     res8: None = df.drop([0, 0], inplace=True)
+    to_drop: List[str] = ["col1"]
+    res9: pd.DataFrame = df.drop(columns=to_drop)
 
 
 def test_types_dropna() -> None:
