@@ -128,31 +128,7 @@ jobs:
 #      - name: Publish PyPi
 #        run: poetry publish --username ${{ secrets.PYPI_TOKEN_NAME }} --password ${{ secrets.PYPI_TOKEN }}
 #
-
-  publish-conda:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs: stub-tests
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.10"
-
-      - name: Upgrade pip
-        run: python -m pip install --upgrade pip
-
-      - name: Install Poetry
-        run: pip install poetry
-
-      - name: Install project dependencies
-        run: poetry update -vvv
-
-  publish-github:
+    publish-github:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: stub-tests
@@ -212,8 +188,7 @@ jobs:
 #          asset_content_type: application/whl
 #
 #      - name: Upload Release Sdist
-#        uses: actions/upload-release-asset@v1
-#        env:
+#        uses: actions/upload-release-asset@v1#        env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #        with:
 #          upload_url: ${{ steps.create_release.outputs.upload_url }}
