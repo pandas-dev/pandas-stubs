@@ -395,15 +395,15 @@ class DataFrame(NDFrame, OpsMixin):
         fill_axis: AxisType = ...,
         broadcast_axis: Optional[AxisType] = ...,
     ) -> DataFrame: ...
-    def reindex(**kwargs) -> DataFrame: ...
+    def reindex(self, **kwargs) -> DataFrame: ...
     @overload
     def drop(
         self,
-        labels: Hashable | list[Hashable] = ...,
+        labels: Hashable | Sequence[Hashable] = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[Hashable] = ...,
-        columns: Hashable | list[Hashable] = ...,
+        index: Hashable | Sequence[Hashable] = ...,
+        columns: Hashable | Sequence[Hashable] = ...,
         level: Optional[Level] = ...,
         inplace: Literal[True],
         errors: IgnoreRaise = ...,
@@ -411,11 +411,11 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | list[Hashable] = ...,
+        labels: Hashable | Sequence[Hashable] = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[Hashable] = ...,
-        columns: Hashable | list[Hashable] = ...,
+        index: Hashable | Sequence[Hashable] = ...,
+        columns: Hashable | Sequence[Hashable] = ...,
         level: Optional[Level] = ...,
         inplace: Literal[False] = ...,
         errors: IgnoreRaise = ...,
@@ -423,11 +423,11 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | list[Hashable] = ...,
+        labels: Hashable | Sequence[Hashable] = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[Hashable] = ...,
-        columns: Hashable | list[Hashable] = ...,
+        index: Hashable | Sequence[Hashable] = ...,
+        columns: Hashable | Sequence[Hashable] = ...,
         level: Optional[Level] = ...,
         inplace: bool = ...,
         errors: IgnoreRaise = ...,
