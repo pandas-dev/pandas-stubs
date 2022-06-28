@@ -1,0 +1,2 @@
+- [ ] Closes #xxxx (Replace xxxx with the Github issue number)
+- [ ] Tests added: Please use `assert_type()` to assert the type of any return value
