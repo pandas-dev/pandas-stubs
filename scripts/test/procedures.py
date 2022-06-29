@@ -5,7 +5,7 @@ import sys
 
 
 def create_mypy_pkg_file():
-    pkg_path = [x for x in sys.path if x.endswith('site-packages')]
+    pkg_path = [path for path in sys.path if path.endswith('site-packages')]
 
     if not Path(fr'{pkg_path[0]}/my_path.pth').exists():
         with open(fr'{pkg_path[0]}/my_path.pth', 'w') as file:
@@ -13,17 +13,15 @@ def create_mypy_pkg_file():
 
 
 def destroy_mypy_pkg_file():
-    pkg_path = [x for x in sys.path if x.endswith('site-packages')]
+    pkg_path = [path for path in sys.path if path.endswith('site-packages')]
 
     if Path(fr'{pkg_path[0]}/my_path.pth').exists():
         Path(fr'{pkg_path[0]}/my_path.pth').unlink()
 
 
 def run_mypy_src():
-    create_mypy_pkg_file()
     cmd = ["mypy", "pandas-stubs", "tests", "--no-incremental"]
     subprocess.run(cmd, check=True)
-    destroy_mypy_pkg_file()
 
 
 def run_pyright_src():
@@ -47,25 +45,13 @@ def install_dist():
     subprocess.run(cmd, check=True)
 
 
-def add_last_changes():
-    cmd = ["git", "add", "."]
-    subprocess.run(cmd, check=True)
-
-
-def commit_last_changes():
-    cmd = ["git", "commit", "-am", "\"temp commit\""]
-    subprocess.run(cmd, check=True)
-
-
 def remove_src():
     shutil.rmtree(r"pandas-stubs")
 
 
 def run_mypy_dist():
-    create_mypy_pkg_file()
     cmd = ["mypy", "tests", "--no-incremental"]
     subprocess.run(cmd, check=True)
-    destroy_mypy_pkg_file()
 
 
 def run_pyright_dist():
@@ -76,18 +62,6 @@ def run_pyright_dist():
 def uninstall_dist():
     cmd = ["pip", "uninstall", "-y", "pandas-stubs"]
     subprocess.run(cmd, check=True)
-
-
-def restore_last_changes():
-    cmd = ["git", "show", "-s", "--format=%s"]
-    process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-    last_commit_name = process.communicate()[0]
-
-    if last_commit_name == b'"temp commit"\n':
-        cmd = ["git", "reset", "--soft", "HEAD~1"]
-        subprocess.run(cmd, check=True)
-    else:
-        print("There is not temp commit to restore.")
 
 
 def restore_src():

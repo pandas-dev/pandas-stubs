@@ -1,6 +1,7 @@
 from scripts._job import Step, run_job
 from scripts.test import procedures
 
+
 def test_src(profile: str, clean_cache: bool = False):
     steps = []
     if clean_cache:
@@ -10,17 +11,20 @@ def test_src(profile: str, clean_cache: bool = False):
         ])
 
     # Possible steps
-    mypy_step = Step(name="Run Mypy Against Source Code", run=procedures.run_mypy_src)
+    create_mypy_pkg_step = Step(name="Create mypy package file", run=procedures.create_mypy_pkg_file)
+    mypy_step = Step(name="Run Mypy Against Source Code", run=procedures.run_mypy_src,
+                     rollback=procedures.destroy_mypy_pkg_file)
+    destroy_mypy_pkg_step = Step(name="Destroy mypy package file", run=procedures.destroy_mypy_pkg_file)
     pyright_step = Step(name="Run Pyright Against Source Code", run=procedures.run_pyright_src)
     pytest_step = Step(name="Run Pytest Against Source Code", run=procedures.run_pytest_src)
 
     # Defining which test is going to run according to a profile
     if profile in (None, "", "default"):
-        steps.extend([mypy_step, pyright_step])
+        steps.extend([create_mypy_pkg_step, mypy_step, destroy_mypy_pkg_step, pyright_step])
     elif profile == "pytest":
         steps.extend([pytest_step])
     elif profile == "full":
-        steps.extend([mypy_step, pyright_step, pytest_step])
+        steps.extend([create_mypy_pkg_step, mypy_step, destroy_mypy_pkg_step, pyright_step, pytest_step])
     else:
         raise Exception("Profile not found!")
 
@@ -57,7 +61,9 @@ def test_all(clean_cache: bool = False):
         ])
 
     steps.extend([
+        Step(name="Create mypy package file", run=procedures.create_mypy_pkg_file),
         Step(name="Run Mypy Against Source Code", run=procedures.run_mypy_src),
+        Step(name="Destroy mypy package file", run=procedures.destroy_mypy_pkg_file),
         Step(name="Run Pyright Against Source Code", run=procedures.run_pyright_src),
         Step(name="Run Pytest Against Source Code", run=procedures.run_pytest_src),
         Step(name="Build Dist", run=procedures.build_dist),
