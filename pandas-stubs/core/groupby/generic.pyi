@@ -1,20 +1,4 @@
-from matplotlib.axes import Axes as PlotAxes, SubplotBase as AxesSubplot
-import numpy as np
 import sys
-from pandas._typing import (
-    FrameOrSeries as FrameOrSeries,
-    AxisType,
-    Dtype,
-    Level,
-    FuncType,
-    S1,
-)
-from pandas.core.frame import DataFrame as DataFrame
-from pandas.core.groupby.groupby import (
-    GroupBy as GroupBy,
-)  # , get_groupby as get_groupby
-from pandas.core.groupby.grouper import Grouper as Grouper
-from pandas.core.series import Series as Series
 from typing import (
     Any,
     Callable,
@@ -29,6 +13,23 @@ from typing import (
     Union,
     overload,
 )
+
+import numpy as np
+from matplotlib.axes import Axes as PlotAxes, SubplotBase as AxesSubplot
+from pandas._typing import (
+    S1,
+    AxisType,
+    Dtype,
+    FrameOrSeries as FrameOrSeries,
+    FuncType,
+    Level,
+)
+from pandas.core.frame import DataFrame as DataFrame
+from pandas.core.groupby.groupby import (  # , get_groupby as get_groupby
+    GroupBy as GroupBy,
+)
+from pandas.core.groupby.grouper import Grouper as Grouper
+from pandas.core.series import Series as Series
 
 if sys.version_info >= (3, 8):
     from typing import Literal

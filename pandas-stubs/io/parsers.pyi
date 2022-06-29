@@ -1,17 +1,7 @@
 from __future__ import annotations
-from collections import abc
+
 import sys
-from pandas._typing import (
-    FilePath as FilePath,
-    FilePathOrBuffer as FilePathOrBuffer,
-    Scalar as Scalar,
-    ReadBuffer as ReadBuffer,
-    AnyStr_cov as AnyStr_cov,
-    DtypeArg as DtypeArg,
-    CompressionOptions as CompressionOptions,
-    StorageOptions as StorageOptions,
-)
-from pandas.core.frame import DataFrame as DataFrame
+from collections import abc
 from typing import (
     Any,
     Callable,
@@ -19,11 +9,23 @@ from typing import (
     List,
     Mapping,
     Optional,
+    Protocol,
     Sequence,
     Union,
     overload,
-    Protocol,
 )
+
+from pandas._typing import (
+    AnyStr_cov as AnyStr_cov,
+    CompressionOptions as CompressionOptions,
+    DtypeArg as DtypeArg,
+    FilePath as FilePath,
+    FilePathOrBuffer as FilePathOrBuffer,
+    ReadBuffer as ReadBuffer,
+    Scalar as Scalar,
+    StorageOptions as StorageOptions,
+)
+from pandas.core.frame import DataFrame as DataFrame
 
 if sys.version_info >= (3, 8):
     from typing import Literal

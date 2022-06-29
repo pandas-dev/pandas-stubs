@@ -1,9 +1,12 @@
 from __future__ import annotations
+
+from typing import Type
+
 import numpy as np
-from .masked import BaseMaskedArray as BaseMaskedArray
 from pandas._typing import Scalar as Scalar
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
-from typing import Type
+
+from .masked import BaseMaskedArray as BaseMaskedArray
 
 class BooleanDtype(ExtensionDtype):
     name: str = ...

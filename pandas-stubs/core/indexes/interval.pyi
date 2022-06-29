@@ -1,10 +1,11 @@
+from typing import List, Optional, Tuple, Union
+
 import numpy as np
-from pandas._libs.interval import IntervalMixin as IntervalMixin, Interval as Interval
+from pandas._libs.interval import Interval as Interval, IntervalMixin as IntervalMixin
 from pandas._typing import AnyArrayLike as AnyArrayLike, DtypeArg as DtypeArg
 from pandas.core.dtypes.generic import ABCSeries as ABCSeries
 from pandas.core.indexes.base import Index as Index
 from pandas.core.indexes.extension import ExtensionIndex as ExtensionIndex
-from typing import Optional, Tuple, Union, List
 
 class SetopCheck:
     op_name = ...

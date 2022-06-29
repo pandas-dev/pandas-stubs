@@ -1,22 +1,9 @@
 from __future__ import annotations
 
-from typing import (
-    Any,
-    Generic,
-    TypeVar,
-    Union,
-    overload,
-)
+from typing import Any, Generic, TypeVar, Union, overload
 
 import numpy as np
-
-from pandas._typing import npt
-
-from pandas._typing import (
-    IntervalClosedType,
-    Timedelta,
-    Timestamp,
-)
+from pandas._typing import IntervalClosedType, Timedelta, Timestamp, npt
 
 VALID_CLOSED: frozenset[str]
 

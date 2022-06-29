@@ -1,3 +1,5 @@
+from typing import List, Literal, Optional, Sequence, Union, overload
+
 import numpy as np
 from pandas._typing import (
     ArrayLike as ArrayLike,
@@ -8,11 +10,12 @@ from pandas._typing import (
 )
 from pandas.core.accessor import PandasDelegate as PandasDelegate
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
-from pandas.core.base import NoNewAttributesMixin as NoNewAttributesMixin
-from pandas.core.base import PandasObject as PandasObject
+from pandas.core.base import (
+    NoNewAttributesMixin as NoNewAttributesMixin,
+    PandasObject as PandasObject,
+)
 from pandas.core.dtypes.dtypes import CategoricalDtype as CategoricalDtype
 from pandas.core.indexes.base import Index
-from typing import List, Literal, Optional, Sequence, Union, overload
 
 def contains(cat, key, container): ...
 

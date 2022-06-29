@@ -1,22 +1,40 @@
-import numpy as np
 from typing import Dict, Optional, Tuple, Type, Union
+
+import numpy as np
 
 get_window_bounds_doc: str
 
 class BaseIndexer:
     index_array = ...
     window_size = ...
-    def __init__(self, index_array: Optional[np.ndarray]=..., window_size: int=..., **kwargs) -> None: ...
-    def get_window_bounds(self, num_values: int=..., min_periods: Optional[int]=...,
-                          center: Optional[bool]=..., closed: Optional[str]=...) -> Tuple[np.ndarray, np.ndarray]: ...
+    def __init__(
+        self, index_array: Optional[np.ndarray] = ..., window_size: int = ..., **kwargs
+    ) -> None: ...
+    def get_window_bounds(
+        self,
+        num_values: int = ...,
+        min_periods: Optional[int] = ...,
+        center: Optional[bool] = ...,
+        closed: Optional[str] = ...,
+    ) -> Tuple[np.ndarray, np.ndarray]: ...
 
 class FixedWindowIndexer(BaseIndexer):
-    def get_window_bounds(self, num_values: int=..., min_periods: Optional[int]=...,
-                          center: Optional[bool]=..., closed: Optional[str]=...) -> Tuple[np.ndarray, np.ndarray]: ...
+    def get_window_bounds(
+        self,
+        num_values: int = ...,
+        min_periods: Optional[int] = ...,
+        center: Optional[bool] = ...,
+        closed: Optional[str] = ...,
+    ) -> Tuple[np.ndarray, np.ndarray]: ...
 
 class VariableWindowIndexer(BaseIndexer):
-    def get_window_bounds(self, num_values: int=..., min_periods: Optional[int]=...,
-                          center: Optional[bool]=..., closed: Optional[str]=...) -> Tuple[np.ndarray, np.ndarray]: ...
+    def get_window_bounds(
+        self,
+        num_values: int = ...,
+        min_periods: Optional[int] = ...,
+        center: Optional[bool] = ...,
+        closed: Optional[str] = ...,
+    ) -> Tuple[np.ndarray, np.ndarray]: ...
 
 class VariableOffsetWindowIndexer(BaseIndexer):
     def __init__(
@@ -27,7 +45,6 @@ class VariableOffsetWindowIndexer(BaseIndexer):
         offset=...,
         **kwargs,
     ) -> None: ...
-
     def get_window_bounds(
         self,
         num_values: int = ...,
@@ -37,9 +54,13 @@ class VariableOffsetWindowIndexer(BaseIndexer):
     ) -> Tuple[np.ndarray, np.ndarray]: ...
 
 class ExpandingIndexer(BaseIndexer):
-    def get_window_bounds(self, num_values: int=..., min_periods: Optional[int]=...,
-                          center: Optional[bool]=..., closed: Optional[str]=...) -> Tuple[np.ndarray, np.ndarray]: ...
-
+    def get_window_bounds(
+        self,
+        num_values: int = ...,
+        min_periods: Optional[int] = ...,
+        center: Optional[bool] = ...,
+        closed: Optional[str] = ...,
+    ) -> Tuple[np.ndarray, np.ndarray]: ...
 
 class FixedForwardWindowIndexer(BaseIndexer):
     def get_window_bounds(
@@ -59,7 +80,6 @@ class GroupbyRollingIndexer(BaseIndexer):
         rolling_indexer: Union[Type[FixedWindowIndexer], Type[VariableWindowIndexer]],
         **kwargs,
     ) -> None: ...
-
     def get_window_bounds(
         self,
         num_values: int = ...,

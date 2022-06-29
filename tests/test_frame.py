@@ -1,17 +1,16 @@
 # flake8: noqa: F841
-from datetime import date, datetime
 import io
 import tempfile
+from datetime import date, datetime
 from pathlib import Path
-from typing import List, Tuple, Iterable, Any, Union
+from typing import Any, Iterable, List, Tuple, Union
 from typing_extensions import assert_type
 
+import numpy as np
 import pandas as pd
+import pytest
 from pandas._testing import getSeriesData
 from pandas.io.parsers import TextFileReader
-import numpy as np
-
-import pytest
 
 
 def test_types_init() -> None:

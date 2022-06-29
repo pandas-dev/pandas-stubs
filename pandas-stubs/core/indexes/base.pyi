@@ -1,28 +1,3 @@
-import numpy as np
-from pandas._typing import (
-    Dtype as Dtype,
-    DtypeArg as DtypeArg,
-    Label as Label,
-    Level as Level,
-    Scalar as Scalar,
-    T1 as T1,
-    np_ndarray_str,
-    np_ndarray_int64,
-    np_ndarray_bool,
-)
-
-from pandas._typing import (
-    Series as Series,
-    DataFrame as DataFrame,
-    DtypeObj as DtypeObj,
-)
-
-from pandas.core.arrays import ExtensionArray
-
-from pandas.core.base import IndexOpsMixin, PandasObject
-
-from pandas.core.strings import StringMethods
-
 from typing import (
     Callable,
     Dict,
@@ -37,6 +12,25 @@ from typing import (
     Union,
     overload,
 )
+
+import numpy as np
+from pandas._typing import (
+    T1 as T1,
+    DataFrame as DataFrame,
+    Dtype as Dtype,
+    DtypeArg as DtypeArg,
+    DtypeObj as DtypeObj,
+    Label as Label,
+    Level as Level,
+    Scalar as Scalar,
+    Series as Series,
+    np_ndarray_bool,
+    np_ndarray_int64,
+    np_ndarray_str,
+)
+from pandas.core.arrays import ExtensionArray
+from pandas.core.base import IndexOpsMixin, PandasObject
+from pandas.core.strings import StringMethods
 
 class InvalidIndexError(Exception): ...
 

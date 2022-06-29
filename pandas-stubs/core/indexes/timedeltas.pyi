@@ -1,13 +1,14 @@
 from typing import Union, overload
+
 from pandas._libs import Timedelta as Timedelta
+from pandas._typing import num
 from pandas.core.arrays import datetimelike as dtl
 from pandas.core.indexes.datetimelike import (
     DatetimeIndexOpsMixin as DatetimeIndexOpsMixin,
-    DatetimeTimedeltaMixin as DatetimeTimedeltaMixin,
     DatetimelikeDelegateMixin as DatetimelikeDelegateMixin,
+    DatetimeTimedeltaMixin as DatetimeTimedeltaMixin,
 )
 from pandas.core.indexes.datetimes import DatetimeIndex as DatetimeIndex
-from pandas._typing import num
 
 class TimedeltaDelegateMixin(DatetimelikeDelegateMixin): ...
 

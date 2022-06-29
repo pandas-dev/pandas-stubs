@@ -1,13 +1,6 @@
-from pandas._typing import DataFrame as DataFrame, Series as Series, Axis as Axis
-from typing import (
-    Hashable,
-    Iterable,
-    Mapping,
-    Union,
-    overload,
-    Literal,
-    TypeVar,
-)
+from typing import Hashable, Iterable, Literal, Mapping, TypeVar, Union, overload
+
+from pandas._typing import Axis as Axis, DataFrame as DataFrame, Series as Series
 
 HashableT = TypeVar("HashableT", bound=Hashable)
 
