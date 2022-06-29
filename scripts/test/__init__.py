@@ -39,13 +39,10 @@ def test_dist(clean_cache: bool = False):
     steps.extend([
         Step(name="Build Dist", run=procedures.build_dist),
         Step(name="Install Dist", run=procedures.install_dist, rollback=procedures.uninstall_dist),
-        Step(name="Add Last changes for a while", run=procedures.add_last_changes),
-        Step(name="Commit Last changes for a while", run=procedures.commit_last_changes),
-        Step(name="Remove Source Code", run=procedures.remove_src, rollback=procedures.restore_src),
+        Step(name="Rename Source Code Folder", run=procedures.rename_src, rollback=procedures.restore_src),
         Step(name="Run MyPy Against Dist", run=procedures.run_mypy_dist),
         Step(name="Run Pyright Against Dist", run=procedures.run_pyright_dist),
         Step(name="Uninstall Dist", run=procedures.uninstall_dist),
-        Step(name="Restore last changes", run=procedures.restore_last_changes),
         Step(name="Restore Source Code", run=procedures.restore_src)
     ])
 
@@ -66,13 +63,10 @@ def test_all(clean_cache: bool = False):
         Step(name="Run Pytest Against Source Code", run=procedures.run_pytest_src),
         Step(name="Build Dist", run=procedures.build_dist),
         Step(name="Install Dist", run=procedures.install_dist, rollback=procedures.uninstall_dist),
-        Step(name="Add Last changes for a while", run=procedures.add_last_changes),
-        Step(name="Commit Last changes for a while", run=procedures.commit_last_changes),
-        Step(name="Remove Source Code", run=procedures.remove_src, rollback=procedures.restore_src),
+        Step(name="Rename Source Code Folder", run=procedures.rename_src, rollback=procedures.restore_src),
         Step(name="Run MyPy Against Dist", run=procedures.run_mypy_dist),
         Step(name="Run Pyright Against Dist", run=procedures.run_pyright_dist),
         Step(name="Uninstall Dist", run=procedures.uninstall_dist),
-        Step(name="Restore last changes", run=procedures.restore_last_changes),
         Step(name="Restore Source Code", run=procedures.restore_src)
     ])
 

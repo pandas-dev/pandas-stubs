@@ -29,18 +29,9 @@ def install_dist():
     subprocess.run(cmd, check=True)
 
 
-def add_last_changes():
-    cmd = ["git", "add", "."]
-    subprocess.run(cmd, check=True)
-
-
-def commit_last_changes():
-    cmd = ["git", "commit", "-am", "\"temp commit\""]
-    subprocess.run(cmd, check=True)
-
-
-def remove_src():
-    shutil.rmtree(r"pandas-stubs")
+def rename_src():
+    if Path(r"pandas-stubs").exists():
+        Path(r"pandas-stubs").rename('_pandas-stubs')
 
 
 def run_mypy_dist():
@@ -58,21 +49,9 @@ def uninstall_dist():
     subprocess.run(cmd, check=True)
 
 
-def restore_last_changes():
-    cmd = ["git", "show", "-s", "--format=%s"]
-    process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-    last_commit_name = process.communicate()[0]
-
-    if last_commit_name == b'"temp commit"\n':
-        cmd = ["git", "reset", "--soft", "HEAD~1"]
-        subprocess.run(cmd, check=True)
-    else:
-        print("There is not temp commit to restore.")
-
-
 def restore_src():
-    cmd = ["git", "checkout", "HEAD", "pandas-stubs"]
-    subprocess.run(cmd, check=True)
+    if Path(r"_pandas-stubs").exists():
+        Path(r"_pandas-stubs").rename('pandas-stubs')
 
 
 def clean_mypy_cache():
@@ -94,7 +73,3 @@ def create_new_venv():
 
     cmd = ["poetry", "shell"]
     subprocess.run(cmd, check=True)
-
-
-if __name__ == '__main__':
-    restore_last_changes()
