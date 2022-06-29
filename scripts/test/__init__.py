@@ -1,6 +1,7 @@
 from scripts._job import Step, run_job
 from scripts.test import procedures
 
+
 def test_src(profile: str, clean_cache: bool = False):
     steps = []
     if clean_cache:
@@ -38,10 +39,12 @@ def test_dist(clean_cache: bool = False):
     steps.extend([
         Step(name="Build Dist", run=procedures.build_dist),
         Step(name="Install Dist", run=procedures.install_dist, rollback=procedures.uninstall_dist),
+        Step(name="Commit Last changes for a while", run=procedures.commit_last_changes),
         Step(name="Remove Source Code", run=procedures.remove_src, rollback=procedures.restore_src),
         Step(name="Run MyPy Against Dist", run=procedures.run_mypy_dist),
         Step(name="Run Pyright Against Dist", run=procedures.run_pyright_dist),
         Step(name="Uninstall Dist", run=procedures.uninstall_dist),
+        Step(name="Restore Last changes", run=procedures.restore_last_changes),
         Step(name="Restore Source Code", run=procedures.restore_src)
     ])
 

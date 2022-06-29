@@ -2,8 +2,6 @@ import shutil
 import subprocess
 from pathlib import Path
 
-from scripts._job import Step, run_job
-
 
 def run_mypy_src():
     cmd = ["mypy", "pandas-stubs", "tests", "--no-incremental"]
@@ -31,6 +29,11 @@ def install_dist():
     subprocess.run(cmd, check=True)
 
 
+def commit_last_changes():
+    cmd = ["git", "commit", "-am", "\"temp commit\""]
+    subprocess.run(cmd, check=True)
+
+
 def remove_src():
     shutil.rmtree(r"pandas-stubs")
 
@@ -44,8 +47,14 @@ def run_pyright_dist():
     cmd = ["pyright", "tests"]
     subprocess.run(cmd, check=True)
 
+
 def uninstall_dist():
     cmd = ["pip", "uninstall", "-y", "pandas-stubs"]
+    subprocess.run(cmd, check=True)
+
+
+def restore_last_changes():
+    cmd = ["git", "reset", "--soft", "HEAD~1"]
     subprocess.run(cmd, check=True)
 
 
