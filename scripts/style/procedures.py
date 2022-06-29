@@ -1,20 +1,21 @@
-from scripts._job import Step, run_job
-from scripts.style import procedures
+import subprocess
 
 
-def check_style():
-    steps = [
-        Step(name="Check Black Style Code", run=procedures.run_black_check),
-        Step(name="Check Isort Style Code", run=procedures.run_isort_check),
-    ]
-
-    run_job(steps)
+def run_black_check():
+    cmd = ["black", "--check", "pandas-stubs", "tests", "scripts"]
+    subprocess.run(cmd, check=True)
 
 
-def format_style():
-    steps = [
-        Step(name="Format Black Style Code", run=procedures.run_format_black),
-        Step(name="Format Isort Style Code", run=procedures.run_format_isort),
-    ]
+def run_isort_check():
+    cmd = ["isort", "--check-only", "pandas-stubs", "tests", "scripts"]
+    subprocess.run(cmd, check=True)
 
-    run_job(steps)
+
+def run_format_black():
+    cmd = ["black", "pandas-stubs", "tests", "scripts"]
+    subprocess.run(cmd, check=True)
+
+
+def run_format_isort():
+    cmd = ["isort", "pandas-stubs", "tests", "scripts"]
+    subprocess.run(cmd, check=True)
