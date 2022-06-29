@@ -109,9 +109,9 @@ script = "scripts.test.procedures:build_dist"
 help = "CI Test | Install distribuition"
 script = "scripts.test.procedures:install_dist"
 
-[tool.poe.tasks.remove_src]
-help = "CI Test | Remove source code"
-script = "scripts.test.procedures:remove_src"
+[tool.poe.tasks.rename_src]
+help = "CI Test | Rename source code"
+script = "scripts.test.procedures:rename_src"
 
 [tool.poe.tasks.run_mypy_dist]
 help = "CI Test | Run mypy against distribuition"

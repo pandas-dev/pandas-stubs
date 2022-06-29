@@ -52,8 +52,8 @@ jobs:
     - name: Install Distribution
       run: poetry run poe install_dist
 
-    - name: Remove Source Code
-      run: poetry run poe remove_src
+    - name: Rename Source Code
+      run: poetry run poe rename_src
 
     - name: Run Pyright Against Distribution
       run: poetry run poe run_pyright_dist
