@@ -1,7 +1,12 @@
-from typing import Callable, Union
+from typing import (
+    Callable,
+    Union,
+)
 
 import numpy as np
+
 from pandas._typing import ArrayLike as ArrayLike
+
 from pandas.core.dtypes.inference import (
     is_array_like as is_array_like,
     is_bool as is_bool,

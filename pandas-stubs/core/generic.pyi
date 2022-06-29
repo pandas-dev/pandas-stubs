@@ -16,7 +16,12 @@ from typing import (
 )
 
 import numpy as np
+from pandas.core.base import PandasObject as PandasObject
+from pandas.core.indexes.base import Index as Index
 import pandas.core.indexing as indexing
+from pandas.core.internals import BlockManager as BlockManager
+from pandas.core.resample import Resampler
+
 from pandas._typing import (
     S1 as S1,
     ArrayLike as ArrayLike,
@@ -37,10 +42,6 @@ from pandas._typing import (
     Timedelta as Timedelta,
     Timestamp as Timestamp,
 )
-from pandas.core.base import PandasObject as PandasObject
-from pandas.core.indexes.base import Index as Index
-from pandas.core.internals import BlockManager as BlockManager
-from pandas.core.resample import Resampler
 
 if sys.version_info >= (3, 8):
     from typing import Literal

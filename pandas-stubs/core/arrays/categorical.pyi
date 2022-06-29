@@ -1,6 +1,21 @@
-from typing import List, Literal, Optional, Sequence, Union, overload
+from typing import (
+    List,
+    Literal,
+    Optional,
+    Sequence,
+    Union,
+    overload,
+)
 
 import numpy as np
+from pandas.core.accessor import PandasDelegate as PandasDelegate
+from pandas.core.arrays.base import ExtensionArray as ExtensionArray
+from pandas.core.base import (
+    NoNewAttributesMixin as NoNewAttributesMixin,
+    PandasObject as PandasObject,
+)
+from pandas.core.indexes.base import Index
+
 from pandas._typing import (
     ArrayLike as ArrayLike,
     Dtype as Dtype,
@@ -8,14 +23,8 @@ from pandas._typing import (
     Scalar as Scalar,
     np_ndarray_bool,
 )
-from pandas.core.accessor import PandasDelegate as PandasDelegate
-from pandas.core.arrays.base import ExtensionArray as ExtensionArray
-from pandas.core.base import (
-    NoNewAttributesMixin as NoNewAttributesMixin,
-    PandasObject as PandasObject,
-)
+
 from pandas.core.dtypes.dtypes import CategoricalDtype as CategoricalDtype
-from pandas.core.indexes.base import Index
 
 def contains(cat, key, container): ...
 

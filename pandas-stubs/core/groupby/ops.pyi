@@ -1,10 +1,16 @@
-from typing import List, Optional, Sequence, Tuple
+from typing import (
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+)
 
 import numpy as np
-from pandas._typing import FrameOrSeriesUnion as FrameOrSeriesUnion
 from pandas.core.groupby import grouper as grouper
 from pandas.core.indexes.api import Index as Index
 from pandas.core.series import Series as Series
+
+from pandas._typing import FrameOrSeriesUnion as FrameOrSeriesUnion
 
 class BaseGrouper:
     axis = ...

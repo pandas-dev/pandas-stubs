@@ -1,14 +1,19 @@
-import tempfile
 from pathlib import Path
-from typing import TYPE_CHECKING, List, Union
-from typing_extensions import assert_type
+import tempfile
+from typing import (
+    TYPE_CHECKING,
+    List,
+    Union,
+)
 
 import numpy as np
 import pandas as pd
-import pytest
-from pandas._typing import Scalar
 from pandas.api.extensions import ExtensionArray
 from pandas.core.window import ExponentialMovingWindow
+import pytest
+from typing_extensions import assert_type
+
+from pandas._typing import Scalar
 
 
 def test_types_init() -> None:

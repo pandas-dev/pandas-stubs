@@ -1,4 +1,7 @@
-from datetime import date, time
+from datetime import (
+    date,
+    time,
+)
 from typing import (
     Any,
     Callable,
@@ -17,8 +20,24 @@ from typing import (
     overload,
 )
 
+from matplotlib.axes import (
+    Axes as PlotAxes,
+    SubplotBase as SubplotBase,
+)
 import numpy as np
-from matplotlib.axes import Axes as PlotAxes, SubplotBase as SubplotBase
+from pandas.core.arrays.base import ExtensionArray
+from pandas.core.groupby.generic import SeriesGroupBy
+from pandas.core.indexes.base import Index
+from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.indexes.timedeltas import TimedeltaIndex
+from pandas.core.resample import Resampler
+from pandas.core.strings import StringMethods
+from pandas.core.window import ExponentialMovingWindow
+from pandas.core.window.rolling import (
+    Rolling,
+    Window,
+)
+
 from pandas._typing import (
     S1 as S1,
     ArrayLike as ArrayLike,
@@ -39,21 +58,15 @@ from pandas._typing import (
     Timestamp as Timestamp,
     num as num,
 )
-from pandas.core.arrays.base import ExtensionArray
-from pandas.core.groupby.generic import SeriesGroupBy
-from pandas.core.indexes.base import Index
-from pandas.core.indexes.datetimes import DatetimeIndex
-from pandas.core.indexes.timedeltas import TimedeltaIndex
-from pandas.core.resample import Resampler
-from pandas.core.strings import StringMethods
-from pandas.core.window import ExponentialMovingWindow
-from pandas.core.window.rolling import Rolling, Window
 
 from .base import IndexOpsMixin
 from .frame import DataFrame
 from .generic import NDFrame
 from .indexes.multi import MultiIndex
-from .indexing import _iLocIndexer, _LocIndexer
+from .indexing import (
+    _iLocIndexer,
+    _LocIndexer,
+)
 
 _bool = bool
 _str = str

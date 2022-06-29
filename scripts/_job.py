@@ -1,8 +1,13 @@
-import time
 from collections import deque
 from dataclasses import dataclass
 from subprocess import CalledProcessError
-from typing import Callable, Deque, List, Optional
+import time
+from typing import (
+    Callable,
+    Deque,
+    List,
+    Optional,
+)
 
 from loguru import logger
 

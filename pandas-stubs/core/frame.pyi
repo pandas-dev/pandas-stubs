@@ -21,9 +21,26 @@ from typing import (
     overload,
 )
 
-import numpy as np
-import numpy as _np
 from matplotlib.axes import Axes as PlotAxes
+import numpy as _np
+import numpy as np
+from pandas.core.arraylike import OpsMixin
+from pandas.core.generic import NDFrame as NDFrame
+from pandas.core.groupby.generic import DataFrameGroupBy as DataFrameGroupBy
+from pandas.core.groupby.grouper import Grouper
+from pandas.core.indexes.base import Index as Index
+from pandas.core.indexes.multi import MultiIndex as MultiIndex
+from pandas.core.indexing import (
+    _iLocIndexer,
+    _LocIndexer,
+)
+from pandas.core.resample import Resampler
+from pandas.core.series import Series as Series
+from pandas.core.window.rolling import (
+    Rolling,
+    Window,
+)
+
 from pandas._typing import (
     S1,
     ArrayLike as ArrayLike,
@@ -51,17 +68,11 @@ from pandas._typing import (
     np_ndarray_str,
     num,
 )
-from pandas.core.arraylike import OpsMixin
-from pandas.core.generic import NDFrame as NDFrame
-from pandas.core.groupby.generic import DataFrameGroupBy as DataFrameGroupBy
-from pandas.core.groupby.grouper import Grouper
-from pandas.core.indexes.base import Index as Index
-from pandas.core.indexes.multi import MultiIndex as MultiIndex
-from pandas.core.indexing import _iLocIndexer, _LocIndexer
-from pandas.core.resample import Resampler
-from pandas.core.series import Series as Series
-from pandas.core.window.rolling import Rolling, Window
-from pandas.io.formats import console as console, format as fmt
+
+from pandas.io.formats import (
+    console as console,
+    format as fmt,
+)
 from pandas.io.formats.style import Styler as Styler
 from pandas.plotting import PlotAccessor
 

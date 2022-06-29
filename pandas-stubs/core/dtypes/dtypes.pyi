@@ -1,4 +1,13 @@
-from typing import Any, Optional, Sequence, Tuple, Type, Union
+from typing import (
+    Any,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    Union,
+)
+
+from pandas.core.indexes.base import Index
 
 from pandas._libs.tslibs import (  # , timezones as timezones
     NaT as NaT,
@@ -6,7 +15,6 @@ from pandas._libs.tslibs import (  # , timezones as timezones
     Timestamp as Timestamp,
 )
 from pandas._typing import Ordered as Ordered
-from pandas.core.indexes.base import Index
 
 from .base import ExtensionDtype as ExtensionDtype
 

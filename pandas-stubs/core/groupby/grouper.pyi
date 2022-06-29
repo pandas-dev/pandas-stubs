@@ -1,9 +1,16 @@
-from typing import Dict, Hashable, List, Optional, Tuple
+from typing import (
+    Dict,
+    Hashable,
+    List,
+    Optional,
+    Tuple,
+)
 
 import numpy as np
-from pandas._typing import FrameOrSeries as FrameOrSeries
 from pandas.core.groupby import ops as ops
 from pandas.core.indexes.api import Index as Index
+
+from pandas._typing import FrameOrSeries as FrameOrSeries
 
 class Grouper:
     def __new__(cls, *args, **kwargs): ...

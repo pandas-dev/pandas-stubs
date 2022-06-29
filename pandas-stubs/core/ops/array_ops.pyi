@@ -1,6 +1,10 @@
-from typing import Optional, Union
+from typing import (
+    Optional,
+    Union,
+)
 
 import numpy as np
+
 from pandas.core.dtypes.generic import ABCExtensionArray as ABCExtensionArray
 
 def comp_method_OBJECT_ARRAY(op, x, y): ...

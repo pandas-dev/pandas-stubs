@@ -1,6 +1,7 @@
 from typing import Type
 
 from pandas.core.arrays import PandasArray as PandasArray
+
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
 
 class StringDtype(ExtensionDtype):

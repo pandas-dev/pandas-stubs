@@ -3,9 +3,18 @@ from __future__ import annotations
 from typing import Optional
 
 import numpy as np
-from pandas._libs.interval import Interval as Interval, IntervalMixin as IntervalMixin
-from pandas._typing import Axis, Index as Index, Scalar
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
+
+from pandas._libs.interval import (
+    Interval as Interval,
+    IntervalMixin as IntervalMixin,
+)
+from pandas._typing import (
+    Axis,
+    Index as Index,
+    Scalar,
+)
+
 from pandas.core.dtypes.generic import ABCExtensionArray as ABCExtensionArray
 
 class IntervalArray(IntervalMixin, ExtensionArray):

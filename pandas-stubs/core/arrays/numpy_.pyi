@@ -6,6 +6,7 @@ from pandas.core.arrays.base import (
     ExtensionArray as ExtensionArray,
     ExtensionOpsMixin as ExtensionOpsMixin,
 )
+
 from pandas.core.dtypes.dtypes import ExtensionDtype as ExtensionDtype
 
 class PandasDtype(ExtensionDtype):

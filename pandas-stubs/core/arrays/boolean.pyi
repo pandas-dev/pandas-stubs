@@ -3,7 +3,9 @@ from __future__ import annotations
 from typing import Type
 
 import numpy as np
+
 from pandas._typing import Scalar as Scalar
+
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
 
 from .masked import BaseMaskedArray as BaseMaskedArray

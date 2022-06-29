@@ -1,4 +1,7 @@
-from typing import Iterable, Union
+from typing import (
+    Iterable,
+    Union,
+)
 
 import numpy as np
 

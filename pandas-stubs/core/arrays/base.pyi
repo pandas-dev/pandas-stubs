@@ -1,7 +1,13 @@
-from typing import Sequence, Tuple, Union
+from typing import (
+    Sequence,
+    Tuple,
+    Union,
+)
 
 import numpy as np
+
 from pandas._typing import ArrayLike as ArrayLike
+
 from pandas.core.dtypes.dtypes import ExtensionDtype as ExtensionDtype
 from pandas.core.dtypes.generic import ABCExtensionArray as ABCExtensionArray
 

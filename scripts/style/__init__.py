@@ -1,4 +1,7 @@
-from scripts._job import Step, run_job
+from scripts._job import (
+    Step,
+    run_job,
+)
 from scripts.style import procedures
 
 

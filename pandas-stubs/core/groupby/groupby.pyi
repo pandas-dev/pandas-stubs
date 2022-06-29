@@ -1,12 +1,14 @@
-from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Union
-
-from pandas._typing import (
-    AxisType as AxisType,
-    FrameOrSeries as FrameOrSeries,
-    FrameOrSeriesUnion as FrameOrSeriesUnion,
-    KeysArgType,
-    Scalar as Scalar,
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Generator,
+    List,
+    Optional,
+    Tuple,
+    Union,
 )
+
 from pandas.core.base import (
     PandasObject as PandasObject,
     SelectionMixin as SelectionMixin,
@@ -16,6 +18,14 @@ from pandas.core.generic import NDFrame as NDFrame
 from pandas.core.groupby import ops as ops
 from pandas.core.indexes.api import Index as Index
 from pandas.core.series import Series as Series
+
+from pandas._typing import (
+    AxisType as AxisType,
+    FrameOrSeries as FrameOrSeries,
+    FrameOrSeriesUnion as FrameOrSeriesUnion,
+    KeysArgType,
+    Scalar as Scalar,
+)
 
 class GroupByPlot(PandasObject):
     def __init__(self, groupby) -> None: ...

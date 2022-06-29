@@ -1,7 +1,11 @@
 import pickle as pkl
 from typing import Optional
 
-from pandas import DataFrame as DataFrame, Index as Index, Series as Series
+from pandas import (
+    DataFrame as DataFrame,
+    Index as Index,
+    Series as Series,
+)
 
 def load_reduce(self) -> None: ...
 def load_newobj(self) -> None: ...

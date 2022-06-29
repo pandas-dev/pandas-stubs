@@ -1,4 +1,8 @@
-from typing import Generic, List, TypeVar
+from typing import (
+    Generic,
+    List,
+    TypeVar,
+)
 
 from pandas.core.base import NoNewAttributesMixin as NoNewAttributesMixin
 from pandas.core.series import Series

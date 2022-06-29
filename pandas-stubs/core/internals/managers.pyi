@@ -1,4 +1,8 @@
-from typing import List, Sequence, Union
+from typing import (
+    List,
+    Sequence,
+    Union,
+)
 
 from pandas.core.base import PandasObject as PandasObject
 from pandas.core.indexes.api import Index as Index

@@ -11,8 +11,12 @@ from typing import (
     overload,
 )
 
-from pandas._typing import Dtype, Scalar
 from pandas.core.frame import DataFrame as DataFrame
+
+from pandas._typing import (
+    Dtype,
+    Scalar,
+)
 
 @overload
 def read_excel(

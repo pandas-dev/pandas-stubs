@@ -1,8 +1,15 @@
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Optional,
+    Tuple,
+)
 
-from pandas._typing import FrameOrSeriesUnion as FrameOrSeries
 from pandas.core.window.common import WindowGroupByMixin as WindowGroupByMixin
 from pandas.core.window.rolling import _Rolling_and_Expanding
+
+from pandas._typing import FrameOrSeriesUnion as FrameOrSeries
 
 class Expanding(_Rolling_and_Expanding):
     def __init__(

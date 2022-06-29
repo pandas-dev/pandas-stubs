@@ -14,6 +14,13 @@ from typing import (
 )
 
 import numpy as np
+from pandas.core.arrays import ExtensionArray
+from pandas.core.base import (
+    IndexOpsMixin,
+    PandasObject,
+)
+from pandas.core.strings import StringMethods
+
 from pandas._typing import (
     T1 as T1,
     DataFrame as DataFrame,
@@ -28,9 +35,6 @@ from pandas._typing import (
     np_ndarray_int64,
     np_ndarray_str,
 )
-from pandas.core.arrays import ExtensionArray
-from pandas.core.base import IndexOpsMixin, PandasObject
-from pandas.core.strings import StringMethods
 
 class InvalidIndexError(Exception): ...
 

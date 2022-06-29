@@ -1,6 +1,11 @@
-from typing import List, Union, overload
+from typing import (
+    List,
+    Union,
+    overload,
+)
 
 import numpy as np
+
 from pandas._typing import (
     ArrayLike as ArrayLike,
     DataFrame as DataFrame,

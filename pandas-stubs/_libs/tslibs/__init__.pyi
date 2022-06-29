@@ -13,8 +13,16 @@ __all__ = [
 
 from np_datetime import OutOfBoundsDatetime as OutOfBoundsDatetime
 
-from .nattype import NaT, NaTType, iNaT, nat_strings
-from .offsets import BaseOffset, Tick
+from .nattype import (
+    NaT,
+    NaTType,
+    iNaT,
+    nat_strings,
+)
+from .offsets import (
+    BaseOffset,
+    Tick,
+)
 from .period import Period
 from .timedeltas import Timedelta
 from .timestamps import Timestamp

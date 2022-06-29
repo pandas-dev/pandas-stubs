@@ -1,6 +1,7 @@
 from typing import NamedTuple
 
 from matplotlib.axes import Axes as PlotAxes
+
 from pandas.plotting._matplotlib.core import LinePlot as LinePlot
 
 class BoxPlot(LinePlot):

@@ -1,6 +1,7 @@
 from typing import Union
 
 import numpy as np
+
 from pandas.core.dtypes.generic import (
     ABCExtensionArray as ABCExtensionArray,
     ABCSeries as ABCSeries,

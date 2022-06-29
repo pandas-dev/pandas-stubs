@@ -1,12 +1,18 @@
-from typing import Any, List, Optional, Union
+from typing import (
+    Any,
+    List,
+    Optional,
+    Union,
+)
+
+from pandas.core.frame import DataFrame
+from pandas.core.indexes.base import Index
+from pandas.core.series import Series
 
 from pandas._typing import (
     FilePathOrBuffer as FilePathOrBuffer,
     FrameOrSeriesUnion as FrameOrSeriesUnion,
 )
-from pandas.core.frame import DataFrame
-from pandas.core.indexes.base import Index
-from pandas.core.series import Series
 
 lzma = ...
 N: int = ...

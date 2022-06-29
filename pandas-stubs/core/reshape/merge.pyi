@@ -1,6 +1,15 @@
-from typing import List, Optional, Sequence, Union
+from typing import (
+    List,
+    Optional,
+    Sequence,
+    Union,
+)
 
-from pandas import DataFrame as DataFrame, Series as Series
+from pandas import (
+    DataFrame as DataFrame,
+    Series as Series,
+)
+
 from pandas._libs.tslibs import Timedelta
 from pandas._typing import Label
 

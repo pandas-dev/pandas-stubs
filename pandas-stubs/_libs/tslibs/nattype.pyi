@@ -1,7 +1,15 @@
-from datetime import datetime, timedelta, tzinfo as _tzinfo
-from typing import Any, Union
+from datetime import (
+    datetime,
+    timedelta,
+    tzinfo as _tzinfo,
+)
+from typing import (
+    Any,
+    Union,
+)
 
 import numpy as np
+
 from pandas._libs.tslibs.period import Period
 
 NaT: NaTType

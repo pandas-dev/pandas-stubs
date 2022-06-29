@@ -1,4 +1,7 @@
-from typing import Callable, Optional
+from typing import (
+    Callable,
+    Optional,
+)
 
 from pandas.core.groupby.base import GroupByMixin as GroupByMixin
 

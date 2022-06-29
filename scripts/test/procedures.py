@@ -1,8 +1,11 @@
+from pathlib import Path
 import shutil
 import subprocess
-from pathlib import Path
 
-from scripts._job import Step, run_job
+from scripts._job import (
+    Step,
+    run_job,
+)
 
 
 def run_mypy_src():

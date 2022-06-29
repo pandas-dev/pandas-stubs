@@ -1,4 +1,7 @@
-from typing import Callable, Optional
+from typing import (
+    Callable,
+    Optional,
+)
 
 def safe_import(mod_name: str, min_version: Optional[str] = ...): ...
 

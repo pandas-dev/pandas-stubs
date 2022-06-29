@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import sys
 from collections import abc
+import sys
 from typing import (
     Any,
     Callable,
@@ -15,6 +15,8 @@ from typing import (
     overload,
 )
 
+from pandas.core.frame import DataFrame as DataFrame
+
 from pandas._typing import (
     AnyStr_cov as AnyStr_cov,
     CompressionOptions as CompressionOptions,
@@ -25,7 +27,6 @@ from pandas._typing import (
     Scalar as Scalar,
     StorageOptions as StorageOptions,
 )
-from pandas.core.frame import DataFrame as DataFrame
 
 if sys.version_info >= (3, 8):
     from typing import Literal
