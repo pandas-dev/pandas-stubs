@@ -45,7 +45,7 @@ def test_dist(clean_cache: bool = False):
         Step(name="Run MyPy Against Dist", run=procedures.run_mypy_dist),
         Step(name="Run Pyright Against Dist", run=procedures.run_pyright_dist),
         Step(name="Uninstall Dist", run=procedures.uninstall_dist),
-        Step(name="Restore Last changes", run=procedures.restore_last_changes),
+        Step(name="Restore last changes", run=procedures.restore_last_changes),
         Step(name="Restore Source Code", run=procedures.restore_src)
     ])
 
@@ -72,7 +72,7 @@ def test_all(clean_cache: bool = False):
         Step(name="Run MyPy Against Dist", run=procedures.run_mypy_dist),
         Step(name="Run Pyright Against Dist", run=procedures.run_pyright_dist),
         Step(name="Uninstall Dist", run=procedures.uninstall_dist),
-        Step(name="Restore Last changes", run=procedures.restore_last_changes),
+        Step(name="Restore last changes", run=procedures.restore_last_changes),
         Step(name="Restore Source Code", run=procedures.restore_src)
     ])
 

@@ -59,9 +59,15 @@ def uninstall_dist():
 
 
 def restore_last_changes():
-    cmd = ["git", "reset", "--soft", "HEAD~1"]
+    cmd = ["git", "show", "-s", "--format=%s"]
+    process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    last_commit_name = process.communicate()[0]
 
-    subprocess.run(cmd, check=True)
+    if last_commit_name == b'"temp commit"\n':
+        cmd = ["git", "reset", "--soft", "HEAD~1"]
+        subprocess.run(cmd, check=True)
+    else:
+        print("There is not temp commit to restore.")
 
 
 def restore_src():
@@ -89,3 +95,6 @@ def create_new_venv():
     cmd = ["poetry", "shell"]
     subprocess.run(cmd, check=True)
 
+
+if __name__ == '__main__':
+    restore_last_changes()
