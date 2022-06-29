@@ -53,6 +53,10 @@ build-backend = "poetry.core.masonry.api"
 help = "Local Code Style Check"
 script = "scripts.style:check_style"
 
+[tool.poe.tasks.format_style]
+help = "Apply Black and Isort Format"
+script = "scripts.style:format_style"
+
 [tool.poe.tasks.test_src]
 help = "LOCAL Test | Run tests against source code version: \"poe test_src -p=<profile>\""
 script = "scripts.test:test_src(profile, clean_cache)"
