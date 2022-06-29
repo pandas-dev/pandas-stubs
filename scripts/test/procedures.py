@@ -29,6 +29,11 @@ def install_dist():
     subprocess.run(cmd, check=True)
 
 
+def add_last_changes():
+    cmd = ["git", "add", "."]
+    subprocess.run(cmd, check=True)
+
+
 def commit_last_changes():
     cmd = ["git", "commit", "-am", "\"temp commit\""]
     subprocess.run(cmd, check=True)
@@ -55,6 +60,7 @@ def uninstall_dist():
 
 def restore_last_changes():
     cmd = ["git", "reset", "--soft", "HEAD~1"]
+
     subprocess.run(cmd, check=True)
 
 

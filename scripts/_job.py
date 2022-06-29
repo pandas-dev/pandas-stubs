@@ -4,7 +4,7 @@ from subprocess import CalledProcessError
 from typing import Callable, List, Optional, Deque
 
 from loguru import logger
-from collections import deque
+
 
 @dataclass
 class Step:
@@ -26,7 +26,6 @@ def __rollback_job(steps: Deque[Step]):
                 step.rollback()
             except Exception:
                 logger.error(f"Rollback of Step: '{step.name}' failed!")
-
 
 
 def run_job(steps: List[Step]) -> None:
