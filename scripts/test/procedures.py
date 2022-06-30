@@ -36,7 +36,7 @@ def install_dist():
 
 def rename_src():
     if Path(r"pandas-stubs").exists():
-        Path(r"pandas-stubs").rename('_pandas-stubs')
+        Path(r"pandas-stubs").rename("_pandas-stubs")
 
 
 def run_mypy_dist():
@@ -56,7 +56,7 @@ def uninstall_dist():
 
 def restore_src():
     if Path(r"_pandas-stubs").exists():
-        Path(r"_pandas-stubs").rename('pandas-stubs')
+        Path(r"_pandas-stubs").rename("pandas-stubs")
 
 
 def clean_mypy_cache():
