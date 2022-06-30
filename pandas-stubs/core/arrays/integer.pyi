@@ -1,6 +1,8 @@
-from .masked import BaseMaskedArray as BaseMaskedArray
-from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
 from typing import Type
+
+from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
+
+from .masked import BaseMaskedArray as BaseMaskedArray
 
 class _IntegerDtype(ExtensionDtype):
     name: str

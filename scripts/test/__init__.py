@@ -1,19 +1,28 @@
-from scripts._job import Step, run_job
+from scripts._job import (
+    Step,
+    run_job,
+)
 from scripts.test import procedures
 
 
 def test_src(profile: str, clean_cache: bool = False):
     steps = []
     if clean_cache:
-        steps.extend([
-            Step(name="Clean mypy cache", run=procedures.clean_mypy_cache),
-            Step(name="Clean pytest cache", run=procedures.clean_pytest_cache)
-        ])
+        steps.extend(
+            [
+                Step(name="Clean mypy cache", run=procedures.clean_mypy_cache),
+                Step(name="Clean pytest cache", run=procedures.clean_pytest_cache),
+            ]
+        )
 
     # Possible steps
     mypy_step = Step(name="Run Mypy Against Source Code", run=procedures.run_mypy_src)
-    pyright_step = Step(name="Run Pyright Against Source Code", run=procedures.run_pyright_src)
-    pytest_step = Step(name="Run Pytest Against Source Code", run=procedures.run_pytest_src)
+    pyright_step = Step(
+        name="Run Pyright Against Source Code", run=procedures.run_pyright_src
+    )
+    pytest_step = Step(
+        name="Run Pytest Against Source Code", run=procedures.run_pytest_src
+    )
 
     # Defining which test is going to run according to a profile
     if profile in (None, "", "default"):

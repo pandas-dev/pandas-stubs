@@ -1,4 +1,5 @@
 import numpy as np
+
 from pandas._typing import Dtype as Dtype
 
 def maybe_convert_platform(values): ...

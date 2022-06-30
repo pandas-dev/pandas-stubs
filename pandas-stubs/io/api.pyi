@@ -15,8 +15,14 @@ from pandas.io.parsers import (
     read_fwf as read_fwf,
     read_table as read_table,
 )
-from pandas.io.pickle import read_pickle as read_pickle, to_pickle as to_pickle
-from pandas.io.pytables import HDFStore as HDFStore, read_hdf as read_hdf
+from pandas.io.pickle import (
+    read_pickle as read_pickle,
+    to_pickle as to_pickle,
+)
+from pandas.io.pytables import (
+    HDFStore as HDFStore,
+    read_hdf as read_hdf,
+)
 from pandas.io.sas import read_sas as read_sas
 from pandas.io.spss import read_spss as read_spss
 from pandas.io.sql import (

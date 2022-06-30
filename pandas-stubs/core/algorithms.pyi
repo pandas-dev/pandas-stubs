@@ -1,8 +1,15 @@
 from __future__ import annotations
+
+from typing import (
+    Any,
+    Tuple,
+    Union,
+)
+
 import numpy as np
-from pandas.core.dtypes.generic import ABCIndex as ABCIndex
 from pandas.core.indexes.base import Index
-from typing import Any, Tuple, Union
+
+from pandas.core.dtypes.generic import ABCIndex as ABCIndex
 
 def unique(values): ...
 

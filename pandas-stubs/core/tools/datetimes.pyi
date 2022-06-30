@@ -1,21 +1,33 @@
 from datetime import datetime as datetime
-from numpy import datetime64 as datetime64
-import numpy as np
-
-from pandas._typing import (
-    ArrayLike as ArrayLike,
-    Index as Index,
-    AnyArrayLike as AnyArrayLike,
-    DateTimeErrorChoices as DateTimeErrorChoices,
-    ExtensionArray as ExtensionArray,
-    Timestamp as Timestamp,
+from typing import (
+    List,
+    Optional,
+    Tuple,
+    TypedDict,
+    Union,
+    overload,
 )
-from pandas.core.dtypes.generic import ABCSeries as ABCSeries
+
+import numpy as np
+from numpy import datetime64 as datetime64
+from pandas.core.frame import DataFrame as DataFrame
 from pandas.core.generic import NDFrame as NDFrame
 from pandas.core.indexes.datetimes import DatetimeIndex as DatetimeIndex
-from pandas.core.frame import DataFrame as DataFrame
-from pandas.core.series import Series as Series, TimestampSeries
-from typing import List, Optional, Tuple, TypedDict, Union, overload
+from pandas.core.series import (
+    Series as Series,
+    TimestampSeries,
+)
+
+from pandas._typing import (
+    AnyArrayLike as AnyArrayLike,
+    ArrayLike as ArrayLike,
+    DateTimeErrorChoices as DateTimeErrorChoices,
+    ExtensionArray as ExtensionArray,
+    Index as Index,
+    Timestamp as Timestamp,
+)
+
+from pandas.core.dtypes.generic import ABCSeries as ABCSeries
 
 ArrayConvertible = Union[List, Tuple, AnyArrayLike]
 Scalar = Union[int, float, str]

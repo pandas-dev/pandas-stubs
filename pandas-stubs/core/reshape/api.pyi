@@ -15,4 +15,7 @@ from pandas.core.reshape.pivot import (
     pivot_table as pivot_table,
 )
 from pandas.core.reshape.reshape import get_dummies as get_dummies
-from pandas.core.reshape.tile import cut as cut, qcut as qcut
+from pandas.core.reshape.tile import (
+    cut as cut,
+    qcut as qcut,
+)

@@ -1,4 +1,9 @@
-from typing import Any, Optional, Set, Tuple
+from typing import (
+    Any,
+    Optional,
+    Set,
+    Tuple,
+)
 
 ARITHMETIC_BINOPS: Set[str] = ...
 COMPARISON_BINOPS: Set[str] = ...

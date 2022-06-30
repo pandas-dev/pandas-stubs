@@ -1,8 +1,13 @@
+from typing import (
+    List,
+    Optional,
+)
+
 from pandas.core.accessor import PandasDelegate as PandasDelegate
 from pandas.core.indexes.extension import ExtensionIndex as ExtensionIndex
 from pandas.core.indexes.numeric import Int64Index as Int64Index
+
 from pandas.tseries.frequencies import DateOffset as DateOffset
-from typing import List, Optional
 
 class DatetimeIndexOpsMixin(ExtensionIndex):
     freq: Optional[DateOffset]

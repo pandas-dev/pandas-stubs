@@ -1,7 +1,13 @@
-import time
+from collections import deque
 from dataclasses import dataclass
 from subprocess import CalledProcessError
-from typing import Callable, List, Optional, Deque
+import time
+from typing import (
+    Callable,
+    Deque,
+    List,
+    Optional,
+)
 
 from loguru import logger
 
@@ -40,7 +46,7 @@ def run_job(steps: List[Step]) -> None:
         logger.info(f"Beginning: '{step.name}'")
 
         try:
-                            
+
             rollback_steps.append(step)
             step.run()
 
@@ -48,9 +54,8 @@ def run_job(steps: List[Step]) -> None:
 
             logger.error(f"Step: '{step.name}' failed!")
             __rollback_job(rollback_steps)
-            
+
             break
 
         end = time.perf_counter()
         logger.success(f"End: '{step.name}', runtime: {end - start:.3f} seconds.")
-

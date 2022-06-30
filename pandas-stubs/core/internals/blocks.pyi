@@ -1,6 +1,7 @@
+from typing import List
+
 from pandas.core.arrays import ExtensionArray as ExtensionArray
 from pandas.core.base import PandasObject as PandasObject
-from typing import List
 
 class Block(PandasObject):
     is_numeric: bool = ...

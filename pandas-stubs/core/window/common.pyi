@@ -1,5 +1,9 @@
+from typing import (
+    Callable,
+    Optional,
+)
+
 from pandas.core.groupby.base import GroupByMixin as GroupByMixin
-from typing import Callable, Optional
 
 class WindowGroupByMixin(GroupByMixin):
     def __init__(self, obj, *args, **kwargs) -> None: ...
