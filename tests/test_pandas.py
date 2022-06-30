@@ -1,12 +1,17 @@
 # flake8: noqa: F841
 import tempfile
-from typing import Any, Dict, List, Union
-from typing_extensions import assert_type
-
-from pandas.io.parsers import TextFileReader
+from typing import (
+    Any,
+    Dict,
+    List,
+    Union,
+)
 
 import numpy as np
 import pandas as pd
+from typing_extensions import assert_type
+
+from pandas.io.parsers import TextFileReader
 
 
 def test_types_to_datetime() -> None:

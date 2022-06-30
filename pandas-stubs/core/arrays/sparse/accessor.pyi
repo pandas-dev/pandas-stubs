@@ -1,12 +1,14 @@
-from pandas.compat._optional import (
-    import_optional_dependency as import_optional_dependency,
-)
 from pandas.core.accessor import (
     PandasDelegate as PandasDelegate,
     delegate_names as delegate_names,
 )
 from pandas.core.arrays.sparse.array import SparseArray as SparseArray
 from pandas.core.arrays.sparse.dtype import SparseDtype as SparseDtype
+
+from pandas.compat._optional import (
+    import_optional_dependency as import_optional_dependency,
+)
+
 from pandas.core.dtypes.cast import find_common_type as find_common_type
 
 class BaseAccessor:

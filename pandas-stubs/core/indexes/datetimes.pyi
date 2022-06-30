@@ -1,21 +1,31 @@
-import numpy as np
 from datetime import tzinfo as tzinfo
+from typing import (
+    Optional,
+    Union,
+    overload,
+)
+
+import numpy as np
 from pandas.core.indexes.api import (
-    PeriodIndex as PeriodIndex,
     Float64Index as Float64Index,
+    PeriodIndex as PeriodIndex,
 )
 from pandas.core.indexes.datetimelike import (
-    DatetimeTimedeltaMixin as DatetimeTimedeltaMixin,
     DatetimelikeDelegateMixin as DatetimelikeDelegateMixin,
+    DatetimeTimedeltaMixin as DatetimeTimedeltaMixin,
 )
 from pandas.core.indexes.timedeltas import TimedeltaIndex as TimedeltaIndex
-from pandas.core.series import Series as Series, TimedeltaSeries, TimestampSeries
-from pandas._typing import (
-    Timestamp as Timestamp,
-    Timedelta as Timedelta,
-    DataFrame as DataFrame,
+from pandas.core.series import (
+    Series as Series,
+    TimedeltaSeries,
+    TimestampSeries,
 )
-from typing import Optional, Union, overload
+
+from pandas._typing import (
+    DataFrame as DataFrame,
+    Timedelta as Timedelta,
+    Timestamp as Timestamp,
+)
 
 class DatetimeDelegateMixin(DatetimelikeDelegateMixin): ...
 

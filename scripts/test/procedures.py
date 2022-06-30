@@ -1,8 +1,11 @@
+from pathlib import Path
 import shutil
 import subprocess
-from pathlib import Path
 
-from scripts._job import Step, run_job
+from scripts._job import (
+    Step,
+    run_job,
+)
 
 
 def run_mypy_src():
@@ -44,6 +47,7 @@ def run_pyright_dist():
     cmd = ["pyright", "tests"]
     subprocess.run(cmd, check=True)
 
+
 def uninstall_dist():
     cmd = ["pip", "uninstall", "-y", "pandas-stubs"]
     subprocess.run(cmd, check=True)
@@ -55,13 +59,13 @@ def restore_src():
 
 
 def clean_mypy_cache():
-    if Path('.mypy_cache').exists():
-        shutil.rmtree('.mypy_cache')
+    if Path(".mypy_cache").exists():
+        shutil.rmtree(".mypy_cache")
 
 
 def clean_pytest_cache():
-    if Path('.mypy_cache').exists():
-        shutil.rmtree('.pytest_cache')
+    if Path(".mypy_cache").exists():
+        shutil.rmtree(".pytest_cache")
 
 
 def create_new_venv():
@@ -73,4 +77,3 @@ def create_new_venv():
 
     cmd = ["poetry", "shell"]
     subprocess.run(cmd, check=True)
-

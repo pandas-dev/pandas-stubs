@@ -10,12 +10,11 @@ from typing import (
 
 import numpy as np
 
-from pandas._typing import npt
-
 from pandas._typing import (
     IntervalClosedType,
     Timedelta,
     Timestamp,
+    npt,
 )
 
 VALID_CLOSED: frozenset[str]

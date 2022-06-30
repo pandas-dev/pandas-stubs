@@ -16,6 +16,7 @@ from typing import (
 )
 
 import numpy as np
+
 from pandas._typing import npt
 
 from .timedeltas import Timedelta

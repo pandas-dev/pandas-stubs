@@ -1,7 +1,12 @@
+from typing import (
+    List,
+    Sequence,
+    Union,
+)
+
 from pandas.core.base import PandasObject as PandasObject
 from pandas.core.indexes.api import Index as Index
 from pandas.core.internals.blocks import Block as Block
-from typing import List, Sequence, Union
 
 class BlockManager(PandasObject):
     axes = ...

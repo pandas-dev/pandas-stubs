@@ -1,3 +1,4 @@
+from .interval import Interval as Interval
 from .tslibs import (
     NaT as NaT,
     NaTType as NaTType,
@@ -7,4 +8,3 @@ from .tslibs import (
     Timestamp as Timestamp,
     iNaT as iNaT,
 )
-from .interval import Interval as Interval

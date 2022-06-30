@@ -1,6 +1,4 @@
 import abc
-from pandas._typing import Dtype, Scalar
-from pandas.core.frame import DataFrame as DataFrame
 from typing import (
     Any,
     Callable,
@@ -11,6 +9,13 @@ from typing import (
     Sequence,
     Union,
     overload,
+)
+
+from pandas.core.frame import DataFrame as DataFrame
+
+from pandas._typing import (
+    Dtype,
+    Scalar,
 )
 
 @overload

@@ -1,4 +1,7 @@
-from typing import Any, Optional
+from typing import (
+    Any,
+    Optional,
+)
 
 loads: Any
 
