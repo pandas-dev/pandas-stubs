@@ -1023,21 +1023,21 @@ def test_join() -> None:
 
 
 def test_types_ffill() -> None:
-    s1 = pd.DataFrame([[1, 2, 3]])
-    s2: pd.DataFrame = s1.ffill()
-    s3: pd.DataFrame = s1.ffill(inplace=False)
-    s4: None = s1.DataFrame(inplace=True)
+    df = pd.DataFrame([[1, 2, 3]])
+    res1: pd.DataFrame = df.ffill()
+    res2: pd.DataFrame = df.ffill(inplace=False)
+    res3: None = df.ffill(inplace=True)
 
 
 def test_types_bfill() -> None:
-    s1 = pd.DataFrame([[1, 2, 3]])
-    s2: pd.DataFrame = s1.bfill()
-    s3: pd.DataFrame = s1.bfill(inplace=False)
-    s4: None = s1.bfill(inplace=True)
+    df = pd.DataFrame([[1, 2, 3]])
+    res1: pd.DataFrame = df.bfill()
+    res2: pd.DataFrame = df.bfill(inplace=False)
+    res3: None = df.bfill(inplace=True)
 
 
 def test_types_replace() -> None:
-    s = pd.DataFrame([[1, 2, 3]])
-    res1: pd.DataFrame = s.replace(1, 2)
-    res2: pd.DataFrame = s.replace(1, 2, inplace=False)
-    res3: None = s.replace(1, 2, inplace=True)
+    df = pd.DataFrame([[1, 2, 3]])
+    res1: pd.DataFrame = df.replace(1, 2)
+    res2: pd.DataFrame = df.replace(1, 2, inplace=False)
+    res3: None = df.replace(1, 2, inplace=True)
