@@ -17,8 +17,8 @@ from pandas.core.series import Series
 def table(
     ax,
     data,
-    rowLabels=None,
-    colLabels=None,
+    rowLabels=...,
+    colLabels=...,
 ): ...
 def register() -> None: ...
 def deregister() -> None: ...
