@@ -3,7 +3,7 @@ from datetime import date, datetime
 import io
 import tempfile
 from pathlib import Path
-from typing import List, Tuple, Iterable, Any, Dict, Hashable
+from typing import List, Tuple, Iterable, Any, Dict, Hashable, Union
 from typing_extensions import assert_type
 
 import pandas as pd
@@ -997,3 +997,9 @@ def test_getmultiindex_columns() -> None:
 def test_frame_getitem_isin() -> None:
     df = pd.DataFrame({"x": [1, 2, 3, 4, 5]}, index=[1, 2, 3, 4, 5])
     assert_type(df[df.index.isin([1, 3, 5])], "pd.DataFrame")
+
+
+def test_read_excel() -> None:
+    df11: pd.DataFrame = pd.read_excel("foo")
+    df12: pd.DataFrame = pd.read_excel("foo", sheet_name="sheet")
+    df13: Dict[Union[int, str], pd.DataFrame] = pd.read_excel("foo", sheet_name=["sheet"])
