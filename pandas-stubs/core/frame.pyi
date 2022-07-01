@@ -1110,7 +1110,7 @@ class DataFrame(NDFrame, OpsMixin):
     @property
     def columns(self) -> Index: ...
     @columns.setter  # setter needs to be right next to getter; otherwise mypy complains
-    def columns(self, cols: Union[List[_str], Index[_str]]) -> None: ...  # type:ignore
+    def columns(self, cols: Union[List[_str], Index[_str]]) -> None: ...  # type: ignore[type-arg]
     @property
     def dtypes(self) -> Series: ...
     @property

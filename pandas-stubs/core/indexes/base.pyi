@@ -205,7 +205,7 @@ class Index(IndexOpsMixin, PandasObject):
     # Extra methods from old stubs
     def __eq__(self, other: object) -> bool: ...  # Series: ...  # type: ignore
     def __iter__(self) -> Iterator: ...
-    def __ne__(self, other: _str) -> Index: ...  # type: ignore
+    def __ne__(self, other: _str) -> Index: ...  # type: ignore[override]
     def to_numpy(self) -> np.ndarray: ...
 
 def ensure_index_from_sequences(

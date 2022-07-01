@@ -1,4 +1,5 @@
 # flake8: noqa: F841
+# pyright: reportUnusedExpression = false
 from typing import TYPE_CHECKING
 
 import pandas as pd
@@ -47,10 +48,10 @@ def test_interval_length() -> None:
 
     assert_type(idres, "pd.Interval[pd.Timestamp]")
     if TYPE_CHECKING:
-        20 in i1  # type: ignore
-        i1 + pd.Timestamp("2000-03-03")  # type: ignore
-        i1 * 3  # type: ignore
-        i1 * pd.Timedelta(seconds=20)  # type: ignore
+        20 in i1
+        i1 + pd.Timestamp("2000-03-03")  # type: ignore[operator]
+        i1 * 3  # type: ignore[operator]
+        i1 * pd.Timedelta(seconds=20)  # type: ignore[operator]
 
     i2 = pd.Interval(10, 20)
     assert_type(i2.length, "int")
@@ -66,8 +67,8 @@ def test_interval_length() -> None:
     assert_type(i2 * 4.2, "pd.Interval[float]")
 
     if TYPE_CHECKING:
-        pd.Timestamp("2001-01-02") in i2  # type: ignore
-        i2 + pd.Timedelta(seconds=20)  # type: ignore
+        pd.Timestamp("2001-01-02") in i2  # pyright: ignore[reportGeneralTypeIssues]
+        i2 + pd.Timedelta(seconds=20)  # pyright: ignore[reportGeneralTypeIssues]
 
     i3 = pd.Interval(13.2, 19.5)
     assert_type(i3.length, "float")
@@ -80,5 +81,5 @@ def test_interval_length() -> None:
     assert_type(i3 + 3, "pd.Interval[float]")
     assert_type(i3 * 3, "pd.Interval[float]")
     if TYPE_CHECKING:
-        pd.Timestamp("2001-01-02") in i3  # type: ignore
-        i3 + pd.Timedelta(seconds=20)  # type: ignore
+        pd.Timestamp("2001-01-02") in i3  # pyright: ignore[reportGeneralTypeIssues]
+        i3 + pd.Timedelta(seconds=20)  # pyright: ignore[reportGeneralTypeIssues]

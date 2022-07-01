@@ -170,18 +170,19 @@ no_implicit_optional = true
 strict_optional = true
 # Configuring warnings
 warn_redundant_casts = true
-warn_unused_ignores = false # Change from pandas
+warn_unused_ignores = true
 warn_no_return = true
 warn_return_any = false # TODO
 warn_unreachable = false # GH#27396
 # Suppressing errors
 show_none_errors = true
 ignore_errors = false
+enable_error_code = "ignore-without-code"
 # Miscellaneous strictness flags
 allow_untyped_globals = false
 allow_redefinition = false
 local_partial_types = false
-implicit_reexport = true
+implicit_reexport = false
 strict_equality = true
 # Configuring error messages
 show_error_context = false
