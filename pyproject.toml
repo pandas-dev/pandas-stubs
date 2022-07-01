@@ -193,3 +193,7 @@ typeCheckingMode = "basic"
 stubPath = "."
 include = ["tests", "pandas-stubs"]
 useLibraryCodeForTypes = true
+# enable subset of "strict"
+reportDuplicateImport = true
+reportInvalidStubStatement = true
+reportOverlappingOverload = true
