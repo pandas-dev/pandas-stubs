@@ -2,10 +2,10 @@
 from datetime import date
 import io
 from pathlib import Path
-from typing import List, Tuple, Iterable, Any, Dict, Union
 import tempfile
 from typing import (
     Any,
+    Dict,
     Iterable,
     List,
     Tuple,
