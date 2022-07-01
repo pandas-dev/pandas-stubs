@@ -1,21 +1,21 @@
 import subprocess
 
 
-def run_black_check():
+def check_black():
     cmd = ["black", "--check", "pandas-stubs", "tests", "scripts"]
     subprocess.run(cmd, check=True)
 
 
-def run_isort_check():
+def check_isort():
     cmd = ["isort", "--check-only", "pandas-stubs", "tests", "scripts"]
     subprocess.run(cmd, check=True)
 
 
-def run_format_black():
+def format_black():
     cmd = ["black", "pandas-stubs", "tests", "scripts"]
     subprocess.run(cmd, check=True)
 
 
-def run_format_isort():
+def format_isort():
     cmd = ["isort", "pandas-stubs", "tests", "scripts"]
     subprocess.run(cmd, check=True)
