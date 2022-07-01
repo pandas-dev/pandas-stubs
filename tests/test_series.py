@@ -682,4 +682,3 @@ def test_types_replace() -> None:
     res1: pd.Series = s.replace(1, 2)
     res2: pd.Series = s.replace(1, 2, inplace=False)
     res3: None = s.replace(1, 2, inplace=True)
-
