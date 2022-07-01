@@ -1,11 +1,17 @@
+from typing import (
+    List,
+    Union,
+    overload,
+)
+
 import numpy as np
-from typing import Union, overload, List
+
 from pandas._typing import (
-    Scalar as Scalar,
-    Series as Series,
-    Index as Index,
     ArrayLike as ArrayLike,
     DataFrame as DataFrame,
+    Index as Index,
+    Scalar as Scalar,
+    Series as Series,
 )
 
 isposinf_scalar = ...

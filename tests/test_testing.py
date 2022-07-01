@@ -1,6 +1,5 @@
-from pandas.testing import assert_series_equal
-
 import pandas as pd
+from pandas.testing import assert_series_equal
 
 
 def test_types_assert_series_equal() -> None:

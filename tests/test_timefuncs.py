@@ -1,15 +1,17 @@
 # flake8: noqa: F841
 
-from typing import TYPE_CHECKING
-import pandas as pd
 import datetime as dt
+from typing import TYPE_CHECKING
+
+import pandas as pd
+from pandas.testing import assert_series_equal
 from typing_extensions import assert_type
 
-from pandas.testing import assert_series_equal
-
-
 if TYPE_CHECKING:
-    from pandas.core.series import TimedeltaSeries, TimestampSeries
+    from pandas.core.series import (
+        TimedeltaSeries,
+        TimestampSeries,
+    )
 
 
 def test_types_init() -> None:
@@ -44,6 +46,19 @@ def test_types_comparison() -> None:
 
     tsr: bool = ts < ts2
     tsr2: bool = ts > ts2
+
+
+def test_types_timestamp_series_comparisons() -> None:
+    # GH 27
+    df = pd.DataFrame(["2020-01-01", "2019-01-01"])
+    tss = pd.to_datetime(df[0], format="%Y-%m-%d")
+    ts = pd.to_datetime("2019-02-01", format="%Y-%m-%d")
+    tssr = tss <= ts
+    tssr2 = tss >= ts
+    tssr3 = tss == ts
+    assert_type(tssr, "pd.Series[bool]")
+    assert_type(tssr2, "pd.Series[bool]")
+    assert_type(tssr3, "pd.Series[bool]")
 
 
 def test_types_pydatetime() -> None:
@@ -148,3 +163,18 @@ def test_timedelta_series_sum() -> None:
 
     sf = pd.Series([1.0, 2.2, 3.3])
     sfsum: float = sf.sum()
+
+
+def test_iso_calendar() -> None:
+    # GH 31
+    dates = pd.date_range(start="2012-01-01", end="2019-12-31", freq="W-MON")
+    dates.isocalendar()
+
+
+def fail_on_adding_two_timestamps() -> None:
+    s1 = pd.Series(pd.to_datetime(["2022-05-01", "2022-06-01"]))
+    s2 = pd.Series(pd.to_datetime(["2022-05-15", "2022-06-15"]))
+    if TYPE_CHECKING:
+        ssum: pd.Series = s1 + s2  # type: ignore
+        ts = pd.Timestamp("2022-06-30")
+        tsum: pd.Series = s1 + ts  # type: ignore

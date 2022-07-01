@@ -1,5 +1,13 @@
-from typing import Any, Protocol, Tuple
-from pandas._typing import FrameOrSeries, DataFrame
+from typing import (
+    Any,
+    Protocol,
+    Tuple,
+)
+
+from pandas._typing import (
+    DataFrame,
+    FrameOrSeries,
+)
 
 class OpsMixinProtocol(Protocol): ...
 

@@ -1,51 +1,7 @@
 from __future__ import annotations
-import datetime
-import numpy as np
 
-from pandas.core.indexing import _iLocIndexer, _LocIndexer
-from matplotlib.axes import Axes as PlotAxes
-from pandas._typing import (
-    Axes as Axes,
-    Axis as Axis,
-    FilePathOrBuffer as FilePathOrBuffer,
-    FilePathOrBytesBuffer as FilePathOrBytesBuffer,
-    Level as Level,
-    Renamer as Renamer,
-)
-from pandas._typing import (
-    num,
-    SeriesAxisType,
-    AxisType,
-    Dtype,
-    DtypeNp,
-    Label,
-    StrLike,
-    Scalar as Scalar,
-    IndexType,
-    MaskType,
-    S1,
-    T as TType,
-)
-from pandas._typing import (
-    ArrayLike as ArrayLike,
-    np_ndarray_str,
-    np_ndarray_bool,
-    Timestamp as Timestamp,
-    Timedelta as Timedelta,
-)
-from pandas._typing import IndexLabel as IndexLabel, IgnoreRaise as IgnoreRaise
-from pandas.core.arraylike import OpsMixin
-from pandas.core.generic import NDFrame as NDFrame
-from pandas.core.groupby.generic import DataFrameGroupBy as DataFrameGroupBy
-from pandas.core.groupby.grouper import Grouper
-from pandas.core.indexes.base import Index as Index
-from pandas.core.indexes.multi import MultiIndex as MultiIndex
-from pandas.core.resample import Resampler
-from pandas.core.window.rolling import Rolling, Window
-from pandas.core.series import Series as Series
-from pandas.io.formats import console as console, format as fmt
-from pandas.io.formats.style import Styler as Styler
-from pandas.plotting import PlotAccessor
+import datetime
+import datetime as _dt
 from typing import (
     Any,
     Callable,
@@ -57,16 +13,68 @@ from typing import (
     Literal,
     Mapping,
     Optional,
+    Pattern,
     Sequence,
     Tuple,
     Type,
     Union,
     overload,
-    Pattern,
 )
 
+from matplotlib.axes import Axes as PlotAxes
 import numpy as _np
-import datetime as _dt
+import numpy as np
+from pandas.core.arraylike import OpsMixin
+from pandas.core.generic import NDFrame as NDFrame
+from pandas.core.groupby.generic import DataFrameGroupBy as DataFrameGroupBy
+from pandas.core.groupby.grouper import Grouper
+from pandas.core.indexes.base import Index as Index
+from pandas.core.indexes.multi import MultiIndex as MultiIndex
+from pandas.core.indexing import (
+    _iLocIndexer,
+    _LocIndexer,
+)
+from pandas.core.resample import Resampler
+from pandas.core.series import Series as Series
+from pandas.core.window.rolling import (
+    Rolling,
+    Window,
+)
+
+from pandas._typing import (
+    S1,
+    ArrayLike as ArrayLike,
+    Axes as Axes,
+    Axis as Axis,
+    AxisType,
+    Dtype,
+    DtypeNp,
+    FilePathOrBuffer as FilePathOrBuffer,
+    FilePathOrBytesBuffer as FilePathOrBytesBuffer,
+    IgnoreRaise as IgnoreRaise,
+    IndexLabel as IndexLabel,
+    IndexType,
+    Label,
+    Level as Level,
+    MaskType,
+    Renamer as Renamer,
+    Scalar as Scalar,
+    SeriesAxisType,
+    StrLike,
+    T as TType,
+    Timedelta as Timedelta,
+    Timestamp as Timestamp,
+    np_ndarray_bool,
+    np_ndarray_str,
+    num,
+)
+
+from pandas.io.formats import (
+    console as console,
+    format as fmt,
+)
+from pandas.io.formats.style import Styler as Styler
+from pandas.plotting import PlotAccessor
 
 _str = str
 _bool = bool
@@ -124,7 +132,7 @@ class _LocIndexerFrame(_LocIndexer):
     @overload
     def __getitem__(
         self,
-        idx: Tuple[Union[StrLike, Tuple[StrLike, ...]], StrLike],
+        idx: Tuple[Union[Union[int, StrLike], Tuple[StrLike, ...]], StrLike],
     ) -> Scalar: ...
     @overload
     def __getitem__(
@@ -398,15 +406,15 @@ class DataFrame(NDFrame, OpsMixin):
         fill_axis: AxisType = ...,
         broadcast_axis: Optional[AxisType] = ...,
     ) -> DataFrame: ...
-    def reindex(**kwargs) -> DataFrame: ...
+    def reindex(self, **kwargs) -> DataFrame: ...
     @overload
     def drop(
         self,
-        labels: Hashable | list[Hashable] = ...,
+        labels: Hashable | Sequence[Hashable] = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[Hashable] = ...,
-        columns: Hashable | list[Hashable] = ...,
+        index: Hashable | Sequence[Hashable] = ...,
+        columns: Hashable | Sequence[Hashable] = ...,
         level: Optional[Level] = ...,
         inplace: Literal[True],
         errors: IgnoreRaise = ...,
@@ -414,11 +422,11 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | list[Hashable] = ...,
+        labels: Hashable | Sequence[Hashable] = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[Hashable] = ...,
-        columns: Hashable | list[Hashable] = ...,
+        index: Hashable | Sequence[Hashable] = ...,
+        columns: Hashable | Sequence[Hashable] = ...,
         level: Optional[Level] = ...,
         inplace: Literal[False] = ...,
         errors: IgnoreRaise = ...,
@@ -426,11 +434,11 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | list[Hashable] = ...,
+        labels: Hashable | Sequence[Hashable] = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[Hashable] = ...,
-        columns: Hashable | list[Hashable] = ...,
+        index: Hashable | Sequence[Hashable] = ...,
+        columns: Hashable | Sequence[Hashable] = ...,
         level: Optional[Level] = ...,
         inplace: bool = ...,
         errors: IgnoreRaise = ...,
@@ -955,7 +963,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def join(
         self,
-        other: Union[DataFrame, Series, List[DataFrame]],
+        other: Union[DataFrame, Series, List[Union[DataFrame, Series]]],
         on: Optional[Union[_str, List[_str]]] = ...,
         how: Union[_str, Literal["left", "right", "outer", "inner"]] = ...,
         lsuffix: _str = ...,
@@ -1104,7 +1112,7 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level = ...,
         fill_value: Union[None, float] = ...,
     ) -> DataFrame: ...
-    def __iter__(self) -> Iterator: ...
+    def __iter__(self) -> Iterator[Hashable]: ...
     # properties
     @property
     def at(self): ...  # Not sure what to do with this yet; look at source

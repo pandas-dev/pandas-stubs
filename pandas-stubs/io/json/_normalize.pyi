@@ -1,6 +1,14 @@
+from typing import (
+    Any,
+    Dict,
+    List,
+    Optional,
+    Union,
+)
+
 from pandas.core.frame import DataFrame as DataFrame
+
 from pandas._typing import Scalar as Scalar
-from typing import Any, Dict, List, Optional, Union
 
 def convert_to_line_delimits(s: Any): ...
 def nested_to_record(

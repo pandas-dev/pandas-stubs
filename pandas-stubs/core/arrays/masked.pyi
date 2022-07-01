@@ -1,9 +1,10 @@
 import numpy as np
-from pandas._typing import Scalar as Scalar
 from pandas.core.arrays import (
     ExtensionArray as ExtensionArray,
     ExtensionOpsMixin as ExtensionOpsMixin,
 )
+
+from pandas._typing import Scalar as Scalar
 
 class BaseMaskedArray(ExtensionArray, ExtensionOpsMixin):
     def __getitem__(self, item): ...

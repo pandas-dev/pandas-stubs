@@ -1,8 +1,18 @@
-from pandas.core.series import Series
+from typing import (
+    Callable,
+    Optional,
+    Sequence,
+    Union,
+)
+
 from pandas.core.frame import DataFrame
 from pandas.core.groupby.grouper import Grouper
-from pandas._typing import IndexLabel, Scalar
-from typing import Callable, Optional, Sequence, Union
+from pandas.core.series import Series
+
+from pandas._typing import (
+    IndexLabel,
+    Scalar,
+)
 
 def pivot_table(
     data: DataFrame,

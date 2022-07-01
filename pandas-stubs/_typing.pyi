@@ -1,19 +1,22 @@
 import datetime
-from io import BufferedIOBase, RawIOBase, TextIOBase, TextIOWrapper
+from io import (
+    BufferedIOBase,
+    RawIOBase,
+    TextIOBase,
+    TextIOWrapper,
+)
 from mmap import mmap
-import numpy as np
-from numpy import typing as npt
-import sys
 from os import PathLike
 from pathlib import Path
+import sys
 from typing import (
+    IO,
     Any,
     AnyStr,
     Callable,
     Collection,
     Dict,
     Hashable,
-    IO,
     List,
     Mapping,
     NewType,
@@ -26,12 +29,20 @@ from typing import (
     Union,
 )
 
-from pandas.core.generic import NDFrame
-from pandas._libs.tslibs import Period, Timedelta as Timedelta, Timestamp as Timestamp
+import numpy as np
+from numpy import typing as npt
 from pandas.core.arrays import ExtensionArray as ExtensionArray
-from pandas.core.series import Series as Series
 from pandas.core.frame import DataFrame as DataFrame
+from pandas.core.generic import NDFrame
 from pandas.core.indexes.base import Index as Index
+from pandas.core.series import Series as Series
+
+from pandas._libs.tslibs import (
+    Period,
+    Timedelta as Timedelta,
+    Timestamp as Timestamp,
+)
+
 from pandas.core.dtypes.dtypes import ExtensionDtype
 
 if sys.version_info >= (3, 8):

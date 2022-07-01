@@ -1,16 +1,30 @@
 # flake8: noqa: F841
-from datetime import date, datetime
+from datetime import (
+    date,
+    datetime,
+)
 import io
-import tempfile
 from pathlib import Path
+<<<<<<< HEAD
 from typing import List, Tuple, Iterable, Any, Dict, Hashable, Union
+=======
+import tempfile
+from typing import (
+    Any,
+    Iterable,
+    List,
+    Tuple,
+    Union,
+)
+
+import numpy as np
+import pandas as pd
+from pandas._testing import getSeriesData
+import pytest
+>>>>>>> upstream/main
 from typing_extensions import assert_type
 
-import pandas as pd
 from pandas.io.parsers import TextFileReader
-import numpy as np
-
-import pytest
 
 
 def test_types_init() -> None:
@@ -133,6 +147,7 @@ def test_types_loc_at() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df.loc[[0], "col1"]
     df.at[0, "col1"]
+    df.loc[0, "col1"]
 
 
 def test_types_boolean_indexing() -> None:
@@ -198,6 +213,8 @@ def test_types_drop() -> None:
     res6: pd.DataFrame = df.drop(index=1)
     res7: pd.DataFrame = df.drop(labels=0)
     res8: None = df.drop([0, 0], inplace=True)
+    to_drop: List[str] = ["col1"]
+    res9: pd.DataFrame = df.drop(columns=to_drop)
 
 
 def test_types_dropna() -> None:
@@ -1003,3 +1020,13 @@ def test_read_excel() -> None:
     df11: pd.DataFrame = pd.read_excel("foo")
     df12: pd.DataFrame = pd.read_excel("foo", sheet_name="sheet")
     df13: Dict[Union[int, str], pd.DataFrame] = pd.read_excel("foo", sheet_name=["sheet"])
+
+
+def test_join() -> None:
+    float_frame = pd.DataFrame(getSeriesData())
+    # GH 29
+    left = float_frame["A"].to_frame()
+    seriesB = float_frame["B"]
+    frameCD = float_frame[["C", "D"]]
+    right: List[Union[pd.Series, pd.DataFrame]] = [seriesB, frameCD]
+    result = left.join(right)

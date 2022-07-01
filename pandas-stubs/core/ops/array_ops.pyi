@@ -1,6 +1,11 @@
+from typing import (
+    Optional,
+    Union,
+)
+
 import numpy as np
+
 from pandas.core.dtypes.generic import ABCExtensionArray as ABCExtensionArray
-from typing import Optional, Union
 
 def comp_method_OBJECT_ARRAY(op, x, y): ...
 def masked_arith_op(x, y, op): ...
