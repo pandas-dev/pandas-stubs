@@ -1024,20 +1024,20 @@ def test_join() -> None:
 
 def test_types_ffill() -> None:
     df = pd.DataFrame([[1, 2, 3]])
-    res1: pd.DataFrame = df.ffill()
-    res2: pd.DataFrame = df.ffill(inplace=False)
-    res3: None = df.ffill(inplace=True)
+    assert_type(df.ffill(), pd.DataFrame)
+    assert_type(df.ffill(inplace=False), pd.DataFrame)
+    assert_type(df.ffill(inplace=True), None)
 
 
 def test_types_bfill() -> None:
     df = pd.DataFrame([[1, 2, 3]])
-    res1: pd.DataFrame = df.bfill()
-    res2: pd.DataFrame = df.bfill(inplace=False)
-    res3: None = df.bfill(inplace=True)
+    assert_type(df.bfill(), pd.DataFrame)
+    assert_type(df.bfill(inplace=False), pd.DataFrame)
+    assert_type(df.bfill(inplace=True), None)
 
 
 def test_types_replace() -> None:
     df = pd.DataFrame([[1, 2, 3]])
-    res1: pd.DataFrame = df.replace(1, 2)
-    res2: pd.DataFrame = df.replace(1, 2, inplace=False)
-    res3: None = df.replace(1, 2, inplace=True)
+    assert_type(df.replace(1, 2), pd.DataFrame)
+    assert_type(df.replace(1, 2, inplace=False), pd.DataFrame)
+    assert_type(df.replace(1, 2, inplace=True), None)
