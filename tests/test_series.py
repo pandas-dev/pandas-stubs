@@ -170,7 +170,7 @@ def test_types_dropna() -> None:
 
 def test_types_fillna() -> None:
     s = pd.Series([1, np.nan, np.nan, 3])
-    res: pd.Series = s.fillna(0)
+    res1: pd.Series = s.fillna(0)
     res2: pd.Series = s.fillna(0, axis="index")
     res3: pd.Series = s.fillna(method="backfill", axis=0)
     res4: None = s.fillna(method="bfill", inplace=True)
@@ -180,9 +180,10 @@ def test_types_fillna() -> None:
 
 def test_types_sort_index() -> None:
     s = pd.Series([1, 2, 3], index=[2, 3, 1])
-    res: pd.Series = s.sort_index()
-    res2: None = s.sort_index(ascending=False, inplace=True)
-    res3: pd.Series = s.sort_index(kind="mergesort")
+    res1: pd.Series = s.sort_index()
+    res2: pd.Series = s.sort_index(ascending=False)
+    res3: None = s.sort_index(ascending=False, inplace=True)
+    res4: pd.Series = s.sort_index(kind="mergesort")
 
 
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
@@ -193,11 +194,12 @@ def test_types_sort_index_with_key() -> None:
 
 def test_types_sort_values() -> None:
     s = pd.Series([4, 2, 1, 3])
-    res: pd.Series = s.sort_values(0)
-    res2: pd.Series = s.sort_values(ascending=False)
-    res3: None = s.sort_values(inplace=True, kind="quicksort")
-    res4: pd.Series = s.sort_values(na_position="last")
-    res5: pd.Series = s.sort_values(ignore_index=True)
+    res1: pd.Series = s.sort_values()
+    res2: pd.Series = s.sort_values(0)
+    res3: pd.Series = s.sort_values(ascending=False)
+    res4: None = s.sort_values(inplace=True, kind="quicksort")
+    res5: pd.Series = s.sort_values(na_position="last")
+    res6: pd.Series = s.sort_values(ignore_index=True)
 
 
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
@@ -547,8 +549,9 @@ def test_types_ne() -> None:
 
 def test_types_bfill() -> None:
     s1 = pd.Series([1, 2, 3])
-    s2: pd.Series = s1.bfill(inplace=False)
-    s3: None = s1.bfill(inplace=True)
+    s2: pd.Series = s1.bfill()
+    s3: pd.Series = s1.bfill(inplace=False)
+    s4: None = s1.bfill(inplace=True)
 
 
 def test_types_ewm() -> None:
@@ -563,8 +566,9 @@ def test_types_ewm() -> None:
 
 def test_types_ffill() -> None:
     s1 = pd.Series([1, 2, 3])
-    s2: pd.Series = s1.ffill(inplace=False)
-    s3: None = s1.ffill(inplace=True)
+    s2: pd.Series = s1.ffill()
+    s3: pd.Series = s1.ffill(inplace=False)
+    s4: None = s1.ffill(inplace=True)
 
 
 def test_types_as_type() -> None:
@@ -671,3 +675,11 @@ def test_series_add_str() -> None:
 def test_series_dtype() -> None:
     s = pd.Series(["abc", "def"], dtype=str)
     assert_type(s, "pd.Series[str]")
+
+
+def test_types_replace() -> None:
+    s = pd.Series([1, 2, 3])
+    res1: pd.Series = s.replace(1, 2)
+    res2: pd.Series = s.replace(1, 2, inplace=False)
+    res3: None = s.replace(1, 2, inplace=True)
+
