@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pandas-stubs"
-version = "1.4.2.220626"
+version = "1.4.3.220701"
 description = "Type annotations for pandas"
 authors = ["The Pandas Development Team <pandas-dev@python.org>"]
 license = "BSD-3-Clause"
@@ -32,7 +32,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"
-pandas = "1.4.2"
+pandas = "1.4.3"
 typing-extensions = ">=4.2.0"
 matplotlib = ">=3.3.2"
 
