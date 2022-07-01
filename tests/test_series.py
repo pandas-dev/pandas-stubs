@@ -678,6 +678,7 @@ def test_series_dtype() -> None:
 
 
 def test_types_replace() -> None:
+    # GH 44
     s = pd.Series([1, 2, 3])
     assert_type(s.replace(1, 2), pd.Series)
     assert_type(s.replace(1, 2, inplace=False), pd.Series)

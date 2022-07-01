@@ -1023,6 +1023,7 @@ def test_join() -> None:
 
 
 def test_types_ffill() -> None:
+    # GH 44
     df = pd.DataFrame([[1, 2, 3]])
     assert_type(df.ffill(), pd.DataFrame)
     assert_type(df.ffill(inplace=False), pd.DataFrame)
@@ -1030,6 +1031,7 @@ def test_types_ffill() -> None:
 
 
 def test_types_bfill() -> None:
+    # GH 44
     df = pd.DataFrame([[1, 2, 3]])
     assert_type(df.bfill(), pd.DataFrame)
     assert_type(df.bfill(inplace=False), pd.DataFrame)
@@ -1037,6 +1039,7 @@ def test_types_bfill() -> None:
 
 
 def test_types_replace() -> None:
+    # GH 44
     df = pd.DataFrame([[1, 2, 3]])
     assert_type(df.replace(1, 2), pd.DataFrame)
     assert_type(df.replace(1, 2, inplace=False), pd.DataFrame)
