@@ -467,18 +467,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         na_position: Union[_str, Literal["first", "last"]] = ...,
         ignore_index: _bool = ...,
         *,
-        inplace: Literal[False],
-        key: Optional[Callable] = ...,
-    ) -> Series[S1]: ...
-    @overload
-    def sort_values(
-        self,
-        axis: AxisType = ...,
-        ascending: Union[_bool, Sequence[_bool]] = ...,
-        *,
-        kind: Union[_str, Literal["quicksort", "mergesort", "heapsort"]] = ...,
-        na_position: Union[_str, Literal["first", "last"]] = ...,
-        ignore_index: _bool = ...,
+        inplace: Literal[False] = ...,
         key: Optional[Callable] = ...,
     ) -> Series[S1]: ...
     @overload
@@ -517,20 +506,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
         *,
-        inplace: Literal[False],
-        key: Optional[Callable] = ...,
-    ) -> Series: ...
-    @overload
-    def sort_index(
-        self,
-        axis: AxisType = ...,
-        level: Optional[Union[Level, List[int], List[_str]]] = ...,
-        ascending: Union[_bool, Sequence[_bool]] = ...,
-        *,
-        kind: Union[_str, Literal["quicksort", "mergesort", "heapsort"]] = ...,
-        na_position: Union[_str, Literal["first", "last"]] = ...,
-        sort_remaining: _bool = ...,
-        ignore_index: _bool = ...,
+        inplace: Literal[False] = ...,
         key: Optional[Callable] = ...,
     ) -> Series: ...
     @overload
@@ -747,6 +723,28 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         limit: Optional[int] = ...,
         downcast: Optional[Dict] = ...,
     ) -> Union[Series[S1], None]: ...
+    @overload
+    def replace(
+        self,
+        to_replace: Optional[Union[_str, List, Dict, Series[S1], int, float]] = ...,
+        value: Optional[Union[Scalar, Dict, List, _str]] = ...,
+        inplace: Literal[False] = ...,
+        limit: Optional[int] = ...,
+        regex=...,
+        method: Optional[Union[_str, Literal["pad", "ffill", "bfill"]]] = ...,
+    ) -> Series[S1]: ...
+    @overload
+    def replace(
+        self,
+        to_replace: Optional[Union[_str, List, Dict, Series[S1], int, float]] = ...,
+        value: Optional[Union[Scalar, Dict, List, _str]] = ...,
+        limit: Optional[int] = ...,
+        regex=...,
+        method: Optional[Union[_str, Literal["pad", "ffill", "bfill"]]] = ...,
+        *,
+        inplace: Literal[True],
+    ) -> None: ...
+    @overload
     def replace(
         self,
         to_replace: Optional[Union[_str, List, Dict, Series[S1], int, float]] = ...,
@@ -755,7 +753,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         limit: Optional[int] = ...,
         regex=...,
         method: Optional[Union[_str, Literal["pad", "ffill", "bfill"]]] = ...,
-    ) -> Series[S1]: ...
+    ) -> Union[Series[S1], None]: ...
     def shift(
         self,
         periods: int = ...,
@@ -878,7 +876,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         axis: Optional[SeriesAxisType] = ...,
         *,
-        inplace: Literal[False],
+        inplace: Literal[False] = ...,
         limit: Optional[int] = ...,
         downcast: Optional[Dict] = ...,
     ) -> Series[S1]: ...
@@ -896,7 +894,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         axis: Optional[SeriesAxisType] = ...,
         *,
-        inplace: Literal[False],
+        inplace: Literal[False] = ...,
         limit: Optional[int] = ...,
         downcast: Optional[Dict] = ...,
     ) -> Series[S1]: ...

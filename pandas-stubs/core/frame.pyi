@@ -544,18 +544,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         to_replace=...,
         value: Optional[Union[Scalar, Sequence, Mapping, Pattern]] = ...,
-        limit: Optional[int] = ...,
-        regex=...,
-        method: Optional[_str] = ...,
-        *,
-        inplace: Literal[False],
-    ) -> DataFrame: ...
-    @overload
-    def replace(
-        self,
-        to_replace=...,
-        value: Optional[Union[Scalar, Sequence, Mapping, Pattern]] = ...,
-        *,
+        inplace: Literal[False] = ...,
         limit: Optional[int] = ...,
         regex=...,
         method: Optional[_str] = ...,
@@ -1238,7 +1227,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         axis: Optional[AxisType] = ...,
         *,
-        inplace: Literal[False],
+        inplace: Literal[False] = ...,
         limit: Optional[int] = ...,
         downcast: Optional[Dict] = ...,
     ) -> DataFrame: ...
@@ -1327,7 +1316,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         axis: Optional[AxisType] = ...,
         *,
-        inplace: Literal[False],
+        inplace: Literal[False] = ...,
         limit: Optional[int] = ...,
         downcast: Optional[Dict] = ...,
     ) -> DataFrame: ...

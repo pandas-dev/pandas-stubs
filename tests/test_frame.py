@@ -1020,3 +1020,27 @@ def test_join() -> None:
     frameCD = float_frame[["C", "D"]]
     right: List[Union[pd.Series, pd.DataFrame]] = [seriesB, frameCD]
     result = left.join(right)
+
+
+def test_types_ffill() -> None:
+    # GH 44
+    df = pd.DataFrame([[1, 2, 3]])
+    assert_type(df.ffill(), pd.DataFrame)
+    assert_type(df.ffill(inplace=False), pd.DataFrame)
+    assert_type(df.ffill(inplace=True), None)
+
+
+def test_types_bfill() -> None:
+    # GH 44
+    df = pd.DataFrame([[1, 2, 3]])
+    assert_type(df.bfill(), pd.DataFrame)
+    assert_type(df.bfill(inplace=False), pd.DataFrame)
+    assert_type(df.bfill(inplace=True), None)
+
+
+def test_types_replace() -> None:
+    # GH 44
+    df = pd.DataFrame([[1, 2, 3]])
+    assert_type(df.replace(1, 2), pd.DataFrame)
+    assert_type(df.replace(1, 2, inplace=False), pd.DataFrame)
+    assert_type(df.replace(1, 2, inplace=True), None)
