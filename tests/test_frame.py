@@ -1,13 +1,8 @@
 # flake8: noqa: F841
-from datetime import (
-    date,
-    datetime,
-)
+from datetime import date
 import io
 from pathlib import Path
-<<<<<<< HEAD
-from typing import List, Tuple, Iterable, Any, Dict, Hashable, Union
-=======
+from typing import List, Tuple, Iterable, Any, Dict, Union
 import tempfile
 from typing import (
     Any,
@@ -21,7 +16,6 @@ import numpy as np
 import pandas as pd
 from pandas._testing import getSeriesData
 import pytest
->>>>>>> upstream/main
 from typing_extensions import assert_type
 
 from pandas.io.parsers import TextFileReader
@@ -1017,6 +1011,9 @@ def test_frame_getitem_isin() -> None:
 
 
 def test_read_excel() -> None:
+    pytest.skip()
+
+    # https://github.com/pandas-dev/pandas-stubs/pull/33
     df11: pd.DataFrame = pd.read_excel("foo")
     df12: pd.DataFrame = pd.read_excel("foo", sheet_name="sheet")
     df13: Dict[Union[int, str], pd.DataFrame] = pd.read_excel("foo", sheet_name=["sheet"])
