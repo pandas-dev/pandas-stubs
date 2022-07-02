@@ -818,7 +818,7 @@ def test_types_rename() -> None:
     df.rename(columns={1: "b"})
     # Apparently all of these calls are accepted by pandas
     df.rename(columns={None: "b"})
-    df.rename(columns={type("AnyObject")(): "b"})
+    df.rename(columns={str(): "b"})
     df.rename(columns={(2, 1): "b"})
     df.rename(columns=lambda s: s.upper())
 
