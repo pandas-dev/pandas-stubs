@@ -3,7 +3,6 @@ from scripts.test import _step
 
 
 def test_src(profile: str, clean_cache: bool = False):
-    """ """
     steps = []
     if clean_cache:
         steps.extend(
@@ -26,7 +25,6 @@ def test_src(profile: str, clean_cache: bool = False):
 
 
 def test_dist(clean_cache: bool = False):
-    """ """
     steps = []
     if clean_cache:
         steps.extend(
@@ -52,7 +50,6 @@ def test_dist(clean_cache: bool = False):
 
 
 def test_all(clean_cache: bool = False):
-    """ """
     steps = []
     if clean_cache:
         steps.extend(
