@@ -1,13 +1,11 @@
 # flake8: noqa: F841
-from datetime import (
-    date,
-    datetime,
-)
+from datetime import date
 import io
 from pathlib import Path
 import tempfile
 from typing import (
     Any,
+    Dict,
     Iterable,
     List,
     Tuple,
@@ -820,7 +818,7 @@ def test_types_rename() -> None:
     df.rename(columns={1: "b"})
     # Apparently all of these calls are accepted by pandas
     df.rename(columns={None: "b"})
-    df.rename(columns={type("AnyObject")(): "b"})
+    df.rename(columns={"": "b"})
     df.rename(columns={(2, 1): "b"})
     df.rename(columns=lambda s: s.upper())
 
@@ -1010,6 +1008,17 @@ def test_getmultiindex_columns() -> None:
 def test_frame_getitem_isin() -> None:
     df = pd.DataFrame({"x": [1, 2, 3, 4, 5]}, index=[1, 2, 3, 4, 5])
     assert_type(df[df.index.isin([1, 3, 5])], "pd.DataFrame")
+
+
+def test_read_excel() -> None:
+    pytest.skip()
+
+    # https://github.com/pandas-dev/pandas-stubs/pull/33
+    df11: pd.DataFrame = pd.read_excel("foo")
+    df12: pd.DataFrame = pd.read_excel("foo", sheet_name="sheet")
+    df13: Dict[Union[int, str], pd.DataFrame] = pd.read_excel(
+        "foo", sheet_name=["sheet"]
+    )
 
 
 def test_join() -> None:

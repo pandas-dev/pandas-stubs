@@ -7,14 +7,19 @@ from typing import (
     Callable,
     Dict,
     List,
+    Literal,
     Mapping,
     Optional,
     Protocol,
     Sequence,
+    Set,
+    Tuple,
     Union,
     overload,
 )
 
+import numpy as np
+import pandas as pd
 from pandas.core.frame import DataFrame as DataFrame
 
 from pandas._typing import (
@@ -28,10 +33,13 @@ from pandas._typing import (
     StorageOptions as StorageOptions,
 )
 
-if sys.version_info >= (3, 8):
-    from typing import Literal
-else:
-    from typing_extensions import Literal
+ListLike = Union[
+    List[Union[str, int]],
+    Tuple[Union[str, int]],
+    Set[Union[str, int]],
+    np.ndarray,
+    pd.Series,
+]
 
 class ReadCsvBuffer(ReadBuffer[AnyStr_cov], Protocol): ...
 
@@ -48,7 +56,7 @@ def read_csv(
     header: Optional[Union[int, Sequence[int], Literal["infer"]]] = ...,
     names=...,
     index_col=...,
-    usecols=...,
+    usecols: Optional[Union[ListLike, Callable]] = ...,
     squeeze: Optional[bool] = ...,
     prefix: Optional[str] = ...,
     mangle_dupe_cols: bool = ...,
@@ -106,7 +114,7 @@ def read_csv(
     header: Optional[Union[int, Sequence[int], Literal["infer"]]] = ...,
     names=...,
     index_col=...,
-    usecols=...,
+    usecols: Optional[Union[ListLike, Callable]] = ...,
     squeeze: Optional[bool] = ...,
     prefix: Optional[str] = ...,
     mangle_dupe_cols: bool = ...,
@@ -164,7 +172,7 @@ def read_csv(
     header: Optional[Union[int, Sequence[int], Literal["infer"]]] = ...,
     names=...,
     index_col=...,
-    usecols=...,
+    usecols: Optional[Union[ListLike, Callable]] = ...,
     squeeze: Optional[bool] = ...,
     prefix: Optional[str] = ...,
     mangle_dupe_cols: bool = ...,
@@ -222,7 +230,7 @@ def read_csv(
     header: Optional[Union[int, Sequence[int], Literal["infer"]]] = ...,
     names=...,
     index_col=...,
-    usecols=...,
+    usecols: Optional[Union[ListLike, Callable]] = ...,
     squeeze: Optional[bool] = ...,
     prefix: Optional[str] = ...,
     mangle_dupe_cols: bool = ...,
