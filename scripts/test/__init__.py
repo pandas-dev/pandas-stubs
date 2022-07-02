@@ -2,7 +2,6 @@ from scripts._job import run_job
 from scripts.test import _step
 
 
-
 def test_src(profile: str, clean_cache: bool = False):
     steps = []
     if clean_cache:
