@@ -544,18 +544,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         to_replace=...,
         value: Optional[Union[Scalar, Sequence, Mapping, Pattern]] = ...,
-        limit: Optional[int] = ...,
-        regex=...,
-        method: Optional[_str] = ...,
-        *,
-        inplace: Literal[False],
-    ) -> DataFrame: ...
-    @overload
-    def replace(
-        self,
-        to_replace=...,
-        value: Optional[Union[Scalar, Sequence, Mapping, Pattern]] = ...,
-        *,
+        inplace: Literal[False] = ...,
         limit: Optional[int] = ...,
         regex=...,
         method: Optional[_str] = ...,
@@ -950,7 +939,7 @@ class DataFrame(NDFrame, OpsMixin):
         **kwargs,
     ) -> DataFrame: ...
     def applymap(
-        self, func: Callable, na_action: Optional[Literal["ignore"]] = None, **kwargs
+        self, func: Callable, na_action: Optional[Literal["ignore"]] = ..., **kwargs
     ) -> DataFrame: ...
     def append(
         self,
@@ -993,7 +982,7 @@ class DataFrame(NDFrame, OpsMixin):
         method: Union[_str, Literal["pearson", "kendall", "spearman"]] = ...,
         min_periods: int = ...,
     ) -> DataFrame: ...
-    def cov(self, min_periods: Optional[int] = ..., ddof: int = 1) -> DataFrame: ...
+    def cov(self, min_periods: Optional[int] = ..., ddof: int = ...) -> DataFrame: ...
     def corrwith(
         self,
         other: Union[DataFrame, Series],
@@ -1009,7 +998,7 @@ class DataFrame(NDFrame, OpsMixin):
     def count(
         self, axis: AxisType = ..., level: None = ..., numeric_only: _bool = ...
     ) -> Series: ...
-    def nunique(self, axis: AxisType = ..., dropna=True) -> Series: ...
+    def nunique(self, axis: AxisType = ..., dropna: bool = ...) -> Series: ...
     def idxmax(self, axis: AxisType = ..., skipna: _bool = ...) -> Series: ...
     def idxmin(self, axis: AxisType = ..., skipna: _bool = ...) -> Series: ...
     @overload
@@ -1238,7 +1227,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         axis: Optional[AxisType] = ...,
         *,
-        inplace: Literal[False],
+        inplace: Literal[False] = ...,
         limit: Optional[int] = ...,
         downcast: Optional[Dict] = ...,
     ) -> DataFrame: ...
@@ -1327,7 +1316,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         axis: Optional[AxisType] = ...,
         *,
-        inplace: Literal[False],
+        inplace: Literal[False] = ...,
         limit: Optional[int] = ...,
         downcast: Optional[Dict] = ...,
     ) -> DataFrame: ...
@@ -1731,7 +1720,7 @@ class DataFrame(NDFrame, OpsMixin):
         origin: Union[
             Timestamp, Literal["epoch", "start", "start_day", "end", "end_day"]
         ] = ...,
-        offset: Optional[Union[Timedelta, _str]] = None,
+        offset: Optional[Union[Timedelta, _str]] = ...,
     ) -> Resampler: ...
     def rfloordiv(
         self,

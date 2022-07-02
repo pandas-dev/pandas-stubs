@@ -20,7 +20,7 @@ def factorize(
     values: Any,
     sort: bool = ...,
     na_sentinel: int = ...,
-    size_hint: Union[int, None] = None,
+    size_hint: Union[int, None] = ...,
 ) -> Tuple[np.ndarray, Union[np.ndarray, Index]]: ...
 def value_counts(
     values,

@@ -6,6 +6,7 @@ from typing import (
     Hashable,
     Iterator,
     List,
+    Literal,
     Mapping,
     Optional,
     Sequence,
@@ -42,11 +43,6 @@ from pandas._typing import (
     Timedelta as Timedelta,
     Timestamp as Timestamp,
 )
-
-if sys.version_info >= (3, 8):
-    from typing import Literal
-else:
-    from typing_extensions import Literal
 
 _bool = bool
 _str = str

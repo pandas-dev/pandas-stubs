@@ -18,6 +18,7 @@ from typing import (
     Dict,
     Hashable,
     List,
+    Literal,
     Mapping,
     NewType,
     Optional,
@@ -44,11 +45,6 @@ from pandas._libs.tslibs import (
 )
 
 from pandas.core.dtypes.dtypes import ExtensionDtype
-
-if sys.version_info >= (3, 8):
-    from typing import Literal
-else:
-    from typing_extensions import Literal
 
 ArrayLike = Union[ExtensionArray, np.ndarray]
 AnyArrayLike = Union[Index, Series]
