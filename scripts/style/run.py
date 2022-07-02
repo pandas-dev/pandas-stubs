@@ -17,7 +17,7 @@ def check_isort():
 def check_pyupgrade():
     cmd = ["pyupgrade", "--py38-plus", "--keep-runtime-typing"]
     for folder in CHECK_FOLDERS:
-        for py_file in Path(folder).glob("**/*.py*"):
+        for py_file in Path(folder).glob("**/*.[py][pyi]"):
             subprocess.run(cmd + [str(py_file)], check=True)
 
 
@@ -39,5 +39,5 @@ def format_pyupgrade():
         "--exit-zero-even-if-changed",
     ]
     for folder in CHECK_FOLDERS:
-        for py_file in Path(folder).glob("**/*.py*"):
+        for py_file in Path(folder).glob("**/*.[py][pyi]"):
             subprocess.run(cmd + [str(py_file)], check=True)
