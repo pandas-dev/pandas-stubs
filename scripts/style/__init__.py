@@ -9,6 +9,6 @@ def check_style():
 
 
 def format_style():
-    steps = [_step.check_pyupgrade, _step.format_black, _step.format_isort]
+    steps = [_step.format_pyupgrade, _step.format_black, _step.format_isort]
 
     run_job(steps)

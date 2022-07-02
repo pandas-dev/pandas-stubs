@@ -14,15 +14,14 @@ def check_isort():
     subprocess.run(cmd, check=True)
 
 
-def pyupgrade_check():
+def check_pyupgrade():
     cmd = ["pyupgrade", "--py38-plus", "--keep-runtime-typing"]
     for folder in CHECK_FOLDERS:
         for py_file in Path(folder).glob("**/*.py*"):
             subprocess.run(cmd + [str(py_file)], check=True)
 
 
-def run_format_black():
-    cmd = ["black"] + CHECK_FOLDERS
+def format_black():
     cmd = ["black"] + CHECK_FOLDERS
     subprocess.run(cmd, check=True)
 
