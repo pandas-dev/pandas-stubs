@@ -1,8 +1,5 @@
-from scripts._job import (
-    Step,
-    run_job,
-)
-from scripts.test import procedures
+from scripts._job import run_job
+from scripts.test import _step
 
 
 def test_src(profile: str, clean_cache: bool = False):
@@ -10,29 +7,34 @@ def test_src(profile: str, clean_cache: bool = False):
     if clean_cache:
         steps.extend(
             [
-                Step(name="Clean mypy cache", run=procedures.clean_mypy_cache),
-                Step(name="Clean pytest cache", run=procedures.clean_pytest_cache),
+                _step.clean_mypy_cache,
+                _step.clean_pytest_cache,
             ]
         )
 
-    # Possible steps
-    mypy_step = Step(name="Run Mypy Against Source Code", run=procedures.run_mypy_src)
-    pyright_step = Step(
-        name="Run Pyright Against Source Code", run=procedures.run_pyright_src
-    )
-    pytest_step = Step(
-        name="Run Pytest Against Source Code", run=procedures.run_pytest_src
-    )
-
-    # Defining which test is going to run according to a profile
     if profile in (None, "", "default"):
-        steps.extend([mypy_step, pyright_step])
+        steps.extend(
+            [
+                _step.create_mypy_pkg_file,
+                _step.mypy_src,
+                _step.destroy_mypy_pkg_file,
+                _step.pyright_src,
+            ]
+        )
     elif profile == "pytest":
-        steps.extend([pytest_step])
+        steps.extend([_step.pytest_src])
     elif profile == "full":
-        steps.extend([mypy_step, pyright_step, pytest_step])
+        steps.extend(
+            [
+                _step.create_mypy_pkg_file,
+                _step.mypy_src,
+                _step.destroy_mypy_pkg_file,
+                _step.pyright_src,
+                _step.pytest_src,
+            ]
+        )
     else:
-        raise Exception("Profile not found!")
+        raise ModuleNotFoundError("Profile not found!")
 
     run_job(steps)
 
@@ -42,28 +44,20 @@ def test_dist(clean_cache: bool = False):
     if clean_cache:
         steps.extend(
             [
-                Step(name="Clean mypy cache", run=procedures.clean_mypy_cache),
-                Step(name="Clean pytest cache", run=procedures.clean_pytest_cache),
+                _step.clean_mypy_cache,
+                _step.clean_pytest_cache,
             ]
         )
 
     steps.extend(
         [
-            Step(name="Build Dist", run=procedures.build_dist),
-            Step(
-                name="Install Dist",
-                run=procedures.install_dist,
-                rollback=procedures.uninstall_dist,
-            ),
-            Step(
-                name="Remove Source Code",
-                run=procedures.remove_src,
-                rollback=procedures.restore_src,
-            ),
-            Step(name="Run MyPy Against Dist", run=procedures.run_mypy_dist),
-            Step(name="Run Pyright Against Dist", run=procedures.run_pyright_dist),
-            Step(name="Uninstall Dist", run=procedures.uninstall_dist),
-            Step(name="Restore Source Code", run=procedures.restore_src),
+            _step.build_dist,
+            _step.install_dist,
+            _step.rename_src,
+            _step.mypy_dist,
+            _step.pyright_src,
+            _step.uninstall_dist,
+            _step.restore_src,
         ]
     )
 
@@ -75,33 +69,25 @@ def test_all(clean_cache: bool = False):
     if clean_cache:
         steps.extend(
             [
-                Step(name="Clean mypy cache", run=procedures.clean_mypy_cache),
-                Step(name="Clean pytest cache", run=procedures.clean_pytest_cache),
+                _step.clean_mypy_cache,
+                _step.clean_pytest_cache,
             ]
         )
 
     steps.extend(
         [
-            Step(name="Run Mypy Against Source Code", run=procedures.run_mypy_src),
-            Step(
-                name="Run Pyright Against Source Code", run=procedures.run_pyright_src
-            ),
-            Step(name="Run Pytest Against Source Code", run=procedures.run_pytest_src),
-            Step(name="Build Dist", run=procedures.build_dist),
-            Step(
-                name="Install Dist",
-                run=procedures.install_dist,
-                rollback=procedures.uninstall_dist,
-            ),
-            Step(
-                name="Remove Source Code",
-                run=procedures.remove_src,
-                rollback=procedures.restore_src,
-            ),
-            Step(name="Run MyPy Against Dist", run=procedures.run_mypy_dist),
-            Step(name="Run Pyright Against Dist", run=procedures.run_pyright_dist),
-            Step(name="Uninstall Dist", run=procedures.uninstall_dist),
-            Step(name="Restore Source Code", run=procedures.restore_src),
+            _step.create_mypy_pkg_file,
+            _step.mypy_src,
+            _step.destroy_mypy_pkg_file,
+            _step.pyright_src,
+            _step.pytest_src,
+            _step.build_dist,
+            _step.install_dist,
+            _step.rename_src,
+            _step.mypy_dist,
+            _step.pyright_src,
+            _step.uninstall_dist,
+            _step.restore_src,
         ]
     )
 

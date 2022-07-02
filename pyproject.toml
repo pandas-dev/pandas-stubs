@@ -94,37 +94,41 @@ script = "scripts.test:test_all(clean_cache)"
     options = ["-c", "--clean_cache"]
     default = false
 
-[tool.poe.tasks.run_mypy_src]
+[tool.poe.tasks.create_mypy_pkg_file]
+help = "CI Test | Create mypy package file"
+script = "scripts.test.run:create_mypy_pkg_file"
+
+[tool.poe.tasks.mypy_src]
 help = "CI Test | Run mypy against source code"
-script = "scripts.test.procedures:run_mypy_src"
+script = "scripts.test.run:mypy_src"
 
-[tool.poe.tasks.run_pyright_src]
+[tool.poe.tasks.pyright_src]
 help = "CI Test | Run pyright against source code"
-script = "scripts.test.procedures:run_pyright_src"
+script = "scripts.test.run:pyright_src"
 
-[tool.poe.tasks.run_pytest_src]
+[tool.poe.tasks.pytest_src]
 help = "CI Test | Run pytest against source code"
-script = "scripts.test.procedures:run_pytest_src"
+script = "scripts.test.run:pytest_src"
 
 [tool.poe.tasks.build_dist]
 help = "CI Test | Build distribuition"
-script = "scripts.test.procedures:build_dist"
+script = "scripts.test.run:build_dist"
 
 [tool.poe.tasks.install_dist]
 help = "CI Test | Install distribuition"
-script = "scripts.test.procedures:install_dist"
+script = "scripts.test.run:install_dist"
 
-[tool.poe.tasks.remove_src]
-help = "CI Test | Remove source code"
-script = "scripts.test.procedures:remove_src"
+[tool.poe.tasks.rename_src]
+help = "CI Test | Rename source code"
+script = "scripts.test.run:rename_src"
 
-[tool.poe.tasks.run_mypy_dist]
+[tool.poe.tasks.mypy_dist]
 help = "CI Test | Run mypy against distribuition"
-script = "scripts.test.procedures:run_mypy_dist"
+script = "scripts.test.run:mypy_dist"
 
-[tool.poe.tasks.run_pyright_dist]
+[tool.poe.tasks.pyright_dist]
 help = "CI Test | Run pyright against distribuition"
-script = "scripts.test.procedures:run_pyright_dist"
+script = "scripts.test.run:pyright_dist"
 
 [tool.black]
 target-version = ['py38', 'py39']

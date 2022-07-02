@@ -1,6 +1,4 @@
-from collections import deque
 from dataclasses import dataclass
-from subprocess import CalledProcessError
 import time
 from typing import (
     Callable,
@@ -31,7 +29,9 @@ def __rollback_job(steps: Deque[Step]):
             try:
                 step.rollback()
             except Exception:
-                logger.error(f"Rollback of Step: '{step.name}' failed!")
+                logger.error(
+                    f"Rollback of Step: '{step.name}' failed! The project could be in a unstable mode."
+                )
 
 
 def run_job(steps: List[Step]) -> None:
@@ -50,7 +50,7 @@ def run_job(steps: List[Step]) -> None:
             rollback_steps.append(step)
             step.run()
 
-        except CalledProcessError:
+        except Exception:
 
             logger.error(f"Step: '{step.name}' failed!")
             __rollback_job(rollback_steps)

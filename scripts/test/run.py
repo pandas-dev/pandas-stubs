@@ -1,24 +1,35 @@
 from pathlib import Path
 import shutil
 import subprocess
-
-from scripts._job import (
-    Step,
-    run_job,
-)
+import sys
 
 
-def run_mypy_src():
+def create_mypy_pkg_file():
+    pkg_path = [path for path in sys.path if path.endswith("site-packages")]
+
+    if not Path(rf"{pkg_path[0]}/my_path.pth").exists():
+        with open(rf"{pkg_path[0]}/my_path.pth", "w") as file:
+            file.write(str(Path.cwd()))
+
+
+def destroy_mypy_pkg_file():
+    pkg_path = [path for path in sys.path if path.endswith("site-packages")]
+
+    if Path(rf"{pkg_path[0]}/my_path.pth").exists():
+        Path(rf"{pkg_path[0]}/my_path.pth").unlink()
+
+
+def mypy_src():
     cmd = ["mypy", "pandas-stubs", "tests", "--no-incremental"]
     subprocess.run(cmd, check=True)
 
 
-def run_pyright_src():
+def pyright_src():
     cmd = ["pyright"]
     subprocess.run(cmd, check=True)
 
 
-def run_pytest_src():
+def pytest_src():
     cmd = ["pytest"]
     subprocess.run(cmd, check=True)
 
@@ -34,16 +45,19 @@ def install_dist():
     subprocess.run(cmd, check=True)
 
 
-def remove_src():
-    shutil.rmtree(r"pandas-stubs")
+def rename_src():
+    if Path(r"pandas-stubs").exists():
+        Path(r"pandas-stubs").rename("_pandas-stubs")
+    else:
+        raise FileNotFoundError("'pandas-stubs' folder does not exists.")
 
 
-def run_mypy_dist():
+def mypy_dist():
     cmd = ["mypy", "tests", "--no-incremental"]
     subprocess.run(cmd, check=True)
 
 
-def run_pyright_dist():
+def pyright_dist():
     cmd = ["pyright", "tests"]
     subprocess.run(cmd, check=True)
 
@@ -54,8 +68,10 @@ def uninstall_dist():
 
 
 def restore_src():
-    cmd = ["git", "checkout", "HEAD", "pandas-stubs"]
-    subprocess.run(cmd, check=True)
+    if Path(r"_pandas-stubs").exists():
+        Path(r"_pandas-stubs").rename("pandas-stubs")
+    else:
+        raise FileNotFoundError("'_pandas-stubs' folder does not exists.")
 
 
 def clean_mypy_cache():
@@ -66,14 +82,3 @@ def clean_mypy_cache():
 def clean_pytest_cache():
     if Path(".mypy_cache").exists():
         shutil.rmtree(".pytest_cache")
-
-
-def create_new_venv():
-    cmd = ["poetry", "remove", "python"]
-    subprocess.run(cmd, check=True)
-
-    cmd = ["poetry", "update", "-vvv"]
-    subprocess.run(cmd, check=True)
-
-    cmd = ["poetry", "shell"]
-    subprocess.run(cmd, check=True)

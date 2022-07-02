@@ -80,7 +80,10 @@ from .core.reshape.api import (
     qcut as qcut,
     wide_to_long as wide_to_long,
 )
-from .core.tools import to_datetime as to_datetime, to_timedelta as to_timedelta
+from .core.tools import (
+    to_datetime as to_datetime,
+    to_timedelta as to_timedelta,
+)
 from .io.api import (
     ExcelFile as ExcelFile,
     ExcelWriter as ExcelWriter,
