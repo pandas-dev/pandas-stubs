@@ -3,6 +3,7 @@ import sys
 from typing import (
     Any,
     Callable,
+    Literal,
     Optional,
     Union,
     overload,
@@ -15,11 +16,6 @@ from pandas._typing import (
     FilePathOrBuffer,
     JSONSerializable as JSONSerializable,
 )
-
-if sys.version_info >= (3, 8):
-    from typing import Literal
-else:
-    from typing_extensions import Literal
 
 loads = ...
 dumps = ...

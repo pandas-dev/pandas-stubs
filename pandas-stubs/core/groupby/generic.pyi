@@ -5,6 +5,7 @@ from typing import (
     Dict,
     FrozenSet,
     List,
+    Literal,
     NamedTuple,
     Optional,
     Sequence,
@@ -34,11 +35,6 @@ from pandas._typing import (
     FuncType,
     Level,
 )
-
-if sys.version_info >= (3, 8):
-    from typing import Literal
-else:
-    from typing_extensions import Literal
 
 AggScalar = Union[str, Callable[..., Any]]
 ScalarResult = ...
