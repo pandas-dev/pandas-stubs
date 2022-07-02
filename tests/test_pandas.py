@@ -126,6 +126,12 @@ def test_types_read_csv() -> None:
         )
         df7: pd.DataFrame = pd.read_csv(file.name, nrows=2)
         df8: pd.DataFrame = pd.read_csv(file.name, dtype={"a": float, "b": int})
+        df9: pd.DataFrame = pd.read_csv(file.name, usecols=["col1"])
+        df10: pd.DataFrame = pd.read_csv(file.name, usecols={"col1"})
+        df11: pd.DataFrame = pd.read_csv(file.name, usecols=[0])
+        df12: pd.DataFrame = pd.read_csv(file.name, usecols=np.array([0]))
+        df13: pd.DataFrame = pd.read_csv(file.name, usecols=("col1",))
+        df14: pd.DataFrame = pd.read_csv(file.name, usecols=pd.Series(data=["col1"]))
 
         tfr1: TextFileReader = pd.read_csv(
             file.name, nrows=2, iterator=True, chunksize=3
