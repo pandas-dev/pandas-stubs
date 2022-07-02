@@ -1,5 +1,8 @@
 import tokenize
-from typing import Iterator, Tuple
+from typing import (
+    Iterator,
+    Tuple,
+)
 
 BACKTICK_QUOTED_STRING: int
 

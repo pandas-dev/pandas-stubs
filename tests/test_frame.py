@@ -1,17 +1,24 @@
 # flake8: noqa: F841
-from datetime import date, datetime
+from datetime import date
 import io
-import tempfile
 from pathlib import Path
-from typing import List, Tuple, Iterable, Any, Union
-from typing_extensions import assert_type
+import tempfile
+from typing import (
+    Any,
+    Dict,
+    Iterable,
+    List,
+    Tuple,
+    Union,
+)
 
+import numpy as np
 import pandas as pd
 from pandas._testing import getSeriesData
-from pandas.io.parsers import TextFileReader
-import numpy as np
-
 import pytest
+from typing_extensions import assert_type
+
+from pandas.io.parsers import TextFileReader
 
 
 def test_types_init() -> None:
@@ -811,7 +818,7 @@ def test_types_rename() -> None:
     df.rename(columns={1: "b"})
     # Apparently all of these calls are accepted by pandas
     df.rename(columns={None: "b"})
-    df.rename(columns={type("AnyObject")(): "b"})
+    df.rename(columns={"": "b"})
     df.rename(columns={(2, 1): "b"})
     df.rename(columns=lambda s: s.upper())
 
@@ -1003,6 +1010,17 @@ def test_frame_getitem_isin() -> None:
     assert_type(df[df.index.isin([1, 3, 5])], "pd.DataFrame")
 
 
+def test_read_excel() -> None:
+    pytest.skip()
+
+    # https://github.com/pandas-dev/pandas-stubs/pull/33
+    df11: pd.DataFrame = pd.read_excel("foo")
+    df12: pd.DataFrame = pd.read_excel("foo", sheet_name="sheet")
+    df13: Dict[Union[int, str], pd.DataFrame] = pd.read_excel(
+        "foo", sheet_name=["sheet"]
+    )
+
+
 def test_join() -> None:
     float_frame = pd.DataFrame(getSeriesData())
     # GH 29
@@ -1011,3 +1029,27 @@ def test_join() -> None:
     frameCD = float_frame[["C", "D"]]
     right: List[Union[pd.Series, pd.DataFrame]] = [seriesB, frameCD]
     result = left.join(right)
+
+
+def test_types_ffill() -> None:
+    # GH 44
+    df = pd.DataFrame([[1, 2, 3]])
+    assert_type(df.ffill(), pd.DataFrame)
+    assert_type(df.ffill(inplace=False), pd.DataFrame)
+    assert_type(df.ffill(inplace=True), None)
+
+
+def test_types_bfill() -> None:
+    # GH 44
+    df = pd.DataFrame([[1, 2, 3]])
+    assert_type(df.bfill(), pd.DataFrame)
+    assert_type(df.bfill(inplace=False), pd.DataFrame)
+    assert_type(df.bfill(inplace=True), None)
+
+
+def test_types_replace() -> None:
+    # GH 44
+    df = pd.DataFrame([[1, 2, 3]])
+    assert_type(df.replace(1, 2), pd.DataFrame)
+    assert_type(df.replace(1, 2, inplace=False), pd.DataFrame)
+    assert_type(df.replace(1, 2, inplace=True), None)

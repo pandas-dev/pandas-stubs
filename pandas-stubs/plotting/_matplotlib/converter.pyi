@@ -1,6 +1,9 @@
 import matplotlib.dates as dates
+from matplotlib.ticker import (
+    Formatter,
+    Locator,
+)
 import matplotlib.units as units
-from matplotlib.ticker import Formatter, Locator
 
 HOURS_PER_DAY: float = ...
 MIN_PER_HOUR: float = ...

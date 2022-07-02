@@ -1,51 +1,7 @@
 from __future__ import annotations
-import datetime
-import numpy as np
 
-from pandas.core.indexing import _iLocIndexer, _LocIndexer
-from matplotlib.axes import Axes as PlotAxes
-from pandas._typing import (
-    Axes as Axes,
-    Axis as Axis,
-    FilePathOrBuffer as FilePathOrBuffer,
-    FilePathOrBytesBuffer as FilePathOrBytesBuffer,
-    Level as Level,
-    Renamer as Renamer,
-)
-from pandas._typing import (
-    num,
-    SeriesAxisType,
-    AxisType,
-    Dtype,
-    DtypeNp,
-    Label,
-    StrLike,
-    Scalar as Scalar,
-    IndexType,
-    MaskType,
-    S1,
-    T as TType,
-)
-from pandas._typing import (
-    ArrayLike as ArrayLike,
-    np_ndarray_str,
-    np_ndarray_bool,
-    Timestamp as Timestamp,
-    Timedelta as Timedelta,
-)
-from pandas._typing import IndexLabel as IndexLabel, IgnoreRaise as IgnoreRaise
-from pandas.core.arraylike import OpsMixin
-from pandas.core.generic import NDFrame as NDFrame
-from pandas.core.groupby.generic import DataFrameGroupBy as DataFrameGroupBy
-from pandas.core.groupby.grouper import Grouper
-from pandas.core.indexes.base import Index as Index
-from pandas.core.indexes.multi import MultiIndex as MultiIndex
-from pandas.core.resample import Resampler
-from pandas.core.window.rolling import Rolling, Window
-from pandas.core.series import Series as Series
-from pandas.io.formats import console as console, format as fmt
-from pandas.io.formats.style import Styler as Styler
-from pandas.plotting import PlotAccessor
+import datetime
+import datetime as _dt
 from typing import (
     Any,
     Callable,
@@ -57,16 +13,68 @@ from typing import (
     Literal,
     Mapping,
     Optional,
+    Pattern,
     Sequence,
     Tuple,
     Type,
     Union,
     overload,
-    Pattern,
 )
 
+from matplotlib.axes import Axes as PlotAxes
 import numpy as _np
-import datetime as _dt
+import numpy as np
+from pandas.core.arraylike import OpsMixin
+from pandas.core.generic import NDFrame as NDFrame
+from pandas.core.groupby.generic import DataFrameGroupBy as DataFrameGroupBy
+from pandas.core.groupby.grouper import Grouper
+from pandas.core.indexes.base import Index as Index
+from pandas.core.indexes.multi import MultiIndex as MultiIndex
+from pandas.core.indexing import (
+    _iLocIndexer,
+    _LocIndexer,
+)
+from pandas.core.resample import Resampler
+from pandas.core.series import Series as Series
+from pandas.core.window.rolling import (
+    Rolling,
+    Window,
+)
+
+from pandas._typing import (
+    S1,
+    ArrayLike as ArrayLike,
+    Axes as Axes,
+    Axis as Axis,
+    AxisType,
+    Dtype,
+    DtypeNp,
+    FilePathOrBuffer as FilePathOrBuffer,
+    FilePathOrBytesBuffer as FilePathOrBytesBuffer,
+    IgnoreRaise as IgnoreRaise,
+    IndexLabel as IndexLabel,
+    IndexType,
+    Label,
+    Level as Level,
+    MaskType,
+    Renamer as Renamer,
+    Scalar as Scalar,
+    SeriesAxisType,
+    StrLike,
+    T as TType,
+    Timedelta as Timedelta,
+    Timestamp as Timestamp,
+    np_ndarray_bool,
+    np_ndarray_str,
+    num,
+)
+
+from pandas.io.formats import (
+    console as console,
+    format as fmt,
+)
+from pandas.io.formats.style import Styler as Styler
+from pandas.plotting import PlotAccessor
 
 _str = str
 _bool = bool
@@ -536,18 +544,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         to_replace=...,
         value: Optional[Union[Scalar, Sequence, Mapping, Pattern]] = ...,
-        limit: Optional[int] = ...,
-        regex=...,
-        method: Optional[_str] = ...,
-        *,
-        inplace: Literal[False],
-    ) -> DataFrame: ...
-    @overload
-    def replace(
-        self,
-        to_replace=...,
-        value: Optional[Union[Scalar, Sequence, Mapping, Pattern]] = ...,
-        *,
+        inplace: Literal[False] = ...,
         limit: Optional[int] = ...,
         regex=...,
         method: Optional[_str] = ...,
@@ -942,7 +939,7 @@ class DataFrame(NDFrame, OpsMixin):
         **kwargs,
     ) -> DataFrame: ...
     def applymap(
-        self, func: Callable, na_action: Optional[Literal["ignore"]] = None, **kwargs
+        self, func: Callable, na_action: Optional[Literal["ignore"]] = ..., **kwargs
     ) -> DataFrame: ...
     def append(
         self,
@@ -985,7 +982,7 @@ class DataFrame(NDFrame, OpsMixin):
         method: Union[_str, Literal["pearson", "kendall", "spearman"]] = ...,
         min_periods: int = ...,
     ) -> DataFrame: ...
-    def cov(self, min_periods: Optional[int] = ..., ddof: int = 1) -> DataFrame: ...
+    def cov(self, min_periods: Optional[int] = ..., ddof: int = ...) -> DataFrame: ...
     def corrwith(
         self,
         other: Union[DataFrame, Series],
@@ -1001,7 +998,7 @@ class DataFrame(NDFrame, OpsMixin):
     def count(
         self, axis: AxisType = ..., level: None = ..., numeric_only: _bool = ...
     ) -> Series: ...
-    def nunique(self, axis: AxisType = ..., dropna=True) -> Series: ...
+    def nunique(self, axis: AxisType = ..., dropna: bool = ...) -> Series: ...
     def idxmax(self, axis: AxisType = ..., skipna: _bool = ...) -> Series: ...
     def idxmin(self, axis: AxisType = ..., skipna: _bool = ...) -> Series: ...
     @overload
@@ -1230,7 +1227,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         axis: Optional[AxisType] = ...,
         *,
-        inplace: Literal[False],
+        inplace: Literal[False] = ...,
         limit: Optional[int] = ...,
         downcast: Optional[Dict] = ...,
     ) -> DataFrame: ...
@@ -1319,7 +1316,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         axis: Optional[AxisType] = ...,
         *,
-        inplace: Literal[False],
+        inplace: Literal[False] = ...,
         limit: Optional[int] = ...,
         downcast: Optional[Dict] = ...,
     ) -> DataFrame: ...
@@ -1723,7 +1720,7 @@ class DataFrame(NDFrame, OpsMixin):
         origin: Union[
             Timestamp, Literal["epoch", "start", "start_day", "end", "end_day"]
         ] = ...,
-        offset: Optional[Union[Timedelta, _str]] = None,
+        offset: Optional[Union[Timedelta, _str]] = ...,
     ) -> Resampler: ...
     def rfloordiv(
         self,

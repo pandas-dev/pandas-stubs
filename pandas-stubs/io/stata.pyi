@@ -1,8 +1,16 @@
-import datetime
 from collections import abc
-from pandas._typing import FilePathOrBuffer as FilePathOrBuffer
+import datetime
+from typing import (
+    Dict,
+    Hashable,
+    List,
+    Optional,
+    Sequence,
+)
+
 from pandas.core.frame import DataFrame as DataFrame
-from typing import Dict, Hashable, List, Optional, Sequence
+
+from pandas._typing import FilePathOrBuffer as FilePathOrBuffer
 
 def read_stata(
     path: FilePathOrBuffer,

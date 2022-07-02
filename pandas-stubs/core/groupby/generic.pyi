@@ -1,26 +1,11 @@
-from matplotlib.axes import Axes as PlotAxes, SubplotBase as AxesSubplot
-import numpy as np
 import sys
-from pandas._typing import (
-    FrameOrSeries as FrameOrSeries,
-    AxisType,
-    Dtype,
-    Level,
-    FuncType,
-    S1,
-)
-from pandas.core.frame import DataFrame as DataFrame
-from pandas.core.groupby.groupby import (
-    GroupBy as GroupBy,
-)  # , get_groupby as get_groupby
-from pandas.core.groupby.grouper import Grouper as Grouper
-from pandas.core.series import Series as Series
 from typing import (
     Any,
     Callable,
     Dict,
     FrozenSet,
     List,
+    Literal,
     NamedTuple,
     Optional,
     Sequence,
@@ -30,10 +15,26 @@ from typing import (
     overload,
 )
 
-if sys.version_info >= (3, 8):
-    from typing import Literal
-else:
-    from typing_extensions import Literal
+from matplotlib.axes import (
+    Axes as PlotAxes,
+    SubplotBase as AxesSubplot,
+)
+import numpy as np
+from pandas.core.frame import DataFrame as DataFrame
+from pandas.core.groupby.groupby import (  # , get_groupby as get_groupby
+    GroupBy as GroupBy,
+)
+from pandas.core.groupby.grouper import Grouper as Grouper
+from pandas.core.series import Series as Series
+
+from pandas._typing import (
+    S1,
+    AxisType,
+    Dtype,
+    FrameOrSeries as FrameOrSeries,
+    FuncType,
+    Level,
+)
 
 AggScalar = Union[str, Callable[..., Any]]
 ScalarResult = ...

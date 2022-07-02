@@ -1,8 +1,7 @@
-from typing_extensions import assert_type
 import numpy as np
-import pandas as pd
-
 from numpy import typing as npt
+import pandas as pd
+from typing_extensions import assert_type
 
 
 def test_index_unique() -> None:

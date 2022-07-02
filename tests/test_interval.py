@@ -1,7 +1,8 @@
 # flake8: noqa: F841
 from typing import TYPE_CHECKING
-from typing_extensions import assert_type
+
 import pandas as pd
+from typing_extensions import assert_type
 
 
 def test_interval_init() -> None:

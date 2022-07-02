@@ -1,22 +1,8 @@
 import shutil
 import subprocess
 from pathlib import Path
-import sys
 
-
-def create_mypy_pkg_file():
-    pkg_path = [path for path in sys.path if path.endswith('site-packages')]
-
-    if not Path(fr'{pkg_path[0]}/my_path.pth').exists():
-        with open(fr'{pkg_path[0]}/my_path.pth', 'w') as file:
-            file.write(str(Path.cwd()))
-
-
-def destroy_mypy_pkg_file():
-    pkg_path = [path for path in sys.path if path.endswith('site-packages')]
-
-    if Path(fr'{pkg_path[0]}/my_path.pth').exists():
-        Path(fr'{pkg_path[0]}/my_path.pth').unlink()
+from scripts._job import Step, run_job
 
 
 def run_mypy_src():
@@ -58,7 +44,6 @@ def run_pyright_dist():
     cmd = ["pyright", "tests"]
     subprocess.run(cmd, check=True)
 
-
 def uninstall_dist():
     cmd = ["pip", "uninstall", "-y", "pandas-stubs"]
     subprocess.run(cmd, check=True)
@@ -89,6 +74,3 @@ def create_new_venv():
     cmd = ["poetry", "shell"]
     subprocess.run(cmd, check=True)
 
-
-if __name__ == '__main__':
-    restore_last_changes()

@@ -1,30 +1,4 @@
-import numpy as np
 import sys
-import pandas.core.indexing as indexing
-from pandas._typing import (
-    ArrayLike as ArrayLike,
-    Axis as Axis,
-    AxisType as AxisType,
-    Dtype as Dtype,
-    FilePathOrBuffer as FilePathOrBuffer,
-    FrameOrSeriesUnion as FrameOrSeriesUnion,
-    IgnoreRaise as IgnoreRaise,
-    JSONSerializable as JSONSerializable,
-    Level as Level,
-    Renamer as Renamer,
-    ListLike as ListLike,
-    Scalar as Scalar,
-    SeriesAxisType as SeriesAxisType,
-    FrameOrSeries as FrameOrSeries,
-    S1 as S1,
-    Timestamp as Timestamp,
-    Timedelta as Timedelta,
-    T,
-)
-from pandas.core.base import PandasObject as PandasObject
-from pandas.core.indexes.base import Index as Index
-from pandas.core.internals import BlockManager as BlockManager
-from pandas.core.resample import Resampler
 from typing import (
     Any,
     Callable,
@@ -32,6 +6,7 @@ from typing import (
     Hashable,
     Iterator,
     List,
+    Literal,
     Mapping,
     Optional,
     Sequence,
@@ -41,10 +16,33 @@ from typing import (
     overload,
 )
 
-if sys.version_info >= (3, 8):
-    from typing import Literal
-else:
-    from typing_extensions import Literal
+import numpy as np
+from pandas.core.base import PandasObject as PandasObject
+from pandas.core.indexes.base import Index as Index
+import pandas.core.indexing as indexing
+from pandas.core.internals import BlockManager as BlockManager
+from pandas.core.resample import Resampler
+
+from pandas._typing import (
+    S1 as S1,
+    ArrayLike as ArrayLike,
+    Axis as Axis,
+    AxisType as AxisType,
+    Dtype as Dtype,
+    FilePathOrBuffer as FilePathOrBuffer,
+    FrameOrSeries as FrameOrSeries,
+    FrameOrSeriesUnion as FrameOrSeriesUnion,
+    IgnoreRaise as IgnoreRaise,
+    JSONSerializable as JSONSerializable,
+    Level as Level,
+    ListLike as ListLike,
+    Renamer as Renamer,
+    Scalar as Scalar,
+    SeriesAxisType as SeriesAxisType,
+    T,
+    Timedelta as Timedelta,
+    Timestamp as Timestamp,
+)
 
 _bool = bool
 _str = str

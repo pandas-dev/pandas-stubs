@@ -1,40 +1,6 @@
-import numpy as np
-from datetime import time, date
-
-from matplotlib.axes import Axes as PlotAxes, SubplotBase as SubplotBase
-from .base import IndexOpsMixin
-from .generic import NDFrame
-from .indexes.multi import MultiIndex
-from .indexing import _iLocIndexer, _LocIndexer
-from .frame import DataFrame
-from pandas.core.arrays.base import ExtensionArray
-from pandas.core.groupby.generic import SeriesGroupBy
-from pandas.core.indexes.base import Index
-from pandas.core.indexes.datetimes import DatetimeIndex
-from pandas.core.indexes.timedeltas import TimedeltaIndex
-from pandas.core.resample import Resampler
-from pandas.core.strings import StringMethods
-from pandas.core.window.rolling import Rolling, Window
-from pandas.core.window import ExponentialMovingWindow
-from pandas._typing import (
-    ArrayLike as ArrayLike,
-    Axis as Axis,
-    AxisType as AxisType,
-    Dtype as Dtype,
-    DtypeNp as DtypeNp,
-    FilePathOrBuffer as FilePathOrBuffer,
-    IgnoreRaise as IgnoreRaise,
-    Level as Level,
-    ListLike as ListLike,
-    MaskType as MaskType,
-    Renamer as Renamer,
-    S1 as S1,
-    Scalar as Scalar,
-    SeriesAxisType as SeriesAxisType,
-    Timestamp as Timestamp,
-    Timedelta as Timedelta,
-    num as num,
-    Label as Label,
+from datetime import (
+    date,
+    time,
 )
 from typing import (
     Any,
@@ -52,6 +18,54 @@ from typing import (
     Type,
     Union,
     overload,
+)
+
+from matplotlib.axes import (
+    Axes as PlotAxes,
+    SubplotBase as SubplotBase,
+)
+import numpy as np
+from pandas.core.arrays.base import ExtensionArray
+from pandas.core.groupby.generic import SeriesGroupBy
+from pandas.core.indexes.base import Index
+from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.indexes.timedeltas import TimedeltaIndex
+from pandas.core.resample import Resampler
+from pandas.core.strings import StringMethods
+from pandas.core.window import ExponentialMovingWindow
+from pandas.core.window.rolling import (
+    Rolling,
+    Window,
+)
+
+from pandas._typing import (
+    S1 as S1,
+    ArrayLike as ArrayLike,
+    Axis as Axis,
+    AxisType as AxisType,
+    Dtype as Dtype,
+    DtypeNp as DtypeNp,
+    FilePathOrBuffer as FilePathOrBuffer,
+    IgnoreRaise as IgnoreRaise,
+    Label as Label,
+    Level as Level,
+    ListLike as ListLike,
+    MaskType as MaskType,
+    Renamer as Renamer,
+    Scalar as Scalar,
+    SeriesAxisType as SeriesAxisType,
+    Timedelta as Timedelta,
+    Timestamp as Timestamp,
+    num as num,
+)
+
+from .base import IndexOpsMixin
+from .frame import DataFrame
+from .generic import NDFrame
+from .indexes.multi import MultiIndex
+from .indexing import (
+    _iLocIndexer,
+    _LocIndexer,
 )
 
 _bool = bool
@@ -453,18 +467,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         na_position: Union[_str, Literal["first", "last"]] = ...,
         ignore_index: _bool = ...,
         *,
-        inplace: Literal[False],
-        key: Optional[Callable] = ...,
-    ) -> Series[S1]: ...
-    @overload
-    def sort_values(
-        self,
-        axis: AxisType = ...,
-        ascending: Union[_bool, Sequence[_bool]] = ...,
-        *,
-        kind: Union[_str, Literal["quicksort", "mergesort", "heapsort"]] = ...,
-        na_position: Union[_str, Literal["first", "last"]] = ...,
-        ignore_index: _bool = ...,
+        inplace: Literal[False] = ...,
         key: Optional[Callable] = ...,
     ) -> Series[S1]: ...
     @overload
@@ -503,20 +506,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
         *,
-        inplace: Literal[False],
-        key: Optional[Callable] = ...,
-    ) -> Series: ...
-    @overload
-    def sort_index(
-        self,
-        axis: AxisType = ...,
-        level: Optional[Union[Level, List[int], List[_str]]] = ...,
-        ascending: Union[_bool, Sequence[_bool]] = ...,
-        *,
-        kind: Union[_str, Literal["quicksort", "mergesort", "heapsort"]] = ...,
-        na_position: Union[_str, Literal["first", "last"]] = ...,
-        sort_remaining: _bool = ...,
-        ignore_index: _bool = ...,
+        inplace: Literal[False] = ...,
         key: Optional[Callable] = ...,
     ) -> Series: ...
     @overload
@@ -733,6 +723,28 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         limit: Optional[int] = ...,
         downcast: Optional[Dict] = ...,
     ) -> Union[Series[S1], None]: ...
+    @overload
+    def replace(
+        self,
+        to_replace: Optional[Union[_str, List, Dict, Series[S1], int, float]] = ...,
+        value: Optional[Union[Scalar, Dict, List, _str]] = ...,
+        inplace: Literal[False] = ...,
+        limit: Optional[int] = ...,
+        regex=...,
+        method: Optional[Union[_str, Literal["pad", "ffill", "bfill"]]] = ...,
+    ) -> Series[S1]: ...
+    @overload
+    def replace(
+        self,
+        to_replace: Optional[Union[_str, List, Dict, Series[S1], int, float]] = ...,
+        value: Optional[Union[Scalar, Dict, List, _str]] = ...,
+        limit: Optional[int] = ...,
+        regex=...,
+        method: Optional[Union[_str, Literal["pad", "ffill", "bfill"]]] = ...,
+        *,
+        inplace: Literal[True],
+    ) -> None: ...
+    @overload
     def replace(
         self,
         to_replace: Optional[Union[_str, List, Dict, Series[S1], int, float]] = ...,
@@ -741,7 +753,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         limit: Optional[int] = ...,
         regex=...,
         method: Optional[Union[_str, Literal["pad", "ffill", "bfill"]]] = ...,
-    ) -> Series[S1]: ...
+    ) -> Union[Series[S1], None]: ...
     def shift(
         self,
         periods: int = ...,
@@ -755,7 +767,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         left: Union[Scalar, Sequence],
         right: Union[Scalar, Sequence],
-        inclusive: Literal["both", "neither", "left", "right"] = "both",
+        inclusive: Literal["both", "neither", "left", "right"] = ...,
     ) -> Series[_bool]: ...
     def isna(self) -> Series[_bool]: ...
     def isnull(self) -> Series[_bool]: ...
@@ -864,7 +876,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         axis: Optional[SeriesAxisType] = ...,
         *,
-        inplace: Literal[False],
+        inplace: Literal[False] = ...,
         limit: Optional[int] = ...,
         downcast: Optional[Dict] = ...,
     ) -> Series[S1]: ...
@@ -882,7 +894,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         axis: Optional[SeriesAxisType] = ...,
         *,
-        inplace: Literal[False],
+        inplace: Literal[False] = ...,
         limit: Optional[int] = ...,
         downcast: Optional[Dict] = ...,
     ) -> Series[S1]: ...
@@ -983,7 +995,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         origin: Union[
             Timestamp, Literal["epoch", "start", "start_day", "end", "end_day"]
         ] = ...,
-        offset: Optional[Union[Timedelta, _str]] = None,
+        offset: Optional[Union[Timedelta, _str]] = ...,
     ) -> Resampler: ...
     def first(self, offset) -> Series[S1]: ...
     def last(self, offset) -> Series[S1]: ...
@@ -1094,8 +1106,12 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def __div__(self, other: Union[num, _ListLike, Series[S1]]) -> Series[S1]: ...
     def __eq__(self, other: object) -> Series[_bool]: ...  # type: ignore
     def __floordiv__(self, other: Union[num, _ListLike, Series[S1]]) -> Series[int]: ...
-    def __ge__(self, other: Union[num, _ListLike, Series[S1],Timestamp]) -> Series[_bool]: ...
-    def __gt__(self, other: Union[num, _ListLike, Series[S1],Timestamp]) -> Series[_bool]: ...
+    def __ge__(
+        self, other: Union[num, _ListLike, Series[S1], Timestamp]
+    ) -> Series[_bool]: ...
+    def __gt__(
+        self, other: Union[num, _ListLike, Series[S1], Timestamp]
+    ) -> Series[_bool]: ...
     # def __iadd__(self, other: S1) -> Series[S1]: ...
     # def __iand__(self, other: S1) -> Series[_bool]: ...
     # def __idiv__(self, other: S1) -> Series[S1]: ...
@@ -1108,8 +1124,12 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     # def __itruediv__(self, other: S1) -> Series[S1]: ...
     # def __itruediv__(self, other) -> None: ...
     # def __ixor__(self, other: S1) -> Series[_bool]: ...
-    def __le__(self, other: Union[num, _ListLike, Series[S1],Timestamp]) -> Series[_bool]: ...
-    def __lt__(self, other: Union[num, _ListLike, Series[S1],Timestamp]) -> Series[_bool]: ...
+    def __le__(
+        self, other: Union[num, _ListLike, Series[S1], Timestamp]
+    ) -> Series[_bool]: ...
+    def __lt__(
+        self, other: Union[num, _ListLike, Series[S1], Timestamp]
+    ) -> Series[_bool]: ...
     @overload
     def __mul__(self, other: Union[Timedelta, TimedeltaSeries]) -> TimedeltaSeries: ...
     @overload

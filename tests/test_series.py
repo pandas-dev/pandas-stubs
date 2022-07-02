@@ -1,17 +1,19 @@
-import tempfile
 from pathlib import Path
-from typing import List, Union, TYPE_CHECKING
+import tempfile
+from typing import (
+    TYPE_CHECKING,
+    List,
+    Union,
+)
+
+import numpy as np
+import pandas as pd
+from pandas.api.extensions import ExtensionArray
+from pandas.core.window import ExponentialMovingWindow
+import pytest
 from typing_extensions import assert_type
 
 from pandas._typing import Scalar
-from pandas.api.extensions import ExtensionArray
-
-import pandas as pd
-import numpy as np
-
-from pandas.core.window import ExponentialMovingWindow
-
-import pytest
 
 
 def test_types_init() -> None:
@@ -144,11 +146,11 @@ def test_types_setting() -> None:
 
 def test_types_drop() -> None:
     s = pd.Series([0, 1, 2])
-    res: pd.Series = s.drop(0)
-    res2: pd.Series = s.drop([0, 1])
-    res3: pd.Series = s.drop(0, axis=0)
-    res4: None = s.drop([0, 1], inplace=True, errors="raise")
-    res5: None = s.drop([0, 1], inplace=True, errors="ignore")
+    assert_type(s.drop(0), pd.Series)
+    assert_type(s.drop([0, 1]), pd.Series)
+    assert_type(s.drop(0, axis=0), pd.Series)
+    assert_type(s.drop([0, 1], inplace=True, errors="raise"), None)
+    assert_type(s.drop([0, 1], inplace=True, errors="ignore"), None)
 
 
 def test_types_drop_multilevel() -> None:
@@ -162,25 +164,26 @@ def test_types_drop_multilevel() -> None:
 
 def test_types_dropna() -> None:
     s = pd.Series([1, np.nan, np.nan])
-    res: pd.Series = s.dropna()
-    res2: None = s.dropna(axis=0, inplace=True)
+    assert_type(s.dropna(), pd.Series)
+    assert_type(s.dropna(axis=0, inplace=True), None)
 
 
 def test_types_fillna() -> None:
     s = pd.Series([1, np.nan, np.nan, 3])
-    res: pd.Series = s.fillna(0)
-    res2: pd.Series = s.fillna(0, axis="index")
-    res3: pd.Series = s.fillna(method="backfill", axis=0)
-    res4: None = s.fillna(method="bfill", inplace=True)
-    res5: pd.Series = s.fillna(method="pad")
-    res6: pd.Series = s.fillna(method="ffill", limit=1)
+    assert_type(s.fillna(0), pd.Series)
+    assert_type(s.fillna(0, axis="index"), pd.Series)
+    assert_type(s.fillna(method="backfill", axis=0), pd.Series)
+    assert_type(s.fillna(method="bfill", inplace=True), None)
+    assert_type(s.fillna(method="pad"), pd.Series)
+    assert_type(s.fillna(method="ffill", limit=1), pd.Series)
 
 
 def test_types_sort_index() -> None:
     s = pd.Series([1, 2, 3], index=[2, 3, 1])
-    res: pd.Series = s.sort_index()
-    res2: None = s.sort_index(ascending=False, inplace=True)
-    res3: pd.Series = s.sort_index(kind="mergesort")
+    assert_type(s.sort_index(), pd.Series)
+    assert_type(s.sort_index(ascending=False), pd.Series)
+    assert_type(s.sort_index(ascending=False, inplace=True), None)
+    assert_type(s.sort_index(kind="mergesort"), pd.Series)
 
 
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
@@ -191,11 +194,12 @@ def test_types_sort_index_with_key() -> None:
 
 def test_types_sort_values() -> None:
     s = pd.Series([4, 2, 1, 3])
-    res: pd.Series = s.sort_values(0)
-    res2: pd.Series = s.sort_values(ascending=False)
-    res3: None = s.sort_values(inplace=True, kind="quicksort")
-    res4: pd.Series = s.sort_values(na_position="last")
-    res5: pd.Series = s.sort_values(ignore_index=True)
+    assert_type(s.sort_values(), pd.Series)
+    assert_type(s.sort_values(0), pd.Series)
+    assert_type(s.sort_values(ascending=False), pd.Series)
+    assert_type(s.sort_values(inplace=True, kind="quicksort"), None)
+    assert_type(s.sort_values(na_position="last"), pd.Series)
+    assert_type(s.sort_values(ignore_index=True), pd.Series)
 
 
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
@@ -545,8 +549,9 @@ def test_types_ne() -> None:
 
 def test_types_bfill() -> None:
     s1 = pd.Series([1, 2, 3])
-    s2: pd.Series = s1.bfill(inplace=False)
-    s3: None = s1.bfill(inplace=True)
+    assert_type(s1.bfill(), pd.Series)
+    assert_type(s1.bfill(inplace=False), pd.Series)
+    assert_type(s1.bfill(inplace=True), None)
 
 
 def test_types_ewm() -> None:
@@ -561,8 +566,9 @@ def test_types_ewm() -> None:
 
 def test_types_ffill() -> None:
     s1 = pd.Series([1, 2, 3])
-    s2: pd.Series = s1.ffill(inplace=False)
-    s3: None = s1.ffill(inplace=True)
+    assert_type(s1.ffill(), pd.Series)
+    assert_type(s1.ffill(inplace=False), pd.Series)
+    assert_type(s1.ffill(inplace=True), None)
 
 
 def test_types_as_type() -> None:
@@ -669,3 +675,11 @@ def test_series_add_str() -> None:
 def test_series_dtype() -> None:
     s = pd.Series(["abc", "def"], dtype=str)
     assert_type(s, "pd.Series[str]")
+
+
+def test_types_replace() -> None:
+    # GH 44
+    s = pd.Series([1, 2, 3])
+    assert_type(s.replace(1, 2), pd.Series)
+    assert_type(s.replace(1, 2, inplace=False), pd.Series)
+    assert_type(s.replace(1, 2, inplace=True), None)
