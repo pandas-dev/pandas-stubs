@@ -31,3 +31,4 @@ from pandas.io.sql import (
     read_sql_table as read_sql_table,
 )
 from pandas.io.stata import read_stata as read_stata
+from pandas.io.xml import read_xml as read_xml
