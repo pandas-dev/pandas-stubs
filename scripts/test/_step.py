@@ -26,6 +26,6 @@ rename_src = Step(
     rollback=run.restore_src,
 )
 mypy_dist = Step(name="Run MyPy Against Dist", run=run.mypy_dist)
-pyright = Step(name="Run Pyright Against Dist", run=run.pyright_dist)
+pyright_dist = Step(name="Run Pyright Against Dist", run=run.pyright_dist)
 uninstall_dist = Step(name="Uninstall Dist", run=run.uninstall_dist)
 restore_src = Step(name="Restore Source Code", run=run.restore_src)
