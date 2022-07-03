@@ -197,8 +197,9 @@ show_error_codes = true
 typeCheckingMode = "basic"
 stubPath = "."
 include = ["tests", "pandas-stubs"]
-useLibraryCodeForTypes = true
 # enable subset of "strict"
 reportDuplicateImport = true
 reportInvalidStubStatement = true
 reportOverlappingOverload = true
+reportMissingImports = true
+reportMissingModuleSource = true

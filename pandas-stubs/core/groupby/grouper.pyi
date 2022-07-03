@@ -7,7 +7,7 @@ from typing import (
 )
 
 import numpy as np
-from pandas.core.groupby import ops as ops
+from pandas.core.groupby.ops import BaseGrouper as BaseGrouper
 from pandas.core.indexes.api import Index as Index
 
 from pandas._typing import FrameOrSeries as FrameOrSeries
@@ -72,4 +72,4 @@ def get_grouper(
     observed: bool = ...,
     mutated: bool = ...,
     validate: bool = ...,
-) -> Tuple[ops.BaseGrouper, List[Hashable], FrameOrSeries]: ...
+) -> Tuple[BaseGrouper, List[Hashable], FrameOrSeries]: ...
