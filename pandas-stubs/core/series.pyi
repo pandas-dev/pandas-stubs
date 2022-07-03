@@ -63,6 +63,8 @@ from pandas._typing import (
     num as num,
 )
 
+from pandas.plotting import PlotAccessor
+
 from .base import IndexOpsMixin
 from .frame import DataFrame
 from .generic import NDFrame
@@ -804,7 +806,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @property
     def dt(self) -> Series: ...
     cat = ...
-    def plot(self, **kwargs) -> Union[PlotAxes, np.ndarray]: ...
+    @property
+    def plot(self) -> PlotAccessor: ...
     sparse = ...
     def hist(
         self,

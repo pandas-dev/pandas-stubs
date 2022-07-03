@@ -107,6 +107,7 @@ from .io.api import (
     read_sql_table as read_sql_table,
     read_stata as read_stata,
     read_table as read_table,
+    read_xml as read_xml,
     to_pickle as to_pickle,
 )
 from .io.json import json_normalize as json_normalize

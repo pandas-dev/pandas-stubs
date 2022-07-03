@@ -1,6 +1,7 @@
 # flake8: noqa: F841
 import tempfile
 from typing import (
+    TYPE_CHECKING,
     Any,
     Dict,
     List,
@@ -151,3 +152,14 @@ def test_isna() -> None:
     assert_type(pd.notna(s), "pd.Series[bool]")
     b2: bool = pd.notna(np.nan)
     ar2: np.ndarray = pd.notna(s.to_list())
+
+
+# GH 55
+def test_read_xml() -> None:
+    if TYPE_CHECKING:  # Skip running pytest
+        assert_type(
+            pd.read_xml(
+                "path/to/file", xpath=".//row", stylesheet="path/to/stylesheet"
+            ),
+            pd.DataFrame,
+        )

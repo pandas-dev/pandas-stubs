@@ -165,3 +165,14 @@ CompressionDict = Dict[str, Any]
 CompressionOptions = Optional[
     Union[Literal["infer", "gzip", "bz2", "zip", "xz", "zstd"], CompressionDict]
 ]
+
+# converters
+ConvertersArg = Dict[Hashable, Callable[[Dtype], Dtype]]
+
+# parse_dates
+ParseDatesArg = Union[
+    bool, List[Hashable], List[List[Hashable]], Dict[Hashable, List[Hashable]]
+]
+
+# read_xml parsers
+XMLParsers = Literal["lxml", "etree"]

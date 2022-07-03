@@ -403,9 +403,9 @@ def test_types_group_by_with_dropna_keyword() -> None:
 
 
 def test_types_plot() -> None:
-    pytest.skip()
     s = pd.Series([0, 1, 1, 0, -10])
-    s.plot.hist()
+    if TYPE_CHECKING:  # skip pytest
+        s.plot.hist()
 
 
 def test_types_window() -> None:
