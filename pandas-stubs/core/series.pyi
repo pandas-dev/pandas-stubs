@@ -30,6 +30,10 @@ from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
+from pandas.core.indexing import (
+    _AtIndexer,
+    _iAtIndexer,
+)
 from pandas.core.resample import Resampler
 from pandas.core.strings import StringMethods
 from pandas.core.window import ExponentialMovingWindow
@@ -1178,11 +1182,11 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     # @property
     # def array(self) -> _npndarray
     @property
-    def at(self) -> _LocIndexerSeries[S1]: ...
+    def at(self) -> _AtIndexer: ...
     # @property
     # def cat(self) -> ?
     @property
-    def iat(self) -> _iLocIndexerSeries[S1]: ...
+    def iat(self) -> _iAtIndexer: ...
     @property
     def iloc(self) -> _iLocIndexerSeries[S1]: ...
     @property
