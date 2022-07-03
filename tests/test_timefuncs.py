@@ -1,10 +1,12 @@
 # flake8: noqa: F841
 
 import datetime as dt
-from typing import TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Optional,
+)
 
 import pandas as pd
-from pandas.testing import assert_series_equal
 from typing_extensions import assert_type
 
 if TYPE_CHECKING:
@@ -178,3 +180,9 @@ def fail_on_adding_two_timestamps() -> None:
         ssum: pd.Series = s1 + s2  # type: ignore
         ts = pd.Timestamp("2022-06-30")
         tsum: pd.Series = s1 + ts  # type: ignore
+
+
+def test_dtindex_tzinfo() -> None:
+    # GH 71
+    dti = pd.date_range("2000-1-1", periods=10)
+    assert_type(dti.tzinfo, Optional[dt.tzinfo])
