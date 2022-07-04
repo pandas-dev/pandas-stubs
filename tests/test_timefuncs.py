@@ -6,6 +6,8 @@ from typing import (
     Optional,
 )
 
+import numpy as np
+from numpy import typing as npt
 import pandas as pd
 from typing_extensions import assert_type
 
@@ -14,6 +16,9 @@ if TYPE_CHECKING:
         TimedeltaSeries,
         TimestampSeries,
     )
+
+# Separately define here so pytest works
+np_ndarray_bool = npt.NDArray[np.bool_]
 
 
 def test_types_init() -> None:
@@ -177,12 +182,30 @@ def fail_on_adding_two_timestamps() -> None:
     s1 = pd.Series(pd.to_datetime(["2022-05-01", "2022-06-01"]))
     s2 = pd.Series(pd.to_datetime(["2022-05-15", "2022-06-15"]))
     if TYPE_CHECKING:
-        ssum: pd.Series = s1 + s2  # type: ignore
+        ssum: pd.Series = s1 + s2  # type: ignore[operator]
         ts = pd.Timestamp("2022-06-30")
-        tsum: pd.Series = s1 + ts  # type: ignore
+        tsum: pd.Series = s1 + ts  # type: ignore[operator]
 
 
 def test_dtindex_tzinfo() -> None:
     # GH 71
     dti = pd.date_range("2000-1-1", periods=10)
     assert_type(dti.tzinfo, Optional[dt.tzinfo])
+
+
+def test_todatetime_fromnumpy() -> None:
+    # GH 72
+    t1 = np.datetime64("2022-07-04 02:30")
+    assert_type(pd.to_datetime(t1), pd.Timestamp)
+
+
+def test_comparisons_datetimeindex() -> None:
+    # GH 74
+    dti = pd.date_range("2000-01-01", "2000-01-10")
+    ts = pd.Timestamp("2000-01-05")
+    assert_type((dti < ts), np_ndarray_bool)
+    assert_type((dti > ts), np_ndarray_bool)
+    assert_type((dti >= ts), np_ndarray_bool)
+    assert_type((dti <= ts), np_ndarray_bool)
+    assert_type((dti == ts), np_ndarray_bool)
+    assert_type((dti != ts), np_ndarray_bool)

@@ -51,7 +51,9 @@ from pandas._typing import (
     DtypeNp,
     FilePathOrBuffer as FilePathOrBuffer,
     FilePathOrBytesBuffer as FilePathOrBytesBuffer,
+    GroupByObject as GroupByObject,
     IgnoreRaise as IgnoreRaise,
+    IndexingInt as IndexingInt,
     IndexLabel as IndexLabel,
     IndexType,
     Label,
@@ -83,7 +85,7 @@ class _iLocIndexerFrame(_iLocIndexer):
     @overload
     def __getitem__(self, idx: Tuple[int, int]) -> Scalar: ...
     @overload
-    def __getitem__(self, idx: int) -> Series: ...
+    def __getitem__(self, idx: IndexingInt) -> Series: ...
     @overload
     def __getitem__(self, idx: Tuple[Union[IndexType, MaskType], int]) -> Series: ...
     @overload
@@ -848,7 +850,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> None: ...
     def groupby(
         self,
-        by: Optional[Union[List[_str], _str]] = ...,
+        by: Optional[GroupByObject] = ...,
         axis: AxisType = ...,
         level: Optional[Level] = ...,
         as_index: _bool = ...,
@@ -1111,7 +1113,7 @@ class DataFrame(NDFrame, OpsMixin):
     @property
     def columns(self) -> Index: ...
     @columns.setter  # setter needs to be right next to getter; otherwise mypy complains
-    def columns(self, cols: Union[List[_str], Index[_str]]) -> None: ...  # type:ignore
+    def columns(self, cols: Union[List[_str], Index[_str]]) -> None: ...  # type: ignore[type-arg]
     @property
     def dtypes(self) -> Series: ...
     @property
