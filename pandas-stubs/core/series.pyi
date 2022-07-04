@@ -26,7 +26,9 @@ from matplotlib.axes import (
 )
 import numpy as np
 from pandas.core.arrays.base import ExtensionArray
+from pandas.core.arrays.categorical import CategoricalAccessor
 from pandas.core.groupby.generic import SeriesGroupBy
+from pandas.core.indexes.accessors import CombinedDatetimelikeProperties
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
@@ -51,6 +53,7 @@ from pandas._typing import (
     DtypeNp as DtypeNp,
     FilePathOrBuffer as FilePathOrBuffer,
     IgnoreRaise as IgnoreRaise,
+    IndexingInt as IndexingInt,
     Label as Label,
     Level as Level,
     ListLike as ListLike,
@@ -80,7 +83,7 @@ _str = str
 class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     # get item
     @overload
-    def __getitem__(self, idx: int) -> S1: ...
+    def __getitem__(self, idx: IndexingInt) -> S1: ...
     @overload
     def __getitem__(self, idx: Union[Index, slice]) -> Series[S1]: ...
     # set item
@@ -804,8 +807,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @property
     def str(self) -> StringMethods[Series]: ...
     @property
-    def dt(self) -> Series: ...
-    cat = ...
+    def dt(self) -> CombinedDatetimelikeProperties: ...
     @property
     def plot(self) -> PlotAccessor: ...
     sparse = ...
@@ -1186,8 +1188,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     # def array(self) -> _npndarray
     @property
     def at(self) -> _AtIndexer: ...
-    # @property
-    # def cat(self) -> ?
+    @property
+    def cat(self) -> CategoricalAccessor: ...
     @property
     def iat(self) -> _iAtIndexer: ...
     @property
