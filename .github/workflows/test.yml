@@ -47,11 +47,13 @@ jobs:
     - name: Install Distribution
       run: poetry run poe install_dist
 
-    - if: matrix.python-version != '3.8' && matrix.os != 'ubuntu-latest'
-      name: Check Style
-      run: poetry run poe check_style
+    - name: Test
+      run: echo ${{ matrix.python-version }}
 
-    - if:  ${{ mmatrix.python-version != '3.8' && matrix.os != 'ubuntu-latest' }}
+    - name: Test
+      run: echo ${{ matrix.os }}
+
+    - if: matrix.python-version != '3.8' && matrix.os != 'ubuntu-latest'
       name: Check Style
       run: poetry run poe check_style
 
