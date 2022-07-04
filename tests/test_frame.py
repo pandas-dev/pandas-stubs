@@ -352,6 +352,8 @@ def test_types_quantile() -> None:
     df.quantile([0.25, 0.5])
     df.quantile(0.75)
     df.quantile()
+    # GH 81
+    df.quantile(np.array([0.25, 0.75]))
 
 
 def test_types_clip() -> None:
@@ -1085,3 +1087,15 @@ def test_set_columns() -> None:
     # Next line should work, but it is a mypy bug
     # https://github.com/python/mypy/issues/3004
     df.columns = ["c", "d"]  # type: ignore[assignment]
+
+
+def test_frame_index_numpy() -> None:
+    # GH 80
+    i = np.array([1.0, 2.0])
+    pd.DataFrame([[1.0, 2.0], [3.0, 4.0]], columns=["a", "b"], index=i)
+
+
+def test_frame_reindex() -> None:
+    # GH 84
+    df = pd.DataFrame({"a": [1, 2, 3]}, index=[0, 1, 2])
+    df.reindex([2, 1, 0])
