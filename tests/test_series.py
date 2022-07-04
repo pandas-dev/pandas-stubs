@@ -689,3 +689,11 @@ def test_cat_accessor() -> None:
     # GH 43
     s = pd.Series(pd.Categorical(["a", "b", "a"], categories=["a", "b"]))
     assert_type(s.cat.codes, "pd.Series[int]")
+
+
+def test_iloc_ndarray() -> None:
+    # GH 85
+    # GH 86
+    indices = np.array([0, 1, 2, 3], dtype=np.int64)
+    values_s = pd.Series(np.arange(10), name="a")
+    assert_type(values_s.iloc[indices], "pd.Series")
