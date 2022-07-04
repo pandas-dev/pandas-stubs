@@ -26,6 +26,7 @@ from matplotlib.axes import (
 )
 import numpy as np
 from pandas.core.arrays.base import ExtensionArray
+from pandas.core.arrays.categorical import CategoricalAccessor
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.indexes.accessors import CombinedDatetimelikeProperties
 from pandas.core.indexes.base import Index
@@ -66,8 +67,6 @@ from pandas._typing import (
 )
 
 from pandas.plotting import PlotAccessor
-
-from pandas.core.arrays.categorical import CategoricalAccessor
 
 from .base import IndexOpsMixin
 from .frame import DataFrame

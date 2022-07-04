@@ -148,7 +148,9 @@ T1 = TypeVar(
 )
 T2 = TypeVar("T2", str, int)
 
-IndexingInt = Union[int, np.int_, np.integer, np.unsignedinteger, np.signedinteger, np.int8]
+IndexingInt = Union[
+    int, np.int_, np.integer, np.unsignedinteger, np.signedinteger, np.int8
+]
 
 # Interval closed type
 
