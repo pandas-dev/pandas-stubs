@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import sys
 import time
 from typing import (
     Callable,
@@ -63,4 +64,4 @@ def run_job(steps: List[Step]) -> None:
         logger.success(f"End: '{step.name}', runtime: {end - start:.3f} seconds.")
 
     if failed:
-        raise RuntimeError("At least one step failed!")
+        sys.exit(1)
