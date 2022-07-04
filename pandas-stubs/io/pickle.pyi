@@ -1,15 +1,11 @@
 import sys
 from typing import (
+    Literal,
     Optional,
     Union,
 )
 
 from pandas._typing import FilePathOrBuffer as FilePathOrBuffer
-
-if sys.version_info >= (3, 8):
-    from typing import Literal
-else:
-    from typing_extensions import Literal
 
 def to_pickle(
     obj,

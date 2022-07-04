@@ -1084,4 +1084,4 @@ def test_set_columns() -> None:
     df = pd.DataFrame({"a": [1, 2, 3], "b": [0.0, 1, 1]})
     # Next line should work, but it is a mypy bug
     # https://github.com/python/mypy/issues/3004
-    df.columns = ["c", "d"]  # type: ignore
+    df.columns = ["c", "d"]  # type: ignore[assignment]
