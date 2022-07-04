@@ -148,6 +148,8 @@ T1 = TypeVar(
 )
 T2 = TypeVar("T2", str, int)
 
+IndexingInt = Union[int, np.int_, np.integer, np.unsignedinteger, np.signedinteger, np.int8]
+
 # Interval closed type
 
 IntervalClosedType = Literal["left", "right", "both", "neither"]
@@ -176,3 +178,9 @@ ParseDatesArg = Union[
 
 # read_xml parsers
 XMLParsers = Literal["lxml", "etree"]
+
+# Any plain Python or numpy function
+Function = Union[np.ufunc, Callable[..., Any]]
+GroupByObject = Union[
+    Label, List[Label], Function, Series, np.ndarray, Mapping[Label, Any]
+]

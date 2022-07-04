@@ -1062,3 +1062,26 @@ def test_loop_dataframe() -> None:
     df = pd.DataFrame({"x": [1, 2, 3]})
     for c in df:
         assert_type(df[c], pd.Series)
+
+
+def test_groupby_index() -> None:
+    # GH 42
+    df = pd.DataFrame(
+        data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0]}
+    ).set_index("col1")
+    assert_type(df.groupby(df.index).min(), pd.DataFrame)
+
+
+def test_iloc_npint() -> None:
+    # GH 69
+    df = pd.DataFrame({"a": [10, 20, 30], "b": [20, 40, 60], "c": [30, 60, 90]})
+    iloc = np.argmin(np.random.standard_normal(3))
+    df.iloc[iloc]
+
+
+def test_set_columns() -> None:
+    # GH 73
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [0.0, 1, 1]})
+    # Next line should work, but it is a mypy bug
+    # https://github.com/python/mypy/issues/3004
+    df.columns = ["c", "d"]  # type: ignore

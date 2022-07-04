@@ -21,6 +21,7 @@ from pandas._typing import (
     Dtype as Dtype,
     Ordered as Ordered,
     Scalar as Scalar,
+    Series as Series,
     np_ndarray_bool,
 )
 
@@ -207,7 +208,7 @@ class Categorical(ExtensionArray, PandasObject):
 class CategoricalAccessor(PandasDelegate, PandasObject, NoNewAttributesMixin):
     def __init__(self, data) -> None: ...
     @property
-    def codes(self) -> Sequence[int]: ...
+    def codes(self) -> Series[int]: ...
 
 def factorize_from_iterable(values): ...
 def factorize_from_iterables(iterables): ...
