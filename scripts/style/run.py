@@ -26,8 +26,8 @@ def check_pyupgrade():
             except subprocess.CalledProcessError:
                 success = False
     if not success:
-         subprocess.run(["git", "diff"], check=True)
-         raise RuntimeError("pyupgrade failed")
+        subprocess.run(["git", "diff"], check=True)
+        raise RuntimeError("pyupgrade failed")
 
 
 def format_black():
