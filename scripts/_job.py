@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import sys
 import time
 from typing import (
     Callable,
@@ -40,6 +41,7 @@ def run_job(steps: List[Step]) -> None:
     """
 
     rollback_steps = Deque[Step]()
+    failed = False
 
     for step in steps:
         start = time.perf_counter()
@@ -54,8 +56,12 @@ def run_job(steps: List[Step]) -> None:
 
             logger.error(f"Step: '{step.name}' failed!")
             __rollback_job(rollback_steps)
+            failed = True
 
             break
 
         end = time.perf_counter()
         logger.success(f"End: '{step.name}', runtime: {end - start:.3f} seconds.")
+
+    if failed:
+        sys.exit(1)
