@@ -47,6 +47,7 @@ from pandas.core.window.rolling import (
 from pandas._typing import (
     S1 as S1,
     ArrayLike as ArrayLike,
+    Axes as Axes,
     Axis as Axis,
     AxisType as AxisType,
     Dtype as Dtype,
@@ -63,6 +64,7 @@ from pandas._typing import (
     SeriesAxisType as SeriesAxisType,
     Timedelta as Timedelta,
     Timestamp as Timestamp,
+    np_ndarray_int64 as np_ndarray_int64,
     num as num,
 )
 
@@ -85,7 +87,7 @@ class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     @overload
     def __getitem__(self, idx: IndexingInt) -> S1: ...
     @overload
-    def __getitem__(self, idx: Union[Index, slice]) -> Series[S1]: ...
+    def __getitem__(self, idx: Union[Index, slice, np_ndarray_int64]) -> Series[S1]: ...
     # set item
     @overload
     def __setitem__(self, idx: int, value: S1) -> None: ...
@@ -836,7 +838,16 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def __abs__(self) -> Series[S1]: ...
     def add_prefix(self, prefix: _str) -> Series[S1]: ...
     def add_suffix(self, suffix: _str) -> Series[S1]: ...
-    def reindex(self, index: Optional[_ListLike] = ..., **kwargs) -> Series[S1]: ...
+    def reindex(
+        self,
+        index: Optional[Axes] = ...,
+        method: Optional[Literal["backfill", "bfill", "pad", "ffill", "nearest"]] = ...,
+        copy: bool = ...,
+        level: Union[int, _str] = ...,
+        fill_value: Optional[Scalar] = ...,
+        limit: Optional[int] = ...,
+        tolerance: Optional[float] = ...,
+    ) -> Series[S1]: ...
     def filter(
         self,
         items: Optional[_ListLike] = ...,

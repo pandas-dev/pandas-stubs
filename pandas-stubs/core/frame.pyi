@@ -408,7 +408,19 @@ class DataFrame(NDFrame, OpsMixin):
         fill_axis: AxisType = ...,
         broadcast_axis: Optional[AxisType] = ...,
     ) -> DataFrame: ...
-    def reindex(self, **kwargs) -> DataFrame: ...
+    def reindex(
+        self,
+        labels: Optional[Axes] = ...,
+        index: Optional[Axes] = ...,
+        columns: Optional[Axes] = ...,
+        axis: Optional[AxisType] = ...,
+        method: Optional[Literal["backfill", "bfill", "pad", "ffill", "nearest"]] = ...,
+        copy: bool = ...,
+        level: Union[int, str] = ...,
+        fill_value: Optional[Scalar] = ...,
+        limit: Optional[int] = ...,
+        tolerance: Optional[float] = ...,
+    ) -> DataFrame: ...
     @overload
     def drop(
         self,
@@ -1035,7 +1047,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def quantile(
         self,
-        q: List[float],
+        q: Union[List[float], np.ndarray],
         axis: AxisType = ...,
         numeric_only: _bool = ...,
         interpolation: Union[

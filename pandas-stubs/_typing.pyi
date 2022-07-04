@@ -47,7 +47,7 @@ from pandas._libs.tslibs import (
 from pandas.core.dtypes.dtypes import ExtensionDtype
 
 ArrayLike = Union[ExtensionArray, np.ndarray]
-AnyArrayLike = Union[Index, Series]
+AnyArrayLike = Union[Index, Series, np.ndarray]
 PythonScalar = Union[str, int, float, bool, complex]
 DatetimeLikeScalar = TypeVar("DatetimeLikeScalar", Period, Timestamp, Timedelta)
 PandasScalar = Union[bytes, datetime.date, datetime.datetime, datetime.timedelta]
