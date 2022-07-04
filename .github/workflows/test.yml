@@ -47,6 +47,10 @@ jobs:
     - name: Install Distribution
       run: poetry run poe install_dist
 
+    - if: matrix.python-version != '3.8' && matrix.os != 'ubuntu-latest'
+      name: Check Style
+      run: poetry run poe check_style
+
     - name: Rename Source Code
       run: poetry run poe rename_src
 
