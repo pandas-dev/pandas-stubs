@@ -148,6 +148,10 @@ T1 = TypeVar(
 )
 T2 = TypeVar("T2", str, int)
 
+IndexingInt = Union[
+    int, np.int_, np.integer, np.unsignedinteger, np.signedinteger, np.int8
+]
+
 # Interval closed type
 
 IntervalClosedType = Literal["left", "right", "both", "neither"]
@@ -164,4 +168,21 @@ StorageOptions = Optional[Dict[str, Any]]
 CompressionDict = Dict[str, Any]
 CompressionOptions = Optional[
     Union[Literal["infer", "gzip", "bz2", "zip", "xz", "zstd"], CompressionDict]
+]
+
+# converters
+ConvertersArg = Dict[Hashable, Callable[[Dtype], Dtype]]
+
+# parse_dates
+ParseDatesArg = Union[
+    bool, List[Hashable], List[List[Hashable]], Dict[Hashable, List[Hashable]]
+]
+
+# read_xml parsers
+XMLParsers = Literal["lxml", "etree"]
+
+# Any plain Python or numpy function
+Function = Union[np.ufunc, Callable[..., Any]]
+GroupByObject = Union[
+    Label, List[Label], Function, Series, np.ndarray, Mapping[Label, Any]
 ]

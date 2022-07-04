@@ -403,9 +403,9 @@ def test_types_group_by_with_dropna_keyword() -> None:
 
 
 def test_types_plot() -> None:
-    pytest.skip()
     s = pd.Series([0, 1, 1, 0, -10])
-    s.plot.hist()
+    if TYPE_CHECKING:  # skip pytest
+        s.plot.hist()
 
 
 def test_types_window() -> None:
@@ -683,3 +683,9 @@ def test_types_replace() -> None:
     assert_type(s.replace(1, 2), pd.Series)
     assert_type(s.replace(1, 2, inplace=False), pd.Series)
     assert_type(s.replace(1, 2, inplace=True), None)
+
+
+def test_cat_accessor() -> None:
+    # GH 43
+    s = pd.Series(pd.Categorical(["a", "b", "a"], categories=["a", "b"]))
+    assert_type(s.cat.codes, "pd.Series[int]")

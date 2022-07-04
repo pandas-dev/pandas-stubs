@@ -55,7 +55,7 @@ def test_dist(clean_cache: bool = False):
             _step.install_dist,
             _step.rename_src,
             _step.mypy_dist,
-            _step.pyright_src,
+            _step.pyright_dist,
             _step.uninstall_dist,
             _step.restore_src,
         ]
@@ -85,7 +85,7 @@ def test_all(clean_cache: bool = False):
             _step.install_dist,
             _step.rename_src,
             _step.mypy_dist,
-            _step.pyright_src,
+            _step.pyright_dist,
             _step.uninstall_dist,
             _step.restore_src,
         ]

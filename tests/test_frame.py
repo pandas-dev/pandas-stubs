@@ -4,6 +4,7 @@ import io
 from pathlib import Path
 import tempfile
 from typing import (
+    TYPE_CHECKING,
     Any,
     Dict,
     Iterable,
@@ -174,8 +175,9 @@ def test_types_assign() -> None:
 
 def test_types_sample() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
-    df.sample(frac=0.5)
-    df.sample(n=1)
+    # GH 67
+    assert_type(df.sample(frac=0.5), pd.DataFrame)
+    assert_type(df.sample(n=1), pd.DataFrame)
 
 
 def test_types_nlargest_nsmallest() -> None:
@@ -576,10 +578,10 @@ def test_types_merge() -> None:
 
 
 def test_types_plot() -> None:
-    pytest.skip()
-    df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
-    df.plot.hist()
-    df.plot.scatter(x="col2", y="col1")
+    if TYPE_CHECKING:  # skip pytest
+        df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
+        df.plot.hist()
+        df.plot.scatter(x="col2", y="col1")
 
 
 def test_types_window() -> None:
@@ -743,28 +745,28 @@ def test_types_from_dict() -> None:
 
 
 def test_pipe() -> None:
-    pytest.skip("jinja2")
+    if TYPE_CHECKING:  # skip pytest
 
-    def foo(df: pd.DataFrame) -> pd.DataFrame:
-        return df
+        def foo(df: pd.DataFrame) -> pd.DataFrame:
+            return df
 
-    df1: pd.DataFrame = pd.DataFrame({"a": [1]}).pipe(foo)
+        df1: pd.DataFrame = pd.DataFrame({"a": [1]}).pipe(foo)
 
-    df2: pd.DataFrame = (
-        pd.DataFrame(
-            {
-                "price": [10, 11, 9, 13, 14, 18, 17, 19],
-                "volume": [50, 60, 40, 100, 50, 100, 40, 50],
-            }
+        df2: pd.DataFrame = (
+            pd.DataFrame(
+                {
+                    "price": [10, 11, 9, 13, 14, 18, 17, 19],
+                    "volume": [50, 60, 40, 100, 50, 100, 40, 50],
+                }
+            )
+            .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
+            .resample("M", on="week_starting")
+            .pipe(foo)
         )
-        .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
-        .resample("M", on="week_starting")
-        .pipe(foo)
-    )
 
-    df3: pd.DataFrame = pd.DataFrame({"a": [1], "b": [1]}).groupby("a").pipe(foo)
+        df3: pd.DataFrame = pd.DataFrame({"a": [1], "b": [1]}).groupby("a").pipe(foo)
 
-    df4: pd.DataFrame = pd.DataFrame({"a": [1], "b": [1]}).style.pipe(foo)
+        df4: pd.DataFrame = pd.DataFrame({"a": [1], "b": [1]}).style.pipe(foo)
 
 
 # set_flags() method added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
@@ -918,20 +920,20 @@ def test_types_regressions() -> None:
 
 
 def test_read_csv() -> None:
-    pytest.skip()
-    #  https://github.com/microsoft/python-type-stubs/issues/87
-    df11: pd.DataFrame = pd.read_csv("foo")
-    df12: pd.DataFrame = pd.read_csv("foo", iterator=False)
-    df13: pd.DataFrame = pd.read_csv("foo", iterator=False, chunksize=None)
-    df14: TextFileReader = pd.read_csv("foo", chunksize=0)
-    df15: TextFileReader = pd.read_csv("foo", iterator=False, chunksize=0)
-    df16: TextFileReader = pd.read_csv("foo", iterator=True)
-    df17: TextFileReader = pd.read_csv("foo", iterator=True, chunksize=None)
-    df18: TextFileReader = pd.read_csv("foo", iterator=True, chunksize=0)
-    df19: TextFileReader = pd.read_csv("foo", chunksize=0)
+    if TYPE_CHECKING:  # skip pytest
+        #  https://github.com/microsoft/python-type-stubs/issues/87
+        df11: pd.DataFrame = pd.read_csv("foo")
+        df12: pd.DataFrame = pd.read_csv("foo", iterator=False)
+        df13: pd.DataFrame = pd.read_csv("foo", iterator=False, chunksize=None)
+        df14: TextFileReader = pd.read_csv("foo", chunksize=0)
+        df15: TextFileReader = pd.read_csv("foo", iterator=False, chunksize=0)
+        df16: TextFileReader = pd.read_csv("foo", iterator=True)
+        df17: TextFileReader = pd.read_csv("foo", iterator=True, chunksize=None)
+        df18: TextFileReader = pd.read_csv("foo", iterator=True, chunksize=0)
+        df19: TextFileReader = pd.read_csv("foo", chunksize=0)
 
-    # https://github.com/microsoft/python-type-stubs/issues/118
-    pd.read_csv("foo", storage_options=None)
+        # https://github.com/microsoft/python-type-stubs/issues/118
+        pd.read_csv("foo", storage_options=None)
 
 
 def test_groupby_series_methods() -> None:
@@ -1011,14 +1013,14 @@ def test_frame_getitem_isin() -> None:
 
 
 def test_read_excel() -> None:
-    pytest.skip()
+    if TYPE_CHECKING:  # skip pytest
 
-    # https://github.com/pandas-dev/pandas-stubs/pull/33
-    df11: pd.DataFrame = pd.read_excel("foo")
-    df12: pd.DataFrame = pd.read_excel("foo", sheet_name="sheet")
-    df13: Dict[Union[int, str], pd.DataFrame] = pd.read_excel(
-        "foo", sheet_name=["sheet"]
-    )
+        # https://github.com/pandas-dev/pandas-stubs/pull/33
+        df11: pd.DataFrame = pd.read_excel("foo")
+        df12: pd.DataFrame = pd.read_excel("foo", sheet_name="sheet")
+        df13: Dict[Union[int, str], pd.DataFrame] = pd.read_excel(
+            "foo", sheet_name=["sheet"]
+        )
 
 
 def test_join() -> None:
@@ -1053,3 +1055,33 @@ def test_types_replace() -> None:
     assert_type(df.replace(1, 2), pd.DataFrame)
     assert_type(df.replace(1, 2, inplace=False), pd.DataFrame)
     assert_type(df.replace(1, 2, inplace=True), None)
+
+
+def test_loop_dataframe() -> None:
+    # GH 70
+    df = pd.DataFrame({"x": [1, 2, 3]})
+    for c in df:
+        assert_type(df[c], pd.Series)
+
+
+def test_groupby_index() -> None:
+    # GH 42
+    df = pd.DataFrame(
+        data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0]}
+    ).set_index("col1")
+    assert_type(df.groupby(df.index).min(), pd.DataFrame)
+
+
+def test_iloc_npint() -> None:
+    # GH 69
+    df = pd.DataFrame({"a": [10, 20, 30], "b": [20, 40, 60], "c": [30, 60, 90]})
+    iloc = np.argmin(np.random.standard_normal(3))
+    df.iloc[iloc]
+
+
+def test_set_columns() -> None:
+    # GH 73
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [0.0, 1, 1]})
+    # Next line should work, but it is a mypy bug
+    # https://github.com/python/mypy/issues/3004
+    df.columns = ["c", "d"]  # type: ignore

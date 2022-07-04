@@ -51,7 +51,9 @@ from pandas._typing import (
     DtypeNp,
     FilePathOrBuffer as FilePathOrBuffer,
     FilePathOrBytesBuffer as FilePathOrBytesBuffer,
+    GroupByObject as GroupByObject,
     IgnoreRaise as IgnoreRaise,
+    IndexingInt as IndexingInt,
     IndexLabel as IndexLabel,
     IndexType,
     Label,
@@ -83,7 +85,7 @@ class _iLocIndexerFrame(_iLocIndexer):
     @overload
     def __getitem__(self, idx: Tuple[int, int]) -> Scalar: ...
     @overload
-    def __getitem__(self, idx: int) -> Series: ...
+    def __getitem__(self, idx: IndexingInt) -> Series: ...
     @overload
     def __getitem__(self, idx: Tuple[Union[IndexType, MaskType], int]) -> Series: ...
     @overload
@@ -848,7 +850,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> None: ...
     def groupby(
         self,
-        by: Optional[Union[List[_str], _str]] = ...,
+        by: Optional[GroupByObject] = ...,
         axis: AxisType = ...,
         level: Optional[Level] = ...,
         as_index: _bool = ...,
@@ -1051,7 +1053,8 @@ class DataFrame(NDFrame, OpsMixin):
         self, freq: Optional[_str] = ..., axis: AxisType = ..., copy: _bool = ...
     ) -> DataFrame: ...
     def isin(self, values: Union[Iterable, Series, DataFrame, Dict]) -> DataFrame: ...
-    def plot(self, *args, **kwargs) -> PlotAccessor: ...
+    @property
+    def plot(self) -> PlotAccessor: ...
     def hist(
         self,
         column: Optional[Union[_str, List[_str]]] = ...,
@@ -1101,7 +1104,7 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level = ...,
         fill_value: Union[None, float] = ...,
     ) -> DataFrame: ...
-    def __iter__(self) -> Iterator[Hashable]: ...
+    def __iter__(self) -> Iterator[Union[int, float, str]]: ...
     # properties
     @property
     def at(self): ...  # Not sure what to do with this yet; look at source
@@ -1797,7 +1800,7 @@ class DataFrame(NDFrame, OpsMixin):
         random_state: Optional[int] = ...,
         axis: Optional[SeriesAxisType] = ...,
         ignore_index: _bool = ...,
-    ) -> Series[S1]: ...
+    ) -> DataFrame: ...
     @overload
     def sem(
         self,
