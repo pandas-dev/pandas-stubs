@@ -1,0 +1,19 @@
+minimum_pre_commit_version: 2.15.0
+ci:
+    autofix_prs: false
+repos:
+-   repo: https://github.com/python/black
+    rev: 22.6.0
+    hooks:
+    -   id: black
+-   repo: https://github.com/PyCQA/isort
+    rev: 5.10.1
+    hooks:
+    -   id: isort
+-   repo: https://github.com/asottile/pyupgrade
+    rev: v2.34.0
+    hooks:
+    -   id: pyupgrade
+        types_or: [python, pyi]
+        types: [text]  # overwrite types: [python]
+        args: [--py38-plus, --keep-runtime-typing]

@@ -49,7 +49,7 @@ jobs:
 
     - if: matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest'
       name: Check Style
-      run: poetry run poe check_style
+      run: poetry run pre-commit run --all-file --verbose
 
     - name: Rename Source Code
       run: poetry run poe rename_src
