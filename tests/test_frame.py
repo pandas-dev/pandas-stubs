@@ -1024,13 +1024,13 @@ def test_read_excel() -> None:
         df14: Dict[Union[int, str], pd.DataFrame] = pd.read_excel(
             "foo", sheet_name=["sheet"]
         )
-        df15: Dict[Union[int, str], pd.DataFrame] = pd.read_excel(
-            "foo", sheet_name=[0]
-        )
+        df15: Dict[Union[int, str], pd.DataFrame] = pd.read_excel("foo", sheet_name=[0])
         df16: Dict[Union[int, str], pd.DataFrame] = pd.read_excel(
             "foo", sheet_name=[0, "sheet"]
         )
-        df17: Dict[Union[int, str], pd.DataFrame] = pd.read_excel("foo", sheet_name=None)
+        df17: Dict[Union[int, str], pd.DataFrame] = pd.read_excel(
+            "foo", sheet_name=None
+        )
 
 
 def test_join() -> None:
