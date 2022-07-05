@@ -25,7 +25,7 @@ from pandas._typing import FilePathOrBuffer as FilePathOrBuffer
 formatters_type = Union[
     List[Callable], Tuple[Callable, ...], Mapping[Union[str, int], Callable]
 ]
-FloatFormatType = Union[str, Callable, "EngFormatter"]
+FloatFormatType = Union[str, Callable, EngFormatter]
 common_docstring: str = ...
 return_docstring: str = ...
 

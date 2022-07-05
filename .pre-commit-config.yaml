@@ -1,0 +1,28 @@
+minimum_pre_commit_version: 2.15.0
+ci:
+    autofix_prs: false
+repos:
+-   repo: https://github.com/python/black
+    rev: 22.6.0
+    hooks:
+    -   id: black
+-   repo: https://github.com/PyCQA/isort
+    rev: 5.10.1
+    hooks:
+    -   id: isort
+-   repo: https://github.com/asottile/pyupgrade
+    rev: v2.34.0
+    hooks:
+    -   id: pyupgrade
+        types_or: [python, pyi]
+        types: [text]  # overwrite types: [python]
+        args: [--py38-plus, --keep-runtime-typing]
+-   repo: https://github.com/PyCQA/flake8
+    rev: 4.0.1
+    hooks:
+    -   id: flake8
+        additional_dependencies:
+        - flake8-pyi==22.5.1
+        types_or: [python, pyi]
+        types: [text]  # overwrite types: [python]
+        args: [--ignore=E301 E302 E305 E402 E501 E701 E704 E741 F401 F403 F841 F811 W503 Y001 Y002 Y019 Y021 Y022 Y026 Y027 Y034 Y037]

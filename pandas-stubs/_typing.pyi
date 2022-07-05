@@ -62,7 +62,7 @@ Dtype = Union[ExtensionDtype, NpDtype]
 AstypeArg = Union[ExtensionDtype, npt.DTypeLike]
 # DtypeArg specifies all allowable dtypes in a functions its dtype argument
 DtypeArg = Union[Dtype, Dict[Any, Dtype]]
-DtypeObj = Union[np.dtype[np.generic], "ExtensionDtype"]
+DtypeObj = Union[np.dtype[np.generic], ExtensionDtype]
 
 # filenames and file-like-objects
 AnyStr_cov = TypeVar("AnyStr_cov", str, bytes, covariant=True)
@@ -76,7 +76,7 @@ FilePath = Union[str, PathLike[str]]
 
 Buffer = Union[IO[AnyStr], RawIOBase, BufferedIOBase, TextIOBase, TextIOWrapper, mmap]
 FileOrBuffer = Union[str, Buffer[AnyStr]]
-FilePathOrBuffer = Union["PathLike[str]", FileOrBuffer[AnyStr]]
+FilePathOrBuffer = Union[PathLike[str], FileOrBuffer[AnyStr]]
 FilePathOrBytesBuffer = Union[PathLike[str], WriteBuffer[bytes]]
 
 FrameOrSeries = TypeVar("FrameOrSeries", bound=NDFrame)
