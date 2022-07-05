@@ -21,7 +21,7 @@ from pandas._typing import (
 @overload
 def read_excel(
     filepath: str,
-    sheet_name: List[Union[int, str]],
+    sheet_name: Union[List[Union[int, str]], None],
     header: Optional[Union[int, Sequence[int]]] = ...,
     names: Optional[List[str]] = ...,
     index_col: Optional[Union[int, Sequence[int]]] = ...,

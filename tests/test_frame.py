@@ -1020,9 +1020,17 @@ def test_read_excel() -> None:
         # https://github.com/pandas-dev/pandas-stubs/pull/33
         df11: pd.DataFrame = pd.read_excel("foo")
         df12: pd.DataFrame = pd.read_excel("foo", sheet_name="sheet")
-        df13: Dict[Union[int, str], pd.DataFrame] = pd.read_excel(
+        df13: pd.DataFrame = pd.read_excel("foo", sheet_name=0)
+        df14: Dict[Union[int, str], pd.DataFrame] = pd.read_excel(
             "foo", sheet_name=["sheet"]
         )
+        df15: Dict[Union[int, str], pd.DataFrame] = pd.read_excel(
+            "foo", sheet_name=[0]
+        )
+        df16: Dict[Union[int, str], pd.DataFrame] = pd.read_excel(
+            "foo", sheet_name=[0, "sheet"]
+        )
+        df17: Dict[Union[int, str], pd.DataFrame] = pd.read_excel("foo", sheet_name=None)
 
 
 def test_join() -> None:
