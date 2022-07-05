@@ -26,9 +26,14 @@ jobs:
     - name: Install Poetry
       run: pip install poetry
 
+    - name: Retrieve caching directory
+      run: |
+        echo "::set-output name=PATH::$(poetry config cache-dir)')"
+      id: cache_path
+
     - uses: actions/cache@v3
       with:
-        path: $( poetry config cache-dir )
+        path: ${{ steps.cache_path.outputs.PATH }}
         key: ${{ matrix.os }}-${{ matrix.python-version }}-poetry-${{ hashFiles('**/poetry.lock') }}
         restore-keys: |
          ${{ matrix.os }}-${{ matrix.python-version }}-poetry-
