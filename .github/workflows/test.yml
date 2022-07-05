@@ -28,7 +28,7 @@ jobs:
 
     - uses: actions/cache@v3
       with:
-        path: ${{ poetry config cache-dir }}
+        path: $( poetry config cache-dir )
         key: ${{ matrix.os }}-${{ matrix.python-version }}-poetry-${{ hashFiles('**/poetry.lock') }}
         restore-keys: |
          ${{ matrix.os }}-${{ matrix.python-version }}-poetry-
