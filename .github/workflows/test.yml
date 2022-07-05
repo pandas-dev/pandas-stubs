@@ -28,7 +28,7 @@ jobs:
 
     - name: Retrieve caching directory
       run: |
-        echo "::set-output name=PATH::$(poetry config cache-dir)')"
+        echo "::set-output name=PATH::$(poetry config cache-dir)"
       id: cache_path
 
     - uses: actions/cache@v3
