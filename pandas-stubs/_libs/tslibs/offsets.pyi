@@ -23,7 +23,7 @@ from .timedeltas import Timedelta
 
 if TYPE_CHECKING:
     from pandas.core.indexes.datetimes import DatetimeIndex
-_BaseOffsetT = TypeVar("_BaseOffsetT", bound="BaseOffset")
+_BaseOffsetT = TypeVar("_BaseOffsetT", bound=BaseOffset)
 _DatetimeT = TypeVar("_DatetimeT", bound=datetime)
 _TimedeltaT = TypeVar("_TimedeltaT", bound=timedelta)
 
@@ -78,7 +78,6 @@ class BaseOffset:
     def __rmul__(self: _BaseOffsetT, other: int) -> _BaseOffsetT: ...
     def __neg__(self: _BaseOffsetT) -> _BaseOffsetT: ...
     def copy(self: _BaseOffsetT) -> _BaseOffsetT: ...
-    def __repr__(self) -> str: ...
     @property
     def name(self) -> str: ...
     @property

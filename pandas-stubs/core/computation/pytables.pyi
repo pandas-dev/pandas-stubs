@@ -13,8 +13,6 @@ from pandas.core.computation import (
 from pandas.core.computation.expr import BaseExprVisitor as BaseExprVisitor
 from pandas.core.indexes.base import Index
 
-from .expr import BaseExprVisitor
-
 class PyTablesScope(_scope.Scope):
     queryables: Dict[str, Any]
     def __init__(
