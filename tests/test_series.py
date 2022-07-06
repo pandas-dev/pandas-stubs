@@ -268,7 +268,8 @@ def test_types_max() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     s.max()
     s.max(axis=0)
-    s.max(level=0)
+    with pytest.warns(FutureWarning, match="Using the level keyword"):
+        s.max(level=0)
     s.max(skipna=False)
 
 
@@ -411,7 +412,8 @@ def test_types_plot() -> None:
 def test_types_window() -> None:
     s = pd.Series([0, 1, 1, 0, 5, 1, -10])
     s.expanding()
-    s.expanding(axis=0, center=True)
+    with pytest.warns(FutureWarning, match="The `center` argument"):
+        s.expanding(axis=0, center=True)
 
     s.rolling(2)
     s.rolling(2, axis=0, center=True)
