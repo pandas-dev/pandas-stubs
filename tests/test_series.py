@@ -3,7 +3,9 @@ import tempfile
 from typing import (
     TYPE_CHECKING,
     List,
+    Sequence,
     Union,
+    cast,
 )
 
 import numpy as np
@@ -691,6 +693,16 @@ def test_cat_accessor() -> None:
     # GH 43
     s = pd.Series(pd.Categorical(["a", "b", "a"], categories=["a", "b"]))
     assert_type(s.cat.codes, "pd.Series[int]")
+
+
+def test_cat_ctor_values() -> None:
+    c1 = pd.Categorical(["a", "b", "a"])
+    # GH 95
+    c2 = pd.Categorical(pd.Series(["a", "b", "a"]))
+    s: Sequence = cast(Sequence, ["a", "b", "a"])
+    c3 = pd.Categorical(s)
+    # GH 107
+    c4 = pd.Categorical(np.array([1, 2, 3, 1, 1]))
 
 
 def test_iloc_getitem_ndarray() -> None:
