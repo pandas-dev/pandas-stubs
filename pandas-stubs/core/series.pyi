@@ -142,7 +142,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def __new__(
         cls,
         data: DatetimeIndex,
-        index: Union[_str, int, Series, List, Index] = ...,
+        index: Optional[Union[_str, int, Series, List, Index]] = ...,
         dtype=...,
         name: Optional[Hashable] = ...,
         copy: bool = ...,
@@ -155,7 +155,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
             Union[object, _ListLike, Series[S1], Dict[int, S1], Dict[_str, S1]]
         ],
         dtype: Type[S1],
-        index: Union[_str, int, Series, List, Index] = ...,
+        index: Optional[Union[_str, int, Series, List, Index]] = ...,
         name: Optional[Hashable] = ...,
         copy: bool = ...,
         fastpath: bool = ...,
@@ -166,7 +166,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         data: Optional[
             Union[object, _ListLike, Series[S1], Dict[int, S1], Dict[_str, S1]]
         ] = ...,
-        index: Union[_str, int, Series, List, Index] = ...,
+        index: Optional[Union[_str, int, Series, List, Index]] = ...,
         dtype=...,
         name: Optional[Hashable] = ...,
         copy: bool = ...,

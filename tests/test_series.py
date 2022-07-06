@@ -26,6 +26,15 @@ def test_types_init() -> None:
     pd.Series(data=[1, 2, 3, 4], dtype=np.int8)
     pd.Series(data={"row1": [1, 2], "row2": [3, 4]})
     pd.Series(data=[1, 2, 3, 4], index=[4, 3, 2, 1], copy=True)
+    # GH 90
+    dt: pd.DatetimeIndex = pd.to_datetime(
+        [1, 2], unit="D", origin=pd.Timestamp("01/01/2000")
+    )
+    pd.Series(data=dt, index=None)
+    pd.Series(data=[1, 2, 3, 4], dtype=int, index=None)
+    pd.Series(data={"row1": [1, 2], "row2": [3, 4]}, dtype=int, index=None)
+    pd.Series(data=[1, 2, 3, 4], index=None)
+    pd.Series(data={"row1": [1, 2], "row2": [3, 4]}, index=None)
 
 
 def test_types_any() -> None:
