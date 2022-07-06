@@ -101,7 +101,7 @@ AggFuncType = Union[
     AggFuncTypeDict,
 ]
 
-num = Union[int, float]
+num = Union[int, float, complex]
 SeriesAxisType = Literal["index", 0]  # Restricted subset of _AxisType for series
 AxisType = Literal["columns", "index", 0, 1]
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
