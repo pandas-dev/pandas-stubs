@@ -19,6 +19,7 @@ from pandas.core.indexes.base import Index
 from pandas._typing import (
     ArrayLike as ArrayLike,
     Dtype as Dtype,
+    ListLike as ListLike,
     Ordered as Ordered,
     Scalar as Scalar,
     Series as Series,
@@ -33,7 +34,7 @@ class Categorical(ExtensionArray, PandasObject):
     __array_priority__: int = ...
     def __init__(
         self,
-        values: Sequence,
+        values: ListLike,
         categories=...,
         ordered: Optional[bool] = ...,
         dtype: Optional[CategoricalDtype] = ...,
