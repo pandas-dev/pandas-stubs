@@ -109,7 +109,7 @@ class _iLocIndexerFrame(_iLocIndexer):
             Tuple[IndexType, IndexType],
             Tuple[int, IndexType],
         ],
-        value: Union[float, Series, DataFrame],
+        value: Union[float, Series, DataFrame, np.ndarray],
     ) -> None: ...
 
 class _LocIndexerFrame(_LocIndexer):

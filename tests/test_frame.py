@@ -1132,3 +1132,8 @@ def test_frame_reindex() -> None:
     # GH 84
     df = pd.DataFrame({"a": [1, 2, 3]}, index=[0, 1, 2])
     df.reindex([2, 1, 0])
+
+
+def test_frame_ndarray_assignmment() -> None:
+    df = pd.DataFrame({"a": [0.0] * 10})
+    df.iloc[:, :] = np.array([-1.0] * 10)
