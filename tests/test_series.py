@@ -691,9 +691,53 @@ def test_cat_accessor() -> None:
     assert_type(s.cat.codes, "pd.Series[int]")
 
 
-def test_iloc_ndarray() -> None:
+def test_iloc_getitem_ndarray() -> None:
     # GH 85
     # GH 86
-    indices = np.array([0, 1, 2, 3], dtype=np.int64)
+    indices_i8 = np.array([0, 1, 2, 3], dtype=np.int8)
+    indices_i16 = np.array([0, 1, 2, 3], dtype=np.int16)
+    indices_i32 = np.array([0, 1, 2, 3], dtype=np.int32)
+    indices_i64 = np.array([0, 1, 2, 3], dtype=np.int64)
+
+    indices_u8 = np.array([0, 1, 2, 3], dtype=np.uint8)
+    indices_u16 = np.array([0, 1, 2, 3], dtype=np.uint16)
+    indices_u32 = np.array([0, 1, 2, 3], dtype=np.uint32)
+    indices_u64 = np.array([0, 1, 2, 3], dtype=np.uint64)
+
     values_s = pd.Series(np.arange(10), name="a")
-    assert_type(values_s.iloc[indices], "pd.Series")
+
+    assert_type(values_s.iloc[indices_i8], "pd.Series")
+    assert_type(values_s.iloc[indices_i16], "pd.Series")
+    assert_type(values_s.iloc[indices_i32], "pd.Series")
+    assert_type(values_s.iloc[indices_i64], "pd.Series")
+
+    assert_type(values_s.iloc[indices_u8], "pd.Series")
+    assert_type(values_s.iloc[indices_u16], "pd.Series")
+    assert_type(values_s.iloc[indices_u32], "pd.Series")
+    assert_type(values_s.iloc[indices_u64], "pd.Series")
+
+
+def test_iloc_setitem_ndarray() -> None:
+    # GH 85
+    # GH 86
+    indices_i8 = np.array([0, 1, 2, 3], dtype=np.int8)
+    indices_i16 = np.array([0, 1, 2, 3], dtype=np.int16)
+    indices_i32 = np.array([0, 1, 2, 3], dtype=np.int32)
+    indices_i64 = np.array([0, 1, 2, 3], dtype=np.int64)
+
+    indices_u8 = np.array([0, 1, 2, 3], dtype=np.uint8)
+    indices_u16 = np.array([0, 1, 2, 3], dtype=np.uint16)
+    indices_u32 = np.array([0, 1, 2, 3], dtype=np.uint32)
+    indices_u64 = np.array([0, 1, 2, 3], dtype=np.uint64)
+
+    values_s = pd.Series(np.arange(10), name="a")
+
+    values_s.iloc[indices_i8] = -1
+    values_s.iloc[indices_i16] = -1
+    values_s.iloc[indices_i32] = -1
+    values_s.iloc[indices_i64] = -1
+
+    values_s.iloc[indices_u8] = -1
+    values_s.iloc[indices_u16] = -1
+    values_s.iloc[indices_u32] = -1
+    values_s.iloc[indices_u64] = -1

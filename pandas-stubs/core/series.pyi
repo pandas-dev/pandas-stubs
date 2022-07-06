@@ -64,7 +64,7 @@ from pandas._typing import (
     SeriesAxisType as SeriesAxisType,
     Timedelta as Timedelta,
     Timestamp as Timestamp,
-    np_ndarray_int64 as np_ndarray_int64,
+    np_ndarray_anyint as np_ndarray_anyint,
     num as num,
 )
 
@@ -87,12 +87,16 @@ class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     @overload
     def __getitem__(self, idx: IndexingInt) -> S1: ...
     @overload
-    def __getitem__(self, idx: Union[Index, slice, np_ndarray_int64]) -> Series[S1]: ...
+    def __getitem__(
+        self, idx: Union[Index, slice, np_ndarray_anyint]
+    ) -> Series[S1]: ...
     # set item
     @overload
     def __setitem__(self, idx: int, value: S1) -> None: ...
     @overload
-    def __setitem__(self, idx: Index, value: Union[S1, Series[S1]]) -> None: ...
+    def __setitem__(
+        self, idx: Union[Index, slice, np_ndarray_anyint], value: Union[S1, Series[S1]]
+    ) -> None: ...
 
 class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     @overload
