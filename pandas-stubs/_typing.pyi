@@ -92,6 +92,7 @@ Renamer = Union[Mapping[Any, Label], Callable[[Any], Label]]
 T = TypeVar("T")
 FuncType = Callable[..., Any]
 F = TypeVar("F", bound=FuncType)
+HashableT = TypeVar("HashableT", bound=Hashable)
 
 AggFuncTypeBase = Union[Callable, str]
 AggFuncTypeDict = Dict[Hashable, Union[AggFuncTypeBase, List[AggFuncTypeBase]]]
