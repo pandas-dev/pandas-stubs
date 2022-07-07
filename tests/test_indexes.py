@@ -8,9 +8,9 @@ def test_index_unique() -> None:
 
     df = pd.DataFrame({"x": [1, 2, 3, 4]}, index=pd.Index([1, 2, 3, 2]))
     ind = df.index
-    assert_type(ind, pd.Index)
+    assert_type(ind, "pd.Index")
     i2 = ind.unique()
-    assert_type(i2, pd.Index)
+    assert_type(i2, "pd.Index")
 
 
 def test_index_isin() -> None:
