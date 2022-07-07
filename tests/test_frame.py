@@ -1149,3 +1149,5 @@ def test_not_hashable() -> None:
     assert_type(pd.DataFrame().__hash__, None)
     assert_type(pd.Series.__hash__, None)
     assert_type(pd.Series([], dtype=object).__hash__, None)
+    assert_type(pd.Index.__hash__, None)
+    assert_type(pd.Index([]).__hash__, None)
