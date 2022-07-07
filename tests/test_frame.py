@@ -1135,5 +1135,8 @@ def test_frame_reindex() -> None:
 
 
 def test_frame_ndarray_assignmment() -> None:
-    df = pd.DataFrame({"a": [0.0] * 10})
-    df.iloc[:, :] = np.array([-1.0] * 10)
+    df_a = pd.DataFrame({"a": [0.0] * 10})
+    df_a.iloc[:, :] = np.array([[-1.0]] * 10)
+
+    df_b = pd.DataFrame({"a": [0.0] * 10, "b": [1.0] * 10})
+    df_b.iloc[:, :] = np.array([[-1.0, np.inf]] * 10)
