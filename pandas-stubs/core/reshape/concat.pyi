@@ -9,12 +9,11 @@ from typing import (
 )
 
 from pandas._typing import (
-    Axis as Axis,
-    DataFrame as DataFrame,
-    Series as Series,
+    Axis,
+    DataFrame,
+    HashableT,
+    Series,
 )
-
-HashableT = TypeVar("HashableT", bound=Hashable)
 
 @overload
 def concat(

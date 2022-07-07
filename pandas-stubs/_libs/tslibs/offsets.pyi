@@ -16,13 +16,12 @@ from typing import (
 )
 
 import numpy as np
+from pandas.core.indexes.datetimes import DatetimeIndex
 
 from pandas._typing import npt
 
 from .timedeltas import Timedelta
 
-if TYPE_CHECKING:
-    from pandas.core.indexes.datetimes import DatetimeIndex
 _BaseOffsetT = TypeVar("_BaseOffsetT", bound=BaseOffset)
 _DatetimeT = TypeVar("_DatetimeT", bound=datetime)
 _TimedeltaT = TypeVar("_TimedeltaT", bound=timedelta)

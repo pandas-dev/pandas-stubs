@@ -3,7 +3,9 @@ import tempfile
 from typing import (
     TYPE_CHECKING,
     List,
+    Sequence,
     Union,
+    cast,
 )
 
 import numpy as np
@@ -24,6 +26,15 @@ def test_types_init() -> None:
     pd.Series(data=[1, 2, 3, 4], dtype=np.int8)
     pd.Series(data={"row1": [1, 2], "row2": [3, 4]})
     pd.Series(data=[1, 2, 3, 4], index=[4, 3, 2, 1], copy=True)
+    # GH 90
+    dt: pd.DatetimeIndex = pd.to_datetime(
+        [1, 2], unit="D", origin=pd.Timestamp("01/01/2000")
+    )
+    pd.Series(data=dt, index=None)
+    pd.Series(data=[1, 2, 3, 4], dtype=int, index=None)
+    pd.Series(data={"row1": [1, 2], "row2": [3, 4]}, dtype=int, index=None)
+    pd.Series(data=[1, 2, 3, 4], index=None)
+    pd.Series(data={"row1": [1, 2], "row2": [3, 4]}, index=None)
 
 
 def test_types_any() -> None:
@@ -195,7 +206,8 @@ def test_types_sort_index_with_key() -> None:
 def test_types_sort_values() -> None:
     s = pd.Series([4, 2, 1, 3])
     assert_type(s.sort_values(), pd.Series)
-    assert_type(s.sort_values(0), pd.Series)
+    with pytest.warns(FutureWarning, match="In a future version of pandas"):
+        assert_type(s.sort_values(0), pd.Series)
     assert_type(s.sort_values(ascending=False), pd.Series)
     assert_type(s.sort_values(inplace=True, kind="quicksort"), None)
     assert_type(s.sort_values(na_position="last"), pd.Series)
@@ -217,17 +229,22 @@ def test_types_shift() -> None:
 
 def test_types_rank() -> None:
     s = pd.Series([1, 1, 2, 5, 6, np.nan, "milion"])
-    s.rank()
-    s.rank(axis=0, na_option="bottom")
-    s.rank(method="min", pct=True)
-    s.rank(method="dense", ascending=True)
+    with pytest.warns(FutureWarning, match="Dropping of nuisance columns"):
+        s.rank()
+    with pytest.warns(FutureWarning, match="Dropping of nuisance columns"):
+        s.rank(axis=0, na_option="bottom")
+    with pytest.warns(FutureWarning, match="Dropping of nuisance columns"):
+        s.rank(method="min", pct=True)
+    with pytest.warns(FutureWarning, match="Dropping of nuisance columns"):
+        s.rank(method="dense", ascending=True)
     s.rank(method="first", numeric_only=True)
 
 
 def test_types_mean() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     f1: float = s.mean()
-    s1: pd.Series = s.mean(axis=0, level=0)
+    with pytest.warns(FutureWarning, match="Using the level keyword"):
+        s1: pd.Series = s.mean(axis=0, level=0)
     f2: float = s.mean(skipna=False)
     f3: float = s.mean(numeric_only=False)
 
@@ -235,7 +252,8 @@ def test_types_mean() -> None:
 def test_types_median() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     f1: float = s.median()
-    s1: pd.Series = s.median(axis=0, level=0)
+    with pytest.warns(FutureWarning, match="Using the level keyword"):
+        s1: pd.Series = s.median(axis=0, level=0)
     f2: float = s.median(skipna=False)
     f3: float = s.median(numeric_only=False)
 
@@ -243,7 +261,8 @@ def test_types_median() -> None:
 def test_types_sum() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     s.sum()
-    s.sum(axis=0, level=0)
+    with pytest.warns(FutureWarning, match="Using the level keyword"):
+        s.sum(axis=0, level=0)
     s.sum(skipna=False)
     s.sum(numeric_only=False)
     s.sum(min_count=4)
@@ -260,7 +279,8 @@ def test_types_min() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     s.min()
     s.min(axis=0)
-    s.min(level=0)
+    with pytest.warns(FutureWarning, match="Using the level keyword"):
+        s.min(level=0)
     s.min(skipna=False)
 
 
@@ -268,7 +288,8 @@ def test_types_max() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     s.max()
     s.max(axis=0)
-    s.max(level=0)
+    with pytest.warns(FutureWarning, match="Using the level keyword"):
+        s.max(level=0)
     s.max(skipna=False)
 
 
@@ -387,6 +408,14 @@ def test_types_scalar_arithmetic() -> None:
     res_pow3: pd.Series = s.pow(0.5)
 
 
+# GH 103
+def test_types_complex_arithmetic() -> None:
+    c = 1 + 1j
+    s = pd.Series([1.0, 2.0, 3.0])
+    x = s + c
+    y = s - c
+
+
 def test_types_groupby() -> None:
     s = pd.Series([4, 2, 1, 8], index=["a", "b", "a", "b"])
     s.groupby(["a", "b", "a", "b"])
@@ -411,7 +440,8 @@ def test_types_plot() -> None:
 def test_types_window() -> None:
     s = pd.Series([0, 1, 1, 0, 5, 1, -10])
     s.expanding()
-    s.expanding(axis=0, center=True)
+    with pytest.warns(FutureWarning, match="The `center` argument"):
+        s.expanding(axis=0, center=True)
 
     s.rolling(2)
     s.rolling(2, axis=0, center=True)
@@ -691,9 +721,63 @@ def test_cat_accessor() -> None:
     assert_type(s.cat.codes, "pd.Series[int]")
 
 
-def test_iloc_ndarray() -> None:
+def test_cat_ctor_values() -> None:
+    c1 = pd.Categorical(["a", "b", "a"])
+    # GH 95
+    c2 = pd.Categorical(pd.Series(["a", "b", "a"]))
+    s: Sequence = cast(Sequence, ["a", "b", "a"])
+    c3 = pd.Categorical(s)
+    # GH 107
+    c4 = pd.Categorical(np.array([1, 2, 3, 1, 1]))
+
+
+def test_iloc_getitem_ndarray() -> None:
     # GH 85
     # GH 86
-    indices = np.array([0, 1, 2, 3], dtype=np.int64)
+    indices_i8 = np.array([0, 1, 2, 3], dtype=np.int8)
+    indices_i16 = np.array([0, 1, 2, 3], dtype=np.int16)
+    indices_i32 = np.array([0, 1, 2, 3], dtype=np.int32)
+    indices_i64 = np.array([0, 1, 2, 3], dtype=np.int64)
+
+    indices_u8 = np.array([0, 1, 2, 3], dtype=np.uint8)
+    indices_u16 = np.array([0, 1, 2, 3], dtype=np.uint16)
+    indices_u32 = np.array([0, 1, 2, 3], dtype=np.uint32)
+    indices_u64 = np.array([0, 1, 2, 3], dtype=np.uint64)
+
     values_s = pd.Series(np.arange(10), name="a")
-    assert_type(values_s.iloc[indices], "pd.Series")
+
+    assert_type(values_s.iloc[indices_i8], "pd.Series")
+    assert_type(values_s.iloc[indices_i16], "pd.Series")
+    assert_type(values_s.iloc[indices_i32], "pd.Series")
+    assert_type(values_s.iloc[indices_i64], "pd.Series")
+
+    assert_type(values_s.iloc[indices_u8], "pd.Series")
+    assert_type(values_s.iloc[indices_u16], "pd.Series")
+    assert_type(values_s.iloc[indices_u32], "pd.Series")
+    assert_type(values_s.iloc[indices_u64], "pd.Series")
+
+
+def test_iloc_setitem_ndarray() -> None:
+    # GH 85
+    # GH 86
+    indices_i8 = np.array([0, 1, 2, 3], dtype=np.int8)
+    indices_i16 = np.array([0, 1, 2, 3], dtype=np.int16)
+    indices_i32 = np.array([0, 1, 2, 3], dtype=np.int32)
+    indices_i64 = np.array([0, 1, 2, 3], dtype=np.int64)
+
+    indices_u8 = np.array([0, 1, 2, 3], dtype=np.uint8)
+    indices_u16 = np.array([0, 1, 2, 3], dtype=np.uint16)
+    indices_u32 = np.array([0, 1, 2, 3], dtype=np.uint32)
+    indices_u64 = np.array([0, 1, 2, 3], dtype=np.uint64)
+
+    values_s = pd.Series(np.arange(10), name="a")
+
+    values_s.iloc[indices_i8] = -1
+    values_s.iloc[indices_i16] = -1
+    values_s.iloc[indices_i32] = -1
+    values_s.iloc[indices_i64] = -1
+
+    values_s.iloc[indices_u8] = -1
+    values_s.iloc[indices_u16] = -1
+    values_s.iloc[indices_u32] = -1
+    values_s.iloc[indices_u64] = -1

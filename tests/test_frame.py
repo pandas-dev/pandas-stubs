@@ -37,17 +37,28 @@ def test_types_init() -> None:
 def test_types_append() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame({"col1": [10, 20], "col2": [30, 40]})
-
-    res1: pd.DataFrame = df.append(df2)
-    res2: pd.DataFrame = df.append([1, 2, 3])
-    res3: pd.DataFrame = df.append([[1, 2, 3]])
-    res4: pd.DataFrame = df.append({("a", 1): [1, 2, 3], "b": df2}, ignore_index=True)
-    res5: pd.DataFrame = df.append({1: [1, 2, 3]}, ignore_index=True)
-    res6: pd.DataFrame = df.append({1: [1, 2, 3], "col2": [1, 2, 3]}, ignore_index=True)
-    res7: pd.DataFrame = df.append(pd.Series([5, 6]), ignore_index=True)
-    res8: pd.DataFrame = df.append(
-        pd.Series([5, 6], index=["col1", "col2"]), ignore_index=True
-    )
+    with pytest.warns(FutureWarning, match="The frame.append"):
+        res1: pd.DataFrame = df.append(df2)
+    with pytest.warns(FutureWarning, match="The frame.append"):
+        res2: pd.DataFrame = df.append([1, 2, 3])
+    with pytest.warns(FutureWarning, match="The frame.append"):
+        res3: pd.DataFrame = df.append([[1, 2, 3]])
+    with pytest.warns(FutureWarning, match="The frame.append"):
+        res4: pd.DataFrame = df.append(
+            {("a", 1): [1, 2, 3], "b": df2}, ignore_index=True
+        )
+    with pytest.warns(FutureWarning, match="The frame.append"):
+        res5: pd.DataFrame = df.append({1: [1, 2, 3]}, ignore_index=True)
+    with pytest.warns(FutureWarning, match="The frame.append"):
+        res6: pd.DataFrame = df.append(
+            {1: [1, 2, 3], "col2": [1, 2, 3]}, ignore_index=True
+        )
+    with pytest.warns(FutureWarning, match="The frame.append"):
+        res7: pd.DataFrame = df.append(pd.Series([5, 6]), ignore_index=True)
+    with pytest.warns(FutureWarning, match="The frame.append"):
+        res8: pd.DataFrame = df.append(
+            pd.Series([5, 6], index=["col1", "col2"]), ignore_index=True
+        )
 
 
 def test_types_to_csv() -> None:
@@ -300,9 +311,12 @@ def test_types_mean() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     s1: pd.Series = df.mean()
     s2: pd.Series = df.mean(axis=0)
-    df2: pd.DataFrame = df.mean(level=0)
-    df3: pd.DataFrame = df.mean(axis=1, level=0)
-    df4: pd.DataFrame = df.mean(1, True, level=0)
+    with pytest.warns(FutureWarning, match="Using the level"):
+        df2: pd.DataFrame = df.mean(level=0)
+    with pytest.warns(FutureWarning, match="Using the level"):
+        df3: pd.DataFrame = df.mean(axis=1, level=0)
+    with pytest.warns(FutureWarning, match="Using the level"):
+        df4: pd.DataFrame = df.mean(1, True, level=0)
     s3: pd.Series = df.mean(axis=1, skipna=True, numeric_only=False)
 
 
@@ -310,9 +324,12 @@ def test_types_median() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     s1: pd.Series = df.median()
     s2: pd.Series = df.median(axis=0)
-    df2: pd.DataFrame = df.median(level=0)
-    df3: pd.DataFrame = df.median(axis=1, level=0)
-    df4: pd.DataFrame = df.median(1, True, level=0)
+    with pytest.warns(FutureWarning, match="Using the level keyword"):
+        df2: pd.DataFrame = df.median(level=0)
+    with pytest.warns(FutureWarning, match="Using the level keyword"):
+        df3: pd.DataFrame = df.median(axis=1, level=0)
+    with pytest.warns(FutureWarning, match="Using the level keyword"):
+        df4: pd.DataFrame = df.median(1, True, level=0)
     s3: pd.Series = df.median(axis=1, skipna=True, numeric_only=False)
 
 
@@ -589,7 +606,8 @@ def test_types_plot() -> None:
 def test_types_window() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
     df.expanding()
-    df.expanding(axis=1, center=True)
+    with pytest.warns(FutureWarning, match="The `center` argument on"):
+        df.expanding(axis=1, center=True)
 
     df.rolling(2)
     df.rolling(2, axis=1, center=True)
@@ -667,8 +685,10 @@ def test_types_describe() -> None:
         }
     )
     df.describe()
-    df.describe(percentiles=[0.5], include="all")
-    df.describe(exclude=[np.number])
+    with pytest.warns(FutureWarning, match="Treating datetime data as categorical"):
+        df.describe(percentiles=[0.5], include="all")
+    with pytest.warns(FutureWarning, match="Treating datetime data as categorical"):
+        df.describe(exclude=[np.number])
     # datetime_is_numeric param added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
     df.describe(datetime_is_numeric=True)
 
@@ -797,14 +817,18 @@ def test_types_to_parquet() -> None:
 
 def test_types_to_latex() -> None:
     df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
-    df.to_latex(
-        columns=["A"], label="some_label", caption="some_caption", multirow=True
-    )
-    df.to_latex(escape=False, decimal=",", column_format="r")
+    with pytest.warns(FutureWarning, match="In future versions `DataFrame.to_latex`"):
+        df.to_latex(
+            columns=["A"], label="some_label", caption="some_caption", multirow=True
+        )
+    with pytest.warns(FutureWarning, match="In future versions `DataFrame.to_latex`"):
+        df.to_latex(escape=False, decimal=",", column_format="r")
     # position param was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-    df.to_latex(position="some")
+    with pytest.warns(FutureWarning, match="In future versions `DataFrame.to_latex`"):
+        df.to_latex(position="some")
     # caption param was extended to accept tuple in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-    df.to_latex(caption=("cap1", "cap2"))
+    with pytest.warns(FutureWarning, match="In future versions `DataFrame.to_latex`"):
+        df.to_latex(caption=("cap1", "cap2"))
 
 
 def test_types_explode() -> None:
@@ -1022,6 +1046,15 @@ def test_read_excel() -> None:
         df12: pd.DataFrame = pd.read_excel("foo", sheet_name="sheet")
         df13: Dict[Union[int, str], pd.DataFrame] = pd.read_excel(
             "foo", sheet_name=["sheet"]
+        )
+        # GH 98
+        df14: pd.DataFrame = pd.read_excel("foo", sheet_name=0)
+        df15: Dict[Union[int, str], pd.DataFrame] = pd.read_excel("foo", sheet_name=[0])
+        df16: Dict[Union[int, str], pd.DataFrame] = pd.read_excel(
+            "foo", sheet_name=[0, "sheet"]
+        )
+        df17: Dict[Union[int, str], pd.DataFrame] = pd.read_excel(
+            "foo", sheet_name=None
         )
 
 

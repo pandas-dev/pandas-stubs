@@ -25,4 +25,8 @@ repos:
         - flake8-pyi==22.5.1
         types_or: [python, pyi]
         types: [text]  # overwrite types: [python]
-        args: [--ignore=E301 E302 E305 E402 E501 E701 E704 E741 F401 F403 F841 F811 W503 Y001 Y002 Y019 Y021 Y022 Y026 Y027 Y034 Y037]
+        args: [
+          --ignore=E301 E302 E305 E402 E501 E701 E704 E741 F401 F403 F841 F811 W503 Y019 Y022 Y026 Y027 Y034 Y037,
+          # TypeVars in private files are already private
+          --per-file-ignores=_*.pyi:Y001
+        ]

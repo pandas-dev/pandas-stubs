@@ -10,6 +10,7 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+import pytest
 from typing_extensions import assert_type
 
 from pandas.io.parsers import TextFileReader
@@ -108,14 +109,16 @@ def test_types_read_csv() -> None:
         df.to_csv(file.name)
         file.close()
         df2: pd.DataFrame = pd.read_csv(file.name)
-        df3: pd.DataFrame = pd.read_csv(file.name, sep="a", squeeze=False)
-        df4: pd.DataFrame = pd.read_csv(
-            file.name,
-            header=None,
-            prefix="b",
-            mangle_dupe_cols=True,
-            keep_default_na=False,
-        )
+        with pytest.warns(FutureWarning, match="The squeeze argument"):
+            df3: pd.DataFrame = pd.read_csv(file.name, sep="a", squeeze=False)
+        with pytest.warns(FutureWarning, match="The prefix argument has been"):
+            df4: pd.DataFrame = pd.read_csv(
+                file.name,
+                header=None,
+                prefix="b",
+                mangle_dupe_cols=True,
+                keep_default_na=False,
+            )
         df5: pd.DataFrame = pd.read_csv(
             file.name, engine="python", true_values=[0, 1, 3], na_filter=False
         )

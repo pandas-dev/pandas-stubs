@@ -92,6 +92,7 @@ Renamer = Union[Mapping[Any, Label], Callable[[Any], Label]]
 T = TypeVar("T")
 FuncType = Callable[..., Any]
 F = TypeVar("F", bound=FuncType)
+HashableT = TypeVar("HashableT", bound=Hashable)
 
 AggFuncTypeBase = Union[Callable, str]
 AggFuncTypeDict = Dict[Hashable, Union[AggFuncTypeBase, List[AggFuncTypeBase]]]
@@ -101,7 +102,7 @@ AggFuncType = Union[
     AggFuncTypeDict,
 ]
 
-num = Union[int, float]
+num = Union[int, float, complex]
 SeriesAxisType = Literal["index", 0]  # Restricted subset of _AxisType for series
 AxisType = Literal["columns", "index", 0, 1]
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
@@ -121,10 +122,25 @@ Scalar = Union[
     Timestamp,
     Timedelta,
 ]
-# Refine the next 3 in 3.9 to use the specialized type.
+# Refine the definitions below in 3.9 to use the specialized type.
+np_ndarray_int8 = npt.NDArray[np.int8]
+np_ndarray_int16 = npt.NDArray[np.int16]
+np_ndarray_int32 = npt.NDArray[np.int32]
 np_ndarray_int64 = npt.NDArray[np.int64]
+np_ndarray_uint8 = npt.NDArray[np.uint8]
+np_ndarray_uint16 = npt.NDArray[np.uint16]
+np_ndarray_uint32 = npt.NDArray[np.uint32]
+np_ndarray_uint64 = npt.NDArray[np.uint64]
+np_ndarray_int = Union[
+    np_ndarray_int8, np_ndarray_int16, np_ndarray_int32, np_ndarray_int64
+]
+np_ndarray_uint = Union[
+    np_ndarray_uint8, np_ndarray_uint16, np_ndarray_uint32, np_ndarray_uint64
+]
+np_ndarray_anyint = Union[np_ndarray_int, np_ndarray_uint]
 np_ndarray_bool = npt.NDArray[np.bool_]
 np_ndarray_str = npt.NDArray[np.str_]
+
 IndexType = Union[slice, np_ndarray_int64, Index, List[int], Series[int]]
 MaskType = Union[Series[bool], np_ndarray_bool, List[bool]]
 # Scratch types for generics
