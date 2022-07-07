@@ -1,5 +1,7 @@
-import typing_extensions
 import types
+from typing import TYPE_CHECKING
+
+import typing_extensions
 
 
 def assert_type(actual_object, expected):
@@ -24,4 +26,5 @@ def assert_type(actual_object, expected):
         raise TypeError(f"Expected '{expected}' got '{actual}'")
 
 
-typing_extensions.assert_type = assert_type
+if not TYPE_CHECKING:
+    typing_extensions.assert_type = assert_type
