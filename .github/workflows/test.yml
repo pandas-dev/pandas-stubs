@@ -26,10 +26,12 @@ jobs:
     - name: Install Poetry
       run: pip install poetry
 
-    - name: Cache project dependencies
+    - name: Determine poetry cache-dir
       run: |
         echo "::set-output name=PATH::$(poetry config cache-dir)"
       id: cache_path
+
+    - name: Cache project dependencies
       uses: actions/cache@v3
       with:
         path: |
