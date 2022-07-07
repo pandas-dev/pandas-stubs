@@ -1,7 +1,3 @@
-"""
-Public testing utility functions.
-"""
-
 from pandas._testing import (
     assert_extension_array_equal as assert_extension_array_equal,
     assert_frame_equal as assert_frame_equal,
