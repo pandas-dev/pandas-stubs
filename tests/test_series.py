@@ -408,6 +408,14 @@ def test_types_scalar_arithmetic() -> None:
     res_pow3: pd.Series = s.pow(0.5)
 
 
+# GH 103
+def test_types_complex_arithmetic() -> None:
+    c = 1 + 1j
+    s = pd.Series([1.0, 2.0, 3.0])
+    x = s + c
+    y = s - c
+
+
 def test_types_groupby() -> None:
     s = pd.Series([4, 2, 1, 8], index=["a", "b", "a", "b"])
     s.groupby(["a", "b", "a", "b"])
