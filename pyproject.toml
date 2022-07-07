@@ -34,7 +34,7 @@ packages = [
 python = ">=3.8,<3.11"
 
 [tool.poetry.dev-dependencies]
-mypy = ">=0.960"
+mypy = ">=0.961"
 pytest = ">=7.1.2"
 pyright = ">=1.1.251"
 poethepoet = ">=0.13.1"
