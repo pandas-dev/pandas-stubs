@@ -24,6 +24,7 @@ from pandas._typing import (
     Ordered,
     Scalar,
     np_ndarray_bool,
+    np_ndarray_int,
 )
 
 from pandas.core.dtypes.dtypes import CategoricalDtype as CategoricalDtype
@@ -63,7 +64,7 @@ class Categorical(ExtensionArray, PandasObject):
         fastpath: bool = ...,
     ) -> Categorical: ...
     @property
-    def codes(self) -> List[int]: ...
+    def codes(self) -> np_ndarray_int: ...
     @overload
     def set_ordered(self, value, inplace: Literal[True]) -> None: ...
     @overload

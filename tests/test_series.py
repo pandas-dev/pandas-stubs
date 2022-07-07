@@ -11,6 +11,7 @@ from typing import (
 )
 
 import numpy as np
+from numpy import typing as npt
 import pandas as pd
 from pandas.api.extensions import ExtensionArray
 from pandas.core.window import ExponentialMovingWindow
@@ -796,3 +797,15 @@ def test_types_iter() -> None:
     iterable: Iterable[int] = s
     assert_type(iter(s), Iterator[int])
     assert_type(next(iter(s)), int)
+
+
+def test_categorical_codes():
+    # GH-111
+    codes: Union[
+        npt.NDArray[np.int8],
+        npt.NDArray[np.int16],
+        npt.NDArray[np.int32],
+        npt.NDArray[np.int64],
+    ]
+    cat = pd.Categorical(["a", "b", "a"])
+    codes = cat.codes
