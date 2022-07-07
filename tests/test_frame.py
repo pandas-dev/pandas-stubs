@@ -1145,9 +1145,9 @@ def test_frame_ndarray_assignmment() -> None:
 
 def test_not_hashable() -> None:
     # GH 113
-    assert_type(pd.DataFrame.__hash__, None)
-    assert_type(pd.DataFrame().__hash__, None)
-    assert_type(pd.Series.__hash__, None)
-    assert_type(pd.Series([], dtype=object).__hash__, None)
-    assert_type(pd.Index.__hash__, None)
-    assert_type(pd.Index([]).__hash__, None)
+    assert assert_type(pd.DataFrame.__hash__, None) is None
+    assert assert_type(pd.DataFrame().__hash__, None) is None
+    assert assert_type(pd.Series.__hash__, None) is None
+    assert assert_type(pd.Series([], dtype=object).__hash__, None) is None
+    assert assert_type(pd.Index.__hash__, None) is None
+    assert assert_type(pd.Index([]).__hash__, None) is None
