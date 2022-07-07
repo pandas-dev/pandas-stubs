@@ -11,7 +11,6 @@ from typing import (
 )
 
 import numpy as np
-from numpy import typing as npt
 import pandas as pd
 from pandas.api.extensions import ExtensionArray
 from pandas.core.window import ExponentialMovingWindow
@@ -21,6 +20,9 @@ from typing_extensions import assert_type
 from pandas._typing import Scalar
 
 from tests import check
+
+if TYPE_CHECKING:
+    from pandas._typing import np_ndarray_int  # noqa: F401
 
 
 def test_types_init() -> None:
@@ -801,11 +803,5 @@ def test_types_iter() -> None:
 
 def test_categorical_codes():
     # GH-111
-    codes: Union[
-        npt.NDArray[np.int8],
-        npt.NDArray[np.int16],
-        npt.NDArray[np.int32],
-        npt.NDArray[np.int64],
-    ]
     cat = pd.Categorical(["a", "b", "a"])
-    codes = cat.codes
+    assert_type(cat.codes, "np_ndarray_int")
