@@ -5,6 +5,7 @@ import datetime as _dt
 from typing import (
     Any,
     Callable,
+    ClassVar,
     Dict,
     Hashable,
     Iterable,
@@ -183,6 +184,8 @@ class DataFrame(NDFrame, OpsMixin):
         Index,
         Series,
     ]
+    __hash__: ClassVar[None]  # type: ignore[assignment]
+
     def __new__(
         cls,
         data: Optional[Union[_ListLike, DataFrame, Dict[Any, Any]]] = ...,
