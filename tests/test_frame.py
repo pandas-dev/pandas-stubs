@@ -1141,3 +1141,10 @@ def test_frame_ndarray_assignmment() -> None:
 
     df_b = pd.DataFrame({"a": [0.0] * 10, "b": [1.0] * 10})
     df_b.iloc[:, :] = np.array([[-1.0, np.inf]] * 10)
+
+def test_not_hashable() -> None:
+    # GH 113
+    assert_type(pd.DataFrame.__hash__, None)
+    assert_type(pd.DataFrame().__hash__, None)
+    assert_type(pd.Series.__hash__, None)
+    assert_type(pd.Series().__hash__, None)
