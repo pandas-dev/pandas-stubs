@@ -26,26 +26,12 @@ jobs:
     - name: Install Poetry
       run: pip install poetry
 
-    - name: Determine poetry cache-dir
-      run: |
-        echo "::set-output name=PATH::$(poetry config cache-dir)"
-      id: cache_path
-
     - name: Cache project dependencies
       id : cache
       uses: actions/cache@v3
       with:
-        path: |
-          ${{ steps.cache_path.outputs.PATH }}
-          poetry.lock
-        key: ${{ matrix.os }}-${{ matrix.python-version }}-poetry-${{ hashFiles('pyproject.toml') }}
-        restore-keys: ${{ matrix.os }}-${{ matrix.python-version }}-poetry-
-
-    - name: Delete poetry.lock on cache miss
-      if: steps.cache.outputs.cache-hit != 'true'
-      uses: JesseTG/rm@v1.0.3
-      with:
         path: poetry.lock
+        key: ${{ matrix.os }}-${{ matrix.python-version }}-poetry-${{ hashFiles('pyproject.toml') }}
 
     - name: Install project dependencies
       run: poetry install -vvv --no-root
