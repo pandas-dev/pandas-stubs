@@ -38,8 +38,6 @@ jobs:
           ${{ steps.cache_path.outputs.PATH }}
           poetry.lock
         key: ${{ matrix.os }}-${{ matrix.python-version }}-poetry-${{ hashFiles('**/pyproject.toml') }}
-        restore-keys: |
-         ${{ matrix.os }}-${{ matrix.python-version }}-poetry-
 
     - name: Install project dependencies
       run: poetry install -vvv --no-root
