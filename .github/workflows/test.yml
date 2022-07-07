@@ -26,12 +26,12 @@ jobs:
     - name: Install Poetry
       run: pip install poetry
 
-    - name: Cache project dependencies
+    - name: Cache poetry.lock
       id : cache
       uses: actions/cache@v3
       with:
         path: poetry.lock
-        key: ${{ matrix.os }}-${{ matrix.python-version }}-poetry-${{ hashFiles('pyproject.toml') }}
+        key: poetry-${{ hashFiles('pyproject.toml') }}
 
     - name: Install project dependencies
       run: poetry install -vvv --no-root
