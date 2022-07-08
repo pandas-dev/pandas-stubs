@@ -17,6 +17,8 @@ from typing_extensions import assert_type
 
 from pandas._typing import Scalar
 
+from tests import check
+
 
 def test_types_init() -> None:
     pd.Series(1)
@@ -101,8 +103,8 @@ def test_types_loc_at() -> None:
 
 def test_multiindex_loc() -> None:
     s = pd.Series([1, 2, 3, 4], index=pd.MultiIndex.from_product([[1, 2], ["a", "b"]]))
-    assert isinstance(assert_type(s.loc[1, :], pd.Series), pd.Series)
-    assert isinstance(assert_type(s.loc[pd.Index([1]), :], pd.Series), pd.Series)
+    check(assert_type(s.loc[1, :], pd.Series), pd.Series)
+    check(assert_type(s.loc[pd.Index([1]), :], pd.Series), pd.Series)
 
 
 def test_types_boolean_indexing() -> None:
@@ -157,9 +159,9 @@ def test_types_setting() -> None:
 
 def test_types_drop() -> None:
     s = pd.Series([0, 1, 2])
-    assert isinstance(assert_type(s.drop(0), pd.Series), pd.Series)
-    assert isinstance(assert_type(s.drop([0, 1]), pd.Series), pd.Series)
-    assert isinstance(assert_type(s.drop(0, axis=0), pd.Series), pd.Series)
+    check(assert_type(s.drop(0), pd.Series), pd.Series)
+    check(assert_type(s.drop([0, 1]), pd.Series), pd.Series)
+    check(assert_type(s.drop(0, axis=0), pd.Series), pd.Series)
     assert assert_type(s.drop([0, 1], inplace=True, errors="raise"), None) is None
     assert assert_type(s.drop([0, 1], inplace=True, errors="ignore"), None) is None
 
@@ -175,30 +177,26 @@ def test_types_drop_multilevel() -> None:
 
 def test_types_dropna() -> None:
     s = pd.Series([1, np.nan, np.nan])
-    assert isinstance(assert_type(s.dropna(), pd.Series), pd.Series)
+    check(assert_type(s.dropna(), pd.Series), pd.Series)
     assert assert_type(s.dropna(axis=0, inplace=True), None) is None
 
 
 def test_types_fillna() -> None:
     s = pd.Series([1, np.nan, np.nan, 3])
-    assert isinstance(assert_type(s.fillna(0), pd.Series), pd.Series)
-    assert isinstance(assert_type(s.fillna(0, axis="index"), pd.Series), pd.Series)
-    assert isinstance(
-        assert_type(s.fillna(method="backfill", axis=0), pd.Series), pd.Series
-    )
+    check(assert_type(s.fillna(0), pd.Series), pd.Series)
+    check(assert_type(s.fillna(0, axis="index"), pd.Series), pd.Series)
+    check(assert_type(s.fillna(method="backfill", axis=0), pd.Series), pd.Series)
     assert assert_type(s.fillna(method="bfill", inplace=True), None) is None
-    assert isinstance(assert_type(s.fillna(method="pad"), pd.Series), pd.Series)
-    assert isinstance(
-        assert_type(s.fillna(method="ffill", limit=1), pd.Series), pd.Series
-    )
+    check(assert_type(s.fillna(method="pad"), pd.Series), pd.Series)
+    check(assert_type(s.fillna(method="ffill", limit=1), pd.Series), pd.Series)
 
 
 def test_types_sort_index() -> None:
     s = pd.Series([1, 2, 3], index=[2, 3, 1])
-    assert isinstance(assert_type(s.sort_index(), pd.Series), pd.Series)
-    assert isinstance(assert_type(s.sort_index(ascending=False), pd.Series), pd.Series)
+    check(assert_type(s.sort_index(), pd.Series), pd.Series)
+    check(assert_type(s.sort_index(ascending=False), pd.Series), pd.Series)
     assert assert_type(s.sort_index(ascending=False, inplace=True), None) is None
-    assert isinstance(assert_type(s.sort_index(kind="mergesort"), pd.Series), pd.Series)
+    check(assert_type(s.sort_index(kind="mergesort"), pd.Series), pd.Series)
 
 
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
@@ -209,17 +207,13 @@ def test_types_sort_index_with_key() -> None:
 
 def test_types_sort_values() -> None:
     s = pd.Series([4, 2, 1, 3])
-    assert isinstance(assert_type(s.sort_values(), pd.Series), pd.Series)
+    check(assert_type(s.sort_values(), pd.Series), pd.Series)
     with pytest.warns(FutureWarning, match="In a future version of pandas"):
-        assert isinstance(assert_type(s.sort_values(0), pd.Series), pd.Series)
-    assert isinstance(assert_type(s.sort_values(ascending=False), pd.Series), pd.Series)
+        check(assert_type(s.sort_values(0), pd.Series), pd.Series)
+    check(assert_type(s.sort_values(ascending=False), pd.Series), pd.Series)
     assert assert_type(s.sort_values(inplace=True, kind="quicksort"), None) is None
-    assert isinstance(
-        assert_type(s.sort_values(na_position="last"), pd.Series), pd.Series
-    )
-    assert isinstance(
-        assert_type(s.sort_values(ignore_index=True), pd.Series), pd.Series
-    )
+    check(assert_type(s.sort_values(na_position="last"), pd.Series), pd.Series)
+    check(assert_type(s.sort_values(ignore_index=True), pd.Series), pd.Series)
 
 
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
@@ -553,25 +547,25 @@ def test_types_values() -> None:
 def test_types_rename() -> None:
     # Scalar
     s1 = pd.Series([1, 2, 3]).rename("A")
-    assert isinstance(assert_type(s1, pd.Series), pd.Series)
+    check(assert_type(s1, pd.Series), pd.Series)
     # Hashable Sequence
     s2 = pd.Series([1, 2, 3]).rename(("A", "B"))
-    assert isinstance(assert_type(s2, pd.Series), pd.Series)
+    check(assert_type(s2, pd.Series), pd.Series)
 
     # Optional
     s3 = pd.Series([1, 2, 3]).rename(None)
-    assert isinstance(assert_type(s3, pd.Series), pd.Series)
+    check(assert_type(s3, pd.Series), pd.Series)
 
     # Functions
     def add1(x: int) -> int:
         return x + 1
 
     s4 = pd.Series([1, 2, 3]).rename(add1)
-    assert isinstance(assert_type(s4, pd.Series), pd.Series)
+    check(assert_type(s4, pd.Series), pd.Series)
 
     # Dictionary
     s5 = pd.Series([1, 2, 3]).rename({1: 10})
-    assert isinstance(assert_type(s5, pd.Series), pd.Series)
+    check(assert_type(s5, pd.Series), pd.Series)
     # inplace
     s6: None = pd.Series([1, 2, 3]).rename("A", inplace=True)
 
@@ -587,8 +581,8 @@ def test_types_ne() -> None:
 
 def test_types_bfill() -> None:
     s1 = pd.Series([1, 2, 3])
-    assert isinstance(assert_type(s1.bfill(), pd.Series), pd.Series)
-    assert isinstance(assert_type(s1.bfill(inplace=False), pd.Series), pd.Series)
+    check(assert_type(s1.bfill(), pd.Series), pd.Series)
+    check(assert_type(s1.bfill(inplace=False), pd.Series), pd.Series)
     assert assert_type(s1.bfill(inplace=True), None) is None
 
 
@@ -604,8 +598,8 @@ def test_types_ewm() -> None:
 
 def test_types_ffill() -> None:
     s1 = pd.Series([1, 2, 3])
-    assert isinstance(assert_type(s1.ffill(), pd.Series), pd.Series)
-    assert isinstance(assert_type(s1.ffill(inplace=False), pd.Series), pd.Series)
+    check(assert_type(s1.ffill(), pd.Series), pd.Series)
+    check(assert_type(s1.ffill(inplace=False), pd.Series), pd.Series)
     assert assert_type(s1.ffill(inplace=True), None) is None
 
 
@@ -641,10 +635,10 @@ def test_series_min_max_sub_axis() -> None:
     ss = s1 - s2
     sm = s1 * s2
     sd = s1 / s2
-    assert isinstance(assert_type(sa, pd.Series), pd.Series)
-    assert isinstance(assert_type(ss, pd.Series), pd.Series)
-    assert isinstance(assert_type(sm, pd.Series), pd.Series)
-    assert isinstance(assert_type(sd, pd.Series), pd.Series)
+    check(assert_type(sa, pd.Series), pd.Series)
+    check(assert_type(ss, pd.Series), pd.Series)
+    check(assert_type(sm, pd.Series), pd.Series)
+    check(assert_type(sd, pd.Series), pd.Series)
 
 
 def test_series_index_isin() -> None:
@@ -653,21 +647,19 @@ def test_series_index_isin() -> None:
     t2 = s.loc[~s.index.isin([1, 3])]
     t3 = s[s.index.isin([1, 3])]
     t4 = s[~s.index.isin([1, 3])]
-    assert isinstance(assert_type(t1, pd.Series), pd.Series)
-    assert isinstance(assert_type(t2, pd.Series), pd.Series)
-    assert isinstance(assert_type(t3, pd.Series), pd.Series)
-    assert isinstance(assert_type(t4, pd.Series), pd.Series)
+    check(assert_type(t1, pd.Series), pd.Series)
+    check(assert_type(t2, pd.Series), pd.Series)
+    check(assert_type(t3, pd.Series), pd.Series)
+    check(assert_type(t4, pd.Series), pd.Series)
 
 
 def test_series_invert() -> None:
     s1 = pd.Series([True, False, True])
     s2 = ~s1
-    assert isinstance(
-        assert_type(s2, "pd.Series[bool]"), pd.Series
-    ) and s2.dtype is np.dtype(bool)
+    check(assert_type(s2, "pd.Series[bool]"), pd.Series, bool)
     s3 = pd.Series([1, 2, 3])
-    assert isinstance(assert_type(s3[s2], pd.Series), pd.Series)
-    assert isinstance(assert_type(s3.loc[s2], pd.Series), pd.Series)
+    check(assert_type(s3[s2], pd.Series), pd.Series)
+    check(assert_type(s3.loc[s2], pd.Series), pd.Series)
 
 
 def test_series_multiindex_getitem() -> None:
@@ -680,13 +672,13 @@ def test_series_multiindex_getitem() -> None:
 def test_series_mul() -> None:
     s = pd.Series([1, 2, 3])
     sm = s * 4
-    assert isinstance(assert_type(sm, pd.Series), pd.Series)
+    check(assert_type(sm, pd.Series), pd.Series)
     ss = s - 4
-    assert isinstance(assert_type(ss, pd.Series), pd.Series)
+    check(assert_type(ss, pd.Series), pd.Series)
     sm2 = s * s
-    assert isinstance(assert_type(sm2, pd.Series), pd.Series)
+    check(assert_type(sm2, pd.Series), pd.Series)
     sp = s + 4
-    assert isinstance(assert_type(sp, pd.Series), pd.Series)
+    check(assert_type(sp, pd.Series), pd.Series)
 
 
 def test_reset_index() -> None:
@@ -695,44 +687,40 @@ def test_reset_index() -> None:
         index=pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"]),
     )
     r1 = s.reset_index()
-    assert isinstance(assert_type(r1, pd.DataFrame), pd.DataFrame)
+    check(assert_type(r1, pd.DataFrame), pd.DataFrame)
     r2 = s.reset_index(["ab"])
-    assert isinstance(assert_type(r2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(r2, pd.DataFrame), pd.DataFrame)
     r3 = s.reset_index("ab")
-    assert isinstance(assert_type(r3, pd.DataFrame), pd.DataFrame)
+    check(assert_type(r3, pd.DataFrame), pd.DataFrame)
     r4 = s.reset_index(drop=True)
-    assert isinstance(assert_type(r4, pd.Series), pd.Series)
+    check(assert_type(r4, pd.Series), pd.Series)
     r5 = s.reset_index(["ab"], drop=True)
-    assert isinstance(assert_type(r5, pd.Series), pd.Series)
+    check(assert_type(r5, pd.Series), pd.Series)
 
 
 def test_series_add_str() -> None:
     s = pd.Series(["abc", "def"])
-    assert isinstance(assert_type(s + "x", pd.Series), pd.Series)
-    assert isinstance(assert_type("x" + s, pd.Series), pd.Series)
+    check(assert_type(s + "x", pd.Series), pd.Series)
+    check(assert_type("x" + s, pd.Series), pd.Series)
 
 
 def test_series_dtype() -> None:
     s = pd.Series(["abc", "def"], dtype=str)
-    assert isinstance(
-        assert_type(s, "pd.Series[str]"), pd.Series
-    ) and s.dtype is np.dtype(object)
+    check(assert_type(s, "pd.Series[str]"), pd.Series, str)
 
 
 def test_types_replace() -> None:
     # GH 44
     s = pd.Series([1, 2, 3])
-    assert isinstance(assert_type(s.replace(1, 2), pd.Series), pd.Series)
-    assert isinstance(assert_type(s.replace(1, 2, inplace=False), pd.Series), pd.Series)
+    check(assert_type(s.replace(1, 2), pd.Series), pd.Series)
+    check(assert_type(s.replace(1, 2, inplace=False), pd.Series), pd.Series)
     assert assert_type(s.replace(1, 2, inplace=True), None) is None
 
 
 def test_cat_accessor() -> None:
     # GH 43
     s = pd.Series(pd.Categorical(["a", "b", "a"], categories=["a", "b"]))
-    assert isinstance(
-        assert_type(s.cat.codes, "pd.Series[int]"), pd.Series
-    ) and s.cat.codes.dtype is np.dtype("int8")
+    check(assert_type(s.cat.codes, "pd.Series[int]"), pd.Series, int)
 
 
 def test_cat_ctor_values() -> None:
@@ -760,15 +748,15 @@ def test_iloc_getitem_ndarray() -> None:
 
     values_s = pd.Series(np.arange(10), name="a")
 
-    assert isinstance(assert_type(values_s.iloc[indices_i8], pd.Series), pd.Series)
-    assert isinstance(assert_type(values_s.iloc[indices_i16], pd.Series), pd.Series)
-    assert isinstance(assert_type(values_s.iloc[indices_i32], pd.Series), pd.Series)
-    assert isinstance(assert_type(values_s.iloc[indices_i64], pd.Series), pd.Series)
+    check(assert_type(values_s.iloc[indices_i8], pd.Series), pd.Series)
+    check(assert_type(values_s.iloc[indices_i16], pd.Series), pd.Series)
+    check(assert_type(values_s.iloc[indices_i32], pd.Series), pd.Series)
+    check(assert_type(values_s.iloc[indices_i64], pd.Series), pd.Series)
 
-    assert isinstance(assert_type(values_s.iloc[indices_u8], pd.Series), pd.Series)
-    assert isinstance(assert_type(values_s.iloc[indices_u16], pd.Series), pd.Series)
-    assert isinstance(assert_type(values_s.iloc[indices_u32], pd.Series), pd.Series)
-    assert isinstance(assert_type(values_s.iloc[indices_u64], pd.Series), pd.Series)
+    check(assert_type(values_s.iloc[indices_u8], pd.Series), pd.Series)
+    check(assert_type(values_s.iloc[indices_u16], pd.Series), pd.Series)
+    check(assert_type(values_s.iloc[indices_u32], pd.Series), pd.Series)
+    check(assert_type(values_s.iloc[indices_u64], pd.Series), pd.Series)
 
 
 def test_iloc_setitem_ndarray() -> None:

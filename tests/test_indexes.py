@@ -3,38 +3,38 @@ from numpy import typing as npt
 import pandas as pd
 from typing_extensions import assert_type
 
+from tests import check
+
 
 def test_index_unique() -> None:
 
     df = pd.DataFrame({"x": [1, 2, 3, 4]}, index=pd.Index([1, 2, 3, 2]))
     ind = df.index
-    assert isinstance(assert_type(ind, pd.Index), pd.Index)
+    check(assert_type(ind, pd.Index), pd.Index)
     i2 = ind.unique()
-    assert isinstance(assert_type(i2, pd.Index), pd.Index)
+    check(assert_type(i2, pd.Index), pd.Index)
 
 
 def test_index_isin() -> None:
     ind = pd.Index([1, 2, 3, 4, 5])
     isin = ind.isin([2, 4])
-    assert isinstance(
-        assert_type(isin, npt.NDArray[np.bool_]), np.ndarray
-    ) and isin.dtype is np.dtype(bool)
+    check(assert_type(isin, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
 
 
 def test_index_astype() -> None:
     indi = pd.Index([1, 2, 3])
     inds = pd.Index(["a", "b", "c"])
     indc = indi.astype(inds.dtype)
-    assert isinstance(assert_type(indc, pd.Index), pd.Index)
+    check(assert_type(indc, pd.Index), pd.Index)
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
     mia = mi.astype(object)  # object is only valid parameter for MultiIndex.astype()
-    assert isinstance(assert_type(mia, pd.MultiIndex), pd.MultiIndex)
+    check(assert_type(mia, pd.MultiIndex), pd.MultiIndex)
 
 
 def test_multiindex_get_level_values() -> None:
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
     i1 = mi.get_level_values("ab")
-    assert isinstance(assert_type(i1, pd.Index), pd.Index)
+    check(assert_type(i1, pd.Index), pd.Index)
 
 
 def test_index_tolist() -> None:
