@@ -40,15 +40,15 @@ def test_types_init() -> None:
 
 
 def test_types_any() -> None:
-    res1: bool = pd.Series([False, False]).any()
-    res2: bool = pd.Series([False, False]).any(bool_only=False)
-    res3: bool = pd.Series([np.nan]).any(skipna=False)
+    check(assert_type(pd.Series([False, False]).any(), bool), np.bool_)
+    check(assert_type(pd.Series([False, False]).any(bool_only=False), bool), np.bool_)
+    check(assert_type(pd.Series([np.nan]).any(skipna=False), bool), np.bool_)
 
 
 def test_types_all() -> None:
-    res1: bool = pd.Series([False, False]).all()
-    res2: bool = pd.Series([False, False]).all(bool_only=False)
-    res3: bool = pd.Series([np.nan]).all(skipna=False)
+    check(assert_type(pd.Series([False, False]).all(), bool), np.bool_)
+    check(assert_type(pd.Series([False, False]).all(bool_only=False), bool), np.bool_)
+    check(assert_type(pd.Series([np.nan]).all(skipna=False), bool), np.bool_)
 
 
 def test_types_csv() -> None:
@@ -74,7 +74,7 @@ def test_types_csv() -> None:
 
 def test_types_copy() -> None:
     s = pd.Series(data=[1, 2, 3, 4])
-    s2: pd.Series = s.copy()
+    check(assert_type(s.copy(), pd.Series), pd.Series, int)
 
 
 def test_types_select() -> None:

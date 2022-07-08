@@ -39,8 +39,8 @@ def test_multiindex_get_level_values() -> None:
 
 def test_index_tolist() -> None:
     i1 = pd.Index([1, 2, 3])
-    l1 = i1.tolist()
-    i2 = i1.to_list()
+    check(assert_type(i1.tolist(), list), list, int)
+    check(assert_type(i1.to_list(), list), list, int)
 
 
 def test_column_getitem() -> None:
@@ -48,7 +48,7 @@ def test_column_getitem() -> None:
     df = pd.DataFrame([[1, 2, 3]], columns=["a", "b", "c"])
 
     column = df.columns[0]
-    a = df[column]
+    check(assert_type(df[column], pd.Series), pd.Series, int)
 
 
 def test_column_contains() -> None:
@@ -65,4 +65,4 @@ def test_column_contains() -> None:
 def test_difference_none() -> None:
     # https://github.com/pandas-dev/pandas-stubs/issues/17
     ind = pd.Index([1, 2, 3])
-    id = ind.difference([1, None])
+    check(assert_type(ind.difference([1, None]), "pd.Index"), pd.Index, int)
