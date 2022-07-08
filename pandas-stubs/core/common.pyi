@@ -4,7 +4,7 @@ from typing import (
     Union,
 )
 
-from pandas._typing import T as T
+from pandas._typing import T
 
 class SettingWithCopyError(ValueError): ...
 class SettingWithCopyWarning(Warning): ...

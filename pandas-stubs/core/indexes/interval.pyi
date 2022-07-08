@@ -14,8 +14,8 @@ from pandas._libs.interval import (
     IntervalMixin as IntervalMixin,
 )
 from pandas._typing import (
-    AnyArrayLike as AnyArrayLike,
-    DtypeArg as DtypeArg,
+    AnyArrayLike,
+    DtypeArg,
 )
 
 from pandas.core.dtypes.generic import ABCSeries as ABCSeries

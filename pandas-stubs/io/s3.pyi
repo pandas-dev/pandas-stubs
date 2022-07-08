@@ -5,7 +5,7 @@ from typing import (
     Tuple,
 )
 
-from pandas._typing import FilePathOrBuffer as FilePathOrBuffer
+from pandas._typing import FilePathOrBuffer
 
 s3fs = ...
 

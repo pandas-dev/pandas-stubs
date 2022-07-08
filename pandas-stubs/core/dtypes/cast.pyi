@@ -1,6 +1,6 @@
 import numpy as np
 
-from pandas._typing import Dtype as Dtype
+from pandas._typing import Dtype
 
 def maybe_convert_platform(values): ...
 def is_nested_object(obj) -> bool: ...

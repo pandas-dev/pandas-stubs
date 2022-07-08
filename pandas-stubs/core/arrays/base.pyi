@@ -6,7 +6,7 @@ from typing import (
 
 import numpy as np
 
-from pandas._typing import ArrayLike as ArrayLike
+from pandas._typing import ArrayLike
 
 from pandas.core.dtypes.dtypes import ExtensionDtype as ExtensionDtype
 from pandas.core.dtypes.generic import ABCExtensionArray as ABCExtensionArray
