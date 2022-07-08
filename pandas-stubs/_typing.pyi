@@ -32,16 +32,16 @@ from typing import (
 
 import numpy as np
 from numpy import typing as npt
-from pandas.core.arrays import ExtensionArray as ExtensionArray
-from pandas.core.frame import DataFrame as DataFrame
+from pandas.core.arrays import ExtensionArray
+from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
-from pandas.core.indexes.base import Index as Index
-from pandas.core.series import Series as Series
+from pandas.core.indexes.base import Index
+from pandas.core.series import Series
 
 from pandas._libs.tslibs import (
     Period,
-    Timedelta as Timedelta,
-    Timestamp as Timestamp,
+    Timedelta,
+    Timestamp,
 )
 
 from pandas.core.dtypes.dtypes import ExtensionDtype

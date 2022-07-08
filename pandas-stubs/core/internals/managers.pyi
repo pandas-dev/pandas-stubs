@@ -4,9 +4,9 @@ from typing import (
     Union,
 )
 
-from pandas.core.base import PandasObject as PandasObject
-from pandas.core.indexes.api import Index as Index
-from pandas.core.internals.blocks import Block as Block
+from pandas.core.base import PandasObject
+from pandas.core.indexes.api import Index
+from pandas.core.internals.blocks import Block
 
 class BlockManager(PandasObject):
     axes = ...

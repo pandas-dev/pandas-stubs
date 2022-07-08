@@ -1,6 +1,6 @@
 from typing import List
 
-from pandas.core.indexes.base import Index as Index
+from pandas.core.indexes.base import Index
 
 def inherit_from_data(name: str, delegate, cache: bool = ..., wrap: bool = ...): ...
 def inherit_names(names: List[str], delegate, cache: bool = ..., wrap: bool = ...): ...

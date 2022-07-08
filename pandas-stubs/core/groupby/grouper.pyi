@@ -7,10 +7,10 @@ from typing import (
 )
 
 import numpy as np
-from pandas.core.groupby.ops import BaseGrouper as BaseGrouper
-from pandas.core.indexes.api import Index as Index
+from pandas.core.groupby.ops import BaseGrouper
+from pandas.core.indexes.api import Index
 
-from pandas._typing import FrameOrSeries as FrameOrSeries
+from pandas._typing import FrameOrSeries
 
 class Grouper:
     def __new__(cls, *args, **kwargs): ...

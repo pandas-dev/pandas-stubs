@@ -6,8 +6,8 @@ from typing import (
 )
 
 from pandas import (
-    DataFrame as DataFrame,
-    Series as Series,
+    DataFrame,
+    Series,
 )
 
 from pandas._libs.tslibs import Timedelta

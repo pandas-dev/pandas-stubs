@@ -10,9 +10,9 @@ from typing import (
     Union,
 )
 
-from pandas.core.frame import DataFrame as DataFrame
+from pandas.core.frame import DataFrame
 
-from pandas._typing import FilePathOrBuffer as FilePathOrBuffer
+from pandas._typing import FilePathOrBuffer
 
 class _HtmlFrameParser:
     io = ...

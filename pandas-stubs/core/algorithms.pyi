@@ -9,7 +9,7 @@ from typing import (
 import numpy as np
 from pandas.core.indexes.base import Index
 
-from pandas.core.dtypes.generic import ABCIndex as ABCIndex
+from pandas.core.dtypes.generic import ABCIndex
 
 def unique(values): ...
 
@@ -79,4 +79,4 @@ def safe_sort(
     verify: bool = ...,
 ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]: ...
 
-from pandas import Series as Series
+from pandas import Series

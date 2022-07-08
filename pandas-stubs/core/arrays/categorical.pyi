@@ -8,6 +8,7 @@ from typing import (
 )
 
 import numpy as np
+from pandas import Series
 from pandas.core.accessor import PandasDelegate as PandasDelegate
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
 from pandas.core.base import (
@@ -22,7 +23,6 @@ from pandas._typing import (
     ListLike as ListLike,
     Ordered as Ordered,
     Scalar as Scalar,
-    Series as Series,
     np_ndarray_bool,
 )
 

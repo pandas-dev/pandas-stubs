@@ -5,7 +5,7 @@ from typing import (
     Optional,
 )
 
-from pandas.core.frame import DataFrame as DataFrame
+from pandas.core.frame import DataFrame
 
 def read_gbq(
     query: str,

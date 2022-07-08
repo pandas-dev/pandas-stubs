@@ -5,13 +5,15 @@ from typing import (
 )
 
 import numpy as np
+from pandas import (
+    DataFrame,
+    Index,
+    Series,
+)
 
 from pandas._typing import (
-    ArrayLike as ArrayLike,
-    DataFrame as DataFrame,
-    Index as Index,
-    Scalar as Scalar,
-    Series as Series,
+    ArrayLike,
+    Scalar,
 )
 
 isposinf_scalar = ...

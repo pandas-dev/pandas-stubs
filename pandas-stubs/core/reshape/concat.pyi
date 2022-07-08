@@ -8,11 +8,14 @@ from typing import (
     overload,
 )
 
+from pandas import (
+    DataFrame,
+    Series,
+)
+
 from pandas._typing import (
     Axis,
-    DataFrame,
     HashableT,
-    Series,
 )
 
 @overload

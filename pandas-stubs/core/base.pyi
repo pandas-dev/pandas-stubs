@@ -12,16 +12,18 @@ from typing import (
 )
 
 import numpy as np
-from pandas.core.accessor import DirNamesMixin as DirNamesMixin
-from pandas.core.arrays import ExtensionArray as ExtensionArray
+from pandas import (
+    DataFrame,
+    Index,
+    Series,
+)
+from pandas.core.accessor import DirNamesMixin
+from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
 
 from pandas._typing import (
-    T1 as T1,
-    DataFrame as DataFrame,
-    Index as Index,
+    T1,
     Scalar,
-    Series as Series,
     SeriesAxisType,
     np_ndarray_int64,
     np_ndarray_str,

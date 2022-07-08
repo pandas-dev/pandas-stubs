@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Optional
 
 import numpy as np
+from pandas import Index
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
 
 from pandas._libs.interval import (
@@ -11,7 +12,6 @@ from pandas._libs.interval import (
 )
 from pandas._typing import (
     Axis,
-    Index as Index,
     Scalar,
 )
 
