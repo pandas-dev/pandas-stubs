@@ -4,12 +4,15 @@ import datetime as dt
 from typing import (
     TYPE_CHECKING,
     Optional,
+    Union,
 )
 
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
 from typing_extensions import assert_type
+
+from pandas._libs import NaTType
 
 if TYPE_CHECKING:
     from pandas.core.series import (
@@ -209,3 +212,29 @@ def test_comparisons_datetimeindex() -> None:
     assert_type((dti <= ts), np_ndarray_bool)
     assert_type((dti == ts), np_ndarray_bool)
     assert_type((dti != ts), np_ndarray_bool)
+
+
+def test_to_datetime_nat() -> None:
+    # GH 88
+    assert isinstance(
+        assert_type(pd.to_datetime("2021-03-01", errors="ignore"), "pd.Timestamp"),
+        pd.Timestamp,
+    )
+    assert isinstance(
+        assert_type(pd.to_datetime("2021-03-01", errors="raise"), "pd.Timestamp"),
+        pd.Timestamp,
+    )
+    assert isinstance(
+        assert_type(
+            pd.to_datetime("2021-03-01", errors="coerce"),
+            "Union[pd.Timestamp, NaTType]",
+        ),
+        pd.Timestamp,
+    )
+    assert isinstance(
+        assert_type(
+            pd.to_datetime("not a date", errors="coerce"),
+            "Union[pd.Timestamp, NaTType]",
+        ),
+        NaTType,
+    )
