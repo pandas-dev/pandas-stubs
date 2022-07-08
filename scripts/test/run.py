@@ -1,22 +1,6 @@
 from pathlib import Path
 import shutil
 import subprocess
-import sys
-
-
-def create_mypy_pkg_file():
-    pkg_path = [path for path in sys.path if path.endswith("site-packages")]
-
-    if not Path(rf"{pkg_path[0]}/my_path.pth").exists():
-        with open(rf"{pkg_path[0]}/my_path.pth", "w") as file:
-            file.write(str(Path.cwd()))
-
-
-def destroy_mypy_pkg_file():
-    pkg_path = [path for path in sys.path if path.endswith("site-packages")]
-
-    if Path(rf"{pkg_path[0]}/my_path.pth").exists():
-        Path(rf"{pkg_path[0]}/my_path.pth").unlink()
 
 
 def mypy_src():
