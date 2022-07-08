@@ -39,9 +39,6 @@ jobs:
     - name: Install project dependencies
       run: poetry install -vvv --no-root
 
-    - name: Create MyPy Package File
-      run: poetry run poe create_mypy_pkg_file
-
     - name: Run MyPy Against Source Code
       run: poetry run poe mypy_src
 
