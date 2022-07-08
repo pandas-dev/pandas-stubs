@@ -36,13 +36,13 @@ def test_interval_length() -> None:
     i1 = pd.Interval(
         pd.Timestamp("2000-01-01"), pd.Timestamp("2000-01-03"), closed="both"
     )
-    assert isinstance(assert_type(i1.length, "pd.Timedelta"), pd.Timedelta)
-    assert isinstance(assert_type(i1.left, "pd.Timestamp"), pd.Timestamp)
-    assert isinstance(assert_type(i1.right, "pd.Timestamp"), pd.Timestamp)
-    assert isinstance(assert_type(i1.mid, "pd.Timestamp"), pd.Timestamp)
+    assert isinstance(assert_type(i1.length, pd.Timedelta), pd.Timedelta)
+    assert isinstance(assert_type(i1.left, pd.Timestamp), pd.Timestamp)
+    assert isinstance(assert_type(i1.right, pd.Timestamp), pd.Timestamp)
+    assert isinstance(assert_type(i1.mid, pd.Timestamp), pd.Timestamp)
     i1.length.total_seconds()
     inres = pd.Timestamp("2001-01-02") in i1
-    assert isinstance(assert_type(inres, "bool"), bool)
+    assert isinstance(assert_type(inres, bool), bool)
     idres = i1 + pd.Timedelta(seconds=20)
 
     assert isinstance(assert_type(idres, "pd.Interval[pd.Timestamp]"), pd.Interval)
@@ -53,13 +53,13 @@ def test_interval_length() -> None:
         i1 * pd.Timedelta(seconds=20)  # type: ignore[operator]
 
     i2 = pd.Interval(10, 20)
-    assert isinstance(assert_type(i2.length, "int"), int)
-    assert isinstance(assert_type(i2.left, "int"), int)
-    assert isinstance(assert_type(i2.right, "int"), int)
-    assert isinstance(assert_type(i2.mid, "float"), float)
+    assert isinstance(assert_type(i2.length, int), int)
+    assert isinstance(assert_type(i2.left, int), int)
+    assert isinstance(assert_type(i2.right, int), int)
+    assert isinstance(assert_type(i2.mid, float), float)
 
     i2inres = 15 in i2
-    assert isinstance(assert_type(i2inres, "bool"), bool)
+    assert isinstance(assert_type(i2inres, bool), bool)
     assert isinstance(assert_type(i2 + 3, "pd.Interval[int]"), pd.Interval)
     assert isinstance(assert_type(i2 + 3.2, "pd.Interval[float]"), pd.Interval)
     assert isinstance(assert_type(i2 * 4, "pd.Interval[int]"), pd.Interval)
@@ -70,13 +70,13 @@ def test_interval_length() -> None:
         i2 + pd.Timedelta(seconds=20)  # type: ignore[operator]
 
     i3 = pd.Interval(13.2, 19.5)
-    assert isinstance(assert_type(i3.length, "float"), float)
-    assert isinstance(assert_type(i3.left, "float"), float)
-    assert isinstance(assert_type(i3.right, "float"), float)
-    assert isinstance(assert_type(i3.mid, "float"), float)
+    assert isinstance(assert_type(i3.length, float), float)
+    assert isinstance(assert_type(i3.left, float), float)
+    assert isinstance(assert_type(i3.right, float), float)
+    assert isinstance(assert_type(i3.mid, float), float)
 
     i3inres = 15.4 in i3
-    assert isinstance(assert_type(i3inres, "bool"), bool)
+    assert isinstance(assert_type(i3inres, bool), bool)
     assert isinstance(assert_type(i3 + 3, "pd.Interval[float]"), pd.Interval)
     assert isinstance(assert_type(i3 * 3, "pd.Interval[float]"), pd.Interval)
     if TYPE_CHECKING:

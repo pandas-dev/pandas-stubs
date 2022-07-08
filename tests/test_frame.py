@@ -575,12 +575,8 @@ def test_types_groupby_any() -> None:
             "col3": [False, False, False],
         }
     )
-    assert isinstance(
-        assert_type(df.groupby("col1").any(), "pd.DataFrame"), pd.DataFrame
-    )
-    assert isinstance(
-        assert_type(df.groupby("col1").all(), "pd.DataFrame"), pd.DataFrame
-    )
+    assert isinstance(assert_type(df.groupby("col1").any(), pd.DataFrame), pd.DataFrame)
+    assert isinstance(assert_type(df.groupby("col1").all(), pd.DataFrame), pd.DataFrame)
     assert isinstance(
         assert_type(df.groupby("col1")["col2"].any(), "pd.Series[bool]"), pd.Series
     )
@@ -973,7 +969,7 @@ def test_read_csv() -> None:
 def test_groupby_series_methods() -> None:
     df = pd.DataFrame({"x": [1, 2, 2, 3, 3], "y": [10, 20, 30, 40, 50]})
     gb = df.groupby("x")["y"]
-    assert isinstance(assert_type(gb.describe(), "pd.DataFrame"), pd.DataFrame)
+    assert isinstance(assert_type(gb.describe(), pd.DataFrame), pd.DataFrame)
     gb.count().loc[2]
     gb.pct_change().loc[2]
     gb.bfill().loc[2]
@@ -1013,9 +1009,9 @@ def test_compute_values():
 def test_sum_get_add() -> None:
     df = pd.DataFrame({"x": [1, 2, 3, 4, 5], "y": [10, 20, 30, 40, 50]})
     s = df["x"]
-    assert isinstance(assert_type(s, "pd.Series"), pd.Series)
+    assert isinstance(assert_type(s, pd.Series), pd.Series)
     summer = df.sum(axis=1)
-    assert isinstance(assert_type(summer, "pd.Series"), pd.Series)
+    assert isinstance(assert_type(summer, pd.Series), pd.Series)
 
     s2: pd.Series = s + summer
     s3: pd.Series = s + df["y"]
@@ -1044,7 +1040,7 @@ def test_getmultiindex_columns() -> None:
 def test_frame_getitem_isin() -> None:
     df = pd.DataFrame({"x": [1, 2, 3, 4, 5]}, index=[1, 2, 3, 4, 5])
     assert isinstance(
-        assert_type(df[df.index.isin([1, 3, 5])], "pd.DataFrame"), pd.DataFrame
+        assert_type(df[df.index.isin([1, 3, 5])], pd.DataFrame), pd.DataFrame
     )
 
 
