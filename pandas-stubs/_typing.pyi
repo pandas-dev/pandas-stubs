@@ -200,5 +200,5 @@ XMLParsers = Literal["lxml", "etree"]
 # Any plain Python or numpy function
 Function = Union[np.ufunc, Callable[..., Any]]
 GroupByObject = Union[
-    Label, List[Label], Function, Series, np.ndarray, Mapping[Label, Any]
+    Label, List[Label], Function, Series, np.ndarray, Mapping[Label, Any], Index
 ]
