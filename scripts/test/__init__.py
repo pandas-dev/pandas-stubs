@@ -17,7 +17,7 @@ def test_src(profile: str, clean_cache: bool = False):
     elif profile == "pytest":
         steps.extend([_step.pytest_src])
     elif profile == "full":
-        steps.extend([mypy_src, _step.pyright_src, _step.pytest_src])
+        steps.extend([_step.pyright_src, _step.pytest_src])
     else:
         raise ModuleNotFoundError("Profile not found!")
 
@@ -61,7 +61,6 @@ def test_all(clean_cache: bool = False):
 
     steps.extend(
         [
-            step.mypy_src,
             _step.pyright_src,
             _step.pytest_src,
             _step.build_dist,
