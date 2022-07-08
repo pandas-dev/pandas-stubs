@@ -1,7 +1,5 @@
 import pandas as pd
 
-from tests import check
-
 
 def test_types_merge() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})

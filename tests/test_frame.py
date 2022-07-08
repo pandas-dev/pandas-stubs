@@ -580,10 +580,16 @@ def test_types_groupby_any() -> None:
     )
     check(assert_type(df.groupby("col1").any(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.groupby("col1").all(), pd.DataFrame), pd.DataFrame)
-    series = df.groupby("col1")["col2"].any()
-    check(assert_type(series, "pd.Series[bool]"), pd.Series, bool)
-    series2 = df.groupby("col1")["col2"].any()
-    check(assert_type(series2, "pd.Series[bool]"), pd.Series, bool)
+    check(
+        assert_type(df.groupby("col1")["col2"].any(), "pd.Series[bool]"),
+        pd.Series,
+        bool,
+    )
+    check(
+        assert_type(df.groupby("col1")["col2"].any(), "pd.Series[bool]"),
+        pd.Series,
+        bool,
+    )
 
 
 def test_types_merge() -> None:

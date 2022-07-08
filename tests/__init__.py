@@ -4,8 +4,9 @@ from typing import Callable
 
 
 def check(actual: object, klass: type, dtype: type | None = None) -> None:
+
     if not isinstance(actual, klass):
-        raise TypeError
+        raise RuntimeError(f"Expected type '{klass}' but got '{type(actual)}'")
     if dtype is None:
         return None
 
@@ -15,4 +16,5 @@ def check(actual: object, klass: type, dtype: type | None = None) -> None:
         value = actual.left  # type: ignore[attr-defined]
 
     if not isinstance(value, dtype):
-        raise TypeError
+        raise RuntimeError(f"Expected type '{dtype}' but got '{type(value)}'")
+    return None

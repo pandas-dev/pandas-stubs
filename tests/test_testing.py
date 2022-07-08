@@ -5,8 +5,6 @@ from pandas.testing import (
 )
 import pytest
 
-from tests import check
-
 
 def test_types_assert_series_equal() -> None:
     s1 = pd.Series([0, 1, 1, 0])

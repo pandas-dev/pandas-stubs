@@ -105,7 +105,7 @@ def test_timestamp_timedelta_series_arithmetic() -> None:
     ts = pd.Timestamp("2022-03-05")
     s1 = pd.Series(["2022-03-05", "2022-03-06"])
     ts1 = pd.to_datetime(pd.Series(["2022-03-05", "2022-03-06"]))
-    check(ts1.iloc[0], pd.Timestamp)
+    assert isinstance(ts1.iloc[0], pd.Timestamp)
     td1 = pd.to_timedelta([2, 3], "seconds")
     ts2 = pd.to_datetime(pd.Series(["2022-03-08", "2022-03-10"]))
     r1 = ts1 - ts2
