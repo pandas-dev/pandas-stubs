@@ -7,6 +7,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
+    Hashable,
     Iterable,
     List,
     Tuple,
@@ -1151,3 +1152,10 @@ def test_not_hashable() -> None:
     assert assert_type(pd.Series([], dtype=object).__hash__, None) is None
     assert assert_type(pd.Index.__hash__, None) is None
     assert assert_type(pd.Index([]).__hash__, None) is None
+
+    def test_func(h: Hashable):
+        pass
+
+    test_func(pd.DataFrame())  # type: ignore[arg-type]
+    test_func(pd.Series([], dtype=object))  # type: ignore[arg-type]
+    test_func(pd.Index([]))  # type: ignore[arg-type]
