@@ -42,6 +42,8 @@ class InvalidIndexError(Exception): ...
 _str = str
 
 class Index(IndexOpsMixin, PandasObject):
+    __hash__: ClassVar[None]  # type: ignore[assignment]
+
     def __new__(
         cls,
         data: Iterable = ...,
@@ -170,7 +172,6 @@ class Index(IndexOpsMixin, PandasObject):
     def where(self, cond, other=...): ...
     def is_type_compatible(self, kind) -> bool: ...
     def __contains__(self, key) -> bool: ...
-    __hash__: ClassVar[None]  # type: ignore[assignment]
     def __setitem__(self, key, value) -> None: ...
     @overload
     def __getitem__(
