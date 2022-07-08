@@ -40,12 +40,22 @@ def test_types_concat() -> None:
     s: pd.Series = pd.Series([0, 1, -10])
     s2: pd.Series = pd.Series([7, -5, 10])
 
-    assert_type(pd.concat([s, s2]), "pd.Series")
-    assert_type(pd.concat([s, s2], axis=1), "pd.DataFrame")
-    assert_type(pd.concat([s, s2], keys=["first", "second"], sort=True), "pd.Series")
-    assert_type(
-        pd.concat([s, s2], keys=["first", "second"], names=["source", "row"]),
-        "pd.Series",
+    assert isinstance(assert_type(pd.concat([s, s2]), "pd.Series"), pd.Series)
+    assert isinstance(
+        assert_type(pd.concat([s, s2], axis=1), "pd.DataFrame"), pd.DataFrame
+    )
+    assert isinstance(
+        assert_type(
+            pd.concat([s, s2], keys=["first", "second"], sort=True), "pd.Series"
+        ),
+        pd.Series,
+    )
+    assert isinstance(
+        assert_type(
+            pd.concat([s, s2], keys=["first", "second"], names=["source", "row"]),
+            "pd.Series",
+        ),
+        pd.Series,
     )
 
     # Depends on the axis
@@ -59,14 +69,22 @@ def test_types_concat() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame(data={"col1": [10, 20], "col2": [30, 40]})
 
-    assert_type(pd.concat([df, df2]), "pd.DataFrame")
-    assert_type(pd.concat([df, df2], axis=1), "pd.DataFrame")
-    assert_type(
-        pd.concat([df, df2], keys=["first", "second"], sort=True), "pd.DataFrame"
+    assert isinstance(assert_type(pd.concat([df, df2]), "pd.DataFrame"), pd.DataFrame)
+    assert isinstance(
+        assert_type(pd.concat([df, df2], axis=1), "pd.DataFrame"), pd.DataFrame
     )
-    assert_type(
-        pd.concat([df, df2], keys=["first", "second"], names=["source", "row"]),
-        "pd.DataFrame",
+    assert isinstance(
+        assert_type(
+            pd.concat([df, df2], keys=["first", "second"], sort=True), "pd.DataFrame"
+        ),
+        pd.DataFrame,
+    )
+    assert isinstance(
+        assert_type(
+            pd.concat([df, df2], keys=["first", "second"], names=["source", "row"]),
+            "pd.DataFrame",
+        ),
+        pd.DataFrame,
     )
 
     result: pd.DataFrame = pd.concat(
@@ -149,10 +167,10 @@ def test_types_read_csv() -> None:
 
 def test_isna() -> None:
     s = pd.Series([1, np.nan, 3.2])
-    assert_type(pd.isna(s), "pd.Series[bool]")
+    assert isinstance(assert_type(pd.isna(s), "pd.Series[bool]"), pd.Series)
     b: bool = pd.isna(np.nan)
     ar: np.ndarray = pd.isna(s.to_list())
-    assert_type(pd.notna(s), "pd.Series[bool]")
+    assert isinstance(assert_type(pd.notna(s), "pd.Series[bool]"), pd.Series)
     b2: bool = pd.notna(np.nan)
     ar2: np.ndarray = pd.notna(s.to_list())
 
@@ -160,9 +178,12 @@ def test_isna() -> None:
 # GH 55
 def test_read_xml() -> None:
     if TYPE_CHECKING:  # Skip running pytest
-        assert_type(
-            pd.read_xml(
-                "path/to/file", xpath=".//row", stylesheet="path/to/stylesheet"
+        assert isinstance(
+            assert_type(
+                pd.read_xml(
+                    "path/to/file", xpath=".//row", stylesheet="path/to/stylesheet"
+                ),
+                pd.DataFrame,
             ),
             pd.DataFrame,
         )
