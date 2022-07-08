@@ -16,7 +16,7 @@ def test_index_unique() -> None:
 def test_index_isin() -> None:
     ind = pd.Index([1, 2, 3, 4, 5])
     isin = ind.isin([2, 4])
-    assert_type(isin, "npt.NDArray[np.bool_]")
+    assert_type(isin, npt.NDArray[np.bool_])
 
 
 def test_index_astype() -> None:
