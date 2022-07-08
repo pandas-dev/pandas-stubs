@@ -5,6 +5,7 @@ from datetime import (
 from typing import (
     Any,
     Callable,
+    ClassVar,
     Dict,
     Generic,
     Hashable,
@@ -138,6 +139,8 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
 class Series(IndexOpsMixin, NDFrame, Generic[S1]):
 
     _ListLike = Union[ArrayLike, Dict[_str, np.ndarray], List, Tuple, Index]
+    __hash__: ClassVar[None]
+
     @overload
     def __new__(
         cls,

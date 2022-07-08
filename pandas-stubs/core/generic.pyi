@@ -2,6 +2,7 @@ import sys
 from typing import (
     Any,
     Callable,
+    ClassVar,
     Dict,
     Hashable,
     Iterator,
@@ -48,6 +49,8 @@ _bool = bool
 _str = str
 
 class NDFrame(PandasObject, indexing.IndexingMixin):
+    __hash__: ClassVar[None]  # type: ignore[assignment]
+
     def __new__(
         cls,
         data: BlockManager,
@@ -89,7 +92,6 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def bool(self) -> _bool: ...
     def __abs__(self) -> NDFrame: ...
     def __round__(self, decimals: int = ...) -> NDFrame: ...
-    def __hash__(self): ...
     def __iter__(self) -> Iterator: ...
     def keys(self): ...
     def iteritems(self): ...

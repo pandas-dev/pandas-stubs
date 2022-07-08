@@ -5,6 +5,7 @@ import datetime as _dt
 from typing import (
     Any,
     Callable,
+    ClassVar,
     Dict,
     Hashable,
     Iterable,
@@ -183,6 +184,8 @@ class DataFrame(NDFrame, OpsMixin):
         Index,
         Series,
     ]
+    __hash__: ClassVar[None]  # type: ignore[assignment]
+
     def __new__(
         cls,
         data: Optional[Union[_ListLike, DataFrame, Dict[Any, Any]]] = ...,
@@ -428,7 +431,7 @@ class DataFrame(NDFrame, OpsMixin):
         *,
         axis: Axis = ...,
         index: Hashable | Sequence[Hashable] = ...,
-        columns: Hashable | Sequence[Hashable] = ...,
+        columns: Hashable | Sequence[Hashable] | Index = ...,
         level: Optional[Level] = ...,
         inplace: Literal[True],
         errors: IgnoreRaise = ...,
@@ -440,7 +443,7 @@ class DataFrame(NDFrame, OpsMixin):
         *,
         axis: Axis = ...,
         index: Hashable | Sequence[Hashable] = ...,
-        columns: Hashable | Sequence[Hashable] = ...,
+        columns: Hashable | Sequence[Hashable] | Index = ...,
         level: Optional[Level] = ...,
         inplace: Literal[False] = ...,
         errors: IgnoreRaise = ...,
@@ -452,7 +455,7 @@ class DataFrame(NDFrame, OpsMixin):
         *,
         axis: Axis = ...,
         index: Hashable | Sequence[Hashable] = ...,
-        columns: Hashable | Sequence[Hashable] = ...,
+        columns: Hashable | Sequence[Hashable] | Index = ...,
         level: Optional[Level] = ...,
         inplace: bool = ...,
         errors: IgnoreRaise = ...,
