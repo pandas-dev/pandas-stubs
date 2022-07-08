@@ -34,7 +34,7 @@ packages = [
 python = ">=3.8,<3.11"
 
 [tool.poetry.dev-dependencies]
-mypy = ">=0.960"
+mypy = ">=0.961"
 pytest = ">=7.1.2"
 pyright = ">=1.1.255"
 poethepoet = ">=0.13.1"
@@ -85,10 +85,6 @@ script = "scripts.test:test_all(clean_cache)"
     name = "clean-cache"
     options = ["-c", "--clean_cache"]
     default = false
-
-[tool.poe.tasks.create_mypy_pkg_file]
-help = "CI Test | Create mypy package file"
-script = "scripts.test.run:create_mypy_pkg_file"
 
 [tool.poe.tasks.mypy_src]
 help = "CI Test | Run mypy against source code"

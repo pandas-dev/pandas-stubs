@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import (
     List,
+    Literal,
     Optional,
     Tuple,
     TypedDict,
@@ -23,6 +24,7 @@ from pandas.core.series import (
     TimestampSeries,
 )
 
+from pandas._libs.tslibs import NaTType
 from pandas._typing import (
     AnyArrayLike,
     ArrayLike,
@@ -63,7 +65,7 @@ def should_cache(
 @overload
 def to_datetime(
     arg: DatetimeScalar,
-    errors: DateTimeErrorChoices = ...,
+    errors: Literal["ignore", "raise"] = ...,
     dayfirst: bool = ...,
     yearfirst: bool = ...,
     utc: bool | None = ...,
@@ -74,6 +76,20 @@ def to_datetime(
     origin=...,
     cache: bool = ...,
 ) -> Timestamp: ...
+@overload
+def to_datetime(
+    arg: DatetimeScalar,
+    errors: Literal["coerce"],
+    dayfirst: bool = ...,
+    yearfirst: bool = ...,
+    utc: bool | None = ...,
+    format: str | None = ...,
+    exact: bool = ...,
+    unit: str | None = ...,
+    infer_datetime_format: bool = ...,
+    origin=...,
+    cache: bool = ...,
+) -> Timestamp | NaTType: ...
 @overload
 def to_datetime(
     arg: Series | DictConvertible,
