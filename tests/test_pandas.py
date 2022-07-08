@@ -165,10 +165,14 @@ def test_types_read_csv() -> None:
 
 def test_isna() -> None:
     s = pd.Series([1, np.nan, 3.2])
-    assert isinstance(assert_type(pd.isna(s), "pd.Series[bool]"), pd.Series)
+    assert isinstance(
+        assert_type(pd.isna(s), "pd.Series[bool]"), pd.Series
+    ) and pd.isna(s).dtype is np.dtype(bool)
     b: bool = pd.isna(np.nan)
     ar: np.ndarray = pd.isna(s.to_list())
-    assert isinstance(assert_type(pd.notna(s), "pd.Series[bool]"), pd.Series)
+    assert isinstance(
+        assert_type(pd.notna(s), "pd.Series[bool]"), pd.Series
+    ) and pd.notna(s).dtype is np.dtype(bool)
     b2: bool = pd.notna(np.nan)
     ar2: np.ndarray = pd.notna(s.to_list())
 

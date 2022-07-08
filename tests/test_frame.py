@@ -577,12 +577,14 @@ def test_types_groupby_any() -> None:
     )
     assert isinstance(assert_type(df.groupby("col1").any(), pd.DataFrame), pd.DataFrame)
     assert isinstance(assert_type(df.groupby("col1").all(), pd.DataFrame), pd.DataFrame)
+    series = df.groupby("col1")["col2"].any()
     assert isinstance(
-        assert_type(df.groupby("col1")["col2"].any(), "pd.Series[bool]"), pd.Series
-    )
+        assert_type(series, "pd.Series[bool]"), pd.Series
+    ) and series.dtype is np.dtype(bool)
+    series2 = df.groupby("col1")["col2"].any()
     assert isinstance(
-        assert_type(df.groupby("col1")["col2"].any(), "pd.Series[bool]"), pd.Series
-    )
+        assert_type(series2, "pd.Series[bool]"), pd.Series
+    ) and series.dtype is np.dtype(bool)
 
 
 def test_types_merge() -> None:

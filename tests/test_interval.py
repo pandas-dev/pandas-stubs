@@ -1,6 +1,7 @@
 # flake8: noqa: F841
 from typing import TYPE_CHECKING
 
+import numpy as np
 import pandas as pd
 from typing_extensions import assert_type
 
@@ -45,7 +46,9 @@ def test_interval_length() -> None:
     assert isinstance(assert_type(inres, bool), bool)
     idres = i1 + pd.Timedelta(seconds=20)
 
-    assert isinstance(assert_type(idres, "pd.Interval[pd.Timestamp]"), pd.Interval)
+    assert isinstance(
+        assert_type(idres, "pd.Interval[pd.Timestamp]"), pd.Interval
+    ) and isinstance(idres.left, pd.Timestamp)
     if TYPE_CHECKING:
         20 in i1  # type: ignore[operator]
         i1 + pd.Timestamp("2000-03-03")  # type: ignore[operator]
@@ -60,10 +63,18 @@ def test_interval_length() -> None:
 
     i2inres = 15 in i2
     assert isinstance(assert_type(i2inres, bool), bool)
-    assert isinstance(assert_type(i2 + 3, "pd.Interval[int]"), pd.Interval)
-    assert isinstance(assert_type(i2 + 3.2, "pd.Interval[float]"), pd.Interval)
-    assert isinstance(assert_type(i2 * 4, "pd.Interval[int]"), pd.Interval)
-    assert isinstance(assert_type(i2 * 4.2, "pd.Interval[float]"), pd.Interval)
+    assert isinstance(
+        assert_type(i2 + 3, "pd.Interval[int]"), pd.Interval
+    ) and isinstance((i2 + 3).left, int)
+    assert isinstance(
+        assert_type(i2 + 3.2, "pd.Interval[float]"), pd.Interval
+    ) and isinstance((i2 + 3.2).left, float)
+    assert isinstance(
+        assert_type(i2 * 4, "pd.Interval[int]"), pd.Interval
+    ) and isinstance((i2 * 4).left, int)
+    assert isinstance(
+        assert_type(i2 * 4.2, "pd.Interval[float]"), pd.Interval
+    ) and isinstance((i2 * 4.2).left, float)
 
     if TYPE_CHECKING:
         pd.Timestamp("2001-01-02") in i2  # type: ignore[operator]
@@ -77,8 +88,12 @@ def test_interval_length() -> None:
 
     i3inres = 15.4 in i3
     assert isinstance(assert_type(i3inres, bool), bool)
-    assert isinstance(assert_type(i3 + 3, "pd.Interval[float]"), pd.Interval)
-    assert isinstance(assert_type(i3 * 3, "pd.Interval[float]"), pd.Interval)
+    assert isinstance(
+        assert_type(i3 + 3, "pd.Interval[float]"), pd.Interval
+    ) and isinstance((i3 + 3).left, float)
+    assert isinstance(
+        assert_type(i3 * 3, "pd.Interval[float]"), pd.Interval
+    ) and isinstance((i3 + 3).left, float)
     if TYPE_CHECKING:
         pd.Timestamp("2001-01-02") in i3  # type: ignore[operator]
         i3 + pd.Timedelta(seconds=20)  # type: ignore[operator]

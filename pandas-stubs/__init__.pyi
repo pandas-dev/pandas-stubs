@@ -1,5 +1,14 @@
 import pandas.testing as testing
 
+from . import (
+    api,
+    arrays,
+    errors,
+    io,
+    plotting,
+    testing,
+    tseries,
+)
 from ._config import (
     describe_option as describe_option,
     get_option as get_option,

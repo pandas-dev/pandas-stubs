@@ -662,7 +662,9 @@ def test_series_index_isin() -> None:
 def test_series_invert() -> None:
     s1 = pd.Series([True, False, True])
     s2 = ~s1
-    assert isinstance(assert_type(s2, "pd.Series[bool]"), pd.Series)
+    assert isinstance(
+        assert_type(s2, "pd.Series[bool]"), pd.Series
+    ) and s2.dtype is np.dtype(bool)
     s3 = pd.Series([1, 2, 3])
     assert isinstance(assert_type(s3[s2], pd.Series), pd.Series)
     assert isinstance(assert_type(s3.loc[s2], pd.Series), pd.Series)
@@ -712,7 +714,9 @@ def test_series_add_str() -> None:
 
 def test_series_dtype() -> None:
     s = pd.Series(["abc", "def"], dtype=str)
-    assert isinstance(assert_type(s, "pd.Series[str]"), pd.Series)
+    assert isinstance(
+        assert_type(s, "pd.Series[str]"), pd.Series
+    ) and s.dtype is np.dtype(object)
 
 
 def test_types_replace() -> None:
@@ -726,7 +730,9 @@ def test_types_replace() -> None:
 def test_cat_accessor() -> None:
     # GH 43
     s = pd.Series(pd.Categorical(["a", "b", "a"], categories=["a", "b"]))
-    assert isinstance(assert_type(s.cat.codes, "pd.Series[int]"), pd.Series)
+    assert isinstance(
+        assert_type(s.cat.codes, "pd.Series[int]"), pd.Series
+    ) and s.cat.codes.dtype is np.dtype("int8")
 
 
 def test_cat_ctor_values() -> None:
