@@ -215,8 +215,26 @@ def test_comparisons_datetimeindex() -> None:
 
 
 def test_to_datetime_nat() -> None:
-    assert_type(pd.to_datetime("2021-03-01", errors="ignore"), "pd.Timestamp")
-    assert_type(pd.to_datetime("2021-03-01", errors="raise"), "pd.Timestamp")
-    assert_type(
-        pd.to_datetime("2021-03-01", errors="coerce"), "Union[pd.Timestamp, NaTType]"
+    # GH 88
+    assert isinstance(
+        assert_type(pd.to_datetime("2021-03-01", errors="ignore"), "pd.Timestamp"),
+        pd.Timestamp,
+    )
+    assert isinstance(
+        assert_type(pd.to_datetime("2021-03-01", errors="raise"), "pd.Timestamp"),
+        pd.Timestamp,
+    )
+    assert isinstance(
+        assert_type(
+            pd.to_datetime("2021-03-01", errors="coerce"),
+            "Union[pd.Timestamp, NaTType]",
+        ),
+        pd.Timestamp,
+    )
+    assert isinstance(
+        assert_type(
+            pd.to_datetime("not a date", errors="coerce"),
+            "Union[pd.Timestamp, NaTType]",
+        ),
+        NaTType,
     )
