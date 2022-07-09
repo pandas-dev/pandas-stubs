@@ -101,6 +101,6 @@ class FrameColumnApply(FrameApply):
     ) -> Union[Series, DataFrame]: ...
     def infer_to_same_shape(self, results: ResType, res_index: Index) -> DataFrame: ...
 
-from pandas.core.frame import DataFrame as DataFrame
-from pandas.core.indexes.base import Index as Index
-from pandas.core.series import Series as Series
+from pandas.core.frame import DataFrame
+from pandas.core.indexes.base import Index
+from pandas.core.series import Series

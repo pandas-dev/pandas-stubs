@@ -11,7 +11,7 @@ from typing import (
     overload,
 )
 
-from pandas.core.frame import DataFrame as DataFrame
+from pandas.core.frame import DataFrame
 
 from pandas._typing import (
     Dtype,

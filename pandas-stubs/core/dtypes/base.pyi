@@ -4,7 +4,7 @@ from typing import (
     Type,
 )
 
-from pandas._typing import ExtensionArray
+from pandas.core.arrays import ExtensionArray
 
 class ExtensionDtype:
     def __eq__(self, other) -> bool: ...

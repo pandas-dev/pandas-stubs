@@ -10,21 +10,21 @@ from typing import (
 )
 
 from pandas.core.base import (
-    PandasObject as PandasObject,
-    SelectionMixin as SelectionMixin,
+    PandasObject,
+    SelectionMixin,
 )
-from pandas.core.frame import DataFrame as DataFrame
-from pandas.core.generic import NDFrame as NDFrame
-from pandas.core.groupby import ops as ops
-from pandas.core.indexes.api import Index as Index
-from pandas.core.series import Series as Series
+from pandas.core.frame import DataFrame
+from pandas.core.generic import NDFrame
+from pandas.core.groupby import ops
+from pandas.core.indexes.api import Index
+from pandas.core.series import Series
 
 from pandas._typing import (
-    AxisType as AxisType,
-    FrameOrSeries as FrameOrSeries,
-    FrameOrSeriesUnion as FrameOrSeriesUnion,
+    AxisType,
+    FrameOrSeries,
+    FrameOrSeriesUnion,
     KeysArgType,
-    Scalar as Scalar,
+    Scalar,
 )
 
 class GroupByPlot(PandasObject):

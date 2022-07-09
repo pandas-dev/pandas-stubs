@@ -13,14 +13,14 @@ from typing import (
 
 import numpy as np
 from pandas.core.arrays.categorical import Categorical
-from pandas.core.arrays.datetimes import DatetimeArray as DatetimeArray
-from pandas.core.frame import DataFrame as DataFrame
-from pandas.core.indexes.api import Index as Index
-from pandas.core.indexes.datetimes import DatetimeIndex as DatetimeIndex
-from pandas.core.indexes.timedeltas import TimedeltaIndex as TimedeltaIndex
-from pandas.core.series import Series as Series
+from pandas.core.arrays.datetimes import DatetimeArray
+from pandas.core.frame import DataFrame
+from pandas.core.indexes.api import Index
+from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.indexes.timedeltas import TimedeltaIndex
+from pandas.core.series import Series
 
-from pandas._typing import FilePathOrBuffer as FilePathOrBuffer
+from pandas._typing import FilePathOrBuffer
 
 formatters_type = Union[
     List[Callable], Tuple[Callable, ...], Mapping[Union[str, int], Callable]

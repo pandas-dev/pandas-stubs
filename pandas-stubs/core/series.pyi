@@ -26,6 +26,10 @@ from matplotlib.axes import (
     SubplotBase as SubplotBase,
 )
 import numpy as np
+from pandas import (
+    Timedelta,
+    Timestamp,
+)
 from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.categorical import CategoricalAccessor
 from pandas.core.groupby.generic import SeriesGroupBy
@@ -46,27 +50,25 @@ from pandas.core.window.rolling import (
 )
 
 from pandas._typing import (
-    S1 as S1,
-    ArrayLike as ArrayLike,
-    Axes as Axes,
-    Axis as Axis,
-    AxisType as AxisType,
-    Dtype as Dtype,
-    DtypeNp as DtypeNp,
-    FilePathOrBuffer as FilePathOrBuffer,
-    IgnoreRaise as IgnoreRaise,
-    IndexingInt as IndexingInt,
-    Label as Label,
-    Level as Level,
-    ListLike as ListLike,
-    MaskType as MaskType,
-    Renamer as Renamer,
-    Scalar as Scalar,
-    SeriesAxisType as SeriesAxisType,
-    Timedelta as Timedelta,
-    Timestamp as Timestamp,
-    np_ndarray_anyint as np_ndarray_anyint,
-    num as num,
+    S1,
+    ArrayLike,
+    Axes,
+    Axis,
+    AxisType,
+    Dtype,
+    DtypeNp,
+    FilePathOrBuffer,
+    IgnoreRaise,
+    IndexingInt,
+    Label,
+    Level,
+    ListLike,
+    MaskType,
+    Renamer,
+    Scalar,
+    SeriesAxisType,
+    np_ndarray_anyint,
+    num,
 )
 
 from pandas.plotting import PlotAccessor

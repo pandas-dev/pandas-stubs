@@ -6,11 +6,11 @@ from typing import (
 )
 
 import numpy as np
-from pandas.core.groupby import grouper as grouper
-from pandas.core.indexes.api import Index as Index
-from pandas.core.series import Series as Series
+from pandas.core.groupby import grouper
+from pandas.core.indexes.api import Index
+from pandas.core.series import Series
 
-from pandas._typing import FrameOrSeriesUnion as FrameOrSeriesUnion
+from pandas._typing import FrameOrSeriesUnion
 
 class BaseGrouper:
     axis = ...

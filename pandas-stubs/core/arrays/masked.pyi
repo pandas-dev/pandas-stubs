@@ -4,7 +4,7 @@ from pandas.core.arrays import (
     ExtensionOpsMixin as ExtensionOpsMixin,
 )
 
-from pandas._typing import Scalar as Scalar
+from pandas._typing import Scalar
 
 class BaseMaskedArray(ExtensionArray, ExtensionOpsMixin):
     def __getitem__(self, item): ...

@@ -1,10 +1,10 @@
-# from pandas import DataFrame as DataFrame, Int64Index as Int64Index, RangeIndex as RangeIndex
+# from pandas import DataFrame, Int64Index, RangeIndex
 from typing import (
     Optional,
     Sequence,
 )
 
-from pandas.core.frame import DataFrame as DataFrame
+from pandas.core.frame import DataFrame
 
 from pandas._typing import FilePathOrBuffer
 

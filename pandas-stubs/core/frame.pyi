@@ -23,20 +23,23 @@ from typing import (
 )
 
 from matplotlib.axes import Axes as PlotAxes
-import numpy as _np
 import numpy as np
+from pandas import (
+    Timedelta,
+    Timestamp,
+)
 from pandas.core.arraylike import OpsMixin
-from pandas.core.generic import NDFrame as NDFrame
-from pandas.core.groupby.generic import DataFrameGroupBy as DataFrameGroupBy
+from pandas.core.generic import NDFrame
+from pandas.core.groupby.generic import DataFrameGroupBy
 from pandas.core.groupby.grouper import Grouper
-from pandas.core.indexes.base import Index as Index
-from pandas.core.indexes.multi import MultiIndex as MultiIndex
+from pandas.core.indexes.base import Index
+from pandas.core.indexes.multi import MultiIndex
 from pandas.core.indexing import (
     _iLocIndexer,
     _LocIndexer,
 )
 from pandas.core.resample import Resampler
-from pandas.core.series import Series as Series
+from pandas.core.series import Series
 from pandas.core.window.rolling import (
     Rolling,
     Window,
@@ -44,39 +47,37 @@ from pandas.core.window.rolling import (
 
 from pandas._typing import (
     S1,
-    ArrayLike as ArrayLike,
-    Axes as Axes,
-    Axis as Axis,
+    ArrayLike,
+    Axes,
+    Axis,
     AxisType,
     Dtype,
     DtypeNp,
-    FilePathOrBuffer as FilePathOrBuffer,
-    FilePathOrBytesBuffer as FilePathOrBytesBuffer,
-    GroupByObject as GroupByObject,
-    IgnoreRaise as IgnoreRaise,
-    IndexingInt as IndexingInt,
-    IndexLabel as IndexLabel,
+    FilePathOrBuffer,
+    FilePathOrBytesBuffer,
+    GroupByObject,
+    IgnoreRaise,
+    IndexingInt,
+    IndexLabel,
     IndexType,
     Label,
-    Level as Level,
+    Level,
     MaskType,
-    Renamer as Renamer,
-    Scalar as Scalar,
+    Renamer,
+    Scalar,
     SeriesAxisType,
     StrLike,
     T as TType,
-    Timedelta as Timedelta,
-    Timestamp as Timestamp,
     np_ndarray_bool,
     np_ndarray_str,
     num,
 )
 
 from pandas.io.formats import (
-    console as console,
+    console,
     format as fmt,
 )
-from pandas.io.formats.style import Styler as Styler
+from pandas.io.formats.style import Styler
 from pandas.plotting import PlotAccessor
 
 _str = str
@@ -179,7 +180,7 @@ class DataFrame(NDFrame, OpsMixin):
     _ListLike = Union[
         np.ndarray,
         List[Dtype],
-        Dict[_str, _np.ndarray],
+        Dict[_str, np.ndarray],
         Sequence,
         Index,
         Series,
@@ -218,7 +219,7 @@ class DataFrame(NDFrame, OpsMixin):
         dtype: Optional[Union[Type[DtypeNp], Dtype]] = ...,
         copy: _bool = ...,
         na_value: Optional[Any] = ...,
-    ) -> _np.ndarray: ...
+    ) -> np.ndarray: ...
     @overload
     def to_dict(
         self,
@@ -1148,7 +1149,7 @@ class DataFrame(NDFrame, OpsMixin):
     @property
     def size(self) -> int: ...
     @property
-    def values(self) -> _np.ndarray: ...
+    def values(self) -> np.ndarray: ...
     # methods
     def abs(self) -> DataFrame: ...
     def add(
@@ -1486,7 +1487,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def mask(
         self,
-        cond: Union[Series, DataFrame, _np.ndarray],
+        cond: Union[Series, DataFrame, np.ndarray],
         other=...,
         inplace: _bool = ...,
         axis: Optional[AxisType] = ...,
@@ -2248,7 +2249,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> Series: ...
     def where(
         self,
-        cond: Union[Series, DataFrame, _np.ndarray],
+        cond: Union[Series, DataFrame, np.ndarray],
         other=...,
         inplace: _bool = ...,
         axis: Optional[AxisType] = ...,

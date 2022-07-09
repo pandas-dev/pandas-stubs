@@ -10,22 +10,22 @@ from typing import (
 )
 
 import numpy as np
-from pandas.core.computation.pytables import PyTablesExpr as PyTablesExpr
-from pandas.core.frame import DataFrame as DataFrame
+from pandas.core.computation.pytables import PyTablesExpr
+from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.multi import MultiIndex
-from pandas.core.series import Series as Series
+from pandas.core.series import Series
 
 from pandas._typing import (
-    ArrayLike as ArrayLike,
-    FilePathOrBuffer as FilePathOrBuffer,
-    FrameOrSeries as FrameOrSeries,
+    ArrayLike,
+    FilePathOrBuffer,
+    FrameOrSeries,
 )
 
-from pandas.core.dtypes.generic import ABCExtensionArray as ABCExtensionArray
+from pandas.core.dtypes.generic import ABCExtensionArray
 
-# from tables import Col, File as File, Node
+# from tables import Col, File, Node
 # pytables may not be installed so create them as dummy classes
 class Col: ...
 class Node: ...

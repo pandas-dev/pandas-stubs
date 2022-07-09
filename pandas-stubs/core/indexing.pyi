@@ -4,7 +4,7 @@ from typing import (
 )
 
 import numpy as np
-from pandas.core.indexes.api import Index as Index
+from pandas.core.indexes.api import Index
 
 from pandas._libs.indexing import _NDFrameIndexerBase
 from pandas._typing import (

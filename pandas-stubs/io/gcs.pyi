@@ -1,4 +1,4 @@
-from pandas._typing import FilePathOrBuffer as FilePathOrBuffer
+from pandas._typing import FilePathOrBuffer
 
 gcsfs = ...
 

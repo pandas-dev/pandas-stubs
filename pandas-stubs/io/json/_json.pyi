@@ -10,11 +10,11 @@ from typing import (
 )
 
 from pandas.core.frame import DataFrame
-from pandas.core.series import Series as Series
+from pandas.core.series import Series
 
 from pandas._typing import (
     FilePathOrBuffer,
-    JSONSerializable as JSONSerializable,
+    JSONSerializable,
 )
 
 loads = ...

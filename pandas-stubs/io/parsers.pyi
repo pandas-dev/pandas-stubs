@@ -20,17 +20,17 @@ from typing import (
 
 import numpy as np
 import pandas as pd
-from pandas.core.frame import DataFrame as DataFrame
+from pandas.core.frame import DataFrame
 
 from pandas._typing import (
-    AnyStr_cov as AnyStr_cov,
-    CompressionOptions as CompressionOptions,
-    DtypeArg as DtypeArg,
-    FilePath as FilePath,
-    FilePathOrBuffer as FilePathOrBuffer,
-    ReadBuffer as ReadBuffer,
-    Scalar as Scalar,
-    StorageOptions as StorageOptions,
+    AnyStr_cov,
+    CompressionOptions,
+    DtypeArg,
+    FilePath,
+    FilePathOrBuffer,
+    ReadBuffer,
+    Scalar,
+    StorageOptions,
 )
 
 ListLike = Union[

@@ -11,17 +11,17 @@ from typing import (
 
 import numpy as np
 from pandas.core.base import (
-    PandasObject as PandasObject,
-    SelectionMixin as SelectionMixin,
-    ShallowMixin as ShallowMixin,
+    PandasObject,
+    SelectionMixin,
+    ShallowMixin,
 )
-from pandas.core.indexes.api import Index as Index
-from pandas.core.window.common import WindowGroupByMixin as WindowGroupByMixin
+from pandas.core.indexes.api import Index
+from pandas.core.window.common import WindowGroupByMixin
 
 from pandas._typing import (
-    Axis as Axis,
+    Axis,
     FrameOrSeriesUnion as FrameOrSeries,
-    Scalar as Scalar,
+    Scalar,
 )
 
 class _Window(PandasObject, ShallowMixin, SelectionMixin):

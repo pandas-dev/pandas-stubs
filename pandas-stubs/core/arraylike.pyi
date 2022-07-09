@@ -4,10 +4,9 @@ from typing import (
     Tuple,
 )
 
-from pandas._typing import (
-    DataFrame,
-    FrameOrSeries,
-)
+from pandas import DataFrame
+
+from pandas._typing import FrameOrSeries
 
 class OpsMixinProtocol(Protocol): ...
 

@@ -6,7 +6,7 @@ from typing import (
     Tuple,
 )
 
-from pandas._typing import Scalar as Scalar
+from pandas._typing import Scalar
 
 def make_rolling_apply(
     func: Callable[..., Scalar],

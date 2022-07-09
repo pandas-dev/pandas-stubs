@@ -4,7 +4,7 @@ from typing import Type
 
 import numpy as np
 
-from pandas._typing import Scalar as Scalar
+from pandas._typing import Scalar
 
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
 

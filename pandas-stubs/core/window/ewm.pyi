@@ -4,13 +4,13 @@ from typing import (
     Union,
 )
 
-from pandas.core.window.rolling import _Rolling
-
-from pandas._typing import (
+from pandas import (
     DataFrame,
-    Scalar,
     Series,
 )
+from pandas.core.window.rolling import _Rolling
+
+from pandas._typing import Scalar
 
 class ExponentialMovingWindow(_Rolling):
     obj = ...

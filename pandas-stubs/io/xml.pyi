@@ -5,17 +5,17 @@ from typing import (
     Union,
 )
 
-from pandas.core.frame import DataFrame as DataFrame
+from pandas.core.frame import DataFrame
 
 from pandas._typing import (
-    CompressionOptions as CompressionOptions,
-    ConvertersArg as ConvertersArg,
-    DtypeArg as DtypeArg,
-    FilePath as FilePath,
-    ParseDatesArg as ParseDatesArg,
-    ReadBuffer as ReadBuffer,
-    StorageOptions as StorageOptions,
-    XMLParsers as XMLParsers,
+    CompressionOptions,
+    ConvertersArg,
+    DtypeArg,
+    FilePath,
+    ParseDatesArg,
+    ReadBuffer,
+    StorageOptions,
+    XMLParsers,
 )
 
 def read_xml(

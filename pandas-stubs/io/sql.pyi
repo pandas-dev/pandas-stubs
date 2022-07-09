@@ -7,8 +7,8 @@ from typing import (
     Union,
 )
 
-from pandas.core.base import PandasObject as PandasObject
-from pandas.core.frame import DataFrame as DataFrame
+from pandas.core.base import PandasObject
+from pandas.core.frame import DataFrame
 
 class SQLAlchemyRequired(ImportError): ...
 class DatabaseError(IOError): ...

@@ -20,18 +20,18 @@ from matplotlib.axes import (
     SubplotBase as AxesSubplot,
 )
 import numpy as np
-from pandas.core.frame import DataFrame as DataFrame
+from pandas.core.frame import DataFrame
 from pandas.core.groupby.groupby import (  # , get_groupby as get_groupby
     GroupBy as GroupBy,
 )
 from pandas.core.groupby.grouper import Grouper as Grouper
-from pandas.core.series import Series as Series
+from pandas.core.series import Series
 
 from pandas._typing import (
     S1,
     AxisType,
     Dtype,
-    FrameOrSeries as FrameOrSeries,
+    FrameOrSeries,
     FuncType,
     Level,
 )

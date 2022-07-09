@@ -15,6 +15,10 @@ from typing import (
 )
 
 import numpy as np
+from pandas import (
+    DataFrame,
+    Series,
+)
 from pandas.core.arrays import ExtensionArray
 from pandas.core.base import (
     IndexOpsMixin,
@@ -23,15 +27,13 @@ from pandas.core.base import (
 from pandas.core.strings import StringMethods
 
 from pandas._typing import (
-    T1 as T1,
-    DataFrame as DataFrame,
-    Dtype as Dtype,
-    DtypeArg as DtypeArg,
-    DtypeObj as DtypeObj,
-    Label as Label,
-    Level as Level,
-    Scalar as Scalar,
-    Series as Series,
+    T1,
+    Dtype,
+    DtypeArg,
+    DtypeObj,
+    Label,
+    Level,
+    Scalar,
     np_ndarray_bool,
     np_ndarray_int64,
     np_ndarray_str,
