@@ -12,7 +12,7 @@ from typing import (
 )
 import zipfile
 
-from pandas._typing import FilePathOrBuffer as FilePathOrBuffer
+from pandas._typing import FilePathOrBuffer
 
 lzma = ...
 

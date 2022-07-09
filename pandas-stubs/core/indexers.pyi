@@ -5,7 +5,7 @@ from typing import (
 
 import numpy as np
 
-from pandas._typing import AnyArrayLike as AnyArrayLike
+from pandas._typing import AnyArrayLike
 
 def is_list_like_indexer(key) -> bool: ...
 def is_scalar_indexer(indexer, arr_value) -> bool: ...

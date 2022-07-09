@@ -8,11 +8,11 @@ from typing import (
 )
 
 import numpy as np
-from pandas.core.indexes.base import Index as Index
+from pandas.core.indexes.base import Index
 
 from pandas._typing import (
-    T1 as T1,
-    DtypeArg as DtypeArg,
+    T1,
+    DtypeArg,
     np_ndarray_bool,
 )
 

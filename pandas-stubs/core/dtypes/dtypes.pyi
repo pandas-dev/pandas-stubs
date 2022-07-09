@@ -14,7 +14,7 @@ from pandas._libs.tslibs import (  # , timezones as timezones
     Period as Period,
     Timestamp as Timestamp,
 )
-from pandas._typing import Ordered as Ordered
+from pandas._typing import Ordered
 
 from .base import ExtensionDtype as ExtensionDtype
 

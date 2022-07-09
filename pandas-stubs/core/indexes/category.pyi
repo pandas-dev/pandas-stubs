@@ -1,13 +1,11 @@
 import numpy as np
-from pandas.core import accessor as accessor
-from pandas.core.indexes.base import (  # , maybe_extract_name as maybe_extract_name
-    Index as Index,
-)
-from pandas.core.indexes.extension import ExtensionIndex as ExtensionIndex
+from pandas.core import accessor
+from pandas.core.indexes.base import Index  # , maybe_extract_name
+from pandas.core.indexes.extension import ExtensionIndex
 
 from pandas._typing import (
-    AnyArrayLike as AnyArrayLike,
-    DtypeArg as DtypeArg,
+    AnyArrayLike,
+    DtypeArg,
 )
 
 class CategoricalIndex(ExtensionIndex, accessor.PandasDelegate):

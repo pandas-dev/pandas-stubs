@@ -2,9 +2,9 @@ import pickle as pkl
 from typing import Optional
 
 from pandas import (
-    DataFrame as DataFrame,
-    Index as Index,
-    Series as Series,
+    DataFrame,
+    Index,
+    Series,
 )
 
 def load_reduce(self) -> None: ...

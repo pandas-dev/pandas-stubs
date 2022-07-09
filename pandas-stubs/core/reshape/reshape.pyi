@@ -1,5 +1,5 @@
 import numpy as np
-from pandas.core.frame import DataFrame as DataFrame
+from pandas.core.frame import DataFrame
 
 class _Unstacker:
     values = ...

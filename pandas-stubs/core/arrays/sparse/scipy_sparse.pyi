@@ -1,5 +1,5 @@
 from pandas.core.indexes.api import (
-    Index as Index,
-    MultiIndex as MultiIndex,
+    Index,
+    MultiIndex,
 )
-from pandas.core.series import Series as Series
+from pandas.core.series import Series

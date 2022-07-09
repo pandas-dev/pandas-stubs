@@ -3,7 +3,7 @@
 from typing import Optional
 
 from pandas._typing import (
-    Dtype as Dtype,
+    Dtype,
     Scalar,
 )
 

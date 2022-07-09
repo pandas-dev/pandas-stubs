@@ -9,11 +9,13 @@ from typing import (
 )
 
 import numpy as np
+from pandas import (
+    Timedelta,
+    Timestamp,
+)
 
 from pandas._typing import (
     IntervalClosedType,
-    Timedelta,
-    Timestamp,
     npt,
 )
 

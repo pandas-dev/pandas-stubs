@@ -3,9 +3,9 @@ from typing import (
     Sequence,
 )
 
-from pandas.core.frame import DataFrame as DataFrame
+from pandas.core.frame import DataFrame
 
-from pandas._typing import FilePathOrBuffer as FilePathOrBuffer
+from pandas._typing import FilePathOrBuffer
 
 def read_spss(
     path: FilePathOrBuffer,

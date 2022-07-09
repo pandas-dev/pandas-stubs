@@ -6,16 +6,16 @@ from typing import (
 )
 
 import numpy as np
-from pandas.core.indexes.base import Index as Index
-from pandas.core.indexes.extension import ExtensionIndex as ExtensionIndex
+from pandas.core.indexes.base import Index
+from pandas.core.indexes.extension import ExtensionIndex
 
 from pandas._libs.interval import (
     Interval as Interval,
     IntervalMixin as IntervalMixin,
 )
 from pandas._typing import (
-    AnyArrayLike as AnyArrayLike,
-    DtypeArg as DtypeArg,
+    AnyArrayLike,
+    DtypeArg,
 )
 
 from pandas.core.dtypes.generic import ABCSeries as ABCSeries

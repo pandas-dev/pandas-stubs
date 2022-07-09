@@ -7,9 +7,10 @@ from typing import (
     overload,
 )
 
+from pandas import Index
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import (
-    Series as Series,
+    Series,
     TimedeltaSeries,
 )
 
@@ -18,7 +19,6 @@ from pandas._libs.tslibs.timedeltas import UnitChoices
 from pandas._typing import (
     ArrayLike,
     DateTimeErrorChoices,
-    Index as Index,
 )
 
 # Copied from pandas/_libs/tslibs/timedeltas.pyx

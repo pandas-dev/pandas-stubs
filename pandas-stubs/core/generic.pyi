@@ -18,31 +18,33 @@ from typing import (
 )
 
 import numpy as np
-from pandas.core.base import PandasObject as PandasObject
-from pandas.core.indexes.base import Index as Index
+from pandas import (
+    Timedelta,
+    Timestamp,
+)
+from pandas.core.base import PandasObject
+from pandas.core.indexes.base import Index
 import pandas.core.indexing as indexing
-from pandas.core.internals import BlockManager as BlockManager
+from pandas.core.internals import BlockManager
 from pandas.core.resample import Resampler
 
 from pandas._typing import (
-    S1 as S1,
-    ArrayLike as ArrayLike,
-    Axis as Axis,
-    AxisType as AxisType,
-    Dtype as Dtype,
-    FilePathOrBuffer as FilePathOrBuffer,
-    FrameOrSeries as FrameOrSeries,
-    FrameOrSeriesUnion as FrameOrSeriesUnion,
-    IgnoreRaise as IgnoreRaise,
-    JSONSerializable as JSONSerializable,
-    Level as Level,
-    ListLike as ListLike,
-    Renamer as Renamer,
-    Scalar as Scalar,
-    SeriesAxisType as SeriesAxisType,
+    S1,
+    ArrayLike,
+    Axis,
+    AxisType,
+    Dtype,
+    FilePathOrBuffer,
+    FrameOrSeries,
+    FrameOrSeriesUnion,
+    IgnoreRaise,
+    JSONSerializable,
+    Level,
+    ListLike,
+    Renamer,
+    Scalar,
+    SeriesAxisType,
     T,
-    Timedelta as Timedelta,
-    Timestamp as Timestamp,
 )
 
 _bool = bool
@@ -510,4 +512,4 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def first_valid_index(self): ...
     def last_valid_index(self): ...
 
-from pandas.core.series import Series as Series
+from pandas.core.series import Series
