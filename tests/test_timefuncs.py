@@ -12,8 +12,9 @@ from numpy import typing as npt
 import pandas as pd
 from typing_extensions import assert_type
 
-from tests import check
 from pandas._libs import NaTType
+
+from tests import check
 
 if TYPE_CHECKING:
     from pandas.core.series import (
