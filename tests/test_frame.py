@@ -1169,3 +1169,10 @@ def test_not_hashable() -> None:
     test_func(pd.DataFrame())  # type: ignore[arg-type]
     test_func(pd.Series([], dtype=object))  # type: ignore[arg-type]
     test_func(pd.Index([]))  # type: ignore[arg-type]
+
+def test_columns_mixlist() -> None:
+    # GH 97
+    df = pd.DataFrame({"a":[1,2,3],1:[3,4,5]})
+    key: List[Union[int, str]]
+    key = [1]
+    df[key]
