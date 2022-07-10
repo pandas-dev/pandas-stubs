@@ -40,22 +40,25 @@ jobs:
       run: poetry install -vvv --no-root
 
     - name: Run MyPy Against Source Code
+      if: matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest'
       run: poetry run poe mypy_src
 
     - name: Run Pyright Against Source Code
+      if: matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest'
       run: poetry run poe pyright_src
 
     - name: Run Pytest Against Source Code
       run: poetry run poe pytest_src
+
+    - name: Run pre-commit Against Source Code
+      if: matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest'
+      uses: pre-commit/action@v3.0.0
 
     - name: Build Distribution
       run: poetry run poe build_dist
 
     - name: Install Distribution
       run: poetry run poe install_dist
-
-    - if: matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest'
-      uses: pre-commit/action@v3.0.0
 
     - name: Rename Source Code
       run: poetry run poe rename_src
