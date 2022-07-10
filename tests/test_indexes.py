@@ -3,42 +3,44 @@ from numpy import typing as npt
 import pandas as pd
 from typing_extensions import assert_type
 
+from tests import check
+
 
 def test_index_unique() -> None:
 
     df = pd.DataFrame({"x": [1, 2, 3, 4]}, index=pd.Index([1, 2, 3, 2]))
     ind = df.index
-    assert_type(ind, "pd.Index")
+    check(assert_type(ind, pd.Index), pd.Index)
     i2 = ind.unique()
-    assert_type(i2, "pd.Index")
+    check(assert_type(i2, pd.Index), pd.Index)
 
 
 def test_index_isin() -> None:
     ind = pd.Index([1, 2, 3, 4, 5])
     isin = ind.isin([2, 4])
-    assert_type(isin, npt.NDArray[np.bool_])
+    check(assert_type(isin, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
 
 
 def test_index_astype() -> None:
     indi = pd.Index([1, 2, 3])
     inds = pd.Index(["a", "b", "c"])
     indc = indi.astype(inds.dtype)
-    assert_type(indc, "pd.Index")
+    check(assert_type(indc, pd.Index), pd.Index)
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
     mia = mi.astype(object)  # object is only valid parameter for MultiIndex.astype()
-    assert_type(mia, "pd.MultiIndex")
+    check(assert_type(mia, pd.MultiIndex), pd.MultiIndex)
 
 
 def test_multiindex_get_level_values() -> None:
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
     i1 = mi.get_level_values("ab")
-    assert_type(i1, "pd.Index")
+    check(assert_type(i1, pd.Index), pd.Index)
 
 
 def test_index_tolist() -> None:
     i1 = pd.Index([1, 2, 3])
-    l1 = i1.tolist()
-    i2 = i1.to_list()
+    check(assert_type(i1.tolist(), list), list, int)
+    check(assert_type(i1.to_list(), list), list, int)
 
 
 def test_column_getitem() -> None:
@@ -46,7 +48,7 @@ def test_column_getitem() -> None:
     df = pd.DataFrame([[1, 2, 3]], columns=["a", "b", "c"])
 
     column = df.columns[0]
-    a = df[column]
+    check(assert_type(df[column], pd.Series), pd.Series, int)
 
 
 def test_column_contains() -> None:
@@ -63,4 +65,4 @@ def test_column_contains() -> None:
 def test_difference_none() -> None:
     # https://github.com/pandas-dev/pandas-stubs/issues/17
     ind = pd.Index([1, 2, 3])
-    id = ind.difference([1, None])
+    check(assert_type(ind.difference([1, None]), "pd.Index"), pd.Index, int)

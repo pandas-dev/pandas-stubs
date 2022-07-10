@@ -14,6 +14,8 @@ from typing_extensions import assert_type
 
 from pandas._libs import NaTType
 
+from tests import check
+
 if TYPE_CHECKING:
     from pandas.core.series import (
         TimedeltaSeries,
@@ -66,9 +68,9 @@ def test_types_timestamp_series_comparisons() -> None:
     tssr = tss <= ts
     tssr2 = tss >= ts
     tssr3 = tss == ts
-    assert_type(tssr, "pd.Series[bool]")
-    assert_type(tssr2, "pd.Series[bool]")
-    assert_type(tssr3, "pd.Series[bool]")
+    check(assert_type(tssr, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(tssr2, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(tssr3, "pd.Series[bool]"), pd.Series, bool)
 
 
 def test_types_pydatetime() -> None:
@@ -110,19 +112,19 @@ def test_timestamp_timedelta_series_arithmetic() -> None:
     td1 = pd.to_timedelta([2, 3], "seconds")
     ts2 = pd.to_datetime(pd.Series(["2022-03-08", "2022-03-10"]))
     r1 = ts1 - ts2
-    assert_type(r1, "TimedeltaSeries")
+    check(assert_type(r1, "TimedeltaSeries"), pd.Series, pd.Timedelta)
     r2 = r1 / td1
-    assert_type(r2, "pd.Series[float]")
+    check(assert_type(r2, "pd.Series[float]"), pd.Series, float)
     r3 = r1 - td1
-    assert_type(r3, "TimedeltaSeries")
+    check(assert_type(r3, "TimedeltaSeries"), pd.Series, pd.Timedelta)
     r4 = pd.Timedelta(5, "days") / r1
-    assert_type(r4, "pd.Series[float]")
+    check(assert_type(r4, "pd.Series[float]"), pd.Series, float)
     sb = pd.Series([1, 2]) == pd.Series([1, 3])
-    assert_type(sb, "pd.Series[bool]")
+    check(assert_type(sb, "pd.Series[bool]"), pd.Series, bool)
     r5 = sb * r1
-    assert_type(r5, "TimedeltaSeries")
+    check(assert_type(r5, "TimedeltaSeries"), pd.Series, pd.Timedelta)
     r6 = r1 * 4
-    assert_type(r6, "TimedeltaSeries")
+    check(assert_type(r6, "TimedeltaSeries"), pd.Series, pd.Timedelta)
 
 
 def test_timestamp_dateoffset_arithmetic() -> None:
@@ -136,16 +138,24 @@ def test_datetimeindex_plus_timedelta() -> None:
     dti = pd.to_datetime(["2022-03-08", "2022-03-15"])
     td_s = pd.to_timedelta(pd.Series([10, 20]), "minutes")
     dti_td_s = dti + td_s
-    assert_type(dti_td_s, "TimestampSeries")
+    check(
+        assert_type(dti_td_s, "TimestampSeries"),
+        pd.Series,
+        pd.Timestamp,
+    )
     td_dti_s = td_s + dti
-    assert_type(td_dti_s, "TimestampSeries")
+    check(
+        assert_type(td_dti_s, "TimestampSeries"),
+        pd.Series,
+        pd.Timestamp,
+    )
     tdi = pd.to_timedelta([10, 20], "minutes")
     dti_tdi_dti = dti + tdi
-    assert_type(dti_tdi_dti, "pd.DatetimeIndex")
+    check(assert_type(dti_tdi_dti, "pd.DatetimeIndex"), pd.DatetimeIndex)
     tdi_dti_dti = tdi + dti
-    assert_type(tdi_dti_dti, "pd.DatetimeIndex")
+    check(assert_type(tdi_dti_dti, "pd.DatetimeIndex"), pd.DatetimeIndex)
     dti_td_dti = dti + pd.Timedelta(10, "minutes")
-    assert_type(dti_td_dti, "pd.DatetimeIndex")
+    check(assert_type(dti_td_dti, "pd.DatetimeIndex"), pd.DatetimeIndex)
 
 
 def test_timestamp_plus_timedelta_series() -> None:
@@ -153,15 +163,17 @@ def test_timestamp_plus_timedelta_series() -> None:
     ts = pd.Timestamp("2022-03-05")
     td = pd.to_timedelta(pd.Series([10, 20]), "minutes")
     r3 = td + ts
-    assert_type(r3, "TimestampSeries")
-    # ignore type on next, because `tscheck` has Unknown dtype
-    assert_type(r3, "TimestampSeries")
+    check(assert_type(r3, "TimestampSeries"), pd.Series, pd.Timestamp)
 
 
 def test_timedelta_series_mult() -> None:
     df = pd.DataFrame({"x": [1, 3, 5], "y": [2, 2, 6]})
     std = (df["x"] < df["y"]) * pd.Timedelta(10, "minutes")
-    assert_type(std, "TimedeltaSeries")
+    check(
+        assert_type(std, "TimedeltaSeries"),
+        pd.Series,
+        pd.Timedelta,
+    )
 
 
 def test_timedelta_series_sum() -> None:
@@ -193,45 +205,45 @@ def fail_on_adding_two_timestamps() -> None:
 def test_dtindex_tzinfo() -> None:
     # GH 71
     dti = pd.date_range("2000-1-1", periods=10)
-    assert_type(dti.tzinfo, Optional[dt.tzinfo])
+    assert assert_type(dti.tzinfo, Optional[dt.tzinfo]) is None
 
 
 def test_todatetime_fromnumpy() -> None:
     # GH 72
     t1 = np.datetime64("2022-07-04 02:30")
-    assert_type(pd.to_datetime(t1), pd.Timestamp)
+    check(assert_type(pd.to_datetime(t1), pd.Timestamp), pd.Timestamp)
 
 
 def test_comparisons_datetimeindex() -> None:
     # GH 74
     dti = pd.date_range("2000-01-01", "2000-01-10")
     ts = pd.Timestamp("2000-01-05")
-    assert_type((dti < ts), np_ndarray_bool)
-    assert_type((dti > ts), np_ndarray_bool)
-    assert_type((dti >= ts), np_ndarray_bool)
-    assert_type((dti <= ts), np_ndarray_bool)
-    assert_type((dti == ts), np_ndarray_bool)
-    assert_type((dti != ts), np_ndarray_bool)
+    check(assert_type((dti < ts), np_ndarray_bool), np.ndarray)
+    check(assert_type((dti > ts), np_ndarray_bool), np.ndarray)
+    check(assert_type((dti >= ts), np_ndarray_bool), np.ndarray)
+    check(assert_type((dti <= ts), np_ndarray_bool), np.ndarray)
+    check(assert_type((dti == ts), np_ndarray_bool), np.ndarray)
+    check(assert_type((dti != ts), np_ndarray_bool), np.ndarray)
 
 
 def test_to_datetime_nat() -> None:
     # GH 88
-    assert isinstance(
-        assert_type(pd.to_datetime("2021-03-01", errors="ignore"), "pd.Timestamp"),
+    check(
+        assert_type(pd.to_datetime("2021-03-01", errors="ignore"), pd.Timestamp),
         pd.Timestamp,
     )
-    assert isinstance(
-        assert_type(pd.to_datetime("2021-03-01", errors="raise"), "pd.Timestamp"),
+    check(
+        assert_type(pd.to_datetime("2021-03-01", errors="raise"), pd.Timestamp),
         pd.Timestamp,
     )
-    assert isinstance(
+    check(
         assert_type(
             pd.to_datetime("2021-03-01", errors="coerce"),
             "Union[pd.Timestamp, NaTType]",
         ),
         pd.Timestamp,
     )
-    assert isinstance(
+    check(
         assert_type(
             pd.to_datetime("not a date", errors="coerce"),
             "Union[pd.Timestamp, NaTType]",
