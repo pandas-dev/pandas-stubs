@@ -122,7 +122,7 @@ Scalar = Union[
     Timestamp,
     Timedelta,
 ]
-ScalarArg = TypeVar("ScalarArg", bound=Scalar)
+ScalarT = TypeVar("ScalarT", bound=Scalar)
 # Refine the definitions below in 3.9 to use the specialized type.
 np_ndarray_int8 = npt.NDArray[np.int8]
 np_ndarray_int16 = npt.NDArray[np.int16]
