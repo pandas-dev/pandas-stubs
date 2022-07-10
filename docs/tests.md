@@ -5,7 +5,7 @@
     - Default: Runs only mypy and pyright tests </br> `poe test_src --profile=default` </br>
     - Pytest: Runs only pytest </br> `poe test_src --profile=pytest` </br> 
     - Pre-commit: Runs all style checks in pre-commit </br> `poe test_src --profile=style` </br> 
-    - Full: Run all the above tests </br> `poe test_src --profiel=full` </br> </br>
+    - Full: Run all the above tests </br> `poe test_src --profile=full` </br> </br>
 
 - Run local tests against distribution: </br> `poe test_dist` </br> </br>
 
