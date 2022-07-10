@@ -18,6 +18,11 @@ def pytest_src():
     subprocess.run(cmd, check=True)
 
 
+def style_src():
+    cmd = ["pre-commit", "run", "--all-files", "--verbose"]
+    subprocess.run(cmd, check=True)
+
+
 def build_dist():
     cmd = ["poetry", "build", "-f", "wheel"]
     subprocess.run(cmd, check=True)
