@@ -2,6 +2,8 @@ from pathlib import Path
 import tempfile
 from typing import (
     TYPE_CHECKING,
+    Any,
+    Dict,
     List,
     Sequence,
     Union,
@@ -787,3 +789,14 @@ def test_iloc_setitem_ndarray() -> None:
     values_s.iloc[indices_u16] = -1
     values_s.iloc[indices_u32] = -1
     values_s.iloc[indices_u64] = -1
+
+
+def test_types_to_list() -> None:
+    s = pd.Series(["a", "b", "c"], dtype=str)
+    assert_type(s.tolist(), List[str])
+    assert_type(s.to_list(), List[str])
+
+
+def test_types_to_dict() -> None:
+    s = pd.Series(["a", "b", "c"], dtype=str)
+    assert_type(s.to_dict(), Dict[Any, str])
