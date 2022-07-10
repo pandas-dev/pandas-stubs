@@ -1175,4 +1175,5 @@ def test_columns_mixlist() -> None:
     df = pd.DataFrame({"a":[1,2,3],1:[3,4,5]})
     key: List[Union[int, str]]
     key = [1]
-    df[key]
+    check(assert_type(df[key], pd.DataFrame), pd.DataFrame)
+    
