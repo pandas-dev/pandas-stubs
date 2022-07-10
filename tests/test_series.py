@@ -4,6 +4,8 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
+    Iterable,
+    Iterator,
     List,
     Sequence,
     Union,
@@ -789,6 +791,13 @@ def test_iloc_setitem_ndarray() -> None:
     values_s.iloc[indices_u16] = -1
     values_s.iloc[indices_u32] = -1
     values_s.iloc[indices_u64] = -1
+
+
+def test_types_iter() -> None:
+    s = pd.Series([1, 2, 3], dtype=int)
+    iterable: Iterable[int] = s
+    assert_type(iter(s), Iterator[int])
+    assert_type(next(iter(s)), int)
 
 
 def test_types_to_list() -> None:

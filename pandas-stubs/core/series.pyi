@@ -10,6 +10,7 @@ from typing import (
     Generic,
     Hashable,
     Iterable,
+    Iterator,
     List,
     Literal,
     Mapping,
@@ -1772,6 +1773,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def set_axis(
         self, labels, axis: Axis = ..., inplace: bool = ...
     ) -> Optional[Series[S1]]: ...
+    def __iter__(self) -> Iterator[S1]: ...
 
 class TimestampSeries(Series): ...
 

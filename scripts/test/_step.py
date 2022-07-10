@@ -6,6 +6,7 @@ clean_pytest_cache = Step(name="Clean pytest cache", run=run.clean_pytest_cache)
 mypy_src = Step(name="Run Mypy Against Source Code", run=run.mypy_src)
 pyright_src = Step(name="Run Pyright Against Source Code", run=run.pyright_src)
 pytest_src = Step(name="Run Pytest Against Source Code", run=run.pytest_src)
+style_src = Step(name="Run pre-commit Against Source Code", run=run.style_src)
 build_dist = Step(name="Build Dist", run=run.build_dist)
 install_dist = Step(
     name="Install Dist", run=run.install_dist, rollback=run.uninstall_dist
