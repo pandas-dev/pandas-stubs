@@ -21,6 +21,9 @@ from pandas._typing import Scalar
 
 from tests import check
 
+if TYPE_CHECKING:
+    from pandas._typing import np_ndarray_int  # noqa: F401
+
 
 def test_types_init() -> None:
     pd.Series(1)
@@ -796,3 +799,9 @@ def test_types_iter() -> None:
     iterable: Iterable[int] = s
     assert_type(iter(s), Iterator[int])
     assert_type(next(iter(s)), int)
+
+
+def test_categorical_codes():
+    # GH-111
+    cat = pd.Categorical(["a", "b", "a"])
+    assert_type(cat.codes, "np_ndarray_int")
