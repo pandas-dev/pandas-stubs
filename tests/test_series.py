@@ -802,8 +802,8 @@ def test_types_iter() -> None:
 
 def test_types_to_list() -> None:
     s = pd.Series(["a", "b", "c"], dtype=str)
-    assert_type(s.tolist(), List[str])
-    assert_type(s.to_list(), List[str])
+    check(assert_type(s.tolist(), List[str]), list, str)
+    check(assert_type(s.to_list(), List[str]), list, str)
 
 
 def test_types_to_dict() -> None:
