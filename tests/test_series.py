@@ -2,6 +2,8 @@ from pathlib import Path
 import tempfile
 from typing import (
     TYPE_CHECKING,
+    Any,
+    Dict,
     Iterable,
     Iterator,
     List,
@@ -799,6 +801,17 @@ def test_types_iter() -> None:
     iterable: Iterable[int] = s
     assert_type(iter(s), Iterator[int])
     assert_type(next(iter(s)), int)
+
+
+def test_types_to_list() -> None:
+    s = pd.Series(["a", "b", "c"], dtype=str)
+    check(assert_type(s.tolist(), List[str]), list, str)
+    check(assert_type(s.to_list(), List[str]), list, str)
+
+
+def test_types_to_dict() -> None:
+    s = pd.Series(["a", "b", "c"], dtype=str)
+    assert_type(s.to_dict(), Dict[Any, str])
 
 
 def test_categorical_codes():
