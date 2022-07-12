@@ -558,6 +558,9 @@ def test_types_groupby() -> None:
     s2: pd.Series = s1.groupby("col1").transform("sum")
     s3: pd.Series = df.groupby("col1")["col3"].agg(min)
     df9: pd.DataFrame = df.groupby("col1")["col3"].agg([min, max])
+    df10: pd.DataFrame = df.groupby("col1").agg(
+        new_col=pd.NamedAgg(column="col2", aggfunc="max")
+    )
 
 
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
