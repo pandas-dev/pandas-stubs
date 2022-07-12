@@ -191,3 +191,4 @@ reportInvalidStubStatement = true
 reportOverlappingOverload = true
 reportMissingImports = true
 reportMissingModuleSource = true
+reportUnusedImport = true

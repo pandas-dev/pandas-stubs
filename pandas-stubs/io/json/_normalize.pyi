@@ -8,8 +8,6 @@ from typing import (
 
 from pandas.core.frame import DataFrame
 
-from pandas._typing import Scalar
-
 def convert_to_line_delimits(s: Any): ...
 def nested_to_record(
     ds: Any,

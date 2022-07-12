@@ -6,8 +6,6 @@ from typing import (
 
 from pandas import DataFrame
 
-from pandas._typing import FrameOrSeries
-
 class OpsMixinProtocol(Protocol): ...
 
 class OpsMixin:

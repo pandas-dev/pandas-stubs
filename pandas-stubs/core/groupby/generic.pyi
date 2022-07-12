@@ -1,4 +1,3 @@
-import sys
 from typing import (
     Any,
     Callable,
@@ -30,7 +29,6 @@ from pandas.core.series import Series
 from pandas._typing import (
     S1,
     AxisType,
-    Dtype,
     FrameOrSeries,
     FuncType,
     Level,

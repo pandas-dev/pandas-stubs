@@ -9,10 +9,7 @@ from typing import (
     Union,
 )
 
-from pandas.core.base import (
-    PandasObject,
-    SelectionMixin,
-)
+from pandas.core.base import PandasObject
 from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
 from pandas.core.groupby import ops
@@ -21,10 +18,8 @@ from pandas.core.series import Series
 
 from pandas._typing import (
     AxisType,
-    FrameOrSeries,
     FrameOrSeriesUnion,
     KeysArgType,
-    Scalar,
 )
 
 class GroupByPlot(PandasObject):

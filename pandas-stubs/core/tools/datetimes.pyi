@@ -10,14 +10,12 @@ from typing import (
 )
 
 import numpy as np
-from numpy import datetime64
 from pandas import (
     Index,
     Timestamp,
 )
 from pandas.core.arrays import ExtensionArray
 from pandas.core.frame import DataFrame
-from pandas.core.generic import NDFrame
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.series import (
     Series,
@@ -27,11 +25,8 @@ from pandas.core.series import (
 from pandas._libs.tslibs import NaTType
 from pandas._typing import (
     AnyArrayLike,
-    ArrayLike,
     DateTimeErrorChoices,
 )
-
-from pandas.core.dtypes.generic import ABCSeries
 
 ArrayConvertible = Union[List, Tuple, AnyArrayLike]
 Scalar = Union[int, float, str]

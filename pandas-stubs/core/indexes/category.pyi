@@ -3,10 +3,7 @@ from pandas.core import accessor
 from pandas.core.indexes.base import Index  # , maybe_extract_name
 from pandas.core.indexes.extension import ExtensionIndex
 
-from pandas._typing import (
-    AnyArrayLike,
-    DtypeArg,
-)
+from pandas._typing import DtypeArg
 
 class CategoricalIndex(ExtensionIndex, accessor.PandasDelegate):
     codes: np.ndarray = ...

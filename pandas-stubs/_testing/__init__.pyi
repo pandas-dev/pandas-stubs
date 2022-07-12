@@ -1,5 +1,4 @@
 from typing import (
-    Any,
     List,
     Literal,
     Optional,

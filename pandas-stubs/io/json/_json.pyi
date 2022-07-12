@@ -1,5 +1,4 @@
 from collections import abc
-import sys
 from typing import (
     Any,
     Callable,
