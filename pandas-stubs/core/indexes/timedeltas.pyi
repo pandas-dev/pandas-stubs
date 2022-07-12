@@ -10,6 +10,7 @@ from pandas.core.indexes.datetimelike import (
     DatetimeTimedeltaMixin as DatetimeTimedeltaMixin,
 )
 from pandas.core.indexes.datetimes import DatetimeIndex as DatetimeIndex
+from pandas.core.series import TimedeltaSeries
 
 from pandas._libs import Timedelta as Timedelta
 from pandas._typing import num
@@ -43,6 +44,7 @@ class TimedeltaIndex(DatetimeTimedeltaMixin, TimelikeOps, TimedeltaDelegateMixin
     @property
     def inferred_type(self) -> str: ...
     def insert(self, loc, item): ...
+    def to_series(self, index=..., name=...) -> TimedeltaSeries: ...
 
 def timedelta_range(
     start=..., end=..., periods=..., freq=..., name=..., closed=...

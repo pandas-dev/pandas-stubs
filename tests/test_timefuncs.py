@@ -10,6 +10,7 @@ from typing import (
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
+import pytest
 from typing_extensions import assert_type
 
 from pandas._libs import NaTType
@@ -250,3 +251,92 @@ def test_to_datetime_nat() -> None:
         ),
         NaTType,
     )
+
+
+def test_dt_accessors() -> None:
+    # GH 131
+    i0 = pd.date_range(start="2022-06-01", periods=10)
+    check(assert_type(i0, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+
+    check(assert_type(i0.to_series(), "TimestampSeries"), pd.Series, pd.Timestamp)
+
+    s0 = pd.Series(i0)
+
+    s0.dt.date
+    s0.dt.time
+    s0.dt.timetz
+    s0.dt.year
+    s0.dt.month
+    s0.dt.day
+    s0.dt.hour
+    s0.dt.minute
+    s0.dt.second
+    s0.dt.microsecond
+    s0.dt.nanosecond
+    with pytest.warns(
+        FutureWarning,
+        match="Series.dt.weekofyear and Series.dt.week have been deprecated",
+    ):
+        s0.dt.week
+    with pytest.warns(
+        FutureWarning,
+        match="Series.dt.weekofyear and Series.dt.week have been deprecated",
+    ):
+        s0.dt.weekofyear
+    s0.dt.dayofweek
+    s0.dt.day_of_week
+    s0.dt.weekday
+    s0.dt.dayofyear
+    s0.dt.day_of_year
+    s0.dt.quarter
+    s0.dt.is_month_start
+    s0.dt.is_month_end
+    s0.dt.is_quarter_start
+    s0.dt.is_quarter_end
+    s0.dt.is_year_start
+    s0.dt.is_year_end
+    s0.dt.is_leap_year
+    s0.dt.daysinmonth
+    s0.dt.days_in_month
+    s0.dt.tz
+    s0.dt.freq  # OK
+    s0.dt.isocalendar()
+    s0.dt.to_period("D")
+    s0.dt.to_pydatetime()
+    local_dtarray = s0.dt.tz_localize("UTC")
+    slocal = pd.Series(local_dtarray)
+    slocal.dt.tz_convert("EST")
+    s0.dt.normalize()
+    s0.dt.strftime("%Y")
+    s0.dt.round("D")
+    s0.dt.floor("D")
+    s0.dt.ceil("D")
+    s0.dt.month_name()
+    s0.dt.day_name()
+
+    i1 = pd.period_range(start="2022-06-01", periods=10)
+
+    check(assert_type(i1, pd.PeriodIndex), pd.PeriodIndex)
+
+    check(assert_type(i1.to_series(), pd.Series), pd.Series, pd.Period)
+
+    s1 = pd.Series(i1)
+
+    s1.dt.qyear
+    s1.dt.start_time
+    s1.dt.end_time
+
+    i2 = pd.timedelta_range(start="1 day", periods=10)
+    check(assert_type(i2, pd.TimedeltaIndex), pd.TimedeltaIndex)
+
+    check(assert_type(i2.to_series(), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+
+    s2 = pd.Series(i2)
+
+    s2.dt.days
+    s2.dt.seconds
+    s2.dt.microseconds
+    s2.dt.nanoseconds
+    s2.dt.components
+    s2.dt.to_pytimedelta()
+    s2.dt.total_seconds()
