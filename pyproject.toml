@@ -67,7 +67,7 @@ script = "scripts.test:test_src(profile, clean_cache)"
     default = false
 
 [tool.poe.tasks.test_dist]
-help = "Run all typing tests using the installed stubs"
+help = "Run typing tests on 'tests' using the installed stubs"
 script = "scripts.test:test_dist(clean_cache)"
 
     [[tool.poe.tasks.test_dist.args]]
