@@ -11,8 +11,8 @@ pyright_src = Step(
     name="Run pyright on 'tests' (using the local stubs) and on the local stubs",
     run=run.pyright_src,
 )
-pytest_src = Step(name="Run pytest", run=run.pytest_src)
-style_src = Step(name="Run pre-commit Against Source Code", run=run.style_src)
+pytest = Step(name="Run pytest", run=run.pytest)
+style = Step(name="Run pre-commit", run=run.style)
 build_dist = Step(name="Build pandas-stubs", run=run.build_dist)
 install_dist = Step(
     name="Install pandas-stubs", run=run.install_dist, rollback=run.uninstall_dist

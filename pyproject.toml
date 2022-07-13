@@ -80,9 +80,13 @@ script = "scripts.test:test(clean_cache, src=True, dist=True)"
     options = ["-c", "--clean_cache"]
     default = false
 
-[tool.poe.tasks.pytest_src]
+[tool.poe.tasks.pytest]
 help = "Run pytest"
-script = "scripts.test.run:pytest_src"
+script = "scripts.test.run:pytest"
+
+[tool.poe.tasks.style]
+help = "Run pre-commit"
+script = "scripts.test.run:style"
 
 [tool.poe.tasks.mypy_src]
 help = "Run mypy on 'tests' (using the local stubs) and on the local stubs"

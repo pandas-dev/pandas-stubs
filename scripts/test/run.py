@@ -13,12 +13,12 @@ def pyright_src():
     subprocess.run(cmd, check=True)
 
 
-def pytest_src():
+def pytest():
     cmd = ["pytest"]
     subprocess.run(cmd, check=True)
 
 
-def style_src():
+def style():
     cmd = ["pre-commit", "run", "--all-files", "--verbose"]
     subprocess.run(cmd, check=True)
 

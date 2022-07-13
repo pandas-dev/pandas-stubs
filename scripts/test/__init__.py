@@ -2,7 +2,7 @@ from scripts._job import run_job
 from scripts.test import _step
 
 _CACHE_STEPS = [_step.clean_mypy_cache, _step.clean_pytest_cache]
-_SRC_STEPS = [_step.mypy_src, _step.pyright_src, _step.pytest_src, _step.style_src]
+_SRC_STEPS = [_step.mypy_src, _step.pyright_src, _step.pytest, _step.style]
 _DIST_STEPS = [
     _step.build_dist,
     _step.install_dist,
