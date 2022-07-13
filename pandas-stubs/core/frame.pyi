@@ -138,17 +138,10 @@ class _LocIndexerFrame(_LocIndexer):
     @overload
     def __getitem__(
         self,
-        idx: Union[int, StrLike],
-    ) -> Series: ...
-    @overload
-    def __getitem__(
-        self,
-        idx: Tuple[Union[IndexType, MaskType], StrLike],
-    ) -> Series: ...
-    @overload
-    def __getitem__(
-        self,
-        idx: Tuple[Tuple[slice, ...], StrLike],
+        idx: Union[
+            Union[ScalarT, None],
+            Tuple[Union[IndexType, MaskType, Tuple[slice, ...]], Union[ScalarT, None]],
+        ],
     ) -> Series: ...
     @overload
     def __setitem__(
