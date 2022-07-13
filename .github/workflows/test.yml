@@ -39,29 +39,29 @@ jobs:
     - name: Install project dependencies
       run: poetry install -vvv --no-root
 
-    - name: Run MyPy Against Source Code
+    - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
       run: poetry run poe mypy_src
 
-    - name: Run Pyright Against Source Code
+    - name: Run pyright on 'tests' (using the local stubs) and on the local stubs
       run: poetry run poe pyright_src
 
-    - name: Run Pytest Against Source Code
+    - name: Run pytest
       run: poetry run poe pytest_src
 
     - if: matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest'
       uses: pre-commit/action@v3.0.0
 
-    - name: Build Distribution
+    - name: Build pandas-stubs
       run: poetry run poe build_dist
 
-    - name: Install Distribution
+    - name: Install pandas-stubs
       run: poetry run poe install_dist
 
-    - name: Rename Source Code
+    - name: Rename local stubs
       run: poetry run poe rename_src
 
-    - name: Run Pyright Against Distribution
+    - name: Run pyright on 'tests' using the installed stubs
       run: poetry run poe pyright_dist
 
-    - name: Run MyPy Against Distribution
+    - name: Run mypy on 'tests' using the installed stubs
       run: poetry run poe mypy_dist
