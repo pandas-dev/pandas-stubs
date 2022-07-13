@@ -22,7 +22,7 @@ def test(clean_cache: bool = False, src: bool = False, dist: bool = False):
     if src:
         steps.extend(_SRC_STEPS)
 
-    if src:
+    if dist:
         steps.extend(_DIST_STEPS)
 
     run_job(steps)
