@@ -51,14 +51,8 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks.test_src]
-help = "Run local tests"
-script = "scripts.test:test_src(profile, clean_cache)"
-
-    [[tool.poe.tasks.test_src.args]]
-    help = "'typing' (mypy and pyright), 'pytest' (pytest only), 'style' (pre-commit only), or 'all'"
-    name = "profile"
-    options = ["-p", "--profile"]
-    default = "typing"
+help = "Run all local tests"
+script = "scripts.test:test(clean_cache, src=True)"
 
     [[tool.poe.tasks.test_src.args]]
     help = "remove cache folders (mypy and pytest)"
@@ -68,23 +62,27 @@ script = "scripts.test:test_src(profile, clean_cache)"
 
 [tool.poe.tasks.test_dist]
 help = "Run typing tests on 'tests' using the installed stubs"
-script = "scripts.test:test_dist(clean_cache)"
+script = "scripts.test:test(clean_cache, dist=True)"
 
     [[tool.poe.tasks.test_dist.args]]
-    help = "remove cache folder (mypy)"
+    help = "remove cache folders (mypy and pytest)"
     name = "clean-cache"
     options = ["-c", "--clean_cache"]
     default = false
 
 [tool.poe.tasks.test_all]
 help = "Run all tests (includes installing the stubs)"
-script = "scripts.test:test_all(clean_cache)"
+script = "scripts.test:test(clean_cache, src=True, dist=True)"
 
     [[tool.poe.tasks.test_all.args]]
     help = "remove cache folders (mypy and pytest)"
     name = "clean-cache"
     options = ["-c", "--clean_cache"]
     default = false
+
+[tool.poe.tasks.pytest_src]
+help = "Run pytest"
+script = "scripts.test.run:pytest_src"
 
 [tool.poe.tasks.mypy_src]
 help = "Run mypy on 'tests' (using the local stubs) and on the local stubs"
