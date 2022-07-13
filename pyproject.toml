@@ -51,7 +51,7 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks.test_src]
-help = "Run all local tests"
+help = "Run local tests (includes 'mypy_src', 'pyright_src', 'pytest', and 'style')"
 script = "scripts.test:test(clean_cache, src=True)"
 
     [[tool.poe.tasks.test_src.args]]
@@ -61,7 +61,7 @@ script = "scripts.test:test(clean_cache, src=True)"
     default = false
 
 [tool.poe.tasks.test_dist]
-help = "Run typing tests on 'tests' using the installed stubs"
+help = "Run tests on the installed stubs (includes 'mypy_dist' and 'pyright_dist')"
 script = "scripts.test:test(clean_cache, dist=True)"
 
     [[tool.poe.tasks.test_dist.args]]
@@ -71,7 +71,7 @@ script = "scripts.test:test(clean_cache, dist=True)"
     default = false
 
 [tool.poe.tasks.test_all]
-help = "Run all tests (includes installing the stubs)"
+help = "Run all tests"
 script = "scripts.test:test(clean_cache, src=True, dist=True)"
 
     [[tool.poe.tasks.test_all.args]]
