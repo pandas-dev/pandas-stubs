@@ -30,7 +30,7 @@ def build_dist():
 
 def install_dist():
     path = next(Path("dist/").glob("*.whl"))
-    cmd = ["pip", "install", str(path)]
+    cmd = ["pip", "install", "--force-reinstall", str(path)]
     subprocess.run(cmd, check=True)
 
 
