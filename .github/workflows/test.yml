@@ -46,7 +46,7 @@ jobs:
       run: poetry run poe pyright_src
 
     - name: Run pytest
-      run: poetry run poe pytest_src
+      run: poetry run poe pytest
 
     - if: matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest'
       uses: pre-commit/action@v3.0.0
