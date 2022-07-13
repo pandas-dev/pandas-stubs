@@ -1,26 +1,10 @@
-from matplotlib.axes import Axes as PlotAxes, SubplotBase as AxesSubplot
-import numpy as np
-import sys
-from pandas._typing import (
-    FrameOrSeries as FrameOrSeries,
-    AxisType,
-    Dtype,
-    Level,
-    FuncType,
-    S1,
-)
-from pandas.core.frame import DataFrame as DataFrame
-from pandas.core.groupby.groupby import (
-    GroupBy as GroupBy,
-)  # , get_groupby as get_groupby
-from pandas.core.groupby.grouper import Grouper as Grouper
-from pandas.core.series import Series as Series
 from typing import (
     Any,
     Callable,
     Dict,
     FrozenSet,
     List,
+    Literal,
     NamedTuple,
     Optional,
     Sequence,
@@ -30,10 +14,25 @@ from typing import (
     overload,
 )
 
-if sys.version_info >= (3, 8):
-    from typing import Literal
-else:
-    from typing_extensions import Literal
+from matplotlib.axes import (
+    Axes as PlotAxes,
+    SubplotBase as AxesSubplot,
+)
+import numpy as np
+from pandas.core.frame import DataFrame
+from pandas.core.groupby.groupby import (  # , get_groupby as get_groupby
+    GroupBy as GroupBy,
+)
+from pandas.core.groupby.grouper import Grouper as Grouper
+from pandas.core.series import Series
+
+from pandas._typing import (
+    S1,
+    AxisType,
+    FrameOrSeries,
+    FuncType,
+    Level,
+)
 
 AggScalar = Union[str, Callable[..., Any]]
 ScalarResult = ...
@@ -117,6 +116,8 @@ class DataFrameGroupBy(GroupBy):
     def agg(self, arg: Dict, *args, **kwargs) -> DataFrame: ...
     @overload
     def agg(self, arg: FuncType, *args, **kwargs) -> DataFrame: ...
+    @overload
+    def agg(self, *args, **kwargs) -> DataFrame: ...
     def transform(self, func, *args, **kwargs): ...
     def filter(
         self, func: Callable, dropna: bool = ..., *args, **kwargs
@@ -145,7 +146,7 @@ class DataFrameGroupBy(GroupBy):
         **kwargs,
     ) -> Union[AxesSubplot, Sequence[AxesSubplot]]: ...
     # Overrides and others from original pylance stubs
-    ## These are "properties" but properties can't have all these arguments?!
+    # These are "properties" but properties can't have all these arguments?!
     def corr(
         self, method: Union[str, Callable], min_periods: int = ...
     ) -> DataFrame: ...

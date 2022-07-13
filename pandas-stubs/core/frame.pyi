@@ -1,54 +1,11 @@
 from __future__ import annotations
-import datetime
-import numpy as np
 
-from pandas.core.indexing import _iLocIndexer, _LocIndexer
-from matplotlib.axes import Axes as PlotAxes
-from pandas._typing import (
-    Axes as Axes,
-    Axis as Axis,
-    FilePathOrBuffer as FilePathOrBuffer,
-    FilePathOrBytesBuffer as FilePathOrBytesBuffer,
-    Level as Level,
-    Renamer as Renamer,
-)
-from pandas._typing import (
-    num,
-    SeriesAxisType,
-    AxisType,
-    Dtype,
-    DtypeNp,
-    Label,
-    StrLike,
-    Scalar as Scalar,
-    IndexType,
-    MaskType,
-    S1,
-    T as TType,
-)
-from pandas._typing import (
-    ArrayLike as ArrayLike,
-    np_ndarray_str,
-    np_ndarray_bool,
-    Timestamp as Timestamp,
-    Timedelta as Timedelta,
-)
-from pandas._typing import IndexLabel as IndexLabel, IgnoreRaise as IgnoreRaise
-from pandas.core.arraylike import OpsMixin
-from pandas.core.generic import NDFrame as NDFrame
-from pandas.core.groupby.generic import DataFrameGroupBy as DataFrameGroupBy
-from pandas.core.groupby.grouper import Grouper
-from pandas.core.indexes.base import Index as Index
-from pandas.core.indexes.multi import MultiIndex as MultiIndex
-from pandas.core.resample import Resampler
-from pandas.core.window.rolling import Rolling, Window
-from pandas.core.series import Series as Series
-from pandas.io.formats import console as console, format as fmt
-from pandas.io.formats.style import Styler as Styler
-from pandas.plotting import PlotAccessor
+import datetime
+import datetime as _dt
 from typing import (
     Any,
     Callable,
+    ClassVar,
     Dict,
     Hashable,
     Iterable,
@@ -57,16 +14,68 @@ from typing import (
     Literal,
     Mapping,
     Optional,
+    Pattern,
     Sequence,
     Tuple,
     Type,
     Union,
     overload,
-    Pattern,
 )
 
-import numpy as _np
-import datetime as _dt
+from matplotlib.axes import Axes as PlotAxes
+import numpy as np
+from pandas import (
+    Timedelta,
+    Timestamp,
+)
+from pandas.core.arraylike import OpsMixin
+from pandas.core.generic import NDFrame
+from pandas.core.groupby.generic import DataFrameGroupBy
+from pandas.core.groupby.grouper import Grouper
+from pandas.core.indexes.base import Index
+from pandas.core.indexing import (
+    _iLocIndexer,
+    _LocIndexer,
+)
+from pandas.core.resample import Resampler
+from pandas.core.series import Series
+from pandas.core.window.rolling import (
+    Rolling,
+    Window,
+)
+
+from pandas._typing import (
+    S1,
+    ArrayLike,
+    Axes,
+    Axis,
+    AxisType,
+    Dtype,
+    DtypeNp,
+    FilePathOrBuffer,
+    FilePathOrBytesBuffer,
+    GroupByObject,
+    IgnoreRaise,
+    IndexingInt,
+    IndexLabel,
+    IndexType,
+    Label,
+    Level,
+    MaskType,
+    Renamer,
+    Scalar,
+    ScalarT,
+    SeriesAxisType,
+    StrLike,
+    T as TType,
+    np_ndarray_bool,
+    np_ndarray_str,
+    num,
+)
+
+from pandas.io.formats import format as fmt
+from pandas.io.formats.style import Styler
+from pandas.plotting import PlotAccessor
 
 _str = str
 _bool = bool
@@ -75,7 +84,7 @@ class _iLocIndexerFrame(_iLocIndexer):
     @overload
     def __getitem__(self, idx: Tuple[int, int]) -> Scalar: ...
     @overload
-    def __getitem__(self, idx: int) -> Series: ...
+    def __getitem__(self, idx: IndexingInt) -> Series: ...
     @overload
     def __getitem__(self, idx: Tuple[Union[IndexType, MaskType], int]) -> Series: ...
     @overload
@@ -99,7 +108,7 @@ class _iLocIndexerFrame(_iLocIndexer):
             Tuple[IndexType, IndexType],
             Tuple[int, IndexType],
         ],
-        value: Union[float, Series, DataFrame],
+        value: Union[float, Series, DataFrame, np.ndarray],
     ) -> None: ...
 
 class _LocIndexerFrame(_LocIndexer):
@@ -168,11 +177,13 @@ class DataFrame(NDFrame, OpsMixin):
     _ListLike = Union[
         np.ndarray,
         List[Dtype],
-        Dict[_str, _np.ndarray],
+        Dict[_str, np.ndarray],
         Sequence,
         Index,
         Series,
     ]
+    __hash__: ClassVar[None]  # type: ignore[assignment]
+
     def __new__(
         cls,
         data: Optional[Union[_ListLike, DataFrame, Dict[Any, Any]]] = ...,
@@ -205,7 +216,7 @@ class DataFrame(NDFrame, OpsMixin):
         dtype: Optional[Union[Type[DtypeNp], Dtype]] = ...,
         copy: _bool = ...,
         na_value: Optional[Any] = ...,
-    ) -> _np.ndarray: ...
+    ) -> np.ndarray: ...
     @overload
     def to_dict(
         self,
@@ -354,7 +365,7 @@ class DataFrame(NDFrame, OpsMixin):
             Series[_bool],
             DataFrame,
             List[_str],
-            List[Scalar],
+            List[ScalarT],
             Index,
             np_ndarray_str,
             np_ndarray_bool,
@@ -398,15 +409,27 @@ class DataFrame(NDFrame, OpsMixin):
         fill_axis: AxisType = ...,
         broadcast_axis: Optional[AxisType] = ...,
     ) -> DataFrame: ...
-    def reindex(**kwargs) -> DataFrame: ...
+    def reindex(
+        self,
+        labels: Optional[Axes] = ...,
+        index: Optional[Axes] = ...,
+        columns: Optional[Axes] = ...,
+        axis: Optional[AxisType] = ...,
+        method: Optional[Literal["backfill", "bfill", "pad", "ffill", "nearest"]] = ...,
+        copy: bool = ...,
+        level: Union[int, str] = ...,
+        fill_value: Optional[Scalar] = ...,
+        limit: Optional[int] = ...,
+        tolerance: Optional[float] = ...,
+    ) -> DataFrame: ...
     @overload
     def drop(
         self,
-        labels: Hashable | list[Hashable] = ...,
+        labels: Hashable | Sequence[Hashable] = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[Hashable] = ...,
-        columns: Hashable | list[Hashable] = ...,
+        index: Hashable | Sequence[Hashable] = ...,
+        columns: Hashable | Sequence[Hashable] | Index = ...,
         level: Optional[Level] = ...,
         inplace: Literal[True],
         errors: IgnoreRaise = ...,
@@ -414,11 +437,11 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | list[Hashable] = ...,
+        labels: Hashable | Sequence[Hashable] = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[Hashable] = ...,
-        columns: Hashable | list[Hashable] = ...,
+        index: Hashable | Sequence[Hashable] = ...,
+        columns: Hashable | Sequence[Hashable] | Index = ...,
         level: Optional[Level] = ...,
         inplace: Literal[False] = ...,
         errors: IgnoreRaise = ...,
@@ -426,11 +449,11 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | list[Hashable] = ...,
+        labels: Hashable | Sequence[Hashable] = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[Hashable] = ...,
-        columns: Hashable | list[Hashable] = ...,
+        index: Hashable | Sequence[Hashable] = ...,
+        columns: Hashable | Sequence[Hashable] | Index = ...,
         level: Optional[Level] = ...,
         inplace: bool = ...,
         errors: IgnoreRaise = ...,
@@ -536,18 +559,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         to_replace=...,
         value: Optional[Union[Scalar, Sequence, Mapping, Pattern]] = ...,
-        limit: Optional[int] = ...,
-        regex=...,
-        method: Optional[_str] = ...,
-        *,
-        inplace: Literal[False],
-    ) -> DataFrame: ...
-    @overload
-    def replace(
-        self,
-        to_replace=...,
-        value: Optional[Union[Scalar, Sequence, Mapping, Pattern]] = ...,
-        *,
+        inplace: Literal[False] = ...,
         limit: Optional[int] = ...,
         regex=...,
         method: Optional[_str] = ...,
@@ -851,7 +863,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> None: ...
     def groupby(
         self,
-        by: Optional[Union[List[_str], _str]] = ...,
+        by: Optional[GroupByObject] = ...,
         axis: AxisType = ...,
         level: Optional[Level] = ...,
         as_index: _bool = ...,
@@ -942,7 +954,7 @@ class DataFrame(NDFrame, OpsMixin):
         **kwargs,
     ) -> DataFrame: ...
     def applymap(
-        self, func: Callable, na_action: Optional[Literal["ignore"]] = None, **kwargs
+        self, func: Callable, na_action: Optional[Literal["ignore"]] = ..., **kwargs
     ) -> DataFrame: ...
     def append(
         self,
@@ -985,7 +997,7 @@ class DataFrame(NDFrame, OpsMixin):
         method: Union[_str, Literal["pearson", "kendall", "spearman"]] = ...,
         min_periods: int = ...,
     ) -> DataFrame: ...
-    def cov(self, min_periods: Optional[int] = ..., ddof: int = 1) -> DataFrame: ...
+    def cov(self, min_periods: Optional[int] = ..., ddof: int = ...) -> DataFrame: ...
     def corrwith(
         self,
         other: Union[DataFrame, Series],
@@ -1001,7 +1013,7 @@ class DataFrame(NDFrame, OpsMixin):
     def count(
         self, axis: AxisType = ..., level: None = ..., numeric_only: _bool = ...
     ) -> Series: ...
-    def nunique(self, axis: AxisType = ..., dropna=True) -> Series: ...
+    def nunique(self, axis: AxisType = ..., dropna: bool = ...) -> Series: ...
     def idxmax(self, axis: AxisType = ..., skipna: _bool = ...) -> Series: ...
     def idxmin(self, axis: AxisType = ..., skipna: _bool = ...) -> Series: ...
     @overload
@@ -1036,7 +1048,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def quantile(
         self,
-        q: List[float],
+        q: Union[List[float], np.ndarray],
         axis: AxisType = ...,
         numeric_only: _bool = ...,
         interpolation: Union[
@@ -1054,7 +1066,8 @@ class DataFrame(NDFrame, OpsMixin):
         self, freq: Optional[_str] = ..., axis: AxisType = ..., copy: _bool = ...
     ) -> DataFrame: ...
     def isin(self, values: Union[Iterable, Series, DataFrame, Dict]) -> DataFrame: ...
-    def plot(self, *args, **kwargs) -> PlotAccessor: ...
+    @property
+    def plot(self) -> PlotAccessor: ...
     def hist(
         self,
         column: Optional[Union[_str, List[_str]]] = ...,
@@ -1104,7 +1117,7 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level = ...,
         fill_value: Union[None, float] = ...,
     ) -> DataFrame: ...
-    def __iter__(self) -> Iterator[Hashable]: ...
+    def __iter__(self) -> Iterator[Union[int, float, str]]: ...
     # properties
     @property
     def at(self): ...  # Not sure what to do with this yet; look at source
@@ -1113,7 +1126,7 @@ class DataFrame(NDFrame, OpsMixin):
     @property
     def columns(self) -> Index: ...
     @columns.setter  # setter needs to be right next to getter; otherwise mypy complains
-    def columns(self, cols: Union[List[_str], Index[_str]]) -> None: ...  # type:ignore
+    def columns(self, cols: Union[List[_str], Index[_str]]) -> None: ...  # type: ignore[type-arg]
     @property
     def dtypes(self) -> Series: ...
     @property
@@ -1133,7 +1146,7 @@ class DataFrame(NDFrame, OpsMixin):
     @property
     def size(self) -> int: ...
     @property
-    def values(self) -> _np.ndarray: ...
+    def values(self) -> np.ndarray: ...
     # methods
     def abs(self) -> DataFrame: ...
     def add(
@@ -1230,7 +1243,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         axis: Optional[AxisType] = ...,
         *,
-        inplace: Literal[False],
+        inplace: Literal[False] = ...,
         limit: Optional[int] = ...,
         downcast: Optional[Dict] = ...,
     ) -> DataFrame: ...
@@ -1319,7 +1332,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         axis: Optional[AxisType] = ...,
         *,
-        inplace: Literal[False],
+        inplace: Literal[False] = ...,
         limit: Optional[int] = ...,
         downcast: Optional[Dict] = ...,
     ) -> DataFrame: ...
@@ -1471,7 +1484,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def mask(
         self,
-        cond: Union[Series, DataFrame, _np.ndarray],
+        cond: Union[Series, DataFrame, np.ndarray],
         other=...,
         inplace: _bool = ...,
         axis: Optional[AxisType] = ...,
@@ -1723,7 +1736,7 @@ class DataFrame(NDFrame, OpsMixin):
         origin: Union[
             Timestamp, Literal["epoch", "start", "start_day", "end", "end_day"]
         ] = ...,
-        offset: Optional[Union[Timedelta, _str]] = None,
+        offset: Optional[Union[Timedelta, _str]] = ...,
     ) -> Resampler: ...
     def rfloordiv(
         self,
@@ -1800,7 +1813,7 @@ class DataFrame(NDFrame, OpsMixin):
         random_state: Optional[int] = ...,
         axis: Optional[SeriesAxisType] = ...,
         ignore_index: _bool = ...,
-    ) -> Series[S1]: ...
+    ) -> DataFrame: ...
     @overload
     def sem(
         self,
@@ -2233,7 +2246,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> Series: ...
     def where(
         self,
-        cond: Union[Series, DataFrame, _np.ndarray],
+        cond: Union[Series, DataFrame, np.ndarray],
         other=...,
         inplace: _bool = ...,
         axis: Optional[AxisType] = ...,

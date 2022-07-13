@@ -1,25 +1,36 @@
-from datetime import datetime as datetime
-from numpy import datetime64 as datetime64
-import numpy as np
-
-from pandas._typing import (
-    ArrayLike as ArrayLike,
-    Index as Index,
-    AnyArrayLike as AnyArrayLike,
-    DateTimeErrorChoices as DateTimeErrorChoices,
-    ExtensionArray as ExtensionArray,
-    Timestamp as Timestamp,
+from datetime import datetime
+from typing import (
+    List,
+    Literal,
+    Optional,
+    Tuple,
+    TypedDict,
+    Union,
+    overload,
 )
-from pandas.core.dtypes.generic import ABCSeries as ABCSeries
-from pandas.core.generic import NDFrame as NDFrame
-from pandas.core.indexes.datetimes import DatetimeIndex as DatetimeIndex
-from pandas.core.frame import DataFrame as DataFrame
-from pandas.core.series import Series as Series, TimestampSeries
-from typing import List, Optional, Tuple, TypedDict, Union, overload
+
+import numpy as np
+from pandas import (
+    Index,
+    Timestamp,
+)
+from pandas.core.arrays import ExtensionArray
+from pandas.core.frame import DataFrame
+from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.series import (
+    Series,
+    TimestampSeries,
+)
+
+from pandas._libs.tslibs import NaTType
+from pandas._typing import (
+    AnyArrayLike,
+    DateTimeErrorChoices,
+)
 
 ArrayConvertible = Union[List, Tuple, AnyArrayLike]
 Scalar = Union[int, float, str]
-DatetimeScalar = Union[Scalar, datetime]
+DatetimeScalar = Union[Scalar, datetime, np.datetime64]
 
 DatetimeScalarOrArrayConvertible = Union[DatetimeScalar, ArrayConvertible]
 
@@ -41,7 +52,7 @@ class FulldatetimeDict(YearMonthDayDict, total=False):
     us: DatetimeDictArg
     ns: DatetimeDictArg
 
-DictConvertible = Union[FulldatetimeDict, "DataFrame"]
+DictConvertible = Union[FulldatetimeDict, DataFrame]
 
 def should_cache(
     arg: ArrayConvertible, unique_share: float = ..., check_count: Optional[int] = ...
@@ -49,7 +60,7 @@ def should_cache(
 @overload
 def to_datetime(
     arg: DatetimeScalar,
-    errors: DateTimeErrorChoices = ...,
+    errors: Literal["ignore", "raise"] = ...,
     dayfirst: bool = ...,
     yearfirst: bool = ...,
     utc: bool | None = ...,
@@ -60,6 +71,20 @@ def to_datetime(
     origin=...,
     cache: bool = ...,
 ) -> Timestamp: ...
+@overload
+def to_datetime(
+    arg: DatetimeScalar,
+    errors: Literal["coerce"],
+    dayfirst: bool = ...,
+    yearfirst: bool = ...,
+    utc: bool | None = ...,
+    format: str | None = ...,
+    exact: bool = ...,
+    unit: str | None = ...,
+    infer_datetime_format: bool = ...,
+    origin=...,
+    cache: bool = ...,
+) -> Timestamp | NaTType: ...
 @overload
 def to_datetime(
     arg: Series | DictConvertible,

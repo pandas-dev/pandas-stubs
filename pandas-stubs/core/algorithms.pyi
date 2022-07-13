@@ -1,8 +1,13 @@
 from __future__ import annotations
+
+from typing import (
+    Any,
+    Tuple,
+    Union,
+)
+
 import numpy as np
-from pandas.core.dtypes.generic import ABCIndex as ABCIndex
 from pandas.core.indexes.base import Index
-from typing import Any, Tuple, Union
 
 def unique(values): ...
 
@@ -13,7 +18,7 @@ def factorize(
     values: Any,
     sort: bool = ...,
     na_sentinel: int = ...,
-    size_hint: Union[int, None] = None,
+    size_hint: Union[int, None] = ...,
 ) -> Tuple[np.ndarray, Union[np.ndarray, Index]]: ...
 def value_counts(
     values,
@@ -72,4 +77,4 @@ def safe_sort(
     verify: bool = ...,
 ) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]: ...
 
-from pandas import Series as Series
+from pandas import Series

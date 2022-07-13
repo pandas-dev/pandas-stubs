@@ -1,6 +1,12 @@
-from pandas.core.frame import DataFrame as DataFrame
-from pandas._typing import Scalar as Scalar
-from typing import Any, Dict, List, Optional, Union
+from typing import (
+    Any,
+    Dict,
+    List,
+    Optional,
+    Union,
+)
+
+from pandas.core.frame import DataFrame
 
 def convert_to_line_delimits(s: Any): ...
 def nested_to_record(
@@ -12,11 +18,11 @@ def nested_to_record(
 ) -> Any: ...
 def json_normalize(
     data: Union[Dict, List[Dict]],
-    record_path: Optional[Union[str, List]] = None,
-    meta: Optional[Union[str, List[Union[str, List[str]]]]] = None,
-    meta_prefix: Optional[str] = None,
-    record_prefix: Optional[str] = None,
-    errors: str = "raise",
-    sep: str = ".",
-    max_level: Optional[int] = None,
+    record_path: Optional[Union[str, List]] = ...,
+    meta: Optional[Union[str, List[Union[str, List[str]]]]] = ...,
+    meta_prefix: Optional[str] = ...,
+    record_prefix: Optional[str] = ...,
+    errors: str = ...,
+    sep: str = ...,
+    max_level: Optional[int] = ...,
 ) -> DataFrame: ...

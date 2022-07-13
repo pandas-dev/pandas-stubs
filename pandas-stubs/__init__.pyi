@@ -1,3 +1,14 @@
+import pandas.testing as testing
+
+from . import (
+    api as api,
+    arrays as arrays,
+    errors as errors,
+    io as io,
+    plotting as plotting,
+    testing as testing,
+    tseries as tseries,
+)
 from ._config import (
     describe_option as describe_option,
     get_option as get_option,
@@ -7,6 +18,7 @@ from ._config import (
     set_option as set_option,
 )
 from .core.api import (
+    NA as NA,
     BooleanDtype as BooleanDtype,
     Categorical as Categorical,
     CategoricalDtype as CategoricalDtype,
@@ -19,18 +31,17 @@ from .core.api import (
     Grouper as Grouper,
     Index as Index,
     IndexSlice as IndexSlice,
+    Int8Dtype as Int8Dtype,
     Int16Dtype as Int16Dtype,
     Int32Dtype as Int32Dtype,
     Int64Dtype as Int64Dtype,
     Int64Index as Int64Index,
-    Int8Dtype as Int8Dtype,
     Interval as Interval,
     IntervalDtype as IntervalDtype,
     IntervalIndex as IntervalIndex,
     MultiIndex as MultiIndex,
-    NA as NA,
-    NaT as NaT,
     NamedAgg as NamedAgg,
+    NaT as NaT,
     Period as Period,
     PeriodDtype as PeriodDtype,
     PeriodIndex as PeriodIndex,
@@ -40,11 +51,11 @@ from .core.api import (
     Timedelta as Timedelta,
     TimedeltaIndex as TimedeltaIndex,
     Timestamp as Timestamp,
+    UInt8Dtype as UInt8Dtype,
     UInt16Dtype as UInt16Dtype,
     UInt32Dtype as UInt32Dtype,
     UInt64Dtype as UInt64Dtype,
     UInt64Index as UInt64Index,
-    UInt8Dtype as UInt8Dtype,
     array as array,
     bdate_range as bdate_range,
     date_range as date_range,
@@ -61,10 +72,7 @@ from .core.api import (
     unique as unique,
     value_counts as value_counts,
 )
-from .core.tools import to_datetime as to_datetime, to_timedelta as to_timedelta
 from .core.arrays.sparse import SparseDtype as SparseDtype
-from .tseries import offsets as offsets
-from .tseries.api import infer_freq as infer_freq
 from .core.computation.api import eval as eval
 from .core.reshape.api import (
     concat as concat,
@@ -81,8 +89,10 @@ from .core.reshape.api import (
     qcut as qcut,
     wide_to_long as wide_to_long,
 )
-from .util._print_versions import show_versions as show_versions
-from .io.json import json_normalize as json_normalize
+from .core.tools import (
+    to_datetime as to_datetime,
+    to_timedelta as to_timedelta,
+)
 from .io.api import (
     ExcelFile as ExcelFile,
     ExcelWriter as ExcelWriter,
@@ -106,11 +116,13 @@ from .io.api import (
     read_sql_table as read_sql_table,
     read_stata as read_stata,
     read_table as read_table,
+    read_xml as read_xml,
     to_pickle as to_pickle,
 )
-
+from .io.json import json_normalize as json_normalize
+from .tseries import offsets as offsets
+from .tseries.api import infer_freq as infer_freq
+from .util._print_versions import show_versions as show_versions
 from .util._tester import test as test
-
-import pandas.testing as testing
 
 __version__: str

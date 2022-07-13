@@ -1,5 +1,4 @@
 import pickle as pkl
-from pandas import DataFrame as DataFrame, Index as Index, Series as Series
 from typing import Optional
 
 def load_reduce(self) -> None: ...

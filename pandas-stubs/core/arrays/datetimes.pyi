@@ -1,7 +1,13 @@
+from datetime import tzinfo
+from typing import (
+    Optional,
+    Union,
+)
+
 import numpy as np
 from pandas.core.arrays import datetimelike as dtl
+
 from pandas.core.dtypes.dtypes import DatetimeTZDtype as DatetimeTZDtype
-from typing import Union
 
 def tz_to_dtype(tz): ...
 
@@ -16,7 +22,7 @@ class DatetimeArray(dtl.DatetimeLikeArrayMixin, dtl.TimelikeOps, dtl.DatelikeOps
     @tz.setter
     def tz(self, value) -> None: ...
     @property
-    def tzinfo(self): ...
+    def tzinfo(self) -> Optional[tzinfo]: ...
     @property
     def is_normalized(self): ...
     def __array__(self, dtype=...) -> np.ndarray: ...

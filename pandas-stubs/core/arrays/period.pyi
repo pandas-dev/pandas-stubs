@@ -1,9 +1,16 @@
+from typing import (
+    Optional,
+    Sequence,
+    Union,
+)
+
 import numpy as np
+from pandas.core.arrays import datetimelike as dtl
+
 from pandas._libs.tslibs import Timestamp
 from pandas._libs.tslibs.period import Period as Period
-from pandas.core.arrays import datetimelike as dtl
+
 from pandas.tseries.offsets import Tick as Tick
-from typing import Optional, Sequence, Union
 
 class PeriodArray(dtl.DatetimeLikeArrayMixin, dtl.DatelikeOps):
     __array_priority__: int = ...

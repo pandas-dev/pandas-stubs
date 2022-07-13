@@ -1,21 +1,31 @@
+from datetime import tzinfo
+from typing import (
+    Optional,
+    Union,
+    overload,
+)
+
 import numpy as np
-from datetime import tzinfo as tzinfo
+from pandas import (
+    DataFrame,
+    Timedelta,
+    Timestamp,
+)
 from pandas.core.indexes.api import (
-    PeriodIndex as PeriodIndex,
-    Float64Index as Float64Index,
+    Float64Index,
+    PeriodIndex,
 )
 from pandas.core.indexes.datetimelike import (
-    DatetimeTimedeltaMixin as DatetimeTimedeltaMixin,
-    DatetimelikeDelegateMixin as DatetimelikeDelegateMixin,
+    DatetimelikeDelegateMixin,
+    DatetimeTimedeltaMixin,
 )
-from pandas.core.indexes.timedeltas import TimedeltaIndex as TimedeltaIndex
-from pandas.core.series import Series as Series, TimedeltaSeries, TimestampSeries
-from pandas._typing import (
-    Timestamp as Timestamp,
-    Timedelta as Timedelta,
-    DataFrame as DataFrame,
+from pandas.core.indexes.timedeltas import TimedeltaIndex
+from pandas.core.series import (
+    TimedeltaSeries,
+    TimestampSeries,
 )
-from typing import Optional, Union, overload
+
+from pandas._typing import np_ndarray_bool
 
 class DatetimeDelegateMixin(DatetimelikeDelegateMixin): ...
 
@@ -64,6 +74,12 @@ class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeDelegateMixin):
     def to_perioddelta(self, freq) -> TimedeltaIndex: ...
     def to_julian_date(self) -> Float64Index: ...
     def isocalendar(self) -> DataFrame: ...
+    @property
+    def tzinfo(self) -> Optional[tzinfo]: ...
+    def __lt__(self, other: Timestamp) -> np_ndarray_bool: ...
+    def __le__(self, other: Timestamp) -> np_ndarray_bool: ...
+    def __gt__(self, other: Timestamp) -> np_ndarray_bool: ...
+    def __ge__(self, other: Timestamp) -> np_ndarray_bool: ...
 
 def date_range(
     start=...,

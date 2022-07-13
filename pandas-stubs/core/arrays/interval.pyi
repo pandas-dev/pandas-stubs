@@ -1,13 +1,18 @@
 from __future__ import annotations
+
+from typing import Optional
+
 import numpy as np
+from pandas import Index
+from pandas.core.arrays.base import ExtensionArray as ExtensionArray
+
 from pandas._libs.interval import (
     Interval as Interval,
     IntervalMixin as IntervalMixin,
 )
-from pandas.core.arrays.base import ExtensionArray as ExtensionArray
+from pandas._typing import Axis
+
 from pandas.core.dtypes.generic import ABCExtensionArray as ABCExtensionArray
-from pandas._typing import Axis, Scalar, Index as Index
-from typing import Optional
 
 class IntervalArray(IntervalMixin, ExtensionArray):
     ndim: int = ...

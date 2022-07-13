@@ -1,5 +1,10 @@
-from typing import List, Optional, Type
-from pandas._typing import ExtensionArray
+from typing import (
+    List,
+    Optional,
+    Type,
+)
+
+from pandas.core.arrays import ExtensionArray
 
 class ExtensionDtype:
     def __eq__(self, other) -> bool: ...

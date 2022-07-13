@@ -1,55 +1,46 @@
-import numpy as np
-import sys
-import pandas.core.indexing as indexing
-from pandas._typing import (
-    ArrayLike as ArrayLike,
-    Axis as Axis,
-    AxisType as AxisType,
-    Dtype as Dtype,
-    FilePathOrBuffer as FilePathOrBuffer,
-    FrameOrSeriesUnion as FrameOrSeriesUnion,
-    IgnoreRaise as IgnoreRaise,
-    JSONSerializable as JSONSerializable,
-    Level as Level,
-    Renamer as Renamer,
-    ListLike as ListLike,
-    Scalar as Scalar,
-    SeriesAxisType as SeriesAxisType,
-    FrameOrSeries as FrameOrSeries,
-    S1 as S1,
-    Timestamp as Timestamp,
-    Timedelta as Timedelta,
-    T,
-)
-from pandas.core.base import PandasObject as PandasObject
-from pandas.core.indexes.base import Index as Index
-from pandas.core.internals import BlockManager as BlockManager
-from pandas.core.resample import Resampler
 from typing import (
     Any,
     Callable,
+    ClassVar,
     Dict,
     Hashable,
-    Iterator,
     List,
+    Literal,
     Mapping,
     Optional,
     Sequence,
     Tuple,
-    TypeVar,
     Union,
     overload,
 )
 
-if sys.version_info >= (3, 8):
-    from typing import Literal
-else:
-    from typing_extensions import Literal
+import numpy as np
+from pandas.core.base import PandasObject
+from pandas.core.indexes.base import Index
+import pandas.core.indexing as indexing
+from pandas.core.internals import BlockManager
+
+from pandas._typing import (
+    S1,
+    ArrayLike,
+    Axis,
+    Dtype,
+    FilePathOrBuffer,
+    FrameOrSeries,
+    FrameOrSeriesUnion,
+    IgnoreRaise,
+    Level,
+    Scalar,
+    SeriesAxisType,
+    T,
+)
 
 _bool = bool
 _str = str
 
 class NDFrame(PandasObject, indexing.IndexingMixin):
+    __hash__: ClassVar[None]  # type: ignore[assignment]
+
     def __new__(
         cls,
         data: BlockManager,
@@ -91,8 +82,6 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def bool(self) -> _bool: ...
     def __abs__(self) -> NDFrame: ...
     def __round__(self, decimals: int = ...) -> NDFrame: ...
-    def __hash__(self): ...
-    def __iter__(self) -> Iterator: ...
     def keys(self): ...
     def iteritems(self): ...
     def __len__(self) -> int: ...
@@ -510,4 +499,4 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def first_valid_index(self): ...
     def last_valid_index(self): ...
 
-from pandas.core.series import Series as Series
+from pandas.core.series import Series

@@ -1,15 +1,17 @@
-from pandas._typing import DataFrame as DataFrame, Series as Series, Axis as Axis
 from typing import (
-    Hashable,
     Iterable,
+    Literal,
     Mapping,
     Union,
     overload,
-    Literal,
-    TypeVar,
 )
 
-HashableT = TypeVar("HashableT", bound=Hashable)
+from pandas import (
+    DataFrame,
+    Series,
+)
+
+from pandas._typing import HashableT
 
 @overload
 def concat(

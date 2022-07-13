@@ -1,11 +1,16 @@
-from typing import Any, Protocol, Tuple
-from pandas._typing import FrameOrSeries, DataFrame
+from typing import (
+    Any,
+    Protocol,
+    Tuple,
+)
+
+from pandas import DataFrame
 
 class OpsMixinProtocol(Protocol): ...
 
 class OpsMixin:
-    def __eq__(self: OpsMixinProtocol, other: Any) -> DataFrame: ...  # type: ignore
-    def __ne__(self: OpsMixinProtocol, other: Any) -> DataFrame: ...  # type: ignore
+    def __eq__(self: OpsMixinProtocol, other: object) -> DataFrame: ...  # type: ignore[override]
+    def __ne__(self: OpsMixinProtocol, other: object) -> DataFrame: ...  # type: ignore[override]
     def __lt__(self: OpsMixinProtocol, other: Any) -> DataFrame: ...
     def __le__(self: OpsMixinProtocol, other: Any) -> DataFrame: ...
     def __gt__(self: OpsMixinProtocol, other: Any) -> DataFrame: ...

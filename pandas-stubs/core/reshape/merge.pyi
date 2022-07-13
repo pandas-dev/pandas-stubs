@@ -1,7 +1,17 @@
+from typing import (
+    List,
+    Optional,
+    Sequence,
+    Union,
+)
+
+from pandas import (
+    DataFrame,
+    Series,
+)
+
 from pandas._libs.tslibs import Timedelta
-from pandas import DataFrame as DataFrame, Series as Series
 from pandas._typing import Label
-from typing import Optional, List, Sequence, Union
 
 def merge(
     left: Union[DataFrame, Series],

@@ -5,24 +5,21 @@ from datetime import (
     timedelta,
 )
 from typing import (
-    TYPE_CHECKING,
     Any,
     Collection,
     Literal,
-    Tuple,
     TypeVar,
-    Union,
     overload,
 )
 
 import numpy as np
+from pandas.core.indexes.datetimes import DatetimeIndex
+
 from pandas._typing import npt
 
 from .timedeltas import Timedelta
 
-if TYPE_CHECKING:
-    from pandas.core.indexes.datetimes import DatetimeIndex
-_BaseOffsetT = TypeVar("_BaseOffsetT", bound="BaseOffset")
+_BaseOffsetT = TypeVar("_BaseOffsetT", bound=BaseOffset)
 _DatetimeT = TypeVar("_DatetimeT", bound=datetime)
 _TimedeltaT = TypeVar("_TimedeltaT", bound=timedelta)
 
@@ -77,13 +74,12 @@ class BaseOffset:
     def __rmul__(self: _BaseOffsetT, other: int) -> _BaseOffsetT: ...
     def __neg__(self: _BaseOffsetT) -> _BaseOffsetT: ...
     def copy(self: _BaseOffsetT) -> _BaseOffsetT: ...
-    def __repr__(self) -> str: ...
     @property
     def name(self) -> str: ...
     @property
     def rule_code(self) -> str: ...
     def freqstr(self) -> str: ...
-    def apply_index(self, dtindex: "DatetimeIndex") -> "DatetimeIndex": ...
+    def apply_index(self, dtindex: DatetimeIndex) -> DatetimeIndex: ...
     def _apply_array(self, dtarr) -> None: ...
     def rollback(self, dt: datetime) -> datetime: ...
     def rollforward(self, dt: datetime) -> datetime: ...

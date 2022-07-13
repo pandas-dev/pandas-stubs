@@ -3,10 +3,7 @@ from datetime import (
     timedelta,
     tzinfo as _tzinfo,
 )
-from typing import (
-    Any,
-    Union,
-)
+from typing import Union
 
 import numpy as np
 
@@ -117,8 +114,8 @@ class NaTType:
     # inject Period properties
     @property
     def qyear(self) -> float: ...
-    def __eq__(self, other: Any) -> bool: ...
-    def __ne__(self, other: Any) -> bool: ...
+    def __eq__(self, other: object) -> bool: ...
+    def __ne__(self, other: object) -> bool: ...
     __lt__: _NatComparison
     __le__: _NatComparison
     __gt__: _NatComparison

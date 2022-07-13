@@ -1,18 +1,33 @@
-import numpy as np
-from pandas._typing import (
-    ArrayLike as ArrayLike,
-    Dtype as Dtype,
-    Ordered as Ordered,
-    Scalar as Scalar,
-    np_ndarray_bool,
+from typing import (
+    List,
+    Literal,
+    Optional,
+    Sequence,
+    Union,
+    overload,
 )
+
+import numpy as np
+from pandas import Series
 from pandas.core.accessor import PandasDelegate as PandasDelegate
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
-from pandas.core.base import NoNewAttributesMixin as NoNewAttributesMixin
-from pandas.core.base import PandasObject as PandasObject
-from pandas.core.dtypes.dtypes import CategoricalDtype as CategoricalDtype
+from pandas.core.base import (
+    NoNewAttributesMixin as NoNewAttributesMixin,
+    PandasObject as PandasObject,
+)
 from pandas.core.indexes.base import Index
-from typing import List, Literal, Optional, Sequence, Union, overload
+
+from pandas._typing import (
+    ArrayLike,
+    Dtype,
+    ListLike,
+    Ordered,
+    Scalar,
+    np_ndarray_bool,
+    np_ndarray_int,
+)
+
+from pandas.core.dtypes.dtypes import CategoricalDtype as CategoricalDtype
 
 def contains(cat, key, container): ...
 
@@ -20,7 +35,7 @@ class Categorical(ExtensionArray, PandasObject):
     __array_priority__: int = ...
     def __init__(
         self,
-        values: Sequence,
+        values: ListLike,
         categories=...,
         ordered: Optional[bool] = ...,
         dtype: Optional[CategoricalDtype] = ...,
@@ -49,7 +64,7 @@ class Categorical(ExtensionArray, PandasObject):
         fastpath: bool = ...,
     ) -> Categorical: ...
     @property
-    def codes(self) -> List[int]: ...
+    def codes(self) -> np_ndarray_int: ...
     @overload
     def set_ordered(self, value, inplace: Literal[True]) -> None: ...
     @overload
@@ -195,7 +210,7 @@ class Categorical(ExtensionArray, PandasObject):
 class CategoricalAccessor(PandasDelegate, PandasObject, NoNewAttributesMixin):
     def __init__(self, data) -> None: ...
     @property
-    def codes(self) -> Sequence[int]: ...
+    def codes(self) -> Series[int]: ...
 
 def factorize_from_iterable(values): ...
 def factorize_from_iterables(iterables): ...

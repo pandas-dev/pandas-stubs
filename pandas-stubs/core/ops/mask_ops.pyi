@@ -1,6 +1,11 @@
+from typing import (
+    Optional,
+    Union,
+)
+
 import numpy as np
+
 from pandas._libs import missing as libmissing
-from typing import Optional, Union
 
 def kleene_or(
     left: Union[bool, np.ndarray],

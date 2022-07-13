@@ -1,12 +1,22 @@
-from pandas._typing import Ordered as Ordered
-from .base import ExtensionDtype as ExtensionDtype
-from pandas._libs.tslibs import (
+from typing import (
+    Any,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    Union,
+)
+
+from pandas.core.indexes.base import Index
+
+from pandas._libs.tslibs import (  # , timezones as timezones
     NaT as NaT,
     Period as Period,
     Timestamp as Timestamp,
-)  # , timezones as timezones
-from pandas.core.indexes.base import Index
-from typing import Any, Optional, Sequence, Tuple, Type, Union
+)
+from pandas._typing import Ordered
+
+from .base import ExtensionDtype as ExtensionDtype
 
 _str = str
 

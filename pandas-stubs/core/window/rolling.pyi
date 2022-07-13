@@ -1,17 +1,26 @@
+from typing import (
+    Callable,
+    Dict,
+    Optional,
+    Set,
+    Tuple,
+    Union,
+)
+
 import numpy as np
-from pandas._typing import (
-    Axis as Axis,
-    FrameOrSeriesUnion as FrameOrSeries,
-    Scalar as Scalar,
-)
 from pandas.core.base import (
-    PandasObject as PandasObject,
-    SelectionMixin as SelectionMixin,
-    ShallowMixin as ShallowMixin,
+    PandasObject,
+    SelectionMixin,
+    ShallowMixin,
 )
-from pandas.core.indexes.api import Index as Index
-from pandas.core.window.common import WindowGroupByMixin as WindowGroupByMixin
-from typing import Callable, Dict, Mapping, Optional, Sequence, Set, Tuple, Union
+from pandas.core.indexes.api import Index
+from pandas.core.window.common import WindowGroupByMixin
+
+from pandas._typing import (
+    Axis,
+    FrameOrSeriesUnion as FrameOrSeries,
+    Scalar,
+)
 
 class _Window(PandasObject, ShallowMixin, SelectionMixin):
     exclusions: Set[str] = ...

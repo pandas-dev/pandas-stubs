@@ -1,21 +1,28 @@
 from __future__ import annotations
-import numpy as np
 
+from typing import (
+    Callable,
+    List,
+    Literal,
+    Optional,
+    Tuple,
+    Union,
+)
+
+import numpy as np
+from pandas import (
+    DataFrame,
+    Index,
+    Series,
+)
+from pandas.core.accessor import DirNamesMixin
+from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
+
 from pandas._typing import (
     Scalar,
     SeriesAxisType,
-    T1 as T1,
-    np_ndarray_int64,
-    np_ndarray_str,
-    Index as Index,
-    Series as Series,
-    DataFrame as DataFrame,
 )
-
-from pandas.core.accessor import DirNamesMixin as DirNamesMixin
-from pandas.core.arrays import ExtensionArray as ExtensionArray
-from typing import Callable, Generic, List, Literal, Optional, Tuple, Union, overload
 
 class PandasObject(DirNamesMixin):
     def __sizeof__(self) -> int: ...

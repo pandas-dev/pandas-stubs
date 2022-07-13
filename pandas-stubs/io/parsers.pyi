@@ -1,34 +1,40 @@
 from __future__ import annotations
+
 from collections import abc
-import sys
-from pandas._typing import (
-    FilePath as FilePath,
-    FilePathOrBuffer as FilePathOrBuffer,
-    Scalar as Scalar,
-    ReadBuffer as ReadBuffer,
-    AnyStr_cov as AnyStr_cov,
-    DtypeArg as DtypeArg,
-    CompressionOptions as CompressionOptions,
-    StorageOptions as StorageOptions,
-)
-from pandas.core.frame import DataFrame as DataFrame
 from typing import (
-    Any,
     Callable,
-    Dict,
     List,
-    Mapping,
+    Literal,
     Optional,
+    Protocol,
     Sequence,
+    Set,
+    Tuple,
     Union,
     overload,
-    Protocol,
 )
 
-if sys.version_info >= (3, 8):
-    from typing import Literal
-else:
-    from typing_extensions import Literal
+import numpy as np
+import pandas as pd
+from pandas.core.frame import DataFrame
+
+from pandas._typing import (
+    AnyStr_cov,
+    CompressionOptions,
+    DtypeArg,
+    FilePath,
+    FilePathOrBuffer,
+    ReadBuffer,
+    StorageOptions,
+)
+
+ListLike = Union[
+    List[Union[str, int]],
+    Tuple[Union[str, int]],
+    Set[Union[str, int]],
+    np.ndarray,
+    pd.Series,
+]
 
 class ReadCsvBuffer(ReadBuffer[AnyStr_cov], Protocol): ...
 
@@ -45,7 +51,7 @@ def read_csv(
     header: Optional[Union[int, Sequence[int], Literal["infer"]]] = ...,
     names=...,
     index_col=...,
-    usecols=...,
+    usecols: Optional[Union[ListLike, Callable]] = ...,
     squeeze: Optional[bool] = ...,
     prefix: Optional[str] = ...,
     mangle_dupe_cols: bool = ...,
@@ -103,7 +109,7 @@ def read_csv(
     header: Optional[Union[int, Sequence[int], Literal["infer"]]] = ...,
     names=...,
     index_col=...,
-    usecols=...,
+    usecols: Optional[Union[ListLike, Callable]] = ...,
     squeeze: Optional[bool] = ...,
     prefix: Optional[str] = ...,
     mangle_dupe_cols: bool = ...,
@@ -161,7 +167,7 @@ def read_csv(
     header: Optional[Union[int, Sequence[int], Literal["infer"]]] = ...,
     names=...,
     index_col=...,
-    usecols=...,
+    usecols: Optional[Union[ListLike, Callable]] = ...,
     squeeze: Optional[bool] = ...,
     prefix: Optional[str] = ...,
     mangle_dupe_cols: bool = ...,
@@ -219,7 +225,7 @@ def read_csv(
     header: Optional[Union[int, Sequence[int], Literal["infer"]]] = ...,
     names=...,
     index_col=...,
-    usecols=...,
+    usecols: Optional[Union[ListLike, Callable]] = ...,
     squeeze: Optional[bool] = ...,
     prefix: Optional[str] = ...,
     mangle_dupe_cols: bool = ...,

@@ -1,11 +1,18 @@
+from typing import (
+    List,
+    Literal,
+    Optional,
+    Union,
+)
+
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
+
 from pandas._typing import (
     FilePathOrBuffer as FilePathOrBuffer,
     FrameOrSeriesUnion as FrameOrSeriesUnion,
 )
-from typing import Any, List, Optional, Union
 
 lzma = ...
 N: int = ...
@@ -100,7 +107,24 @@ def assert_series_equal(
     check_index: bool = ...,
 ) -> None: ...
 def assert_frame_equal(
-    left: DataFrame, right: DataFrame, check_like: Optional[bool] = ...
+    left: DataFrame,
+    right: DataFrame,
+    check_dtype: Union[bool, Literal["equiv"]] = ...,
+    check_index_type: Union[bool, Literal["equiv"]] = ...,
+    check_column_type: Union[bool, Literal["equiv"]] = ...,
+    check_frame_typ: bool = ...,
+    check_less_precise: Union[int, bool] = ...,
+    check_names: bool = ...,
+    by_blocks: bool = ...,
+    check_exact: bool = ...,
+    check_datetimelike_compat: bool = ...,
+    check_categorical: bool = ...,
+    check_like: bool = ...,
+    check_freq: bool = ...,
+    check_flag: bool = ...,
+    rtol: float = ...,
+    atol: float = ...,
+    obj: str = ...,
 ) -> None: ...
 def assert_equal(left, right, **kwargs) -> None: ...
 def box_expected(expected, box_cls, transpose: bool = ...): ...

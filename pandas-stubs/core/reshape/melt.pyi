@@ -1,6 +1,12 @@
+from typing import (
+    List,
+    Optional,
+    Tuple,
+    Union,
+)
+
 import numpy as np
-from pandas.core.frame import DataFrame as DataFrame
-from typing import List, Optional, Tuple, Union
+from pandas.core.frame import DataFrame
 
 def melt(
     frame: DataFrame,

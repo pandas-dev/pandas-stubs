@@ -1,30 +1,6 @@
-import numpy as np
-from pandas._typing import (
-    Dtype as Dtype,
-    DtypeArg as DtypeArg,
-    Label as Label,
-    Level as Level,
-    Scalar as Scalar,
-    T1 as T1,
-    np_ndarray_str,
-    np_ndarray_int64,
-    np_ndarray_bool,
-)
-
-from pandas._typing import (
-    Series as Series,
-    DataFrame as DataFrame,
-    DtypeObj as DtypeObj,
-)
-
-from pandas.core.arrays import ExtensionArray
-
-from pandas.core.base import IndexOpsMixin, PandasObject
-
-from pandas.core.strings import StringMethods
-
 from typing import (
     Callable,
+    ClassVar,
     Dict,
     Hashable,
     Iterable,
@@ -38,11 +14,37 @@ from typing import (
     overload,
 )
 
+import numpy as np
+from pandas import (
+    DataFrame,
+    Series,
+)
+from pandas.core.arrays import ExtensionArray
+from pandas.core.base import (
+    IndexOpsMixin,
+    PandasObject,
+)
+from pandas.core.strings import StringMethods
+
+from pandas._typing import (
+    T1,
+    Dtype,
+    DtypeArg,
+    DtypeObj,
+    Label,
+    Level,
+    Scalar,
+    np_ndarray_bool,
+    np_ndarray_int64,
+)
+
 class InvalidIndexError(Exception): ...
 
 _str = str
 
 class Index(IndexOpsMixin, PandasObject):
+    __hash__: ClassVar[None]  # type: ignore[assignment]
+
     def __new__(
         cls,
         data: Iterable = ...,
@@ -171,7 +173,6 @@ class Index(IndexOpsMixin, PandasObject):
     def where(self, cond, other=...): ...
     def is_type_compatible(self, kind) -> bool: ...
     def __contains__(self, key) -> bool: ...
-    def __hash__(self) -> int: ...
     def __setitem__(self, key, value) -> None: ...
     @overload
     def __getitem__(
@@ -205,9 +206,9 @@ class Index(IndexOpsMixin, PandasObject):
     @property
     def shape(self) -> Tuple[int, ...]: ...
     # Extra methods from old stubs
-    def __eq__(self, other: object) -> bool: ...  # Series: ...  # type: ignore
+    def __eq__(self, other: object) -> np_ndarray_bool: ...  # type: ignore[override]
     def __iter__(self) -> Iterator: ...
-    def __ne__(self, other: _str) -> Index: ...  # type: ignore
+    def __ne__(self, other: object) -> np_ndarray_bool: ...  # type: ignore[override]
     def to_numpy(self) -> np.ndarray: ...
 
 def ensure_index_from_sequences(

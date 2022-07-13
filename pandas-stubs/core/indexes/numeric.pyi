@@ -1,7 +1,9 @@
+from typing import Iterable
+
 import numpy as np
-from pandas.core.indexes.base import Index as Index
-from typing import Iterable, TypeVar
-from pandas._typing import T1 as T1, np_ndarray_int64
+from pandas.core.indexes.base import Index
+
+from pandas._typing import np_ndarray_int64
 
 class NumericIndex(Index):
     def __init__(self, data: Iterable = ..., dtype=..., copy: bool = ..., name=...): ...
