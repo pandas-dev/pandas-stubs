@@ -1,7 +1,5 @@
-# flake8: noqa: F841
 from typing import TYPE_CHECKING
 
-import numpy as np
 import pandas as pd
 from typing_extensions import assert_type
 

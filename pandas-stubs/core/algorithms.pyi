@@ -9,8 +9,6 @@ from typing import (
 import numpy as np
 from pandas.core.indexes.base import Index
 
-from pandas.core.dtypes.generic import ABCIndex
-
 def unique(values): ...
 
 unique1d = unique

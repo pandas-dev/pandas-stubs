@@ -1,47 +1,35 @@
-import sys
 from typing import (
     Any,
     Callable,
     ClassVar,
     Dict,
     Hashable,
-    Iterator,
     List,
     Literal,
     Mapping,
     Optional,
     Sequence,
     Tuple,
-    TypeVar,
     Union,
     overload,
 )
 
 import numpy as np
-from pandas import (
-    Timedelta,
-    Timestamp,
-)
 from pandas.core.base import PandasObject
 from pandas.core.indexes.base import Index
 import pandas.core.indexing as indexing
 from pandas.core.internals import BlockManager
-from pandas.core.resample import Resampler
 
 from pandas._typing import (
     S1,
     ArrayLike,
     Axis,
-    AxisType,
     Dtype,
     FilePathOrBuffer,
     FrameOrSeries,
     FrameOrSeriesUnion,
     IgnoreRaise,
-    JSONSerializable,
     Level,
-    ListLike,
-    Renamer,
     Scalar,
     SeriesAxisType,
     T,

@@ -1,7 +1,6 @@
 # def to_timedelta(arg, unit: str = ..., errors: str = ...): ...
 from datetime import timedelta
 from typing import (
-    Literal,
     Optional,
     Union,
     overload,

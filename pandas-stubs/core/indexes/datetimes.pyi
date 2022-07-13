@@ -21,7 +21,6 @@ from pandas.core.indexes.datetimelike import (
 )
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import (
-    Series,
     TimedeltaSeries,
     TimestampSeries,
 )

@@ -1,7 +1,6 @@
 from typing import (
     Generic,
     List,
-    TypeVar,
 )
 
 from pandas import Series

@@ -20,7 +20,6 @@ from pandas.core.series import Series
 from pandas._typing import (
     ArrayLike,
     FilePathOrBuffer,
-    FrameOrSeries,
 )
 
 from pandas.core.dtypes.generic import ABCExtensionArray

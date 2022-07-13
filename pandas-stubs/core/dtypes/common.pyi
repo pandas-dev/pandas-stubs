@@ -5,8 +5,6 @@ from typing import (
 
 import numpy as np
 
-from pandas._typing import ArrayLike
-
 from pandas.core.dtypes.inference import (
     is_array_like as is_array_like,
     is_bool as is_bool,

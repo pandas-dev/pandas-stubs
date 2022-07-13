@@ -2,7 +2,6 @@ from contextlib import ContextDecorator
 from typing import (
     Any,
     Literal,
-    Union,
     overload,
 )
 

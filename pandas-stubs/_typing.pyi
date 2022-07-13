@@ -7,24 +7,19 @@ from io import (
 )
 from mmap import mmap
 from os import PathLike
-from pathlib import Path
-import sys
 from typing import (
     IO,
     Any,
     AnyStr,
     Callable,
-    Collection,
     Dict,
     Hashable,
     List,
     Literal,
     Mapping,
-    NewType,
     Optional,
     Protocol,
     Sequence,
-    Tuple,
     Type,
     TypeVar,
     Union,

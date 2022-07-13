@@ -33,7 +33,6 @@ from pandas.core.generic import NDFrame
 from pandas.core.groupby.generic import DataFrameGroupBy
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexes.base import Index
-from pandas.core.indexes.multi import MultiIndex
 from pandas.core.indexing import (
     _iLocIndexer,
     _LocIndexer,
@@ -74,10 +73,7 @@ from pandas._typing import (
     num,
 )
 
-from pandas.io.formats import (
-    console,
-    format as fmt,
-)
+from pandas.io.formats import format as fmt
 from pandas.io.formats.style import Styler
 from pandas.plotting import PlotAccessor
 
