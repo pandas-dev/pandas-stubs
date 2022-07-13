@@ -52,16 +52,4 @@ jobs:
       uses: pre-commit/action@v3.0.0
 
     - name: Build pandas-stubs
-      run: poetry run poe build_dist
-
-    - name: Install pandas-stubs
-      run: poetry run poe install_dist
-
-    - name: Rename local stubs
-      run: poetry run poe rename_src
-
-    - name: Run pyright on 'tests' using the installed stubs
-      run: poetry run poe pyright_dist
-
-    - name: Run mypy on 'tests' using the installed stubs
-      run: poetry run poe mypy_dist
+      run: poetry run poe test_dist

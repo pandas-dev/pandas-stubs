@@ -1,3 +1,5 @@
+from typing import Literal
+
 from scripts._job import run_job
 from scripts.test import _step
 
@@ -14,7 +16,12 @@ _DIST_STEPS = [
 ]
 
 
-def test(clean_cache: bool = False, src: bool = False, dist: bool = False):
+def test(
+    clean_cache: bool = False,
+    src: bool = False,
+    dist: bool = False,
+    type_checker: Literal["", "mypy", "pyright"] = "",
+):
     steps = []
     if clean_cache:
         steps.extend(_CACHE_STEPS)
@@ -24,5 +31,10 @@ def test(clean_cache: bool = False, src: bool = False, dist: bool = False):
 
     if dist:
         steps.extend(_DIST_STEPS)
+
+    if type_checker:
+        # either pyright or mypy
+        remove = "mypy" if type_checker == "pyright" else "pyright"
+        steps = [step for step in steps if remove not in step.name]
 
     run_job(steps)

@@ -94,7 +94,7 @@ script = "scripts.test.run:mypy_src"
 
 [tool.poe.tasks.mypy_dist]
 help = "Run mypy on 'tests' using the installed stubs"
-script = "scripts.test.run:mypy_dist"
+script = "scripts.test:test(clean_cache=False, dist=True, type_checker='mypy')"
 
 [tool.poe.tasks.pyright_src]
 help = "Run pyright on 'tests' (using the local stubs) and on the local stubs"
@@ -102,19 +102,8 @@ script = "scripts.test.run:pyright_src"
 
 [tool.poe.tasks.pyright_dist]
 help = "Run pyright on 'tests' using the installed stubs"
-script = "scripts.test.run:pyright_dist"
+script = "scripts.test:test(clean_cache=False, dist=True, type_checker='pyright')"
 
-[tool.poe.tasks.build_dist]
-help = "Build pandas-stubs"
-script = "scripts.test.run:build_dist"
-
-[tool.poe.tasks.install_dist]
-help = "Install pandas-stubs"
-script = "scripts.test.run:install_dist"
-
-[tool.poe.tasks.rename_src]
-help = "Rename local stubs"
-script = "scripts.test.run:rename_src"
 
 
 [tool.black]
