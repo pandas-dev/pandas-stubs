@@ -46,16 +46,16 @@ jobs:
       run: poetry run poe pyright_src
 
     - name: Run Pytest Against Source Code
-      run: poetry run poe pytest_src
+      run: poetry run poe test_src pytest
+
+    - if: matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest'
+      uses: pre-commit/action@v3.0.0
 
     - name: Build Distribution
       run: poetry run poe build_dist
 
     - name: Install Distribution
       run: poetry run poe install_dist
-
-    - if: matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest'
-      uses: pre-commit/action@v3.0.0
 
     - name: Rename Source Code
       run: poetry run poe rename_src

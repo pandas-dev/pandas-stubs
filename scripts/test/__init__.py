@@ -12,13 +12,13 @@ def test_src(profile: str, clean_cache: bool = False):
             ]
         )
 
-    if profile in (None, "", "default"):
+    if profile in (None, "", "typing"):
         steps.extend([_step.mypy_src, _step.pyright_src])
     elif profile == "pytest":
         steps.extend([_step.pytest_src])
     elif profile == "style":
         steps.extend([_step.style_src])
-    elif profile == "full":
+    elif profile == "all":
         steps.extend(
             [_step.mypy_src, _step.pyright_src, _step.pytest_src, _step.style_src]
         )
@@ -31,12 +31,7 @@ def test_src(profile: str, clean_cache: bool = False):
 def test_dist(clean_cache: bool = False):
     steps = []
     if clean_cache:
-        steps.extend(
-            [
-                _step.clean_mypy_cache,
-                _step.clean_pytest_cache,
-            ]
-        )
+        steps.extend([_step.clean_mypy_cache])
 
     steps.extend(
         [
