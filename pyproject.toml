@@ -50,6 +50,16 @@ isort = ">=5.10.1"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.poe.tasks.test_all]
+help = "Run all tests"
+script = "scripts.test:test(clean_cache, src=True, dist=True)"
+
+    [[tool.poe.tasks.test_all.args]]
+    help = "remove cache folders (mypy and pytest)"
+    name = "clean-cache"
+    options = ["-c", "--clean_cache"]
+    default = false
+
 [tool.poe.tasks.test_src]
 help = "Run local tests (includes 'mypy_src', 'pyright_src', 'pytest', and 'style')"
 script = "scripts.test:test(clean_cache, src=True)"
@@ -65,16 +75,6 @@ help = "Run tests on the installed stubs (includes 'mypy_dist' and 'pyright_dist
 script = "scripts.test:test(clean_cache, dist=True)"
 
     [[tool.poe.tasks.test_dist.args]]
-    help = "remove cache folders (mypy and pytest)"
-    name = "clean-cache"
-    options = ["-c", "--clean_cache"]
-    default = false
-
-[tool.poe.tasks.test_all]
-help = "Run all tests"
-script = "scripts.test:test(clean_cache, src=True, dist=True)"
-
-    [[tool.poe.tasks.test_all.args]]
     help = "remove cache folders (mypy and pytest)"
     name = "clean-cache"
     options = ["-c", "--clean_cache"]
