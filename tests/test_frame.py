@@ -769,7 +769,7 @@ def test_types_resample() -> None:
 
 
 def test_types_to_dict() -> None:
-    data = pd.DataFrame({"a": 1, "b": 2})
+    data = pd.DataFrame({"a": [1], "b": [2]})
     data.to_dict(orient='records')
     data.to_dict(orient='dict')
     data.to_dict(orient='list')
