@@ -22,8 +22,8 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-        cache: 'poetry'
-        cache-dependency-path: 'pyproject.toml'
+        cache: poetry
+        cache-dependency-path: pyproject.toml
 
     - name: Determine poetry version
       run: echo "::set-output name=VERSION::$(poetry --version)"
