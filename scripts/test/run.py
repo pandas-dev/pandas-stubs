@@ -29,7 +29,7 @@ def build_dist():
 
 
 def install_dist():
-    path = sorted(Path("dist/").glob("pandas_stubs-1*.whl"))[-1]
+    path = sorted(Path("dist/").glob("pandas_stubs-*.whl"))[-1]
     cmd = ["pip", "install", "--force-reinstall", str(path)]
     subprocess.run(cmd, check=True)
 

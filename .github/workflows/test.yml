@@ -51,5 +51,5 @@ jobs:
     - if: matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest'
       uses: pre-commit/action@v3.0.0
 
-    - name: Build pandas-stubs
+    - name: Install pandas-stubs and run tests on the installed stubs
       run: poetry run poe test_dist
