@@ -13,12 +13,12 @@ def pyright_src():
     subprocess.run(cmd, check=True)
 
 
-def pytest_src():
+def pytest():
     cmd = ["pytest"]
     subprocess.run(cmd, check=True)
 
 
-def style_src():
+def style():
     cmd = ["pre-commit", "run", "--all-files", "--verbose"]
     subprocess.run(cmd, check=True)
 
@@ -29,8 +29,8 @@ def build_dist():
 
 
 def install_dist():
-    path = next(Path("dist/").glob("*.whl"))
-    cmd = ["pip", "install", str(path)]
+    path = sorted(Path("dist/").glob("pandas_stubs-*.whl"))[-1]
+    cmd = ["pip", "install", "--force-reinstall", str(path)]
     subprocess.run(cmd, check=True)
 
 
