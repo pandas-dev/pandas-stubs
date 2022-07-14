@@ -15,16 +15,15 @@ jobs:
 
     - uses: actions/checkout@v3
 
+    - name: Install Poetry
+      run: pipx install poetry
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-
-    - name: Upgrade pip
-      run: python -m pip install --upgrade pip
-
-    - name: Install Poetry
-      run: pip install poetry
+        cache: 'poetry'
+        cache-dependency-path: 'pyproject.toml'
 
     - name: Determine poetry version
       run: echo "::set-output name=VERSION::$(poetry --version)"
