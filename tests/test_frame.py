@@ -1189,13 +1189,13 @@ def test_frame_scalars_slice() -> None:
     # float, complex, Timestamp, Timedelta
 
     str_ = "a"
-    bytes_ = b"1"
+    bytes_ = b"7"
     date = datetime.date(1999, 12, 31)
     datetime_ = datetime.datetime(1999, 12, 31)
     timedelta = datetime.datetime(2000, 1, 1) - datetime.datetime(1999, 12, 31)
     bool_ = True
-    int_ = 1
-    float_ = 1.0
+    int_ = 2
+    float_ = 3.14
     complex_ = 1.0 + 3.0j
     timestamp = pd.Timestamp(0)
     pd_timedelta = pd.Timedelta(0, unit="D")
@@ -1219,33 +1219,33 @@ def test_frame_scalars_slice() -> None:
 
     # Note: bool_ cannot be tested since the index is object and pandas does not
     # support boolean access using loc except when the index is boolean
-    assert_type(df.loc[str_], pd.Series)
-    assert_type(df.loc[bytes_], pd.Series)
-    assert_type(df.loc[date], pd.Series)
-    assert_type(df.loc[datetime_], pd.Series)
-    assert_type(df.loc[timedelta], pd.Series)
-    assert_type(df.loc[int_], pd.Series)
-    assert_type(df.loc[float_], pd.Series)
-    assert_type(df.loc[complex_], pd.Series)
-    assert_type(df.loc[timestamp], pd.Series)
-    assert_type(df.loc[pd_timedelta], pd.Series)
-    assert_type(df.loc[none], pd.Series)
+    check(assert_type(df.loc[str_], pd.Series), pd.Series)
+    check(assert_type(df.loc[bytes_], pd.Series), pd.Series)
+    check(assert_type(df.loc[date], pd.Series), pd.Series)
+    check(assert_type(df.loc[datetime_], pd.Series), pd.Series)
+    check(assert_type(df.loc[timedelta], pd.Series), pd.Series)
+    check(assert_type(df.loc[int_], pd.Series), pd.Series)
+    check(assert_type(df.loc[float_], pd.Series), pd.Series)
+    check(assert_type(df.loc[complex_], pd.Series), pd.Series)
+    check(assert_type(df.loc[timestamp], pd.Series), pd.Series)
+    check(assert_type(df.loc[pd_timedelta], pd.Series), pd.Series)
+    check(assert_type(df.loc[none], pd.Series), pd.Series)
 
-    assert_type(df.loc[:, str_], pd.Series)
-    assert_type(df.loc[:, bytes_], pd.Series)
-    assert_type(df.loc[:, date], pd.Series)
-    assert_type(df.loc[:, datetime_], pd.Series)
-    assert_type(df.loc[:, timedelta], pd.Series)
-    assert_type(df.loc[:, int_], pd.Series)
-    assert_type(df.loc[:, float_], pd.Series)
-    assert_type(df.loc[:, complex_], pd.Series)
-    assert_type(df.loc[:, timestamp], pd.Series)
-    assert_type(df.loc[:, pd_timedelta], pd.Series)
-    assert_type(df.loc[:, none], pd.Series)
+    check(assert_type(df.loc[:, str_], pd.Series), pd.Series)
+    check(assert_type(df.loc[:, bytes_], pd.Series), pd.Series)
+    check(assert_type(df.loc[:, date], pd.Series), pd.Series)
+    check(assert_type(df.loc[:, datetime_], pd.Series), pd.Series)
+    check(assert_type(df.loc[:, timedelta], pd.Series), pd.Series)
+    check(assert_type(df.loc[:, int_], pd.Series), pd.Series)
+    check(assert_type(df.loc[:, float_], pd.Series), pd.Series)
+    check(assert_type(df.loc[:, complex_], pd.Series), pd.Series)
+    check(assert_type(df.loc[:, timestamp], pd.Series), pd.Series)
+    check(assert_type(df.loc[:, pd_timedelta], pd.Series), pd.Series)
+    check(assert_type(df.loc[:, none], pd.Series), pd.Series)
 
 
 def test_boolean_loc() -> None:
     # Booleans can only be used in loc when the index is boolean
     df = pd.DataFrame([[0, 1], [1, 0]], columns=[True, False], index=[True, False])
-    assert_type(df.loc[True], pd.Series)
-    assert_type(df.loc[:, False], pd.Series)
+    check(assert_type(df.loc[True], pd.Series), pd.Series)
+    check(assert_type(df.loc[:, False], pd.Series), pd.Series)
