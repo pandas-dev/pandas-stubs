@@ -50,76 +50,64 @@ isort = ">=5.10.1"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.poe.tasks.test_all]
+help = "Run all tests"
+script = "scripts.test:test(clean_cache, src=True, dist=True)"
+
+    [[tool.poe.tasks.test_all.args]]
+    help = "remove cache folders (mypy and pytest)"
+    name = "clean-cache"
+    options = ["-c", "--clean_cache"]
+    default = false
+
 [tool.poe.tasks.test_src]
-help = "LOCAL Test | Run tests against source code version: \"poe test_src -p=<profile>\""
-script = "scripts.test:test_src(profile, clean_cache)"
+help = "Run local tests (includes 'mypy_src', 'pyright_src', 'pytest', and 'style')"
+script = "scripts.test:test(clean_cache, src=True)"
 
     [[tool.poe.tasks.test_src.args]]
-    help = "\"default\" (mypy + pyright) or \"pytest\" (pytest only) or \"full\" (mypy + pyright + pytest)"
-    name = "profile"
-    options = ["-p", "--profile"]
-    default = "default"
-
-    [[tool.poe.tasks.test_src.args]]
-    help = "remove mypy and pytest cache folders"
+    help = "remove cache folders (mypy and pytest)"
     name = "clean-cache"
     options = ["-c", "--clean_cache"]
     default = false
 
 [tool.poe.tasks.test_dist]
-help = "Local Test | Run tests against distribuition version: \"poe test_dist\""
-script = "scripts.test:test_dist(clean_cache)"
+help = "Run tests on the installed stubs (includes 'mypy_dist' and 'pyright_dist')"
+script = "scripts.test:test(clean_cache, dist=True)"
 
     [[tool.poe.tasks.test_dist.args]]
-    help = "remove mypy and pytest cache folders"
+    help = "remove cache folders (mypy and pytest)"
     name = "clean-cache"
     options = ["-c", "--clean_cache"]
     default = false
 
-[tool.poe.tasks.test_all]
-help = "Local Test | Run tests against source code and distribuition version: \"poe test_all\""
-script = "scripts.test:test_all(clean_cache)"
+[tool.poe.tasks.pytest]
+help = "Run pytest"
+script = "scripts.test.run:pytest"
 
-    [[tool.poe.tasks.test_all.args]]
-    help = "remove mypy and pytest cache folders"
-    name = "clean-cache"
-    options = ["-c", "--clean_cache"]
-    default = false
+[tool.poe.tasks.style]
+help = "Run pre-commit"
+script = "scripts.test.run:style"
 
 [tool.poe.tasks.mypy_src]
-help = "CI Test | Run mypy against source code"
+help = "Run mypy on 'tests' (using the local stubs) and on the local stubs"
 script = "scripts.test.run:mypy_src"
 
+[tool.poe.tasks.mypy_dist]
+help = "Run mypy on 'tests' using the installed stubs"
+script = "scripts.test:test(clean_cache=False, dist=True, type_checker='mypy')"
+
 [tool.poe.tasks.pyright_src]
-help = "CI Test | Run pyright against source code"
+help = "Run pyright on 'tests' (using the local stubs) and on the local stubs"
 script = "scripts.test.run:pyright_src"
 
-[tool.poe.tasks.pytest_src]
-help = "CI Test | Run pytest against source code"
-script = "scripts.test.run:pytest_src"
-
-[tool.poe.tasks.build_dist]
-help = "CI Test | Build distribuition"
-script = "scripts.test.run:build_dist"
-
-[tool.poe.tasks.install_dist]
-help = "CI Test | Install distribuition"
-script = "scripts.test.run:install_dist"
-
-[tool.poe.tasks.rename_src]
-help = "CI Test | Rename source code"
-script = "scripts.test.run:rename_src"
-
-[tool.poe.tasks.mypy_dist]
-help = "CI Test | Run mypy against distribuition"
-script = "scripts.test.run:mypy_dist"
-
 [tool.poe.tasks.pyright_dist]
-help = "CI Test | Run pyright against distribuition"
-script = "scripts.test.run:pyright_dist"
+help = "Run pyright on 'tests' using the installed stubs"
+script = "scripts.test:test(clean_cache=False, dist=True, type_checker='pyright')"
+
+
 
 [tool.black]
-target-version = ['py38', 'py39']
+target-version = ['py38']
 
 [tool.isort]
 known_pre_libs = "pandas._config"
@@ -182,12 +170,22 @@ show_column_numbers = false
 show_error_codes = true
 
 [tool.pyright]
-typeCheckingMode = "basic"
+typeCheckingMode = "strict"
 stubPath = "."
 include = ["tests", "pandas-stubs"]
-# enable subset of "strict"
-reportDuplicateImport = true
-reportInvalidStubStatement = true
-reportOverlappingOverload = true
-reportMissingImports = true
+# disable subset of strict
+reportIncompleteStub = false
+reportInconsistentConstructor = false
+reportMissingParameterType = false
+reportMissingTypeArgument = false
+reportMissingTypeStubs = false
+reportUnknownArgumentType = false
+reportUnknownLambdaType = false
+reportUnknownMemberType = false
+reportUnknownParameterType = false
+reportUnknownVariableType = false
+reportUntypedBaseClass = false
+reportUnusedVariable = false
+reportPrivateUsage = false
+# enable optional checks
 reportMissingModuleSource = true

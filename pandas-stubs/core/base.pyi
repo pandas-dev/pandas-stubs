@@ -2,13 +2,11 @@ from __future__ import annotations
 
 from typing import (
     Callable,
-    Generic,
     List,
     Literal,
     Optional,
     Tuple,
     Union,
-    overload,
 )
 
 import numpy as np
@@ -22,11 +20,8 @@ from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
 
 from pandas._typing import (
-    T1,
     Scalar,
     SeriesAxisType,
-    np_ndarray_int64,
-    np_ndarray_str,
 )
 
 class PandasObject(DirNamesMixin):

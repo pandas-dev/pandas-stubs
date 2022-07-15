@@ -1,5 +1,4 @@
 from typing import (
-    List,
     Optional,
     Tuple,
     Union,
@@ -13,10 +12,7 @@ from pandas._libs.interval import (
     Interval as Interval,
     IntervalMixin as IntervalMixin,
 )
-from pandas._typing import (
-    AnyArrayLike,
-    DtypeArg,
-)
+from pandas._typing import DtypeArg
 
 from pandas.core.dtypes.generic import ABCSeries as ABCSeries
 

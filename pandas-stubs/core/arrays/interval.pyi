@@ -10,10 +10,7 @@ from pandas._libs.interval import (
     Interval as Interval,
     IntervalMixin as IntervalMixin,
 )
-from pandas._typing import (
-    Axis,
-    Scalar,
-)
+from pandas._typing import Axis
 
 from pandas.core.dtypes.generic import ABCExtensionArray as ABCExtensionArray
 

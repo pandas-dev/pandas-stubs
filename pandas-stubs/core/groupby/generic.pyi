@@ -1,4 +1,3 @@
-import sys
 from typing import (
     Any,
     Callable,
@@ -30,7 +29,6 @@ from pandas.core.series import Series
 from pandas._typing import (
     S1,
     AxisType,
-    Dtype,
     FrameOrSeries,
     FuncType,
     Level,
@@ -118,6 +116,8 @@ class DataFrameGroupBy(GroupBy):
     def agg(self, arg: Dict, *args, **kwargs) -> DataFrame: ...
     @overload
     def agg(self, arg: FuncType, *args, **kwargs) -> DataFrame: ...
+    @overload
+    def agg(self, *args, **kwargs) -> DataFrame: ...
     def transform(self, func, *args, **kwargs): ...
     def filter(
         self, func: Callable, dropna: bool = ..., *args, **kwargs

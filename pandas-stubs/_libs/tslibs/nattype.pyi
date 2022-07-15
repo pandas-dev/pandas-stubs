@@ -3,10 +3,7 @@ from datetime import (
     timedelta,
     tzinfo as _tzinfo,
 )
-from typing import (
-    Any,
-    Union,
-)
+from typing import Union
 
 import numpy as np
 

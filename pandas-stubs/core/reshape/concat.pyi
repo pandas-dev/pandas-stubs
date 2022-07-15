@@ -1,9 +1,7 @@
 from typing import (
-    Hashable,
     Iterable,
     Literal,
     Mapping,
-    TypeVar,
     Union,
     overload,
 )
@@ -13,10 +11,7 @@ from pandas import (
     Series,
 )
 
-from pandas._typing import (
-    Axis,
-    HashableT,
-)
+from pandas._typing import HashableT
 
 @overload
 def concat(

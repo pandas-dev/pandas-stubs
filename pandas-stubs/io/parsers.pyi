@@ -1,14 +1,10 @@
 from __future__ import annotations
 
 from collections import abc
-import sys
 from typing import (
-    Any,
     Callable,
-    Dict,
     List,
     Literal,
-    Mapping,
     Optional,
     Protocol,
     Sequence,
@@ -29,7 +25,6 @@ from pandas._typing import (
     FilePath,
     FilePathOrBuffer,
     ReadBuffer,
-    Scalar,
     StorageOptions,
 )
 

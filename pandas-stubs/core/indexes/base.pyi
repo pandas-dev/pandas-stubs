@@ -36,7 +36,6 @@ from pandas._typing import (
     Scalar,
     np_ndarray_bool,
     np_ndarray_int64,
-    np_ndarray_str,
 )
 
 class InvalidIndexError(Exception): ...
