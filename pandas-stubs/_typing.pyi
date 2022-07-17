@@ -146,6 +146,7 @@ S1 = TypeVar(
     bytes,
     datetime.date,
     datetime.datetime,
+    datetime.time,
     datetime.timedelta,
     bool,
     int,
@@ -154,6 +155,7 @@ S1 = TypeVar(
     Timestamp,
     Timedelta,
     np.datetime64,
+    Period,
 )
 T1 = TypeVar(
     "T1", str, int, np.int64, np.uint64, np.float64, float, np.dtype[np.generic]
