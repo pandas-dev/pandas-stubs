@@ -734,17 +734,18 @@ def test_cat_accessor() -> None:
     check(assert_type(s.cat.codes, "pd.Series[int]"), pd.Series, int)
     # GH 139
     ser = pd.Series([1, 2, 3], name="A").astype("category")
-    check(assert_type(ser.cat.set_categories([1, 2, 3]), pd.Series), pd.Series)
+    check(assert_type(ser.cat.set_categories([1, 2, 3]), pd.Series), pd.Series, int)
     check(
         assert_type(ser.cat.reorder_categories([2, 3, 1], ordered=True), pd.Series),
         pd.Series,
+        int,
     )
-    check(assert_type(ser.cat.rename_categories([1, 2, 3]), pd.Series), pd.Series)
-    check(assert_type(ser.cat.remove_unused_categories(), pd.Series), pd.Series)
-    check(assert_type(ser.cat.remove_categories([2]), pd.Series), pd.Series)
-    check(assert_type(ser.cat.add_categories([4]), pd.Series), pd.Series)
-    check(assert_type(ser.cat.as_ordered(), pd.Series), pd.Series)
-    check(assert_type(ser.cat.as_unordered(), pd.Series), pd.Series)
+    check(assert_type(ser.cat.rename_categories([1, 2, 3]), pd.Series), pd.Series, int)
+    check(assert_type(ser.cat.remove_unused_categories(), pd.Series), pd.Series, int)
+    check(assert_type(ser.cat.remove_categories([2]), pd.Series), pd.Series, int)
+    check(assert_type(ser.cat.add_categories([4]), pd.Series), pd.Series, int)
+    check(assert_type(ser.cat.as_ordered(), pd.Series), pd.Series, int)
+    check(assert_type(ser.cat.as_unordered(), pd.Series), pd.Series, int)
 
 
 def test_cat_ctor_values() -> None:
