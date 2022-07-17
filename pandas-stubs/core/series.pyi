@@ -28,15 +28,21 @@ from matplotlib.axes import (
 )
 import numpy as np
 from pandas import (
+    Period,
     Timedelta,
     Timestamp,
 )
 from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.categorical import CategoricalAccessor
 from pandas.core.groupby.generic import SeriesGroupBy
-from pandas.core.indexes.accessors import CombinedDatetimelikeProperties
+from pandas.core.indexes.accessors import (
+    CombinedDatetimelikeProperties,
+    DatetimeProperties,
+    TimedeltaProperties,
+)
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.indexing import (
     _AtIndexer,
@@ -154,6 +160,16 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         copy: bool = ...,
         fastpath: bool = ...,
     ) -> TimestampSeries: ...
+    @overload
+    def __new__(
+        cls,
+        data: PeriodIndex,
+        index: Optional[Union[_str, int, Series, List, Index]] = ...,
+        dtype=...,
+        name: Optional[Hashable] = ...,
+        copy: bool = ...,
+        fastpath: bool = ...,
+    ) -> Series[Period]: ...
     @overload
     def __new__(
         cls,
@@ -1775,11 +1791,17 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     ) -> Optional[Series[S1]]: ...
     def __iter__(self) -> Iterator[S1]: ...
 
-class TimestampSeries(Series): ...
+class TimestampSeries(Series[Timestamp]):
+    # ignore needed because of mypy
+    @property
+    def dt(self) -> DatetimeProperties: ...  # type: ignore[override]
 
-class TimedeltaSeries(Series):
+class TimedeltaSeries(Series[Timedelta]):
     # ignore needed because of mypy
     def __mul__(self, other: num) -> TimedeltaSeries: ...  # type: ignore[override]
     def __sub__(  # type: ignore[override]
         self, other: Union[Timedelta, TimedeltaSeries, TimedeltaIndex]
     ) -> TimedeltaSeries: ...
+    # ignore needed because of mypy
+    @property
+    def dt(self) -> TimedeltaProperties: ...  # type: ignore[override]

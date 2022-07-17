@@ -10,6 +10,8 @@ from typing import (
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
+import pytest
+from pytz.tzinfo import BaseTzInfo
 from typing_extensions import assert_type
 
 from pandas._libs import NaTType
@@ -250,3 +252,99 @@ def test_to_datetime_nat() -> None:
         ),
         NaTType,
     )
+
+
+def test_dt_accessors() -> None:
+    # GH 131
+    i0 = pd.date_range(start="2022-06-01", periods=10)
+    check(assert_type(i0, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+
+    check(assert_type(i0.to_series(), "TimestampSeries"), pd.Series, pd.Timestamp)
+
+    s0 = pd.Series(i0)
+
+    check(assert_type(s0.dt.date, "pd.Series[dt.date]"), pd.Series, dt.date)
+    check(assert_type(s0.dt.time, "pd.Series[dt.time]"), pd.Series, dt.time)
+    check(assert_type(s0.dt.timetz, "pd.Series[dt.time]"), pd.Series, dt.time)
+    check(assert_type(s0.dt.year, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s0.dt.month, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s0.dt.day, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s0.dt.hour, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s0.dt.minute, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s0.dt.second, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s0.dt.microsecond, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s0.dt.nanosecond, "pd.Series[int]"), pd.Series, int)
+    with pytest.warns(
+        FutureWarning,
+        match="Series.dt.weekofyear and Series.dt.week have been deprecated",
+    ):
+        check(assert_type(s0.dt.week, "pd.Series[int]"), pd.Series, int)
+    with pytest.warns(
+        FutureWarning,
+        match="Series.dt.weekofyear and Series.dt.week have been deprecated",
+    ):
+        check(assert_type(s0.dt.weekofyear, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s0.dt.dayofweek, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s0.dt.day_of_week, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s0.dt.weekday, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s0.dt.dayofyear, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s0.dt.day_of_year, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s0.dt.quarter, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s0.dt.is_month_start, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s0.dt.is_month_end, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s0.dt.is_quarter_start, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s0.dt.is_quarter_end, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s0.dt.is_year_start, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s0.dt.is_year_end, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s0.dt.is_leap_year, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s0.dt.daysinmonth, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s0.dt.days_in_month, "pd.Series[int]"), pd.Series, int)
+    assert assert_type(s0.dt.tz, Optional[Union[dt.tzinfo, BaseTzInfo]]) is None
+    check(assert_type(s0.dt.freq, Optional[str]), str)
+    check(assert_type(s0.dt.isocalendar(), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(s0.dt.to_period("D"), "pd.Series[pd.Period]"), pd.Series, pd.Period
+    )
+    check(assert_type(s0.dt.to_pydatetime(), np.ndarray), np.ndarray, dt.datetime)
+    local_dtarray = s0.dt.tz_localize("UTC")
+    slocal = pd.Series(local_dtarray)
+    check(
+        assert_type(slocal.dt.tz_convert("EST"), "TimestampSeries"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(assert_type(slocal.dt.tz, Optional[Union[dt.tzinfo, BaseTzInfo]]), BaseTzInfo)
+    check(assert_type(s0.dt.normalize(), "TimestampSeries"), pd.Series, pd.Timestamp)
+    check(assert_type(s0.dt.strftime("%Y"), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(s0.dt.round("D"), pd.Series), pd.Series, pd.Timestamp)
+    check(assert_type(s0.dt.floor("D"), pd.Series), pd.Series, pd.Timestamp)
+    check(assert_type(s0.dt.ceil("D"), pd.Series), pd.Series, pd.Timestamp)
+    check(assert_type(s0.dt.month_name(), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(s0.dt.day_name(), "pd.Series[str]"), pd.Series, str)
+
+    i1 = pd.period_range(start="2022-06-01", periods=10)
+
+    check(assert_type(i1, pd.PeriodIndex), pd.PeriodIndex)
+
+    check(assert_type(i1.to_series(), pd.Series), pd.Series, pd.Period)
+
+    s1 = pd.Series(i1)
+
+    check(assert_type(s1.dt.qyear, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s1.dt.start_time, "TimestampSeries"), pd.Series, pd.Timestamp)
+    check(assert_type(s1.dt.end_time, "TimestampSeries"), pd.Series, pd.Timestamp)
+
+    i2 = pd.timedelta_range(start="1 day", periods=10)
+    check(assert_type(i2, pd.TimedeltaIndex), pd.TimedeltaIndex)
+
+    check(assert_type(i2.to_series(), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+
+    s2 = pd.Series(i2)
+
+    check(assert_type(s2.dt.days, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s2.dt.seconds, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s2.dt.microseconds, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s2.dt.nanoseconds, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s2.dt.components, pd.DataFrame), pd.DataFrame)
+    check(assert_type(s2.dt.to_pytimedelta(), np.ndarray), np.ndarray)
+    check(assert_type(s2.dt.total_seconds(), "pd.Series[float]"), pd.Series, float)
