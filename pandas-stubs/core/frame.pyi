@@ -577,7 +577,9 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def set_index(
         self,
-        keys: Union[Label, Sequence],
+        keys: Union[
+            Label, Series, Index, np.ndarray, Iterator[Hashable], List[Hashable]
+        ],
         drop: _bool = ...,
         append: _bool = ...,
         verify_integrity: _bool = ...,
@@ -587,7 +589,9 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def set_index(
         self,
-        keys: Union[Label, Sequence],
+        keys: Union[
+            Label, Series, Index, np.ndarray, Iterator[Hashable], List[Hashable]
+        ],
         drop: _bool = ...,
         append: _bool = ...,
         verify_integrity: _bool = ...,
@@ -597,7 +601,9 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def set_index(
         self,
-        keys: Union[Label, Sequence],
+        keys: Union[
+            Label, Series, Index, np.ndarray, Iterator[Hashable], List[Hashable]
+        ],
         drop: _bool = ...,
         append: _bool = ...,
         *,
@@ -606,7 +612,9 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def set_index(
         self,
-        keys: Union[Label, Sequence],
+        keys: Union[
+            Label, Series, Index, np.ndarray, Iterator[Hashable], List[Hashable]
+        ],
         drop: _bool = ...,
         append: _bool = ...,
         inplace: Optional[_bool] = ...,
