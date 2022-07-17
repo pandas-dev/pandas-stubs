@@ -59,6 +59,7 @@ script = "scripts.test:test(clean_cache, src=True, dist=True)"
     name = "clean-cache"
     options = ["-c", "--clean_cache"]
     default = false
+    type = "boolean"
 
 [tool.poe.tasks.test_src]
 help = "Run local tests (includes 'mypy_src', 'pyright_src', 'pytest', and 'style')"
@@ -69,6 +70,7 @@ script = "scripts.test:test(clean_cache, src=True)"
     name = "clean-cache"
     options = ["-c", "--clean_cache"]
     default = false
+    type = "boolean"
 
 [tool.poe.tasks.test_dist]
 help = "Run tests on the installed stubs (includes 'mypy_dist' and 'pyright_dist')"
@@ -79,6 +81,7 @@ script = "scripts.test:test(clean_cache, dist=True)"
     name = "clean-cache"
     options = ["-c", "--clean_cache"]
     default = false
+    type = "boolean"
 
 [tool.poe.tasks.pytest]
 help = "Run pytest"
