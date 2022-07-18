@@ -12,7 +12,6 @@ from typing import (
     List,
     Tuple,
     Union,
-    cast,
 )
 
 import numpy as np
@@ -1257,8 +1256,14 @@ def test_boolean_loc() -> None:
 def test_groupby_result() -> None:
     # GH 142
     df = pd.DataFrame({"a": [0, 1, 2], "b": [4, 5, 6], "c": [7, 8, 9]})
-    lresult = [(cast(Tuple[int, int], k), g) for k, g in df.groupby(["a", "b"])]
-    check(assert_type(lresult, List[Tuple[Tuple[int, int], pd.DataFrame]]), list, tuple)
+    index, value = next(df.groupby(["a", "b"]).__iter__())
+    assert_type((index, value), Tuple[Hashable, pd.DataFrame])
 
-    lresult2 = [(cast(int, k), g) for k, g in df.groupby("a")]
-    check(assert_type(lresult2, List[Tuple[int, pd.DataFrame]]), list, tuple)
+    check(assert_type(index, Hashable), tuple, np.int64)
+    check(assert_type(value, pd.DataFrame), pd.DataFrame)
+
+    index2, value2 = next(df.groupby("a").__iter__())
+    assert_type((index2, value2), Tuple[Hashable, pd.DataFrame])
+
+    check(assert_type(index2, Hashable), int)
+    check(assert_type(value2, pd.DataFrame), pd.DataFrame)
