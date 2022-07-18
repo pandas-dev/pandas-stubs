@@ -30,7 +30,10 @@ from pandas import (
 )
 from pandas.core.arraylike import OpsMixin
 from pandas.core.generic import NDFrame
-from pandas.core.groupby.generic import DataFrameGroupBy
+from pandas.core.groupby.generic import (
+    DataFrameGroupBy,
+    DataFrameGroupByLabel,
+)
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexes.base import Index
 from pandas.core.indexing import (
@@ -54,7 +57,7 @@ from pandas._typing import (
     DtypeNp,
     FilePathOrBuffer,
     FilePathOrBytesBuffer,
-    GroupByObject,
+    GroupByObjectNonLabel,
     IgnoreRaise,
     IndexingInt,
     IndexLabel,
@@ -862,9 +865,23 @@ class DataFrame(NDFrame, OpsMixin):
         filter_func: Optional[Callable] = ...,
         errors: Union[_str, Literal["raise", "ignore"]] = ...,
     ) -> None: ...
+    @overload
     def groupby(
         self,
-        by: Optional[GroupByObject] = ...,
+        by: Optional[Label] = ...,
+        axis: AxisType = ...,
+        level: Optional[Level] = ...,
+        as_index: _bool = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        squeeze: _bool = ...,
+        observed: _bool = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupByLabel: ...
+    @overload
+    def groupby(
+        self,
+        by: Optional[GroupByObjectNonLabel] = ...,
         axis: AxisType = ...,
         level: Optional[Level] = ...,
         as_index: _bool = ...,

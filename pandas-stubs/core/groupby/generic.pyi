@@ -3,6 +3,7 @@ from typing import (
     Callable,
     Dict,
     FrozenSet,
+    Iterator,
     List,
     Literal,
     NamedTuple,
@@ -31,6 +32,7 @@ from pandas._typing import (
     AxisType,
     FrameOrSeries,
     FuncType,
+    Label,
     Level,
 )
 
@@ -99,6 +101,9 @@ class SeriesGroupBy(GroupBy):
     def nth(
         self, n: Union[int, Sequence[int]], dropna: Optional[str] = ...
     ) -> Series[S1]: ...
+
+class DataFrameGroupByLabel(DataFrameGroupBy):
+    def __iter__(self) -> Iterator[Tuple[Label, DataFrame]]: ...
 
 class DataFrameGroupBy(GroupBy[DataFrame]):
     def any(self, skipna: bool = ...) -> DataFrame: ...

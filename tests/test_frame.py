@@ -1260,5 +1260,5 @@ def test_groupby_result() -> None:
     lresult = [(cast(Tuple[int, int], k), g) for k, g in df.groupby(["a", "b"])]
     check(assert_type(lresult, List[Tuple[Tuple[int, int], pd.DataFrame]]), list, tuple)
 
-    lresult2 = [(cast(int, k), g) for k, g in df.groupby("a")]
-    check(assert_type(lresult2, List[Tuple[int, pd.DataFrame]]), list, tuple)
+    lresult2 = [(k, g) for k, g in df.groupby("a")]
+    check(assert_type(lresult2, List[Tuple[Label, pd.DataFrame]]), list, tuple)
