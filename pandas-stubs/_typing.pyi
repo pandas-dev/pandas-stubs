@@ -20,6 +20,7 @@ from typing import (
     Optional,
     Protocol,
     Sequence,
+    Tuple,
     Type,
     TypeVar,
     Union,
@@ -166,6 +167,12 @@ IndexingInt = Union[
     int, np.int_, np.integer, np.unsignedinteger, np.signedinteger, np.int8
 ]
 
+# NDFrameT is stricter and ensures that the same subclass of NDFrame always is
+# used. E.g. `def func(a: NDFrameT) -> NDFrameT: ...` means that if a
+# Series is passed into a function, a Series is always returned and if a DataFrame is
+# passed in, a DataFrame is always returned.
+NDFrameT = TypeVar("NDFrameT", bound=NDFrame)
+
 # Interval closed type
 
 IntervalClosedType = Literal["left", "right", "both", "neither"]
@@ -197,6 +204,7 @@ XMLParsers = Literal["lxml", "etree"]
 
 # Any plain Python or numpy function
 Function = Union[np.ufunc, Callable[..., Any]]
-GroupByObject = Union[
-    Label, List[Label], Function, Series, np.ndarray, Mapping[Label, Any], Index
+GroupByObjectNonScalar = Union[
+    Tuple, List[Label], Function, Series, np.ndarray, Mapping[Label, Any], Index
 ]
+GroupByObject = Union[Scalar, GroupByObjectNonScalar]

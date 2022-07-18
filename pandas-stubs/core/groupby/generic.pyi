@@ -3,6 +3,7 @@ from typing import (
     Callable,
     Dict,
     FrozenSet,
+    Iterator,
     List,
     Literal,
     NamedTuple,
@@ -32,6 +33,7 @@ from pandas._typing import (
     FrameOrSeries,
     FuncType,
     Level,
+    Scalar,
 )
 
 AggScalar = Union[str, Callable[..., Any]]
@@ -45,6 +47,12 @@ def generate_property(name: str, klass: Type[FrameOrSeries]): ...
 def pin_whitelisted_properties(
     klass: Type[FrameOrSeries], whitelist: FrozenSet[str]
 ): ...
+
+class _SeriesGroupByScalar(SeriesGroupBy):
+    def __iter__(self) -> Iterator[Tuple[Scalar, Series]]: ...
+
+class _SeriesGroupByNonScalar(SeriesGroupBy):
+    def __iter__(self) -> Iterator[Tuple[Tuple, Series]]: ...
 
 class SeriesGroupBy(GroupBy):
     def any(self, skipna: bool = ...) -> Series[bool]: ...
@@ -99,6 +107,12 @@ class SeriesGroupBy(GroupBy):
     def nth(
         self, n: Union[int, Sequence[int]], dropna: Optional[str] = ...
     ) -> Series[S1]: ...
+
+class _DataFrameGroupByScalar(DataFrameGroupBy):
+    def __iter__(self) -> Iterator[Tuple[Scalar, DataFrame]]: ...
+
+class _DataFrameGroupByNonScalar(DataFrameGroupBy):
+    def __iter__(self) -> Iterator[Tuple[Tuple, DataFrame]]: ...
 
 class DataFrameGroupBy(GroupBy):
     def any(self, skipna: bool = ...) -> DataFrame: ...

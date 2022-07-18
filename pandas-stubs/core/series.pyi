@@ -34,7 +34,10 @@ from pandas import (
 )
 from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.categorical import CategoricalAccessor
-from pandas.core.groupby.generic import SeriesGroupBy
+from pandas.core.groupby.generic import (
+    _SeriesGroupByNonScalar,
+    _SeriesGroupByScalar,
+)
 from pandas.core.indexes.accessors import (
     CombinedDatetimelikeProperties,
     DatetimeProperties,
@@ -65,6 +68,7 @@ from pandas._typing import (
     Dtype,
     DtypeNp,
     FilePathOrBuffer,
+    GroupByObjectNonScalar,
     IgnoreRaise,
     IndexingInt,
     Label,
@@ -363,9 +367,10 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def keys(self) -> List: ...
     def to_dict(self, into: Hashable = ...) -> Dict[Any, S1]: ...
     def to_frame(self, name: Optional[object] = ...) -> DataFrame: ...
+    @overload
     def groupby(
         self,
-        by=...,
+        by: Scalar,
         axis: SeriesAxisType = ...,
         level: Optional[Level] = ...,
         as_index: _bool = ...,
@@ -374,7 +379,20 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         squeeze: _bool = ...,
         observed: _bool = ...,
         dropna: _bool = ...,
-    ) -> SeriesGroupBy: ...
+    ) -> _SeriesGroupByScalar: ...
+    @overload
+    def groupby(
+        self,
+        by: GroupByObjectNonScalar = ...,
+        axis: SeriesAxisType = ...,
+        level: Optional[Level] = ...,
+        as_index: _bool = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        squeeze: _bool = ...,
+        observed: _bool = ...,
+        dropna: _bool = ...,
+    ) -> _SeriesGroupByNonScalar: ...
     @overload
     def count(self, level: None = ...) -> int: ...
     @overload
