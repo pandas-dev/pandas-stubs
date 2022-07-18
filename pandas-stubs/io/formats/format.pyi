@@ -3,11 +3,9 @@ from __future__ import annotations
 from typing import (
     IO,
     Callable,
-    Dict,
     Iterable,
     List,
     Mapping,
-    Optional,
     Sequence,
     Tuple,
     Union,

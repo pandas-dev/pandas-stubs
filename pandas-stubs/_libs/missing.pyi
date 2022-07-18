@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Union
-
 class NAType:
     def __new__(cls, *args, **kwargs) -> NAType: ...
     def __format__(self, format_spec: str) -> str: ...

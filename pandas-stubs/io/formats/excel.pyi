@@ -2,11 +2,7 @@ from __future__ import annotations
 
 from typing import (
     Callable,
-    Dict,
-    List,
-    Optional,
     Sequence,
-    Union,
 )
 
 class ExcelCell:

@@ -1,11 +1,7 @@
 from __future__ import annotations
 
 from datetime import tzinfo
-from typing import (
-    Optional,
-    Union,
-    overload,
-)
+from typing import overload
 
 import numpy as np
 from pandas import (

@@ -2,11 +2,7 @@ from __future__ import annotations
 
 import datetime as dt
 from datetime import tzinfo
-from typing import (
-    Literal,
-    Optional,
-    Union,
-)
+from typing import Literal
 
 import numpy as np
 import numpy.typing as npt

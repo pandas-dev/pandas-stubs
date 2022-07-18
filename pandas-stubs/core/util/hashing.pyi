@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 def hash_pandas_object(
     obj,
     index: bool = ...,

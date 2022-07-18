@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import List
-
 from pandas.core.indexes.base import Index
 
 def inherit_from_data(name: str, delegate, cache: bool = ..., wrap: bool = ...): ...

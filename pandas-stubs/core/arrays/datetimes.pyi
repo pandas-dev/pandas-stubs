@@ -1,10 +1,6 @@
 from __future__ import annotations
 
 from datetime import tzinfo
-from typing import (
-    Optional,
-    Union,
-)
 
 import numpy as np
 from pandas.core.arrays import datetimelike as dtl

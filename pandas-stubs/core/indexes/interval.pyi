@@ -1,11 +1,5 @@
 from __future__ import annotations
 
-from typing import (
-    Optional,
-    Tuple,
-    Union,
-)
-
 import numpy as np
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.extension import ExtensionIndex

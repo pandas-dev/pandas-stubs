@@ -5,7 +5,6 @@ from typing import (
     Callable,
     List,
     Literal,
-    Optional,
     Protocol,
     Sequence,
     Set,

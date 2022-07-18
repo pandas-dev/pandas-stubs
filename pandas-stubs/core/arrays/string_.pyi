@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import Type
-
 from pandas.core.arrays import PandasArray as PandasArray
 
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
+
+_type_StringArray = type[StringArray]
 
 class StringDtype(ExtensionDtype):
     name: str = ...
@@ -12,7 +12,7 @@ class StringDtype(ExtensionDtype):
     @property
     def type(self) -> type: ...
     @classmethod
-    def construct_array_type(cls) -> type[StringArray]: ...
+    def construct_array_type(cls) -> _type_StringArray: ...
     def __from_arrow__(self, array): ...
 
 class StringArray(PandasArray):

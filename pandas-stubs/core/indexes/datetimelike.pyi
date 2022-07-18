@@ -1,10 +1,5 @@
 from __future__ import annotations
 
-from typing import (
-    List,
-    Optional,
-)
-
 from pandas.core.accessor import PandasDelegate as PandasDelegate
 from pandas.core.indexes.extension import ExtensionIndex as ExtensionIndex
 from pandas.core.indexes.numeric import Int64Index as Int64Index

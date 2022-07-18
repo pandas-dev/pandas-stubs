@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    List,
-    Sequence,
-    Union,
-)
+from typing import Sequence
 
 from pandas.core.base import PandasObject
 from pandas.core.indexes.api import Index

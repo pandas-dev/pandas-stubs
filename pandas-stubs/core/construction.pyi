@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    Optional,
-    Sequence,
-    Union,
-)
+from typing import Sequence
 
 import numpy as np
 from pandas.core.indexes.api import Index

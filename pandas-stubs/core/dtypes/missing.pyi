@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    List,
-    Union,
-    overload,
-)
+from typing import overload
 
 import numpy as np
 from pandas import (

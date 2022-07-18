@@ -3,16 +3,10 @@ from __future__ import annotations
 from typing import (
     Any,
     Callable,
-    Dict,
-    FrozenSet,
     Iterator,
-    List,
     Literal,
     NamedTuple,
-    Optional,
     Sequence,
-    Tuple,
-    Type,
     Union,
     overload,
 )

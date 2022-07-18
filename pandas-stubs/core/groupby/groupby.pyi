@@ -1,12 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    Callable,
-    Dict,
-    List,
-    Optional,
-    Union,
-)
+from typing import Callable
 
 from pandas.core.base import PandasObject
 from pandas.core.frame import DataFrame

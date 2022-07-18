@@ -2,12 +2,7 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Dict,
-    List,
-    Optional,
     Sequence,
-    Tuple,
-    Union,
 )
 
 from matplotlib.axes import Axes as PlotAxes

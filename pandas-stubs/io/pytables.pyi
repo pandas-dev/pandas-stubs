@@ -2,13 +2,7 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Dict,
     Hashable,
-    List,
-    Optional,
-    Tuple,
-    Type,
-    Union,
 )
 
 import numpy as np

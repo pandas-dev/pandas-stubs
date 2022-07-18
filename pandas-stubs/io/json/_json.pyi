@@ -5,8 +5,6 @@ from typing import (
     Any,
     Callable,
     Literal,
-    Optional,
-    Union,
     overload,
 )
 

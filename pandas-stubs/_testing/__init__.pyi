@@ -1,11 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    List,
-    Literal,
-    Optional,
-    Union,
-)
+from typing import Literal
 
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.base import Index

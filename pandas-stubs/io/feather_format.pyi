@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 # from pandas import DataFrame, Int64Index, RangeIndex
-from typing import (
-    Optional,
-    Sequence,
-)
+from typing import Sequence
 
 from pandas.core.frame import DataFrame
 

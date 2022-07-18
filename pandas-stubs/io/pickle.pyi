@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    Literal,
-    Optional,
-    Union,
-)
+from typing import Literal
 
 from pandas._typing import FilePathOrBuffer
 

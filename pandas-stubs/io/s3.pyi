@@ -3,8 +3,6 @@ from __future__ import annotations
 from typing import (
     IO,
     Any,
-    Optional,
-    Tuple,
 )
 
 from pandas._typing import FilePathOrBuffer

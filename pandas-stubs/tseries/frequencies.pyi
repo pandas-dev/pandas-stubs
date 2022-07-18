@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 from pandas.tseries.offsets import DateOffset as DateOffset
 
 def get_period_alias(offset_str: str) -> str | None: ...

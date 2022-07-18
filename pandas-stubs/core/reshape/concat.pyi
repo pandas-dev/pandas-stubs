@@ -4,7 +4,6 @@ from typing import (
     Iterable,
     Literal,
     Mapping,
-    Union,
     overload,
 )
 

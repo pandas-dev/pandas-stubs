@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     Protocol,
-    Tuple,
 )
 
 from pandas import DataFrame

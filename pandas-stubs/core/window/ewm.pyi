@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    Callable,
-    Optional,
-    Union,
-)
+from typing import Callable
 
 from pandas import (
     DataFrame,

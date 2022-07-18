@@ -4,7 +4,6 @@ from datetime import timedelta
 from typing import (
     ClassVar,
     Literal,
-    Type,
     TypeVar,
     overload,
 )

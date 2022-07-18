@@ -1,13 +1,5 @@
 from __future__ import annotations
 
-from typing import (
-    Dict,
-    Optional,
-    Tuple,
-    Type,
-    Union,
-)
-
 import numpy as np
 
 get_window_bounds_doc: str

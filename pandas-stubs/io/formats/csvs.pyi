@@ -3,9 +3,7 @@ from __future__ import annotations
 from typing import (
     Hashable,
     Mapping,
-    Optional,
     Sequence,
-    Union,
 )
 
 from pandas._typing import FilePathOrBuffer

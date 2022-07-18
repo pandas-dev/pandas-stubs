@@ -3,13 +3,9 @@ from __future__ import annotations
 from typing import (
     Any,
     Callable,
-    Dict,
     Iterable,
-    List,
     Mapping,
-    Optional,
     Sequence,
-    Union,
 )
 
 from pandas.core.frame import DataFrame

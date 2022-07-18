@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    Any,
-    Tuple,
-    Union,
-)
+from typing import Any
 
 import numpy as np
 from pandas.core.indexes.base import Index

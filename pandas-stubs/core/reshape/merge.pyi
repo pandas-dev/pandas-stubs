@@ -1,11 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    List,
-    Optional,
-    Sequence,
-    Union,
-)
+from typing import Sequence
 
 from pandas import (
     DataFrame,

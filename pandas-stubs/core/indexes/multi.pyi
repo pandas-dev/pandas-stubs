@@ -3,10 +3,7 @@ from __future__ import annotations
 from typing import (
     Callable,
     Hashable,
-    List,
-    Optional,
     Sequence,
-    Union,
 )
 
 import numpy as np

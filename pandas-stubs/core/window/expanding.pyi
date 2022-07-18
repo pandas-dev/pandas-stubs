@@ -3,9 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     Callable,
-    Dict,
-    Optional,
-    Tuple,
 )
 
 from pandas.core.window.common import WindowGroupByMixin as WindowGroupByMixin

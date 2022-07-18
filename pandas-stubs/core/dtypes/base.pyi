@@ -1,12 +1,8 @@
 from __future__ import annotations
 
-from typing import (
-    List,
-    Optional,
-    Type,
-)
-
 from pandas.core.arrays import ExtensionArray
+
+_type_ExtensionArray = type[ExtensionArray]
 
 class ExtensionDtype:
     def __eq__(self, other) -> bool: ...
@@ -23,7 +19,7 @@ class ExtensionDtype:
     @property
     def names(self) -> list[str] | None: ...
     @classmethod
-    def construct_array_type(cls) -> type[ExtensionArray]: ...
+    def construct_array_type(cls) -> _type_ExtensionArray: ...
     @classmethod
     def construct_from_string(cls, string: str): ...
     @classmethod

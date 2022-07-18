@@ -3,13 +3,8 @@ from __future__ import annotations
 from typing import (
     Any,
     Callable,
-    List,
     Mapping,
-    Optional,
-    Tuple,
-    Type,
     TypeVar,
-    Union,
 )
 
 from pandas._libs.properties import cache_readonly as cache_readonly

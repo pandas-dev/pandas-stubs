@@ -1,18 +1,15 @@
 from __future__ import annotations
 
-from typing import (
-    Dict,
-    Hashable,
-    List,
-    Optional,
-    Tuple,
-)
+from typing import Hashable
 
 import numpy as np
 from pandas.core.groupby.ops import BaseGrouper
 from pandas.core.indexes.api import Index
 
-from pandas._typing import FrameOrSeries
+from pandas._typing import (
+    FrameOrSeries,
+    FrameOrSeriesUnion,
+)
 
 class Grouper:
     def __new__(cls, *args, **kwargs): ...
@@ -47,7 +44,7 @@ class Grouping:
         self,
         index: Index,
         grouper=...,
-        obj: FrameOrSeries | None = ...,
+        obj: FrameOrSeriesUnion | None = ...,
         name=...,
         level=...,
         sort: bool = ...,

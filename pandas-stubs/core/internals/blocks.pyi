@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import List
-
 from pandas.core.arrays import ExtensionArray as ExtensionArray
 from pandas.core.base import PandasObject as PandasObject
 

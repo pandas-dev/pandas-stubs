@@ -2,12 +2,7 @@ from __future__ import annotations
 
 from typing import (
     IO,
-    Dict,
     Iterable,
-    List,
-    Optional,
-    Tuple,
-    Union,
 )
 
 from pandas.io.formats.format import (

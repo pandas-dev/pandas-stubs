@@ -8,13 +8,10 @@ import tempfile
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
     Hashable,
     Iterable,
     Iterator,
-    List,
     Tuple,
-    Union,
 )
 
 import numpy as np

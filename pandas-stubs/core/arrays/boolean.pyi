@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Type
-
 import numpy as np
 
 from pandas._typing import Scalar
@@ -9,6 +7,8 @@ from pandas._typing import Scalar
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
 
 from .masked import BaseMaskedArray as BaseMaskedArray
+
+_type_BooleanArray = type[BooleanArray]
 
 class BooleanDtype(ExtensionDtype):
     name: str = ...
@@ -19,7 +19,7 @@ class BooleanDtype(ExtensionDtype):
     @property
     def kind(self) -> str: ...
     @classmethod
-    def construct_array_type(cls) -> type[BooleanArray]: ...
+    def construct_array_type(cls) -> _type_BooleanArray: ...
     def __from_arrow__(self, array): ...
 
 def coerce_to_array(values, mask=..., copy: bool = ...): ...

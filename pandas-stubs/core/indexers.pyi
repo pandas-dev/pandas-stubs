@@ -1,10 +1,5 @@
 from __future__ import annotations
 
-from typing import (
-    Optional,
-    Tuple,
-)
-
 import numpy as np
 
 def is_list_like_indexer(key) -> bool: ...

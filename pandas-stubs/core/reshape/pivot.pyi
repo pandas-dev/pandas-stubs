@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from typing import (
     Callable,
-    Optional,
     Sequence,
-    Union,
 )
 
 from pandas.core.frame import DataFrame

@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    IO,
-    Optional,
-)
+from typing import IO
 
 from pandas.io.formats.format import (
     DataFrameFormatter as DataFrameFormatter,

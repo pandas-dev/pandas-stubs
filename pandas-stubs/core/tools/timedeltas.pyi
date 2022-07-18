@@ -2,11 +2,7 @@ from __future__ import annotations
 
 # def to_timedelta(arg, unit: str = ..., errors: str = ...): ...
 from datetime import timedelta
-from typing import (
-    Optional,
-    Union,
-    overload,
-)
+from typing import overload
 
 from pandas import Index
 from pandas.core.indexes.timedeltas import TimedeltaIndex

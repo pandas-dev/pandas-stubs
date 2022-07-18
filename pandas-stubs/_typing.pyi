@@ -22,7 +22,6 @@ from typing import (
     Optional,
     Protocol,
     Sequence,
-    Tuple,
     Type,
     TypeVar,
     Union,
@@ -207,6 +206,6 @@ XMLParsers = Literal["lxml", "etree"]
 # Any plain Python or numpy function
 Function = Union[np.ufunc, Callable[..., Any]]
 GroupByObjectNonScalar = Union[
-    Tuple, List[Label], Function, Series, np.ndarray, Mapping[Label, Any], Index
+    List[Label], Function, Series, np.ndarray, Mapping[Label, Any], Index
 ]
 GroupByObject = Union[Scalar, GroupByObjectNonScalar]

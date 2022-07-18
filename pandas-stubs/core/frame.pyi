@@ -13,11 +13,8 @@ from typing import (
     List,
     Literal,
     Mapping,
-    Optional,
     Pattern,
     Sequence,
-    Tuple,
-    Type,
     Union,
     overload,
 )
@@ -1736,7 +1733,7 @@ class DataFrame(NDFrame, OpsMixin):
         other,
         axis: AxisType = ...,
         level: Level | None = ...,
-        fill_value: float | None | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     def rmod(
         self,

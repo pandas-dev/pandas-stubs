@@ -16,10 +16,8 @@ from typing import (
     List,
     Literal,
     Mapping,
-    Optional,
     Sequence,
     Tuple,
-    Type,
     Union,
     overload,
 )
@@ -1564,7 +1562,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         other,
         level: Level | None = ...,
-        fill_value: float | None | None = ...,
+        fill_value: float | None = ...,
         axis: SeriesAxisType = ...,
     ) -> Series[S1]: ...
     def rmod(
@@ -1622,7 +1620,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         other,
         level: Level | None = ...,
-        fill_value: float | None | None = ...,
+        fill_value: float | None = ...,
         axis: SeriesAxisType = ...,
     ) -> Series[S1]: ...
     @overload
@@ -1728,7 +1726,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         other,
         level: Level | None = ...,
-        fill_value: float | None | None = ...,
+        fill_value: float | None = ...,
         axis: SeriesAxisType = ...,
     ) -> Series[float]: ...
     @overload

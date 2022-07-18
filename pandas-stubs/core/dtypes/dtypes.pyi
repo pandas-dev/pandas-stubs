@@ -2,11 +2,7 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Optional,
     Sequence,
-    Tuple,
-    Type,
-    Union,
 )
 
 from pandas.core.indexes.base import Index

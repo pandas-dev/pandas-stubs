@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Collection,
     Iterable,
-    Union,
 )
 
 from pandas._typing import T

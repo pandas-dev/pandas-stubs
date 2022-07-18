@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 import tokenize
-from typing import (
-    Iterator,
-    Tuple,
-)
+from typing import Iterator
 
 BACKTICK_QUOTED_STRING: int
 

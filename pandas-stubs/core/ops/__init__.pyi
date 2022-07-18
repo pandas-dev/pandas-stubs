@@ -1,11 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    Any,
-    Optional,
-    Set,
-    Tuple,
-)
+from typing import Any
 
 ARITHMETIC_BINOPS: set[str] = ...
 COMPARISON_BINOPS: set[str] = ...

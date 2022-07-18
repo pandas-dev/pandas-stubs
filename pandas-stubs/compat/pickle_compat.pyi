@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import pickle as pkl
-from typing import Optional
 
 def load_reduce(self) -> None: ...
 def load_newobj(self) -> None: ...

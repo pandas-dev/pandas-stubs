@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import ast
-from typing import Optional
 
 from pandas.core.computation.ops import Term as Term
 from pandas.core.computation.scope import Scope as Scope

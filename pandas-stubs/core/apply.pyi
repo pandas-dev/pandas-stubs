@@ -5,8 +5,6 @@ from typing import (
     Any,
     Dict,
     Iterator,
-    Tuple,
-    Union,
 )
 
 ResType = Dict[int, Any]
