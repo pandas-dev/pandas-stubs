@@ -31,8 +31,8 @@ from pandas import (
 from pandas.core.arraylike import OpsMixin
 from pandas.core.generic import NDFrame
 from pandas.core.groupby.generic import (
-    DataFrameGroupByNonScalar,
-    DataFrameGroupByScalar,
+    _DataFrameGroupByNonScalar,
+    _DataFrameGroupByScalar,
 )
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexes.base import Index
@@ -877,7 +877,7 @@ class DataFrame(NDFrame, OpsMixin):
         squeeze: _bool = ...,
         observed: _bool = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupByScalar: ...
+    ) -> _DataFrameGroupByScalar: ...
     @overload
     def groupby(
         self,
@@ -890,7 +890,7 @@ class DataFrame(NDFrame, OpsMixin):
         squeeze: _bool = ...,
         observed: _bool = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupByNonScalar: ...
+    ) -> _DataFrameGroupByNonScalar: ...
     def pivot(
         self,
         index=...,

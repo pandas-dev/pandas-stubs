@@ -9,6 +9,7 @@ from typing import (
     Dict,
     Hashable,
     Iterable,
+    Iterator,
     List,
     Tuple,
     Union,
@@ -1258,13 +1259,17 @@ def test_boolean_loc() -> None:
 def test_groupby_result() -> None:
     # GH 142
     df = pd.DataFrame({"a": [0, 1, 2], "b": [4, 5, 6], "c": [7, 8, 9]})
-    index, value = next(df.groupby(["a", "b"]).__iter__())
+    iterator = df.groupby(["a", "b"]).__iter__()
+    assert_type(iterator, Iterator[Tuple[Tuple, pd.DataFrame]])
+    index, value = next(iterator)
     assert_type((index, value), Tuple[Tuple, pd.DataFrame])
 
     check(assert_type(index, Tuple), tuple, np.int64)
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
 
-    index2, value2 = next(df.groupby("a").__iter__())
+    iterator2 = df.groupby("a").__iter__()
+    assert_type(iterator2, Iterator[Tuple[Scalar, pd.DataFrame]])
+    index2, value2 = next(iterator2)
     assert_type((index2, value2), Tuple[Scalar, pd.DataFrame])
 
     check(assert_type(index2, Scalar), int)
@@ -1272,7 +1277,7 @@ def test_groupby_result() -> None:
 
     # Want to make sure these cases are differentiated
     for (k1, k2), g in df.groupby(["a", "b"]):
-        print(k1, k2)
+        pass
 
     for kk, g in df.groupby("a"):
-        print(kk)
+        pass

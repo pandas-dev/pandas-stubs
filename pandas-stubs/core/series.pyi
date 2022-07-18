@@ -35,8 +35,8 @@ from pandas import (
 from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.categorical import CategoricalAccessor
 from pandas.core.groupby.generic import (
-    SeriesGroupByNonScalar,
-    SeriesGroupByScalar,
+    _SeriesGroupByNonScalar,
+    _SeriesGroupByScalar,
 )
 from pandas.core.indexes.accessors import (
     CombinedDatetimelikeProperties,
@@ -379,7 +379,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         squeeze: _bool = ...,
         observed: _bool = ...,
         dropna: _bool = ...,
-    ) -> SeriesGroupByScalar: ...
+    ) -> _SeriesGroupByScalar: ...
     @overload
     def groupby(
         self,
@@ -392,7 +392,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         squeeze: _bool = ...,
         observed: _bool = ...,
         dropna: _bool = ...,
-    ) -> SeriesGroupByNonScalar: ...
+    ) -> _SeriesGroupByNonScalar: ...
     @overload
     def count(self, level: None = ...) -> int: ...
     @overload

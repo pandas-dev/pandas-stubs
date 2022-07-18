@@ -48,10 +48,10 @@ def pin_whitelisted_properties(
     klass: Type[FrameOrSeries], whitelist: FrozenSet[str]
 ): ...
 
-class SeriesGroupByScalar(SeriesGroupBy):
+class _SeriesGroupByScalar(SeriesGroupBy):
     def __iter__(self) -> Iterator[Tuple[Scalar, Series]]: ...
 
-class SeriesGroupByNonScalar(SeriesGroupBy):
+class _SeriesGroupByNonScalar(SeriesGroupBy):
     def __iter__(self) -> Iterator[Tuple[Tuple, Series]]: ...
 
 class SeriesGroupBy(GroupBy):
@@ -108,10 +108,10 @@ class SeriesGroupBy(GroupBy):
         self, n: Union[int, Sequence[int]], dropna: Optional[str] = ...
     ) -> Series[S1]: ...
 
-class DataFrameGroupByScalar(DataFrameGroupBy):
+class _DataFrameGroupByScalar(DataFrameGroupBy):
     def __iter__(self) -> Iterator[Tuple[Scalar, DataFrame]]: ...
 
-class DataFrameGroupByNonScalar(DataFrameGroupBy):
+class _DataFrameGroupByNonScalar(DataFrameGroupBy):
     def __iter__(self) -> Iterator[Tuple[Tuple, DataFrame]]: ...
 
 class DataFrameGroupBy(GroupBy):
