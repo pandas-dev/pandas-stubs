@@ -211,11 +211,11 @@ class DataFrame(NDFrame, OpsMixin):
     def __rmatmul__(self, other): ...
     @classmethod
     def from_dict(
-            cls,
-            data: Dict[Any, Any],
-            orient: Literal["columns", "index", "tight"] = ...,
-            dtype: _str = ...,
-            columns: List[_str] = ...
+        cls,
+        data: Dict[Any, Any],
+        orient: Literal["columns", "index", "tight"] = ...,
+        dtype: _str = ...,
+        columns: List[_str] = ...,
     ) -> DataFrame: ...
     def to_numpy(
         self,
