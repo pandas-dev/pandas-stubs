@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import (
     Callable,
+    Generic,
     List,
     Literal,
     Optional,
@@ -20,6 +21,7 @@ from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
 
 from pandas._typing import (
+    NDFrameT,
     Scalar,
     SeriesAxisType,
 )
@@ -34,7 +36,7 @@ class GroupByError(Exception): ...
 class DataError(GroupByError): ...
 class SpecificationError(GroupByError): ...
 
-class SelectionMixin:
+class SelectionMixin(Generic[NDFrameT]):
     def ndim(self) -> int: ...
     def __getitem__(self, key): ...
     def aggregate(

@@ -12,6 +12,7 @@ from typing import (
     List,
     Tuple,
     Union,
+    cast,
 )
 
 import numpy as np
@@ -1251,3 +1252,13 @@ def test_boolean_loc() -> None:
     df = pd.DataFrame([[0, 1], [1, 0]], columns=[True, False], index=[True, False])
     check(assert_type(df.loc[True], pd.Series), pd.Series)
     check(assert_type(df.loc[:, False], pd.Series), pd.Series)
+
+
+def test_groupby_result() -> None:
+    # GH 142
+    df = pd.DataFrame({"a": [0, 1, 2], "b": [4, 5, 6], "c": [7, 8, 9]})
+    lresult = [(cast(Tuple[int, int], k), g) for k, g in df.groupby(["a", "b"])]
+    check(assert_type(lresult, List[Tuple[Tuple[int, int], pd.DataFrame]]), list, tuple)
+
+    lresult2 = [(cast(int, k), g) for k, g in df.groupby("a")]
+    check(assert_type(lresult2, List[Tuple[int, pd.DataFrame]]), list, tuple)

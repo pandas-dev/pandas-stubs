@@ -1,8 +1,9 @@
 from typing import (
-    Any,
     Callable,
     Dict,
-    Generator,
+    Generic,
+    Hashable,
+    Iterator,
     List,
     Optional,
     Tuple,
@@ -13,6 +14,7 @@ from pandas.core.base import PandasObject
 from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
 from pandas.core.groupby import ops
+from pandas.core.groupby.indexing import GroupByIndexingMixin
 from pandas.core.indexes.api import Index
 from pandas.core.series import Series
 
@@ -20,6 +22,7 @@ from pandas._typing import (
     AxisType,
     FrameOrSeriesUnion,
     KeysArgType,
+    NDFrameT,
 )
 
 class GroupByPlot(PandasObject):
@@ -27,7 +30,7 @@ class GroupByPlot(PandasObject):
     def __call__(self, *args, **kwargs): ...
     def __getattr__(self, name: str): ...
 
-class _GroupBy(PandasObject):
+class _GroupBy(PandasObject, GroupByIndexingMixin, Generic[NDFrameT]):
     level = ...
     as_index = ...
     keys = ...
@@ -67,10 +70,10 @@ class _GroupBy(PandasObject):
     def pipe(self, func: Callable, *args, **kwargs): ...
     plot = ...
     def get_group(self, name, obj: Optional[DataFrame] = ...) -> DataFrame: ...
-    def __iter__(self) -> Generator[Tuple[str, Any], None, None]: ...
+    def __iter__(self) -> Iterator[Tuple[Hashable, NDFrameT]]: ...
     def apply(self, func: Callable, *args, **kwargs) -> FrameOrSeriesUnion: ...
 
-class GroupBy(_GroupBy):
+class GroupBy(_GroupBy[NDFrameT]):
     def count(self) -> FrameOrSeriesUnion: ...
     def mean(self, **kwargs) -> FrameOrSeriesUnion: ...
     def median(self, **kwargs) -> FrameOrSeriesUnion: ...
