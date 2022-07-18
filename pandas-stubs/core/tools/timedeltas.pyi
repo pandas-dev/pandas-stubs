@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # def to_timedelta(arg, unit: str = ..., errors: str = ...): ...
 from datetime import timedelta
 from typing import (
@@ -24,19 +26,19 @@ from pandas._typing import (
 
 @overload
 def to_timedelta(
-    arg: Union[str, int, float, timedelta],
-    unit: Optional[UnitChoices] = ...,
+    arg: str | int | float | timedelta,
+    unit: UnitChoices | None = ...,
     errors: DateTimeErrorChoices = ...,
 ) -> Timedelta: ...
 @overload
 def to_timedelta(
     arg: Series,
-    unit: Optional[UnitChoices] = ...,
+    unit: UnitChoices | None = ...,
     errors: DateTimeErrorChoices = ...,
 ) -> TimedeltaSeries: ...
 @overload
 def to_timedelta(
-    arg: Union[list, tuple, range, ArrayLike, Index],
-    unit: Optional[UnitChoices] = ...,
+    arg: list | tuple | range | ArrayLike | Index,
+    unit: UnitChoices | None = ...,
     errors: DateTimeErrorChoices = ...,
 ) -> TimedeltaIndex: ...

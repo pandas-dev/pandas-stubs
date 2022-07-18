@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 def get_mgr_concatenation_plan(mgr, indexers): ...
 
 class JoinUnit:

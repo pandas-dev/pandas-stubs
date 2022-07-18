@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import timedelta
 from typing import (
     ClassVar,
@@ -80,7 +82,7 @@ class Timedelta(timedelta):
     resolution: ClassVar[Timedelta]
     value: int  # np.int64
     def __new__(
-        cls: Type[_S],
+        cls: type[_S],
         value=...,
         unit: str = ...,
         **kwargs: int | float | np.integer | np.floating,

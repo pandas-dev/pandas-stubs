@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import (
     Callable,
     Optional,
@@ -11,7 +13,7 @@ class WindowGroupByMixin(GroupByMixin):
 def calculate_center_offset(window): ...
 def calculate_min_periods(
     window: int,
-    min_periods: Optional[int],
+    min_periods: int | None,
     num_values: int,
     required_min_periods: int,
     floor: int,

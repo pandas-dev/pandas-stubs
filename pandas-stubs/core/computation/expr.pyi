@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import ast
 from typing import Optional
 
@@ -64,7 +66,7 @@ class Expr:
         expr,
         engine: str = ...,
         parser: str = ...,
-        env: Optional[Scope] = ...,
+        env: Scope | None = ...,
         level: int = ...,
     ) -> None: ...
     @property

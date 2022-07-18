@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import (
     Iterable,
     Literal,
@@ -15,7 +17,7 @@ from pandas._typing import HashableT
 
 @overload
 def concat(
-    objs: Union[Iterable[DataFrame], Mapping[HashableT, DataFrame]],
+    objs: Iterable[DataFrame] | Mapping[HashableT, DataFrame],
     axis: Literal[0, "index"] = ...,
     join: str = ...,
     ignore_index: bool = ...,
@@ -28,7 +30,7 @@ def concat(
 ) -> DataFrame: ...
 @overload
 def concat(
-    objs: Union[Iterable[Series], Mapping[HashableT, Series]],
+    objs: Iterable[Series] | Mapping[HashableT, Series],
     axis: Literal[0, "index"] = ...,
     join: str = ...,
     ignore_index: bool = ...,
@@ -41,9 +43,7 @@ def concat(
 ) -> Series: ...
 @overload
 def concat(
-    objs: Union[
-        Iterable[Union[Series, DataFrame]], Mapping[HashableT, Union[Series, DataFrame]]
-    ],
+    objs: (Iterable[Series | DataFrame] | Mapping[HashableT, Series | DataFrame]),
     axis: Literal[1, "columns"],
     join: str = ...,
     ignore_index: bool = ...,

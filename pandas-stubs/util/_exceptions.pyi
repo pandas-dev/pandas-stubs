@@ -1,1 +1,3 @@
+from __future__ import annotations
+
 def rewrite_exception(old_name: str, new_name: str): ...

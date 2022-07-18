@@ -1,1 +1,3 @@
+from __future__ import annotations
+
 def cartesian_product(X): ...

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime as dt
 from datetime import tzinfo
 from typing import (
@@ -72,7 +74,7 @@ class DatetimeAndPeriodProperties(Properties):
     @property
     def is_leap_year(self) -> Series[bool]: ...
     @property
-    def freq(self) -> Optional[str]: ...
+    def freq(self) -> str | None: ...
 
 class DatetimeProperties(DatetimeAndPeriodProperties):
     def to_pydatetime(self) -> np.ndarray: ...
@@ -94,25 +96,23 @@ class DatetimeProperties(DatetimeAndPeriodProperties):
     @property
     def is_year_end(self) -> Series[bool]: ...
     @property
-    def tz(self) -> Optional[Union[tzinfo, BaseTzInfo]]: ...
+    def tz(self) -> tzinfo | BaseTzInfo | None: ...
     @property
     def date(self) -> Series[dt.date]: ...
     @property
     def time(self) -> Series[dt.time]: ...
     @property
     def timetz(self) -> Series[dt.time]: ...
-    def to_period(
-        self, freq: Optional[Union[str, BaseOffset]] = ...
-    ) -> Series[Period]: ...
+    def to_period(self, freq: str | BaseOffset | None = ...) -> Series[Period]: ...
     def tz_localize(
         self,
-        tz: Optional[str],
-        ambiguous: Union[Literal["raise", "infer", "NaT"], np_ndarray_bool] = ...,
-        nonexistent: Union[
-            Literal["shift_forward", "shift_backward", "NaT", "raise"], Timedelta
-        ] = ...,
+        tz: str | None,
+        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+        nonexistent: (
+            Literal["shift_forward", "shift_backward", "NaT", "raise"] | Timedelta
+        ) = ...,
     ) -> DatetimeArray: ...
-    def tz_convert(self, tz: Optional[str]) -> TimestampSeries: ...
+    def tz_convert(self, tz: str | None) -> TimestampSeries: ...
     def normalize(self) -> TimestampSeries: ...
     def strftime(self, date_format: str) -> Series[str]: ...
     # Ideally, the next 3 methods would return TimestampSeries, but because of
@@ -120,30 +120,30 @@ class DatetimeProperties(DatetimeAndPeriodProperties):
     # in to the dt accessor
     def round(
         self,
-        freq: Optional[Union[str, BaseOffset]],
-        ambiguous: Union[Literal["raise", "infer", "NaT"], np_ndarray_bool] = ...,
-        nonexistent: Union[
-            Literal["shift_forward", "shift_backward", "NaT", "raise"], Timedelta
-        ] = ...,
+        freq: str | BaseOffset | None,
+        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+        nonexistent: (
+            Literal["shift_forward", "shift_backward", "NaT", "raise"] | Timedelta
+        ) = ...,
     ) -> Series: ...
     def floor(
         self,
-        freq: Optional[Union[str, BaseOffset]],
-        ambiguous: Union[Literal["raise", "infer", "NaT"], np_ndarray_bool] = ...,
-        nonexistent: Union[
-            Literal["shift_forward", "shift_backward", "NaT", "raise"], Timedelta
-        ] = ...,
+        freq: str | BaseOffset | None,
+        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+        nonexistent: (
+            Literal["shift_forward", "shift_backward", "NaT", "raise"] | Timedelta
+        ) = ...,
     ) -> Series: ...
     def ceil(
         self,
-        freq: Optional[Union[str, BaseOffset]],
-        ambiguous: Union[Literal["raise", "infer", "NaT"], np_ndarray_bool] = ...,
-        nonexistent: Union[
-            Literal["shift_forward", "shift_backward", "NaT", "raise"], Timedelta
-        ] = ...,
+        freq: str | BaseOffset | None,
+        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+        nonexistent: (
+            Literal["shift_forward", "shift_backward", "NaT", "raise"] | Timedelta
+        ) = ...,
     ) -> Series: ...
-    def month_name(self, locale: Optional[str] = ...) -> Series[str]: ...
-    def day_name(self, locale: Optional[str] = ...) -> Series[str]: ...
+    def month_name(self, locale: str | None = ...) -> Series[str]: ...
+    def day_name(self, locale: str | None = ...) -> Series[str]: ...
 
 class TimedeltaProperties(Properties):
     def to_pytimedelta(self) -> np.ndarray: ...
@@ -163,27 +163,27 @@ class TimedeltaProperties(Properties):
     # in to the dt accessor
     def round(
         self,
-        freq: Optional[Union[str, BaseOffset]],
-        ambiguous: Union[Literal["raise", "infer", "NaT"], np_ndarray_bool] = ...,
-        nonexistent: Union[
-            Literal["shift_forward", "shift_backward", "NaT", "raise"], Timedelta
-        ] = ...,
+        freq: str | BaseOffset | None,
+        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+        nonexistent: (
+            Literal["shift_forward", "shift_backward", "NaT", "raise"] | Timedelta
+        ) = ...,
     ) -> Series: ...
     def floor(
         self,
-        freq: Optional[Union[str, BaseOffset]],
-        ambiguous: Union[Literal["raise", "infer", "NaT"], np_ndarray_bool] = ...,
-        nonexistent: Union[
-            Literal["shift_forward", "shift_backward", "NaT", "raise"], Timedelta
-        ] = ...,
+        freq: str | BaseOffset | None,
+        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+        nonexistent: (
+            Literal["shift_forward", "shift_backward", "NaT", "raise"] | Timedelta
+        ) = ...,
     ) -> Series: ...
     def ceil(
         self,
-        freq: Optional[Union[str, BaseOffset]],
-        ambiguous: Union[Literal["raise", "infer", "NaT"], np_ndarray_bool] = ...,
-        nonexistent: Union[
-            Literal["shift_forward", "shift_backward", "NaT", "raise"], Timedelta
-        ] = ...,
+        freq: str | BaseOffset | None,
+        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+        nonexistent: (
+            Literal["shift_forward", "shift_backward", "NaT", "raise"] | Timedelta
+        ) = ...,
     ) -> Series: ...
 
 class PeriodProperties(DatetimeAndPeriodProperties):
@@ -196,12 +196,12 @@ class PeriodProperties(DatetimeAndPeriodProperties):
     def strftime(self, date_format: str) -> Series[str]: ...
     def to_timestamp(
         self,
-        freq: Optional[Union[str, DateOffset]] = ...,
+        freq: str | DateOffset | None = ...,
         how: Literal["s", "e", "start", "end"] = ...,
     ) -> DatetimeArray: ...
     def asfreq(
         self,
-        freq: Optional[Union[str, DateOffset]] = ...,
+        freq: str | DateOffset | None = ...,
         how: Literal["E", "END", "FINISH", "S", "START", "BEGIN"] = ...,
     ) -> PeriodArray: ...
 

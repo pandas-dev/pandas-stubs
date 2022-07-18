@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .blocks import (
     Block as Block,
     BoolBlock as BoolBlock,

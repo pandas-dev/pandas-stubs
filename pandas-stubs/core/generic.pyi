@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import (
     Any,
     Callable,
@@ -44,26 +46,26 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def __new__(
         cls,
         data: BlockManager,
-        axes: Optional[List[Index]] = ...,
+        axes: list[Index] | None = ...,
         copy: _bool = ...,
-        dtype: Optional[Dtype] = ...,
-        attrs: Optional[Mapping[Optional[Hashable], Any]] = ...,
+        dtype: Dtype | None = ...,
+        attrs: Mapping[Hashable | None, Any] | None = ...,
         fastpath: _bool = ...,
     ) -> NDFrame: ...
     def set_flags(
         self: FrameOrSeries,
         *,
         copy: bool = ...,
-        allows_duplicate_labels: Optional[bool] = ...,
+        allows_duplicate_labels: bool | None = ...,
     ) -> FrameOrSeries: ...
     @property
-    def attrs(self) -> Dict[Optional[Hashable], Any]: ...
+    def attrs(self) -> dict[Hashable | None, Any]: ...
     @attrs.setter
-    def attrs(self, value: Mapping[Optional[Hashable], Any]) -> None: ...
+    def attrs(self, value: Mapping[Hashable | None, Any]) -> None: ...
     @property
-    def shape(self) -> Tuple[int, ...]: ...
+    def shape(self) -> tuple[int, ...]: ...
     @property
-    def axes(self) -> List[Index]: ...
+    def axes(self) -> list[Index]: ...
     @property
     def ndim(self) -> int: ...
     @property
@@ -96,77 +98,71 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         excel_writer,
         sheet_name: _str = ...,
         na_rep: _str = ...,
-        float_format: Optional[_str] = ...,
-        columns: Optional[Union[_str, Sequence[_str]]] = ...,
+        float_format: _str | None = ...,
+        columns: _str | Sequence[_str] | None = ...,
         header: _bool = ...,
         index: _bool = ...,
-        index_label: Optional[Union[_str, Sequence[_str]]] = ...,
+        index_label: _str | Sequence[_str] | None = ...,
         startrow: int = ...,
         startcol: int = ...,
-        engine: Optional[_str] = ...,
+        engine: _str | None = ...,
         merge_cells: _bool = ...,
-        encoding: Optional[_str] = ...,
+        encoding: _str | None = ...,
         inf_rep: _str = ...,
         verbose: _bool = ...,
-        freeze_panes: Optional[Tuple[int, int]] = ...,
+        freeze_panes: tuple[int, int] | None = ...,
     ) -> None: ...
     @overload
     def to_json(
         self,
-        path_or_buf: Optional[FilePathOrBuffer],
-        orient: Optional[
-            Union[
-                _str, Literal["split", "records", "index", "columns", "values", "table"]
-            ]
-        ] = ...,
-        date_format: Optional[Union[_str, Literal["epoch", "iso"]]] = ...,
+        path_or_buf: FilePathOrBuffer | None,
+        orient: None
+        | (
+            _str | Literal["split", "records", "index", "columns", "values", "table"]
+        ) = ...,
+        date_format: _str | Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Union[_str, Literal["s", "ms", "us", "ns"]] = ...,
-        default_handler: Optional[
-            Callable[[Any], Union[_str, int, float, _bool, List, Dict]]
-        ] = ...,
+        date_unit: _str | Literal["s", "ms", "us", "ns"] = ...,
+        default_handler: None
+        | (Callable[[Any], _str | int | float | _bool | list | dict]) = ...,
         lines: _bool = ...,
-        compression: Union[_str, Literal["infer", "gzip", "bz2", "zip", "xz"]] = ...,
+        compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] = ...,
         index: _bool = ...,
-        indent: Optional[int] = ...,
+        indent: int | None = ...,
     ) -> None: ...
     @overload
     def to_json(
         self,
-        orient: Optional[
-            Union[
-                _str, Literal["split", "records", "index", "columns", "values", "table"]
-            ]
-        ] = ...,
-        date_format: Optional[Union[_str, Literal["epoch", "iso"]]] = ...,
+        orient: None
+        | (
+            _str | Literal["split", "records", "index", "columns", "values", "table"]
+        ) = ...,
+        date_format: _str | Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Union[_str, Literal["s", "ms", "us", "ns"]] = ...,
-        default_handler: Optional[
-            Callable[[Any], Union[_str, int, float, _bool, List, Dict]]
-        ] = ...,
+        date_unit: _str | Literal["s", "ms", "us", "ns"] = ...,
+        default_handler: None
+        | (Callable[[Any], _str | int | float | _bool | list | dict]) = ...,
         lines: _bool = ...,
-        compression: Optional[
-            Union[_str, Literal["infer", "gzip", "bz2", "zip", "xz"]]
-        ] = ...,
+        compression: None | (_str | Literal["infer", "gzip", "bz2", "zip", "xz"]) = ...,
         index: _bool = ...,
-        indent: Optional[int] = ...,
+        indent: int | None = ...,
     ) -> _str: ...
     def to_hdf(
         self,
         path_or_buf: FilePathOrBuffer,
         key: _str,
         mode: _str = ...,
-        complevel: Optional[int] = ...,
-        complib: Optional[_str] = ...,
+        complevel: int | None = ...,
+        complib: _str | None = ...,
         append: _bool = ...,
-        format: Optional[_str] = ...,
+        format: _str | None = ...,
         index: _bool = ...,
-        min_itemsize: Optional[Union[int, Dict[_str, int]]] = ...,
+        min_itemsize: int | dict[_str, int] | None = ...,
         nan_rep=...,
-        dropna: Optional[_bool] = ...,
-        data_columns: Optional[List[_str]] = ...,
+        dropna: _bool | None = ...,
+        data_columns: list[_str] | None = ...,
         errors: _str = ...,
         encoding: _str = ...,
     ) -> None: ...
@@ -174,140 +170,140 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         self,
         name: _str,
         con,
-        schema: Optional[_str] = ...,
+        schema: _str | None = ...,
         if_exists: _str = ...,
         index: _bool = ...,
-        index_label: Optional[Union[_str, Sequence[_str]]] = ...,
-        chunksize: Optional[int] = ...,
-        dtype: Optional[Union[Dict, Scalar]] = ...,
-        method: Optional[Union[_str, Callable]] = ...,
+        index_label: _str | Sequence[_str] | None = ...,
+        chunksize: int | None = ...,
+        dtype: dict | Scalar | None = ...,
+        method: _str | Callable | None = ...,
     ) -> None: ...
     def to_pickle(
         self,
         path: _str,
-        compression: Union[_str, Literal["infer", "gzip", "bz2", "zip", "xz"]] = ...,
+        compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] = ...,
         protocol: int = ...,
     ) -> None: ...
     def to_clipboard(
-        self, excel: _bool = ..., sep: Optional[_str] = ..., **kwargs
+        self, excel: _bool = ..., sep: _str | None = ..., **kwargs
     ) -> None: ...
     def to_xarray(self): ...
     @overload
     def to_latex(
         self,
-        buf: Optional[FilePathOrBuffer],
-        columns: Optional[List[_str]] = ...,
-        col_space: Optional[int] = ...,
+        buf: FilePathOrBuffer | None,
+        columns: list[_str] | None = ...,
+        col_space: int | None = ...,
         header: _bool = ...,
         index: _bool = ...,
         na_rep: _str = ...,
         formatters=...,
         float_format=...,
-        sparsify: Optional[_bool] = ...,
+        sparsify: _bool | None = ...,
         index_names: _bool = ...,
         bold_rows: _bool = ...,
-        column_format: Optional[_str] = ...,
-        longtable: Optional[_bool] = ...,
-        escape: Optional[_bool] = ...,
-        encoding: Optional[_str] = ...,
+        column_format: _str | None = ...,
+        longtable: _bool | None = ...,
+        escape: _bool | None = ...,
+        encoding: _str | None = ...,
         decimal: _str = ...,
-        multicolumn: Optional[_bool] = ...,
-        multicolumn_format: Optional[_str] = ...,
-        multirow: Optional[_bool] = ...,
-        caption: Optional[Union[_str, Tuple[_str, _str]]] = ...,
-        label: Optional[_str] = ...,
-        position: Optional[_str] = ...,
+        multicolumn: _bool | None = ...,
+        multicolumn_format: _str | None = ...,
+        multirow: _bool | None = ...,
+        caption: _str | tuple[_str, _str] | None = ...,
+        label: _str | None = ...,
+        position: _str | None = ...,
     ) -> None: ...
     @overload
     def to_latex(
         self,
-        columns: Optional[List[_str]] = ...,
-        col_space: Optional[int] = ...,
+        columns: list[_str] | None = ...,
+        col_space: int | None = ...,
         header: _bool = ...,
         index: _bool = ...,
         na_rep: _str = ...,
         formatters=...,
         float_format=...,
-        sparsify: Optional[_bool] = ...,
+        sparsify: _bool | None = ...,
         index_names: _bool = ...,
         bold_rows: _bool = ...,
-        column_format: Optional[_str] = ...,
-        longtable: Optional[_bool] = ...,
-        escape: Optional[_bool] = ...,
-        encoding: Optional[_str] = ...,
+        column_format: _str | None = ...,
+        longtable: _bool | None = ...,
+        escape: _bool | None = ...,
+        encoding: _str | None = ...,
         decimal: _str = ...,
-        multicolumn: Optional[_bool] = ...,
-        multicolumn_format: Optional[_str] = ...,
-        multirow: Optional[_bool] = ...,
-        caption: Optional[Union[_str, Tuple[_str, _str]]] = ...,
-        label: Optional[_str] = ...,
-        position: Optional[_str] = ...,
+        multicolumn: _bool | None = ...,
+        multicolumn_format: _str | None = ...,
+        multirow: _bool | None = ...,
+        caption: _str | tuple[_str, _str] | None = ...,
+        label: _str | None = ...,
+        position: _str | None = ...,
     ) -> _str: ...
     @overload
     def to_csv(
         self,
-        path_or_buf: Optional[FilePathOrBuffer],
+        path_or_buf: FilePathOrBuffer | None,
         sep: _str = ...,
         na_rep: _str = ...,
-        float_format: Optional[_str] = ...,
-        columns: Optional[Sequence[Hashable]] = ...,
-        header: Union[_bool, List[_str]] = ...,
+        float_format: _str | None = ...,
+        columns: Sequence[Hashable] | None = ...,
+        header: _bool | list[_str] = ...,
         index: _bool = ...,
-        index_label: Optional[Union[_bool, _str, Sequence[Hashable]]] = ...,
+        index_label: _bool | _str | Sequence[Hashable] | None = ...,
         mode: _str = ...,
-        encoding: Optional[_str] = ...,
-        compression: Union[_str, Mapping[_str, _str]] = ...,
-        quoting: Optional[int] = ...,
+        encoding: _str | None = ...,
+        compression: _str | Mapping[_str, _str] = ...,
+        quoting: int | None = ...,
         quotechar: _str = ...,
-        line_terminator: Optional[_str] = ...,
-        chunksize: Optional[int] = ...,
-        date_format: Optional[_str] = ...,
+        line_terminator: _str | None = ...,
+        chunksize: int | None = ...,
+        date_format: _str | None = ...,
         doublequote: _bool = ...,
-        escapechar: Optional[_str] = ...,
+        escapechar: _str | None = ...,
         decimal: _str = ...,
         errors: _str = ...,
-        storage_options: Optional[Dict[_str, Any]] = ...,
+        storage_options: dict[_str, Any] | None = ...,
     ) -> None: ...
     @overload
     def to_csv(
         self,
         sep: _str = ...,
         na_rep: _str = ...,
-        float_format: Optional[_str] = ...,
-        columns: Optional[Sequence[Hashable]] = ...,
-        header: Union[_bool, List[_str]] = ...,
+        float_format: _str | None = ...,
+        columns: Sequence[Hashable] | None = ...,
+        header: _bool | list[_str] = ...,
         index: _bool = ...,
-        index_label: Optional[Union[_bool, _str, Sequence[Hashable]]] = ...,
+        index_label: _bool | _str | Sequence[Hashable] | None = ...,
         mode: _str = ...,
-        encoding: Optional[_str] = ...,
-        compression: Union[_str, Mapping[_str, _str]] = ...,
-        quoting: Optional[int] = ...,
+        encoding: _str | None = ...,
+        compression: _str | Mapping[_str, _str] = ...,
+        quoting: int | None = ...,
         quotechar: _str = ...,
-        line_terminator: Optional[_str] = ...,
-        chunksize: Optional[int] = ...,
-        date_format: Optional[_str] = ...,
+        line_terminator: _str | None = ...,
+        chunksize: int | None = ...,
+        date_format: _str | None = ...,
         doublequote: _bool = ...,
-        escapechar: Optional[_str] = ...,
+        escapechar: _str | None = ...,
         decimal: _str = ...,
         errors: _str = ...,
-        storage_options: Optional[Dict[_str, Any]] = ...,
+        storage_options: dict[_str, Any] | None = ...,
     ) -> _str: ...
     def take(
-        self, indices, axis=..., is_copy: Optional[_bool] = ..., **kwargs
+        self, indices, axis=..., is_copy: _bool | None = ..., **kwargs
     ) -> NDFrame: ...
     def xs(
         self,
-        key: Union[_str, Tuple[_str]],
+        key: _str | tuple[_str],
         axis: SeriesAxisType = ...,
-        level: Optional[Level] = ...,
+        level: Level | None = ...,
         drop_level: _bool = ...,
     ) -> FrameOrSeriesUnion: ...
     def __delitem__(self, idx: Hashable): ...
-    def get(self, key: object, default: Optional[Dtype] = ...) -> Dtype: ...
+    def get(self, key: object, default: Dtype | None = ...) -> Dtype: ...
     def reindex_like(
         self,
         other,
-        method: Optional[_str] = ...,
+        method: _str | None = ...,
         copy: _bool = ...,
         limit=...,
         tolerance=...,
@@ -364,8 +360,8 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def filter(
         self,
         items=...,
-        like: Optional[_str] = ...,
-        regex: Optional[_str] = ...,
+        like: _str | None = ...,
+        regex: _str | None = ...,
         axis=...,
     ) -> NDFrame: ...
     def head(self: FrameOrSeries, n: int = ...) -> FrameOrSeries: ...
@@ -402,7 +398,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         inplace: _bool = ...,
         limit=...,
         downcast=...,
-    ) -> Optional[NDFrame]: ...
+    ) -> NDFrame | None: ...
     def replace(
         self,
         to_replace=...,
@@ -424,7 +420,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         self,
         freq,
         method=...,
-        how: Optional[_str] = ...,
+        how: _str | None = ...,
         normalize: _bool = ...,
         fill_value=...,
     ) -> NDFrame: ...
@@ -443,7 +439,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         self,
         axis=...,
         method: _str = ...,
-        numeric_only: Optional[_bool] = ...,
+        numeric_only: _bool | None = ...,
         na_option: _str = ...,
         ascending: _bool = ...,
         pct: _bool = ...,
@@ -490,7 +486,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         percentiles=...,
         include=...,
         exclude=...,
-        datetime_is_numeric: Optional[_bool] = ...,
+        datetime_is_numeric: _bool | None = ...,
     ) -> NDFrame: ...
     def pct_change(
         self, periods=..., fill_method=..., limit=..., freq=..., **kwargs

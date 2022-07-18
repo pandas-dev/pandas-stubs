@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import (
     Any,
     Dict,
@@ -25,8 +27,8 @@ def deregister() -> None: ...
 def scatter_matrix(
     frame: DataFrame,
     alpha: float = ...,
-    figsize: Optional[Tuple[float, float]] = ...,
-    ax: Optional[PlotAxes] = ...,
+    figsize: tuple[float, float] | None = ...,
+    ax: PlotAxes | None = ...,
     grid: bool = ...,
     diagonal: str = ...,
     marker: str = ...,
@@ -37,32 +39,32 @@ def scatter_matrix(
 def radviz(
     frame: DataFrame,
     class_column: str,
-    ax: Optional[PlotAxes] = ...,
-    color: Optional[Union[List[str], Tuple[str]]] = ...,
+    ax: PlotAxes | None = ...,
+    color: list[str] | tuple[str] | None = ...,
     colormap=...,
 ) -> PlotAxes: ...
 def andrews_curves(
     frame: DataFrame,
     class_column: str,
-    ax: Optional[PlotAxes] = ...,
+    ax: PlotAxes | None = ...,
     samples: int = ...,
-    color: Optional[Union[List[str], Tuple[str]]] = ...,
+    color: list[str] | tuple[str] | None = ...,
     colormap=...,
 ) -> PlotAxes: ...
 def bootstrap_plot(
     series: Series,
-    fig: Optional[Figure] = ...,
+    fig: Figure | None = ...,
     size: int = ...,
     samples: int = ...,
 ) -> Figure: ...
 def parallel_coordinates(
     frame: DataFrame,
     class_column: str,
-    cols: Optional[List[str]] = ...,
-    ax: Optional[PlotAxes] = ...,
-    color: Optional[Union[List[str], Tuple[str]]] = ...,
+    cols: list[str] | None = ...,
+    ax: PlotAxes | None = ...,
+    color: list[str] | tuple[str] | None = ...,
     use_columns: bool = ...,
-    xticks: Optional[Union[Sequence, Tuple]] = ...,
+    xticks: Sequence | tuple | None = ...,
     colormap=...,
     axvlines: bool = ...,
     axvlines_kwds=...,
@@ -71,11 +73,11 @@ def parallel_coordinates(
 def lag_plot(
     series: Series,
     lag: int = ...,
-    ax: Optional[PlotAxes] = ...,
+    ax: PlotAxes | None = ...,
 ) -> PlotAxes: ...
 def autocorrelation_plot(
     series: Series,
-    ax: Optional[PlotAxes] = ...,
+    ax: PlotAxes | None = ...,
 ) -> PlotAxes: ...
 
 class _Options(dict):
@@ -87,4 +89,4 @@ class _Options(dict):
     def reset(self) -> None: ...
     def use(self, key, value) -> None: ...
 
-plot_params: Dict[str, Any]
+plot_params: dict[str, Any]

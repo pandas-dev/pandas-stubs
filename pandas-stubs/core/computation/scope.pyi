@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 def ensure_scope(
     level: int, global_dict=..., local_dict=..., resolvers=..., target=..., **kwargs
 ) -> Scope: ...

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Optional
 
 jinja2 = ...
@@ -30,7 +32,7 @@ class Styler:
         caption=...,
         table_attributes=...,
         cell_ids=...,
-        na_rep: Optional[str] = ...,
+        na_rep: str | None = ...,
     ): ...
     def to_excel(
         self,
@@ -51,7 +53,7 @@ class Styler:
         verbose: bool = ...,
         freeze_panes=...,
     ) -> None: ...
-    def format(self, formatter, subset=..., na_rep: Optional[str] = ...): ...
+    def format(self, formatter, subset=..., na_rep: str | None = ...): ...
     def render(self, **kwargs): ...
     def __copy__(self): ...
     def __deepcopy__(self, memo): ...
@@ -78,8 +80,8 @@ class Styler:
         axis=...,
         subset=...,
         text_color_threshold=...,
-        vmin: Optional[float] = ...,
-        vmax: Optional[float] = ...,
+        vmin: float | None = ...,
+        vmax: float | None = ...,
     ): ...
     def set_properties(self, subset=..., **kwargs): ...
     def bar(

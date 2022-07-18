@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 from typing import Optional
 
 def eval(
     expr,
     parser=...,
-    engine: Optional[str] = ...,
+    engine: str | None = ...,
     truediv=...,
     local_dict=...,
     global_dict=...,

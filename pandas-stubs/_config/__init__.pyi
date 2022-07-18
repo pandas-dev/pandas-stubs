@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .config import (
     describe_option as describe_option,
     get_option as get_option,

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import (
     Tuple,
     Union,
@@ -13,7 +15,7 @@ from pandas._typing import (
 )
 
 class _IndexSlice:
-    def __getitem__(self, arg) -> Tuple[Union[StrLike, Scalar, slice], ...]: ...
+    def __getitem__(self, arg) -> tuple[StrLike | Scalar | slice, ...]: ...
 
 IndexSlice: _IndexSlice
 

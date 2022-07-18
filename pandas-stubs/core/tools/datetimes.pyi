@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import datetime
 from typing import (
     List,
@@ -55,7 +57,7 @@ class FulldatetimeDict(YearMonthDayDict, total=False):
 DictConvertible = Union[FulldatetimeDict, DataFrame]
 
 def should_cache(
-    arg: ArrayConvertible, unique_share: float = ..., check_count: Optional[int] = ...
+    arg: ArrayConvertible, unique_share: float = ..., check_count: int | None = ...
 ) -> bool: ...
 @overload
 def to_datetime(

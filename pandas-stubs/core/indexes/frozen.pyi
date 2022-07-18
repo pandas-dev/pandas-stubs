@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pandas.core.base import PandasObject as PandasObject
 
 class FrozenList(PandasObject, list):

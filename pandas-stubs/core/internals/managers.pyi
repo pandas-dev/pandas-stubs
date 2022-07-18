@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import (
     List,
     Sequence,
@@ -110,7 +112,7 @@ class SingleBlockManager(BlockManager):
     def __init__(
         self,
         block: Block,
-        axis: Union[Index, List[Index]],
+        axis: Index | list[Index],
         do_integrity_check: bool = ...,
         fastpath: bool = ...,
     ) -> None: ...

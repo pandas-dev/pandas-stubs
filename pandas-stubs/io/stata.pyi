@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections import abc
 import datetime
 from typing import (
@@ -16,12 +18,12 @@ def read_stata(
     path: FilePathOrBuffer,
     convert_dates: bool = ...,
     convert_categoricals: bool = ...,
-    index_col: Optional[str] = ...,
+    index_col: str | None = ...,
     convert_missing: bool = ...,
     preserve_dtypes: bool = ...,
-    columns: Optional[List[str]] = ...,
+    columns: list[str] | None = ...,
     order_categoricals: bool = ...,
-    chunksize: Optional[int] = ...,
+    chunksize: int | None = ...,
     iterator: bool = ...,
 ) -> DataFrame: ...
 
@@ -156,12 +158,12 @@ class StataWriterUTF8(StataWriter117):
         self,
         fname: FilePathOrBuffer,
         data: DataFrame,
-        convert_dates: Optional[Dict[Hashable, str]] = ...,
+        convert_dates: dict[Hashable, str] | None = ...,
         write_index: bool = ...,
-        byteorder: Optional[str] = ...,
-        time_stamp: Optional[datetime.datetime] = ...,
-        data_label: Optional[str] = ...,
-        variable_labels: Optional[Dict[Hashable, str]] = ...,
-        convert_strl: Optional[Sequence[Hashable]] = ...,
-        version: Optional[int] = ...,
+        byteorder: str | None = ...,
+        time_stamp: datetime.datetime | None = ...,
+        data_label: str | None = ...,
+        variable_labels: dict[Hashable, str] | None = ...,
+        convert_strl: Sequence[Hashable] | None = ...,
+        version: int | None = ...,
     ) -> None: ...

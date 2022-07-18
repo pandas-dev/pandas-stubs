@@ -1,1 +1,3 @@
+from __future__ import annotations
+
 def test(extra_args=...) -> None: ...

@@ -18,8 +18,8 @@ def factorize(
     values: Any,
     sort: bool = ...,
     na_sentinel: int = ...,
-    size_hint: Union[int, None] = ...,
-) -> Tuple[np.ndarray, Union[np.ndarray, Index]]: ...
+    size_hint: int | None = ...,
+) -> tuple[np.ndarray, np.ndarray | Index]: ...
 def value_counts(
     values,
     sort: bool = ...,
@@ -75,6 +75,6 @@ def safe_sort(
     na_sentinel: int = ...,
     assume_unique: bool = ...,
     verify: bool = ...,
-) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]: ...
+) -> np.ndarray | tuple[np.ndarray, np.ndarray]: ...
 
 from pandas import Series

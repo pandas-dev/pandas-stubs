@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .interval import Interval as Interval
 from .tslibs import (
     NaT as NaT,

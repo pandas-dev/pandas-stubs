@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 class _NDFrameIndexerBase:
     def __init__(self, name: str, obj: object) -> None: ...
     @property

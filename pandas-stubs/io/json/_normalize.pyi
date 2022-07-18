@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import (
     Any,
     Dict,
@@ -14,15 +16,15 @@ def nested_to_record(
     prefix: str = ...,
     sep: str = ...,
     level: int = ...,
-    max_level: Optional[int] = ...,
+    max_level: int | None = ...,
 ) -> Any: ...
 def json_normalize(
-    data: Union[Dict, List[Dict]],
-    record_path: Optional[Union[str, List]] = ...,
-    meta: Optional[Union[str, List[Union[str, List[str]]]]] = ...,
-    meta_prefix: Optional[str] = ...,
-    record_prefix: Optional[str] = ...,
+    data: dict | list[dict],
+    record_path: str | list | None = ...,
+    meta: str | list[str | list[str]] | None = ...,
+    meta_prefix: str | None = ...,
+    record_prefix: str | None = ...,
     errors: str = ...,
     sep: str = ...,
-    max_level: Optional[int] = ...,
+    max_level: int | None = ...,
 ) -> DataFrame: ...

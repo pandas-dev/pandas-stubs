@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pandas.testing as testing
 
 from . import (

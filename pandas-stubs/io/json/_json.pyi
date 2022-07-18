@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections import abc
 from typing import (
     Any,
@@ -23,14 +25,14 @@ TABLE_SCHEMA_VERSION: str = ...
 def to_json(
     path_or_buf,
     obj,
-    orient: Optional[str] = ...,
+    orient: str | None = ...,
     date_format: str = ...,
     double_precision: int = ...,
     force_ascii: bool = ...,
     date_unit: str = ...,
-    default_handler: Optional[Callable[[Any], JSONSerializable]] = ...,
+    default_handler: Callable[[Any], JSONSerializable] | None = ...,
     lines: bool = ...,
-    compression: Optional[str] = ...,
+    compression: str | None = ...,
     index: bool = ...,
     indent: int = ...,
 ): ...
@@ -49,13 +51,13 @@ class Writer:
     def __init__(
         self,
         obj,
-        orient: Optional[str],
+        orient: str | None,
         date_format: str,
         double_precision: int,
         ensure_ascii: bool,
         date_unit: str,
         index: bool,
-        default_handler: Optional[Callable[[Any], JSONSerializable]] = ...,
+        default_handler: Callable[[Any], JSONSerializable] | None = ...,
         indent: int = ...,
     ) -> None: ...
     def write(self): ...
@@ -72,75 +74,69 @@ class JSONTableWriter(FrameWriter):
     def __init__(
         self,
         obj,
-        orient: Optional[str],
+        orient: str | None,
         date_format: str,
         double_precision: int,
         ensure_ascii: bool,
         date_unit: str,
         index: bool,
-        default_handler: Optional[Callable[[Any], JSONSerializable]] = ...,
+        default_handler: Callable[[Any], JSONSerializable] | None = ...,
         indent: int = ...,
     ): ...
 
 @overload
 def read_json(
     path: FilePathOrBuffer,
-    orient: Optional[str] = ...,
+    orient: str | None = ...,
     dtype=...,
     convert_axes=...,
     convert_dates: bool = ...,
     keep_default_dates: bool = ...,
     numpy: bool = ...,
     precise_float: bool = ...,
-    date_unit: Optional[str] = ...,
-    encoding: Optional[str] = ...,
+    date_unit: str | None = ...,
+    encoding: str | None = ...,
     lines: bool = ...,
-    chunksize: Optional[int] = ...,
-    compression: Optional[
-        Union[str, Literal["infer", "gzip", "bz2", "zip", "xz"]]
-    ] = ...,
+    chunksize: int | None = ...,
+    compression: None | (str | Literal["infer", "gzip", "bz2", "zip", "xz"]) = ...,
     *,
     typ: Literal["series"],
 ) -> Series: ...
 @overload
 def read_json(
     path: FilePathOrBuffer,
-    orient: Optional[str] = ...,
+    orient: str | None = ...,
     dtype=...,
     convert_axes=...,
     convert_dates: bool = ...,
     keep_default_dates: bool = ...,
     numpy: bool = ...,
     precise_float: bool = ...,
-    date_unit: Optional[str] = ...,
-    encoding: Optional[str] = ...,
+    date_unit: str | None = ...,
+    encoding: str | None = ...,
     lines: bool = ...,
-    chunksize: Optional[int] = ...,
-    compression: Optional[
-        Union[str, Literal["infer", "gzip", "bz2", "zip", "xz"]]
-    ] = ...,
+    chunksize: int | None = ...,
+    compression: None | (str | Literal["infer", "gzip", "bz2", "zip", "xz"]) = ...,
     *,
     typ: Literal["frame"],
 ) -> DataFrame: ...
 @overload
 def read_json(
     path: FilePathOrBuffer,
-    orient: Optional[str] = ...,
-    typ: Optional[str] = ...,
+    orient: str | None = ...,
+    typ: str | None = ...,
     dtype=...,
     convert_axes=...,
     convert_dates: bool = ...,
     keep_default_dates: bool = ...,
     numpy: bool = ...,
     precise_float: bool = ...,
-    date_unit: Optional[str] = ...,
-    encoding: Optional[str] = ...,
+    date_unit: str | None = ...,
+    encoding: str | None = ...,
     lines: bool = ...,
-    chunksize: Optional[int] = ...,
-    compression: Optional[
-        Union[str, Literal["infer", "gzip", "bz2", "zip", "xz"]]
-    ] = ...,
-) -> Union[Series, DataFrame]: ...
+    chunksize: int | None = ...,
+    compression: None | (str | Literal["infer", "gzip", "bz2", "zip", "xz"]) = ...,
+) -> Series | DataFrame: ...
 
 class JsonReader(abc.Iterator):
     path_or_buf = ...

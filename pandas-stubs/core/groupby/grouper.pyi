@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import (
     Dict,
     Hashable,
@@ -45,7 +47,7 @@ class Grouping:
         self,
         index: Index,
         grouper=...,
-        obj: Optional[FrameOrSeries] = ...,
+        obj: FrameOrSeries | None = ...,
         name=...,
         level=...,
         sort: bool = ...,
@@ -61,7 +63,7 @@ class Grouping:
     def result_index(self) -> Index: ...
     @property
     def group_index(self) -> Index: ...
-    def groups(self) -> Dict[Hashable, np.ndarray]: ...
+    def groups(self) -> dict[Hashable, np.ndarray]: ...
 
 def get_grouper(
     obj: FrameOrSeries,
@@ -72,4 +74,4 @@ def get_grouper(
     observed: bool = ...,
     mutated: bool = ...,
     validate: bool = ...,
-) -> Tuple[BaseGrouper, List[Hashable], FrameOrSeries]: ...
+) -> tuple[BaseGrouper, list[Hashable], FrameOrSeries]: ...

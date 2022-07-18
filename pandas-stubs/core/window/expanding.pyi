@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import (
     Any,
     Callable,
@@ -20,10 +22,10 @@ class Expanding(_Rolling_and_Expanding):
         self,
         func: Callable[..., Any],
         raw: bool = ...,
-        engine: Optional[str] = ...,
-        engine_kwargs: Optional[Dict[str, bool]] = ...,
-        args: Optional[Tuple[Any, ...]] = ...,
-        kwargs: Optional[Dict[str, Any]] = ...,
+        engine: str | None = ...,
+        engine_kwargs: dict[str, bool] | None = ...,
+        args: tuple[Any, ...] | None = ...,
+        kwargs: dict[str, Any] | None = ...,
     ): ...
 
 class ExpandingGroupby(WindowGroupByMixin, Expanding): ...

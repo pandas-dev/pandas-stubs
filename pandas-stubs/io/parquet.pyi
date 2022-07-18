@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import (
     Optional,
     Sequence,
@@ -24,7 +26,7 @@ class PyArrowImpl(BaseImpl):
         path,
         compression=...,
         coerce_timestamps=...,
-        index: Optional[bool] = ...,
+        index: bool | None = ...,
         partition_cols=...,
         **kwargs,
     ): ...
@@ -49,13 +51,13 @@ def to_parquet(
     path,
     engine: str = ...,
     compression=...,
-    index: Optional[bool] = ...,
+    index: bool | None = ...,
     partition_cols=...,
     **kwargs,
 ): ...
 def read_parquet(
     path: FilePathOrBuffer,
     engine: str = ...,
-    columns: Optional[Sequence[str]] = ...,
+    columns: Sequence[str] | None = ...,
     **kwargs,
 ) -> DataFrame: ...

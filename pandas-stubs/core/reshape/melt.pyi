@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import (
     List,
     Optional,
@@ -10,11 +12,11 @@ from pandas.core.frame import DataFrame
 
 def melt(
     frame: DataFrame,
-    id_vars: Optional[Union[Tuple, List, np.ndarray]] = ...,
-    value_vars: Optional[Union[Tuple, List, np.ndarray]] = ...,
-    var_name: Optional[str] = ...,
+    id_vars: tuple | list | np.ndarray | None = ...,
+    value_vars: tuple | list | np.ndarray | None = ...,
+    var_name: str | None = ...,
     value_name: str = ...,
-    col_level: Optional[Union[int, str]] = ...,
+    col_level: int | str | None = ...,
     ignore_index: bool = ...,
 ) -> DataFrame: ...
 def lreshape(data: DataFrame, groups, dropna: bool = ..., label=...) -> DataFrame: ...

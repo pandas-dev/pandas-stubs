@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 VERSIONS = ...
 
 def import_optional_dependency(
