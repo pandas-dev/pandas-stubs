@@ -206,7 +206,13 @@ class DataFrame(NDFrame, OpsMixin):
     def __matmul__(self, other): ...
     def __rmatmul__(self, other): ...
     @classmethod
-    def from_dict(cls, data, orient=..., dtype=..., columns=...) -> DataFrame: ...
+    def from_dict(
+        cls,
+        data: Dict[Any, Any],
+        orient: Literal["columns", "index", "tight"] = ...,
+        dtype: _str = ...,
+        columns: List[_str] = ...,
+    ) -> DataFrame: ...
     def to_numpy(
         self,
         dtype: Optional[Union[Type[DtypeNp], Dtype]] = ...,
@@ -222,7 +228,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def to_dict(
         self,
-        orient: Literal["dict", "list", "series", "split", "index"] = ...,
+        orient: Literal["dict", "list", "series", "split", "tight", "index"] = ...,
         into: Hashable = ...,
     ) -> Dict[_str, Any]: ...
     def to_gbq(

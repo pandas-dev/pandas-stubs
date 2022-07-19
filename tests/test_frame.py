@@ -774,6 +774,19 @@ def test_types_resample() -> None:
     df.resample("20min", origin="epoch", offset=pd.Timedelta(2, "minutes"), on="date")
 
 
+def test_types_to_dict() -> None:
+    data = pd.DataFrame({"a": [1], "b": [2]})
+    data.to_dict(orient="records")
+    data.to_dict(orient="dict")
+    data.to_dict(orient="list")
+    data.to_dict(orient="series")
+    data.to_dict(orient="split")
+    data.to_dict(orient="index")
+
+    # orient param accepting "tight" added in 1.4.0 https://pandas.pydata.org/docs/whatsnew/v1.4.0.html
+    data.to_dict(orient="tight")
+
+
 def test_types_from_dict() -> None:
     pd.DataFrame.from_dict({"col_1": [3, 2, 1, 0], "col_2": ["a", "b", "c", "d"]})
     pd.DataFrame.from_dict({1: [3, 2, 1, 0], 2: ["a", "b", "c", "d"]})
@@ -782,6 +795,17 @@ def test_types_from_dict() -> None:
     pd.DataFrame.from_dict({"a": (1, 2, 3), "b": (2, 4, 5)})
     pd.DataFrame.from_dict(
         data={"col_1": {"a": 1}, "col_2": {"a": 1, "b": 2}}, orient="columns"
+    )
+    # orient param accepting "tight" added in 1.4.0 https://pandas.pydata.org/docs/whatsnew/v1.4.0.html
+    pd.DataFrame.from_dict(
+        data={
+            "index": [("a", "b"), ("a", "c")],
+            "columns": [("x", 1), ("y", 2)],
+            "data": [[1, 3], [2, 4]],
+            "index_names": ["n1", "n2"],
+            "column_names": ["z1", "z2"],
+        },
+        orient="tight",
     )
 
 
