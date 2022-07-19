@@ -111,16 +111,15 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def to_json(
         self,
         path_or_buf: FilePathOrBuffer | None,
-        orient: None
-        | (
-            _str | Literal["split", "records", "index", "columns", "values", "table"]
-        ) = ...,
+        orient: _str
+        | Literal["split", "records", "index", "columns", "values", "table"]
+        | None = ...,
         date_format: _str | Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: _str | Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: None
-        | (Callable[[Any], _str | int | float | _bool | list | dict]) = ...,
+        default_handler: Callable[[Any], _str | int | float | _bool | list | dict]
+        | None = ...,
         lines: _bool = ...,
         compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] = ...,
         index: _bool = ...,
@@ -129,18 +128,17 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     @overload
     def to_json(
         self,
-        orient: None
-        | (
-            _str | Literal["split", "records", "index", "columns", "values", "table"]
-        ) = ...,
+        orient: _str
+        | Literal["split", "records", "index", "columns", "values", "table"]
+        | None = ...,
         date_format: _str | Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: _str | Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: None
-        | (Callable[[Any], _str | int | float | _bool | list | dict]) = ...,
+        default_handler: Callable[[Any], _str | int | float | _bool | list | dict]
+        | None = ...,
         lines: _bool = ...,
-        compression: None | (_str | Literal["infer", "gzip", "bz2", "zip", "xz"]) = ...,
+        compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
         index: _bool = ...,
         indent: int | None = ...,
     ) -> _str: ...

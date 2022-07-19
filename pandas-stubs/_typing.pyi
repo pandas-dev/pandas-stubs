@@ -25,7 +25,7 @@ from typing import (
 )
 
 import numpy as np
-from numpy import typing as npt
+import numpy.typing
 from pandas.core.arrays import ExtensionArray
 from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
@@ -39,6 +39,9 @@ from pandas._libs.tslibs import (
 )
 
 from pandas.core.dtypes.dtypes import ExtensionDtype
+
+# to re-export npt
+npt = numpy.typing
 
 ArrayLike = Union[ExtensionArray, np.ndarray]
 AnyArrayLike = Union[Index, Series, np.ndarray]
@@ -203,6 +206,6 @@ XMLParsers = Literal["lxml", "etree"]
 # Any plain Python or numpy function
 Function = Union[np.ufunc, Callable[..., Any]]
 GroupByObjectNonScalar = Union[
-    list[Label], Function, Series, np.ndarray, Mapping[Label, Any], Index
+    tuple, list[Label], Function, Series, np.ndarray, Mapping[Label, Any], Index
 ]
 GroupByObject = Union[Scalar, GroupByObjectNonScalar]

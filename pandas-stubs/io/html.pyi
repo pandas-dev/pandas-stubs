@@ -35,11 +35,9 @@ def read_html(
     index_col: int | Sequence[Any] | None = ...,
     skiprows: int | Sequence[Any] | slice | None = ...,
     attrs: Mapping[str, str] | None = ...,
-    parse_dates: (
-        bool
-        | Sequence[int | str | Sequence[int | str]]
-        | dict[str, Sequence[int | str]]
-    ) = ...,
+    parse_dates: bool
+    | Sequence[int | str | Sequence[int | str]]
+    | dict[str, Sequence[int | str]] = ...,
     thousands: str = ...,
     encoding: str | None = ...,
     decimal: str = ...,

@@ -90,18 +90,16 @@ class _iLocIndexerFrame(_iLocIndexer):
     @overload
     def __getitem__(
         self,
-        idx: (IndexType | MaskType | tuple[IndexType | MaskType, IndexType | MaskType]),
+        idx: IndexType | MaskType | tuple[IndexType | MaskType, IndexType | MaskType],
     ) -> DataFrame: ...
     def __setitem__(
         self,
-        idx: (
-            int
-            | IndexType
-            | tuple[int, int]
-            | tuple[IndexType, int]
-            | tuple[IndexType, IndexType]
-            | tuple[int, IndexType]
-        ),
+        idx: int
+        | IndexType
+        | tuple[int, int]
+        | tuple[IndexType, int]
+        | tuple[IndexType, IndexType]
+        | tuple[int, IndexType],
         value: float | Series | DataFrame | np.ndarray,
     ) -> None: ...
 
@@ -109,21 +107,17 @@ class _LocIndexerFrame(_LocIndexer):
     @overload
     def __getitem__(
         self,
-        idx: (
+        idx: IndexType
+        | MaskType
+        | list[StrLike]
+        | tuple[
             IndexType
             | MaskType
+            | slice
             | list[StrLike]
-            | tuple[
-                (
-                    IndexType
-                    | MaskType
-                    | slice
-                    | list[StrLike]
-                    | tuple[str | int | slice, ...]
-                ),
-                list[StrLike] | slice | Series[bool] | Callable,
-            ]
-        ),
+            | tuple[str | int | slice, ...],
+            list[StrLike] | slice | Series[bool] | Callable,
+        ],
     ) -> DataFrame: ...
     @overload
     def __getitem__(
@@ -133,20 +127,16 @@ class _LocIndexerFrame(_LocIndexer):
     @overload
     def __getitem__(
         self,
-        idx: (
-            ScalarT
-            | None
-            | tuple[IndexType | MaskType | tuple[slice, ...], ScalarT | None]
-        ),
+        idx: ScalarT
+        | tuple[IndexType | MaskType | tuple[slice, ...], ScalarT | None]
+        | None,
     ) -> Series: ...
     @overload
     def __setitem__(
         self,
-        idx: (
-            MaskType
-            | StrLike
-            | tuple[MaskType | Index | Sequence[Scalar] | Scalar | slice, ...]
-        ),
+        idx: MaskType
+        | StrLike
+        | tuple[MaskType | Index | Sequence[Scalar] | Scalar | slice, ...],
         value: S1 | ArrayLike | Series | DataFrame,
     ) -> None: ...
     @overload
@@ -349,17 +339,15 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def __getitem__(
         self,
-        idx: (
-            tuple
-            | Series[_bool]
-            | DataFrame
-            | list[_str]
-            | list[ScalarT]
-            | Index
-            | np_ndarray_str
-            | np_ndarray_bool
-            | Sequence[tuple[Scalar, ...]]
-        ),
+        idx: tuple
+        | Series[_bool]
+        | DataFrame
+        | list[_str]
+        | list[ScalarT]
+        | Index
+        | np_ndarray_str
+        | np_ndarray_bool
+        | Sequence[tuple[Scalar, ...]],
     ) -> DataFrame: ...
     def __setitem__(self, key, value): ...
     @overload
@@ -391,7 +379,7 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level | None = ...,
         copy: _bool = ...,
         fill_value=...,
-        method: None | (_str | Literal["backfill", "bfill", "pad", "ffill"]) = ...,
+        method: _str | Literal["backfill", "bfill", "pad", "ffill"] | None = ...,
         limit: int | None = ...,
         fill_axis: AxisType = ...,
         broadcast_axis: AxisType | None = ...,
@@ -510,22 +498,22 @@ class DataFrame(NDFrame, OpsMixin):
     def fillna(
         self,
         value: Scalar | dict | Series | DataFrame | None = ...,
-        method: None | (_str | Literal["backfill", "bfill", "ffill", "pad"]) = ...,
+        method: _str | Literal["backfill", "bfill", "ffill", "pad"] | None = ...,
         axis: AxisType | None = ...,
         *,
         limit: int = ...,
         downcast: dict | None = ...,
-    ) -> None | DataFrame: ...
+    ) -> DataFrame | None: ...
     @overload
     def fillna(
         self,
         value: Scalar | dict | Series | DataFrame | None = ...,
-        method: None | (_str | Literal["backfill", "bfill", "ffill", "pad"]) = ...,
+        method: _str | Literal["backfill", "bfill", "ffill", "pad"] | None = ...,
         axis: AxisType | None = ...,
         inplace: _bool | None = ...,
         limit: int = ...,
         downcast: dict | None = ...,
-    ) -> None | DataFrame: ...
+    ) -> DataFrame | None: ...
     @overload
     def replace(
         self,
@@ -556,7 +544,7 @@ class DataFrame(NDFrame, OpsMixin):
         limit: int | None = ...,
         regex=...,
         method: _str | None = ...,
-    ) -> None | DataFrame: ...
+    ) -> DataFrame | None: ...
     def shift(
         self,
         periods: int = ...,
@@ -567,9 +555,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def set_index(
         self,
-        keys: (
-            Label | Series | Index | np.ndarray | Iterator[Hashable] | list[Hashable]
-        ),
+        keys: Label | Series | Index | np.ndarray | Iterator[Hashable] | list[Hashable],
         drop: _bool = ...,
         append: _bool = ...,
         verify_integrity: _bool = ...,
@@ -579,9 +565,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def set_index(
         self,
-        keys: (
-            Label | Series | Index | np.ndarray | Iterator[Hashable] | list[Hashable]
-        ),
+        keys: Label | Series | Index | np.ndarray | Iterator[Hashable] | list[Hashable],
         drop: _bool = ...,
         append: _bool = ...,
         verify_integrity: _bool = ...,
@@ -591,9 +575,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def set_index(
         self,
-        keys: (
-            Label | Series | Index | np.ndarray | Iterator[Hashable] | list[Hashable]
-        ),
+        keys: Label | Series | Index | np.ndarray | Iterator[Hashable] | list[Hashable],
         drop: _bool = ...,
         append: _bool = ...,
         *,
@@ -602,14 +584,12 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def set_index(
         self,
-        keys: (
-            Label | Series | Index | np.ndarray | Iterator[Hashable] | list[Hashable]
-        ),
+        keys: Label | Series | Index | np.ndarray | Iterator[Hashable] | list[Hashable],
         drop: _bool = ...,
         append: _bool = ...,
         inplace: _bool | None = ...,
         verify_integrity: _bool = ...,
-    ) -> None | DataFrame: ...
+    ) -> DataFrame | None: ...
     @overload
     def reset_index(
         self,
@@ -647,7 +627,7 @@ class DataFrame(NDFrame, OpsMixin):
         inplace: _bool | None = ...,
         col_level: int | _str = ...,
         col_fill: Hashable = ...,
-    ) -> None | DataFrame: ...
+    ) -> DataFrame | None: ...
     def isna(self) -> DataFrame: ...
     def isnull(self) -> DataFrame: ...
     def notna(self) -> DataFrame: ...
@@ -688,7 +668,7 @@ class DataFrame(NDFrame, OpsMixin):
         thresh: int | None = ...,
         subset: list | None = ...,
         inplace: _bool | None = ...,
-    ) -> None | DataFrame: ...
+    ) -> DataFrame | None: ...
     def drop_duplicates(
         self,
         subset=...,
@@ -750,7 +730,7 @@ class DataFrame(NDFrame, OpsMixin):
         na_position: _str | Literal["first", "last"] = ...,
         ignore_index: _bool = ...,
         key: Callable | None = ...,
-    ) -> None | DataFrame: ...
+    ) -> DataFrame | None: ...
     @overload
     def sort_index(
         self,
@@ -804,7 +784,7 @@ class DataFrame(NDFrame, OpsMixin):
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
         key: Callable | None = ...,
-    ) -> None | DataFrame: ...
+    ) -> DataFrame | None: ...
     def value_counts(
         self,
         subset: Sequence[Hashable] | None = ...,
@@ -957,9 +937,11 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def append(
         self,
-        other: (
-            DataFrame | Series | dict[Any, Any] | Sequence[Scalar] | Sequence[_ListLike]
-        ),
+        other: DataFrame
+        | Series
+        | dict[Any, Any]
+        | Sequence[Scalar]
+        | Sequence[_ListLike],
         ignore_index: _bool = ...,
         verify_integrity: _bool = ...,
         sort: _bool = ...,
@@ -1040,9 +1022,8 @@ class DataFrame(NDFrame, OpsMixin):
         q: float = ...,
         axis: AxisType = ...,
         numeric_only: _bool = ...,
-        interpolation: (
-            _str | Literal["linear", "lower", "higher", "midpoint", "nearest"]
-        ) = ...,
+        interpolation: _str
+        | Literal["linear", "lower", "higher", "midpoint", "nearest"] = ...,
     ) -> Series: ...
     @overload
     def quantile(
@@ -1050,9 +1031,8 @@ class DataFrame(NDFrame, OpsMixin):
         q: list[float] | np.ndarray,
         axis: AxisType = ...,
         numeric_only: _bool = ...,
-        interpolation: (
-            _str | Literal["linear", "lower", "higher", "midpoint", "nearest"]
-        ) = ...,
+        interpolation: _str
+        | Literal["linear", "lower", "higher", "midpoint", "nearest"] = ...,
     ) -> DataFrame: ...
     def to_timestamp(
         self,
@@ -1114,7 +1094,7 @@ class DataFrame(NDFrame, OpsMixin):
         other: num | _ListLike | DataFrame,
         axis: AxisType = ...,
         level: Level = ...,
-        fill_value: None | float = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     def __iter__(self) -> Iterator[int | float | str]: ...
     # properties
@@ -1199,7 +1179,7 @@ class DataFrame(NDFrame, OpsMixin):
     def asfreq(
         self,
         freq,
-        method: None | (_str | Literal["backfill", "bfill", "pad", "ffill"]) = ...,
+        method: _str | Literal["backfill", "bfill", "pad", "ffill"] | None = ...,
         how: _str | Literal["start", "end"] | None = ...,
         normalize: _bool = ...,
         fill_value: Scalar | None = ...,
@@ -1665,8 +1645,9 @@ class DataFrame(NDFrame, OpsMixin):
     def reindex_like(
         self,
         other: DataFrame,
-        method: None
-        | (_str | Literal["backfill", "bfill", "pad", "ffill", "nearest"]) = ...,
+        method: _str
+        | Literal["backfill", "bfill", "pad", "ffill", "nearest"]
+        | None = ...,
         copy: _bool = ...,
         limit: int | None = ...,
         tolerance=...,
@@ -1694,9 +1675,8 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         *,
         inplace: Literal[True],
-        index: None | (_str | Sequence[_str] | dict[_str | int, _str] | Callable) = ...,
-        columns: None
-        | (_str | Sequence[_str] | dict[_str | int, _str] | Callable) = ...,
+        index: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
+        columns: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
         copy: _bool = ...,
     ) -> None: ...
     @overload
@@ -1704,9 +1684,8 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         *,
         inplace: Literal[False] = ...,
-        index: None | (_str | Sequence[_str] | dict[_str | int, _str] | Callable) = ...,
-        columns: None
-        | (_str | Sequence[_str] | dict[_str | int, _str] | Callable) = ...,
+        index: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
+        columns: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
         copy: _bool = ...,
     ) -> DataFrame: ...
     def resample(
@@ -1721,9 +1700,8 @@ class DataFrame(NDFrame, OpsMixin):
         base: int = ...,
         on: _str | None = ...,
         level: Level | None = ...,
-        origin: (
-            Timestamp | Literal["epoch", "start", "start_day", "end", "end_day"]
-        ) = ...,
+        origin: Timestamp
+        | Literal["epoch", "start", "start_day", "end", "end_day"] = ...,
         offset: Timedelta | _str | None = ...,
     ) -> Resampler: ...
     def rfloordiv(
@@ -1839,7 +1817,7 @@ class DataFrame(NDFrame, OpsMixin):
         labels,
         axis: AxisType = ...,
         inplace: _bool | None = ...,
-    ) -> None | DataFrame: ...
+    ) -> DataFrame | None: ...
     @overload
     def skew(
         self,
@@ -2023,36 +2001,34 @@ class DataFrame(NDFrame, OpsMixin):
     def to_json(
         self,
         path_or_buf: FilePathOrBuffer | None,
-        orient: None
-        | (
-            _str | Literal["split", "records", "index", "columns", "values", "table"]
-        ) = ...,
+        orient: str
+        | Literal["split", "records", "index", "columns", "values", "table"]
+        | None = ...,
         date_format: _str | Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: _str | Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: None
-        | (Callable[[Any], _str | int | float | _bool | list | dict]) = ...,
+        default_handler: Callable[[Any], _str | int | float | _bool | list | dict]
+        | None = ...,
         lines: _bool = ...,
-        compression: (_str | None | Literal["infer", "gzip", "bz2", "zip", "xz"]) = ...,
+        compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
         index: _bool = ...,
         indent: int | None = ...,
     ) -> None: ...
     @overload
     def to_json(
         self,
-        orient: None
-        | (
-            _str | Literal["split", "records", "index", "columns", "values", "table"]
-        ) = ...,
+        orient: str
+        | Literal["split", "records", "index", "columns", "values", "table"]
+        | None = ...,
         date_format: _str | Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: _str | Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: None
-        | (Callable[[Any], _str | int | float | _bool | list | dict]) = ...,
+        default_handler: Callable[[Any], _str | int | float | _bool | list | dict]
+        | None = ...,
         lines: _bool = ...,
-        compression: (_str | None | Literal["infer", "gzip", "bz2", "zip", "xz"]) = ...,
+        compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
         index: _bool = ...,
         indent: int | None = ...,
     ) -> _str: ...

@@ -35,7 +35,7 @@ python = ">=3.8,<3.11"
 types-pytz = ">= 2022.1.1"
 
 [tool.poetry.dev-dependencies]
-mypy = ">=0.961"
+mypy = ">=0.971"
 pytest = ">=7.1.2"
 pyright = ">=1.1.255"
 poethepoet = ">=0.13.1"
