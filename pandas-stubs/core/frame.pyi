@@ -6,11 +6,9 @@ from typing import (
     Any,
     Callable,
     ClassVar,
-    Dict,
     Hashable,
     Iterable,
     Iterator,
-    List,
     Literal,
     Mapping,
     Pattern,
@@ -167,8 +165,8 @@ class _LocIndexerFrame(_LocIndexer):
 class DataFrame(NDFrame, OpsMixin):
     _ListLike = Union[
         np.ndarray,
-        List[Dtype],
-        Dict[_str, np.ndarray],
+        list[Dtype],
+        dict[_str, np.ndarray],
         Sequence,
         Index,
         Series,

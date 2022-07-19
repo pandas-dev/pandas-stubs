@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import (
-    List,
     Literal,
-    Tuple,
     TypedDict,
     Union,
     overload,
@@ -29,13 +27,13 @@ from pandas._typing import (
     DateTimeErrorChoices,
 )
 
-ArrayConvertible = Union[List, Tuple, AnyArrayLike]
+ArrayConvertible = Union[list, tuple, AnyArrayLike]
 Scalar = Union[int, float, str]
 DatetimeScalar = Union[Scalar, datetime, np.datetime64]
 
 DatetimeScalarOrArrayConvertible = Union[DatetimeScalar, ArrayConvertible]
 
-DatetimeDictArg = Union[List[Scalar], Tuple[Scalar, ...], AnyArrayLike]
+DatetimeDictArg = Union[list[Scalar], tuple[Scalar, ...], AnyArrayLike]
 
 class YearMonthDayDict(TypedDict, total=True):
     year: DatetimeDictArg

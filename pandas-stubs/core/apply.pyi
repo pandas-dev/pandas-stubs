@@ -3,11 +3,10 @@ from __future__ import annotations
 import abc
 from typing import (
     Any,
-    Dict,
     Iterator,
 )
 
-ResType = Dict[int, Any]
+ResType = dict[int, Any]
 
 def frame_apply(
     obj: DataFrame,

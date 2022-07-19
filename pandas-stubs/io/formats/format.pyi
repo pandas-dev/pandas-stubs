@@ -4,10 +4,8 @@ from typing import (
     IO,
     Callable,
     Iterable,
-    List,
     Mapping,
     Sequence,
-    Tuple,
     Union,
 )
 
@@ -23,7 +21,7 @@ from pandas.core.series import Series
 from pandas._typing import FilePathOrBuffer
 
 formatters_type = Union[
-    List[Callable], Tuple[Callable, ...], Mapping[Union[str, int], Callable]
+    list[Callable], tuple[Callable, ...], Mapping[Union[str, int], Callable]
 ]
 FloatFormatType = Union[str, Callable, EngFormatter]
 common_docstring: str = ...

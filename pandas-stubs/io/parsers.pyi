@@ -3,12 +3,9 @@ from __future__ import annotations
 from collections import abc
 from typing import (
     Callable,
-    List,
     Literal,
     Protocol,
     Sequence,
-    Set,
-    Tuple,
     Union,
     overload,
 )
@@ -28,9 +25,9 @@ from pandas._typing import (
 )
 
 ListLike = Union[
-    List[Union[str, int]],
-    Tuple[Union[str, int]],
-    Set[Union[str, int]],
+    list[Union[str, int]],
+    tuple[Union[str, int]],
+    set[Union[str, int]],
     np.ndarray,
     pd.Series,
 ]
