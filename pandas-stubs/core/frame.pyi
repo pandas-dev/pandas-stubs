@@ -99,6 +99,7 @@ class _iLocIndexerFrame(_iLocIndexer):
             IndexType,
             MaskType,
             Tuple[Union[IndexType, MaskType], Union[IndexType, MaskType]],
+            Tuple[slice],
         ],
     ) -> DataFrame: ...
     def __setitem__(
