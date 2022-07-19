@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-# flake8: noqa: F841
 import datetime
 import io
 from pathlib import Path
@@ -610,8 +609,8 @@ def test_types_merge() -> None:
     df.merge(df2, on=("col1", "col2"), how="left", suffixes=(None, "s"))
     df.merge(df2, on=("col1", "col2"), how="left", suffixes=("t", "s"))
     df.merge(df2, on=("col1", "col2"), how="left", suffixes=("a", None))
-    l = ["col1", "col2"]
-    df.merge(df2, on=l)
+    columns = ["col1", "col2"]
+    df.merge(df2, on=columns)
 
 
 def test_types_plot() -> None:

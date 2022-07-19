@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-# flake8: noqa: F841
 import tempfile
 from typing import (
     TYPE_CHECKING,

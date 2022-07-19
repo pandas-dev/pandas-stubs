@@ -1,3 +1,4 @@
+# flake8: noqa: F841
 from __future__ import annotations
 
 import datetime as dt
@@ -17,9 +18,6 @@ from typing_extensions import assert_type
 from pandas._libs import NaTType
 
 from tests import check
-
-# flake8: noqa: F841
-
 
 if TYPE_CHECKING:
     from pandas.core.series import (
