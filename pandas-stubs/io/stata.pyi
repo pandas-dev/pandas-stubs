@@ -165,6 +165,6 @@ class StataWriterUTF8(StataWriter117):
         time_stamp: Optional[datetime.datetime] = ...,
         data_label: Optional[str] = ...,
         variable_labels: Optional[Dict[Hashable, str]] = ...,
-        convert_strl: Optional[Sequence[HashableT]] = ...,
+        convert_strl: Optional[Sequence[Hashable]] = ...,
         version: Optional[int] = ...,
     ) -> None: ...
