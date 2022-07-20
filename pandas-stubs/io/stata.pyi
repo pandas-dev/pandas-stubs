@@ -1,31 +1,43 @@
 from collections import abc
 import datetime
+from types import TracebackType
 from typing import (
     Dict,
     Hashable,
     List,
+    Literal,
     Optional,
     Sequence,
 )
 
+import numpy as np
+import numpy.typing as npt
+import pandas as pd
 from pandas.core.frame import DataFrame
 
-from pandas._typing import FilePathOrBuffer
+from pandas._typing import (
+    CompressionOptions,
+    FilePath,
+    FilePathOrBuffer,
+    ReadBuffer,
+    StorageOptions,
+    WriteBuffer,
+)
 
 def read_stata(
     path: FilePathOrBuffer,
     convert_dates: bool = ...,
     convert_categoricals: bool = ...,
-    index_col: Optional[str] = ...,
+    index_col: str | None = ...,
     convert_missing: bool = ...,
     preserve_dtypes: bool = ...,
-    columns: Optional[List[str]] = ...,
+    columns: list[str] | None = ...,
     order_categoricals: bool = ...,
-    chunksize: Optional[int] = ...,
+    chunksize: int | None = ...,
     iterator: bool = ...,
 ) -> DataFrame: ...
 
-stata_epoch = ...
+stata_epoch: datetime.datetime = ...
 excessive_string_length_error: str
 
 class PossiblePrecisionLoss(Warning): ...
@@ -41,16 +53,18 @@ class InvalidColumnName(Warning): ...
 invalid_name_doc: str
 
 class StataValueLabel:
-    labname = ...
-    value_labels = ...
-    text_len = ...
-    off = ...
-    val = ...
-    txt = ...
+    labname: Hashable = ...
+    value_labels: list[tuple[int | float, str]] = ...
+    text_len: int = ...
+    off: npt.NDArray[np.int32] = ...
+    val: npt.NDArray[np.int32] = ...
+    txt: list[bytes] = ...
     n: int = ...
-    len = ...
-    def __init__(self, catarray, encoding: str = ...): ...
-    def generate_value_label(self, byteorder): ...
+    len: int = ...
+    def __init__(
+        self, catarray: pd.Series, encoding: Literal["latin-1", "utf-8"] = ...
+    ) -> None: ...
+    def generate_value_label(self, byteorder: str) -> bytes: ...
 
 class StataMissingValue:
     MISSING_VALUES = ...
@@ -84,18 +98,25 @@ class StataReader(StataParser, abc.Iterator):
     path_or_buf = ...
     def __init__(
         self,
-        path_or_buf,
+        path_or_buf: FilePath | ReadBuffer[bytes],
         convert_dates: bool = ...,
         convert_categoricals: bool = ...,
-        index_col=...,
+        index_col: str | None = ...,
         convert_missing: bool = ...,
         preserve_dtypes: bool = ...,
-        columns=...,
+        columns: Sequence[str] | None = ...,
         order_categoricals: bool = ...,
-        chunksize=...,
+        chunksize: int | None = ...,
+        compression: CompressionOptions = ...,
+        storage_options: StorageOptions = ...,
     ) -> None: ...
-    def __enter__(self): ...
-    def __exit__(self, exc_type, exc_value, traceback) -> None: ...
+    def __enter__(self) -> StataReader: ...
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> None: ...
     def close(self) -> None: ...
     def __next__(self): ...
     def get_chunk(self, size=...): ...
@@ -116,52 +137,70 @@ class StataReader(StataParser, abc.Iterator):
     def value_labels(self): ...
 
 class StataWriter(StataParser):
-    type_converters = ...
+    type_converters: dict[str, type[np.dtype]] = ...
     def __init__(
         self,
-        fname,
-        data,
-        convert_dates=...,
+        fname: FilePath | WriteBuffer[bytes],
+        data: DataFrame,
+        convert_dates: dict[Hashable, str] | None = ...,
         write_index: bool = ...,
-        byteorder=...,
-        time_stamp=...,
-        data_label=...,
-        variable_labels=...,
+        byteorder: str | None = ...,
+        time_stamp: datetime.datetime | None = ...,
+        data_label: str | None = ...,
+        variable_labels: dict[Hashable, str] | None = ...,
+        compression: CompressionOptions = ...,
+        storage_options: StorageOptions = ...,
+        *,
+        value_labels: dict[Hashable, dict[float | int, str]] | None = ...,
     ) -> None: ...
     def write_file(self) -> None: ...
 
 class StataStrLWriter:
-    df = ...
-    columns = ...
-    def __init__(self, df, columns, version: int = ..., byteorder=...) -> None: ...
-    def generate_table(self): ...
-    def generate_blob(self, gso_table): ...
+    df: DataFrame = ...
+    columns: Sequence[str] = ...
+    def __init__(
+        self,
+        df: DataFrame,
+        columns: Sequence[str],
+        version: int = ...,
+        byteorder: str | None = ...,
+    ) -> None: ...
+    def generate_table(self) -> tuple[dict[str, tuple[int, int]], DataFrame]: ...
+    def generate_blob(self, gso_table: dict[str, tuple[int, int]]) -> bytes: ...
 
 class StataWriter117(StataWriter):
     def __init__(
         self,
-        fname,
-        data,
-        convert_dates=...,
+        fname: FilePath | WriteBuffer[bytes],
+        data: DataFrame,
+        convert_dates: dict[Hashable, str] | None = ...,
         write_index: bool = ...,
-        byteorder=...,
-        time_stamp=...,
-        data_label=...,
-        variable_labels=...,
-        convert_strl=...,
+        byteorder: str | None = ...,
+        time_stamp: datetime.datetime | None = ...,
+        data_label: str | None = ...,
+        variable_labels: dict[Hashable, str] | None = ...,
+        convert_strl: Sequence[Hashable] | None = ...,
+        compression: CompressionOptions = ...,
+        storage_options: StorageOptions = ...,
+        *,
+        value_labels: dict[Hashable, dict[float | int, str]] | None = ...,
     ) -> None: ...
 
 class StataWriterUTF8(StataWriter117):
     def __init__(
         self,
-        fname: FilePathOrBuffer,
+        fname: FilePath | WriteBuffer[bytes],
         data: DataFrame,
-        convert_dates: Optional[Dict[Hashable, str]] = ...,
+        convert_dates: dict[Hashable, str] | None = ...,
         write_index: bool = ...,
-        byteorder: Optional[str] = ...,
-        time_stamp: Optional[datetime.datetime] = ...,
-        data_label: Optional[str] = ...,
-        variable_labels: Optional[Dict[Hashable, str]] = ...,
-        convert_strl: Optional[Sequence[Hashable]] = ...,
-        version: Optional[int] = ...,
+        byteorder: str | None = ...,
+        time_stamp: datetime.datetime | None = ...,
+        data_label: str | None = ...,
+        variable_labels: dict[Hashable, str] | None = ...,
+        convert_strl: Sequence[Hashable] | None = ...,
+        version: int | None = ...,
+        compression: CompressionOptions = ...,
+        storage_options: StorageOptions = ...,
+        *,
+        value_labels: dict[Hashable, dict[float | int, str]] | None = ...,
     ) -> None: ...
