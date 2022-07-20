@@ -831,3 +831,23 @@ def test_categorical_codes():
     # GH-111
     cat = pd.Categorical(["a", "b", "a"])
     assert_type(cat.codes, "np_ndarray_int")
+
+
+def test_string_accessors():
+    s = pd.Series(["apple", "banana", "Cherry", "DATE", "eGGpLANT", "123", "23.45"])
+    check(assert_type(s.str.len(), "pd.Series[float]"), pd.Series)
+    check(assert_type(s.str.lower(), pd.Series), pd.Series)
+    check(assert_type(s.str.upper(), pd.Series), pd.Series)
+    check(assert_type(s.str.title(), pd.Series), pd.Series)
+    check(assert_type(s.str.capitalize(), pd.Series), pd.Series)
+    check(assert_type(s.str.swapcase(), pd.Series), pd.Series)
+    check(assert_type(s.str.casefold(), pd.Series), pd.Series)
+    check(assert_type(s.str.isalnum(), "pd.Series[bool]"), pd.Series)
+    check(assert_type(s.str.isalpha(), "pd.Series[bool]"), pd.Series)
+    check(assert_type(s.str.isdigit(), "pd.Series[bool]"), pd.Series)
+    check(assert_type(s.str.isspace(), "pd.Series[bool]"), pd.Series)
+    check(assert_type(s.str.islower(), "pd.Series[bool]"), pd.Series)
+    check(assert_type(s.str.isupper(), "pd.Series[bool]"), pd.Series)
+    check(assert_type(s.str.istitle(), "pd.Series[bool]"), pd.Series)
+    check(assert_type(s.str.isnumeric(), "pd.Series[bool]"), pd.Series)
+    check(assert_type(s.str.isdecimal(), "pd.Series[bool]"), pd.Series)
