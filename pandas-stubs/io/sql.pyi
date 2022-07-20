@@ -39,10 +39,8 @@ def read_sql(
     index_col: str | Sequence[str] | None = ...,
     coerce_float: bool = ...,
     params: Sequence[str] | tuple[str, ...] | Mapping[str, str] | None = ...,
-    parse_dates: Sequence[str]
-    | Mapping[str, str]
-    | Mapping[str, Mapping[str, Any]]
-    | None = ...,
+    parse_dates: None
+    | (Sequence[str] | Mapping[str, str] | Mapping[str, Mapping[str, Any]]) = ...,
     columns: Sequence[str] = ...,
     chunksize: int = ...,
 ) -> DataFrame: ...

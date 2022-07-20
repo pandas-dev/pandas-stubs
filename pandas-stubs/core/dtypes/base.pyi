@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from pandas.core.arrays import ExtensionArray
 
-_type = type
 _type_ExtensionArray = type[ExtensionArray]
 
 class ExtensionDtype:
@@ -12,7 +11,7 @@ class ExtensionDtype:
     @property
     def na_value(self): ...
     @property
-    def type(self) -> _type: ...
+    def type(self) -> type: ...
     @property
     def kind(self) -> str: ...
     @property

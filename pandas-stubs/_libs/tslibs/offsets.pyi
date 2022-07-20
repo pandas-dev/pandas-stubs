@@ -204,7 +204,7 @@ class _CustomBusinessMonth(BusinessMixin):
         n: int = ...,
         normalize: bool = ...,
         offset: timedelta = ...,
-        holidays: list | None = ...,
+        holidays: None | list = ...,
     ): ...
 
 class CustomBusinessDay(BusinessDay):
@@ -224,7 +224,7 @@ class CustomBusinessHour(BusinessHour):
         start: str = ...,
         end: str = ...,
         offset: timedelta = ...,
-        holidays: list | None = ...,
+        holidays: None | list = ...,
     ): ...
 
 class CustomBusinessMonthEnd(_CustomBusinessMonth): ...

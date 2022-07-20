@@ -8,7 +8,6 @@ from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
 
 from .masked import BaseMaskedArray as BaseMaskedArray
 
-_type = type
 _type_BooleanArray = type[BooleanArray]
 
 class BooleanDtype(ExtensionDtype):
@@ -16,7 +15,7 @@ class BooleanDtype(ExtensionDtype):
     @property
     def na_value(self) -> Scalar: ...
     @property
-    def type(self) -> _type: ...
+    def type(self) -> type: ...
     @property
     def kind(self) -> str: ...
     @classmethod
