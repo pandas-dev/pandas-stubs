@@ -25,7 +25,7 @@ from typing import (
 )
 
 import numpy as np
-from numpy import typing as npt
+import numpy.typing
 from pandas.core.arrays import ExtensionArray
 from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
@@ -39,6 +39,8 @@ from pandas._libs.tslibs import (
 )
 
 from pandas.core.dtypes.dtypes import ExtensionDtype
+
+npt = numpy.typing
 
 ArrayLike = Union[ExtensionArray, np.ndarray]
 AnyArrayLike = Union[Index, Series, np.ndarray]
