@@ -46,8 +46,8 @@ class StringMethods(NoNewAttributesMixin, Generic[T]):
         others: Literal[None] = ...,
         *,
         sep: str,
-        na_rep: str | None,
-        join: Literal["left", "right", "outer", "inner"],
+        na_rep: str | None = ...,
+        join: Literal["left", "right", "outer", "inner"] = ...,
     ) -> str: ...
     @overload
     def cat(

@@ -896,3 +896,51 @@ def test_string_accessors():
     check(assert_type(s.str.upper(), pd.Series), pd.Series)
     check(assert_type(s.str.wrap(80), pd.Series), pd.Series)
     check(assert_type(s.str.zfill(10), pd.Series), pd.Series)
+
+
+def test_series_overloads_cat():
+    s = pd.Series(
+        ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
+    )
+    check(assert_type(s.str.cat(sep=";"), str), str)
+    check(assert_type(s.str.cat(None, sep=";"), str), str)
+    check(
+        assert_type(s.str.cat(["A", "B", "C", "D", "E", "F", "G"], sep=";"), pd.Series),
+        pd.Series,
+    )
+
+
+def test_series_overloads_partition():
+    s = pd.Series(
+        [
+            "ap;pl;ep",
+            "ban;an;ap",
+            "Che;rr;yp",
+            "DA;TEp",
+            "eGGp;LANT;p",
+            "12;3p",
+            "23.45p",
+        ]
+    )
+    check(assert_type(s.str.partition(sep=";"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(s.str.partition(sep=";", expand=True), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(s.str.partition(sep=";", expand=False), pd.Series), pd.Series)
+
+    check(assert_type(s.str.rpartition(sep=";"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(s.str.rpartition(sep=";", expand=True), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(s.str.rpartition(sep=";", expand=False), pd.Series), pd.Series)
+
+
+def test_series_overloads_extract():
+    s = pd.Series(
+        ["appl;ep", "ban;anap", "Cherr;yp", "DATEp", "eGGp;LANTp", "12;3p", "23.45p"]
+    )
+    check(assert_type(s.str.extract(r"[ab](\d)"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(s.str.extract(r"[ab](\d)", expand=True), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(s.str.extract(r"[ab](\d)", expand=False), pd.Series), pd.Series)
