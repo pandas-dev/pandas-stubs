@@ -35,7 +35,7 @@ python = ">=3.8,<3.11"
 types-pytz = ">= 2022.1.1"
 
 [tool.poetry.dev-dependencies]
-mypy = ">=0.961"
+mypy = ">=0.971"
 pytest = ">=7.1.2"
 pyright = ">=1.1.255"
 poethepoet = ">=0.13.1"
@@ -53,36 +53,15 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks.test_all]
 help = "Run all tests"
-script = "scripts.test:test(clean_cache, src=True, dist=True)"
-
-    [[tool.poe.tasks.test_all.args]]
-    help = "remove cache folders (mypy and pytest)"
-    name = "clean-cache"
-    options = ["-c", "--clean_cache"]
-    default = false
-    type = "boolean"
+script = "scripts.test:test(src=True, dist=True)"
 
 [tool.poe.tasks.test_src]
 help = "Run local tests (includes 'mypy_src', 'pyright_src', 'pytest', and 'style')"
-script = "scripts.test:test(clean_cache, src=True)"
-
-    [[tool.poe.tasks.test_src.args]]
-    help = "remove cache folders (mypy and pytest)"
-    name = "clean-cache"
-    options = ["-c", "--clean_cache"]
-    default = false
-    type = "boolean"
+script = "scripts.test:test(src=True)"
 
 [tool.poe.tasks.test_dist]
 help = "Run tests on the installed stubs (includes 'mypy_dist' and 'pyright_dist')"
-script = "scripts.test:test(clean_cache, dist=True)"
-
-    [[tool.poe.tasks.test_dist.args]]
-    help = "remove cache folders (mypy and pytest)"
-    name = "clean-cache"
-    options = ["-c", "--clean_cache"]
-    default = false
-    type = "boolean"
+script = "scripts.test:test(dist=True)"
 
 [tool.poe.tasks.pytest]
 help = "Run pytest"
@@ -98,7 +77,7 @@ script = "scripts.test.run:mypy_src"
 
 [tool.poe.tasks.mypy_dist]
 help = "Run mypy on 'tests' using the installed stubs"
-script = "scripts.test:test(clean_cache=False, dist=True, type_checker='mypy')"
+script = "scripts.test:test(dist=True, type_checker='mypy')"
 
 [tool.poe.tasks.pyright_src]
 help = "Run pyright on 'tests' (using the local stubs) and on the local stubs"
@@ -106,7 +85,7 @@ script = "scripts.test.run:pyright_src"
 
 [tool.poe.tasks.pyright_dist]
 help = "Run pyright on 'tests' using the installed stubs"
-script = "scripts.test:test(clean_cache=False, dist=True, type_checker='pyright')"
+script = "scripts.test:test(dist=True, type_checker='pyright')"
 
 
 

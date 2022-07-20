@@ -1,8 +1,6 @@
 from scripts._job import Step
 from scripts.test import run
 
-clean_mypy_cache = Step(name="Clean mypy cache", run=run.clean_mypy_cache)
-clean_pytest_cache = Step(name="Clean pytest cache", run=run.clean_pytest_cache)
 mypy_src = Step(
     name="Run mypy on 'tests' (using the local stubs) and on the local stubs",
     run=run.mypy_src,
