@@ -13,7 +13,6 @@ from pandas.core.indexes.base import Index
 from pandas._typing import (
     T1,
     DtypeArg,
-    HashableT,
     np_ndarray_bool,
 )
 

@@ -28,7 +28,6 @@ from pandas._typing import (
     FilePathOrBuffer,
     FrameOrSeries,
     FrameOrSeriesUnion,
-    HashableT,
     IgnoreRaise,
     Level,
     Scalar,

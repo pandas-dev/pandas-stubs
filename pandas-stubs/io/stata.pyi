@@ -10,10 +10,7 @@ from typing import (
 
 from pandas.core.frame import DataFrame
 
-from pandas._typing import (
-    FilePathOrBuffer,
-    HashableT,
-)
+from pandas._typing import FilePathOrBuffer
 
 def read_stata(
     path: FilePathOrBuffer,

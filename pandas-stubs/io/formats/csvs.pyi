@@ -6,10 +6,7 @@ from typing import (
     Union,
 )
 
-from pandas._typing import (
-    FilePathOrBuffer,
-    HashableT,
-)
+from pandas._typing import FilePathOrBuffer
 
 class CSVFormatter:
     obj = ...
