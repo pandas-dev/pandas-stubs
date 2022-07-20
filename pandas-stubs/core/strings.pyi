@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Generic
 
+import re
 from typing import (
     Any,
     Callable,
@@ -53,11 +54,10 @@ class StringMethods(NoNewAttributesMixin, Generic[T]):
     def match(
         self, pat: str, case: bool = ..., flags: int = ..., na: Any = ...
     ) -> T: ...
-    # TODO: Fix callable
     def replace(
         self,
         pat: str,
-        repl: str | Callable[[Any], str],
+        repl: str | Callable[[re.Match], str],
         n: int = ...,
         case: bool | None = ...,
         flags: int = ...,
