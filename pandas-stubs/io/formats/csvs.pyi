@@ -6,7 +6,10 @@ from typing import (
     Union,
 )
 
-from pandas._typing import FilePathOrBuffer
+from pandas._typing import (
+    FilePathOrBuffer,
+    HashableT,
+)
 
 class CSVFormatter:
     obj = ...
@@ -41,9 +44,9 @@ class CSVFormatter:
         na_rep: str = ...,
         float_format: Optional[str] = ...,
         cols=...,
-        header: Union[bool, Sequence[Hashable]] = ...,
+        header: Union[bool, Sequence[HashableT]] = ...,
         index: bool = ...,
-        index_label: Optional[Union[bool, Hashable, Sequence[Hashable]]] = ...,
+        index_label: Optional[Union[bool, Hashable, Sequence[HashableT]]] = ...,
         mode: str = ...,
         encoding: Optional[str] = ...,
         compression: Union[str, Mapping[str, str], None] = ...,

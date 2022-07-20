@@ -10,7 +10,10 @@ from typing import (
 
 from pandas.core.frame import DataFrame
 
-from pandas._typing import FilePathOrBuffer
+from pandas._typing import (
+    FilePathOrBuffer,
+    HashableT,
+)
 
 def read_stata(
     path: FilePathOrBuffer,
@@ -162,6 +165,6 @@ class StataWriterUTF8(StataWriter117):
         time_stamp: Optional[datetime.datetime] = ...,
         data_label: Optional[str] = ...,
         variable_labels: Optional[Dict[Hashable, str]] = ...,
-        convert_strl: Optional[Sequence[Hashable]] = ...,
+        convert_strl: Optional[Sequence[HashableT]] = ...,
         version: Optional[int] = ...,
     ) -> None: ...
