@@ -58,7 +58,6 @@ from pandas._typing import (
     FilePathOrBuffer,
     FilePathOrBytesBuffer,
     GroupByObjectNonScalar,
-    HashableT,
     IgnoreRaise,
     IndexingInt,
     IndexLabel,
