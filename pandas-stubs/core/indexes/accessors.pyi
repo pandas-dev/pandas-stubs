@@ -104,9 +104,8 @@ class DatetimeProperties(DatetimeAndPeriodProperties):
         self,
         tz: str | None,
         ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-        nonexistent: (
-            Literal["shift_forward", "shift_backward", "NaT", "raise"] | Timedelta
-        ) = ...,
+        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
+        | Timedelta = ...,
     ) -> DatetimeArray: ...
     def tz_convert(self, tz: str | None) -> TimestampSeries: ...
     def normalize(self) -> TimestampSeries: ...
@@ -118,25 +117,22 @@ class DatetimeProperties(DatetimeAndPeriodProperties):
         self,
         freq: str | BaseOffset | None,
         ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-        nonexistent: (
-            Literal["shift_forward", "shift_backward", "NaT", "raise"] | Timedelta
-        ) = ...,
+        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
+        | Timedelta = ...,
     ) -> Series: ...
     def floor(
         self,
         freq: str | BaseOffset | None,
         ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-        nonexistent: (
-            Literal["shift_forward", "shift_backward", "NaT", "raise"] | Timedelta
-        ) = ...,
+        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
+        | Timedelta = ...,
     ) -> Series: ...
     def ceil(
         self,
         freq: str | BaseOffset | None,
         ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-        nonexistent: (
-            Literal["shift_forward", "shift_backward", "NaT", "raise"] | Timedelta
-        ) = ...,
+        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
+        | Timedelta = ...,
     ) -> Series: ...
     def month_name(self, locale: str | None = ...) -> Series[str]: ...
     def day_name(self, locale: str | None = ...) -> Series[str]: ...
@@ -161,25 +157,22 @@ class TimedeltaProperties(Properties):
         self,
         freq: str | BaseOffset | None,
         ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-        nonexistent: (
-            Literal["shift_forward", "shift_backward", "NaT", "raise"] | Timedelta
-        ) = ...,
+        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
+        | Timedelta = ...,
     ) -> Series: ...
     def floor(
         self,
         freq: str | BaseOffset | None,
         ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-        nonexistent: (
-            Literal["shift_forward", "shift_backward", "NaT", "raise"] | Timedelta
-        ) = ...,
+        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
+        | Timedelta = ...,
     ) -> Series: ...
     def ceil(
         self,
         freq: str | BaseOffset | None,
         ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-        nonexistent: (
-            Literal["shift_forward", "shift_backward", "NaT", "raise"] | Timedelta
-        ) = ...,
+        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
+        | Timedelta = ...,
     ) -> Series: ...
 
 class PeriodProperties(DatetimeAndPeriodProperties):

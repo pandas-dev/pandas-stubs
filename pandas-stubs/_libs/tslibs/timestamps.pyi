@@ -42,8 +42,8 @@ class Timestamp(datetime):
         | _date
         | datetime
         | np.datetime64 = ...,
-        freq: int | None | str | BaseOffset = ...,
-        tz: str | _tzinfo | None | int = ...,
+        freq: int | str | BaseOffset | None = ...,
+        tz: str | _tzinfo | int | None = ...,
         unit: str | int | None = ...,
         year: int | None = ...,
         month: int | None = ...,

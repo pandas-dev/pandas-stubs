@@ -42,7 +42,7 @@ def concat(
 ) -> Series: ...
 @overload
 def concat(
-    objs: (Iterable[Series | DataFrame] | Mapping[HashableT, Series | DataFrame]),
+    objs: Iterable[Series | DataFrame] | Mapping[HashableT, Series | DataFrame],
     axis: Literal[1, "columns"],
     join: str = ...,
     ignore_index: bool = ...,
