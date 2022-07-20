@@ -58,6 +58,7 @@ from pandas._typing import (
     FilePathOrBuffer,
     FilePathOrBytesBuffer,
     GroupByObjectNonScalar,
+    HashableT,
     IgnoreRaise,
     IndexingInt,
     IndexLabel,
@@ -587,7 +588,7 @@ class DataFrame(NDFrame, OpsMixin):
     def set_index(
         self,
         keys: Union[
-            Label, Series, Index, np.ndarray, Iterator[Hashable], List[Hashable]
+            Label, Series, Index, np.ndarray, Iterator[HashableT], List[HashableT]
         ],
         drop: _bool = ...,
         append: _bool = ...,
@@ -599,7 +600,7 @@ class DataFrame(NDFrame, OpsMixin):
     def set_index(
         self,
         keys: Union[
-            Label, Series, Index, np.ndarray, Iterator[Hashable], List[Hashable]
+            Label, Series, Index, np.ndarray, Iterator[HashableT], List[HashableT]
         ],
         drop: _bool = ...,
         append: _bool = ...,
@@ -611,7 +612,7 @@ class DataFrame(NDFrame, OpsMixin):
     def set_index(
         self,
         keys: Union[
-            Label, Series, Index, np.ndarray, Iterator[Hashable], List[Hashable]
+            Label, Series, Index, np.ndarray, Iterator[HashableT], List[HashableT]
         ],
         drop: _bool = ...,
         append: _bool = ...,
@@ -622,7 +623,7 @@ class DataFrame(NDFrame, OpsMixin):
     def set_index(
         self,
         keys: Union[
-            Label, Series, Index, np.ndarray, Iterator[Hashable], List[Hashable]
+            Label, Series, Index, np.ndarray, Iterator[HashableT], List[HashableT]
         ],
         drop: _bool = ...,
         append: _bool = ...,
