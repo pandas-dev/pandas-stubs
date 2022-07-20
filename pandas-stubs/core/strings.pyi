@@ -2,10 +2,7 @@ from __future__ import annotations
 
 from typing import Generic
 
-from pandas import (
-    Index,
-    Series,
-)
+from pandas import Series
 from pandas.core.base import NoNewAttributesMixin as NoNewAttributesMixin
 
 from pandas._typing import T
