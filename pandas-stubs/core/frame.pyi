@@ -53,6 +53,7 @@ from pandas._typing import (
     FilePathOrBuffer,
     FilePathOrBytesBuffer,
     GroupByObjectNonScalar,
+    HashableT,
     IgnoreRaise,
     IndexingInt,
     IndexLabel,
@@ -199,7 +200,13 @@ class DataFrame(NDFrame, OpsMixin):
     def __matmul__(self, other): ...
     def __rmatmul__(self, other): ...
     @classmethod
-    def from_dict(cls, data, orient=..., dtype=..., columns=...) -> DataFrame: ...
+    def from_dict(
+        cls,
+        data: dict[Any, Any],
+        orient: Literal["columns", "index", "tight"] = ...,
+        dtype: _str = ...,
+        columns: list[_str] = ...,
+    ) -> DataFrame: ...
     def to_numpy(
         self,
         dtype: type[DtypeNp] | Dtype | None = ...,
@@ -215,7 +222,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def to_dict(
         self,
-        orient: Literal["dict", "list", "series", "split", "index"] = ...,
+        orient: Literal["dict", "list", "series", "split", "tight", "index"] = ...,
         into: Hashable = ...,
     ) -> dict[_str, Any]: ...
     def to_gbq(
@@ -567,9 +574,12 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def set_index(
         self,
-        keys: (
-            Label | Series | Index | np.ndarray | Iterator[Hashable] | list[Hashable]
-        ),
+        keys: Label
+        | Series
+        | Index
+        | np.ndarray
+        | Iterator[HashableT]
+        | list[HashableT],
         drop: _bool = ...,
         append: _bool = ...,
         verify_integrity: _bool = ...,
@@ -579,9 +589,12 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def set_index(
         self,
-        keys: (
-            Label | Series | Index | np.ndarray | Iterator[Hashable] | list[Hashable]
-        ),
+        keys: Label
+        | Series
+        | Index
+        | np.ndarray
+        | Iterator[HashableT]
+        | list[HashableT],
         drop: _bool = ...,
         append: _bool = ...,
         verify_integrity: _bool = ...,
@@ -591,9 +604,12 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def set_index(
         self,
-        keys: (
-            Label | Series | Index | np.ndarray | Iterator[Hashable] | list[Hashable]
-        ),
+        keys: Label
+        | Series
+        | Index
+        | np.ndarray
+        | Iterator[HashableT]
+        | list[HashableT],
         drop: _bool = ...,
         append: _bool = ...,
         *,
@@ -602,9 +618,12 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def set_index(
         self,
-        keys: (
-            Label | Series | Index | np.ndarray | Iterator[Hashable] | list[Hashable]
-        ),
+        keys: Label
+        | Series
+        | Index
+        | np.ndarray
+        | Iterator[HashableT]
+        | list[HashableT],
         drop: _bool = ...,
         append: _bool = ...,
         inplace: _bool | None = ...,

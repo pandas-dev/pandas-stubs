@@ -306,11 +306,11 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | list[Hashable] = ...,
+        labels: Hashable | Sequence[Hashable] = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[Hashable] = ...,
-        columns: Hashable | list[Hashable] = ...,
+        index: Hashable | Sequence[Hashable] = ...,
+        columns: Hashable | Sequence[Hashable] = ...,
         level: Level | None = ...,
         inplace: Literal[True],
         errors: IgnoreRaise = ...,
@@ -318,11 +318,11 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     @overload
     def drop(
         self: NDFrame,
-        labels: Hashable | list[Hashable] = ...,
+        labels: Hashable | Sequence[Hashable] = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[Hashable] = ...,
-        columns: Hashable | list[Hashable] = ...,
+        index: Hashable | Sequence[Hashable] = ...,
+        columns: Hashable | Sequence[Hashable] = ...,
         level: Level | None = ...,
         inplace: Literal[False] = ...,
         errors: IgnoreRaise = ...,
@@ -330,11 +330,11 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     @overload
     def drop(
         self: NDFrame,
-        labels: Hashable | list[Hashable] = ...,
+        labels: Hashable | Sequence[Hashable] = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[Hashable] = ...,
-        columns: Hashable | list[Hashable] = ...,
+        index: Hashable | Sequence[Hashable] = ...,
+        columns: Hashable | Sequence[Hashable] = ...,
         level: Level | None = ...,
         inplace: _bool = ...,
         errors: IgnoreRaise = ...,

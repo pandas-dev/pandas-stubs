@@ -66,6 +66,7 @@ from pandas._typing import (
     DtypeNp,
     FilePathOrBuffer,
     GroupByObjectNonScalar,
+    HashableT,
     IgnoreRaise,
     IndexingInt,
     Label,
@@ -695,11 +696,11 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def drop(
         self,
-        labels: Hashable | list[Hashable] = ...,
+        labels: Hashable | list[HashableT] = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[Hashable] = ...,
-        columns: Hashable | list[Hashable] = ...,
+        index: Hashable | list[HashableT] = ...,
+        columns: Hashable | list[HashableT] = ...,
         level: Level | None = ...,
         inplace: Literal[True],
         errors: IgnoreRaise = ...,
@@ -707,11 +708,11 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def drop(
         self,
-        labels: Hashable | list[Hashable] = ...,
+        labels: Hashable | list[HashableT] = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[Hashable] = ...,
-        columns: Hashable | list[Hashable] = ...,
+        index: Hashable | list[HashableT] = ...,
+        columns: Hashable | list[HashableT] = ...,
         level: Level | None = ...,
         inplace: Literal[False] = ...,
         errors: IgnoreRaise = ...,
@@ -719,11 +720,11 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def drop(
         self,
-        labels: Hashable | list[Hashable] = ...,
+        labels: Hashable | list[HashableT] = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[Hashable] = ...,
-        columns: Hashable | list[Hashable] = ...,
+        index: Hashable | list[HashableT] = ...,
+        columns: Hashable | list[HashableT] = ...,
         level: Level | None = ...,
         inplace: bool = ...,
         errors: IgnoreRaise = ...,
