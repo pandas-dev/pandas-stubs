@@ -145,7 +145,7 @@ enable_error_code = "ignore-without-code" # same as in pandas
 allow_untyped_globals = false
 allow_redefinition = false
 local_partial_types = false
-implicit_reexport = false # pyright behaves the same
+implicit_reexport = true
 strict_equality = true
 # Configuring error messages
 show_error_context = false
