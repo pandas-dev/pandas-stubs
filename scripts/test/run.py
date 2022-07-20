@@ -14,7 +14,7 @@ def pyright_src():
 
 
 def pytest():
-    cmd = ["pytest"]
+    cmd = ["pytest", "--cache-clear"]
     subprocess.run(cmd, check=True)
 
 
@@ -61,13 +61,3 @@ def restore_src():
         Path(r"_pandas-stubs").rename("pandas-stubs")
     else:
         raise FileNotFoundError("'_pandas-stubs' folder does not exists.")
-
-
-def clean_mypy_cache():
-    if Path(".mypy_cache").exists():
-        shutil.rmtree(".mypy_cache")
-
-
-def clean_pytest_cache():
-    if Path(".mypy_cache").exists():
-        shutil.rmtree(".pytest_cache")
