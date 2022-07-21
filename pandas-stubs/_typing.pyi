@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from builtins import type as type_t
 import datetime
 from io import (
     BufferedIOBase,
@@ -25,7 +26,7 @@ from typing import (
 )
 
 import numpy as np
-import numpy.typing
+from numpy import typing as npt
 from pandas.core.arrays import ExtensionArray
 from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
@@ -39,8 +40,6 @@ from pandas._libs.tslibs import (
 )
 
 from pandas.core.dtypes.dtypes import ExtensionDtype
-
-npt = numpy.typing
 
 ArrayLike = Union[ExtensionArray, np.ndarray]
 AnyArrayLike = Union[Index, Series, np.ndarray]
@@ -208,3 +207,5 @@ GroupByObjectNonScalar = Union[
     tuple, list[Label], Function, Series, np.ndarray, Mapping[Label, Any], Index
 ]
 GroupByObject = Union[Scalar, GroupByObjectNonScalar]
+
+__all__ = ["npt", "type_t"]

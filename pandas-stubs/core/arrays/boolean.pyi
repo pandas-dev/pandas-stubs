@@ -2,25 +2,25 @@ from __future__ import annotations
 
 import numpy as np
 
-from pandas._typing import Scalar
+from pandas._typing import (
+    Scalar,
+    type_t,
+)
 
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
 
 from .masked import BaseMaskedArray as BaseMaskedArray
-
-_type = type
-_type_BooleanArray = type[BooleanArray]
 
 class BooleanDtype(ExtensionDtype):
     name: str = ...
     @property
     def na_value(self) -> Scalar: ...
     @property
-    def type(self) -> _type: ...
+    def type(self) -> type_t: ...
     @property
     def kind(self) -> str: ...
     @classmethod
-    def construct_array_type(cls) -> _type_BooleanArray: ...
+    def construct_array_type(cls) -> type_t[BooleanArray]: ...
     def __from_arrow__(self, array): ...
 
 def coerce_to_array(values, mask=..., copy: bool = ...): ...
