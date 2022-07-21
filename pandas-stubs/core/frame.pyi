@@ -181,7 +181,7 @@ class DataFrame(NDFrame, OpsMixin):
     def items(self) -> Iterable[tuple[Hashable, Series]]: ...
     def iteritems(self) -> Iterable[tuple[Label, Series]]: ...
     def iterrows(self) -> Iterable[tuple[Label, Series]]: ...
-    def itertuples(self, index: _bool = ..., name: str | None = ...): ...
+    def itertuples(self, index: _bool = ..., name: _str | None = ...): ...
     def __len__(self) -> int: ...
     @overload
     def dot(self, other: DataFrame | ArrayLike) -> DataFrame: ...
@@ -399,7 +399,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         method: Literal["backfill", "bfill", "pad", "ffill", "nearest"] | None = ...,
         copy: bool = ...,
-        level: int | str = ...,
+        level: int | _str = ...,
         fill_value: Scalar | None = ...,
         limit: int | None = ...,
         tolerance: float | None = ...,
@@ -1123,7 +1123,7 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
-    def __iter__(self) -> Iterator[int | float | str]: ...
+    def __iter__(self) -> Iterator[int | float | _str]: ...
     # properties
     @property
     def at(self): ...  # Not sure what to do with this yet; look at source
@@ -1604,7 +1604,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def pipe(
         self,
-        func: Callable[..., TType] | tuple[Callable[..., TType], str],
+        func: Callable[..., TType] | tuple[Callable[..., TType], _str],
         *args,
         **kwargs,
     ) -> TType: ...
@@ -2028,7 +2028,7 @@ class DataFrame(NDFrame, OpsMixin):
     def to_json(
         self,
         path_or_buf: FilePathOrBuffer | None,
-        orient: str
+        orient: _str
         | Literal["split", "records", "index", "columns", "values", "table"]
         | None = ...,
         date_format: _str | Literal["epoch", "iso"] | None = ...,
@@ -2045,7 +2045,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def to_json(
         self,
-        orient: str
+        orient: _str
         | Literal["split", "records", "index", "columns", "values", "table"]
         | None = ...,
         date_format: _str | Literal["epoch", "iso"] | None = ...,
@@ -2083,7 +2083,7 @@ class DataFrame(NDFrame, OpsMixin):
         multirow: _bool | None = ...,
         caption: _str | tuple[_str, _str] | None = ...,
         label: _str | None = ...,
-        position: str | None = ...,
+        position: _str | None = ...,
     ) -> None: ...
     @overload
     def to_latex(
@@ -2108,7 +2108,7 @@ class DataFrame(NDFrame, OpsMixin):
         multirow: _bool | None = ...,
         caption: _str | tuple[_str, _str] | None = ...,
         label: _str | None = ...,
-        position: str | None = ...,
+        position: _str | None = ...,
     ) -> _str: ...
     def to_pickle(
         self,
