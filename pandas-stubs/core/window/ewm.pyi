@@ -1,8 +1,6 @@
-from typing import (
-    Callable,
-    Optional,
-    Union,
-)
+from __future__ import annotations
+
+from typing import Callable
 
 from pandas import (
     DataFrame,
@@ -33,8 +31,8 @@ class ExponentialMovingWindow(_Rolling):
         axis: int = ...,
     ) -> None: ...
     def aggregate(
-        self, func: Optional[Callable] = ..., *args, **kwargs
-    ) -> Union[Scalar, Series, DataFrame]: ...
+        self, func: Callable | None = ..., *args, **kwargs
+    ) -> Scalar | Series | DataFrame: ...
     agg = aggregate
     def mean(self, *args, **kwargs): ...
     def std(self, bias: bool = ..., *args, **kwargs): ...

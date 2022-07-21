@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pandas.io.excel._base import (
     ExcelFile as ExcelFile,
     ExcelWriter as ExcelWriter,

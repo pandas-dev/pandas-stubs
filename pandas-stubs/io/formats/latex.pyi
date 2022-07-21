@@ -1,7 +1,6 @@
-from typing import (
-    IO,
-    Optional,
-)
+from __future__ import annotations
+
+from typing import IO
 
 from pandas.io.formats.format import (
     DataFrameFormatter as DataFrameFormatter,
@@ -23,13 +22,13 @@ class LatexFormatter(TableFormatter):
     def __init__(
         self,
         formatter: DataFrameFormatter,
-        column_format: Optional[str] = ...,
+        column_format: str | None = ...,
         longtable: bool = ...,
         multicolumn: bool = ...,
-        multicolumn_format: Optional[str] = ...,
+        multicolumn_format: str | None = ...,
         multirow: bool = ...,
-        caption: Optional[str] = ...,
-        label: Optional[str] = ...,
+        caption: str | None = ...,
+        label: str | None = ...,
     ) -> None: ...
     clinebuf = ...
     def write_result(self, buf: IO[str]) -> None: ...

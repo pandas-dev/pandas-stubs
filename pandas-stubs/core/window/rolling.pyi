@@ -1,11 +1,6 @@
-from typing import (
-    Callable,
-    Dict,
-    Optional,
-    Set,
-    Tuple,
-    Union,
-)
+from __future__ import annotations
+
+from typing import Callable
 
 import numpy as np
 from pandas.core.base import (
@@ -23,7 +18,7 @@ from pandas._typing import (
 )
 
 class _Window(PandasObject, ShallowMixin, SelectionMixin):
-    exclusions: Set[str] = ...
+    exclusions: set[str] = ...
     obj = ...
     on = ...
     closed = ...
@@ -37,24 +32,24 @@ class _Window(PandasObject, ShallowMixin, SelectionMixin):
         self,
         obj,
         window=...,
-        min_periods: Optional[int] = ...,
-        center: Optional[bool] = ...,
-        win_type: Optional[str] = ...,
+        min_periods: int | None = ...,
+        center: bool | None = ...,
+        win_type: str | None = ...,
         axis: Axis = ...,
-        on: Optional[Union[str, Index]] = ...,
-        closed: Optional[str] = ...,
+        on: str | Index | None = ...,
+        closed: str | None = ...,
         **kwargs,
     ) -> None: ...
     @property
-    def is_datetimelike(self) -> Optional[bool]: ...
+    def is_datetimelike(self) -> bool | None: ...
     @property
     def is_freq_type(self) -> bool: ...
     def validate(self) -> None: ...
     def __getattr__(self, attr: str): ...
     def __iter__(self): ...
     def aggregate(
-        self, func: Optional[Callable] = ..., *args, **kwargs
-    ) -> Union[Scalar, FrameOrSeries]: ...
+        self, func: Callable | None = ..., *args, **kwargs
+    ) -> Scalar | FrameOrSeries: ...
     agg = aggregate
 
 class Window(_Window):
@@ -73,9 +68,9 @@ class _Rolling_and_Expanding(_Rolling):
         func,
         raw: bool = ...,
         engine: str = ...,
-        engine_kwargs: Optional[Dict] = ...,
-        args: Optional[Tuple] = ...,
-        kwargs: Optional[Dict] = ...,
+        engine_kwargs: dict | None = ...,
+        args: tuple | None = ...,
+        kwargs: dict | None = ...,
     ): ...
     def sum(self, *args, **kwargs) -> FrameOrSeries: ...
     def max(self, *args, **kwargs) -> FrameOrSeries: ...
@@ -91,15 +86,15 @@ class _Rolling_and_Expanding(_Rolling):
     ) -> FrameOrSeries: ...
     def cov(
         self,
-        other: Optional[Union[FrameOrSeries, np.ndarray]] = ...,
-        pairwise: Optional[bool] = ...,
+        other: FrameOrSeries | np.ndarray | None = ...,
+        pairwise: bool | None = ...,
         ddof: int = ...,
         **kwargs,
     ) -> FrameOrSeries: ...
     def corr(
         self,
-        other: Optional[Union[FrameOrSeries, np.ndarray]] = ...,
-        pairwise: Optional[bool] = ...,
+        other: FrameOrSeries | np.ndarray | None = ...,
+        pairwise: bool | None = ...,
         **kwargs,
     ) -> FrameOrSeries: ...
 

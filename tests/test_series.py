@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 import tempfile
 from typing import (
@@ -8,7 +10,6 @@ from typing import (
     Iterator,
     List,
     Sequence,
-    Union,
     cast,
 )
 
@@ -527,7 +528,7 @@ def test_types_set_flags() -> None:
 
 def test_types_getitem() -> None:
     s = pd.Series({"key": [0, 1, 2, 3]})
-    key: List[int] = s["key"]
+    key: list[int] = s["key"]
     s2 = pd.Series([0, 1, 2, 3])
     value: int = s2[0]
     s3: pd.Series = s[:2]
@@ -545,12 +546,10 @@ def test_types_rename_axis() -> None:
 
 
 def test_types_values() -> None:
-    n1: Union[np.ndarray, ExtensionArray] = pd.Series([1, 2, 3]).values
-    n2: Union[np.ndarray, ExtensionArray] = pd.Series(list("aabc")).values
-    n3: Union[np.ndarray, ExtensionArray] = (
-        pd.Series(list("aabc")).astype("category").values
-    )
-    n4: Union[np.ndarray, ExtensionArray] = pd.Series(
+    n1: np.ndarray | ExtensionArray = pd.Series([1, 2, 3]).values
+    n2: np.ndarray | ExtensionArray = pd.Series(list("aabc")).values
+    n3: np.ndarray | ExtensionArray = pd.Series(list("aabc")).astype("category").values
+    n4: np.ndarray | ExtensionArray = pd.Series(
         pd.date_range("20130101", periods=3, tz="US/Eastern")
     ).values
 

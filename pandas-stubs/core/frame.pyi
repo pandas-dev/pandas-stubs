@@ -6,18 +6,13 @@ from typing import (
     Any,
     Callable,
     ClassVar,
-    Dict,
     Hashable,
     Iterable,
     Iterator,
-    List,
     Literal,
     Mapping,
-    Optional,
     Pattern,
     Sequence,
-    Tuple,
-    Type,
     Union,
     overload,
 )
@@ -86,95 +81,83 @@ _bool = bool
 
 class _iLocIndexerFrame(_iLocIndexer):
     @overload
-    def __getitem__(self, idx: Tuple[int, int]) -> Scalar: ...
+    def __getitem__(self, idx: tuple[int, int]) -> Scalar: ...
     @overload
     def __getitem__(self, idx: IndexingInt) -> Series: ...
     @overload
-    def __getitem__(self, idx: Tuple[Union[IndexType, MaskType], int]) -> Series: ...
+    def __getitem__(self, idx: tuple[IndexType | MaskType, int]) -> Series: ...
     @overload
-    def __getitem__(self, idx: Tuple[int, Union[IndexType, MaskType]]) -> Series: ...
+    def __getitem__(self, idx: tuple[int, IndexType | MaskType]) -> Series: ...
     @overload
     def __getitem__(
         self,
-        idx: Union[
-            IndexType,
-            MaskType,
-            Tuple[Union[IndexType, MaskType], Union[IndexType, MaskType]],
-        ],
+        idx: IndexType | MaskType | tuple[IndexType | MaskType, IndexType | MaskType],
     ) -> DataFrame: ...
     def __setitem__(
         self,
-        idx: Union[
-            int,
-            IndexType,
-            Tuple[int, int],
-            Tuple[IndexType, int],
-            Tuple[IndexType, IndexType],
-            Tuple[int, IndexType],
-        ],
-        value: Union[float, Series, DataFrame, np.ndarray],
+        idx: int
+        | IndexType
+        | tuple[int, int]
+        | tuple[IndexType, int]
+        | tuple[IndexType, IndexType]
+        | tuple[int, IndexType],
+        value: float | Series | DataFrame | np.ndarray,
     ) -> None: ...
 
 class _LocIndexerFrame(_LocIndexer):
     @overload
     def __getitem__(
         self,
-        idx: Union[
-            Union[IndexType, MaskType],
-            List[StrLike],
-            Tuple[
-                Union[
-                    IndexType,
-                    MaskType,
-                    slice,
-                    List[StrLike],
-                    Tuple[Union[str, int, slice], ...],
-                ],
-                Union[List[StrLike], slice, Series[bool], Callable],
-            ],
+        idx: IndexType
+        | MaskType
+        | list[StrLike]
+        | tuple[
+            IndexType
+            | MaskType
+            | slice
+            | list[StrLike]
+            | tuple[str | int | slice, ...],
+            list[StrLike] | slice | Series[bool] | Callable,
         ],
     ) -> DataFrame: ...
     @overload
     def __getitem__(
         self,
-        idx: Tuple[Union[Union[int, StrLike], Tuple[StrLike, ...]], StrLike],
+        idx: tuple[int | StrLike | tuple[StrLike, ...], StrLike],
     ) -> Scalar: ...
     @overload
     def __getitem__(
         self,
-        idx: Union[
-            Union[ScalarT, None],
-            Tuple[Union[IndexType, MaskType, Tuple[slice, ...]], Union[ScalarT, None]],
-        ],
+        idx: ScalarT
+        | tuple[IndexType | MaskType | tuple[slice, ...], ScalarT | None]
+        | None,
     ) -> Series: ...
     @overload
     def __setitem__(
         self,
-        idx: Union[
-            MaskType,
-            StrLike,
-            Tuple[Union[MaskType, Index, Sequence[Scalar], Scalar, slice], ...],
-        ],
-        value: Union[S1, ArrayLike, Series, DataFrame],
+        idx: MaskType
+        | StrLike
+        | tuple[MaskType | Index | Sequence[Scalar] | Scalar | slice, ...],
+        value: S1 | ArrayLike | Series | DataFrame,
     ) -> None: ...
     @overload
     def __setitem__(
         self,
-        idx: Tuple[Tuple[Union[StrLike, Scalar, slice], ...], StrLike],
-        value: Union[S1, ArrayLike, Series[S1], List],
+        idx: tuple[tuple[StrLike | Scalar | slice, ...], StrLike],
+        value: S1 | ArrayLike | Series[S1] | list,
     ) -> None: ...
     @overload
     def __setitem__(
         self,
-        idx: Tuple[Tuple[Union[StrLike, Scalar, slice], ...], StrLike],
-        value: Union[S1, ArrayLike, Series[S1], List],
+        idx: tuple[tuple[StrLike | Scalar | slice, ...], StrLike],
+        value: S1 | ArrayLike | Series[S1] | list,
     ) -> None: ...
 
 class DataFrame(NDFrame, OpsMixin):
     _ListLike = Union[
         np.ndarray,
-        List[Dtype],
-        Dict[_str, np.ndarray],
+        list[Dtype],
+        dict[_str, np.ndarray],
         Sequence,
         Index,
         Series,
@@ -183,25 +166,25 @@ class DataFrame(NDFrame, OpsMixin):
 
     def __new__(
         cls,
-        data: Optional[Union[_ListLike, DataFrame, Dict[Any, Any]]] = ...,
-        index: Optional[Axes] = ...,
-        columns: Optional[Axes] = ...,
+        data: _ListLike | DataFrame | dict[Any, Any] | None = ...,
+        index: Axes | None = ...,
+        columns: Axes | None = ...,
         dtype=...,
         copy: _bool = ...,
     ) -> DataFrame: ...
     @property
-    def axes(self) -> List[Index]: ...
+    def axes(self) -> list[Index]: ...
     @property
-    def shape(self) -> Tuple[int, int]: ...
+    def shape(self) -> tuple[int, int]: ...
     @property
     def style(self) -> Styler: ...
-    def items(self) -> Iterable[Tuple[Hashable, Series]]: ...
-    def iteritems(self) -> Iterable[Tuple[Label, Series]]: ...
-    def iterrows(self) -> Iterable[Tuple[Label, Series]]: ...
-    def itertuples(self, index: _bool = ..., name: Optional[str] = ...): ...
+    def items(self) -> Iterable[tuple[Hashable, Series]]: ...
+    def iteritems(self) -> Iterable[tuple[Label, Series]]: ...
+    def iterrows(self) -> Iterable[tuple[Label, Series]]: ...
+    def itertuples(self, index: _bool = ..., name: _str | None = ...): ...
     def __len__(self) -> int: ...
     @overload
-    def dot(self, other: Union[DataFrame, ArrayLike]) -> DataFrame: ...
+    def dot(self, other: DataFrame | ArrayLike) -> DataFrame: ...
     @overload
     def dot(self, other: Series) -> Series: ...
     def __matmul__(self, other): ...
@@ -209,29 +192,29 @@ class DataFrame(NDFrame, OpsMixin):
     @classmethod
     def from_dict(
         cls,
-        data: Dict[Any, Any],
+        data: dict[Any, Any],
         orient: Literal["columns", "index", "tight"] = ...,
         dtype: _str = ...,
-        columns: List[_str] = ...,
+        columns: list[_str] = ...,
     ) -> DataFrame: ...
     def to_numpy(
         self,
-        dtype: Optional[Union[Type[DtypeNp], Dtype]] = ...,
+        dtype: type[DtypeNp] | Dtype | None = ...,
         copy: _bool = ...,
-        na_value: Optional[Any] = ...,
+        na_value: Any | None = ...,
     ) -> np.ndarray: ...
     @overload
     def to_dict(
         self,
         orient: Literal["records"],
         into: Hashable = ...,
-    ) -> List[Dict[_str, Any]]: ...
+    ) -> list[dict[_str, Any]]: ...
     @overload
     def to_dict(
         self,
         orient: Literal["dict", "list", "series", "split", "tight", "index"] = ...,
         into: Hashable = ...,
-    ) -> Dict[_str, Any]: ...
+    ) -> dict[_str, Any]: ...
     def to_gbq(
         self,
         destination_table,
@@ -252,37 +235,37 @@ class DataFrame(NDFrame, OpsMixin):
     def to_records(
         self,
         index: _bool = ...,
-        columnDTypes: Optional[Union[_str, Dict]] = ...,
-        indexDTypes: Optional[Union[_str, Dict]] = ...,
+        columnDTypes: _str | dict | None = ...,
+        indexDTypes: _str | dict | None = ...,
     ) -> np.recarray: ...
     def to_stata(
         self,
         path: FilePathOrBuffer,
-        convert_dates: Optional[Dict] = ...,
+        convert_dates: dict | None = ...,
         write_index: _bool = ...,
-        byteorder: Optional[Union[_str, Literal["<", ">", "little", "big"]]] = ...,
+        byteorder: _str | Literal["<", ">", "little", "big"] | None = ...,
         time_stamp=...,
-        data_label: Optional[_str] = ...,
-        variable_labels: Optional[Dict] = ...,
+        data_label: _str | None = ...,
+        variable_labels: dict | None = ...,
         version: int = ...,
-        convert_strl: Optional[List[_str]] = ...,
+        convert_strl: list[_str] | None = ...,
     ) -> None: ...
     def to_feather(self, path: FilePathOrBuffer, **kwargs) -> None: ...
     @overload
     def to_markdown(
-        self, buf: Optional[FilePathOrBuffer], mode: Optional[_str] = ..., **kwargs
+        self, buf: FilePathOrBuffer | None, mode: _str | None = ..., **kwargs
     ) -> None: ...
     @overload
-    def to_markdown(self, mode: Optional[_str] = ..., **kwargs) -> _str: ...
+    def to_markdown(self, mode: _str | None = ..., **kwargs) -> _str: ...
     @overload
     def to_parquet(
         self,
         path: FilePathOrBytesBuffer,
         *,
-        engine: Union[_str, Literal["auto", "pyarrow", "fastparquet"]] = ...,
-        compression: Union[_str, Literal["snappy", "gzip", "brotli"]] = ...,
-        index: Optional[_bool] = ...,
-        partition_cols: Optional[List] = ...,
+        engine: _str | Literal["auto", "pyarrow", "fastparquet"] = ...,
+        compression: _str | Literal["snappy", "gzip", "brotli"] = ...,
+        index: _bool | None = ...,
+        partition_cols: list | None = ...,
         **kwargs,
     ) -> None: ...
     @overload
@@ -290,64 +273,64 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         *,
         path: None = ...,
-        engine: Union[_str, Literal["auto", "pyarrow", "fastparquet"]] = ...,
-        compression: Union[_str, Literal["snappy", "gzip", "brotli"]] = ...,
-        index: Optional[_bool] = ...,
-        partition_cols: Optional[List] = ...,
+        engine: _str | Literal["auto", "pyarrow", "fastparquet"] = ...,
+        compression: _str | Literal["snappy", "gzip", "brotli"] = ...,
+        index: _bool | None = ...,
+        partition_cols: list | None = ...,
         **kwargs,
     ) -> bytes: ...
     @overload
     def to_html(
         self,
-        buf: Optional[FilePathOrBuffer],
-        columns: Optional[Sequence[_str]] = ...,
-        col_space: Optional[Union[int, List[int], Dict[Union[_str, int], int]]] = ...,
+        buf: FilePathOrBuffer | None,
+        columns: Sequence[_str] | None = ...,
+        col_space: int | list[int] | dict[_str | int, int] | None = ...,
         header: _bool = ...,
         index: _bool = ...,
         na_rep: _str = ...,
         formatters=...,
         float_format=...,
-        sparsify: Optional[_bool] = ...,
+        sparsify: _bool | None = ...,
         index_names: _bool = ...,
-        justify: Optional[_str] = ...,
-        max_rows: Optional[int] = ...,
-        max_cols: Optional[int] = ...,
+        justify: _str | None = ...,
+        max_rows: int | None = ...,
+        max_cols: int | None = ...,
         show_dimensions: _bool = ...,
         decimal: _str = ...,
         bold_rows: _bool = ...,
-        classes: Optional[Union[_str, List, Tuple]] = ...,
+        classes: _str | list | tuple | None = ...,
         escape: _bool = ...,
         notebook: _bool = ...,
-        border: Optional[int] = ...,
-        table_id: Optional[_str] = ...,
+        border: int | None = ...,
+        table_id: _str | None = ...,
         render_links: _bool = ...,
-        encoding: Optional[_str] = ...,
+        encoding: _str | None = ...,
     ) -> None: ...
     @overload
     def to_html(
         self,
-        columns: Optional[Sequence[_str]] = ...,
-        col_space: Optional[Union[int, List[int], Dict[Union[_str, int], int]]] = ...,
+        columns: Sequence[_str] | None = ...,
+        col_space: int | list[int] | dict[_str | int, int] | None = ...,
         header: _bool = ...,
         index: _bool = ...,
         na_rep: _str = ...,
         formatters=...,
         float_format=...,
-        sparsify: Optional[_bool] = ...,
+        sparsify: _bool | None = ...,
         index_names: _bool = ...,
-        justify: Optional[_str] = ...,
-        max_rows: Optional[int] = ...,
-        max_cols: Optional[int] = ...,
+        justify: _str | None = ...,
+        max_rows: int | None = ...,
+        max_cols: int | None = ...,
         show_dimensions: _bool = ...,
         decimal: _str = ...,
         bold_rows: _bool = ...,
-        classes: Optional[Union[_str, List, Tuple]] = ...,
+        classes: _str | list | tuple | None = ...,
         escape: _bool = ...,
         notebook: _bool = ...,
-        border: Optional[int] = ...,
-        table_id: Optional[_str] = ...,
+        border: int | None = ...,
+        table_id: _str | None = ...,
         render_links: _bool = ...,
-        encoding: Optional[_str] = ...,
+        encoding: _str | None = ...,
     ) -> _str: ...
     def info(
         self, verbose=..., buf=..., max_cols=..., memory_usage=..., null_counts=...
@@ -363,17 +346,15 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def __getitem__(
         self,
-        idx: Union[
-            Tuple,
-            Series[_bool],
-            DataFrame,
-            List[_str],
-            List[ScalarT],
-            Index,
-            np_ndarray_str,
-            np_ndarray_bool,
-            Sequence[Tuple[Scalar, ...]],
-        ],
+        idx: tuple
+        | Series[_bool]
+        | DataFrame
+        | list[_str]
+        | list[ScalarT]
+        | Index
+        | np_ndarray_str
+        | np_ndarray_bool
+        | Sequence[tuple[Scalar, ...]],
     ) -> DataFrame: ...
     def __setitem__(self, key, value): ...
     @overload
@@ -385,45 +366,43 @@ class DataFrame(NDFrame, OpsMixin):
     def eval(self, expr: _str, inplace: _bool = ..., **kwargs): ...
     def select_dtypes(
         self,
-        include: Optional[Union[_str, List[_str]]] = ...,
-        exclude: Optional[Union[_str, List[_str]]] = ...,
+        include: _str | list[_str] | None = ...,
+        exclude: _str | list[_str] | None = ...,
     ) -> DataFrame: ...
     def insert(
         self,
         loc: int,
         column,
-        value: Union[int, _ListLike],
+        value: int | _ListLike,
         allow_duplicates: _bool = ...,
     ) -> None: ...
     def assign(self, **kwargs) -> DataFrame: ...
     def lookup(self, row_labels: Sequence, col_labels: Sequence) -> np.ndarray: ...
     def align(
         self,
-        other: Union[DataFrame, Series],
-        join: Union[_str, Literal["inner", "outer", "left", "right"]] = ...,
-        axis: Optional[AxisType] = ...,
-        level: Optional[Level] = ...,
+        other: DataFrame | Series,
+        join: _str | Literal["inner", "outer", "left", "right"] = ...,
+        axis: AxisType | None = ...,
+        level: Level | None = ...,
         copy: _bool = ...,
         fill_value=...,
-        method: Optional[
-            Union[_str, Literal["backfill", "bfill", "pad", "ffill"]]
-        ] = ...,
-        limit: Optional[int] = ...,
+        method: _str | Literal["backfill", "bfill", "pad", "ffill"] | None = ...,
+        limit: int | None = ...,
         fill_axis: AxisType = ...,
-        broadcast_axis: Optional[AxisType] = ...,
+        broadcast_axis: AxisType | None = ...,
     ) -> DataFrame: ...
     def reindex(
         self,
-        labels: Optional[Axes] = ...,
-        index: Optional[Axes] = ...,
-        columns: Optional[Axes] = ...,
-        axis: Optional[AxisType] = ...,
-        method: Optional[Literal["backfill", "bfill", "pad", "ffill", "nearest"]] = ...,
+        labels: Axes | None = ...,
+        index: Axes | None = ...,
+        columns: Axes | None = ...,
+        axis: AxisType | None = ...,
+        method: Literal["backfill", "bfill", "pad", "ffill", "nearest"] | None = ...,
         copy: bool = ...,
-        level: Union[int, str] = ...,
-        fill_value: Optional[Scalar] = ...,
-        limit: Optional[int] = ...,
-        tolerance: Optional[float] = ...,
+        level: int | _str = ...,
+        fill_value: Scalar | None = ...,
+        limit: int | None = ...,
+        tolerance: float | None = ...,
     ) -> DataFrame: ...
     @overload
     def drop(
@@ -433,7 +412,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: Axis = ...,
         index: Hashable | Sequence[Hashable] = ...,
         columns: Hashable | Sequence[Hashable] | Index = ...,
-        level: Optional[Level] = ...,
+        level: Level | None = ...,
         inplace: Literal[True],
         errors: IgnoreRaise = ...,
     ) -> None: ...
@@ -445,7 +424,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: Axis = ...,
         index: Hashable | Sequence[Hashable] = ...,
         columns: Hashable | Sequence[Hashable] | Index = ...,
-        level: Optional[Level] = ...,
+        level: Level | None = ...,
         inplace: Literal[False] = ...,
         errors: IgnoreRaise = ...,
     ) -> DataFrame: ...
@@ -457,103 +436,99 @@ class DataFrame(NDFrame, OpsMixin):
         axis: Axis = ...,
         index: Hashable | Sequence[Hashable] = ...,
         columns: Hashable | Sequence[Hashable] | Index = ...,
-        level: Optional[Level] = ...,
+        level: Level | None = ...,
         inplace: bool = ...,
         errors: IgnoreRaise = ...,
     ) -> DataFrame | None: ...
     @overload
     def rename(
         self,
-        mapper: Optional[Renamer] = ...,
+        mapper: Renamer | None = ...,
         *,
-        index: Optional[Renamer] = ...,
-        columns: Optional[Renamer] = ...,
-        axis: Optional[Axis] = ...,
+        index: Renamer | None = ...,
+        columns: Renamer | None = ...,
+        axis: Axis | None = ...,
         copy: bool = ...,
         inplace: Literal[True],
-        level: Optional[Level] = ...,
+        level: Level | None = ...,
         errors: IgnoreRaise = ...,
     ) -> None: ...
     @overload
     def rename(
         self,
-        mapper: Optional[Renamer] = ...,
+        mapper: Renamer | None = ...,
         *,
-        index: Optional[Renamer] = ...,
-        columns: Optional[Renamer] = ...,
-        axis: Optional[Axis] = ...,
+        index: Renamer | None = ...,
+        columns: Renamer | None = ...,
+        axis: Axis | None = ...,
         copy: bool = ...,
         inplace: Literal[False] = ...,
-        level: Optional[Level] = ...,
+        level: Level | None = ...,
         errors: IgnoreRaise = ...,
     ) -> DataFrame: ...
     @overload
     def rename(
         self,
-        mapper: Optional[Renamer] = ...,
+        mapper: Renamer | None = ...,
         *,
-        index: Optional[Renamer] = ...,
-        columns: Optional[Renamer] = ...,
-        axis: Optional[Axis] = ...,
+        index: Renamer | None = ...,
+        columns: Renamer | None = ...,
+        axis: Axis | None = ...,
         copy: bool = ...,
         inplace: bool = ...,
-        level: Optional[Level] = ...,
+        level: Level | None = ...,
         errors: IgnoreRaise = ...,
-    ) -> Optional[DataFrame]: ...
+    ) -> DataFrame | None: ...
     @overload
     def fillna(
         self,
-        value: Optional[Union[Scalar, Dict, Series, DataFrame]] = ...,
-        method: Optional[Literal["backfill", "bfill", "ffill", "pad"]] = ...,
-        axis: Optional[AxisType] = ...,
+        value: Scalar | dict | Series | DataFrame | None = ...,
+        method: Literal["backfill", "bfill", "ffill", "pad"] | None = ...,
+        axis: AxisType | None = ...,
         limit: int = ...,
-        downcast: Optional[Dict] = ...,
+        downcast: dict | None = ...,
         *,
         inplace: Literal[True],
     ) -> None: ...
     @overload
     def fillna(
         self,
-        value: Optional[Union[Scalar, Dict, Series, DataFrame]] = ...,
-        method: Optional[Literal["backfill", "bfill", "ffill", "pad"]] = ...,
-        axis: Optional[AxisType] = ...,
+        value: Scalar | dict | Series | DataFrame | None = ...,
+        method: Literal["backfill", "bfill", "ffill", "pad"] | None = ...,
+        axis: AxisType | None = ...,
         limit: int = ...,
-        downcast: Optional[Dict] = ...,
+        downcast: dict | None = ...,
         *,
         inplace: Literal[False] = ...,
     ) -> DataFrame: ...
     @overload
     def fillna(
         self,
-        value: Optional[Union[Scalar, Dict, Series, DataFrame]] = ...,
-        method: Optional[
-            Union[_str, Literal["backfill", "bfill", "ffill", "pad"]]
-        ] = ...,
-        axis: Optional[AxisType] = ...,
+        value: Scalar | dict | Series | DataFrame | None = ...,
+        method: _str | Literal["backfill", "bfill", "ffill", "pad"] | None = ...,
+        axis: AxisType | None = ...,
         *,
         limit: int = ...,
-        downcast: Optional[Dict] = ...,
-    ) -> Union[None, DataFrame]: ...
+        downcast: dict | None = ...,
+    ) -> DataFrame | None: ...
     @overload
     def fillna(
         self,
-        value: Optional[Union[Scalar, Dict, Series, DataFrame]] = ...,
-        method: Optional[
-            Union[_str, Literal["backfill", "bfill", "ffill", "pad"]]
-        ] = ...,
-        axis: Optional[AxisType] = ...,
-        inplace: Optional[_bool] = ...,
+        value: Scalar | dict | Series | DataFrame | None = ...,
+        method: _str | Literal["backfill", "bfill", "ffill", "pad"] | None = ...,
+        axis: AxisType | None = ...,
+        inplace: _bool | None = ...,
         limit: int = ...,
-        downcast: Optional[Dict] = ...,
-    ) -> Union[None, DataFrame]: ...
+        downcast: dict | None = ...,
+    ) -> DataFrame | None: ...
     @overload
     def replace(
         self,
         to_replace=...,
-        value: Optional[Union[Scalar, Sequence, Mapping, Pattern]] = ...,
-        limit: Optional[int] = ...,
+        value: Scalar | Sequence | Mapping | Pattern | None = ...,
+        limit: int | None = ...,
         regex=...,
-        method: Optional[_str] = ...,
+        method: _str | None = ...,
         *,
         inplace: Literal[True],
     ) -> None: ...
@@ -561,35 +536,38 @@ class DataFrame(NDFrame, OpsMixin):
     def replace(
         self,
         to_replace=...,
-        value: Optional[Union[Scalar, Sequence, Mapping, Pattern]] = ...,
+        value: Scalar | Sequence | Mapping | Pattern | None = ...,
         inplace: Literal[False] = ...,
-        limit: Optional[int] = ...,
+        limit: int | None = ...,
         regex=...,
-        method: Optional[_str] = ...,
+        method: _str | None = ...,
     ) -> DataFrame: ...
     @overload
     def replace(
         self,
         to_replace=...,
-        value: Optional[Union[Scalar, Sequence, Mapping, Pattern]] = ...,
-        inplace: Optional[_bool] = ...,
-        limit: Optional[int] = ...,
+        value: Scalar | Sequence | Mapping | Pattern | None = ...,
+        inplace: _bool | None = ...,
+        limit: int | None = ...,
         regex=...,
-        method: Optional[_str] = ...,
-    ) -> Union[None, DataFrame]: ...
+        method: _str | None = ...,
+    ) -> DataFrame | None: ...
     def shift(
         self,
         periods: int = ...,
         freq=...,
         axis: AxisType = ...,
-        fill_value: Optional[Hashable] = ...,
+        fill_value: Hashable | None = ...,
     ) -> DataFrame: ...
     @overload
     def set_index(
         self,
-        keys: Union[
-            Label, Series, Index, np.ndarray, Iterator[HashableT], List[HashableT]
-        ],
+        keys: Label
+        | Series
+        | Index
+        | np.ndarray
+        | Iterator[HashableT]
+        | list[HashableT],
         drop: _bool = ...,
         append: _bool = ...,
         verify_integrity: _bool = ...,
@@ -599,9 +577,12 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def set_index(
         self,
-        keys: Union[
-            Label, Series, Index, np.ndarray, Iterator[HashableT], List[HashableT]
-        ],
+        keys: Label
+        | Series
+        | Index
+        | np.ndarray
+        | Iterator[HashableT]
+        | list[HashableT],
         drop: _bool = ...,
         append: _bool = ...,
         verify_integrity: _bool = ...,
@@ -611,9 +592,12 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def set_index(
         self,
-        keys: Union[
-            Label, Series, Index, np.ndarray, Iterator[HashableT], List[HashableT]
-        ],
+        keys: Label
+        | Series
+        | Index
+        | np.ndarray
+        | Iterator[HashableT]
+        | list[HashableT],
         drop: _bool = ...,
         append: _bool = ...,
         *,
@@ -622,20 +606,23 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def set_index(
         self,
-        keys: Union[
-            Label, Series, Index, np.ndarray, Iterator[HashableT], List[HashableT]
-        ],
+        keys: Label
+        | Series
+        | Index
+        | np.ndarray
+        | Iterator[HashableT]
+        | list[HashableT],
         drop: _bool = ...,
         append: _bool = ...,
-        inplace: Optional[_bool] = ...,
+        inplace: _bool | None = ...,
         verify_integrity: _bool = ...,
-    ) -> Union[None, DataFrame]: ...
+    ) -> DataFrame | None: ...
     @overload
     def reset_index(
         self,
-        level: Union[Level, Sequence[Level]] = ...,
+        level: Level | Sequence[Level] = ...,
         drop: _bool = ...,
-        col_level: Union[int, _str] = ...,
+        col_level: int | _str = ...,
         col_fill: Hashable = ...,
         *,
         inplace: Literal[True],
@@ -643,9 +630,9 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def reset_index(
         self,
-        level: Union[Level, Sequence[Level]] = ...,
+        level: Level | Sequence[Level] = ...,
         drop: _bool = ...,
-        col_level: Union[int, _str] = ...,
+        col_level: int | _str = ...,
         col_fill: Hashable = ...,
         *,
         inplace: Literal[False],
@@ -653,21 +640,21 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def reset_index(
         self,
-        level: Union[Level, Sequence[Level]] = ...,
+        level: Level | Sequence[Level] = ...,
         drop: _bool = ...,
         *,
-        col_level: Union[int, _str] = ...,
+        col_level: int | _str = ...,
         col_fill: Hashable = ...,
     ) -> DataFrame: ...
     @overload
     def reset_index(
         self,
-        level: Union[Level, Sequence[Level]] = ...,
+        level: Level | Sequence[Level] = ...,
         drop: _bool = ...,
-        inplace: Optional[_bool] = ...,
-        col_level: Union[int, _str] = ...,
+        inplace: _bool | None = ...,
+        col_level: int | _str = ...,
         col_fill: Hashable = ...,
-    ) -> Union[None, DataFrame]: ...
+    ) -> DataFrame | None: ...
     def isna(self) -> DataFrame: ...
     def isnull(self) -> DataFrame: ...
     def notna(self) -> DataFrame: ...
@@ -676,9 +663,9 @@ class DataFrame(NDFrame, OpsMixin):
     def dropna(
         self,
         axis: AxisType = ...,
-        how: Union[_str, Literal["any", "all"]] = ...,
-        thresh: Optional[int] = ...,
-        subset: Optional[List] = ...,
+        how: _str | Literal["any", "all"] = ...,
+        thresh: int | None = ...,
+        subset: list | None = ...,
         *,
         inplace: Literal[True],
     ) -> None: ...
@@ -686,9 +673,9 @@ class DataFrame(NDFrame, OpsMixin):
     def dropna(
         self,
         axis: AxisType = ...,
-        how: Union[_str, Literal["any", "all"]] = ...,
-        thresh: Optional[int] = ...,
-        subset: Optional[List] = ...,
+        how: _str | Literal["any", "all"] = ...,
+        thresh: int | None = ...,
+        subset: list | None = ...,
         *,
         inplace: Literal[False],
     ) -> DataFrame: ...
@@ -696,138 +683,138 @@ class DataFrame(NDFrame, OpsMixin):
     def dropna(
         self,
         axis: AxisType = ...,
-        how: Union[_str, Literal["any", "all"]] = ...,
-        thresh: Optional[int] = ...,
-        subset: Optional[List] = ...,
+        how: _str | Literal["any", "all"] = ...,
+        thresh: int | None = ...,
+        subset: list | None = ...,
     ) -> DataFrame: ...
     @overload
     def dropna(
         self,
         axis: AxisType = ...,
-        how: Union[_str, Literal["any", "all"]] = ...,
-        thresh: Optional[int] = ...,
-        subset: Optional[List] = ...,
-        inplace: Optional[_bool] = ...,
-    ) -> Union[None, DataFrame]: ...
+        how: _str | Literal["any", "all"] = ...,
+        thresh: int | None = ...,
+        subset: list | None = ...,
+        inplace: _bool | None = ...,
+    ) -> DataFrame | None: ...
     def drop_duplicates(
         self,
         subset=...,
-        keep: Union[_str, Literal["first", "last"], _bool] = ...,
+        keep: _str | Literal["first", "last"] | _bool = ...,
         inplace: _bool = ...,
         ignore_index: _bool = ...,
     ) -> DataFrame: ...
     def duplicated(
         self,
-        subset: Optional[Union[Hashable, Sequence[Hashable]]] = ...,
-        keep: Union[_str, Literal["first", "last"], _bool] = ...,
+        subset: Hashable | Sequence[Hashable] | None = ...,
+        keep: _str | Literal["first", "last"] | _bool = ...,
     ) -> Series: ...
     @overload
     def sort_values(
         self,
-        by: Union[_str, Sequence[_str]],
+        by: _str | Sequence[_str],
         axis: AxisType = ...,
-        ascending: Union[_bool, Sequence[_bool]] = ...,
-        kind: Union[_str, Literal["quicksort", "mergesort", "heapsort"]] = ...,
-        na_position: Union[_str, Literal["first", "last"]] = ...,
+        ascending: _bool | Sequence[_bool] = ...,
+        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: _str | Literal["first", "last"] = ...,
         ignore_index: _bool = ...,
         *,
         inplace: Literal[True],
-        key: Optional[Callable] = ...,
+        key: Callable | None = ...,
     ) -> None: ...
     @overload
     def sort_values(
         self,
-        by: Union[_str, Sequence[_str]],
+        by: _str | Sequence[_str],
         axis: AxisType = ...,
-        ascending: Union[_bool, Sequence[_bool]] = ...,
-        kind: Union[_str, Literal["quicksort", "mergesort", "heapsort"]] = ...,
-        na_position: Union[_str, Literal["first", "last"]] = ...,
+        ascending: _bool | Sequence[_bool] = ...,
+        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: _str | Literal["first", "last"] = ...,
         ignore_index: _bool = ...,
         *,
         inplace: Literal[False],
-        key: Optional[Callable] = ...,
+        key: Callable | None = ...,
     ) -> DataFrame: ...
     @overload
     def sort_values(
         self,
-        by: Union[_str, Sequence[_str]],
+        by: _str | Sequence[_str],
         axis: AxisType = ...,
-        ascending: Union[_bool, Sequence[_bool]] = ...,
+        ascending: _bool | Sequence[_bool] = ...,
         *,
-        kind: Union[_str, Literal["quicksort", "mergesort", "heapsort"]] = ...,
-        na_position: Union[_str, Literal["first", "last"]] = ...,
+        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: _str | Literal["first", "last"] = ...,
         ignore_index: _bool = ...,
-        key: Optional[Callable] = ...,
+        key: Callable | None = ...,
     ) -> DataFrame: ...
     @overload
     def sort_values(
         self,
-        by: Union[_str, Sequence[_str]],
+        by: _str | Sequence[_str],
         axis: AxisType = ...,
-        ascending: Union[_bool, Sequence[_bool]] = ...,
-        inplace: Optional[_bool] = ...,
-        kind: Union[_str, Literal["quicksort", "mergesort", "heapsort"]] = ...,
-        na_position: Union[_str, Literal["first", "last"]] = ...,
+        ascending: _bool | Sequence[_bool] = ...,
+        inplace: _bool | None = ...,
+        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: _str | Literal["first", "last"] = ...,
         ignore_index: _bool = ...,
-        key: Optional[Callable] = ...,
-    ) -> Union[None, DataFrame]: ...
+        key: Callable | None = ...,
+    ) -> DataFrame | None: ...
     @overload
     def sort_index(
         self,
         axis: AxisType = ...,
-        level: Optional[Level] = ...,
-        ascending: Union[_bool, Sequence[_bool]] = ...,
-        kind: Union[_str, Literal["quicksort", "mergesort", "heapsort"]] = ...,
-        na_position: Union[_str, Literal["first", "last"]] = ...,
+        level: Level | None = ...,
+        ascending: _bool | Sequence[_bool] = ...,
+        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: _str | Literal["first", "last"] = ...,
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
         *,
         inplace: Literal[True],
-        key: Optional[Callable] = ...,
+        key: Callable | None = ...,
     ) -> None: ...
     @overload
     def sort_index(
         self,
         axis: AxisType = ...,
-        level: Optional[Union[Level, List[int], List[_str]]] = ...,
-        ascending: Union[_bool, Sequence[_bool]] = ...,
-        kind: Union[_str, Literal["quicksort", "mergesort", "heapsort"]] = ...,
-        na_position: Union[_str, Literal["first", "last"]] = ...,
+        level: Level | list[int] | list[_str] | None = ...,
+        ascending: _bool | Sequence[_bool] = ...,
+        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: _str | Literal["first", "last"] = ...,
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
         *,
         inplace: Literal[False],
-        key: Optional[Callable] = ...,
+        key: Callable | None = ...,
     ) -> DataFrame: ...
     @overload
     def sort_index(
         self,
         axis: AxisType = ...,
-        level: Optional[Union[Level, List[int], List[_str]]] = ...,
-        ascending: Union[_bool, Sequence[_bool]] = ...,
+        level: Level | list[int] | list[_str] | None = ...,
+        ascending: _bool | Sequence[_bool] = ...,
         *,
-        kind: Union[_str, Literal["quicksort", "mergesort", "heapsort"]] = ...,
-        na_position: Union[_str, Literal["first", "last"]] = ...,
+        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: _str | Literal["first", "last"] = ...,
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
-        key: Optional[Callable] = ...,
+        key: Callable | None = ...,
     ) -> DataFrame: ...
     @overload
     def sort_index(
         self,
         axis: AxisType = ...,
-        level: Optional[Union[Level, List[int], List[_str]]] = ...,
-        ascending: Union[_bool, Sequence[_bool]] = ...,
-        inplace: Optional[_bool] = ...,
-        kind: Union[_str, Literal["quicksort", "mergesort", "heapsort"]] = ...,
-        na_position: Union[_str, Literal["first", "last"]] = ...,
+        level: Level | list[int] | list[_str] | None = ...,
+        ascending: _bool | Sequence[_bool] = ...,
+        inplace: _bool | None = ...,
+        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: _str | Literal["first", "last"] = ...,
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
-        key: Optional[Callable] = ...,
-    ) -> Union[None, DataFrame]: ...
+        key: Callable | None = ...,
+    ) -> DataFrame | None: ...
     def value_counts(
         self,
-        subset: Optional[Sequence[Hashable]] = ...,
+        subset: Sequence[Hashable] | None = ...,
         normalize: _bool = ...,
         sort: _bool = ...,
         ascending: _bool = ...,
@@ -836,19 +823,19 @@ class DataFrame(NDFrame, OpsMixin):
     def nlargest(
         self,
         n: int,
-        columns: Union[_str, List[_str]],
-        keep: Union[_str, Literal["first", "last", "all"]] = ...,
+        columns: _str | list[_str],
+        keep: _str | Literal["first", "last", "all"] = ...,
     ) -> DataFrame: ...
     def nsmallest(
         self,
         n: int,
-        columns: Union[_str, List[_str]],
-        keep: Union[_str, Literal["first", "last", "all"]] = ...,
+        columns: _str | list[_str],
+        keep: _str | Literal["first", "last", "all"] = ...,
     ) -> DataFrame: ...
     def swaplevel(
         self, i: Level = ..., j: Level = ..., axis: AxisType = ...
     ) -> DataFrame: ...
-    def reorder_levels(self, order: List, axis: AxisType = ...) -> DataFrame: ...
+    def reorder_levels(self, order: list, axis: AxisType = ...) -> DataFrame: ...
     def compare(
         self,
         other: DataFrame,
@@ -866,18 +853,18 @@ class DataFrame(NDFrame, OpsMixin):
     def combine_first(self, other: DataFrame) -> DataFrame: ...
     def update(
         self,
-        other: Union[DataFrame, Series],
+        other: DataFrame | Series,
         join: _str = ...,
         overwrite: _bool = ...,
-        filter_func: Optional[Callable] = ...,
-        errors: Union[_str, Literal["raise", "ignore"]] = ...,
+        filter_func: Callable | None = ...,
+        errors: _str | Literal["raise", "ignore"] = ...,
     ) -> None: ...
     @overload
     def groupby(
         self,
         by: Scalar,
         axis: AxisType = ...,
-        level: Optional[Level] = ...,
+        level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
@@ -888,9 +875,9 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def groupby(
         self,
-        by: Optional[GroupByObjectNonScalar] = ...,
+        by: GroupByObjectNonScalar | None = ...,
         axis: AxisType = ...,
-        level: Optional[Level] = ...,
+        level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
@@ -906,62 +893,56 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def pivot_table(
         self,
-        values: Optional[_str] = ...,
-        index: Optional[Union[_str, Grouper, Sequence]] = ...,
-        columns: Optional[Union[_str, Grouper, Sequence]] = ...,
+        values: _str | None = ...,
+        index: _str | Grouper | Sequence | None = ...,
+        columns: _str | Grouper | Sequence | None = ...,
         aggfunc=...,
-        fill_value: Optional[Scalar] = ...,
+        fill_value: Scalar | None = ...,
         margins: _bool = ...,
         dropna: _bool = ...,
         margins_name: _str = ...,
         observed: _bool = ...,
     ) -> DataFrame: ...
-    def stack(
-        self, level: Level = ..., dropna: _bool = ...
-    ) -> Union[DataFrame, Series]: ...
-    def explode(
-        self, column: Union[_str, Tuple], ignore_index: _bool = ...
-    ) -> DataFrame: ...
+    def stack(self, level: Level = ..., dropna: _bool = ...) -> DataFrame | Series: ...
+    def explode(self, column: _str | tuple, ignore_index: _bool = ...) -> DataFrame: ...
     def unstack(
         self,
         level: Level = ...,
-        fill_value: Optional[Union[int, _str, Dict]] = ...,
-    ) -> Union[DataFrame, Series]: ...
+        fill_value: int | _str | dict | None = ...,
+    ) -> DataFrame | Series: ...
     def melt(
         self,
-        id_vars: Optional[Union[Tuple, Sequence, np.ndarray]] = ...,
-        value_vars: Optional[Union[Tuple, Sequence, np.ndarray]] = ...,
-        var_name: Optional[Scalar] = ...,
+        id_vars: tuple | Sequence | np.ndarray | None = ...,
+        value_vars: tuple | Sequence | np.ndarray | None = ...,
+        var_name: Scalar | None = ...,
         value_name: Scalar = ...,
-        col_level: Optional[Union[int, _str]] = ...,
+        col_level: int | _str | None = ...,
         ignore_index: _bool = ...,
     ) -> DataFrame: ...
     def diff(self, periods: int = ..., axis: AxisType = ...) -> DataFrame: ...
     @overload
-    def agg(
-        self, func: Union[Callable, _str], axis: AxisType = ..., **kwargs
-    ) -> Series: ...
+    def agg(self, func: Callable | _str, axis: AxisType = ..., **kwargs) -> Series: ...
     @overload
     def agg(
         self,
-        func: Union[List[Callable], Dict[_str, Callable]] = ...,
+        func: list[Callable] | dict[_str, Callable] = ...,
         axis: AxisType = ...,
         **kwargs,
     ) -> DataFrame: ...
     @overload
     def aggregate(
-        self, func: Union[Callable, _str], axis: AxisType = ..., **kwargs
+        self, func: Callable | _str, axis: AxisType = ..., **kwargs
     ) -> Series: ...
     @overload
     def aggregate(
         self,
-        func: Union[List[Callable], Dict[_str, Callable]],
+        func: list[Callable] | dict[_str, Callable],
         axis: AxisType = ...,
         **kwargs,
     ) -> DataFrame: ...
     def transform(
         self,
-        func: Union[List[Callable], Dict[_str, Callable]],
+        func: list[Callable] | dict[_str, Callable],
         axis: AxisType = ...,
         *args,
         **kwargs,
@@ -974,61 +955,63 @@ class DataFrame(NDFrame, OpsMixin):
         f: Callable,
         axis: AxisType,
         raw: _bool = ...,
-        result_type: Optional[_str] = ...,
+        result_type: _str | None = ...,
         args=...,
         **kwargs,
     ) -> DataFrame: ...
     def applymap(
-        self, func: Callable, na_action: Optional[Literal["ignore"]] = ..., **kwargs
+        self, func: Callable, na_action: Literal["ignore"] | None = ..., **kwargs
     ) -> DataFrame: ...
     def append(
         self,
-        other: Union[
-            DataFrame, Series, Dict[Any, Any], Sequence[Scalar], Sequence[_ListLike]
-        ],
+        other: DataFrame
+        | Series
+        | dict[Any, Any]
+        | Sequence[Scalar]
+        | Sequence[_ListLike],
         ignore_index: _bool = ...,
         verify_integrity: _bool = ...,
         sort: _bool = ...,
     ) -> DataFrame: ...
     def join(
         self,
-        other: Union[DataFrame, Series, List[Union[DataFrame, Series]]],
-        on: Optional[Union[_str, List[_str]]] = ...,
-        how: Union[_str, Literal["left", "right", "outer", "inner"]] = ...,
+        other: DataFrame | Series | list[DataFrame | Series],
+        on: _str | list[_str] | None = ...,
+        how: _str | Literal["left", "right", "outer", "inner"] = ...,
         lsuffix: _str = ...,
         rsuffix: _str = ...,
         sort: _bool = ...,
     ) -> DataFrame: ...
     def merge(
         self,
-        right: Union[DataFrame, Series],
-        how: Union[_str, Literal["left", "right", "inner", "outer"]] = ...,
-        on: Optional[IndexLabel] = ...,
-        left_on: Optional[IndexLabel] = ...,
-        right_on: Optional[IndexLabel] = ...,
+        right: DataFrame | Series,
+        how: _str | Literal["left", "right", "inner", "outer"] = ...,
+        on: IndexLabel | None = ...,
+        left_on: IndexLabel | None = ...,
+        right_on: IndexLabel | None = ...,
         left_index: _bool = ...,
         right_index: _bool = ...,
         sort: _bool = ...,
-        suffixes: Tuple[Optional[_str], Optional[_str]] = ...,
+        suffixes: tuple[_str | None, _str | None] = ...,
         copy: _bool = ...,
-        indicator: Union[_bool, _str] = ...,
-        validate: Optional[_str] = ...,
+        indicator: _bool | _str = ...,
+        validate: _str | None = ...,
     ) -> DataFrame: ...
     def round(
-        self, decimals: Union[int, Dict, Series] = ..., *args, **kwargs
+        self, decimals: int | dict | Series = ..., *args, **kwargs
     ) -> DataFrame: ...
     def corr(
         self,
-        method: Union[_str, Literal["pearson", "kendall", "spearman"]] = ...,
+        method: _str | Literal["pearson", "kendall", "spearman"] = ...,
         min_periods: int = ...,
     ) -> DataFrame: ...
-    def cov(self, min_periods: Optional[int] = ..., ddof: int = ...) -> DataFrame: ...
+    def cov(self, min_periods: int | None = ..., ddof: int = ...) -> DataFrame: ...
     def corrwith(
         self,
-        other: Union[DataFrame, Series],
-        axis: Optional[AxisType] = ...,
+        other: DataFrame | Series,
+        axis: AxisType | None = ...,
         drop: _bool = ...,
-        method: Union[_str, Literal["pearson", "kendall", "spearman"]] = ...,
+        method: _str | Literal["pearson", "kendall", "spearman"] = ...,
     ) -> Series: ...
     @overload
     def count(
@@ -1066,63 +1049,61 @@ class DataFrame(NDFrame, OpsMixin):
         q: float = ...,
         axis: AxisType = ...,
         numeric_only: _bool = ...,
-        interpolation: Union[
-            _str, Literal["linear", "lower", "higher", "midpoint", "nearest"]
-        ] = ...,
+        interpolation: _str
+        | Literal["linear", "lower", "higher", "midpoint", "nearest"] = ...,
     ) -> Series: ...
     @overload
     def quantile(
         self,
-        q: Union[List[float], np.ndarray],
+        q: list[float] | np.ndarray,
         axis: AxisType = ...,
         numeric_only: _bool = ...,
-        interpolation: Union[
-            _str, Literal["linear", "lower", "higher", "midpoint", "nearest"]
-        ] = ...,
+        interpolation: _str
+        | Literal["linear", "lower", "higher", "midpoint", "nearest"] = ...,
     ) -> DataFrame: ...
     def to_timestamp(
         self,
         freq=...,
-        how: Union[_str, Literal["start", "end", "s", "e"]] = ...,
+        how: _str | Literal["start", "end", "s", "e"] = ...,
         axis: AxisType = ...,
         copy: _bool = ...,
     ) -> DataFrame: ...
     def to_period(
-        self, freq: Optional[_str] = ..., axis: AxisType = ..., copy: _bool = ...
+        self, freq: _str | None = ..., axis: AxisType = ..., copy: _bool = ...
     ) -> DataFrame: ...
-    def isin(self, values: Union[Iterable, Series, DataFrame, Dict]) -> DataFrame: ...
+    def isin(self, values: Iterable | Series | DataFrame | dict) -> DataFrame: ...
     @property
     def plot(self) -> PlotAccessor: ...
     def hist(
         self,
-        column: Optional[Union[_str, List[_str]]] = ...,
-        by: Optional[Union[_str, _ListLike]] = ...,
+        column: _str | list[_str] | None = ...,
+        by: _str | _ListLike | None = ...,
         grid: _bool = ...,
-        xlabelsize: Optional[int] = ...,
-        xrot: Optional[float] = ...,
-        ylabelsize: Optional[int] = ...,
-        yrot: Optional[float] = ...,
-        ax: Optional[PlotAxes] = ...,
+        xlabelsize: int | None = ...,
+        xrot: float | None = ...,
+        ylabelsize: int | None = ...,
+        yrot: float | None = ...,
+        ax: PlotAxes | None = ...,
         sharex: _bool = ...,
         sharey: _bool = ...,
-        figsize: Optional[Tuple[float, float]] = ...,
-        layout: Optional[Tuple[int, int]] = ...,
-        bins: Union[int, List] = ...,
-        backend: Optional[_str] = ...,
+        figsize: tuple[float, float] | None = ...,
+        layout: tuple[int, int] | None = ...,
+        bins: int | list = ...,
+        backend: _str | None = ...,
         **kwargs,
     ): ...
     def boxplot(
         self,
-        column: Optional[Union[_str, List[_str]]] = ...,
-        by: Optional[Union[_str, _ListLike]] = ...,
-        ax: Optional[PlotAxes] = ...,
-        fontsize: Optional[Union[float, _str]] = ...,
+        column: _str | list[_str] | None = ...,
+        by: _str | _ListLike | None = ...,
+        ax: PlotAxes | None = ...,
+        fontsize: float | _str | None = ...,
         rot: int = ...,
         grid: _bool = ...,
-        figsize: Optional[Tuple[float, float]] = ...,
-        layout: Optional[Tuple[int, int]] = ...,
-        return_type: Optional[Union[_str, Literal["axes", "dict", "both"]]] = ...,
-        backend: Optional[_str] = ...,
+        figsize: tuple[float, float] | None = ...,
+        layout: tuple[int, int] | None = ...,
+        return_type: _str | Literal["axes", "dict", "both"] | None = ...,
+        backend: _str | None = ...,
         **kwargs,
     ): ...
     sparse = ...
@@ -1137,12 +1118,12 @@ class DataFrame(NDFrame, OpsMixin):
     # dunder methods
     def __exp__(
         self,
-        other: Union[num, _ListLike, DataFrame],
+        other: num | _ListLike | DataFrame,
         axis: AxisType = ...,
         level: Level = ...,
-        fill_value: Union[None, float] = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
-    def __iter__(self) -> Iterator[Union[int, float, str]]: ...
+    def __iter__(self) -> Iterator[int | float | _str]: ...
     # properties
     @property
     def at(self): ...  # Not sure what to do with this yet; look at source
@@ -1151,7 +1132,7 @@ class DataFrame(NDFrame, OpsMixin):
     @property
     def columns(self) -> Index: ...
     @columns.setter  # setter needs to be right next to getter; otherwise mypy complains
-    def columns(self, cols: Union[List[_str], Index[_str]]) -> None: ...  # type: ignore[type-arg]
+    def columns(self, cols: list[_str] | Index[_str]) -> None: ...  # type: ignore[type-arg]
     @property
     def dtypes(self) -> Series: ...
     @property
@@ -1176,10 +1157,10 @@ class DataFrame(NDFrame, OpsMixin):
     def abs(self) -> DataFrame: ...
     def add(
         self,
-        other: Union[num, _ListLike, DataFrame],
-        axis: Optional[AxisType] = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        other: num | _ListLike | DataFrame,
+        axis: AxisType | None = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     def add_prefix(self, prefix: _str) -> DataFrame: ...
     def add_suffix(self, suffix: _str) -> DataFrame: ...
@@ -1187,7 +1168,7 @@ class DataFrame(NDFrame, OpsMixin):
     def all(
         self,
         axis: AxisType = ...,
-        bool_only: Optional[_bool] = ...,
+        bool_only: _bool | None = ...,
         skipna: _bool = ...,
         level: None = ...,
         **kwargs,
@@ -1196,7 +1177,7 @@ class DataFrame(NDFrame, OpsMixin):
     def all(
         self,
         axis: AxisType = ...,
-        bool_only: Optional[_bool] = ...,
+        bool_only: _bool | None = ...,
         skipna: _bool = ...,
         *,
         level: Level,
@@ -1206,7 +1187,7 @@ class DataFrame(NDFrame, OpsMixin):
     def any(
         self,
         axis: AxisType = ...,
-        bool_only: Optional[_bool] = ...,
+        bool_only: _bool | None = ...,
         skipna: _bool = ...,
         level: None = ...,
         **kwargs,
@@ -1221,113 +1202,109 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level,
         **kwargs,
     ) -> DataFrame: ...
-    def asof(
-        self, where, subset: Optional[Union[_str, List[_str]]] = ...
-    ) -> DataFrame: ...
+    def asof(self, where, subset: _str | list[_str] | None = ...) -> DataFrame: ...
     def asfreq(
         self,
         freq,
-        method: Optional[
-            Union[_str, Literal["backfill", "bfill", "pad", "ffill"]]
-        ] = ...,
-        how: Optional[Union[_str, Literal["start", "end"]]] = ...,
+        method: _str | Literal["backfill", "bfill", "pad", "ffill"] | None = ...,
+        how: _str | Literal["start", "end"] | None = ...,
         normalize: _bool = ...,
-        fill_value: Optional[Scalar] = ...,
+        fill_value: Scalar | None = ...,
     ) -> DataFrame: ...
     def astype(
         self,
-        dtype: Union[_str, Dtype, Dict[_str, Union[_str, Dtype]]],
+        dtype: _str | Dtype | dict[_str, _str | Dtype],
         copy: _bool = ...,
         errors: _str = ...,
     ) -> DataFrame: ...
     def at_time(
         self,
-        time: Union[_str, datetime.time],
+        time: _str | datetime.time,
         asof: _bool = ...,
-        axis: Optional[AxisType] = ...,
+        axis: AxisType | None = ...,
     ) -> DataFrame: ...
     def between_time(
         self,
-        start_time: Union[_str, datetime.time],
-        end_time: Union[_str, datetime.time],
+        start_time: _str | datetime.time,
+        end_time: _str | datetime.time,
         include_start: _bool = ...,
         include_end: _bool = ...,
-        axis: Optional[AxisType] = ...,
+        axis: AxisType | None = ...,
     ) -> DataFrame: ...
     @overload
     def bfill(
         self,
-        axis: Optional[AxisType] = ...,
+        axis: AxisType | None = ...,
         *,
         inplace: Literal[True],
-        limit: Optional[int] = ...,
-        downcast: Optional[Dict] = ...,
+        limit: int | None = ...,
+        downcast: dict | None = ...,
     ) -> None: ...
     @overload
     def bfill(
         self,
-        axis: Optional[AxisType] = ...,
+        axis: AxisType | None = ...,
         *,
         inplace: Literal[False] = ...,
-        limit: Optional[int] = ...,
-        downcast: Optional[Dict] = ...,
+        limit: int | None = ...,
+        downcast: dict | None = ...,
     ) -> DataFrame: ...
     def clip(
         self,
-        lower: Optional[float] = ...,
-        upper: Optional[float] = ...,
-        axis: Optional[AxisType] = ...,
+        lower: float | None = ...,
+        upper: float | None = ...,
+        axis: AxisType | None = ...,
         inplace: _bool = ...,
         *args,
         **kwargs,
     ) -> DataFrame: ...
     def copy(self, deep: _bool = ...) -> DataFrame: ...
     def cummax(
-        self, axis: Optional[AxisType] = ..., skipna: _bool = ..., *args, **kwargs
+        self, axis: AxisType | None = ..., skipna: _bool = ..., *args, **kwargs
     ) -> DataFrame: ...
     def cummin(
-        self, axis: Optional[AxisType] = ..., skipna: _bool = ..., *args, **kwargs
+        self, axis: AxisType | None = ..., skipna: _bool = ..., *args, **kwargs
     ) -> DataFrame: ...
     def cumprod(
-        self, axis: Optional[AxisType] = ..., skipna: _bool = ..., *args, **kwargs
+        self, axis: AxisType | None = ..., skipna: _bool = ..., *args, **kwargs
     ) -> DataFrame: ...
     def cumsum(
-        self, axis: Optional[AxisType] = ..., skipna: _bool = ..., *args, **kwargs
+        self, axis: AxisType | None = ..., skipna: _bool = ..., *args, **kwargs
     ) -> DataFrame: ...
     def describe(
         self,
-        percentiles: Optional[List[float]] = ...,
-        include: Optional[Union[_str, Literal["all"], List[Dtype]]] = ...,
-        exclude: Optional[List[Dtype]] = ...,
-        datetime_is_numeric: Optional[_bool] = ...,
+        percentiles: list[float] | None = ...,
+        include: _str | Literal["all"] | list[Dtype] | None = ...,
+        exclude: list[Dtype] | None = ...,
+        datetime_is_numeric: _bool | None = ...,
     ) -> DataFrame: ...
     def div(
         self,
-        other: Union[num, _ListLike, DataFrame],
-        axis: Optional[AxisType] = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        other: num | _ListLike | DataFrame,
+        axis: AxisType | None = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     def divide(
         self,
-        other: Union[num, _ListLike, DataFrame],
-        axis: Optional[AxisType] = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        other: num | _ListLike | DataFrame,
+        axis: AxisType | None = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     def droplevel(
-        self, level: Union[Level, List[Level]] = ..., axis: AxisType = ...
+        self, level: Level | list[Level] = ..., axis: AxisType = ...
     ) -> DataFrame: ...
     def eq(
-        self, other, axis: AxisType = ..., level: Optional[Level] = ...
+        self, other, axis: AxisType = ..., level: Level | None = ...
     ) -> DataFrame: ...
-    def equals(self, other: Union[Series, DataFrame]) -> _bool: ...
+    def equals(self, other: Series | DataFrame) -> _bool: ...
     def ewm(
         self,
-        com: Optional[float] = ...,
-        span: Optional[float] = ...,
-        halflife: Optional[float] = ...,
-        alpha: Optional[float] = ...,
+        com: float | None = ...,
+        span: float | None = ...,
+        halflife: float | None = ...,
+        alpha: float | None = ...,
         min_periods: int = ...,
         adjust: _bool = ...,
         ignore_na: _bool = ...,
@@ -1335,10 +1312,10 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def exp(
         self,
-        other: Union[num, _ListLike, DataFrame],
-        axis: Optional[AxisType] = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        other: num | _ListLike | DataFrame,
+        axis: AxisType | None = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     def expanding(
         self, min_periods: int = ..., center: _bool = ..., axis: AxisType = ...
@@ -1346,52 +1323,52 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def ffill(
         self,
-        axis: Optional[AxisType] = ...,
+        axis: AxisType | None = ...,
         *,
         inplace: Literal[True],
-        limit: Optional[int] = ...,
-        downcast: Optional[Dict] = ...,
+        limit: int | None = ...,
+        downcast: dict | None = ...,
     ) -> None: ...
     @overload
     def ffill(
         self,
-        axis: Optional[AxisType] = ...,
+        axis: AxisType | None = ...,
         *,
         inplace: Literal[False] = ...,
-        limit: Optional[int] = ...,
-        downcast: Optional[Dict] = ...,
+        limit: int | None = ...,
+        downcast: dict | None = ...,
     ) -> DataFrame: ...
     def filter(
         self,
-        items: Optional[List] = ...,
-        like: Optional[_str] = ...,
-        regex: Optional[_str] = ...,
-        axis: Optional[AxisType] = ...,
+        items: list | None = ...,
+        like: _str | None = ...,
+        regex: _str | None = ...,
+        axis: AxisType | None = ...,
     ) -> DataFrame: ...
     def first(self, offset) -> DataFrame: ...
     def first_valid_index(self) -> Scalar: ...
     def floordiv(
         self,
-        other: Union[num, _ListLike, DataFrame],
-        axis: Optional[AxisType] = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        other: num | _ListLike | DataFrame,
+        axis: AxisType | None = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     # def from_dict
     # def from_records
     def fulldiv(
         self,
-        other: Union[num, _ListLike, DataFrame],
-        axis: Optional[AxisType] = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        other: num | _ListLike | DataFrame,
+        axis: AxisType | None = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     def ge(
-        self, other, axis: AxisType = ..., level: Optional[Level] = ...
+        self, other, axis: AxisType = ..., level: Level | None = ...
     ) -> DataFrame: ...
     # def get
     def gt(
-        self, other, axis: AxisType = ..., level: Optional[Level] = ...
+        self, other, axis: AxisType = ..., level: Level | None = ...
     ) -> DataFrame: ...
     def head(self, n: int = ...) -> DataFrame: ...
     def infer_objects(self) -> DataFrame: ...
@@ -1401,10 +1378,10 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         method: _str = ...,
         axis: AxisType = ...,
-        limit: Optional[int] = ...,
-        limit_direction: Union[_str, Literal["forward", "backward", "both"]] = ...,
-        limit_area: Union[_str, Optional[Literal["inside", "outside"]]] = ...,
-        downcast: Optional[Union[_str, Literal["infer"]]] = ...,
+        limit: int | None = ...,
+        limit_direction: _str | Literal["forward", "backward", "both"] = ...,
+        limit_area: _str | Literal["inside", "outside"] | None = ...,
+        downcast: _str | Literal["infer"] | None = ...,
         *,
         inplace: Literal[True],
         **kwargs,
@@ -1414,10 +1391,10 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         method: _str = ...,
         axis: AxisType = ...,
-        limit: Optional[int] = ...,
-        limit_direction: Union[_str, Literal["forward", "backward", "both"]] = ...,
-        limit_area: Union[_str, Optional[Literal["inside", "outside"]]] = ...,
-        downcast: Optional[Union[_str, Literal["infer"]]] = ...,
+        limit: int | None = ...,
+        limit_direction: _str | Literal["forward", "backward", "both"] = ...,
+        limit_area: _str | Literal["inside", "outside"] | None = ...,
+        downcast: _str | Literal["infer"] | None = ...,
         *,
         inplace: Literal[False],
         **kwargs,
@@ -1427,30 +1404,30 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         method: _str = ...,
         axis: AxisType = ...,
-        limit: Optional[int] = ...,
-        limit_direction: Union[_str, Literal["forward", "backward", "both"]] = ...,
-        limit_area: Union[_str, Optional[Literal["inside", "outside"]]] = ...,
-        downcast: Optional[Union[_str, Literal["infer"]]] = ...,
+        limit: int | None = ...,
+        limit_direction: _str | Literal["forward", "backward", "both"] = ...,
+        limit_area: _str | Literal["inside", "outside"] | None = ...,
+        downcast: _str | Literal["infer"] | None = ...,
     ) -> DataFrame: ...
     @overload
     def interpolate(
         self,
         method: _str = ...,
         axis: AxisType = ...,
-        limit: Optional[int] = ...,
-        inplace: Optional[_bool] = ...,
-        limit_direction: Union[_str, Literal["forward", "backward", "both"]] = ...,
-        limit_area: Optional[Union[_str, Literal["inside", "outside"]]] = ...,
-        downcast: Optional[Union[_str, Literal["infer"]]] = ...,
+        limit: int | None = ...,
+        inplace: _bool | None = ...,
+        limit_direction: _str | Literal["forward", "backward", "both"] = ...,
+        limit_area: _str | Literal["inside", "outside"] | None = ...,
+        downcast: _str | Literal["infer"] | None = ...,
         **kwargs,
     ) -> DataFrame: ...
     def keys(self) -> Index: ...
     @overload
     def kurt(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
-        numeric_only: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
+        numeric_only: _bool | None = ...,
         *,
         level: Level,
         **kwargs,
@@ -1458,18 +1435,18 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def kurt(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: Optional[_bool] = ...,
+        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
     @overload
     def kurtosis(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
-        numeric_only: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
+        numeric_only: _bool | None = ...,
         *,
         level: Level,
         **kwargs,
@@ -1477,52 +1454,52 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def kurtosis(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: Optional[_bool] = ...,
+        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
     def last(self, offset) -> DataFrame: ...
     def last_valid_index(self) -> Scalar: ...
     def le(
-        self, other, axis: AxisType = ..., level: Optional[Level] = ...
+        self, other, axis: AxisType = ..., level: Level | None = ...
     ) -> DataFrame: ...
     def lt(
-        self, other, axis: AxisType = ..., level: Optional[Level] = ...
+        self, other, axis: AxisType = ..., level: Level | None = ...
     ) -> DataFrame: ...
     @overload
     def mad(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
         level: None = ...,
     ) -> Series: ...
     @overload
     def mad(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
         *,
         level: Level,
         **kwargs,
     ) -> DataFrame: ...
     def mask(
         self,
-        cond: Union[Series, DataFrame, np.ndarray],
+        cond: Series | DataFrame | np.ndarray,
         other=...,
         inplace: _bool = ...,
-        axis: Optional[AxisType] = ...,
-        level: Optional[Level] = ...,
+        axis: AxisType | None = ...,
+        level: Level | None = ...,
         errors: _str = ...,
         try_cast: _bool = ...,
     ) -> DataFrame: ...
     @overload
     def max(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
-        numeric_only: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
+        numeric_only: _bool | None = ...,
         *,
         level: Level,
         **kwargs,
@@ -1530,18 +1507,18 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def max(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: Optional[_bool] = ...,
+        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
     @overload
     def mean(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
-        numeric_only: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
+        numeric_only: _bool | None = ...,
         *,
         level: Level,
         **kwargs,
@@ -1549,18 +1526,18 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def mean(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: Optional[_bool] = ...,
+        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
     @overload
     def median(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
-        numeric_only: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
+        numeric_only: _bool | None = ...,
         *,
         level: Level,
         **kwargs,
@@ -1568,18 +1545,18 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def median(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: Optional[_bool] = ...,
+        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
     @overload
     def min(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
-        numeric_only: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
+        numeric_only: _bool | None = ...,
         *,
         level: Level,
         **kwargs,
@@ -1587,64 +1564,64 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def min(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: Optional[_bool] = ...,
+        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
     def mod(
         self,
-        other: Union[num, _ListLike, DataFrame],
-        axis: Optional[AxisType] = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        other: num | _ListLike | DataFrame,
+        axis: AxisType | None = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     def mul(
         self,
-        other: Union[num, _ListLike, DataFrame],
-        axis: Optional[AxisType] = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        other: num | _ListLike | DataFrame,
+        axis: AxisType | None = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     def multiply(
         self,
-        other: Union[num, _ListLike, DataFrame],
-        axis: Optional[AxisType] = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        other: num | _ListLike | DataFrame,
+        axis: AxisType | None = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     def ne(
-        self, other, axis: AxisType = ..., level: Optional[Level] = ...
+        self, other, axis: AxisType = ..., level: Level | None = ...
     ) -> DataFrame: ...
     def pct_change(
         self,
         periods: int = ...,
         fill_method: _str = ...,
-        limit: Optional[int] = ...,
+        limit: int | None = ...,
         freq=...,
         **kwargs,
     ) -> DataFrame: ...
     def pipe(
         self,
-        func: Callable[..., TType] | tuple[Callable[..., TType], str],
+        func: Callable[..., TType] | tuple[Callable[..., TType], _str],
         *args,
         **kwargs,
     ) -> TType: ...
     def pop(self, item: _str) -> Series: ...
     def pow(
         self,
-        other: Union[num, _ListLike, DataFrame],
-        axis: Optional[AxisType] = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        other: num | _ListLike | DataFrame,
+        axis: AxisType | None = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     @overload
     def prod(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
-        numeric_only: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
+        numeric_only: _bool | None = ...,
         min_count: int = ...,
         *,
         level: Level,
@@ -1653,19 +1630,19 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def prod(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: Optional[_bool] = ...,
+        numeric_only: _bool | None = ...,
         min_count: int = ...,
         **kwargs,
     ) -> Series: ...
     def product(
         self,
-        axis: Optional[AxisType] = ...,
+        axis: AxisType | None = ...,
         skipna: _bool = ...,
-        level: Optional[Level] = ...,
-        numeric_only: Optional[_bool] = ...,
+        level: Level | None = ...,
+        numeric_only: _bool | None = ...,
         min_count: int = ...,
         **kwargs,
     ) -> DataFrame: ...
@@ -1673,15 +1650,15 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         other,
         axis: AxisType = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     def rank(
         self,
         axis: AxisType = ...,
-        method: Union[_str, Literal["average", "min", "max", "first", "dense"]] = ...,
-        numeric_only: Optional[_bool] = ...,
-        na_option: Union[_str, Literal["keep", "top", "bottom"]] = ...,
+        method: _str | Literal["average", "min", "max", "first", "dense"] = ...,
+        numeric_only: _bool | None = ...,
+        na_option: _str | Literal["keep", "top", "bottom"] = ...,
         ascending: _bool = ...,
         pct: _bool = ...,
     ) -> DataFrame: ...
@@ -1689,17 +1666,17 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         other,
         axis: AxisType = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     def reindex_like(
         self,
         other: DataFrame,
-        method: Optional[
-            Union[_str, Literal["backfill", "bfill", "pad", "ffill", "nearest"]]
-        ] = ...,
+        method: _str
+        | Literal["backfill", "bfill", "pad", "ffill", "nearest"]
+        | None = ...,
         copy: _bool = ...,
-        limit: Optional[int] = ...,
+        limit: int | None = ...,
         tolerance=...,
     ) -> DataFrame: ...
     @overload
@@ -1708,7 +1685,7 @@ class DataFrame(NDFrame, OpsMixin):
         mapper=...,
         *,
         inplace: Literal[True],
-        axis: Optional[AxisType] = ...,
+        axis: AxisType | None = ...,
         copy: _bool = ...,
     ) -> None: ...
     @overload
@@ -1717,7 +1694,7 @@ class DataFrame(NDFrame, OpsMixin):
         mapper=...,
         *,
         inplace: Literal[False] = ...,
-        axis: Optional[AxisType] = ...,
+        axis: AxisType | None = ...,
         copy: _bool = ...,
     ) -> DataFrame: ...
     @overload
@@ -1725,12 +1702,8 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         *,
         inplace: Literal[True],
-        index: Optional[
-            Union[_str, Sequence[_str], Dict[Union[_str, int], _str], Callable]
-        ] = ...,
-        columns: Optional[
-            Union[_str, Sequence[_str], Dict[Union[_str, int], _str], Callable]
-        ] = ...,
+        index: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
+        columns: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
         copy: _bool = ...,
     ) -> None: ...
     @overload
@@ -1738,114 +1711,109 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         *,
         inplace: Literal[False] = ...,
-        index: Optional[
-            Union[_str, Sequence[_str], Dict[Union[_str, int], _str], Callable]
-        ] = ...,
-        columns: Optional[
-            Union[_str, Sequence[_str], Dict[Union[_str, int], _str], Callable]
-        ] = ...,
+        index: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
+        columns: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
         copy: _bool = ...,
     ) -> DataFrame: ...
     def resample(
         self,
         rule,
         axis: AxisType = ...,
-        closed: Optional[_str] = ...,
-        label: Optional[_str] = ...,
-        convention: Union[_str, Literal["start", "end", "s", "e"]] = ...,
-        kind: Union[_str, Optional[Literal["timestamp", "period"]]] = ...,
+        closed: _str | None = ...,
+        label: _str | None = ...,
+        convention: _str | Literal["start", "end", "s", "e"] = ...,
+        kind: _str | Literal["timestamp", "period"] | None = ...,
         loffset=...,
         base: int = ...,
-        on: Optional[_str] = ...,
-        level: Optional[Level] = ...,
-        origin: Union[
-            Timestamp, Literal["epoch", "start", "start_day", "end", "end_day"]
-        ] = ...,
-        offset: Optional[Union[Timedelta, _str]] = ...,
+        on: _str | None = ...,
+        level: Level | None = ...,
+        origin: Timestamp
+        | Literal["epoch", "start", "start_day", "end", "end_day"] = ...,
+        offset: Timedelta | _str | None = ...,
     ) -> Resampler: ...
     def rfloordiv(
         self,
         other,
         axis: AxisType = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[Union[float, None]] = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     def rmod(
         self,
         other,
         axis: AxisType = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     def rmul(
         self,
         other,
         axis: AxisType = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     @overload
     def rolling(
         self,
         window,
-        min_periods: Optional[int] = ...,
+        min_periods: int | None = ...,
         center: _bool = ...,
         *,
         win_type: _str,
-        on: Optional[_str] = ...,
+        on: _str | None = ...,
         axis: AxisType = ...,
-        closed: Optional[_str] = ...,
+        closed: _str | None = ...,
     ) -> Window: ...
     @overload
     def rolling(
         self,
         window,
-        min_periods: Optional[int] = ...,
+        min_periods: int | None = ...,
         center: _bool = ...,
         *,
-        on: Optional[_str] = ...,
+        on: _str | None = ...,
         axis: AxisType = ...,
-        closed: Optional[_str] = ...,
+        closed: _str | None = ...,
     ) -> Rolling: ...
     def rpow(
         self,
         other,
         axis: AxisType = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     def rsub(
         self,
         other,
         axis: AxisType = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     def rtruediv(
         self,
         other,
         axis: AxisType = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     # sample is missing a weights arg
     def sample(
         self,
-        n: Optional[int] = ...,
-        frac: Optional[float] = ...,
+        n: int | None = ...,
+        frac: float | None = ...,
         replace: _bool = ...,
-        weights: Optional[Union[_str, _ListLike, np.ndarray]] = ...,
-        random_state: Optional[int] = ...,
-        axis: Optional[SeriesAxisType] = ...,
+        weights: _str | _ListLike | np.ndarray | None = ...,
+        random_state: int | None = ...,
+        axis: SeriesAxisType | None = ...,
         ignore_index: _bool = ...,
     ) -> DataFrame: ...
     @overload
     def sem(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
         ddof: int = ...,
-        numeric_only: Optional[_bool] = ...,
+        numeric_only: _bool | None = ...,
         *,
         level: Level,
         **kwargs,
@@ -1853,11 +1821,11 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def sem(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
         level: None = ...,
         ddof: int = ...,
-        numeric_only: Optional[_bool] = ...,
+        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
     @overload
@@ -1875,14 +1843,14 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         labels,
         axis: AxisType = ...,
-        inplace: Optional[_bool] = ...,
-    ) -> Union[None, DataFrame]: ...
+        inplace: _bool | None = ...,
+    ) -> DataFrame | None: ...
     @overload
     def skew(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
-        numeric_only: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
+        numeric_only: _bool | None = ...,
         *,
         level: Level,
         **kwargs,
@@ -1890,14 +1858,14 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def skew(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: Optional[_bool] = ...,
+        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
     def slice_shift(self, periods: int = ..., axis: AxisType = ...) -> DataFrame: ...
-    def squeeze(self, axis: Optional[AxisType] = ...): ...
+    def squeeze(self, axis: AxisType | None = ...): ...
     @overload
     def std(
         self,
@@ -1921,24 +1889,24 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> Series: ...
     def sub(
         self,
-        other: Union[num, _ListLike, DataFrame],
-        axis: Optional[AxisType] = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        other: num | _ListLike | DataFrame,
+        axis: AxisType | None = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     def subtract(
         self,
-        other: Union[num, _ListLike, DataFrame],
-        axis: Optional[AxisType] = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        other: num | _ListLike | DataFrame,
+        axis: AxisType | None = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     @overload
     def sum(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
-        numeric_only: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
+        numeric_only: _bool | None = ...,
         min_count: int = ...,
         *,
         level: Level,
@@ -1947,10 +1915,10 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def sum(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: Optional[_bool] = ...,
+        numeric_only: _bool | None = ...,
         min_count: int = ...,
         **kwargs,
     ) -> Series: ...
@@ -1960,274 +1928,264 @@ class DataFrame(NDFrame, OpsMixin):
     def tail(self, n: int = ...) -> DataFrame: ...
     def take(
         self,
-        indices: List,
+        indices: list,
         axis: AxisType = ...,
-        is_copy: Optional[_bool] = ...,
+        is_copy: _bool | None = ...,
         **kwargs,
     ) -> DataFrame: ...
     def tshift(
         self, periods: int = ..., freq=..., axis: AxisType = ...
     ) -> DataFrame: ...
     def to_clipboard(
-        self, excel: _bool = ..., sep: Optional[_str] = ..., **kwargs
+        self, excel: _bool = ..., sep: _str | None = ..., **kwargs
     ) -> None: ...
     @overload
     def to_csv(
         self,
-        path_or_buf: Optional[FilePathOrBuffer],
+        path_or_buf: FilePathOrBuffer | None,
         sep: _str = ...,
         na_rep: _str = ...,
-        float_format: Optional[_str] = ...,
-        columns: Optional[Sequence[Hashable]] = ...,
-        header: Union[_bool, List[_str]] = ...,
+        float_format: _str | None = ...,
+        columns: Sequence[Hashable] | None = ...,
+        header: _bool | list[_str] = ...,
         index: _bool = ...,
-        index_label: Optional[Union[_bool, _str, Sequence[Hashable]]] = ...,
+        index_label: _bool | _str | Sequence[Hashable] | None = ...,
         mode: _str = ...,
-        encoding: Optional[_str] = ...,
-        compression: Union[_str, Mapping[_str, _str]] = ...,
-        quoting: Optional[int] = ...,
+        encoding: _str | None = ...,
+        compression: _str | Mapping[_str, _str] = ...,
+        quoting: int | None = ...,
         quotechar: _str = ...,
-        line_terminator: Optional[_str] = ...,
-        chunksize: Optional[int] = ...,
-        date_format: Optional[_str] = ...,
+        line_terminator: _str | None = ...,
+        chunksize: int | None = ...,
+        date_format: _str | None = ...,
         doublequote: _bool = ...,
-        escapechar: Optional[_str] = ...,
+        escapechar: _str | None = ...,
         decimal: _str = ...,
         errors: _str = ...,
-        storage_options: Optional[Dict[_str, Any]] = ...,
+        storage_options: dict[_str, Any] | None = ...,
     ) -> None: ...
     @overload
     def to_csv(
         self,
         sep: _str = ...,
         na_rep: _str = ...,
-        float_format: Optional[_str] = ...,
-        columns: Optional[Sequence[Hashable]] = ...,
-        header: Union[_bool, List[_str]] = ...,
+        float_format: _str | None = ...,
+        columns: Sequence[Hashable] | None = ...,
+        header: _bool | list[_str] = ...,
         index: _bool = ...,
-        index_label: Optional[Union[_bool, _str, Sequence[Hashable]]] = ...,
+        index_label: _bool | _str | Sequence[Hashable] | None = ...,
         mode: _str = ...,
-        encoding: Optional[_str] = ...,
-        compression: Union[_str, Mapping[_str, _str]] = ...,
-        quoting: Optional[int] = ...,
+        encoding: _str | None = ...,
+        compression: _str | Mapping[_str, _str] = ...,
+        quoting: int | None = ...,
         quotechar: _str = ...,
-        line_terminator: Optional[_str] = ...,
-        chunksize: Optional[int] = ...,
-        date_format: Optional[_str] = ...,
+        line_terminator: _str | None = ...,
+        chunksize: int | None = ...,
+        date_format: _str | None = ...,
         doublequote: _bool = ...,
-        escapechar: Optional[_str] = ...,
+        escapechar: _str | None = ...,
         decimal: _str = ...,
         errors: _str = ...,
-        storage_options: Optional[Dict[_str, Any]] = ...,
+        storage_options: dict[_str, Any] | None = ...,
     ) -> _str: ...
     def to_excel(
         self,
         excel_writer,
         sheet_name: _str = ...,
         na_rep: _str = ...,
-        float_format: Optional[_str] = ...,
-        columns: Optional[Union[_str, Sequence[_str]]] = ...,
+        float_format: _str | None = ...,
+        columns: _str | Sequence[_str] | None = ...,
         header: _bool = ...,
         index: _bool = ...,
-        index_label: Optional[Union[_str, Sequence[_str]]] = ...,
+        index_label: _str | Sequence[_str] | None = ...,
         startrow: int = ...,
         startcol: int = ...,
-        engine: Optional[_str] = ...,
+        engine: _str | None = ...,
         merge_cells: _bool = ...,
-        encoding: Optional[_str] = ...,
+        encoding: _str | None = ...,
         inf_rep: _str = ...,
         verbose: _bool = ...,
-        freeze_panes: Optional[Tuple[int, int]] = ...,
+        freeze_panes: tuple[int, int] | None = ...,
     ) -> None: ...
     def to_hdf(
         self,
         path_or_buf: FilePathOrBuffer,
         key: _str,
         mode: _str = ...,
-        complevel: Optional[int] = ...,
-        complib: Optional[_str] = ...,
+        complevel: int | None = ...,
+        complib: _str | None = ...,
         append: _bool = ...,
-        format: Optional[_str] = ...,
+        format: _str | None = ...,
         index: _bool = ...,
-        min_itemsize: Optional[Union[int, Dict[_str, int]]] = ...,
+        min_itemsize: int | dict[_str, int] | None = ...,
         nan_rep=...,
-        dropna: Optional[_bool] = ...,
-        data_columns: Optional[List[_str]] = ...,
+        dropna: _bool | None = ...,
+        data_columns: list[_str] | None = ...,
         errors: _str = ...,
         encoding: _str = ...,
     ) -> None: ...
     @overload
     def to_json(
         self,
-        path_or_buf: Optional[FilePathOrBuffer],
-        orient: Optional[
-            Union[
-                _str, Literal["split", "records", "index", "columns", "values", "table"]
-            ]
-        ] = ...,
-        date_format: Optional[Union[_str, Literal["epoch", "iso"]]] = ...,
+        path_or_buf: FilePathOrBuffer | None,
+        orient: _str
+        | Literal["split", "records", "index", "columns", "values", "table"]
+        | None = ...,
+        date_format: _str | Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Union[_str, Literal["s", "ms", "us", "ns"]] = ...,
-        default_handler: Optional[
-            Callable[[Any], Union[_str, int, float, _bool, List, Dict]]
-        ] = ...,
+        date_unit: _str | Literal["s", "ms", "us", "ns"] = ...,
+        default_handler: Callable[[Any], _str | int | float | _bool | list | dict]
+        | None = ...,
         lines: _bool = ...,
-        compression: Union[
-            _str, None, Literal["infer", "gzip", "bz2", "zip", "xz"]
-        ] = ...,
+        compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
         index: _bool = ...,
-        indent: Optional[int] = ...,
+        indent: int | None = ...,
     ) -> None: ...
     @overload
     def to_json(
         self,
-        orient: Optional[
-            Union[
-                _str, Literal["split", "records", "index", "columns", "values", "table"]
-            ]
-        ] = ...,
-        date_format: Optional[Union[_str, Literal["epoch", "iso"]]] = ...,
+        orient: _str
+        | Literal["split", "records", "index", "columns", "values", "table"]
+        | None = ...,
+        date_format: _str | Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Union[_str, Literal["s", "ms", "us", "ns"]] = ...,
-        default_handler: Optional[
-            Callable[[Any], Union[_str, int, float, _bool, List, Dict]]
-        ] = ...,
+        date_unit: _str | Literal["s", "ms", "us", "ns"] = ...,
+        default_handler: Callable[[Any], _str | int | float | _bool | list | dict]
+        | None = ...,
         lines: _bool = ...,
-        compression: Union[
-            _str, None, Literal["infer", "gzip", "bz2", "zip", "xz"]
-        ] = ...,
+        compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
         index: _bool = ...,
-        indent: Optional[int] = ...,
+        indent: int | None = ...,
     ) -> _str: ...
     @overload
     def to_latex(
         self,
-        buf: Optional[FilePathOrBuffer],
-        columns: Optional[List[_str]] = ...,
-        col_space: Optional[int] = ...,
+        buf: FilePathOrBuffer | None,
+        columns: list[_str] | None = ...,
+        col_space: int | None = ...,
         header: _bool = ...,
         index: _bool = ...,
         na_rep: _str = ...,
         formatters=...,
         float_format=...,
-        sparsify: Optional[_bool] = ...,
+        sparsify: _bool | None = ...,
         index_names: _bool = ...,
         bold_rows: _bool = ...,
-        column_format: Optional[_str] = ...,
-        longtable: Optional[_bool] = ...,
-        escape: Optional[_bool] = ...,
-        encoding: Optional[_str] = ...,
+        column_format: _str | None = ...,
+        longtable: _bool | None = ...,
+        escape: _bool | None = ...,
+        encoding: _str | None = ...,
         decimal: _str = ...,
-        multicolumn: Optional[_bool] = ...,
-        multicolumn_format: Optional[_str] = ...,
-        multirow: Optional[_bool] = ...,
-        caption: Optional[Union[_str, Tuple[_str, _str]]] = ...,
-        label: Optional[_str] = ...,
-        position: Optional[str] = ...,
+        multicolumn: _bool | None = ...,
+        multicolumn_format: _str | None = ...,
+        multirow: _bool | None = ...,
+        caption: _str | tuple[_str, _str] | None = ...,
+        label: _str | None = ...,
+        position: _str | None = ...,
     ) -> None: ...
     @overload
     def to_latex(
         self,
-        columns: Optional[List[_str]] = ...,
-        col_space: Optional[int] = ...,
+        columns: list[_str] | None = ...,
+        col_space: int | None = ...,
         header: _bool = ...,
         index: _bool = ...,
         na_rep: _str = ...,
         formatters=...,
         float_format=...,
-        sparsify: Optional[_bool] = ...,
+        sparsify: _bool | None = ...,
         index_names: _bool = ...,
         bold_rows: _bool = ...,
-        column_format: Optional[_str] = ...,
-        longtable: Optional[_bool] = ...,
-        escape: Optional[_bool] = ...,
-        encoding: Optional[_str] = ...,
+        column_format: _str | None = ...,
+        longtable: _bool | None = ...,
+        escape: _bool | None = ...,
+        encoding: _str | None = ...,
         decimal: _str = ...,
-        multicolumn: Optional[_bool] = ...,
-        multicolumn_format: Optional[_str] = ...,
-        multirow: Optional[_bool] = ...,
-        caption: Optional[Union[_str, Tuple[_str, _str]]] = ...,
-        label: Optional[_str] = ...,
-        position: Optional[str] = ...,
+        multicolumn: _bool | None = ...,
+        multicolumn_format: _str | None = ...,
+        multirow: _bool | None = ...,
+        caption: _str | tuple[_str, _str] | None = ...,
+        label: _str | None = ...,
+        position: _str | None = ...,
     ) -> _str: ...
     def to_pickle(
         self,
         path: _str,
-        compression: Union[_str, Literal["infer", "gzip", "bz2", "zip", "xz"]] = ...,
+        compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] = ...,
         protocol: int = ...,
     ) -> None: ...
     def to_sql(
         self,
         name: _str,
         con,
-        schema: Optional[_str] = ...,
+        schema: _str | None = ...,
         if_exists: _str = ...,
         index: _bool = ...,
-        index_label: Optional[Union[_str, Sequence[_str]]] = ...,
-        chunksize: Optional[int] = ...,
-        dtype: Optional[Union[Dict, Scalar]] = ...,
-        method: Optional[Union[_str, Callable]] = ...,
+        index_label: _str | Sequence[_str] | None = ...,
+        chunksize: int | None = ...,
+        dtype: dict | Scalar | None = ...,
+        method: _str | Callable | None = ...,
     ) -> None: ...
     @overload
     def to_string(
         self,
-        buf: Optional[FilePathOrBuffer],
-        columns: Optional[Sequence[_str]] = ...,
-        col_space: Optional[Union[int, List[int], Dict[Union[_str, int], int]]] = ...,
-        header: Union[_bool, Sequence[_str]] = ...,
+        buf: FilePathOrBuffer | None,
+        columns: Sequence[_str] | None = ...,
+        col_space: int | list[int] | dict[_str | int, int] | None = ...,
+        header: _bool | Sequence[_str] = ...,
         index: _bool = ...,
         na_rep: _str = ...,
         formatters=...,
         float_format=...,
-        sparsify: Optional[_bool] = ...,
+        sparsify: _bool | None = ...,
         index_names: _bool = ...,
-        justify: Optional[_str] = ...,
-        max_rows: Optional[int] = ...,
-        min_rows: Optional[int] = ...,
-        max_cols: Optional[int] = ...,
+        justify: _str | None = ...,
+        max_rows: int | None = ...,
+        min_rows: int | None = ...,
+        max_cols: int | None = ...,
         show_dimensions: _bool = ...,
         decimal: _str = ...,
-        line_width: Optional[int] = ...,
-        max_colwidth: Optional[int] = ...,
-        encoding: Optional[_str] = ...,
+        line_width: int | None = ...,
+        max_colwidth: int | None = ...,
+        encoding: _str | None = ...,
     ) -> None: ...
     @overload
     def to_string(
         self,
-        columns: Optional[Sequence[_str]] = ...,
-        col_space: Optional[Union[int, List[int], Dict[Union[_str, int], int]]] = ...,
-        header: Union[_bool, Sequence[_str]] = ...,
+        columns: Sequence[_str] | None = ...,
+        col_space: int | list[int] | dict[_str | int, int] | None = ...,
+        header: _bool | Sequence[_str] = ...,
         index: _bool = ...,
         na_rep: _str = ...,
         formatters=...,
         float_format=...,
-        sparsify: Optional[_bool] = ...,
+        sparsify: _bool | None = ...,
         index_names: _bool = ...,
-        justify: Optional[_str] = ...,
-        max_rows: Optional[int] = ...,
-        min_rows: Optional[int] = ...,
-        max_cols: Optional[int] = ...,
+        justify: _str | None = ...,
+        max_rows: int | None = ...,
+        min_rows: int | None = ...,
+        max_cols: int | None = ...,
         show_dimensions: _bool = ...,
         decimal: _str = ...,
-        line_width: Optional[int] = ...,
-        max_colwidth: Optional[int] = ...,
-        encoding: Optional[_str] = ...,
+        line_width: int | None = ...,
+        max_colwidth: int | None = ...,
+        encoding: _str | None = ...,
     ) -> _str: ...
     def to_xarray(self): ...
     def truediv(
         self,
-        other: Union[num, _ListLike, DataFrame],
-        axis: Optional[AxisType] = ...,
-        level: Optional[Level] = ...,
-        fill_value: Optional[float] = ...,
+        other: num | _ListLike | DataFrame,
+        axis: AxisType | None = ...,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
     ) -> DataFrame: ...
     def truncate(
         self,
-        before: Optional[Union[datetime.date, _str, int]] = ...,
-        after: Optional[Union[datetime.date, _str, int]] = ...,
-        axis: Optional[AxisType] = ...,
+        before: datetime.date | _str | int | None = ...,
+        after: datetime.date | _str | int | None = ...,
+        axis: AxisType | None = ...,
         copy: _bool = ...,
     ) -> DataFrame: ...
     # def tshift
@@ -2235,14 +2193,14 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         tz,
         axis: AxisType = ...,
-        level: Optional[Level] = ...,
+        level: Level | None = ...,
         copy: _bool = ...,
     ) -> DataFrame: ...
     def tz_localize(
         self,
         tz,
         axis: AxisType = ...,
-        level: Optional[Level] = ...,
+        level: Level | None = ...,
         copy: _bool = ...,
         ambiguous=...,
         nonexistent: _str = ...,
@@ -2251,10 +2209,10 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def var(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
         ddof: int = ...,
-        numeric_only: Optional[_bool] = ...,
+        numeric_only: _bool | None = ...,
         *,
         level: Level,
         **kwargs,
@@ -2262,20 +2220,20 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def var(
         self,
-        axis: Optional[AxisType] = ...,
-        skipna: Optional[_bool] = ...,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
         level: None = ...,
         ddof: int = ...,
-        numeric_only: Optional[_bool] = ...,
+        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
     def where(
         self,
-        cond: Union[Series, DataFrame, np.ndarray],
+        cond: Series | DataFrame | np.ndarray,
         other=...,
         inplace: _bool = ...,
-        axis: Optional[AxisType] = ...,
-        level: Optional[Level] = ...,
+        axis: AxisType | None = ...,
+        level: Level | None = ...,
         errors: _str = ...,
         try_cast: _bool = ...,
     ) -> DataFrame: ...

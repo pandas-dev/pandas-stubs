@@ -1,9 +1,6 @@
-from typing import (
-    Any,
-    Dict,
-    Optional,
-    Tuple,
-)
+from __future__ import annotations
+
+from typing import Any
 
 from pandas.core.computation import (
     expr as expr,
@@ -14,13 +11,13 @@ from pandas.core.computation.expr import BaseExprVisitor as BaseExprVisitor
 from pandas.core.indexes.base import Index
 
 class PyTablesScope(_scope.Scope):
-    queryables: Dict[str, Any]
+    queryables: dict[str, Any]
     def __init__(
         self,
         level: int,
         global_dict=...,
         local_dict=...,
-        queryables: Optional[Dict[str, Any]] = ...,
+        queryables: dict[str, Any] | None = ...,
     ) -> None: ...
 
 class Term(ops.Term):
@@ -37,11 +34,11 @@ class Constant(Term):
 
 class BinOp(ops.BinOp):
     op: str
-    queryables: Dict[str, Any]
+    queryables: dict[str, Any]
     encoding = ...
     condition = ...
     def __init__(
-        self, op: str, lhs, rhs, queryables: Dict[str, Any], encoding
+        self, op: str, lhs, rhs, queryables: dict[str, Any], encoding
     ) -> None: ...
     def prune(self, klass): ...
     def conform(self, rhs): ...
@@ -60,7 +57,7 @@ class BinOp(ops.BinOp):
     def convert_values(self) -> None: ...
 
 class FilterBinOp(BinOp):
-    filter: Optional[Tuple[Any, Any, Index]] = ...
+    filter: tuple[Any, Any, Index] | None = ...
     def invert(self): ...
     def format(self): ...
     def evaluate(self): ...
@@ -103,7 +100,7 @@ class PyTablesExpr(expr.Expr):
     def __init__(
         self,
         where,
-        queryables: Optional[Dict[str, Any]] = ...,
+        queryables: dict[str, Any] | None = ...,
         encoding=...,
         scope_level: int = ...,
     ) -> None: ...

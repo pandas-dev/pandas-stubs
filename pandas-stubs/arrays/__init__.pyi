@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pandas.core.arrays import (
     BooleanArray as BooleanArray,
     Categorical as Categorical,

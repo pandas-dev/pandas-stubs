@@ -1,9 +1,6 @@
-from typing import (
-    Dict,
-    Optional,
-    Sequence,
-    Union,
-)
+from __future__ import annotations
+
+from typing import Sequence
 
 from pandas.core.frame import DataFrame
 
@@ -21,18 +18,18 @@ from pandas._typing import (
 def read_xml(
     path_or_buffer: FilePath | ReadBuffer[bytes] | ReadBuffer[str],
     xpath: str = ...,
-    namespaces: Optional[Dict[str, str]] = ...,
+    namespaces: dict[str, str] | None = ...,
     elems_only: bool = ...,
     attrs_only: bool = ...,
-    names: Optional[Sequence[str]] = ...,
-    dtype: Optional[DtypeArg] = ...,
-    converters: Optional[ConvertersArg] = ...,
-    parse_dates: Optional[ParseDatesArg] = ...,
+    names: Sequence[str] | None = ...,
+    dtype: DtypeArg | None = ...,
+    converters: ConvertersArg | None = ...,
+    parse_dates: ParseDatesArg | None = ...,
     # encoding can not be None for lxml and StringIO input
-    encoding: Optional[str] = ...,
-    parser: Optional[XMLParsers] = ...,
-    stylesheet: Optional[Union[FilePath, ReadBuffer[bytes], ReadBuffer[str]]] = ...,
-    iterparse: Optional[Dict[str, list[str]]] = ...,
-    compression: Optional[CompressionOptions] = ...,
-    storage_options: Optional[StorageOptions] = ...,
+    encoding: str | None = ...,
+    parser: XMLParsers | None = ...,
+    stylesheet: FilePath | ReadBuffer[bytes] | ReadBuffer[str] | None = ...,
+    iterparse: dict[str, list[str]] | None = ...,
+    compression: CompressionOptions | None = ...,
+    storage_options: StorageOptions | None = ...,
 ) -> DataFrame: ...

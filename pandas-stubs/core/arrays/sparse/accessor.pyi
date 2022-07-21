@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pandas.core.accessor import (
     PandasDelegate as PandasDelegate,
     delegate_names as delegate_names,

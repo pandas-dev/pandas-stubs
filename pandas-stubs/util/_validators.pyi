@@ -1,7 +1,6 @@
-from typing import (
-    Iterable,
-    Union,
-)
+from __future__ import annotations
+
+from typing import Iterable
 
 import numpy as np
 
@@ -13,4 +12,4 @@ def validate_args_and_kwargs(
 def validate_bool_kwarg(value, arg_name): ...
 def validate_axis_style_args(data, args, kwargs, arg_name, method_name): ...
 def validate_fillna_kwargs(value, method, validate_scalar_dict_value: bool = ...): ...
-def validate_percentile(q: Union[float, Iterable[float]]) -> np.ndarray: ...
+def validate_percentile(q: float | Iterable[float]) -> np.ndarray: ...

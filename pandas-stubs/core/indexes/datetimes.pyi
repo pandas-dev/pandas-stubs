@@ -1,9 +1,7 @@
+from __future__ import annotations
+
 from datetime import tzinfo
-from typing import (
-    Optional,
-    Union,
-    overload,
-)
+from typing import overload
 
 import numpy as np
 from pandas import (
@@ -30,7 +28,7 @@ from pandas._typing import np_ndarray_bool
 class DatetimeDelegateMixin(DatetimelikeDelegateMixin): ...
 
 class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeDelegateMixin):
-    tz: Optional[tzinfo]
+    tz: tzinfo | None
     def __init__(
         self,
         data=...,
@@ -50,7 +48,7 @@ class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeDelegateMixin):
     @overload
     def __add__(self, other: TimedeltaSeries) -> TimestampSeries: ...
     @overload
-    def __add__(self, other: Union[Timedelta, TimedeltaIndex]) -> DatetimeIndex: ...
+    def __add__(self, other: Timedelta | TimedeltaIndex) -> DatetimeIndex: ...
     def union_many(self, others): ...
     # overload needed because Index.to_series() and DatetimeIndex.to_series() have
     # different arguments
@@ -77,7 +75,7 @@ class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeDelegateMixin):
     def to_julian_date(self) -> Float64Index: ...
     def isocalendar(self) -> DataFrame: ...
     @property
-    def tzinfo(self) -> Optional[tzinfo]: ...
+    def tzinfo(self) -> tzinfo | None: ...
     def __lt__(self, other: Timestamp) -> np_ndarray_bool: ...
     def __le__(self, other: Timestamp) -> np_ndarray_bool: ...
     def __gt__(self, other: Timestamp) -> np_ndarray_bool: ...

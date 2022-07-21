@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .boxplot import (
     boxplot as boxplot,
     boxplot_frame as boxplot_frame,

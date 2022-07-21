@@ -1,12 +1,8 @@
+from __future__ import annotations
+
 from typing import (
     Any,
-    Dict,
     Hashable,
-    List,
-    Optional,
-    Tuple,
-    Type,
-    Union,
 )
 
 import numpy as np
@@ -53,15 +49,15 @@ def to_hdf(
     key: str,
     value: NDFrame,
     mode: str = ...,
-    complevel: Optional[int] = ...,
-    complib: Optional[str] = ...,
+    complevel: int | None = ...,
+    complib: str | None = ...,
     append: bool = ...,
-    format: Optional[str] = ...,
+    format: str | None = ...,
     index: bool = ...,
-    min_itemsize: Optional[Union[int, Dict[str, int]]] = ...,
+    min_itemsize: int | dict[str, int] | None = ...,
     nan_rep=...,
-    dropna: Optional[bool] = ...,
-    data_columns: Optional[List[str]] = ...,
+    dropna: bool | None = ...,
+    data_columns: list[str] | None = ...,
     errors: str = ...,
     encoding: str = ...,
 ): ...
@@ -70,12 +66,12 @@ def read_hdf(
     key=...,
     mode: str = ...,
     errors: str = ...,
-    where: Optional[List[Any]] = ...,
-    start: Optional[int] = ...,
-    stop: Optional[int] = ...,
-    columns: Optional[List[str]] = ...,
+    where: list[Any] | None = ...,
+    start: int | None = ...,
+    stop: int | None = ...,
+    columns: list[str] | None = ...,
     iterator: bool = ...,
-    chunksize: Optional[int] = ...,
+    chunksize: int | None = ...,
     **kwargs,
 ): ...
 
@@ -84,7 +80,7 @@ class HDFStore:
         self,
         path,
         mode: str = ...,
-        complevel: Optional[int] = ...,
+        complevel: int | None = ...,
         complib=...,
         fletcher32: bool = ...,
         **kwargs,
@@ -102,7 +98,7 @@ class HDFStore:
     def __len__(self) -> int: ...
     def __enter__(self): ...
     def __exit__(self, exc_type, exc_value, traceback) -> None: ...
-    def keys(self) -> List[str]: ...
+    def keys(self) -> list[str]: ...
     def __iter__(self): ...
     def items(self) -> None: ...
     iteritems = ...
@@ -124,14 +120,14 @@ class HDFStore:
         auto_close: bool = ...,
     ): ...
     def select_as_coordinates(
-        self, key: str, where=..., start: Optional[int] = ..., stop: Optional[int] = ...
+        self, key: str, where=..., start: int | None = ..., stop: int | None = ...
     ): ...
     def select_column(
         self,
         key: str,
         column: str,
-        start: Optional[int] = ...,
-        stop: Optional[int] = ...,
+        start: int | None = ...,
+        stop: int | None = ...,
     ): ...
     def select_as_multiple(
         self,
@@ -153,10 +149,10 @@ class HDFStore:
         index=...,
         append=...,
         complib=...,
-        complevel: Optional[int] = ...,
-        min_itemsize: Optional[Union[int, Dict[str, int]]] = ...,
+        complevel: int | None = ...,
+        min_itemsize: int | dict[str, int] | None = ...,
         nan_rep=...,
-        data_columns: Optional[List[str]] = ...,
+        data_columns: list[str] | None = ...,
         encoding=...,
         errors: str = ...,
     ): ...
@@ -170,31 +166,31 @@ class HDFStore:
         index=...,
         append=...,
         complib=...,
-        complevel: Optional[int] = ...,
+        complevel: int | None = ...,
         columns=...,
-        min_itemsize: Optional[Union[int, Dict[str, int]]] = ...,
+        min_itemsize: int | dict[str, int] | None = ...,
         nan_rep=...,
         chunksize=...,
         expectedrows=...,
-        dropna: Optional[bool] = ...,
-        data_columns: Optional[List[str]] = ...,
+        dropna: bool | None = ...,
+        data_columns: list[str] | None = ...,
         encoding=...,
         errors: str = ...,
     ): ...
     def append_to_multiple(
-        self, d: Dict, value, selector, data_columns=..., axes=..., dropna=..., **kwargs
+        self, d: dict, value, selector, data_columns=..., axes=..., dropna=..., **kwargs
     ): ...
     def create_table_index(
         self,
         key: str,
         columns=...,
-        optlevel: Optional[int] = ...,
-        kind: Optional[str] = ...,
+        optlevel: int | None = ...,
+        kind: str | None = ...,
     ): ...
     def groups(self): ...
     def walk(self, where: str = ...) -> None: ...
-    def get_node(self, key: str) -> Optional[Node]: ...
-    def get_storer(self, key: str) -> Union[GenericFixed, Table]: ...
+    def get_node(self, key: str) -> Node | None: ...
+    def get_storer(self, key: str) -> GenericFixed | Table: ...
     def copy(
         self,
         file,
@@ -202,16 +198,16 @@ class HDFStore:
         propindexes: bool = ...,
         keys=...,
         complib=...,
-        complevel: Optional[int] = ...,
+        complevel: int | None = ...,
         fletcher32: bool = ...,
         overwrite=...,
     ): ...
     def info(self) -> str: ...
 
 class TableIterator:
-    chunksize: Optional[int]
+    chunksize: int | None
     store: HDFStore
-    s: Union[GenericFixed, Table]
+    s: GenericFixed | Table
     func = ...
     where = ...
     nrows = ...
@@ -222,14 +218,14 @@ class TableIterator:
     def __init__(
         self,
         store: HDFStore,
-        s: Union[GenericFixed, Table],
+        s: GenericFixed | Table,
         func,
         where,
         nrows,
         start=...,
         stop=...,
         iterator: bool = ...,
-        chunksize: Optional[int] = ...,
+        chunksize: int | None = ...,
         auto_close: bool = ...,
     ) -> None: ...
     def __iter__(self): ...
@@ -259,7 +255,7 @@ class IndexCol:
         values=...,
         kind=...,
         typ=...,
-        cname: Optional[str] = ...,
+        cname: str | None = ...,
         axis=...,
         pos=...,
         freq=...,
@@ -334,12 +330,12 @@ class DataCol(IndexCol):
     def meta_attr(self) -> str: ...
     def __eq__(self, other) -> bool: ...
     kind = ...
-    def set_data(self, data: Union[np.ndarray, ABCExtensionArray]): ...
+    def set_data(self, data: np.ndarray | ABCExtensionArray): ...
     def take_data(self): ...
     @classmethod
     def get_atom_string(cls, shape, itemsize): ...
     @classmethod
-    def get_atom_coltype(cls, kind: str) -> Type[Col]: ...
+    def get_atom_coltype(cls, kind: str) -> type[Col]: ...
     @classmethod
     def get_atom_data(cls, shape, kind: str) -> Col: ...
     @classmethod
@@ -371,7 +367,7 @@ class GenericDataIndexableCol(DataIndexableCol): ...
 class Fixed:
     pandas_kind: str
     format_type: str = ...
-    obj_type: Type[Union[DataFrame, Series]]
+    obj_type: type[DataFrame | Series]
     ndim: int
     encoding: str
     parent: HDFStore
@@ -384,7 +380,7 @@ class Fixed:
     @property
     def is_old_version(self) -> bool: ...
     @property
-    def version(self) -> Tuple[int, int, int]: ...
+    def version(self) -> tuple[int, int, int]: ...
     @property
     def pandas_type(self): ...
     def set_object_info(self) -> None: ...
@@ -410,49 +406,45 @@ class Fixed:
         self,
         where=...,
         columns=...,
-        start: Optional[int] = ...,
-        stop: Optional[int] = ...,
+        start: int | None = ...,
+        stop: int | None = ...,
     ): ...
-    def delete(
-        self, where=..., start: Optional[int] = ..., stop: Optional[int] = ...
-    ): ...
+    def delete(self, where=..., start: int | None = ..., stop: int | None = ...): ...
 
 class GenericFixed(Fixed):
-    attributes: List[str] = ...
+    attributes: list[str] = ...
     def validate_read(self, columns, where) -> None: ...
     @property
     def is_exists(self) -> bool: ...
     def set_attrs(self) -> None: ...
     def get_attrs(self) -> None: ...
     def write(self, obj, **kwargs) -> None: ...
-    def read_array(
-        self, key: str, start: Optional[int] = ..., stop: Optional[int] = ...
-    ): ...
+    def read_array(self, key: str, start: int | None = ..., stop: int | None = ...): ...
     def read_index(
-        self, key: str, start: Optional[int] = ..., stop: Optional[int] = ...
+        self, key: str, start: int | None = ..., stop: int | None = ...
     ) -> Index: ...
     def write_index(self, key: str, index: Index): ...
     def write_multi_index(self, key: str, index: MultiIndex): ...
     def read_multi_index(
-        self, key: str, start: Optional[int] = ..., stop: Optional[int] = ...
+        self, key: str, start: int | None = ..., stop: int | None = ...
     ) -> MultiIndex: ...
     def read_index_node(
-        self, node: Node, start: Optional[int] = ..., stop: Optional[int] = ...
+        self, node: Node, start: int | None = ..., stop: int | None = ...
     ) -> Index: ...
     def write_array_empty(self, key: str, value: ArrayLike): ...
-    def write_array(self, key: str, value: ArrayLike, items: Optional[Index] = ...): ...
+    def write_array(self, key: str, value: ArrayLike, items: Index | None = ...): ...
 
 class SeriesFixed(GenericFixed):
     pandas_kind: str = ...
-    name: Optional[Hashable]
+    name: Hashable | None
     @property
     def shape(self): ...
     def read(
         self,
         where=...,
         columns=...,
-        start: Optional[int] = ...,
-        stop: Optional[int] = ...,
+        start: int | None = ...,
+        stop: int | None = ...,
     ): ...
     def write(self, obj, **kwargs) -> None: ...
 
@@ -464,8 +456,8 @@ class BlockManagerFixed(GenericFixed):
         self,
         where=...,
         columns=...,
-        start: Optional[int] = ...,
-        stop: Optional[int] = ...,
+        start: int | None = ...,
+        stop: int | None = ...,
     ): ...
     def write(self, obj, **kwargs) -> None: ...
 
@@ -478,12 +470,12 @@ class Table(Fixed):
     table_type: str
     levels: int = ...
     is_table: bool = ...
-    index_axes: List[IndexCol]
-    non_index_axes: List[Tuple[int, Any]]
-    values_axes: List[DataCol]
-    data_columns: List
-    metadata: List
-    info: Dict
+    index_axes: list[IndexCol]
+    non_index_axes: list[tuple[int, Any]]
+    values_axes: list[DataCol]
+    data_columns: list
+    metadata: list
+    info: dict
     nan_rep = ...
     def __init__(
         self,
@@ -525,9 +517,9 @@ class Table(Fixed):
     def is_transposed(self) -> bool: ...
     @property
     def data_orientation(self): ...
-    def queryables(self) -> Dict[str, Any]: ...
+    def queryables(self) -> dict[str, Any]: ...
     def index_cols(self): ...
-    def values_cols(self) -> List[str]: ...
+    def values_cols(self) -> list[str]: ...
     def write_metadata(self, key: str, values: np.ndarray): ...
     def read_metadata(self, key: str): ...
     def set_attrs(self) -> None: ...
@@ -535,7 +527,7 @@ class Table(Fixed):
     def validate_version(self, where=...) -> None: ...
     def validate_min_itemsize(self, min_itemsize) -> None: ...
     def indexables(self): ...
-    def create_index(self, columns=..., optlevel=..., kind: Optional[str] = ...): ...
+    def create_index(self, columns=..., optlevel=..., kind: str | None = ...): ...
     @classmethod
     def get_object(cls, obj, transposed: bool): ...
     def validate_data_columns(self, data_columns, min_itemsize, non_index_axes): ...
@@ -543,19 +535,19 @@ class Table(Fixed):
     def create_description(
         self,
         complib,
-        complevel: Optional[int],
+        complevel: int | None,
         fletcher32: bool,
-        expectedrows: Optional[int],
-    ) -> Dict[str, Any]: ...
+        expectedrows: int | None,
+    ) -> dict[str, Any]: ...
     def read_coordinates(
-        self, where=..., start: Optional[int] = ..., stop: Optional[int] = ...
+        self, where=..., start: int | None = ..., stop: int | None = ...
     ): ...
     def read_column(
         self,
         column: str,
         where=...,
-        start: Optional[int] = ...,
-        stop: Optional[int] = ...,
+        start: int | None = ...,
+        stop: int | None = ...,
     ): ...
 
 class WORMTable(Table):
@@ -564,8 +556,8 @@ class WORMTable(Table):
         self,
         where=...,
         columns=...,
-        start: Optional[int] = ...,
-        stop: Optional[int] = ...,
+        start: int | None = ...,
+        stop: int | None = ...,
     ): ...
     def write(self, **kwargs) -> None: ...
 
@@ -586,23 +578,21 @@ class AppendableTable(Table):
         nan_rep=...,
         data_columns=...,
     ) -> None: ...
-    def write_data(self, chunksize: Optional[int], dropna: bool = ...): ...
+    def write_data(self, chunksize: int | None, dropna: bool = ...): ...
     def write_data_chunk(
         self,
         rows: np.ndarray,
-        indexes: List[np.ndarray],
-        mask: Optional[np.ndarray],
-        values: List[np.ndarray],
+        indexes: list[np.ndarray],
+        mask: np.ndarray | None,
+        values: list[np.ndarray],
     ): ...
-    def delete(
-        self, where=..., start: Optional[int] = ..., stop: Optional[int] = ...
-    ): ...
+    def delete(self, where=..., start: int | None = ..., stop: int | None = ...): ...
 
 class AppendableFrameTable(AppendableTable):
     pandas_kind: str = ...
     table_type: str = ...
     ndim: int = ...
-    obj_type: Type[Union[DataFrame, Series]] = ...
+    obj_type: type[DataFrame | Series] = ...
     @property
     def is_transposed(self) -> bool: ...
     @classmethod
@@ -611,8 +601,8 @@ class AppendableFrameTable(AppendableTable):
         self,
         where=...,
         columns=...,
-        start: Optional[int] = ...,
-        stop: Optional[int] = ...,
+        start: int | None = ...,
+        stop: int | None = ...,
     ): ...
 
 class AppendableSeriesTable(AppendableFrameTable):
@@ -628,8 +618,8 @@ class AppendableSeriesTable(AppendableFrameTable):
         self,
         where=...,
         columns=...,
-        start: Optional[int] = ...,
-        stop: Optional[int] = ...,
+        start: int | None = ...,
+        stop: int | None = ...,
     ) -> Series: ...
 
 class AppendableMultiSeriesTable(AppendableSeriesTable):
@@ -659,8 +649,8 @@ class AppendableMultiFrameTable(AppendableFrameTable):
         self,
         where=...,
         columns=...,
-        start: Optional[int] = ...,
-        stop: Optional[int] = ...,
+        start: int | None = ...,
+        stop: int | None = ...,
     ): ...
 
 class Selection:
@@ -676,8 +666,8 @@ class Selection:
         self,
         table: Table,
         where=...,
-        start: Optional[int] = ...,
-        stop: Optional[int] = ...,
+        start: int | None = ...,
+        stop: int | None = ...,
     ) -> None: ...
     def generate(self, where): ...
     def select(self): ...

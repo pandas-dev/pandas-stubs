@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pandas._libs.lib import infer_dtype as infer_dtype
 
 from pandas.core.dtypes.api import (

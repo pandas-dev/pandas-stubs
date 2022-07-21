@@ -1,15 +1,14 @@
-from typing import (
-    Generic,
-    List,
-)
+from __future__ import annotations
+
+from typing import Generic
 
 from pandas import Series
 from pandas.core.base import NoNewAttributesMixin as NoNewAttributesMixin
 
 from pandas._typing import T
 
-def cat_core(list_of_columns: List, sep: str): ...
-def cat_safe(list_of_columns: List, sep: str): ...
+def cat_core(list_of_columns: list, sep: str): ...
+def cat_safe(list_of_columns: list, sep: str): ...
 def str_count(arr, pat, flags: int = ...): ...
 def str_contains(
     arr, pat, case: bool = ..., flags: int = ..., na=..., regex: bool = ...

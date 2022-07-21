@@ -1,9 +1,9 @@
+from __future__ import annotations
+
 from typing import (
     Hashable,
     Mapping,
-    Optional,
     Sequence,
-    Union,
 )
 
 from pandas._typing import FilePathOrBuffer
@@ -36,24 +36,24 @@ class CSVFormatter:
     def __init__(
         self,
         obj,
-        path_or_buf: Optional[FilePathOrBuffer[str]] = ...,
+        path_or_buf: FilePathOrBuffer[str] | None = ...,
         sep: str = ...,
         na_rep: str = ...,
-        float_format: Optional[str] = ...,
+        float_format: str | None = ...,
         cols=...,
-        header: Union[bool, Sequence[Hashable]] = ...,
+        header: bool | Sequence[Hashable] = ...,
         index: bool = ...,
-        index_label: Optional[Union[bool, Hashable, Sequence[Hashable]]] = ...,
+        index_label: bool | Hashable | Sequence[Hashable] | None = ...,
         mode: str = ...,
-        encoding: Optional[str] = ...,
-        compression: Union[str, Mapping[str, str], None] = ...,
-        quoting: Optional[int] = ...,
+        encoding: str | None = ...,
+        compression: str | Mapping[str, str] | None = ...,
+        quoting: int | None = ...,
         line_terminator=...,
-        chunksize: Optional[int] = ...,
+        chunksize: int | None = ...,
         quotechar=...,
-        date_format: Optional[str] = ...,
+        date_format: str | None = ...,
         doublequote: bool = ...,
-        escapechar: Optional[str] = ...,
+        escapechar: str | None = ...,
         decimal=...,
     ) -> None: ...
     writer = ...

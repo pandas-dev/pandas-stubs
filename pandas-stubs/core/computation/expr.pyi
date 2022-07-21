@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import ast
-from typing import Optional
 
 from pandas.core.computation.ops import Term as Term
 from pandas.core.computation.scope import Scope as Scope
@@ -64,7 +65,7 @@ class Expr:
         expr,
         engine: str = ...,
         parser: str = ...,
-        env: Optional[Scope] = ...,
+        env: Scope | None = ...,
         level: int = ...,
     ) -> None: ...
     @property

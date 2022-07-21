@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import matplotlib.dates as dates
 from matplotlib.ticker import (
     Formatter,

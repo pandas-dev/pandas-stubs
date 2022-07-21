@@ -1,8 +1,9 @@
+from __future__ import annotations
+
 from datetime import timedelta
 from typing import (
     ClassVar,
     Literal,
-    Type,
     TypeVar,
     overload,
 )
@@ -80,7 +81,7 @@ class Timedelta(timedelta):
     resolution: ClassVar[Timedelta]
     value: int  # np.int64
     def __new__(
-        cls: Type[_S],
+        cls: type[_S],
         value=...,
         unit: str = ...,
         **kwargs: int | float | np.integer | np.floating,
@@ -130,7 +131,7 @@ class Timedelta(timedelta):
     @overload
     def __rfloordiv__(self, other: timedelta | str) -> int: ...
     @overload
-    def __rfloordiv__(self, other: None | NaTType) -> NaTType: ...
+    def __rfloordiv__(self, other: NaTType | None) -> NaTType: ...
     @overload
     def __rfloordiv__(self, other: np.ndarray) -> npt.NDArray[np.timedelta64]: ...
     @overload

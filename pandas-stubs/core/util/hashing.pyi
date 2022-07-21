@@ -1,10 +1,10 @@
-from typing import Optional
+from __future__ import annotations
 
 def hash_pandas_object(
     obj,
     index: bool = ...,
     encoding: str = ...,
-    hash_key: Optional[str] = ...,
+    hash_key: str | None = ...,
     categorize: bool = ...,
 ): ...
 def hash_tuples(vals, encoding=..., hash_key: str = ...): ...

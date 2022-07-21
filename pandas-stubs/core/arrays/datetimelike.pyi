@@ -1,7 +1,6 @@
-from typing import (
-    Sequence,
-    Union,
-)
+from __future__ import annotations
+
+from typing import Sequence
 
 import numpy as np
 from pandas.core.arrays.base import (
@@ -42,7 +41,7 @@ class DatetimeLikeArrayMixin(ExtensionOpsMixin, AttributesMixin, ExtensionArray)
     def size(self) -> int: ...
     def __len__(self) -> int: ...
     def __getitem__(self, key): ...
-    def __setitem__(self, key: Union[int, Sequence[int], Sequence[bool], slice], value) -> None: ...  # type: ignore[override]
+    def __setitem__(self, key: int | Sequence[int] | Sequence[bool] | slice, value) -> None: ...  # type: ignore[override]
     def astype(self, dtype, copy: bool = ...): ...
     def view(self, dtype=...): ...
     def unique(self): ...

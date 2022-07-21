@@ -1,4 +1,3 @@
-# flake8: noqa: F841
 from __future__ import annotations
 
 import datetime
@@ -8,13 +7,10 @@ import tempfile
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
     Hashable,
     Iterable,
     Iterator,
-    List,
     Tuple,
-    Union,
 )
 
 import numpy as np
@@ -228,7 +224,7 @@ def test_types_drop() -> None:
     res6: pd.DataFrame = df.drop(index=1)
     res7: pd.DataFrame = df.drop(labels=0)
     res8: None = df.drop([0, 0], inplace=True)
-    to_drop: List[str] = ["col1"]
+    to_drop: list[str] = ["col1"]
     res9: pd.DataFrame = df.drop(columns=to_drop)
 
 
@@ -251,7 +247,7 @@ def test_types_sort_index() -> None:
     res: pd.DataFrame = df.sort_index()
     level1 = (1, 2)
     res2: pd.DataFrame = df.sort_index(ascending=False, level=level1)
-    level2: List[str] = ["a", "b", "c"]
+    level2: list[str] = ["a", "b", "c"]
     res3: pd.DataFrame = df2.sort_index(level=level2)
     res4: pd.DataFrame = df.sort_index(ascending=False, level=3)
     res5: None = df.sort_index(kind="mergesort", inplace=True)
@@ -345,9 +341,9 @@ def test_types_median() -> None:
 
 def test_types_itertuples() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    res1: Iterable[Tuple[Any, ...]] = df.itertuples()
-    res2: Iterable[Tuple[Any, ...]] = df.itertuples(index=False, name="Foobar")
-    res3: Iterable[Tuple[Any, ...]] = df.itertuples(index=False, name=None)
+    res1: Iterable[tuple[Any, ...]] = df.itertuples()
+    res2: Iterable[tuple[Any, ...]] = df.itertuples(index=False, name="Foobar")
+    res3: Iterable[tuple[Any, ...]] = df.itertuples(index=False, name=None)
 
 
 def test_types_sum() -> None:
@@ -475,9 +471,9 @@ def test_types_element_wise_arithmetic() -> None:
 
     # divmod operation was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
     # noinspection PyTypeChecker
-    res_divmod: Tuple[pd.DataFrame, pd.DataFrame] = divmod(df, df2)
-    res_divmod2: Tuple[pd.DataFrame, pd.DataFrame] = df.__divmod__(df2)
-    res_rdivmod: Tuple[pd.DataFrame, pd.DataFrame] = df.__rdivmod__(df2)
+    res_divmod: tuple[pd.DataFrame, pd.DataFrame] = divmod(df, df2)
+    res_divmod2: tuple[pd.DataFrame, pd.DataFrame] = df.__divmod__(df2)
+    res_rdivmod: tuple[pd.DataFrame, pd.DataFrame] = df.__rdivmod__(df2)
 
 
 def test_types_scalar_arithmetic() -> None:
@@ -613,8 +609,8 @@ def test_types_merge() -> None:
     df.merge(df2, on=("col1", "col2"), how="left", suffixes=(None, "s"))
     df.merge(df2, on=("col1", "col2"), how="left", suffixes=("t", "s"))
     df.merge(df2, on=("col1", "col2"), how="left", suffixes=("a", None))
-    l = ["col1", "col2"]
-    df.merge(df2, on=l)
+    columns = ["col1", "col2"]
+    df.merge(df2, on=columns)
 
 
 def test_types_plot() -> None:
@@ -975,7 +971,7 @@ def test_types_regressions() -> None:
 
     # https://github.com/microsoft/python-type-stubs/issues/110
     d: datetime.date = pd.Timestamp("2021-01-01")
-    tslist: List[pd.Timestamp] = list(pd.to_datetime(["2022-01-01", "2022-01-02"]))
+    tslist: list[pd.Timestamp] = list(pd.to_datetime(["2022-01-01", "2022-01-02"]))
     sseries: pd.Series = pd.Series(tslist)
     sseries_plus1: pd.Series = sseries + pd.Timedelta(1, "d")
 
@@ -1069,7 +1065,7 @@ def test_getset_untyped() -> None:
 def test_getmultiindex_columns() -> None:
     mi = pd.MultiIndex.from_product([[1, 2], ["a", "b"]])
     df = pd.DataFrame([[1, 2, 3, 4], [10, 20, 30, 40]], columns=mi)
-    li: List[Tuple[int, str]] = [(1, "a"), (2, "b")]
+    li: list[tuple[int, str]] = [(1, "a"), (2, "b")]
     res1: pd.DataFrame = df[[(1, "a"), (2, "b")]]
     res2: pd.DataFrame = df[li]
     res3: pd.DataFrame = df[
@@ -1089,18 +1085,14 @@ def test_read_excel() -> None:
         # https://github.com/pandas-dev/pandas-stubs/pull/33
         df11: pd.DataFrame = pd.read_excel("foo")
         df12: pd.DataFrame = pd.read_excel("foo", sheet_name="sheet")
-        df13: Dict[Union[int, str], pd.DataFrame] = pd.read_excel(
-            "foo", sheet_name=["sheet"]
-        )
+        df13: dict[int | str, pd.DataFrame] = pd.read_excel("foo", sheet_name=["sheet"])
         # GH 98
         df14: pd.DataFrame = pd.read_excel("foo", sheet_name=0)
-        df15: Dict[Union[int, str], pd.DataFrame] = pd.read_excel("foo", sheet_name=[0])
-        df16: Dict[Union[int, str], pd.DataFrame] = pd.read_excel(
+        df15: dict[int | str, pd.DataFrame] = pd.read_excel("foo", sheet_name=[0])
+        df16: dict[int | str, pd.DataFrame] = pd.read_excel(
             "foo", sheet_name=[0, "sheet"]
         )
-        df17: Dict[Union[int, str], pd.DataFrame] = pd.read_excel(
-            "foo", sheet_name=None
-        )
+        df17: dict[int | str, pd.DataFrame] = pd.read_excel("foo", sheet_name=None)
 
 
 def test_join() -> None:
@@ -1109,7 +1101,7 @@ def test_join() -> None:
     left = float_frame["A"].to_frame()
     seriesB = float_frame["B"]
     frameCD = float_frame[["C", "D"]]
-    right: List[Union[pd.Series, pd.DataFrame]] = [seriesB, frameCD]
+    right: list[pd.Series | pd.DataFrame] = [seriesB, frameCD]
     result = left.join(right)
 
 
@@ -1208,7 +1200,7 @@ def test_not_hashable() -> None:
 def test_columns_mixlist() -> None:
     # GH 97
     df = pd.DataFrame({"a": [1, 2, 3], 1: [3, 4, 5]})
-    key: List[Union[int, str]]
+    key: list[int | str]
     key = [1]
     check(assert_type(df[key], pd.DataFrame), pd.DataFrame)
 

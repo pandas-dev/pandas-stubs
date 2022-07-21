@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any
 
 def get_group_index(labels: Any, shape: Any, sort: bool, xnull: bool) -> Any: ...

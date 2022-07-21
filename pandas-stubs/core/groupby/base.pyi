@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # from pandas.core.dtypes.common import is_list_like as is_list_like, is_scalar as is_scalar
 from typing import NamedTuple
 

@@ -1,4 +1,4 @@
-from typing import Union
+from __future__ import annotations
 
 import numpy as np
 from pandas.core.indexes.numeric import Int64Index as Int64Index
@@ -6,7 +6,7 @@ from pandas.core.indexes.numeric import Int64Index as Int64Index
 class RangeIndex(Int64Index):
     def __new__(
         cls,
-        start: Union[int, RangeIndex] = ...,
+        start: int | RangeIndex = ...,
         stop: int = ...,
         step: int = ...,
         dtype=...,
@@ -15,7 +15,7 @@ class RangeIndex(Int64Index):
     ): ...
     def __init__(
         self,
-        start: Union[int, RangeIndex] = ...,
+        start: int | RangeIndex = ...,
         stop: int = ...,
         step: int = ...,
         dtype=...,
@@ -38,7 +38,7 @@ class RangeIndex(Int64Index):
     def is_monotonic_decreasing(self) -> bool: ...
     @property
     def has_duplicates(self) -> bool: ...
-    def __contains__(self, key: Union[int, np.integer]) -> bool: ...
+    def __contains__(self, key: int | np.integer) -> bool: ...
     def get_loc(self, key, method=..., tolerance=...): ...
     def get_indexer(self, target, method=..., limit=..., tolerance=...): ...
     def tolist(self): ...

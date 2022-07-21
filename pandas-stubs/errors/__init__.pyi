@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pandas._libs.tslibs import OutOfBoundsDatetime as OutOfBoundsDatetime
 
 class PerformanceWarning(Warning): ...

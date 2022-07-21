@@ -1,1 +1,3 @@
+from __future__ import annotations
+
 def to_numeric(arg, errors: str = ..., downcast=...): ...

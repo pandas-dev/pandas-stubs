@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pandas.core.indexers import check_array_indexer as check_array_indexer
 from pandas.core.window.indexers import (
     BaseIndexer as BaseIndexer,

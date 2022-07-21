@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pandas.core.frame import DataFrame
 
 def read_clipboard(sep: str = ..., **kwargs) -> DataFrame: ...

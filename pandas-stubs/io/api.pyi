@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pandas.io.clipboards import read_clipboard as read_clipboard
 from pandas.io.excel import (
     ExcelFile as ExcelFile,

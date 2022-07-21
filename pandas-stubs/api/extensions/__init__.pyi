@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pandas.core.accessor import (
     register_dataframe_accessor as register_dataframe_accessor,
     register_index_accessor as register_index_accessor,
