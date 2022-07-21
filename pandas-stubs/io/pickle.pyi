@@ -1,16 +1,23 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any
 
-from pandas._typing import FilePathOrBuffer
+from pandas._typing import (
+    CompressionOptions,
+    FilePath,
+    ReadPickleBuffer,
+    StorageOptions,
+    WriteBuffer,
+)
 
 def to_pickle(
-    obj,
-    filepath_or_buffer: FilePathOrBuffer,
-    compression: str | None = ...,
+    obj: Any,
+    filepath_or_buffer: FilePath | WriteBuffer[bytes],
+    compression: CompressionOptions = ...,
     protocol: int = ...,
+    storage_options: StorageOptions = ...,
 ): ...
 def read_pickle(
-    filepath_or_buffer_or_reader: FilePathOrBuffer,
-    compression: str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
+    filepath_or_buffer_or_reader: FilePath | ReadPickleBuffer,
+    compression: CompressionOptions = ...,
 ): ...
