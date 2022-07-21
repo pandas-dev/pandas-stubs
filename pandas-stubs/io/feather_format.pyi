@@ -1,13 +1,27 @@
 from __future__ import annotations
 
-# from pandas import DataFrame, Int64Index, RangeIndex
 from typing import Sequence
+
 
 from pandas.core.frame import DataFrame
 
-from pandas._typing import FilePathOrBuffer
+from pandas._typing import (
+    FilePath,
+    HashableT,
+    ReadBuffer,
+    StorageOptions,
+    WriteBuffer,
+)
 
-def to_feather(df: DataFrame, path): ...
+def to_feather(
+    df: DataFrame,
+    path: FilePath | WriteBuffer[bytes],
+    storage_options: StorageOptions = ...,
+    **kwargs,
+) -> None: ...
 def read_feather(
-    p: FilePathOrBuffer, columns: Sequence | None = ..., use_threads: bool = ...
+    path: FilePath | ReadBuffer[bytes],
+    columns: list[HashableT] | None = ...,
+    use_threads: bool = ...,
+    storage_options: StorageOptions = ...,
 ): ...

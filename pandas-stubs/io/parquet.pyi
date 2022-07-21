@@ -4,7 +4,6 @@ from types import ModuleType
 from typing import (
     Any,
     Literal,
-    Sequence,
 )
 
 from pandas.core.frame import DataFrame
@@ -67,7 +66,7 @@ class FastParquetImpl(BaseImpl):
     def write(
         self,
         df: DataFrame,
-        path: FilePath,
+        path: FilePath | WriteBuffer[bytes],
         compression: _CompressionT | None = ...,
         index: bool | None = ...,
         partition_cols: list[str] | None = ...,
@@ -76,7 +75,7 @@ class FastParquetImpl(BaseImpl):
     ): ...
     def read(
         self,
-        path: FilePath,
+        path: FilePath | WriteBuffer[bytes],
         columns: list[str] | None = ...,
         storage_options: StorageOptions = ...,
         **kwargs: Any,
