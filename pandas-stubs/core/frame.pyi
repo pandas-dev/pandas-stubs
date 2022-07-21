@@ -76,7 +76,6 @@ from pandas.io.formats import format as fmt
 from pandas.io.formats.style import Styler
 from pandas.plotting import PlotAccessor
 
-_str = str
 _bool = bool
 
 class _iLocIndexerFrame(_iLocIndexer):
@@ -157,7 +156,7 @@ class DataFrame(NDFrame, OpsMixin):
     _ListLike = Union[
         np.ndarray,
         list[Dtype],
-        dict[_str, np.ndarray],
+        dict[str, np.ndarray],
         Sequence,
         Index,
         Series,
@@ -194,8 +193,8 @@ class DataFrame(NDFrame, OpsMixin):
         cls,
         data: dict[Any, Any],
         orient: Literal["columns", "index", "tight"] = ...,
-        dtype: _str = ...,
-        columns: list[_str] = ...,
+        dtype: str = ...,
+        columns: list[str] = ...,
     ) -> DataFrame: ...
     def to_numpy(
         self,
@@ -208,13 +207,13 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         orient: Literal["records"],
         into: Hashable = ...,
-    ) -> list[dict[_str, Any]]: ...
+    ) -> list[dict[str, Any]]: ...
     @overload
     def to_dict(
         self,
         orient: Literal["dict", "list", "series", "split", "tight", "index"] = ...,
         into: Hashable = ...,
-    ) -> dict[_str, Any]: ...
+    ) -> dict[str, Any]: ...
     def to_gbq(
         self,
         destination_table,
@@ -235,35 +234,35 @@ class DataFrame(NDFrame, OpsMixin):
     def to_records(
         self,
         index: _bool = ...,
-        columnDTypes: _str | dict | None = ...,
-        indexDTypes: _str | dict | None = ...,
+        columnDTypes: str | dict | None = ...,
+        indexDTypes: str | dict | None = ...,
     ) -> np.recarray: ...
     def to_stata(
         self,
         path: FilePathOrBuffer,
         convert_dates: dict | None = ...,
         write_index: _bool = ...,
-        byteorder: _str | Literal["<", ">", "little", "big"] | None = ...,
+        byteorder: str | Literal["<", ">", "little", "big"] | None = ...,
         time_stamp=...,
-        data_label: _str | None = ...,
+        data_label: str | None = ...,
         variable_labels: dict | None = ...,
         version: int = ...,
-        convert_strl: list[_str] | None = ...,
+        convert_strl: list[str] | None = ...,
     ) -> None: ...
     def to_feather(self, path: FilePathOrBuffer, **kwargs) -> None: ...
     @overload
     def to_markdown(
-        self, buf: FilePathOrBuffer | None, mode: _str | None = ..., **kwargs
+        self, buf: FilePathOrBuffer | None, mode: str | None = ..., **kwargs
     ) -> None: ...
     @overload
-    def to_markdown(self, mode: _str | None = ..., **kwargs) -> _str: ...
+    def to_markdown(self, mode: str | None = ..., **kwargs) -> str: ...
     @overload
     def to_parquet(
         self,
         path: FilePathOrBytesBuffer,
         *,
-        engine: _str | Literal["auto", "pyarrow", "fastparquet"] = ...,
-        compression: _str | Literal["snappy", "gzip", "brotli"] = ...,
+        engine: str | Literal["auto", "pyarrow", "fastparquet"] = ...,
+        compression: str | Literal["snappy", "gzip", "brotli"] = ...,
         index: _bool | None = ...,
         partition_cols: list | None = ...,
         **kwargs,
@@ -273,8 +272,8 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         *,
         path: None = ...,
-        engine: _str | Literal["auto", "pyarrow", "fastparquet"] = ...,
-        compression: _str | Literal["snappy", "gzip", "brotli"] = ...,
+        engine: str | Literal["auto", "pyarrow", "fastparquet"] = ...,
+        compression: str | Literal["snappy", "gzip", "brotli"] = ...,
         index: _bool | None = ...,
         partition_cols: list | None = ...,
         **kwargs,
@@ -283,55 +282,55 @@ class DataFrame(NDFrame, OpsMixin):
     def to_html(
         self,
         buf: FilePathOrBuffer | None,
-        columns: Sequence[_str] | None = ...,
-        col_space: int | list[int] | dict[_str | int, int] | None = ...,
+        columns: Sequence[str] | None = ...,
+        col_space: int | list[int] | dict[str | int, int] | None = ...,
         header: _bool = ...,
         index: _bool = ...,
-        na_rep: _str = ...,
+        na_rep: str = ...,
         formatters=...,
         float_format=...,
         sparsify: _bool | None = ...,
         index_names: _bool = ...,
-        justify: _str | None = ...,
+        justify: str | None = ...,
         max_rows: int | None = ...,
         max_cols: int | None = ...,
         show_dimensions: _bool = ...,
-        decimal: _str = ...,
+        decimal: str = ...,
         bold_rows: _bool = ...,
-        classes: _str | list | tuple | None = ...,
+        classes: str | list | tuple | None = ...,
         escape: _bool = ...,
         notebook: _bool = ...,
         border: int | None = ...,
-        table_id: _str | None = ...,
+        table_id: str | None = ...,
         render_links: _bool = ...,
-        encoding: _str | None = ...,
+        encoding: str | None = ...,
     ) -> None: ...
     @overload
     def to_html(
         self,
-        columns: Sequence[_str] | None = ...,
-        col_space: int | list[int] | dict[_str | int, int] | None = ...,
+        columns: Sequence[str] | None = ...,
+        col_space: int | list[int] | dict[str | int, int] | None = ...,
         header: _bool = ...,
         index: _bool = ...,
-        na_rep: _str = ...,
+        na_rep: str = ...,
         formatters=...,
         float_format=...,
         sparsify: _bool | None = ...,
         index_names: _bool = ...,
-        justify: _str | None = ...,
+        justify: str | None = ...,
         max_rows: int | None = ...,
         max_cols: int | None = ...,
         show_dimensions: _bool = ...,
-        decimal: _str = ...,
+        decimal: str = ...,
         bold_rows: _bool = ...,
-        classes: _str | list | tuple | None = ...,
+        classes: str | list | tuple | None = ...,
         escape: _bool = ...,
         notebook: _bool = ...,
         border: int | None = ...,
-        table_id: _str | None = ...,
+        table_id: str | None = ...,
         render_links: _bool = ...,
-        encoding: _str | None = ...,
-    ) -> _str: ...
+        encoding: str | None = ...,
+    ) -> str: ...
     def info(
         self, verbose=..., buf=..., max_cols=..., memory_usage=..., null_counts=...
     ) -> None: ...
@@ -349,7 +348,7 @@ class DataFrame(NDFrame, OpsMixin):
         idx: tuple
         | Series[_bool]
         | DataFrame
-        | list[_str]
+        | list[str]
         | list[ScalarT]
         | Index
         | np_ndarray_str
@@ -358,16 +357,16 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def __setitem__(self, key, value): ...
     @overload
-    def query(self, expr: _str, *, inplace: Literal[True], **kwargs) -> None: ...
+    def query(self, expr: str, *, inplace: Literal[True], **kwargs) -> None: ...
     @overload
     def query(
-        self, expr: _str, *, inplace: Literal[False] = ..., **kwargs
+        self, expr: str, *, inplace: Literal[False] = ..., **kwargs
     ) -> DataFrame: ...
-    def eval(self, expr: _str, inplace: _bool = ..., **kwargs): ...
+    def eval(self, expr: str, inplace: _bool = ..., **kwargs): ...
     def select_dtypes(
         self,
-        include: _str | list[_str] | None = ...,
-        exclude: _str | list[_str] | None = ...,
+        include: str | list[str] | None = ...,
+        exclude: str | list[str] | None = ...,
     ) -> DataFrame: ...
     def insert(
         self,
@@ -381,12 +380,12 @@ class DataFrame(NDFrame, OpsMixin):
     def align(
         self,
         other: DataFrame | Series,
-        join: _str | Literal["inner", "outer", "left", "right"] = ...,
+        join: str | Literal["inner", "outer", "left", "right"] = ...,
         axis: AxisType | None = ...,
         level: Level | None = ...,
         copy: _bool = ...,
         fill_value=...,
-        method: _str | Literal["backfill", "bfill", "pad", "ffill"] | None = ...,
+        method: str | Literal["backfill", "bfill", "pad", "ffill"] | None = ...,
         limit: int | None = ...,
         fill_axis: AxisType = ...,
         broadcast_axis: AxisType | None = ...,
@@ -505,7 +504,7 @@ class DataFrame(NDFrame, OpsMixin):
     def fillna(
         self,
         value: Scalar | dict | Series | DataFrame | None = ...,
-        method: _str | Literal["backfill", "bfill", "ffill", "pad"] | None = ...,
+        method: str | Literal["backfill", "bfill", "ffill", "pad"] | None = ...,
         axis: AxisType | None = ...,
         *,
         limit: int = ...,
@@ -515,7 +514,7 @@ class DataFrame(NDFrame, OpsMixin):
     def fillna(
         self,
         value: Scalar | dict | Series | DataFrame | None = ...,
-        method: _str | Literal["backfill", "bfill", "ffill", "pad"] | None = ...,
+        method: str | Literal["backfill", "bfill", "ffill", "pad"] | None = ...,
         axis: AxisType | None = ...,
         inplace: _bool | None = ...,
         limit: int = ...,
@@ -528,7 +527,7 @@ class DataFrame(NDFrame, OpsMixin):
         value: Scalar | Sequence | Mapping | Pattern | None = ...,
         limit: int | None = ...,
         regex=...,
-        method: _str | None = ...,
+        method: str | None = ...,
         *,
         inplace: Literal[True],
     ) -> None: ...
@@ -540,7 +539,7 @@ class DataFrame(NDFrame, OpsMixin):
         inplace: Literal[False] = ...,
         limit: int | None = ...,
         regex=...,
-        method: _str | None = ...,
+        method: str | None = ...,
     ) -> DataFrame: ...
     @overload
     def replace(
@@ -550,7 +549,7 @@ class DataFrame(NDFrame, OpsMixin):
         inplace: _bool | None = ...,
         limit: int | None = ...,
         regex=...,
-        method: _str | None = ...,
+        method: str | None = ...,
     ) -> DataFrame | None: ...
     def shift(
         self,
@@ -622,7 +621,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         level: Level | Sequence[Level] = ...,
         drop: _bool = ...,
-        col_level: int | _str = ...,
+        col_level: int | str = ...,
         col_fill: Hashable = ...,
         *,
         inplace: Literal[True],
@@ -632,7 +631,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         level: Level | Sequence[Level] = ...,
         drop: _bool = ...,
-        col_level: int | _str = ...,
+        col_level: int | str = ...,
         col_fill: Hashable = ...,
         *,
         inplace: Literal[False],
@@ -643,7 +642,7 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level | Sequence[Level] = ...,
         drop: _bool = ...,
         *,
-        col_level: int | _str = ...,
+        col_level: int | str = ...,
         col_fill: Hashable = ...,
     ) -> DataFrame: ...
     @overload
@@ -652,7 +651,7 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level | Sequence[Level] = ...,
         drop: _bool = ...,
         inplace: _bool | None = ...,
-        col_level: int | _str = ...,
+        col_level: int | str = ...,
         col_fill: Hashable = ...,
     ) -> DataFrame | None: ...
     def isna(self) -> DataFrame: ...
@@ -663,7 +662,7 @@ class DataFrame(NDFrame, OpsMixin):
     def dropna(
         self,
         axis: AxisType = ...,
-        how: _str | Literal["any", "all"] = ...,
+        how: str | Literal["any", "all"] = ...,
         thresh: int | None = ...,
         subset: list | None = ...,
         *,
@@ -673,7 +672,7 @@ class DataFrame(NDFrame, OpsMixin):
     def dropna(
         self,
         axis: AxisType = ...,
-        how: _str | Literal["any", "all"] = ...,
+        how: str | Literal["any", "all"] = ...,
         thresh: int | None = ...,
         subset: list | None = ...,
         *,
@@ -683,7 +682,7 @@ class DataFrame(NDFrame, OpsMixin):
     def dropna(
         self,
         axis: AxisType = ...,
-        how: _str | Literal["any", "all"] = ...,
+        how: str | Literal["any", "all"] = ...,
         thresh: int | None = ...,
         subset: list | None = ...,
     ) -> DataFrame: ...
@@ -691,7 +690,7 @@ class DataFrame(NDFrame, OpsMixin):
     def dropna(
         self,
         axis: AxisType = ...,
-        how: _str | Literal["any", "all"] = ...,
+        how: str | Literal["any", "all"] = ...,
         thresh: int | None = ...,
         subset: list | None = ...,
         inplace: _bool | None = ...,
@@ -699,23 +698,23 @@ class DataFrame(NDFrame, OpsMixin):
     def drop_duplicates(
         self,
         subset=...,
-        keep: _str | Literal["first", "last"] | _bool = ...,
+        keep: str | Literal["first", "last"] | _bool = ...,
         inplace: _bool = ...,
         ignore_index: _bool = ...,
     ) -> DataFrame: ...
     def duplicated(
         self,
         subset: Hashable | Sequence[Hashable] | None = ...,
-        keep: _str | Literal["first", "last"] | _bool = ...,
+        keep: str | Literal["first", "last"] | _bool = ...,
     ) -> Series: ...
     @overload
     def sort_values(
         self,
-        by: _str | Sequence[_str],
+        by: str | Sequence[str],
         axis: AxisType = ...,
         ascending: _bool | Sequence[_bool] = ...,
-        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: _str | Literal["first", "last"] = ...,
+        kind: str | Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: str | Literal["first", "last"] = ...,
         ignore_index: _bool = ...,
         *,
         inplace: Literal[True],
@@ -724,11 +723,11 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def sort_values(
         self,
-        by: _str | Sequence[_str],
+        by: str | Sequence[str],
         axis: AxisType = ...,
         ascending: _bool | Sequence[_bool] = ...,
-        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: _str | Literal["first", "last"] = ...,
+        kind: str | Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: str | Literal["first", "last"] = ...,
         ignore_index: _bool = ...,
         *,
         inplace: Literal[False],
@@ -737,24 +736,24 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def sort_values(
         self,
-        by: _str | Sequence[_str],
+        by: str | Sequence[str],
         axis: AxisType = ...,
         ascending: _bool | Sequence[_bool] = ...,
         *,
-        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: _str | Literal["first", "last"] = ...,
+        kind: str | Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: str | Literal["first", "last"] = ...,
         ignore_index: _bool = ...,
         key: Callable | None = ...,
     ) -> DataFrame: ...
     @overload
     def sort_values(
         self,
-        by: _str | Sequence[_str],
+        by: str | Sequence[str],
         axis: AxisType = ...,
         ascending: _bool | Sequence[_bool] = ...,
         inplace: _bool | None = ...,
-        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: _str | Literal["first", "last"] = ...,
+        kind: str | Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: str | Literal["first", "last"] = ...,
         ignore_index: _bool = ...,
         key: Callable | None = ...,
     ) -> DataFrame | None: ...
@@ -764,8 +763,8 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         level: Level | None = ...,
         ascending: _bool | Sequence[_bool] = ...,
-        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: _str | Literal["first", "last"] = ...,
+        kind: str | Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: str | Literal["first", "last"] = ...,
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
         *,
@@ -776,10 +775,10 @@ class DataFrame(NDFrame, OpsMixin):
     def sort_index(
         self,
         axis: AxisType = ...,
-        level: Level | list[int] | list[_str] | None = ...,
+        level: Level | list[int] | list[str] | None = ...,
         ascending: _bool | Sequence[_bool] = ...,
-        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: _str | Literal["first", "last"] = ...,
+        kind: str | Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: str | Literal["first", "last"] = ...,
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
         *,
@@ -790,11 +789,11 @@ class DataFrame(NDFrame, OpsMixin):
     def sort_index(
         self,
         axis: AxisType = ...,
-        level: Level | list[int] | list[_str] | None = ...,
+        level: Level | list[int] | list[str] | None = ...,
         ascending: _bool | Sequence[_bool] = ...,
         *,
-        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: _str | Literal["first", "last"] = ...,
+        kind: str | Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: str | Literal["first", "last"] = ...,
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
         key: Callable | None = ...,
@@ -803,11 +802,11 @@ class DataFrame(NDFrame, OpsMixin):
     def sort_index(
         self,
         axis: AxisType = ...,
-        level: Level | list[int] | list[_str] | None = ...,
+        level: Level | list[int] | list[str] | None = ...,
         ascending: _bool | Sequence[_bool] = ...,
         inplace: _bool | None = ...,
-        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: _str | Literal["first", "last"] = ...,
+        kind: str | Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: str | Literal["first", "last"] = ...,
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
         key: Callable | None = ...,
@@ -823,14 +822,14 @@ class DataFrame(NDFrame, OpsMixin):
     def nlargest(
         self,
         n: int,
-        columns: _str | list[_str],
-        keep: _str | Literal["first", "last", "all"] = ...,
+        columns: str | list[str],
+        keep: str | Literal["first", "last", "all"] = ...,
     ) -> DataFrame: ...
     def nsmallest(
         self,
         n: int,
-        columns: _str | list[_str],
-        keep: _str | Literal["first", "last", "all"] = ...,
+        columns: str | list[str],
+        keep: str | Literal["first", "last", "all"] = ...,
     ) -> DataFrame: ...
     def swaplevel(
         self, i: Level = ..., j: Level = ..., axis: AxisType = ...
@@ -854,10 +853,10 @@ class DataFrame(NDFrame, OpsMixin):
     def update(
         self,
         other: DataFrame | Series,
-        join: _str = ...,
+        join: str = ...,
         overwrite: _bool = ...,
         filter_func: Callable | None = ...,
-        errors: _str | Literal["raise", "ignore"] = ...,
+        errors: str | Literal["raise", "ignore"] = ...,
     ) -> None: ...
     @overload
     def groupby(
@@ -893,22 +892,22 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def pivot_table(
         self,
-        values: _str | None = ...,
-        index: _str | Grouper | Sequence | None = ...,
-        columns: _str | Grouper | Sequence | None = ...,
+        values: str | None = ...,
+        index: str | Grouper | Sequence | None = ...,
+        columns: str | Grouper | Sequence | None = ...,
         aggfunc=...,
         fill_value: Scalar | None = ...,
         margins: _bool = ...,
         dropna: _bool = ...,
-        margins_name: _str = ...,
+        margins_name: str = ...,
         observed: _bool = ...,
     ) -> DataFrame: ...
     def stack(self, level: Level = ..., dropna: _bool = ...) -> DataFrame | Series: ...
-    def explode(self, column: _str | tuple, ignore_index: _bool = ...) -> DataFrame: ...
+    def explode(self, column: str | tuple, ignore_index: _bool = ...) -> DataFrame: ...
     def unstack(
         self,
         level: Level = ...,
-        fill_value: int | _str | dict | None = ...,
+        fill_value: int | str | dict | None = ...,
     ) -> DataFrame | Series: ...
     def melt(
         self,
@@ -916,33 +915,33 @@ class DataFrame(NDFrame, OpsMixin):
         value_vars: tuple | Sequence | np.ndarray | None = ...,
         var_name: Scalar | None = ...,
         value_name: Scalar = ...,
-        col_level: int | _str | None = ...,
+        col_level: int | str | None = ...,
         ignore_index: _bool = ...,
     ) -> DataFrame: ...
     def diff(self, periods: int = ..., axis: AxisType = ...) -> DataFrame: ...
     @overload
-    def agg(self, func: Callable | _str, axis: AxisType = ..., **kwargs) -> Series: ...
+    def agg(self, func: Callable | str, axis: AxisType = ..., **kwargs) -> Series: ...
     @overload
     def agg(
         self,
-        func: list[Callable] | dict[_str, Callable] = ...,
+        func: list[Callable] | dict[str, Callable] = ...,
         axis: AxisType = ...,
         **kwargs,
     ) -> DataFrame: ...
     @overload
     def aggregate(
-        self, func: Callable | _str, axis: AxisType = ..., **kwargs
+        self, func: Callable | str, axis: AxisType = ..., **kwargs
     ) -> Series: ...
     @overload
     def aggregate(
         self,
-        func: list[Callable] | dict[_str, Callable],
+        func: list[Callable] | dict[str, Callable],
         axis: AxisType = ...,
         **kwargs,
     ) -> DataFrame: ...
     def transform(
         self,
-        func: list[Callable] | dict[_str, Callable],
+        func: list[Callable] | dict[str, Callable],
         axis: AxisType = ...,
         *args,
         **kwargs,
@@ -955,7 +954,7 @@ class DataFrame(NDFrame, OpsMixin):
         f: Callable,
         axis: AxisType,
         raw: _bool = ...,
-        result_type: _str | None = ...,
+        result_type: str | None = ...,
         args=...,
         **kwargs,
     ) -> DataFrame: ...
@@ -976,33 +975,33 @@ class DataFrame(NDFrame, OpsMixin):
     def join(
         self,
         other: DataFrame | Series | list[DataFrame | Series],
-        on: _str | list[_str] | None = ...,
-        how: _str | Literal["left", "right", "outer", "inner"] = ...,
-        lsuffix: _str = ...,
-        rsuffix: _str = ...,
+        on: str | list[str] | None = ...,
+        how: str | Literal["left", "right", "outer", "inner"] = ...,
+        lsuffix: str = ...,
+        rsuffix: str = ...,
         sort: _bool = ...,
     ) -> DataFrame: ...
     def merge(
         self,
         right: DataFrame | Series,
-        how: _str | Literal["left", "right", "inner", "outer"] = ...,
+        how: str | Literal["left", "right", "inner", "outer"] = ...,
         on: IndexLabel | None = ...,
         left_on: IndexLabel | None = ...,
         right_on: IndexLabel | None = ...,
         left_index: _bool = ...,
         right_index: _bool = ...,
         sort: _bool = ...,
-        suffixes: tuple[_str | None, _str | None] = ...,
+        suffixes: tuple[str | None, str | None] = ...,
         copy: _bool = ...,
-        indicator: _bool | _str = ...,
-        validate: _str | None = ...,
+        indicator: _bool | str = ...,
+        validate: str | None = ...,
     ) -> DataFrame: ...
     def round(
         self, decimals: int | dict | Series = ..., *args, **kwargs
     ) -> DataFrame: ...
     def corr(
         self,
-        method: _str | Literal["pearson", "kendall", "spearman"] = ...,
+        method: str | Literal["pearson", "kendall", "spearman"] = ...,
         min_periods: int = ...,
     ) -> DataFrame: ...
     def cov(self, min_periods: int | None = ..., ddof: int = ...) -> DataFrame: ...
@@ -1011,7 +1010,7 @@ class DataFrame(NDFrame, OpsMixin):
         other: DataFrame | Series,
         axis: AxisType | None = ...,
         drop: _bool = ...,
-        method: _str | Literal["pearson", "kendall", "spearman"] = ...,
+        method: str | Literal["pearson", "kendall", "spearman"] = ...,
     ) -> Series: ...
     @overload
     def count(
@@ -1049,7 +1048,7 @@ class DataFrame(NDFrame, OpsMixin):
         q: float = ...,
         axis: AxisType = ...,
         numeric_only: _bool = ...,
-        interpolation: _str
+        interpolation: str
         | Literal["linear", "lower", "higher", "midpoint", "nearest"] = ...,
     ) -> Series: ...
     @overload
@@ -1058,26 +1057,26 @@ class DataFrame(NDFrame, OpsMixin):
         q: list[float] | np.ndarray,
         axis: AxisType = ...,
         numeric_only: _bool = ...,
-        interpolation: _str
+        interpolation: str
         | Literal["linear", "lower", "higher", "midpoint", "nearest"] = ...,
     ) -> DataFrame: ...
     def to_timestamp(
         self,
         freq=...,
-        how: _str | Literal["start", "end", "s", "e"] = ...,
+        how: str | Literal["start", "end", "s", "e"] = ...,
         axis: AxisType = ...,
         copy: _bool = ...,
     ) -> DataFrame: ...
     def to_period(
-        self, freq: _str | None = ..., axis: AxisType = ..., copy: _bool = ...
+        self, freq: str | None = ..., axis: AxisType = ..., copy: _bool = ...
     ) -> DataFrame: ...
     def isin(self, values: Iterable | Series | DataFrame | dict) -> DataFrame: ...
     @property
     def plot(self) -> PlotAccessor: ...
     def hist(
         self,
-        column: _str | list[_str] | None = ...,
-        by: _str | _ListLike | None = ...,
+        column: str | list[str] | None = ...,
+        by: str | _ListLike | None = ...,
         grid: _bool = ...,
         xlabelsize: int | None = ...,
         xrot: float | None = ...,
@@ -1089,21 +1088,21 @@ class DataFrame(NDFrame, OpsMixin):
         figsize: tuple[float, float] | None = ...,
         layout: tuple[int, int] | None = ...,
         bins: int | list = ...,
-        backend: _str | None = ...,
+        backend: str | None = ...,
         **kwargs,
     ): ...
     def boxplot(
         self,
-        column: _str | list[_str] | None = ...,
-        by: _str | _ListLike | None = ...,
+        column: str | list[str] | None = ...,
+        by: str | _ListLike | None = ...,
         ax: PlotAxes | None = ...,
-        fontsize: float | _str | None = ...,
+        fontsize: float | str | None = ...,
         rot: int = ...,
         grid: _bool = ...,
         figsize: tuple[float, float] | None = ...,
         layout: tuple[int, int] | None = ...,
-        return_type: _str | Literal["axes", "dict", "both"] | None = ...,
-        backend: _str | None = ...,
+        return_type: str | Literal["axes", "dict", "both"] | None = ...,
+        backend: str | None = ...,
         **kwargs,
     ): ...
     sparse = ...
@@ -1113,7 +1112,7 @@ class DataFrame(NDFrame, OpsMixin):
     # base classes, or stubgen just failed to generate
     # these.
 
-    Name: _str
+    Name: str
     #
     # dunder methods
     def __exp__(
@@ -1132,7 +1131,7 @@ class DataFrame(NDFrame, OpsMixin):
     @property
     def columns(self) -> Index: ...
     @columns.setter  # setter needs to be right next to getter; otherwise mypy complains
-    def columns(self, cols: list[_str] | Index[_str]) -> None: ...  # type: ignore[type-arg]
+    def columns(self, cols: list[str] | Index[str]) -> None: ...  # type: ignore[type-arg]
     @property
     def dtypes(self) -> Series: ...
     @property
@@ -1162,8 +1161,8 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
-    def add_prefix(self, prefix: _str) -> DataFrame: ...
-    def add_suffix(self, suffix: _str) -> DataFrame: ...
+    def add_prefix(self, prefix: str) -> DataFrame: ...
+    def add_suffix(self, suffix: str) -> DataFrame: ...
     @overload
     def all(
         self,
@@ -1202,31 +1201,31 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level,
         **kwargs,
     ) -> DataFrame: ...
-    def asof(self, where, subset: _str | list[_str] | None = ...) -> DataFrame: ...
+    def asof(self, where, subset: str | list[str] | None = ...) -> DataFrame: ...
     def asfreq(
         self,
         freq,
-        method: _str | Literal["backfill", "bfill", "pad", "ffill"] | None = ...,
-        how: _str | Literal["start", "end"] | None = ...,
+        method: str | Literal["backfill", "bfill", "pad", "ffill"] | None = ...,
+        how: str | Literal["start", "end"] | None = ...,
         normalize: _bool = ...,
         fill_value: Scalar | None = ...,
     ) -> DataFrame: ...
     def astype(
         self,
-        dtype: _str | Dtype | dict[_str, _str | Dtype],
+        dtype: str | Dtype | dict[str, str | Dtype],
         copy: _bool = ...,
-        errors: _str = ...,
+        errors: str = ...,
     ) -> DataFrame: ...
     def at_time(
         self,
-        time: _str | datetime.time,
+        time: str | datetime.time,
         asof: _bool = ...,
         axis: AxisType | None = ...,
     ) -> DataFrame: ...
     def between_time(
         self,
-        start_time: _str | datetime.time,
-        end_time: _str | datetime.time,
+        start_time: str | datetime.time,
+        end_time: str | datetime.time,
         include_start: _bool = ...,
         include_end: _bool = ...,
         axis: AxisType | None = ...,
@@ -1274,7 +1273,7 @@ class DataFrame(NDFrame, OpsMixin):
     def describe(
         self,
         percentiles: list[float] | None = ...,
-        include: _str | Literal["all"] | list[Dtype] | None = ...,
+        include: str | Literal["all"] | list[Dtype] | None = ...,
         exclude: list[Dtype] | None = ...,
         datetime_is_numeric: _bool | None = ...,
     ) -> DataFrame: ...
@@ -1341,8 +1340,8 @@ class DataFrame(NDFrame, OpsMixin):
     def filter(
         self,
         items: list | None = ...,
-        like: _str | None = ...,
-        regex: _str | None = ...,
+        like: str | None = ...,
+        regex: str | None = ...,
         axis: AxisType | None = ...,
     ) -> DataFrame: ...
     def first(self, offset) -> DataFrame: ...
@@ -1376,12 +1375,12 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def interpolate(
         self,
-        method: _str = ...,
+        method: str = ...,
         axis: AxisType = ...,
         limit: int | None = ...,
-        limit_direction: _str | Literal["forward", "backward", "both"] = ...,
-        limit_area: _str | Literal["inside", "outside"] | None = ...,
-        downcast: _str | Literal["infer"] | None = ...,
+        limit_direction: str | Literal["forward", "backward", "both"] = ...,
+        limit_area: str | Literal["inside", "outside"] | None = ...,
+        downcast: str | Literal["infer"] | None = ...,
         *,
         inplace: Literal[True],
         **kwargs,
@@ -1389,12 +1388,12 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def interpolate(
         self,
-        method: _str = ...,
+        method: str = ...,
         axis: AxisType = ...,
         limit: int | None = ...,
-        limit_direction: _str | Literal["forward", "backward", "both"] = ...,
-        limit_area: _str | Literal["inside", "outside"] | None = ...,
-        downcast: _str | Literal["infer"] | None = ...,
+        limit_direction: str | Literal["forward", "backward", "both"] = ...,
+        limit_area: str | Literal["inside", "outside"] | None = ...,
+        downcast: str | Literal["infer"] | None = ...,
         *,
         inplace: Literal[False],
         **kwargs,
@@ -1402,23 +1401,23 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def interpolate(
         self,
-        method: _str = ...,
+        method: str = ...,
         axis: AxisType = ...,
         limit: int | None = ...,
-        limit_direction: _str | Literal["forward", "backward", "both"] = ...,
-        limit_area: _str | Literal["inside", "outside"] | None = ...,
-        downcast: _str | Literal["infer"] | None = ...,
+        limit_direction: str | Literal["forward", "backward", "both"] = ...,
+        limit_area: str | Literal["inside", "outside"] | None = ...,
+        downcast: str | Literal["infer"] | None = ...,
     ) -> DataFrame: ...
     @overload
     def interpolate(
         self,
-        method: _str = ...,
+        method: str = ...,
         axis: AxisType = ...,
         limit: int | None = ...,
         inplace: _bool | None = ...,
-        limit_direction: _str | Literal["forward", "backward", "both"] = ...,
-        limit_area: _str | Literal["inside", "outside"] | None = ...,
-        downcast: _str | Literal["infer"] | None = ...,
+        limit_direction: str | Literal["forward", "backward", "both"] = ...,
+        limit_area: str | Literal["inside", "outside"] | None = ...,
+        downcast: str | Literal["infer"] | None = ...,
         **kwargs,
     ) -> DataFrame: ...
     def keys(self) -> Index: ...
@@ -1491,7 +1490,7 @@ class DataFrame(NDFrame, OpsMixin):
         inplace: _bool = ...,
         axis: AxisType | None = ...,
         level: Level | None = ...,
-        errors: _str = ...,
+        errors: str = ...,
         try_cast: _bool = ...,
     ) -> DataFrame: ...
     @overload
@@ -1597,7 +1596,7 @@ class DataFrame(NDFrame, OpsMixin):
     def pct_change(
         self,
         periods: int = ...,
-        fill_method: _str = ...,
+        fill_method: str = ...,
         limit: int | None = ...,
         freq=...,
         **kwargs,
@@ -1608,7 +1607,7 @@ class DataFrame(NDFrame, OpsMixin):
         *args,
         **kwargs,
     ) -> TType: ...
-    def pop(self, item: _str) -> Series: ...
+    def pop(self, item: str) -> Series: ...
     def pow(
         self,
         other: num | _ListLike | DataFrame,
@@ -1656,9 +1655,9 @@ class DataFrame(NDFrame, OpsMixin):
     def rank(
         self,
         axis: AxisType = ...,
-        method: _str | Literal["average", "min", "max", "first", "dense"] = ...,
+        method: str | Literal["average", "min", "max", "first", "dense"] = ...,
         numeric_only: _bool | None = ...,
-        na_option: _str | Literal["keep", "top", "bottom"] = ...,
+        na_option: str | Literal["keep", "top", "bottom"] = ...,
         ascending: _bool = ...,
         pct: _bool = ...,
     ) -> DataFrame: ...
@@ -1672,7 +1671,7 @@ class DataFrame(NDFrame, OpsMixin):
     def reindex_like(
         self,
         other: DataFrame,
-        method: _str
+        method: str
         | Literal["backfill", "bfill", "pad", "ffill", "nearest"]
         | None = ...,
         copy: _bool = ...,
@@ -1702,8 +1701,8 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         *,
         inplace: Literal[True],
-        index: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
-        columns: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
+        index: str | Sequence[str] | dict[str | int, str] | Callable | None = ...,
+        columns: str | Sequence[str] | dict[str | int, str] | Callable | None = ...,
         copy: _bool = ...,
     ) -> None: ...
     @overload
@@ -1711,25 +1710,25 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         *,
         inplace: Literal[False] = ...,
-        index: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
-        columns: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
+        index: str | Sequence[str] | dict[str | int, str] | Callable | None = ...,
+        columns: str | Sequence[str] | dict[str | int, str] | Callable | None = ...,
         copy: _bool = ...,
     ) -> DataFrame: ...
     def resample(
         self,
         rule,
         axis: AxisType = ...,
-        closed: _str | None = ...,
-        label: _str | None = ...,
-        convention: _str | Literal["start", "end", "s", "e"] = ...,
-        kind: _str | Literal["timestamp", "period"] | None = ...,
+        closed: str | None = ...,
+        label: str | None = ...,
+        convention: str | Literal["start", "end", "s", "e"] = ...,
+        kind: str | Literal["timestamp", "period"] | None = ...,
         loffset=...,
         base: int = ...,
-        on: _str | None = ...,
+        on: str | None = ...,
         level: Level | None = ...,
         origin: Timestamp
         | Literal["epoch", "start", "start_day", "end", "end_day"] = ...,
-        offset: Timedelta | _str | None = ...,
+        offset: Timedelta | str | None = ...,
     ) -> Resampler: ...
     def rfloordiv(
         self,
@@ -1759,10 +1758,10 @@ class DataFrame(NDFrame, OpsMixin):
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
-        win_type: _str,
-        on: _str | None = ...,
+        win_type: str,
+        on: str | None = ...,
         axis: AxisType = ...,
-        closed: _str | None = ...,
+        closed: str | None = ...,
     ) -> Window: ...
     @overload
     def rolling(
@@ -1771,9 +1770,9 @@ class DataFrame(NDFrame, OpsMixin):
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
-        on: _str | None = ...,
+        on: str | None = ...,
         axis: AxisType = ...,
-        closed: _str | None = ...,
+        closed: str | None = ...,
     ) -> Rolling: ...
     def rpow(
         self,
@@ -1802,7 +1801,7 @@ class DataFrame(NDFrame, OpsMixin):
         n: int | None = ...,
         frac: float | None = ...,
         replace: _bool = ...,
-        weights: _str | _ListLike | np.ndarray | None = ...,
+        weights: str | _ListLike | np.ndarray | None = ...,
         random_state: int | None = ...,
         axis: SeriesAxisType | None = ...,
         ignore_index: _bool = ...,
@@ -1937,92 +1936,92 @@ class DataFrame(NDFrame, OpsMixin):
         self, periods: int = ..., freq=..., axis: AxisType = ...
     ) -> DataFrame: ...
     def to_clipboard(
-        self, excel: _bool = ..., sep: _str | None = ..., **kwargs
+        self, excel: _bool = ..., sep: str | None = ..., **kwargs
     ) -> None: ...
     @overload
     def to_csv(
         self,
         path_or_buf: FilePathOrBuffer | None,
-        sep: _str = ...,
-        na_rep: _str = ...,
-        float_format: _str | None = ...,
+        sep: str = ...,
+        na_rep: str = ...,
+        float_format: str | None = ...,
         columns: Sequence[Hashable] | None = ...,
-        header: _bool | list[_str] = ...,
+        header: _bool | list[str] = ...,
         index: _bool = ...,
-        index_label: _bool | _str | Sequence[Hashable] | None = ...,
-        mode: _str = ...,
-        encoding: _str | None = ...,
-        compression: _str | Mapping[_str, _str] = ...,
+        index_label: _bool | str | Sequence[Hashable] | None = ...,
+        mode: str = ...,
+        encoding: str | None = ...,
+        compression: str | Mapping[str, str] = ...,
         quoting: int | None = ...,
-        quotechar: _str = ...,
-        line_terminator: _str | None = ...,
+        quotechar: str = ...,
+        line_terminator: str | None = ...,
         chunksize: int | None = ...,
-        date_format: _str | None = ...,
+        date_format: str | None = ...,
         doublequote: _bool = ...,
-        escapechar: _str | None = ...,
-        decimal: _str = ...,
-        errors: _str = ...,
-        storage_options: dict[_str, Any] | None = ...,
+        escapechar: str | None = ...,
+        decimal: str = ...,
+        errors: str = ...,
+        storage_options: dict[str, Any] | None = ...,
     ) -> None: ...
     @overload
     def to_csv(
         self,
-        sep: _str = ...,
-        na_rep: _str = ...,
-        float_format: _str | None = ...,
+        sep: str = ...,
+        na_rep: str = ...,
+        float_format: str | None = ...,
         columns: Sequence[Hashable] | None = ...,
-        header: _bool | list[_str] = ...,
+        header: _bool | list[str] = ...,
         index: _bool = ...,
-        index_label: _bool | _str | Sequence[Hashable] | None = ...,
-        mode: _str = ...,
-        encoding: _str | None = ...,
-        compression: _str | Mapping[_str, _str] = ...,
+        index_label: _bool | str | Sequence[Hashable] | None = ...,
+        mode: str = ...,
+        encoding: str | None = ...,
+        compression: str | Mapping[str, str] = ...,
         quoting: int | None = ...,
-        quotechar: _str = ...,
-        line_terminator: _str | None = ...,
+        quotechar: str = ...,
+        line_terminator: str | None = ...,
         chunksize: int | None = ...,
-        date_format: _str | None = ...,
+        date_format: str | None = ...,
         doublequote: _bool = ...,
-        escapechar: _str | None = ...,
-        decimal: _str = ...,
-        errors: _str = ...,
-        storage_options: dict[_str, Any] | None = ...,
-    ) -> _str: ...
+        escapechar: str | None = ...,
+        decimal: str = ...,
+        errors: str = ...,
+        storage_options: dict[str, Any] | None = ...,
+    ) -> str: ...
     def to_excel(
         self,
         excel_writer,
-        sheet_name: _str = ...,
-        na_rep: _str = ...,
-        float_format: _str | None = ...,
-        columns: _str | Sequence[_str] | None = ...,
+        sheet_name: str = ...,
+        na_rep: str = ...,
+        float_format: str | None = ...,
+        columns: str | Sequence[str] | None = ...,
         header: _bool = ...,
         index: _bool = ...,
-        index_label: _str | Sequence[_str] | None = ...,
+        index_label: str | Sequence[str] | None = ...,
         startrow: int = ...,
         startcol: int = ...,
-        engine: _str | None = ...,
+        engine: str | None = ...,
         merge_cells: _bool = ...,
-        encoding: _str | None = ...,
-        inf_rep: _str = ...,
+        encoding: str | None = ...,
+        inf_rep: str = ...,
         verbose: _bool = ...,
         freeze_panes: tuple[int, int] | None = ...,
     ) -> None: ...
     def to_hdf(
         self,
         path_or_buf: FilePathOrBuffer,
-        key: _str,
-        mode: _str = ...,
+        key: str,
+        mode: str = ...,
         complevel: int | None = ...,
-        complib: _str | None = ...,
+        complib: str | None = ...,
         append: _bool = ...,
-        format: _str | None = ...,
+        format: str | None = ...,
         index: _bool = ...,
-        min_itemsize: int | dict[_str, int] | None = ...,
+        min_itemsize: int | dict[str, int] | None = ...,
         nan_rep=...,
         dropna: _bool | None = ...,
-        data_columns: list[_str] | None = ...,
-        errors: _str = ...,
-        encoding: _str = ...,
+        data_columns: list[str] | None = ...,
+        errors: str = ...,
+        encoding: str = ...,
     ) -> None: ...
     @overload
     def to_json(
@@ -2031,14 +2030,14 @@ class DataFrame(NDFrame, OpsMixin):
         orient: str
         | Literal["split", "records", "index", "columns", "values", "table"]
         | None = ...,
-        date_format: _str | Literal["epoch", "iso"] | None = ...,
+        date_format: str | Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: _str | Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: Callable[[Any], _str | int | float | _bool | list | dict]
+        date_unit: str | Literal["s", "ms", "us", "ns"] = ...,
+        default_handler: Callable[[Any], str | int | float | _bool | list | dict]
         | None = ...,
         lines: _bool = ...,
-        compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
+        compression: str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
         index: _bool = ...,
         indent: int | None = ...,
     ) -> None: ...
@@ -2048,131 +2047,131 @@ class DataFrame(NDFrame, OpsMixin):
         orient: str
         | Literal["split", "records", "index", "columns", "values", "table"]
         | None = ...,
-        date_format: _str | Literal["epoch", "iso"] | None = ...,
+        date_format: str | Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: _str | Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: Callable[[Any], _str | int | float | _bool | list | dict]
+        date_unit: str | Literal["s", "ms", "us", "ns"] = ...,
+        default_handler: Callable[[Any], str | int | float | _bool | list | dict]
         | None = ...,
         lines: _bool = ...,
-        compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
+        compression: str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
         index: _bool = ...,
         indent: int | None = ...,
-    ) -> _str: ...
+    ) -> str: ...
     @overload
     def to_latex(
         self,
         buf: FilePathOrBuffer | None,
-        columns: list[_str] | None = ...,
+        columns: list[str] | None = ...,
         col_space: int | None = ...,
         header: _bool = ...,
         index: _bool = ...,
-        na_rep: _str = ...,
+        na_rep: str = ...,
         formatters=...,
         float_format=...,
         sparsify: _bool | None = ...,
         index_names: _bool = ...,
         bold_rows: _bool = ...,
-        column_format: _str | None = ...,
+        column_format: str | None = ...,
         longtable: _bool | None = ...,
         escape: _bool | None = ...,
-        encoding: _str | None = ...,
-        decimal: _str = ...,
+        encoding: str | None = ...,
+        decimal: str = ...,
         multicolumn: _bool | None = ...,
-        multicolumn_format: _str | None = ...,
+        multicolumn_format: str | None = ...,
         multirow: _bool | None = ...,
-        caption: _str | tuple[_str, _str] | None = ...,
-        label: _str | None = ...,
+        caption: str | tuple[str, str] | None = ...,
+        label: str | None = ...,
         position: str | None = ...,
     ) -> None: ...
     @overload
     def to_latex(
         self,
-        columns: list[_str] | None = ...,
+        columns: list[str] | None = ...,
         col_space: int | None = ...,
         header: _bool = ...,
         index: _bool = ...,
-        na_rep: _str = ...,
+        na_rep: str = ...,
         formatters=...,
         float_format=...,
         sparsify: _bool | None = ...,
         index_names: _bool = ...,
         bold_rows: _bool = ...,
-        column_format: _str | None = ...,
+        column_format: str | None = ...,
         longtable: _bool | None = ...,
         escape: _bool | None = ...,
-        encoding: _str | None = ...,
-        decimal: _str = ...,
+        encoding: str | None = ...,
+        decimal: str = ...,
         multicolumn: _bool | None = ...,
-        multicolumn_format: _str | None = ...,
+        multicolumn_format: str | None = ...,
         multirow: _bool | None = ...,
-        caption: _str | tuple[_str, _str] | None = ...,
-        label: _str | None = ...,
+        caption: str | tuple[str, str] | None = ...,
+        label: str | None = ...,
         position: str | None = ...,
-    ) -> _str: ...
+    ) -> str: ...
     def to_pickle(
         self,
-        path: _str,
-        compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] = ...,
+        path: str,
+        compression: str | Literal["infer", "gzip", "bz2", "zip", "xz"] = ...,
         protocol: int = ...,
     ) -> None: ...
     def to_sql(
         self,
-        name: _str,
+        name: str,
         con,
-        schema: _str | None = ...,
-        if_exists: _str = ...,
+        schema: str | None = ...,
+        if_exists: str = ...,
         index: _bool = ...,
-        index_label: _str | Sequence[_str] | None = ...,
+        index_label: str | Sequence[str] | None = ...,
         chunksize: int | None = ...,
         dtype: dict | Scalar | None = ...,
-        method: _str | Callable | None = ...,
+        method: str | Callable | None = ...,
     ) -> None: ...
     @overload
     def to_string(
         self,
         buf: FilePathOrBuffer | None,
-        columns: Sequence[_str] | None = ...,
-        col_space: int | list[int] | dict[_str | int, int] | None = ...,
-        header: _bool | Sequence[_str] = ...,
+        columns: Sequence[str] | None = ...,
+        col_space: int | list[int] | dict[str | int, int] | None = ...,
+        header: _bool | Sequence[str] = ...,
         index: _bool = ...,
-        na_rep: _str = ...,
+        na_rep: str = ...,
         formatters=...,
         float_format=...,
         sparsify: _bool | None = ...,
         index_names: _bool = ...,
-        justify: _str | None = ...,
+        justify: str | None = ...,
         max_rows: int | None = ...,
         min_rows: int | None = ...,
         max_cols: int | None = ...,
         show_dimensions: _bool = ...,
-        decimal: _str = ...,
+        decimal: str = ...,
         line_width: int | None = ...,
         max_colwidth: int | None = ...,
-        encoding: _str | None = ...,
+        encoding: str | None = ...,
     ) -> None: ...
     @overload
     def to_string(
         self,
-        columns: Sequence[_str] | None = ...,
-        col_space: int | list[int] | dict[_str | int, int] | None = ...,
-        header: _bool | Sequence[_str] = ...,
+        columns: Sequence[str] | None = ...,
+        col_space: int | list[int] | dict[str | int, int] | None = ...,
+        header: _bool | Sequence[str] = ...,
         index: _bool = ...,
-        na_rep: _str = ...,
+        na_rep: str = ...,
         formatters=...,
         float_format=...,
         sparsify: _bool | None = ...,
         index_names: _bool = ...,
-        justify: _str | None = ...,
+        justify: str | None = ...,
         max_rows: int | None = ...,
         min_rows: int | None = ...,
         max_cols: int | None = ...,
         show_dimensions: _bool = ...,
-        decimal: _str = ...,
+        decimal: str = ...,
         line_width: int | None = ...,
         max_colwidth: int | None = ...,
-        encoding: _str | None = ...,
-    ) -> _str: ...
+        encoding: str | None = ...,
+    ) -> str: ...
     def to_xarray(self): ...
     def truediv(
         self,
@@ -2183,8 +2182,8 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def truncate(
         self,
-        before: datetime.date | _str | int | None = ...,
-        after: datetime.date | _str | int | None = ...,
+        before: datetime.date | str | int | None = ...,
+        after: datetime.date | str | int | None = ...,
         axis: AxisType | None = ...,
         copy: _bool = ...,
     ) -> DataFrame: ...
@@ -2203,7 +2202,7 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level | None = ...,
         copy: _bool = ...,
         ambiguous=...,
-        nonexistent: _str = ...,
+        nonexistent: str = ...,
     ) -> DataFrame: ...
     def unique(self) -> DataFrame: ...
     @overload
@@ -2234,7 +2233,7 @@ class DataFrame(NDFrame, OpsMixin):
         inplace: _bool = ...,
         axis: AxisType | None = ...,
         level: Level | None = ...,
-        errors: _str = ...,
+        errors: str = ...,
         try_cast: _bool = ...,
     ) -> DataFrame: ...
     # Move from generic because Series is Generic and it returns Series[bool] there
