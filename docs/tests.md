@@ -1,11 +1,11 @@
 ## Test
 
-- Run local tests against source code. </br> `poe test_src` </br> </br> 
+- Run local tests against source code. </br> `poe test` </br> </br> 
   - Profiles: </br>
-    - Default: Runs only mypy and pyright tests </br> `poe test_src --profile=default` </br>
-    - Pytest: Runs only pytest </br> `poe test_src --profile=pytest` </br> 
-    - Pre-commit: Runs all style checks in pre-commit </br> `poe test_src --profile=style` </br> 
-    - Full: Run all the above tests </br> `poe test_src --profile=full` </br> </br>
+    - Default: Runs only mypy and pyright tests </br> `poe test --profile=default` </br>
+    - Pytest: Runs only pytest </br> `poe test --profile=pytest` </br> 
+    - Pre-commit: Runs all style checks in pre-commit </br> `poe test --profile=style` </br> 
+    - Full: Run all the above tests </br> `poe test --profile=full` </br> </br>
 
 - Run local tests against distribution: </br> `poe test_dist` </br> </br>
 
