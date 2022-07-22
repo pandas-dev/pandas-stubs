@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import tempfile
 from typing import (
     TYPE_CHECKING,
@@ -831,3 +832,119 @@ def test_categorical_codes():
     # GH-111
     cat = pd.Categorical(["a", "b", "a"])
     assert_type(cat.codes, "np_ndarray_int")
+
+
+def test_string_accessors():
+    s = pd.Series(
+        ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
+    )
+    s2 = pd.Series([["apple", "banana"], ["cherry", "date"], [1, "eggplant"]])
+    s3 = pd.Series(["a1", "b2", "c3"])
+    check(assert_type(s.str.capitalize(), pd.Series), pd.Series)
+    check(assert_type(s.str.casefold(), pd.Series), pd.Series)
+    check(assert_type(s.str.cat(sep="X"), str), str)
+    check(assert_type(s.str.center(10), pd.Series), pd.Series)
+    check(assert_type(s.str.contains("a"), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.count("pp"), "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s.str.decode("utf-8"), pd.Series), pd.Series)
+    check(assert_type(s.str.encode("latin-1"), pd.Series), pd.Series)
+    check(assert_type(s.str.endswith("e"), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s3.str.extract(r"([ab])?(\d)"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(s3.str.extractall(r"([ab])?(\d)"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(s.str.find("p"), pd.Series), pd.Series)
+    check(assert_type(s.str.findall("pp"), pd.Series), pd.Series)
+    check(assert_type(s.str.fullmatch("apple"), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.get(2), pd.Series), pd.Series)
+    check(assert_type(s.str.get_dummies(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(s.str.index("p"), pd.Series), pd.Series)
+    check(assert_type(s.str.isalnum(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.isalpha(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.isdecimal(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.isdigit(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.isnumeric(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.islower(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.isspace(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.istitle(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.isupper(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s2.str.join("-"), pd.Series), pd.Series)
+    check(assert_type(s.str.len(), "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s.str.ljust(80), pd.Series), pd.Series)
+    check(assert_type(s.str.lower(), pd.Series), pd.Series)
+    check(assert_type(s.str.lstrip("a"), pd.Series), pd.Series)
+    check(assert_type(s.str.match("pp"), pd.Series), pd.Series)
+    check(assert_type(s.str.normalize("NFD"), pd.Series), pd.Series)
+    check(assert_type(s.str.pad(80, "right"), pd.Series), pd.Series)
+    check(assert_type(s.str.partition("p"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(s.str.removeprefix("a"), pd.Series), pd.Series)
+    check(assert_type(s.str.removesuffix("e"), pd.Series), pd.Series)
+    check(assert_type(s.str.repeat(2), pd.Series), pd.Series)
+    check(assert_type(s.str.replace("a", "X"), pd.Series), pd.Series)
+    check(assert_type(s.str.rfind("e"), pd.Series), pd.Series)
+    check(assert_type(s.str.rindex("p"), pd.Series), pd.Series)
+    check(assert_type(s.str.rjust(80), pd.Series), pd.Series)
+    check(assert_type(s.str.rpartition("p"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(s.str.rsplit("a"), pd.Series), pd.Series)
+    check(assert_type(s.str.rstrip(), pd.Series), pd.Series)
+    check(assert_type(s.str.slice(0, 4, 2), pd.Series), pd.Series)
+    check(assert_type(s.str.slice_replace(0, 2, "XX"), pd.Series), pd.Series)
+    check(assert_type(s.str.split("a"), pd.Series), pd.Series)
+    check(assert_type(s.str.startswith("a"), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.strip(), pd.Series), pd.Series)
+    check(assert_type(s.str.swapcase(), pd.Series), pd.Series)
+    check(assert_type(s.str.title(), pd.Series), pd.Series)
+    check(assert_type(s.str.translate(None), pd.Series), pd.Series)
+    check(assert_type(s.str.upper(), pd.Series), pd.Series)
+    check(assert_type(s.str.wrap(80), pd.Series), pd.Series)
+    check(assert_type(s.str.zfill(10), pd.Series), pd.Series)
+
+
+def test_series_overloads_cat():
+    s = pd.Series(
+        ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
+    )
+    check(assert_type(s.str.cat(sep=";"), str), str)
+    check(assert_type(s.str.cat(None, sep=";"), str), str)
+    check(
+        assert_type(s.str.cat(["A", "B", "C", "D", "E", "F", "G"], sep=";"), pd.Series),
+        pd.Series,
+    )
+
+
+def test_series_overloads_partition():
+    s = pd.Series(
+        [
+            "ap;pl;ep",
+            "ban;an;ap",
+            "Che;rr;yp",
+            "DA;TEp",
+            "eGGp;LANT;p",
+            "12;3p",
+            "23.45p",
+        ]
+    )
+    check(assert_type(s.str.partition(sep=";"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(s.str.partition(sep=";", expand=True), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(s.str.partition(sep=";", expand=False), pd.Series), pd.Series)
+
+    check(assert_type(s.str.rpartition(sep=";"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(s.str.rpartition(sep=";", expand=True), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(s.str.rpartition(sep=";", expand=False), pd.Series), pd.Series)
+
+
+def test_series_overloads_extract():
+    s = pd.Series(
+        ["appl;ep", "ban;anap", "Cherr;yp", "DATEp", "eGGp;LANTp", "12;3p", "23.45p"]
+    )
+    check(assert_type(s.str.extract(r"[ab](\d)"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(s.str.extract(r"[ab](\d)", expand=True), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(s.str.extract(r"[ab](\d)", expand=False), pd.Series), pd.Series)
+    check(
+        assert_type(s.str.extract(r"[ab](\d)", re.IGNORECASE, False), pd.Series),
+        pd.Series,
+    )
