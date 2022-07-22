@@ -5,10 +5,7 @@ from typing import (
     Iterable,
 )
 
-from pandas.io.formats.format import (
-    DataFrameFormatter as DataFrameFormatter,
-    TableFormatter as TableFormatter,
-)
+from pandas.io.formats.format import DataFrameFormatter
 
 class HTMLFormatter:
     indent_delta: int = ...

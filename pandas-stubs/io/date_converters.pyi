@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from pandas._typing import npt as npt
+from pandas._typing import npt
 
 def parse_date_time(date_col, time_col) -> npt.NDArray[np.object_]: ...
 def parse_date_fields(year_col, month_col, day_col) -> npt.NDArray[np.object_]: ...
