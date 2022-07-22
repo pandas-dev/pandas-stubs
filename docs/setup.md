@@ -1,9 +1,9 @@
 ## Set Up Environment
 
-- Make sure you have `python >= 3.8` installed. </br></br>
-- Install poetry if you still don't have: </br> `pip install poetry`</br> </br>
-- Install the project dependencies with: </br> `poetry update -vvv` </br></br>
-- Enter the virtual environment: </br> `poetry shell`</br></br>
-- Run all tests to make sure the project is ok: </br> `poe test_all` </br></br>
-- Enable pre-commit:  </br> `pre-commit install` </br></br>
-- Do you want to add a new dependency? </br> `poetry add --dev foo-pkg ` </br></br>
+- Make sure you have `python >= 3.8` installed.
+- Install poetry: `pip install poetry`
+- Install the project dependencies: `poetry update`
+- Enter the virtual environment: `poetry shell`
+- Run all tests: `poe test_all`
+- Enable pre-commit:  `pre-commit install`
+- Do you want to add a new dependency? `poetry add --dev foo-pkg`
