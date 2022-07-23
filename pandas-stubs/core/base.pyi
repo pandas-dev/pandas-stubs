@@ -1,24 +1,18 @@
 from __future__ import annotations
 
 from typing import (
-    Callable,
     Generic,
     Literal,
 )
 
 import numpy as np
-from pandas import (
-    DataFrame,
-    Index,
-    Series,
-)
+from pandas import Index
 from pandas.core.accessor import DirNamesMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
 
 from pandas._typing import (
     NDFrameT,
-    Scalar,
     SeriesAxisType,
 )
 
@@ -35,10 +29,6 @@ class SpecificationError(GroupByError): ...
 class SelectionMixin(Generic[NDFrameT]):
     def ndim(self) -> int: ...
     def __getitem__(self, key): ...
-    def aggregate(
-        self, func: Callable | None = ..., *args, **kwargs
-    ) -> Scalar | Series | DataFrame: ...
-    agg = aggregate
 
 class ShallowMixin: ...
 
