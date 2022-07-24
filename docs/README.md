@@ -10,4 +10,4 @@ Instructions for working with the code are found here:
 
 - [How to set up the environment](setup.md)
 - [How to test the project](tests.md)
-- [Code style](style.md)
+- [How to make a release](release_procedure.md)
