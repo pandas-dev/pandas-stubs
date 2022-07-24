@@ -55,8 +55,8 @@ build-backend = "poetry.core.masonry.api"
 help = "Run all tests"
 script = "scripts.test:test(src=True, dist=True)"
 
-[tool.poe.tasks.test_src]
-help = "Run local tests (includes 'mypy_src', 'pyright_src', 'pytest', and 'style')"
+[tool.poe.tasks.test]
+help = "Run local tests (includes 'mypy', 'pyright', 'pytest', and 'style')"
 script = "scripts.test:test(src=True)"
 
 [tool.poe.tasks.test_dist]
@@ -71,7 +71,7 @@ script = "scripts.test.run:pytest"
 help = "Run pre-commit"
 script = "scripts.test.run:style"
 
-[tool.poe.tasks.mypy_src]
+[tool.poe.tasks.mypy]
 help = "Run mypy on 'tests' (using the local stubs) and on the local stubs"
 script = "scripts.test.run:mypy_src"
 
@@ -79,7 +79,7 @@ script = "scripts.test.run:mypy_src"
 help = "Run mypy on 'tests' using the installed stubs"
 script = "scripts.test:test(dist=True, type_checker='mypy')"
 
-[tool.poe.tasks.pyright_src]
+[tool.poe.tasks.pyright]
 help = "Run pyright on 'tests' (using the local stubs) and on the local stubs"
 script = "scripts.test.run:pyright_src"
 

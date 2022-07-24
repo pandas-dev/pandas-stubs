@@ -38,10 +38,10 @@ jobs:
       run: poetry install -vvv --no-root
 
     - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
-      run: poetry run poe mypy_src
+      run: poetry run poe mypy
 
     - name: Run pyright on 'tests' (using the local stubs) and on the local stubs
-      run: poetry run poe pyright_src
+      run: poetry run poe pyright
 
     - name: Run pytest
       run: poetry run poe pytest
