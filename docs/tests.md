@@ -4,10 +4,10 @@
 
 Here are the most important options. Fore more details, please use `poe --help`.
 
-- Run all tests (includes installing the stubs): `poe test_all`
-- Run tests against the source code: `poe test_src` 
-  - Run only mypy: `poe mypy_src`
-  - Run only pyright: `poe pyright_src`
+- Run all tests (against both source and installed stubs): `poe test_all`
+- Run tests against the source code: `poe test` 
+  - Run only mypy: `poe mypy`
+  - Run only pyright: `poe pyright`
   - Run only pytest: `poe pytest`
   - Run only pre-commit: `poe style`
 - Run tests against the installed stubs (this will install and uninstall the stubs): `poe test_dist`

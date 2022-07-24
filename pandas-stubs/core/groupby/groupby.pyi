@@ -2,7 +2,10 @@ from __future__ import annotations
 
 from typing import Callable
 
-from pandas.core.base import PandasObject
+from pandas.core.base import (
+    PandasObject,
+    SelectionMixin,
+)
 from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
 from pandas.core.groupby import ops
@@ -14,6 +17,7 @@ from pandas._typing import (
     AxisType,
     FrameOrSeriesUnion,
     KeysArgType,
+    NDFrameT,
 )
 
 class GroupByPlot(PandasObject):
@@ -21,7 +25,7 @@ class GroupByPlot(PandasObject):
     def __call__(self, *args, **kwargs): ...
     def __getattr__(self, name: str): ...
 
-class _GroupBy(PandasObject, GroupByIndexingMixin):
+class BaseGroupBy(PandasObject, SelectionMixin[NDFrameT], GroupByIndexingMixin):
     level = ...
     as_index = ...
     keys = ...
@@ -63,7 +67,7 @@ class _GroupBy(PandasObject, GroupByIndexingMixin):
     def get_group(self, name, obj: DataFrame | None = ...) -> DataFrame: ...
     def apply(self, func: Callable, *args, **kwargs) -> FrameOrSeriesUnion: ...
 
-class GroupBy(_GroupBy):
+class GroupBy(BaseGroupBy[NDFrameT]):
     def count(self) -> FrameOrSeriesUnion: ...
     def mean(self, **kwargs) -> FrameOrSeriesUnion: ...
     def median(self, **kwargs) -> FrameOrSeriesUnion: ...
