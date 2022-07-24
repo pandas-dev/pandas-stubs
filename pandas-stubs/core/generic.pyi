@@ -15,7 +15,6 @@ import numpy as np
 from pandas.core.base import PandasObject
 from pandas.core.indexes.base import Index
 import pandas.core.indexing as indexing
-from pandas.core.internals import BlockManager
 
 from pandas._typing import (
     S1,
@@ -38,15 +37,6 @@ _str = str
 class NDFrame(PandasObject, indexing.IndexingMixin):
     __hash__: ClassVar[None]  # type: ignore[assignment]
 
-    def __new__(
-        cls,
-        data: BlockManager,
-        axes: list[Index] | None = ...,
-        copy: _bool = ...,
-        dtype: Dtype | None = ...,
-        attrs: Mapping[Hashable | None, Any] | None = ...,
-        fastpath: _bool = ...,
-    ) -> NDFrame: ...
     def set_flags(
         self: FrameOrSeries,
         *,
