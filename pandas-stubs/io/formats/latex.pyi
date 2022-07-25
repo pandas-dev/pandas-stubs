@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import IO
 
 from pandas.io.formats.format import (
-    DataFrameFormatter as DataFrameFormatter,
-    TableFormatter as TableFormatter,
+    DataFrameFormatter,
+    TableFormatter,
 )
 
 class LatexFormatter(TableFormatter):

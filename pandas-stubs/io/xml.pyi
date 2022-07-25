@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import io
 from typing import Sequence
 
 from pandas.core.frame import DataFrame
@@ -15,6 +16,13 @@ from pandas._typing import (
     XMLParsers,
 )
 
+def get_data_from_filepath(
+    filepath_or_buffer: FilePath | bytes | ReadBuffer[bytes] | ReadBuffer[str],
+    encoding: str | None,
+    compression: CompressionOptions,
+    storage_options: StorageOptions,
+) -> str | bytes | ReadBuffer[bytes] | ReadBuffer[str]: ...
+def preprocess_data(data) -> io.StringIO | io.BytesIO: ...
 def read_xml(
     path_or_buffer: FilePath | ReadBuffer[bytes] | ReadBuffer[str],
     xpath: str = ...,

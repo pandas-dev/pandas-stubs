@@ -1,0 +1,26 @@
+from pandas._libs.tslibs.nattype import NaTType
+from pandas._typing import (
+    FilePath,
+    ReadBuffer,
+    Scalar,
+    StorageOptions,
+)
+
+from pandas.io.excel._base import BaseExcelReader
+
+class ODFReader(BaseExcelReader):
+    def __init__(
+        self,
+        filepath_or_buffer: FilePath | ReadBuffer[bytes],
+        storage_options: StorageOptions = ...,
+    ) -> None: ...
+    def load_workbook(self, filepath_or_buffer: FilePath | ReadBuffer[bytes]): ...
+    @property
+    def empty_value(self) -> str: ...
+    @property
+    def sheet_names(self) -> list[str]: ...
+    def get_sheet_by_index(self, index: int): ...
+    def get_sheet_by_name(self, name: str): ...
+    def get_sheet_data(
+        self, sheet, convert_float: bool, file_rows_needed: int | None = ...
+    ) -> list[list[Scalar | NaTType]]: ...

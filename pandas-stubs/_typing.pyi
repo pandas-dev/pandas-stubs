@@ -16,6 +16,7 @@ from typing import (
     AnyStr,
     Callable,
     Hashable,
+    Iterator,
     Literal,
     Mapping,
     Optional,
@@ -63,9 +64,28 @@ DtypeObj = Union[np.dtype[np.generic], ExtensionDtype]
 AnyStr_cov = TypeVar("AnyStr_cov", str, bytes, covariant=True)
 AnyStr_con = TypeVar("AnyStr_con", str, bytes, contravariant=True)
 
-class BaseBuffer(Protocol): ...
+class BaseBuffer(Protocol):
+    @property
+    def mode(self) -> str: ...
+    def fileno(self) -> int: ...
+    def seek(self, __offset: int, __whence: int = ...) -> int: ...
+    def seekable(self) -> bool: ...
+    def tell(self) -> int: ...
+
 class ReadBuffer(BaseBuffer, Protocol[AnyStr_cov]): ...
 class WriteBuffer(BaseBuffer, Protocol[AnyStr_cov]): ...
+
+class ReadPickleBuffer(ReadBuffer[bytes], Protocol):
+    def readline(self) -> AnyStr_cov: ...
+
+class WriteExcelBuffer(WriteBuffer[bytes], Protocol):
+    def truncate(self, size: int | None = ...) -> int: ...
+
+class ReadCsvBuffer(ReadBuffer[AnyStr_cov], Protocol):
+    def __iter__(self) -> Iterator[AnyStr_cov]: ...
+    def readline(self) -> AnyStr_cov: ...
+    @property
+    def closed(self) -> bool: ...
 
 FilePath = Union[str, PathLike[str]]
 
@@ -207,5 +227,7 @@ GroupByObjectNonScalar = Union[
     tuple, list[Label], Function, Series, np.ndarray, Mapping[Label, Any], Index
 ]
 GroupByObject = Union[Scalar, GroupByObjectNonScalar]
+
+CSVEngine = Literal["c", "python", "pyarrow", "python-fwf"]
 
 __all__ = ["npt", "type_t"]
