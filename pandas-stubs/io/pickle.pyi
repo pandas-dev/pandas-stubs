@@ -11,7 +11,7 @@ from pandas._typing import (
 )
 
 def to_pickle(
-    obj: Any,
+    obj: object,
     filepath_or_buffer: FilePath | WriteBuffer[bytes],
     compression: CompressionOptions = ...,
     protocol: int = ...,
