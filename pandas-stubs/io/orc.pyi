@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pandas.core.frame import DataFrame
 
 from pandas._typing import FilePathOrBuffer

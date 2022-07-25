@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import pickle as pkl
 
 def load_reduce(self) -> None: ...

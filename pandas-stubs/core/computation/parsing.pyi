@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import tokenize
 from typing import Iterator
 

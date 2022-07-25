@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pandas.core.dtypes.common import (
     is_array_like as is_array_like,
     is_bool as is_bool,

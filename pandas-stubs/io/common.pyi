@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from collections import abc
 from io import BytesIO
 from typing import (

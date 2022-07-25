@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from .ewm import ExponentialMovingWindow as ExponentialMovingWindow
 from .expanding import (
     Expanding as Expanding,

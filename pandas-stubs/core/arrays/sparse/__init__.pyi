@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from .accessor import (
     SparseAccessor as SparseAccessor,
     SparseFrameAccessor as SparseFrameAccessor,

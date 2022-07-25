@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pandas.core.base import ShallowMixin as ShallowMixin
 from pandas.core.groupby.base import GroupByMixin as GroupByMixin
 from pandas.core.groupby.groupby import BaseGroupBy

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 # def to_timedelta(arg, unit: str = ..., errors: str = ...): ...
 from datetime import timedelta
 from typing import overload

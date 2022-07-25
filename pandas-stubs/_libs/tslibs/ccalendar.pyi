@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import Sequence
 
 def dayofweek(y: int, m: int, d: int) -> int: ...

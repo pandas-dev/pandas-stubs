@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import numpy as np
 
 get_window_bounds_doc: str

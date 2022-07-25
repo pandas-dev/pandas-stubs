@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 # from pandas import DataFrame, Int64Index, RangeIndex
 from typing import Sequence
 

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import numpy as np
 from pandas.core.indexes.datetimelike import (
     DatetimeIndexOpsMixin as DatetimeIndexOpsMixin,

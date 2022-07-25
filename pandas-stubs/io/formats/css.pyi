@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 class CSSWarning(UserWarning): ...
 
 class CSSResolver:

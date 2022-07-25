@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 def scatter_matrix(
     frame,
     alpha: float = ...,

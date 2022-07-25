@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from ._core import (
     PlotAccessor as PlotAccessor,
     boxplot as boxplot,

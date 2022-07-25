@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import numpy as np
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.extension import ExtensionIndex

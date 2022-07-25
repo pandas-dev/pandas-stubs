@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import ast
 
 from pandas.core.computation.ops import Term as Term

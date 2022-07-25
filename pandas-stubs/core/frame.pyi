@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import datetime
 import datetime as _dt
 from typing import (

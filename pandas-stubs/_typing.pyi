@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from builtins import type as type_t
 import datetime
 from io import (

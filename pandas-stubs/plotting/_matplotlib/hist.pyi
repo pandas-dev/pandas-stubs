@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pandas.plotting._matplotlib.core import LinePlot as LinePlot
 
 class HistPlot(LinePlot):

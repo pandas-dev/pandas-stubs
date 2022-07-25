@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pandas.core.algorithms import (
     factorize as factorize,
     unique as unique,

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import overload
 
 from pandas.core.arrays.datetimelike import TimelikeOps as TimelikeOps
