@@ -1904,7 +1904,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def sum(
         self,
-        axis: Literal[1, "columns"],
+        axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
         numeric_only: _bool | None = ...,
@@ -1919,19 +1919,9 @@ class DataFrame(NDFrame, OpsMixin):
         numeric_only: _bool | None = ...,
         min_count: int = ...,
         *,
-        level: Level = ...,
+        level: Level,
         **kwargs,
     ) -> DataFrame: ...
-    @overload
-    def sum(
-        self,
-        axis: AxisType | None = ...,
-        skipna: _bool | None = ...,
-        level: None = ...,
-        numeric_only: _bool | None = ...,
-        min_count: int = ...,
-        **kwargs,
-    ) -> Series: ...
     def swapaxes(
         self, axis1: AxisType, axis2: AxisType, copy: _bool = ...
     ) -> DataFrame: ...

@@ -7,6 +7,7 @@ import tempfile
 from typing import (
     TYPE_CHECKING,
     Any,
+    Callable,
     Hashable,
     Iterable,
     Iterator,
@@ -1345,12 +1346,13 @@ def test_groupby_apply() -> None:
     # GH 167
     df = pd.DataFrame({"col1": [1, 2, 3], "col2": [4, 5, 6]})
 
-    def summean(x: pd.DataFrame) -> pd.Series:
+    def summean(x: pd.DataFrame) -> float:
         return x.sum().mean()
 
     check(assert_type(df.groupby("col1").apply(summean), pd.Series), pd.Series)
 
+    lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
     check(
-        assert_type(df.groupby("col1").apply(lambda x: x.sum().mean()), pd.Series),
+        assert_type(df.groupby("col1").apply(lfunc), pd.Series),
         pd.Series,
     )
