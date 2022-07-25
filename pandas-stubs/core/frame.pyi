@@ -245,15 +245,19 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> np.recarray: ...
     def to_stata(
         self,
-        path: FilePathOrBuffer,
-        convert_dates: dict | None = ...,
+        path: FilePath | WriteBuffer[bytes],
+        convert_dates: dict[Hashable, str] | None = ...,
         write_index: _bool = ...,
-        byteorder: _str | Literal["<", ">", "little", "big"] | None = ...,
-        time_stamp=...,
+        byteorder: Literal["<", ">", "little", "big"] | None = ...,
+        time_stamp: _dt.datetime | None = ...,
         data_label: _str | None = ...,
-        variable_labels: dict | None = ...,
-        version: int = ...,
-        convert_strl: list[_str] | None = ...,
+        variable_labels: dict[Hashable, str] | None = ...,
+        version: int | None = ...,
+        convert_strl: list[HashableT] | None = ...,
+        compression: CompressionOptions = ...,
+        storage_options: StorageOptions = ...,
+        *,
+        value_labels: dict[Hashable, dict[float | int, str]] | None = ...,
     ) -> None: ...
     def to_feather(self, path: FilePathOrBuffer, **kwargs) -> None: ...
     @overload
