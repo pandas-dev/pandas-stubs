@@ -1906,22 +1906,22 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
+        level: None = ...,
+        numeric_only: _bool | None = ...,
+        min_count: int = ...,
+        **kwargs,
+    ) -> Series: ...
+    @overload
+    def sum(
+        self,
+        axis: AxisType | None = ...,
+        skipna: _bool | None = ...,
         numeric_only: _bool | None = ...,
         min_count: int = ...,
         *,
         level: Level,
         **kwargs,
     ) -> DataFrame: ...
-    @overload
-    def sum(
-        self,
-        axis: AxisType | None = ...,
-        skipna: _bool | None = ...,
-        level: None = ...,
-        numeric_only: _bool | None = ...,
-        min_count: int = ...,
-        **kwargs,
-    ) -> Series: ...
     def swapaxes(
         self, axis1: AxisType, axis2: AxisType, copy: _bool = ...
     ) -> DataFrame: ...

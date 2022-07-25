@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import (
     Any,
     Callable,
+    Iterable,
     Iterator,
     Literal,
     NamedTuple,
@@ -111,7 +112,17 @@ class _DataFrameGroupByNonScalar(DataFrameGroupBy):
 class DataFrameGroupBy(GroupBy):
     def any(self, skipna: bool = ...) -> DataFrame: ...
     def all(self, skipna: bool = ...) -> DataFrame: ...
-    def apply(self, func, *args, **kwargs) -> DataFrame: ...
+    # mypy sees the two overloads as overlapping
+    @overload
+    def apply(  # type: ignore[misc]
+        self, func: Callable[[DataFrame], Series | Scalar], *args, **kwargs
+    ) -> Series: ...
+    @overload
+    def apply(  # type: ignore[misc]
+        self, func: Callable[[Iterable], Series | Scalar], *args, **kwargs
+    ) -> DataFrame: ...
+    @overload
+    def apply(self, func: Callable, *args, **kwargs) -> DataFrame | Series: ...
     @overload
     def aggregate(self, arg: str, *args, **kwargs) -> DataFrame: ...
     @overload
