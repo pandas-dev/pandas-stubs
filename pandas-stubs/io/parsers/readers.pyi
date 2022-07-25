@@ -1,10 +1,8 @@
 from collections import abc
 import csv
 from typing import (
-    Any,
     Hashable,
     Literal,
-    NamedTuple,
     Sequence,
     overload,
 )
@@ -21,10 +19,6 @@ from pandas._typing import (
     ReadCsvBuffer,
     StorageOptions,
 )
-
-class _DeprecationConfig(NamedTuple):
-    default_value: Any
-    msg: str | None
 
 @overload
 def read_csv(
