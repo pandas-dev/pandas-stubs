@@ -2,37 +2,68 @@ from __future__ import annotations
 
 from typing import (
     Any,
+    Callable,
+    Hashable,
+    Iterator,
     Mapping,
     Sequence,
+    overload,
 )
 
-from pandas.core.base import PandasObject
 from pandas.core.frame import DataFrame
+
+from pandas._typing import DtypeArg
 
 class SQLAlchemyRequired(ImportError): ...
 class DatabaseError(IOError): ...
 
-def execute(sql, con, cur=..., params=...): ...
+@overload
 def read_sql_table(
     table_name: str,
-    con,
+    con: str | Any,
     schema: str | None = ...,
     index_col: str | Sequence[str] | None = ...,
     coerce_float: bool = ...,
     parse_dates: Sequence[str] | Mapping[str, str] | None = ...,
     columns: Sequence[str] | None = ...,
-    chunksize: int | None = ...,
+    chunksize: None = ...,
 ) -> DataFrame: ...
-def read_sql_query(
-    sql,
-    con,
+@overload
+def read_sql_table(
+    table_name: str,
+    con: str | Any,
     schema: str | None = ...,
+    index_col: str | Sequence[str] | None = ...,
+    coerce_float: bool = ...,
+    parse_dates: Sequence[str] | Mapping[str, str] | None = ...,
+    columns: Sequence[str] | None = ...,
+    *,
+    chunksize: int,
+) -> Iterator[DataFrame]: ...
+@overload
+def read_sql_query(
+    sql: str | Any,
+    con: str | Any,
     index_col: str | Sequence[str] | None = ...,
     coerce_float: bool = ...,
     params=...,
     parse_dates: Sequence[str] | Mapping[str, str] | None = ...,
-    chunksize: int | None = ...,
+    chunksize: None = ...,
+    dtype: DtypeArg | None = ...,
 ) -> DataFrame: ...
+@overload
+def read_sql_query(
+    sql: str | Any,
+    con: str | Any,
+    index_col: str | Sequence[str] | None = ...,
+    coerce_float: bool = ...,
+    params=...,
+    parse_dates: Sequence[str] | Mapping[str, str] | None = ...,
+    *,
+    chunksize: int,
+    dtype: DtypeArg | None = ...,
+) -> Iterator[DataFrame]: ...
+@overload
 def read_sql(
     sql: str | Any,
     con: str | Any = ...,
@@ -44,151 +75,34 @@ def read_sql(
     | Mapping[str, Mapping[str, Any]]
     | None = ...,
     columns: Sequence[str] = ...,
-    chunksize: int = ...,
+    chunksize: None = ...,
 ) -> DataFrame: ...
+@overload
+def read_sql(
+    sql: str | Any,
+    con: str | Any = ...,
+    index_col: str | Sequence[str] | None = ...,
+    coerce_float: bool = ...,
+    params: Sequence[str] | tuple[str, ...] | Mapping[str, str] | None = ...,
+    parse_dates: Sequence[str]
+    | Mapping[str, str]
+    | Mapping[str, Mapping[str, Any]]
+    | None = ...,
+    columns: Sequence[str] = ...,
+    *,
+    chunksize: int,
+) -> Iterator[DataFrame]: ...
 def to_sql(
-    frame,
-    name,
-    con,
-    schema=...,
+    frame: DataFrame,
+    name: str,
+    con: Any,
+    schema: str | None = ...,
     if_exists: str = ...,
     index: bool = ...,
-    index_label=...,
-    chunksize=...,
-    dtype=...,
-    method=...,
-) -> None: ...
-def has_table(table_name, con, schema=...): ...
-
-table_exists = has_table
-
-def pandasSQL_builder(con, schema=..., meta=..., is_cursor: bool = ...): ...
-
-class SQLTable(PandasObject):
-    name = ...
-    pd_sql = ...
-    prefix = ...
-    frame = ...
-    index = ...
-    schema = ...
-    if_exists = ...
-    keys = ...
-    dtype = ...
-    table = ...
-    def __init__(
-        self,
-        name,
-        pandas_sql_engine,
-        frame=...,
-        index: bool = ...,
-        if_exists: str = ...,
-        prefix: str = ...,
-        index_label=...,
-        schema=...,
-        keys=...,
-        dtype=...,
-    ) -> None: ...
-    def exists(self): ...
-    def sql_schema(self): ...
-    def create(self) -> None: ...
-    def insert_data(self): ...
-    def insert(self, chunksize=..., method=...) -> None: ...
-    def read(
-        self, coerce_float: bool = ..., parse_dates=..., columns=..., chunksize=...
-    ): ...
-
-class PandasSQL(PandasObject):
-    def read_sql(self, *args, **kwargs) -> None: ...
-    def to_sql(
-        self,
-        frame,
-        name,
-        if_exists: str = ...,
-        index: bool = ...,
-        index_label=...,
-        schema=...,
-        chunksize=...,
-        dtype=...,
-        method=...,
-    ) -> None: ...
-
-class SQLDatabase(PandasSQL):
-    connectable = ...
-    meta = ...
-    def __init__(self, engine, schema=..., meta=...) -> None: ...
-    def run_transaction(self) -> None: ...
-    def execute(self, *args, **kwargs): ...
-    def read_table(
-        self,
-        table_name,
-        index_col=...,
-        coerce_float: bool = ...,
-        parse_dates=...,
-        columns=...,
-        schema=...,
-        chunksize=...,
-    ): ...
-    def read_query(
-        self,
-        sql,
-        index_col=...,
-        coerce_float: bool = ...,
-        parse_dates=...,
-        params=...,
-        chunksize=...,
-    ): ...
-    def to_sql(
-        self,
-        frame,
-        name,
-        if_exists: str = ...,
-        index: bool = ...,
-        index_label=...,
-        schema=...,
-        chunksize=...,
-        dtype=...,
-        method=...,
-    ) -> None: ...
-    @property
-    def tables(self): ...
-    def has_table(self, name, schema=...): ...
-    def get_table(self, table_name, schema=...): ...
-    def drop_table(self, table_name, schema=...) -> None: ...
-
-class SQLiteTable(SQLTable):
-    def __init__(self, *args, **kwargs): ...
-    def sql_schema(self): ...
-    def insert_statement(self): ...
-
-class SQLiteDatabase(PandasSQL):
-    is_cursor = ...
-    con = ...
-    def __init__(self, con, is_cursor: bool = ...) -> None: ...
-    def run_transaction(self) -> None: ...
-    def execute(self, *args, **kwargs): ...
-    def read_query(
-        self,
-        sql,
-        index_col=...,
-        coerce_float: bool = ...,
-        params=...,
-        parse_dates=...,
-        chunksize=...,
-    ): ...
-    def to_sql(
-        self,
-        frame,
-        name,
-        if_exists: str = ...,
-        index: bool = ...,
-        index_label=...,
-        schema=...,
-        chunksize=...,
-        dtype=...,
-        method=...,
-    ) -> None: ...
-    def has_table(self, name, schema=...): ...
-    def get_table(self, table_name, schema=...) -> None: ...
-    def drop_table(self, name, schema=...) -> None: ...
-
-def get_schema(frame, name, keys=..., con=..., dtype=...): ...
+    index_label: Hashable | Sequence[Hashable] | None = ...,
+    chunksize: int | None = ...,
+    dtype: DtypeArg | None = ...,
+    method: str | Callable | None = ...,
+    engine: str = ...,
+    **engine_kwargs,
+) -> int | None: ...
