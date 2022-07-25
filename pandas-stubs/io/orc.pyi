@@ -1,9 +1,28 @@
 from __future__ import annotations
 
-from pandas.core.frame import DataFrame
+from typing import (
+    Any,
+    Literal,
+)
 
-from pandas._typing import FilePathOrBuffer
+from pandas import DataFrame
+
+from pandas._typing import (
+    FilePath,
+    ReadBuffer,
+    WriteBuffer,
+)
 
 def read_orc(
-    path: FilePathOrBuffer, columns: list[str] | None = ..., **kwargs
+    path: FilePath | ReadBuffer[bytes],
+    columns: list[str] | None = ...,
+    **kwargs: Any,
 ) -> DataFrame: ...
+def to_orc(
+    df: DataFrame,
+    path: FilePath | WriteBuffer[bytes] | None = ...,
+    *,
+    engine: Literal["pyarrow"] = ...,
+    index: bool | None = ...,
+    engine_kwargs: dict[str, Any] | None = ...,
+) -> bytes | None: ...
