@@ -48,8 +48,10 @@ from pandas._typing import (
     Axes,
     Axis,
     AxisType,
+    CompressionOptions,
     Dtype,
     DtypeNp,
+    FilePath,
     FilePathOrBuffer,
     FilePathOrBytesBuffer,
     GroupByObjectNonScalar,
@@ -61,12 +63,15 @@ from pandas._typing import (
     Label,
     Level,
     MaskType,
+    ReadBuffer,
     Renamer,
     Scalar,
     ScalarT,
     SeriesAxisType,
+    StorageOptions,
     StrLike,
     T as TType,
+    WriteBuffer,
     np_ndarray_bool,
     np_ndarray_str,
     num,
@@ -240,15 +245,19 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> np.recarray: ...
     def to_stata(
         self,
-        path: FilePathOrBuffer,
-        convert_dates: dict | None = ...,
+        path: FilePath | WriteBuffer[bytes],
+        convert_dates: dict[Hashable, str] | None = ...,
         write_index: _bool = ...,
-        byteorder: _str | Literal["<", ">", "little", "big"] | None = ...,
-        time_stamp=...,
+        byteorder: Literal["<", ">", "little", "big"] | None = ...,
+        time_stamp: _dt.datetime | None = ...,
         data_label: _str | None = ...,
-        variable_labels: dict | None = ...,
-        version: int = ...,
-        convert_strl: list[_str] | None = ...,
+        variable_labels: dict[Hashable, str] | None = ...,
+        version: int | None = ...,
+        convert_strl: list[HashableT] | None = ...,
+        compression: CompressionOptions = ...,
+        storage_options: StorageOptions = ...,
+        *,
+        value_labels: dict[Hashable, dict[float | int, str]] | None = ...,
     ) -> None: ...
     def to_feather(self, path: FilePathOrBuffer, **kwargs) -> None: ...
     @overload
@@ -332,6 +341,25 @@ class DataFrame(NDFrame, OpsMixin):
         render_links: _bool = ...,
         encoding: _str | None = ...,
     ) -> _str: ...
+    def to_xml(
+        self,
+        path_or_buffer: FilePath | WriteBuffer[bytes] | WriteBuffer[str] | None = ...,
+        index: bool = ...,
+        root_name: str | None = ...,
+        row_name: str | None = ...,
+        na_rep: str | None = ...,
+        attr_cols: list[str] | None = ...,
+        elem_cols: list[str] | None = ...,
+        namespaces: dict[str | None, str] | None = ...,
+        prefix: str | None = ...,
+        encoding: str = ...,
+        xml_declaration: bool | None = ...,
+        pretty_print: bool | None = ...,
+        parser: str | None = ...,
+        stylesheet: FilePath | ReadBuffer[str] | ReadBuffer[bytes] | None = ...,
+        compression: CompressionOptions = ...,
+        storage_options: StorageOptions = ...,
+    ) -> str | None: ...
     def info(
         self, verbose=..., buf=..., max_cols=..., memory_usage=..., null_counts=...
     ) -> None: ...
@@ -2115,18 +2143,6 @@ class DataFrame(NDFrame, OpsMixin):
         path: _str,
         compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] = ...,
         protocol: int = ...,
-    ) -> None: ...
-    def to_sql(
-        self,
-        name: _str,
-        con,
-        schema: _str | None = ...,
-        if_exists: _str = ...,
-        index: _bool = ...,
-        index_label: _str | Sequence[_str] | None = ...,
-        chunksize: int | None = ...,
-        dtype: dict | Scalar | None = ...,
-        method: _str | Callable | None = ...,
     ) -> None: ...
     @overload
     def to_string(

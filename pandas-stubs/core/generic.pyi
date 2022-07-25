@@ -21,12 +21,12 @@ from pandas._typing import (
     ArrayLike,
     Axis,
     Dtype,
+    DtypeArg,
     FilePathOrBuffer,
     FrameOrSeries,
     FrameOrSeriesUnion,
     IgnoreRaise,
     Level,
-    Scalar,
     SeriesAxisType,
     T,
 )
@@ -152,13 +152,13 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def to_sql(
         self,
         name: _str,
-        con,
+        con: str | Any,
         schema: _str | None = ...,
         if_exists: _str = ...,
         index: _bool = ...,
-        index_label: _str | Sequence[_str] | None = ...,
+        index_label: Hashable | Sequence[Hashable] | None = ...,
         chunksize: int | None = ...,
-        dtype: dict | Scalar | None = ...,
+        dtype: DtypeArg | None = ...,
         method: _str | Callable | None = ...,
     ) -> None: ...
     def to_pickle(
