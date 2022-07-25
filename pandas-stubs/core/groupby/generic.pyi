@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import (
     Any,
     Callable,
+    Iterable,
     Iterator,
     Literal,
     NamedTuple,
@@ -111,7 +112,16 @@ class _DataFrameGroupByNonScalar(DataFrameGroupBy):
 class DataFrameGroupBy(GroupBy):
     def any(self, skipna: bool = ...) -> DataFrame: ...
     def all(self, skipna: bool = ...) -> DataFrame: ...
-    def apply(self, func, *args, **kwargs) -> DataFrame: ...
+    @overload
+    def apply(
+        self, func: Callable[[DataFrame], DataFrame], *args, **kwargs
+    ) -> DataFrame: ...
+    @overload
+    def apply(self, func: Callable[[DataFrame], Series], *args, **kwargs) -> Series: ...
+    @overload
+    def apply(
+        self, func: Callable[[Iterable], float], *args, **kwargs
+    ) -> DataFrame: ...
     @overload
     def aggregate(self, arg: str, *args, **kwargs) -> DataFrame: ...
     @overload

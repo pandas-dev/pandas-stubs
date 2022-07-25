@@ -1339,3 +1339,18 @@ def test_setitem_list():
     iter2: Iterator[tuple[str, int]] = (v for v in lst4)
     check(assert_type(df.set_index(iter1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index(iter2), pd.DataFrame), pd.DataFrame)
+
+
+def test_groupby_apply() -> None:
+    # GH 167
+    df = pd.DataFrame({"col1": [1, 2, 3], "col2": [4, 5, 6]})
+
+    def summean(x: pd.DataFrame) -> pd.Series:
+        return x.sum().mean()
+
+    check(assert_type(df.groupby("col1").apply(summean), pd.Series), pd.Series)
+
+    check(
+        assert_type(df.groupby("col1").apply(lambda x: x.sum().mean()), pd.Series),
+        pd.Series,
+    )

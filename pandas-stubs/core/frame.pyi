@@ -1904,12 +1904,22 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def sum(
         self,
+        axis: Literal[1, "columns"],
+        skipna: _bool | None = ...,
+        level: None = ...,
+        numeric_only: _bool | None = ...,
+        min_count: int = ...,
+        **kwargs,
+    ) -> Series: ...
+    @overload
+    def sum(
+        self,
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         numeric_only: _bool | None = ...,
         min_count: int = ...,
         *,
-        level: Level,
+        level: Level = ...,
         **kwargs,
     ) -> DataFrame: ...
     @overload
