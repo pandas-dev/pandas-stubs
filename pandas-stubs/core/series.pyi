@@ -112,15 +112,15 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
         self,
         idx: MaskType
         | Index
-        | Sequence[int | float]
+        | Sequence[float]
         | list[_str]
         | slice
-        | tuple[int | str | float | slice | Index, ...],
+        | tuple[str | float | slice | Index, ...],
     ) -> Series[S1]: ...
     @overload
     def __getitem__(
         self,
-        idx: int | _str | float,
+        idx: _str | float,
     ) -> S1: ...
     @overload
     def __setitem__(
@@ -761,7 +761,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def replace(
         self,
-        to_replace: _str | list | dict | Series[S1] | int | float | None = ...,
+        to_replace: _str | list | dict | Series[S1] | float | None = ...,
         value: Scalar | dict | list | _str | None = ...,
         inplace: Literal[False] = ...,
         limit: int | None = ...,
@@ -771,7 +771,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def replace(
         self,
-        to_replace: _str | list | dict | Series[S1] | int | float | None = ...,
+        to_replace: _str | list | dict | Series[S1] | float | None = ...,
         value: Scalar | dict | list | _str | None = ...,
         limit: int | None = ...,
         regex=...,
@@ -782,7 +782,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def replace(
         self,
-        to_replace: _str | list | dict | Series[S1] | int | float | None = ...,
+        to_replace: _str | list | dict | Series[S1] | float | None = ...,
         value: Scalar | dict | list | _str | None = ...,
         inplace: _bool = ...,
         limit: int | None = ...,

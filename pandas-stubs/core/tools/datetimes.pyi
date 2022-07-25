@@ -26,7 +26,7 @@ from pandas._typing import (
 )
 
 ArrayConvertible = Union[list, tuple, AnyArrayLike]
-Scalar = Union[int, float, str]
+Scalar = Union[float, str]
 DatetimeScalar = Union[Scalar, datetime, np.datetime64]
 
 DatetimeScalarOrArrayConvertible = Union[DatetimeScalar, ArrayConvertible]

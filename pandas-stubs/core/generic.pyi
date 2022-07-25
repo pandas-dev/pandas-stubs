@@ -106,7 +106,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: _str | Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: Callable[[Any], _str | int | float | _bool | list | dict]
+        default_handler: Callable[[Any], _str | float | _bool | list | dict]
         | None = ...,
         lines: _bool = ...,
         compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] = ...,
@@ -123,7 +123,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: _str | Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: Callable[[Any], _str | int | float | _bool | list | dict]
+        default_handler: Callable[[Any], _str | float | _bool | list | dict]
         | None = ...,
         lines: _bool = ...,
         compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,

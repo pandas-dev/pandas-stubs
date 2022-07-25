@@ -1121,7 +1121,7 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
-    def __iter__(self) -> Iterator[int | float | _str]: ...
+    def __iter__(self) -> Iterator[float | _str]: ...
     # properties
     @property
     def at(self): ...  # Not sure what to do with this yet; look at source
@@ -2033,7 +2033,7 @@ class DataFrame(NDFrame, OpsMixin):
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: _str | Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: Callable[[Any], _str | int | float | _bool | list | dict]
+        default_handler: Callable[[Any], _str | float | _bool | list | dict]
         | None = ...,
         lines: _bool = ...,
         compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
@@ -2050,7 +2050,7 @@ class DataFrame(NDFrame, OpsMixin):
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: _str | Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: Callable[[Any], _str | int | float | _bool | list | dict]
+        default_handler: Callable[[Any], _str | float | _bool | list | dict]
         | None = ...,
         lines: _bool = ...,
         compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
