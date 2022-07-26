@@ -11,6 +11,8 @@ from pandas import (
 )
 from pandas.api.extensions import ExtensionArray
 
+from pandas._typing import AnyArrayLike
+
 @overload
 def unique(values: Index) -> Index: ...
 @overload
@@ -28,3 +30,11 @@ def factorize(
     use_na_sentinel: bool = ...,
     size_hint: int | None = ...,
 ) -> tuple[np.ndarray, np.ndarray | Index]: ...
+def value_counts(
+    values: AnyArrayLike | list | tuple,
+    sort: bool = ...,
+    ascending: bool = ...,
+    normalize: bool = ...,
+    bins: int | None = ...,
+    dropna: bool = ...,
+) -> Series: ...
