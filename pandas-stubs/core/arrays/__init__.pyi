@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from .base import (
     ExtensionArray as ExtensionArray,
     ExtensionOpsMixin as ExtensionOpsMixin,

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
 
 from .masked import BaseMaskedArray as BaseMaskedArray

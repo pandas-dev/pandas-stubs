@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from . import (
     extensions as extensions,
     indexers as indexers,

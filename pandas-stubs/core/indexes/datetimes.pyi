@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from datetime import tzinfo
 from typing import overload
 

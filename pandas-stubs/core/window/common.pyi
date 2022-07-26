@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import Callable
 
 from pandas.core.groupby.base import GroupByMixin as GroupByMixin

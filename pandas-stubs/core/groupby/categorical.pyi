@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pandas.core.arrays.categorical import (  # , CategoricalDtype as CategoricalDtype
     Categorical as Categorical,
 )

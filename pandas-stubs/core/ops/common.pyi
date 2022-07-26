@@ -1,3 +1,1 @@
-from __future__ import annotations
-
 def unpack_zerodim_and_defer(name: str): ...

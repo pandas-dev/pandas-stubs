@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from builtins import type as type_t
 import datetime
 from io import (
@@ -43,16 +41,14 @@ from pandas.core.dtypes.dtypes import ExtensionDtype
 
 ArrayLike = Union[ExtensionArray, np.ndarray]
 AnyArrayLike = Union[Index, Series, np.ndarray]
-PythonScalar = Union[str, int, float, bool, complex]
+PythonScalar = Union[str, bool, complex]
 DatetimeLikeScalar = TypeVar("DatetimeLikeScalar", Period, Timestamp, Timedelta)
 PandasScalar = Union[bytes, datetime.date, datetime.datetime, datetime.timedelta]
 # Scalar = Union[PythonScalar, PandasScalar]
 IntStrT = TypeVar("IntStrT", int, str)
 
 # dtypes
-NpDtype = Union[
-    str, np.dtype[np.generic], type[Union[str, float, int, complex, bool, object]]
-]
+NpDtype = Union[str, np.dtype[np.generic], type[Union[str, complex, bool, object]]]
 Dtype = Union[ExtensionDtype, NpDtype]
 AstypeArg = Union[ExtensionDtype, npt.DTypeLike]
 # DtypeArg specifies all allowable dtypes in a functions its dtype argument
@@ -97,7 +93,7 @@ AggFuncType = Union[
     AggFuncTypeDict,
 ]
 
-num = Union[int, float, complex]
+num = complex
 SeriesAxisType = Literal["index", 0]  # Restricted subset of _AxisType for series
 AxisType = Literal["columns", "index", 0, 1]
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
@@ -111,8 +107,6 @@ Scalar = Union[
     datetime.datetime,
     datetime.timedelta,
     bool,
-    int,
-    float,
     complex,
     Timestamp,
     Timedelta,

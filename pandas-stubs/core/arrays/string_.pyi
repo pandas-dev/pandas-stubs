@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pandas.core.arrays import PandasArray as PandasArray
 
 from pandas._typing import type_t

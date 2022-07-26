@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 def hash_pandas_object(
     obj,
     index: bool = ...,

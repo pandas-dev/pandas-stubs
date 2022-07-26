@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 # def to_timedelta(arg, unit: str = ..., errors: str = ...): ...
 from datetime import timedelta
 from typing import overload
@@ -22,7 +20,7 @@ from pandas._typing import (
 
 @overload
 def to_timedelta(
-    arg: str | int | float | timedelta,
+    arg: str | float | timedelta,
     unit: UnitChoices | None = ...,
     errors: DateTimeErrorChoices = ...,
 ) -> Timedelta: ...

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from matplotlib.axes import Axes as PlotAxes
 from pandas.core.base import PandasObject as PandasObject
 from pandas.core.frame import DataFrame

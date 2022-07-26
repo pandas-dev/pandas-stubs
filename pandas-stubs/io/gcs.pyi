@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pandas._typing import FilePathOrBuffer
 
 gcsfs = ...

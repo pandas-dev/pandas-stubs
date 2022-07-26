@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pandas.core.indexes.base import Index as Index
 from pandas.core.indexes.category import CategoricalIndex as CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex as DatetimeIndex

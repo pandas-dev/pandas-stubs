@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pandas import compat as compat
 from pandas.core.util.hashing import (
     hash_array as hash_array,

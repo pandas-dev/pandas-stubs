@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pandas.core.reshape.concat import concat as concat
 from pandas.core.reshape.melt import (
     lreshape as lreshape,

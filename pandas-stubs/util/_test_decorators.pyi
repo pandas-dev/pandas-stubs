@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import Callable
 
 def safe_import(mod_name: str, min_version: str | None = ...): ...
