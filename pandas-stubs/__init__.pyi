@@ -70,7 +70,6 @@ from .core.api import (
     timedelta_range as timedelta_range,
     to_numeric as to_numeric,
     unique as unique,
-    value_counts as value_counts,
 )
 from .core.arrays.sparse import SparseDtype as SparseDtype
 from .core.computation.api import eval as eval
