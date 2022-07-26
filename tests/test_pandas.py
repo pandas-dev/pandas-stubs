@@ -4,10 +4,12 @@ import tempfile
 from typing import (
     TYPE_CHECKING,
     Any,
+    Union,
 )
 
 import numpy as np
 import pandas as pd
+from pandas.api.extensions import ExtensionArray
 import pytest
 from typing_extensions import assert_type
 
@@ -181,3 +183,91 @@ def test_read_xml() -> None:
             ),
             pd.DataFrame,
         )
+
+
+def test_unique() -> None:
+    # Taken from the docs
+    check(
+        assert_type(
+            pd.unique(pd.Series([2, 1, 3, 3])), Union[np.ndarray, ExtensionArray]
+        ),
+        np.ndarray,
+    )
+
+    check(
+        assert_type(
+            pd.unique(pd.Series([2] + [1] * 5)), Union[np.ndarray, ExtensionArray]
+        ),
+        np.ndarray,
+    )
+
+    check(
+        assert_type(
+            pd.unique(pd.Series([pd.Timestamp("20160101"), pd.Timestamp("20160101")])),
+            Union[np.ndarray, ExtensionArray],
+        ),
+        np.ndarray,
+    )
+
+    check(
+        assert_type(
+            pd.unique(
+                pd.Series(
+                    [
+                        pd.Timestamp("20160101", tz="US/Eastern"),
+                        pd.Timestamp("20160101", tz="US/Eastern"),
+                    ]
+                )
+            ),
+            Union[np.ndarray, ExtensionArray],
+        ),
+        pd.arrays.DatetimeArray,
+    )
+    check(
+        assert_type(
+            pd.unique(
+                pd.Index(
+                    [
+                        pd.Timestamp("20160101", tz="US/Eastern"),
+                        pd.Timestamp("20160101", tz="US/Eastern"),
+                    ]
+                )
+            ),
+            pd.Index,
+        ),
+        pd.DatetimeIndex,
+    )
+
+    check(assert_type(pd.unique(list("baabc")), np.ndarray), np.ndarray)
+
+    check(
+        assert_type(
+            pd.unique(pd.Series(pd.Categorical(list("baabc")))),
+            Union[np.ndarray, ExtensionArray],
+        ),
+        pd.Categorical,
+    )
+    check(
+        assert_type(
+            pd.unique(pd.Series(pd.Categorical(list("baabc"), categories=list("abc")))),
+            Union[np.ndarray, ExtensionArray],
+        ),
+        pd.Categorical,
+    )
+    check(
+        assert_type(
+            pd.unique(
+                pd.Series(
+                    pd.Categorical(list("baabc"), categories=list("abc"), ordered=True)
+                )
+            ),
+            Union[np.ndarray, ExtensionArray],
+        ),
+        pd.Categorical,
+    )
+    check(
+        assert_type(
+            pd.unique([("a", "b"), ("b", "a"), ("a", "c"), ("b", "a")]), np.ndarray
+        ),
+        np.ndarray,
+    )
