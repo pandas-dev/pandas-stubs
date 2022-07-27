@@ -107,7 +107,7 @@ def assert_frame_equal(
     check_dtype: bool | Literal["equiv"] = ...,
     check_index_type: bool | Literal["equiv"] = ...,
     check_column_type: bool | Literal["equiv"] = ...,
-    check_frame_typ: bool = ...,
+    check_frame_type: bool = ...,
     check_less_precise: int | bool = ...,
     check_names: bool = ...,
     by_blocks: bool = ...,
