@@ -56,6 +56,8 @@ from pandas.core.window.rolling import (
 
 from pandas._typing import (
     S1,
+    AggFuncType,
+    AggFuncTypeBase,
     ArrayLike,
     Axes,
     Axis,
@@ -596,27 +598,25 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     ) -> Series[S1]: ...
     def aggregate(
         self,
-        func: Callable
-        | _str
-        | list[Callable | _str]
-        | dict[SeriesAxisType, Callable | _str],
+        func: AggFuncTypeBase
+        | list[AggFuncTypeBase]
+        | dict[SeriesAxisType, AggFuncTypeBase | list[AggFuncTypeBase]] = ...,
         axis: SeriesAxisType = ...,
         *args,
         **kwargs,
     ) -> None: ...
     def agg(
         self,
-        func: Callable
-        | _str
-        | list[Callable | _str]
-        | dict[SeriesAxisType, Callable | _str] = ...,
+        func: AggFuncTypeBase
+        | list[AggFuncTypeBase]
+        | dict[SeriesAxisType, AggFuncTypeBase | list[AggFuncTypeBase]] = ...,
         axis: SeriesAxisType = ...,
         *args,
         **kwargs,
     ) -> None: ...
     def transform(
         self,
-        func: list[Callable] | dict[_str, Callable],
+        func: AggFuncType,
         axis: SeriesAxisType = ...,
         *args,
         **kwargs,

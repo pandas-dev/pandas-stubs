@@ -42,6 +42,9 @@ from pandas.core.window.rolling import (
 
 from pandas._typing import (
     S1,
+    AggFuncType,
+    AggFuncTypeBase,
+    AggFuncTypeDict,
     ArrayLike,
     Axes,
     Axis,
@@ -919,28 +922,28 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def diff(self, periods: int = ..., axis: AxisType = ...) -> DataFrame: ...
     @overload
-    def agg(self, func: Callable | _str, axis: AxisType = ..., **kwargs) -> Series: ...
+    def agg(self, func: AggFuncTypeBase, axis: AxisType = ..., **kwargs) -> Series: ...
     @overload
     def agg(
         self,
-        func: list[Callable] | dict[_str, Callable] = ...,
+        func: list[AggFuncTypeBase] | AggFuncTypeDict = ...,
         axis: AxisType = ...,
         **kwargs,
     ) -> DataFrame: ...
     @overload
     def aggregate(
-        self, func: Callable | _str, axis: AxisType = ..., **kwargs
+        self, func: AggFuncTypeBase, axis: AxisType = ..., **kwargs
     ) -> Series: ...
     @overload
     def aggregate(
         self,
-        func: list[Callable] | dict[_str, Callable],
+        func: list[AggFuncTypeBase] | AggFuncTypeDict,
         axis: AxisType = ...,
         **kwargs,
     ) -> DataFrame: ...
     def transform(
         self,
-        func: list[Callable] | dict[_str, Callable],
+        func: AggFuncType,
         axis: AxisType = ...,
         *args,
         **kwargs,
