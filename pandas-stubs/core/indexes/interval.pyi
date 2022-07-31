@@ -1,7 +1,4 @@
-from typing import (
-    Hashable,
-    Literal,
-)
+from typing import Hashable
 
 import numpy as np
 from pandas.core.indexes.extension import ExtensionIndex
@@ -10,7 +7,10 @@ from pandas._libs.interval import (
     Interval as Interval,
     IntervalMixin as IntervalMixin,
 )
-from pandas._typing import DtypeArg
+from pandas._typing import (
+    DtypeArg,
+    IntervalClosedType,
+)
 
 from pandas.core.dtypes.dtypes import IntervalDtype as IntervalDtype
 from pandas.core.dtypes.generic import ABCSeries as ABCSeries
@@ -24,7 +24,7 @@ class IntervalIndex(IntervalMixin, ExtensionIndex):
     def __new__(
         cls,
         data,
-        closed: Literal["left", "right", "both", "neither"] = ...,
+        closed: IntervalClosedType = ...,
         dtype: IntervalDtype | None = ...,
         copy: bool = ...,
         name: Hashable = ...,
@@ -34,7 +34,7 @@ class IntervalIndex(IntervalMixin, ExtensionIndex):
     def from_breaks(
         cls,
         breaks,
-        closed: Literal["left", "right", "both", "neither"] = ...,
+        closed: IntervalClosedType = ...,
         name: Hashable = ...,
         copy: bool = ...,
         dtype: IntervalDtype | None = ...,
@@ -44,7 +44,7 @@ class IntervalIndex(IntervalMixin, ExtensionIndex):
         cls,
         left,
         right,
-        closed: Literal["left", "right", "both", "neither"] = ...,
+        closed: IntervalClosedType = ...,
         name: Hashable = ...,
         copy: bool = ...,
         dtype: IntervalDtype | None = ...,
@@ -53,7 +53,7 @@ class IntervalIndex(IntervalMixin, ExtensionIndex):
     def from_tuples(
         cls,
         data,
-        closed: Literal["left", "right", "both", "neither"] = ...,
+        closed: IntervalClosedType = ...,
         name: Hashable = ...,
         copy: bool = ...,
         dtype: IntervalDtype | None = ...,
