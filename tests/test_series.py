@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 from pathlib import Path
 import re
 import tempfile
@@ -948,3 +949,72 @@ def test_series_overloads_extract():
         assert_type(s.str.extract(r"[ab](\d)", re.IGNORECASE, False), pd.Series),
         pd.Series,
     )
+
+
+def test_relops() -> None:
+    # GH 175
+    s: str = "abc"
+    check(assert_type(pd.Series([s]) > s, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([s]) < s, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([s]) <= s, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([s]) >= s, "pd.Series[bool]"), pd.Series, bool)
+
+    b: bytes = b"def"
+    check(assert_type(pd.Series([b]) > b, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([b]) < b, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([b]) <= b, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([b]) >= b, "pd.Series[bool]"), pd.Series, bool)
+
+    dtd = datetime.date(2022, 7, 31)
+    check(assert_type(pd.Series([dtd]) > dtd, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([dtd]) < dtd, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([dtd]) <= dtd, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([dtd]) >= dtd, "pd.Series[bool]"), pd.Series, bool)
+
+    dtdt = datetime.datetime(2022, 7, 31, 8, 32, 21)
+    check(assert_type(pd.Series([dtdt]) > dtdt, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([dtdt]) < dtdt, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([dtdt]) <= dtdt, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([dtdt]) >= dtdt, "pd.Series[bool]"), pd.Series, bool)
+
+    dttd = datetime.timedelta(seconds=10)
+    check(assert_type(pd.Series([dttd]) > dttd, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([dttd]) < dttd, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([dttd]) <= dttd, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([dttd]) >= dttd, "pd.Series[bool]"), pd.Series, bool)
+
+    bo: bool = True
+    check(assert_type(pd.Series([bo]) > bo, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([bo]) < bo, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([bo]) <= bo, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([bo]) >= bo, "pd.Series[bool]"), pd.Series, bool)
+
+    ai: int = 10
+    check(assert_type(pd.Series([ai]) > ai, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([ai]) < ai, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([ai]) <= ai, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([ai]) >= ai, "pd.Series[bool]"), pd.Series, bool)
+
+    af: float = 3.14
+    check(assert_type(pd.Series([af]) > af, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([af]) < af, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([af]) <= af, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([af]) >= af, "pd.Series[bool]"), pd.Series, bool)
+
+    ac: complex = 1 + 2j
+    check(assert_type(pd.Series([ac]) > ac, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([ac]) < ac, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([ac]) <= ac, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([ac]) >= ac, "pd.Series[bool]"), pd.Series, bool)
+
+    ts = pd.Timestamp("2022-07-31 08:35:12")
+    check(assert_type(pd.Series([ts]) > ts, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([ts]) < ts, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([ts]) <= ts, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([ts]) >= ts, "pd.Series[bool]"), pd.Series, bool)
+
+    td = pd.Timedelta(seconds=10)
+    check(assert_type(pd.Series([td]) > td, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([td]) < td, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([td]) <= td, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([td]) >= td, "pd.Series[bool]"), pd.Series, bool)
