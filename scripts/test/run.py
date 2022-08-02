@@ -1,5 +1,6 @@
 from pathlib import Path
 import subprocess
+import sys
 
 
 def mypy_src():
@@ -24,7 +25,7 @@ def style():
 
 def stubtest():
     cmd = [
-        "python",
+        sys.executable,
         "-m",
         "mypy.stubtest",
         "pandas",
