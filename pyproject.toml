@@ -60,7 +60,7 @@ help = "Run local tests (includes 'mypy', 'pyright', 'pytest', and 'style')"
 script = "scripts.test:test(src=True)"
 
 [tool.poe.tasks.test_dist]
-help = "Run tests on the installed stubs (includes 'mypy_dist' and 'pyright_dist')"
+help = "Run tests on the installed stubs (includes 'mypy_dist', 'pyright_dist', and 'stubtest')"
 script = "scripts.test:test(dist=True)"
 
 [tool.poe.tasks.pytest]
@@ -78,6 +78,10 @@ script = "scripts.test.run:mypy_src"
 [tool.poe.tasks.mypy_dist]
 help = "Run mypy on 'tests' using the installed stubs"
 script = "scripts.test:test(dist=True, type_checker='mypy')"
+
+[tool.poe.tasks.stubtest]
+help = "Run stubtest to compare the installed stubs against pandas"
+script = "scripts.test:test(dist=True, type_checker='stubtest')"
 
 [tool.poe.tasks.pyright]
 help = "Run pyright on 'tests' (using the local stubs) and on the local stubs"

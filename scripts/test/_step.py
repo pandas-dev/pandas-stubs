@@ -26,5 +26,8 @@ mypy_dist = Step(
 pyright_dist = Step(
     name="Run pyright on 'tests' using the installed stubs", run=run.pyright_dist
 )
+stubtest = Step(
+    name="Run stubtest to compare the installed stubs against pandas", run=run.stubtest
+)
 uninstall_dist = Step(name="Uninstall pandas-stubs", run=run.uninstall_dist)
 restore_src = Step(name="Restore local stubs", run=run.restore_src)

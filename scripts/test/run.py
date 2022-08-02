@@ -22,6 +22,22 @@ def style():
     subprocess.run(cmd, check=True)
 
 
+def stubtest():
+    cmd = [
+        "python",
+        "-m",
+        "mypy.stubtest",
+        "pandas",
+        "--concise",
+        "--ignore-missing-stub",
+        "--mypy-config-file",
+        "pyproject.toml",
+        "--allowlist",
+        "stubtest_allowlist",
+    ]
+    subprocess.run(cmd, check=True)
+
+
 def build_dist():
     cmd = ["poetry", "build", "-f", "wheel"]
     subprocess.run(cmd, check=True)
