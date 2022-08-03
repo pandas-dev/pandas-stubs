@@ -1,5 +1,5 @@
-from functools import partial
 from copy import copy
+from functools import partial
 from typing import Literal
 
 from scripts._job import run_job
