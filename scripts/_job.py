@@ -63,5 +63,8 @@ def run_job(steps: List[Step]) -> None:
         end = time.perf_counter()
         logger.success(f"End: '{step.name}', runtime: {end - start:.3f} seconds.")
 
+    if not failed:
+        __rollback_job(rollback_steps)
+
     if failed:
         sys.exit(1)

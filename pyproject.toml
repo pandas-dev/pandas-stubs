@@ -60,7 +60,7 @@ help = "Run local tests (includes 'mypy', 'pyright', 'pytest', and 'style')"
 script = "scripts.test:test(src=True)"
 
 [tool.poe.tasks.test_dist]
-help = "Run tests on the installed stubs (includes 'mypy_dist', 'pyright_dist', and 'stubtest')"
+help = "Run tests on the installed stubs (includes 'mypy_dist' and 'pyright_dist')"
 script = "scripts.test:test(dist=True)"
 
 [tool.poe.tasks.pytest]
@@ -79,10 +79,6 @@ script = "scripts.test.run:mypy_src"
 help = "Run mypy on 'tests' using the installed stubs"
 script = "scripts.test:test(dist=True, type_checker='mypy')"
 
-[tool.poe.tasks.stubtest]
-help = "Run stubtest to compare the installed stubs against pandas"
-script = "scripts.test:test(dist=True, type_checker='stubtest')"
-
 [tool.poe.tasks.pyright]
 help = "Run pyright on 'tests' (using the local stubs) and on the local stubs"
 script = "scripts.test.run:pyright_src"
@@ -91,6 +87,10 @@ script = "scripts.test.run:pyright_src"
 help = "Run pyright on 'tests' using the installed stubs"
 script = "scripts.test:test(dist=True, type_checker='pyright')"
 
+[tool.poe.tasks.stubtest]
+script = "scripts.test:stubtest(allowlist)"
+help = "Run stubtest to compare the installed stubs against pandas"
+args = [{ name = "allowlist", positional = true, default = "", required = false, help= "Path to an allowlist (optional)" }]
 
 
 [tool.black]
