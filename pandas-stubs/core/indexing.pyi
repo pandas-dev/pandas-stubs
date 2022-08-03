@@ -1,8 +1,3 @@
-from typing import (
-    Tuple,
-    Union,
-)
-
 import numpy as np
 from pandas.core.indexes.api import Index
 
@@ -13,7 +8,7 @@ from pandas._typing import (
 )
 
 class _IndexSlice:
-    def __getitem__(self, arg) -> Tuple[Union[StrLike, Scalar, slice], ...]: ...
+    def __getitem__(self, arg) -> tuple[StrLike | Scalar | slice, ...]: ...
 
 IndexSlice: _IndexSlice
 

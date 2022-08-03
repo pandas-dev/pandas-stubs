@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import Dict
 
 from .offsets import BaseOffset
 
@@ -13,7 +12,7 @@ class PeriodDtypeBase:
     @classmethod
     def from_date_offset(cls, offset: BaseOffset) -> PeriodDtypeBase: ...
 
-attrname_to_abbrevs: Dict[str, str]
+attrname_to_abbrevs: dict[str, str]
 
 class FreqGroup:
     FR_ANN: int

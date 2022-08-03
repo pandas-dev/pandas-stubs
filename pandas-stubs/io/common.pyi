@@ -4,11 +4,7 @@ from typing import (
     IO,
     Any,
     AnyStr,
-    Dict,
     Mapping,
-    Optional,
-    Tuple,
-    Union,
 )
 import zipfile
 
@@ -26,22 +22,22 @@ def is_gcs_url(url) -> bool: ...
 def urlopen(*args, **kwargs) -> IO: ...
 def get_filepath_or_buffer(
     filepath_or_buffer: FilePathOrBuffer,
-    encoding: Optional[str] = ...,
-    compression: Optional[str] = ...,
-    mode: Optional[str] = ...,
+    encoding: str | None = ...,
+    compression: str | None = ...,
+    mode: str | None = ...,
 ): ...
 def file_path_to_url(path: str) -> str: ...
 def get_compression_method(
-    compression: Optional[Union[str, Mapping[str, str]]]
-) -> Tuple[Optional[str], Dict[str, str]]: ...
+    compression: str | Mapping[str, str] | None
+) -> tuple[str | None, dict[str, str]]: ...
 def infer_compression(
-    filepath_or_buffer: FilePathOrBuffer, compression: Optional[str]
-) -> Optional[str]: ...
+    filepath_or_buffer: FilePathOrBuffer, compression: str | None
+) -> str | None: ...
 def get_handle(
     path_or_buf,
     mode: str,
     encoding=...,
-    compression: Optional[Union[str, Mapping[str, Any]]] = ...,
+    compression: str | Mapping[str, Any] | None = ...,
     memory_map: bool = ...,
     is_text: bool = ...,
 ): ...
@@ -53,7 +49,7 @@ class _BytesZipFile(zipfile.ZipFile, BytesIO):  # type: ignore[misc]
         self,
         file: FilePathOrBuffer,
         mode: str,
-        archive_name: Optional[str] = ...,
+        archive_name: str | None = ...,
         **kwargs,
     ) -> None: ...
     @property

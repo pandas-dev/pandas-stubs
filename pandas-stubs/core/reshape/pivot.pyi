@@ -1,8 +1,6 @@
 from typing import (
     Callable,
-    Optional,
     Sequence,
-    Union,
 )
 
 from pandas.core.frame import DataFrame
@@ -16,11 +14,11 @@ from pandas._typing import (
 
 def pivot_table(
     data: DataFrame,
-    values: Optional[str] = ...,
-    index: Optional[Union[str, Sequence, Grouper]] = ...,
-    columns: Optional[Union[str, Sequence, Grouper]] = ...,
+    values: str | None = ...,
+    index: str | Sequence | Grouper | None = ...,
+    columns: str | Sequence | Grouper | None = ...,
     aggfunc=...,
-    fill_value: Optional[Scalar] = ...,
+    fill_value: Scalar | None = ...,
     margins: bool = ...,
     dropna: bool = ...,
     margins_name: str = ...,
@@ -28,17 +26,17 @@ def pivot_table(
 ) -> DataFrame: ...
 def pivot(
     data: DataFrame,
-    index: Optional[str] = ...,
-    columns: Optional[str] = ...,
-    values: Optional[IndexLabel] = ...,
+    index: str | None = ...,
+    columns: str | None = ...,
+    values: IndexLabel | None = ...,
 ) -> DataFrame: ...
 def crosstab(
-    index: Union[Sequence, Series],
-    columns: Union[Sequence, Series],
-    values: Optional[Sequence] = ...,
-    rownames: Optional[Sequence] = ...,
-    colnames: Optional[Sequence] = ...,
-    aggfunc: Optional[Callable] = ...,
+    index: Sequence | Series,
+    columns: Sequence | Series,
+    values: Sequence | None = ...,
+    rownames: Sequence | None = ...,
+    colnames: Sequence | None = ...,
+    aggfunc: Callable | None = ...,
     margins: bool = ...,
     margins_name: str = ...,
     dropna: bool = ...,

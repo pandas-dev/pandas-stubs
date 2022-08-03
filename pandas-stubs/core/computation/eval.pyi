@@ -1,9 +1,7 @@
-from typing import Optional
-
 def eval(
     expr,
     parser=...,
-    engine: Optional[str] = ...,
+    engine: str | None = ...,
     truediv=...,
     local_dict=...,
     global_dict=...,

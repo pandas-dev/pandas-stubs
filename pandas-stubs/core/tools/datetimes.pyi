@@ -1,9 +1,6 @@
 from datetime import datetime
 from typing import (
-    List,
     Literal,
-    Optional,
-    Tuple,
     TypedDict,
     Union,
     overload,
@@ -28,13 +25,13 @@ from pandas._typing import (
     DateTimeErrorChoices,
 )
 
-ArrayConvertible = Union[List, Tuple, AnyArrayLike]
-Scalar = Union[int, float, str]
+ArrayConvertible = Union[list, tuple, AnyArrayLike]
+Scalar = Union[float, str]
 DatetimeScalar = Union[Scalar, datetime, np.datetime64]
 
 DatetimeScalarOrArrayConvertible = Union[DatetimeScalar, ArrayConvertible]
 
-DatetimeDictArg = Union[List[Scalar], Tuple[Scalar, ...], AnyArrayLike]
+DatetimeDictArg = Union[list[Scalar], tuple[Scalar, ...], AnyArrayLike]
 
 class YearMonthDayDict(TypedDict, total=True):
     year: DatetimeDictArg
@@ -55,7 +52,7 @@ class FulldatetimeDict(YearMonthDayDict, total=False):
 DictConvertible = Union[FulldatetimeDict, DataFrame]
 
 def should_cache(
-    arg: ArrayConvertible, unique_share: float = ..., check_count: Optional[int] = ...
+    arg: ArrayConvertible, unique_share: float = ..., check_count: int | None = ...
 ) -> bool: ...
 @overload
 def to_datetime(

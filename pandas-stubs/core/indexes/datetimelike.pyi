@@ -1,8 +1,3 @@
-from typing import (
-    List,
-    Optional,
-)
-
 from pandas.core.accessor import PandasDelegate as PandasDelegate
 from pandas.core.indexes.extension import ExtensionIndex as ExtensionIndex
 from pandas.core.indexes.numeric import Int64Index as Int64Index
@@ -10,8 +5,8 @@ from pandas.core.indexes.numeric import Int64Index as Int64Index
 from pandas.tseries.frequencies import DateOffset as DateOffset
 
 class DatetimeIndexOpsMixin(ExtensionIndex):
-    freq: Optional[DateOffset]
-    freqstr: Optional[str]
+    freq: DateOffset | None
+    freqstr: str | None
     @property
     def is_all_dates(self) -> bool: ...
     @property
@@ -23,7 +18,7 @@ class DatetimeIndexOpsMixin(ExtensionIndex):
     def take(
         self, indices, axis: int = ..., allow_fill: bool = ..., fill_value=..., **kwargs
     ): ...
-    def tolist(self) -> List: ...
+    def tolist(self) -> list: ...
     def min(self, axis=..., skipna: bool = ..., *args, **kwargs): ...
     def argmin(self, axis=..., skipna: bool = ..., *args, **kwargs): ...
     def max(self, axis=..., skipna: bool = ..., *args, **kwargs): ...

@@ -1,3 +1,4 @@
+from builtins import type as type_t
 import datetime
 from io import (
     BufferedIOBase,
@@ -12,16 +13,12 @@ from typing import (
     Any,
     AnyStr,
     Callable,
-    Dict,
     Hashable,
-    List,
     Literal,
     Mapping,
     Optional,
     Protocol,
     Sequence,
-    Tuple,
-    Type,
     TypeVar,
     Union,
 )
@@ -44,20 +41,18 @@ from pandas.core.dtypes.dtypes import ExtensionDtype
 
 ArrayLike = Union[ExtensionArray, np.ndarray]
 AnyArrayLike = Union[Index, Series, np.ndarray]
-PythonScalar = Union[str, int, float, bool, complex]
+PythonScalar = Union[str, bool, complex]
 DatetimeLikeScalar = TypeVar("DatetimeLikeScalar", Period, Timestamp, Timedelta)
 PandasScalar = Union[bytes, datetime.date, datetime.datetime, datetime.timedelta]
 # Scalar = Union[PythonScalar, PandasScalar]
 IntStrT = TypeVar("IntStrT", int, str)
 
 # dtypes
-NpDtype = Union[
-    str, np.dtype[np.generic], Type[Union[str, float, int, complex, bool, object]]
-]
+NpDtype = Union[str, np.dtype[np.generic], type[Union[str, complex, bool, object]]]
 Dtype = Union[ExtensionDtype, NpDtype]
 AstypeArg = Union[ExtensionDtype, npt.DTypeLike]
 # DtypeArg specifies all allowable dtypes in a functions its dtype argument
-DtypeArg = Union[Dtype, Dict[Any, Dtype]]
+DtypeArg = Union[Dtype, dict[Any, Dtype]]
 DtypeObj = Union[np.dtype[np.generic], ExtensionDtype]
 
 # filenames and file-like-objects
@@ -82,8 +77,8 @@ IndexLabel = Union[Hashable, Sequence[Hashable]]
 Label = Optional[Hashable]
 Level = Union[Hashable, int]
 Ordered = Optional[bool]
-JSONSerializable = Union[PythonScalar, List, Dict]
-Axes = Union[AnyArrayLike, List, Dict, range]
+JSONSerializable = Union[PythonScalar, list, dict]
+Axes = Union[AnyArrayLike, list, dict, range]
 Renamer = Union[Mapping[Any, Label], Callable[[Any], Label]]
 T = TypeVar("T")
 FuncType = Callable[..., Any]
@@ -91,14 +86,14 @@ F = TypeVar("F", bound=FuncType)
 HashableT = TypeVar("HashableT", bound=Hashable)
 
 AggFuncTypeBase = Union[Callable, str]
-AggFuncTypeDict = Dict[Hashable, Union[AggFuncTypeBase, List[AggFuncTypeBase]]]
+AggFuncTypeDict = dict[Hashable, Union[AggFuncTypeBase, list[AggFuncTypeBase]]]
 AggFuncType = Union[
     AggFuncTypeBase,
-    List[AggFuncTypeBase],
+    list[AggFuncTypeBase],
     AggFuncTypeDict,
 ]
 
-num = Union[int, float, complex]
+num = complex
 SeriesAxisType = Literal["index", 0]  # Restricted subset of _AxisType for series
 AxisType = Literal["columns", "index", 0, 1]
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
@@ -112,8 +107,6 @@ Scalar = Union[
     datetime.datetime,
     datetime.timedelta,
     bool,
-    int,
-    float,
     complex,
     Timestamp,
     Timedelta,
@@ -138,8 +131,8 @@ np_ndarray_anyint = Union[np_ndarray_int, np_ndarray_uint]
 np_ndarray_bool = npt.NDArray[np.bool_]
 np_ndarray_str = npt.NDArray[np.str_]
 
-IndexType = Union[slice, np_ndarray_int64, Index, List[int], Series[int]]
-MaskType = Union[Series[bool], np_ndarray_bool, List[bool]]
+IndexType = Union[slice, np_ndarray_int64, Index, list[int], Series[int]]
+MaskType = Union[Series[bool], np_ndarray_bool, list[bool]]
 # Scratch types for generics
 S1 = TypeVar(
     "S1",
@@ -183,20 +176,20 @@ DateTimeErrorChoices = Literal["ignore", "raise", "coerce"]
 IgnoreRaise = Literal["ignore", "raise"]
 
 # for arbitrary kwargs passed during reading/writing files
-StorageOptions = Optional[Dict[str, Any]]
+StorageOptions = Optional[dict[str, Any]]
 
 # compression keywords and compression
-CompressionDict = Dict[str, Any]
+CompressionDict = dict[str, Any]
 CompressionOptions = Optional[
     Union[Literal["infer", "gzip", "bz2", "zip", "xz", "zstd"], CompressionDict]
 ]
 
 # converters
-ConvertersArg = Dict[Hashable, Callable[[Dtype], Dtype]]
+ConvertersArg = dict[Hashable, Callable[[Dtype], Dtype]]
 
 # parse_dates
 ParseDatesArg = Union[
-    bool, List[Hashable], List[List[Hashable]], Dict[Hashable, List[Hashable]]
+    bool, list[Hashable], list[list[Hashable]], dict[Hashable, list[Hashable]]
 ]
 
 # read_xml parsers
@@ -205,6 +198,8 @@ XMLParsers = Literal["lxml", "etree"]
 # Any plain Python or numpy function
 Function = Union[np.ufunc, Callable[..., Any]]
 GroupByObjectNonScalar = Union[
-    Tuple, List[Label], Function, Series, np.ndarray, Mapping[Label, Any], Index
+    tuple, list[Label], Function, Series, np.ndarray, Mapping[Label, Any], Index
 ]
 GroupByObject = Union[Scalar, GroupByObjectNonScalar]
+
+__all__ = ["npt", "type_t"]

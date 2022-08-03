@@ -1,15 +1,15 @@
-# flake8: noqa: F841
+from __future__ import annotations
+
 import tempfile
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
-    List,
     Union,
 )
 
 import numpy as np
 import pandas as pd
+from pandas.api.extensions import ExtensionArray
 import pytest
 from typing_extensions import assert_type
 
@@ -57,12 +57,12 @@ def test_types_concat() -> None:
     )
 
     # Depends on the axis
-    rs1: Union[pd.Series, pd.DataFrame] = pd.concat({"a": s, "b": s2})
-    rs1a: Union[pd.Series, pd.DataFrame] = pd.concat({"a": s, "b": s2}, axis=1)
-    rs2: Union[pd.Series, pd.DataFrame] = pd.concat({1: s, 2: s2})
-    rs2a: Union[pd.Series, pd.DataFrame] = pd.concat({1: s, 2: s2}, axis=1)
-    rs3: Union[pd.Series, pd.DataFrame] = pd.concat({1: s, None: s2})
-    rs3a: Union[pd.Series, pd.DataFrame] = pd.concat({1: s, None: s2}, axis=1)
+    rs1: pd.Series | pd.DataFrame = pd.concat({"a": s, "b": s2})
+    rs1a: pd.Series | pd.DataFrame = pd.concat({"a": s, "b": s2}, axis=1)
+    rs2: pd.Series | pd.DataFrame = pd.concat({1: s, 2: s2})
+    rs2a: pd.Series | pd.DataFrame = pd.concat({1: s, 2: s2}, axis=1)
+    rs3: pd.Series | pd.DataFrame = pd.concat({1: s, None: s2})
+    rs3a: pd.Series | pd.DataFrame = pd.concat({1: s, None: s2}, axis=1)
 
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame(data={"col1": [10, 20], "col2": [30, 40]})
@@ -86,7 +86,7 @@ def test_types_concat() -> None:
     result: pd.DataFrame = pd.concat(
         {"a": pd.DataFrame([1, 2, 3]), "b": pd.DataFrame([4, 5, 6])}, axis=1
     )
-    result2: Union[pd.DataFrame, pd.Series] = pd.concat(
+    result2: pd.DataFrame | pd.Series = pd.concat(
         {"a": pd.Series([1, 2, 3]), "b": pd.Series([4, 5, 6])}, axis=1
     )
 
@@ -100,7 +100,7 @@ def test_types_concat() -> None:
 
 
 def test_types_json_normalize() -> None:
-    data1: List[Dict[str, Any]] = [
+    data1: list[dict[str, Any]] = [
         {"id": 1, "name": {"first": "Coleen", "last": "Volk"}},
         {"name": {"given": "Mose", "family": "Regner"}},
         {"id": 2, "name": "Faye Raker"},
@@ -111,7 +111,7 @@ def test_types_json_normalize() -> None:
         data=data1, meta_prefix="id", record_prefix="name", errors="raise"
     )
     df4: pd.DataFrame = pd.json_normalize(data=data1, record_path=None, meta="id")
-    data2: Dict[str, Any] = {"name": {"given": "Mose", "family": "Regner"}}
+    data2: dict[str, Any] = {"name": {"given": "Mose", "family": "Regner"}}
     df5: pd.DataFrame = pd.json_normalize(data=data2)
 
 
@@ -183,3 +183,91 @@ def test_read_xml() -> None:
             ),
             pd.DataFrame,
         )
+
+
+def test_unique() -> None:
+    # Taken from the docs
+    check(
+        assert_type(
+            pd.unique(pd.Series([2, 1, 3, 3])), Union[np.ndarray, ExtensionArray]
+        ),
+        np.ndarray,
+    )
+
+    check(
+        assert_type(
+            pd.unique(pd.Series([2] + [1] * 5)), Union[np.ndarray, ExtensionArray]
+        ),
+        np.ndarray,
+    )
+
+    check(
+        assert_type(
+            pd.unique(pd.Series([pd.Timestamp("20160101"), pd.Timestamp("20160101")])),
+            Union[np.ndarray, ExtensionArray],
+        ),
+        np.ndarray,
+    )
+
+    check(
+        assert_type(
+            pd.unique(
+                pd.Series(
+                    [
+                        pd.Timestamp("20160101", tz="US/Eastern"),
+                        pd.Timestamp("20160101", tz="US/Eastern"),
+                    ]
+                )
+            ),
+            Union[np.ndarray, ExtensionArray],
+        ),
+        pd.arrays.DatetimeArray,
+    )
+    check(
+        assert_type(
+            pd.unique(
+                pd.Index(
+                    [
+                        pd.Timestamp("20160101", tz="US/Eastern"),
+                        pd.Timestamp("20160101", tz="US/Eastern"),
+                    ]
+                )
+            ),
+            pd.Index,
+        ),
+        pd.DatetimeIndex,
+    )
+
+    check(assert_type(pd.unique(list("baabc")), np.ndarray), np.ndarray)
+
+    check(
+        assert_type(
+            pd.unique(pd.Series(pd.Categorical(list("baabc")))),
+            Union[np.ndarray, ExtensionArray],
+        ),
+        pd.Categorical,
+    )
+    check(
+        assert_type(
+            pd.unique(pd.Series(pd.Categorical(list("baabc"), categories=list("abc")))),
+            Union[np.ndarray, ExtensionArray],
+        ),
+        pd.Categorical,
+    )
+    check(
+        assert_type(
+            pd.unique(
+                pd.Series(
+                    pd.Categorical(list("baabc"), categories=list("abc"), ordered=True)
+                )
+            ),
+            Union[np.ndarray, ExtensionArray],
+        ),
+        pd.Categorical,
+    )
+    check(
+        assert_type(
+            pd.unique([("a", "b"), ("b", "a"), ("a", "c"), ("b", "a")]), np.ndarray
+        ),
+        np.ndarray,
+    )

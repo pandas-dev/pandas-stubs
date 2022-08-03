@@ -1,7 +1,4 @@
-from typing import (
-    Callable,
-    Optional,
-)
+from typing import Callable
 
 from pandas.core.groupby.base import GroupByMixin as GroupByMixin
 
@@ -11,7 +8,7 @@ class WindowGroupByMixin(GroupByMixin):
 def calculate_center_offset(window): ...
 def calculate_min_periods(
     window: int,
-    min_periods: Optional[int],
+    min_periods: int | None,
     num_values: int,
     required_min_periods: int,
     floor: int,

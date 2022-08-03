@@ -1,13 +1,13 @@
-from typing import Type
-
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
 
 from .masked import BaseMaskedArray as BaseMaskedArray
 
+_type = type
+
 class _IntegerDtype(ExtensionDtype):
     name: str
     base = ...
-    type: Type
+    type: _type
     na_value = ...
     def is_signed_integer(self): ...
     def is_unsigned_integer(self): ...

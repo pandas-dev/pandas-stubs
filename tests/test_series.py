@@ -1,4 +1,8 @@
+from __future__ import annotations
+
+import datetime
 from pathlib import Path
+import re
 import tempfile
 from typing import (
     TYPE_CHECKING,
@@ -8,7 +12,6 @@ from typing import (
     Iterator,
     List,
     Sequence,
-    Union,
     cast,
 )
 
@@ -527,7 +530,7 @@ def test_types_set_flags() -> None:
 
 def test_types_getitem() -> None:
     s = pd.Series({"key": [0, 1, 2, 3]})
-    key: List[int] = s["key"]
+    key: list[int] = s["key"]
     s2 = pd.Series([0, 1, 2, 3])
     value: int = s2[0]
     s3: pd.Series = s[:2]
@@ -545,12 +548,10 @@ def test_types_rename_axis() -> None:
 
 
 def test_types_values() -> None:
-    n1: Union[np.ndarray, ExtensionArray] = pd.Series([1, 2, 3]).values
-    n2: Union[np.ndarray, ExtensionArray] = pd.Series(list("aabc")).values
-    n3: Union[np.ndarray, ExtensionArray] = (
-        pd.Series(list("aabc")).astype("category").values
-    )
-    n4: Union[np.ndarray, ExtensionArray] = pd.Series(
+    n1: np.ndarray | ExtensionArray = pd.Series([1, 2, 3]).values
+    n2: np.ndarray | ExtensionArray = pd.Series(list("aabc")).values
+    n3: np.ndarray | ExtensionArray = pd.Series(list("aabc")).astype("category").values
+    n4: np.ndarray | ExtensionArray = pd.Series(
         pd.date_range("20130101", periods=3, tz="US/Eastern")
     ).values
 
@@ -832,3 +833,188 @@ def test_categorical_codes():
     # GH-111
     cat = pd.Categorical(["a", "b", "a"])
     assert_type(cat.codes, "np_ndarray_int")
+
+
+def test_string_accessors():
+    s = pd.Series(
+        ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
+    )
+    s2 = pd.Series([["apple", "banana"], ["cherry", "date"], [1, "eggplant"]])
+    s3 = pd.Series(["a1", "b2", "c3"])
+    check(assert_type(s.str.capitalize(), pd.Series), pd.Series)
+    check(assert_type(s.str.casefold(), pd.Series), pd.Series)
+    check(assert_type(s.str.cat(sep="X"), str), str)
+    check(assert_type(s.str.center(10), pd.Series), pd.Series)
+    check(assert_type(s.str.contains("a"), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.count("pp"), "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s.str.decode("utf-8"), pd.Series), pd.Series)
+    check(assert_type(s.str.encode("latin-1"), pd.Series), pd.Series)
+    check(assert_type(s.str.endswith("e"), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s3.str.extract(r"([ab])?(\d)"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(s3.str.extractall(r"([ab])?(\d)"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(s.str.find("p"), pd.Series), pd.Series)
+    check(assert_type(s.str.findall("pp"), pd.Series), pd.Series)
+    check(assert_type(s.str.fullmatch("apple"), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.get(2), pd.Series), pd.Series)
+    check(assert_type(s.str.get_dummies(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(s.str.index("p"), pd.Series), pd.Series)
+    check(assert_type(s.str.isalnum(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.isalpha(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.isdecimal(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.isdigit(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.isnumeric(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.islower(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.isspace(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.istitle(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.isupper(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s2.str.join("-"), pd.Series), pd.Series)
+    check(assert_type(s.str.len(), "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s.str.ljust(80), pd.Series), pd.Series)
+    check(assert_type(s.str.lower(), pd.Series), pd.Series)
+    check(assert_type(s.str.lstrip("a"), pd.Series), pd.Series)
+    check(assert_type(s.str.match("pp"), pd.Series), pd.Series)
+    check(assert_type(s.str.normalize("NFD"), pd.Series), pd.Series)
+    check(assert_type(s.str.pad(80, "right"), pd.Series), pd.Series)
+    check(assert_type(s.str.partition("p"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(s.str.removeprefix("a"), pd.Series), pd.Series)
+    check(assert_type(s.str.removesuffix("e"), pd.Series), pd.Series)
+    check(assert_type(s.str.repeat(2), pd.Series), pd.Series)
+    check(assert_type(s.str.replace("a", "X"), pd.Series), pd.Series)
+    check(assert_type(s.str.rfind("e"), pd.Series), pd.Series)
+    check(assert_type(s.str.rindex("p"), pd.Series), pd.Series)
+    check(assert_type(s.str.rjust(80), pd.Series), pd.Series)
+    check(assert_type(s.str.rpartition("p"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(s.str.rsplit("a"), pd.Series), pd.Series)
+    check(assert_type(s.str.rstrip(), pd.Series), pd.Series)
+    check(assert_type(s.str.slice(0, 4, 2), pd.Series), pd.Series)
+    check(assert_type(s.str.slice_replace(0, 2, "XX"), pd.Series), pd.Series)
+    check(assert_type(s.str.split("a"), pd.Series), pd.Series)
+    check(assert_type(s.str.startswith("a"), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.strip(), pd.Series), pd.Series)
+    check(assert_type(s.str.swapcase(), pd.Series), pd.Series)
+    check(assert_type(s.str.title(), pd.Series), pd.Series)
+    check(assert_type(s.str.translate(None), pd.Series), pd.Series)
+    check(assert_type(s.str.upper(), pd.Series), pd.Series)
+    check(assert_type(s.str.wrap(80), pd.Series), pd.Series)
+    check(assert_type(s.str.zfill(10), pd.Series), pd.Series)
+
+
+def test_series_overloads_cat():
+    s = pd.Series(
+        ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
+    )
+    check(assert_type(s.str.cat(sep=";"), str), str)
+    check(assert_type(s.str.cat(None, sep=";"), str), str)
+    check(
+        assert_type(s.str.cat(["A", "B", "C", "D", "E", "F", "G"], sep=";"), pd.Series),
+        pd.Series,
+    )
+
+
+def test_series_overloads_partition():
+    s = pd.Series(
+        [
+            "ap;pl;ep",
+            "ban;an;ap",
+            "Che;rr;yp",
+            "DA;TEp",
+            "eGGp;LANT;p",
+            "12;3p",
+            "23.45p",
+        ]
+    )
+    check(assert_type(s.str.partition(sep=";"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(s.str.partition(sep=";", expand=True), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(s.str.partition(sep=";", expand=False), pd.Series), pd.Series)
+
+    check(assert_type(s.str.rpartition(sep=";"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(s.str.rpartition(sep=";", expand=True), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(s.str.rpartition(sep=";", expand=False), pd.Series), pd.Series)
+
+
+def test_series_overloads_extract():
+    s = pd.Series(
+        ["appl;ep", "ban;anap", "Cherr;yp", "DATEp", "eGGp;LANTp", "12;3p", "23.45p"]
+    )
+    check(assert_type(s.str.extract(r"[ab](\d)"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(s.str.extract(r"[ab](\d)", expand=True), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(s.str.extract(r"[ab](\d)", expand=False), pd.Series), pd.Series)
+    check(
+        assert_type(s.str.extract(r"[ab](\d)", re.IGNORECASE, False), pd.Series),
+        pd.Series,
+    )
+
+
+def test_relops() -> None:
+    # GH 175
+    s: str = "abc"
+    check(assert_type(pd.Series([s]) > s, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([s]) < s, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([s]) <= s, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([s]) >= s, "pd.Series[bool]"), pd.Series, bool)
+
+    b: bytes = b"def"
+    check(assert_type(pd.Series([b]) > b, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([b]) < b, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([b]) <= b, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([b]) >= b, "pd.Series[bool]"), pd.Series, bool)
+
+    dtd = datetime.date(2022, 7, 31)
+    check(assert_type(pd.Series([dtd]) > dtd, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([dtd]) < dtd, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([dtd]) <= dtd, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([dtd]) >= dtd, "pd.Series[bool]"), pd.Series, bool)
+
+    dtdt = datetime.datetime(2022, 7, 31, 8, 32, 21)
+    check(assert_type(pd.Series([dtdt]) > dtdt, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([dtdt]) < dtdt, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([dtdt]) <= dtdt, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([dtdt]) >= dtdt, "pd.Series[bool]"), pd.Series, bool)
+
+    dttd = datetime.timedelta(seconds=10)
+    check(assert_type(pd.Series([dttd]) > dttd, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([dttd]) < dttd, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([dttd]) <= dttd, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([dttd]) >= dttd, "pd.Series[bool]"), pd.Series, bool)
+
+    bo: bool = True
+    check(assert_type(pd.Series([bo]) > bo, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([bo]) < bo, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([bo]) <= bo, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([bo]) >= bo, "pd.Series[bool]"), pd.Series, bool)
+
+    ai: int = 10
+    check(assert_type(pd.Series([ai]) > ai, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([ai]) < ai, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([ai]) <= ai, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([ai]) >= ai, "pd.Series[bool]"), pd.Series, bool)
+
+    af: float = 3.14
+    check(assert_type(pd.Series([af]) > af, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([af]) < af, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([af]) <= af, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([af]) >= af, "pd.Series[bool]"), pd.Series, bool)
+
+    ac: complex = 1 + 2j
+    check(assert_type(pd.Series([ac]) > ac, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([ac]) < ac, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([ac]) <= ac, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([ac]) >= ac, "pd.Series[bool]"), pd.Series, bool)
+
+    ts = pd.Timestamp("2022-07-31 08:35:12")
+    check(assert_type(pd.Series([ts]) > ts, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([ts]) < ts, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([ts]) <= ts, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([ts]) >= ts, "pd.Series[bool]"), pd.Series, bool)
+
+    td = pd.Timedelta(seconds=10)
+    check(assert_type(pd.Series([td]) > td, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([td]) < td, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([td]) <= td, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.Series([td]) >= td, "pd.Series[bool]"), pd.Series, bool)

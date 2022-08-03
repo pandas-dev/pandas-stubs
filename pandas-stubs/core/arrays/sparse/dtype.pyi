@@ -1,7 +1,3 @@
-# merged types from pylance
-
-from typing import Optional
-
 from pandas._typing import (
     Dtype,
     Scalar,
@@ -24,10 +20,10 @@ from pandas.core.dtypes.missing import (
     na_value_for_dtype as na_value_for_dtype,
 )
 
+# merged types from pylance
+
 class SparseDtype(ExtensionDtype):
-    def __init__(
-        self, dtype: Dtype = ..., fill_value: Optional[Scalar] = ...
-    ) -> None: ...
+    def __init__(self, dtype: Dtype = ..., fill_value: Scalar | None = ...) -> None: ...
     def __hash__(self): ...
     def __eq__(self, other) -> bool: ...
     @property

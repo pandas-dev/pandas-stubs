@@ -1,15 +1,12 @@
-from typing import (
-    Optional,
-    Sequence,
-)
+from typing import Sequence
 
 from pandas._typing import FilePathOrBuffer
 
 def read_sas(
     path: FilePathOrBuffer,
-    format: Optional[str] = ...,
-    index: Optional[Sequence] = ...,
-    encoding: Optional[str] = ...,
-    chunksize: Optional[int] = ...,
+    format: str | None = ...,
+    index: Sequence | None = ...,
+    encoding: str | None = ...,
+    chunksize: int | None = ...,
     iterator: bool = ...,
 ): ...

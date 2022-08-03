@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from datetime import (
     datetime,
     timedelta,
@@ -204,7 +202,7 @@ class _CustomBusinessMonth(BusinessMixin):
         n: int = ...,
         normalize: bool = ...,
         offset: timedelta = ...,
-        holidays: None | list = ...,
+        holidays: list | None = ...,
     ): ...
 
 class CustomBusinessDay(BusinessDay):
@@ -224,7 +222,7 @@ class CustomBusinessHour(BusinessHour):
         start: str = ...,
         end: str = ...,
         offset: timedelta = ...,
-        holidays: None | list = ...,
+        holidays: list | None = ...,
     ): ...
 
 class CustomBusinessMonthEnd(_CustomBusinessMonth): ...

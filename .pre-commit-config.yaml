@@ -16,7 +16,7 @@ repos:
     -   id: pyupgrade
         types_or: [python, pyi]
         types: [text]  # overwrite types: [python]
-        args: [--py38-plus, --keep-runtime-typing]
+        args: [--py38-plus]
 -   repo: https://github.com/PyCQA/flake8
     rev: 4.0.1
     hooks:
@@ -27,10 +27,10 @@ repos:
     -   id: flake8
         name: flake8 (pyi)
         additional_dependencies:
-        - flake8-pyi==22.5.1
+        - flake8-pyi==22.7.0
         types: [pyi]
         args: [
-          --ignore=E301 E302 E305 E402 E501 E701 E704 F401 F811 W503 Y019 Y022 Y026 Y027 Y034 Y037,
+          --ignore=E301 E302 E305 E402 E501 E701 E704 F401 F811 W503 Y019 Y026 Y027 Y034 Y037,
           # TypeVars in private files are already private
           --per-file-ignores=_*.pyi:Y001
         ]

@@ -1,8 +1,3 @@
-from typing import (
-    Optional,
-    Tuple,
-)
-
 import numpy as np
 
 def is_list_like_indexer(key) -> bool: ...
@@ -18,40 +13,40 @@ def check_array_indexer(arrayArrayLike, indexer): ...
 class BaseIndexer:
     def __init__(
         self,
-        index_array: Optional[np.ndarray] = ...,
+        index_array: np.ndarray | None = ...,
         window_size: int = ...,
         **kwargs,
     ): ...
     def get_window_bounds(
         self,
         num_values: int = ...,
-        min_periods: Optional[int] = ...,
-        center: Optional[bool] = ...,
-        closed: Optional[str] = ...,
-    ) -> Tuple[np.ndarray, np.ndarray]: ...
+        min_periods: int | None = ...,
+        center: bool | None = ...,
+        closed: str | None = ...,
+    ) -> tuple[np.ndarray, np.ndarray]: ...
 
 class FixedWindowIndexer(BaseIndexer):
     def get_window_bounds(
         self,
         num_values: int = ...,
-        min_periods: Optional[int] = ...,
-        center: Optional[bool] = ...,
-        closed: Optional[str] = ...,
-    ) -> Tuple[np.ndarray, np.ndarray]: ...
+        min_periods: int | None = ...,
+        center: bool | None = ...,
+        closed: str | None = ...,
+    ) -> tuple[np.ndarray, np.ndarray]: ...
 
 class VariableWindowIndexer(BaseIndexer):
     def get_window_bounds(
         self,
         num_values: int = ...,
-        min_periods: Optional[int] = ...,
-        center: Optional[bool] = ...,
-        closed: Optional[str] = ...,
-    ) -> Tuple[np.ndarray, np.ndarray]: ...
+        min_periods: int | None = ...,
+        center: bool | None = ...,
+        closed: str | None = ...,
+    ) -> tuple[np.ndarray, np.ndarray]: ...
 
 class VariableOffsetWindowIndexer(BaseIndexer):
     def __init__(
         self,
-        index_array: Optional[np.ndarray] = ...,
+        index_array: np.ndarray | None = ...,
         window_size: int = ...,
         index=...,
         offset=...,
@@ -60,25 +55,25 @@ class VariableOffsetWindowIndexer(BaseIndexer):
     def get_window_bounds(
         self,
         num_values: int = ...,
-        min_periods: Optional[int] = ...,
-        center: Optional[bool] = ...,
-        closed: Optional[str] = ...,
-    ) -> Tuple[np.ndarray, np.ndarray]: ...
+        min_periods: int | None = ...,
+        center: bool | None = ...,
+        closed: str | None = ...,
+    ) -> tuple[np.ndarray, np.ndarray]: ...
 
 class ExpandingIndexer(BaseIndexer):
     def get_window_bounds(
         self,
         num_values: int = ...,
-        min_periods: Optional[int] = ...,
-        center: Optional[bool] = ...,
-        closed: Optional[str] = ...,
-    ) -> Tuple[np.ndarray, np.ndarray]: ...
+        min_periods: int | None = ...,
+        center: bool | None = ...,
+        closed: str | None = ...,
+    ) -> tuple[np.ndarray, np.ndarray]: ...
 
 class FixedForwardWindowIndexer(BaseIndexer):
     def get_window_bounds(
         self,
         num_values: int = ...,
-        min_periods: Optional[int] = ...,
-        center: Optional[bool] = ...,
-        closed: Optional[str] = ...,
-    ) -> Tuple[np.ndarray, np.ndarray]: ...
+        min_periods: int | None = ...,
+        center: bool | None = ...,
+        closed: str | None = ...,
+    ) -> tuple[np.ndarray, np.ndarray]: ...

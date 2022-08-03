@@ -1,13 +1,9 @@
 from typing import (
     Any,
     Callable,
-    Dict,
     Iterable,
-    List,
     Mapping,
-    Optional,
     Sequence,
-    Union,
 )
 
 from pandas.core.frame import DataFrame
@@ -32,21 +28,19 @@ class _LxmlFrameParser(_HtmlFrameParser):
 def read_html(
     io: FilePathOrBuffer,
     match: str = ...,
-    flavor: Optional[str] = ...,
-    header: Optional[Union[int, Sequence[int]]] = ...,
-    index_col: Optional[Union[int, Sequence[Any]]] = ...,
-    skiprows: Optional[Union[int, Sequence[Any], slice]] = ...,
-    attrs: Optional[Mapping[str, str]] = ...,
-    parse_dates: Union[
-        bool,
-        Sequence[Union[int, str, Sequence[Union[int, str]]]],
-        Dict[str, Sequence[Union[int, str]]],
-    ] = ...,
+    flavor: str | None = ...,
+    header: int | Sequence[int] | None = ...,
+    index_col: int | Sequence[Any] | None = ...,
+    skiprows: int | Sequence[Any] | slice | None = ...,
+    attrs: Mapping[str, str] | None = ...,
+    parse_dates: bool
+    | Sequence[int | str | Sequence[int | str]]
+    | dict[str, Sequence[int | str]] = ...,
     thousands: str = ...,
-    encoding: Optional[str] = ...,
+    encoding: str | None = ...,
     decimal: str = ...,
-    converters: Optional[Mapping[Union[int, str], Callable]] = ...,
-    na_values: Optional[Iterable[Any]] = ...,
+    converters: Mapping[int | str, Callable] | None = ...,
+    na_values: Iterable[Any] | None = ...,
     keep_default_na: bool = ...,
     displayed_only: bool = ...,
-) -> List[DataFrame]: ...
+) -> list[DataFrame]: ...

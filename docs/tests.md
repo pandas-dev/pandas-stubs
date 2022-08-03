@@ -1,16 +1,15 @@
 ## Test
 
-- Run local tests against source code. </br> `poe test_src` </br> </br> 
-  - Profiles: </br>
-    - Default: Runs only mypy and pyright tests </br> `poe test_src --profile=default` </br>
-    - Pytest: Runs only pytest </br> `poe test_src --profile=pytest` </br> 
-    - Pre-commit: Runs all style checks in pre-commit </br> `poe test_src --profile=style` </br> 
-    - Full: Run all the above tests </br> `poe test_src --profile=full` </br> </br>
+[Poe](https://github.com/nat-n/poethepoet) is used to run all tests.
 
-- Run local tests against distribution: </br> `poe test_dist` </br> </br>
+Here are the most important options. Fore more details, please use `poe --help`.
 
-- Run all local tests: </br> `poe test_all` </br> </br>
+- Run all tests (against both source and installed stubs): `poe test_all`
+- Run tests against the source code: `poe test` 
+  - Run only mypy: `poe mypy`
+  - Run only pyright: `poe pyright`
+  - Run only pytest: `poe pytest`
+  - Run only pre-commit: `poe style`
+- Run tests against the installed stubs (this will install and uninstall the stubs): `poe test_dist`
 
-- Forgot some command? </br>`poe --help` </br> </br>
-
-- These tests originally came from https://github.com/VirtusLab/pandas-stubs.
+These tests originally came from https://github.com/VirtusLab/pandas-stubs.

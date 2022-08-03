@@ -1,13 +1,9 @@
 from typing import (
     IO,
     Callable,
-    Dict,
     Iterable,
-    List,
     Mapping,
-    Optional,
     Sequence,
-    Tuple,
     Union,
 )
 
@@ -23,7 +19,7 @@ from pandas.core.series import Series
 from pandas._typing import FilePathOrBuffer
 
 formatters_type = Union[
-    List[Callable], Tuple[Callable, ...], Mapping[Union[str, int], Callable]
+    list[Callable], tuple[Callable, ...], Mapping[Union[str, int], Callable]
 ]
 FloatFormatType = Union[str, Callable, EngFormatter]
 common_docstring: str = ...
@@ -38,7 +34,7 @@ class CategoricalFormatter:
     def __init__(
         self,
         categorical: Categorical,
-        buf: Optional[IO[str]] = ...,
+        buf: IO[str] | None = ...,
         length: bool = ...,
         na_rep: str = ...,
         footer: bool = ...,
@@ -61,16 +57,16 @@ class SeriesFormatter:
     def __init__(
         self,
         series: Series,
-        buf: Optional[IO[str]] = ...,
-        length: Union[bool, str] = ...,
+        buf: IO[str] | None = ...,
+        length: bool | str = ...,
         header: bool = ...,
         index: bool = ...,
         na_rep: str = ...,
         name: bool = ...,
-        float_format: Optional[str] = ...,
+        float_format: str | None = ...,
         dtype: bool = ...,
-        max_rows: Optional[int] = ...,
-        min_rows: Optional[int] = ...,
+        max_rows: int | None = ...,
+        min_rows: int | None = ...,
     ) -> None: ...
     def to_string(self) -> str: ...
 
@@ -78,7 +74,7 @@ class TextAdjustment:
     encoding = ...
     def __init__(self) -> None: ...
     def len(self, text: str) -> int: ...
-    def justify(self, texts, max_len: int, mode: str = ...) -> List[str]: ...
+    def justify(self, texts, max_len: int, mode: str = ...) -> list[str]: ...
     def adjoin(self, space: int, *lists, **kwargs) -> str: ...
 
 class EastAsianTextAdjustment(TextAdjustment):
@@ -87,22 +83,22 @@ class EastAsianTextAdjustment(TextAdjustment):
     def len(self, text: str) -> int: ...
     def justify(
         self, texts: Iterable[str], max_len: int, mode: str = ...
-    ) -> List[str]: ...
+    ) -> list[str]: ...
 
 class TableFormatter:
-    show_dimensions: Union[bool, str]
+    show_dimensions: bool | str
     is_truncated: bool
     formatters: formatters_type
     columns: Index
     @property
     def should_show_dimensions(self) -> bool: ...
     def get_buffer(
-        self, buf: Optional[FilePathOrBuffer[str]], encoding: Optional[str] = ...
+        self, buf: FilePathOrBuffer[str] | None, encoding: str | None = ...
     ): ...
     def write_result(self, buf: IO[str]) -> None: ...
     def get_result(
-        self, buf: Optional[FilePathOrBuffer[str]] = ..., encoding: Optional[str] = ...
-    ) -> Optional[str]: ...
+        self, buf: FilePathOrBuffer[str] | None = ..., encoding: str | None = ...
+    ) -> str | None: ...
 
 class DataFrameFormatter(TableFormatter):
     frame = ...
@@ -128,23 +124,23 @@ class DataFrameFormatter(TableFormatter):
     def __init__(
         self,
         frame: DataFrame,
-        columns: Optional[Sequence[str]] = ...,
-        col_space: Optional[Union[str, int]] = ...,
-        header: Union[bool, Sequence[str]] = ...,
+        columns: Sequence[str] | None = ...,
+        col_space: str | int | None = ...,
+        header: bool | Sequence[str] = ...,
         index: bool = ...,
         na_rep: str = ...,
-        formatters: Optional[formatters_type] = ...,
-        justify: Optional[str] = ...,
-        float_format: Optional[FloatFormatType] = ...,
-        sparsify: Optional[bool] = ...,
+        formatters: formatters_type | None = ...,
+        justify: str | None = ...,
+        float_format: FloatFormatType | None = ...,
+        sparsify: bool | None = ...,
         index_names: bool = ...,
-        line_width: Optional[int] = ...,
-        max_rows: Optional[int] = ...,
-        min_rows: Optional[int] = ...,
-        max_cols: Optional[int] = ...,
-        show_dimensions: Union[bool, str] = ...,
+        line_width: int | None = ...,
+        max_rows: int | None = ...,
+        min_rows: int | None = ...,
+        max_cols: int | None = ...,
+        show_dimensions: bool | str = ...,
         decimal: str = ...,
-        table_id: Optional[str] = ...,
+        table_id: str | None = ...,
         render_links: bool = ...,
         bold_rows: bool = ...,
         escape: bool = ...,
@@ -152,28 +148,28 @@ class DataFrameFormatter(TableFormatter):
     max_cols_adj = ...
     def write_result(self, buf: IO[str]) -> None: ...
     def to_string(
-        self, buf: Optional[FilePathOrBuffer[str]] = ..., encoding: Optional[str] = ...
-    ) -> Optional[str]: ...
+        self, buf: FilePathOrBuffer[str] | None = ..., encoding: str | None = ...
+    ) -> str | None: ...
     def to_latex(
         self,
-        buf: Optional[FilePathOrBuffer[str]] = ...,
-        column_format: Optional[str] = ...,
+        buf: FilePathOrBuffer[str] | None = ...,
+        column_format: str | None = ...,
         longtable: bool = ...,
-        encoding: Optional[str] = ...,
+        encoding: str | None = ...,
         multicolumn: bool = ...,
-        multicolumn_format: Optional[str] = ...,
+        multicolumn_format: str | None = ...,
         multirow: bool = ...,
-        caption: Optional[str] = ...,
-        label: Optional[str] = ...,
-    ) -> Optional[str]: ...
+        caption: str | None = ...,
+        label: str | None = ...,
+    ) -> str | None: ...
     def to_html(
         self,
-        buf: Optional[FilePathOrBuffer[str]] = ...,
-        encoding: Optional[str] = ...,
-        classes: Optional[Union[str, List, Tuple]] = ...,
+        buf: FilePathOrBuffer[str] | None = ...,
+        encoding: str | None = ...,
+        classes: str | list | tuple | None = ...,
         notebook: bool = ...,
-        border: Optional[int] = ...,
-    ) -> Optional[str]: ...
+        border: int | None = ...,
+    ) -> str | None: ...
     @property
     def has_index_names(self) -> bool: ...
     @property
@@ -185,15 +181,15 @@ class DataFrameFormatter(TableFormatter):
 
 def format_array(
     values,
-    formatter: Optional[Callable],
-    float_format: Optional[FloatFormatType] = ...,
+    formatter: Callable | None,
+    float_format: FloatFormatType | None = ...,
     na_rep: str = ...,
-    digits: Optional[int] = ...,
-    space: Optional[Union[str, int]] = ...,
+    digits: int | None = ...,
+    space: str | int | None = ...,
     justify: str = ...,
     decimal: str = ...,
-    leading_space: Optional[bool] = ...,
-) -> List[str]: ...
+    leading_space: bool | None = ...,
+) -> list[str]: ...
 
 class GenericArrayFormatter:
     values = ...
@@ -211,17 +207,17 @@ class GenericArrayFormatter:
         self,
         values,
         digits: int = ...,
-        formatter: Optional[Callable] = ...,
+        formatter: Callable | None = ...,
         na_rep: str = ...,
-        space: Union[str, int] = ...,
-        float_format: Optional[FloatFormatType] = ...,
+        space: str | int = ...,
+        float_format: FloatFormatType | None = ...,
         justify: str = ...,
         decimal: str = ...,
-        quoting: Optional[int] = ...,
+        quoting: int | None = ...,
         fixed_width: bool = ...,
-        leading_space: Optional[bool] = ...,
+        leading_space: bool | None = ...,
     ) -> None: ...
-    def get_result(self) -> List[str]: ...
+    def get_result(self) -> list[str]: ...
 
 class FloatArrayFormatter(GenericArrayFormatter):
     formatter = ...
@@ -236,7 +232,7 @@ class Datetime64Formatter(GenericArrayFormatter):
     date_format = ...
     def __init__(
         self,
-        values: Union[np.ndarray, Series, DatetimeIndex, DatetimeArray],
+        values: np.ndarray | Series | DatetimeIndex | DatetimeArray,
         nat_rep: str = ...,
         date_format: None = ...,
         **kwargs,
@@ -245,10 +241,8 @@ class Datetime64Formatter(GenericArrayFormatter):
 class ExtensionArrayFormatter(GenericArrayFormatter): ...
 
 def format_percentiles(
-    percentiles: Union[
-        np.ndarray, List[Union[int, float]], List[float], List[Union[str, float]]
-    ]
-) -> List[str]: ...
+    percentiles: np.ndarray | list[float] | list[str | float],
+) -> list[str]: ...
 
 class Datetime64TZFormatter(Datetime64Formatter): ...
 
@@ -257,7 +251,7 @@ class Timedelta64Formatter(GenericArrayFormatter):
     box = ...
     def __init__(
         self,
-        values: Union[np.ndarray, TimedeltaIndex],
+        values: np.ndarray | TimedeltaIndex,
         nat_rep: str = ...,
         box: bool = ...,
         **kwargs,
@@ -268,12 +262,12 @@ class EngFormatter:
     accuracy = ...
     use_eng_prefix = ...
     def __init__(
-        self, accuracy: Optional[int] = ..., use_eng_prefix: bool = ...
+        self, accuracy: int | None = ..., use_eng_prefix: bool = ...
     ) -> None: ...
-    def __call__(self, num: Union[int, float]) -> str: ...
+    def __call__(self, num: float) -> str: ...
 
 def set_eng_float_format(accuracy: int = ..., use_eng_prefix: bool = ...) -> None: ...
 def get_level_lengths(
-    levels, sentinel: Union[bool, object, str] = ...
-) -> List[Dict[int, int]]: ...
-def buffer_put_lines(buf: IO[str], lines: List[str]) -> None: ...
+    levels, sentinel: bool | object | str = ...
+) -> list[dict[int, int]]: ...
+def buffer_put_lines(buf: IO[str], lines: list[str]) -> None: ...

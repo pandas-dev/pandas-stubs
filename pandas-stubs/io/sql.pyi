@@ -1,10 +1,7 @@
 from typing import (
     Any,
     Mapping,
-    Optional,
     Sequence,
-    Tuple,
-    Union,
 )
 
 from pandas.core.base import PandasObject
@@ -17,32 +14,33 @@ def execute(sql, con, cur=..., params=...): ...
 def read_sql_table(
     table_name: str,
     con,
-    schema: Optional[str] = ...,
-    index_col: Optional[Union[str, Sequence[str]]] = ...,
+    schema: str | None = ...,
+    index_col: str | Sequence[str] | None = ...,
     coerce_float: bool = ...,
-    parse_dates: Optional[Union[Sequence[str], Mapping[str, str]]] = ...,
-    columns: Optional[Sequence[str]] = ...,
-    chunksize: Optional[int] = ...,
+    parse_dates: Sequence[str] | Mapping[str, str] | None = ...,
+    columns: Sequence[str] | None = ...,
+    chunksize: int | None = ...,
 ) -> DataFrame: ...
 def read_sql_query(
     sql,
     con,
-    schema: Optional[str] = ...,
-    index_col: Optional[Union[str, Sequence[str]]] = ...,
+    schema: str | None = ...,
+    index_col: str | Sequence[str] | None = ...,
     coerce_float: bool = ...,
     params=...,
-    parse_dates: Optional[Union[Sequence[str], Mapping[str, str]]] = ...,
-    chunksize: Optional[int] = ...,
+    parse_dates: Sequence[str] | Mapping[str, str] | None = ...,
+    chunksize: int | None = ...,
 ) -> DataFrame: ...
 def read_sql(
-    sql: Union[str, Any],
-    con: Union[str, Any] = ...,
-    index_col: Optional[Union[str, Sequence[str]]] = ...,
+    sql: str | Any,
+    con: str | Any = ...,
+    index_col: str | Sequence[str] | None = ...,
     coerce_float: bool = ...,
-    params: Optional[Union[Sequence[str], Tuple[str, ...], Mapping[str, str]]] = ...,
-    parse_dates: Optional[
-        Union[Sequence[str], Mapping[str, str], Mapping[str, Mapping[str, Any]]]
-    ] = ...,
+    params: Sequence[str] | tuple[str, ...] | Mapping[str, str] | None = ...,
+    parse_dates: Sequence[str]
+    | Mapping[str, str]
+    | Mapping[str, Mapping[str, Any]]
+    | None = ...,
     columns: Sequence[str] = ...,
     chunksize: int = ...,
 ) -> DataFrame: ...

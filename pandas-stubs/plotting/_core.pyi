@@ -1,10 +1,3 @@
-from typing import (
-    List,
-    Optional,
-    Tuple,
-    Union,
-)
-
 from matplotlib.axes import Axes as PlotAxes
 from pandas.core.base import PandasObject as PandasObject
 from pandas.core.frame import DataFrame
@@ -43,15 +36,15 @@ def hist_frame(
 ): ...
 def boxplot(
     data: DataFrame,
-    column: Optional[Union[str, List[str]]] = ...,
-    by: Optional[Union[str, List[str]]] = ...,
-    ax: Optional[PlotAxes] = ...,
-    fontsize: Optional[Union[float, str]] = ...,
+    column: str | list[str] | None = ...,
+    by: str | list[str] | None = ...,
+    ax: PlotAxes | None = ...,
+    fontsize: float | str | None = ...,
     rot: float = ...,
     grid: bool = ...,
-    figsize: Optional[Tuple[float, float]] = ...,
-    layout: Optional[Tuple[int, int]] = ...,
-    return_type: Optional[str] = ...,
+    figsize: tuple[float, float] | None = ...,
+    layout: tuple[int, int] | None = ...,
+    return_type: str | None = ...,
 ): ...
 def boxplot_frame(
     self,

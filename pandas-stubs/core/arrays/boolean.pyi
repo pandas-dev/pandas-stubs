@@ -1,10 +1,9 @@
-from __future__ import annotations
-
-from typing import Type
-
 import numpy as np
 
-from pandas._typing import Scalar
+from pandas._typing import (
+    Scalar,
+    type_t,
+)
 
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
 
@@ -15,11 +14,11 @@ class BooleanDtype(ExtensionDtype):
     @property
     def na_value(self) -> Scalar: ...
     @property
-    def type(self) -> Type: ...
+    def type(self) -> type_t: ...
     @property
     def kind(self) -> str: ...
     @classmethod
-    def construct_array_type(cls) -> Type[BooleanArray]: ...
+    def construct_array_type(cls) -> type_t[BooleanArray]: ...
     def __from_arrow__(self, array): ...
 
 def coerce_to_array(values, mask=..., copy: bool = ...): ...
