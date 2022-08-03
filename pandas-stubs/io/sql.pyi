@@ -33,7 +33,7 @@ def read_sql_query(
 ) -> DataFrame: ...
 def read_sql(
     sql: str | Any,
-    con: str | Any = ...,
+    con: str | Any,
     index_col: str | Sequence[str] | None = ...,
     coerce_float: bool = ...,
     params: Sequence[str] | tuple[str, ...] | Mapping[str, str] | None = ...,

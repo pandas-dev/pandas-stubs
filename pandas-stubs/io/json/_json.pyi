@@ -82,7 +82,7 @@ class JSONTableWriter(FrameWriter):
 
 @overload
 def read_json(
-    path: FilePathOrBuffer,
+    path: FilePathOrBuffer = ...,
     orient: str | None = ...,
     dtype=...,
     convert_axes=...,

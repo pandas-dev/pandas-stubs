@@ -43,7 +43,7 @@ class FastParquetImpl(BaseImpl):
 
 def to_parquet(
     df: DataFrame,
-    path,
+    path=...,
     engine: str = ...,
     compression=...,
     index: bool | None = ...,
