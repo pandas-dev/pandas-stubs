@@ -1080,6 +1080,15 @@ def test_frame_getitem_isin() -> None:
     check(assert_type(df[df.index.isin([1, 3, 5])], pd.DataFrame), pd.DataFrame)
 
 
+def test_to_excel() -> None:
+    if TYPE_CHECKING:  # skip pytest
+
+        df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
+        df.to_excel("foo.xlsx", startrow=1, startcol=1, header=False)
+        df.to_excel("foo.xlsx", na_rep="-", float_format="%.2f", columns=["col1"])
+        df.to_excel("foo.xlsx", sheet_name="sheet", header=["x", "y"], index=False)
+
+
 def test_read_excel() -> None:
     if TYPE_CHECKING:  # skip pytest
 
