@@ -1151,9 +1151,12 @@ def test_iloc_npint() -> None:
     iloc = np.argmin(np.random.standard_normal(3))
     df.iloc[iloc]
 
+
+# https://github.com/pandas-dev/pandas-stubs/issues/143
 def test_iloc_tuple() -> None:
     df = pd.DataFrame({"Char": ["A", "B", "C"], "Number": [1, 2, 3]})
     df = df.iloc[0:2,]
+
 
 def test_set_columns() -> None:
     # GH 73
