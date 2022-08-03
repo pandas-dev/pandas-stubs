@@ -114,15 +114,15 @@ class DataFrameGroupBy(GroupBy):
     # mypy and pyright see these overloads as overlapping
     @overload
     def apply(  # type: ignore[misc]
-        self, func: Callable[[Iterable], float], *args, **kwargs
-    ) -> DataFrame: ...
-    @overload
-    def apply(  # type: ignore[misc]
         self, func: Callable[[DataFrame], Scalar | list | dict], *args, **kwargs
     ) -> Series: ...
     @overload
     def apply(  # type: ignore[misc]
         self, func: Callable[[DataFrame], Series | DataFrame], *args, **kwargs
+    ) -> DataFrame: ...
+    @overload
+    def apply(  # type: ignore[misc]
+        self, func: Callable[[Iterable], float], *args, **kwargs
     ) -> DataFrame: ...
     @overload
     def aggregate(self, arg: str, *args, **kwargs) -> DataFrame: ...
