@@ -1,4 +1,4 @@
-from copy import copy
+import dataclasses
 from functools import partial
 from typing import Literal
 
@@ -36,6 +36,7 @@ def test(
 
 
 def stubtest(allowlist: str):
-    stubtest = copy(_step.stubtest)
-    stubtest.run = partial(_step.stubtest.run, allowlist=allowlist)
+    stubtest = dataclasses.replace(
+        _step.stubtest, run=partial(_step.stubtest.run, allowlist=allowlist)
+    )
     run_job(_DIST_STEPS[:-2] + [stubtest])
