@@ -1080,6 +1080,35 @@ def test_frame_getitem_isin() -> None:
     check(assert_type(df[df.index.isin([1, 3, 5])], pd.DataFrame), pd.DataFrame)
 
 
+def test_to_excel() -> None:
+    df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
+
+    with tempfile.NamedTemporaryFile(delete=False) as file:
+        df.to_excel(file.name, engine="openpyxl")
+        file.close()
+        df2: pd.DataFrame = pd.read_excel(file.name)
+    with tempfile.NamedTemporaryFile(delete=False) as file:
+        df.to_excel(Path(file.name), engine="openpyxl")
+        file.close()
+        df3: pd.DataFrame = pd.read_excel(file.name)
+    with tempfile.NamedTemporaryFile(delete=False) as file:
+        df.to_excel(file.name, engine="openpyxl", startrow=1, startcol=1, header=False)
+        file.close()
+        df4: pd.DataFrame = pd.read_excel(file.name)
+    with tempfile.NamedTemporaryFile(delete=False) as file:
+        df.to_excel(file.name, engine="openpyxl", sheet_name="sheet", index=False)
+        file.close()
+        df5: pd.DataFrame = pd.read_excel(file.name)
+    with tempfile.NamedTemporaryFile(delete=False) as file:
+        df.to_excel(file.name, engine="openpyxl", header=["x", "y"])
+        file.close()
+        df6: pd.DataFrame = pd.read_excel(file.name)
+    with tempfile.NamedTemporaryFile(delete=False) as file:
+        df.to_excel(file.name, engine="openpyxl", columns=["col1"])
+        file.close()
+        df7: pd.DataFrame = pd.read_excel(file.name)
+
+
 def test_read_excel() -> None:
     if TYPE_CHECKING:  # skip pytest
 
