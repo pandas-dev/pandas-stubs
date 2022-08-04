@@ -88,6 +88,10 @@ script = "scripts.test.run:pyright_src"
 help = "Run pyright on 'tests' using the installed stubs"
 script = "scripts.test:test(dist=True, type_checker='pyright')"
 
+[tool.poe.tasks.stubtest]
+script = "scripts.test:stubtest(allowlist)"
+help = "Run stubtest to compare the installed stubs against pandas"
+args = [{ name = "allowlist", positional = true, default = "", required = false, help= "Path to an allowlist (optional)" }]
 
 
 [tool.black]
