@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pandas-stubs"
-version = "1.4.3.220724"
+version = "1.4.3.220801"
 description = "Type annotations for pandas"
 authors = ["The Pandas Development Team <pandas-dev@python.org>"]
 license = "BSD-3-Clause"
@@ -46,6 +46,7 @@ matplotlib = ">=3.3.2"
 pre-commit = ">=2.19.0"
 black = ">=22.6.0"
 isort = ">=5.10.1"
+openpyxl = ">=3.0.10"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -87,6 +88,10 @@ script = "scripts.test.run:pyright_src"
 help = "Run pyright on 'tests' using the installed stubs"
 script = "scripts.test:test(dist=True, type_checker='pyright')"
 
+[tool.poe.tasks.stubtest]
+script = "scripts.test:stubtest(allowlist)"
+help = "Run stubtest to compare the installed stubs against pandas"
+args = [{ name = "allowlist", positional = true, default = "", required = false, help= "Path to an allowlist (optional)" }]
 
 
 [tool.black]

@@ -1,3 +1,5 @@
+import dataclasses
+from functools import partial
 from typing import Literal
 
 from scripts._job import run_job
@@ -10,8 +12,6 @@ _DIST_STEPS = [
     _step.rename_src,
     _step.mypy_dist,
     _step.pyright_dist,
-    _step.uninstall_dist,
-    _step.restore_src,
 ]
 
 
@@ -33,3 +33,10 @@ def test(
         steps = [step for step in steps if remove not in step.name]
 
     run_job(steps)
+
+
+def stubtest(allowlist: str):
+    stubtest = dataclasses.replace(
+        _step.stubtest, run=partial(_step.stubtest.run, allowlist=allowlist)
+    )
+    run_job(_DIST_STEPS[:-2] + [stubtest])

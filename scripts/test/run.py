@@ -1,5 +1,6 @@
 from pathlib import Path
 import subprocess
+import sys
 
 
 def mypy_src():
@@ -19,6 +20,22 @@ def pytest():
 
 def style():
     cmd = ["pre-commit", "run", "--all-files", "--verbose"]
+    subprocess.run(cmd, check=True)
+
+
+def stubtest(allowlist: str = ""):
+    cmd = [
+        sys.executable,
+        "-m",
+        "mypy.stubtest",
+        "pandas",
+        "--concise",
+        "--ignore-missing-stub",
+        "--mypy-config-file",
+        "pyproject.toml",
+    ]
+    if allowlist:
+        cmd += ["--allowlist", allowlist]
     subprocess.run(cmd, check=True)
 
 

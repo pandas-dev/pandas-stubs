@@ -92,7 +92,10 @@ class _iLocIndexerFrame(_iLocIndexer):
     @overload
     def __getitem__(
         self,
-        idx: IndexType | MaskType | tuple[IndexType | MaskType, IndexType | MaskType],
+        idx: IndexType
+        | MaskType
+        | tuple[IndexType | MaskType, IndexType | MaskType]
+        | tuple[slice],
     ) -> DataFrame: ...
     def __setitem__(
         self,
@@ -1294,7 +1297,7 @@ class DataFrame(NDFrame, OpsMixin):
         fill_value: float | None = ...,
     ) -> DataFrame: ...
     def droplevel(
-        self, level: Level | list[Level] = ..., axis: AxisType = ...
+        self, level: Level | list[Level], axis: AxisType = ...
     ) -> DataFrame: ...
     def eq(
         self, other, axis: AxisType = ..., level: Level | None = ...
@@ -1989,25 +1992,6 @@ class DataFrame(NDFrame, OpsMixin):
         errors: _str = ...,
         storage_options: dict[_str, Any] | None = ...,
     ) -> _str: ...
-    def to_excel(
-        self,
-        excel_writer,
-        sheet_name: _str = ...,
-        na_rep: _str = ...,
-        float_format: _str | None = ...,
-        columns: _str | Sequence[_str] | None = ...,
-        header: _bool = ...,
-        index: _bool = ...,
-        index_label: _str | Sequence[_str] | None = ...,
-        startrow: int = ...,
-        startcol: int = ...,
-        engine: _str | None = ...,
-        merge_cells: _bool = ...,
-        encoding: _str | None = ...,
-        inf_rep: _str = ...,
-        verbose: _bool = ...,
-        freeze_panes: tuple[int, int] | None = ...,
-    ) -> None: ...
     def to_hdf(
         self,
         path_or_buf: FilePathOrBuffer,
@@ -2059,57 +2043,6 @@ class DataFrame(NDFrame, OpsMixin):
         compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
         index: _bool = ...,
         indent: int | None = ...,
-    ) -> _str: ...
-    @overload
-    def to_latex(
-        self,
-        buf: FilePathOrBuffer | None,
-        columns: list[_str] | None = ...,
-        col_space: int | None = ...,
-        header: _bool = ...,
-        index: _bool = ...,
-        na_rep: _str = ...,
-        formatters=...,
-        float_format=...,
-        sparsify: _bool | None = ...,
-        index_names: _bool = ...,
-        bold_rows: _bool = ...,
-        column_format: _str | None = ...,
-        longtable: _bool | None = ...,
-        escape: _bool | None = ...,
-        encoding: _str | None = ...,
-        decimal: _str = ...,
-        multicolumn: _bool | None = ...,
-        multicolumn_format: _str | None = ...,
-        multirow: _bool | None = ...,
-        caption: _str | tuple[_str, _str] | None = ...,
-        label: _str | None = ...,
-        position: _str | None = ...,
-    ) -> None: ...
-    @overload
-    def to_latex(
-        self,
-        columns: list[_str] | None = ...,
-        col_space: int | None = ...,
-        header: _bool = ...,
-        index: _bool = ...,
-        na_rep: _str = ...,
-        formatters=...,
-        float_format=...,
-        sparsify: _bool | None = ...,
-        index_names: _bool = ...,
-        bold_rows: _bool = ...,
-        column_format: _str | None = ...,
-        longtable: _bool | None = ...,
-        escape: _bool | None = ...,
-        encoding: _str | None = ...,
-        decimal: _str = ...,
-        multicolumn: _bool | None = ...,
-        multicolumn_format: _str | None = ...,
-        multirow: _bool | None = ...,
-        caption: _str | tuple[_str, _str] | None = ...,
-        label: _str | None = ...,
-        position: _str | None = ...,
     ) -> _str: ...
     def to_pickle(
         self,

@@ -1120,6 +1120,35 @@ def test_frame_getitem_isin() -> None:
     check(assert_type(df[df.index.isin([1, 3, 5])], pd.DataFrame), pd.DataFrame)
 
 
+def test_to_excel() -> None:
+    df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
+
+    with tempfile.NamedTemporaryFile(delete=False) as file:
+        df.to_excel(file.name, engine="openpyxl")
+        file.close()
+        df2: pd.DataFrame = pd.read_excel(file.name)
+    with tempfile.NamedTemporaryFile(delete=False) as file:
+        df.to_excel(Path(file.name), engine="openpyxl")
+        file.close()
+        df3: pd.DataFrame = pd.read_excel(file.name)
+    with tempfile.NamedTemporaryFile(delete=False) as file:
+        df.to_excel(file.name, engine="openpyxl", startrow=1, startcol=1, header=False)
+        file.close()
+        df4: pd.DataFrame = pd.read_excel(file.name)
+    with tempfile.NamedTemporaryFile(delete=False) as file:
+        df.to_excel(file.name, engine="openpyxl", sheet_name="sheet", index=False)
+        file.close()
+        df5: pd.DataFrame = pd.read_excel(file.name)
+    with tempfile.NamedTemporaryFile(delete=False) as file:
+        df.to_excel(file.name, engine="openpyxl", header=["x", "y"])
+        file.close()
+        df6: pd.DataFrame = pd.read_excel(file.name)
+    with tempfile.NamedTemporaryFile(delete=False) as file:
+        df.to_excel(file.name, engine="openpyxl", columns=["col1"])
+        file.close()
+        df7: pd.DataFrame = pd.read_excel(file.name)
+
+
 def test_read_excel() -> None:
     if TYPE_CHECKING:  # skip pytest
 
@@ -1190,6 +1219,14 @@ def test_iloc_npint() -> None:
     df = pd.DataFrame({"a": [10, 20, 30], "b": [20, 40, 60], "c": [30, 60, 90]})
     iloc = np.argmin(np.random.standard_normal(3))
     df.iloc[iloc]
+
+
+# https://github.com/pandas-dev/pandas-stubs/issues/143
+def test_iloc_tuple() -> None:
+    df = pd.DataFrame({"Char": ["A", "B", "C"], "Number": [1, 2, 3]})
+    df = df.iloc[
+        0:2,
+    ]
 
 
 def test_set_columns() -> None:
@@ -1386,13 +1423,32 @@ def test_groupby_apply() -> None:
     # GH 167
     df = pd.DataFrame({"col1": [1, 2, 3], "col2": [4, 5, 6]})
 
-    def summean(x: pd.DataFrame) -> float:
+    def sum_mean(x: pd.DataFrame) -> float:
         return x.sum().mean()
 
-    check(assert_type(df.groupby("col1").apply(summean), pd.Series), pd.Series)
+    check(assert_type(df.groupby("col1").apply(sum_mean), pd.Series), pd.Series)
 
     lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
     check(
         assert_type(df.groupby("col1").apply(lfunc), pd.Series),
         pd.Series,
+    )
+
+    def sum_to_list(x: pd.DataFrame) -> list:
+        return x.sum().tolist()
+
+    check(assert_type(df.groupby("col1").apply(sum_to_list), pd.Series), pd.Series)
+
+    def sum_to_series(x: pd.DataFrame) -> pd.Series:
+        return x.sum()
+
+    check(
+        assert_type(df.groupby("col1").apply(sum_to_series), pd.DataFrame), pd.DataFrame
+    )
+
+    def sample_to_df(x: pd.DataFrame) -> pd.DataFrame:
+        return x.sample()
+
+    check(
+        assert_type(df.groupby("col1").apply(sample_to_df), pd.DataFrame), pd.DataFrame
     )
