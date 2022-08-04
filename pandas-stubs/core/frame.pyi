@@ -89,7 +89,10 @@ class _iLocIndexerFrame(_iLocIndexer):
     @overload
     def __getitem__(
         self,
-        idx: IndexType | MaskType | tuple[IndexType | MaskType, IndexType | MaskType],
+        idx: IndexType
+        | MaskType
+        | tuple[IndexType | MaskType, IndexType | MaskType]
+        | tuple[slice],
     ) -> DataFrame: ...
     def __setitem__(
         self,
