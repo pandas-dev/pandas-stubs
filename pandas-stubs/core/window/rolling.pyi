@@ -47,7 +47,9 @@ class _Window(PandasObject, ShallowMixin, SelectionMixin):
     def aggregate(
         self, func: AggFuncType = ..., *args, **kwargs
     ) -> Scalar | FrameOrSeries: ...
-    agg = aggregate
+    def agg(
+        self, func: AggFuncType = ..., *args, **kwargs
+    ) -> Scalar | FrameOrSeries: ...
 
 class Window(_Window):
     def validate(self) -> None: ...

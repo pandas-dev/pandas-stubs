@@ -56,8 +56,8 @@ from pandas.core.window.rolling import (
 
 from pandas._typing import (
     S1,
-    AggFuncType,
     AggFuncTypeBase,
+    AggFuncTypeDict,
     ArrayLike,
     Axes,
     Axis,
@@ -600,27 +600,36 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         func: AggFuncTypeBase
         | list[AggFuncTypeBase]
-        | dict[SeriesAxisType, AggFuncTypeBase | list[AggFuncTypeBase]] = ...,
-        axis: SeriesAxisType = ...,
-        *args,
-        **kwargs,
-    ) -> None: ...
-    def agg(
-        self,
-        func: AggFuncTypeBase
-        | list[AggFuncTypeBase]
-        | dict[SeriesAxisType, AggFuncTypeBase | list[AggFuncTypeBase]] = ...,
-        axis: SeriesAxisType = ...,
-        *args,
-        **kwargs,
-    ) -> None: ...
-    def transform(
-        self,
-        func: AggFuncType,
+        | dict[Hashable, AggFuncTypeBase] = ...,
         axis: SeriesAxisType = ...,
         *args,
         **kwargs,
     ) -> Series[S1]: ...
+    def agg(
+        self,
+        func: AggFuncTypeBase
+        | list[AggFuncTypeBase]
+        | dict[Hashable, AggFuncTypeBase] = ...,
+        axis: SeriesAxisType = ...,
+        *args,
+        **kwargs,
+    ) -> Series[S1]: ...
+    @overload
+    def transform(
+        self,
+        func: AggFuncTypeBase,
+        axis: SeriesAxisType = ...,
+        *args,
+        **kwargs,
+    ) -> Series[S1]: ...
+    @overload
+    def transform(
+        self,
+        func: list[AggFuncTypeBase] | AggFuncTypeDict,
+        axis: SeriesAxisType = ...,
+        *args,
+        **kwargs,
+    ) -> DataFrame: ...
     def apply(
         self, func: Callable, convertDType: _bool = ..., args: tuple = ..., **kwds
     ) -> Series | DataFrame: ...

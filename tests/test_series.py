@@ -434,6 +434,22 @@ def test_types_groupby() -> None:
     s.groupby(s > 2)
 
 
+def test_types_groupby_agg() -> None:
+    s = pd.Series([4, 2, 1, 8], index=["a", "b", "a", "b"])
+    s.groupby(level=0).agg("sum")
+    s.groupby(level=0).agg(sum)
+    s.groupby(level=0).agg(["min", "sum"])
+    s.groupby(level=0).agg([min, sum])
+
+
+def test_types_groupby_aggregate() -> None:
+    s = pd.Series([4, 2, 1, 8], index=["a", "b", "a", "b"])
+    s.groupby(level=0).aggregate("sum")
+    s.groupby(level=0).aggregate(sum)
+    s.groupby(level=0).aggregate(["min", "sum"])
+    s.groupby(level=0).aggregate([min, sum])
+
+
 # This added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
 def test_types_group_by_with_dropna_keyword() -> None:
     s = pd.Series([1, 2, 3, 3], index=["col1", "col2", "col3", np.nan])
@@ -456,6 +472,11 @@ def test_types_window() -> None:
 
     s.rolling(2)
     s.rolling(2, axis=0, center=True)
+
+    s1 = s.rolling(2).agg("sum")
+    s2 = s.rolling(2).agg(sum)
+    df1 = s.rolling(2).agg(["max", "min"])
+    df2 = s.rolling(2).agg([max, min])
 
 
 def test_types_cov() -> None:
@@ -496,8 +517,35 @@ def test_types_compare() -> None:
 def test_types_agg() -> None:
     s = pd.Series([1, 2, 3], index=["col1", "col2", "col3"])
     s.agg("min")
+    s.agg(min)
+    s.agg(["min", "max"])
+    s.agg([min, max])
+    s.agg({"a": "min"})
+    s.agg({0: min})
     s.agg(x=max, y="min", z=np.mean)
     s.agg("mean", axis=0)
+
+
+def test_types_aggregate() -> None:
+    s = pd.Series([1, 2, 3], index=["col1", "col2", "col3"])
+    s.aggregate("min")
+    s.aggregate(min)
+    s.aggregate(["min", "max"])
+    s.aggregate([min, max])
+    s.aggregate({"a": "min"})
+    s.aggregate({0: min})
+
+
+def test_types_transform() -> None:
+    s = pd.Series([1, 2, 3], index=["col1", "col2", "col3"])
+    s.transform("abs")
+    s.transform(abs)
+    s.transform(["abs", "sqrt"])
+    s.transform([abs, np.sqrt])
+    s.transform({"col1": ["abs", "sqrt"]})
+    s.transform({"col1": [abs, np.sqrt]})
+    s.transform({"index": "abs"})
+    s.transform({"index": abs})
 
 
 def test_types_describe() -> None:

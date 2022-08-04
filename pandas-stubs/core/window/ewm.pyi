@@ -1,13 +1,4 @@
-from pandas import (
-    DataFrame,
-    Series,
-)
 from pandas.core.window.rolling import _Rolling
-
-from pandas._typing import (
-    AggFuncType,
-    Scalar,
-)
 
 class ExponentialMovingWindow(_Rolling):
     obj = ...
@@ -29,10 +20,6 @@ class ExponentialMovingWindow(_Rolling):
         ignore_na: bool = ...,
         axis: int = ...,
     ) -> None: ...
-    def aggregate(
-        self, func: AggFuncType = ..., *args, **kwargs
-    ) -> Scalar | Series | DataFrame: ...
-    agg = aggregate
     def mean(self, *args, **kwargs): ...
     def std(self, bias: bool = ..., *args, **kwargs): ...
     vol = ...

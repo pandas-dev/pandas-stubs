@@ -562,7 +562,13 @@ def test_types_groupby() -> None:
     s2: pd.Series = s1.groupby("col1").transform("sum")
     s3: pd.Series = df.groupby("col1")["col3"].agg(min)
     df9: pd.DataFrame = df.groupby("col1")["col3"].agg([min, max])
-    df10: pd.DataFrame = df.groupby("col1").agg(
+    df10: pd.DataFrame = df.groupby("col1").agg("min")
+    df11: pd.DataFrame = df.groupby("col1").agg(min)
+    df12: pd.DataFrame = df.groupby("col1").agg(["min", "max"])
+    df13: pd.DataFrame = df.groupby("col1").agg([min, max])
+    df14: pd.DataFrame = df.groupby("col1").agg({"col2": "min", "col3": "max"})
+    df15: pd.DataFrame = df.groupby("col1").agg({"col2": min, "col3": max})
+    df16: pd.DataFrame = df.groupby("col1").agg(
         new_col=pd.NamedAgg(column="col2", aggfunc="max")
     )
 
@@ -630,6 +636,15 @@ def test_types_window() -> None:
     df.rolling(2)
     df.rolling(2, axis=1, center=True)
 
+    df1 = df.rolling(2).agg("max")
+    df2 = df.rolling(2).agg(max)
+    df3 = df.rolling(2).agg(["max", "min"])
+    df4 = df.rolling(2).agg([max, min])
+    df5 = df.rolling(2).agg({"col2": "max"})
+    df6 = df.rolling(2).agg({"col2": max})
+    df7 = df.rolling(2).agg({"col2": ["max", "min"]})
+    df8 = df.rolling(2).agg({"col2": [max, min]})
+
 
 def test_types_cov() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
@@ -687,8 +702,33 @@ def test_types_compare() -> None:
 def test_types_agg() -> None:
     df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=["A", "B", "C"])
     df.agg("min")
+    df.agg(min)
+    df.agg(["min", "max"])
+    df.agg([min, max])
+    df.agg({"A": ["min", "max"], "B": "min"})
+    df.agg({"A": [min, max], "B": min})
     df.agg(x=("A", max), y=("B", "min"), z=("C", np.mean))
     df.agg("mean", axis=1)
+
+
+def test_types_aggregate() -> None:
+    df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=["A", "B", "C"])
+    df.aggregate("min")
+    df.aggregate(min)
+    df.aggregate(["min", "max"])
+    df.aggregate([min, max])
+    df.aggregate({"A": ["min", "max"], "B": "min"})
+    df.aggregate({"A": [min, max], "B": min})
+
+
+def test_types_transform() -> None:
+    df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=["A", "B", "C"])
+    df.transform("abs")
+    df.transform(abs)
+    df.transform(["abs", "sqrt"])
+    df.transform([abs, np.sqrt])
+    df.transform({"A": ["abs", "sqrt"], "B": "abs"})
+    df.transform({"A": [abs, np.sqrt], "B": abs})
 
 
 def test_types_describe() -> None:
