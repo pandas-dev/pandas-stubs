@@ -1,6 +1,6 @@
-from pandas.core.indexers import check_array_indexer as check_array_indexer
-from pandas.core.window.indexers import (
+from pandas.core.indexers import (
     BaseIndexer as BaseIndexer,
     FixedForwardWindowIndexer as FixedForwardWindowIndexer,
     VariableOffsetWindowIndexer as VariableOffsetWindowIndexer,
+    check_array_indexer as check_array_indexer,
 )
