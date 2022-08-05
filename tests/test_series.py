@@ -437,18 +437,26 @@ def test_types_groupby() -> None:
 
 def test_types_groupby_agg() -> None:
     s = pd.Series([4, 2, 1, 8], index=["a", "b", "a", "b"])
-    s.groupby(level=0).agg("sum")
-    s.groupby(level=0).agg(sum)
-    s.groupby(level=0).agg(["min", "sum"])
-    s.groupby(level=0).agg([min, sum])
+    check(assert_type(s.groupby(level=0).agg("sum"), pd.Series), pd.Series)
+    check(assert_type(s.groupby(level=0).agg(sum), pd.Series), pd.Series)
+    check(
+        assert_type(s.groupby(level=0).agg(["min", "sum"]), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(s.groupby(level=0).agg([min, sum]), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_groupby_aggregate() -> None:
     s = pd.Series([4, 2, 1, 8], index=["a", "b", "a", "b"])
-    s.groupby(level=0).aggregate("sum")
-    s.groupby(level=0).aggregate(sum)
-    s.groupby(level=0).aggregate(["min", "sum"])
-    s.groupby(level=0).aggregate([min, sum])
+    check(assert_type(s.groupby(level=0).aggregate("sum"), pd.Series), pd.Series)
+    check(assert_type(s.groupby(level=0).aggregate(sum), pd.Series), pd.Series)
+    check(
+        assert_type(s.groupby(level=0).aggregate(["min", "sum"]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(s.groupby(level=0).aggregate([min, sum]), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 # This added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
@@ -474,10 +482,10 @@ def test_types_window() -> None:
     s.rolling(2)
     s.rolling(2, axis=0, center=True)
 
-    s1 = s.rolling(2).agg("sum")
-    s2 = s.rolling(2).agg(sum)
-    df1 = s.rolling(2).agg(["max", "min"])
-    df2 = s.rolling(2).agg([max, min])
+    s.rolling(2).agg("sum")
+    s.rolling(2).agg(sum)
+    s.rolling(2).agg(["max", "min"])
+    s.rolling(2).agg([max, min])
 
 
 def test_types_cov() -> None:
@@ -517,36 +525,40 @@ def test_types_compare() -> None:
 
 def test_types_agg() -> None:
     s = pd.Series([1, 2, 3], index=["col1", "col2", "col3"])
-    s.agg("min")
-    s.agg(min)
-    s.agg(["min", "max"])
-    s.agg([min, max])
-    s.agg({"a": "min"})
-    s.agg({0: min})
-    s.agg(x=max, y="min", z=np.mean)
-    s.agg("mean", axis=0)
+    check(s.agg("min"), np.int64)
+    check(s.agg(min), np.int64)
+    check(assert_type(s.agg(["min", "max"]), pd.Series), pd.Series)
+    check(assert_type(s.agg([min, max]), pd.Series), pd.Series)
+    check(assert_type(s.agg({"a": "min"}), pd.Series), pd.Series)
+    check(assert_type(s.agg({0: min}), pd.Series), pd.Series)
+    check(assert_type(s.agg(x=max, y="min", z=np.mean), pd.Series), pd.Series)
+    check(s.agg("mean", axis=0), np.float64)
 
 
 def test_types_aggregate() -> None:
     s = pd.Series([1, 2, 3], index=["col1", "col2", "col3"])
-    s.aggregate("min")
-    s.aggregate(min)
-    s.aggregate(["min", "max"])
-    s.aggregate([min, max])
-    s.aggregate({"a": "min"})
-    s.aggregate({0: min})
+    check(s.aggregate("min"), np.int64)
+    check(s.aggregate(min), np.int64)
+    check(assert_type(s.aggregate(["min", "max"]), pd.Series), pd.Series)
+    check(assert_type(s.aggregate([min, max]), pd.Series), pd.Series)
+    check(assert_type(s.aggregate({"a": "min"}), pd.Series), pd.Series)
+    check(assert_type(s.aggregate({0: min}), pd.Series), pd.Series)
 
 
 def test_types_transform() -> None:
     s = pd.Series([1, 2, 3], index=["col1", "col2", "col3"])
-    s.transform("abs")
-    s.transform(abs)
-    s.transform(["abs", "sqrt"])
-    s.transform([abs, np.sqrt])
-    s.transform({"col1": ["abs", "sqrt"]})
-    s.transform({"col1": [abs, np.sqrt]})
-    s.transform({"index": "abs"})
-    s.transform({"index": abs})
+    check(assert_type(s.transform("abs"), pd.Series), pd.Series)
+    check(assert_type(s.transform(abs), pd.Series), pd.Series)
+    check(assert_type(s.transform(["abs", "sqrt"]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(s.transform([abs, np.sqrt]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(s.transform({"col1": ["abs", "sqrt"]}), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(s.transform({"col1": [abs, np.sqrt]}), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(s.transform({"index": "abs"}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(s.transform({"index": abs}), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_describe() -> None:

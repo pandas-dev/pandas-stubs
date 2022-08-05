@@ -596,20 +596,34 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def map(
         self, arg, na_action: _str | Literal["ignore"] | None = ...
     ) -> Series[S1]: ...
+    @overload
     def aggregate(
         self,
-        func: AggFuncTypeBase
-        | list[AggFuncTypeBase]
-        | dict[Hashable, AggFuncTypeBase] = ...,
+        func: AggFuncTypeBase,
+        axis: SeriesAxisType = ...,
+        *args,
+        **kwargs,
+    ) -> S1: ...
+    @overload
+    def aggregate(
+        self,
+        func: list[AggFuncTypeBase] | dict[Hashable, AggFuncTypeBase] = ...,
         axis: SeriesAxisType = ...,
         *args,
         **kwargs,
     ) -> Series[S1]: ...
+    @overload
     def agg(
         self,
-        func: AggFuncTypeBase
-        | list[AggFuncTypeBase]
-        | dict[Hashable, AggFuncTypeBase] = ...,
+        func: AggFuncTypeBase,
+        axis: SeriesAxisType = ...,
+        *args,
+        **kwargs,
+    ) -> S1: ...
+    @overload
+    def agg(
+        self,
+        func: list[AggFuncTypeBase] | dict[Hashable, AggFuncTypeBase] = ...,
         axis: SeriesAxisType = ...,
         *args,
         **kwargs,
