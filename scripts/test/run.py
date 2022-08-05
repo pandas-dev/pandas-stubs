@@ -23,17 +23,18 @@ def style():
     subprocess.run(cmd, check=True)
 
 
-def stubtest(allowlist: str = ""):
+def stubtest(allowlist: str = "", check_missing: bool = False):
     cmd = [
         sys.executable,
         "-m",
         "mypy.stubtest",
         "pandas",
         "--concise",
-        "--ignore-missing-stub",
         "--mypy-config-file",
         "pyproject.toml",
     ]
+    if not check_missing:
+        cmd += ["--ignore-missing-stub"]
     if allowlist:
         cmd += ["--allowlist", allowlist]
     subprocess.run(cmd, check=True)

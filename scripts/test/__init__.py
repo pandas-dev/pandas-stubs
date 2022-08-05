@@ -35,8 +35,12 @@ def test(
     run_job(steps)
 
 
-def stubtest(allowlist: str):
+def stubtest(allowlist: str, check_missing: bool):
     stubtest = dataclasses.replace(
-        _step.stubtest, run=partial(_step.stubtest.run, allowlist=allowlist)
+        _step.stubtest,
+        run=partial(
+            _step.stubtest.run, allowlist=allowlist, check_missing=check_missing
+        ),
     )
-    run_job(_DIST_STEPS[:-2] + [stubtest])
+    print(_DIST_STEPS[:2])
+    run_job(_DIST_STEPS[:2] + [stubtest])

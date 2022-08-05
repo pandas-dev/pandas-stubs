@@ -89,9 +89,9 @@ help = "Run pyright on 'tests' using the installed stubs"
 script = "scripts.test:test(dist=True, type_checker='pyright')"
 
 [tool.poe.tasks.stubtest]
-script = "scripts.test:stubtest(allowlist)"
+script = "scripts.test:stubtest(allowlist, check_missing)"
 help = "Run stubtest to compare the installed stubs against pandas"
-args = [{ name = "allowlist", positional = true, default = "", required = false, help= "Path to an allowlist (optional)" }]
+args = [{ name = "allowlist", positional = true, default = "", required = false, help= "Path to an allowlist (optional)" }, {name = "check_missing", positional = false, default = false, type = "boolean", required = false, help= "Report errors when the stubs are incomplete (off by default)"}]
 
 
 [tool.black]
