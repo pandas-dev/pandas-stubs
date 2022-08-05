@@ -2,13 +2,10 @@ from typing import (
     Any,
     Callable,
     Mapping,
-    TypeVar,
 )
 
 from pandas._libs.properties import cache_readonly as cache_readonly
-
-FuncType = Callable[..., Any]
-F = TypeVar("F", bound=FuncType)
+from pandas._typing import F
 
 def deprecate(
     name: str,
