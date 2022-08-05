@@ -29,3 +29,6 @@ pyright_dist = Step(
 stubtest = Step(
     name="Run stubtest to compare the installed stubs against pandas", run=run.stubtest
 )
+nightly = Step(
+    name="Install pandas nightly", run=run.nightly_pandas, rollback=run.released_pandas
+)
