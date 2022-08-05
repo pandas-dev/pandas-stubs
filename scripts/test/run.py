@@ -47,7 +47,7 @@ def build_dist():
 
 def install_dist():
     path = sorted(Path("dist/").glob("pandas_stubs-*.whl"))[-1]
-    cmd = ["pip", "install", "--force-reinstall", str(path)]
+    cmd = [sys.executable, "-m", "pip", "install", "--force-reinstall", str(path)]
     subprocess.run(cmd, check=True)
 
 
@@ -69,7 +69,7 @@ def pyright_dist():
 
 
 def uninstall_dist():
-    cmd = ["pip", "uninstall", "-y", "pandas-stubs"]
+    cmd = [sys.executable, "-m", "pip", "uninstall", "-y", "pandas-stubs"]
     subprocess.run(cmd, check=True)
 
 
@@ -78,3 +78,25 @@ def restore_src():
         Path(r"_pandas-stubs").rename("pandas-stubs")
     else:
         raise FileNotFoundError("'_pandas-stubs' folder does not exists.")
+
+
+def nightly_pandas():
+    cmd = [sys.executable, "-m", "pip", "uninstall", "-y", "pandas"]
+    subprocess.run(cmd, check=True)
+    cmd = [
+        sys.executable,
+        "-m",
+        "pip",
+        "install",
+        "-i",
+        "https://pypi.anaconda.org/scipy-wheels-nightly/simple",
+        "pandas",
+    ]
+    subprocess.run(cmd, check=True)
+
+
+def released_pandas():
+    cmd = [sys.executable, "-m", "pip", "uninstall", "-y", "pandas"]
+    subprocess.run(cmd, check=True)
+    cmd = [sys.executable, "-m", "pip", "install", "pandas"]
+    subprocess.run(cmd, check=True)

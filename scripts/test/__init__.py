@@ -35,11 +35,14 @@ def test(
     run_job(steps)
 
 
-def stubtest(allowlist: str, check_missing: bool):
+def stubtest(allowlist: str, check_missing: bool, nightly: bool) -> None:
     stubtest = dataclasses.replace(
         _step.stubtest,
         run=partial(
             _step.stubtest.run, allowlist=allowlist, check_missing=check_missing
         ),
     )
-    run_job(_DIST_STEPS[:2] + [stubtest])
+    steps = _DIST_STEPS[:2]
+    if nightly:
+        steps.append(_step.nightly)
+    run_job(steps + [stubtest])
