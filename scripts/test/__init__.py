@@ -42,5 +42,4 @@ def stubtest(allowlist: str, check_missing: bool):
             _step.stubtest.run, allowlist=allowlist, check_missing=check_missing
         ),
     )
-    print(_DIST_STEPS[:2])
     run_job(_DIST_STEPS[:2] + [stubtest])
