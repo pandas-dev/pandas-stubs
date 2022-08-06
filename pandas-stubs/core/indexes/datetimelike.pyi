@@ -1,8 +1,7 @@
-from pandas.core.accessor import PandasDelegate as PandasDelegate
-from pandas.core.indexes.extension import ExtensionIndex as ExtensionIndex
-from pandas.core.indexes.numeric import Int64Index as Int64Index
+from pandas.core.indexes.extension import ExtensionIndex
+from pandas.core.indexes.numeric import Int64Index
 
-from pandas.tseries.frequencies import DateOffset as DateOffset
+from pandas.tseries.frequencies import DateOffset
 
 class DatetimeIndexOpsMixin(ExtensionIndex):
     freq: DateOffset | None
@@ -32,5 +31,3 @@ class DatetimeTimedeltaMixin(DatetimeIndexOpsMixin, Int64Index):
     def difference(self, other, sort=...): ...
     def intersection(self, other, sort: bool = ...): ...
     def join(self, other, how: str = ..., level=..., return_indexers=..., sort=...): ...
-
-class DatetimelikeDelegateMixin(PandasDelegate): ...

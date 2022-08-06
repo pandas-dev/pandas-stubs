@@ -47,7 +47,7 @@ from pandas.core.indexes.period import period_range as period_range
 from pandas.core.indexes.timedeltas import timedelta_range as timedelta_range
 from pandas.core.indexing import IndexSlice as IndexSlice
 from pandas.core.series import Series as Series
-from pandas.core.tools import to_datetime as to_datetime
+from pandas.core.tools.datetimes import to_datetime as to_datetime
 from pandas.core.tools.numeric import to_numeric as to_numeric
 from pandas.core.tools.timedeltas import to_timedelta as to_timedelta
 

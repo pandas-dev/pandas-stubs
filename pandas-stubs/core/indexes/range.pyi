@@ -1,5 +1,5 @@
 import numpy as np
-from pandas.core.indexes.numeric import Int64Index as Int64Index
+from pandas.core.indexes.numeric import Int64Index
 
 class RangeIndex(Int64Index):
     def __new__(

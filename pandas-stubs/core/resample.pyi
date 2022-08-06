@@ -1,5 +1,5 @@
-from pandas.core.base import ShallowMixin as ShallowMixin
-from pandas.core.groupby.base import GroupByMixin as GroupByMixin
+from pandas.core.base import ShallowMixin
+from pandas.core.groupby.base import GroupByMixin
 from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.core.groupby.grouper import Grouper as Grouper
 
@@ -66,7 +66,6 @@ class _GroupByMixin(GroupByMixin):
     groupby = ...
     def __init__(self, obj, *args, **kwargs) -> None: ...
 
-def resample(obj, kind=..., **kwds): ...
 def get_resampler_for_grouping(
     groupby, rule, how=..., fill_method=..., limit=..., kind=..., **kwargs
 ): ...

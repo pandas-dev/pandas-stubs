@@ -5,13 +5,6 @@ from typing import (
 
 from pandas._typing import Scalar
 
-def make_rolling_apply(
-    func: Callable[..., Scalar],
-    args: tuple,
-    nogil: bool,
-    parallel: bool,
-    nopython: bool,
-): ...
 def generate_numba_apply_func(
     args: tuple,
     kwargs: dict[str, Any],

@@ -13,12 +13,7 @@ from pandas._typing import (
 )
 
 from pandas.core.dtypes.dtypes import IntervalDtype as IntervalDtype
-from pandas.core.dtypes.generic import ABCSeries as ABCSeries
-
-class SetopCheck:
-    op_name = ...
-    def __init__(self, op_name) -> None: ...
-    def __call__(self, setop): ...
+from pandas.core.dtypes.generic import ABCSeries
 
 class IntervalIndex(IntervalMixin, ExtensionIndex):
     def __new__(

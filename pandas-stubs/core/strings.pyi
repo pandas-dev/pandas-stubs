@@ -11,18 +11,9 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas import Series
-from pandas.core.base import NoNewAttributesMixin as NoNewAttributesMixin
+from pandas.core.base import NoNewAttributesMixin
 
-from pandas._typing import (
-    F,
-    T,
-)
-
-def cat_core(list_of_columns: list[np.ndarray], sep: str) -> np.ndarray: ...
-def cat_safe(list_of_columns: list[np.ndarray], sep: str) -> np.ndarray: ...
-def forbid_nonstring_types(
-    forbidden: list[str] | None, name: str | None = ...
-) -> Callable[[F], F]: ...
+from pandas._typing import T
 
 class StringMethods(NoNewAttributesMixin, Generic[T]):
     def __init__(self, data: T) -> None: ...

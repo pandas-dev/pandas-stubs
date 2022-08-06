@@ -68,7 +68,9 @@ from .core.api import (
     period_range as period_range,
     set_eng_float_format as set_eng_float_format,
     timedelta_range as timedelta_range,
+    to_datetime as to_datetime,
     to_numeric as to_numeric,
+    to_timedelta as to_timedelta,
     unique as unique,
     value_counts as value_counts,
 )
@@ -88,10 +90,6 @@ from .core.reshape.api import (
     pivot_table as pivot_table,
     qcut as qcut,
     wide_to_long as wide_to_long,
-)
-from .core.tools import (
-    to_datetime as to_datetime,
-    to_timedelta as to_timedelta,
 )
 from .io.api import (
     ExcelFile as ExcelFile,

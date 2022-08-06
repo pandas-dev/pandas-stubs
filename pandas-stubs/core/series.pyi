@@ -19,7 +19,7 @@ from typing import (
 
 from matplotlib.axes import (
     Axes as PlotAxes,
-    SubplotBase as SubplotBase,
+    SubplotBase,
 )
 import numpy as np
 from pandas import (
@@ -1700,12 +1700,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         na_value=...,
         **kwargs,
     ) -> np.ndarray: ...
-    def to_records(
-        self,
-        index: _bool = ...,
-        columnDTypes: _str | dict | None = ...,
-        indexDTypes: _str | dict | None = ...,
-    ): ...
     def tolist(self) -> list[S1]: ...
     def truediv(
         self,

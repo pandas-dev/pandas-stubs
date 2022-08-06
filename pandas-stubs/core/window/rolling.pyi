@@ -7,7 +7,6 @@ from pandas.core.base import (
     ShallowMixin,
 )
 from pandas.core.indexes.api import Index
-from pandas.core.window.common import WindowGroupByMixin
 
 from pandas._typing import (
     Axis,
@@ -114,4 +113,4 @@ class Rolling(_Rolling_and_Expanding):
         kwargs=...,
     ): ...
 
-class RollingGroupby(WindowGroupByMixin, Rolling): ...
+class RollingGroupby(Rolling): ...
