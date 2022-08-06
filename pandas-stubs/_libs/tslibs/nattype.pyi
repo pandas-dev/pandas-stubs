@@ -13,8 +13,6 @@ NaT: NaTType
 iNaT: int
 nat_strings: set[str]
 
-def is_null_datetimelike(val: object, inat_is_null: bool = ...) -> bool: ...
-
 _NaTComparisonTypes = Union[datetime, timedelta, Period, np.datetime64, np.timedelta64]
 
 class _NatComparison:

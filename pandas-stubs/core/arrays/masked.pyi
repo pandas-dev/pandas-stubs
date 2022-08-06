@@ -1,7 +1,7 @@
 import numpy as np
 from pandas.core.arrays import (
     ExtensionArray as ExtensionArray,
-    ExtensionOpsMixin as ExtensionOpsMixin,
+    ExtensionOpsMixin,
 )
 
 from pandas._typing import Scalar

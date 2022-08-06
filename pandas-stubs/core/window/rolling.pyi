@@ -4,7 +4,6 @@ import numpy as np
 from pandas.core.base import (
     PandasObject,
     SelectionMixin,
-    ShallowMixin,
 )
 from pandas.core.indexes.api import Index
 
@@ -14,7 +13,7 @@ from pandas._typing import (
     Scalar,
 )
 
-class _Window(PandasObject, ShallowMixin, SelectionMixin):
+class _Window(PandasObject, SelectionMixin):
     exclusions: set[str] = ...
     obj = ...
     on = ...

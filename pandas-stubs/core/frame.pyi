@@ -1117,13 +1117,6 @@ class DataFrame(NDFrame, OpsMixin):
     Name: _str
     #
     # dunder methods
-    def __exp__(
-        self,
-        other: num | _ListLike | DataFrame,
-        axis: AxisType = ...,
-        level: Level = ...,
-        fill_value: float | None = ...,
-    ) -> DataFrame: ...
     def __iter__(self) -> Iterator[float | _str]: ...
     # properties
     @property
@@ -1311,13 +1304,6 @@ class DataFrame(NDFrame, OpsMixin):
         ignore_na: _bool = ...,
         axis: AxisType = ...,
     ) -> DataFrame: ...
-    def exp(
-        self,
-        other: num | _ListLike | DataFrame,
-        axis: AxisType | None = ...,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-    ) -> DataFrame: ...
     def expanding(
         self, min_periods: int = ..., center: _bool = ..., axis: AxisType = ...
     ): ...  # for now
@@ -1357,13 +1343,6 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     # def from_dict
     # def from_records
-    def fulldiv(
-        self,
-        other: num | _ListLike | DataFrame,
-        axis: AxisType | None = ...,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-    ) -> DataFrame: ...
     def ge(
         self, other, axis: AxisType = ..., level: Level | None = ...
     ) -> DataFrame: ...
@@ -2136,7 +2115,6 @@ class DataFrame(NDFrame, OpsMixin):
         ambiguous=...,
         nonexistent: _str = ...,
     ) -> DataFrame: ...
-    def unique(self) -> DataFrame: ...
     @overload
     def var(
         self,
