@@ -10,10 +10,6 @@ from pandas.core.generic import NDFrame
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.multi import MultiIndex
 from pandas.core.series import Series
-from tables import (
-    Col,
-    Node,
-)
 
 from pandas._typing import (
     ArrayLike,
@@ -21,6 +17,10 @@ from pandas._typing import (
 )
 
 from pandas.core.dtypes.generic import ABCExtensionArray
+
+# pytables may not be installed so create them as dummy classes
+class Col: ...
+class Node: ...
 
 Term = PyTablesExpr
 

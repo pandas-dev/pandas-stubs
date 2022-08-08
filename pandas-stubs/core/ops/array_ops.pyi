@@ -2,7 +2,6 @@ import numpy as np
 
 from pandas.core.dtypes.generic import ABCExtensionArray as ABCExtensionArray
 
-def comp_method_OBJECT_ARRAY(op, x, y): ...
 def arithmetic_op(left: np.ndarray | ABCExtensionArray, right, op, str_rep: str): ...
 def comparison_op(
     left: np.ndarray | ABCExtensionArray, right, op

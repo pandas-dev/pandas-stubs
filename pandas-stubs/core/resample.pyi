@@ -1,9 +1,7 @@
 from typing import Generic
 
 from pandas import DataFrame
-from pandas.core.groupby.base import GroupByMixin
 from pandas.core.groupby.groupby import BaseGroupBy
-from pandas.core.groupby.grouper import Grouper
 
 from pandas._typing import NDFrameT
 
