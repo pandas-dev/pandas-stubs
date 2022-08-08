@@ -1018,3 +1018,24 @@ def test_relops() -> None:
     check(assert_type(pd.Series([td]) < td, "pd.Series[bool]"), pd.Series, bool)
     check(assert_type(pd.Series([td]) <= td, "pd.Series[bool]"), pd.Series, bool)
     check(assert_type(pd.Series([td]) >= td, "pd.Series[bool]"), pd.Series, bool)
+
+
+def test_resample() -> None:
+    # GH 181
+    N = 10
+    index = pd.date_range("1/1/2000", periods=N, freq="T")
+    x = [x for x in range(N)]
+    df = pd.Series(x, index=index)
+    check(assert_type(df.resample("2T").std(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2T").var(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2T").quantile(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2T").sum(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2T").prod(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2T").min(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2T").max(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2T").first(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2T").last(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2T").mean(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2T").sem(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2T").median(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2T").ohlc(), pd.DataFrame), pd.DataFrame)
