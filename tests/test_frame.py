@@ -1412,3 +1412,24 @@ def test_groupby_apply() -> None:
     check(
         assert_type(df.groupby("col1").apply(sample_to_df), pd.DataFrame), pd.DataFrame
     )
+
+
+def test_resample() -> None:
+    # GH 181
+    N = 10
+    index = pd.date_range("1/1/2000", periods=N, freq="T")
+    x = [x for x in range(N)]
+    df = pd.DataFrame({"a": x, "b": x, "c": x}, index=index)
+    check(assert_type(df.resample("2T").std(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2T").var(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2T").quantile(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2T").sum(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2T").prod(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2T").min(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2T").max(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2T").first(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2T").last(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2T").mean(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2T").sem(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2T").median(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2T").ohlc(), pd.DataFrame), pd.DataFrame)
