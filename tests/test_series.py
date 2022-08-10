@@ -12,6 +12,7 @@ from typing import (
     Iterator,
     List,
     Sequence,
+    Union,
     cast,
 )
 
@@ -482,10 +483,26 @@ def test_types_window() -> None:
     s.rolling(2)
     s.rolling(2, axis=0, center=True)
 
-    s.rolling(2).agg("sum")
-    s.rolling(2).agg(sum)
-    s.rolling(2).agg(["max", "min"])
-    s.rolling(2).agg([max, min])
+    check(
+        assert_type(s.rolling(2).agg("sum"), Union[Scalar, pd.Series, pd.DataFrame]),
+        pd.Series,
+    )
+    check(
+        assert_type(s.rolling(2).agg(sum), Union[Scalar, pd.Series, pd.DataFrame]),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            s.rolling(2).agg(["max", "min"]), Union[Scalar, pd.Series, pd.DataFrame]
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            s.rolling(2).agg([max, min]), Union[Scalar, pd.Series, pd.DataFrame]
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_types_cov() -> None:
@@ -525,20 +542,20 @@ def test_types_compare() -> None:
 
 def test_types_agg() -> None:
     s = pd.Series([1, 2, 3], index=["col1", "col2", "col3"])
-    check(s.agg("min"), np.int64)
-    check(s.agg(min), np.int64)
+    check(assert_type(s.agg("min"), Any), np.int64)
+    check(assert_type(s.agg(min), Any), np.int64)
     check(assert_type(s.agg(["min", "max"]), pd.Series), pd.Series)
     check(assert_type(s.agg([min, max]), pd.Series), pd.Series)
     check(assert_type(s.agg({"a": "min"}), pd.Series), pd.Series)
     check(assert_type(s.agg({0: min}), pd.Series), pd.Series)
     check(assert_type(s.agg(x=max, y="min", z=np.mean), pd.Series), pd.Series)
-    check(s.agg("mean", axis=0), np.float64)
+    check(assert_type(s.agg("mean", axis=0), Any), np.float64)
 
 
 def test_types_aggregate() -> None:
     s = pd.Series([1, 2, 3], index=["col1", "col2", "col3"])
-    check(s.aggregate("min"), np.int64)
-    check(s.aggregate(min), np.int64)
+    check(assert_type(s.aggregate("min"), Any), np.int64)
+    check(assert_type(s.aggregate(min), Any), np.int64)
     check(assert_type(s.aggregate(["min", "max"]), pd.Series), pd.Series)
     check(assert_type(s.aggregate([min, max]), pd.Series), pd.Series)
     check(assert_type(s.aggregate({"a": "min"}), pd.Series), pd.Series)

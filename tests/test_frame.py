@@ -12,6 +12,7 @@ from typing import (
     Iterable,
     Iterator,
     Tuple,
+    Union,
 )
 
 import numpy as np
@@ -548,8 +549,9 @@ def test_types_groupby() -> None:
     df.groupby(by="col1", sort=False, as_index=True)
     df.groupby(by=["col1", "col2"])
 
-    df1: pd.DataFrame = df.groupby(level="ind").aggregate("sum")
-    df2: pd.DataFrame = df.groupby(by="col1", sort=False, as_index=True).transform(
+    df1: pd.DataFrame = df.groupby(by="col1").agg("sum")
+    df2: pd.DataFrame = df.groupby(level="ind").aggregate("sum")
+    df3: pd.DataFrame = df.groupby(by="col1", sort=False, as_index=True).transform(
         lambda x: x.max()
     )
     df4: pd.DataFrame = df.groupby(by=["col1", "col2"]).count()
@@ -656,14 +658,52 @@ def test_types_window() -> None:
     df.rolling(2)
     df.rolling(2, axis=1, center=True)
 
-    df.rolling(2).agg("max")
-    df.rolling(2).agg(max)
-    df.rolling(2).agg(["max", "min"])
-    df.rolling(2).agg([max, min])
-    df.rolling(2).agg({"col2": "max"})
-    df.rolling(2).agg({"col2": max})
-    df.rolling(2).agg({"col2": ["max", "min"]})
-    df.rolling(2).agg({"col2": [max, min]})
+    check(
+        assert_type(df.rolling(2).agg("max"), Union[Scalar, pd.DataFrame, pd.Series]),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.rolling(2).agg(max), Union[Scalar, pd.DataFrame, pd.Series]),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.rolling(2).agg(["max", "min"]), Union[Scalar, pd.DataFrame, pd.Series]
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.rolling(2).agg([max, min]), Union[Scalar, pd.DataFrame, pd.Series]
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.rolling(2).agg({"col2": "max"}), Union[Scalar, pd.DataFrame, pd.Series]
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.rolling(2).agg({"col2": max}), Union[Scalar, pd.DataFrame, pd.Series]
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.rolling(2).agg({"col2": ["max", "min"]}),
+            Union[Scalar, pd.DataFrame, pd.Series],
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.rolling(2).agg({"col2": [max, min]}),
+            Union[Scalar, pd.DataFrame, pd.Series],
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_types_cov() -> None:
