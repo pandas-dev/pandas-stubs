@@ -569,7 +569,7 @@ def test_types_groupby() -> None:
     df11: pd.DataFrame = df.groupby(by=cols).sum()
 
     cols_opt: list[str | None] = ["col1", "col2"]
-    df12 : pd.DataFrame = df.groupby(by=cols_opt).sum()
+    df12: pd.DataFrame = df.groupby(by=cols_opt).sum()
 
 
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
