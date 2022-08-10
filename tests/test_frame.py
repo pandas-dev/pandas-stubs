@@ -546,6 +546,13 @@ def test_types_groupby() -> None:
     df.groupby(by="col1")
     df.groupby(level="ind")
     df.groupby(by="col1", sort=False, as_index=True)
+
+    cols: list[str] = ["col1", "col2"]
+    df.groupby(by=cols).sum()
+
+    cols_opt: list[str | None] = ["col1", "col2"]
+    df.groupby(by=cols_opt).sum()
+
     df.groupby(by=["col1", "col2"])
 
     df1: pd.DataFrame = df.groupby(by="col1").agg("sum")
