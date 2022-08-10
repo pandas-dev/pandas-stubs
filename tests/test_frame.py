@@ -565,6 +565,7 @@ def test_types_groupby() -> None:
     df10: pd.DataFrame = df.groupby("col1").agg(
         new_col=pd.NamedAgg(column="col2", aggfunc="max")
     )
+    # GH#187
     cols: list[str] = ["col1", "col2"]
     check(assert_type(df.groupby(by=cols).sum(), pd.DataFrame), pd.DataFrame)
 
