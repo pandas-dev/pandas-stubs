@@ -1,5 +1,3 @@
-from typing import Callable
-
 import numpy as np
 from pandas.core.base import (
     PandasObject,
@@ -10,6 +8,7 @@ from pandas.core.indexes.api import Index
 from pandas.core.window.common import WindowGroupByMixin
 
 from pandas._typing import (
+    AggFuncType,
     Axis,
     FrameOrSeriesUnion as FrameOrSeries,
     Scalar,
@@ -46,9 +45,11 @@ class _Window(PandasObject, ShallowMixin, SelectionMixin):
     def __getattr__(self, attr: str): ...
     def __iter__(self): ...
     def aggregate(
-        self, func: Callable | None, *args, **kwargs
+        self, func: AggFuncType = ..., *args, **kwargs
     ) -> Scalar | FrameOrSeries: ...
-    agg = aggregate
+    def agg(
+        self, func: AggFuncType = ..., *args, **kwargs
+    ) -> Scalar | FrameOrSeries: ...
 
 class Window(_Window):
     def validate(self) -> None: ...

@@ -12,6 +12,7 @@ from typing import (
     Iterable,
     Iterator,
     Tuple,
+    Union,
 )
 
 import numpy as np
@@ -560,10 +561,37 @@ def test_types_groupby() -> None:
     df8: pd.DataFrame = df.groupby("col1").transform("sum")
     s1: pd.Series = df.set_index("col1")["col2"]
     s2: pd.Series = s1.groupby("col1").transform("sum")
-    s3: pd.Series = df.groupby("col1")["col3"].agg(min)
-    df9: pd.DataFrame = df.groupby("col1")["col3"].agg([min, max])
-    df10: pd.DataFrame = df.groupby("col1").agg(
-        new_col=pd.NamedAgg(column="col2", aggfunc="max")
+
+
+def test_types_groupby_agg() -> None:
+    df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0]})
+    check(assert_type(df.groupby("col1")["col3"].agg(min), pd.Series), pd.Series)
+    check(
+        assert_type(df.groupby("col1")["col3"].agg([min, max]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.groupby("col1").agg("min"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.groupby("col1").agg(min), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.groupby("col1").agg(["min", "max"]), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(df.groupby("col1").agg([min, max]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(
+            df.groupby("col1").agg({"col2": "min", "col3": "max"}), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.groupby("col1").agg({"col2": min, "col3": max}), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.groupby("col1").agg(new_col=pd.NamedAgg(column="col2", aggfunc="max")),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )
     # GH#187
     cols: list[str] = ["col1", "col2"]
@@ -636,6 +664,53 @@ def test_types_window() -> None:
     df.rolling(2)
     df.rolling(2, axis=1, center=True)
 
+    check(
+        assert_type(df.rolling(2).agg("max"), Union[Scalar, pd.DataFrame, pd.Series]),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.rolling(2).agg(max), Union[Scalar, pd.DataFrame, pd.Series]),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.rolling(2).agg(["max", "min"]), Union[Scalar, pd.DataFrame, pd.Series]
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.rolling(2).agg([max, min]), Union[Scalar, pd.DataFrame, pd.Series]
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.rolling(2).agg({"col2": "max"}), Union[Scalar, pd.DataFrame, pd.Series]
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.rolling(2).agg({"col2": max}), Union[Scalar, pd.DataFrame, pd.Series]
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.rolling(2).agg({"col2": ["max", "min"]}),
+            Union[Scalar, pd.DataFrame, pd.Series],
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.rolling(2).agg({"col2": [max, min]}),
+            Union[Scalar, pd.DataFrame, pd.Series],
+        ),
+        pd.DataFrame,
+    )
+
 
 def test_types_cov() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
@@ -692,9 +767,54 @@ def test_types_compare() -> None:
 
 def test_types_agg() -> None:
     df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=["A", "B", "C"])
-    df.agg("min")
-    df.agg(x=("A", max), y=("B", "min"), z=("C", np.mean))
-    df.agg("mean", axis=1)
+    check(assert_type(df.agg("min"), pd.Series), pd.Series)
+    check(assert_type(df.agg(min), pd.Series), pd.Series)
+    check(assert_type(df.agg(["min", "max"]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.agg([min, max]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.agg({"A": ["min", "max"], "B": "min"}), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.agg({"A": [min, max], "B": min}), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(
+            df.agg(x=("A", max), y=("B", "min"), z=("C", np.mean)), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(assert_type(df.agg("mean", axis=1), pd.Series), pd.Series)
+
+
+def test_types_aggregate() -> None:
+    df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=["A", "B", "C"])
+    check(assert_type(df.aggregate("min"), pd.Series), pd.Series)
+    check(assert_type(df.aggregate(min), pd.Series), pd.Series)
+    check(assert_type(df.aggregate(["min", "max"]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.aggregate([min, max]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.aggregate({"A": ["min", "max"], "B": "min"}), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.aggregate({"A": [min, max], "B": min}), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+
+def test_types_transform() -> None:
+    df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=["A", "B", "C"])
+    check(assert_type(df.transform("abs"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.transform(abs), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.transform(["abs", "sqrt"]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.transform([abs, np.sqrt]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.transform({"A": ["abs", "sqrt"], "B": "abs"}), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.transform({"A": [abs, np.sqrt], "B": abs}), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_types_describe() -> None:

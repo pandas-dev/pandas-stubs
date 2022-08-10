@@ -12,6 +12,7 @@ from typing import (
     Iterator,
     List,
     Sequence,
+    Union,
     cast,
 )
 
@@ -435,6 +436,30 @@ def test_types_groupby() -> None:
     s.groupby(s > 2)
 
 
+def test_types_groupby_agg() -> None:
+    s = pd.Series([4, 2, 1, 8], index=["a", "b", "a", "b"])
+    check(assert_type(s.groupby(level=0).agg("sum"), pd.Series), pd.Series)
+    check(assert_type(s.groupby(level=0).agg(sum), pd.Series), pd.Series)
+    check(
+        assert_type(s.groupby(level=0).agg(["min", "sum"]), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(s.groupby(level=0).agg([min, sum]), pd.DataFrame), pd.DataFrame)
+
+
+def test_types_groupby_aggregate() -> None:
+    s = pd.Series([4, 2, 1, 8], index=["a", "b", "a", "b"])
+    check(assert_type(s.groupby(level=0).aggregate("sum"), pd.Series), pd.Series)
+    check(assert_type(s.groupby(level=0).aggregate(sum), pd.Series), pd.Series)
+    check(
+        assert_type(s.groupby(level=0).aggregate(["min", "sum"]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(s.groupby(level=0).aggregate([min, sum]), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+
 # This added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
 def test_types_group_by_with_dropna_keyword() -> None:
     s = pd.Series([1, 2, 3, 3], index=["col1", "col2", "col3", np.nan])
@@ -457,6 +482,27 @@ def test_types_window() -> None:
 
     s.rolling(2)
     s.rolling(2, axis=0, center=True)
+
+    check(
+        assert_type(s.rolling(2).agg("sum"), Union[Scalar, pd.Series, pd.DataFrame]),
+        pd.Series,
+    )
+    check(
+        assert_type(s.rolling(2).agg(sum), Union[Scalar, pd.Series, pd.DataFrame]),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            s.rolling(2).agg(["max", "min"]), Union[Scalar, pd.Series, pd.DataFrame]
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            s.rolling(2).agg([max, min]), Union[Scalar, pd.Series, pd.DataFrame]
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_types_cov() -> None:
@@ -496,9 +542,40 @@ def test_types_compare() -> None:
 
 def test_types_agg() -> None:
     s = pd.Series([1, 2, 3], index=["col1", "col2", "col3"])
-    s.agg("min")
-    s.agg(x=max, y="min", z=np.mean)
-    s.agg("mean", axis=0)
+    check(assert_type(s.agg("min"), Any), np.int64)
+    check(assert_type(s.agg(min), Any), np.int64)
+    check(assert_type(s.agg(["min", "max"]), pd.Series), pd.Series)
+    check(assert_type(s.agg([min, max]), pd.Series), pd.Series)
+    check(assert_type(s.agg({"a": "min"}), pd.Series), pd.Series)
+    check(assert_type(s.agg({0: min}), pd.Series), pd.Series)
+    check(assert_type(s.agg(x=max, y="min", z=np.mean), pd.Series), pd.Series)
+    check(assert_type(s.agg("mean", axis=0), Any), np.float64)
+
+
+def test_types_aggregate() -> None:
+    s = pd.Series([1, 2, 3], index=["col1", "col2", "col3"])
+    check(assert_type(s.aggregate("min"), Any), np.int64)
+    check(assert_type(s.aggregate(min), Any), np.int64)
+    check(assert_type(s.aggregate(["min", "max"]), pd.Series), pd.Series)
+    check(assert_type(s.aggregate([min, max]), pd.Series), pd.Series)
+    check(assert_type(s.aggregate({"a": "min"}), pd.Series), pd.Series)
+    check(assert_type(s.aggregate({0: min}), pd.Series), pd.Series)
+
+
+def test_types_transform() -> None:
+    s = pd.Series([1, 2, 3], index=["col1", "col2", "col3"])
+    check(assert_type(s.transform("abs"), pd.Series), pd.Series)
+    check(assert_type(s.transform(abs), pd.Series), pd.Series)
+    check(assert_type(s.transform(["abs", "sqrt"]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(s.transform([abs, np.sqrt]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(s.transform({"col1": ["abs", "sqrt"]}), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(s.transform({"col1": [abs, np.sqrt]}), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(s.transform({"index": "abs"}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(s.transform({"index": abs}), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_describe() -> None:

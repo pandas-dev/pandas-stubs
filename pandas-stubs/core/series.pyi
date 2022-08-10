@@ -56,6 +56,8 @@ from pandas.core.window.rolling import (
 
 from pandas._typing import (
     S1,
+    AggFuncTypeBase,
+    AggFuncTypeDict,
     ArrayLike,
     Axes,
     Axis,
@@ -594,33 +596,54 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def map(
         self, arg, na_action: _str | Literal["ignore"] | None = ...
     ) -> Series[S1]: ...
+    @overload
     def aggregate(
         self,
-        func: Callable
-        | _str
-        | list[Callable | _str]
-        | dict[SeriesAxisType, Callable | _str],
+        func: AggFuncTypeBase,
         axis: SeriesAxisType = ...,
         *args,
         **kwargs,
-    ) -> None: ...
-    def agg(
+    ) -> S1: ...
+    @overload
+    def aggregate(
         self,
-        func: Callable
-        | _str
-        | list[Callable | _str]
-        | dict[SeriesAxisType, Callable | _str] = ...,
-        axis: SeriesAxisType = ...,
-        *args,
-        **kwargs,
-    ) -> None: ...
-    def transform(
-        self,
-        func: list[Callable] | dict[_str, Callable],
+        func: list[AggFuncTypeBase] | dict[Hashable, AggFuncTypeBase] = ...,
         axis: SeriesAxisType = ...,
         *args,
         **kwargs,
     ) -> Series[S1]: ...
+    @overload
+    def agg(
+        self,
+        func: AggFuncTypeBase,
+        axis: SeriesAxisType = ...,
+        *args,
+        **kwargs,
+    ) -> S1: ...
+    @overload
+    def agg(
+        self,
+        func: list[AggFuncTypeBase] | dict[Hashable, AggFuncTypeBase] = ...,
+        axis: SeriesAxisType = ...,
+        *args,
+        **kwargs,
+    ) -> Series[S1]: ...
+    @overload
+    def transform(
+        self,
+        func: AggFuncTypeBase,
+        axis: SeriesAxisType = ...,
+        *args,
+        **kwargs,
+    ) -> Series[S1]: ...
+    @overload
+    def transform(
+        self,
+        func: list[AggFuncTypeBase] | AggFuncTypeDict,
+        axis: SeriesAxisType = ...,
+        *args,
+        **kwargs,
+    ) -> DataFrame: ...
     def apply(
         self, func: Callable, convertDType: _bool = ..., args: tuple = ..., **kwds
     ) -> Series | DataFrame: ...
