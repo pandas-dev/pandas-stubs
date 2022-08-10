@@ -546,13 +546,6 @@ def test_types_groupby() -> None:
     df.groupby(by="col1")
     df.groupby(level="ind")
     df.groupby(by="col1", sort=False, as_index=True)
-
-    cols: list[str] = ["col1", "col2"]
-    df.groupby(by=cols).sum()
-
-    cols_opt: list[str | None] = ["col1", "col2"]
-    df.groupby(by=cols_opt).sum()
-
     df.groupby(by=["col1", "col2"])
 
     df1: pd.DataFrame = df.groupby(by="col1").agg("sum")
@@ -572,6 +565,11 @@ def test_types_groupby() -> None:
     df10: pd.DataFrame = df.groupby("col1").agg(
         new_col=pd.NamedAgg(column="col2", aggfunc="max")
     )
+    cols: list[str] = ["col1", "col2"]
+    df11: pd.DataFrame = df.groupby(by=cols).sum()
+
+    cols_opt: list[str | None] = ["col1", "col2"]
+    df12 : pd.DataFrame = df.groupby(by=cols_opt).sum()
 
 
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
