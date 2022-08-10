@@ -2,17 +2,14 @@ from typing import Sequence
 
 import numpy as np
 from pandas.core.arrays.base import (
-    ExtensionArray as ExtensionArray,
-    ExtensionOpsMixin as ExtensionOpsMixin,
+    ExtensionArray,
+    ExtensionOpsMixin,
 )
 
 from pandas._libs import (
     NaT as NaT,
     NaTType as NaTType,
-    Timestamp as Timestamp,
 )
-
-class AttributesMixin: ...
 
 class DatelikeOps:
     def strftime(self, date_format): ...
@@ -22,7 +19,7 @@ class TimelikeOps:
     def floor(self, freq, ambiguous: str = ..., nonexistent: str = ...): ...
     def ceil(self, freq, ambiguous: str = ..., nonexistent: str = ...): ...
 
-class DatetimeLikeArrayMixin(ExtensionOpsMixin, AttributesMixin, ExtensionArray):
+class DatetimeLikeArrayMixin(ExtensionOpsMixin, ExtensionArray):
     @property
     def ndim(self) -> int: ...
     @property
@@ -84,7 +81,4 @@ class DatetimeLikeArrayMixin(ExtensionOpsMixin, AttributesMixin, ExtensionArray)
     def max(self, axis=..., skipna: bool = ..., *args, **kwargs): ...
     def mean(self, skipna: bool = ...): ...
 
-def validate_periods(periods): ...
-def validate_endpoints(closed): ...
-def validate_inferred_freq(freq, inferred_freq, freq_infer): ...
 def maybe_infer_freq(freq): ...

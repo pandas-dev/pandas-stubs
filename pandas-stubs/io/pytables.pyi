@@ -18,7 +18,6 @@ from pandas._typing import (
 
 from pandas.core.dtypes.generic import ABCExtensionArray
 
-# from tables import Col, File, Node
 # pytables may not be installed so create them as dummy classes
 class Col: ...
 class Node: ...

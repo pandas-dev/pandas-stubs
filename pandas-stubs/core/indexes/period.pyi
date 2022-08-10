@@ -1,13 +1,10 @@
 import numpy as np
 from pandas.core.indexes.datetimelike import (
     DatetimeIndexOpsMixin as DatetimeIndexOpsMixin,
-    DatetimelikeDelegateMixin as DatetimelikeDelegateMixin,
 )
-from pandas.core.indexes.numeric import Int64Index as Int64Index
+from pandas.core.indexes.numeric import Int64Index
 
-class PeriodDelegateMixin(DatetimelikeDelegateMixin): ...
-
-class PeriodIndex(DatetimeIndexOpsMixin, Int64Index, PeriodDelegateMixin):
+class PeriodIndex(DatetimeIndexOpsMixin, Int64Index):
     def __new__(
         cls,
         data=...,

@@ -1,15 +1,14 @@
 from typing import NamedTuple
 
 from matplotlib.axes import Axes as PlotAxes
+from matplotlib.lines import Line2D
 
 from pandas.plotting._matplotlib.core import LinePlot as LinePlot
 
 class BoxPlot(LinePlot):
-    class BoxPlot(NamedTuple):
-        ax: PlotAxes = ...
-        lines: dict = ...
-    BP = BoxPlot
-
+    class BP(NamedTuple):
+        ax: PlotAxes
+        lines: dict[str, list[Line2D]]
     return_type = ...
     def __init__(self, data, return_type: str = ..., **kwargs) -> None: ...
     def maybe_color_bp(self, bp) -> None: ...

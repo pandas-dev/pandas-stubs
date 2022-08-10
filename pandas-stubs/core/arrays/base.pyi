@@ -5,9 +5,7 @@ import numpy as np
 from pandas._typing import ArrayLike
 
 from pandas.core.dtypes.dtypes import ExtensionDtype as ExtensionDtype
-from pandas.core.dtypes.generic import ABCExtensionArray as ABCExtensionArray
-
-def try_cast_to_ea(cls_or_instance, obj, dtype=...): ...
+from pandas.core.dtypes.generic import ABCExtensionArray
 
 class ExtensionArray:
     def __getitem__(self, item) -> None: ...

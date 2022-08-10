@@ -19,7 +19,7 @@ from pandas.core.frame import DataFrame
 from pandas.core.groupby.groupby import (  # , get_groupby as get_groupby
     GroupBy as GroupBy,
 )
-from pandas.core.groupby.grouper import Grouper as Grouper
+from pandas.core.groupby.grouper import Grouper
 from pandas.core.series import Series
 
 from pandas._typing import (
@@ -40,9 +40,6 @@ class NamedAgg(NamedTuple):
     aggfunc: AggScalar = ...
 
 def generate_property(name: str, klass: type[FrameOrSeries]): ...
-def pin_whitelisted_properties(
-    klass: type[FrameOrSeries], whitelist: frozenset[str]
-): ...
 
 class _SeriesGroupByScalar(SeriesGroupBy):
     def __iter__(self) -> Iterator[tuple[Scalar, Series]]: ...

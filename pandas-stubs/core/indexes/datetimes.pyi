@@ -11,10 +11,7 @@ from pandas.core.indexes.api import (
     Float64Index,
     PeriodIndex,
 )
-from pandas.core.indexes.datetimelike import (
-    DatetimelikeDelegateMixin,
-    DatetimeTimedeltaMixin,
-)
+from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import (
     TimedeltaSeries,
@@ -23,9 +20,7 @@ from pandas.core.series import (
 
 from pandas._typing import np_ndarray_bool
 
-class DatetimeDelegateMixin(DatetimelikeDelegateMixin): ...
-
-class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeDelegateMixin):
+class DatetimeIndex(DatetimeTimedeltaMixin):
     tz: tzinfo | None
     def __init__(
         self,
@@ -53,7 +48,6 @@ class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeDelegateMixin):
     def to_series(self, keep_tz=..., index=..., name=...) -> TimestampSeries: ...  # type: ignore[override]
     def snap(self, freq: str = ...): ...
     def get_value(self, series, key): ...
-    def get_value_maybe_box(self, series, key): ...
     def get_loc(self, key, method=..., tolerance=...): ...
     def slice_indexer(self, start=..., end=..., step=..., kind=...): ...
     def searchsorted(self, value, side: str = ..., sorter=...): ...

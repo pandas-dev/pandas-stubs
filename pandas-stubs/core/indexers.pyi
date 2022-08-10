@@ -25,24 +25,6 @@ class BaseIndexer:
         closed: str | None = ...,
     ) -> tuple[np.ndarray, np.ndarray]: ...
 
-class FixedWindowIndexer(BaseIndexer):
-    def get_window_bounds(
-        self,
-        num_values: int = ...,
-        min_periods: int | None = ...,
-        center: bool | None = ...,
-        closed: str | None = ...,
-    ) -> tuple[np.ndarray, np.ndarray]: ...
-
-class VariableWindowIndexer(BaseIndexer):
-    def get_window_bounds(
-        self,
-        num_values: int = ...,
-        min_periods: int | None = ...,
-        center: bool | None = ...,
-        closed: str | None = ...,
-    ) -> tuple[np.ndarray, np.ndarray]: ...
-
 class VariableOffsetWindowIndexer(BaseIndexer):
     def __init__(
         self,
@@ -52,15 +34,6 @@ class VariableOffsetWindowIndexer(BaseIndexer):
         offset=...,
         **kwargs,
     ): ...
-    def get_window_bounds(
-        self,
-        num_values: int = ...,
-        min_periods: int | None = ...,
-        center: bool | None = ...,
-        closed: str | None = ...,
-    ) -> tuple[np.ndarray, np.ndarray]: ...
-
-class ExpandingIndexer(BaseIndexer):
     def get_window_bounds(
         self,
         num_values: int = ...,

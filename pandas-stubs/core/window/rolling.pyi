@@ -2,10 +2,8 @@ import numpy as np
 from pandas.core.base import (
     PandasObject,
     SelectionMixin,
-    ShallowMixin,
 )
 from pandas.core.indexes.api import Index
-from pandas.core.window.common import WindowGroupByMixin
 
 from pandas._typing import (
     AggFuncType,
@@ -14,7 +12,7 @@ from pandas._typing import (
     Scalar,
 )
 
-class _Window(PandasObject, ShallowMixin, SelectionMixin):
+class _Window(PandasObject, SelectionMixin):
     exclusions: set[str] = ...
     obj = ...
     on = ...
@@ -115,4 +113,4 @@ class Rolling(_Rolling_and_Expanding):
         kwargs=...,
     ): ...
 
-class RollingGroupby(WindowGroupByMixin, Rolling): ...
+class RollingGroupby(Rolling): ...

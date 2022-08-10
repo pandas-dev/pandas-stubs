@@ -6,15 +6,9 @@ from .base import (
 from .boolean import BooleanArray as BooleanArray
 from .categorical import Categorical as Categorical
 from .datetimes import DatetimeArray as DatetimeArray
-from .integer import (
-    IntegerArray as IntegerArray,
-    integer_array as integer_array,
-)
+from .integer import IntegerArray as IntegerArray
 from .interval import IntervalArray as IntervalArray
-from .numpy_ import (
-    PandasArray as PandasArray,
-    PandasDtype as PandasDtype,
-)
+from .numpy_ import PandasArray as PandasArray
 from .period import (
     PeriodArray as PeriodArray,
     period_array as period_array,

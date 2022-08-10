@@ -3,7 +3,6 @@ from typing import (
     Callable,
 )
 
-from pandas.core.window.common import WindowGroupByMixin as WindowGroupByMixin
 from pandas.core.window.rolling import _Rolling_and_Expanding
 
 from pandas._typing import FrameOrSeriesUnion as FrameOrSeries
@@ -23,4 +22,4 @@ class Expanding(_Rolling_and_Expanding):
         kwargs: dict[str, Any] | None = ...,
     ): ...
 
-class ExpandingGroupby(WindowGroupByMixin, Expanding): ...
+class ExpandingGroupby(Expanding): ...

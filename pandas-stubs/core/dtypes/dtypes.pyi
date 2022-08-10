@@ -8,7 +8,7 @@ from pandas.core.indexes.base import Index
 from pandas._libs.tslibs import (  # , timezones as timezones
     NaT as NaT,
     Period as Period,
-    Timestamp as Timestamp,
+    Timestamp,
 )
 from pandas._typing import Ordered
 
@@ -17,16 +17,6 @@ from .base import ExtensionDtype as ExtensionDtype
 _str = str
 
 def register_extension_dtype(cls: type[ExtensionDtype]) -> type[ExtensionDtype]: ...
-
-class Registry:
-    dtypes = ...
-    def __init__(self) -> None: ...
-    def register(self, dtype: type[ExtensionDtype]) -> None: ...
-    def find(
-        self, dtype: type[ExtensionDtype] | str
-    ) -> type[ExtensionDtype] | None: ...
-
-registry = ...
 
 class PandasExtensionDtype(ExtensionDtype):
     subdtype = ...
