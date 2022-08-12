@@ -436,6 +436,17 @@ def test_types_groupby() -> None:
     s.groupby(s > 2)
 
 
+def test_types_groupby_methods() -> None:
+    s = pd.Series([4, 2, 1, 8], index=["a", "b", "a", "b"])
+    check(assert_type(s.groupby(level=0).sum(), pd.Series), pd.Series)
+    check(assert_type(s.groupby(level=0).prod(), pd.Series), pd.Series)
+    check(assert_type(s.groupby(level=0).sem(), pd.Series), pd.Series)
+    check(assert_type(s.groupby(level=0).std(), pd.Series), pd.Series)
+    check(assert_type(s.groupby(level=0).var(), pd.Series), pd.Series)
+    check(assert_type(s.groupby(level=0).tail(), pd.Series), pd.Series)
+    check(assert_type(s.groupby(level=0).unique(), pd.Series), pd.Series)
+
+
 def test_types_groupby_agg() -> None:
     s = pd.Series([4, 2, 1, 8], index=["a", "b", "a", "b"])
     check(assert_type(s.groupby(level=0).agg("sum"), pd.Series), pd.Series)
