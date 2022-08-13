@@ -1579,3 +1579,9 @@ def test_resample() -> None:
     check(assert_type(df.resample("2T").sem(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.resample("2T").median(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.resample("2T").ohlc(), pd.DataFrame), pd.DataFrame)
+
+
+def test_dict_items() -> None:
+    # GH 180
+    x = {"a": [1]}
+    check(assert_type(pd.DataFrame(x.items()), pd.DataFrame), pd.DataFrame)

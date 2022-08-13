@@ -98,7 +98,7 @@ SeriesAxisType = Literal["index", 0]  # Restricted subset of _AxisType for serie
 AxisType = Literal["columns", "index", 0, 1]
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
 KeysArgType = Any
-ListLike = TypeVar("ListLike", Sequence, np.ndarray, "Series")
+ListLike = TypeVar("ListLike", Sequence, np.ndarray, "Series", "Index")
 StrLike = Union[str, np.str_]
 Scalar = Union[
     str,
