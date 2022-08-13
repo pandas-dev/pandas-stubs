@@ -563,6 +563,26 @@ def test_types_groupby() -> None:
     s2: pd.Series = s1.groupby("col1").transform("sum")
 
 
+def test_types_groupby_methods() -> None:
+    df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0]})
+    check(assert_type(df.groupby("col1").sum(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.groupby("col1").prod(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.groupby("col1").sample(), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.groupby("col1").value_counts(normalize=False), "pd.Series[int]"),
+        pd.Series,
+        int,
+    )
+    check(
+        assert_type(
+            df.groupby("col1").value_counts(subset=None, normalize=True),
+            "pd.Series[float]",
+        ),
+        pd.Series,
+        float,
+    )
+
+
 def test_types_groupby_agg() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0]})
     check(assert_type(df.groupby("col1")["col3"].agg(min), pd.Series), pd.Series)

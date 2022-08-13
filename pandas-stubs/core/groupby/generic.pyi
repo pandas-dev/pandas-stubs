@@ -1,6 +1,7 @@
 from typing import (
     Any,
     Callable,
+    Generic,
     Iterable,
     Iterator,
     Literal,
@@ -29,6 +30,7 @@ from pandas._typing import (
     AxisType,
     FrameOrSeries,
     Level,
+    ListLike,
     Scalar,
 )
 
@@ -41,13 +43,13 @@ class NamedAgg(NamedTuple):
 
 def generate_property(name: str, klass: type[FrameOrSeries]): ...
 
-class _SeriesGroupByScalar(SeriesGroupBy):
+class _SeriesGroupByScalar(SeriesGroupBy[S1]):
     def __iter__(self) -> Iterator[tuple[Scalar, Series]]: ...
 
-class _SeriesGroupByNonScalar(SeriesGroupBy):
+class _SeriesGroupByNonScalar(SeriesGroupBy[S1]):
     def __iter__(self) -> Iterator[tuple[tuple, Series]]: ...
 
-class SeriesGroupBy(GroupBy):
+class SeriesGroupBy(GroupBy, Generic[S1]):
     def any(self, skipna: bool = ...) -> Series[bool]: ...
     def all(self, skipna: bool = ...) -> Series[bool]: ...
     def apply(self, func, *args, **kwargs) -> Series: ...
@@ -101,7 +103,34 @@ class SeriesGroupBy(GroupBy):
     def nlargest(self, n: int = ..., keep: str = ...) -> Series[S1]: ...
     def nsmallest(self, n: int = ..., keep: str = ...) -> Series[S1]: ...
     def nth(self, n: int | Sequence[int], dropna: str | None = ...) -> Series[S1]: ...
-    def sum(self, **kwargs) -> Series[S1]: ...
+    def sum(
+        self,
+        numeric_only: bool = ...,
+        min_count: int = ...,
+        engine=...,
+        engine_kwargs=...,
+    ) -> Series[S1]: ...
+    def prod(self, numeric_only: bool = ..., min_count: int = ...) -> Series[S1]: ...
+    def sem(self, ddof: int = ...) -> Series[float]: ...
+    def std(self, ddof: int = ...) -> Series[float]: ...
+    def var(self, ddof: int = ...) -> Series[float]: ...
+    def tail(self, n: int = ...) -> Series[S1]: ...
+    def unique(self) -> Series: ...
+    def hist(
+        self,
+        by=...,
+        ax: PlotAxes | None = ...,
+        grid: bool = ...,
+        xlabelsize: int | None = ...,
+        xrot: float | None = ...,
+        ylabelsize: int | None = ...,
+        yrot: float | None = ...,
+        figsize: tuple[float, float] | None = ...,
+        bins: int | Sequence = ...,
+        backend: str | None = ...,
+        legend: bool = ...,
+        **kwargs,
+    ) -> AxesSubplot: ...
 
 class _DataFrameGroupByScalar(DataFrameGroupBy):
     def __iter__(self) -> Iterator[tuple[Scalar, DataFrame]]: ...
@@ -261,9 +290,17 @@ class DataFrameGroupBy(GroupBy):
         freq=...,
         axis: AxisType = ...,
     ) -> DataFrame: ...
-    def prod(self, **kwargs) -> DataFrame: ...
+    def prod(self, numeric_only: bool = ..., min_count: int = ...) -> DataFrame: ...
     def quantile(self, q: float = ..., interpolation: str = ...) -> DataFrame: ...
     def resample(self, rule, *args, **kwargs) -> Grouper: ...
+    def sample(
+        self,
+        n: int | None = ...,
+        frac: float | None = ...,
+        replace: bool = ...,
+        weights: ListLike | None = ...,
+        random_state: int | None = ...,
+    ) -> DataFrame: ...
     def sem(self, ddof: int = ...) -> DataFrame: ...
     def shift(
         self,
@@ -272,7 +309,6 @@ class DataFrameGroupBy(GroupBy):
         axis: AxisType = ...,
         fill_value=...,
     ) -> DataFrame: ...
-    def size(self) -> Series[int]: ...
     @overload
     def skew(
         self,
@@ -293,8 +329,32 @@ class DataFrameGroupBy(GroupBy):
         **kwargs,
     ) -> Series: ...
     def std(self, ddof: int = ...) -> DataFrame: ...
-    def sum(self, **kwargs) -> DataFrame: ...
+    def sum(
+        self,
+        numeric_only: bool = ...,
+        min_count: int = ...,
+        engine=...,
+        engine_kwargs=...,
+    ) -> DataFrame: ...
     def tail(self, n: int = ...) -> DataFrame: ...
     def take(self, indices: Sequence, axis: AxisType = ..., **kwargs) -> DataFrame: ...
     def tshift(self, periods: int, freq=..., axis: AxisType = ...) -> DataFrame: ...
     def var(self, ddof: int = ...) -> DataFrame: ...
+    @overload
+    def value_counts(
+        self,
+        subset: ListLike | None = ...,
+        normalize: Literal[False] = ...,
+        sort: bool = ...,
+        ascending: bool = ...,
+        dropna: bool = ...,
+    ) -> Series[int]: ...
+    @overload
+    def value_counts(
+        self,
+        subset: ListLike | None,
+        normalize: Literal[True],
+        sort: bool = ...,
+        ascending: bool = ...,
+        dropna: bool = ...,
+    ) -> Series[float]: ...

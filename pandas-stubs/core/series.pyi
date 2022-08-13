@@ -377,7 +377,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         squeeze: _bool = ...,
         observed: _bool = ...,
         dropna: _bool = ...,
-    ) -> _SeriesGroupByScalar: ...
+    ) -> _SeriesGroupByScalar[S1]: ...
     @overload
     def groupby(
         self,
@@ -390,7 +390,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         squeeze: _bool = ...,
         observed: _bool = ...,
         dropna: _bool = ...,
-    ) -> _SeriesGroupByNonScalar: ...
+    ) -> _SeriesGroupByNonScalar[S1]: ...
     @overload
     def count(self, level: None = ...) -> int: ...
     @overload
