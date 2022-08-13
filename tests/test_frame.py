@@ -1583,7 +1583,7 @@ def test_resample() -> None:
 
 def test_loclist() -> None:
     # GH 189
-    df = pd.DataFrame({1: [1, 2], None: 5})
+    df = pd.DataFrame({1: [1, 2], None: 5}, columns=pd.Index([1, None], dtype=object))
 
     check(assert_type(df.loc[:, [None]], pd.DataFrame), pd.DataFrame)
     check(assert_type(df.loc[:, [1]], pd.DataFrame), pd.DataFrame)
