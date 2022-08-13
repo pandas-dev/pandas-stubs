@@ -1579,3 +1579,11 @@ def test_resample() -> None:
     check(assert_type(df.resample("2T").sem(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.resample("2T").median(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.resample("2T").ohlc(), pd.DataFrame), pd.DataFrame)
+
+
+def test_loclist() -> None:
+    # GH 189
+    df = pd.DataFrame({1: [1, 2], None: 5})
+
+    check(assert_type(df.loc[:, [None]], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[:, [1]], pd.DataFrame), pd.DataFrame)
