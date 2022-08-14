@@ -11,7 +11,6 @@ from typing import (
     Mapping,
     Pattern,
     Sequence,
-    Union,
     overload,
 )
 
@@ -61,6 +60,7 @@ from pandas._typing import (
     IndexType,
     Label,
     Level,
+    ListLike,
     MaskType,
     Renamer,
     Scalar,
@@ -158,19 +158,16 @@ class _LocIndexerFrame(_LocIndexer):
     ) -> None: ...
 
 class DataFrame(NDFrame, OpsMixin):
-    _ListLike = Union[
-        np.ndarray,
-        list[Dtype],
-        dict[_str, np.ndarray],
-        Sequence,
-        Index,
-        Series,
-    ]
+
     __hash__: ClassVar[None]  # type: ignore[assignment]
 
     def __new__(
         cls,
-        data: _ListLike | DataFrame | dict[Any, Any] | None = ...,
+        data: ListLike
+        | DataFrame
+        | dict[Any, Any]
+        | Iterable[tuple[Hashable, ListLike]]
+        | None = ...,
         index: Axes | None = ...,
         columns: Axes | None = ...,
         dtype=...,
@@ -377,7 +374,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         loc: int,
         column,
-        value: int | _ListLike,
+        value: int | ListLike,
         allow_duplicates: _bool = ...,
     ) -> None: ...
     def assign(self, **kwargs) -> DataFrame: ...
@@ -972,7 +969,7 @@ class DataFrame(NDFrame, OpsMixin):
         | Series
         | dict[Any, Any]
         | Sequence[Scalar]
-        | Sequence[_ListLike],
+        | Sequence[ListLike],
         ignore_index: _bool = ...,
         verify_integrity: _bool = ...,
         sort: _bool = ...,
@@ -1081,7 +1078,7 @@ class DataFrame(NDFrame, OpsMixin):
     def hist(
         self,
         column: _str | list[_str] | None = ...,
-        by: _str | _ListLike | None = ...,
+        by: _str | ListLike | None = ...,
         grid: _bool = ...,
         xlabelsize: int | None = ...,
         xrot: float | None = ...,
@@ -1099,7 +1096,7 @@ class DataFrame(NDFrame, OpsMixin):
     def boxplot(
         self,
         column: _str | list[_str] | None = ...,
-        by: _str | _ListLike | None = ...,
+        by: _str | ListLike | None = ...,
         ax: PlotAxes | None = ...,
         fontsize: float | _str | None = ...,
         rot: int = ...,
@@ -1154,7 +1151,7 @@ class DataFrame(NDFrame, OpsMixin):
     def abs(self) -> DataFrame: ...
     def add(
         self,
-        other: num | _ListLike | DataFrame,
+        other: num | ListLike | DataFrame,
         axis: AxisType | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
@@ -1277,14 +1274,14 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def div(
         self,
-        other: num | _ListLike | DataFrame,
+        other: num | ListLike | DataFrame,
         axis: AxisType | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
     def divide(
         self,
-        other: num | _ListLike | DataFrame,
+        other: num | ListLike | DataFrame,
         axis: AxisType | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
@@ -1339,7 +1336,7 @@ class DataFrame(NDFrame, OpsMixin):
     def first_valid_index(self) -> Scalar: ...
     def floordiv(
         self,
-        other: num | _ListLike | DataFrame,
+        other: num | ListLike | DataFrame,
         axis: AxisType | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
@@ -1555,21 +1552,21 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> Series: ...
     def mod(
         self,
-        other: num | _ListLike | DataFrame,
+        other: num | ListLike | DataFrame,
         axis: AxisType | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
     def mul(
         self,
-        other: num | _ListLike | DataFrame,
+        other: num | ListLike | DataFrame,
         axis: AxisType | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
     def multiply(
         self,
-        other: num | _ListLike | DataFrame,
+        other: num | ListLike | DataFrame,
         axis: AxisType | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
@@ -1594,7 +1591,7 @@ class DataFrame(NDFrame, OpsMixin):
     def pop(self, item: _str) -> Series: ...
     def pow(
         self,
-        other: num | _ListLike | DataFrame,
+        other: num | ListLike | DataFrame,
         axis: AxisType | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
@@ -1785,7 +1782,7 @@ class DataFrame(NDFrame, OpsMixin):
         n: int | None = ...,
         frac: float | None = ...,
         replace: _bool = ...,
-        weights: _str | _ListLike | np.ndarray | None = ...,
+        weights: _str | ListLike | None = ...,
         random_state: int | None = ...,
         axis: SeriesAxisType | None = ...,
         ignore_index: _bool = ...,
@@ -1872,14 +1869,14 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> Series: ...
     def sub(
         self,
-        other: num | _ListLike | DataFrame,
+        other: num | ListLike | DataFrame,
         axis: AxisType | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
     def subtract(
         self,
-        other: num | _ListLike | DataFrame,
+        other: num | ListLike | DataFrame,
         axis: AxisType | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
@@ -2089,7 +2086,7 @@ class DataFrame(NDFrame, OpsMixin):
     def to_xarray(self): ...
     def truediv(
         self,
-        other: num | _ListLike | DataFrame,
+        other: num | ListLike | DataFrame,
         axis: AxisType | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
