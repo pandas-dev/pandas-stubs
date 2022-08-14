@@ -1587,3 +1587,9 @@ def test_loclist() -> None:
 
     check(assert_type(df.loc[:, [None]], pd.DataFrame), pd.DataFrame)
     check(assert_type(df.loc[:, [1]], pd.DataFrame), pd.DataFrame)
+
+
+def test_dict_items() -> None:
+    # GH 180
+    x = {"a": [1]}
+    check(assert_type(pd.DataFrame(x.items()), pd.DataFrame), pd.DataFrame)
