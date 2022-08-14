@@ -1,4 +1,3 @@
-from collections.abc import ItemsView
 import datetime
 import datetime as _dt
 from typing import (
@@ -167,7 +166,7 @@ class DataFrame(NDFrame, OpsMixin):
         data: ListLike
         | DataFrame
         | dict[Any, Any]
-        | ItemsView[Hashable, ListLike]
+        | Iterable[tuple[Hashable, ListLike]]
         | None = ...,
         index: Axes | None = ...,
         columns: Axes | None = ...,
