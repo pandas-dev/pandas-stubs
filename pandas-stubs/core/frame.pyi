@@ -150,12 +150,6 @@ class _LocIndexerFrame(_LocIndexer):
         idx: tuple[tuple[HashableT | Scalar | slice, ...], HashableT],
         value: S1 | ArrayLike | Series[S1] | list,
     ) -> None: ...
-    @overload
-    def __setitem__(
-        self,
-        idx: tuple[tuple[HashableT | Scalar | slice, ...], HashableT],
-        value: S1 | ArrayLike | Series[S1] | list,
-    ) -> None: ...
 
 class DataFrame(NDFrame, OpsMixin):
     _ListLike = Union[
