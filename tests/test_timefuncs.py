@@ -11,6 +11,7 @@ from typing import (
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
+from pandas.core.indexes.numeric import IntegerIndex
 import pytest
 from pytz.tzinfo import BaseTzInfo
 from typing_extensions import assert_type
@@ -349,3 +350,8 @@ def test_dt_accessors() -> None:
     check(assert_type(s2.dt.components, pd.DataFrame), pd.DataFrame)
     check(assert_type(s2.dt.to_pytimedelta(), np.ndarray), np.ndarray)
     check(assert_type(s2.dt.total_seconds(), "pd.Series[float]"), pd.Series, float)
+
+
+def test_dti_accessors() -> None:
+    x = pd.DatetimeIndex(["2022-08-14"])
+    check(assert_type(x.month, IntegerIndex), IntegerIndex)

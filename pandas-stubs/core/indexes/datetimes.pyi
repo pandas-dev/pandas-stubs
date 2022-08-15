@@ -7,24 +7,30 @@ from pandas import (
     Timedelta,
     Timestamp,
 )
+from pandas.core.indexes.accessors import DatetimeFieldOps
 from pandas.core.indexes.api import (
     Float64Index,
     PeriodIndex,
 )
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
+from pandas.core.indexes.numeric import IntegerIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import (
     TimedeltaSeries,
     TimestampSeries,
 )
 
-from pandas._typing import np_ndarray_bool
+from pandas._typing import (
+    AnyArrayLike,
+    ArrayLike,
+    np_ndarray_bool,
+)
 
-class DatetimeIndex(DatetimeTimedeltaMixin):
+class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeFieldOps[IntegerIndex]):
     tz: tzinfo | None
     def __init__(
         self,
-        data=...,
+        data: ArrayLike | AnyArrayLike | list | tuple,
         freq=...,
         tz=...,
         normalize: bool = ...,
