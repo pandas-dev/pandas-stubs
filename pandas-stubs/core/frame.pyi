@@ -114,20 +114,20 @@ class _LocIndexerFrame(_LocIndexer):
         self,
         idx: IndexType
         | MaskType
-        | list[StrLike]
+        | list[HashableT]
         | tuple[
             IndexType
             | MaskType
             | slice
-            | list[StrLike]
+            | list[HashableT]
             | tuple[str | int | slice, ...],
-            list[StrLike] | slice | Series[bool] | Callable,
+            list[HashableT] | slice | Series[bool] | Callable,
         ],
     ) -> DataFrame: ...
     @overload
     def __getitem__(
         self,
-        idx: tuple[int | StrLike | tuple[StrLike, ...], StrLike],
+        idx: tuple[int | StrLike | tuple[HashableT, ...], int | StrLike],
     ) -> Scalar: ...
     @overload
     def __getitem__(
@@ -141,19 +141,13 @@ class _LocIndexerFrame(_LocIndexer):
         self,
         idx: MaskType
         | StrLike
-        | tuple[MaskType | Index | Sequence[Scalar] | Scalar | slice, ...],
+        | tuple[MaskType | Index | Sequence[ScalarT] | Scalar | slice, ...],
         value: S1 | ArrayLike | Series | DataFrame,
     ) -> None: ...
     @overload
     def __setitem__(
         self,
-        idx: tuple[tuple[StrLike | Scalar | slice, ...], StrLike],
-        value: S1 | ArrayLike | Series[S1] | list,
-    ) -> None: ...
-    @overload
-    def __setitem__(
-        self,
-        idx: tuple[tuple[StrLike | Scalar | slice, ...], StrLike],
+        idx: tuple[tuple[HashableT | Scalar | slice, ...], HashableT],
         value: S1 | ArrayLike | Series[S1] | list,
     ) -> None: ...
 

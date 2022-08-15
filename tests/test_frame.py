@@ -1581,6 +1581,14 @@ def test_resample() -> None:
     check(assert_type(df.resample("2T").ohlc(), pd.DataFrame), pd.DataFrame)
 
 
+def test_loclist() -> None:
+    # GH 189
+    df = pd.DataFrame({1: [1, 2], None: 5}, columns=pd.Index([1, None], dtype=object))
+
+    check(assert_type(df.loc[:, [None]], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[:, [1]], pd.DataFrame), pd.DataFrame)
+
+
 def test_dict_items() -> None:
     # GH 180
     x = {"a": [1]}
