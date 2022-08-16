@@ -1271,6 +1271,24 @@ def test_read_excel() -> None:
         df17: dict[int | str, pd.DataFrame] = pd.read_excel("foo", sheet_name=None)
 
 
+def test_read_excel_io_types() -> None:
+    df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as file:
+        as_str: str = file.name
+        df.to_excel(file.name)
+        file.close()
+    
+    pd.read_excel(as_str)
+    as_path = Path(as_str)
+    pd.read_excel(as_path)
+
+    with as_path.open("rb") as as_file:
+        pd.read_excel(as_file)
+    
+    as_bytes = as_path.read_bytes()
+    pd.read_excel(as_bytes)
+
+
 def test_join() -> None:
     float_frame = pd.DataFrame(getSeriesData())
     # GH 29
