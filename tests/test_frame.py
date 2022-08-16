@@ -8,10 +8,12 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
+    Generic,
     Hashable,
     Iterable,
     Iterator,
     Tuple,
+    TypeVar,
     Union,
 )
 
@@ -1593,3 +1595,16 @@ def test_dict_items() -> None:
     # GH 180
     x = {"a": [1]}
     check(assert_type(pd.DataFrame(x.items()), pd.DataFrame), pd.DataFrame)
+
+
+def test_generic() -> None:
+    # GH 197
+    T = TypeVar("T")
+
+    class MyDataFrame(pd.DataFrame, Generic[T]):
+        ...
+
+    def func() -> MyDataFrame[int]:
+        return MyDataFrame[int]({"foo": [1, 2, 3]})
+
+    func()

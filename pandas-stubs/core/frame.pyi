@@ -61,6 +61,7 @@ from pandas._typing import (
     Label,
     Level,
     ListLike,
+    ListLikeU,
     MaskType,
     Renamer,
     Scalar,
@@ -157,10 +158,10 @@ class DataFrame(NDFrame, OpsMixin):
 
     def __new__(
         cls,
-        data: ListLike
+        data: ListLikeU
         | DataFrame
         | dict[Any, Any]
-        | Iterable[tuple[Hashable, ListLike]]
+        | Iterable[tuple[Hashable, ListLikeU]]
         | None = ...,
         index: Axes | None = ...,
         columns: Axes | None = ...,
