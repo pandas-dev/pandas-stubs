@@ -99,6 +99,7 @@ AxisType = Literal["columns", "index", 0, 1]
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
 KeysArgType = Any
 ListLike = TypeVar("ListLike", Sequence, np.ndarray, "Series", "Index")
+ListLikeU = Union[Sequence, np.ndarray, Series, Index]
 StrLike = Union[str, np.str_]
 Scalar = Union[
     str,
