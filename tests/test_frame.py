@@ -1272,6 +1272,7 @@ def test_read_excel() -> None:
 
 
 def test_read_excel_io_types() -> None:
+    # GH 195
     df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
     with tempfile.NamedTemporaryFile(suffix=".xlsx") as file:
         as_str: str = file.name
