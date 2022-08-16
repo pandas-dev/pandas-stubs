@@ -10,12 +10,14 @@ from pandas.core.frame import DataFrame
 
 from pandas._typing import (
     Dtype,
+    FilePath,
+    ReadBuffer,
     Scalar,
 )
 
 @overload
 def read_excel(
-    filepath: str,
+    filepath: FilePath | ReadBuffer[bytes] | bytes,
     sheet_name: list[int | str] | None,
     header: int | Sequence[int] | None = ...,
     names: list[str] | None = ...,
@@ -42,7 +44,7 @@ def read_excel(
 ) -> dict[int | str, DataFrame]: ...
 @overload
 def read_excel(
-    filepath: str,
+    filepath: FilePath | ReadBuffer[bytes] | bytes,
     sheet_name: int | str = ...,
     header: int | Sequence[int] | None = ...,
     names: list[str] | None = ...,
