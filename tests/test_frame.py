@@ -1277,14 +1277,14 @@ def test_read_excel_io_types() -> None:
         as_str: str = file.name
         df.to_excel(file.name)
         file.close()
-    
+
     pd.read_excel(as_str)
     as_path = Path(as_str)
     pd.read_excel(as_path)
 
     with as_path.open("rb") as as_file:
         pd.read_excel(as_file)
-    
+
     as_bytes = as_path.read_bytes()
     pd.read_excel(as_bytes)
 
