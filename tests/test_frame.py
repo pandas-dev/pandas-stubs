@@ -1273,20 +1273,20 @@ def test_read_excel() -> None:
 
 def test_read_excel_io_types() -> None:
     df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as file:
+    with tempfile.NamedTemporaryFile(suffix=".xlsx") as file:
         as_str: str = file.name
         df.to_excel(file.name)
-        file.close()
 
-    pd.read_excel(as_str)
-    as_path = Path(as_str)
-    pd.read_excel(as_path)
+        check(assert_type(pd.read_excel(as_str), pd.DataFrame), pd.DataFrame)
 
-    with as_path.open("rb") as as_file:
-        pd.read_excel(as_file)
+        as_path = Path(as_str)
+        check(assert_type(pd.read_excel(as_path), pd.DataFrame), pd.DataFrame)
 
-    as_bytes = as_path.read_bytes()
-    pd.read_excel(as_bytes)
+        with as_path.open("rb") as as_file:
+            check(assert_type(pd.read_excel(as_file), pd.DataFrame), pd.DataFrame)
+
+        as_bytes = as_path.read_bytes()
+        check(assert_type(pd.read_excel(as_bytes), pd.DataFrame), pd.DataFrame)
 
 
 def test_join() -> None:
