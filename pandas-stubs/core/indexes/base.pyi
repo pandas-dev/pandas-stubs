@@ -12,6 +12,7 @@ from typing import (
 import numpy as np
 from pandas import (
     DataFrame,
+    MultiIndex,
     Series,
 )
 from pandas.core.arrays import ExtensionArray
@@ -58,7 +59,7 @@ class Index(IndexOpsMixin, PandasObject):
         tupleize_cols: bool = ...,
     ): ...
     @property
-    def str(self) -> StringMethods[Index]: ...
+    def str(self) -> StringMethods[Index, MultiIndex]: ...
     @property
     def asi8(self) -> np_ndarray_int64: ...
     def is_(self, other) -> bool: ...

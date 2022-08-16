@@ -977,6 +977,8 @@ def test_string_accessors():
     check(assert_type(s.str.slice(0, 4, 2), pd.Series), pd.Series)
     check(assert_type(s.str.slice_replace(0, 2, "XX"), pd.Series), pd.Series)
     check(assert_type(s.str.split("a"), pd.Series), pd.Series)
+    # GH 194
+    check(assert_type(s.str.split("a", expand=True), pd.DataFrame), pd.DataFrame)
     check(assert_type(s.str.startswith("a"), "pd.Series[bool]"), pd.Series, bool)
     check(assert_type(s.str.strip(), pd.Series), pd.Series)
     check(assert_type(s.str.swapcase(), pd.Series), pd.Series)

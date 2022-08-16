@@ -5,17 +5,25 @@ from typing import (
     Generic,
     Literal,
     Sequence,
+    TypeVar,
     overload,
 )
 
 import numpy as np
 import pandas as pd
-from pandas import Series
+from pandas import (
+    DataFrame,
+    MultiIndex,
+    Series,
+)
 from pandas.core.base import NoNewAttributesMixin
 
 from pandas._typing import T
 
-class StringMethods(NoNewAttributesMixin, Generic[T]):
+# The _TS type is what is used for the result of str.split with expand=True
+_TS = TypeVar("_TS", DataFrame, MultiIndex)
+
+class StringMethods(NoNewAttributesMixin, Generic[T, _TS]):
     def __init__(self, data: T) -> None: ...
     def __getitem__(self, key: slice | int) -> T: ...
     def __iter__(self) -> T: ...
@@ -44,9 +52,19 @@ class StringMethods(NoNewAttributesMixin, Generic[T]):
         na_rep: str | None = ...,
         join: Literal["left", "right", "outer", "inner"] = ...,
     ) -> T: ...
+    @overload
+    def split(
+        self, pat: str = ..., n: int = ..., *, expand: Literal[True], regex: bool = ...
+    ) -> _TS: ...
+    @overload
     def split(
         self, pat: str = ..., n: int = ..., expand: bool = ..., *, regex: bool = ...
     ) -> T: ...
+    @overload
+    def rsplit(
+        self, pat: str = ..., n: int = ..., *, expand: Literal[True], regex: bool = ...
+    ) -> T: ...
+    @overload
     def rsplit(
         self, pat: str = ..., n: int = ..., expand: bool = ..., *, regex: bool = ...
     ) -> T: ...
