@@ -1274,10 +1274,10 @@ def test_read_excel() -> None:
 def test_read_excel_io_types() -> None:
     # GH 195
     df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
-    with tempfile.NamedTemporaryFile(suffix=".xlsx") as file:
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as file:
         as_str: str = file.name
-        df.to_excel(file.name)
-
+        df.to_excel(file)
+    try:
         check(assert_type(pd.read_excel(as_str), pd.DataFrame), pd.DataFrame)
 
         as_path = Path(as_str)
@@ -1288,6 +1288,8 @@ def test_read_excel_io_types() -> None:
 
         as_bytes = as_path.read_bytes()
         check(assert_type(pd.read_excel(as_bytes), pd.DataFrame), pd.DataFrame)
+    finally:
+        Path(as_str).unlink()
 
 
 def test_join() -> None:
