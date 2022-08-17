@@ -273,12 +273,20 @@ def test_unique() -> None:
     )
 
 
+# GH 200
 def test_crosstab() -> None:
     df = pd.DataFrame({"a": [1, 2, 1, 2], "b": [1, 1, 2, 2]})
-    pd.crosstab(
-        index=df["a"],
-        columns=df["b"],
-        margins=True,
-        dropna=False,
-        normalize="columns",
+    check(
+        assert_type(
+            pd.crosstab(
+                index=df["a"],
+                columns=df["b"],
+                margins=True,
+                dropna=False,
+                normalize="columns",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )
+
