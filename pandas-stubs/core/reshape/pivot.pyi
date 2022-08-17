@@ -41,5 +41,5 @@ def crosstab(
     margins: bool = ...,
     margins_name: str = ...,
     dropna: bool = ...,
-    normalize: bool | Literal["all", "index", "columns"] = ...,
+    normalize: bool | Literal[0, 1, "all", "index", "columns"] = ...,
 ) -> DataFrame: ...
