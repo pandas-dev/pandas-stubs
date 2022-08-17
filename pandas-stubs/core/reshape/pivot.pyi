@@ -1,5 +1,6 @@
 from typing import (
     Callable,
+    Literal,
     Sequence,
 )
 
@@ -40,5 +41,5 @@ def crosstab(
     margins: bool = ...,
     margins_name: str = ...,
     dropna: bool = ...,
-    normalize: bool = ...,
+    normalize: bool | Literal["all", "index", "columns"] = ...,
 ) -> DataFrame: ...
