@@ -25,9 +25,9 @@ def read_xml(
     parse_dates: ParseDatesArg | None = ...,
     # encoding can not be None for lxml and StringIO input
     encoding: str | None = ...,
-    parser: XMLParsers | None = ...,
+    parser: XMLParsers = ...,
     stylesheet: FilePath | ReadBuffer[bytes] | ReadBuffer[str] | None = ...,
     iterparse: dict[str, list[str]] | None = ...,
-    compression: CompressionOptions | None = ...,
-    storage_options: StorageOptions | None = ...,
+    compression: CompressionOptions = ...,
+    storage_options: StorageOptions = ...,
 ) -> DataFrame: ...
