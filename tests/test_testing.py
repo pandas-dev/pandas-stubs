@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import os.path
+
 import pandas as pd
+from pandas._testing import ensure_clean
 from pandas.testing import (
     assert_frame_equal,
     assert_series_equal,
@@ -31,3 +34,9 @@ def test_assert_frame_equal():
     df2 = pd.DataFrame({"x": [1, 2, 3]})
     # GH 56
     assert_frame_equal(df1, df2, check_index_type=False)
+
+
+def test_ensure_clean():
+    with ensure_clean() as path:
+        pd.DataFrame({"x": [1, 2, 3]}).to_csv(path)
+    assert not os.path.exists(path)

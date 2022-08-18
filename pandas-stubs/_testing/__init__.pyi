@@ -1,4 +1,9 @@
-from typing import Literal
+from contextlib import contextmanager
+from typing import (
+    Any,
+    Generator,
+    Literal,
+)
 
 from pandas import (
     DataFrame,
@@ -107,3 +112,7 @@ def assert_produces_warning(
     check_stacklevel: bool = ...,
     raise_on_extra_warnings: bool = ...,
 ) -> None: ...
+@contextmanager
+def ensure_clean(
+    filename: str | None = ..., return_filelike: bool = ..., **kwargs: Any
+) -> Generator[str, None, None]: ...
