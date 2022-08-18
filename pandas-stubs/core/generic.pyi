@@ -18,7 +18,9 @@ from pandas._typing import (
     S1,
     ArrayLike,
     Axis,
+    CompressionOptions,
     Dtype,
+    FilePath,
     FilePathOrBuffer,
     FrameOrSeries,
     FrameOrSeriesUnion,
@@ -26,7 +28,9 @@ from pandas._typing import (
     Level,
     Scalar,
     SeriesAxisType,
+    StorageOptions,
     T,
+    WriteBuffer,
 )
 
 _bool = bool
@@ -160,9 +164,10 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     ) -> None: ...
     def to_pickle(
         self,
-        path: _str,
-        compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] = ...,
+        path: FilePath | WriteBuffer[bytes],
+        compression: CompressionOptions = ...,
         protocol: int = ...,
+        storage_options: StorageOptions = ...,
     ) -> None: ...
     def to_clipboard(
         self, excel: _bool = ..., sep: _str | None = ..., **kwargs

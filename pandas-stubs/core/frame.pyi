@@ -48,8 +48,10 @@ from pandas._typing import (
     Axes,
     Axis,
     AxisType,
+    CompressionOptions,
     Dtype,
     DtypeNp,
+    FilePath,
     FilePathOrBuffer,
     FilePathOrBytesBuffer,
     GroupByObjectNonScalar,
@@ -67,8 +69,10 @@ from pandas._typing import (
     Scalar,
     ScalarT,
     SeriesAxisType,
+    StorageOptions,
     StrLike,
     T as TType,
+    WriteBuffer,
     np_ndarray_bool,
     np_ndarray_str,
     num,
@@ -2017,9 +2021,10 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> _str: ...
     def to_pickle(
         self,
-        path: _str,
-        compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] = ...,
+        path: FilePath | WriteBuffer[bytes],
+        compression: CompressionOptions = ...,
         protocol: int = ...,
+        storage_options: StorageOptions = ...,
     ) -> None: ...
     def to_sql(
         self,
