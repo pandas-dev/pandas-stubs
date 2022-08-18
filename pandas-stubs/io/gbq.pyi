@@ -12,10 +12,10 @@ def read_gbq(
     dialect: str | None = ...,
     location: str | None = ...,
     configuration: dict[str, Any] | None = ...,
-    credentials=...,
+    # Google type, not available
+    credentials: Any = ...,
     use_bqstorage_api: bool | None = ...,
-    private_key=...,
-    verbose=...,
+    max_results: int | None = ...,
     progress_bar_type: str | None = ...,
 ) -> DataFrame: ...
 def to_gbq(
@@ -29,7 +29,6 @@ def to_gbq(
     table_schema: list[dict[str, str]] | None = ...,
     location: str | None = ...,
     progress_bar: bool = ...,
-    credentials=...,
-    verbose=...,
-    private_key=...,
+    # Google type, not available
+    credentials: Any = ...,
 ) -> None: ...
