@@ -9,6 +9,9 @@ from pandas.testing import (
     assert_series_equal,
 )
 import pytest
+from typing_extensions import assert_type
+
+from tests import check
 
 
 def test_types_assert_series_equal() -> None:
@@ -38,5 +41,6 @@ def test_assert_frame_equal():
 
 def test_ensure_clean():
     with ensure_clean() as path:
+        check(assert_type(path, str), str)
         pd.DataFrame({"x": [1, 2, 3]}).to_csv(path)
     assert not os.path.exists(path)
