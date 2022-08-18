@@ -1,4 +1,7 @@
-from typing import Any
+from typing import (
+    Any,
+    Literal,
+)
 
 from pandas.core.frame import DataFrame
 
@@ -9,26 +12,12 @@ def read_gbq(
     col_order: list[str] | None = ...,
     reauth: bool = ...,
     auth_local_webserver: bool = ...,
-    dialect: str | None = ...,
+    dialect: Literal["legacy", "standard"] | None = ...,
     location: str | None = ...,
     configuration: dict[str, Any] | None = ...,
     # Google type, not available
     credentials: Any = ...,
     use_bqstorage_api: bool | None = ...,
     max_results: int | None = ...,
-    progress_bar_type: str | None = ...,
+    progress_bar_type: Literal["tqdm", "tqdm_notebook", "tqdm_gui"] | None = ...,
 ) -> DataFrame: ...
-def to_gbq(
-    dataframe: DataFrame,
-    destination_table: str,
-    project_id: str | None = ...,
-    chunksize: int | None = ...,
-    reauth: bool = ...,
-    if_exists: str = ...,
-    auth_local_webserver: bool = ...,
-    table_schema: list[dict[str, str]] | None = ...,
-    location: str | None = ...,
-    progress_bar: bool = ...,
-    # Google type, not available
-    credentials: Any = ...,
-) -> None: ...
