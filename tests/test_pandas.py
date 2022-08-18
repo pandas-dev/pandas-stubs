@@ -289,4 +289,3 @@ def test_crosstab() -> None:
         ),
         pd.DataFrame,
     )
-
