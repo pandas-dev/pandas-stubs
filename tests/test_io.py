@@ -1,8 +1,8 @@
-import os
-import tempfile
+from pathlib import Path
 from typing import Any
 
 from pandas import DataFrame
+from pandas._testing import ensure_clean
 from typing_extensions import assert_type
 
 from tests import check
@@ -16,57 +16,54 @@ DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 
 
 def test_pickle():
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        check(assert_type(DF.to_pickle(file), None), type(None))
-        file.seek(0)
-        check(assert_type(read_pickle(file.name), Any), DataFrame)
-        file.close()
-        check(assert_type(read_pickle(file.name), Any), DataFrame)
-        os.unlink(file.name)
+    with ensure_clean() as path:
+        check(assert_type(DF.to_pickle(path), None), type(None))
+        check(assert_type(read_pickle(path), Any), DataFrame)
 
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        check(assert_type(to_pickle(DF, file), None), type(None))
-        file.seek(0)
-        check(assert_type(read_pickle(file.name), Any), DataFrame)
+    with ensure_clean() as path:
+        check(assert_type(to_pickle(DF, path), None), type(None))
+        check(assert_type(read_pickle(path), Any), DataFrame)
+
+
+def test_pickle_file_handle():
+    with ensure_clean() as path:
+        check(assert_type(to_pickle(DF, path), None), type(None))
+        file = open(path, "rb")
+        check(assert_type(read_pickle(file), Any), DataFrame)
         file.close()
-        check(assert_type(read_pickle(file.name), Any), DataFrame)
-        os.unlink(file.name)
+
+
+def test_pickle_path():
+    with ensure_clean() as path:
+        check(assert_type(to_pickle(DF, path), None), type(None))
+        check(assert_type(read_pickle(Path(path)), Any), DataFrame)
 
 
 def test_pickle_protocol():
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        DF.to_pickle(file, protocol=3)
-        file.seek(0)
-        check(assert_type(read_pickle(file.name), Any), DataFrame)
-        file.close()
-        check(assert_type(read_pickle(file.name), Any), DataFrame)
-        os.unlink(file.name)
+    with ensure_clean() as path:
+        DF.to_pickle(path, protocol=3)
+        check(assert_type(read_pickle(path), Any), DataFrame)
 
 
 def test_pickle_compression():
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        DF.to_pickle(file, compression="gzip")
-        file.seek(0)
+    with ensure_clean() as path:
+        DF.to_pickle(path, compression="gzip")
         check(
-            assert_type(read_pickle(file.name, compression="gzip"), Any),
+            assert_type(read_pickle(path, compression="gzip"), Any),
             DataFrame,
         )
-        file.close()
+
         check(
-            assert_type(read_pickle(file.name, compression="gzip"), Any),
+            assert_type(read_pickle(path, compression="gzip"), Any),
             DataFrame,
         )
-        os.unlink(file.name)
 
 
 def test_pickle_storage_options():
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        DF.to_pickle(file, storage_options={})
-        file.seek(0)
-        check(assert_type(read_pickle(file, storage_options={}), Any), DataFrame)
-        file.close()
+    with ensure_clean() as path:
+        DF.to_pickle(path, storage_options={})
+
         check(
-            assert_type(read_pickle(file.name, storage_options={}), Any),
+            assert_type(read_pickle(path, storage_options={}), Any),
             DataFrame,
         )
-        os.unlink(file.name)
