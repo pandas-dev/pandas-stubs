@@ -1157,12 +1157,21 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def all(
         self,
+        axis: None,
+        bool_only: _bool | None = ...,
+        skipna: _bool = ...,
+        level: None = ...,
+        **kwargs,
+    ) -> _bool: ...
+    @overload
+    def all(
+        self,
         axis: AxisType = ...,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
         level: None = ...,
         **kwargs,
-    ) -> Series: ...
+    ) -> Series[_bool]: ...
     @overload
     def all(
         self,
@@ -1176,12 +1185,21 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def any(
         self,
+        axis: None,
+        bool_only: _bool | None = ...,
+        skipna: _bool = ...,
+        level: None = ...,
+        **kwargs,
+    ) -> _bool: ...
+    @overload
+    def any(
+        self,
         axis: AxisType = ...,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
         level: None = ...,
         **kwargs,
-    ) -> Series: ...
+    ) -> Series[_bool]: ...
     @overload
     def any(
         self,
