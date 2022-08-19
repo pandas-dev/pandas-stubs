@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import tempfile
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -9,6 +8,7 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas._testing import ensure_clean
 from pandas.api.extensions import ExtensionArray
 import pytest
 from typing_extensions import assert_type
@@ -119,46 +119,48 @@ def test_types_read_csv() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     csv_df: str = df.to_csv()
 
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        df.to_csv(file.name)
-        file.close()
-        df2: pd.DataFrame = pd.read_csv(file.name)
+    with ensure_clean() as path:
+        df.to_csv(path)
+        df2: pd.DataFrame = pd.read_csv(path)
         with pytest.warns(FutureWarning, match="The squeeze argument"):
-            df3: pd.DataFrame = pd.read_csv(file.name, sep="a", squeeze=False)
+            df3: pd.DataFrame = pd.read_csv(path, sep="a", squeeze=False)
         with pytest.warns(FutureWarning, match="The prefix argument has been"):
             df4: pd.DataFrame = pd.read_csv(
-                file.name,
+                path,
                 header=None,
                 prefix="b",
                 mangle_dupe_cols=True,
                 keep_default_na=False,
             )
         df5: pd.DataFrame = pd.read_csv(
-            file.name, engine="python", true_values=[0, 1, 3], na_filter=False
+            path, engine="python", true_values=[0, 1, 3], na_filter=False
         )
         df6: pd.DataFrame = pd.read_csv(
-            file.name,
+            path,
             skiprows=lambda x: x in [0, 2],
             skip_blank_lines=True,
             dayfirst=False,
         )
-        df7: pd.DataFrame = pd.read_csv(file.name, nrows=2)
-        df8: pd.DataFrame = pd.read_csv(file.name, dtype={"a": float, "b": int})
-        df9: pd.DataFrame = pd.read_csv(file.name, usecols=["col1"])
-        df10: pd.DataFrame = pd.read_csv(file.name, usecols={"col1"})
-        df11: pd.DataFrame = pd.read_csv(file.name, usecols=[0])
-        df12: pd.DataFrame = pd.read_csv(file.name, usecols=np.array([0]))
-        df13: pd.DataFrame = pd.read_csv(file.name, usecols=("col1",))
-        df14: pd.DataFrame = pd.read_csv(file.name, usecols=pd.Series(data=["col1"]))
+        df7: pd.DataFrame = pd.read_csv(path, nrows=2)
+        df8: pd.DataFrame = pd.read_csv(path, dtype={"a": float, "b": int})
+        df9: pd.DataFrame = pd.read_csv(path, usecols=["col1"])
+        df10: pd.DataFrame = pd.read_csv(path, usecols={"col1"})
+        df11: pd.DataFrame = pd.read_csv(path, usecols=[0])
+        df12: pd.DataFrame = pd.read_csv(path, usecols=np.array([0]))
+        df13: pd.DataFrame = pd.read_csv(path, usecols=("col1",))
+        df14: pd.DataFrame = pd.read_csv(path, usecols=pd.Series(data=["col1"]))
 
-        tfr1: TextFileReader = pd.read_csv(
-            file.name, nrows=2, iterator=True, chunksize=3
-        )
-        tfr2: TextFileReader = pd.read_csv(file.name, nrows=2, chunksize=1)
-        tfr3: TextFileReader = pd.read_csv(
-            file.name, nrows=2, iterator=False, chunksize=1
-        )
-        tfr4: TextFileReader = pd.read_csv(file.name, nrows=2, iterator=True)
+        tfr1: TextFileReader = pd.read_csv(path, nrows=2, iterator=True, chunksize=3)
+        tfr1.close()
+
+        tfr2: TextFileReader = pd.read_csv(path, nrows=2, chunksize=1)
+        tfr2.close()
+
+        tfr3: TextFileReader = pd.read_csv(path, nrows=2, iterator=False, chunksize=1)
+        tfr3.close()
+
+        tfr4: TextFileReader = pd.read_csv(path, nrows=2, iterator=True)
+        tfr4.close()
 
 
 def test_isna() -> None:
@@ -270,4 +272,22 @@ def test_unique() -> None:
             pd.unique([("a", "b"), ("b", "a"), ("a", "c"), ("b", "a")]), np.ndarray
         ),
         np.ndarray,
+    )
+
+
+# GH 200
+def test_crosstab() -> None:
+    df = pd.DataFrame({"a": [1, 2, 1, 2], "b": [1, 1, 2, 2]})
+    check(
+        assert_type(
+            pd.crosstab(
+                index=df["a"],
+                columns=df["b"],
+                margins=True,
+                dropna=False,
+                normalize="columns",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )

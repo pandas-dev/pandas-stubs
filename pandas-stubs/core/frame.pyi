@@ -217,16 +217,17 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> dict[_str, Any]: ...
     def to_gbq(
         self,
-        destination_table,
-        project_id=...,
-        chunksize=...,
-        reauth=...,
-        if_exists=...,
-        auth_local_webserver=...,
-        table_schema=...,
-        location=...,
-        progress_bar=...,
-        credentials=...,
+        destination_table: str,
+        project_id: str | None = ...,
+        chunksize: int | None = ...,
+        reauth: bool = ...,
+        if_exists: Literal["fail", "replace", "append"] = ...,
+        auth_local_webserver: bool = ...,
+        table_schema: list[dict[str, str]] | None = ...,
+        location: str | None = ...,
+        progress_bar: bool = ...,
+        # Google type, not available
+        credentials: Any = ...,
     ) -> None: ...
     @classmethod
     def from_records(
