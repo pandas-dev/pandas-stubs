@@ -27,7 +27,7 @@ def test_pickle():
 
 def test_pickle_file_handle():
     with ensure_clean() as path:
-        check(assert_type(to_pickle(DF, path), None), type(None))
+        check(assert_type(DF.to_pickle(path), None), type(None))
         file = open(path, "rb")
         check(assert_type(read_pickle(file), Any), DataFrame)
         file.close()
@@ -35,7 +35,7 @@ def test_pickle_file_handle():
 
 def test_pickle_path():
     with ensure_clean() as path:
-        check(assert_type(to_pickle(DF, path), None), type(None))
+        check(assert_type(DF.to_pickle(path), None), type(None))
         check(assert_type(read_pickle(Path(path)), Any), DataFrame)
 
 
