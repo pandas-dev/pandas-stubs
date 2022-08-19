@@ -1,7 +1,4 @@
-from typing import (
-    Any,
-    Literal,
-)
+from typing import Any
 
 from pandas import DataFrame
 
