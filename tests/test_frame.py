@@ -44,6 +44,18 @@ def test_types_init() -> None:
     )
 
 
+def test_types_all() -> None:
+    df = pd.DataFrame([[False, True], [False, False]], columns=["col1", "col2"])
+    check(assert_type(df.all(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(df.all(axis=None), bool), np.bool_)
+
+
+def test_types_any() -> None:
+    df = pd.DataFrame([[False, True], [False, False]], columns=["col1", "col2"])
+    check(assert_type(df.any(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(df.any(axis=None), bool), np.bool_)
+
+
 def test_types_append() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame({"col1": [10, 20], "col2": [30, 40]})

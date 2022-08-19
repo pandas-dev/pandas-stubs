@@ -1248,7 +1248,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType = ...,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
-        level: Level | None = ...,
         **kwargs,
     ) -> _bool: ...
     def any(
@@ -1256,7 +1255,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType = ...,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
-        level: Level | None = ...,
         **kwargs,
     ) -> _bool: ...
     def cummax(

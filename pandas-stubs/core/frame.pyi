@@ -1157,41 +1157,35 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def all(
         self,
-        axis: AxisType = ...,
+        axis: None,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
-        level: None = ...,
         **kwargs,
-    ) -> Series: ...
+    ) -> _bool: ...
     @overload
     def all(
         self,
         axis: AxisType = ...,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
-        *,
-        level: Level,
         **kwargs,
-    ) -> DataFrame: ...
+    ) -> Series[_bool]: ...
+    @overload
+    def any(
+        self,
+        axis: None,
+        bool_only: _bool | None = ...,
+        skipna: _bool = ...,
+        **kwargs,
+    ) -> _bool: ...
     @overload
     def any(
         self,
         axis: AxisType = ...,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
-        level: None = ...,
         **kwargs,
-    ) -> Series: ...
-    @overload
-    def any(
-        self,
-        axis: AxisType = ...,
-        bool_only: _bool = ...,
-        skipna: _bool = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> DataFrame: ...
+    ) -> Series[_bool]: ...
     def asof(self, where, subset: _str | list[_str] | None = ...) -> DataFrame: ...
     def asfreq(
         self,
