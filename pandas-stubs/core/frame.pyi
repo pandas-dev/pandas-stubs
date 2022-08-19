@@ -1392,17 +1392,6 @@ class DataFrame(NDFrame, OpsMixin):
         **kwargs,
     ) -> DataFrame: ...
     def keys(self) -> Index: ...
-    @overload
-    def kurt(
-        self,
-        axis: AxisType | None = ...,
-        skipna: _bool | None = ...,
-        numeric_only: _bool | None = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> DataFrame: ...
-    @overload
     def kurt(
         self,
         axis: AxisType | None = ...,
@@ -1411,17 +1400,6 @@ class DataFrame(NDFrame, OpsMixin):
         numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
-    @overload
-    def kurtosis(
-        self,
-        axis: AxisType | None = ...,
-        skipna: _bool | None = ...,
-        numeric_only: _bool | None = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> DataFrame: ...
-    @overload
     def kurtosis(
         self,
         axis: AxisType | None = ...,
@@ -1464,17 +1442,6 @@ class DataFrame(NDFrame, OpsMixin):
         errors: _str = ...,
         try_cast: _bool = ...,
     ) -> DataFrame: ...
-    @overload
-    def max(
-        self,
-        axis: AxisType | None = ...,
-        skipna: _bool | None = ...,
-        numeric_only: _bool | None = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> DataFrame: ...
-    @overload
     def max(
         self,
         axis: AxisType | None = ...,
@@ -1483,17 +1450,6 @@ class DataFrame(NDFrame, OpsMixin):
         numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
-    @overload
-    def mean(
-        self,
-        axis: AxisType | None = ...,
-        skipna: _bool | None = ...,
-        numeric_only: _bool | None = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> DataFrame: ...
-    @overload
     def mean(
         self,
         axis: AxisType | None = ...,
@@ -1502,17 +1458,6 @@ class DataFrame(NDFrame, OpsMixin):
         numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
-    @overload
-    def median(
-        self,
-        axis: AxisType | None = ...,
-        skipna: _bool | None = ...,
-        numeric_only: _bool | None = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> DataFrame: ...
-    @overload
     def median(
         self,
         axis: AxisType | None = ...,
@@ -1521,17 +1466,6 @@ class DataFrame(NDFrame, OpsMixin):
         numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
-    @overload
-    def min(
-        self,
-        axis: AxisType | None = ...,
-        skipna: _bool | None = ...,
-        numeric_only: _bool | None = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> DataFrame: ...
-    @overload
     def min(
         self,
         axis: AxisType | None = ...,
@@ -1586,18 +1520,6 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
-    @overload
-    def prod(
-        self,
-        axis: AxisType | None = ...,
-        skipna: _bool | None = ...,
-        numeric_only: _bool | None = ...,
-        min_count: int = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> DataFrame: ...
-    @overload
     def prod(
         self,
         axis: AxisType | None = ...,
@@ -1611,11 +1533,11 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         axis: AxisType | None = ...,
         skipna: _bool = ...,
-        level: Level | None = ...,
+        level: None = ...,
         numeric_only: _bool | None = ...,
         min_count: int = ...,
         **kwargs,
-    ) -> DataFrame: ...
+    ) -> Series: ...
     def radd(
         self,
         other,
@@ -1777,18 +1699,6 @@ class DataFrame(NDFrame, OpsMixin):
         axis: SeriesAxisType | None = ...,
         ignore_index: _bool = ...,
     ) -> DataFrame: ...
-    @overload
-    def sem(
-        self,
-        axis: AxisType | None = ...,
-        skipna: _bool | None = ...,
-        ddof: int = ...,
-        numeric_only: _bool | None = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> DataFrame: ...
-    @overload
     def sem(
         self,
         axis: AxisType | None = ...,
@@ -1815,17 +1725,6 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         inplace: _bool | None = ...,
     ) -> DataFrame | None: ...
-    @overload
-    def skew(
-        self,
-        axis: AxisType | None = ...,
-        skipna: _bool | None = ...,
-        numeric_only: _bool | None = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> DataFrame: ...
-    @overload
     def skew(
         self,
         axis: AxisType | None = ...,
@@ -1836,18 +1735,6 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> Series: ...
     def slice_shift(self, periods: int = ..., axis: AxisType = ...) -> DataFrame: ...
     def squeeze(self, axis: AxisType | None = ...): ...
-    @overload
-    def std(
-        self,
-        axis: AxisType = ...,
-        skipna: _bool = ...,
-        ddof: int = ...,
-        numeric_only: _bool = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> DataFrame: ...
-    @overload
     def std(
         self,
         axis: AxisType = ...,
@@ -1871,7 +1758,6 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
-    @overload
     def sum(
         self,
         axis: AxisType | None = ...,
@@ -1881,17 +1767,6 @@ class DataFrame(NDFrame, OpsMixin):
         min_count: int = ...,
         **kwargs,
     ) -> Series: ...
-    @overload
-    def sum(
-        self,
-        axis: AxisType | None = ...,
-        skipna: _bool | None = ...,
-        numeric_only: _bool | None = ...,
-        min_count: int = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> DataFrame: ...
     def swapaxes(
         self, axis1: AxisType, axis2: AxisType, copy: _bool = ...
     ) -> DataFrame: ...
@@ -2105,18 +1980,6 @@ class DataFrame(NDFrame, OpsMixin):
         ambiguous=...,
         nonexistent: _str = ...,
     ) -> DataFrame: ...
-    @overload
-    def var(
-        self,
-        axis: AxisType | None = ...,
-        skipna: _bool | None = ...,
-        ddof: int = ...,
-        numeric_only: _bool | None = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> DataFrame: ...
-    @overload
     def var(
         self,
         axis: AxisType | None = ...,

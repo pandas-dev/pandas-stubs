@@ -253,8 +253,6 @@ def test_types_rank() -> None:
 def test_types_mean() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     f1: float = s.mean()
-    with pytest.warns(FutureWarning, match="Using the level keyword"):
-        s1: pd.Series = s.mean(axis=0, level=0)
     f2: float = s.mean(skipna=False)
     f3: float = s.mean(numeric_only=False)
 
@@ -262,8 +260,6 @@ def test_types_mean() -> None:
 def test_types_median() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     f1: float = s.median()
-    with pytest.warns(FutureWarning, match="Using the level keyword"):
-        s1: pd.Series = s.median(axis=0, level=0)
     f2: float = s.median(skipna=False)
     f3: float = s.median(numeric_only=False)
 
@@ -271,8 +267,6 @@ def test_types_median() -> None:
 def test_types_sum() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     s.sum()
-    with pytest.warns(FutureWarning, match="Using the level keyword"):
-        s.sum(axis=0, level=0)
     s.sum(skipna=False)
     s.sum(numeric_only=False)
     s.sum(min_count=4)
@@ -289,8 +283,6 @@ def test_types_min() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     s.min()
     s.min(axis=0)
-    with pytest.warns(FutureWarning, match="Using the level keyword"):
-        s.min(level=0)
     s.min(skipna=False)
 
 
@@ -298,8 +290,6 @@ def test_types_max() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     s.max()
     s.max(axis=0)
-    with pytest.warns(FutureWarning, match="Using the level keyword"):
-        s.max(level=0)
     s.max(skipna=False)
 
 
