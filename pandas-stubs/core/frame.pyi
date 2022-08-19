@@ -240,7 +240,7 @@ class DataFrame(NDFrame, OpsMixin):
         path: FilePathOrBuffer,
         convert_dates: dict | None = ...,
         write_index: _bool = ...,
-        byteorder: _str | Literal["<", ">", "little", "big"] | None = ...,
+        byteorder: Literal["<", ">", "little", "big"] | None = ...,
         time_stamp=...,
         data_label: _str | None = ...,
         variable_labels: dict | None = ...,
@@ -259,8 +259,8 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         path: FilePathOrBytesBuffer,
         *,
-        engine: _str | Literal["auto", "pyarrow", "fastparquet"] = ...,
-        compression: _str | Literal["snappy", "gzip", "brotli"] = ...,
+        engine: Literal["auto", "pyarrow", "fastparquet"] = ...,
+        compression: Literal["snappy", "gzip", "brotli"] = ...,
         index: _bool | None = ...,
         partition_cols: list | None = ...,
         **kwargs,
@@ -270,8 +270,8 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         *,
         path: None = ...,
-        engine: _str | Literal["auto", "pyarrow", "fastparquet"] = ...,
-        compression: _str | Literal["snappy", "gzip", "brotli"] = ...,
+        engine: Literal["auto", "pyarrow", "fastparquet"] = ...,
+        compression: Literal["snappy", "gzip", "brotli"] = ...,
         index: _bool | None = ...,
         partition_cols: list | None = ...,
         **kwargs,
@@ -378,12 +378,12 @@ class DataFrame(NDFrame, OpsMixin):
     def align(
         self,
         other: DataFrame | Series,
-        join: _str | Literal["inner", "outer", "left", "right"] = ...,
+        join: Literal["inner", "outer", "left", "right"] = ...,
         axis: AxisType | None = ...,
         level: Level | None = ...,
         copy: _bool = ...,
         fill_value=...,
-        method: _str | Literal["backfill", "bfill", "pad", "ffill"] | None = ...,
+        method: Literal["backfill", "bfill", "pad", "ffill"] | None = ...,
         limit: int | None = ...,
         fill_axis: AxisType = ...,
         broadcast_axis: AxisType | None = ...,
@@ -502,17 +502,7 @@ class DataFrame(NDFrame, OpsMixin):
     def fillna(
         self,
         value: Scalar | dict | Series | DataFrame | None = ...,
-        method: _str | Literal["backfill", "bfill", "ffill", "pad"] | None = ...,
-        axis: AxisType | None = ...,
-        *,
-        limit: int = ...,
-        downcast: dict | None = ...,
-    ) -> DataFrame | None: ...
-    @overload
-    def fillna(
-        self,
-        value: Scalar | dict | Series | DataFrame | None = ...,
-        method: _str | Literal["backfill", "bfill", "ffill", "pad"] | None = ...,
+        method: Literal["backfill", "bfill", "ffill", "pad"] | None = ...,
         axis: AxisType | None = ...,
         inplace: _bool | None = ...,
         limit: int = ...,
@@ -660,7 +650,7 @@ class DataFrame(NDFrame, OpsMixin):
     def dropna(
         self,
         axis: AxisType = ...,
-        how: _str | Literal["any", "all"] = ...,
+        how: Literal["any", "all"] = ...,
         thresh: int | None = ...,
         subset: list | None = ...,
         *,
@@ -670,7 +660,7 @@ class DataFrame(NDFrame, OpsMixin):
     def dropna(
         self,
         axis: AxisType = ...,
-        how: _str | Literal["any", "all"] = ...,
+        how: Literal["any", "all"] = ...,
         thresh: int | None = ...,
         subset: list | None = ...,
         *,
@@ -680,7 +670,7 @@ class DataFrame(NDFrame, OpsMixin):
     def dropna(
         self,
         axis: AxisType = ...,
-        how: _str | Literal["any", "all"] = ...,
+        how: Literal["any", "all"] = ...,
         thresh: int | None = ...,
         subset: list | None = ...,
     ) -> DataFrame: ...
@@ -688,7 +678,7 @@ class DataFrame(NDFrame, OpsMixin):
     def dropna(
         self,
         axis: AxisType = ...,
-        how: _str | Literal["any", "all"] = ...,
+        how: Literal["any", "all"] = ...,
         thresh: int | None = ...,
         subset: list | None = ...,
         inplace: _bool | None = ...,
@@ -696,14 +686,14 @@ class DataFrame(NDFrame, OpsMixin):
     def drop_duplicates(
         self,
         subset=...,
-        keep: _str | Literal["first", "last"] | _bool = ...,
+        keep: Literal["first", "last"] | _bool = ...,
         inplace: _bool = ...,
         ignore_index: _bool = ...,
     ) -> DataFrame: ...
     def duplicated(
         self,
         subset: Hashable | Sequence[Hashable] | None = ...,
-        keep: _str | Literal["first", "last"] | _bool = ...,
+        keep: Literal["first", "last"] | _bool = ...,
     ) -> Series: ...
     @overload
     def sort_values(
@@ -711,8 +701,8 @@ class DataFrame(NDFrame, OpsMixin):
         by: _str | Sequence[_str],
         axis: AxisType = ...,
         ascending: _bool | Sequence[_bool] = ...,
-        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: _str | Literal["first", "last"] = ...,
+        kind: Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: Literal["first", "last"] = ...,
         ignore_index: _bool = ...,
         *,
         inplace: Literal[True],
@@ -724,8 +714,8 @@ class DataFrame(NDFrame, OpsMixin):
         by: _str | Sequence[_str],
         axis: AxisType = ...,
         ascending: _bool | Sequence[_bool] = ...,
-        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: _str | Literal["first", "last"] = ...,
+        kind: Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: Literal["first", "last"] = ...,
         ignore_index: _bool = ...,
         *,
         inplace: Literal[False],
@@ -738,8 +728,8 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         ascending: _bool | Sequence[_bool] = ...,
         *,
-        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: _str | Literal["first", "last"] = ...,
+        kind: Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: Literal["first", "last"] = ...,
         ignore_index: _bool = ...,
         key: Callable | None = ...,
     ) -> DataFrame: ...
@@ -750,8 +740,8 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         ascending: _bool | Sequence[_bool] = ...,
         inplace: _bool | None = ...,
-        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: _str | Literal["first", "last"] = ...,
+        kind: Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: Literal["first", "last"] = ...,
         ignore_index: _bool = ...,
         key: Callable | None = ...,
     ) -> DataFrame | None: ...
@@ -761,8 +751,8 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         level: Level | None = ...,
         ascending: _bool | Sequence[_bool] = ...,
-        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: _str | Literal["first", "last"] = ...,
+        kind: Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: Literal["first", "last"] = ...,
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
         *,
@@ -775,8 +765,8 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         level: Level | list[int] | list[_str] | None = ...,
         ascending: _bool | Sequence[_bool] = ...,
-        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: _str | Literal["first", "last"] = ...,
+        kind: Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: Literal["first", "last"] = ...,
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
         *,
@@ -790,8 +780,8 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level | list[int] | list[_str] | None = ...,
         ascending: _bool | Sequence[_bool] = ...,
         *,
-        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: _str | Literal["first", "last"] = ...,
+        kind: Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: Literal["first", "last"] = ...,
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
         key: Callable | None = ...,
@@ -803,8 +793,8 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level | list[int] | list[_str] | None = ...,
         ascending: _bool | Sequence[_bool] = ...,
         inplace: _bool | None = ...,
-        kind: _str | Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: _str | Literal["first", "last"] = ...,
+        kind: Literal["quicksort", "mergesort", "heapsort"] = ...,
+        na_position: Literal["first", "last"] = ...,
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
         key: Callable | None = ...,
@@ -821,13 +811,13 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         n: int,
         columns: _str | list[_str],
-        keep: _str | Literal["first", "last", "all"] = ...,
+        keep: Literal["first", "last", "all"] = ...,
     ) -> DataFrame: ...
     def nsmallest(
         self,
         n: int,
         columns: _str | list[_str],
-        keep: _str | Literal["first", "last", "all"] = ...,
+        keep: Literal["first", "last", "all"] = ...,
     ) -> DataFrame: ...
     def swaplevel(
         self, i: Level = ..., j: Level = ..., axis: AxisType = ...
@@ -854,7 +844,7 @@ class DataFrame(NDFrame, OpsMixin):
         join: _str = ...,
         overwrite: _bool = ...,
         filter_func: Callable | None = ...,
-        errors: _str | Literal["raise", "ignore"] = ...,
+        errors: Literal["raise", "ignore"] = ...,
     ) -> None: ...
     @overload
     def groupby(
@@ -974,7 +964,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         other: DataFrame | Series | list[DataFrame | Series],
         on: _str | list[_str] | None = ...,
-        how: _str | Literal["left", "right", "outer", "inner"] = ...,
+        how: Literal["left", "right", "outer", "inner"] = ...,
         lsuffix: _str = ...,
         rsuffix: _str = ...,
         sort: _bool = ...,
@@ -982,7 +972,7 @@ class DataFrame(NDFrame, OpsMixin):
     def merge(
         self,
         right: DataFrame | Series,
-        how: _str | Literal["left", "right", "inner", "outer"] = ...,
+        how: Literal["left", "right", "inner", "outer"] = ...,
         on: IndexLabel | None = ...,
         left_on: IndexLabel | None = ...,
         right_on: IndexLabel | None = ...,
@@ -999,7 +989,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def corr(
         self,
-        method: _str | Literal["pearson", "kendall", "spearman"] = ...,
+        method: Literal["pearson", "kendall", "spearman"] = ...,
         min_periods: int = ...,
     ) -> DataFrame: ...
     def cov(self, min_periods: int | None = ..., ddof: int = ...) -> DataFrame: ...
@@ -1008,7 +998,7 @@ class DataFrame(NDFrame, OpsMixin):
         other: DataFrame | Series,
         axis: AxisType | None = ...,
         drop: _bool = ...,
-        method: _str | Literal["pearson", "kendall", "spearman"] = ...,
+        method: Literal["pearson", "kendall", "spearman"] = ...,
     ) -> Series: ...
     @overload
     def count(
@@ -1061,7 +1051,7 @@ class DataFrame(NDFrame, OpsMixin):
     def to_timestamp(
         self,
         freq=...,
-        how: _str | Literal["start", "end", "s", "e"] = ...,
+        how: Literal["start", "end", "s", "e"] = ...,
         axis: AxisType = ...,
         copy: _bool = ...,
     ) -> DataFrame: ...
@@ -1099,7 +1089,7 @@ class DataFrame(NDFrame, OpsMixin):
         grid: _bool = ...,
         figsize: tuple[float, float] | None = ...,
         layout: tuple[int, int] | None = ...,
-        return_type: _str | Literal["axes", "dict", "both"] | None = ...,
+        return_type: Literal["axes", "dict", "both"] | None = ...,
         backend: _str | None = ...,
         **kwargs,
     ): ...
@@ -1190,8 +1180,8 @@ class DataFrame(NDFrame, OpsMixin):
     def asfreq(
         self,
         freq,
-        method: _str | Literal["backfill", "bfill", "pad", "ffill"] | None = ...,
-        how: _str | Literal["start", "end"] | None = ...,
+        method: Literal["backfill", "bfill", "pad", "ffill"] | None = ...,
+        how: Literal["start", "end"] | None = ...,
         normalize: _bool = ...,
         fill_value: Scalar | None = ...,
     ) -> DataFrame: ...
@@ -1258,7 +1248,7 @@ class DataFrame(NDFrame, OpsMixin):
     def describe(
         self,
         percentiles: list[float] | None = ...,
-        include: _str | Literal["all"] | list[Dtype] | None = ...,
+        include: Literal["all"] | list[Dtype] | None = ...,
         exclude: list[Dtype] | None = ...,
         datetime_is_numeric: _bool | None = ...,
     ) -> DataFrame: ...
@@ -1349,9 +1339,9 @@ class DataFrame(NDFrame, OpsMixin):
         method: _str = ...,
         axis: AxisType = ...,
         limit: int | None = ...,
-        limit_direction: _str | Literal["forward", "backward", "both"] = ...,
-        limit_area: _str | Literal["inside", "outside"] | None = ...,
-        downcast: _str | Literal["infer"] | None = ...,
+        limit_direction: Literal["forward", "backward", "both"] = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
+        downcast: Literal["infer"] | None = ...,
         *,
         inplace: Literal[True],
         **kwargs,
@@ -1362,9 +1352,9 @@ class DataFrame(NDFrame, OpsMixin):
         method: _str = ...,
         axis: AxisType = ...,
         limit: int | None = ...,
-        limit_direction: _str | Literal["forward", "backward", "both"] = ...,
-        limit_area: _str | Literal["inside", "outside"] | None = ...,
-        downcast: _str | Literal["infer"] | None = ...,
+        limit_direction: Literal["forward", "backward", "both"] = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
+        downcast: Literal["infer"] | None = ...,
         *,
         inplace: Literal[False],
         **kwargs,
@@ -1375,9 +1365,9 @@ class DataFrame(NDFrame, OpsMixin):
         method: _str = ...,
         axis: AxisType = ...,
         limit: int | None = ...,
-        limit_direction: _str | Literal["forward", "backward", "both"] = ...,
-        limit_area: _str | Literal["inside", "outside"] | None = ...,
-        downcast: _str | Literal["infer"] | None = ...,
+        limit_direction: Literal["forward", "backward", "both"] = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
+        downcast: Literal["infer"] | None = ...,
     ) -> DataFrame: ...
     @overload
     def interpolate(
@@ -1386,9 +1376,9 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         limit: int | None = ...,
         inplace: _bool | None = ...,
-        limit_direction: _str | Literal["forward", "backward", "both"] = ...,
-        limit_area: _str | Literal["inside", "outside"] | None = ...,
-        downcast: _str | Literal["infer"] | None = ...,
+        limit_direction: Literal["forward", "backward", "both"] = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
+        downcast: Literal["infer"] | None = ...,
         **kwargs,
     ) -> DataFrame: ...
     def keys(self) -> Index: ...
@@ -1626,9 +1616,9 @@ class DataFrame(NDFrame, OpsMixin):
     def rank(
         self,
         axis: AxisType = ...,
-        method: _str | Literal["average", "min", "max", "first", "dense"] = ...,
+        method: Literal["average", "min", "max", "first", "dense"] = ...,
         numeric_only: _bool | None = ...,
-        na_option: _str | Literal["keep", "top", "bottom"] = ...,
+        na_option: Literal["keep", "top", "bottom"] = ...,
         ascending: _bool = ...,
         pct: _bool = ...,
     ) -> DataFrame: ...
@@ -1691,8 +1681,8 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         closed: _str | None = ...,
         label: _str | None = ...,
-        convention: _str | Literal["start", "end", "s", "e"] = ...,
-        kind: _str | Literal["timestamp", "period"] | None = ...,
+        convention: Literal["start", "end", "s", "e"] = ...,
+        kind: Literal["timestamp", "period"] | None = ...,
         loffset=...,
         base: int = ...,
         on: _str | None = ...,
@@ -1982,14 +1972,14 @@ class DataFrame(NDFrame, OpsMixin):
         orient: _str
         | Literal["split", "records", "index", "columns", "values", "table"]
         | None = ...,
-        date_format: _str | Literal["epoch", "iso"] | None = ...,
+        date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: _str | Literal["s", "ms", "us", "ns"] = ...,
+        date_unit: Literal["s", "ms", "us", "ns"] = ...,
         default_handler: Callable[[Any], _str | float | _bool | list | dict]
         | None = ...,
         lines: _bool = ...,
-        compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
+        compression: Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
         index: _bool = ...,
         indent: int | None = ...,
     ) -> None: ...
@@ -1999,21 +1989,21 @@ class DataFrame(NDFrame, OpsMixin):
         orient: _str
         | Literal["split", "records", "index", "columns", "values", "table"]
         | None = ...,
-        date_format: _str | Literal["epoch", "iso"] | None = ...,
+        date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: _str | Literal["s", "ms", "us", "ns"] = ...,
+        date_unit: Literal["s", "ms", "us", "ns"] = ...,
         default_handler: Callable[[Any], _str | float | _bool | list | dict]
         | None = ...,
         lines: _bool = ...,
-        compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
+        compression: Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
         index: _bool = ...,
         indent: int | None = ...,
     ) -> _str: ...
     def to_pickle(
         self,
         path: _str,
-        compression: _str | Literal["infer", "gzip", "bz2", "zip", "xz"] = ...,
+        compression: Literal["infer", "gzip", "bz2", "zip", "xz"] = ...,
         protocol: int = ...,
     ) -> None: ...
     def to_sql(

@@ -93,7 +93,7 @@ def read_json(
     encoding: str | None = ...,
     lines: bool = ...,
     chunksize: int | None = ...,
-    compression: str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
+    compression: Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
     *,
     typ: Literal["series"],
 ) -> Series: ...
@@ -111,7 +111,7 @@ def read_json(
     encoding: str | None = ...,
     lines: bool = ...,
     chunksize: int | None = ...,
-    compression: str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
+    compression: Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
     *,
     typ: Literal["frame"],
 ) -> DataFrame: ...
@@ -130,7 +130,7 @@ def read_json(
     encoding: str | None = ...,
     lines: bool = ...,
     chunksize: int | None = ...,
-    compression: str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
+    compression: Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
 ) -> Series | DataFrame: ...
 
 class JsonReader(abc.Iterator):
