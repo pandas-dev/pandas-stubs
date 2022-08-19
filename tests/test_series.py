@@ -3,7 +3,6 @@ from __future__ import annotations
 import datetime
 from pathlib import Path
 import re
-import tempfile
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -18,6 +17,7 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas._testing import ensure_clean
 from pandas.api.extensions import ExtensionArray
 from pandas.core.window import ExponentialMovingWindow
 import pytest
@@ -66,21 +66,18 @@ def test_types_csv() -> None:
     s = pd.Series(data=[1, 2, 3])
     csv_df: str = s.to_csv()
 
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        s.to_csv(file.name)
-        file.close()
-        s2: pd.DataFrame = pd.read_csv(file.name)
+    with ensure_clean() as path:
+        s.to_csv(path)
+        s2: pd.DataFrame = pd.read_csv(path)
 
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        s.to_csv(Path(file.name))
-        file.close()
-        s3: pd.DataFrame = pd.read_csv(Path(file.name))
+    with ensure_clean() as path:
+        s.to_csv(Path(path))
+        s3: pd.DataFrame = pd.read_csv(Path(path))
 
     # This keyword was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        s.to_csv(file.name, errors="replace")
-        file.close()
-        s4: pd.DataFrame = pd.read_csv(file.name)
+    with ensure_clean() as path:
+        s.to_csv(path, errors="replace")
+        s4: pd.DataFrame = pd.read_csv(path)
 
 
 def test_types_copy() -> None:
