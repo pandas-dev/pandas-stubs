@@ -50,6 +50,7 @@ from pandas._typing import (
     AxisType,
     Dtype,
     DtypeNp,
+    FilePath,
     FilePathOrBuffer,
     FilePathOrBytesBuffer,
     GroupByObjectNonScalar,
@@ -69,6 +70,7 @@ from pandas._typing import (
     SeriesAxisType,
     StrLike,
     T as TType,
+    WriteBuffer,
     np_ndarray_bool,
     np_ndarray_str,
     num,
@@ -275,6 +277,24 @@ class DataFrame(NDFrame, OpsMixin):
         index: _bool | None = ...,
         partition_cols: list | None = ...,
         **kwargs,
+    ) -> bytes: ...
+    @overload
+    def to_orc(
+        self,
+        path: FilePath | WriteBuffer[bytes],
+        *,
+        engine: Literal["pyarrow"] = ...,
+        index: bool | None = ...,
+        engine_kwargs: dict[str, Any] | None = ...,
+    ) -> None: ...
+    @overload
+    def to_orc(
+        self,
+        path: None = ...,
+        *,
+        engine: Literal["pyarrow"] = ...,
+        index: bool | None = ...,
+        engine_kwargs: dict[str, Any] | None = ...,
     ) -> bytes: ...
     @overload
     def to_html(
