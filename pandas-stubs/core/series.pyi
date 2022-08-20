@@ -35,8 +35,9 @@ from pandas.core.groupby.generic import (
 )
 from pandas.core.indexes.accessors import (
     CombinedDatetimelikeProperties,
-    DatetimeProperties,
+    PeriodProperties,
     TimedeltaProperties,
+    TimestampProperties,
 )
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.datetimes import DatetimeIndex
@@ -1651,7 +1652,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
 class TimestampSeries(Series[Timestamp]):
     # ignore needed because of mypy
     @property
-    def dt(self) -> DatetimeProperties: ...  # type: ignore[override]
+    def dt(self) -> TimestampProperties: ...  # type: ignore[override]
 
 class TimedeltaSeries(Series[Timedelta]):
     # ignore needed because of mypy
@@ -1662,3 +1663,8 @@ class TimedeltaSeries(Series[Timedelta]):
     # ignore needed because of mypy
     @property
     def dt(self) -> TimedeltaProperties: ...  # type: ignore[override]
+
+class PeriodSeries(Series[Period]):
+    # ignore needed because of mypy
+    @property
+    def dt(self) -> PeriodProperties: ...  # type: ignore[override]
