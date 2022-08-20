@@ -203,4 +203,11 @@ GroupByObjectNonScalar = Union[
 ]
 GroupByObject = Union[Scalar, GroupByObjectNonScalar]
 
+FillnaOptions = Literal["backfill", "bfill", "ffill", "pad"]
+SortKind = Literal["quicksort", "mergesort", "heapsort", "stable"]
+NaPosition = Literal["first", "last"]
+MergeHow = Literal["left", "right", "outer", "inner"]
+JsonOrient = Literal["split", "records", "index", "columns", "values", "table"]
+TimestampConvention = Literal["start", "end", "s", "e"]
+
 __all__ = ["npt", "type_t"]

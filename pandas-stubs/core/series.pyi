@@ -65,6 +65,7 @@ from pandas._typing import (
     Dtype,
     DtypeNp,
     FilePathOrBuffer,
+    FillnaOptions,
     GroupByObjectNonScalar,
     HashableT,
     IgnoreRaise,
@@ -73,9 +74,13 @@ from pandas._typing import (
     Level,
     ListLike,
     MaskType,
+    MergeHow,
+    NaPosition,
     Renamer,
     Scalar,
     SeriesAxisType,
+    SortKind,
+    TimestampConvention,
     np_ndarray_anyint,
     num,
 )
@@ -399,21 +404,19 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def unique(self) -> np.ndarray: ...
     @overload
     def drop_duplicates(
-        self, keep: Literal["first", "last", False] = ..., inplace: Literal[False] = ...
+        self, keep: NaPosition | Literal[False] = ..., inplace: Literal[False] = ...
     ) -> Series[S1]: ...
     @overload
     def drop_duplicates(
-        self, keep: Literal["first", "last", False], inplace: Literal[True]
+        self, keep: NaPosition | Literal[False], inplace: Literal[True]
     ) -> None: ...
     @overload
     def drop_duplicates(self, *, inplace: Literal[True]) -> None: ...
     @overload
     def drop_duplicates(
-        self, keep: Literal["first", "last", False] = ..., inplace: bool = ...
+        self, keep: NaPosition | Literal[False] = ..., inplace: bool = ...
     ) -> Series[S1] | None: ...
-    def duplicated(
-        self, keep: Literal["first", "last", False] = ...
-    ) -> Series[_bool]: ...
+    def duplicated(self, keep: NaPosition | Literal[False] = ...) -> Series[_bool]: ...
     def idxmax(
         self, axis: SeriesAxisType = ..., skipna: _bool = ..., *args, **kwargs
     ) -> int | _str: ...
@@ -500,8 +503,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         axis: AxisType = ...,
         ascending: _bool | Sequence[_bool] = ...,
-        kind: Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: Literal["first", "last"] = ...,
+        kind: SortKind = ...,
+        na_position: NaPosition = ...,
         ignore_index: _bool = ...,
         *,
         inplace: Literal[True],
@@ -512,8 +515,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         axis: AxisType = ...,
         ascending: _bool | Sequence[_bool] = ...,
-        kind: Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: Literal["first", "last"] = ...,
+        kind: SortKind = ...,
+        na_position: NaPosition = ...,
         ignore_index: _bool = ...,
         *,
         inplace: Literal[False] = ...,
@@ -525,8 +528,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: AxisType = ...,
         ascending: _bool | Sequence[_bool] = ...,
         inplace: _bool | None = ...,
-        kind: Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: Literal["first", "last"] = ...,
+        kind: SortKind = ...,
+        na_position: NaPosition = ...,
         ignore_index: _bool = ...,
         key: Callable | None = ...,
     ) -> Series[S1] | None: ...
@@ -536,8 +539,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: AxisType = ...,
         level: Level | None = ...,
         ascending: _bool | Sequence[_bool] = ...,
-        kind: Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: Literal["first", "last"] = ...,
+        kind: SortKind = ...,
+        na_position: NaPosition = ...,
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
         *,
@@ -550,8 +553,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: AxisType = ...,
         level: Level | list[int] | list[_str] | None = ...,
         ascending: _bool | Sequence[_bool] = ...,
-        kind: Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: Literal["first", "last"] = ...,
+        kind: SortKind = ...,
+        na_position: NaPosition = ...,
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
         *,
@@ -565,8 +568,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         level: Level | list[int] | list[_str] | None = ...,
         ascending: _bool | Sequence[_bool] = ...,
         inplace: _bool | None = ...,
-        kind: Literal["quicksort", "mergesort", "heapsort"] = ...,
-        na_position: Literal["first", "last"] = ...,
+        kind: SortKind = ...,
+        na_position: NaPosition = ...,
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
         key: Callable | None = ...,
@@ -574,14 +577,14 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def argsort(
         self,
         axis: SeriesAxisType = ...,
-        kind: Literal["mergesort", "quicksort", "heapsort"] = ...,
+        kind: SortKind = ...,
         order: None = ...,
     ) -> Series[int]: ...
     def nlargest(
-        self, n: int = ..., keep: Literal["first", "last", "all"] = ...
+        self, n: int = ..., keep: NaPosition | Literal["all"] = ...
     ) -> Series[S1]: ...
     def nsmallest(
-        self, n: int = ..., keep: Literal["first", "last", "all"] = ...
+        self, n: int = ..., keep: NaPosition | Literal["all"] = ...
     ) -> Series[S1]: ...
     def swaplevel(
         self, i: Level = ..., j: Level = ..., copy: _bool = ...
@@ -648,12 +651,12 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def align(
         self,
         other: DataFrame | Series,
-        join: Literal["inner", "outer", "left", "right"] = ...,
+        join: MergeHow = ...,
         axis: AxisType | None = ...,
         level: Level | None = ...,
         copy: _bool = ...,
         fill_value=...,
-        method: Literal["backfill", "bfill", "pad", "ffill"] | None = ...,
+        method: FillnaOptions | None = ...,
         limit: int | None = ...,
         fill_axis: SeriesAxisType = ...,
         broadcast_axis: SeriesAxisType | None = ...,
@@ -705,9 +708,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def reindex_like(
         self,
         other: Series[S1],
-        method: _str
-        | Literal["backfill", "bfill", "pad", "ffill", "nearest"]
-        | None = ...,
+        method: _str | FillnaOptions | Literal["nearest"] | None = ...,
         copy: _bool = ...,
         limit: int | None = ...,
         tolerance: float | None = ...,
@@ -752,7 +753,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def fillna(
         self,
         value: Scalar | dict | Series[S1] | DataFrame | None = ...,
-        method: Literal["backfill", "bfill", "pad", "ffill"] | None = ...,
+        method: FillnaOptions | None = ...,
         axis: SeriesAxisType = ...,
         limit: int | None = ...,
         downcast: dict | None = ...,
@@ -763,7 +764,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def fillna(
         self,
         value: Scalar | dict | Series[S1] | DataFrame | None = ...,
-        method: Literal["backfill", "bfill", "pad", "ffill"] | None = ...,
+        method: FillnaOptions | None = ...,
         axis: SeriesAxisType = ...,
         *,
         limit: int | None = ...,
@@ -773,7 +774,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def fillna(
         self,
         value: Scalar | dict | Series[S1] | DataFrame | None = ...,
-        method: Literal["backfill", "bfill", "pad", "ffill"] | None = ...,
+        method: FillnaOptions | None = ...,
         axis: SeriesAxisType = ...,
         inplace: _bool = ...,
         limit: int | None = ...,
@@ -847,7 +848,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def to_timestamp(
         self,
         freq=...,
-        how: Literal["start", "end", "s", "e"] = ...,
+        how: TimestampConvention = ...,
         copy: _bool = ...,
     ) -> Series[S1]: ...
     def to_period(self, freq: _str | None = ..., copy: _bool = ...) -> DataFrame: ...
@@ -886,7 +887,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def reindex(
         self,
         index: Axes | None = ...,
-        method: Literal["backfill", "bfill", "pad", "ffill", "nearest"] | None = ...,
+        method: FillnaOptions | Literal["nearest"] | None = ...,
         copy: bool = ...,
         level: int | _str = ...,
         fill_value: Scalar | None = ...,
@@ -916,7 +917,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         dtype: S1 | _str | type[Scalar],
         copy: _bool = ...,
-        errors: Literal["raise", "ignore"] = ...,
+        errors: IgnoreRaise = ...,
     ) -> Series: ...
     def copy(self, deep: _bool = ...) -> Series[S1]: ...
     def infer_objects(self) -> Series[S1]: ...
@@ -1020,7 +1021,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def asfreq(
         self,
         freq,
-        method: Literal["backfill", "bfill", "pad", "ffill"] | None = ...,
+        method: FillnaOptions | None = ...,
         how: Literal["start", "end"] | None = ...,
         normalize: _bool = ...,
         fill_value: Scalar | None = ...,
@@ -1045,7 +1046,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType = ...,
         closed: _str | None = ...,
         label: _str | None = ...,
-        convention: Literal["start", "end", "s", "e"] = ...,
+        convention: TimestampConvention = ...,
         kind: Literal["timestamp", "period"] | None = ...,
         loffset=...,
         base: int = ...,
@@ -1083,7 +1084,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         inplace: _bool = ...,
         axis: SeriesAxisType | None = ...,
         level: Level | None = ...,
-        errors: Literal["raise", "ignore"] = ...,
+        errors: IgnoreRaise = ...,
         try_cast: _bool = ...,
     ) -> Series[S1]: ...
     def slice_shift(

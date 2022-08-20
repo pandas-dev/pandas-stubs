@@ -18,14 +18,18 @@ from pandas._typing import (
     S1,
     ArrayLike,
     Axis,
+    CompressionOptions,
     Dtype,
     FilePathOrBuffer,
+    FillnaOptions,
     FrameOrSeries,
     FrameOrSeriesUnion,
     IgnoreRaise,
+    JsonOrient,
     Level,
     Scalar,
     SeriesAxisType,
+    SortKind,
     T,
 )
 
@@ -98,8 +102,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def to_json(
         self,
         path_or_buf: FilePathOrBuffer | None,
-        orient: Literal["split", "records", "index", "columns", "values", "table"]
-        | None = ...,
+        orient: JsonOrient | None = ...,
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
@@ -107,15 +110,14 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         default_handler: Callable[[Any], _str | float | _bool | list | dict]
         | None = ...,
         lines: _bool = ...,
-        compression: Literal["infer", "gzip", "bz2", "zip", "xz"] = ...,
+        compression: CompressionOptions = ...,
         index: _bool = ...,
         indent: int | None = ...,
     ) -> None: ...
     @overload
     def to_json(
         self,
-        orient: Literal["split", "records", "index", "columns", "values", "table"]
-        | None = ...,
+        orient: JsonOrient | None = ...,
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
@@ -123,7 +125,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         default_handler: Callable[[Any], _str | float | _bool | list | dict]
         | None = ...,
         lines: _bool = ...,
-        compression: Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
+        compression: CompressionOptions = ...,
         index: _bool = ...,
         indent: int | None = ...,
     ) -> _str: ...
@@ -159,7 +161,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def to_pickle(
         self,
         path: _str,
-        compression: Literal["infer", "gzip", "bz2", "zip", "xz"] = ...,
+        compression: CompressionOptions = ...,
         protocol: int = ...,
     ) -> None: ...
     def to_clipboard(
@@ -330,7 +332,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         level=...,
         ascending: _bool = ...,
         inplace: _bool = ...,
-        kind: Literal["quicksort", "mergesort", "heapsort"] = ...,
+        kind: SortKind = ...,
         na_position: Literal["first", "last"] = ...,
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
@@ -358,7 +360,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         self: FrameOrSeries,
         dtype,
         copy: _bool = ...,
-        errors: Literal["raise", "ignore"] = ...,
+        errors: IgnoreRaise = ...,
     ) -> FrameOrSeries: ...
     def copy(self: FrameOrSeries, deep: _bool = ...) -> FrameOrSeries: ...
     def __copy__(self, deep: _bool = ...) -> NDFrame: ...
@@ -400,7 +402,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def asfreq(
         self,
         freq,
-        method: Literal["backfill", "bfill", "pad", "ffill"] | None = ...,
+        method: FillnaOptions | None = ...,
         how: Literal["start", "end"] | None = ...,
         normalize: _bool = ...,
         fill_value=...,
@@ -442,7 +444,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         inplace: _bool = ...,
         axis=...,
         level=...,
-        errors: Literal["raise", "ignore"] = ...,
+        errors: IgnoreRaise = ...,
         try_cast: _bool = ...,
     ): ...
     def shift(self, periods=..., freq=..., axis=..., fill_value=...) -> NDFrame: ...
