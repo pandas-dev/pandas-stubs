@@ -27,6 +27,7 @@ from pandas._typing import (
     IgnoreRaise,
     JsonOrient,
     Level,
+    ReplaceMethod,
     Scalar,
     SeriesAxisType,
     SortKind,
@@ -389,7 +390,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         inplace: _bool = ...,
         limit=...,
         regex: _bool = ...,
-        method: Literal["pad", "ffill", "bfill"] | None = ...,
+        method: ReplaceMethod = ...,
     ): ...
     def asof(self, where, subset=...): ...
     def isna(self) -> NDFrame: ...

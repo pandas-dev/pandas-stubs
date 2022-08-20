@@ -77,6 +77,7 @@ from pandas._typing import (
     MergeHow,
     NaPosition,
     Renamer,
+    ReplaceMethod,
     Scalar,
     SeriesAxisType,
     SortKind,
@@ -788,7 +789,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         inplace: Literal[False] = ...,
         limit: int | None = ...,
         regex=...,
-        method: Literal["pad", "ffill", "bfill"] | None = ...,
+        method: ReplaceMethod = ...,
     ) -> Series[S1]: ...
     @overload
     def replace(
@@ -797,7 +798,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         value: Scalar | dict | list | _str | None = ...,
         limit: int | None = ...,
         regex=...,
-        method: Literal["pad", "ffill", "bfill"] | None = ...,
+        method: ReplaceMethod = ...,
         *,
         inplace: Literal[True],
     ) -> None: ...
@@ -809,7 +810,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         inplace: _bool = ...,
         limit: int | None = ...,
         regex=...,
-        method: Literal["pad", "ffill", "bfill"] | None = ...,
+        method: ReplaceMethod = ...,
     ) -> Series[S1] | None: ...
     def shift(
         self,

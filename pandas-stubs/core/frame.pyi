@@ -69,6 +69,7 @@ from pandas._typing import (
     MergeHow,
     NaPosition,
     Renamer,
+    ReplaceMethod,
     Scalar,
     ScalarT,
     SeriesAxisType,
@@ -522,7 +523,7 @@ class DataFrame(NDFrame, OpsMixin):
         value: Scalar | Sequence | Mapping | Pattern | None = ...,
         limit: int | None = ...,
         regex=...,
-        method: _str | None = ...,
+        method: ReplaceMethod = ...,
         *,
         inplace: Literal[True],
     ) -> None: ...
@@ -534,7 +535,7 @@ class DataFrame(NDFrame, OpsMixin):
         inplace: Literal[False] = ...,
         limit: int | None = ...,
         regex=...,
-        method: _str | None = ...,
+        method: ReplaceMethod = ...,
     ) -> DataFrame: ...
     @overload
     def replace(
@@ -544,7 +545,7 @@ class DataFrame(NDFrame, OpsMixin):
         inplace: _bool | None = ...,
         limit: int | None = ...,
         regex=...,
-        method: _str | None = ...,
+        method: ReplaceMethod = ...,
     ) -> DataFrame | None: ...
     def shift(
         self,
