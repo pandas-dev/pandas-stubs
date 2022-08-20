@@ -332,6 +332,9 @@ def test_types_mean() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     s1: pd.Series = df.mean()
     s2: pd.Series = df.mean(axis=0)
+    df2: pd.DataFrame = df.groupby(level=0).mean()
+    df3: pd.DataFrame = df.groupby(axis=1, level=0).mean()
+    df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).mean()
     s3: pd.Series = df.mean(axis=1, skipna=True, numeric_only=False)
 
 
@@ -339,6 +342,9 @@ def test_types_median() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     s1: pd.Series = df.median()
     s2: pd.Series = df.median(axis=0)
+    df2: pd.DataFrame = df.groupby(level=0).median()
+    df3: pd.DataFrame = df.groupby(axis=1, level=0).median()
+    df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).median()
     s3: pd.Series = df.median(axis=1, skipna=True, numeric_only=False)
 
 

@@ -253,6 +253,7 @@ def test_types_rank() -> None:
 def test_types_mean() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     f1: float = s.mean()
+    s1: pd.Series = s.groupby(level=0).mean()
     f2: float = s.mean(skipna=False)
     f3: float = s.mean(numeric_only=False)
 
@@ -260,6 +261,7 @@ def test_types_mean() -> None:
 def test_types_median() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     f1: float = s.median()
+    s1: pd.Series = s.groupby(level=0).median()
     f2: float = s.median(skipna=False)
     f3: float = s.median(numeric_only=False)
 
@@ -267,6 +269,7 @@ def test_types_median() -> None:
 def test_types_sum() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     s.sum()
+    s.groupby(level=0).sum()
     s.sum(skipna=False)
     s.sum(numeric_only=False)
     s.sum(min_count=4)
@@ -283,6 +286,7 @@ def test_types_min() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     s.min()
     s.min(axis=0)
+    s.groupby(level=0).min()
     s.min(skipna=False)
 
 
@@ -290,6 +294,7 @@ def test_types_max() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     s.max()
     s.max(axis=0)
+    s.groupby(level=0).max()
     s.max(skipna=False)
 
 
