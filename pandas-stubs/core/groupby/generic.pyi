@@ -149,8 +149,9 @@ class DataFrameGroupBy(GroupBy):
     def apply(
         self, func: Callable[[DataFrame], Series | DataFrame], *args, **kwargs
     ) -> DataFrame: ...
+    # error: Overload 3 for "apply" will never be used because its parameters overlap overload 1
     @overload
-    def apply(
+    def apply(  # pyright: ignore[reportOverlappingOverload]
         self, func: Callable[[Iterable], float], *args, **kwargs
     ) -> DataFrame: ...
     def aggregate(self, arg: AggFuncType = ..., *args, **kwargs) -> DataFrame: ...
