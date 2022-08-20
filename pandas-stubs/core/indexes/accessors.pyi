@@ -9,7 +9,9 @@ from typing import (
 import numpy as np
 import numpy.typing as npt
 from pandas import (
-    Period,
+    DatetimeIndex,
+    Index,
+    PeriodIndex,
     Timedelta,
 )
 from pandas.core.accessor import PandasDelegate
@@ -24,7 +26,9 @@ from pandas.core.base import (
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.numeric import IntegerIndex
 from pandas.core.series import (
+    PeriodSeries,
     Series,
+    TimedeltaSeries,
     TimestampSeries,
 )
 from pytz.tzinfo import BaseTzInfo
@@ -36,76 +40,149 @@ from pandas._typing import np_ndarray_bool
 class Properties(PandasDelegate, PandasObject, NoNewAttributesMixin):
     def __init__(self, data: Series, orig) -> None: ...
 
-_DTReturnType = TypeVar("_DTReturnType", Series[int], IntegerIndex)
+_DTFieldOpsReturnType = TypeVar("_DTFieldOpsReturnType", Series[int], IntegerIndex)
 
-class DatetimeFieldOps(Properties, Generic[_DTReturnType]):
+class _DatetimeFieldOps(Generic[_DTFieldOpsReturnType]):
     @property
-    def year(self) -> _DTReturnType: ...
+    def year(self) -> _DTFieldOpsReturnType: ...
     @property
-    def month(self) -> _DTReturnType: ...
+    def month(self) -> _DTFieldOpsReturnType: ...
     @property
-    def day(self) -> _DTReturnType: ...
+    def day(self) -> _DTFieldOpsReturnType: ...
     @property
-    def hour(self) -> _DTReturnType: ...
+    def hour(self) -> _DTFieldOpsReturnType: ...
     @property
-    def minute(self) -> _DTReturnType: ...
+    def minute(self) -> _DTFieldOpsReturnType: ...
     @property
-    def second(self) -> _DTReturnType: ...
+    def second(self) -> _DTFieldOpsReturnType: ...
     @property
-    def weekofyear(self) -> _DTReturnType: ...
+    def weekofyear(self) -> _DTFieldOpsReturnType: ...
     @property
-    def week(self) -> _DTReturnType: ...
+    def week(self) -> _DTFieldOpsReturnType: ...
     @property
-    def weekday(self) -> _DTReturnType: ...
+    def weekday(self) -> _DTFieldOpsReturnType: ...
     @property
-    def dayofweek(self) -> _DTReturnType: ...
+    def dayofweek(self) -> _DTFieldOpsReturnType: ...
     @property
-    def day_of_week(self) -> _DTReturnType: ...
+    def day_of_week(self) -> _DTFieldOpsReturnType: ...
     @property
-    def dayofyear(self) -> _DTReturnType: ...
+    def dayofyear(self) -> _DTFieldOpsReturnType: ...
     @property
-    def day_of_year(self) -> _DTReturnType: ...
+    def day_of_year(self) -> _DTFieldOpsReturnType: ...
     @property
-    def quarter(self) -> _DTReturnType: ...
+    def quarter(self) -> _DTFieldOpsReturnType: ...
     @property
-    def days_in_month(self) -> _DTReturnType: ...
+    def days_in_month(self) -> _DTFieldOpsReturnType: ...
     @property
-    def daysinmonth(self) -> _DTReturnType: ...
+    def daysinmonth(self) -> _DTFieldOpsReturnType: ...
     @property
-    def microsecond(self) -> _DTReturnType: ...
+    def microsecond(self) -> _DTFieldOpsReturnType: ...
     @property
-    def nanosecond(self) -> _DTReturnType: ...
+    def nanosecond(self) -> _DTFieldOpsReturnType: ...
 
-class DatetimeAndPeriodProperties(DatetimeFieldOps[Series[int]]):
-    @property
-    def is_leap_year(self) -> Series[bool]: ...
-    @property
-    def freq(self) -> str | None: ...
+_DTBoolOpsReturnType = TypeVar("_DTBoolOpsReturnType", "Series[bool]", np_ndarray_bool)
 
-class DatetimeProperties(DatetimeAndPeriodProperties):
-    def to_pydatetime(self) -> np.ndarray: ...
-    def isocalendar(self) -> DataFrame: ...
+class _IsLeapYearProperty(Generic[_DTBoolOpsReturnType]):
     @property
-    def is_month_start(self) -> Series[bool]: ...
+    def is_leap_year(self) -> _DTBoolOpsReturnType: ...
+
+class _DatetimeBoolOps(
+    _IsLeapYearProperty[_DTBoolOpsReturnType], Generic[_DTBoolOpsReturnType]
+):
     @property
-    def is_month_end(self) -> Series[bool]: ...
+    def is_month_start(self) -> _DTBoolOpsReturnType: ...
     @property
-    def is_quarter_start(self) -> Series[bool]: ...
+    def is_month_end(self) -> _DTBoolOpsReturnType: ...
     @property
-    def is_quarter_end(self) -> Series[bool]: ...
+    def is_quarter_start(self) -> _DTBoolOpsReturnType: ...
     @property
-    def is_year_start(self) -> Series[bool]: ...
+    def is_quarter_end(self) -> _DTBoolOpsReturnType: ...
     @property
-    def is_year_end(self) -> Series[bool]: ...
+    def is_year_start(self) -> _DTBoolOpsReturnType: ...
+    @property
+    def is_year_end(self) -> _DTBoolOpsReturnType: ...
+
+_DTFreqReturnType = TypeVar("_DTFreqReturnType", str, BaseOffset)
+
+class _FreqProperty(Generic[_DTFreqReturnType]):
+    @property
+    def freq(self) -> _DTFreqReturnType | None: ...
+
+class _TZProperty:
     @property
     def tz(self) -> tzinfo | BaseTzInfo | None: ...
+
+class _DatetimeObjectOps(
+    _FreqProperty[_DTFreqReturnType], _TZProperty, Generic[_DTFreqReturnType]
+): ...
+
+_DTOtherOpsDateReturnType = TypeVar(
+    "_DTOtherOpsDateReturnType", Series[dt.date], np.ndarray
+)
+_DTOtherOpsTimeReturnType = TypeVar(
+    "_DTOtherOpsTimeReturnType", Series[dt.time], np.ndarray
+)
+
+class _DatetimeOtherOps(Generic[_DTOtherOpsDateReturnType, _DTOtherOpsTimeReturnType]):
     @property
-    def date(self) -> Series[dt.date]: ...
+    def date(self) -> _DTOtherOpsDateReturnType: ...
     @property
-    def time(self) -> Series[dt.time]: ...
+    def time(self) -> _DTOtherOpsTimeReturnType: ...
     @property
-    def timetz(self) -> Series[dt.time]: ...
-    def to_period(self, freq: str | BaseOffset | None = ...) -> Series[Period]: ...
+    def timetz(self) -> _DTOtherOpsTimeReturnType: ...
+
+class DatetimeAndPeriodProperties(_DatetimeFieldOps[Series[int]]): ...
+class _DatetimeLikeOps(
+    _DatetimeFieldOps[_DTFieldOpsReturnType],
+    _DatetimeObjectOps[_DTFreqReturnType],
+    _DatetimeBoolOps[_DTBoolOpsReturnType],
+    _DatetimeOtherOps[_DTOtherOpsDateReturnType, _DTOtherOpsTimeReturnType],
+    Generic[
+        _DTFieldOpsReturnType,
+        _DTBoolOpsReturnType,
+        _DTOtherOpsDateReturnType,
+        _DTOtherOpsTimeReturnType,
+        _DTFreqReturnType,
+    ],
+): ...
+
+# Ideally, the rounding methods would return TimestampSeries when `Series.dt.method`
+# is invoked, but because of how Series.dt is hooked in and that we may not know the
+# type of the series, we don't know which kind of series was ...ed
+# in to the dt accessor
+
+_DTRoundingMethodReturnType = TypeVar(
+    "_DTRoundingMethodReturnType",
+    Series,
+    TimedeltaSeries,
+    TimestampSeries,
+    DatetimeIndex,
+)
+
+class _DatetimeRoundingMethods(Generic[_DTRoundingMethodReturnType]):
+    def round(
+        self,
+        freq: str | BaseOffset | None,
+        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
+        | Timedelta = ...,
+    ) -> _DTRoundingMethodReturnType: ...
+    def floor(
+        self,
+        freq: str | BaseOffset | None,
+        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
+        | Timedelta = ...,
+    ) -> _DTRoundingMethodReturnType: ...
+    def ceil(
+        self,
+        freq: str | BaseOffset | None,
+        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
+        | Timedelta = ...,
+    ) -> _DTRoundingMethodReturnType: ...
+
+class _TZConversionMethods:
     def tz_localize(
         self,
         tz: str | None,
@@ -114,36 +191,95 @@ class DatetimeProperties(DatetimeAndPeriodProperties):
         | Timedelta = ...,
     ) -> DatetimeArray: ...
     def tz_convert(self, tz: str | None) -> TimestampSeries: ...
-    def normalize(self) -> TimestampSeries: ...
-    def strftime(self, date_format: str) -> Series[str]: ...
-    # Ideally, the next 3 methods would return TimestampSeries, but because of
-    # how Series.dt is hooked in, we don't know which kind of series was passed
-    # in to the dt accessor
-    def round(
-        self,
-        freq: str | BaseOffset | None,
-        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
-        | Timedelta = ...,
-    ) -> Series: ...
-    def floor(
-        self,
-        freq: str | BaseOffset | None,
-        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
-        | Timedelta = ...,
-    ) -> Series: ...
-    def ceil(
-        self,
-        freq: str | BaseOffset | None,
-        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
-        | Timedelta = ...,
-    ) -> Series: ...
-    def month_name(self, locale: str | None = ...) -> Series[str]: ...
-    def day_name(self, locale: str | None = ...) -> Series[str]: ...
 
-class TimedeltaProperties(Properties):
+_DTNormalizeReturnType = TypeVar(
+    "_DTNormalizeReturnType", TimestampSeries, DatetimeIndex
+)
+_DTStrKindReturnType = TypeVar("_DTStrKindReturnType", Series[str], Index)
+_DTToPeriodReturnType = TypeVar("_DTToPeriodReturnType", PeriodSeries, PeriodIndex)
+
+class _DatetimeLikeNoTZMethods(
+    _DatetimeRoundingMethods[_DTRoundingMethodReturnType],
+    Generic[
+        _DTRoundingMethodReturnType,
+        _DTNormalizeReturnType,
+        _DTStrKindReturnType,
+        _DTToPeriodReturnType,
+    ],
+):
+    def to_period(
+        self, freq: str | BaseOffset | None = ...
+    ) -> _DTToPeriodReturnType: ...
+    def tz_localize(
+        self,
+        tz: str | None,
+        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
+        | Timedelta = ...,
+    ) -> DatetimeArray: ...
+    def tz_convert(self, tz: str | None) -> TimestampSeries: ...
+    def normalize(self) -> _DTNormalizeReturnType: ...
+    def strftime(self, date_format: str) -> _DTStrKindReturnType: ...
+    def month_name(self, locale: str | None = ...) -> _DTStrKindReturnType: ...
+    def day_name(self, locale: str | None = ...) -> _DTStrKindReturnType: ...
+
+class _DatetimeNoTZProperties(
+    _DatetimeLikeOps[
+        _DTFieldOpsReturnType,
+        _DTBoolOpsReturnType,
+        _DTOtherOpsDateReturnType,
+        _DTOtherOpsTimeReturnType,
+        _DTFreqReturnType,
+    ],
+    _DatetimeLikeNoTZMethods[
+        _DTRoundingMethodReturnType,
+        _DTNormalizeReturnType,
+        _DTStrKindReturnType,
+        _DTToPeriodReturnType,
+    ],
+    Generic[
+        _DTFieldOpsReturnType,
+        _DTBoolOpsReturnType,
+        _DTRoundingMethodReturnType,
+        _DTOtherOpsDateReturnType,
+        _DTOtherOpsTimeReturnType,
+        _DTFreqReturnType,
+        _DTNormalizeReturnType,
+        _DTStrKindReturnType,
+        _DTToPeriodReturnType,
+    ],
+): ...
+
+class DatetimeProperties(
+    Properties,
+    _DatetimeNoTZProperties[
+        _DTFieldOpsReturnType,
+        _DTBoolOpsReturnType,
+        _DTRoundingMethodReturnType,
+        _DTOtherOpsDateReturnType,
+        _DTOtherOpsTimeReturnType,
+        _DTFreqReturnType,
+        _DTNormalizeReturnType,
+        _DTStrKindReturnType,
+        _DTToPeriodReturnType,
+    ],
+    _TZConversionMethods,
+    Generic[
+        _DTFieldOpsReturnType,
+        _DTBoolOpsReturnType,
+        _DTRoundingMethodReturnType,
+        _DTOtherOpsDateReturnType,
+        _DTOtherOpsTimeReturnType,
+        _DTFreqReturnType,
+        _DTNormalizeReturnType,
+        _DTStrKindReturnType,
+        _DTToPeriodReturnType,
+    ],
+):
+    def to_pydatetime(self) -> np.ndarray: ...
+    def isocalendar(self) -> DataFrame: ...
+
+class _TimedeltaPropertiesNoRounding:
     def to_pytimedelta(self) -> np.ndarray: ...
     @property
     def components(self) -> DataFrame: ...
@@ -156,32 +292,14 @@ class TimedeltaProperties(Properties):
     @property
     def nanoseconds(self) -> Series[int]: ...
     def total_seconds(self) -> Series[float]: ...
-    # Ideally, the next 3 methods would return TimedeltaSeries, but because of
-    # how Series.dt is hooked in, we don't know which kind of series was passed
-    # in to the dt accessor
-    def round(
-        self,
-        freq: str | BaseOffset | None,
-        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
-        | Timedelta = ...,
-    ) -> Series: ...
-    def floor(
-        self,
-        freq: str | BaseOffset | None,
-        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
-        | Timedelta = ...,
-    ) -> Series: ...
-    def ceil(
-        self,
-        freq: str | BaseOffset | None,
-        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
-        | Timedelta = ...,
-    ) -> Series: ...
 
-class PeriodProperties(DatetimeAndPeriodProperties):
+class TimedeltaProperties(
+    Properties,
+    _TimedeltaPropertiesNoRounding,
+    _DatetimeRoundingMethods[TimedeltaSeries],
+): ...
+
+class _PeriodProperties:
     @property
     def start_time(self) -> TimestampSeries: ...
     @property
@@ -200,7 +318,65 @@ class PeriodProperties(DatetimeAndPeriodProperties):
         how: Literal["E", "END", "FINISH", "S", "START", "BEGIN"] = ...,
     ) -> PeriodArray: ...
 
+class PeriodProperties(
+    Properties,
+    _PeriodProperties,
+    _DatetimeFieldOps[Series[int]],
+    _IsLeapYearProperty,
+    _FreqProperty[BaseOffset],
+): ...
+
 class CombinedDatetimelikeProperties(
-    DatetimeProperties, TimedeltaProperties, PeriodProperties
+    DatetimeProperties[
+        Series[int],
+        Series[bool],
+        Series,
+        Series[dt.date],
+        Series[dt.time],
+        str,
+        TimestampSeries,
+        Series[str],
+        PeriodSeries,
+    ],
+    _TimedeltaPropertiesNoRounding,
+    _PeriodProperties,
 ):
     def __new__(cls, data: Series): ...
+
+class TimestampProperties(
+    DatetimeProperties[
+        Series[int],
+        Series[bool],
+        TimestampSeries,
+        Series[dt.date],
+        Series[dt.time],
+        str,
+        TimestampSeries,
+        Series[str],
+        PeriodSeries,
+    ]
+): ...
+
+class DatetimeIndexProperties(
+    Properties,
+    _DatetimeNoTZProperties[
+        IntegerIndex,
+        np_ndarray_bool,
+        DatetimeIndex,
+        np.ndarray,
+        np.ndarray,
+        BaseOffset,
+        DatetimeIndex,
+        Index,
+        PeriodIndex,
+    ],
+    _TZProperty,
+):
+    @property
+    def is_normalized(self) -> bool: ...
+    @property
+    def tzinfo(self) -> tzinfo | None: ...
+    def to_pydatetime(self) -> npt.NDArray[np.object_]: ...
+    def std(
+        self, axis: int | None = ..., ddof: int = ..., skipna: bool = ...
+    ) -> Timedelta: ...
