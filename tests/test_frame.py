@@ -1147,18 +1147,37 @@ def test_types_regressions() -> None:
 def test_read_csv() -> None:
     with ensure_clean() as path:
         Path(path).write_text("A,B\n1,2")
-        df11: pd.DataFrame = pd.read_csv(path)
-        df12: pd.DataFrame = pd.read_csv(path, iterator=False)
-        df13: pd.DataFrame = pd.read_csv(path, iterator=False, chunksize=None)
-        df14: TextFileReader = pd.read_csv(path, chunksize=1)
-        df15: TextFileReader = pd.read_csv(path, iterator=False, chunksize=1)
-        df16: TextFileReader = pd.read_csv(path, iterator=True)
-        df17: TextFileReader = pd.read_csv(path, iterator=True, chunksize=None)
-        df18: TextFileReader = pd.read_csv(path, iterator=True, chunksize=1)
-        df19: TextFileReader = pd.read_csv(path, chunksize=1)
+        check(assert_type(pd.read_csv(path), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(pd.read_csv(path, iterator=False), pd.DataFrame), pd.DataFrame
+        )
+        check(
+            assert_type(
+                pd.read_csv(path, iterator=False, chunksize=None), pd.DataFrame
+            ),
+            pd.DataFrame,
+        )
+
+        with assert_type(pd.read_csv(path, chunksize=1), TextFileReader):
+            ...
+        with assert_type(
+            pd.read_csv(path, iterator=False, chunksize=1), TextFileReader
+        ):
+            ...
+        with assert_type(pd.read_csv(path, iterator=True), TextFileReader):
+            ...
+        with assert_type(
+            pd.read_csv(path, iterator=True, chunksize=None), TextFileReader
+        ):
+            ...
+        with assert_type(pd.read_csv(path, iterator=True, chunksize=1), TextFileReader):
+            ...
 
         # https://github.com/microsoft/python-type-stubs/issues/118
-        pd.read_csv(path, storage_options=None)
+        check(
+            assert_type(pd.read_csv(path, storage_options=None), pd.DataFrame),
+            pd.DataFrame,
+        )
 
 
 def test_groupby_series_methods() -> None:
