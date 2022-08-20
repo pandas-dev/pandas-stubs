@@ -10,6 +10,7 @@ from pandas.core.frame import DataFrame
 from pandas.core.series import Series
 
 from pandas._typing import (
+    CompressionOptions,
     FilePathOrBuffer,
     JSONSerializable,
 )
@@ -93,7 +94,7 @@ def read_json(
     encoding: str | None = ...,
     lines: bool = ...,
     chunksize: int | None = ...,
-    compression: str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
+    compression: CompressionOptions = ...,
     *,
     typ: Literal["series"],
 ) -> Series: ...
@@ -111,7 +112,7 @@ def read_json(
     encoding: str | None = ...,
     lines: bool = ...,
     chunksize: int | None = ...,
-    compression: str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
+    compression: CompressionOptions = ...,
     *,
     typ: Literal["frame"],
 ) -> DataFrame: ...
@@ -130,7 +131,7 @@ def read_json(
     encoding: str | None = ...,
     lines: bool = ...,
     chunksize: int | None = ...,
-    compression: str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
+    compression: CompressionOptions = ...,
 ) -> Series | DataFrame: ...
 
 class JsonReader(abc.Iterator):
