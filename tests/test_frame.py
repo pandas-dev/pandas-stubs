@@ -1152,20 +1152,32 @@ def test_read_csv() -> None:
             pd.DataFrame,
         )
 
-        with assert_type(pd.read_csv(path, chunksize=1), TextFileReader):
-            ...
-        with assert_type(
-            pd.read_csv(path, iterator=False, chunksize=1), TextFileReader
+        with check(
+            assert_type(pd.read_csv(path, chunksize=1), TextFileReader), TextFileReader
         ):
-            ...
-        with assert_type(pd.read_csv(path, iterator=True), TextFileReader):
-            ...
-        with assert_type(
-            pd.read_csv(path, iterator=True, chunksize=None), TextFileReader
+            pass
+        with check(
+            assert_type(pd.read_csv(path, iterator=False, chunksize=1), TextFileReader),
+            TextFileReader,
         ):
-            ...
-        with assert_type(pd.read_csv(path, iterator=True, chunksize=1), TextFileReader):
-            ...
+            pass
+        with check(
+            assert_type(pd.read_csv(path, iterator=True), TextFileReader),
+            TextFileReader,
+        ):
+            pass
+        with check(
+            assert_type(
+                pd.read_csv(path, iterator=True, chunksize=None), TextFileReader
+            ),
+            TextFileReader,
+        ):
+            pass
+        with check(
+            assert_type(pd.read_csv(path, iterator=True, chunksize=1), TextFileReader),
+            TextFileReader,
+        ):
+            pass
 
         # https://github.com/microsoft/python-type-stubs/issues/118
         check(
