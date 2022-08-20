@@ -1326,17 +1326,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType = ...,
     ) -> Series[_bool]: ...
     def item(self) -> S1: ...
-    @overload
-    def kurt(
-        self,
-        axis: SeriesAxisType | None = ...,
-        skipna: _bool = ...,
-        numeric_only: _bool | None = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> Series[S1]: ...
-    @overload
     def kurt(
         self,
         axis: SeriesAxisType | None = ...,
@@ -1345,17 +1334,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Scalar: ...
-    @overload
-    def kurtosis(
-        self,
-        axis: SeriesAxisType | None = ...,
-        skipna: _bool = ...,
-        numeric_only: _bool | None = ...,
-        *,
-        level: Level | None,
-        **kwargs,
-    ) -> Series[S1]: ...
-    @overload
     def kurtosis(
         self,
         axis: SeriesAxisType | None = ...,
@@ -1395,17 +1373,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         level: None = ...,
         **kwargs,
     ) -> Scalar: ...
-    @overload
-    def max(
-        self,
-        axis: SeriesAxisType | None = ...,
-        skipna: _bool = ...,
-        *,
-        level: Level,
-        numeric_only: _bool | None = ...,
-        **kwargs,
-    ) -> Series[S1]: ...
-    @overload
     def max(
         self,
         axis: SeriesAxisType | None = ...,
@@ -1415,17 +1382,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         numeric_only: _bool | None = ...,
         **kwargs,
     ) -> S1: ...
-    @overload
-    def mean(
-        self,
-        axis: SeriesAxisType | None = ...,
-        skipna: _bool = ...,
-        numeric_only: _bool | None = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> Series[S1]: ...
-    @overload
     def mean(
         self,
         axis: SeriesAxisType | None = ...,
@@ -1434,17 +1390,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         numeric_only: _bool | None = ...,
         **kwargs,
     ) -> float: ...
-    @overload
-    def median(
-        self,
-        axis: SeriesAxisType | None = ...,
-        skipna: _bool = ...,
-        numeric_only: _bool | None = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> Series[S1]: ...
-    @overload
     def median(
         self,
         axis: SeriesAxisType | None = ...,
@@ -1453,17 +1398,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         numeric_only: _bool | None = ...,
         **kwargs,
     ) -> float: ...
-    @overload
-    def min(
-        self,
-        axis: SeriesAxisType | None = ...,
-        skipna: _bool = ...,
-        numeric_only: _bool | None = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> Series[S1]: ...
-    @overload
     def min(
         self,
         axis: SeriesAxisType | None = ...,
@@ -1508,18 +1442,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         fill_value: float | None = ...,
         axis: SeriesAxisType | None = ...,
     ) -> Series[S1]: ...
-    @overload
-    def prod(
-        self,
-        axis: SeriesAxisType | None = ...,
-        skipna: _bool | None = ...,
-        numeric_only: _bool | None = ...,
-        min_count: int = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> Series[S1]: ...
-    @overload
     def prod(
         self,
         axis: SeriesAxisType | None = ...,
@@ -1529,18 +1451,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         min_count: int = ...,
         **kwargs,
     ) -> Scalar: ...
-    @overload
-    def product(
-        self,
-        axis: SeriesAxisType | None = ...,
-        skipna: _bool | None = ...,
-        numeric_only: _bool | None = ...,
-        min_count: int = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> Series[S1]: ...
-    @overload
     def product(
         self,
         axis: SeriesAxisType | None = ...,
@@ -1629,18 +1539,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         fill_value: float | None = ...,
         axis: SeriesAxisType = ...,
     ) -> Series[S1]: ...
-    @overload
-    def sem(
-        self,
-        axis: SeriesAxisType | None = ...,
-        skipna: _bool | None = ...,
-        ddof: int = ...,
-        numeric_only: _bool | None = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> Series[S1]: ...
-    @overload
     def sem(
         self,
         axis: SeriesAxisType | None = ...,
@@ -1650,17 +1548,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Scalar: ...
-    @overload
-    def skew(
-        self,
-        axis: SeriesAxisType | None = ...,
-        skipna: _bool | None = ...,
-        numeric_only: _bool | None = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> Series[S1]: ...
-    @overload
     def skew(
         self,
         axis: SeriesAxisType | None = ...,
@@ -1669,18 +1556,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Scalar: ...
-    @overload
-    def std(
-        self,
-        axis: SeriesAxisType | None = ...,
-        skipna: _bool | None = ...,
-        ddof: int = ...,
-        numeric_only: _bool | None = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> Series[float]: ...
-    @overload
     def std(
         self,
         axis: SeriesAxisType | None = ...,
@@ -1708,7 +1583,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self: Series[S1],
         axis: SeriesAxisType | None = ...,
         skipna: _bool | None = ...,
-        level: Level | None = ...,
+        level: None = ...,
         numeric_only: _bool | None = ...,
         min_count: int = ...,
         **kwargs,
@@ -1729,18 +1604,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         fill_value: float | None = ...,
         axis: SeriesAxisType = ...,
     ) -> Series[float]: ...
-    @overload
-    def var(
-        self,
-        axis: SeriesAxisType | None = ...,
-        skipna: _bool | None = ...,
-        ddof: int = ...,
-        numeric_only: _bool | None = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> Series[S1]: ...
-    @overload
     def var(
         self,
         axis: SeriesAxisType | None = ...,
