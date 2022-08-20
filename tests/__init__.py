@@ -8,7 +8,7 @@ def check(actual: T, klass: type, dtype: type | None = None, attr: str = "left")
     if not isinstance(actual, klass):
         raise RuntimeError(f"Expected type '{klass}' but got '{type(actual)}'")
     if dtype is None:
-        return actual
+        return actual  # type: ignore[return-value]
 
     if hasattr(actual, "__iter__"):
         value = next(iter(actual))  # type: ignore[call-overload]
@@ -18,4 +18,4 @@ def check(actual: T, klass: type, dtype: type | None = None, attr: str = "left")
 
     if not isinstance(value, dtype):
         raise RuntimeError(f"Expected type '{dtype}' but got '{type(value)}'")
-    return actual
+    return actual  # type: ignore[return-value]
