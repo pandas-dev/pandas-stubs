@@ -141,17 +141,16 @@ class _DataFrameGroupByNonScalar(DataFrameGroupBy):
 class DataFrameGroupBy(GroupBy):
     def any(self, skipna: bool = ...) -> DataFrame: ...
     def all(self, skipna: bool = ...) -> DataFrame: ...
-    # mypy and pyright see these overloads as overlapping
     @overload
-    def apply(  # type: ignore[misc]
+    def apply(
         self, func: Callable[[DataFrame], Scalar | list | dict], *args, **kwargs
     ) -> Series: ...
     @overload
-    def apply(  # type: ignore[misc]
+    def apply(
         self, func: Callable[[DataFrame], Series | DataFrame], *args, **kwargs
     ) -> DataFrame: ...
     @overload
-    def apply(  # type: ignore[misc]
+    def apply(
         self, func: Callable[[Iterable], float], *args, **kwargs
     ) -> DataFrame: ...
     def aggregate(self, arg: AggFuncType = ..., *args, **kwargs) -> DataFrame: ...

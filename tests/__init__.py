@@ -14,7 +14,7 @@ def check(
         value = next(iter(actual))  # type: ignore[call-overload]
     else:
         assert hasattr(actual, attr)
-        value = getattr(actual, attr)  # type: ignore[attr-defined]
+        value = getattr(actual, attr)
 
     if not isinstance(value, dtype):
         raise RuntimeError(f"Expected type '{dtype}' but got '{type(value)}'")

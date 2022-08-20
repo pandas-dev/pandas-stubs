@@ -50,7 +50,7 @@ def test_interval_length() -> None:
 
     check(assert_type(idres, "pd.Interval[pd.Timestamp]"), pd.Interval, pd.Timestamp)
     if TYPE_CHECKING:
-        20 in i1  # type: ignore[operator]
+        20 in i1  # TODO
         i1 + pd.Timestamp("2000-03-03")  # type: ignore[operator]
         i1 * 3  # type: ignore[operator]
         i1 * pd.Timedelta(seconds=20)  # type: ignore[operator]
@@ -69,8 +69,10 @@ def test_interval_length() -> None:
     check(assert_type(i2 * 4.2, "pd.Interval[float]"), pd.Interval, float)
 
     if TYPE_CHECKING:
-        pd.Timestamp("2001-01-02") in i2  # type: ignore[operator]
-        i2 + pd.Timedelta(seconds=20)  # type: ignore[operator]
+        pd.Timestamp(
+            "2001-01-02"
+        ) in i2  # pyright: ignore[reportGeneralTypeIssues] # TODO
+        i2 + pd.Timedelta(seconds=20)  # pyright: ignore[reportGeneralTypeIssues] # TODO
 
     i3 = pd.Interval(13.2, 19.5)
     check(assert_type(i3.length, float), float)
@@ -83,5 +85,7 @@ def test_interval_length() -> None:
     check(assert_type(i3 + 3, "pd.Interval[float]"), pd.Interval, float)
     check(assert_type(i3 * 3, "pd.Interval[float]"), pd.Interval, float)
     if TYPE_CHECKING:
-        pd.Timestamp("2001-01-02") in i3  # type: ignore[operator]
-        i3 + pd.Timedelta(seconds=20)  # type: ignore[operator]
+        pd.Timestamp(
+            "2001-01-02"
+        ) in i3  # pyright: ignore[reportGeneralTypeIssues] # TODO
+        i3 + pd.Timedelta(seconds=20)  # pyright: ignore[reportGeneralTypeIssues] # TODO
