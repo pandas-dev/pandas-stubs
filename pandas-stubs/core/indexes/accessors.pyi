@@ -26,7 +26,10 @@ from pytz.tzinfo import BaseTzInfo
 
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.offsets import DateOffset
-from pandas._typing import np_ndarray_bool
+from pandas._typing import (
+    TimestampConvention,
+    np_ndarray_bool,
+)
 
 class Properties(PandasDelegate, PandasObject, NoNewAttributesMixin):
     def __init__(self, data: Series, orig) -> None: ...
@@ -184,7 +187,7 @@ class PeriodProperties(DatetimeAndPeriodProperties):
     def to_timestamp(
         self,
         freq: str | DateOffset | None = ...,
-        how: Literal["s", "e", "start", "end"] = ...,
+        how: TimestampConvention = ...,
     ) -> DatetimeArray: ...
     def asfreq(
         self,
