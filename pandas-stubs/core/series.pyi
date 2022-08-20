@@ -854,7 +854,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     ) -> Series[S1]: ...
     def to_period(self, freq: _str | None = ..., copy: _bool = ...) -> DataFrame: ...
     @property
-    def str(self) -> StringMethods[Series]: ...
+    def str(self) -> StringMethods[Series, DataFrame]: ...
     @property
     def dt(self) -> CombinedDatetimelikeProperties: ...
     @property
@@ -1248,7 +1248,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType = ...,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
-        level: Level | None = ...,
         **kwargs,
     ) -> _bool: ...
     def any(
@@ -1256,7 +1255,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType = ...,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
-        level: Level | None = ...,
         **kwargs,
     ) -> _bool: ...
     def cummax(

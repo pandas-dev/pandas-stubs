@@ -61,6 +61,7 @@ from pandas._typing import (
     Label,
     Level,
     ListLike,
+    ListLikeU,
     MaskType,
     Renamer,
     Scalar,
@@ -157,10 +158,10 @@ class DataFrame(NDFrame, OpsMixin):
 
     def __new__(
         cls,
-        data: ListLike
+        data: ListLikeU
         | DataFrame
         | dict[Any, Any]
-        | Iterable[tuple[Hashable, ListLike]]
+        | Iterable[tuple[Hashable, ListLikeU]]
         | None = ...,
         index: Axes | None = ...,
         columns: Axes | None = ...,
@@ -212,16 +213,17 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> dict[_str, Any]: ...
     def to_gbq(
         self,
-        destination_table,
-        project_id=...,
-        chunksize=...,
-        reauth=...,
-        if_exists=...,
-        auth_local_webserver=...,
-        table_schema=...,
-        location=...,
-        progress_bar=...,
-        credentials=...,
+        destination_table: str,
+        project_id: str | None = ...,
+        chunksize: int | None = ...,
+        reauth: bool = ...,
+        if_exists: Literal["fail", "replace", "append"] = ...,
+        auth_local_webserver: bool = ...,
+        table_schema: list[dict[str, str]] | None = ...,
+        location: str | None = ...,
+        progress_bar: bool = ...,
+        # Google type, not available
+        credentials: Any = ...,
     ) -> None: ...
     @classmethod
     def from_records(
@@ -1155,41 +1157,35 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def all(
         self,
-        axis: AxisType = ...,
+        axis: None,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
-        level: None = ...,
         **kwargs,
-    ) -> Series: ...
+    ) -> _bool: ...
     @overload
     def all(
         self,
         axis: AxisType = ...,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
-        *,
-        level: Level,
         **kwargs,
-    ) -> DataFrame: ...
+    ) -> Series[_bool]: ...
+    @overload
+    def any(
+        self,
+        axis: None,
+        bool_only: _bool | None = ...,
+        skipna: _bool = ...,
+        **kwargs,
+    ) -> _bool: ...
     @overload
     def any(
         self,
         axis: AxisType = ...,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
-        level: None = ...,
         **kwargs,
-    ) -> Series: ...
-    @overload
-    def any(
-        self,
-        axis: AxisType = ...,
-        bool_only: _bool = ...,
-        skipna: _bool = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> DataFrame: ...
+    ) -> Series[_bool]: ...
     def asof(self, where, subset: _str | list[_str] | None = ...) -> DataFrame: ...
     def asfreq(
         self,
