@@ -2,6 +2,7 @@ import pandas as pd
 from pandas import (
     DataFrame,
     read_clipboard,
+    read_stata,
 )
 from pandas._testing import ensure_clean
 import pytest
@@ -11,10 +12,7 @@ from tests import check
 
 from pandas.io.clipboard import PyperclipException
 from pandas.io.parsers import TextFileReader
-from pandas.io.stata import (
-    StataReader,
-    read_stata,
-)
+from pandas.io.stata import StataReader
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 

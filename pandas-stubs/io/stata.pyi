@@ -3,7 +3,6 @@ import datetime
 from io import BytesIO
 from types import TracebackType
 from typing import (
-    Hashable,
     Literal,
     Sequence,
     overload,
@@ -76,18 +75,6 @@ class ValueLabelTypeMismatch(Warning): ...
 class InvalidColumnName(Warning): ...
 
 class StataParser:
-    DTYPE_MAP: dict[int, np.dtype] = ...
-    DTYPE_MAP_XML: dict[int, np.dtype] = ...
-    TYPE_MAP: list[tuple[int | str, ...]] = ...
-    TYPE_MAP_XML: dict[int, str] = ...
-    VALID_RANGE: dict[
-        str,
-        tuple[int, int] | tuple[np.float32, np.float32] | tuple[np.float64, np.float64],
-    ] = ...
-    OLD_TYPE_MAPPING: dict[int, int] = ...
-    MISSING_VALUES: dict[str, int] = ...
-    NUMPY_TYPE_MAP: dict[str, str] = ...
-    RESERVED_WORDS: tuple[str, ...] = ...
     def __init__(self) -> None: ...
 
 class StataReader(StataParser, abc.Iterator):
@@ -134,7 +121,6 @@ class StataReader(StataParser, abc.Iterator):
     def value_labels(self) -> dict[str, dict[float, str]]: ...
 
 class StataWriter(StataParser):
-    type_converters: dict[str, type[np.dtype]] = ...
     def __init__(
         self,
         fname: FilePath | WriteBuffer[bytes],
@@ -151,40 +137,3 @@ class StataWriter(StataParser):
         value_labels: dict[HashableT, dict[float, str]] | None = ...,
     ) -> None: ...
     def write_file(self) -> None: ...
-
-class StataWriter117(StataWriter):
-    def __init__(
-        self,
-        fname: FilePath | WriteBuffer[bytes],
-        data: DataFrame,
-        convert_dates: dict[HashableT, StataDateFormat] | None = ...,
-        write_index: bool = ...,
-        byteorder: str | None = ...,
-        time_stamp: datetime.datetime | None = ...,
-        data_label: str | None = ...,
-        variable_labels: dict[HashableT, str] | None = ...,
-        convert_strl: Sequence[Hashable] | None = ...,
-        compression: CompressionOptions = ...,
-        storage_options: StorageOptions = ...,
-        *,
-        value_labels: dict[HashableT, dict[float, str]] | None = ...,
-    ) -> None: ...
-
-class StataWriterUTF8(StataWriter117):
-    def __init__(
-        self,
-        fname: FilePath | WriteBuffer[bytes],
-        data: DataFrame,
-        convert_dates: dict[HashableT, StataDateFormat] | None = ...,
-        write_index: bool = ...,
-        byteorder: str | None = ...,
-        time_stamp: datetime.datetime | None = ...,
-        data_label: str | None = ...,
-        variable_labels: dict[HashableT, str] | None = ...,
-        convert_strl: Sequence[Hashable] | None = ...,
-        version: Literal[118, 119] | None = ...,
-        compression: CompressionOptions = ...,
-        storage_options: StorageOptions = ...,
-        *,
-        value_labels: dict[HashableT, dict[float, str]] | None = ...,
-    ) -> None: ...
