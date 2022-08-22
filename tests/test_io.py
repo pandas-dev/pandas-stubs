@@ -1,16 +1,16 @@
 from pathlib import Path
 from typing import Any
 
-from pandas import DataFrame
+from pandas import (
+    DataFrame,
+    read_pickle,
+)
 from pandas._testing import ensure_clean
 from typing_extensions import assert_type
 
 from tests import check
 
-from pandas.io.pickle import (
-    read_pickle,
-    to_pickle,
-)
+from pandas.io.api import to_pickle
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 
