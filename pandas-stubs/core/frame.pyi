@@ -51,7 +51,6 @@ from pandas._typing import (
     CompressionOptions,
     Dtype,
     DtypeNp,
-    FilePath,
     FilePathOrBuffer,
     FilePathOrBytesBuffer,
     FillnaOptions,
@@ -75,11 +74,9 @@ from pandas._typing import (
     ScalarT,
     SeriesAxisType,
     SortKind,
-    StorageOptions,
     StrLike,
     T as TType,
     TimestampConvention,
-    WriteBuffer,
     np_ndarray_bool,
     np_ndarray_str,
     num,
@@ -1880,13 +1877,6 @@ class DataFrame(NDFrame, OpsMixin):
         index: _bool = ...,
         indent: int | None = ...,
     ) -> _str: ...
-    def to_pickle(
-        self,
-        path: FilePath | WriteBuffer[bytes],
-        compression: CompressionOptions = ...,
-        protocol: int = ...,
-        storage_options: StorageOptions = ...,
-    ) -> None: ...
     def to_sql(
         self,
         name: _str,

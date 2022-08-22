@@ -3,6 +3,7 @@ from typing import Any
 
 from pandas import (
     DataFrame,
+    Series,
     read_pickle,
 )
 from pandas._testing import ensure_clean
@@ -67,3 +68,10 @@ def test_pickle_storage_options():
             assert_type(read_pickle(path, storage_options={}), Any),
             DataFrame,
         )
+
+
+def test_to_pickle_series():
+    s: Series = DF["a"]
+    with ensure_clean() as path:
+        check(assert_type(s.to_pickle(path), None), type(None))
+        check(assert_type(read_pickle(path), Any), Series)
