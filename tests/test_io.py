@@ -1,8 +1,10 @@
 import io
 
+import pandas as pd
 from pandas import (
     DataFrame,
     read_clipboard,
+    read_stata,
     read_xml,
 )
 from pandas._testing import ensure_clean
@@ -13,6 +15,7 @@ from tests import check
 
 from pandas.io.clipboard import PyperclipException
 from pandas.io.parsers import TextFileReader
+from pandas.io.stata import StataReader
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 
@@ -30,6 +33,36 @@ def test_xml_str():
         check(assert_type(DF.to_xml(), str), str)
         out: str = DF.to_xml()
         check(assert_type(read_xml(io.StringIO(out)), DataFrame), DataFrame)
+
+
+def test_read_stata_df():
+    with ensure_clean() as path:
+        DF.to_stata(path)
+        check(assert_type(read_stata(path), pd.DataFrame), pd.DataFrame)
+
+
+def test_read_stata_iterator_positional():
+    with ensure_clean() as path:
+        str_path = str(path)
+        DF.to_stata(str_path)
+        check(
+            assert_type(
+                read_stata(
+                    str_path, False, False, None, False, False, None, False, 2, True
+                ),
+                StataReader,
+            ),
+            StataReader,
+        )
+
+
+def test_read_stata_iterator():
+    with ensure_clean() as path:
+        str_path = str(path)
+        DF.to_stata(str_path)
+        check(
+            assert_type(read_stata(str_path, iterator=True), StataReader), StataReader
+        )
 
 
 def test_clipboard():
