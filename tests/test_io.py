@@ -4,14 +4,13 @@ from packaging.version import parse
 from pandas import (
     DataFrame,
     __version__,
+    read_orc,
 )
 from pandas._testing import ensure_clean
 import pytest
 from typing_extensions import assert_type
 
 from tests import check
-
-from pandas.io.orc import read_orc
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 

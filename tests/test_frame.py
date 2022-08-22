@@ -44,6 +44,18 @@ def test_types_init() -> None:
     )
 
 
+def test_types_all() -> None:
+    df = pd.DataFrame([[False, True], [False, False]], columns=["col1", "col2"])
+    check(assert_type(df.all(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(df.all(axis=None), bool), np.bool_)
+
+
+def test_types_any() -> None:
+    df = pd.DataFrame([[False, True], [False, False]], columns=["col1", "col2"])
+    check(assert_type(df.any(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(df.any(axis=None), bool), np.bool_)
+
+
 def test_types_append() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame({"col1": [10, 20], "col2": [30, 40]})
@@ -320,12 +332,9 @@ def test_types_mean() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     s1: pd.Series = df.mean()
     s2: pd.Series = df.mean(axis=0)
-    with pytest.warns(FutureWarning, match="Using the level"):
-        df2: pd.DataFrame = df.mean(level=0)
-    with pytest.warns(FutureWarning, match="Using the level"):
-        df3: pd.DataFrame = df.mean(axis=1, level=0)
-    with pytest.warns(FutureWarning, match="Using the level"):
-        df4: pd.DataFrame = df.mean(1, True, level=0)
+    df2: pd.DataFrame = df.groupby(level=0).mean()
+    df3: pd.DataFrame = df.groupby(axis=1, level=0).mean()
+    df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).mean()
     s3: pd.Series = df.mean(axis=1, skipna=True, numeric_only=False)
 
 
@@ -333,12 +342,9 @@ def test_types_median() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     s1: pd.Series = df.median()
     s2: pd.Series = df.median(axis=0)
-    with pytest.warns(FutureWarning, match="Using the level keyword"):
-        df2: pd.DataFrame = df.median(level=0)
-    with pytest.warns(FutureWarning, match="Using the level keyword"):
-        df3: pd.DataFrame = df.median(axis=1, level=0)
-    with pytest.warns(FutureWarning, match="Using the level keyword"):
-        df4: pd.DataFrame = df.median(1, True, level=0)
+    df2: pd.DataFrame = df.groupby(level=0).median()
+    df3: pd.DataFrame = df.groupby(axis=1, level=0).median()
+    df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).median()
     s3: pd.Series = df.median(axis=1, skipna=True, numeric_only=False)
 
 

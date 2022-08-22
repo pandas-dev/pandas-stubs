@@ -23,6 +23,7 @@ from pandas._libs.tslibs import NaTType
 from pandas._typing import (
     AnyArrayLike,
     DateTimeErrorChoices,
+    IgnoreRaise,
 )
 
 ArrayConvertible = Union[list, tuple, AnyArrayLike]
@@ -57,7 +58,7 @@ def should_cache(
 @overload
 def to_datetime(
     arg: DatetimeScalar,
-    errors: Literal["ignore", "raise"] = ...,
+    errors: IgnoreRaise = ...,
     dayfirst: bool = ...,
     yearfirst: bool = ...,
     utc: bool | None = ...,
