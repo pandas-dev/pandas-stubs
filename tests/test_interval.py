@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import pandas as pd
 from typing_extensions import assert_type
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 
 def test_interval_init() -> None:
@@ -49,8 +50,8 @@ def test_interval_length() -> None:
     idres = i1 + pd.Timedelta(seconds=20)
 
     check(assert_type(idres, "pd.Interval[pd.Timestamp]"), pd.Interval, pd.Timestamp)
-    if TYPE_CHECKING:
-        20 in i1  # type: ignore[operator]
+    if TYPE_CHECKING_INVALID_USAGE:
+        20 in i1  # TODO both: ignore[operator]
         i1 + pd.Timestamp("2000-03-03")  # type: ignore[operator]
         i1 * 3  # type: ignore[operator]
         i1 * pd.Timedelta(seconds=20)  # type: ignore[operator]
@@ -68,9 +69,13 @@ def test_interval_length() -> None:
     check(assert_type(i2 * 4, "pd.Interval[int]"), pd.Interval, int)
     check(assert_type(i2 * 4.2, "pd.Interval[float]"), pd.Interval, float)
 
-    if TYPE_CHECKING:
-        pd.Timestamp("2001-01-02") in i2  # type: ignore[operator]
-        i2 + pd.Timedelta(seconds=20)  # type: ignore[operator]
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.Timestamp(
+            "2001-01-02"
+        ) in i2  # pyright: ignore[reportGeneralTypeIssues] # TODO mypy: ignore[operator]
+        i2 + pd.Timedelta(
+            seconds=20
+        )  # pyright: ignore[reportGeneralTypeIssues] # TODO mypy: ignore[operator]
 
     i3 = pd.Interval(13.2, 19.5)
     check(assert_type(i3.length, float), float)
@@ -82,6 +87,10 @@ def test_interval_length() -> None:
     check(assert_type(i3inres, bool), bool)
     check(assert_type(i3 + 3, "pd.Interval[float]"), pd.Interval, float)
     check(assert_type(i3 * 3, "pd.Interval[float]"), pd.Interval, float)
-    if TYPE_CHECKING:
-        pd.Timestamp("2001-01-02") in i3  # type: ignore[operator]
-        i3 + pd.Timedelta(seconds=20)  # type: ignore[operator]
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.Timestamp(
+            "2001-01-02"
+        ) in i3  # pyright: ignore[reportGeneralTypeIssues] # TODO mypy: ignore[operator]
+        i3 + pd.Timedelta(
+            seconds=20
+        )  # pyright: ignore[reportGeneralTypeIssues] # TODO mypy: ignore[operator]

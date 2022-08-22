@@ -25,7 +25,10 @@ from typing_extensions import assert_type
 
 from pandas._typing import Scalar
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 if TYPE_CHECKING:
     from pandas._typing import np_ndarray_int  # noqa: F401
@@ -661,7 +664,7 @@ def test_types_rename() -> None:
     # inplace
     s6: None = pd.Series([1, 2, 3]).rename("A", inplace=True)
 
-    if TYPE_CHECKING:
+    if TYPE_CHECKING_INVALID_USAGE:
         s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item]
 
 

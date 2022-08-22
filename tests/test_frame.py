@@ -1139,20 +1139,51 @@ def test_types_regressions() -> None:
 
 
 def test_read_csv() -> None:
-    if TYPE_CHECKING:  # skip pytest
-        #  https://github.com/microsoft/python-type-stubs/issues/87
-        df11: pd.DataFrame = pd.read_csv("foo")
-        df12: pd.DataFrame = pd.read_csv("foo", iterator=False)
-        df13: pd.DataFrame = pd.read_csv("foo", iterator=False, chunksize=None)
-        df14: TextFileReader = pd.read_csv("foo", chunksize=0)
-        df15: TextFileReader = pd.read_csv("foo", iterator=False, chunksize=0)
-        df16: TextFileReader = pd.read_csv("foo", iterator=True)
-        df17: TextFileReader = pd.read_csv("foo", iterator=True, chunksize=None)
-        df18: TextFileReader = pd.read_csv("foo", iterator=True, chunksize=0)
-        df19: TextFileReader = pd.read_csv("foo", chunksize=0)
+    with ensure_clean() as path:
+        Path(path).write_text("A,B\n1,2")
+        check(assert_type(pd.read_csv(path), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(pd.read_csv(path, iterator=False), pd.DataFrame), pd.DataFrame
+        )
+        check(
+            assert_type(
+                pd.read_csv(path, iterator=False, chunksize=None), pd.DataFrame
+            ),
+            pd.DataFrame,
+        )
+
+        with check(
+            assert_type(pd.read_csv(path, chunksize=1), TextFileReader), TextFileReader
+        ):
+            pass
+        with check(
+            assert_type(pd.read_csv(path, iterator=False, chunksize=1), TextFileReader),
+            TextFileReader,
+        ):
+            pass
+        with check(
+            assert_type(pd.read_csv(path, iterator=True), TextFileReader),
+            TextFileReader,
+        ):
+            pass
+        with check(
+            assert_type(
+                pd.read_csv(path, iterator=True, chunksize=None), TextFileReader
+            ),
+            TextFileReader,
+        ):
+            pass
+        with check(
+            assert_type(pd.read_csv(path, iterator=True, chunksize=1), TextFileReader),
+            TextFileReader,
+        ):
+            pass
 
         # https://github.com/microsoft/python-type-stubs/issues/118
-        pd.read_csv("foo", storage_options=None)
+        check(
+            assert_type(pd.read_csv(path, storage_options=None), pd.DataFrame),
+            pd.DataFrame,
+        )
 
 
 def test_groupby_series_methods() -> None:
@@ -1358,6 +1389,7 @@ def test_set_columns() -> None:
     df = pd.DataFrame({"a": [1, 2, 3], "b": [0.0, 1, 1]})
     # Next line should work, but it is a mypy bug
     # https://github.com/python/mypy/issues/3004
+    # pyright doesn't need the ignore
     df.columns = ["c", "d"]  # type: ignore[assignment]
 
 
