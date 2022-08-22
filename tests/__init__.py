@@ -1,6 +1,13 @@
 from __future__ import annotations
 
+from typing import (
+    TYPE_CHECKING,
+    Final,
+)
+
 from pandas._typing import T
+
+TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 
 
 def check(actual: T, klass: type, dtype: type | None = None, attr: str = "left") -> T:
