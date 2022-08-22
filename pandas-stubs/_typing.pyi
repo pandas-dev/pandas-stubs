@@ -203,6 +203,23 @@ GroupByObjectNonScalar = Union[
 ]
 GroupByObject = Union[Scalar, GroupByObjectNonScalar]
 
+StataDateFormat = Literal[
+    "tc",
+    "%tc",
+    "td",
+    "%td",
+    "tw",
+    "%tw",
+    "tm",
+    "%tm",
+    "tq",
+    "%tq",
+    "th",
+    "%th",
+    "ty",
+    "%ty",
+]
+
 FillnaOptions = Literal["backfill", "bfill", "ffill", "pad"]
 ReplaceMethod = Literal["pad", "ffill", "bfill"]
 SortKind = Literal["quicksort", "mergesort", "heapsort", "stable"]
