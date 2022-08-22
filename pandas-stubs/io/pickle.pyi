@@ -1,6 +1,7 @@
-from typing import Literal
-
-from pandas._typing import FilePathOrBuffer
+from pandas._typing import (
+    CompressionOptions,
+    FilePathOrBuffer,
+)
 
 def to_pickle(
     obj,
@@ -10,5 +11,5 @@ def to_pickle(
 ): ...
 def read_pickle(
     filepath_or_buffer_or_reader: FilePathOrBuffer,
-    compression: str | Literal["infer", "gzip", "bz2", "zip", "xz"] | None = ...,
+    compression: CompressionOptions = ...,
 ): ...

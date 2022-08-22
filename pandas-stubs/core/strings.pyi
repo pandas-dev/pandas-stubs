@@ -18,7 +18,10 @@ from pandas import (
 )
 from pandas.core.base import NoNewAttributesMixin
 
-from pandas._typing import T
+from pandas._typing import (
+    MergeHow,
+    T,
+)
 
 # The _TS type is what is used for the result of str.split with expand=True
 _TS = TypeVar("_TS", DataFrame, MultiIndex)
@@ -33,7 +36,7 @@ class StringMethods(NoNewAttributesMixin, Generic[T, _TS]):
         *,
         sep: str,
         na_rep: str | None = ...,
-        join: Literal["left", "right", "outer", "inner"] = ...,
+        join: MergeHow = ...,
     ) -> str: ...
     @overload
     def cat(
@@ -42,7 +45,7 @@ class StringMethods(NoNewAttributesMixin, Generic[T, _TS]):
         *,
         sep: str,
         na_rep: str | None = ...,
-        join: Literal["left", "right", "outer", "inner"] = ...,
+        join: MergeHow = ...,
     ) -> str: ...
     @overload
     def cat(
@@ -50,7 +53,7 @@ class StringMethods(NoNewAttributesMixin, Generic[T, _TS]):
         others: Series | pd.Index | pd.DataFrame | np.ndarray | list[Any],
         sep: str = ...,
         na_rep: str | None = ...,
-        join: Literal["left", "right", "outer", "inner"] = ...,
+        join: MergeHow = ...,
     ) -> T: ...
     @overload
     def split(
