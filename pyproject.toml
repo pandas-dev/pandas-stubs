@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pandas-stubs"
-version = "1.4.3.220815"
+version = "1.4.3.220822"
 description = "Type annotations for pandas"
 authors = ["The Pandas Development Team <pandas-dev@python.org>"]
 license = "BSD-3-Clause"
@@ -138,7 +138,7 @@ no_implicit_optional = true
 strict_optional = true
 # Configuring warnings
 warn_redundant_casts = true
-warn_unused_ignores = false # Change from pandas
+warn_unused_ignores = true
 warn_no_return = true
 warn_return_any = false # TODO
 warn_unreachable = false # GH#27396
@@ -168,6 +168,7 @@ reportMissingParameterType = false
 reportMissingTypeArgument = false
 reportMissingTypeStubs = false
 reportUnknownArgumentType = false
+reportUnusedExpression = false
 reportUnknownLambdaType = false
 reportUnknownMemberType = false
 reportUnknownParameterType = false
