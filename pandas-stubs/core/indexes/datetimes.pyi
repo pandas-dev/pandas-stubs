@@ -7,10 +7,8 @@ from pandas import (
     Timedelta,
     Timestamp,
 )
-from pandas.core.indexes.api import (
-    Float64Index,
-    PeriodIndex,
-)
+from pandas.core.indexes.accessors import DatetimeIndexProperties
+from pandas.core.indexes.api import Float64Index
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import (
@@ -18,13 +16,19 @@ from pandas.core.series import (
     TimestampSeries,
 )
 
-from pandas._typing import np_ndarray_bool
+from pandas._typing import (
+    AnyArrayLike,
+    ArrayLike,
+    np_ndarray_bool,
+)
 
-class DatetimeIndex(DatetimeTimedeltaMixin):
+from pandas.core.dtypes.dtypes import DatetimeTZDtype
+
+class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeIndexProperties):
     tz: tzinfo | None
     def __init__(
         self,
-        data=...,
+        data: ArrayLike | AnyArrayLike | list | tuple,
         freq=...,
         tz=...,
         normalize: bool = ...,
@@ -59,10 +63,6 @@ class DatetimeIndex(DatetimeTimedeltaMixin):
     def indexer_between_time(
         self, start_time, end_time, include_start: bool = ..., include_end: bool = ...
     ): ...
-    def strftime(self, date_format: str = ...) -> np.ndarray: ...
-    def tz_convert(self, tz) -> DatetimeIndex: ...
-    def tz_localize(self, tz, ambiguous=..., nonexistent=...) -> DatetimeIndex: ...
-    def to_period(self, freq) -> PeriodIndex: ...
     def to_perioddelta(self, freq) -> TimedeltaIndex: ...
     def to_julian_date(self) -> Float64Index: ...
     def isocalendar(self) -> DataFrame: ...
@@ -72,6 +72,9 @@ class DatetimeIndex(DatetimeTimedeltaMixin):
     def __le__(self, other: Timestamp) -> np_ndarray_bool: ...
     def __gt__(self, other: Timestamp) -> np_ndarray_bool: ...
     def __ge__(self, other: Timestamp) -> np_ndarray_bool: ...
+    # ignore for mypy because we know dtype of a DatetimeIndex
+    @property
+    def dtype(self) -> np.dtype | DatetimeTZDtype: ...  # type: ignore[misc]
 
 def date_range(
     start=...,

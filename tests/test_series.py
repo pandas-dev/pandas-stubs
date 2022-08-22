@@ -3,7 +3,6 @@ from __future__ import annotations
 import datetime
 from pathlib import Path
 import re
-import tempfile
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -18,6 +17,7 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas._testing import ensure_clean
 from pandas.api.extensions import ExtensionArray
 from pandas.core.window import ExponentialMovingWindow
 import pytest
@@ -66,21 +66,18 @@ def test_types_csv() -> None:
     s = pd.Series(data=[1, 2, 3])
     csv_df: str = s.to_csv()
 
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        s.to_csv(file.name)
-        file.close()
-        s2: pd.DataFrame = pd.read_csv(file.name)
+    with ensure_clean() as path:
+        s.to_csv(path)
+        s2: pd.DataFrame = pd.read_csv(path)
 
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        s.to_csv(Path(file.name))
-        file.close()
-        s3: pd.DataFrame = pd.read_csv(Path(file.name))
+    with ensure_clean() as path:
+        s.to_csv(Path(path))
+        s3: pd.DataFrame = pd.read_csv(Path(path))
 
     # This keyword was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        s.to_csv(file.name, errors="replace")
-        file.close()
-        s4: pd.DataFrame = pd.read_csv(file.name)
+    with ensure_clean() as path:
+        s.to_csv(path, errors="replace")
+        s4: pd.DataFrame = pd.read_csv(path)
 
 
 def test_types_copy() -> None:
@@ -256,8 +253,7 @@ def test_types_rank() -> None:
 def test_types_mean() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     f1: float = s.mean()
-    with pytest.warns(FutureWarning, match="Using the level keyword"):
-        s1: pd.Series = s.mean(axis=0, level=0)
+    s1: pd.Series = s.groupby(level=0).mean()
     f2: float = s.mean(skipna=False)
     f3: float = s.mean(numeric_only=False)
 
@@ -265,8 +261,7 @@ def test_types_mean() -> None:
 def test_types_median() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     f1: float = s.median()
-    with pytest.warns(FutureWarning, match="Using the level keyword"):
-        s1: pd.Series = s.median(axis=0, level=0)
+    s1: pd.Series = s.groupby(level=0).median()
     f2: float = s.median(skipna=False)
     f3: float = s.median(numeric_only=False)
 
@@ -274,8 +269,7 @@ def test_types_median() -> None:
 def test_types_sum() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     s.sum()
-    with pytest.warns(FutureWarning, match="Using the level keyword"):
-        s.sum(axis=0, level=0)
+    s.groupby(level=0).sum()
     s.sum(skipna=False)
     s.sum(numeric_only=False)
     s.sum(min_count=4)
@@ -292,8 +286,7 @@ def test_types_min() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     s.min()
     s.min(axis=0)
-    with pytest.warns(FutureWarning, match="Using the level keyword"):
-        s.min(level=0)
+    s.groupby(level=0).min()
     s.min(skipna=False)
 
 
@@ -301,8 +294,7 @@ def test_types_max() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     s.max()
     s.max(axis=0)
-    with pytest.warns(FutureWarning, match="Using the level keyword"):
-        s.max(level=0)
+    s.groupby(level=0).max()
     s.max(skipna=False)
 
 

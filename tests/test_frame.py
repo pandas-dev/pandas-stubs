@@ -3,7 +3,6 @@ from __future__ import annotations
 import datetime
 import io
 from pathlib import Path
-import tempfile
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -19,7 +18,10 @@ from typing import (
 
 import numpy as np
 import pandas as pd
-from pandas._testing import getSeriesData
+from pandas._testing import (
+    ensure_clean,
+    getSeriesData,
+)
 import pytest
 from typing_extensions import assert_type
 
@@ -40,6 +42,18 @@ def test_types_init() -> None:
         dtype=np.int8,
         copy=True,
     )
+
+
+def test_types_all() -> None:
+    df = pd.DataFrame([[False, True], [False, False]], columns=["col1", "col2"])
+    check(assert_type(df.all(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(df.all(axis=None), bool), np.bool_)
+
+
+def test_types_any() -> None:
+    df = pd.DataFrame([[False, True], [False, False]], columns=["col1", "col2"])
+    check(assert_type(df.any(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(df.any(axis=None), bool), np.bool_)
 
 
 def test_types_append() -> None:
@@ -73,21 +87,18 @@ def test_types_to_csv() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     csv_df: str = df.to_csv()
 
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        df.to_csv(file.name)
-        file.close()
-        df2: pd.DataFrame = pd.read_csv(file.name)
+    with ensure_clean() as path:
+        df.to_csv(path)
+        df2: pd.DataFrame = pd.read_csv(path)
 
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        df.to_csv(Path(file.name))
-        file.close()
-        df3: pd.DataFrame = pd.read_csv(Path(file.name))
+    with ensure_clean() as path:
+        df.to_csv(Path(path))
+        df3: pd.DataFrame = pd.read_csv(Path(path))
 
     # This keyword was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        df.to_csv(file.name, errors="replace")
-        file.close()
-        df4: pd.DataFrame = pd.read_csv(file.name)
+    with ensure_clean() as path:
+        df.to_csv(path, errors="replace")
+        df4: pd.DataFrame = pd.read_csv(path)
 
     # Testing support for binary file handles, added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
     df.to_csv(io.BytesIO(), encoding="utf-8", compression="gzip")
@@ -321,12 +332,9 @@ def test_types_mean() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     s1: pd.Series = df.mean()
     s2: pd.Series = df.mean(axis=0)
-    with pytest.warns(FutureWarning, match="Using the level"):
-        df2: pd.DataFrame = df.mean(level=0)
-    with pytest.warns(FutureWarning, match="Using the level"):
-        df3: pd.DataFrame = df.mean(axis=1, level=0)
-    with pytest.warns(FutureWarning, match="Using the level"):
-        df4: pd.DataFrame = df.mean(1, True, level=0)
+    df2: pd.DataFrame = df.groupby(level=0).mean()
+    df3: pd.DataFrame = df.groupby(axis=1, level=0).mean()
+    df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).mean()
     s3: pd.Series = df.mean(axis=1, skipna=True, numeric_only=False)
 
 
@@ -334,12 +342,9 @@ def test_types_median() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     s1: pd.Series = df.median()
     s2: pd.Series = df.median(axis=0)
-    with pytest.warns(FutureWarning, match="Using the level keyword"):
-        df2: pd.DataFrame = df.median(level=0)
-    with pytest.warns(FutureWarning, match="Using the level keyword"):
-        df3: pd.DataFrame = df.median(axis=1, level=0)
-    with pytest.warns(FutureWarning, match="Using the level keyword"):
-        df4: pd.DataFrame = df.median(1, True, level=0)
+    df2: pd.DataFrame = df.groupby(level=0).median()
+    df3: pd.DataFrame = df.groupby(axis=1, level=0).median()
+    df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).median()
     s3: pd.Series = df.median(axis=1, skipna=True, numeric_only=False)
 
 
@@ -770,9 +775,8 @@ def test_types_to_feather() -> None:
     # See https://pandas.pydata.org/docs/whatsnew/v1.0.0.html
     # Docstring and type were updated in 1.2.0.
     # https://github.com/pandas-dev/pandas/pull/35408
-    with tempfile.NamedTemporaryFile(delete=False) as f:
-        df.to_feather(f.name)
-        f.close()
+    with ensure_clean() as path:
+        df.to_feather(path)
 
 
 # compare() method added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
@@ -998,9 +1002,8 @@ def test_types_to_parquet() -> None:
     df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"]).set_flags(
         allows_duplicate_labels=False
     )
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        df.to_parquet(Path(file.name))
-        file.close()
+    with ensure_clean() as path:
+        df.to_parquet(Path(path))
     # to_parquet() returns bytes when no path given since 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
     b: bytes = df.to_parquet()
 
@@ -1231,30 +1234,24 @@ def test_frame_getitem_isin() -> None:
 def test_to_excel() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        df.to_excel(file.name, engine="openpyxl")
-        file.close()
-        df2: pd.DataFrame = pd.read_excel(file.name)
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        df.to_excel(Path(file.name), engine="openpyxl")
-        file.close()
-        df3: pd.DataFrame = pd.read_excel(file.name)
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        df.to_excel(file.name, engine="openpyxl", startrow=1, startcol=1, header=False)
-        file.close()
-        df4: pd.DataFrame = pd.read_excel(file.name)
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        df.to_excel(file.name, engine="openpyxl", sheet_name="sheet", index=False)
-        file.close()
-        df5: pd.DataFrame = pd.read_excel(file.name)
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        df.to_excel(file.name, engine="openpyxl", header=["x", "y"])
-        file.close()
-        df6: pd.DataFrame = pd.read_excel(file.name)
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        df.to_excel(file.name, engine="openpyxl", columns=["col1"])
-        file.close()
-        df7: pd.DataFrame = pd.read_excel(file.name)
+    with ensure_clean() as path:
+        df.to_excel(path, engine="openpyxl")
+        df2: pd.DataFrame = pd.read_excel(path)
+    with ensure_clean() as path:
+        df.to_excel(Path(path), engine="openpyxl")
+        df3: pd.DataFrame = pd.read_excel(path)
+    with ensure_clean() as path:
+        df.to_excel(path, engine="openpyxl", startrow=1, startcol=1, header=False)
+        df4: pd.DataFrame = pd.read_excel(path)
+    with ensure_clean() as path:
+        df.to_excel(path, engine="openpyxl", sheet_name="sheet", index=False)
+        df5: pd.DataFrame = pd.read_excel(path)
+    with ensure_clean() as path:
+        df.to_excel(path, engine="openpyxl", header=["x", "y"])
+        df6: pd.DataFrame = pd.read_excel(path)
+    with ensure_clean() as path:
+        df.to_excel(path, engine="openpyxl", columns=["col1"])
+        df7: pd.DataFrame = pd.read_excel(path)
 
 
 def test_read_excel() -> None:
@@ -1276,22 +1273,20 @@ def test_read_excel() -> None:
 def test_read_excel_io_types() -> None:
     # GH 195
     df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as file:
-        as_str: str = file.name
-        df.to_excel(file)
+    with ensure_clean(".xlsx") as path:
+        as_str: str = path
+        df.to_excel(path)
 
-    check(assert_type(pd.read_excel(as_str), pd.DataFrame), pd.DataFrame)
+        check(assert_type(pd.read_excel(as_str), pd.DataFrame), pd.DataFrame)
 
-    as_path = Path(as_str)
-    check(assert_type(pd.read_excel(as_path), pd.DataFrame), pd.DataFrame)
+        as_path = Path(as_str)
+        check(assert_type(pd.read_excel(as_path), pd.DataFrame), pd.DataFrame)
 
-    with as_path.open("rb") as as_file:
-        check(assert_type(pd.read_excel(as_file), pd.DataFrame), pd.DataFrame)
+        with as_path.open("rb") as as_file:
+            check(assert_type(pd.read_excel(as_file), pd.DataFrame), pd.DataFrame)
 
-    as_bytes = as_path.read_bytes()
-    check(assert_type(pd.read_excel(as_bytes), pd.DataFrame), pd.DataFrame)
-
-    Path(as_str).unlink()
+        as_bytes = as_path.read_bytes()
+        check(assert_type(pd.read_excel(as_bytes), pd.DataFrame), pd.DataFrame)
 
 
 def test_join() -> None:

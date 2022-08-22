@@ -1,10 +1,11 @@
 from pandas.core.indexes.extension import ExtensionIndex
 from pandas.core.indexes.numeric import Int64Index
 
-from pandas.tseries.frequencies import DateOffset
+from pandas._libs.tslibs import BaseOffset
 
 class DatetimeIndexOpsMixin(ExtensionIndex):
-    freq: DateOffset | None
+    @property
+    def freq(self) -> BaseOffset | None: ...
     freqstr: str | None
     @property
     def is_all_dates(self) -> bool: ...
