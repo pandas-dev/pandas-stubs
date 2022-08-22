@@ -211,4 +211,6 @@ MergeHow = Literal["left", "right", "outer", "inner"]
 JsonOrient = Literal["split", "records", "index", "columns", "values", "table"]
 TimestampConvention = Literal["start", "end", "s", "e"]
 
+CSVEngine = Literal["c", "python", "pyarrow", "python-fwf"]
+
 __all__ = ["npt", "type_t"]

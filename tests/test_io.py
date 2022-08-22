@@ -4,6 +4,7 @@ from packaging.version import parse
 from pandas import (
     DataFrame,
     __version__,
+    read_clipboard,
     read_orc,
 )
 from pandas._testing import ensure_clean
@@ -11,6 +12,9 @@ import pytest
 from typing_extensions import assert_type
 
 from tests import check
+
+from pandas.io.clipboard import PyperclipException
+from pandas.io.parsers import TextFileReader
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 
@@ -54,3 +58,30 @@ def test_orc_columns():
 @pytest.mark.skipif(PD_LT_15, reason="pandas 1.5.0 or later required")
 def test_orc_bytes():
     check(assert_type(DF.to_orc(index=False), bytes), bytes)
+
+
+def test_clipboard():
+    try:
+        DF.to_clipboard()
+    except PyperclipException:
+        pytest.skip("clipboard not available for testing")
+    check(assert_type(read_clipboard(), DataFrame), DataFrame)
+    check(assert_type(read_clipboard(iterator=False), DataFrame), DataFrame)
+    check(assert_type(read_clipboard(chunksize=None), DataFrame), DataFrame)
+
+
+def test_clipboard_iterator():
+    try:
+        DF.to_clipboard()
+    except PyperclipException:
+        pytest.skip("clipboard not available for testing")
+    check(assert_type(read_clipboard(iterator=True), TextFileReader), TextFileReader)
+    check(
+        assert_type(read_clipboard(iterator=True, chunksize=None), TextFileReader),
+        TextFileReader,
+    )
+    check(assert_type(read_clipboard(chunksize=1), TextFileReader), TextFileReader)
+    check(
+        assert_type(read_clipboard(iterator=False, chunksize=1), TextFileReader),
+        TextFileReader,
+    )
