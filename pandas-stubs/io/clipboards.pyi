@@ -130,7 +130,7 @@ def read_clipboard(
     date_parser: Callable = ...,
     dayfirst: bool = ...,
     cache_dates: bool = ...,
-    iterator: bool | None,
+    iterator: bool = ...,
     chunksize: int,
     compression: CompressionOptions = ...,
     thousands: str | None = ...,
