@@ -18,7 +18,10 @@ from typing_extensions import assert_type
 from pandas._libs import NaTType
 from pandas._libs.tslibs import BaseOffset
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 if TYPE_CHECKING:
     from pandas.core.series import (
@@ -201,10 +204,10 @@ def test_iso_calendar() -> None:
 def fail_on_adding_two_timestamps() -> None:
     s1 = pd.Series(pd.to_datetime(["2022-05-01", "2022-06-01"]))
     s2 = pd.Series(pd.to_datetime(["2022-05-15", "2022-06-15"]))
-    if TYPE_CHECKING:
-        ssum: pd.Series = s1 + s2  # type: ignore[operator]
+    if TYPE_CHECKING_INVALID_USAGE:
+        ssum: pd.Series = s1 + s2  # TODO both: ignore[operator]
         ts = pd.Timestamp("2022-06-30")
-        tsum: pd.Series = s1 + ts  # type: ignore[operator]
+        tsum: pd.Series = s1 + ts  # TODO both: ignore[operator]
 
 
 def test_dtindex_tzinfo() -> None:
