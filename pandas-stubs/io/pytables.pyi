@@ -10,7 +10,6 @@ from typing import (
 import numpy as np
 from pandas import (
     DataFrame,
-    Index,
     Series,
 )
 from pandas.core.computation.pytables import PyTablesExpr
@@ -43,8 +42,7 @@ def read_hdf(
         "xmlcharrefreplace",
         "backslashreplace",
         "namereplace",
-    ]
-    | None = ...,
+    ] = ...,
     where: str | Term | Sequence[Term] | None = ...,
     start: int | None = ...,
     stop: int | None = ...,
@@ -67,8 +65,7 @@ def read_hdf(
         "xmlcharrefreplace",
         "backslashreplace",
         "namereplace",
-    ]
-    | None = ...,
+    ] = ...,
     where: str | Term | Sequence[Term] | None = ...,
     start: int | None = ...,
     stop: int | None = ...,
@@ -91,8 +88,7 @@ def read_hdf(
         "xmlcharrefreplace",
         "backslashreplace",
         "namereplace",
-    ]
-    | None = ...,
+    ] = ...,
     where: str | Term | Sequence[Term] | None = ...,
     start: int | None = ...,
     stop: int | None = ...,
@@ -100,7 +96,7 @@ def read_hdf(
     iterator: Literal[False] = ...,
     chunksize: None = ...,
     **kwargs: Any,
-) -> DataFrame | Series | Index: ...
+) -> DataFrame | Series: ...
 
 class HDFStore:
     def __init__(
@@ -113,10 +109,10 @@ class HDFStore:
         **kwargs,
     ) -> None: ...
     def __fspath__(self) -> str: ...
-    def __getitem__(self, key: str) -> DataFrame | Series | Index: ...
-    def __setitem__(self, key: str, value: DataFrame | Series | Index) -> None: ...
+    def __getitem__(self, key: str) -> DataFrame | Series: ...
+    def __setitem__(self, key: str, value: DataFrame | Series) -> None: ...
     def __delitem__(self, key: str) -> None: ...
-    def __getattr__(self, name: str) -> DataFrame | Series | Index: ...
+    def __getattr__(self, name: str) -> DataFrame | Series: ...
     def __contains__(self, key: str) -> bool: ...
     def __len__(self) -> int: ...
     def __enter__(self) -> HDFStore: ...
@@ -132,7 +128,7 @@ class HDFStore:
     def close(self) -> None: ...
     @property
     def is_open(self) -> bool: ...
-    def get(self, key: str) -> DataFrame | Series | Index: ...
+    def get(self, key: str) -> DataFrame | Series: ...
     @overload
     def select(
         self,
@@ -170,7 +166,7 @@ class HDFStore:
         iterator: Literal[False] = ...,
         chunksize: None = ...,
         auto_close: bool = ...,
-    ) -> DataFrame | Series | Index: ...
+    ) -> DataFrame | Series: ...
     def put(
         self,
         key: str,
@@ -231,5 +227,5 @@ class HDFStore:
     def info(self) -> str: ...
 
 class TableIterator:
-    def __iter__(self) -> Generator[DataFrame | Series | Index, None, None]: ...
+    def __iter__(self) -> Generator[DataFrame | Series, None, None]: ...
     def close(self) -> None: ...
