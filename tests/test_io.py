@@ -1,5 +1,8 @@
 import io
-from typing import Union
+from typing import (
+    List,
+    Union,
+)
 
 import pandas as pd
 from pandas import (
@@ -20,7 +23,10 @@ from tests import check
 
 from pandas.io.clipboard import PyperclipException
 from pandas.io.parsers import TextFileReader
-from pandas.io.pytables import TableIterator
+from pandas.io.pytables import (
+    TableIterator,
+    Term,
+)
 from pandas.io.stata import StataReader
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
@@ -108,16 +114,45 @@ def test_hdfstore():
     with ensure_clean() as path:
         store = HDFStore(path, model="w")
         check(assert_type(store, HDFStore), HDFStore)
-        store.put("df", DF, "table")
-        store.append("df2", DF, "table")
-        store.keys()
-        store.close()
+        check(assert_type(store.put("df", DF, "table"), None), type(None))
+        check(assert_type(store.append("df2", DF, "table"), None), type(None))
+        check(assert_type(store.keys(), List[str]), list)
+        check(assert_type(store.info(), str), str)
+        check(
+            assert_type(
+                store.select("df", start=0, stop=1), Union[DataFrame, Series, Index]
+            ),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                store.select("df", where="index>=1"), Union[DataFrame, Series, Index]
+            ),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                store.select("df", where=Term("index>=1")),
+                Union[DataFrame, Series, Index],
+            ),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                store.select("df", where=[Term("index>=1")]),
+                Union[DataFrame, Series, Index],
+            ),
+            DataFrame,
+        )
+        check(assert_type(store.get("df"), Union[DataFrame, Series, Index]), DataFrame)
+        check(assert_type(store.close(), None), type(None))
 
         store = HDFStore(path, model="r")
         check(
             assert_type(read_hdf(store, "df"), Union[DataFrame, Series, Index]),
             DataFrame,
         )
+        store.close()
 
 
 def test_read_hdf_iterator():
@@ -132,3 +167,13 @@ def test_read_hdf_iterator():
         for _ in ti:
             pass
         ti.close()
+
+
+def test_hdf_context_manaeger():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
+        with HDFStore(path, mode="r") as store:
+            check(assert_type(store.is_open, bool), bool)
+            check(
+                assert_type(store.get("df"), Union[DataFrame, Series, Index]), DataFrame
+            )
