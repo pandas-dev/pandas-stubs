@@ -295,6 +295,24 @@ class DataFrame(NDFrame, OpsMixin):
         **kwargs,
     ) -> bytes: ...
     @overload
+    def to_orc(
+        self,
+        path: FilePath | WriteBuffer[bytes],
+        *,
+        engine: Literal["pyarrow"] = ...,
+        index: bool | None = ...,
+        engine_kwargs: dict[str, Any] | None = ...,
+    ) -> None: ...
+    @overload
+    def to_orc(
+        self,
+        path: None = ...,
+        *,
+        engine: Literal["pyarrow"] = ...,
+        index: bool | None = ...,
+        engine_kwargs: dict[str, Any] | None = ...,
+    ) -> bytes: ...
+    @overload
     def to_html(
         self,
         buf: FilePathOrBuffer | None,

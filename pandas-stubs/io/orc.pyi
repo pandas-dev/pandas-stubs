@@ -1,7 +1,15 @@
-from pandas.core.frame import DataFrame
+from typing import Any
 
-from pandas._typing import FilePathOrBuffer
+from pandas import DataFrame
+
+from pandas._typing import (
+    FilePath,
+    HashableT,
+    ReadBuffer,
+)
 
 def read_orc(
-    path: FilePathOrBuffer, columns: list[str] | None = ..., **kwargs
+    path: FilePath | ReadBuffer[bytes],
+    columns: list[HashableT] | None = ...,
+    **kwargs: Any,
 ) -> DataFrame: ...
