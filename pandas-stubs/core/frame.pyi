@@ -69,6 +69,7 @@ from pandas._typing import (
     MaskType,
     MergeHow,
     NaPosition,
+    ReadBuffer,
     Renamer,
     ReplaceMethod,
     Scalar,
@@ -81,6 +82,7 @@ from pandas._typing import (
     T as TType,
     TimestampConvention,
     WriteBuffer,
+    XMLParsers,
     np_ndarray_bool,
     np_ndarray_str,
     num,
@@ -363,6 +365,46 @@ class DataFrame(NDFrame, OpsMixin):
         render_links: _bool = ...,
         encoding: _str | None = ...,
     ) -> _str: ...
+    @overload
+    def to_xml(
+        self,
+        path_or_buffer: FilePath | WriteBuffer[bytes] | WriteBuffer[str],
+        index: bool = ...,
+        root_name: str = ...,
+        row_name: str = ...,
+        na_rep: str | None = ...,
+        attr_cols: list[HashableT] | None = ...,
+        elem_cols: list[HashableT] | None = ...,
+        namespaces: dict[str | None, str] | None = ...,
+        prefix: str | None = ...,
+        encoding: str = ...,
+        xml_declaration: bool = ...,
+        pretty_print: bool = ...,
+        parser: XMLParsers = ...,
+        stylesheet: FilePath | ReadBuffer[str] | ReadBuffer[bytes] | None = ...,
+        compression: CompressionOptions = ...,
+        storage_options: StorageOptions = ...,
+    ) -> None: ...
+    @overload
+    def to_xml(
+        self,
+        path_or_buffer: Literal[None] = ...,
+        index: bool = ...,
+        root_name: str | None = ...,
+        row_name: str | None = ...,
+        na_rep: str | None = ...,
+        attr_cols: list[HashableT] | None = ...,
+        elem_cols: list[HashableT] | None = ...,
+        namespaces: dict[str | None, str] | None = ...,
+        prefix: str | None = ...,
+        encoding: str = ...,
+        xml_declaration: bool | None = ...,
+        pretty_print: bool | None = ...,
+        parser: str | None = ...,
+        stylesheet: FilePath | ReadBuffer[str] | ReadBuffer[bytes] | None = ...,
+        compression: CompressionOptions = ...,
+        storage_options: StorageOptions = ...,
+    ) -> str: ...
     def info(
         self, verbose=..., buf=..., max_cols=..., memory_usage=..., null_counts=...
     ) -> None: ...
