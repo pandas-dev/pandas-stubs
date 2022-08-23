@@ -1879,23 +1879,6 @@ class DataFrame(NDFrame, OpsMixin):
         errors: _str = ...,
         storage_options: dict[_str, Any] | None = ...,
     ) -> _str: ...
-    def to_hdf(
-        self,
-        path_or_buf: FilePathOrBuffer,
-        key: _str,
-        mode: _str = ...,
-        complevel: int | None = ...,
-        complib: _str | None = ...,
-        append: _bool = ...,
-        format: _str | None = ...,
-        index: _bool = ...,
-        min_itemsize: int | dict[_str, int] | None = ...,
-        nan_rep=...,
-        dropna: _bool | None = ...,
-        data_columns: list[_str] | None = ...,
-        errors: _str = ...,
-        encoding: _str = ...,
-    ) -> None: ...
     @overload
     def to_json(
         self,
