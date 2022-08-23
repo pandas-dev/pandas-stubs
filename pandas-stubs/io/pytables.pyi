@@ -1,6 +1,7 @@
 from typing import (
     Any,
     Literal,
+    overload,
 )
 
 import numpy as np
@@ -25,6 +26,31 @@ class IncompatibilityWarning(Warning): ...
 class AttributeConflictWarning(Warning): ...
 class DuplicateWarning(Warning): ...
 
+@overload
+def read_hdf(
+    path_or_buf: FilePath | HDFStore,
+    key: Any | None = ...,
+    mode: Literal["r", "r+", "a"] = ...,
+    errors: Literal[
+        "strict",
+        "ignore",
+        "replace",
+        "surrogateescape",
+        "xmlcharrefreplace",
+        "backslashreplace",
+        "namereplace",
+    ]
+    | None = ...,
+    where: list[Term] | str | None = ...,
+    start: int | None = ...,
+    stop: int | None = ...,
+    columns: list[HashableT] | None = ...,
+    *,
+    iterator: Literal[True],
+    chunksize: int | None = ...,
+    **kwargs: Any,
+) -> TableIterator: ...
+@overload
 def read_hdf(
     path_or_buf: FilePath | HDFStore,
     key: Any | None = ...,
@@ -44,9 +70,33 @@ def read_hdf(
     stop: int | None = ...,
     columns: list[HashableT] | None = ...,
     iterator: bool = ...,
-    chunksize: int | None = ...,
+    *,
+    chunksize: int,
     **kwargs: Any,
-) -> DataFrame | Series | Index | TableIterator: ...
+) -> TableIterator: ...
+@overload
+def read_hdf(
+    path_or_buf: FilePath | HDFStore,
+    key: Any | None = ...,
+    mode: Literal["r", "r+", "a"] = ...,
+    errors: Literal[
+        "strict",
+        "ignore",
+        "replace",
+        "surrogateescape",
+        "xmlcharrefreplace",
+        "backslashreplace",
+        "namereplace",
+    ]
+    | None = ...,
+    where: list[Term] | str | None = ...,
+    start: int | None = ...,
+    stop: int | None = ...,
+    columns: list[HashableT] | None = ...,
+    iterator: Literal[False] = ...,
+    chunksize: None = ...,
+    **kwargs: Any,
+) -> DataFrame | Series | Index: ...
 
 class HDFStore:
     def __init__(

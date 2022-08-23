@@ -1,9 +1,14 @@
 import io
+from typing import Union
 
 import pandas as pd
 from pandas import (
     DataFrame,
+    HDFStore,
+    Index,
+    Series,
     read_clipboard,
+    read_hdf,
     read_stata,
     read_xml,
 )
@@ -15,6 +20,7 @@ from tests import check
 
 from pandas.io.clipboard import PyperclipException
 from pandas.io.parsers import TextFileReader
+from pandas.io.pytables import TableIterator
 from pandas.io.stata import StataReader
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
@@ -90,3 +96,39 @@ def test_clipboard_iterator():
         assert_type(read_clipboard(iterator=False, chunksize=1), TextFileReader),
         TextFileReader,
     )
+
+
+def test_hdf():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_hdf(path, "df"), None), type(None))
+        check(assert_type(read_hdf(path), Union[DataFrame, Series, Index]), DataFrame)
+
+
+def test_hdfstore():
+    with ensure_clean() as path:
+        store = HDFStore(path, model="w")
+        check(assert_type(store, HDFStore), HDFStore)
+        store.put("df", DF, "table")
+        store.append("df2", DF, "table")
+        store.keys()
+        store.close()
+
+        store = HDFStore(path, model="r")
+        check(
+            assert_type(read_hdf(store, "df"), Union[DataFrame, Series, Index]),
+            DataFrame,
+        )
+
+
+def test_read_hdf_iterator():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
+        ti = read_hdf(path, chunksize=1)
+        check(assert_type(ti, TableIterator), TableIterator)
+        ti.close()
+
+        ti = read_hdf(path, "df", iterator=True)
+        check(assert_type(ti, TableIterator), TableIterator)
+        for _ in ti:
+            pass
+        ti.close()
