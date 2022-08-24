@@ -1,4 +1,5 @@
 import io
+import os
 from pathlib import Path
 from typing import (
     List,
@@ -15,6 +16,7 @@ from pandas import (
     read_clipboard,
     read_hdf,
     read_orc,
+    read_spss,
     read_stata,
     read_xml,
 )
@@ -33,6 +35,7 @@ from pandas.io.pytables import (
 from pandas.io.stata import StataReader
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
+CWD = os.path.split(os.path.abspath(__file__))[0]
 
 PD_LT_15 = parse(__version__) < parse("1.5.0")
 
@@ -222,3 +225,9 @@ def test_hdf_series():
     with ensure_clean() as path:
         check(assert_type(s.to_hdf(path, "s"), None), type(None))
         check(assert_type(read_hdf(path, "s"), Union[DataFrame, Series]), Series)
+
+
+def test_spss():
+    path = Path(CWD, "data", "labelled-num.sav")
+    check(assert_type(read_spss(path, convert_categoricals=True), DataFrame), DataFrame)
+    check(assert_type(read_spss(str(path), usecols=["VAR00002"]), DataFrame), DataFrame)
