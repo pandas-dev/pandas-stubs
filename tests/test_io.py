@@ -209,9 +209,16 @@ def test_read_hdf_iterator():
         ti.close()
 
 
-def test_hdf_context_manaeger():
+def test_hdf_context_manager():
     with ensure_clean() as path:
         check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
         with HDFStore(path, mode="r") as store:
             check(assert_type(store.is_open, bool), bool)
             check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
+
+
+def test_hdf_series():
+    s = DF["a"]
+    with ensure_clean() as path:
+        check(assert_type(s.to_hdf(path, "s"), None), type(None))
+        check(assert_type(read_hdf(path, "s"), Union[DataFrame, Series]), Series)
