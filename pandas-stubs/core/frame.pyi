@@ -51,9 +51,9 @@ from pandas._typing import (
     CompressionOptions,
     Dtype,
     DtypeNp,
+ParquetEngine,
     FilePath,
     FilePathOrBuffer,
-    FilePathOrBytesBuffer,
     FillnaOptions,
     GroupByObjectNonScalar,
     HashableT,
@@ -275,23 +275,23 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def to_parquet(
         self,
-        path: FilePathOrBytesBuffer,
-        *,
-        engine: Literal["auto", "pyarrow", "fastparquet"] = ...,
-        compression: Literal["snappy", "gzip", "brotli"] = ...,
-        index: _bool | None = ...,
-        partition_cols: list | None = ...,
+        path: FilePath | WriteBuffer[bytes],
+        engine: ParquetEngine = ...,
+        compression: Literal["snappy", "gzip", "brotli"] | None = ...,
+        index: bool | None = ...,
+        partition_cols: list[HashableT] | None = ...,
+        storage_options: StorageOptions = ...,
         **kwargs,
     ) -> None: ...
     @overload
     def to_parquet(
         self,
-        *,
         path: None = ...,
-        engine: Literal["auto", "pyarrow", "fastparquet"] = ...,
-        compression: Literal["snappy", "gzip", "brotli"] = ...,
-        index: _bool | None = ...,
-        partition_cols: list | None = ...,
+        engine: ParquetEngine = ...,
+        compression: Literal["snappy", "gzip", "brotli"] | None = ...,
+        index: bool | None = ...,
+        partition_cols: list[HashableT] | None = ...,
+        storage_options: StorageOptions = ...,
         **kwargs,
     ) -> bytes: ...
     @overload

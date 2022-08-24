@@ -16,6 +16,7 @@ from pandas import (
     read_clipboard,
     read_hdf,
     read_orc,
+    read_parquet,
     read_spss,
     read_stata,
     read_xml,
@@ -231,3 +232,16 @@ def test_spss():
     path = Path(CWD, "data", "labelled-num.sav")
     check(assert_type(read_spss(path, convert_categoricals=True), DataFrame), DataFrame)
     check(assert_type(read_spss(str(path), usecols=["VAR00002"]), DataFrame), DataFrame)
+
+
+def test_parquet():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_parquet(path), None), type(None))
+        check(assert_type(read_parquet(path), DataFrame), DataFrame)
+    check(assert_type(DF.to_parquet(), bytes), bytes)
+
+
+def test_parquet_options():
+    with ensure_clean(".parquet") as path:
+        check(assert_type(DF.to_parquet(path, compression=None, index=True), None), type(None))
+        check(assert_type(read_parquet(path), DataFrame), DataFrame)
