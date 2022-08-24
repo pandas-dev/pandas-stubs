@@ -1,5 +1,8 @@
 import io
+import os.path
+import pathlib
 from pathlib import Path
+from typing import Union
 
 from packaging.version import parse
 import pandas as pd
@@ -8,6 +11,7 @@ from pandas import (
     __version__,
     read_clipboard,
     read_orc,
+    read_sas,
     read_stata,
     read_xml,
 )
@@ -19,9 +23,12 @@ from tests import check
 
 from pandas.io.clipboard import PyperclipException
 from pandas.io.parsers import TextFileReader
+from pandas.io.sas.sas7bdat import SAS7BDATReader
+from pandas.io.sas.sas_xport import XportReader
 from pandas.io.stata import StataReader
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
+CWD = os.path.split(os.path.abspath(__file__))[0]
 
 PD_LT_15 = parse(__version__) < parse("1.5.0")
 
@@ -134,4 +141,19 @@ def test_clipboard_iterator():
     check(
         assert_type(read_clipboard(iterator=False, chunksize=1), TextFileReader),
         TextFileReader,
+    )
+
+
+@pytest.mark.parametrize("file_name", ["airline.sas7bdat", "SSHSV1_A.xpt"])
+def test_sas(file_name: str) -> None:
+    path = pathlib.Path(CWD, "data", file_name)
+    actual_type = SAS7BDATReader if file_name.endswith("bdat") else XportReader
+    check(assert_type(read_sas(path), DataFrame), DataFrame)
+    check(
+        assert_type(read_sas(path, iterator=True), Union[SAS7BDATReader, XportReader]),
+        actual_type,
+    )
+    check(
+        assert_type(read_sas(path, chunksize=1), Union[SAS7BDATReader, XportReader]),
+        actual_type,
     )
