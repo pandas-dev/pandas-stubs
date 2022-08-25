@@ -15,6 +15,7 @@ from pandas import (
     __version__,
     read_clipboard,
     read_hdf,
+    read_json,
     read_orc,
     read_spss,
     read_stata,
@@ -27,6 +28,7 @@ from typing_extensions import assert_type
 from tests import check
 
 from pandas.io.clipboard import PyperclipException
+from pandas.io.json._json import JsonReader
 from pandas.io.parsers import TextFileReader
 from pandas.io.pytables import (
     TableIterator,
@@ -231,3 +233,31 @@ def test_spss():
     path = Path(CWD, "data", "labelled-num.sav")
     check(assert_type(read_spss(path, convert_categoricals=True), DataFrame), DataFrame)
     check(assert_type(read_spss(str(path), usecols=["VAR00002"]), DataFrame), DataFrame)
+
+
+def test_json():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_json(path), None), type(None))
+        check(assert_type(read_json(path), DataFrame), DataFrame)
+    json_str = DF.to_json()
+    check(assert_type(json_str, str), str)
+    bin_json = io.StringIO(json_str)
+    check(assert_type(read_json(bin_json), DataFrame), DataFrame)
+
+
+def test_json_series():
+    s = DF["a"]
+    with ensure_clean() as path:
+        check(assert_type(s.to_json(path), None), type(None))
+        check(assert_type(read_json(path, typ="series"), Series), Series)
+    check(assert_type(DF.to_json(), str), str)
+
+
+def test_json_chunk():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_json(path), None), type(None))
+        json_reader = read_json(path, chunksize=1, lines=True)
+        check(assert_type(json_reader, JsonReader), JsonReader)
+        for sub_df in json_reader:
+            check(assert_type(sub_df, Union[DataFrame, Series]), DataFrame)
+    check(assert_type(DF.to_json(), str), str)

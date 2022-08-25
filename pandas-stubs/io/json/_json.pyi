@@ -12,6 +12,8 @@ from pandas._typing import (
     DtypeArg,
     FilePath,
     HashableT,
+    JsonFrameOrient,
+    JsonSeriesOrient,
     ReadBuffer,
     StorageOptions,
 )
@@ -20,9 +22,8 @@ from pandas._typing import (
 def read_json(
     path_or_buf: FilePath | ReadBuffer[str] | ReadBuffer[bytes],
     *,
-    orient: Literal["split", "records", "index", "columns", "values", "table"]
-    | None = ...,
-    typ: Literal["series", "frame"] = ...,
+    orient: JsonSeriesOrient | None = ...,
+    typ: Literal["series"],
     dtype: bool | dict[HashableT, DtypeArg] | None = ...,
     convert_axes: bool | None = ...,
     convert_dates: bool | list[str] = ...,
@@ -34,7 +35,7 @@ def read_json(
         "strict", "ignore", "replace", "backslashreplace", "surrogateescape"
     ]
     | None = ...,
-    lines: bool = ...,
+    lines: Literal[True],
     chunksize: int,
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
@@ -44,8 +45,30 @@ def read_json(
 def read_json(
     path_or_buf: FilePath | ReadBuffer[str] | ReadBuffer[bytes],
     *,
-    orient: Literal["split", "records", "index", "columns", "values", "table"]
+    orient: JsonFrameOrient | None = ...,
+    typ: Literal["frame"] = ...,
+    dtype: bool | dict[HashableT, DtypeArg] | None = ...,
+    convert_axes: bool | None = ...,
+    convert_dates: bool | list[str] = ...,
+    keep_default_dates: bool = ...,
+    precise_float: bool = ...,
+    date_unit: Literal["s", "ms", "us", "ns"] | None = ...,
+    encoding: str | None = ...,
+    encoding_errors: Literal[
+        "strict", "ignore", "replace", "backslashreplace", "surrogateescape"
+    ]
     | None = ...,
+    lines: Literal[True],
+    chunksize: int,
+    compression: CompressionOptions = ...,
+    nrows: int | None = ...,
+    storage_options: StorageOptions = ...,
+) -> JsonReader: ...
+@overload
+def read_json(
+    path_or_buf: FilePath | ReadBuffer[str] | ReadBuffer[bytes],
+    *,
+    orient: JsonSeriesOrient | None = ...,
     typ: Literal["series"],
     dtype: bool | dict[HashableT, DtypeArg] | None = ...,
     convert_axes: bool | None = ...,
@@ -67,8 +90,7 @@ def read_json(
 @overload
 def read_json(
     path_or_buf: FilePath | ReadBuffer[str] | ReadBuffer[bytes],
-    orient: Literal["split", "records", "index", "columns", "values", "table"]
-    | None = ...,
+    orient: JsonFrameOrient | None = ...,
     typ: Literal["frame"] = ...,
     dtype: bool | dict[HashableT, DtypeArg] | None = ...,
     convert_axes: bool | None = ...,

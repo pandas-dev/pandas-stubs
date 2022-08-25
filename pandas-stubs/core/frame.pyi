@@ -61,7 +61,7 @@ from pandas._typing import (
     IndexingInt,
     IndexLabel,
     IndexType,
-    JsonOrient,
+    JsonFrameOrient,
     Label,
     Level,
     ListLike,
@@ -1901,7 +1901,7 @@ class DataFrame(NDFrame, OpsMixin):
     def to_json(
         self,
         path_or_buf: FilePathOrBuffer | None,
-        orient: JsonOrient | None = ...,
+        orient: JsonFrameOrient | None = ...,
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
@@ -1916,7 +1916,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def to_json(
         self,
-        orient: JsonOrient | None = ...,
+        orient: JsonFrameOrient | None = ...,
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
