@@ -231,5 +231,6 @@ TimestampConvention = Literal["start", "end", "s", "e"]
 CSVEngine = Literal["c", "python", "pyarrow", "python-fwf"]
 
 HDFCompLib = Literal["zlib", "lzo", "bzip2", "blosc"]
+ParquetEngine = Literal["auto", "pyarrow", "fastparquet"]
 
 __all__ = ["npt", "type_t"]
