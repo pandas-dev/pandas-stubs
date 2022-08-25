@@ -2,13 +2,6 @@ import numpy as np
 import pandas as pd
 from pandas import DataFrame
 
-from pandas._typing import (
-    CompressionOptions as CompressionOptions,
-    FilePath as FilePath,
-    Label,
-    ReadBuffer,
-)
-
 from pandas.io.sas.sasreader import ReaderBase
 
 class SAS7BDATReader(ReaderBase):
