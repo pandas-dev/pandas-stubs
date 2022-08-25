@@ -281,7 +281,7 @@ class DataFrame(NDFrame, OpsMixin):
         index: bool | None = ...,
         partition_cols: list[HashableT] | None = ...,
         storage_options: StorageOptions = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> None: ...
     @overload
     def to_parquet(
@@ -292,7 +292,7 @@ class DataFrame(NDFrame, OpsMixin):
         index: bool | None = ...,
         partition_cols: list[HashableT] | None = ...,
         storage_options: StorageOptions = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> bytes: ...
     @overload
     def to_orc(
