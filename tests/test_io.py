@@ -1,5 +1,7 @@
 import io
 import os
+import os.path
+import pathlib
 from pathlib import Path
 from typing import (
     List,
@@ -17,6 +19,7 @@ from pandas import (
     read_hdf,
     read_orc,
     read_parquet,
+    read_sas,
     read_spss,
     read_stata,
     read_xml,
@@ -33,6 +36,8 @@ from pandas.io.pytables import (
     TableIterator,
     Term,
 )
+from pandas.io.sas.sas7bdat import SAS7BDATReader
+from pandas.io.sas.sas_xport import XportReader
 from pandas.io.stata import StataReader
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
@@ -149,6 +154,48 @@ def test_clipboard_iterator():
     check(
         assert_type(read_clipboard(iterator=False, chunksize=1), TextFileReader),
         TextFileReader,
+    )
+
+
+def test_sas_bdat() -> None:
+    path = pathlib.Path(CWD, "data", "airline.sas7bdat")
+    check(assert_type(read_sas(path), DataFrame), DataFrame)
+    check(
+        assert_type(read_sas(path, iterator=True), Union[SAS7BDATReader, XportReader]),
+        SAS7BDATReader,
+    )
+    check(
+        assert_type(read_sas(path, iterator=True, format="sas7bdat"), SAS7BDATReader),
+        SAS7BDATReader,
+    )
+    check(
+        assert_type(read_sas(path, chunksize=1), Union[SAS7BDATReader, XportReader]),
+        SAS7BDATReader,
+    )
+    check(
+        assert_type(read_sas(path, chunksize=1, format="sas7bdat"), SAS7BDATReader),
+        SAS7BDATReader,
+    )
+
+
+def test_sas_xport() -> None:
+    path = pathlib.Path(CWD, "data", "SSHSV1_A.xpt")
+    check(assert_type(read_sas(path), DataFrame), DataFrame)
+    check(
+        assert_type(read_sas(path, iterator=True), Union[SAS7BDATReader, XportReader]),
+        XportReader,
+    )
+    check(
+        assert_type(read_sas(path, iterator=True, format="xport"), XportReader),
+        XportReader,
+    )
+    check(
+        assert_type(read_sas(path, chunksize=1), Union[SAS7BDATReader, XportReader]),
+        XportReader,
+    )
+    check(
+        assert_type(read_sas(path, chunksize=1, format="xport"), XportReader),
+        XportReader,
     )
 
 
