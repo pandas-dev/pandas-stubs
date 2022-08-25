@@ -1,6 +1,9 @@
 from collections import abc
 from typing import (
+    Generic,
     Literal,
+    TypeVar,
+    Union,
     overload,
 )
 
@@ -17,6 +20,8 @@ from pandas._typing import (
     ReadBuffer,
     StorageOptions,
 )
+
+FrameSeriesStrT = TypeVar("FrameSeriesStrT", bound=Union[Series, DataFrame])
 
 @overload
 def read_json(
@@ -40,7 +45,7 @@ def read_json(
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
-) -> JsonReader: ...
+) -> JsonReader[Series]: ...
 @overload
 def read_json(
     path_or_buf: FilePath | ReadBuffer[str] | ReadBuffer[bytes],
@@ -63,7 +68,7 @@ def read_json(
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
-) -> JsonReader: ...
+) -> JsonReader[DataFrame]: ...
 @overload
 def read_json(
     path_or_buf: FilePath | ReadBuffer[str] | ReadBuffer[bytes],
@@ -110,10 +115,10 @@ def read_json(
     storage_options: StorageOptions = ...,
 ) -> DataFrame: ...
 
-class JsonReader(abc.Iterator):
+class JsonReader(abc.Iterator, Generic[FrameSeriesStrT]):
     def read(self) -> DataFrame | Series: ...
     def close(self) -> None: ...
-    def __iter__(self) -> JsonReader: ...
+    def __iter__(self) -> JsonReader[FrameSeriesStrT]: ...
     def __next__(self) -> DataFrame | Series: ...
-    def __enter__(self) -> JsonReader: ...
+    def __enter__(self) -> JsonReader[FrameSeriesStrT]: ...
     def __exit__(self, exc_type, exc_value, traceback) -> None: ...

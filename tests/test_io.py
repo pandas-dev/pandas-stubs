@@ -258,7 +258,7 @@ def test_json_chunk():
     with ensure_clean() as path:
         check(assert_type(DF.to_json(path), None), type(None))
         json_reader = read_json(path, chunksize=1, lines=True)
-        check(assert_type(json_reader, JsonReader), JsonReader)
+        check(assert_type(json_reader, "JsonReader[DataFrame]"), JsonReader)
         for sub_df in json_reader:
             check(assert_type(sub_df, Union[DataFrame, Series]), DataFrame)
     check(assert_type(DF.to_json(), str), str)
