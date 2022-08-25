@@ -1934,18 +1934,6 @@ class DataFrame(NDFrame, OpsMixin):
         compression: CompressionOptions = ...,
         protocol: int = ...,
     ) -> None: ...
-    def to_sql(
-        self,
-        name: _str,
-        con,
-        schema: _str | None = ...,
-        if_exists: _str = ...,
-        index: _bool = ...,
-        index_label: _str | Sequence[_str] | None = ...,
-        chunksize: int | None = ...,
-        dtype: dict | Scalar | None = ...,
-        method: _str | Callable | None = ...,
-    ) -> None: ...
     @overload
     def to_string(
         self,

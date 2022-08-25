@@ -3,6 +3,7 @@ from typing import (
     Callable,
     ClassVar,
     Hashable,
+    Iterable,
     Literal,
     Mapping,
     Sequence,
@@ -20,6 +21,7 @@ from pandas._typing import (
     Axis,
     CompressionOptions,
     Dtype,
+    DtypeArg,
     FilePath,
     FilePathOrBuffer,
     FillnaOptions,
@@ -28,6 +30,7 @@ from pandas._typing import (
     HashableT,
     HDFCompLib,
     IgnoreRaise,
+    IndexLabel,
     JsonOrient,
     Level,
     ReplaceMethod,
@@ -38,6 +41,7 @@ from pandas._typing import (
 )
 
 from pandas.io.pytables import HDFStore
+from pandas.io.sql import SQLTable
 
 _bool = bool
 _str = str
@@ -163,15 +167,17 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def to_sql(
         self,
         name: _str,
-        con,
+        con: Any,
         schema: _str | None = ...,
         if_exists: _str = ...,
         index: _bool = ...,
-        index_label: _str | Sequence[_str] | None = ...,
+        index_label: IndexLabel = ...,
         chunksize: int | None = ...,
-        dtype: dict | Scalar | None = ...,
-        method: _str | Callable | None = ...,
-    ) -> None: ...
+        dtype: DtypeArg | None = ...,
+        method: Literal["multi"]
+        | None
+        | Callable[[SQLTable, Any, list[str], Iterable], int | None] = ...,
+    ) -> int | None: ...
     def to_pickle(
         self,
         path: _str,
