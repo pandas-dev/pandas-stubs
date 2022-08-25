@@ -17,6 +17,7 @@ from pandas import (
     read_hdf,
     read_json,
     read_orc,
+    read_parquet,
     read_spss,
     read_stata,
     read_xml,
@@ -261,3 +262,19 @@ def test_json_chunk():
         for sub_df in json_reader:
             check(assert_type(sub_df, Union[DataFrame, Series]), DataFrame)
     check(assert_type(DF.to_json(), str), str)
+
+
+def test_parquet():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_parquet(path), None), type(None))
+        check(assert_type(read_parquet(path), DataFrame), DataFrame)
+    check(assert_type(DF.to_parquet(), bytes), bytes)
+
+
+def test_parquet_options():
+    with ensure_clean(".parquet") as path:
+        check(
+            assert_type(DF.to_parquet(path, compression=None, index=True), None),
+            type(None),
+        )
+        check(assert_type(read_parquet(path), DataFrame), DataFrame)
