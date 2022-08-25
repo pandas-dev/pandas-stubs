@@ -20,10 +20,13 @@ from pandas._typing import (
     Axis,
     CompressionOptions,
     Dtype,
+    FilePath,
     FilePathOrBuffer,
     FillnaOptions,
     FrameOrSeries,
     FrameOrSeriesUnion,
+    HashableT,
+    HDFCompLib,
     IgnoreRaise,
     JsonOrient,
     Level,
@@ -33,6 +36,8 @@ from pandas._typing import (
     SortKind,
     T,
 )
+
+from pandas.io.pytables import HDFStore
 
 _bool = bool
 _str = str
@@ -132,19 +137,27 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     ) -> _str: ...
     def to_hdf(
         self,
-        path_or_buf: FilePathOrBuffer,
+        path_or_buf: FilePath | HDFStore,
         key: _str,
-        mode: _str = ...,
+        mode: Literal["a", "w", "r+"] = ...,
         complevel: int | None = ...,
-        complib: _str | None = ...,
+        complib: HDFCompLib | None = ...,
         append: _bool = ...,
-        format: _str | None = ...,
+        format: Literal["t", "table", "f", "fixed"] | None = ...,
         index: _bool = ...,
-        min_itemsize: int | dict[_str, int] | None = ...,
-        nan_rep=...,
+        min_itemsize: int | dict[HashableT, int] | None = ...,
+        nan_rep: _str | None = ...,
         dropna: _bool | None = ...,
-        data_columns: list[_str] | None = ...,
-        errors: _str = ...,
+        data_columns: Literal[True] | list[HashableT] | None = ...,
+        errors: Literal[
+            "strict",
+            "ignore",
+            "replace",
+            "surrogateescape",
+            "xmlcharrefreplace",
+            "backslashreplace",
+            "namereplace",
+        ] = ...,
         encoding: _str = ...,
     ) -> None: ...
     def to_sql(

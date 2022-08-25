@@ -1,17 +1,26 @@
 import io
+import os
 import os.path
 import pathlib
 from pathlib import Path
-from typing import Union
+from typing import (
+    List,
+    Union,
+)
 
 from packaging.version import parse
 import pandas as pd
 from pandas import (
     DataFrame,
+    HDFStore,
+    Series,
     __version__,
     read_clipboard,
+    read_hdf,
     read_orc,
+    read_parquet,
     read_sas,
+    read_spss,
     read_stata,
     read_xml,
 )
@@ -23,6 +32,10 @@ from tests import check
 
 from pandas.io.clipboard import PyperclipException
 from pandas.io.parsers import TextFileReader
+from pandas.io.pytables import (
+    TableIterator,
+    Term,
+)
 from pandas.io.sas.sas7bdat import SAS7BDATReader
 from pandas.io.sas.sas_xport import XportReader
 from pandas.io.stata import StataReader
@@ -184,3 +197,101 @@ def test_sas_xport() -> None:
         assert_type(read_sas(path, chunksize=1, format="xport"), XportReader),
         XportReader,
     )
+
+
+def test_hdf():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_hdf(path, "df"), None), type(None))
+        check(assert_type(read_hdf(path), Union[DataFrame, Series]), DataFrame)
+
+
+def test_hdfstore():
+    with ensure_clean() as path:
+        store = HDFStore(path, model="w")
+        check(assert_type(store, HDFStore), HDFStore)
+        check(assert_type(store.put("df", DF, "table"), None), type(None))
+        check(assert_type(store.append("df2", DF, "table"), None), type(None))
+        check(assert_type(store.keys(), List[str]), list)
+        check(assert_type(store.info(), str), str)
+        check(
+            assert_type(store.select("df", start=0, stop=1), Union[DataFrame, Series]),
+            DataFrame,
+        )
+        check(
+            assert_type(store.select("df", where="index>=1"), Union[DataFrame, Series]),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                store.select("df", where=Term("index>=1")),
+                Union[DataFrame, Series],
+            ),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                store.select("df", where=[Term("index>=1")]),
+                Union[DataFrame, Series],
+            ),
+            DataFrame,
+        )
+        check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
+        check(assert_type(store.close(), None), type(None))
+
+        store = HDFStore(path, model="r")
+        check(
+            assert_type(read_hdf(store, "df"), Union[DataFrame, Series]),
+            DataFrame,
+        )
+        store.close()
+
+
+def test_read_hdf_iterator():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
+        ti = read_hdf(path, chunksize=1)
+        check(assert_type(ti, TableIterator), TableIterator)
+        ti.close()
+
+        ti = read_hdf(path, "df", iterator=True)
+        check(assert_type(ti, TableIterator), TableIterator)
+        for _ in ti:
+            pass
+        ti.close()
+
+
+def test_hdf_context_manager():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
+        with HDFStore(path, mode="r") as store:
+            check(assert_type(store.is_open, bool), bool)
+            check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
+
+
+def test_hdf_series():
+    s = DF["a"]
+    with ensure_clean() as path:
+        check(assert_type(s.to_hdf(path, "s"), None), type(None))
+        check(assert_type(read_hdf(path, "s"), Union[DataFrame, Series]), Series)
+
+
+def test_spss():
+    path = Path(CWD, "data", "labelled-num.sav")
+    check(assert_type(read_spss(path, convert_categoricals=True), DataFrame), DataFrame)
+    check(assert_type(read_spss(str(path), usecols=["VAR00002"]), DataFrame), DataFrame)
+
+
+def test_parquet():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_parquet(path), None), type(None))
+        check(assert_type(read_parquet(path), DataFrame), DataFrame)
+    check(assert_type(DF.to_parquet(), bytes), bytes)
+
+
+def test_parquet_options():
+    with ensure_clean(".parquet") as path:
+        check(
+            assert_type(DF.to_parquet(path, compression=None, index=True), None),
+            type(None),
+        )
+        check(assert_type(read_parquet(path), DataFrame), DataFrame)
