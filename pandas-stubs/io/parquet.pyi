@@ -1,15 +1,12 @@
-from typing import (
-    Any,
-    Literal,
-)
+from typing import Any
 
 from pandas import DataFrame
 
 from pandas._typing import (
     FilePath,
+    ParquetEngine,
     ReadBuffer,
     StorageOptions,
-    ParquetEngine,
 )
 
 def read_parquet(

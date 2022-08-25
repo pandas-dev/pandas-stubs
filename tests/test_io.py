@@ -243,5 +243,8 @@ def test_parquet():
 
 def test_parquet_options():
     with ensure_clean(".parquet") as path:
-        check(assert_type(DF.to_parquet(path, compression=None, index=True), None), type(None))
+        check(
+            assert_type(DF.to_parquet(path, compression=None, index=True), None),
+            type(None),
+        )
         check(assert_type(read_parquet(path), DataFrame), DataFrame)
