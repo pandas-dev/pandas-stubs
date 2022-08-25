@@ -1,9 +1,8 @@
 from collections import abc
+from types import TracebackType
 from typing import (
     Generic,
     Literal,
-    TypeVar,
-    Union,
     overload,
 )
 
@@ -17,11 +16,10 @@ from pandas._typing import (
     HashableT,
     JsonFrameOrient,
     JsonSeriesOrient,
+    NDFrameT,
     ReadBuffer,
     StorageOptions,
 )
-
-FrameSeriesStrT = TypeVar("FrameSeriesStrT", bound=Union[Series, DataFrame])
 
 @overload
 def read_json(
@@ -115,10 +113,15 @@ def read_json(
     storage_options: StorageOptions = ...,
 ) -> DataFrame: ...
 
-class JsonReader(abc.Iterator, Generic[FrameSeriesStrT]):
-    def read(self) -> DataFrame | Series: ...
+class JsonReader(abc.Iterator, Generic[NDFrameT]):
+    def read(self) -> NDFrameT: ...
     def close(self) -> None: ...
-    def __iter__(self) -> JsonReader[FrameSeriesStrT]: ...
-    def __next__(self) -> DataFrame | Series: ...
-    def __enter__(self) -> JsonReader[FrameSeriesStrT]: ...
-    def __exit__(self, exc_type, exc_value, traceback) -> None: ...
+    def __iter__(self) -> JsonReader[NDFrameT]: ...
+    def __next__(self) -> NDFrameT: ...
+    def __enter__(self) -> JsonReader[NDFrameT]: ...
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> None: ...
