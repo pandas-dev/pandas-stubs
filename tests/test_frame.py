@@ -42,6 +42,7 @@ def test_types_init() -> None:
         dtype=np.int8,
         copy=True,
     )
+    pd.DataFrame(0, index=[0, 1], columns=[0, 1])
 
 
 def test_types_all() -> None:

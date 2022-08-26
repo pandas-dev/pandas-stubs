@@ -159,7 +159,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def __new__(
         cls,
         data: DatetimeIndex,
-        index: Iterable[Hashable] | None = ...,
+        index: Axes | None = ...,
         dtype=...,
         name: Hashable | None = ...,
         copy: bool = ...,
@@ -169,7 +169,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def __new__(
         cls,
         data: PeriodIndex,
-        index: Iterable[Hashable] | None = ...,
+        index: Axes | None = ...,
         dtype=...,
         name: Hashable | None = ...,
         copy: bool = ...,
@@ -180,7 +180,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         cls,
         data: object | _ListLike | Series[S1] | dict[int, S1] | dict[_str, S1] | None,
         dtype: type[S1],
-        index: Iterable[Hashable] | None = ...,
+        index: Axes | None = ...,
         name: Hashable | None = ...,
         copy: bool = ...,
         fastpath: bool = ...,
@@ -194,7 +194,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         | dict[int, S1]
         | dict[_str, S1]
         | None = ...,
-        index: Iterable[Hashable] | None = ...,
+        index: Axes | None = ...,
         dtype=...,
         name: Hashable | None = ...,
         copy: bool = ...,
