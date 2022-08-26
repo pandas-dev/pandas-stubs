@@ -170,6 +170,7 @@ class DataFrame(NDFrame, OpsMixin):
 
     __hash__: ClassVar[None]  # type: ignore[assignment]
 
+    @overload
     def __new__(
         cls,
         data: ListLikeU
@@ -177,8 +178,17 @@ class DataFrame(NDFrame, OpsMixin):
         | dict[Any, Any]
         | Iterable[tuple[Hashable, ListLikeU]]
         | None = ...,
-        index: Axes | None = ...,
-        columns: Axes | None = ...,
+        index: Iterable[Hashable] | None = ...,
+        columns: Iterable[Hashable] | None = ...,
+        dtype=...,
+        copy: _bool = ...,
+    ) -> DataFrame: ...
+    @overload
+    def __new__(
+        cls,
+        data: Scalar,
+        index: Iterable[Hashable],
+        columns: Iterable[Hashable],
         dtype=...,
         copy: _bool = ...,
     ) -> DataFrame: ...

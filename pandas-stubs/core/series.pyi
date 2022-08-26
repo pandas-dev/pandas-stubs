@@ -122,14 +122,14 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
         idx: MaskType
         | Index
         | Sequence[float]
-        | list[_str]
+        | list[str]
         | slice
         | tuple[str | float | slice | Index, ...],
     ) -> Series[S1]: ...
     @overload
     def __getitem__(
         self,
-        idx: _str | float,
+        idx: str | float,
     ) -> S1: ...
     @overload
     def __setitem__(
@@ -159,7 +159,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def __new__(
         cls,
         data: DatetimeIndex,
-        index: _str | int | Series | list | Index | None = ...,
+        index: Iterable[Hashable] | None = ...,
         dtype=...,
         name: Hashable | None = ...,
         copy: bool = ...,
@@ -169,7 +169,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def __new__(
         cls,
         data: PeriodIndex,
-        index: _str | int | Series | list | Index | None = ...,
+        index: Iterable[Hashable] | None = ...,
         dtype=...,
         name: Hashable | None = ...,
         copy: bool = ...,
@@ -180,7 +180,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         cls,
         data: object | _ListLike | Series[S1] | dict[int, S1] | dict[_str, S1] | None,
         dtype: type[S1],
-        index: _str | int | Series | list | Index | None = ...,
+        index: Iterable[Hashable] | None = ...,
         name: Hashable | None = ...,
         copy: bool = ...,
         fastpath: bool = ...,
@@ -194,7 +194,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         | dict[int, S1]
         | dict[_str, S1]
         | None = ...,
-        index: _str | int | Series | list | Index | None = ...,
+        index: Iterable[Hashable] | None = ...,
         dtype=...,
         name: Hashable | None = ...,
         copy: bool = ...,
