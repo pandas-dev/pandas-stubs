@@ -34,7 +34,6 @@ from pandas._typing import (
     JsonOrient,
     Level,
     ReplaceMethod,
-    Scalar,
     SeriesAxisType,
     SortKind,
     T,

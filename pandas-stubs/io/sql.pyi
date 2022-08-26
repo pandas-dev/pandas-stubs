@@ -4,7 +4,6 @@ from typing import (
     overload,
 )
 
-from _typeshed import Incomplete
 from pandas.core.base import PandasObject
 from pandas.core.frame import DataFrame
 
@@ -85,31 +84,46 @@ def read_sql(
     chunksize: None = ...,
 ) -> DataFrame: ...
 
+class PandasSQL(PandasObject):
+    def read_sql(self, *args, **kwargs): ...
+    def to_sql(
+        self,
+        frame: DataFrame,
+        name: str,
+        if_exists: str = ...,
+        index: bool = ...,
+        index_label=...,
+        schema=...,
+        chunksize=...,
+        dtype: DtypeArg | None = ...,
+        method=...,
+    ) -> int | None: ...
+
 class SQLTable(PandasObject):
-    name: Incomplete
-    pd_sql: Incomplete
-    prefix: Incomplete
-    frame: Incomplete
-    index: Incomplete
-    schema: Incomplete
-    if_exists: Incomplete
-    keys: Incomplete
-    dtype: Incomplete
-    table: Incomplete
+    name: str
+    pd_sql: PandasSQL  # pandas SQL interface
+    prefix: str
+    frame: DataFrame | None
+    index: list[str]
+    schema: str
+    if_exists: str
+    keys: list[str]
+    dtype: DtypeArg | None
+    table: Any  # sqlalchemy.Table
     def __init__(
         self,
         name: str,
-        pandas_sql_engine,
-        frame: Incomplete | None = ...,
+        pandas_sql_engine: PandasSQL,
+        frame: DataFrame | None = ...,
         index: bool | str | list[str] | None = ...,
         if_exists: str = ...,
         prefix: str = ...,
-        index_label: Incomplete | None = ...,
-        schema: Incomplete | None = ...,
-        keys: Incomplete | None = ...,
+        index_label: str | list[str] | None = ...,
+        schema: str | None = ...,
+        keys: str | list[str] | None = ...,
         dtype: DtypeArg | None = ...,
     ) -> None: ...
-    def exists(self): ...
+    def exists(self) -> bool: ...
     def sql_schema(self) -> str: ...
     def create(self) -> None: ...
     def insert_data(self) -> tuple[list[str], list[npt.NDArray]]: ...
@@ -119,7 +133,7 @@ class SQLTable(PandasObject):
     def read(
         self,
         coerce_float: bool = ...,
-        parse_dates: Incomplete | None = ...,
-        columns: Incomplete | None = ...,
-        chunksize: Incomplete | None = ...,
+        parse_dates: bool | list[str] | None = ...,
+        columns: list[str] | None = ...,
+        chunksize: int | None = ...,
     ) -> DataFrame | Iterator[DataFrame]: ...
