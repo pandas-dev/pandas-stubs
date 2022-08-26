@@ -28,7 +28,6 @@ from pandas._typing import (
     HashableT,
     HDFCompLib,
     IgnoreRaise,
-    JsonOrient,
     Level,
     ReplaceMethod,
     Scalar,
@@ -104,37 +103,6 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         verbose: _bool = ...,
         freeze_panes: tuple[int, int] | None = ...,
     ) -> None: ...
-    @overload
-    def to_json(
-        self,
-        path_or_buf: FilePathOrBuffer | None,
-        orient: JsonOrient | None = ...,
-        date_format: Literal["epoch", "iso"] | None = ...,
-        double_precision: int = ...,
-        force_ascii: _bool = ...,
-        date_unit: Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: Callable[[Any], _str | float | _bool | list | dict]
-        | None = ...,
-        lines: _bool = ...,
-        compression: CompressionOptions = ...,
-        index: _bool = ...,
-        indent: int | None = ...,
-    ) -> None: ...
-    @overload
-    def to_json(
-        self,
-        orient: JsonOrient | None = ...,
-        date_format: Literal["epoch", "iso"] | None = ...,
-        double_precision: int = ...,
-        force_ascii: _bool = ...,
-        date_unit: Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: Callable[[Any], _str | float | _bool | list | dict]
-        | None = ...,
-        lines: _bool = ...,
-        compression: CompressionOptions = ...,
-        index: _bool = ...,
-        indent: int | None = ...,
-    ) -> _str: ...
     def to_hdf(
         self,
         path_or_buf: FilePath | HDFStore,

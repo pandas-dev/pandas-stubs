@@ -63,6 +63,7 @@ from pandas._typing import (
     Axes,
     Axis,
     AxisType,
+    CompressionOptions,
     Dtype,
     DtypeNp,
     FilePathOrBuffer,
@@ -71,6 +72,7 @@ from pandas._typing import (
     HashableT,
     IgnoreRaise,
     IndexingInt,
+    JsonSeriesOrient,
     Label,
     Level,
     ListLike,
@@ -366,6 +368,37 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         mode: _str | None = ...,
         index: _bool = ...,
         storage_options: dict | None = ...,
+    ) -> _str: ...
+    @overload
+    def to_json(
+        self,
+        path_or_buf: FilePathOrBuffer | None,
+        orient: JsonSeriesOrient | None = ...,
+        date_format: Literal["epoch", "iso"] | None = ...,
+        double_precision: int = ...,
+        force_ascii: _bool = ...,
+        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        default_handler: Callable[[Any], _str | float | _bool | list | dict]
+        | None = ...,
+        lines: _bool = ...,
+        compression: CompressionOptions = ...,
+        index: _bool = ...,
+        indent: int | None = ...,
+    ) -> None: ...
+    @overload
+    def to_json(
+        self,
+        orient: JsonSeriesOrient | None = ...,
+        date_format: Literal["epoch", "iso"] | None = ...,
+        double_precision: int = ...,
+        force_ascii: _bool = ...,
+        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        default_handler: Callable[[Any], _str | float | _bool | list | dict]
+        | None = ...,
+        lines: _bool = ...,
+        compression: CompressionOptions = ...,
+        index: _bool = ...,
+        indent: int | None = ...,
     ) -> _str: ...
     def items(self) -> Iterable[tuple[Hashable, S1]]: ...
     def iteritems(self) -> Iterable[tuple[Label, S1]]: ...
