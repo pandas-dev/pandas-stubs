@@ -16,6 +16,7 @@ from pandas import (
     Series,
     __version__,
     read_clipboard,
+    read_feather,
     read_hdf,
     read_orc,
     read_parquet,
@@ -295,3 +296,14 @@ def test_parquet_options():
             type(None),
         )
         check(assert_type(read_parquet(path), DataFrame), DataFrame)
+
+
+def test_feather():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_feather(path), None), type(None))
+        check(assert_type(read_feather(path), DataFrame), DataFrame)
+        check(assert_type(read_feather(path, columns=["a"]), DataFrame), DataFrame)
+    bio = io.BytesIO()
+    check(assert_type(DF.to_feather(bio), None), type(None))
+    bio.seek(0)
+    check(assert_type(read_feather(bio), DataFrame), DataFrame)
