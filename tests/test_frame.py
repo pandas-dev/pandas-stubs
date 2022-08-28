@@ -1392,6 +1392,8 @@ def test_set_columns() -> None:
     # pyright doesn't need the ignore
     df.columns = ["c", "d"]  # type: ignore[assignment]
     df.columns = [1, 2]  # type: ignore[assignment]
+    df.columns = np.array([1, 2])  # type: ignore[assignment]
+    df.columns = pd.Series([1, 2])  # type: ignore[assignment]
 
 
 def test_frame_index_numpy() -> None:
