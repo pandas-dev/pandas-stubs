@@ -75,3 +75,15 @@ def test_str_split() -> None:
     ind = pd.Index(["a-b", "c-d"])
     check(assert_type(ind.str.split("-"), pd.Index), pd.Index)
     check(assert_type(ind.str.split("-", expand=True), pd.MultiIndex), pd.MultiIndex)
+
+
+def test_index_dropna():
+    idx = pd.Index([1, 2])
+
+    check(assert_type(idx.dropna(how="all"), pd.Index), pd.Index)
+    check(assert_type(idx.dropna(how="any"), pd.Index), pd.Index)
+
+    midx = pd.MultiIndex.from_arrays([[1, 2], [3, 4]])
+
+    check(assert_type(midx.dropna(how="all"), pd.MultiIndex), pd.MultiIndex)
+    check(assert_type(midx.dropna(how="any"), pd.MultiIndex), pd.MultiIndex)

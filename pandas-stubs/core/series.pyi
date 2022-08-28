@@ -869,7 +869,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def dropna(
         self,
         axis: SeriesAxisType = ...,
-        how: _str | None = ...,
+        how: Literal["any", "all"] | None = ...,
         *,
         inplace: Literal[True],
     ) -> None: ...
@@ -878,7 +878,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         axis: SeriesAxisType = ...,
         inplace: _bool = ...,
-        how: _str | None = ...,
+        how: Literal["any", "all"] | None = ...,
     ) -> Series[S1]: ...
     def to_timestamp(
         self,
