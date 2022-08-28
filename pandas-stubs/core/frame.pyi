@@ -951,9 +951,9 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> _DataFrameGroupByNonScalar: ...
     def pivot(
         self,
-        index=...,
-        columns=...,
-        values=...,
+        index: IndexLabel = ...,
+        columns: IndexLabel = ...,
+        values: IndexLabel = ...,
     ) -> DataFrame: ...
     def pivot_table(
         self,

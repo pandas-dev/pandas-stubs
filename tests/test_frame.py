@@ -543,9 +543,26 @@ def test_types_pivot() -> None:
             "col4": [100, 102, 500, 600],
         }
     )
-    df.pivot(index="col1", columns="col3", values="col2")
-    df.pivot(index="col1", columns="col3")
-    df.pivot(index="col1", columns="col3", values=["col2", "col4"])
+    check(
+        assert_type(
+            df.pivot(index="col1", columns="col3", values="col2"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.pivot(index="col1", columns="col3"), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(
+            df.pivot(index="col1", columns="col3", values=["col2", "col4"]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(assert_type(df.pivot(columns="col3"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.pivot(columns="col3", values="col2"), pd.DataFrame), pd.DataFrame
+    )
 
 
 def test_types_groupby() -> None:
