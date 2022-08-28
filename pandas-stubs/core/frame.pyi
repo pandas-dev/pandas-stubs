@@ -1188,7 +1188,7 @@ class DataFrame(NDFrame, OpsMixin):
     @property
     def columns(self) -> Index: ...
     @columns.setter  # setter needs to be right next to getter; otherwise mypy complains
-    def columns(self, cols: list[_str] | Index[_str]) -> None: ...  # type: ignore[type-arg]
+    def columns(self, cols: Sequence[Hashable] | Index[_str]) -> None: ...  # type: ignore[type-arg]
     @property
     def dtypes(self) -> Series: ...
     @property
