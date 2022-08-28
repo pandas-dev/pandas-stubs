@@ -26,10 +26,7 @@ from pandas._typing import (
 
 from pandas.core.dtypes.dtypes import DatetimeTZDtype
 
-from pandas.tseries.offsets import (
-    BaseOffset,
-    Tick,
-)
+from pandas.tseries.offsets import BaseOffset
 
 class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeIndexProperties):
     tz: tzinfo | None
@@ -86,7 +83,7 @@ def date_range(
     start: str | DatetimeLike | None = ...,
     end: str | DatetimeLike | None = ...,
     periods: int | None = ...,
-    freq: str | BaseOffset | Tick = ...,
+    freq: str | BaseOffset = ...,
     tz: str | tzinfo = ...,
     normalize: bool = ...,
     name: str | None = ...,
@@ -97,7 +94,7 @@ def bdate_range(
     start: str | DatetimeLike | None = ...,
     end: str | DatetimeLike | None = ...,
     periods: int | None = ...,
-    freq: str | BaseOffset | Tick = ...,
+    freq: str | BaseOffset = ...,
     tz: str | tzinfo = ...,
     normalize: bool = ...,
     name: str | None = ...,
