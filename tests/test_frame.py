@@ -42,6 +42,10 @@ def test_types_init() -> None:
         dtype=np.int8,
         copy=True,
     )
+    check(
+        assert_type(pd.DataFrame(0, index=[0, 1], columns=[0, 1]), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_types_all() -> None:
