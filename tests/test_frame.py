@@ -1414,6 +1414,8 @@ def test_set_columns() -> None:
     df.columns = pd.Series([1, 2])  # type: ignore[assignment]
     df.columns = np.array([1, "a"])  # type: ignore[assignment]
     df.columns = pd.Series([1, "a"])  # type: ignore[assignment]
+    df.columns = (1, 2)  # type: ignore[assignment]
+    df.columns = (1, "a")  # type: ignore[assignment]
 
 
 def test_frame_index_numpy() -> None:
