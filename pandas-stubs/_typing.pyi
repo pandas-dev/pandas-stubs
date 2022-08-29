@@ -47,6 +47,8 @@ PandasScalar = Union[bytes, datetime.date, datetime.datetime, datetime.timedelta
 # Scalar = Union[PythonScalar, PandasScalar]
 IntStrT = TypeVar("IntStrT", int, str)
 
+DatetimeLike = Union[datetime.date, datetime.datetime, np.datetime64, Timestamp]
+
 # dtypes
 NpDtype = Union[str, np.dtype[np.generic], type[Union[str, complex, bool, object]]]
 Dtype = Union[ExtensionDtype, NpDtype]

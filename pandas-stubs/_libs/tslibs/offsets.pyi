@@ -1,4 +1,5 @@
 from datetime import (
+    date,
     datetime,
     timedelta,
 )
@@ -15,10 +16,12 @@ from pandas.core.indexes.datetimes import DatetimeIndex
 
 from pandas._typing import npt
 
+from pandas.tseries.holiday import AbstractHolidayCalendar
+
 from .timedeltas import Timedelta
 
 _BaseOffsetT = TypeVar("_BaseOffsetT", bound=BaseOffset)
-_DatetimeT = TypeVar("_DatetimeT", bound=datetime)
+_DatetimeT = TypeVar("_DatetimeT", bound=date)
 _TimedeltaT = TypeVar("_TimedeltaT", bound=timedelta)
 
 prefix_mapping: dict[str, type]
@@ -204,8 +207,8 @@ class CustomBusinessDay(BusinessDay):
         self,
         n: int = ...,
         normalize: bool = ...,
-        offset: timedelta = ...,
-        weekmask: str = ...,
+        holidays: list = ...,
+        calendar: AbstractHolidayCalendar | np.busdaycalendar = ...,
     ): ...
 
 class CustomBusinessHour(BusinessHour):
