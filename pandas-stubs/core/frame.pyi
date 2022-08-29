@@ -44,6 +44,7 @@ from pandas._typing import (
     AggFuncType,
     AggFuncTypeBase,
     AggFuncTypeDict,
+    AnyArrayLike,
     ArrayLike,
     Axes,
     Axis,
@@ -1188,7 +1189,9 @@ class DataFrame(NDFrame, OpsMixin):
     @property
     def columns(self) -> Index: ...
     @columns.setter  # setter needs to be right next to getter; otherwise mypy complains
-    def columns(self, cols: Sequence[Hashable] | Index[_str]) -> None: ...  # type: ignore[type-arg]
+    def columns(
+        self, cols: AnyArrayLike | list[HashableT] | tuple[HashableT]
+    ) -> None: ...
     @property
     def dtypes(self) -> Series: ...
     @property
