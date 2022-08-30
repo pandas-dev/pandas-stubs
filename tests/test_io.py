@@ -1,5 +1,4 @@
 import io
-import os
 import os.path
 import pathlib
 from pathlib import Path
@@ -18,6 +17,7 @@ from pandas import (
     read_clipboard,
     read_feather,
     read_hdf,
+    read_html,
     read_json,
     read_orc,
     read_parquet,
@@ -337,3 +337,10 @@ def test_feather():
     check(assert_type(DF.to_feather(bio), None), type(None))
     bio.seek(0)
     check(assert_type(read_feather(bio), DataFrame), DataFrame)
+
+
+def test_read_html():
+    check(assert_type(DF.to_html(), str), str)
+    with ensure_clean() as path:
+        check(assert_type(DF.to_html(path), None), type(None))
+        check(assert_type(read_html(path), List[DataFrame]), list)

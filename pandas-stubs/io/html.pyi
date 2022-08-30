@@ -1,46 +1,46 @@
 from typing import (
     Any,
     Callable,
-    Iterable,
+    Hashable,
+    Literal,
     Mapping,
+    Pattern,
     Sequence,
 )
 
 from pandas.core.frame import DataFrame
 
-from pandas._typing import FilePathOrBuffer
-
-class _HtmlFrameParser:
-    io = ...
-    match = ...
-    attrs = ...
-    encoding = ...
-    displayed_only = ...
-    def __init__(self, io, match, attrs, encoding, displayed_only) -> None: ...
-    def parse_tables(self): ...
-
-class _BeautifulSoupHtml5LibFrameParser(_HtmlFrameParser):
-    def __init__(self, *args, **kwargs) -> None: ...
-
-class _LxmlFrameParser(_HtmlFrameParser):
-    def __init__(self, *args, **kwargs) -> None: ...
+from pandas._typing import (
+    FilePath,
+    HashableT,
+    ReadBuffer,
+)
 
 def read_html(
-    io: FilePathOrBuffer,
-    match: str = ...,
+    io: FilePath | ReadBuffer[str],
+    match: str | Pattern = ...,
     flavor: str | None = ...,
     header: int | Sequence[int] | None = ...,
-    index_col: int | Sequence[Any] | None = ...,
-    skiprows: int | Sequence[Any] | slice | None = ...,
+    index_col: int | Sequence[int] | list[HashableT] | None = ...,
+    skiprows: int | Sequence[int] | slice | None = ...,
     attrs: Mapping[str, str] | None = ...,
     parse_dates: bool
-    | Sequence[int | str | Sequence[int | str]]
-    | dict[str, Sequence[int | str]] = ...,
+    | Sequence[int]
+    | list[HashableT]  # Cannot be Sequence[Hashable] to prevent str
+    | Sequence[Sequence[int]]
+    | Sequence[Sequence[Hashable]]
+    | dict[str, Sequence[int]]
+    | dict[str, list[HashableT]] = ...,
     thousands: str = ...,
     encoding: str | None = ...,
     decimal: str = ...,
-    converters: Mapping[int | str, Callable] | None = ...,
-    na_values: Iterable[Any] | None = ...,
+    converters: Mapping[int | HashableT, Callable[[str], Any]] | None = ...,
+    na_values: str
+    | list[str]
+    | dict[HashableT, str]
+    | dict[HashableT, list[str]]
+    | None = ...,
     keep_default_na: bool = ...,
     displayed_only: bool = ...,
+    extract_links: Literal["header", "footer", "body", "all"] | None = ...,
 ) -> list[DataFrame]: ...

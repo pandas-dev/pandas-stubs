@@ -236,5 +236,6 @@ CSVEngine = Literal["c", "python", "pyarrow", "python-fwf"]
 
 HDFCompLib = Literal["zlib", "lzo", "bzip2", "blosc"]
 ParquetEngine = Literal["auto", "pyarrow", "fastparquet"]
+ColspaceArgType = str | int | Sequence[int | str] | Mapping[Hashable, str | int]
 
 __all__ = ["npt", "type_t"]
