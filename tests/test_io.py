@@ -351,6 +351,7 @@ def test_read_sql():
         check(
             assert_type(read_sql("select * from test", con=con), DataFrame), DataFrame
         )
+        con.close()
 
 
 def test_read_sql_generator():
@@ -365,6 +366,7 @@ def test_read_sql_generator():
             ),
             Generator,
         )
+        con.close()
 
 
 def test_read_sql_table():
@@ -377,6 +379,7 @@ def test_read_sql_table():
                 read_sql_table("test", con=con, chunksize=1),
                 Generator[DataFrame, None, None],
             )
+            con.close()
 
 
 def test_read_sql_query():
@@ -390,6 +393,7 @@ def test_read_sql_query():
             ),
             DataFrame,
         )
+        con.close()
 
 
 def test_read_sql_query_generator():
@@ -404,3 +408,4 @@ def test_read_sql_query_generator():
             ),
             Generator,
         )
+        con.close()
