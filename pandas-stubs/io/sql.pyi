@@ -1,11 +1,16 @@
+import sqlite3
 from typing import (
     Any,
+    Callable,
+    Iterable,
     Iterator,
+    Literal,
     overload,
 )
 
 from pandas.core.base import PandasObject
 from pandas.core.frame import DataFrame
+import sqlalchemy.engine
 
 from pandas._typing import (
     DtypeArg,
@@ -17,8 +22,8 @@ class DatabaseError(IOError): ...
 @overload
 def read_sql_table(
     table_name: str,
-    con: Any,
-    schema: str | list[str] = ...,
+    con: str | sqlalchemy.engine.Connection | sqlite3.Connection,
+    schema: str | None = ...,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
@@ -29,8 +34,8 @@ def read_sql_table(
 @overload
 def read_sql_table(
     table_name: str,
-    con: Any,
-    schema: str | list[str] = ...,
+    con: str | sqlalchemy.engine.Connection | sqlite3.Connection,
+    schema: str | None = ...,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
@@ -40,10 +45,10 @@ def read_sql_table(
 @overload
 def read_sql_query(
     sql: str,
-    con: Any,
+    con: str | sqlalchemy.engine.Connection | sqlite3.Connection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
-    params: list[str] | dict[str, str] | None = ...,
+    params: list[str] | tuple[str, ...] | dict[str, str] | None = ...,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
     *,
     chunksize: int,
@@ -52,10 +57,10 @@ def read_sql_query(
 @overload
 def read_sql_query(
     sql: str,
-    con: Any,
+    con: str | sqlalchemy.engine.Connection | sqlite3.Connection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
-    params: list[str] | dict[str, str] | None = ...,
+    params: list[str] | tuple[str, ...] | dict[str, str] | None = ...,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
     chunksize: None = ...,
     dtype: DtypeArg | None = ...,
@@ -63,10 +68,10 @@ def read_sql_query(
 @overload
 def read_sql(
     sql: str,
-    con: Any,
+    con: str | sqlalchemy.engine.Connection | sqlite3.Connection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
-    params: list[str] | dict[str, str] | None = ...,
+    params: list[str] | tuple[str, ...] | dict[str, str] | None = ...,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
     columns: list[str] = ...,
     *,
@@ -75,10 +80,10 @@ def read_sql(
 @overload
 def read_sql(
     sql: str,
-    con: Any,
+    con: str | sqlalchemy.engine.Connection | sqlite3.Connection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
-    params: list[str] | dict[str, str] | None = ...,
+    params: list[str] | tuple[str, ...] | dict[str, str] | None = ...,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
     columns: list[str] = ...,
     chunksize: None = ...,
@@ -90,13 +95,15 @@ class PandasSQL(PandasObject):
         self,
         frame: DataFrame,
         name: str,
-        if_exists: str = ...,
+        if_exists: Literal["fail", "replace", "append"] = ...,
         index: bool = ...,
         index_label=...,
-        schema=...,
+        schema: str | None = ...,
         chunksize=...,
         dtype: DtypeArg | None = ...,
-        method=...,
+        method: Literal["multi"]
+        | Callable[[SQLTable, Any, list[str], Iterable], int | None]
+        | None = ...,
     ) -> int | None: ...
 
 class SQLTable(PandasObject):
@@ -106,7 +113,7 @@ class SQLTable(PandasObject):
     frame: DataFrame | None
     index: list[str]
     schema: str
-    if_exists: str
+    if_exists: Literal["fail", "replace", "append"]
     keys: list[str]
     dtype: DtypeArg | None
     table: Any  # sqlalchemy.Table
@@ -116,7 +123,7 @@ class SQLTable(PandasObject):
         pandas_sql_engine: PandasSQL,
         frame: DataFrame | None = ...,
         index: bool | str | list[str] | None = ...,
-        if_exists: str = ...,
+        if_exists: Literal["fail", "replace", "append"] = ...,
         prefix: str = ...,
         index_label: str | list[str] | None = ...,
         schema: str | None = ...,

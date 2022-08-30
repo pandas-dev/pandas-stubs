@@ -1,3 +1,4 @@
+import sqlite3
 from typing import (
     Any,
     Callable,
@@ -14,6 +15,7 @@ import numpy as np
 from pandas.core.base import PandasObject
 from pandas.core.indexes.base import Index
 import pandas.core.indexing as indexing
+import sqlalchemy.engine
 
 from pandas._typing import (
     S1,
@@ -31,7 +33,6 @@ from pandas._typing import (
     HDFCompLib,
     IgnoreRaise,
     IndexLabel,
-    JsonOrient,
     Level,
     ReplaceMethod,
     SeriesAxisType,
@@ -135,16 +136,16 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def to_sql(
         self,
         name: _str,
-        con: Any,
+        con: str | sqlalchemy.engine.Connection | sqlite3.Connection,
         schema: _str | None = ...,
-        if_exists: _str = ...,
+        if_exists: Literal["fail", "replace", "append"] = ...,
         index: _bool = ...,
         index_label: IndexLabel = ...,
         chunksize: int | None = ...,
         dtype: DtypeArg | None = ...,
         method: Literal["multi"]
-        | None
-        | Callable[[SQLTable, Any, list[str], Iterable], int | None] = ...,
+        | Callable[[SQLTable, Any, list[str], Iterable], int | None]
+        | None = ...,
     ) -> int | None: ...
     def to_pickle(
         self,
