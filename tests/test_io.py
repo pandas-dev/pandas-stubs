@@ -352,6 +352,12 @@ def test_read_sql():
             assert_type(read_sql("select * from test", con=con), DataFrame), DataFrame
         )
 
+
+def test_read_sql_generator():
+    with ensure_clean() as path:
+        con = sqlite3.connect(path)
+        check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
+
         check(
             assert_type(
                 read_sql("select * from test", con=con, chunksize=1),
@@ -384,6 +390,13 @@ def test_read_sql_query():
             ),
             DataFrame,
         )
+
+
+def test_read_sql_query_generator():
+    with ensure_clean() as path:
+        con = sqlite3.connect(path)
+        check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
+
         check(
             assert_type(
                 read_sql_query("select * from test", con=con, chunksize=1),
