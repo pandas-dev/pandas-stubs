@@ -44,6 +44,7 @@ from pandas._typing import (
     AggFuncType,
     AggFuncTypeBase,
     AggFuncTypeDict,
+    AnyArrayLike,
     ArrayLike,
     Axes,
     Axis,
@@ -53,7 +54,6 @@ from pandas._typing import (
     DtypeNp,
     FilePath,
     FilePathOrBuffer,
-    FilePathOrBytesBuffer,
     FillnaOptions,
     GroupByObjectNonScalar,
     HashableT,
@@ -61,7 +61,7 @@ from pandas._typing import (
     IndexingInt,
     IndexLabel,
     IndexType,
-    JsonOrient,
+    JsonFrameOrient,
     Label,
     Level,
     ListLike,
@@ -69,6 +69,8 @@ from pandas._typing import (
     MaskType,
     MergeHow,
     NaPosition,
+    ParquetEngine,
+    ReadBuffer,
     Renamer,
     ReplaceMethod,
     Scalar,
@@ -81,6 +83,7 @@ from pandas._typing import (
     T as TType,
     TimestampConvention,
     WriteBuffer,
+    XMLParsers,
     np_ndarray_bool,
     np_ndarray_str,
     num,
@@ -168,6 +171,7 @@ class DataFrame(NDFrame, OpsMixin):
 
     __hash__: ClassVar[None]  # type: ignore[assignment]
 
+    @overload
     def __new__(
         cls,
         data: ListLikeU
@@ -177,6 +181,15 @@ class DataFrame(NDFrame, OpsMixin):
         | None = ...,
         index: Axes | None = ...,
         columns: Axes | None = ...,
+        dtype=...,
+        copy: _bool = ...,
+    ) -> DataFrame: ...
+    @overload
+    def __new__(
+        cls,
+        data: Scalar,
+        index: Axes,
+        columns: Axes,
         dtype=...,
         copy: _bool = ...,
     ) -> DataFrame: ...
@@ -263,7 +276,7 @@ class DataFrame(NDFrame, OpsMixin):
         *,
         value_labels: dict[Hashable, dict[float, str]] | None = ...,
     ) -> None: ...
-    def to_feather(self, path: FilePathOrBuffer, **kwargs) -> None: ...
+    def to_feather(self, path: FilePath | WriteBuffer[bytes], **kwargs) -> None: ...
     @overload
     def to_markdown(
         self, buf: FilePathOrBuffer | None, mode: _str | None = ..., **kwargs
@@ -273,24 +286,42 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def to_parquet(
         self,
-        path: FilePathOrBytesBuffer,
-        *,
-        engine: Literal["auto", "pyarrow", "fastparquet"] = ...,
-        compression: Literal["snappy", "gzip", "brotli"] = ...,
-        index: _bool | None = ...,
-        partition_cols: list | None = ...,
-        **kwargs,
+        path: FilePath | WriteBuffer[bytes],
+        engine: ParquetEngine = ...,
+        compression: Literal["snappy", "gzip", "brotli"] | None = ...,
+        index: bool | None = ...,
+        partition_cols: list[HashableT] | None = ...,
+        storage_options: StorageOptions = ...,
+        **kwargs: Any,
     ) -> None: ...
     @overload
     def to_parquet(
         self,
-        *,
         path: None = ...,
-        engine: Literal["auto", "pyarrow", "fastparquet"] = ...,
-        compression: Literal["snappy", "gzip", "brotli"] = ...,
-        index: _bool | None = ...,
-        partition_cols: list | None = ...,
-        **kwargs,
+        engine: ParquetEngine = ...,
+        compression: Literal["snappy", "gzip", "brotli"] | None = ...,
+        index: bool | None = ...,
+        partition_cols: list[HashableT] | None = ...,
+        storage_options: StorageOptions = ...,
+        **kwargs: Any,
+    ) -> bytes: ...
+    @overload
+    def to_orc(
+        self,
+        path: FilePath | WriteBuffer[bytes],
+        *,
+        engine: Literal["pyarrow"] = ...,
+        index: bool | None = ...,
+        engine_kwargs: dict[str, Any] | None = ...,
+    ) -> None: ...
+    @overload
+    def to_orc(
+        self,
+        path: None = ...,
+        *,
+        engine: Literal["pyarrow"] = ...,
+        index: bool | None = ...,
+        engine_kwargs: dict[str, Any] | None = ...,
     ) -> bytes: ...
     @overload
     def to_html(
@@ -345,6 +376,46 @@ class DataFrame(NDFrame, OpsMixin):
         render_links: _bool = ...,
         encoding: _str | None = ...,
     ) -> _str: ...
+    @overload
+    def to_xml(
+        self,
+        path_or_buffer: FilePath | WriteBuffer[bytes] | WriteBuffer[str],
+        index: bool = ...,
+        root_name: str = ...,
+        row_name: str = ...,
+        na_rep: str | None = ...,
+        attr_cols: list[HashableT] | None = ...,
+        elem_cols: list[HashableT] | None = ...,
+        namespaces: dict[str | None, str] | None = ...,
+        prefix: str | None = ...,
+        encoding: str = ...,
+        xml_declaration: bool = ...,
+        pretty_print: bool = ...,
+        parser: XMLParsers = ...,
+        stylesheet: FilePath | ReadBuffer[str] | ReadBuffer[bytes] | None = ...,
+        compression: CompressionOptions = ...,
+        storage_options: StorageOptions = ...,
+    ) -> None: ...
+    @overload
+    def to_xml(
+        self,
+        path_or_buffer: Literal[None] = ...,
+        index: bool = ...,
+        root_name: str | None = ...,
+        row_name: str | None = ...,
+        na_rep: str | None = ...,
+        attr_cols: list[HashableT] | None = ...,
+        elem_cols: list[HashableT] | None = ...,
+        namespaces: dict[str | None, str] | None = ...,
+        prefix: str | None = ...,
+        encoding: str = ...,
+        xml_declaration: bool | None = ...,
+        pretty_print: bool | None = ...,
+        parser: str | None = ...,
+        stylesheet: FilePath | ReadBuffer[str] | ReadBuffer[bytes] | None = ...,
+        compression: CompressionOptions = ...,
+        storage_options: StorageOptions = ...,
+    ) -> str: ...
     def info(
         self, verbose=..., buf=..., max_cols=..., memory_usage=..., null_counts=...
     ) -> None: ...
@@ -890,9 +961,9 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> _DataFrameGroupByNonScalar: ...
     def pivot(
         self,
-        index=...,
-        columns=...,
-        values=...,
+        index: IndexLabel = ...,
+        columns: IndexLabel = ...,
+        values: IndexLabel = ...,
     ) -> DataFrame: ...
     def pivot_table(
         self,
@@ -989,9 +1060,9 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         right: DataFrame | Series,
         how: MergeHow = ...,
-        on: IndexLabel | None = ...,
-        left_on: IndexLabel | None = ...,
-        right_on: IndexLabel | None = ...,
+        on: IndexLabel | AnyArrayLike | None = ...,
+        left_on: IndexLabel | AnyArrayLike | None = ...,
+        right_on: IndexLabel | AnyArrayLike | None = ...,
         left_index: _bool = ...,
         right_index: _bool = ...,
         sort: _bool = ...,
@@ -1128,7 +1199,9 @@ class DataFrame(NDFrame, OpsMixin):
     @property
     def columns(self) -> Index: ...
     @columns.setter  # setter needs to be right next to getter; otherwise mypy complains
-    def columns(self, cols: list[_str] | Index[_str]) -> None: ...  # type: ignore[type-arg]
+    def columns(
+        self, cols: AnyArrayLike | list[HashableT] | tuple[HashableT, ...]
+    ) -> None: ...
     @property
     def dtypes(self) -> Series: ...
     @property
@@ -1837,28 +1910,11 @@ class DataFrame(NDFrame, OpsMixin):
         errors: _str = ...,
         storage_options: dict[_str, Any] | None = ...,
     ) -> _str: ...
-    def to_hdf(
-        self,
-        path_or_buf: FilePathOrBuffer,
-        key: _str,
-        mode: _str = ...,
-        complevel: int | None = ...,
-        complib: _str | None = ...,
-        append: _bool = ...,
-        format: _str | None = ...,
-        index: _bool = ...,
-        min_itemsize: int | dict[_str, int] | None = ...,
-        nan_rep=...,
-        dropna: _bool | None = ...,
-        data_columns: list[_str] | None = ...,
-        errors: _str = ...,
-        encoding: _str = ...,
-    ) -> None: ...
     @overload
     def to_json(
         self,
         path_or_buf: FilePathOrBuffer | None,
-        orient: JsonOrient | None = ...,
+        orient: JsonFrameOrient | None = ...,
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
@@ -1873,7 +1929,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def to_json(
         self,
-        orient: JsonOrient | None = ...,
+        orient: JsonFrameOrient | None = ...,
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,

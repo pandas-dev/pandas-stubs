@@ -19,10 +19,14 @@ from pandas.core.series import (
 from pandas._typing import (
     AnyArrayLike,
     ArrayLike,
+    DatetimeLike,
+    IntervalClosedType,
     np_ndarray_bool,
 )
 
 from pandas.core.dtypes.dtypes import DatetimeTZDtype
+
+from pandas.tseries.offsets import BaseOffset
 
 class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeIndexProperties):
     tz: tzinfo | None
@@ -76,25 +80,26 @@ class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeIndexProperties):
     def dtype(self) -> np.dtype | DatetimeTZDtype: ...
 
 def date_range(
-    start=...,
-    end=...,
-    periods=...,
-    freq=...,
-    tz=...,
-    normalize=...,
-    name=...,
-    closed=...,
+    start: str | DatetimeLike | None = ...,
+    end: str | DatetimeLike | None = ...,
+    periods: int | None = ...,
+    freq: str | BaseOffset = ...,
+    tz: str | tzinfo = ...,
+    normalize: bool = ...,
+    name: str | None = ...,
+    inclusive: IntervalClosedType = ...,
     **kwargs,
 ) -> DatetimeIndex: ...
 def bdate_range(
-    start=...,
-    end=...,
-    periods=...,
-    freq: str = ...,
-    tz=...,
+    start: str | DatetimeLike | None = ...,
+    end: str | DatetimeLike | None = ...,
+    periods: int | None = ...,
+    freq: str | BaseOffset = ...,
+    tz: str | tzinfo = ...,
     normalize: bool = ...,
-    name=...,
-    weekmask=...,
-    holidays=...,
-    closed=...,
+    name: str | None = ...,
+    weekmask: str | None = ...,
+    holidays: list | None = ...,
+    inclusive: IntervalClosedType = ...,
+    **kwargs,
 ) -> DatetimeIndex: ...

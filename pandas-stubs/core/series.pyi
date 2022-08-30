@@ -63,6 +63,7 @@ from pandas._typing import (
     Axes,
     Axis,
     AxisType,
+    CompressionOptions,
     Dtype,
     DtypeNp,
     FilePathOrBuffer,
@@ -71,6 +72,7 @@ from pandas._typing import (
     HashableT,
     IgnoreRaise,
     IndexingInt,
+    JsonSeriesOrient,
     Label,
     Level,
     ListLike,
@@ -122,14 +124,14 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
         idx: MaskType
         | Index
         | Sequence[float]
-        | list[_str]
+        | list[str]
         | slice
         | tuple[str | float | slice | Index, ...],
     ) -> Series[S1]: ...
     @overload
     def __getitem__(
         self,
-        idx: _str | float,
+        idx: str | float,
     ) -> S1: ...
     @overload
     def __setitem__(
@@ -159,7 +161,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def __new__(
         cls,
         data: DatetimeIndex,
-        index: _str | int | Series | list | Index | None = ...,
+        index: Axes | None = ...,
         dtype=...,
         name: Hashable | None = ...,
         copy: bool = ...,
@@ -169,7 +171,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def __new__(
         cls,
         data: PeriodIndex,
-        index: _str | int | Series | list | Index | None = ...,
+        index: Axes | None = ...,
         dtype=...,
         name: Hashable | None = ...,
         copy: bool = ...,
@@ -180,7 +182,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         cls,
         data: object | _ListLike | Series[S1] | dict[int, S1] | dict[_str, S1] | None,
         dtype: type[S1],
-        index: _str | int | Series | list | Index | None = ...,
+        index: Axes | None = ...,
         name: Hashable | None = ...,
         copy: bool = ...,
         fastpath: bool = ...,
@@ -194,7 +196,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         | dict[int, S1]
         | dict[_str, S1]
         | None = ...,
-        index: _str | int | Series | list | Index | None = ...,
+        index: Axes | None = ...,
         dtype=...,
         name: Hashable | None = ...,
         copy: bool = ...,
@@ -366,6 +368,37 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         mode: _str | None = ...,
         index: _bool = ...,
         storage_options: dict | None = ...,
+    ) -> _str: ...
+    @overload
+    def to_json(
+        self,
+        path_or_buf: FilePathOrBuffer | None,
+        orient: JsonSeriesOrient | None = ...,
+        date_format: Literal["epoch", "iso"] | None = ...,
+        double_precision: int = ...,
+        force_ascii: _bool = ...,
+        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        default_handler: Callable[[Any], _str | float | _bool | list | dict]
+        | None = ...,
+        lines: _bool = ...,
+        compression: CompressionOptions = ...,
+        index: _bool = ...,
+        indent: int | None = ...,
+    ) -> None: ...
+    @overload
+    def to_json(
+        self,
+        orient: JsonSeriesOrient | None = ...,
+        date_format: Literal["epoch", "iso"] | None = ...,
+        double_precision: int = ...,
+        force_ascii: _bool = ...,
+        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        default_handler: Callable[[Any], _str | float | _bool | list | dict]
+        | None = ...,
+        lines: _bool = ...,
+        compression: CompressionOptions = ...,
+        index: _bool = ...,
+        indent: int | None = ...,
     ) -> _str: ...
     def items(self) -> Iterable[tuple[Hashable, S1]]: ...
     def iteritems(self) -> Iterable[tuple[Label, S1]]: ...
@@ -836,7 +869,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def dropna(
         self,
         axis: SeriesAxisType = ...,
-        how: _str | None = ...,
+        how: Literal["any", "all"] | None = ...,
         *,
         inplace: Literal[True],
     ) -> None: ...
@@ -845,7 +878,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         axis: SeriesAxisType = ...,
         inplace: _bool = ...,
-        how: _str | None = ...,
+        how: Literal["any", "all"] | None = ...,
     ) -> Series[S1]: ...
     def to_timestamp(
         self,

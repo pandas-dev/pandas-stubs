@@ -42,6 +42,10 @@ def test_types_init() -> None:
         dtype=np.int8,
         copy=True,
     )
+    check(
+        assert_type(pd.DataFrame(0, index=[0, 1], columns=[0, 1]), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_types_all() -> None:
@@ -543,9 +547,26 @@ def test_types_pivot() -> None:
             "col4": [100, 102, 500, 600],
         }
     )
-    df.pivot(index="col1", columns="col3", values="col2")
-    df.pivot(index="col1", columns="col3")
-    df.pivot(index="col1", columns="col3", values=["col2", "col4"])
+    check(
+        assert_type(
+            df.pivot(index="col1", columns="col3", values="col2"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.pivot(index="col1", columns="col3"), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(
+            df.pivot(index="col1", columns="col3", values=["col2", "col4"]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(assert_type(df.pivot(columns="col3"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.pivot(columns="col3", values="col2"), pd.DataFrame), pd.DataFrame
+    )
 
 
 def test_types_groupby() -> None:
@@ -1391,6 +1412,14 @@ def test_set_columns() -> None:
     # https://github.com/python/mypy/issues/3004
     # pyright doesn't need the ignore
     df.columns = ["c", "d"]  # type: ignore[assignment]
+    df.columns = [1, 2]  # type: ignore[assignment]
+    df.columns = [1, "a"]  # type: ignore[assignment]
+    df.columns = np.array([1, 2])  # type: ignore[assignment]
+    df.columns = pd.Series([1, 2])  # type: ignore[assignment]
+    df.columns = np.array([1, "a"])  # type: ignore[assignment]
+    df.columns = pd.Series([1, "a"])  # type: ignore[assignment]
+    df.columns = (1, 2)  # type: ignore[assignment]
+    df.columns = (1, "a")  # type: ignore[assignment]
 
 
 def test_frame_index_numpy() -> None:

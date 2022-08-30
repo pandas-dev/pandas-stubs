@@ -1,11 +1,15 @@
-# from pandas import DataFrame, Int64Index, RangeIndex
-from typing import Sequence
+from pandas import DataFrame
 
-from pandas.core.frame import DataFrame
+from pandas._typing import (
+    FilePath,
+    HashableT,
+    ReadBuffer,
+    StorageOptions,
+)
 
-from pandas._typing import FilePathOrBuffer
-
-def to_feather(df: DataFrame, path): ...
 def read_feather(
-    p: FilePathOrBuffer, columns: Sequence | None = ..., use_threads: bool = ...
-): ...
+    path: FilePath | ReadBuffer[bytes],
+    columns: list[HashableT] | None = ...,
+    use_threads: bool = ...,
+    storage_options: StorageOptions = ...,
+) -> DataFrame: ...
