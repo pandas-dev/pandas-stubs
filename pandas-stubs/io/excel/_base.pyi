@@ -1,7 +1,8 @@
-import abc
 from typing import (
-    Any,
     Callable,
+    Hashable,
+    Iterable,
+    Literal,
     Sequence,
     overload,
 )
@@ -11,36 +12,40 @@ from pandas.core.frame import DataFrame
 from pandas._typing import (
     Dtype,
     FilePath,
+    IntStrT,
     ReadBuffer,
-    Scalar,
+    StorageOptions,
 )
 
 @overload
 def read_excel(
-    filepath: FilePath | ReadBuffer[bytes] | bytes,
-    sheet_name: list[int | str] | None,
+    io: FilePath | ReadBuffer[bytes] | bytes,
+    sheet_name: list[IntStrT] | None,
     header: int | Sequence[int] | None = ...,
     names: list[str] | None = ...,
     index_col: int | Sequence[int] | None = ...,
-    usecols: int | str | Sequence[int | str | Callable] | None = ...,
-    squeeze: bool = ...,
-    dtype: str | dict[str, Any] | Dtype = ...,
-    engine: str | None = ...,
-    converters: dict[int | str, Callable] | None = ...,
-    true_values: Sequence[Scalar] | None = ...,
-    false_values: Sequence[Scalar] | None = ...,
-    skiprows: Sequence[int] | int | Callable | None = ...,
+    usecols: str | Sequence[int] | Sequence[str] | Callable[[str], bool] | None = ...,
+    dtype: str | Dtype | dict[str, str | Dtype] | None = ...,
+    engine: Literal["xlrd", "openpyxl", "odf", "pyxlsb"] | None = ...,
+    converters: dict[int | str, Callable[[object], object]] | None = ...,
+    true_values: Iterable[Hashable] | None = ...,
+    false_values: Iterable[Hashable] | None = ...,
+    skiprows: int | Sequence[int] | Callable[[object], bool] | None = ...,
     nrows: int | None = ...,
-    na_values=...,
+    na_values: Sequence[str] | dict[str | int, Sequence[str]] = ...,
     keep_default_na: bool = ...,
+    na_filter: bool = ...,
     verbose: bool = ...,
-    parse_dates: bool | Sequence | dict[str, Sequence] = ...,
+    parse_dates: bool
+    | Sequence[int]
+    | Sequence[Sequence[str] | Sequence[int]]
+    | dict[str, Sequence[int] | list[str]] = ...,
     date_parser: Callable | None = ...,
     thousands: str | None = ...,
+    decimal: str = ...,
     comment: str | None = ...,
     skipfooter: int = ...,
-    convert_float: bool = ...,
-    mangle_dupe_cols: bool = ...,
+    storage_options: StorageOptions = ...,
 ) -> dict[int | str, DataFrame]: ...
 @overload
 def read_excel(
@@ -49,69 +54,32 @@ def read_excel(
     header: int | Sequence[int] | None = ...,
     names: list[str] | None = ...,
     index_col: int | Sequence[int] | None = ...,
-    usecols: int | str | Sequence[int | str | Callable] | None = ...,
-    squeeze: bool = ...,
-    dtype: str | dict[str, Any] | Dtype = ...,
-    engine: str | None = ...,
-    converters: dict[int | str, Callable] | None = ...,
-    true_values: Sequence[Scalar] | None = ...,
-    false_values: Sequence[Scalar] | None = ...,
-    skiprows: Sequence[int] | int | Callable | None = ...,
+    usecols: str | Sequence[int] | Sequence[str] | Callable[[str], bool] | None = ...,
+    dtype: str | Dtype | dict[str, str | Dtype] | None = ...,
+    engine: Literal["xlrd", "openpyxl", "odf", "pyxlsb"] | None = ...,
+    converters: dict[int | str, Callable[[object], object]] | None = ...,
+    true_values: Iterable[Hashable] | None = ...,
+    false_values: Iterable[Hashable] | None = ...,
+    skiprows: int | Sequence[int] | Callable[[object], bool] | None = ...,
     nrows: int | None = ...,
-    na_values=...,
+    na_values: Sequence[str] | dict[str | int, Sequence[str]] = ...,
     keep_default_na: bool = ...,
+    na_filter: bool = ...,
     verbose: bool = ...,
-    parse_dates: bool | Sequence | dict[str, Sequence] = ...,
+    parse_dates: bool
+    | Sequence[int]
+    | Sequence[Sequence[str] | Sequence[int]]
+    | dict[str, Sequence[int] | list[str]] = ...,
     date_parser: Callable | None = ...,
     thousands: str | None = ...,
+    decimal: str = ...,
     comment: str | None = ...,
     skipfooter: int = ...,
-    convert_float: bool = ...,
-    mangle_dupe_cols: bool = ...,
+    storage_options: StorageOptions = ...,
     **kwargs,
 ) -> DataFrame: ...
 
-class BaseExcelReader(metaclass=abc.ABCMeta):
-    book = ...
-    def __init__(self, filepath_or_buffer) -> None: ...
-    @abc.abstractmethod
-    def load_workbook(self, filepath_or_buffer): ...
-    def close(self) -> None: ...
-    @property
-    @abc.abstractmethod
-    def sheet_names(self): ...
-    @abc.abstractmethod
-    def get_sheet_by_name(self, name): ...
-    @abc.abstractmethod
-    def get_sheet_by_index(self, index): ...
-    @abc.abstractmethod
-    def get_sheet_data(self, sheet, convert_float): ...
-    def parse(
-        self,
-        sheet_name: int = ...,
-        header: int = ...,
-        names=...,
-        index_col=...,
-        usecols=...,
-        squeeze: bool = ...,
-        dtype=...,
-        true_values=...,
-        false_values=...,
-        skiprows=...,
-        nrows=...,
-        na_values=...,
-        verbose: bool = ...,
-        parse_dates: bool = ...,
-        date_parser=...,
-        thousands=...,
-        comment=...,
-        skipfooter: int = ...,
-        convert_float: bool = ...,
-        mangle_dupe_cols: bool = ...,
-        **kwds,
-    ): ...
-
-class ExcelWriter(metaclass=abc.ABCMeta):
+class ExcelWriter:
     def __new__(cls, path, engine=..., **kwargs): ...
     book = ...
     curr_sheet = ...
