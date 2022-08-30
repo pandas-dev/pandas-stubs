@@ -44,6 +44,7 @@ from pandas._typing import (
     AggFuncType,
     AggFuncTypeBase,
     AggFuncTypeDict,
+    AnyArrayLike,
     ArrayLike,
     Axes,
     Axis,
@@ -60,7 +61,7 @@ from pandas._typing import (
     IndexingInt,
     IndexLabel,
     IndexType,
-    JsonOrient,
+    JsonFrameOrient,
     Label,
     Level,
     ListLike,
@@ -170,6 +171,7 @@ class DataFrame(NDFrame, OpsMixin):
 
     __hash__: ClassVar[None]  # type: ignore[assignment]
 
+    @overload
     def __new__(
         cls,
         data: ListLikeU
@@ -179,6 +181,15 @@ class DataFrame(NDFrame, OpsMixin):
         | None = ...,
         index: Axes | None = ...,
         columns: Axes | None = ...,
+        dtype=...,
+        copy: _bool = ...,
+    ) -> DataFrame: ...
+    @overload
+    def __new__(
+        cls,
+        data: Scalar,
+        index: Axes,
+        columns: Axes,
         dtype=...,
         copy: _bool = ...,
     ) -> DataFrame: ...
@@ -265,7 +276,7 @@ class DataFrame(NDFrame, OpsMixin):
         *,
         value_labels: dict[Hashable, dict[float, str]] | None = ...,
     ) -> None: ...
-    def to_feather(self, path: FilePathOrBuffer, **kwargs) -> None: ...
+    def to_feather(self, path: FilePath | WriteBuffer[bytes], **kwargs) -> None: ...
     @overload
     def to_markdown(
         self, buf: FilePathOrBuffer | None, mode: _str | None = ..., **kwargs
@@ -950,9 +961,9 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> _DataFrameGroupByNonScalar: ...
     def pivot(
         self,
-        index=...,
-        columns=...,
-        values=...,
+        index: IndexLabel = ...,
+        columns: IndexLabel = ...,
+        values: IndexLabel = ...,
     ) -> DataFrame: ...
     def pivot_table(
         self,
@@ -1049,9 +1060,9 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         right: DataFrame | Series,
         how: MergeHow = ...,
-        on: IndexLabel | None = ...,
-        left_on: IndexLabel | None = ...,
-        right_on: IndexLabel | None = ...,
+        on: IndexLabel | AnyArrayLike | None = ...,
+        left_on: IndexLabel | AnyArrayLike | None = ...,
+        right_on: IndexLabel | AnyArrayLike | None = ...,
         left_index: _bool = ...,
         right_index: _bool = ...,
         sort: _bool = ...,
@@ -1188,7 +1199,9 @@ class DataFrame(NDFrame, OpsMixin):
     @property
     def columns(self) -> Index: ...
     @columns.setter  # setter needs to be right next to getter; otherwise mypy complains
-    def columns(self, cols: list[_str] | Index[_str]) -> None: ...  # type: ignore[type-arg]
+    def columns(
+        self, cols: AnyArrayLike | list[HashableT] | tuple[HashableT, ...]
+    ) -> None: ...
     @property
     def dtypes(self) -> Series: ...
     @property
@@ -1901,7 +1914,7 @@ class DataFrame(NDFrame, OpsMixin):
     def to_json(
         self,
         path_or_buf: FilePathOrBuffer | None,
-        orient: JsonOrient | None = ...,
+        orient: JsonFrameOrient | None = ...,
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
@@ -1916,7 +1929,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def to_json(
         self,
-        orient: JsonOrient | None = ...,
+        orient: JsonFrameOrient | None = ...,
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,

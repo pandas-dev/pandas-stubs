@@ -16,7 +16,9 @@ from pandas import (
     Series,
     __version__,
     read_clipboard,
+    read_feather,
     read_hdf,
+    read_json,
     read_orc,
     read_parquet,
     read_sas,
@@ -31,6 +33,7 @@ from typing_extensions import assert_type
 from tests import check
 
 from pandas.io.clipboard import PyperclipException
+from pandas.io.json._json import JsonReader
 from pandas.io.parsers import TextFileReader
 from pandas.io.pytables import (
     TableIterator,
@@ -281,6 +284,34 @@ def test_spss():
     check(assert_type(read_spss(str(path), usecols=["VAR00002"]), DataFrame), DataFrame)
 
 
+def test_json():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_json(path), None), type(None))
+        check(assert_type(read_json(path), DataFrame), DataFrame)
+    json_str = DF.to_json()
+    check(assert_type(json_str, str), str)
+    bin_json = io.StringIO(json_str)
+    check(assert_type(read_json(bin_json), DataFrame), DataFrame)
+
+
+def test_json_series():
+    s = DF["a"]
+    with ensure_clean() as path:
+        check(assert_type(s.to_json(path), None), type(None))
+        check(assert_type(read_json(path, typ="series"), Series), Series)
+    check(assert_type(DF.to_json(), str), str)
+
+
+def test_json_chunk():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_json(path), None), type(None))
+        json_reader = read_json(path, chunksize=1, lines=True)
+        check(assert_type(json_reader, "JsonReader[DataFrame]"), JsonReader)
+        for sub_df in json_reader:
+            check(assert_type(sub_df, DataFrame), DataFrame)
+    check(assert_type(DF.to_json(), str), str)
+
+
 def test_parquet():
     with ensure_clean() as path:
         check(assert_type(DF.to_parquet(path), None), type(None))
@@ -295,3 +326,14 @@ def test_parquet_options():
             type(None),
         )
         check(assert_type(read_parquet(path), DataFrame), DataFrame)
+
+
+def test_feather():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_feather(path), None), type(None))
+        check(assert_type(read_feather(path), DataFrame), DataFrame)
+        check(assert_type(read_feather(path, columns=["a"]), DataFrame), DataFrame)
+    bio = io.BytesIO()
+    check(assert_type(DF.to_feather(bio), None), type(None))
+    bio.seek(0)
+    check(assert_type(read_feather(bio), DataFrame), DataFrame)

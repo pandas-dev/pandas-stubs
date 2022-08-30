@@ -23,6 +23,13 @@ from tests import (
     check,
 )
 
+from pandas.tseries.holiday import USFederalHolidayCalendar
+from pandas.tseries.offsets import (
+    BusinessDay,
+    CustomBusinessDay,
+    Day,
+)
+
 if TYPE_CHECKING:
     from pandas.core.series import (
         PeriodSeries,
@@ -403,3 +410,33 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.month_name(), pd.Index), pd.Index, str)
     check(assert_type(i0.day_name(), pd.Index), pd.Index, str)
     check(assert_type(i0.is_normalized, bool), bool)
+
+
+def test_some_offsets() -> None:
+    # GH 222
+
+    check(
+        assert_type(
+            CustomBusinessDay(calendar=USFederalHolidayCalendar()), CustomBusinessDay
+        ),
+        CustomBusinessDay,
+    )
+    # GH 223
+    check(
+        assert_type(pd.date_range("1/1/2022", "2/1/2022", freq="1D"), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.date_range("1/1/2022", "2/1/2022", freq=Day()), pd.DatetimeIndex
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.bdate_range("1/1/2022", "2/1/2022", freq=BusinessDay()), pd.DatetimeIndex
+        ),
+        pd.DatetimeIndex,
+    )
+    # GH 224
+    check(assert_type(dt.date.today() - Day(), dt.date), dt.date)

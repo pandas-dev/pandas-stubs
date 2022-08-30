@@ -27,9 +27,9 @@ def pivot_table(
 ) -> DataFrame: ...
 def pivot(
     data: DataFrame,
-    index: str | None = ...,
-    columns: str | None = ...,
-    values: IndexLabel | None = ...,
+    index: IndexLabel = ...,
+    columns: IndexLabel = ...,
+    values: IndexLabel = ...,
 ) -> DataFrame: ...
 def crosstab(
     index: Sequence | Series,

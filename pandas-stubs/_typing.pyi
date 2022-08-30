@@ -47,6 +47,8 @@ PandasScalar = Union[bytes, datetime.date, datetime.datetime, datetime.timedelta
 # Scalar = Union[PythonScalar, PandasScalar]
 IntStrT = TypeVar("IntStrT", int, str)
 
+DatetimeLike = Union[datetime.date, datetime.datetime, np.datetime64, Timestamp]
+
 # dtypes
 NpDtype = Union[str, np.dtype[np.generic], type[Union[str, complex, bool, object]]]
 Dtype = Union[ExtensionDtype, NpDtype]
@@ -225,7 +227,9 @@ ReplaceMethod = Literal["pad", "ffill", "bfill"]
 SortKind = Literal["quicksort", "mergesort", "heapsort", "stable"]
 NaPosition = Literal["first", "last"]
 MergeHow = Literal["left", "right", "outer", "inner"]
-JsonOrient = Literal["split", "records", "index", "columns", "values", "table"]
+JsonFrameOrient = Literal["split", "records", "index", "columns", "values", "table"]
+JsonSeriesOrient = Literal["split", "records", "index"]
+
 TimestampConvention = Literal["start", "end", "s", "e"]
 
 CSVEngine = Literal["c", "python", "pyarrow", "python-fwf"]

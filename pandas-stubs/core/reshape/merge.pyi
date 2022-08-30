@@ -6,15 +6,18 @@ from pandas import (
 )
 
 from pandas._libs.tslibs import Timedelta
-from pandas._typing import Label
+from pandas._typing import (
+    AnyArrayLike,
+    Label,
+)
 
 def merge(
     left: DataFrame | Series,
     right: DataFrame | Series,
     how: str = ...,
-    on: Label | Sequence | None = ...,
-    left_on: Label | Sequence | None = ...,
-    right_on: Label | Sequence | None = ...,
+    on: Label | Sequence | AnyArrayLike | None = ...,
+    left_on: Label | Sequence | AnyArrayLike | None = ...,
+    right_on: Label | Sequence | AnyArrayLike | None = ...,
     left_index: bool = ...,
     right_index: bool = ...,
     sort: bool = ...,
@@ -26,9 +29,9 @@ def merge(
 def merge_ordered(
     left: DataFrame | Series,
     right: DataFrame | Series,
-    on: Label | Sequence | None = ...,
-    left_on: Label | Sequence | None = ...,
-    right_on: Label | Sequence | None = ...,
+    on: Label | Sequence | AnyArrayLike | None = ...,
+    left_on: Label | Sequence | AnyArrayLike | None = ...,
+    right_on: Label | Sequence | AnyArrayLike | None = ...,
     left_by: str | list[str] | None = ...,
     right_by: str | list[str] | None = ...,
     fill_method: str | None = ...,
@@ -39,8 +42,8 @@ def merge_asof(
     left: DataFrame | Series,
     right: DataFrame | Series,
     on: Label | None = ...,
-    left_on: Label | None = ...,
-    right_on: Label | None = ...,
+    left_on: Label | AnyArrayLike | None = ...,
+    right_on: Label | AnyArrayLike | None = ...,
     left_index: bool = ...,
     right_index: bool = ...,
     by: str | list[str] | None = ...,
