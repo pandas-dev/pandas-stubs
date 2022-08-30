@@ -2,8 +2,8 @@ import sqlite3
 from typing import (
     Any,
     Callable,
+    Generator,
     Iterable,
-    Iterator,
     Literal,
     overload,
 )
@@ -30,7 +30,7 @@ def read_sql_table(
     columns: list[str] | None = ...,
     *,
     chunksize: int,
-) -> Iterator[DataFrame]: ...
+) -> Generator[DataFrame, None, None]: ...
 @overload
 def read_sql_table(
     table_name: str,
@@ -53,7 +53,7 @@ def read_sql_query(
     *,
     chunksize: int,
     dtype: DtypeArg | None = ...,
-) -> Iterator[DataFrame]: ...
+) -> Generator[DataFrame, None, None]: ...
 @overload
 def read_sql_query(
     sql: str,
@@ -76,7 +76,7 @@ def read_sql(
     columns: list[str] = ...,
     *,
     chunksize: int,
-) -> Iterator[DataFrame]: ...
+) -> Generator[DataFrame, None, None]: ...
 @overload
 def read_sql(
     sql: str,
@@ -143,4 +143,4 @@ class SQLTable(PandasObject):
         parse_dates: bool | list[str] | None = ...,
         columns: list[str] | None = ...,
         chunksize: int | None = ...,
-    ) -> DataFrame | Iterator[DataFrame]: ...
+    ) -> DataFrame | Generator[DataFrame, None, None]: ...
