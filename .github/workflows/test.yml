@@ -28,7 +28,7 @@ jobs:
       run: python -m venv virtual
 
     - name: activate the virtual environment
-      run: venv\Scripts\activate
+      run: virtual\Scripts\activate
 
     - name: Install Poetry
       run: pip install poetry
