@@ -1,5 +1,6 @@
-from loguru import logger
+import pandas as pd
 
-logger.info("hey")
+df = pd.Series([1, 2, 3])
+print(df)
 
 print("this is a test to see if import works")
