@@ -46,3 +46,8 @@ def stubtest(allowlist: str, check_missing: bool, nightly: bool) -> None:
     if nightly:
         steps.append(_step.nightly)
     run_job(steps + [stubtest])
+
+
+def pytest(nightly: bool) -> None:
+    steps = [_step.nightly] if nightly else []
+    run_job(steps + [_step.pytest])

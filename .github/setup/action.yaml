@@ -1,0 +1,35 @@
+name: Install project dependencies
+
+inputs:
+  python-version:
+    required: true
+  os:
+    required: true
+
+runs:
+  using: composite
+  steps:
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install Poetry
+      shell: bash
+      run: python -m pip install poetry
+
+    - name: Determine poetry version
+      shell: bash
+      run: echo "::set-output name=VERSION::$(poetry --version)"
+      id: poetry_version
+
+    - name: Cache poetry.lock
+      uses: actions/cache@v3
+      with:
+        path: poetry.lock
+        key: ${{ inputs.os }}-${{ inputs.python-version }}-poetry-${{ steps.poetry_version.outputs.VERSION }}-${{ hashFiles('pyproject.toml') }}
+
+    - name: Install project dependencies
+      shell: bash
+      run: poetry install -vvv --no-root

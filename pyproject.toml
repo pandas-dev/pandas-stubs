@@ -70,7 +70,8 @@ script = "scripts.test:test(dist=True)"
 
 [tool.poe.tasks.pytest]
 help = "Run pytest"
-script = "scripts.test.run:pytest"
+script = "scripts.test:pytest(nightly)"
+args = [{name = "nightly", positional = false, default = false, type = "boolean", required = false, help= "Use pandas nightly (off by default)"}]
 
 [tool.poe.tasks.style]
 help = "Run pre-commit"
