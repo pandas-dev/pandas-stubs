@@ -4,7 +4,8 @@ import sys
 
 
 def mypy_src():
-    cmd = ["mypy", "pandas-stubs", "tests", "--no-incremental"]
+    # cmd = ["mypy", "pandas-stubs", "tests", "--no-incremental"]
+    cmd = [sys.executable, "testing.py"]
     subprocess.run(cmd, check=True)
 
 

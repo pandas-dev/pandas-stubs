@@ -38,13 +38,14 @@ jobs:
 #        key: ${{ matrix.os }}-${{ matrix.python-version }}-poetry-${{ steps.poetry_version.outputs.VERSION }}-${{ hashFiles('pyproject.toml') }}
 #
     - name: Install project dependencies
-      run: poetry install -vvv 
+      run: poetry install -vvv --no-root
 
-    - name: where is python
-      run: (get-command python.exe).Path
+#    - name: Run tester
+#      run: python testing.py
 
-    - name: Run tester
-      run: python testing.py
+    - name: Use the mypy poe to run python testing.py
+      run: poetry run poe mypy
+
 
 #    - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
 #      run: poetry run poe mypy
