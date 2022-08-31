@@ -7,6 +7,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
+    Dict,
     Generic,
     Hashable,
     Iterable,
@@ -1288,38 +1289,66 @@ def test_to_excel() -> None:
 
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl")
-        df2: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(Path(path), engine="openpyxl")
-        df3: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl", startrow=1, startcol=1, header=False)
-        df4: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl", sheet_name="sheet", index=False)
-        df5: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl", header=["x", "y"])
-        df6: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl", columns=["col1"])
-        df7: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
 
 
 def test_read_excel() -> None:
-    if TYPE_CHECKING:  # skip pytest
-
+    with ensure_clean(".xlsx") as path:
         # https://github.com/pandas-dev/pandas-stubs/pull/33
-        df11: pd.DataFrame = pd.read_excel("foo")
-        df12: pd.DataFrame = pd.read_excel("foo", sheet_name="sheet")
-        df13: dict[int | str, pd.DataFrame] = pd.read_excel("foo", sheet_name=["sheet"])
-        # GH 98
-        df14: pd.DataFrame = pd.read_excel("foo", sheet_name=0)
-        df15: dict[int | str, pd.DataFrame] = pd.read_excel("foo", sheet_name=[0])
-        df16: dict[int | str, pd.DataFrame] = pd.read_excel(
-            "foo", sheet_name=[0, "sheet"]
+        check(
+            assert_type(pd.DataFrame({"A": [1, 2, 3]}).to_excel(path), None), type(None)
         )
-        df17: pd.DataFrame = pd.read_excel("foo", sheet_name=None)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(pd.read_excel(path, sheet_name="Sheet1"), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, sheet_name=["Sheet1"]),
+                Dict[Union[int, str], pd.DataFrame],
+            ),
+            dict,
+        )
+        # GH 98
+        check(
+            assert_type(pd.read_excel(path, sheet_name=0), pd.DataFrame), pd.DataFrame
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, sheet_name=[0]), Dict[Union[int, str], pd.DataFrame]
+            ),
+            dict,
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, sheet_name=[0, "Sheet1"]),
+                Dict[Union[int, str], pd.DataFrame],
+            ),
+            dict,
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, sheet_name=None),
+                Dict[Union[int, str], pd.DataFrame],
+            ),
+            dict,
+        )
 
 
 def test_read_excel_io_types() -> None:

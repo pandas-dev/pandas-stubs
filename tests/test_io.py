@@ -1,9 +1,9 @@
 import io
-import os
 import os.path
 import pathlib
 from pathlib import Path
 from typing import (
+    Dict,
     List,
     Union,
 )
@@ -16,6 +16,7 @@ from pandas import (
     Series,
     __version__,
     read_clipboard,
+    read_excel,
     read_feather,
     read_hdf,
     read_json,
@@ -33,6 +34,7 @@ from typing_extensions import assert_type
 from tests import check
 
 from pandas.io.clipboard import PyperclipException
+from pandas.io.common import IOHandles
 from pandas.io.json._json import JsonReader
 from pandas.io.parsers import TextFileReader
 from pandas.io.pytables import (
@@ -337,3 +339,48 @@ def test_feather():
     check(assert_type(DF.to_feather(bio), None), type(None))
     bio.seek(0)
     check(assert_type(read_feather(bio), DataFrame), DataFrame)
+
+
+def test_read_excel():
+    with ensure_clean(".xlsx") as path:
+        check(assert_type(DF.to_excel(path), None), type(None))
+        check(assert_type(read_excel(path), DataFrame), DataFrame)
+        check(assert_type(read_excel(path, sheet_name="Sheet1"), DataFrame), DataFrame)
+        check(assert_type(read_excel(path, sheet_name=0), DataFrame), DataFrame)
+
+
+def test_read_excel_list():
+    with ensure_clean(".xlsx") as path:
+        check(assert_type(DF.to_excel(path), None), type(None))
+        check(
+            assert_type(
+                read_excel(path, sheet_name=["Sheet1"]),
+                Dict[Union[str, int], DataFrame],
+            ),
+            dict,
+        )
+        check(
+            assert_type(
+                read_excel(path, sheet_name=[0]), Dict[Union[str, int], DataFrame]
+            ),
+            dict,
+        )
+
+
+def test_excel_writer():
+    with ensure_clean(".xlsx") as path:
+        with pd.ExcelWriter(path) as ew:
+            check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
+            DF.to_excel(ew, sheet_name="A")
+            check(assert_type(ew.handles, IOHandles[bytes]), IOHandles)
+        check(assert_type(read_excel(path, sheet_name="A"), DataFrame), DataFrame)
+        check(assert_type(read_excel(path), DataFrame), DataFrame)
+        ef = pd.ExcelFile(path)
+        check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
+        check(assert_type(read_excel(ef, sheet_name="A"), DataFrame), DataFrame)
+        check(assert_type(read_excel(ef), DataFrame), DataFrame)
+        check(assert_type(ef.parse(sheet_name=0), DataFrame), DataFrame)
+        check(
+            assert_type(ef.parse(sheet_name=[0]), Dict[Union[str, int], DataFrame]),
+            dict,
+        )

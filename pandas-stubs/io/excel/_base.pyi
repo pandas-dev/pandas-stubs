@@ -36,7 +36,7 @@ def read_excel(
     | Book
     | OpenDocument
     | pyxlsb.workbook.Workbook,
-    sheet_name: list[int | str],
+    sheet_name: list[int | str] | None,
     *,
     header: int | Sequence[int] | None = ...,
     names: list[str] | None = ...,
@@ -74,7 +74,7 @@ def read_excel(
     | Book
     | OpenDocument
     | pyxlsb.workbook.Workbook,
-    sheet_name: int | str | None = ...,
+    sheet_name: int | str = ...,
     *,
     header: int | Sequence[int] | None = ...,
     names: list[str] | None = ...,
@@ -167,15 +167,7 @@ class ExcelFile:
     @overload
     def parse(
         self,
-        io: FilePath
-        | ReadBuffer[bytes]
-        | bytes
-        | ExcelFile
-        | Workbook
-        | Book
-        | OpenDocument
-        | pyxlsb.workbook.Workbook,
-        sheet_name: list[int | str],
+        sheet_name: list[int | str] | None,
         header: int | Sequence[int] | None = ...,
         names: list[str] | None = ...,
         index_col: int | Sequence[int] | None = ...,
@@ -205,7 +197,7 @@ class ExcelFile:
     @overload
     def parse(
         self,
-        sheet_name: list[int | str],
+        sheet_name: int | str,
         header: int | Sequence[int] | None = ...,
         names: list[str] | None = ...,
         index_col: int | Sequence[int] | None = ...,
