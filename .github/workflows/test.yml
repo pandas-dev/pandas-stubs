@@ -28,14 +28,17 @@ jobs:
       run: echo "::set-output name=VERSION::$(poetry --version)"
       id: poetry_version
 
-#    - name: Cache poetry.lock
-#      uses: actions/cache@v3
-#      with:
-#        path: poetry.lock
-#        key: ${{ matrix.os }}-${{ matrix.python-version }}-poetry-${{ steps.poetry_version.outputs.VERSION }}-${{ hashFiles('pyproject.toml') }}
+    - name: Cache poetry.lock
+      uses: actions/cache@v3
+      with:
+        path: poetry.lock
+        key: ${{ matrix.os }}-${{ matrix.python-version }}-poetry-${{ steps.poetry_version.outputs.VERSION }}-${{ hashFiles('pyproject.toml') }}
 
     - name: Install project dependencies
       run: poetry install -vvv --no-root
+
+    - name: Run tester
+      run: python testing.py
 
     - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
       run: poetry run poe mypy
