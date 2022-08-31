@@ -1319,7 +1319,7 @@ def test_read_excel() -> None:
         df16: dict[int | str, pd.DataFrame] = pd.read_excel(
             "foo", sheet_name=[0, "sheet"]
         )
-        df17: dict[int | str, pd.DataFrame] = pd.read_excel("foo", sheet_name=None)
+        df17: pd.DataFrame = pd.read_excel("foo", sheet_name=None)
 
 
 def test_read_excel_io_types() -> None:

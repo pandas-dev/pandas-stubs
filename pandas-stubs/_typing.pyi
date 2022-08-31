@@ -45,7 +45,6 @@ PythonScalar = Union[str, bool, complex]
 DatetimeLikeScalar = TypeVar("DatetimeLikeScalar", Period, Timestamp, Timedelta)
 PandasScalar = Union[bytes, datetime.date, datetime.datetime, datetime.timedelta]
 # Scalar = Union[PythonScalar, PandasScalar]
-IntStrT = TypeVar("IntStrT", int, str)
 
 DatetimeLike = Union[datetime.date, datetime.datetime, np.datetime64, Timestamp]
 
@@ -64,6 +63,9 @@ AnyStr_con = TypeVar("AnyStr_con", str, bytes, contravariant=True)
 class BaseBuffer(Protocol): ...
 class ReadBuffer(BaseBuffer, Protocol[AnyStr_cov]): ...
 class WriteBuffer(BaseBuffer, Protocol[AnyStr_cov]): ...
+
+class WriteExcelBuffer(WriteBuffer[bytes], Protocol):
+    def truncate(self, size: Union[int, None] = ...) -> int: ...
 
 FilePath = Union[str, PathLike[str]]
 
