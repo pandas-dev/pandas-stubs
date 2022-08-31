@@ -40,17 +40,17 @@ jobs:
     - name: Run tester
       run: python testing.py
 
-    - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
-      run: poetry run poe mypy
-
-    - name: Run pyright on 'tests' (using the local stubs) and on the local stubs
-      run: poetry run poe pyright
-
-    - name: Run pytest
-      run: poetry run poe pytest
-
-    - if: matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest'
-      uses: pre-commit/action@v3.0.0
-
-    - name: Install pandas-stubs and run tests on the installed stubs
-      run: poetry run poe test_dist
+#    - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
+#      run: poetry run poe mypy
+#
+#    - name: Run pyright on 'tests' (using the local stubs) and on the local stubs
+#      run: poetry run poe pyright
+#
+#    - name: Run pytest
+#      run: poetry run poe pytest
+#
+#    - if: matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest'
+#      uses: pre-commit/action@v3.0.0
+#
+#    - name: Install pandas-stubs and run tests on the installed stubs
+#      run: poetry run poe test_dist
