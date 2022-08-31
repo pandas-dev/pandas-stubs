@@ -21,11 +21,11 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install pandas
-      run: pip install pandas
+#    - name: Install pandas
+#      run: pip install pandas
 
-#    - name: Install Poetry
-#      run: pip install poetry
+    - name: Install Poetry
+      run: pip install poetry
 #
 #    - name: Determine poetry version
 #      run: echo "::set-output name=VERSION::$(poetry --version)"
@@ -37,8 +37,8 @@ jobs:
 #        path: poetry.lock
 #        key: ${{ matrix.os }}-${{ matrix.python-version }}-poetry-${{ steps.poetry_version.outputs.VERSION }}-${{ hashFiles('pyproject.toml') }}
 #
-#    - name: Install project dependencies
-#      run: poetry install -vvv --no-root
+    - name: Install project dependencies
+      run: poetry install -vvv 
 
     - name: Run tester
       run: python testing.py
