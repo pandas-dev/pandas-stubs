@@ -24,14 +24,15 @@ jobs:
 #    - name: Install pandas
 #      run: pip install pandas
 
+    - name: Install Poetry
+      run: pip install poetry
+
     - name: create a virtual environment
       run: python -m venv virtual
 
     - name: activate the virtual environment
       run: virtual\Scripts\activate
 
-    - name: Install Poetry
-      run: pip install poetry
 #
 #    - name: Determine poetry version
 #      run: echo "::set-output name=VERSION::$(poetry --version)"
@@ -45,6 +46,9 @@ jobs:
 #
     - name: Install project dependencies
       run: poetry install -vvv --no-root
+
+    - name: look at poetry env
+      run: poetry env info
 
 #    - name: Run tester
 #      run: python testing.py
