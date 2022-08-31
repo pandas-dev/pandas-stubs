@@ -23,11 +23,10 @@ def read_html(
     header: int | Sequence[int] | None = ...,
     index_col: int | Sequence[int] | list[HashableT] | None = ...,
     skiprows: int | Sequence[int] | slice | None = ...,
-    attrs: Mapping[str, str] | None = ...,
+    attrs: dict[str, str] | None = ...,
     parse_dates: bool
     | Sequence[int]
     | list[HashableT]  # Cannot be Sequence[Hashable] to prevent str
-    | Sequence[Sequence[int]]
     | Sequence[Sequence[Hashable]]
     | dict[str, Sequence[int]]
     | dict[str, list[HashableT]] = ...,
