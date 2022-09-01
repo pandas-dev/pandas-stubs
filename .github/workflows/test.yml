@@ -33,7 +33,7 @@ jobs:
       with:
         path: poetry.lock
         key: ${{ matrix.os }}-${{ matrix.python-version }}-poetry-${{ steps.poetry_version.outputs.VERSION }}-${{ hashFiles('pyproject.toml') }}
-      if: matrix.os != 'windows-latest'
+      if: (matrix.os == 'ubuntu-latest') || (matrix.os == 'macos-latest')
 
     - name: Install project dependencies
       run: poetry install -vvv --no-root
