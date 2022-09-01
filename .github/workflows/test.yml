@@ -57,6 +57,9 @@ jobs:
     - name: Use the mypy poe to run python testing.py
       run: |
         source $VENV
+        printenv
+        which python
+        which poe
         poe mypy
 
 
