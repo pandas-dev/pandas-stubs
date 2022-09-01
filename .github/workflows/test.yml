@@ -66,9 +66,8 @@ jobs:
     - name: Install pandas-stubs and run tests on the installed stubs
       run: |
         source $VENV
-        ls
         poetry build -f wheel
-        python -m pip install --find-links=.\dist --force-reinstall pandas-stubs
+        python -m pip install --find-links=./dist --force-reinstall pandas-stubs
         mv pandas-stubs _pandas-stubs
         mypy tests --no-incremental
         pyright tests
