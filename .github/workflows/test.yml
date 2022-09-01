@@ -67,8 +67,8 @@ jobs:
       run: |
         source $VENV
         ls
-        poetry install --only-root
-        pip show pandas-stubs
+        poetry build -f wheel
+        python -m pip install --find-links=.\dist --force-reinstall pandas-stubs
         mv pandas-stubs _pandas-stubs
         mypy tests --no-incremental
         pyright tests
