@@ -40,7 +40,12 @@ jobs:
     - name: Show poetry python location (Windows)
       shell: pwsh
       run: |
+        echo "Python location"
         poetry run where python
+        echo "poe location"
+        poetry run where.exe poe
+        echo "Installed packages"
+        poetry run python -m pip list
       if: matrix.os == 'windows-latest'
 
     - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
