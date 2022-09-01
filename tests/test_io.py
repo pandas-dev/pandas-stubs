@@ -1,5 +1,4 @@
 import io
-import os
 import os.path
 import pathlib
 from pathlib import Path
