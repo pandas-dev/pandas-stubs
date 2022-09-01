@@ -22,11 +22,24 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: Install Poetry
-      run: pip install poetry==1.1.15
+      run: python -m pip install poetry
 
     - name: Determine poetry version
       run: echo "::set-output name=VERSION::$(poetry --version)"
       id: poetry_version
+
+    - name: Get poetry's python
+      run: echo "::set-output name=PATH::$(poetry run python -c 'import sys; print(sys.executable)')"
+      id: poetry_python
+
+    - name: Print path
+      run: echo  $env:GITHUB_PATH
+
+    - name: Use poetry's python
+      run: ${{ steps.poetry_python.outputs.PATH }}:$env:PATH >> $env:GITHUB_PATH
+
+    - name: Print path
+      run: echo  $env:GITHUB_PATH
 
     - name: Cache poetry.lock
       uses: actions/cache@v3
