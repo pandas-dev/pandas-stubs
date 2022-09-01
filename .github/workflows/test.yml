@@ -60,7 +60,7 @@ jobs:
         printenv
         which python
         which poe
-        poe mypy
+        python testing.py
 
 
 #    - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
