@@ -28,11 +28,12 @@ jobs:
       run: echo "::set-output name=VERSION::$(poetry --version)"
       id: poetry_version
 
-    - name: Cache poetry.lock
+    - name: Cache poetry.lock (*nix)
       uses: actions/cache@v3
       with:
         path: poetry.lock
         key: ${{ matrix.os }}-${{ matrix.python-version }}-poetry-${{ steps.poetry_version.outputs.VERSION }}-${{ hashFiles('pyproject.toml') }}
+      if: matrix.os != 'windows-latest'
 
     - name: Install project dependencies
       run: poetry install -vvv --no-root
