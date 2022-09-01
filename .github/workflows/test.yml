@@ -66,4 +66,10 @@ jobs:
     - name: Install pandas-stubs and run tests on the installed stubs
       run: |
         source $VENV
-        poetry run poe test_dist
+        poetry install --only-root
+        mv pandas-stubs _pandas-stubs
+        poetry run poe mypy
+        poetry run poe pyright
+        mv _pandas-stubs pandas-stubs
+        
+
