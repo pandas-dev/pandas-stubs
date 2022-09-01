@@ -33,6 +33,7 @@ from pandas._typing import (
     Scalar,
     SeriesAxisType,
     SortKind,
+    StorageOptions,
     T,
 )
 
@@ -204,17 +205,19 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     @overload
     def to_csv(
         self,
-        path_or_buf: FilePathOrBuffer | None,
+        path_or_buf: FilePathOrBuffer,
         sep: _str = ...,
         na_rep: _str = ...,
-        float_format: _str | None = ...,
-        columns: Sequence[Hashable] | None = ...,
+        float_format: _str | Callable | None = ...,
+        columns: list[HashableT] | None = ...,
         header: _bool | list[_str] = ...,
         index: _bool = ...,
-        index_label: _bool | _str | Sequence[Hashable] | None = ...,
-        mode: _str = ...,
+        index_label: Literal[False] | _str | list[HashableT] | None = ...,
+        mode: Literal[
+            "a", "w", "x", "at", "wt", "xt", "ab", "wb", "xb", "w+", "w+b", "a+", "a+b"
+        ] = ...,
         encoding: _str | None = ...,
-        compression: _str | Mapping[_str, _str] = ...,
+        compression: CompressionOptions = ...,
         quoting: int | None = ...,
         quotechar: _str = ...,
         line_terminator: _str | None = ...,
@@ -224,21 +227,24 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         escapechar: _str | None = ...,
         decimal: _str = ...,
         errors: _str = ...,
-        storage_options: dict[_str, Any] | None = ...,
+        storage_options: StorageOptions = ...,
     ) -> None: ...
     @overload
     def to_csv(
         self,
+        path_or_buf: None = ...,
         sep: _str = ...,
         na_rep: _str = ...,
-        float_format: _str | None = ...,
-        columns: Sequence[Hashable] | None = ...,
+        float_format: _str | Callable | None = ...,
+        columns: list[HashableT] | None = ...,
         header: _bool | list[_str] = ...,
         index: _bool = ...,
-        index_label: _bool | _str | Sequence[Hashable] | None = ...,
-        mode: _str = ...,
+        index_label: Literal[False] | _str | list[HashableT] | None = ...,
+        mode: Literal[
+            "a", "w", "x", "at", "wt", "xt", "ab", "wb", "xb", "w+", "w+b", "a+", "a+b"
+        ] = ...,
         encoding: _str | None = ...,
-        compression: _str | Mapping[_str, _str] = ...,
+        compression: CompressionOptions = ...,
         quoting: int | None = ...,
         quotechar: _str = ...,
         line_terminator: _str | None = ...,
@@ -248,7 +254,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         escapechar: _str | None = ...,
         decimal: _str = ...,
         errors: _str = ...,
-        storage_options: dict[_str, Any] | None = ...,
+        storage_options: StorageOptions = ...,
     ) -> _str: ...
     def take(
         self, indices, axis=..., is_copy: _bool | None = ..., **kwargs
