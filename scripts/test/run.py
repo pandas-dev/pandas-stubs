@@ -50,6 +50,7 @@ def install_dist():
     cmd = ["python", "-m", "pip", "install", "--force-reinstall", str(path)]
     subprocess.run(cmd, check=True)
     cmd = ["python", "-m", "pip", "show", "pandas-stubs"]
+    subprocess.run(cmd, check=True)
 
 
 def rename_src():
