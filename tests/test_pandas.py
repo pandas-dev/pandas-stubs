@@ -10,7 +10,6 @@ import numpy as np
 import pandas as pd
 from pandas._testing import ensure_clean
 from pandas.api.extensions import ExtensionArray
-import pytest
 from typing_extensions import assert_type
 
 from tests import check
@@ -122,18 +121,13 @@ def test_types_read_csv() -> None:
     with ensure_clean() as path:
         df.to_csv(path)
         df2: pd.DataFrame = pd.read_csv(path)
-        with pytest.warns(FutureWarning, match="The squeeze argument"):
-            df3: pd.DataFrame = pd.read_csv(path, sep="a", squeeze=False)
-        with pytest.warns(FutureWarning, match="The prefix argument has been"):
-            df4: pd.DataFrame = pd.read_csv(
-                path,
-                header=None,
-                prefix="b",
-                mangle_dupe_cols=True,
-                keep_default_na=False,
-            )
+        df3: pd.DataFrame = pd.read_csv(path, sep="a")
+        df4: pd.DataFrame = pd.read_csv(
+            path,
+            header=None,
+        )
         df5: pd.DataFrame = pd.read_csv(
-            path, engine="python", true_values=[0, 1, 3], na_filter=False
+            path, engine="python", true_values=["no", "No", "NO"], na_filter=False
         )
         df6: pd.DataFrame = pd.read_csv(
             path,
@@ -144,11 +138,10 @@ def test_types_read_csv() -> None:
         df7: pd.DataFrame = pd.read_csv(path, nrows=2)
         df8: pd.DataFrame = pd.read_csv(path, dtype={"a": float, "b": int})
         df9: pd.DataFrame = pd.read_csv(path, usecols=["col1"])
-        df10: pd.DataFrame = pd.read_csv(path, usecols={"col1"})
-        df11: pd.DataFrame = pd.read_csv(path, usecols=[0])
-        df12: pd.DataFrame = pd.read_csv(path, usecols=np.array([0]))
-        df13: pd.DataFrame = pd.read_csv(path, usecols=("col1",))
-        df14: pd.DataFrame = pd.read_csv(path, usecols=pd.Series(data=["col1"]))
+        df10: pd.DataFrame = pd.read_csv(path, usecols=[0])
+        df11: pd.DataFrame = pd.read_csv(path, usecols=np.array([0]))
+        df12: pd.DataFrame = pd.read_csv(path, usecols=("col1",))
+        df13: pd.DataFrame = pd.read_csv(path, usecols=pd.Series(data=["col1"]))
 
         tfr1: TextFileReader = pd.read_csv(path, nrows=2, iterator=True, chunksize=3)
         tfr1.close()
