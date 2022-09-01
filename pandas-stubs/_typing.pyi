@@ -243,5 +243,7 @@ CSVEngine = Literal["c", "python", "pyarrow", "python-fwf"]
 
 HDFCompLib = Literal["zlib", "lzo", "bzip2", "blosc"]
 ParquetEngine = Literal["auto", "pyarrow", "fastparquet"]
-
+FileWriteMode = Literal[
+    "a", "w", "x", "at", "wt", "xt", "ab", "wb", "xb", "w+", "w+b", "a+", "a+b"
+]
 __all__ = ["npt", "type_t"]

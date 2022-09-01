@@ -22,6 +22,7 @@ from pandas._typing import (
     Dtype,
     FilePath,
     FilePathOrBuffer,
+    FileWriteMode,
     FillnaOptions,
     FrameOrSeries,
     FrameOrSeriesUnion,
@@ -213,9 +214,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         header: _bool | list[_str] = ...,
         index: _bool = ...,
         index_label: Literal[False] | _str | list[HashableT] | None = ...,
-        mode: Literal[
-            "a", "w", "x", "at", "wt", "xt", "ab", "wb", "xb", "w+", "w+b", "a+", "a+b"
-        ] = ...,
+        mode: FileWriteMode = ...,
         encoding: _str | None = ...,
         compression: CompressionOptions = ...,
         quoting: int | None = ...,
@@ -240,9 +239,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         header: _bool | list[_str] = ...,
         index: _bool = ...,
         index_label: Literal[False] | _str | list[HashableT] | None = ...,
-        mode: Literal[
-            "a", "w", "x", "at", "wt", "xt", "ab", "wb", "xb", "w+", "w+b", "a+", "a+b"
-        ] = ...,
+        mode: FileWriteMode = ...,
         encoding: _str | None = ...,
         compression: CompressionOptions = ...,
         quoting: int | None = ...,
