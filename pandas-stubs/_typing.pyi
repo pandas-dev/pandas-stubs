@@ -23,6 +23,7 @@ from typing import (
     Union,
 )
 
+import matplotlib.ticker
 import numpy as np
 from numpy import typing as npt
 from pandas.core.arrays import ExtensionArray
@@ -186,7 +187,10 @@ CompressionDict = dict[str, Any]
 CompressionOptions = Optional[
     Union[Literal["infer", "gzip", "bz2", "zip", "xz", "zstd"], CompressionDict]
 ]
-
+FormattersType = Union[
+    list[Callable], tuple[Callable, ...], Mapping[Union[str, int], Callable]
+]
+FloatFormatType = str | Callable | matplotlib.ticker.EngFormatter
 # converters
 ConvertersArg = dict[Hashable, Callable[[Dtype], Dtype]]
 
