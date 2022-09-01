@@ -14,6 +14,7 @@ from typing import (
     AnyStr,
     Callable,
     Hashable,
+    Iterator,
     Literal,
     Mapping,
     Optional,
@@ -64,6 +65,12 @@ AnyStr_con = TypeVar("AnyStr_con", str, bytes, contravariant=True)
 class BaseBuffer(Protocol): ...
 class ReadBuffer(BaseBuffer, Protocol[AnyStr_cov]): ...
 class WriteBuffer(BaseBuffer, Protocol[AnyStr_cov]): ...
+
+class ReadCsvBuffer(ReadBuffer[AnyStr_cov], Protocol[AnyStr_cov]):
+    def __iter__(self) -> Iterator[AnyStr_cov]: ...
+    def readline(self) -> AnyStr_cov: ...
+    @property
+    def closed(self) -> bool: ...
 
 FilePath = Union[str, PathLike[str]]
 
