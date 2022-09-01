@@ -12,6 +12,10 @@ jobs:
         os: [windows-latest]
         python-version: ['3.10']
 
+    defaults:
+      run:
+        shell: bash
+
     steps:
 
     - uses: actions/checkout@v3
