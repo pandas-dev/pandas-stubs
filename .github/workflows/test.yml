@@ -28,7 +28,7 @@ jobs:
       run: echo "::set-output name=VERSION::$(poetry --version)"
       id: poetry_version
 
-    - name: Cache poetry.lock (*nix)
+    - name: Cache poetry.lock
       uses: actions/cache@v3
       with:
         path: poetry.lock
