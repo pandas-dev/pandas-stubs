@@ -1,5 +1,4 @@
 import io
-import os
 import os.path
 import pathlib
 from pathlib import Path
@@ -16,7 +15,9 @@ from pandas import (
     Series,
     __version__,
     read_clipboard,
+    read_csv,
     read_feather,
+    read_fwf,
     read_hdf,
     read_json,
     read_orc,
@@ -24,6 +25,7 @@ from pandas import (
     read_sas,
     read_spss,
     read_stata,
+    read_table,
     read_xml,
 )
 from pandas._testing import ensure_clean
@@ -337,3 +339,102 @@ def test_feather():
     check(assert_type(DF.to_feather(bio), None), type(None))
     bio.seek(0)
     check(assert_type(read_feather(bio), DataFrame), DataFrame)
+
+
+def test_read_csv():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_csv(path), None), type(None))
+        check(assert_type(read_csv(path), DataFrame), DataFrame)
+        with open(path) as csv_file:
+            check(assert_type(read_csv(csv_file), DataFrame), DataFrame)
+        with open(path) as csv_file:
+            sio = io.StringIO(csv_file.read())
+            check(assert_type(read_csv(sio), DataFrame), DataFrame)
+        check(assert_type(read_csv(path, iterator=False), DataFrame), DataFrame)
+        check(assert_type(read_csv(path, chunksize=None), DataFrame), DataFrame)
+
+
+def test_read_csv_iterator():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_csv(path), None), type(None))
+        check(
+            assert_type(read_csv(path, iterator=True), TextFileReader), TextFileReader
+        )
+        check(
+            assert_type(read_csv(pathlib.Path(path), chunksize=1), TextFileReader),
+            TextFileReader,
+        )
+
+
+def test_read_table():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_csv(path, sep="\t"), None), type(None))
+        check(assert_type(read_table(path), DataFrame), DataFrame)
+        check(assert_type(read_table(path, iterator=False), DataFrame), DataFrame)
+        check(assert_type(read_table(path, chunksize=None), DataFrame), DataFrame)
+
+
+def test_read_table_iterator():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_csv(path, sep="\t"), None), type(None))
+        check(
+            assert_type(read_table(path, iterator=True), TextFileReader), TextFileReader
+        )
+        check(
+            assert_type(read_table(path, chunksize=1), TextFileReader), TextFileReader
+        )
+
+
+def test_read_fwf():
+    with ensure_clean() as path:
+        DF.to_string(path, index=False)
+        check(assert_type(read_fwf(path), Union[DataFrame, TextFileReader]), DataFrame)
+        check(
+            assert_type(read_fwf(pathlib.Path(path)), Union[DataFrame, TextFileReader]),
+            DataFrame,
+        )
+
+        with open(path) as fwf_file:
+            check(
+                assert_type(read_fwf(fwf_file), Union[DataFrame, TextFileReader]),
+                DataFrame,
+            )
+        with open(path) as fwf_file:
+            sio = io.StringIO(fwf_file.read())
+            check(
+                assert_type(read_fwf(sio), Union[DataFrame, TextFileReader]), DataFrame
+            )
+        with open(path, "rb") as fwf_file:
+            bio = io.BytesIO(fwf_file.read())
+            check(
+                assert_type(read_fwf(bio), Union[DataFrame, TextFileReader]), DataFrame
+            )
+        fwf_iterator = read_fwf(path, iterator=True)
+        check(
+            assert_type(fwf_iterator, Union[DataFrame, TextFileReader]), TextFileReader
+        )
+        fwf_iterator.close()
+
+
+def test_text_file_reader():
+    with ensure_clean() as path:
+        DF.to_string(path, index=False)
+        tfr = TextFileReader(path, engine="python")
+        check(assert_type(tfr, TextFileReader), TextFileReader)
+        check(assert_type(tfr.read(1), DataFrame), DataFrame)
+        check(assert_type(tfr.close(), None), type(None))
+        with TextFileReader(path, engine="python") as tfr:
+            check(assert_type(tfr.read(1), DataFrame), DataFrame)
+        with TextFileReader(path, engine="python") as tfr:
+            check(assert_type(tfr.__next__(), DataFrame), DataFrame)
+            df_iter: DataFrame
+            for df_iter in tfr:
+                check(df_iter, DataFrame)
+
+
+def test_to_csv_series():
+    s: Series
+    s = DF.iloc[:, 0]
+    check(assert_type(s.to_csv(), str), str)
+    with ensure_clean() as path:
+        check(assert_type(s.to_csv(path), None), type(None))

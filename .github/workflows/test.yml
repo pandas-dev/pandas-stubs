@@ -38,16 +38,24 @@ jobs:
       run: poetry install -vvv --no-root
 
     - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
-      run: poetry run poe mypy
+      run: |
+        poetry shell
+        poe mypy
 
     - name: Run pyright on 'tests' (using the local stubs) and on the local stubs
-      run: poetry run poe pyright
+      run: |
+        poetry shell
+        poe pyright
 
     - name: Run pytest
-      run: poetry run poe pytest
+      run: |
+        poetry shell
+        poe pytest
 
     - if: matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest'
       uses: pre-commit/action@v3.0.0
 
     - name: Install pandas-stubs and run tests on the installed stubs
-      run: poetry run poe test_dist
+      run: |
+        poetry shell
+        poe test_dist

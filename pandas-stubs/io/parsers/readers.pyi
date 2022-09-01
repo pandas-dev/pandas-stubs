@@ -1,5 +1,6 @@
 from collections import abc
 import csv
+from types import TracebackType
 from typing import (
     Any,
     Callable,
@@ -429,4 +430,9 @@ class TextFileReader(abc.Iterator):
     def get_chunk(self, size: int | None = ...) -> DataFrame: ...
     def __next__(self) -> DataFrame: ...
     def __enter__(self) -> TextFileReader: ...
-    def __exit__(self, exc_type, exc_value, traceback) -> None: ...
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> None: ...
