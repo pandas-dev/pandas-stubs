@@ -384,3 +384,4 @@ def test_excel_writer():
             assert_type(ef.parse(sheet_name=[0]), Dict[Union[str, int], DataFrame]),
             dict,
         )
+        check(assert_type(ef.close(), None), type(None))
