@@ -48,19 +48,10 @@ jobs:
     - name: Install project dependencies
       run: poetry install -vvv --no-root
 
-    - name: look at poetry env without env use
-      run: poetry env info
-
-#    - name: Run tester
-#      run: python testing.py
-
     - name: Use the mypy poe to run python testing.py
       run: |
         source $VENV
-        printenv
-        which python
-        which poe
-        python testing.py
+        poetry run poe mypy
 
 
 #    - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
