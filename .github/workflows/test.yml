@@ -68,8 +68,8 @@ jobs:
         source $VENV
         poetry install --only-root
         mv pandas-stubs _pandas-stubs
-        poetry run poe mypy
-        poetry run poe pyright
+        poetry run poe mypy_dist
+        poetry run poe pyright_dist
         mv _pandas-stubs pandas-stubs
-        
+
 
