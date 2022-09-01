@@ -9,8 +9,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest]
-        python-version: ['3.10']
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.8', '3.9', '3.10']
 
     defaults:
       run:
@@ -31,37 +31,33 @@ jobs:
         virtualenvs-create: true
         virtualenvs-in-project: true
   
-#
-#    - name: Determine poetry version
-#      run: echo "::set-output name=VERSION::$(poetry --version)"
-#      id: poetry_version
-#
-#    - name: Cache poetry.lock
-#      uses: actions/cache@v3
-#      with:
-#        path: poetry.lock
-#        key: ${{ matrix.os }}-${{ matrix.python-version }}-poetry-${{ steps.poetry_version.outputs.VERSION }}-${{ hashFiles('pyproject.toml') }}
-#
+    - name: Load cached venv
+      id: cached-pip-wheels
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache
+        key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+
     - name: Install project dependencies
       run: poetry install -vvv --no-root
 
-    # - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
-    #   run: |
-    #     source $VENV
-    #     poetry run poe mypy
+    - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
+      run: |
+        source $VENV
+        poetry run poe mypy
 
-    # - name: Run pyright on 'tests' (using the local stubs) and on the local stubs
-    #   run: |
-    #     source $VENV
-    #     poetry run poe pyright
+    - name: Run pyright on 'tests' (using the local stubs) and on the local stubs
+      run: |
+        source $VENV
+        poetry run poe pyright
 
-    # - name: Run pytest
-    #   run: |
-    #     source $VENV
-    #     poetry run poe pytest
+    - name: Run pytest
+      run: |
+        source $VENV
+        poetry run poe pytest
 
-    # - if: matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest'
-    #   uses: pre-commit/action@v3.0.0
+    - if: matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest'
+      uses: pre-commit/action@v3.0.0
 
     - name: Install pandas-stubs and run tests on the installed stubs
       run: |

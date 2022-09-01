@@ -1,5 +1,6 @@
 [tool.poetry]
 name = "pandas-stubs"
+# Use the big version number so in CI, it will use the built wheel
 version = "1.4.3.999999"
 description = "Type annotations for pandas"
 authors = ["The Pandas Development Team <pandas-dev@python.org>"]
