@@ -45,12 +45,6 @@ jobs:
     - name: Install project dependencies
       run: poetry install -vvv --no-root
 
-    - name: Use the mypy poe to run python testing.py
-      run: |
-        source $VENV
-        poetry run poe mypy
-
-
     - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
       run: |
         source $VENV

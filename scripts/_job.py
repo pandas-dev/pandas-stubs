@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-import logging
 import sys
 import time
 from typing import (
@@ -9,8 +8,7 @@ from typing import (
     Optional,
 )
 
-# from loguru import logger
-logger = logging.getLogger()
+from loguru import logger
 
 
 @dataclass
@@ -63,7 +61,7 @@ def run_job(steps: List[Step]) -> None:
             break
 
         end = time.perf_counter()
-        logger.info(f"End: '{step.name}', runtime: {end - start:.3f} seconds.")
+        logger.success(f"End: '{step.name}', runtime: {end - start:.3f} seconds.")
 
     if not failed:
         __rollback_job(rollback_steps)
