@@ -33,13 +33,13 @@ jobs:
       id: poetry_python
 
     - name: Print path
-      run: echo  $env:GITHUB_PATH
+      run: echo $GITHUB_PATH
 
     - name: Use poetry's python
-      run: ${{ steps.poetry_python.outputs.PATH }}:$env:PATH >> $env:GITHUB_PATH
+      run: echo "${{ steps.poetry_python.outputs.PATH }}:$PATH" >> $GITHUB_PATH
 
     - name: Print path
-      run: echo  $env:GITHUB_PATH
+      run: echo  $GITHUB_PATH
 
     - name: Cache poetry.lock
       uses: actions/cache@v3
