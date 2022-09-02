@@ -13,6 +13,7 @@ from typing import (
     Literal,
     Mapping,
     Sequence,
+    TypeVar,
     Union,
     overload,
 )
@@ -54,6 +55,7 @@ from pandas.core.window.rolling import (
     Rolling,
     Window,
 )
+import xarray as xr
 
 from pandas._typing import (
     S1,
@@ -354,22 +356,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         encoding: _str | None = ...,
     ) -> _str: ...
     @overload
-    def to_markdown(
-        self,
-        buf: FilePathOrBuffer | None,
-        mode: _str | None = ...,
-        index: _bool = ...,
-        storage_options: dict | None = ...,
-        **kwargs,
-    ) -> None: ...
-    @overload
-    def to_markdown(
-        self,
-        mode: _str | None = ...,
-        index: _bool = ...,
-        storage_options: dict | None = ...,
-    ) -> _str: ...
-    @overload
     def to_json(
         self,
         path_or_buf: FilePathOrBuffer | None,
@@ -400,10 +386,11 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         index: _bool = ...,
         indent: int | None = ...,
     ) -> _str: ...
+    def to_xarray(self) -> xr.DataArray: ...
     def items(self) -> Iterable[tuple[Hashable, S1]]: ...
     def iteritems(self) -> Iterable[tuple[Label, S1]]: ...
     def keys(self) -> list: ...
-    def to_dict(self, into: Hashable = ...) -> dict[Any, S1]: ...
+    def to_dict(self, into: type[Mapping] | Mapping = ...) -> Mapping[Hashable, S1]: ...
     def to_frame(self, name: object | None = ...) -> DataFrame: ...
     @overload
     def groupby(

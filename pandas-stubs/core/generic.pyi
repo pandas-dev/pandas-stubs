@@ -22,6 +22,7 @@ from pandas._typing import (
     Dtype,
     FilePath,
     FilePathOrBuffer,
+    FileWriteMode,
     FillnaOptions,
     FrameOrSeries,
     FrameOrSeriesUnion,
@@ -33,6 +34,7 @@ from pandas._typing import (
     Scalar,
     SeriesAxisType,
     SortKind,
+    StorageOptions,
     T,
 )
 
@@ -128,6 +130,24 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         ] = ...,
         encoding: _str = ...,
     ) -> None: ...
+    @overload
+    def to_markdown(
+        self,
+        buf: FilePathOrBuffer,
+        mode: FileWriteMode | None = ...,
+        index: _bool = ...,
+        storage_options: StorageOptions = ...,
+        **kwargs: Any,
+    ) -> None: ...
+    @overload
+    def to_markdown(
+        self,
+        buf: None = ...,
+        mode: FileWriteMode | None = ...,
+        index: _bool = ...,
+        storage_options: StorageOptions = ...,
+        **kwargs: Any,
+    ) -> _str: ...
     def to_sql(
         self,
         name: _str,
@@ -149,7 +169,6 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def to_clipboard(
         self, excel: _bool = ..., sep: _str | None = ..., **kwargs
     ) -> None: ...
-    def to_xarray(self): ...
     @overload
     def to_latex(
         self,

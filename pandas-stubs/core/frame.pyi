@@ -38,6 +38,7 @@ from pandas.core.window.rolling import (
     Rolling,
     Window,
 )
+import xarray as xr
 
 from pandas._typing import (
     S1,
@@ -229,11 +230,11 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         orient: Literal["dict", "list", "series", "split", "tight", "index"] = ...,
         into: type[Mapping] | Mapping = ...,
-    ) -> dict: ...
+    ) -> Mapping[Hashable, Any]: ...
     @overload
     def to_dict(
         self, orient: Literal["records"], into: type[Mapping] | Mapping = ...
-    ) -> list[dict[_str, Any]]: ...
+    ) -> list[Mapping[Hashable, Any]]: ...
     def to_gbq(
         self,
         destination_table: str,
@@ -275,12 +276,6 @@ class DataFrame(NDFrame, OpsMixin):
         value_labels: dict[Hashable, dict[float, str]] | None = ...,
     ) -> None: ...
     def to_feather(self, path: FilePath | WriteBuffer[bytes], **kwargs) -> None: ...
-    @overload
-    def to_markdown(
-        self, buf: FilePathOrBuffer | None, mode: _str | None = ..., **kwargs
-    ) -> None: ...
-    @overload
-    def to_markdown(self, mode: _str | None = ..., **kwargs) -> _str: ...
     @overload
     def to_parquet(
         self,
@@ -2002,7 +1997,7 @@ class DataFrame(NDFrame, OpsMixin):
         max_colwidth: int | None = ...,
         encoding: _str | None = ...,
     ) -> _str: ...
-    def to_xarray(self): ...
+    def to_xarray(self) -> xr.Dataset: ...
     def truediv(
         self,
         other: num | ListLike | DataFrame,
