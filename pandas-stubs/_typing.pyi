@@ -169,6 +169,8 @@ IndexingInt = Union[
 # passed in, a DataFrame is always returned.
 NDFrameT = TypeVar("NDFrameT", bound=NDFrame)
 
+IndexT = TypeVar("IndexT", bound=Index)
+
 # Interval closed type
 
 IntervalClosedType = Literal["left", "right", "both", "neither"]
