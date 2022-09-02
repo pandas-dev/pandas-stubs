@@ -7,6 +7,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
+    Hashable,
     Iterable,
     Iterator,
     List,
@@ -909,7 +910,7 @@ def test_types_to_list() -> None:
 
 def test_types_to_dict() -> None:
     s = pd.Series(["a", "b", "c"], dtype=str)
-    assert_type(s.to_dict(), Dict[Any, str])
+    assert_type(s.to_dict(), Dict[Hashable, str])
 
 
 def test_categorical_codes():

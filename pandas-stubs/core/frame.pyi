@@ -228,13 +228,32 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def to_dict(
         self,
-        orient: Literal["dict", "list", "series", "split", "tight", "index"] = ...,
-        into: type[Mapping] | Mapping = ...,
-    ) -> dict[HashableT, Any]: ...
+        orient: Literal["dict", "list", "series", "split", "tight", "index"],
+        into: Mapping | type[Mapping],
+    ) -> Mapping[Hashable, Any]: ...
     @overload
     def to_dict(
-        self, orient: Literal["records"], into: type[Mapping] | Mapping = ...
-    ) -> list[dict[HashableT, Any]]: ...
+        self,
+        orient: Literal["dict", "list", "series", "split", "tight", "index"] = ...,
+        *,
+        into: Mapping | type[Mapping],
+    ) -> Mapping[Hashable, Any]: ...
+    @overload
+    def to_dict(
+        self,
+        orient: Literal["dict", "list", "series", "split", "tight", "index"] = ...,
+        into: None = ...,
+    ) -> dict[Hashable, Any]: ...
+    @overload
+    def to_dict(
+        self,
+        orient: Literal["records"],
+        into: Mapping | type[Mapping],
+    ) -> list[Mapping[Hashable, Any]]: ...
+    @overload
+    def to_dict(
+        self, orient: Literal["records"], into: None = ...
+    ) -> list[dict[Hashable, Any]]: ...
     def to_gbq(
         self,
         destination_table: str,
