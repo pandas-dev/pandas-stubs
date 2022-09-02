@@ -16,11 +16,9 @@ runs:
         python-version: ${{ inputs.python-version }}
 
     - name: Install Poetry
-      shell: bash
       run: python -m pip install poetry
 
     - name: Determine poetry version
-      shell: bash
       run: echo "::set-output name=VERSION::$(poetry --version)"
       id: poetry_version
 
@@ -31,5 +29,4 @@ runs:
         key: ${{ inputs.os }}-${{ inputs.python-version }}-poetry-${{ steps.poetry_version.outputs.VERSION }}-${{ hashFiles('pyproject.toml') }}
 
     - name: Install project dependencies
-      shell: bash
       run: poetry install -vvv --no-root
