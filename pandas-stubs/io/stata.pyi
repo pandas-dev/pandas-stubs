@@ -25,7 +25,8 @@ from pandas._typing import (
 
 @overload
 def read_stata(
-    path: FilePath | ReadBuffer[bytes],
+    filepath_or_buffer: FilePath | ReadBuffer[bytes],
+    *,
     convert_dates: bool = ...,
     convert_categoricals: bool = ...,
     index_col: str | None = ...,
@@ -34,29 +35,30 @@ def read_stata(
     columns: list[HashableT] | None = ...,
     order_categoricals: bool = ...,
     chunksize: int | None = ...,
+    iterator: Literal[True],
+    compression: CompressionOptions = ...,
+    storage_options: StorageOptions = ...,
+) -> StataReader: ...
+@overload
+def read_stata(
+    filepath_or_buffer: FilePath | ReadBuffer[bytes],
     *,
-    iterator: Literal[True],
+    convert_dates: bool = ...,
+    convert_categoricals: bool = ...,
+    index_col: str | None = ...,
+    convert_missing: bool = ...,
+    preserve_dtypes: bool = ...,
+    columns: list[HashableT] | None = ...,
+    order_categoricals: bool = ...,
+    chunksize: int,
+    iterator: bool = ...,
     compression: CompressionOptions = ...,
     storage_options: StorageOptions = ...,
 ) -> StataReader: ...
 @overload
 def read_stata(
     path: FilePath | ReadBuffer[bytes],
-    convert_dates: bool,
-    convert_categoricals: bool,
-    index_col: str | None,
-    convert_missing: bool,
-    preserve_dtypes: bool,
-    columns: list[HashableT] | None,
-    order_categoricals: bool,
-    chunksize: int | None,
-    iterator: Literal[True],
-    compression: CompressionOptions = ...,
-    storage_options: StorageOptions = ...,
-) -> StataReader: ...
-@overload
-def read_stata(
-    path: FilePath | ReadBuffer[bytes],
+    *,
     convert_dates: bool = ...,
     convert_categoricals: bool = ...,
     index_col: str | None = ...,
