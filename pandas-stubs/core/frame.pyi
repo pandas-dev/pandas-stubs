@@ -255,8 +255,8 @@ class DataFrame(NDFrame, OpsMixin):
     def to_records(
         self,
         index: _bool = ...,
-        columnDTypes: _str | dict | None = ...,
-        indexDTypes: _str | dict | None = ...,
+        column_dtypes: _str | dict[HashableT, _str | DtypeNp] | None = ...,
+        index_dtypes: _str | dict[HashableT, _str | DtypeNp] | None = ...,
     ) -> np.recarray: ...
     def to_stata(
         self,
