@@ -27,11 +27,11 @@ from pandas._typing import (
     Dtype,
     DtypeArg,
     DtypeObj,
+    IndexT,
     Label,
     Level,
     NaPosition,
     Scalar,
-    IndexT,
     np_ndarray_bool,
     np_ndarray_int64,
 )
