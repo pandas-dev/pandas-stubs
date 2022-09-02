@@ -645,8 +645,6 @@ class DataFrame(NDFrame, OpsMixin):
         drop: _bool = ...,
         append: _bool = ...,
         verify_integrity: _bool = ...,
-        *,
-        inplace: Literal[True],
     ) -> None: ...
     @overload
     def set_index(
@@ -660,8 +658,6 @@ class DataFrame(NDFrame, OpsMixin):
         drop: _bool = ...,
         append: _bool = ...,
         verify_integrity: _bool = ...,
-        *,
-        inplace: Literal[False],
     ) -> DataFrame: ...
     @overload
     def set_index(
@@ -688,7 +684,6 @@ class DataFrame(NDFrame, OpsMixin):
         | list[HashableT],
         drop: _bool = ...,
         append: _bool = ...,
-        inplace: _bool | None = ...,
         verify_integrity: _bool = ...,
     ) -> DataFrame | None: ...
     @overload

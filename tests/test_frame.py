@@ -287,7 +287,6 @@ def test_types_set_index() -> None:
     res3: pd.DataFrame = df.set_index("col1", append=True)
     res4: pd.DataFrame = df.set_index("col1", verify_integrity=True)
     res5: pd.DataFrame = df.set_index(["col1", "col2"])
-    res6: None = df.set_index("col1", inplace=True)
     # GH 140
     res7: pd.DataFrame = df.set_index(pd.Index(["w", "x", "y", "z"]))
 
@@ -1505,7 +1504,8 @@ def test_frame_scalars_slice() -> None:
 
     # Note: bool_ cannot be tested since the index is object and pandas does not
     # support boolean access using loc except when the index is boolean
-    check(assert_type(df.loc[str_], pd.Series), pd.Series)
+    with pytest.warns(FutureWarning, match="Comparison of Timestamp with datetime"):
+        check(assert_type(df.loc[str_], pd.Series), pd.Series)
     check(assert_type(df.loc[bytes_], pd.Series), pd.Series)
     check(assert_type(df.loc[date], pd.Series), pd.Series)
     check(assert_type(df.loc[datetime_], pd.Series), pd.Series)
@@ -1513,11 +1513,13 @@ def test_frame_scalars_slice() -> None:
     check(assert_type(df.loc[int_], pd.Series), pd.Series)
     check(assert_type(df.loc[float_], pd.Series), pd.Series)
     check(assert_type(df.loc[complex_], pd.Series), pd.Series)
-    check(assert_type(df.loc[timestamp], pd.Series), pd.Series)
+    with pytest.warns(FutureWarning, match="Comparison of Timestamp with datetime"):
+        check(assert_type(df.loc[timestamp], pd.Series), pd.Series)
     check(assert_type(df.loc[pd_timedelta], pd.Series), pd.Series)
     check(assert_type(df.loc[none], pd.Series), pd.Series)
 
-    check(assert_type(df.loc[:, str_], pd.Series), pd.Series)
+    with pytest.warns(FutureWarning, match="Comparison of Timestamp with datetime"):
+        check(assert_type(df.loc[:, str_], pd.Series), pd.Series)
     check(assert_type(df.loc[:, bytes_], pd.Series), pd.Series)
     check(assert_type(df.loc[:, date], pd.Series), pd.Series)
     check(assert_type(df.loc[:, datetime_], pd.Series), pd.Series)
@@ -1525,7 +1527,8 @@ def test_frame_scalars_slice() -> None:
     check(assert_type(df.loc[:, int_], pd.Series), pd.Series)
     check(assert_type(df.loc[:, float_], pd.Series), pd.Series)
     check(assert_type(df.loc[:, complex_], pd.Series), pd.Series)
-    check(assert_type(df.loc[:, timestamp], pd.Series), pd.Series)
+    with pytest.warns(FutureWarning, match="Comparison of Timestamp with datetime"):
+        check(assert_type(df.loc[:, timestamp], pd.Series), pd.Series)
     check(assert_type(df.loc[:, pd_timedelta], pd.Series), pd.Series)
     check(assert_type(df.loc[:, none], pd.Series), pd.Series)
 
@@ -1635,7 +1638,10 @@ def test_groupby_apply() -> None:
         return x.sample()
 
     check(
-        assert_type(df.groupby("col1").apply(sample_to_df), pd.DataFrame), pd.DataFrame
+        assert_type(
+            df.groupby("col1").apply(sample_to_df, group_keys=True), pd.DataFrame
+        ),
+        pd.DataFrame,
     )
 
 
