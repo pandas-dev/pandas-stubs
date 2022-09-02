@@ -67,6 +67,7 @@ def test_difference_none() -> None:
     # https://github.com/pandas-dev/pandas-stubs/issues/17
     ind = pd.Index([1, 2, 3])
     check(assert_type(ind.difference([1, None]), pd.Index), pd.Index)
+    # GH 253
     check(assert_type(ind.difference([1]), pd.Index), pd.Index)
 
 
@@ -90,5 +91,6 @@ def test_index_dropna():
 
 
 def test_index_neg():
+    # GH 253
     idx = pd.Index([1, 2])
     check(assert_type(-idx, pd.Index), pd.Index)

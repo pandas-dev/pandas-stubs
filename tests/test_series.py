@@ -1127,6 +1127,7 @@ def test_resample() -> None:
 
 
 def test_neg() -> None:
+    # GH 253
     sr = pd.Series([1, 2, 3])
     sr_int = pd.Series([1, 2, 3], dtype=int)
     check(assert_type(-sr, pd.Series), pd.Series)
