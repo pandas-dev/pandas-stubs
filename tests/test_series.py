@@ -250,7 +250,8 @@ def test_types_rank() -> None:
         s.rank(method="min", pct=True)
     with pytest.warns(FutureWarning, match="Dropping of nuisance columns"):
         s.rank(method="dense", ascending=True)
-    s.rank(method="first", numeric_only=True)
+    with pytest.warns(FutureWarning, match="Calling series.rank with numeric"):
+        s.rank(method="first", numeric_only=True)
 
 
 def test_types_mean() -> None:
