@@ -1639,7 +1639,7 @@ def test_groupby_apply() -> None:
 
     check(
         assert_type(
-            df.groupby("col1").apply(sample_to_df, group_keys=True), pd.DataFrame
+            df.groupby("col1", group_keys=True).apply(sample_to_df), pd.DataFrame
         ),
         pd.DataFrame,
     )

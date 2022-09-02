@@ -633,20 +633,6 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         fill_value: Hashable | None = ...,
     ) -> DataFrame: ...
-    @overload
-    def set_index(
-        self,
-        keys: Label
-        | Series
-        | Index
-        | np.ndarray
-        | Iterator[HashableT]
-        | list[HashableT],
-        drop: _bool = ...,
-        append: _bool = ...,
-        verify_integrity: _bool = ...,
-    ) -> None: ...
-    @overload
     def set_index(
         self,
         keys: Label
@@ -659,33 +645,6 @@ class DataFrame(NDFrame, OpsMixin):
         append: _bool = ...,
         verify_integrity: _bool = ...,
     ) -> DataFrame: ...
-    @overload
-    def set_index(
-        self,
-        keys: Label
-        | Series
-        | Index
-        | np.ndarray
-        | Iterator[HashableT]
-        | list[HashableT],
-        drop: _bool = ...,
-        append: _bool = ...,
-        *,
-        verify_integrity: _bool = ...,
-    ) -> DataFrame: ...
-    @overload
-    def set_index(
-        self,
-        keys: Label
-        | Series
-        | Index
-        | np.ndarray
-        | Iterator[HashableT]
-        | list[HashableT],
-        drop: _bool = ...,
-        append: _bool = ...,
-        verify_integrity: _bool = ...,
-    ) -> DataFrame | None: ...
     @overload
     def reset_index(
         self,
