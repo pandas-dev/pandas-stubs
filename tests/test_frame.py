@@ -1685,3 +1685,8 @@ def test_generic() -> None:
         return MyDataFrame[int]({"foo": [1, 2, 3]})
 
     func()
+
+
+def test_neg() -> None:
+    df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
+    check(assert_type(-df, pd.DataFrame), pd.DataFrame)

@@ -9,7 +9,6 @@ from tests import check
 
 
 def test_index_unique() -> None:
-
     df = pd.DataFrame({"x": [1, 2, 3, 4]}, index=pd.Index([1, 2, 3, 2]))
     ind = df.index
     check(assert_type(ind, pd.Index), pd.Index)
@@ -67,7 +66,8 @@ def test_column_contains() -> None:
 def test_difference_none() -> None:
     # https://github.com/pandas-dev/pandas-stubs/issues/17
     ind = pd.Index([1, 2, 3])
-    check(assert_type(ind.difference([1, None]), "pd.Index"), pd.Index, int)
+    check(assert_type(ind.difference([1, None]), pd.Index), pd.Index)
+    check(assert_type(ind.difference([1]), pd.Index), pd.Index)
 
 
 def test_str_split() -> None:
@@ -87,3 +87,8 @@ def test_index_dropna():
 
     check(assert_type(midx.dropna(how="all"), pd.MultiIndex), pd.MultiIndex)
     check(assert_type(midx.dropna(how="any"), pd.MultiIndex), pd.MultiIndex)
+
+
+def test_index_neg():
+    idx = pd.Index([1, 2])
+    check(assert_type(-idx, pd.Index), pd.Index)
