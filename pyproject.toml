@@ -45,7 +45,7 @@ pandas = "1.4.3"
 typing-extensions = ">=4.2.0"
 matplotlib = ">=3.3.2"
 pre-commit = ">=2.19.0"
-black = ">=22.6.0"
+black = ">=22.8.0"
 isort = ">=5.10.1"
 openpyxl = ">=3.0.10"
 tables = ">=3.7.0"
@@ -54,6 +54,9 @@ pyreadstat = ">=1.1.9"
 xlrd = ">=2.0.1"
 pyxlsb = ">=1.0.9"
 odfpy = ">=1.4.1"
+xarray = ">=22.6.0"
+tabulate = ">=0.8.10"
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
