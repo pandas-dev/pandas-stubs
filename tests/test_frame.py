@@ -1734,3 +1734,15 @@ def test_to_dict():
         assert_type(DF.to_dict("records", into=target), list[Mapping[Hashable, Any]]),
         list,
     )
+
+
+def test_neg() -> None:
+    # GH 253
+    df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
+    check(assert_type(-df, pd.DataFrame), pd.DataFrame)
+
+
+def test_pos() -> None:
+    # GH 253
+    df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
+    check(assert_type(+df, pd.DataFrame), pd.DataFrame)

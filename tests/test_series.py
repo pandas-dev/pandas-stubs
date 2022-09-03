@@ -1131,3 +1131,11 @@ def test_resample() -> None:
 def test_to_xarray():
     s = pd.Series([1, 2])
     check(assert_type(s.to_xarray(), xr.DataArray), xr.DataArray)
+
+
+def test_neg() -> None:
+    # GH 253
+    sr = pd.Series([1, 2, 3])
+    sr_int = pd.Series([1, 2, 3], dtype=int)
+    check(assert_type(-sr, pd.Series), pd.Series)
+    check(assert_type(-sr_int, "pd.Series[int]"), pd.Series, int)
