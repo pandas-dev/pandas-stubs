@@ -1125,3 +1125,11 @@ def test_resample() -> None:
     check(assert_type(df.resample("2T").sem(), pd.Series), pd.Series)
     check(assert_type(df.resample("2T").median(), pd.Series), pd.Series)
     check(assert_type(df.resample("2T").ohlc(), pd.DataFrame), pd.DataFrame)
+
+
+def test_neg() -> None:
+    # GH 253
+    sr = pd.Series([1, 2, 3])
+    sr_int = pd.Series([1, 2, 3], dtype=int)
+    check(assert_type(-sr, pd.Series), pd.Series)
+    check(assert_type(-sr_int, "pd.Series[int]"), pd.Series, int)
