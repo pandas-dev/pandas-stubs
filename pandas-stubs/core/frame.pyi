@@ -38,6 +38,7 @@ from pandas.core.window.rolling import (
     Rolling,
     Window,
 )
+import xarray as xr
 
 from pandas._typing import (
     S1,
@@ -89,6 +90,7 @@ from pandas._typing import (
     XMLParsers,
     np_ndarray_bool,
     np_ndarray_str,
+    npt,
     num,
 )
 
@@ -230,15 +232,32 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def to_dict(
         self,
-        orient: Literal["records"],
-        into: Hashable = ...,
-    ) -> list[dict[_str, Any]]: ...
+        orient: Literal["dict", "list", "series", "split", "tight", "index"],
+        into: Mapping | type[Mapping],
+    ) -> Mapping[Hashable, Any]: ...
     @overload
     def to_dict(
         self,
         orient: Literal["dict", "list", "series", "split", "tight", "index"] = ...,
-        into: Hashable = ...,
-    ) -> dict[_str, Any]: ...
+        *,
+        into: Mapping | type[Mapping],
+    ) -> Mapping[Hashable, Any]: ...
+    @overload
+    def to_dict(
+        self,
+        orient: Literal["dict", "list", "series", "split", "tight", "index"] = ...,
+        into: None = ...,
+    ) -> dict[Hashable, Any]: ...
+    @overload
+    def to_dict(
+        self,
+        orient: Literal["records"],
+        into: Mapping | type[Mapping],
+    ) -> list[Mapping[Hashable, Any]]: ...
+    @overload
+    def to_dict(
+        self, orient: Literal["records"], into: None = ...
+    ) -> list[dict[Hashable, Any]]: ...
     def to_gbq(
         self,
         destination_table: str,
@@ -260,8 +279,14 @@ class DataFrame(NDFrame, OpsMixin):
     def to_records(
         self,
         index: _bool = ...,
-        columnDTypes: _str | dict | None = ...,
-        indexDTypes: _str | dict | None = ...,
+        column_dtypes: _str
+        | npt.DTypeLike
+        | Mapping[HashableT, npt.DTypeLike]
+        | None = ...,
+        index_dtypes: _str
+        | npt.DTypeLike
+        | Mapping[HashableT, npt.DTypeLike]
+        | None = ...,
     ) -> np.recarray: ...
     def to_stata(
         self,
@@ -280,12 +305,6 @@ class DataFrame(NDFrame, OpsMixin):
         value_labels: dict[Hashable, dict[float, str]] | None = ...,
     ) -> None: ...
     def to_feather(self, path: FilePath | WriteBuffer[bytes], **kwargs) -> None: ...
-    @overload
-    def to_markdown(
-        self, buf: FilePathOrBuffer | None, mode: _str | None = ..., **kwargs
-    ) -> None: ...
-    @overload
-    def to_markdown(self, mode: _str | None = ..., **kwargs) -> _str: ...
     @overload
     def to_parquet(
         self,
@@ -1983,18 +2002,6 @@ class DataFrame(NDFrame, OpsMixin):
         compression: CompressionOptions = ...,
         protocol: int = ...,
     ) -> None: ...
-    def to_sql(
-        self,
-        name: _str,
-        con,
-        schema: _str | None = ...,
-        if_exists: _str = ...,
-        index: _bool = ...,
-        index_label: _str | Sequence[_str] | None = ...,
-        chunksize: int | None = ...,
-        dtype: dict | Scalar | None = ...,
-        method: _str | Callable | None = ...,
-    ) -> None: ...
     @overload
     def to_string(
         self,
@@ -2040,8 +2047,8 @@ class DataFrame(NDFrame, OpsMixin):
         min_rows: int | None = ...,
         max_colwidth: int | None = ...,
         encoding: _str | None = ...,
-    ) -> str: ...
-    def to_xarray(self): ...
+    ) -> _str: ...
+    def to_xarray(self) -> xr.Dataset: ...
     def truediv(
         self,
         other: num | ListLike | DataFrame,

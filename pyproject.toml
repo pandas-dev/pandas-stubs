@@ -33,6 +33,7 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"
 types-pytz = ">= 2022.1.1"
+types_SQLAlchemy = ">=1.4.50"
 
 [tool.poetry.dev-dependencies]
 mypy = ">=0.971"
@@ -45,12 +46,14 @@ pandas = "1.4.3"
 typing-extensions = ">=4.2.0"
 matplotlib = ">=3.3.2"
 pre-commit = ">=2.19.0"
-black = ">=22.6.0"
+black = ">=22.8.0"
 isort = ">=5.10.1"
 openpyxl = ">=3.0.10"
 tables = ">=3.7.0"
 lxml = ">=4.7.1,<4.9.0"
 pyreadstat = ">=1.1.9"
+xarray = ">=22.6.0"
+tabulate = ">=0.8.10"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -70,7 +73,8 @@ script = "scripts.test:test(dist=True)"
 
 [tool.poe.tasks.pytest]
 help = "Run pytest"
-script = "scripts.test.run:pytest"
+script = "scripts.test:pytest(nightly)"
+args = [{name = "nightly", positional = false, default = false, type = "boolean", required = false, help= "Use pandas nightly (off by default)"}]
 
 [tool.poe.tasks.style]
 help = "Run pre-commit"
