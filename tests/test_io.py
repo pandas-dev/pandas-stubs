@@ -372,6 +372,8 @@ def test_read_sql_generator():
 
 def test_read_sql_table():
     if TYPE_CHECKING:
+        # sqlite3 doesn't support read_table, which is required for this function
+        # Could only run in pytest if SQLAlchemy was installed
         with ensure_clean() as path:
             con = sqlite3.connect(path)
             assert_type(DF.to_sql("test", con=con), Union[int, None])

@@ -33,6 +33,7 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"
 types-pytz = ">= 2022.1.1"
+types_SQLAlchemy = ">=1.4.50"
 
 [tool.poetry.dev-dependencies]
 mypy = ">=0.971"
@@ -51,7 +52,6 @@ openpyxl = ">=3.0.10"
 tables = ">=3.7.0"
 lxml = ">=4.7.1,<4.9.0"
 pyreadstat = ">=1.1.9"
-types_SQLAlchemy = ">=1.4.50"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
