@@ -1,8 +1,10 @@
+import sqlite3
 from typing import (
     Any,
     Callable,
     ClassVar,
     Hashable,
+    Iterable,
     Literal,
     Mapping,
     Sequence,
@@ -13,6 +15,7 @@ import numpy as np
 from pandas.core.base import PandasObject
 from pandas.core.indexes.base import Index
 import pandas.core.indexing as indexing
+import sqlalchemy.engine
 
 from pandas._typing import (
     S1,
@@ -20,6 +23,7 @@ from pandas._typing import (
     Axis,
     CompressionOptions,
     Dtype,
+    DtypeArg,
     FilePath,
     FilePathOrBuffer,
     FileWriteMode,
@@ -29,10 +33,10 @@ from pandas._typing import (
     HashableT,
     HDFCompLib,
     IgnoreRaise,
+    IndexLabel,
     Level,
     NDFrameT,
     ReplaceMethod,
-    Scalar,
     SeriesAxisType,
     SortKind,
     StorageOptions,
@@ -40,6 +44,7 @@ from pandas._typing import (
 )
 
 from pandas.io.pytables import HDFStore
+from pandas.io.sql import SQLTable
 
 _bool = bool
 _str = str
@@ -152,15 +157,17 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def to_sql(
         self,
         name: _str,
-        con,
+        con: str | sqlalchemy.engine.Connection | sqlite3.Connection,
         schema: _str | None = ...,
-        if_exists: _str = ...,
+        if_exists: Literal["fail", "replace", "append"] = ...,
         index: _bool = ...,
-        index_label: _str | Sequence[_str] | None = ...,
+        index_label: IndexLabel = ...,
         chunksize: int | None = ...,
-        dtype: dict | Scalar | None = ...,
-        method: _str | Callable | None = ...,
-    ) -> None: ...
+        dtype: DtypeArg | None = ...,
+        method: Literal["multi"]
+        | Callable[[SQLTable, Any, list[str], Iterable], int | None]
+        | None = ...,
+    ) -> int | None: ...
     def to_pickle(
         self,
         path: _str,
