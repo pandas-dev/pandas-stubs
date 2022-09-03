@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import defaultdict
 import datetime
 import io
 from pathlib import Path
@@ -7,10 +8,12 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
+    Dict,
     Generic,
     Hashable,
     Iterable,
     Iterator,
+    Mapping,
     Tuple,
     TypeVar,
     Union,
@@ -1703,16 +1706,31 @@ def test_to_xarray():
 def test_to_records():
     check(assert_type(DF.to_records(False, "int8"), np.recarray), np.recarray)
     check(
-        assert_type(
-            DF.to_records(False, {"col1": "int8", "col2": np.int16}), np.recarray
-        ),
+        assert_type(DF.to_records(False, index_dtypes=np.int8), np.recarray),
         np.recarray,
     )
     check(
-        assert_type(DF.to_records(False, index_dtypes=np.int8), np.recarray),
+        assert_type(
+            DF.to_records(False, {"col1": np.int8, "col2": np.int16}), np.recarray
+        ),
         np.recarray,
     )
 
 
 def test_to_dict():
-    pass
+    check(assert_type(DF.to_dict(), Dict[Hashable, Any]), dict)
+    check(assert_type(DF.to_dict("split"), Dict[Hashable, Any]), dict)
+
+    target: Mapping = defaultdict(list)
+    check(assert_type(DF.to_dict(into=target), Mapping[Hashable, Any]), defaultdict)
+    target = defaultdict(list)
+    check(
+        assert_type(DF.to_dict("tight", into=target), Mapping[Hashable, Any]),
+        defaultdict,
+    )
+    target = defaultdict(list)
+    check(assert_type(DF.to_dict("records"), list[Dict[Hashable, Any]]), list)
+    check(
+        assert_type(DF.to_dict("records", into=target), list[Mapping[Hashable, Any]]),
+        list,
+    )

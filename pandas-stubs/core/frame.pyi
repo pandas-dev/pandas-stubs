@@ -278,11 +278,11 @@ class DataFrame(NDFrame, OpsMixin):
         index: _bool = ...,
         column_dtypes: _str
         | npt.DTypeLike
-        | dict[HashableT, _str | npt.DTypeLike]
+        | Mapping[HashableT, npt.DTypeLike]
         | None = ...,
         index_dtypes: _str
         | npt.DTypeLike
-        | dict[HashableT, _str | npt.DTypeLike]
+        | Mapping[HashableT, npt.DTypeLike]
         | None = ...,
     ) -> np.recarray: ...
     def to_stata(
