@@ -1,5 +1,4 @@
 import io
-import os
 import os.path
 import pathlib
 from pathlib import Path
@@ -18,6 +17,7 @@ from pandas import (
     read_clipboard,
     read_feather,
     read_hdf,
+    read_html,
     read_json,
     read_orc,
     read_parquet,
@@ -348,3 +348,10 @@ def test_to_string():
             check(assert_type(DF.to_string(df_string), None), type(None))
         sio = io.StringIO()
         check(assert_type(DF.to_string(sio), None), type(None))
+
+
+def test_read_html():
+    check(assert_type(DF.to_html(), str), str)
+    with ensure_clean() as path:
+        check(assert_type(DF.to_html(path), None), type(None))
+        check(assert_type(read_html(path), List[DataFrame]), list)
