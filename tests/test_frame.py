@@ -7,7 +7,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    Dict,
     Generic,
     Hashable,
     Iterable,
@@ -1305,69 +1304,6 @@ def test_to_excel() -> None:
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl", columns=["col1"])
         check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
-
-
-def test_read_excel() -> None:
-    with ensure_clean(".xlsx") as path:
-        # https://github.com/pandas-dev/pandas-stubs/pull/33
-        check(
-            assert_type(pd.DataFrame({"A": [1, 2, 3]}).to_excel(path), None), type(None)
-        )
-        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
-        check(
-            assert_type(pd.read_excel(path, sheet_name="Sheet1"), pd.DataFrame),
-            pd.DataFrame,
-        )
-        check(
-            assert_type(
-                pd.read_excel(path, sheet_name=["Sheet1"]),
-                Dict[Union[int, str], pd.DataFrame],
-            ),
-            dict,
-        )
-        # GH 98
-        check(
-            assert_type(pd.read_excel(path, sheet_name=0), pd.DataFrame), pd.DataFrame
-        )
-        check(
-            assert_type(
-                pd.read_excel(path, sheet_name=[0]), Dict[Union[int, str], pd.DataFrame]
-            ),
-            dict,
-        )
-        check(
-            assert_type(
-                pd.read_excel(path, sheet_name=[0, "Sheet1"]),
-                Dict[Union[int, str], pd.DataFrame],
-            ),
-            dict,
-        )
-        check(
-            assert_type(
-                pd.read_excel(path, sheet_name=None),
-                Dict[Union[int, str], pd.DataFrame],
-            ),
-            dict,
-        )
-
-
-def test_read_excel_io_types() -> None:
-    # GH 195
-    df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
-    with ensure_clean(".xlsx") as path:
-        as_str: str = path
-        df.to_excel(path)
-
-        check(assert_type(pd.read_excel(as_str), pd.DataFrame), pd.DataFrame)
-
-        as_path = Path(as_str)
-        check(assert_type(pd.read_excel(as_path), pd.DataFrame), pd.DataFrame)
-
-        with as_path.open("rb") as as_file:
-            check(assert_type(pd.read_excel(as_file), pd.DataFrame), pd.DataFrame)
-
-        as_bytes = as_path.read_bytes()
-        check(assert_type(pd.read_excel(as_bytes), pd.DataFrame), pd.DataFrame)
 
 
 def test_join() -> None:
