@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
+import csv
 import datetime
 import io
 from pathlib import Path
@@ -113,6 +114,9 @@ def test_types_to_csv() -> None:
 
     # Testing support for binary file handles, added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
     df.to_csv(io.BytesIO(), encoding="utf-8", compression="gzip")
+
+    # Testing support for binary file handles, added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
+    df.to_csv(io.BytesIO(), quoting=csv.QUOTE_ALL, encoding="utf-8", compression="gzip")
 
 
 def test_types_to_csv_when_path_passed() -> None:
