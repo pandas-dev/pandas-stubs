@@ -176,6 +176,8 @@ IndexingInt = Union[
 # passed in, a DataFrame is always returned.
 NDFrameT = TypeVar("NDFrameT", bound=NDFrame)
 
+IndexT = TypeVar("IndexT", bound=Index)
+
 # Interval closed type
 
 IntervalClosedType = Literal["left", "right", "both", "neither"]
@@ -246,4 +248,6 @@ ParquetEngine = Literal["auto", "pyarrow", "fastparquet"]
 FileWriteMode = Literal[
     "a", "w", "x", "at", "wt", "xt", "ab", "wb", "xb", "w+", "w+b", "a+", "a+b"
 ]
+ColspaceArgType = str | int | Sequence[int | str] | Mapping[Hashable, str | int]
+
 __all__ = ["npt", "type_t"]

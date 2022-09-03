@@ -19,6 +19,7 @@ from pandas import (
     read_feather,
     read_fwf,
     read_hdf,
+    read_html,
     read_json,
     read_orc,
     read_parquet,
@@ -438,3 +439,10 @@ def test_to_csv_series():
     check(assert_type(s.to_csv(), str), str)
     with ensure_clean() as path:
         check(assert_type(s.to_csv(path), None), type(None))
+
+
+def test_read_html():
+    check(assert_type(DF.to_html(), str), str)
+    with ensure_clean() as path:
+        check(assert_type(DF.to_html(path), None), type(None))
+        check(assert_type(read_html(path), List[DataFrame]), list)
