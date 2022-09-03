@@ -1999,7 +1999,7 @@ class DataFrame(NDFrame, OpsMixin):
     def to_string(
         self,
         buf: FilePath | WriteBuffer[str],
-        columns: Sequence[_str] | None = ...,
+        columns: list[HashableT] | Index | Series | None = ...,
         col_space: int | list[int] | dict[HashableT, int] | None = ...,
         header: _bool | list[_str] | tuple[str, ...] = ...,
         index: _bool = ...,
@@ -2022,7 +2022,7 @@ class DataFrame(NDFrame, OpsMixin):
     def to_string(
         self,
         buf: None = ...,
-        columns: Sequence[_str] | None = ...,
+        columns: list[HashableT] | Index | None = ...,
         col_space: int | list[int] | dict[Hashable, int] | None = ...,
         header: _bool | Sequence[_str] = ...,
         index: _bool = ...,
