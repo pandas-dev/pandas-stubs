@@ -169,43 +169,51 @@ def test_clipboard_iterator():
 def test_sas_bdat() -> None:
     path = pathlib.Path(CWD, "data", "airline.sas7bdat")
     check(assert_type(read_sas(path), DataFrame), DataFrame)
-    check(
+    with check(
         assert_type(read_sas(path, iterator=True), Union[SAS7BDATReader, XportReader]),
         SAS7BDATReader,
-    )
-    check(
+    ):
+        pass
+    with check(
         assert_type(read_sas(path, iterator=True, format="sas7bdat"), SAS7BDATReader),
         SAS7BDATReader,
-    )
-    check(
+    ):
+        pass
+    with check(
         assert_type(read_sas(path, chunksize=1), Union[SAS7BDATReader, XportReader]),
         SAS7BDATReader,
-    )
-    check(
+    ):
+        pass
+    with check(
         assert_type(read_sas(path, chunksize=1, format="sas7bdat"), SAS7BDATReader),
         SAS7BDATReader,
-    )
+    ):
+        pass
 
 
 def test_sas_xport() -> None:
     path = pathlib.Path(CWD, "data", "SSHSV1_A.xpt")
     check(assert_type(read_sas(path), DataFrame), DataFrame)
-    check(
+    with check(
         assert_type(read_sas(path, iterator=True), Union[SAS7BDATReader, XportReader]),
         XportReader,
-    )
-    check(
+    ):
+        pass
+    with check(
         assert_type(read_sas(path, iterator=True, format="xport"), XportReader),
         XportReader,
-    )
-    check(
+    ):
+        pass
+    with check(
         assert_type(read_sas(path, chunksize=1), Union[SAS7BDATReader, XportReader]),
         XportReader,
-    )
-    check(
+    ):
+        pass
+    with check(
         assert_type(read_sas(path, chunksize=1, format="xport"), XportReader),
         XportReader,
-    )
+    ):
+        pass
 
 
 def test_hdf():

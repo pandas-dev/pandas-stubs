@@ -117,13 +117,10 @@ def test_types_to_csv() -> None:
 
 def test_types_to_csv_when_path_passed() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
-    path: Path = Path("./dummy_path.txt")
-    try:
-        assert not path.exists()
+    with ensure_clean() as file:
+        path = Path(file)
         df.to_csv(path)
         df5: pd.DataFrame = pd.read_csv(path)
-    finally:
-        path.unlink()
 
 
 def test_types_copy() -> None:
@@ -801,16 +798,17 @@ def test_to_markdown() -> None:
 def test_types_to_feather() -> None:
     pytest.importorskip("pyarrow")
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
-    df.to_feather("dummy_path")
-    # kwargs for pyarrow.feather.write_feather added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    df.to_feather("dummy_path", compression="zstd", compression_level=3, chunksize=2)
-
-    # to_feather has been able to accept a buffer since pandas 1.0.0
-    # See https://pandas.pydata.org/docs/whatsnew/v1.0.0.html
-    # Docstring and type were updated in 1.2.0.
-    # https://github.com/pandas-dev/pandas/pull/35408
     with ensure_clean() as path:
         df.to_feather(path)
+        # kwargs for pyarrow.feather.write_feather added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
+        df.to_feather(path, compression="zstd", compression_level=3, chunksize=2)
+
+        # to_feather has been able to accept a buffer since pandas 1.0.0
+        # See https://pandas.pydata.org/docs/whatsnew/v1.0.0.html
+        # Docstring and type were updated in 1.2.0.
+        # https://github.com/pandas-dev/pandas/pull/35408
+        with open(path, mode="wb") as file:
+            df.to_feather(file)
 
 
 # compare() method added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
