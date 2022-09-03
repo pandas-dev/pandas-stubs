@@ -1504,8 +1504,7 @@ def test_frame_scalars_slice() -> None:
 
     # Note: bool_ cannot be tested since the index is object and pandas does not
     # support boolean access using loc except when the index is boolean
-    with pytest.warns(FutureWarning, match="Comparison of Timestamp with datetime"):
-        check(assert_type(df.loc[str_], pd.Series), pd.Series)
+    check(assert_type(df.loc[str_], pd.Series), pd.Series)
     check(assert_type(df.loc[bytes_], pd.Series), pd.Series)
     check(assert_type(df.loc[date], pd.Series), pd.Series)
     check(assert_type(df.loc[datetime_], pd.Series), pd.Series)
@@ -1513,13 +1512,11 @@ def test_frame_scalars_slice() -> None:
     check(assert_type(df.loc[int_], pd.Series), pd.Series)
     check(assert_type(df.loc[float_], pd.Series), pd.Series)
     check(assert_type(df.loc[complex_], pd.Series), pd.Series)
-    with pytest.warns(FutureWarning, match="Comparison of Timestamp with datetime"):
-        check(assert_type(df.loc[timestamp], pd.Series), pd.Series)
+    check(assert_type(df.loc[timestamp], pd.Series), pd.Series)
     check(assert_type(df.loc[pd_timedelta], pd.Series), pd.Series)
     check(assert_type(df.loc[none], pd.Series), pd.Series)
 
-    with pytest.warns(FutureWarning, match="Comparison of Timestamp with datetime"):
-        check(assert_type(df.loc[:, str_], pd.Series), pd.Series)
+    check(assert_type(df.loc[:, str_], pd.Series), pd.Series)
     check(assert_type(df.loc[:, bytes_], pd.Series), pd.Series)
     check(assert_type(df.loc[:, date], pd.Series), pd.Series)
     check(assert_type(df.loc[:, datetime_], pd.Series), pd.Series)
@@ -1527,8 +1524,7 @@ def test_frame_scalars_slice() -> None:
     check(assert_type(df.loc[:, int_], pd.Series), pd.Series)
     check(assert_type(df.loc[:, float_], pd.Series), pd.Series)
     check(assert_type(df.loc[:, complex_], pd.Series), pd.Series)
-    with pytest.warns(FutureWarning, match="Comparison of Timestamp with datetime"):
-        check(assert_type(df.loc[:, timestamp], pd.Series), pd.Series)
+    check(assert_type(df.loc[:, timestamp], pd.Series), pd.Series)
     check(assert_type(df.loc[:, pd_timedelta], pd.Series), pd.Series)
     check(assert_type(df.loc[:, none], pd.Series), pd.Series)
 
