@@ -13,6 +13,7 @@ from typing import (
     Hashable,
     Iterable,
     Iterator,
+    List,
     Mapping,
     Tuple,
     TypeVar,
@@ -1729,9 +1730,9 @@ def test_to_dict():
         defaultdict,
     )
     target = defaultdict(list)
-    check(assert_type(DF.to_dict("records"), list[Dict[Hashable, Any]]), list)
+    check(assert_type(DF.to_dict("records"), List[Dict[Hashable, Any]]), list)
     check(
-        assert_type(DF.to_dict("records", into=target), list[Mapping[Hashable, Any]]),
+        assert_type(DF.to_dict("records", into=target), List[Mapping[Hashable, Any]]),
         list,
     )
 
