@@ -19,6 +19,7 @@ from pandas import (
     read_excel,
     read_feather,
     read_hdf,
+    read_html,
     read_json,
     read_orc,
     read_parquet,
@@ -385,3 +386,10 @@ def test_excel_writer():
             dict,
         )
         check(assert_type(ef.close(), None), type(None))
+
+
+def test_read_html():
+    check(assert_type(DF.to_html(), str), str)
+    with ensure_clean() as path:
+        check(assert_type(DF.to_html(path), None), type(None))
+        check(assert_type(read_html(path), List[DataFrame]), list)
