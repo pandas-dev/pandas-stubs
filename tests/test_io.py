@@ -2,7 +2,10 @@ import io
 import os.path
 import pathlib
 from pathlib import Path
+import sqlite3
 from typing import (
+    TYPE_CHECKING,
+    Generator,
     List,
     Union,
 )
@@ -23,6 +26,9 @@ from pandas import (
     read_parquet,
     read_sas,
     read_spss,
+    read_sql,
+    read_sql_query,
+    read_sql_table,
     read_stata,
     read_xml,
 )
@@ -337,6 +343,75 @@ def test_feather():
     check(assert_type(DF.to_feather(bio), None), type(None))
     bio.seek(0)
     check(assert_type(read_feather(bio), DataFrame), DataFrame)
+
+
+def test_read_sql():
+    with ensure_clean() as path:
+        con = sqlite3.connect(path)
+        check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
+        check(
+            assert_type(read_sql("select * from test", con=con), DataFrame), DataFrame
+        )
+        con.close()
+
+
+def test_read_sql_generator():
+    with ensure_clean() as path:
+        con = sqlite3.connect(path)
+        check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
+
+        check(
+            assert_type(
+                read_sql("select * from test", con=con, chunksize=1),
+                Generator[DataFrame, None, None],
+            ),
+            Generator,
+        )
+        con.close()
+
+
+def test_read_sql_table():
+    if TYPE_CHECKING:
+        # sqlite3 doesn't support read_table, which is required for this function
+        # Could only run in pytest if SQLAlchemy was installed
+        with ensure_clean() as path:
+            con = sqlite3.connect(path)
+            assert_type(DF.to_sql("test", con=con), Union[int, None])
+            assert_type(read_sql_table("test", con=con), DataFrame)
+            assert_type(
+                read_sql_table("test", con=con, chunksize=1),
+                Generator[DataFrame, None, None],
+            )
+            con.close()
+
+
+def test_read_sql_query():
+    with ensure_clean() as path:
+        con = sqlite3.connect(path)
+        check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
+        check(
+            assert_type(
+                read_sql_query("select * from test", con=con, index_col="index"),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+        con.close()
+
+
+def test_read_sql_query_generator():
+    with ensure_clean() as path:
+        con = sqlite3.connect(path)
+        check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
+
+        check(
+            assert_type(
+                read_sql_query("select * from test", con=con, chunksize=1),
+                Generator[DataFrame, None, None],
+            ),
+            Generator,
+        )
+        con.close()
 
 
 def test_read_html():
