@@ -24,12 +24,15 @@ from pandas._testing import (
 )
 import pytest
 from typing_extensions import assert_type
+import xarray as xr
 
 from pandas._typing import Scalar
 
 from tests import check
 
 from pandas.io.parsers import TextFileReader
+
+DF = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
 
 def test_types_init() -> None:
@@ -777,12 +780,18 @@ def test_types_to_numpy() -> None:
 
 
 def test_to_markdown() -> None:
-    pytest.importorskip("tabulate")
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
-    df.to_markdown()
-    df.to_markdown(buf=None, mode="wt")
+    check(assert_type(df.to_markdown(), str), str)
+    check(assert_type(df.to_markdown(None), str), str)
+    check(assert_type(df.to_markdown(buf=None, mode="wt"), str), str)
     # index param was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    df.to_markdown(index=False)
+    check(assert_type(df.to_markdown(index=False), str), str)
+    with ensure_clean() as path:
+        check(assert_type(df.to_markdown(path), None), type(None))
+    with ensure_clean() as path:
+        check(assert_type(df.to_markdown(Path(path)), None), type(None))
+    sio = io.StringIO()
+    check(assert_type(df.to_markdown(sio), None), type(None))
 
 
 def test_types_to_feather() -> None:
@@ -1685,3 +1694,25 @@ def test_generic() -> None:
         return MyDataFrame[int]({"foo": [1, 2, 3]})
 
     func()
+
+
+def test_to_xarray():
+    check(assert_type(DF.to_xarray(), xr.Dataset), xr.Dataset)
+
+
+def test_to_records():
+    check(assert_type(DF.to_records(False, "int8"), np.recarray), np.recarray)
+    check(
+        assert_type(
+            DF.to_records(False, {"col1": "int8", "col2": np.int16}), np.recarray
+        ),
+        np.recarray,
+    )
+    check(
+        assert_type(DF.to_records(False, index_dtypes=np.int8), np.recarray),
+        np.recarray,
+    )
+
+
+def test_to_dict():
+    pass

@@ -52,6 +52,7 @@ tables = ">=3.7.0"
 lxml = ">=4.7.1,<4.9.0"
 pyreadstat = ">=1.1.9"
 xarray = ">=22.6.0"
+tabulate = ">=0.8.10"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

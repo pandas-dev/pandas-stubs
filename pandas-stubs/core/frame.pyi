@@ -87,6 +87,7 @@ from pandas._typing import (
     XMLParsers,
     np_ndarray_bool,
     np_ndarray_str,
+    npt,
     num,
 )
 
@@ -275,8 +276,14 @@ class DataFrame(NDFrame, OpsMixin):
     def to_records(
         self,
         index: _bool = ...,
-        column_dtypes: _str | dict[HashableT, _str | DtypeNp] | None = ...,
-        index_dtypes: _str | dict[HashableT, _str | DtypeNp] | None = ...,
+        column_dtypes: _str
+        | npt.DTypeLike
+        | dict[HashableT, _str | npt.DTypeLike]
+        | None = ...,
+        index_dtypes: _str
+        | npt.DTypeLike
+        | dict[HashableT, _str | npt.DTypeLike]
+        | None = ...,
     ) -> np.recarray: ...
     def to_stata(
         self,
