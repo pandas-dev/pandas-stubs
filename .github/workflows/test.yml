@@ -37,6 +37,12 @@ jobs:
     - name: Install project dependencies
       run: poetry install -vvv --no-root
 
+    - name: Show poetry python location (Windows)
+      shell: pwsh
+      run: |
+        poetry run where python
+      if: matrix.os == 'windows-latest'
+
     - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
       run: poetry run poe mypy
 
