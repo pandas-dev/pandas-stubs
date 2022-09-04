@@ -242,6 +242,7 @@ JsonSeriesOrient = Literal["split", "records", "index"]
 TimestampConvention = Literal["start", "end", "s", "e"]
 
 CSVEngine = Literal["c", "python", "pyarrow", "python-fwf"]
+CSVQuoting = Literal[0, 1, 2, 3]
 
 HDFCompLib = Literal["zlib", "lzo", "bzip2", "blosc"]
 ParquetEngine = Literal["auto", "pyarrow", "fastparquet"]

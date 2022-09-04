@@ -8,13 +8,10 @@ from typing import (
 
 import numpy as np
 import pandas as pd
-from pandas._testing import ensure_clean
 from pandas.api.extensions import ExtensionArray
 from typing_extensions import assert_type
 
 from tests import check
-
-from pandas.io.parsers import TextFileReader
 
 
 def test_types_to_datetime() -> None:
@@ -112,48 +109,6 @@ def test_types_json_normalize() -> None:
     df4: pd.DataFrame = pd.json_normalize(data=data1, record_path=None, meta="id")
     data2: dict[str, Any] = {"name": {"given": "Mose", "family": "Regner"}}
     df5: pd.DataFrame = pd.json_normalize(data=data2)
-
-
-def test_types_read_csv() -> None:
-    df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
-    csv_df: str = df.to_csv()
-
-    with ensure_clean() as path:
-        df.to_csv(path)
-        df2: pd.DataFrame = pd.read_csv(path)
-        df3: pd.DataFrame = pd.read_csv(path, sep="a")
-        df4: pd.DataFrame = pd.read_csv(
-            path,
-            header=None,
-        )
-        df5: pd.DataFrame = pd.read_csv(
-            path, engine="python", true_values=["no", "No", "NO"], na_filter=False
-        )
-        df6: pd.DataFrame = pd.read_csv(
-            path,
-            skiprows=lambda x: x in [0, 2],
-            skip_blank_lines=True,
-            dayfirst=False,
-        )
-        df7: pd.DataFrame = pd.read_csv(path, nrows=2)
-        df8: pd.DataFrame = pd.read_csv(path, dtype={"a": float, "b": int})
-        df9: pd.DataFrame = pd.read_csv(path, usecols=["col1"])
-        df10: pd.DataFrame = pd.read_csv(path, usecols=[0])
-        df11: pd.DataFrame = pd.read_csv(path, usecols=np.array([0]))
-        df12: pd.DataFrame = pd.read_csv(path, usecols=("col1",))
-        df13: pd.DataFrame = pd.read_csv(path, usecols=pd.Series(data=["col1"]))
-
-        tfr1: TextFileReader = pd.read_csv(path, nrows=2, iterator=True, chunksize=3)
-        tfr1.close()
-
-        tfr2: TextFileReader = pd.read_csv(path, nrows=2, chunksize=1)
-        tfr2.close()
-
-        tfr3: TextFileReader = pd.read_csv(path, nrows=2, iterator=False, chunksize=1)
-        tfr3.close()
-
-        tfr4: TextFileReader = pd.read_csv(path, nrows=2, iterator=True)
-        tfr4.close()
 
 
 def test_isna() -> None:

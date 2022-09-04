@@ -17,6 +17,7 @@ import pandas._libs.lib as lib
 from pandas._typing import (
     CompressionOptions,
     CSVEngine,
+    CSVQuoting,
     DtypeArg,
     FilePath,
     ReadCsvBuffer,
@@ -30,10 +31,10 @@ from pandas.io.common import IOHandles
 def read_csv(
     filepath_or_buffer: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str],
     *,
-    sep: str | None | lib.NoDefault = ...,
-    delimiter: str | None | lib.NoDefault = ...,
+    sep: str | None = ...,
+    delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
-    names: list[str] | None | lib.NoDefault = ...,
+    names: list[str] | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: list[str]
     | tuple[str, ...]
@@ -74,7 +75,7 @@ def read_csv(
     decimal: str = ...,
     lineterminator: str | None = ...,
     quotechar: str = ...,
-    quoting: int = ...,
+    quoting: CSVQuoting | None = ...,
     doublequote: bool = ...,
     escapechar: str | None = ...,
     comment: str | None = ...,
@@ -93,10 +94,10 @@ def read_csv(
 def read_csv(
     filepath_or_buffer: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str],
     *,
-    sep: str | None | lib.NoDefault = ...,
-    delimiter: str | None | lib.NoDefault = ...,
+    sep: str | None = ...,
+    delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
-    names: list[str] | None | lib.NoDefault = ...,
+    names: list[str] | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: list[str]
     | tuple[str, ...]
@@ -137,7 +138,7 @@ def read_csv(
     decimal: str = ...,
     lineterminator: str | None = ...,
     quotechar: str = ...,
-    quoting: int = ...,
+    quoting: CSVQuoting | None = ...,
     doublequote: bool = ...,
     escapechar: str | None = ...,
     comment: str | None = ...,
@@ -156,10 +157,10 @@ def read_csv(
 def read_csv(
     filepath_or_buffer: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str],
     *,
-    sep: str | None | lib.NoDefault = ...,
-    delimiter: str | None | lib.NoDefault = ...,
+    sep: str | None = ...,
+    delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
-    names: list[str] | None | lib.NoDefault = ...,
+    names: list[str] | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: list[str]
     | tuple[str, ...]
@@ -200,7 +201,7 @@ def read_csv(
     decimal: str = ...,
     lineterminator: str | None = ...,
     quotechar: str = ...,
-    quoting: int = ...,
+    quoting: CSVQuoting | None = ...,
     doublequote: bool = ...,
     escapechar: str | None = ...,
     comment: str | None = ...,
@@ -219,10 +220,10 @@ def read_csv(
 def read_table(
     filepath_or_buffer: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str],
     *,
-    sep: str | None | lib.NoDefault = ...,
-    delimiter: str | None | lib.NoDefault = ...,
+    sep: str | None = ...,
+    delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
-    names: list[str] | None | lib.NoDefault = ...,
+    names: list[str] | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: list[str]
     | tuple[str, ...]
@@ -263,7 +264,7 @@ def read_table(
     decimal: str = ...,
     lineterminator: str | None = ...,
     quotechar: str = ...,
-    quoting: int = ...,
+    quoting: CSVQuoting | None = ...,
     doublequote: bool = ...,
     escapechar: str | None = ...,
     comment: str | None = ...,
@@ -282,10 +283,10 @@ def read_table(
 def read_table(
     filepath_or_buffer: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str],
     *,
-    sep: str | None | lib.NoDefault = ...,
-    delimiter: str | None | lib.NoDefault = ...,
+    sep: str | None = ...,
+    delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
-    names: list[str] | None | lib.NoDefault = ...,
+    names: list[str] | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: list[str]
     | tuple[str, ...]
@@ -326,7 +327,7 @@ def read_table(
     decimal: str = ...,
     lineterminator: str | None = ...,
     quotechar: str = ...,
-    quoting: int = ...,
+    quoting: CSVQuoting | None = ...,
     doublequote: bool = ...,
     escapechar: str | None = ...,
     comment: str | None = ...,
@@ -345,10 +346,10 @@ def read_table(
 def read_table(
     filepath_or_buffer: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str],
     *,
-    sep: str | None | lib.NoDefault = ...,
-    delimiter: str | None | lib.NoDefault = ...,
+    sep: str | None = ...,
+    delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
-    names: list[str] | None | lib.NoDefault = ...,
+    names: list[str] | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: list[str]
     | tuple[str, ...]
@@ -389,7 +390,7 @@ def read_table(
     decimal: str = ...,
     lineterminator: str | None = ...,
     quotechar: str = ...,
-    quoting: int = ...,
+    quoting: CSVQuoting | None = ...,
     doublequote: bool = ...,
     escapechar: str | None = ...,
     comment: str | None = ...,
