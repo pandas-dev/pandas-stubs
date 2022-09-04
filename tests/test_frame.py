@@ -32,7 +32,10 @@ import xarray as xr
 
 from pandas._typing import Scalar
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 from pandas.io.parsers import TextFileReader
 
@@ -70,26 +73,23 @@ def test_types_any() -> None:
 def test_types_append() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame({"col1": [10, 20], "col2": [30, 40]})
-    with pytest.warns(FutureWarning, match="The frame.append"):
-        res1: pd.DataFrame = df.append(df2)
-    with pytest.warns(FutureWarning, match="The frame.append"):
-        res2: pd.DataFrame = df.append([1, 2, 3])
-    with pytest.warns(FutureWarning, match="The frame.append"):
-        res3: pd.DataFrame = df.append([[1, 2, 3]])
-    with pytest.warns(FutureWarning, match="The frame.append"):
-        res4: pd.DataFrame = df.append(
+    if TYPE_CHECKING_INVALID_USAGE:
+        res1: pd.DataFrame = df.append(df2)  # type: ignore[attr-defined]
+        res2: pd.DataFrame = df.append([1, 2, 3])  # type: ignore[attr-defined]
+        res3: pd.DataFrame = df.append([[1, 2, 3]])  # type: ignore[attr-defined]
+        res4: pd.DataFrame = df.append(  # type: ignore[attr-defined]
             {("a", 1): [1, 2, 3], "b": df2}, ignore_index=True
         )
-    with pytest.warns(FutureWarning, match="The frame.append"):
-        res5: pd.DataFrame = df.append({1: [1, 2, 3]}, ignore_index=True)
-    with pytest.warns(FutureWarning, match="The frame.append"):
-        res6: pd.DataFrame = df.append(
+        res5: pd.DataFrame = df.append(  # type: ignore[attr-defined]
+            {1: [1, 2, 3]}, ignore_index=True
+        )
+        res6: pd.DataFrame = df.append(  # type: ignore[attr-defined]
             {1: [1, 2, 3], "col2": [1, 2, 3]}, ignore_index=True
         )
-    with pytest.warns(FutureWarning, match="The frame.append"):
-        res7: pd.DataFrame = df.append(pd.Series([5, 6]), ignore_index=True)
-    with pytest.warns(FutureWarning, match="The frame.append"):
-        res8: pd.DataFrame = df.append(
+        res7: pd.DataFrame = df.append(  # type: ignore[attr-defined]
+            pd.Series([5, 6]), ignore_index=True
+        )
+        res8: pd.DataFrame = df.append(  # type: ignore[attr-defined]
             pd.Series([5, 6], index=["col1", "col2"]), ignore_index=True
         )
 

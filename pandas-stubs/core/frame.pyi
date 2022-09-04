@@ -1089,17 +1089,6 @@ class DataFrame(NDFrame, OpsMixin):
     def applymap(
         self, func: Callable, na_action: Literal["ignore"] | None = ..., **kwargs
     ) -> DataFrame: ...
-    def append(
-        self,
-        other: DataFrame
-        | Series
-        | dict[Any, Any]
-        | Sequence[Scalar]
-        | Sequence[ListLike],
-        ignore_index: _bool = ...,
-        verify_integrity: _bool = ...,
-        sort: _bool = ...,
-    ) -> DataFrame: ...
     def join(
         self,
         other: DataFrame | Series | list[DataFrame | Series],

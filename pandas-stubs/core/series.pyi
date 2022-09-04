@@ -495,12 +495,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         side: Literal["left", "right"] = ...,
         sorter: _ListLike | None = ...,
     ) -> int: ...
-    def append(
-        self,
-        to_append: Series | Sequence[Series],
-        ignore_index: _bool = ...,
-        verify_integrity: _bool = ...,
-    ) -> Series[S1]: ...
     @overload
     def compare(
         self,
