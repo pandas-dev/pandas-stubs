@@ -1720,3 +1720,12 @@ def test_getattr() -> None:
     # GH 261
     df = pd.DataFrame({"a": [1, 2]})
     check(assert_type(df.a, pd.Series), pd.Series)
+
+
+def test_xs_key() -> None:
+    # GH 214
+    mi = pd.MultiIndex.from_product([[0, 1], [0, 1]], names=["foo", "bar"])
+    df = pd.DataFrame({"x": [10, 20, 30, 40], "y": [50, 60, 70, 80]}, index=mi)
+    check(
+        assert_type(df.xs(0, level="foo"), Union[pd.DataFrame, pd.Series]), pd.DataFrame
+    )

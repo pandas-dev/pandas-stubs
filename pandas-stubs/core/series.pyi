@@ -65,8 +65,8 @@ from pandas._typing import (
     Axis,
     AxisType,
     CompressionOptions,
-    Dtype,
     DtypeNp,
+    DtypeObj,
     FilePathOrBuffer,
     FillnaOptions,
     GroupByObjectNonScalar,
@@ -220,9 +220,9 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType = ...,
     ) -> Series[S1]: ...
     @property
-    def dtype(self) -> Dtype: ...
+    def dtype(self) -> DtypeObj: ...
     @property
-    def dtypes(self) -> Dtype: ...
+    def dtypes(self) -> DtypeObj: ...
     @property
     def name(self) -> Hashable | None: ...
     @name.setter
