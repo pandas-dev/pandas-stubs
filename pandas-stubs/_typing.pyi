@@ -39,6 +39,8 @@ from pandas._libs.tslibs import (
 
 from pandas.core.dtypes.dtypes import ExtensionDtype
 
+from pandas.io.formats.format import EngFormatter
+
 ArrayLike = Union[ExtensionArray, np.ndarray]
 AnyArrayLike = Union[Index, Series, np.ndarray]
 PythonScalar = Union[str, bool, complex]
@@ -188,7 +190,10 @@ CompressionDict = dict[str, Any]
 CompressionOptions = Optional[
     Union[Literal["infer", "gzip", "bz2", "zip", "xz", "zstd"], CompressionDict]
 ]
-
+FormattersType = Union[
+    list[Callable], tuple[Callable, ...], Mapping[Union[str, int], Callable]
+]
+FloatFormatType = str | Callable | EngFormatter
 # converters
 ConvertersArg = dict[Hashable, Callable[[Dtype], Dtype]]
 

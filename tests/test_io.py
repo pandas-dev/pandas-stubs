@@ -353,6 +353,17 @@ def test_feather():
     check(assert_type(read_feather(bio), DataFrame), DataFrame)
 
 
+def test_to_string():
+    check(assert_type(DF.to_string(), str), str)
+    with ensure_clean() as path:
+        check(assert_type(DF.to_string(path), None), type(None))
+        check(assert_type(DF.to_string(pathlib.Path(path)), None), type(None))
+        with open(path, "wt") as df_string:
+            check(assert_type(DF.to_string(df_string), None), type(None))
+        sio = io.StringIO()
+        check(assert_type(DF.to_string(sio), None), type(None))
+
+
 def test_read_sql():
     with ensure_clean() as path:
         con = sqlite3.connect(path)
