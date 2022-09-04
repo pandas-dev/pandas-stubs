@@ -14,7 +14,7 @@ def pyright_src():
 
 
 def pytest():
-    cmd = ["pytest", "--cache-clear"]
+    cmd = ["pytest", "--cache-clear", "-Werror"]
     subprocess.run(cmd, check=True)
 
 
@@ -81,14 +81,14 @@ def restore_src():
 
 
 def nightly_pandas():
-    cmd = [sys.executable, "-m", "pip", "uninstall", "-y", "pandas"]
-    subprocess.run(cmd, check=True)
     cmd = [
         sys.executable,
         "-m",
         "pip",
         "install",
-        "-i",
+        "--use-deprecated=legacy-resolver",
+        "--upgrade",
+        "--index-url",
         "https://pypi.anaconda.org/scipy-wheels-nightly/simple",
         "pandas",
     ]
@@ -96,7 +96,12 @@ def nightly_pandas():
 
 
 def released_pandas():
-    cmd = [sys.executable, "-m", "pip", "uninstall", "-y", "pandas"]
-    subprocess.run(cmd, check=True)
-    cmd = [sys.executable, "-m", "pip", "install", "pandas"]
+    # query pandas version
+    text = Path("pyproject.toml").read_text()
+    version_line = next(
+        line for line in text.splitlines() if line.startswith("pandas = ")
+    )
+    version = version_line.split('"')[1]
+
+    cmd = [sys.executable, "-m", "pip", "install", f"pandas=={version}"]
     subprocess.run(cmd, check=True)
