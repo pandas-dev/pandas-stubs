@@ -244,7 +244,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         mode: _str = ...,
         encoding: _str | None = ...,
         compression: _str | Mapping[_str, _str] = ...,
-        quoting: int | None = ...,
+        quoting: Literal[0, 1, 2, 3] | None = ...,
         quotechar: _str = ...,
         line_terminator: _str | None = ...,
         chunksize: int | None = ...,
@@ -268,7 +268,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         mode: _str = ...,
         encoding: _str | None = ...,
         compression: _str | Mapping[_str, _str] = ...,
-        quoting: int | None = ...,
+        quoting: Literal[0, 1, 2, 3] | None = ...,
         quotechar: _str = ...,
         line_terminator: _str | None = ...,
         chunksize: int | None = ...,
@@ -284,7 +284,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     ) -> NDFrame: ...
     def xs(
         self,
-        key: _str | tuple[_str],
+        key: Hashable,
         axis: SeriesAxisType = ...,
         level: Level | None = ...,
         drop_level: _bool = ...,

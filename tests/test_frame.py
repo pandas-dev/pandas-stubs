@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
+import csv
 import datetime
 import io
 from pathlib import Path
@@ -113,6 +114,9 @@ def test_types_to_csv() -> None:
 
     # Testing support for binary file handles, added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
     df.to_csv(io.BytesIO(), encoding="utf-8", compression="gzip")
+
+    # Testing support for binary file handles, added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
+    df.to_csv(io.BytesIO(), quoting=csv.QUOTE_ALL, encoding="utf-8", compression="gzip")
 
 
 def test_types_to_csv_when_path_passed() -> None:
@@ -1299,57 +1303,22 @@ def test_to_excel() -> None:
 
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl")
-        df2: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(Path(path), engine="openpyxl")
-        df3: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl", startrow=1, startcol=1, header=False)
-        df4: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl", sheet_name="sheet", index=False)
-        df5: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl", header=["x", "y"])
-        df6: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl", columns=["col1"])
-        df7: pd.DataFrame = pd.read_excel(path)
-
-
-def test_read_excel() -> None:
-    if TYPE_CHECKING:  # skip pytest
-
-        # https://github.com/pandas-dev/pandas-stubs/pull/33
-        df11: pd.DataFrame = pd.read_excel("foo")
-        df12: pd.DataFrame = pd.read_excel("foo", sheet_name="sheet")
-        df13: dict[int | str, pd.DataFrame] = pd.read_excel("foo", sheet_name=["sheet"])
-        # GH 98
-        df14: pd.DataFrame = pd.read_excel("foo", sheet_name=0)
-        df15: dict[int | str, pd.DataFrame] = pd.read_excel("foo", sheet_name=[0])
-        df16: dict[int | str, pd.DataFrame] = pd.read_excel(
-            "foo", sheet_name=[0, "sheet"]
-        )
-        df17: dict[int | str, pd.DataFrame] = pd.read_excel("foo", sheet_name=None)
-
-
-def test_read_excel_io_types() -> None:
-    # GH 195
-    df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
-    with ensure_clean(".xlsx") as path:
-        as_str: str = path
-        df.to_excel(path)
-
-        check(assert_type(pd.read_excel(as_str), pd.DataFrame), pd.DataFrame)
-
-        as_path = Path(as_str)
-        check(assert_type(pd.read_excel(as_path), pd.DataFrame), pd.DataFrame)
-
-        with as_path.open("rb") as as_file:
-            check(assert_type(pd.read_excel(as_file), pd.DataFrame), pd.DataFrame)
-
-        as_bytes = as_path.read_bytes()
-        check(assert_type(pd.read_excel(as_bytes), pd.DataFrame), pd.DataFrame)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
 
 
 def test_join() -> None:
@@ -1745,3 +1714,12 @@ def test_pos() -> None:
     # GH 253
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     check(assert_type(+df, pd.DataFrame), pd.DataFrame)
+
+
+def test_xs_key() -> None:
+    # GH 214
+    mi = pd.MultiIndex.from_product([[0, 1], [0, 1]], names=["foo", "bar"])
+    df = pd.DataFrame({"x": [10, 20, 30, 40], "y": [50, 60, 70, 80]}, index=mi)
+    check(
+        assert_type(df.xs(0, level="foo"), Union[pd.DataFrame, pd.Series]), pd.DataFrame
+    )

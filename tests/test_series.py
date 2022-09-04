@@ -19,13 +19,19 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas._testing import ensure_clean
-from pandas.api.extensions import ExtensionArray
+from pandas.api.extensions import (
+    ExtensionArray,
+    ExtensionDtype,
+)
 from pandas.core.window import ExponentialMovingWindow
 import pytest
 from typing_extensions import assert_type
 import xarray as xr
 
-from pandas._typing import Scalar
+from pandas._typing import (
+    DtypeObj,
+    Scalar,
+)
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -1139,3 +1145,18 @@ def test_neg() -> None:
     sr_int = pd.Series([1, 2, 3], dtype=int)
     check(assert_type(-sr, pd.Series), pd.Series)
     check(assert_type(-sr_int, "pd.Series[int]"), pd.Series, int)
+
+
+def test_dtype_type() -> None:
+    # GH 216
+    s1 = pd.Series(["foo"], dtype="string")
+    check(assert_type(s1.dtype, DtypeObj), ExtensionDtype)
+    check(assert_type(s1.dtype.kind, str), str)
+
+    s2 = pd.Series([1], dtype="Int64")
+    check(assert_type(s2.dtype, DtypeObj), ExtensionDtype)
+    check(assert_type(s2.dtype.kind, str), str)
+
+    s3 = pd.Series([1, 2, 3])
+    check(assert_type(s3.dtype, DtypeObj), np.dtype)
+    check(assert_type(s3.dtype.kind, str), str)

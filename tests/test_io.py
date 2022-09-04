@@ -6,6 +6,7 @@ import sqlite3
 from typing import (
     TYPE_CHECKING,
     Any,
+    Dict,
     Generator,
     List,
     Union,
@@ -19,6 +20,7 @@ from pandas import (
     Series,
     __version__,
     read_clipboard,
+    read_excel,
     read_feather,
     read_hdf,
     read_html,
@@ -42,6 +44,7 @@ from tests import check
 
 from pandas.io.api import to_pickle
 from pandas.io.clipboard import PyperclipException
+from pandas.io.common import IOHandles
 from pandas.io.json._json import JsonReader
 from pandas.io.parsers import TextFileReader
 from pandas.io.pytables import (
@@ -415,6 +418,126 @@ def test_feather():
     check(assert_type(DF.to_feather(bio), None), type(None))
     bio.seek(0)
     check(assert_type(read_feather(bio), DataFrame), DataFrame)
+
+
+def test_read_excel() -> None:
+    with ensure_clean(".xlsx") as path:
+        # https://github.com/pandas-dev/pandas-stubs/pull/33
+        check(
+            assert_type(pd.DataFrame({"A": [1, 2, 3]}).to_excel(path), None), type(None)
+        )
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(pd.read_excel(path, sheet_name="Sheet1"), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, sheet_name=["Sheet1"]),
+                Dict[Union[int, str], pd.DataFrame],
+            ),
+            dict,
+        )
+        # GH 98
+        check(
+            assert_type(pd.read_excel(path, sheet_name=0), pd.DataFrame), pd.DataFrame
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, sheet_name=[0]), Dict[Union[int, str], pd.DataFrame]
+            ),
+            dict,
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, sheet_name=[0, "Sheet1"]),
+                Dict[Union[int, str], pd.DataFrame],
+            ),
+            dict,
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, sheet_name=None),
+                Dict[Union[int, str], pd.DataFrame],
+            ),
+            dict,
+        )
+
+
+def test_read_excel_io_types() -> None:
+    # GH 195
+    df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
+    with ensure_clean(".xlsx") as path:
+        as_str: str = path
+        df.to_excel(path)
+
+        check(assert_type(pd.read_excel(as_str), pd.DataFrame), pd.DataFrame)
+
+        as_path = Path(as_str)
+        check(assert_type(pd.read_excel(as_path), pd.DataFrame), pd.DataFrame)
+
+        with as_path.open("rb") as as_file:
+            check(assert_type(pd.read_excel(as_file), pd.DataFrame), pd.DataFrame)
+
+        as_bytes = as_path.read_bytes()
+        check(assert_type(pd.read_excel(as_bytes), pd.DataFrame), pd.DataFrame)
+
+
+def test_read_excel_basic():
+    with ensure_clean(".xlsx") as path:
+        check(assert_type(DF.to_excel(path), None), type(None))
+        check(assert_type(read_excel(path), DataFrame), DataFrame)
+        check(assert_type(read_excel(path, sheet_name="Sheet1"), DataFrame), DataFrame)
+        check(assert_type(read_excel(path, sheet_name=0), DataFrame), DataFrame)
+
+
+def test_read_excel_list():
+    with ensure_clean(".xlsx") as path:
+        check(assert_type(DF.to_excel(path), None), type(None))
+        check(
+            assert_type(
+                read_excel(path, sheet_name=["Sheet1"]),
+                Dict[Union[str, int], DataFrame],
+            ),
+            dict,
+        )
+        check(
+            assert_type(
+                read_excel(path, sheet_name=[0]), Dict[Union[str, int], DataFrame]
+            ),
+            dict,
+        )
+
+
+def test_excel_writer():
+    with ensure_clean(".xlsx") as path:
+        with pd.ExcelWriter(path) as ew:
+            check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
+            DF.to_excel(ew, sheet_name="A")
+            check(assert_type(ew.handles, IOHandles[bytes]), IOHandles)
+        check(assert_type(read_excel(path, sheet_name="A"), DataFrame), DataFrame)
+        check(assert_type(read_excel(path), DataFrame), DataFrame)
+        ef = pd.ExcelFile(path)
+        check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
+        check(assert_type(read_excel(ef, sheet_name="A"), DataFrame), DataFrame)
+        check(assert_type(read_excel(ef), DataFrame), DataFrame)
+        check(assert_type(ef.parse(sheet_name=0), DataFrame), DataFrame)
+        check(
+            assert_type(ef.parse(sheet_name=[0]), Dict[Union[str, int], DataFrame]),
+            dict,
+        )
+        check(assert_type(ef.close(), None), type(None))
+
+
+def test_to_string():
+    check(assert_type(DF.to_string(), str), str)
+    with ensure_clean() as path:
+        check(assert_type(DF.to_string(path), None), type(None))
+        check(assert_type(DF.to_string(pathlib.Path(path)), None), type(None))
+        with open(path, "wt") as df_string:
+            check(assert_type(DF.to_string(df_string), None), type(None))
+        sio = io.StringIO()
+        check(assert_type(DF.to_string(sio), None), type(None))
 
 
 def test_read_sql():

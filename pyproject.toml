@@ -42,7 +42,7 @@ pytest = ">=7.1.2"
 pyright = ">=1.1.266"
 poethepoet = "0.16.0"
 loguru = ">=0.6.0"
-pandas = "1.4.3"
+pandas = "1.4.4"
 typing-extensions = ">=4.2.0"
 matplotlib = ">=3.3.2"
 pre-commit = ">=2.19.0"
@@ -52,8 +52,12 @@ openpyxl = ">=3.0.10"
 tables = ">=3.7.0"
 lxml = ">=4.7.1,<4.9.0"
 pyreadstat = ">=1.1.9"
+xlrd = ">=2.0.1"
+pyxlsb = ">=1.0.9"
+odfpy = ">=1.4.1"
 xarray = ">=22.6.0"
 tabulate = ">=0.8.10"
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -170,7 +174,6 @@ typeCheckingMode = "strict"
 stubPath = "."
 include = ["tests", "pandas-stubs"]
 # disable subset of strict
-reportIncompleteStub = false
 reportInconsistentConstructor = false
 reportMissingParameterType = false
 reportMissingTypeArgument = false

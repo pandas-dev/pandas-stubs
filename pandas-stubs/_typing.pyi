@@ -39,13 +39,14 @@ from pandas._libs.tslibs import (
 
 from pandas.core.dtypes.dtypes import ExtensionDtype
 
+from pandas.io.formats.format import EngFormatter
+
 ArrayLike = Union[ExtensionArray, np.ndarray]
 AnyArrayLike = Union[Index, Series, np.ndarray]
 PythonScalar = Union[str, bool, complex]
 DatetimeLikeScalar = TypeVar("DatetimeLikeScalar", Period, Timestamp, Timedelta)
 PandasScalar = Union[bytes, datetime.date, datetime.datetime, datetime.timedelta]
 # Scalar = Union[PythonScalar, PandasScalar]
-IntStrT = TypeVar("IntStrT", int, str)
 
 DatetimeLike = Union[datetime.date, datetime.datetime, np.datetime64, Timestamp]
 
@@ -67,6 +68,9 @@ class WriteBuffer(BaseBuffer, Protocol[AnyStr_cov]): ...
 
 class ReadPickleBuffer(ReadBuffer[bytes], Protocol):
     def readline(self, size: int | None = ...) -> bytes: ...
+
+class WriteExcelBuffer(WriteBuffer[bytes], Protocol):
+    def truncate(self, size: Union[int, None] = ...) -> int: ...
 
 FilePath = Union[str, PathLike[str]]
 
@@ -191,7 +195,10 @@ CompressionDict = dict[str, Any]
 CompressionOptions = Optional[
     Union[Literal["infer", "gzip", "bz2", "zip", "xz", "zstd"], CompressionDict]
 ]
-
+FormattersType = Union[
+    list[Callable], tuple[Callable, ...], Mapping[Union[str, int], Callable]
+]
+FloatFormatType = str | Callable | EngFormatter
 # converters
 ConvertersArg = dict[Hashable, Callable[[Dtype], Dtype]]
 

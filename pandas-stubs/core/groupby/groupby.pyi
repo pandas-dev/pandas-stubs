@@ -7,7 +7,6 @@ from pandas.core.base import (
 from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
 from pandas.core.groupby import ops
-from pandas.core.groupby.indexing import GroupByIndexingMixin
 from pandas.core.indexes.api import Index
 from pandas.core.series import Series
 
@@ -23,7 +22,7 @@ class GroupByPlot(PandasObject):
     def __call__(self, *args, **kwargs): ...
     def __getattr__(self, name: str): ...
 
-class BaseGroupBy(PandasObject, SelectionMixin[NDFrameT], GroupByIndexingMixin):
+class BaseGroupBy(PandasObject, SelectionMixin[NDFrameT]):
     level = ...
     as_index = ...
     keys = ...
