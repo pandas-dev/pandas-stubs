@@ -52,8 +52,12 @@ openpyxl = ">=3.0.10"
 tables = ">=3.7.0"
 lxml = ">=4.7.1,<4.9.0"
 pyreadstat = ">=1.1.9"
+xlrd = ">=2.0.1"
+pyxlsb = ">=1.0.9"
+odfpy = ">=1.4.1"
 xarray = ">=22.6.0"
 tabulate = ">=0.8.10"
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
