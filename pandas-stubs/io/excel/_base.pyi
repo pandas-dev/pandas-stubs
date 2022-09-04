@@ -1,188 +1,239 @@
-import abc
+from types import TracebackType
 from typing import (
     Any,
     Callable,
+    Generator,
+    Hashable,
+    Iterable,
+    Literal,
     Sequence,
     overload,
 )
 
+from odf.opendocument import OpenDocument
+from openpyxl.workbook.workbook import Workbook
 from pandas.core.frame import DataFrame
+import pyxlsb.workbook
+from xlrd.book import Book
 
 from pandas._typing import (
     Dtype,
     FilePath,
     ReadBuffer,
-    Scalar,
+    StorageOptions,
+    WriteExcelBuffer,
 )
+
+from pandas.io.common import IOHandles
 
 @overload
 def read_excel(
-    filepath: FilePath | ReadBuffer[bytes] | bytes,
+    io: FilePath
+    | ReadBuffer[bytes]
+    | bytes
+    | ExcelFile
+    | Workbook
+    | Book
+    | OpenDocument
+    | pyxlsb.workbook.Workbook,
     sheet_name: list[int | str] | None,
+    *,
     header: int | Sequence[int] | None = ...,
     names: list[str] | None = ...,
     index_col: int | Sequence[int] | None = ...,
-    usecols: int | str | Sequence[int | str | Callable] | None = ...,
-    squeeze: bool = ...,
-    dtype: str | dict[str, Any] | Dtype = ...,
-    engine: str | None = ...,
-    converters: dict[int | str, Callable] | None = ...,
-    true_values: Sequence[Scalar] | None = ...,
-    false_values: Sequence[Scalar] | None = ...,
-    skiprows: Sequence[int] | int | Callable | None = ...,
+    usecols: Sequence[int] | Sequence[str] | Callable[[str], bool] | None = ...,
+    dtype: str | Dtype | dict[str, str | Dtype] | None = ...,
+    engine: Literal["xlrd", "openpyxl", "odf", "pyxlsb"] | None = ...,
+    converters: dict[int | str, Callable[[object], object]] | None = ...,
+    true_values: Iterable[Hashable] | None = ...,
+    false_values: Iterable[Hashable] | None = ...,
+    skiprows: int | Sequence[int] | Callable[[object], bool] | None = ...,
     nrows: int | None = ...,
-    na_values=...,
+    na_values: Sequence[str] | dict[str | int, Sequence[str]] = ...,
     keep_default_na: bool = ...,
+    na_filter: bool = ...,
     verbose: bool = ...,
-    parse_dates: bool | Sequence | dict[str, Sequence] = ...,
+    parse_dates: bool
+    | Sequence[int]
+    | Sequence[Sequence[str] | Sequence[int]]
+    | dict[str, Sequence[int] | list[str]] = ...,
     date_parser: Callable | None = ...,
     thousands: str | None = ...,
+    decimal: str = ...,
     comment: str | None = ...,
     skipfooter: int = ...,
-    convert_float: bool = ...,
-    mangle_dupe_cols: bool = ...,
+    storage_options: StorageOptions = ...,
 ) -> dict[int | str, DataFrame]: ...
 @overload
 def read_excel(
-    filepath: FilePath | ReadBuffer[bytes] | bytes,
+    io: FilePath
+    | ReadBuffer[bytes]
+    | bytes
+    | ExcelFile
+    | Workbook
+    | Book
+    | OpenDocument
+    | pyxlsb.workbook.Workbook,
     sheet_name: int | str = ...,
+    *,
     header: int | Sequence[int] | None = ...,
     names: list[str] | None = ...,
     index_col: int | Sequence[int] | None = ...,
-    usecols: int | str | Sequence[int | str | Callable] | None = ...,
-    squeeze: bool = ...,
-    dtype: str | dict[str, Any] | Dtype = ...,
-    engine: str | None = ...,
-    converters: dict[int | str, Callable] | None = ...,
-    true_values: Sequence[Scalar] | None = ...,
-    false_values: Sequence[Scalar] | None = ...,
-    skiprows: Sequence[int] | int | Callable | None = ...,
+    usecols: Sequence[int] | Sequence[str] | Callable[[str], bool] | None = ...,
+    dtype: str | Dtype | dict[str, str | Dtype] | None = ...,
+    engine: Literal["xlrd", "openpyxl", "odf", "pyxlsb"] | None = ...,
+    converters: dict[int | str, Callable[[object], object]] | None = ...,
+    true_values: Iterable[Hashable] | None = ...,
+    false_values: Iterable[Hashable] | None = ...,
+    skiprows: int | Sequence[int] | Callable[[object], bool] | None = ...,
     nrows: int | None = ...,
-    na_values=...,
+    na_values: Sequence[str] | dict[str | int, Sequence[str]] = ...,
     keep_default_na: bool = ...,
+    na_filter: bool = ...,
     verbose: bool = ...,
-    parse_dates: bool | Sequence | dict[str, Sequence] = ...,
+    parse_dates: bool
+    | Sequence[int]
+    | Sequence[Sequence[str] | Sequence[int]]
+    | dict[str, Sequence[int] | list[str]] = ...,
     date_parser: Callable | None = ...,
     thousands: str | None = ...,
+    decimal: str = ...,
     comment: str | None = ...,
     skipfooter: int = ...,
-    convert_float: bool = ...,
-    mangle_dupe_cols: bool = ...,
-    **kwargs,
+    storage_options: StorageOptions = ...,
 ) -> DataFrame: ...
 
-class BaseExcelReader(metaclass=abc.ABCMeta):
-    book = ...
-    def __init__(self, filepath_or_buffer) -> None: ...
-    @abc.abstractmethod
-    def load_workbook(self, filepath_or_buffer): ...
-    def close(self) -> None: ...
-    @property
-    @abc.abstractmethod
-    def sheet_names(self): ...
-    @abc.abstractmethod
-    def get_sheet_by_name(self, name): ...
-    @abc.abstractmethod
-    def get_sheet_by_index(self, index): ...
-    @abc.abstractmethod
-    def get_sheet_data(self, sheet, convert_float): ...
-    def parse(
-        self,
-        sheet_name: int = ...,
-        header: int = ...,
-        names=...,
-        index_col=...,
-        usecols=...,
-        squeeze: bool = ...,
-        dtype=...,
-        true_values=...,
-        false_values=...,
-        skiprows=...,
-        nrows=...,
-        na_values=...,
-        verbose: bool = ...,
-        parse_dates: bool = ...,
-        date_parser=...,
-        thousands=...,
-        comment=...,
-        skipfooter: int = ...,
-        convert_float: bool = ...,
-        mangle_dupe_cols: bool = ...,
-        **kwds,
-    ): ...
-
-class ExcelWriter(metaclass=abc.ABCMeta):
-    def __new__(cls, path, engine=..., **kwargs): ...
-    book = ...
-    curr_sheet = ...
-    path = ...
-    @property
-    def supported_extensions(self): ...
-    @property
-    def engine(self): ...
-    def write_cells(
-        self,
-        cells,
-        sheet_name=...,
-        startrow: int = ...,
-        startcol: int = ...,
-        freeze_panes=...,
-    ): ...
-    def save(self): ...
-    sheets = ...
-    cur_sheet = ...
-    date_format: str = ...
-    datetime_format: str = ...
-    mode = ...
+class ExcelWriter:
     def __init__(
         self,
-        path,
-        engine=...,
-        date_format=...,
-        datetime_format=...,
-        mode: str = ...,
-        **engine_kwargs,
+        path: FilePath | WriteExcelBuffer | ExcelWriter,
+        engine: Literal["auto", "openpyxl", "pyxlsb", "odf"] | None = ...,
+        date_format: str | None = ...,
+        datetime_format: str | None = ...,
+        mode: Literal["w", "writer"] = ...,
+        storage_options: StorageOptions = ...,
+        if_sheet_exists: Literal["error", "new", "replace", "overlay"] | None = ...,
+        engine_kwargs: dict[str, Any] | None = ...,
     ) -> None: ...
-    def __fspath__(self): ...
-    @classmethod
-    def check_extension(cls, ext): ...
-    def __enter__(self): ...
-    def __exit__(self, exc_type, exc_value, traceback) -> None: ...
-    def close(self): ...
+    @property
+    def supported_extensions(self) -> tuple[str, ...]: ...
+    @property
+    def engine(self) -> Literal["openpyxl", "pyxlsb", "odf"]: ...
+    @property
+    def sheets(self) -> dict[str, Any]: ...
+    @property
+    def book(self) -> Workbook | OpenDocument | pyxlsb.workbook.Workbook: ...
+    def write_cells(
+        self,
+        cells: Generator[object, None, None],
+        sheet_name: str | None = ...,
+        startrow: int = ...,
+        startcol: int = ...,
+        freeze_panes: tuple[int, int] | None = ...,
+    ) -> None: ...
+    def save(self) -> None: ...
+    @property
+    def date_format(self) -> str: ...
+    @property
+    def datetime_format(self) -> str: ...
+    @property
+    def if_sheet_exists(self) -> Literal["error", "new", "replace", "overlay"]: ...
+    @property
+    def cur_sheet(self) -> Any: ...
+    @property
+    def handles(self) -> IOHandles[bytes]: ...
+    @property
+    def path(self) -> str | None: ...
+    def __fspath__(self) -> str: ...
+    def __enter__(self) -> ExcelWriter: ...
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> None: ...
+    def close(self) -> None: ...
 
 class ExcelFile:
     engine = ...
-    io = ...
-    def __init__(self, io, engine=...) -> None: ...
+    io: FilePath | ReadBuffer[bytes] | bytes = ...
+    def __init__(
+        self,
+        io: FilePath | ReadBuffer[bytes] | bytes,
+        engine: Literal["xlrd", "openpyxl", "odf", "pyxlsb"] | None = ...,
+        storage_options: StorageOptions = ...,
+    ) -> None: ...
     def __fspath__(self): ...
+    @overload
     def parse(
         self,
-        sheet_name: int = ...,
-        header: int = ...,
-        names=...,
-        index_col=...,
-        usecols=...,
-        squeeze: bool = ...,
-        converters=...,
-        true_values=...,
-        false_values=...,
-        skiprows=...,
-        nrows=...,
-        na_values=...,
-        parse_dates: bool = ...,
-        date_parser=...,
-        thousands=...,
-        comment=...,
+        sheet_name: list[int | str] | None,
+        header: int | Sequence[int] | None = ...,
+        names: list[str] | None = ...,
+        index_col: int | Sequence[int] | None = ...,
+        usecols: str
+        | Sequence[int]
+        | Sequence[str]
+        | Callable[[str], bool]
+        | None = ...,
+        converters: dict[int | str, Callable[[object], object]] | None = ...,
+        true_values: Iterable[Hashable] | None = ...,
+        false_values: Iterable[Hashable] | None = ...,
+        skiprows: int | Sequence[int] | Callable[[object], bool] | None = ...,
+        nrows: int | None = ...,
+        na_values: Sequence[str] | dict[str | int, Sequence[str]] = ...,
+        parse_dates: bool
+        | Sequence[int]
+        | Sequence[Sequence[str] | Sequence[int]]
+        | dict[str, Sequence[int] | list[str]] = ...,
+        date_parser: Callable | None = ...,
+        thousands: str | None = ...,
+        comment: str | None = ...,
         skipfooter: int = ...,
-        convert_float: bool = ...,
-        mangle_dupe_cols: bool = ...,
-        **kwds,
-    ): ...
+        keep_default_na: bool = ...,
+        na_filter: bool = ...,
+        **kwds: Any,
+    ) -> dict[int | str, DataFrame]: ...
+    @overload
+    def parse(
+        self,
+        sheet_name: int | str,
+        header: int | Sequence[int] | None = ...,
+        names: list[str] | None = ...,
+        index_col: int | Sequence[int] | None = ...,
+        usecols: str
+        | Sequence[int]
+        | Sequence[str]
+        | Callable[[str], bool]
+        | None = ...,
+        converters: dict[int | str, Callable[[object], object]] | None = ...,
+        true_values: Iterable[Hashable] | None = ...,
+        false_values: Iterable[Hashable] | None = ...,
+        skiprows: int | Sequence[int] | Callable[[object], bool] | None = ...,
+        nrows: int | None = ...,
+        na_values: Sequence[str] | dict[str | int, Sequence[str]] = ...,
+        parse_dates: bool
+        | Sequence[int]
+        | Sequence[Sequence[str] | Sequence[int]]
+        | dict[str, Sequence[int] | list[str]] = ...,
+        date_parser: Callable | None = ...,
+        thousands: str | None = ...,
+        comment: str | None = ...,
+        skipfooter: int = ...,
+        keep_default_na: bool = ...,
+        na_filter: bool = ...,
+        **kwds: Any,
+    ) -> DataFrame: ...
     @property
-    def book(self): ...
+    def book(self) -> Workbook | Book | OpenDocument | pyxlsb.workbook.Workbook: ...
     @property
-    def sheet_names(self): ...
+    def sheet_names(self) -> list[int | str]: ...
     def close(self) -> None: ...
-    def __enter__(self): ...
-    def __exit__(self, exc_type, exc_value, traceback) -> None: ...
+    def __enter__(self) -> ExcelFile: ...
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> None: ...
     def __del__(self) -> None: ...
