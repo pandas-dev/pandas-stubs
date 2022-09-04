@@ -7,6 +7,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
+    Hashable,
     Iterable,
     Iterator,
     List,
@@ -22,6 +23,7 @@ from pandas.api.extensions import ExtensionArray
 from pandas.core.window import ExponentialMovingWindow
 import pytest
 from typing_extensions import assert_type
+import xarray as xr
 
 from pandas._typing import Scalar
 
@@ -909,7 +911,7 @@ def test_types_to_list() -> None:
 
 def test_types_to_dict() -> None:
     s = pd.Series(["a", "b", "c"], dtype=str)
-    assert_type(s.to_dict(), Dict[Any, str])
+    assert_type(s.to_dict(), Dict[Hashable, str])
 
 
 def test_categorical_codes():
@@ -1124,6 +1126,11 @@ def test_resample() -> None:
     check(assert_type(df.resample("2T").sem(), pd.Series), pd.Series)
     check(assert_type(df.resample("2T").median(), pd.Series), pd.Series)
     check(assert_type(df.resample("2T").ohlc(), pd.DataFrame), pd.DataFrame)
+
+
+def test_to_xarray():
+    s = pd.Series([1, 2])
+    check(assert_type(s.to_xarray(), xr.DataArray), xr.DataArray)
 
 
 def test_neg() -> None:
