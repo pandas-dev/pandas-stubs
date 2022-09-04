@@ -82,7 +82,7 @@ script = "scripts.test.run:style"
 
 [tool.poe.tasks.mypy]
 help = "Run mypy on 'tests' (using the local stubs) and on the local stubs"
-script = "scripts.test:test(src=True, type_checker='mypy')"
+script = "scripts.test.run:mypy_src"
 
 [tool.poe.tasks.mypy_dist]
 help = "Run mypy on 'tests' using the installed stubs"
@@ -90,7 +90,7 @@ script = "scripts.test:test(dist=True, type_checker='mypy')"
 
 [tool.poe.tasks.pyright]
 help = "Run pyright on 'tests' (using the local stubs) and on the local stubs"
-script = "scripts.test:test(src=True, type_checker='pyright')"
+script = "scripts.test.run:pyright_src"
 
 [tool.poe.tasks.pyright_dist]
 help = "Run pyright on 'tests' using the installed stubs"
@@ -170,8 +170,8 @@ typeCheckingMode = "strict"
 stubPath = "."
 include = ["tests", "pandas-stubs"]
 # disable subset of strict
+reportIncompleteStub = false
 reportInconsistentConstructor = false
-reportMissingModuleSource = false
 reportMissingParameterType = false
 reportMissingTypeArgument = false
 reportMissingTypeStubs = false
@@ -184,3 +184,5 @@ reportUnknownVariableType = false
 reportUntypedBaseClass = false
 reportUnusedVariable = false
 reportPrivateUsage = false
+# enable optional checks
+reportMissingModuleSource = true

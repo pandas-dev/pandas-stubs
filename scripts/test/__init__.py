@@ -5,13 +5,7 @@ from typing import Literal
 from scripts._job import run_job
 from scripts.test import _step
 
-_SRC_STEPS = [
-    _step.pytest,
-    _step.style,
-    _step.rename_pandas,
-    _step.mypy_src,
-    _step.pyright_src,
-]
+_SRC_STEPS = [_step.mypy_src, _step.pyright_src, _step.pytest, _step.style]
 _DIST_STEPS = [
     _step.build_dist,
     _step.install_dist,
@@ -35,11 +29,8 @@ def test(
 
     if type_checker:
         # either pyright or mypy
-        removes = ["mypy" if type_checker == "pyright" else "pyright"]
-        removes.extend(["pytest", "pre-commit"])
-        steps = [
-            step for step in steps if all(remove not in step.name for remove in removes)
-        ]
+        remove = "mypy" if type_checker == "pyright" else "pyright"
+        steps = [step for step in steps if remove not in step.name]
 
     run_job(steps)
 
