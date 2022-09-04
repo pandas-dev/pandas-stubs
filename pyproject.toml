@@ -170,7 +170,6 @@ typeCheckingMode = "strict"
 stubPath = "."
 include = ["tests", "pandas-stubs"]
 # disable subset of strict
-reportIncompleteStub = false
 reportInconsistentConstructor = false
 reportMissingParameterType = false
 reportMissingTypeArgument = false
