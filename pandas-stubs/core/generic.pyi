@@ -15,6 +15,7 @@ import numpy as np
 from pandas.core.base import PandasObject
 from pandas.core.indexes.base import Index
 import pandas.core.indexing as indexing
+from pandas.core.series import Series
 import sqlalchemy.engine
 
 from pandas._typing import (
@@ -45,7 +46,6 @@ from pandas._typing import (
 
 from pandas.io.pytables import HDFStore
 from pandas.io.sql import SQLTable
-from pandas.core.series import Series
 
 _bool = bool
 _str = str
