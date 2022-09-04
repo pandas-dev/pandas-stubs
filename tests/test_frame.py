@@ -1745,3 +1745,9 @@ def test_pos() -> None:
     # GH 253
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     check(assert_type(+df, pd.DataFrame), pd.DataFrame)
+
+
+def test_getattr() -> None:
+    # GH 261
+    df = pd.DataFrame({"a": [1, 2]})
+    check(assert_type(df.a, pd.Series), pd.Series)

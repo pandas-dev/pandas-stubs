@@ -1139,3 +1139,9 @@ def test_neg() -> None:
     sr_int = pd.Series([1, 2, 3], dtype=int)
     check(assert_type(-sr, pd.Series), pd.Series)
     check(assert_type(-sr_int, "pd.Series[int]"), pd.Series, int)
+
+
+def test_getattr() -> None:
+    # GH 261
+    series = pd.Series([1, 2, 3], index=["a", "b", "c"], dtype=int)
+    check(assert_type(series.a, int), np.int64)
