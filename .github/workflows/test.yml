@@ -11,13 +11,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ['3.8', '3.9', '3.10']
-        experimental: [false]
-        pandas-version: ""
-        include:
-          - os: ubuntu-latest
-            python-version: '3.10'
-            experimental: true
-            pandas-version: "--nightly"
 
     steps:
     - uses: actions/checkout@v3
@@ -40,11 +33,26 @@ jobs:
       run: poetry run poe pyright
 
     - name: Run pytest
-      run: poetry run poe pytest {{ matrix.pandas-version }}
-      continue-on-error: ${{ matrix.experimental }}
+      run: poetry run poe pytest
 
     - name: Install pandas-stubs and run tests on the installed stubs
       run: poetry run poe test_dist
+
+  nightly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install project dependencies
+      uses: ./.github/setup
+      with:
+        os: ubuntu-latest
+        python-version: '3.10'
+
+    - name: Run pytest (against pandas nightly)
+      run: poetry run poe pytest --nightly
 
   precommit:
     runs-on: ubuntu-latest
