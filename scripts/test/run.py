@@ -1,6 +1,8 @@
+from functools import partial
 from pathlib import Path
 import subprocess
 import sys
+from typing import Callable
 
 
 def mypy_src():
@@ -105,3 +107,13 @@ def released_pandas():
 
     cmd = [sys.executable, "-m", "pip", "install", f"pandas=={version}"]
     subprocess.run(cmd, check=True)
+
+
+def get_pandas_renamer() -> dict[str, Callable[[], None]]:
+    cmd = [sys.executable, "-c", "import pandas; print(pandas.__path__[0])"]
+    path = Path(subprocess.check_output(cmd).decode().strip())
+    hidden = path.parent / f"_{path.name}"
+    return {
+        "run": partial(path.rename, hidden),
+        "rollback": partial(hidden.rename, path),
+    }

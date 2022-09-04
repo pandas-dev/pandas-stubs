@@ -20,6 +20,7 @@ rename_src = Step(
     run=run.rename_src,
     rollback=run.restore_src,
 )
+rename_pandas = Step(name="Rename pandas implementation", **run.get_pandas_renamer())
 mypy_dist = Step(
     name="Run mypy on 'tests' using the installed stubs", run=run.mypy_dist
 )
