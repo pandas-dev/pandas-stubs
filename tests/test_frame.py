@@ -1303,57 +1303,22 @@ def test_to_excel() -> None:
 
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl")
-        df2: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(Path(path), engine="openpyxl")
-        df3: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl", startrow=1, startcol=1, header=False)
-        df4: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl", sheet_name="sheet", index=False)
-        df5: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl", header=["x", "y"])
-        df6: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl", columns=["col1"])
-        df7: pd.DataFrame = pd.read_excel(path)
-
-
-def test_read_excel() -> None:
-    if TYPE_CHECKING:  # skip pytest
-
-        # https://github.com/pandas-dev/pandas-stubs/pull/33
-        df11: pd.DataFrame = pd.read_excel("foo")
-        df12: pd.DataFrame = pd.read_excel("foo", sheet_name="sheet")
-        df13: dict[int | str, pd.DataFrame] = pd.read_excel("foo", sheet_name=["sheet"])
-        # GH 98
-        df14: pd.DataFrame = pd.read_excel("foo", sheet_name=0)
-        df15: dict[int | str, pd.DataFrame] = pd.read_excel("foo", sheet_name=[0])
-        df16: dict[int | str, pd.DataFrame] = pd.read_excel(
-            "foo", sheet_name=[0, "sheet"]
-        )
-        df17: dict[int | str, pd.DataFrame] = pd.read_excel("foo", sheet_name=None)
-
-
-def test_read_excel_io_types() -> None:
-    # GH 195
-    df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
-    with ensure_clean(".xlsx") as path:
-        as_str: str = path
-        df.to_excel(path)
-
-        check(assert_type(pd.read_excel(as_str), pd.DataFrame), pd.DataFrame)
-
-        as_path = Path(as_str)
-        check(assert_type(pd.read_excel(as_path), pd.DataFrame), pd.DataFrame)
-
-        with as_path.open("rb") as as_file:
-            check(assert_type(pd.read_excel(as_file), pd.DataFrame), pd.DataFrame)
-
-        as_bytes = as_path.read_bytes()
-        check(assert_type(pd.read_excel(as_bytes), pd.DataFrame), pd.DataFrame)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
 
 
 def test_join() -> None:
