@@ -44,6 +44,7 @@ def read_csv(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
+    mangle_dupe_cols: bool = ...,
     dtype: DtypeArg | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
@@ -107,6 +108,7 @@ def read_csv(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
+    mangle_dupe_cols: bool = ...,
     dtype: DtypeArg | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
@@ -170,6 +172,7 @@ def read_csv(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
+    mangle_dupe_cols: bool = ...,
     dtype: DtypeArg | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
@@ -405,13 +408,39 @@ def read_table(
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
     storage_options: StorageOptions | None = ...,
 ) -> DataFrame: ...
+@overload
 def read_fwf(
     filepath_or_buffer: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str],
-    colspecs: Sequence[tuple[int, int]] | str | None = ...,
+    colspecs: Sequence[tuple[int, int]] | Literal["infer"] | None = ...,
     widths: Sequence[int] | None = ...,
     infer_nrows: int = ...,
+    *,
+    iterator: Literal[True],
+    chunksize: int | None = ...,
     **kwds: Any,
-) -> DataFrame | TextFileReader: ...
+) -> TextFileReader: ...
+@overload
+def read_fwf(
+    filepath_or_buffer: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str],
+    colspecs: Sequence[tuple[int, int]] | Literal["infer"] | None = ...,
+    widths: Sequence[int] | None = ...,
+    infer_nrows: int = ...,
+    *,
+    iterator: bool = ...,
+    chunksize: int,
+    **kwds: Any,
+) -> TextFileReader: ...
+@overload
+def read_fwf(
+    filepath_or_buffer: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str],
+    colspecs: Sequence[tuple[int, int]] | Literal["infer"] | None = ...,
+    widths: Sequence[int] | None = ...,
+    infer_nrows: int = ...,
+    *,
+    iterator: Literal[False] = ...,
+    chunksize: None = ...,
+    **kwds: Any,
+) -> DataFrame: ...
 
 class TextFileReader(abc.Iterator):
     engine: CSVEngine

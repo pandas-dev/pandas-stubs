@@ -1,3 +1,4 @@
+import csv
 import io
 import os.path
 import pathlib
@@ -443,34 +444,28 @@ def test_read_table_iterator():
         )
 
 
-def test_read_fwf():
+def btest_read_fwf():
     with ensure_clean() as path:
         DF.to_string(path, index=False)
-        check(assert_type(read_fwf(path), Union[DataFrame, TextFileReader]), DataFrame)
-        check(
-            assert_type(read_fwf(pathlib.Path(path)), Union[DataFrame, TextFileReader]),
-            DataFrame,
-        )
+        check(assert_type(read_fwf(path), DataFrame), DataFrame)
+        check(assert_type(read_fwf(pathlib.Path(path)), DataFrame), DataFrame)
 
         with open(path) as fwf_file:
             check(
-                assert_type(read_fwf(fwf_file), Union[DataFrame, TextFileReader]),
+                assert_type(read_fwf(fwf_file), DataFrame),
                 DataFrame,
             )
         with open(path) as fwf_file:
             sio = io.StringIO(fwf_file.read())
-            check(
-                assert_type(read_fwf(sio), Union[DataFrame, TextFileReader]), DataFrame
-            )
+            check(assert_type(read_fwf(sio), DataFrame), DataFrame)
         with open(path, "rb") as fwf_file:
             bio = io.BytesIO(fwf_file.read())
-            check(
-                assert_type(read_fwf(bio), Union[DataFrame, TextFileReader]), DataFrame
-            )
+            check(assert_type(read_fwf(bio), DataFrame), DataFrame)
         fwf_iterator = read_fwf(path, iterator=True)
-        check(
-            assert_type(fwf_iterator, Union[DataFrame, TextFileReader]), TextFileReader
-        )
+        check(assert_type(fwf_iterator, TextFileReader), TextFileReader)
+        fwf_iterator.close()
+        fwf_iterator2 = read_fwf(path, chunksize=1)
+        check(assert_type(fwf_iterator2, TextFileReader), TextFileReader)
         fwf_iterator.close()
 
 
@@ -496,6 +491,17 @@ def test_to_csv_series():
     check(assert_type(s.to_csv(), str), str)
     with ensure_clean() as path:
         check(assert_type(s.to_csv(path), None), type(None))
+
+
+def test_to_string():
+    check(assert_type(DF.to_string(), str), str)
+    with ensure_clean() as path:
+        check(assert_type(DF.to_string(path), None), type(None))
+        check(assert_type(DF.to_string(pathlib.Path(path)), None), type(None))
+        with open(path, "wt") as df_string:
+            check(assert_type(DF.to_string(df_string), None), type(None))
+        sio = io.StringIO()
+        check(assert_type(DF.to_string(sio), None), type(None))
 
 
 def test_read_sql():
@@ -572,3 +578,13 @@ def test_read_html():
     with ensure_clean() as path:
         check(assert_type(DF.to_html(path), None), type(None))
         check(assert_type(read_html(path), List[DataFrame]), list)
+
+
+def test_csv_quoting():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_csv(path, quoting=csv.QUOTE_ALL), None), type(None))
+        check(assert_type(DF.to_csv(path, quoting=csv.QUOTE_NONE), None), type(None))
+        check(
+            assert_type(DF.to_csv(path, quoting=csv.QUOTE_NONNUMERIC), None), type(None)
+        )
+        check(assert_type(DF.to_csv(path, quoting=csv.QUOTE_MINIMAL), None), type(None))
