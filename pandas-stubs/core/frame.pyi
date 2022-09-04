@@ -52,7 +52,6 @@ from pandas._typing import (
     AxisType,
     ColspaceArgType,
     CompressionOptions,
-    CSVQuoting,
     Dtype,
     DtypeNp,
     FilePath,
@@ -1917,55 +1916,6 @@ class DataFrame(NDFrame, OpsMixin):
     def to_clipboard(
         self, excel: _bool = ..., sep: _str | None = ..., **kwargs
     ) -> None: ...
-    @overload
-    def to_csv(
-        self,
-        path_or_buf: FilePathOrBuffer | None,
-        sep: _str = ...,
-        na_rep: _str = ...,
-        float_format: _str | None = ...,
-        columns: Sequence[Hashable] | None = ...,
-        header: _bool | list[_str] = ...,
-        index: _bool = ...,
-        index_label: _bool | _str | Sequence[Hashable] | None = ...,
-        mode: _str = ...,
-        encoding: _str | None = ...,
-        compression: _str | Mapping[_str, _str] = ...,
-        quoting: CSVQuoting = ...,
-        quotechar: _str = ...,
-        line_terminator: _str | None = ...,
-        chunksize: int | None = ...,
-        date_format: _str | None = ...,
-        doublequote: _bool = ...,
-        escapechar: _str | None = ...,
-        decimal: _str = ...,
-        errors: _str = ...,
-        storage_options: dict[_str, Any] | None = ...,
-    ) -> None: ...
-    @overload
-    def to_csv(
-        self,
-        sep: _str = ...,
-        na_rep: _str = ...,
-        float_format: _str | None = ...,
-        columns: Sequence[Hashable] | None = ...,
-        header: _bool | list[_str] = ...,
-        index: _bool = ...,
-        index_label: _bool | _str | Sequence[Hashable] | None = ...,
-        mode: _str = ...,
-        encoding: _str | None = ...,
-        compression: _str | Mapping[_str, _str] = ...,
-        quoting: CSVQuoting = ...,
-        quotechar: _str = ...,
-        line_terminator: _str | None = ...,
-        chunksize: int | None = ...,
-        date_format: _str | None = ...,
-        doublequote: _bool = ...,
-        escapechar: _str | None = ...,
-        decimal: _str = ...,
-        errors: _str = ...,
-        storage_options: dict[_str, Any] | None = ...,
-    ) -> _str: ...
     @overload
     def to_json(
         self,

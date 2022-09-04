@@ -377,13 +377,15 @@ def test_read_csv():
 def test_read_csv_iterator():
     with ensure_clean() as path:
         check(assert_type(DF.to_csv(path), None), type(None))
+        tfr = read_csv(path, iterator=True)
+        check(assert_type(tfr, TextFileReader), TextFileReader)
+        tfr.close()
+        tfr2 = read_csv(pathlib.Path(path), chunksize=1)
         check(
-            assert_type(read_csv(path, iterator=True), TextFileReader), TextFileReader
-        )
-        check(
-            assert_type(read_csv(pathlib.Path(path), chunksize=1), TextFileReader),
+            assert_type(tfr2, TextFileReader),
             TextFileReader,
         )
+        tfr2.close()
 
 
 def test_types_read_csv() -> None:
@@ -439,12 +441,12 @@ def test_read_table():
 def test_read_table_iterator():
     with ensure_clean() as path:
         check(assert_type(DF.to_csv(path, sep="\t"), None), type(None))
-        check(
-            assert_type(read_table(path, iterator=True), TextFileReader), TextFileReader
-        )
-        check(
-            assert_type(read_table(path, chunksize=1), TextFileReader), TextFileReader
-        )
+        tfr = read_table(path, iterator=True)
+        check(assert_type(tfr, TextFileReader), TextFileReader)
+        tfr.close()
+        tfr2 = read_table(path, chunksize=1)
+        check(assert_type(tfr2, TextFileReader), TextFileReader)
+        tfr2.close()
 
 
 def btest_read_fwf():
