@@ -7,7 +7,7 @@ from pandas.core.arrays.base import (
 
 from pandas._typing import (
     Scalar,
-    npt as npt,
+    npt,
 )
 
 from pandas.core.dtypes.dtypes import ExtensionDtype

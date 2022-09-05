@@ -6,7 +6,7 @@ from pandas.core.arrays import (
 
 from pandas._typing import (
     Scalar,
-    npt as npt,
+    npt,
 )
 
 class BaseMaskedArray(ExtensionArray, ExtensionOpsMixin):
