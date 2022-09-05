@@ -1428,9 +1428,7 @@ class DataFrame(NDFrame, OpsMixin):
         ignore_na: _bool = ...,
         axis: AxisType = ...,
     ) -> DataFrame: ...
-    def expanding(
-        self, min_periods: int = ..., center: _bool = ..., axis: AxisType = ...
-    ): ...  # for now
+    def expanding(self, min_periods: int = ..., axis: AxisType = ...): ...  # for now
     @overload
     def ffill(
         self,

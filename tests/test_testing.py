@@ -8,10 +8,12 @@ from pandas.testing import (
     assert_frame_equal,
     assert_series_equal,
 )
-import pytest
 from typing_extensions import assert_type
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 
 def test_types_assert_series_equal() -> None:
@@ -26,9 +28,13 @@ def test_types_assert_series_equal() -> None:
         check_flags=True,
         check_datetimelike_compat=True,
     )
-    with pytest.warns(FutureWarning, match="The 'check_less_precise'"):
+    if TYPE_CHECKING_INVALID_USAGE:
         assert_series_equal(
-            s1, s2, check_dtype=True, check_less_precise=True, check_names=True
+            s1,
+            s2,
+            check_dtype=True,
+            check_less_precise=True,  # type: ignore[call-arg]
+            check_names=True,
         )
 
 

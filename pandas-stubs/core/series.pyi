@@ -525,30 +525,31 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def sort_values(
         self,
+        *,
         axis: AxisType = ...,
         ascending: _bool | Sequence[_bool] = ...,
         kind: SortKind = ...,
         na_position: NaPosition = ...,
         ignore_index: _bool = ...,
-        *,
         inplace: Literal[True],
         key: Callable | None = ...,
     ) -> None: ...
     @overload
     def sort_values(
         self,
+        *,
         axis: AxisType = ...,
         ascending: _bool | Sequence[_bool] = ...,
         kind: SortKind = ...,
         na_position: NaPosition = ...,
         ignore_index: _bool = ...,
-        *,
         inplace: Literal[False] = ...,
         key: Callable | None = ...,
     ) -> Series[S1]: ...
     @overload
     def sort_values(
         self,
+        *,
         axis: AxisType = ...,
         ascending: _bool | Sequence[_bool] = ...,
         inplace: _bool | None = ...,
@@ -1325,7 +1326,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType = ...,
     ) -> ExponentialMovingWindow: ...
     def expanding(
-        self, min_periods: int = ..., center: _bool = ..., axis: SeriesAxisType = ...
+        self, min_periods: int = ..., axis: SeriesAxisType = ...
     ) -> DataFrame: ...
     def floordiv(
         self,
