@@ -52,7 +52,12 @@ jobs:
         python-version: '3.10'
 
     - name: Run pytest (against pandas nightly)
+      id: pytest_nightly
+      continue-on-error: true
       run: poetry run poe pytest --nightly
+
+    - if: steps.pytest_nightly.outcome == "failure"
+      run: echo "Pytest nightly failed" >> $GITHUB_STEP_SUMMARY
 
   precommit:
     runs-on: ubuntu-latest
