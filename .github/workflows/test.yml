@@ -56,8 +56,8 @@ jobs:
       continue-on-error: true
       run: poetry run poe pytest --nightly
 
-    - if: steps.pytest_nightly.outcome == "failure"
-      run: echo "Pytest nightly failed" >> $GITHUB_STEP_SUMMARY
+    - if: steps.pytest_nightly.outcome != 'success'
+      run: echo 'Pytest nightly failed' > $GITHUB_STEP_SUMMARY
 
   precommit:
     runs-on: ubuntu-latest
