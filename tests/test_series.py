@@ -1160,3 +1160,10 @@ def test_dtype_type() -> None:
     s3 = pd.Series([1, 2, 3])
     check(assert_type(s3.dtype, DtypeObj), np.dtype)
     check(assert_type(s3.dtype.kind, str), str)
+
+
+def test_types_to_numpy() -> None:
+    s = pd.Series(["a", "b", "c"], dtype=str)
+    check(assert_type(s.to_numpy(), np.ndarray), np.ndarray)
+    check(assert_type(s.to_numpy(dtype="str", copy=True), np.ndarray), np.ndarray)
+    check(assert_type(s.to_numpy(na_value=0), np.ndarray), np.ndarray)

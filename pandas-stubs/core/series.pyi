@@ -65,7 +65,6 @@ from pandas._typing import (
     Axis,
     AxisType,
     CompressionOptions,
-    DtypeNp,
     DtypeObj,
     FilePathOrBuffer,
     FillnaOptions,
