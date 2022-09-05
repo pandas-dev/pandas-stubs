@@ -11,10 +11,7 @@ import pandas as pd
 from pandas.api.extensions import ExtensionArray
 from typing_extensions import assert_type
 
-from tests import (
-    TYPE_CHECKING_INVALID_USAGE,
-    check,
-)
+from tests import check
 
 
 def test_types_to_datetime() -> None:
