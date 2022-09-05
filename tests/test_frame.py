@@ -33,7 +33,10 @@ import xarray as xr
 
 from pandas._typing import Scalar
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 from pandas.io.parsers import TextFileReader
 
@@ -714,8 +717,9 @@ def test_types_plot() -> None:
 def test_types_window() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
     df.expanding()
-    with pytest.warns(FutureWarning, match="The `center` argument on"):
-        df.expanding(axis=1, center=True)
+    df.expanding(axis=1)
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.expanding(axis=1, center=True)  # type: ignore[call-arg]
 
     df.rolling(2)
     df.rolling(2, axis=1, center=True)

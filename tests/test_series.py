@@ -227,8 +227,9 @@ def test_types_sort_index_with_key() -> None:
 def test_types_sort_values() -> None:
     s = pd.Series([4, 2, 1, 3])
     check(assert_type(s.sort_values(), pd.Series), pd.Series)
-    with pytest.warns(FutureWarning, match="In a future version of pandas"):
-        check(assert_type(s.sort_values(0), pd.Series), pd.Series)
+    if TYPE_CHECKING_INVALID_USAGE:
+        check(assert_type(s.sort_values(0), pd.Series), pd.Series)  # type: ignore[assert-type,call-overload]
+    check(assert_type(s.sort_values(axis=0), pd.Series), pd.Series)
     check(assert_type(s.sort_values(ascending=False), pd.Series), pd.Series)
     assert assert_type(s.sort_values(inplace=True, kind="quicksort"), None) is None
     check(assert_type(s.sort_values(na_position="last"), pd.Series), pd.Series)
@@ -491,8 +492,9 @@ def test_types_plot() -> None:
 def test_types_window() -> None:
     s = pd.Series([0, 1, 1, 0, 5, 1, -10])
     s.expanding()
-    with pytest.warns(FutureWarning, match="The `center` argument"):
-        s.expanding(axis=0, center=True)
+    s.expanding(axis=0)
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.expanding(axis=0, center=True)  # type: ignore[call-arg]
 
     s.rolling(2)
     s.rolling(2, axis=0, center=True)
