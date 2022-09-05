@@ -1149,6 +1149,12 @@ def test_neg() -> None:
     check(assert_type(-sr_int, "pd.Series[int]"), pd.Series, int)
 
 
+def test_getattr() -> None:
+    # GH 261
+    series = pd.Series([1, 2, 3], index=["a", "b", "c"], dtype=int)
+    check(assert_type(series.a, int), np.integer)
+
+
 def test_dtype_type() -> None:
     # GH 216
     s1 = pd.Series(["foo"], dtype="string")
