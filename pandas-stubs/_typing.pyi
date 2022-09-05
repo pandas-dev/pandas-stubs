@@ -27,7 +27,6 @@ from typing import (
 import numpy as np
 from numpy import typing as npt
 from pandas.core.arrays import ExtensionArray
-from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
@@ -86,8 +85,6 @@ FileOrBuffer = Union[str, Buffer[AnyStr]]
 FilePathOrBuffer = Union[PathLike[str], FileOrBuffer[AnyStr]]
 FilePathOrBytesBuffer = Union[PathLike[str], WriteBuffer[bytes]]
 
-FrameOrSeries = TypeVar("FrameOrSeries", bound=NDFrame)
-FrameOrSeriesUnion = Union[DataFrame, Series]
 Axis = Union[str, int]
 IndexLabel = Union[Hashable, Sequence[Hashable]]
 Label = Optional[Hashable]

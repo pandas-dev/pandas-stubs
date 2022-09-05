@@ -1,13 +1,14 @@
 from typing import Hashable
 
 import numpy as np
-from pandas.core.groupby.ops import BaseGrouper
-from pandas.core.indexes.api import Index
-
-from pandas._typing import (
-    FrameOrSeries,
-    FrameOrSeriesUnion,
+from pandas import (
+    DataFrame,
+    Index,
+    Series,
 )
+from pandas.core.groupby.ops import BaseGrouper
+
+from pandas._typing import NDFrameT
 
 class Grouper:
     def __new__(cls, *args, **kwargs): ...
@@ -42,7 +43,7 @@ class Grouping:
         self,
         index: Index,
         grouper=...,
-        obj: FrameOrSeriesUnion | None = ...,
+        obj: DataFrame | Series | None = ...,
         name=...,
         level=...,
         sort: bool = ...,
@@ -61,7 +62,7 @@ class Grouping:
     def groups(self) -> dict[Hashable, np.ndarray]: ...
 
 def get_grouper(
-    obj: FrameOrSeries,
+    obj: NDFrameT,
     key=...,
     axis: int = ...,
     level=...,
@@ -69,4 +70,4 @@ def get_grouper(
     observed: bool = ...,
     mutated: bool = ...,
     validate: bool = ...,
-) -> tuple[BaseGrouper, list[Hashable], FrameOrSeries]: ...
+) -> tuple[BaseGrouper, list[Hashable], NDFrameT]: ...
