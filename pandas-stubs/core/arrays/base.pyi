@@ -5,7 +5,7 @@ import numpy as np
 from pandas._typing import (
     ArrayLike,
     Scalar,
-    npt as npt,
+    npt,
 )
 
 from pandas.core.dtypes.dtypes import ExtensionDtype as ExtensionDtype
