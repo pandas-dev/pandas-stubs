@@ -245,7 +245,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         is_copy: _bool | None = ...,
         **kwargs,
     ) -> Series[S1]: ...
-    def __getattr__(self, name: str) -> S1: ...  # type: ignore[override]
+    def __getattr__(self, name: str) -> S1: ...
     @overload
     def __getitem__(
         self,
