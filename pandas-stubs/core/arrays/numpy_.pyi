@@ -5,6 +5,11 @@ from pandas.core.arrays.base import (
     ExtensionOpsMixin,
 )
 
+from pandas._typing import (
+    Scalar,
+    npt as npt,
+)
+
 from pandas.core.dtypes.dtypes import ExtensionDtype
 
 class PandasDtype(ExtensionDtype):
@@ -109,6 +114,11 @@ class PandasArray(ExtensionArray, ExtensionOpsMixin, NDArrayOperatorsMixin):
     def skew(
         self, axis=..., dtype=..., out=..., keepdims: bool = ..., skipna: bool = ...
     ): ...
-    def to_numpy(self, dtype=..., copy: bool = ..., na_value=...): ...
+    def to_numpy(
+        self,
+        dtype: npt.DTypeLike | None = ...,
+        copy: bool = ...,
+        na_value: Scalar = ...,
+    ) -> np.ndarray: ...
     def searchsorted(self, value, side: str = ..., sorter=...): ...
     def __invert__(self): ...

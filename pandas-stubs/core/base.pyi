@@ -12,7 +12,9 @@ from pandas.core.arrays.categorical import Categorical
 from pandas._typing import (
     NaPosition,
     NDFrameT,
+    Scalar,
     SeriesAxisType,
+    npt,
 )
 
 class PandasObject(DirNamesMixin):
@@ -41,7 +43,13 @@ class IndexOpsMixin:
     def size(self) -> int: ...
     @property
     def array(self) -> ExtensionArray: ...
-    def to_numpy(self) -> np.ndarray: ...
+    def to_numpy(
+        self,
+        dtype: npt.DTypeLike | None = ...,
+        copy: bool = ...,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np.ndarray: ...
     @property
     def empty(self) -> bool: ...
     def max(self, axis=..., skipna: bool = ..., **kwargs): ...

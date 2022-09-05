@@ -87,6 +87,7 @@ from pandas._typing import (
     SortKind,
     TimestampConvention,
     np_ndarray_anyint,
+    npt,
     num,
 )
 
@@ -1614,9 +1615,9 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def to_list(self) -> list[S1]: ...
     def to_numpy(
         self,
-        dtype: type[DtypeNp] | None = ...,
-        copy: _bool = ...,
-        na_value=...,
+        dtype: npt.DTypeLike | None = ...,
+        copy: bool = ...,
+        na_value: Scalar = ...,
         **kwargs,
     ) -> np.ndarray: ...
     def tolist(self) -> list[S1]: ...
