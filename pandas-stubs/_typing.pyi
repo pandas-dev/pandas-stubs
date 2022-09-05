@@ -14,6 +14,7 @@ from typing import (
     AnyStr,
     Callable,
     Hashable,
+    Iterator,
     Literal,
     Mapping,
     Optional,
@@ -68,6 +69,12 @@ class WriteBuffer(BaseBuffer, Protocol[AnyStr_cov]): ...
 
 class ReadPickleBuffer(ReadBuffer[bytes], Protocol):
     def readline(self, size: int | None = ...) -> bytes: ...
+
+class ReadCsvBuffer(ReadBuffer[AnyStr_cov], Protocol[AnyStr_cov]):
+    def __iter__(self) -> Iterator[AnyStr_cov]: ...
+    def readline(self) -> AnyStr_cov: ...
+    @property
+    def closed(self) -> bool: ...
 
 class WriteExcelBuffer(WriteBuffer[bytes], Protocol):
     def truncate(self, size: Union[int, None] = ...) -> int: ...
@@ -245,6 +252,7 @@ JsonSeriesOrient = Literal["split", "records", "index"]
 TimestampConvention = Literal["start", "end", "s", "e"]
 
 CSVEngine = Literal["c", "python", "pyarrow", "python-fwf"]
+CSVQuoting = Literal[0, 1, 2, 3]
 
 HDFCompLib = Literal["zlib", "lzo", "bzip2", "blosc"]
 ParquetEngine = Literal["auto", "pyarrow", "fastparquet"]
