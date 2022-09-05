@@ -226,7 +226,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         dtype: npt.DTypeLike | None = ...,
         copy: bool = ...,
-        na_value: object = ...,
+        na_value: Scalar = ...,
     ) -> np.ndarray: ...
     @overload
     def to_dict(
