@@ -1935,12 +1935,6 @@ class DataFrame(NDFrame, OpsMixin):
         index: _bool = ...,
         indent: int | None = ...,
     ) -> _str: ...
-    def to_pickle(
-        self,
-        path: _str,
-        compression: CompressionOptions = ...,
-        protocol: int = ...,
-    ) -> None: ...
     @overload
     def to_string(
         self,

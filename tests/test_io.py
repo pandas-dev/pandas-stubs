@@ -6,6 +6,7 @@ from pathlib import Path
 import sqlite3
 from typing import (
     TYPE_CHECKING,
+    Any,
     Dict,
     Generator,
     List,
@@ -30,6 +31,7 @@ from pandas import (
     read_json,
     read_orc,
     read_parquet,
+    read_pickle,
     read_sas,
     read_spss,
     read_sql,
@@ -45,6 +47,7 @@ from typing_extensions import assert_type
 
 from tests import check
 
+from pandas.io.api import to_pickle
 from pandas.io.clipboard import PyperclipException
 from pandas.io.common import IOHandles
 from pandas.io.json._json import JsonReader
@@ -115,6 +118,67 @@ def test_xml_str():
         check(assert_type(DF.to_xml(), str), str)
         out: str = DF.to_xml()
         check(assert_type(read_xml(io.StringIO(out)), DataFrame), DataFrame)
+
+
+def test_pickle():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_pickle(path), None), type(None))
+        check(assert_type(read_pickle(path), Any), DataFrame)
+
+    with ensure_clean() as path:
+        check(assert_type(to_pickle(DF, path), None), type(None))
+        check(assert_type(read_pickle(path), Any), DataFrame)
+
+
+def test_pickle_file_handle():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_pickle(path), None), type(None))
+        file = open(path, "rb")
+        check(assert_type(read_pickle(file), Any), DataFrame)
+        file.close()
+
+
+def test_pickle_path():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_pickle(path), None), type(None))
+        check(assert_type(read_pickle(Path(path)), Any), DataFrame)
+
+
+def test_pickle_protocol():
+    with ensure_clean() as path:
+        DF.to_pickle(path, protocol=3)
+        check(assert_type(read_pickle(path), Any), DataFrame)
+
+
+def test_pickle_compression():
+    with ensure_clean() as path:
+        DF.to_pickle(path, compression="gzip")
+        check(
+            assert_type(read_pickle(path, compression="gzip"), Any),
+            DataFrame,
+        )
+
+        check(
+            assert_type(read_pickle(path, compression="gzip"), Any),
+            DataFrame,
+        )
+
+
+def test_pickle_storage_options():
+    with ensure_clean() as path:
+        DF.to_pickle(path, storage_options={})
+
+        check(
+            assert_type(read_pickle(path, storage_options={}), Any),
+            DataFrame,
+        )
+
+
+def test_to_pickle_series():
+    s: Series = DF["a"]
+    with ensure_clean() as path:
+        check(assert_type(s.to_pickle(path), None), type(None))
+        check(assert_type(read_pickle(path), Any), Series)
 
 
 def test_read_stata_df():

@@ -42,6 +42,7 @@ from pandas._typing import (
     SortKind,
     StorageOptions,
     T,
+    WriteBuffer,
 )
 
 from pandas.io.pytables import HDFStore
@@ -171,9 +172,10 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     ) -> int | None: ...
     def to_pickle(
         self,
-        path: _str,
+        path: FilePath | WriteBuffer[bytes],
         compression: CompressionOptions = ...,
         protocol: int = ...,
+        storage_options: StorageOptions = ...,
     ) -> None: ...
     def to_clipboard(
         self, excel: _bool = ..., sep: _str | None = ..., **kwargs
