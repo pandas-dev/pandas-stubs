@@ -27,7 +27,6 @@ from typing import (
 import numpy as np
 from numpy import typing as npt
 from pandas.core.arrays import ExtensionArray
-from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
@@ -80,14 +79,10 @@ class WriteExcelBuffer(WriteBuffer[bytes], Protocol):
     def truncate(self, size: Union[int, None] = ...) -> int: ...
 
 FilePath = Union[str, PathLike[str]]
+FilePathOrBuffer = Union[
+    FilePath, IO[AnyStr], RawIOBase, BufferedIOBase, TextIOBase, TextIOWrapper, mmap
+]
 
-Buffer = Union[IO[AnyStr], RawIOBase, BufferedIOBase, TextIOBase, TextIOWrapper, mmap]
-FileOrBuffer = Union[str, Buffer[AnyStr]]
-FilePathOrBuffer = Union[PathLike[str], FileOrBuffer[AnyStr]]
-FilePathOrBytesBuffer = Union[PathLike[str], WriteBuffer[bytes]]
-
-FrameOrSeries = TypeVar("FrameOrSeries", bound=NDFrame)
-FrameOrSeriesUnion = Union[DataFrame, Series]
 Axis = Union[str, int]
 IndexLabel = Union[Hashable, Sequence[Hashable]]
 Label = Optional[Hashable]
@@ -130,21 +125,9 @@ Scalar = Union[
 ]
 ScalarT = TypeVar("ScalarT", bound=Scalar)
 # Refine the definitions below in 3.9 to use the specialized type.
-np_ndarray_int8 = npt.NDArray[np.int8]
-np_ndarray_int16 = npt.NDArray[np.int16]
-np_ndarray_int32 = npt.NDArray[np.int32]
 np_ndarray_int64 = npt.NDArray[np.int64]
-np_ndarray_uint8 = npt.NDArray[np.uint8]
-np_ndarray_uint16 = npt.NDArray[np.uint16]
-np_ndarray_uint32 = npt.NDArray[np.uint32]
-np_ndarray_uint64 = npt.NDArray[np.uint64]
-np_ndarray_int = Union[
-    np_ndarray_int8, np_ndarray_int16, np_ndarray_int32, np_ndarray_int64
-]
-np_ndarray_uint = Union[
-    np_ndarray_uint8, np_ndarray_uint16, np_ndarray_uint32, np_ndarray_uint64
-]
-np_ndarray_anyint = Union[np_ndarray_int, np_ndarray_uint]
+np_ndarray_int = npt.NDArray[np.signedinteger]
+np_ndarray_anyint = npt.NDArray[np.integer]
 np_ndarray_bool = npt.NDArray[np.bool_]
 np_ndarray_str = npt.NDArray[np.str_]
 

@@ -12,8 +12,11 @@ from typing import (
 )
 
 import numpy as np
+from pandas import (
+    DataFrame,
+    Index,
+)
 from pandas.core.base import PandasObject
-from pandas.core.indexes.base import Index
 import pandas.core.indexing as indexing
 import sqlalchemy.engine
 
@@ -29,8 +32,6 @@ from pandas._typing import (
     FilePathOrBuffer,
     FileWriteMode,
     FillnaOptions,
-    FrameOrSeries,
-    FrameOrSeriesUnion,
     HashableT,
     HDFCompLib,
     IgnoreRaise,
@@ -55,11 +56,11 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     __hash__: ClassVar[None]  # type: ignore[assignment]
 
     def set_flags(
-        self: FrameOrSeries,
+        self: NDFrameT,
         *,
         copy: bool = ...,
         allows_duplicate_labels: bool | None = ...,
-    ) -> FrameOrSeries: ...
+    ) -> NDFrameT: ...
     @property
     def attrs(self) -> dict[Hashable | None, Any]: ...
     @attrs.setter
@@ -290,7 +291,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         axis: SeriesAxisType = ...,
         level: Level | None = ...,
         drop_level: _bool = ...,
-    ) -> FrameOrSeriesUnion: ...
+    ) -> DataFrame | Series: ...
     def __delitem__(self, idx: Hashable): ...
     def get(self, key: object, default: Dtype | None = ...) -> Dtype: ...
     def reindex_like(
@@ -357,8 +358,8 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         regex: _str | None = ...,
         axis=...,
     ) -> NDFrame: ...
-    def head(self: FrameOrSeries, n: int = ...) -> FrameOrSeries: ...
-    def tail(self: FrameOrSeries, n: int = ...) -> FrameOrSeries: ...
+    def head(self: NDFrameT, n: int = ...) -> NDFrameT: ...
+    def tail(self: NDFrameT, n: int = ...) -> NDFrameT: ...
     def pipe(
         self, func: Callable[..., T] | tuple[Callable[..., T], str], *args, **kwargs
     ) -> T: ...
@@ -369,22 +370,22 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     @property
     def dtypes(self): ...
     def astype(
-        self: FrameOrSeries,
+        self: NDFrameT,
         dtype,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
-    ) -> FrameOrSeries: ...
-    def copy(self: FrameOrSeries, deep: _bool = ...) -> FrameOrSeries: ...
+    ) -> NDFrameT: ...
+    def copy(self: NDFrameT, deep: _bool = ...) -> NDFrameT: ...
     def __copy__(self, deep: _bool = ...) -> NDFrame: ...
     def __deepcopy__(self, memo=...) -> NDFrame: ...
     def infer_objects(self) -> NDFrame: ...
     def convert_dtypes(
-        self: FrameOrSeries,
+        self: NDFrameT,
         infer_objects: _bool = ...,
         convert_string: _bool = ...,
         convert_integer: _bool = ...,
         convert_boolean: _bool = ...,
-    ) -> FrameOrSeries: ...
+    ) -> NDFrameT: ...
     def fillna(
         self,
         value=...,
