@@ -6,7 +6,6 @@ from typing import (
 from pandas.core.indexes.base import Index
 
 from pandas._libs.tslibs import (  # , timezones as timezones
-    NaT as NaT,
     Period as Period,
     Timestamp,
 )
