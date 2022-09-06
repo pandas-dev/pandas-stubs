@@ -134,7 +134,7 @@ def test_numexpr_clobbering_error() -> None:
 @pytest.mark.skipif(PD_LT_15, reason="Feature added in 1.5.0")
 def test_undefined_variable_error() -> None:
     with pytest.raises(errors.UndefinedVariableError):
-        raise errors.UndefinedVariableError()
+        raise errors.UndefinedVariableError("x")
 
 
 @pytest.mark.skipif(PD_LT_15, reason="Feature added in 1.5.0")
@@ -152,7 +152,7 @@ def test_pyperclip_exception() -> None:
 @pytest.mark.skipif(PD_LT_15, reason="Feature added in 1.5.0")
 def test_pyperclip_windows_exception() -> None:
     with pytest.raises(errors.PyperclipWindowsException):
-        raise errors.PyperclipWindowsException()
+        raise errors.PyperclipWindowsException("message")
 
 
 @pytest.mark.skipif(PD_LT_15, reason="Feature added in 1.5.0")
