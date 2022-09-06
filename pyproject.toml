@@ -33,7 +33,6 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"
 types-pytz = ">= 2022.1.1"
-types_SQLAlchemy = ">=1.4.50"
 
 [tool.poetry.dev-dependencies]
 mypy = ">=0.971"
