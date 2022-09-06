@@ -1,10 +1,9 @@
 import numpy as np
 import pandas as pd
+import pandas.api.types as api
 from typing_extensions import assert_type
 
 from pandas._typing import DtypeObj
-
-import pandas.core.dtypes.api as api
 
 from tests import check
 
@@ -167,5 +166,13 @@ def test_is_unsigned_integer_dtype() -> None:
 
 
 def test_pandas_dtype() -> None:
-    # Can't use check because these are both types
-    assert assert_type(api.pandas_dtype(arr), DtypeObj) == np.dtype("i8")
+    check(assert_type(api.pandas_dtype(arr), DtypeObj), type(np.dtype("i8")))
+
+
+def test_infer_dtype() -> None:
+    check(assert_type(api.infer_dtype([1, 2, 3]), str), str)
+
+
+def test_union_categoricals() -> None:
+    to_union = [pd.Categorical([1, 2, 3]), pd.Categorical([3, 4, 5])]
+    check(assert_type(api.union_categoricals(to_union), pd.Categorical), pd.Categorical)
