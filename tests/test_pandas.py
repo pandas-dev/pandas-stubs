@@ -128,7 +128,7 @@ def test_isna() -> None:
     check(assert_type(pd.isna(idx1), npt.NDArray[np.bool_]), np.ndarray, np.bool_)
 
     idx2 = pd.Index([1, 2])
-    check(assert_type(pd.notna(idx2), np.ndarray), np.ndarray)
+    check(assert_type(pd.notna(idx2), npt.NDArray[np.bool_]), np.ndarray, np.bool_)
 
     assert check(assert_type(pd.isna(pd.NA), Literal[True]), bool)
     assert not check(assert_type(pd.notna(pd.NA), Literal[False]), bool)
