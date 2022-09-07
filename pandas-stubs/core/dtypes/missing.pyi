@@ -13,7 +13,6 @@ from pandas import (
 
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import NaTType
-
 from pandas._typing import (
     ArrayLike,
     Scalar,
