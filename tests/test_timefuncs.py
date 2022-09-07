@@ -440,3 +440,10 @@ def test_some_offsets() -> None:
     )
     # GH 224
     check(assert_type(dt.date.today() - Day(), dt.date), dt.date)
+
+
+def test_types_to_numpy() -> None:
+    td_s = pd.to_timedelta(pd.Series([10, 20]), "minutes")
+    check(assert_type(td_s.to_numpy(), np.ndarray), np.ndarray)
+    check(assert_type(td_s.to_numpy(dtype="int", copy=True), np.ndarray), np.ndarray)
+    check(assert_type(td_s.to_numpy(na_value=0), np.ndarray), np.ndarray)

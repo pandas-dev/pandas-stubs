@@ -779,10 +779,10 @@ def test_types_cov() -> None:
 
 def test_types_to_numpy() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
-    df.to_numpy()
-    df.to_numpy(dtype="str", copy=True)
+    check(assert_type(df.to_numpy(), np.ndarray), np.ndarray)
+    check(assert_type(df.to_numpy(dtype="str", copy=True), np.ndarray), np.ndarray)
     # na_value param was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    df.to_numpy(na_value=0)
+    check(assert_type(df.to_numpy(na_value=0), np.ndarray), np.ndarray)
 
 
 def test_to_markdown() -> None:

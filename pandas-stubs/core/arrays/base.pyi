@@ -2,7 +2,11 @@ from typing import Sequence
 
 import numpy as np
 
-from pandas._typing import ArrayLike
+from pandas._typing import (
+    ArrayLike,
+    Scalar,
+    npt,
+)
 
 from pandas.core.dtypes.dtypes import ExtensionDtype as ExtensionDtype
 from pandas.core.dtypes.generic import ABCExtensionArray
@@ -12,7 +16,12 @@ class ExtensionArray:
     def __setitem__(self, key: int | slice | np.ndarray, value) -> None: ...
     def __len__(self) -> int: ...
     def __iter__(self): ...
-    def to_numpy(self, dtype=..., copy: bool = ..., na_value=...): ...
+    def to_numpy(
+        self,
+        dtype: npt.DTypeLike | None = ...,
+        copy: bool = ...,
+        na_value: Scalar = ...,
+    ) -> np.ndarray: ...
     @property
     def dtype(self) -> ExtensionDtype: ...
     @property
