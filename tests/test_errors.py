@@ -1,3 +1,5 @@
+import os
+import platform
 import warnings
 
 from packaging.version import parse
@@ -37,6 +39,7 @@ from pandas.io.stata import (
     ValueLabelTypeMismatch,
 )
 
+WINDOWS = os.name == "nt" or "cygwin" in platform.system().lower()
 PD_LT_15 = parse(pd.__version__) < parse("1.5.0")
 
 
@@ -181,7 +184,7 @@ def test_pyperclip_exception() -> None:
         raise PyperclipException()
 
 
-@pytest.mark.skipif(not PD_LT_15, reason="Feature moved in 1.5.0")
+@pytest.mark.skipif(not PD_LT_15 or not WINDOWS, reason="Feature moved in 1.5.0")
 def test_pyperclip_windows_exception() -> None:
     with pytest.raises(PyperclipWindowsException):
         raise PyperclipWindowsException("message")
