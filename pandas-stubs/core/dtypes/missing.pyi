@@ -1,12 +1,14 @@
 from typing import overload
 
 import numpy as np
+from numpy import typing as npt
 from pandas import (
     DataFrame,
     Index,
     Series,
 )
 
+from pandas._libs.tslibs import NaTType
 from pandas._typing import (
     ArrayLike,
     Scalar,
@@ -22,7 +24,7 @@ def isna(obj: Series) -> Series[bool]: ...
 @overload
 def isna(obj: Index | list | ArrayLike) -> np.ndarray: ...
 @overload
-def isna(obj: Scalar) -> bool: ...
+def isna(obj: Scalar | NaTType) -> bool: ...
 
 isnull = isna
 
@@ -33,7 +35,7 @@ def notna(obj: Series) -> Series[bool]: ...
 @overload
 def notna(obj: Index | list | ArrayLike) -> np.ndarray: ...
 @overload
-def notna(obj: Scalar) -> bool: ...
+def notna(obj: Scalar | NaTType) -> bool: ...
 
 notnull = notna
 

@@ -112,13 +112,26 @@ def test_types_json_normalize() -> None:
 
 
 def test_isna() -> None:
-    s = pd.Series([1, np.nan, 3.2])
-    check(assert_type(pd.isna(s), "pd.Series[bool]"), pd.Series, bool)
-    b: bool = pd.isna(np.nan)
-    ar: np.ndarray = pd.isna(s.to_list())
-    check(assert_type(pd.notna(s), "pd.Series[bool]"), pd.Series, bool)
-    b2: bool = pd.notna(np.nan)
-    ar2: np.ndarray = pd.notna(s.to_list())
+    s1 = pd.Series([1, np.nan, 3.2])
+    check(assert_type(pd.isna(s1), "pd.Series[bool]"), pd.Series, bool)
+
+    s2 = pd.Series([1, 3.2])
+    check(assert_type(pd.notna(s2), "pd.Series[bool]"), pd.Series, bool)
+
+    df1 = pd.DataFrame({"a": [1, 2, 1, 2], "b": [1, 1, 2, np.nan]})
+    check(assert_type(pd.isna(df1), "pd.DataFrame"), pd.DataFrame)
+
+    idx1 = pd.Index([1, 2, np.nan])
+    check(assert_type(pd.isna(idx1), np.ndarray), np.ndarray)
+
+    idx2 = pd.Index([1, 2])
+    check(assert_type(pd.notna(idx2), np.ndarray), np.ndarray)
+
+    check(assert_type(pd.isna(np.nan), bool), bool)
+    check(assert_type(pd.notna(np.nan), bool), bool)
+
+    check(assert_type(pd.isna(2.5), bool), bool)
+    check(assert_type(pd.notna(2.5), bool), bool)
 
 
 # GH 55
