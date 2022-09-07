@@ -276,9 +276,17 @@ def test_table(close_figures) -> None:
 def test_plot_line():
     check(assert_type(IRIS_DF.plot(), plt.Axes), plt.Axes)
     check(assert_type(IRIS_DF.plot.line(), plt.Axes), plt.Axes)
+    check(assert_type(IRIS_DF.plot(kind="line"), plt.Axes), plt.Axes)
     check(
         assert_type(
             IRIS_DF.plot.line(subplots=True),
+            npt.NDArray[np.object_],
+        ),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            IRIS_DF.plot(kind="line", subplots=True),
             npt.NDArray[np.object_],
         ),
         np.ndarray,
@@ -287,9 +295,17 @@ def test_plot_line():
 
 def test_plot_area(close_figures) -> None:
     check(assert_type(IRIS_DF.plot.area(), plt.Axes), plt.Axes)
+    check(assert_type(IRIS_DF.plot(kind="area"), plt.Axes), plt.Axes)
     check(
         assert_type(
             IRIS_DF.plot.area(subplots=True),
+            npt.NDArray[np.object_],
+        ),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            IRIS_DF.plot(kind="area", subplots=True),
             npt.NDArray[np.object_],
         ),
         np.ndarray,
@@ -298,9 +314,17 @@ def test_plot_area(close_figures) -> None:
 
 def test_plot_bar(close_figures) -> None:
     check(assert_type(IRIS_DF.plot.bar(), plt.Axes), plt.Axes)
+    check(assert_type(IRIS_DF.plot(kind="bar"), plt.Axes), plt.Axes)
     check(
         assert_type(
             IRIS_DF.plot.bar(subplots=True),
+            npt.NDArray[np.object_],
+        ),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            IRIS_DF.plot(kind="bar", subplots=True),
             npt.NDArray[np.object_],
         ),
         np.ndarray,
@@ -309,9 +333,17 @@ def test_plot_bar(close_figures) -> None:
 
 def test_plot_barh(close_figures) -> None:
     check(assert_type(IRIS_DF.plot.barh(), plt.Axes), plt.Axes)
+    check(assert_type(IRIS_DF.plot(kind="barh"), plt.Axes), plt.Axes)
     check(
         assert_type(
             IRIS_DF.plot.barh(subplots=True),
+            npt.NDArray[np.object_],
+        ),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            IRIS_DF.plot(kind="barh", subplots=True),
             npt.NDArray[np.object_],
         ),
         np.ndarray,
@@ -320,9 +352,17 @@ def test_plot_barh(close_figures) -> None:
 
 def test_plot_box(close_figures) -> None:
     check(assert_type(IRIS_DF.plot.box(), plt.Axes), plt.Axes)
+    check(assert_type(IRIS_DF.plot(kind="box"), plt.Axes), plt.Axes)
     check(
         assert_type(
             IRIS_DF.plot.box(subplots=True),
+            pd.Series,
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            IRIS_DF.plot(kind="box", subplots=True),
             pd.Series,
         ),
         pd.Series,
@@ -331,9 +371,17 @@ def test_plot_box(close_figures) -> None:
 
 def test_plot_density(close_figures) -> None:
     check(assert_type(IRIS_DF.plot.density(), plt.Axes), plt.Axes)
+    check(assert_type(IRIS_DF.plot(kind="density"), plt.Axes), plt.Axes)
     check(
         assert_type(
             IRIS_DF.plot.density(subplots=True),
+            npt.NDArray[np.object_],
+        ),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            IRIS_DF.plot(kind="density", subplots=True),
             npt.NDArray[np.object_],
         ),
         np.ndarray,
@@ -347,7 +395,20 @@ def test_plot_hexbin(close_figures) -> None:
     )
     check(
         assert_type(
+            IRIS_DF.plot(x="SepalLength", y="SepalWidth", kind="hexbin"), plt.Axes
+        ),
+        plt.Axes,
+    )
+    check(
+        assert_type(
             IRIS_DF.plot.hexbin(x="SepalLength", y="SepalWidth", subplots=True),
+            npt.NDArray[np.object_],
+        ),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            IRIS_DF.plot(kind="hexbin", x="SepalLength", y="SepalWidth", subplots=True),
             npt.NDArray[np.object_],
         ),
         np.ndarray,
@@ -356,9 +417,17 @@ def test_plot_hexbin(close_figures) -> None:
 
 def test_plot_hist(close_figures) -> None:
     check(assert_type(IRIS_DF.plot.hist(), plt.Axes), plt.Axes)
+    check(assert_type(IRIS_DF.plot(kind="hist"), plt.Axes), plt.Axes)
     check(
         assert_type(
             IRIS_DF.plot.hist(subplots=True),
+            npt.NDArray[np.object_],
+        ),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            IRIS_DF.plot(subplots=True, kind="hist"),
             npt.NDArray[np.object_],
         ),
         np.ndarray,
@@ -367,9 +436,17 @@ def test_plot_hist(close_figures) -> None:
 
 def test_plot_kde(close_figures) -> None:
     check(assert_type(IRIS_DF.plot.kde(), plt.Axes), plt.Axes)
+    check(assert_type(IRIS_DF.plot(kind="kde"), plt.Axes), plt.Axes)
     check(
         assert_type(
             IRIS_DF.plot.kde(subplots=True),
+            npt.NDArray[np.object_],
+        ),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            IRIS_DF.plot(subplots=True, kind="kde"),
             npt.NDArray[np.object_],
         ),
         np.ndarray,
@@ -378,9 +455,18 @@ def test_plot_kde(close_figures) -> None:
 
 def test_plot_pie(close_figures) -> None:
     check(assert_type(IRIS_DF.plot.pie(y="SepalLength"), plt.Axes), plt.Axes)
+    check(assert_type(IRIS_DF.plot(kind="pie", y="SepalLength"), plt.Axes), plt.Axes)
     check(
         assert_type(
             IRIS_DF.plot.pie(y="SepalLength", subplots=True),
+            npt.NDArray[np.object_],
+        ),
+        np.ndarray,
+    )
+
+    check(
+        assert_type(
+            IRIS_DF.plot(kind="pie", y="SepalLength", subplots=True),
             npt.NDArray[np.object_],
         ),
         np.ndarray,
@@ -394,8 +480,97 @@ def test_plot_scatter(close_figures) -> None:
     )
     check(
         assert_type(
+            IRIS_DF.plot(x="SepalLength", y="SepalWidth", kind="scatter"), plt.Axes
+        ),
+        plt.Axes,
+    )
+    check(
+        assert_type(
             IRIS_DF.plot.scatter(x="SepalLength", y="SepalWidth", subplots=True),
             npt.NDArray[np.object_],
         ),
         np.ndarray,
+    )
+    check(
+        assert_type(
+            IRIS_DF.plot(
+                x="SepalLength", y="SepalWidth", subplots=True, kind="scatter"
+            ),
+            npt.NDArray[np.object_],
+        ),
+        np.ndarray,
+    )
+
+
+def test_plot_keywords(close_figures):
+    _, ax = plt.subplots(1, 1)
+    df = IRIS_DF.iloc[:, :3].abs()
+    check(
+        assert_type(
+            df.plot(
+                x="SepalLength",
+                y="SepalWidth",
+                kind="line",
+                ax=ax,
+                subplots=False,
+                sharex=False,
+                sharey=False,
+                layout=(8, 8),
+                figsize=(16, 16),
+                use_index=False,
+                title="Some title",
+                grid=True,
+                legend="reverse",
+                style="r:",
+                logx=True,
+                logy=True,
+                loglog=True,
+                xticks=[0, 3, 5, 10],
+                yticks=[0, 0.2, 0.8],
+                xlim=(1e-5, 10.0),
+                ylim=(0.001, 1.0),
+                xlabel="XX",
+                ylabel="YY",
+                rot=0.0,
+                fontsize=12,
+                colormap="jet",
+                table=True,
+                stacked=True,
+                sort_columns=True,
+                secondary_y=True,
+                mark_right=True,
+                include_bool=True,
+                backend="matplotlib",
+            ),
+            plt.Axes,
+        ),
+        plt.Axes,
+    )
+
+    df = pd.DataFrame(np.random.rand(50, 4), columns=["a", "b", "c", "d"])
+    df["species"] = pd.Categorical(
+        ["setosa"] * 20 + ["versicolor"] * 20 + ["virginica"] * 10
+    )
+    check(
+        assert_type(
+            df.plot(
+                kind="scatter",
+                x="a",
+                y="b",
+                c="species",
+                cmap="viridis",
+                s=50,
+                colorbar=False,
+            ),
+            plt.Axes,
+        ),
+        plt.Axes,
+    )
+
+    df = pd.DataFrame(np.random.rand(10, 5), columns=["A", "B", "C", "D", "E"])
+    check(
+        assert_type(
+            df.plot(kind="box", vert=False, positions=[1, 4, 5, 6, 8]), plt.Axes
+        ),
+        plt.Axes,
     )
