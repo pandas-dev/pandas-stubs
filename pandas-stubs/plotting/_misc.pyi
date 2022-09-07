@@ -1,85 +1,82 @@
 from typing import (
     Any,
+    Hashable,
+    Literal,
     Sequence,
+    Union,
 )
 
-from matplotlib.axes import Axes as PlotAxes
+from matplotlib.axes import Axes
+from matplotlib.colors import Colormap
 from matplotlib.figure import Figure
+from matplotlib.table import Table
 import numpy as np
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
 
+from pandas._typing import HashableT
+
+_Color = Union[str, Sequence[float]]
+
 def table(
-    ax,
-    data,
-    rowLabels=...,
-    colLabels=...,
-): ...
+    ax: Axes,
+    data: DataFrame | Series,
+    **kwargs,
+) -> Table: ...
 def register() -> None: ...
 def deregister() -> None: ...
 def scatter_matrix(
     frame: DataFrame,
     alpha: float = ...,
     figsize: tuple[float, float] | None = ...,
-    ax: PlotAxes | None = ...,
+    ax: Axes | None = ...,
     grid: bool = ...,
-    diagonal: str = ...,
+    diagonal: Literal["hist", "kde"] = ...,
     marker: str = ...,
-    density_kwds=...,
-    hist_kwds=...,
+    density_kwds: dict[str, Any] | None = ...,
+    hist_kwds: dict[str, Any] | None = ...,
     range_padding: float = ...,
+    **kwargs,
 ) -> np.ndarray: ...
 def radviz(
     frame: DataFrame,
-    class_column: str,
-    ax: PlotAxes | None = ...,
-    color: list[str] | tuple[str] | None = ...,
-    colormap=...,
-) -> PlotAxes: ...
+    class_column: Hashable,
+    ax: Axes | None = ...,
+    color: _Color | Sequence[_Color] | None = ...,
+    colormap: str | Colormap | None = ...,
+    **kwds,
+) -> Axes: ...
 def andrews_curves(
     frame: DataFrame,
-    class_column: str,
-    ax: PlotAxes | None = ...,
+    class_column: Hashable,
+    ax: Axes | None = ...,
     samples: int = ...,
-    color: list[str] | tuple[str] | None = ...,
-    colormap=...,
-) -> PlotAxes: ...
+    color: _Color | Sequence[_Color] | None = ...,
+    colormap: str | Colormap | None = ...,
+    **kwargs,
+) -> Axes: ...
 def bootstrap_plot(
     series: Series,
     fig: Figure | None = ...,
     size: int = ...,
     samples: int = ...,
+    **kwds,
 ) -> Figure: ...
 def parallel_coordinates(
     frame: DataFrame,
-    class_column: str,
-    cols: list[str] | None = ...,
-    ax: PlotAxes | None = ...,
-    color: list[str] | tuple[str] | None = ...,
+    class_column: Hashable,
+    cols: list[HashableT] | None = ...,
+    ax: Axes | None = ...,
+    color: _Color | Sequence[_Color] | None = ...,
     use_columns: bool = ...,
-    xticks: Sequence | tuple | None = ...,
-    colormap=...,
+    xticks: Sequence[float] | None = ...,
+    colormap: str | Colormap | None = ...,
     axvlines: bool = ...,
-    axvlines_kwds=...,
+    axvlines_kwds: dict[str, Any] | None = ...,
     sort_labels: bool = ...,
-) -> PlotAxes: ...
-def lag_plot(
-    series: Series,
-    lag: int = ...,
-    ax: PlotAxes | None = ...,
-) -> PlotAxes: ...
-def autocorrelation_plot(
-    series: Series,
-    ax: PlotAxes | None = ...,
-) -> PlotAxes: ...
-
-class _Options(dict):
-    def __init__(self, deprecated: bool = ...) -> None: ...
-    def __getitem__(self, key): ...
-    def __setitem__(self, key, value): ...
-    def __delitem__(self, key): ...
-    def __contains__(self, key) -> bool: ...
-    def reset(self) -> None: ...
-    def use(self, key, value) -> None: ...
+    **kwargs,
+) -> Axes: ...
+def lag_plot(series: Series, lag: int = ..., ax: Axes | None = ..., **kwds) -> Axes: ...
+def autocorrelation_plot(series: Series, ax: Axes | None = ..., **kwargs) -> Axes: ...
 
 plot_params: dict[str, Any]

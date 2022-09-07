@@ -1,12 +1,8 @@
-from ._core import (
+from pandas.plotting._core import (
     PlotAccessor as PlotAccessor,
     boxplot as boxplot,
-    boxplot_frame as boxplot_frame,
-    boxplot_frame_groupby as boxplot_frame_groupby,
-    hist_frame as hist_frame,
-    hist_series as hist_series,
 )
-from ._misc import (
+from pandas.plotting._misc import (
     andrews_curves as andrews_curves,
     autocorrelation_plot as autocorrelation_plot,
     bootstrap_plot as bootstrap_plot,
