@@ -1,3 +1,4 @@
+# TODO: Remove PyperclipException after switch to 1.5.x, moved to pandas.errors
 class PyperclipException(RuntimeError): ...
 
 class PyperclipWindowsException(PyperclipException):

@@ -17,6 +17,7 @@ from pandas._typing import (
     npt,
 )
 
+# TODO: Remove after switch to 1.5.x, moved to pandas.errors
 class DatabaseError(IOError): ...
 
 @overload

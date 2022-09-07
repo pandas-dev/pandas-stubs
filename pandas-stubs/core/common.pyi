@@ -5,6 +5,7 @@ from typing import (
 
 from pandas._typing import T
 
+# TODO: Remove from here after 1.5.x is target, moved to pandas.errors
 class SettingWithCopyError(ValueError): ...
 class SettingWithCopyWarning(Warning): ...
 

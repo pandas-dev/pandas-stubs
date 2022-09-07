@@ -1,5 +1,6 @@
 import abc
 
+# TODO: Remove from here after 1.5.x, moved to pandas.errors
 class NumExprClobberingError(NameError): ...
 
 class AbstractEngine(metaclass=abc.ABCMeta):
