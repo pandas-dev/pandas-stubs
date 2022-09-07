@@ -14,7 +14,10 @@ import numpy as np
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
 
-from pandas._typing import HashableT
+from pandas._typing import (
+    HashableT,
+    npt,
+)
 
 _Color = Union[str, Sequence[float]]
 
@@ -37,7 +40,7 @@ def scatter_matrix(
     hist_kwds: dict[str, Any] | None = ...,
     range_padding: float = ...,
     **kwargs,
-) -> np.ndarray: ...
+) -> npt.NDArray[np.object_]: ...
 def radviz(
     frame: DataFrame,
     class_column: Hashable,

@@ -9,9 +9,9 @@ from typing import (
 )
 
 from matplotlib.axes import Axes
-from matplotlib.axes._subplots import AxesSubplot
 from matplotlib.lines import Line2D
 import numpy as np
+from pandas import Series
 from pandas.core.base import PandasObject
 from pandas.core.frame import DataFrame
 from scipy.stats.kde import gaussian_kde
@@ -86,7 +86,7 @@ class PlotAccessor(PandasObject):
         color: _PlotAccessorColor = ...,
         subplots: Literal[False] | None = ...,
         **kwargs,
-    ) -> AxesSubplot: ...
+    ) -> Axes: ...
     @overload
     def line(
         self,
@@ -104,7 +104,7 @@ class PlotAccessor(PandasObject):
         color: _PlotAccessorColor = ...,
         subplots: Literal[False] | None = ...,
         **kwargs,
-    ) -> AxesSubplot: ...
+    ) -> Axes: ...
     @overload
     def bar(
         self,
@@ -122,7 +122,7 @@ class PlotAccessor(PandasObject):
         color: _PlotAccessorColor = ...,
         subplots: Literal[False] | None = ...,
         **kwargs,
-    ) -> AxesSubplot: ...
+    ) -> Axes: ...
     @overload
     def barh(
         self,
@@ -138,14 +138,14 @@ class PlotAccessor(PandasObject):
         by: Hashable | list[HashableT] | None = ...,
         subplots: Literal[False] | None = ...,
         **kwargs,
-    ) -> AxesSubplot: ...
+    ) -> Axes: ...
     @overload
     def box(
         self,
         by: Hashable | list[HashableT] | None = ...,
         subplots: Literal[True] = ...,
         **kwargs,
-    ) -> npt.NDArray[np.object_]: ...
+    ) -> Series: ...
     @overload
     def hist(
         self,
@@ -154,7 +154,7 @@ class PlotAccessor(PandasObject):
         *,
         subplots: Literal[False] | None = ...,
         **kwargs,
-    ) -> AxesSubplot: ...
+    ) -> Axes: ...
     @overload
     def hist(
         self,
@@ -175,7 +175,7 @@ class PlotAccessor(PandasObject):
         *,
         subplots: Literal[False] | None = ...,
         **kwargs,
-    ) -> AxesSubplot: ...
+    ) -> Axes: ...
     @overload
     def kde(
         self,
@@ -187,7 +187,7 @@ class PlotAccessor(PandasObject):
         *,
         subplots: Literal[True],
         **kwargs,
-    ) -> AxesSubplot: ...
+    ) -> npt.NDArray[np.object_]: ...
     @overload
     def area(
         self,
@@ -197,7 +197,7 @@ class PlotAccessor(PandasObject):
         *,
         subplots: Literal[False] | None = ...,
         **kwargs,
-    ) -> AxesSubplot: ...
+    ) -> Axes: ...
     @overload
     def area(
         self,
@@ -211,7 +211,7 @@ class PlotAccessor(PandasObject):
     @overload
     def pie(
         self, y: Hashable, *, subplots: Literal[False] | None = ..., **kwargs
-    ) -> AxesSubplot: ...
+    ) -> Axes: ...
     @overload
     def pie(
         self, y: Hashable, *, subplots: Literal[True], **kwargs
@@ -226,7 +226,7 @@ class PlotAccessor(PandasObject):
         *,
         subplots: Literal[False] | None = ...,
         **kwargs,
-    ) -> AxesSubplot: ...
+    ) -> Axes: ...
     @overload
     def scatter(
         self,
@@ -238,6 +238,7 @@ class PlotAccessor(PandasObject):
         subplots: Literal[True],
         **kwargs,
     ) -> npt.NDArray[np.object_]: ...
+    @overload
     def hexbin(
         self,
         x: Hashable,
@@ -245,6 +246,21 @@ class PlotAccessor(PandasObject):
         C: Hashable | None = ...,
         reduce_C_function: Callable[[list], float] | None = ...,
         gridsize: int | tuple[int, int] | None = ...,
+        *,
+        subplots: Literal[False] | None = ...,
         **kwargs,
-    ) -> AxesSubplot: ...
+    ) -> Axes: ...
+    @overload
+    def hexbin(
+        self,
+        x: Hashable,
+        y: Hashable,
+        C: Hashable | None = ...,
+        reduce_C_function: Callable[[list], float] | None = ...,
+        gridsize: int | tuple[int, int] | None = ...,
+        *,
+        subplots: Literal[True],
+        **kwargs,
+    ) -> npt.NDArray[np.object_]: ...
+
     density = kde
