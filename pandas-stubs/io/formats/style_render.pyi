@@ -13,6 +13,7 @@ import jinja2
 from pandas import Index
 
 from pandas._typing import (
+    Axis,
     HashableT,
     Level,
 )
@@ -38,7 +39,7 @@ class StyleExportDict(TypedDict, total=False):
     css: dict[str, str | int]
 
 CSSStyles = list[CSSDict]
-Subset = Union[slice, list[HashableT], Index]
+Subset = Union[slice, tuple[slice, ...], list[HashableT], Index]
 
 _StylerT = TypeVar("_StylerT", bound=StylerRenderer)
 
@@ -63,7 +64,7 @@ class StylerRenderer(Generic[_StylerT]):
     def format_index(
         self,
         formatter: ExtFormatter | None = ...,
-        axis: int | Literal["index", "columns"] = ...,
+        axis: Axis = ...,
         level: Level | list[Level] | None = ...,
         na_rep: str | None = ...,
         precision: int | None = ...,
