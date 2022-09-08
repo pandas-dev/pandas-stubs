@@ -57,6 +57,7 @@ odfpy = ">=1.4.1"
 xarray = ">=22.6.0"
 tabulate = ">=0.8.10"
 scipy = ">=1.9.1"
+SQLAlchemy = "^1.4.41"
 
 
 [build-system]
