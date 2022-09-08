@@ -1,6 +1,7 @@
 from typing import (
     Any,
     Callable,
+    Literal,
     Optional,
     Sequence,
     TypedDict,
@@ -10,9 +11,12 @@ from typing import (
 import jinja2
 from pandas import Index
 
-from pandas._typing import Level
+from pandas._typing import (
+    HashableT,
+    Level,
+)
 
-BaseFormatter = Union[str, Callable]
+BaseFormatter = Union[str, Callable[[object], str]]
 ExtFormatter = Union[BaseFormatter, dict[Any, Optional[BaseFormatter]]]
 CSSPair = tuple[str, Union[str, float]]
 CSSList = list[CSSPair]
@@ -23,7 +27,7 @@ class CSSDict(TypedDict):
     props: CSSProperties
 
 CSSStyles = list[CSSDict]
-Subset = Union[slice, Sequence, Index]
+Subset = Union[slice, list[HashableT], Index]
 
 class StylerRenderer:
     loader: jinja2.loaders.BaseLoader
@@ -41,17 +45,17 @@ class StylerRenderer:
         decimal: str = ...,
         thousands: str | None = ...,
         escape: str | None = ...,
-        hyperlinks: str | None = ...,
+        hyperlinks: Literal["html", "latex"] | None = ...,
     ) -> StylerRenderer: ...
     def format_index(
         self,
         formatter: ExtFormatter | None = ...,
-        axis: int | str = ...,
+        axis: int | Literal["index", "columns"] = ...,
         level: Level | list[Level] | None = ...,
         na_rep: str | None = ...,
         precision: int | None = ...,
         decimal: str = ...,
         thousands: str | None = ...,
         escape: str | None = ...,
-        hyperlinks: str | None = ...,
+        hyperlinks: Literal["html", "latex"] | None = ...,
     ) -> StylerRenderer: ...
