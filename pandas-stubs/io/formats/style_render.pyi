@@ -11,6 +11,7 @@ from typing import (
 
 import jinja2
 from pandas import Index
+from pandas.core.indexing import _IndexSlice
 
 from pandas._typing import (
     Axis,
@@ -39,7 +40,7 @@ class StyleExportDict(TypedDict, total=False):
     css: dict[str, str | int]
 
 CSSStyles = list[CSSDict]
-Subset = Union[slice, tuple[slice, ...], list[HashableT], Index]
+Subset = Union[_IndexSlice, slice, tuple[slice, ...], list[HashableT], Index]
 
 _StylerT = TypeVar("_StylerT", bound=StylerRenderer)
 

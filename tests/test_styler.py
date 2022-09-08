@@ -221,7 +221,6 @@ def test_subset() -> None:
     from pandas import IndexSlice
 
     check(assert_type(DF.style.highlight_min(subset=slice(1, 2)), Styler), Styler)
-    # TODO: IndexSlice is not a valid type for mypy, but works. Should fix IndexSlice.
-    check(assert_type(DF.style.highlight_min(subset=IndexSlice[1:2]), Styler), Styler)  # type: ignore[arg-type]
+    check(assert_type(DF.style.highlight_min(subset=IndexSlice[1:2]), Styler), Styler)
     check(assert_type(DF.style.highlight_min(subset=[1]), Styler), Styler)
     check(assert_type(DF.style.highlight_min(subset=DF.columns[1:]), Styler), Styler)
