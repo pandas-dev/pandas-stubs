@@ -1,13 +1,12 @@
 from typing import (
     Any,
     Callable,
-    Hashable,
     Literal,
     Sequence,
-    TypeVar,
     overload,
 )
 
+from matplotlib.colors import Colormap
 import numpy as np
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
@@ -20,20 +19,21 @@ from pandas._typing import (
     Level,
     Scalar,
     WriteBuffer,
+    WriteExcelBuffer,
     npt,
 )
 
+from pandas.io.excel import ExcelWriter
 from pandas.io.formats.style_render import (
     CSSProperties,
     CSSStyles,
     ExtFormatter,
+    StyleExportDict,
     StylerRenderer,
     Subset,
 )
 
-_StylerT = TypeVar("_StylerT", bound=Styler)
-
-class Styler(StylerRenderer):
+class Styler(StylerRenderer[Styler]):
     def __init__(
         self,
         data: DataFrame | Series,
@@ -59,46 +59,73 @@ class Styler(StylerRenderer):
     ) -> Styler: ...
     def to_excel(
         self,
-        excel_writer,
+        excel_writer: FilePath | WriteExcelBuffer | ExcelWriter,
         sheet_name: str = ...,
         na_rep: str = ...,
         float_format: str | None = ...,
-        columns: Sequence[Hashable] | None = ...,
-        header: Sequence[Hashable] | bool = ...,
+        columns: list[HashableT] | None = ...,
+        header: list[HashableT] | bool = ...,
         index: bool = ...,
         index_label: IndexLabel | None = ...,
         startrow: int = ...,
         startcol: int = ...,
-        engine: str | None = ...,
+        engine: Literal["openpyxl", "xlsxwriter"] | None = ...,
         merge_cells: bool = ...,
         encoding: str | None = ...,
         inf_rep: str = ...,
         verbose: bool = ...,
         freeze_panes: tuple[int, int] | None = ...,
+        # TODO: Listed in docs but not in function decl
+        # storage_options: StorageOptions = ...,
     ) -> None: ...
+    @overload
     def to_latex(
         self,
-        buf: FilePath | WriteBuffer[str] | None = ...,
+        buf: FilePath | WriteBuffer[str],
         *,
         column_format: str | None = ...,
         position: str | None = ...,
-        position_float: str | None = ...,
+        position_float: Literal["centering", "raggedleft", "raggedright"] | None = ...,
         hrules: bool | None = ...,
-        clines: str | None = ...,
+        clines: Literal["all;data", "all;index", "skip-last;data", "skip-last;index"]
+        | None = ...,
         label: str | None = ...,
-        caption: str | tuple | None = ...,
+        caption: str | tuple[str, str] | None = ...,
         sparse_index: bool | None = ...,
         sparse_columns: bool | None = ...,
-        multirow_align: str | None = ...,
-        multicol_align: str | None = ...,
+        multirow_align: Literal["c", "t", "b", "naive"] | None = ...,
+        multicol_align: Literal["r", "c", "l", "naive-l", "naive-r"] | None = ...,
         siunitx: bool = ...,
         environment: str | None = ...,
         encoding: str | None = ...,
         convert_css: bool = ...,
-    ): ...
+    ) -> None: ...
+    @overload
+    def to_latex(
+        self,
+        buf: None = ...,
+        *,
+        column_format: str | None = ...,
+        position: str | None = ...,
+        position_float: Literal["centering", "raggedleft", "raggedright"] | None = ...,
+        hrules: bool | None = ...,
+        clines: Literal["all;data", "all;index", "skip-last;data", "skip-last;index"]
+        | None = ...,
+        label: str | None = ...,
+        caption: str | tuple[str, str] | None = ...,
+        sparse_index: bool | None = ...,
+        sparse_columns: bool | None = ...,
+        multirow_align: Literal["c", "t", "b", "naive"] | None = ...,
+        multicol_align: Literal["r", "c", "l", "naive-l", "naive-r"] | None = ...,
+        siunitx: bool = ...,
+        environment: str | None = ...,
+        encoding: str | None = ...,
+        convert_css: bool = ...,
+    ) -> str: ...
+    @overload
     def to_html(
         self,
-        buf: FilePath | WriteBuffer[str] | None = ...,
+        buf: FilePath | WriteBuffer[str],
         *,
         table_uuid: str | None = ...,
         table_attributes: str | None = ...,
@@ -112,7 +139,25 @@ class Styler(StylerRenderer):
         doctype_html: bool = ...,
         exclude_styles: bool = ...,
         **kwargs: Any,
-    ): ...
+    ) -> None: ...
+    @overload
+    def to_html(
+        self,
+        buf: None = ...,
+        *,
+        table_uuid: str | None = ...,
+        table_attributes: str | None = ...,
+        sparse_index: bool | None = ...,
+        sparse_columns: bool | None = ...,
+        bold_headers: bool = ...,
+        caption: str | None = ...,
+        max_rows: int | None = ...,
+        max_columns: int | None = ...,
+        encoding: str | None = ...,
+        doctype_html: bool = ...,
+        exclude_styles: bool = ...,
+        **kwargs: Any,
+    ) -> str: ...
     def set_td_classes(self, classes: DataFrame) -> Styler: ...
     def __copy__(self) -> Styler: ...
     def __deepcopy__(self, memo) -> Styler: ...
@@ -135,7 +180,7 @@ class Styler(StylerRenderer):
     ) -> Styler: ...
     def apply_index(
         self,
-        func: Callable[[Series], npt.NDArray[np.str_]],
+        func: Callable[[Series], npt.NDArray[np.str_] | list[str] | Series[str]],
         axis: int | str = ...,
         level: Level | list[Level] | None = ...,
         **kwargs: Any,
@@ -153,8 +198,8 @@ class Styler(StylerRenderer):
     # def where(self, cond: Callable, value: str, other: str | None = ..., subset: Subset | None = ..., **kwargs) -> Styler: ...
     # def set_precision(self, precision: int) -> StylerRenderer: ...
     def set_table_attributes(self, attributes: str) -> Styler: ...
-    def export(self) -> dict[str, Any]: ...
-    def use(self, styles: dict[str, Any]) -> Styler: ...
+    def export(self) -> StyleExportDict: ...
+    def use(self, styles: StyleExportDict) -> Styler: ...
     uuid: Any  # Incomplete
     def set_uuid(self, uuid: str) -> Styler: ...
     caption: Any  # Incomplete
@@ -174,6 +219,7 @@ class Styler(StylerRenderer):
     ) -> Styler: ...
     # def set_na_rep(self, na_rep: str) -> StylerRenderer: ...
     # def hide_index(self, subset: Subset | None = ..., level: Level | list[Level] | None = ..., names: bool = ...,) -> Styler: ...
+    # TODO: Not in docs? Should it be?
     def hide_columns(
         self,
         subset: Subset | None = ...,
@@ -189,7 +235,7 @@ class Styler(StylerRenderer):
     ) -> Styler: ...
     def background_gradient(
         self,
-        cmap: str = ...,
+        cmap: str | Colormap = ...,
         low: float = ...,
         high: float = ...,
         axis: Axis | None = ...,
@@ -197,18 +243,30 @@ class Styler(StylerRenderer):
         text_color_threshold: float = ...,
         vmin: float | None = ...,
         vmax: float | None = ...,
-        gmap: Sequence | None = ...,
+        gmap: Sequence[float]
+        | Sequence[Sequence[float]]
+        | npt.NDArray
+        | DataFrame
+        | Series
+        | None = ...,
     ) -> Styler: ...
     def text_gradient(
         self,
-        cmap: str = ...,
+        cmap: str | Colormap = ...,
         low: float = ...,
         high: float = ...,
         axis: Axis | None = ...,
         subset: Subset | None = ...,
+        # In docs but not in function declaration
+        # text_color_threshold: float
         vmin: float | None = ...,
         vmax: float | None = ...,
-        gmap: Sequence | None = ...,
+        gmap: Sequence[float]
+        | Sequence[Sequence[float]]
+        | npt.NDArray
+        | DataFrame
+        | Series
+        | None = ...,
     ) -> Styler: ...
     def set_properties(
         self, subset: Subset | None = ..., **kwargs: str | int
@@ -218,11 +276,13 @@ class Styler(StylerRenderer):
         subset: Subset | None = ...,
         axis: Axis | None = ...,
         *,
-        color: str | list | tuple | None = ...,
-        cmap: Any | None = ...,
+        color: str | list[str] | tuple[str, str] | None = ...,
+        cmap: str | Colormap = ...,
         width: float = ...,
         height: float = ...,
-        align: str | float | Callable = ...,
+        align: Literal["left", "right", "zero", "mid", "mean"]
+        | float
+        | Callable[[Series | npt.NDArray | DataFrame], float] = ...,
         vmin: float | None = ...,
         vmax: float | None = ...,
         props: str = ...,
@@ -276,10 +336,10 @@ class Styler(StylerRenderer):
         searchpath: str | list[str],
         html_table: str | None = ...,
         html_style: str | None = ...,
-    ) -> _StylerT: ...
+    ) -> type[Styler]: ...
     def pipe(
         self,
-        func: Callable[[Styler], Styler] | tuple[Callable[[Styler], Styler], str],
+        func: Callable | tuple[Callable, str],
         *args: Any,
         **kwargs: Any,
     ) -> Styler: ...

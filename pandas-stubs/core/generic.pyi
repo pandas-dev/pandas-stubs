@@ -160,7 +160,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def to_sql(
         self,
         name: _str,
-        con: str | sqlalchemy.engine.Connection | sqlite3.Connection,
+        con: str | sqlalchemy.engine.Connectable | sqlite3.Connection,
         schema: _str | None = ...,
         if_exists: Literal["fail", "replace", "append"] = ...,
         index: _bool = ...,

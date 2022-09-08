@@ -1,10 +1,11 @@
 from typing import (
     Any,
     Callable,
+    Generic,
     Literal,
     Optional,
-    Sequence,
     TypedDict,
+    TypeVar,
     Union,
 )
 
@@ -26,11 +27,23 @@ class CSSDict(TypedDict):
     selector: str
     props: CSSProperties
 
+class StyleExportDict(TypedDict, total=False):
+    apply: Any
+    table_attributes: Any
+    table_styles: Any
+    hide_index: bool
+    hide_columns: bool
+    hide_index_names: bool
+    hide_column_names: bool
+    css: dict[str, str | int]
+
 CSSStyles = list[CSSDict]
 Subset = Union[slice, list[HashableT], Index]
 
-class StylerRenderer:
-    loader: jinja2.loaders.BaseLoader
+_StylerT = TypeVar("_StylerT", bound=StylerRenderer)
+
+class StylerRenderer(Generic[_StylerT]):
+    loader: jinja2.loaders.PackageLoader
     env: jinja2.environment.Environment
     template_html: jinja2.environment.Template
     template_html_table: jinja2.environment.Template
@@ -46,7 +59,7 @@ class StylerRenderer:
         thousands: str | None = ...,
         escape: str | None = ...,
         hyperlinks: Literal["html", "latex"] | None = ...,
-    ) -> StylerRenderer: ...
+    ) -> _StylerT: ...
     def format_index(
         self,
         formatter: ExtFormatter | None = ...,
@@ -58,4 +71,4 @@ class StylerRenderer:
         thousands: str | None = ...,
         escape: str | None = ...,
         hyperlinks: Literal["html", "latex"] | None = ...,
-    ) -> StylerRenderer: ...
+    ) -> _StylerT: ...

@@ -171,7 +171,7 @@ class DataFrameGroupBy(GroupBy):
         grouped: DataFrame,
         subplots: bool = ...,
         column: str | Sequence | None = ...,
-        fontsize: int | str = ...,
+        fontsize: float | str = ...,
         rot: float = ...,
         grid: bool = ...,
         ax: PlotAxes | None = ...,

@@ -38,6 +38,7 @@ from tests import (
     check,
 )
 
+from pandas.io.formats.style import Styler
 from pandas.io.parsers import TextFileReader
 
 DF = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
@@ -1019,7 +1020,10 @@ def test_pipe() -> None:
 
         df3: pd.DataFrame = pd.DataFrame({"a": [1], "b": [1]}).groupby("a").pipe(foo)
 
-        df4: pd.DataFrame = pd.DataFrame({"a": [1], "b": [1]}).style.pipe(foo)
+        check(
+            assert_type(pd.DataFrame({"a": [1], "b": [1]}).style.pipe(foo), Styler),
+            Styler,
+        )
 
 
 # set_flags() method added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html

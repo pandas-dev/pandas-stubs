@@ -1,94 +1,424 @@
-from matplotlib.axes import Axes as PlotAxes
-from pandas.core.base import PandasObject as PandasObject
-from pandas.core.frame import DataFrame
+from typing import (
+    Any,
+    Callable,
+    Hashable,
+    Literal,
+    NamedTuple,
+    Sequence,
+    Union,
+    overload,
+)
 
-def hist_series(
-    self,
-    by=...,
-    ax=...,
-    grid: bool = ...,
-    xlabelsize=...,
-    xrot=...,
-    ylabelsize=...,
-    yrot=...,
-    figsize=...,
-    bins: int = ...,
-    backend=...,
-    **kwargs,
-): ...
-def hist_frame(
-    data,
-    column=...,
-    by=...,
-    grid: bool = ...,
-    xlabelsize=...,
-    xrot=...,
-    ylabelsize=...,
-    yrot=...,
-    ax=...,
-    sharex: bool = ...,
-    sharey: bool = ...,
-    figsize=...,
-    layout=...,
-    bins: int = ...,
-    backend=...,
-    **kwargs,
-): ...
+from matplotlib.axes import Axes
+from matplotlib.colors import Colormap
+from matplotlib.lines import Line2D
+import numpy as np
+import pandas as pd
+from pandas import Series
+from pandas.core.base import PandasObject
+from pandas.core.frame import DataFrame
+from scipy.stats.kde import gaussian_kde
+
+from pandas._typing import (
+    ArrayLike,
+    HashableT,
+    npt,
+)
+
+class _BoxPlotT(NamedTuple):
+    ax: Axes
+    lines: dict[str, list[Line2D]]
+
+_SingleColor = Union[
+    str, list[float], tuple[float, float, float], tuple[float, float, float, float]
+]
+_PlotAccessorColor = Union[str, list[_SingleColor], dict[HashableT, _SingleColor]]
+
+@overload
 def boxplot(
     data: DataFrame,
-    column: str | list[str] | None = ...,
-    by: str | list[str] | None = ...,
-    ax: PlotAxes | None = ...,
+    column: Hashable | list[HashableT] | None = ...,
+    by: Hashable | list[HashableT] | None = ...,
+    ax: Axes | None = ...,
     fontsize: float | str | None = ...,
     rot: float = ...,
     grid: bool = ...,
     figsize: tuple[float, float] | None = ...,
     layout: tuple[int, int] | None = ...,
-    return_type: str | None = ...,
-): ...
-def boxplot_frame(
-    self,
-    column=...,
-    by=...,
-    ax=...,
-    fontsize=...,
-    rot: int = ...,
-    grid: bool = ...,
-    figsize=...,
-    layout=...,
-    return_type=...,
-    backend=...,
+    return_type: Literal["axes"] | None = ...,
     **kwargs,
-): ...
-def boxplot_frame_groupby(
-    grouped,
-    subplots: bool = ...,
-    column=...,
-    fontsize=...,
-    rot: int = ...,
+) -> Axes: ...
+@overload
+def boxplot(
+    data: DataFrame,
+    column: Hashable | list[HashableT] | None = ...,
+    by: Hashable | list[HashableT] | None = ...,
+    ax: Axes | None = ...,
+    fontsize: float | str | None = ...,
+    rot: float = ...,
     grid: bool = ...,
-    ax=...,
-    figsize=...,
-    layout=...,
-    sharex: bool = ...,
-    sharey: bool = ...,
-    backend=...,
+    figsize: tuple[float, float] | None = ...,
+    layout: tuple[int, int] | None = ...,
+    *,
+    return_type: Literal["dict"],
     **kwargs,
-): ...
+) -> dict[str, list[Line2D]]: ...
+@overload
+def boxplot(
+    data: DataFrame,
+    column: Hashable | list[HashableT] | None = ...,
+    by: Hashable | list[HashableT] | None = ...,
+    ax: Axes | None = ...,
+    fontsize: float | str | None = ...,
+    rot: float = ...,
+    grid: bool = ...,
+    figsize: tuple[float, float] | None = ...,
+    layout: tuple[int, int] | None = ...,
+    *,
+    return_type: Literal["both"],
+    **kwargs,
+) -> _BoxPlotT: ...
 
 class PlotAccessor(PandasObject):
     def __init__(self, data) -> None: ...
-    def __call__(self, *args, **kwargs): ...
-    def line(self, x=..., y=..., **kwargs) -> PlotAccessor: ...
-    def bar(self, x=..., y=..., **kwargs) -> PlotAccessor: ...
-    def barh(self, x=..., y=..., **kwargs) -> PlotAccessor: ...
-    def box(self, by=..., **kwargs) -> PlotAccessor: ...
-    def hist(self, by=..., bins: int = ..., **kwargs) -> PlotAccessor: ...
-    def kde(self, bw_method=..., ind=..., **kwargs) -> PlotAccessor: ...
-    density = ...
-    def area(self, x=..., y=..., **kwargs) -> PlotAccessor: ...
-    def pie(self, **kwargs) -> PlotAccessor: ...
-    def scatter(self, x, y, s=..., c=..., **kwargs) -> PlotAccessor: ...
+    @overload
+    def __call__(
+        self,
+        *,
+        data: Series | DataFrame | None = ...,
+        x: Hashable = ...,
+        y: Hashable | Sequence[Hashable] = ...,
+        kind: Literal[
+            "line",
+            "bar",
+            "barh",
+            "hist",
+            "box",
+            "kde",
+            "density",
+            "area",
+            "pie",
+            "scatter",
+            "hexbin",
+        ] = ...,
+        ax: Axes | None = ...,
+        subplots: Literal[False] | None = ...,
+        sharex: bool = ...,
+        sharey: bool = ...,
+        layout: tuple[int, int] = ...,
+        figsize: tuple[float, float] = ...,
+        use_index: bool = ...,
+        title: Sequence[str] | None = ...,
+        grid: bool | None = ...,
+        legend: bool | Literal["reverse"] = ...,
+        style: str | list[str] | dict[HashableT, str] = ...,
+        logx: bool | Literal["sym"] = ...,
+        logy: bool | Literal["sym"] = ...,
+        loglog: bool | Literal["sym"] = ...,
+        xticks: Sequence[float] = ...,
+        yticks: Sequence[float] = ...,
+        xlim: tuple[float, float] | list[float] = ...,
+        ylim: tuple[float, float] | list[float] = ...,
+        xlabel: str = ...,
+        ylabel: str = ...,
+        rot: float = ...,
+        fontsize: float = ...,
+        colormap: str | Colormap | None = ...,
+        colorbar: bool = ...,
+        position: float = ...,
+        table: bool | Series | DataFrame = ...,
+        yerr: DataFrame | Series | ArrayLike | dict | str = ...,
+        xerr: DataFrame | Series | ArrayLike | dict | str = ...,
+        stacked: bool = ...,
+        sort_columns: bool = ...,
+        secondary_y: bool | list[HashableT] | tuple[HashableT, ...] = ...,
+        mark_right: bool = ...,
+        include_bool: bool = ...,
+        backend: str = ...,
+        **kwargs: Any,
+    ) -> Axes: ...
+    @overload
+    def __call__(
+        self,
+        *,
+        data: Series | DataFrame | None = ...,
+        x: Hashable = ...,
+        y: Hashable | Sequence[Hashable] = ...,
+        kind: Literal[
+            "line",
+            "bar",
+            "barh",
+            "hist",
+            "kde",
+            "density",
+            "area",
+            "pie",
+            "scatter",
+            "hexbin",
+        ] = ...,
+        ax: Axes | None = ...,
+        subplots: Literal[True],
+        sharex: bool = ...,
+        sharey: bool = ...,
+        layout: tuple[int, int] = ...,
+        figsize: tuple[float, float] = ...,
+        use_index: bool = ...,
+        title: Sequence[str] | None = ...,
+        grid: bool | None = ...,
+        legend: bool | Literal["reverse"] = ...,
+        style: str | list[str] | dict[HashableT, str] = ...,
+        logx: bool | Literal["sym"] = ...,
+        logy: bool | Literal["sym"] = ...,
+        loglog: bool | Literal["sym"] = ...,
+        xticks: Sequence[float] = ...,
+        yticks: Sequence[float] = ...,
+        xlim: tuple[float, float] | list[float] = ...,
+        ylim: tuple[float, float] | list[float] = ...,
+        xlabel: str = ...,
+        ylabel: str = ...,
+        rot: float = ...,
+        fontsize: float = ...,
+        colormap: str | Colormap | None = ...,
+        colorbar: bool = ...,
+        position: float = ...,
+        table: bool | Series | DataFrame = ...,
+        yerr: DataFrame | Series | ArrayLike | dict | str = ...,
+        xerr: DataFrame | Series | ArrayLike | dict | str = ...,
+        stacked: bool = ...,
+        sort_columns: bool = ...,
+        secondary_y: bool | list[HashableT] | tuple[HashableT, ...] = ...,
+        mark_right: bool = ...,
+        include_bool: bool = ...,
+        backend: str = ...,
+        **kwargs: Any,
+    ) -> npt.NDArray[np.object_]: ...
+    @overload
+    def __call__(
+        self,
+        *,
+        data: Series | DataFrame | None = ...,
+        x: Hashable = ...,
+        y: Hashable | Sequence[Hashable] = ...,
+        kind: Literal["box"],
+        ax: Axes | None = ...,
+        subplots: Literal[True],
+        sharex: bool = ...,
+        sharey: bool = ...,
+        layout: tuple[int, int] = ...,
+        figsize: tuple[float, float] = ...,
+        use_index: bool = ...,
+        title: Sequence[str] | None = ...,
+        grid: bool | None = ...,
+        legend: bool | Literal["reverse"] = ...,
+        style: str | list[str] | dict[HashableT, str] = ...,
+        logx: bool | Literal["sym"] = ...,
+        logy: bool | Literal["sym"] = ...,
+        loglog: bool | Literal["sym"] = ...,
+        xticks: Sequence[float] = ...,
+        yticks: Sequence[float] = ...,
+        xlim: tuple[float, float] | list[float] = ...,
+        ylim: tuple[float, float] | list[float] = ...,
+        xlabel: str = ...,
+        ylabel: str = ...,
+        rot: float = ...,
+        fontsize: float = ...,
+        colormap: str | Colormap | None = ...,
+        colorbar: bool = ...,
+        position: float = ...,
+        table: bool | Series | DataFrame = ...,
+        yerr: DataFrame | Series | ArrayLike | dict | str = ...,
+        xerr: DataFrame | Series | ArrayLike | dict | str = ...,
+        stacked: bool = ...,
+        sort_columns: bool = ...,
+        secondary_y: bool | list[HashableT] | tuple[HashableT, ...] = ...,
+        mark_right: bool = ...,
+        include_bool: bool = ...,
+        backend: str = ...,
+        **kwargs: Any,
+    ) -> pd.Series: ...
+    @overload
+    def line(
+        self,
+        x: Hashable | None = ...,
+        y: Hashable | None = ...,
+        color: _PlotAccessorColor = ...,
+        subplots: Literal[False] | None = ...,
+        **kwargs,
+    ) -> Axes: ...
+    @overload
+    def line(
+        self,
+        x: Hashable | None = ...,
+        y: Hashable | None = ...,
+        color: _PlotAccessorColor = ...,
+        subplots: Literal[True] = ...,
+        **kwargs,
+    ) -> npt.NDArray[np.object_]: ...
+    @overload
+    def bar(
+        self,
+        x: Hashable | None = ...,
+        y: Hashable | None = ...,
+        color: _PlotAccessorColor = ...,
+        subplots: Literal[False] | None = ...,
+        **kwargs,
+    ) -> Axes: ...
+    @overload
+    def bar(
+        self,
+        x: Hashable | None = ...,
+        y: Hashable | None = ...,
+        color: _PlotAccessorColor = ...,
+        subplots: Literal[True] = ...,
+        **kwargs,
+    ) -> npt.NDArray[np.object_]: ...
+    @overload
+    def barh(
+        self,
+        x: Hashable | None = ...,
+        y: Hashable | None = ...,
+        color: _PlotAccessorColor = ...,
+        subplots: Literal[False] | None = ...,
+        **kwargs,
+    ) -> Axes: ...
+    @overload
+    def barh(
+        self,
+        x: Hashable | None = ...,
+        y: Hashable | None = ...,
+        color: _PlotAccessorColor = ...,
+        subplots: Literal[True] = ...,
+        **kwargs,
+    ) -> npt.NDArray[np.object_]: ...
+    @overload
+    def box(
+        self,
+        by: Hashable | list[HashableT] | None = ...,
+        subplots: Literal[False] | None = ...,
+        **kwargs,
+    ) -> Axes: ...
+    @overload
+    def box(
+        self,
+        by: Hashable | list[HashableT] | None = ...,
+        subplots: Literal[True] = ...,
+        **kwargs,
+    ) -> Series: ...
+    @overload
+    def hist(
+        self,
+        by: Hashable | list[HashableT] | None = ...,
+        bins: int = ...,
+        *,
+        subplots: Literal[False] | None = ...,
+        **kwargs,
+    ) -> Axes: ...
+    @overload
+    def hist(
+        self,
+        by: Hashable | list[HashableT] | None = ...,
+        bins: int = ...,
+        *,
+        subplots: Literal[True],
+        **kwargs,
+    ) -> npt.NDArray[np.object_]: ...
+    @overload
+    def kde(
+        self,
+        bw_method: Literal["scott", "silverman"]
+        | float
+        | Callable[[gaussian_kde], float]
+        | None = ...,
+        ind: npt.NDArray[np.float_] | int | None = ...,
+        *,
+        subplots: Literal[False] | None = ...,
+        **kwargs,
+    ) -> Axes: ...
+    @overload
+    def kde(
+        self,
+        bw_method: Literal["scott", "silverman"]
+        | float
+        | Callable[[gaussian_kde], float]
+        | None = ...,
+        ind: npt.NDArray[np.float_] | int | None = ...,
+        *,
+        subplots: Literal[True],
+        **kwargs,
+    ) -> npt.NDArray[np.object_]: ...
+    @overload
+    def area(
+        self,
+        x: Hashable | None = ...,
+        y: Hashable | None = ...,
+        stacked: bool = ...,
+        *,
+        subplots: Literal[False] | None = ...,
+        **kwargs,
+    ) -> Axes: ...
+    @overload
+    def area(
+        self,
+        x: Hashable | None = ...,
+        y: Hashable | None = ...,
+        stacked: bool = ...,
+        *,
+        subplots: Literal[True],
+        **kwargs,
+    ) -> npt.NDArray[np.object_]: ...
+    @overload
+    def pie(
+        self, y: Hashable, *, subplots: Literal[False] | None = ..., **kwargs
+    ) -> Axes: ...
+    @overload
+    def pie(
+        self, y: Hashable, *, subplots: Literal[True], **kwargs
+    ) -> npt.NDArray[np.object_]: ...
+    @overload
+    def scatter(
+        self,
+        x: Hashable,
+        y: Hashable,
+        s: Hashable | Sequence[float] | None = ...,
+        c: Hashable | list[str] = ...,
+        *,
+        subplots: Literal[False] | None = ...,
+        **kwargs,
+    ) -> Axes: ...
+    @overload
+    def scatter(
+        self,
+        x: Hashable,
+        y: Hashable,
+        s: Hashable | Sequence[float] | None = ...,
+        c: Hashable | list[str] = ...,
+        *,
+        subplots: Literal[True],
+        **kwargs,
+    ) -> npt.NDArray[np.object_]: ...
+    @overload
     def hexbin(
-        self, x, y, C=..., reduce_C_function=..., gridsize=..., **kwargs
-    ) -> PlotAccessor: ...
+        self,
+        x: Hashable,
+        y: Hashable,
+        C: Hashable | None = ...,
+        reduce_C_function: Callable[[list], float] | None = ...,
+        gridsize: int | tuple[int, int] | None = ...,
+        *,
+        subplots: Literal[False] | None = ...,
+        **kwargs,
+    ) -> Axes: ...
+    @overload
+    def hexbin(
+        self,
+        x: Hashable,
+        y: Hashable,
+        C: Hashable | None = ...,
+        reduce_C_function: Callable[[list], float] | None = ...,
+        gridsize: int | tuple[int, int] | None = ...,
+        *,
+        subplots: Literal[True],
+        **kwargs,
+    ) -> npt.NDArray[np.object_]: ...
+
+    density = kde
