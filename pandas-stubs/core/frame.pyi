@@ -1216,7 +1216,7 @@ class DataFrame(NDFrame, OpsMixin):
         by: _str | ListLike | None = ...,
         ax: PlotAxes | None = ...,
         fontsize: float | _str | None = ...,
-        rot: int = ...,
+        rot: float = ...,
         grid: _bool = ...,
         figsize: tuple[float, float] | None = ...,
         layout: tuple[int, int] | None = ...,
