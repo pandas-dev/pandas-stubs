@@ -2,19 +2,25 @@ from typing import (
     Any,
     Callable,
     Hashable,
+    Literal,
     Sequence,
+    TypeVar,
+    overload,
 )
 
+import numpy as np
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
 
 from pandas._typing import (
     Axis,
     FilePath,
+    HashableT,
     IndexLabel,
     Level,
     Scalar,
     WriteBuffer,
+    npt,
 )
 
 from pandas.io.formats.style_render import (
@@ -25,6 +31,8 @@ from pandas.io.formats.style_render import (
     Subset,
 )
 
+_StylerT = TypeVar("_StylerT", bound=Styler)
+
 class Styler(StylerRenderer):
     def __init__(
         self,
@@ -32,7 +40,7 @@ class Styler(StylerRenderer):
         precision: int | None = ...,
         table_styles: CSSStyles | None = ...,
         uuid: str | None = ...,
-        caption: str | tuple | None = ...,
+        caption: str | tuple[str, str] | None = ...,
         table_attributes: str | None = ...,
         cell_ids: bool = ...,
         na_rep: str | None = ...,
@@ -103,35 +111,44 @@ class Styler(StylerRenderer):
         encoding: str | None = ...,
         doctype_html: bool = ...,
         exclude_styles: bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ): ...
     def set_td_classes(self, classes: DataFrame) -> Styler: ...
     def __copy__(self) -> Styler: ...
     def __deepcopy__(self, memo) -> Styler: ...
     def clear(self) -> None: ...
+    @overload
     def apply(
         self,
-        func: Callable,
-        axis: Axis | None = ...,
+        func: Callable[[Series], list | Series],
+        axis: Axis = ...,
         subset: Subset | None = ...,
-        **kwargs,
+        **kwargs: Any,
+    ) -> Styler: ...
+    @overload
+    def apply(
+        self,
+        func: Callable[[DataFrame], npt.NDArray | DataFrame],
+        axis: None,
+        subset: Subset | None = ...,
+        **kwargs: Any,
     ) -> Styler: ...
     def apply_index(
         self,
-        func: Callable,
+        func: Callable[[Series], npt.NDArray[np.str_]],
         axis: int | str = ...,
         level: Level | list[Level] | None = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Styler: ...
     def applymap_index(
         self,
-        func: Callable,
+        func: Callable[[object], str],
         axis: int | str = ...,
         level: Level | list[Level] | None = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Styler: ...
     def applymap(
-        self, func: Callable, subset: Subset | None = ..., **kwargs
+        self, func: Callable[[object], str], subset: Subset | None = ..., **kwargs: Any
     ) -> Styler: ...
     # def where(self, cond: Callable, value: str, other: str | None = ..., subset: Subset | None = ..., **kwargs) -> Styler: ...
     # def set_precision(self, precision: int) -> StylerRenderer: ...
@@ -141,7 +158,7 @@ class Styler(StylerRenderer):
     uuid: Any  # Incomplete
     def set_uuid(self, uuid: str) -> Styler: ...
     caption: Any  # Incomplete
-    # def set_caption(self, caption: str | tuple) -> Styler: ...
+    def set_caption(self, caption: str | tuple[str, str]) -> Styler: ...
     def set_sticky(
         self,
         axis: Axis = ...,
@@ -150,7 +167,7 @@ class Styler(StylerRenderer):
     ) -> Styler: ...
     def set_table_styles(
         self,
-        table_styles: dict[Any, CSSStyles] | CSSStyles | None = ...,
+        table_styles: dict[HashableT, CSSStyles] | CSSStyles | None = ...,
         axis: int = ...,
         overwrite: bool = ...,
         css_class_names: dict[str, str] | None = ...,
@@ -193,7 +210,9 @@ class Styler(StylerRenderer):
         vmax: float | None = ...,
         gmap: Sequence | None = ...,
     ) -> Styler: ...
-    def set_properties(self, subset: Subset | None = ..., **kwargs) -> Styler: ...
+    def set_properties(
+        self, subset: Subset | None = ..., **kwargs: str | int
+    ) -> Styler: ...
     def bar(
         self,
         subset: Subset | None = ...,
@@ -233,9 +252,9 @@ class Styler(StylerRenderer):
         subset: Subset | None = ...,
         color: str = ...,
         axis: Axis | None = ...,
-        left: Scalar | Sequence | None = ...,
-        right: Scalar | Sequence | None = ...,
-        inclusive: str = ...,
+        left: Scalar | list[Scalar] | None = ...,
+        right: Scalar | list[Scalar] | None = ...,
+        inclusive: Literal["both", "neither", "left", "right"] = ...,
         props: str | None = ...,
     ) -> Styler: ...
     def highlight_quantile(
@@ -245,15 +264,22 @@ class Styler(StylerRenderer):
         axis: Axis | None = ...,
         q_left: float = ...,
         q_right: float = ...,
-        interpolation: str = ...,
-        inclusive: str = ...,
+        interpolation: Literal[
+            "linear", "lower", "higher", "midpoint", "nearest"
+        ] = ...,
+        inclusive: Literal["both", "neither", "left", "right"] = ...,
         props: str | None = ...,
     ) -> Styler: ...
     @classmethod
     def from_custom_template(
         cls,
-        searchpath,
+        searchpath: str | list[str],
         html_table: str | None = ...,
         html_style: str | None = ...,
-    ): ...
-    def pipe(self, func: Callable, *args, **kwargs): ...
+    ) -> _StylerT: ...
+    def pipe(
+        self,
+        func: Callable[[Styler], Styler] | tuple[Callable[[Styler], Styler], str],
+        *args: Any,
+        **kwargs: Any,
+    ) -> Styler: ...
