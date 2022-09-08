@@ -10,7 +10,10 @@ __all__ = [
     "Tick",
     "OutOfBoundsDatetime",
 ]
-from pandas._libs.tslibs.np_datetime import OutOfBoundsDatetime as OutOfBoundsDatetime
+from pandas._libs.tslibs.np_datetime import (
+    OutOfBoundsDatetime as OutOfBoundsDatetime,
+    OutOfBoundsTimedelta as OutOfBoundsTimedelta,
+)
 
 from .nattype import (
     NaT,

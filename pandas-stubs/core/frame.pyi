@@ -53,7 +53,6 @@ from pandas._typing import (
     ColspaceArgType,
     CompressionOptions,
     Dtype,
-    DtypeNp,
     FilePath,
     FilePathOrBuffer,
     FillnaOptions,
@@ -225,9 +224,9 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def to_numpy(
         self,
-        dtype: type[DtypeNp] | Dtype | None = ...,
-        copy: _bool = ...,
-        na_value: Any | None = ...,
+        dtype: npt.DTypeLike | None = ...,
+        copy: bool = ...,
+        na_value: Scalar = ...,
     ) -> np.ndarray: ...
     @overload
     def to_dict(

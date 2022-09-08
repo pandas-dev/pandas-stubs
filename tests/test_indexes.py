@@ -94,3 +94,10 @@ def test_index_neg():
     # GH 253
     idx = pd.Index([1, 2])
     check(assert_type(-idx, pd.Index), pd.Index)
+
+
+def test_types_to_numpy() -> None:
+    idx = pd.Index([1, 2])
+    check(assert_type(idx.to_numpy(), np.ndarray), np.ndarray)
+    check(assert_type(idx.to_numpy(dtype="int", copy=True), np.ndarray), np.ndarray)
+    check(assert_type(idx.to_numpy(na_value=0), np.ndarray), np.ndarray)
