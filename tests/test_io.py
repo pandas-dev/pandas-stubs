@@ -43,6 +43,7 @@ from pandas import (
 )
 from pandas._testing import ensure_clean
 import pytest
+import sqlalchemy
 from typing_extensions import assert_type
 
 from tests import check
@@ -690,6 +691,31 @@ def test_read_sql():
             assert_type(read_sql("select * from test", con=con), DataFrame), DataFrame
         )
         con.close()
+
+
+def test_read_sql_via_sqlalchemy_connection():
+    with ensure_clean() as path:
+        db_uri = "sqlite:///" + path
+        engine = sqlalchemy.create_engine(db_uri)
+
+        with engine.connect() as conn:
+            check(assert_type(DF.to_sql("test", con=conn), Union[int, None]), int)
+            check(
+                assert_type(read_sql("select * from test", con=conn), DataFrame),
+                DataFrame,
+            )
+
+
+def test_read_sql_via_sqlalchemy_engine():
+    with ensure_clean() as path:
+        db_uri = "sqlite:///" + path
+        engine = sqlalchemy.create_engine(db_uri)
+
+        check(assert_type(DF.to_sql("test", con=engine), Union[int, None]), int)
+        check(
+            assert_type(read_sql("select * from test", con=engine), DataFrame),
+            DataFrame,
+        )
 
 
 def test_read_sql_generator():
