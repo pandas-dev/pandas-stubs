@@ -10,6 +10,7 @@ from typing import (
 import numpy as np
 from pandas import (
     DataFrame,
+    Index,
     Series,
 )
 from pandas.core.groupby.generic import SeriesGroupBy
@@ -17,7 +18,6 @@ from pandas.core.groupby.groupby import BaseGroupBy
 
 from pandas._typing import (
     Axis,
-    IndexT,
     NDFrameT,
     Scalar,
     npt,
@@ -54,7 +54,7 @@ class Resampler(BaseGroupBy, Generic[NDFrameT]):
     @property
     def obj(self) -> NDFrameT: ...
     @property
-    def ax(self) -> IndexT: ...
+    def ax(self) -> Index: ...
     def pipe(
         self,
         func: Callable | tuple[Callable, str],

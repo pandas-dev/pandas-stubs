@@ -83,7 +83,7 @@ FilePathOrBuffer = Union[
     FilePath, IO[AnyStr], RawIOBase, BufferedIOBase, TextIOBase, TextIOWrapper, mmap
 ]
 
-Axis = Literal[0, 1, "index", "columns"]
+Axis = Union[str, int]
 IndexLabel = Union[Hashable, Sequence[Hashable]]
 Label = Optional[Hashable]
 Level = Union[Hashable, int]

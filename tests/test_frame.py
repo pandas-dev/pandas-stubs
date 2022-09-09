@@ -27,6 +27,7 @@ from pandas._testing import (
     ensure_clean,
     getSeriesData,
 )
+from pandas.core.resample import Resampler
 import pytest
 from typing_extensions import assert_type
 import xarray as xr
@@ -998,28 +999,31 @@ def test_types_from_dict() -> None:
 
 
 def test_pipe() -> None:
+    def foo(df: pd.DataFrame) -> pd.DataFrame:
+        return df
+
+    val = (
+        pd.DataFrame(
+            {
+                "price": [10, 11, 9, 13, 14, 18, 17, 19],
+                "volume": [50, 60, 40, 100, 50, 100, 40, 50],
+            }
+        )
+        .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
+        .resample("M", on="week_starting")
+        .pipe(foo)
+    )
+
+    # Cant' check actual return type because it is DatetimeIndexResampler which is
+    # not part of the public API
+    assert_type(val, Union[Scalar, pd.Series, pd.DataFrame, Resampler])
+
     if TYPE_CHECKING:  # skip pytest
-
-        def foo(df: pd.DataFrame) -> pd.DataFrame:
-            return df
-
         df1: pd.DataFrame = pd.DataFrame({"a": [1]}).pipe(foo)
 
-        df2: pd.DataFrame = (
-            pd.DataFrame(
-                {
-                    "price": [10, 11, 9, 13, 14, 18, 17, 19],
-                    "volume": [50, 60, 40, 100, 50, 100, 40, 50],
-                }
-            )
-            .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
-            .resample("M", on="week_starting")
-            .pipe(foo)
-        )
+        df2: pd.DataFrame = pd.DataFrame({"a": [1], "b": [1]}).groupby("a").pipe(foo)
 
-        df3: pd.DataFrame = pd.DataFrame({"a": [1], "b": [1]}).groupby("a").pipe(foo)
-
-        df4: pd.DataFrame = pd.DataFrame({"a": [1], "b": [1]}).style.pipe(foo)
+        df3: pd.DataFrame = pd.DataFrame({"a": [1], "b": [1]}).style.pipe(foo)
 
 
 # set_flags() method added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html

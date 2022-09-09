@@ -9,6 +9,7 @@ import numpy as np
 from pandas import (
     DataFrame,
     DatetimeIndex,
+    Index,
     Series,
     date_range,
 )
@@ -16,10 +17,7 @@ from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.resample import Resampler
 from typing_extensions import assert_type
 
-from pandas._typing import (
-    IndexT,
-    Scalar,
-)
+from pandas._typing import Scalar
 
 from tests import check
 
@@ -34,7 +32,7 @@ _PipeRetType = Union[_AggRetType, Resampler]
 
 def test_props() -> None:
     check(assert_type(DF.resample("m").obj, DataFrame), DataFrame)
-    check(assert_type(DF.resample("m").ax, IndexT), DatetimeIndex)
+    check(assert_type(DF.resample("m").ax, Index), DatetimeIndex)
 
 
 def test_iter() -> None:
