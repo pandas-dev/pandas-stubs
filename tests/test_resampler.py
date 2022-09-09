@@ -26,8 +26,8 @@ DF_ = DataFrame(np.random.standard_normal((365, 1)), index=DR)
 S = DF_.iloc[:, 0]
 DF = DataFrame({"col1": S, "col2": S})
 
-_AggRetType = Union[DataFrame, Series, Scalar]
-_PipeRetType = Union[_AggRetType, Resampler]
+_AggRetType = Union[DataFrame, Series]
+_PipeRetType = Union[_AggRetType, Resampler, Scalar]
 
 
 def test_props() -> None:
@@ -57,7 +57,7 @@ def test_agg_funcs() -> None:
     check(assert_type(DF.resample("m").nunique(), DataFrame), DataFrame)
 
 
-def test_quantile():
+def test_quantile() -> None:
     check(assert_type(DF.resample("m").quantile(0.5), DataFrame), DataFrame)
     check(assert_type(DF.resample("m").quantile([0.5, 0.7]), DataFrame), DataFrame)
     check(
@@ -106,13 +106,14 @@ def test_aggregate() -> None:
     )
     check(
         assert_type(
-            DF.resample("m").aggregate({"col1": sum, "col2": np.mean}), _AggRetType
+            DF.resample("m").aggregate({"col1": "sum", "col2": np.mean}),
+            _AggRetType,
         ),
         DataFrame,
     )
     check(
         assert_type(
-            DF.resample("m").aggregate({"col1": [sum, np.mean], "col2": np.mean}),
+            DF.resample("m").aggregate({"col1": ["sum", np.mean], "col2": np.mean}),
             _AggRetType,
         ),
         DataFrame,
@@ -160,3 +161,118 @@ def test_transform() -> None:
         return -1 * val
 
     check(assert_type(DF.resample("m").transform(f), DataFrame), DataFrame)
+
+
+def test_props_series() -> None:
+    check(assert_type(S.resample("m").obj, Series), Series)
+    check(assert_type(S.resample("m").ax, Index), DatetimeIndex)
+
+
+def test_iter_series() -> None:
+    for v in S.resample("m"):
+        check(assert_type(v, Tuple[Hashable, Series]), tuple)
+
+
+def test_agg_funcs_series() -> None:
+    check(assert_type(S.resample("m").sum(), Series), Series)
+    check(assert_type(S.resample("m").prod(), Series), Series)
+    check(assert_type(S.resample("m").min(), Series), Series)
+    check(assert_type(S.resample("m").max(), Series), Series)
+    check(assert_type(S.resample("m").first(), Series), Series)
+    check(assert_type(S.resample("m").last(), Series), Series)
+    check(assert_type(S.resample("m").mean(), Series), Series)
+    check(assert_type(S.resample("m").sum(), Series), Series)
+    check(assert_type(S.resample("m").median(), Series), Series)
+    check(assert_type(S.resample("m").ohlc(), DataFrame), DataFrame)
+    check(assert_type(S.resample("m").nunique(), Series), Series)
+
+
+def test_quantile_series() -> None:
+    check(assert_type(S.resample("m").quantile(0.5), Series), Series)
+    check(assert_type(S.resample("m").quantile([0.5, 0.7]), Series), Series)
+    check(
+        assert_type(S.resample("m").quantile(np.array([0.5, 0.7])), Series),
+        Series,
+    )
+
+
+def test_std_var_series() -> None:
+    check(assert_type(S.resample("m").std(), Series), Series)
+    check(assert_type(S.resample("m").var(2), Series), Series)
+
+
+def test_size_count_series() -> None:
+    check(assert_type(S.resample("m").size(), Series), Series)
+    check(assert_type(S.resample("m").count(), Series), Series)
+
+
+def test_filling_series() -> None:
+    check(assert_type(S.resample("m").ffill(), Series), Series)
+    check(assert_type(S.resample("m").nearest(), Series), Series)
+    check(assert_type(S.resample("m").bfill(), Series), Series)
+
+
+def test_fillna_series() -> None:
+    check(assert_type(S.resample("m").fillna("pad"), Series), Series)
+    check(assert_type(S.resample("m").fillna("backfill"), Series), Series)
+    check(assert_type(S.resample("m").fillna("ffill"), Series), Series)
+    check(assert_type(S.resample("m").fillna("bfill"), Series), Series)
+    check(assert_type(S.resample("m").fillna("nearest", limit=2), Series), Series)
+
+
+def test_aggregate_series() -> None:
+    check(assert_type(S.resample("m").aggregate(np.sum), _AggRetType), Series)
+    check(assert_type(S.resample("m").agg(np.sum), _AggRetType), Series)
+    check(assert_type(S.resample("m").apply(np.sum), _AggRetType), Series)
+    check(
+        assert_type(S.resample("m").aggregate([np.sum, np.mean]), _AggRetType),
+        DataFrame,
+    )
+    check(
+        assert_type(S.resample("m").aggregate(["sum", np.mean]), _AggRetType),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            S.resample("m").aggregate({"col1": "sum", "col2": np.mean}),
+            _AggRetType,
+        ),
+        DataFrame,
+    )
+
+    def f(val: Series) -> float:
+        return val.mean()
+
+    check(assert_type(S.resample("m").aggregate(f), _AggRetType), Series)
+
+
+def test_asfreq_series() -> None:
+    check(assert_type(S.resample("m").asfreq(-1.0), Series), Series)
+
+
+def test_interpolate_series() -> None:
+    check(assert_type(S.resample("m").interpolate(), Series), Series)
+    check(assert_type(S.resample("m").interpolate(method="time"), Series), Series)
+
+
+def test_interpolate_inplace_series() -> None:
+    check(assert_type(S.resample("m").interpolate(inplace=True), None), type(None))
+
+
+def test_pipe_series() -> None:
+    def f(val: Series) -> Series:
+        return Series(val)
+
+    check(assert_type(S.resample("m").pipe(f), _PipeRetType), Series)
+
+    def g(val: Series) -> float:
+        return val.mean()
+
+    check(assert_type(S.resample("m").pipe(g), _PipeRetType), Series)
+
+
+def test_transform_series() -> None:
+    def f(val: Series) -> Series:
+        return -1 * val
+
+    check(assert_type(S.resample("m").transform(f), Series), Series)

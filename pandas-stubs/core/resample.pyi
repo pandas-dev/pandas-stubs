@@ -4,6 +4,7 @@ from typing import (
     Generic,
     Hashable,
     Literal,
+    Mapping,
     overload,
 )
 
@@ -23,9 +24,20 @@ from pandas._typing import (
     npt,
 )
 
-_GroupByFunc = Callable[[Series], Scalar] | Callable[[DataFrame], Series]
-_GroupByFuncTypes = _GroupByFunc | str | list[_GroupByFunc | str]
-_GroupByFuncArgs = _GroupByFuncTypes | dict[Hashable, _GroupByFuncTypes]
+_FrameGroupByFunc = (
+    Callable[[DataFrame], Series] | Callable[[DataFrame], DataFrame] | np.ufunc
+)
+_FrameGroupByFuncTypes = _FrameGroupByFunc | str | list[_FrameGroupByFunc | str]
+_FrameGroupByFuncArgs = (
+    _FrameGroupByFuncTypes | Mapping[Hashable, _FrameGroupByFuncTypes]
+)
+
+_SeriesGroupByFunc = Callable[[Series], Scalar] | Callable[[Series], Series] | np.ufunc
+_SeriesGroupByFuncTypes = _SeriesGroupByFunc | str | list[_SeriesGroupByFunc | str]
+_SeriesGroupByFuncArgs = (
+    _SeriesGroupByFuncTypes | Mapping[Hashable, _SeriesGroupByFunc | str]
+)
+
 _Interpolation = Literal[
     "linear",
     "time",
@@ -61,9 +73,20 @@ class Resampler(BaseGroupBy, Generic[NDFrameT]):
         *args,
         **kwargs,
     ) -> Scalar | Series | DataFrame | Resampler: ...
+    @overload
     def aggregate(
-        self, func: _GroupByFuncArgs | None = ..., *args, **kwargs
-    ) -> Scalar | Series | DataFrame: ...
+        self: Resampler[DataFrame],
+        func: _FrameGroupByFuncArgs | None = ...,
+        *args,
+        **kwargs,
+    ) -> Series | DataFrame: ...
+    @overload
+    def aggregate(
+        self: Resampler[Series],
+        func: _SeriesGroupByFuncArgs | None = ...,
+        *args,
+        **kwargs,
+    ) -> Series | DataFrame: ...
     agg = aggregate
     apply = aggregate
     def transform(
