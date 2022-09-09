@@ -1,5 +1,3 @@
-import pandas.testing as testing
-
 from . import (
     api as api,
     arrays as arrays,
