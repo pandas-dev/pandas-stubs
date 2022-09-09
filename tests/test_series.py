@@ -438,6 +438,12 @@ def test_types_groupby() -> None:
     s.groupby(["a", "b", "a", "b"])
     s.groupby(level=0)
     s.groupby(s > 2)
+    # GH 284
+    s.groupby([s > 2, s % 2 == 1])
+    s.groupby(lambda x: x)
+    s.groupby([lambda x: x, lambda x: x.replace("a", "b")])
+    s.groupby(pd.Grouper(level=0))
+    s.groupby([pd.Grouper(level=0), pd.Grouper(level=0)])
 
 
 def test_types_groupby_methods() -> None:

@@ -584,6 +584,13 @@ def test_types_groupby() -> None:
     df.groupby(level="ind")
     df.groupby(by="col1", sort=False, as_index=True)
     df.groupby(by=["col1", "col2"])
+    # GH 284
+    df.groupby(df["col1"] > 2)
+    df.groupby([df["col1"] > 2, df["col2"] % 2 == 1])
+    df.groupby(lambda x: x)
+    df.groupby([lambda x: x % 2, lambda x: x % 3])
+    df.groupby(pd.Grouper(level=0))
+    df.groupby([pd.Grouper(level=0), pd.Grouper(key="col1")])
 
     df1: pd.DataFrame = df.groupby(by="col1").agg("sum")
     df2: pd.DataFrame = df.groupby(level="ind").aggregate("sum")
