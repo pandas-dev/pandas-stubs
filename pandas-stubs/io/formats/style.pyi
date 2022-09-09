@@ -181,14 +181,14 @@ class Styler(StylerRenderer[Styler]):
     def apply_index(
         self,
         func: Callable[[Series], npt.NDArray[np.str_] | list[str] | Series[str]],
-        axis: int | str = ...,
+        axis: AxisType = ...,
         level: Level | list[Level] | None = ...,
         **kwargs: Any,
     ) -> Styler: ...
     def applymap_index(
         self,
         func: Callable[[object], str],
-        axis: int | str = ...,
+        axis: AxisType = ...,
         level: Level | list[Level] | None = ...,
         **kwargs: Any,
     ) -> Styler: ...
@@ -211,7 +211,7 @@ class Styler(StylerRenderer[Styler]):
     def set_table_styles(
         self,
         table_styles: dict[HashableT, CSSStyles] | CSSStyles | None = ...,
-        axis: int = ...,
+        axis: AxisType = ...,
         overwrite: bool = ...,
         css_class_names: dict[str, str] | None = ...,
     ) -> Styler: ...
