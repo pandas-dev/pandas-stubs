@@ -83,7 +83,7 @@ FilePathOrBuffer = Union[
     FilePath, IO[AnyStr], RawIOBase, BufferedIOBase, TextIOBase, TextIOWrapper, mmap
 ]
 
-Axis = Union[str, int]
+Axis = Literal[0, 1, "index", "columns"]
 IndexLabel = Union[Hashable, Sequence[Hashable]]
 Label = Optional[Hashable]
 Level = Union[Hashable, int]
@@ -159,7 +159,12 @@ T2 = TypeVar("T2", str, int)
 IndexingInt = Union[
     int, np.int_, np.integer, np.unsignedinteger, np.signedinteger, np.int8
 ]
-
+TimestampConvertibleTypes = Union[
+    Timestamp, datetime.datetime, np.datetime64, np.int64, float, str
+]
+TimedeltaConvertibleTypes = Union[
+    Timedelta, datetime.timedelta, np.timedelta64, np.int64, float, str
+]
 # NDFrameT is stricter and ensures that the same subclass of NDFrame always is
 # used. E.g. `def func(a: NDFrameT) -> NDFrameT: ...` means that if a
 # Series is passed into a function, a Series is always returned and if a DataFrame is
