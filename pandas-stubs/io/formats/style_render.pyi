@@ -14,7 +14,7 @@ from pandas import Index
 from pandas.core.indexing import _IndexSlice
 
 from pandas._typing import (
-    Axis,
+    AxisType,
     HashableT,
     Level,
 )
@@ -65,7 +65,7 @@ class StylerRenderer(Generic[_StylerT]):
     def format_index(
         self,
         formatter: ExtFormatter | None = ...,
-        axis: Axis = ...,
+        axis: AxisType = ...,
         level: Level | list[Level] | None = ...,
         na_rep: str | None = ...,
         precision: int | None = ...,

@@ -12,10 +12,11 @@ from pandas.core.frame import DataFrame
 from pandas.core.series import Series
 
 from pandas._typing import (
-    Axis,
+    AxisType,
     FilePath,
     HashableT,
     IndexLabel,
+    IntervalClosedType,
     Level,
     Scalar,
     WriteBuffer,
@@ -165,7 +166,7 @@ class Styler(StylerRenderer[Styler]):
     def apply(
         self,
         func: Callable[[Series], list | Series],
-        axis: Axis = ...,
+        axis: AxisType = ...,
         subset: Subset | None = ...,
         **kwargs: Any,
     ) -> Styler: ...
@@ -203,7 +204,7 @@ class Styler(StylerRenderer[Styler]):
     def set_caption(self, caption: str | tuple[str, str]) -> Styler: ...
     def set_sticky(
         self,
-        axis: Axis = ...,
+        axis: AxisType = ...,
         pixel_size: int | None = ...,
         levels: Level | list[Level] | None = ...,
     ) -> Styler: ...
@@ -217,7 +218,7 @@ class Styler(StylerRenderer[Styler]):
     def hide(
         self,
         subset: Subset | None = ...,
-        axis: Axis = ...,
+        axis: AxisType = ...,
         level: Level | list[Level] | None = ...,
         names: bool = ...,
     ) -> Styler: ...
@@ -226,7 +227,7 @@ class Styler(StylerRenderer[Styler]):
         cmap: str | Colormap = ...,
         low: float = ...,
         high: float = ...,
-        axis: Axis | None = ...,
+        axis: AxisType | None = ...,
         subset: Subset | None = ...,
         text_color_threshold: float = ...,
         vmin: float | None = ...,
@@ -243,7 +244,7 @@ class Styler(StylerRenderer[Styler]):
         cmap: str | Colormap = ...,
         low: float = ...,
         high: float = ...,
-        axis: Axis | None = ...,
+        axis: AxisType | None = ...,
         subset: Subset | None = ...,
         # In docs but not in function declaration
         # text_color_threshold: float
@@ -262,7 +263,7 @@ class Styler(StylerRenderer[Styler]):
     def bar(
         self,
         subset: Subset | None = ...,
-        axis: Axis | None = ...,
+        axis: AxisType | None = ...,
         *,
         color: str | list[str] | tuple[str, str] | None = ...,
         cmap: str | Colormap = ...,
@@ -285,37 +286,37 @@ class Styler(StylerRenderer[Styler]):
         self,
         subset: Subset | None = ...,
         color: str = ...,
-        axis: Axis | None = ...,
+        axis: AxisType | None = ...,
         props: str | None = ...,
     ) -> Styler: ...
     def highlight_min(
         self,
         subset: Subset | None = ...,
         color: str = ...,
-        axis: Axis | None = ...,
+        axis: AxisType | None = ...,
         props: str | None = ...,
     ) -> Styler: ...
     def highlight_between(
         self,
         subset: Subset | None = ...,
         color: str = ...,
-        axis: Axis | None = ...,
+        axis: AxisType | None = ...,
         left: Scalar | list[Scalar] | None = ...,
         right: Scalar | list[Scalar] | None = ...,
-        inclusive: Literal["both", "neither", "left", "right"] = ...,
+        inclusive: IntervalClosedType = ...,
         props: str | None = ...,
     ) -> Styler: ...
     def highlight_quantile(
         self,
         subset: Subset | None = ...,
         color: str = ...,
-        axis: Axis | None = ...,
+        axis: AxisType | None = ...,
         q_left: float = ...,
         q_right: float = ...,
         interpolation: Literal[
             "linear", "lower", "higher", "midpoint", "nearest"
         ] = ...,
-        inclusive: Literal["both", "neither", "left", "right"] = ...,
+        inclusive: IntervalClosedType = ...,
         props: str | None = ...,
     ) -> Styler: ...
     @classmethod
