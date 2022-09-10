@@ -228,7 +228,7 @@ FillnaOptions = Literal["backfill", "bfill", "ffill", "pad"]
 ReplaceMethod = Literal["pad", "ffill", "bfill"]
 SortKind = Literal["quicksort", "mergesort", "heapsort", "stable"]
 NaPosition = Literal["first", "last"]
-MergeHow = Literal["left", "right", "outer", "inner"]
+MergeHow = Literal["left", "right", "outer", "inner", "cross"]
 JsonFrameOrient = Literal["split", "records", "index", "columns", "values", "table"]
 JsonSeriesOrient = Literal["split", "records", "index"]
 
