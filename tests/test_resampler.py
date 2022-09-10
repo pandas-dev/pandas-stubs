@@ -149,12 +149,17 @@ def test_pipe() -> None:
     def f(val: DataFrame) -> DataFrame:
         return DataFrame(val)
 
-    check(assert_type(DF.resample("m").pipe(f), _PipeRetType), DataFrame)
+    check(assert_type(DF.resample("m").pipe(f), DataFrame), DataFrame)
 
     def g(val: DataFrame) -> Series:
         return val.mean()
 
-    check(assert_type(DF.resample("m").pipe(g), _PipeRetType), DataFrame)
+    check(assert_type(DF.resample("m").pipe(g), DataFrame), DataFrame)
+
+    def h(val: DataFrame) -> float:
+        return val.mean().mean()
+
+    check(assert_type(DF.resample("m").pipe(h), DataFrame), Series)
 
 
 def test_transform() -> None:
@@ -264,12 +269,17 @@ def test_pipe_series() -> None:
     def f(val: Series) -> Series:
         return Series(val)
 
-    check(assert_type(S.resample("m").pipe(f), _PipeRetType), Series)
+    check(assert_type(S.resample("m").pipe(f), Series), Series)
 
-    def g(val: Series) -> float:
-        return val.mean()
+    def g(val: Resampler) -> float:
+        return float(val.mean().mean())
 
-    check(assert_type(S.resample("m").pipe(g), _PipeRetType), Series)
+    check(assert_type(S.resample("m").pipe(g), float), float)
+
+    def h(val: Series) -> DataFrame:
+        return DataFrame({0: val, 1: val})
+
+    check(assert_type(S.resample("m").pipe(h), DataFrame), DataFrame)
 
 
 def test_transform_series() -> None:

@@ -21,6 +21,7 @@ from pandas._typing import (
     AxisType,
     NDFrameT,
     Scalar,
+    T,
     npt,
 )
 
@@ -70,12 +71,40 @@ class Resampler(BaseGroupBy, Generic[NDFrameT]):
     def obj(self) -> NDFrameT: ...
     @property
     def ax(self) -> Index: ...
+    @overload
     def pipe(
-        self,
-        func: Callable | tuple[Callable, str],
+        self: Resampler[DataFrame],
+        func: Callable[..., DataFrame]
+        | tuple[Callable[..., DataFrame], str]
+        | Callable[..., Series]
+        | tuple[Callable[..., Series], str],
         *args,
         **kwargs,
-    ) -> Scalar | Series | DataFrame | Resampler: ...
+    ) -> DataFrame: ...
+    @overload
+    def pipe(
+        self: Resampler[DataFrame],
+        func: Callable[..., Scalar] | tuple[Callable[..., Scalar], str],
+        *args,
+        **kwargs,
+    ) -> Series: ...
+    @overload
+    def pipe(
+        self: Resampler[Series],
+        func: Callable[..., Series]
+        | tuple[Callable[..., Series], str]
+        | Callable[..., Scalar]
+        | tuple[Callable[..., Scalar], str],
+        *args,
+        **kwargs,
+    ) -> Series: ...
+    @overload
+    def pipe(
+        self: Resampler[Series],
+        func: Callable[..., DataFrame] | tuple[Callable[..., DataFrame], str],
+        *args,
+        **kwargs,
+    ) -> Series: ...
     @overload
     def aggregate(
         self: Resampler[DataFrame],

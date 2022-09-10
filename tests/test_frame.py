@@ -27,7 +27,6 @@ from pandas._testing import (
     ensure_clean,
     getSeriesData,
 )
-from pandas.core.resample import Resampler
 import pytest
 from typing_extensions import assert_type
 import xarray as xr
@@ -1018,28 +1017,20 @@ def test_pipe() -> None:
         .pipe(foo)
     )
 
-    # Cant' check actual return type because it is DatetimeIndexResampler which is
-    # not part of the public API
-    check(
-        assert_type(val, Union[Scalar, pd.Series, pd.DataFrame, Resampler]),
-        pd.DataFrame,
-    )
+    check(assert_type(val, pd.DataFrame), pd.DataFrame)
 
     check(assert_type(pd.DataFrame({"a": [1]}).pipe(foo), pd.DataFrame), pd.DataFrame)
-
+    # TODO: Needs work to get type for DataFrameGroupBy.pipe
     check(
-        assert_type(
-            pd.DataFrame({"a": [1], "b": [1]}).groupby("a").pipe(foo), pd.DataFrame
-        ),
+        assert_type(pd.DataFrame({"a": [1], "b": [1]}).groupby("a").pipe(foo), Any),
         pd.DataFrame,
     )
 
     def bar(val: T) -> T:
         return val
 
-    check(
-        assert_type(pd.DataFrame({"a": [1], "b": [1]}).style.pipe(bar), Styler), Styler
-    )
+    # TODO: Needs work to get type for Styler.pipe
+    check(assert_type(pd.DataFrame({"a": [1], "b": [1]}).style.pipe(bar), Any), Styler)
 
 
 # set_flags() method added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
