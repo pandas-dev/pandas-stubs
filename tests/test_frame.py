@@ -32,13 +32,17 @@ import pytest
 from typing_extensions import assert_type
 import xarray as xr
 
-from pandas._typing import Scalar
+from pandas._typing import (
+    Scalar,
+    T,
+)
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
 
+from pandas.io.formats.style import Styler
 from pandas.io.parsers import TextFileReader
 
 DF = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
@@ -1000,7 +1004,7 @@ def test_types_from_dict() -> None:
 
 def test_pipe() -> None:
     def foo(df: pd.DataFrame) -> pd.DataFrame:
-        return df
+        return pd.DataFrame(df)
 
     val = (
         pd.DataFrame(
@@ -1016,14 +1020,26 @@ def test_pipe() -> None:
 
     # Cant' check actual return type because it is DatetimeIndexResampler which is
     # not part of the public API
-    assert_type(val, Union[Scalar, pd.Series, pd.DataFrame, Resampler])
+    check(
+        assert_type(val, Union[Scalar, pd.Series, pd.DataFrame, Resampler]),
+        pd.DataFrame,
+    )
 
-    if TYPE_CHECKING:  # skip pytest
-        df1: pd.DataFrame = pd.DataFrame({"a": [1]}).pipe(foo)
+    check(assert_type(pd.DataFrame({"a": [1]}).pipe(foo), pd.DataFrame), pd.DataFrame)
 
-        df2: pd.DataFrame = pd.DataFrame({"a": [1], "b": [1]}).groupby("a").pipe(foo)
+    check(
+        assert_type(
+            pd.DataFrame({"a": [1], "b": [1]}).groupby("a").pipe(foo), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
 
-        df3: pd.DataFrame = pd.DataFrame({"a": [1], "b": [1]}).style.pipe(foo)
+    def bar(val: T) -> T:
+        return val
+
+    check(
+        assert_type(pd.DataFrame({"a": [1], "b": [1]}).style.pipe(bar), Styler), Styler
+    )
 
 
 # set_flags() method added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html

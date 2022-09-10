@@ -18,14 +18,17 @@ from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.groupby.groupby import BaseGroupBy
 
 from pandas._typing import (
-    Axis,
+    AxisType,
     NDFrameT,
     Scalar,
     npt,
 )
 
 _FrameGroupByFunc = (
-    Callable[[DataFrame], Series] | Callable[[DataFrame], DataFrame] | np.ufunc
+    Callable[[DataFrame], Scalar]
+    | Callable[[DataFrame], Series]
+    | Callable[[DataFrame], DataFrame]
+    | np.ufunc
 )
 _FrameGroupByFuncTypes = _FrameGroupByFunc | str | list[_FrameGroupByFunc | str]
 _FrameGroupByFuncArgs = (
@@ -104,7 +107,7 @@ class Resampler(BaseGroupBy, Generic[NDFrameT]):
     def interpolate(
         self,
         method: _Interpolation = ...,
-        axis: Axis = ...,
+        axis: AxisType = ...,
         limit: int | None = ...,
         *,
         inplace: Literal[True],
@@ -117,7 +120,7 @@ class Resampler(BaseGroupBy, Generic[NDFrameT]):
     def interpolate(
         self,
         method: _Interpolation = ...,
-        axis: Axis = ...,
+        axis: AxisType = ...,
         limit: int | None = ...,
         inplace: Literal[False] = ...,
         limit_direction: Literal["forward", "backward", "both"] = ...,

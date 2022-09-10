@@ -6,6 +6,7 @@ from typing import (
 )
 
 import numpy as np
+import pandas as pd
 from pandas import (
     DataFrame,
     DatetimeIndex,
@@ -276,3 +277,50 @@ def test_transform_series() -> None:
         return -1 * val
 
     check(assert_type(S.resample("m").transform(f), Series), Series)
+
+
+def test_aggregate_series_combinations() -> None:
+    def s2series(val: Series) -> Series:
+        return pd.Series(val)
+
+    def s2scalar(val: Series) -> float:
+        return float(val.mean())
+
+    check(S.resample("m").aggregate(np.sum), Series)
+    check(S.resample("m").aggregate("sum"), Series)
+    check(S.resample("m").aggregate(s2series), Series)
+    check(S.resample("m").aggregate(s2scalar), Series)
+    check(S.resample("m").aggregate([np.mean]), DataFrame)
+    check(S.resample("m").aggregate(["sum", np.mean]), DataFrame)
+    check(S.resample("m").aggregate({"sum": np.sum}), DataFrame)
+    check(S.resample("m").aggregate({"sum": np.sum, "mean": np.mean}), DataFrame)
+
+
+def test_aggregate_frame_combinations() -> None:
+    def df2frame(val: DataFrame) -> DataFrame:
+        return pd.DataFrame(val)
+
+    def df2series(val: DataFrame) -> Series:
+        return val.mean()
+
+    def df2scalar(val: DataFrame) -> float:
+        return float(val.mean().mean())
+
+    check(DF.resample("m").aggregate(np.sum), DataFrame)
+    check(DF.resample("m").aggregate("sum"), DataFrame)
+    check(DF.resample("m").aggregate(df2frame), DataFrame)
+    check(DF.resample("m").aggregate(df2series), DataFrame)
+    check(DF.resample("m").aggregate(df2scalar), Series)
+    check(DF.resample("m").aggregate([np.mean]), DataFrame)
+    check(DF.resample("m").aggregate(["sum", np.mean]), DataFrame)
+    check(DF.resample("m").aggregate({"col1": np.sum}), DataFrame)
+    check(DF.resample("m").aggregate({"col1": np.sum, "col2": np.mean}), DataFrame)
+    check(
+        DF.resample("m").aggregate({"col1": [np.sum], "col2": ["sum", np.mean]}),
+        DataFrame,
+    )
+    check(
+        DF.resample("m").aggregate({"col1": np.sum, "col2": ["sum", np.mean]}),
+        DataFrame,
+    )
+    check(DF.resample("m").aggregate({"col1": "sum", "col2": [np.mean]}), DataFrame)
