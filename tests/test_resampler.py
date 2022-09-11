@@ -28,7 +28,6 @@ S = DF_.iloc[:, 0]
 DF = DataFrame({"col1": S, "col2": S})
 
 _AggRetType = Union[DataFrame, Series]
-_PipeRetType = Union[_AggRetType, Resampler, Scalar]
 
 
 def test_props() -> None:
@@ -159,7 +158,7 @@ def test_pipe() -> None:
     def h(val: DataFrame) -> float:
         return val.mean().mean()
 
-    check(assert_type(DF.resample("m").pipe(h), DataFrame), Series)
+    check(assert_type(DF.resample("m").pipe(h), Series), Series)
 
 
 def test_transform() -> None:
@@ -274,7 +273,7 @@ def test_pipe_series() -> None:
     def g(val: Resampler) -> float:
         return float(val.mean().mean())
 
-    check(assert_type(S.resample("m").pipe(g), float), float)
+    check(assert_type(S.resample("m").pipe(g), Scalar), float)
 
     def h(val: Series) -> DataFrame:
         return DataFrame({0: val, 1: val})
@@ -320,7 +319,7 @@ def test_aggregate_frame_combinations() -> None:
     check(DF.resample("m").aggregate("sum"), DataFrame)
     check(DF.resample("m").aggregate(df2frame), DataFrame)
     check(DF.resample("m").aggregate(df2series), DataFrame)
-    check(DF.resample("m").aggregate(df2scalar), Series)
+    check(DF.resample("m").aggregate(df2scalar), DataFrame)
     check(DF.resample("m").aggregate([np.mean]), DataFrame)
     check(DF.resample("m").aggregate(["sum", np.mean]), DataFrame)
     check(DF.resample("m").aggregate({"col1": np.sum}), DataFrame)
