@@ -201,6 +201,8 @@ def test_timestamp_plus_timedelta_series() -> None:
     td = pd.to_timedelta(pd.Series([10, 20]), "minutes")
     r3 = td + ts
     check(assert_type(r3, "TimestampSeries"), pd.Series, pd.Timestamp)
+    r4 = ts + td
+    check(assert_type(r4, "TimestampSeries"), pd.Series, pd.Timestamp)
 
 
 def test_timedelta_series_mult() -> None:
