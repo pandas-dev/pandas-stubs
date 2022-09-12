@@ -1673,12 +1673,12 @@ class TimestampSeries(Series[Timestamp]):
     def dt(self) -> TimestampProperties: ...  # type: ignore[override]
 
 class TimedeltaSeries(Series[Timedelta]):
-    # ignore needed because of mypy
+    # ignores needed because of mypy
+    def __radd__(self, pther: Timestamp | TimestampSeries) -> TimestampSeries: ...  # type: ignore[override]
     def __mul__(self, other: num) -> TimedeltaSeries: ...  # type: ignore[override]
     def __sub__(  # type: ignore[override]
         self, other: Timedelta | TimedeltaSeries | TimedeltaIndex
     ) -> TimedeltaSeries: ...
-    # ignore needed because of mypy
     @property
     def dt(self) -> TimedeltaProperties: ...  # type: ignore[override]
 
