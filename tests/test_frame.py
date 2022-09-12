@@ -31,13 +31,17 @@ import pytest
 from typing_extensions import assert_type
 import xarray as xr
 
-from pandas._typing import Scalar
+from pandas._typing import (
+    Scalar,
+    T,
+)
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
 
+from pandas.io.formats.style import Styler
 from pandas.io.parsers import TextFileReader
 
 DF = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
@@ -998,28 +1002,35 @@ def test_types_from_dict() -> None:
 
 
 def test_pipe() -> None:
-    if TYPE_CHECKING:  # skip pytest
+    def foo(df: pd.DataFrame) -> pd.DataFrame:
+        return pd.DataFrame(df)
 
-        def foo(df: pd.DataFrame) -> pd.DataFrame:
-            return df
-
-        df1: pd.DataFrame = pd.DataFrame({"a": [1]}).pipe(foo)
-
-        df2: pd.DataFrame = (
-            pd.DataFrame(
-                {
-                    "price": [10, 11, 9, 13, 14, 18, 17, 19],
-                    "volume": [50, 60, 40, 100, 50, 100, 40, 50],
-                }
-            )
-            .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
-            .resample("M", on="week_starting")
-            .pipe(foo)
+    val = (
+        pd.DataFrame(
+            {
+                "price": [10, 11, 9, 13, 14, 18, 17, 19],
+                "volume": [50, 60, 40, 100, 50, 100, 40, 50],
+            }
         )
+        .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
+        .resample("M", on="week_starting")
+        .pipe(foo)
+    )
 
-        df3: pd.DataFrame = pd.DataFrame({"a": [1], "b": [1]}).groupby("a").pipe(foo)
+    check(assert_type(val, pd.DataFrame), pd.DataFrame)
 
-        df4: pd.DataFrame = pd.DataFrame({"a": [1], "b": [1]}).style.pipe(foo)
+    check(assert_type(pd.DataFrame({"a": [1]}).pipe(foo), pd.DataFrame), pd.DataFrame)
+    # TODO: Needs work to get type for DataFrameGroupBy.pipe
+    check(
+        assert_type(pd.DataFrame({"a": [1], "b": [1]}).groupby("a").pipe(foo), Any),
+        pd.DataFrame,
+    )
+
+    def bar(val: T) -> T:
+        return val
+
+    # TODO: Needs work to get type for Styler.pipe
+    check(assert_type(pd.DataFrame({"a": [1], "b": [1]}).style.pipe(bar), Any), Styler)
 
 
 # set_flags() method added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
