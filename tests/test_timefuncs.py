@@ -171,6 +171,8 @@ def test_datetimeindex_plus_timedelta() -> None:
     check(assert_type(tdi_dti_dti, "pd.DatetimeIndex"), pd.DatetimeIndex)
     dti_td_dti = dti + pd.Timedelta(10, "minutes")
     check(assert_type(dti_td_dti, "pd.DatetimeIndex"), pd.DatetimeIndex)
+    ts_tdi_dti = pd.Timestamp("2022-03-05") + tdi
+    check(assert_type(ts_tdi_dti, pd.DatetimeIndex), pd.DatetimeIndex)
 
 
 def test_datetimeindex_minus_timedelta() -> None:
