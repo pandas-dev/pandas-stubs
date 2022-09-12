@@ -136,12 +136,7 @@ class _LocIndexerFrame(_LocIndexer):
         | MaskType
         | list[HashableT]
         | tuple[
-            IndexType
-            | MaskType
-            | slice
-            | list[HashableT]
-            | tuple[str | int | slice, ...]
-            | Hashable,
+            IndexType | MaskType | list[HashableT] | Hashable,
             list[HashableT] | slice | Series[bool] | Callable,
         ],
     ) -> DataFrame: ...
