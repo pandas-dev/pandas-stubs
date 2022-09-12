@@ -1741,3 +1741,12 @@ def test_xs_key() -> None:
     check(
         assert_type(df.xs(0, level="foo"), Union[pd.DataFrame, pd.Series]), pd.DataFrame
     )
+
+
+def test_loc_slice() -> None:
+    # GH 277
+    df1 = pd.DataFrame(
+        {"x": [1, 2, 3, 4]},
+        index=pd.MultiIndex.from_product([[1, 2], ["a", "b"]], names=["num", "let"]),
+    )
+    check(assert_type(df1.loc[1, :], pd.DataFrame), pd.DataFrame)
