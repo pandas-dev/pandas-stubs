@@ -3,6 +3,7 @@ from __future__ import annotations
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
+from pandas.core.indexes.numeric import NumericIndex
 from typing_extensions import assert_type
 
 from tests import check
@@ -101,3 +102,18 @@ def test_types_to_numpy() -> None:
     check(assert_type(idx.to_numpy(), np.ndarray), np.ndarray)
     check(assert_type(idx.to_numpy(dtype="int", copy=True), np.ndarray), np.ndarray)
     check(assert_type(idx.to_numpy(na_value=0), np.ndarray), np.ndarray)
+
+
+def test_index_arithmetic() -> None:
+    # GH 287
+    idx = pd.Index([1, 2.2, 3], dtype=float)
+    check(assert_type(idx + 3, NumericIndex), NumericIndex)
+    check(assert_type(idx - 3, NumericIndex), NumericIndex)
+    check(assert_type(idx * 3, NumericIndex), NumericIndex)
+    check(assert_type(idx / 3, NumericIndex), NumericIndex)
+    check(assert_type(idx // 3, NumericIndex), NumericIndex)
+    check(assert_type(3 + idx, NumericIndex), NumericIndex)
+    check(assert_type(3 - idx, NumericIndex), NumericIndex)
+    check(assert_type(3 * idx, NumericIndex), NumericIndex)
+    check(assert_type(3 / idx, NumericIndex), NumericIndex)
+    check(assert_type(3 // idx, NumericIndex), NumericIndex)
