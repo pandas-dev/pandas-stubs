@@ -19,6 +19,7 @@ from pandas._typing import (
     IntervalClosedType,
     Level,
     Scalar,
+    T,
     WriteBuffer,
     WriteExcelBuffer,
     npt,
@@ -326,7 +327,7 @@ class Styler(StylerRenderer[Styler]):
     ) -> type[Styler]: ...
     def pipe(
         self,
-        func: Callable | tuple[Callable, str],
+        func: Callable[..., T] | tuple[Callable[..., T], str],
         *args: Any,
         **kwargs: Any,
-    ) -> Styler: ...
+    ) -> T: ...
