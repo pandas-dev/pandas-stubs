@@ -2,6 +2,10 @@ name: 'Test'
 
 on:
   [push, pull_request, workflow_dispatch]
+
+env:
+  MPLBACKEND: 'Agg'
+
 jobs:
   released:
     runs-on: ${{ matrix.os }}

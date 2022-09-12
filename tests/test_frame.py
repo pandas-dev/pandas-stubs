@@ -31,10 +31,7 @@ import pytest
 from typing_extensions import assert_type
 import xarray as xr
 
-from pandas._typing import (
-    Scalar,
-    T,
-)
+from pandas._typing import Scalar
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -1020,17 +1017,18 @@ def test_pipe() -> None:
     check(assert_type(val, pd.DataFrame), pd.DataFrame)
 
     check(assert_type(pd.DataFrame({"a": [1]}).pipe(foo), pd.DataFrame), pd.DataFrame)
-    # TODO: Needs work to get type for DataFrameGroupBy.pipe
-    check(
-        assert_type(pd.DataFrame({"a": [1], "b": [1]}).groupby("a").pipe(foo), Any),
-        pd.DataFrame,
-    )
 
-    def bar(val: T) -> T:
+    def bar(val: Styler) -> Styler:
         return val
 
-    # TODO: Needs work to get type for Styler.pipe
-    check(assert_type(pd.DataFrame({"a": [1], "b": [1]}).style.pipe(bar), Any), Styler)
+    check(
+        assert_type(pd.DataFrame({"a": [1], "b": [1]}).style.pipe(bar), Styler), Styler
+    )
+
+    def baz(val: Styler) -> str:
+        return val.to_latex()
+
+    check(assert_type(pd.DataFrame({"a": [1], "b": [1]}).style.pipe(baz), str), str)
 
 
 # set_flags() method added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
