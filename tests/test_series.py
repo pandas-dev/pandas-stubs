@@ -442,6 +442,12 @@ def test_types_groupby() -> None:
     s.groupby([s > 2, s % 2 == 1])
     s.groupby(lambda x: x)
     s.groupby([lambda x: x, lambda x: x.replace("a", "b")])
+    s.groupby(np.array([1, 0, 1, 0]))
+    s.groupby([np.array([1, 0, 0, 0]), np.array([0, 0, 1, 0])])
+    s.groupby({"a": 1, "b": 2})
+    s.groupby([{"a": 1, "b": 3}, {"a": 1, "b": 1}])
+    s.groupby(s.index)
+    s.groupby([pd.Index([1, 0, 0, 0]), pd.Index([0, 0, 1, 0])])
     s.groupby(pd.Grouper(level=0))
     s.groupby([pd.Grouper(level=0), pd.Grouper(level=0)])
 
