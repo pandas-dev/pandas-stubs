@@ -249,4 +249,7 @@ FileWriteMode = Literal[
 ]
 ColspaceArgType = str | int | Sequence[int | str] | Mapping[Hashable, str | int]
 
+# Windowing rank methods
+WindowingRankType = Literal["average", "min", "max"]
+
 __all__ = ["npt", "type_t"]

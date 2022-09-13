@@ -49,7 +49,11 @@ from pandas.core.indexing import (
 )
 from pandas.core.resample import Resampler
 from pandas.core.strings import StringMethods
-from pandas.core.window import ExponentialMovingWindow
+from pandas.core.window import (
+    Expanding,
+    ExponentialMovingWindow,
+    Rolling,
+)
 from pandas.core.window.rolling import (
     Rolling,
     Window,
@@ -1321,8 +1325,11 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType = ...,
     ) -> ExponentialMovingWindow: ...
     def expanding(
-        self, min_periods: int = ..., axis: SeriesAxisType = ...
-    ) -> DataFrame: ...
+        self,
+        min_periods: int = ...,
+        axis: SeriesAxisType = ...,
+        method: Literal["single", "table"] = ...,
+    ) -> Expanding: ...
     def floordiv(
         self,
         other: num | _ListLike | Series[S1],

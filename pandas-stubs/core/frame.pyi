@@ -34,6 +34,10 @@ from pandas.core.indexing import (
 )
 from pandas.core.resample import Resampler
 from pandas.core.series import Series
+from pandas.core.window import (
+    Expanding,
+    ExponentialMovingWindow,
+)
 from pandas.core.window.rolling import (
     Rolling,
     Window,
@@ -1412,8 +1416,13 @@ class DataFrame(NDFrame, OpsMixin):
         adjust: _bool = ...,
         ignore_na: _bool = ...,
         axis: AxisType = ...,
-    ) -> DataFrame: ...
-    def expanding(self, min_periods: int = ..., axis: AxisType = ...): ...  # for now
+    ) -> ExponentialMovingWindow: ...
+    def expanding(
+        self,
+        min_periods: int = ...,
+        axis: AxisType = ...,
+        method: Literal["single", "table"] = ...,
+    ) -> Expanding: ...
     @overload
     def ffill(
         self,
