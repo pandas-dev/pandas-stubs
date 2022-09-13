@@ -20,6 +20,7 @@ from typing import (
     Optional,
     Protocol,
     Sequence,
+    TypedDict,
     TypeVar,
     Union,
 )
@@ -251,5 +252,15 @@ ColspaceArgType = str | int | Sequence[int | str] | Mapping[Hashable, str | int]
 
 # Windowing rank methods
 WindowingRankType = Literal["average", "min", "max"]
+
+class StyleExportDict(TypedDict, total=False):
+    apply: Any
+    table_attributes: Any
+    table_styles: Any
+    hide_index: bool
+    hide_columns: bool
+    hide_index_names: bool
+    hide_column_names: bool
+    css: dict[str, str | int]
 
 __all__ = ["npt", "type_t"]

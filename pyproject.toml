@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pandas-stubs"
-version = "1.4.4.220906"
+version = "1.4.4.220912"
 description = "Type annotations for pandas"
 authors = ["The Pandas Development Team <pandas-dev@python.org>"]
 license = "BSD-3-Clause"
@@ -56,9 +56,9 @@ pyxlsb = ">=1.0.9"
 odfpy = ">=1.4.1"
 xarray = ">=22.6.0"
 tabulate = ">=0.8.10"
+jinja2 = "^3.1"
 scipy = ">=1.9.1"
 SQLAlchemy = "^1.4.41"
-jinja2 = "^3.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
