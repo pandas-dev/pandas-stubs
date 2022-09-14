@@ -14,11 +14,12 @@ from pandas.core.window.rolling import (
 )
 
 from pandas._typing import (
-    Axis as Axis,
-    WindowingRankType as WindowingRankType,
+    Axis,
+    NDFrameT,
+    WindowingRankType,
 )
 
-class Expanding(RollingAndExpandingMixin):
+class Expanding(RollingAndExpandingMixin[NDFrameT]):
     def __init__(
         self,
         obj: NDFrame,
@@ -46,34 +47,34 @@ class Expanding(RollingAndExpandingMixin):
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
         **kwargs,
-    ) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
     def max(
         self,
         *args,
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
         **kwargs,
-    ) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
     def min(
         self,
         *args,
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
         **kwargs,
-    ) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
     def mean(
         self,
         *args,
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
         **kwargs,
-    ) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
     def median(
         self,
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
         **kwargs,
-    ) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
     def std(
         self,
         ddof: int = ...,
@@ -81,7 +82,7 @@ class Expanding(RollingAndExpandingMixin):
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
         **kwargs,
-    ) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
     def var(
         self,
         ddof: int = ...,
@@ -89,33 +90,33 @@ class Expanding(RollingAndExpandingMixin):
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
         **kwargs,
-    ) -> DataFrame | Series: ...
-    def sem(self, ddof: int = ..., *args, **kwargs) -> DataFrame | Series: ...
-    def skew(self, **kwargs) -> DataFrame | Series: ...
-    def kurt(self, **kwargs) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
+    def sem(self, ddof: int = ..., *args, **kwargs) -> NDFrameT: ...
+    def skew(self, **kwargs) -> NDFrameT: ...
+    def kurt(self, **kwargs) -> NDFrameT: ...
     def quantile(
         self, quantile: float, interpolation: str = ..., **kwargs
-    ) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
     def rank(
         self,
         method: WindowingRankType = ...,
         ascending: bool = ...,
         pct: bool = ...,
         **kwargs,
-    ) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
     def cov(
         self,
         other: DataFrame | Series | None = ...,
         pairwise: bool | None = ...,
         ddof: int = ...,
         **kwargs,
-    ) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
     def corr(
         self,
         other: DataFrame | Series | None = ...,
         pairwise: bool | None = ...,
         ddof: int = ...,
         **kwargs,
-    ) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
 
 class ExpandingGroupby(BaseWindowGroupby, Expanding): ...

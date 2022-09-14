@@ -10,10 +10,11 @@ from pandas.core.window.rolling import BaseWindow
 
 from pandas._typing import (
     Axis,
+    NDFrameT,
     TimedeltaConvertibleTypes,
 )
 
-class ExponentialMovingWindow(BaseWindow):
+class ExponentialMovingWindow(BaseWindow[NDFrameT]):
     com: Any = ...  # Incomplete
     span: Any = ...  # Incomplete
     halflife: Any = ...  # Incomplete
@@ -23,7 +24,7 @@ class ExponentialMovingWindow(BaseWindow):
     times: Any = ...  # Incomplete
     def __init__(
         self,
-        obj: NDFrame,
+        obj: NDFrameT,
         com: float | None = ...,
         span: float | None = ...,
         halflife: float | TimedeltaConvertibleTypes | None = ...,
@@ -46,27 +47,27 @@ class ExponentialMovingWindow(BaseWindow):
         engine: Any | None = ...,
         engine_kwargs: Any | None = ...,
         **kwargs,
-    ) -> Series | DataFrame: ...
+    ) -> NDFrameT: ...
     def sum(
         self,
         *args,
         engine: Any | None = ...,
         engine_kwargs: Any | None = ...,
         **kwargs,
-    ) -> Series | DataFrame: ...
-    def std(self, bias: bool = ..., *args, **kwargs) -> Series | DataFrame: ...
-    def vol(self, bias: bool = ..., *args, **kwargs) -> Series | DataFrame: ...
-    def var(self, bias: bool = ..., *args, **kwargs) -> Series | DataFrame: ...
+    ) -> NDFrameT: ...
+    def std(self, bias: bool = ..., *args, **kwargs) -> NDFrameT: ...
+    def vol(self, bias: bool = ..., *args, **kwargs) -> NDFrameT: ...
+    def var(self, bias: bool = ..., *args, **kwargs) -> NDFrameT: ...
     def cov(
         self,
         other: DataFrame | Series | None = ...,
         pairwise: bool | None = ...,
         bias: bool = ...,
         **kwargs,
-    ) -> Series | DataFrame: ...
+    ) -> NDFrameT: ...
     def corr(
         self,
         other: DataFrame | Series | None = ...,
         pairwise: bool | None = ...,
         **kwargs,
-    ) -> Series | DataFrame: ...
+    ) -> NDFrameT: ...

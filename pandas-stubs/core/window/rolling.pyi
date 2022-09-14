@@ -1,6 +1,7 @@
 from typing import (
     Any,
     Callable,
+    Generic,
     Hashable,
 )
 
@@ -10,18 +11,18 @@ from pandas import (
     Series,
 )
 from pandas.core.base import SelectionMixin
-from pandas.core.generic import NDFrame
 from pandas.core.groupby.ops import BaseGrouper
 from pandas.core.indexes.api import Index
 
 from pandas._typing import (
     AggFuncType,
     Axis,
+    NDFrameT,
     Scalar,
     WindowingRankType,
 )
 
-class BaseWindow(SelectionMixin):
+class BaseWindow(SelectionMixin[NDFrameT], Generic[NDFrameT]):
     exclusions: frozenset[Hashable]
     obj: Any = ...  # Incomplete
     on: Any = ...  # Incomplete
@@ -33,7 +34,7 @@ class BaseWindow(SelectionMixin):
     method: Any = ...  # Incomplete
     def __init__(
         self,
-        obj: NDFrame,
+        obj: NDFrameT,
         window: Any | None = ...,
         min_periods: int | None = ...,
         center: bool = ...,
@@ -57,28 +58,28 @@ class BaseWindow(SelectionMixin):
     ) -> Scalar | DataFrame | Series: ...
     agg = aggregate
 
-class BaseWindowGroupby(BaseWindow):
+class BaseWindowGroupby(BaseWindow[NDFrameT]):
     def __init__(
         self,
-        obj: DataFrame | Series,
+        obj: NDFrameT,
         *args,
         _grouper: BaseGrouper,
         _as_index: bool = ...,
         **kwargs,
     ) -> None: ...
 
-class Window(BaseWindow):
+class Window(BaseWindow[NDFrameT]):
     def aggregate(
         self, func: AggFuncType, *args, **kwargs
     ) -> Scalar | Series | DataFrame: ...
     agg = aggregate
-    def sum(self, *args, **kwargs) -> DataFrame | Series: ...
-    def mean(self, *args, **kwargs) -> DataFrame | Series: ...
-    def var(self, ddof: int = ..., *args, **kwargs) -> DataFrame | Series: ...
-    def std(self, ddof: int = ..., *args, **kwargs) -> DataFrame | Series: ...
+    def sum(self, *args, **kwargs) -> NDFrameT: ...
+    def mean(self, *args, **kwargs) -> NDFrameT: ...
+    def var(self, ddof: int = ..., *args, **kwargs) -> NDFrameT: ...
+    def std(self, ddof: int = ..., *args, **kwargs) -> NDFrameT: ...
 
-class RollingAndExpandingMixin(BaseWindow):
-    def count(self) -> DataFrame | Series: ...
+class RollingAndExpandingMixin(BaseWindow[NDFrameT], Generic[NDFrameT]):
+    def count(self) -> NDFrameT: ...
     def apply(
         self,
         func: Callable[..., Any],
@@ -94,34 +95,34 @@ class RollingAndExpandingMixin(BaseWindow):
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
         **kwargs,
-    ) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
     def max(
         self,
         *args,
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
         **kwargs,
-    ) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
     def min(
         self,
         *args,
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
         **kwargs,
-    ) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
     def mean(
         self,
         *args,
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
         **kwargs,
-    ) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
     def median(
         self,
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
         **kwargs,
-    ) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
     def std(
         self,
         ddof: int = ...,
@@ -129,7 +130,7 @@ class RollingAndExpandingMixin(BaseWindow):
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
         **kwargs,
-    ) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
     def var(
         self,
         ddof: int = ...,
@@ -137,40 +138,40 @@ class RollingAndExpandingMixin(BaseWindow):
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
         **kwargs,
-    ) -> DataFrame | Series: ...
-    def skew(self, **kwargs) -> DataFrame | Series: ...
-    def sem(self, ddof: int = ..., *args, **kwargs) -> DataFrame | Series: ...
-    def kurt(self, **kwargs) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
+    def skew(self, **kwargs) -> NDFrameT: ...
+    def sem(self, ddof: int = ..., *args, **kwargs) -> NDFrameT: ...
+    def kurt(self, **kwargs) -> NDFrameT: ...
     def quantile(
         self, quantile: float, interpolation: str = ..., **kwargs
-    ) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
     def rank(
         self,
         method: WindowingRankType = ...,
         ascending: bool = ...,
         pct: bool = ...,
         **kwargs,
-    ): ...
+    ) -> NDFrameT: ...
     def cov(
         self,
         other: DataFrame | Series | None = ...,
         pairwise: bool | None = ...,
         ddof: int = ...,
         **kwargs,
-    ) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
     def corr(
         self,
         other: DataFrame | Series | None = ...,
         pairwise: bool | None = ...,
         ddof: int = ...,
         **kwargs,
-    ) -> DataFrame | Series: ...
+    ) -> NDFrameT: ...
 
-class Rolling(RollingAndExpandingMixin):
+class Rolling(RollingAndExpandingMixin[NDFrameT]):
     min_periods: int
     def aggregate(self, func, *args, **kwargs) -> Scalar | Series | DataFrame: ...
     agg = aggregate
-    def count(self): ...
+    def count(self) -> NDFrameT: ...
     def apply(
         self,
         func: Callable[..., Any],
@@ -181,4 +182,4 @@ class Rolling(RollingAndExpandingMixin):
         kwargs: dict[str, Any] | None = ...,
     ) -> Scalar | Series | DataFrame: ...
 
-class RollingGroupby(BaseWindowGroupby, Rolling): ...
+class RollingGroupby(BaseWindowGroupby[NDFrameT], Rolling): ...

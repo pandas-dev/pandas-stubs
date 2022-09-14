@@ -1416,13 +1416,13 @@ class DataFrame(NDFrame, OpsMixin):
         adjust: _bool = ...,
         ignore_na: _bool = ...,
         axis: AxisType = ...,
-    ) -> ExponentialMovingWindow: ...
+    ) -> ExponentialMovingWindow[DataFrame]: ...
     def expanding(
         self,
         min_periods: int = ...,
         axis: AxisType = ...,
         method: Literal["single", "table"] = ...,
-    ) -> Expanding: ...
+    ) -> Expanding[DataFrame]: ...
     @overload
     def ffill(
         self,
@@ -1779,7 +1779,7 @@ class DataFrame(NDFrame, OpsMixin):
         on: _str | None = ...,
         axis: AxisType = ...,
         closed: _str | None = ...,
-    ) -> Window: ...
+    ) -> Window[DataFrame]: ...
     @overload
     def rolling(
         self,
@@ -1790,7 +1790,7 @@ class DataFrame(NDFrame, OpsMixin):
         on: _str | None = ...,
         axis: AxisType = ...,
         closed: _str | None = ...,
-    ) -> Rolling: ...
+    ) -> Rolling[DataFrame]: ...
     def rpow(
         self,
         other,

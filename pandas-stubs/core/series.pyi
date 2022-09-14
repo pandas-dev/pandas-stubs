@@ -1323,13 +1323,13 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         adjust: _bool = ...,
         ignore_na: _bool = ...,
         axis: SeriesAxisType = ...,
-    ) -> ExponentialMovingWindow: ...
+    ) -> ExponentialMovingWindow[Series]: ...
     def expanding(
         self,
         min_periods: int = ...,
         axis: SeriesAxisType = ...,
         method: Literal["single", "table"] = ...,
-    ) -> Expanding: ...
+    ) -> Expanding[Series]: ...
     def floordiv(
         self,
         other: num | _ListLike | Series[S1],
@@ -1532,7 +1532,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         on: _str | None = ...,
         axis: SeriesAxisType = ...,
         closed: _str | None = ...,
-    ) -> Window: ...
+    ) -> Window[Series]: ...
     @overload
     def rolling(
         self,
@@ -1543,7 +1543,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         on: _str | None = ...,
         axis: SeriesAxisType = ...,
         closed: _str | None = ...,
-    ) -> Rolling: ...
+    ) -> Rolling[Series]: ...
     def rpow(
         self,
         other: Series[S1] | Scalar,

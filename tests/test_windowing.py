@@ -1,5 +1,3 @@
-from typing import Union
-
 import numpy as np
 from pandas import (
     DataFrame,
@@ -16,15 +14,15 @@ DF = DataFrame({"col1": S, "col2": S})
 
 
 def test_rolling():
-    check(assert_type(S.rolling(10).mean(), Union[Series, DataFrame]), Series)
-    check(assert_type(DF.rolling(10).mean(), Union[Series, DataFrame]), DataFrame)
+    check(assert_type(S.rolling(10).mean(), Series), Series)
+    check(assert_type(DF.rolling(10).mean(), DataFrame), DataFrame)
 
 
 def test_expanding():
-    check(assert_type(S.expanding().mean(), Union[Series, DataFrame]), Series)
-    check(assert_type(DF.expanding().mean(), Union[Series, DataFrame]), DataFrame)
+    check(assert_type(S.expanding().mean(), Series), Series)
+    check(assert_type(DF.expanding().mean(), DataFrame), DataFrame)
 
 
 def test_ewm():
-    check(assert_type(S.ewm(span=10).mean(), Union[Series, DataFrame]), Series)
-    check(assert_type(DF.ewm(span=10).mean(), Union[Series, DataFrame]), DataFrame)
+    check(assert_type(S.ewm(span=10).mean(), Series), Series)
+    check(assert_type(DF.ewm(span=10).mean(), DataFrame), DataFrame)
