@@ -3,6 +3,8 @@ from typing import (
     Callable,
     Generic,
     Hashable,
+    Literal,
+    TypedDict,
 )
 
 import numpy as np
@@ -21,6 +23,11 @@ from pandas._typing import (
     Scalar,
     WindowingRankType,
 )
+
+class _NumbaKwargs(TypedDict, total=False):
+    nopython: bool
+    nogil: bool
+    parallel: bool
 
 class BaseWindow(SelectionMixin[NDFrameT], Generic[NDFrameT]):
     exclusions: frozenset[Hashable]
@@ -53,9 +60,7 @@ class BaseWindow(SelectionMixin[NDFrameT], Generic[NDFrameT]):
     def validate(self) -> None: ...
     def __getattr__(self, attr: str): ...
     def __iter__(self): ...
-    def aggregate(
-        self, func: AggFuncType, *args, **kwargs
-    ) -> Scalar | DataFrame | Series: ...
+    def aggregate(self, func: AggFuncType, *args, **kwargs) -> NDFrameT: ...
     agg = aggregate
 
 class BaseWindowGroupby(BaseWindow[NDFrameT]):
@@ -69,9 +74,7 @@ class BaseWindowGroupby(BaseWindow[NDFrameT]):
     ) -> None: ...
 
 class Window(BaseWindow[NDFrameT]):
-    def aggregate(
-        self, func: AggFuncType, *args, **kwargs
-    ) -> Scalar | Series | DataFrame: ...
+    def aggregate(self, func: AggFuncType, *args, **kwargs) -> NDFrameT: ...
     agg = aggregate
     def sum(self, *args, **kwargs) -> NDFrameT: ...
     def mean(self, *args, **kwargs) -> NDFrameT: ...
@@ -84,102 +87,92 @@ class RollingAndExpandingMixin(BaseWindow[NDFrameT], Generic[NDFrameT]):
         self,
         func: Callable[..., Any],
         raw: bool = ...,
-        engine: str | None = ...,
-        engine_kwargs: dict[str, bool] | None = ...,
+        engine: Literal["cython", "numba"] | None = ...,
+        engine_kwargs: _NumbaKwargs = ...,
         args: tuple[Any, ...] | None = ...,
         kwargs: dict[str, Any] | None = ...,
-    ): ...
+    ) -> NDFrameT: ...
     def sum(
         self,
-        *args,
+        *,
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
-        **kwargs,
     ) -> NDFrameT: ...
     def max(
         self,
-        *args,
+        *,
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
-        **kwargs,
     ) -> NDFrameT: ...
     def min(
         self,
-        *args,
+        *,
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
-        **kwargs,
     ) -> NDFrameT: ...
     def mean(
         self,
-        *args,
+        *,
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
-        **kwargs,
     ) -> NDFrameT: ...
     def median(
         self,
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
-        **kwargs,
     ) -> NDFrameT: ...
     def std(
         self,
         ddof: int = ...,
-        *args,
+        *,
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
-        **kwargs,
     ) -> NDFrameT: ...
     def var(
         self,
         ddof: int = ...,
-        *args,
+        *,
         engine: str | None = ...,
         engine_kwargs: dict[str, bool] | None = ...,
-        **kwargs,
     ) -> NDFrameT: ...
-    def skew(self, **kwargs) -> NDFrameT: ...
-    def sem(self, ddof: int = ..., *args, **kwargs) -> NDFrameT: ...
-    def kurt(self, **kwargs) -> NDFrameT: ...
+    def skew(self) -> NDFrameT: ...
+    def sem(self, ddof: int = ...) -> NDFrameT: ...
+    def kurt(self) -> NDFrameT: ...
     def quantile(
-        self, quantile: float, interpolation: str = ..., **kwargs
+        self,
+        quantile: float,
+        interpolation: str = ...,
     ) -> NDFrameT: ...
     def rank(
         self,
         method: WindowingRankType = ...,
         ascending: bool = ...,
         pct: bool = ...,
-        **kwargs,
     ) -> NDFrameT: ...
     def cov(
         self,
         other: DataFrame | Series | None = ...,
         pairwise: bool | None = ...,
         ddof: int = ...,
-        **kwargs,
     ) -> NDFrameT: ...
     def corr(
         self,
         other: DataFrame | Series | None = ...,
         pairwise: bool | None = ...,
         ddof: int = ...,
-        **kwargs,
     ) -> NDFrameT: ...
 
 class Rolling(RollingAndExpandingMixin[NDFrameT]):
-    min_periods: int
-    def aggregate(self, func, *args, **kwargs) -> Scalar | Series | DataFrame: ...
+    def aggregate(self, func, *args, **kwargs) -> NDFrameT: ...
     agg = aggregate
-    def count(self) -> NDFrameT: ...
     def apply(
         self,
         func: Callable[..., Any],
         raw: bool = ...,
-        engine: str | None = ...,
-        engine_kwargs: dict[str, bool] | None = ...,
+        engine: Literal["cython", "numba"] | None = ...,
+        engine_kwargs: _NumbaKwargs = ...,
         args: tuple[Any, ...] | None = ...,
         kwargs: dict[str, Any] | None = ...,
-    ) -> Scalar | Series | DataFrame: ...
+    ) -> NDFrameT: ...
 
 class RollingGroupby(BaseWindowGroupby[NDFrameT], Rolling): ...
