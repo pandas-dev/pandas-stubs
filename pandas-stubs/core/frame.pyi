@@ -68,6 +68,7 @@ from pandas._typing import (
     IndexingInt,
     IndexLabel,
     IndexType,
+    IntervalClosedType,
     JsonFrameOrient,
     Label,
     Level,
@@ -1776,9 +1777,9 @@ class DataFrame(NDFrame, OpsMixin):
         center: _bool = ...,
         *,
         win_type: _str,
-        on: _str | None = ...,
+        on: Hashable | None = ...,
         axis: AxisType = ...,
-        closed: _str | None = ...,
+        closed: IntervalClosedType | None = ...,
     ) -> Window[DataFrame]: ...
     @overload
     def rolling(
@@ -1787,9 +1788,9 @@ class DataFrame(NDFrame, OpsMixin):
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
-        on: _str | None = ...,
+        on: Hashable | None = ...,
         axis: AxisType = ...,
-        closed: _str | None = ...,
+        closed: IntervalClosedType | None = ...,
     ) -> Rolling[DataFrame]: ...
     def rpow(
         self,

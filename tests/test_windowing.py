@@ -4,6 +4,10 @@ from pandas import (
     Series,
     date_range,
 )
+from pandas.core.window import (
+    Rolling,
+    Window,
+)
 from typing_extensions import assert_type
 
 from tests import check
@@ -11,6 +15,11 @@ from tests import check
 IDX = date_range("1/1/2000", periods=700, freq="D")
 S = Series(np.random.standard_normal(700))
 DF = DataFrame({"col1": S, "col2": S})
+
+
+def test_rolling_basic() -> None:
+    check(assert_type(DF.rolling(win_type="gaussian"), Window), Window)
+    check(assert_type(DF.rolling(10, min_periods=10), Rolling), Rolling)
 
 
 def test_rolling_basic_math() -> None:
