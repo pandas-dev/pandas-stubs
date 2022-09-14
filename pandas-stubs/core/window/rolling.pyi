@@ -20,7 +20,6 @@ from pandas._typing import (
     AggFuncType,
     Axis,
     NDFrameT,
-    Scalar,
     WindowingRankType,
 )
 
@@ -88,7 +87,7 @@ class RollingAndExpandingMixin(BaseWindow[NDFrameT], Generic[NDFrameT]):
         func: Callable[..., Any],
         raw: bool = ...,
         engine: Literal["cython", "numba"] | None = ...,
-        engine_kwargs: _NumbaKwargs = ...,
+        engine_kwargs: _NumbaKwargs | None = ...,
         args: tuple[Any, ...] | None = ...,
         kwargs: dict[str, Any] | None = ...,
     ) -> NDFrameT: ...
@@ -170,7 +169,7 @@ class Rolling(RollingAndExpandingMixin[NDFrameT]):
         func: Callable[..., Any],
         raw: bool = ...,
         engine: Literal["cython", "numba"] | None = ...,
-        engine_kwargs: _NumbaKwargs = ...,
+        engine_kwargs: _NumbaKwargs | None = ...,
         args: tuple[Any, ...] | None = ...,
         kwargs: dict[str, Any] | None = ...,
     ) -> NDFrameT: ...

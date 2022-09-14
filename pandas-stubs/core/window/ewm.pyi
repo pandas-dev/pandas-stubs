@@ -1,4 +1,7 @@
-from typing import Any
+from typing import (
+    Any,
+    Generic,
+)
 
 import numpy as np
 from pandas import (
@@ -14,7 +17,7 @@ from pandas._typing import (
     TimedeltaConvertibleTypes,
 )
 
-class ExponentialMovingWindow(BaseWindow[NDFrameT]):
+class ExponentialMovingWindow(BaseWindow[NDFrameT], Generic[NDFrameT]):
     com: Any = ...  # Incomplete
     span: Any = ...  # Incomplete
     halflife: Any = ...  # Incomplete
@@ -39,7 +42,7 @@ class ExponentialMovingWindow(BaseWindow[NDFrameT]):
         selection: Any | None = ...,
     ) -> None: ...
     def online(self, engine: str = ..., engine_kwargs: Any | None = ...): ...
-    def aggregate(self, func, *args, **kwargs): ...
+    def aggregate(self, func, *args, **kwargs) -> NDFrameT: ...
     agg = aggregate
     def mean(
         self,

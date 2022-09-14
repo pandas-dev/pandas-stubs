@@ -723,49 +723,35 @@ def test_types_window() -> None:
     df.rolling(2, axis=1, center=True)
 
     check(
-        assert_type(df.rolling(2).agg("max"), Union[Scalar, pd.DataFrame, pd.Series]),
+        assert_type(df.rolling(2).agg("max"), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(df.rolling(2).agg(max), Union[Scalar, pd.DataFrame, pd.Series]),
+        assert_type(df.rolling(2).agg(max), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(
-            df.rolling(2).agg(["max", "min"]), Union[Scalar, pd.DataFrame, pd.Series]
-        ),
+        assert_type(df.rolling(2).agg(["max", "min"]), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(
-            df.rolling(2).agg([max, min]), Union[Scalar, pd.DataFrame, pd.Series]
-        ),
+        assert_type(df.rolling(2).agg([max, min]), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(
-            df.rolling(2).agg({"col2": "max"}), Union[Scalar, pd.DataFrame, pd.Series]
-        ),
+        assert_type(df.rolling(2).agg({"col2": "max"}), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(
-            df.rolling(2).agg({"col2": max}), Union[Scalar, pd.DataFrame, pd.Series]
-        ),
+        assert_type(df.rolling(2).agg({"col2": max}), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(
-            df.rolling(2).agg({"col2": ["max", "min"]}),
-            Union[Scalar, pd.DataFrame, pd.Series],
-        ),
+        assert_type(df.rolling(2).agg({"col2": ["max", "min"]}), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(
-            df.rolling(2).agg({"col2": [max, min]}),
-            Union[Scalar, pd.DataFrame, pd.Series],
-        ),
+        assert_type(df.rolling(2).agg({"col2": [max, min]}), pd.DataFrame),
         pd.DataFrame,
     )
 

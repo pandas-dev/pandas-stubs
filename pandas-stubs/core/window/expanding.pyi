@@ -11,6 +11,7 @@ from pandas.core.generic import NDFrame
 from pandas.core.window.rolling import (
     BaseWindowGroupby,
     RollingAndExpandingMixin,
+    _NumbaKwargs,
 )
 
 from pandas._typing import (
@@ -29,18 +30,18 @@ class Expanding(RollingAndExpandingMixin[NDFrameT]):
         method: str = ...,
         selection: Any | None = ...,  # Incomplete
     ) -> None: ...
-    def aggregate(self, func, *args, **kwargs): ...
+    def aggregate(self, func, *args, **kwargs) -> NDFrameT: ...
     agg = aggregate
-    def count(self): ...
+    def count(self) -> NDFrameT: ...
     def apply(
         self,
         func: Callable[..., Any],
         raw: bool = ...,
         engine: str | None = ...,
-        engine_kwargs: dict[str, bool] | None = ...,
+        engine_kwargs: _NumbaKwargs | None = ...,
         args: tuple[Any, ...] | None = ...,
         kwargs: dict[str, Any] | None = ...,
-    ): ...
+    ) -> NDFrameT: ...
     def sum(
         self,
         *args,
