@@ -17,7 +17,6 @@ from typing import (
 )
 
 import numpy as np
-from packaging.version import parse
 import pandas as pd
 from pandas._testing import ensure_clean
 from pandas.api.extensions import (
@@ -35,11 +34,10 @@ from pandas._typing import (
 )
 
 from tests import (
+    PD_LT_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
-
-PD_LT_15 = parse(pd.__version__) < parse("1.5.0")
 
 if TYPE_CHECKING:
     from pandas._typing import np_ndarray_int  # noqa: F401
@@ -263,8 +261,10 @@ def test_types_rank() -> None:
     with pytest.warns(FutureWarning, match="Dropping of nuisance columns"):
         s.rank(method="dense", ascending=True)
     if PD_LT_15:
-        # FutureWarning in 1.5, add pytest.warns after 1.5.0
         s.rank(method="first", numeric_only=True)
+    else:
+        with pytest.warns(FutureWarning, match="Calling Series.rank with numeric_only"):
+            s.rank(method="first", numeric_only=True)
 
 
 def test_types_mean() -> None:

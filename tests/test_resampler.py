@@ -6,7 +6,6 @@ from typing import (
 )
 
 import numpy as np
-from packaging.version import parse
 import pandas as pd
 from pandas import (
     DataFrame,
@@ -17,13 +16,16 @@ from pandas import (
 )
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.resample import Resampler
+import pytest
 from typing_extensions import assert_type
 
 from pandas._typing import Scalar
 
-from tests import check
+from tests import (
+    PD_LT_15,
+    check,
+)
 
-PD_LT_15 = parse(pd.__version__) < parse("1.5.0")
 DR = date_range("1999-1-1", periods=365, freq="D")
 DF_ = DataFrame(np.random.standard_normal((365, 1)), index=DR)
 S = DF_.iloc[:, 0]
@@ -290,8 +292,6 @@ def test_transform_series() -> None:
     check(assert_type(S.resample("m").transform(f), Series), Series)
 
 
-# Add pytest.warns around problem lines after 1.5.0 to catch FutureWarning
-# @pytest.mark.skipif(not PD_LT_15, reason="Fails on 1.5.0")
 def test_aggregate_series_combinations() -> None:
     def s2series(val: Series) -> Series:
         return pd.Series(val)
@@ -302,8 +302,10 @@ def test_aggregate_series_combinations() -> None:
     check(S.resample("m").aggregate(np.sum), Series)
     check(S.resample("m").aggregate("sum"), Series)
     if PD_LT_15:
-        # Warns on 1.5.0, add pytest.warns
         check(S.resample("m").aggregate(s2series), Series)
+    else:
+        with pytest.warns(FutureWarning, match="Not prepending group keys"):
+            check(S.resample("m").aggregate(s2series), Series)
     check(S.resample("m").aggregate(s2scalar), Series)
     check(S.resample("m").aggregate([np.mean]), DataFrame)
     check(S.resample("m").aggregate(["sum", np.mean]), DataFrame)
@@ -324,8 +326,10 @@ def test_aggregate_frame_combinations() -> None:
     check(DF.resample("m").aggregate(np.sum), DataFrame)
     check(DF.resample("m").aggregate("sum"), DataFrame)
     if PD_LT_15:
-        # Warns on 1.5.0, add pytest.warns
         check(DF.resample("m").aggregate(df2frame), DataFrame)
+    else:
+        with pytest.warns(FutureWarning, match="Not prepending group keys"):
+            check(DF.resample("m").aggregate(df2frame), DataFrame)
     check(DF.resample("m").aggregate(df2series), DataFrame)
     check(DF.resample("m").aggregate(df2scalar), DataFrame)
     check(DF.resample("m").aggregate([np.mean]), DataFrame)
