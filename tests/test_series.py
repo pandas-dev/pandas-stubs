@@ -33,6 +33,7 @@ from pandas._typing import (
 )
 
 from tests import (
+    PD_LT_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
@@ -258,7 +259,11 @@ def test_types_rank() -> None:
         s.rank(method="min", pct=True)
     with pytest.warns(FutureWarning, match="Dropping of nuisance columns"):
         s.rank(method="dense", ascending=True)
-    s.rank(method="first", numeric_only=True)
+    if PD_LT_15:
+        s.rank(method="first", numeric_only=True)
+    else:
+        with pytest.warns(FutureWarning, match="Calling Series.rank with numeric_only"):
+            s.rank(method="first", numeric_only=True)
 
 
 def test_types_mean() -> None:

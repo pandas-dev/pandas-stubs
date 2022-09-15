@@ -1611,7 +1611,10 @@ def test_groupby_apply() -> None:
         return x.sample()
 
     check(
-        assert_type(df.groupby("col1").apply(sample_to_df), pd.DataFrame), pd.DataFrame
+        assert_type(
+            df.groupby("col1", group_keys=False).apply(sample_to_df), pd.DataFrame
+        ),
+        pd.DataFrame,
     )
 
 
