@@ -46,9 +46,9 @@ import xarray as xr
 
 from pandas._typing import (
     S1,
-    AggFuncType,
     AggFuncTypeBase,
-    AggFuncTypeDict,
+    AggFuncTypeDictFrame,
+    AggFuncTypeFrame,
     AnyArrayLike,
     ArrayLike,
     Axes,
@@ -78,6 +78,7 @@ from pandas._typing import (
     MergeHow,
     NaPosition,
     ParquetEngine,
+    QuantileInterpolation,
     ReadBuffer,
     Renamer,
     ReplaceMethod,
@@ -1055,7 +1056,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def agg(
         self,
-        func: list[AggFuncTypeBase] | AggFuncTypeDict = ...,
+        func: list[AggFuncTypeBase] | AggFuncTypeDictFrame = ...,
         axis: AxisType = ...,
         **kwargs,
     ) -> DataFrame: ...
@@ -1066,13 +1067,13 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def aggregate(
         self,
-        func: list[AggFuncTypeBase] | AggFuncTypeDict,
+        func: list[AggFuncTypeBase] | AggFuncTypeDictFrame,
         axis: AxisType = ...,
         **kwargs,
     ) -> DataFrame: ...
     def transform(
         self,
-        func: AggFuncType,
+        func: AggFuncTypeFrame,
         axis: AxisType = ...,
         *args,
         **kwargs,
@@ -1168,8 +1169,7 @@ class DataFrame(NDFrame, OpsMixin):
         q: float = ...,
         axis: AxisType = ...,
         numeric_only: _bool = ...,
-        interpolation: _str
-        | Literal["linear", "lower", "higher", "midpoint", "nearest"] = ...,
+        interpolation: QuantileInterpolation = ...,
     ) -> Series: ...
     @overload
     def quantile(
@@ -1177,8 +1177,7 @@ class DataFrame(NDFrame, OpsMixin):
         q: list[float] | np.ndarray,
         axis: AxisType = ...,
         numeric_only: _bool = ...,
-        interpolation: _str
-        | Literal["linear", "lower", "higher", "midpoint", "nearest"] = ...,
+        interpolation: QuantileInterpolation = ...,
     ) -> DataFrame: ...
     def to_timestamp(
         self,

@@ -1,6 +1,7 @@
 from typing import (
     Any,
     Generic,
+    overload,
 )
 
 import numpy as np
@@ -12,9 +13,14 @@ from pandas.core.generic import NDFrame
 from pandas.core.window.rolling import BaseWindow
 
 from pandas._typing import (
+    AggFuncTypeBase,
+    AggFuncTypeFrame,
+    AggFuncTypeSeriesToFrame,
     Axis,
     NDFrameT,
     TimedeltaConvertibleTypes,
+    WindowingEngine,
+    WindowingEngineKwargs,
 )
 
 class ExponentialMovingWindow(BaseWindow[NDFrameT], Generic[NDFrameT]):
@@ -41,36 +47,49 @@ class ExponentialMovingWindow(BaseWindow[NDFrameT], Generic[NDFrameT]):
         *,
         selection: Any | None = ...,
     ) -> None: ...
-    def online(self, engine: str = ..., engine_kwargs: Any | None = ...): ...
-    def aggregate(self, func, *args, **kwargs) -> NDFrameT: ...
-    agg = aggregate
+    @overload
+    def aggregate(
+        self: ExponentialMovingWindow[Series],
+        func: AggFuncTypeBase,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Series: ...
+    @overload
+    def aggregate(
+        self: ExponentialMovingWindow[Series],
+        func: AggFuncTypeSeriesToFrame,
+        *args: Any,
+        **kwargs: Any,
+    ) -> DataFrame: ...
+    @overload
+    def aggregate(
+        self: ExponentialMovingWindow[DataFrame],
+        func: AggFuncTypeFrame,
+        *args: Any,
+        **kwargs: Any,
+    ) -> DataFrame: ...
     def mean(
         self,
-        *args,
-        engine: Any | None = ...,
-        engine_kwargs: Any | None = ...,
-        **kwargs,
+        *,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     def sum(
         self,
-        *args,
-        engine: Any | None = ...,
-        engine_kwargs: Any | None = ...,
-        **kwargs,
+        *,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
-    def std(self, bias: bool = ..., *args, **kwargs) -> NDFrameT: ...
-    def vol(self, bias: bool = ..., *args, **kwargs) -> NDFrameT: ...
-    def var(self, bias: bool = ..., *args, **kwargs) -> NDFrameT: ...
+    def std(self, bias: bool = ...) -> NDFrameT: ...
+    def var(self, bias: bool = ...) -> NDFrameT: ...
     def cov(
         self,
         other: DataFrame | Series | None = ...,
         pairwise: bool | None = ...,
         bias: bool = ...,
-        **kwargs,
     ) -> NDFrameT: ...
     def corr(
         self,
         other: DataFrame | Series | None = ...,
         pairwise: bool | None = ...,
-        **kwargs,
     ) -> NDFrameT: ...

@@ -26,8 +26,8 @@ from pandas.core.series import Series
 
 from pandas._typing import (
     S1,
-    AggFuncType,
     AggFuncTypeBase,
+    AggFuncTypeFrame,
     AxisType,
     Level,
     ListLike,
@@ -154,8 +154,8 @@ class DataFrameGroupBy(GroupBy):
     def apply(  # pyright: ignore[reportOverlappingOverload]
         self, func: Callable[[Iterable], float], *args, **kwargs
     ) -> DataFrame: ...
-    def aggregate(self, arg: AggFuncType = ..., *args, **kwargs) -> DataFrame: ...
-    def agg(self, arg: AggFuncType = ..., *args, **kwargs) -> DataFrame: ...
+    def aggregate(self, arg: AggFuncTypeFrame = ..., *args, **kwargs) -> DataFrame: ...
+    agg = aggregate
     def transform(self, func, *args, **kwargs): ...
     def filter(
         self, func: Callable, dropna: bool = ..., *args, **kwargs

@@ -507,11 +507,11 @@ def test_types_window() -> None:
         pd.Series,
     )
     check(
-        assert_type(s.rolling(2).agg(["max", "min"]), pd.Series),
+        assert_type(s.rolling(2).agg(["max", "min"]), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(s.rolling(2).agg([max, min]), pd.Series),
+        assert_type(s.rolling(2).agg([max, min]), pd.DataFrame),
         pd.DataFrame,
     )
 

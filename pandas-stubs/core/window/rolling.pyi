@@ -3,8 +3,7 @@ from typing import (
     Callable,
     Generic,
     Hashable,
-    Literal,
-    TypedDict,
+    overload,
 )
 
 import numpy as np
@@ -17,16 +16,16 @@ from pandas.core.groupby.ops import BaseGrouper
 from pandas.core.indexes.api import Index
 
 from pandas._typing import (
-    AggFuncType,
+    AggFuncTypeBase,
+    AggFuncTypeFrame,
+    AggFuncTypeSeriesToFrame,
     Axis,
     NDFrameT,
+    QuantileInterpolation,
+    WindowingEngine,
+    WindowingEngineKwargs,
     WindowingRankType,
 )
-
-class _NumbaKwargs(TypedDict, total=False):
-    nopython: bool
-    nogil: bool
-    parallel: bool
 
 class BaseWindow(SelectionMixin[NDFrameT], Generic[NDFrameT]):
     exclusions: frozenset[Hashable]
@@ -59,26 +58,59 @@ class BaseWindow(SelectionMixin[NDFrameT], Generic[NDFrameT]):
     def validate(self) -> None: ...
     def __getattr__(self, attr: str): ...
     def __iter__(self): ...
-    def aggregate(self, func: AggFuncType, *args, **kwargs) -> NDFrameT: ...
+    @overload
+    def aggregate(
+        self: BaseWindow[Series], func: AggFuncTypeBase, *args: Any, **kwargs: Any
+    ) -> Series: ...
+    @overload
+    def aggregate(
+        self: BaseWindow[Series],
+        func: AggFuncTypeSeriesToFrame,
+        *args: Any,
+        **kwargs: Any,
+    ) -> DataFrame: ...
+    @overload
+    def aggregate(
+        self: BaseWindow[DataFrame],
+        func: AggFuncTypeFrame,
+        *args: Any,
+        **kwargs: Any,
+    ) -> DataFrame: ...
     agg = aggregate
 
 class BaseWindowGroupby(BaseWindow[NDFrameT]):
     def __init__(
         self,
         obj: NDFrameT,
-        *args,
+        *args: Any,
         _grouper: BaseGrouper,
         _as_index: bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> None: ...
 
 class Window(BaseWindow[NDFrameT]):
-    def aggregate(self, func: AggFuncType, *args, **kwargs) -> NDFrameT: ...
-    agg = aggregate
-    def sum(self, *args, **kwargs) -> NDFrameT: ...
-    def mean(self, *args, **kwargs) -> NDFrameT: ...
-    def var(self, ddof: int = ..., *args, **kwargs) -> NDFrameT: ...
-    def std(self, ddof: int = ..., *args, **kwargs) -> NDFrameT: ...
+    @overload
+    def aggregate(
+        self: Window[Series], func: AggFuncTypeBase, *args: Any, **kwargs: Any
+    ) -> Series: ...
+    @overload
+    def aggregate(
+        self: Window[Series],
+        func: AggFuncTypeSeriesToFrame,
+        *args: Any,
+        **kwargs: Any,
+    ) -> DataFrame: ...
+    @overload
+    def aggregate(
+        self: Window[DataFrame],
+        func: AggFuncTypeFrame,
+        *args: Any,
+        **kwargs: Any,
+    ) -> DataFrame: ...
+    def sum(self, **kwargs: Any) -> NDFrameT: ...
+    def mean(self, **kwargs: Any) -> NDFrameT: ...
+    def var(self, ddof: int = ..., **kwargs: Any) -> NDFrameT: ...
+    def std(self, ddof: int = ..., **kwargs: Any) -> NDFrameT: ...
 
 class RollingAndExpandingMixin(BaseWindow[NDFrameT], Generic[NDFrameT]):
     def count(self) -> NDFrameT: ...
@@ -86,53 +118,53 @@ class RollingAndExpandingMixin(BaseWindow[NDFrameT], Generic[NDFrameT]):
         self,
         func: Callable[..., Any],
         raw: bool = ...,
-        engine: Literal["cython", "numba"] | None = ...,
-        engine_kwargs: _NumbaKwargs | None = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
         args: tuple[Any, ...] | None = ...,
         kwargs: dict[str, Any] | None = ...,
     ) -> NDFrameT: ...
     def sum(
         self,
         *,
-        engine: str | None = ...,
-        engine_kwargs: dict[str, bool] | None = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     def max(
         self,
         *,
-        engine: str | None = ...,
-        engine_kwargs: dict[str, bool] | None = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     def min(
         self,
         *,
-        engine: str | None = ...,
-        engine_kwargs: dict[str, bool] | None = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     def mean(
         self,
         *,
-        engine: str | None = ...,
-        engine_kwargs: dict[str, bool] | None = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     def median(
         self,
-        engine: str | None = ...,
-        engine_kwargs: dict[str, bool] | None = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     def std(
         self,
         ddof: int = ...,
         *,
-        engine: str | None = ...,
-        engine_kwargs: dict[str, bool] | None = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     def var(
         self,
         ddof: int = ...,
         *,
-        engine: str | None = ...,
-        engine_kwargs: dict[str, bool] | None = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     def skew(self) -> NDFrameT: ...
     def sem(self, ddof: int = ...) -> NDFrameT: ...
@@ -140,7 +172,7 @@ class RollingAndExpandingMixin(BaseWindow[NDFrameT], Generic[NDFrameT]):
     def quantile(
         self,
         quantile: float,
-        interpolation: str = ...,
+        interpolation: QuantileInterpolation = ...,
     ) -> NDFrameT: ...
     def rank(
         self,
@@ -162,14 +194,30 @@ class RollingAndExpandingMixin(BaseWindow[NDFrameT], Generic[NDFrameT]):
     ) -> NDFrameT: ...
 
 class Rolling(RollingAndExpandingMixin[NDFrameT]):
-    def aggregate(self, func, *args, **kwargs) -> NDFrameT: ...
-    agg = aggregate
+    @overload
+    def aggregate(
+        self: Rolling[Series], func: AggFuncTypeBase, *args: Any, **kwargs: Any
+    ) -> Series: ...
+    @overload
+    def aggregate(
+        self: Rolling[Series],
+        func: AggFuncTypeSeriesToFrame,
+        *args: Any,
+        **kwargs: Any,
+    ) -> DataFrame: ...
+    @overload
+    def aggregate(
+        self: Rolling[DataFrame],
+        func: AggFuncTypeFrame,
+        *args: Any,
+        **kwargs: Any,
+    ) -> DataFrame: ...
     def apply(
         self,
         func: Callable[..., Any],
         raw: bool = ...,
-        engine: Literal["cython", "numba"] | None = ...,
-        engine_kwargs: _NumbaKwargs | None = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs | None = ...,
         args: tuple[Any, ...] | None = ...,
         kwargs: dict[str, Any] | None = ...,
     ) -> NDFrameT: ...
