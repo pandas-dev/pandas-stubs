@@ -536,7 +536,6 @@ def test_plot_keywords(close_figures):
                 colormap="jet",
                 table=True,
                 stacked=True,
-                sort_columns=True,
                 secondary_y=True,
                 mark_right=True,
                 include_bool=True,

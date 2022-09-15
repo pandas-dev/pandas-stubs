@@ -188,6 +188,8 @@ def test_read_stata_df():
         check(assert_type(read_stata(path), pd.DataFrame), pd.DataFrame)
 
 
+# Remove test when pandas 1.5.0 is released
+@pytest.mark.skipif(not PD_LT_15, reason="Keyword only in 1.5.0")
 def test_read_stata_iterator_positional():
     with ensure_clean() as path:
         str_path = str(path)
@@ -657,7 +659,9 @@ def test_excel_writer():
         with pd.ExcelWriter(path) as ew:
             check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
             DF.to_excel(ew, sheet_name="A")
-            check(assert_type(ew.handles, IOHandles[bytes]), IOHandles)
+            if PD_LT_15:
+                # Remove after 1.5 and remove handles from ExcelWriter
+                check(assert_type(ew.handles, IOHandles[bytes]), IOHandles)
         check(assert_type(read_excel(path, sheet_name="A"), DataFrame), DataFrame)
         check(assert_type(read_excel(path), DataFrame), DataFrame)
         ef = pd.ExcelFile(path)
