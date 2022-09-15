@@ -38,6 +38,7 @@ from pandas.core.window.rolling import (
     Rolling,
     Window,
 )
+import xarray as xr
 
 from pandas._typing import (
     S1,
@@ -52,10 +53,11 @@ from pandas._typing import (
     ColspaceArgType,
     CompressionOptions,
     Dtype,
-    DtypeNp,
     FilePath,
     FilePathOrBuffer,
     FillnaOptions,
+    FloatFormatType,
+    FormattersType,
     GroupByObjectNonScalar,
     HashableT,
     IgnoreRaise,
@@ -87,6 +89,7 @@ from pandas._typing import (
     XMLParsers,
     np_ndarray_bool,
     np_ndarray_str,
+    npt,
     num,
 )
 
@@ -133,11 +136,7 @@ class _LocIndexerFrame(_LocIndexer):
         | MaskType
         | list[HashableT]
         | tuple[
-            IndexType
-            | MaskType
-            | slice
-            | list[HashableT]
-            | tuple[str | int | slice, ...],
+            IndexType | MaskType | list[HashableT] | Hashable,
             list[HashableT] | slice | Series[bool] | Callable,
         ],
     ) -> DataFrame: ...
@@ -221,22 +220,39 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def to_numpy(
         self,
-        dtype: type[DtypeNp] | Dtype | None = ...,
-        copy: _bool = ...,
-        na_value: Any | None = ...,
+        dtype: npt.DTypeLike | None = ...,
+        copy: bool = ...,
+        na_value: Scalar = ...,
     ) -> np.ndarray: ...
     @overload
     def to_dict(
         self,
-        orient: Literal["records"],
-        into: Hashable = ...,
-    ) -> list[dict[_str, Any]]: ...
+        orient: Literal["dict", "list", "series", "split", "tight", "index"],
+        into: Mapping | type[Mapping],
+    ) -> Mapping[Hashable, Any]: ...
     @overload
     def to_dict(
         self,
         orient: Literal["dict", "list", "series", "split", "tight", "index"] = ...,
-        into: Hashable = ...,
-    ) -> dict[_str, Any]: ...
+        *,
+        into: Mapping | type[Mapping],
+    ) -> Mapping[Hashable, Any]: ...
+    @overload
+    def to_dict(
+        self,
+        orient: Literal["dict", "list", "series", "split", "tight", "index"] = ...,
+        into: None = ...,
+    ) -> dict[Hashable, Any]: ...
+    @overload
+    def to_dict(
+        self,
+        orient: Literal["records"],
+        into: Mapping | type[Mapping],
+    ) -> list[Mapping[Hashable, Any]]: ...
+    @overload
+    def to_dict(
+        self, orient: Literal["records"], into: None = ...
+    ) -> list[dict[Hashable, Any]]: ...
     def to_gbq(
         self,
         destination_table: str,
@@ -258,8 +274,14 @@ class DataFrame(NDFrame, OpsMixin):
     def to_records(
         self,
         index: _bool = ...,
-        columnDTypes: _str | dict | None = ...,
-        indexDTypes: _str | dict | None = ...,
+        column_dtypes: _str
+        | npt.DTypeLike
+        | Mapping[HashableT, npt.DTypeLike]
+        | None = ...,
+        index_dtypes: _str
+        | npt.DTypeLike
+        | Mapping[HashableT, npt.DTypeLike]
+        | None = ...,
     ) -> np.recarray: ...
     def to_stata(
         self,
@@ -278,12 +300,6 @@ class DataFrame(NDFrame, OpsMixin):
         value_labels: dict[Hashable, dict[float, str]] | None = ...,
     ) -> None: ...
     def to_feather(self, path: FilePath | WriteBuffer[bytes], **kwargs) -> None: ...
-    @overload
-    def to_markdown(
-        self, buf: FilePathOrBuffer | None, mode: _str | None = ..., **kwargs
-    ) -> None: ...
-    @overload
-    def to_markdown(self, mode: _str | None = ..., **kwargs) -> _str: ...
     @overload
     def to_parquet(
         self,
@@ -328,7 +344,7 @@ class DataFrame(NDFrame, OpsMixin):
     def to_html(
         self,
         buf: FilePath | WriteBuffer[str],
-        columns: list[HashableT] | None = ...,
+        columns: list[HashableT] | Index | Series | None = ...,
         col_space: ColspaceArgType | None = ...,
         header: _bool = ...,
         index: _bool = ...,
@@ -457,6 +473,7 @@ class DataFrame(NDFrame, OpsMixin):
     def transpose(self, *args, copy: _bool = ...) -> DataFrame: ...
     @property
     def T(self) -> DataFrame: ...
+    def __getattr__(self, name: str) -> Series: ...
     @overload
     def __getitem__(self, idx: Scalar) -> Series: ...
     @overload
@@ -1024,17 +1041,6 @@ class DataFrame(NDFrame, OpsMixin):
     def applymap(
         self, func: Callable, na_action: Literal["ignore"] | None = ..., **kwargs
     ) -> DataFrame: ...
-    def append(
-        self,
-        other: DataFrame
-        | Series
-        | dict[Any, Any]
-        | Sequence[Scalar]
-        | Sequence[ListLike],
-        ignore_index: _bool = ...,
-        verify_integrity: _bool = ...,
-        sort: _bool = ...,
-    ) -> DataFrame: ...
     def join(
         self,
         other: DataFrame | Series | list[DataFrame | Series],
@@ -1160,7 +1166,7 @@ class DataFrame(NDFrame, OpsMixin):
         by: _str | ListLike | None = ...,
         ax: PlotAxes | None = ...,
         fontsize: float | _str | None = ...,
-        rot: int = ...,
+        rot: float = ...,
         grid: _bool = ...,
         figsize: tuple[float, float] | None = ...,
         layout: tuple[int, int] | None = ...,
@@ -1361,9 +1367,7 @@ class DataFrame(NDFrame, OpsMixin):
         ignore_na: _bool = ...,
         axis: AxisType = ...,
     ) -> DataFrame: ...
-    def expanding(
-        self, min_periods: int = ..., center: _bool = ..., axis: AxisType = ...
-    ): ...  # for now
+    def expanding(self, min_periods: int = ..., axis: AxisType = ...): ...  # for now
     @overload
     def ffill(
         self,
@@ -1850,55 +1854,6 @@ class DataFrame(NDFrame, OpsMixin):
         self, excel: _bool = ..., sep: _str | None = ..., **kwargs
     ) -> None: ...
     @overload
-    def to_csv(
-        self,
-        path_or_buf: FilePathOrBuffer | None,
-        sep: _str = ...,
-        na_rep: _str = ...,
-        float_format: _str | None = ...,
-        columns: Sequence[Hashable] | None = ...,
-        header: _bool | list[_str] = ...,
-        index: _bool = ...,
-        index_label: _bool | _str | Sequence[Hashable] | None = ...,
-        mode: _str = ...,
-        encoding: _str | None = ...,
-        compression: _str | Mapping[_str, _str] = ...,
-        quoting: int | None = ...,
-        quotechar: _str = ...,
-        line_terminator: _str | None = ...,
-        chunksize: int | None = ...,
-        date_format: _str | None = ...,
-        doublequote: _bool = ...,
-        escapechar: _str | None = ...,
-        decimal: _str = ...,
-        errors: _str = ...,
-        storage_options: dict[_str, Any] | None = ...,
-    ) -> None: ...
-    @overload
-    def to_csv(
-        self,
-        sep: _str = ...,
-        na_rep: _str = ...,
-        float_format: _str | None = ...,
-        columns: Sequence[Hashable] | None = ...,
-        header: _bool | list[_str] = ...,
-        index: _bool = ...,
-        index_label: _bool | _str | Sequence[Hashable] | None = ...,
-        mode: _str = ...,
-        encoding: _str | None = ...,
-        compression: _str | Mapping[_str, _str] = ...,
-        quoting: int | None = ...,
-        quotechar: _str = ...,
-        line_terminator: _str | None = ...,
-        chunksize: int | None = ...,
-        date_format: _str | None = ...,
-        doublequote: _bool = ...,
-        escapechar: _str | None = ...,
-        decimal: _str = ...,
-        errors: _str = ...,
-        storage_options: dict[_str, Any] | None = ...,
-    ) -> _str: ...
-    @overload
     def to_json(
         self,
         path_or_buf: FilePathOrBuffer | None,
@@ -1929,70 +1884,53 @@ class DataFrame(NDFrame, OpsMixin):
         index: _bool = ...,
         indent: int | None = ...,
     ) -> _str: ...
-    def to_pickle(
-        self,
-        path: _str,
-        compression: CompressionOptions = ...,
-        protocol: int = ...,
-    ) -> None: ...
-    def to_sql(
-        self,
-        name: _str,
-        con,
-        schema: _str | None = ...,
-        if_exists: _str = ...,
-        index: _bool = ...,
-        index_label: _str | Sequence[_str] | None = ...,
-        chunksize: int | None = ...,
-        dtype: dict | Scalar | None = ...,
-        method: _str | Callable | None = ...,
-    ) -> None: ...
     @overload
     def to_string(
         self,
-        buf: FilePathOrBuffer | None,
-        columns: Sequence[_str] | None = ...,
-        col_space: int | list[int] | dict[_str | int, int] | None = ...,
-        header: _bool | Sequence[_str] = ...,
+        buf: FilePath | WriteBuffer[str],
+        columns: list[HashableT] | Index | Series | None = ...,
+        col_space: int | list[int] | dict[HashableT, int] | None = ...,
+        header: _bool | list[_str] | tuple[str, ...] = ...,
         index: _bool = ...,
         na_rep: _str = ...,
-        formatters=...,
-        float_format=...,
+        formatters: FormattersType | None = ...,
+        float_format: FloatFormatType | None = ...,
         sparsify: _bool | None = ...,
         index_names: _bool = ...,
         justify: _str | None = ...,
         max_rows: int | None = ...,
-        min_rows: int | None = ...,
         max_cols: int | None = ...,
         show_dimensions: _bool = ...,
         decimal: _str = ...,
         line_width: int | None = ...,
+        min_rows: int | None = ...,
         max_colwidth: int | None = ...,
         encoding: _str | None = ...,
     ) -> None: ...
     @overload
     def to_string(
         self,
-        columns: Sequence[_str] | None = ...,
-        col_space: int | list[int] | dict[_str | int, int] | None = ...,
+        buf: None = ...,
+        columns: list[HashableT] | Index | Series | None = ...,
+        col_space: int | list[int] | dict[Hashable, int] | None = ...,
         header: _bool | Sequence[_str] = ...,
         index: _bool = ...,
         na_rep: _str = ...,
-        formatters=...,
-        float_format=...,
+        formatters: FormattersType | None = ...,
+        float_format: FloatFormatType | None = ...,
         sparsify: _bool | None = ...,
         index_names: _bool = ...,
         justify: _str | None = ...,
         max_rows: int | None = ...,
-        min_rows: int | None = ...,
         max_cols: int | None = ...,
         show_dimensions: _bool = ...,
         decimal: _str = ...,
         line_width: int | None = ...,
+        min_rows: int | None = ...,
         max_colwidth: int | None = ...,
         encoding: _str | None = ...,
     ) -> _str: ...
-    def to_xarray(self): ...
+    def to_xarray(self) -> xr.Dataset: ...
     def truediv(
         self,
         other: num | ListLike | DataFrame,

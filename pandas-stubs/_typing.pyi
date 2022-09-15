@@ -14,11 +14,13 @@ from typing import (
     AnyStr,
     Callable,
     Hashable,
+    Iterator,
     Literal,
     Mapping,
     Optional,
     Protocol,
     Sequence,
+    TypedDict,
     TypeVar,
     Union,
 )
@@ -26,7 +28,6 @@ from typing import (
 import numpy as np
 from numpy import typing as npt
 from pandas.core.arrays import ExtensionArray
-from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
@@ -39,13 +40,14 @@ from pandas._libs.tslibs import (
 
 from pandas.core.dtypes.dtypes import ExtensionDtype
 
+from pandas.io.formats.format import EngFormatter
+
 ArrayLike = Union[ExtensionArray, np.ndarray]
 AnyArrayLike = Union[Index, Series, np.ndarray]
 PythonScalar = Union[str, bool, complex]
 DatetimeLikeScalar = TypeVar("DatetimeLikeScalar", Period, Timestamp, Timedelta)
 PandasScalar = Union[bytes, datetime.date, datetime.datetime, datetime.timedelta]
 # Scalar = Union[PythonScalar, PandasScalar]
-IntStrT = TypeVar("IntStrT", int, str)
 
 DatetimeLike = Union[datetime.date, datetime.datetime, np.datetime64, Timestamp]
 
@@ -65,15 +67,23 @@ class BaseBuffer(Protocol): ...
 class ReadBuffer(BaseBuffer, Protocol[AnyStr_cov]): ...
 class WriteBuffer(BaseBuffer, Protocol[AnyStr_cov]): ...
 
+class ReadPickleBuffer(ReadBuffer[bytes], Protocol):
+    def readline(self, size: int | None = ...) -> bytes: ...
+
+class ReadCsvBuffer(ReadBuffer[AnyStr_cov], Protocol[AnyStr_cov]):
+    def __iter__(self) -> Iterator[AnyStr_cov]: ...
+    def readline(self) -> AnyStr_cov: ...
+    @property
+    def closed(self) -> bool: ...
+
+class WriteExcelBuffer(WriteBuffer[bytes], Protocol):
+    def truncate(self, size: Union[int, None] = ...) -> int: ...
+
 FilePath = Union[str, PathLike[str]]
+FilePathOrBuffer = Union[
+    FilePath, IO[AnyStr], RawIOBase, BufferedIOBase, TextIOBase, TextIOWrapper, mmap
+]
 
-Buffer = Union[IO[AnyStr], RawIOBase, BufferedIOBase, TextIOBase, TextIOWrapper, mmap]
-FileOrBuffer = Union[str, Buffer[AnyStr]]
-FilePathOrBuffer = Union[PathLike[str], FileOrBuffer[AnyStr]]
-FilePathOrBytesBuffer = Union[PathLike[str], WriteBuffer[bytes]]
-
-FrameOrSeries = TypeVar("FrameOrSeries", bound=NDFrame)
-FrameOrSeriesUnion = Union[DataFrame, Series]
 Axis = Union[str, int]
 IndexLabel = Union[Hashable, Sequence[Hashable]]
 Label = Optional[Hashable]
@@ -116,21 +126,9 @@ Scalar = Union[
 ]
 ScalarT = TypeVar("ScalarT", bound=Scalar)
 # Refine the definitions below in 3.9 to use the specialized type.
-np_ndarray_int8 = npt.NDArray[np.int8]
-np_ndarray_int16 = npt.NDArray[np.int16]
-np_ndarray_int32 = npt.NDArray[np.int32]
 np_ndarray_int64 = npt.NDArray[np.int64]
-np_ndarray_uint8 = npt.NDArray[np.uint8]
-np_ndarray_uint16 = npt.NDArray[np.uint16]
-np_ndarray_uint32 = npt.NDArray[np.uint32]
-np_ndarray_uint64 = npt.NDArray[np.uint64]
-np_ndarray_int = Union[
-    np_ndarray_int8, np_ndarray_int16, np_ndarray_int32, np_ndarray_int64
-]
-np_ndarray_uint = Union[
-    np_ndarray_uint8, np_ndarray_uint16, np_ndarray_uint32, np_ndarray_uint64
-]
-np_ndarray_anyint = Union[np_ndarray_int, np_ndarray_uint]
+np_ndarray_int = npt.NDArray[np.signedinteger]
+np_ndarray_anyint = npt.NDArray[np.integer]
 np_ndarray_bool = npt.NDArray[np.bool_]
 np_ndarray_str = npt.NDArray[np.str_]
 
@@ -162,7 +160,12 @@ T2 = TypeVar("T2", str, int)
 IndexingInt = Union[
     int, np.int_, np.integer, np.unsignedinteger, np.signedinteger, np.int8
 ]
-
+TimestampConvertibleTypes = Union[
+    Timestamp, datetime.datetime, np.datetime64, np.int64, float, str
+]
+TimedeltaConvertibleTypes = Union[
+    Timedelta, datetime.timedelta, np.timedelta64, np.int64, float, str
+]
 # NDFrameT is stricter and ensures that the same subclass of NDFrame always is
 # used. E.g. `def func(a: NDFrameT) -> NDFrameT: ...` means that if a
 # Series is passed into a function, a Series is always returned and if a DataFrame is
@@ -188,7 +191,10 @@ CompressionDict = dict[str, Any]
 CompressionOptions = Optional[
     Union[Literal["infer", "gzip", "bz2", "zip", "xz", "zstd"], CompressionDict]
 ]
-
+FormattersType = Union[
+    list[Callable], tuple[Callable, ...], Mapping[Union[str, int], Callable]
+]
+FloatFormatType = str | Callable | EngFormatter
 # converters
 ConvertersArg = dict[Hashable, Callable[[Dtype], Dtype]]
 
@@ -235,9 +241,23 @@ JsonSeriesOrient = Literal["split", "records", "index"]
 TimestampConvention = Literal["start", "end", "s", "e"]
 
 CSVEngine = Literal["c", "python", "pyarrow", "python-fwf"]
+CSVQuoting = Literal[0, 1, 2, 3]
 
 HDFCompLib = Literal["zlib", "lzo", "bzip2", "blosc"]
 ParquetEngine = Literal["auto", "pyarrow", "fastparquet"]
+FileWriteMode = Literal[
+    "a", "w", "x", "at", "wt", "xt", "ab", "wb", "xb", "w+", "w+b", "a+", "a+b"
+]
 ColspaceArgType = str | int | Sequence[int | str] | Mapping[Hashable, str | int]
+
+class StyleExportDict(TypedDict, total=False):
+    apply: Any
+    table_attributes: Any
+    table_styles: Any
+    hide_index: bool
+    hide_columns: bool
+    hide_index_names: bool
+    hide_column_names: bool
+    css: dict[str, str | int]
 
 __all__ = ["npt", "type_t"]

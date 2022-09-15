@@ -60,7 +60,6 @@ def assert_series_equal(
     check_dtype: bool = ...,
     check_index_type: bool | str = ...,
     check_series_type: bool = ...,
-    check_less_precise: bool | int = ...,
     check_names: bool = ...,
     check_exact: bool = ...,
     check_datetimelike_compat: bool = ...,

@@ -1,44 +1,9 @@
 import numpy as np
 from pandas.core.arrays import (
-    ExtensionArray as ExtensionArray,
+    ExtensionArray,
     ExtensionOpsMixin,
 )
-from pandas.core.arrays.sparse.dtype import SparseDtype as SparseDtype
 from pandas.core.base import PandasObject as PandasObject
-from pandas.core.construction import sanitize_array as sanitize_array
-from pandas.core.indexers import check_array_indexer as check_array_indexer
-from pandas.core.missing import interpolate_2d as interpolate_2d
-
-from pandas._libs.sparse import (
-    BlockIndex as BlockIndex,
-    IntIndex as IntIndex,
-    SparseIndex as SparseIndex,
-)
-from pandas._libs.tslibs import NaT as NaT
-from pandas.errors import PerformanceWarning as PerformanceWarning
-
-from pandas.core.dtypes.cast import (
-    astype_nansafe as astype_nansafe,
-    construct_1d_arraylike_from_scalar as construct_1d_arraylike_from_scalar,
-    find_common_type as find_common_type,
-)
-from pandas.core.dtypes.common import (
-    is_array_like as is_array_like,
-    is_bool_dtype as is_bool_dtype,
-    is_datetime64_any_dtype as is_datetime64_any_dtype,
-    is_dtype_equal as is_dtype_equal,
-    is_integer as is_integer,
-    is_object_dtype as is_object_dtype,
-    is_scalar as is_scalar,
-    is_string_dtype as is_string_dtype,
-    pandas_dtype as pandas_dtype,
-)
-from pandas.core.dtypes.generic import ABCSeries as ABCSeries
-from pandas.core.dtypes.missing import (
-    isna as isna,
-    na_value_for_dtype as na_value_for_dtype,
-    notna as notna,
-)
 
 class SparseArray(PandasObject, ExtensionArray, ExtensionOpsMixin):
     def __init__(

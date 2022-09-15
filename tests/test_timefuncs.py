@@ -171,6 +171,28 @@ def test_datetimeindex_plus_timedelta() -> None:
     check(assert_type(tdi_dti_dti, "pd.DatetimeIndex"), pd.DatetimeIndex)
     dti_td_dti = dti + pd.Timedelta(10, "minutes")
     check(assert_type(dti_td_dti, "pd.DatetimeIndex"), pd.DatetimeIndex)
+    ts_tdi_dti = pd.Timestamp("2022-03-05") + tdi
+    check(assert_type(ts_tdi_dti, pd.DatetimeIndex), pd.DatetimeIndex)
+
+
+def test_datetimeindex_minus_timedelta() -> None:
+    # GH 280
+    tscheck = pd.Series([pd.Timestamp("2022-03-05"), pd.Timestamp("2022-03-06")])
+    dti = pd.to_datetime(["2022-03-08", "2022-03-15"])
+    td_s = pd.to_timedelta(pd.Series([10, 20]), "minutes")
+    dti_td_s = dti - td_s
+    check(
+        assert_type(dti_td_s, "TimestampSeries"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    tdi = pd.to_timedelta([10, 20], "minutes")
+    dti_tdi_dti = dti - tdi
+    check(assert_type(dti_tdi_dti, "pd.DatetimeIndex"), pd.DatetimeIndex)
+    dti_td_dti = dti - pd.Timedelta(10, "minutes")
+    check(assert_type(dti_td_dti, "pd.DatetimeIndex"), pd.DatetimeIndex)
+    dti_ts_tdi = dti - pd.Timestamp("2022-03-05")
+    check(assert_type(dti_ts_tdi, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
 
 def test_timestamp_plus_timedelta_series() -> None:
@@ -179,6 +201,8 @@ def test_timestamp_plus_timedelta_series() -> None:
     td = pd.to_timedelta(pd.Series([10, 20]), "minutes")
     r3 = td + ts
     check(assert_type(r3, "TimestampSeries"), pd.Series, pd.Timestamp)
+    r4 = ts + td
+    check(assert_type(r4, "TimestampSeries"), pd.Series, pd.Timestamp)
 
 
 def test_timedelta_series_mult() -> None:
@@ -440,3 +464,10 @@ def test_some_offsets() -> None:
     )
     # GH 224
     check(assert_type(dt.date.today() - Day(), dt.date), dt.date)
+
+
+def test_types_to_numpy() -> None:
+    td_s = pd.to_timedelta(pd.Series([10, 20]), "minutes")
+    check(assert_type(td_s.to_numpy(), np.ndarray), np.ndarray)
+    check(assert_type(td_s.to_numpy(dtype="int", copy=True), np.ndarray), np.ndarray)
+    check(assert_type(td_s.to_numpy(na_value=0), np.ndarray), np.ndarray)

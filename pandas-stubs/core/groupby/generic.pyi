@@ -17,6 +17,7 @@ from matplotlib.axes import (
 )
 import numpy as np
 from pandas.core.frame import DataFrame
+from pandas.core.generic import NDFrame
 from pandas.core.groupby.groupby import (  # , get_groupby as get_groupby
     GroupBy as GroupBy,
 )
@@ -28,7 +29,6 @@ from pandas._typing import (
     AggFuncType,
     AggFuncTypeBase,
     AxisType,
-    FrameOrSeries,
     Level,
     ListLike,
     Scalar,
@@ -41,7 +41,7 @@ class NamedAgg(NamedTuple):
     column: str = ...
     aggfunc: AggScalar = ...
 
-def generate_property(name: str, klass: type[FrameOrSeries]): ...
+def generate_property(name: str, klass: type[NDFrame]): ...
 
 class _SeriesGroupByScalar(SeriesGroupBy[S1]):
     def __iter__(self) -> Iterator[tuple[Scalar, Series]]: ...
@@ -171,7 +171,7 @@ class DataFrameGroupBy(GroupBy):
         grouped: DataFrame,
         subplots: bool = ...,
         column: str | Sequence | None = ...,
-        fontsize: int | str = ...,
+        fontsize: float | str = ...,
         rot: float = ...,
         grid: bool = ...,
         ax: PlotAxes | None = ...,

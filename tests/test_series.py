@@ -7,6 +7,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
+    Hashable,
     Iterable,
     Iterator,
     List,
@@ -18,14 +19,22 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas._testing import ensure_clean
-from pandas.api.extensions import ExtensionArray
+from pandas.api.extensions import (
+    ExtensionArray,
+    ExtensionDtype,
+)
 from pandas.core.window import ExponentialMovingWindow
 import pytest
 from typing_extensions import assert_type
+import xarray as xr
 
-from pandas._typing import Scalar
+from pandas._typing import (
+    DtypeObj,
+    Scalar,
+)
 
 from tests import (
+    PD_LT_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
@@ -219,8 +228,9 @@ def test_types_sort_index_with_key() -> None:
 def test_types_sort_values() -> None:
     s = pd.Series([4, 2, 1, 3])
     check(assert_type(s.sort_values(), pd.Series), pd.Series)
-    with pytest.warns(FutureWarning, match="In a future version of pandas"):
-        check(assert_type(s.sort_values(0), pd.Series), pd.Series)
+    if TYPE_CHECKING_INVALID_USAGE:
+        check(assert_type(s.sort_values(0), pd.Series), pd.Series)  # type: ignore[assert-type,call-overload]
+    check(assert_type(s.sort_values(axis=0), pd.Series), pd.Series)
     check(assert_type(s.sort_values(ascending=False), pd.Series), pd.Series)
     assert assert_type(s.sort_values(inplace=True, kind="quicksort"), None) is None
     check(assert_type(s.sort_values(na_position="last"), pd.Series), pd.Series)
@@ -250,6 +260,11 @@ def test_types_rank() -> None:
         s.rank(method="min", pct=True)
     with pytest.warns(FutureWarning, match="Dropping of nuisance columns"):
         s.rank(method="dense", ascending=True)
+    if PD_LT_15:
+        s.rank(method="first", numeric_only=True)
+    else:
+        with pytest.warns(FutureWarning, match="Calling Series.rank with numeric_only"):
+            s.rank(method="first", numeric_only=True)
     s2 = pd.Series([1, 1, 2, 5, 6, np.nan])
     s2.rank(method="first", numeric_only=True)
 
@@ -484,8 +499,9 @@ def test_types_plot() -> None:
 def test_types_window() -> None:
     s = pd.Series([0, 1, 1, 0, 5, 1, -10])
     s.expanding()
-    with pytest.warns(FutureWarning, match="The `center` argument"):
-        s.expanding(axis=0, center=True)
+    s.expanding(axis=0)
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.expanding(axis=0, center=True)  # type: ignore[call-arg]
 
     s.rolling(2)
     s.rolling(2, axis=0, center=True)
@@ -910,7 +926,7 @@ def test_types_to_list() -> None:
 
 def test_types_to_dict() -> None:
     s = pd.Series(["a", "b", "c"], dtype=str)
-    assert_type(s.to_dict(), Dict[Any, str])
+    assert_type(s.to_dict(), Dict[Hashable, str])
 
 
 def test_categorical_codes():
@@ -1127,9 +1143,42 @@ def test_resample() -> None:
     check(assert_type(df.resample("2T").ohlc(), pd.DataFrame), pd.DataFrame)
 
 
+def test_to_xarray():
+    s = pd.Series([1, 2])
+    check(assert_type(s.to_xarray(), xr.DataArray), xr.DataArray)
+
+
 def test_neg() -> None:
     # GH 253
     sr = pd.Series([1, 2, 3])
     sr_int = pd.Series([1, 2, 3], dtype=int)
     check(assert_type(-sr, pd.Series), pd.Series)
     check(assert_type(-sr_int, "pd.Series[int]"), pd.Series, int)
+
+
+def test_getattr() -> None:
+    # GH 261
+    series = pd.Series([1, 2, 3], index=["a", "b", "c"], dtype=int)
+    check(assert_type(series.a, int), np.integer)
+
+
+def test_dtype_type() -> None:
+    # GH 216
+    s1 = pd.Series(["foo"], dtype="string")
+    check(assert_type(s1.dtype, DtypeObj), ExtensionDtype)
+    check(assert_type(s1.dtype.kind, str), str)
+
+    s2 = pd.Series([1], dtype="Int64")
+    check(assert_type(s2.dtype, DtypeObj), ExtensionDtype)
+    check(assert_type(s2.dtype.kind, str), str)
+
+    s3 = pd.Series([1, 2, 3])
+    check(assert_type(s3.dtype, DtypeObj), np.dtype)
+    check(assert_type(s3.dtype.kind, str), str)
+
+
+def test_types_to_numpy() -> None:
+    s = pd.Series(["a", "b", "c"], dtype=str)
+    check(assert_type(s.to_numpy(), np.ndarray), np.ndarray)
+    check(assert_type(s.to_numpy(dtype="str", copy=True), np.ndarray), np.ndarray)
+    check(assert_type(s.to_numpy(na_value=0), np.ndarray), np.ndarray)

@@ -3,15 +3,17 @@ from typing import (
     Callable,
 )
 
+from pandas import (
+    DataFrame,
+    Series,
+)
 from pandas.core.window.rolling import _Rolling_and_Expanding
-
-from pandas._typing import FrameOrSeriesUnion as FrameOrSeries
 
 class Expanding(_Rolling_and_Expanding):
     def __init__(
         self, obj, min_periods: int = ..., center: bool = ..., axis: int = ..., **kwargs
     ) -> None: ...
-    def count(self, **kwargs) -> FrameOrSeries: ...
+    def count(self, **kwargs) -> DataFrame | Series: ...
     def apply(
         self,
         func: Callable[..., Any],

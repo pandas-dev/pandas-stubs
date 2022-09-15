@@ -20,6 +20,7 @@ from pandas.core.base import (
     IndexOpsMixin,
     PandasObject,
 )
+from pandas.core.indexes.numeric import NumericIndex
 from pandas.core.strings import StringMethods
 
 from pandas._typing import (
@@ -34,6 +35,7 @@ from pandas._typing import (
     Scalar,
     np_ndarray_bool,
     np_ndarray_int64,
+    type_t,
 )
 
 class InvalidIndexError(Exception): ...
@@ -42,7 +44,17 @@ _str = str
 
 class Index(IndexOpsMixin, PandasObject):
     __hash__: ClassVar[None]  # type: ignore[assignment]
-
+    @overload
+    def __new__(
+        cls,
+        data: Iterable,
+        dtype: Literal["float", "int", "complex"] | type_t[complex] | type_t[np.number],
+        copy: bool = ...,
+        name=...,
+        tupleize_cols: bool = ...,
+        **kwargs,
+    ) -> NumericIndex: ...
+    @overload
     def __new__(
         cls,
         data: Iterable = ...,
@@ -52,14 +64,6 @@ class Index(IndexOpsMixin, PandasObject):
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> Index: ...
-    def __init__(
-        self,
-        data: Iterable,
-        dtype=...,
-        copy: bool = ...,
-        name=...,
-        tupleize_cols: bool = ...,
-    ): ...
     @property
     def str(self) -> StringMethods[Index, MultiIndex]: ...
     @property
@@ -206,7 +210,6 @@ class Index(IndexOpsMixin, PandasObject):
     def __eq__(self, other: object) -> np_ndarray_bool: ...  # type: ignore[override]
     def __iter__(self) -> Iterator: ...
     def __ne__(self, other: object) -> np_ndarray_bool: ...  # type: ignore[override]
-    def to_numpy(self) -> np.ndarray: ...
 
 def ensure_index_from_sequences(
     sequences: Sequence[Sequence[Dtype]], names: list[str] = ...

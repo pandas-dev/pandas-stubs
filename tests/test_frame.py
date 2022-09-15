@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from collections import defaultdict
+import csv
 import datetime
 import io
 from pathlib import Path
@@ -7,10 +9,13 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
+    Dict,
     Generic,
     Hashable,
     Iterable,
     Iterator,
+    List,
+    Mapping,
     Tuple,
     TypeVar,
     Union,
@@ -24,12 +29,19 @@ from pandas._testing import (
 )
 import pytest
 from typing_extensions import assert_type
+import xarray as xr
 
 from pandas._typing import Scalar
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
+from pandas.io.formats.style import Styler
 from pandas.io.parsers import TextFileReader
+
+DF = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
 
 def test_types_init() -> None:
@@ -63,26 +75,23 @@ def test_types_any() -> None:
 def test_types_append() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame({"col1": [10, 20], "col2": [30, 40]})
-    with pytest.warns(FutureWarning, match="The frame.append"):
-        res1: pd.DataFrame = df.append(df2)
-    with pytest.warns(FutureWarning, match="The frame.append"):
-        res2: pd.DataFrame = df.append([1, 2, 3])
-    with pytest.warns(FutureWarning, match="The frame.append"):
-        res3: pd.DataFrame = df.append([[1, 2, 3]])
-    with pytest.warns(FutureWarning, match="The frame.append"):
-        res4: pd.DataFrame = df.append(
+    if TYPE_CHECKING_INVALID_USAGE:
+        res1: pd.DataFrame = df.append(df2)  # type: ignore[operator]
+        res2: pd.DataFrame = df.append([1, 2, 3])  # type: ignore[operator]
+        res3: pd.DataFrame = df.append([[1, 2, 3]])  # type: ignore[operator]
+        res4: pd.DataFrame = df.append(  # type: ignore[operator]
             {("a", 1): [1, 2, 3], "b": df2}, ignore_index=True
         )
-    with pytest.warns(FutureWarning, match="The frame.append"):
-        res5: pd.DataFrame = df.append({1: [1, 2, 3]}, ignore_index=True)
-    with pytest.warns(FutureWarning, match="The frame.append"):
-        res6: pd.DataFrame = df.append(
+        res5: pd.DataFrame = df.append(  # type: ignore[operator]
+            {1: [1, 2, 3]}, ignore_index=True
+        )
+        res6: pd.DataFrame = df.append(  # type: ignore[operator]
             {1: [1, 2, 3], "col2": [1, 2, 3]}, ignore_index=True
         )
-    with pytest.warns(FutureWarning, match="The frame.append"):
-        res7: pd.DataFrame = df.append(pd.Series([5, 6]), ignore_index=True)
-    with pytest.warns(FutureWarning, match="The frame.append"):
-        res8: pd.DataFrame = df.append(
+        res7: pd.DataFrame = df.append(  # type: ignore[operator]
+            pd.Series([5, 6]), ignore_index=True
+        )
+        res8: pd.DataFrame = df.append(  # type: ignore[operator]
             pd.Series([5, 6], index=["col1", "col2"]), ignore_index=True
         )
 
@@ -107,16 +116,16 @@ def test_types_to_csv() -> None:
     # Testing support for binary file handles, added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
     df.to_csv(io.BytesIO(), encoding="utf-8", compression="gzip")
 
+    # Testing support for binary file handles, added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
+    df.to_csv(io.BytesIO(), quoting=csv.QUOTE_ALL, encoding="utf-8", compression="gzip")
+
 
 def test_types_to_csv_when_path_passed() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
-    path: Path = Path("./dummy_path.txt")
-    try:
-        assert not path.exists()
+    with ensure_clean() as file:
+        path = Path(file)
         df.to_csv(path)
         df5: pd.DataFrame = pd.read_csv(path)
-    finally:
-        path.unlink()
 
 
 def test_types_copy() -> None:
@@ -705,8 +714,9 @@ def test_types_plot() -> None:
 def test_types_window() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
     df.expanding()
-    with pytest.warns(FutureWarning, match="The `center` argument on"):
-        df.expanding(axis=1, center=True)
+    df.expanding(axis=1)
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.expanding(axis=1, center=True)  # type: ignore[call-arg]
 
     df.rolling(2)
     df.rolling(2, axis=1, center=True)
@@ -769,34 +779,41 @@ def test_types_cov() -> None:
 
 def test_types_to_numpy() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
-    df.to_numpy()
-    df.to_numpy(dtype="str", copy=True)
+    check(assert_type(df.to_numpy(), np.ndarray), np.ndarray)
+    check(assert_type(df.to_numpy(dtype="str", copy=True), np.ndarray), np.ndarray)
     # na_value param was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    df.to_numpy(na_value=0)
+    check(assert_type(df.to_numpy(na_value=0), np.ndarray), np.ndarray)
 
 
 def test_to_markdown() -> None:
-    pytest.importorskip("tabulate")
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
-    df.to_markdown()
-    df.to_markdown(buf=None, mode="wt")
+    check(assert_type(df.to_markdown(), str), str)
+    check(assert_type(df.to_markdown(None), str), str)
+    check(assert_type(df.to_markdown(buf=None, mode="wt"), str), str)
     # index param was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    df.to_markdown(index=False)
+    check(assert_type(df.to_markdown(index=False), str), str)
+    with ensure_clean() as path:
+        check(assert_type(df.to_markdown(path), None), type(None))
+    with ensure_clean() as path:
+        check(assert_type(df.to_markdown(Path(path)), None), type(None))
+    sio = io.StringIO()
+    check(assert_type(df.to_markdown(sio), None), type(None))
 
 
 def test_types_to_feather() -> None:
     pytest.importorskip("pyarrow")
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
-    df.to_feather("dummy_path")
-    # kwargs for pyarrow.feather.write_feather added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    df.to_feather("dummy_path", compression="zstd", compression_level=3, chunksize=2)
-
-    # to_feather has been able to accept a buffer since pandas 1.0.0
-    # See https://pandas.pydata.org/docs/whatsnew/v1.0.0.html
-    # Docstring and type were updated in 1.2.0.
-    # https://github.com/pandas-dev/pandas/pull/35408
     with ensure_clean() as path:
         df.to_feather(path)
+        # kwargs for pyarrow.feather.write_feather added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
+        df.to_feather(path, compression="zstd", compression_level=3, chunksize=2)
+
+        # to_feather has been able to accept a buffer since pandas 1.0.0
+        # See https://pandas.pydata.org/docs/whatsnew/v1.0.0.html
+        # Docstring and type were updated in 1.2.0.
+        # https://github.com/pandas-dev/pandas/pull/35408
+        with open(path, mode="wb") as file:
+            df.to_feather(file)
 
 
 # compare() method added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
@@ -981,28 +998,36 @@ def test_types_from_dict() -> None:
 
 
 def test_pipe() -> None:
-    if TYPE_CHECKING:  # skip pytest
+    def foo(df: pd.DataFrame) -> pd.DataFrame:
+        return pd.DataFrame(df)
 
-        def foo(df: pd.DataFrame) -> pd.DataFrame:
-            return df
-
-        df1: pd.DataFrame = pd.DataFrame({"a": [1]}).pipe(foo)
-
-        df2: pd.DataFrame = (
-            pd.DataFrame(
-                {
-                    "price": [10, 11, 9, 13, 14, 18, 17, 19],
-                    "volume": [50, 60, 40, 100, 50, 100, 40, 50],
-                }
-            )
-            .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
-            .resample("M", on="week_starting")
-            .pipe(foo)
+    val = (
+        pd.DataFrame(
+            {
+                "price": [10, 11, 9, 13, 14, 18, 17, 19],
+                "volume": [50, 60, 40, 100, 50, 100, 40, 50],
+            }
         )
+        .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
+        .resample("M", on="week_starting")
+        .pipe(foo)
+    )
 
-        df3: pd.DataFrame = pd.DataFrame({"a": [1], "b": [1]}).groupby("a").pipe(foo)
+    check(assert_type(val, pd.DataFrame), pd.DataFrame)
 
-        df4: pd.DataFrame = pd.DataFrame({"a": [1], "b": [1]}).style.pipe(foo)
+    check(assert_type(pd.DataFrame({"a": [1]}).pipe(foo), pd.DataFrame), pd.DataFrame)
+
+    def bar(val: Styler) -> Styler:
+        return val
+
+    check(
+        assert_type(pd.DataFrame({"a": [1], "b": [1]}).style.pipe(bar), Styler), Styler
+    )
+
+    def baz(val: Styler) -> str:
+        return val.to_latex()
+
+    check(assert_type(pd.DataFrame({"a": [1], "b": [1]}).style.pipe(baz), str), str)
 
 
 # set_flags() method added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
@@ -1287,57 +1312,22 @@ def test_to_excel() -> None:
 
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl")
-        df2: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(Path(path), engine="openpyxl")
-        df3: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl", startrow=1, startcol=1, header=False)
-        df4: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl", sheet_name="sheet", index=False)
-        df5: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl", header=["x", "y"])
-        df6: pd.DataFrame = pd.read_excel(path)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     with ensure_clean() as path:
         df.to_excel(path, engine="openpyxl", columns=["col1"])
-        df7: pd.DataFrame = pd.read_excel(path)
-
-
-def test_read_excel() -> None:
-    if TYPE_CHECKING:  # skip pytest
-
-        # https://github.com/pandas-dev/pandas-stubs/pull/33
-        df11: pd.DataFrame = pd.read_excel("foo")
-        df12: pd.DataFrame = pd.read_excel("foo", sheet_name="sheet")
-        df13: dict[int | str, pd.DataFrame] = pd.read_excel("foo", sheet_name=["sheet"])
-        # GH 98
-        df14: pd.DataFrame = pd.read_excel("foo", sheet_name=0)
-        df15: dict[int | str, pd.DataFrame] = pd.read_excel("foo", sheet_name=[0])
-        df16: dict[int | str, pd.DataFrame] = pd.read_excel(
-            "foo", sheet_name=[0, "sheet"]
-        )
-        df17: dict[int | str, pd.DataFrame] = pd.read_excel("foo", sheet_name=None)
-
-
-def test_read_excel_io_types() -> None:
-    # GH 195
-    df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
-    with ensure_clean(".xlsx") as path:
-        as_str: str = path
-        df.to_excel(path)
-
-        check(assert_type(pd.read_excel(as_str), pd.DataFrame), pd.DataFrame)
-
-        as_path = Path(as_str)
-        check(assert_type(pd.read_excel(as_path), pd.DataFrame), pd.DataFrame)
-
-        with as_path.open("rb") as as_file:
-            check(assert_type(pd.read_excel(as_file), pd.DataFrame), pd.DataFrame)
-
-        as_bytes = as_path.read_bytes()
-        check(assert_type(pd.read_excel(as_bytes), pd.DataFrame), pd.DataFrame)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
 
 
 def test_join() -> None:
@@ -1635,7 +1625,7 @@ def test_groupby_apply() -> None:
 
     check(
         assert_type(
-            df.groupby("col1", group_keys=True).apply(sample_to_df), pd.DataFrame
+            df.groupby("col1", group_keys=False).apply(sample_to_df), pd.DataFrame
         ),
         pd.DataFrame,
     )
@@ -1689,6 +1679,43 @@ def test_generic() -> None:
     func()
 
 
+def test_to_xarray():
+    check(assert_type(DF.to_xarray(), xr.Dataset), xr.Dataset)
+
+
+def test_to_records():
+    check(assert_type(DF.to_records(False, "int8"), np.recarray), np.recarray)
+    check(
+        assert_type(DF.to_records(False, index_dtypes=np.int8), np.recarray),
+        np.recarray,
+    )
+    check(
+        assert_type(
+            DF.to_records(False, {"col1": np.int8, "col2": np.int16}), np.recarray
+        ),
+        np.recarray,
+    )
+
+
+def test_to_dict():
+    check(assert_type(DF.to_dict(), Dict[Hashable, Any]), dict)
+    check(assert_type(DF.to_dict("split"), Dict[Hashable, Any]), dict)
+
+    target: Mapping = defaultdict(list)
+    check(assert_type(DF.to_dict(into=target), Mapping[Hashable, Any]), defaultdict)
+    target = defaultdict(list)
+    check(
+        assert_type(DF.to_dict("tight", into=target), Mapping[Hashable, Any]),
+        defaultdict,
+    )
+    target = defaultdict(list)
+    check(assert_type(DF.to_dict("records"), List[Dict[Hashable, Any]]), list)
+    check(
+        assert_type(DF.to_dict("records", into=target), List[Mapping[Hashable, Any]]),
+        list,
+    )
+
+
 def test_neg() -> None:
     # GH 253
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
@@ -1699,3 +1726,27 @@ def test_pos() -> None:
     # GH 253
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     check(assert_type(+df, pd.DataFrame), pd.DataFrame)
+
+
+def test_getattr() -> None:
+    # GH 261
+    df = pd.DataFrame({"a": [1, 2]})
+    check(assert_type(df.a, pd.Series), pd.Series)
+
+
+def test_xs_key() -> None:
+    # GH 214
+    mi = pd.MultiIndex.from_product([[0, 1], [0, 1]], names=["foo", "bar"])
+    df = pd.DataFrame({"x": [10, 20, 30, 40], "y": [50, 60, 70, 80]}, index=mi)
+    check(
+        assert_type(df.xs(0, level="foo"), Union[pd.DataFrame, pd.Series]), pd.DataFrame
+    )
+
+
+def test_loc_slice() -> None:
+    # GH 277
+    df1 = pd.DataFrame(
+        {"x": [1, 2, 3, 4]},
+        index=pd.MultiIndex.from_product([[1, 2], ["a", "b"]], names=["num", "let"]),
+    )
+    check(assert_type(df1.loc[1, :], pd.DataFrame), pd.DataFrame)

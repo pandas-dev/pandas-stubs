@@ -8,10 +8,3 @@ from ._decorators import (
     Substitution as Substitution,
     cache_readonly as cache_readonly,
 )
-
-def __getattr__(name): ...
-
-class _testing:
-    def __getattr__(self, item): ...
-
-testing = ...

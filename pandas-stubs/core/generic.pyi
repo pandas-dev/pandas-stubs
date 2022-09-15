@@ -1,8 +1,10 @@
+import sqlite3
 from typing import (
     Any,
     Callable,
     ClassVar,
     Hashable,
+    Iterable,
     Literal,
     Mapping,
     Sequence,
@@ -10,34 +12,42 @@ from typing import (
 )
 
 import numpy as np
+from pandas import (
+    DataFrame,
+    Index,
+)
 from pandas.core.base import PandasObject
-from pandas.core.indexes.base import Index
 import pandas.core.indexing as indexing
+import sqlalchemy.engine
 
 from pandas._typing import (
     S1,
     ArrayLike,
     Axis,
     CompressionOptions,
+    CSVQuoting,
     Dtype,
+    DtypeArg,
     FilePath,
     FilePathOrBuffer,
+    FileWriteMode,
     FillnaOptions,
-    FrameOrSeries,
-    FrameOrSeriesUnion,
     HashableT,
     HDFCompLib,
     IgnoreRaise,
+    IndexLabel,
     Level,
     NDFrameT,
     ReplaceMethod,
-    Scalar,
     SeriesAxisType,
     SortKind,
+    StorageOptions,
     T,
+    WriteBuffer,
 )
 
 from pandas.io.pytables import HDFStore
+from pandas.io.sql import SQLTable
 
 _bool = bool
 _str = str
@@ -46,11 +56,11 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     __hash__: ClassVar[None]  # type: ignore[assignment]
 
     def set_flags(
-        self: FrameOrSeries,
+        self: NDFrameT,
         *,
         copy: bool = ...,
         allows_duplicate_labels: bool | None = ...,
-    ) -> FrameOrSeries: ...
+    ) -> NDFrameT: ...
     @property
     def attrs(self) -> dict[Hashable | None, Any]: ...
     @attrs.setter
@@ -129,28 +139,48 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         ] = ...,
         encoding: _str = ...,
     ) -> None: ...
+    @overload
+    def to_markdown(
+        self,
+        buf: FilePathOrBuffer,
+        mode: FileWriteMode | None = ...,
+        index: _bool = ...,
+        storage_options: StorageOptions = ...,
+        **kwargs: Any,
+    ) -> None: ...
+    @overload
+    def to_markdown(
+        self,
+        buf: None = ...,
+        mode: FileWriteMode | None = ...,
+        index: _bool = ...,
+        storage_options: StorageOptions = ...,
+        **kwargs: Any,
+    ) -> _str: ...
     def to_sql(
         self,
         name: _str,
-        con,
+        con: str | sqlalchemy.engine.Connectable | sqlite3.Connection,
         schema: _str | None = ...,
-        if_exists: _str = ...,
+        if_exists: Literal["fail", "replace", "append"] = ...,
         index: _bool = ...,
-        index_label: _str | Sequence[_str] | None = ...,
+        index_label: IndexLabel = ...,
         chunksize: int | None = ...,
-        dtype: dict | Scalar | None = ...,
-        method: _str | Callable | None = ...,
-    ) -> None: ...
+        dtype: DtypeArg | None = ...,
+        method: Literal["multi"]
+        | Callable[[SQLTable, Any, list[str], Iterable], int | None]
+        | None = ...,
+    ) -> int | None: ...
     def to_pickle(
         self,
-        path: _str,
+        path: FilePath | WriteBuffer[bytes],
         compression: CompressionOptions = ...,
         protocol: int = ...,
+        storage_options: StorageOptions = ...,
     ) -> None: ...
     def to_clipboard(
         self, excel: _bool = ..., sep: _str | None = ..., **kwargs
     ) -> None: ...
-    def to_xarray(self): ...
     @overload
     def to_latex(
         self,
@@ -205,18 +235,18 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     @overload
     def to_csv(
         self,
-        path_or_buf: FilePathOrBuffer | None,
+        path_or_buf: FilePathOrBuffer,
         sep: _str = ...,
         na_rep: _str = ...,
-        float_format: _str | None = ...,
-        columns: Sequence[Hashable] | None = ...,
+        float_format: _str | Callable[[object], _str] | None = ...,
+        columns: list[HashableT] | None = ...,
         header: _bool | list[_str] = ...,
         index: _bool = ...,
-        index_label: _bool | _str | Sequence[Hashable] | None = ...,
-        mode: _str = ...,
+        index_label: Literal[False] | _str | list[HashableT] | None = ...,
+        mode: FileWriteMode = ...,
         encoding: _str | None = ...,
-        compression: _str | Mapping[_str, _str] = ...,
-        quoting: int | None = ...,
+        compression: CompressionOptions = ...,
+        quoting: CSVQuoting = ...,
         quotechar: _str = ...,
         line_terminator: _str | None = ...,
         chunksize: int | None = ...,
@@ -225,22 +255,23 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         escapechar: _str | None = ...,
         decimal: _str = ...,
         errors: _str = ...,
-        storage_options: dict[_str, Any] | None = ...,
+        storage_options: StorageOptions = ...,
     ) -> None: ...
     @overload
     def to_csv(
         self,
+        path_or_buf: None = ...,
         sep: _str = ...,
         na_rep: _str = ...,
-        float_format: _str | None = ...,
-        columns: Sequence[Hashable] | None = ...,
+        float_format: _str | Callable[[object], _str] | None = ...,
+        columns: list[HashableT] | None = ...,
         header: _bool | list[_str] = ...,
         index: _bool = ...,
-        index_label: _bool | _str | Sequence[Hashable] | None = ...,
-        mode: _str = ...,
+        index_label: Literal[False] | _str | list[HashableT] | None = ...,
+        mode: FileWriteMode = ...,
         encoding: _str | None = ...,
-        compression: _str | Mapping[_str, _str] = ...,
-        quoting: int | None = ...,
+        compression: CompressionOptions = ...,
+        quoting: CSVQuoting = ...,
         quotechar: _str = ...,
         line_terminator: _str | None = ...,
         chunksize: int | None = ...,
@@ -249,18 +280,18 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         escapechar: _str | None = ...,
         decimal: _str = ...,
         errors: _str = ...,
-        storage_options: dict[_str, Any] | None = ...,
+        storage_options: StorageOptions = ...,
     ) -> _str: ...
     def take(
         self, indices, axis=..., is_copy: _bool | None = ..., **kwargs
     ) -> NDFrame: ...
     def xs(
         self,
-        key: _str | tuple[_str],
+        key: Hashable,
         axis: SeriesAxisType = ...,
         level: Level | None = ...,
         drop_level: _bool = ...,
-    ) -> FrameOrSeriesUnion: ...
+    ) -> DataFrame | Series: ...
     def __delitem__(self, idx: Hashable): ...
     def get(self, key: object, default: Dtype | None = ...) -> Dtype: ...
     def reindex_like(
@@ -327,35 +358,34 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         regex: _str | None = ...,
         axis=...,
     ) -> NDFrame: ...
-    def head(self: FrameOrSeries, n: int = ...) -> FrameOrSeries: ...
-    def tail(self: FrameOrSeries, n: int = ...) -> FrameOrSeries: ...
+    def head(self: NDFrameT, n: int = ...) -> NDFrameT: ...
+    def tail(self: NDFrameT, n: int = ...) -> NDFrameT: ...
     def pipe(
         self, func: Callable[..., T] | tuple[Callable[..., T], str], *args, **kwargs
     ) -> T: ...
     def __finalize__(self, other, method=..., **kwargs) -> NDFrame: ...
-    def __getattr__(self, name: _str): ...
     def __setattr__(self, name: _str, value) -> None: ...
     @property
     def values(self) -> ArrayLike: ...
     @property
     def dtypes(self): ...
     def astype(
-        self: FrameOrSeries,
+        self: NDFrameT,
         dtype,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
-    ) -> FrameOrSeries: ...
-    def copy(self: FrameOrSeries, deep: _bool = ...) -> FrameOrSeries: ...
+    ) -> NDFrameT: ...
+    def copy(self: NDFrameT, deep: _bool = ...) -> NDFrameT: ...
     def __copy__(self, deep: _bool = ...) -> NDFrame: ...
     def __deepcopy__(self, memo=...) -> NDFrame: ...
     def infer_objects(self) -> NDFrame: ...
     def convert_dtypes(
-        self: FrameOrSeries,
+        self: NDFrameT,
         infer_objects: _bool = ...,
         convert_string: _bool = ...,
         convert_integer: _bool = ...,
         convert_boolean: _bool = ...,
-    ) -> FrameOrSeries: ...
+    ) -> NDFrameT: ...
     def fillna(
         self,
         value=...,

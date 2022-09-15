@@ -3,19 +3,17 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Any,
+    Literal,
     Union,
 )
 
 import numpy as np
+from numpy import typing as npt
 import pandas as pd
-from pandas._testing import ensure_clean
 from pandas.api.extensions import ExtensionArray
-import pytest
 from typing_extensions import assert_type
 
 from tests import check
-
-from pandas.io.parsers import TextFileReader
 
 
 def test_types_to_datetime() -> None:
@@ -115,62 +113,31 @@ def test_types_json_normalize() -> None:
     df5: pd.DataFrame = pd.json_normalize(data=data2)
 
 
-def test_types_read_csv() -> None:
-    df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
-    csv_df: str = df.to_csv()
-
-    with ensure_clean() as path:
-        df.to_csv(path)
-        df2: pd.DataFrame = pd.read_csv(path)
-        with pytest.warns(FutureWarning, match="The squeeze argument"):
-            df3: pd.DataFrame = pd.read_csv(path, sep="a", squeeze=False)
-        with pytest.warns(FutureWarning, match="The prefix argument has been"):
-            df4: pd.DataFrame = pd.read_csv(
-                path,
-                header=None,
-                prefix="b",
-                mangle_dupe_cols=True,
-                keep_default_na=False,
-            )
-        df5: pd.DataFrame = pd.read_csv(
-            path, engine="python", true_values=[0, 1, 3], na_filter=False
-        )
-        df6: pd.DataFrame = pd.read_csv(
-            path,
-            skiprows=lambda x: x in [0, 2],
-            skip_blank_lines=True,
-            dayfirst=False,
-        )
-        df7: pd.DataFrame = pd.read_csv(path, nrows=2)
-        df8: pd.DataFrame = pd.read_csv(path, dtype={"a": float, "b": int})
-        df9: pd.DataFrame = pd.read_csv(path, usecols=["col1"])
-        df10: pd.DataFrame = pd.read_csv(path, usecols={"col1"})
-        df11: pd.DataFrame = pd.read_csv(path, usecols=[0])
-        df12: pd.DataFrame = pd.read_csv(path, usecols=np.array([0]))
-        df13: pd.DataFrame = pd.read_csv(path, usecols=("col1",))
-        df14: pd.DataFrame = pd.read_csv(path, usecols=pd.Series(data=["col1"]))
-
-        tfr1: TextFileReader = pd.read_csv(path, nrows=2, iterator=True, chunksize=3)
-        tfr1.close()
-
-        tfr2: TextFileReader = pd.read_csv(path, nrows=2, chunksize=1)
-        tfr2.close()
-
-        tfr3: TextFileReader = pd.read_csv(path, nrows=2, iterator=False, chunksize=1)
-        tfr3.close()
-
-        tfr4: TextFileReader = pd.read_csv(path, nrows=2, iterator=True)
-        tfr4.close()
-
-
 def test_isna() -> None:
-    s = pd.Series([1, np.nan, 3.2])
-    check(assert_type(pd.isna(s), "pd.Series[bool]"), pd.Series, bool)
-    b: bool = pd.isna(np.nan)
-    ar: np.ndarray = pd.isna(s.to_list())
-    check(assert_type(pd.notna(s), "pd.Series[bool]"), pd.Series, bool)
-    b2: bool = pd.notna(np.nan)
-    ar2: np.ndarray = pd.notna(s.to_list())
+    # https://github.com/pandas-dev/pandas-stubs/issues/264
+    s1 = pd.Series([1, np.nan, 3.2])
+    check(assert_type(pd.isna(s1), "pd.Series[bool]"), pd.Series, bool)
+
+    s2 = pd.Series([1, 3.2])
+    check(assert_type(pd.notna(s2), "pd.Series[bool]"), pd.Series, bool)
+
+    df1 = pd.DataFrame({"a": [1, 2, 1, 2], "b": [1, 1, 2, np.nan]})
+    check(assert_type(pd.isna(df1), "pd.DataFrame"), pd.DataFrame)
+
+    idx1 = pd.Index([1, 2, np.nan])
+    check(assert_type(pd.isna(idx1), npt.NDArray[np.bool_]), np.ndarray, np.bool_)
+
+    idx2 = pd.Index([1, 2])
+    check(assert_type(pd.notna(idx2), npt.NDArray[np.bool_]), np.ndarray, np.bool_)
+
+    assert check(assert_type(pd.isna(pd.NA), Literal[True]), bool)
+    assert not check(assert_type(pd.notna(pd.NA), Literal[False]), bool)
+
+    assert check(assert_type(pd.isna(pd.NaT), Literal[True]), bool)
+    assert not check(assert_type(pd.notna(pd.NaT), Literal[False]), bool)
+
+    check(assert_type(pd.isna(2.5), bool), bool)
+    check(assert_type(pd.notna(2.5), bool), bool)
 
 
 # GH 55

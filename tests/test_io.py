@@ -1,38 +1,57 @@
+import csv
 import io
 import os.path
 import pathlib
 from pathlib import Path
+import sqlite3
 from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generator,
     List,
     Union,
 )
 
-from packaging.version import parse
+import numpy as np
 import pandas as pd
 from pandas import (
     DataFrame,
     HDFStore,
     Series,
-    __version__,
     read_clipboard,
+    read_csv,
+    read_excel,
     read_feather,
+    read_fwf,
     read_hdf,
     read_html,
     read_json,
     read_orc,
     read_parquet,
+    read_pickle,
     read_sas,
     read_spss,
+    read_sql,
+    read_sql_query,
+    read_sql_table,
     read_stata,
+    read_table,
     read_xml,
 )
 from pandas._testing import ensure_clean
 import pytest
+import sqlalchemy
 from typing_extensions import assert_type
 
-from tests import check
+from tests import (
+    PD_LT_15,
+    check,
+)
 
+from pandas.io.api import to_pickle
 from pandas.io.clipboard import PyperclipException
+from pandas.io.common import IOHandles
 from pandas.io.json._json import JsonReader
 from pandas.io.parsers import TextFileReader
 from pandas.io.pytables import (
@@ -45,8 +64,6 @@ from pandas.io.stata import StataReader
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 CWD = os.path.split(os.path.abspath(__file__))[0]
-
-PD_LT_15 = parse(__version__) < parse("1.5.0")
 
 
 @pytest.mark.skipif(PD_LT_15, reason="pandas 1.5.0 or later required")
@@ -103,10 +120,88 @@ def test_xml_str():
         check(assert_type(read_xml(io.StringIO(out)), DataFrame), DataFrame)
 
 
+def test_pickle():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_pickle(path), None), type(None))
+        check(assert_type(read_pickle(path), Any), DataFrame)
+
+    with ensure_clean() as path:
+        check(assert_type(to_pickle(DF, path), None), type(None))
+        check(assert_type(read_pickle(path), Any), DataFrame)
+
+
+def test_pickle_file_handle():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_pickle(path), None), type(None))
+        file = open(path, "rb")
+        check(assert_type(read_pickle(file), Any), DataFrame)
+        file.close()
+
+
+def test_pickle_path():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_pickle(path), None), type(None))
+        check(assert_type(read_pickle(Path(path)), Any), DataFrame)
+
+
+def test_pickle_protocol():
+    with ensure_clean() as path:
+        DF.to_pickle(path, protocol=3)
+        check(assert_type(read_pickle(path), Any), DataFrame)
+
+
+def test_pickle_compression():
+    with ensure_clean() as path:
+        DF.to_pickle(path, compression="gzip")
+        check(
+            assert_type(read_pickle(path, compression="gzip"), Any),
+            DataFrame,
+        )
+
+        check(
+            assert_type(read_pickle(path, compression="gzip"), Any),
+            DataFrame,
+        )
+
+
+def test_pickle_storage_options():
+    with ensure_clean() as path:
+        DF.to_pickle(path, storage_options={})
+
+        check(
+            assert_type(read_pickle(path, storage_options={}), Any),
+            DataFrame,
+        )
+
+
+def test_to_pickle_series():
+    s: Series = DF["a"]
+    with ensure_clean() as path:
+        check(assert_type(s.to_pickle(path), None), type(None))
+        check(assert_type(read_pickle(path), Any), Series)
+
+
 def test_read_stata_df():
     with ensure_clean() as path:
         DF.to_stata(path)
         check(assert_type(read_stata(path), pd.DataFrame), pd.DataFrame)
+
+
+# Remove test when pandas 1.5.0 is released
+@pytest.mark.skipif(not PD_LT_15, reason="Keyword only in 1.5.0")
+def test_read_stata_iterator_positional():
+    with ensure_clean() as path:
+        str_path = str(path)
+        DF.to_stata(str_path)
+        check(
+            assert_type(
+                read_stata(
+                    str_path, False, False, None, False, False, None, False, 2, True
+                ),
+                StataReader,
+            ),
+            StataReader,
+        )
 
 
 def test_read_stata_iterator():
@@ -149,43 +244,51 @@ def test_clipboard_iterator():
 def test_sas_bdat() -> None:
     path = pathlib.Path(CWD, "data", "airline.sas7bdat")
     check(assert_type(read_sas(path), DataFrame), DataFrame)
-    check(
+    with check(
         assert_type(read_sas(path, iterator=True), Union[SAS7BDATReader, XportReader]),
         SAS7BDATReader,
-    )
-    check(
+    ):
+        pass
+    with check(
         assert_type(read_sas(path, iterator=True, format="sas7bdat"), SAS7BDATReader),
         SAS7BDATReader,
-    )
-    check(
+    ):
+        pass
+    with check(
         assert_type(read_sas(path, chunksize=1), Union[SAS7BDATReader, XportReader]),
         SAS7BDATReader,
-    )
-    check(
+    ):
+        pass
+    with check(
         assert_type(read_sas(path, chunksize=1, format="sas7bdat"), SAS7BDATReader),
         SAS7BDATReader,
-    )
+    ):
+        pass
 
 
 def test_sas_xport() -> None:
     path = pathlib.Path(CWD, "data", "SSHSV1_A.xpt")
     check(assert_type(read_sas(path), DataFrame), DataFrame)
-    check(
+    with check(
         assert_type(read_sas(path, iterator=True), Union[SAS7BDATReader, XportReader]),
         XportReader,
-    )
-    check(
+    ):
+        pass
+    with check(
         assert_type(read_sas(path, iterator=True, format="xport"), XportReader),
         XportReader,
-    )
-    check(
+    ):
+        pass
+    with check(
         assert_type(read_sas(path, chunksize=1), Union[SAS7BDATReader, XportReader]),
         XportReader,
-    )
-    check(
+    ):
+        pass
+    with check(
         assert_type(read_sas(path, chunksize=1, format="xport"), XportReader),
         XportReader,
-    )
+    ):
+        pass
 
 
 def test_hdf():
@@ -325,8 +428,371 @@ def test_feather():
     check(assert_type(read_feather(bio), DataFrame), DataFrame)
 
 
+def test_read_csv():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_csv(path), None), type(None))
+        check(assert_type(read_csv(path), DataFrame), DataFrame)
+        with open(path) as csv_file:
+            check(assert_type(read_csv(csv_file), DataFrame), DataFrame)
+        with open(path) as csv_file:
+            sio = io.StringIO(csv_file.read())
+            check(assert_type(read_csv(sio), DataFrame), DataFrame)
+        check(assert_type(read_csv(path, iterator=False), DataFrame), DataFrame)
+        check(assert_type(read_csv(path, chunksize=None), DataFrame), DataFrame)
+
+
+def test_read_csv_iterator():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_csv(path), None), type(None))
+        tfr = read_csv(path, iterator=True)
+        check(assert_type(tfr, TextFileReader), TextFileReader)
+        tfr.close()
+        tfr2 = read_csv(pathlib.Path(path), chunksize=1)
+        check(
+            assert_type(tfr2, TextFileReader),
+            TextFileReader,
+        )
+        tfr2.close()
+
+
+def test_types_read_csv() -> None:
+    df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
+    csv_df: str = df.to_csv()
+
+    with ensure_clean() as path:
+        df.to_csv(path)
+        df2: pd.DataFrame = pd.read_csv(path)
+        df3: pd.DataFrame = pd.read_csv(path, sep="a")
+        df4: pd.DataFrame = pd.read_csv(
+            path,
+            header=None,
+        )
+        df5: pd.DataFrame = pd.read_csv(
+            path, engine="python", true_values=["no", "No", "NO"], na_filter=False
+        )
+        df6: pd.DataFrame = pd.read_csv(
+            path,
+            skiprows=lambda x: x in [0, 2],
+            skip_blank_lines=True,
+            dayfirst=False,
+        )
+        df7: pd.DataFrame = pd.read_csv(path, nrows=2)
+        df8: pd.DataFrame = pd.read_csv(path, dtype={"a": float, "b": int})
+        df9: pd.DataFrame = pd.read_csv(path, usecols=["col1"])
+        df10: pd.DataFrame = pd.read_csv(path, usecols=[0])
+        df11: pd.DataFrame = pd.read_csv(path, usecols=np.array([0]))
+        df12: pd.DataFrame = pd.read_csv(path, usecols=("col1",))
+        df13: pd.DataFrame = pd.read_csv(path, usecols=pd.Series(data=["col1"]))
+
+        tfr1: TextFileReader = pd.read_csv(path, nrows=2, iterator=True, chunksize=3)
+        tfr1.close()
+
+        tfr2: TextFileReader = pd.read_csv(path, nrows=2, chunksize=1)
+        tfr2.close()
+
+        tfr3: TextFileReader = pd.read_csv(path, nrows=2, iterator=False, chunksize=1)
+        tfr3.close()
+
+        tfr4: TextFileReader = pd.read_csv(path, nrows=2, iterator=True)
+        tfr4.close()
+
+
+def test_read_table():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_csv(path, sep="\t"), None), type(None))
+        check(assert_type(read_table(path), DataFrame), DataFrame)
+        check(assert_type(read_table(path, iterator=False), DataFrame), DataFrame)
+        check(assert_type(read_table(path, chunksize=None), DataFrame), DataFrame)
+
+
+def test_read_table_iterator():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_csv(path, sep="\t"), None), type(None))
+        tfr = read_table(path, iterator=True)
+        check(assert_type(tfr, TextFileReader), TextFileReader)
+        tfr.close()
+        tfr2 = read_table(path, chunksize=1)
+        check(assert_type(tfr2, TextFileReader), TextFileReader)
+        tfr2.close()
+
+
+def btest_read_fwf():
+    with ensure_clean() as path:
+        DF.to_string(path, index=False)
+        check(assert_type(read_fwf(path), DataFrame), DataFrame)
+        check(assert_type(read_fwf(pathlib.Path(path)), DataFrame), DataFrame)
+
+        with open(path) as fwf_file:
+            check(
+                assert_type(read_fwf(fwf_file), DataFrame),
+                DataFrame,
+            )
+        with open(path) as fwf_file:
+            sio = io.StringIO(fwf_file.read())
+            check(assert_type(read_fwf(sio), DataFrame), DataFrame)
+        with open(path, "rb") as fwf_file:
+            bio = io.BytesIO(fwf_file.read())
+            check(assert_type(read_fwf(bio), DataFrame), DataFrame)
+        fwf_iterator = read_fwf(path, iterator=True)
+        check(assert_type(fwf_iterator, TextFileReader), TextFileReader)
+        fwf_iterator.close()
+        fwf_iterator2 = read_fwf(path, chunksize=1)
+        check(assert_type(fwf_iterator2, TextFileReader), TextFileReader)
+        fwf_iterator.close()
+
+
+def test_text_file_reader():
+    with ensure_clean() as path:
+        DF.to_string(path, index=False)
+        tfr = TextFileReader(path, engine="python")
+        check(assert_type(tfr, TextFileReader), TextFileReader)
+        check(assert_type(tfr.read(1), DataFrame), DataFrame)
+        check(assert_type(tfr.close(), None), type(None))
+        with TextFileReader(path, engine="python") as tfr:
+            check(assert_type(tfr.read(1), DataFrame), DataFrame)
+        with TextFileReader(path, engine="python") as tfr:
+            check(assert_type(tfr.__next__(), DataFrame), DataFrame)
+            df_iter: DataFrame
+            for df_iter in tfr:
+                check(df_iter, DataFrame)
+
+
+def test_to_csv_series():
+    s: Series
+    s = DF.iloc[:, 0]
+    check(assert_type(s.to_csv(), str), str)
+    with ensure_clean() as path:
+        check(assert_type(s.to_csv(path), None), type(None))
+
+
+def test_read_excel() -> None:
+    with ensure_clean(".xlsx") as path:
+        # https://github.com/pandas-dev/pandas-stubs/pull/33
+        check(
+            assert_type(pd.DataFrame({"A": [1, 2, 3]}).to_excel(path), None), type(None)
+        )
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(pd.read_excel(path, sheet_name="Sheet1"), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, sheet_name=["Sheet1"]),
+                Dict[Union[int, str], pd.DataFrame],
+            ),
+            dict,
+        )
+        # GH 98
+        check(
+            assert_type(pd.read_excel(path, sheet_name=0), pd.DataFrame), pd.DataFrame
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, sheet_name=[0]), Dict[Union[int, str], pd.DataFrame]
+            ),
+            dict,
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, sheet_name=[0, "Sheet1"]),
+                Dict[Union[int, str], pd.DataFrame],
+            ),
+            dict,
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, sheet_name=None),
+                Dict[Union[int, str], pd.DataFrame],
+            ),
+            dict,
+        )
+
+
+def test_read_excel_io_types() -> None:
+    # GH 195
+    df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
+    with ensure_clean(".xlsx") as path:
+        as_str: str = path
+        df.to_excel(path)
+
+        check(assert_type(pd.read_excel(as_str), pd.DataFrame), pd.DataFrame)
+
+        as_path = Path(as_str)
+        check(assert_type(pd.read_excel(as_path), pd.DataFrame), pd.DataFrame)
+
+        with as_path.open("rb") as as_file:
+            check(assert_type(pd.read_excel(as_file), pd.DataFrame), pd.DataFrame)
+
+        as_bytes = as_path.read_bytes()
+        check(assert_type(pd.read_excel(as_bytes), pd.DataFrame), pd.DataFrame)
+
+
+def test_read_excel_basic():
+    with ensure_clean(".xlsx") as path:
+        check(assert_type(DF.to_excel(path), None), type(None))
+        check(assert_type(read_excel(path), DataFrame), DataFrame)
+        check(assert_type(read_excel(path, sheet_name="Sheet1"), DataFrame), DataFrame)
+        check(assert_type(read_excel(path, sheet_name=0), DataFrame), DataFrame)
+
+
+def test_read_excel_list():
+    with ensure_clean(".xlsx") as path:
+        check(assert_type(DF.to_excel(path), None), type(None))
+        check(
+            assert_type(
+                read_excel(path, sheet_name=["Sheet1"]),
+                Dict[Union[str, int], DataFrame],
+            ),
+            dict,
+        )
+        check(
+            assert_type(
+                read_excel(path, sheet_name=[0]), Dict[Union[str, int], DataFrame]
+            ),
+            dict,
+        )
+
+
+def test_excel_writer():
+    with ensure_clean(".xlsx") as path:
+        with pd.ExcelWriter(path) as ew:
+            check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
+            DF.to_excel(ew, sheet_name="A")
+            if PD_LT_15:
+                # Remove after 1.5 and remove handles from ExcelWriter
+                check(assert_type(ew.handles, IOHandles[bytes]), IOHandles)
+        check(assert_type(read_excel(path, sheet_name="A"), DataFrame), DataFrame)
+        check(assert_type(read_excel(path), DataFrame), DataFrame)
+        ef = pd.ExcelFile(path)
+        check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
+        check(assert_type(read_excel(ef, sheet_name="A"), DataFrame), DataFrame)
+        check(assert_type(read_excel(ef), DataFrame), DataFrame)
+        check(assert_type(ef.parse(sheet_name=0), DataFrame), DataFrame)
+        check(
+            assert_type(ef.parse(sheet_name=[0]), Dict[Union[str, int], DataFrame]),
+            dict,
+        )
+        check(assert_type(ef.close(), None), type(None))
+
+
+def test_to_string():
+    check(assert_type(DF.to_string(), str), str)
+    with ensure_clean() as path:
+        check(assert_type(DF.to_string(path), None), type(None))
+        check(assert_type(DF.to_string(pathlib.Path(path)), None), type(None))
+        with open(path, "wt") as df_string:
+            check(assert_type(DF.to_string(df_string), None), type(None))
+        sio = io.StringIO()
+        check(assert_type(DF.to_string(sio), None), type(None))
+
+
+def test_read_sql():
+    with ensure_clean() as path:
+        con = sqlite3.connect(path)
+        check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
+        check(
+            assert_type(read_sql("select * from test", con=con), DataFrame), DataFrame
+        )
+        con.close()
+
+
+def test_read_sql_via_sqlalchemy_connection():
+    with ensure_clean() as path:
+        db_uri = "sqlite:///" + path
+        engine = sqlalchemy.create_engine(db_uri)
+
+        with engine.connect() as conn:
+            check(assert_type(DF.to_sql("test", con=conn), Union[int, None]), int)
+            check(
+                assert_type(read_sql("select * from test", con=conn), DataFrame),
+                DataFrame,
+            )
+
+
+def test_read_sql_via_sqlalchemy_engine():
+    with ensure_clean() as path:
+        db_uri = "sqlite:///" + path
+        engine = sqlalchemy.create_engine(db_uri)
+
+        check(assert_type(DF.to_sql("test", con=engine), Union[int, None]), int)
+        check(
+            assert_type(read_sql("select * from test", con=engine), DataFrame),
+            DataFrame,
+        )
+
+
+def test_read_sql_generator():
+    with ensure_clean() as path:
+        con = sqlite3.connect(path)
+        check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
+
+        check(
+            assert_type(
+                read_sql("select * from test", con=con, chunksize=1),
+                Generator[DataFrame, None, None],
+            ),
+            Generator,
+        )
+        con.close()
+
+
+def test_read_sql_table():
+    if TYPE_CHECKING:
+        # sqlite3 doesn't support read_table, which is required for this function
+        # Could only run in pytest if SQLAlchemy was installed
+        with ensure_clean() as path:
+            con = sqlite3.connect(path)
+            assert_type(DF.to_sql("test", con=con), Union[int, None])
+            assert_type(read_sql_table("test", con=con), DataFrame)
+            assert_type(
+                read_sql_table("test", con=con, chunksize=1),
+                Generator[DataFrame, None, None],
+            )
+            con.close()
+
+
+def test_read_sql_query():
+    with ensure_clean() as path:
+        con = sqlite3.connect(path)
+        check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
+        check(
+            assert_type(
+                read_sql_query("select * from test", con=con, index_col="index"),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+        con.close()
+
+
+def test_read_sql_query_generator():
+    with ensure_clean() as path:
+        con = sqlite3.connect(path)
+        check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
+
+        check(
+            assert_type(
+                read_sql_query("select * from test", con=con, chunksize=1),
+                Generator[DataFrame, None, None],
+            ),
+            Generator,
+        )
+        con.close()
+
+
 def test_read_html():
     check(assert_type(DF.to_html(), str), str)
     with ensure_clean() as path:
         check(assert_type(DF.to_html(path), None), type(None))
         check(assert_type(read_html(path), List[DataFrame]), list)
+
+
+def test_csv_quoting():
+    with ensure_clean() as path:
+        check(assert_type(DF.to_csv(path, quoting=csv.QUOTE_ALL), None), type(None))
+        check(assert_type(DF.to_csv(path, quoting=csv.QUOTE_NONE), None), type(None))
+        check(
+            assert_type(DF.to_csv(path, quoting=csv.QUOTE_NONNUMERIC), None), type(None)
+        )
+        check(assert_type(DF.to_csv(path, quoting=csv.QUOTE_MINIMAL), None), type(None))

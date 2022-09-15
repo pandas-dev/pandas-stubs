@@ -1,15 +1,22 @@
+from typing import Any
+
 from pandas._typing import (
     CompressionOptions,
-    FilePathOrBuffer,
+    FilePath,
+    ReadPickleBuffer,
+    StorageOptions,
+    WriteBuffer,
 )
 
 def to_pickle(
-    obj,
-    filepath_or_buffer: FilePathOrBuffer,
-    compression: str | None = ...,
-    protocol: int = ...,
-): ...
-def read_pickle(
-    filepath_or_buffer_or_reader: FilePathOrBuffer,
+    obj: object,
+    filepath_or_buffer: FilePath | WriteBuffer[bytes],
     compression: CompressionOptions = ...,
-): ...
+    protocol: int = ...,
+    storage_options: StorageOptions = ...,
+) -> None: ...
+def read_pickle(
+    filepath_or_buffer: FilePath | ReadPickleBuffer,
+    compression: CompressionOptions = ...,
+    storage_options: StorageOptions = ...,
+) -> Any: ...

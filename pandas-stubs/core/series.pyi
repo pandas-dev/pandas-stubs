@@ -54,6 +54,7 @@ from pandas.core.window.rolling import (
     Rolling,
     Window,
 )
+import xarray as xr
 
 from pandas._typing import (
     S1,
@@ -64,8 +65,7 @@ from pandas._typing import (
     Axis,
     AxisType,
     CompressionOptions,
-    Dtype,
-    DtypeNp,
+    DtypeObj,
     FilePathOrBuffer,
     FillnaOptions,
     GroupByObjectNonScalar,
@@ -86,6 +86,7 @@ from pandas._typing import (
     SortKind,
     TimestampConvention,
     np_ndarray_anyint,
+    npt,
     num,
 )
 
@@ -219,9 +220,9 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType = ...,
     ) -> Series[S1]: ...
     @property
-    def dtype(self) -> Dtype: ...
+    def dtype(self) -> DtypeObj: ...
     @property
-    def dtypes(self) -> Dtype: ...
+    def dtypes(self) -> DtypeObj: ...
     @property
     def name(self) -> Hashable | None: ...
     @name.setter
@@ -244,6 +245,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         is_copy: _bool | None = ...,
         **kwargs,
     ) -> Series[S1]: ...
+    def __getattr__(self, name: str) -> S1: ...
     @overload
     def __getitem__(
         self,
@@ -354,22 +356,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         encoding: _str | None = ...,
     ) -> _str: ...
     @overload
-    def to_markdown(
-        self,
-        buf: FilePathOrBuffer | None,
-        mode: _str | None = ...,
-        index: _bool = ...,
-        storage_options: dict | None = ...,
-        **kwargs,
-    ) -> None: ...
-    @overload
-    def to_markdown(
-        self,
-        mode: _str | None = ...,
-        index: _bool = ...,
-        storage_options: dict | None = ...,
-    ) -> _str: ...
-    @overload
     def to_json(
         self,
         path_or_buf: FilePathOrBuffer | None,
@@ -400,10 +386,14 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         index: _bool = ...,
         indent: int | None = ...,
     ) -> _str: ...
+    def to_xarray(self) -> xr.DataArray: ...
     def items(self) -> Iterable[tuple[Hashable, S1]]: ...
     def iteritems(self) -> Iterable[tuple[Label, S1]]: ...
     def keys(self) -> list: ...
-    def to_dict(self, into: Hashable = ...) -> dict[Any, S1]: ...
+    @overload
+    def to_dict(self) -> dict[Hashable, S1]: ...
+    @overload
+    def to_dict(self, into: type[Mapping] | Mapping) -> Mapping[Hashable, S1]: ...
     def to_frame(self, name: object | None = ...) -> DataFrame: ...
     @overload
     def groupby(
@@ -506,12 +496,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         side: Literal["left", "right"] = ...,
         sorter: _ListLike | None = ...,
     ) -> int: ...
-    def append(
-        self,
-        to_append: Series | Sequence[Series],
-        ignore_index: _bool = ...,
-        verify_integrity: _bool = ...,
-    ) -> Series[S1]: ...
     @overload
     def compare(
         self,
@@ -536,30 +520,31 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def sort_values(
         self,
+        *,
         axis: AxisType = ...,
         ascending: _bool | Sequence[_bool] = ...,
         kind: SortKind = ...,
         na_position: NaPosition = ...,
         ignore_index: _bool = ...,
-        *,
         inplace: Literal[True],
         key: Callable | None = ...,
     ) -> None: ...
     @overload
     def sort_values(
         self,
+        *,
         axis: AxisType = ...,
         ascending: _bool | Sequence[_bool] = ...,
         kind: SortKind = ...,
         na_position: NaPosition = ...,
         ignore_index: _bool = ...,
-        *,
         inplace: Literal[False] = ...,
         key: Callable | None = ...,
     ) -> Series[S1]: ...
     @overload
     def sort_values(
         self,
+        *,
         axis: AxisType = ...,
         ascending: _bool | Sequence[_bool] = ...,
         inplace: _bool | None = ...,
@@ -1336,7 +1321,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType = ...,
     ) -> ExponentialMovingWindow: ...
     def expanding(
-        self, min_periods: int = ..., center: _bool = ..., axis: SeriesAxisType = ...
+        self, min_periods: int = ..., axis: SeriesAxisType = ...
     ) -> DataFrame: ...
     def floordiv(
         self,
@@ -1625,9 +1610,9 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def to_list(self) -> list[S1]: ...
     def to_numpy(
         self,
-        dtype: type[DtypeNp] | None = ...,
-        copy: _bool = ...,
-        na_value=...,
+        dtype: npt.DTypeLike | None = ...,
+        copy: bool = ...,
+        na_value: Scalar = ...,
         **kwargs,
     ) -> np.ndarray: ...
     def tolist(self) -> list[S1]: ...
@@ -1688,12 +1673,12 @@ class TimestampSeries(Series[Timestamp]):
     def dt(self) -> TimestampProperties: ...  # type: ignore[override]
 
 class TimedeltaSeries(Series[Timedelta]):
-    # ignore needed because of mypy
+    # ignores needed because of mypy
+    def __radd__(self, pther: Timestamp | TimestampSeries) -> TimestampSeries: ...  # type: ignore[override]
     def __mul__(self, other: num) -> TimedeltaSeries: ...  # type: ignore[override]
     def __sub__(  # type: ignore[override]
         self, other: Timedelta | TimedeltaSeries | TimedeltaIndex
     ) -> TimedeltaSeries: ...
-    # ignore needed because of mypy
     @property
     def dt(self) -> TimedeltaProperties: ...  # type: ignore[override]
 
