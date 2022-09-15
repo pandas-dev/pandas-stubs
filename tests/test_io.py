@@ -14,13 +14,11 @@ from typing import (
 )
 
 import numpy as np
-from packaging.version import parse
 import pandas as pd
 from pandas import (
     DataFrame,
     HDFStore,
     Series,
-    __version__,
     read_clipboard,
     read_csv,
     read_excel,
@@ -46,7 +44,10 @@ import pytest
 import sqlalchemy
 from typing_extensions import assert_type
 
-from tests import check
+from tests import (
+    PD_LT_15,
+    check,
+)
 
 from pandas.io.api import to_pickle
 from pandas.io.clipboard import PyperclipException
@@ -63,8 +64,6 @@ from pandas.io.stata import StataReader
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 CWD = os.path.split(os.path.abspath(__file__))[0]
-
-PD_LT_15 = parse(__version__) < parse("1.5.0")
 
 
 @pytest.mark.skipif(PD_LT_15, reason="pandas 1.5.0 or later required")
@@ -188,6 +187,8 @@ def test_read_stata_df():
         check(assert_type(read_stata(path), pd.DataFrame), pd.DataFrame)
 
 
+# Remove test when pandas 1.5.0 is released
+@pytest.mark.skipif(not PD_LT_15, reason="Keyword only in 1.5.0")
 def test_read_stata_iterator_positional():
     with ensure_clean() as path:
         str_path = str(path)
@@ -657,7 +658,9 @@ def test_excel_writer():
         with pd.ExcelWriter(path) as ew:
             check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
             DF.to_excel(ew, sheet_name="A")
-            check(assert_type(ew.handles, IOHandles[bytes]), IOHandles)
+            if PD_LT_15:
+                # Remove after 1.5 and remove handles from ExcelWriter
+                check(assert_type(ew.handles, IOHandles[bytes]), IOHandles)
         check(assert_type(read_excel(path, sheet_name="A"), DataFrame), DataFrame)
         check(assert_type(read_excel(path), DataFrame), DataFrame)
         ef = pd.ExcelFile(path)

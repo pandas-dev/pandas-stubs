@@ -3,12 +3,10 @@ import platform
 from typing import TYPE_CHECKING
 import warnings
 
-from packaging.version import parse
-import pandas as pd
 from pandas import errors
 import pytest
 
-PD_LT_15 = parse(pd.__version__) < parse("1.5.0")
+from tests import PD_LT_15
 
 if TYPE_CHECKING or PD_LT_15:
     # TODO: Remove all imports below after switch to 1.5.x, these moved to pandas.errors
