@@ -23,6 +23,22 @@ from pandas._typing import (
     WriteBuffer,
 )
 
+# TODO: Remove after 1.5.0 since positional is required
+@overload
+def read_stata(
+    filepath_or_buffer: FilePath | ReadBuffer[bytes],
+    convert_dates: bool,
+    convert_categoricals: bool,
+    index_col: str | None,
+    convert_missing: bool,
+    preserve_dtypes: bool,
+    columns: list[HashableT] | None,
+    order_categoricals: bool,
+    chunksize: int | None,
+    iterator: Literal[True],
+    compression: CompressionOptions = ...,
+    storage_options: StorageOptions = ...,
+) -> StataReader: ...
 @overload
 def read_stata(
     filepath_or_buffer: FilePath | ReadBuffer[bytes],
