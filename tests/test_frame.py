@@ -38,6 +38,7 @@ from tests import (
     check,
 )
 
+from pandas.io.formats.style import Styler
 from pandas.io.parsers import TextFileReader
 
 DF = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
@@ -1011,28 +1012,36 @@ def test_types_from_dict() -> None:
 
 
 def test_pipe() -> None:
-    if TYPE_CHECKING:  # skip pytest
+    def foo(df: pd.DataFrame) -> pd.DataFrame:
+        return pd.DataFrame(df)
 
-        def foo(df: pd.DataFrame) -> pd.DataFrame:
-            return df
-
-        df1: pd.DataFrame = pd.DataFrame({"a": [1]}).pipe(foo)
-
-        df2: pd.DataFrame = (
-            pd.DataFrame(
-                {
-                    "price": [10, 11, 9, 13, 14, 18, 17, 19],
-                    "volume": [50, 60, 40, 100, 50, 100, 40, 50],
-                }
-            )
-            .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
-            .resample("M", on="week_starting")
-            .pipe(foo)
+    val = (
+        pd.DataFrame(
+            {
+                "price": [10, 11, 9, 13, 14, 18, 17, 19],
+                "volume": [50, 60, 40, 100, 50, 100, 40, 50],
+            }
         )
+        .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
+        .resample("M", on="week_starting")
+        .pipe(foo)
+    )
 
-        df3: pd.DataFrame = pd.DataFrame({"a": [1], "b": [1]}).groupby("a").pipe(foo)
+    check(assert_type(val, pd.DataFrame), pd.DataFrame)
 
-        df4: pd.DataFrame = pd.DataFrame({"a": [1], "b": [1]}).style.pipe(foo)
+    check(assert_type(pd.DataFrame({"a": [1]}).pipe(foo), pd.DataFrame), pd.DataFrame)
+
+    def bar(val: Styler) -> Styler:
+        return val
+
+    check(
+        assert_type(pd.DataFrame({"a": [1], "b": [1]}).style.pipe(bar), Styler), Styler
+    )
+
+    def baz(val: Styler) -> str:
+        return val.to_latex()
+
+    check(assert_type(pd.DataFrame({"a": [1], "b": [1]}).style.pipe(baz), str), str)
 
 
 # set_flags() method added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
@@ -1629,7 +1638,10 @@ def test_groupby_apply() -> None:
         return x.sample()
 
     check(
-        assert_type(df.groupby("col1").apply(sample_to_df), pd.DataFrame), pd.DataFrame
+        assert_type(
+            df.groupby("col1", group_keys=False).apply(sample_to_df), pd.DataFrame
+        ),
+        pd.DataFrame,
     )
 
 
@@ -1743,3 +1755,12 @@ def test_xs_key() -> None:
     check(
         assert_type(df.xs(0, level="foo"), Union[pd.DataFrame, pd.Series]), pd.DataFrame
     )
+
+
+def test_loc_slice() -> None:
+    # GH 277
+    df1 = pd.DataFrame(
+        {"x": [1, 2, 3, 4]},
+        index=pd.MultiIndex.from_product([[1, 2], ["a", "b"]], names=["num", "let"]),
+    )
+    check(assert_type(df1.loc[1, :], pd.DataFrame), pd.DataFrame)

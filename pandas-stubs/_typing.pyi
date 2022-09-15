@@ -20,6 +20,7 @@ from typing import (
     Optional,
     Protocol,
     Sequence,
+    TypedDict,
     TypeVar,
     Union,
 )
@@ -160,7 +161,12 @@ T2 = TypeVar("T2", str, int)
 IndexingInt = Union[
     int, np.int_, np.integer, np.unsignedinteger, np.signedinteger, np.int8
 ]
-
+TimestampConvertibleTypes = Union[
+    Timestamp, datetime.datetime, np.datetime64, np.int64, float, str
+]
+TimedeltaConvertibleTypes = Union[
+    Timedelta, datetime.timedelta, np.timedelta64, np.int64, float, str
+]
 # NDFrameT is stricter and ensures that the same subclass of NDFrame always is
 # used. E.g. `def func(a: NDFrameT) -> NDFrameT: ...` means that if a
 # Series is passed into a function, a Series is always returned and if a DataFrame is
@@ -257,5 +263,15 @@ FileWriteMode = Literal[
     "a", "w", "x", "at", "wt", "xt", "ab", "wb", "xb", "w+", "w+b", "a+", "a+b"
 ]
 ColspaceArgType = str | int | Sequence[int | str] | Mapping[Hashable, str | int]
+
+class StyleExportDict(TypedDict, total=False):
+    apply: Any
+    table_attributes: Any
+    table_styles: Any
+    hide_index: bool
+    hide_columns: bool
+    hide_index_names: bool
+    hide_column_names: bool
+    css: dict[str, str | int]
 
 __all__ = ["npt", "type_t"]

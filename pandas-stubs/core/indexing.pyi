@@ -1,3 +1,9 @@
+from typing import (
+    Generic,
+    TypeVar,
+    Union,
+)
+
 import numpy as np
 from pandas.core.indexes.api import Index
 
@@ -7,8 +13,10 @@ from pandas._typing import (
     StrLike,
 )
 
-class _IndexSlice:
-    def __getitem__(self, arg) -> tuple[StrLike | Scalar | slice, ...]: ...
+_IndexSliceT = TypeVar("_IndexSliceT", bound=Union[StrLike, Scalar, slice])
+
+class _IndexSlice(Generic[_IndexSliceT]):
+    def __getitem__(self, arg) -> tuple[_IndexSliceT, ...]: ...
 
 IndexSlice: _IndexSlice
 

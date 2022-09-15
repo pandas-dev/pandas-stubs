@@ -1,46 +1,69 @@
 import os
 import platform
+from typing import TYPE_CHECKING
 import warnings
 
-from packaging.version import parse
-import pandas as pd
 from pandas import errors
-
-# TODO: Remove all imports below after switch to 1.5.x, these moved to pandas.errors
-from pandas.core.base import (
-    DataError,
-    SpecificationError,
-)
-from pandas.core.common import (
-    SettingWithCopyError,
-    SettingWithCopyWarning,
-)
-from pandas.core.computation.engines import NumExprClobberingError
-from pandas.core.computation.ops import UndefinedVariableError
-from pandas.core.indexing import IndexingError
 import pytest
 
-from pandas.io.clipboard import (
-    PyperclipException,
-    PyperclipWindowsException,
-)
-from pandas.io.formats.css import CSSWarning
-from pandas.io.pytables import (
-    AttributeConflictWarning,
-    ClosedFileError,
-    IncompatibilityWarning,
-    PossibleDataLossError,
-)
-from pandas.io.sql import DatabaseError
-from pandas.io.stata import (
-    CategoricalConversionWarning,
-    InvalidColumnName,
-    PossiblePrecisionLoss,
-    ValueLabelTypeMismatch,
-)
+from tests import PD_LT_15
+
+if TYPE_CHECKING or PD_LT_15:
+    # TODO: Remove all imports below after switch to 1.5.x, these moved to pandas.errors
+    from pandas.core.base import (
+        DataError,
+        SpecificationError,
+    )
+    from pandas.core.common import (
+        SettingWithCopyError,
+        SettingWithCopyWarning,
+    )
+    from pandas.core.computation.engines import NumExprClobberingError
+    from pandas.core.computation.ops import UndefinedVariableError
+    from pandas.core.indexing import IndexingError
+
+    from pandas.io.clipboard import (
+        PyperclipException,
+        PyperclipWindowsException,
+    )
+    from pandas.io.formats.css import CSSWarning
+    from pandas.io.pytables import (
+        AttributeConflictWarning,
+        ClosedFileError,
+        IncompatibilityWarning,
+        PossibleDataLossError,
+    )
+    from pandas.io.sql import DatabaseError
+    from pandas.io.stata import (
+        CategoricalConversionWarning,
+        InvalidColumnName,
+        PossiblePrecisionLoss,
+        ValueLabelTypeMismatch,
+    )
+else:
+    from pandas.errors import (
+        AttributeConflictWarning,
+        CategoricalConversionWarning,
+        ClosedFileError,
+        CSSWarning,
+        DatabaseError,
+        DataError,
+        IncompatibilityWarning,
+        IndexingError,
+        InvalidColumnName,
+        NumExprClobberingError,
+        PossibleDataLossError,
+        PossiblePrecisionLoss,
+        PyperclipException,
+        PyperclipWindowsException,
+        SettingWithCopyError,
+        SettingWithCopyWarning,
+        SpecificationError,
+        UndefinedVariableError,
+        ValueLabelTypeMismatch,
+    )
 
 WINDOWS = os.name == "nt" or "cygwin" in platform.system().lower()
-PD_LT_15 = parse(pd.__version__) < parse("1.5.0")
 
 
 def test_abstract_method_error() -> None:
@@ -136,49 +159,41 @@ def test_unsupported_function_call() -> None:
         raise errors.UnsupportedFunctionCall()
 
 
-@pytest.mark.skipif(not PD_LT_15, reason="Feature moved in 1.5.0")
 def test_data_error() -> None:
     with pytest.raises(DataError):
         raise DataError()
 
 
-@pytest.mark.skipif(not PD_LT_15, reason="Feature moved in 1.5.0")
 def test_specification_error() -> None:
     with pytest.raises(SpecificationError):
         raise SpecificationError()
 
 
-@pytest.mark.skipif(not PD_LT_15, reason="Feature moved in 1.5.0")
 def test_setting_with_copy_error() -> None:
     with pytest.raises(SettingWithCopyError):
         raise SettingWithCopyError()
 
 
-@pytest.mark.skipif(not PD_LT_15, reason="Feature moved in 1.5.0")
 def test_setting_with_copy_warning() -> None:
     with pytest.warns(SettingWithCopyWarning):
         warnings.warn("", SettingWithCopyWarning)
 
 
-@pytest.mark.skipif(not PD_LT_15, reason="Feature moved in 1.5.0")
 def test_numexpr_clobbering_error() -> None:
     with pytest.raises(NumExprClobberingError):
         raise NumExprClobberingError()
 
 
-@pytest.mark.skipif(not PD_LT_15, reason="Feature moved in 1.5.0")
 def test_undefined_variable_error() -> None:
     with pytest.raises(UndefinedVariableError):
         raise UndefinedVariableError("x")
 
 
-@pytest.mark.skipif(not PD_LT_15, reason="Feature moved in 1.5.0")
 def test_indexing_error() -> None:
     with pytest.raises(IndexingError):
         raise IndexingError()
 
 
-@pytest.mark.skipif(not PD_LT_15, reason="Feature moved in 1.5.0")
 def test_pyperclip_exception() -> None:
     with pytest.raises(PyperclipException):
         raise PyperclipException()
@@ -190,61 +205,51 @@ def test_pyperclip_windows_exception() -> None:
         raise PyperclipWindowsException("message")
 
 
-@pytest.mark.skipif(not PD_LT_15, reason="Feature moved in 1.5.0")
 def test_css_warning() -> None:
     with pytest.warns(CSSWarning):
         warnings.warn("", CSSWarning)
 
 
-@pytest.mark.skipif(not PD_LT_15, reason="Feature moved in 1.5.0")
 def test_possible_data_loss_error() -> None:
     with pytest.raises(PossibleDataLossError):
         raise PossibleDataLossError()
 
 
-@pytest.mark.skipif(not PD_LT_15, reason="Feature moved in 1.5.0")
 def test_closed_file_error() -> None:
     with pytest.raises(ClosedFileError):
         raise ClosedFileError()
 
 
-@pytest.mark.skipif(not PD_LT_15, reason="Feature moved in 1.5.0")
 def test_incompatibility_warning() -> None:
     with pytest.warns(IncompatibilityWarning):
         warnings.warn("", IncompatibilityWarning)
 
 
-@pytest.mark.skipif(not PD_LT_15, reason="Feature moved in 1.5.0")
 def test_attribute_conflict_warning() -> None:
     with pytest.warns(AttributeConflictWarning):
         warnings.warn("", AttributeConflictWarning)
 
 
-@pytest.mark.skipif(not PD_LT_15, reason="Feature moved in 1.5.0")
 def test_database_error() -> None:
     with pytest.raises(DatabaseError):
         raise DatabaseError()
 
 
-@pytest.mark.skipif(not PD_LT_15, reason="Feature moved in 1.5.0")
 def test_possible_precision_loss() -> None:
     with pytest.warns(PossiblePrecisionLoss):
         warnings.warn("", PossiblePrecisionLoss)
 
 
-@pytest.mark.skipif(not PD_LT_15, reason="Feature moved in 1.5.0")
 def test_value_label_type_mismatch() -> None:
     with pytest.warns(ValueLabelTypeMismatch):
         warnings.warn("", ValueLabelTypeMismatch)
 
 
-@pytest.mark.skipif(not PD_LT_15, reason="Feature moved in 1.5.0")
 def test_invalid_column_name() -> None:
     with pytest.warns(InvalidColumnName):
         warnings.warn("", InvalidColumnName)
 
 
-@pytest.mark.skipif(not PD_LT_15, reason="Feature moved in 1.5.0")
 def test_categorical_conversion_warning() -> None:
     with pytest.warns(CategoricalConversionWarning):
         warnings.warn("", CategoricalConversionWarning)
