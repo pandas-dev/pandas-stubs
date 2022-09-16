@@ -42,6 +42,7 @@ from pandas import (
 from pandas._testing import ensure_clean
 import pytest
 import sqlalchemy
+import sqlalchemy.orm
 from typing_extensions import assert_type
 
 from tests import (
@@ -795,3 +796,16 @@ def test_csv_quoting():
             assert_type(DF.to_csv(path, quoting=csv.QUOTE_NONNUMERIC), None), type(None)
         )
         check(assert_type(DF.to_csv(path, quoting=csv.QUOTE_MINIMAL), None), type(None))
+
+
+def test_sqlalchemy_selectable() -> None:
+    with ensure_clean() as path:
+        db_uri = "sqlite:///" + path
+        engine = sqlalchemy.create_engine(db_uri)
+        with engine.connect():
+            check(assert_type(DF.to_sql("test", con=engine), Union[int, None]), int)
+
+        Session = sqlalchemy.orm.sessionmaker(engine)
+        with Session() as session:
+            if TYPE_CHECKING:
+                pd.read_sql(session.query("Something").statement, session.connection())
