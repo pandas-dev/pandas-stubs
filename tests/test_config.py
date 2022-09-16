@@ -35,4 +35,4 @@ def test_specific_option():
     # GH 294
     check(assert_type(pd.options.plotting.backend, str), str)
     # Just check assignment
-    pd.options.plotting.backend = "plotly"
+    pd.options.plotting.backend = "matplotlib"
