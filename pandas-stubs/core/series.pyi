@@ -1056,8 +1056,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         start_time: _str | time,
         end_time: _str | time,
-        include_start: _bool = ...,
-        include_end: _bool = ...,
         axis: SeriesAxisType | None = ...,
     ) -> Series[S1]: ...
     def resample(
@@ -1082,7 +1080,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         axis: SeriesAxisType = ...,
         method: Literal["average", "min", "max", "first", "dense"] = ...,
-        numeric_only: _bool | None = ...,
+        numeric_only: _bool = ...,
         na_option: Literal["keep", "top", "bottom"] = ...,
         ascending: _bool = ...,
         pct: _bool = ...,

@@ -1330,8 +1330,6 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         start_time: _str | datetime.time,
         end_time: _str | datetime.time,
-        include_start: _bool = ...,
-        include_end: _bool = ...,
         axis: AxisType | None = ...,
     ) -> DataFrame: ...
     @overload
@@ -1666,7 +1664,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         axis: AxisType = ...,
         method: Literal["average", "min", "max", "first", "dense"] = ...,
-        numeric_only: _bool | None = ...,
+        numeric_only: _bool = ...,
         na_option: Literal["keep", "top", "bottom"] = ...,
         ascending: _bool = ...,
         pct: _bool = ...,

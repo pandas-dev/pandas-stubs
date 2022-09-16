@@ -15,6 +15,7 @@ from pandas._typing import (
 
 def read_xml(
     path_or_buffer: FilePath | ReadBuffer[bytes] | ReadBuffer[str],
+    *,
     xpath: str = ...,
     namespaces: dict[str, str] | None = ...,
     elems_only: bool = ...,
