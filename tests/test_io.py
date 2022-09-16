@@ -42,6 +42,9 @@ from pandas import (
 from pandas._testing import ensure_clean
 import pytest
 import sqlalchemy
+import sqlalchemy.ext.declarative
+import sqlalchemy.orm
+import sqlalchemy.orm.decl_api
 from typing_extensions import assert_type
 
 from tests import (
@@ -795,3 +798,24 @@ def test_csv_quoting():
             assert_type(DF.to_csv(path, quoting=csv.QUOTE_NONNUMERIC), None), type(None)
         )
         check(assert_type(DF.to_csv(path, quoting=csv.QUOTE_MINIMAL), None), type(None))
+
+
+def test_sqlalchemy_selectable() -> None:
+    with ensure_clean() as path:
+        db_uri = "sqlite:///" + path
+        engine = sqlalchemy.create_engine(db_uri)
+
+        if TYPE_CHECKING:
+            # Just type checking since underlying dB does not exist
+            class Base(metaclass=sqlalchemy.orm.decl_api.DeclarativeMeta):
+                __abstract__ = True
+
+            class Temp(Base):
+                __tablename__ = "part"
+                quantity = sqlalchemy.Column(sqlalchemy.Integer)
+
+            Session = sqlalchemy.orm.sessionmaker(engine)
+            with Session() as session:
+                pd.read_sql(
+                    session.query(Temp.quantity).statement, session.connection()
+                )
