@@ -684,6 +684,37 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         fill_value: Hashable | None = ...,
     ) -> DataFrame: ...
+    @overload
+    def set_index(
+        self,
+        keys: Label
+        | Series
+        | Index
+        | np.ndarray
+        | Iterator[HashableT]
+        | list[HashableT],
+        drop: _bool = ...,
+        append: _bool = ...,
+        verify_integrity: _bool = ...,
+        *,
+        inplace: Literal[True],
+    ) -> None: ...
+    @overload
+    def set_index(
+        self,
+        keys: Label
+        | Series
+        | Index
+        | np.ndarray
+        | Iterator[HashableT]
+        | list[HashableT],
+        drop: _bool = ...,
+        append: _bool = ...,
+        verify_integrity: _bool = ...,
+        *,
+        inplace: Literal[False],
+    ) -> DataFrame: ...
+    @overload
     def set_index(
         self,
         keys: Label

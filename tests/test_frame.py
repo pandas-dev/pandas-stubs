@@ -296,6 +296,7 @@ def test_types_set_index() -> None:
     res3: pd.DataFrame = df.set_index("col1", append=True)
     res4: pd.DataFrame = df.set_index("col1", verify_integrity=True)
     res5: pd.DataFrame = df.set_index(["col1", "col2"])
+    res6: None = df.set_index("col1", inplace=True)
     # GH 140
     res7: pd.DataFrame = df.set_index(pd.Index(["w", "x", "y", "z"]))
 
