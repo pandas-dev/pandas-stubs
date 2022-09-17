@@ -157,7 +157,7 @@ _DTRoundingMethodReturnType = TypeVar(
     TimedeltaSeries,
     TimestampSeries,
     DatetimeIndex,
-    # TimedeltaIndex
+    TimedeltaIndex,
 )
 
 class _DatetimeRoundingMethods(Generic[_DTRoundingMethodReturnType]):
@@ -394,26 +394,27 @@ class DatetimeIndexProperties(
 class TimedeltaIndexProperties(
     Properties,
     _TimedeltaPropertiesNoRounding[Index, Index],
-    # _DatetimeRoundingMethods[TimedeltaIndex],
-):
-    def round(
-        self,
-        freq: str | BaseOffset | None,
-        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
-        | Timedelta = ...,
-    ) -> TimedeltaIndex: ...
-    def floor(
-        self,
-        freq: str | BaseOffset | None,
-        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
-        | Timedelta = ...,
-    ) -> TimedeltaIndex: ...
-    def ceil(
-        self,
-        freq: str | BaseOffset | None,
-        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
-        | Timedelta = ...,
-    ) -> TimedeltaIndex: ...
+    _DatetimeRoundingMethods[TimedeltaIndex],
+): ...
+
+# def round(
+#     self,
+#     freq: str | BaseOffset | None,
+#     ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+#     nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
+#     | Timedelta = ...,
+# ) -> TimedeltaIndex: ...
+# def floor(
+#     self,
+#     freq: str | BaseOffset | None,
+#     ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+#     nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
+#     | Timedelta = ...,
+# ) -> TimedeltaIndex: ...
+# def ceil(
+#     self,
+#     freq: str | BaseOffset | None,
+#     ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+#     nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
+#     | Timedelta = ...,
+# ) -> TimedeltaIndex: ...
