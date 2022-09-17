@@ -436,6 +436,26 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.is_normalized, bool), bool)
 
 
+def test_timedeltaindex_accessors() -> None:
+    # GH 292
+    i0 = pd.date_range("1/1/2021", "1/5/2021") - pd.Timestamp("1/3/2019")
+    check(assert_type(i0, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(i0.days, pd.Index), pd.Index, int)
+    check(assert_type(i0.seconds, pd.Index), pd.Index, int)
+    check(assert_type(i0.microseconds, pd.Index), pd.Index, int)
+    check(assert_type(i0.nanoseconds, pd.Index), pd.Index, int)
+    check(assert_type(i0.components, pd.DataFrame), pd.DataFrame)
+    check(assert_type(i0.to_pytimedelta(), np.ndarray), np.ndarray)
+    check(assert_type(i0.total_seconds(), pd.Index), pd.Index, float)
+    check(
+        assert_type(i0.round("D"), pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta
+    )
+    check(
+        assert_type(i0.floor("D"), pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta
+    )
+    check(assert_type(i0.ceil("D"), pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
+
+
 def test_some_offsets() -> None:
     # GH 222
 
