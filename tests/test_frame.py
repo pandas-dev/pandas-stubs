@@ -1781,3 +1781,19 @@ def test_where() -> None:
 
     cond3 = pd.DataFrame({"a": [True, True, False], "b": [False, False, False]})
     check(assert_type(df.where(cond3), pd.DataFrame), pd.DataFrame)
+
+
+def test_setitem_loc() -> None:
+    # GH 254
+    df = pd.DataFrame.from_dict(
+        {view: (True, True, True) for view in ["A", "B", "C"]}, orient="index"
+    )
+    df.loc[["A", "C"]] = False
+    my_arr = ["A", "C"]
+    df.loc[my_arr] = False
+
+
+def test_replace_na() -> None:
+    # GH 262
+    frame = pd.DataFrame(["N/A", "foo", "bar"])
+    frame = frame.replace("N/A", pd.NA)
