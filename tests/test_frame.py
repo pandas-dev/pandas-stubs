@@ -1288,6 +1288,16 @@ def test_indexslice_getitem():
     ind = pd.Index([2, 3])
     check(assert_type(pd.IndexSlice[ind, :], tuple[pd.Index, slice]), tuple)
     check(assert_type(df.loc[pd.IndexSlice[ind, :]], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[pd.IndexSlice[1:2]], pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.loc[pd.IndexSlice[:, df["z"] > 40], :], pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.loc[pd.IndexSlice[2, 30], "z"], Scalar), np.int64)
+    check(
+        assert_type(df.loc[pd.IndexSlice[[2, 4], [20, 40]], :], pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_compute_values():
