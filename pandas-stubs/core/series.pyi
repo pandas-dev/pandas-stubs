@@ -1089,7 +1089,11 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     ) -> Series: ...
     def where(
         self,
-        cond: Series[S1] | Series[_bool] | np.ndarray,
+        cond: Series[S1]
+        | Series[_bool]
+        | np.ndarray
+        | Callable[[Series[S1]], Series[bool]]
+        | Callable[[S1], bool],
         other=...,
         inplace: _bool = ...,
         axis: SeriesAxisType | None = ...,

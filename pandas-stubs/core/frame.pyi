@@ -2019,7 +2019,11 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> Series: ...
     def where(
         self,
-        cond: Series | DataFrame | np.ndarray,
+        cond: Series
+        | DataFrame
+        | np.ndarray
+        | Callable[[DataFrame], DataFrame]
+        | Callable[[Any], _bool],
         other=...,
         inplace: _bool = ...,
         axis: AxisType | None = ...,
