@@ -1796,4 +1796,4 @@ def test_setitem_loc() -> None:
 def test_replace_na() -> None:
     # GH 262
     frame = pd.DataFrame(["N/A", "foo", "bar"])
-    frame = frame.replace("N/A", pd.NA)
+    check(assert_type(frame.replace("N/A", pd.NA), pd.DataFrame), pd.DataFrame)
