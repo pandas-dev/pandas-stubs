@@ -4,9 +4,14 @@ import numpy as np
 from pandas.core.indexes.api import Index
 
 from pandas._libs.indexing import _NDFrameIndexerBase
-from pandas._typing import IndexSliceTuple
+from pandas._typing import (
+    MaskType,
+    Scalar,
+)
 
-_IndexSliceTupleT = TypeVar("_IndexSliceTupleT", bound=IndexSliceTuple)
+_IndexSliceTuple = slice | tuple[Index | MaskType | Scalar | list[Scalar] | slice, ...]
+
+_IndexSliceTupleT = TypeVar("_IndexSliceTupleT", bound=_IndexSliceTuple)
 
 class _IndexSlice:
     def __getitem__(self, arg: _IndexSliceTupleT) -> _IndexSliceTupleT: ...
