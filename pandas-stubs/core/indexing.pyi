@@ -1,22 +1,15 @@
-from typing import (
-    Generic,
-    TypeVar,
-    Union,
-)
+from typing import TypeVar
 
 import numpy as np
 from pandas.core.indexes.api import Index
 
 from pandas._libs.indexing import _NDFrameIndexerBase
-from pandas._typing import (
-    Scalar,
-    StrLike,
-)
+from pandas._typing import IndexSliceTuple
 
-_IndexSliceT = TypeVar("_IndexSliceT", bound=Union[StrLike, Scalar, slice])
+_IndexSliceTupleT = TypeVar("_IndexSliceTupleT", bound=IndexSliceTuple)
 
-class _IndexSlice(Generic[_IndexSliceT]):
-    def __getitem__(self, arg) -> tuple[_IndexSliceT, ...]: ...
+class _IndexSlice:
+    def __getitem__(self, arg: _IndexSliceTupleT) -> _IndexSliceTupleT: ...
 
 IndexSlice: _IndexSlice
 
