@@ -425,8 +425,6 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         self,
         start_time,
         end_time,
-        include_start: _bool = ...,
-        include_end: _bool = ...,
         axis=...,
     ) -> NDFrame: ...
     def first(self, offset) -> NDFrame: ...
@@ -435,7 +433,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         self,
         axis=...,
         method: Literal["average", "min", "max", "first", "dense"] = ...,
-        numeric_only: _bool | None = ...,
+        numeric_only: _bool = ...,
         na_option: Literal["keep", "top", "bottom"] = ...,
         ascending: _bool = ...,
         pct: _bool = ...,
