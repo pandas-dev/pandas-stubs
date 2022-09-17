@@ -1,13 +1,17 @@
 from datetime import tzinfo
 
 import numpy as np
-from pandas.core.arrays import datetimelike as dtl
+from pandas.core.arrays.datetimelike import (
+    DatelikeOps,
+    DatetimeLikeArrayMixin,
+    TimelikeOps,
+)
 
 from pandas.core.dtypes.dtypes import DatetimeTZDtype as DatetimeTZDtype
 
 def tz_to_dtype(tz): ...
 
-class DatetimeArray(dtl.DatetimeLikeArrayMixin, dtl.TimelikeOps, dtl.DatelikeOps):
+class DatetimeArray(DatetimeLikeArrayMixin, TimelikeOps, DatelikeOps):
     __array_priority__: int = ...
     def __init__(self, values, dtype=..., freq=..., copy: bool = ...) -> None: ...
     # ignore in dtype() is from the pandas source

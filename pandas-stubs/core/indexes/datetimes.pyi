@@ -5,12 +5,12 @@ import numpy as np
 from pandas import (
     DataFrame,
     Timedelta,
+    TimedeltaIndex,
     Timestamp,
 )
 from pandas.core.indexes.accessors import DatetimeIndexProperties
 from pandas.core.indexes.api import Float64Index
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
-from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import (
     TimedeltaSeries,
     TimestampSeries,

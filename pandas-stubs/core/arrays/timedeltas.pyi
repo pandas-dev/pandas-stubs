@@ -1,9 +1,12 @@
 from datetime import timedelta
 from typing import Sequence
 
-from pandas.core.arrays import datetimelike as dtl
+from pandas.core.arrays.datetimelike import (
+    DatetimeLikeArrayMixin,
+    TimelikeOps,
+)
 
-class TimedeltaArray(dtl.DatetimeLikeArrayMixin, dtl.TimelikeOps):
+class TimedeltaArray(DatetimeLikeArrayMixin, TimelikeOps):
     __array_priority__: int = ...
     @property
     def dtype(self): ...
