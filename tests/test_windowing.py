@@ -156,9 +156,6 @@ def test_rolling_aggregate_series() -> None:
         ),
         DataFrame,
     )
-    # check(assert_type(S.rolling(10).aggregate({"col1": [np.mean, "mean"], "col2": "mean"}), Series), DataFrame)
-
-    # func: np.ufunc | Callable | str | list[Callable | str, np.ufunc] | dict[Hashable, Callable | str | np.ufunc| list[Callable | str]]
     check(assert_type(S.rolling(10).agg("sum"), Series), Series)
 
 
@@ -251,7 +248,6 @@ def test_expanding_apply_series() -> None:
 
 def test_expanding_aggregate_series() -> None:
     check(assert_type(S.expanding(10).aggregate(np.mean), Series), Series)
-    # TODO: Make sure this works
     check(
         assert_type(S.expanding(10).aggregate(["mean", np.mean]), DataFrame), DataFrame
     )

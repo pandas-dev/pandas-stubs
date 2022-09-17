@@ -13,6 +13,7 @@ from pandas import (
     Index,
     PeriodIndex,
     Timedelta,
+    TimedeltaIndex,
 )
 from pandas.core.accessor import PandasDelegate
 from pandas.core.arrays import (
@@ -156,6 +157,7 @@ _DTRoundingMethodReturnType = TypeVar(
     TimedeltaSeries,
     TimestampSeries,
     DatetimeIndex,
+    # TimedeltaIndex
 )
 
 class _DatetimeRoundingMethods(Generic[_DTRoundingMethodReturnType]):
@@ -278,23 +280,30 @@ class DatetimeProperties(
     def to_pydatetime(self) -> np.ndarray: ...
     def isocalendar(self) -> DataFrame: ...
 
-class _TimedeltaPropertiesNoRounding:
+_TDNoRoundingMethodReturnType = TypeVar(
+    "_TDNoRoundingMethodReturnType", Series[int], Index
+)
+_TDTotalSecondsReturnType = TypeVar("_TDTotalSecondsReturnType", Series[float], Index)
+
+class _TimedeltaPropertiesNoRounding(
+    Generic[_TDNoRoundingMethodReturnType, _TDTotalSecondsReturnType]
+):
     def to_pytimedelta(self) -> np.ndarray: ...
     @property
     def components(self) -> DataFrame: ...
     @property
-    def days(self) -> Series[int]: ...
+    def days(self) -> _TDNoRoundingMethodReturnType: ...
     @property
-    def seconds(self) -> Series[int]: ...
+    def seconds(self) -> _TDNoRoundingMethodReturnType: ...
     @property
-    def microseconds(self) -> Series[int]: ...
+    def microseconds(self) -> _TDNoRoundingMethodReturnType: ...
     @property
-    def nanoseconds(self) -> Series[int]: ...
-    def total_seconds(self) -> Series[float]: ...
+    def nanoseconds(self) -> _TDNoRoundingMethodReturnType: ...
+    def total_seconds(self) -> _TDTotalSecondsReturnType: ...
 
 class TimedeltaProperties(
     Properties,
-    _TimedeltaPropertiesNoRounding,
+    _TimedeltaPropertiesNoRounding[Series[int], Series[float]],
     _DatetimeRoundingMethods[TimedeltaSeries],
 ): ...
 
@@ -337,7 +346,7 @@ class CombinedDatetimelikeProperties(
         Series[str],
         PeriodSeries,
     ],
-    _TimedeltaPropertiesNoRounding,
+    _TimedeltaPropertiesNoRounding[Series[int], Series[float]],
     _PeriodProperties,
 ):
     def __new__(cls, data: Series): ...
@@ -379,3 +388,32 @@ class DatetimeIndexProperties(
     def std(
         self, axis: int | None = ..., ddof: int = ..., skipna: bool = ...
     ) -> Timedelta: ...
+
+# For some reason, using TimedeltaIndex as an argument to _DatetimeRoundingMethods
+# doesn't work for pyright.  So we just make the rounding methods explicit here.
+class TimedeltaIndexProperties(
+    Properties,
+    _TimedeltaPropertiesNoRounding[Index, Index],
+    # _DatetimeRoundingMethods[TimedeltaIndex],
+):
+    def round(
+        self,
+        freq: str | BaseOffset | None,
+        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
+        | Timedelta = ...,
+    ) -> TimedeltaIndex: ...
+    def floor(
+        self,
+        freq: str | BaseOffset | None,
+        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
+        | Timedelta = ...,
+    ) -> TimedeltaIndex: ...
+    def ceil(
+        self,
+        freq: str | BaseOffset | None,
+        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
+        | Timedelta = ...,
+    ) -> TimedeltaIndex: ...

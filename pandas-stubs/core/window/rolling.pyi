@@ -2,7 +2,6 @@ from typing import (
     Any,
     Callable,
     Generic,
-    Hashable,
     overload,
 )
 
@@ -12,14 +11,11 @@ from pandas import (
     Series,
 )
 from pandas.core.base import SelectionMixin
-from pandas.core.groupby.ops import BaseGrouper
-from pandas.core.indexes.api import Index
 
 from pandas._typing import (
     AggFuncTypeBase,
     AggFuncTypeFrame,
     AggFuncTypeSeriesToFrame,
-    Axis,
     NDFrameT,
     QuantileInterpolation,
     WindowingEngine,
@@ -28,34 +24,6 @@ from pandas._typing import (
 )
 
 class BaseWindow(SelectionMixin[NDFrameT], Generic[NDFrameT]):
-    exclusions: frozenset[Hashable]
-    obj: Any = ...  # Incomplete
-    on: Any = ...  # Incomplete
-    closed: Any = ...  # Incomplete
-    window: Any = ...  # Incomplete
-    min_periods: Any = ...  # Incomplete
-    center: Any = ...  # Incomplete
-    axis: Any = ...  # Incomplete
-    method: Any = ...  # Incomplete
-    def __init__(
-        self,
-        obj: NDFrameT,
-        window: Any | None = ...,
-        min_periods: int | None = ...,
-        center: bool = ...,
-        win_type: str | None = ...,
-        axis: Axis = ...,
-        on: str | Index | None = ...,
-        closed: str | None = ...,
-        method: str = ...,
-        *,
-        selection: Any | None = ...,
-    ) -> None: ...
-    @property
-    def win_type(self): ...
-    @property
-    def is_datetimelike(self) -> bool: ...
-    def validate(self) -> None: ...
     def __getattr__(self, attr: str): ...
     def __iter__(self): ...
     @overload
@@ -78,15 +46,7 @@ class BaseWindow(SelectionMixin[NDFrameT], Generic[NDFrameT]):
     ) -> DataFrame: ...
     agg = aggregate
 
-class BaseWindowGroupby(BaseWindow[NDFrameT]):
-    def __init__(
-        self,
-        obj: NDFrameT,
-        *args: Any,
-        _grouper: BaseGrouper,
-        _as_index: bool = ...,
-        **kwargs: Any,
-    ) -> None: ...
+class BaseWindowGroupby(BaseWindow[NDFrameT]): ...
 
 class Window(BaseWindow[NDFrameT]):
     @overload

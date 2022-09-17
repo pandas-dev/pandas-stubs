@@ -442,6 +442,18 @@ def test_types_groupby() -> None:
     s.groupby(["a", "b", "a", "b"])
     s.groupby(level=0)
     s.groupby(s > 2)
+    # GH 284
+    s.groupby([s > 2, s % 2 == 1])
+    s.groupby(lambda x: x)
+    s.groupby([lambda x: x, lambda x: x.replace("a", "b")])
+    s.groupby(np.array([1, 0, 1, 0]))
+    s.groupby([np.array([1, 0, 0, 0]), np.array([0, 0, 1, 0])])
+    s.groupby({"a": 1, "b": 2})
+    s.groupby([{"a": 1, "b": 3}, {"a": 1, "b": 1}])
+    s.groupby(s.index)
+    s.groupby([pd.Index([1, 0, 0, 0]), pd.Index([0, 0, 1, 0])])
+    s.groupby(pd.Grouper(level=0))
+    s.groupby([pd.Grouper(level=0), pd.Grouper(level=0)])
 
 
 def test_types_groupby_methods() -> None:
@@ -1175,3 +1187,20 @@ def test_types_to_numpy() -> None:
     check(assert_type(s.to_numpy(), np.ndarray), np.ndarray)
     check(assert_type(s.to_numpy(dtype="str", copy=True), np.ndarray), np.ndarray)
     check(assert_type(s.to_numpy(na_value=0), np.ndarray), np.ndarray)
+
+
+def test_where() -> None:
+    s = pd.Series([1, 2, 3], dtype=int)
+
+    def cond1(x: int) -> bool:
+        return x % 2 == 0
+
+    check(assert_type(s.where(cond1, other=0), "pd.Series[int]"), pd.Series, int)
+
+    def cond2(x: pd.Series[int]) -> pd.Series[bool]:
+        return x > 1
+
+    check(assert_type(s.where(cond2, other=0), "pd.Series[int]"), pd.Series, int)
+
+    cond3 = pd.Series([False, True, True])
+    check(assert_type(s.where(cond3, other=0), "pd.Series[int]"), pd.Series, int)

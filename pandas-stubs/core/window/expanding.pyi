@@ -9,7 +9,6 @@ from pandas import (
     DataFrame,
     Series,
 )
-from pandas.core.generic import NDFrame
 from pandas.core.window.rolling import (
     BaseWindowGroupby,
     RollingAndExpandingMixin,
@@ -19,7 +18,6 @@ from pandas._typing import (
     AggFuncTypeBase,
     AggFuncTypeFrame,
     AggFuncTypeSeriesToFrame,
-    Axis,
     NDFrameT,
     QuantileInterpolation,
     WindowingEngine,
@@ -28,15 +26,6 @@ from pandas._typing import (
 )
 
 class Expanding(RollingAndExpandingMixin[NDFrameT]):
-    def __init__(
-        self,
-        obj: NDFrame,
-        min_periods: int = ...,
-        center: Any | None = ...,  # Incomplete
-        axis: Axis = ...,
-        method: str = ...,
-        selection: Any | None = ...,  # Incomplete
-    ) -> None: ...
     @overload
     def aggregate(
         self: Expanding[Series], func: AggFuncTypeBase, *args: Any, **kwargs: Any

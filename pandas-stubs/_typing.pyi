@@ -29,6 +29,7 @@ import numpy as np
 from numpy import typing as npt
 from pandas.core.arrays import ExtensionArray
 from pandas.core.generic import NDFrame
+from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
 
@@ -214,7 +215,20 @@ XMLParsers = Literal["lxml", "etree"]
 # Any plain Python or numpy function
 Function = Union[np.ufunc, Callable[..., Any]]
 GroupByObjectNonScalar = Union[
-    tuple, list[HashableT], Function, Series, np.ndarray, Mapping[Label, Any], Index
+    tuple,
+    list[HashableT],
+    Function,
+    list[Function],
+    Series,
+    list[Series],
+    np.ndarray,
+    list[np.ndarray],
+    Mapping[Label, Any],
+    list[Mapping[Label, Any]],
+    Index,
+    list[Index],
+    Grouper,
+    list[Grouper],
 ]
 GroupByObject = Union[Scalar, GroupByObjectNonScalar]
 

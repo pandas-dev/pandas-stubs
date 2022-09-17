@@ -1,6 +1,7 @@
 from typing import (
     Any,
     Generic,
+    Literal,
     overload,
 )
 
@@ -9,7 +10,6 @@ from pandas import (
     DataFrame,
     Series,
 )
-from pandas.core.generic import NDFrame
 from pandas.core.window.rolling import BaseWindow
 
 from pandas._typing import (
@@ -24,28 +24,19 @@ from pandas._typing import (
 )
 
 class ExponentialMovingWindow(BaseWindow[NDFrameT], Generic[NDFrameT]):
-    com: Any = ...  # Incomplete
-    span: Any = ...  # Incomplete
-    halflife: Any = ...  # Incomplete
-    alpha: Any = ...  # Incomplete
-    adjust: Any = ...  # Incomplete
-    ignore_na: Any = ...  # Incomplete
-    times: Any = ...  # Incomplete
     def __init__(
         self,
         obj: NDFrameT,
         com: float | None = ...,
         span: float | None = ...,
-        halflife: float | TimedeltaConvertibleTypes | None = ...,
+        halflife: TimedeltaConvertibleTypes | None = ...,
         alpha: float | None = ...,
         min_periods: int | None = ...,
         adjust: bool = ...,
         ignore_na: bool = ...,
         axis: Axis = ...,
-        times: str | np.ndarray | NDFrame | None = ...,
-        method: str = ...,
-        *,
-        selection: Any | None = ...,
+        times: str | np.ndarray | Series | None = ...,
+        method: Literal["single", "table"] = ...,
     ) -> None: ...
     @overload
     def aggregate(

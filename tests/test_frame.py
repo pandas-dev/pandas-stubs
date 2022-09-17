@@ -585,6 +585,19 @@ def test_types_groupby() -> None:
     df.groupby(level="ind")
     df.groupby(by="col1", sort=False, as_index=True)
     df.groupby(by=["col1", "col2"])
+    # GH 284
+    df.groupby(df["col1"] > 2)
+    df.groupby([df["col1"] > 2, df["col2"] % 2 == 1])
+    df.groupby(lambda x: x)
+    df.groupby([lambda x: x % 2, lambda x: x % 3])
+    df.groupby(np.array([1, 0, 1]))
+    df.groupby([np.array([1, 0, 0]), np.array([0, 0, 1])])
+    df.groupby({1: 1, 2: 2, 3: 3})
+    df.groupby([{1: 1, 2: 1, 3: 2}, {1: 1, 2: 2, 3: 2}])
+    df.groupby(df.index)
+    df.groupby([pd.Index([1, 0, 0]), pd.Index([0, 0, 1])])
+    df.groupby(pd.Grouper(level=0))
+    df.groupby([pd.Grouper(level=0), pd.Grouper(key="col1")])
 
     df1: pd.DataFrame = df.groupby(by="col1").agg("sum")
     df2: pd.DataFrame = df.groupby(level="ind").aggregate("sum")
@@ -1737,3 +1750,20 @@ def test_loc_slice() -> None:
         index=pd.MultiIndex.from_product([[1, 2], ["a", "b"]], names=["num", "let"]),
     )
     check(assert_type(df1.loc[1, :], pd.DataFrame), pd.DataFrame)
+
+
+def test_where() -> None:
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+
+    def cond1(x: int) -> bool:
+        return x % 2 == 0
+
+    check(assert_type(df.where(cond1), pd.DataFrame), pd.DataFrame)
+
+    def cond2(x: pd.DataFrame) -> pd.DataFrame:
+        return x > 1
+
+    check(assert_type(df.where(cond2), pd.DataFrame), pd.DataFrame)
+
+    cond3 = pd.DataFrame({"a": [True, True, False], "b": [False, False, False]})
+    check(assert_type(df.where(cond3), pd.DataFrame), pd.DataFrame)

@@ -5,12 +5,14 @@ from typing import (
     Generator,
     Iterable,
     Literal,
+    Union,
     overload,
 )
 
 from pandas.core.base import PandasObject
 from pandas.core.frame import DataFrame
 import sqlalchemy.engine
+import sqlalchemy.sql.expression
 
 from pandas._typing import (
     DtypeArg,
@@ -20,10 +22,16 @@ from pandas._typing import (
 # TODO: Remove after switch to 1.5.x, moved to pandas.errors
 class DatabaseError(IOError): ...
 
+_SQLConnection = Union[
+    str,
+    sqlalchemy.engine.Connectable,
+    sqlite3.Connection,
+]
+
 @overload
 def read_sql_table(
     table_name: str,
-    con: str | sqlalchemy.engine.Connectable | sqlite3.Connection,
+    con: _SQLConnection,
     schema: str | None = ...,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
@@ -35,7 +43,7 @@ def read_sql_table(
 @overload
 def read_sql_table(
     table_name: str,
-    con: str | sqlalchemy.engine.Connectable | sqlite3.Connection,
+    con: _SQLConnection,
     schema: str | None = ...,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
@@ -45,8 +53,8 @@ def read_sql_table(
 ) -> DataFrame: ...
 @overload
 def read_sql_query(
-    sql: str,
-    con: str | sqlalchemy.engine.Connectable | sqlite3.Connection,
+    sql: str | sqlalchemy.sql.expression.Selectable,
+    con: _SQLConnection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
     params: list[str] | tuple[str, ...] | dict[str, str] | None = ...,
@@ -57,8 +65,8 @@ def read_sql_query(
 ) -> Generator[DataFrame, None, None]: ...
 @overload
 def read_sql_query(
-    sql: str,
-    con: str | sqlalchemy.engine.Connectable | sqlite3.Connection,
+    sql: str | sqlalchemy.sql.expression.Selectable,
+    con: _SQLConnection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
     params: list[str] | tuple[str, ...] | dict[str, str] | None = ...,
@@ -68,8 +76,8 @@ def read_sql_query(
 ) -> DataFrame: ...
 @overload
 def read_sql(
-    sql: str,
-    con: str | sqlalchemy.engine.Connectable | sqlite3.Connection,
+    sql: str | sqlalchemy.sql.expression.Selectable,
+    con: _SQLConnection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
     params: list[str] | tuple[str, ...] | dict[str, str] | None = ...,
@@ -80,8 +88,8 @@ def read_sql(
 ) -> Generator[DataFrame, None, None]: ...
 @overload
 def read_sql(
-    sql: str,
-    con: str | sqlalchemy.engine.Connectable | sqlite3.Connection,
+    sql: str | sqlalchemy.sql.expression.Selectable,
+    con: _SQLConnection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
     params: list[str] | tuple[str, ...] | dict[str, str] | None = ...,

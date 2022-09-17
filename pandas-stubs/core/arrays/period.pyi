@@ -1,14 +1,17 @@
 from typing import Sequence
 
 import numpy as np
-from pandas.core.arrays import datetimelike as dtl
+from pandas.core.arrays.datetimelike import (
+    DatelikeOps,
+    DatetimeLikeArrayMixin,
+)
 
 from pandas._libs.tslibs import Timestamp
 from pandas._libs.tslibs.period import Period as Period
 
 from pandas.tseries.offsets import Tick as Tick
 
-class PeriodArray(dtl.DatetimeLikeArrayMixin, dtl.DatelikeOps):
+class PeriodArray(DatetimeLikeArrayMixin, DatelikeOps):
     __array_priority__: int = ...
     def __init__(self, values, freq=..., dtype=..., copy: bool = ...) -> None: ...
     def dtype(self): ...
