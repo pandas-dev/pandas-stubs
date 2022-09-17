@@ -1764,3 +1764,20 @@ def test_loc_slice() -> None:
         index=pd.MultiIndex.from_product([[1, 2], ["a", "b"]], names=["num", "let"]),
     )
     check(assert_type(df1.loc[1, :], pd.DataFrame), pd.DataFrame)
+
+
+def test_where() -> None:
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+
+    def cond1(x: int) -> bool:
+        return x % 2 == 0
+
+    check(assert_type(df.where(cond1), pd.DataFrame), pd.DataFrame)
+
+    def cond2(x: pd.DataFrame) -> pd.DataFrame:
+        return x > 1
+
+    check(assert_type(df.where(cond2), pd.DataFrame), pd.DataFrame)
+
+    cond3 = pd.DataFrame({"a": [True, True, False], "b": [False, False, False]})
+    check(assert_type(df.where(cond3), pd.DataFrame), pd.DataFrame)

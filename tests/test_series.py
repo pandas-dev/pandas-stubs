@@ -1192,3 +1192,20 @@ def test_types_to_numpy() -> None:
     check(assert_type(s.to_numpy(), np.ndarray), np.ndarray)
     check(assert_type(s.to_numpy(dtype="str", copy=True), np.ndarray), np.ndarray)
     check(assert_type(s.to_numpy(na_value=0), np.ndarray), np.ndarray)
+
+
+def test_where() -> None:
+    s = pd.Series([1, 2, 3], dtype=int)
+
+    def cond1(x: int) -> bool:
+        return x % 2 == 0
+
+    check(assert_type(s.where(cond1, other=0), "pd.Series[int]"), pd.Series, int)
+
+    def cond2(x: pd.Series[int]) -> pd.Series[bool]:
+        return x > 1
+
+    check(assert_type(s.where(cond2, other=0), "pd.Series[int]"), pd.Series, int)
+
+    cond3 = pd.Series([False, True, True])
+    check(assert_type(s.where(cond3, other=0), "pd.Series[int]"), pd.Series, int)
