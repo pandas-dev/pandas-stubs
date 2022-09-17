@@ -1,4 +1,7 @@
-from typing import TypeVar
+from typing import (
+    TypeVar,
+    Union,
+)
 
 import numpy as np
 from pandas.core.indexes.api import Index
@@ -9,7 +12,9 @@ from pandas._typing import (
     Scalar,
 )
 
-_IndexSliceTuple = slice | tuple[Index | MaskType | Scalar | list[Scalar] | slice, ...]
+_IndexSliceTuple = Union[
+    slice, tuple[Union[Index, MaskType, Scalar, list[Scalar], slice], ...]
+]
 
 _IndexSliceTupleT = TypeVar("_IndexSliceTupleT", bound=_IndexSliceTuple)
 
