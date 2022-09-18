@@ -209,6 +209,8 @@ def test_types_fillna() -> None:
     assert assert_type(s.fillna(method="bfill", inplace=True), None) is None
     check(assert_type(s.fillna(method="pad"), pd.Series), pd.Series)
     check(assert_type(s.fillna(method="ffill", limit=1), pd.Series), pd.Series)
+    # GH 263
+    check(assert_type(s.fillna(pd.NA), pd.Series), pd.Series)
 
 
 def test_types_sort_index() -> None:

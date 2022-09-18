@@ -40,6 +40,7 @@ from pandas.core.window.rolling import (
 )
 import xarray as xr
 
+from pandas._libs.missing import NAType
 from pandas._typing import (
     S1,
     AggFuncType,
@@ -157,7 +158,8 @@ class _LocIndexerFrame(_LocIndexer):
         self,
         idx: MaskType
         | StrLike
-        | tuple[MaskType | Index | Sequence[ScalarT] | Scalar | slice, ...],
+        | tuple[MaskType | Index | Sequence[ScalarT] | Scalar | slice, ...]
+        | list[ScalarT],
         value: S1 | ArrayLike | Series | DataFrame,
     ) -> None: ...
     @overload
@@ -617,7 +619,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def fillna(
         self,
-        value: Scalar | dict | Series | DataFrame | None = ...,
+        value: Scalar | NAType | dict | Series | DataFrame | None = ...,
         method: FillnaOptions | None = ...,
         axis: AxisType | None = ...,
         limit: int = ...,
@@ -628,7 +630,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def fillna(
         self,
-        value: Scalar | dict | Series | DataFrame | None = ...,
+        value: Scalar | NAType | dict | Series | DataFrame | None = ...,
         method: FillnaOptions | None = ...,
         axis: AxisType | None = ...,
         limit: int = ...,
@@ -639,7 +641,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def fillna(
         self,
-        value: Scalar | dict | Series | DataFrame | None = ...,
+        value: Scalar | NAType | dict | Series | DataFrame | None = ...,
         method: FillnaOptions | None = ...,
         axis: AxisType | None = ...,
         inplace: _bool | None = ...,
@@ -650,7 +652,7 @@ class DataFrame(NDFrame, OpsMixin):
     def replace(
         self,
         to_replace=...,
-        value: Scalar | Sequence | Mapping | Pattern | None = ...,
+        value: Scalar | NAType | Sequence | Mapping | Pattern | None = ...,
         limit: int | None = ...,
         regex=...,
         method: ReplaceMethod = ...,
@@ -661,7 +663,7 @@ class DataFrame(NDFrame, OpsMixin):
     def replace(
         self,
         to_replace=...,
-        value: Scalar | Sequence | Mapping | Pattern | None = ...,
+        value: Scalar | NAType | Sequence | Mapping | Pattern | None = ...,
         inplace: Literal[False] = ...,
         limit: int | None = ...,
         regex=...,
@@ -671,7 +673,7 @@ class DataFrame(NDFrame, OpsMixin):
     def replace(
         self,
         to_replace=...,
-        value: Scalar | Sequence | Mapping | Pattern | None = ...,
+        value: Scalar | NAType | Sequence | Mapping | Pattern | None = ...,
         inplace: _bool | None = ...,
         limit: int | None = ...,
         regex=...,
