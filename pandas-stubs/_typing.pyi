@@ -175,9 +175,6 @@ NDFrameT = TypeVar("NDFrameT", bound=NDFrame)
 
 IndexT = TypeVar("IndexT", bound=Index)
 
-IndexSliceTuple = Union[
-    slice, tuple[Union[Index, MaskType, Scalar, list[ScalarT], slice], ...]
-]
 # Interval closed type
 
 IntervalClosedType = Literal["left", "right", "both", "neither"]
