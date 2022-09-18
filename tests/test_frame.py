@@ -1278,6 +1278,28 @@ def test_indexslice_setitem():
     df.loc[pd.IndexSlice[2, :], "z"] = [200, 300]
 
 
+def test_indexslice_getitem():
+    # GH 300
+    df = (
+        pd.DataFrame({"x": [1, 2, 2, 3, 4], "y": [10, 20, 30, 40, 10]})
+        .assign(z=lambda df: df.x * df.y)
+        .set_index(["x", "y"])
+    )
+    ind = pd.Index([2, 3])
+    check(assert_type(pd.IndexSlice[ind, :], "tuple[pd.Index, slice]"), tuple)
+    check(assert_type(df.loc[pd.IndexSlice[ind, :]], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[pd.IndexSlice[1:2]], pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.loc[pd.IndexSlice[:, df["z"] > 40], :], pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.loc[pd.IndexSlice[2, 30], "z"], Scalar), np.int64)
+    check(
+        assert_type(df.loc[pd.IndexSlice[[2, 4], [20, 40]], :], pd.DataFrame),
+        pd.DataFrame,
+    )
+
+
 def test_compute_values():
     df = pd.DataFrame({"x": [1, 2, 3, 4]})
     s: pd.Series = pd.Series([10, 20, 30, 40])
