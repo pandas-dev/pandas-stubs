@@ -49,7 +49,11 @@ from pandas.core.indexing import (
 )
 from pandas.core.resample import Resampler
 from pandas.core.strings import StringMethods
-from pandas.core.window import ExponentialMovingWindow
+from pandas.core.window import (
+    Expanding,
+    ExponentialMovingWindow,
+    Rolling,
+)
 from pandas.core.window.rolling import (
     Rolling,
     Window,
@@ -60,7 +64,8 @@ from pandas._libs.missing import NAType
 from pandas._typing import (
     S1,
     AggFuncTypeBase,
-    AggFuncTypeDict,
+    AggFuncTypeDictFrame,
+    AggFuncTypeSeriesToFrame,
     ArrayLike,
     Axes,
     Axis,
@@ -80,6 +85,7 @@ from pandas._typing import (
     MaskType,
     MergeHow,
     NaPosition,
+    QuantileInterpolation,
     Renamer,
     ReplaceMethod,
     Scalar,
@@ -454,15 +460,13 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def quantile(
         self,
         q: float = ...,
-        interpolation: _str
-        | Literal["linear", "lower", "higher", "midpoint", "nearest"] = ...,
+        interpolation: QuantileInterpolation = ...,
     ) -> float: ...
     @overload
     def quantile(
         self,
         q: _ListLike,
-        interpolation: _str
-        | Literal["linear", "lower", "higher", "midpoint", "nearest"] = ...,
+        interpolation: QuantileInterpolation = ...,
     ) -> Series[S1]: ...
     def corr(
         self,
@@ -629,27 +633,12 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def aggregate(
         self,
-        func: list[AggFuncTypeBase] | dict[Hashable, AggFuncTypeBase] = ...,
+        func: AggFuncTypeSeriesToFrame = ...,
         axis: SeriesAxisType = ...,
         *args,
         **kwargs,
     ) -> Series[S1]: ...
-    @overload
-    def agg(
-        self,
-        func: AggFuncTypeBase,
-        axis: SeriesAxisType = ...,
-        *args,
-        **kwargs,
-    ) -> S1: ...
-    @overload
-    def agg(
-        self,
-        func: list[AggFuncTypeBase] | dict[Hashable, AggFuncTypeBase] = ...,
-        axis: SeriesAxisType = ...,
-        *args,
-        **kwargs,
-    ) -> Series[S1]: ...
+    agg = aggregate
     @overload
     def transform(
         self,
@@ -661,7 +650,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def transform(
         self,
-        func: list[AggFuncTypeBase] | AggFuncTypeDict,
+        func: list[AggFuncTypeBase] | AggFuncTypeDictFrame,
         axis: SeriesAxisType = ...,
         *args,
         **kwargs,
@@ -1322,10 +1311,13 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         adjust: _bool = ...,
         ignore_na: _bool = ...,
         axis: SeriesAxisType = ...,
-    ) -> ExponentialMovingWindow: ...
+    ) -> ExponentialMovingWindow[Series]: ...
     def expanding(
-        self, min_periods: int = ..., axis: SeriesAxisType = ...
-    ) -> DataFrame: ...
+        self,
+        min_periods: int = ...,
+        axis: SeriesAxisType = ...,
+        method: Literal["single", "table"] = ...,
+    ) -> Expanding[Series]: ...
     def floordiv(
         self,
         other: num | _ListLike | Series[S1],
@@ -1528,7 +1520,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         on: _str | None = ...,
         axis: SeriesAxisType = ...,
         closed: _str | None = ...,
-    ) -> Window: ...
+    ) -> Window[Series]: ...
     @overload
     def rolling(
         self,
@@ -1539,7 +1531,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         on: _str | None = ...,
         axis: SeriesAxisType = ...,
         closed: _str | None = ...,
-    ) -> Rolling: ...
+    ) -> Rolling[Series]: ...
     def rpow(
         self,
         other: Series[S1] | Scalar,

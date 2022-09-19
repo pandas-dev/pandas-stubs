@@ -12,7 +12,6 @@ from typing import (
     Iterator,
     List,
     Sequence,
-    Union,
     cast,
 )
 
@@ -519,23 +518,19 @@ def test_types_window() -> None:
     s.rolling(2, axis=0, center=True)
 
     check(
-        assert_type(s.rolling(2).agg("sum"), Union[Scalar, pd.Series, pd.DataFrame]),
+        assert_type(s.rolling(2).agg("sum"), pd.Series),
         pd.Series,
     )
     check(
-        assert_type(s.rolling(2).agg(sum), Union[Scalar, pd.Series, pd.DataFrame]),
+        assert_type(s.rolling(2).agg(sum), pd.Series),
         pd.Series,
     )
     check(
-        assert_type(
-            s.rolling(2).agg(["max", "min"]), Union[Scalar, pd.Series, pd.DataFrame]
-        ),
+        assert_type(s.rolling(2).agg(["max", "min"]), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(
-            s.rolling(2).agg([max, min]), Union[Scalar, pd.Series, pd.DataFrame]
-        ),
+        assert_type(s.rolling(2).agg([max, min]), pd.DataFrame),
         pd.DataFrame,
     )
 

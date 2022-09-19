@@ -34,6 +34,10 @@ from pandas.core.indexing import (
 )
 from pandas.core.resample import Resampler
 from pandas.core.series import Series
+from pandas.core.window import (
+    Expanding,
+    ExponentialMovingWindow,
+)
 from pandas.core.window.rolling import (
     Rolling,
     Window,
@@ -43,9 +47,9 @@ import xarray as xr
 from pandas._libs.missing import NAType
 from pandas._typing import (
     S1,
-    AggFuncType,
     AggFuncTypeBase,
-    AggFuncTypeDict,
+    AggFuncTypeDictFrame,
+    AggFuncTypeFrame,
     AnyArrayLike,
     ArrayLike,
     Axes,
@@ -65,6 +69,7 @@ from pandas._typing import (
     IndexingInt,
     IndexLabel,
     IndexType,
+    IntervalClosedType,
     JsonFrameOrient,
     Label,
     Level,
@@ -74,6 +79,7 @@ from pandas._typing import (
     MergeHow,
     NaPosition,
     ParquetEngine,
+    QuantileInterpolation,
     ReadBuffer,
     Renamer,
     ReplaceMethod,
@@ -1052,7 +1058,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def agg(
         self,
-        func: list[AggFuncTypeBase] | AggFuncTypeDict = ...,
+        func: list[AggFuncTypeBase] | AggFuncTypeDictFrame = ...,
         axis: AxisType = ...,
         **kwargs,
     ) -> DataFrame: ...
@@ -1063,13 +1069,13 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def aggregate(
         self,
-        func: list[AggFuncTypeBase] | AggFuncTypeDict,
+        func: list[AggFuncTypeBase] | AggFuncTypeDictFrame,
         axis: AxisType = ...,
         **kwargs,
     ) -> DataFrame: ...
     def transform(
         self,
-        func: AggFuncType,
+        func: AggFuncTypeFrame,
         axis: AxisType = ...,
         *args,
         **kwargs,
@@ -1165,8 +1171,7 @@ class DataFrame(NDFrame, OpsMixin):
         q: float = ...,
         axis: AxisType = ...,
         numeric_only: _bool = ...,
-        interpolation: _str
-        | Literal["linear", "lower", "higher", "midpoint", "nearest"] = ...,
+        interpolation: QuantileInterpolation = ...,
     ) -> Series: ...
     @overload
     def quantile(
@@ -1174,8 +1179,7 @@ class DataFrame(NDFrame, OpsMixin):
         q: list[float] | np.ndarray,
         axis: AxisType = ...,
         numeric_only: _bool = ...,
-        interpolation: _str
-        | Literal["linear", "lower", "higher", "midpoint", "nearest"] = ...,
+        interpolation: QuantileInterpolation = ...,
     ) -> DataFrame: ...
     def to_timestamp(
         self,
@@ -1412,8 +1416,13 @@ class DataFrame(NDFrame, OpsMixin):
         adjust: _bool = ...,
         ignore_na: _bool = ...,
         axis: AxisType = ...,
-    ) -> DataFrame: ...
-    def expanding(self, min_periods: int = ..., axis: AxisType = ...): ...  # for now
+    ) -> ExponentialMovingWindow[DataFrame]: ...
+    def expanding(
+        self,
+        min_periods: int = ...,
+        axis: AxisType = ...,
+        method: Literal["single", "table"] = ...,
+    ) -> Expanding[DataFrame]: ...
     @overload
     def ffill(
         self,
@@ -1767,10 +1776,10 @@ class DataFrame(NDFrame, OpsMixin):
         center: _bool = ...,
         *,
         win_type: _str,
-        on: _str | None = ...,
+        on: Hashable | None = ...,
         axis: AxisType = ...,
-        closed: _str | None = ...,
-    ) -> Window: ...
+        closed: IntervalClosedType | None = ...,
+    ) -> Window[DataFrame]: ...
     @overload
     def rolling(
         self,
@@ -1778,10 +1787,10 @@ class DataFrame(NDFrame, OpsMixin):
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
-        on: _str | None = ...,
+        on: Hashable | None = ...,
         axis: AxisType = ...,
-        closed: _str | None = ...,
-    ) -> Rolling: ...
+        closed: IntervalClosedType | None = ...,
+    ) -> Rolling[DataFrame]: ...
     def rpow(
         self,
         other,

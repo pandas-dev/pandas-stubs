@@ -98,12 +98,17 @@ FuncType = Callable[..., Any]
 F = TypeVar("F", bound=FuncType)
 HashableT = TypeVar("HashableT", bound=Hashable)
 
-AggFuncTypeBase = Union[Callable, str]
-AggFuncTypeDict = dict[Hashable, Union[AggFuncTypeBase, list[AggFuncTypeBase]]]
-AggFuncType = Union[
+AggFuncTypeBase = Union[Callable, str, np.ufunc]
+AggFuncTypeDictSeries = dict[Hashable, AggFuncTypeBase]
+AggFuncTypeDictFrame = dict[Hashable, Union[AggFuncTypeBase, list[AggFuncTypeBase]]]
+AggFuncTypeSeriesToFrame = Union[
+    list[AggFuncTypeBase],
+    AggFuncTypeDictSeries,
+]
+AggFuncTypeFrame = Union[
     AggFuncTypeBase,
     list[AggFuncTypeBase],
-    AggFuncTypeDict,
+    AggFuncTypeDictFrame,
 ]
 
 num = complex
@@ -263,6 +268,18 @@ FileWriteMode = Literal[
     "a", "w", "x", "at", "wt", "xt", "ab", "wb", "xb", "w+", "w+b", "a+", "a+b"
 ]
 ColspaceArgType = str | int | Sequence[int | str] | Mapping[Hashable, str | int]
+
+# Windowing rank methods
+WindowingRankType = Literal["average", "min", "max"]
+WindowingEngine = Union[Literal["cython", "numba"], None]
+
+class _WindowingNumbaKwargs(TypedDict, total=False):
+    nopython: bool
+    nogil: bool
+    parallel: bool
+
+WindowingEngineKwargs = Union[_WindowingNumbaKwargs, None]
+QuantileInterpolation = Literal["linear", "lower", "higher", "midpoint", "nearest"]
 
 class StyleExportDict(TypedDict, total=False):
     apply: Any

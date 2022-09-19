@@ -18,6 +18,7 @@ from pandas._typing import (
     IndexLabel,
     IntervalClosedType,
     Level,
+    QuantileInterpolation,
     Scalar,
     T,
     WriteBuffer,
@@ -312,9 +313,7 @@ class Styler(StylerRenderer[Styler]):
         axis: AxisType | None = ...,
         q_left: float = ...,
         q_right: float = ...,
-        interpolation: Literal[
-            "linear", "lower", "higher", "midpoint", "nearest"
-        ] = ...,
+        interpolation: QuantileInterpolation = ...,
         inclusive: IntervalClosedType = ...,
         props: str | None = ...,
     ) -> Styler: ...
