@@ -26,7 +26,6 @@ def unique(values: ExtensionArray) -> ExtensionArray: ...
 def factorize(
     values: Any,
     sort: bool = ...,
-    na_sentinel: int | None = ...,
     use_na_sentinel: bool = ...,
     size_hint: int | None = ...,
 ) -> tuple[np.ndarray, np.ndarray | Index]: ...
