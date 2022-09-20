@@ -44,7 +44,6 @@ def read_csv(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
-    mangle_dupe_cols: bool = ...,
     dtype: DtypeArg | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
@@ -108,7 +107,6 @@ def read_csv(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
-    mangle_dupe_cols: bool = ...,
     dtype: DtypeArg | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
@@ -172,7 +170,6 @@ def read_csv(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
-    mangle_dupe_cols: bool = ...,
     dtype: DtypeArg | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
