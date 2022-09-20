@@ -48,7 +48,7 @@ import sqlalchemy.orm.decl_api
 from typing_extensions import assert_type
 
 from tests import (
-    PD_LT_15,
+    WINDOWS,
     check,
 )
 
@@ -68,14 +68,14 @@ DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 CWD = os.path.split(os.path.abspath(__file__))[0]
 
 
-@pytest.mark.skipif(PD_LT_15, reason="pandas 1.5.0 or later required")
+@pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc():
     with ensure_clean() as path:
         check(assert_type(DF.to_orc(path), None), type(None))
         check(assert_type(read_orc(path), DataFrame), DataFrame)
 
 
-@pytest.mark.skipif(PD_LT_15, reason="pandas 1.5.0 or later required")
+@pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_path():
     with ensure_clean() as path:
         pathlib_path = Path(path)
@@ -83,7 +83,7 @@ def test_orc_path():
         check(assert_type(read_orc(pathlib_path), DataFrame), DataFrame)
 
 
-@pytest.mark.skipif(PD_LT_15, reason="pandas 1.5.0 or later required")
+@pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_buffer():
     with ensure_clean() as path:
         file_w = open(path, "wb")
@@ -95,14 +95,14 @@ def test_orc_buffer():
         file_r.close()
 
 
-@pytest.mark.skipif(PD_LT_15, reason="pandas 1.5.0 or later required")
+@pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_columns():
     with ensure_clean() as path:
         check(assert_type(DF.to_orc(path, index=False), None), type(None))
         check(assert_type(read_orc(path, columns=["a"]), DataFrame), DataFrame)
 
 
-@pytest.mark.skipif(PD_LT_15, reason="pandas 1.5.0 or later required")
+@pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_bytes():
     check(assert_type(DF.to_orc(index=False), bytes), bytes)
 
@@ -190,7 +190,6 @@ def test_read_stata_df():
 
 
 # Remove test when pandas 1.5.0 is released
-@pytest.mark.skipif(not PD_LT_15, reason="Keyword only in 1.5.0")
 def test_read_stata_iterator_positional():
     with ensure_clean() as path:
         str_path = str(path)
