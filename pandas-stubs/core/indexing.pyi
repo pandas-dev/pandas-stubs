@@ -24,9 +24,6 @@ class _IndexSlice:
 
 IndexSlice: _IndexSlice
 
-# TODO: Remove from here after 1.5.x, moved to pandas.errors
-class IndexingError(Exception): ...
-
 class IndexingMixin:
     @property
     def iloc(self) -> _iLocIndexer: ...

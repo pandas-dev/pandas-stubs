@@ -17,10 +17,6 @@ from pandas._typing import (
     npt,
 )
 
-# TODO: These two moved to pandas.errors after switch to 1.5.x
-class DataError(Exception): ...
-class SpecificationError(Exception): ...
-
 class PandasObject(DirNamesMixin):
     def __sizeof__(self) -> int: ...
 
