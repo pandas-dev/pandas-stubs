@@ -54,7 +54,6 @@ from tests import (
 
 from pandas.io.api import to_pickle
 from pandas.io.clipboard import PyperclipException
-from pandas.io.common import IOHandles
 from pandas.io.json._json import JsonReader
 from pandas.io.parsers import TextFileReader
 from pandas.io.pytables import (
@@ -661,9 +660,6 @@ def test_excel_writer():
         with pd.ExcelWriter(path) as ew:
             check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
             DF.to_excel(ew, sheet_name="A")
-            if PD_LT_15:
-                # Remove after 1.5 and remove handles from ExcelWriter
-                check(assert_type(ew.handles, IOHandles[bytes]), IOHandles)
         check(assert_type(read_excel(path, sheet_name="A"), DataFrame), DataFrame)
         check(assert_type(read_excel(path), DataFrame), DataFrame)
         ef = pd.ExcelFile(path)

@@ -79,7 +79,6 @@ from pandas._typing import (
     IgnoreRaise,
     IndexingInt,
     JsonSeriesOrient,
-    Label,
     Level,
     ListLike,
     MaskType,

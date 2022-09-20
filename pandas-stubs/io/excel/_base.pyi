@@ -2,7 +2,6 @@ from types import TracebackType
 from typing import (
     Any,
     Callable,
-    Generator,
     Hashable,
     Iterable,
     Literal,
@@ -23,8 +22,6 @@ from pandas._typing import (
     StorageOptions,
     WriteExcelBuffer,
 )
-
-from pandas.io.common import IOHandles
 
 @overload
 def read_excel(
