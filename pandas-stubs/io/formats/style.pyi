@@ -278,7 +278,7 @@ class Styler(StylerRenderer[Styler]):
     ) -> Styler: ...
     def highlight_null(
         self,
-        null_color: str = ...,
+        color: str | None = ...,
         subset: Subset | None = ...,
         props: str | None = ...,
     ) -> Styler: ...
