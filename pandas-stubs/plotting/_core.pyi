@@ -130,7 +130,6 @@ class PlotAccessor(PandasObject):
         yerr: DataFrame | Series | ArrayLike | dict | str = ...,
         xerr: DataFrame | Series | ArrayLike | dict | str = ...,
         stacked: bool = ...,
-        sort_columns: bool = ...,
         secondary_y: bool | list[HashableT] | tuple[HashableT, ...] = ...,
         mark_right: bool = ...,
         include_bool: bool = ...,
