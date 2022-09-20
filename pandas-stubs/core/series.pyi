@@ -1344,7 +1344,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType | None = ...,
         skipna: _bool = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Scalar: ...
     def kurtosis(
@@ -1352,7 +1351,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType | None = ...,
         skipna: _bool = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Scalar: ...
     def le(
@@ -1392,7 +1390,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         skipna: _bool = ...,
         *,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> S1: ...
     def mean(
@@ -1400,7 +1397,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType | None = ...,
         skipna: _bool = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> float: ...
     def median(
@@ -1408,7 +1404,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType | None = ...,
         skipna: _bool = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> float: ...
     def min(
@@ -1416,7 +1411,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType | None = ...,
         skipna: _bool = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> S1: ...
     def mod(
@@ -1460,7 +1454,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         min_count: int = ...,
         **kwargs,
     ) -> Scalar: ...
@@ -1469,7 +1462,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         min_count: int = ...,
         **kwargs,
     ) -> Scalar: ...
@@ -1558,7 +1550,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         skipna: _bool | None = ...,
         level: None = ...,
         ddof: int = ...,
-        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Scalar: ...
     def skew(
@@ -1566,7 +1557,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Scalar: ...
     def std(
@@ -1575,7 +1565,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         skipna: _bool | None = ...,
         level: None = ...,
         ddof: int = ...,
-        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> float: ...
     def sub(
@@ -1597,7 +1586,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         min_count: int = ...,
         **kwargs,
     ) -> S1: ...
@@ -1623,7 +1611,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         skipna: _bool | None = ...,
         level: None = ...,
         ddof: int = ...,
-        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Scalar: ...
     @overload

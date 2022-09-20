@@ -1170,7 +1170,6 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         q: float = ...,
         axis: AxisType = ...,
-        numeric_only: _bool = ...,
         interpolation: QuantileInterpolation = ...,
     ) -> Series: ...
     @overload
@@ -1178,7 +1177,6 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         q: list[float] | np.ndarray,
         axis: AxisType = ...,
-        numeric_only: _bool = ...,
         interpolation: QuantileInterpolation = ...,
     ) -> DataFrame: ...
     def to_timestamp(
@@ -1523,7 +1521,6 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
     def kurtosis(
@@ -1531,7 +1528,6 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
     def last(self, offset) -> DataFrame: ...
@@ -1573,7 +1569,6 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
     def mean(
@@ -1581,7 +1576,6 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
     def median(
@@ -1589,7 +1583,6 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
     def min(
@@ -1597,7 +1590,6 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
     def mod(
@@ -1651,7 +1643,6 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         min_count: int = ...,
         **kwargs,
     ) -> Series: ...
@@ -1660,7 +1651,6 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         skipna: _bool = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         min_count: int = ...,
         **kwargs,
     ) -> Series: ...
@@ -1829,7 +1819,6 @@ class DataFrame(NDFrame, OpsMixin):
         skipna: _bool | None = ...,
         level: None = ...,
         ddof: int = ...,
-        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
     @overload
@@ -1854,7 +1843,6 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
     def slice_shift(self, periods: int = ..., axis: AxisType = ...) -> DataFrame: ...
@@ -1865,7 +1853,6 @@ class DataFrame(NDFrame, OpsMixin):
         skipna: _bool = ...,
         level: None = ...,
         ddof: int = ...,
-        numeric_only: _bool = ...,
         **kwargs,
     ) -> Series: ...
     def sub(
@@ -1887,7 +1874,6 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
         min_count: int = ...,
         **kwargs,
     ) -> Series: ...
@@ -2023,7 +2009,6 @@ class DataFrame(NDFrame, OpsMixin):
         skipna: _bool | None = ...,
         level: None = ...,
         ddof: int = ...,
-        numeric_only: _bool | None = ...,
         **kwargs,
     ) -> Series: ...
     def where(
