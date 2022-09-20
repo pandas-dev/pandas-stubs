@@ -19,6 +19,7 @@ from pandas import (
     DataFrame,
     HDFStore,
     Series,
+    errors,
     read_clipboard,
     read_csv,
     read_excel,
@@ -53,7 +54,6 @@ from tests import (
 )
 
 from pandas.io.api import to_pickle
-from pandas.io.clipboard import PyperclipException
 from pandas.io.json._json import JsonReader
 from pandas.io.parsers import TextFileReader
 from pandas.io.pytables import (
@@ -189,22 +189,6 @@ def test_read_stata_df():
         check(assert_type(read_stata(path), pd.DataFrame), pd.DataFrame)
 
 
-# Remove test when pandas 1.5.0 is released
-def test_read_stata_iterator_positional():
-    with ensure_clean() as path:
-        str_path = str(path)
-        DF.to_stata(str_path)
-        check(
-            assert_type(
-                read_stata(
-                    str_path, False, False, None, False, False, None, False, 2, True
-                ),
-                StataReader,
-            ),
-            StataReader,
-        )
-
-
 def test_read_stata_iterator():
     with ensure_clean() as path:
         str_path = str(path)
@@ -217,7 +201,7 @@ def test_read_stata_iterator():
 def test_clipboard():
     try:
         DF.to_clipboard()
-    except PyperclipException:
+    except errors.PyperclipException:
         pytest.skip("clipboard not available for testing")
     check(assert_type(read_clipboard(), DataFrame), DataFrame)
     check(assert_type(read_clipboard(iterator=False), DataFrame), DataFrame)
@@ -227,7 +211,7 @@ def test_clipboard():
 def test_clipboard_iterator():
     try:
         DF.to_clipboard()
-    except PyperclipException:
+    except errors.PyperclipException:
         pytest.skip("clipboard not available for testing")
     check(assert_type(read_clipboard(iterator=True), TextFileReader), TextFileReader)
     check(
