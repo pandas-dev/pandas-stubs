@@ -5,11 +5,6 @@ from pandas.core.arrays.base import (
     ExtensionOpsMixin,
 )
 
-from pandas._typing import (
-    Scalar,
-    npt,
-)
-
 from pandas.core.dtypes.dtypes import ExtensionDtype
 
 class PandasDtype(ExtensionDtype):
