@@ -14,6 +14,7 @@ class TimedeltaArray(DatetimeLikeArrayMixin, TimelikeOps):
     def astype(self, dtype, copy: bool = ...): ...
     def sum(
         self,
+        *,
         axis=...,
         dtype=...,
         out=...,
@@ -24,6 +25,7 @@ class TimedeltaArray(DatetimeLikeArrayMixin, TimelikeOps):
     ): ...
     def std(
         self,
+        *,
         axis=...,
         dtype=...,
         out=...,
@@ -33,6 +35,7 @@ class TimedeltaArray(DatetimeLikeArrayMixin, TimelikeOps):
     ): ...
     def median(
         self,
+        *,
         axis=...,
         out=...,
         overwrite_input: bool = ...,
