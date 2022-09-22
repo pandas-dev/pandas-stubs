@@ -1,5 +1,6 @@
 from datetime import (
     date,
+    datetime,
     time,
 )
 from typing import (
@@ -1218,7 +1219,9 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def __rtruediv__(self, other: num | _ListLike | Series[S1]) -> Series: ...
     def __rxor__(self, other: num | _ListLike | Series[S1]) -> Series[_bool]: ...
     @overload
-    def __sub__(self, other: Timestamp | TimestampSeries) -> TimedeltaSeries: ...
+    def __sub__(
+        self, other: Timestamp | datetime | TimestampSeries
+    ) -> TimedeltaSeries: ...
     @overload
     def __sub__(
         self, other: Timedelta | TimedeltaSeries | TimedeltaIndex
