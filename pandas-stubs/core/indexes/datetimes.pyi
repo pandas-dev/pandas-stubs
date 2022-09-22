@@ -1,4 +1,7 @@
-from datetime import tzinfo
+from datetime import (
+    timedelta,
+    tzinfo,
+)
 from typing import overload
 
 import numpy as np
@@ -90,7 +93,7 @@ def date_range(
     start: str | DatetimeLike | None = ...,
     end: str | DatetimeLike | None = ...,
     periods: int | None = ...,
-    freq: str | BaseOffset = ...,
+    freq: str | timedelta | BaseOffset = ...,
     tz: str | tzinfo = ...,
     normalize: bool = ...,
     name: str | None = ...,
@@ -101,7 +104,7 @@ def bdate_range(
     start: str | DatetimeLike | None = ...,
     end: str | DatetimeLike | None = ...,
     periods: int | None = ...,
-    freq: str | BaseOffset = ...,
+    freq: str | timedelta | BaseOffset = ...,
     tz: str | tzinfo = ...,
     normalize: bool = ...,
     name: str | None = ...,

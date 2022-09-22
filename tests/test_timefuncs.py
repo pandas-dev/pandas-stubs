@@ -458,7 +458,6 @@ def test_timedeltaindex_accessors() -> None:
 
 def test_some_offsets() -> None:
     # GH 222
-
     check(
         assert_type(
             CustomBusinessDay(calendar=USFederalHolidayCalendar()), CustomBusinessDay
@@ -484,6 +483,21 @@ def test_some_offsets() -> None:
     )
     # GH 224
     check(assert_type(dt.date.today() - Day(), dt.date), dt.date)
+    # GH 235
+    check(
+        assert_type(
+            pd.date_range("1/1/2022", "2/1/2022", freq=dt.timedelta(days=2)),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.bdate_range("1/1/2022", "2/1/2022", freq=dt.timedelta(days=2)),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
 
 
 def test_types_to_numpy() -> None:
