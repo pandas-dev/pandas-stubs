@@ -498,6 +498,20 @@ def test_some_offsets() -> None:
         ),
         pd.DatetimeIndex,
     )
+    check(
+        assert_type(
+            pd.date_range("1/1/2022", "2/1/2022", freq=pd.Timedelta(days=5)),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.bdate_range("1/1/2022", "2/1/2022", freq=pd.Timedelta(days=5)),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
 
 
 def test_types_to_numpy() -> None:
