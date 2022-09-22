@@ -798,3 +798,16 @@ def test_sqlalchemy_selectable() -> None:
                 pd.read_sql(
                     session.query(Temp.quantity).statement, session.connection()
                 )
+
+
+def test_sqlalchemy_text() -> None:
+    with ensure_clean() as path:
+        db_uri = "sqlite:///" + path
+        engine = sqlalchemy.create_engine(db_uri)
+        sql_select = sqlalchemy.text("select * from test")
+        with engine.connect() as conn:
+            check(assert_type(DF.to_sql("test", con=conn), Union[int, None]), int)
+            check(
+                assert_type(read_sql(sql_select, con=conn), DataFrame),
+                DataFrame,
+            )

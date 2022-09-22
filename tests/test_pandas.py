@@ -136,6 +136,9 @@ def test_isna() -> None:
     assert check(assert_type(pd.isna(pd.NaT), Literal[True]), bool)
     assert not check(assert_type(pd.notna(pd.NaT), Literal[False]), bool)
 
+    assert check(assert_type(pd.isna(None), Literal[True]), bool)
+    assert not check(assert_type(pd.notna(None), Literal[False]), bool)
+
     check(assert_type(pd.isna(2.5), bool), bool)
     check(assert_type(pd.notna(2.5), bool), bool)
 

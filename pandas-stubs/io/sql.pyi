@@ -25,6 +25,10 @@ _SQLConnection = Union[
     sqlite3.Connection,
 ]
 
+_SQLStatement = Union[
+    str, sqlalchemy.sql.expression.Selectable, sqlalchemy.sql.expression.TextClause
+]
+
 @overload
 def read_sql_table(
     table_name: str,
@@ -50,7 +54,7 @@ def read_sql_table(
 ) -> DataFrame: ...
 @overload
 def read_sql_query(
-    sql: str | sqlalchemy.sql.expression.Selectable,
+    sql: _SQLStatement,
     con: _SQLConnection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
@@ -62,7 +66,7 @@ def read_sql_query(
 ) -> Generator[DataFrame, None, None]: ...
 @overload
 def read_sql_query(
-    sql: str | sqlalchemy.sql.expression.Selectable,
+    sql: _SQLStatement,
     con: _SQLConnection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
@@ -73,7 +77,7 @@ def read_sql_query(
 ) -> DataFrame: ...
 @overload
 def read_sql(
-    sql: str | sqlalchemy.sql.expression.Selectable,
+    sql: _SQLStatement,
     con: _SQLConnection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
@@ -85,7 +89,7 @@ def read_sql(
 ) -> Generator[DataFrame, None, None]: ...
 @overload
 def read_sql(
-    sql: str | sqlalchemy.sql.expression.Selectable,
+    sql: _SQLStatement,
     con: _SQLConnection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,

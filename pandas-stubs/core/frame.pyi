@@ -1777,6 +1777,7 @@ class DataFrame(NDFrame, OpsMixin):
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
+        win_type: None = ...,
         on: Hashable | None = ...,
         axis: AxisType = ...,
         closed: IntervalClosedType | None = ...,

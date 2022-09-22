@@ -120,8 +120,6 @@ def test_timedelta_series_arithmetic() -> None:
 
 
 def test_timestamp_timedelta_series_arithmetic() -> None:
-    ts = pd.Timestamp("2022-03-05")
-    s1 = pd.Series(["2022-03-05", "2022-03-06"])
     ts1 = pd.to_datetime(pd.Series(["2022-03-05", "2022-03-06"]))
     assert isinstance(ts1.iloc[0], pd.Timestamp)
     td1 = pd.to_timedelta([2, 3], "seconds")
@@ -140,6 +138,13 @@ def test_timestamp_timedelta_series_arithmetic() -> None:
     check(assert_type(r5, "TimedeltaSeries"), pd.Series, pd.Timedelta)
     r6 = r1 * 4
     check(assert_type(r6, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+
+    tsp1 = pd.Timestamp("2022-03-05")
+    dt1 = dt.datetime(2022, 9, 1, 12, 5, 30)
+    r7 = ts1 - tsp1
+    check(assert_type(r7, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    r8 = ts1 - dt1
+    check(assert_type(r8, "TimedeltaSeries"), pd.Series, pd.Timedelta)
 
 
 def test_timestamp_dateoffset_arithmetic() -> None:
@@ -458,7 +463,6 @@ def test_timedeltaindex_accessors() -> None:
 
 def test_some_offsets() -> None:
     # GH 222
-
     check(
         assert_type(
             CustomBusinessDay(calendar=USFederalHolidayCalendar()), CustomBusinessDay
@@ -484,6 +488,35 @@ def test_some_offsets() -> None:
     )
     # GH 224
     check(assert_type(dt.date.today() - Day(), dt.date), dt.date)
+    # GH 235
+    check(
+        assert_type(
+            pd.date_range("1/1/2022", "2/1/2022", freq=dt.timedelta(days=2)),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.bdate_range("1/1/2022", "2/1/2022", freq=dt.timedelta(days=2)),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.date_range("1/1/2022", "2/1/2022", freq=pd.Timedelta(days=5)),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.bdate_range("1/1/2022", "2/1/2022", freq=pd.Timedelta(days=5)),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
 
 
 def test_types_to_numpy() -> None:
