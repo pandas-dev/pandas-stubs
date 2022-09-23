@@ -400,7 +400,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def to_frame(self, name: object | None = ...) -> DataFrame: ...
     def groupby(
         self,
-        by: GroupByObjectNonScalar = ...,
+        by: Scalar | GroupByObjectNonScalar = ...,
         axis: SeriesAxisType = ...,
         level: Level | None = ...,
         as_index: _bool = ...,

@@ -1559,19 +1559,8 @@ def test_groupby_result() -> None:
     check(assert_type(index, Tuple), tuple, np.int64)
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
 
-    iterator2 = df.groupby("a").__iter__()
-    assert_type(iterator2, Iterator[Tuple[Scalar, pd.DataFrame]])
-    index2, value2 = next(iterator2)
-    assert_type((index2, value2), Tuple[Scalar, pd.DataFrame])
-
-    check(assert_type(index2, Scalar), int)
-    check(assert_type(value2, pd.DataFrame), pd.DataFrame)
-
     # Want to make sure these cases are differentiated
     for (k1, k2), g in df.groupby(["a", "b"]):
-        pass
-
-    for kk, g in df.groupby("a"):
         pass
 
 

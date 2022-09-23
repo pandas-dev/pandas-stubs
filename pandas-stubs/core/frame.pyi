@@ -990,7 +990,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> None: ...
     def groupby(
         self,
-        by: GroupByObjectNonScalar | None = ...,
+        by: Scalar | GroupByObjectNonScalar | None = ...,
         axis: AxisType = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
@@ -1811,7 +1811,7 @@ class DataFrame(NDFrame, OpsMixin):
         **kwargs,
     ) -> Series: ...
     # Not actually positional, but used to handle removal of deprecated
-    def set_axis(self, labels, *, axis: AxisType, copy: bool = ...) -> DataFrame: ...
+    def set_axis(self, labels, *, axis: AxisType, copy: _bool = ...) -> DataFrame: ...
     def skew(
         self,
         axis: AxisType | None = ...,
