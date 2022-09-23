@@ -26,6 +26,7 @@ from pandas._typing import (
 @overload
 def read_stata(
     path: FilePath | ReadBuffer[bytes],
+    *,
     convert_dates: bool = ...,
     convert_categoricals: bool = ...,
     index_col: str | None = ...,
@@ -34,7 +35,6 @@ def read_stata(
     columns: list[HashableT] | None = ...,
     order_categoricals: bool = ...,
     chunksize: int | None = ...,
-    *,
     iterator: Literal[True],
     compression: CompressionOptions = ...,
     storage_options: StorageOptions = ...,
@@ -42,6 +42,7 @@ def read_stata(
 @overload
 def read_stata(
     path: FilePath | ReadBuffer[bytes],
+    *,
     convert_dates: bool,
     convert_categoricals: bool,
     index_col: str | None,
@@ -57,6 +58,7 @@ def read_stata(
 @overload
 def read_stata(
     path: FilePath | ReadBuffer[bytes],
+    *,
     convert_dates: bool = ...,
     convert_categoricals: bool = ...,
     index_col: str | None = ...,

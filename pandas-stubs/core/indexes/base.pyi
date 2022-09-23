@@ -160,6 +160,7 @@ class Index(IndexOpsMixin, PandasObject):
     def join(
         self,
         other,
+        *,
         how: _str = ...,
         level=...,
         return_indexers: bool = ...,
