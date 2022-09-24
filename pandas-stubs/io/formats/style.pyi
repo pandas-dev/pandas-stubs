@@ -53,6 +53,7 @@ class Styler(StylerRenderer[Styler]):
         escape: str | None = ...,
         formatter: ExtFormatter | None = ...,
     ) -> None: ...
+    def concat(self, other: Styler) -> Styler: ...
     def set_tooltips(
         self,
         ttips: DataFrame,
@@ -159,6 +160,30 @@ class Styler(StylerRenderer[Styler]):
         doctype_html: bool = ...,
         exclude_styles: bool = ...,
         **kwargs: Any,
+    ) -> str: ...
+    @overload
+    def to_string(
+        self,
+        buf: FilePath | WriteBuffer[str],
+        *,
+        encoding: str | None = ...,
+        sparse_index: bool | None = ...,
+        sparse_columns: bool | None = ...,
+        max_rows: int | None = ...,
+        max_columns: int | None = ...,
+        delimiter: str = ...,
+    ) -> None: ...
+    @overload
+    def to_string(
+        self,
+        buf: None = ...,
+        *,
+        encoding: str | None = ...,
+        sparse_index: bool | None = ...,
+        sparse_columns: bool | None = ...,
+        max_rows: int | None = ...,
+        max_columns: int | None = ...,
+        delimiter: str = ...,
     ) -> str: ...
     def set_td_classes(self, classes: DataFrame) -> Styler: ...
     def __copy__(self) -> Styler: ...
