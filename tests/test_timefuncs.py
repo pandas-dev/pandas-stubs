@@ -336,8 +336,8 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s0.dt.isocalendar(), pd.DataFrame), pd.DataFrame)
     check(assert_type(s0.dt.to_period("D"), "PeriodSeries"), pd.Series, pd.Period)
     check(assert_type(s0.dt.to_pydatetime(), np.ndarray), np.ndarray, dt.datetime)
-    local_dtarray = s0.dt.tz_localize("UTC")
-    slocal = pd.Series(local_dtarray)
+    slocal = s0.dt.tz_localize("UTC")
+    check(assert_type(slocal, "TimestampSeries"), pd.Series, pd.Timestamp)
     check(
         assert_type(slocal.dt.tz_convert("EST"), "TimestampSeries"),
         pd.Series,
@@ -414,7 +414,7 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.is_leap_year, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
     check(assert_type(i0.daysinmonth, IntegerIndex), IntegerIndex, int)
     check(assert_type(i0.days_in_month, IntegerIndex), IntegerIndex, int)
-    assert assert_type(i0.tz, Optional[dt.tzinfo]) is None
+    assert assert_type(i0.tz, Optional[Union[dt.tzinfo, BaseTzInfo]]) is None
     check(assert_type(i0.freq, Optional[BaseOffset]), BaseOffset)
     check(assert_type(i0.isocalendar(), pd.DataFrame), pd.DataFrame)
     check(assert_type(i0.to_period("D"), pd.PeriodIndex), pd.PeriodIndex, pd.Period)
@@ -423,14 +423,10 @@ def test_datetimeindex_accessors() -> None:
         np.ndarray,
         dt.datetime,
     )
-    local_dtarray = i0.tz_localize("UTC")
-    slocal = pd.Series(local_dtarray)
-    check(
-        assert_type(slocal.dt.tz_convert("EST"), "TimestampSeries"),
-        pd.Series,
-        pd.Timestamp,
-    )
-    check(assert_type(slocal.dt.tz, Optional[Union[dt.tzinfo, BaseTzInfo]]), BaseTzInfo)
+    slocal = i0.tz_localize("UTC")
+    check(assert_type(slocal, pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(slocal.tz_convert("EST"), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(slocal.tz, Optional[Union[dt.tzinfo, BaseTzInfo]]), BaseTzInfo)
     check(assert_type(i0.normalize(), pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
     check(assert_type(i0.strftime("%Y"), pd.Index), pd.Index, str)
     check(assert_type(i0.round("D"), pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
@@ -517,6 +513,11 @@ def test_some_offsets() -> None:
         ),
         pd.DatetimeIndex,
     )
+    # GH 320
+    tswm1 = pd.Timestamp("9/23/2022") + pd.offsets.WeekOfMonth(2, 3)
+    check(assert_type(tswm1, pd.Timestamp), pd.Timestamp)
+    tswm2 = pd.Timestamp("9/23/2022") + pd.offsets.LastWeekOfMonth(2, 3)
+    check(assert_type(tswm2, pd.Timestamp), pd.Timestamp)
 
 
 def test_types_to_numpy() -> None:

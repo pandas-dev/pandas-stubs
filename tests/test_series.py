@@ -183,6 +183,10 @@ def test_types_drop() -> None:
     check(assert_type(s.drop(0, axis=0), pd.Series), pd.Series)
     assert assert_type(s.drop([0, 1], inplace=True, errors="raise"), None) is None
     assert assert_type(s.drop([0, 1], inplace=True, errors="ignore"), None) is None
+    # GH 302
+    s = pd.Series([0, 1, 2])
+    check(assert_type(s.drop(pd.Index([0, 1])), pd.Series), pd.Series)
+    check(assert_type(s.drop(index=pd.Index([0, 1])), pd.Series), pd.Series)
 
 
 def test_types_drop_multilevel() -> None:

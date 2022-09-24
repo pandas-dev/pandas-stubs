@@ -32,7 +32,6 @@ from pandas.core.dtypes.dtypes import DatetimeTZDtype
 from pandas.tseries.offsets import BaseOffset
 
 class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeIndexProperties):
-    tz: tzinfo | None
     def __init__(
         self,
         data: ArrayLike | AnyArrayLike | list | tuple,

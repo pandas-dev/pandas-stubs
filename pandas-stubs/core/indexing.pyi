@@ -13,14 +13,14 @@ from pandas._typing import (
     ScalarT,
 )
 
-_IndexSliceTuple = Union[
-    slice, tuple[Union[Index, MaskType, Scalar, list[ScalarT], slice], ...]
-]
+_IndexSliceTuple = tuple[Union[Index, MaskType, Scalar, list[ScalarT], slice], ...]
 
-_IndexSliceTupleT = TypeVar("_IndexSliceTupleT", bound=_IndexSliceTuple)
+_IndexSliceUnion = Union[slice, _IndexSliceTuple]
+
+_IndexSliceUnionT = TypeVar("_IndexSliceUnionT", bound=_IndexSliceUnion)
 
 class _IndexSlice:
-    def __getitem__(self, arg: _IndexSliceTupleT) -> _IndexSliceTupleT: ...
+    def __getitem__(self, arg: _IndexSliceUnionT) -> _IndexSliceUnionT: ...
 
 IndexSlice: _IndexSlice
 

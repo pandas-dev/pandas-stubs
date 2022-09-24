@@ -244,16 +244,20 @@ def test_types_setting() -> None:
 
 def test_types_drop() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
-    res: pd.DataFrame = df.drop("col1", axis=1)
-    res2: pd.DataFrame = df.drop(columns=["col1"])
-    res3: pd.DataFrame = df.drop([0])
-    res4: pd.DataFrame = df.drop(index=[0])
-    res5: pd.DataFrame = df.drop(columns=["col1"])
-    res6: pd.DataFrame = df.drop(index=1)
-    res7: pd.DataFrame = df.drop(labels=0)
-    res8: None = df.drop([0, 0], inplace=True)
+    check(assert_type(df.drop("col1", axis=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop(columns=["col1"]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop([0]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop(index=[0]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop(columns=["col1"]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop(index=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop(labels=0), pd.DataFrame), pd.DataFrame)
+    assert assert_type(df.drop([0, 0], inplace=True), None) is None
     to_drop: list[str] = ["col1"]
-    res9: pd.DataFrame = df.drop(columns=to_drop)
+    check(assert_type(df.drop(columns=to_drop), pd.DataFrame), pd.DataFrame)
+    # GH 302
+    check(assert_type(df.drop(pd.Index([1])), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop(index=pd.Index([1])), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop(columns=pd.Index(["col1"])), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_dropna() -> None:
@@ -1262,6 +1266,8 @@ def test_indexslice_setitem():
     s = pd.Series([-1, -2])
     df.loc[pd.IndexSlice[2, :]] = s.values
     df.loc[pd.IndexSlice[2, :], "z"] = [200, 300]
+    # GH 314
+    df.loc[pd.IndexSlice[pd.Index([2, 3]), :], "z"] = 99
 
 
 def test_indexslice_getitem():
@@ -1283,6 +1289,11 @@ def test_indexslice_getitem():
     check(
         assert_type(df.loc[pd.IndexSlice[[2, 4], [20, 40]], :], pd.DataFrame),
         pd.DataFrame,
+    )
+    # GH 314
+    check(
+        assert_type(df.loc[pd.IndexSlice[pd.Index([2, 4]), :], "z"], pd.Series),
+        pd.Series,
     )
 
 

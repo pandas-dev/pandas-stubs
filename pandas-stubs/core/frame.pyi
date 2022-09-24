@@ -30,6 +30,7 @@ from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexes.base import Index
 from pandas.core.indexing import (
     _iLocIndexer,
+    _IndexSliceTuple,
     _LocIndexer,
 )
 from pandas.core.resample import Resampler
@@ -150,28 +151,25 @@ class _LocIndexerFrame(_LocIndexer):
     @overload
     def __getitem__(
         self,
-        idx: tuple[int | StrLike | tuple[HashableT, ...], int | StrLike],
+        idx: tuple[int | StrLike | tuple[ScalarT, ...], int | StrLike],
     ) -> Scalar: ...
     @overload
     def __getitem__(
         self,
         idx: ScalarT
-        | tuple[IndexType | MaskType | tuple[slice, ...], ScalarT | None]
+        | tuple[IndexType | MaskType | _IndexSliceTuple, ScalarT | None]
         | None,
     ) -> Series: ...
     @overload
     def __setitem__(
         self,
-        idx: MaskType
-        | StrLike
-        | tuple[MaskType | Index | Sequence[ScalarT] | Scalar | slice, ...]
-        | list[ScalarT],
+        idx: MaskType | StrLike | _IndexSliceTuple | list[ScalarT],
         value: S1 | ArrayLike | Series | DataFrame,
     ) -> None: ...
     @overload
     def __setitem__(
         self,
-        idx: tuple[tuple[HashableT | Scalar | slice, ...], HashableT],
+        idx: tuple[_IndexSliceTuple, HashableT],
         value: S1 | ArrayLike | Series[S1] | list,
     ) -> None: ...
 
@@ -550,10 +548,10 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] = ...,
+        labels: Hashable | Sequence[Hashable] | Index = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] = ...,
+        index: Hashable | Sequence[Hashable] | Index = ...,
         columns: Hashable | Sequence[Hashable] | Index = ...,
         level: Level | None = ...,
         inplace: Literal[True],
@@ -562,10 +560,10 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] = ...,
+        labels: Hashable | Sequence[Hashable] | Index = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] = ...,
+        index: Hashable | Sequence[Hashable] | Index = ...,
         columns: Hashable | Sequence[Hashable] | Index = ...,
         level: Level | None = ...,
         inplace: Literal[False] = ...,
@@ -574,10 +572,10 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] = ...,
+        labels: Hashable | Sequence[Hashable] | Index = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] = ...,
+        index: Hashable | Sequence[Hashable] | Index = ...,
         columns: Hashable | Sequence[Hashable] | Index = ...,
         level: Level | None = ...,
         inplace: bool = ...,

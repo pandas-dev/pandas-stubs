@@ -136,7 +136,8 @@ class BusinessHour(BusinessMixin):
         offset: timedelta = ...,
     ): ...
 
-class WeekOfMonthMixin(SingleConstructorOffset): ...
+class WeekOfMonthMixin(SingleConstructorOffset):
+    def __init__(self, n: int = ..., weekday: Literal[0, 1, 2, 3, 4, 5, 6] = ...): ...
 
 class YearOffset(SingleConstructorOffset):
     def __init__(
