@@ -727,11 +727,11 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def drop(
         self,
-        labels: Hashable | list[HashableT] = ...,
+        labels: Hashable | list[HashableT] | Index = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[HashableT] = ...,
-        columns: Hashable | list[HashableT] = ...,
+        index: Hashable | list[HashableT] | Index = ...,
+        columns: Hashable | list[HashableT] | Index = ...,
         level: Level | None = ...,
         inplace: Literal[True],
         errors: IgnoreRaise = ...,
@@ -739,11 +739,11 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def drop(
         self,
-        labels: Hashable | list[HashableT] = ...,
+        labels: Hashable | list[HashableT] | Index = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[HashableT] = ...,
-        columns: Hashable | list[HashableT] = ...,
+        index: Hashable | list[HashableT] | Index = ...,
+        columns: Hashable | list[HashableT] | Index = ...,
         level: Level | None = ...,
         inplace: Literal[False] = ...,
         errors: IgnoreRaise = ...,
@@ -751,11 +751,11 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def drop(
         self,
-        labels: Hashable | list[HashableT] = ...,
+        labels: Hashable | list[HashableT] | Index = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[HashableT] = ...,
-        columns: Hashable | list[HashableT] = ...,
+        index: Hashable | list[HashableT] | Index = ...,
+        columns: Hashable | list[HashableT] | Index = ...,
         level: Level | None = ...,
         inplace: bool = ...,
         errors: IgnoreRaise = ...,
