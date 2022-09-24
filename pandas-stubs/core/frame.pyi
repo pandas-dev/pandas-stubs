@@ -22,7 +22,10 @@ from pandas import (
 )
 from pandas.core.arraylike import OpsMixin
 from pandas.core.generic import NDFrame
-from pandas.core.groupby.generic import DataFrameGroupBy
+from pandas.core.groupby.generic import (
+    _DataFrameGroupByNonScalar,
+    _DataFrameGroupByScalar,
+)
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexes.base import Index
 from pandas.core.indexing import (
@@ -988,9 +991,10 @@ class DataFrame(NDFrame, OpsMixin):
         filter_func: Callable | None = ...,
         errors: IgnoreRaise = ...,
     ) -> None: ...
+    @overload
     def groupby(
         self,
-        by: Scalar | GroupByObjectNonScalar | None = ...,
+        by: Scalar,
         axis: AxisType = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
@@ -999,7 +1003,20 @@ class DataFrame(NDFrame, OpsMixin):
         squeeze: _bool = ...,
         observed: _bool = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy: ...
+    ) -> _DataFrameGroupByScalar: ...
+    @overload
+    def groupby(
+        self,
+        by: GroupByObjectNonScalar | None = ...,
+        axis: AxisType = ...,
+        level: Level | None = ...,
+        as_index: _bool = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        squeeze: _bool = ...,
+        observed: _bool = ...,
+        dropna: _bool = ...,
+    ) -> _DataFrameGroupByNonScalar: ...
     def pivot(
         self,
         *,
