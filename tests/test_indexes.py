@@ -117,3 +117,34 @@ def test_index_arithmetic() -> None:
     check(assert_type(3 * idx, NumericIndex), NumericIndex)
     check(assert_type(3 / idx, NumericIndex), NumericIndex)
     check(assert_type(3 // idx, NumericIndex), NumericIndex)
+
+
+def test_index_relops() -> None:
+    # GH 265
+    data = pd.date_range("2022-01-01", "2022-01-31", freq="D")
+    x = pd.Timestamp("2022-01-17")
+    idx = pd.Index(data, name="date")
+    check(assert_type(data[x <= idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[x < idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[x >= idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[x > idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[idx < x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[idx >= x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[idx > x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[idx <= x], pd.DatetimeIndex), pd.DatetimeIndex)
+
+    dt_idx = pd.DatetimeIndex(data, name="date")
+    check(assert_type(data[x <= dt_idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[x >= dt_idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[x < dt_idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[x > dt_idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[dt_idx <= x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[dt_idx >= x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[dt_idx < x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[dt_idx > x], pd.DatetimeIndex), pd.DatetimeIndex)
+
+    ind = pd.Index([1, 2, 3])
+    check(assert_type(ind <= 2, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
+    check(assert_type(ind >= 2, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
+    check(assert_type(ind < 2, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
+    check(assert_type(ind > 2, npt.NDArray[np.bool_]), np.ndarray, np.bool_)

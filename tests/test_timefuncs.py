@@ -86,6 +86,15 @@ def test_types_timestamp_series_comparisons() -> None:
     check(assert_type(tssr, "pd.Series[bool]"), pd.Series, bool)
     check(assert_type(tssr2, "pd.Series[bool]"), pd.Series, bool)
     check(assert_type(tssr3, "pd.Series[bool]"), pd.Series, bool)
+    # GH 265
+    data = pd.date_range("2022-01-01", "2022-01-31", freq="D")
+    s = pd.Series(data)
+    ts2 = pd.Timestamp("2022-01-15")
+    check(assert_type(s, "TimestampSeries"), pd.Series, pd.Timestamp)
+    check(assert_type(ts2 <= s, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(ts2 >= s, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(ts2 < s, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(ts2 > s, "pd.Series[bool]"), pd.Series, bool)
 
 
 def test_types_pydatetime() -> None:
