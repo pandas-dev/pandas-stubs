@@ -1,5 +1,8 @@
+from typing import Type
+
 import numpy as np
 import pandas as pd
+from pandas.api.extensions import ExtensionDtype
 import pandas.api.types as api
 from typing_extensions import assert_type
 
@@ -176,3 +179,28 @@ def test_infer_dtype() -> None:
 def test_union_categoricals() -> None:
     to_union = [pd.Categorical([1, 2, 3]), pd.Categorical([3, 4, 5])]
     check(assert_type(api.union_categoricals(to_union), pd.Categorical), pd.Categorical)
+
+
+def check_extension_dtypes() -> None:
+    # GH 315
+    def check_ext_dtype(etype: Type[ExtensionDtype]):
+        assert issubclass(etype, ExtensionDtype)
+
+    check_ext_dtype(pd.Int64Dtype)
+    check_ext_dtype(pd.Int8Dtype)
+    check_ext_dtype(pd.Int16Dtype)
+    check_ext_dtype(pd.Int32Dtype)
+    check_ext_dtype(pd.Int64Dtype)
+    check_ext_dtype(pd.UInt8Dtype)
+    check_ext_dtype(pd.UInt16Dtype)
+    check_ext_dtype(pd.UInt32Dtype)
+    check_ext_dtype(pd.UInt64Dtype)
+    check_ext_dtype(pd.BooleanDtype)
+    check_ext_dtype(pd.StringDtype)
+    check_ext_dtype(pd.CategoricalDtype)
+    check_ext_dtype(pd.DatetimeTZDtype)
+    check_ext_dtype(pd.IntervalDtype)
+    check_ext_dtype(pd.PeriodDtype)
+    check_ext_dtype(pd.SparseDtype)
+    check_ext_dtype(pd.Float32Dtype)
+    check_ext_dtype(pd.Float64Dtype)
