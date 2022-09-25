@@ -5,6 +5,10 @@ from pandas.core.algorithms import (
 )
 from pandas.core.arrays import Categorical as Categorical
 from pandas.core.arrays.boolean import BooleanDtype as BooleanDtype
+from pandas.core.arrays.floating import (
+    Float32Dtype as Float32Dtype,
+    Float64Dtype as Float64Dtype,
+)
 from pandas.core.arrays.integer import (
     Int8Dtype as Int8Dtype,
     Int16Dtype as Int16Dtype,

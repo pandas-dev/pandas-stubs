@@ -25,6 +25,8 @@ from .core.api import (
     DateOffset as DateOffset,
     DatetimeIndex as DatetimeIndex,
     DatetimeTZDtype as DatetimeTZDtype,
+    Float32Dtype as Float32Dtype,
+    Float64Dtype as Float64Dtype,
     Float64Index as Float64Index,
     Grouper as Grouper,
     Index as Index,
