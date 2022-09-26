@@ -61,26 +61,30 @@ class ExponentialMovingWindow(BaseWindow[NDFrameT], Generic[NDFrameT]):
     ) -> DataFrame: ...
     def mean(
         self,
+        numeric_only: bool = ...,
         *,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     def sum(
         self,
+        numeric_only: bool = ...,
         *,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
-    def std(self, bias: bool = ...) -> NDFrameT: ...
-    def var(self, bias: bool = ...) -> NDFrameT: ...
+    def std(self, bias: bool = ..., numeric_only: bool = ...) -> NDFrameT: ...
+    def var(self, bias: bool = ..., numeric_only: bool = ...) -> NDFrameT: ...
     def cov(
         self,
         other: DataFrame | Series | None = ...,
         pairwise: bool | None = ...,
         bias: bool = ...,
+        numeric_only: bool = ...,
     ) -> NDFrameT: ...
     def corr(
         self,
         other: DataFrame | Series | None = ...,
         pairwise: bool | None = ...,
+        numeric_only: bool = ...,
     ) -> NDFrameT: ...

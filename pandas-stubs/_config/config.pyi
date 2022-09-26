@@ -47,7 +47,6 @@ class DisplayUnicode(DictWrapper):
 class Display(DictWrapper):
     chop_threshold: int | None
     colheader_justify: str
-    column_space: int
     date_dayfirst: bool
     date_yearfirst: bool
     encoding: str

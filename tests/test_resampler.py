@@ -21,10 +21,7 @@ from typing_extensions import assert_type
 
 from pandas._typing import Scalar
 
-from tests import (
-    PD_LT_15,
-    check,
-)
+from tests import check
 
 DR = date_range("1999-1-1", periods=365, freq="D")
 DF_ = DataFrame(np.random.standard_normal((365, 1)), index=DR)
@@ -301,11 +298,8 @@ def test_aggregate_series_combinations() -> None:
 
     check(S.resample("m").aggregate(np.sum), Series)
     check(S.resample("m").aggregate("sum"), Series)
-    if PD_LT_15:
+    with pytest.warns(FutureWarning, match="Not prepending group keys"):
         check(S.resample("m").aggregate(s2series), Series)
-    else:
-        with pytest.warns(FutureWarning, match="Not prepending group keys"):
-            check(S.resample("m").aggregate(s2series), Series)
     check(S.resample("m").aggregate(s2scalar), Series)
     check(S.resample("m").aggregate([np.mean]), DataFrame)
     check(S.resample("m").aggregate(["sum", np.mean]), DataFrame)
@@ -325,11 +319,8 @@ def test_aggregate_frame_combinations() -> None:
 
     check(DF.resample("m").aggregate(np.sum), DataFrame)
     check(DF.resample("m").aggregate("sum"), DataFrame)
-    if PD_LT_15:
+    with pytest.warns(FutureWarning, match="Not prepending group keys"):
         check(DF.resample("m").aggregate(df2frame), DataFrame)
-    else:
-        with pytest.warns(FutureWarning, match="Not prepending group keys"):
-            check(DF.resample("m").aggregate(df2frame), DataFrame)
     check(DF.resample("m").aggregate(df2series), DataFrame)
     check(DF.resample("m").aggregate(df2scalar), DataFrame)
     check(DF.resample("m").aggregate([np.mean]), DataFrame)

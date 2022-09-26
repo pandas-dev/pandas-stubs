@@ -107,8 +107,6 @@ class Index(IndexOpsMixin, PandasObject):
     def get_level_values(self, level: int | _str) -> Index: ...
     def droplevel(self, level: Level | list[Level] = ...): ...
     @property
-    def is_monotonic(self) -> bool: ...
-    @property
     def is_monotonic_increasing(self) -> bool: ...
     @property
     def is_monotonic_decreasing(self) -> bool: ...
@@ -162,6 +160,7 @@ class Index(IndexOpsMixin, PandasObject):
     def join(
         self,
         other,
+        *,
         how: _str = ...,
         level=...,
         return_indexers: bool = ...,

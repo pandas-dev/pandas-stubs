@@ -2,7 +2,6 @@ from types import TracebackType
 from typing import (
     Any,
     Callable,
-    Generator,
     Hashable,
     Iterable,
     Literal,
@@ -23,8 +22,6 @@ from pandas._typing import (
     StorageOptions,
     WriteExcelBuffer,
 )
-
-from pandas.io.common import IOHandles
 
 @overload
 def read_excel(
@@ -123,27 +120,12 @@ class ExcelWriter:
     def sheets(self) -> dict[str, Any]: ...
     @property
     def book(self) -> Workbook | OpenDocument | pyxlsb.workbook.Workbook: ...
-    def write_cells(
-        self,
-        cells: Generator[object, None, None],
-        sheet_name: str | None = ...,
-        startrow: int = ...,
-        startcol: int = ...,
-        freeze_panes: tuple[int, int] | None = ...,
-    ) -> None: ...
-    def save(self) -> None: ...
     @property
     def date_format(self) -> str: ...
     @property
     def datetime_format(self) -> str: ...
     @property
     def if_sheet_exists(self) -> Literal["error", "new", "replace", "overlay"]: ...
-    @property
-    def cur_sheet(self) -> Any: ...
-    @property
-    def handles(self) -> IOHandles[bytes]: ...
-    @property
-    def path(self) -> str | None: ...
     def __fspath__(self) -> str: ...
     def __enter__(self) -> ExcelWriter: ...
     def __exit__(

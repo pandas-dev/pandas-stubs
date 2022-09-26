@@ -206,7 +206,6 @@ class DataFrame(NDFrame, OpsMixin):
     @property
     def style(self) -> Styler: ...
     def items(self) -> Iterable[tuple[Hashable, Series]]: ...
-    def iteritems(self) -> Iterable[tuple[Label, Series]]: ...
     def iterrows(self) -> Iterable[tuple[Label, Series]]: ...
     def itertuples(self, index: _bool = ..., name: _str | None = ...): ...
     def __len__(self) -> int: ...
@@ -292,6 +291,7 @@ class DataFrame(NDFrame, OpsMixin):
     def to_stata(
         self,
         path: FilePath | WriteBuffer[bytes],
+        *,
         convert_dates: dict[HashableT, StataDateFormat] | None = ...,
         write_index: _bool = ...,
         byteorder: Literal["<", ">", "little", "big"] | None = ...,
@@ -302,7 +302,6 @@ class DataFrame(NDFrame, OpsMixin):
         convert_strl: list[HashableT] | None = ...,
         compression: CompressionOptions = ...,
         storage_options: StorageOptions = ...,
-        *,
         value_labels: dict[Hashable, dict[float, str]] | None = ...,
     ) -> None: ...
     def to_feather(self, path: FilePath | WriteBuffer[bytes], **kwargs) -> None: ...
@@ -1018,6 +1017,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> _DataFrameGroupByNonScalar: ...
     def pivot(
         self,
+        *,
         index: IndexLabel = ...,
         columns: IndexLabel = ...,
         values: IndexLabel = ...,
@@ -1124,14 +1124,18 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         method: Literal["pearson", "kendall", "spearman"] = ...,
         min_periods: int = ...,
+        numeric_only: _bool = ...,
     ) -> DataFrame: ...
-    def cov(self, min_periods: int | None = ..., ddof: int = ...) -> DataFrame: ...
+    def cov(
+        self, min_periods: int | None = ..., ddof: int = ..., numeric_only: _bool = ...
+    ) -> DataFrame: ...
     def corrwith(
         self,
         other: DataFrame | Series,
         axis: AxisType | None = ...,
         drop: _bool = ...,
         method: Literal["pearson", "kendall", "spearman"] = ...,
+        numeric_only: _bool = ...,
     ) -> Series: ...
     @overload
     def count(
@@ -1142,8 +1146,12 @@ class DataFrame(NDFrame, OpsMixin):
         self, axis: AxisType = ..., level: None = ..., numeric_only: _bool = ...
     ) -> Series: ...
     def nunique(self, axis: AxisType = ..., dropna: bool = ...) -> Series: ...
-    def idxmax(self, axis: AxisType = ..., skipna: _bool = ...) -> Series: ...
-    def idxmin(self, axis: AxisType = ..., skipna: _bool = ...) -> Series: ...
+    def idxmax(
+        self, axis: AxisType = ..., skipna: _bool = ..., numeric_only: _bool = ...
+    ) -> Series: ...
+    def idxmin(
+        self, axis: AxisType = ..., skipna: _bool = ..., numeric_only: _bool = ...
+    ) -> Series: ...
     @overload
     def mode(
         self,
@@ -1296,6 +1304,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def any(
         self,
+        *,
         axis: None,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
@@ -1304,6 +1313,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def any(
         self,
+        *,
         axis: AxisType = ...,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
@@ -1521,7 +1531,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
+        numeric_only: _bool = ...,
         **kwargs,
     ) -> Series: ...
     def kurtosis(
@@ -1529,7 +1539,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
+        numeric_only: _bool = ...,
         **kwargs,
     ) -> Series: ...
     def last(self, offset) -> DataFrame: ...
@@ -1540,22 +1550,6 @@ class DataFrame(NDFrame, OpsMixin):
     def lt(
         self, other, axis: AxisType = ..., level: Level | None = ...
     ) -> DataFrame: ...
-    @overload
-    def mad(
-        self,
-        axis: AxisType | None = ...,
-        skipna: _bool | None = ...,
-        level: None = ...,
-    ) -> Series: ...
-    @overload
-    def mad(
-        self,
-        axis: AxisType | None = ...,
-        skipna: _bool | None = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> DataFrame: ...
     def mask(
         self,
         cond: Series | DataFrame | np.ndarray,
@@ -1563,7 +1557,7 @@ class DataFrame(NDFrame, OpsMixin):
         inplace: _bool = ...,
         axis: AxisType | None = ...,
         level: Level | None = ...,
-        errors: _str = ...,
+        *,  # Not actually positional-only, but needed due to depr in 1.5.0
         try_cast: _bool = ...,
     ) -> DataFrame: ...
     def max(
@@ -1571,7 +1565,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
+        numeric_only: _bool = ...,
         **kwargs,
     ) -> Series: ...
     def mean(
@@ -1579,7 +1573,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
+        numeric_only: _bool = ...,
         **kwargs,
     ) -> Series: ...
     def median(
@@ -1587,7 +1581,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
+        numeric_only: _bool = ...,
         **kwargs,
     ) -> Series: ...
     def min(
@@ -1595,7 +1589,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
+        numeric_only: _bool = ...,
         **kwargs,
     ) -> Series: ...
     def mod(
@@ -1649,7 +1643,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
+        numeric_only: _bool = ...,
         min_count: int = ...,
         **kwargs,
     ) -> Series: ...
@@ -1658,7 +1652,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         skipna: _bool = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
+        numeric_only: _bool = ...,
         min_count: int = ...,
         **kwargs,
     ) -> Series: ...
@@ -1828,32 +1822,17 @@ class DataFrame(NDFrame, OpsMixin):
         skipna: _bool | None = ...,
         level: None = ...,
         ddof: int = ...,
-        numeric_only: _bool | None = ...,
+        numeric_only: _bool = ...,
         **kwargs,
     ) -> Series: ...
-    @overload
-    def set_axis(
-        self, labels, inplace: Literal[True], axis: AxisType = ...
-    ) -> None: ...
-    @overload
-    def set_axis(
-        self, labels, inplace: Literal[False], axis: AxisType = ...
-    ) -> DataFrame: ...
-    @overload
-    def set_axis(self, labels, *, axis: AxisType = ...) -> DataFrame: ...
-    @overload
-    def set_axis(
-        self,
-        labels,
-        axis: AxisType = ...,
-        inplace: _bool | None = ...,
-    ) -> DataFrame | None: ...
+    # Not actually positional, but used to handle removal of deprecated
+    def set_axis(self, labels, *, axis: AxisType, copy: _bool = ...) -> DataFrame: ...
     def skew(
         self,
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
+        numeric_only: _bool = ...,
         **kwargs,
     ) -> Series: ...
     def slice_shift(self, periods: int = ..., axis: AxisType = ...) -> DataFrame: ...
@@ -1886,7 +1865,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
-        numeric_only: _bool | None = ...,
+        numeric_only: _bool = ...,
         min_count: int = ...,
         **kwargs,
     ) -> Series: ...
@@ -2022,7 +2001,7 @@ class DataFrame(NDFrame, OpsMixin):
         skipna: _bool | None = ...,
         level: None = ...,
         ddof: int = ...,
-        numeric_only: _bool | None = ...,
+        numeric_only: _bool = ...,
         **kwargs,
     ) -> Series: ...
     def where(
@@ -2036,7 +2015,7 @@ class DataFrame(NDFrame, OpsMixin):
         inplace: _bool = ...,
         axis: AxisType | None = ...,
         level: Level | None = ...,
-        errors: _str = ...,
+        *,  # Not actually positional-only, but needed due to depr in 1.5.0
         try_cast: _bool = ...,
     ) -> DataFrame: ...
     # Move from generic because Series is Generic and it returns Series[bool] there

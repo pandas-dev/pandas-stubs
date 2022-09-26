@@ -67,10 +67,14 @@ class Window(BaseWindow[NDFrameT]):
         *args: Any,
         **kwargs: Any,
     ) -> DataFrame: ...
-    def sum(self, **kwargs: Any) -> NDFrameT: ...
-    def mean(self, **kwargs: Any) -> NDFrameT: ...
-    def var(self, ddof: int = ..., **kwargs: Any) -> NDFrameT: ...
-    def std(self, ddof: int = ..., **kwargs: Any) -> NDFrameT: ...
+    def sum(self, numeric_only: bool = ..., **kwargs: Any) -> NDFrameT: ...
+    def mean(self, numeric_only: bool = ..., **kwargs: Any) -> NDFrameT: ...
+    def var(
+        self, ddof: int = ..., numeric_only: bool = ..., *args: Any, **kwargs: Any
+    ) -> NDFrameT: ...
+    def std(
+        self, ddof: int = ..., numeric_only: bool = ..., *args: Any, **kwargs: Any
+    ) -> NDFrameT: ...
 
 class RollingAndExpandingMixin(BaseWindow[NDFrameT], Generic[NDFrameT]):
     def count(self) -> NDFrameT: ...
@@ -85,36 +89,42 @@ class RollingAndExpandingMixin(BaseWindow[NDFrameT], Generic[NDFrameT]):
     ) -> NDFrameT: ...
     def sum(
         self,
+        numeric_only: bool = ...,
         *,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     def max(
         self,
+        numeric_only: bool = ...,
         *,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     def min(
         self,
+        numeric_only: bool = ...,
         *,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     def mean(
         self,
+        numeric_only: bool = ...,
         *,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     def median(
         self,
+        numeric_only: bool = ...,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     def std(
         self,
         ddof: int = ...,
+        numeric_only: bool = ...,
         *,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
@@ -122,35 +132,44 @@ class RollingAndExpandingMixin(BaseWindow[NDFrameT], Generic[NDFrameT]):
     def var(
         self,
         ddof: int = ...,
+        numeric_only: bool = ...,
         *,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
-    def skew(self) -> NDFrameT: ...
-    def sem(self, ddof: int = ...) -> NDFrameT: ...
-    def kurt(self) -> NDFrameT: ...
+    def skew(self, numeric_only: bool = ...) -> NDFrameT: ...
+    def sem(
+        self,
+        ddof: int = ...,
+        numeric_only: bool = ...,
+    ) -> NDFrameT: ...
+    def kurt(self, numeric_only: bool = ...) -> NDFrameT: ...
     def quantile(
         self,
         quantile: float,
         interpolation: QuantileInterpolation = ...,
+        numeric_only: bool = ...,
     ) -> NDFrameT: ...
     def rank(
         self,
         method: WindowingRankType = ...,
         ascending: bool = ...,
         pct: bool = ...,
+        numeric_only: bool = ...,
     ) -> NDFrameT: ...
     def cov(
         self,
         other: DataFrame | Series | None = ...,
         pairwise: bool | None = ...,
         ddof: int = ...,
+        numeric_only: bool = ...,
     ) -> NDFrameT: ...
     def corr(
         self,
         other: DataFrame | Series | None = ...,
         pairwise: bool | None = ...,
         ddof: int = ...,
+        numeric_only: bool = ...,
     ) -> NDFrameT: ...
 
 class Rolling(RollingAndExpandingMixin[NDFrameT]):
