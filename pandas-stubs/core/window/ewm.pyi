@@ -1,7 +1,6 @@
 from typing import (
     Any,
     Generic,
-    Literal,
     overload,
 )
 
@@ -18,6 +17,7 @@ from pandas._typing import (
     AggFuncTypeSeriesToFrame,
     Axis,
     NDFrameT,
+    RollingMethod,
     TimedeltaConvertibleTypes,
     WindowingEngine,
     WindowingEngineKwargs,
@@ -36,7 +36,7 @@ class ExponentialMovingWindow(BaseWindow[NDFrameT], Generic[NDFrameT]):
         ignore_na: bool = ...,
         axis: Axis = ...,
         times: str | np.ndarray | Series | None = ...,
-        method: Literal["single", "table"] = ...,
+        method: RollingMethod = ...,
     ) -> None: ...
     @overload
     def aggregate(

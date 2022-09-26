@@ -84,6 +84,7 @@ from pandas._typing import (
     ReadBuffer,
     Renamer,
     ReplaceMethod,
+    RollingMethod,
     Scalar,
     ScalarT,
     SeriesAxisType,
@@ -1429,7 +1430,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         min_periods: int = ...,
         axis: AxisType = ...,
-        method: Literal["single", "table"] = ...,
+        method: RollingMethod = ...,
     ) -> Expanding[DataFrame]: ...
     @overload
     def ffill(
@@ -1763,7 +1764,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def rolling(
         self,
-        window,
+        window: int,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
@@ -1771,11 +1772,13 @@ class DataFrame(NDFrame, OpsMixin):
         on: Hashable | None = ...,
         axis: AxisType = ...,
         closed: IntervalClosedType | None = ...,
+        step: int | None = ...,
+        method: RollingMethod = ...,
     ) -> Window[DataFrame]: ...
     @overload
     def rolling(
         self,
-        window,
+        window: int,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
@@ -1783,6 +1786,8 @@ class DataFrame(NDFrame, OpsMixin):
         on: Hashable | None = ...,
         axis: AxisType = ...,
         closed: IntervalClosedType | None = ...,
+        step: int | None = ...,
+        method: RollingMethod = ...,
     ) -> Rolling[DataFrame]: ...
     def rpow(
         self,

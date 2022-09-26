@@ -88,6 +88,7 @@ from pandas._typing import (
     QuantileInterpolation,
     Renamer,
     ReplaceMethod,
+    RollingMethod,
     Scalar,
     SeriesAxisType,
     SortKind,
@@ -1318,7 +1319,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         min_periods: int = ...,
         axis: SeriesAxisType = ...,
-        method: Literal["single", "table"] = ...,
+        method: RollingMethod = ...,
     ) -> Expanding[Series]: ...
     def floordiv(
         self,
@@ -1496,7 +1497,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def rolling(
         self,
-        window,
+        window: int,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
@@ -1504,11 +1505,13 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         on: _str | None = ...,
         axis: SeriesAxisType = ...,
         closed: _str | None = ...,
+        step: int | None = ...,
+        method: RollingMethod = ...,
     ) -> Window[Series]: ...
     @overload
     def rolling(
         self,
-        window,
+        window: int,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
@@ -1516,6 +1519,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         on: _str | None = ...,
         axis: SeriesAxisType = ...,
         closed: _str | None = ...,
+        step: int | None = ...,
+        method: RollingMethod = ...,
     ) -> Rolling[Series]: ...
     def rpow(
         self,

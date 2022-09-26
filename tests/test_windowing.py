@@ -304,3 +304,11 @@ def test_ewm_aggregate_series() -> None:
         DataFrame,
     )
     check(assert_type(S.ewm(span=10).agg("sum"), Series), Series)
+
+
+def test_rolling_step_method():
+    check(
+        assert_type(DF.rolling(10, step=5, method="single"), "Rolling[DataFrame]"),
+        Rolling,
+    )
+    check(assert_type(DF.rolling(10, method="table"), "Rolling[DataFrame]"), Rolling)
