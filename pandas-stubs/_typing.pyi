@@ -64,21 +64,32 @@ DtypeObj = Union[np.dtype[np.generic], ExtensionDtype]
 AnyStr_cov = TypeVar("AnyStr_cov", str, bytes, covariant=True)
 AnyStr_con = TypeVar("AnyStr_con", str, bytes, contravariant=True)
 
-class BaseBuffer(Protocol): ...
-class ReadBuffer(BaseBuffer, Protocol[AnyStr_cov]): ...
-class WriteBuffer(BaseBuffer, Protocol[AnyStr_cov]): ...
+class BaseBuffer(Protocol):
+    @property
+    def mode(self) -> str: ...
+    def seek(self, __offset: int, __whence: int = ...) -> int: ...
+    def seekable(self) -> bool: ...
+    def tell(self) -> int: ...
+
+class ReadBuffer(BaseBuffer, Protocol[AnyStr_cov]):
+    def read(self, __n: int = ...) -> AnyStr_cov: ...
+
+class WriteBuffer(BaseBuffer, Protocol[AnyStr_con]):
+    def write(self, __b: AnyStr_con) -> Any: ...
+    def flush(self) -> Any: ...
 
 class ReadPickleBuffer(ReadBuffer[bytes], Protocol):
-    def readline(self, size: int | None = ...) -> bytes: ...
+    def readline(self) -> bytes: ...
 
 class ReadCsvBuffer(ReadBuffer[AnyStr_cov], Protocol[AnyStr_cov]):
     def __iter__(self) -> Iterator[AnyStr_cov]: ...
+    def fileno(self) -> int: ...
     def readline(self) -> AnyStr_cov: ...
     @property
     def closed(self) -> bool: ...
 
 class WriteExcelBuffer(WriteBuffer[bytes], Protocol):
-    def truncate(self, size: Union[int, None] = ...) -> int: ...
+    def truncate(self, size: int | None = ...) -> int: ...
 
 FilePath = Union[str, PathLike[str]]
 FilePathOrBuffer = Union[
@@ -98,12 +109,17 @@ FuncType = Callable[..., Any]
 F = TypeVar("F", bound=FuncType)
 HashableT = TypeVar("HashableT", bound=Hashable)
 
-AggFuncTypeBase = Union[Callable, str]
-AggFuncTypeDict = dict[Hashable, Union[AggFuncTypeBase, list[AggFuncTypeBase]]]
-AggFuncType = Union[
+AggFuncTypeBase = Union[Callable, str, np.ufunc]
+AggFuncTypeDictSeries = dict[Hashable, AggFuncTypeBase]
+AggFuncTypeDictFrame = dict[Hashable, Union[AggFuncTypeBase, list[AggFuncTypeBase]]]
+AggFuncTypeSeriesToFrame = Union[
+    list[AggFuncTypeBase],
+    AggFuncTypeDictSeries,
+]
+AggFuncTypeFrame = Union[
     AggFuncTypeBase,
     list[AggFuncTypeBase],
-    AggFuncTypeDict,
+    AggFuncTypeDictFrame,
 ]
 
 num = complex
@@ -263,6 +279,18 @@ FileWriteMode = Literal[
     "a", "w", "x", "at", "wt", "xt", "ab", "wb", "xb", "w+", "w+b", "a+", "a+b"
 ]
 ColspaceArgType = str | int | Sequence[int | str] | Mapping[Hashable, str | int]
+
+# Windowing rank methods
+WindowingRankType = Literal["average", "min", "max"]
+WindowingEngine = Union[Literal["cython", "numba"], None]
+
+class _WindowingNumbaKwargs(TypedDict, total=False):
+    nopython: bool
+    nogil: bool
+    parallel: bool
+
+WindowingEngineKwargs = Union[_WindowingNumbaKwargs, None]
+QuantileInterpolation = Literal["linear", "lower", "higher", "midpoint", "nearest"]
 
 class StyleExportDict(TypedDict, total=False):
     apply: Any

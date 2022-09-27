@@ -86,6 +86,15 @@ def test_types_timestamp_series_comparisons() -> None:
     check(assert_type(tssr, "pd.Series[bool]"), pd.Series, bool)
     check(assert_type(tssr2, "pd.Series[bool]"), pd.Series, bool)
     check(assert_type(tssr3, "pd.Series[bool]"), pd.Series, bool)
+    # GH 265
+    data = pd.date_range("2022-01-01", "2022-01-31", freq="D")
+    s = pd.Series(data)
+    ts2 = pd.Timestamp("2022-01-15")
+    check(assert_type(s, "TimestampSeries"), pd.Series, pd.Timestamp)
+    check(assert_type(ts2 <= s, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(ts2 >= s, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(ts2 < s, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(ts2 > s, "pd.Series[bool]"), pd.Series, bool)
 
 
 def test_types_pydatetime() -> None:
@@ -120,8 +129,6 @@ def test_timedelta_series_arithmetic() -> None:
 
 
 def test_timestamp_timedelta_series_arithmetic() -> None:
-    ts = pd.Timestamp("2022-03-05")
-    s1 = pd.Series(["2022-03-05", "2022-03-06"])
     ts1 = pd.to_datetime(pd.Series(["2022-03-05", "2022-03-06"]))
     assert isinstance(ts1.iloc[0], pd.Timestamp)
     td1 = pd.to_timedelta([2, 3], "seconds")
@@ -140,6 +147,13 @@ def test_timestamp_timedelta_series_arithmetic() -> None:
     check(assert_type(r5, "TimedeltaSeries"), pd.Series, pd.Timedelta)
     r6 = r1 * 4
     check(assert_type(r6, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+
+    tsp1 = pd.Timestamp("2022-03-05")
+    dt1 = dt.datetime(2022, 9, 1, 12, 5, 30)
+    r7 = ts1 - tsp1
+    check(assert_type(r7, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    r8 = ts1 - dt1
+    check(assert_type(r8, "TimedeltaSeries"), pd.Series, pd.Timedelta)
 
 
 def test_timestamp_dateoffset_arithmetic() -> None:
@@ -331,8 +345,8 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s0.dt.isocalendar(), pd.DataFrame), pd.DataFrame)
     check(assert_type(s0.dt.to_period("D"), "PeriodSeries"), pd.Series, pd.Period)
     check(assert_type(s0.dt.to_pydatetime(), np.ndarray), np.ndarray, dt.datetime)
-    local_dtarray = s0.dt.tz_localize("UTC")
-    slocal = pd.Series(local_dtarray)
+    slocal = s0.dt.tz_localize("UTC")
+    check(assert_type(slocal, "TimestampSeries"), pd.Series, pd.Timestamp)
     check(
         assert_type(slocal.dt.tz_convert("EST"), "TimestampSeries"),
         pd.Series,
@@ -409,7 +423,7 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.is_leap_year, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
     check(assert_type(i0.daysinmonth, IntegerIndex), IntegerIndex, int)
     check(assert_type(i0.days_in_month, IntegerIndex), IntegerIndex, int)
-    assert assert_type(i0.tz, Optional[dt.tzinfo]) is None
+    assert assert_type(i0.tz, Optional[Union[dt.tzinfo, BaseTzInfo]]) is None
     check(assert_type(i0.freq, Optional[BaseOffset]), BaseOffset)
     check(assert_type(i0.isocalendar(), pd.DataFrame), pd.DataFrame)
     check(assert_type(i0.to_period("D"), pd.PeriodIndex), pd.PeriodIndex, pd.Period)
@@ -418,14 +432,10 @@ def test_datetimeindex_accessors() -> None:
         np.ndarray,
         dt.datetime,
     )
-    local_dtarray = i0.tz_localize("UTC")
-    slocal = pd.Series(local_dtarray)
-    check(
-        assert_type(slocal.dt.tz_convert("EST"), "TimestampSeries"),
-        pd.Series,
-        pd.Timestamp,
-    )
-    check(assert_type(slocal.dt.tz, Optional[Union[dt.tzinfo, BaseTzInfo]]), BaseTzInfo)
+    slocal = i0.tz_localize("UTC")
+    check(assert_type(slocal, pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(slocal.tz_convert("EST"), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(slocal.tz, Optional[Union[dt.tzinfo, BaseTzInfo]]), BaseTzInfo)
     check(assert_type(i0.normalize(), pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
     check(assert_type(i0.strftime("%Y"), pd.Index), pd.Index, str)
     check(assert_type(i0.round("D"), pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
@@ -436,9 +446,28 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.is_normalized, bool), bool)
 
 
+def test_timedeltaindex_accessors() -> None:
+    # GH 292
+    i0 = pd.date_range("1/1/2021", "1/5/2021") - pd.Timestamp("1/3/2019")
+    check(assert_type(i0, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(i0.days, pd.Index), pd.Index, int)
+    check(assert_type(i0.seconds, pd.Index), pd.Index, int)
+    check(assert_type(i0.microseconds, pd.Index), pd.Index, int)
+    check(assert_type(i0.nanoseconds, pd.Index), pd.Index, int)
+    check(assert_type(i0.components, pd.DataFrame), pd.DataFrame)
+    check(assert_type(i0.to_pytimedelta(), np.ndarray), np.ndarray)
+    check(assert_type(i0.total_seconds(), pd.Index), pd.Index, float)
+    check(
+        assert_type(i0.round("D"), pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta
+    )
+    check(
+        assert_type(i0.floor("D"), pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta
+    )
+    check(assert_type(i0.ceil("D"), pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
+
+
 def test_some_offsets() -> None:
     # GH 222
-
     check(
         assert_type(
             CustomBusinessDay(calendar=USFederalHolidayCalendar()), CustomBusinessDay
@@ -464,6 +493,40 @@ def test_some_offsets() -> None:
     )
     # GH 224
     check(assert_type(dt.date.today() - Day(), dt.date), dt.date)
+    # GH 235
+    check(
+        assert_type(
+            pd.date_range("1/1/2022", "2/1/2022", freq=dt.timedelta(days=2)),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.bdate_range("1/1/2022", "2/1/2022", freq=dt.timedelta(days=2)),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.date_range("1/1/2022", "2/1/2022", freq=pd.Timedelta(days=5)),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.bdate_range("1/1/2022", "2/1/2022", freq=pd.Timedelta(days=5)),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    # GH 320
+    tswm1 = pd.Timestamp("9/23/2022") + pd.offsets.WeekOfMonth(2, 3)
+    check(assert_type(tswm1, pd.Timestamp), pd.Timestamp)
+    tswm2 = pd.Timestamp("9/23/2022") + pd.offsets.LastWeekOfMonth(2, 3)
+    check(assert_type(tswm2, pd.Timestamp), pd.Timestamp)
 
 
 def test_types_to_numpy() -> None:

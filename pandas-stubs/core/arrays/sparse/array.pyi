@@ -10,7 +10,6 @@ class SparseArray(PandasObject, ExtensionArray, ExtensionOpsMixin):
         self,
         data,
         sparse_index=...,
-        index=...,
         fill_value=...,
         kind: str = ...,
         dtype=...,

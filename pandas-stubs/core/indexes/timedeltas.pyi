@@ -1,6 +1,6 @@
 from typing import overload
 
-from pandas.core.arrays.datetimelike import TimelikeOps
+from pandas.core.indexes.accessors import TimedeltaIndexProperties
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.series import TimedeltaSeries
@@ -11,7 +11,7 @@ from pandas._libs import (
 )
 from pandas._typing import num
 
-class TimedeltaIndex(DatetimeTimedeltaMixin, TimelikeOps):
+class TimedeltaIndex(DatetimeTimedeltaMixin, TimedeltaIndexProperties):
     def __new__(
         cls,
         data=...,
@@ -34,9 +34,8 @@ class TimedeltaIndex(DatetimeTimedeltaMixin, TimelikeOps):
     def __truediv__(self, other: num) -> TimedeltaIndex: ...  # type: ignore[override]
     def astype(self, dtype, copy: bool = ...): ...
     def get_value(self, series, key): ...
-    def get_loc(self, key, method=..., tolerance=...): ...
+    def get_loc(self, key, tolerance=...): ...
     def searchsorted(self, value, side: str = ..., sorter=...): ...
-    def is_type_compatible(self, typ) -> bool: ...
     @property
     def inferred_type(self) -> str: ...
     def insert(self, loc, item): ...

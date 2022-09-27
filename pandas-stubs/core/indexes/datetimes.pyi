@@ -1,16 +1,19 @@
-from datetime import tzinfo
+from datetime import (
+    timedelta,
+    tzinfo,
+)
 from typing import overload
 
 import numpy as np
 from pandas import (
     DataFrame,
     Timedelta,
+    TimedeltaIndex,
     Timestamp,
 )
 from pandas.core.indexes.accessors import DatetimeIndexProperties
 from pandas.core.indexes.api import Float64Index
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
-from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import (
     TimedeltaSeries,
     TimestampSeries,
@@ -21,7 +24,6 @@ from pandas._typing import (
     ArrayLike,
     DatetimeLike,
     IntervalClosedType,
-    np_ndarray_bool,
 )
 
 from pandas.core.dtypes.dtypes import DatetimeTZDtype
@@ -29,7 +31,6 @@ from pandas.core.dtypes.dtypes import DatetimeTZDtype
 from pandas.tseries.offsets import BaseOffset
 
 class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeIndexProperties):
-    tz: tzinfo | None
     def __init__(
         self,
         data: ArrayLike | AnyArrayLike | list | tuple,
@@ -58,14 +59,13 @@ class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeIndexProperties):
     def __sub__(self, other: Timedelta | TimedeltaIndex) -> DatetimeIndex: ...
     @overload
     def __sub__(self, other: Timestamp | DatetimeIndex) -> TimedeltaIndex: ...
-    def union_many(self, others): ...
     # overload needed because Index.to_series() and DatetimeIndex.to_series() have
     # different arguments
     def to_series(self, keep_tz=..., index=..., name=...) -> TimestampSeries: ...  # type: ignore[override]
     def snap(self, freq: str = ...): ...
     def get_value(self, series, key): ...
-    def get_loc(self, key, method=..., tolerance=...): ...
-    def slice_indexer(self, start=..., end=..., step=..., kind=...): ...
+    def get_loc(self, key, tolerance=...): ...
+    def slice_indexer(self, start=..., end=..., step=...): ...
     def searchsorted(self, value, side: str = ..., sorter=...): ...
     def is_type_compatible(self, typ) -> bool: ...
     @property
@@ -80,10 +80,6 @@ class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeIndexProperties):
     def isocalendar(self) -> DataFrame: ...
     @property
     def tzinfo(self) -> tzinfo | None: ...
-    def __lt__(self, other: Timestamp) -> np_ndarray_bool: ...
-    def __le__(self, other: Timestamp) -> np_ndarray_bool: ...
-    def __gt__(self, other: Timestamp) -> np_ndarray_bool: ...
-    def __ge__(self, other: Timestamp) -> np_ndarray_bool: ...
     @property
     def dtype(self) -> np.dtype | DatetimeTZDtype: ...
 
@@ -91,7 +87,7 @@ def date_range(
     start: str | DatetimeLike | None = ...,
     end: str | DatetimeLike | None = ...,
     periods: int | None = ...,
-    freq: str | BaseOffset = ...,
+    freq: str | timedelta | Timedelta | BaseOffset = ...,
     tz: str | tzinfo = ...,
     normalize: bool = ...,
     name: str | None = ...,
@@ -102,7 +98,7 @@ def bdate_range(
     start: str | DatetimeLike | None = ...,
     end: str | DatetimeLike | None = ...,
     periods: int | None = ...,
-    freq: str | BaseOffset = ...,
+    freq: str | timedelta | Timedelta | BaseOffset = ...,
     tz: str | tzinfo = ...,
     normalize: bool = ...,
     name: str | None = ...,

@@ -27,6 +27,7 @@ def pivot_table(
 ) -> DataFrame: ...
 def pivot(
     data: DataFrame,
+    *,
     index: IndexLabel = ...,
     columns: IndexLabel = ...,
     values: IndexLabel = ...,

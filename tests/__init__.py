@@ -1,17 +1,16 @@
 from __future__ import annotations
 
+import os
+import platform
 from typing import (
     TYPE_CHECKING,
     Final,
 )
 
-from packaging.version import parse
-import pandas as pd
-
 from pandas._typing import T
 
 TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
-PD_LT_15 = parse(pd.__version__) < parse("1.5.0")
+WINDOWS = os.name == "nt" or "cygwin" in platform.system().lower()
 
 
 def check(actual: T, klass: type, dtype: type | None = None, attr: str = "left") -> T:

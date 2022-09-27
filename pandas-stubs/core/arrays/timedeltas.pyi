@@ -1,9 +1,12 @@
 from datetime import timedelta
 from typing import Sequence
 
-from pandas.core.arrays import datetimelike as dtl
+from pandas.core.arrays.datetimelike import (
+    DatetimeLikeArrayMixin,
+    TimelikeOps,
+)
 
-class TimedeltaArray(dtl.DatetimeLikeArrayMixin, dtl.TimelikeOps):
+class TimedeltaArray(DatetimeLikeArrayMixin, TimelikeOps):
     __array_priority__: int = ...
     @property
     def dtype(self): ...
@@ -11,6 +14,7 @@ class TimedeltaArray(dtl.DatetimeLikeArrayMixin, dtl.TimelikeOps):
     def astype(self, dtype, copy: bool = ...): ...
     def sum(
         self,
+        *,
         axis=...,
         dtype=...,
         out=...,
@@ -21,6 +25,7 @@ class TimedeltaArray(dtl.DatetimeLikeArrayMixin, dtl.TimelikeOps):
     ): ...
     def std(
         self,
+        *,
         axis=...,
         dtype=...,
         out=...,
@@ -30,6 +35,7 @@ class TimedeltaArray(dtl.DatetimeLikeArrayMixin, dtl.TimelikeOps):
     ): ...
     def median(
         self,
+        *,
         axis=...,
         out=...,
         overwrite_input: bool = ...,

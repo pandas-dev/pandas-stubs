@@ -1,8 +1,8 @@
-from pandas.core.arrays import PandasArray as PandasArray
+from pandas.core.arrays import PandasArray
 
 from pandas._typing import type_t
 
-from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
+from pandas.core.dtypes.base import ExtensionDtype
 
 class StringDtype(ExtensionDtype):
     name: str = ...
