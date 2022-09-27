@@ -1,4 +1,7 @@
-from collections import abc
+from collections import (
+    abc,
+    defaultdict,
+)
 import csv
 from types import TracebackType
 from typing import (
@@ -18,6 +21,7 @@ from pandas._typing import (
     CompressionOptions,
     CSVEngine,
     CSVQuoting,
+    Dtype,
     DtypeArg,
     FilePath,
     ReadCsvBuffer,
@@ -44,7 +48,7 @@ def read_csv(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
-    dtype: DtypeArg | None = ...,
+    dtype: DtypeArg | defaultdict[str, Dtype] | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
