@@ -33,6 +33,7 @@ from pandas.core.indexing import (
     _IndexSliceTuple,
     _LocIndexer,
 )
+from pandas.core.interchange.dataframe_protocol import DataFrame as DataFrameXchg
 from pandas.core.resample import Resampler
 from pandas.core.series import Series
 from pandas.core.window import (
@@ -199,6 +200,9 @@ class DataFrame(NDFrame, OpsMixin):
         dtype=...,
         copy: _bool = ...,
     ) -> DataFrame: ...
+    def __dataframe__(
+        self, nan_as_null: bool = ..., allow_copy: bool = ...
+    ) -> DataFrameXchg: ...
     @property
     def axes(self) -> list[Index]: ...
     @property
