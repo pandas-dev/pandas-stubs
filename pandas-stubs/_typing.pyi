@@ -302,6 +302,6 @@ class StyleExportDict(TypedDict, total=False):
     hide_column_names: bool
     css: dict[str, str | int]
 
-RollingMethod = Literal["single", "table"]
+CalculationMethod = Literal["single", "table"]
 
 __all__ = ["npt", "type_t"]

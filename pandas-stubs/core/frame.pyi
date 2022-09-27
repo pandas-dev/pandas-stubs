@@ -56,6 +56,7 @@ from pandas._typing import (
     Axes,
     Axis,
     AxisType,
+    CalculationMethod,
     ColspaceArgType,
     CompressionOptions,
     Dtype,
@@ -84,7 +85,6 @@ from pandas._typing import (
     ReadBuffer,
     Renamer,
     ReplaceMethod,
-    RollingMethod,
     Scalar,
     ScalarT,
     SeriesAxisType,
@@ -1430,7 +1430,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         min_periods: int = ...,
         axis: AxisType = ...,
-        method: RollingMethod = ...,
+        method: CalculationMethod = ...,
     ) -> Expanding[DataFrame]: ...
     @overload
     def ffill(
@@ -1773,7 +1773,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         closed: IntervalClosedType | None = ...,
         step: int | None = ...,
-        method: RollingMethod = ...,
+        method: CalculationMethod = ...,
     ) -> Window[DataFrame]: ...
     @overload
     def rolling(
@@ -1787,7 +1787,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         closed: IntervalClosedType | None = ...,
         step: int | None = ...,
-        method: RollingMethod = ...,
+        method: CalculationMethod = ...,
     ) -> Rolling[DataFrame]: ...
     def rpow(
         self,

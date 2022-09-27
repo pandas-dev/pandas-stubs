@@ -71,6 +71,7 @@ from pandas._typing import (
     Axes,
     Axis,
     AxisType,
+    CalculationMethod,
     CompressionOptions,
     DtypeObj,
     FilePathOrBuffer,
@@ -88,7 +89,6 @@ from pandas._typing import (
     QuantileInterpolation,
     Renamer,
     ReplaceMethod,
-    RollingMethod,
     Scalar,
     SeriesAxisType,
     SortKind,
@@ -1319,7 +1319,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         min_periods: int = ...,
         axis: SeriesAxisType = ...,
-        method: RollingMethod = ...,
+        method: CalculationMethod = ...,
     ) -> Expanding[Series]: ...
     def floordiv(
         self,
@@ -1506,7 +1506,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType = ...,
         closed: _str | None = ...,
         step: int | None = ...,
-        method: RollingMethod = ...,
+        method: CalculationMethod = ...,
     ) -> Window[Series]: ...
     @overload
     def rolling(
@@ -1520,7 +1520,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType = ...,
         closed: _str | None = ...,
         step: int | None = ...,
-        method: RollingMethod = ...,
+        method: CalculationMethod = ...,
     ) -> Rolling[Series]: ...
     def rpow(
         self,
