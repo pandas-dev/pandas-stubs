@@ -1755,13 +1755,14 @@ class DataFrame(NDFrame, OpsMixin):
         label: _str | None = ...,
         convention: TimestampConvention = ...,
         kind: Literal["timestamp", "period"] | None = ...,
-        loffset=...,
-        base: int = ...,
+        # Not actually positional but needed due to deprecations
+        *,
         on: _str | None = ...,
         level: Level | None = ...,
         origin: Timestamp
         | Literal["epoch", "start", "start_day", "end", "end_day"] = ...,
         offset: Timedelta | _str | None = ...,
+        group_keys: bool = ...,
     ) -> Resampler[DataFrame]: ...
     def rfloordiv(
         self,
