@@ -759,6 +759,8 @@ class DataFrame(NDFrame, OpsMixin):
         col_fill: Hashable = ...,
         *,
         inplace: Literal[True],
+        allow_duplicates: bool = ...,
+        names: Hashable | list[HashableT] = ...,
     ) -> None: ...
     @overload
     def reset_index(
@@ -769,6 +771,8 @@ class DataFrame(NDFrame, OpsMixin):
         col_fill: Hashable = ...,
         *,
         inplace: Literal[False],
+        allow_duplicates: bool = ...,
+        names: Hashable | list[HashableT] = ...,
     ) -> DataFrame: ...
     @overload
     def reset_index(
@@ -778,6 +782,8 @@ class DataFrame(NDFrame, OpsMixin):
         *,
         col_level: int | _str = ...,
         col_fill: Hashable = ...,
+        allow_duplicates: bool = ...,
+        names: Hashable | list[HashableT] = ...,
     ) -> DataFrame: ...
     @overload
     def reset_index(
@@ -787,6 +793,8 @@ class DataFrame(NDFrame, OpsMixin):
         inplace: _bool | None = ...,
         col_level: int | _str = ...,
         col_fill: Hashable = ...,
+        allow_duplicates: bool = ...,
+        names: Hashable | list[HashableT] = ...,
     ) -> DataFrame | None: ...
     def isna(self) -> DataFrame: ...
     def isnull(self) -> DataFrame: ...
