@@ -1105,6 +1105,17 @@ class DataFrame(NDFrame, OpsMixin):
         lsuffix: _str = ...,
         rsuffix: _str = ...,
         sort: _bool = ...,
+        validate: Literal[
+            "one_to_one",
+            "1:1",
+            "one_to_many",
+            "1:m",
+            "many_to_one",
+            "m:1",
+            "many_to_many",
+            "m:m",
+        ]
+        | None = ...,
     ) -> DataFrame: ...
     def merge(
         self,
