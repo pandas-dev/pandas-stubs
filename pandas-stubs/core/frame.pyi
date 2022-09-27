@@ -56,6 +56,7 @@ from pandas._typing import (
     Axes,
     Axis,
     AxisType,
+    CalculationMethod,
     ColspaceArgType,
     CompressionOptions,
     Dtype,
@@ -1179,6 +1180,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         numeric_only: _bool = ...,
         interpolation: QuantileInterpolation = ...,
+        method: CalculationMethod = ...,
     ) -> Series: ...
     @overload
     def quantile(
