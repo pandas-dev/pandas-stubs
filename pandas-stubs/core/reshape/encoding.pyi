@@ -16,7 +16,7 @@ from pandas._typing import (
 
 def get_dummies(
     data: ArrayLike | DataFrame | Series,
-    prefix: str | Iterable[str] | dict[Hashable, str] | None = ...,
+    prefix: str | Iterable[str] | dict[HashableT, str] | None = ...,
     prefix_sep: str = ...,
     dummy_na: bool = ...,
     columns: list[HashableT] | None = ...,
