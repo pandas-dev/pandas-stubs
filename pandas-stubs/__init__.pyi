@@ -80,6 +80,7 @@ from .core.reshape.api import (
     concat as concat,
     crosstab as crosstab,
     cut as cut,
+    from_dummies as from_dummies,
     get_dummies as get_dummies,
     lreshape as lreshape,
     melt as melt,
