@@ -92,6 +92,7 @@ from pandas._typing import (
     StataDateFormat,
     StorageOptions,
     StrLike,
+    Suffixes,
     T as TType,
     TimestampConvention,
     WriteBuffer,
@@ -974,6 +975,7 @@ class DataFrame(NDFrame, OpsMixin):
         align_axis: Axis = ...,
         keep_shape: bool = ...,
         keep_equal: bool = ...,
+        result_names: Suffixes = ...,
     ) -> DataFrame: ...
     def combine(
         self,
