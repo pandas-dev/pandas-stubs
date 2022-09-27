@@ -34,6 +34,7 @@ from pandas.core.groupby.generic import (
     _SeriesGroupByNonScalar,
     _SeriesGroupByScalar,
 )
+from pandas.core.indexers import BaseIndexer
 from pandas.core.indexes.accessors import (
     CombinedDatetimelikeProperties,
     PeriodProperties,
@@ -62,6 +63,7 @@ from pandas.core.window.rolling import (
 import xarray as xr
 
 from pandas._libs.missing import NAType
+from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     S1,
     AggFuncTypeBase,
@@ -1497,7 +1499,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def rolling(
         self,
-        window: int,
+        window: int | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
@@ -1511,7 +1513,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def rolling(
         self,
-        window: int,
+        window: int | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,

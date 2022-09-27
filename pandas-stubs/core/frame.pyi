@@ -27,6 +27,7 @@ from pandas.core.groupby.generic import (
     _DataFrameGroupByScalar,
 )
 from pandas.core.groupby.grouper import Grouper
+from pandas.core.indexers import BaseIndexer
 from pandas.core.indexes.base import Index
 from pandas.core.indexing import (
     _iLocIndexer,
@@ -46,6 +47,7 @@ from pandas.core.window.rolling import (
 import xarray as xr
 
 from pandas._libs.missing import NAType
+from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     S1,
     AggFuncTypeBase,
@@ -1764,7 +1766,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def rolling(
         self,
-        window: int,
+        window: int | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
@@ -1778,7 +1780,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def rolling(
         self,
-        window: int,
+        window: int | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
