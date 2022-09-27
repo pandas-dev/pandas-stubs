@@ -19,6 +19,15 @@ def test_dummies():
     check(assert_type(dummies, pd.DataFrame), pd.DataFrame)
     check(assert_type(pd.from_dummies(dummies), pd.DataFrame), pd.DataFrame)
 
+    df2 = pd.DataFrame(
+        pd.Series(["a", "b", "a", "b", "c", "a", "a"], dtype="category"),
+        columns=[("A",)],
+    )
+    check(
+        assert_type(pd.get_dummies(df2, prefix={("A",): "bar"}), pd.DataFrame),
+        pd.DataFrame,
+    )
+
 
 def test_get_dummies_args():
     df = pd.DataFrame(
