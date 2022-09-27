@@ -281,6 +281,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         *,
         name: object | None = ...,
         inplace: _bool = ...,
+        allow_duplicates: bool = ...,
     ) -> Series[S1]: ...
     @overload
     def reset_index(
@@ -290,6 +291,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         *,
         name: object | None = ...,
         inplace: _bool = ...,
+        allow_duplicates: bool = ...,
     ) -> Series[S1]: ...
     @overload
     def reset_index(
@@ -299,6 +301,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         level: Sequence[Level] | None = ...,
         name: object | None = ...,
         inplace: _bool = ...,
+        allow_duplicates: bool = ...,
     ) -> Series[S1]: ...
     @overload
     def reset_index(
@@ -308,6 +311,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         level: Level | None = ...,
         name: object | None = ...,
         inplace: _bool = ...,
+        allow_duplicates: bool = ...,
     ) -> Series[S1]: ...
     @overload
     def reset_index(
@@ -316,6 +320,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         drop: Literal[False] = ...,
         name: object | None = ...,
         inplace: _bool = ...,
+        allow_duplicates: bool = ...,
     ) -> DataFrame: ...
     @overload
     def reset_index(
@@ -324,6 +329,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         drop: Literal[False] = ...,
         name: object | None = ...,
         inplace: _bool = ...,
+        allow_duplicates: bool = ...,
     ) -> DataFrame: ...
     @overload
     def to_string(
