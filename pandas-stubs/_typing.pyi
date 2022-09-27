@@ -100,6 +100,7 @@ Axis = Union[str, int]
 IndexLabel = Union[Hashable, Sequence[Hashable]]
 Label = Optional[Hashable]
 Level = Union[Hashable, int]
+Suffixes = tuple[Optional[str], Optional[str]]
 Ordered = Optional[bool]
 JSONSerializable = Union[PythonScalar, list, dict]
 Axes = Union[AnyArrayLike, list, dict, range]
@@ -301,5 +302,7 @@ class StyleExportDict(TypedDict, total=False):
     hide_index_names: bool
     hide_column_names: bool
     css: dict[str, str | int]
+
+CalculationMethod = Literal["single", "table"]
 
 __all__ = ["npt", "type_t"]

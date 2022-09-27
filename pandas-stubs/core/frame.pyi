@@ -56,6 +56,7 @@ from pandas._typing import (
     Axes,
     Axis,
     AxisType,
+    CalculationMethod,
     ColspaceArgType,
     CompressionOptions,
     Dtype,
@@ -91,6 +92,7 @@ from pandas._typing import (
     StataDateFormat,
     StorageOptions,
     StrLike,
+    Suffixes,
     T as TType,
     TimestampConvention,
     WriteBuffer,
@@ -496,6 +498,9 @@ class DataFrame(NDFrame, OpsMixin):
         | np_ndarray_bool
         | Sequence[tuple[Scalar, ...]],
     ) -> DataFrame: ...
+    def isetitem(
+        self, loc: int | Sequence[int], value: Scalar | ArrayLike | list[Any]
+    ) -> None: ...
     def __setitem__(self, key, value): ...
     @overload
     def query(self, expr: _str, *, inplace: Literal[True], **kwargs) -> None: ...
@@ -741,6 +746,8 @@ class DataFrame(NDFrame, OpsMixin):
         col_fill: Hashable = ...,
         *,
         inplace: Literal[True],
+        allow_duplicates: _bool = ...,
+        names: Hashable | list[HashableT] = ...,
     ) -> None: ...
     @overload
     def reset_index(
@@ -751,6 +758,8 @@ class DataFrame(NDFrame, OpsMixin):
         col_fill: Hashable = ...,
         *,
         inplace: Literal[False],
+        allow_duplicates: _bool = ...,
+        names: Hashable | list[HashableT] = ...,
     ) -> DataFrame: ...
     @overload
     def reset_index(
@@ -760,6 +769,8 @@ class DataFrame(NDFrame, OpsMixin):
         *,
         col_level: int | _str = ...,
         col_fill: Hashable = ...,
+        allow_duplicates: _bool = ...,
+        names: Hashable | list[HashableT] = ...,
     ) -> DataFrame: ...
     @overload
     def reset_index(
@@ -769,6 +780,8 @@ class DataFrame(NDFrame, OpsMixin):
         inplace: _bool | None = ...,
         col_level: int | _str = ...,
         col_fill: Hashable = ...,
+        allow_duplicates: _bool = ...,
+        names: Hashable | list[HashableT] = ...,
     ) -> DataFrame | None: ...
     def isna(self) -> DataFrame: ...
     def isnull(self) -> DataFrame: ...
@@ -957,6 +970,7 @@ class DataFrame(NDFrame, OpsMixin):
         align_axis: Axis = ...,
         keep_shape: bool = ...,
         keep_equal: bool = ...,
+        result_names: Suffixes = ...,
     ) -> DataFrame: ...
     def combine(
         self,
@@ -1086,6 +1100,17 @@ class DataFrame(NDFrame, OpsMixin):
         lsuffix: _str = ...,
         rsuffix: _str = ...,
         sort: _bool = ...,
+        validate: Literal[
+            "one_to_one",
+            "1:1",
+            "one_to_many",
+            "1:m",
+            "many_to_one",
+            "m:1",
+            "many_to_many",
+            "m:m",
+        ]
+        | None = ...,
     ) -> DataFrame: ...
     def merge(
         self,
@@ -1163,6 +1188,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         numeric_only: _bool = ...,
         interpolation: QuantileInterpolation = ...,
+        method: CalculationMethod = ...,
     ) -> Series: ...
     @overload
     def quantile(
@@ -1171,6 +1197,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         numeric_only: _bool = ...,
         interpolation: QuantileInterpolation = ...,
+        method: CalculationMethod = ...,
     ) -> DataFrame: ...
     def to_timestamp(
         self,
@@ -1716,13 +1743,14 @@ class DataFrame(NDFrame, OpsMixin):
         label: _str | None = ...,
         convention: TimestampConvention = ...,
         kind: Literal["timestamp", "period"] | None = ...,
-        loffset=...,
-        base: int = ...,
+        # Not actually positional but needed due to deprecations
+        *,
         on: _str | None = ...,
         level: Level | None = ...,
         origin: Timestamp
         | Literal["epoch", "start", "start_day", "end", "end_day"] = ...,
         offset: Timedelta | _str | None = ...,
+        group_keys: _bool = ...,
     ) -> Resampler[DataFrame]: ...
     def rfloordiv(
         self,

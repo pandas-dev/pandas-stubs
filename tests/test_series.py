@@ -817,6 +817,8 @@ def test_reset_index() -> None:
     check(assert_type(r4, pd.Series), pd.Series)
     r5 = s.reset_index(["ab"], drop=True)
     check(assert_type(r5, pd.Series), pd.Series)
+    r6 = s.reset_index(["ab"], drop=True, allow_duplicates=True)
+    check(assert_type(r6, pd.Series), pd.Series)
 
 
 def test_series_add_str() -> None:

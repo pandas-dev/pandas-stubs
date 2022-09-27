@@ -27,6 +27,7 @@ from pandas._testing import (
     ensure_clean,
     getSeriesData,
 )
+from pandas.core.resample import Resampler  # noqa: F401
 import pytest
 from typing_extensions import assert_type
 import xarray as xr
@@ -1370,7 +1371,12 @@ def test_join() -> None:
     seriesB = float_frame["B"]
     frameCD = float_frame[["C", "D"]]
     right: list[pd.Series | pd.DataFrame] = [seriesB, frameCD]
-    result = left.join(right)
+    check(assert_type(left.join(right), pd.DataFrame), pd.DataFrame)
+    check(assert_type(left.join(right, validate="1:1"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(left.join(right, validate="one_to_one"), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(left.join(right, validate="1:m"), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_ffill() -> None:
@@ -1816,3 +1822,60 @@ def test_replace_na() -> None:
     # GH 262
     frame = pd.DataFrame(["N/A", "foo", "bar"])
     check(assert_type(frame.replace("N/A", pd.NA), pd.DataFrame), pd.DataFrame)
+
+
+def test_isetframe() -> None:
+    frame = pd.DataFrame([[1, 2], [3, 4]], columns=["a", "b"])
+    check(assert_type(frame.isetitem(0, 10), None), type(None))
+    check(assert_type(frame.isetitem([0], [10, 12]), None), type(None))
+
+
+def test_reset_index_150_changes() -> None:
+    frame = pd.DataFrame({"a": [1, 2, 3, 4]}, index=[-10, -9, -8, -7])
+    check(
+        assert_type(
+            frame.reset_index(allow_duplicates=True, names="idx"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            frame.reset_index(allow_duplicates=True, names=["idx"]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_compare_150_changes() -> None:
+    frame_a = pd.DataFrame({"a": [1, 2, 3, 4]}, index=[-10, -9, -8, -7])
+    frame_b = pd.DataFrame({"a": [1, 2, 4, 3]}, index=[-10, -9, -8, -7])
+    check(
+        assert_type(
+            frame_a.compare(frame_b, result_names=("one", "the_other")), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_quantile_150_changes() -> None:
+    frame = pd.DataFrame(getSeriesData())
+    check(assert_type(frame.quantile(0.5, method="single"), pd.Series), pd.Series)
+    check(
+        assert_type(
+            frame.quantile([0.25, 0.5, 0.75], interpolation="nearest", method="table"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_resample_150_changes() -> None:
+    idx = pd.date_range("2020-1-1", periods=700)
+    frame = pd.DataFrame(np.random.standard_normal((700, 1)), index=idx, columns=["a"])
+    resampler = frame.resample("M", group_keys=True)
+    assert_type(resampler, "Resampler[pd.DataFrame]")
+
+    def f(s: pd.DataFrame) -> pd.Series:
+        return s.mean()
+
+    check(assert_type(resampler.apply(f), Union[pd.Series, pd.DataFrame]), pd.DataFrame)
