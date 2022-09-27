@@ -196,6 +196,8 @@ def test_read_stata_iterator():
         check(
             assert_type(read_stata(str_path, iterator=True), StataReader), StataReader
         )
+        reader = read_stata(str_path, chunksize=1)
+        check(assert_type(reader, StataReader), StataReader)
 
 
 def test_clipboard():
