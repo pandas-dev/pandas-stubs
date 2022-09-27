@@ -498,7 +498,9 @@ class DataFrame(NDFrame, OpsMixin):
         | np_ndarray_bool
         | Sequence[tuple[Scalar, ...]],
     ) -> DataFrame: ...
-    def isetitem(self, loc: int | Sequence[int], value: Scalar | ArrayLike) -> None: ...
+    def isetitem(
+        self, loc: int | Sequence[int], value: Scalar | ArrayLike | list[Any]
+    ) -> None: ...
     def __setitem__(self, key, value): ...
     @overload
     def query(self, expr: _str, *, inplace: Literal[True], **kwargs) -> None: ...
@@ -759,7 +761,7 @@ class DataFrame(NDFrame, OpsMixin):
         col_fill: Hashable = ...,
         *,
         inplace: Literal[True],
-        allow_duplicates: bool = ...,
+        allow_duplicates: _bool = ...,
         names: Hashable | list[HashableT] = ...,
     ) -> None: ...
     @overload
@@ -771,7 +773,7 @@ class DataFrame(NDFrame, OpsMixin):
         col_fill: Hashable = ...,
         *,
         inplace: Literal[False],
-        allow_duplicates: bool = ...,
+        allow_duplicates: _bool = ...,
         names: Hashable | list[HashableT] = ...,
     ) -> DataFrame: ...
     @overload
@@ -782,7 +784,7 @@ class DataFrame(NDFrame, OpsMixin):
         *,
         col_level: int | _str = ...,
         col_fill: Hashable = ...,
-        allow_duplicates: bool = ...,
+        allow_duplicates: _bool = ...,
         names: Hashable | list[HashableT] = ...,
     ) -> DataFrame: ...
     @overload
@@ -793,7 +795,7 @@ class DataFrame(NDFrame, OpsMixin):
         inplace: _bool | None = ...,
         col_level: int | _str = ...,
         col_fill: Hashable = ...,
-        allow_duplicates: bool = ...,
+        allow_duplicates: _bool = ...,
         names: Hashable | list[HashableT] = ...,
     ) -> DataFrame | None: ...
     def isna(self) -> DataFrame: ...
@@ -1210,6 +1212,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         numeric_only: _bool = ...,
         interpolation: QuantileInterpolation = ...,
+        method: CalculationMethod = ...,
     ) -> DataFrame: ...
     def to_timestamp(
         self,
@@ -1762,7 +1765,7 @@ class DataFrame(NDFrame, OpsMixin):
         origin: Timestamp
         | Literal["epoch", "start", "start_day", "end", "end_day"] = ...,
         offset: Timedelta | _str | None = ...,
-        group_keys: bool = ...,
+        group_keys: _bool = ...,
     ) -> Resampler[DataFrame]: ...
     def rfloordiv(
         self,

@@ -573,3 +573,13 @@ def test_plot_keywords(close_figures):
         ),
         plt.Axes,
     )
+
+
+def test_plot_subplot_changes_150() -> None:
+    df = pd.DataFrame(np.random.standard_normal((25, 4)), columns=["a", "b", "c", "d"])
+    check(
+        assert_type(
+            df.plot(subplots=[("a", "b"), ("c", "d")]), npt.NDArray[np.object_]
+        ),
+        np.ndarray,
+    )
