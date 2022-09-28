@@ -1,6 +1,8 @@
 import numpy as np
 from pandas.core.indexes.numeric import Int64Index
 
+from pandas._typing import npt
+
 class RangeIndex(Int64Index):
     def __new__(
         cls,
@@ -44,6 +46,13 @@ class RangeIndex(Int64Index):
     def min(self, axis=..., skipna: bool = ..., *args, **kwargs): ...
     def max(self, axis=..., skipna: bool = ..., *args, **kwargs): ...
     def argsort(self, *args, **kwargs): ...
+    def factorize(
+        self,
+        sort: bool = ...,
+        # Not actually positional-only, used to handle deprecations in 1.5.0
+        *,
+        use_na_sentinel: bool = ...,
+    ) -> tuple[npt.NDArray[np.intp], RangeIndex]: ...
     def equals(self, other): ...
     def intersection(self, other, sort: bool = ...): ...
     def join(

@@ -34,6 +34,7 @@ from pandas.core.groupby.generic import (
     _SeriesGroupByNonScalar,
     _SeriesGroupByScalar,
 )
+from pandas.core.indexers import BaseIndexer
 from pandas.core.indexes.accessors import (
     CombinedDatetimelikeProperties,
     PeriodProperties,
@@ -62,6 +63,7 @@ from pandas.core.window.rolling import (
 import xarray as xr
 
 from pandas._libs.missing import NAType
+from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     S1,
     AggFuncTypeBase,
@@ -71,6 +73,7 @@ from pandas._typing import (
     Axes,
     Axis,
     AxisType,
+    CalculationMethod,
     CompressionOptions,
     DtypeObj,
     FilePathOrBuffer,
@@ -281,6 +284,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         *,
         name: object | None = ...,
         inplace: _bool = ...,
+        allow_duplicates: bool = ...,
     ) -> Series[S1]: ...
     @overload
     def reset_index(
@@ -290,6 +294,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         *,
         name: object | None = ...,
         inplace: _bool = ...,
+        allow_duplicates: bool = ...,
     ) -> Series[S1]: ...
     @overload
     def reset_index(
@@ -299,6 +304,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         level: Sequence[Level] | None = ...,
         name: object | None = ...,
         inplace: _bool = ...,
+        allow_duplicates: bool = ...,
     ) -> Series[S1]: ...
     @overload
     def reset_index(
@@ -308,6 +314,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         level: Level | None = ...,
         name: object | None = ...,
         inplace: _bool = ...,
+        allow_duplicates: bool = ...,
     ) -> Series[S1]: ...
     @overload
     def reset_index(
@@ -316,6 +323,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         drop: Literal[False] = ...,
         name: object | None = ...,
         inplace: _bool = ...,
+        allow_duplicates: bool = ...,
     ) -> DataFrame: ...
     @overload
     def reset_index(
@@ -324,6 +332,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         drop: Literal[False] = ...,
         name: object | None = ...,
         inplace: _bool = ...,
+        allow_duplicates: bool = ...,
     ) -> DataFrame: ...
     @overload
     def to_string(
@@ -1318,7 +1327,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         min_periods: int = ...,
         axis: SeriesAxisType = ...,
-        method: Literal["single", "table"] = ...,
+        method: CalculationMethod = ...,
     ) -> Expanding[Series]: ...
     def floordiv(
         self,
@@ -1496,7 +1505,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def rolling(
         self,
-        window,
+        window: int | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
@@ -1504,11 +1513,13 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         on: _str | None = ...,
         axis: SeriesAxisType = ...,
         closed: _str | None = ...,
+        step: int | None = ...,
+        method: CalculationMethod = ...,
     ) -> Window[Series]: ...
     @overload
     def rolling(
         self,
-        window,
+        window: int | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
@@ -1516,6 +1527,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         on: _str | None = ...,
         axis: SeriesAxisType = ...,
         closed: _str | None = ...,
+        step: int | None = ...,
+        method: CalculationMethod = ...,
     ) -> Rolling[Series]: ...
     def rpow(
         self,

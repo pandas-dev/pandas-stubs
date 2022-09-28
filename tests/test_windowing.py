@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from pandas import (
     DataFrame,
     Series,
@@ -304,3 +305,35 @@ def test_ewm_aggregate_series() -> None:
         DataFrame,
     )
     check(assert_type(S.ewm(span=10).agg("sum"), Series), Series)
+
+
+def test_rolling_step_method() -> None:
+    check(
+        assert_type(DF.rolling(10, step=5, method="single"), "Rolling[DataFrame]"),
+        Rolling,
+    )
+    check(assert_type(DF.rolling(10, method="table"), "Rolling[DataFrame]"), Rolling)
+
+
+def test_rolling_window() -> None:
+    df_time = pd.DataFrame(
+        {"B": [0, 1, 2, np.nan, 4]},
+        index=[
+            pd.Timestamp("20130101 09:00:00"),
+            pd.Timestamp("20130101 09:00:02"),
+            pd.Timestamp("20130101 09:00:03"),
+            pd.Timestamp("20130101 09:00:05"),
+            pd.Timestamp("20130101 09:00:06"),
+        ],
+    )
+
+    indexer = pd.api.indexers.FixedForwardWindowIndexer(window_size=2)
+    check(
+        assert_type(df_time.rolling(window=indexer, min_periods=1).sum(), DataFrame),
+        DataFrame,
+    )
+    s = df_time.iloc[:, 0]
+    check(
+        assert_type(s.rolling(window=indexer, min_periods=1).sum(), Series),
+        Series,
+    )

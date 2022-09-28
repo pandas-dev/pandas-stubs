@@ -266,6 +266,8 @@ def test_types_rank() -> None:
         s.rank(method="dense", ascending=True)
     with pytest.warns(FutureWarning, match="Calling Series.rank with numeric_only"):
         s.rank(method="first", numeric_only=True)
+    s2 = pd.Series([1, 1, 2, 5, 6, np.nan])
+    s2.rank(method="first", numeric_only=True)
 
 
 def test_types_mean() -> None:
@@ -815,6 +817,8 @@ def test_reset_index() -> None:
     check(assert_type(r4, pd.Series), pd.Series)
     r5 = s.reset_index(["ab"], drop=True)
     check(assert_type(r5, pd.Series), pd.Series)
+    r6 = s.reset_index(["ab"], drop=True, allow_duplicates=True)
+    check(assert_type(r6, pd.Series), pd.Series)
 
 
 def test_series_add_str() -> None:

@@ -27,6 +27,7 @@ from pandas.core.groupby.generic import (
     _DataFrameGroupByScalar,
 )
 from pandas.core.groupby.grouper import Grouper
+from pandas.core.indexers import BaseIndexer
 from pandas.core.indexes.base import Index
 from pandas.core.indexing import (
     _iLocIndexer,
@@ -46,6 +47,7 @@ from pandas.core.window.rolling import (
 import xarray as xr
 
 from pandas._libs.missing import NAType
+from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     S1,
     AggFuncTypeBase,
@@ -56,6 +58,7 @@ from pandas._typing import (
     Axes,
     Axis,
     AxisType,
+    CalculationMethod,
     ColspaceArgType,
     CompressionOptions,
     Dtype,
@@ -91,6 +94,7 @@ from pandas._typing import (
     StataDateFormat,
     StorageOptions,
     StrLike,
+    Suffixes,
     T as TType,
     TimestampConvention,
     WriteBuffer,
@@ -496,6 +500,9 @@ class DataFrame(NDFrame, OpsMixin):
         | np_ndarray_bool
         | Sequence[tuple[Scalar, ...]],
     ) -> DataFrame: ...
+    def isetitem(
+        self, loc: int | Sequence[int], value: Scalar | ArrayLike | list[Any]
+    ) -> None: ...
     def __setitem__(self, key, value): ...
     @overload
     def query(self, expr: _str, *, inplace: Literal[True], **kwargs) -> None: ...
@@ -730,23 +737,8 @@ class DataFrame(NDFrame, OpsMixin):
         | list[HashableT],
         drop: _bool = ...,
         append: _bool = ...,
-        *,
         verify_integrity: _bool = ...,
     ) -> DataFrame: ...
-    @overload
-    def set_index(
-        self,
-        keys: Label
-        | Series
-        | Index
-        | np.ndarray
-        | Iterator[HashableT]
-        | list[HashableT],
-        drop: _bool = ...,
-        append: _bool = ...,
-        inplace: _bool | None = ...,
-        verify_integrity: _bool = ...,
-    ) -> DataFrame | None: ...
     @overload
     def reset_index(
         self,
@@ -756,6 +748,8 @@ class DataFrame(NDFrame, OpsMixin):
         col_fill: Hashable = ...,
         *,
         inplace: Literal[True],
+        allow_duplicates: _bool = ...,
+        names: Hashable | list[HashableT] = ...,
     ) -> None: ...
     @overload
     def reset_index(
@@ -766,6 +760,8 @@ class DataFrame(NDFrame, OpsMixin):
         col_fill: Hashable = ...,
         *,
         inplace: Literal[False],
+        allow_duplicates: _bool = ...,
+        names: Hashable | list[HashableT] = ...,
     ) -> DataFrame: ...
     @overload
     def reset_index(
@@ -775,6 +771,8 @@ class DataFrame(NDFrame, OpsMixin):
         *,
         col_level: int | _str = ...,
         col_fill: Hashable = ...,
+        allow_duplicates: _bool = ...,
+        names: Hashable | list[HashableT] = ...,
     ) -> DataFrame: ...
     @overload
     def reset_index(
@@ -784,6 +782,8 @@ class DataFrame(NDFrame, OpsMixin):
         inplace: _bool | None = ...,
         col_level: int | _str = ...,
         col_fill: Hashable = ...,
+        allow_duplicates: _bool = ...,
+        names: Hashable | list[HashableT] = ...,
     ) -> DataFrame | None: ...
     def isna(self) -> DataFrame: ...
     def isnull(self) -> DataFrame: ...
@@ -972,6 +972,7 @@ class DataFrame(NDFrame, OpsMixin):
         align_axis: Axis = ...,
         keep_shape: bool = ...,
         keep_equal: bool = ...,
+        result_names: Suffixes = ...,
     ) -> DataFrame: ...
     def combine(
         self,
@@ -1101,6 +1102,17 @@ class DataFrame(NDFrame, OpsMixin):
         lsuffix: _str = ...,
         rsuffix: _str = ...,
         sort: _bool = ...,
+        validate: Literal[
+            "one_to_one",
+            "1:1",
+            "one_to_many",
+            "1:m",
+            "many_to_one",
+            "m:1",
+            "many_to_many",
+            "m:m",
+        ]
+        | None = ...,
     ) -> DataFrame: ...
     def merge(
         self,
@@ -1178,6 +1190,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         numeric_only: _bool = ...,
         interpolation: QuantileInterpolation = ...,
+        method: CalculationMethod = ...,
     ) -> Series: ...
     @overload
     def quantile(
@@ -1186,6 +1199,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         numeric_only: _bool = ...,
         interpolation: QuantileInterpolation = ...,
+        method: CalculationMethod = ...,
     ) -> DataFrame: ...
     def to_timestamp(
         self,
@@ -1429,7 +1443,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         min_periods: int = ...,
         axis: AxisType = ...,
-        method: Literal["single", "table"] = ...,
+        method: CalculationMethod = ...,
     ) -> Expanding[DataFrame]: ...
     @overload
     def ffill(
@@ -1731,13 +1745,14 @@ class DataFrame(NDFrame, OpsMixin):
         label: _str | None = ...,
         convention: TimestampConvention = ...,
         kind: Literal["timestamp", "period"] | None = ...,
-        loffset=...,
-        base: int = ...,
+        # Not actually positional but needed due to deprecations
+        *,
         on: _str | None = ...,
         level: Level | None = ...,
         origin: Timestamp
         | Literal["epoch", "start", "start_day", "end", "end_day"] = ...,
         offset: Timedelta | _str | None = ...,
+        group_keys: _bool = ...,
     ) -> Resampler[DataFrame]: ...
     def rfloordiv(
         self,
@@ -1763,7 +1778,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def rolling(
         self,
-        window,
+        window: int | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
@@ -1771,11 +1786,13 @@ class DataFrame(NDFrame, OpsMixin):
         on: Hashable | None = ...,
         axis: AxisType = ...,
         closed: IntervalClosedType | None = ...,
+        step: int | None = ...,
+        method: CalculationMethod = ...,
     ) -> Window[DataFrame]: ...
     @overload
     def rolling(
         self,
-        window,
+        window: int | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
@@ -1783,6 +1800,8 @@ class DataFrame(NDFrame, OpsMixin):
         on: Hashable | None = ...,
         axis: AxisType = ...,
         closed: IntervalClosedType | None = ...,
+        step: int | None = ...,
+        method: CalculationMethod = ...,
     ) -> Rolling[DataFrame]: ...
     def rpow(
         self,
