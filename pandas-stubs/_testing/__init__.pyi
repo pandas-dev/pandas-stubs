@@ -72,6 +72,7 @@ def assert_series_equal(
     obj: str = ...,
     *,
     check_index: bool = ...,
+    check_like: bool = ...,
 ) -> None: ...
 def assert_frame_equal(
     left: DataFrame,
