@@ -5,7 +5,6 @@ import random
 from typing import (
     TYPE_CHECKING,
     Any,
-    Literal,
     Union,
 )
 
@@ -17,6 +16,8 @@ from pandas.api.extensions import ExtensionArray
 import pytest
 from typing_extensions import assert_type
 
+from pandas._libs.missing import NAType
+from pandas._libs.tslibs import NaTType
 from pandas._typing import Scalar
 
 from tests import (
@@ -246,17 +247,41 @@ def test_isna() -> None:
     idx2 = pd.Index([1, 2])
     check(assert_type(pd.notna(idx2), npt.NDArray[np.bool_]), np.ndarray, np.bool_)
 
-    assert check(assert_type(pd.isna(pd.NA), Literal[True]), bool)
-    assert not check(assert_type(pd.notna(pd.NA), Literal[False]), bool)
+    assert check(assert_type(pd.isna(pd.NA), bool), bool)
+    assert not check(assert_type(pd.notna(pd.NA), bool), bool)
 
-    assert check(assert_type(pd.isna(pd.NaT), Literal[True]), bool)
-    assert not check(assert_type(pd.notna(pd.NaT), Literal[False]), bool)
+    assert check(assert_type(pd.isna(pd.NaT), bool), bool)
+    assert not check(assert_type(pd.notna(pd.NaT), bool), bool)
 
-    assert check(assert_type(pd.isna(None), Literal[True]), bool)
-    assert not check(assert_type(pd.notna(None), Literal[False]), bool)
+    assert check(assert_type(pd.isna(None), bool), bool)
+    assert not check(assert_type(pd.notna(None), bool), bool)
 
     check(assert_type(pd.isna(2.5), bool), bool)
     check(assert_type(pd.notna(2.5), bool), bool)
+
+    # Check type guard functionality
+    nullable1 = random.choice(["value", None, pd.NA, pd.NaT])
+    if pd.notna(nullable1):
+        check(assert_type(nullable1, str), str)
+    if pd.isna(nullable1):
+        assert_type(nullable1, Union[NaTType, NAType, None])
+
+    nullable2 = random.choice([2, None])
+    if pd.notna(nullable2):
+        check(assert_type(nullable2, int), int)
+    if pd.isna(nullable2):
+        # TODO: Due to limitations in TypeGuard spec, the true annotation is not viable at this time
+        # There is a proposal being floated for a StrictTypeGuard that will have more rigid narrowing semantics
+        # assert_type(nullable2, None)
+        assert_type(nullable2, Union[NaTType, NAType, None])
+
+    nullable3 = random.choice([2, None, pd.NA])
+    if pd.notna(nullable3):
+        check(assert_type(nullable3, int), int)
+    if pd.isna(nullable3):
+        # TODO: See comment above about the limitations of TypeGuard
+        # assert_type(nullable3, Union[NAType, None])
+        assert_type(nullable3, Union[NaTType, NAType, None])
 
 
 # GH 55

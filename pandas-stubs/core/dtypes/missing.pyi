@@ -1,7 +1,4 @@
-from typing import (
-    Literal,
-    overload,
-)
+from typing import overload
 
 import numpy as np
 from numpy import typing as npt
@@ -10,12 +7,14 @@ from pandas import (
     Index,
     Series,
 )
+from typing_extensions import TypeGuard
 
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import NaTType
 from pandas._typing import (
     ArrayLike,
     Scalar,
+    ScalarT,
 )
 
 isposinf_scalar = ...
@@ -28,9 +27,9 @@ def isna(obj: Series) -> Series[bool]: ...
 @overload
 def isna(obj: Index | list | ArrayLike) -> npt.NDArray[np.bool_]: ...
 @overload
-def isna(obj: Scalar) -> bool: ...
-@overload
-def isna(obj: NaTType | NAType | None) -> Literal[True]: ...
+def isna(
+    obj: Scalar | NaTType | NAType | None,
+) -> TypeGuard[NaTType | NAType | None]: ...
 
 isnull = isna
 
@@ -41,8 +40,6 @@ def notna(obj: Series) -> Series[bool]: ...
 @overload
 def notna(obj: Index | list | ArrayLike) -> npt.NDArray[np.bool_]: ...
 @overload
-def notna(obj: Scalar) -> bool: ...
-@overload
-def notna(obj: NaTType | NAType | None) -> Literal[False]: ...
+def notna(obj: ScalarT | NaTType | NAType | None) -> TypeGuard[ScalarT]: ...
 
 notnull = notna
