@@ -1,7 +1,11 @@
 import numpy as np
+from pandas.core.indexes.base import Index
 from pandas.core.indexes.numeric import Int64Index
 
-from pandas._typing import npt
+from pandas._typing import (
+    HashableT,
+    npt,
+)
 
 class RangeIndex(Int64Index):
     def __new__(
@@ -70,3 +74,6 @@ class RangeIndex(Int64Index):
     def __floordiv__(self, other): ...
     def all(self) -> bool: ...
     def any(self) -> bool: ...
+    def union(
+        self, other: list[HashableT] | Index, sort=...
+    ) -> Index | Int64Index | RangeIndex: ...

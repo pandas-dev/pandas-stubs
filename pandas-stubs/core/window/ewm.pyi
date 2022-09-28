@@ -35,7 +35,7 @@ class ExponentialMovingWindow(BaseWindow[NDFrameT], Generic[NDFrameT]):
         adjust: bool = ...,
         ignore_na: bool = ...,
         axis: Axis = ...,
-        times: str | np.ndarray | Series | None = ...,
+        times: str | np.ndarray | Series | None | np.timedelta64 = ...,
         method: CalculationMethod = ...,
     ) -> None: ...
     @overload
