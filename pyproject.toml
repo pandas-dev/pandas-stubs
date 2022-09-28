@@ -35,7 +35,7 @@ python = ">=3.8,<3.11"
 types-pytz = ">= 2022.1.1"
 
 [tool.poetry.dev-dependencies]
-mypy = ">=0.971"
+mypy = "==0.971"
 pyarrow = ">=9.0.0"
 pytest = ">=7.1.2"
 pyright = ">=1.1.266"
@@ -156,7 +156,6 @@ warn_no_return = true
 warn_return_any = false # TODO
 warn_unreachable = false # GH#27396
 # Suppressing errors
-show_none_errors = true
 ignore_errors = false
 enable_error_code = "ignore-without-code" # same as in pandas
 # Miscellaneous strictness flags
