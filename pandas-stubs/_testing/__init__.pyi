@@ -3,6 +3,7 @@ from typing import (
     Any,
     Generator,
     Literal,
+    overload,
 )
 
 from pandas import (
@@ -54,6 +55,7 @@ def assert_extension_array_equal(
     check_less_precise: bool = ...,
     check_exact: bool = ...,
 ) -> None: ...
+@overload
 def assert_series_equal(
     left: Series,
     right: Series,
@@ -71,7 +73,28 @@ def assert_series_equal(
     atol: float = ...,
     obj: str = ...,
     *,
-    check_index: bool = ...,
+    check_index: Literal[False],
+    check_like: Literal[False],
+) -> None: ...
+@overload
+def assert_series_equal(
+    left: Series,
+    right: Series,
+    check_dtype: bool = ...,
+    check_index_type: bool | str = ...,
+    check_series_type: bool = ...,
+    check_names: bool = ...,
+    check_exact: bool = ...,
+    check_datetimelike_compat: bool = ...,
+    check_categorical: bool = ...,
+    check_category_order: bool = ...,
+    check_freq: bool = ...,
+    check_flags: bool = ...,
+    rtol: float = ...,
+    atol: float = ...,
+    obj: str = ...,
+    *,
+    check_index: Literal[True] = ...,
     check_like: bool = ...,
 ) -> None: ...
 def assert_frame_equal(

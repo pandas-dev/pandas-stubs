@@ -821,6 +821,19 @@ def test_types_to_feather() -> None:
             df.to_feather(file)
 
 
+def test_arrow_dtype() -> None:
+    pytest.importorskip("pyarrow")
+
+    import pyarrow as pa
+
+    check(
+        assert_type(
+            pd.ArrowDtype(pa.timestamp("s", tz="America/New_York")), pd.ArrowDtype
+        ),
+        pd.ArrowDtype,
+    )
+
+
 # compare() method added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
 def test_types_compare() -> None:
     df1 = pd.DataFrame(
