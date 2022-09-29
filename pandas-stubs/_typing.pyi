@@ -138,6 +138,8 @@ Scalar = Union[
     datetime.datetime,
     datetime.timedelta,
     bool,
+    int,
+    float,
     complex,
     Timestamp,
     Timedelta,
