@@ -663,9 +663,22 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         *args,
         **kwargs,
     ) -> DataFrame: ...
+    @overload
     def apply(
-        self, func: Callable, convertDType: _bool = ..., args: tuple = ..., **kwds
-    ) -> Series | DataFrame: ...
+        self,
+        func: Callable[..., Scalar],
+        convertDType: _bool = ...,
+        args: tuple = ...,
+        **kwds,
+    ) -> Series: ...
+    @overload
+    def apply(
+        self,
+        func: Callable[..., Series],
+        convertDType: _bool = ...,
+        args: tuple = ...,
+        **kwds,
+    ) -> DataFrame: ...
     def align(
         self,
         other: DataFrame | Series,

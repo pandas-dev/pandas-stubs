@@ -131,13 +131,7 @@ KeysArgType = Any
 ListLike = TypeVar("ListLike", Sequence, np.ndarray, "Series", "Index")
 ListLikeU = Union[Sequence, np.ndarray, Series, Index]
 StrLike = Union[str, np.str_]
-Scalar = Union[
-    str,
-    bytes,
-    datetime.date,
-    datetime.timedelta,
-    complex,
-]
+Scalar = Union[str, bytes, datetime.date, datetime.timedelta, complex]
 ScalarT = TypeVar("ScalarT", bound=Scalar)
 # Refine the definitions below in 3.9 to use the specialized type.
 np_ndarray_int64 = npt.NDArray[np.int64]
