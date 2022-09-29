@@ -143,7 +143,7 @@ class DataFrameGroupBy(GroupBy):
     def all(self, skipna: bool = ...) -> DataFrame: ...
     # error: Overload 3 for "apply" will never be used because its parameters overlap overload 1
     @overload
-    def apply(  # typing: ignore[misc]
+    def apply(  # type: ignore[misc]
         self, func: Callable[[DataFrame], Scalar | list | dict], *args, **kwargs
     ) -> Series: ...
     @overload
