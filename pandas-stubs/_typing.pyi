@@ -53,7 +53,7 @@ PandasScalar = Union[bytes, datetime.date, datetime.datetime, datetime.timedelta
 DatetimeLike = Union[datetime.date, datetime.datetime, np.datetime64, Timestamp]
 
 # dtypes
-NpDtype = Union[str, np.dtype[np.generic], type[Union[str, complex, bool, object]]]
+NpDtype = Union[str, np.dtype[np.generic], type[object]]
 Dtype = Union[ExtensionDtype, NpDtype]
 AstypeArg = Union[ExtensionDtype, npt.DTypeLike]
 # DtypeArg specifies all allowable dtypes in a functions its dtype argument
@@ -135,12 +135,8 @@ Scalar = Union[
     str,
     bytes,
     datetime.date,
-    datetime.datetime,
     datetime.timedelta,
-    bool,
     complex,
-    Timestamp,
-    Timedelta,
 ]
 ScalarT = TypeVar("ScalarT", bound=Scalar)
 # Refine the definitions below in 3.9 to use the specialized type.
