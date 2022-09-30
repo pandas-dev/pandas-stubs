@@ -17,6 +17,7 @@ from ._config import (
 )
 from .core.api import (
     NA as NA,
+    ArrowDtype as ArrowDtype,
     BooleanDtype as BooleanDtype,
     Categorical as Categorical,
     CategoricalDtype as CategoricalDtype,

@@ -4,6 +4,7 @@ from pandas.core.algorithms import (
     value_counts as value_counts,
 )
 from pandas.core.arrays import Categorical as Categorical
+from pandas.core.arrays.arrow.dtype import ArrowDtype as ArrowDtype
 from pandas.core.arrays.boolean import BooleanDtype as BooleanDtype
 from pandas.core.arrays.floating import (
     Float32Dtype as Float32Dtype,

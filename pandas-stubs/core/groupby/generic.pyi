@@ -141,15 +141,15 @@ class _DataFrameGroupByNonScalar(DataFrameGroupBy):
 class DataFrameGroupBy(GroupBy):
     def any(self, skipna: bool = ...) -> DataFrame: ...
     def all(self, skipna: bool = ...) -> DataFrame: ...
+    # error: Overload 3 for "apply" will never be used because its parameters overlap overload 1
     @overload
-    def apply(
+    def apply(  # type: ignore[misc]
         self, func: Callable[[DataFrame], Scalar | list | dict], *args, **kwargs
     ) -> Series: ...
     @overload
     def apply(
         self, func: Callable[[DataFrame], Series | DataFrame], *args, **kwargs
     ) -> DataFrame: ...
-    # error: Overload 3 for "apply" will never be used because its parameters overlap overload 1
     @overload
     def apply(  # pyright: ignore[reportOverlappingOverload]
         self, func: Callable[[Iterable], float], *args, **kwargs
