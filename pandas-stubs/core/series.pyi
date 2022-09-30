@@ -666,7 +666,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def apply(
         self,
-        func: Callable[..., Scalar],
+        func: Callable[..., Hashable],
         convertDType: _bool = ...,
         args: tuple = ...,
         **kwds,
