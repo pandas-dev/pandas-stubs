@@ -21,7 +21,6 @@ from pandas._typing import (
     CompressionOptions,
     CSVEngine,
     CSVQuoting,
-    Dtype,
     DtypeArg,
     FilePath,
     ReadCsvBuffer,
@@ -48,7 +47,7 @@ def read_csv(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
-    dtype: DtypeArg | defaultdict[str, Dtype] | None = ...,
+    dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
@@ -111,7 +110,7 @@ def read_csv(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
-    dtype: DtypeArg | defaultdict[str, Dtype] | None = ...,
+    dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
@@ -174,7 +173,7 @@ def read_csv(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
-    dtype: DtypeArg | defaultdict[str, Dtype] | None = ...,
+    dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
@@ -237,7 +236,7 @@ def read_table(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
-    dtype: DtypeArg | defaultdict[str, Dtype] | None = ...,
+    dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
@@ -300,7 +299,7 @@ def read_table(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
-    dtype: DtypeArg | defaultdict[str, Dtype] | None = ...,
+    dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
@@ -363,7 +362,7 @@ def read_table(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
-    dtype: DtypeArg | defaultdict[str, Dtype] | None = ...,
+    dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,

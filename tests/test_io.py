@@ -431,10 +431,6 @@ def test_read_csv():
         check(assert_type(read_csv(path, iterator=False), DataFrame), DataFrame)
         check(assert_type(read_csv(path, chunksize=None), DataFrame), DataFrame)
         check(
-            assert_type(read_csv(dtype=defaultdict(lambda: "f8")), DataFrame), DataFrame
-        )
-
-        check(
             assert_type(read_csv(path, dtype=defaultdict(lambda: "f8")), DataFrame),
             DataFrame,
         )
