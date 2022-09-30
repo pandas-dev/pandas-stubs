@@ -1,5 +1,4 @@
 from typing import (
-    Generic,
     TypeVar,
     Union,
 )
@@ -9,19 +8,21 @@ from pandas.core.indexes.api import Index
 
 from pandas._libs.indexing import _NDFrameIndexerBase
 from pandas._typing import (
+    MaskType,
     Scalar,
-    StrLike,
+    ScalarT,
 )
 
-_IndexSliceT = TypeVar("_IndexSliceT", bound=Union[StrLike, Scalar, slice])
+_IndexSliceTuple = tuple[Union[Index, MaskType, Scalar, list[ScalarT], slice], ...]
 
-class _IndexSlice(Generic[_IndexSliceT]):
-    def __getitem__(self, arg) -> tuple[_IndexSliceT, ...]: ...
+_IndexSliceUnion = Union[slice, _IndexSliceTuple]
+
+_IndexSliceUnionT = TypeVar("_IndexSliceUnionT", bound=_IndexSliceUnion)
+
+class _IndexSlice:
+    def __getitem__(self, arg: _IndexSliceUnionT) -> _IndexSliceUnionT: ...
 
 IndexSlice: _IndexSlice
-
-# TODO: Remove from here after 1.5.x, moved to pandas.errors
-class IndexingError(Exception): ...
 
 class IndexingMixin:
     @property

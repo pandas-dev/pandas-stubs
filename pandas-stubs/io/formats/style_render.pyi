@@ -4,6 +4,7 @@ from typing import (
     Generic,
     Literal,
     Optional,
+    Sequence,
     TypedDict,
     TypeVar,
     Union,
@@ -73,4 +74,10 @@ class StylerRenderer(Generic[_StylerT]):
         thousands: str | None = ...,
         escape: str | None = ...,
         hyperlinks: Literal["html", "latex"] | None = ...,
+    ) -> _StylerT: ...
+    def relabel_index(
+        self,
+        labels: Sequence[str] | Index,
+        axis: AxisType = ...,
+        level: Level | list[Level] | None = ...,
     ) -> _StylerT: ...

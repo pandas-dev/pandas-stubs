@@ -87,14 +87,12 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def __abs__(self) -> NDFrame: ...
     def __round__(self, decimals: int = ...) -> NDFrame: ...
     def keys(self): ...
-    def iteritems(self): ...
     def __len__(self) -> int: ...
     def __contains__(self, key) -> _bool: ...
     @property
     def empty(self) -> _bool: ...
     __array_priority__: int = ...
     def __array__(self, dtype=...) -> np.ndarray: ...
-    def __array_wrap__(self, result, context=...): ...
     def to_excel(
         self,
         excel_writer,
@@ -109,9 +107,9 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         startcol: int = ...,
         engine: _str | None = ...,
         merge_cells: _bool = ...,
-        encoding: _str | None = ...,
+        # Not actually positional, but used to handle removal of deprecated
+        *,
         inf_rep: _str = ...,
-        verbose: _bool = ...,
         freeze_panes: tuple[int, int] | None = ...,
     ) -> None: ...
     def to_hdf(
@@ -248,7 +246,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         compression: CompressionOptions = ...,
         quoting: CSVQuoting = ...,
         quotechar: _str = ...,
-        line_terminator: _str | None = ...,
+        lineterminator: _str | None = ...,
         chunksize: int | None = ...,
         date_format: _str | None = ...,
         doublequote: _bool = ...,
@@ -273,7 +271,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         compression: CompressionOptions = ...,
         quoting: CSVQuoting = ...,
         quotechar: _str = ...,
-        line_terminator: _str | None = ...,
+        lineterminator: _str | None = ...,
         chunksize: int | None = ...,
         date_format: _str | None = ...,
         doublequote: _bool = ...,
@@ -425,8 +423,6 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         self,
         start_time,
         end_time,
-        include_start: _bool = ...,
-        include_end: _bool = ...,
         axis=...,
     ) -> NDFrame: ...
     def first(self, offset) -> NDFrame: ...
@@ -435,7 +431,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         self,
         axis=...,
         method: Literal["average", "min", "max", "first", "dense"] = ...,
-        numeric_only: _bool | None = ...,
+        numeric_only: _bool = ...,
         na_option: Literal["keep", "top", "bottom"] = ...,
         ascending: _bool = ...,
         pct: _bool = ...,
@@ -447,7 +443,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         inplace: _bool = ...,
         axis=...,
         level=...,
-        errors: _str = ...,
+        *,  # Not actually positional-only, but needed due to depr in 1.5.0
         try_cast: _bool = ...,
     ): ...
     def mask(
@@ -457,7 +453,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         inplace: _bool = ...,
         axis=...,
         level=...,
-        errors: IgnoreRaise = ...,
+        *,  # Not actually positional-only, but needed due to depr in 1.5.0
         try_cast: _bool = ...,
     ): ...
     def shift(self, periods=..., freq=..., axis=..., fill_value=...) -> NDFrame: ...

@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+from typing import Union
+
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
 from pandas.core.indexes.numeric import NumericIndex
+import pytest
 from typing_extensions import assert_type
 
 from tests import check
@@ -31,6 +34,10 @@ def test_index_astype() -> None:
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
     mia = mi.astype(object)  # object is only valid parameter for MultiIndex.astype()
     check(assert_type(mia, pd.MultiIndex), pd.MultiIndex)
+    check(
+        assert_type(mi.to_frame(name=[3, 7], allow_duplicates=True), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_multiindex_get_level_values() -> None:
@@ -117,3 +124,59 @@ def test_index_arithmetic() -> None:
     check(assert_type(3 * idx, NumericIndex), NumericIndex)
     check(assert_type(3 / idx, NumericIndex), NumericIndex)
     check(assert_type(3 // idx, NumericIndex), NumericIndex)
+
+
+def test_index_relops() -> None:
+    # GH 265
+    data = pd.date_range("2022-01-01", "2022-01-31", freq="D")
+    x = pd.Timestamp("2022-01-17")
+    idx = pd.Index(data, name="date")
+    check(assert_type(data[x <= idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[x < idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[x >= idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[x > idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[idx < x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[idx >= x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[idx > x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[idx <= x], pd.DatetimeIndex), pd.DatetimeIndex)
+
+    dt_idx = pd.DatetimeIndex(data, name="date")
+    check(assert_type(data[x <= dt_idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[x >= dt_idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[x < dt_idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[x > dt_idx], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[dt_idx <= x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[dt_idx >= x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[dt_idx < x], pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(data[dt_idx > x], pd.DatetimeIndex), pd.DatetimeIndex)
+
+    ind = pd.Index([1, 2, 3])
+    check(assert_type(ind <= 2, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
+    check(assert_type(ind >= 2, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
+    check(assert_type(ind < 2, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
+    check(assert_type(ind > 2, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
+
+
+def test_range_index_union():
+    with pytest.warns(FutureWarning, match="pandas.Int64Index"):
+        check(
+            assert_type(
+                pd.RangeIndex(0, 10).union(pd.RangeIndex(10, 20)),
+                Union[pd.Index, pd.Int64Index, pd.RangeIndex],
+            ),
+            pd.RangeIndex,
+        )
+        check(
+            assert_type(
+                pd.RangeIndex(0, 10).union([11, 12, 13]),
+                Union[pd.Index, pd.Int64Index, pd.RangeIndex],
+            ),
+            pd.Int64Index,
+        )
+        check(
+            assert_type(
+                pd.RangeIndex(0, 10).union(["a", "b", "c"]),
+                Union[pd.Index, pd.Int64Index, pd.RangeIndex],
+            ),
+            pd.Index,
+        )

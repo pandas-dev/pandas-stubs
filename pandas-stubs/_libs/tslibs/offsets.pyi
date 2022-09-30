@@ -136,7 +136,8 @@ class BusinessHour(BusinessMixin):
         offset: timedelta = ...,
     ): ...
 
-class WeekOfMonthMixin(SingleConstructorOffset): ...
+class WeekOfMonthMixin(SingleConstructorOffset):
+    def __init__(self, n: int = ..., weekday: Literal[0, 1, 2, 3, 4, 5, 6] = ...): ...
 
 class YearOffset(SingleConstructorOffset):
     def __init__(
@@ -224,7 +225,33 @@ class CustomBusinessHour(BusinessHour):
 
 class CustomBusinessMonthEnd(_CustomBusinessMonth): ...
 class CustomBusinessMonthBegin(_CustomBusinessMonth): ...
-class DateOffset(RelativeDeltaOffset): ...
+
+class DateOffset(RelativeDeltaOffset):
+    def __init__(
+        self,
+        *,
+        n: int = ...,
+        normalize: bool = ...,
+        years: int = ...,
+        months: int = ...,
+        weeks: int = ...,
+        days: int = ...,
+        hours: int = ...,
+        minutes: int = ...,
+        seconds: int = ...,
+        milliseconds: int = ...,
+        microseconds: int = ...,
+        nanoseconds: int = ...,
+        year: int = ...,
+        month: int = ...,
+        day: int = ...,
+        weekday: int = ...,
+        hour: int = ...,
+        minute: int = ...,
+        second: int = ...,
+        microsecond: int = ...,
+        nanosecond: int = ...,
+    ): ...
 
 BDay = BusinessDay
 BMonthEnd = BusinessMonthEnd

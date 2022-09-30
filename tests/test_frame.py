@@ -4,6 +4,7 @@ from collections import defaultdict
 import csv
 import datetime
 import io
+import itertools
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
@@ -27,6 +28,7 @@ from pandas._testing import (
     ensure_clean,
     getSeriesData,
 )
+from pandas.core.resample import Resampler  # noqa: F401
 import pytest
 from typing_extensions import assert_type
 import xarray as xr
@@ -47,6 +49,9 @@ DF = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 def test_types_init() -> None:
     pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]}, index=[2, 1])
+    pd.DataFrame(data=[[1, 2, 3], [4, 5, 6]])
+    pd.DataFrame(data=itertools.repeat([1, 2, 3], 3))
+    pd.DataFrame(data=(range(i) for i in range(5)))
     pd.DataFrame(data=[1, 2, 3, 4], dtype=np.int8)
     pd.DataFrame(
         np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]),
@@ -244,16 +249,20 @@ def test_types_setting() -> None:
 
 def test_types_drop() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
-    res: pd.DataFrame = df.drop("col1", axis=1)
-    res2: pd.DataFrame = df.drop(columns=["col1"])
-    res3: pd.DataFrame = df.drop([0])
-    res4: pd.DataFrame = df.drop(index=[0])
-    res5: pd.DataFrame = df.drop(columns=["col1"])
-    res6: pd.DataFrame = df.drop(index=1)
-    res7: pd.DataFrame = df.drop(labels=0)
-    res8: None = df.drop([0, 0], inplace=True)
+    check(assert_type(df.drop("col1", axis=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop(columns=["col1"]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop([0]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop(index=[0]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop(columns=["col1"]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop(index=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop(labels=0), pd.DataFrame), pd.DataFrame)
+    assert assert_type(df.drop([0, 0], inplace=True), None) is None
     to_drop: list[str] = ["col1"]
-    res9: pd.DataFrame = df.drop(columns=to_drop)
+    check(assert_type(df.drop(columns=to_drop), pd.DataFrame), pd.DataFrame)
+    # GH 302
+    check(assert_type(df.drop(pd.Index([1])), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop(index=pd.Index([1])), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop(columns=pd.Index(["col1"])), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_dropna() -> None:
@@ -736,49 +745,35 @@ def test_types_window() -> None:
     df.rolling(2, axis=1, center=True)
 
     check(
-        assert_type(df.rolling(2).agg("max"), Union[Scalar, pd.DataFrame, pd.Series]),
+        assert_type(df.rolling(2).agg("max"), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(df.rolling(2).agg(max), Union[Scalar, pd.DataFrame, pd.Series]),
+        assert_type(df.rolling(2).agg(max), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(
-            df.rolling(2).agg(["max", "min"]), Union[Scalar, pd.DataFrame, pd.Series]
-        ),
+        assert_type(df.rolling(2).agg(["max", "min"]), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(
-            df.rolling(2).agg([max, min]), Union[Scalar, pd.DataFrame, pd.Series]
-        ),
+        assert_type(df.rolling(2).agg([max, min]), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(
-            df.rolling(2).agg({"col2": "max"}), Union[Scalar, pd.DataFrame, pd.Series]
-        ),
+        assert_type(df.rolling(2).agg({"col2": "max"}), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(
-            df.rolling(2).agg({"col2": max}), Union[Scalar, pd.DataFrame, pd.Series]
-        ),
+        assert_type(df.rolling(2).agg({"col2": max}), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(
-            df.rolling(2).agg({"col2": ["max", "min"]}),
-            Union[Scalar, pd.DataFrame, pd.Series],
-        ),
+        assert_type(df.rolling(2).agg({"col2": ["max", "min"]}), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(
-            df.rolling(2).agg({"col2": [max, min]}),
-            Union[Scalar, pd.DataFrame, pd.Series],
-        ),
+        assert_type(df.rolling(2).agg({"col2": [max, min]}), pd.DataFrame),
         pd.DataFrame,
     )
 
@@ -1276,6 +1271,35 @@ def test_indexslice_setitem():
     s = pd.Series([-1, -2])
     df.loc[pd.IndexSlice[2, :]] = s.values
     df.loc[pd.IndexSlice[2, :], "z"] = [200, 300]
+    # GH 314
+    df.loc[pd.IndexSlice[pd.Index([2, 3]), :], "z"] = 99
+
+
+def test_indexslice_getitem():
+    # GH 300
+    df = (
+        pd.DataFrame({"x": [1, 2, 2, 3, 4], "y": [10, 20, 30, 40, 10]})
+        .assign(z=lambda df: df.x * df.y)
+        .set_index(["x", "y"])
+    )
+    ind = pd.Index([2, 3])
+    check(assert_type(pd.IndexSlice[ind, :], "tuple[pd.Index, slice]"), tuple)
+    check(assert_type(df.loc[pd.IndexSlice[ind, :]], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[pd.IndexSlice[1:2]], pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.loc[pd.IndexSlice[:, df["z"] > 40], :], pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.loc[pd.IndexSlice[2, 30], "z"], Scalar), np.int64)
+    check(
+        assert_type(df.loc[pd.IndexSlice[[2, 4], [20, 40]], :], pd.DataFrame),
+        pd.DataFrame,
+    )
+    # GH 314
+    check(
+        assert_type(df.loc[pd.IndexSlice[pd.Index([2, 4]), :], "z"], pd.Series),
+        pd.Series,
+    )
 
 
 def test_compute_values():
@@ -1351,7 +1375,12 @@ def test_join() -> None:
     seriesB = float_frame["B"]
     frameCD = float_frame[["C", "D"]]
     right: list[pd.Series | pd.DataFrame] = [seriesB, frameCD]
-    result = left.join(right)
+    check(assert_type(left.join(right), pd.DataFrame), pd.DataFrame)
+    check(assert_type(left.join(right, validate="1:1"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(left.join(right, validate="one_to_one"), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(left.join(right, validate="1:m"), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_ffill() -> None:
@@ -1764,3 +1793,93 @@ def test_loc_slice() -> None:
         index=pd.MultiIndex.from_product([[1, 2], ["a", "b"]], names=["num", "let"]),
     )
     check(assert_type(df1.loc[1, :], pd.DataFrame), pd.DataFrame)
+
+
+def test_where() -> None:
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+
+    def cond1(x: int) -> bool:
+        return x % 2 == 0
+
+    check(assert_type(df.where(cond1), pd.DataFrame), pd.DataFrame)
+
+    def cond2(x: pd.DataFrame) -> pd.DataFrame:
+        return x > 1
+
+    check(assert_type(df.where(cond2), pd.DataFrame), pd.DataFrame)
+
+    cond3 = pd.DataFrame({"a": [True, True, False], "b": [False, False, False]})
+    check(assert_type(df.where(cond3), pd.DataFrame), pd.DataFrame)
+
+
+def test_setitem_loc() -> None:
+    # GH 254
+    df = pd.DataFrame.from_dict(
+        {view: (True, True, True) for view in ["A", "B", "C"]}, orient="index"
+    )
+    df.loc[["A", "C"]] = False
+    my_arr = ["A", "C"]
+    df.loc[my_arr] = False
+
+
+def test_replace_na() -> None:
+    # GH 262
+    frame = pd.DataFrame(["N/A", "foo", "bar"])
+    check(assert_type(frame.replace("N/A", pd.NA), pd.DataFrame), pd.DataFrame)
+
+
+def test_isetframe() -> None:
+    frame = pd.DataFrame([[1, 2], [3, 4]], columns=["a", "b"])
+    check(assert_type(frame.isetitem(0, 10), None), type(None))
+    check(assert_type(frame.isetitem([0], [10, 12]), None), type(None))
+
+
+def test_reset_index_150_changes() -> None:
+    frame = pd.DataFrame({"a": [1, 2, 3, 4]}, index=[-10, -9, -8, -7])
+    check(
+        assert_type(
+            frame.reset_index(allow_duplicates=True, names="idx"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            frame.reset_index(allow_duplicates=True, names=["idx"]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_compare_150_changes() -> None:
+    frame_a = pd.DataFrame({"a": [1, 2, 3, 4]}, index=[-10, -9, -8, -7])
+    frame_b = pd.DataFrame({"a": [1, 2, 4, 3]}, index=[-10, -9, -8, -7])
+    check(
+        assert_type(
+            frame_a.compare(frame_b, result_names=("one", "the_other")), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_quantile_150_changes() -> None:
+    frame = pd.DataFrame(getSeriesData())
+    check(assert_type(frame.quantile(0.5, method="single"), pd.Series), pd.Series)
+    check(
+        assert_type(
+            frame.quantile([0.25, 0.5, 0.75], interpolation="nearest", method="table"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_resample_150_changes() -> None:
+    idx = pd.date_range("2020-1-1", periods=700)
+    frame = pd.DataFrame(np.random.standard_normal((700, 1)), index=idx, columns=["a"])
+    resampler = frame.resample("M", group_keys=True)
+    assert_type(resampler, "Resampler[pd.DataFrame]")
+
+    def f(s: pd.DataFrame) -> pd.Series:
+        return s.mean()
+
+    check(assert_type(resampler.apply(f), Union[pd.Series, pd.DataFrame]), pd.DataFrame)

@@ -1,3 +1,4 @@
+from collections import defaultdict
 import csv
 import io
 import os.path
@@ -19,6 +20,7 @@ from pandas import (
     DataFrame,
     HDFStore,
     Series,
+    errors,
     read_clipboard,
     read_csv,
     read_excel,
@@ -48,13 +50,11 @@ import sqlalchemy.orm.decl_api
 from typing_extensions import assert_type
 
 from tests import (
-    PD_LT_15,
+    WINDOWS,
     check,
 )
 
 from pandas.io.api import to_pickle
-from pandas.io.clipboard import PyperclipException
-from pandas.io.common import IOHandles
 from pandas.io.json._json import JsonReader
 from pandas.io.parsers import TextFileReader
 from pandas.io.pytables import (
@@ -69,14 +69,14 @@ DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 CWD = os.path.split(os.path.abspath(__file__))[0]
 
 
-@pytest.mark.skipif(PD_LT_15, reason="pandas 1.5.0 or later required")
+@pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc():
     with ensure_clean() as path:
         check(assert_type(DF.to_orc(path), None), type(None))
         check(assert_type(read_orc(path), DataFrame), DataFrame)
 
 
-@pytest.mark.skipif(PD_LT_15, reason="pandas 1.5.0 or later required")
+@pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_path():
     with ensure_clean() as path:
         pathlib_path = Path(path)
@@ -84,7 +84,7 @@ def test_orc_path():
         check(assert_type(read_orc(pathlib_path), DataFrame), DataFrame)
 
 
-@pytest.mark.skipif(PD_LT_15, reason="pandas 1.5.0 or later required")
+@pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_buffer():
     with ensure_clean() as path:
         file_w = open(path, "wb")
@@ -96,14 +96,14 @@ def test_orc_buffer():
         file_r.close()
 
 
-@pytest.mark.skipif(PD_LT_15, reason="pandas 1.5.0 or later required")
+@pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_columns():
     with ensure_clean() as path:
         check(assert_type(DF.to_orc(path, index=False), None), type(None))
         check(assert_type(read_orc(path, columns=["a"]), DataFrame), DataFrame)
 
 
-@pytest.mark.skipif(PD_LT_15, reason="pandas 1.5.0 or later required")
+@pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_bytes():
     check(assert_type(DF.to_orc(index=False), bytes), bytes)
 
@@ -190,23 +190,6 @@ def test_read_stata_df():
         check(assert_type(read_stata(path), pd.DataFrame), pd.DataFrame)
 
 
-# Remove test when pandas 1.5.0 is released
-@pytest.mark.skipif(not PD_LT_15, reason="Keyword only in 1.5.0")
-def test_read_stata_iterator_positional():
-    with ensure_clean() as path:
-        str_path = str(path)
-        DF.to_stata(str_path)
-        check(
-            assert_type(
-                read_stata(
-                    str_path, False, False, None, False, False, None, False, 2, True
-                ),
-                StataReader,
-            ),
-            StataReader,
-        )
-
-
 def test_read_stata_iterator():
     with ensure_clean() as path:
         str_path = str(path)
@@ -214,22 +197,28 @@ def test_read_stata_iterator():
         check(
             assert_type(read_stata(str_path, iterator=True), StataReader), StataReader
         )
+        reader = read_stata(str_path, chunksize=1)
+        check(assert_type(reader, StataReader), StataReader)
 
 
 def test_clipboard():
     try:
         DF.to_clipboard()
-    except PyperclipException:
+    except errors.PyperclipException:
         pytest.skip("clipboard not available for testing")
     check(assert_type(read_clipboard(), DataFrame), DataFrame)
     check(assert_type(read_clipboard(iterator=False), DataFrame), DataFrame)
     check(assert_type(read_clipboard(chunksize=None), DataFrame), DataFrame)
+    check(
+        assert_type(read_clipboard(dtype=defaultdict(lambda: "f8")), DataFrame),
+        DataFrame,
+    )
 
 
 def test_clipboard_iterator():
     try:
         DF.to_clipboard()
-    except PyperclipException:
+    except errors.PyperclipException:
         pytest.skip("clipboard not available for testing")
     check(assert_type(read_clipboard(iterator=True), TextFileReader), TextFileReader)
     check(
@@ -441,6 +430,10 @@ def test_read_csv():
             check(assert_type(read_csv(sio), DataFrame), DataFrame)
         check(assert_type(read_csv(path, iterator=False), DataFrame), DataFrame)
         check(assert_type(read_csv(path, chunksize=None), DataFrame), DataFrame)
+        check(
+            assert_type(read_csv(path, dtype=defaultdict(lambda: "f8")), DataFrame),
+            DataFrame,
+        )
 
 
 def test_read_csv_iterator():
@@ -505,6 +498,10 @@ def test_read_table():
         check(assert_type(read_table(path), DataFrame), DataFrame)
         check(assert_type(read_table(path, iterator=False), DataFrame), DataFrame)
         check(assert_type(read_table(path, chunksize=None), DataFrame), DataFrame)
+        check(
+            assert_type(read_table(path, dtype=defaultdict(lambda: "f8")), DataFrame),
+            DataFrame,
+        )
 
 
 def test_read_table_iterator():
@@ -661,9 +658,6 @@ def test_excel_writer():
         with pd.ExcelWriter(path) as ew:
             check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
             DF.to_excel(ew, sheet_name="A")
-            if PD_LT_15:
-                # Remove after 1.5 and remove handles from ExcelWriter
-                check(assert_type(ew.handles, IOHandles[bytes]), IOHandles)
         check(assert_type(read_excel(path, sheet_name="A"), DataFrame), DataFrame)
         check(assert_type(read_excel(path), DataFrame), DataFrame)
         ef = pd.ExcelFile(path)
@@ -819,3 +813,16 @@ def test_sqlalchemy_selectable() -> None:
                 pd.read_sql(
                     session.query(Temp.quantity).statement, session.connection()
                 )
+
+
+def test_sqlalchemy_text() -> None:
+    with ensure_clean() as path:
+        db_uri = "sqlite:///" + path
+        engine = sqlalchemy.create_engine(db_uri)
+        sql_select = sqlalchemy.text("select * from test")
+        with engine.connect() as conn:
+            check(assert_type(DF.to_sql("test", con=conn), Union[int, None]), int)
+            check(
+                assert_type(read_sql(sql_select, con=conn), DataFrame),
+                DataFrame,
+            )

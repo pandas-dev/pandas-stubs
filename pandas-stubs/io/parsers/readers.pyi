@@ -1,4 +1,7 @@
-from collections import abc
+from collections import (
+    abc,
+    defaultdict,
+)
 import csv
 from types import TracebackType
 from typing import (
@@ -44,8 +47,7 @@ def read_csv(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
-    mangle_dupe_cols: bool = ...,
-    dtype: DtypeArg | None = ...,
+    dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
@@ -108,8 +110,7 @@ def read_csv(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
-    mangle_dupe_cols: bool = ...,
-    dtype: DtypeArg | None = ...,
+    dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
@@ -172,8 +173,7 @@ def read_csv(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
-    mangle_dupe_cols: bool = ...,
-    dtype: DtypeArg | None = ...,
+    dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
@@ -236,7 +236,7 @@ def read_table(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
-    dtype: DtypeArg | None = ...,
+    dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
@@ -299,7 +299,7 @@ def read_table(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
-    dtype: DtypeArg | None = ...,
+    dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
@@ -362,7 +362,7 @@ def read_table(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
-    dtype: DtypeArg | None = ...,
+    dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,

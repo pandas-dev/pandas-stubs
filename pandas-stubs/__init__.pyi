@@ -17,6 +17,7 @@ from ._config import (
 )
 from .core.api import (
     NA as NA,
+    ArrowDtype as ArrowDtype,
     BooleanDtype as BooleanDtype,
     Categorical as Categorical,
     CategoricalDtype as CategoricalDtype,
@@ -25,6 +26,8 @@ from .core.api import (
     DateOffset as DateOffset,
     DatetimeIndex as DatetimeIndex,
     DatetimeTZDtype as DatetimeTZDtype,
+    Float32Dtype as Float32Dtype,
+    Float64Dtype as Float64Dtype,
     Float64Index as Float64Index,
     Grouper as Grouper,
     Index as Index,
@@ -78,6 +81,7 @@ from .core.reshape.api import (
     concat as concat,
     crosstab as crosstab,
     cut as cut,
+    from_dummies as from_dummies,
     get_dummies as get_dummies,
     lreshape as lreshape,
     melt as melt,

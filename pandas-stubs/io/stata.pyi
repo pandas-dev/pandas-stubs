@@ -25,38 +25,8 @@ from pandas._typing import (
 
 @overload
 def read_stata(
-    path: FilePath | ReadBuffer[bytes],
-    convert_dates: bool = ...,
-    convert_categoricals: bool = ...,
-    index_col: str | None = ...,
-    convert_missing: bool = ...,
-    preserve_dtypes: bool = ...,
-    columns: list[HashableT] | None = ...,
-    order_categoricals: bool = ...,
-    chunksize: int | None = ...,
+    filepath_or_buffer: FilePath | ReadBuffer[bytes],
     *,
-    iterator: Literal[True],
-    compression: CompressionOptions = ...,
-    storage_options: StorageOptions = ...,
-) -> StataReader: ...
-@overload
-def read_stata(
-    path: FilePath | ReadBuffer[bytes],
-    convert_dates: bool,
-    convert_categoricals: bool,
-    index_col: str | None,
-    convert_missing: bool,
-    preserve_dtypes: bool,
-    columns: list[HashableT] | None,
-    order_categoricals: bool,
-    chunksize: int | None,
-    iterator: Literal[True],
-    compression: CompressionOptions = ...,
-    storage_options: StorageOptions = ...,
-) -> StataReader: ...
-@overload
-def read_stata(
-    path: FilePath | ReadBuffer[bytes],
     convert_dates: bool = ...,
     convert_categoricals: bool = ...,
     index_col: str | None = ...,
@@ -65,16 +35,42 @@ def read_stata(
     columns: list[HashableT] | None = ...,
     order_categoricals: bool = ...,
     chunksize: int | None = ...,
+    iterator: Literal[True],
+    compression: CompressionOptions = ...,
+    storage_options: StorageOptions = ...,
+) -> StataReader: ...
+@overload
+def read_stata(
+    filepath_or_buffer: FilePath | ReadBuffer[bytes],
+    *,
+    convert_dates: bool = ...,
+    convert_categoricals: bool = ...,
+    index_col: str | None = ...,
+    convert_missing: bool = ...,
+    preserve_dtypes: bool = ...,
+    columns: list[HashableT] | None = ...,
+    order_categoricals: bool = ...,
+    chunksize: int,
+    iterator: bool = ...,
+    compression: CompressionOptions = ...,
+    storage_options: StorageOptions = ...,
+) -> StataReader: ...
+@overload
+def read_stata(
+    filepath_or_buffer: FilePath | ReadBuffer[bytes],
+    *,
+    convert_dates: bool = ...,
+    convert_categoricals: bool = ...,
+    index_col: str | None = ...,
+    convert_missing: bool = ...,
+    preserve_dtypes: bool = ...,
+    columns: list[HashableT] | None = ...,
+    order_categoricals: bool = ...,
+    chunksize: None = ...,
     iterator: Literal[False] = ...,
     compression: CompressionOptions = ...,
     storage_options: StorageOptions = ...,
 ) -> DataFrame: ...
-
-# TODO: Remove after switch to 1.5.x, moved to pandas.errors
-class PossiblePrecisionLoss(Warning): ...
-class ValueLabelTypeMismatch(Warning): ...
-class InvalidColumnName(Warning): ...
-class CategoricalConversionWarning(Warning): ...
 
 class StataParser:
     def __init__(self) -> None: ...

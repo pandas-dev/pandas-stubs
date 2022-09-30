@@ -11,6 +11,7 @@ import numpy as np
 from numpy import typing as npt
 import pandas as pd
 from pandas.api.extensions import ExtensionArray
+import pytest
 from typing_extensions import assert_type
 
 from tests import check
@@ -136,6 +137,9 @@ def test_isna() -> None:
     assert check(assert_type(pd.isna(pd.NaT), Literal[True]), bool)
     assert not check(assert_type(pd.notna(pd.NaT), Literal[False]), bool)
 
+    assert check(assert_type(pd.isna(None), Literal[True]), bool)
+    assert not check(assert_type(pd.notna(None), Literal[False]), bool)
+
     check(assert_type(pd.isna(2.5), bool), bool)
     check(assert_type(pd.notna(2.5), bool), bool)
 
@@ -257,4 +261,17 @@ def test_crosstab() -> None:
             pd.DataFrame,
         ),
         pd.DataFrame,
+    )
+
+
+def test_arrow_dtype() -> None:
+    pytest.importorskip("pyarrow")
+
+    import pyarrow as pa
+
+    check(
+        assert_type(
+            pd.ArrowDtype(pa.timestamp("s", tz="America/New_York")), pd.ArrowDtype
+        ),
+        pd.ArrowDtype,
     )

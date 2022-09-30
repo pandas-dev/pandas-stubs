@@ -1,3 +1,4 @@
+from collections import defaultdict
 import csv
 from typing import (
     Any,
@@ -38,10 +39,7 @@ def read_clipboard(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
-    # squeeze: bool | None = ..., # deprecated: 1.4.0
-    # prefix: str | None = ..., # deprecated: 1.4.0
-    mangle_dupe_cols: bool = ...,  # deprecated: 1.5.0
-    dtype: DtypeArg | None = ...,
+    dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
@@ -104,10 +102,7 @@ def read_clipboard(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
-    # squeeze: bool | None = ..., # deprecated: 1.4.0
-    # prefix: str | None = ..., # deprecated: 1.4.0
-    mangle_dupe_cols: bool = ...,  # deprecated: 1.5.0
-    dtype: DtypeArg | None = ...,
+    dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
@@ -170,10 +165,7 @@ def read_clipboard(
     | npt.NDArray
     | Callable[[str], bool]
     | None = ...,
-    # squeeze: bool | None = ..., # deprecated: 1.4.0
-    # prefix: str | None = ..., # deprecated: 1.4.0
-    mangle_dupe_cols: bool = ...,  # deprecated: 1.5.0
-    dtype: DtypeArg | None = ...,
+    dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,

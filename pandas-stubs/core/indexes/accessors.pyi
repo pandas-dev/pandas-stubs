@@ -183,16 +183,6 @@ class _DatetimeRoundingMethods(Generic[_DTRoundingMethodReturnType]):
         | Timedelta = ...,
     ) -> _DTRoundingMethodReturnType: ...
 
-class _TZConversionMethods:
-    def tz_localize(
-        self,
-        tz: str | None,
-        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-        nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
-        | Timedelta = ...,
-    ) -> DatetimeArray: ...
-    def tz_convert(self, tz: str | None) -> TimestampSeries: ...
-
 _DTNormalizeReturnType = TypeVar(
     "_DTNormalizeReturnType", TimestampSeries, DatetimeIndex
 )
@@ -217,8 +207,8 @@ class _DatetimeLikeNoTZMethods(
         ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
         nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
         | Timedelta = ...,
-    ) -> DatetimeArray: ...
-    def tz_convert(self, tz: str | None) -> TimestampSeries: ...
+    ) -> _DTNormalizeReturnType: ...
+    def tz_convert(self, tz: str | None) -> _DTNormalizeReturnType: ...
     def normalize(self) -> _DTNormalizeReturnType: ...
     def strftime(self, date_format: str) -> _DTStrKindReturnType: ...
     def month_name(self, locale: str | None = ...) -> _DTStrKindReturnType: ...
@@ -264,7 +254,6 @@ class DatetimeProperties(
         _DTStrKindReturnType,
         _DTToPeriodReturnType,
     ],
-    _TZConversionMethods,
     Generic[
         _DTFieldOpsReturnType,
         _DTBoolOpsReturnType,
@@ -389,32 +378,8 @@ class DatetimeIndexProperties(
         self, axis: int | None = ..., ddof: int = ..., skipna: bool = ...
     ) -> Timedelta: ...
 
-# For some reason, using TimedeltaIndex as an argument to _DatetimeRoundingMethods
-# doesn't work for pyright.  So we just make the rounding methods explicit here.
 class TimedeltaIndexProperties(
     Properties,
     _TimedeltaPropertiesNoRounding[Index, Index],
     _DatetimeRoundingMethods[TimedeltaIndex],
 ): ...
-
-# def round(
-#     self,
-#     freq: str | BaseOffset | None,
-#     ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-#     nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
-#     | Timedelta = ...,
-# ) -> TimedeltaIndex: ...
-# def floor(
-#     self,
-#     freq: str | BaseOffset | None,
-#     ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-#     nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
-#     | Timedelta = ...,
-# ) -> TimedeltaIndex: ...
-# def ceil(
-#     self,
-#     freq: str | BaseOffset | None,
-#     ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-#     nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
-#     | Timedelta = ...,
-# ) -> TimedeltaIndex: ...

@@ -12,7 +12,6 @@ from typing import (
     Iterator,
     List,
     Sequence,
-    Union,
     cast,
 )
 
@@ -34,7 +33,6 @@ from pandas._typing import (
 )
 
 from tests import (
-    PD_LT_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
@@ -184,6 +182,10 @@ def test_types_drop() -> None:
     check(assert_type(s.drop(0, axis=0), pd.Series), pd.Series)
     assert assert_type(s.drop([0, 1], inplace=True, errors="raise"), None) is None
     assert assert_type(s.drop([0, 1], inplace=True, errors="ignore"), None) is None
+    # GH 302
+    s = pd.Series([0, 1, 2])
+    check(assert_type(s.drop(pd.Index([0, 1])), pd.Series), pd.Series)
+    check(assert_type(s.drop(index=pd.Index([0, 1])), pd.Series), pd.Series)
 
 
 def test_types_drop_multilevel() -> None:
@@ -209,6 +211,8 @@ def test_types_fillna() -> None:
     assert assert_type(s.fillna(method="bfill", inplace=True), None) is None
     check(assert_type(s.fillna(method="pad"), pd.Series), pd.Series)
     check(assert_type(s.fillna(method="ffill", limit=1), pd.Series), pd.Series)
+    # GH 263
+    check(assert_type(s.fillna(pd.NA), pd.Series), pd.Series)
 
 
 def test_types_sort_index() -> None:
@@ -260,11 +264,10 @@ def test_types_rank() -> None:
         s.rank(method="min", pct=True)
     with pytest.warns(FutureWarning, match="Dropping of nuisance columns"):
         s.rank(method="dense", ascending=True)
-    if PD_LT_15:
+    with pytest.warns(FutureWarning, match="Calling Series.rank with numeric_only"):
         s.rank(method="first", numeric_only=True)
-    else:
-        with pytest.warns(FutureWarning, match="Calling Series.rank with numeric_only"):
-            s.rank(method="first", numeric_only=True)
+    s2 = pd.Series([1, 1, 2, 5, 6, np.nan])
+    s2.rank(method="first", numeric_only=True)
 
 
 def test_types_mean() -> None:
@@ -517,23 +520,19 @@ def test_types_window() -> None:
     s.rolling(2, axis=0, center=True)
 
     check(
-        assert_type(s.rolling(2).agg("sum"), Union[Scalar, pd.Series, pd.DataFrame]),
+        assert_type(s.rolling(2).agg("sum"), pd.Series),
         pd.Series,
     )
     check(
-        assert_type(s.rolling(2).agg(sum), Union[Scalar, pd.Series, pd.DataFrame]),
+        assert_type(s.rolling(2).agg(sum), pd.Series),
         pd.Series,
     )
     check(
-        assert_type(
-            s.rolling(2).agg(["max", "min"]), Union[Scalar, pd.Series, pd.DataFrame]
-        ),
+        assert_type(s.rolling(2).agg(["max", "min"]), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(
-            s.rolling(2).agg([max, min]), Union[Scalar, pd.Series, pd.DataFrame]
-        ),
+        assert_type(s.rolling(2).agg([max, min]), pd.DataFrame),
         pd.DataFrame,
     )
 
@@ -818,6 +817,8 @@ def test_reset_index() -> None:
     check(assert_type(r4, pd.Series), pd.Series)
     r5 = s.reset_index(["ab"], drop=True)
     check(assert_type(r5, pd.Series), pd.Series)
+    r6 = s.reset_index(["ab"], drop=True, allow_duplicates=True)
+    check(assert_type(r6, pd.Series), pd.Series)
 
 
 def test_series_add_str() -> None:
@@ -995,6 +996,7 @@ def test_string_accessors():
     check(assert_type(s.str.rjust(80), pd.Series), pd.Series)
     check(assert_type(s.str.rpartition("p"), pd.DataFrame), pd.DataFrame)
     check(assert_type(s.str.rsplit("a"), pd.Series), pd.Series)
+    check(assert_type(s.str.rsplit("a", expand=True), pd.DataFrame), pd.DataFrame)
     check(assert_type(s.str.rstrip(), pd.Series), pd.Series)
     check(assert_type(s.str.slice(0, 4, 2), pd.Series), pd.Series)
     check(assert_type(s.str.slice_replace(0, 2, "XX"), pd.Series), pd.Series)
@@ -1192,3 +1194,20 @@ def test_types_to_numpy() -> None:
     check(assert_type(s.to_numpy(), np.ndarray), np.ndarray)
     check(assert_type(s.to_numpy(dtype="str", copy=True), np.ndarray), np.ndarray)
     check(assert_type(s.to_numpy(na_value=0), np.ndarray), np.ndarray)
+
+
+def test_where() -> None:
+    s = pd.Series([1, 2, 3], dtype=int)
+
+    def cond1(x: int) -> bool:
+        return x % 2 == 0
+
+    check(assert_type(s.where(cond1, other=0), "pd.Series[int]"), pd.Series, int)
+
+    def cond2(x: pd.Series[int]) -> pd.Series[bool]:
+        return x > 1
+
+    check(assert_type(s.where(cond2, other=0), "pd.Series[int]"), pd.Series, int)
+
+    cond3 = pd.Series([False, True, True])
+    check(assert_type(s.where(cond3, other=0), "pd.Series[int]"), pd.Series, int)
