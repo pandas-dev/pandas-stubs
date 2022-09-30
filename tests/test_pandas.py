@@ -275,3 +275,19 @@ def test_arrow_dtype() -> None:
         ),
         pd.ArrowDtype,
     )
+
+
+def test_hashing():
+    a = np.array([1, 2, 3])
+    pd.util.hash_array(a)
+    pd.util.hash_array(a, encoding="latin1", hash_key="1", categorize=True)
+
+    b = pd.Series(a)
+    c = pd.DataFrame({"a": a, "b": a})
+    d = pd.Index(b)
+    pd.util.hash_pandas_object(b)
+    pd.util.hash_pandas_object(c)
+    pd.util.hash_pandas_object(d)
+    pd.util.hash_pandas_object(
+        d, index=True, encoding="latin1", hash_key="apple", categorize=True
+    )
