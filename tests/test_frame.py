@@ -4,6 +4,7 @@ from collections import defaultdict
 import csv
 import datetime
 import io
+import itertools
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
@@ -48,6 +49,9 @@ DF = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 def test_types_init() -> None:
     pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]}, index=[2, 1])
+    pd.DataFrame(data=[[1, 2, 3], [4, 5, 6]])
+    pd.DataFrame(data=itertools.repeat([1, 2, 3], 3))
+    pd.DataFrame(data=(range(i) for i in range(5)))
     pd.DataFrame(data=[1, 2, 3, 4], dtype=np.int8)
     pd.DataFrame(
         np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]),
