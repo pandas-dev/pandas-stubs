@@ -14,6 +14,8 @@ from pandas.api.extensions import ExtensionArray
 import pytest
 from typing_extensions import assert_type
 
+from pandas._typing import Scalar
+
 from tests import check
 
 
@@ -279,15 +281,38 @@ def test_arrow_dtype() -> None:
 
 def test_hashing():
     a = np.array([1, 2, 3])
-    pd.util.hash_array(a)
-    pd.util.hash_array(a, encoding="latin1", hash_key="1", categorize=True)
+    check(assert_type(pd.util.hash_array(a), npt.NDArray[np.uint64]), np.ndarray)
+    check(
+        assert_type(
+            pd.util.hash_array(a, encoding="latin1", hash_key="1", categorize=True),
+            npt.NDArray[np.uint64],
+        ),
+        np.ndarray,
+    )
 
     b = pd.Series(a)
     c = pd.DataFrame({"a": a, "b": a})
     d = pd.Index(b)
-    pd.util.hash_pandas_object(b)
-    pd.util.hash_pandas_object(c)
-    pd.util.hash_pandas_object(d)
-    pd.util.hash_pandas_object(
-        d, index=True, encoding="latin1", hash_key="apple", categorize=True
+    check(assert_type(pd.util.hash_pandas_object(b), pd.Series), pd.Series)
+    check(assert_type(pd.util.hash_pandas_object(c), pd.Series), pd.Series)
+    check(assert_type(pd.util.hash_pandas_object(d), pd.Series), pd.Series)
+    check(
+        assert_type(
+            pd.util.hash_pandas_object(
+                d, index=True, encoding="latin1", hash_key="apple", categorize=True
+            ),
+            pd.Series,
+        ),
+        pd.Series,
+    )
+
+
+def test_eval():
+    df = pd.DataFrame({"animal": ["dog", "pig"], "age": [10, 20]})
+    check(
+        assert_type(
+            pd.eval("double_age = df.age * 2", target=df),
+            Union[npt.NDArray, Scalar, pd.DataFrame, pd.Series, None],
+        ),
+        pd.DataFrame,
     )
