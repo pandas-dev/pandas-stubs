@@ -29,7 +29,6 @@ from pandas._typing import (
     Dtype,
     DtypeArg,
     FilePath,
-    FilePathOrBuffer,
     FileWriteMode,
     FillnaOptions,
     HashableT,
@@ -140,7 +139,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     @overload
     def to_markdown(
         self,
-        buf: FilePathOrBuffer,
+        buf: FilePath | WriteBuffer[str],
         mode: FileWriteMode | None = ...,
         index: _bool = ...,
         storage_options: StorageOptions = ...,
@@ -182,7 +181,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     @overload
     def to_latex(
         self,
-        buf: FilePathOrBuffer | None,
+        buf: FilePath | WriteBuffer[str],
         columns: list[_str] | None = ...,
         col_space: int | None = ...,
         header: _bool | list[_str] = ...,
@@ -208,6 +207,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     @overload
     def to_latex(
         self,
+        buf: None = ...,
         columns: list[_str] | None = ...,
         col_space: int | None = ...,
         header: _bool | list[_str] = ...,
@@ -233,7 +233,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     @overload
     def to_csv(
         self,
-        path_or_buf: FilePathOrBuffer,
+        path_or_buf: FilePath | WriteBuffer[bytes] | WriteBuffer[str],
         sep: _str = ...,
         na_rep: _str = ...,
         float_format: _str | Callable[[object], _str] | None = ...,

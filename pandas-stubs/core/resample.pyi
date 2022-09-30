@@ -16,6 +16,7 @@ from pandas import (
 )
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.groupby.groupby import BaseGroupBy
+from typing_extensions import TypeAlias
 
 from pandas._typing import (
     AxisType,
@@ -24,24 +25,30 @@ from pandas._typing import (
     npt,
 )
 
-_FrameGroupByFunc = (
+_FrameGroupByFunc: TypeAlias = (
     Callable[[DataFrame], Scalar]
     | Callable[[DataFrame], Series]
     | Callable[[DataFrame], DataFrame]
     | np.ufunc
 )
-_FrameGroupByFuncTypes = _FrameGroupByFunc | str | list[_FrameGroupByFunc | str]
-_FrameGroupByFuncArgs = (
+_FrameGroupByFuncTypes: TypeAlias = (
+    _FrameGroupByFunc | str | list[_FrameGroupByFunc | str]
+)
+_FrameGroupByFuncArgs: TypeAlias = (
     _FrameGroupByFuncTypes | Mapping[Hashable, _FrameGroupByFuncTypes]
 )
 
-_SeriesGroupByFunc = Callable[[Series], Scalar] | Callable[[Series], Series] | np.ufunc
-_SeriesGroupByFuncTypes = _SeriesGroupByFunc | str | list[_SeriesGroupByFunc | str]
-_SeriesGroupByFuncArgs = (
+_SeriesGroupByFunc: TypeAlias = (
+    Callable[[Series], Scalar] | Callable[[Series], Series] | np.ufunc
+)
+_SeriesGroupByFuncTypes: TypeAlias = (
+    _SeriesGroupByFunc | str | list[_SeriesGroupByFunc | str]
+)
+_SeriesGroupByFuncArgs: TypeAlias = (
     _SeriesGroupByFuncTypes | Mapping[Hashable, _SeriesGroupByFunc | str]
 )
 
-_Interpolation = Literal[
+_Interpolation: TypeAlias = Literal[
     "linear",
     "time",
     "index",

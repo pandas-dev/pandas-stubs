@@ -64,7 +64,6 @@ from pandas._typing import (
     CompressionOptions,
     Dtype,
     FilePath,
-    FilePathOrBuffer,
     FillnaOptions,
     FloatFormatType,
     FormattersType,
@@ -1912,7 +1911,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def to_json(
         self,
-        path_or_buf: FilePathOrBuffer | None,
+        path_or_buf: FilePath | WriteBuffer[str],
         orient: JsonFrameOrient | None = ...,
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
@@ -1928,6 +1927,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def to_json(
         self,
+        path_or_buf: None = ...,
         orient: JsonFrameOrient | None = ...,
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,

@@ -60,6 +60,7 @@ from pandas.core.window.rolling import (
     Rolling,
     Window,
 )
+from typing_extensions import TypeAlias
 import xarray as xr
 
 from pandas._libs.missing import NAType
@@ -76,7 +77,7 @@ from pandas._typing import (
     CalculationMethod,
     CompressionOptions,
     DtypeObj,
-    FilePathOrBuffer,
+    FilePath,
     FillnaOptions,
     GroupByObjectNonScalar,
     HashableT,
@@ -95,6 +96,7 @@ from pandas._typing import (
     SeriesAxisType,
     SortKind,
     TimestampConvention,
+    WriteBuffer,
     np_ndarray_anyint,
     npt,
     num,
@@ -165,7 +167,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
 
 class Series(IndexOpsMixin, NDFrame, Generic[S1]):
 
-    _ListLike = Union[ArrayLike, dict[_str, np.ndarray], list, tuple, Index]
+    _ListLike: TypeAlias = Union[ArrayLike, dict[_str, np.ndarray], list, tuple, Index]
     __hash__: ClassVar[None]
 
     @overload
@@ -337,7 +339,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def to_string(
         self,
-        buf: FilePathOrBuffer | None,
+        buf: FilePath | WriteBuffer[str],
         na_rep: _str = ...,
         formatters=...,
         float_format=...,
@@ -356,6 +358,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def to_string(
         self,
+        buf: None = ...,
         na_rep: _str = ...,
         formatters=...,
         float_format=...,
@@ -374,7 +377,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def to_json(
         self,
-        path_or_buf: FilePathOrBuffer | None,
+        path_or_buf: FilePath | WriteBuffer[str],
         orient: JsonSeriesOrient | None = ...,
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
@@ -390,6 +393,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def to_json(
         self,
+        path_or_buf: None = ...,
         orient: JsonSeriesOrient | None = ...,
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
