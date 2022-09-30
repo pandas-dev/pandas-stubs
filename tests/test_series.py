@@ -374,10 +374,32 @@ def test_types_unique() -> None:
 
 
 def test_types_apply() -> None:
-    s = pd.Series([-10, 2, 2, 3, 10, 10])
-    s.apply(lambda x: x**2)
-    s.apply(np.exp)
-    s.apply(str)
+    s = pd.Series([-10, 2, 2, 3.4, 10, 10])
+
+    def square(x: float) -> float:
+        return x**2
+
+    check(assert_type(s.apply(square), pd.Series), pd.Series, float)
+    check(assert_type(s.apply(np.exp), pd.Series), pd.Series, float)
+    check(assert_type(s.apply(str), pd.Series), pd.Series, str)
+
+    def makeseries(x: float) -> pd.Series:
+        return pd.Series([x, 2 * x])
+
+    check(assert_type(s.apply(makeseries), pd.DataFrame), pd.DataFrame)
+
+    # GH 293
+
+    def retseries(x: float) -> float:
+        return x
+
+    check(assert_type(s.apply(retseries).tolist(), list), list)
+
+    def get_depth(url: str) -> int:
+        return len(url)
+
+    ss = s.astype(str)
+    check(assert_type(ss.apply(get_depth), pd.Series), pd.Series, int)
 
 
 def test_types_element_wise_arithmetic() -> None:
