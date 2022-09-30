@@ -6,11 +6,13 @@ from typing import (
 )
 
 import numpy as np
+import pandas as pd
 from pandas.core.indexes.base import Index
 
 from pandas._typing import (
     T1,
     DtypeArg,
+    HashableT,
     np_ndarray_bool,
 )
 
@@ -88,7 +90,12 @@ class MultiIndex(Index):
     def get_value(self, series, key): ...
     def get_level_values(self, level: str | int) -> Index: ...
     def unique(self, level=...): ...
-    def to_frame(self, index: bool = ..., name=...): ...
+    def to_frame(
+        self,
+        index: bool = ...,
+        name: list[HashableT] = ...,
+        allow_duplicates: bool = ...,
+    ) -> pd.DataFrame: ...
     def to_flat_index(self): ...
     @property
     def is_all_dates(self) -> bool: ...

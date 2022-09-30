@@ -1,3 +1,4 @@
+from collections import defaultdict
 import csv
 import io
 import os.path
@@ -208,6 +209,10 @@ def test_clipboard():
     check(assert_type(read_clipboard(), DataFrame), DataFrame)
     check(assert_type(read_clipboard(iterator=False), DataFrame), DataFrame)
     check(assert_type(read_clipboard(chunksize=None), DataFrame), DataFrame)
+    check(
+        assert_type(read_clipboard(dtype=defaultdict(lambda: "f8")), DataFrame),
+        DataFrame,
+    )
 
 
 def test_clipboard_iterator():
@@ -425,6 +430,10 @@ def test_read_csv():
             check(assert_type(read_csv(sio), DataFrame), DataFrame)
         check(assert_type(read_csv(path, iterator=False), DataFrame), DataFrame)
         check(assert_type(read_csv(path, chunksize=None), DataFrame), DataFrame)
+        check(
+            assert_type(read_csv(path, dtype=defaultdict(lambda: "f8")), DataFrame),
+            DataFrame,
+        )
 
 
 def test_read_csv_iterator():
@@ -489,6 +498,10 @@ def test_read_table():
         check(assert_type(read_table(path), DataFrame), DataFrame)
         check(assert_type(read_table(path, iterator=False), DataFrame), DataFrame)
         check(assert_type(read_table(path, chunksize=None), DataFrame), DataFrame)
+        check(
+            assert_type(read_table(path, dtype=defaultdict(lambda: "f8")), DataFrame),
+            DataFrame,
+        )
 
 
 def test_read_table_iterator():

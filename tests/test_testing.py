@@ -29,13 +29,14 @@ def test_types_assert_series_equal() -> None:
         check_datetimelike_compat=True,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_series_equal(
+        assert_series_equal(  # type: ignore[call-overload]
             s1,
             s2,
             check_dtype=True,
-            check_less_precise=True,  # type: ignore[call-arg]
+            check_less_precise=True,
             check_names=True,
         )
+    assert_series_equal(s1, s2, check_like=True)
 
 
 def test_assert_frame_equal():
