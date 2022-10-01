@@ -6,6 +6,7 @@ from datetime import (
 from typing import Union
 
 import numpy as np
+from typing_extensions import TypeAlias
 
 from pandas._libs.tslibs.period import Period
 
@@ -13,7 +14,9 @@ NaT: NaTType
 iNaT: int
 nat_strings: set[str]
 
-_NaTComparisonTypes = Union[datetime, timedelta, Period, np.datetime64, np.timedelta64]
+_NaTComparisonTypes: TypeAlias = Union[
+    datetime, timedelta, Period, np.datetime64, np.timedelta64
+]
 
 class _NatComparison:
     def __call__(self, other: _NaTComparisonTypes) -> bool: ...

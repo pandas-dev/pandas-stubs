@@ -13,19 +13,20 @@ from pandas.core.base import PandasObject
 from pandas.core.frame import DataFrame
 import sqlalchemy.engine
 import sqlalchemy.sql.expression
+from typing_extensions import TypeAlias
 
 from pandas._typing import (
     DtypeArg,
     npt,
 )
 
-_SQLConnection = Union[
+_SQLConnection: TypeAlias = Union[
     str,
     sqlalchemy.engine.Connectable,
     sqlite3.Connection,
 ]
 
-_SQLStatement = Union[
+_SQLStatement: TypeAlias = Union[
     str, sqlalchemy.sql.expression.Selectable, sqlalchemy.sql.expression.TextClause
 ]
 

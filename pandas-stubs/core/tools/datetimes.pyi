@@ -18,6 +18,7 @@ from pandas.core.series import (
     Series,
     TimestampSeries,
 )
+from typing_extensions import TypeAlias
 
 from pandas._libs.tslibs import NaTType
 from pandas._typing import (
@@ -26,13 +27,13 @@ from pandas._typing import (
     IgnoreRaise,
 )
 
-ArrayConvertible = Union[list, tuple, AnyArrayLike]
-Scalar = Union[float, str]
-DatetimeScalar = Union[Scalar, datetime, np.datetime64]
+ArrayConvertible: TypeAlias = Union[list, tuple, AnyArrayLike]
+Scalar: TypeAlias = Union[float, str]
+DatetimeScalar: TypeAlias = Union[Scalar, datetime, np.datetime64]
 
-DatetimeScalarOrArrayConvertible = Union[DatetimeScalar, ArrayConvertible]
+DatetimeScalarOrArrayConvertible: TypeAlias = Union[DatetimeScalar, ArrayConvertible]
 
-DatetimeDictArg = Union[list[Scalar], tuple[Scalar, ...], AnyArrayLike]
+DatetimeDictArg: TypeAlias = Union[list[Scalar], tuple[Scalar, ...], AnyArrayLike]
 
 class YearMonthDayDict(TypedDict, total=True):
     year: DatetimeDictArg
@@ -50,7 +51,7 @@ class FulldatetimeDict(YearMonthDayDict, total=False):
     us: DatetimeDictArg
     ns: DatetimeDictArg
 
-DictConvertible = Union[FulldatetimeDict, DataFrame]
+DictConvertible: TypeAlias = Union[FulldatetimeDict, DataFrame]
 
 def should_cache(
     arg: ArrayConvertible, unique_share: float = ..., check_count: int | None = ...

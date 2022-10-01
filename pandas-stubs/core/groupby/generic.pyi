@@ -23,6 +23,7 @@ from pandas.core.groupby.groupby import (  # , get_groupby as get_groupby
 )
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.series import Series
+from typing_extensions import TypeAlias
 
 from pandas._typing import (
     S1,
@@ -34,7 +35,7 @@ from pandas._typing import (
     Scalar,
 )
 
-AggScalar = Union[str, Callable[..., Any]]
+AggScalar: TypeAlias = Union[str, Callable[..., Any]]
 ScalarResult = ...
 
 class NamedAgg(NamedTuple):
