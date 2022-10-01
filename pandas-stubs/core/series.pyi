@@ -129,6 +129,13 @@ class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     ) -> None: ...
 
 class _LocIndexerSeries(_LocIndexer, Generic[S1]):
+    # ignore needed because of mypy.  Overlapping, but we want to distinguish
+    # having a tuple of just scalars, versus tuples that include slices or Index
+    @overload
+    def __getitem__(  # type: ignore[misc]
+        self,
+        idx: Scalar | tuple[Scalar, ...],
+    ) -> S1: ...
     @overload
     def __getitem__(
         self,
@@ -137,13 +144,8 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
         | Sequence[float]
         | list[str]
         | slice
-        | tuple[str | float | slice | Index, ...],
+        | tuple[Scalar | slice | Index, ...],
     ) -> Series[S1]: ...
-    @overload
-    def __getitem__(
-        self,
-        idx: str | float,
-    ) -> S1: ...
     @overload
     def __setitem__(
         self,

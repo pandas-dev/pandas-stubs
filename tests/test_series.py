@@ -120,9 +120,12 @@ def test_types_loc_at() -> None:
 
 
 def test_multiindex_loc() -> None:
-    s = pd.Series([1, 2, 3, 4], index=pd.MultiIndex.from_product([[1, 2], ["a", "b"]]))
-    check(assert_type(s.loc[1, :], pd.Series), pd.Series)
-    check(assert_type(s.loc[pd.Index([1]), :], pd.Series), pd.Series)
+    s = pd.Series(
+        [1, 2, 3, 4], index=pd.MultiIndex.from_product([[1, 2], ["a", "b"]]), dtype=int
+    )
+    check(assert_type(s.loc[1, :], "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s.loc[pd.Index([1]), :], "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s.loc[1, "a"], int), np.int_)
 
 
 def test_types_boolean_indexing() -> None:
