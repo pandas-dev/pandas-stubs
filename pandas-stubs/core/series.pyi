@@ -48,6 +48,7 @@ from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.indexing import (
     _AtIndexer,
     _iAtIndexer,
+    _IndexSliceTuple,
 )
 from pandas.core.resample import Resampler
 from pandas.core.strings import StringMethods
@@ -137,16 +138,14 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     def __getitem__(  # type: ignore[misc]
         self,
         idx: Scalar | tuple[Scalar, ...],
+        # tuple case is for getting a specific element when using a MultiIndex
     ) -> S1: ...
     @overload
     def __getitem__(
         self,
-        idx: MaskType
-        | Index
-        | Sequence[float]
-        | list[str]
-        | slice
-        | tuple[Scalar | slice | Index, ...],
+        idx: MaskType | Index | Sequence[float] | list[str] | slice | _IndexSliceTuple,
+        # _IndexSliceTuple is when having a tuple that includes a slice.  Could just
+        # be s.loc[1, :], or s.loc[pd.IndexSlice[1, :]]
     ) -> Series[S1]: ...
     @overload
     def __setitem__(
