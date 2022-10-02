@@ -5,6 +5,7 @@ from typing import (
 
 import numpy as np
 from pandas.core.indexes.api import Index
+from typing_extensions import TypeAlias
 
 from pandas._libs.indexing import _NDFrameIndexerBase
 from pandas._typing import (
@@ -13,9 +14,11 @@ from pandas._typing import (
     ScalarT,
 )
 
-_IndexSliceTuple = tuple[Union[Index, MaskType, Scalar, list[ScalarT], slice], ...]
+_IndexSliceTuple: TypeAlias = tuple[
+    Union[Index, MaskType, Scalar, list[ScalarT], slice], ...
+]
 
-_IndexSliceUnion = Union[slice, _IndexSliceTuple]
+_IndexSliceUnion: TypeAlias = Union[slice, _IndexSliceTuple]
 
 _IndexSliceUnionT = TypeVar("_IndexSliceUnionT", bound=_IndexSliceUnion)
 

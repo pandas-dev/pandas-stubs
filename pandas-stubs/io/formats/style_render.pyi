@@ -13,6 +13,7 @@ from typing import (
 import jinja2
 from pandas import Index
 from pandas.core.indexing import _IndexSlice
+from typing_extensions import TypeAlias
 
 from pandas._typing import (
     AxisType,
@@ -20,11 +21,11 @@ from pandas._typing import (
     Level,
 )
 
-BaseFormatter = Union[str, Callable[[object], str]]
-ExtFormatter = Union[BaseFormatter, dict[Any, Optional[BaseFormatter]]]
-CSSPair = tuple[str, Union[str, float]]
-CSSList = list[CSSPair]
-CSSProperties = Union[str, CSSList]
+BaseFormatter: TypeAlias = Union[str, Callable[[object], str]]
+ExtFormatter: TypeAlias = Union[BaseFormatter, dict[Any, Optional[BaseFormatter]]]
+CSSPair: TypeAlias = tuple[str, Union[str, float]]
+CSSList: TypeAlias = list[CSSPair]
+CSSProperties: TypeAlias = Union[str, CSSList]
 
 class CSSDict(TypedDict):
     selector: str
@@ -40,8 +41,8 @@ class StyleExportDict(TypedDict, total=False):
     hide_column_names: bool
     css: dict[str, str | int]
 
-CSSStyles = list[CSSDict]
-Subset = Union[_IndexSlice, slice, tuple[slice, ...], list[HashableT], Index]
+CSSStyles: TypeAlias = list[CSSDict]
+Subset: TypeAlias = Union[_IndexSlice, slice, tuple[slice, ...], list[HashableT], Index]
 
 _StylerT = TypeVar("_StylerT", bound=StylerRenderer)
 

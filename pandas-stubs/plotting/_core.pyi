@@ -19,6 +19,7 @@ from pandas import Series
 from pandas.core.base import PandasObject
 from pandas.core.frame import DataFrame
 from scipy.stats.kde import gaussian_kde
+from typing_extensions import TypeAlias
 
 from pandas._typing import (
     ArrayLike,
@@ -30,10 +31,12 @@ class _BoxPlotT(NamedTuple):
     ax: Axes
     lines: dict[str, list[Line2D]]
 
-_SingleColor = Union[
+_SingleColor: TypeAlias = Union[
     str, list[float], tuple[float, float, float], tuple[float, float, float, float]
 ]
-_PlotAccessorColor = Union[str, list[_SingleColor], dict[HashableT, _SingleColor]]
+_PlotAccessorColor: TypeAlias = Union[
+    str, list[_SingleColor], dict[HashableT, _SingleColor]
+]
 
 @overload
 def boxplot(
