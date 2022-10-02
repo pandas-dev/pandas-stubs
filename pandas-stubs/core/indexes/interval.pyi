@@ -5,6 +5,7 @@ from typing import (
     Literal,
     Sequence,
     Union,
+    overload,
 )
 
 import numpy as np
@@ -122,11 +123,21 @@ class IntervalIndex(IntervalMixin, ExtensionIndex):
     @property
     def is_all_dates(self) -> bool: ...
 
+@overload
 def interval_range(
-    start: int | float | DatetimeLike | None = ...,
-    end: int | float | DatetimeLike | None = ...,
+    start: int | float | None = ...,
+    end: int | float | None = ...,
     periods: int | None = ...,
-    freq: int | str | DateOffset | None = ...,
+    freq: int | None = ...,
+    name: Hashable = ...,
+    closed: IntervalClosedType = ...,
+) -> IntervalIndex: ...
+@overload
+def interval_range(
+    start: DatetimeLike | None = ...,
+    end: DatetimeLike | None = ...,
+    periods: int | None = ...,
+    freq: str | DateOffset | None = ...,
     name: Hashable = ...,
     closed: IntervalClosedType = ...,
 ) -> IntervalIndex: ...

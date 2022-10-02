@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime as dt
 from typing import Union
 
 import numpy as np
@@ -180,3 +181,295 @@ def test_range_index_union():
             ),
             pd.Index,
         )
+
+
+def test_interval_range():
+    check(assert_type(pd.interval_range(0, 10), pd.IntervalIndex), pd.IntervalIndex)
+    check(
+        assert_type(
+            pd.interval_range(0, 10, name="something", closed="both"), pd.IntervalIndex
+        ),
+        pd.IntervalIndex,
+    )
+    check(assert_type(pd.interval_range(0.0, 10), pd.IntervalIndex), pd.IntervalIndex)
+    check(
+        assert_type(
+            pd.interval_range(dt.datetime(2000, 1, 1), dt.datetime(2010, 1, 1), 5),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.interval_range(
+                np.datetime64("2000-01-01"), np.datetime64("2020-01-01"), 5
+            ),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.interval_range(pd.Timestamp(2000, 1, 1), pd.Timestamp(2010, 1, 1), 5),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.interval_range(
+                pd.Timestamp(2000, 1, 1), pd.Timestamp(2010, 1, 1), freq="1M"
+            ),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.interval_range(
+                pd.Timestamp(2000, 1, 1),
+                pd.Timestamp(2010, 1, 1),
+                freq=pd.DateOffset(months=2),
+            ),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.interval_range(pd.Timestamp(2000, 1, 1), dt.datetime(2010, 1, 1), 5),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
+
+
+def test_interval_index_breaks():
+    check(
+        assert_type(pd.IntervalIndex.from_breaks([1, 2, 3, 4]), pd.IntervalIndex),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_breaks([1.0, 2.0, 3.0, 4.0]), pd.IntervalIndex
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_breaks(np.array([1, 2, 3, 4])), pd.IntervalIndex
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_breaks(np.array([1.0, 2.0, 3.0, 4.0])),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_breaks(
+                np.array(
+                    [
+                        np.datetime64("2000-01-01"),
+                        np.datetime64("2001-01-01"),
+                        np.datetime64("2002-01-01"),
+                        np.datetime64("2003-01-01"),
+                    ]
+                )
+            ),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_breaks(pd.Series([1, 2, 3, 4])), pd.IntervalIndex
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_breaks(pd.Series([1.0, 2.0, 3.0, 4.0])),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_breaks(
+                pd.Series(
+                    [
+                        pd.Timestamp(2000, 1, 1),
+                        pd.Timestamp(2001, 1, 1),
+                        pd.Timestamp(2002, 1, 1),
+                        pd.Timestamp(2003, 1, 1),
+                    ]
+                )
+            ),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_breaks(
+                [
+                    dt.datetime(2000, 1, 1),
+                    dt.datetime(2001, 1, 1),
+                    dt.datetime(2002, 1, 1),
+                    dt.datetime(2003, 1, 1),
+                ]
+            ),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
+
+
+def test_interval_index_arrays():
+    check(
+        assert_type(
+            pd.IntervalIndex.from_arrays([1, 2, 3, 4], [2, 3, 4, 5]), pd.IntervalIndex
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_arrays([1.0, 2.0, 3.0, 4.0], [2.0, 3.0, 4.0, 5.0]),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_arrays(
+                np.array([1, 2, 3, 4]), np.array([2, 3, 4, 5])
+            ),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_arrays(
+                np.array([1.0, 2.0, 3.0, 4.0]), np.array([2.0, 3.0, 4.0, 5.0])
+            ),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_arrays(
+                np.array(
+                    [
+                        np.datetime64("2000-01-01"),
+                        np.datetime64("2001-01-01"),
+                        np.datetime64("2002-01-01"),
+                        np.datetime64("2003-01-01"),
+                    ]
+                ),
+                np.array(
+                    [
+                        np.datetime64("2001-01-01"),
+                        np.datetime64("2002-01-01"),
+                        np.datetime64("2003-01-01"),
+                        np.datetime64("2004-01-01"),
+                    ]
+                ),
+            ),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
+
+    check(
+        assert_type(
+            pd.IntervalIndex.from_arrays(
+                pd.Series([1, 2, 3, 4]), pd.Series([2, 3, 4, 5])
+            ),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_arrays(
+                pd.Series([1.0, 2.0, 3.0, 4.0]), pd.Series([2.0, 3.0, 4.0, 5.0])
+            ),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_arrays(
+                pd.Series(
+                    [
+                        pd.Timestamp(2000, 1, 1),
+                        pd.Timestamp(2001, 1, 1),
+                        pd.Timestamp(2002, 1, 1),
+                        pd.Timestamp(2003, 1, 1),
+                    ]
+                ),
+                pd.Series(
+                    [
+                        pd.Timestamp(2001, 1, 1),
+                        pd.Timestamp(2002, 1, 1),
+                        pd.Timestamp(2003, 1, 1),
+                        pd.Timestamp(2004, 1, 1),
+                    ]
+                ),
+            ),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_arrays(
+                [
+                    dt.datetime(2000, 1, 1),
+                    dt.datetime(2001, 1, 1),
+                    dt.datetime(2002, 1, 1),
+                    dt.datetime(2003, 1, 1),
+                ],
+                [
+                    dt.datetime(2001, 1, 1),
+                    dt.datetime(2002, 1, 1),
+                    dt.datetime(2003, 1, 1),
+                    dt.datetime(2004, 1, 1),
+                ],
+            ),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
+
+
+def test_interval_index_tuples():
+    check(
+        assert_type(pd.IntervalIndex.from_tuples([(1, 2), (2, 3)]), pd.IntervalIndex),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_tuples([(1.0, 2.0), (2.0, 3.0)]), pd.IntervalIndex
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_tuples(
+                [
+                    (pd.Timestamp(2000, 1, 1), pd.Timestamp(2001, 1, 1)),
+                    (pd.Timestamp(2001, 1, 1), pd.Timestamp(2002, 1, 1)),
+                ]
+            ),
+            pd.IntervalIndex,
+        ),
+        pd.IntervalIndex,
+    )
