@@ -28,6 +28,7 @@ from pandas._typing import (
     Dtype,
     DtypeArg,
     DtypeObj,
+    FillnaOptions,
     HashableT,
     IndexT,
     Label,
@@ -155,7 +156,12 @@ class Index(IndexOpsMixin, PandasObject):
     def symmetric_difference(
         self, other: list[T1] | Index, result_name=..., sort=...
     ) -> Index: ...
-    def get_loc(self, key, tolerance=...): ...
+    def get_loc(
+        self,
+        key: Label,
+        method: FillnaOptions | Literal["nearest"] | None = ...,
+        tolerance=...,
+    ): ...
     def get_indexer(self, target, method=..., limit=..., tolerance=...): ...
     def reindex(self, target, method=..., level=..., limit=..., tolerance=...): ...
     def join(

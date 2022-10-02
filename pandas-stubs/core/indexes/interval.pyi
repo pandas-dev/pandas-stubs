@@ -2,21 +2,26 @@ import datetime as dt
 from typing import (
     Any,
     Hashable,
+    Literal,
     Sequence,
+    Union,
 )
 
 import numpy as np
+import pandas as pd
 from pandas import Index
 from pandas.core.indexes.extension import ExtensionIndex
+from typing_extensions import TypeAlias
 
 from pandas._libs.interval import (
     Interval as Interval,
     IntervalMixin as IntervalMixin,
 )
-from pandas._libs.tslibs import BaseOffset
+from pandas._libs.tslibs.offsets import DateOffset
 from pandas._typing import (
     DatetimeLike,
     DtypeArg,
+    FillnaOptions,
     IntervalClosedType,
     Label,
     npt,
@@ -24,6 +29,20 @@ from pandas._typing import (
 
 from pandas.core.dtypes.dtypes import IntervalDtype as IntervalDtype
 from pandas.core.dtypes.generic import ABCSeries
+
+_Edges: TypeAlias = Union[
+    Sequence[int],
+    Sequence[float],
+    Sequence[DatetimeLike],
+    npt.NDArray[np.int_],
+    npt.NDArray[np.float_],
+    npt.NDArray[np.datetime64],
+    pd.Series[int],
+    pd.Series[float],
+    pd.Series[pd.Timestamp],
+    pd.Int64Index,
+    pd.DatetimeIndex,
+]
 
 class IntervalIndex(IntervalMixin, ExtensionIndex):
     def __new__(
@@ -38,11 +57,7 @@ class IntervalIndex(IntervalMixin, ExtensionIndex):
     @classmethod
     def from_breaks(
         cls,
-        breaks: Sequence[int]
-        | Sequence[float]
-        | Sequence[DatetimeLike]
-        | npt.NDArray[np.int_]
-        | npt.NDArray[np.float_],
+        breaks: _Edges,
         closed: IntervalClosedType = ...,
         name: Hashable = ...,
         copy: bool = ...,
@@ -51,16 +66,8 @@ class IntervalIndex(IntervalMixin, ExtensionIndex):
     @classmethod
     def from_arrays(
         cls,
-        left: Sequence[int]
-        | Sequence[float]
-        | Sequence[DatetimeLike]
-        | npt.NDArray[np.int_]
-        | npt.NDArray[np.float_],
-        right: Sequence[int]
-        | Sequence[float]
-        | Sequence[DatetimeLike]
-        | npt.NDArray[np.int_]
-        | npt.NDArray[np.float_],
+        left: _Edges,
+        right: _Edges,
         closed: IntervalClosedType = ...,
         name: Hashable = ...,
         copy: bool = ...,
@@ -83,23 +90,23 @@ class IntervalIndex(IntervalMixin, ExtensionIndex):
     @property
     def inferred_type(self) -> str: ...
     def memory_usage(self, deep: bool = ...) -> int: ...
-    def is_monotonic_decreasing(self) -> bool: ...
-    def is_unique(self) -> bool: ...
     @property
     def is_overlapping(self) -> bool: ...
-    # Note: tolerance removed as it has no effect
+    # Note: tolerance no effect. It is included in all get_loc so
+    # that signatures are consistent with base even though it is usually not used
     def get_loc(
         self,
         key: Label,
-        method: str | None = ...,
-    ) -> int | slice | np.ndarray: ...
+        method: FillnaOptions | Literal["nearest"] | None = ...,
+        tolerance=...,
+    ) -> int | slice | npt.NDArray[np.bool_]: ...
     def get_indexer(
         self,
         target: Index,
-        method: str | None = ...,
+        method: FillnaOptions | Literal["nearest"] | None = ...,
         limit: int | None = ...,
         tolerance=...,
-    ) -> np.ndarray: ...
+    ) -> npt.NDArray[np.intp]: ...
     def get_indexer_non_unique(
         self, target: Index
     ) -> tuple[npt.NDArray[np.intp], npt.NDArray[np.intp]]: ...
@@ -119,7 +126,7 @@ def interval_range(
     start: int | float | DatetimeLike | None = ...,
     end: int | float | DatetimeLike | None = ...,
     periods: int | None = ...,
-    freq: int | str | BaseOffset | None = ...,
+    freq: int | str | DateOffset | None = ...,
     name: Hashable = ...,
     closed: IntervalClosedType = ...,
 ) -> IntervalIndex: ...
