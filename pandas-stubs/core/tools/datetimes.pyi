@@ -1,12 +1,14 @@
 from datetime import datetime
 from typing import (
     Literal,
+    Sequence,
     TypedDict,
     Union,
     overload,
 )
 
 import numpy as np
+import pandas as pd
 from pandas import (
     Index,
     Timestamp,
@@ -25,6 +27,7 @@ from pandas._typing import (
     AnyArrayLike,
     DateTimeErrorChoices,
     IgnoreRaise,
+    npt,
 )
 
 ArrayConvertible: TypeAlias = Union[list, tuple, AnyArrayLike]
@@ -53,9 +56,6 @@ class FulldatetimeDict(YearMonthDayDict, total=False):
 
 DictConvertible: TypeAlias = Union[FulldatetimeDict, DataFrame]
 
-def should_cache(
-    arg: ArrayConvertible, unique_share: float = ..., check_count: int | None = ...
-) -> bool: ...
 @overload
 def to_datetime(
     arg: DatetimeScalar,
@@ -67,7 +67,7 @@ def to_datetime(
     exact: bool = ...,
     unit: str | None = ...,
     infer_datetime_format: bool = ...,
-    origin=...,
+    origin: int | Literal["julian", "unix"] | pd.Timestamp = ...,
     cache: bool = ...,
 ) -> Timestamp: ...
 @overload
@@ -81,11 +81,12 @@ def to_datetime(
     exact: bool = ...,
     unit: str | None = ...,
     infer_datetime_format: bool = ...,
-    origin=...,
+    origin: Literal["julian", "unix"] | pd.Timestamp = ...,
     cache: bool = ...,
 ) -> Timestamp | NaTType: ...
 @overload
 def to_datetime(
+    # TODO: Test dataframe return type
     arg: Series | DictConvertible,
     errors: DateTimeErrorChoices = ...,
     dayfirst: bool = ...,
@@ -95,12 +96,23 @@ def to_datetime(
     exact: bool = ...,
     unit: str | None = ...,
     infer_datetime_format: bool = ...,
-    origin=...,
+    origin: int | Literal["julian", "unix"] | pd.Timestamp = ...,
     cache: bool = ...,
 ) -> TimestampSeries: ...
 @overload
 def to_datetime(
-    arg: list | tuple | np.ndarray | Index | ExtensionArray,
+    # TODO: Test other types
+    arg: list[str]
+    | list[int]
+    | list[float]
+    | list[datetime]
+    | tuple[int | float | str | datetime, ...]
+    | npt.NDArray[np.datetime64]
+    | npt.NDArray[np.str_]
+    | npt.NDArray[np.int_]
+    | npt.NDArray[np.float_]
+    | Index
+    | ExtensionArray,
     errors: DateTimeErrorChoices = ...,
     dayfirst: bool = ...,
     yearfirst: bool = ...,
@@ -109,7 +121,6 @@ def to_datetime(
     exact: bool = ...,
     unit: str | None = ...,
     infer_datetime_format: bool = ...,
-    origin=...,
+    origin: int | Literal["julian", "unix"] | pd.Timestamp = ...,
     cache: bool = ...,
 ) -> DatetimeIndex: ...
-def to_time(arg, format=..., infer_time_format: bool = ..., errors: str = ...): ...
