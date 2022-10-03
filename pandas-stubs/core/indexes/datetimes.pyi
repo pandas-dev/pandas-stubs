@@ -5,7 +5,6 @@ from datetime import (
 from typing import (
     Hashable,
     Literal,
-    Sequence,
     overload,
 )
 
@@ -28,7 +27,6 @@ from pandas._typing import (
     AnyArrayLike,
     ArrayLike,
     DatetimeLike,
-    IntervalClosedType,
 )
 
 from pandas.core.dtypes.dtypes import DatetimeTZDtype

@@ -102,10 +102,8 @@ def to_datetime(
 @overload
 def to_datetime(
     # TODO: Test other types
-    arg: list[str]
-    | list[int]
-    | list[float]
-    | list[datetime]
+    arg: Sequence[int | float | datetime]
+    | list[str]
     | tuple[int | float | str | datetime, ...]
     | npt.NDArray[np.datetime64]
     | npt.NDArray[np.str_]
@@ -121,6 +119,7 @@ def to_datetime(
     exact: bool = ...,
     unit: str | None = ...,
     infer_datetime_format: bool = ...,
+    # TODO: Origin needs int in pandas docs
     origin: int | Literal["julian", "unix"] | pd.Timestamp = ...,
     cache: bool = ...,
 ) -> DatetimeIndex: ...
