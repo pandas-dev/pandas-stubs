@@ -635,3 +635,19 @@ def test_to_timedelta_index() -> None:
     check(
         assert_type(pd.to_timedelta(arg6, "ms"), pd.TimedeltaIndex), pd.TimedeltaIndex
     )
+
+
+def test_bdate_range_holidays():
+    pd.bdate_range("2000-1-1", "2001-1-1", freq="C", holidays=["2000-12-15"])
+    pd.bdate_range(
+        "2000-1-1", "2001-1-1", freq="C", holidays=[pd.Timestamp(2000, 12, 15)]
+    )
+    pd.bdate_range(
+        "2000-1-1", "2001-1-1", freq="C", holidays=[np.datetime64("2000-12-15")]
+    )
+    pd.bdate_range(
+        "2000-1-1", "2001-1-1", freq="C", holidays=[dt.datetime(2000, 12, 15)]
+    )
+    pd.bdate_range(
+        "2000-1-1", "2001-1-1", freq="C", holidays=[dt.date(2000, 12, 15)], name=("a",)
+    )

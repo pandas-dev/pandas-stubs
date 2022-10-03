@@ -1,10 +1,11 @@
 from datetime import (
+    date,
     timedelta,
     tzinfo,
 )
 from typing import (
     Hashable,
-    Literal,
+    Sequence,
     overload,
 )
 
@@ -27,6 +28,7 @@ from pandas._typing import (
     AnyArrayLike,
     ArrayLike,
     DatetimeLike,
+    IntervalClosedType,
 )
 
 from pandas.core.dtypes.dtypes import DatetimeTZDtype
@@ -90,24 +92,38 @@ def date_range(
     start: str | DatetimeLike | None = ...,
     end: str | DatetimeLike | None = ...,
     periods: int | None = ...,
-    # TODO: Test timedelta and Timedelta, update pandas docs
+    # TODO: Add Timedelta to pandas docs
     freq: str | timedelta | Timedelta | BaseOffset = ...,
     tz: str | tzinfo = ...,
     normalize: bool = ...,
     name: Hashable | None = ...,
-    inclusive: Literal["left", "right"] | None = ...,
+    inclusive: IntervalClosedType = ...,
 ) -> DatetimeIndex: ...
+@overload
 def bdate_range(
     start: str | DatetimeLike | None = ...,
     end: str | DatetimeLike | None = ...,
     periods: int | None = ...,
-    # TODO: Test timedelta and Timedelta, update pandas docs
     freq: str | timedelta | Timedelta | BaseOffset = ...,
     tz: str | tzinfo = ...,
     normalize: bool = ...,
     name: Hashable | None = ...,
     weekmask: str | None = ...,
-    # TODO: Check if dt.date is allowed
-    holidays: list[str | DatetimeLike] | None = ...,
-    inclusive: Literal["left", "right"] | None = ...,
+    holidays: None = ...,
+    inclusive: IntervalClosedType = ...,
+) -> DatetimeIndex: ...
+@overload
+def bdate_range(
+    start: str | DatetimeLike | None = ...,
+    end: str | DatetimeLike | None = ...,
+    periods: int | None = ...,
+    *,
+    # TODO: Add Timedelta to pandas docs
+    freq: str | timedelta | Timedelta | BaseOffset,
+    tz: str | tzinfo = ...,
+    normalize: bool = ...,
+    name: Hashable | None = ...,
+    weekmask: str | None = ...,
+    holidays: Sequence[str | DatetimeLike | date],
+    inclusive: IntervalClosedType = ...,
 ) -> DatetimeIndex: ...
