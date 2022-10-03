@@ -2,7 +2,12 @@ from datetime import (
     timedelta,
     tzinfo,
 )
-from typing import overload
+from typing import (
+    Hashable,
+    Literal,
+    Sequence,
+    overload,
+)
 
 import numpy as np
 from pandas import (
@@ -87,23 +92,24 @@ def date_range(
     start: str | DatetimeLike | None = ...,
     end: str | DatetimeLike | None = ...,
     periods: int | None = ...,
+    # TODO: Test timedelta and Timedelta, update pandas docs
     freq: str | timedelta | Timedelta | BaseOffset = ...,
     tz: str | tzinfo = ...,
     normalize: bool = ...,
-    name: str | None = ...,
-    inclusive: IntervalClosedType = ...,
-    **kwargs,
+    name: Hashable | None = ...,
+    inclusive: Literal["left", "right"] | None = ...,
 ) -> DatetimeIndex: ...
 def bdate_range(
     start: str | DatetimeLike | None = ...,
     end: str | DatetimeLike | None = ...,
     periods: int | None = ...,
+    # TODO: Test timedelta and Timedelta, update pandas docs
     freq: str | timedelta | Timedelta | BaseOffset = ...,
     tz: str | tzinfo = ...,
     normalize: bool = ...,
-    name: str | None = ...,
+    name: Hashable | None = ...,
     weekmask: str | None = ...,
-    holidays: list | None = ...,
-    inclusive: IntervalClosedType = ...,
-    **kwargs,
+    # TODO: Check if dt.date is allowed
+    holidays: list[str | DatetimeLike] | None = ...,
+    inclusive: Literal["left", "right"] | None = ...,
 ) -> DatetimeIndex: ...
