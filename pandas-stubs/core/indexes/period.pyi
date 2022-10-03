@@ -7,6 +7,8 @@ from pandas.core.indexes.datetimelike import (
 )
 from pandas.core.indexes.numeric import Int64Index
 
+from pandas._libs.tslibs import BaseOffset
+
 class PeriodIndex(DatetimeIndexOpsMixin, Int64Index):
     def __new__(
         cls,
@@ -52,6 +54,6 @@ def period_range(
     start: str | pd.Period | None = ...,
     end: str | pd.Period | None = ...,
     periods: int | None = ...,
-    freq: str | pd.DateOffset | None = ...,
+    freq: str | BaseOffset | None = ...,
     name: Hashable | None = ...,
 ) -> PeriodIndex: ...

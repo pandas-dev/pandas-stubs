@@ -637,7 +637,7 @@ def test_to_timedelta_index() -> None:
     )
 
 
-def test_bdate_range_holidays():
+def test_bdate_range_holidays() -> None:
     pd.bdate_range("2000-1-1", "2001-1-1", freq="C", holidays=["2000-12-15"])
     pd.bdate_range(
         "2000-1-1", "2001-1-1", freq="C", holidays=[pd.Timestamp(2000, 12, 15)]
@@ -650,4 +650,39 @@ def test_bdate_range_holidays():
     )
     pd.bdate_range(
         "2000-1-1", "2001-1-1", freq="C", holidays=[dt.date(2000, 12, 15)], name=("a",)
+    )
+
+
+def test_period_range() -> None:
+    check(
+        assert_type(
+            pd.period_range(pd.Period("2001Q1"), end=pd.Period("2010Q1")),
+            pd.PeriodIndex,
+        ),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(pd.period_range("2001Q1", end=pd.Period("2010Q1")), pd.PeriodIndex),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(
+            pd.period_range("2001-01-01", end="2010-01-01", freq="Q"), pd.PeriodIndex
+        ),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(pd.period_range("2001Q1", periods=100, freq="Q"), pd.PeriodIndex),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(pd.period_range("2001Q1", periods=100, freq=Day()), pd.PeriodIndex),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(
+            pd.period_range("2001Q1", periods=100, freq=Day(), name=("A",)),
+            pd.PeriodIndex,
+        ),
+        pd.PeriodIndex,
     )
