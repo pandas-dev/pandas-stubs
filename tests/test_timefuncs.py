@@ -534,3 +534,104 @@ def test_types_to_numpy() -> None:
     check(assert_type(td_s.to_numpy(), np.ndarray), np.ndarray)
     check(assert_type(td_s.to_numpy(dtype="int", copy=True), np.ndarray), np.ndarray)
     check(assert_type(td_s.to_numpy(na_value=0), np.ndarray), np.ndarray)
+
+
+def test_to_timdelta_units() -> None:
+    pd.to_timedelta(1, "W")
+    pd.to_timedelta(1, "w")
+    pd.to_timedelta(1, "D")
+    pd.to_timedelta(1, "d")
+    pd.to_timedelta(1, "days")
+    pd.to_timedelta(1, "day")
+    pd.to_timedelta(1, "hours")
+    pd.to_timedelta(1, "hour")
+    pd.to_timedelta(1, "hr")
+    pd.to_timedelta(1, "h")
+    pd.to_timedelta(1, "m")
+    pd.to_timedelta(1, "minute")
+    pd.to_timedelta(1, "min")
+    pd.to_timedelta(1, "minutes")
+    pd.to_timedelta(1, "t")
+    pd.to_timedelta(1, "s")
+    pd.to_timedelta(1, "seconds")
+    pd.to_timedelta(1, "sec")
+    pd.to_timedelta(1, "second")
+    pd.to_timedelta(1, "ms")
+    pd.to_timedelta(1, "milliseconds")
+    pd.to_timedelta(1, "millisecond")
+    pd.to_timedelta(1, "milli")
+    pd.to_timedelta(1, "millis")
+    pd.to_timedelta(1, "l")
+    pd.to_timedelta(1, "us")
+    pd.to_timedelta(1, "microseconds")
+    pd.to_timedelta(1, "microsecond")
+    pd.to_timedelta(1, "µs")
+    pd.to_timedelta(1, "micro")
+    pd.to_timedelta(1, "micros")
+    pd.to_timedelta(1, "u")
+    pd.to_timedelta(1, "ns")
+    pd.to_timedelta(1, "nanoseconds")
+    pd.to_timedelta(1, "nano")
+    pd.to_timedelta(1, "nanos")
+    pd.to_timedelta(1, "nanosecond")
+    pd.to_timedelta(1, "n")
+
+
+def test_to_timedelta_scalar() -> None:
+    check(
+        assert_type(pd.to_timedelta(10, "ms", errors="raise"), pd.Timedelta),
+        pd.Timedelta,
+    )
+    check(
+        assert_type(pd.to_timedelta("10ms", errors="ignore"), pd.Timedelta),
+        pd.Timedelta,
+    )
+    check(
+        assert_type(
+            pd.to_timedelta(dt.timedelta(milliseconds=10), errors="coerce"),
+            pd.Timedelta,
+        ),
+        pd.Timedelta,
+    )
+
+
+def test_to_timedelta_series() -> None:
+    s = pd.Series([10, 20, 30, 40])
+    s2 = pd.Series(["10ms", "20ms", "30ms"])
+    check(assert_type(pd.to_timedelta(s, "ms"), "TimedeltaSeries"), pd.Series)
+    check(assert_type(pd.to_timedelta(s2), "TimedeltaSeries"), pd.Series)
+
+
+def test_to_timedelta_index() -> None:
+    arg0 = [1.0, 2.0, 3.0]
+    arg1 = [
+        dt.timedelta(milliseconds=1),
+        dt.timedelta(milliseconds=2),
+        dt.timedelta(milliseconds=3),
+    ]
+    arg2 = tuple(arg0)
+    arg3 = tuple(arg1)
+    arg4 = range(0, 10)
+    arg5 = np.arange(10)
+    arg6 = pd.Index(arg5)
+    check(
+        assert_type(pd.to_timedelta(arg0, "ms"), pd.TimedeltaIndex), pd.TimedeltaIndex
+    )
+    check(
+        assert_type(pd.to_timedelta(arg1, "ms"), pd.TimedeltaIndex), pd.TimedeltaIndex
+    )
+    check(
+        assert_type(pd.to_timedelta(arg2, "ms"), pd.TimedeltaIndex), pd.TimedeltaIndex
+    )
+    check(
+        assert_type(pd.to_timedelta(arg3, "ms"), pd.TimedeltaIndex), pd.TimedeltaIndex
+    )
+    check(
+        assert_type(pd.to_timedelta(arg4, "ms"), pd.TimedeltaIndex), pd.TimedeltaIndex
+    )
+    check(
+        assert_type(pd.to_timedelta(arg5, "ms"), pd.TimedeltaIndex), pd.TimedeltaIndex
+    )
+    check(
+        assert_type(pd.to_timedelta(arg6, "ms"), pd.TimedeltaIndex), pd.TimedeltaIndex
+    )

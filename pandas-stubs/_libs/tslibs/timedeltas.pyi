@@ -3,6 +3,7 @@ from typing import (
     ClassVar,
     Literal,
     TypeVar,
+    Union,
     overload,
 )
 
@@ -17,10 +18,7 @@ from pandas._typing import npt
 
 # This should be kept consistent with the keys in the dict timedelta_abbrevs
 # in pandas/_libs/tslibs/timedeltas.pyx
-UnitChoices: TypeAlias = Literal[
-    "Y",
-    "y",
-    "M",
+TimeDeltaUnitChoices: TypeAlias = Literal[
     "W",
     "w",
     "D",
@@ -60,6 +58,16 @@ UnitChoices: TypeAlias = Literal[
     "nanosecond",
     "n",
 ]
+
+UnitChoices: TypeAlias = Union[
+    TimeDeltaUnitChoices,
+    Literal[
+        "Y",
+        "y",
+        "M",
+    ],
+]
+
 _S = TypeVar("_S", bound=timedelta)
 
 def ints_to_pytimedelta(

@@ -4,6 +4,7 @@ from typing import (
     overload,
 )
 
+import pandas as pd
 from pandas import Index
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import (
@@ -12,7 +13,7 @@ from pandas.core.series import (
 )
 
 from pandas._libs.tslibs import Timedelta
-from pandas._libs.tslibs.timedeltas import UnitChoices
+from pandas._libs.tslibs.timedeltas import TimeDeltaUnitChoices
 from pandas._typing import (
     ArrayLike,
     DateTimeErrorChoices,
@@ -21,14 +22,13 @@ from pandas._typing import (
 @overload
 def to_timedelta(
     arg: str | float | timedelta,
-    # TODO: Check all UnitChoices are valid
-    unit: UnitChoices | None = ...,
+    unit: TimeDeltaUnitChoices | None = ...,
     errors: DateTimeErrorChoices = ...,
 ) -> Timedelta: ...
 @overload
 def to_timedelta(
     arg: Series,
-    unit: UnitChoices | None = ...,
+    unit: TimeDeltaUnitChoices | None = ...,
     errors: DateTimeErrorChoices = ...,
 ) -> TimedeltaSeries: ...
 @overload
@@ -39,6 +39,6 @@ def to_timedelta(
     | range
     | ArrayLike
     | Index,
-    unit: UnitChoices | None = ...,
+    unit: TimeDeltaUnitChoices | None = ...,
     errors: DateTimeErrorChoices = ...,
 ) -> TimedeltaIndex: ...
