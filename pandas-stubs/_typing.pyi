@@ -44,9 +44,7 @@ PandasScalar: TypeAlias = Union[
 ]
 # Scalar: TypeAlias = Union[PythonScalar, PandasScalar]
 
-DatetimeLike: TypeAlias = Union[
-    datetime.date, datetime.datetime, np.datetime64, Timestamp
-]
+DatetimeLike: TypeAlias = Union[datetime.datetime, np.datetime64, Timestamp]
 
 # dtypes
 NpDtype: TypeAlias = Union[
