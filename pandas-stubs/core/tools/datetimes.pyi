@@ -68,7 +68,6 @@ def to_datetime(
 ) -> Timestamp | NaTType: ...
 @overload
 def to_datetime(
-    # TODO: Test dataframe return type
     arg: Series | DictConvertible,
     errors: DateTimeErrorChoices = ...,
     dayfirst: bool = ...,

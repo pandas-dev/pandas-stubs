@@ -92,7 +92,6 @@ def date_range(
     start: str | DatetimeLike | None = ...,
     end: str | DatetimeLike | None = ...,
     periods: int | None = ...,
-    # TODO: Add Timedelta to pandas docs
     freq: str | timedelta | Timedelta | BaseOffset = ...,
     tz: str | tzinfo = ...,
     normalize: bool = ...,
