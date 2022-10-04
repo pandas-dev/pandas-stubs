@@ -542,44 +542,44 @@ def test_types_to_numpy() -> None:
 
 
 def test_to_timdelta_units() -> None:
-    pd.to_timedelta(1, "W")
-    pd.to_timedelta(1, "w")
-    pd.to_timedelta(1, "D")
-    pd.to_timedelta(1, "d")
-    pd.to_timedelta(1, "days")
-    pd.to_timedelta(1, "day")
-    pd.to_timedelta(1, "hours")
-    pd.to_timedelta(1, "hour")
-    pd.to_timedelta(1, "hr")
-    pd.to_timedelta(1, "h")
-    pd.to_timedelta(1, "m")
-    pd.to_timedelta(1, "minute")
-    pd.to_timedelta(1, "min")
-    pd.to_timedelta(1, "minutes")
-    pd.to_timedelta(1, "t")
-    pd.to_timedelta(1, "s")
-    pd.to_timedelta(1, "seconds")
-    pd.to_timedelta(1, "sec")
-    pd.to_timedelta(1, "second")
-    pd.to_timedelta(1, "ms")
-    pd.to_timedelta(1, "milliseconds")
-    pd.to_timedelta(1, "millisecond")
-    pd.to_timedelta(1, "milli")
-    pd.to_timedelta(1, "millis")
-    pd.to_timedelta(1, "l")
-    pd.to_timedelta(1, "us")
-    pd.to_timedelta(1, "microseconds")
-    pd.to_timedelta(1, "microsecond")
-    pd.to_timedelta(1, "µs")
-    pd.to_timedelta(1, "micro")
-    pd.to_timedelta(1, "micros")
-    pd.to_timedelta(1, "u")
-    pd.to_timedelta(1, "ns")
-    pd.to_timedelta(1, "nanoseconds")
-    pd.to_timedelta(1, "nano")
-    pd.to_timedelta(1, "nanos")
-    pd.to_timedelta(1, "nanosecond")
-    pd.to_timedelta(1, "n")
+    check(assert_type(pd.to_timedelta(1, "W"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "w"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "D"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "d"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "days"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "day"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "hours"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "hour"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "hr"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "h"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "m"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "minute"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "min"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "minutes"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "t"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "s"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "seconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "sec"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "second"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "ms"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "milliseconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "millisecond"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "milli"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "millis"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "l"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "us"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "microseconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "microsecond"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "µs"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "micro"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "micros"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "u"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "ns"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "nanoseconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "nano"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "nanos"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "nanosecond"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "n"), pd.Timedelta), pd.Timedelta)
 
 
 def test_to_timedelta_scalar() -> None:
@@ -843,4 +843,63 @@ def test_to_datetime_array() -> None:
             pd.DatetimeIndex,
         ),
         pd.DatetimeIndex,
+    )
+
+
+def test_timedelta_range() -> None:
+    check(
+        assert_type(
+            pd.timedelta_range(
+                pd.Timedelta(1, unit="D"), pd.Timedelta(10, unit="D"), periods=10
+            ),
+            pd.TimedeltaIndex,
+        ),
+        pd.TimedeltaIndex,
+    )
+    check(
+        assert_type(
+            pd.timedelta_range(dt.timedelta(1), dt.timedelta(10), periods=10),
+            pd.TimedeltaIndex,
+        ),
+        pd.TimedeltaIndex,
+    )
+    check(
+        assert_type(
+            pd.timedelta_range(
+                np.timedelta64(86400000000000),
+                np.timedelta64(864000000000000),
+                periods=10,
+            ),
+            pd.TimedeltaIndex,
+        ),
+        pd.TimedeltaIndex,
+    )
+    check(
+        assert_type(
+            pd.timedelta_range("1 day", "10 days", periods=10), pd.TimedeltaIndex
+        ),
+        pd.TimedeltaIndex,
+    )
+    check(
+        assert_type(
+            pd.timedelta_range(
+                np.int64(86400000000000), np.int64(864000000000000), periods=10
+            ),
+            pd.TimedeltaIndex,
+        ),
+        pd.TimedeltaIndex,
+    )
+    check(
+        assert_type(
+            pd.timedelta_range(86400000000000, 864000000000000, periods=10),
+            pd.TimedeltaIndex,
+        ),
+        pd.TimedeltaIndex,
+    )
+    check(
+        assert_type(
+            pd.timedelta_range(86400000000000.0, 864000000000000.0, periods=10),
+            pd.TimedeltaIndex,
+        ),
+        pd.TimedeltaIndex,
     )
