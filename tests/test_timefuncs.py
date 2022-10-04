@@ -4,6 +4,7 @@ from __future__ import annotations
 import datetime as dt
 from typing import (
     TYPE_CHECKING,
+    Any,
     Optional,
     Union,
 )
@@ -18,6 +19,10 @@ from typing_extensions import assert_type
 from pandas._libs import NaTType
 from pandas._libs.tslibs import BaseOffset
 
+if TYPE_CHECKING:
+    from pandas._typing import FulldatetimeDict
+else:
+    FulldatetimeDict = Any
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
@@ -685,4 +690,157 @@ def test_period_range() -> None:
             pd.PeriodIndex,
         ),
         pd.PeriodIndex,
+    )
+
+
+def test_to_datetime_scalar() -> None:
+    check(assert_type(pd.to_datetime("2000-01-01"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(pd.to_datetime(1), pd.Timestamp), pd.Timestamp)
+    check(assert_type(pd.to_datetime(1.5), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(pd.to_datetime(dt.datetime(2000, 1, 1)), pd.Timestamp), pd.Timestamp
+    )
+    check(assert_type(pd.to_datetime(dt.date(2000, 1, 1)), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(pd.to_datetime(np.datetime64("2000-01-01")), pd.Timestamp),
+        pd.Timestamp,
+    )
+
+
+def test_to_datetime_scalar_extended() -> None:
+    check(assert_type(pd.to_datetime("2000-01-01"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(pd.to_datetime(1), pd.Timestamp), pd.Timestamp)
+    check(assert_type(pd.to_datetime(1.5), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(pd.to_datetime(dt.datetime(2000, 1, 1)), pd.Timestamp), pd.Timestamp
+    )
+    check(assert_type(pd.to_datetime(dt.date(2000, 1, 1)), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(pd.to_datetime(np.datetime64("2000-01-01")), pd.Timestamp),
+        pd.Timestamp,
+    )
+
+
+def test_to_datetime_series() -> None:
+    s = pd.Series(["2000-01-01", "2000-01-02"])
+    check(assert_type(pd.to_datetime(s), "TimestampSeries"), pd.Series)
+    d: FulldatetimeDict = {
+        "year": [2000, 2000, 2000],
+        "month": [1, 1, 1],
+        "day": [1, 2, 3],
+    }
+    df = pd.DataFrame(d)
+    d_ex: FulldatetimeDict = {
+        "year": [2000, 2000, 2000],
+        "month": [1, 1, 1],
+        "day": [1, 2, 3],
+        "hour": [1, 1, 1],
+        "hours": [1, 1, 1],
+        "minute": [1, 1, 1],
+        "minutes": [1, 1, 1],
+        "second": [1, 1, 1],
+        "seconds": [1, 1, 1],
+        "ms": [1, 1, 1],
+        "us": [1, 1, 1],
+        "ns": [1, 1, 1],
+    }
+    check(assert_type(pd.to_datetime(df), "TimestampSeries"), pd.Series)
+    check(assert_type(pd.to_datetime(d), "TimestampSeries"), pd.Series)
+    check(assert_type(pd.to_datetime(d_ex), "TimestampSeries"), pd.Series)
+
+
+def test_to_datetime_array() -> None:
+    check(assert_type(pd.to_datetime([1, 2, 3]), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(
+        assert_type(pd.to_datetime([1.5, 2.5, 3.5]), pd.DatetimeIndex), pd.DatetimeIndex
+    )
+    check(
+        assert_type(
+            pd.to_datetime(
+                [
+                    dt.datetime(2000, 1, 1),
+                    dt.datetime(2000, 1, 2),
+                    dt.datetime(2000, 1, 3),
+                ]
+            ),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime(["2000-01-01", "2000-01-02", "2000-01-03"]), pd.DatetimeIndex
+        ),
+        pd.DatetimeIndex,
+    )
+    check(assert_type(pd.to_datetime((1, 2, 3)), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(
+        assert_type(pd.to_datetime((1.5, 2.5, 3.5)), pd.DatetimeIndex), pd.DatetimeIndex
+    )
+    check(
+        assert_type(
+            pd.to_datetime(
+                (
+                    dt.datetime(2000, 1, 1),
+                    dt.datetime(2000, 1, 2),
+                    dt.datetime(2000, 1, 3),
+                )
+            ),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime(("2000-01-01", "2000-01-02", "2000-01-03")), pd.DatetimeIndex
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime(
+                np.array(
+                    [
+                        np.datetime64("2000-01-01"),
+                        np.datetime64("2000-01-02"),
+                        np.datetime64("2000-01-03"),
+                    ]
+                )
+            ),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime(np.array(["2000-01-01", "2000-01-02", "2000-01-03"])),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(pd.to_datetime(np.array([1, 2, 3])), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    pd.to_datetime(
+        pd.Index([2451544.5, 2451545.5, 2451546.5]),
+        unit="D",
+        origin="julian",
+    )
+    check(
+        assert_type(
+            pd.to_datetime(pd.Index([1, 2, 3]), origin="unix"), pd.DatetimeIndex
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(pd.to_datetime(pd.Index([1, 2, 3]), origin=4), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime(pd.Index([1, 2, 3]), origin=pd.Timestamp("1999-12-31")),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
     )

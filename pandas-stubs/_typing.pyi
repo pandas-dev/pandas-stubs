@@ -19,6 +19,7 @@ from typing import (
 import numpy as np
 from numpy import typing as npt
 from pandas.core.arrays import ExtensionArray
+from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexes.base import Index
@@ -45,6 +46,27 @@ PandasScalar: TypeAlias = Union[
 # Scalar: TypeAlias = Union[PythonScalar, PandasScalar]
 
 DatetimeLike: TypeAlias = Union[datetime.datetime, np.datetime64, Timestamp]
+
+DatetimeDictArg: TypeAlias = Union[
+    Sequence[int], Sequence[float], list[str], tuple[Scalar, ...], AnyArrayLike
+]
+DictConvertible: TypeAlias = Union[FulldatetimeDict, DataFrame]
+
+class YearMonthDayDict(TypedDict, total=True):
+    year: DatetimeDictArg
+    month: DatetimeDictArg
+    day: DatetimeDictArg
+
+class FulldatetimeDict(YearMonthDayDict, total=False):
+    hour: DatetimeDictArg
+    hours: DatetimeDictArg
+    minute: DatetimeDictArg
+    minutes: DatetimeDictArg
+    second: DatetimeDictArg
+    seconds: DatetimeDictArg
+    ms: DatetimeDictArg
+    us: DatetimeDictArg
+    ns: DatetimeDictArg
 
 # dtypes
 NpDtype: TypeAlias = Union[

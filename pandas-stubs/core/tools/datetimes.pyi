@@ -1,8 +1,10 @@
-from datetime import datetime
+from datetime import (
+    date,
+    datetime,
+)
 from typing import (
     Literal,
     Sequence,
-    TypedDict,
     Union,
     overload,
 )
@@ -14,7 +16,6 @@ from pandas import (
     Timestamp,
 )
 from pandas.core.arrays import ExtensionArray
-from pandas.core.frame import DataFrame
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.series import (
     Series,
@@ -26,35 +27,16 @@ from pandas._libs.tslibs import NaTType
 from pandas._typing import (
     AnyArrayLike,
     DateTimeErrorChoices,
+    DictConvertible,
     IgnoreRaise,
     npt,
 )
 
 ArrayConvertible: TypeAlias = Union[list, tuple, AnyArrayLike]
 Scalar: TypeAlias = Union[float, str]
-DatetimeScalar: TypeAlias = Union[Scalar, datetime, np.datetime64]
+DatetimeScalar: TypeAlias = Union[Scalar, datetime, np.datetime64, date]
 
 DatetimeScalarOrArrayConvertible: TypeAlias = Union[DatetimeScalar, ArrayConvertible]
-
-DatetimeDictArg: TypeAlias = Union[list[Scalar], tuple[Scalar, ...], AnyArrayLike]
-
-class YearMonthDayDict(TypedDict, total=True):
-    year: DatetimeDictArg
-    month: DatetimeDictArg
-    day: DatetimeDictArg
-
-class FulldatetimeDict(YearMonthDayDict, total=False):
-    hour: DatetimeDictArg
-    hours: DatetimeDictArg
-    minute: DatetimeDictArg
-    minutes: DatetimeDictArg
-    second: DatetimeDictArg
-    seconds: DatetimeDictArg
-    ms: DatetimeDictArg
-    us: DatetimeDictArg
-    ns: DatetimeDictArg
-
-DictConvertible: TypeAlias = Union[FulldatetimeDict, DataFrame]
 
 @overload
 def to_datetime(
@@ -101,14 +83,12 @@ def to_datetime(
 ) -> TimestampSeries: ...
 @overload
 def to_datetime(
-    # TODO: Test other types
     arg: Sequence[int | float | datetime]
     | list[str]
     | tuple[int | float | str | datetime, ...]
     | npt.NDArray[np.datetime64]
     | npt.NDArray[np.str_]
     | npt.NDArray[np.int_]
-    | npt.NDArray[np.float_]
     | Index
     | ExtensionArray,
     errors: DateTimeErrorChoices = ...,
