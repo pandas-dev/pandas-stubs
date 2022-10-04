@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import datetime as dt
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -320,20 +319,16 @@ def test_eval():
 
 
 def test_to_numeric_scalar() -> None:
-    check(assert_type(pd.to_numeric(1), float), int)
-    check(assert_type(pd.to_numeric("1.2"), float), float)
-    check(assert_type(pd.to_numeric("blerg", errors="coerce"), float), float)
+    check(assert_type(pd.to_numeric(1), Union[int, float]), int)
+    check(assert_type(pd.to_numeric("1.2"), Union[int, float]), float)
     check(
-        assert_type(
-            pd.to_numeric("blerg", errors="ignore"),
-            Union[str, bytes, dt.date, dt.timedelta, complex],
-        ),
-        str,
+        assert_type(pd.to_numeric("blerg", errors="coerce"), Union[int, float]), float
     )
-    check(assert_type(pd.to_numeric(1, downcast="signed"), float), int)
-    check(assert_type(pd.to_numeric(1, downcast="unsigned"), float), int)
-    check(assert_type(pd.to_numeric(1, downcast="float"), float), int)
-    check(assert_type(pd.to_numeric(1, downcast="integer"), float), int)
+    check(assert_type(pd.to_numeric("blerg", errors="ignore"), Scalar), str)
+    check(assert_type(pd.to_numeric(1, downcast="signed"), Union[int, float]), int)
+    check(assert_type(pd.to_numeric(1, downcast="unsigned"), Union[int, float]), int)
+    check(assert_type(pd.to_numeric(1, downcast="float"), Union[int, float]), int)
+    check(assert_type(pd.to_numeric(1, downcast="integer"), Union[int, float]), int)
 
 
 def test_to_numeric_array_like() -> None:
