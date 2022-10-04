@@ -1,8 +1,13 @@
+from typing import Hashable
+
 import numpy as np
+import pandas as pd
 from pandas.core.indexes.datetimelike import (
     DatetimeIndexOpsMixin as DatetimeIndexOpsMixin,
 )
 from pandas.core.indexes.numeric import Int64Index
+
+from pandas._libs.tslibs import BaseOffset
 
 class PeriodIndex(DatetimeIndexOpsMixin, Int64Index):
     def __new__(
@@ -46,5 +51,9 @@ class PeriodIndex(DatetimeIndexOpsMixin, Int64Index):
     def memory_usage(self, deep: bool = ...): ...
 
 def period_range(
-    start=..., end=..., periods=..., freq=..., name=...
+    start: str | pd.Period | None = ...,
+    end: str | pd.Period | None = ...,
+    periods: int | None = ...,
+    freq: str | BaseOffset | None = ...,
+    name: Hashable | None = ...,
 ) -> PeriodIndex: ...
