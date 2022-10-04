@@ -29,6 +29,7 @@ from pandas._typing import (
     DateTimeErrorChoices,
     DictConvertible,
     IgnoreRaise,
+    TimestampConvertibleTypes,
     npt,
 )
 
@@ -49,7 +50,7 @@ def to_datetime(
     exact: bool = ...,
     unit: str | None = ...,
     infer_datetime_format: bool = ...,
-    origin: int | Literal["julian", "unix"] | pd.Timestamp = ...,
+    origin: Literal["julian", "unix"] | TimestampConvertibleTypes = ...,
     cache: bool = ...,
 ) -> Timestamp: ...
 @overload
@@ -63,7 +64,7 @@ def to_datetime(
     exact: bool = ...,
     unit: str | None = ...,
     infer_datetime_format: bool = ...,
-    origin: Literal["julian", "unix"] | pd.Timestamp = ...,
+    origin: Literal["julian", "unix"] | TimestampConvertibleTypes = ...,
     cache: bool = ...,
 ) -> Timestamp | NaTType: ...
 @overload
@@ -77,7 +78,7 @@ def to_datetime(
     exact: bool = ...,
     unit: str | None = ...,
     infer_datetime_format: bool = ...,
-    origin: int | Literal["julian", "unix"] | pd.Timestamp = ...,
+    origin: Literal["julian", "unix"] | TimestampConvertibleTypes = ...,
     cache: bool = ...,
 ) -> TimestampSeries: ...
 @overload
@@ -98,7 +99,6 @@ def to_datetime(
     exact: bool = ...,
     unit: str | None = ...,
     infer_datetime_format: bool = ...,
-    # TODO: Origin needs int in pandas docs
-    origin: int | Literal["julian", "unix"] | pd.Timestamp = ...,
+    origin: Literal["julian", "unix"] | TimestampConvertibleTypes = ...,
     cache: bool = ...,
 ) -> DatetimeIndex: ...

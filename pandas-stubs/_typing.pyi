@@ -200,7 +200,7 @@ IndexingInt: TypeAlias = Union[
     int, np.int_, np.integer, np.unsignedinteger, np.signedinteger, np.int8
 ]
 TimestampConvertibleTypes: TypeAlias = Union[
-    Timestamp, datetime.datetime, np.datetime64, np.int64, float, str
+    Timestamp, datetime.datetime, datetime.date, np.datetime64, np.int64, float, str
 ]
 TimedeltaConvertibleTypes: TypeAlias = Union[
     Timedelta, datetime.timedelta, np.timedelta64, np.int64, float, str

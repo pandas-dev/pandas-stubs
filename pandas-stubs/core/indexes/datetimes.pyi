@@ -117,7 +117,6 @@ def bdate_range(
     end: str | DatetimeLike | None = ...,
     periods: int | None = ...,
     *,
-    # TODO: Add Timedelta to pandas docs
     freq: str | timedelta | Timedelta | BaseOffset,
     tz: str | tzinfo = ...,
     normalize: bool = ...,

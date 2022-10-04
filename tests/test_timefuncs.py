@@ -844,6 +844,27 @@ def test_to_datetime_array() -> None:
         ),
         pd.DatetimeIndex,
     )
+    check(
+        assert_type(
+            pd.to_datetime(pd.Index([1, 2, 3]), origin=np.datetime64("1999-12-31")),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime(pd.Index([1, 2, 3]), origin=dt.datetime(1999, 12, 31)),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime(pd.Index([1, 2, 3]), origin=dt.date(1999, 12, 31)),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
 
 
 def test_timedelta_range() -> None:
