@@ -1,8 +1,13 @@
 from datetime import (
+    date,
     timedelta,
     tzinfo,
 )
-from typing import overload
+from typing import (
+    Hashable,
+    Sequence,
+    overload,
+)
 
 import numpy as np
 from pandas import (
@@ -90,10 +95,10 @@ def date_range(
     freq: str | timedelta | Timedelta | BaseOffset = ...,
     tz: str | tzinfo = ...,
     normalize: bool = ...,
-    name: str | None = ...,
+    name: Hashable | None = ...,
     inclusive: IntervalClosedType = ...,
-    **kwargs,
 ) -> DatetimeIndex: ...
+@overload
 def bdate_range(
     start: str | DatetimeLike | None = ...,
     end: str | DatetimeLike | None = ...,
@@ -101,9 +106,22 @@ def bdate_range(
     freq: str | timedelta | Timedelta | BaseOffset = ...,
     tz: str | tzinfo = ...,
     normalize: bool = ...,
-    name: str | None = ...,
+    name: Hashable | None = ...,
     weekmask: str | None = ...,
-    holidays: list | None = ...,
+    holidays: None = ...,
     inclusive: IntervalClosedType = ...,
-    **kwargs,
+) -> DatetimeIndex: ...
+@overload
+def bdate_range(
+    start: str | DatetimeLike | None = ...,
+    end: str | DatetimeLike | None = ...,
+    periods: int | None = ...,
+    *,
+    freq: str | timedelta | Timedelta | BaseOffset,
+    tz: str | tzinfo = ...,
+    normalize: bool = ...,
+    name: Hashable | None = ...,
+    weekmask: str | None = ...,
+    holidays: Sequence[str | DatetimeLike | date],
+    inclusive: IntervalClosedType = ...,
 ) -> DatetimeIndex: ...

@@ -4,6 +4,7 @@ from __future__ import annotations
 import datetime as dt
 from typing import (
     TYPE_CHECKING,
+    Any,
     Optional,
     Union,
 )
@@ -18,6 +19,10 @@ from typing_extensions import assert_type
 from pandas._libs import NaTType
 from pandas._libs.tslibs import BaseOffset
 
+if TYPE_CHECKING:
+    from pandas._typing import FulldatetimeDict
+else:
+    FulldatetimeDict = Any
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
@@ -534,3 +539,388 @@ def test_types_to_numpy() -> None:
     check(assert_type(td_s.to_numpy(), np.ndarray), np.ndarray)
     check(assert_type(td_s.to_numpy(dtype="int", copy=True), np.ndarray), np.ndarray)
     check(assert_type(td_s.to_numpy(na_value=0), np.ndarray), np.ndarray)
+
+
+def test_to_timdelta_units() -> None:
+    check(assert_type(pd.to_timedelta(1, "W"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "w"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "D"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "d"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "days"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "day"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "hours"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "hour"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "hr"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "h"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "m"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "minute"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "min"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "minutes"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "t"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "s"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "seconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "sec"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "second"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "ms"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "milliseconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "millisecond"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "milli"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "millis"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "l"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "us"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "microseconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "microsecond"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "µs"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "micro"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "micros"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "u"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "ns"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "nanoseconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "nano"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "nanos"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "nanosecond"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.to_timedelta(1, "n"), pd.Timedelta), pd.Timedelta)
+
+
+def test_to_timedelta_scalar() -> None:
+    check(
+        assert_type(pd.to_timedelta(10, "ms", errors="raise"), pd.Timedelta),
+        pd.Timedelta,
+    )
+    check(
+        assert_type(pd.to_timedelta("10ms", errors="ignore"), pd.Timedelta),
+        pd.Timedelta,
+    )
+    check(
+        assert_type(
+            pd.to_timedelta(dt.timedelta(milliseconds=10), errors="coerce"),
+            pd.Timedelta,
+        ),
+        pd.Timedelta,
+    )
+
+
+def test_to_timedelta_series() -> None:
+    s = pd.Series([10, 20, 30, 40])
+    s2 = pd.Series(["10ms", "20ms", "30ms"])
+    check(assert_type(pd.to_timedelta(s, "ms"), "TimedeltaSeries"), pd.Series)
+    check(assert_type(pd.to_timedelta(s2), "TimedeltaSeries"), pd.Series)
+
+
+def test_to_timedelta_index() -> None:
+    arg0 = [1.0, 2.0, 3.0]
+    arg1 = [
+        dt.timedelta(milliseconds=1),
+        dt.timedelta(milliseconds=2),
+        dt.timedelta(milliseconds=3),
+    ]
+    arg2 = tuple(arg0)
+    arg3 = tuple(arg1)
+    arg4 = range(0, 10)
+    arg5 = np.arange(10)
+    arg6 = pd.Index(arg5)
+    check(
+        assert_type(pd.to_timedelta(arg0, "ms"), pd.TimedeltaIndex), pd.TimedeltaIndex
+    )
+    check(
+        assert_type(pd.to_timedelta(arg1, "ms"), pd.TimedeltaIndex), pd.TimedeltaIndex
+    )
+    check(
+        assert_type(pd.to_timedelta(arg2, "ms"), pd.TimedeltaIndex), pd.TimedeltaIndex
+    )
+    check(
+        assert_type(pd.to_timedelta(arg3, "ms"), pd.TimedeltaIndex), pd.TimedeltaIndex
+    )
+    check(
+        assert_type(pd.to_timedelta(arg4, "ms"), pd.TimedeltaIndex), pd.TimedeltaIndex
+    )
+    check(
+        assert_type(pd.to_timedelta(arg5, "ms"), pd.TimedeltaIndex), pd.TimedeltaIndex
+    )
+    check(
+        assert_type(pd.to_timedelta(arg6, "ms"), pd.TimedeltaIndex), pd.TimedeltaIndex
+    )
+
+
+def test_bdate_range_holidays() -> None:
+    pd.bdate_range("2000-1-1", "2001-1-1", freq="C", holidays=["2000-12-15"])
+    pd.bdate_range(
+        "2000-1-1", "2001-1-1", freq="C", holidays=[pd.Timestamp(2000, 12, 15)]
+    )
+    pd.bdate_range(
+        "2000-1-1", "2001-1-1", freq="C", holidays=[np.datetime64("2000-12-15")]
+    )
+    pd.bdate_range(
+        "2000-1-1", "2001-1-1", freq="C", holidays=[dt.datetime(2000, 12, 15)]
+    )
+    pd.bdate_range(
+        "2000-1-1", "2001-1-1", freq="C", holidays=[dt.date(2000, 12, 15)], name=("a",)
+    )
+
+
+def test_period_range() -> None:
+    check(
+        assert_type(
+            pd.period_range(pd.Period("2001Q1"), end=pd.Period("2010Q1")),
+            pd.PeriodIndex,
+        ),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(pd.period_range("2001Q1", end=pd.Period("2010Q1")), pd.PeriodIndex),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(
+            pd.period_range("2001-01-01", end="2010-01-01", freq="Q"), pd.PeriodIndex
+        ),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(pd.period_range("2001Q1", periods=100, freq="Q"), pd.PeriodIndex),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(pd.period_range("2001Q1", periods=100, freq=Day()), pd.PeriodIndex),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(
+            pd.period_range("2001Q1", periods=100, freq=Day(), name=("A",)),
+            pd.PeriodIndex,
+        ),
+        pd.PeriodIndex,
+    )
+
+
+def test_to_datetime_scalar() -> None:
+    check(assert_type(pd.to_datetime("2000-01-01"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(pd.to_datetime(1), pd.Timestamp), pd.Timestamp)
+    check(assert_type(pd.to_datetime(1.5), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(pd.to_datetime(dt.datetime(2000, 1, 1)), pd.Timestamp), pd.Timestamp
+    )
+    check(assert_type(pd.to_datetime(dt.date(2000, 1, 1)), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(pd.to_datetime(np.datetime64("2000-01-01")), pd.Timestamp),
+        pd.Timestamp,
+    )
+
+
+def test_to_datetime_scalar_extended() -> None:
+    check(assert_type(pd.to_datetime("2000-01-01"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(pd.to_datetime(1), pd.Timestamp), pd.Timestamp)
+    check(assert_type(pd.to_datetime(1.5), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(pd.to_datetime(dt.datetime(2000, 1, 1)), pd.Timestamp), pd.Timestamp
+    )
+    check(assert_type(pd.to_datetime(dt.date(2000, 1, 1)), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(pd.to_datetime(np.datetime64("2000-01-01")), pd.Timestamp),
+        pd.Timestamp,
+    )
+
+
+def test_to_datetime_series() -> None:
+    s = pd.Series(["2000-01-01", "2000-01-02"])
+    check(assert_type(pd.to_datetime(s), "TimestampSeries"), pd.Series)
+    d: FulldatetimeDict = {
+        "year": [2000, 2000, 2000],
+        "month": [1, 1, 1],
+        "day": [1, 2, 3],
+    }
+    df = pd.DataFrame(d)
+    d_ex: FulldatetimeDict = {
+        "year": [2000, 2000, 2000],
+        "month": [1, 1, 1],
+        "day": [1, 2, 3],
+        "hour": [1, 1, 1],
+        "hours": [1, 1, 1],
+        "minute": [1, 1, 1],
+        "minutes": [1, 1, 1],
+        "second": [1, 1, 1],
+        "seconds": [1, 1, 1],
+        "ms": [1, 1, 1],
+        "us": [1, 1, 1],
+        "ns": [1, 1, 1],
+    }
+    check(assert_type(pd.to_datetime(df), "TimestampSeries"), pd.Series)
+    check(assert_type(pd.to_datetime(d), "TimestampSeries"), pd.Series)
+    check(assert_type(pd.to_datetime(d_ex), "TimestampSeries"), pd.Series)
+
+
+def test_to_datetime_array() -> None:
+    check(assert_type(pd.to_datetime([1, 2, 3]), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(
+        assert_type(pd.to_datetime([1.5, 2.5, 3.5]), pd.DatetimeIndex), pd.DatetimeIndex
+    )
+    check(
+        assert_type(
+            pd.to_datetime(
+                [
+                    dt.datetime(2000, 1, 1),
+                    dt.datetime(2000, 1, 2),
+                    dt.datetime(2000, 1, 3),
+                ]
+            ),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime(["2000-01-01", "2000-01-02", "2000-01-03"]), pd.DatetimeIndex
+        ),
+        pd.DatetimeIndex,
+    )
+    check(assert_type(pd.to_datetime((1, 2, 3)), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(
+        assert_type(pd.to_datetime((1.5, 2.5, 3.5)), pd.DatetimeIndex), pd.DatetimeIndex
+    )
+    check(
+        assert_type(
+            pd.to_datetime(
+                (
+                    dt.datetime(2000, 1, 1),
+                    dt.datetime(2000, 1, 2),
+                    dt.datetime(2000, 1, 3),
+                )
+            ),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime(("2000-01-01", "2000-01-02", "2000-01-03")), pd.DatetimeIndex
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime(
+                np.array(
+                    [
+                        np.datetime64("2000-01-01"),
+                        np.datetime64("2000-01-02"),
+                        np.datetime64("2000-01-03"),
+                    ]
+                )
+            ),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime(np.array(["2000-01-01", "2000-01-02", "2000-01-03"])),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(pd.to_datetime(np.array([1, 2, 3])), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    pd.to_datetime(
+        pd.Index([2451544.5, 2451545.5, 2451546.5]),
+        unit="D",
+        origin="julian",
+    )
+    check(
+        assert_type(
+            pd.to_datetime(pd.Index([1, 2, 3]), origin="unix"), pd.DatetimeIndex
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(pd.to_datetime(pd.Index([1, 2, 3]), origin=4), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime(pd.Index([1, 2, 3]), origin=pd.Timestamp("1999-12-31")),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime(pd.Index([1, 2, 3]), origin=np.datetime64("1999-12-31")),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime(pd.Index([1, 2, 3]), origin=dt.datetime(1999, 12, 31)),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime(pd.Index([1, 2, 3]), origin=dt.date(1999, 12, 31)),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+
+
+def test_timedelta_range() -> None:
+    check(
+        assert_type(
+            pd.timedelta_range(
+                pd.Timedelta(1, unit="D"), pd.Timedelta(10, unit="D"), periods=10
+            ),
+            pd.TimedeltaIndex,
+        ),
+        pd.TimedeltaIndex,
+    )
+    check(
+        assert_type(
+            pd.timedelta_range(dt.timedelta(1), dt.timedelta(10), periods=10),
+            pd.TimedeltaIndex,
+        ),
+        pd.TimedeltaIndex,
+    )
+    check(
+        assert_type(
+            pd.timedelta_range(
+                np.timedelta64(86400000000000),
+                np.timedelta64(864000000000000),
+                periods=10,
+            ),
+            pd.TimedeltaIndex,
+        ),
+        pd.TimedeltaIndex,
+    )
+    check(
+        assert_type(
+            pd.timedelta_range("1 day", "10 days", periods=10), pd.TimedeltaIndex
+        ),
+        pd.TimedeltaIndex,
+    )
+    check(
+        assert_type(
+            pd.timedelta_range(
+                np.int64(86400000000000), np.int64(864000000000000), periods=10
+            ),
+            pd.TimedeltaIndex,
+        ),
+        pd.TimedeltaIndex,
+    )
+    check(
+        assert_type(
+            pd.timedelta_range(86400000000000, 864000000000000, periods=10),
+            pd.TimedeltaIndex,
+        ),
+        pd.TimedeltaIndex,
+    )
+    check(
+        assert_type(
+            pd.timedelta_range(86400000000000.0, 864000000000000.0, periods=10),
+            pd.TimedeltaIndex,
+        ),
+        pd.TimedeltaIndex,
+    )

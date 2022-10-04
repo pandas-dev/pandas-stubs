@@ -1,5 +1,10 @@
-from typing import overload
+from typing import (
+    Hashable,
+    Literal,
+    overload,
+)
 
+from pandas import DateOffset
 from pandas.core.indexes.accessors import TimedeltaIndexProperties
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.indexes.datetimes import DatetimeIndex
@@ -9,7 +14,10 @@ from pandas._libs import (
     Timedelta,
     Timestamp,
 )
-from pandas._typing import num
+from pandas._typing import (
+    TimedeltaConvertibleTypes,
+    num,
+)
 
 class TimedeltaIndex(DatetimeTimedeltaMixin, TimedeltaIndexProperties):
     def __new__(
@@ -42,5 +50,10 @@ class TimedeltaIndex(DatetimeTimedeltaMixin, TimedeltaIndexProperties):
     def to_series(self, index=..., name=...) -> TimedeltaSeries: ...
 
 def timedelta_range(
-    start=..., end=..., periods=..., freq=..., name=..., closed=...
+    start: TimedeltaConvertibleTypes = ...,
+    end: TimedeltaConvertibleTypes = ...,
+    periods: int | None = ...,
+    freq: str | DateOffset | None = ...,
+    name: Hashable | None = ...,
+    closed: Literal["left", "right"] | None = ...,
 ) -> TimedeltaIndex: ...
