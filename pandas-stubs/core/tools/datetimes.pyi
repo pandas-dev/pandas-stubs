@@ -23,8 +23,8 @@ from typing_extensions import TypeAlias
 from pandas._libs.tslibs import NaTType
 from pandas._typing import (
     AnyArrayLike,
-    DateTimeErrorChoices,
     IgnoreRaise,
+    IgnoreRaiseCoerce,
 )
 
 ArrayConvertible: TypeAlias = Union[list, tuple, AnyArrayLike]
@@ -87,7 +87,7 @@ def to_datetime(
 @overload
 def to_datetime(
     arg: Series | DictConvertible,
-    errors: DateTimeErrorChoices = ...,
+    errors: IgnoreRaiseCoerce = ...,
     dayfirst: bool = ...,
     yearfirst: bool = ...,
     utc: bool | None = ...,
@@ -101,7 +101,7 @@ def to_datetime(
 @overload
 def to_datetime(
     arg: list | tuple | np.ndarray | Index | ExtensionArray,
-    errors: DateTimeErrorChoices = ...,
+    errors: IgnoreRaiseCoerce = ...,
     dayfirst: bool = ...,
     yearfirst: bool = ...,
     utc: bool | None = ...,

@@ -195,7 +195,7 @@ IndexT = TypeVar("IndexT", bound=Index)
 
 IntervalClosedType: TypeAlias = Literal["left", "right", "both", "neither"]
 
-DateTimeErrorChoices: TypeAlias = Literal["ignore", "raise", "coerce"]
+IgnoreRaiseCoerce: TypeAlias = Literal["ignore", "raise", "coerce"]
 
 # Shared by functions such as drop and astype
 IgnoreRaise: TypeAlias = Literal["ignore", "raise"]
