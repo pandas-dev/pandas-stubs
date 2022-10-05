@@ -8,13 +8,15 @@ from typing import (
 )
 
 import numpy as np
-from numpy import typing as npt
 import pandas as pd
 from pandas.api.extensions import ExtensionArray
 import pytest
 from typing_extensions import assert_type
 
-from pandas._typing import Scalar
+from pandas._typing import (
+    Scalar,
+    npt,
+)
 
 from tests import check
 
@@ -447,3 +449,21 @@ def test_lreshape() -> None:
         ),
         pd.DataFrame,
     )
+
+
+def test_factorize() -> None:
+    codes, uniques = pd.factorize(["b", "b", "a", "c", "b"])
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(uniques, Union[pd.Index, pd.Categorical, np.ndarray]), np.ndarray)
+    codes, uniques = pd.factorize(pd.Series(["b", "b", "a", "c", "b"]))
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(uniques, Union[pd.Index, pd.Categorical, np.ndarray]), np.ndarray)
+    codes, uniques = pd.factorize("bbacb")
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(uniques, Union[pd.Index, pd.Categorical, np.ndarray]), np.ndarray)
+
+    codes, uniques = pd.factorize(
+        ["b", "b", "a", "c", "b"], use_na_sentinel=True, size_hint=10
+    )
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(uniques, Union[pd.Index, pd.Categorical, np.ndarray]), np.ndarray)
