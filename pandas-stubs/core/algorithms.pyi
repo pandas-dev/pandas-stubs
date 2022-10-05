@@ -4,9 +4,14 @@ from typing import (
 )
 
 import numpy as np
+import pandas as pd
 from pandas import (
     Categorical,
+    CategoricalIndex,
+    DatetimeIndex,
     Index,
+    PeriodIndex,
+    RangeIndex,
     Series,
 )
 from pandas.api.extensions import ExtensionArray
@@ -14,7 +19,15 @@ from pandas.api.extensions import ExtensionArray
 from pandas._typing import AnyArrayLike
 
 @overload
-def unique(values: Index) -> Index: ...
+def unique(values: DatetimeIndex) -> DatetimeIndex: ...
+@overload
+def unique(values: PeriodIndex) -> PeriodIndex: ...
+@overload
+def unique(values: CategoricalIndex) -> CategoricalIndex: ...
+@overload
+def unique(values: RangeIndex | pd.Float64Index) -> np.ndarray: ...
+@overload
+def unique(values: Index) -> Index | np.ndarray: ...
 @overload
 def unique(values: Categorical) -> Categorical: ...
 @overload

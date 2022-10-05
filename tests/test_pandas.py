@@ -208,7 +208,7 @@ def test_unique() -> None:
                     ]
                 )
             ),
-            pd.Index,
+            Union[pd.Index, np.ndarray],
         ),
         pd.DatetimeIndex,
     )
@@ -243,6 +243,34 @@ def test_unique() -> None:
     check(
         assert_type(
             pd.unique([("a", "b"), ("b", "a"), ("a", "c"), ("b", "a")]), np.ndarray
+        ),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            pd.unique(pd.Index(["a", "b", "c", "a"])), Union[pd.Index, np.ndarray]
+        ),
+        np.ndarray,
+    )
+    check(
+        assert_type(pd.unique(pd.RangeIndex(0, 10)), np.ndarray),
+        np.ndarray,
+    )
+    check(
+        assert_type(pd.unique(pd.Categorical(["a", "b", "c", "a"])), pd.Categorical),
+        pd.Categorical,
+    )
+    check(
+        assert_type(
+            pd.unique(pd.period_range("2001Q1", periods=10, freq="D")),
+            pd.PeriodIndex,
+        ),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(
+            pd.unique(pd.timedelta_range(start="1 day", periods=4)),
+            Union[pd.Index, np.ndarray],
         ),
         np.ndarray,
     )
@@ -313,6 +341,109 @@ def test_eval():
         assert_type(
             pd.eval("double_age = df.age * 2", target=df),
             Union[npt.NDArray, Scalar, pd.DataFrame, pd.Series, None],
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_wide_to_long():
+    df = pd.DataFrame(
+        {
+            "A1970": {0: "a", 1: "b", 2: "c"},
+            "A1980": {0: "d", 1: "e", 2: "f"},
+            "B1970": {0: 2.5, 1: 1.2, 2: 0.7},
+            "B1980": {0: 3.2, 1: 1.3, 2: 0.1},
+            "X": dict(zip(range(3), np.random.randn(3))),
+        }
+    )
+    df["id"] = df.index
+    df["id2"] = df.index + 1
+    check(
+        assert_type(pd.wide_to_long(df, ["A", "B"], i="id", j="year"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.wide_to_long(df, ["A", "B"], i=["id", "id2"], j="year"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_melt():
+    df = pd.DataFrame(
+        {
+            "A": {0: "a", 1: "b", 2: "c"},
+            "B": {0: 1, 1: 3, 2: 5},
+            "C": {0: 2, 1: 4, 2: 6},
+            "D": {0: 3, 1: 6, 2: 9},
+            "E": {0: 3, 1: 6, 2: 9},
+        }
+    )
+    check(
+        assert_type(
+            pd.melt(df, id_vars=["A"], value_vars=["B"], ignore_index=False),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.melt(df, id_vars=["A"], value_vars=["B"], value_name=("F",)),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    df.columns = pd.MultiIndex.from_arrays([list("ABCDE"), list("FGHIJ")])
+    check(
+        assert_type(
+            pd.melt(
+                df, id_vars=["A"], value_vars=["B"], ignore_index=False, col_level=0
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_lreshape() -> None:
+    data = pd.DataFrame(
+        {
+            "hr1": [514, 573],
+            "hr2": [545, 526],
+            "team": ["Red Sox", "Yankees"],
+            "year1": [2007, 2007],
+            "year2": [2008, 2008],
+        }
+    )
+    check(
+        assert_type(
+            pd.lreshape(
+                data, {"year": ["year1", "year2"], "hr": ["hr1", "hr2"]}, dropna=True
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    data2 = pd.DataFrame(
+        {
+            "hr1": [514, 573],
+            ("hr2",): [545, 526],
+            "team": ["Red Sox", "Yankees"],
+            ("year1",): [2007, 2007],
+            "year2": [2008, 2008],
+        }
+    )
+    from typing import Hashable
+
+    groups: dict[Hashable, list[Hashable]] = {
+        ("year",): [("year1",), "year2"],
+        ("hr",): ["hr1", ("hr2",)],
+    }
+    check(
+        assert_type(
+            pd.lreshape(data2, groups=groups),
+            pd.DataFrame,
         ),
         pd.DataFrame,
     )
