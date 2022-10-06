@@ -672,6 +672,14 @@ def test_excel_writer():
         check(assert_type(ef.close(), None), type(None))
 
 
+def test_excel_writer_append_mode():
+    with ensure_clean(".xlsx") as path:
+        with pd.ExcelWriter(path, mode="w") as ew:
+            DF.to_excel(ew, sheet_name="A")
+        with pd.ExcelWriter(path, mode="a") as ew:
+            pass
+
+
 def test_to_string():
     check(assert_type(DF.to_string(), str), str)
     with ensure_clean() as path:
