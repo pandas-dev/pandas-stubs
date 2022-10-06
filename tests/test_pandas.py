@@ -454,16 +454,26 @@ def test_lreshape() -> None:
 def test_factorize() -> None:
     codes, uniques = pd.factorize(["b", "b", "a", "c", "b"])
     check(assert_type(codes, np.ndarray), np.ndarray)
-    check(assert_type(uniques, Union[pd.Index, pd.Categorical, np.ndarray]), np.ndarray)
-    codes, uniques = pd.factorize(pd.Series(["b", "b", "a", "c", "b"]))
+    check(assert_type(uniques, np.ndarray), np.ndarray)
+
+    codes, cat_uniques = pd.factorize(pd.Categorical(["b", "b", "a", "c", "b"]))
     check(assert_type(codes, np.ndarray), np.ndarray)
-    check(assert_type(uniques, Union[pd.Index, pd.Categorical, np.ndarray]), np.ndarray)
+    check(assert_type(cat_uniques, pd.Categorical), pd.Categorical)
+
+    codes, idx_uniques = pd.factorize(pd.Index(["b", "b", "a", "c", "b"]))
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(idx_uniques, pd.Index), pd.Index)
+
+    codes, idx_uniques = pd.factorize(pd.Series(["b", "b", "a", "c", "b"]))
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(idx_uniques, pd.Index), pd.Index)
+
     codes, uniques = pd.factorize("bbacb")
     check(assert_type(codes, np.ndarray), np.ndarray)
-    check(assert_type(uniques, Union[pd.Index, pd.Categorical, np.ndarray]), np.ndarray)
+    check(assert_type(uniques, np.ndarray), np.ndarray)
 
     codes, uniques = pd.factorize(
         ["b", "b", "a", "c", "b"], use_na_sentinel=True, size_hint=10
     )
     check(assert_type(codes, np.ndarray), np.ndarray)
-    check(assert_type(uniques, Union[pd.Index, pd.Categorical, np.ndarray]), np.ndarray)
+    check(assert_type(uniques, np.ndarray), np.ndarray)
