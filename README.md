@@ -144,6 +144,14 @@ These stubs were initially forked from the Microsoft project <https://github.com
 
 We are indebted to Microsoft and that project for the initial set of public type stubs.  We are also grateful for the original pandas-stubs project at <https://github.com/VirtusLab/pandas-stubs> that created the framework for testing the stubs.
 
+## Differences between type declarations in pandas and pandas-stubs
+
+The <https://github.com/pandas-dev/pandas/> project has type declarations for some parts of pandas, both for the internal and public API's.  Those type declarations are used to make sure that the pandas code is _internally_ consistent.
+
+The <https://github.com/pandas-dev/pandas-stubs/> project provides type declarations for the pandas _public_ API.  The philsophy of these stubs can be found at <https://github.com/pandas-dev/pandas-stubs/blob/main/docs/philosophy.md/> While it would be ideal if the `pyi` files in this project would be part of the `pandas` distribution, this would require consistency between the internal type declarations and the public declarations, and the scope of a project to create that consistency is quite large.  That is a long term goal.  Finally, another goal is to do more frequent releases of the pandas-stubs than is done for pandas, in order to make the stubs more useful.
+
+If issues are found with the public stubs, pull requests to correct those issues are welcome.  In addition, pull requests on the pandas repository to fix the same issue are welcome there as well.  However, since the goals of typing in the two projects are different (internal consistency vs. public usage), it may be a challenge to create consistent type declarations across both projects.  See <https://pandas.pydata.org/docs/development/contributing_codebase.html#type-hints/> for a discussion of typing standards used within the pandas code.
+
 ## Getting help
 
 Ask questions and report issues on the [pandas-stubs repository](https://github.com/pandas-dev/pandas-stubs/issues).  
