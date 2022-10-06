@@ -21,6 +21,13 @@ def test_index_unique() -> None:
     check(assert_type(i2, pd.Index), pd.Index)
 
 
+def test_index_duplicated() -> None:
+    df = pd.DataFrame({"x": [1, 2, 3, 4]}, index=pd.Index([1, 2, 3, 2]))
+    ind = df.index
+    duplicated = ind.duplicated("first")
+    check(assert_type(duplicated, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
+
+
 def test_index_isin() -> None:
     ind = pd.Index([1, 2, 3, 4, 5])
     isin = ind.isin([2, 4])
