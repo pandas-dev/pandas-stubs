@@ -1,4 +1,5 @@
 from typing import Literal
+
 import numpy as np
 from pandas.core import accessor
 from pandas.core.indexes.base import Index  # , maybe_extract_name
