@@ -483,7 +483,7 @@ def test_index_unqiue() -> None:
     fi = pd.Float64Index([1.0, 2.0])
     i = pd.Index(["a", "b", "c", "a"])
     i64i = pd.Int64Index([1, 2, 3, 4])
-    pi = pd.PeriodIndex(["2000Q1"], freq="Q")
+    pi = pd.period_range("2000Q1", periods=2, freq="Q")
     ri = pd.RangeIndex(0, 10)
     ui = pd.UInt64Index([0, 1, 2, 3, 5])
     tdi = pd.timedelta_range("1 day", "10 days", periods=10)

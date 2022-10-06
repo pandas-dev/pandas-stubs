@@ -8,11 +8,9 @@ import pandas as pd
 from pandas import (
     Categorical,
     CategoricalIndex,
-    DatetimeIndex,
     Index,
     IntervalIndex,
     PeriodIndex,
-    RangeIndex,
     Series,
 )
 from pandas.api.extensions import ExtensionArray

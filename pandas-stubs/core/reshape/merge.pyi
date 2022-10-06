@@ -1,8 +1,4 @@
-from typing import (
-    Hashable,
-    Literal,
-    Sequence,
-)
+from typing import Literal
 
 from pandas import (
     DataFrame,

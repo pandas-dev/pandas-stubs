@@ -14,7 +14,6 @@ from pandas import (
 )
 
 from pandas._typing import (
-    ArrayLike,
     Label,
     npt,
 )
