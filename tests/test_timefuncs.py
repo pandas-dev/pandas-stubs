@@ -560,6 +560,24 @@ def test_some_offsets() -> None:
     )
     check(
         assert_type(
+            pd.date_range(
+                dt.date(2022, 1, 1), dt.date(2022, 2, 1), freq=dt.timedelta(days=2)
+            ),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.bdate_range(
+                dt.date(2022, 1, 1), dt.date(2022, 2, 1), freq=dt.timedelta(days=2)
+            ),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
             pd.date_range("1/1/2022", "2/1/2022", freq=pd.Timedelta(days=5)),
             pd.DatetimeIndex,
         ),
@@ -689,6 +707,7 @@ def test_to_timedelta_index() -> None:
 
 def test_bdate_range_holidays() -> None:
     pd.bdate_range("2000-1-1", "2001-1-1", freq="C", holidays=["2000-12-15"])
+    pd.bdate_range("2000-1-1", "2001-1-1", freq="C", holidays=[dt.date(2000, 12, 15)])
     pd.bdate_range(
         "2000-1-1", "2001-1-1", freq="C", holidays=[pd.Timestamp(2000, 12, 15)]
     )

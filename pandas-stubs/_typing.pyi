@@ -46,6 +46,7 @@ PandasScalar: TypeAlias = Union[
 # Scalar: TypeAlias = Union[PythonScalar, PandasScalar]
 
 DatetimeLike: TypeAlias = Union[datetime.datetime, np.datetime64, Timestamp]
+DateAndDatetimeLike: TypeAlias = Union[datetime.date, DatetimeLike]
 
 DatetimeDictArg: TypeAlias = Union[
     Sequence[int], Sequence[float], list[str], tuple[Scalar, ...], AnyArrayLike
