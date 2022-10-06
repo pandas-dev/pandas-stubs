@@ -13,7 +13,7 @@ import numpy as np
 from numpy import typing as npt
 import pandas as pd
 from pandas.core.indexes.numeric import IntegerIndex
-from pytz.tzinfo import BaseTzInfo
+import pytz
 from typing_extensions import assert_type
 
 from pandas._libs import NaTType
@@ -345,19 +345,54 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s0.dt.is_leap_year, "pd.Series[bool]"), pd.Series, bool)
     check(assert_type(s0.dt.daysinmonth, "pd.Series[int]"), pd.Series, int)
     check(assert_type(s0.dt.days_in_month, "pd.Series[int]"), pd.Series, int)
-    assert assert_type(s0.dt.tz, Optional[Union[dt.tzinfo, BaseTzInfo]]) is None
+    assert assert_type(s0.dt.tz, Optional[dt.tzinfo]) is None
     check(assert_type(s0.dt.freq, Optional[str]), str)
     check(assert_type(s0.dt.isocalendar(), pd.DataFrame), pd.DataFrame)
     check(assert_type(s0.dt.to_period("D"), "PeriodSeries"), pd.Series, pd.Period)
     check(assert_type(s0.dt.to_pydatetime(), np.ndarray), np.ndarray, dt.datetime)
-    slocal = s0.dt.tz_localize("UTC")
-    check(assert_type(slocal, "TimestampSeries"), pd.Series, pd.Timestamp)
+    s0_local = s0.dt.tz_localize("UTC")
     check(
-        assert_type(slocal.dt.tz_convert("EST"), "TimestampSeries"),
+        assert_type(s0_local, "TimestampSeries"),
         pd.Series,
         pd.Timestamp,
     )
-    check(assert_type(slocal.dt.tz, Optional[Union[dt.tzinfo, BaseTzInfo]]), BaseTzInfo)
+    check(
+        assert_type(s0.dt.tz_localize(None), "TimestampSeries"), pd.Series, pd.Timestamp
+    )
+    check(
+        assert_type(s0.dt.tz_localize(pytz.UTC), "TimestampSeries"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(s0.dt.tz_localize(pytz.timezone("US/Eastern")), "TimestampSeries"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(s0_local.dt.tz_convert("EST"), "TimestampSeries"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(s0_local.dt.tz_convert(None), "TimestampSeries"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(s0_local.dt.tz_convert(pytz.UTC), "TimestampSeries"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(
+            s0_local.dt.tz_convert(pytz.timezone("US/Eastern")), "TimestampSeries"
+        ),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(assert_type(s0.dt.tz, Optional[dt.tzinfo]), type(None))
+    check(assert_type(s0_local.dt.tz, Optional[dt.tzinfo]), dt.tzinfo)
     check(assert_type(s0.dt.normalize(), "TimestampSeries"), pd.Series, pd.Timestamp)
     check(assert_type(s0.dt.strftime("%Y"), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s0.dt.round("D"), "TimestampSeries"), pd.Series, pd.Timestamp)
@@ -428,7 +463,7 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.is_leap_year, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
     check(assert_type(i0.daysinmonth, IntegerIndex), IntegerIndex, int)
     check(assert_type(i0.days_in_month, IntegerIndex), IntegerIndex, int)
-    assert assert_type(i0.tz, Optional[Union[dt.tzinfo, BaseTzInfo]]) is None
+    check(assert_type(i0.tz, Optional[dt.tzinfo]), type(None))
     check(assert_type(i0.freq, Optional[BaseOffset]), BaseOffset)
     check(assert_type(i0.isocalendar(), pd.DataFrame), pd.DataFrame)
     check(assert_type(i0.to_period("D"), pd.PeriodIndex), pd.PeriodIndex, pd.Period)
@@ -437,10 +472,20 @@ def test_datetimeindex_accessors() -> None:
         np.ndarray,
         dt.datetime,
     )
-    slocal = i0.tz_localize("UTC")
-    check(assert_type(slocal, pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(slocal.tz_convert("EST"), pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(slocal.tz, Optional[Union[dt.tzinfo, BaseTzInfo]]), BaseTzInfo)
+    ilocal = i0.tz_localize("UTC")
+    check(assert_type(ilocal, pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(i0.tz_localize(pytz.UTC), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(
+        assert_type(i0.tz_localize(pytz.timezone("US/Central")), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(assert_type(ilocal.tz_convert("EST"), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(ilocal.tz_convert(pytz.UTC), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(
+        assert_type(ilocal.tz_convert(pytz.timezone("US/Pacific")), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(assert_type(ilocal.tz, Optional[dt.tzinfo]), dt.tzinfo)
     check(assert_type(i0.normalize(), pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
     check(assert_type(i0.strftime("%Y"), pd.Index), pd.Index, str)
     check(assert_type(i0.round("D"), pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
