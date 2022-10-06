@@ -504,3 +504,62 @@ def test_index_unqiue() -> None:
     check(assert_type(pd.unique(tdi), Union[pd.Index, np.ndarray]), np.ndarray)
     check(assert_type(pd.unique(mi), Union[pd.Index, np.ndarray]), np.ndarray)
     check(assert_type(pd.unique(interval_i), pd.IntervalIndex), pd.IntervalIndex)
+
+
+def test_cut() -> None:
+    a = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, precision=1, duplicates="drop")
+    b = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, labels=False, duplicates="raise")
+    c = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, labels=["1", "2", "3", "4"])
+    check(assert_type(a, pd.Categorical), pd.Categorical)
+    check(assert_type(b, npt.NDArray[np.intp]), np.ndarray)
+    check(assert_type(c, pd.Categorical), pd.Categorical)
+
+    d0, d1 = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, retbins=True)
+    e0, e1 = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, labels=False, retbins=True)
+    f0, f1 = pd.cut(
+        [1, 2, 3, 4, 5, 6, 7, 8], 4, labels=["1", "2", "3", "4"], retbins=True
+    )
+    check(assert_type(d0, pd.Categorical), pd.Categorical)
+    check(assert_type(d1, npt.NDArray), np.ndarray)
+    check(assert_type(e0, npt.NDArray[np.intp]), np.ndarray)
+    check(assert_type(e1, npt.NDArray), np.ndarray)
+    check(assert_type(f0, pd.Categorical), pd.Categorical)
+    check(assert_type(f1, npt.NDArray), np.ndarray)
+
+    g = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), 4, precision=1, duplicates="drop")
+    h = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), 4, labels=False, duplicates="raise")
+    i = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), 4, labels=["1", "2", "3", "4"])
+    check(assert_type(g, pd.Series), pd.Series)
+    check(assert_type(h, pd.Series), pd.Series)
+    check(assert_type(i, pd.Series), pd.Series)
+
+    j0, j1 = pd.cut(
+        pd.Series([1, 2, 3, 4, 5, 6, 7, 8]),
+        4,
+        precision=1,
+        duplicates="drop",
+        retbins=True,
+    )
+    k0, k1 = pd.cut(
+        pd.Series([1, 2, 3, 4, 5, 6, 7, 8]),
+        4,
+        labels=False,
+        duplicates="raise",
+        retbins=True,
+    )
+    l0, l1 = pd.cut(
+        pd.Series([1, 2, 3, 4, 5, 6, 7, 8]),
+        4,
+        labels=["1", "2", "3", "4"],
+        retbins=True,
+    )
+    check(assert_type(j0, pd.Series), pd.Series)
+    check(assert_type(j1, npt.NDArray), np.ndarray)
+    check(assert_type(k0, pd.Series), pd.Series)
+    check(assert_type(k1, npt.NDArray), np.ndarray)
+    check(assert_type(l0, pd.Series), pd.Series)
+    check(assert_type(l1, npt.NDArray), np.ndarray)
+
+
+def test_qcut() -> None:
+    pass
