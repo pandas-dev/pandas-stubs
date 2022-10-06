@@ -256,8 +256,8 @@ def test_isna() -> None:
     assert check(assert_type(pd.isna(None), bool), bool)
     assert not check(assert_type(pd.notna(None), bool), bool)
 
-    check(assert_type(pd.isna(2.5), bool), bool)
-    check(assert_type(pd.notna(2.5), bool), bool)
+    assert not check(assert_type(pd.isna(2.5), bool), bool)
+    assert check(assert_type(pd.notna(2.5), bool), bool)
 
     # Check type guard functionality
     nullable1 = random.choice(["value", None, pd.NA, pd.NaT])
