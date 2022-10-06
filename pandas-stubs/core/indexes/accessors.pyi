@@ -32,7 +32,6 @@ from pandas.core.series import (
     TimedeltaSeries,
     TimestampSeries,
 )
-from pytz.tzinfo import BaseTzInfo
 
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.offsets import DateOffset
@@ -110,7 +109,7 @@ class _FreqProperty(Generic[_DTFreqReturnType]):
 
 class _TZProperty:
     @property
-    def tz(self) -> tzinfo | BaseTzInfo | None: ...
+    def tz(self) -> tzinfo | None: ...
 
 class _DatetimeObjectOps(
     _FreqProperty[_DTFreqReturnType], _TZProperty, Generic[_DTFreqReturnType]
@@ -203,12 +202,12 @@ class _DatetimeLikeNoTZMethods(
     ) -> _DTToPeriodReturnType: ...
     def tz_localize(
         self,
-        tz: str | None,
+        tz: tzinfo | str | None,
         ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
         nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
         | Timedelta = ...,
     ) -> _DTNormalizeReturnType: ...
-    def tz_convert(self, tz: str | None) -> _DTNormalizeReturnType: ...
+    def tz_convert(self, tz: tzinfo | str | None) -> _DTNormalizeReturnType: ...
     def normalize(self) -> _DTNormalizeReturnType: ...
     def strftime(self, date_format: str) -> _DTStrKindReturnType: ...
     def month_name(self, locale: str | None = ...) -> _DTStrKindReturnType: ...
