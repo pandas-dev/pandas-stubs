@@ -107,7 +107,7 @@ class ExcelWriter:
         engine: Literal["auto", "openpyxl", "pyxlsb", "odf"] | None = ...,
         date_format: str | None = ...,
         datetime_format: str | None = ...,
-        mode: Literal["w", "writer"] = ...,
+        mode: Literal["w", "a"] = ...,
         storage_options: StorageOptions = ...,
         if_sheet_exists: Literal["error", "new", "replace", "overlay"] | None = ...,
         engine_kwargs: dict[str, Any] | None = ...,

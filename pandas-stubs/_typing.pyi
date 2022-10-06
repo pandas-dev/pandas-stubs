@@ -332,4 +332,14 @@ class StyleExportDict(TypedDict, total=False):
 
 CalculationMethod: TypeAlias = Literal["single", "table"]
 
+ValidationOptions: TypeAlias = Literal[
+    "one_to_one",
+    "1:1",
+    "one_to_many",
+    "1:m",
+    "many_to_one",
+    "m:1",
+    "many_to_many",
+    "m:m",
+]
 __all__ = ["npt", "type_t"]
