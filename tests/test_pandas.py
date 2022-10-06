@@ -292,7 +292,10 @@ def test_isna() -> None:
     if not pd.notna(nullable2):
         # TODO: This is the true type (see comments above on the limitations of TypeGuard)
         # check(assert_type(nullable2, None), type(None))
-        assert_type(nullable2, Union[int, NaTType, NAType, None])
+        assert_type(nullable2, Union[int, None])  # TODO: MyPy result
+        assert_type(
+            nullable2, Union[int, NaTType, NAType, None]
+        )  # TODO: Pyright result
 
     nullable3 = random.choice([True, None, pd.NA])
     if pd.notna(nullable3):
@@ -308,7 +311,10 @@ def test_isna() -> None:
     if not pd.notna(nullable3):
         # TODO: This is the true type (see comments above on the limitations of TypeGuard)
         # assert_type(nullable3, Union[NAType, None])
-        assert_type(nullable3, Union[bool, NaTType, NAType, None])
+        assert_type(nullable3, Union[bool, NAType, None])  # TODO: Mypy result
+        assert_type(
+            nullable3, Union[bool, NaTType, NAType, None]
+        )  # TODO: Pyright result
 
 
 # GH 55
