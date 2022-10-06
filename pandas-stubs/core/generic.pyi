@@ -165,7 +165,10 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         chunksize: int | None = ...,
         dtype: DtypeArg | None = ...,
         method: Literal["multi"]
-        | Callable[[SQLTable, Any, list[str], Iterable], int | None]
+        | Callable[
+            [SQLTable, Any, list[str], Iterable[tuple[Any, ...]]],
+            int | None,
+        ]
         | None = ...,
     ) -> int | None: ...
     def to_pickle(
