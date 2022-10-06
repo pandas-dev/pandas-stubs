@@ -1,4 +1,8 @@
-from typing import Sequence
+from typing import (
+    Hashable,
+    Literal,
+    Sequence,
+)
 
 from pandas import (
     DataFrame,
@@ -8,131 +12,65 @@ from pandas import (
 from pandas._libs.tslibs import Timedelta
 from pandas._typing import (
     AnyArrayLike,
+    HashableT,
     Label,
+    ValidationOptions,
 )
 
 def merge(
+    # TODO: Verify Series is accepted and correct in docs
     left: DataFrame | Series,
     right: DataFrame | Series,
-    how: str = ...,
-    on: Label | Sequence | AnyArrayLike | None = ...,
-    left_on: Label | Sequence | AnyArrayLike | None = ...,
-    right_on: Label | Sequence | AnyArrayLike | None = ...,
+    how: Literal["left", "right", "outer", "inner", "cross"] = ...,
+    on: Label | list[HashableT] | AnyArrayLike | None = ...,
+    left_on: Label | list[HashableT] | AnyArrayLike | None = ...,
+    right_on: Label | list[HashableT] | AnyArrayLike | None = ...,
     left_index: bool = ...,
     right_index: bool = ...,
     sort: bool = ...,
-    suffixes: Sequence[str | None] = ...,
+    suffixes: list[str | None]
+    | tuple[str, str]
+    | tuple[None, str]
+    | tuple[str, None] = ...,
     copy: bool = ...,
     indicator: bool | str = ...,
-    validate: str = ...,
+    validate: ValidationOptions = ...,
 ) -> DataFrame: ...
 def merge_ordered(
+    # TODO: Verify Series is accepted and correct in docs
     left: DataFrame | Series,
+    # TODO: Verify Series is accepted and correct in docs
     right: DataFrame | Series,
-    on: Label | Sequence | AnyArrayLike | None = ...,
-    left_on: Label | Sequence | AnyArrayLike | None = ...,
-    right_on: Label | Sequence | AnyArrayLike | None = ...,
-    left_by: str | list[str] | None = ...,
-    right_by: str | list[str] | None = ...,
-    fill_method: str | None = ...,
-    suffixes: Sequence[str | None] = ...,
-    how: str = ...,
+    on: Label | list[HashableT] | AnyArrayLike | None = ...,
+    left_on: Label | list[HashableT] | AnyArrayLike | None = ...,
+    right_on: Label | list[HashableT] | AnyArrayLike | None = ...,
+    left_by: Label | list[HashableT] | None = ...,
+    right_by: Label | list[HashableT] | None = ...,
+    fill_method: Literal["ffill"] | None = ...,
+    suffixes: list[str | None]
+    | tuple[str, str]
+    | tuple[None, str]
+    | tuple[str, None] = ...,
+    how: Literal["left", "right", "outer", "inner"] = ...,
 ) -> DataFrame: ...
 def merge_asof(
     left: DataFrame | Series,
     right: DataFrame | Series,
     on: Label | None = ...,
+    # TODO: Is AnyArrayLike accepted?  Not in docs
     left_on: Label | AnyArrayLike | None = ...,
+    # TODO: Is AnyArrayLike accepted?  Not in docs
     right_on: Label | AnyArrayLike | None = ...,
     left_index: bool = ...,
     right_index: bool = ...,
-    by: str | list[str] | None = ...,
-    left_by: str | None = ...,
-    right_by: str | None = ...,
-    suffixes: Sequence[str | None] = ...,
+    by: Label | list[HashableT] | None = ...,
+    left_by: Label | None = ...,
+    right_by: Label | None = ...,
+    suffixes: list[str | None]
+    | tuple[str, str]
+    | tuple[None, str]
+    | tuple[str, None] = ...,
     tolerance: int | Timedelta | None = ...,
     allow_exact_matches: bool = ...,
-    direction: str = ...,
+    direction: Literal["backward", "forward", "nearest"] = ...,
 ) -> DataFrame: ...
-
-class _MergeOperation:
-    left = ...
-    right = ...
-    how = ...
-    axis = ...
-    on = ...
-    left_on = ...
-    right_on = ...
-    copy = ...
-    suffixes = ...
-    sort = ...
-    left_index = ...
-    right_index = ...
-    indicator = ...
-    indicator_name = ...
-    def __init__(
-        self,
-        left: Series | DataFrame,
-        right: Series | DataFrame,
-        how: str = ...,
-        on=...,
-        left_on=...,
-        right_on=...,
-        axis=...,
-        left_index: bool = ...,
-        right_index: bool = ...,
-        sort: bool = ...,
-        suffixes=...,
-        copy: bool = ...,
-        indicator: bool = ...,
-        validate=...,
-    ) -> None: ...
-    def get_result(self): ...
-
-class _OrderedMerge(_MergeOperation):
-    fill_method = ...
-    def __init__(
-        self,
-        left,
-        right,
-        on=...,
-        left_on=...,
-        right_on=...,
-        left_index: bool = ...,
-        right_index: bool = ...,
-        axis=...,
-        suffixes=...,
-        copy: bool = ...,
-        fill_method=...,
-        how: str = ...,
-    ) -> None: ...
-    def get_result(self): ...
-
-class _AsOfMerge(_OrderedMerge):
-    by = ...
-    left_by = ...
-    right_by = ...
-    tolerance = ...
-    allow_exact_matches = ...
-    direction = ...
-    def __init__(
-        self,
-        left,
-        right,
-        on=...,
-        left_on=...,
-        right_on=...,
-        left_index: bool = ...,
-        right_index: bool = ...,
-        by=...,
-        left_by=...,
-        right_by=...,
-        axis=...,
-        suffixes=...,
-        copy: bool = ...,
-        fill_method=...,
-        how: str = ...,
-        tolerance=...,
-        allow_exact_matches: bool = ...,
-        direction: str = ...,
-    ) -> None: ...
