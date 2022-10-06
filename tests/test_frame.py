@@ -670,6 +670,10 @@ def test_types_groupby_agg() -> None:
         0: lambda x: x.min(),
     }
     check(assert_type(df.groupby("col1").agg(agg_dict3), pd.DataFrame), pd.DataFrame)
+    agg_dict4 = {"col2": "sum"}
+    check(assert_type(df.groupby("col1").agg(agg_dict4), pd.DataFrame), pd.DataFrame)
+    agg_dict5 = {0: "sum"}
+    check(assert_type(df.groupby("col1").agg(agg_dict5), pd.DataFrame), pd.DataFrame)
     named_agg = pd.NamedAgg(column="col2", aggfunc="max")
     check(
         assert_type(df.groupby("col1").agg(new_col=named_agg), pd.DataFrame),
