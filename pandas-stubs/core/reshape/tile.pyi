@@ -154,8 +154,8 @@ def cut(
 ) -> Categorical: ...
 @overload
 def qcut(
-    x: npt.NDArray | Series,
-    q: int | Sequence[float] | Series[float] | Float64Index,
+    x: Index | npt.NDArray | Sequence[int] | Sequence[float],
+    q: int | Sequence[float] | Series[float] | Float64Index | npt.NDArray,
     *,
     labels: Literal[False],
     retbins: Literal[False] = ...,
@@ -164,8 +164,8 @@ def qcut(
 ) -> npt.NDArray: ...
 @overload
 def qcut(
-    x: npt.NDArray,
-    q: int | Sequence[float] | Series[float] | Float64Index,
+    x: Index | npt.NDArray | Sequence[int] | Sequence[float],
+    q: int | Sequence[float] | Series[float] | Float64Index | npt.NDArray,
     labels: Sequence[Label] | None = ...,
     retbins: Literal[False] = ...,
     precision: int = ...,
@@ -174,39 +174,39 @@ def qcut(
 @overload
 def qcut(
     x: Series,
-    q: int | Sequence[float] | Series[float] | Float64Index,
-    labels: Sequence[Label] | None = ...,
+    q: int | Sequence[float] | Series[float] | Float64Index | npt.NDArray,
+    labels: Literal[False] | Sequence[Label] | None = ...,
     retbins: Literal[False] = ...,
     precision: int = ...,
     duplicates: Literal["raise", "drop"] = ...,
 ) -> Series: ...
 @overload
 def qcut(
-    x: npt.NDArray | Series,
-    q: int | Sequence[float] | Series[float] | Float64Index,
+    x: Index | npt.NDArray | Sequence[int] | Sequence[float],
+    q: int | Sequence[float] | Series[float] | Float64Index | npt.NDArray,
     *,
     labels: Literal[False],
     retbins: Literal[True],
     precision: int = ...,
     duplicates: Literal["raise", "drop"] = ...,
-) -> tuple[npt.NDArray, npt.NDArray]: ...
+) -> tuple[npt.NDArray, npt.NDArray[np.float_]]: ...
 @overload
 def qcut(
     x: Series,
-    q: int | Sequence[float] | Series[float] | Float64Index,
-    labels: Sequence[Label] | None = ...,
+    q: int | Sequence[float] | Series[float] | Float64Index | npt.NDArray,
+    labels: Literal[False] | Sequence[Label] | None = ...,
     *,
     retbins: Literal[True],
     precision: int = ...,
     duplicates: Literal["raise", "drop"] = ...,
-) -> tuple[Series, npt.NDArray]: ...
+) -> tuple[Series, npt.NDArray[np.float_]]: ...
 @overload
 def qcut(
-    x: npt.NDArray,
-    q: int | Sequence[float] | Series[float] | Float64Index,
+    x: Index | npt.NDArray | Sequence[int] | Sequence[float],
+    q: int | Sequence[float] | Series[float] | Float64Index | npt.NDArray,
     labels: Sequence[Label] | None = ...,
     *,
     retbins: Literal[True],
     precision: int = ...,
     duplicates: Literal["raise", "drop"] = ...,
-) -> tuple[Categorical, npt.NDArray]: ...
+) -> tuple[Categorical, npt.NDArray[np.float_]]: ...

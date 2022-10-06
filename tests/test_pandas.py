@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import random
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -574,4 +575,65 @@ def test_cut() -> None:
 
 
 def test_qcut() -> None:
-    pass
+    val_list = [random.random() for _ in range(20)]
+    val_arr = np.array(val_list)
+    val_series = pd.Series(val_list)
+    val_idx = pd.Index(val_list)
+
+    check(
+        assert_type(
+            pd.qcut(val_list, 4, precision=2, duplicates="raise"), pd.Categorical
+        ),
+        pd.Categorical,
+    )
+    check(
+        assert_type(
+            pd.qcut(val_arr, 4, precision=2, duplicates="drop"), pd.Categorical
+        ),
+        pd.Categorical,
+    )
+    check(
+        assert_type(
+            pd.qcut(val_idx, 4, precision=2, duplicates="drop"), pd.Categorical
+        ),
+        pd.Categorical,
+    )
+    check(
+        assert_type(pd.qcut(val_series, 4, precision=2, duplicates="raise"), pd.Series),
+        pd.Series,
+    )
+
+    a0, a1 = pd.qcut(val_list, 4, retbins=True)
+    b0, b1 = pd.qcut(val_arr, 4, retbins=True)
+    c0, c1 = pd.qcut(val_idx, 4, retbins=True)
+    d0, d1 = pd.qcut(val_series, 4, retbins=True)
+    check(assert_type(a0, pd.Categorical), pd.Categorical)
+    check(assert_type(b0, pd.Categorical), pd.Categorical)
+    check(assert_type(c0, pd.Categorical), pd.Categorical)
+    check(assert_type(d0, pd.Series), pd.Series)
+
+    check(assert_type(a1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(b1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(c1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(d1, npt.NDArray[np.float_]), np.ndarray)
+
+    e0, e1 = pd.qcut(val_list, [0.25, 0.5, 0.75], retbins=True)
+    f0, f1 = pd.qcut(val_arr, np.array([0.25, 0.5, 0.75]), retbins=True)
+    g0, g1 = pd.qcut(val_idx, 4, retbins=True, labels=False)
+    h0, h1 = pd.qcut(val_series, 4, retbins=True, labels=False)
+    i0, i1 = pd.qcut(val_list, [0.25, 0.5, 0.75], retbins=True, labels=False)
+    j0, j1 = pd.qcut(val_arr, np.array([0.25, 0.5, 0.75]), retbins=True, labels=False)
+
+    check(assert_type(e0, pd.Categorical), pd.Categorical)
+    check(assert_type(f0, pd.Categorical), pd.Categorical)
+    check(assert_type(g0, npt.NDArray), np.ndarray)
+    check(assert_type(h0, pd.Series), pd.Series)
+    check(assert_type(i0, npt.NDArray), np.ndarray)
+    check(assert_type(j0, npt.NDArray), np.ndarray)
+
+    check(assert_type(e1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(f1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(g1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(h1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(i1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(j1, npt.NDArray[np.float_]), np.ndarray)
