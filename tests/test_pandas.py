@@ -253,7 +253,7 @@ def test_unique() -> None:
         np.ndarray,
     )
     check(
-        assert_type(pd.unique(pd.RangeIndex(0, 10)), np.ndarray),
+        assert_type(pd.unique(pd.RangeIndex(0, 10)), Union[pd.Index, np.ndarray]),
         np.ndarray,
     )
     check(
@@ -475,3 +475,29 @@ def test_factorize() -> None:
     )
     check(assert_type(codes, np.ndarray), np.ndarray)
     check(assert_type(uniques, np.ndarray), np.ndarray)
+
+
+def test_index_unqiue() -> None:
+    ci = pd.CategoricalIndex(["a", "b", "a", "c"])
+    dti = pd.DatetimeIndex([pd.Timestamp(2000, 1, 1)])
+    fi = pd.Float64Index([1.0, 2.0])
+    i = pd.Index(["a", "b", "c", "a"])
+    i64i = pd.Int64Index([1, 2, 3, 4])
+    pi = pd.PeriodIndex(["2000Q1"], freq="Q")
+    ri = pd.RangeIndex(0, 10)
+    ui = pd.UInt64Index([0, 1, 2, 3, 5])
+    tdi = pd.timedelta_range("1 day", "10 days", periods=10)
+    mi = pd.MultiIndex.from_product([["a", "b"], ["apple", "banana"]])
+    interval_i = pd.interval_range(1, 10, periods=10)
+
+    check(assert_type(pd.unique(ci), pd.CategoricalIndex), pd.CategoricalIndex)
+    check(assert_type(pd.unique(dti), Union[pd.Index, np.ndarray]), np.ndarray)
+    check(assert_type(pd.unique(fi), Union[pd.Index, np.ndarray]), np.ndarray)
+    check(assert_type(pd.unique(i), Union[pd.Index, np.ndarray]), np.ndarray)
+    check(assert_type(pd.unique(i64i), Union[pd.Index, np.ndarray]), np.ndarray)
+    check(assert_type(pd.unique(pi), pd.PeriodIndex), pd.PeriodIndex)
+    check(assert_type(pd.unique(ri), Union[pd.Index, np.ndarray]), np.ndarray)
+    check(assert_type(pd.unique(ui), Union[pd.Index, np.ndarray]), np.ndarray)
+    check(assert_type(pd.unique(tdi), Union[pd.Index, np.ndarray]), np.ndarray)
+    check(assert_type(pd.unique(mi), Union[pd.Index, np.ndarray]), np.ndarray)
+    check(assert_type(pd.unique(interval_i), pd.IntervalIndex), pd.IntervalIndex)

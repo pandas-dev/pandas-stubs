@@ -10,6 +10,7 @@ from pandas import (
     CategoricalIndex,
     DatetimeIndex,
     Index,
+    IntervalIndex,
     PeriodIndex,
     RangeIndex,
     Series,
@@ -19,13 +20,11 @@ from pandas.api.extensions import ExtensionArray
 from pandas._typing import AnyArrayLike
 
 @overload
-def unique(values: DatetimeIndex) -> DatetimeIndex: ...
-@overload
 def unique(values: PeriodIndex) -> PeriodIndex: ...
 @overload
 def unique(values: CategoricalIndex) -> CategoricalIndex: ...
 @overload
-def unique(values: RangeIndex | pd.Float64Index) -> np.ndarray: ...
+def unique(values: IntervalIndex) -> IntervalIndex: ...
 @overload
 def unique(values: Index) -> Index | np.ndarray: ...
 @overload
