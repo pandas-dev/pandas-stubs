@@ -44,7 +44,7 @@ def cut(
     include_lowest: bool = ...,
     duplicates: Literal["raise", "drop"] = ...,
     ordered: bool = ...,
-) -> tuple[npt.NDArray, IntervalIndex]: ...
+) -> tuple[npt.NDArray[np.intp], IntervalIndex]: ...
 @overload
 def cut(
     x: Series,
@@ -161,7 +161,7 @@ def qcut(
     retbins: Literal[False] = ...,
     precision: int = ...,
     duplicates: Literal["raise", "drop"] = ...,
-) -> npt.NDArray: ...
+) -> npt.NDArray[np.intp]: ...
 @overload
 def qcut(
     x: Index | npt.NDArray | Sequence[int] | Sequence[float],
@@ -189,7 +189,7 @@ def qcut(
     retbins: Literal[True],
     precision: int = ...,
     duplicates: Literal["raise", "drop"] = ...,
-) -> tuple[npt.NDArray, npt.NDArray[np.float_]]: ...
+) -> tuple[npt.NDArray[np.intp], npt.NDArray[np.float_]]: ...
 @overload
 def qcut(
     x: Series,

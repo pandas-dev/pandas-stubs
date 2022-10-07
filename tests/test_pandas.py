@@ -17,7 +17,10 @@ from typing_extensions import assert_type
 
 from pandas._typing import Scalar
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 
 def test_types_to_datetime() -> None:
@@ -624,10 +627,10 @@ def test_qcut() -> None:
 
     check(assert_type(e0, pd.Categorical), pd.Categorical)
     check(assert_type(f0, pd.Categorical), pd.Categorical)
-    check(assert_type(g0, npt.NDArray), np.ndarray)
+    check(assert_type(g0, npt.NDArray[np.intp]), np.ndarray)
     check(assert_type(h0, pd.Series), pd.Series)
-    check(assert_type(i0, npt.NDArray), np.ndarray)
-    check(assert_type(j0, npt.NDArray), np.ndarray)
+    check(assert_type(i0, npt.NDArray[np.intp]), np.ndarray)
+    check(assert_type(j0, npt.NDArray[np.intp]), np.ndarray)
 
     check(assert_type(e1, npt.NDArray[np.float_]), np.ndarray)
     check(assert_type(f1, npt.NDArray[np.float_]), np.ndarray)
@@ -817,6 +820,18 @@ def test_merge_ordered() -> None:
         ),
         pd.DataFrame,
     )
+    check(
+        assert_type(
+            pd.merge_ordered(ls, rf, left_on="left", right_on="b"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rs, left_on="a", right_on="right"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
     check(assert_type(pd.merge_ordered(lf, rf, on="b"), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(pd.merge_ordered(lf, rf, left_on="a", right_on="b"), pd.DataFrame),
@@ -891,6 +906,16 @@ def test_merge_ordered() -> None:
         ),
         pd.DataFrame,
     )
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.merge_ordered(  # type: ignore[call-overload]
+            ls, rs, left_on="left", right_on="right", left_by="left", right_by="right"
+        )
+        pd.merge_ordered(  # type: ignore[call-overload]
+            ls, rf, left_on="left", right_on="b", left_by="left", right_by="b"
+        )
+        pd.merge_ordered(  # type: ignore[call-overload]
+            lf, rs, left_on="a", right_on="right", left_by="a", right_by="right"
+        )
 
 
 def test_merge_asof() -> None:
