@@ -1236,25 +1236,16 @@ def test_where() -> None:
 
     cond3 = pd.Series([False, True, True])
     check(assert_type(s.where(cond3, other=0), "pd.Series[int]"), pd.Series, int)
-    
-def Bitwise_Operator_on_Series_Support_int() -> None:
+
+
+def test_bitwise_operators_int() -> None:
     #from issue348(bitwise operators on Series should support int)
     s=pd.Series([1,2,34,])
     check(assert_type(s & 3, pd.Series), pd.Series)
-    
-    s=pd.Series([1,2,34,])
     check(assert_type(3 & s, pd.Series), pd.Series)
-    
-    s=pd.Series([1,2,34,])
-    check(assert_type(s | 3, pd.Series), pd.Series)
-    
-    s=pd.Series([1,2,34,])
-    check(assert_type(3 | s, pd.Series), pd.Series)
-    
-    s=pd.Series([1,2,34,])
-    check(assert_type(3 ^ s, pd.Series), pd.Series)
-    
-    s=pd.Series([1,2,34,])
-    check(assert_type(3 ^ s, pd.Series), pd.Series)
+    check(assert_type(s | 3, pd.Series), pd.Series)  
+    check(assert_type(3 | s, pd.Series), pd.Series) 
+    check(assert_type(3 ^ s, pd.Series), pd.Series)    
+    check(assert_type(s ^ 3, pd.Series), pd.Series)
     
 
