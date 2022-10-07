@@ -122,6 +122,6 @@ def bdate_range(
     normalize: bool = ...,
     name: Hashable | None = ...,
     weekmask: str | None = ...,
-    holidays: Sequence[str | DateAndDatetimeLike | date],
+    holidays: Sequence[str | DateAndDatetimeLike],
     inclusive: IntervalClosedType = ...,
 ) -> DatetimeIndex: ...
