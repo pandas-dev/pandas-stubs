@@ -4,13 +4,16 @@ from typing import (
     Sequence,
 )
 
+import numpy as np
 from pandas.core.frame import DataFrame
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.series import Series
 
 from pandas._typing import (
+    HashableT,
     IndexLabel,
     Scalar,
+    npt,
 )
 
 def pivot_table(
@@ -33,12 +36,12 @@ def pivot(
     values: IndexLabel = ...,
 ) -> DataFrame: ...
 def crosstab(
-    index: Sequence | Series,
-    columns: Sequence | Series,
-    values: Sequence | None = ...,
-    rownames: Sequence | None = ...,
-    colnames: Sequence | None = ...,
-    aggfunc: Callable | None = ...,
+    index: list | npt.NDArray | Series | list[Sequence | npt.NDArray | Series],
+    columns: list | npt.NDArray | Series | list[Sequence | npt.NDArray | Series],
+    values: list | npt.NDArray | Series | None = ...,
+    rownames: list[HashableT] | None = ...,
+    colnames: list[HashableT] | None = ...,
+    aggfunc: str | np.ufunc | Callable[[Series], float] | None = ...,
     margins: bool = ...,
     margins_name: str = ...,
     dropna: bool = ...,

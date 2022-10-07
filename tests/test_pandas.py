@@ -316,3 +316,100 @@ def test_eval():
         ),
         pd.DataFrame,
     )
+
+
+def test_crosstab_args() -> None:
+    a = [1, 2, 3, 4, 1, 2, 3, 4, 1, 2]
+    b: list = [4, 5, 6, 3, 4, 3, 5, 6, 5, 5]
+    c = [1, 3, 2, 3, 1, 2, 3, 1, 3, 2]
+    check(assert_type(pd.crosstab(a, b), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.crosstab(a, [b, c]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.crosstab(np.array(a), np.array(b)), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(pd.crosstab(np.array(a), [np.array(b), np.array(c)]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.crosstab(pd.Series(a), pd.Series(b)), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(
+            pd.crosstab(pd.Series(a), [pd.Series(b), pd.Series(c)]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    check(
+        assert_type(pd.crosstab(a, b, values=values, aggfunc=np.sum), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.crosstab(a, b, values=np.array(values), aggfunc=np.sum), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+    check(
+        assert_type(
+            pd.crosstab(a, b, values=pd.Series(values), aggfunc=np.sum), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.crosstab(a, b, values=values, aggfunc=np.mean), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.crosstab(a, b, values=values, aggfunc="mean"), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    def m(x: pd.Series) -> float:
+        return x.sum() / len(x)
+
+    check(
+        assert_type(pd.crosstab(a, b, values=values, aggfunc=m), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    def m2(x: pd.Series) -> int:
+        return int(x.sum())
+
+    check(
+        assert_type(pd.crosstab(a, b, values=values, aggfunc=m2), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.crosstab(a, b, margins=True, margins_name="something"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.crosstab(a, b, margins=True, dropna=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.crosstab(a, b, colnames=["a"], rownames=["b"]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    rownames: list[tuple] = [("b", 1)]
+    colnames: list[tuple] = [("a",)]
+    # pyright can't figure out that these are hashable
+    check(
+        assert_type(
+            pd.crosstab(a, b, colnames=colnames, rownames=rownames),
+            pd.DataFrame,  # pyright: ignore
+        ),
+        pd.DataFrame,
+    )
+    check(assert_type(pd.crosstab(a, b, normalize=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.crosstab(a, b, normalize=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.crosstab(a, b, normalize="all"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.crosstab(a, b, normalize="index"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.crosstab(a, b, normalize="columns"), pd.DataFrame), pd.DataFrame
+    )
