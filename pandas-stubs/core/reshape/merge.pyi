@@ -14,7 +14,7 @@ from pandas._typing import (
 )
 
 def merge(
-    # TODO: Verify Series is accepted and correct in docs
+    # TODO: Series is accepted -> correct in docs
     left: DataFrame | Series,
     right: DataFrame | Series,
     how: Literal["left", "right", "outer", "inner", "cross"] = ...,

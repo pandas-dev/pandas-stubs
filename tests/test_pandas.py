@@ -635,3 +635,167 @@ def test_qcut() -> None:
     check(assert_type(h1, npt.NDArray[np.float_]), np.ndarray)
     check(assert_type(i1, npt.NDArray[np.float_]), np.ndarray)
     check(assert_type(j1, npt.NDArray[np.float_]), np.ndarray)
+
+
+def test_merge() -> None:
+    ls = pd.Series([1, 2, 3, 4], index=[1, 2, 3, 4], name="left")
+    rs = pd.Series([3, 4, 5, 6], index=[3, 4, 5, 6], name="right")
+    lf = pd.DataFrame(pd.Series([1, 2, 3, 4], index=[1, 2, 3, 4], name="left"))
+    rf = pd.DataFrame(pd.Series([3, 4, 5, 6], index=[3, 4, 5, 6], name="right"))
+
+    check(
+        assert_type(pd.merge(ls, rs, left_on="left", right_on="right"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(ls, rs, how="left", left_on="left", right_on="right"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(ls, rs, how="right", left_on="left", right_on="right"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(ls, rs, how="outer", left_on="left", right_on="right"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(ls, rs, how="inner", left_on="left", right_on="right"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    # TOOD: When cross don't need on??
+    check(assert_type(pd.merge(ls, rs, how="cross"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(
+            pd.merge(ls, rs, how="inner", left_index=True, right_index=True),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls,
+                rs,
+                how="inner",
+                left_index=True,
+                right_index=True,
+                sort=True,
+                copy=True,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls,
+                rs,
+                how="inner",
+                left_index=True,
+                right_index=True,
+                suffixes=["_1", "_2"],
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls,
+                rs,
+                how="inner",
+                left_index=True,
+                right_index=True,
+                suffixes=["_1", None],
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls,
+                rs,
+                how="inner",
+                left_index=True,
+                right_index=True,
+                suffixes=("_1", None),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls,
+                rs,
+                how="inner",
+                left_index=True,
+                right_index=True,
+                suffixes=(None, "_2"),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls,
+                rs,
+                how="inner",
+                left_index=True,
+                right_index=True,
+                suffixes=("_1", "_2"),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls, rs, how="inner", left_index=True, right_index=True, indicator=True
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge(lf, rs, left_on="left", right_on="right"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge(ls, rf, left_on="left", right_on="right"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge(lf, rf, left_on="left", right_on="right"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(lf, rf, left_on=["left"], right_on=["right"]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge(lf, rf, left_index=True, right_index=True), pd.DataFrame),
+        pd.DataFrame,
+    )
