@@ -209,7 +209,7 @@ def test_unique() -> None:
                     ]
                 )
             ),
-            Union[pd.Index, np.ndarray],
+            np.ndarray,
         ),
         pd.DatetimeIndex,
     )
@@ -248,13 +248,11 @@ def test_unique() -> None:
         np.ndarray,
     )
     check(
-        assert_type(
-            pd.unique(pd.Index(["a", "b", "c", "a"])), Union[pd.Index, np.ndarray]
-        ),
+        assert_type(pd.unique(pd.Index(["a", "b", "c", "a"])), np.ndarray),
         np.ndarray,
     )
     check(
-        assert_type(pd.unique(pd.RangeIndex(0, 10)), Union[pd.Index, np.ndarray]),
+        assert_type(pd.unique(pd.RangeIndex(0, 10)), np.ndarray),
         np.ndarray,
     )
     check(
@@ -271,7 +269,7 @@ def test_unique() -> None:
     check(
         assert_type(
             pd.unique(pd.timedelta_range(start="1 day", periods=4)),
-            Union[pd.Index, np.ndarray],
+            np.ndarray,
         ),
         np.ndarray,
     )
@@ -495,15 +493,15 @@ def test_index_unqiue() -> None:
     interval_i = pd.interval_range(1, 10, periods=10)
 
     check(assert_type(pd.unique(ci), pd.CategoricalIndex), pd.CategoricalIndex)
-    check(assert_type(pd.unique(dti), Union[pd.Index, np.ndarray]), np.ndarray)
-    check(assert_type(pd.unique(fi), Union[pd.Index, np.ndarray]), np.ndarray)
-    check(assert_type(pd.unique(i), Union[pd.Index, np.ndarray]), np.ndarray)
-    check(assert_type(pd.unique(i64i), Union[pd.Index, np.ndarray]), np.ndarray)
+    check(assert_type(pd.unique(dti), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(fi), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(i), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(i64i), np.ndarray), np.ndarray)
     check(assert_type(pd.unique(pi), pd.PeriodIndex), pd.PeriodIndex)
-    check(assert_type(pd.unique(ri), Union[pd.Index, np.ndarray]), np.ndarray)
-    check(assert_type(pd.unique(ui), Union[pd.Index, np.ndarray]), np.ndarray)
-    check(assert_type(pd.unique(tdi), Union[pd.Index, np.ndarray]), np.ndarray)
-    check(assert_type(pd.unique(mi), Union[pd.Index, np.ndarray]), np.ndarray)
+    check(assert_type(pd.unique(ri), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(ui), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(tdi), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(mi), np.ndarray), np.ndarray)
     check(assert_type(pd.unique(interval_i), pd.IntervalIndex), pd.IntervalIndex)
 
 
