@@ -74,6 +74,7 @@ from pandas._typing import (
     IndexLabel,
     IndexType,
     IntervalClosedType,
+    JoinHow,
     JsonFrameOrient,
     Label,
     Level,
@@ -97,6 +98,7 @@ from pandas._typing import (
     Suffixes,
     T as TType,
     TimestampConvention,
+    ValidationOptions,
     WriteBuffer,
     XMLParsers,
     np_ndarray_bool,
@@ -531,7 +533,7 @@ class DataFrame(NDFrame, OpsMixin):
     def align(
         self,
         other: DataFrame | Series,
-        join: MergeHow = ...,
+        join: JoinHow = ...,
         axis: AxisType | None = ...,
         level: Level | None = ...,
         copy: _bool = ...,
@@ -1101,21 +1103,11 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         other: DataFrame | Series | list[DataFrame | Series],
         on: _str | list[_str] | None = ...,
-        how: MergeHow = ...,
+        how: JoinHow = ...,
         lsuffix: _str = ...,
         rsuffix: _str = ...,
         sort: _bool = ...,
-        validate: Literal[
-            "one_to_one",
-            "1:1",
-            "one_to_many",
-            "1:m",
-            "many_to_one",
-            "m:1",
-            "many_to_many",
-            "m:m",
-        ]
-        | None = ...,
+        validate: ValidationOptions | None = ...,
     ) -> DataFrame: ...
     def merge(
         self,

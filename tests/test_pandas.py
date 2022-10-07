@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import random
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -8,7 +9,7 @@ from typing import (
 )
 
 import numpy as np
-from numpy import typing as npt
+import numpy.typing as npt
 import pandas as pd
 from pandas.api.extensions import ExtensionArray
 import pytest
@@ -16,7 +17,10 @@ from typing_extensions import assert_type
 
 from pandas._typing import Scalar
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 
 def test_types_to_datetime() -> None:
@@ -208,7 +212,7 @@ def test_unique() -> None:
                     ]
                 )
             ),
-            pd.Index,
+            np.ndarray,
         ),
         pd.DatetimeIndex,
     )
@@ -243,6 +247,32 @@ def test_unique() -> None:
     check(
         assert_type(
             pd.unique([("a", "b"), ("b", "a"), ("a", "c"), ("b", "a")]), np.ndarray
+        ),
+        np.ndarray,
+    )
+    check(
+        assert_type(pd.unique(pd.Index(["a", "b", "c", "a"])), np.ndarray),
+        np.ndarray,
+    )
+    check(
+        assert_type(pd.unique(pd.RangeIndex(0, 10)), np.ndarray),
+        np.ndarray,
+    )
+    check(
+        assert_type(pd.unique(pd.Categorical(["a", "b", "c", "a"])), pd.Categorical),
+        pd.Categorical,
+    )
+    check(
+        assert_type(
+            pd.unique(pd.period_range("2001Q1", periods=10, freq="D")),
+            pd.PeriodIndex,
+        ),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(
+            pd.unique(pd.timedelta_range(start="1 day", periods=4)),
+            np.ndarray,
         ),
         np.ndarray,
     )
@@ -313,6 +343,763 @@ def test_eval():
         assert_type(
             pd.eval("double_age = df.age * 2", target=df),
             Union[npt.NDArray, Scalar, pd.DataFrame, pd.Series, None],
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_wide_to_long():
+    df = pd.DataFrame(
+        {
+            "A1970": {0: "a", 1: "b", 2: "c"},
+            "A1980": {0: "d", 1: "e", 2: "f"},
+            "B1970": {0: 2.5, 1: 1.2, 2: 0.7},
+            "B1980": {0: 3.2, 1: 1.3, 2: 0.1},
+            "X": dict(zip(range(3), np.random.randn(3))),
+        }
+    )
+    df["id"] = df.index
+    df["id2"] = df.index + 1
+    check(
+        assert_type(pd.wide_to_long(df, ["A", "B"], i="id", j="year"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.wide_to_long(df, ["A", "B"], i=["id", "id2"], j="year"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_melt():
+    df = pd.DataFrame(
+        {
+            "A": {0: "a", 1: "b", 2: "c"},
+            "B": {0: 1, 1: 3, 2: 5},
+            "C": {0: 2, 1: 4, 2: 6},
+            "D": {0: 3, 1: 6, 2: 9},
+            "E": {0: 3, 1: 6, 2: 9},
+        }
+    )
+    check(
+        assert_type(
+            pd.melt(df, id_vars=["A"], value_vars=["B"], ignore_index=False),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.melt(df, id_vars=["A"], value_vars=["B"], value_name=("F",)),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    df.columns = pd.MultiIndex.from_arrays([list("ABCDE"), list("FGHIJ")])
+    check(
+        assert_type(
+            pd.melt(
+                df, id_vars=["A"], value_vars=["B"], ignore_index=False, col_level=0
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_lreshape() -> None:
+    data = pd.DataFrame(
+        {
+            "hr1": [514, 573],
+            "hr2": [545, 526],
+            "team": ["Red Sox", "Yankees"],
+            "year1": [2007, 2007],
+            "year2": [2008, 2008],
+        }
+    )
+    check(
+        assert_type(
+            pd.lreshape(
+                data, {"year": ["year1", "year2"], "hr": ["hr1", "hr2"]}, dropna=True
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    data2 = pd.DataFrame(
+        {
+            "hr1": [514, 573],
+            ("hr2",): [545, 526],
+            "team": ["Red Sox", "Yankees"],
+            ("year1",): [2007, 2007],
+            "year2": [2008, 2008],
+        }
+    )
+    from typing import Hashable
+
+    groups: dict[Hashable, list[Hashable]] = {
+        ("year",): [("year1",), "year2"],
+        ("hr",): ["hr1", ("hr2",)],
+    }
+    check(
+        assert_type(
+            pd.lreshape(data2, groups=groups),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_factorize() -> None:
+    codes, uniques = pd.factorize(["b", "b", "a", "c", "b"])
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(uniques, np.ndarray), np.ndarray)
+
+    codes, cat_uniques = pd.factorize(pd.Categorical(["b", "b", "a", "c", "b"]))
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(cat_uniques, pd.Categorical), pd.Categorical)
+
+    codes, idx_uniques = pd.factorize(pd.Index(["b", "b", "a", "c", "b"]))
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(idx_uniques, pd.Index), pd.Index)
+
+    codes, idx_uniques = pd.factorize(pd.Series(["b", "b", "a", "c", "b"]))
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(idx_uniques, pd.Index), pd.Index)
+
+    codes, uniques = pd.factorize("bbacb")
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(uniques, np.ndarray), np.ndarray)
+
+    codes, uniques = pd.factorize(
+        ["b", "b", "a", "c", "b"], use_na_sentinel=True, size_hint=10
+    )
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(uniques, np.ndarray), np.ndarray)
+
+
+def test_index_unqiue() -> None:
+    ci = pd.CategoricalIndex(["a", "b", "a", "c"])
+    dti = pd.DatetimeIndex([pd.Timestamp(2000, 1, 1)])
+    with pytest.warns(FutureWarning, match="pandas.Float64Index is deprecated"):
+        fi = pd.Float64Index([1.0, 2.0])
+    i = pd.Index(["a", "b", "c", "a"])
+    with pytest.warns(FutureWarning, match="pandas.Int64Index is deprecated"):
+        i64i = pd.Int64Index([1, 2, 3, 4])
+    pi = pd.period_range("2000Q1", periods=2, freq="Q")
+    ri = pd.RangeIndex(0, 10)
+    with pytest.warns(FutureWarning, match="pandas.UInt64Index is deprecated"):
+        ui = pd.UInt64Index([0, 1, 2, 3, 5])
+    tdi = pd.timedelta_range("1 day", "10 days", periods=10)
+    mi = pd.MultiIndex.from_product([["a", "b"], ["apple", "banana"]])
+    interval_i = pd.interval_range(1, 10, periods=10)
+
+    check(assert_type(pd.unique(ci), pd.CategoricalIndex), pd.CategoricalIndex)
+    check(assert_type(pd.unique(dti), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(fi), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(i), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(i64i), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(pi), pd.PeriodIndex), pd.PeriodIndex)
+    check(assert_type(pd.unique(ri), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(ui), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(tdi), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(mi), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(interval_i), pd.IntervalIndex), pd.IntervalIndex)
+
+
+def test_cut() -> None:
+    intval_idx = pd.interval_range(0, 10, 4)
+    a = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, precision=1, duplicates="drop")
+    b = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, labels=False, duplicates="raise")
+    c = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, labels=["1", "2", "3", "4"])
+    check(assert_type(a, pd.Categorical), pd.Categorical)
+    check(assert_type(b, npt.NDArray[np.intp]), np.ndarray)
+    check(assert_type(c, pd.Categorical), pd.Categorical)
+
+    d0, d1 = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, retbins=True)
+    e0, e1 = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, labels=False, retbins=True)
+    f0, f1 = pd.cut(
+        [1, 2, 3, 4, 5, 6, 7, 8], 4, labels=["1", "2", "3", "4"], retbins=True
+    )
+    check(assert_type(d0, pd.Categorical), pd.Categorical)
+    check(assert_type(d1, npt.NDArray), np.ndarray)
+    check(assert_type(e0, npt.NDArray[np.intp]), np.ndarray)
+    check(assert_type(e1, npt.NDArray), np.ndarray)
+    check(assert_type(f0, pd.Categorical), pd.Categorical)
+    check(assert_type(f1, npt.NDArray), np.ndarray)
+
+    g = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), 4, precision=1, duplicates="drop")
+    h = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), 4, labels=False, duplicates="raise")
+    i = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), 4, labels=["1", "2", "3", "4"])
+    check(assert_type(g, pd.Series), pd.Series)
+    check(assert_type(h, pd.Series), pd.Series)
+    check(assert_type(i, pd.Series), pd.Series)
+
+    j0, j1 = pd.cut(
+        pd.Series([1, 2, 3, 4, 5, 6, 7, 8]),
+        4,
+        precision=1,
+        duplicates="drop",
+        retbins=True,
+    )
+    k0, k1 = pd.cut(
+        pd.Series([1, 2, 3, 4, 5, 6, 7, 8]),
+        4,
+        labels=False,
+        duplicates="raise",
+        retbins=True,
+    )
+    l0, l1 = pd.cut(
+        pd.Series([1, 2, 3, 4, 5, 6, 7, 8]),
+        4,
+        labels=["1", "2", "3", "4"],
+        retbins=True,
+    )
+    m0, m1 = pd.cut(
+        pd.Series([1, 2, 3, 4, 5, 6, 7, 8]),
+        intval_idx,
+        retbins=True,
+    )
+    check(assert_type(j0, pd.Series), pd.Series)
+    check(assert_type(j1, npt.NDArray), np.ndarray)
+    check(assert_type(k0, pd.Series), pd.Series)
+    check(assert_type(k1, npt.NDArray), np.ndarray)
+    check(assert_type(l0, pd.Series), pd.Series)
+    check(assert_type(l1, npt.NDArray), np.ndarray)
+    check(assert_type(m0, pd.Series), pd.Series)
+    check(assert_type(m1, pd.IntervalIndex), pd.IntervalIndex)
+
+    n0, n1 = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], intval_idx, retbins=True)
+    check(assert_type(n0, pd.Categorical), pd.Categorical)
+    check(assert_type(n1, pd.IntervalIndex), pd.IntervalIndex)
+
+
+def test_qcut() -> None:
+    val_list = [random.random() for _ in range(20)]
+    val_arr = np.array(val_list)
+    val_series = pd.Series(val_list)
+    val_idx = pd.Index(val_list)
+
+    check(
+        assert_type(
+            pd.qcut(val_list, 4, precision=2, duplicates="raise"), pd.Categorical
+        ),
+        pd.Categorical,
+    )
+    check(
+        assert_type(
+            pd.qcut(val_arr, 4, precision=2, duplicates="drop"), pd.Categorical
+        ),
+        pd.Categorical,
+    )
+    check(
+        assert_type(
+            pd.qcut(val_idx, 4, precision=2, duplicates="drop"), pd.Categorical
+        ),
+        pd.Categorical,
+    )
+    check(
+        assert_type(pd.qcut(val_series, 4, precision=2, duplicates="raise"), pd.Series),
+        pd.Series,
+    )
+
+    a0, a1 = pd.qcut(val_list, 4, retbins=True)
+    b0, b1 = pd.qcut(val_arr, 4, retbins=True)
+    c0, c1 = pd.qcut(val_idx, 4, retbins=True)
+    d0, d1 = pd.qcut(val_series, 4, retbins=True)
+    check(assert_type(a0, pd.Categorical), pd.Categorical)
+    check(assert_type(b0, pd.Categorical), pd.Categorical)
+    check(assert_type(c0, pd.Categorical), pd.Categorical)
+    check(assert_type(d0, pd.Series), pd.Series)
+
+    check(assert_type(a1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(b1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(c1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(d1, npt.NDArray[np.float_]), np.ndarray)
+
+    e0, e1 = pd.qcut(val_list, [0.25, 0.5, 0.75], retbins=True)
+    f0, f1 = pd.qcut(val_arr, np.array([0.25, 0.5, 0.75]), retbins=True)
+    g0, g1 = pd.qcut(val_idx, 4, retbins=True, labels=False)
+    h0, h1 = pd.qcut(val_series, 4, retbins=True, labels=False)
+    i0, i1 = pd.qcut(val_list, [0.25, 0.5, 0.75], retbins=True, labels=False)
+    j0, j1 = pd.qcut(val_arr, np.array([0.25, 0.5, 0.75]), retbins=True, labels=False)
+
+    check(assert_type(e0, pd.Categorical), pd.Categorical)
+    check(assert_type(f0, pd.Categorical), pd.Categorical)
+    check(assert_type(g0, npt.NDArray[np.intp]), np.ndarray)
+    check(assert_type(h0, pd.Series), pd.Series)
+    check(assert_type(i0, npt.NDArray[np.intp]), np.ndarray)
+    check(assert_type(j0, npt.NDArray[np.intp]), np.ndarray)
+
+    check(assert_type(e1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(f1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(g1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(h1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(i1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(j1, npt.NDArray[np.float_]), np.ndarray)
+
+
+def test_merge() -> None:
+    ls = pd.Series([1, 2, 3, 4], index=[1, 2, 3, 4], name="left")
+    rs = pd.Series([3, 4, 5, 6], index=[3, 4, 5, 6], name="right")
+    lf = pd.DataFrame(pd.Series([1, 2, 3, 4], index=[1, 2, 3, 4], name="left"))
+    rf = pd.DataFrame(pd.Series([3, 4, 5, 6], index=[3, 4, 5, 6], name="right"))
+
+    check(
+        assert_type(pd.merge(ls, rs, left_on="left", right_on="right"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(ls, rs, how="left", left_on="left", right_on="right"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(ls, rs, how="right", left_on="left", right_on="right"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(ls, rs, how="outer", left_on="left", right_on="right"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(ls, rs, how="inner", left_on="left", right_on="right"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    # TOOD: When cross don't need on??
+    check(assert_type(pd.merge(ls, rs, how="cross"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(
+            pd.merge(ls, rs, how="inner", left_index=True, right_index=True),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls,
+                rs,
+                how="inner",
+                left_index=True,
+                right_index=True,
+                sort=True,
+                copy=True,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls,
+                rs,
+                how="inner",
+                left_index=True,
+                right_index=True,
+                suffixes=["_1", "_2"],
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls,
+                rs,
+                how="inner",
+                left_index=True,
+                right_index=True,
+                suffixes=["_1", None],
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls,
+                rs,
+                how="inner",
+                left_index=True,
+                right_index=True,
+                suffixes=("_1", None),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls,
+                rs,
+                how="inner",
+                left_index=True,
+                right_index=True,
+                suffixes=(None, "_2"),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls,
+                rs,
+                how="inner",
+                left_index=True,
+                right_index=True,
+                suffixes=("_1", "_2"),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls, rs, how="inner", left_index=True, right_index=True, indicator=True
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge(lf, rs, left_on="left", right_on="right"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge(ls, rf, left_on="left", right_on="right"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge(lf, rf, left_on="left", right_on="right"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(lf, rf, left_on=["left"], right_on=["right"]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge(lf, rf, left_index=True, right_index=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+
+def test_merge_ordered() -> None:
+    ls = pd.Series([1, 2, 3, 4], index=[1, 2, 3, 4], name="left")
+    rs = pd.Series([3, 4, 5, 6], index=[3, 4, 5, 6], name="right")
+    lf = pd.DataFrame(
+        [[1, 2, 3], [3, 4, 5], [5, 6, 7], [7, 8, 9]],
+        index=[1, 2, 3, 4],
+        columns=["a", "b", "c"],
+    )
+    rf = pd.DataFrame(pd.Series([3, 4, 5, 6], index=[3, 4, 5, 6], name="b"))
+
+    check(
+        assert_type(
+            pd.merge_ordered(ls, rs, left_on="left", right_on="right"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(ls, rf, left_on="left", right_on="b"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rs, left_on="a", right_on="right"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(assert_type(pd.merge_ordered(lf, rf, on="b"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.merge_ordered(lf, rf, left_on="a", right_on="b"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, left_on="b", right_on="b", how="outer"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, left_on=["b"], right_on=["b"], how="outer"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, left_on="b", right_on="b", how="inner"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, left_on="b", right_on="b", how="left"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, left_on="b", right_on="b", how="right"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge_ordered(lf, rf, left_by="a"), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, left_by=["a", "c"], fill_method="ffill"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, on="b", suffixes=["_1", None]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, on="b", suffixes=("_1", None)), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, on="b", suffixes=(None, "_2")), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, on="b", suffixes=("_1", "_2")), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.merge_ordered(  # type: ignore[call-overload]
+            ls,
+            rs,
+            left_on="left",
+            right_on="right",
+            left_by="left",  # pyright: ignore
+            right_by="right",  # pyright: ignore
+        )
+        pd.merge_ordered(  # type: ignore[call-overload]
+            ls,
+            rf,  # pyright: ignore
+            left_on="left",
+            right_on="b",
+            left_by="left",  # pyright: ignore
+            right_by="b",  # pyright: ignore
+        )
+        pd.merge_ordered(  # type: ignore[call-overload]
+            lf,
+            rs,
+            left_on="a",
+            right_on="right",
+            left_by="a",  # pyright: ignore
+            right_by="right",  # pyright: ignore
+        )
+
+
+def test_merge_asof() -> None:
+    ls = pd.Series([1, 2, 3, 4], index=[1, 2, 3, 4], name="left")
+    rs = pd.Series([3, 4, 5, 6], index=[3, 4, 5, 6], name="right")
+    lf = pd.DataFrame(
+        [[1, 2, 3], [3, 4, 5], [5, 6, 7], [7, 8, 9]],
+        index=[1, 2, 3, 4],
+        columns=["a", "b", "c"],
+    )
+    rf = pd.DataFrame(
+        [[1, 2, 3], [3, 4, 5], [5, 6, 7], [7, 8, 9]],
+        index=[1, 2, 3, 4],
+        columns=["a", "b", "d"],
+    )
+
+    check(
+        assert_type(
+            pd.merge_asof(ls, rs, left_on="left", right_on="right"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(ls, rs, left_index=True, right_index=True), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+    check(assert_type(pd.merge_asof(lf, rf, on="a"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.merge_asof(lf, rf, left_on="a", right_on="b"), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    check(
+        assert_type(pd.merge_asof(lf, rf, on="a", by="b"), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(
+            pd.merge_asof(lf, rf, left_on="c", right_on="d", by=["a", "b"]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(lf, rf, on="a", left_by=["c"], right_by=["d"]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(lf, rf, on="a", left_by=["b", "c"], right_by=["b", "d"]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge_asof(lf, rf, on="a", suffixes=["_1", None]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge_asof(lf, rf, on="a", suffixes=("_1", None)), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge_asof(lf, rf, on="a", suffixes=("_1", "_2")), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge_asof(lf, rf, on="a", suffixes=(None, "_2")), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    quotes = pd.DataFrame(
+        {
+            "time": [
+                pd.Timestamp("2016-05-25 13:30:00.023"),
+                pd.Timestamp("2016-05-25 13:30:00.023"),
+                pd.Timestamp("2016-05-25 13:30:00.030"),
+                pd.Timestamp("2016-05-25 13:30:00.041"),
+                pd.Timestamp("2016-05-25 13:30:00.048"),
+                pd.Timestamp("2016-05-25 13:30:00.049"),
+                pd.Timestamp("2016-05-25 13:30:00.072"),
+                pd.Timestamp("2016-05-25 13:30:00.075"),
+            ],
+            "ticker": ["GOOG", "MSFT", "MSFT", "MSFT", "GOOG", "AAPL", "GOOG", "MSFT"],
+            "bid": [720.50, 51.95, 51.97, 51.99, 720.50, 97.99, 720.50, 52.01],
+            "ask": [720.93, 51.96, 51.98, 52.00, 720.93, 98.01, 720.88, 52.03],
+        }
+    )
+    trades = pd.DataFrame(
+        {
+            "time": [
+                pd.Timestamp("2016-05-25 13:30:00.023"),
+                pd.Timestamp("2016-05-25 13:30:00.038"),
+                pd.Timestamp("2016-05-25 13:30:00.048"),
+                pd.Timestamp("2016-05-25 13:30:00.048"),
+                pd.Timestamp("2016-05-25 13:30:00.048"),
+            ],
+            "ticker": ["MSFT", "MSFT", "GOOG", "GOOG", "AAPL"],
+            "price": [51.95, 51.95, 720.77, 720.92, 98.0],
+            "quantity": [75, 155, 100, 100, 100],
+        }
+    )
+
+    check(
+        assert_type(
+            pd.merge_asof(
+                trades, quotes, on="time", by="ticker", tolerance=pd.Timedelta("10ms")
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(
+                trades,
+                quotes,
+                on="time",
+                by="ticker",
+                tolerance=pd.Timedelta("10ms"),
+                allow_exact_matches=False,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(
+                trades,
+                quotes,
+                on="time",
+                by="ticker",
+                tolerance=pd.Timedelta("10ms"),
+                direction="backward",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(
+                trades,
+                quotes,
+                on="time",
+                by="ticker",
+                tolerance=pd.Timedelta("10ms"),
+                direction="forward",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(
+                trades,
+                quotes,
+                on="time",
+                by="ticker",
+                tolerance=pd.Timedelta("10ms"),
+                direction="nearest",
+            ),
+            pd.DataFrame,
         ),
         pd.DataFrame,
     )
