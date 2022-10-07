@@ -17,7 +17,6 @@ from pandas._typing import (
 )
 
 def merge(
-    # TODO: Series is accepted -> correct in docs
     left: DataFrame | Series,
     right: DataFrame | Series,
     how: Literal["left", "right", "outer", "inner", "cross"] = ...,
@@ -37,9 +36,7 @@ def merge(
 ) -> DataFrame: ...
 @overload
 def merge_ordered(
-    # TODO: Series is accepted -> correct in docs
     left: DataFrame,
-    # TODO: Series is accepted -> correct in docs
     right: DataFrame,
     on: Label | list[HashableT] | None = ...,
     left_on: Label | list[HashableT] | None = ...,
@@ -60,7 +57,6 @@ def merge_ordered(
     on: Label | list[HashableT] | None = ...,
     left_on: Label | list[HashableT] | None = ...,
     right_on: Label | list[HashableT] | None = ...,
-    # TODO: Update docs since left_by, right_by must be None if either is a series
     left_by: None = ...,
     right_by: None = ...,
     fill_method: Literal["ffill"] | None = ...,
