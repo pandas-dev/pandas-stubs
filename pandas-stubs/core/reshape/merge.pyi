@@ -12,14 +12,16 @@ from pandas._libs.tslibs import Timedelta
 from pandas._typing import (
     AnyArrayLike,
     HashableT,
+    JoinHow,
     Label,
+    MergeHow,
     ValidationOptions,
 )
 
 def merge(
     left: DataFrame | Series,
     right: DataFrame | Series,
-    how: Literal["left", "right", "outer", "inner", "cross"] = ...,
+    how: MergeHow = ...,
     on: Label | list[HashableT] | AnyArrayLike | None = ...,
     left_on: Label | list[HashableT] | AnyArrayLike | None = ...,
     right_on: Label | list[HashableT] | AnyArrayLike | None = ...,
@@ -48,7 +50,7 @@ def merge_ordered(
     | tuple[str, str]
     | tuple[None, str]
     | tuple[str, None] = ...,
-    how: Literal["left", "right", "outer", "inner"] = ...,
+    how: JoinHow = ...,
 ) -> DataFrame: ...
 @overload
 def merge_ordered(
@@ -64,7 +66,7 @@ def merge_ordered(
     | tuple[str, str]
     | tuple[None, str]
     | tuple[str, None] = ...,
-    how: Literal["left", "right", "outer", "inner"] = ...,
+    how: JoinHow = ...,
 ) -> DataFrame: ...
 @overload
 def merge_ordered(
@@ -80,7 +82,7 @@ def merge_ordered(
     | tuple[str, str]
     | tuple[None, str]
     | tuple[str, None] = ...,
-    how: Literal["left", "right", "outer", "inner"] = ...,
+    how: JoinHow = ...,
 ) -> DataFrame: ...
 def merge_asof(
     left: DataFrame | Series,
