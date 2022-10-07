@@ -125,6 +125,11 @@ T = TypeVar("T")
 FuncType: TypeAlias = Callable[..., Any]
 F = TypeVar("F", bound=FuncType)
 HashableT = TypeVar("HashableT", bound=Hashable)
+HashableT1 = TypeVar("HashableT1", bound=Hashable)
+HashableT2 = TypeVar("HashableT2", bound=Hashable)
+HashableT3 = TypeVar("HashableT3", bound=Hashable)
+HashableT4 = TypeVar("HashableT4", bound=Hashable)
+HashableT5 = TypeVar("HashableT5", bound=Hashable)
 
 AggFuncTypeBase: TypeAlias = Union[Callable, str, np.ufunc]
 AggFuncTypeDictSeries: TypeAlias = dict[Hashable, AggFuncTypeBase]

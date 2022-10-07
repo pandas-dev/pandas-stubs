@@ -69,6 +69,9 @@ from pandas._typing import (
     FormattersType,
     GroupByObjectNonScalar,
     HashableT,
+    HashableT1,
+    HashableT2,
+    HashableT3,
     IgnoreRaise,
     IndexingInt,
     IndexLabel,
@@ -288,25 +291,25 @@ class DataFrame(NDFrame, OpsMixin):
         index: _bool = ...,
         column_dtypes: _str
         | npt.DTypeLike
-        | Mapping[HashableT, npt.DTypeLike]
+        | Mapping[HashableT1, npt.DTypeLike]
         | None = ...,
         index_dtypes: _str
         | npt.DTypeLike
-        | Mapping[HashableT, npt.DTypeLike]
+        | Mapping[HashableT2, npt.DTypeLike]
         | None = ...,
     ) -> np.recarray: ...
     def to_stata(
         self,
         path: FilePath | WriteBuffer[bytes],
         *,
-        convert_dates: dict[HashableT, StataDateFormat] | None = ...,
+        convert_dates: dict[HashableT1, StataDateFormat] | None = ...,
         write_index: _bool = ...,
         byteorder: Literal["<", ">", "little", "big"] | None = ...,
         time_stamp: _dt.datetime | None = ...,
         data_label: _str | None = ...,
-        variable_labels: dict[HashableT, str] | None = ...,
+        variable_labels: dict[HashableT2, str] | None = ...,
         version: Literal[114, 117, 118, 119] | None = ...,
-        convert_strl: list[HashableT] | None = ...,
+        convert_strl: list[HashableT3] | None = ...,
         compression: CompressionOptions = ...,
         storage_options: StorageOptions = ...,
         value_labels: dict[Hashable, dict[float, str]] | None = ...,
@@ -446,8 +449,8 @@ class DataFrame(NDFrame, OpsMixin):
         root_name: str = ...,
         row_name: str = ...,
         na_rep: str | None = ...,
-        attr_cols: list[HashableT] | None = ...,
-        elem_cols: list[HashableT] | None = ...,
+        attr_cols: list[HashableT1] | None = ...,
+        elem_cols: list[HashableT2] | None = ...,
         namespaces: dict[str | None, str] | None = ...,
         prefix: str | None = ...,
         encoding: str = ...,
@@ -466,8 +469,8 @@ class DataFrame(NDFrame, OpsMixin):
         root_name: str | None = ...,
         row_name: str | None = ...,
         na_rep: str | None = ...,
-        attr_cols: list[HashableT] | None = ...,
-        elem_cols: list[HashableT] | None = ...,
+        attr_cols: list[HashableT1] | None = ...,
+        elem_cols: list[HashableT2] | None = ...,
         namespaces: dict[str | None, str] | None = ...,
         prefix: str | None = ...,
         encoding: str = ...,
@@ -1944,8 +1947,8 @@ class DataFrame(NDFrame, OpsMixin):
     def to_string(
         self,
         buf: FilePath | WriteBuffer[str],
-        columns: list[HashableT] | Index | Series | None = ...,
-        col_space: int | list[int] | dict[HashableT, int] | None = ...,
+        columns: list[HashableT1] | Index | Series | None = ...,
+        col_space: int | list[int] | dict[HashableT2, int] | None = ...,
         header: _bool | list[_str] | tuple[str, ...] = ...,
         index: _bool = ...,
         na_rep: _str = ...,
