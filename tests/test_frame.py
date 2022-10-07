@@ -33,10 +33,7 @@ import pytest
 from typing_extensions import assert_type
 import xarray as xr
 
-from pandas._typing import (
-    AggFuncTypeBase,
-    Scalar,
-)
+from pandas._typing import Scalar
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -660,11 +657,12 @@ def test_types_groupby_agg() -> None:
         assert_type(df.groupby("col1").agg(["min", "max"]), pd.DataFrame), pd.DataFrame
     )
     check(assert_type(df.groupby("col1").agg([min, max]), pd.DataFrame), pd.DataFrame)
-    agg_dict1: dict[Hashable, str] = {"col2": "min", "col3": "max", 0: "sum"}
+    agg_dict1 = {"col2": "min", "col3": "max", 0: "sum"}
     check(assert_type(df.groupby("col1").agg(agg_dict1), pd.DataFrame), pd.DataFrame)
-    agg_dict2: dict[Hashable, AggFuncTypeBase] = {"col2": min, "col3": max, 0: min}
+    agg_dict2 = {"col2": min, "col3": max, 0: min}
     check(assert_type(df.groupby("col1").agg(agg_dict2), pd.DataFrame), pd.DataFrame)
-    agg_dict3: dict[Hashable, str | AggFuncTypeBase] = {
+    # Here, MyPy infers dict[object, object], so it must be explicitly annotated
+    agg_dict3: dict[str | int, str | Callable] = {
         "col2": min,
         "col3": "max",
         0: lambda x: x.min(),
