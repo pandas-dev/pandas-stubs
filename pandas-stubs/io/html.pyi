@@ -12,7 +12,6 @@ from pandas.core.frame import DataFrame
 
 from pandas._typing import (
     FilePath,
-    HashableT,
     HashableT1,
     HashableT2,
     HashableT3,
