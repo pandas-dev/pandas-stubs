@@ -1236,3 +1236,7 @@ def test_where() -> None:
 
     cond3 = pd.Series([False, True, True])
     check(assert_type(s.where(cond3, other=0), "pd.Series[int]"), pd.Series, int)
+    
+# from issue #348 (bitwise operators on Series should support int)
+s= pd.Series([1,2,3,4])
+check(assert_type(s & 3, pd.Series), pd.Series)
