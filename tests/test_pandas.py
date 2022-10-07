@@ -799,3 +799,121 @@ def test_merge() -> None:
         assert_type(pd.merge(lf, rf, left_index=True, right_index=True), pd.DataFrame),
         pd.DataFrame,
     )
+
+
+def test_merge_ordered() -> None:
+    ls = pd.Series([1, 2, 3, 4], index=[1, 2, 3, 4], name="left")
+    rs = pd.Series([3, 4, 5, 6], index=[3, 4, 5, 6], name="right")
+    lf = pd.DataFrame(
+        [[1, 2, 3], [3, 4, 5], [5, 6, 7], [7, 8, 9]],
+        index=[1, 2, 3, 4],
+        columns=["a", "b", "c"],
+    )
+    rf = pd.DataFrame(pd.Series([3, 4, 5, 6], index=[3, 4, 5, 6], name="b"))
+
+    check(
+        assert_type(
+            pd.merge_ordered(ls, rs, left_on="left", right_on="right"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(assert_type(pd.merge_ordered(lf, rf, on="b"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.merge_ordered(lf, rf, left_on="a", right_on="b"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, left_on="b", right_on="b", how="outer"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, left_on=["b"], right_on=["b"], how="outer"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, left_on="b", right_on="b", how="inner"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, left_on="b", right_on="b", how="left"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, left_on="b", right_on="b", how="right"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge_ordered(lf, rf, left_by="a"), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, left_by=["a", "c"], fill_method="ffill"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, on="b", suffixes=["_1", None]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, on="b", suffixes=("_1", None)), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, on="b", suffixes=(None, "_2")), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, on="b", suffixes=("_1", "_2")), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_merge_asof() -> None:
+    pass
+
+    # def merge_asof(
+    #     left: DataFrame | Series,
+    #     right: DataFrame | Series,
+    #     on: Label | None = ...,
+    #     # TODO: Is AnyArrayLike accepted?  Not in docs
+    #     left_on: Label | AnyArrayLike | None = ...,
+    #     # TODO: Is AnyArrayLike accepted?  Not in docs
+    #     right_on: Label | AnyArrayLike | None = ...,
+    #     left_index: bool = ...,
+    #     right_index: bool = ...,
+    #     by: Label | list[HashableT] | None = ...,
+    #     left_by: Label | None = ...,
+    #     right_by: Label | None = ...,
+    #     suffixes: list[str | None]
+    #     | tuple[str, str]
+    #     | tuple[None, str]
+    #     | tuple[str, None] = ...,
+    #     tolerance: int | Timedelta | None = ...,
+    #     allow_exact_matches: bool = ...,
+    #     direction: Literal["backward", "forward", "nearest"] = ...,
+    # ) -> DataFrame: ...
