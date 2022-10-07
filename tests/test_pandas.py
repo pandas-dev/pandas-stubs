@@ -894,26 +894,172 @@ def test_merge_ordered() -> None:
 
 
 def test_merge_asof() -> None:
-    pass
+    ls = pd.Series([1, 2, 3, 4], index=[1, 2, 3, 4], name="left")
+    rs = pd.Series([3, 4, 5, 6], index=[3, 4, 5, 6], name="right")
+    lf = pd.DataFrame(
+        [[1, 2, 3], [3, 4, 5], [5, 6, 7], [7, 8, 9]],
+        index=[1, 2, 3, 4],
+        columns=["a", "b", "c"],
+    )
+    rf = pd.DataFrame(
+        [[1, 2, 3], [3, 4, 5], [5, 6, 7], [7, 8, 9]],
+        index=[1, 2, 3, 4],
+        columns=["a", "b", "d"],
+    )
 
-    # def merge_asof(
-    #     left: DataFrame | Series,
-    #     right: DataFrame | Series,
-    #     on: Label | None = ...,
-    #     # TODO: Is AnyArrayLike accepted?  Not in docs
-    #     left_on: Label | AnyArrayLike | None = ...,
-    #     # TODO: Is AnyArrayLike accepted?  Not in docs
-    #     right_on: Label | AnyArrayLike | None = ...,
-    #     left_index: bool = ...,
-    #     right_index: bool = ...,
-    #     by: Label | list[HashableT] | None = ...,
-    #     left_by: Label | None = ...,
-    #     right_by: Label | None = ...,
-    #     suffixes: list[str | None]
-    #     | tuple[str, str]
-    #     | tuple[None, str]
-    #     | tuple[str, None] = ...,
-    #     tolerance: int | Timedelta | None = ...,
-    #     allow_exact_matches: bool = ...,
-    #     direction: Literal["backward", "forward", "nearest"] = ...,
-    # ) -> DataFrame: ...
+    check(
+        assert_type(
+            pd.merge_asof(ls, rs, left_on="left", right_on="right"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(ls, rs, left_index=True, right_index=True), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+    check(assert_type(pd.merge_asof(lf, rf, on="a"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.merge_asof(lf, rf, left_on="a", right_on="b"), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    check(
+        assert_type(pd.merge_asof(lf, rf, on="a", by="b"), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(
+            pd.merge_asof(lf, rf, left_on="c", right_on="d", by=["a", "b"]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(lf, rf, on="a", left_by=["c"], right_by=["d"]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(lf, rf, on="a", left_by=["b", "c"], right_by=["b", "d"]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge_asof(lf, rf, on="a", suffixes=["_1", None]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge_asof(lf, rf, on="a", suffixes=("_1", None)), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge_asof(lf, rf, on="a", suffixes=("_1", "_2")), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge_asof(lf, rf, on="a", suffixes=(None, "_2")), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    quotes = pd.DataFrame(
+        {
+            "time": [
+                pd.Timestamp("2016-05-25 13:30:00.023"),
+                pd.Timestamp("2016-05-25 13:30:00.023"),
+                pd.Timestamp("2016-05-25 13:30:00.030"),
+                pd.Timestamp("2016-05-25 13:30:00.041"),
+                pd.Timestamp("2016-05-25 13:30:00.048"),
+                pd.Timestamp("2016-05-25 13:30:00.049"),
+                pd.Timestamp("2016-05-25 13:30:00.072"),
+                pd.Timestamp("2016-05-25 13:30:00.075"),
+            ],
+            "ticker": ["GOOG", "MSFT", "MSFT", "MSFT", "GOOG", "AAPL", "GOOG", "MSFT"],
+            "bid": [720.50, 51.95, 51.97, 51.99, 720.50, 97.99, 720.50, 52.01],
+            "ask": [720.93, 51.96, 51.98, 52.00, 720.93, 98.01, 720.88, 52.03],
+        }
+    )
+    trades = pd.DataFrame(
+        {
+            "time": [
+                pd.Timestamp("2016-05-25 13:30:00.023"),
+                pd.Timestamp("2016-05-25 13:30:00.038"),
+                pd.Timestamp("2016-05-25 13:30:00.048"),
+                pd.Timestamp("2016-05-25 13:30:00.048"),
+                pd.Timestamp("2016-05-25 13:30:00.048"),
+            ],
+            "ticker": ["MSFT", "MSFT", "GOOG", "GOOG", "AAPL"],
+            "price": [51.95, 51.95, 720.77, 720.92, 98.0],
+            "quantity": [75, 155, 100, 100, 100],
+        }
+    )
+
+    check(
+        assert_type(
+            pd.merge_asof(
+                trades, quotes, on="time", by="ticker", tolerance=pd.Timedelta("10ms")
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(
+                trades,
+                quotes,
+                on="time",
+                by="ticker",
+                tolerance=pd.Timedelta("10ms"),
+                allow_exact_matches=False,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(
+                trades,
+                quotes,
+                on="time",
+                by="ticker",
+                tolerance=pd.Timedelta("10ms"),
+                direction="backward",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(
+                trades,
+                quotes,
+                on="time",
+                by="ticker",
+                tolerance=pd.Timedelta("10ms"),
+                direction="forward",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(
+                trades,
+                quotes,
+                on="time",
+                by="ticker",
+                tolerance=pd.Timedelta("10ms"),
+                direction="nearest",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )

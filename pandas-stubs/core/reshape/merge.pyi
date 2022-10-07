@@ -90,15 +90,13 @@ def merge_asof(
     left: DataFrame | Series,
     right: DataFrame | Series,
     on: Label | None = ...,
-    # TODO: Is AnyArrayLike accepted?  Not in docs
-    left_on: Label | AnyArrayLike | None = ...,
-    # TODO: Is AnyArrayLike accepted?  Not in docs
-    right_on: Label | AnyArrayLike | None = ...,
+    left_on: Label | None = ...,
+    right_on: Label | None = ...,
     left_index: bool = ...,
     right_index: bool = ...,
     by: Label | list[HashableT] | None = ...,
-    left_by: Label | None = ...,
-    right_by: Label | None = ...,
+    left_by: Label | list[HashableT] | None = ...,
+    right_by: Label | list[HashableT] | None = ...,
     suffixes: list[str | None]
     | tuple[str, str]
     | tuple[None, str]
