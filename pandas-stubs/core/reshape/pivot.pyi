@@ -1,7 +1,9 @@
 from typing import (
     Callable,
+    Hashable,
     Literal,
     Sequence,
+    TypeVar,
 )
 
 import numpy as np
@@ -15,6 +17,8 @@ from pandas._typing import (
     Scalar,
     npt,
 )
+
+_HashableT2 = TypeVar("_HashableT2", bound=Hashable)
 
 def pivot_table(
     data: DataFrame,
@@ -40,7 +44,7 @@ def crosstab(
     columns: list | npt.NDArray | Series | list[Sequence | npt.NDArray | Series],
     values: list | npt.NDArray | Series | None = ...,
     rownames: list[HashableT] | None = ...,
-    colnames: list[HashableT] | None = ...,
+    colnames: list[_HashableT2] | None = ...,
     aggfunc: str | np.ufunc | Callable[[Series], float] | None = ...,
     margins: bool = ...,
     margins_name: str = ...,

@@ -398,11 +398,10 @@ def test_crosstab_args() -> None:
     )
     rownames: list[tuple] = [("b", 1)]
     colnames: list[tuple] = [("a",)]
-    # pyright can't figure out that these are hashable
     check(
         assert_type(
             pd.crosstab(a, b, colnames=colnames, rownames=rownames),
-            pd.DataFrame,  # pyright: ignore
+            pd.DataFrame,
         ),
         pd.DataFrame,
     )
