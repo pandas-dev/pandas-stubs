@@ -908,13 +908,28 @@ def test_merge_ordered() -> None:
     )
     if TYPE_CHECKING_INVALID_USAGE:
         pd.merge_ordered(  # type: ignore[call-overload]
-            ls, rs, left_on="left", right_on="right", left_by="left", right_by="right"
+            ls,
+            rs,
+            left_on="left",
+            right_on="right",
+            left_by="left",  # pyright: ignore
+            right_by="right",  # pyright: ignore
         )
         pd.merge_ordered(  # type: ignore[call-overload]
-            ls, rf, left_on="left", right_on="b", left_by="left", right_by="b"
+            ls,
+            rf,  # pyright: ignore
+            left_on="left",
+            right_on="b",
+            left_by="left",  # pyright: ignore
+            right_by="b",  # pyright: ignore
         )
         pd.merge_ordered(  # type: ignore[call-overload]
-            lf, rs, left_on="a", right_on="right", left_by="a", right_by="right"
+            lf,
+            rs,
+            left_on="a",
+            right_on="right",
+            left_by="a",  # pyright: ignore
+            right_by="right",  # pyright: ignore
         )
 
 
