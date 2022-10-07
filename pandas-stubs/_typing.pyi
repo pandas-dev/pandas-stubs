@@ -287,7 +287,8 @@ FillnaOptions: TypeAlias = Literal["backfill", "bfill", "ffill", "pad"]
 ReplaceMethod: TypeAlias = Literal["pad", "ffill", "bfill"]
 SortKind: TypeAlias = Literal["quicksort", "mergesort", "heapsort", "stable"]
 NaPosition: TypeAlias = Literal["first", "last"]
-MergeHow: TypeAlias = Literal["left", "right", "outer", "inner"]
+JoinHow: TypeAlias = Literal["left", "right", "outer", "inner"]
+MergeHow: TypeAlias = Union[JoinHow, Literal["cross"]]
 JsonFrameOrient: TypeAlias = Literal[
     "split", "records", "index", "columns", "values", "table"
 ]
