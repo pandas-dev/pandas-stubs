@@ -24,8 +24,21 @@ _HashableT1 = TypeVar("_HashableT1", bound=Hashable)
 _HashableT2 = TypeVar("_HashableT2", bound=Hashable)
 _HashableT3 = TypeVar("_HashableT3", bound=Hashable)
 
+_PivotAggCallable: TypeAlias = Union[
+    Callable[[Series], str],
+    Callable[[Series], datetime.date],
+    Callable[[Series], datetime.datetime],
+    Callable[[Series], datetime.timedelta],
+    Callable[[Series], bool],
+    Callable[[Series], int],
+    Callable[[Series], float],
+    Callable[[Series], complex],
+    Callable[[Series], pd.Timestamp],
+    Callable[[Series], pd.Timedelta],
+]
+
 _PivotAggFunc: TypeAlias = Union[
-    Callable[[Series], Scalar],
+    _PivotAggCallable,
     np.ufunc,
     Literal["mean", "sum", "count", "min", "max", "median", "std", "var"],
 ]
