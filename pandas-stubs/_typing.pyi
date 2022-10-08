@@ -253,9 +253,11 @@ XMLParsers: TypeAlias = Literal["lxml", "etree"]
 
 # Any plain Python or numpy function
 Function: TypeAlias = Union[np.ufunc, Callable[..., Any]]
+# Use custom HashableT in shared types to avoid conflicts with shared HashableTs
+_GroupByObjectHashableT = TypeVar("_GroupByObjectHashableT", bound=Hashable)
 GroupByObjectNonScalar: TypeAlias = Union[
     tuple,
-    list[HashableT],
+    list[_GroupByObjectHashableT],
     Function,
     list[Function],
     Series,
