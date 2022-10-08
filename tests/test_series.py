@@ -1236,16 +1236,29 @@ def test_where() -> None:
 
     cond3 = pd.Series([False, True, True])
     check(assert_type(s.where(cond3, other=0), "pd.Series[int]"), pd.Series, int)
-
-
+    
 def test_bitwise_operators_int() -> None:
-    #from issue348(bitwise operators on Series should support int)
-    s=pd.Series([1,2,3,4])
-    check(assert_type(s & 3, pd.Series), pd.Series)
-    check(assert_type(3 & s, pd.Series), pd.Series)
-    check(assert_type(s | 3, pd.Series), pd.Series)  
-    check(assert_type(3 | s, pd.Series), pd.Series) 
-    check(assert_type(3 ^ s, pd.Series), pd.Series)    
-    check(assert_type(s ^ 3, pd.Series), pd.Series)
+    s = pd.Series([1, 2, 3, 4])
+    
+    check(assert_type(s & [1, 2, 3, 4], "pd.Series[int]"), pd.Series, int)
+    check(assert_type([1, 2, 3, 4] & s, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s & pd.Series([1, 2, 3, 4]), "pd.Series[int]"), pd.Series, int)
+    check(assert_type(pd.Series([1, 2, 3, 4]) & s, "pd.Series[int]"), pd.Series, int)
+    
+    check(assert_type(s | [1, 2, 3, 4], "pd.Series[int]"), pd.Series, int)
+    check(assert_type([1, 2, 3, 4] | s, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s | pd.Series([1, 2, 3, 4]), "pd.Series[int]"), pd.Series, int)
+    check(assert_type(pd.Series([1, 2, 3, 4]) | s, "pd.Series[int]"), pd.Series, int)
+    
+    check(assert_type(s ^ [1, 2, 3, 4], "pd.Series[int]"), pd.Series, int)
+    check(assert_type([1, 2, 3, 4] ^ s, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(s ^ pd.Series([1, 2, 3, 4]), "pd.Series[int]"), pd.Series, int)
+    check(assert_type(pd.Series([1, 2, 3, 4]) ^ s, "pd.Series[int]"), pd.Series, int)
+
+    
+    
+
+
+
     
 
