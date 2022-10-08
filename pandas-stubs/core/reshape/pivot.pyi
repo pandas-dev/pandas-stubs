@@ -3,6 +3,7 @@ from typing import (
     Callable,
     Hashable,
     Literal,
+    Mapping,
     Sequence,
     TypeVar,
     Union,
@@ -63,7 +64,7 @@ def pivot_table(
     columns: Label | list[_HashableT2] | Grouper | None = ...,
     aggfunc: _PivotAggFunc
     | list[_PivotAggFunc]
-    | dict[_HashableT3, _PivotAggFunc] = ...,
+    | Mapping[Hashable, _PivotAggFunc] = ...,
     fill_value: Scalar | None = ...,
     margins: bool = ...,
     dropna: bool = ...,
