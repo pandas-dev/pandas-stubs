@@ -1240,7 +1240,9 @@ def test_where() -> None:
 
 def test_bitwise_operators_int() -> None:
     s = pd.Series([1, 2, 3, 4])
-#     for issue #348 (bitwise operators on Series should support int)
+    # for issue #348 (bitwise operators on Series should support int)
+    check(assret_type(s & 3, "pd.Series[int]"), pd.Series,int)
+    check(assert_type(3 & s, "pd.Series[int]"), pd.Series,int)
 
     check(assert_type(s & [1, 2, 3, 4], "pd.Series[int]"), pd.Series, int)
     check(assert_type([1, 2, 3, 4] & s, "pd.Series[int]"), pd.Series, int)
