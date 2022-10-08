@@ -12,6 +12,7 @@ from typing import (
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
+from pandas import Grouper
 from pandas.api.extensions import ExtensionArray
 import pytest
 from typing_extensions import assert_type
@@ -1253,46 +1254,203 @@ def test_pivot_table() -> None:
             ],
         }
     )
-    pd.pivot_table(df, values="D", index=["A", "B"], columns=["C"], aggfunc=np.sum)
-    pd.pivot_table(df, values="D", index=["A", "B"], columns="C", aggfunc=np.sum)
-    pd.pivot_table(
-        df, values="D", index=["A", "B"], columns=[(7, "seven")], aggfunc=np.sum
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, values="D", index=["A", "B"], columns=["C"], aggfunc=np.sum
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )
-    pd.pivot_table(
-        df,
-        values="D",
-        index=[("col5",), ("col6", 6)],
-        columns=[(7, "seven")],
-        aggfunc=np.sum,
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, values="D", index=["A", "B"], columns="C", aggfunc=np.sum
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )
-    pd.pivot_table(df, values="D", index=["A", "B"], columns=["C"], aggfunc="sum")
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, values="D", index=["A", "B"], columns=[(7, "seven")], aggfunc=np.sum
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=[("col5",), ("col6", 6)],
+                columns=[(7, "seven")],
+                aggfunc=np.sum,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, values="D", index=["A", "B"], columns=["C"], aggfunc="sum"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
 
     def f(x: pd.Series) -> float:
         return x.sum()
 
-    pd.pivot_table(df, values="D", index=["A", "B"], columns=["C"], aggfunc=f)
-    pd.pivot_table(df, values="D", index=["A", "B"], columns=["C"], aggfunc={"D": f})
-    pd.pivot_table(
-        df, values="D", index=["A", "B"], columns=["C"], aggfunc=[f, np.sum, "sum"]
+    check(
+        assert_type(
+            pd.pivot_table(df, values="D", index=["A", "B"], columns=["C"], aggfunc=f),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )
-    pd.pivot_table(
-        df,
-        values="D",
-        index=["A", "B"],
-        columns=["C"],
-        aggfunc=np.sum,
-        margins=True,
-        margins_name="Total",
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, values="D", index=["A", "B"], columns=["C"], aggfunc={"D": f}
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )
-    pd.pivot_table(
-        df, values="D", index=["A", "B"], columns=["C"], aggfunc=np.sum, dropna=True
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, values="D", index=["A", "B"], columns=["C"], aggfunc={"D": np.sum}
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )
-    pd.pivot_table(
-        df, values="D", index=["A", "B"], columns=["C"], aggfunc=np.sum, dropna=True
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, values="D", index=["A", "B"], columns=["C"], aggfunc={"D": "sum"}
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )
-    pd.pivot_table(
-        df, values="D", index=["A", "B"], columns=["C"], aggfunc=np.sum, observed=True
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=[f, np.sum, "sum"],
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )
-    pd.pivot_table(
-        df, values="D", index=["A", "B"], columns=["C"], aggfunc=np.sum, sort=False
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                margins=True,
+                margins_name="Total",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                dropna=True,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                dropna=True,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                observed=True,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                sort=False,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    idx = pd.DatetimeIndex(
+        ["2011-01-01", "2011-02-01", "2011-01-02", "2011-01-01", "2011-01-02"]
+    )
+    df = pd.DataFrame(
+        {
+            "A": [1, 2, 3, 4, 5],
+            "dt": pd.date_range("2011-01-01", freq="D", periods=5),
+        },
+        index=idx,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=list(idx.month), columns=Grouper(key="dt", freq="M")
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=Grouper(freq="A"), columns=Grouper(key="dt", freq="M")
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )

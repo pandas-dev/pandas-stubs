@@ -24,7 +24,11 @@ _HashableT1 = TypeVar("_HashableT1", bound=Hashable)
 _HashableT2 = TypeVar("_HashableT2", bound=Hashable)
 _HashableT3 = TypeVar("_HashableT3", bound=Hashable)
 
-_PivotAggFunc: TypeAlias = Callable[[Series], Scalar]
+_PivotAggFunc: TypeAlias = Union[
+    Callable[[Series], Scalar],
+    np.ufunc,
+    Literal["mean", "sum", "count", "min", "max", "median", "std", "var"],
+]
 
 _NonIterableHashable: TypeAlias = Union[
     str,
@@ -46,9 +50,7 @@ def pivot_table(
     columns: Label | list[_HashableT2] | Grouper | None = ...,
     aggfunc: _PivotAggFunc
     | list[_PivotAggFunc]
-    | dict[_HashableT3, _PivotAggFunc]
-    | Literal["mean", "sum", "count", "min", "max", "median", "std", "var"]
-    | np.ufunc = ...,
+    | dict[_HashableT3, _PivotAggFunc] = ...,
     fill_value: Scalar | None = ...,
     margins: bool = ...,
     dropna: bool = ...,
