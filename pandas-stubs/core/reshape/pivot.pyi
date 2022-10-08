@@ -4,6 +4,7 @@ from typing import (
     Literal,
     Sequence,
     TypeVar,
+    overload,
 )
 
 import numpy as np
@@ -12,10 +13,10 @@ from pandas.core.groupby.grouper import Grouper
 from pandas.core.series import Series
 
 from pandas._typing import (
+    AnyArrayLike,
     HashableT,
     IndexLabel,
     Scalar,
-    npt,
 )
 
 _HashableT2 = TypeVar("_HashableT2", bound=Hashable)
@@ -39,13 +40,28 @@ def pivot(
     columns: IndexLabel = ...,
     values: IndexLabel = ...,
 ) -> DataFrame: ...
+@overload
 def crosstab(
-    index: list | npt.NDArray | Series | list[Sequence | npt.NDArray | Series],
-    columns: list | npt.NDArray | Series | list[Sequence | npt.NDArray | Series],
-    values: list | npt.NDArray | Series | None = ...,
+    index: list | AnyArrayLike | list[Sequence | AnyArrayLike],
+    columns: list | AnyArrayLike | list[Sequence | AnyArrayLike],
+    values: list | AnyArrayLike,
     rownames: list[HashableT] | None = ...,
     colnames: list[_HashableT2] | None = ...,
-    aggfunc: str | np.ufunc | Callable[[Series], float] | None = ...,
+    *,
+    aggfunc: str | np.ufunc | Callable[[Series], float],
+    margins: bool = ...,
+    margins_name: str = ...,
+    dropna: bool = ...,
+    normalize: bool | Literal[0, 1, "all", "index", "columns"] = ...,
+) -> DataFrame: ...
+@overload
+def crosstab(
+    index: list | AnyArrayLike | list[Sequence | AnyArrayLike],
+    columns: list | AnyArrayLike | list[Sequence | AnyArrayLike],
+    values: None = ...,
+    rownames: list[HashableT] | None = ...,
+    colnames: list[_HashableT2] | None = ...,
+    aggfunc: None = ...,
     margins: bool = ...,
     margins_name: str = ...,
     dropna: bool = ...,
