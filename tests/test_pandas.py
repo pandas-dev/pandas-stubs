@@ -1128,7 +1128,6 @@ def test_crosstab_args() -> None:
         assert_type(pd.crosstab(pd.Categorical(a), pd.Categorical(b)), pd.DataFrame),
         pd.DataFrame,
     )
-
     check(
         assert_type(
             pd.crosstab(pd.Series(a), [pd.Series(b), pd.Series(c)]), pd.DataFrame
@@ -1146,13 +1145,14 @@ def test_crosstab_args() -> None:
         ),
         pd.DataFrame,
     )
-    check(
-        assert_type(
-            pd.crosstab(a, b, values=pd.Categorical(values), aggfunc=np.sum),
+    with pytest.warns(FutureWarning):
+        check(
+            assert_type(
+                pd.crosstab(a, b, values=pd.Categorical(values), aggfunc=np.sum),
+                pd.DataFrame,
+            ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
+        )
     check(
         assert_type(
             pd.crosstab(a, b, values=np.array(values), aggfunc=np.sum), pd.DataFrame
