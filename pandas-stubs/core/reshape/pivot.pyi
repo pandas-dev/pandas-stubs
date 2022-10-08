@@ -1,16 +1,19 @@
+import datetime
 from typing import (
     Callable,
     Hashable,
     Literal,
     Sequence,
-    TypeAlias,
     TypeVar,
+    Union,
 )
 
 import numpy as np
+import pandas as pd
 from pandas.core.frame import DataFrame
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.series import Series
+from typing_extensions import TypeAlias
 
 from pandas._typing import (
     Label,
@@ -22,6 +25,19 @@ _HashableT2 = TypeVar("_HashableT2", bound=Hashable)
 _HashableT3 = TypeVar("_HashableT3", bound=Hashable)
 
 _PivotAggFunc: TypeAlias = Callable[[Series], Scalar]
+
+_NonIterableHashable: TypeAlias = Union[
+    str,
+    datetime.date,
+    datetime.datetime,
+    datetime.timedelta,
+    bool,
+    int,
+    float,
+    complex,
+    pd.Timestamp,
+    pd.Timedelta,
+]
 
 def pivot_table(
     data: DataFrame,
@@ -43,9 +59,9 @@ def pivot_table(
 def pivot(
     data: DataFrame,
     *,
-    index: Hashable | list[_HashableT1] = ...,
-    columns: Hashable | list[_HashableT2] = ...,
-    values: Hashable | list[_HashableT3] = ...,
+    index: _NonIterableHashable | list[_HashableT1] = ...,
+    columns: _NonIterableHashable | list[_HashableT2] = ...,
+    values: _NonIterableHashable | list[_HashableT3] = ...,
 ) -> DataFrame: ...
 def crosstab(
     index: Sequence | Series,

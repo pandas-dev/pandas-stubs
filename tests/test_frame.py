@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 import csv
 import datetime
+import datetime as dt
 import io
 import itertools
 from pathlib import Path
@@ -1884,3 +1885,107 @@ def test_resample_150_changes() -> None:
         return s.mean()
 
     check(assert_type(resampler.apply(f), Union[pd.Series, pd.DataFrame]), pd.DataFrame)
+
+
+def test_pivot_extended() -> None:
+    df = pd.DataFrame(
+        data={
+            "col1": ["first", "second", "third", "fourth"],
+            "col2": [50, 70, 56, 111],
+            "col3": ["A", "B", "B", "A"],
+            "col4": [100, 102, 500, 600],
+            ("col5",): ["E", "F", "G", "H"],
+            ("col6", 6): ["apple", "banana", "cherry", "date"],
+            ("col7", "other"): ["apple", "banana", "cherry", "date"],
+            dt.date(2000, 1, 1): ["E", "F", "G", "H"],
+            dt.datetime(2001, 1, 1, 12): ["E", "F", "G", "H"],
+            dt.timedelta(7): ["E", "F", "G", "H"],
+            True: ["E", "F", "G", "H"],
+            9: ["E", "F", "G", "H"],
+            10.0: ["E", "F", "G", "H"],
+            (11.0 + 1j): ["E", "F", "G", "H"],
+            pd.Timestamp(2002, 1, 1): ["E", "F", "G", "H"],
+            pd.Timedelta(1, "D"): ["E", "F", "G", "H"],
+        }
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index="col1", columns="col3", values="col2"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=[("col5",)], columns=[("col6", 6)], values="col2"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(
+                df, index=[("col5",)], columns=[("col6", 6)], values=[("col7", "other")]
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=dt.date(2000, 1, 1), columns="col3", values="col2"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(
+                df, index=dt.datetime(2001, 1, 1, 12), columns="col3", values="col2"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=dt.timedelta(7), columns="col3", values="col2"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=True, columns="col3", values="col2"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.pivot(df, index=9, columns="col3", values="col2"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=10.0, columns="col3", values="col2"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=(11.0 + 1j), columns="col3", values="col2"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=pd.Timestamp(2002, 1, 1), columns="col3", values="col2"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=pd.Timedelta(1, "D"), columns="col3", values="col2"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
