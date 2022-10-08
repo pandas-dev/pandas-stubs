@@ -19,7 +19,7 @@ from pandas import (
 from pandas.core.base import NoNewAttributesMixin
 
 from pandas._typing import (
-    MergeHow,
+    JoinHow,
     T,
 )
 
@@ -36,7 +36,7 @@ class StringMethods(NoNewAttributesMixin, Generic[T, _TS]):
         *,
         sep: str,
         na_rep: str | None = ...,
-        join: MergeHow = ...,
+        join: JoinHow = ...,
     ) -> str: ...
     @overload
     def cat(
@@ -45,7 +45,7 @@ class StringMethods(NoNewAttributesMixin, Generic[T, _TS]):
         *,
         sep: str,
         na_rep: str | None = ...,
-        join: MergeHow = ...,
+        join: JoinHow = ...,
     ) -> str: ...
     @overload
     def cat(
@@ -53,7 +53,7 @@ class StringMethods(NoNewAttributesMixin, Generic[T, _TS]):
         others: Series | pd.Index | pd.DataFrame | np.ndarray | list[Any],
         sep: str = ...,
         na_rep: str | None = ...,
-        join: MergeHow = ...,
+        join: JoinHow = ...,
     ) -> T: ...
     @overload
     def split(
