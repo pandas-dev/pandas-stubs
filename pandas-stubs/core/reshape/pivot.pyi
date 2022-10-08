@@ -4,13 +4,16 @@ from typing import (
     Literal,
     Sequence,
     TypeVar,
+    Union,
     overload,
 )
 
 import numpy as np
+import pandas as pd
 from pandas.core.frame import DataFrame
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.series import Series
+from typing_extensions import TypeAlias
 
 from pandas._typing import (
     AnyArrayLike,
@@ -18,6 +21,8 @@ from pandas._typing import (
     IndexLabel,
     Scalar,
 )
+
+_ExtendedAnyArrayLike: TypeAlias = Union[AnyArrayLike, pd.Categorical]
 
 _HashableT2 = TypeVar("_HashableT2", bound=Hashable)
 
@@ -42,9 +47,9 @@ def pivot(
 ) -> DataFrame: ...
 @overload
 def crosstab(
-    index: list | AnyArrayLike | list[Sequence | AnyArrayLike],
-    columns: list | AnyArrayLike | list[Sequence | AnyArrayLike],
-    values: list | AnyArrayLike,
+    index: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
+    columns: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
+    values: list | _ExtendedAnyArrayLike,
     rownames: list[HashableT] | None = ...,
     colnames: list[_HashableT2] | None = ...,
     *,
@@ -56,8 +61,8 @@ def crosstab(
 ) -> DataFrame: ...
 @overload
 def crosstab(
-    index: list | AnyArrayLike | list[Sequence | AnyArrayLike],
-    columns: list | AnyArrayLike | list[Sequence | AnyArrayLike],
+    index: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
+    columns: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
     values: None = ...,
     rownames: list[HashableT] | None = ...,
     colnames: list[_HashableT2] | None = ...,
