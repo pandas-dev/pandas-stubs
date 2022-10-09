@@ -1,17 +1,31 @@
 from typing import (
     Callable,
+    Hashable,
     Literal,
     Sequence,
+    TypeVar,
+    Union,
+    overload,
 )
 
+import numpy as np
+import pandas as pd
 from pandas.core.frame import DataFrame
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.series import Series
+from typing_extensions import TypeAlias
 
 from pandas._typing import (
+    AnyArrayLike,
+    ArrayLike,
+    HashableT,
     IndexLabel,
     Scalar,
 )
+
+_ExtendedAnyArrayLike: TypeAlias = Union[AnyArrayLike, ArrayLike]
+
+_HashableT2 = TypeVar("_HashableT2", bound=Hashable)
 
 def pivot_table(
     data: DataFrame,
@@ -32,13 +46,28 @@ def pivot(
     columns: IndexLabel = ...,
     values: IndexLabel = ...,
 ) -> DataFrame: ...
+@overload
 def crosstab(
-    index: Sequence | Series,
-    columns: Sequence | Series,
-    values: Sequence | None = ...,
-    rownames: Sequence | None = ...,
-    colnames: Sequence | None = ...,
-    aggfunc: Callable | None = ...,
+    index: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
+    columns: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
+    values: list | _ExtendedAnyArrayLike,
+    rownames: list[HashableT] | None = ...,
+    colnames: list[_HashableT2] | None = ...,
+    *,
+    aggfunc: str | np.ufunc | Callable[[Series], float],
+    margins: bool = ...,
+    margins_name: str = ...,
+    dropna: bool = ...,
+    normalize: bool | Literal[0, 1, "all", "index", "columns"] = ...,
+) -> DataFrame: ...
+@overload
+def crosstab(
+    index: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
+    columns: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
+    values: None = ...,
+    rownames: list[HashableT] | None = ...,
+    colnames: list[_HashableT2] | None = ...,
+    aggfunc: None = ...,
     margins: bool = ...,
     margins_name: str = ...,
     dropna: bool = ...,
