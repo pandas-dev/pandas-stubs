@@ -1258,6 +1258,10 @@ def test_crosstab_args() -> None:
         pd.DataFrame,
     )
     check(
+        assert_type(pd.crosstab(a, b, values=values, aggfunc="sum"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
         assert_type(
             pd.crosstab(a, b, values=pd.Index(values), aggfunc=np.sum), pd.DataFrame
         ),
@@ -1273,7 +1277,7 @@ def test_crosstab_args() -> None:
         )
     check(
         assert_type(
-            pd.crosstab(a, b, values=np.array(values), aggfunc=np.sum), pd.DataFrame
+            pd.crosstab(a, b, values=np.array(values), aggfunc="var"), pd.DataFrame
         ),
         pd.DataFrame,
     )
@@ -1503,7 +1507,7 @@ def test_pivot_table() -> None:
                 values="D",
                 index=pd.Series(["A", "B"]),
                 columns=["C"],
-                aggfunc=np.sum,
+                aggfunc="sum",
             ),
             pd.DataFrame,
         ),
@@ -1512,7 +1516,7 @@ def test_pivot_table() -> None:
     check(
         assert_type(
             pd.pivot_table(
-                df, values="D", index=["A", "B"], columns="C", aggfunc=np.sum
+                df, values="D", index=["A", "B"], columns="C", aggfunc="mean"
             ),
             pd.DataFrame,
         ),
@@ -1566,10 +1570,18 @@ def test_pivot_table() -> None:
         ),
         pd.DataFrame,
     )
+
+    def g(x: pd.Series) -> int:
+        return int(np.round(x.sum()))
+
     check(
         assert_type(
             pd.pivot_table(
-                df, values="D", index=["A", "B"], columns=["C"], aggfunc={"D": f}
+                df,
+                values=["D", "E"],
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc={"D": f, "E": g},
             ),
             pd.DataFrame,
         ),

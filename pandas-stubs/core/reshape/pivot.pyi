@@ -60,7 +60,7 @@ _ExtendedAnyArrayLike: TypeAlias = Union[AnyArrayLike, ArrayLike]
 @overload
 def pivot_table(
     data: DataFrame,
-    values: Label | None = ...,
+    values: Label | list[HashableT3] | None = ...,
     index: _PivotTableIndexTypes = ...,
     columns: _PivotTableColumnsTypes = ...,
     aggfunc: _PivotAggFunc
@@ -78,7 +78,7 @@ def pivot_table(
 @overload
 def pivot_table(
     data: DataFrame,
-    values: Label | None = ...,
+    values: Label | list[HashableT3] | None = ...,
     *,
     index: Grouper,
     columns: _PivotTableColumnsTypes | Index | npt.NDArray = ...,
@@ -95,7 +95,7 @@ def pivot_table(
 @overload
 def pivot_table(
     data: DataFrame,
-    values: Label | None = ...,
+    values: Label | list[HashableT3] | None = ...,
     index: _PivotTableIndexTypes | Index | npt.NDArray = ...,
     *,
     columns: Grouper,
