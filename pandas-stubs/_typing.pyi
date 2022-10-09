@@ -256,10 +256,10 @@ Function: TypeAlias = Union[np.ufunc, Callable[..., Any]]
 # Use a distinct HashableT in shared types to avoid conflicts with
 # shared HashableT and HashableT#. This one can be used if the identical
 # type is need in a function that uses GroupByObjectNonScalar
-HashableTa = TypeVar("HashableTa", bound=Hashable)
+_HashableTa = TypeVar("_HashableTa", bound=Hashable)
 GroupByObjectNonScalar: TypeAlias = Union[
     tuple,
-    list[HashableTa],
+    list[_HashableTa],
     Function,
     list[Function],
     Series,
