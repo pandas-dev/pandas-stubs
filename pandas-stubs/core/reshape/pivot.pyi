@@ -25,21 +25,11 @@ from pandas._typing import (
     HashableT3,
     Label,
     Scalar,
+    ScalarT,
     npt,
 )
 
-_PivotAggCallable: TypeAlias = Union[
-    Callable[[Series], str],
-    Callable[[Series], datetime.date],
-    Callable[[Series], datetime.datetime],
-    Callable[[Series], datetime.timedelta],
-    Callable[[Series], bool],
-    Callable[[Series], int],
-    Callable[[Series], float],
-    Callable[[Series], complex],
-    Callable[[Series], pd.Timestamp],
-    Callable[[Series], pd.Timedelta],
-]
+_PivotAggCallable: TypeAlias = Callable[[Series], ScalarT]
 
 _PivotAggFunc: TypeAlias = Union[
     _PivotAggCallable,
