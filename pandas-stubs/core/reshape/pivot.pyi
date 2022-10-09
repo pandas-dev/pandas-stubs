@@ -17,12 +17,13 @@ from typing_extensions import TypeAlias
 
 from pandas._typing import (
     AnyArrayLike,
+    ArrayLike,
     HashableT,
     IndexLabel,
     Scalar,
 )
 
-_ExtendedAnyArrayLike: TypeAlias = Union[AnyArrayLike, pd.Categorical]
+_ExtendedAnyArrayLike: TypeAlias = Union[AnyArrayLike, ArrayLike]
 
 _HashableT2 = TypeVar("_HashableT2", bound=Hashable)
 
