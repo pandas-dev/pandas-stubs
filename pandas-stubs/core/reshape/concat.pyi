@@ -1,7 +1,10 @@
 from typing import (
+    Hashable,
     Iterable,
     Literal,
     Mapping,
+    Sequence,
+    TypeVar,
     overload,
 )
 
@@ -12,15 +15,18 @@ from pandas import (
 
 from pandas._typing import HashableT
 
+_HashableT2 = TypeVar("_HashableT2", bound=Hashable)
+_HashableT3 = TypeVar("_HashableT3", bound=Hashable)
+
 @overload
 def concat(
     objs: Iterable[DataFrame] | Mapping[HashableT, DataFrame],
     axis: Literal[0, "index"] = ...,
     join: str = ...,
     ignore_index: bool = ...,
-    keys=...,
-    levels=...,
-    names=...,
+    keys: Sequence[_HashableT2] = ...,
+    levels: list[Sequence] = ...,
+    names: list[_HashableT3] = ...,
     verify_integrity: bool = ...,
     sort: bool = ...,
     copy: bool = ...,
@@ -31,9 +37,9 @@ def concat(
     axis: Literal[0, "index"] = ...,
     join: str = ...,
     ignore_index: bool = ...,
-    keys=...,
-    levels=...,
-    names=...,
+    keys: Sequence[_HashableT2] = ...,
+    levels: list[Sequence] = ...,
+    names: list[_HashableT3] = ...,
     verify_integrity: bool = ...,
     sort: bool = ...,
     copy: bool = ...,
@@ -44,9 +50,9 @@ def concat(
     axis: Literal[1, "columns"],
     join: str = ...,
     ignore_index: bool = ...,
-    keys=...,
-    levels=...,
-    names=...,
+    keys: Sequence[_HashableT2] = ...,
+    levels: list[Sequence] = ...,
+    names: list[_HashableT3] = ...,
     verify_integrity: bool = ...,
     sort: bool = ...,
     copy: bool = ...,
