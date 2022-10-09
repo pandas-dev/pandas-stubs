@@ -1272,28 +1272,34 @@ def test_pivot_table() -> None:
         ),
         pd.DataFrame,
     )
-    check(
-        assert_type(
-            pd.pivot_table(
-                df, values="D", index=["A", "B"], columns=[(7, "seven")], aggfunc=np.sum
+    with pytest.warns(np.VisibleDeprecationWarning):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df,
+                    values="D",
+                    index=["A", "B"],
+                    columns=[(7, "seven")],
+                    aggfunc=np.sum,
+                ),
+                pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            pd.pivot_table(
-                df,
-                values="D",
-                index=[("col5",), ("col6", 6)],
-                columns=[(7, "seven")],
-                aggfunc=np.sum,
+        )
+    with pytest.warns(np.VisibleDeprecationWarning):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df,
+                    values="D",
+                    index=[("col5",), ("col6", 6)],
+                    columns=[(7, "seven")],
+                    aggfunc=np.sum,
+                ),
+                pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
+        )
     check(
         assert_type(
             pd.pivot_table(
@@ -1439,7 +1445,7 @@ def test_pivot_table() -> None:
     check(
         assert_type(
             pd.pivot_table(
-                df, index=list(idx.month), columns=Grouper(key="dt", freq="M")
+                df, index=pd.Index(idx.month), columns=Grouper(key="dt", freq="M")
             ),
             pd.DataFrame,
         ),
