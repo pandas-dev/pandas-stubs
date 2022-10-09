@@ -18,6 +18,9 @@ from pandas.core.generic import NDFrame
 from pandas._typing import (
     FilePath,
     HashableT,
+    HashableT1,
+    HashableT2,
+    HashableT3,
     HDFCompLib,
 )
 
@@ -170,9 +173,9 @@ class HDFStore:
         append: bool = ...,
         complib: HDFCompLib | None = ...,
         complevel: int | None = ...,
-        min_itemsize: int | dict[HashableT, int] | None = ...,
+        min_itemsize: int | dict[HashableT1, int] | None = ...,
         nan_rep: str | None = ...,
-        data_columns: Literal[True] | list[HashableT] | None = ...,
+        data_columns: Literal[True] | list[HashableT2] | None = ...,
         encoding: str | None = ...,
         errors: Literal[
             "strict",
@@ -196,13 +199,13 @@ class HDFStore:
         append: bool = ...,
         complib: HDFCompLib | None = ...,
         complevel: int | None = ...,
-        columns: list[HashableT] | None = ...,
-        min_itemsize: int | dict[HashableT, int] | None = ...,
+        columns: list[HashableT1] | None = ...,
+        min_itemsize: int | dict[HashableT2, int] | None = ...,
         nan_rep: str | None = ...,
         chunksize: int | None = ...,
         expectedrows: int | None = ...,
         dropna: bool | None = ...,
-        data_columns: Literal[True] | list[HashableT] | None = ...,
+        data_columns: Literal[True] | list[HashableT3] | None = ...,
         encoding: str | None = ...,
         errors: Literal[
             "strict",
