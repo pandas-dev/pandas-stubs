@@ -5,7 +5,6 @@ from typing import (
     Literal,
     Mapping,
     Sequence,
-    TypeVar,
     Union,
     overload,
 )
@@ -19,14 +18,15 @@ from pandas.core.series import Series
 from typing_extensions import TypeAlias
 
 from pandas._typing import (
+    AnyArrayLike,
+    ArrayLike,
+    HashableT1,
+    HashableT2,
+    HashableT3,
     Label,
     Scalar,
     npt,
 )
-
-_HashableT1 = TypeVar("_HashableT1", bound=Hashable)
-_HashableT2 = TypeVar("_HashableT2", bound=Hashable)
-_HashableT3 = TypeVar("_HashableT3", bound=Hashable)
 
 _PivotAggCallable: TypeAlias = Union[
     Callable[[Series], str],
@@ -60,12 +60,12 @@ _NonIterableHashable: TypeAlias = Union[
     pd.Timedelta,
 ]
 
-_PivotTableIndexTypes: TypeAlias = Union[
-    Label, list[_HashableT1], Series, Grouper, None
-]
+_PivotTableIndexTypes: TypeAlias = Union[Label, list[HashableT1], Series, Grouper, None]
 _PivotTableColumnsTypes: TypeAlias = Union[
-    Label, list[_HashableT2], Series, Grouper, None
+    Label, list[HashableT2], Series, Grouper, None
 ]
+
+_ExtendedAnyArrayLike: TypeAlias = Union[AnyArrayLike, ArrayLike]
 
 @overload
 def pivot_table(
@@ -122,17 +122,32 @@ def pivot_table(
 def pivot(
     data: DataFrame,
     *,
-    index: _NonIterableHashable | list[_HashableT1] = ...,
-    columns: _NonIterableHashable | list[_HashableT2] = ...,
-    values: _NonIterableHashable | list[_HashableT3] = ...,
+    index: _NonIterableHashable | list[HashableT1] = ...,
+    columns: _NonIterableHashable | list[HashableT2] = ...,
+    values: _NonIterableHashable | list[HashableT3] = ...,
 ) -> DataFrame: ...
+@overload
 def crosstab(
-    index: Sequence | Series,
-    columns: Sequence | Series,
-    values: Sequence | None = ...,
-    rownames: Sequence | None = ...,
-    colnames: Sequence | None = ...,
-    aggfunc: Callable | None = ...,
+    index: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
+    columns: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
+    values: list | _ExtendedAnyArrayLike,
+    rownames: list[HashableT1] | None = ...,
+    colnames: list[HashableT2] | None = ...,
+    *,
+    aggfunc: str | np.ufunc | Callable[[Series], float],
+    margins: bool = ...,
+    margins_name: str = ...,
+    dropna: bool = ...,
+    normalize: bool | Literal[0, 1, "all", "index", "columns"] = ...,
+) -> DataFrame: ...
+@overload
+def crosstab(
+    index: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
+    columns: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
+    values: None = ...,
+    rownames: list[HashableT1] | None = ...,
+    colnames: list[HashableT2] | None = ...,
+    aggfunc: None = ...,
     margins: bool = ...,
     margins_name: str = ...,
     dropna: bool = ...,

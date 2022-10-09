@@ -125,6 +125,11 @@ T = TypeVar("T")
 FuncType: TypeAlias = Callable[..., Any]
 F = TypeVar("F", bound=FuncType)
 HashableT = TypeVar("HashableT", bound=Hashable)
+HashableT1 = TypeVar("HashableT1", bound=Hashable)
+HashableT2 = TypeVar("HashableT2", bound=Hashable)
+HashableT3 = TypeVar("HashableT3", bound=Hashable)
+HashableT4 = TypeVar("HashableT4", bound=Hashable)
+HashableT5 = TypeVar("HashableT5", bound=Hashable)
 
 AggFuncTypeBase: TypeAlias = Union[Callable, str, np.ufunc]
 AggFuncTypeDictSeries: TypeAlias = dict[Hashable, AggFuncTypeBase]
@@ -248,9 +253,13 @@ XMLParsers: TypeAlias = Literal["lxml", "etree"]
 
 # Any plain Python or numpy function
 Function: TypeAlias = Union[np.ufunc, Callable[..., Any]]
+# Use a distinct HashableT in shared types to avoid conflicts with
+# shared HashableT and HashableT#. This one can be used if the identical
+# type is need in a function that uses GroupByObjectNonScalar
+_HashableTa = TypeVar("_HashableTa", bound=Hashable)
 GroupByObjectNonScalar: TypeAlias = Union[
     tuple,
-    list[HashableT],
+    list[_HashableTa],
     Function,
     list[Function],
     Series,

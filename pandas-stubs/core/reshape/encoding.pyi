@@ -11,15 +11,16 @@ from pandas import (
 from pandas._typing import (
     ArrayLike,
     Dtype,
-    HashableT,
+    HashableT1,
+    HashableT2,
 )
 
 def get_dummies(
     data: ArrayLike | DataFrame | Series,
-    prefix: str | Iterable[str] | dict[HashableT, str] | None = ...,
+    prefix: str | Iterable[str] | dict[HashableT1, str] | None = ...,
     prefix_sep: str = ...,
     dummy_na: bool = ...,
-    columns: list[HashableT] | None = ...,
+    columns: list[HashableT2] | None = ...,
     sparse: bool = ...,
     drop_first: bool = ...,
     dtype: Dtype | None = ...,
