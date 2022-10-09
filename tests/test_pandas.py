@@ -1176,7 +1176,6 @@ def test_crosstab_args() -> None:
     )
 
     def m(x: pd.Series) -> float:
-        print(type(x))
         return x.sum() / len(x)
 
     check(
