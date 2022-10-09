@@ -64,12 +64,27 @@ def test_types_concat() -> None:
     )
 
     # Depends on the axis
-    rs1: pd.Series | pd.DataFrame = pd.concat({"a": s, "b": s2})
-    rs1a: pd.Series | pd.DataFrame = pd.concat({"a": s, "b": s2}, axis=1)
-    rs2: pd.Series | pd.DataFrame = pd.concat({1: s, 2: s2})
-    rs2a: pd.Series | pd.DataFrame = pd.concat({1: s, 2: s2}, axis=1)
-    rs3: pd.Series | pd.DataFrame = pd.concat({1: s, None: s2})
-    rs3a: pd.Series | pd.DataFrame = pd.concat({1: s, None: s2}, axis=1)
+    check(
+        assert_type(pd.concat({"a": s, "b": s2}), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(pd.concat({"a": s, "b": s2}, axis=1), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(pd.concat({1: s, 2: s2}), pd.Series), pd.Series)
+    check(assert_type(pd.concat({1: s, 2: s2}, axis=1), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.concat({1: s, None: s2}), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            pd.concat({1: s, None: s2}, axis=1),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
 
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame(data={"col1": [10, 20], "col2": [30, 40]})
@@ -90,20 +105,121 @@ def test_types_concat() -> None:
         pd.DataFrame,
     )
 
-    result: pd.DataFrame = pd.concat(
-        {"a": pd.DataFrame([1, 2, 3]), "b": pd.DataFrame([4, 5, 6])}, axis=1
+    check(
+        assert_type(
+            pd.concat(
+                {"a": pd.DataFrame([1, 2, 3]), "b": pd.DataFrame([4, 5, 6])}, axis=1
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )
-    result2: pd.DataFrame | pd.Series = pd.concat(
-        {"a": pd.Series([1, 2, 3]), "b": pd.Series([4, 5, 6])}, axis=1
+    check(
+        assert_type(
+            pd.concat({"a": pd.Series([1, 2, 3]), "b": pd.Series([4, 5, 6])}, axis=1),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )
 
-    rdf1: pd.DataFrame = pd.concat({"a": df, "b": df2})
-    rdf2: pd.DataFrame = pd.concat({1: df, 2: df2})
-    rdf3: pd.DataFrame = pd.concat({1: df, None: df2})
+    check(assert_type(pd.concat({"a": df, "b": df2}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat({1: df, 2: df2}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat({1: df, None: df2}), pd.DataFrame), pd.DataFrame)
 
-    rdf4: pd.DataFrame = pd.concat(map(lambda x: s2, ["some_value", 3]), axis=1)
+    check(
+        assert_type(
+            pd.concat(map(lambda x: s2, ["some_value", 3]), axis=1), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
     adict = {"a": df, 2: df2}
-    rdict: pd.DataFrame = pd.concat(adict)
+    check(assert_type(pd.concat(adict), pd.DataFrame), pd.DataFrame)
+
+
+def test_concat_args() -> None:
+    df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
+    df2 = pd.DataFrame(data={"col1": [10, 20], "col2": [30, 40]}, index=[2, 3])
+
+    check(
+        assert_type(pd.concat([df, df2], keys=["df1", "df2"]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.concat([df, df2], keys=["df1", "df2"], names=["one"]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.concat([df, df2], keys=["df1", "df2"], names=[pd.Timedelta(1, "D")]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.concat(
+                [df, df2], keys=[("df1", "ff"), (pd.Timestamp(2000, 1, 1), "gg")]
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.concat([df, df2], ignore_index=True), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(pd.concat([df, df2], verify_integrity=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(pd.concat([df, df2], sort=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], copy=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], join="inner"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], join="outer"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], axis=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], axis=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], axis="index"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], axis="columns"), pd.DataFrame), pd.DataFrame)
+
+    df = pd.DataFrame(np.random.randn(1, 3))
+    df2 = pd.DataFrame(np.random.randn(1, 4))
+
+    levels = [["foo", "baz"], ["one", "two"]]
+    names = ["first", "second"]
+    check(
+        assert_type(
+            pd.concat(
+                [df, df2, df, df2],
+                keys=[("foo", "one"), ("foo", "two"), ("baz", "one"), ("baz", "two")],
+                levels=levels,
+                names=names,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    check(
+        assert_type(
+            pd.concat(
+                [df, df2, df, df2],
+                keys=[("foo", "one"), ("foo", "two"), ("baz", "one"), ("baz", "two")],
+                levels=levels,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    # @overload
+    # def concat(
+    #         objs: Iterable[DataFrame] | Mapping[HashableT, DataFrame],
+    #         keys=...,
+    #         levels=...,
+    #         names=...,
+
+    # ) -> DataFrame: ...
 
 
 def test_types_json_normalize() -> None:

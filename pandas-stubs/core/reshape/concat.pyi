@@ -12,19 +12,19 @@ from pandas import (
 )
 
 from pandas._typing import (
-    HashableT,
+    HashableT1,
     HashableT2,
     HashableT3,
 )
 
 @overload
 def concat(
-    objs: Iterable[DataFrame] | Mapping[HashableT, DataFrame],
+    objs: Iterable[DataFrame] | Mapping[HashableT1, DataFrame],
     axis: Literal[0, "index"] = ...,
-    join: str = ...,
+    join: Literal["inner", "outer"] = ...,
     ignore_index: bool = ...,
-    keys: Sequence[HashableT2] = ...,
-    levels: list[Sequence] = ...,
+    keys: list[HashableT2] = ...,
+    levels: Sequence[list] | list[Sequence] = ...,
     names: list[HashableT3] = ...,
     verify_integrity: bool = ...,
     sort: bool = ...,
@@ -32,12 +32,12 @@ def concat(
 ) -> DataFrame: ...
 @overload
 def concat(
-    objs: Iterable[Series] | Mapping[HashableT, Series],
+    objs: Iterable[Series] | Mapping[HashableT1, Series],
     axis: Literal[0, "index"] = ...,
-    join: str = ...,
+    join: Literal["inner", "outer"] = ...,
     ignore_index: bool = ...,
-    keys: Sequence[HashableT2] = ...,
-    levels: list[Sequence] = ...,
+    keys: list[HashableT2] = ...,
+    levels: Sequence[list] | list[Sequence] = ...,
     names: list[HashableT3] = ...,
     verify_integrity: bool = ...,
     sort: bool = ...,
@@ -45,12 +45,12 @@ def concat(
 ) -> Series: ...
 @overload
 def concat(
-    objs: Iterable[Series | DataFrame] | Mapping[HashableT, Series | DataFrame],
+    objs: Iterable[Series | DataFrame] | Mapping[HashableT1, Series | DataFrame],
     axis: Literal[1, "columns"],
-    join: str = ...,
+    join: Literal["inner", "outer"] = ...,
     ignore_index: bool = ...,
-    keys: Sequence[HashableT2] = ...,
-    levels: list[Sequence] = ...,
+    keys: list[HashableT2] = ...,
+    levels: Sequence[list] | list[Sequence] = ...,
     names: list[HashableT3] = ...,
     verify_integrity: bool = ...,
     sort: bool = ...,
