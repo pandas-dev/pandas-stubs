@@ -1236,7 +1236,7 @@ def test_where() -> None:
 
     cond3 = pd.Series([False, True, True])
     check(assert_type(s.where(cond3, other=0), "pd.Series[int]"), pd.Series, int)
-    
+
 
 def test_bitwise_operator() -> None:
     s = pd.Series([1, 2, 3, 4])
