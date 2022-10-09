@@ -1264,4 +1264,3 @@ def test_bitwise_operator() -> None:
     check(assert_type([1, 2, 3, 4] ^ s, "pd.Series[int]"), pd.Series, int)
     check(assert_type(s ^ pd.Series([1, 2, 3, 4]), "pd.Series[int]"), pd.Series, int)
     check(assert_type(pd.Series([1, 2, 3, 4]) ^ s, "pd.Series[int]"), pd.Series, int)
-    
