@@ -1266,6 +1266,19 @@ def test_pivot_table() -> None:
     check(
         assert_type(
             pd.pivot_table(
+                df,
+                values="D",
+                index=pd.Series(["A", "B"]),
+                columns=["C"],
+                aggfunc=np.sum,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
                 df, values="D", index=["A", "B"], columns="C", aggfunc=np.sum
             ),
             pd.DataFrame,
@@ -1446,6 +1459,33 @@ def test_pivot_table() -> None:
         assert_type(
             pd.pivot_table(
                 df, index=pd.Index(idx.month), columns=Grouper(key="dt", freq="M")
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=np.array(idx.month), columns=Grouper(key="dt", freq="M")
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=Grouper(key="dt", freq="M"), columns=pd.Index(idx.month)
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=Grouper(key="dt", freq="M"), columns=np.array(idx.month)
             ),
             pd.DataFrame,
         ),

@@ -7,18 +7,21 @@ from typing import (
     Sequence,
     TypeVar,
     Union,
+    overload,
 )
 
 import numpy as np
 import pandas as pd
 from pandas.core.frame import DataFrame
 from pandas.core.groupby.grouper import Grouper
+from pandas.core.indexes.base import Index
 from pandas.core.series import Series
 from typing_extensions import TypeAlias
 
 from pandas._typing import (
     Label,
     Scalar,
+    npt,
 )
 
 _HashableT1 = TypeVar("_HashableT1", bound=Hashable)
@@ -57,11 +60,55 @@ _NonIterableHashable: TypeAlias = Union[
     pd.Timedelta,
 ]
 
+_PivotTableIndexTypes: TypeAlias = Union[
+    Label, list[_HashableT1], Series, Grouper, None
+]
+_PivotTableColumnsTypes: TypeAlias = Union[
+    Label, list[_HashableT2], Series, Grouper, None
+]
+
+@overload
 def pivot_table(
     data: DataFrame,
     values: Label | None = ...,
-    index: Label | list[_HashableT1] | Grouper | None = ...,
-    columns: Label | list[_HashableT2] | Grouper | None = ...,
+    index: _PivotTableIndexTypes = ...,
+    columns: _PivotTableColumnsTypes = ...,
+    aggfunc: _PivotAggFunc
+    | list[_PivotAggFunc]
+    | Mapping[Hashable, _PivotAggFunc] = ...,
+    fill_value: Scalar | None = ...,
+    margins: bool = ...,
+    dropna: bool = ...,
+    margins_name: str = ...,
+    observed: bool = ...,
+    sort: bool = ...,
+) -> DataFrame: ...
+
+# Can only use Index or ndarray when index or columns is a Grouper
+@overload
+def pivot_table(
+    data: DataFrame,
+    values: Label | None = ...,
+    *,
+    index: Grouper,
+    columns: _PivotTableColumnsTypes | Index | npt.NDArray = ...,
+    aggfunc: _PivotAggFunc
+    | list[_PivotAggFunc]
+    | Mapping[Hashable, _PivotAggFunc] = ...,
+    fill_value: Scalar | None = ...,
+    margins: bool = ...,
+    dropna: bool = ...,
+    margins_name: str = ...,
+    observed: bool = ...,
+    sort: bool = ...,
+) -> DataFrame: ...
+@overload
+def pivot_table(
+    data: DataFrame,
+    values: Label | None = ...,
+    index: _PivotTableIndexTypes | Index | npt.NDArray = ...,
+    *,
+    columns: Grouper,
     aggfunc: _PivotAggFunc
     | list[_PivotAggFunc]
     | Mapping[Hashable, _PivotAggFunc] = ...,
