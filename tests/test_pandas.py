@@ -212,15 +212,6 @@ def test_concat_args() -> None:
         pd.DataFrame,
     )
 
-    # @overload
-    # def concat(
-    #         objs: Iterable[DataFrame] | Mapping[HashableT, DataFrame],
-    #         keys=...,
-    #         levels=...,
-    #         names=...,
-
-    # ) -> DataFrame: ...
-
 
 def test_types_json_normalize() -> None:
     data1: list[dict[str, Any]] = [
