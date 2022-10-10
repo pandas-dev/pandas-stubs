@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime as dt
 import random
 from typing import (
     TYPE_CHECKING,
@@ -11,6 +12,7 @@ from typing import (
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
+from pandas import Grouper
 from pandas.api.extensions import ExtensionArray
 import pytest
 from typing_extensions import assert_type
@@ -62,12 +64,27 @@ def test_types_concat() -> None:
     )
 
     # Depends on the axis
-    rs1: pd.Series | pd.DataFrame = pd.concat({"a": s, "b": s2})
-    rs1a: pd.Series | pd.DataFrame = pd.concat({"a": s, "b": s2}, axis=1)
-    rs2: pd.Series | pd.DataFrame = pd.concat({1: s, 2: s2})
-    rs2a: pd.Series | pd.DataFrame = pd.concat({1: s, 2: s2}, axis=1)
-    rs3: pd.Series | pd.DataFrame = pd.concat({1: s, None: s2})
-    rs3a: pd.Series | pd.DataFrame = pd.concat({1: s, None: s2}, axis=1)
+    check(
+        assert_type(pd.concat({"a": s, "b": s2}), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(pd.concat({"a": s, "b": s2}, axis=1), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(pd.concat({1: s, 2: s2}), pd.Series), pd.Series)
+    check(assert_type(pd.concat({1: s, 2: s2}, axis=1), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.concat({1: s, None: s2}), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            pd.concat({1: s, None: s2}, axis=1),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
 
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame(data={"col1": [10, 20], "col2": [30, 40]})
@@ -88,20 +105,112 @@ def test_types_concat() -> None:
         pd.DataFrame,
     )
 
-    result: pd.DataFrame = pd.concat(
-        {"a": pd.DataFrame([1, 2, 3]), "b": pd.DataFrame([4, 5, 6])}, axis=1
+    check(
+        assert_type(
+            pd.concat(
+                {"a": pd.DataFrame([1, 2, 3]), "b": pd.DataFrame([4, 5, 6])}, axis=1
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )
-    result2: pd.DataFrame | pd.Series = pd.concat(
-        {"a": pd.Series([1, 2, 3]), "b": pd.Series([4, 5, 6])}, axis=1
+    check(
+        assert_type(
+            pd.concat({"a": pd.Series([1, 2, 3]), "b": pd.Series([4, 5, 6])}, axis=1),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )
 
-    rdf1: pd.DataFrame = pd.concat({"a": df, "b": df2})
-    rdf2: pd.DataFrame = pd.concat({1: df, 2: df2})
-    rdf3: pd.DataFrame = pd.concat({1: df, None: df2})
+    check(assert_type(pd.concat({"a": df, "b": df2}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat({1: df, 2: df2}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat({1: df, None: df2}), pd.DataFrame), pd.DataFrame)
 
-    rdf4: pd.DataFrame = pd.concat(map(lambda x: s2, ["some_value", 3]), axis=1)
+    check(
+        assert_type(
+            pd.concat(map(lambda x: s2, ["some_value", 3]), axis=1), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
     adict = {"a": df, 2: df2}
-    rdict: pd.DataFrame = pd.concat(adict)
+    check(assert_type(pd.concat(adict), pd.DataFrame), pd.DataFrame)
+
+
+def test_concat_args() -> None:
+    df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
+    df2 = pd.DataFrame(data={"col1": [10, 20], "col2": [30, 40]}, index=[2, 3])
+
+    check(
+        assert_type(pd.concat([df, df2], keys=["df1", "df2"]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.concat([df, df2], keys=["df1", "df2"], names=["one"]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.concat([df, df2], keys=["df1", "df2"], names=[pd.Timedelta(1, "D")]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.concat(
+                [df, df2], keys=[("df1", "ff"), (pd.Timestamp(2000, 1, 1), "gg")]
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.concat([df, df2], ignore_index=True), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(pd.concat([df, df2], verify_integrity=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(pd.concat([df, df2], sort=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], copy=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], join="inner"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], join="outer"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], axis=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], axis=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], axis="index"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], axis="columns"), pd.DataFrame), pd.DataFrame)
+
+    df = pd.DataFrame(np.random.randn(1, 3))
+    df2 = pd.DataFrame(np.random.randn(1, 4))
+
+    levels = [["foo", "baz"], ["one", "two"]]
+    names = ["first", "second"]
+    check(
+        assert_type(
+            pd.concat(
+                [df, df2, df, df2],
+                keys=[("foo", "one"), ("foo", "two"), ("baz", "one"), ("baz", "two")],
+                levels=levels,
+                names=names,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    check(
+        assert_type(
+            pd.concat(
+                [df, df2, df, df2],
+                keys=[("foo", "one"), ("foo", "two"), ("baz", "one"), ("baz", "two")],
+                levels=levels,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_types_json_normalize() -> None:
@@ -1140,6 +1249,10 @@ def test_crosstab_args() -> None:
         pd.DataFrame,
     )
     check(
+        assert_type(pd.crosstab(a, b, values=values, aggfunc="sum"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
         assert_type(
             pd.crosstab(a, b, values=pd.Index(values), aggfunc=np.sum), pd.DataFrame
         ),
@@ -1155,7 +1268,7 @@ def test_crosstab_args() -> None:
         )
     check(
         assert_type(
-            pd.crosstab(a, b, values=np.array(values), aggfunc=np.sum), pd.DataFrame
+            pd.crosstab(a, b, values=np.array(values), aggfunc="var"), pd.DataFrame
         ),
         pd.DataFrame,
     )
@@ -1219,4 +1332,407 @@ def test_crosstab_args() -> None:
     check(assert_type(pd.crosstab(a, b, normalize="index"), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(pd.crosstab(a, b, normalize="columns"), pd.DataFrame), pd.DataFrame
+    )
+
+
+def test_pivot_extended() -> None:
+    df = pd.DataFrame(
+        data={
+            "col1": ["first", "second", "third", "fourth"],
+            "col2": [50, 70, 56, 111],
+            "col3": ["A", "B", "B", "A"],
+            "col4": [100, 102, 500, 600],
+            ("col5",): ["E", "F", "G", "H"],
+            ("col6", 6): ["apple", "banana", "cherry", "date"],
+            ("col7", "other"): ["apple", "banana", "cherry", "date"],
+            dt.date(2000, 1, 1): ["E", "F", "G", "H"],
+            dt.datetime(2001, 1, 1, 12): ["E", "F", "G", "H"],
+            dt.timedelta(7): ["E", "F", "G", "H"],
+            True: ["E", "F", "G", "H"],
+            9: ["E", "F", "G", "H"],
+            10.0: ["E", "F", "G", "H"],
+            (11.0 + 1j): ["E", "F", "G", "H"],
+            pd.Timestamp(2002, 1, 1): ["E", "F", "G", "H"],
+            pd.Timedelta(1, "D"): ["E", "F", "G", "H"],
+        }
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index="col1", columns="col3", values="col2"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=[("col5",)], columns=[("col6", 6)], values="col2"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(
+                df, index=[("col5",)], columns=[("col6", 6)], values=[("col7", "other")]
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=dt.date(2000, 1, 1), columns="col3", values="col2"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(
+                df, index=dt.datetime(2001, 1, 1, 12), columns="col3", values="col2"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=dt.timedelta(7), columns="col3", values="col2"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=True, columns="col3", values="col2"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.pivot(df, index=9, columns="col3", values="col2"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=10.0, columns="col3", values="col2"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=(11.0 + 1j), columns="col3", values="col2"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=pd.Timestamp(2002, 1, 1), columns="col3", values="col2"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=pd.Timedelta(1, "D"), columns="col3", values="col2"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_pivot_table() -> None:
+    df = pd.DataFrame(
+        {
+            "A": ["foo", "foo", "foo", "foo", "foo", "bar", "bar", "bar", "bar"],
+            "B": ["one", "one", "one", "two", "two", "one", "one", "two", "two"],
+            "C": [
+                "small",
+                "large",
+                "large",
+                "small",
+                "small",
+                "large",
+                "small",
+                "small",
+                "large",
+            ],
+            "D": [1, 2, 2, 3, 3, 4, 5, 6, 7],
+            "E": [2, 4, 5, 5, 6, 6, 8, 9, 9],
+            ("col5",): ["foo", "foo", "foo", "foo", "foo", "bar", "bar", "bar", "bar"],
+            ("col6", 6): [
+                "one",
+                "one",
+                "one",
+                "two",
+                "two",
+                "one",
+                "one",
+                "two",
+                "two",
+            ],
+            (7, "seven"): [
+                "small",
+                "large",
+                "large",
+                "small",
+                "small",
+                "large",
+                "small",
+                "small",
+                "large",
+            ],
+        }
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, values="D", index=["A", "B"], columns=["C"], aggfunc=np.sum
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=pd.Series(["A", "B"]),
+                columns=["C"],
+                aggfunc="sum",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, values="D", index=["A", "B"], columns="C", aggfunc="mean"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    with pytest.warns(np.VisibleDeprecationWarning):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df,
+                    values="D",
+                    index=["A", "B"],
+                    columns=[(7, "seven")],
+                    aggfunc=np.sum,
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    with pytest.warns(np.VisibleDeprecationWarning):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df,
+                    values="D",
+                    index=[("col5",), ("col6", 6)],
+                    columns=[(7, "seven")],
+                    aggfunc=np.sum,
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, values="D", index=["A", "B"], columns=["C"], aggfunc="sum"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    def f(x: pd.Series) -> float:
+        return x.sum()
+
+    check(
+        assert_type(
+            pd.pivot_table(df, values="D", index=["A", "B"], columns=["C"], aggfunc=f),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    def g(x: pd.Series) -> int:
+        return int(np.round(x.sum()))
+
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values=["D", "E"],
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc={"D": f, "E": g},
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, values="D", index=["A", "B"], columns=["C"], aggfunc={"D": np.sum}
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, values="D", index=["A", "B"], columns=["C"], aggfunc={"D": "sum"}
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=[f, np.sum, "sum"],
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                margins=True,
+                margins_name="Total",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                dropna=True,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                dropna=True,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                observed=True,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                sort=False,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    idx = pd.DatetimeIndex(
+        ["2011-01-01", "2011-02-01", "2011-01-02", "2011-01-01", "2011-01-02"]
+    )
+    df = pd.DataFrame(
+        {
+            "A": [1, 2, 3, 4, 5],
+            "dt": pd.date_range("2011-01-01", freq="D", periods=5),
+        },
+        index=idx,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=pd.Index(idx.month), columns=Grouper(key="dt", freq="M")
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=np.array(idx.month), columns=Grouper(key="dt", freq="M")
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=Grouper(key="dt", freq="M"), columns=pd.Index(idx.month)
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=Grouper(key="dt", freq="M"), columns=np.array(idx.month)
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=Grouper(freq="A"), columns=Grouper(key="dt", freq="M")
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )
