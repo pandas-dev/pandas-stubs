@@ -6,13 +6,13 @@ from typing import (
 
 from pandas.core.indexes.base import Index
 
-from pandas._libs.tslibs import (  # , timezones as timezones
-    Period as Period,
-    Timestamp,
+from pandas._libs.tslibs import (
+    BaseOffset,
+    Period,
 )
 from pandas._typing import Ordered
 
-from .base import ExtensionDtype as ExtensionDtype
+from .base import ExtensionDtype
 
 _str = str
 
@@ -83,7 +83,7 @@ class PeriodDtype(PandasExtensionDtype):
     str: _str = ...
     base = ...
     num: int = ...
-    def __new__(cls, freq=...): ...
+    def __new__(cls, freq: str | BaseOffset = ...): ...
     @property
     def freq(self): ...
     @classmethod
