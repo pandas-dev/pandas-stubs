@@ -8,10 +8,12 @@ from datetime import (
 from time import struct_time
 from typing import (
     ClassVar,
+    Literal,
     TypeVar,
     overload,
 )
 
+from dateutil.tz import tzfile
 import numpy as np
 from pandas import Index
 from pandas.core.series import (
@@ -38,9 +40,9 @@ class Timestamp(datetime):
     def __new__(
         cls: type[_DatetimeT],
         ts_input: np.integer | float | str | _date | datetime | np.datetime64 = ...,
-        freq: int | str | BaseOffset | None = ...,
-        tz: str | _tzinfo | int | None = ...,
-        unit: str | int | None = ...,
+        freq: str | BaseOffset | None = ...,
+        tz: str | _tzinfo | tzfile | None = ...,
+        unit: Literal["D", "h", "m", "s", "ms", "us", "ns"] | None = ...,
         year: int | None = ...,
         month: int | None = ...,
         day: int | None = ...,
@@ -51,7 +53,7 @@ class Timestamp(datetime):
         nanosecond: int | None = ...,
         tzinfo: _tzinfo | None = ...,
         *,
-        fold: int | None = ...,
+        fold: Literal[0, 1] | None = ...,
     ) -> _DatetimeT: ...
     # GH 46171
     # While Timestamp can return pd.NaT, having the constructor return
