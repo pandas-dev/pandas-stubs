@@ -1,20 +1,31 @@
+from typing import (
+    Literal,
+    Sequence,
+)
+
+import numpy as np
+import pandas as pd
 from pandas.core.arrays import PandasArray
 
-from pandas._typing import type_t
+from pandas._typing import (
+    AnyArrayLike,
+    type_t,
+)
 
 from pandas.core.dtypes.base import ExtensionDtype
 
 class StringDtype(ExtensionDtype):
-    name: str = ...
-    na_value = ...
+    def __init__(self, storage: Literal["python", "pyarrow"] | None) -> None: ...
     @property
     def type(self) -> type_t: ...
-    @classmethod
-    def construct_array_type(cls) -> type_t[StringArray]: ...
     def __from_arrow__(self, array): ...
 
 class StringArray(PandasArray):
-    def __init__(self, values, copy: bool = ...) -> None: ...
+    def __init__(
+        self,
+        values: AnyArrayLike | Sequence[str | None | pd.NA | np.nan],
+        copy: bool = ...,
+    ) -> None: ...
     def __arrow_array__(self, type=...): ...
     def __setitem__(self, key, value) -> None: ...
     def fillna(self, value=..., method=..., limit=...): ...

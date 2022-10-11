@@ -1,6 +1,7 @@
 import datetime as dt
 from typing import Any
 
+import numpy as np
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
 
@@ -10,11 +11,13 @@ from pandas._typing import (
     npt,
 )
 
-from .base import ExtensionDtype
+from .base import ExtensionDtype as ExtensionDtype
 
 _str = str
 
 def register_extension_dtype(cls: type[ExtensionDtype]) -> type[ExtensionDtype]: ...
+
+class BaseMaskedDtype(ExtensionDtype): ...
 
 class PandasExtensionDtype(ExtensionDtype):
     subdtype = ...
@@ -68,7 +71,7 @@ class PeriodDtype(PandasExtensionDtype):
     def __from_arrow__(self, array): ...
 
 class IntervalDtype(PandasExtensionDtype):
-    def __new__(cls, subtype: str | npt.Dtype | None = ...): ...
+    def __new__(cls, subtype: str | npt.DTypeLike | None = ...): ...
     def __hash__(self) -> int: ...
     def __eq__(self, other) -> bool: ...
     @property
