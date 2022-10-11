@@ -457,6 +457,111 @@ def test_eval():
     )
 
 
+def test_to_numeric_scalar() -> None:
+    check(assert_type(pd.to_numeric(1), float), int)
+    check(assert_type(pd.to_numeric("1.2"), float), float)
+    check(assert_type(pd.to_numeric("blerg", errors="coerce"), float), float)
+    check(assert_type(pd.to_numeric("blerg", errors="ignore"), Scalar), str)
+    check(assert_type(pd.to_numeric(1, downcast="signed"), float), int)
+    check(assert_type(pd.to_numeric(1, downcast="unsigned"), float), int)
+    check(assert_type(pd.to_numeric(1, downcast="float"), float), int)
+    check(assert_type(pd.to_numeric(1, downcast="integer"), float), int)
+
+
+def test_to_numeric_array_like() -> None:
+    check(
+        assert_type(
+            pd.to_numeric([1, 2, 3]),
+            npt.NDArray,
+        ),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            pd.to_numeric([1.0, 2.0, 3.0]),
+            npt.NDArray,
+        ),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            pd.to_numeric([1.0, 2.0, "3.0"]),
+            npt.NDArray,
+        ),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            pd.to_numeric(np.array([1.0, 2.0, "3.0"], dtype=object)),
+            npt.NDArray,
+        ),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            pd.to_numeric([1.0, 2.0, "blerg"], errors="coerce"),
+            npt.NDArray,
+        ),
+        np.ndarray,
+    )
+    check(
+        assert_type(pd.to_numeric([1.0, 2.0, "blerg"], errors="ignore"), npt.NDArray),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            pd.to_numeric((1.0, 2.0, 3.0)),
+            npt.NDArray,
+        ),
+        np.ndarray,
+    )
+    check(
+        assert_type(pd.to_numeric([1, 2, 3], downcast="unsigned"), npt.NDArray),
+        np.ndarray,
+    )
+
+
+def test_to_numeric_array_series() -> None:
+    check(
+        assert_type(
+            pd.to_numeric(pd.Series([1, 2, 3])),
+            pd.Series,
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            pd.to_numeric(pd.Series([1, 2, "blerg"]), errors="coerce"),
+            pd.Series,
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            pd.to_numeric(pd.Series([1, 2, "blerg"]), errors="ignore"), pd.Series
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(pd.to_numeric(pd.Series([1, 2, 3]), downcast="signed"), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            pd.to_numeric(pd.Series([1, 2, 3]), downcast="unsigned"), pd.Series
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(pd.to_numeric(pd.Series([1, 2, 3]), downcast="integer"), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(pd.to_numeric(pd.Series([1, 2, 3]), downcast="float"), pd.Series),
+        pd.Series,
+    )
+
+
 def test_wide_to_long():
     df = pd.DataFrame(
         {
