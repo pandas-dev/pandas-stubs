@@ -86,12 +86,19 @@ class Timedelta(timedelta):
     min: ClassVar[Timedelta]
     max: ClassVar[Timedelta]
     resolution: ClassVar[Timedelta]
-    value: int  # np.int64
+    value: int
     def __new__(
         cls: type[_S],
-        value=...,
-        unit: str = ...,
-        **kwargs: float | np.integer | np.floating,
+        value: str | int | Timedelta | timedelta | np.timedelta64 = ...,
+        unit: TimeDeltaUnitChoices = ...,
+        *,
+        days: float | np.integer | np.floating = ...,
+        seconds: float | np.integer | np.floating = ...,
+        microseconds: float | np.integer | np.floating = ...,
+        milliseconds: float | np.integer | np.floating = ...,
+        minutes: float | np.integer | np.floating = ...,
+        hours: float | np.integer | np.floating = ...,
+        weeks: float | np.integer | np.floating = ...,
     ) -> _S: ...
     # GH 46171
     # While Timedelta can return pd.NaT, having the constructor return
@@ -154,3 +161,7 @@ class Timedelta(timedelta):
     def __hash__(self) -> int: ...
     def isoformat(self) -> str: ...
     def to_numpy(self) -> np.timedelta64: ...
+    @property
+    def freq(self) -> None: ...
+    @property
+    def is_populated(self) -> bool: ...
