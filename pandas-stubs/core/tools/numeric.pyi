@@ -1,10 +1,12 @@
 from typing import (
     Literal,
+    Union,
     overload,
 )
 
 import numpy as np
 import pandas as pd
+from typing_extensions import TypeAlias
 
 from pandas._typing import (
     IgnoreRaiseCoerce,
@@ -12,53 +14,29 @@ from pandas._typing import (
     npt,
 )
 
+_Downcast: TypeAlias = Union[Literal["integer", "signed", "unsigned", "float"], None]
+
 @overload
 def to_numeric(
     arg: Scalar,
     errors: Literal["raise", "coerce"] = ...,
-    downcast: Literal["integer", "signed", "unsigned", "float"] | None = ...,
-) -> int | float: ...
+    downcast: _Downcast = ...,
+) -> float: ...
 @overload
 def to_numeric(
     arg: Scalar,
     errors: Literal["ignore"],
-    downcast: Literal["integer", "signed", "unsigned", "float"] | None = ...,
+    downcast: _Downcast = ...,
 ) -> Scalar: ...
 @overload
 def to_numeric(
-    arg: list | tuple | npt.NDArray,
+    arg: list | tuple | np.ndarray,
     errors: IgnoreRaiseCoerce = ...,
-    *,
-    downcast: Literal["integer", "signed", "unsigned", "float"],
+    downcast: _Downcast = ...,
 ) -> npt.NDArray: ...
-@overload
-def to_numeric(
-    arg: list | tuple | npt.NDArray,
-    errors: Literal["ignore"],
-    downcast: None = ...,
-) -> npt.NDArray: ...
-@overload
-def to_numeric(
-    arg: list | tuple | npt.NDArray,
-    errors: Literal["raise", "coerce"] = ...,
-    downcast: None = ...,
-) -> npt.NDArray[np.intp] | npt.NDArray[np.float_]: ...
 @overload
 def to_numeric(
     arg: pd.Series,
     errors: IgnoreRaiseCoerce = ...,
-    *,
-    downcast: Literal["integer", "signed", "unsigned", "float"],
+    downcast: _Downcast = ...,
 ) -> pd.Series: ...
-@overload
-def to_numeric(
-    arg: pd.Series,
-    errors: Literal["ignore"],
-    downcast: None = ...,
-) -> pd.Series: ...
-@overload
-def to_numeric(
-    arg: pd.Series,
-    errors: Literal["raise", "coerce"] = ...,
-    downcast: None = ...,
-) -> pd.Series[int] | pd.Series[float]: ...
