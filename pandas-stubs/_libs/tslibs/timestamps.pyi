@@ -36,13 +36,13 @@ class Timestamp(datetime):
     max: ClassVar[Timestamp]
 
     resolution: ClassVar[Timedelta]
-    value: int  # np.int64
+    value: int
     def __new__(
         cls: type[_DatetimeT],
         ts_input: np.integer | float | str | _date | datetime | np.datetime64 = ...,
-        freq: str | BaseOffset | None = ...,
-        tz: str | _tzinfo | tzfile | None = ...,
-        unit: Literal["D", "h", "m", "s", "ms", "us", "ns"] | None = ...,
+        freq: int | str | BaseOffset | None = ...,
+        tz: str | _tzinfo | tzfile | int | None = ...,
+        unit: str | int | None = ...,
         year: int | None = ...,
         month: int | None = ...,
         day: int | None = ...,

@@ -23,7 +23,8 @@ class StringDtype(ExtensionDtype):
 class StringArray(PandasArray):
     def __init__(
         self,
-        values: AnyArrayLike | Sequence[str | None | pd.NA | np.nan],
+        # Also pd.NA and np.nan but not possible it seems
+        values: AnyArrayLike | Sequence[str | None],
         copy: bool = ...,
     ) -> None: ...
     def __arrow_array__(self, type=...): ...
