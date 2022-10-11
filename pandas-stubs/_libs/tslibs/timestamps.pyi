@@ -29,8 +29,6 @@ from pandas._typing import np_ndarray_bool
 
 _DatetimeT = TypeVar("_DatetimeT", bound=datetime)
 
-def integer_op_not_supported(obj: object) -> TypeError: ...
-
 class Timestamp(datetime):
     min: ClassVar[Timestamp]
     max: ClassVar[Timestamp]
@@ -113,15 +111,15 @@ class Timestamp(datetime):
     def timetz(self) -> _time: ...
     def replace(
         self,
-        year: int = ...,
-        month: int = ...,
-        day: int = ...,
-        hour: int = ...,
-        minute: int = ...,
-        second: int = ...,
-        microsecond: int = ...,
+        year: int | None = ...,
+        month: int | None = ...,
+        day: int | None = ...,
+        hour: int | None = ...,
+        minute: int | None = ...,
+        second: int | None = ...,
+        microsecond: int | None = ...,
         tzinfo: _tzinfo | None = ...,
-        fold: int = ...,
+        fold: int | None = ...,
     ) -> Timestamp: ...
     def astimezone(self: _DatetimeT, tz: _tzinfo | None = ...) -> _DatetimeT: ...
     def ctime(self) -> str: ...
