@@ -31,7 +31,8 @@ from pandas._typing import (
     FilePath,
     FileWriteMode,
     FillnaOptions,
-    HashableT,
+    HashableT1,
+    HashableT2,
     HDFCompLib,
     IgnoreRaise,
     IndexLabel,
@@ -121,10 +122,10 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         append: _bool = ...,
         format: Literal["t", "table", "f", "fixed"] | None = ...,
         index: _bool = ...,
-        min_itemsize: int | dict[HashableT, int] | None = ...,
+        min_itemsize: int | dict[HashableT1, int] | None = ...,
         nan_rep: _str | None = ...,
         dropna: _bool | None = ...,
-        data_columns: Literal[True] | list[HashableT] | None = ...,
+        data_columns: Literal[True] | list[HashableT2] | None = ...,
         errors: Literal[
             "strict",
             "ignore",
@@ -165,7 +166,10 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         chunksize: int | None = ...,
         dtype: DtypeArg | None = ...,
         method: Literal["multi"]
-        | Callable[[SQLTable, Any, list[str], Iterable], int | None]
+        | Callable[
+            [SQLTable, Any, list[str], Iterable[tuple[Any, ...]]],
+            int | None,
+        ]
         | None = ...,
     ) -> int | None: ...
     def to_pickle(
@@ -237,10 +241,10 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         sep: _str = ...,
         na_rep: _str = ...,
         float_format: _str | Callable[[object], _str] | None = ...,
-        columns: list[HashableT] | None = ...,
+        columns: list[HashableT1] | None = ...,
         header: _bool | list[_str] = ...,
         index: _bool = ...,
-        index_label: Literal[False] | _str | list[HashableT] | None = ...,
+        index_label: Literal[False] | _str | list[HashableT2] | None = ...,
         mode: FileWriteMode = ...,
         encoding: _str | None = ...,
         compression: CompressionOptions = ...,
@@ -262,10 +266,10 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         sep: _str = ...,
         na_rep: _str = ...,
         float_format: _str | Callable[[object], _str] | None = ...,
-        columns: list[HashableT] | None = ...,
+        columns: list[HashableT1] | None = ...,
         header: _bool | list[_str] = ...,
         index: _bool = ...,
-        index_label: Literal[False] | _str | list[HashableT] | None = ...,
+        index_label: Literal[False] | _str | list[HashableT2] | None = ...,
         mode: FileWriteMode = ...,
         encoding: _str | None = ...,
         compression: CompressionOptions = ...,

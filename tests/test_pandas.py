@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import datetime as dt
+import random
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -8,15 +10,19 @@ from typing import (
 )
 
 import numpy as np
-from numpy import typing as npt
+import numpy.typing as npt
 import pandas as pd
+from pandas import Grouper
 from pandas.api.extensions import ExtensionArray
 import pytest
 from typing_extensions import assert_type
 
 from pandas._typing import Scalar
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 
 def test_types_to_datetime() -> None:
@@ -58,12 +64,27 @@ def test_types_concat() -> None:
     )
 
     # Depends on the axis
-    rs1: pd.Series | pd.DataFrame = pd.concat({"a": s, "b": s2})
-    rs1a: pd.Series | pd.DataFrame = pd.concat({"a": s, "b": s2}, axis=1)
-    rs2: pd.Series | pd.DataFrame = pd.concat({1: s, 2: s2})
-    rs2a: pd.Series | pd.DataFrame = pd.concat({1: s, 2: s2}, axis=1)
-    rs3: pd.Series | pd.DataFrame = pd.concat({1: s, None: s2})
-    rs3a: pd.Series | pd.DataFrame = pd.concat({1: s, None: s2}, axis=1)
+    check(
+        assert_type(pd.concat({"a": s, "b": s2}), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(pd.concat({"a": s, "b": s2}, axis=1), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(pd.concat({1: s, 2: s2}), pd.Series), pd.Series)
+    check(assert_type(pd.concat({1: s, 2: s2}, axis=1), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.concat({1: s, None: s2}), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            pd.concat({1: s, None: s2}, axis=1),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
 
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame(data={"col1": [10, 20], "col2": [30, 40]})
@@ -84,20 +105,112 @@ def test_types_concat() -> None:
         pd.DataFrame,
     )
 
-    result: pd.DataFrame = pd.concat(
-        {"a": pd.DataFrame([1, 2, 3]), "b": pd.DataFrame([4, 5, 6])}, axis=1
+    check(
+        assert_type(
+            pd.concat(
+                {"a": pd.DataFrame([1, 2, 3]), "b": pd.DataFrame([4, 5, 6])}, axis=1
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )
-    result2: pd.DataFrame | pd.Series = pd.concat(
-        {"a": pd.Series([1, 2, 3]), "b": pd.Series([4, 5, 6])}, axis=1
+    check(
+        assert_type(
+            pd.concat({"a": pd.Series([1, 2, 3]), "b": pd.Series([4, 5, 6])}, axis=1),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )
 
-    rdf1: pd.DataFrame = pd.concat({"a": df, "b": df2})
-    rdf2: pd.DataFrame = pd.concat({1: df, 2: df2})
-    rdf3: pd.DataFrame = pd.concat({1: df, None: df2})
+    check(assert_type(pd.concat({"a": df, "b": df2}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat({1: df, 2: df2}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat({1: df, None: df2}), pd.DataFrame), pd.DataFrame)
 
-    rdf4: pd.DataFrame = pd.concat(map(lambda x: s2, ["some_value", 3]), axis=1)
+    check(
+        assert_type(
+            pd.concat(map(lambda x: s2, ["some_value", 3]), axis=1), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
     adict = {"a": df, 2: df2}
-    rdict: pd.DataFrame = pd.concat(adict)
+    check(assert_type(pd.concat(adict), pd.DataFrame), pd.DataFrame)
+
+
+def test_concat_args() -> None:
+    df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
+    df2 = pd.DataFrame(data={"col1": [10, 20], "col2": [30, 40]}, index=[2, 3])
+
+    check(
+        assert_type(pd.concat([df, df2], keys=["df1", "df2"]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.concat([df, df2], keys=["df1", "df2"], names=["one"]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.concat([df, df2], keys=["df1", "df2"], names=[pd.Timedelta(1, "D")]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.concat(
+                [df, df2], keys=[("df1", "ff"), (pd.Timestamp(2000, 1, 1), "gg")]
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.concat([df, df2], ignore_index=True), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(pd.concat([df, df2], verify_integrity=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(pd.concat([df, df2], sort=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], copy=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], join="inner"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], join="outer"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], axis=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], axis=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], axis="index"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.concat([df, df2], axis="columns"), pd.DataFrame), pd.DataFrame)
+
+    df = pd.DataFrame(np.random.randn(1, 3))
+    df2 = pd.DataFrame(np.random.randn(1, 4))
+
+    levels = [["foo", "baz"], ["one", "two"]]
+    names = ["first", "second"]
+    check(
+        assert_type(
+            pd.concat(
+                [df, df2, df, df2],
+                keys=[("foo", "one"), ("foo", "two"), ("baz", "one"), ("baz", "two")],
+                levels=levels,
+                names=names,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    check(
+        assert_type(
+            pd.concat(
+                [df, df2, df, df2],
+                keys=[("foo", "one"), ("foo", "two"), ("baz", "one"), ("baz", "two")],
+                levels=levels,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_types_json_normalize() -> None:
@@ -208,7 +321,7 @@ def test_unique() -> None:
                     ]
                 )
             ),
-            pd.Index,
+            np.ndarray,
         ),
         pd.DatetimeIndex,
     )
@@ -243,6 +356,32 @@ def test_unique() -> None:
     check(
         assert_type(
             pd.unique([("a", "b"), ("b", "a"), ("a", "c"), ("b", "a")]), np.ndarray
+        ),
+        np.ndarray,
+    )
+    check(
+        assert_type(pd.unique(pd.Index(["a", "b", "c", "a"])), np.ndarray),
+        np.ndarray,
+    )
+    check(
+        assert_type(pd.unique(pd.RangeIndex(0, 10)), np.ndarray),
+        np.ndarray,
+    )
+    check(
+        assert_type(pd.unique(pd.Categorical(["a", "b", "c", "a"])), pd.Categorical),
+        pd.Categorical,
+    )
+    check(
+        assert_type(
+            pd.unique(pd.period_range("2001Q1", periods=10, freq="D")),
+            pd.PeriodIndex,
+        ),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(
+            pd.unique(pd.timedelta_range(start="1 day", periods=4)),
+            np.ndarray,
         ),
         np.ndarray,
     )
@@ -422,4 +561,1285 @@ def test_to_numeric_array_series() -> None:
     check(
         assert_type(pd.to_numeric(pd.Series([1, 2, 3]), downcast="float"), pd.Series),
         pd.Series,
+    )
+
+
+def test_wide_to_long():
+    df = pd.DataFrame(
+        {
+            "A1970": {0: "a", 1: "b", 2: "c"},
+            "A1980": {0: "d", 1: "e", 2: "f"},
+            "B1970": {0: 2.5, 1: 1.2, 2: 0.7},
+            "B1980": {0: 3.2, 1: 1.3, 2: 0.1},
+            "X": dict(zip(range(3), np.random.randn(3))),
+        }
+    )
+    df["id"] = df.index
+    df["id2"] = df.index + 1
+    check(
+        assert_type(pd.wide_to_long(df, ["A", "B"], i="id", j="year"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.wide_to_long(df, ["A", "B"], i=["id", "id2"], j="year"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_melt():
+    df = pd.DataFrame(
+        {
+            "A": {0: "a", 1: "b", 2: "c"},
+            "B": {0: 1, 1: 3, 2: 5},
+            "C": {0: 2, 1: 4, 2: 6},
+            "D": {0: 3, 1: 6, 2: 9},
+            "E": {0: 3, 1: 6, 2: 9},
+        }
+    )
+    check(
+        assert_type(
+            pd.melt(df, id_vars=["A"], value_vars=["B"], ignore_index=False),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.melt(df, id_vars=["A"], value_vars=["B"], value_name=("F",)),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    df.columns = pd.MultiIndex.from_arrays([list("ABCDE"), list("FGHIJ")])
+    check(
+        assert_type(
+            pd.melt(
+                df, id_vars=["A"], value_vars=["B"], ignore_index=False, col_level=0
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_lreshape() -> None:
+    data = pd.DataFrame(
+        {
+            "hr1": [514, 573],
+            "hr2": [545, 526],
+            "team": ["Red Sox", "Yankees"],
+            "year1": [2007, 2007],
+            "year2": [2008, 2008],
+        }
+    )
+    check(
+        assert_type(
+            pd.lreshape(
+                data, {"year": ["year1", "year2"], "hr": ["hr1", "hr2"]}, dropna=True
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    data2 = pd.DataFrame(
+        {
+            "hr1": [514, 573],
+            ("hr2",): [545, 526],
+            "team": ["Red Sox", "Yankees"],
+            ("year1",): [2007, 2007],
+            "year2": [2008, 2008],
+        }
+    )
+    from typing import Hashable
+
+    groups: dict[Hashable, list[Hashable]] = {
+        ("year",): [("year1",), "year2"],
+        ("hr",): ["hr1", ("hr2",)],
+    }
+    check(
+        assert_type(
+            pd.lreshape(data2, groups=groups),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_factorize() -> None:
+    codes, uniques = pd.factorize(["b", "b", "a", "c", "b"])
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(uniques, np.ndarray), np.ndarray)
+
+    codes, cat_uniques = pd.factorize(pd.Categorical(["b", "b", "a", "c", "b"]))
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(cat_uniques, pd.Categorical), pd.Categorical)
+
+    codes, idx_uniques = pd.factorize(pd.Index(["b", "b", "a", "c", "b"]))
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(idx_uniques, pd.Index), pd.Index)
+
+    codes, idx_uniques = pd.factorize(pd.Series(["b", "b", "a", "c", "b"]))
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(idx_uniques, pd.Index), pd.Index)
+
+    codes, uniques = pd.factorize("bbacb")
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(uniques, np.ndarray), np.ndarray)
+
+    codes, uniques = pd.factorize(
+        ["b", "b", "a", "c", "b"], use_na_sentinel=True, size_hint=10
+    )
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(uniques, np.ndarray), np.ndarray)
+
+
+def test_index_unqiue() -> None:
+    ci = pd.CategoricalIndex(["a", "b", "a", "c"])
+    dti = pd.DatetimeIndex([pd.Timestamp(2000, 1, 1)])
+    with pytest.warns(FutureWarning, match="pandas.Float64Index is deprecated"):
+        fi = pd.Float64Index([1.0, 2.0])
+    i = pd.Index(["a", "b", "c", "a"])
+    with pytest.warns(FutureWarning, match="pandas.Int64Index is deprecated"):
+        i64i = pd.Int64Index([1, 2, 3, 4])
+    pi = pd.period_range("2000Q1", periods=2, freq="Q")
+    ri = pd.RangeIndex(0, 10)
+    with pytest.warns(FutureWarning, match="pandas.UInt64Index is deprecated"):
+        ui = pd.UInt64Index([0, 1, 2, 3, 5])
+    tdi = pd.timedelta_range("1 day", "10 days", periods=10)
+    mi = pd.MultiIndex.from_product([["a", "b"], ["apple", "banana"]])
+    interval_i = pd.interval_range(1, 10, periods=10)
+
+    check(assert_type(pd.unique(ci), pd.CategoricalIndex), pd.CategoricalIndex)
+    check(assert_type(pd.unique(dti), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(fi), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(i), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(i64i), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(pi), pd.PeriodIndex), pd.PeriodIndex)
+    check(assert_type(pd.unique(ri), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(ui), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(tdi), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(mi), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(interval_i), pd.IntervalIndex), pd.IntervalIndex)
+
+
+def test_cut() -> None:
+    intval_idx = pd.interval_range(0, 10, 4)
+    a = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, precision=1, duplicates="drop")
+    b = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, labels=False, duplicates="raise")
+    c = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, labels=["1", "2", "3", "4"])
+    check(assert_type(a, pd.Categorical), pd.Categorical)
+    check(assert_type(b, npt.NDArray[np.intp]), np.ndarray)
+    check(assert_type(c, pd.Categorical), pd.Categorical)
+
+    d0, d1 = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, retbins=True)
+    e0, e1 = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, labels=False, retbins=True)
+    f0, f1 = pd.cut(
+        [1, 2, 3, 4, 5, 6, 7, 8], 4, labels=["1", "2", "3", "4"], retbins=True
+    )
+    check(assert_type(d0, pd.Categorical), pd.Categorical)
+    check(assert_type(d1, npt.NDArray), np.ndarray)
+    check(assert_type(e0, npt.NDArray[np.intp]), np.ndarray)
+    check(assert_type(e1, npt.NDArray), np.ndarray)
+    check(assert_type(f0, pd.Categorical), pd.Categorical)
+    check(assert_type(f1, npt.NDArray), np.ndarray)
+
+    g = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), 4, precision=1, duplicates="drop")
+    h = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), 4, labels=False, duplicates="raise")
+    i = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), 4, labels=["1", "2", "3", "4"])
+    check(assert_type(g, pd.Series), pd.Series)
+    check(assert_type(h, pd.Series), pd.Series)
+    check(assert_type(i, pd.Series), pd.Series)
+
+    j0, j1 = pd.cut(
+        pd.Series([1, 2, 3, 4, 5, 6, 7, 8]),
+        4,
+        precision=1,
+        duplicates="drop",
+        retbins=True,
+    )
+    k0, k1 = pd.cut(
+        pd.Series([1, 2, 3, 4, 5, 6, 7, 8]),
+        4,
+        labels=False,
+        duplicates="raise",
+        retbins=True,
+    )
+    l0, l1 = pd.cut(
+        pd.Series([1, 2, 3, 4, 5, 6, 7, 8]),
+        4,
+        labels=["1", "2", "3", "4"],
+        retbins=True,
+    )
+    m0, m1 = pd.cut(
+        pd.Series([1, 2, 3, 4, 5, 6, 7, 8]),
+        intval_idx,
+        retbins=True,
+    )
+    check(assert_type(j0, pd.Series), pd.Series)
+    check(assert_type(j1, npt.NDArray), np.ndarray)
+    check(assert_type(k0, pd.Series), pd.Series)
+    check(assert_type(k1, npt.NDArray), np.ndarray)
+    check(assert_type(l0, pd.Series), pd.Series)
+    check(assert_type(l1, npt.NDArray), np.ndarray)
+    check(assert_type(m0, pd.Series), pd.Series)
+    check(assert_type(m1, pd.IntervalIndex), pd.IntervalIndex)
+
+    n0, n1 = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], intval_idx, retbins=True)
+    check(assert_type(n0, pd.Categorical), pd.Categorical)
+    check(assert_type(n1, pd.IntervalIndex), pd.IntervalIndex)
+
+
+def test_qcut() -> None:
+    val_list = [random.random() for _ in range(20)]
+    val_arr = np.array(val_list)
+    val_series = pd.Series(val_list)
+    val_idx = pd.Index(val_list)
+
+    check(
+        assert_type(
+            pd.qcut(val_list, 4, precision=2, duplicates="raise"), pd.Categorical
+        ),
+        pd.Categorical,
+    )
+    check(
+        assert_type(
+            pd.qcut(val_arr, 4, precision=2, duplicates="drop"), pd.Categorical
+        ),
+        pd.Categorical,
+    )
+    check(
+        assert_type(
+            pd.qcut(val_idx, 4, precision=2, duplicates="drop"), pd.Categorical
+        ),
+        pd.Categorical,
+    )
+    check(
+        assert_type(pd.qcut(val_series, 4, precision=2, duplicates="raise"), pd.Series),
+        pd.Series,
+    )
+
+    a0, a1 = pd.qcut(val_list, 4, retbins=True)
+    b0, b1 = pd.qcut(val_arr, 4, retbins=True)
+    c0, c1 = pd.qcut(val_idx, 4, retbins=True)
+    d0, d1 = pd.qcut(val_series, 4, retbins=True)
+    check(assert_type(a0, pd.Categorical), pd.Categorical)
+    check(assert_type(b0, pd.Categorical), pd.Categorical)
+    check(assert_type(c0, pd.Categorical), pd.Categorical)
+    check(assert_type(d0, pd.Series), pd.Series)
+
+    check(assert_type(a1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(b1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(c1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(d1, npt.NDArray[np.float_]), np.ndarray)
+
+    e0, e1 = pd.qcut(val_list, [0.25, 0.5, 0.75], retbins=True)
+    f0, f1 = pd.qcut(val_arr, np.array([0.25, 0.5, 0.75]), retbins=True)
+    g0, g1 = pd.qcut(val_idx, 4, retbins=True, labels=False)
+    h0, h1 = pd.qcut(val_series, 4, retbins=True, labels=False)
+    i0, i1 = pd.qcut(val_list, [0.25, 0.5, 0.75], retbins=True, labels=False)
+    j0, j1 = pd.qcut(val_arr, np.array([0.25, 0.5, 0.75]), retbins=True, labels=False)
+
+    check(assert_type(e0, pd.Categorical), pd.Categorical)
+    check(assert_type(f0, pd.Categorical), pd.Categorical)
+    check(assert_type(g0, npt.NDArray[np.intp]), np.ndarray)
+    check(assert_type(h0, pd.Series), pd.Series)
+    check(assert_type(i0, npt.NDArray[np.intp]), np.ndarray)
+    check(assert_type(j0, npt.NDArray[np.intp]), np.ndarray)
+
+    check(assert_type(e1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(f1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(g1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(h1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(i1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(j1, npt.NDArray[np.float_]), np.ndarray)
+
+
+def test_merge() -> None:
+    ls = pd.Series([1, 2, 3, 4], index=[1, 2, 3, 4], name="left")
+    rs = pd.Series([3, 4, 5, 6], index=[3, 4, 5, 6], name="right")
+    lf = pd.DataFrame(pd.Series([1, 2, 3, 4], index=[1, 2, 3, 4], name="left"))
+    rf = pd.DataFrame(pd.Series([3, 4, 5, 6], index=[3, 4, 5, 6], name="right"))
+
+    check(
+        assert_type(pd.merge(ls, rs, left_on="left", right_on="right"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(ls, rs, how="left", left_on="left", right_on="right"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(ls, rs, how="right", left_on="left", right_on="right"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(ls, rs, how="outer", left_on="left", right_on="right"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(ls, rs, how="inner", left_on="left", right_on="right"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    # TOOD: When cross don't need on??
+    check(assert_type(pd.merge(ls, rs, how="cross"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(
+            pd.merge(ls, rs, how="inner", left_index=True, right_index=True),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls,
+                rs,
+                how="inner",
+                left_index=True,
+                right_index=True,
+                sort=True,
+                copy=True,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls,
+                rs,
+                how="inner",
+                left_index=True,
+                right_index=True,
+                suffixes=["_1", "_2"],
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls,
+                rs,
+                how="inner",
+                left_index=True,
+                right_index=True,
+                suffixes=["_1", None],
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls,
+                rs,
+                how="inner",
+                left_index=True,
+                right_index=True,
+                suffixes=("_1", None),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls,
+                rs,
+                how="inner",
+                left_index=True,
+                right_index=True,
+                suffixes=(None, "_2"),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls,
+                rs,
+                how="inner",
+                left_index=True,
+                right_index=True,
+                suffixes=("_1", "_2"),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(
+                ls, rs, how="inner", left_index=True, right_index=True, indicator=True
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge(lf, rs, left_on="left", right_on="right"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge(ls, rf, left_on="left", right_on="right"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge(lf, rf, left_on="left", right_on="right"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge(lf, rf, left_on=["left"], right_on=["right"]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge(lf, rf, left_index=True, right_index=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+
+def test_merge_ordered() -> None:
+    ls = pd.Series([1, 2, 3, 4], index=[1, 2, 3, 4], name="left")
+    rs = pd.Series([3, 4, 5, 6], index=[3, 4, 5, 6], name="right")
+    lf = pd.DataFrame(
+        [[1, 2, 3], [3, 4, 5], [5, 6, 7], [7, 8, 9]],
+        index=[1, 2, 3, 4],
+        columns=["a", "b", "c"],
+    )
+    rf = pd.DataFrame(pd.Series([3, 4, 5, 6], index=[3, 4, 5, 6], name="b"))
+
+    check(
+        assert_type(
+            pd.merge_ordered(ls, rs, left_on="left", right_on="right"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(ls, rf, left_on="left", right_on="b"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rs, left_on="a", right_on="right"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(assert_type(pd.merge_ordered(lf, rf, on="b"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.merge_ordered(lf, rf, left_on="a", right_on="b"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, left_on="b", right_on="b", how="outer"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, left_on=["b"], right_on=["b"], how="outer"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, left_on="b", right_on="b", how="inner"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, left_on="b", right_on="b", how="left"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, left_on="b", right_on="b", how="right"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge_ordered(lf, rf, left_by="a"), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, left_by=["a", "c"], fill_method="ffill"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, on="b", suffixes=["_1", None]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, on="b", suffixes=("_1", None)), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, on="b", suffixes=(None, "_2")), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_ordered(lf, rf, on="b", suffixes=("_1", "_2")), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.merge_ordered(  # type: ignore[call-overload]
+            ls,
+            rs,
+            left_on="left",
+            right_on="right",
+            left_by="left",  # pyright: ignore
+            right_by="right",  # pyright: ignore
+        )
+        pd.merge_ordered(  # type: ignore[call-overload]
+            ls,
+            rf,  # pyright: ignore
+            left_on="left",
+            right_on="b",
+            left_by="left",  # pyright: ignore
+            right_by="b",  # pyright: ignore
+        )
+        pd.merge_ordered(  # type: ignore[call-overload]
+            lf,
+            rs,
+            left_on="a",
+            right_on="right",
+            left_by="a",  # pyright: ignore
+            right_by="right",  # pyright: ignore
+        )
+
+
+def test_merge_asof() -> None:
+    ls = pd.Series([1, 2, 3, 4], index=[1, 2, 3, 4], name="left")
+    rs = pd.Series([3, 4, 5, 6], index=[3, 4, 5, 6], name="right")
+    lf = pd.DataFrame(
+        [[1, 2, 3], [3, 4, 5], [5, 6, 7], [7, 8, 9]],
+        index=[1, 2, 3, 4],
+        columns=["a", "b", "c"],
+    )
+    rf = pd.DataFrame(
+        [[1, 2, 3], [3, 4, 5], [5, 6, 7], [7, 8, 9]],
+        index=[1, 2, 3, 4],
+        columns=["a", "b", "d"],
+    )
+
+    check(
+        assert_type(
+            pd.merge_asof(ls, rs, left_on="left", right_on="right"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(ls, rs, left_index=True, right_index=True), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+    check(assert_type(pd.merge_asof(lf, rf, on="a"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.merge_asof(lf, rf, left_on="a", right_on="b"), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    check(
+        assert_type(pd.merge_asof(lf, rf, on="a", by="b"), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(
+            pd.merge_asof(lf, rf, left_on="c", right_on="d", by=["a", "b"]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(lf, rf, on="a", left_by=["c"], right_by=["d"]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(lf, rf, on="a", left_by=["b", "c"], right_by=["b", "d"]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge_asof(lf, rf, on="a", suffixes=["_1", None]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge_asof(lf, rf, on="a", suffixes=("_1", None)), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge_asof(lf, rf, on="a", suffixes=("_1", "_2")), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.merge_asof(lf, rf, on="a", suffixes=(None, "_2")), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    quotes = pd.DataFrame(
+        {
+            "time": [
+                pd.Timestamp("2016-05-25 13:30:00.023"),
+                pd.Timestamp("2016-05-25 13:30:00.023"),
+                pd.Timestamp("2016-05-25 13:30:00.030"),
+                pd.Timestamp("2016-05-25 13:30:00.041"),
+                pd.Timestamp("2016-05-25 13:30:00.048"),
+                pd.Timestamp("2016-05-25 13:30:00.049"),
+                pd.Timestamp("2016-05-25 13:30:00.072"),
+                pd.Timestamp("2016-05-25 13:30:00.075"),
+            ],
+            "ticker": ["GOOG", "MSFT", "MSFT", "MSFT", "GOOG", "AAPL", "GOOG", "MSFT"],
+            "bid": [720.50, 51.95, 51.97, 51.99, 720.50, 97.99, 720.50, 52.01],
+            "ask": [720.93, 51.96, 51.98, 52.00, 720.93, 98.01, 720.88, 52.03],
+        }
+    )
+    trades = pd.DataFrame(
+        {
+            "time": [
+                pd.Timestamp("2016-05-25 13:30:00.023"),
+                pd.Timestamp("2016-05-25 13:30:00.038"),
+                pd.Timestamp("2016-05-25 13:30:00.048"),
+                pd.Timestamp("2016-05-25 13:30:00.048"),
+                pd.Timestamp("2016-05-25 13:30:00.048"),
+            ],
+            "ticker": ["MSFT", "MSFT", "GOOG", "GOOG", "AAPL"],
+            "price": [51.95, 51.95, 720.77, 720.92, 98.0],
+            "quantity": [75, 155, 100, 100, 100],
+        }
+    )
+
+    check(
+        assert_type(
+            pd.merge_asof(
+                trades, quotes, on="time", by="ticker", tolerance=pd.Timedelta("10ms")
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(
+                trades,
+                quotes,
+                on="time",
+                by="ticker",
+                tolerance=pd.Timedelta("10ms"),
+                allow_exact_matches=False,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(
+                trades,
+                quotes,
+                on="time",
+                by="ticker",
+                tolerance=pd.Timedelta("10ms"),
+                direction="backward",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(
+                trades,
+                quotes,
+                on="time",
+                by="ticker",
+                tolerance=pd.Timedelta("10ms"),
+                direction="forward",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(
+                trades,
+                quotes,
+                on="time",
+                by="ticker",
+                tolerance=pd.Timedelta("10ms"),
+                direction="nearest",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_crosstab_args() -> None:
+    a = [1, 2, 3, 4, 1, 2, 3, 4, 1, 2]
+    b: list = [4, 5, 6, 3, 4, 3, 5, 6, 5, 5]
+    c = [1, 3, 2, 3, 1, 2, 3, 1, 3, 2]
+    check(assert_type(pd.crosstab(a, b), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.crosstab(a, [b, c]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.crosstab(np.array(a), np.array(b)), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(pd.crosstab(np.array(a), [np.array(b), np.array(c)]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.crosstab(pd.Series(a), pd.Series(b)), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(pd.crosstab(pd.Index(a), pd.Index(b)), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(pd.crosstab(pd.Categorical(a), pd.Categorical(b)), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.crosstab(pd.Series(a), [pd.Series(b), pd.Series(c)]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    check(
+        assert_type(pd.crosstab(a, b, values=values, aggfunc=np.sum), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.crosstab(a, b, values=values, aggfunc="sum"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.crosstab(a, b, values=pd.Index(values), aggfunc=np.sum), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    with pytest.warns(FutureWarning):
+        check(
+            assert_type(
+                pd.crosstab(a, b, values=pd.Categorical(values), aggfunc=np.sum),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    check(
+        assert_type(
+            pd.crosstab(a, b, values=np.array(values), aggfunc="var"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+    check(
+        assert_type(
+            pd.crosstab(a, b, values=pd.Series(values), aggfunc=np.sum), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.crosstab(a, b, values=values, aggfunc=np.mean), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.crosstab(a, b, values=values, aggfunc="mean"), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    def m(x: pd.Series) -> float:
+        return x.sum() / len(x)
+
+    check(
+        assert_type(pd.crosstab(a, b, values=values, aggfunc=m), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    def m2(x: pd.Series) -> int:
+        return int(x.sum())
+
+    check(
+        assert_type(pd.crosstab(a, b, values=values, aggfunc=m2), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.crosstab(a, b, margins=True, margins_name="something"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.crosstab(a, b, margins=True, dropna=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.crosstab(a, b, colnames=["a"], rownames=["b"]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    rownames: list[tuple] = [("b", 1)]
+    colnames: list[tuple] = [("a",)]
+    check(
+        assert_type(
+            pd.crosstab(a, b, colnames=colnames, rownames=rownames),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(assert_type(pd.crosstab(a, b, normalize=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.crosstab(a, b, normalize=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.crosstab(a, b, normalize="all"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.crosstab(a, b, normalize="index"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.crosstab(a, b, normalize="columns"), pd.DataFrame), pd.DataFrame
+    )
+
+
+def test_pivot_extended() -> None:
+    df = pd.DataFrame(
+        data={
+            "col1": ["first", "second", "third", "fourth"],
+            "col2": [50, 70, 56, 111],
+            "col3": ["A", "B", "B", "A"],
+            "col4": [100, 102, 500, 600],
+            ("col5",): ["E", "F", "G", "H"],
+            ("col6", 6): ["apple", "banana", "cherry", "date"],
+            ("col7", "other"): ["apple", "banana", "cherry", "date"],
+            dt.date(2000, 1, 1): ["E", "F", "G", "H"],
+            dt.datetime(2001, 1, 1, 12): ["E", "F", "G", "H"],
+            dt.timedelta(7): ["E", "F", "G", "H"],
+            True: ["E", "F", "G", "H"],
+            9: ["E", "F", "G", "H"],
+            10.0: ["E", "F", "G", "H"],
+            (11.0 + 1j): ["E", "F", "G", "H"],
+            pd.Timestamp(2002, 1, 1): ["E", "F", "G", "H"],
+            pd.Timedelta(1, "D"): ["E", "F", "G", "H"],
+        }
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index="col1", columns="col3", values="col2"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=[("col5",)], columns=[("col6", 6)], values="col2"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(
+                df, index=[("col5",)], columns=[("col6", 6)], values=[("col7", "other")]
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=dt.date(2000, 1, 1), columns="col3", values="col2"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(
+                df, index=dt.datetime(2001, 1, 1, 12), columns="col3", values="col2"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=dt.timedelta(7), columns="col3", values="col2"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=True, columns="col3", values="col2"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.pivot(df, index=9, columns="col3", values="col2"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=10.0, columns="col3", values="col2"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=(11.0 + 1j), columns="col3", values="col2"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=pd.Timestamp(2002, 1, 1), columns="col3", values="col2"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot(df, index=pd.Timedelta(1, "D"), columns="col3", values="col2"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_pivot_table() -> None:
+    df = pd.DataFrame(
+        {
+            "A": ["foo", "foo", "foo", "foo", "foo", "bar", "bar", "bar", "bar"],
+            "B": ["one", "one", "one", "two", "two", "one", "one", "two", "two"],
+            "C": [
+                "small",
+                "large",
+                "large",
+                "small",
+                "small",
+                "large",
+                "small",
+                "small",
+                "large",
+            ],
+            "D": [1, 2, 2, 3, 3, 4, 5, 6, 7],
+            "E": [2, 4, 5, 5, 6, 6, 8, 9, 9],
+            ("col5",): ["foo", "foo", "foo", "foo", "foo", "bar", "bar", "bar", "bar"],
+            ("col6", 6): [
+                "one",
+                "one",
+                "one",
+                "two",
+                "two",
+                "one",
+                "one",
+                "two",
+                "two",
+            ],
+            (7, "seven"): [
+                "small",
+                "large",
+                "large",
+                "small",
+                "small",
+                "large",
+                "small",
+                "small",
+                "large",
+            ],
+        }
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, values="D", index=["A", "B"], columns=["C"], aggfunc=np.sum
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=pd.Series(["A", "B"]),
+                columns=["C"],
+                aggfunc="sum",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, values="D", index=["A", "B"], columns="C", aggfunc="mean"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    with pytest.warns(np.VisibleDeprecationWarning):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df,
+                    values="D",
+                    index=["A", "B"],
+                    columns=[(7, "seven")],
+                    aggfunc=np.sum,
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    with pytest.warns(np.VisibleDeprecationWarning):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df,
+                    values="D",
+                    index=[("col5",), ("col6", 6)],
+                    columns=[(7, "seven")],
+                    aggfunc=np.sum,
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, values="D", index=["A", "B"], columns=["C"], aggfunc="sum"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    def f(x: pd.Series) -> float:
+        return x.sum()
+
+    check(
+        assert_type(
+            pd.pivot_table(df, values="D", index=["A", "B"], columns=["C"], aggfunc=f),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    def g(x: pd.Series) -> int:
+        return int(np.round(x.sum()))
+
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values=["D", "E"],
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc={"D": f, "E": g},
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, values="D", index=["A", "B"], columns=["C"], aggfunc={"D": np.sum}
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, values="D", index=["A", "B"], columns=["C"], aggfunc={"D": "sum"}
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=[f, np.sum, "sum"],
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                margins=True,
+                margins_name="Total",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                dropna=True,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                dropna=True,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                observed=True,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=["C"],
+                aggfunc=np.sum,
+                sort=False,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    idx = pd.DatetimeIndex(
+        ["2011-01-01", "2011-02-01", "2011-01-02", "2011-01-01", "2011-01-02"]
+    )
+    df = pd.DataFrame(
+        {
+            "A": [1, 2, 3, 4, 5],
+            "dt": pd.date_range("2011-01-01", freq="D", periods=5),
+        },
+        index=idx,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=pd.Index(idx.month), columns=Grouper(key="dt", freq="M")
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=np.array(idx.month), columns=Grouper(key="dt", freq="M")
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=Grouper(key="dt", freq="M"), columns=pd.Index(idx.month)
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=Grouper(key="dt", freq="M"), columns=np.array(idx.month)
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=Grouper(freq="A"), columns=Grouper(key="dt", freq="M")
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )

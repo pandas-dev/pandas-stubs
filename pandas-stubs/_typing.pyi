@@ -46,6 +46,7 @@ PandasScalar: TypeAlias = Union[
 # Scalar: TypeAlias = Union[PythonScalar, PandasScalar]
 
 DatetimeLike: TypeAlias = Union[datetime.datetime, np.datetime64, Timestamp]
+DateAndDatetimeLike: TypeAlias = Union[datetime.date, DatetimeLike]
 
 DatetimeDictArg: TypeAlias = Union[
     Sequence[int], Sequence[float], list[str], tuple[Scalar, ...], AnyArrayLike
@@ -124,6 +125,11 @@ T = TypeVar("T")
 FuncType: TypeAlias = Callable[..., Any]
 F = TypeVar("F", bound=FuncType)
 HashableT = TypeVar("HashableT", bound=Hashable)
+HashableT1 = TypeVar("HashableT1", bound=Hashable)
+HashableT2 = TypeVar("HashableT2", bound=Hashable)
+HashableT3 = TypeVar("HashableT3", bound=Hashable)
+HashableT4 = TypeVar("HashableT4", bound=Hashable)
+HashableT5 = TypeVar("HashableT5", bound=Hashable)
 
 AggFuncTypeBase: TypeAlias = Union[Callable, str, np.ufunc]
 AggFuncTypeDictSeries: TypeAlias = dict[Hashable, AggFuncTypeBase]
@@ -247,9 +253,13 @@ XMLParsers: TypeAlias = Literal["lxml", "etree"]
 
 # Any plain Python or numpy function
 Function: TypeAlias = Union[np.ufunc, Callable[..., Any]]
+# Use a distinct HashableT in shared types to avoid conflicts with
+# shared HashableT and HashableT#. This one can be used if the identical
+# type is need in a function that uses GroupByObjectNonScalar
+_HashableTa = TypeVar("_HashableTa", bound=Hashable)
 GroupByObjectNonScalar: TypeAlias = Union[
     tuple,
-    list[HashableT],
+    list[_HashableTa],
     Function,
     list[Function],
     Series,
@@ -286,7 +296,8 @@ FillnaOptions: TypeAlias = Literal["backfill", "bfill", "ffill", "pad"]
 ReplaceMethod: TypeAlias = Literal["pad", "ffill", "bfill"]
 SortKind: TypeAlias = Literal["quicksort", "mergesort", "heapsort", "stable"]
 NaPosition: TypeAlias = Literal["first", "last"]
-MergeHow: TypeAlias = Literal["left", "right", "outer", "inner"]
+JoinHow: TypeAlias = Literal["left", "right", "outer", "inner"]
+MergeHow: TypeAlias = Union[JoinHow, Literal["cross"]]
 JsonFrameOrient: TypeAlias = Literal[
     "split", "records", "index", "columns", "values", "table"
 ]
@@ -332,4 +343,14 @@ class StyleExportDict(TypedDict, total=False):
 
 CalculationMethod: TypeAlias = Literal["single", "table"]
 
+ValidationOptions: TypeAlias = Literal[
+    "one_to_one",
+    "1:1",
+    "one_to_many",
+    "1:m",
+    "many_to_one",
+    "m:1",
+    "many_to_many",
+    "m:m",
+]
 __all__ = ["npt", "type_t"]

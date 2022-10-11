@@ -81,14 +81,16 @@ from pandas._typing import (
     FilePath,
     FillnaOptions,
     GroupByObjectNonScalar,
-    HashableT,
+    HashableT1,
+    HashableT2,
+    HashableT3,
     IgnoreRaise,
     IndexingInt,
+    JoinHow,
     JsonSeriesOrient,
     Level,
     ListLike,
     MaskType,
-    MergeHow,
     NaPosition,
     QuantileInterpolation,
     Renamer,
@@ -687,7 +689,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def align(
         self,
         other: DataFrame | Series,
-        join: MergeHow = ...,
+        join: JoinHow = ...,
         axis: AxisType | None = ...,
         level: Level | None = ...,
         copy: _bool = ...,
@@ -752,11 +754,11 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def drop(
         self,
-        labels: Hashable | list[HashableT] | Index = ...,
+        labels: Hashable | list[HashableT1] | Index = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[HashableT] | Index = ...,
-        columns: Hashable | list[HashableT] | Index = ...,
+        index: Hashable | list[HashableT2] | Index = ...,
+        columns: Hashable | list[HashableT3] | Index = ...,
         level: Level | None = ...,
         inplace: Literal[True],
         errors: IgnoreRaise = ...,
@@ -764,11 +766,11 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def drop(
         self,
-        labels: Hashable | list[HashableT] | Index = ...,
+        labels: Hashable | list[HashableT1] | Index = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[HashableT] | Index = ...,
-        columns: Hashable | list[HashableT] | Index = ...,
+        index: Hashable | list[HashableT2] | Index = ...,
+        columns: Hashable | list[HashableT3] | Index = ...,
         level: Level | None = ...,
         inplace: Literal[False] = ...,
         errors: IgnoreRaise = ...,
@@ -776,11 +778,11 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def drop(
         self,
-        labels: Hashable | list[HashableT] | Index = ...,
+        labels: Hashable | list[HashableT1] | Index = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | list[HashableT] | Index = ...,
-        columns: Hashable | list[HashableT] | Index = ...,
+        index: Hashable | list[HashableT2] | Index = ...,
+        columns: Hashable | list[HashableT3] | Index = ...,
         level: Level | None = ...,
         inplace: bool = ...,
         errors: IgnoreRaise = ...,
@@ -1198,7 +1200,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def __add__(
         self, other: num | _str | Timedelta | _ListLike | Series[S1]
     ) -> Series: ...
-    def __and__(self, other: _ListLike | Series[S1]) -> Series[_bool]: ...
+    def __and__(self, other: int | _ListLike | Series[S1]) -> Series[int]: ...
     # def __array__(self, dtype: Optional[_bool] = ...) -> _np_ndarray
     def __div__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __eq__(self, other: object) -> Series[_bool]: ...  # type: ignore[override]
@@ -1226,9 +1228,9 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def __mod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __ne__(self, other: object) -> Series[_bool]: ...  # type: ignore[override]
     def __pow__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
-    def __or__(self, other: _ListLike | Series[S1]) -> Series[_bool]: ...
+    def __or__(self, other: int | _ListLike | Series[S1]) -> Series[int]: ...
     def __radd__(self, other: num | _str | _ListLike | Series[S1]) -> Series[S1]: ...
-    def __rand__(self, other: num | _ListLike | Series[S1]) -> Series[_bool]: ...
+    def __rand__(self, other: int | _ListLike | Series[S1]) -> Series[int]: ...
     def __rdiv__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __rdivmod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __rfloordiv__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
@@ -1236,13 +1238,13 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def __rmul__(self, other: num | _ListLike | Series) -> Series: ...
     def __rnatmul__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __rpow__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
-    def __ror__(self, other: num | _ListLike | Series[S1]) -> Series[_bool]: ...
+    def __ror__(self, other: int | _ListLike | Series[S1]) -> Series[int]: ...
     def __rsub__(self, other: num | _ListLike | Series[S1]) -> Series: ...
     @overload
     def __rtruediv__(self, other: Timedelta | TimedeltaSeries) -> Series[float]: ...
     @overload
     def __rtruediv__(self, other: num | _ListLike | Series[S1]) -> Series: ...
-    def __rxor__(self, other: num | _ListLike | Series[S1]) -> Series[_bool]: ...
+    def __rxor__(self, other: int | _ListLike | Series[S1]) -> Series[int]: ...
     @overload
     def __sub__(
         self, other: Timestamp | datetime | TimestampSeries
@@ -1259,7 +1261,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     ) -> Series[float]: ...
     @overload
     def __truediv__(self, other: num | _ListLike | Series[S1]) -> Series: ...
-    def __xor__(self, other: _ListLike | Series[S1]) -> Series: ...
+    def __xor__(self, other: int | _ListLike | Series[S1]) -> Series[int]: ...
     def __invert__(self) -> Series[bool]: ...
     # properties
     # @property

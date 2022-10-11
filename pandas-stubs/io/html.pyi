@@ -12,7 +12,11 @@ from pandas.core.frame import DataFrame
 
 from pandas._typing import (
     FilePath,
-    HashableT,
+    HashableT1,
+    HashableT2,
+    HashableT3,
+    HashableT4,
+    HashableT5,
     ReadBuffer,
 )
 
@@ -21,23 +25,23 @@ def read_html(
     match: str | Pattern = ...,
     flavor: str | None = ...,
     header: int | Sequence[int] | None = ...,
-    index_col: int | Sequence[int] | list[HashableT] | None = ...,
+    index_col: int | Sequence[int] | list[HashableT1] | None = ...,
     skiprows: int | Sequence[int] | slice | None = ...,
     attrs: dict[str, str] | None = ...,
     parse_dates: bool
     | Sequence[int]
-    | list[HashableT]  # Cannot be Sequence[Hashable] to prevent str
+    | list[HashableT2]  # Cannot be Sequence[Hashable] to prevent str
     | Sequence[Sequence[Hashable]]
     | dict[str, Sequence[int]]
-    | dict[str, list[HashableT]] = ...,
+    | dict[str, list[HashableT3]] = ...,
     thousands: str = ...,
     encoding: str | None = ...,
     decimal: str = ...,
-    converters: Mapping[int | HashableT, Callable[[str], Any]] | None = ...,
+    converters: Mapping[int | HashableT4, Callable[[str], Any]] | None = ...,
     na_values: str
     | list[str]
-    | dict[HashableT, str]
-    | dict[HashableT, list[str]]
+    | dict[HashableT5, str]
+    | dict[HashableT5, list[str]]
     | None = ...,
     keep_default_na: bool = ...,
     displayed_only: bool = ...,

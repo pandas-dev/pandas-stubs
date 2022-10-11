@@ -723,6 +723,7 @@ def test_types_merge() -> None:
     df.merge(df2, on=("col1", "col2"), how="left", suffixes=(None, "s"))
     df.merge(df2, on=("col1", "col2"), how="left", suffixes=("t", "s"))
     df.merge(df2, on=("col1", "col2"), how="left", suffixes=("a", None))
+    df.merge(df2, how="cross")  # GH 289
     columns = ["col1", "col2"]
     df.merge(df2, on=columns)
 
