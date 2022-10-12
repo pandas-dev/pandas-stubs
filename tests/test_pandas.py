@@ -264,7 +264,9 @@ def test_isna() -> None:
     # and as a result the type narrowing does not always work as it intuitively should
     # There is a proposal being floated for a StrictTypeGuard that will have more rigid narrowing semantics
     # In the test cases below, a commented out assertion will be included to document the optimal test result
-    nullable1 = random.choice(["value", None, pd.NA, pd.NaT])
+    nullable1: str | None | NAType | NaTType = random.choice(
+        ["value", None, pd.NA, pd.NaT]
+    )
     if pd.notna(nullable1):
         check(assert_type(nullable1, str), str)
     if not pd.isna(nullable1):
@@ -276,7 +278,7 @@ def test_isna() -> None:
         # assert_type(nullable1, Union[NaTType, NAType, None])  # TODO: Desired result (see comments above)
         assert_type(nullable1, Union[str, NaTType, NAType, None])
 
-    nullable2 = random.choice([2, None])
+    nullable2: int | None = random.choice([2, None])
     if pd.notna(nullable2):
         check(assert_type(nullable2, int), int)
     if not pd.isna(nullable2):
@@ -294,7 +296,7 @@ def test_isna() -> None:
         # )  # Pyright result
         pass
 
-    nullable3 = random.choice([True, None, pd.NA])
+    nullable3: bool | None | NAType = random.choice([True, None, pd.NA])
     if pd.notna(nullable3):
         check(assert_type(nullable3, bool), bool)
     if not pd.isna(nullable3):
