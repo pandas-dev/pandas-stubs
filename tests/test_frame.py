@@ -661,11 +661,15 @@ def test_types_groupby_agg() -> None:
     check(assert_type(df.groupby("col1").agg(agg_dict1), pd.DataFrame), pd.DataFrame)
     agg_dict2 = {"col2": min, "col3": max, 0: min}
     check(assert_type(df.groupby("col1").agg(agg_dict2), pd.DataFrame), pd.DataFrame)
+
+    def wrapped_min(x: Any) -> Any:
+        return x.min()
+
     # Here, MyPy infers dict[object, object], so it must be explicitly annotated
     agg_dict3: dict[str | int, str | Callable] = {
         "col2": min,
         "col3": "max",
-        0: lambda x: x.min(),
+        0: wrapped_min,
     }
     check(assert_type(df.groupby("col1").agg(agg_dict3), pd.DataFrame), pd.DataFrame)
     agg_dict4 = {"col2": "sum"}
