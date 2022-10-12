@@ -5,6 +5,7 @@ from datetime import (
 
 import numpy as np
 import pandas as pd
+import pyarrow as pa
 from typing_extensions import assert_type
 
 from tests import check
@@ -114,6 +115,4 @@ def test_boolean_dtype() -> None:
 
 
 def test_arrow_dtype() -> None:
-    import pyarrow as pa
-
     check(assert_type(pd.ArrowDtype(pa.int64()), pd.ArrowDtype), pd.ArrowDtype)

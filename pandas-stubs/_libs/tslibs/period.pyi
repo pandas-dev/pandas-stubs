@@ -1,11 +1,49 @@
-from datetime import tzinfo
-from typing import Any
+import datetime
+from typing import (
+    Literal,
+    Union,
+    overload,
+)
+
+import numpy as np
+from pandas import (
+    DatetimeIndex,
+    Index,
+    PeriodIndex,
+    Timedelta,
+)
+from typing_extensions import TypeAlias
+
+from pandas._typing import npt
 
 from .timestamps import Timestamp
 
 class IncompatibleFrequency(ValueError): ...
 
 from pandas._libs.tslibs.offsets import BaseOffset
+
+_PeriodAddSub: TypeAlias = Union[
+    Timedelta, datetime.timedelta, np.timedelta64, np.int64, int
+]
+
+_PeriodEqualityComparison: TypeAlias = Union[
+    Period, datetime.datetime, datetime.date, Timestamp, np.datetime64, int, np.int64
+]
+
+_PeriodFreqHow: TypeAlias = Literal[
+    "S",
+    "E",
+    "Start",
+    "Finish",
+    "Begin",
+    "End",
+    "s",
+    "e",
+    "start",
+    "finish",
+    "begin",
+    "end",
+]
 
 class PeriodMixin:
     @property
@@ -16,21 +54,8 @@ class PeriodMixin:
 class Period(PeriodMixin):
     def __init__(
         self,
-        value: Any = ...,
-        freqstr: Any = ...,
-        ordinal: Any = ...,
-        year: Any = ...,
-        month: int = ...,
-        quarter: Any = ...,
-        day: int = ...,
-        hour: int = ...,
-        minute: int = ...,
-        second: int = ...,
-    ) -> None: ...
-    def __new__(
-        cls,
-        value: Period | str = ...,
-        freq: int | str | BaseOffset | None = ...,
+        value: Period | str | None = ...,
+        freq: str | BaseOffset | None = ...,
         ordinal: int | None = ...,
         year: int | None = ...,
         month: int | None = ...,
@@ -39,20 +64,45 @@ class Period(PeriodMixin):
         hour: int | None = ...,
         minute: int | None = ...,
         second: int | None = ...,
-    ) -> Period: ...
-    def __sub__(self, other) -> Period | BaseOffset: ...
-    def __add__(self, other) -> Period: ...
-    def __eq__(self, other) -> bool: ...
-    def __ge__(self, other) -> bool: ...
-    def __gt__(self, other) -> bool: ...
+    ) -> None: ...
+    @overload
+    def __sub__(self, other: _PeriodAddSub) -> Period: ...
+    @overload
+    def __sub__(self, other: Period) -> BaseOffset: ...
+    @overload
+    def __sub__(self, other: PeriodIndex) -> Index: ...
+    @overload
+    def __add__(self, other: _PeriodAddSub) -> Period: ...
+    @overload
+    def __add__(self, other: Index) -> Period: ...
+    @overload  # type: ignore[override]
+    def __eq__(self, other: _PeriodEqualityComparison) -> bool: ...
+    @overload
+    def __eq__(self, other: PeriodIndex | DatetimeIndex) -> npt.NDArray[np.bool_]: ...
+    @overload
+    def __ge__(self, other: Period) -> bool: ...
+    @overload
+    def __ge__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
+    @overload
+    def __gt__(self, other: Period) -> bool: ...
+    @overload
+    def __gt__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
     def __hash__(self) -> int: ...
-    def __le__(self, other) -> bool: ...
-    def __lt__(self, other) -> bool: ...
-    def __ne__(self, other) -> bool: ...
-    def __radd__(self, other) -> Period: ...
-    def __reduce__(self, *args, **kwargs) -> Any: ...  # what should this be?
-    def __rsub__(self, other) -> Period: ...
-    def __setstate__(self, *args, **kwargs) -> Any: ...  # what should this be?
+    @overload
+    def __le__(self, other: Period) -> bool: ...
+    @overload
+    def __le__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
+    @overload
+    def __lt__(self, other: Period) -> bool: ...
+    @overload
+    def __lt__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
+    @overload  # type: ignore[override]
+    def __ne__(self, other: _PeriodEqualityComparison) -> bool: ...
+    @overload
+    def __ne__(self, other: PeriodIndex | DatetimeIndex) -> npt.NDArray[np.bool_]: ...
+    # Ignored due to indecipherable error from mypy:
+    # Forward operator "__add__" is not callable  [misc]
+    def __radd__(self, other: _PeriodAddSub) -> Period: ...  # type: ignore[misc]
     @property
     def day(self) -> int: ...
     @property
@@ -66,7 +116,7 @@ class Period(PeriodMixin):
     @property
     def end_time(self) -> Timestamp: ...
     @property
-    def freq(self) -> Any: ...
+    def freq(self) -> BaseOffset: ...
     @property
     def freqstr(self) -> str: ...
     @property
@@ -99,14 +149,12 @@ class Period(PeriodMixin):
     def day_of_year(self) -> int: ...
     @property
     def day_of_week(self) -> int: ...
-    def asfreq(self, freq: str | BaseOffset, how: str = ...) -> Period: ...
+    def asfreq(self, freq: str | BaseOffset, how: _PeriodFreqHow = ...) -> Period: ...
     @classmethod
-    def now(cls, freq: BaseOffset = ...) -> Period: ...
+    def now(cls, freq: str | BaseOffset = ...) -> Period: ...
     def strftime(self, fmt: str) -> str: ...
     def to_timestamp(
         self,
         freq: str | BaseOffset | None = ...,
-        how: str = ...,
-        tz: str | tzinfo | None = ...,
+        how: _PeriodFreqHow = ...,
     ) -> Timestamp: ...
-    def astype(self, dtype, copy: bool = ...): ...
