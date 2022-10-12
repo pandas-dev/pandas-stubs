@@ -46,19 +46,27 @@ def test_interval_dtype() -> None:
     check(
         assert_type(
             pd.Interval(pd.Timestamp("2017-01-01"), pd.Timestamp("2017-01-02")),
-            pd.Interval,
+            "pd.Interval[pd.Timestamp]",
         ),
         pd.Interval,
     )
-    check(assert_type(pd.Interval(1, 2, closed="left"), pd.Interval), pd.Interval)
-    check(assert_type(pd.Interval(1.0, 2.5, closed="right"), pd.Interval), pd.Interval)
-    check(assert_type(pd.Interval(1.0, 2.5, closed="both"), pd.Interval), pd.Interval)
     check(
-        assert_type(pd.Interval(1.0, 2.5, closed="neither"), pd.Interval), pd.Interval
+        assert_type(pd.Interval(1, 2, closed="left"), "pd.Interval[int]"), pd.Interval
+    )
+    check(
+        assert_type(pd.Interval(1.0, 2.5, closed="right"), "pd.Interval[float]"),
+        pd.Interval,
+    )
+    check(
+        assert_type(pd.Interval(1.0, 2.5, closed="both"), "pd.Interval[float]"),
+        pd.Interval,
     )
     check(
         assert_type(
-            pd.Interval(pd.Timedelta("1 days"), pd.Timedelta("2 days")), pd.Interval
+            pd.Interval(
+                pd.Timedelta("1 day"), pd.Timedelta("2 days"), closed="neither"
+            ),
+            "pd.Interval[pd.Timedelta]",
         ),
         pd.Interval,
     )
@@ -106,4 +114,6 @@ def test_boolean_dtype() -> None:
 
 
 def test_arrow_dtype() -> None:
-    check(assert_type(pd.ArrowDtype("int64"), pd.ArrowDtype), pd.ArrowDtype)
+    import pyarrow as pa
+
+    check(assert_type(pd.ArrowDtype(pa.int64()), pd.ArrowDtype), pd.ArrowDtype)
