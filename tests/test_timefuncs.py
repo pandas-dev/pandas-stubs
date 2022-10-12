@@ -18,6 +18,7 @@ from typing_extensions import assert_type
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs import BaseOffset
+from pandas._libs.tslibs.timedeltas import Components
 
 from pandas.tseries.offsets import (
     BusinessDay,
@@ -1155,3 +1156,306 @@ def test_period() -> None:
 
     check(assert_type(p.strftime("%Y-%m-%d"), str), str)
     check(assert_type(hash(p), int), int)
+
+
+def test_timedelta() -> None:
+    check(assert_type(pd.Timedelta(1, "W"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "w"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "D"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "d"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "days"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "day"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "hours"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "hour"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "hr"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "h"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "m"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "minute"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "min"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "minutes"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "t"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "s"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "seconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "sec"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "second"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "ms"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "milliseconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "millisecond"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "milli"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "millis"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "l"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "us"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "microseconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "microsecond"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "µs"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "micro"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "micros"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "u"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "ns"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "nanoseconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "nano"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "nanos"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "nanosecond"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "n"), pd.Timedelta), pd.Timedelta)
+
+    check(assert_type(pd.Timedelta("1 W"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 w"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 D"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 d"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 days"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 day"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 hours"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 hour"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 hr"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 h"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 m"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 minute"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 min"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 minutes"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 t"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 s"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 seconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 sec"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 second"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 ms"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 milliseconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 millisecond"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 milli"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 millis"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 l"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 us"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 microseconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 microsecond"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 µs"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 micro"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 micros"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 u"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 ns"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 nanoseconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 nano"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 nanos"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 nanosecond"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 n"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(days=1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(seconds=1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(microseconds=1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(minutes=1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(hours=1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(weeks=1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(milliseconds=1), pd.Timedelta), pd.Timedelta)
+
+    td = pd.Timedelta("1 day")
+    check(assert_type(td.value, int), int)
+    check(assert_type(td.asm8, np.timedelta64), np.timedelta64)
+
+    check(assert_type(td.days, int), int)
+    check(assert_type(td.microseconds, int), int)
+    check(assert_type(td.nanoseconds, int), int)
+    check(assert_type(td.seconds, int), int)
+    check(assert_type(td.value, int), int)
+    check(assert_type(td.resolution_string, str), str)
+    check(assert_type(td.components, Components), Components)
+
+    check(assert_type(td.ceil("D"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td.floor(Day()), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td.isoformat(), str), str)
+    check(assert_type(td.round("s"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td.to_numpy(), np.timedelta64), np.timedelta64)
+    check(assert_type(td.to_pytimedelta(), dt.timedelta), dt.timedelta)
+    check(assert_type(td.to_timedelta64(), np.timedelta64), np.timedelta64)
+    check(assert_type(td.total_seconds(), float), float)
+    check(assert_type(td.view(np.int64), object), np.int64)
+    check(assert_type(td.view("i8"), object), np.int64)
+
+    check(assert_type(td + pd.Period("2012-01-01", freq="D"), pd.Period), pd.Period)
+    check(assert_type(td + pd.Timestamp("2012-01-01"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(td + dt.datetime(2012, 1, 1), pd.Timestamp), pd.Timestamp)
+    check(assert_type(td + dt.date(2012, 1, 1), dt.date), dt.date)
+    check(assert_type(td + np.datetime64(1, "ns"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(td + dt.timedelta(days=1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td + np.timedelta64(1, "D"), pd.Timedelta), pd.Timedelta)
+    check(
+        assert_type(
+            td + pd.period_range("2012-01-01", periods=3, freq="D"), pd.PeriodIndex
+        ),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(td + pd.date_range("2012-01-01", periods=3), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(td + np.array([1, 2, 3], dtype="timedelta64[D]"), np.ndarray),
+        np.ndarray,
+    )
+    check(
+        assert_type(td + np.array([1, 2, 3], dtype="datetime64[ns]"), np.ndarray),
+        np.ndarray,
+    )
+
+    check(assert_type(td - td, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td - dt.timedelta(days=1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td - np.timedelta64(1, "D"), pd.Timedelta), pd.Timedelta)
+    check(
+        assert_type(td - np.array([1, 2, 3], dtype="timedelta64[D]"), np.ndarray),
+        np.ndarray,
+    )
+
+    check(assert_type(pd.Period("2012-01-01", freq="D") - td, pd.Period), pd.Period)
+    check(assert_type(pd.Timestamp("2012-01-01") - td, pd.Timestamp), pd.Timestamp)
+    check(assert_type(dt.datetime(2012, 1, 1) - td, dt.datetime), dt.datetime)
+    check(assert_type(dt.date(2012, 1, 1) - td, dt.date), dt.date)
+    check(assert_type(np.datetime64(1, "ns") - td, pd.Timestamp), pd.Timestamp)
+    check(assert_type(dt.timedelta(days=1) - td, pd.Timedelta), pd.Timedelta)
+    check(assert_type(np.timedelta64(1, "D") - td, pd.Timedelta), pd.Timedelta)
+    check(
+        assert_type(
+            pd.period_range("2012-01-01", periods=3, freq="D") - td, pd.PeriodIndex
+        ),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(pd.date_range("2012-01-01", periods=3) - td, pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(np.array([1, 2, 3], dtype="timedelta64[D]") - td, np.ndarray),
+        np.ndarray,
+    )
+    check(
+        assert_type(np.array([1, 2, 3], dtype="datetime64[ns]") - td, np.ndarray),
+        np.ndarray,
+    )
+
+    check(assert_type(td * 3, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td * 3.5, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td * np.array([1, 2, 3]), np.ndarray), np.ndarray)
+    check(assert_type(td * np.array([1.2, 2.2, 3.4]), np.ndarray), np.ndarray)
+    check(assert_type(td * pd.Series([1, 2, 3]), pd.Series), pd.Series)
+    check(assert_type(td * pd.Series([1.2, 2.2, 3.4]), pd.Series), pd.Series)
+    check(assert_type(td * pd.Index([1, 2, 3]), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(
+        assert_type(td * pd.Index([1.2, 2.2, 3.4]), pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+    )
+
+    check(assert_type(td // td, int), int)
+    check(assert_type(td // 3, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td // 3.5, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td // np.array([1, 2, 3]), np.ndarray), np.ndarray)
+    check(assert_type(td // np.array([1.2, 2.2, 3.4]), np.ndarray), np.ndarray)
+    check(assert_type(td // pd.Series([1, 2, 3]), pd.Series), pd.Series)
+    check(assert_type(td // pd.Series([1.2, 2.2, 3.4]), pd.Series), pd.Series)
+    check(assert_type(td // pd.Index([1, 2, 3]), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(
+        assert_type(td // pd.Index([1.2, 2.2, 3.4]), pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+    )
+
+    check(assert_type(td / td, float), float)
+    check(assert_type(td / 3, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td / 3.5, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td / np.array([1, 2, 3]), np.ndarray), np.ndarray)
+    check(assert_type(td / np.array([1.2, 2.2, 3.4]), np.ndarray), np.ndarray)
+    check(assert_type(td / pd.Series([1, 2, 3]), pd.Series), pd.Series)
+    check(assert_type(td / pd.Series([1.2, 2.2, 3.4]), pd.Series), pd.Series)
+    check(assert_type(td / pd.Index([1, 2, 3]), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(
+        assert_type(td / pd.Index([1.2, 2.2, 3.4]), pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+    )
+
+    check(assert_type(td % 3, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td % 3.5, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td % td, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td % np.array([1, 2, 3]), np.ndarray), np.ndarray)
+    check(assert_type(td % np.array([1.2, 2.2, 3.4]), np.ndarray), np.ndarray)
+    check(assert_type(td % pd.Series([1, 2, 3]), pd.Series), pd.Series)
+    check(assert_type(td % pd.Series([1.2, 2.2, 3.4]), pd.Series), pd.Series)
+    check(assert_type(td % pd.Index([1, 2, 3]), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(
+        assert_type(td % pd.Index([1.2, 2.2, 3.4]), pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+    )
+
+    check(assert_type(abs(td), pd.Timedelta), pd.Timedelta)
+    check(assert_type(-td, pd.Timedelta), pd.Timedelta)
+    check(assert_type(+td, pd.Timedelta), pd.Timedelta)
+
+    check(assert_type(td < td, bool), bool)
+    check(assert_type(td < dt.timedelta(days=1), bool), bool)
+    check(assert_type(td < np.timedelta64(1, "D"), bool), bool)
+    check(
+        assert_type(td < np.array([1, 2, 3], dtype="timedelta64[D]"), np.ndarray),
+        np.ndarray,
+    )
+    check(
+        assert_type(td < pd.TimedeltaIndex([1, 2, 3], unit="D"), np.ndarray), np.ndarray
+    )
+
+    check(assert_type(td > td, bool), bool)
+    check(assert_type(td > dt.timedelta(days=1), bool), bool)
+    check(assert_type(td > np.timedelta64(1, "D"), bool), bool)
+    check(
+        assert_type(td > np.array([1, 2, 3], dtype="timedelta64[D]"), np.ndarray),
+        np.ndarray,
+    )
+    check(
+        assert_type(td > pd.TimedeltaIndex([1, 2, 3], unit="D"), np.ndarray), np.ndarray
+    )
+
+    check(assert_type(td <= td, bool), bool)
+    check(assert_type(td <= dt.timedelta(days=1), bool), bool)
+    check(assert_type(td <= np.timedelta64(1, "D"), bool), bool)
+    check(
+        assert_type(td <= np.array([1, 2, 3], dtype="timedelta64[D]"), np.ndarray),
+        np.ndarray,
+    )
+    check(
+        assert_type(td <= pd.TimedeltaIndex([1, 2, 3], unit="D"), np.ndarray),
+        np.ndarray,
+    )
+
+    check(assert_type(td >= td, bool), bool)
+    check(assert_type(td >= dt.timedelta(days=1), bool), bool)
+    check(assert_type(td >= np.timedelta64(1, "D"), bool), bool)
+    check(
+        assert_type(td >= np.array([1, 2, 3], dtype="timedelta64[D]"), np.ndarray),
+        np.ndarray,
+    )
+    check(
+        assert_type(td >= pd.TimedeltaIndex([1, 2, 3], unit="D"), np.ndarray),
+        np.ndarray,
+    )
+
+    check(assert_type(td == td, bool), bool)
+    check(assert_type(td == dt.timedelta(days=1), bool), bool)
+    check(assert_type(td == np.timedelta64(1, "D"), bool), bool)
+    check(
+        assert_type(td == np.array([1, 2, 3], dtype="timedelta64[D]"), np.ndarray),
+        np.ndarray,
+    )
+    check(
+        assert_type(td == pd.TimedeltaIndex([1, 2, 3], unit="D"), np.ndarray),
+        np.ndarray,
+    )
+    check(assert_type(td == pd.Series([1, 2, 3]), pd.Series), pd.Series)
+    check(assert_type(td == pd.Timestamp("2016-01-01"), bool), bool)
+    check(assert_type(td == 1, bool), bool)
+    check(assert_type(td == (3 + 2j), bool), bool)
+
+    check(assert_type(td != td, bool), bool)
+    check(assert_type(td != dt.timedelta(days=1), bool), bool)
+    check(assert_type(td != np.timedelta64(1, "D"), bool), bool)
+    check(
+        assert_type(td != np.array([1, 2, 3], dtype="timedelta64[D]"), np.ndarray),
+        np.ndarray,
+    )
+    check(
+        assert_type(td != pd.TimedeltaIndex([1, 2, 3], unit="D"), np.ndarray),
+        np.ndarray,
+    )
+    check(assert_type(td != pd.Series([1, 2, 3]), pd.Series), pd.Series)
+    check(assert_type(td != pd.Timestamp("2016-01-01"), bool), bool)
+    check(assert_type(td != 1, bool), bool)
+    check(assert_type(td != (3 + 2j), bool), bool)

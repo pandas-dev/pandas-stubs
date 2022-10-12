@@ -2,6 +2,7 @@ from datetime import timedelta
 from typing import (
     ClassVar,
     Literal,
+    NamedTuple,
     TypeVar,
     Union,
     overload,
@@ -11,10 +12,20 @@ import numpy as np
 from typing_extensions import TypeAlias
 
 from pandas._libs.tslibs import (
+    BaseOffset,
     NaTType,
     Tick,
 )
 from pandas._typing import npt
+
+class Components(NamedTuple):
+    days: int
+    hours: int
+    minutes: int
+    seconds: int
+    milliseconds: int
+    microseconds: int
+    nanoseconds: int
 
 # This should be kept consistent with the keys in the dict timedelta_abbrevs
 # in pandas/_libs/tslibs/timedeltas.pyx
@@ -70,18 +81,6 @@ UnitChoices: TypeAlias = Union[
 
 _S = TypeVar("_S", bound=timedelta)
 
-def ints_to_pytimedelta(
-    arr: npt.NDArray[np.int64],  # const int64_t[:]
-    box: bool = ...,
-) -> npt.NDArray[np.object_]: ...
-def array_to_timedelta64(
-    values: npt.NDArray[np.object_],
-    unit: str | None = ...,
-    errors: str = ...,
-) -> np.ndarray: ...  # np.ndarray[m8ns]
-def parse_timedelta_unit(unit: str | None) -> UnitChoices: ...
-def delta_to_nanoseconds(delta: np.timedelta64 | timedelta | Tick) -> int: ...
-
 class Timedelta(timedelta):
     min: ClassVar[Timedelta]
     max: ClassVar[Timedelta]
@@ -106,6 +105,8 @@ class Timedelta(timedelta):
     @property
     def days(self) -> int: ...
     @property
+    def nanoseconds(self) -> int: ...
+    @property
     def seconds(self) -> int: ...
     @property
     def microseconds(self) -> int: ...
@@ -115,9 +116,9 @@ class Timedelta(timedelta):
     @property
     def asm8(self) -> np.timedelta64: ...
     # TODO: round/floor/ceil could return NaT?
-    def round(self: _S, freq: str) -> _S: ...
-    def floor(self: _S, freq: str) -> _S: ...
-    def ceil(self: _S, freq: str) -> _S: ...
+    def round(self: _S, freq: str | BaseOffset) -> _S: ...
+    def floor(self: _S, freq: str | BaseOffset) -> _S: ...
+    def ceil(self: _S, freq: str | BaseOffset) -> _S: ...
     @property
     def resolution_string(self) -> str: ...
     def __add__(self, other: timedelta) -> Timedelta: ...
@@ -162,6 +163,5 @@ class Timedelta(timedelta):
     def isoformat(self) -> str: ...
     def to_numpy(self) -> np.timedelta64: ...
     @property
-    def freq(self) -> None: ...
-    @property
-    def is_populated(self) -> bool: ...
+    def components(self) -> Components: ...
+    def view(self, dtype: npt.DTypeLike = ...) -> object: ...
