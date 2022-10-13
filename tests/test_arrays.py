@@ -25,6 +25,8 @@ def test_integer_array() -> None:
     nulled_ints = [1, 2, 3, 4, 5, 6, 7, 8, None, 10]
     pd.array(nulled_ints, dtype="UInt8")
     pd.array(nulled_ints, dtype=pd.UInt8Dtype())
+    pd.array(nulled_ints, dtype=float)
+    pd.array(ints, dtype=int)
 
 
 def test_string_array() -> None:
@@ -35,6 +37,7 @@ def test_string_array() -> None:
     strings_list = strings.tolist()
     pd.array(strings_list, dtype="string")
     pd.array(strings, dtype="string")
+    pd.array(strings, dtype=str)
     pd.array(strings)
 
 

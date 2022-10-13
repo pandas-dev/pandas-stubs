@@ -6,6 +6,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Optional,
+    Union,
 )
 
 import numpy as np

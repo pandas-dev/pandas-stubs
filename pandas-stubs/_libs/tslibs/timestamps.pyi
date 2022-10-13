@@ -13,7 +13,6 @@ from typing import (
     overload,
 )
 
-from dateutil.tz import tzfile
 import numpy as np
 from pandas import Index
 from pandas.core.series import (
@@ -40,8 +39,10 @@ class Timestamp(datetime):
     def __new__(
         cls: type[_DatetimeT],
         ts_input: np.integer | float | str | _date | datetime | np.datetime64 = ...,
-        *,
-        tz: str | _tzinfo | tzfile | int | None = ...,
+        # Freq is deprecated but is left in to allow code like Timestamp(2000,1,1)
+        # Removing it would make the other arguments position only
+        freq: int | str | BaseOffset | None = ...,
+        tz: str | _tzinfo | int | None = ...,
         unit: str | int | None = ...,
         year: int | None = ...,
         month: int | None = ...,

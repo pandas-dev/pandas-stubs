@@ -1,20 +1,30 @@
-from typing import Sequence
+from typing import (
+    Sequence,
+    Union,
+)
 
 import numpy as np
+import pandas as pd
 from pandas.core.indexes.api import Index
 from pandas.core.series import Series
 
 from pandas._typing import (
     ArrayLike,
     Dtype,
+    npt,
 )
 
 from pandas.core.dtypes.dtypes import ExtensionDtype
 from pandas.core.dtypes.generic import ABCExtensionArray
 
 def array(
-    data: Sequence[object],
-    dtype: str | np.dtype | ExtensionDtype | None = ...,
+    # str is forbidden even though Sequence[object] allows "abc"
+    data: npt.NDArray | Sequence[object],
+    dtype: str
+    | np.dtype[np.generic]
+    | ExtensionDtype
+    | type[Union[str, bool, float, int]]
+    | None = ...,
     copy: bool = ...,
 ) -> ABCExtensionArray: ...
 def extract_array(obj, extract_numpy: bool = ...): ...

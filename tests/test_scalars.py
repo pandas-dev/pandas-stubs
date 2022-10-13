@@ -1,16 +1,29 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import Literal
+
+# import dateutil.tz
+from typing import (  # Literal,
+    TYPE_CHECKING,
+    Any,
+    cast,
+)
 
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
-import pytz
+import pytest
+
+# import pytz
 from typing_extensions import assert_type
 
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.timedeltas import Components
+
+if TYPE_CHECKING:
+    from pandas._typing import np_ndarray_bool
+else:
+    np_ndarray_bool = Any
 
 from tests import check
 
@@ -126,8 +139,8 @@ def test_period() -> None:
     check(assert_type(p == c3, bool), bool)
     check(assert_type(p == c4, bool), bool)
     check(assert_type(p == c5, bool), bool)
-    check(assert_type(p == c7, npt.NDArray[np.bool_]), np.ndarray)
-    check(assert_type(p == c8, npt.NDArray[np.bool_]), np.ndarray)
+    check(assert_type(p == c7, np_ndarray_bool), np.ndarray)
+    check(assert_type(p == c8, np_ndarray_bool), np.ndarray)
 
     check(assert_type(p != c0, bool), bool)
     check(assert_type(p != c1, bool), bool)
@@ -135,20 +148,20 @@ def test_period() -> None:
     check(assert_type(p != c3, bool), bool)
     check(assert_type(p != c4, bool), bool)
     check(assert_type(p != c5, bool), bool)
-    check(assert_type(p != c7, npt.NDArray[np.bool_]), np.ndarray)
-    check(assert_type(p != c8, npt.NDArray[np.bool_]), np.ndarray)
+    check(assert_type(p != c7, np_ndarray_bool), np.ndarray)
+    check(assert_type(p != c8, np_ndarray_bool), np.ndarray)
 
     check(assert_type(p > c6, bool), bool)
-    check(assert_type(p > c7, npt.NDArray[np.bool_]), np.ndarray)
+    check(assert_type(p > c7, np_ndarray_bool), np.ndarray)
 
     check(assert_type(p < c6, bool), bool)
-    check(assert_type(p < c7, npt.NDArray[np.bool_]), np.ndarray)
+    check(assert_type(p < c7, np_ndarray_bool), np.ndarray)
 
     check(assert_type(p <= c6, bool), bool)
-    check(assert_type(p <= c7, npt.NDArray[np.bool_]), np.ndarray)
+    check(assert_type(p <= c7, np_ndarray_bool), np.ndarray)
 
     check(assert_type(p >= c6, bool), bool)
-    check(assert_type(p >= c7, npt.NDArray[np.bool_]), np.ndarray)
+    check(assert_type(p >= c7, np_ndarray_bool), np.ndarray)
 
     p3 = pd.Period("2007-01", freq="M")
     check(assert_type(p3.to_timestamp("D", "S"), pd.Timestamp), pd.Timestamp)
@@ -287,6 +300,13 @@ def test_timedelta() -> None:
     check(assert_type(td.view(np.int64), object), np.int64)
     check(assert_type(td.view("i8"), object), np.int64)
 
+    ndarray_td64: npt.NDArray[np.timedelta64] = np.array(
+        [1, 2, 3], dtype="timedelta64[D]"
+    )
+    ndarray_dt64: npt.NDArray[np.datetime64] = np.array(
+        [1, 2, 3], dtype="datetime64[D]"
+    )
+
     check(assert_type(td + pd.Period("2012-01-01", freq="D"), pd.Period), pd.Period)
     check(assert_type(td + pd.Timestamp("2012-01-01"), pd.Timestamp), pd.Timestamp)
     check(assert_type(td + dt.datetime(2012, 1, 1), pd.Timestamp), pd.Timestamp)
@@ -305,11 +325,17 @@ def test_timedelta() -> None:
         pd.DatetimeIndex,
     )
     check(
-        assert_type(td + np.array([1, 2, 3], dtype="timedelta64[D]"), np.ndarray),
+        assert_type(
+            td + ndarray_td64,
+            npt.NDArray[np.timedelta64],
+        ),
         np.ndarray,
     )
     check(
-        assert_type(td + np.array([1, 2, 3], dtype="datetime64[ns]"), np.ndarray),
+        assert_type(
+            td + ndarray_dt64,  # pyright: ignore[reportGeneralTypeIssues]
+            npt.NDArray[np.datetime64],
+        ),
         np.ndarray,
     )
 
@@ -317,16 +343,26 @@ def test_timedelta() -> None:
     check(assert_type(td - dt.timedelta(days=1), pd.Timedelta), pd.Timedelta)
     check(assert_type(td - np.timedelta64(1, "D"), pd.Timedelta), pd.Timedelta)
     check(
-        assert_type(td - np.array([1, 2, 3], dtype="timedelta64[D]"), np.ndarray),
+        assert_type(
+            td - ndarray_td64,
+            npt.NDArray[np.timedelta64],
+        ),
         np.ndarray,
     )
-
+    # pyright appears to get some things wrong when __rsub__ is called,
+    # hence pyright ignores
     check(assert_type(pd.Period("2012-01-01", freq="D") - td, pd.Period), pd.Period)
     check(assert_type(pd.Timestamp("2012-01-01") - td, pd.Timestamp), pd.Timestamp)
     check(assert_type(dt.datetime(2012, 1, 1) - td, dt.datetime), dt.datetime)
     check(assert_type(dt.date(2012, 1, 1) - td, dt.date), dt.date)
     check(assert_type(np.datetime64(1, "ns") - td, pd.Timestamp), pd.Timestamp)
-    check(assert_type(dt.timedelta(days=1) - td, pd.Timedelta), pd.Timedelta)
+    check(
+        assert_type(
+            dt.timedelta(days=1) - td,  # pyright: ignore[reportGeneralTypeIssues]
+            pd.Timedelta,
+        ),
+        pd.Timedelta,
+    )
     check(assert_type(np.timedelta64(1, "D") - td, pd.Timedelta), pd.Timedelta)
     check(
         assert_type(
@@ -339,13 +375,23 @@ def test_timedelta() -> None:
         pd.DatetimeIndex,
     )
     check(
-        assert_type(np.array([1, 2, 3], dtype="timedelta64[D]") - td, np.ndarray),
+        assert_type(
+            ndarray_td64 - td,  # pyright: ignore[reportGeneralTypeIssues]
+            npt.NDArray[np.timedelta64],
+        ),
         np.ndarray,
     )
     check(
-        assert_type(np.array([1, 2, 3], dtype="datetime64[ns]") - td, np.ndarray),
+        assert_type(
+            ndarray_dt64 - td,  # pyright: ignore[reportGeneralTypeIssues]
+            npt.NDArray[np.datetime64],
+        ),
         np.ndarray,
     )
+
+    with pytest.warns(FutureWarning):
+        i_idx = cast(pd.Int64Index, pd.Index([1, 2, 3], dtype=int))
+        f_idx = cast(pd.Float64Index, pd.Index([1.2, 2.2, 3.4], dtype=float))
 
     check(assert_type(td * 3, pd.Timedelta), pd.Timedelta)
     check(assert_type(td * 3.5, pd.Timedelta), pd.Timedelta)
@@ -353,52 +399,66 @@ def test_timedelta() -> None:
     check(assert_type(td * np.array([1.2, 2.2, 3.4]), np.ndarray), np.ndarray)
     check(assert_type(td * pd.Series([1, 2, 3]), pd.Series), pd.Series)
     check(assert_type(td * pd.Series([1.2, 2.2, 3.4]), pd.Series), pd.Series)
-    check(assert_type(td * pd.Index([1, 2, 3]), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(td * i_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(
-        assert_type(td * pd.Index([1.2, 2.2, 3.4]), pd.TimedeltaIndex),
+        assert_type(td * f_idx, pd.TimedeltaIndex),
         pd.TimedeltaIndex,
     )
 
+    np_intp_arr: npt.NDArray[np.integer] = np.array([1, 2, 3])
+    np_float_arr: npt.NDArray[np.floating] = np.array([1, 2, 3])
     check(assert_type(td // td, int), int)
     check(assert_type(td // 3, pd.Timedelta), pd.Timedelta)
     check(assert_type(td // 3.5, pd.Timedelta), pd.Timedelta)
-    check(assert_type(td // np.array([1, 2, 3]), np.ndarray), np.ndarray)
-    check(assert_type(td // np.array([1.2, 2.2, 3.4]), np.ndarray), np.ndarray)
+    check(assert_type(td // np_intp_arr, npt.NDArray[np.timedelta64]), np.ndarray)
+    check(assert_type(td // np_float_arr, npt.NDArray[np.timedelta64]), np.ndarray)
     check(assert_type(td // pd.Series([1, 2, 3]), pd.Series), pd.Series)
     check(assert_type(td // pd.Series([1.2, 2.2, 3.4]), pd.Series), pd.Series)
-    check(assert_type(td // pd.Index([1, 2, 3]), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(td // i_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(
-        assert_type(td // pd.Index([1.2, 2.2, 3.4]), pd.TimedeltaIndex),
+        assert_type(td // f_idx, pd.TimedeltaIndex),
         pd.TimedeltaIndex,
     )
 
     check(assert_type(td / td, float), float)
     check(assert_type(td / 3, pd.Timedelta), pd.Timedelta)
     check(assert_type(td / 3.5, pd.Timedelta), pd.Timedelta)
-    check(assert_type(td / np.array([1, 2, 3]), np.ndarray), np.ndarray)
-    check(assert_type(td / np.array([1.2, 2.2, 3.4]), np.ndarray), np.ndarray)
+    check(
+        assert_type(td / np.array([1, 2, 3]), npt.NDArray[np.timedelta64]), np.ndarray
+    )
+    check(
+        assert_type(td / np.array([1.2, 2.2, 3.4]), npt.NDArray[np.timedelta64]),
+        np.ndarray,
+    )
     check(assert_type(td / pd.Series([1, 2, 3]), pd.Series), pd.Series)
     check(assert_type(td / pd.Series([1.2, 2.2, 3.4]), pd.Series), pd.Series)
-    check(assert_type(td / pd.Index([1, 2, 3]), pd.TimedeltaIndex), pd.TimedeltaIndex)
+
+    check(assert_type(td / i_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(
-        assert_type(td / pd.Index([1.2, 2.2, 3.4]), pd.TimedeltaIndex),
+        assert_type(td / f_idx, pd.TimedeltaIndex),
         pd.TimedeltaIndex,
     )
 
     check(assert_type(td % 3, pd.Timedelta), pd.Timedelta)
     check(assert_type(td % 3.5, pd.Timedelta), pd.Timedelta)
     check(assert_type(td % td, pd.Timedelta), pd.Timedelta)
-    check(assert_type(td % np.array([1, 2, 3]), np.ndarray), np.ndarray)
-    check(assert_type(td % np.array([1.2, 2.2, 3.4]), np.ndarray), np.ndarray)
+    check(
+        assert_type(td % np.array([1, 2, 3]), npt.NDArray[np.timedelta64]), np.ndarray
+    )
+    check(
+        assert_type(td % np.array([1.2, 2.2, 3.4]), npt.NDArray[np.timedelta64]),
+        np.ndarray,
+    )
     check(assert_type(td % pd.Series([1, 2, 3]), pd.Series), pd.Series)
     check(assert_type(td % pd.Series([1.2, 2.2, 3.4]), pd.Series), pd.Series)
-    check(assert_type(td % pd.Index([1, 2, 3]), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(td % i_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
+
     check(
-        assert_type(td % pd.Index([1.2, 2.2, 3.4]), pd.TimedeltaIndex),
+        assert_type(td % f_idx, pd.TimedeltaIndex),
         pd.TimedeltaIndex,
     )
 
-    check(assert_type(abs(td), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td.__abs__(), pd.Timedelta), pd.Timedelta)
     check(assert_type(-td, pd.Timedelta), pd.Timedelta)
     check(assert_type(+td, pd.Timedelta), pd.Timedelta)
 
@@ -406,33 +466,35 @@ def test_timedelta() -> None:
     check(assert_type(td < dt.timedelta(days=1), bool), bool)
     check(assert_type(td < np.timedelta64(1, "D"), bool), bool)
     check(
-        assert_type(td < np.array([1, 2, 3], dtype="timedelta64[D]"), np.ndarray),
+        assert_type(td < ndarray_td64, np_ndarray_bool),
         np.ndarray,
     )
     check(
-        assert_type(td < pd.TimedeltaIndex([1, 2, 3], unit="D"), np.ndarray), np.ndarray
+        assert_type(td < pd.TimedeltaIndex([1, 2, 3], unit="D"), np_ndarray_bool),
+        np.ndarray,
     )
 
     check(assert_type(td > td, bool), bool)
     check(assert_type(td > dt.timedelta(days=1), bool), bool)
     check(assert_type(td > np.timedelta64(1, "D"), bool), bool)
     check(
-        assert_type(td > np.array([1, 2, 3], dtype="timedelta64[D]"), np.ndarray),
+        assert_type(td > ndarray_td64, np_ndarray_bool),
         np.ndarray,
     )
     check(
-        assert_type(td > pd.TimedeltaIndex([1, 2, 3], unit="D"), np.ndarray), np.ndarray
+        assert_type(td > pd.TimedeltaIndex([1, 2, 3], unit="D"), np_ndarray_bool),
+        np.ndarray,
     )
 
     check(assert_type(td <= td, bool), bool)
     check(assert_type(td <= dt.timedelta(days=1), bool), bool)
     check(assert_type(td <= np.timedelta64(1, "D"), bool), bool)
     check(
-        assert_type(td <= np.array([1, 2, 3], dtype="timedelta64[D]"), np.ndarray),
+        assert_type(td <= ndarray_td64, np_ndarray_bool),
         np.ndarray,
     )
     check(
-        assert_type(td <= pd.TimedeltaIndex([1, 2, 3], unit="D"), np.ndarray),
+        assert_type(td <= pd.TimedeltaIndex([1, 2, 3], unit="D"), np_ndarray_bool),
         np.ndarray,
     )
 
@@ -440,11 +502,11 @@ def test_timedelta() -> None:
     check(assert_type(td >= dt.timedelta(days=1), bool), bool)
     check(assert_type(td >= np.timedelta64(1, "D"), bool), bool)
     check(
-        assert_type(td >= np.array([1, 2, 3], dtype="timedelta64[D]"), np.ndarray),
+        assert_type(td >= ndarray_td64, np_ndarray_bool),
         np.ndarray,
     )
     check(
-        assert_type(td >= pd.TimedeltaIndex([1, 2, 3], unit="D"), np.ndarray),
+        assert_type(td >= pd.TimedeltaIndex([1, 2, 3], unit="D"), np_ndarray_bool),
         np.ndarray,
     )
 
@@ -452,11 +514,11 @@ def test_timedelta() -> None:
     check(assert_type(td == dt.timedelta(days=1), bool), bool)
     check(assert_type(td == np.timedelta64(1, "D"), bool), bool)
     check(
-        assert_type(td == np.array([1, 2, 3], dtype="timedelta64[D]"), np.ndarray),
+        assert_type(td == ndarray_td64, np_ndarray_bool),
         np.ndarray,
     )
     check(
-        assert_type(td == pd.TimedeltaIndex([1, 2, 3], unit="D"), np.ndarray),
+        assert_type(td == pd.TimedeltaIndex([1, 2, 3], unit="D"), np_ndarray_bool),
         np.ndarray,
     )
     check(assert_type(td == pd.Series([1, 2, 3]), pd.Series), pd.Series)
@@ -468,11 +530,11 @@ def test_timedelta() -> None:
     check(assert_type(td != dt.timedelta(days=1), bool), bool)
     check(assert_type(td != np.timedelta64(1, "D"), bool), bool)
     check(
-        assert_type(td != np.array([1, 2, 3], dtype="timedelta64[D]"), np.ndarray),
+        assert_type(td != ndarray_td64, np_ndarray_bool),
         np.ndarray,
     )
     check(
-        assert_type(td != pd.TimedeltaIndex([1, 2, 3], unit="D"), np.ndarray),
+        assert_type(td != pd.TimedeltaIndex([1, 2, 3], unit="D"), np_ndarray_bool),
         np.ndarray,
     )
     check(assert_type(td != pd.Series([1, 2, 3]), pd.Series), pd.Series)
@@ -481,233 +543,233 @@ def test_timedelta() -> None:
     check(assert_type(td != (3 + 2j), bool), bool)
 
 
-def test_interval() -> None:
-    i0 = pd.Interval(0, 1, closed="left")
-    i1 = pd.Interval(0.0, 1.0, closed="right")
-    i2 = pd.Interval(
-        pd.Timestamp("2017-01-01"), pd.Timestamp("2017-01-02"), closed="both"
-    )
-    i3 = pd.Interval(pd.Timedelta("1 days"), pd.Timedelta("2 days"), closed="neither")
-    check(assert_type(i0, "pd.Interval[int]"), pd.Interval)
-    check(assert_type(i1, "pd.Interval[float]"), pd.Interval)
-    check(assert_type(i2, "pd.Interval[pd.Timestamp]"), pd.Interval)
-    check(assert_type(i3, "pd.Interval[pd.Timedelta]"), pd.Interval)
-
-    check(assert_type(i0.closed, Literal["left", "right", "both", "neither"]), str)
-    check(assert_type(i0.closed_left, bool), bool)
-    check(assert_type(i0.closed_right, bool), bool)
-    check(assert_type(i0.is_empty, bool), bool)
-    check(assert_type(i0.left, int), int)
-    check(assert_type(i0.length, int), int)
-    check(assert_type(i0.mid, float), float)
-    check(assert_type(i0.open_left, bool), bool)
-    check(assert_type(i0.open_right, bool), bool)
-    check(assert_type(i0.right, int), int)
-
-    check(assert_type(i1.closed, Literal["left", "right", "both", "neither"]), str)
-    check(assert_type(i1.closed_left, bool), bool)
-    check(assert_type(i1.closed_right, bool), bool)
-    check(assert_type(i1.is_empty, bool), bool)
-    check(assert_type(i1.left, float), float)
-    check(assert_type(i1.length, float), float)
-    check(assert_type(i1.mid, float), float)
-    check(assert_type(i1.open_left, bool), bool)
-    check(assert_type(i1.open_right, bool), bool)
-    check(assert_type(i1.right, float), float)
-
-    check(assert_type(i2.closed, Literal["left", "right", "both", "neither"]), str)
-    check(assert_type(i2.closed_left, bool), bool)
-    check(assert_type(i2.closed_right, bool), bool)
-    check(assert_type(i2.is_empty, bool), bool)
-    check(assert_type(i2.left, pd.Timestamp), pd.Timestamp)
-    check(assert_type(i2.length, pd.Timedelta), pd.Timedelta)
-    check(assert_type(i2.mid, pd.Timestamp), pd.Timestamp)
-    check(assert_type(i2.open_left, bool), bool)
-    check(assert_type(i2.open_right, bool), bool)
-    check(assert_type(i2.right, pd.Timestamp), pd.Timestamp)
-
-    check(assert_type(i3.closed, Literal["left", "right", "both", "neither"]), str)
-    check(assert_type(i3.closed_left, bool), bool)
-    check(assert_type(i3.closed_right, bool), bool)
-    check(assert_type(i3.is_empty, bool), bool)
-    check(assert_type(i3.left, pd.Timedelta), pd.Timedelta)
-    check(assert_type(i3.length, pd.Timedelta), pd.Timedelta)
-    check(assert_type(i3.mid, pd.Timedelta), pd.Timedelta)
-    check(assert_type(i3.open_left, bool), bool)
-    check(assert_type(i3.open_right, bool), bool)
-    check(assert_type(i3.right, pd.Timedelta), pd.Timedelta)
-
-    check(assert_type(i0.overlaps(pd.Interval(0.5, 1.5, closed="left")), bool), bool)
-    check(assert_type(i0.overlaps(pd.Interval(2, 3, closed="left")), bool), bool)
-
-    check(assert_type(i1.overlaps(pd.Interval(0.5, 1.5, closed="left")), bool), bool)
-    check(assert_type(i1.overlaps(pd.Interval(2, 3, closed="left")), bool), bool)
-
-    check(
-        assert_type(
-            i2.overlaps(
-                pd.Interval(
-                    pd.Timestamp(year=2017, month=1, day=1),
-                    pd.Timestamp(year=2017, month=1, day=2),
-                    closed="left",
-                )
-            ),
-            bool,
-        ),
-        bool,
-    )
-    check(
-        assert_type(
-            i3.overlaps(
-                pd.Interval(pd.Timedelta(days=1), pd.Timedelta(days=3), closed="left")
-            ),
-            bool,
-        ),
-        bool,
-    )
-
-    check(assert_type(i0 * 3, "pd.Interval[int]"), pd.Interval)
-    check(assert_type(i1 * 3, "pd.Interval[float]"), pd.Interval)
-    check(assert_type(i3 * 3, "pd.Interval[pd.Timedelta]"), pd.Interval)
-
-    check(assert_type(i0 * 3.5, "pd.Interval[float]"), pd.Interval)
-    check(assert_type(i1 * 3.5, "pd.Interval[float]"), pd.Interval)
-    check(assert_type(i3 * 3.5, pd.Interval), pd.Interval)
-
-    check(assert_type(3 * i0, "pd.Interval[int]"), pd.Interval)
-    check(assert_type(3 * i1, "pd.Interval[float]"), pd.Interval)
-    check(assert_type(3 * i3, pd.Interval), pd.Interval)
-
-    check(assert_type(3.5 * i0, "pd.Interval[float]"), pd.Interval)
-    check(assert_type(3.5 * i1, "pd.Interval[float]"), pd.Interval)
-    check(assert_type(3.5 * i3, pd.Interval), pd.Interval)
-
-    check(assert_type(i0 / 3, "pd.Interval[int]"), pd.Interval)
-    check(assert_type(i1 / 3, "pd.Interval[float]"), pd.Interval)
-    check(assert_type(i3 / 3, "pd.Interval[pd.Timedelta]"), pd.Interval)
-
-    check(assert_type(i0 / 3.5, "pd.Interval[float]"), pd.Interval)
-    check(assert_type(i1 / 3.5, "pd.Interval[float]"), pd.Interval)
-    check(assert_type(i3 / 3.5, "pd.Interval[pd.Timedelta]"), pd.Interval)
-
-    check(assert_type(i0 // 3, "pd.Interval[int]"), pd.Interval)
-    check(assert_type(i1 // 3, "pd.Interval[float]"), pd.Interval)
-    check(assert_type(i3 // 3, "pd.Interval[pd.Timedelta]"), pd.Interval)
-
-    check(assert_type(i0 // 3.5, "pd.Interval[float]"), pd.Interval)
-    check(assert_type(i1 // 3.5, "pd.Interval[float]"), pd.Interval)
-    check(assert_type(i3 // 3.5, pd.Interval), pd.Interval)
-
-    check(assert_type(i0 - 1, "pd.Interval[int]"), pd.Interval)
-    check(assert_type(i1 - 1, "pd.Interval[float]"), pd.Interval)
-    check(
-        assert_type(i2 - pd.Timedelta(days=1), "pd.Interval[pd.Timestamp]"), pd.Interval
-    )
-    check(
-        assert_type(i3 - pd.Timedelta(days=1), "pd.Interval[pd.Timedelta]"), pd.Interval
-    )
-
-    check(assert_type(i0 - 1.5, "pd.Interval[float]"), pd.Interval)
-    check(assert_type(i1 - 1.5, "pd.Interval[float]"), pd.Interval)
-    check(
-        assert_type(i2 - pd.Timedelta(days=1), "pd.Interval[pd.Timestamp]"), pd.Interval
-    )
-    check(
-        assert_type(i3 - pd.Timedelta(days=1), "pd.Interval[pd.Timedelta]"), pd.Interval
-    )
-
-    check(assert_type(i0 + 1, "pd.Interval[int]"), pd.Interval)
-    check(assert_type(i1 + 1, "pd.Interval[float]"), pd.Interval)
-    check(
-        assert_type(i2 + pd.Timedelta(days=1), "pd.Interval[pd.Timestamp]"), pd.Interval
-    )
-    check(
-        assert_type(i3 + pd.Timedelta(days=1), "pd.Interval[pd.Timedelta]"), pd.Interval
-    )
-
-    check(assert_type(i0 + 1.5, "pd.Interval[float]"), pd.Interval)
-    check(assert_type(i1 + 1.5, "pd.Interval[float]"), pd.Interval)
-    check(
-        assert_type(i2 + pd.Timedelta(days=1), "pd.Interval[pd.Timestamp]"), pd.Interval
-    )
-    check(
-        assert_type(i3 + pd.Timedelta(days=1), "pd.Interval[pd.Timedelta]"), pd.Interval
-    )
-
-    check(assert_type(i0 in i0, bool), bool)
-    check(assert_type(i1 in i0, bool), bool)
-    check(assert_type(i2 in i2, bool), bool)
-    check(assert_type(i3 in i3, bool), bool)
-
-    check(assert_type(hash(i0), int), int)
-    check(assert_type(hash(i1), int), int)
-    check(assert_type(hash(i2), int), int)
-    check(assert_type(hash(i3), int), int)
-
-
-def test_timestamp() -> None:
-    import dateutil.tz
-
-    pd.Timestamp("2000-1-1")
-    pd.Timestamp("2000-1-1", tz="US/Pacific")
-    pd.Timestamp("2000-1-1", tz=pytz.timezone("US/Eastern"))
-    pd.Timestamp("2000-1-1", tz=dateutil.tz.UTC)
-    pd.Timestamp(
-        year=2000,
-        month=1,
-        day=1,
-        hour=1,
-        minute=1,
-        second=1,
-        microsecond=1,
-        nanosecond=1,
-    )
-    pd.Timestamp(1, unit="D")
-    pd.Timestamp(1, unit="h")
-    pd.Timestamp(1, unit="m")
-    pd.Timestamp(1, unit="s")
-    pd.Timestamp(1, unit="ms")
-    pd.Timestamp(1, unit="us")
-    pd.Timestamp(year=2000, month=3, day=24, hour=12, minute=27, fold=0)
-    pd.Timestamp(year=2000, month=3, day=24, hour=12, minute=27, fold=1)
-    pd.Timestamp(
-        year=2000,
-        month=1,
-        day=1,
-        hour=1,
-        minute=1,
-        second=1,
-        microsecond=1,
-        nanosecond=1,
-        tzinfo=dt.timezone(offset=dt.timedelta(hours=6), name="EST"),
-    )
-    ts = pd.Timestamp(year=2000, month=3, day=24, hour=12, minute=27)
-    check(assert_type(ts.asm8, np.datetime64), np.datetime64)
-    check(assert_type(ts.day_of_week, int), int)
-    check(assert_type(ts.day_of_year, int), int)
-    check(assert_type(ts.dayofweek, int), int)
-    check(assert_type(ts.dayofyear, int), int)
-    check(assert_type(ts.days_in_month, int), int)
-    check(assert_type(ts.daysinmonth, int), int)
-    check(assert_type(ts.is_leap_year, bool), bool)
-    check(assert_type(ts.is_month_end, bool), bool)
-    check(assert_type(ts.is_month_start, bool), bool)
-    check(assert_type(ts.is_quarter_end, bool), bool)
-    check(assert_type(ts.is_quarter_start, bool), bool)
-    check(assert_type(ts.is_year_end, bool), bool)
-    check(assert_type(ts.is_year_start, bool), bool)
-    check(assert_type(ts.quarter, int), int)
-    check(assert_type(ts.tz, None), type(None))
-    check(assert_type(ts.week, int), int)
-    check(assert_type(ts.weekofyear, int), int)
-    check(assert_type(ts.day, int), int)
-    check(assert_type(ts.fold, int), int)
-    check(assert_type(ts.hour, int), int)
-    check(assert_type(ts.microsecond, int), int)
-    check(assert_type(ts.minute, int), int)
-    check(assert_type(ts.month, int), int)
-    check(assert_type(ts.nanosecond, int), int)
-    check(assert_type(ts.second, int), int)
-    check(assert_type(ts.tzinfo, None), type(None))
-    check(assert_type(ts.value, int), int)
-    check(assert_type(ts.year, int), int)
+# def test_interval() -> None:
+#     i0 = pd.Interval(0, 1, closed="left")
+#     i1 = pd.Interval(0.0, 1.0, closed="right")
+#     i2 = pd.Interval(
+#         pd.Timestamp("2017-01-01"), pd.Timestamp("2017-01-02"), closed="both"
+#     )
+#     i3 = pd.Interval(pd.Timedelta("1 days"), pd.Timedelta("2 days"), closed="neither")
+#     check(assert_type(i0, "pd.Interval[int]"), pd.Interval)
+#     check(assert_type(i1, "pd.Interval[float]"), pd.Interval)
+#     check(assert_type(i2, "pd.Interval[pd.Timestamp]"), pd.Interval)
+#     check(assert_type(i3, "pd.Interval[pd.Timedelta]"), pd.Interval)
+#
+#     check(assert_type(i0.closed, Literal["left", "right", "both", "neither"]), str)
+#     check(assert_type(i0.closed_left, bool), bool)
+#     check(assert_type(i0.closed_right, bool), bool)
+#     check(assert_type(i0.is_empty, bool), bool)
+#     check(assert_type(i0.left, int), int)
+#     check(assert_type(i0.length, int), int)
+#     check(assert_type(i0.mid, float), float)
+#     check(assert_type(i0.open_left, bool), bool)
+#     check(assert_type(i0.open_right, bool), bool)
+#     check(assert_type(i0.right, int), int)
+#
+#     check(assert_type(i1.closed, Literal["left", "right", "both", "neither"]), str)
+#     check(assert_type(i1.closed_left, bool), bool)
+#     check(assert_type(i1.closed_right, bool), bool)
+#     check(assert_type(i1.is_empty, bool), bool)
+#     check(assert_type(i1.left, float), float)
+#     check(assert_type(i1.length, float), float)
+#     check(assert_type(i1.mid, float), float)
+#     check(assert_type(i1.open_left, bool), bool)
+#     check(assert_type(i1.open_right, bool), bool)
+#     check(assert_type(i1.right, float), float)
+#
+#     check(assert_type(i2.closed, Literal["left", "right", "both", "neither"]), str)
+#     check(assert_type(i2.closed_left, bool), bool)
+#     check(assert_type(i2.closed_right, bool), bool)
+#     check(assert_type(i2.is_empty, bool), bool)
+#     check(assert_type(i2.left, pd.Timestamp), pd.Timestamp)
+#     check(assert_type(i2.length, pd.Timedelta), pd.Timedelta)
+#     check(assert_type(i2.mid, pd.Timestamp), pd.Timestamp)
+#     check(assert_type(i2.open_left, bool), bool)
+#     check(assert_type(i2.open_right, bool), bool)
+#     check(assert_type(i2.right, pd.Timestamp), pd.Timestamp)
+#
+#     check(assert_type(i3.closed, Literal["left", "right", "both", "neither"]), str)
+#     check(assert_type(i3.closed_left, bool), bool)
+#     check(assert_type(i3.closed_right, bool), bool)
+#     check(assert_type(i3.is_empty, bool), bool)
+#     check(assert_type(i3.left, pd.Timedelta), pd.Timedelta)
+#     check(assert_type(i3.length, pd.Timedelta), pd.Timedelta)
+#     check(assert_type(i3.mid, pd.Timedelta), pd.Timedelta)
+#     check(assert_type(i3.open_left, bool), bool)
+#     check(assert_type(i3.open_right, bool), bool)
+#     check(assert_type(i3.right, pd.Timedelta), pd.Timedelta)
+#
+#     check(assert_type(i0.overlaps(pd.Interval(0.5, 1.5, closed="left")), bool), bool)
+#     check(assert_type(i0.overlaps(pd.Interval(2, 3, closed="left")), bool), bool)
+#
+#     check(assert_type(i1.overlaps(pd.Interval(0.5, 1.5, closed="left")), bool), bool)
+#     check(assert_type(i1.overlaps(pd.Interval(2, 3, closed="left")), bool), bool)
+#
+#     check(
+#         assert_type(
+#             i2.overlaps(
+#                 pd.Interval(
+#                     pd.Timestamp(year=2017, month=1, day=1),
+#                     pd.Timestamp(year=2017, month=1, day=2),
+#                     closed="left",
+#                 )
+#             ),
+#             bool,
+#         ),
+#         bool,
+#     )
+#     check(
+#         assert_type(
+#             i3.overlaps(
+#                 pd.Interval(pd.Timedelta(days=1), pd.Timedelta(days=3), closed="left")
+#             ),
+#             bool,
+#         ),
+#         bool,
+#     )
+#
+#     check(assert_type(i0 * 3, "pd.Interval[int]"), pd.Interval)
+#     check(assert_type(i1 * 3, "pd.Interval[float]"), pd.Interval)
+#     check(assert_type(i3 * 3, "pd.Interval[pd.Timedelta]"), pd.Interval)
+#
+#     check(assert_type(i0 * 3.5, "pd.Interval[float]"), pd.Interval)
+#     check(assert_type(i1 * 3.5, "pd.Interval[float]"), pd.Interval)
+#     check(assert_type(i3 * 3.5, pd.Interval), pd.Interval)
+#
+#     check(assert_type(3 * i0, "pd.Interval[int]"), pd.Interval)
+#     check(assert_type(3 * i1, "pd.Interval[float]"), pd.Interval)
+#     check(assert_type(3 * i3, pd.Interval), pd.Interval)
+#
+#     check(assert_type(3.5 * i0, "pd.Interval[float]"), pd.Interval)
+#     check(assert_type(3.5 * i1, "pd.Interval[float]"), pd.Interval)
+#     check(assert_type(3.5 * i3, pd.Interval), pd.Interval)
+#
+#     check(assert_type(i0 / 3, "pd.Interval[int]"), pd.Interval)
+#     check(assert_type(i1 / 3, "pd.Interval[float]"), pd.Interval)
+#     check(assert_type(i3 / 3, "pd.Interval[pd.Timedelta]"), pd.Interval)
+#
+#     check(assert_type(i0 / 3.5, "pd.Interval[float]"), pd.Interval)
+#     check(assert_type(i1 / 3.5, "pd.Interval[float]"), pd.Interval)
+#     check(assert_type(i3 / 3.5, "pd.Interval[pd.Timedelta]"), pd.Interval)
+#
+#     check(assert_type(i0 // 3, "pd.Interval[int]"), pd.Interval)
+#     check(assert_type(i1 // 3, "pd.Interval[float]"), pd.Interval)
+#     check(assert_type(i3 // 3, "pd.Interval[pd.Timedelta]"), pd.Interval)
+#
+#     check(assert_type(i0 // 3.5, "pd.Interval[float]"), pd.Interval)
+#     check(assert_type(i1 // 3.5, "pd.Interval[float]"), pd.Interval)
+#     check(assert_type(i3 // 3.5, pd.Interval), pd.Interval)
+#
+#     check(assert_type(i0 - 1, "pd.Interval[int]"), pd.Interval)
+#     check(assert_type(i1 - 1, "pd.Interval[float]"), pd.Interval)
+#     check(
+#         assert_type(i2 - pd.Timedelta(days=1), "pd.Interval[pd.Timestamp]"), pd.Interval
+#     )
+#     check(
+#         assert_type(i3 - pd.Timedelta(days=1), "pd.Interval[pd.Timedelta]"), pd.Interval
+#     )
+#
+#     check(assert_type(i0 - 1.5, "pd.Interval[float]"), pd.Interval)
+#     check(assert_type(i1 - 1.5, "pd.Interval[float]"), pd.Interval)
+#     check(
+#         assert_type(i2 - pd.Timedelta(days=1), "pd.Interval[pd.Timestamp]"), pd.Interval
+#     )
+#     check(
+#         assert_type(i3 - pd.Timedelta(days=1), "pd.Interval[pd.Timedelta]"), pd.Interval
+#     )
+#
+#     check(assert_type(i0 + 1, "pd.Interval[int]"), pd.Interval)
+#     check(assert_type(i1 + 1, "pd.Interval[float]"), pd.Interval)
+#     check(
+#         assert_type(i2 + pd.Timedelta(days=1), "pd.Interval[pd.Timestamp]"), pd.Interval
+#     )
+#     check(
+#         assert_type(i3 + pd.Timedelta(days=1), "pd.Interval[pd.Timedelta]"), pd.Interval
+#     )
+#
+#     check(assert_type(i0 + 1.5, "pd.Interval[float]"), pd.Interval)
+#     check(assert_type(i1 + 1.5, "pd.Interval[float]"), pd.Interval)
+#     check(
+#         assert_type(i2 + pd.Timedelta(days=1), "pd.Interval[pd.Timestamp]"), pd.Interval
+#     )
+#     check(
+#         assert_type(i3 + pd.Timedelta(days=1), "pd.Interval[pd.Timedelta]"), pd.Interval
+#     )
+#
+#     check(assert_type(i0 in i0, bool), bool)
+#     check(assert_type(i1 in i0, bool), bool)
+#     check(assert_type(i2 in i2, bool), bool)
+#     check(assert_type(i3 in i3, bool), bool)
+#
+#     check(assert_type(hash(i0), int), int)
+#     check(assert_type(hash(i1), int), int)
+#     check(assert_type(hash(i2), int), int)
+#     check(assert_type(hash(i3), int), int)
+#
+#
+# def test_timestamp() -> None:
+#
+#
+#     pd.Timestamp("2000-1-1")
+#     pd.Timestamp("2000-1-1", tz="US/Pacific")
+#     pd.Timestamp("2000-1-1", tz=pytz.timezone("US/Eastern"))
+#     pd.Timestamp("2000-1-1", tz=dateutil.tz.UTC)
+#     pd.Timestamp(
+#         year=2000,
+#         month=1,
+#         day=1,
+#         hour=1,
+#         minute=1,
+#         second=1,
+#         microsecond=1,
+#         nanosecond=1,
+#     )
+#     pd.Timestamp(1, unit="D")
+#     pd.Timestamp(1, unit="h")
+#     pd.Timestamp(1, unit="m")
+#     pd.Timestamp(1, unit="s")
+#     pd.Timestamp(1, unit="ms")
+#     pd.Timestamp(1, unit="us")
+#     pd.Timestamp(year=2000, month=3, day=24, hour=12, minute=27, fold=0)
+#     pd.Timestamp(year=2000, month=3, day=24, hour=12, minute=27, fold=1)
+#     pd.Timestamp(
+#         year=2000,
+#         month=1,
+#         day=1,
+#         hour=1,
+#         minute=1,
+#         second=1,
+#         microsecond=1,
+#         nanosecond=1,
+#         tzinfo=dt.timezone(offset=dt.timedelta(hours=6), name="EST"),
+#     )
+#     ts = pd.Timestamp(year=2000, month=3, day=24, hour=12, minute=27)
+#     check(assert_type(ts.asm8, np.datetime64), np.datetime64)
+#     check(assert_type(ts.day_of_week, int), int)
+#     check(assert_type(ts.day_of_year, int), int)
+#     check(assert_type(ts.dayofweek, int), int)
+#     check(assert_type(ts.dayofyear, int), int)
+#     check(assert_type(ts.days_in_month, int), int)
+#     check(assert_type(ts.daysinmonth, int), int)
+#     check(assert_type(ts.is_leap_year, bool), bool)
+#     check(assert_type(ts.is_month_end, bool), bool)
+#     check(assert_type(ts.is_month_start, bool), bool)
+#     check(assert_type(ts.is_quarter_end, bool), bool)
+#     check(assert_type(ts.is_quarter_start, bool), bool)
+#     check(assert_type(ts.is_year_end, bool), bool)
+#     check(assert_type(ts.is_year_start, bool), bool)
+#     check(assert_type(ts.quarter, int), int)
+#     check(assert_type(ts.tz, None), type(None))
+#     check(assert_type(ts.week, int), int)
+#     check(assert_type(ts.weekofyear, int), int)
+#     check(assert_type(ts.day, int), int)
+#     check(assert_type(ts.fold, int), int)
+#     check(assert_type(ts.hour, int), int)
+#     check(assert_type(ts.microsecond, int), int)
+#     check(assert_type(ts.minute, int), int)
+#     check(assert_type(ts.month, int), int)
+#     check(assert_type(ts.nanosecond, int), int)
+#     check(assert_type(ts.second, int), int)
+#     check(assert_type(ts.tzinfo, None), type(None))
+#     check(assert_type(ts.value, int), int)
+#     check(assert_type(ts.year, int), int)
