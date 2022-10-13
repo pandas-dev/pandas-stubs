@@ -40,7 +40,7 @@ class Timestamp(datetime):
     def __new__(
         cls: type[_DatetimeT],
         ts_input: np.integer | float | str | _date | datetime | np.datetime64 = ...,
-        freq: int | str | BaseOffset | None = ...,
+        *,
         tz: str | _tzinfo | tzfile | int | None = ...,
         unit: str | int | None = ...,
         year: int | None = ...,
@@ -52,7 +52,6 @@ class Timestamp(datetime):
         microsecond: int | None = ...,
         nanosecond: int | None = ...,
         tzinfo: _tzinfo | None = ...,
-        *,
         fold: Literal[0, 1] | None = ...,
     ) -> _DatetimeT: ...
     # GH 46171
