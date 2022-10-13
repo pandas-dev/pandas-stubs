@@ -1,20 +1,19 @@
 from __future__ import annotations
 
 import datetime as dt
-
-# import dateutil.tz
-from typing import (  # Literal,
+from typing import (
     TYPE_CHECKING,
     Any,
+    Optional,
     cast,
 )
 
+import dateutil.tz
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
 import pytest
-
-# import pytz
+import pytz
 from typing_extensions import assert_type
 
 from pandas._libs.tslibs import BaseOffset
@@ -707,69 +706,123 @@ def test_timedelta() -> None:
 #     check(assert_type(hash(i3), int), int)
 #
 #
-# def test_timestamp() -> None:
-#
-#
-#     pd.Timestamp("2000-1-1")
-#     pd.Timestamp("2000-1-1", tz="US/Pacific")
-#     pd.Timestamp("2000-1-1", tz=pytz.timezone("US/Eastern"))
-#     pd.Timestamp("2000-1-1", tz=dateutil.tz.UTC)
-#     pd.Timestamp(
-#         year=2000,
-#         month=1,
-#         day=1,
-#         hour=1,
-#         minute=1,
-#         second=1,
-#         microsecond=1,
-#         nanosecond=1,
-#     )
-#     pd.Timestamp(1, unit="D")
-#     pd.Timestamp(1, unit="h")
-#     pd.Timestamp(1, unit="m")
-#     pd.Timestamp(1, unit="s")
-#     pd.Timestamp(1, unit="ms")
-#     pd.Timestamp(1, unit="us")
-#     pd.Timestamp(year=2000, month=3, day=24, hour=12, minute=27, fold=0)
-#     pd.Timestamp(year=2000, month=3, day=24, hour=12, minute=27, fold=1)
-#     pd.Timestamp(
-#         year=2000,
-#         month=1,
-#         day=1,
-#         hour=1,
-#         minute=1,
-#         second=1,
-#         microsecond=1,
-#         nanosecond=1,
-#         tzinfo=dt.timezone(offset=dt.timedelta(hours=6), name="EST"),
-#     )
-#     ts = pd.Timestamp(year=2000, month=3, day=24, hour=12, minute=27)
-#     check(assert_type(ts.asm8, np.datetime64), np.datetime64)
-#     check(assert_type(ts.day_of_week, int), int)
-#     check(assert_type(ts.day_of_year, int), int)
-#     check(assert_type(ts.dayofweek, int), int)
-#     check(assert_type(ts.dayofyear, int), int)
-#     check(assert_type(ts.days_in_month, int), int)
-#     check(assert_type(ts.daysinmonth, int), int)
-#     check(assert_type(ts.is_leap_year, bool), bool)
-#     check(assert_type(ts.is_month_end, bool), bool)
-#     check(assert_type(ts.is_month_start, bool), bool)
-#     check(assert_type(ts.is_quarter_end, bool), bool)
-#     check(assert_type(ts.is_quarter_start, bool), bool)
-#     check(assert_type(ts.is_year_end, bool), bool)
-#     check(assert_type(ts.is_year_start, bool), bool)
-#     check(assert_type(ts.quarter, int), int)
-#     check(assert_type(ts.tz, None), type(None))
-#     check(assert_type(ts.week, int), int)
-#     check(assert_type(ts.weekofyear, int), int)
-#     check(assert_type(ts.day, int), int)
-#     check(assert_type(ts.fold, int), int)
-#     check(assert_type(ts.hour, int), int)
-#     check(assert_type(ts.microsecond, int), int)
-#     check(assert_type(ts.minute, int), int)
-#     check(assert_type(ts.month, int), int)
-#     check(assert_type(ts.nanosecond, int), int)
-#     check(assert_type(ts.second, int), int)
-#     check(assert_type(ts.tzinfo, None), type(None))
-#     check(assert_type(ts.value, int), int)
-#     check(assert_type(ts.year, int), int)
+def test_timestamp() -> None:
+
+    pd.Timestamp("2000-1-1")
+    pd.Timestamp("2000-1-1", tz="US/Pacific")
+    pd.Timestamp("2000-1-1", tz=pytz.timezone("US/Eastern"))
+    pd.Timestamp("2000-1-1", tz=dateutil.tz.UTC)
+    pd.Timestamp(
+        year=2000,
+        month=1,
+        day=1,
+        hour=1,
+        minute=1,
+        second=1,
+        microsecond=1,
+        nanosecond=1,
+    )
+    pd.Timestamp(1, unit="D")
+    pd.Timestamp(1, unit="h")
+    pd.Timestamp(1, unit="m")
+    pd.Timestamp(1, unit="s")
+    pd.Timestamp(1, unit="ms")
+    pd.Timestamp(1, unit="us")
+    pd.Timestamp(year=2000, month=3, day=24, hour=12, minute=27, fold=0)
+    pd.Timestamp(year=2000, month=3, day=24, hour=12, minute=27, fold=1)
+    pd.Timestamp(
+        year=2000,
+        month=1,
+        day=1,
+        hour=1,
+        minute=1,
+        second=1,
+        microsecond=1,
+        nanosecond=1,
+        tzinfo=dt.timezone(offset=dt.timedelta(hours=6), name="EST"),
+    )
+    ts = pd.Timestamp(year=2000, month=3, day=24, hour=12, minute=27)
+    check(assert_type(ts.asm8, np.datetime64), np.datetime64)
+    check(assert_type(ts.day_of_week, int), int)
+    check(assert_type(ts.day_of_year, int), int)
+    check(assert_type(ts.dayofweek, int), int)
+    check(assert_type(ts.dayofyear, int), int)
+    check(assert_type(ts.days_in_month, int), int)
+    check(assert_type(ts.daysinmonth, int), int)
+    check(assert_type(ts.is_leap_year, bool), bool)
+    check(assert_type(ts.is_month_end, bool), bool)
+    check(assert_type(ts.is_month_start, bool), bool)
+    check(assert_type(ts.is_quarter_end, bool), bool)
+    check(assert_type(ts.is_quarter_start, bool), bool)
+    check(assert_type(ts.is_year_end, bool), bool)
+    check(assert_type(ts.is_year_start, bool), bool)
+    check(assert_type(ts.quarter, int), int)
+    check(assert_type(ts.tz, Optional[dt.tzinfo]), type(None))
+    check(assert_type(ts.week, int), int)
+    check(assert_type(ts.weekofyear, int), int)
+    check(assert_type(ts.day, int), int)
+    check(assert_type(ts.fold, int), int)
+    check(assert_type(ts.hour, int), int)
+    check(assert_type(ts.microsecond, int), int)
+    check(assert_type(ts.minute, int), int)
+    check(assert_type(ts.month, int), int)
+    check(assert_type(ts.nanosecond, int), int)
+    check(assert_type(ts.second, int), int)
+    check(assert_type(ts.tzinfo, Optional[dt.tzinfo]), type(None))
+    check(assert_type(ts.value, int), int)
+    check(assert_type(ts.year, int), int)
+
+    ts = pd.Timestamp("2000-1-1")
+    ts + pd.Timedelta(days=1)
+    ts + dt.timedelta(days=1)
+    pd.Timedelta(days=1) + ts
+    dt.timedelta(days=1) + ts
+    ts + 3 * Day()
+    ts + pd.TimedeltaIndex([1, 2, 3], "D")
+    ts + pd.Series([1, 2], dtype="timedelta64[ns]")
+    ts + np.array([1, 2], dtype="timedelta64[ns]")
+    pd.TimedeltaIndex([1, 2, 3], "D") + ts
+    pd.Series([1, 2], dtype="timedelta64[ns]") + ts
+    np.array([1, 2], dtype="timedelta64[ns]") + ts
+
+    ts - pd.Timedelta(days=1)
+    ts - dt.timedelta(days=1)
+    ts - 3 * Day()
+    ts - pd.TimedeltaIndex([1, 2, 3], "D")
+    ts - pd.Series([1, 2], dtype="timedelta64[ns]")
+    ts - np.array([1, 2], dtype="timedelta64[ns]")
+
+    ts > ts
+    ts > np.datetime64(1, "ns")
+    ts > dt.datetime(year=2000, month=1, day=1)
+    ts > pd.DatetimeIndex(["2000-1-1"])
+    ts > np.array([1, 2, 3], dtype="datetime64[ns]")
+    ts > pd.Series([1, 2, 3], dtype="datetime64[ns]")
+
+    ts >= ts
+    ts >= np.datetime64(1, "ns")
+    ts >= dt.datetime(year=2000, month=1, day=1)
+    ts >= pd.DatetimeIndex(["2000-1-1"])
+    ts >= np.array([1, 2, 3], dtype="datetime64[ns]")
+    ts >= pd.Series([1, 2, 3], dtype="datetime64[ns]")
+
+    ts < ts
+    ts < np.datetime64(1, "ns")
+    ts < dt.datetime(year=2000, month=1, day=1)
+    ts < pd.DatetimeIndex(["2000-1-1"])
+    ts < np.array([1, 2, 3], dtype="datetime64[ns]")
+    ts < pd.Series([1, 2, 3], dtype="datetime64[ns]")
+
+    ts <= ts
+    ts <= np.datetime64(1, "ns")
+    ts <= dt.datetime(year=2000, month=1, day=1)
+    ts <= pd.DatetimeIndex(["2000-1-1"])
+    ts <= np.array([1, 2, 3], dtype="datetime64[ns]")
+    ts <= pd.Series([1, 2, 3], dtype="datetime64[ns]")
+
+    ts == ts
+    ts == np.datetime64(1, "ns")
+    ts == dt.datetime(year=2000, month=1, day=1)
+    ts == pd.DatetimeIndex(["2000-1-1"])
+    ts == np.array([1, 2, 3], dtype="datetime64[ns]")
+    ts == pd.Series([1, 2, 3], dtype="datetime64[ns]")
