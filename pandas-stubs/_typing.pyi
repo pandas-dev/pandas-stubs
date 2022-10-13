@@ -132,9 +132,9 @@ HashableT4 = TypeVar("HashableT4", bound=Hashable)
 HashableT5 = TypeVar("HashableT5", bound=Hashable)
 
 AggFuncTypeBase: TypeAlias = Union[Callable, str, np.ufunc]
-AggFuncTypeDictSeries: TypeAlias = dict[Hashable, AggFuncTypeBase]
-AggFuncTypeDictFrame: TypeAlias = dict[
-    Hashable, Union[AggFuncTypeBase, list[AggFuncTypeBase]]
+AggFuncTypeDictSeries: TypeAlias = Mapping[HashableT, AggFuncTypeBase]
+AggFuncTypeDictFrame: TypeAlias = Mapping[
+    HashableT, Union[AggFuncTypeBase, list[AggFuncTypeBase]]
 ]
 AggFuncTypeSeriesToFrame: TypeAlias = Union[
     list[AggFuncTypeBase],

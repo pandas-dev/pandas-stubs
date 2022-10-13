@@ -643,7 +643,9 @@ def test_types_groupby_methods() -> None:
 
 
 def test_types_groupby_agg() -> None:
-    df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0]})
+    df = pd.DataFrame(
+        data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0], 0: [-1, -1, -1]}
+    )
     check(assert_type(df.groupby("col1")["col3"].agg(min), pd.Series), pd.Series)
     check(
         assert_type(df.groupby("col1")["col3"].agg([min, max]), pd.DataFrame),
@@ -655,21 +657,28 @@ def test_types_groupby_agg() -> None:
         assert_type(df.groupby("col1").agg(["min", "max"]), pd.DataFrame), pd.DataFrame
     )
     check(assert_type(df.groupby("col1").agg([min, max]), pd.DataFrame), pd.DataFrame)
+    agg_dict1 = {"col2": "min", "col3": "max", 0: "sum"}
+    check(assert_type(df.groupby("col1").agg(agg_dict1), pd.DataFrame), pd.DataFrame)
+    agg_dict2 = {"col2": min, "col3": max, 0: min}
+    check(assert_type(df.groupby("col1").agg(agg_dict2), pd.DataFrame), pd.DataFrame)
+
+    def wrapped_min(x: Any) -> Any:
+        return x.min()
+
+    # Here, MyPy infers dict[object, object], so it must be explicitly annotated
+    agg_dict3: dict[str | int, str | Callable] = {
+        "col2": min,
+        "col3": "max",
+        0: wrapped_min,
+    }
+    check(assert_type(df.groupby("col1").agg(agg_dict3), pd.DataFrame), pd.DataFrame)
+    agg_dict4 = {"col2": "sum"}
+    check(assert_type(df.groupby("col1").agg(agg_dict4), pd.DataFrame), pd.DataFrame)
+    agg_dict5 = {0: "sum"}
+    check(assert_type(df.groupby("col1").agg(agg_dict5), pd.DataFrame), pd.DataFrame)
+    named_agg = pd.NamedAgg(column="col2", aggfunc="max")
     check(
-        assert_type(
-            df.groupby("col1").agg({"col2": "min", "col3": "max"}), pd.DataFrame
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(df.groupby("col1").agg({"col2": min, "col3": max}), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            df.groupby("col1").agg(new_col=pd.NamedAgg(column="col2", aggfunc="max")),
-            pd.DataFrame,
-        ),
+        assert_type(df.groupby("col1").agg(new_col=named_agg), pd.DataFrame),
         pd.DataFrame,
     )
     # GH#187
@@ -678,6 +687,9 @@ def test_types_groupby_agg() -> None:
 
     cols_opt: list[str | None] = ["col1", "col2"]
     check(assert_type(df.groupby(by=cols_opt).sum(), pd.DataFrame), pd.DataFrame)
+
+    cols_mixed: list[str | int] = ["col1", 0]
+    check(assert_type(df.groupby(by=cols_mixed).sum(), pd.DataFrame), pd.DataFrame)
 
 
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
