@@ -13,9 +13,13 @@ from typing_extensions import assert_type
 
 from tests import check
 
+from pandas.tseries.frequencies import to_offset
+
 IDX = date_range("1/1/2000", periods=700, freq="D")
 S = Series(np.random.standard_normal(700))
 DF = DataFrame({"col1": S, "col2": S})
+S_DTI = Series(data=np.random.standard_normal(700), index=IDX)
+DF_DTI = DataFrame(data=np.random.standard_normal(700), index=IDX)
 
 
 def test_rolling_basic() -> None:
@@ -41,6 +45,22 @@ def test_rolling_basic_math() -> None:
     check(assert_type(DF.rolling(10).rank("average"), DataFrame), DataFrame)
     check(assert_type(DF.rolling(10).rank("min"), DataFrame), DataFrame)
     check(assert_type(DF.rolling(10).rank("max"), DataFrame), DataFrame)
+
+
+def test_rolling_datetime_index() -> None:
+    offset_1d = to_offset("1D")
+    assert offset_1d is not None
+
+    check(assert_type(DF_DTI.rolling("1D"), "Rolling[DataFrame]"), Rolling, DataFrame)
+    check(
+        assert_type(DF_DTI.rolling(offset_1d), "Rolling[DataFrame]"), Rolling, DataFrame
+    )
+    check(assert_type(S_DTI.rolling("1D"), "Rolling[Series]"), Rolling, Series)
+    check(
+        assert_type(S_DTI.rolling(offset_1d), "Rolling[Series]"),
+        Rolling,
+        Series,
+    )
 
 
 def test_rolling_apply() -> None:

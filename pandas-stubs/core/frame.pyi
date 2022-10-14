@@ -1776,7 +1776,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def rolling(
         self,
-        window: int | BaseOffset | BaseIndexer,
+        window: int | str | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
@@ -1790,7 +1790,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def rolling(
         self,
-        window: int | BaseOffset | BaseIndexer,
+        window: int | str | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
