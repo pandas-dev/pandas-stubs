@@ -46,70 +46,6 @@ if TYPE_CHECKING:
 np_ndarray_bool = npt.NDArray[np.bool_]
 
 
-def test_types_init() -> None:
-    ts: pd.Timestamp = pd.Timestamp("2021-03-01T12")
-    ts1: pd.Timestamp = pd.Timestamp(dt.date(2021, 3, 15))
-    ts2: pd.Timestamp = pd.Timestamp(dt.datetime(2021, 3, 10, 12))
-    ts3: pd.Timestamp = pd.Timestamp(pd.Timestamp("2021-03-01T12"))
-    ts4: pd.Timestamp = pd.Timestamp(1515590000.1, unit="s")
-    ts5: pd.Timestamp = pd.Timestamp(1515590000.1, unit="s", tz="US/Pacific")
-    ts6: pd.Timestamp = pd.Timestamp(1515590000100000000)  # plain integer (nanosecond)
-    ts7: pd.Timestamp = pd.Timestamp(2021, 3, 10, 12)
-    ts8: pd.Timestamp = pd.Timestamp(year=2021, month=3, day=10, hour=12)
-    ts9: pd.Timestamp = pd.Timestamp(
-        year=2021, month=3, day=10, hour=12, tz="US/Pacific"
-    )
-
-
-def test_types_arithmetic() -> None:
-    ts: pd.Timestamp = pd.to_datetime("2021-03-01")
-    ts2: pd.Timestamp = pd.to_datetime("2021-01-01")
-    delta: pd.Timedelta = pd.to_timedelta("1 day")
-
-    tsr: pd.Timedelta = ts - ts2
-    tsr2: pd.Timestamp = ts + delta
-    tsr3: pd.Timestamp = ts - delta
-    tsr4: pd.Timedelta = ts - dt.datetime(2021, 1, 3)
-
-
-def test_types_comparison() -> None:
-    ts: pd.Timestamp = pd.to_datetime("2021-03-01")
-    ts2: pd.Timestamp = pd.to_datetime("2021-01-01")
-
-    tsr: bool = ts < ts2
-    tsr2: bool = ts > ts2
-
-
-def test_types_timestamp_series_comparisons() -> None:
-    # GH 27
-    df = pd.DataFrame(["2020-01-01", "2019-01-01"])
-    tss = pd.to_datetime(df[0], format="%Y-%m-%d")
-    ts = pd.to_datetime("2019-02-01", format="%Y-%m-%d")
-    tssr = tss <= ts
-    tssr2 = tss >= ts
-    tssr3 = tss == ts
-    check(assert_type(tssr, "pd.Series[bool]"), pd.Series, bool)
-    check(assert_type(tssr2, "pd.Series[bool]"), pd.Series, bool)
-    check(assert_type(tssr3, "pd.Series[bool]"), pd.Series, bool)
-    # GH 265
-    data = pd.date_range("2022-01-01", "2022-01-31", freq="D")
-    s = pd.Series(data)
-    ts2 = pd.Timestamp("2022-01-15")
-    check(assert_type(s, "TimestampSeries"), pd.Series, pd.Timestamp)
-    check(assert_type(ts2 <= s, "pd.Series[bool]"), pd.Series, bool)
-    check(assert_type(ts2 >= s, "pd.Series[bool]"), pd.Series, bool)
-    check(assert_type(ts2 < s, "pd.Series[bool]"), pd.Series, bool)
-    check(assert_type(ts2 > s, "pd.Series[bool]"), pd.Series, bool)
-
-
-def test_types_pydatetime() -> None:
-    ts: pd.Timestamp = pd.Timestamp("2021-03-01T12")
-
-    datet: dt.datetime = ts.to_pydatetime()
-    datet2: dt.datetime = ts.to_pydatetime(False)
-    datet3: dt.datetime = ts.to_pydatetime(warn=True)
-
-
 def test_to_timedelta() -> None:
     td: pd.Timedelta = pd.to_timedelta(3, "days")
     tds: pd.TimedeltaIndex = pd.to_timedelta([2, 3], "minutes")
@@ -159,12 +95,6 @@ def test_timestamp_timedelta_series_arithmetic() -> None:
     check(assert_type(r7, "TimedeltaSeries"), pd.Series, pd.Timedelta)
     r8 = ts1 - dt1
     check(assert_type(r8, "TimedeltaSeries"), pd.Series, pd.Timedelta)
-
-
-def test_timestamp_dateoffset_arithmetic() -> None:
-    ts = pd.Timestamp("2022-03-18")
-    do = pd.DateOffset(days=366)
-    r1: pd.Timestamp = ts + do
 
 
 def test_datetimeindex_plus_timedelta() -> None:
@@ -264,24 +194,6 @@ def test_dtindex_tzinfo() -> None:
     # GH 71
     dti = pd.date_range("2000-1-1", periods=10)
     assert assert_type(dti.tzinfo, Optional[dt.tzinfo]) is None
-
-
-def test_todatetime_fromnumpy() -> None:
-    # GH 72
-    t1 = np.datetime64("2022-07-04 02:30")
-    check(assert_type(pd.to_datetime(t1), pd.Timestamp), pd.Timestamp)
-
-
-def test_comparisons_datetimeindex() -> None:
-    # GH 74
-    dti = pd.date_range("2000-01-01", "2000-01-10")
-    ts = pd.Timestamp("2000-01-05")
-    check(assert_type((dti < ts), np_ndarray_bool), np.ndarray)
-    check(assert_type((dti > ts), np_ndarray_bool), np.ndarray)
-    check(assert_type((dti >= ts), np_ndarray_bool), np.ndarray)
-    check(assert_type((dti <= ts), np_ndarray_bool), np.ndarray)
-    check(assert_type((dti == ts), np_ndarray_bool), np.ndarray)
-    check(assert_type((dti != ts), np_ndarray_bool), np.ndarray)
 
 
 def test_to_datetime_nat() -> None:
@@ -661,6 +573,18 @@ def test_to_timedelta_scalar() -> None:
         ),
         pd.Timedelta,
     )
+
+
+def test_comparisons_datetimeindex() -> None:
+    # GH 74
+    dti = pd.date_range("2000-01-01", "2000-01-10")
+    ts = pd.Timestamp("2000-01-05")
+    check(assert_type((dti < ts), np_ndarray_bool), np.ndarray)
+    check(assert_type((dti > ts), np_ndarray_bool), np.ndarray)
+    check(assert_type((dti >= ts), np_ndarray_bool), np.ndarray)
+    check(assert_type((dti <= ts), np_ndarray_bool), np.ndarray)
+    check(assert_type((dti == ts), np_ndarray_bool), np.ndarray)
+    check(assert_type((dti != ts), np_ndarray_bool), np.ndarray)
 
 
 def test_to_timedelta_series() -> None:

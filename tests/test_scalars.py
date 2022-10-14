@@ -1030,3 +1030,78 @@ def test_timestamp() -> None:
     check(assert_type(np_dt64_arr == ts, np_ndarray_bool), np.ndarray)  # type: ignore[assert-type]
     check(assert_type(np.datetime64(1, "ns") != ts, np.bool_), np.bool_)  # type: ignore[assert-type]
     check(assert_type(np_dt64_arr != ts, np_ndarray_bool), np.ndarray)  # type: ignore[assert-type]
+
+
+def test_types_init() -> None:
+    ts: pd.Timestamp = pd.Timestamp("2021-03-01T12")
+    ts1: pd.Timestamp = pd.Timestamp(dt.date(2021, 3, 15))
+    ts2: pd.Timestamp = pd.Timestamp(dt.datetime(2021, 3, 10, 12))
+    ts3: pd.Timestamp = pd.Timestamp(pd.Timestamp("2021-03-01T12"))
+    ts4: pd.Timestamp = pd.Timestamp(1515590000.1, unit="s")
+    ts5: pd.Timestamp = pd.Timestamp(1515590000.1, unit="s", tz="US/Pacific")
+    ts6: pd.Timestamp = pd.Timestamp(1515590000100000000)  # plain integer (nanosecond)
+    ts7: pd.Timestamp = pd.Timestamp(2021, 3, 10, 12)
+    ts8: pd.Timestamp = pd.Timestamp(year=2021, month=3, day=10, hour=12)
+    ts9: pd.Timestamp = pd.Timestamp(
+        year=2021, month=3, day=10, hour=12, tz="US/Pacific"
+    )
+
+
+def test_types_arithmetic() -> None:
+    ts: pd.Timestamp = pd.to_datetime("2021-03-01")
+    ts2: pd.Timestamp = pd.to_datetime("2021-01-01")
+    delta: pd.Timedelta = pd.to_timedelta("1 day")
+
+    check(assert_type(ts - ts2, pd.Timedelta), pd.Timedelta)
+    check(assert_type(ts + delta, pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts - delta, pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts - dt.datetime(2021, 1, 3), pd.Timedelta), pd.Timedelta)
+
+
+def test_types_comparison() -> None:
+    ts: pd.Timestamp = pd.to_datetime("2021-03-01")
+    ts2: pd.Timestamp = pd.to_datetime("2021-01-01")
+
+    check(assert_type(ts < ts2, bool), bool)
+    check(assert_type(ts > ts2, bool), bool)
+
+
+def test_types_timestamp_series_comparisons() -> None:
+    # GH 27
+    df = pd.DataFrame(["2020-01-01", "2019-01-01"])
+    tss = pd.to_datetime(df[0], format="%Y-%m-%d")
+    ts = pd.to_datetime("2019-02-01", format="%Y-%m-%d")
+    tssr = tss <= ts
+    tssr2 = tss >= ts
+    tssr3 = tss == ts
+    check(assert_type(tssr, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(tssr2, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(tssr3, "pd.Series[bool]"), pd.Series, bool)
+    # GH 265
+    data = pd.date_range("2022-01-01", "2022-01-31", freq="D")
+    s = pd.Series(data)
+    ts2 = pd.Timestamp("2022-01-15")
+    check(assert_type(s, "TimestampSeries"), pd.Series, pd.Timestamp)
+    check(assert_type(ts2 <= s, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(ts2 >= s, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(ts2 < s, "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(ts2 > s, "pd.Series[bool]"), pd.Series, bool)
+
+
+def test_types_pydatetime() -> None:
+    ts: pd.Timestamp = pd.Timestamp("2021-03-01T12")
+    check(assert_type(ts.to_pydatetime(), dt.datetime), dt.datetime)
+    check(assert_type(ts.to_pydatetime(False), dt.datetime), dt.datetime)
+    check(assert_type(ts.to_pydatetime(warn=True), dt.datetime), dt.datetime)
+
+
+def test_timestamp_dateoffset_arithmetic() -> None:
+    ts = pd.Timestamp("2022-03-18")
+    do = pd.DateOffset(days=366)
+    check(assert_type(ts + do, pd.Timestamp), pd.Timestamp)
+
+
+def test_todatetime_fromnumpy() -> None:
+    # GH 72
+    t1 = np.datetime64("2022-07-04 02:30")
+    check(assert_type(pd.to_datetime(t1), pd.Timestamp), pd.Timestamp)
