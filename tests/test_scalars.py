@@ -399,10 +399,16 @@ def test_timedelta() -> None:
     check(assert_type(td * pd.Series([1, 2, 3]), pd.Series), pd.Series)
     check(assert_type(td * pd.Series([1.2, 2.2, 3.4]), pd.Series), pd.Series)
     check(assert_type(td * i_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(
-        assert_type(td * f_idx, pd.TimedeltaIndex),
-        pd.TimedeltaIndex,
-    )
+    check(assert_type(td * f_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
+
+    check(assert_type(3 * td, pd.Timedelta), pd.Timedelta)
+    check(assert_type(3.5 * td, pd.Timedelta), pd.Timedelta)
+    check(assert_type(np.array([1, 2, 3]) * td, np.ndarray), np.ndarray)
+    check(assert_type(np.array([1.2, 2.2, 3.4]) * td, np.ndarray), np.ndarray)
+    check(assert_type(pd.Series([1, 2, 3]) * td, pd.Series), pd.Series)
+    check(assert_type(pd.Series([1.2, 2.2, 3.4]) * td, pd.Series), pd.Series)
+    check(assert_type(i_idx * td, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(f_idx * td, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
     np_intp_arr: npt.NDArray[np.integer] = np.array([1, 2, 3])
     np_float_arr: npt.NDArray[np.floating] = np.array([1, 2, 3])
@@ -414,10 +420,17 @@ def test_timedelta() -> None:
     check(assert_type(td // pd.Series([1, 2, 3]), pd.Series), pd.Series)
     check(assert_type(td // pd.Series([1.2, 2.2, 3.4]), pd.Series), pd.Series)
     check(assert_type(td // i_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(
-        assert_type(td // f_idx, pd.TimedeltaIndex),
-        pd.TimedeltaIndex,
-    )
+    check(assert_type(td // f_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
+
+    # Note: None of the reverse floordiv work
+    # check(assert_type(3 // td, pd.Timedelta), pd.Timedelta)
+    # check(assert_type(3.5// td, pd.Timedelta), pd.Timedelta)
+    # check(assert_type(np_intp_arr// td, npt.NDArray[np.timedelta64]), np.ndarray)
+    # check(assert_type(np_float_arr// td, npt.NDArray[np.timedelta64]), np.ndarray)
+    # check(assert_type(pd.Series([1, 2, 3])// td, pd.Series), pd.Series)
+    # check(assert_type(pd.Series([1.2, 2.2, 3.4])// td, pd.Series), pd.Series)
+    # check(assert_type(i_idx, pd.TimedeltaIndex)// td, pd.TimedeltaIndex)
+    # check( assert_type(f_idx// td, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
     check(assert_type(td / td, float), float)
     check(assert_type(td / 3, pd.Timedelta), pd.Timedelta)
@@ -431,12 +444,18 @@ def test_timedelta() -> None:
     )
     check(assert_type(td / pd.Series([1, 2, 3]), pd.Series), pd.Series)
     check(assert_type(td / pd.Series([1.2, 2.2, 3.4]), pd.Series), pd.Series)
-
     check(assert_type(td / i_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(
-        assert_type(td / f_idx, pd.TimedeltaIndex),
-        pd.TimedeltaIndex,
-    )
+    check(assert_type(td / f_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
+
+    # Note: None of the reverse truediv work
+    # check(assert_type(3 / td, pd.Timedelta), pd.Timedelta)
+    # check(assert_type(3.5 / td, pd.Timedelta), pd.Timedelta)
+    # check(assert_type(np.array([1, 2, 3]) / td, npt.NDArray[np.timedelta64]), np.ndarray)
+    # check(assert_type(np.array([1.2, 2.2, 3.4]) / td, npt.NDArray[np.timedelta64]),np.ndarray,)
+    # check(assert_type(pd.Series([1, 2, 3]) / td, pd.Series), pd.Series)
+    # check(assert_type(pd.Series([1.2, 2.2, 3.4]) / td, pd.Series), pd.Series)
+    # check(assert_type(i_idx / td, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    # check(assert_type(f_idx / td, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
     check(assert_type(td % 3, pd.Timedelta), pd.Timedelta)
     check(assert_type(td % 3.5, pd.Timedelta), pd.Timedelta)
@@ -464,63 +483,85 @@ def test_timedelta() -> None:
     check(assert_type(td < td, bool), bool)
     check(assert_type(td < dt.timedelta(days=1), bool), bool)
     check(assert_type(td < np.timedelta64(1, "D"), bool), bool)
+    check(assert_type(td < ndarray_td64, np_ndarray_bool), np.ndarray)
     check(
-        assert_type(td < ndarray_td64, np_ndarray_bool),
+        assert_type(pd.TimedeltaIndex([1, 2, 3], unit="D") < td, np_ndarray_bool),
         np.ndarray,
     )
+    check(assert_type(dt.timedelta(days=1) < td, bool), bool)
+    check(assert_type(np.timedelta64(1, "D") < td, np.bool_), np.bool_)
+    check(assert_type(ndarray_td64 < td, np_ndarray_bool), np.ndarray)
     check(
-        assert_type(td < pd.TimedeltaIndex([1, 2, 3], unit="D"), np_ndarray_bool),
+        assert_type(pd.TimedeltaIndex([1, 2, 3], unit="D") < td, np_ndarray_bool),
         np.ndarray,
     )
 
     check(assert_type(td > td, bool), bool)
     check(assert_type(td > dt.timedelta(days=1), bool), bool)
     check(assert_type(td > np.timedelta64(1, "D"), bool), bool)
-    check(
-        assert_type(td > ndarray_td64, np_ndarray_bool),
-        np.ndarray,
-    )
+    check(assert_type(td > ndarray_td64, np_ndarray_bool), np.ndarray)
     check(
         assert_type(td > pd.TimedeltaIndex([1, 2, 3], unit="D"), np_ndarray_bool),
+        np.ndarray,
+    )
+    check(assert_type(dt.timedelta(days=1) > td, bool), bool)
+    check(assert_type(np.timedelta64(1, "D") > td, np.bool_), np.bool_)
+    check(assert_type(ndarray_td64 > td, np_ndarray_bool), np.ndarray)
+    check(
+        assert_type(pd.TimedeltaIndex([1, 2, 3], unit="D") > td, np_ndarray_bool),
         np.ndarray,
     )
 
     check(assert_type(td <= td, bool), bool)
     check(assert_type(td <= dt.timedelta(days=1), bool), bool)
     check(assert_type(td <= np.timedelta64(1, "D"), bool), bool)
-    check(
-        assert_type(td <= ndarray_td64, np_ndarray_bool),
-        np.ndarray,
-    )
+    check(assert_type(td <= ndarray_td64, np_ndarray_bool), np.ndarray)
     check(
         assert_type(td <= pd.TimedeltaIndex([1, 2, 3], unit="D"), np_ndarray_bool),
+        np.ndarray,
+    )
+    check(assert_type(dt.timedelta(days=1) <= td, bool), bool)
+    check(assert_type(np.timedelta64(1, "D") <= td, np.bool_), np.bool_)
+    check(assert_type(ndarray_td64 <= td, np_ndarray_bool), np.ndarray)
+    check(
+        assert_type(pd.TimedeltaIndex([1, 2, 3], unit="D") <= td, np_ndarray_bool),
         np.ndarray,
     )
 
     check(assert_type(td >= td, bool), bool)
     check(assert_type(td >= dt.timedelta(days=1), bool), bool)
     check(assert_type(td >= np.timedelta64(1, "D"), bool), bool)
-    check(
-        assert_type(td >= ndarray_td64, np_ndarray_bool),
-        np.ndarray,
-    )
+    check(assert_type(td >= ndarray_td64, np_ndarray_bool), np.ndarray)
     check(
         assert_type(td >= pd.TimedeltaIndex([1, 2, 3], unit="D"), np_ndarray_bool),
+        np.ndarray,
+    )
+    check(assert_type(dt.timedelta(days=1) >= td, bool), bool)
+    check(assert_type(np.timedelta64(1, "D") >= td, np.bool_), np.bool_)
+    check(assert_type(ndarray_td64 >= td, np_ndarray_bool), np.ndarray)
+    check(
+        assert_type(pd.TimedeltaIndex([1, 2, 3], unit="D") >= td, np_ndarray_bool),
         np.ndarray,
     )
 
     check(assert_type(td == td, bool), bool)
     check(assert_type(td == dt.timedelta(days=1), bool), bool)
     check(assert_type(td == np.timedelta64(1, "D"), bool), bool)
-    check(
-        assert_type(td == ndarray_td64, np_ndarray_bool),
-        np.ndarray,
-    )
+    check(assert_type(td == ndarray_td64, np_ndarray_bool), np.ndarray)
     check(
         assert_type(td == pd.TimedeltaIndex([1, 2, 3], unit="D"), np_ndarray_bool),
         np.ndarray,
     )
     check(assert_type(td == pd.Series([1, 2, 3]), pd.Series), pd.Series)
+    check(assert_type(dt.timedelta(days=1), bool) == td, bool)
+    check(assert_type(np.timedelta64(1, "D") == td, np.bool_), np.bool_)
+    check(assert_type(ndarray_td64 == td, np_ndarray_bool), np.ndarray)
+    check(
+        assert_type(pd.TimedeltaIndex([1, 2, 3], unit="D") == td, np_ndarray_bool),
+        np.ndarray,
+    )
+    check(assert_type(pd.Series([1, 2, 3]) == td, pd.Series), pd.Series)
+
     check(assert_type(td == pd.Timestamp("2016-01-01"), bool), bool)
     check(assert_type(td == 1, bool), bool)
     check(assert_type(td == (3 + 2j), bool), bool)
@@ -528,15 +569,20 @@ def test_timedelta() -> None:
     check(assert_type(td != td, bool), bool)
     check(assert_type(td != dt.timedelta(days=1), bool), bool)
     check(assert_type(td != np.timedelta64(1, "D"), bool), bool)
-    check(
-        assert_type(td != ndarray_td64, np_ndarray_bool),
-        np.ndarray,
-    )
+    check(assert_type(td != ndarray_td64, np_ndarray_bool), np.ndarray)
     check(
         assert_type(td != pd.TimedeltaIndex([1, 2, 3], unit="D"), np_ndarray_bool),
         np.ndarray,
     )
     check(assert_type(td != pd.Series([1, 2, 3]), pd.Series), pd.Series)
+    check(assert_type(dt.timedelta(days=1) != td, bool), bool)
+    check(assert_type(np.timedelta64(1, "D") != td, np.bool_), np.bool_)
+    check(assert_type(ndarray_td64 != td, np_ndarray_bool), np.ndarray)
+    check(
+        assert_type(pd.TimedeltaIndex([1, 2, 3], unit="D") != td, np_ndarray_bool),
+        np.ndarray,
+    )
+    check(assert_type(pd.Series([1, 2, 3]) != td, pd.Series), pd.Series)
     check(assert_type(td != pd.Timestamp("2016-01-01"), bool), bool)
     check(assert_type(td != 1, bool), bool)
     check(assert_type(td != (3 + 2j), bool), bool)
@@ -773,56 +819,241 @@ def test_timestamp() -> None:
     check(assert_type(ts.year, int), int)
 
     ts = pd.Timestamp("2000-1-1")
-    ts + pd.Timedelta(days=1)
-    ts + dt.timedelta(days=1)
-    pd.Timedelta(days=1) + ts
-    dt.timedelta(days=1) + ts
-    ts + 3 * Day()
-    ts + pd.TimedeltaIndex([1, 2, 3], "D")
-    ts + pd.Series([1, 2], dtype="timedelta64[ns]")
-    ts + np.array([1, 2], dtype="timedelta64[ns]")
-    pd.TimedeltaIndex([1, 2, 3], "D") + ts
-    pd.Series([1, 2], dtype="timedelta64[ns]") + ts
-    np.array([1, 2], dtype="timedelta64[ns]") + ts
+    check(assert_type(ts + pd.Timedelta(days=1), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts + dt.timedelta(days=1), pd.Timestamp), pd.Timestamp)
+    check(assert_type(pd.Timedelta(days=1) + ts, pd.Timestamp), pd.Timestamp)
+    check(assert_type(dt.timedelta(days=1) + ts, pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts + 3 * Day(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(3 * Day() + ts, pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(ts + pd.TimedeltaIndex([1, 2, 3], "D"), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(ts + pd.Series([1, 2], dtype="timedelta64[ns]"), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(ts + np.array([1, 2], dtype="timedelta64[ns]"), np_ndarray_bool),
+        np.ndarray,
+    )
+    check(
+        assert_type(pd.TimedeltaIndex([1, 2, 3], "D") + ts, pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(pd.Series([1, 2], dtype="timedelta64[ns]") + ts, pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(np.array([1, 2], dtype="timedelta64[ns]") + ts, np_ndarray_bool),
+        np.ndarray,
+    )
 
-    ts - pd.Timedelta(days=1)
-    ts - dt.timedelta(days=1)
-    ts - 3 * Day()
-    ts - pd.TimedeltaIndex([1, 2, 3], "D")
-    ts - pd.Series([1, 2], dtype="timedelta64[ns]")
-    ts - np.array([1, 2], dtype="timedelta64[ns]")
+    check(assert_type(ts - pd.Timedelta(days=1), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts - dt.timedelta(days=1), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts - 3 * Day(), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(ts - pd.TimedeltaIndex([1, 2, 3], "D"), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(ts - pd.Series([1, 2], dtype="timedelta64[ns]"), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            ts - np.array([1, 2], dtype="timedelta64[ns]"), npt.NDArray[np.timedelta64]
+        ),
+        np.ndarray,
+    )
 
-    ts > ts
-    ts > np.datetime64(1, "ns")
-    ts > dt.datetime(year=2000, month=1, day=1)
-    ts > pd.DatetimeIndex(["2000-1-1"])
-    ts > np.array([1, 2, 3], dtype="datetime64[ns]")
-    ts > pd.Series([1, 2, 3], dtype="datetime64[ns]")
+    check(assert_type(ts > ts, bool), bool)
+    check(assert_type(ts > np.datetime64(1, "ns"), bool), bool)
+    check(assert_type(ts > dt.datetime(year=2000, month=1, day=1), bool), bool)
+    check(assert_type(ts > pd.DatetimeIndex(["2000-1-1"]), np_ndarray_bool), np.ndarray)
+    check(
+        assert_type(ts > np.array([1, 2, 3], dtype="datetime64[ns]"), np_ndarray_bool),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            ts > pd.Series([1, 2, 3], dtype="datetime64[ns]"), "pd.Series[bool]"
+        ),
+        pd.Series,
+    )
 
-    ts >= ts
-    ts >= np.datetime64(1, "ns")
-    ts >= dt.datetime(year=2000, month=1, day=1)
-    ts >= pd.DatetimeIndex(["2000-1-1"])
-    ts >= np.array([1, 2, 3], dtype="datetime64[ns]")
-    ts >= pd.Series([1, 2, 3], dtype="datetime64[ns]")
+    check(assert_type(np.datetime64(1, "ns") > ts, np.bool_), np.bool_)
+    check(assert_type(dt.datetime(year=2000, month=1, day=1) > ts, bool), bool)
+    check(assert_type(pd.DatetimeIndex(["2000-1-1"]) > ts, np_ndarray_bool), np.ndarray)
+    check(
+        assert_type(np.array([1, 2, 3], dtype="datetime64[ns]") > ts, np_ndarray_bool),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            pd.Series([1, 2, 3], dtype="datetime64[ns]") > ts, "pd.Series[bool]"
+        ),
+        pd.Series,
+    )
 
-    ts < ts
-    ts < np.datetime64(1, "ns")
-    ts < dt.datetime(year=2000, month=1, day=1)
-    ts < pd.DatetimeIndex(["2000-1-1"])
-    ts < np.array([1, 2, 3], dtype="datetime64[ns]")
-    ts < pd.Series([1, 2, 3], dtype="datetime64[ns]")
+    check(assert_type(ts >= ts, bool), bool)
+    check(assert_type(ts >= np.datetime64(1, "ns"), bool), bool)
+    check(assert_type(ts >= dt.datetime(year=2000, month=1, day=1), bool), bool)
+    check(
+        assert_type(ts >= pd.DatetimeIndex(["2000-1-1"]), np_ndarray_bool), np.ndarray
+    )
+    check(
+        assert_type(ts >= np.array([1, 2, 3], dtype="datetime64[ns]"), np_ndarray_bool),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            ts >= pd.Series([1, 2, 3], dtype="datetime64[ns]"), "pd.Series[bool]"
+        ),
+        pd.Series,
+    )
 
-    ts <= ts
-    ts <= np.datetime64(1, "ns")
-    ts <= dt.datetime(year=2000, month=1, day=1)
-    ts <= pd.DatetimeIndex(["2000-1-1"])
-    ts <= np.array([1, 2, 3], dtype="datetime64[ns]")
-    ts <= pd.Series([1, 2, 3], dtype="datetime64[ns]")
+    check(assert_type(np.datetime64(1, "ns") >= ts, np.bool_), np.bool_)
+    check(assert_type(dt.datetime(year=2000, month=1, day=1) >= ts, bool), bool)
+    check(
+        assert_type(pd.DatetimeIndex(["2000-1-1"]) >= ts, np_ndarray_bool), np.ndarray
+    )
+    check(
+        assert_type(np.array([1, 2, 3], dtype="datetime64[ns]") >= ts, np_ndarray_bool),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            pd.Series([1, 2, 3], dtype="datetime64[ns]") >= ts, "pd.Series[bool]"
+        ),
+        pd.Series,
+    )
 
-    ts == ts
-    ts == np.datetime64(1, "ns")
-    ts == dt.datetime(year=2000, month=1, day=1)
-    ts == pd.DatetimeIndex(["2000-1-1"])
-    ts == np.array([1, 2, 3], dtype="datetime64[ns]")
-    ts == pd.Series([1, 2, 3], dtype="datetime64[ns]")
+    check(assert_type(ts < ts, bool), bool)
+    check(assert_type(ts < np.datetime64(1, "ns"), bool), bool)
+    check(assert_type(ts < dt.datetime(year=2000, month=1, day=1), bool), bool)
+    check(assert_type(ts < pd.DatetimeIndex(["2000-1-1"]), np_ndarray_bool), np.ndarray)
+    check(
+        assert_type(ts < np.array([1, 2, 3], dtype="datetime64[ns]"), np_ndarray_bool),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            ts < pd.Series([1, 2, 3], dtype="datetime64[ns]"), "pd.Series[bool]"
+        ),
+        pd.Series,
+    )
+
+    check(assert_type(np.datetime64(1, "ns") < ts, np.bool_), np.bool_)
+    check(assert_type(dt.datetime(year=2000, month=1, day=1) < ts, bool), bool)
+    check(assert_type(pd.DatetimeIndex(["2000-1-1"]) < ts, np_ndarray_bool), np.ndarray)
+    check(
+        assert_type(np.array([1, 2, 3], dtype="datetime64[ns]") < ts, np_ndarray_bool),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            pd.Series([1, 2, 3], dtype="datetime64[ns]") < ts, "pd.Series[bool]"
+        ),
+        pd.Series,
+    )
+
+    check(assert_type(ts <= ts, bool), bool)
+    check(assert_type(ts <= np.datetime64(1, "ns"), bool), bool)
+    check(assert_type(ts <= dt.datetime(year=2000, month=1, day=1), bool), bool)
+    check(
+        assert_type(ts <= pd.DatetimeIndex(["2000-1-1"]), np_ndarray_bool), np.ndarray
+    )
+    check(
+        assert_type(ts <= np.array([1, 2, 3], dtype="datetime64[ns]"), np_ndarray_bool),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            ts <= pd.Series([1, 2, 3], dtype="datetime64[ns]"), "pd.Series[bool]"
+        ),
+        pd.Series,
+    )
+
+    check(assert_type(np.datetime64(1, "ns") <= ts, np.bool_), np.bool_)
+    check(assert_type(dt.datetime(year=2000, month=1, day=1) <= ts, bool), bool)
+    check(
+        assert_type(pd.DatetimeIndex(["2000-1-1"]) <= ts, np_ndarray_bool), np.ndarray
+    )
+    check(
+        assert_type(np.array([1, 2, 3], dtype="datetime64[ns]") <= ts, np_ndarray_bool),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            pd.Series([1, 2, 3], dtype="datetime64[ns]") <= ts, "pd.Series[bool]"
+        ),
+        pd.Series,
+    )
+
+    check(assert_type(ts == ts, bool), bool)
+    check(assert_type(ts == np.datetime64(1, "ns"), bool), bool)
+    check(assert_type(ts == dt.datetime(year=2000, month=1, day=1), bool), bool)
+    check(
+        assert_type(ts == pd.DatetimeIndex(["2000-1-1"]), np_ndarray_bool), np.ndarray
+    )
+    check(
+        assert_type(ts == np.array([1, 2, 3], dtype="datetime64[ns]"), np_ndarray_bool),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            ts == pd.Series([1, 2, 3], dtype="datetime64[ns]"), "pd.Series[bool]"
+        ),
+        pd.Series,
+    )
+
+    check(assert_type(np.datetime64(1, "ns") == ts, np.bool_), np.bool_)
+    check(assert_type(dt.datetime(year=2000, month=1, day=1) == ts, bool), bool)
+    check(
+        assert_type(pd.DatetimeIndex(["2000-1-1"]) == ts, np_ndarray_bool), np.ndarray
+    )
+    check(
+        assert_type(np.array([1, 2, 3], dtype="datetime64[ns]") == ts, np_ndarray_bool),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            pd.Series([1, 2, 3], dtype="datetime64[ns]") == ts, "pd.Series[bool]"
+        ),
+        pd.Series,
+    )
+
+    check(assert_type(ts != ts, bool), bool)
+    check(assert_type(ts != np.datetime64(1, "ns"), bool), bool)
+    check(assert_type(ts != dt.datetime(year=2000, month=1, day=1), bool), bool)
+    check(
+        assert_type(ts != pd.DatetimeIndex(["2000-1-1"]), np_ndarray_bool), np.ndarray
+    )
+    check(
+        assert_type(ts != np.array([1, 2, 3], dtype="datetime64[ns]"), np_ndarray_bool),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            ts != pd.Series([1, 2, 3], dtype="datetime64[ns]"), "pd.Series[bool]"
+        ),
+        pd.Series,
+    )
+
+    check(assert_type(np.datetime64(1, "ns") != ts, np.bool_), np.bool_)
+    check(assert_type(dt.datetime(year=2000, month=1, day=1) != ts, bool), bool)
+    check(
+        assert_type(pd.DatetimeIndex(["2000-1-1"]) != ts, np_ndarray_bool), np.ndarray
+    )
+    check(
+        assert_type(np.array([1, 2, 3], dtype="datetime64[ns]") != ts, np_ndarray_bool),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            pd.Series([1, 2, 3], dtype="datetime64[ns]") != ts, "pd.Series[bool]"
+        ),
+        pd.Series,
+    )
