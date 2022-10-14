@@ -7,10 +7,13 @@ from typing import (
 
 import numpy as np
 from pandas import (
-    DatetimeIndex,
     Index,
     PeriodIndex,
     Timedelta,
+)
+from pandas.core.series import (
+    PeriodSeries,
+    TimedeltaSeries,
 )
 from typing_extensions import TypeAlias
 
@@ -68,12 +71,13 @@ class Period(PeriodMixin):
     @overload
     def __sub__(self, other: PeriodIndex) -> Index: ...
     @overload
+    def __sub__(self, other: TimedeltaSeries) -> PeriodSeries: ...
+    @overload
     def __add__(self, other: _PeriodAddSub) -> Period: ...
     @overload
     def __add__(self, other: Index) -> PeriodIndex: ...
-
-    # @overload
-    # def __add__(self, other: Index) -> Period: ...
+    @overload
+    def __add__(self, other: TimedeltaSeries) -> PeriodSeries: ...
     @overload  # type: ignore[override]
     def __eq__(self, other: Period) -> bool: ...
     @overload
@@ -103,8 +107,14 @@ class Period(PeriodMixin):
     # Forward operator "__add__" is not callable  [misc]
     @overload
     def __radd__(self, other: _PeriodAddSub) -> Period: ...  # type: ignore[misc]
+    # Real signature is -> PeriodIndex, but conflicts with Index.__add__
+    # Changing Index is very hard due to Index inheritance
+    #   Signatures of "__radd__" of "Period" and "__add__" of "Index"
+    #   are unsafely overlapping
     @overload
-    def __radd__(self, other: Index) -> PeriodIndex: ...
+    def __radd__(self, other: Index) -> Index: ...
+    @overload
+    def __radd__(self, other: TimedeltaSeries) -> PeriodSeries: ...
     @property
     def day(self) -> int: ...
     @property

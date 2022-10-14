@@ -94,6 +94,8 @@ def test_period() -> None:
     as4 = int(1)
     as5 = pd.period_range("2012-1-1", periods=10, freq="D")
     as6 = pd.Period("2012-1-1", freq="D")
+    as7 = cast("TimedeltaSeries", pd.Series([pd.Timedelta(days=1)]))
+    as8 = cast("PeriodSeries", pd.Series([as6]))
 
     check(assert_type(p + as0, pd.Period), pd.Period)
     check(assert_type(p + as1, pd.Period), pd.Period)
@@ -102,6 +104,9 @@ def test_period() -> None:
     check(assert_type(p + as4, pd.Period), pd.Period)
     check(assert_type(p + p.freq, pd.Period), pd.Period)
     check(assert_type(p + (p - as5), pd.PeriodIndex), pd.PeriodIndex)
+    check(assert_type(p + as7, "PeriodSeries"), pd.Series)
+    das8 = cast("TimedeltaSeries", (as8 - as8))
+    check(assert_type(p + das8, "PeriodSeries"), pd.Series)
     check(assert_type(p - as0, pd.Period), pd.Period)
     check(assert_type(p - as1, pd.Period), pd.Period)
     check(assert_type(p - as2, pd.Period), pd.Period)
@@ -109,6 +114,7 @@ def test_period() -> None:
     check(assert_type(p - as4, pd.Period), pd.Period)
     check(assert_type(p - as5, pd.Index), pd.Index)
     check(assert_type(p - as6, BaseOffset), Day)
+    check(assert_type(p - as7, "PeriodSeries"), pd.Series)
     check(assert_type(p - p.freq, pd.Period), pd.Period)
 
     check(assert_type(as0 + p, pd.Period), pd.Period)
@@ -116,6 +122,7 @@ def test_period() -> None:
     check(assert_type(as2 + p, pd.Period), pd.Period)
     check(assert_type(as3 + p, pd.Period), pd.Period)
     check(assert_type(as4 + p, pd.Period), pd.Period)
+    check(assert_type(as7 + p, "PeriodSeries"), pd.Series)
     check(assert_type(p.freq + p, pd.Period), pd.Period)
     # TODO: PeriodIndex should have a __sub__ with correct types, this op is valid
     #  and so the assert_type is skipped
@@ -856,11 +863,9 @@ def test_timestamp() -> None:
         assert_type(ts - pd.TimedeltaIndex([1, 2, 3], "D"), pd.DatetimeIndex),
         pd.DatetimeIndex,
     )
-    ts_series: TimedeltaSeries = cast(
-        TimedeltaSeries, pd.Series([1, 2], dtype="timedelta64[ns]")
-    )
+    ts_series = cast("TimedeltaSeries", pd.Series([1, 2], dtype="timedelta64[ns]"))
     check(
-        assert_type(ts - ts_series, TimestampSeries),
+        assert_type(ts - ts_series, "TimestampSeries"),
         pd.Series,
     )
     check(assert_type(ts - np_td64_arr, npt.NDArray[np.datetime64]), np.ndarray)
