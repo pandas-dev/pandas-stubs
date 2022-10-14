@@ -86,6 +86,7 @@ from pandas._typing import (
     HashableT3,
     IgnoreRaise,
     IndexingInt,
+    IntervalClosedType,
     JoinHow,
     JsonSeriesOrient,
     Level,
@@ -1574,28 +1575,28 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def rolling(
         self,
-        window: int | BaseOffset | BaseIndexer,
+        window: int | _str | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
         win_type: _str,
         on: _str | None = ...,
         axis: SeriesAxisType = ...,
-        closed: _str | None = ...,
+        closed: IntervalClosedType | None = ...,
         step: int | None = ...,
         method: CalculationMethod = ...,
     ) -> Window[Series]: ...
     @overload
     def rolling(
         self,
-        window: int | BaseOffset | BaseIndexer,
+        window: int | _str | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
         win_type: None = ...,
         on: _str | None = ...,
         axis: SeriesAxisType = ...,
-        closed: _str | None = ...,
+        closed: IntervalClosedType | None = ...,
         step: int | None = ...,
         method: CalculationMethod = ...,
     ) -> Rolling[Series]: ...
