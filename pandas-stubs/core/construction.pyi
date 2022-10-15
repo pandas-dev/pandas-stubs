@@ -19,7 +19,7 @@ from pandas.core.dtypes.generic import ABCExtensionArray
 
 def array(
     # str is forbidden even though Sequence[object] allows "abc"
-    data: npt.NDArray | Sequence[object],
+    data: npt.NDArray | Sequence[object] | pd.Index | pd.Series,
     dtype: str
     | np.dtype[np.generic]
     | ExtensionDtype
