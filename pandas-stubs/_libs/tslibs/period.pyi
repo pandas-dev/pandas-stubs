@@ -2,11 +2,13 @@ from typing import Any
 
 class IncompatibleFrequency(ValueError): ...
 
+from pandas._libs.tslibs.offsets import BaseOffset
+
 class Period:
     def __init__(
         self,
         value: Any = ...,
-        freqstr: Any = ...,
+        freq: str | BaseOffset | None = ...,
         ordinal: Any = ...,
         year: Any = ...,
         month: int = ...,

@@ -6,10 +6,11 @@ from pandas.core.arrays.datetimelike import (
     DatetimeLikeArrayMixin,
 )
 
-from pandas._libs.tslibs import Timestamp
-from pandas._libs.tslibs.period import Period as Period
+from pandas._libs.tslibs import Period
+from pandas._libs.tslibs.timestamps import Timestamp
+from pandas._typing import npt as npt
 
-from pandas.tseries.offsets import Tick as Tick
+from pandas.tseries.offsets import Tick
 
 class PeriodArray(DatetimeLikeArrayMixin, DatelikeOps):
     __array_priority__: int = ...
@@ -43,11 +44,8 @@ class PeriodArray(DatetimeLikeArrayMixin, DatelikeOps):
     def asfreq(self, freq: str | None = ..., how: str = ...) -> Period: ...
     def astype(self, dtype, copy: bool = ...): ...
 
-def raise_on_incompatible(left, right): ...
 def period_array(
     data: Sequence[Period | None],
     freq: str | Tick | None = ...,
     copy: bool = ...,
 ) -> PeriodArray: ...
-def validate_dtype_freq(dtype, freq): ...
-def dt64arr_to_periodarr(data, freq, tz=...): ...

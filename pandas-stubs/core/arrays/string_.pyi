@@ -1,6 +1,13 @@
+from typing import Sequence
+
+import numpy as np
+import pandas as pd
 from pandas.core.arrays import PandasArray
 
-from pandas._typing import type_t
+from pandas._typing import (
+    AnyArrayLike,
+    type_t,
+)
 
 from pandas.core.dtypes.base import ExtensionDtype
 
@@ -14,7 +21,12 @@ class StringDtype(ExtensionDtype):
     def __from_arrow__(self, array): ...
 
 class StringArray(PandasArray):
-    def __init__(self, values, copy: bool = ...) -> None: ...
+    def __init__(
+        self,
+        # Also pd.NA and np.nan but not possible it seems
+        values: AnyArrayLike | Sequence[str | None],
+        copy: bool = ...,
+    ) -> None: ...
     def __arrow_array__(self, type=...): ...
     def __setitem__(self, key, value) -> None: ...
     def fillna(self, value=..., method=..., limit=...): ...
