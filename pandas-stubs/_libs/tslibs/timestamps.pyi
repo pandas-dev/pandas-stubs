@@ -8,14 +8,20 @@ from datetime import (
 from time import struct_time
 from typing import (
     ClassVar,
+    Literal,
     TypeVar,
     overload,
 )
 
 import numpy as np
-from pandas import Index
+from pandas import (
+    DatetimeIndex,
+    Index,
+    TimedeltaIndex,
+)
 from pandas.core.series import (
     Series,
+    TimedeltaSeries,
     TimestampSeries,
 )
 
@@ -25,21 +31,24 @@ from pandas._libs.tslibs import (
     Tick,
     Timedelta,
 )
-from pandas._typing import np_ndarray_bool
+from pandas._typing import (
+    np_ndarray_bool,
+    npt,
+)
 
 _DatetimeT = TypeVar("_DatetimeT", bound=datetime)
-
-def integer_op_not_supported(obj: object) -> TypeError: ...
 
 class Timestamp(datetime):
     min: ClassVar[Timestamp]
     max: ClassVar[Timestamp]
 
     resolution: ClassVar[Timedelta]
-    value: int  # np.int64
+    value: int
     def __new__(
         cls: type[_DatetimeT],
         ts_input: np.integer | float | str | _date | datetime | np.datetime64 = ...,
+        # Freq is deprecated but is left in to allow code like Timestamp(2000,1,1)
+        # Removing it would make the other arguments position only
         freq: int | str | BaseOffset | None = ...,
         tz: str | _tzinfo | int | None = ...,
         unit: str | int | None = ...,
@@ -52,8 +61,7 @@ class Timestamp(datetime):
         microsecond: int | None = ...,
         nanosecond: int | None = ...,
         tzinfo: _tzinfo | None = ...,
-        *,
-        fold: int | None = ...,
+        fold: Literal[0, 1] | None = ...,
     ) -> _DatetimeT: ...
     # GH 46171
     # While Timestamp can return pd.NaT, having the constructor return
@@ -72,6 +80,8 @@ class Timestamp(datetime):
     def second(self) -> int: ...
     @property
     def microsecond(self) -> int: ...
+    @property
+    def nanosecond(self) -> int: ...
     @property
     def tzinfo(self) -> _tzinfo | None: ...
     @property
@@ -113,15 +123,15 @@ class Timestamp(datetime):
     def timetz(self) -> _time: ...
     def replace(
         self,
-        year: int = ...,
-        month: int = ...,
-        day: int = ...,
-        hour: int = ...,
-        minute: int = ...,
-        second: int = ...,
-        microsecond: int = ...,
+        year: int | None = ...,
+        month: int | None = ...,
+        day: int | None = ...,
+        hour: int | None = ...,
+        minute: int | None = ...,
+        second: int | None = ...,
+        microsecond: int | None = ...,
         tzinfo: _tzinfo | None = ...,
-        fold: int = ...,
+        fold: int | None = ...,
     ) -> Timestamp: ...
     def astimezone(self: _DatetimeT, tz: _tzinfo | None = ...) -> _DatetimeT: ...
     def ctime(self) -> str: ...
@@ -131,44 +141,75 @@ class Timestamp(datetime):
     def utcoffset(self) -> timedelta | None: ...
     def tzname(self) -> str | None: ...
     def dst(self) -> timedelta | None: ...
+    # Mypy complains Forward operator "<inequality op>" is not callable, so ignore misc
+    # for le, lt ge and gt
     @overload  # type: ignore[override]
-    def __le__(self, other: datetime) -> bool: ...
+    def __le__(self, other: datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
-    def __le__(self, other: Index) -> np_ndarray_bool: ...
+    def __le__(self, other: Index | npt.NDArray[np.datetime64]) -> np_ndarray_bool: ...
     @overload
     def __le__(self, other: TimestampSeries) -> Series[bool]: ...
     @overload  # type: ignore[override]
-    def __lt__(self, other: datetime) -> bool: ...
+    def __lt__(self, other: datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
-    def __lt__(self, other: Index) -> np_ndarray_bool: ...
+    def __lt__(self, other: Index | npt.NDArray[np.datetime64]) -> np_ndarray_bool: ...
     @overload
     def __lt__(self, other: TimestampSeries) -> Series[bool]: ...
     @overload  # type: ignore[override]
-    def __ge__(self, other: datetime) -> bool: ...
+    def __ge__(self, other: datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
-    def __ge__(self, other: Index) -> np_ndarray_bool: ...
+    def __ge__(self, other: Index | npt.NDArray[np.datetime64]) -> np_ndarray_bool: ...
     @overload
     def __ge__(self, other: TimestampSeries) -> Series[bool]: ...
     @overload  # type: ignore[override]
-    def __gt__(self, other: datetime) -> bool: ...
+    def __gt__(self, other: datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
-    def __gt__(self, other: Index) -> np_ndarray_bool: ...
+    def __gt__(self, other: Index | npt.NDArray[np.datetime64]) -> np_ndarray_bool: ...
     @overload
     def __gt__(self, other: TimestampSeries) -> Series[bool]: ...
     # error: Signature of "__add__" incompatible with supertype "date"/"datetime"
     @overload  # type: ignore[override]
-    def __add__(self, other: np.ndarray) -> np.ndarray: ...
+    def __add__(
+        self, other: npt.NDArray[np.timedelta64]
+    ) -> npt.NDArray[np.datetime64]: ...
     @overload
     def __add__(
         self: _DatetimeT, other: timedelta | np.timedelta64 | Tick
     ) -> _DatetimeT: ...
+    @overload
+    def __add__(self, other: Series) -> TimestampSeries: ...
+    @overload
+    def __add__(self, other: TimedeltaIndex) -> DatetimeIndex: ...
+    @overload
     def __radd__(self: _DatetimeT, other: timedelta) -> _DatetimeT: ...
+    @overload
+    def __radd__(self, other: TimedeltaIndex) -> DatetimeIndex: ...
     @overload  # type: ignore[override]
     def __sub__(self, other: datetime) -> Timedelta: ...
     @overload
     def __sub__(
         self: _DatetimeT, other: timedelta | np.timedelta64 | Tick
     ) -> _DatetimeT: ...
+    @overload
+    def __sub__(self, other: TimedeltaIndex) -> DatetimeIndex: ...
+    @overload
+    def __sub__(self, other: TimedeltaSeries) -> TimestampSeries: ...
+    @overload
+    def __sub__(
+        self, other: npt.NDArray[np.timedelta64]
+    ) -> npt.NDArray[np.datetime64]: ...
+    @overload  # type: ignore[override]
+    def __eq__(self, other: Timestamp | np.datetime64 | datetime) -> bool: ...
+    @overload
+    def __eq__(self, other: TimestampSeries) -> Series[bool]: ...
+    @overload
+    def __eq__(self, other: npt.NDArray[np.datetime64] | Index) -> np_ndarray_bool: ...
+    @overload  # type: ignore[override]
+    def __ne__(self, other: Timestamp | np.datetime64 | datetime) -> bool: ...
+    @overload
+    def __ne__(self, other: TimestampSeries) -> Series[bool]: ...
+    @overload
+    def __ne__(self, other: npt.NDArray[np.datetime64] | Index) -> np_ndarray_bool: ...
     def __hash__(self) -> int: ...
     def weekday(self) -> int: ...
     def isoweekday(self) -> int: ...
@@ -222,6 +263,8 @@ class Timestamp(datetime):
     def day_of_year(self) -> int: ...
     @property
     def dayofyear(self) -> int: ...
+    @property
+    def weekofyear(self) -> int: ...
     @property
     def quarter(self) -> int: ...
     @property
