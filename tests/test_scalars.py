@@ -4,6 +4,7 @@ import datetime as dt
 from typing import (
     TYPE_CHECKING,
     Any,
+    Union,
     cast,
 )
 
@@ -21,7 +22,7 @@ if TYPE_CHECKING:
 
     from pandas._typing import np_ndarray_bool
 else:
-    np_ndarray_bool = Any
+    TimedeltaSeries = TimestampSeries = np_ndarray_bool = Any
 
 from tests import check
 
@@ -152,6 +153,10 @@ def test_timedelta() -> None:
     check(assert_type(td + dt.timedelta(days=1), pd.Timedelta), pd.Timedelta)
     check(assert_type(td + np.timedelta64(1, "D"), pd.Timedelta), pd.Timedelta)
     check(
+        assert_type(td + pd.TimedeltaIndex([td]), pd.TimedeltaIndex), pd.TimedeltaIndex
+    )
+    check(assert_type(td + pd.Series([td]), pd.Series), pd.Series)
+    check(
         assert_type(
             td + pd.period_range("2012-01-01", periods=3, freq="D"), pd.PeriodIndex
         ),
@@ -175,6 +180,10 @@ def test_timedelta() -> None:
         ),
         np.ndarray,
     )
+    check(
+        assert_type(pd.TimedeltaIndex([td]) + td, pd.TimedeltaIndex), pd.TimedeltaIndex
+    )
+    check(assert_type(pd.Series([td]) + td, pd.Series), pd.Series)
 
     check(assert_type(td - td, pd.Timedelta), pd.Timedelta)
     check(assert_type(td - dt.timedelta(days=1), pd.Timedelta), pd.Timedelta)
@@ -186,6 +195,10 @@ def test_timedelta() -> None:
         ),
         np.ndarray,
     )
+    check(
+        assert_type(td - pd.TimedeltaIndex([td]), pd.TimedeltaIndex), pd.TimedeltaIndex
+    )
+    check(assert_type(td - pd.Series([td]), pd.Series), pd.Series)
     # pyright appears to get some things wrong when __rsub__ is called,
     # hence pyright ignores
     check(assert_type(pd.Period("2012-01-01", freq="D") - td, pd.Period), pd.Period)
@@ -212,6 +225,13 @@ def test_timedelta() -> None:
         pd.DatetimeIndex,
     )
     check(
+        assert_type(pd.TimedeltaIndex([td]) - td, pd.TimedeltaIndex), pd.TimedeltaIndex
+    )
+    check(
+        assert_type(pd.Series([td]) - td, Union[TimestampSeries, TimedeltaSeries]),
+        pd.Series,
+    )
+    check(
         assert_type(
             ndarray_td64 - td,  # pyright: ignore[reportGeneralTypeIssues]
             npt.NDArray[np.timedelta64],
@@ -234,15 +254,15 @@ def test_timedelta() -> None:
     check(assert_type(td * 3.5, pd.Timedelta), pd.Timedelta)
     check(assert_type(td * np.array([1, 2, 3]), np.ndarray), np.ndarray)
     check(assert_type(td * np.array([1.2, 2.2, 3.4]), np.ndarray), np.ndarray)
-    check(assert_type(td * pd.Series([1, 2, 3]), pd.Series), pd.Series)
-    check(assert_type(td * pd.Series([1.2, 2.2, 3.4]), pd.Series), pd.Series)
+    check(assert_type(td * pd.Series([1, 2, 3]), TimedeltaSeries), pd.Series)
+    check(assert_type(td * pd.Series([1.2, 2.2, 3.4]), TimedeltaSeries), pd.Series)
     check(assert_type(td * i_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(td * f_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
     check(assert_type(3 * td, pd.Timedelta), pd.Timedelta)
     check(assert_type(3.5 * td, pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Series([1, 2, 3]) * td, "TimedeltaSeries"), pd.Series)
-    check(assert_type(pd.Series([1.2, 2.2, 3.4]) * td, "TimedeltaSeries"), pd.Series)
+    check(assert_type(pd.Series([1, 2, 3]) * td, TimedeltaSeries), pd.Series)
+    check(assert_type(pd.Series([1.2, 2.2, 3.4]) * td, TimedeltaSeries), pd.Series)
     check(assert_type(i_idx * td, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(f_idx * td, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
@@ -253,8 +273,8 @@ def test_timedelta() -> None:
     check(assert_type(td // 3.5, pd.Timedelta), pd.Timedelta)
     check(assert_type(td // np_intp_arr, npt.NDArray[np.timedelta64]), np.ndarray)
     check(assert_type(td // np_float_arr, npt.NDArray[np.timedelta64]), np.ndarray)
-    check(assert_type(td // pd.Series([1, 2, 3]), pd.Series), pd.Series)
-    check(assert_type(td // pd.Series([1.2, 2.2, 3.4]), pd.Series), pd.Series)
+    check(assert_type(td // pd.Series([1, 2, 3]), TimedeltaSeries), pd.Series)
+    check(assert_type(td // pd.Series([1.2, 2.2, 3.4]), TimedeltaSeries), pd.Series)
     check(assert_type(td // i_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(td // f_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
@@ -278,8 +298,8 @@ def test_timedelta() -> None:
         assert_type(td / np.array([1.2, 2.2, 3.4]), npt.NDArray[np.timedelta64]),
         np.ndarray,
     )
-    check(assert_type(td / pd.Series([1, 2, 3]), pd.Series), pd.Series)
-    check(assert_type(td / pd.Series([1.2, 2.2, 3.4]), pd.Series), pd.Series)
+    check(assert_type(td / pd.Series([1, 2, 3]), TimedeltaSeries), pd.Series)
+    check(assert_type(td / pd.Series([1.2, 2.2, 3.4]), TimedeltaSeries), pd.Series)
     check(assert_type(td / i_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(td / f_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
@@ -495,7 +515,7 @@ def test_types_timestamp_series_comparisons() -> None:
     data = pd.date_range("2022-01-01", "2022-01-31", freq="D")
     s = pd.Series(data)
     ts2 = pd.Timestamp("2022-01-15")
-    check(assert_type(s, "TimestampSeries"), pd.Series, pd.Timestamp)
+    check(assert_type(s, TimestampSeries), pd.Series, pd.Timestamp)
     check(assert_type(ts2 <= s, "pd.Series[bool]"), pd.Series, bool)
     check(assert_type(ts2 >= s, "pd.Series[bool]"), pd.Series, bool)
     check(assert_type(ts2 < s, "pd.Series[bool]"), pd.Series, bool)
