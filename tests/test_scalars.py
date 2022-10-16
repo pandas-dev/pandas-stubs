@@ -117,9 +117,8 @@ def test_period() -> None:
     check(assert_type(as4 + p, pd.Period), pd.Period)
     check(assert_type(as7 + p, "PeriodSeries"), pd.Series)
     check(assert_type(p.freq + p, pd.Period), pd.Period)
-    # TODO: PeriodIndex should have a __sub__ with correct types, this op is valid
-    #  and so the assert_type is skipped
-    check(as5 - p, pd.Index)  # type: ignore[operator]
+
+    check(assert_type(as5 - p, pd.Index), pd.Index)
 
     check(assert_type(p.__radd__(as0), pd.Period), pd.Period)
     check(assert_type(p.__radd__(as1), pd.Period), pd.Period)
@@ -164,23 +163,20 @@ def test_period() -> None:
     p3 = pd.Period("2007-01", freq="M")
     check(assert_type(p3.to_timestamp("D", "S"), pd.Timestamp), pd.Timestamp)
     check(assert_type(p3.to_timestamp("D", "E"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(p3.to_timestamp("D", "start"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(p3.to_timestamp("D", "end"), pd.Timestamp), pd.Timestamp)
     check(assert_type(p3.to_timestamp("D", "Finish"), pd.Timestamp), pd.Timestamp)
-    check(assert_type(p3.to_timestamp("D", "End"), pd.Timestamp), pd.Timestamp)
     check(assert_type(p3.to_timestamp("D", "Begin"), pd.Timestamp), pd.Timestamp)
-    check(assert_type(p3.to_timestamp("D", "Start"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(p3.to_timestamp("D", "End"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(p3.to_timestamp("D", "s"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(p3.to_timestamp("D", "e"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(p3.to_timestamp("D", "finish"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(p3.to_timestamp("D", "begin"), pd.Timestamp), pd.Timestamp)
 
     check(assert_type(p3.asfreq("D", "S"), pd.Period), pd.Period)
     check(assert_type(p3.asfreq(Day(), "E"), pd.Period), pd.Period)
-    check(assert_type(p3.asfreq(Day(), "Finish"), pd.Period), pd.Period)
-    check(assert_type(p3.asfreq(Day(), "Begin"), pd.Period), pd.Period)
-    check(assert_type(p3.asfreq(Day(), "Start"), pd.Period), pd.Period)
-    check(assert_type(p3.asfreq(Day(), "End"), pd.Period), pd.Period)
     check(assert_type(p3.asfreq(Day(), "end"), pd.Period), pd.Period)
     check(assert_type(p3.asfreq(Day(), "start"), pd.Period), pd.Period)
-    check(assert_type(p3.asfreq(Day(), "begin"), pd.Period), pd.Period)
-    check(assert_type(p3.asfreq(Day(), "finish"), pd.Period), pd.Period)
-    check(assert_type(p3.asfreq(Day(), "s"), pd.Period), pd.Period)
-    check(assert_type(p3.asfreq(Day(), "e"), pd.Period), pd.Period)
 
     check(assert_type(pd.Period.now("D"), pd.Period), pd.Period)
     check(assert_type(pd.Period.now(Day()), pd.Period), pd.Period)

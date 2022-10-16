@@ -32,16 +32,22 @@ _PeriodAddSub: TypeAlias = Union[
 _PeriodFreqHow: TypeAlias = Literal[
     "S",
     "E",
-    "Start",
-    "Finish",
-    "Begin",
-    "End",
-    "s",
-    "e",
     "start",
-    "finish",
-    "begin",
     "end",
+]
+
+_PeriodToTimestampHow: TypeAlias = Union[
+    _PeriodFreqHow,
+    Literal[
+        "Start",
+        "Finish",
+        "Begin",
+        "End",
+        "s",
+        "e",
+        "finish",
+        "begin",
+    ],
 ]
 
 class PeriodMixin:
@@ -72,6 +78,7 @@ class Period(PeriodMixin):
     def __sub__(self, other: PeriodIndex) -> Index: ...
     @overload
     def __sub__(self, other: TimedeltaSeries) -> PeriodSeries: ...
+    def __rsub__(self, other: PeriodIndex) -> Index: ...
     @overload
     def __add__(self, other: _PeriodAddSub) -> Period: ...
     @overload
@@ -168,5 +175,5 @@ class Period(PeriodMixin):
     def to_timestamp(
         self,
         freq: str | BaseOffset | None = ...,
-        how: _PeriodFreqHow = ...,
+        how: _PeriodToTimestampHow = ...,
     ) -> Timestamp: ...
