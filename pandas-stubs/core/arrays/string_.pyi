@@ -1,3 +1,7 @@
+from typing import Literal
+
+import numpy as np
+import pandas as pd
 from pandas.core.arrays import PandasArray
 
 from pandas._typing import type_t
@@ -5,12 +9,9 @@ from pandas._typing import type_t
 from pandas.core.dtypes.base import ExtensionDtype
 
 class StringDtype(ExtensionDtype):
-    name: str = ...
-    na_value = ...
+    def __init__(self, storage: Literal["python", "pyarrow"] | None) -> None: ...
     @property
     def type(self) -> type_t: ...
-    @classmethod
-    def construct_array_type(cls) -> type_t[StringArray]: ...
     def __from_arrow__(self, array): ...
 
 class StringArray(PandasArray):
