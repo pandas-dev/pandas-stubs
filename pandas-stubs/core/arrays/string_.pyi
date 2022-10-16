@@ -1,11 +1,9 @@
-from typing import Sequence
-
 import numpy as np
 import pandas as pd
 from pandas.core.arrays import PandasArray
 
 from pandas._typing import (
-    AnyArrayLike,
+    npt,
     type_t,
 )
 
@@ -23,8 +21,9 @@ class StringDtype(ExtensionDtype):
 class StringArray(PandasArray):
     def __init__(
         self,
-        # Also pd.NA and np.nan but not possible it seems
-        values: AnyArrayLike | Sequence[str | None],
+        values: npt.NDArray[np.str_]
+        | npt.NDArray[np.string_]
+        | npt.NDArray[np.object_],
         copy: bool = ...,
     ) -> None: ...
     def __arrow_array__(self, type=...): ...

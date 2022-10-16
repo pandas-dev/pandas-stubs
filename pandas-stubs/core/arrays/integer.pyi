@@ -13,10 +13,7 @@ from pandas.arrays import (
 )
 
 from pandas._libs.missing import NAType
-from pandas._typing import (
-    Dtype,
-    npt,
-)
+from pandas._typing import npt
 
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
 
