@@ -6,7 +6,7 @@ class Period:
     def __init__(
         self,
         value: Any = ...,
-        freqstr: Any = ...,
+        freq: Any = ...,
         ordinal: Any = ...,
         year: Any = ...,
         month: int = ...,

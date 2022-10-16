@@ -14,12 +14,23 @@ from pandas._libs import (
     Timedelta,
     Timestamp,
 )
+from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     TimedeltaConvertibleTypes,
     num,
 )
 
 class TimedeltaIndex(DatetimeTimedeltaMixin, TimedeltaIndexProperties):
+    def __init__(
+        self,
+        data=...,
+        unit: Literal["D", "h", "m", "s", "ms", "us", "ns"] = ...,
+        freq: str | BaseOffset = ...,
+        closed: object = ...,
+        dtype=...,
+        copy: bool = ...,
+        name: str = ...,
+    ): ...
     def __new__(
         cls,
         data=...,
