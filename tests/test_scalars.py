@@ -150,6 +150,7 @@ def test_timestamp() -> None:
             ts > pd.Series([1, 2, 3], dtype="datetime64[ns]"), "pd.Series[bool]"
         ),
         pd.Series,
+        bool,
     )
 
     check(assert_type(dt.datetime(year=2000, month=1, day=1) > ts, bool), bool)
@@ -160,6 +161,7 @@ def test_timestamp() -> None:
             pd.Series([1, 2, 3], dtype="datetime64[ns]") > ts, "pd.Series[bool]"
         ),
         pd.Series,
+        bool,
     )
 
     check(assert_type(ts >= ts, bool), bool)
@@ -174,6 +176,7 @@ def test_timestamp() -> None:
             ts >= pd.Series([1, 2, 3], dtype="datetime64[ns]"), "pd.Series[bool]"
         ),
         pd.Series,
+        bool,
     )
 
     check(assert_type(dt.datetime(year=2000, month=1, day=1) >= ts, bool), bool)
@@ -186,6 +189,7 @@ def test_timestamp() -> None:
             pd.Series([1, 2, 3], dtype="datetime64[ns]") >= ts, "pd.Series[bool]"
         ),
         pd.Series,
+        bool,
     )
 
     check(assert_type(ts < ts, bool), bool)
@@ -198,6 +202,7 @@ def test_timestamp() -> None:
             ts < pd.Series([1, 2, 3], dtype="datetime64[ns]"), "pd.Series[bool]"
         ),
         pd.Series,
+        bool,
     )
 
     check(assert_type(dt.datetime(year=2000, month=1, day=1) < ts, bool), bool)
@@ -208,6 +213,7 @@ def test_timestamp() -> None:
             pd.Series([1, 2, 3], dtype="datetime64[ns]") < ts, "pd.Series[bool]"
         ),
         pd.Series,
+        bool,
     )
 
     check(assert_type(ts <= ts, bool), bool)
@@ -222,6 +228,7 @@ def test_timestamp() -> None:
             ts <= pd.Series([1, 2, 3], dtype="datetime64[ns]"), "pd.Series[bool]"
         ),
         pd.Series,
+        bool,
     )
 
     check(assert_type(dt.datetime(year=2000, month=1, day=1) <= ts, bool), bool)
@@ -234,6 +241,7 @@ def test_timestamp() -> None:
             pd.Series([1, 2, 3], dtype="datetime64[ns]") <= ts, "pd.Series[bool]"
         ),
         pd.Series,
+        bool,
     )
 
     check(assert_type(ts == ts, bool), bool)
@@ -251,6 +259,7 @@ def test_timestamp() -> None:
             ts == pd.Series([1, 2, 3], dtype="datetime64[ns]"), "pd.Series[bool]"
         ),
         pd.Series,
+        bool,
     )
 
     check(assert_type(dt.datetime(year=2000, month=1, day=1) == ts, bool), bool)
@@ -263,6 +272,7 @@ def test_timestamp() -> None:
             pd.Series([1, 2, 3], dtype="datetime64[ns]") == ts, "pd.Series[bool]"
         ),
         pd.Series,
+        bool,
     )
 
     check(assert_type(ts != ts, bool), bool)
@@ -277,6 +287,7 @@ def test_timestamp() -> None:
             ts != pd.Series([1, 2, 3], dtype="datetime64[ns]"), "pd.Series[bool]"
         ),
         pd.Series,
+        bool,
     )
 
     check(assert_type(dt.datetime(year=2000, month=1, day=1) != ts, bool), bool)
@@ -288,6 +299,7 @@ def test_timestamp() -> None:
             pd.Series([1, 2, 3], dtype="datetime64[ns]") != ts, "pd.Series[bool]"
         ),
         pd.Series,
+        bool,
     )
 
     # Failures due to NumPy ops returning Any
