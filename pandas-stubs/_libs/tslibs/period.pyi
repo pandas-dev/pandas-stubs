@@ -1,34 +1,120 @@
-from typing import Any
+import datetime
+from typing import (
+    Literal,
+    Union,
+    overload,
+)
+
+import numpy as np
+from pandas import (
+    Index,
+    PeriodIndex,
+    Timedelta,
+)
+from pandas.core.series import (
+    PeriodSeries,
+    TimedeltaSeries,
+)
+from typing_extensions import TypeAlias
+
+from pandas._typing import npt
+
+from .timestamps import Timestamp
 
 class IncompatibleFrequency(ValueError): ...
 
-class Period:
+from pandas._libs.tslibs.offsets import BaseOffset
+
+_PeriodAddSub: TypeAlias = Union[
+    Timedelta, datetime.timedelta, np.timedelta64, np.int64, int, BaseOffset
+]
+
+_PeriodFreqHow: TypeAlias = Literal[
+    "S",
+    "E",
+    "Start",
+    "Finish",
+    "Begin",
+    "End",
+    "s",
+    "e",
+    "start",
+    "finish",
+    "begin",
+    "end",
+]
+
+class PeriodMixin:
+    @property
+    def end_time(self) -> Timestamp: ...
+    @property
+    def start_time(self) -> Timestamp: ...
+
+class Period(PeriodMixin):
     def __init__(
         self,
-        value: Any = ...,
-        freqstr: Any = ...,
-        ordinal: Any = ...,
-        year: Any = ...,
-        month: int = ...,
-        quarter: Any = ...,
-        day: int = ...,
-        hour: int = ...,
-        minute: int = ...,
-        second: int = ...,
+        value: Period | str | None = ...,
+        freq: str | BaseOffset | None = ...,
+        ordinal: int | None = ...,
+        year: int | None = ...,
+        month: int | None = ...,
+        quarter: int | None = ...,
+        day: int | None = ...,
+        hour: int | None = ...,
+        minute: int | None = ...,
+        second: int | None = ...,
     ) -> None: ...
-    def __add__(self, other) -> Period: ...
-    def __eq__(self, other) -> bool: ...
-    def __ge__(self, other) -> bool: ...
-    def __gt__(self, other) -> bool: ...
+    @overload
+    def __sub__(self, other: _PeriodAddSub) -> Period: ...
+    @overload
+    def __sub__(self, other: Period) -> BaseOffset: ...
+    @overload
+    def __sub__(self, other: PeriodIndex) -> Index: ...
+    @overload
+    def __sub__(self, other: TimedeltaSeries) -> PeriodSeries: ...
+    @overload
+    def __add__(self, other: _PeriodAddSub) -> Period: ...
+    @overload
+    def __add__(self, other: Index) -> PeriodIndex: ...
+    @overload
+    def __add__(self, other: TimedeltaSeries) -> PeriodSeries: ...
+    @overload  # type: ignore[override]
+    def __eq__(self, other: Period) -> bool: ...
+    @overload
+    def __eq__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
+    @overload
+    def __ge__(self, other: Period) -> bool: ...
+    @overload
+    def __ge__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
+    @overload
+    def __gt__(self, other: Period) -> bool: ...
+    @overload
+    def __gt__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
     def __hash__(self) -> int: ...
-    def __le__(self, other) -> bool: ...
-    def __lt__(self, other) -> bool: ...
-    def __new__(cls, *args, **kwargs) -> Period: ...
-    def __ne__(self, other) -> bool: ...
-    def __radd__(self, other) -> Period: ...
-    def __reduce__(self, *args, **kwargs) -> Any: ...  # what should this be?
-    def __rsub__(self, other) -> Period: ...
-    def __setstate__(self, *args, **kwargs) -> Any: ...  # what should this be?
+    @overload
+    def __le__(self, other: Period) -> bool: ...
+    @overload
+    def __le__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
+    @overload
+    def __lt__(self, other: Period) -> bool: ...
+    @overload
+    def __lt__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
+    @overload  # type: ignore[override]
+    def __ne__(self, other: Period) -> bool: ...
+    @overload
+    def __ne__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
+    # Ignored due to indecipherable error from mypy:
+    # Forward operator "__add__" is not callable  [misc]
+    @overload
+    def __radd__(self, other: _PeriodAddSub) -> Period: ...  # type: ignore[misc]
+    # Real signature is -> PeriodIndex, but conflicts with Index.__add__
+    # Changing Index is very hard due to Index inheritance
+    #   Signatures of "__radd__" of "Period" and "__add__" of "Index"
+    #   are unsafely overlapping
+    @overload
+    def __radd__(self, other: Index) -> Index: ...
+    @overload
+    def __radd__(self, other: TimedeltaSeries) -> PeriodSeries: ...
     @property
     def day(self) -> int: ...
     @property
@@ -42,7 +128,7 @@ class Period:
     @property
     def end_time(self) -> Timestamp: ...
     @property
-    def freq(self) -> Any: ...
+    def freq(self) -> BaseOffset: ...
     @property
     def freqstr(self) -> str: ...
     @property
@@ -71,12 +157,16 @@ class Period:
     def weekofyear(self) -> int: ...
     @property
     def year(self) -> int: ...
-    # Static methods
+    @property
+    def day_of_year(self) -> int: ...
+    @property
+    def day_of_week(self) -> int: ...
+    def asfreq(self, freq: str | BaseOffset, how: _PeriodFreqHow = ...) -> Period: ...
     @classmethod
-    def now(cls) -> Period: ...
-    # Methods
-    def asfreq(self, freq: str, how: str = ...) -> Period: ...
+    def now(cls, freq: str | BaseOffset = ...) -> Period: ...
     def strftime(self, fmt: str) -> str: ...
-    def to_timestamp(self, freq: str, how: str = ...) -> Timestamp: ...
-
-from .timestamps import Timestamp
+    def to_timestamp(
+        self,
+        freq: str | BaseOffset | None = ...,
+        how: _PeriodFreqHow = ...,
+    ) -> Timestamp: ...
