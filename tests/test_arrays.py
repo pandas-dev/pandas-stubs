@@ -414,22 +414,52 @@ def test_interval_array_construction() -> None:
 def test_integer_array_attrib_props() -> None:
     ia = IntervalArray([pd.Interval(0, 1), pd.Interval(1, 2)])
 
-    ia.left
-    ia.right
-    ia.closed
-    ia.mid
-    ia.length
-    ia.is_empty
-    ia.is_non_overlapping_monotonic
+    check(assert_type(ia.left, pd.Int64Index), pd.Int64Index)
+    check(assert_type(ia.right, pd.Int64Index), pd.Int64Index)
+    check(assert_type(ia.closed, str), str)
+    check(assert_type(ia.mid, pd.Float64Index), pd.Float64Index)
+    check(assert_type(ia.length, pd.Int64Index), pd.Int64Index)
+    check(assert_type(ia.is_empty, npt.NDArray[np.bool_]), np.ndarray)
+    check(assert_type(ia.is_non_overlapping_monotonic, bool), bool)
 
-    ia.contains(0.5)
-    ia.overlaps(pd.Interval(0.5, 1.0))
-    ia.set_closed("right")
-    ia.set_closed("left")
-    ia.set_closed("both")
-    ia.set_closed("neither")
-    ia.to_tuples(True)
-    ia.to_tuples(False)
+    check(assert_type(ia.contains(0.5), npt.NDArray[np.bool_]), np.ndarray)
+    check(
+        assert_type(ia.overlaps(pd.Interval(0.5, 1.0)), npt.NDArray[np.bool_]),
+        np.ndarray,
+    )
+    check(assert_type(ia.set_closed("right"), IntervalArray), IntervalArray)
+    check(assert_type(ia.set_closed("left"), IntervalArray), IntervalArray)
+    check(assert_type(ia.set_closed("both"), IntervalArray), IntervalArray)
+    check(assert_type(ia.set_closed("neither"), IntervalArray), IntervalArray)
+    check(assert_type(ia.to_tuples(True), npt.NDArray[np.object_]), np.ndarray)
+    check(assert_type(ia.to_tuples(False), npt.NDArray[np.object_]), np.ndarray)
+
+    ia_float = IntervalArray([pd.Interval(0, 1.5), pd.Interval(1, 2)])
+    check(assert_type(ia_float.left, pd.Float64Index), pd.Float64Index)
+    check(assert_type(ia_float.right, pd.Float64Index), pd.Float64Index)
+    check(assert_type(ia_float.length, pd.Float64Index), pd.Float64Index)
+
+    ia_ts = IntervalArray(
+        [
+            pd.Interval(pd.Timestamp("2018-01-01"), pd.Timestamp("2018-01-02")),
+            pd.Interval(pd.Timestamp("2018-01-02"), pd.Timestamp("2018-01-03")),
+        ]
+    )
+    check(assert_type(ia_ts.left, pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(ia_ts.right, pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(ia_ts.mid, pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(ia_ts.length, pd.TimedeltaIndex), pd.TimedeltaIndex)
+
+    ia_td = IntervalArray(
+        [
+            pd.Interval(pd.Timedelta("1 days"), pd.Timedelta("2 days")),
+            pd.Interval(pd.Timedelta("2 days"), pd.Timedelta("3 days")),
+        ]
+    )
+    check(assert_type(ia_td.left, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(ia_td.right, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(ia_td.mid, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(ia_td.length, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
 
 def test_timedelta_array() -> None:
