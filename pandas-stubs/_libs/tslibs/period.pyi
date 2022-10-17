@@ -10,6 +10,7 @@ from pandas import (
     Index,
     PeriodIndex,
     Timedelta,
+    TimedeltaIndex,
 )
 from pandas.core.series import (
     PeriodSeries,
@@ -17,6 +18,7 @@ from pandas.core.series import (
 )
 from typing_extensions import TypeAlias
 
+from pandas._libs.tslibs import NaTType
 from pandas._typing import npt
 
 from .timestamps import Timestamp
@@ -75,12 +77,18 @@ class Period(PeriodMixin):
     @overload
     def __sub__(self, other: Period) -> BaseOffset: ...
     @overload
+    def __sub__(self, other: NaTType) -> NaTType: ...
+    @overload
     def __sub__(self, other: PeriodIndex) -> Index: ...
     @overload
     def __sub__(self, other: TimedeltaSeries) -> PeriodSeries: ...
+    @overload
+    def __sub__(self, other: TimedeltaIndex) -> PeriodIndex: ...
     def __rsub__(self, other: PeriodIndex) -> Index: ...
     @overload
     def __add__(self, other: _PeriodAddSub) -> Period: ...
+    @overload
+    def __add__(self, other: NaTType) -> NaTType: ...
     @overload
     def __add__(self, other: Index) -> PeriodIndex: ...
     @overload
@@ -122,6 +130,8 @@ class Period(PeriodMixin):
     def __radd__(self, other: Index) -> Index: ...
     @overload
     def __radd__(self, other: TimedeltaSeries) -> PeriodSeries: ...
+    @overload
+    def __radd__(self, other: NaTType) -> NaTType: ...
     @property
     def day(self) -> int: ...
     @property

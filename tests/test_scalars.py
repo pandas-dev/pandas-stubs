@@ -11,22 +11,27 @@ import numpy as np
 import pandas as pd
 from typing_extensions import assert_type
 
-from pandas._libs.tslibs import BaseOffset
+from pandas._libs.tslibs import (
+    BaseOffset,
+    NaTType,
+)
 
 if TYPE_CHECKING:
-    from pandas.core.series import PeriodSeries  # noqa: F401
-    from pandas.core.series import TimedeltaSeries  # noqa: F401
+    from pandas.core.series import (
+        PeriodSeries,
+        TimedeltaSeries,
+    )
 
     from pandas._typing import np_ndarray_bool
 else:
-    np_ndarray_bool = Any
+    PeriodSeries = TimedeltaSeries = np_ndarray_bool = Any
 
 from tests import check
 
 from pandas.tseries.offsets import Day
 
 
-def test_period() -> None:
+def test_period_construction() -> None:
     p = pd.Period("2012-1-1", freq="D")
     check(assert_type(p, pd.Period), pd.Period)
     check(assert_type(pd.Period(p), pd.Period), pd.Period)
@@ -53,6 +58,11 @@ def test_period() -> None:
         pd.Period,
     )
     check(assert_type(pd.Period(freq="Q", year=2012, quarter=2), pd.Period), pd.Period)
+
+
+def test_period_properties() -> None:
+    p = pd.Period("2012-1-1", freq="D")
+
     check(assert_type(p.day, int), int)
     check(assert_type(p.day_of_week, int), int)
     check(assert_type(p.day_of_year, int), int)
@@ -80,6 +90,10 @@ def test_period() -> None:
     p2 = pd.Period("2012-1-1", freq="2D")
     check(assert_type(p2.freq, BaseOffset), Day)
 
+
+def test_periof_add_subtract() -> None:
+    p = pd.Period("2012-1-1", freq="D")
+
     as0 = pd.Timedelta(1, "D")
     as1 = dt.timedelta(days=1)
     as2 = np.timedelta64(1, "D")
@@ -87,8 +101,11 @@ def test_period() -> None:
     as4 = int(1)
     as5 = pd.period_range("2012-1-1", periods=10, freq="D")
     as6 = pd.Period("2012-1-1", freq="D")
-    as7 = cast("TimedeltaSeries", pd.Series([pd.Timedelta(days=1)]))
-    as8 = cast("PeriodSeries", pd.Series([as6]))
+    scale = 24 * 60 * 60 * 10**9
+    as7 = cast(TimedeltaSeries, pd.Series(pd.timedelta_range(scale, scale, freq="D")))
+    as8 = pd.Series(as5)
+    as9 = pd.timedelta_range(scale, scale, freq="D")
+    as10 = pd.NaT
 
     check(assert_type(p + as0, pd.Period), pd.Period)
     check(assert_type(p + as1, pd.Period), pd.Period)
@@ -97,9 +114,11 @@ def test_period() -> None:
     check(assert_type(p + as4, pd.Period), pd.Period)
     check(assert_type(p + p.freq, pd.Period), pd.Period)
     check(assert_type(p + (p - as5), pd.PeriodIndex), pd.PeriodIndex)
-    check(assert_type(p + as7, "PeriodSeries"), pd.Series)
-    das8 = cast("TimedeltaSeries", (as8 - as8))
-    check(assert_type(p + das8, "PeriodSeries"), pd.Series)
+    check(assert_type(p + as7, PeriodSeries), pd.Series, pd.Period)
+    check(assert_type(p + as9, pd.PeriodIndex), pd.PeriodIndex)
+    check(assert_type(p + as10, NaTType), NaTType)
+    das8 = cast(TimedeltaSeries, (as8 - as8))
+    check(assert_type(p + das8, PeriodSeries), pd.Series, pd.Period)
     check(assert_type(p - as0, pd.Period), pd.Period)
     check(assert_type(p - as1, pd.Period), pd.Period)
     check(assert_type(p - as2, pd.Period), pd.Period)
@@ -107,7 +126,9 @@ def test_period() -> None:
     check(assert_type(p - as4, pd.Period), pd.Period)
     check(assert_type(p - as5, pd.Index), pd.Index)
     check(assert_type(p - as6, BaseOffset), Day)
-    check(assert_type(p - as7, "PeriodSeries"), pd.Series)
+    check(assert_type(p - as7, PeriodSeries), pd.Series, pd.Period)
+    check(assert_type(p - as9, pd.PeriodIndex), pd.PeriodIndex)
+    check(assert_type(p - as10, NaTType), NaTType)
     check(assert_type(p - p.freq, pd.Period), pd.Period)
 
     check(assert_type(as0 + p, pd.Period), pd.Period)
@@ -115,7 +136,10 @@ def test_period() -> None:
     check(assert_type(as2 + p, pd.Period), pd.Period)
     check(assert_type(as3 + p, pd.Period), pd.Period)
     check(assert_type(as4 + p, pd.Period), pd.Period)
-    check(assert_type(as7 + p, "PeriodSeries"), pd.Series)
+    check(assert_type(as7 + p, PeriodSeries), pd.Series, pd.Period)
+    # TODO: Improve Index to not handle __add__(period)
+    check(assert_type(as9 + p, pd.Index), pd.PeriodIndex)
+    check(assert_type(as10 + p, NaTType), NaTType)
     check(assert_type(p.freq + p, pd.Period), pd.Period)
 
     check(assert_type(as5 - p, pd.Index), pd.Index)
@@ -125,41 +149,66 @@ def test_period() -> None:
     check(assert_type(p.__radd__(as2), pd.Period), pd.Period)
     check(assert_type(p.__radd__(as3), pd.Period), pd.Period)
     check(assert_type(p.__radd__(as4), pd.Period), pd.Period)
+    check(assert_type(p.__radd__(as10), NaTType), NaTType)
     check(assert_type(p.__radd__(p.freq), pd.Period), pd.Period)
+
+
+def test_period_cmp() -> None:
+    p = pd.Period("2012-1-1", freq="D")
 
     c0 = pd.Period("2012-1-1", freq="D")
     c1 = pd.period_range("2012-1-1", periods=10, freq="D")
 
-    check(assert_type(p == c0, bool), bool)
-    check(assert_type(p == c1, np_ndarray_bool), np.ndarray)
-    check(assert_type(c0 == p, bool), bool)
-    check(assert_type(c1 == p, np_ndarray_bool), np.ndarray)
+    eq = check(assert_type(p == c0, bool), bool)
+    ne = check(assert_type(p != c0, bool), bool)
+    assert eq != ne
 
-    check(assert_type(p != c0, bool), bool)
-    check(assert_type(p != c1, np_ndarray_bool), np.ndarray)
-    check(assert_type(c0 != p, bool), bool)
-    check(assert_type(c1 != p, np_ndarray_bool), np.ndarray)
+    eq_a = check(assert_type(p == c1, np_ndarray_bool), np.ndarray)
+    ne_q = check(assert_type(p != c1, np_ndarray_bool), np.ndarray)
+    assert (eq_a != ne_q).all()
 
-    check(assert_type(p > c0, bool), bool)
-    check(assert_type(p > c1, np_ndarray_bool), np.ndarray)
-    check(assert_type(c0 > p, bool), bool)
-    check(assert_type(c1 > p, np_ndarray_bool), np.ndarray)
+    eq = check(assert_type(c0 == p, bool), bool)
+    ne = check(assert_type(c0 != p, bool), bool)
+    assert eq != ne
 
-    check(assert_type(p < c0, bool), bool)
-    check(assert_type(p < c1, np_ndarray_bool), np.ndarray)
-    check(assert_type(c0 < p, bool), bool)
-    check(assert_type(c1 < p, np_ndarray_bool), np.ndarray)
+    eq_a = check(assert_type(c1 == p, np_ndarray_bool), np.ndarray)
+    ne_a = check(assert_type(c1 != p, np_ndarray_bool), np.ndarray)
+    assert (eq_a != ne_q).all()
 
-    check(assert_type(p <= c0, bool), bool)
-    check(assert_type(p <= c1, np_ndarray_bool), np.ndarray)
-    check(assert_type(c0 <= p, bool), bool)
-    check(assert_type(c1 <= p, np_ndarray_bool), np.ndarray)
+    gt = check(assert_type(p > c0, bool), bool)
+    le = check(assert_type(p <= c0, bool), bool)
+    assert gt != le
 
-    check(assert_type(p >= c0, bool), bool)
-    check(assert_type(p >= c1, np_ndarray_bool), np.ndarray)
-    check(assert_type(c0 >= p, bool), bool)
-    check(assert_type(c1 >= p, np_ndarray_bool), np.ndarray)
+    gt_a = check(assert_type(p > c1, np_ndarray_bool), np.ndarray)
+    le_a = check(assert_type(p <= c1, np_ndarray_bool), np.ndarray)
+    assert (gt_a != le_a).all()
 
+    gt = check(assert_type(c0 > p, bool), bool)
+    le = check(assert_type(c0 <= p, bool), bool)
+    assert gt != le
+
+    gt_a = check(assert_type(c1 > p, np_ndarray_bool), np.ndarray)
+    le_a = check(assert_type(c1 <= p, np_ndarray_bool), np.ndarray)
+    assert (gt_a != le_a).all()
+
+    lt = check(assert_type(p < c0, bool), bool)
+    ge = check(assert_type(p >= c0, bool), bool)
+    assert lt != ge
+
+    lt_a = check(assert_type(p < c1, np_ndarray_bool), np.ndarray)
+    ge_a = check(assert_type(p >= c1, np_ndarray_bool), np.ndarray)
+    assert (lt_a != ge_a).all()
+
+    lt = check(assert_type(c0 < p, bool), bool)
+    ge = check(assert_type(c0 >= p, bool), bool)
+    assert lt != ge
+
+    lt_a = check(assert_type(c1 < p, np_ndarray_bool), np.ndarray)
+    ge_a = check(assert_type(c1 >= p, np_ndarray_bool), np.ndarray)
+    assert (lt_a != ge_a).all()
+
+
+def test_period_methods():
     p3 = pd.Period("2007-01", freq="M")
     check(assert_type(p3.to_timestamp("D", "S"), pd.Timestamp), pd.Timestamp)
     check(assert_type(p3.to_timestamp("D", "E"), pd.Timestamp), pd.Timestamp)
@@ -181,5 +230,5 @@ def test_period() -> None:
     check(assert_type(pd.Period.now("D"), pd.Period), pd.Period)
     check(assert_type(pd.Period.now(Day()), pd.Period), pd.Period)
 
-    check(assert_type(p.strftime("%Y-%m-%d"), str), str)
-    check(assert_type(hash(p), int), int)
+    check(assert_type(p3.strftime("%Y-%m-%d"), str), str)
+    check(assert_type(hash(p3), int), int)
