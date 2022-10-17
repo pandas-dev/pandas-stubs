@@ -14,17 +14,23 @@ import pandas as pd
 import pytest
 from typing_extensions import assert_type
 
+from pandas._libs.tslibs import NaTType
 from pandas._libs.tslibs.timedeltas import Components
 
 if TYPE_CHECKING:
-    from pandas.core.series import TimedeltaSeries  # noqa: F401
-    from pandas.core.series import TimestampSeries  # noqa: F401
+    from pandas.core.series import (
+        TimedeltaSeries,
+        TimestampSeries,
+    )
 
     from pandas._typing import np_ndarray_bool
 else:
     TimedeltaSeries = TimestampSeries = np_ndarray_bool = Any
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 from pandas.tseries.offsets import Day
 
@@ -163,6 +169,7 @@ def test_timedelta_add_sub() -> None:
     as11 = pd.date_range("2012-01-01", periods=3)
     as12 = ndarray_td64
     as13 = ndarray_dt64
+    as14 = pd.NaT
 
     check(assert_type(td + td, pd.Timedelta), pd.Timedelta)
     check(assert_type(td + as1, pd.Period), pd.Period)
@@ -185,6 +192,7 @@ def test_timedelta_add_sub() -> None:
         ),
         np.ndarray,
     )
+    check(assert_type(td + as14, NaTType), NaTType)
 
     check(assert_type(as1 + td, pd.Period), pd.Period)
     check(assert_type(as2 + td, pd.Timestamp), pd.Timestamp)
@@ -210,6 +218,7 @@ def test_timedelta_add_sub() -> None:
         ),
         np.ndarray,
     )
+    check(assert_type(as14 + td, NaTType), NaTType)
 
     # sub is not symmetric with dates. In general date_like - timedelta is
     # sensible, while timedelta - date_like is not
@@ -220,7 +229,7 @@ def test_timedelta_add_sub() -> None:
     check(assert_type(td - as8, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(td - as9, pd.Series), pd.Series)
     check(assert_type(td - as12, npt.NDArray[np.timedelta64]), np.ndarray)
-
+    check(assert_type(td - as14, NaTType), NaTType)
     check(assert_type(as1 - td, pd.Period), pd.Period)
     check(assert_type(as2 - td, pd.Timestamp), pd.Timestamp)
     check(assert_type(as3 - td, dt.datetime), dt.datetime)
@@ -256,6 +265,7 @@ def test_timedelta_add_sub() -> None:
         ),
         np.ndarray,
     )
+    check(assert_type(as14 - td, NaTType), NaTType)
 
 
 def test_timedelta_mul_div() -> None:
@@ -303,6 +313,7 @@ def test_timedelta_mul_div() -> None:
     check(assert_type(md8 * td, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
     check(assert_type(td // td, int), int)
+    check(assert_type(td // pd.NaT, float), float)
     check(assert_type(td // md1, pd.Timedelta), pd.Timedelta)
     check(assert_type(td // md2, pd.Timedelta), pd.Timedelta)
     check(assert_type(td // md3, npt.NDArray[np.timedelta64]), np.ndarray)
@@ -312,10 +323,21 @@ def test_timedelta_mul_div() -> None:
     check(assert_type(td // md7, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(td // md8, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
+    check(assert_type(pd.NaT // td, float), float)
     # Note: None of the reverse floordiv work
     # TypeError: md1, md2, md3, md4, md5, md6, md7, md8
+    if TYPE_CHECKING_INVALID_USAGE:
+        md1 // td  # type: ignore[operator]
+        md2 // td  # type: ignore[operator]
+        md3 // td  # type: ignore[operator]
+        md4 // td  # type: ignore[operator]
+        md5 // td  # type: ignore[operator]
+        md6 // td  # type: ignore[operator]
+        md7 // td  # type: ignore[operator]
+        md8 // td  # type: ignore[operator]
 
     check(assert_type(td / td, float), float)
+    check(assert_type(td / pd.NaT, float), float)
     check(assert_type(td / md1, pd.Timedelta), pd.Timedelta)
     check(assert_type(td / md2, pd.Timedelta), pd.Timedelta)
     check(assert_type(td / md3, npt.NDArray[np.timedelta64]), np.ndarray)
@@ -325,8 +347,20 @@ def test_timedelta_mul_div() -> None:
     check(assert_type(td / md7, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(td / md8, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
+    check(assert_type(pd.NaT / td, float), float)
     # Note: None of the reverse truediv work
     # TypeError: md1, md2, md3, md4, md5, md6, md7, md8
+    if TYPE_CHECKING_INVALID_USAGE:
+        md1 / td  # type: ignore[operator]
+        md2 / td  # type: ignore[operator]
+        md3 / td  # type: ignore[operator]
+        md4 / td  # type: ignore[operator]
+        # TODO: Series.__truediv__ says it supports Timedelta
+        #   it does not, in general, except for TimedeltaSeries
+        # md5 / td  # type: ignore[operator]
+        # md6 / td  # type: ignore[operator]
+        md7 / td  # type: ignore[operator]
+        md8 / td  # type: ignore[operator]
 
 
 def test_timedelta_mod_abs_unary() -> None:
@@ -346,8 +380,10 @@ def test_timedelta_mod_abs_unary() -> None:
         assert_type(td % np.array([1.2, 2.2, 3.4]), npt.NDArray[np.timedelta64]),
         np.ndarray,
     )
-    check(assert_type(td % pd.Series([1, 2, 3]), pd.Series), pd.Series)
-    check(assert_type(td % pd.Series([1.2, 2.2, 3.4]), pd.Series), pd.Series)
+    int_series = pd.Series([1, 2, 3], dtype=int)
+    float_series = pd.Series([1.2, 2.2, 3.4], dtype=float)
+    check(assert_type(td % int_series, TimedeltaSeries), pd.Series)
+    check(assert_type(td % float_series, TimedeltaSeries), pd.Series)
     check(assert_type(td % i_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
     check(
