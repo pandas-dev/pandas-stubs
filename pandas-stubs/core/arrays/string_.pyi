@@ -4,14 +4,10 @@ import numpy as np
 import pandas as pd
 from pandas.core.arrays import PandasArray
 
-from pandas._typing import type_t
-
 from pandas.core.dtypes.base import ExtensionDtype
 
 class StringDtype(ExtensionDtype):
     def __init__(self, storage: Literal["python", "pyarrow"] | None) -> None: ...
-    @property
-    def type(self) -> type_t: ...
     def __from_arrow__(self, array): ...
 
 class StringArray(PandasArray):
