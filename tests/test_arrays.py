@@ -499,6 +499,64 @@ def test_timedelta_array() -> None:
     check(assert_type(pd.array(tdi), Type[ExtensionArray]), TimedeltaArray)
     check(assert_type(pd.array(tds, copy=False), Type[ExtensionArray]), TimedeltaArray)
 
+    # check(assert_type(tda.microseconds,npt.NDArray[np.int_]), np.ndarray)
+    # check(assert_type(tda.nanoseconds,npt.NDArray[np.int_]), np.ndarray)
+    # check(assert_type(tda.days,npt.NDArray[np.int_]), np.ndarray)
+    # check(assert_type(tda.seconds,npt.NDArray[np.int_]), np.ndarray)
+    #
+    # all
+    # any
+    # check(assert_type(tda.argmax(), int), int)
+    # check(assert_type(tda.argmin(), int), int)
+    # check(assert_type(argsort, npt.NDArray[npt.intp]), np.ndarray)
+    # check(assert_type(tda.asi8, npt.NDArray[npt.intp]), np.ndarray)
+    #
+    # astype
+    # ceil
+    # components
+    # copy
+    # delete
+    # dropna
+    # dtype
+    # equals
+    # factorize
+    # fillna
+    # floor
+    # freq
+    # freqstr
+    # inferred_freq
+    # insert
+    # isin
+    # isna
+    # map
+    # max
+    # mean
+    # median
+    # min
+    # nbytes
+    # ndim
+    # ravel
+    # repeat
+    # reshape
+    # resolution
+    # round
+    # searchsorted
+    # shape
+    # shift
+    # size
+    # std
+    # sum
+    # swapaxes
+    # take
+    # check(assert_type(tda.to_numpy(), npt.NDArray[np.timedelta64]), np.ndarray)
+    # check(assert_type(tda.to_pytimedelta(), npt.NDArray[np.object_]), np.ndarray)
+    # tsa.tolist()
+    # check(assert_type(tda.total_seconds(), npt.NDArray[np.float64]),np.ndarray)
+    # transpose
+    # unique
+    # value_counts
+    # view
+
 
 def test_sparse_array() -> None:
     ints = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]

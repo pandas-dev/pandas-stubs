@@ -48,7 +48,10 @@ class BooleanArray(BaseMaskedArray):
     def __setitem__(
         self,
         key: _ArrayKey,
-        value: _ScalarType | Sequence[bool | NAType | None] | npt.NDArray[np.bool_],
+        value: _ScalarType
+        | Sequence[bool | NAType | None]
+        | npt.NDArray[np.bool_]
+        | BooleanArray,
     ) -> None: ...
     @overload  # type: ignore[override]
     def __getitem__(self, item: int) -> bool | NAType: ...
