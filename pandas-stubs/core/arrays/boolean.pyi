@@ -1,11 +1,24 @@
 import numpy as np
 
+from pandas._typing import (
+    Scalar,
+    type_t,
+)
+
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
 
 from .masked import BaseMaskedArray as BaseMaskedArray
 
 class BooleanDtype(ExtensionDtype):
     name: str = ...
+    @property
+    def na_value(self) -> Scalar: ...
+    @property
+    def type(self) -> type_t: ...
+    @property
+    def kind(self) -> str: ...
+    @classmethod
+    def construct_array_type(cls) -> type_t[BooleanArray]: ...
     def __from_arrow__(self, array): ...
 
 def coerce_to_array(values, mask=..., copy: bool = ...): ...
