@@ -1737,6 +1737,10 @@ class TimestampSeries(Series[Timestamp]):
 
 class TimedeltaSeries(Series[Timedelta]):
     # ignores needed because of mypy
+    @overload  # type: ignore[override]
+    def __add__(self, other: Period) -> PeriodSeries: ...
+    @overload
+    def __add__(self, other: Timestamp | DatetimeIndex) -> TimestampSeries: ...
     def __radd__(self, pther: Timestamp | TimestampSeries) -> TimestampSeries: ...  # type: ignore[override]
     def __mul__(self, other: num) -> TimedeltaSeries: ...  # type: ignore[override]
     def __sub__(  # type: ignore[override]

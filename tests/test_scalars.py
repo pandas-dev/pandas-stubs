@@ -97,7 +97,7 @@ def test_period_properties() -> None:
     check(assert_type(p2.freq, BaseOffset), Day)
 
 
-def test_periof_add_subtract() -> None:
+def test_period_add_subtract() -> None:
     p = pd.Period("2012-1-1", freq="D")
 
     as_pd_td = pd.Timedelta(1, "D")
@@ -143,26 +143,35 @@ def test_periof_add_subtract() -> None:
     check(assert_type(p - as_nat, NaTType), NaTType)
     check(assert_type(p - p.freq, pd.Period), pd.Period)
 
+    # The __radd__ and __rsub__ methods are included to
+    # establish the location of the concrete implementation
+    # Those missing are using the __add__ of the other class
     check(assert_type(as_pd_td + p, pd.Period), pd.Period)
+    check(assert_type(p.__radd__(as_pd_td), pd.Period), pd.Period)
+
     check(assert_type(as_dt_td + p, pd.Period), pd.Period)
+    check(assert_type(p.__radd__(as_dt_td), pd.Period), pd.Period)
+
     check(assert_type(as_np_td + p, pd.Period), pd.Period)
+    check(assert_type(p.__radd__(as_np_td), pd.Period), pd.Period)
+
     check(assert_type(as_np_i64 + p, pd.Period), pd.Period)
+    check(assert_type(p.__radd__(as_np_i64), pd.Period), pd.Period)
+
     check(assert_type(as_int + p, pd.Period), pd.Period)
+    check(assert_type(p.__radd__(as_int), pd.Period), pd.Period)
+
     check(assert_type(as_td_series + p, PeriodSeries), pd.Series, pd.Period)
-    # TODO: Improve Index to not handle __add__(period)
-    check(assert_type(as_timedelta_idx + p, pd.Index), pd.PeriodIndex)
+
+    check(assert_type(as_timedelta_idx + p, pd.PeriodIndex), pd.PeriodIndex)
+
     check(assert_type(as_nat + p, NaTType), NaTType)
+    check(assert_type(p.__radd__(as_nat), NaTType), NaTType)
+
     check(assert_type(p.freq + p, pd.Period), pd.Period)
+    check(assert_type(p.__radd__(p.freq), pd.Period), pd.Period)
 
     check(assert_type(as_period_index - p, pd.Index), pd.Index)
-
-    check(assert_type(p.__radd__(as_pd_td), pd.Period), pd.Period)
-    check(assert_type(p.__radd__(as_dt_td), pd.Period), pd.Period)
-    check(assert_type(p.__radd__(as_np_td), pd.Period), pd.Period)
-    check(assert_type(p.__radd__(as_np_i64), pd.Period), pd.Period)
-    check(assert_type(p.__radd__(as_int), pd.Period), pd.Period)
-    check(assert_type(p.__radd__(as_nat), NaTType), NaTType)
-    check(assert_type(p.__radd__(p.freq), pd.Period), pd.Period)
 
 
 def test_period_cmp() -> None:
