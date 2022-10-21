@@ -25,6 +25,7 @@ from pandas._typing import (
     FillnaOptions,
     IntervalClosedType,
     Label,
+    np_ndarray_bool,
     npt,
 )
 
@@ -122,6 +123,30 @@ class IntervalIndex(IntervalMixin, ExtensionIndex):
     def get_value(self, series: ABCSeries, key): ...
     @property
     def is_all_dates(self) -> bool: ...
+    @overload  # type: ignore[override]
+    def __gt__(self, other: Interval | IntervalIndex) -> np_ndarray_bool: ...  # type: ignore[misc]
+    @overload
+    def __gt__(self, other: object) -> bool: ...
+    @overload  # type: ignore[override]
+    def __ge__(self, other: Interval | IntervalIndex) -> np_ndarray_bool: ...  # type: ignore[misc]
+    @overload
+    def __ge__(self, other: object) -> bool: ...
+    @overload  # type: ignore[override]
+    def __le__(self, other: Interval | IntervalIndex) -> np_ndarray_bool: ...  # type: ignore[misc]
+    @overload
+    def __le__(self, other: object) -> bool: ...
+    @overload  # type: ignore[override]
+    def __lt__(self, other: Interval | IntervalIndex) -> np_ndarray_bool: ...  # type: ignore[misc]
+    @overload
+    def __lt__(self, other: object) -> bool: ...
+    @overload  # type: ignore[override]
+    def __eq__(self, other: Interval | IntervalIndex) -> np_ndarray_bool: ...  # type: ignore[misc]
+    @overload
+    def __eq__(self, other: object) -> bool: ...
+    @overload  # type: ignore[override]
+    def __ne__(self, other: Interval | IntervalIndex) -> np_ndarray_bool: ...  # type: ignore[misc]
+    @overload
+    def __ne__(self, other: object) -> bool: ...
 
 @overload
 def interval_range(
