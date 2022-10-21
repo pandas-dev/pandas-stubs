@@ -13,6 +13,7 @@ from pandas import (
     TimedeltaIndex,
 )
 from pandas.core.series import (
+    OffsetSeries,
     PeriodSeries,
     TimedeltaSeries,
 )
@@ -91,7 +92,7 @@ class Period(PeriodMixin):
     @overload
     def __add__(self, other: Index) -> PeriodIndex: ...
     @overload
-    def __add__(self, other: TimedeltaSeries) -> PeriodSeries: ...
+    def __add__(self, other: OffsetSeries | TimedeltaSeries) -> PeriodSeries: ...
     @overload  # type: ignore[override]
     def __eq__(self, other: Period) -> bool: ...
     @overload

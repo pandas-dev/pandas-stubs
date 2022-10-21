@@ -1,4 +1,7 @@
-from typing import Hashable
+from typing import (
+    Hashable,
+    overload,
+)
 
 import numpy as np
 import pandas as pd
@@ -7,6 +10,7 @@ from pandas.core.indexes.datetimelike import (
     DatetimeIndexOpsMixin as DatetimeIndexOpsMixin,
 )
 from pandas.core.indexes.numeric import Int64Index
+from pandas.core.series import OffsetSeries
 
 from pandas._libs.tslibs import (
     BaseOffset,
@@ -28,8 +32,11 @@ class PeriodIndex(DatetimeIndexOpsMixin, Int64Index):
     @property
     def values(self): ...
     def __contains__(self, key) -> bool: ...
-    # Override due to supertpye incompatibility which has it for NumericIndex or complex.
-    def __sub__(self, other: Period) -> Index: ...  # type: ignore[override]
+    # Override due to supertype incompatibility which has it for NumericIndex or complex.
+    @overload  # type: ignore[override]
+    def __sub__(self, other: Period) -> Index: ...
+    @overload
+    def __sub__(self, other: PeriodIndex) -> OffsetSeries: ...
     def __array__(self, dtype=...) -> np.ndarray: ...
     def __array_wrap__(self, result, context=...): ...
     def asof_locs(self, where, mask): ...

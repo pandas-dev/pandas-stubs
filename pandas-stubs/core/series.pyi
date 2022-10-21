@@ -194,7 +194,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         name: Hashable | None = ...,
         copy: bool = ...,
         fastpath: bool = ...,
-    ) -> Series[Period]: ...
+    ) -> PeriodSeries: ...
     @overload
     def __new__(
         cls,
@@ -1749,3 +1749,10 @@ class PeriodSeries(Series[Period]):
     # ignore needed because of mypy
     @property
     def dt(self) -> PeriodProperties: ...  # type: ignore[override]
+    def __sub__(self, other: PeriodSeries) -> OffsetSeries: ...  # type: ignore[override]
+
+class OffsetSeries(Series):
+    @overload  # type: ignore[override]
+    def __radd__(self, other: Period) -> PeriodSeries: ...
+    @overload
+    def __radd__(self, other: BaseOffset) -> OffsetSeries: ...
