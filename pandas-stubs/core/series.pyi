@@ -188,6 +188,16 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def __new__(
         cls,
+        data: TimedeltaIndex,
+        index: Axes | None = ...,
+        dtype=...,
+        name: Hashable | None = ...,
+        copy: bool = ...,
+        fastpath: bool = ...,
+    ) -> TimedeltaSeries: ...
+    @overload
+    def __new__(
+        cls,
         data: PeriodIndex,
         index: Axes | None = ...,
         dtype=...,
