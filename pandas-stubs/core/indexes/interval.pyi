@@ -1,9 +1,11 @@
 import datetime as dt
 from typing import (
     Any,
+    Generic,
     Hashable,
     Literal,
     Sequence,
+    TypeVar,
     Union,
     overload,
 )
@@ -12,11 +14,15 @@ import numpy as np
 import pandas as pd
 from pandas import Index
 from pandas.core.indexes.extension import ExtensionIndex
+from pandas.core.series import (
+    TimedeltaSeries,
+    TimestampSeries,
+)
 from typing_extensions import TypeAlias
 
 from pandas._libs.interval import (
     Interval as Interval,
-    IntervalMixin as IntervalMixin,
+    IntervalMixin,
 )
 from pandas._libs.tslibs.offsets import DateOffset
 from pandas._typing import (
@@ -25,6 +31,7 @@ from pandas._typing import (
     FillnaOptions,
     IntervalClosedType,
     Label,
+    TimedeltaConvertibleTypes,
     np_ndarray_bool,
     npt,
 )
@@ -32,49 +39,136 @@ from pandas._typing import (
 from pandas.core.dtypes.dtypes import IntervalDtype as IntervalDtype
 from pandas.core.dtypes.generic import ABCSeries
 
-_Edges: TypeAlias = Union[
+_EdgesInt: TypeAlias = Union[
     Sequence[int],
-    Sequence[float],
-    Sequence[DatetimeLike],
-    npt.NDArray[np.int_],
-    npt.NDArray[np.float_],
-    npt.NDArray[np.datetime64],
+    npt.NDArray[np.int64],
+    npt.NDArray[np.int32],
+    npt.NDArray[np.intp],
     pd.Series[int],
-    pd.Series[float],
-    pd.Series[pd.Timestamp],
     pd.Int64Index,
-    pd.DatetimeIndex,
+]
+_EdgesFloat: TypeAlias = Union[
+    Sequence[float] | npt.NDArray[np.float64] | pd.Series[float] | pd.Float64Index,
+]
+_EdgesTimestamp: TypeAlias = Union[
+    Sequence[DatetimeLike]
+    | npt.NDArray[np.datetime64]
+    | pd.Series[pd.Timestamp]
+    | TimestampSeries
+    | pd.DatetimeIndex
+]
+_EdgesTimedelta: TypeAlias = Union[
+    Sequence[pd.Timedelta]
+    | npt.NDArray[np.timedelta64]
+    | pd.Series[pd.Timedelta]
+    | TimedeltaSeries
+    | pd.TimedeltaIndex
 ]
 
-class IntervalIndex(IntervalMixin, ExtensionIndex):
+_IntervalT = TypeVar(
+    "_IntervalT",
+    Interval[int],
+    Interval[float],
+    Interval[pd.Timestamp],
+    Interval[pd.Timedelta],
+)
+
+class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[_IntervalT]):
     def __new__(
         cls,
-        data,
+        data: Sequence[_IntervalT],
         closed: IntervalClosedType = ...,
         dtype: IntervalDtype | None = ...,
         copy: bool = ...,
         name: Hashable = ...,
         verify_integrity: bool = ...,
-    ): ...
+    ) -> IntervalIndex[_IntervalT]: ...
+    # ignore[misc] here due to overlap, e.g., Sequence[int] and Sequence[float]
+    @overload
+    @classmethod
+    def from_breaks(  # type:ignore[misc]
+        cls,
+        breaks: _EdgesInt,
+        closed: IntervalClosedType = ...,
+        name: Hashable = ...,
+        copy: bool = ...,
+        dtype: IntervalDtype | None = ...,
+    ) -> IntervalIndex[Interval[int]]: ...
+    @overload
     @classmethod
     def from_breaks(
         cls,
-        breaks: _Edges,
+        breaks: _EdgesFloat,
         closed: IntervalClosedType = ...,
         name: Hashable = ...,
         copy: bool = ...,
         dtype: IntervalDtype | None = ...,
-    ) -> IntervalIndex: ...
+    ) -> IntervalIndex[Interval[float]]: ...
+    @overload
+    @classmethod
+    def from_breaks(
+        cls,
+        breaks: _EdgesTimestamp,
+        closed: IntervalClosedType = ...,
+        name: Hashable = ...,
+        copy: bool = ...,
+        dtype: IntervalDtype | None = ...,
+    ) -> IntervalIndex[Interval[pd.Timestamp]]: ...
+    @overload
+    @classmethod
+    def from_breaks(
+        cls,
+        breaks: _EdgesTimedelta,
+        closed: IntervalClosedType = ...,
+        name: Hashable = ...,
+        copy: bool = ...,
+        dtype: IntervalDtype | None = ...,
+    ) -> IntervalIndex[Interval[pd.Timedelta]]: ...
+    # ignore[misc] here due to overlap, e.g., Sequence[int] and Sequence[float]
+    @overload
+    @classmethod
+    def from_arrays(  # type:ignore[misc]
+        cls,
+        left: _EdgesInt,
+        right: _EdgesInt,
+        closed: IntervalClosedType = ...,
+        name: Hashable = ...,
+        copy: bool = ...,
+        dtype: IntervalDtype | None = ...,
+    ) -> IntervalIndex[Interval[int]]: ...
+    @overload
     @classmethod
     def from_arrays(
         cls,
-        left: _Edges,
-        right: _Edges,
+        left: _EdgesFloat,
+        right: _EdgesFloat,
         closed: IntervalClosedType = ...,
         name: Hashable = ...,
         copy: bool = ...,
         dtype: IntervalDtype | None = ...,
-    ) -> IntervalIndex: ...
+    ) -> IntervalIndex[Interval[float]]: ...
+    @overload
+    @classmethod
+    def from_arrays(
+        cls,
+        left: _EdgesTimestamp,
+        right: _EdgesTimestamp,
+        closed: IntervalClosedType = ...,
+        name: Hashable = ...,
+        copy: bool = ...,
+        dtype: IntervalDtype | None = ...,
+    ) -> IntervalIndex[Interval[pd.Timestamp]]: ...
+    @overload
+    @classmethod
+    def from_arrays(
+        cls,
+        left: _EdgesTimedelta,
+        right: _EdgesTimedelta,
+        closed: IntervalClosedType = ...,
+        name: Hashable = ...,
+        copy: bool = ...,
+        dtype: IntervalDtype | None = ...,
+    ) -> IntervalIndex[Interval[pd.Timedelta]]: ...
     @classmethod
     def from_tuples(
         cls,

@@ -253,70 +253,105 @@ def test_interval_range():
 
 def test_interval_index_breaks():
     check(
-        assert_type(pd.IntervalIndex.from_breaks([1, 2, 3, 4]), pd.IntervalIndex),
-        pd.IntervalIndex,
-    )
-    check(
         assert_type(
-            pd.IntervalIndex.from_breaks([1.0, 2.0, 3.0, 4.0]), pd.IntervalIndex
+            pd.IntervalIndex.from_breaks([1, 2, 3, 4]),
+            "pd.IntervalIndex[pd.Interval[int]]",
         ),
         pd.IntervalIndex,
     )
     check(
         assert_type(
-            pd.IntervalIndex.from_breaks(np.array([1, 2, 3, 4])), pd.IntervalIndex
-        ),
-        pd.IntervalIndex,
-    )
-    check(
-        assert_type(
-            pd.IntervalIndex.from_breaks(np.array([1.0, 2.0, 3.0, 4.0])),
-            pd.IntervalIndex,
+            pd.IntervalIndex.from_breaks([1.0, 2.0, 3.0, 4.0]),
+            "pd.IntervalIndex[pd.Interval[float]]",
         ),
         pd.IntervalIndex,
     )
     check(
         assert_type(
             pd.IntervalIndex.from_breaks(
-                np.array(
-                    [
-                        np.datetime64("2000-01-01"),
-                        np.datetime64("2001-01-01"),
-                        np.datetime64("2002-01-01"),
-                        np.datetime64("2003-01-01"),
-                    ]
-                )
+                [pd.Timestamp(2000, 1, 1), pd.Timestamp(2000, 1, 2)]
             ),
-            pd.IntervalIndex,
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
     )
     check(
         assert_type(
-            pd.IntervalIndex.from_breaks(pd.Series([1, 2, 3, 4])), pd.IntervalIndex
+            pd.IntervalIndex.from_breaks([pd.Timedelta(1, "D"), pd.Timedelta(2, "D")]),
+            "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
         ),
         pd.IntervalIndex,
     )
+
     check(
         assert_type(
-            pd.IntervalIndex.from_breaks(pd.Series([1.0, 2.0, 3.0, 4.0])),
-            pd.IntervalIndex,
+            pd.IntervalIndex.from_breaks(np.array([1, 2, 3, 4], dtype=np.int64)),
+            "pd.IntervalIndex[pd.Interval[int]]",
         ),
         pd.IntervalIndex,
     )
     check(
         assert_type(
             pd.IntervalIndex.from_breaks(
-                pd.Series(
-                    [
-                        pd.Timestamp(2000, 1, 1),
-                        pd.Timestamp(2001, 1, 1),
-                        pd.Timestamp(2002, 1, 1),
-                        pd.Timestamp(2003, 1, 1),
-                    ]
-                )
+                np.array([1.0, 2.0, 3.0, 4.0], dtype=np.float64)
             ),
-            pd.IntervalIndex,
+            "pd.IntervalIndex[pd.Interval[float]]",
+        ),
+        pd.IntervalIndex,
+    )
+    np_ndarray_dt64 = np.array(
+        [
+            np.datetime64("2000-01-01"),
+            np.datetime64("2001-01-01"),
+            np.datetime64("2002-01-01"),
+            np.datetime64("2003-01-01"),
+        ],
+        dtype=np.datetime64,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_breaks(np_ndarray_dt64),
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
+        ),
+        pd.IntervalIndex,
+    )
+    np_ndarray_td64 = np.array(
+        [
+            np.timedelta64(1),
+            np.timedelta64(2),
+            np.timedelta64(3),
+            np.timedelta64(4),
+        ],
+        dtype=np.timedelta64,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_breaks(np_ndarray_td64),
+            "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_breaks(pd.Series([1, 2, 3, 4], dtype=int)),
+            "pd.IntervalIndex[pd.Interval[int]]",
+        ),
+        pd.IntervalIndex,
+    )
+    pd_series_float = pd.Series([1.0, 2.0, 3.0, 4.0], dtype=float)
+    check(
+        assert_type(
+            pd.IntervalIndex.from_breaks(pd_series_float),
+            "pd.IntervalIndex[pd.Interval[float]]",
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_breaks(
+                pd.Series(pd.date_range("2000-01-01", "2003-01-01", freq="D"))
+            ),
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
     )
@@ -330,7 +365,7 @@ def test_interval_index_breaks():
                     dt.datetime(2003, 1, 1),
                 ]
             ),
-            pd.IntervalIndex,
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
     )
@@ -339,32 +374,35 @@ def test_interval_index_breaks():
 def test_interval_index_arrays():
     check(
         assert_type(
-            pd.IntervalIndex.from_arrays([1, 2, 3, 4], [2, 3, 4, 5]), pd.IntervalIndex
+            pd.IntervalIndex.from_arrays([1, 2, 3, 4], [2, 3, 4, 5]),
+            "pd.IntervalIndex[pd.Interval[int]]",
         ),
         pd.IntervalIndex,
     )
     check(
         assert_type(
             pd.IntervalIndex.from_arrays([1.0, 2.0, 3.0, 4.0], [2.0, 3.0, 4.0, 5.0]),
-            pd.IntervalIndex,
+            "pd.IntervalIndex[pd.Interval[float]]",
         ),
         pd.IntervalIndex,
     )
     check(
         assert_type(
             pd.IntervalIndex.from_arrays(
-                np.array([1, 2, 3, 4]), np.array([2, 3, 4, 5])
+                np.array([1, 2, 3, 4], dtype=np.int64),
+                np.array([2, 3, 4, 5], dtype=np.int64),
             ),
-            pd.IntervalIndex,
+            "pd.IntervalIndex[pd.Interval[int]]",
         ),
         pd.IntervalIndex,
     )
     check(
         assert_type(
             pd.IntervalIndex.from_arrays(
-                np.array([1.0, 2.0, 3.0, 4.0]), np.array([2.0, 3.0, 4.0, 5.0])
+                np.array([1.0, 2.0, 3.0, 4.0], dtype=np.float64),
+                np.array([2.0, 3.0, 4.0, 5.0], dtype=np.float64),
             ),
-            pd.IntervalIndex,
+            "pd.IntervalIndex[pd.Interval[float]]",
         ),
         pd.IntervalIndex,
     )
@@ -451,7 +489,7 @@ def test_interval_index_arrays():
                     dt.datetime(2004, 1, 1),
                 ],
             ),
-            pd.IntervalIndex,
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
     )
