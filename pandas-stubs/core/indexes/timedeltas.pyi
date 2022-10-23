@@ -4,10 +4,14 @@ from typing import (
     overload,
 )
 
-from pandas import DateOffset
+from pandas import (
+    DateOffset,
+    Period,
+)
 from pandas.core.indexes.accessors import TimedeltaIndexProperties
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.indexes.period import PeriodIndex
 from pandas.core.series import TimedeltaSeries
 
 from pandas._libs import (
@@ -33,6 +37,8 @@ class TimedeltaIndex(DatetimeTimedeltaMixin, TimedeltaIndexProperties):
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
     @overload  # type: ignore[override]
+    def __add__(self, other: Period) -> PeriodIndex: ...
+    @overload
     def __add__(self, other: DatetimeIndex) -> DatetimeIndex: ...
     @overload
     def __add__(self, other: Timedelta | TimedeltaIndex) -> TimedeltaIndex: ...
