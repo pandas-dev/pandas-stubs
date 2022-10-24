@@ -86,6 +86,7 @@ from pandas._typing import (
     HashableT3,
     IgnoreRaise,
     IndexingInt,
+    IntervalClosedType,
     JoinHow,
     JsonSeriesOrient,
     Level,
@@ -193,7 +194,17 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         name: Hashable | None = ...,
         copy: bool = ...,
         fastpath: bool = ...,
-    ) -> Series[Period]: ...
+    ) -> PeriodSeries: ...
+    @overload
+    def __new__(
+        cls,
+        data: TimedeltaIndex,
+        index: Axes | None = ...,
+        dtype=...,
+        name: Hashable | None = ...,
+        copy: bool = ...,
+        fastpath: bool = ...,
+    ) -> TimedeltaSeries: ...
     @overload
     def __new__(
         cls,
@@ -1574,28 +1585,28 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def rolling(
         self,
-        window: int | BaseOffset | BaseIndexer,
+        window: int | _str | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
         win_type: _str,
         on: _str | None = ...,
         axis: SeriesAxisType = ...,
-        closed: _str | None = ...,
+        closed: IntervalClosedType | None = ...,
         step: int | None = ...,
         method: CalculationMethod = ...,
     ) -> Window[Series]: ...
     @overload
     def rolling(
         self,
-        window: int | BaseOffset | BaseIndexer,
+        window: int | _str | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
         win_type: None = ...,
         on: _str | None = ...,
         axis: SeriesAxisType = ...,
-        closed: _str | None = ...,
+        closed: IntervalClosedType | None = ...,
         step: int | None = ...,
         method: CalculationMethod = ...,
     ) -> Rolling[Series]: ...
@@ -1726,6 +1737,12 @@ class TimestampSeries(Series[Timestamp]):
 
 class TimedeltaSeries(Series[Timedelta]):
     # ignores needed because of mypy
+    @overload  # type: ignore[override]
+    def __add__(self, other: Period) -> PeriodSeries: ...
+    @overload
+    def __add__(self, other: Timestamp | DatetimeIndex) -> TimestampSeries: ...
+    @overload
+    def __add__(self, other: Timedelta) -> TimedeltaSeries: ...
     def __radd__(self, pther: Timestamp | TimestampSeries) -> TimestampSeries: ...  # type: ignore[override]
     def __mul__(self, other: num) -> TimedeltaSeries: ...  # type: ignore[override]
     def __sub__(  # type: ignore[override]
@@ -1738,3 +1755,10 @@ class PeriodSeries(Series[Period]):
     # ignore needed because of mypy
     @property
     def dt(self) -> PeriodProperties: ...  # type: ignore[override]
+    def __sub__(self, other: PeriodSeries) -> OffsetSeries: ...  # type: ignore[override]
+
+class OffsetSeries(Series):
+    @overload  # type: ignore[override]
+    def __radd__(self, other: Period) -> PeriodSeries: ...
+    @overload
+    def __radd__(self, other: BaseOffset) -> OffsetSeries: ...
