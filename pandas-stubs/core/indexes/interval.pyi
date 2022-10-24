@@ -5,7 +5,6 @@ from typing import (
     Hashable,
     Literal,
     Sequence,
-    TypeVar,
     Union,
     overload,
 )
@@ -24,14 +23,14 @@ from pandas._libs.interval import (
     Interval as Interval,
     IntervalMixin,
 )
-from pandas._libs.tslibs.offsets import DateOffset
+from pandas._libs.tslibs.offsets import BaseOffset
 from pandas._typing import (
     DatetimeLike,
     DtypeArg,
     FillnaOptions,
     IntervalClosedType,
+    IntervalT,
     Label,
-    TimedeltaConvertibleTypes,
     np_ndarray_bool,
     npt,
 )
@@ -48,41 +47,38 @@ _EdgesInt: TypeAlias = Union[
     pd.Int64Index,
 ]
 _EdgesFloat: TypeAlias = Union[
-    Sequence[float] | npt.NDArray[np.float64] | pd.Series[float] | pd.Float64Index,
+    Sequence[float],
+    npt.NDArray[np.float64],
+    pd.Series[float],
+    pd.Float64Index,
 ]
 _EdgesTimestamp: TypeAlias = Union[
-    Sequence[DatetimeLike]
-    | npt.NDArray[np.datetime64]
-    | pd.Series[pd.Timestamp]
-    | TimestampSeries
-    | pd.DatetimeIndex
+    Sequence[DatetimeLike],
+    npt.NDArray[np.datetime64],
+    pd.Series[pd.Timestamp],
+    TimestampSeries,
+    pd.DatetimeIndex,
 ]
 _EdgesTimedelta: TypeAlias = Union[
-    Sequence[pd.Timedelta]
-    | npt.NDArray[np.timedelta64]
-    | pd.Series[pd.Timedelta]
-    | TimedeltaSeries
-    | pd.TimedeltaIndex
+    Sequence[pd.Timedelta],
+    npt.NDArray[np.timedelta64],
+    pd.Series[pd.Timedelta],
+    TimedeltaSeries,
+    pd.TimedeltaIndex,
 ]
+_TimestampLike: TypeAlias = Union[pd.Timestamp, np.datetime64, dt.datetime]
+_TimedeltaLike: TypeAlias = Union[pd.Timedelta, np.timedelta64, dt.timedelta]
 
-_IntervalT = TypeVar(
-    "_IntervalT",
-    Interval[int],
-    Interval[float],
-    Interval[pd.Timestamp],
-    Interval[pd.Timedelta],
-)
-
-class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[_IntervalT]):
+class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[IntervalT]):
     def __new__(
         cls,
-        data: Sequence[_IntervalT],
+        data: Sequence[IntervalT],
         closed: IntervalClosedType = ...,
         dtype: IntervalDtype | None = ...,
         copy: bool = ...,
         name: Hashable = ...,
         verify_integrity: bool = ...,
-    ) -> IntervalIndex[_IntervalT]: ...
+    ) -> IntervalIndex[IntervalT]: ...
     # ignore[misc] here due to overlap, e.g., Sequence[int] and Sequence[float]
     @overload
     @classmethod
@@ -217,46 +213,153 @@ class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[_IntervalT]):
     def get_value(self, series: ABCSeries, key): ...
     @property
     def is_all_dates(self) -> bool: ...
+    # override is due to additional types for comparison
+    # misc is due to overlap with object below
     @overload  # type: ignore[override]
-    def __gt__(self, other: Interval | IntervalIndex) -> np_ndarray_bool: ...  # type: ignore[misc]
+    def __gt__(  # type: ignore[misc]
+        self, other: IntervalT | IntervalIndex[IntervalT]
+    ) -> np_ndarray_bool: ...
     @overload
-    def __gt__(self, other: object) -> bool: ...
+    def __gt__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[misc]
+    @overload
+    def __gt__(self, other: object) -> Literal[False]: ...
     @overload  # type: ignore[override]
-    def __ge__(self, other: Interval | IntervalIndex) -> np_ndarray_bool: ...  # type: ignore[misc]
+    def __ge__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload
-    def __ge__(self, other: object) -> bool: ...
+    def __ge__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[misc]
+    @overload
+    def __ge__(self, other: object) -> Literal[False]: ...
     @overload  # type: ignore[override]
-    def __le__(self, other: Interval | IntervalIndex) -> np_ndarray_bool: ...  # type: ignore[misc]
+    def __le__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload
-    def __le__(self, other: object) -> bool: ...
+    def __le__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[misc]
+    @overload
+    def __le__(self, other: object) -> Literal[False]: ...
     @overload  # type: ignore[override]
-    def __lt__(self, other: Interval | IntervalIndex) -> np_ndarray_bool: ...  # type: ignore[misc]
+    def __lt__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload
-    def __lt__(self, other: object) -> bool: ...
+    def __lt__(self, other: pd.Series[IntervalT]) -> bool: ...  # type: ignore[misc]
+    @overload
+    def __lt__(self, other: object) -> Literal[False]: ...
     @overload  # type: ignore[override]
-    def __eq__(self, other: Interval | IntervalIndex) -> np_ndarray_bool: ...  # type: ignore[misc]
+    def __eq__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload
-    def __eq__(self, other: object) -> bool: ...
+    def __eq__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[misc]
+    @overload
+    def __eq__(self, other: object) -> Literal[False]: ...
     @overload  # type: ignore[override]
-    def __ne__(self, other: Interval | IntervalIndex) -> np_ndarray_bool: ...  # type: ignore[misc]
+    def __ne__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload
-    def __ne__(self, other: object) -> bool: ...
+    def __ne__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[misc]
+    @overload
+    def __ne__(self, other: object) -> Literal[True]: ...
 
+# misc here because int and float overlap but interval has distinct types
+# int gets hit first and so the correct type is returned
 @overload
-def interval_range(
-    start: int | float | None = ...,
-    end: int | float | None = ...,
+def interval_range(  # type: ignore[misc]
+    start: int = ...,
+    end: int = ...,
     periods: int | None = ...,
     freq: int | None = ...,
     name: Hashable = ...,
     closed: IntervalClosedType = ...,
-) -> IntervalIndex: ...
+) -> IntervalIndex[Interval[int]]: ...
 @overload
 def interval_range(
-    start: DatetimeLike | None = ...,
-    end: DatetimeLike | None = ...,
+    start: int,
+    *,
+    end: None = ...,
     periods: int | None = ...,
-    freq: str | DateOffset | None = ...,
+    freq: int | None = ...,
     name: Hashable = ...,
     closed: IntervalClosedType = ...,
-) -> IntervalIndex: ...
+) -> IntervalIndex[Interval[int]]: ...
+@overload
+def interval_range(
+    *,
+    start: None = ...,
+    end: int,
+    periods: int | None = ...,
+    freq: int | None = ...,
+    name: Hashable = ...,
+    closed: IntervalClosedType = ...,
+) -> IntervalIndex[Interval[int]]: ...
+@overload
+def interval_range(
+    start: float = ...,
+    end: float = ...,
+    periods: int | None = ...,
+    freq: int | None = ...,
+    name: Hashable = ...,
+    closed: IntervalClosedType = ...,
+) -> IntervalIndex[Interval[float]]: ...
+@overload
+def interval_range(
+    start: float,
+    *,
+    end: None = ...,
+    periods: int | None = ...,
+    freq: int | None = ...,
+    name: Hashable = ...,
+    closed: IntervalClosedType = ...,
+) -> IntervalIndex[Interval[float]]: ...
+@overload
+def interval_range(
+    *,
+    start: None = ...,
+    end: float,
+    periods: int | None = ...,
+    freq: int | None = ...,
+    name: Hashable = ...,
+    closed: IntervalClosedType = ...,
+) -> IntervalIndex[Interval[float]]: ...
+@overload
+def interval_range(
+    start: _TimestampLike,
+    end: _TimestampLike = ...,
+    periods: int | None = ...,
+    freq: str | BaseOffset | None = ...,
+    name: Hashable = ...,
+    closed: IntervalClosedType = ...,
+) -> IntervalIndex[Interval[pd.Timestamp]]: ...
+@overload
+def interval_range(
+    *,
+    start: None = ...,
+    end: _TimestampLike,
+    periods: int | None = ...,
+    freq: str | BaseOffset | None = ...,
+    name: Hashable = ...,
+    closed: IntervalClosedType = ...,
+) -> IntervalIndex[Interval[pd.Timestamp]]: ...
+@overload
+def interval_range(
+    start: _TimestampLike,
+    *,
+    end: None = ...,
+    periods: int | None = ...,
+    freq: str | BaseOffset | None = ...,
+    name: Hashable = ...,
+    closed: IntervalClosedType = ...,
+) -> IntervalIndex[Interval[pd.Timestamp]]: ...
+@overload
+def interval_range(
+    *,
+    start: None = ...,
+    end: _TimedeltaLike,
+    periods: int | None = ...,
+    freq: str | BaseOffset | None = ...,
+    name: Hashable = ...,
+    closed: IntervalClosedType = ...,
+) -> IntervalIndex[Interval[pd.Timestamp]]: ...
+@overload
+def interval_range(
+    start: _TimedeltaLike,
+    *,
+    end: None = ...,
+    periods: int | None = ...,
+    freq: str | BaseOffset | None = ...,
+    name: Hashable = ...,
+    closed: IntervalClosedType = ...,
+) -> IntervalIndex[Interval[pd.Timedelta]]: ...

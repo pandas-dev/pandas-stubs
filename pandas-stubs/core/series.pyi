@@ -24,7 +24,6 @@ from matplotlib.axes import (
 )
 import numpy as np
 from pandas import (
-    Interval,
     Period,
     Timedelta,
     Timestamp,
@@ -89,6 +88,7 @@ from pandas._typing import (
     IgnoreRaise,
     IndexingInt,
     IntervalClosedType,
+    IntervalT,
     JoinHow,
     JsonSeriesOrient,
     Level,
@@ -210,13 +210,13 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def __new__(
         cls,
-        data: IntervalIndex,
+        data: IntervalIndex[IntervalT],
         index: Axes | None = ...,
         dtype=...,
         name: Hashable | None = ...,
         copy: bool = ...,
         fastpath: bool = ...,
-    ) -> Series[Interval]: ...
+    ) -> Series[IntervalT]: ...
     @overload
     def __new__(
         cls,

@@ -7,6 +7,7 @@ from typing import (
 )
 
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 from typing_extensions import (
     TypeAlias,
@@ -31,8 +32,6 @@ if TYPE_CHECKING:
 
     from pandas._typing import np_ndarray_bool
 else:
-    import numpy.typing as npt
-
     np_ndarray_bool = npt.NDArray[np.bool_]
     PeriodSeries: TypeAlias = pd.Series
     TimedeltaSeries: TypeAlias = pd.Series
@@ -262,56 +261,72 @@ def test_interval() -> None:
     check(assert_type(hash(interval_td), int), int)
 
     interval_index_int = pd.IntervalIndex([interval_i])
-    interval_series_int = pd.Series(interval_index_int)
-
-    check(interval_series_int >= interval_i, pd.Series, bool)
-    check(interval_series_int < interval_i, pd.Series, bool)
-    check(interval_series_int <= interval_i, pd.Series, bool)
-    check(interval_series_int > interval_i, pd.Series, bool)
-
-    check(interval_i >= interval_series_int, pd.Series, bool)
-    check(interval_i < interval_series_int, pd.Series, bool)
-    check(interval_i <= interval_series_int, pd.Series, bool)
-    check(interval_i > interval_series_int, pd.Series, bool)
-
-    check(interval_series_int == interval_i, pd.Series, bool)
-    check(interval_series_int != interval_i, pd.Series, bool)
-
     check(
-        interval_i
-        == interval_series_int,  # pyright: ignore[reportUnnecessaryComparison]
-        pd.Series,
-        bool,
-    )
-    check(
-        interval_i
-        != interval_series_int,  # pyright: ignore[reportUnnecessaryComparison]
-        pd.Series,
-        bool,
-    )
-
-    check(interval_index_int >= interval_i, np.ndarray, np.bool_)
-    check(interval_index_int < interval_i, np.ndarray, np.bool_)
-    check(interval_index_int <= interval_i, np.ndarray, np.bool_)
-    check(interval_index_int > interval_i, np.ndarray, np.bool_)
-
-    check(interval_i >= interval_index_int, np.ndarray, np.bool_)
-    check(interval_i < interval_index_int, np.ndarray, np.bool_)
-    check(interval_i <= interval_index_int, np.ndarray, np.bool_)
-    check(interval_i > interval_index_int, np.ndarray, np.bool_)
-
-    check(interval_index_int == interval_i, np.ndarray, np.bool_)
-    check(interval_index_int != interval_i, np.ndarray, np.bool_)
-
-    check(
-        interval_i
-        == interval_index_int,  # pyright: ignore[reportUnnecessaryComparison]
+        assert_type(interval_index_int >= interval_i, np_ndarray_bool),
         np.ndarray,
         np.bool_,
     )
     check(
-        interval_i
-        != interval_index_int,  # pyright: ignore[reportUnnecessaryComparison]
+        assert_type(interval_index_int < interval_i, np_ndarray_bool),
+        np.ndarray,
+        np.bool_,
+    )
+    check(
+        assert_type(interval_index_int <= interval_i, np_ndarray_bool),
+        np.ndarray,
+        np.bool_,
+    )
+    check(
+        assert_type(interval_index_int > interval_i, np_ndarray_bool),
+        np.ndarray,
+        np.bool_,
+    )
+
+    check(
+        assert_type(interval_i >= interval_index_int, np_ndarray_bool),
+        np.ndarray,
+        np.bool_,
+    )
+    check(
+        assert_type(interval_i < interval_index_int, np_ndarray_bool),
+        np.ndarray,
+        np.bool_,
+    )
+    check(
+        assert_type(interval_i <= interval_index_int, np_ndarray_bool),
+        np.ndarray,
+        np.bool_,
+    )
+    check(
+        assert_type(interval_i > interval_index_int, np_ndarray_bool),
+        np.ndarray,
+        np.bool_,
+    )
+
+    check(
+        assert_type(interval_index_int == interval_i, np_ndarray_bool),
+        np.ndarray,
+        np.bool_,
+    )
+    check(
+        assert_type(interval_index_int != interval_i, np_ndarray_bool),
+        np.ndarray,
+        np.bool_,
+    )
+
+    check(
+        assert_type(
+            interval_i == interval_index_int,
+            np_ndarray_bool,
+        ),
+        np.ndarray,
+        np.bool_,
+    )
+    check(
+        assert_type(
+            interval_i != interval_index_int,
+            np_ndarray_bool,
+        ),
         np.ndarray,
         np.bool_,
     )

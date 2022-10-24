@@ -1,6 +1,5 @@
 from typing import (
     Sequence,
-    TypeVar,
     overload,
 )
 
@@ -10,32 +9,26 @@ from pandas import (
     Categorical,
     CategoricalIndex,
     Index,
-    Interval,
     IntervalIndex,
     PeriodIndex,
     Series,
 )
 from pandas.api.extensions import ExtensionArray
 
-from pandas._typing import AnyArrayLike
+from pandas._typing import (
+    AnyArrayLike,
+    IntervalT,
+)
 
 # These are type: ignored because the Index types overlap due to inheritance but indices
 # with extension types return the same type while standard type return ndarray
-
-_IntervalT = TypeVar(
-    "_IntervalT",
-    Interval[int],
-    Interval[float],
-    Interval[pd.Timestamp],
-    Interval[pd.Timedelta],
-)
 
 @overload
 def unique(values: PeriodIndex) -> PeriodIndex: ...  # type: ignore[misc]
 @overload
 def unique(values: CategoricalIndex) -> CategoricalIndex: ...  # type: ignore[misc]
 @overload
-def unique(values: IntervalIndex[_IntervalT]) -> IntervalIndex[_IntervalT]: ...  # type: ignore[misc]
+def unique(values: IntervalIndex[IntervalT]) -> IntervalIndex[IntervalT]: ...  # type: ignore[misc]
 @overload
 def unique(values: Index) -> np.ndarray: ...
 @overload

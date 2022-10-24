@@ -1,18 +1,23 @@
 from typing import (
     Any,
     Generic,
+    Literal,
     TypeVar,
     overload,
 )
 
 import numpy as np
 from pandas import (
+    IntervalIndex,
+    Series,
     Timedelta,
     Timestamp,
 )
 
 from pandas._typing import (
     IntervalClosedType,
+    IntervalT,
+    np_ndarray_bool,
     npt,
 )
 
@@ -152,6 +157,90 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     def overlaps(self: Interval[int], other: Interval[float]) -> bool: ...
     @overload
     def overlaps(self: Interval[float], other: Interval[int]) -> bool: ...
+    @overload
+    def __gt__(self, other: Interval[_OrderableT]) -> bool: ...  # type: ignore[misc]
+    @overload
+    def __gt__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
+    #    @overload
+    #    def __gt__(self:Interval[float], other: IntervalIndex[Interval[float]]) -> np_ndarray_bool: ...
+    #    @overload
+    #    def __gt__(self:Interval[Timestamp], other: IntervalIndex[Interval[Timestamp]]) -> np_ndarray_bool: ...
+    #    @overload
+    #    def __gt__(self:Interval[Timedelta], other: IntervalIndex[Interval[Timedelta]]) -> np_ndarray_bool: ...
+    @overload
+    def __gt__(self, other: Series[_OrderableT]) -> Series[bool]: ...  # type: ignore[misc]
+    @overload
+    def __gt__(self, other: object) -> Literal[False]: ...
+    @overload
+    def __lt__(self, other: Interval[_OrderableT]) -> bool: ...  # type: ignore[misc]
+    @overload
+    def __lt__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
+    #    @overload
+    #    def __lt__(self:Interval[float], other: IntervalIndex[Interval[float]]) -> np_ndarray_bool: ...
+    #    @overload
+    #    def __lt__(self:Interval[Timestamp], other: IntervalIndex[Interval[Timestamp]]) -> np_ndarray_bool: ...
+    #    @overload
+    #    def __lt__(self:Interval[Timedelta], other: IntervalIndex[Interval[Timedelta]]) -> np_ndarray_bool: ...
+    @overload
+    def __lt__(self, other: Series[_OrderableT]) -> Series[bool]: ...  # type: ignore[misc]
+    @overload
+    def __lt__(self, other: object) -> Literal[False]: ...
+    @overload
+    def __ge__(self, other: Interval[_OrderableT]) -> bool: ...  # type: ignore[misc]
+    @overload
+    def __ge__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
+    #    @overload
+    #    def __ge__(self:Interval[float], other: IntervalIndex[Interval[float]]) -> np_ndarray_bool: ...
+    #    @overload
+    #    def __ge__(self:Interval[Timestamp], other: IntervalIndex[Interval[Timestamp]]) -> np_ndarray_bool: ...
+    #    @overload
+    #    def __ge__(self:Interval[Timedelta], other: IntervalIndex[Interval[Timedelta]]) -> np_ndarray_bool: ...
+    @overload
+    def __ge__(self, other: Series[_OrderableT]) -> Series[bool]: ...  # type: ignore[misc]
+    @overload
+    def __ge__(self, other: object) -> Literal[False]: ...
+    @overload
+    def __le__(self, other: Interval[_OrderableT]) -> bool: ...  # type: ignore[misc]
+    @overload
+    def __le__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
+    #    @overload
+    #    def __le__(self:Interval[float], other: IntervalIndex[Interval[float]]) -> np_ndarray_bool: ...
+    #    @overload
+    #    def __le__(self:Interval[Timestamp], other: IntervalIndex[Interval[Timestamp]]) -> np_ndarray_bool: ...
+    #    @overload
+    #    def __le__(self:Interval[Timedelta], other: IntervalIndex[Interval[Timedelta]]) -> np_ndarray_bool: ...
+    #    @overload
+    #    def __le__(self, other: Series[_OrderableT]) -> Series[bool]: ...
+    @overload
+    def __le__(self, other: object) -> Literal[False]: ...
+    @overload
+    def __eq__(self, other: Interval[_OrderableT]) -> bool: ...  # type: ignore[misc]
+    @overload
+    def __eq__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
+    #    @overload
+    #    def __eq__(self:Interval[float], other: IntervalIndex[Interval[float]]) -> np_ndarray_bool: ...
+    #    @overload
+    #    def __eq__(self:Interval[Timestamp], other: IntervalIndex[Interval[Timestamp]]) -> np_ndarray_bool: ...
+    #    @overload
+    #    def __eq__(self:Interval[Timedelta], other: IntervalIndex[Interval[Timedelta]]) -> np_ndarray_bool: ...
+    @overload
+    def __eq__(self, other: Series[_OrderableT]) -> Series[bool]: ...  # type: ignore[misc]
+    @overload
+    def __eq__(self, other: object) -> Literal[False]: ...
+    @overload
+    def __ne__(self, other: Interval[_OrderableT]) -> bool: ...  # type: ignore[misc]
+    @overload
+    def __ne__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
+    #    @overload
+    #    def __ne__(self:Interval[float], other: IntervalIndex[Interval[float]]) -> np_ndarray_bool: ...
+    #    @overload
+    #    def __ne__(self:Interval[Timestamp], other: IntervalIndex[Interval[Timestamp]]) -> np_ndarray_bool: ...
+    #    @overload
+    #    def __ne__(self:Interval[Timedelta], other: IntervalIndex[Interval[Timedelta]]) -> np_ndarray_bool: ...
+    @overload
+    def __ne__(self, other: Series[_OrderableT]) -> Series[bool]: ...  # type: ignore[misc]
+    @overload
+    def __ne__(self, other: object) -> Literal[True]: ...
 
 class IntervalTree(IntervalMixin):
     def __init__(
