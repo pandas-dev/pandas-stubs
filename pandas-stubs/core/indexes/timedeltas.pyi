@@ -1,9 +1,12 @@
+import datetime as dt
 from typing import (
     Hashable,
     Literal,
+    Sequence,
     overload,
 )
 
+import numpy as np
 from pandas import (
     DateOffset,
     Period,
@@ -20,6 +23,7 @@ from pandas._libs import (
 )
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
+    AnyArrayLike,
     TimedeltaConvertibleTypes,
     num,
 )
@@ -27,23 +31,15 @@ from pandas._typing import (
 class TimedeltaIndex(DatetimeTimedeltaMixin, TimedeltaIndexProperties):
     def __init__(
         self,
-        data=...,
+        data: AnyArrayLike
+        | list[str]
+        | Sequence[dt.timedelta | Timedelta | np.timedelta64 | float] = ...,
         unit: Literal["D", "h", "m", "s", "ms", "us", "ns"] = ...,
         freq: str | BaseOffset = ...,
         closed: object = ...,
-        dtype=...,
+        dtype: Literal["<m8[ns]"] = ...,
         copy: bool = ...,
         name: str = ...,
-    ): ...
-    def __new__(
-        cls,
-        data=...,
-        unit=...,
-        freq=...,
-        closed=...,
-        dtype=...,
-        copy: bool = ...,
-        name=...,
     ): ...
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
