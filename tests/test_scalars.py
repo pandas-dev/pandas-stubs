@@ -229,8 +229,7 @@ def test_timedelta_add_sub() -> None:
     check(assert_type(as_datetime + td, dt.datetime), dt.datetime)
     check(assert_type(as_date + td, dt.date), dt.date)
     check(assert_type(as_datetime64 + td, pd.Timestamp), pd.Timestamp)
-    # pyright is fails here because as6 + td calls td.__radd__(as6),
-    # not timedelta.__add__
+    # pyright can't know that as6 + td calls td.__radd__(as6),  not timedelta.__sub__
     # https://github.com/microsoft/pyright/issues/4088
     check(
         assert_type(
@@ -274,8 +273,8 @@ def test_timedelta_add_sub() -> None:
     check(assert_type(as_datetime - td, dt.datetime), dt.datetime)
     check(assert_type(as_date - td, dt.date), dt.date)
     check(assert_type(as_datetime64 - td, pd.Timestamp), pd.Timestamp)
-    # pyright is wrong here because as6 + td calls td.__rsub__(as6),
-    # not timedelta.__sub__
+    # pyright can't know that as6 + td calls td.__rsub__(as6),  not timedelta.__sub__
+    # https://github.com/microsoft/pyright/issues/4088
     check(
         assert_type(
             as_dt_timedelta - td,  # pyright: ignore[reportGeneralTypeIssues]
@@ -340,7 +339,7 @@ def test_timedelta_mul_div() -> None:
 
     check(assert_type(md_int * td, pd.Timedelta), pd.Timedelta)
     check(assert_type(md_float * td, pd.Timedelta), pd.Timedelta)
-    # pyright is wrong here ndarray.__mul__(Timedelta0 is NotImplemented
+    # pyright is wrong here ndarray.__mul__(Timedelta) is NotImplemented
     check(
         assert_type(
             md_ndarray_intp * td, np.ndarray  # pyright: ignore[reportGeneralTypeIssues]
@@ -443,7 +442,7 @@ def test_timedelta_mod_abs_unary() -> None:
         pd.TimedeltaIndex,
     )
 
-    # mypy and pyright reports dt.timedelta, even though __abs__ returns Timedelta
+    # mypy and pyright report dt.timedelta, even though __abs__ returns Timedelta
     check(assert_type(abs(td), dt.timedelta), pd.Timedelta)
     check(assert_type(td.__abs__(), pd.Timedelta), pd.Timedelta)
     check(assert_type(-td, pd.Timedelta), pd.Timedelta)
