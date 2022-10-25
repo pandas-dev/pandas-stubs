@@ -234,8 +234,8 @@ def test_timedelta_add_sub() -> None:
     # https://github.com/microsoft/pyright/issues/4088
     check(
         assert_type(
-            as_dt_timedelta + td,
-            pd.Timedelta,  # pyright: ignore[reportGeneralTypeIssues]
+            as_dt_timedelta + td,  # pyright: ignore[reportGeneralTypeIssues]
+            pd.Timedelta,
         ),
         pd.Timedelta,
     )
@@ -327,6 +327,7 @@ def test_timedelta_mul_div() -> None:
     md_series_float = pd.Series([1.2, 2.2, 3.4], dtype=float)
     md_int64_index = i_idx
     md_float_index = f_idx
+    md_timedelta_series = pd.Series(pd.timedelta_range("1 day", periods=3))
 
     check(assert_type(td * md_int, pd.Timedelta), pd.Timedelta)
     check(assert_type(td * md_float, pd.Timedelta), pd.Timedelta)
@@ -348,8 +349,8 @@ def test_timedelta_mul_div() -> None:
     )
     check(
         assert_type(
-            md_ndarray_float * td,
-            np.ndarray,  # pyright: ignore[reportGeneralTypeIssues]
+            md_ndarray_float * td,  # pyright: ignore[reportGeneralTypeIssues]
+            np.ndarray,
         ),
         np.ndarray,
     )
@@ -368,6 +369,7 @@ def test_timedelta_mul_div() -> None:
     check(assert_type(td // md_series_float, TimedeltaSeries), pd.Series)
     check(assert_type(td // md_int64_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(td // md_float_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(td // md_timedelta_series, "pd.Series[int]"), pd.Series, int)
 
     check(assert_type(pd.NaT // td, float), float)
     # Note: None of the reverse floordiv work
@@ -392,6 +394,7 @@ def test_timedelta_mul_div() -> None:
     check(assert_type(td / md_series_float, TimedeltaSeries), pd.Series)
     check(assert_type(td / md_int64_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(td / md_float_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(td / md_timedelta_series, "pd.Series[float]"), pd.Series, float)
 
     check(assert_type(pd.NaT / td, float), float)
     # Note: None of the reverse truediv work
