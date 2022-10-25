@@ -23,11 +23,6 @@ rename_src = Step(
 mypy_dist = Step(
     name="Run mypy on 'tests' using the installed stubs", run=run.mypy_dist
 )
-mypy_coverage = Step(
-    name="Run mypy on 'tests' (using the local stubs) and on the local stubs, reporting coverage as HTML",
-    run=run.mypy_coverage,
-)
-
 pyright_dist = Step(
     name="Run pyright on 'tests' using the installed stubs", run=run.pyright_dist
 )
