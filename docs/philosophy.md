@@ -79,6 +79,11 @@ which is supported by `typing_extensions` version 4.2 and beyond makes it easier
 to test to validate the return types of functions and methods. Future work
 is intended to expand the use of `assert_type()` in the test code.
 
+After making changes to the type stubs and adding tests to verify these, please generate
+a coverage report to ensure that all changes are covered by the tests. You can generate
+the HTML report by running ``poe mypy_coverage``. The report will be generated in the
+directory ``coverage``.
+
 ## Narrow vs. Wide Arguments
 
 A consideration in creating stubs is too make the set of type annotations for
