@@ -94,6 +94,10 @@ script = "scripts.test.run:mypy_src"
 help = "Run mypy on 'tests' using the installed stubs"
 script = "scripts.test:test(dist=True, type_checker='mypy')"
 
+[tool.poe.tasks.mypy_coverage]
+help = "Run mypy on 'tests' using the local stubs and report HTML coverage"
+script = "scripts.test:test(coverage=True, type_checker='mypy')"
+
 [tool.poe.tasks.pyright]
 help = "Run pyright on 'tests' (using the local stubs) and on the local stubs"
 script = "scripts.test.run:pyright_src"

@@ -210,7 +210,11 @@ def test_timestamp_cmp() -> None:
     c_dt_datetime = dt.datetime(year=2000, month=1, day=1)
     c_datetimeindex = pd.DatetimeIndex(["2000-1-1"])
     c_np_ndarray_dt64 = np_dt64_arr
-    c_series_dt64 = pd.Series([1, 2, 3], dtype="datetime64[ns]")
+    # Typing provided since there is no way to get a Series[Timestamp],
+    # which is a different type from a TimestampSeries
+    c_series_dt64: pd.Series[pd.Timestamp] = pd.Series(
+        [1, 2, 3], dtype="datetime64[ns]"
+    )
     c_series_timestamp = pd.Series(pd.DatetimeIndex(["2000-1-1"]))
     check(assert_type(c_series_timestamp, TimestampSeries), pd.Series)
     # Use xor to ensure one is True and the other is False
@@ -371,6 +375,145 @@ def test_timestamp_types_init() -> None:
     )
 
 
+def test_timestamp_misc_methods() -> None:
+    ts = pd.Timestamp("2021-03-01T12")
+    check(assert_type(ts, pd.Timestamp), pd.Timestamp)
+
+    check(assert_type(ts.to_numpy(), np.datetime64), np.datetime64)
+
+    check(assert_type(pd.Timestamp.fromtimestamp(432.54), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(pd.Timestamp.fromtimestamp(432.54, tz="US/Pacific"), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(assert_type(pd.Timestamp.fromordinal(700000), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(pd.Timestamp.fromordinal(700000, tz="US/Pacific"), pd.Timestamp),
+        pd.Timestamp,
+    )
+
+    ts2 = ts.replace(
+        year=2020,
+        month=2,
+        day=2,
+        hour=12,
+        minute=21,
+        second=21,
+        microsecond=12,
+        tzinfo=dateutil.tz.UTC,
+        fold=0,
+    )
+    check(assert_type(ts2, pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts.tz_localize("US/Pacific", False), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts.tz_localize("US/Pacific", True), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts.tz_localize("US/Pacific", "NaT"), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(ts.tz_localize("US/Pacific", "raise"), pd.Timestamp), pd.Timestamp
+    )
+
+    check(
+        assert_type(
+            ts.tz_localize("US/Pacific", nonexistent="shift_forward"), pd.Timestamp
+        ),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(
+            ts.tz_localize("US/Pacific", nonexistent="shift_backward"), pd.Timestamp
+        ),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(ts.tz_localize("US/Pacific", nonexistent="NaT"), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(ts.tz_localize("US/Pacific", nonexistent="raise"), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(
+            ts.tz_localize("US/Pacific", nonexistent=pd.Timedelta("1D")), pd.Timestamp
+        ),
+        pd.Timestamp,
+    )
+
+    check(assert_type(ts2.round("1S"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.round("1S", ambiguous="raise"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.round("1S", ambiguous=True), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.round("1S", ambiguous=False), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.round("1S", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
+
+    check(
+        assert_type(ts2.round("2H", nonexistent="shift_forward"), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(ts2.round("2H", nonexistent="shift_backward"), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(assert_type(ts2.round("2H", nonexistent="NaT"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.round("2H", nonexistent="raise"), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(ts2.round("2H", nonexistent=pd.Timedelta(24, "H")), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(ts2.round("2H", nonexistent=dt.timedelta(hours=24)), pd.Timestamp),
+        pd.Timestamp,
+    )
+
+    check(assert_type(ts2.ceil("1S"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.ceil("1S", ambiguous="raise"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.ceil("1S", ambiguous=True), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.ceil("1S", ambiguous=False), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.ceil("1S", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
+
+    check(
+        assert_type(ts2.ceil("2H", nonexistent="shift_forward"), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(ts2.ceil("2H", nonexistent="shift_backward"), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(assert_type(ts2.ceil("2H", nonexistent="NaT"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.ceil("2H", nonexistent="raise"), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(ts2.ceil("2H", nonexistent=pd.Timedelta(24, "H")), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(ts2.ceil("2H", nonexistent=dt.timedelta(hours=24)), pd.Timestamp),
+        pd.Timestamp,
+    )
+
+    check(assert_type(ts2.floor("1S"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.floor("1S", ambiguous="raise"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.floor("1S", ambiguous=True), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.floor("1S", ambiguous=False), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.floor("1S", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
+
+    check(
+        assert_type(ts2.floor("2H", nonexistent="shift_forward"), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(ts2.floor("2H", nonexistent="shift_backward"), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(assert_type(ts2.floor("2H", nonexistent="NaT"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.floor("2H", nonexistent="raise"), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(ts2.floor("2H", nonexistent=pd.Timedelta(24, "H")), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(ts2.floor("2H", nonexistent=dt.timedelta(hours=24)), pd.Timestamp),
+        pd.Timestamp,
+    )
+
+
 def test_timestamp_types_arithmetic() -> None:
     ts: pd.Timestamp = pd.to_datetime("2021-03-01")
     ts2: pd.Timestamp = pd.to_datetime("2021-01-01")
@@ -429,6 +572,18 @@ def test_todatetime_fromnumpy() -> None:
     # GH 72
     t1 = np.datetime64("2022-07-04 02:30")
     check(assert_type(pd.to_datetime(t1), pd.Timestamp), pd.Timestamp)
+
+
+def test_timestamp_combine() -> None:
+    ts = pd.Timestamp("2022-03-18")
+    # mypy and pyright disagree from actual type due to inheritance.
+    # Same issue with some timedelta ops
+    check(
+        assert_type(
+            ts.combine(dt.date(2000, 1, 1), dt.time(12, 21, 21, 12)), dt.datetime
+        ),
+        pd.Timestamp,
+    )
 
 
 def test_period_construction() -> None:

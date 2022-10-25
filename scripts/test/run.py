@@ -8,6 +8,18 @@ def mypy_src():
     subprocess.run(cmd, check=True)
 
 
+def mypy_coverage():
+    cmd = [
+        "mypy",
+        "pandas-stubs",
+        "tests",
+        "--no-incremental",
+        "--html-report",
+        "./coverage",
+    ]
+    subprocess.run(cmd, check=True)
+
+
 def pyright_src():
     cmd = ["pyright"]
     subprocess.run(cmd, check=True)
