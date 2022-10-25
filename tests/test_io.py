@@ -5,6 +5,7 @@ import os.path
 import pathlib
 from pathlib import Path
 import sqlite3
+import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -68,6 +69,10 @@ from pandas.io.stata import StataReader
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 CWD = os.path.split(os.path.abspath(__file__))[0]
 
+
+if sys.version_info >= (3, 11):
+    # This is only needed temporarily due to no wheels being available for arrow on 3.11
+    _arrow = pytest.importorskip("arrow")
 
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc():
