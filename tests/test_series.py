@@ -398,6 +398,11 @@ def test_types_apply() -> None:
 
     check(assert_type(s.apply(retseries).tolist(), list), list)
 
+    def retlist(x: float) -> list:
+        return [x]
+
+    check(assert_type(s.apply(retlist), pd.Series), pd.Series, list)
+
     def get_depth(url: str) -> int:
         return len(url)
 
