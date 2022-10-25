@@ -4,6 +4,7 @@ import datetime as dt
 from typing import (
     TYPE_CHECKING,
     Any,
+    Literal,
     cast,
 )
 
@@ -233,8 +234,9 @@ def test_timedelta_add_sub() -> None:
     # https://github.com/microsoft/pyright/issues/4088
     check(
         assert_type(
-            as_dt_timedelta + td, pd.Timedelta
-        ),  # pyright: ignore[reportGeneralTypeIssues]
+            as_dt_timedelta + td,
+            pd.Timedelta,  # pyright: ignore[reportGeneralTypeIssues]
+        ),
         pd.Timedelta,
     )
     check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)
@@ -321,8 +323,8 @@ def test_timedelta_mul_div() -> None:
     md_float = 3.5
     md_ndarray_intp = np_intp_arr
     md_ndarray_float = np_float_arr
-    mp_series_int = pd.Series([1, 2, 3])
-    md_series_float = pd.Series([1.2, 2.2, 3.4])
+    mp_series_int = pd.Series([1, 2, 3], dtype=int)
+    md_series_float = pd.Series([1.2, 2.2, 3.4], dtype=float)
     md_int64_index = i_idx
     md_float_index = f_idx
 
@@ -340,14 +342,15 @@ def test_timedelta_mul_div() -> None:
     # pyright is wrong here ndarray.__mul__(Timedelta0 is NotImplemented
     check(
         assert_type(
-            md_ndarray_intp * td, np.ndarray
-        ),  # pyright: ignore[reportGeneralTypeIssues]
+            md_ndarray_intp * td, np.ndarray  # pyright: ignore[reportGeneralTypeIssues]
+        ),
         np.ndarray,
     )
     check(
         assert_type(
-            md_ndarray_float * td, np.ndarray
-        ),  # pyright: ignore[reportGeneralTypeIssues]
+            md_ndarray_float * td,
+            np.ndarray,  # pyright: ignore[reportGeneralTypeIssues]
+        ),
         np.ndarray,
     )
     check(assert_type(mp_series_int * td, TimedeltaSeries), pd.Series)
@@ -454,7 +457,7 @@ def test_timedelta_cmp() -> None:
     c_timedelta64 = np.timedelta64(1, "D")
     c_ndarray_td64 = ndarray_td64
     c_timedelta_index = pd.TimedeltaIndex([1, 2, 3], unit="D")
-    c_timedelta_series = pd.Series([1, 2, 3], dtype="timedelta64[D]")
+    c_timedelta_series = pd.Series(pd.TimedeltaIndex([1, 2, 3]))
 
     check(assert_type(td < c_timedelta, bool), bool)
     check(assert_type(td < c_dt_timedelta, bool), bool)
@@ -665,21 +668,13 @@ def test_timedelta_cmp() -> None:
     )
     assert (eq_s != ne_s).all()
 
-    eq = check(assert_type(td == 1, bool), bool)
-    ne = check(assert_type(td != 1, bool), bool)
+    eq = check(assert_type(td == 1, Literal[False]), bool)
+    ne = check(assert_type(td != 1, Literal[True]), bool)
     assert eq != ne
 
-    eq = check(assert_type(td == (3 + 2j), bool), bool)
-    ne = check(assert_type(td != (3 + 2j), bool), bool)
+    eq = check(assert_type(td == (3 + 2j), Literal[False]), bool)
+    ne = check(assert_type(td != (3 + 2j), Literal[True]), bool)
     assert eq != ne
-
-    eq_s = check(
-        assert_type(td == pd.Series([1, 2, 3]), "pd.Series[bool]"), pd.Series, bool
-    )
-    ne_s = check(
-        assert_type(td != pd.Series([1, 2, 3]), "pd.Series[bool]"), pd.Series, bool
-    )
-    assert (eq_s != ne_s).all()
 
 
 def test_period_construction() -> None:
