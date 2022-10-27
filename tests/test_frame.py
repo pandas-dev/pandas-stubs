@@ -477,6 +477,12 @@ def test_types_apply() -> None:
     check(assert_type(df.apply(np.exp), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.apply(str), pd.Series), pd.Series)
 
+    # GH 393
+    def gethead(s: pd.Series, y: int) -> pd.Series:
+        return s.head(y)
+
+    check(assert_type(df.apply(gethead, args=(4,)), pd.DataFrame), pd.DataFrame)
+
 
 def test_types_applymap() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
