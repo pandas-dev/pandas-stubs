@@ -460,9 +460,28 @@ def test_types_unique() -> None:
 
 def test_types_apply() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    df.apply(lambda x: x**2)
-    df.apply(np.exp)
-    df.apply(str)
+
+    def returns_series(x: pd.Series) -> pd.Series:
+        return x**2
+
+    check(assert_type(df.apply(returns_series), pd.DataFrame), pd.DataFrame)
+
+    def returns_scalar(x: pd.Series) -> float:
+        return 2
+
+    check(assert_type(df.apply(returns_scalar), pd.Series), pd.Series)
+    check(
+        assert_type(df.apply(returns_scalar, result_type="broadcast"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.apply(np.exp), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.apply(str), pd.Series), pd.Series)
+
+    # GH 393
+    def gethead(s: pd.Series, y: int) -> pd.Series:
+        return s.head(y)
+
+    check(assert_type(df.apply(gethead, args=(4,)), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_applymap() -> None:

@@ -367,8 +367,8 @@ def test_types_idxmax() -> None:
 
 
 def test_types_value_counts() -> None:
-    s = pd.Series([1, 2])
-    s.value_counts()
+    s = pd.Series(["a", "b"])
+    check(assert_type(s.value_counts(), "pd.Series[int]"), pd.Series, int)
 
 
 def test_types_unique() -> None:
@@ -397,6 +397,11 @@ def test_types_apply() -> None:
         return x
 
     check(assert_type(s.apply(retseries).tolist(), list), list)
+
+    def retlist(x: float) -> list:
+        return [x]
+
+    check(assert_type(s.apply(retlist), pd.Series), pd.Series, list)
 
     def get_depth(url: str) -> int:
         return len(url)
