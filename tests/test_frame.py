@@ -1920,4 +1920,4 @@ def test_resample_150_changes() -> None:
 def df_accepting_dicts_iterator() -> None: 
     # GH 392
     data = [{"a": 1, "b": 2}, {"a": 3, "b": 5}]
-    p = pd.DataFrame(iter(data))
+    check(assert_type(pd.DataFrame(iter(data)), pd.DataFrame), pd.DataFrame)
