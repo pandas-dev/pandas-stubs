@@ -192,7 +192,7 @@ class DataFrame(NDFrame, OpsMixin):
         data: ListLikeU
         | DataFrame
         | dict[Any, Any]
-        | Iterable[ListLikeU | tuple[Hashable, ListLikeU]]
+        | Iterable[ListLikeU | tuple[Hashable, ListLikeU] | dict[Any, Any]]
         | None = ...,
         index: Axes | None = ...,
         columns: Axes | None = ...,
