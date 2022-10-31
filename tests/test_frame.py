@@ -1915,3 +1915,8 @@ def test_resample_150_changes() -> None:
         return s.mean()
 
     check(assert_type(resampler.apply(f), Union[pd.Series, pd.DataFrame]), pd.DataFrame)
+    
+    
+def df_accepting_dicts_iterator() -> None:
+    data = [{"a": 1, "b": 2}, {"a": 3, "b": 5}]
+    p = pd.DataFrame(iter(data))
