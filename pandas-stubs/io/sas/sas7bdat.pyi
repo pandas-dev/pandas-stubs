@@ -1,5 +1,3 @@
-import numpy as np
-import pandas as pd
 from pandas import DataFrame
 
 from pandas.io.sas.sasreader import ReaderBase

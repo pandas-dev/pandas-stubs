@@ -205,7 +205,9 @@ def test_timedelta_add_sub() -> None:
     check(assert_type(td + as_dt_timedelta, pd.Timedelta), pd.Timedelta)
     check(assert_type(td + as_timedelta64, pd.Timedelta), pd.Timedelta)
     check(assert_type(td + as_timedelta_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(td + as_timedelta_series, TimedeltaSeries), pd.Series)
+    check(
+        assert_type(td + as_timedelta_series, TimedeltaSeries), pd.Series, pd.Timedelta
+    )
     check(assert_type(td + as_period_index, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(td + as_datetime_index, pd.DatetimeIndex), pd.DatetimeIndex)
     check(
@@ -213,12 +215,8 @@ def test_timedelta_add_sub() -> None:
         np.ndarray,
         np.timedelta64,
     )
-    # pyright has trouble with timedelta64 and datetime64
     check(
-        assert_type(
-            td + as_ndarray_dt64,  # pyright: ignore[reportGeneralTypeIssues]
-            npt.NDArray[np.datetime64],
-        ),
+        assert_type(td + as_ndarray_dt64, npt.NDArray[np.datetime64]),
         np.ndarray,
         np.datetime64,
     )
@@ -240,7 +238,9 @@ def test_timedelta_add_sub() -> None:
     )
     check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)
     check(assert_type(as_timedelta_index + td, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(as_timedelta_series + td, TimedeltaSeries), pd.Series)
+    check(
+        assert_type(as_timedelta_series + td, TimedeltaSeries), pd.Series, pd.Timedelta
+    )
     check(assert_type(as_period_index + td, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(as_datetime_index + td, pd.DatetimeIndex), pd.DatetimeIndex)
     # pyright is fails here because ndarray.__add__(Timedelta) is NotImplemented
@@ -256,12 +256,25 @@ def test_timedelta_add_sub() -> None:
 
     # sub is not symmetric with dates. In general date_like - timedelta is
     # sensible, while timedelta - date_like is not
-    # TypeError: as1, as2, as3, as4, as5, as10, as11, as13
+    # TypeError: as_period, as_timestamp, as_datetime, as_date, as_datetime64,
+    #            as_period_index, as_datetime_index, as_ndarray_dt64
+    if TYPE_CHECKING_INVALID_USAGE:
+        td - as_period  # type: ignore[operator]
+        td - as_timestamp  # type: ignore[operator]
+        td - as_datetime  # type: ignore[operator]
+        td - as_date  # type: ignore[operator]
+        td - as_datetime64  # type: ignore[operator]
+        td - as_period_index  # type: ignore[operator]
+        td - as_datetime_index  # type: ignore[operator]
+        td - as_ndarray_dt64  # type: ignore[operator]
+
     check(assert_type(td - td, pd.Timedelta), pd.Timedelta)
     check(assert_type(td - as_dt_timedelta, pd.Timedelta), pd.Timedelta)
     check(assert_type(td - as_timedelta64, pd.Timedelta), pd.Timedelta)
     check(assert_type(td - as_timedelta_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(td - as_timedelta_series, TimedeltaSeries), pd.Series)
+    check(
+        assert_type(td - as_timedelta_series, TimedeltaSeries), pd.Series, pd.Timedelta
+    )
     check(
         assert_type(td - as_ndarray_td64, npt.NDArray[np.timedelta64]),
         np.ndarray,
@@ -273,7 +286,8 @@ def test_timedelta_add_sub() -> None:
     check(assert_type(as_datetime - td, dt.datetime), dt.datetime)
     check(assert_type(as_date - td, dt.date), dt.date)
     check(assert_type(as_datetime64 - td, pd.Timestamp), pd.Timestamp)
-    # pyright can't know that as6 + td calls td.__rsub__(as6),  not timedelta.__sub__
+    # pyright can't know that as_dt_timedelta - td calls td.__rsub__(as_dt_timedelta),
+    # not as_dt_timedelta.__sub__
     # https://github.com/microsoft/pyright/issues/4088
     check(
         assert_type(
@@ -284,22 +298,22 @@ def test_timedelta_add_sub() -> None:
     )
     check(assert_type(as_timedelta64 - td, pd.Timedelta), pd.Timedelta)
     check(assert_type(as_timedelta_index - td, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(as_timedelta_series - td, TimedeltaSeries), pd.Series)
+    check(
+        assert_type(as_timedelta_series - td, TimedeltaSeries), pd.Series, pd.Timedelta
+    )
     check(assert_type(as_period_index - td, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(as_datetime_index - td, pd.DatetimeIndex), pd.DatetimeIndex)
-    # pyright is wrong here because ndarray.__sub__(Timedelta) is NotImplemented
     check(
         assert_type(
-            as_ndarray_td64 - td,  # pyright: ignore[reportGeneralTypeIssues]
+            as_ndarray_td64 - td,
             npt.NDArray[np.timedelta64],
         ),
         np.ndarray,
         np.timedelta64,
     )
-    # pyright is wrong here because ndarray.__sub__(Timedelta) is NotImplemented
     check(
         assert_type(
-            as_ndarray_dt64 - td,  # pyright: ignore[reportGeneralTypeIssues]
+            as_ndarray_dt64 - td,
             npt.NDArray[np.datetime64],
         ),
         np.ndarray,
@@ -330,10 +344,18 @@ def test_timedelta_mul_div() -> None:
 
     check(assert_type(td * md_int, pd.Timedelta), pd.Timedelta)
     check(assert_type(td * md_float, pd.Timedelta), pd.Timedelta)
-    check(assert_type(td * md_ndarray_intp, np.ndarray), np.ndarray)
-    check(assert_type(td * md_ndarray_float, np.ndarray), np.ndarray)
-    check(assert_type(td * mp_series_int, TimedeltaSeries), pd.Series)
-    check(assert_type(td * md_series_float, TimedeltaSeries), pd.Series)
+    check(
+        assert_type(td * md_ndarray_intp, npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
+    check(
+        assert_type(td * md_ndarray_float, npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
+    check(assert_type(td * mp_series_int, TimedeltaSeries), pd.Series, pd.Timedelta)
+    check(assert_type(td * md_series_float, TimedeltaSeries), pd.Series, pd.Timedelta)
     check(assert_type(td * md_int64_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(td * md_float_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
@@ -353,8 +375,8 @@ def test_timedelta_mul_div() -> None:
         ),
         np.ndarray,
     )
-    check(assert_type(mp_series_int * td, TimedeltaSeries), pd.Series)
-    check(assert_type(md_series_float * td, TimedeltaSeries), pd.Series)
+    check(assert_type(mp_series_int * td, TimedeltaSeries), pd.Series, pd.Timedelta)
+    check(assert_type(md_series_float * td, TimedeltaSeries), pd.Series, pd.Timedelta)
     check(assert_type(md_int64_index * td, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(md_float_index * td, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
@@ -362,17 +384,26 @@ def test_timedelta_mul_div() -> None:
     check(assert_type(td // pd.NaT, float), float)
     check(assert_type(td // md_int, pd.Timedelta), pd.Timedelta)
     check(assert_type(td // md_float, pd.Timedelta), pd.Timedelta)
-    check(assert_type(td // md_ndarray_intp, npt.NDArray[np.timedelta64]), np.ndarray)
-    check(assert_type(td // md_ndarray_float, npt.NDArray[np.timedelta64]), np.ndarray)
-    check(assert_type(td // mp_series_int, TimedeltaSeries), pd.Series)
-    check(assert_type(td // md_series_float, TimedeltaSeries), pd.Series)
+    check(
+        assert_type(td // md_ndarray_intp, npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
+    check(
+        assert_type(td // md_ndarray_float, npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
+    check(assert_type(td // mp_series_int, TimedeltaSeries), pd.Series, pd.Timedelta)
+    check(assert_type(td // md_series_float, TimedeltaSeries), pd.Series, pd.Timedelta)
     check(assert_type(td // md_int64_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(td // md_float_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(td // md_timedelta_series, "pd.Series[int]"), pd.Series, int)
 
     check(assert_type(pd.NaT // td, float), float)
     # Note: None of the reverse floordiv work
-    # TypeError: md1, md2, md3, md4, md5, md6, md7, md8
+    # TypeError: md_int, md_float, md_ndarray_intp, md_ndarray_float, mp_series_int,
+    #            mp_series_float, md_int64_index, md_float_index
     if TYPE_CHECKING_INVALID_USAGE:
         md_int // td  # type: ignore[operator]
         md_float // td  # type: ignore[operator]
@@ -387,17 +418,26 @@ def test_timedelta_mul_div() -> None:
     check(assert_type(td / pd.NaT, float), float)
     check(assert_type(td / md_int, pd.Timedelta), pd.Timedelta)
     check(assert_type(td / md_float, pd.Timedelta), pd.Timedelta)
-    check(assert_type(td / md_ndarray_intp, npt.NDArray[np.timedelta64]), np.ndarray)
-    check(assert_type(td / md_ndarray_float, npt.NDArray[np.timedelta64]), np.ndarray)
-    check(assert_type(td / mp_series_int, TimedeltaSeries), pd.Series)
-    check(assert_type(td / md_series_float, TimedeltaSeries), pd.Series)
+    check(
+        assert_type(td / md_ndarray_intp, npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
+    check(
+        assert_type(td / md_ndarray_float, npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
+    check(assert_type(td / mp_series_int, TimedeltaSeries), pd.Series, pd.Timedelta)
+    check(assert_type(td / md_series_float, TimedeltaSeries), pd.Series, pd.Timedelta)
     check(assert_type(td / md_int64_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(td / md_float_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(td / md_timedelta_series, "pd.Series[float]"), pd.Series, float)
 
     check(assert_type(pd.NaT / td, float), float)
     # Note: None of the reverse truediv work
-    # TypeError: md1, md2, md3, md4, md5, md6, md7, md8
+    # TypeError: md_int, md_float, md_ndarray_intp, md_ndarray_float, mp_series_int,
+    #            mp_series_float, md_int64_index, md_float_index
     if TYPE_CHECKING_INVALID_USAGE:
         md_int / td  # type: ignore[operator]
         md_float / td  # type: ignore[operator]
@@ -405,8 +445,8 @@ def test_timedelta_mul_div() -> None:
         md_ndarray_float / td  # type: ignore[operator]
         # TODO: Series.__truediv__ says it supports Timedelta
         #   it does not, in general, except for TimedeltaSeries
-        # md5 / td  # type: ignore[operator]
-        # md6 / td  # type: ignore[operator]
+        # mp_series_int / td  # type: ignore[operator]
+        # mp_series_float / td  # type: ignore[operator]
         md_int64_index / td  # type: ignore[operator]
         md_float_index / td  # type: ignore[operator]
 
@@ -433,8 +473,8 @@ def test_timedelta_mod_abs_unary() -> None:
     )
     int_series = pd.Series([1, 2, 3], dtype=int)
     float_series = pd.Series([1.2, 2.2, 3.4], dtype=float)
-    check(assert_type(td % int_series, TimedeltaSeries), pd.Series)
-    check(assert_type(td % float_series, TimedeltaSeries), pd.Series)
+    check(assert_type(td % int_series, TimedeltaSeries), pd.Series, pd.Timedelta)
+    check(assert_type(td % float_series, TimedeltaSeries), pd.Series, pd.Timedelta)
     check(assert_type(td % i_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
     check(
@@ -442,8 +482,8 @@ def test_timedelta_mod_abs_unary() -> None:
         pd.TimedeltaIndex,
     )
 
-    # mypy and pyright report dt.timedelta, even though __abs__ returns Timedelta
-    check(assert_type(abs(td), dt.timedelta), pd.Timedelta)
+    # mypy reports dt.timedelta, even though __abs__ returns Timedelta
+    check(assert_type(abs(td), pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type]
     check(assert_type(td.__abs__(), pd.Timedelta), pd.Timedelta)
     check(assert_type(-td, pd.Timedelta), pd.Timedelta)
     check(assert_type(+td, pd.Timedelta), pd.Timedelta)
@@ -642,6 +682,28 @@ def test_timedelta_cmp() -> None:
     )
     assert (eq_s != ne_s).all()
 
+    eq = check(assert_type(td == 1, Literal[False]), bool)
+    ne = check(assert_type(td != 1, Literal[True]), bool)
+    assert eq != ne
+
+    eq = check(assert_type(td == (3 + 2j), Literal[False]), bool)
+    ne = check(assert_type(td != (3 + 2j), Literal[True]), bool)
+    assert eq != ne
+
+
+def test_timedelta_cmp_rhs() -> None:
+    # Test that check eq and ne when Timedelta is the RHS argument
+    # that use the __eq__ and __ne__ methods of the LHS
+    td = pd.Timedelta("1 day")
+    ndarray_td64: npt.NDArray[np.timedelta64] = np.array(
+        [1, 2, 3], dtype="timedelta64[D]"
+    )
+    c_dt_timedelta = dt.timedelta(days=1)
+    c_timedelta64 = np.timedelta64(1, "D")
+    c_ndarray_td64 = ndarray_td64
+    c_timedelta_index = pd.TimedeltaIndex([1, 2, 3], unit="D")
+    c_timedelta_series = pd.Series(pd.TimedeltaIndex([1, 2, 3]))
+
     eq = check(assert_type(c_dt_timedelta == td, bool), bool)
     ne = check(assert_type(c_dt_timedelta != td, bool), bool)
     assert eq != ne
@@ -669,14 +731,6 @@ def test_timedelta_cmp() -> None:
         assert_type(c_timedelta_series != td, "pd.Series[bool]"), pd.Series, bool
     )
     assert (eq_s != ne_s).all()
-
-    eq = check(assert_type(td == 1, Literal[False]), bool)
-    ne = check(assert_type(td != 1, Literal[True]), bool)
-    assert eq != ne
-
-    eq = check(assert_type(td == (3 + 2j), Literal[False]), bool)
-    ne = check(assert_type(td != (3 + 2j), Literal[True]), bool)
-    assert eq != ne
 
 
 def test_period_construction() -> None:
@@ -752,7 +806,7 @@ def test_period_add_subtract() -> None:
     as_period = pd.Period("2012-1-1", freq="D")
     scale = 24 * 60 * 60 * 10**9
     as_td_series = pd.Series(pd.timedelta_range(scale, scale, freq="D"))
-    check(assert_type(as_td_series, TimedeltaSeries), pd.Series)
+    check(assert_type(as_td_series, TimedeltaSeries), pd.Series, pd.Timedelta)
     as_period_series = pd.Series(as_period_index)
     check(assert_type(as_period_series, PeriodSeries), pd.Series)
     as_timedelta_idx = pd.timedelta_range(scale, scale, freq="D")

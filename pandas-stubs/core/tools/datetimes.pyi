@@ -10,7 +10,6 @@ from typing import (
 )
 
 import numpy as np
-import pandas as pd
 from pandas import (
     Index,
     Timestamp,

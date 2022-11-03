@@ -15,7 +15,6 @@ from matplotlib.axes import (
     Axes as PlotAxes,
     SubplotBase as AxesSubplot,
 )
-import numpy as np
 from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
 from pandas.core.groupby.groupby import (  # , get_groupby as get_groupby

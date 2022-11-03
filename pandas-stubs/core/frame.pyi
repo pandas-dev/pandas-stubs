@@ -110,7 +110,6 @@ from pandas._typing import (
     num,
 )
 
-from pandas.io.formats import format as fmt
 from pandas.io.formats.style import Styler
 from pandas.plotting import PlotAccessor
 
