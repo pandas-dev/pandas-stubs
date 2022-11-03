@@ -107,7 +107,8 @@ class Timestamp(datetime):
     def fromordinal(
         cls: type[_DatetimeT],
         ordinal: int,
-        *,
+        # freq produces a FutureWarning about being deprecated in a future version
+        freq: None = ...,
         tz: _tzinfo | str | None = ...,
     ) -> _DatetimeT: ...
     @classmethod
@@ -129,6 +130,7 @@ class Timestamp(datetime):
     def time(self) -> _time: ...
     def timetz(self) -> _time: ...
     # Override since fold is more precise than datetime.replace(fold:int)
+    # Here it is restricted to be 0 or 1 using a Literal
     # Violation of Liskov substitution principle
     def replace(  # type:ignore[override]
         self,
@@ -140,6 +142,7 @@ class Timestamp(datetime):
         second: int | None = ...,
         microsecond: int | None = ...,
         tzinfo: _tzinfo | None = ...,
+        *,
         fold: Literal[0, 1] | None = ...,
     ) -> Timestamp: ...
     def astimezone(self: _DatetimeT, tz: _tzinfo | None = ...) -> _DatetimeT: ...
@@ -230,7 +233,6 @@ class Timestamp(datetime):
     def __ne__(self, other: npt.NDArray[np.datetime64] | Index) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload
     def __ne__(self, other: object) -> Literal[True]: ...
-    def __hash__(self) -> int: ...
     def weekday(self) -> int: ...
     def isoweekday(self) -> int: ...
     def isocalendar(self) -> tuple[int, int, int]: ...
