@@ -192,7 +192,7 @@ class DataFrame(NDFrame, OpsMixin):
         data: ListLikeU
         | DataFrame
         | dict[Any, Any]
-        | Iterable[ListLikeU | tuple[Hashable, ListLikeU]]
+        | Iterable[ListLikeU | tuple[Hashable, ListLikeU] | dict[Any, Any]]
         | None = ...,
         index: Axes | None = ...,
         columns: Axes | None = ...,
@@ -1088,14 +1088,32 @@ class DataFrame(NDFrame, OpsMixin):
         **kwargs,
     ) -> DataFrame: ...
     @overload
-    def apply(self, f: Callable) -> Series: ...
+    def apply(
+        self,
+        f: Callable[..., Series],
+        axis: AxisType = ...,
+        raw: _bool = ...,
+        result_type: Literal["expand", "reduce", "broadcast"] | None = ...,
+        args=...,
+        **kwargs,
+    ) -> DataFrame: ...
     @overload
     def apply(
         self,
-        f: Callable,
-        axis: AxisType,
+        f: Callable[..., Scalar],
+        axis: AxisType = ...,
         raw: _bool = ...,
-        result_type: _str | None = ...,
+        result_type: Literal["expand", "reduce"] | None = ...,
+        args=...,
+        **kwargs,
+    ) -> Series: ...
+    @overload
+    def apply(
+        self,
+        f: Callable[..., Scalar],
+        result_type: Literal["broadcast"],
+        axis: AxisType = ...,
+        raw: _bool = ...,
         args=...,
         **kwargs,
     ) -> DataFrame: ...
