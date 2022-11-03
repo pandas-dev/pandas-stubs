@@ -243,10 +243,9 @@ def test_timedelta_add_sub() -> None:
     )
     check(assert_type(as_period_index + td, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(as_datetime_index + td, pd.DatetimeIndex), pd.DatetimeIndex)
-    # pyright is fails here because ndarray.__add__(Timedelta) is NotImplemented
     check(
         assert_type(
-            as_ndarray_td64 + td,  # pyright: ignore[reportGeneralTypeIssues]
+            as_ndarray_td64 + td,
             npt.NDArray[np.timedelta64],
         ),
         np.ndarray,
@@ -361,20 +360,8 @@ def test_timedelta_mul_div() -> None:
 
     check(assert_type(md_int * td, pd.Timedelta), pd.Timedelta)
     check(assert_type(md_float * td, pd.Timedelta), pd.Timedelta)
-    # pyright is wrong here ndarray.__mul__(Timedelta) is NotImplemented
-    check(
-        assert_type(
-            md_ndarray_intp * td, np.ndarray  # pyright: ignore[reportGeneralTypeIssues]
-        ),
-        np.ndarray,
-    )
-    check(
-        assert_type(
-            md_ndarray_float * td,  # pyright: ignore[reportGeneralTypeIssues]
-            np.ndarray,
-        ),
-        np.ndarray,
-    )
+    check(assert_type(md_ndarray_intp * td, np.ndarray), np.ndarray)
+    check(assert_type(md_ndarray_float * td, np.ndarray), np.ndarray)
     check(assert_type(mp_series_int * td, TimedeltaSeries), pd.Series, pd.Timedelta)
     check(assert_type(md_series_float * td, TimedeltaSeries), pd.Series, pd.Timedelta)
     check(assert_type(md_int64_index * td, pd.TimedeltaIndex), pd.TimedeltaIndex)
