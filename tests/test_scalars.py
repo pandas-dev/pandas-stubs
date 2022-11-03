@@ -324,33 +324,75 @@ def test_timestamp_cmp() -> None:
     ne = check(assert_type(ts != c_dt_datetime, bool), bool)
     assert eq != ne
 
-    check(assert_type(ts == c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_)
-    check(assert_type(ts != c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_)
+    eq_arr = check(
+        assert_type(ts == c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    ne_arr = check(
+        assert_type(ts != c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    assert (eq_arr != ne_arr).all()
 
-    check(assert_type(ts == c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_)
-    check(assert_type(ts != c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_)
+    eq_arr = check(
+        assert_type(ts == c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    ne_arr = check(
+        assert_type(ts != c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    assert (eq_arr != ne_arr).all()
 
-    check(assert_type(ts == c_series_timestamp, "pd.Series[bool]"), pd.Series, bool)
-    check(assert_type(ts != c_series_timestamp, "pd.Series[bool]"), pd.Series, bool)
+    eq_s = check(
+        assert_type(ts == c_series_timestamp, "pd.Series[bool]"), pd.Series, bool
+    )
+    ne_s = check(
+        assert_type(ts != c_series_timestamp, "pd.Series[bool]"), pd.Series, bool
+    )
+    assert (eq_s != ne_s).all()
 
-    check(assert_type(ts == c_series_dt64, "pd.Series[bool]"), pd.Series, bool)
-    check(assert_type(ts != c_series_dt64, "pd.Series[bool]"), pd.Series, bool)
+    eq_s = check(assert_type(ts == c_series_dt64, "pd.Series[bool]"), pd.Series, bool)
+    ne_s = check(assert_type(ts != c_series_dt64, "pd.Series[bool]"), pd.Series, bool)
+    assert (eq_s != ne_s).all()
 
-    check(assert_type(c_np_dt64 == ts, Any), np.bool_)
-    check(assert_type(c_np_dt64 != ts, Any), np.bool_)
+
+def test_timestamp_eq_ne_rhs() -> None:
+    # These test equality using the LHS objects __eq__ and __ne__ methods
+    # The tests are retained for completeness, but are not strictly necessary
+    ts = pd.Timestamp(year=2000, month=3, day=24, hour=12, minute=27)
+
+    np_dt64_arr: npt.NDArray[np.datetime64] = np.array(
+        [1, 2, 3], dtype="datetime64[ns]"
+    )
+
+    c_np_dt64 = np.datetime64(1, "ns")
+    c_dt_datetime = dt.datetime(year=2000, month=1, day=1)
+    c_datetimeindex = pd.DatetimeIndex(["2000-1-1"])
+    c_np_ndarray_dt64 = np_dt64_arr
+    c_series_dt64: pd.Series[pd.Timestamp] = pd.Series(
+        [1, 2, 3], dtype="datetime64[ns]"
+    )
+
+    eq_a = check(assert_type(c_np_dt64 == ts, Any), np.bool_)
+    ne_a = check(assert_type(c_np_dt64 != ts, Any), np.bool_)
+    assert eq_a != ne_a
 
     eq = check(assert_type(c_dt_datetime == ts, bool), bool)
     ne = check(assert_type(c_dt_datetime != ts, bool), bool)
     assert eq != ne
 
-    check(assert_type(c_datetimeindex == ts, np_ndarray_bool), np.ndarray, np.bool_)
-    check(assert_type(c_datetimeindex != ts, np_ndarray_bool), np.ndarray, np.bool_)
+    eq_arr = check(
+        assert_type(c_datetimeindex == ts, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    ne_arr = check(
+        assert_type(c_datetimeindex != ts, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    assert (eq_arr != ne_arr).all()
 
-    check(assert_type(c_np_ndarray_dt64 != ts, Any), np.ndarray)
-    check(assert_type(c_np_ndarray_dt64 == ts, Any), np.ndarray)
+    eq_a = check(assert_type(c_np_ndarray_dt64 != ts, Any), np.ndarray, np.bool_)
+    ne_a = check(assert_type(c_np_ndarray_dt64 == ts, Any), np.ndarray, np.bool_)
+    assert (eq_a != ne_a).all()
 
-    check(assert_type(c_series_dt64 == ts, "pd.Series[bool]"), pd.Series, bool)
-    check(assert_type(c_series_dt64 != ts, "pd.Series[bool]"), pd.Series, bool)
+    eq_s = check(assert_type(c_series_dt64 == ts, "pd.Series[bool]"), pd.Series, bool)
+    ne_s = check(assert_type(c_series_dt64 != ts, "pd.Series[bool]"), pd.Series, bool)
+    assert (eq_s != ne_s).all()
 
 
 def test_timestamp_types_init() -> None:
