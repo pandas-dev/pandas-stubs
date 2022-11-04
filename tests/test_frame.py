@@ -39,6 +39,7 @@ from tests import (
     PD_LTE_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 
 from pandas.io.formats.style import Styler
@@ -934,16 +935,11 @@ def test_types_describe() -> None:
         }
     )
     df.describe()
-    if PD_LTE_15:
-        with pytest.warns(FutureWarning, match="Treating datetime data as categorical"):
-            df.describe(percentiles=[0.5], include="all")
-    else:
+    with pytest_warns_bounded(
+        FutureWarning, match="Treating datetime data as categorical", upper="1.5.999"
+    ):
         df.describe(percentiles=[0.5], include="all")
-    if PD_LTE_15:
-        with pytest.warns(FutureWarning, match="Treating datetime data as categorical"):
-            df.describe(exclude=[np.number])
-    else:
-        df.describe(percentiles=[0.5], include="all")
+        df.describe(exclude=[np.number])
     if PD_LTE_15:
         # datetime_is_numeric param added in 1.1.0
         # https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
