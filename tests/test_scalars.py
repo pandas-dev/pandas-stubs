@@ -4,13 +4,16 @@ import datetime as dt
 from typing import (
     TYPE_CHECKING,
     Any,
+    Literal,
     Optional,
+    cast,
 )
 
 import dateutil.tz
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
+import pytest
 import pytz
 from typing_extensions import (
     TypeAlias,
@@ -21,8 +24,12 @@ from pandas._libs.tslibs import (
     BaseOffset,
     NaTType,
 )
+from pandas._libs.tslibs.timedeltas import Components
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 from pandas.tseries.offsets import Day
 
@@ -38,10 +45,693 @@ if TYPE_CHECKING:
 else:
 
     np_ndarray_bool = npt.NDArray[np.bool_]
-    TimedeltaSeries = pd.Series
-    TimestampSeries = pd.Series
+    TimedeltaSeries: TypeAlias = pd.Series
+    TimestampSeries: TypeAlias = pd.Series
     PeriodSeries: TypeAlias = pd.Series
     OffsetSeries: TypeAlias = pd.Series
+
+
+def test_timedelta_construction() -> None:
+
+    check(assert_type(pd.Timedelta(1, "H"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "T"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "S"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "L"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "U"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "N"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "W"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "w"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "D"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "d"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "days"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "day"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "hours"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "hour"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "hr"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "h"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "m"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "minute"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "min"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "minutes"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "t"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "s"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "seconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "sec"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "second"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "ms"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "milliseconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "millisecond"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "milli"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "millis"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "l"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "us"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "microseconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "microsecond"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "µs"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "micro"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "micros"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "u"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "ns"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "nanoseconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "nano"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "nanos"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "nanosecond"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "n"), pd.Timedelta), pd.Timedelta)
+
+    check(assert_type(pd.Timedelta("1 W"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 w"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 D"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 d"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 days"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 day"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 hours"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 hour"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 hr"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 h"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 m"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 minute"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 min"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 minutes"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 t"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 s"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 seconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 sec"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 second"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 ms"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 milliseconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 millisecond"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 milli"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 millis"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 l"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 us"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 microseconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 microsecond"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 µs"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 micro"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 micros"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 u"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 ns"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 nanoseconds"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 nano"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 nanos"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 nanosecond"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta("1 n"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(days=1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(seconds=1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(microseconds=1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(minutes=1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(hours=1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(weeks=1), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(milliseconds=1), pd.Timedelta), pd.Timedelta)
+    check(
+        assert_type(
+            pd.Timedelta(
+                days=1,
+                seconds=1,
+                microseconds=1,
+                minutes=1,
+                hours=1,
+                weeks=1,
+                milliseconds=1,
+            ),
+            pd.Timedelta,
+        ),
+        pd.Timedelta,
+    )
+
+
+def test_timedelta_properties_methods() -> None:
+    td = pd.Timedelta("1 day")
+    check(assert_type(td.value, int), int)
+    check(assert_type(td.asm8, np.timedelta64), np.timedelta64)
+
+    check(assert_type(td.days, int), int)
+    check(assert_type(td.microseconds, int), int)
+    check(assert_type(td.nanoseconds, int), int)
+    check(assert_type(td.seconds, int), int)
+    check(assert_type(td.value, int), int)
+    check(assert_type(td.resolution_string, str), str)
+    check(assert_type(td.components, Components), Components)
+
+    check(assert_type(td.ceil("D"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td.floor(Day()), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td.isoformat(), str), str)
+    check(assert_type(td.round("s"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td.to_numpy(), np.timedelta64), np.timedelta64)
+    check(assert_type(td.to_pytimedelta(), dt.timedelta), dt.timedelta)
+    check(assert_type(td.to_timedelta64(), np.timedelta64), np.timedelta64)
+    check(assert_type(td.total_seconds(), float), float)
+    check(assert_type(td.view(np.int64), object), np.int64)
+    check(assert_type(td.view("i8"), object), np.int64)
+
+
+def test_timedelta_add_sub() -> None:
+    td = pd.Timedelta("1 day")
+
+    ndarray_td64: npt.NDArray[np.timedelta64] = np.array(
+        [1, 2, 3], dtype="timedelta64[D]"
+    )
+    ndarray_dt64: npt.NDArray[np.datetime64] = np.array(
+        [1, 2, 3], dtype="datetime64[D]"
+    )
+    as_period = pd.Period("2012-01-01", freq="D")
+    as_timestamp = pd.Timestamp("2012-01-01")
+    as_datetime = dt.datetime(2012, 1, 1)
+    as_date = dt.date(2012, 1, 1)
+    as_datetime64 = np.datetime64(1, "ns")
+    as_dt_timedelta = dt.timedelta(days=1)
+    as_timedelta64 = np.timedelta64(1, "D")
+    as_timedelta_index = pd.TimedeltaIndex([td])
+    as_timedelta_series = pd.Series(as_timedelta_index)
+    as_period_index = pd.period_range("2012-01-01", periods=3, freq="D")
+    as_datetime_index = pd.date_range("2012-01-01", periods=3)
+    as_ndarray_td64 = ndarray_td64
+    as_ndarray_dt64 = ndarray_dt64
+    as_nat = pd.NaT
+
+    check(assert_type(td + td, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td + as_period, pd.Period), pd.Period)
+    check(assert_type(td + as_timestamp, pd.Timestamp), pd.Timestamp)
+    check(assert_type(td + as_datetime, pd.Timestamp), pd.Timestamp)
+    check(assert_type(td + as_date, dt.date), dt.date)
+    check(assert_type(td + as_datetime64, pd.Timestamp), pd.Timestamp)
+    check(assert_type(td + as_dt_timedelta, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td + as_timedelta64, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td + as_timedelta_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(
+        assert_type(td + as_timedelta_series, TimedeltaSeries), pd.Series, pd.Timedelta
+    )
+    check(assert_type(td + as_period_index, pd.PeriodIndex), pd.PeriodIndex)
+    check(assert_type(td + as_datetime_index, pd.DatetimeIndex), pd.DatetimeIndex)
+    check(
+        assert_type(td + as_ndarray_td64, npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
+    check(
+        assert_type(td + as_ndarray_dt64, npt.NDArray[np.datetime64]),
+        np.ndarray,
+        np.datetime64,
+    )
+    check(assert_type(td + as_nat, NaTType), NaTType)
+
+    check(assert_type(as_period + td, pd.Period), pd.Period)
+    check(assert_type(as_timestamp + td, pd.Timestamp), pd.Timestamp)
+    check(assert_type(as_datetime + td, dt.datetime), dt.datetime)
+    check(assert_type(as_date + td, dt.date), dt.date)
+    check(assert_type(as_datetime64 + td, pd.Timestamp), pd.Timestamp)
+    # pyright can't know that as_td_timedelta + td calls
+    # td.__radd__(as_td_timedelta),  not timedelta.__add__
+    # https://github.com/microsoft/pyright/issues/4088
+    check(
+        assert_type(
+            as_dt_timedelta + td,  # pyright: ignore[reportGeneralTypeIssues]
+            pd.Timedelta,
+        ),
+        pd.Timedelta,
+    )
+    check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)
+    check(assert_type(as_timedelta_index + td, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(
+        assert_type(as_timedelta_series + td, TimedeltaSeries), pd.Series, pd.Timedelta
+    )
+    check(assert_type(as_period_index + td, pd.PeriodIndex), pd.PeriodIndex)
+    check(assert_type(as_datetime_index + td, pd.DatetimeIndex), pd.DatetimeIndex)
+    check(
+        assert_type(
+            as_ndarray_td64 + td,
+            npt.NDArray[np.timedelta64],
+        ),
+        np.ndarray,
+        np.timedelta64,
+    )
+    check(assert_type(as_nat + td, NaTType), NaTType)
+
+    # sub is not symmetric with dates. In general date_like - timedelta is
+    # sensible, while timedelta - date_like is not
+    # TypeError: as_period, as_timestamp, as_datetime, as_date, as_datetime64,
+    #            as_period_index, as_datetime_index, as_ndarray_dt64
+    if TYPE_CHECKING_INVALID_USAGE:
+        td - as_period  # type: ignore[operator]
+        td - as_timestamp  # type: ignore[operator]
+        td - as_datetime  # type: ignore[operator]
+        td - as_date  # type: ignore[operator]
+        td - as_datetime64  # type: ignore[operator]
+        td - as_period_index  # type: ignore[operator]
+        td - as_datetime_index  # type: ignore[operator]
+        td - as_ndarray_dt64  # type: ignore[operator]
+
+    check(assert_type(td - td, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td - as_dt_timedelta, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td - as_timedelta64, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td - as_timedelta_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(
+        assert_type(td - as_timedelta_series, TimedeltaSeries), pd.Series, pd.Timedelta
+    )
+    check(
+        assert_type(td - as_ndarray_td64, npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
+    check(assert_type(td - as_nat, NaTType), NaTType)
+    check(assert_type(as_period - td, pd.Period), pd.Period)
+    check(assert_type(as_timestamp - td, pd.Timestamp), pd.Timestamp)
+    check(assert_type(as_datetime - td, dt.datetime), dt.datetime)
+    check(assert_type(as_date - td, dt.date), dt.date)
+    check(assert_type(as_datetime64 - td, pd.Timestamp), pd.Timestamp)
+    # pyright can't know that as_dt_timedelta - td calls td.__rsub__(as_dt_timedelta),
+    # not as_dt_timedelta.__sub__
+    # https://github.com/microsoft/pyright/issues/4088
+    check(
+        assert_type(
+            as_dt_timedelta - td,  # pyright: ignore[reportGeneralTypeIssues]
+            pd.Timedelta,
+        ),
+        pd.Timedelta,
+    )
+    check(assert_type(as_timedelta64 - td, pd.Timedelta), pd.Timedelta)
+    check(assert_type(as_timedelta_index - td, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(
+        assert_type(as_timedelta_series - td, TimedeltaSeries), pd.Series, pd.Timedelta
+    )
+    check(assert_type(as_period_index - td, pd.PeriodIndex), pd.PeriodIndex)
+    check(assert_type(as_datetime_index - td, pd.DatetimeIndex), pd.DatetimeIndex)
+    check(
+        assert_type(
+            as_ndarray_td64 - td,
+            npt.NDArray[np.timedelta64],
+        ),
+        np.ndarray,
+        np.timedelta64,
+    )
+    check(
+        assert_type(
+            as_ndarray_dt64 - td,
+            npt.NDArray[np.datetime64],
+        ),
+        np.ndarray,
+        np.datetime64,
+    )
+    check(assert_type(as_nat - td, NaTType), NaTType)
+
+
+def test_timedelta_mul_div() -> None:
+    td = pd.Timedelta("1 day")
+
+    with pytest.warns(FutureWarning):
+        i_idx = cast(pd.Int64Index, pd.Index([1, 2, 3], dtype=int))
+        f_idx = cast(pd.Float64Index, pd.Index([1.2, 2.2, 3.4], dtype=float))
+
+    np_intp_arr: npt.NDArray[np.integer] = np.array([1, 2, 3])
+    np_float_arr: npt.NDArray[np.floating] = np.array([1.2, 2.2, 3.4])
+
+    md_int = 3
+    md_float = 3.5
+    md_ndarray_intp = np_intp_arr
+    md_ndarray_float = np_float_arr
+    mp_series_int = pd.Series([1, 2, 3], dtype=int)
+    md_series_float = pd.Series([1.2, 2.2, 3.4], dtype=float)
+    md_int64_index = i_idx
+    md_float_index = f_idx
+    md_timedelta_series = pd.Series(pd.timedelta_range("1 day", periods=3))
+
+    check(assert_type(td * md_int, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td * md_float, pd.Timedelta), pd.Timedelta)
+    check(
+        assert_type(td * md_ndarray_intp, npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
+    check(
+        assert_type(td * md_ndarray_float, npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
+    check(assert_type(td * mp_series_int, TimedeltaSeries), pd.Series, pd.Timedelta)
+    check(assert_type(td * md_series_float, TimedeltaSeries), pd.Series, pd.Timedelta)
+    check(assert_type(td * md_int64_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(td * md_float_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
+
+    check(assert_type(md_int * td, pd.Timedelta), pd.Timedelta)
+    check(assert_type(md_float * td, pd.Timedelta), pd.Timedelta)
+    check(assert_type(md_ndarray_intp * td, np.ndarray), np.ndarray, np.timedelta64)
+    check(assert_type(md_ndarray_float * td, np.ndarray), np.ndarray, np.timedelta64)
+    check(assert_type(mp_series_int * td, TimedeltaSeries), pd.Series, pd.Timedelta)
+    check(assert_type(md_series_float * td, TimedeltaSeries), pd.Series, pd.Timedelta)
+    check(assert_type(md_int64_index * td, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(md_float_index * td, pd.TimedeltaIndex), pd.TimedeltaIndex)
+
+    check(assert_type(td // td, int), int)
+    check(assert_type(td // pd.NaT, float), float)
+    check(assert_type(td // md_int, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td // md_float, pd.Timedelta), pd.Timedelta)
+    check(
+        assert_type(td // md_ndarray_intp, npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
+    check(
+        assert_type(td // md_ndarray_float, npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
+    check(assert_type(td // mp_series_int, TimedeltaSeries), pd.Series, pd.Timedelta)
+    check(assert_type(td // md_series_float, TimedeltaSeries), pd.Series, pd.Timedelta)
+    check(assert_type(td // md_int64_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(td // md_float_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(td // md_timedelta_series, "pd.Series[int]"), pd.Series, int)
+
+    check(assert_type(pd.NaT // td, float), float)
+    # Note: None of the reverse floordiv work
+    # TypeError: md_int, md_float, md_ndarray_intp, md_ndarray_float, mp_series_int,
+    #            mp_series_float, md_int64_index, md_float_index
+    if TYPE_CHECKING_INVALID_USAGE:
+        md_int // td  # type: ignore[operator]
+        md_float // td  # type: ignore[operator]
+        md_ndarray_intp // td  # type: ignore[operator]
+        md_ndarray_float // td  # type: ignore[operator]
+        mp_series_int // td  # type: ignore[operator]
+        md_series_float // td  # type: ignore[operator]
+        md_int64_index // td  # type: ignore[operator]
+        md_float_index // td  # type: ignore[operator]
+
+    check(assert_type(td / td, float), float)
+    check(assert_type(td / pd.NaT, float), float)
+    check(assert_type(td / md_int, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td / md_float, pd.Timedelta), pd.Timedelta)
+    check(
+        assert_type(td / md_ndarray_intp, npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
+    check(
+        assert_type(td / md_ndarray_float, npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
+    check(assert_type(td / mp_series_int, TimedeltaSeries), pd.Series, pd.Timedelta)
+    check(assert_type(td / md_series_float, TimedeltaSeries), pd.Series, pd.Timedelta)
+    check(assert_type(td / md_int64_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(td / md_float_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(td / md_timedelta_series, "pd.Series[float]"), pd.Series, float)
+
+    check(assert_type(pd.NaT / td, float), float)
+    # Note: None of the reverse truediv work
+    # TypeError: md_int, md_float, md_ndarray_intp, md_ndarray_float, mp_series_int,
+    #            mp_series_float, md_int64_index, md_float_index
+    if TYPE_CHECKING_INVALID_USAGE:
+        md_int / td  # type: ignore[operator]
+        md_float / td  # type: ignore[operator]
+        md_ndarray_intp / td  # type: ignore[operator]
+        md_ndarray_float / td  # type: ignore[operator]
+        # TODO: Series.__truediv__ says it supports Timedelta
+        #   it does not, in general, except for TimedeltaSeries
+        # mp_series_int / td  # type: ignore[operator]
+        # mp_series_float / td  # type: ignore[operator]
+        md_int64_index / td  # type: ignore[operator]
+        md_float_index / td  # type: ignore[operator]
+
+
+def test_timedelta_mod_abs_unary() -> None:
+    td = pd.Timedelta("1 day")
+
+    with pytest.warns(FutureWarning):
+        i_idx = cast(pd.Int64Index, pd.Index([1, 2, 3], dtype=int))
+        f_idx = cast(pd.Float64Index, pd.Index([1.2, 2.2, 3.4], dtype=float))
+
+    check(assert_type(td % 3, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td % 3.5, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td % td, pd.Timedelta), pd.Timedelta)
+    check(
+        assert_type(td % np.array([1, 2, 3]), npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
+    check(
+        assert_type(td % np.array([1.2, 2.2, 3.4]), npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
+    int_series = pd.Series([1, 2, 3], dtype=int)
+    float_series = pd.Series([1.2, 2.2, 3.4], dtype=float)
+    check(assert_type(td % int_series, TimedeltaSeries), pd.Series, pd.Timedelta)
+    check(assert_type(td % float_series, TimedeltaSeries), pd.Series, pd.Timedelta)
+    check(assert_type(td % i_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
+
+    check(
+        assert_type(td % f_idx, pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+    )
+
+    # mypy reports dt.timedelta, even though __abs__ returns Timedelta
+    check(assert_type(abs(td), pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type]
+    check(assert_type(td.__abs__(), pd.Timedelta), pd.Timedelta)
+    check(assert_type(-td, pd.Timedelta), pd.Timedelta)
+    check(assert_type(+td, pd.Timedelta), pd.Timedelta)
+
+
+def test_timedelta_cmp() -> None:
+    td = pd.Timedelta("1 day")
+    ndarray_td64: npt.NDArray[np.timedelta64] = np.array(
+        [1, 2, 3], dtype="timedelta64[D]"
+    )
+    c_timedelta = td
+    c_dt_timedelta = dt.timedelta(days=1)
+    c_timedelta64 = np.timedelta64(1, "D")
+    c_ndarray_td64 = ndarray_td64
+    c_timedelta_index = pd.TimedeltaIndex([1, 2, 3], unit="D")
+    c_timedelta_series = pd.Series(pd.TimedeltaIndex([1, 2, 3]))
+
+    check(assert_type(td < c_timedelta, bool), bool)
+    check(assert_type(td < c_dt_timedelta, bool), bool)
+    check(assert_type(td < c_timedelta64, bool), bool)
+    check(assert_type(td < c_ndarray_td64, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(c_timedelta_index < td, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(c_dt_timedelta < td, bool), bool)
+    check(assert_type(c_ndarray_td64 < td, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(c_timedelta_index < td, np_ndarray_bool), np.ndarray, np.bool_)
+
+    gt = check(assert_type(td > c_timedelta, bool), bool)
+    le = check(assert_type(td <= c_timedelta, bool), bool)
+    assert gt != le
+
+    gt = check(assert_type(td > c_dt_timedelta, bool), bool)
+    le = check(assert_type(td <= c_dt_timedelta, bool), bool)
+    assert gt != le
+
+    gt = check(assert_type(td > c_timedelta64, bool), bool)
+    le = check(assert_type(td <= c_timedelta64, bool), bool)
+    assert gt != le
+
+    gt_a = check(
+        assert_type(td > c_ndarray_td64, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    le_a = check(
+        assert_type(td <= c_ndarray_td64, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    assert (gt_a != le_a).all()
+
+    gt_a = check(
+        assert_type(td > c_timedelta_index, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    le_a = check(
+        assert_type(td <= c_timedelta_index, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    assert (gt_a != le_a).all()
+
+    gt_s = check(
+        assert_type(td > c_timedelta_series, "pd.Series[bool]"), pd.Series, bool
+    )
+    le_s = check(
+        assert_type(td <= c_timedelta_series, "pd.Series[bool]"), pd.Series, bool
+    )
+    assert (gt_s != le_s).all()
+
+    gt = check(assert_type(c_dt_timedelta > td, bool), bool)
+    le = check(assert_type(c_dt_timedelta <= td, bool), bool)
+    assert gt != le
+
+    gt_b = check(assert_type(c_timedelta64 > td, Any), np.bool_)
+    le_b = check(assert_type(c_timedelta64 <= td, Any), np.bool_)
+    assert gt_b != le_b
+
+    gt_a = check(
+        assert_type(c_ndarray_td64 > td, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    le_a = check(
+        assert_type(c_ndarray_td64 <= td, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    assert (gt_a != le_a).all()
+
+    gt_a = check(
+        assert_type(c_timedelta_index > td, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    le_a = check(
+        assert_type(c_timedelta_index <= td, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    assert (gt_a != le_a).all()
+
+    eq_s = check(
+        assert_type(c_timedelta_series > td, "pd.Series[bool]"), pd.Series, bool
+    )
+    ne_s = check(
+        assert_type(c_timedelta_series <= td, "pd.Series[bool]"), pd.Series, bool
+    )
+    assert (eq_s != ne_s).all()
+
+    lt = check(assert_type(td < c_timedelta, bool), bool)
+    ge = check(assert_type(td >= c_timedelta, bool), bool)
+    assert lt != ge
+
+    lt = check(assert_type(td < c_dt_timedelta, bool), bool)
+    ge = check(assert_type(td >= c_dt_timedelta, bool), bool)
+    assert lt != ge
+
+    lt = check(assert_type(td < c_timedelta64, bool), bool)
+    ge = check(assert_type(td >= c_timedelta64, bool), bool)
+    assert lt != ge
+
+    lt_a = check(
+        assert_type(td < c_ndarray_td64, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    ge_a = check(
+        assert_type(td >= c_ndarray_td64, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    assert (lt_a != ge_a).all()
+
+    lt_a = check(
+        assert_type(td < c_timedelta_index, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    ge_a = check(
+        assert_type(td >= c_timedelta_index, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    assert (lt_a != ge_a).all()
+
+    eq_s = check(
+        assert_type(td < c_timedelta_series, "pd.Series[bool]"), pd.Series, bool
+    )
+    ne_s = check(
+        assert_type(td >= c_timedelta_series, "pd.Series[bool]"), pd.Series, bool
+    )
+    assert (eq_s != ne_s).all()
+
+    lt = check(assert_type(c_dt_timedelta < td, bool), bool)
+    ge = check(assert_type(c_dt_timedelta >= td, bool), bool)
+    assert lt != ge
+
+    lt_b = check(assert_type(c_timedelta64 < td, Any), np.bool_)
+    ge_b = check(assert_type(c_timedelta64 >= td, Any), np.bool_)
+    assert lt_b != ge_b
+
+    lt_a = check(
+        assert_type(c_ndarray_td64 < td, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    ge_a = check(
+        assert_type(c_ndarray_td64 >= td, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    assert (lt_a != ge_a).all()
+
+    lt_a = check(
+        assert_type(c_timedelta_index < td, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    ge_a = check(
+        assert_type(c_timedelta_index >= td, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    assert (lt_a != ge_a).all()
+
+    eq_s = check(
+        assert_type(c_timedelta_series < td, "pd.Series[bool]"), pd.Series, bool
+    )
+    ne_s = check(
+        assert_type(c_timedelta_series >= td, "pd.Series[bool]"), pd.Series, bool
+    )
+    assert (eq_s != ne_s).all()
+
+    eq = check(assert_type(td == td, bool), bool)
+    ne = check(assert_type(td != td, bool), bool)
+    assert eq != ne
+
+    eq = check(assert_type(td == c_dt_timedelta, bool), bool)
+    ne = check(assert_type(td != c_dt_timedelta, bool), bool)
+    assert eq != ne
+
+    eq = check(assert_type(td == c_timedelta64, bool), bool)
+    ne = check(assert_type(td != c_timedelta64, bool), bool)
+    assert eq != ne
+
+    eq_a = check(
+        assert_type(td == c_ndarray_td64, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    ne_a = check(
+        assert_type(td != c_ndarray_td64, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    assert (eq_a != ne_a).all()
+
+    eq_a = check(
+        assert_type(td == c_timedelta_index, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    ne_a = check(
+        assert_type(td != c_timedelta_index, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    assert (eq_a != ne_a).all()
+
+    eq_s = check(
+        assert_type(td == c_timedelta_series, "pd.Series[bool]"), pd.Series, bool
+    )
+    ne_s = check(
+        assert_type(td != c_timedelta_series, "pd.Series[bool]"), pd.Series, bool
+    )
+    assert (eq_s != ne_s).all()
+
+    eq = check(assert_type(td == 1, Literal[False]), bool)
+    ne = check(assert_type(td != 1, Literal[True]), bool)
+    assert eq != ne
+
+    eq = check(assert_type(td == (3 + 2j), Literal[False]), bool)
+    ne = check(assert_type(td != (3 + 2j), Literal[True]), bool)
+    assert eq != ne
+
+
+def test_timedelta_cmp_rhs() -> None:
+    # Test that check eq and ne when Timedelta is the RHS argument
+    # that use the __eq__ and __ne__ methods of the LHS
+    td = pd.Timedelta("1 day")
+    ndarray_td64: npt.NDArray[np.timedelta64] = np.array(
+        [1, 2, 3], dtype="timedelta64[D]"
+    )
+    c_dt_timedelta = dt.timedelta(days=1)
+    c_timedelta64 = np.timedelta64(1, "D")
+    c_ndarray_td64 = ndarray_td64
+    c_timedelta_index = pd.TimedeltaIndex([1, 2, 3], unit="D")
+    c_timedelta_series = pd.Series(pd.TimedeltaIndex([1, 2, 3]))
+
+    eq = check(assert_type(c_dt_timedelta == td, bool), bool)
+    ne = check(assert_type(c_dt_timedelta != td, bool), bool)
+    assert eq != ne
+
+    eq = check(assert_type(c_timedelta64 == td, Any), np.bool_)
+    ne = check(assert_type(c_timedelta64 != td, Any), np.bool_)
+    assert eq != ne
+
+    eq_a = check(assert_type(c_ndarray_td64 == td, Any), np.ndarray, np.bool_)
+    ne_a = check(assert_type(c_ndarray_td64 != td, Any), np.ndarray, np.bool_)
+    assert (eq_a != ne_a).all()
+
+    eq_a = check(
+        assert_type(c_timedelta_index == td, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    ne_a = check(
+        assert_type(c_timedelta_index != td, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    assert (eq_a != ne_a).all()
+
+    eq_s = check(
+        assert_type(c_timedelta_series == td, "pd.Series[bool]"), pd.Series, bool
+    )
+    ne_s = check(
+        assert_type(c_timedelta_series != td, "pd.Series[bool]"), pd.Series, bool
+    )
+    assert (eq_s != ne_s).all()
 
 
 def test_timestamp_construction() -> None:
@@ -160,7 +850,7 @@ def test_timestamp_add_sub() -> None:
     as_offset = 3 * Day()
     as_timedelta_index = pd.TimedeltaIndex([1, 2, 3], "D")
     as_timedelta_series = pd.Series(as_timedelta_index)
-    check(assert_type(as_timedelta_series, TimedeltaSeries), pd.Series)
+    check(assert_type(as_timedelta_series, TimedeltaSeries), pd.Series, pd.Timedelta)
     as_np_ndarray_td64 = np_td64_arr
 
     check(assert_type(ts + as_pd_timedelta, pd.Timestamp), pd.Timestamp)
@@ -714,9 +1404,9 @@ def test_period_add_subtract() -> None:
     as_period = pd.Period("2012-1-1", freq="D")
     scale = 24 * 60 * 60 * 10**9
     as_td_series = pd.Series(pd.timedelta_range(scale, scale, freq="D"))
-    check(assert_type(as_td_series, TimedeltaSeries), pd.Series)
+    check(assert_type(as_td_series, TimedeltaSeries), pd.Series, pd.Timedelta)
     as_period_series = pd.Series(as_period_index)
-    check(assert_type(as_period_series, PeriodSeries), pd.Series)
+    check(assert_type(as_period_series, PeriodSeries), pd.Series, pd.Period)
     as_timedelta_idx = pd.timedelta_range(scale, scale, freq="D")
     as_nat = pd.NaT
 
