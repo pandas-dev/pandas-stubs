@@ -11,15 +11,15 @@ from typing import (
     Final,
 )
 
-from packaging.version import parse
 import pandas as pd
+from pandas.util.version import Version
 import pytest
 
 from pandas._typing import T
 
 TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 WINDOWS = os.name == "nt" or "cygwin" in platform.system().lower()
-PD_LTE_15 = parse(pd.__version__) < parse("1.5.999")
+PD_LTE_15 = Version(pd.__version__) < Version("1.5.999")
 
 
 def check(actual: T, klass: type, dtype: type | None = None, attr: str = "left") -> T:
@@ -46,7 +46,7 @@ def pytest_warns_bounded(
     upper: str | None = None,
 ) -> AbstractContextManager:
     """
-    Version conditional pytet.warns context manager
+    Version conditional pytest.warns context manager
 
     Returns a context manager that will raise an error if
     the warning is not issued when pandas version is
@@ -86,9 +86,9 @@ def pytest_warns_bounded(
         # Versions between 1.3.x and 1.5.x will raise an error
         pass
     """
-    lb = parse("0.0.0") if lower is None else parse(lower)
-    ub = parse("9999.0.0") if upper is None else parse(upper)
-    current = parse(pd.__version__)
+    lb = Version("0.0.0") if lower is None else Version(lower)
+    ub = Version("9999.0.0") if upper is None else Version(upper)
+    current = Version(pd.__version__)
     if lb < current < ub:
         return pytest.warns(warning, match=match)
     else:
