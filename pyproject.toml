@@ -85,16 +85,20 @@ help = "Run pre-commit"
 script = "scripts.test.run:style"
 
 [tool.poe.tasks.mypy]
-help = "Run mypy on 'tests' (using the local stubs) and on the local stubs"
-script = "scripts.test.run:mypy_src"
+help = '''Run mypy on 'tests' (using the local stubs) and on the local stubs'''
+script = 'scripts.test.run:mypy_src'
+
+[[tool.poe.tasks.mypy.args]]
+default = false
+help = 'Whether to generate a HTML coverage report (off by default)'
+name = 'coverage'
+positional = false
+required = false
+type = 'boolean'
 
 [tool.poe.tasks.mypy_dist]
 help = "Run mypy on 'tests' using the installed stubs"
 script = "scripts.test:test(dist=True, type_checker='mypy')"
-
-[tool.poe.tasks.mypy_coverage]
-help = "Run mypy on 'tests' using the local stubs and report HTML coverage"
-script = "scripts.test:test(coverage=True, type_checker='mypy')"
 
 [tool.poe.tasks.pyright]
 help = "Run pyright on 'tests' (using the local stubs) and on the local stubs"

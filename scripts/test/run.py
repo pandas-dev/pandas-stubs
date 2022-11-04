@@ -3,20 +3,10 @@ import subprocess
 import sys
 
 
-def mypy_src():
+def mypy_src(coverage=False):
     cmd = ["mypy", "pandas-stubs", "tests", "--no-incremental"]
-    subprocess.run(cmd, check=True)
-
-
-def mypy_coverage():
-    cmd = [
-        "mypy",
-        "pandas-stubs",
-        "tests",
-        "--no-incremental",
-        "--html-report",
-        "./coverage",
-    ]
+    if coverage:
+        cmd += ["--html-report", "./coverage"]
     subprocess.run(cmd, check=True)
 
 
