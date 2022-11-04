@@ -28,7 +28,6 @@ packages = [
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/pandas-dev/pandas-stubs/issues"
 "Documentation" = "https://pandas.pydata.org/pandas-docs/stable"
-"Source Code" = "https://github.com/pandas-dev/pandas-stubs"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"
@@ -38,7 +37,7 @@ types-pytz = ">= 2022.1.1"
 mypy = "==0.971"
 pyarrow = ">=9.0.0"
 pytest = ">=7.1.2"
-pyright = ">=1.1.266"
+pyright = ">=1.1.278"
 poethepoet = "0.16.0"
 loguru = ">=0.6.0"
 pandas = "1.5.1"

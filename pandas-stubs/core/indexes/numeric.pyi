@@ -1,6 +1,5 @@
 from typing import Iterable
 
-import numpy as np
 from pandas.core.indexes.base import Index
 
 from pandas._typing import np_ndarray_int64

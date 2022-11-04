@@ -1,4 +1,3 @@
-import numpy as np
 import pyarrow as pa
 
 from pandas.core.dtypes.base import StorageExtensionDtype
