@@ -649,7 +649,6 @@ def test_types_describe() -> None:
         s.describe(percentiles=[0.5], include="all")
     with pytest.warns(DeprecationWarning, match="elementwise comparison failed"):
         s.describe(exclude=np.number)
-    # datetime_is_numeric param added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
     if PD_LTE_15:
         # datetime_is_numeric param added in 1.1.0
         # https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
