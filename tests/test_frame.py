@@ -1921,3 +1921,9 @@ def df_accepting_dicts_iterator() -> None:
     # GH 392
     data = [{"a": 1, "b": 2}, {"a": 3, "b": 5}]
     check(assert_type(pd.DataFrame(iter(data)), pd.DataFrame), pd.DataFrame)
+
+
+def series_added_in_astype() -> None:
+    # GH410
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+    check(assert_type(df.astype(df.dtypes), pd.DataFrame), pd.DataFrame)
