@@ -165,18 +165,56 @@ class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[IntervalT]):
         copy: bool = ...,
         dtype: IntervalDtype | None = ...,
     ) -> IntervalIndex[Interval[pd.Timedelta]]: ...
+    @overload
     @classmethod
     def from_tuples(
         cls,
-        data: Sequence[tuple[int, int]]
-        | Sequence[tuple[float, float]]
-        | Sequence[tuple[DatetimeLike, DatetimeLike]]
-        | npt.NDArray,
+        data: Sequence[tuple[int, int]] | npt.NDArray[np.integer],
         closed: IntervalClosedType = ...,
         name: Hashable = ...,
         copy: bool = ...,
         dtype: IntervalDtype | None = ...,
-    ) -> IntervalIndex: ...
+    ) -> IntervalIndex[pd.Interval[int]]: ...
+    @overload
+    @classmethod
+    def from_tuples(
+        cls,
+        data: Sequence[tuple[float, float]] | npt.NDArray[np.floating],
+        closed: IntervalClosedType = ...,
+        name: Hashable = ...,
+        copy: bool = ...,
+        dtype: IntervalDtype | None = ...,
+    ) -> IntervalIndex[pd.Interval[float]]: ...
+    @overload
+    @classmethod
+    def from_tuples(
+        cls,
+        data: Sequence[
+            tuple[pd.Timestamp, pd.Timestamp]
+            | tuple[dt.datetime, dt.datetime]
+            | tuple[np.datetime64, np.datetime64]
+        ]
+        | npt.NDArray[np.datetime64],
+        closed: IntervalClosedType = ...,
+        name: Hashable = ...,
+        copy: bool = ...,
+        dtype: IntervalDtype | None = ...,
+    ) -> IntervalIndex[pd.Interval[pd.Timestamp]]: ...
+    @overload
+    @classmethod
+    def from_tuples(
+        cls,
+        data: Sequence[
+            tuple[pd.Timedelta, pd.Timedelta]
+            | tuple[dt.datetime, dt.datetime]
+            | tuple[np.datetime64, np.datetime64]
+        ]
+        | npt.NDArray[np.timedelta64],
+        closed: IntervalClosedType = ...,
+        name: Hashable = ...,
+        copy: bool = ...,
+        dtype: IntervalDtype | None = ...,
+    ) -> IntervalIndex[pd.Interval[pd.Timedelta]]: ...
     def __contains__(self, key: Any) -> bool: ...
     def astype(self, dtype: DtypeArg, copy: bool = ...) -> IntervalIndex: ...
     @property
@@ -265,8 +303,10 @@ def interval_range(  # type: ignore[misc]
     name: Hashable = ...,
     closed: IntervalClosedType = ...,
 ) -> IntervalIndex[Interval[int]]: ...
+
+# Overlaps since int is a subclass of float
 @overload
-def interval_range(
+def interval_range(  # pyright: reportOverlappingOverload=false
     start: int,
     *,
     end: None = ...,
@@ -276,7 +316,7 @@ def interval_range(
     closed: IntervalClosedType = ...,
 ) -> IntervalIndex[Interval[int]]: ...
 @overload
-def interval_range(
+def interval_range(  # pyright: reportOverlappingOverload=false
     *,
     start: None = ...,
     end: int,

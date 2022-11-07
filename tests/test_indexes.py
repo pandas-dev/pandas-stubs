@@ -504,13 +504,33 @@ def test_interval_index_arrays():
 
 
 def test_interval_index_tuples():
+    int_arr: npt.NDArray[np.integer] = np.array([[1, 2], [3, 4]], dtype=np.int64)
+    float_arr: npt.NDArray[np.floating] = np.array([[1, 2], [3, 4]], dtype=np.float_)
+
     check(
-        assert_type(pd.IntervalIndex.from_tuples([(1, 2), (2, 3)]), pd.IntervalIndex),
+        assert_type(
+            pd.IntervalIndex.from_tuples([(1, 2), (2, 3)]),
+            "pd.IntervalIndex[pd.Interval[int]]",
+        ),
         pd.IntervalIndex,
     )
     check(
         assert_type(
-            pd.IntervalIndex.from_tuples([(1.0, 2.0), (2.0, 3.0)]), pd.IntervalIndex
+            pd.IntervalIndex.from_tuples(int_arr), "pd.IntervalIndex[pd.Interval[int]]"
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_tuples([(1.0, 2.0), (2.0, 3.0)]),
+            "pd.IntervalIndex[pd.Interval[float]]",
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_tuples(float_arr),
+            "pd.IntervalIndex[pd.Interval[float]]",
         ),
         pd.IntervalIndex,
     )
@@ -522,7 +542,7 @@ def test_interval_index_tuples():
                     (pd.Timestamp(2001, 1, 1), pd.Timestamp(2002, 1, 1)),
                 ]
             ),
-            pd.IntervalIndex,
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
     )
