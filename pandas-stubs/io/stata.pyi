@@ -8,9 +8,6 @@ from typing import (
     overload,
 )
 
-import numpy as np
-import numpy.typing as npt
-import pandas as pd
 from pandas.core.frame import DataFrame
 
 from pandas._typing import (

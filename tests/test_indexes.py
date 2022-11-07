@@ -412,26 +412,27 @@ def test_interval_index_arrays():
         ),
         pd.IntervalIndex,
     )
+    left_dt64_arr: npt.NDArray[np.datetime64] = np.array(
+        [
+            np.datetime64("2000-01-01"),
+            np.datetime64("2001-01-01"),
+            np.datetime64("2002-01-01"),
+            np.datetime64("2003-01-01"),
+        ],
+        dtype="datetime64[ns]",
+    )
+    right_dt_arr: npt.NDArray[np.datetime64] = np.array(
+        [
+            np.datetime64("2001-01-01"),
+            np.datetime64("2002-01-01"),
+            np.datetime64("2003-01-01"),
+            np.datetime64("2004-01-01"),
+        ],
+        dtype="datetime64[ns]",
+    )
     check(
         assert_type(
-            pd.IntervalIndex.from_arrays(
-                np.array(
-                    [
-                        np.datetime64("2000-01-01"),
-                        np.datetime64("2001-01-01"),
-                        np.datetime64("2002-01-01"),
-                        np.datetime64("2003-01-01"),
-                    ]
-                ),
-                np.array(
-                    [
-                        np.datetime64("2001-01-01"),
-                        np.datetime64("2002-01-01"),
-                        np.datetime64("2003-01-01"),
-                        np.datetime64("2004-01-01"),
-                    ]
-                ),
-            ),
+            pd.IntervalIndex.from_arrays(left_dt64_arr, right_dt_arr),
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
@@ -440,7 +441,7 @@ def test_interval_index_arrays():
     check(
         assert_type(
             pd.IntervalIndex.from_arrays(
-                pd.Series([1, 2, 3, 4]), pd.Series([2, 3, 4, 5])
+                pd.Series([1, 2, 3, 4], dtype=int), pd.Series([2, 3, 4, 5], dtype=int)
             ),
             "pd.IntervalIndex[pd.Interval[int]]",
         ),
@@ -455,28 +456,27 @@ def test_interval_index_arrays():
         ),
         pd.IntervalIndex,
     )
+    left_s_ts = pd.Series(
+        [
+            pd.Timestamp(2000, 1, 1),
+            pd.Timestamp(2001, 1, 1),
+            pd.Timestamp(2002, 1, 1),
+            pd.Timestamp(2003, 1, 1),
+        ],
+        dtype=pd.Timestamp,
+    )
+    right_s_ts = pd.Series(
+        [
+            pd.Timestamp(2001, 1, 1),
+            pd.Timestamp(2002, 1, 1),
+            pd.Timestamp(2003, 1, 1),
+            pd.Timestamp(2004, 1, 1),
+        ],
+        dtype=pd.Timestamp,
+    )
     check(
         assert_type(
-            pd.IntervalIndex.from_arrays(
-                pd.Series(
-                    [
-                        pd.Timestamp(2000, 1, 1),
-                        pd.Timestamp(2001, 1, 1),
-                        pd.Timestamp(2002, 1, 1),
-                        pd.Timestamp(2003, 1, 1),
-                    ],
-                    dtype=pd.Timestamp,
-                ),
-                pd.Series(
-                    [
-                        pd.Timestamp(2001, 1, 1),
-                        pd.Timestamp(2002, 1, 1),
-                        pd.Timestamp(2003, 1, 1),
-                        pd.Timestamp(2004, 1, 1),
-                    ],
-                    dtype=pd.Timestamp,
-                ),
-            ),
+            pd.IntervalIndex.from_arrays(left_s_ts, right_s_ts),
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,

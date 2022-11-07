@@ -697,7 +697,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def apply(
         self,
-        func: Callable[..., Hashable],
+        func: Callable[..., Scalar | Sequence | Mapping],
         convertDType: _bool = ...,
         args: tuple = ...,
         **kwds,
@@ -1205,7 +1205,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         ascending: _bool = ...,
         bins: int | None = ...,
         dropna: _bool = ...,
-    ) -> Series[S1]: ...
+    ) -> Series[int]: ...
     def transpose(self, *args, **kwargs) -> Series[S1]: ...
     @property
     def T(self) -> Series[S1]: ...
