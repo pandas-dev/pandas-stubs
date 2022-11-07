@@ -456,24 +456,8 @@ def test_interval_index_arrays():
         ),
         pd.IntervalIndex,
     )
-    left_s_ts = pd.Series(
-        [
-            pd.Timestamp(2000, 1, 1),
-            pd.Timestamp(2001, 1, 1),
-            pd.Timestamp(2002, 1, 1),
-            pd.Timestamp(2003, 1, 1),
-        ],
-        dtype=pd.Timestamp,
-    )
-    right_s_ts = pd.Series(
-        [
-            pd.Timestamp(2001, 1, 1),
-            pd.Timestamp(2002, 1, 1),
-            pd.Timestamp(2003, 1, 1),
-            pd.Timestamp(2004, 1, 1),
-        ],
-        dtype=pd.Timestamp,
-    )
+    left_s_ts = pd.Series(pd.date_range("2000-01-01", "2003-01-01", freq="Y"))
+    right_s_ts = pd.Series(pd.date_range("2001-01-01", "2004-01-01", freq="Y"))
     check(
         assert_type(
             pd.IntervalIndex.from_arrays(left_s_ts, right_s_ts),
@@ -504,9 +488,6 @@ def test_interval_index_arrays():
 
 
 def test_interval_index_tuples():
-    int_arr: npt.NDArray[np.integer] = np.array([[1, 2], [3, 4]], dtype=np.int64)
-    float_arr: npt.NDArray[np.floating] = np.array([[1, 2], [3, 4]], dtype=np.float_)
-
     check(
         assert_type(
             pd.IntervalIndex.from_tuples([(1, 2), (2, 3)]),
@@ -516,20 +497,7 @@ def test_interval_index_tuples():
     )
     check(
         assert_type(
-            pd.IntervalIndex.from_tuples(int_arr), "pd.IntervalIndex[pd.Interval[int]]"
-        ),
-        pd.IntervalIndex,
-    )
-    check(
-        assert_type(
             pd.IntervalIndex.from_tuples([(1.0, 2.0), (2.0, 3.0)]),
-            "pd.IntervalIndex[pd.Interval[float]]",
-        ),
-        pd.IntervalIndex,
-    )
-    check(
-        assert_type(
-            pd.IntervalIndex.from_tuples(float_arr),
             "pd.IntervalIndex[pd.Interval[float]]",
         ),
         pd.IntervalIndex,
@@ -543,6 +511,66 @@ def test_interval_index_tuples():
                 ]
             ),
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_tuples(
+                [
+                    (dt.datetime(2000, 1, 1), dt.datetime(2001, 1, 1)),
+                    (dt.datetime(2001, 1, 1), dt.datetime(2002, 1, 1)),
+                ]
+            ),
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_tuples(
+                [
+                    (np.datetime64("2000-01-01"), np.datetime64("2001-01-01")),
+                    (np.datetime64("2001-01-01"), np.datetime64("2002-01-01")),
+                ]
+            ),
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_tuples(
+                [
+                    (pd.Timedelta(1, "D"), pd.Timedelta(2, "D")),
+                    (pd.Timedelta(2, "D"), pd.Timedelta(3, "D")),
+                ]
+            ),
+            "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_tuples(
+                [
+                    (dt.timedelta(days=1), dt.timedelta(days=2)),
+                    (dt.timedelta(days=2), dt.timedelta(days=3)),
+                ]
+            ),
+            "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
+        ),
+        pd.IntervalIndex,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_tuples(
+                [
+                    (np.timedelta64(1, "D"), np.timedelta64(2, "D")),
+                    (np.timedelta64(2, "D"), np.timedelta64(3, "D")),
+                ]
+            ),
+            "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
         ),
         pd.IntervalIndex,
     )

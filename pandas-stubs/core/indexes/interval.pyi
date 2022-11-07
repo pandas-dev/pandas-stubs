@@ -167,19 +167,20 @@ class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[IntervalT]):
     ) -> IntervalIndex[Interval[pd.Timedelta]]: ...
     @overload
     @classmethod
-    def from_tuples(
+    def from_tuples(  # type:ignore[misc]
         cls,
-        data: Sequence[tuple[int, int]] | npt.NDArray[np.integer],
+        data: Sequence[tuple[int, int]],
         closed: IntervalClosedType = ...,
         name: Hashable = ...,
         copy: bool = ...,
         dtype: IntervalDtype | None = ...,
     ) -> IntervalIndex[pd.Interval[int]]: ...
+    # Ignore misc here due to intentional overlap between int and float
     @overload
     @classmethod
     def from_tuples(
         cls,
-        data: Sequence[tuple[float, float]] | npt.NDArray[np.floating],
+        data: Sequence[tuple[float, float]],
         closed: IntervalClosedType = ...,
         name: Hashable = ...,
         copy: bool = ...,
@@ -193,8 +194,7 @@ class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[IntervalT]):
             tuple[pd.Timestamp, pd.Timestamp]
             | tuple[dt.datetime, dt.datetime]
             | tuple[np.datetime64, np.datetime64]
-        ]
-        | npt.NDArray[np.datetime64],
+        ],
         closed: IntervalClosedType = ...,
         name: Hashable = ...,
         copy: bool = ...,
@@ -206,10 +206,9 @@ class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[IntervalT]):
         cls,
         data: Sequence[
             tuple[pd.Timedelta, pd.Timedelta]
-            | tuple[dt.datetime, dt.datetime]
-            | tuple[np.datetime64, np.datetime64]
-        ]
-        | npt.NDArray[np.timedelta64],
+            | tuple[dt.timedelta, dt.timedelta]
+            | tuple[np.timedelta64, np.timedelta64]
+        ],
         closed: IntervalClosedType = ...,
         name: Hashable = ...,
         copy: bool = ...,
