@@ -695,7 +695,7 @@ def test_to_string():
     with ensure_clean() as path:
         check(assert_type(DF.to_string(path), None), type(None))
         check(assert_type(DF.to_string(pathlib.Path(path)), None), type(None))
-        with open(path, "wt") as df_string:
+        with open(path, "w") as df_string:
             check(assert_type(DF.to_string(df_string), None), type(None))
         sio = io.StringIO()
         check(assert_type(DF.to_string(sio), None), type(None))
@@ -822,7 +822,9 @@ def test_sqlalchemy_selectable() -> None:
             class Base(metaclass=sqlalchemy.orm.decl_api.DeclarativeMeta):
                 __abstract__ = True
 
-            class Temp(Base):
+            # error: Metaclass conflict: the metaclass of a derived class must be a
+            # (non-strict) subclass of the metaclasses of all its bases
+            class Temp(Base):  # type: ignore[misc]
                 __tablename__ = "part"
                 quantity = sqlalchemy.Column(sqlalchemy.Integer)
 

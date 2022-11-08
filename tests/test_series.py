@@ -33,6 +33,7 @@ from pandas._typing import (
 )
 
 from tests import (
+    PD_LTE_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
@@ -648,9 +649,12 @@ def test_types_describe() -> None:
         s.describe(percentiles=[0.5], include="all")
     with pytest.warns(DeprecationWarning, match="elementwise comparison failed"):
         s.describe(exclude=np.number)
-    # datetime_is_numeric param added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    with pytest.warns(DeprecationWarning, match="elementwise comparison failed"):
-        s.describe(datetime_is_numeric=True)
+    if PD_LTE_15:
+        # datetime_is_numeric param added in 1.1.0
+        # https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
+        # Remove in 2.0.0
+        with pytest.warns(DeprecationWarning, match="elementwise comparison failed"):
+            s.describe(datetime_is_numeric=True)
 
 
 def test_types_resample() -> None:
