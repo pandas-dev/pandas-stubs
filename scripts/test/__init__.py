@@ -13,13 +13,11 @@ _DIST_STEPS = [
     _step.mypy_dist,
     _step.pyright_dist,
 ]
-_COVERAGE_STEPS = [_step.mypy_coverage]
 
 
 def test(
     src: bool = False,
     dist: bool = False,
-    coverage: bool = False,
     type_checker: Literal["", "mypy", "pyright"] = "",
 ):
     steps = []
@@ -28,9 +26,6 @@ def test(
 
     if dist:
         steps.extend(_DIST_STEPS)
-
-    if coverage:
-        steps.extend(_COVERAGE_STEPS)
 
     if type_checker:
         # either pyright or mypy

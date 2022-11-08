@@ -79,23 +79,34 @@ script = "scripts.test:test(dist=True)"
 [tool.poe.tasks.pytest]
 help = "Run pytest"
 script = "scripts.test:pytest(nightly)"
-args = [{name = "nightly", positional = false, default = false, type = "boolean", required = false, help= "Use pandas nightly (off by default)"}]
+
+[[tool.poe.tasks.pytest.args]]
+name = "nightly"
+positional = false
+default = false
+type = "boolean"
+required = false
+help= "Use pandas nightly (off by default)"
 
 [tool.poe.tasks.style]
 help = "Run pre-commit"
 script = "scripts.test.run:style"
 
 [tool.poe.tasks.mypy]
-help = "Run mypy on 'tests' (using the local stubs) and on the local stubs"
-script = "scripts.test.run:mypy_src"
+help = '''Run mypy on 'tests' (using the local stubs) and on the local stubs'''
+script = 'scripts.test.run:mypy_src'
+
+[[tool.poe.tasks.mypy.args]]
+default = false
+help = 'Whether to generate a HTML coverage report (off by default)'
+name = 'coverage'
+positional = false
+required = false
+type = 'boolean'
 
 [tool.poe.tasks.mypy_dist]
 help = "Run mypy on 'tests' using the installed stubs"
 script = "scripts.test:test(dist=True, type_checker='mypy')"
-
-[tool.poe.tasks.mypy_coverage]
-help = "Run mypy on 'tests' using the local stubs and report HTML coverage"
-script = "scripts.test:test(coverage=True, type_checker='mypy')"
 
 [tool.poe.tasks.pyright]
 help = "Run pyright on 'tests' (using the local stubs) and on the local stubs"
@@ -106,9 +117,31 @@ help = "Run pyright on 'tests' using the installed stubs"
 script = "scripts.test:test(dist=True, type_checker='pyright')"
 
 [tool.poe.tasks.stubtest]
-script = "scripts.test:stubtest(allowlist, check_missing, nightly)"
-help = "Run stubtest to compare the installed stubs against pandas"
-args = [{ name = "allowlist", positional = true, default = "", required = false, help= "Path to an allowlist (optional)" }, {name = "check_missing", positional = false, default = false, type = "boolean", required = false, help= "Report errors when the stubs are incomplete (off by default)"}, {name = "nightly", positional = false, default = false, type = "boolean", required = false, help= "Compare against pandas nightly (off by default)"}]
+help = 'Run stubtest to compare the installed stubs against pandas'
+script = 'scripts.test:stubtest(allowlist, check_missing, nightly)'
+
+[[tool.poe.tasks.stubtest.args]]
+default = ''
+help = 'Path to an allowlist (optional)'
+name = 'allowlist'
+positional = true
+required = false
+
+[[tool.poe.tasks.stubtest.args]]
+default = false
+help = 'Report errors when the stubs are incomplete (off by default)'
+name = 'check_missing'
+positional = false
+required = false
+type = 'boolean'
+
+[[tool.poe.tasks.stubtest.args]]
+default = false
+help = 'Compare against pandas nightly (off by default)'
+name = 'nightly'
+positional = false
+required = false
+type = 'boolean'
 
 
 [tool.black]

@@ -14,5 +14,9 @@ Here are the most important options. Fore more details, please use `poe --help`.
 - Run tests against the installed stubs (this will install and uninstall the stubs): `poe test_dist`
 - Optional: run pytest against pandas nightly (this might fail): `poe pytest --nightly`
 - Optional: Run stubtest to compare the installed pandas-stubs against pandas (this will fail): `poe stubtest`. If you have created an allowlist to ignore certain errors: `poe stubtest path_to_the_allow_list`
+- Optional: Run mypy with coverage: `poe mypy --coverage`. The reported coverage documents functions thay appear to be fully, 
+  partially, or untyped.  The coverage report is a good place to start when looking for imprecise types to improve, or when
+  adding classes and functions to pandas-stubs.
 
+## Credits
 These tests originally came from https://github.com/VirtusLab/pandas-stubs.
