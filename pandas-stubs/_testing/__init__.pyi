@@ -74,7 +74,7 @@ def assert_series_equal(
     obj: str = ...,
     *,
     check_index: Literal[False],
-    check_like: Literal[False],
+    check_like: Literal[False] = ...,
 ) -> None: ...
 @overload
 def assert_series_equal(

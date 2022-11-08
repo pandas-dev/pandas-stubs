@@ -37,6 +37,8 @@ def test_types_assert_series_equal() -> None:
             check_names=True,
         )
     assert_series_equal(s1, s2, check_like=True)
+    # GH 417
+    assert_series_equal(s1, s2, check_index=False)
 
 
 def test_assert_frame_equal():
