@@ -460,9 +460,28 @@ def test_types_unique() -> None:
 
 def test_types_apply() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    df.apply(lambda x: x**2)
-    df.apply(np.exp)
-    df.apply(str)
+
+    def returns_series(x: pd.Series) -> pd.Series:
+        return x**2
+
+    check(assert_type(df.apply(returns_series), pd.DataFrame), pd.DataFrame)
+
+    def returns_scalar(x: pd.Series) -> float:
+        return 2
+
+    check(assert_type(df.apply(returns_scalar), pd.Series), pd.Series)
+    check(
+        assert_type(df.apply(returns_scalar, result_type="broadcast"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.apply(np.exp), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.apply(str), pd.Series), pd.Series)
+
+    # GH 393
+    def gethead(s: pd.Series, y: int) -> pd.Series:
+        return s.head(y)
+
+    check(assert_type(df.apply(gethead, args=(4,)), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_applymap() -> None:
@@ -1896,3 +1915,15 @@ def test_resample_150_changes() -> None:
         return s.mean()
 
     check(assert_type(resampler.apply(f), Union[pd.Series, pd.DataFrame]), pd.DataFrame)
+
+
+def df_accepting_dicts_iterator() -> None:
+    # GH 392
+    data = [{"a": 1, "b": 2}, {"a": 3, "b": 5}]
+    check(assert_type(pd.DataFrame(iter(data)), pd.DataFrame), pd.DataFrame)
+
+
+def series_added_in_astype() -> None:
+    # GH410
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+    check(assert_type(df.astype(df.dtypes), pd.DataFrame), pd.DataFrame)
