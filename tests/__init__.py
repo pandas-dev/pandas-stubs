@@ -29,7 +29,7 @@ def check(actual: T, klass: type, dtype: type | None = None, attr: str = "left")
         return actual  # type: ignore[return-value]
 
     if hasattr(actual, "__iter__"):
-        value = next(iter(actual))  # type: ignore[call-overload]
+        value = next(iter(actual))  # pyright: ignore[reportGeneralTypeIssues]
     else:
         assert hasattr(actual, attr)
         value = getattr(actual, attr)
