@@ -455,6 +455,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         observed: _bool = ...,
         dropna: _bool = ...,
     ) -> _SeriesGroupByNonScalar[S1]: ...
+    # need the ignore because None is Hashable
     @overload
     def count(self, level: None = ...) -> int: ...  # type: ignore[misc]
     @overload
