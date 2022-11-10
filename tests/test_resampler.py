@@ -298,8 +298,7 @@ def test_aggregate_series_combinations() -> None:
 
     check(S.resample("m").aggregate(np.sum), Series)
     check(S.resample("m").aggregate("sum"), Series)
-    with pytest.warns(FutureWarning, match="Not prepending group keys"):
-        check(S.resample("m").aggregate(s2series), Series)
+    check(S.resample("m").aggregate(s2series), Series)
     check(S.resample("m").aggregate(s2scalar), Series)
     check(S.resample("m").aggregate([np.mean]), DataFrame)
     check(S.resample("m").aggregate(["sum", np.mean]), DataFrame)
@@ -319,8 +318,7 @@ def test_aggregate_frame_combinations() -> None:
 
     check(DF.resample("m").aggregate(np.sum), DataFrame)
     check(DF.resample("m").aggregate("sum"), DataFrame)
-    with pytest.warns(FutureWarning, match="Not prepending group keys"):
-        check(DF.resample("m").aggregate(df2frame), DataFrame)
+    check(DF.resample("m").aggregate(df2frame), DataFrame)
     check(DF.resample("m").aggregate(df2series), DataFrame)
     check(DF.resample("m").aggregate(df2scalar), DataFrame)
     check(DF.resample("m").aggregate([np.mean]), DataFrame)
