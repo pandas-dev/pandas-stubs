@@ -54,7 +54,6 @@ def test_is_categorical_dtype() -> None:
     check(assert_type(api.is_categorical_dtype(arr), bool), bool)
     check(assert_type(api.is_categorical_dtype(nparr), bool), bool)
     check(assert_type(api.is_categorical_dtype(dtylike), bool), bool)
-    check(assert_type(api.is_categorical_dtype(arr), bool), bool)
     check(
         assert_type(api.is_categorical_dtype(dframe), bool),
         bool,
