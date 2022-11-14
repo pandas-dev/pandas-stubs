@@ -20,10 +20,14 @@ from pandas._libs.missing import NAType
 from pandas._libs.tslibs import NaTType
 from pandas._typing import Scalar
 
+
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    importskip
 )
+
+pyarrow_skip = pytest.mark.skip
 
 
 def test_types_to_datetime() -> None:
@@ -461,9 +465,8 @@ def test_crosstab() -> None:
     )
 
 
+@pyarrow_skip
 def test_arrow_dtype() -> None:
-    pytest.importorskip("pyarrow")
-
     import pyarrow as pa
 
     check(

@@ -4,9 +4,11 @@ from contextlib import (
     AbstractContextManager,
     nullcontext,
 )
+import functools
 import os
 import platform
 from typing import (
+    Callable,
     TYPE_CHECKING,
     Final,
 )
@@ -15,7 +17,7 @@ import pandas as pd
 from pandas.util.version import Version
 import pytest
 
-from pandas._typing import T
+from pandas._typing import T, F
 
 TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 WINDOWS = os.name == "nt" or "cygwin" in platform.system().lower()

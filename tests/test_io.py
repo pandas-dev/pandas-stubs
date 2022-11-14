@@ -70,10 +70,13 @@ DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 CWD = os.path.split(os.path.abspath(__file__))[0]
 
 
-if sys.version_info >= (3, 11):
-    # This is only needed temporarily due to no wheels being available for arrow on 3.11
-    _arrow = pytest.importorskip("arrow")
+arrow_skip = pytest.mark.skipif(sys.version_info >= (3, 11), "pyarrow is not available for 3.11 yet")
+"""This is only needed temporarily due to no wheels being available for arrow on 3.11"""
 
+lxml_skip = pytest.mark.skipif(sys.version_info >= (3, 11), "pyarrow is not available for 3.11 yet")
+"""This is only needed temporarily due to no wheels being available for arrow on 3.11"""
+
+@arrow_skip
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc():
     with ensure_clean() as path:
@@ -81,6 +84,7 @@ def test_orc():
         check(assert_type(read_orc(path), DataFrame), DataFrame)
 
 
+@arrow_skip
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_path():
     with ensure_clean() as path:
@@ -89,6 +93,7 @@ def test_orc_path():
         check(assert_type(read_orc(pathlib_path), DataFrame), DataFrame)
 
 
+@arrow_skip
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_buffer():
     with ensure_clean() as path:
@@ -101,6 +106,7 @@ def test_orc_buffer():
         file_r.close()
 
 
+@arrow_skip
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_columns():
     with ensure_clean() as path:
@@ -108,11 +114,12 @@ def test_orc_columns():
         check(assert_type(read_orc(path, columns=["a"]), DataFrame), DataFrame)
 
 
+@arrow_skip
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_bytes():
     check(assert_type(DF.to_orc(index=False), bytes), bytes)
 
-
+@lxml_skip
 def test_xml():
     with ensure_clean() as path:
         check(assert_type(DF.to_xml(path), None), type(None))
@@ -121,6 +128,7 @@ def test_xml():
             check(assert_type(read_xml(f), DataFrame), DataFrame)
 
 
+@lxml_skip
 def test_xml_str():
     with ensure_clean() as path:
         check(assert_type(DF.to_xml(), str), str)
@@ -287,6 +295,7 @@ def test_sas_xport() -> None:
         pass
 
 
+@lxml_skip
 def test_hdf():
     with ensure_clean() as path:
         check(assert_type(DF.to_hdf(path, "df"), None), type(None))
