@@ -1,6 +1,7 @@
 from datetime import (
     date,
     datetime,
+    time,
     timedelta,
 )
 from typing import (
@@ -131,8 +132,8 @@ class BusinessHour(BusinessMixin):
         self,
         n: int = ...,
         normalize: bool = ...,
-        start: str | Collection[str] = ...,
-        end: str | Collection[str] = ...,
+        start: str | time | Collection[str | time] = ...,
+        end: str | time | Collection[str | time] = ...,
         offset: timedelta = ...,
     ): ...
 
@@ -217,8 +218,8 @@ class CustomBusinessHour(BusinessHour):
         self,
         n: int = ...,
         normalize: bool = ...,
-        start: str = ...,
-        end: str = ...,
+        start: str | time | Collection[str | time] = ...,
+        end: str | time | Collection[str | time] = ...,
         offset: timedelta = ...,
         holidays: list | None = ...,
     ): ...
