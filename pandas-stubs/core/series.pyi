@@ -1211,7 +1211,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def __add__(self, other: Timestamp) -> TimestampSeries: ...
     @overload
     def __add__(
-        self, other: num | _str | Timedelta | _ListLike | Series[S1]
+        self, other: num | _str | Timedelta | _ListLike | Series[S1] | np.timedelta64
     ) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload
@@ -1243,7 +1243,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def __le__(self, other: S1 | _ListLike | Series[S1]) -> Series[_bool]: ...
     def __lt__(self, other: S1 | _ListLike | Series[S1]) -> Series[_bool]: ...
     @overload
-    def __mul__(self, other: Timedelta | TimedeltaSeries) -> TimedeltaSeries: ...
+    def __mul__(self, other: Timedelta | TimedeltaSeries | np.timedelta64) -> TimedeltaSeries: ...
     @overload
     def __mul__(self, other: num | _ListLike | Series) -> Series: ...
     def __mod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
@@ -1304,17 +1304,17 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     ) -> TimedeltaSeries: ...
     @overload
     def __sub__(
-        self: Series[Timestamp], other: Timedelta | TimedeltaSeries | TimedeltaIndex
+        self: Series[Timestamp], other: Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64
     ) -> TimestampSeries: ...
     @overload
     def __sub__(
-        self: Series[Timedelta], other: Timedelta | TimedeltaSeries | TimedeltaIndex
+        self: Series[Timedelta], other: Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64
     ) -> TimedeltaSeries: ...
     @overload
     def __sub__(self, other: num | _ListLike | Series) -> Series: ...
     @overload
     def __truediv__(
-        self, other: Timedelta | TimedeltaSeries | TimedeltaIndex
+        self, other: Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64
     ) -> Series[float]: ...
     @overload
     def __truediv__(self, other: num | _ListLike | Series[S1]) -> Series: ...
@@ -1739,6 +1739,8 @@ class TimestampSeries(Series[Timestamp]):
     # ignore needed because of mypy
     @property
     def dt(self) -> TimestampProperties: ...  # type: ignore[override]
+    @overload
+    def __truediv__(self, other) -> TimestampSeries: ...  # type: ignore
 
 class TimedeltaSeries(Series[Timedelta]):
     # ignores needed because of mypy
@@ -1747,11 +1749,11 @@ class TimedeltaSeries(Series[Timedelta]):
     @overload
     def __add__(self, other: Timestamp | DatetimeIndex) -> TimestampSeries: ...
     @overload
-    def __add__(self, other: Timedelta) -> TimedeltaSeries: ...
+    def __add__(self, other: Timedelta | np.timedelta64) -> TimedeltaSeries: ...
     def __radd__(self, pther: Timestamp | TimestampSeries) -> TimestampSeries: ...  # type: ignore[override]
     def __mul__(self, other: num) -> TimedeltaSeries: ...  # type: ignore[override]
     def __sub__(  # type: ignore[override]
-        self, other: Timedelta | TimedeltaSeries | TimedeltaIndex
+        self, other: Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64
     ) -> TimedeltaSeries: ...
     @property
     def dt(self) -> TimedeltaProperties: ...  # type: ignore[override]
