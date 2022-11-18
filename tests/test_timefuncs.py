@@ -18,6 +18,7 @@ from typing_extensions import assert_type
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs import BaseOffset
+from pandas._libs.tslibs.offsets import DateOffset
 
 if TYPE_CHECKING:
     from pandas._typing import FulldatetimeDict
@@ -1029,3 +1030,8 @@ def test_timedelta_range() -> None:
         ),
         pd.TimedeltaIndex,
     )
+
+
+def test_dateoffset_freqstr() -> None:
+    offset = DateOffset(minutes=10)
+    check(assert_type(offset.freqstr, str), str)
