@@ -338,7 +338,7 @@ def test_timedelta_add_sub() -> None:
 def test_timedelta_mul_div() -> None:
     td = pd.Timedelta("1 day")
 
-    with pytest.warns(FutureWarning):
+    with python_warns_bounded(FutureWarning):
         i_idx = cast(pd.Int64Index, pd.Index([1, 2, 3], dtype=int))
         f_idx = cast(pd.Float64Index, pd.Index([1.2, 2.2, 3.4], dtype=float))
 
@@ -455,7 +455,7 @@ def test_timedelta_mul_div() -> None:
 def test_timedelta_mod_abs_unary() -> None:
     td = pd.Timedelta("1 day")
 
-    with pytest.warns(FutureWarning):
+    with python_warns_bounded(FutureWarning):
         i_idx = cast(pd.Int64Index, pd.Index([1, 2, 3], dtype=int))
         f_idx = cast(pd.Float64Index, pd.Index([1.2, 2.2, 3.4], dtype=float))
 

@@ -260,15 +260,15 @@ def test_types_shift() -> None:
 
 def test_types_rank() -> None:
     s = pd.Series([1, 1, 2, 5, 6, np.nan, "milion"])
-    with pytest.warns(FutureWarning, match="Dropping of nuisance columns"):
+    with python_warns_bounded(FutureWarning, match="Dropping of nuisance columns"):
         s.rank()
-    with pytest.warns(FutureWarning, match="Dropping of nuisance columns"):
+    with python_warns_bounded(FutureWarning, match="Dropping of nuisance columns"):
         s.rank(axis=0, na_option="bottom")
-    with pytest.warns(FutureWarning, match="Dropping of nuisance columns"):
+    with python_warns_bounded(FutureWarning, match="Dropping of nuisance columns"):
         s.rank(method="min", pct=True)
-    with pytest.warns(FutureWarning, match="Dropping of nuisance columns"):
+    with python_warns_bounded(FutureWarning, match="Dropping of nuisance columns"):
         s.rank(method="dense", ascending=True)
-    with pytest.warns(FutureWarning, match="Calling Series.rank with numeric_only"):
+    with python_warns_bounded(FutureWarning, match="Calling Series.rank with numeric_only"):
         s.rank(method="first", numeric_only=True)
     s2 = pd.Series([1, 1, 2, 5, 6, np.nan])
     s2.rank(method="first", numeric_only=True)
@@ -643,17 +643,17 @@ def test_types_transform() -> None:
 
 def test_types_describe() -> None:
     s = pd.Series([1, 2, 3, np.datetime64("2000-01-01")])
-    with pytest.warns(DeprecationWarning, match="elementwise comparison failed"):
+    with python_warns_bounded(DeprecationWarning, match="elementwise comparison failed"):
         s.describe()
-    with pytest.warns(DeprecationWarning, match="elementwise comparison failed"):
+    with python_warns_bounded(DeprecationWarning, match="elementwise comparison failed"):
         s.describe(percentiles=[0.5], include="all")
-    with pytest.warns(DeprecationWarning, match="elementwise comparison failed"):
+    with python_warns_bounded(DeprecationWarning, match="elementwise comparison failed"):
         s.describe(exclude=np.number)
     if PD_LTE_15:
         # datetime_is_numeric param added in 1.1.0
         # https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
         # Remove in 2.0.0
-        with pytest.warns(DeprecationWarning, match="elementwise comparison failed"):
+        with python_warns_bounded(DeprecationWarning, match="elementwise comparison failed"):
             s.describe(datetime_is_numeric=True)
 
 
