@@ -1035,3 +1035,28 @@ def test_timedelta_range() -> None:
 def test_dateoffset_freqstr() -> None:
     offset = DateOffset(minutes=10)
     check(assert_type(offset.freqstr, str), str)
+
+
+def timedelta64_and_arithmatic_operator() -> None:
+    s1 = pd.Series(data=pd.date_range("1/1/2020", "2/1/2020"))
+    s2 = pd.Series(data=pd.date_range("1/1/2021", "2/1/2021"))
+    check(assert_type((s1 - np.timedelta64(1, "M")), np.timedelta64), np.timedelta64)
+    check(assert_type((s1 + np.timedelta64(1, "M")), np.timedelta64), np.timedelta64)
+    check(assert_type(((s1 * np.timedelta64(1, "M")), np.timedelta64), np.timedelta64))
+    check(assert_type(((s1 / np.timedelta64(1, "M")), np.timedelta64), np.timedelta64))
+    check(
+        assert_type(((s1 - s2) - np.timedelta64(1, "M")), np.timedelta64),
+        np.timedelta64,
+    )
+    check(
+        assert_type(((s1 + s2) / np.timedelta64(1, "M")), np.timedelta64),
+        np.timedelta64,
+    )
+    check(
+        assert_type(((s1 * s2) / np.timedelta64(1, "M")), np.timedelta64),
+        np.timedelta64,
+    )
+    check(
+        assert_type(((s1 / s2) / np.timedelta64(1, "M")), np.timedelta64),
+        np.timedelta64,
+    )
