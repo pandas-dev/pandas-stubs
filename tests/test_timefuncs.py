@@ -1043,7 +1043,7 @@ def timedelta64_and_arithmatic_operator() -> None:
     s3 = s2 - s1
     td = np.timedelta64(1, "M")
     check(assert_type((s1 - td), pd.TimestampSeries), np.timedelta64)
-    check(assert_type((s1 + td), pd.Series), pd.Timestamp)
+    check(assert_type((s1 + td), pd.Series), pd.TimestampSeries)
     check(assert_type((s1 * td), pd.Series), pd.Timestamp)
     check(assert_type((s1 / td), pd.Series), pd.Timestamp)
     check(
