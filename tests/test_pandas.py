@@ -752,14 +752,20 @@ def test_factorize() -> None:
 def test_index_unqiue() -> None:
     ci = pd.CategoricalIndex(["a", "b", "a", "c"])
     dti = pd.DatetimeIndex([pd.Timestamp(2000, 1, 1)])
-    with python_warns_bounded(FutureWarning, match="pandas.Float64Index is deprecated", upper="1.5.99"):
+    with python_warns_bounded(
+        FutureWarning, match="pandas.Float64Index is deprecated", upper="1.5.99"
+    ):
         fi = pd.Float64Index([1.0, 2.0])
     i = pd.Index(["a", "b", "c", "a"])
-    with python_warns_bounded(FutureWarning, match="pandas.Int64Index is deprecated", upper="1.5.99"):
+    with python_warns_bounded(
+        FutureWarning, match="pandas.Int64Index is deprecated", upper="1.5.99"
+    ):
         i64i = pd.Int64Index([1, 2, 3, 4])
     pi = pd.period_range("2000Q1", periods=2, freq="Q")
     ri = pd.RangeIndex(0, 10)
-    with python_warns_bounded(FutureWarning, match="pandas.UInt64Index is deprecated", upper="1.5.99"):
+    with python_warns_bounded(
+        FutureWarning, match="pandas.UInt64Index is deprecated", upper="1.5.99"
+    ):
         ui = pd.UInt64Index([0, 1, 2, 3, 5])
     tdi = pd.timedelta_range("1 day", "10 days", periods=10)
     mi = pd.MultiIndex.from_product([["a", "b"], ["apple", "banana"]])
