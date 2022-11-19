@@ -15,12 +15,12 @@ def test_abstract_method_error() -> None:
 
 
 def test_accessor_registration_warning() -> None:
-    with python_warns_bounded(errors.AccessorRegistrationWarning):
+    with python_warns_bounded(errors.AccessorRegistrationWarning, upper="1.5.99"):
         warnings.warn("", errors.AccessorRegistrationWarning)
 
 
 def test_dtype_warning() -> None:
-    with python_warns_bounded(errors.DtypeWarning):
+    with python_warns_bounded(errors.DtypeWarning, upper="1.5.99"):
         warnings.warn("", errors.DtypeWarning)
 
 
@@ -80,12 +80,12 @@ def test_parser_error() -> None:
 
 
 def test_parser_warning() -> None:
-    with python_warns_bounded(errors.ParserWarning):
+    with python_warns_bounded(errors.ParserWarning, upper="1.5.99"):
         warnings.warn("", errors.ParserWarning)
 
 
 def test_performance_warning() -> None:
-    with python_warns_bounded(errors.PerformanceWarning):
+    with python_warns_bounded(errors.PerformanceWarning, upper="1.5.99"):
         warnings.warn("", errors.PerformanceWarning)
 
 
@@ -115,7 +115,7 @@ def test_setting_with_copy_error() -> None:
 
 
 def test_setting_with_copy_warning() -> None:
-    with python_warns_bounded(errors.SettingWithCopyWarning):
+    with python_warns_bounded(errors.SettingWithCopyWarning, upper="1.5.99"):
         warnings.warn("", errors.SettingWithCopyWarning)
 
 
@@ -146,7 +146,7 @@ def test_pyperclip_windows_exception() -> None:
 
 
 def test_css_warning() -> None:
-    with python_warns_bounded(errors.CSSWarning):
+    with python_warns_bounded(errors.CSSWarning, upper="1.5.99"):
         warnings.warn("", errors.CSSWarning)
 
 
@@ -161,12 +161,12 @@ def test_closed_file_error() -> None:
 
 
 def test_incompatibility_warning() -> None:
-    with python_warns_bounded(errors.IncompatibilityWarning):
+    with python_warns_bounded(errors.IncompatibilityWarning, upper="1.5.99"):
         warnings.warn("", errors.IncompatibilityWarning)
 
 
 def test_attribute_conflict_warning() -> None:
-    with python_warns_bounded(errors.AttributeConflictWarning):
+    with python_warns_bounded(errors.AttributeConflictWarning, upper="1.5.99"):
         warnings.warn("", errors.AttributeConflictWarning)
 
 
@@ -176,20 +176,20 @@ def test_database_error() -> None:
 
 
 def test_possible_precision_loss() -> None:
-    with python_warns_bounded(errors.PossiblePrecisionLoss):
+    with python_warns_bounded(errors.PossiblePrecisionLoss, upper="1.5.99"):
         warnings.warn("", errors.PossiblePrecisionLoss)
 
 
 def test_value_label_type_mismatch() -> None:
-    with python_warns_bounded(errors.ValueLabelTypeMismatch):
+    with python_warns_bounded(errors.ValueLabelTypeMismatch, upper="1.5.99"):
         warnings.warn("", errors.ValueLabelTypeMismatch)
 
 
 def test_invalid_column_name() -> None:
-    with python_warns_bounded(errors.InvalidColumnName):
+    with python_warns_bounded(errors.InvalidColumnName, upper="1.5.99"):
         warnings.warn("", errors.InvalidColumnName)
 
 
 def test_categorical_conversion_warning() -> None:
-    with python_warns_bounded(errors.CategoricalConversionWarning):
+    with python_warns_bounded(errors.CategoricalConversionWarning, upper="1.5.99"):
         warnings.warn("", errors.CategoricalConversionWarning)
