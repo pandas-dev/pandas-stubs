@@ -1751,11 +1751,11 @@ class TimedeltaSeries(Series[Timedelta]):
     @overload
     def __add__(self, other: Timestamp | DatetimeIndex) -> TimestampSeries: ...
     @overload
-    def __add__(self, other: Timedelta) -> TimedeltaSeries: ...
+    def __add__(self, other: Timedelta | np.timedelta64) -> TimedeltaSeries: ...
     def __radd__(self, pther: Timestamp | TimestampSeries) -> TimestampSeries: ...  # type: ignore[override]
-    def __mul__(self, other: num) -> TimedeltaSeries: ...  # type: ignore[override]
+    def __mul__(self, other: num | np.timedelta64) -> TimedeltaSeries: ...  # type: ignore[override]
     def __sub__(  # type: ignore[override]
-        self, other: Timedelta | TimedeltaSeries | TimedeltaIndex
+        self, other: Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64
     ) -> TimedeltaSeries: ...
     @property
     def dt(self) -> TimedeltaProperties: ...  # type: ignore[override]

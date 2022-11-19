@@ -1040,23 +1040,25 @@ def test_dateoffset_freqstr() -> None:
 def timedelta64_and_arithmatic_operator() -> None:
     s1 = pd.Series(data=pd.date_range("1/1/2020", "2/1/2020"))
     s2 = pd.Series(data=pd.date_range("1/1/2021", "2/1/2021"))
-    check(assert_type((s1 - np.timedelta64(1, "M")), np.timedelta64), np.timedelta64)
-    check(assert_type((s1 + np.timedelta64(1, "M")), np.timedelta64), np.timedelta64)
-    check(assert_type(((s1 * np.timedelta64(1, "M")), np.timedelta64), np.timedelta64))
-    check(assert_type(((s1 / np.timedelta64(1, "M")), np.timedelta64), np.timedelta64))
+    s3 = s2 - s1
+    td = np.timedelta64(1, "M")
+    check(assert_type((s1 - td), pd.Series), pd.Timestamp)
+    check(assert_type((s1 + td), pd.Series), pd.Timestamp)
+    check(assert_type((s1 * td), pd.Series), pd.Timestamp)
+    check(assert_type((s1 / td), pd.Series), pd.Timestamp)
     check(
-        assert_type(((s1 - s2) - np.timedelta64(1, "M")), np.timedelta64),
-        np.timedelta64,
+        assert_type((s3 - td), pd.Series),
+        pd.Series,
     )
     check(
-        assert_type(((s1 + s2) / np.timedelta64(1, "M")), np.timedelta64),
-        np.timedelta64,
+        assert_type((s3 + td), pd.Series),
+        pd.Series,
     )
     check(
-        assert_type(((s1 * s2) / np.timedelta64(1, "M")), np.timedelta64),
-        np.timedelta64,
+        assert_type((s3 * td), pd.Series),
+        pd.Series,
     )
     check(
-        assert_type(((s1 / s2) / np.timedelta64(1, "M")), np.timedelta64),
-        np.timedelta64,
+        assert_type((s3 / td), pd.Series),
+        pd.Series,
     )
