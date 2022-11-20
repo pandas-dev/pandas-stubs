@@ -6,7 +6,7 @@ from tests import check
 
 
 def test_show_version():
-    with pytest_warns_bounded(
+    with pytest_warns_bounds(
         UserWarning, match="Setuptools is replacing distutils", upper="1.5.99"
     ):
         check(assert_type(pd.show_versions(True), None), type(None))

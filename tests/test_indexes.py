@@ -166,7 +166,7 @@ def test_index_relops() -> None:
 
 
 def test_range_index_union():
-    with pytest_warns_bounded(FutureWarning, match="pandas.Int64Index", upper="1.5.99"):
+    with pytest_warns_bounds(FutureWarning, match="pandas.Int64Index", upper="1.5.99"):
         check(
             assert_type(
                 pd.RangeIndex(0, 10).union(pd.RangeIndex(10, 20)),
