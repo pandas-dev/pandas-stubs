@@ -1042,23 +1042,11 @@ def timedelta64_and_arithmatic_operator() -> None:
     s2 = pd.Series(data=pd.date_range("1/1/2021", "2/1/2021"))
     s3 = s2 - s1
     td = np.timedelta64(1, "M")
-    check(assert_type((s1 - td), TimestampSeries), np.timedelta64)
-    check(assert_type((s1 + td), pd.Series[Any]), np.timedelta64)
-    check(assert_type((s1 * td), TimedeltaSeries), np.timedelta64)
-    check(assert_type((s1 / td), pd.Series[float]), np.timedelta64)
-    check(
-        assert_type((s3 - td), TimedeltaSeries),
-        pd.Series,
-    )
-    check(
-        assert_type((s3 + td), TimedeltaSeries),
-        pd.Series,
-    )
-    check(
-        assert_type((s3 * td), TimedeltaSeries),
-        pd.Series,
-    )
-    check(
-        assert_type((s3 / td), pd.Series[float]),
-        pd.Series,
-    )
+    check(assert_type((s1 - td), TimestampSeries), pd.Series, pd.Timestamp)
+    check(assert_type((s1 + td), TimestampSeries), pd.Series, pd.Timestamp)
+    check(assert_type((s1 * td), TimedeltaSeries), pd.Series, pd.Timestamp)
+    check(assert_type((s1 / td), TimestampSeries), pd.Series, pd.Timestamp)
+    check(assert_type((s3 - td), TimedeltaSeries), pd.Series, pd.Timedelta)
+    check(assert_type((s3 + td), TimedeltaSeries), pd.Series, pd.Timedelta)
+    check(assert_type((s3 * td), TimedeltaSeries), pd.Series, pd.Timedelta)
+    check(assert_type((s3 / td), TimedeltaSeries), pd.Series, np.float)
