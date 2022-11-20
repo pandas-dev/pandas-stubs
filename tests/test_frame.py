@@ -1763,7 +1763,7 @@ def test_generic() -> None:
     with pytest_warns_bounded(
         UserWarning,
         "Pandas doesn't allow columns to be created",
-        lower="3.10",
+        lower="3.11",
         version_str=platform.python_version(),
     ):
         func()
