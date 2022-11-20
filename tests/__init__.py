@@ -25,17 +25,17 @@ PD_LTE_15 = Version(pd.__version__) < Version("1.5.999")
 arrow_skip = pytest.mark.skipif(
     sys.version_info >= (3, 11), reason="pyarrow is not available for 3.11 yet"
 )
-"""This is only needed temporarily due to no wheels being available for arrow on 3.11"""
+# This is only needed temporarily due to no wheels being available for arrow on 3.11
 
 lxml_skip = pytest.mark.skipif(
     sys.version_info >= (3, 11), reason="lxml is not available for 3.11 yet"
 )
-"""This is only needed temporarily due to no wheels being available for lxml on 3.11"""
+# This is only needed temporarily due to no wheels being available for lxml on 3.11
 
 pytables_skip = pytest.mark.skipif(
     sys.version_info >= (3, 11), reason="pytables is not available for 3.11 yet"
 )
-"""This is only needed temporarily due to no wheels being available for pytables on 3.11"""
+# This is only needed temporarily due to no wheels being available for pytables on 3.11
 
 
 def check(actual: T, klass: type, dtype: type | None = None, attr: str = "left") -> T:
