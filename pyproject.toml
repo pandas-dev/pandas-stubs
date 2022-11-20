@@ -38,7 +38,7 @@ types-pytz = ">= 2022.1.1"
 mypy = "0.990"
 pyarrow = { version = ">=9.0.0", python = "<3.11" }
 pytest = ">=7.1.2"
-pyright = ">=1.1.278"
+pyright = "<=1.1.279"
 poethepoet = "0.16.0"
 loguru = ">=0.6.0"
 pandas = "1.5.1"
