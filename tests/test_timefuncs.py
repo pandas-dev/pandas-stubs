@@ -18,6 +18,7 @@ from typing_extensions import assert_type
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs import BaseOffset
+from pandas._libs.tslibs.offsets import DateOffset
 
 if TYPE_CHECKING:
     from pandas._typing import FulldatetimeDict
@@ -31,7 +32,9 @@ from tests import (
 from pandas.tseries.holiday import USFederalHolidayCalendar
 from pandas.tseries.offsets import (
     BusinessDay,
+    BusinessHour,
     CustomBusinessDay,
+    CustomBusinessHour,
     Day,
 )
 
@@ -595,6 +598,45 @@ def test_some_offsets() -> None:
     check(assert_type(tswm1, pd.Timestamp), pd.Timestamp)
     tswm2 = pd.Timestamp("9/23/2022") + pd.offsets.LastWeekOfMonth(2, 3)
     check(assert_type(tswm2, pd.Timestamp), pd.Timestamp)
+    # GH 396
+    check(
+        assert_type(
+            BusinessHour(start=dt.time(9, 30), end=dt.time(16, 0)), BusinessHour
+        ),
+        BusinessHour,
+    )
+    check(
+        assert_type(BusinessHour(start="9:30", end="16:00"), BusinessHour), BusinessHour
+    )
+    check(
+        assert_type(
+            BusinessHour(
+                start=["9:30", dt.time(11, 30)], end=[dt.time(10, 30), "13:00"]
+            ),
+            BusinessHour,
+        ),
+        BusinessHour,
+    )
+    check(
+        assert_type(
+            CustomBusinessHour(start=dt.time(9, 30), end=dt.time(16, 0)),
+            CustomBusinessHour,
+        ),
+        CustomBusinessHour,
+    )
+    check(
+        assert_type(CustomBusinessHour(start="9:30", end="16:00"), CustomBusinessHour),
+        CustomBusinessHour,
+    )
+    check(
+        assert_type(
+            CustomBusinessHour(
+                start=["9:30", dt.time(11, 30)], end=[dt.time(10, 30), "13:00"]
+            ),
+            CustomBusinessHour,
+        ),
+        CustomBusinessHour,
+    )
 
 
 def test_types_to_numpy() -> None:
@@ -988,3 +1030,8 @@ def test_timedelta_range() -> None:
         ),
         pd.TimedeltaIndex,
     )
+
+
+def test_dateoffset_freqstr() -> None:
+    offset = DateOffset(minutes=10)
+    check(assert_type(offset.freqstr, str), str)

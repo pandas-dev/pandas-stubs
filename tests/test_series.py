@@ -995,6 +995,7 @@ def test_string_accessors():
     check(assert_type(s.str.decode("utf-8"), pd.Series), pd.Series)
     check(assert_type(s.str.encode("latin-1"), pd.Series), pd.Series)
     check(assert_type(s.str.endswith("e"), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.endswith(("e", "f")), "pd.Series[bool]"), pd.Series, bool)
     check(assert_type(s3.str.extract(r"([ab])?(\d)"), pd.DataFrame), pd.DataFrame)
     check(assert_type(s3.str.extractall(r"([ab])?(\d)"), pd.DataFrame), pd.DataFrame)
     check(assert_type(s.str.find("p"), pd.Series), pd.Series)
@@ -1038,6 +1039,11 @@ def test_string_accessors():
     # GH 194
     check(assert_type(s.str.split("a", expand=True), pd.DataFrame), pd.DataFrame)
     check(assert_type(s.str.startswith("a"), "pd.Series[bool]"), pd.Series, bool)
+    check(
+        assert_type(s.str.startswith(("a", "b")), "pd.Series[bool]"),
+        pd.Series,
+        bool,
+    )
     check(assert_type(s.str.strip(), pd.Series), pd.Series)
     check(assert_type(s.str.swapcase(), pd.Series), pd.Series)
     check(assert_type(s.str.title(), pd.Series), pd.Series)
