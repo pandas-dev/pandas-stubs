@@ -1,8 +1,7 @@
 import sys
-from typing import (
-    Any,
-    TypeAlias,
-)
+from typing import Any
+
+from typing_extensions import TypeAlias
 
 if sys.version_info < (3, 11):
     import pyarrow as pa

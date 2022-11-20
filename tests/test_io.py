@@ -65,10 +65,17 @@ from pandas.io.sas.sas7bdat import SAS7BDATReader
 from pandas.io.sas.sas_xport import XportReader
 from pandas.io.stata import StataReader
 
+from . import (
+    arrow_skip,
+    lxml_skip,
+    pytables_skip,
+)
+
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 CWD = os.path.split(os.path.abspath(__file__))[0]
 
 
+@arrow_skip
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc():
     with ensure_clean() as path:
@@ -76,6 +83,7 @@ def test_orc():
         check(assert_type(read_orc(path), DataFrame), DataFrame)
 
 
+@arrow_skip
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_path():
     with ensure_clean() as path:
@@ -84,6 +92,7 @@ def test_orc_path():
         check(assert_type(read_orc(pathlib_path), DataFrame), DataFrame)
 
 
+@arrow_skip
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_buffer():
     with ensure_clean() as path:
@@ -96,6 +105,7 @@ def test_orc_buffer():
         file_r.close()
 
 
+@arrow_skip
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_columns():
     with ensure_clean() as path:
@@ -103,11 +113,13 @@ def test_orc_columns():
         check(assert_type(read_orc(path, columns=["a"]), DataFrame), DataFrame)
 
 
+@arrow_skip
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_bytes():
     check(assert_type(DF.to_orc(index=False), bytes), bytes)
 
 
+@lxml_skip
 def test_xml():
     with ensure_clean() as path:
         check(assert_type(DF.to_xml(path), None), type(None))
@@ -116,6 +128,7 @@ def test_xml():
             check(assert_type(read_xml(f), DataFrame), DataFrame)
 
 
+@lxml_skip
 def test_xml_str():
     with ensure_clean() as path:
         check(assert_type(DF.to_xml(), str), str)
@@ -282,12 +295,14 @@ def test_sas_xport() -> None:
         pass
 
 
+@pytables_skip
 def test_hdf():
     with ensure_clean() as path:
         check(assert_type(DF.to_hdf(path, "df"), None), type(None))
         check(assert_type(read_hdf(path), Union[DataFrame, Series]), DataFrame)
 
 
+@pytables_skip
 def test_hdfstore():
     with ensure_clean() as path:
         store = HDFStore(path, model="w")
@@ -329,6 +344,7 @@ def test_hdfstore():
         store.close()
 
 
+@pytables_skip
 def test_read_hdf_iterator():
     with ensure_clean() as path:
         check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
@@ -343,6 +359,7 @@ def test_read_hdf_iterator():
         ti.close()
 
 
+@pytables_skip
 def test_hdf_context_manager():
     with ensure_clean() as path:
         check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
@@ -351,6 +368,7 @@ def test_hdf_context_manager():
             check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
 
 
+@pytables_skip
 def test_hdf_series():
     s = DF["a"]
     with ensure_clean() as path:
@@ -392,6 +410,7 @@ def test_json_chunk():
     check(assert_type(DF.to_json(), str), str)
 
 
+@arrow_skip
 def test_parquet():
     with ensure_clean() as path:
         check(assert_type(DF.to_parquet(path), None), type(None))
@@ -399,6 +418,7 @@ def test_parquet():
     check(assert_type(DF.to_parquet(), bytes), bytes)
 
 
+@arrow_skip
 def test_parquet_options():
     with ensure_clean(".parquet") as path:
         check(
@@ -408,6 +428,7 @@ def test_parquet_options():
         check(assert_type(read_parquet(path), DataFrame), DataFrame)
 
 
+@arrow_skip
 def test_feather():
     with ensure_clean() as path:
         check(assert_type(DF.to_feather(path), None), type(None))
@@ -795,6 +816,7 @@ def test_read_sql_query_generator():
         con.close()
 
 
+@lxml_skip
 def test_read_html():
     check(assert_type(DF.to_html(), str), str)
     with ensure_clean() as path:

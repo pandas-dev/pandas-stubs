@@ -50,7 +50,7 @@ isort = ">=5.10.1"
 openpyxl = ">=3.0.10"
 tables = { version = ">=3.7.0", python = "<3.11" }
 lxml = { version = ">=4.7.1,<4.9.0", python = "<3.11" }
-pyreadstat = { version = ">=1.1.9", python = "<3.11" }
+pyreadstat = ">=1.2.0"
 xlrd = ">=2.0.1"
 pyxlsb = ">=1.0.9"
 odfpy = ">=1.4.1"
