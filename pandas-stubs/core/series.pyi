@@ -62,6 +62,7 @@ from pandas.core.window.rolling import (
     Window,
 )
 from typing_extensions import TypeAlias
+from typing_extensions import Never
 import xarray as xr
 
 from pandas._libs.missing import NAType
@@ -1743,8 +1744,9 @@ class TimestampSeries(Series[Timestamp]):
     # ignore needed because of mypy
     @property
     def dt(self) -> TimestampProperties: ...  # type: ignore[override]
-    @overload
-    def __add__(self, other: Timedelta | np.timedelta64) -> TimedeltaSeries: ...
+    def __add__(self, other: TimedeltaSeries | np.timedelta64) -> TimestampSeries: ...  # type: ignore[override]
+    def __mul__(self, other: TimestampSeries | np.timedelta64) -> Never: ...  # type: ignore[override]
+    def __truediv__(self, other: TimestampSeries | np.timedelta64) -> Never: ...  # type: ignore[override]
 
 class TimedeltaSeries(Series[Timedelta]):
     # ignores needed because of mypy
@@ -1755,10 +1757,14 @@ class TimedeltaSeries(Series[Timedelta]):
     @overload
     def __add__(self, other: Timedelta | np.timedelta64) -> TimedeltaSeries: ...
     def __radd__(self, pther: Timestamp | TimestampSeries) -> TimestampSeries: ...  # type: ignore[override]
+    @overload
     def __mul__(self, other: num) -> TimedeltaSeries: ...  # type: ignore[override]
     def __sub__(  # type: ignore[override]
         self, other: Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64
     ) -> TimedeltaSeries: ...
+    def __truediv__(self, other: TimedeltaSeries | np.timedelta64) -> Series[float]: ...  # type: ignore[override]
+    @overload
+    def __mul__(self, other: TimestampSeries | np.timedelta64) -> Never: ...  # type: ignore[override]
     @property
     def dt(self) -> TimedeltaProperties: ...  # type: ignore[override]
 

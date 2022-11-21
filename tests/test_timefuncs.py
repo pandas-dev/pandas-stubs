@@ -5,6 +5,7 @@ import datetime as dt
 from typing import (
     TYPE_CHECKING,
     Any,
+    NoReturn,
     Optional,
     Union,
 )
@@ -1042,11 +1043,11 @@ def timedelta64_and_arithmatic_operator() -> None:
     s2 = pd.Series(data=pd.date_range("1/1/2021", "2/1/2021"))
     s3 = s2 - s1
     td = np.timedelta64(1, "M")
-    check(assert_type((s1 - td), TimestampSeries), pd.Series, pd.Timestamp)
-    check(assert_type((s1 + td), TimestampSeries), pd.Series, pd.Timestamp)
-    check(assert_type((s1 * td), TimedeltaSeries), pd.Series, pd.Timestamp)
-    check(assert_type((s1 / td), TimestampSeries), pd.Series, pd.Timestamp)
-    check(assert_type((s3 - td), TimedeltaSeries), pd.Series, pd.Timedelta)
-    check(assert_type((s3 + td), TimedeltaSeries), pd.Series, pd.Timedelta)
-    check(assert_type((s3 * td), TimedeltaSeries), pd.Series, pd.Timedelta)
-    check(assert_type((s3 / td), TimedeltaSeries), pd.Series, np.float)
+    assert_type((s1 - td), TimestampSeries)
+    assert_type((s1 + td), TimestampSeries)
+    assert_type((s1 * td), NoReturn)
+    assert_type((s1 / td), NoReturn)
+    assert_type((s3 - td), TimedeltaSeries)
+    assert_type((s3 + td), TimedeltaSeries)
+    assert_type((s3 * td), Series[Any])
+    assert_type((s3 / td), Series[float])
