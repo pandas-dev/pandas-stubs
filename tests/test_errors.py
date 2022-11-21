@@ -1,8 +1,8 @@
 import warnings
 
 from pandas import errors
-import pytest_warns_bounds
 import pytest
+import pytest_warns_bounds
 
 from tests import WINDOWS
 

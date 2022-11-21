@@ -14,7 +14,6 @@ import numpy as np
 from numpy import typing as npt
 import pandas as pd
 import pytest_warns_bounds
-import pytest
 import pytz
 from typing_extensions import (
     TypeAlias,

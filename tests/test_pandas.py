@@ -13,8 +13,8 @@ import numpy.typing as npt
 import pandas as pd
 from pandas import Grouper
 from pandas.api.extensions import ExtensionArray
-import pytest_warns_bounds
 import pytest
+import pytest_warns_bounds
 from typing_extensions import assert_type
 
 from pandas._libs.missing import NAType
