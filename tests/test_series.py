@@ -23,7 +23,7 @@ from pandas.api.extensions import (
     ExtensionDtype,
 )
 from pandas.core.window import ExponentialMovingWindow
-import pytest
+import pytest_warns_bounds
 from typing_extensions import assert_type
 import xarray as xr
 

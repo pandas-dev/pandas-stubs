@@ -1,5 +1,5 @@
 import pandas as pd
-import pytest
+import pytest_warns_bounds
 from typing_extensions import assert_type
 
 from tests import check

@@ -13,7 +13,7 @@ import dateutil.tz
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
-import pytest
+import pytest_warns_bounds
 import pytz
 from typing_extensions import (
     TypeAlias,
