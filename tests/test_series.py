@@ -24,6 +24,7 @@ from pandas.api.extensions import (
 )
 from pandas.core.window import ExponentialMovingWindow
 import pytest_warns_bounds
+import pytest
 from typing_extensions import assert_type
 import xarray as xr
 

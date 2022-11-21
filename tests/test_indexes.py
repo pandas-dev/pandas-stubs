@@ -8,6 +8,7 @@ from numpy import typing as npt
 import pandas as pd
 from pandas.core.indexes.numeric import NumericIndex
 import pytest_warns_bounds
+import pytest
 from typing_extensions import assert_type
 
 from tests import check

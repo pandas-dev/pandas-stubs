@@ -14,6 +14,7 @@ import pandas as pd
 from pandas import Grouper
 from pandas.api.extensions import ExtensionArray
 import pytest_warns_bounds
+import pytest
 from typing_extensions import assert_type
 
 from pandas._libs.missing import NAType
