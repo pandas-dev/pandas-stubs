@@ -260,9 +260,13 @@ def test_types_shift() -> None:
 
 
 def test_types_rank() -> None:
-    s = pd.Series([1, 1, 2, 5, 6, np.nan, "milion"])
+    s = pd.Series([1, 1, 2, 5, 6, np.nan])
+    if PD_LTE_15:
+        s[6] = "milion"
     with pytest_warns_bounded(
-        FutureWarning, match="Dropping of nuisance columns", upper="1.5.99"
+        FutureWarning,
+        match="Dropping of nuisance columns",
+        upper="1.5.99",
     ):
         s.rank()
     with pytest_warns_bounded(

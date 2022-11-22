@@ -338,9 +338,14 @@ def test_timedelta_add_sub() -> None:
 def test_timedelta_mul_div() -> None:
     td = pd.Timedelta("1 day")
 
-    with pytest_warns_bounded(FutureWarning, upper="1.5.99", match=""):
-        i_idx = cast(pd.Int64Index, pd.Index([1, 2, 3], dtype=int))
-        f_idx = cast(pd.Float64Index, pd.Index([1.2, 2.2, 3.4], dtype=float))
+    i_idx = pd.Index([1, 2, 3], dtype=int)
+    f_idx = pd.Index([1.2, 2.2, 3.4], dtype=float)
+
+    with pytest_warns_bounded(
+        FutureWarning, upper="1.5.99", match="", upper_exception=AttributeError
+    ):
+        i_idx = cast(pd.Int64Index, i_idx)
+        f_idx = cast(pd.Float64Index, f_idx)
 
     np_intp_arr: npt.NDArray[np.integer] = np.array([1, 2, 3])
     np_float_arr: npt.NDArray[np.floating] = np.array([1.2, 2.2, 3.4])
@@ -455,9 +460,14 @@ def test_timedelta_mul_div() -> None:
 def test_timedelta_mod_abs_unary() -> None:
     td = pd.Timedelta("1 day")
 
-    with pytest_warns_bounded(FutureWarning, upper="1.5.99", match=""):
-        i_idx = cast(pd.Int64Index, pd.Index([1, 2, 3], dtype=int))
-        f_idx = cast(pd.Float64Index, pd.Index([1.2, 2.2, 3.4], dtype=float))
+    i_idx = pd.Index([1, 2, 3], dtype=int)
+    f_idx = pd.Index([1.2, 2.2, 3.4], dtype=float)
+
+    with pytest_warns_bounded(
+        FutureWarning, upper="1.5.99", match="", upper_exception=AttributeError
+    ):
+        i_idx = cast(pd.Int64Index, i_idx)
+        f_idx = cast(pd.Float64Index, f_idx)
 
     check(assert_type(td % 3, pd.Timedelta), pd.Timedelta)
     check(assert_type(td % 3.5, pd.Timedelta), pd.Timedelta)
