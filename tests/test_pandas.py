@@ -14,7 +14,6 @@ import pandas as pd
 from pandas import Grouper
 from pandas.api.extensions import ExtensionArray
 import pytest
-import pytest_warns_bounds
 from typing_extensions import assert_type
 
 from pandas._libs.missing import NAType
@@ -24,6 +23,7 @@ from pandas._typing import Scalar
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 
 
@@ -753,18 +753,18 @@ def test_factorize() -> None:
 def test_index_unqiue() -> None:
     ci = pd.CategoricalIndex(["a", "b", "a", "c"])
     dti = pd.DatetimeIndex([pd.Timestamp(2000, 1, 1)])
-    with pytest_warns_bounds(
+    with pytest_warns_bounded(
         FutureWarning, match="pandas.Float64Index is deprecated", upper="1.5.99"
     ):
         fi = pd.Float64Index([1.0, 2.0])
     i = pd.Index(["a", "b", "c", "a"])
-    with pytest_warns_bounds(
+    with pytest_warns_bounded(
         FutureWarning, match="pandas.Int64Index is deprecated", upper="1.5.99"
     ):
         i64i = pd.Int64Index([1, 2, 3, 4])
     pi = pd.period_range("2000Q1", periods=2, freq="Q")
     ri = pd.RangeIndex(0, 10)
-    with pytest_warns_bounds(
+    with pytest_warns_bounded(
         FutureWarning, match="pandas.UInt64Index is deprecated", upper="1.5.99"
     ):
         ui = pd.UInt64Index([0, 1, 2, 3, 5])
@@ -1426,7 +1426,7 @@ def test_crosstab_args() -> None:
         ),
         pd.DataFrame,
     )
-    with pytest_warns_bounds(FutureWarning, upper="1.5.99"):
+    with pytest_warns_bounded(FutureWarning, upper="1.5.99", match=""):
         check(
             assert_type(
                 pd.crosstab(a, b, values=pd.Categorical(values), aggfunc=np.sum),
@@ -1681,7 +1681,7 @@ def test_pivot_table() -> None:
         ),
         pd.DataFrame,
     )
-    with pytest_warns_bounds(np.VisibleDeprecationWarning, upper="1.5.99"):
+    with pytest_warns_bounded(np.VisibleDeprecationWarning, upper="1.5.99", match=""):
         check(
             assert_type(
                 pd.pivot_table(
@@ -1695,7 +1695,7 @@ def test_pivot_table() -> None:
             ),
             pd.DataFrame,
         )
-    with pytest_warns_bounds(np.VisibleDeprecationWarning, upper="1.5.99"):
+    with pytest_warns_bounded(np.VisibleDeprecationWarning, upper="1.5.99", match=""):
         check(
             assert_type(
                 pd.pivot_table(
