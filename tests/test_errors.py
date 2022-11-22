@@ -15,9 +15,7 @@ def test_abstract_method_error() -> None:
 
 
 def test_accessor_registration_warning() -> None:
-    with pytest.warns(
-        errors.AccessorRegistrationWarning
-    ):
+    with pytest.warns(errors.AccessorRegistrationWarning):
         warnings.warn("", errors.AccessorRegistrationWarning)
 
 
@@ -168,9 +166,7 @@ def test_incompatibility_warning() -> None:
 
 
 def test_attribute_conflict_warning() -> None:
-    with pytest.warns(
-        errors.AttributeConflictWarning
-    ):
+    with pytest.warns(errors.AttributeConflictWarning):
         warnings.warn("", errors.AttributeConflictWarning)
 
 
@@ -195,7 +191,5 @@ def test_invalid_column_name() -> None:
 
 
 def test_categorical_conversion_warning() -> None:
-    with pytest.warns(
-        errors.CategoricalConversionWarning
-    ):
+    with pytest.warns(errors.CategoricalConversionWarning):
         warnings.warn("", errors.CategoricalConversionWarning)
