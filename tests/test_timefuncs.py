@@ -5,7 +5,6 @@ import datetime as dt
 from typing import (
     TYPE_CHECKING,
     Any,
-    NoReturn,
     Optional,
     Union,
 )
@@ -15,7 +14,10 @@ from numpy import typing as npt
 import pandas as pd
 from pandas.core.indexes.numeric import IntegerIndex
 import pytz
-from typing_extensions import assert_type
+from typing_extensions import (
+    Never,
+    assert_type,
+)
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs import BaseOffset
@@ -1043,11 +1045,11 @@ def timedelta64_and_arithmatic_operator() -> None:
     s2 = pd.Series(data=pd.date_range("1/1/2021", "2/1/2021"))
     s3 = s2 - s1
     td = np.timedelta64(1, "M")
-    assert_type((s1 - td), TimestampSeries)
-    assert_type((s1 + td), TimestampSeries)
-    assert_type((s1 * td), NoReturn)  # pyright: ignore
-    assert_type((s1 / td), NoReturn)  # pyright: ignore
-    assert_type((s3 - td), TimedeltaSeries)
-    assert_type((s3 + td), TimedeltaSeries)
-    assert_type((s3 * td), NoReturn)  # pyright: ignore
-    assert_type((s3 / td), pd.Series[float])
+    check(assert_type((s1 - td), TimestampSeries), TimestampSeries, pd.Timestamp)
+    check(assert_type((s1 + td), TimestampSeries), TimestampSeries, pd.Timestamp)
+    assert_type((s1 * td), Never)  # pyright: ignore
+    assert_type((s1 / td), Never)  # pyright: ignore
+    check(assert_type((s3 - td), TimedeltaSeries), TimedeltaSeries, pd.Timedelta)
+    check(assert_type((s3 + td), TimedeltaSeries), TimedeltaSeries, pd.Timedelta)
+    assert_type((s3 * td), Never)  # pyright: ignore
+    check(assert_type((s3 / td), pd.Series[float]), pd.Series[float], float)

@@ -1746,7 +1746,12 @@ class TimestampSeries(Series[Timestamp]):
     # ignore needed because of mypy
     @property
     def dt(self) -> TimestampProperties: ...  # type: ignore[override]
-    def __add__(self, other: TimedeltaSeries | np.timedelta64 | TimestampSeries | Timestamp) -> TimestampSeries: ...  # type: ignore[override]
+    @overload  # type: ignore[override]
+    def __add__(
+        self, other: TimedeltaSeries | np.timedelta64 | TimestampSeries
+    ) -> TimestampSeries: ...
+    @overload
+    def __add__(self, other: Timestamp) -> TimestampSeries: ...
     def __mul__(self, other: TimestampSeries | np.timedelta64 | TimedeltaSeries) -> Never: ...  # type: ignore[override]
     def __truediv__(self, other: TimestampSeries | np.timedelta64 | TimedeltaSeries) -> Never: ...  # type: ignore[override]
 
