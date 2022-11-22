@@ -1,14 +1,12 @@
 import pandas as pd
 from typing_extensions import assert_type
 
-from tests import (
-    check,
-    pytest_warns_bounded,
-)
+from tests import  check
+
 
 
 def test_show_version():
-    with pytest_warns_bounded(
+    with pytest.warns(
         UserWarning, match="Setuptools is replacing distutils", upper="1.5.99"
     ):
         check(assert_type(pd.show_versions(True), None), type(None))

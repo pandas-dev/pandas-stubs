@@ -1426,7 +1426,7 @@ def test_crosstab_args() -> None:
         ),
         pd.DataFrame,
     )
-    with pytest_warns_bounded(FutureWarning, upper="1.5.99", match=""):
+    with pytest.warns(FutureWarning):
         check(
             assert_type(
                 pd.crosstab(a, b, values=pd.Categorical(values), aggfunc=np.sum),
@@ -1681,7 +1681,7 @@ def test_pivot_table() -> None:
         ),
         pd.DataFrame,
     )
-    with pytest_warns_bounded(np.VisibleDeprecationWarning, upper="1.5.99", match=""):
+    with pytest.warns(np.VisibleDeprecationWarning):
         check(
             assert_type(
                 pd.pivot_table(
@@ -1695,7 +1695,7 @@ def test_pivot_table() -> None:
             ),
             pd.DataFrame,
         )
-    with pytest_warns_bounded(np.VisibleDeprecationWarning, upper="1.5.99", match=""):
+    with pytest.warns(np.VisibleDeprecationWarning):
         check(
             assert_type(
                 pd.pivot_table(
