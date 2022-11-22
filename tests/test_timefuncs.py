@@ -1043,11 +1043,11 @@ def timedelta64_and_arithmatic_operator() -> None:
     s2 = pd.Series(data=pd.date_range("1/1/2021", "2/1/2021"))
     s3 = s2 - s1
     td = np.timedelta64(1, "M")
-    assert_type((s1 - td), TimestampSeries)  # type: ignore
-    assert_type((s1 + td), TimestampSeries)  # type: ignore
-    assert_type((s1 * td), NoReturn)  # type: ignore
-    assert_type((s1 / td), NoReturn)  # type: ignore
-    assert_type((s3 - td), TimedeltaSeries)  # type: ignore
-    assert_type((s3 + td), TimedeltaSeries)  # type: ignore
-    assert_type((s3 * td), NoReturn)  # type: ignore
-    assert_type((s3 / td), pd.Series[float])  # type: ignore
+    assert_type((s1 - td), TimestampSeries)
+    assert_type((s1 + td), TimestampSeries)
+    assert_type((s1 * td), NoReturn)  # pyright: ignore
+    assert_type((s1 / td), NoReturn)  # pyright: ignore
+    assert_type((s3 - td), TimedeltaSeries)
+    assert_type((s3 + td), TimedeltaSeries)
+    assert_type((s3 * td), NoReturn)  # pyright: ignore
+    assert_type((s3 / td), pd.Series[float])
