@@ -61,8 +61,10 @@ from pandas.core.window.rolling import (
     Rolling,
     Window,
 )
-from typing_extensions import TypeAlias
-from typing_extensions import Never
+from typing_extensions import (
+    Never,
+    TypeAlias,
+)
 import xarray as xr
 
 from pandas._libs.missing import NAType
@@ -1751,16 +1753,18 @@ class TimestampSeries(Series[Timestamp]):
 class TimedeltaSeries(Series[Timedelta]):
     # ignores needed because of mypy
     @overload  # type: ignore[override]
-    def __add__(self, other: Period) -> PeriodSeries: ... 
+    def __add__(self, other: Period) -> PeriodSeries: ...
     @overload
     def __add__(self, other: Timestamp | DatetimeIndex) -> TimestampSeries: ...
     @overload
     def __add__(self, other: Timedelta | np.timedelta64) -> TimedeltaSeries: ...
     def __radd__(self, pther: Timestamp | TimestampSeries) -> TimestampSeries: ...  # type: ignore[override]
+    @overload  # type: ignore[override]
+    def __mul__(
+        self, other: TimestampSeries | np.timedelta64 | Timedelta | TimedeltaSeries
+    ) -> Never: ...
     @overload
-    def __mul__(self, other: TimestampSeries | np.timedelta64 | Timedelta | TimedeltaSeries) -> Never: ...
-    @overload
-    def __mul__(self, other: num) -> TimedeltaSeries: ... 
+    def __mul__(self, other: num) -> TimedeltaSeries: ...
     def __sub__(  # type: ignore[override]
         self, other: Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64
     ) -> TimedeltaSeries: ...
