@@ -1049,5 +1049,5 @@ def timedelta64_and_arithmatic_operator() -> None:
     assert_type((s1 / td), NoReturn)
     assert_type((s3 - td), TimedeltaSeries)
     assert_type((s3 + td), TimedeltaSeries)
-    assert_type((s3 * td), Series[Any])
-    assert_type((s3 / td), Series[float])
+    assert_type((s3 * td), NoReturn)
+    assert_type((s3 / td), pd.Series[float])

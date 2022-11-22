@@ -1744,27 +1744,27 @@ class TimestampSeries(Series[Timestamp]):
     # ignore needed because of mypy
     @property
     def dt(self) -> TimestampProperties: ...  # type: ignore[override]
-    def __add__(self, other: TimedeltaSeries | np.timedelta64) -> TimestampSeries: ...  # type: ignore[override]
-    def __mul__(self, other: TimestampSeries | np.timedelta64) -> Never: ...  # type: ignore[override]
-    def __truediv__(self, other: TimestampSeries | np.timedelta64) -> Never: ...  # type: ignore[override]
+    def __add__(self, other: TimedeltaSeries | np.timedelta64 | TimestampSeries | Timestamp) -> TimestampSeries: ...  # type: ignore[override]
+    def __mul__(self, other: TimestampSeries | np.timedelta64 | TimedeltaSeries) -> Never: ...  # type: ignore[override]
+    def __truediv__(self, other: TimestampSeries | np.timedelta64 | TimedeltaSeries) -> Never: ...  # type: ignore[override]
 
 class TimedeltaSeries(Series[Timedelta]):
     # ignores needed because of mypy
     @overload  # type: ignore[override]
-    def __add__(self, other: Period) -> PeriodSeries: ...
+    def __add__(self, other: Period) -> PeriodSeries: ... 
     @overload
     def __add__(self, other: Timestamp | DatetimeIndex) -> TimestampSeries: ...
     @overload
     def __add__(self, other: Timedelta | np.timedelta64) -> TimedeltaSeries: ...
     def __radd__(self, pther: Timestamp | TimestampSeries) -> TimestampSeries: ...  # type: ignore[override]
     @overload
-    def __mul__(self, other: num) -> TimedeltaSeries: ...  # type: ignore[override]
+    def __mul__(self, other: TimestampSeries | np.timedelta64 | Timedelta | TimedeltaSeries) -> Never: ...
+    @overload
+    def __mul__(self, other: num | TimestampSeries) -> TimedeltaSeries: ... 
     def __sub__(  # type: ignore[override]
         self, other: Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64
     ) -> TimedeltaSeries: ...
-    def __truediv__(self, other: TimedeltaSeries | np.timedelta64) -> Series[float]: ...  # type: ignore[override]
-    @overload
-    def __mul__(self, other: TimestampSeries | np.timedelta64) -> Never: ...  # type: ignore[override]
+    def __truediv__(self, other: TimedeltaSeries | np.timedelta64 | TimedeltaIndex) -> Series[float]: ...  # type: ignore[override]
     @property
     def dt(self) -> TimedeltaProperties: ...  # type: ignore[override]
 
