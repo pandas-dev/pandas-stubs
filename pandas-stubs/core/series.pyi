@@ -1065,8 +1065,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     ) -> Scalar | Series[S1]: ...
     def clip(
         self,
-        lower: float | None = ...,
-        upper: float | None = ...,
+        lower: float | ArrayLike | None = ...,
+        upper: float | ArrayLike | None = ...,
         axis: SeriesAxisType | None = ...,
         inplace: _bool = ...,
         *args,

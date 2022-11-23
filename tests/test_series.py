@@ -1330,3 +1330,13 @@ def test_logical_operators() -> None:
         pd.Series,
         bool,
     )
+
+
+def test_ArrayLike_and_clip() -> None:
+    s = pd.Series([1, 2, 3, 4])
+    check(
+        assert_type((s.clip(upper=s)), "pd.Series[Any]"), pd.Series[Any], pd.Series[Any]
+    )
+    check(
+        assert_type((s.clip(lower=s)), "pd.Series[Any]"), pd.Series[Any], pd.Series[Any]
+    )
