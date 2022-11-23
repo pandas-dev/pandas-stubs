@@ -36,8 +36,10 @@ import xarray as xr
 from pandas._typing import Scalar
 
 from tests import (
+    PD_LTE_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 
 from pandas.io.formats.style import Styler
@@ -933,12 +935,16 @@ def test_types_describe() -> None:
         }
     )
     df.describe()
-    with pytest.warns(FutureWarning, match="Treating datetime data as categorical"):
+    with pytest_warns_bounded(
+        FutureWarning, match="Treating datetime data as categorical", upper="1.5.999"
+    ):
         df.describe(percentiles=[0.5], include="all")
-    with pytest.warns(FutureWarning, match="Treating datetime data as categorical"):
         df.describe(exclude=[np.number])
-    # datetime_is_numeric param added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    df.describe(datetime_is_numeric=True)
+    if PD_LTE_15:
+        # datetime_is_numeric param added in 1.1.0
+        # https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
+        # Remove in 2.0.0
+        df.describe(datetime_is_numeric=True)
 
 
 def test_types_to_string() -> None:
@@ -1921,3 +1927,9 @@ def df_accepting_dicts_iterator() -> None:
     # GH 392
     data = [{"a": 1, "b": 2}, {"a": 3, "b": 5}]
     check(assert_type(pd.DataFrame(iter(data)), pd.DataFrame), pd.DataFrame)
+
+
+def series_added_in_astype() -> None:
+    # GH410
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+    check(assert_type(df.astype(df.dtypes), pd.DataFrame), pd.DataFrame)

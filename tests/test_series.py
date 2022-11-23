@@ -33,6 +33,7 @@ from pandas._typing import (
 )
 
 from tests import (
+    PD_LTE_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
@@ -648,9 +649,12 @@ def test_types_describe() -> None:
         s.describe(percentiles=[0.5], include="all")
     with pytest.warns(DeprecationWarning, match="elementwise comparison failed"):
         s.describe(exclude=np.number)
-    # datetime_is_numeric param added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    with pytest.warns(DeprecationWarning, match="elementwise comparison failed"):
-        s.describe(datetime_is_numeric=True)
+    if PD_LTE_15:
+        # datetime_is_numeric param added in 1.1.0
+        # https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
+        # Remove in 2.0.0
+        with pytest.warns(DeprecationWarning, match="elementwise comparison failed"):
+            s.describe(datetime_is_numeric=True)
 
 
 def test_types_resample() -> None:
@@ -991,6 +995,7 @@ def test_string_accessors():
     check(assert_type(s.str.decode("utf-8"), pd.Series), pd.Series)
     check(assert_type(s.str.encode("latin-1"), pd.Series), pd.Series)
     check(assert_type(s.str.endswith("e"), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(s.str.endswith(("e", "f")), "pd.Series[bool]"), pd.Series, bool)
     check(assert_type(s3.str.extract(r"([ab])?(\d)"), pd.DataFrame), pd.DataFrame)
     check(assert_type(s3.str.extractall(r"([ab])?(\d)"), pd.DataFrame), pd.DataFrame)
     check(assert_type(s.str.find("p"), pd.Series), pd.Series)
@@ -1034,6 +1039,11 @@ def test_string_accessors():
     # GH 194
     check(assert_type(s.str.split("a", expand=True), pd.DataFrame), pd.DataFrame)
     check(assert_type(s.str.startswith("a"), "pd.Series[bool]"), pd.Series, bool)
+    check(
+        assert_type(s.str.startswith(("a", "b")), "pd.Series[bool]"),
+        pd.Series,
+        bool,
+    )
     check(assert_type(s.str.strip(), pd.Series), pd.Series)
     check(assert_type(s.str.swapcase(), pd.Series), pd.Series)
     check(assert_type(s.str.title(), pd.Series), pd.Series)

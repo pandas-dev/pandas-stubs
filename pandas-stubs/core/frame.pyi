@@ -1276,8 +1276,6 @@ class DataFrame(NDFrame, OpsMixin):
     @property
     def at(self): ...  # Not sure what to do with this yet; look at source
     @property
-    def bool(self) -> _bool: ...
-    @property
     def columns(self) -> Index: ...
     @columns.setter  # setter needs to be right next to getter; otherwise mypy complains
     def columns(
@@ -1359,7 +1357,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def astype(
         self,
-        dtype: _str | Dtype | dict[_str, _str | Dtype],
+        dtype: _str | Dtype | dict[_str, _str | Dtype] | Series,
         copy: _bool = ...,
         errors: _str = ...,
     ) -> DataFrame: ...
