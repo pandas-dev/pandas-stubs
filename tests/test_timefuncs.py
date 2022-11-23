@@ -263,7 +263,7 @@ def fail_on_adding_two_timestamps() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         ssum: pd.Series = s1 + s2  # TODO both: ignore[operator]
         ts = pd.Timestamp("2022-06-30")
-        tsum: pd.Series = s1 + ts  # TODO both: ignore[operator]
+        tsum: pd.Series = s1 + ts  # pyright: ignore
 
 
 def test_dtindex_tzinfo() -> None:
