@@ -167,7 +167,7 @@ class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[IntervalT]):
     ) -> IntervalIndex[Interval[pd.Timedelta]]: ...
     @overload
     @classmethod
-    def from_tuples(  # type:ignore[misc]
+    def from_tuples(
         cls,
         data: Sequence[tuple[int, int]],
         closed: IntervalClosedType = ...,
