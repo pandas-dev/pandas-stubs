@@ -1,6 +1,5 @@
 import datetime as dt
 from typing import (
-    Any,
     Generic,
     Hashable,
     Literal,
@@ -217,7 +216,10 @@ class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[IntervalT]):
         copy: bool = ...,
         dtype: IntervalDtype | None = ...,
     ) -> IntervalIndex[pd.Interval[pd.Timedelta]]: ...
-    def __contains__(self, key: Any) -> bool: ...
+    @overload
+    def __contains__(self, key: IntervalT) -> bool: ...  # type: ignore[misc]
+    @overload
+    def __contains__(self, key: object) -> Literal[False]: ...
     def astype(self, dtype: DtypeArg, copy: bool = ...) -> IntervalIndex: ...
     @property
     def inferred_type(self) -> str: ...
@@ -281,12 +283,12 @@ class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[IntervalT]):
     def __lt__(self, other: pd.Series[IntervalT]) -> bool: ...  # type: ignore[misc]
     @overload
     def __lt__(self, other: object) -> Never: ...
-    @overload
+    @overload  # type: ignore[override]
     def __eq__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload
     def __eq__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[misc]
     @overload
-    def __eq__(self, other: object) -> Never: ...
+    def __eq__(self, other: object) -> Literal[False]: ...
     @overload  # type: ignore[override]
     def __ne__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload

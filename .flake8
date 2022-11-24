@@ -1,3 +1,0 @@
-[flake8]
-per-file-ignores =
-    tests/test_scalars.py: W503
