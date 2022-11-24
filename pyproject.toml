@@ -36,7 +36,7 @@ types-pytz = ">= 2022.1.1"
 
 [tool.poetry.dev-dependencies]
 mypy = "0.990"
-pyarrow = { version = ">=9.0.0", python = "<3.11" }
+pyarrow = ">=10.0.1"
 pytest = ">=7.1.2"
 pyright = ">=1.1.281"
 poethepoet = "0.16.0"

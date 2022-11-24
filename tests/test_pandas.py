@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import datetime as dt
 import random
-import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -465,15 +464,14 @@ def test_crosstab() -> None:
 def test_arrow_dtype() -> None:
     pytest.importorskip("pyarrow")
 
-    if sys.version_info < (3, 11):
-        import pyarrow as pa
+    import pyarrow as pa
 
-        check(
-            assert_type(
-                pd.ArrowDtype(pa.timestamp("s", tz="America/New_York")), pd.ArrowDtype
-            ),
-            pd.ArrowDtype,
-        )
+    check(
+        assert_type(
+            pd.ArrowDtype(pa.timestamp("s", tz="America/New_York")), pd.ArrowDtype
+        ),
+        pd.ArrowDtype,
+    )
 
 
 def test_hashing():
