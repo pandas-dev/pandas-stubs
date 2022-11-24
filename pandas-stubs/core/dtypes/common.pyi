@@ -1,6 +1,5 @@
 from typing import Union
 
-import numpy as np
 import pandas as pd
 from typing_extensions import TypeAlias
 
@@ -29,7 +28,9 @@ from pandas.core.dtypes.inference import (
     is_scalar as is_scalar,
 )
 
-_ArrayOrDtype: TypeAlias = Union[ArrayLike, npt.DTypeLike, pd.Series, pd.DataFrame]
+_ArrayOrDtype: TypeAlias = Union[
+    ArrayLike, npt.DTypeLike, pd.Series, pd.DataFrame, pd.Index
+]
 
 def is_object_dtype(arr_or_dtype: _ArrayOrDtype) -> bool: ...
 def is_sparse(arr: ArrayLike | pd.Series | pd.DataFrame) -> bool: ...

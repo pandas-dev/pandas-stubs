@@ -4,7 +4,6 @@ from typing import (
     overload,
 )
 
-import pandas as pd
 from pandas import Index
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import (

@@ -16,7 +16,6 @@ from pandas.core.frame import DataFrame
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
 
-import pandas._libs.lib as lib
 from pandas._typing import (
     CompressionOptions,
     CSVEngine,

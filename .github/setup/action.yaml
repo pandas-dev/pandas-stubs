@@ -21,7 +21,7 @@ runs:
 
     - name: Determine poetry version
       shell: bash
-      run: echo "::set-output name=VERSION::$(poetry --version)"
+      run: echo "{VERSION}=$(poetry --version)"
       id: poetry_version
 
     - name: Cache poetry.lock
