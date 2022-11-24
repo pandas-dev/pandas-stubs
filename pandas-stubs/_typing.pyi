@@ -26,6 +26,7 @@ from pandas.core.indexes.base import Index
 from pandas.core.series import Series
 from typing_extensions import TypeAlias
 
+from pandas._libs.interval import Interval
 from pandas._libs.tslibs import (
     Period,
     Timedelta,
@@ -196,6 +197,10 @@ S1 = TypeVar(
     Timedelta,
     np.datetime64,
     Period,
+    Interval[int],
+    Interval[float],
+    Interval[Timestamp],
+    Interval[Timedelta],
 )
 T1 = TypeVar(
     "T1", str, int, np.int64, np.uint64, np.float64, float, np.dtype[np.generic]
@@ -220,7 +225,13 @@ NDFrameT = TypeVar("NDFrameT", bound=NDFrame)
 IndexT = TypeVar("IndexT", bound=Index)
 
 # Interval closed type
-
+IntervalT = TypeVar(
+    "IntervalT",
+    Interval[int],
+    Interval[float],
+    Interval[Timestamp],
+    Interval[Timedelta],
+)
 IntervalClosedType: TypeAlias = Literal["left", "right", "both", "neither"]
 
 IgnoreRaiseCoerce: TypeAlias = Literal["ignore", "raise", "coerce"]
