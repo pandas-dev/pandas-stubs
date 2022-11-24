@@ -14,7 +14,10 @@ from numpy import typing as npt
 import pandas as pd
 from pandas.core.indexes.numeric import IntegerIndex
 import pytz
-from typing_extensions import assert_type
+from typing_extensions import (
+    Never,
+    assert_type,
+)
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs import BaseOffset
@@ -260,7 +263,7 @@ def fail_on_adding_two_timestamps() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         ssum: pd.Series = s1 + s2  # TODO both: ignore[operator]
         ts = pd.Timestamp("2022-06-30")
-        tsum: pd.Series = s1 + ts  # TODO both: ignore[operator]
+        tsum: pd.Series = s1 + ts  # pyright: ignore
 
 
 def test_dtindex_tzinfo() -> None:
@@ -1035,3 +1038,19 @@ def test_timedelta_range() -> None:
 def test_dateoffset_freqstr() -> None:
     offset = DateOffset(minutes=10)
     check(assert_type(offset.freqstr, str), str)
+
+
+def test_timedelta64_and_arithmatic_operator() -> None:
+    s1 = pd.Series(data=pd.date_range("1/1/2020", "2/1/2020"))
+    s2 = pd.Series(data=pd.date_range("1/1/2021", "2/1/2021"))
+    s3 = s2 - s1
+    td = np.timedelta64(1, "M")
+    check(assert_type((s1 - td), "TimestampSeries"), pd.Series, pd.Timestamp)
+    check(assert_type((s1 + td), "TimestampSeries"), pd.Series, pd.Timestamp)
+    check(assert_type((s3 - td), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type((s3 + td), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type((s3 / td), "pd.Series[float]"), pd.Series, float)
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type((s1 * td), Never)  # pyright: ignore
+        assert_type((s1 / td), Never)  # pyright: ignore
+        assert_type((s3 * td), Never)  # pyright: ignore
