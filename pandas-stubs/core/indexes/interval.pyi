@@ -281,7 +281,7 @@ class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[IntervalT]):
     def __lt__(self, other: pd.Series[IntervalT]) -> bool: ...  # type: ignore[misc]
     @overload
     def __lt__(self, other: object) -> Never: ...
-    @overload  # type: ignore[override]
+    @overload
     def __eq__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload
     def __eq__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[misc]
