@@ -194,6 +194,7 @@ def test_interval_range():
     check(
         assert_type(pd.interval_range(0, 10), "pd.IntervalIndex[pd.Interval[int]]"),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -201,10 +202,12 @@ def test_interval_range():
             "pd.IntervalIndex[pd.Interval[int]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(pd.interval_range(0.0, 10), "pd.IntervalIndex[pd.Interval[float]]"),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -212,6 +215,7 @@ def test_interval_range():
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -221,6 +225,7 @@ def test_interval_range():
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -228,6 +233,7 @@ def test_interval_range():
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -237,6 +243,7 @@ def test_interval_range():
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -248,6 +255,7 @@ def test_interval_range():
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -255,6 +263,32 @@ def test_interval_range():
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
+    )
+
+    check(
+        assert_type(
+            pd.interval_range(pd.Timedelta("1D"), pd.Timedelta("10D")),
+            "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(
+        assert_type(
+            pd.interval_range(end=pd.Timedelta("10D"), periods=10, freq="D"),
+            "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(
+        assert_type(
+            pd.interval_range(start=pd.Timedelta("1D"), periods=10, freq="D"),
+            "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
     )
 
 
@@ -265,6 +299,7 @@ def test_interval_index_breaks():
             "pd.IntervalIndex[pd.Interval[int]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -272,6 +307,7 @@ def test_interval_index_breaks():
             "pd.IntervalIndex[pd.Interval[float]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -281,6 +317,7 @@ def test_interval_index_breaks():
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -288,6 +325,7 @@ def test_interval_index_breaks():
             "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
 
     check(
@@ -296,6 +334,7 @@ def test_interval_index_breaks():
             "pd.IntervalIndex[pd.Interval[int]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -305,6 +344,7 @@ def test_interval_index_breaks():
             "pd.IntervalIndex[pd.Interval[float]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     np_ndarray_dt64 = np.array(
         [
@@ -321,6 +361,7 @@ def test_interval_index_breaks():
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     np_ndarray_td64 = np.array(
         [
@@ -337,6 +378,7 @@ def test_interval_index_breaks():
             "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -352,6 +394,7 @@ def test_interval_index_breaks():
             "pd.IntervalIndex[pd.Interval[float]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     timestamp_series = pd.Series(pd.date_range("2000-01-01", "2003-01-01", freq="D"))
     check(
@@ -360,6 +403,7 @@ def test_interval_index_breaks():
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -374,6 +418,7 @@ def test_interval_index_breaks():
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
 
 
@@ -384,6 +429,7 @@ def test_interval_index_arrays():
             "pd.IntervalIndex[pd.Interval[int]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -391,6 +437,7 @@ def test_interval_index_arrays():
             "pd.IntervalIndex[pd.Interval[float]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -401,6 +448,7 @@ def test_interval_index_arrays():
             "pd.IntervalIndex[pd.Interval[int]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -411,6 +459,7 @@ def test_interval_index_arrays():
             "pd.IntervalIndex[pd.Interval[float]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     left_dt64_arr: npt.NDArray[np.datetime64] = np.array(
         [
@@ -436,6 +485,7 @@ def test_interval_index_arrays():
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
 
     check(
@@ -446,6 +496,7 @@ def test_interval_index_arrays():
             "pd.IntervalIndex[pd.Interval[int]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     series_float_left = pd.Series([1.0, 2.0, 3.0, 4.0], dtype=float)
     series_float_right = pd.Series([2.0, 3.0, 4.0, 5.0], dtype=float)
@@ -455,6 +506,7 @@ def test_interval_index_arrays():
             "pd.IntervalIndex[pd.Interval[float]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     left_s_ts = pd.Series(pd.date_range("2000-01-01", "2003-01-01", freq="Y"))
     right_s_ts = pd.Series(pd.date_range("2001-01-01", "2004-01-01", freq="Y"))
@@ -464,6 +516,7 @@ def test_interval_index_arrays():
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -484,6 +537,7 @@ def test_interval_index_arrays():
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
 
 
@@ -494,6 +548,7 @@ def test_interval_index_tuples():
             "pd.IntervalIndex[pd.Interval[int]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -501,6 +556,7 @@ def test_interval_index_tuples():
             "pd.IntervalIndex[pd.Interval[float]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -513,6 +569,7 @@ def test_interval_index_tuples():
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -525,6 +582,7 @@ def test_interval_index_tuples():
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -537,6 +595,7 @@ def test_interval_index_tuples():
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -549,6 +608,7 @@ def test_interval_index_tuples():
             "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -561,6 +621,7 @@ def test_interval_index_tuples():
             "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
     check(
         assert_type(
@@ -573,4 +634,5 @@ def test_interval_index_tuples():
             "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
         ),
         pd.IntervalIndex,
+        pd.Interval,
     )
