@@ -789,7 +789,10 @@ def test_index_unqiue() -> None:
     check(assert_type(pd.unique(ri), np.ndarray), np.ndarray)
     check(assert_type(pd.unique(tdi), np.ndarray), np.ndarray)
     check(assert_type(pd.unique(mi), np.ndarray), np.ndarray)
-    check(assert_type(pd.unique(interval_i), pd.IntervalIndex), pd.IntervalIndex)
+    check(
+        assert_type(pd.unique(interval_i), "pd.IntervalIndex[pd.Interval[int]]"),
+        pd.IntervalIndex,
+    )
     if PD_LTE_15:
         check(assert_type(pd.unique(fi), np.ndarray), np.ndarray)
         check(assert_type(pd.unique(i64i), np.ndarray), np.ndarray)

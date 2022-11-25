@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pandas-stubs"
-version = "1.5.1.221024"
+version = "1.5.2.221124"
 description = "Type annotations for pandas"
 authors = ["The Pandas Development Team <pandas-dev@python.org>"]
 license = "BSD-3-Clause"
@@ -19,6 +19,7 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Topic :: Scientific/Engineering"
 ]
 packages = [
@@ -30,26 +31,26 @@ packages = [
 "Documentation" = "https://pandas.pydata.org/pandas-docs/stable"
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.11"
+python = ">=3.8,<3.12"
 types-pytz = ">= 2022.1.1"
 
 [tool.poetry.dev-dependencies]
 mypy = "0.990"
-pyarrow = ">=9.0.0"
+pyarrow = ">=10.0.1"
 pytest = ">=7.1.2"
-pyright = "<=1.1.279"
+pyright = ">=1.1.281"
 poethepoet = "0.16.0"
 loguru = ">=0.6.0"
-pandas = "1.5.1"
+pandas = "1.5.2"
 typing-extensions = ">=4.2.0"
 matplotlib = ">=3.5.1"
 pre-commit = ">=2.19.0"
 black = ">=22.8.0"
 isort = ">=5.10.1"
 openpyxl = ">=3.0.10"
-tables = ">=3.7.0"
-lxml = ">=4.7.1,<4.9.0"
-pyreadstat = ">=1.1.9"
+tables = { version = ">=3.7.0", python = "<3.11" }
+lxml = { version = ">=4.7.1,<4.9.0", python = "<3.11" }
+pyreadstat = ">=1.2.0"
 xlrd = ">=2.0.1"
 pyxlsb = ">=1.0.9"
 odfpy = ">=1.4.1"
