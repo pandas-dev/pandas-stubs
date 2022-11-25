@@ -14,10 +14,14 @@ from numpy import typing as npt
 import pandas as pd
 from pandas.core.indexes.numeric import IntegerIndex
 import pytz
-from typing_extensions import assert_type
+from typing_extensions import (
+    Never,
+    assert_type,
+)
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs import BaseOffset
+from pandas._libs.tslibs.offsets import DateOffset
 
 if TYPE_CHECKING:
     from pandas._typing import FulldatetimeDict
@@ -31,7 +35,9 @@ from tests import (
 from pandas.tseries.holiday import USFederalHolidayCalendar
 from pandas.tseries.offsets import (
     BusinessDay,
+    BusinessHour,
     CustomBusinessDay,
+    CustomBusinessHour,
     Day,
 )
 
@@ -257,7 +263,7 @@ def fail_on_adding_two_timestamps() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         ssum: pd.Series = s1 + s2  # TODO both: ignore[operator]
         ts = pd.Timestamp("2022-06-30")
-        tsum: pd.Series = s1 + ts  # TODO both: ignore[operator]
+        tsum: pd.Series = s1 + ts  # pyright: ignore
 
 
 def test_dtindex_tzinfo() -> None:
@@ -595,6 +601,45 @@ def test_some_offsets() -> None:
     check(assert_type(tswm1, pd.Timestamp), pd.Timestamp)
     tswm2 = pd.Timestamp("9/23/2022") + pd.offsets.LastWeekOfMonth(2, 3)
     check(assert_type(tswm2, pd.Timestamp), pd.Timestamp)
+    # GH 396
+    check(
+        assert_type(
+            BusinessHour(start=dt.time(9, 30), end=dt.time(16, 0)), BusinessHour
+        ),
+        BusinessHour,
+    )
+    check(
+        assert_type(BusinessHour(start="9:30", end="16:00"), BusinessHour), BusinessHour
+    )
+    check(
+        assert_type(
+            BusinessHour(
+                start=["9:30", dt.time(11, 30)], end=[dt.time(10, 30), "13:00"]
+            ),
+            BusinessHour,
+        ),
+        BusinessHour,
+    )
+    check(
+        assert_type(
+            CustomBusinessHour(start=dt.time(9, 30), end=dt.time(16, 0)),
+            CustomBusinessHour,
+        ),
+        CustomBusinessHour,
+    )
+    check(
+        assert_type(CustomBusinessHour(start="9:30", end="16:00"), CustomBusinessHour),
+        CustomBusinessHour,
+    )
+    check(
+        assert_type(
+            CustomBusinessHour(
+                start=["9:30", dt.time(11, 30)], end=[dt.time(10, 30), "13:00"]
+            ),
+            CustomBusinessHour,
+        ),
+        CustomBusinessHour,
+    )
 
 
 def test_types_to_numpy() -> None:
@@ -988,3 +1033,24 @@ def test_timedelta_range() -> None:
         ),
         pd.TimedeltaIndex,
     )
+
+
+def test_dateoffset_freqstr() -> None:
+    offset = DateOffset(minutes=10)
+    check(assert_type(offset.freqstr, str), str)
+
+
+def test_timedelta64_and_arithmatic_operator() -> None:
+    s1 = pd.Series(data=pd.date_range("1/1/2020", "2/1/2020"))
+    s2 = pd.Series(data=pd.date_range("1/1/2021", "2/1/2021"))
+    s3 = s2 - s1
+    td = np.timedelta64(1, "M")
+    check(assert_type((s1 - td), "TimestampSeries"), pd.Series, pd.Timestamp)
+    check(assert_type((s1 + td), "TimestampSeries"), pd.Series, pd.Timestamp)
+    check(assert_type((s3 - td), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type((s3 + td), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type((s3 / td), "pd.Series[float]"), pd.Series, float)
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type((s1 * td), Never)  # pyright: ignore
+        assert_type((s1 / td), Never)  # pyright: ignore
+        assert_type((s3 * td), Never)  # pyright: ignore

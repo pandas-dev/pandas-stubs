@@ -1,4 +1,3 @@
-import numpy as np
 import pyarrow as pa
 
 from pandas._libs.missing import NAType

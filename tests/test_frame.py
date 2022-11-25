@@ -6,6 +6,7 @@ import datetime
 import io
 import itertools
 from pathlib import Path
+import platform
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -36,8 +37,10 @@ import xarray as xr
 from pandas._typing import Scalar
 
 from tests import (
+    PD_LTE_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 
 from pandas.io.formats.style import Styler
@@ -460,9 +463,28 @@ def test_types_unique() -> None:
 
 def test_types_apply() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    df.apply(lambda x: x**2)
-    df.apply(np.exp)
-    df.apply(str)
+
+    def returns_series(x: pd.Series) -> pd.Series:
+        return x**2
+
+    check(assert_type(df.apply(returns_series), pd.DataFrame), pd.DataFrame)
+
+    def returns_scalar(x: pd.Series) -> float:
+        return 2
+
+    check(assert_type(df.apply(returns_scalar), pd.Series), pd.Series)
+    check(
+        assert_type(df.apply(returns_scalar, result_type="broadcast"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.apply(np.exp), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.apply(str), pd.Series), pd.Series)
+
+    # GH 393
+    def gethead(s: pd.Series, y: int) -> pd.Series:
+        return s.head(y)
+
+    check(assert_type(df.apply(gethead, args=(4,)), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_applymap() -> None:
@@ -914,12 +936,16 @@ def test_types_describe() -> None:
         }
     )
     df.describe()
-    with pytest.warns(FutureWarning, match="Treating datetime data as categorical"):
+    with pytest_warns_bounded(
+        FutureWarning, match="Treating datetime data as categorical", upper="1.5.999"
+    ):
         df.describe(percentiles=[0.5], include="all")
-    with pytest.warns(FutureWarning, match="Treating datetime data as categorical"):
         df.describe(exclude=[np.number])
-    # datetime_is_numeric param added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    df.describe(datetime_is_numeric=True)
+    if PD_LTE_15:
+        # datetime_is_numeric param added in 1.1.0
+        # https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
+        # Remove in 2.0.0
+        df.describe(datetime_is_numeric=True)
 
 
 def test_types_to_string() -> None:
@@ -1732,7 +1758,15 @@ def test_generic() -> None:
     def func() -> MyDataFrame[int]:
         return MyDataFrame[int]({"foo": [1, 2, 3]})
 
-    func()
+    # This should be fixed in pandas 1.5.2, if
+    # https://github.com/pandas-dev/pandas/pull/49736 is included
+    with pytest_warns_bounded(
+        UserWarning,
+        "Pandas doesn't allow columns to be created",
+        lower="3.10.99",
+        version_str=platform.python_version(),
+    ):
+        func()
 
 
 def test_to_xarray():
@@ -1896,3 +1930,15 @@ def test_resample_150_changes() -> None:
         return s.mean()
 
     check(assert_type(resampler.apply(f), Union[pd.Series, pd.DataFrame]), pd.DataFrame)
+
+
+def df_accepting_dicts_iterator() -> None:
+    # GH 392
+    data = [{"a": 1, "b": 2}, {"a": 3, "b": 5}]
+    check(assert_type(pd.DataFrame(iter(data)), pd.DataFrame), pd.DataFrame)
+
+
+def series_added_in_astype() -> None:
+    # GH410
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+    check(assert_type(df.astype(df.dtypes), pd.DataFrame), pd.DataFrame)

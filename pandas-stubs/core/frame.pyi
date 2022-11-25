@@ -110,7 +110,6 @@ from pandas._typing import (
     num,
 )
 
-from pandas.io.formats import format as fmt
 from pandas.io.formats.style import Styler
 from pandas.plotting import PlotAccessor
 
@@ -192,7 +191,7 @@ class DataFrame(NDFrame, OpsMixin):
         data: ListLikeU
         | DataFrame
         | dict[Any, Any]
-        | Iterable[ListLikeU | tuple[Hashable, ListLikeU]]
+        | Iterable[ListLikeU | tuple[Hashable, ListLikeU] | dict[Any, Any]]
         | None = ...,
         index: Axes | None = ...,
         columns: Axes | None = ...,
@@ -1088,14 +1087,32 @@ class DataFrame(NDFrame, OpsMixin):
         **kwargs,
     ) -> DataFrame: ...
     @overload
-    def apply(self, f: Callable) -> Series: ...
+    def apply(
+        self,
+        f: Callable[..., Series],
+        axis: AxisType = ...,
+        raw: _bool = ...,
+        result_type: Literal["expand", "reduce", "broadcast"] | None = ...,
+        args=...,
+        **kwargs,
+    ) -> DataFrame: ...
     @overload
     def apply(
         self,
-        f: Callable,
-        axis: AxisType,
+        f: Callable[..., Scalar],
+        axis: AxisType = ...,
         raw: _bool = ...,
-        result_type: _str | None = ...,
+        result_type: Literal["expand", "reduce"] | None = ...,
+        args=...,
+        **kwargs,
+    ) -> Series: ...
+    @overload
+    def apply(
+        self,
+        f: Callable[..., Scalar],
+        result_type: Literal["broadcast"],
+        axis: AxisType = ...,
+        raw: _bool = ...,
         args=...,
         **kwargs,
     ) -> DataFrame: ...
@@ -1259,8 +1276,6 @@ class DataFrame(NDFrame, OpsMixin):
     @property
     def at(self): ...  # Not sure what to do with this yet; look at source
     @property
-    def bool(self) -> _bool: ...
-    @property
     def columns(self) -> Index: ...
     @columns.setter  # setter needs to be right next to getter; otherwise mypy complains
     def columns(
@@ -1342,7 +1357,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def astype(
         self,
-        dtype: _str | Dtype | dict[_str, _str | Dtype],
+        dtype: _str | Dtype | dict[_str, _str | Dtype] | Series,
         copy: _bool = ...,
         errors: _str = ...,
     ) -> DataFrame: ...
@@ -1776,7 +1791,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def rolling(
         self,
-        window: int | BaseOffset | BaseIndexer,
+        window: int | str | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,
@@ -1790,7 +1805,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def rolling(
         self,
-        window: int | BaseOffset | BaseIndexer,
+        window: int | str | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         *,

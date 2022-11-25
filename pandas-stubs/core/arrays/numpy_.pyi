@@ -1,4 +1,3 @@
-import numpy as np
 from numpy.lib.mixins import NDArrayOperatorsMixin
 from pandas.core.arrays.base import (
     ExtensionArray,
