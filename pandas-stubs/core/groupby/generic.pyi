@@ -65,19 +65,9 @@ class SeriesGroupBy(GroupBy, Generic[S1]):
     def filter(self, func, dropna: bool = ..., *args, **kwargs): ...
     def nunique(self, dropna: bool = ...) -> Series: ...
     def describe(self, **kwargs) -> DataFrame: ...
-    @overload
     def value_counts(
         self,
-        normalize: Literal[False] = ...,
-        sort: bool = ...,
-        ascending: bool = ...,
-        bins=...,
-        dropna: bool = ...,
-    ) -> Series: ...
-    @overload
-    def value_counts(
-        self,
-        normalize: Literal[True] = ...,
+        normalize: Literal[False, True] = ...,
         sort: bool = ...,
         ascending: bool = ...,
         bins=...,

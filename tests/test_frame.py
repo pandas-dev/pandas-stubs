@@ -1944,7 +1944,7 @@ def series_added_in_astype() -> None:
     check(assert_type(df.astype(df.dtypes), pd.DataFrame), pd.DataFrame)
 
 
-def test_SeriesGroupBy_and_value_conts() -> None:
+def test_series_groupby_and_value_counts() -> None:
     df = pd.DataFrame(
         {
             "Animal": ["Falcon", "Falcon", "Parrot", "Parrot"],
