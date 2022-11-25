@@ -1300,7 +1300,7 @@ def test_groupby_series_methods() -> None:
     gb.min().loc[2]
     gb.nlargest().loc[2]
     gb.nsmallest().loc[2]
-    gb.nth(0).loc[2]
+    gb.nth(0).loc[1]
 
 
 def test_indexslice_setitem():

@@ -7,10 +7,12 @@ import numpy as np
 from numpy import typing as npt
 import pandas as pd
 from pandas.core.indexes.numeric import NumericIndex
-import pytest
 from typing_extensions import assert_type
 
-from tests import check
+from tests import (
+    check,
+    pytest_warns_bounded,
+)
 
 
 def test_index_unique() -> None:
@@ -166,7 +168,12 @@ def test_index_relops() -> None:
 
 
 def test_range_index_union():
-    with pytest.warns(FutureWarning, match="pandas.Int64Index"):
+    with pytest_warns_bounded(
+        FutureWarning,
+        match="pandas.Int64Index",
+        upper="1.5.99",
+        upper_exception=AttributeError,
+    ):
         check(
             assert_type(
                 pd.RangeIndex(0, 10).union(pd.RangeIndex(10, 20)),

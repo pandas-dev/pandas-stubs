@@ -21,8 +21,10 @@ from pandas._libs.tslibs import NaTType
 from pandas._typing import Scalar
 
 from tests import (
+    PD_LTE_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 
 
@@ -752,14 +754,29 @@ def test_factorize() -> None:
 def test_index_unqiue() -> None:
     ci = pd.CategoricalIndex(["a", "b", "a", "c"])
     dti = pd.DatetimeIndex([pd.Timestamp(2000, 1, 1)])
-    with pytest.warns(FutureWarning, match="pandas.Float64Index is deprecated"):
+    with pytest_warns_bounded(
+        FutureWarning,
+        match="pandas.Float64Index is deprecated",
+        upper="1.5.99",
+        upper_exception=AttributeError,
+    ):
         fi = pd.Float64Index([1.0, 2.0])
     i = pd.Index(["a", "b", "c", "a"])
-    with pytest.warns(FutureWarning, match="pandas.Int64Index is deprecated"):
+    with pytest_warns_bounded(
+        FutureWarning,
+        match="pandas.Int64Index is deprecated",
+        upper="1.5.99",
+        upper_exception=AttributeError,
+    ):
         i64i = pd.Int64Index([1, 2, 3, 4])
     pi = pd.period_range("2000Q1", periods=2, freq="Q")
     ri = pd.RangeIndex(0, 10)
-    with pytest.warns(FutureWarning, match="pandas.UInt64Index is deprecated"):
+    with pytest_warns_bounded(
+        FutureWarning,
+        match="pandas.UInt64Index is deprecated",
+        upper="1.5.99",
+        upper_exception=AttributeError,
+    ):
         ui = pd.UInt64Index([0, 1, 2, 3, 5])
     tdi = pd.timedelta_range("1 day", "10 days", periods=10)
     mi = pd.MultiIndex.from_product([["a", "b"], ["apple", "banana"]])
@@ -767,18 +784,19 @@ def test_index_unqiue() -> None:
 
     check(assert_type(pd.unique(ci), pd.CategoricalIndex), pd.CategoricalIndex)
     check(assert_type(pd.unique(dti), np.ndarray), np.ndarray)
-    check(assert_type(pd.unique(fi), np.ndarray), np.ndarray)
     check(assert_type(pd.unique(i), np.ndarray), np.ndarray)
-    check(assert_type(pd.unique(i64i), np.ndarray), np.ndarray)
     check(assert_type(pd.unique(pi), pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(pd.unique(ri), np.ndarray), np.ndarray)
-    check(assert_type(pd.unique(ui), np.ndarray), np.ndarray)
     check(assert_type(pd.unique(tdi), np.ndarray), np.ndarray)
     check(assert_type(pd.unique(mi), np.ndarray), np.ndarray)
     check(
         assert_type(pd.unique(interval_i), "pd.IntervalIndex[pd.Interval[int]]"),
         pd.IntervalIndex,
     )
+    if PD_LTE_15:
+        check(assert_type(pd.unique(fi), np.ndarray), np.ndarray)
+        check(assert_type(pd.unique(i64i), np.ndarray), np.ndarray)
+        check(assert_type(pd.unique(ui), np.ndarray), np.ndarray)
 
 
 def test_cut() -> None:
@@ -1422,7 +1440,12 @@ def test_crosstab_args() -> None:
         ),
         pd.DataFrame,
     )
-    with pytest.warns(FutureWarning):
+    with pytest_warns_bounded(
+        FutureWarning,
+        "pivot_table dropped a column because",
+        upper="1.5.99",
+        upper_exception=TypeError,
+    ):
         check(
             assert_type(
                 pd.crosstab(a, b, values=pd.Categorical(values), aggfunc=np.sum),

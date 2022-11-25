@@ -36,6 +36,7 @@ from tests import (
     PD_LTE_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 
 if TYPE_CHECKING:
@@ -259,16 +260,30 @@ def test_types_shift() -> None:
 
 
 def test_types_rank() -> None:
-    s = pd.Series([1, 1, 2, 5, 6, np.nan, "milion"])
-    with pytest.warns(FutureWarning, match="Dropping of nuisance columns"):
+    s = pd.Series([1, 1, 2, 5, 6, np.nan])
+    if PD_LTE_15:
+        s[6] = "milion"
+    with pytest_warns_bounded(
+        FutureWarning,
+        match="Dropping of nuisance columns",
+        upper="1.5.99",
+    ):
         s.rank()
-    with pytest.warns(FutureWarning, match="Dropping of nuisance columns"):
+    with pytest_warns_bounded(
+        FutureWarning, match="Dropping of nuisance columns", upper="1.5.99"
+    ):
         s.rank(axis=0, na_option="bottom")
-    with pytest.warns(FutureWarning, match="Dropping of nuisance columns"):
+    with pytest_warns_bounded(
+        FutureWarning, match="Dropping of nuisance columns", upper="1.5.99"
+    ):
         s.rank(method="min", pct=True)
-    with pytest.warns(FutureWarning, match="Dropping of nuisance columns"):
+    with pytest_warns_bounded(
+        FutureWarning, match="Dropping of nuisance columns", upper="1.5.99"
+    ):
         s.rank(method="dense", ascending=True)
-    with pytest.warns(FutureWarning, match="Calling Series.rank with numeric_only"):
+    with pytest_warns_bounded(
+        FutureWarning, match="Calling Series.rank with numeric_only", upper="1.5.99"
+    ):
         s.rank(method="first", numeric_only=True)
     s2 = pd.Series([1, 1, 2, 5, 6, np.nan])
     s2.rank(method="first", numeric_only=True)
@@ -643,17 +658,25 @@ def test_types_transform() -> None:
 
 def test_types_describe() -> None:
     s = pd.Series([1, 2, 3, np.datetime64("2000-01-01")])
-    with pytest.warns(DeprecationWarning, match="elementwise comparison failed"):
+    with pytest_warns_bounded(
+        DeprecationWarning, match="elementwise comparison failed", upper="1.5.99"
+    ):
         s.describe()
-    with pytest.warns(DeprecationWarning, match="elementwise comparison failed"):
+    with pytest_warns_bounded(
+        DeprecationWarning, match="elementwise comparison failed", upper="1.5.99"
+    ):
         s.describe(percentiles=[0.5], include="all")
-    with pytest.warns(DeprecationWarning, match="elementwise comparison failed"):
+    with pytest_warns_bounded(
+        DeprecationWarning, match="elementwise comparison failed", upper="1.5.99"
+    ):
         s.describe(exclude=np.number)
     if PD_LTE_15:
         # datetime_is_numeric param added in 1.1.0
         # https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
         # Remove in 2.0.0
-        with pytest.warns(DeprecationWarning, match="elementwise comparison failed"):
+        with pytest_warns_bounded(
+            DeprecationWarning, match="elementwise comparison failed", upper="1.5.99"
+        ):
             s.describe(datetime_is_numeric=True)
 
 
