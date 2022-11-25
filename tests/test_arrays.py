@@ -65,8 +65,16 @@ def test_integer_array() -> None:
         ),
         BooleanArray,
     )
-    check(assert_type(int_arr.astype(float), npt.NDArray[np.float64]), np.ndarray)
-    check(assert_type(int_arr.astype(np.float64), npt.NDArray[np.float64]), np.ndarray)
+    check(
+        assert_type(int_arr.astype(float), npt.NDArray[np.float64]),
+        np.ndarray,
+        np.float64,
+    )
+    check(
+        assert_type(int_arr.astype(np.float64), npt.NDArray[np.float64]),
+        np.ndarray,
+        np.float64,
+    )
     non_null_int_arr.astype(bool)
     non_null_int_arr.astype(np.bool_)
     non_null_int_arr.astype("bool")
@@ -268,32 +276,34 @@ def test_datetime_array() -> None:
 
 def test_interval_array_construction() -> None:
     ia = IntervalArray([pd.Interval(0, 1), pd.Interval(1, 2)])
-    check(assert_type(IntervalArray(ia), IntervalArray), IntervalArray)
+    check(
+        assert_type(IntervalArray(ia), "IntervalArray[pd.Interval[int]]"), IntervalArray
+    )
     check(
         assert_type(
             IntervalArray([pd.Interval(0, 1), pd.Interval(1, 2)], closed="left"),
-            IntervalArray,
+            "IntervalArray[pd.Interval[int]]",
         ),
         IntervalArray,
     )
     check(
         assert_type(
             IntervalArray([pd.Interval(0, 1), pd.Interval(1, 2)], closed="right"),
-            IntervalArray,
+            "IntervalArray[pd.Interval[int]]",
         ),
         IntervalArray,
     )
     check(
         assert_type(
             IntervalArray([pd.Interval(0, 1), pd.Interval(1, 2)], closed="both"),
-            IntervalArray,
+            "IntervalArray[pd.Interval[int]]",
         ),
         IntervalArray,
     )
     check(
         assert_type(
             IntervalArray([pd.Interval(0, 1), pd.Interval(1, 2)], closed="neither"),
-            IntervalArray,
+            "IntervalArray[pd.Interval[int]]",
         ),
         IntervalArray,
     )
@@ -304,38 +314,42 @@ def test_interval_array_construction() -> None:
                 closed="neither",
                 verify_integrity=True,
             ),
-            IntervalArray,
+            "IntervalArray[pd.Interval[int]]",
         ),
         IntervalArray,
     )
 
     check(
-        assert_type(IntervalArray.from_arrays([0, 1], [1, 2]), IntervalArray),
+        assert_type(
+            IntervalArray.from_arrays([0, 1], [1, 2]), "IntervalArray[pd.Interval[int]]"
+        ),
         IntervalArray,
     )
     check(
         assert_type(
-            IntervalArray.from_arrays(np.array([0, 1]), np.array([1, 2])), IntervalArray
+            IntervalArray.from_arrays(np.array([0, 1]), np.array([1, 2])),
+            "IntervalArray[pd.Interval[int]]",
         ),
         IntervalArray,
     )
     check(
         assert_type(
             IntervalArray.from_arrays(pd.Series([0, 1]), pd.Series([1, 2])),
-            IntervalArray,
+            "IntervalArray[pd.Interval[int]]",
         ),
         IntervalArray,
     )
     check(
         assert_type(
-            IntervalArray.from_arrays(pd.Index([0, 1]), pd.Index([1, 2])), IntervalArray
+            IntervalArray.from_arrays(pd.Index([0, 1]), pd.Index([1, 2])),
+            "IntervalArray[pd.Interval[int]]",
         ),
         IntervalArray,
     )
     check(
         assert_type(
             IntervalArray.from_arrays([0, 1], [1, 2], closed="left", copy=False),
-            IntervalArray,
+            "IntervalArray[pd.Interval[int]]",
         ),
         IntervalArray,
     )
@@ -344,7 +358,7 @@ def test_interval_array_construction() -> None:
             IntervalArray.from_arrays(
                 [0, 1], [1, 2], closed="right", dtype=pd.IntervalDtype("int64")
             ),
-            IntervalArray,
+            "IntervalArray[pd.Interval[int]]",
         ),
         IntervalArray,
     )
@@ -353,59 +367,71 @@ def test_interval_array_construction() -> None:
             IntervalArray.from_arrays(
                 [0, 1], [1, 2], closed="right", dtype=pd.IntervalDtype(float)
             ),
-            IntervalArray,
+            "IntervalArray[pd.Interval[int]]",
         ),
         IntervalArray,
     )
     check(
         assert_type(
-            IntervalArray.from_arrays([0, 1], [1, 2], closed="both"), IntervalArray
+            IntervalArray.from_arrays([0, 1], [1, 2], closed="both"),
+            "IntervalArray[pd.Interval[int]]",
         ),
         IntervalArray,
     )
     check(
         assert_type(
-            IntervalArray.from_arrays([0, 1], [1, 2], closed="neither"), IntervalArray
+            IntervalArray.from_arrays([0, 1], [1, 2], closed="neither"),
+            "IntervalArray[pd.Interval[int]]",
         ),
         IntervalArray,
     )
 
     breaks = [0, 1, 2, 3, 4.5]
-    check(assert_type(IntervalArray.from_breaks(breaks), IntervalArray), IntervalArray)
     check(
         assert_type(
-            IntervalArray.from_breaks(np.array(breaks), copy=False), IntervalArray
+            IntervalArray.from_breaks(breaks), "IntervalArray[pd.Interval[float]]"
         ),
         IntervalArray,
     )
     check(
         assert_type(
-            IntervalArray.from_breaks(pd.Series(breaks), closed="left"), IntervalArray
+            IntervalArray.from_breaks(np.array(breaks), copy=False),
+            "IntervalArray[pd.Interval[float]]",
         ),
         IntervalArray,
     )
     check(
         assert_type(
-            IntervalArray.from_breaks(pd.Index(breaks), closed="right"), IntervalArray
+            IntervalArray.from_breaks(pd.Series(breaks), closed="left"),
+            "IntervalArray[pd.Interval[float]]",
         ),
         IntervalArray,
     )
     check(
         assert_type(
-            IntervalArray.from_breaks(pd.Index(breaks), closed="both"), IntervalArray
+            IntervalArray.from_breaks(pd.Index(breaks), closed="right"),
+            "IntervalArray[pd.Interval[float]]",
         ),
         IntervalArray,
     )
     check(
         assert_type(
-            IntervalArray.from_breaks(pd.Index(breaks), closed="neither"), IntervalArray
+            IntervalArray.from_breaks(pd.Index(breaks), closed="both"),
+            "IntervalArray[pd.Interval[float]]",
+        ),
+        IntervalArray,
+    )
+    check(
+        assert_type(
+            IntervalArray.from_breaks(pd.Index(breaks), closed="neither"),
+            "IntervalArray[pd.Interval[float]]",
         ),
         IntervalArray,
     )
     check(
         assert_type(
             IntervalArray.from_breaks(pd.Index(breaks), dtype=pd.IntervalDtype(float)),
-            IntervalArray,
+            "IntervalArray[pd.Interval[float]]",
         ),
         IntervalArray,
     )
@@ -413,31 +439,43 @@ def test_interval_array_construction() -> None:
 
 def test_integer_array_attrib_props() -> None:
     ia = IntervalArray([pd.Interval(0, 1), pd.Interval(1, 2)])
-
-    check(assert_type(ia.left, pd.Int64Index), pd.Int64Index)
-    check(assert_type(ia.right, pd.Int64Index), pd.Int64Index)
+    check(assert_type(ia.left, pd.Index), pd.Int64Index)
+    check(assert_type(ia.right, pd.Index), pd.Int64Index)
     check(assert_type(ia.closed, str), str)
-    check(assert_type(ia.mid, pd.Float64Index), pd.Float64Index)
-    check(assert_type(ia.length, pd.Int64Index), pd.Int64Index)
-    check(assert_type(ia.is_empty, npt.NDArray[np.bool_]), np.ndarray)
+    check(assert_type(ia.mid, pd.Index), pd.Float64Index)
+    check(assert_type(ia.length, pd.Index), pd.Int64Index)
+    check(assert_type(ia.is_empty, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
     check(assert_type(ia.is_non_overlapping_monotonic, bool), bool)
 
-    check(assert_type(ia.contains(0.5), npt.NDArray[np.bool_]), np.ndarray)
+    check(assert_type(ia.contains(0.5), npt.NDArray[np.bool_]), np.ndarray, np.bool_)
     check(
         assert_type(ia.overlaps(pd.Interval(0.5, 1.0)), npt.NDArray[np.bool_]),
         np.ndarray,
+        np.bool_,
     )
-    check(assert_type(ia.set_closed("right"), IntervalArray), IntervalArray)
-    check(assert_type(ia.set_closed("left"), IntervalArray), IntervalArray)
-    check(assert_type(ia.set_closed("both"), IntervalArray), IntervalArray)
-    check(assert_type(ia.set_closed("neither"), IntervalArray), IntervalArray)
-    check(assert_type(ia.to_tuples(True), npt.NDArray[np.object_]), np.ndarray)
-    check(assert_type(ia.to_tuples(False), npt.NDArray[np.object_]), np.ndarray)
+    check(
+        assert_type(ia.set_closed("right"), "IntervalArray[pd.Interval[int]]"),
+        IntervalArray,
+    )
+    check(
+        assert_type(ia.set_closed("left"), "IntervalArray[pd.Interval[int]]"),
+        IntervalArray,
+    )
+    check(
+        assert_type(ia.set_closed("both"), "IntervalArray[pd.Interval[int]]"),
+        IntervalArray,
+    )
+    check(
+        assert_type(ia.set_closed("neither"), "IntervalArray[pd.Interval[int]]"),
+        IntervalArray,
+    )
+    check(assert_type(ia.to_tuples(True), npt.NDArray[np.object_]), np.ndarray, tuple)
+    check(assert_type(ia.to_tuples(False), npt.NDArray[np.object_]), np.ndarray, tuple)
 
     ia_float = IntervalArray([pd.Interval(0, 1.5), pd.Interval(1, 2)])
-    check(assert_type(ia_float.left, pd.Float64Index), pd.Float64Index)
-    check(assert_type(ia_float.right, pd.Float64Index), pd.Float64Index)
-    check(assert_type(ia_float.length, pd.Float64Index), pd.Float64Index)
+    check(assert_type(ia_float.left, pd.Index), pd.Float64Index)
+    check(assert_type(ia_float.right, pd.Index), pd.Float64Index)
+    check(assert_type(ia_float.length, pd.Index), pd.Float64Index)
 
     ia_ts = IntervalArray(
         [
@@ -445,10 +483,10 @@ def test_integer_array_attrib_props() -> None:
             pd.Interval(pd.Timestamp("2018-01-02"), pd.Timestamp("2018-01-03")),
         ]
     )
-    check(assert_type(ia_ts.left, pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(ia_ts.right, pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(ia_ts.mid, pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(ia_ts.length, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(ia_ts.left, pd.Index), pd.DatetimeIndex)
+    check(assert_type(ia_ts.right, pd.Index), pd.DatetimeIndex)
+    check(assert_type(ia_ts.mid, pd.Index), pd.DatetimeIndex)
+    check(assert_type(ia_ts.length, pd.Index), pd.TimedeltaIndex)
 
     ia_td = IntervalArray(
         [
@@ -456,10 +494,10 @@ def test_integer_array_attrib_props() -> None:
             pd.Interval(pd.Timedelta("2 days"), pd.Timedelta("3 days")),
         ]
     )
-    check(assert_type(ia_td.left, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(ia_td.right, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(ia_td.mid, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(ia_td.length, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(ia_td.left, pd.Index), pd.TimedeltaIndex)
+    check(assert_type(ia_td.right, pd.Index), pd.TimedeltaIndex)
+    check(assert_type(ia_td.mid, pd.Index), pd.TimedeltaIndex)
+    check(assert_type(ia_td.length, pd.Index), pd.TimedeltaIndex)
 
 
 def test_timedelta_array() -> None:

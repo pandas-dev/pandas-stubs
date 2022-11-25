@@ -193,6 +193,8 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     def __ne__(self, other: Series[_OrderableT]) -> Series[bool]: ...  # type: ignore[misc]
     @overload
     def __ne__(self, other: object) -> Literal[True]: ...
+    @property
+    def is_empty(self) -> bool: ...
 
 class IntervalTree(IntervalMixin):
     def __init__(
