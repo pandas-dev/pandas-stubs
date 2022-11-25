@@ -43,6 +43,7 @@ from pandas.core.indexes.accessors import (
 )
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.indexes.interval import IntervalIndex
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.indexing import (
@@ -74,6 +75,7 @@ from pandas._typing import (
     AggFuncTypeBase,
     AggFuncTypeDictFrame,
     AggFuncTypeSeriesToFrame,
+    AnyArrayLike,
     ArrayLike,
     Axes,
     Axis,
@@ -90,6 +92,7 @@ from pandas._typing import (
     IgnoreRaise,
     IndexingInt,
     IntervalClosedType,
+    IntervalT,
     JoinHow,
     JsonSeriesOrient,
     Level,
@@ -208,6 +211,16 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         copy: bool = ...,
         fastpath: bool = ...,
     ) -> TimedeltaSeries: ...
+    @overload
+    def __new__(
+        cls,
+        data: IntervalIndex[IntervalT],
+        index: Axes | None = ...,
+        dtype=...,
+        name: Hashable | None = ...,
+        copy: bool = ...,
+        fastpath: bool = ...,
+    ) -> Series[IntervalT]: ...
     @overload
     def __new__(
         cls,
@@ -1065,8 +1078,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     ) -> Scalar | Series[S1]: ...
     def clip(
         self,
-        lower: float | None = ...,
-        upper: float | None = ...,
+        lower: AnyArrayLike | float | None = ...,
+        upper: AnyArrayLike | float | None = ...,
         axis: SeriesAxisType | None = ...,
         inplace: _bool = ...,
         *args,

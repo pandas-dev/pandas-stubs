@@ -775,7 +775,10 @@ def test_index_unqiue() -> None:
     check(assert_type(pd.unique(ui), np.ndarray), np.ndarray)
     check(assert_type(pd.unique(tdi), np.ndarray), np.ndarray)
     check(assert_type(pd.unique(mi), np.ndarray), np.ndarray)
-    check(assert_type(pd.unique(interval_i), pd.IntervalIndex), pd.IntervalIndex)
+    check(
+        assert_type(pd.unique(interval_i), "pd.IntervalIndex[pd.Interval[int]]"),
+        pd.IntervalIndex,
+    )
 
 
 def test_cut() -> None:
