@@ -1442,7 +1442,7 @@ def test_crosstab_args() -> None:
     )
     with pytest_warns_bounded(
         FutureWarning,
-        "The default value of numeric_only i",
+        "pivot_table dropped a column because",
         upper="1.5.99",
         upper_exception=TypeError,
     ):
