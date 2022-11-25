@@ -1,7 +1,5 @@
 from typing import Literal
 
-import numpy as np
-import pandas as pd
 from pandas.core.arrays import PandasArray
 
 from pandas._libs.missing import NAType
@@ -10,7 +8,6 @@ from pandas.core.dtypes.base import ExtensionDtype
 
 class StringDtype(ExtensionDtype):
     def __init__(self, storage: Literal["python", "pyarrow"] | None) -> None: ...
-    def __from_arrow__(self, array): ...
     @property
     def na_value(self) -> NAType: ...
 

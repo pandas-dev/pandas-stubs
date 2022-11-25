@@ -20,7 +20,7 @@ from typing_extensions import assert_type
 
 from pandas._libs import NaTType
 from pandas._libs.missing import NAType
-from pandas._typing import Dtype
+from pandas._typing import Scalar
 
 from tests import check
 
@@ -94,9 +94,6 @@ def test_int64_dtype() -> None:
     i64dt = pd.Int64Dtype()
     check(assert_type(i64dt.itemsize, int), int)
     check(assert_type(i64dt.na_value, NAType), NAType)
-    check(assert_type(i64dt.is_signed_integer, bool), bool)
-    check(assert_type(i64dt.is_unsigned_integer, bool), bool)
-    check(assert_type(i64dt.numpy_dtype, np.dtype), np.dtype)
     check(assert_type(i64dt.construct_array_type(), "type[IntegerArray]"), type)
 
 
@@ -129,12 +126,10 @@ def test_sparse_dtype() -> None:
     check(
         assert_type(
             s_dt.fill_value,  # pyright: ignore[reportGeneralTypeIssues]
-            Union[str, bytes, dt.date, timedelta, complex, None],
+            Union[Scalar, None],
         ),
         int,
     )
-    check(assert_type(s_dt.subtype, Dtype), np.dtype)
-    check(assert_type(s_dt.update_dtype(np.int64), pd.SparseDtype), pd.SparseDtype)
 
 
 def test_string_dtype() -> None:
