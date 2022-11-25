@@ -67,12 +67,12 @@ class SeriesGroupBy(GroupBy, Generic[S1]):
     def describe(self, **kwargs) -> DataFrame: ...
     def value_counts(
         self,
-        normalize: bool = ...,
+        normalize: Literal[False, True] = ...,
         sort: bool = ...,
         ascending: bool = ...,
         bins=...,
         dropna: bool = ...,
-    ) -> DataFrame: ...
+    ) -> Series: ...
     def count(self) -> Series[int]: ...
     def pct_change(
         self,

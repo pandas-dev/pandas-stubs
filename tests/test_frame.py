@@ -1942,3 +1942,14 @@ def series_added_in_astype() -> None:
     # GH410
     df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
     check(assert_type(df.astype(df.dtypes), pd.DataFrame), pd.DataFrame)
+
+
+def test_series_groupby_and_value_counts() -> None:
+    df = pd.DataFrame(
+        {
+            "Animal": ["Falcon", "Falcon", "Parrot", "Parrot"],
+            "Max Speed": [380, 370, 24, 26],
+        }
+    )
+    c: pd.Series = df.groupby("Animal")["Max Speed"].value_counts()
+    check(assert_type(c, pd.Series), pd.Series)
