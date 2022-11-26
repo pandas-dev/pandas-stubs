@@ -1120,7 +1120,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Series | str | Scalar],
+        f: Callable[..., ListLikeExceptSeriesAndStr],
         axis: AxisType = ...,
         raw: _bool = ...,
         args=...,
@@ -1142,7 +1142,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Series | str | Scalar],
+        f: Callable[..., ListLikeExceptSeriesAndStr | Series],
         axis: AxisType = ...,
         raw: _bool = ...,
         args=...,
