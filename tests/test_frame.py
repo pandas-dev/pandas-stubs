@@ -1953,3 +1953,11 @@ def test_series_groupby_and_value_counts() -> None:
     )
     c: pd.Series = df.groupby("Animal")["Max Speed"].value_counts()
     check(assert_type(c, pd.Series), pd.Series)
+
+
+def test_axes_as_tuple() -> None:
+    # GH 384
+    index = (3, 5, 7)
+    columns = ["a", "b", "c"]
+    df = pd.DataFrame(data=1, index=index, columns=columns)
+    check(assert_type(df, pd.DataFrame), pd.DataFrame)
