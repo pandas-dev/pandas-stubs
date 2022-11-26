@@ -19,6 +19,7 @@ from typing import (
     List,
     Mapping,
     Tuple,
+    TypedDict,
     TypeVar,
     Union,
 )
@@ -1275,6 +1276,94 @@ def test_read_csv() -> None:
         # https://github.com/microsoft/python-type-stubs/issues/118
         check(
             assert_type(pd.read_csv(path, storage_options=None), pd.DataFrame),
+            pd.DataFrame,
+        )
+
+        # Allow a variety of dict types for the converters parameter
+        converters1 = {"A": str, "B": str}
+        check(
+            assert_type(pd.read_csv(path, converters=converters1), pd.DataFrame),
+            pd.DataFrame,
+        )
+        converters2 = {"A": str, "B": float}
+        check(
+            assert_type(pd.read_csv(path, converters=converters2), pd.DataFrame),
+            pd.DataFrame,
+        )
+        converters3 = {0: str, 1: str}
+        check(
+            assert_type(pd.read_csv(path, converters=converters3), pd.DataFrame),
+            pd.DataFrame,
+        )
+        converters4 = {0: str, 1: float}
+        check(
+            assert_type(pd.read_csv(path, converters=converters4), pd.DataFrame),
+            pd.DataFrame,
+        )
+        converters5: dict[int | str, Callable[[str], Any]] = {
+            0: str,
+            "A": float,
+        }
+        check(
+            assert_type(pd.read_csv(path, converters=converters5), pd.DataFrame),
+            pd.DataFrame,
+        )
+
+        class ReadCsvKwargs(TypedDict):
+            converters: dict[int, Callable[[str], Any]]
+
+        read_csv_kwargs: ReadCsvKwargs = {"converters": {0: int}}
+
+        check(
+            assert_type(pd.read_csv(path, **read_csv_kwargs), pd.DataFrame),
+            pd.DataFrame,
+        )
+
+        # Check value covariance for various other parameters too (these only accept a str key)
+        na_values = {"A": ["1"], "B": ["1"]}
+        check(
+            assert_type(pd.read_csv(path, na_values=na_values), pd.DataFrame),
+            pd.DataFrame,
+        )
+
+    # There are several possible inputs for parse_dates
+    with ensure_clean() as path:
+        Path(path).write_text("Date,Year,Month,Day\n20221125,2022,11,25")
+        parse_dates_1 = ["Date"]
+        check(
+            assert_type(pd.read_csv(path, parse_dates=parse_dates_1), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_csv(path, index_col="Date", parse_dates=True), pd.DataFrame
+            ),
+            pd.DataFrame,
+        )
+        parse_dates_2 = {"combined_date": ["Year", "Month", "Day"]}
+        check(
+            assert_type(pd.read_csv(path, parse_dates=parse_dates_2), pd.DataFrame),
+            pd.DataFrame,
+        )
+        parse_dates_3 = {"combined_date": [1, 2, 3]}
+        check(
+            assert_type(pd.read_csv(path, parse_dates=parse_dates_3), pd.DataFrame),
+            pd.DataFrame,
+        )
+        # MyPy calls this Dict[str, object] by default which necessitates the explicit annotation (Pyright does not)
+        parse_dates_4: dict[str, list[str | int]] = {"combined_date": [1, "Month", 3]}
+        check(
+            assert_type(pd.read_csv(path, parse_dates=parse_dates_4), pd.DataFrame),
+            pd.DataFrame,
+        )
+        parse_dates_5 = [2]
+        check(
+            assert_type(pd.read_csv(path, parse_dates=parse_dates_5), pd.DataFrame),
+            pd.DataFrame,
+        )
+        parse_dates_6 = [[1, 2], [1, 2, 3]]
+        check(
+            assert_type(pd.read_csv(path, parse_dates=parse_dates_6), pd.DataFrame),
             pd.DataFrame,
         )
 
