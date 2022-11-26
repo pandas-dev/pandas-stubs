@@ -19,6 +19,7 @@ from typing import (
     List,
     Mapping,
     Tuple,
+    TypedDict,
     TypeVar,
     Union,
 )
@@ -1275,6 +1276,46 @@ def test_read_csv() -> None:
         # https://github.com/microsoft/python-type-stubs/issues/118
         check(
             assert_type(pd.read_csv(path, storage_options=None), pd.DataFrame),
+            pd.DataFrame,
+        )
+
+        # Allow a variety of dict types for the converters parameter
+        converters1 = {"A": lambda x: str, "B": lambda x: str}
+        check(
+            assert_type(pd.read_csv(path, converters=converters1), pd.DataFrame),
+            pd.DataFrame,
+        )
+        converters2 = {"A": lambda x: str, "B": lambda x: float}
+        check(
+            assert_type(pd.read_csv(path, converters=converters2), pd.DataFrame),
+            pd.DataFrame,
+        )
+        converters3 = {0: lambda x: str, 1: lambda x: str}
+        check(
+            assert_type(pd.read_csv(path, converters=converters3), pd.DataFrame),
+            pd.DataFrame,
+        )
+        converters4 = {0: lambda x: str, 1: lambda x: float}
+        check(
+            assert_type(pd.read_csv(path, converters=converters4), pd.DataFrame),
+            pd.DataFrame,
+        )
+        converters5: dict[int | str, Callable[[str], Any]] = {
+            0: lambda x: str,
+            "A": lambda x: float,
+        }
+        check(
+            assert_type(pd.read_csv(path, converters=converters5), pd.DataFrame),
+            pd.DataFrame,
+        )
+
+        class ReadCsvKwargs(TypedDict):
+            converters: dict[int, Callable[[str], Any]]
+
+        read_csv_kwargs: ReadCsvKwargs = {"converters": {0: int}}
+
+        check(
+            assert_type(pd.read_csv(path, **read_csv_kwargs), pd.DataFrame),
             pd.DataFrame,
         )
 

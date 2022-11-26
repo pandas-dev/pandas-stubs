@@ -48,7 +48,10 @@ def read_csv(
     | None = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
-    converters: dict[int | str, Callable[[str], Any]] | None = ...,
+    converters: dict[int | str, Callable[[str], Any]]
+    | dict[int, Callable[[str], Any]]
+    | dict[str, Callable[[str], Any]]
+    | None = ...,
     true_values: list[str] = ...,
     false_values: list[str] = ...,
     skipinitialspace: bool = ...,
@@ -111,7 +114,10 @@ def read_csv(
     | None = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
-    converters: dict[int | str, Callable[[str], Any]] | None = ...,
+    converters: dict[int | str, Callable[[str], Any]]
+    | dict[int, Callable[[str], Any]]
+    | dict[str, Callable[[str], Any]]
+    | None = ...,
     true_values: list[str] = ...,
     false_values: list[str] = ...,
     skipinitialspace: bool = ...,
@@ -174,7 +180,10 @@ def read_csv(
     | None = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
-    converters: dict[int | str, Callable[[str], Any]] | None = ...,
+    converters: dict[int | str, Callable[[str], Any]]
+    | dict[int, Callable[[str], Any]]
+    | dict[str, Callable[[str], Any]]
+    | None = ...,
     true_values: list[str] = ...,
     false_values: list[str] = ...,
     skipinitialspace: bool = ...,
@@ -237,7 +246,10 @@ def read_table(
     | None = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
-    converters: dict[int | str, Callable[[str], Any]] | None = ...,
+    converters: dict[int | str, Callable[[str], Any]]
+    | dict[int, Callable[[str], Any]]
+    | dict[str, Callable[[str], Any]]
+    | None = ...,
     true_values: list[str] = ...,
     false_values: list[str] = ...,
     skipinitialspace: bool = ...,
@@ -300,7 +312,10 @@ def read_table(
     | None = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
-    converters: dict[int | str, Callable[[str], Any]] | None = ...,
+    converters: dict[int | str, Callable[[str], Any]]
+    | dict[int, Callable[[str], Any]]
+    | dict[str, Callable[[str], Any]]
+    | None = ...,
     true_values: list[str] = ...,
     false_values: list[str] = ...,
     skipinitialspace: bool = ...,
@@ -363,7 +378,10 @@ def read_table(
     | None = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
-    converters: dict[int | str, Callable[[str], Any]] | None = ...,
+    converters: dict[int | str, Callable[[str], Any]]
+    | dict[int, Callable[[str], Any]]
+    | dict[str, Callable[[str], Any]]
+    | None = ...,
     true_values: list[str] = ...,
     false_values: list[str] = ...,
     skipinitialspace: bool = ...,
