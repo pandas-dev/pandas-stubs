@@ -8,6 +8,7 @@ from typing import (
     Any,
     Callable,
     Literal,
+    Mapping,
     Sequence,
     overload,
 )
@@ -48,9 +49,9 @@ def read_csv(
     | None = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
-    converters: dict[int | str, Callable[[str], Any]]
-    | dict[int, Callable[[str], Any]]
-    | dict[str, Callable[[str], Any]]
+    converters: Mapping[int | str, Callable[[str], Any]]
+    | Mapping[int, Callable[[str], Any]]
+    | Mapping[str, Callable[[str], Any]]
     | None = ...,
     true_values: list[str] = ...,
     false_values: list[str] = ...,
@@ -58,16 +59,16 @@ def read_csv(
     skiprows: int | Sequence[int] | Callable[[int], bool] = ...,
     skipfooter: int = ...,
     nrows: int | None = ...,
-    na_values: Sequence[str] | dict[str, Sequence[str]] = ...,
+    na_values: Sequence[str] | Mapping[str, Sequence[str]] = ...,
     keep_default_na: bool = ...,
     na_filter: bool = ...,
     verbose: bool = ...,
     skip_blank_lines: bool = ...,
     parse_dates: bool
-    | Sequence[int]
+    | list[int]
     | list[str]
     | Sequence[Sequence[int]]
-    | dict[str, Sequence[int]] = ...,
+    | Mapping[str, Sequence[int | str]] = ...,
     infer_datetime_format: bool = ...,
     keep_date_col: bool = ...,
     date_parser: Callable = ...,
@@ -114,9 +115,9 @@ def read_csv(
     | None = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
-    converters: dict[int | str, Callable[[str], Any]]
-    | dict[int, Callable[[str], Any]]
-    | dict[str, Callable[[str], Any]]
+    converters: Mapping[int | str, Callable[[str], Any]]
+    | Mapping[int, Callable[[str], Any]]
+    | Mapping[str, Callable[[str], Any]]
     | None = ...,
     true_values: list[str] = ...,
     false_values: list[str] = ...,
@@ -124,16 +125,16 @@ def read_csv(
     skiprows: int | Sequence[int] | Callable[[int], bool] = ...,
     skipfooter: int = ...,
     nrows: int | None = ...,
-    na_values: Sequence[str] | dict[str, Sequence[str]] = ...,
+    na_values: Sequence[str] | Mapping[str, Sequence[str]] = ...,
     keep_default_na: bool = ...,
     na_filter: bool = ...,
     verbose: bool = ...,
     skip_blank_lines: bool = ...,
     parse_dates: bool
-    | Sequence[int]
+    | list[int]
     | list[str]
     | Sequence[Sequence[int]]
-    | dict[str, Sequence[int]] = ...,
+    | Mapping[str, Sequence[int | str]] = ...,
     infer_datetime_format: bool = ...,
     keep_date_col: bool = ...,
     date_parser: Callable = ...,
@@ -180,9 +181,9 @@ def read_csv(
     | None = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
-    converters: dict[int | str, Callable[[str], Any]]
-    | dict[int, Callable[[str], Any]]
-    | dict[str, Callable[[str], Any]]
+    converters: Mapping[int | str, Callable[[str], Any]]
+    | Mapping[int, Callable[[str], Any]]
+    | Mapping[str, Callable[[str], Any]]
     | None = ...,
     true_values: list[str] = ...,
     false_values: list[str] = ...,
@@ -190,16 +191,16 @@ def read_csv(
     skiprows: int | Sequence[int] | Callable[[int], bool] = ...,
     skipfooter: int = ...,
     nrows: int | None = ...,
-    na_values: Sequence[str] | dict[str, Sequence[str]] = ...,
+    na_values: Sequence[str] | Mapping[str, Sequence[str]] = ...,
     keep_default_na: bool = ...,
     na_filter: bool = ...,
     verbose: bool = ...,
     skip_blank_lines: bool = ...,
     parse_dates: bool
-    | Sequence[int]
+    | list[int]
     | list[str]
     | Sequence[Sequence[int]]
-    | dict[str, Sequence[int]] = ...,
+    | Mapping[str, Sequence[int | str]] = ...,
     infer_datetime_format: bool = ...,
     keep_date_col: bool = ...,
     date_parser: Callable = ...,
@@ -246,9 +247,9 @@ def read_table(
     | None = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
-    converters: dict[int | str, Callable[[str], Any]]
-    | dict[int, Callable[[str], Any]]
-    | dict[str, Callable[[str], Any]]
+    converters: Mapping[int | str, Callable[[str], Any]]
+    | Mapping[int, Callable[[str], Any]]
+    | Mapping[str, Callable[[str], Any]]
     | None = ...,
     true_values: list[str] = ...,
     false_values: list[str] = ...,
@@ -256,16 +257,16 @@ def read_table(
     skiprows: int | Sequence[int] | Callable[[int], bool] = ...,
     skipfooter: int = ...,
     nrows: int | None = ...,
-    na_values: Sequence[str] | dict[str, Sequence[str]] = ...,
+    na_values: Sequence[str] | Mapping[str, Sequence[str]] = ...,
     keep_default_na: bool = ...,
     na_filter: bool = ...,
     verbose: bool = ...,
     skip_blank_lines: bool = ...,
     parse_dates: bool
-    | Sequence[int]
+    | list[int]
     | list[str]
     | Sequence[Sequence[int]]
-    | dict[str, Sequence[int]] = ...,
+    | Mapping[str, Sequence[int | str]] = ...,
     infer_datetime_format: bool = ...,
     keep_date_col: bool = ...,
     date_parser: Callable = ...,
@@ -312,9 +313,9 @@ def read_table(
     | None = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
-    converters: dict[int | str, Callable[[str], Any]]
-    | dict[int, Callable[[str], Any]]
-    | dict[str, Callable[[str], Any]]
+    converters: Mapping[int | str, Callable[[str], Any]]
+    | Mapping[int, Callable[[str], Any]]
+    | Mapping[str, Callable[[str], Any]]
     | None = ...,
     true_values: list[str] = ...,
     false_values: list[str] = ...,
@@ -322,16 +323,16 @@ def read_table(
     skiprows: int | Sequence[int] | Callable[[int], bool] = ...,
     skipfooter: int = ...,
     nrows: int | None = ...,
-    na_values: Sequence[str] | dict[str, Sequence[str]] = ...,
+    na_values: Sequence[str] | Mapping[str, Sequence[str]] = ...,
     keep_default_na: bool = ...,
     na_filter: bool = ...,
     verbose: bool = ...,
     skip_blank_lines: bool = ...,
     parse_dates: bool
-    | Sequence[int]
+    | list[int]
     | list[str]
     | Sequence[Sequence[int]]
-    | dict[str, Sequence[int]] = ...,
+    | Mapping[str, Sequence[int | str]] = ...,
     infer_datetime_format: bool = ...,
     keep_date_col: bool = ...,
     date_parser: Callable = ...,
@@ -378,9 +379,9 @@ def read_table(
     | None = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
-    converters: dict[int | str, Callable[[str], Any]]
-    | dict[int, Callable[[str], Any]]
-    | dict[str, Callable[[str], Any]]
+    converters: Mapping[int | str, Callable[[str], Any]]
+    | Mapping[int, Callable[[str], Any]]
+    | Mapping[str, Callable[[str], Any]]
     | None = ...,
     true_values: list[str] = ...,
     false_values: list[str] = ...,
@@ -388,16 +389,16 @@ def read_table(
     skiprows: int | Sequence[int] | Callable[[int], bool] = ...,
     skipfooter: int = ...,
     nrows: int | None = ...,
-    na_values: Sequence[str] | dict[str, Sequence[str]] = ...,
+    na_values: Sequence[str] | Mapping[str, Sequence[str]] = ...,
     keep_default_na: bool = ...,
     na_filter: bool = ...,
     verbose: bool = ...,
     skip_blank_lines: bool = ...,
     parse_dates: bool
-    | Sequence[int]
+    | list[int]
     | list[str]
     | Sequence[Sequence[int]]
-    | dict[str, Sequence[int]] = ...,
+    | Mapping[str, Sequence[int | str]] = ...,
     infer_datetime_format: bool = ...,
     keep_date_col: bool = ...,
     date_parser: Callable = ...,
@@ -461,7 +462,7 @@ def read_fwf(
 
 class TextFileReader(abc.Iterator):
     engine: CSVEngine
-    orig_options: dict[str, Any]
+    orig_options: Mapping[str, Any]
     chunksize: int | None
     nrows: int | None
     squeeze: bool
