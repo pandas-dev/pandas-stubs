@@ -1953,3 +1953,11 @@ def test_series_groupby_and_value_counts() -> None:
     )
     c: pd.Series = df.groupby("Animal")["Max Speed"].value_counts()
     check(assert_type(c, pd.Series), pd.Series)
+
+
+def test_astype_dict() -> None:
+    # GH 447
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+    columns_types = {"a": "int", "b": "float"}
+    df = df.astype(columns_types)
+    check(assert_type(df, pd.DataFrame), pd.DataFrame)
