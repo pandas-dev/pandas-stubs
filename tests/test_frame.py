@@ -1953,3 +1953,14 @@ def test_series_groupby_and_value_counts() -> None:
     )
     c: pd.Series = df.groupby("Animal")["Max Speed"].value_counts()
     check(assert_type(c, pd.Series), pd.Series)
+
+
+def test_setitem_none() -> None:
+    df = pd.DataFrame(
+        {"A": [1, 2, 3], "B": ["abc", "def", "ghi"]}, index=["x", "y", "z"]
+    )
+    df.loc["x", "B"] = None
+    df.iloc[2, 0] = None
+    sb = pd.Series([1, 2, 3], dtype=int)
+    sb.loc["y"] = None
+    sb.iloc[0] = None
