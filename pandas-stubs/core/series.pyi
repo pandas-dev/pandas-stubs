@@ -135,10 +135,10 @@ class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     def __getitem__(self, idx: Index | slice | np_ndarray_anyint) -> Series[S1]: ...
     # set item
     @overload
-    def __setitem__(self, idx: int, value: S1) -> None: ...
+    def __setitem__(self, idx: int, value: S1 | None) -> None: ...
     @overload
     def __setitem__(
-        self, idx: Index | slice | np_ndarray_anyint, value: S1 | Series[S1]
+        self, idx: Index | slice | np_ndarray_anyint, value: S1 | Series[S1] | None
     ) -> None: ...
 
 class _LocIndexerSeries(_LocIndexer, Generic[S1]):
@@ -161,19 +161,19 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     def __setitem__(
         self,
         idx: Index | MaskType,
-        value: S1 | ArrayLike | Series[S1],
+        value: S1 | ArrayLike | Series[S1] | None,
     ) -> None: ...
     @overload
     def __setitem__(
         self,
         idx: str,
-        value: S1,
+        value: S1 | None,
     ) -> None: ...
     @overload
     def __setitem__(
         self,
         idx: list[int] | list[str] | list[str | int],
-        value: S1 | ArrayLike | Series[S1],
+        value: S1 | ArrayLike | Series[S1] | None,
     ) -> None: ...
 
 class Series(IndexOpsMixin, NDFrame, Generic[S1]):
