@@ -569,8 +569,8 @@ def test_types_apply() -> None:
         pd.DataFrame,
     )
     check(
-        assert_type(df.apply(returns_listlike_of_3, axis=1), pd.DataFrame),
-        pd.DataFrame,
+        assert_type(df.apply(returns_listlike_of_3, axis=1), pd.Series),
+        pd.Series,
     )
 
     # While this call works in reality, it errors in the type checker, because this should never be called
@@ -636,6 +636,30 @@ def test_types_apply() -> None:
             pd.DataFrame,
         ),
         pd.DataFrame,
+    )
+
+    # Test various other argument combinations to ensure all overloads are supported
+    check(
+        assert_type(df.apply(returns_scalar, axis=0), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(df.apply(returns_scalar, axis=0, result_type=None), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(df.apply(returns_scalar, 0, False, None), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(df.apply(returns_scalar, 0, False, result_type=None), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            df.apply(returns_scalar, 0, raw=False, result_type=None), pd.Series
+        ),
+        pd.Series,
     )
 
 

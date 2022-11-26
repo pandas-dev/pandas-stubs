@@ -59,6 +59,8 @@ from pandas._typing import (
     Axes,
     Axis,
     AxisType,
+    AxisTypeColumn,
+    AxisTypeIndex,
     CalculationMethod,
     ColspaceArgType,
     CompressionOptions,
@@ -1087,11 +1089,13 @@ class DataFrame(NDFrame, OpsMixin):
         *args,
         **kwargs,
     ) -> DataFrame: ...
+
+    # First set of apply() overloads is with defaults
     @overload
     def apply(
         self,
         f: Callable[..., ListLikeExceptSeriesAndStr],
-        axis: AxisType = ...,
+        axis: AxisTypeIndex = ...,
         raw: _bool = ...,
         result_type: Literal[None] = ...,
         args=...,
@@ -1101,7 +1105,7 @@ class DataFrame(NDFrame, OpsMixin):
     def apply(
         self,
         f: Callable[..., Series],
-        axis: AxisType = ...,
+        axis: AxisTypeIndex = ...,
         raw: _bool = ...,
         result_type: Literal[None] = ...,
         args=...,
@@ -1111,17 +1115,19 @@ class DataFrame(NDFrame, OpsMixin):
     def apply(
         self,
         f: Callable[..., Scalar],
-        axis: AxisType = ...,
+        axis: AxisTypeIndex = ...,
         raw: _bool = ...,
         result_type: Literal[None] = ...,
         args=...,
         **kwargs,
     ) -> Series: ...
+
+    # Second set of apply() overloads is with keyword result_type
     @overload
     def apply(
         self,
         f: Callable[..., ListLikeExceptSeriesAndStr],
-        axis: AxisType = ...,
+        axis: AxisTypeIndex = ...,
         raw: _bool = ...,
         args=...,
         *,
@@ -1132,7 +1138,7 @@ class DataFrame(NDFrame, OpsMixin):
     def apply(
         self,
         f: Callable[..., ListLikeExceptSeriesAndStr | Series],
-        axis: AxisType = ...,
+        axis: AxisTypeIndex = ...,
         raw: _bool = ...,
         args=...,
         *,
@@ -1143,13 +1149,118 @@ class DataFrame(NDFrame, OpsMixin):
     def apply(
         self,
         f: Callable[..., ListLikeExceptSeriesAndStr | Series],
-        axis: AxisType = ...,
+        axis: AxisTypeIndex = ...,
         raw: _bool = ...,
         args=...,
         *,
         result_type: Literal["broadcast"],
         **kwargs,
     ) -> DataFrame: ...
+
+    # Third set of apply() overloads is with keyword axis=1 only
+    @overload
+    def apply(
+        self,
+        f: Callable[..., ListLikeExceptSeriesAndStr],
+        raw: _bool = ...,
+        result_type: Literal[None] = ...,
+        args=...,
+        *,
+        axis: AxisTypeColumn,
+        **kwargs,
+    ) -> Series: ...
+    @overload
+    def apply(
+        self,
+        f: Callable[..., Series],
+        raw: _bool = ...,
+        result_type: Literal[None] = ...,
+        args=...,
+        *,
+        axis: AxisTypeColumn,
+        **kwargs,
+    ) -> DataFrame: ...
+    @overload
+    def apply(
+        self,
+        f: Callable[..., Scalar],
+        raw: _bool = ...,
+        result_type: Literal[None] = ...,
+        args=...,
+        *,
+        axis: AxisTypeColumn,
+        **kwargs,
+    ) -> Series: ...
+
+    # Fourth set of apply() overloads is with keyword axis=1 and keyword result_type
+    @overload
+    def apply(
+        self,
+        f: Callable[..., ListLikeExceptSeriesAndStr],
+        raw: _bool = ...,
+        args=...,
+        *,
+        axis: AxisTypeColumn = ...,
+        result_type: Literal[None] = ...,
+        **kwargs,
+    ) -> Series: ...
+    @overload
+    def apply(
+        self,
+        f: Callable[..., Series],
+        raw: _bool = ...,
+        args=...,
+        *,
+        axis: AxisTypeColumn = ...,
+        result_type: Literal[None] = ...,
+        **kwargs,
+    ) -> DataFrame: ...
+    @overload
+    def apply(
+        self,
+        f: Callable[..., Scalar],
+        raw: _bool = ...,
+        args=...,
+        *,
+        axis: AxisTypeColumn = ...,
+        result_type: Literal[None] = ...,
+        **kwargs,
+    ) -> Series: ...
+    @overload
+    def apply(
+        self,
+        f: Callable[..., ListLikeExceptSeriesAndStr],
+        raw: _bool = ...,
+        args=...,
+        *,
+        axis: AxisTypeColumn = ...,
+        result_type: Literal["reduce"],
+        **kwargs,
+    ) -> Series: ...
+    @overload
+    def apply(
+        self,
+        f: Callable[..., ListLikeExceptSeriesAndStr | Series],
+        raw: _bool = ...,
+        args=...,
+        *,
+        axis: AxisTypeColumn = ...,
+        result_type: Literal["expand"],
+        **kwargs,
+    ) -> DataFrame: ...
+    @overload
+    def apply(
+        self,
+        f: Callable[..., ListLikeExceptSeriesAndStr | Series],
+        raw: _bool = ...,
+        args=...,
+        *,
+        axis: AxisTypeColumn = ...,
+        result_type: Literal["broadcast"],
+        **kwargs,
+    ) -> DataFrame: ...
+
+    # Add spacing between apply() overloads and remaining annotations
     def applymap(
         self, func: Callable, na_action: Literal["ignore"] | None = ..., **kwargs
     ) -> DataFrame: ...

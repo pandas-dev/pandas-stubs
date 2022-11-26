@@ -152,7 +152,9 @@ num: TypeAlias = complex
 SeriesAxisType: TypeAlias = Literal[
     "index", 0
 ]  # Restricted subset of _AxisType for series
-AxisType: TypeAlias = Literal["columns", "index", 0, 1]
+AxisTypeIndex: TypeAlias = Literal["index", 0]
+AxisTypeColumn: TypeAlias = Literal["columns", 1]
+AxisType: TypeAlias = AxisTypeIndex | AxisTypeColumn
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
 KeysArgType: TypeAlias = Any
 ListLike = TypeVar("ListLike", Sequence, np.ndarray, "Series", "Index")
