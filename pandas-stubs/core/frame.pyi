@@ -1094,17 +1094,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr],
-        axis: AxisTypeIndex = ...,
-        raw: _bool = ...,
-        result_type: Literal[None] = ...,
-        args=...,
-        **kwargs,
-    ) -> DataFrame: ...
-    @overload
-    def apply(
-        self,
-        f: Callable[..., Series],
+        f: Callable[..., ListLikeExceptSeriesAndStr | Series],
         axis: AxisTypeIndex = ...,
         raw: _bool = ...,
         result_type: Literal[None] = ...,
@@ -1127,7 +1117,7 @@ class DataFrame(NDFrame, OpsMixin):
     def apply(
         self,
         f: Callable[..., ListLikeExceptSeriesAndStr],
-        axis: AxisTypeIndex = ...,
+        axis: AxisType = ...,
         raw: _bool = ...,
         args=...,
         *,
@@ -1138,7 +1128,7 @@ class DataFrame(NDFrame, OpsMixin):
     def apply(
         self,
         f: Callable[..., ListLikeExceptSeriesAndStr | Series],
-        axis: AxisTypeIndex = ...,
+        axis: AxisType = ...,
         raw: _bool = ...,
         args=...,
         *,
@@ -1149,7 +1139,7 @@ class DataFrame(NDFrame, OpsMixin):
     def apply(
         self,
         f: Callable[..., ListLikeExceptSeriesAndStr | Series],
-        axis: AxisTypeIndex = ...,
+        axis: AxisType = ...,
         raw: _bool = ...,
         args=...,
         *,
@@ -1157,11 +1147,11 @@ class DataFrame(NDFrame, OpsMixin):
         **kwargs,
     ) -> DataFrame: ...
 
-    # Third set of apply() overloads is with keyword axis=1 only
+    # Third set of apply() overloads is with keyword axis=1, but only where the return values have changed
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr],
+        f: Callable[..., ListLikeExceptSeriesAndStr | Scalar],
         raw: _bool = ...,
         result_type: Literal[None] = ...,
         args=...,
@@ -1180,52 +1170,8 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisTypeColumn,
         **kwargs,
     ) -> DataFrame: ...
-    @overload
-    def apply(
-        self,
-        f: Callable[..., Scalar],
-        raw: _bool = ...,
-        result_type: Literal[None] = ...,
-        args=...,
-        *,
-        axis: AxisTypeColumn,
-        **kwargs,
-    ) -> Series: ...
 
     # Fourth set of apply() overloads is with keyword axis=1 and keyword result_type
-    @overload
-    def apply(
-        self,
-        f: Callable[..., ListLikeExceptSeriesAndStr],
-        raw: _bool = ...,
-        args=...,
-        *,
-        axis: AxisTypeColumn = ...,
-        result_type: Literal[None] = ...,
-        **kwargs,
-    ) -> Series: ...
-    @overload
-    def apply(
-        self,
-        f: Callable[..., Series],
-        raw: _bool = ...,
-        args=...,
-        *,
-        axis: AxisTypeColumn = ...,
-        result_type: Literal[None] = ...,
-        **kwargs,
-    ) -> DataFrame: ...
-    @overload
-    def apply(
-        self,
-        f: Callable[..., Scalar],
-        raw: _bool = ...,
-        args=...,
-        *,
-        axis: AxisTypeColumn = ...,
-        result_type: Literal[None] = ...,
-        **kwargs,
-    ) -> Series: ...
     @overload
     def apply(
         self,
