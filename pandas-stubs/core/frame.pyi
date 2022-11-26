@@ -82,6 +82,7 @@ from pandas._typing import (
     Label,
     Level,
     ListLike,
+    ListLikeExceptSeriesAndStr,
     ListLikeU,
     MaskType,
     MergeHow,
@@ -1089,10 +1090,20 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
+        f: Callable[..., ListLikeExceptSeriesAndStr],
+        axis: AxisType = ...,
+        raw: _bool = ...,
+        result_type: Literal[None] = ...,
+        args=...,
+        **kwargs,
+    ) -> DataFrame: ...
+    @overload
+    def apply(
+        self,
         f: Callable[..., Series],
         axis: AxisType = ...,
         raw: _bool = ...,
-        result_type: Literal["expand", "reduce", "broadcast"] | None = ...,
+        result_type: Literal[None] = ...,
         args=...,
         **kwargs,
     ) -> DataFrame: ...
@@ -1102,18 +1113,41 @@ class DataFrame(NDFrame, OpsMixin):
         f: Callable[..., Scalar],
         axis: AxisType = ...,
         raw: _bool = ...,
-        result_type: Literal["expand", "reduce"] | None = ...,
+        result_type: Literal[None] = ...,
         args=...,
         **kwargs,
     ) -> Series: ...
     @overload
     def apply(
         self,
-        f: Callable[..., Scalar],
-        result_type: Literal["broadcast"],
+        f: Callable[..., ListLikeExceptSeriesAndStr | Series | str | Scalar],
         axis: AxisType = ...,
         raw: _bool = ...,
         args=...,
+        *,
+        result_type: Literal["reduce"],
+        **kwargs,
+    ) -> Series: ...
+    @overload
+    def apply(
+        self,
+        f: Callable[..., ListLikeExceptSeriesAndStr | Series],
+        axis: AxisType = ...,
+        raw: _bool = ...,
+        args=...,
+        *,
+        result_type: Literal["expand"],
+        **kwargs,
+    ) -> DataFrame: ...
+    @overload
+    def apply(
+        self,
+        f: Callable[..., ListLikeExceptSeriesAndStr | Series | str | Scalar],
+        axis: AxisType = ...,
+        raw: _bool = ...,
+        args=...,
+        *,
+        result_type: Literal["broadcast"],
         **kwargs,
     ) -> DataFrame: ...
     def applymap(

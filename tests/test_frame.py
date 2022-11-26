@@ -486,6 +486,16 @@ def test_types_apply() -> None:
 
     check(assert_type(df.apply(gethead, args=(4,)), pd.DataFrame), pd.DataFrame)
 
+    def returns_tuple(x: pd.Series) -> tuple[str, str]:
+        return ("a", "b")
+
+    check(
+        assert_type(
+            df.apply(returns_tuple, axis=1, result_type="expand"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
 
 def test_types_applymap() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
