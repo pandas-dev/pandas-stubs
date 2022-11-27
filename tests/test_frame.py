@@ -2040,8 +2040,10 @@ def test_series_groupby_and_value_counts() -> None:
             "Max Speed": [380, 370, 24, 26],
         }
     )
-    c: pd.Series = df.groupby("Animal")["Max Speed"].value_counts()
-    check(assert_type(c, pd.Series), pd.Series)
+    c1 = df.groupby("Animal")["Max Speed"].value_counts()
+    c2 = df.groupby("Animal")["Max Speed"].value_counts(normalize=True)
+    check(assert_type(c1, pd.Series), pd.Series)
+    check(assert_type(c2, pd.Series), pd.Series)
 
 
 def test_setitem_none() -> None:
