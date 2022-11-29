@@ -2046,8 +2046,8 @@ def test_series_groupby_and_value_counts() -> None:
 
 def test_astype_dict() -> None:
     # GH 447
-    df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
-    columns_types = {"a": "int", "b": "float"}
+    df = pd.DataFrame({"a": [1, 2, 3], 43: [4, 5, 6]})
+    columns_types = {"a": "int", 43: "float"}
     df = df.astype(columns_types)
     check(assert_type(df, pd.DataFrame), pd.DataFrame)
 
