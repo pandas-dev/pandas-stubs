@@ -2040,8 +2040,18 @@ def test_series_groupby_and_value_counts() -> None:
             "Max Speed": [380, 370, 24, 26],
         }
     )
-    c: pd.Series = df.groupby("Animal")["Max Speed"].value_counts()
-    check(assert_type(c, pd.Series), pd.Series)
+    c1 = df.groupby("Animal")["Max Speed"].value_counts()
+    c2 = df.groupby("Animal")["Max Speed"].value_counts(normalize=True)
+    check(assert_type(c1, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(c2, "pd.Series[float]"), pd.Series, float)
+
+
+def test_axes_as_tuple() -> None:
+    # GH 384
+    index = (3, 5, 7)
+    columns = ["a", "b", "c"]
+    df = pd.DataFrame(data=1, index=index, columns=columns)
+    check(assert_type(df, pd.DataFrame), pd.DataFrame)
 
 
 def test_astype_dict() -> None:
