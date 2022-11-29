@@ -2083,5 +2083,5 @@ def test_groupby_and_transform() -> None:
     grouped1 = ser.groupby(ser > 100)
     c1 = grouped.transform(lambda x: (x - x.mean()) / x.std())
     c2 = grouped1.transform(lambda x: x.max() - x.min())
-    check(assert_type(c1, "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(c1, pd.DataFrame), pd.DataFrame)
     check(assert_type(c2, pd.Series), pd.Series)
