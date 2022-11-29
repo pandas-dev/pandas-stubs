@@ -1357,7 +1357,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def astype(
         self,
-        dtype: _str | Dtype | dict[_str, _str | Dtype] | Series,
+        dtype: _str | Dtype | Mapping[HashableT, _str | Dtype] | Series,
         copy: _bool = ...,
         errors: _str = ...,
     ) -> DataFrame: ...
