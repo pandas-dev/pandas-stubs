@@ -2071,3 +2071,29 @@ def test_setitem_none() -> None:
     sb = pd.Series([1, 2, 3], dtype=int)
     sb.loc["y"] = None
     sb.iloc[0] = None
+
+
+def test_groupby_and_transform() -> None:
+    df = pd.DataFrame(
+        {
+            "A": ["foo", "bar", "foo", "bar", "foo", "bar"],
+            "B": ["one", "one", "two", "three", "two", "two"],
+            "C": [1, 5, 5, 2, 5, 5],
+            "D": [2.0, 5.0, 8.0, 1.0, 2.0, 9.0],
+        }
+    )
+    ser = pd.Series(
+        [390.0, 350.0, 30.0, 20.0],
+        index=["Falcon", "Falcon", "Parrot", "Parrot"],
+        name="Max Speed",
+    )
+    grouped = df.groupby("A")[["C", "D"]]
+    grouped1 = ser.groupby(ser > 100)
+    c1 = grouped.transform("sum")
+    c2 = grouped.transform(lambda x: (x - x.mean()) / x.std())
+    c3 = grouped1.transform("cumsum")
+    c4 = grouped1.transform(lambda x: x.max() - x.min())
+    check(assert_type(c1, pd.DataFrame), pd.DataFrame)
+    check(assert_type(c2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(c3, pd.Series), pd.Series)
+    check(assert_type(c4, pd.Series), pd.Series)
