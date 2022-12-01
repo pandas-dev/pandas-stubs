@@ -2097,3 +2097,14 @@ def test_groupby_and_transform() -> None:
     check(assert_type(c2, pd.DataFrame), pd.DataFrame)
     check(assert_type(c3, pd.Series), pd.Series)
     check(assert_type(c4, pd.Series), pd.Series)
+
+
+def test_getattr_and_dataframe_groupby() -> None:
+    df = pd.DataFrame(
+        {
+            'C': [1, 5, 5, 2, 5, 5],
+            'D': [2.0, 5.0, 8.0, 1.0, 2.0, 9.0],
+        }
+    )
+    gb = df.groupby('C').D
+    check(assert_type(gb, pd.Series), pd.Series)
