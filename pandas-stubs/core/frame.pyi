@@ -1090,7 +1090,7 @@ class DataFrame(NDFrame, OpsMixin):
         **kwargs,
     ) -> DataFrame: ...
 
-    # First set of apply() overloads is with defaults
+    # apply() overloads with default result_type of None, and is indifferent to axis
     @overload
     def apply(
         self,
@@ -1104,26 +1104,26 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., Scalar],
+        f: Callable[..., S1],
         axis: AxisTypeIndex = ...,
         raw: _bool = ...,
         result_type: Literal[None] = ...,
         args=...,
         **kwargs,
-    ) -> Series: ...
+    ) -> Series[S1]: ...
 
-    # Second set of apply() overloads is with keyword result_type
+    # apply() overloads with keyword result_type, and axis does not matter
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr],
+        f: Callable[..., S1],
         axis: AxisType = ...,
         raw: _bool = ...,
         args=...,
         *,
-        result_type: Literal["reduce"],
+        result_type: Literal["expand", "reduce"],
         **kwargs,
-    ) -> Series: ...
+    ) -> Series[S1]: ...
     @overload
     def apply(
         self,
@@ -1138,7 +1138,18 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Series],
+        f: Callable[..., ListLikeExceptSeriesAndStr],
+        axis: AxisType = ...,
+        raw: _bool = ...,
+        args=...,
+        *,
+        result_type: Literal["reduce"],
+        **kwargs,
+    ) -> Series: ...
+    @overload
+    def apply(
+        self,
+        f: Callable[..., ListLikeExceptSeriesAndStr | Series | Scalar],
         axis: AxisType = ...,
         raw: _bool = ...,
         args=...,
@@ -1147,11 +1158,35 @@ class DataFrame(NDFrame, OpsMixin):
         **kwargs,
     ) -> DataFrame: ...
 
-    # Third set of apply() overloads is with keyword axis=1, but only where the return values have changed
+    # apply() overloads with keyword result_type, and axis does matter
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Scalar],
+        f: Callable[..., Series],
+        axis: AxisTypeIndex = ...,
+        raw: _bool = ...,
+        args=...,
+        *,
+        result_type: Literal["reduce"],
+        **kwargs,
+    ) -> Series: ...
+
+    # apply() overloads with default result_type of None, and keyword axis=1 matters
+    @overload
+    def apply(
+        self,
+        f: Callable[..., S1],
+        raw: _bool = ...,
+        result_type: Literal[None] = ...,
+        args=...,
+        *,
+        axis: AxisTypeColumn,
+        **kwargs,
+    ) -> Series[S1]: ...
+    @overload
+    def apply(
+        self,
+        f: Callable[..., ListLikeExceptSeriesAndStr],
         raw: _bool = ...,
         result_type: Literal[None] = ...,
         args=...,
@@ -1171,38 +1206,16 @@ class DataFrame(NDFrame, OpsMixin):
         **kwargs,
     ) -> DataFrame: ...
 
-    # Fourth set of apply() overloads is with keyword axis=1 and keyword result_type
+    # apply() overloads with keyword axis=1 and keyword result_type
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr],
+        f: Callable[..., Series],
         raw: _bool = ...,
         args=...,
         *,
-        axis: AxisTypeColumn = ...,
+        axis: AxisTypeColumn,
         result_type: Literal["reduce"],
-        **kwargs,
-    ) -> Series: ...
-    @overload
-    def apply(
-        self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Series],
-        raw: _bool = ...,
-        args=...,
-        *,
-        axis: AxisTypeColumn = ...,
-        result_type: Literal["expand"],
-        **kwargs,
-    ) -> DataFrame: ...
-    @overload
-    def apply(
-        self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Series],
-        raw: _bool = ...,
-        args=...,
-        *,
-        axis: AxisTypeColumn = ...,
-        result_type: Literal["broadcast"],
         **kwargs,
     ) -> DataFrame: ...
 
