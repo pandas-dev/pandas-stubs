@@ -22,15 +22,21 @@ from pandas.core.groupby.groupby import (  # , get_groupby as get_groupby
 )
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.series import Series
-from typing_extensions import TypeAlias
+from typing_extensions import (
+    Concatenate,
+    TypeAlias,
+)
 
 from pandas._typing import (
     S1,
+    S2,
     AggFuncTypeBase,
     AggFuncTypeFrame,
     AxisType,
+    GroupByFuncStrs,
     Level,
     ListLike,
+    P,
     Scalar,
 )
 
@@ -61,7 +67,17 @@ class SeriesGroupBy(GroupBy, Generic[S1]):
     def agg(self, func: list[AggFuncTypeBase], *args, **kwargs) -> DataFrame: ...
     @overload
     def agg(self, func: AggFuncTypeBase, *args, **kwargs) -> Series: ...
-    def transform(self, func: Callable | str, *args, **kwargs) -> Series: ...
+    @overload
+    def transform(
+        self,
+        func: Callable[Concatenate[Series[S1], P], Series[S2]],
+        *args: P.args,
+        engine: Literal["cython", "numba", None] = ...,
+        engine_kwargs: dict[str, Any] | None = ...,
+        **kwargs: P.kwargs,
+    ) -> Series[S2]: ...
+    @overload
+    def transform(self, func: GroupByFuncStrs, *args, **kwargs) -> Series: ...
     def filter(self, func, dropna: bool = ..., *args, **kwargs): ...
     def nunique(self, dropna: bool = ...) -> Series: ...
     def describe(self, **kwargs) -> DataFrame: ...

@@ -24,7 +24,10 @@ from pandas.core.generic import NDFrame
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
-from typing_extensions import TypeAlias
+from typing_extensions import (
+    ParamSpec,
+    TypeAlias,
+)
 
 from pandas._libs.interval import Interval
 from pandas._libs.tslibs import (
@@ -123,6 +126,7 @@ JSONSerializable: TypeAlias = Union[PythonScalar, list, dict]
 Axes: TypeAlias = Union[AnyArrayLike, list, dict, range, tuple]
 Renamer: TypeAlias = Union[Mapping[Any, Label], Callable[[Any], Label]]
 T = TypeVar("T")
+P = ParamSpec("P")
 FuncType: TypeAlias = Callable[..., Any]
 F = TypeVar("F", bound=FuncType)
 HashableT = TypeVar("HashableT", bound=Hashable)
@@ -183,6 +187,27 @@ MaskType: TypeAlias = Union[Series[bool], np_ndarray_bool, list[bool]]
 # Scratch types for generics
 S1 = TypeVar(
     "S1",
+    str,
+    bytes,
+    datetime.date,
+    datetime.datetime,
+    datetime.time,
+    datetime.timedelta,
+    bool,
+    int,
+    float,
+    complex,
+    Timestamp,
+    Timedelta,
+    np.datetime64,
+    Period,
+    Interval[int],
+    Interval[float],
+    Interval[Timestamp],
+    Interval[Timedelta],
+)
+S2 = TypeVar(
+    "S2",
     str,
     bytes,
     datetime.date,
@@ -285,6 +310,44 @@ GroupByObjectNonScalar: TypeAlias = Union[
     list[Grouper],
 ]
 GroupByObject: TypeAlias = Union[Scalar, GroupByObjectNonScalar]
+GroupByFuncStrs: TypeAlias = Literal[
+    # Reduction/aggregation functions
+    "all",
+    "any",
+    "corrwith",
+    "count",
+    "first",
+    "idxmax",
+    "idxmin",
+    "last",
+    "max",
+    "mean",
+    "median",
+    "min",
+    "nunique",
+    "prod",
+    "quantile",
+    "sem",
+    "size",
+    "skew",
+    "std",
+    "sum",
+    "var",
+    # Transformation functions
+    "bfill",
+    "cumcount",
+    "cummax",
+    "cummin",
+    "cumprod",
+    "cumsum",
+    "diff",
+    "ffill",
+    "fillna",
+    "ngroup",
+    "pct_change",
+    "rank",
+    "shift",
+]
 
 StataDateFormat: TypeAlias = Literal[
     "tc",
