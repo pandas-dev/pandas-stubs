@@ -1,13 +1,20 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import Union
+from typing import (
+    Hashable,
+    List,
+    Tuple,
+    Union,
+)
 
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
 from pandas.core.indexes.numeric import NumericIndex
 from typing_extensions import assert_type
+
+from pandas._typing import Scalar
 
 from tests import (
     check,
@@ -67,6 +74,7 @@ def test_column_getitem() -> None:
     df = pd.DataFrame([[1, 2, 3]], columns=["a", "b", "c"])
 
     column = df.columns[0]
+    check(assert_type(column, Scalar), str)
     check(assert_type(df[column], pd.Series), pd.Series, int)
 
 
@@ -79,6 +87,12 @@ def test_column_contains() -> None:
     collist2 = [column for column in df.columns[df.columns.str.contains("A|B")]]
 
     length = len(df.columns[df.columns.str.contains("A|B")])
+
+
+def test_column_sequence() -> None:
+    df = pd.DataFrame([1, 2, 3])
+    col_list = list(df.columns)
+    check(assert_type(col_list, List[Union[Scalar, Tuple[Hashable, ...]]]), list, int)
 
 
 def test_difference_none() -> None:

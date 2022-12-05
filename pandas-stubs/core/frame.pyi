@@ -11,6 +11,7 @@ from typing import (
     Mapping,
     Pattern,
     Sequence,
+    TypeVar,
     overload,
 )
 
@@ -115,6 +116,7 @@ from pandas.plotting import PlotAccessor
 
 _str = str
 _bool = bool
+_ScalarOrTupleT = TypeVar("_ScalarOrTupleT", bound=Scalar | tuple[Hashable, ...])
 
 class _iLocIndexerFrame(_iLocIndexer):
     @overload
@@ -491,21 +493,18 @@ class DataFrame(NDFrame, OpsMixin):
     def T(self) -> DataFrame: ...
     def __getattr__(self, name: str) -> Series: ...
     @overload
-    def __getitem__(self, idx: Scalar) -> Series: ...
+    def __getitem__(self, idx: Scalar | tuple[Hashable, ...]) -> Series: ...
     @overload
     def __getitem__(self, rows: slice) -> DataFrame: ...
     @overload
     def __getitem__(
         self,
-        idx: tuple
-        | Series[_bool]
+        idx: Series[_bool]
         | DataFrame
-        | list[_str]
-        | list[ScalarT]
         | Index
         | np_ndarray_str
         | np_ndarray_bool
-        | Sequence[tuple[Scalar, ...]],
+        | list[_ScalarOrTupleT],
     ) -> DataFrame: ...
     def isetitem(
         self, loc: int | Sequence[int], value: Scalar | ArrayLike | list[Any]

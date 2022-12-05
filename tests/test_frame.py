@@ -1465,7 +1465,9 @@ def test_getmultiindex_columns() -> None:
     res3: pd.DataFrame = df[
         [(i, s) for i in [1] for s in df.columns.get_level_values(1)]
     ]
-    ndf: pd.DataFrame = df[[df.columns[0]]]
+    res4: pd.DataFrame = df[[df.columns[0]]]
+    check(assert_type(df[df.columns[0]], pd.Series), pd.Series)
+    check(assert_type(df[li[0]], pd.Series), pd.Series)
 
 
 def test_frame_getitem_isin() -> None:
