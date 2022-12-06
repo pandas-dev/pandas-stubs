@@ -30,7 +30,6 @@ from pandas._testing import (
     ensure_clean,
     getSeriesData,
 )
-from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.resample import Resampler  # noqa: F401
 import pytest
 from typing_extensions import assert_type
@@ -2103,9 +2102,9 @@ def test_groupby_and_transform() -> None:
 def test_getattr_and_dataframe_groupby() -> None:
     df = pd.DataFrame(
         {
-            "C": [1, 5, 5, 2, 5, 5],
-            "D": [2.0, 5.0, 8.0, 1.0, 2.0, 9.0],
+            "col1": [1, 5, 5, 2, 5, 5],
+            "col2": [2.0, 5.0, 8.0, 1.0, 2.0, 9.0],
+            "col3": [9,8,7,5,6,1]
         }
     )
-    gb = df.groupby("C").D
-    check(assert_type(gb, SeriesGroupBy), SeriesGroupBy)
+    check(assert_type(df.groupby("col1").__getattr__("col3"), pd.Series), pd.Series)
