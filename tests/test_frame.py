@@ -2101,10 +2101,10 @@ def test_groupby_and_transform() -> None:
 
 def test_getattr_and_dataframe_groupby() -> None:
     df = pd.DataFrame(
-        {
-            "col1": [1, 5, 5, 2, 5, 5],
-            "col2": [2.0, 5.0, 8.0, 1.0, 2.0, 9.0],
-            "col3": [9,8,7,5,6,1]
-        }
+        data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0], 0: [-1, -1, -1]}
     )
-    check(assert_type(df.groupby("col1").__getattr__("col3"), pd.Series), pd.Series)
+    check(assert_type(df.groupby("col1").col3.agg(min), pd.Series), pd.Series)
+    check(
+        assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame),
+        pd.DataFrame,
+    )
