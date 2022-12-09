@@ -1054,3 +1054,10 @@ def test_timedelta64_and_arithmatic_operator() -> None:
         assert_type((s1 * td), Never)  # pyright: ignore
         assert_type((s1 / td), Never)  # pyright: ignore
         assert_type((s3 * td), Never)  # pyright: ignore
+
+
+def test_add_and_timestampseries() -> None:
+    tds = pd.Series(pd.timedelta_range(start="1 day", periods=10))
+    tss = pd.Series(pd.date_range(start="2012-01-01", periods=10, freq="W-MON"))
+    plus = tds + tss
+    check(assert_type(plus, "TimestampSeries"), pd.Series)

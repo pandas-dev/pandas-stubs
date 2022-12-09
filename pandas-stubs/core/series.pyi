@@ -1773,10 +1773,12 @@ class TimedeltaSeries(Series[Timedelta]):
     @overload  # type: ignore[override]
     def __add__(self, other: Period) -> PeriodSeries: ...
     @overload
-    def __add__(self, other: Timestamp | DatetimeIndex) -> TimestampSeries: ...
+    def __add__(
+        self, other: Timestamp | TimestampSeries | DatetimeIndex
+    ) -> TimestampSeries: ...
     @overload
     def __add__(self, other: Timedelta | np.timedelta64) -> TimedeltaSeries: ...
-    def __radd__(self, pther: Timestamp | TimestampSeries) -> TimestampSeries: ...  # type: ignore[override]
+    def __radd__(self, other: Timestamp | TimestampSeries) -> TimestampSeries: ...  # type: ignore[override]
     @overload  # type: ignore[override]
     def __mul__(
         self, other: TimestampSeries | np.timedelta64 | Timedelta | TimedeltaSeries
