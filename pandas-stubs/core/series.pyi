@@ -683,6 +683,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         **kwargs,
     ) -> Series[S1]: ...
     agg = aggregate
+
     @overload
     def transform(
         self,
@@ -926,6 +927,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @property
     def plot(self) -> PlotAccessor: ...
     sparse = ...
+
     def hist(
         self,
         by: object | None = ...,
@@ -1230,6 +1232,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self, other: num | _str | Timedelta | _ListLike | Series[S1] | np.timedelta64
     ) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
+
     @overload
     def __and__(  # type: ignore[misc]
         self, other: bool | list[bool] | np_ndarray_bool | Series[bool]
@@ -1268,6 +1271,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def __ne__(self, other: object) -> Series[_bool]: ...  # type: ignore[override]
     def __pow__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     # ignore needed for mypy as we want different results based on the arguments
+
     @overload
     def __or__(  # type: ignore[misc]
         self, other: bool | list[bool] | np_ndarray_bool | Series[bool]
@@ -1278,6 +1282,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     ) -> Series[int]: ...
     def __radd__(self, other: num | _str | _ListLike | Series[S1]) -> Series[S1]: ...
     # ignore needed for mypy as we want different results based on the arguments
+
     @overload
     def __rand__(  # type: ignore[misc]
         self, other: bool | list[bool] | np_ndarray_bool | Series[bool]
@@ -1294,6 +1299,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def __rnatmul__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __rpow__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     # ignore needed for mypy as we want different results based on the arguments
+
     @overload
     def __ror__(  # type: ignore[misc]
         self, other: bool | list[bool] | np_ndarray_bool | Series[bool]
@@ -1308,6 +1314,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def __rtruediv__(self, other: num | _ListLike | Series[S1]) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
+
     @overload
     def __rxor__(  # type: ignore[misc]
         self, other: bool | list[bool] | np_ndarray_bool | Series[bool]
@@ -1339,6 +1346,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def __truediv__(self, other: num | _ListLike | Series[S1]) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
+
     @overload
     def __xor__(  # type: ignore[misc]
         self, other: bool | list[bool] | np_ndarray_bool | Series[bool]
@@ -1362,6 +1370,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @property
     def loc(self) -> _LocIndexerSeries[S1]: ...
     # Methods
+
     def add(
         self,
         other: Series[S1] | Scalar,
@@ -1765,8 +1774,12 @@ class TimestampSeries(Series[Timestamp]):
     ) -> TimestampSeries: ...
     @overload
     def __add__(self, other: Timestamp) -> Never: ...
-    def __mul__(self, other: TimestampSeries | np.timedelta64 | TimedeltaSeries) -> Never: ...  # type: ignore[override]
-    def __truediv__(self, other: TimestampSeries | np.timedelta64 | TimedeltaSeries) -> Never: ...  # type: ignore[override]
+    def __mul__(
+        self, other: TimestampSeries | np.timedelta64 | TimedeltaSeries
+    ) -> Never: ...  # type: ignore[override]
+    def __truediv__(
+        self, other: TimestampSeries | np.timedelta64 | TimedeltaSeries
+    ) -> Never: ...  # type: ignore[override]
 
 class TimedeltaSeries(Series[Timedelta]):
     # ignores needed because of mypy
@@ -1776,7 +1789,9 @@ class TimedeltaSeries(Series[Timedelta]):
     def __add__(self, other: Timestamp | DatetimeIndex) -> TimestampSeries: ...
     @overload
     def __add__(self, other: Timedelta | np.timedelta64) -> TimedeltaSeries: ...
-    def __radd__(self, pther: Timestamp | TimestampSeries) -> TimestampSeries: ...  # type: ignore[override]
+    def __radd__(
+        self, pther: Timestamp | TimestampSeries
+    ) -> TimestampSeries: ...  # type: ignore[override]
     @overload  # type: ignore[override]
     def __mul__(
         self, other: TimestampSeries | np.timedelta64 | Timedelta | TimedeltaSeries
@@ -1786,7 +1801,9 @@ class TimedeltaSeries(Series[Timedelta]):
     def __sub__(  # type: ignore[override]
         self, other: Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64
     ) -> TimedeltaSeries: ...
-    def __truediv__(self, other: TimedeltaSeries | np.timedelta64 | TimedeltaIndex) -> Series[float]: ...  # type: ignore[override]
+    def __truediv__(
+        self, other: TimedeltaSeries | np.timedelta64 | TimedeltaIndex | Timedelta
+    ) -> Series[float]: ...  # type: ignore[override]
     @property
     def dt(self) -> TimedeltaProperties: ...  # type: ignore[override]
 
@@ -1794,7 +1811,9 @@ class PeriodSeries(Series[Period]):
     # ignore needed because of mypy
     @property
     def dt(self) -> PeriodProperties: ...  # type: ignore[override]
-    def __sub__(self, other: PeriodSeries) -> OffsetSeries: ...  # type: ignore[override]
+    def __sub__(
+        self, other: PeriodSeries
+    ) -> OffsetSeries: ...  # type: ignore[override]
 
 class OffsetSeries(Series):
     @overload  # type: ignore[override]
