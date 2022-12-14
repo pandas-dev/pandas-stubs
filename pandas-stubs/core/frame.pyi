@@ -1126,7 +1126,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Series],
+        f: Callable[..., ListLikeExceptSeriesAndStr | Series | dict],
         axis: AxisType = ...,
         raw: _bool = ...,
         args=...,
