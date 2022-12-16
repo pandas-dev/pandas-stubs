@@ -1110,6 +1110,18 @@ class DataFrame(NDFrame, OpsMixin):
         args=...,
         **kwargs,
     ) -> Series[S1]: ...
+    # Since non-scalar type T is not supported in Series[T],
+    # we separate this overload from the above one
+    @overload
+    def apply(
+        self,
+        f: Callable[..., Mapping],
+        axis: AxisTypeIndex = ...,
+        raw: _bool = ...,
+        result_type: None = ...,
+        args=...,
+        **kwargs,
+    ) -> Series: ...
 
     # apply() overloads with keyword result_type, and axis does not matter
     @overload
