@@ -521,25 +521,24 @@ def test_types_apply() -> None:
 
     # Check various return types for result_type="reduce" with default axis (0)
     check(
-        assert_type(
-            # Note that technically it does not make sense to pass a result_type of "reduce" to a scalar return
-            df.apply(returns_scalar, result_type="reduce"),
-            "pd.Series[int]",
-        ),
+        # Note that technically it does not make sense
+        # to pass a result_type of "reduce" to a scalar return
+        assert_type(df.apply(returns_scalar, result_type="reduce"), "pd.Series[int]"),
         pd.Series,
         int,
     )
     check(
-        assert_type(
-            # Note that technically it does not make sense to pass a result_type of "reduce" to a series return
-            df.apply(returns_series, result_type="reduce"),
-            pd.Series,
-        ),
+        # Note that technically it does not make sense
+        # to pass a result_type of "reduce" to a series return
+        assert_type(df.apply(returns_series, result_type="reduce"), pd.Series),
         pd.Series,  # This technically returns a pd.Series[pd.Series], but typing does not support that
     )
     check(
         assert_type(df.apply(returns_listlike_of_3, result_type="reduce"), pd.Series),
         pd.Series,
+    )
+    check(
+        assert_type(df.apply(returns_dict, result_type="reduce"), pd.Series), pd.Series
     )
 
     # Check various return types for result_type="broadcast" with default axis (0)
@@ -579,10 +578,10 @@ def test_types_apply() -> None:
 
     # Check various return types for result_type="expand" with axis=1
     check(
+        # Note that technically it does not make sense
+        # to pass a result_type of "expand" to a scalar return
         assert_type(
-            # Note that technically it does not make sense to pass a result_type of "expand" to a scalar return
-            df.apply(returns_scalar, axis=1, result_type="expand"),
-            "pd.Series[int]",
+            df.apply(returns_scalar, axis=1, result_type="expand"), "pd.Series[int]"
         ),
         pd.Series,
         int,
@@ -606,19 +605,19 @@ def test_types_apply() -> None:
 
     # Check various return types for result_type="reduce" with axis=1
     check(
+        # Note that technically it does not make sense
+        # to pass a result_type of "reduce" to a scalar return
         assert_type(
-            # Note that technically it does not make sense to pass a result_type of "reduce" to a scalar return
-            df.apply(returns_scalar, axis=1, result_type="reduce"),
-            "pd.Series[int]",
+            df.apply(returns_scalar, axis=1, result_type="reduce"), "pd.Series[int]"
         ),
         pd.Series,
         int,
     )
     check(
+        # Note that technically it does not make sense
+        # to pass a result_type of "reduce" to a series return
         assert_type(
-            # Note that technically it does not make sense to pass a result_type of "reduce" to a series return
-            df.apply(returns_series, axis=1, result_type="reduce"),
-            pd.DataFrame,
+            df.apply(returns_series, axis=1, result_type="reduce"), pd.DataFrame
         ),
         pd.DataFrame,
     )
@@ -626,6 +625,10 @@ def test_types_apply() -> None:
         assert_type(
             df.apply(returns_listlike_of_3, axis=1, result_type="reduce"), pd.Series
         ),
+        pd.Series,
+    )
+    check(
+        assert_type(df.apply(returns_dict, axis=1, result_type="reduce"), pd.Series),
         pd.Series,
     )
 
