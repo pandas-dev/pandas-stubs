@@ -498,11 +498,9 @@ def test_types_apply() -> None:
 
     # Check various return types for result_type="expand" with default axis (0)
     check(
-        assert_type(
-            # Note that technically it does not make sense to pass a result_type of "expand" to a scalar return
-            df.apply(returns_scalar, result_type="expand"),
-            "pd.Series[int]",
-        ),
+        # Note that technically it does not make sense
+        # to pass a result_type of "expand" to a scalar return
+        assert_type(df.apply(returns_scalar, result_type="expand"), "pd.Series[int]"),
         pd.Series,
         int,
     )
