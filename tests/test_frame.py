@@ -567,14 +567,9 @@ def test_types_apply() -> None:
     check(
         assert_type(df.apply(returns_scalar, axis=1), "pd.Series[int]"), pd.Series, int
     )
-    check(
-        assert_type(df.apply(returns_series, axis=1), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(df.apply(returns_listlike_of_3, axis=1), pd.Series),
-        pd.Series,
-    )
+    check(assert_type(df.apply(returns_series, axis=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.apply(returns_listlike_of_3, axis=1), pd.Series), pd.Series)
+    check(assert_type(df.apply(returns_dict, axis=1), pd.Series), pd.Series)
 
     # Check various return types for result_type="expand" with axis=1
     check(
