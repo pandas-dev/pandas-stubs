@@ -538,7 +538,7 @@ def test_types_read_table():
         df2: pd.DataFrame = pd.read_table(path, sep=",", converters=None)
 
 
-def btest_read_fwf():
+def test_btest_read_fwf():
     with ensure_clean() as path:
         DF.to_string(path, index=False)
         check(assert_type(read_fwf(path), DataFrame), DataFrame)
