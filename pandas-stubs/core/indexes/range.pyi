@@ -54,17 +54,14 @@ class RangeIndex(Int64Index):
     def max(self, axis=..., skipna: bool = ..., *args, **kwargs): ...
     def argsort(self, *args, **kwargs): ...
     def factorize(
-        self,
-        sort: bool = ...,
-        # Not actually positional-only, used to handle deprecations in 1.5.0
-        *,
-        use_na_sentinel: bool = ...,
+        self, sort: bool = ..., use_na_sentinel: bool = ...
     ) -> tuple[npt.NDArray[np.intp], RangeIndex]: ...
     def equals(self, other): ...
     def intersection(self, other, sort: bool = ...): ...
     def join(
         self,
         other,
+        *,
         how: str = ...,
         level=...,
         return_indexers: bool = ...,

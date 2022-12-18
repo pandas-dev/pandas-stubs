@@ -54,6 +54,7 @@ class PeriodIndex(DatetimeIndexOpsMixin, Int64Index):
     def join(
         self,
         other,
+        *,
         how: str = ...,
         level=...,
         return_indexers: bool = ...,

@@ -22,6 +22,7 @@ from pandas._typing import (
 
 def read_html(
     io: FilePath | ReadBuffer[str],
+    *,
     match: str | Pattern = ...,
     flavor: str | None = ...,
     header: int | Sequence[int] | None = ...,

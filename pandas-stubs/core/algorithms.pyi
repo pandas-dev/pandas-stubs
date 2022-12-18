@@ -42,8 +42,6 @@ def unique(values: ExtensionArray) -> ExtensionArray: ...
 def factorize(
     values: Sequence,
     sort: bool = ...,
-    # Not actually positional-only, used to handle deprecations in 1.5.0
-    *,
     use_na_sentinel: bool = ...,
     size_hint: int | None = ...,
 ) -> tuple[np.ndarray, np.ndarray]: ...

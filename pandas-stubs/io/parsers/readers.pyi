@@ -429,10 +429,10 @@ def read_table(
 @overload
 def read_fwf(
     filepath_or_buffer: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str],
+    *,
     colspecs: Sequence[tuple[int, int]] | Literal["infer"] | None = ...,
     widths: Sequence[int] | None = ...,
     infer_nrows: int = ...,
-    *,
     iterator: Literal[True],
     chunksize: int | None = ...,
     **kwds: Any,
@@ -440,10 +440,10 @@ def read_fwf(
 @overload
 def read_fwf(
     filepath_or_buffer: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str],
+    *,
     colspecs: Sequence[tuple[int, int]] | Literal["infer"] | None = ...,
     widths: Sequence[int] | None = ...,
     infer_nrows: int = ...,
-    *,
     iterator: bool = ...,
     chunksize: int,
     **kwds: Any,
@@ -451,10 +451,10 @@ def read_fwf(
 @overload
 def read_fwf(
     filepath_or_buffer: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str],
+    *,
     colspecs: Sequence[tuple[int, int]] | Literal["infer"] | None = ...,
     widths: Sequence[int] | None = ...,
     infer_nrows: int = ...,
-    *,
     iterator: Literal[False] = ...,
     chunksize: None = ...,
     **kwds: Any,

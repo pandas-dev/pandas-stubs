@@ -14,12 +14,15 @@ from pandas import (
     Index,
     Series,
 )
+from pandas.core.generic import NDFrame
+from pandas.core.groupby import ops
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.groupby.groupby import BaseGroupBy
 from typing_extensions import TypeAlias
 
 from pandas._typing import (
     AxisType,
+    KeysArgType,
     NDFrameT,
     Scalar,
     npt,
@@ -71,6 +74,23 @@ _Interpolation: TypeAlias = Literal[
 ]
 
 class Resampler(BaseGroupBy, Generic[NDFrameT]):
+    def __init__(
+        self,
+        obj: NDFrame,
+        keys: KeysArgType | None = ...,
+        axis: int = ...,
+        level=...,
+        grouper: ops.BaseGrouper | None = ...,
+        exclusions=...,
+        as_index: bool = ...,
+        sort: bool = ...,
+        squeeze: bool = ...,
+        observed: bool = ...,
+        mutated: bool = ...,
+        *,
+        selection=...,
+        group_keys: bool = ...,
+    ) -> None: ...
     def __getattr__(self, attr: str) -> SeriesGroupBy: ...
     def __iter__(self) -> Generator[tuple[Hashable, NDFrameT], None, None]: ...
     @property
@@ -146,9 +166,9 @@ class Resampler(BaseGroupBy, Generic[NDFrameT]):
     def interpolate(
         self,
         method: _Interpolation = ...,
+        *,
         axis: AxisType = ...,
         limit: int | None = ...,
-        *,
         inplace: Literal[True],
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
@@ -159,6 +179,7 @@ class Resampler(BaseGroupBy, Generic[NDFrameT]):
     def interpolate(
         self,
         method: _Interpolation = ...,
+        *,
         axis: AxisType = ...,
         limit: int | None = ...,
         inplace: Literal[False] = ...,

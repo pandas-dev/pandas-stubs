@@ -312,61 +312,33 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def reset_index(
         self,
-        level: Sequence[Level] | None,
-        drop: Literal[True],
+        level: Sequence[Level] | Level | None = ...,
         *,
-        name: object | None = ...,
-        inplace: _bool = ...,
-        allow_duplicates: bool = ...,
-    ) -> Series[S1]: ...
-    @overload
-    def reset_index(
-        self,
-        level: Level | None,
-        drop: Literal[True],
-        *,
-        name: object | None = ...,
-        inplace: _bool = ...,
-        allow_duplicates: bool = ...,
-    ) -> Series[S1]: ...
-    @overload
-    def reset_index(
-        self,
-        /,
-        drop: Literal[True],
-        level: Sequence[Level] | None = ...,
-        name: object | None = ...,
-        inplace: _bool = ...,
-        allow_duplicates: bool = ...,
-    ) -> Series[S1]: ...
-    @overload
-    def reset_index(
-        self,
-        /,
-        drop: Literal[True],
-        level: Level | None = ...,
-        name: object | None = ...,
-        inplace: _bool = ...,
-        allow_duplicates: bool = ...,
-    ) -> Series[S1]: ...
-    @overload
-    def reset_index(
-        self,
-        level: Sequence[Level] | None = ...,
         drop: Literal[False] = ...,
-        name: object | None = ...,
-        inplace: _bool = ...,
+        name: Level = ...,
+        inplace: Literal[False] = ...,
         allow_duplicates: bool = ...,
     ) -> DataFrame: ...
     @overload
     def reset_index(
         self,
-        level: Level | None = ...,
-        drop: Literal[False] = ...,
-        name: object | None = ...,
-        inplace: _bool = ...,
+        level: Sequence[Level] | Level | None = ...,
+        *,
+        drop: Literal[True],
+        name: Level = ...,
+        inplace: Literal[False] = ...,
         allow_duplicates: bool = ...,
-    ) -> DataFrame: ...
+    ) -> Series: ...
+    @overload
+    def reset_index(
+        self,
+        level: Sequence[Level] | Level | None = ...,
+        *,
+        drop: bool = ...,
+        name: Level = ...,
+        inplace: Literal[True],
+        allow_duplicates: bool = ...,
+    ) -> None: ...
     @overload
     def to_string(
         self,
@@ -480,17 +452,15 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def unique(self) -> np.ndarray: ...
     @overload
     def drop_duplicates(
-        self, keep: NaPosition | Literal[False] = ..., inplace: Literal[False] = ...
+        self, *, keep: NaPosition | Literal[False] = ..., inplace: Literal[False] = ...
     ) -> Series[S1]: ...
     @overload
     def drop_duplicates(
-        self, keep: NaPosition | Literal[False], inplace: Literal[True]
+        self, *, keep: NaPosition | Literal[False] = ..., inplace: Literal[True]
     ) -> None: ...
     @overload
-    def drop_duplicates(self, *, inplace: Literal[True]) -> None: ...
-    @overload
     def drop_duplicates(
-        self, keep: NaPosition | Literal[False] = ..., inplace: bool = ...
+        self, *, keep: NaPosition | Literal[False] = ..., inplace: bool = ...
     ) -> Series[S1] | None: ...
     def duplicated(self, keep: NaPosition | Literal[False] = ...) -> Series[_bool]: ...
     def idxmax(
@@ -605,6 +575,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def sort_index(
         self,
+        *,
         axis: AxisType = ...,
         level: Level | None = ...,
         ascending: _bool | Sequence[_bool] = ...,
@@ -612,13 +583,13 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         na_position: NaPosition = ...,
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
-        *,
         inplace: Literal[True],
         key: Callable | None = ...,
     ) -> None: ...
     @overload
     def sort_index(
         self,
+        *,
         axis: AxisType = ...,
         level: Level | list[int] | list[_str] | None = ...,
         ascending: _bool | Sequence[_bool] = ...,
@@ -626,13 +597,13 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         na_position: NaPosition = ...,
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
-        *,
         inplace: Literal[False] = ...,
         key: Callable | None = ...,
     ) -> Series: ...
     @overload
     def sort_index(
         self,
+        *,
         axis: AxisType = ...,
         level: Level | list[int] | list[_str] | None = ...,
         ascending: _bool | Sequence[_bool] = ...,
@@ -816,31 +787,33 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         inplace: bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series | None: ...
-    @overload
+    @overload  # type: ignore[override]
     def fillna(
         self,
         value: Scalar | NAType | dict | Series[S1] | DataFrame | None = ...,
+        *,
         method: FillnaOptions | None = ...,
         axis: SeriesAxisType = ...,
         limit: int | None = ...,
         downcast: dict | None = ...,
-        *,
         inplace: Literal[True],
     ) -> None: ...
     @overload
     def fillna(
         self,
         value: Scalar | NAType | dict | Series[S1] | DataFrame | None = ...,
+        *,
         method: FillnaOptions | None = ...,
         axis: SeriesAxisType = ...,
-        *,
         limit: int | None = ...,
         downcast: dict | None = ...,
+        inplace: Literal[False] = ...,
     ) -> Series[S1]: ...
     @overload
     def fillna(
         self,
         value: Scalar | NAType | dict | Series[S1] | DataFrame | None = ...,
+        *,
         method: FillnaOptions | None = ...,
         axis: SeriesAxisType = ...,
         inplace: _bool = ...,
@@ -852,6 +825,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         to_replace: _str | list | dict | Series[S1] | float | None = ...,
         value: Scalar | NAType | dict | list | _str | None = ...,
+        *,
         inplace: Literal[False] = ...,
         limit: int | None = ...,
         regex=...,
@@ -862,10 +836,10 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         to_replace: _str | list | dict | Series[S1] | float | None = ...,
         value: Scalar | NAType | dict | list | _str | None = ...,
+        *,
         limit: int | None = ...,
         regex=...,
         method: ReplaceMethod = ...,
-        *,
         inplace: Literal[True],
     ) -> None: ...
     @overload
@@ -873,6 +847,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         to_replace: _str | list | dict | Series[S1] | float | None = ...,
         value: Scalar | NAType | dict | list | _str | None = ...,
+        *,
         inplace: _bool = ...,
         limit: int | None = ...,
         regex=...,
@@ -900,18 +875,27 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def dropna(
         self,
-        axis: SeriesAxisType = ...,
-        how: Literal["any", "all"] | None = ...,
         *,
+        axis: SeriesAxisType = ...,
         inplace: Literal[True],
+        how: Literal["any", "all"] | None = ...,
     ) -> None: ...
     @overload
     def dropna(
         self,
+        *,
+        axis: SeriesAxisType = ...,
+        inplace: Literal[False] = ...,
+        how: Literal["any", "all"] | None = ...,
+    ) -> Series[S1]: ...
+    @overload
+    def dropna(
+        self,
+        *,
         axis: SeriesAxisType = ...,
         inplace: _bool = ...,
         how: Literal["any", "all"] | None = ...,
-    ) -> Series[S1]: ...
+    ) -> Series[S1] | None: ...
     def to_timestamp(
         self,
         freq=...,
@@ -998,8 +982,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def ffill(
         self,
-        axis: SeriesAxisType | None = ...,
         *,
+        axis: SeriesAxisType | None = ...,
         inplace: Literal[True],
         limit: int | None = ...,
         downcast: dict | None = ...,
@@ -1007,8 +991,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def ffill(
         self,
-        axis: SeriesAxisType | None = ...,
         *,
+        axis: SeriesAxisType | None = ...,
         inplace: Literal[False] = ...,
         limit: int | None = ...,
         downcast: dict | None = ...,
@@ -1016,8 +1000,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def bfill(
         self,
-        axis: SeriesAxisType | None = ...,
         *,
+        axis: SeriesAxisType | None = ...,
         inplace: Literal[True],
         limit: int | None = ...,
         downcast: dict | None = ...,
@@ -1025,8 +1009,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def bfill(
         self,
-        axis: SeriesAxisType | None = ...,
         *,
+        axis: SeriesAxisType | None = ...,
         inplace: Literal[False] = ...,
         limit: int | None = ...,
         downcast: dict | None = ...,
@@ -1034,6 +1018,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def bfill(
         self,
+        *,
         value: S1 | dict | Series[S1] | DataFrame,
         axis: SeriesAxisType = ...,
         inplace: _bool = ...,
@@ -1063,6 +1048,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
             "akima",
             "from_derivatives",
         ] = ...,
+        *,
         axis: SeriesAxisType | None = ...,
         limit: int | None = ...,
         inplace: _bool = ...,
@@ -1080,9 +1066,9 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         lower: AnyArrayLike | float | None = ...,
         upper: AnyArrayLike | float | None = ...,
+        *,
         axis: SeriesAxisType | None = ...,
         inplace: _bool = ...,
-        *args,
         **kwargs,
     ) -> Series[S1]: ...
     def asfreq(
@@ -1140,20 +1126,20 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         | Callable[[Series[S1]], Series[bool]]
         | Callable[[S1], bool],
         other=...,
+        *,
         inplace: _bool = ...,
         axis: SeriesAxisType | None = ...,
         level: Level | None = ...,
-        *,  # Not actually positional-only, but needed due to depr in 1.5.0
         try_cast: _bool = ...,
     ) -> Series[S1]: ...
     def mask(
         self,
         cond: MaskType,
         other: Scalar | Series[S1] | DataFrame | Callable = ...,
+        *,
         inplace: _bool = ...,
         axis: SeriesAxisType | None = ...,
         level: Level | None = ...,
-        *,  # Not actually positional-only, but needed due to depr in 1.5.0
         try_cast: _bool = ...,
     ) -> Series[S1]: ...
     def slice_shift(
@@ -1613,13 +1599,13 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         window: int | _str | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
-        *,
-        win_type: _str,
         on: _str | None = ...,
         axis: SeriesAxisType = ...,
         closed: IntervalClosedType | None = ...,
         step: int | None = ...,
         method: CalculationMethod = ...,
+        *,
+        win_type: _str,
     ) -> Window[Series]: ...
     @overload
     def rolling(
@@ -1627,13 +1613,13 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         window: int | _str | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
-        *,
-        win_type: None = ...,
         on: _str | None = ...,
         axis: SeriesAxisType = ...,
         closed: IntervalClosedType | None = ...,
         step: int | None = ...,
         method: CalculationMethod = ...,
+        *,
+        win_type: None = ...,
     ) -> Rolling[Series]: ...
     def rpow(
         self,
@@ -1751,8 +1737,9 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         copy: _bool = ...,
         inplace: Literal[False] = ...,
     ) -> Series: ...
-    # Not actually positional, but used to handle removal of deprecated
-    def set_axis(self, labels, axis: Axis = ..., copy: _bool = ...) -> Series[S1]: ...
+    def set_axis(
+        self, labels, *, axis: Axis = ..., copy: _bool = ...
+    ) -> Series[S1]: ...
     def __iter__(self) -> Iterator[S1]: ...
 
 class TimestampSeries(Series[Timestamp]):
