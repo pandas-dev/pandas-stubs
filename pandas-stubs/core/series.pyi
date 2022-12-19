@@ -329,7 +329,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         name: Level = ...,
         inplace: Literal[False] = ...,
         allow_duplicates: bool = ...,
-    ) -> Series: ...
+    ) -> Series[S1]: ...
     @overload
     def reset_index(
         self,
@@ -359,7 +359,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         name: Level = ...,
         inplace: Literal[False] = ...,
         allow_duplicates: bool = ...,
-    ) -> Series: ...
+    ) -> Series[S1]: ...
     @overload
     def reset_index(
         self,
