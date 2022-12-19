@@ -1096,7 +1096,7 @@ class DataFrame(NDFrame, OpsMixin):
         f: Callable[..., ListLikeExceptSeriesAndStr | Series],
         axis: AxisTypeIndex = ...,
         raw: _bool = ...,
-        result_type: Literal[None] = ...,
+        result_type: None = ...,
         args=...,
         **kwargs,
     ) -> DataFrame: ...
@@ -1106,10 +1106,22 @@ class DataFrame(NDFrame, OpsMixin):
         f: Callable[..., S1],
         axis: AxisTypeIndex = ...,
         raw: _bool = ...,
-        result_type: Literal[None] = ...,
+        result_type: None = ...,
         args=...,
         **kwargs,
     ) -> Series[S1]: ...
+    # Since non-scalar type T is not supported in Series[T],
+    # we separate this overload from the above one
+    @overload
+    def apply(
+        self,
+        f: Callable[..., Mapping],
+        axis: AxisTypeIndex = ...,
+        raw: _bool = ...,
+        result_type: None = ...,
+        args=...,
+        **kwargs,
+    ) -> Series: ...
 
     # apply() overloads with keyword result_type, and axis does not matter
     @overload
@@ -1126,7 +1138,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Series],
+        f: Callable[..., ListLikeExceptSeriesAndStr | Series | Mapping],
         axis: AxisType = ...,
         raw: _bool = ...,
         args=...,
@@ -1137,7 +1149,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr],
+        f: Callable[..., ListLikeExceptSeriesAndStr | Mapping],
         axis: AxisType = ...,
         raw: _bool = ...,
         args=...,
@@ -1148,7 +1160,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Series | Scalar],
+        f: Callable[..., ListLikeExceptSeriesAndStr | Series | Scalar | Mapping],
         axis: AxisType = ...,
         raw: _bool = ...,
         args=...,
@@ -1176,7 +1188,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         f: Callable[..., S1],
         raw: _bool = ...,
-        result_type: Literal[None] = ...,
+        result_type: None = ...,
         args=...,
         *,
         axis: AxisTypeColumn,
@@ -1185,9 +1197,9 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr],
+        f: Callable[..., ListLikeExceptSeriesAndStr | Mapping],
         raw: _bool = ...,
-        result_type: Literal[None] = ...,
+        result_type: None = ...,
         args=...,
         *,
         axis: AxisTypeColumn,
@@ -1198,7 +1210,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         f: Callable[..., Series],
         raw: _bool = ...,
-        result_type: Literal[None] = ...,
+        result_type: None = ...,
         args=...,
         *,
         axis: AxisTypeColumn,
