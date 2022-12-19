@@ -35,10 +35,10 @@ python = ">=3.8,<3.12"
 types-pytz = ">= 2022.1.1"
 
 [tool.poetry.dev-dependencies]
-mypy = "0.990"
+mypy = "0.991"
 pyarrow = ">=10.0.1"
 pytest = ">=7.1.2"
-pyright = "1.1.282"
+pyright = ">=1.1.284"
 poethepoet = "0.16.0"
 loguru = ">=0.6.0"
 pandas = "1.5.2"

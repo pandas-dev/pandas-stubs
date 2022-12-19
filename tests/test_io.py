@@ -538,7 +538,7 @@ def test_types_read_table():
         df2: pd.DataFrame = pd.read_table(path, sep=",", converters=None)
 
 
-def btest_read_fwf():
+def test_btest_read_fwf():
     with ensure_clean() as path:
         DF.to_string(path, index=False)
         check(assert_type(read_fwf(path), DataFrame), DataFrame)
@@ -555,12 +555,10 @@ def btest_read_fwf():
         with open(path, "rb") as fwf_file:
             bio = io.BytesIO(fwf_file.read())
             check(assert_type(read_fwf(bio), DataFrame), DataFrame)
-        fwf_iterator = read_fwf(path, iterator=True)
-        check(assert_type(fwf_iterator, TextFileReader), TextFileReader)
-        fwf_iterator.close()
-        fwf_iterator2 = read_fwf(path, chunksize=1)
-        check(assert_type(fwf_iterator2, TextFileReader), TextFileReader)
-        fwf_iterator.close()
+        with read_fwf(path, iterator=True) as fwf_iterator:
+            check(assert_type(fwf_iterator, TextFileReader), TextFileReader)
+        with read_fwf(path, chunksize=1) as fwf_iterator2:
+            check(assert_type(fwf_iterator2, TextFileReader), TextFileReader)
 
 
 def test_text_file_reader():
