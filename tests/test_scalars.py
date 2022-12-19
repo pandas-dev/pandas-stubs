@@ -28,6 +28,7 @@ from pandas._libs.tslibs.timedeltas import Components
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    nigthly_test_skip,
     pytest_warns_bounded,
 )
 
@@ -1734,6 +1735,9 @@ def test_period_properties() -> None:
     check(assert_type(p2.freq, BaseOffset), Day)
 
 
+@nigthly_test_skip(
+    reason_to_skip="Not compatible with newer version", version_no="1.5.0"
+)
 def test_period_add_subtract() -> None:
     p = pd.Period("2012-1-1", freq="D")
 

@@ -24,10 +24,14 @@ from tests import (
     PD_LTE_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    nigthly_test_skip,
     pytest_warns_bounded,
 )
 
 
+@nigthly_test_skip(
+    reason_to_skip="not compatiblw with newer versions", version_no="1.5.0"
+)
 def test_types_to_datetime() -> None:
     df = pd.DataFrame({"year": [2015, 2016], "month": [2, 3], "day": [4, 5]})
     r1: pd.Series = pd.to_datetime(df)

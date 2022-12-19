@@ -136,3 +136,21 @@ def pytest_warns_bounded(
             return nullcontext()
         else:
             return suppress(upper_exception)
+
+
+def nigthly_test_skip(
+    # skip_func: str,
+    reason_to_skip: str,
+    lower: str | None = None,
+    upper: str | None = None,
+    version_no: str | None = None,
+) -> AbstractContextManager:
+    lb = Version("0.0.0") if lower is None else Version(lower)
+    ub = Version("9999.0.0") if upper is None else Version(upper)
+    if version_no is None:
+        current = Version(pd.__version__)
+    else:
+        current = Version(version_no)
+    if lb < current < ub:
+        # if skip_func:
+        return pytest.mark.skipif(reason=reason_to_skip)

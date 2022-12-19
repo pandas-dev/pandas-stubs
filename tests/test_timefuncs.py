@@ -30,6 +30,7 @@ else:
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    nigthly_test_skip,
 )
 
 from pandas.tseries.holiday import USFederalHolidayCalendar
@@ -290,6 +291,9 @@ def test_comparisons_datetimeindex() -> None:
     check(assert_type((dti != ts), np_ndarray_bool), np.ndarray)
 
 
+@nigthly_test_skip(
+    reason_to_skip="not compatible with newer versions", version_no="1.5.0"
+)
 def test_to_datetime_nat() -> None:
     # GH 88
     check(

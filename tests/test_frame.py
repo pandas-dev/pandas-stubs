@@ -41,6 +41,7 @@ from tests import (
     PD_LTE_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    nigthly_test_skip,
     pytest_warns_bounded,
 )
 
@@ -1425,6 +1426,9 @@ def test_types_regressions() -> None:
     )
 
 
+@nigthly_test_skip(
+    reason_to_skip="not compatible with newer versions", version_no="1.5.0"
+)
 def test_read_csv() -> None:
     with ensure_clean() as path:
         Path(path).write_text("A,B\n1,2")
