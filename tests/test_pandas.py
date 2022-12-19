@@ -1700,7 +1700,7 @@ def test_pivot_table() -> None:
         ),
         pd.DataFrame,
     )
-    with pytest.warns(np.VisibleDeprecationWarning):
+    with pytest.raises(ValueError):
         check(
             assert_type(
                 pd.pivot_table(
@@ -1714,7 +1714,7 @@ def test_pivot_table() -> None:
             ),
             pd.DataFrame,
         )
-    with pytest.warns(np.VisibleDeprecationWarning):
+    with pytest.raises(ValueError):
         check(
             assert_type(
                 pd.pivot_table(
