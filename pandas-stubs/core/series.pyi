@@ -309,10 +309,11 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def index(self) -> Index | MultiIndex: ...
     @index.setter
     def index(self, idx: Index) -> None: ...
+    # TODO: combine Level | Sequence[Level] github.com/python/mypy/issues/14311
     @overload
     def reset_index(
         self,
-        level: Sequence[Level] | Level | None = ...,
+        level: Sequence[Level] = ...,
         *,
         drop: Literal[False] = ...,
         name: Level = ...,
@@ -322,7 +323,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def reset_index(
         self,
-        level: Sequence[Level] | Level | None = ...,
+        level: Sequence[Level] = ...,
         *,
         drop: Literal[True],
         name: Level = ...,
@@ -332,7 +333,37 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def reset_index(
         self,
-        level: Sequence[Level] | Level | None = ...,
+        level: Sequence[Level] = ...,
+        *,
+        drop: bool = ...,
+        name: Level = ...,
+        inplace: Literal[True],
+        allow_duplicates: bool = ...,
+    ) -> None: ...
+    @overload
+    def reset_index(
+        self,
+        level: Level | None = ...,
+        *,
+        drop: Literal[False] = ...,
+        name: Level = ...,
+        inplace: Literal[False] = ...,
+        allow_duplicates: bool = ...,
+    ) -> DataFrame: ...
+    @overload
+    def reset_index(
+        self,
+        level: Level | None = ...,
+        *,
+        drop: Literal[True],
+        name: Level = ...,
+        inplace: Literal[False] = ...,
+        allow_duplicates: bool = ...,
+    ) -> Series: ...
+    @overload
+    def reset_index(
+        self,
+        level: Level | None = ...,
         *,
         drop: bool = ...,
         name: Level = ...,
