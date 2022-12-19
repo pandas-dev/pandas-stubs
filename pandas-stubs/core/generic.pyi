@@ -392,6 +392,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def fillna(
         self,
         value=...,
+        *,
         method=...,
         axis=...,
         inplace: _bool = ...,

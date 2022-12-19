@@ -787,7 +787,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         inplace: bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series | None: ...
-    @overload  # type: ignore[override]
+    @overload
     def fillna(
         self,
         value: Scalar | NAType | dict | Series[S1] | DataFrame | None = ...,

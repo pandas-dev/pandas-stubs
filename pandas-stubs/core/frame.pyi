@@ -635,7 +635,7 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level | None = ...,
         errors: IgnoreRaise = ...,
     ) -> DataFrame | None: ...
-    @overload  # type: ignore[override]
+    @overload
     def fillna(
         self,
         value: Scalar | NAType | dict | Series | DataFrame | None = ...,
