@@ -56,6 +56,8 @@ class Timestamp(datetime):
         # Freq is deprecated but is left in to allow code like Timestamp(2000,1,1)
         # Removing it would make the other arguments position only
         freq: int | str | BaseOffset | None = ...,
+        tz: str | _tzinfo | int | None = ...,
+        unit: str | int | None = ...,
         year: int | None = ...,
         month: int | None = ...,
         day: int | None = ...,
@@ -63,12 +65,10 @@ class Timestamp(datetime):
         minute: int | None = ...,
         second: int | None = ...,
         microsecond: int | None = ...,
+        nanosecond: int | None = ...,
         tzinfo: _tzinfo | None = ...,
         *,
-        unit: str | int | None = ...,
-        tz: str | _tzinfo | int | None = ...,
         fold: Literal[0, 1] | None = ...,
-        nanosecond: int | None = ...,
     ) -> _DatetimeT: ...
     # GH 46171
     # While Timestamp can return pd.NaT, having the constructor return
