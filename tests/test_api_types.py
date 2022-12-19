@@ -442,7 +442,7 @@ def test_union_categoricals() -> None:
     check(assert_type(api.union_categoricals(to_union), pd.Categorical), pd.Categorical)
 
 
-def check_extension_dtypes() -> None:
+def test_check_extension_dtypes() -> None:
     # GH 315
     def check_ext_dtype(etype: Type[ExtensionDtype]):
         assert issubclass(etype, ExtensionDtype)

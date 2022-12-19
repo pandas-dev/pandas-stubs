@@ -478,6 +478,9 @@ def test_types_apply() -> None:
     def returns_listlike_of_3(x: pd.Series) -> tuple[int, int, int]:
         return (7, 8, 9)
 
+    def returns_dict(x: pd.Series) -> dict[str, int]:
+        return {"col4": 7, "col5": 8}
+
     # Misc checks
     check(assert_type(df.apply(np.exp), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.apply(str), "pd.Series[str]"), pd.Series, str)
@@ -490,22 +493,15 @@ def test_types_apply() -> None:
 
     # Check various return types for default result_type (None) with default axis (0)
     check(assert_type(df.apply(returns_scalar), "pd.Series[int]"), pd.Series, int)
-    check(
-        assert_type(df.apply(returns_series), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(df.apply(returns_listlike_of_3), pd.DataFrame),
-        pd.DataFrame,
-    )
+    check(assert_type(df.apply(returns_series), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.apply(returns_listlike_of_3), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.apply(returns_dict), pd.Series), pd.Series)
 
     # Check various return types for result_type="expand" with default axis (0)
     check(
-        assert_type(
-            # Note that technically it does not make sense to pass a result_type of "expand" to a scalar return
-            df.apply(returns_scalar, result_type="expand"),
-            "pd.Series[int]",
-        ),
+        # Note that technically it does not make sense
+        # to pass a result_type of "expand" to a scalar return
+        assert_type(df.apply(returns_scalar, result_type="expand"), "pd.Series[int]"),
         pd.Series,
         int,
     )
@@ -519,71 +515,47 @@ def test_types_apply() -> None:
         ),
         pd.DataFrame,
     )
+    check(
+        assert_type(df.apply(returns_dict, result_type="expand"), pd.DataFrame),
+        pd.DataFrame,
+    )
 
     # Check various return types for result_type="reduce" with default axis (0)
     check(
-        assert_type(
-            # Note that technically it does not make sense to pass a result_type of "reduce" to a scalar return
-            df.apply(returns_scalar, result_type="reduce"),
-            "pd.Series[int]",
-        ),
+        # Note that technically it does not make sense
+        # to pass a result_type of "reduce" to a scalar return
+        assert_type(df.apply(returns_scalar, result_type="reduce"), "pd.Series[int]"),
         pd.Series,
         int,
     )
     check(
-        assert_type(
-            # Note that technically it does not make sense to pass a result_type of "reduce" to a series return
-            df.apply(returns_series, result_type="reduce"),
-            pd.Series,
-        ),
+        # Note that technically it does not make sense
+        # to pass a result_type of "reduce" to a series return
+        assert_type(df.apply(returns_series, result_type="reduce"), pd.Series),
         pd.Series,  # This technically returns a pd.Series[pd.Series], but typing does not support that
     )
     check(
         assert_type(df.apply(returns_listlike_of_3, result_type="reduce"), pd.Series),
         pd.Series,
     )
-
-    # Check various return types for result_type="broadcast" with default axis (0)
     check(
-        assert_type(
-            # Note that technically it does not make sense to pass a result_type of "broadcast" to a scalar return
-            df.apply(returns_scalar, result_type="broadcast"),
-            pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(df.apply(returns_series, result_type="broadcast"), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            # Can only broadcast a list-like of 2 elements, not 3, because there are 2 rows
-            df.apply(returns_listlike_of_2, result_type="broadcast"),
-            pd.DataFrame,
-        ),
-        pd.DataFrame,
+        assert_type(df.apply(returns_dict, result_type="reduce"), pd.Series), pd.Series
     )
 
     # Check various return types for default result_type (None) with axis=1
     check(
         assert_type(df.apply(returns_scalar, axis=1), "pd.Series[int]"), pd.Series, int
     )
-    check(
-        assert_type(df.apply(returns_series, axis=1), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(df.apply(returns_listlike_of_3, axis=1), pd.Series),
-        pd.Series,
-    )
+    check(assert_type(df.apply(returns_series, axis=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.apply(returns_listlike_of_3, axis=1), pd.Series), pd.Series)
+    check(assert_type(df.apply(returns_dict, axis=1), pd.Series), pd.Series)
 
     # Check various return types for result_type="expand" with axis=1
     check(
+        # Note that technically it does not make sense
+        # to pass a result_type of "expand" to a scalar return
         assert_type(
-            # Note that technically it does not make sense to pass a result_type of "expand" to a scalar return
-            df.apply(returns_scalar, axis=1, result_type="expand"),
-            "pd.Series[int]",
+            df.apply(returns_scalar, axis=1, result_type="expand"), "pd.Series[int]"
         ),
         pd.Series,
         int,
@@ -600,22 +572,26 @@ def test_types_apply() -> None:
         ),
         pd.DataFrame,
     )
+    check(
+        assert_type(df.apply(returns_dict, axis=1, result_type="expand"), pd.DataFrame),
+        pd.DataFrame,
+    )
 
     # Check various return types for result_type="reduce" with axis=1
     check(
+        # Note that technically it does not make sense
+        # to pass a result_type of "reduce" to a scalar return
         assert_type(
-            # Note that technically it does not make sense to pass a result_type of "reduce" to a scalar return
-            df.apply(returns_scalar, axis=1, result_type="reduce"),
-            "pd.Series[int]",
+            df.apply(returns_scalar, axis=1, result_type="reduce"), "pd.Series[int]"
         ),
         pd.Series,
         int,
     )
     check(
+        # Note that technically it does not make sense
+        # to pass a result_type of "reduce" to a series return
         assert_type(
-            # Note that technically it does not make sense to pass a result_type of "reduce" to a series return
-            df.apply(returns_series, axis=1, result_type="reduce"),
-            pd.DataFrame,
+            df.apply(returns_series, axis=1, result_type="reduce"), pd.DataFrame
         ),
         pd.DataFrame,
     )
@@ -625,13 +601,34 @@ def test_types_apply() -> None:
         ),
         pd.Series,
     )
-
-    # Check various return types for result_type="broadcast" with axis=1
     check(
+        assert_type(df.apply(returns_dict, axis=1, result_type="reduce"), pd.Series),
+        pd.Series,
+    )
+
+    # Check various return types for result_type="broadcast" with axis=0 and axis=1
+    check(
+        # Note that technically it does not make sense
+        # to pass a result_type of "broadcast" to a scalar return
+        assert_type(df.apply(returns_scalar, result_type="broadcast"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.apply(returns_series, result_type="broadcast"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        # Can only broadcast a list-like of 2 elements, not 3, because there are 2 rows
         assert_type(
-            # Note that technicaly it does not make sense to pass a result_type of "broadcast" to a scalar return
-            df.apply(returns_scalar, axis=1, result_type="broadcast"),
-            pd.DataFrame,
+            df.apply(returns_listlike_of_2, result_type="broadcast"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        # Note that technicaly it does not make sense
+        # to pass a result_type of "broadcast" to a scalar return
+        assert_type(
+            df.apply(returns_scalar, axis=1, result_type="broadcast"), pd.DataFrame
         ),
         pd.DataFrame,
     )
@@ -643,14 +640,29 @@ def test_types_apply() -> None:
     )
     check(
         assert_type(
-            # Can only broadcast a list-like of 3 elements, not 2, as there are 3 columns
+            # Can only broadcast a list-like of 3 elements, not 2,
+            # as there are 3 columns
             df.apply(returns_listlike_of_3, axis=1, result_type="broadcast"),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
+    # Since dicts will be assigned to elements of np.ndarray inside broadcasting,
+    # we need to use a DataFrame with object dtype to make the assignment possible.
+    df2 = pd.DataFrame({"col1": ["a", "b"], "col2": ["c", "d"]})
+    check(
+        assert_type(df2.apply(returns_dict, result_type="broadcast"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df2.apply(returns_dict, axis=1, result_type="broadcast"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
 
-    # Test various other positional/keyword argument combinations to ensure all overloads are supported
+    # Test various other positional/keyword argument combinations
+    # to ensure all overloads are supported
     check(
         assert_type(df.apply(returns_scalar, axis=0), "pd.Series[int]"), pd.Series, int
     )
@@ -2220,13 +2232,13 @@ def test_resample_150_changes() -> None:
     check(assert_type(resampler.apply(f), Union[pd.Series, pd.DataFrame]), pd.DataFrame)
 
 
-def df_accepting_dicts_iterator() -> None:
+def test_df_accepting_dicts_iterator() -> None:
     # GH 392
     data = [{"a": 1, "b": 2}, {"a": 3, "b": 5}]
     check(assert_type(pd.DataFrame(iter(data)), pd.DataFrame), pd.DataFrame)
 
 
-def series_added_in_astype() -> None:
+def test_series_added_in_astype() -> None:
     # GH410
     df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
     check(assert_type(df.astype(df.dtypes), pd.DataFrame), pd.DataFrame)

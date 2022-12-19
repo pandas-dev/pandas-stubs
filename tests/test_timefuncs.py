@@ -258,7 +258,7 @@ def test_iso_calendar() -> None:
     dates.isocalendar()
 
 
-def fail_on_adding_two_timestamps() -> None:
+def test_fail_on_adding_two_timestamps() -> None:
     s1 = pd.Series(pd.to_datetime(["2022-05-01", "2022-06-01"]))
     s2 = pd.Series(pd.to_datetime(["2022-05-15", "2022-06-15"]))
     if TYPE_CHECKING_INVALID_USAGE:
@@ -1058,3 +1058,10 @@ def test_timedelta64_and_arithmatic_operator() -> None:
         assert_type((s1 * td), Never)  # pyright: ignore
         assert_type((s1 / td), Never)  # pyright: ignore
         assert_type((s3 * td), Never)  # pyright: ignore
+
+
+def test_timedeltaseries_add_timestampseries() -> None:
+    tds = pd.Series(pd.timedelta_range(start="1 day", periods=10))
+    tss = pd.Series(pd.date_range(start="2012-01-01", periods=10, freq="W-MON"))
+    plus = tds + tss
+    check(assert_type(plus, "TimestampSeries"), pd.Series, pd.Timestamp)
