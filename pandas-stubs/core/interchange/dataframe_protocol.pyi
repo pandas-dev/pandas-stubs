@@ -3,11 +3,13 @@ from abc import (
     ABC,
     abstractmethod,
 )
+from collections.abc import (
+    Iterable,
+    Sequence,
+)
 import enum
 from typing import (
     Any,
-    Iterable,
-    Sequence,
     TypedDict,
 )
 

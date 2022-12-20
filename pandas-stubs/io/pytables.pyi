@@ -1,9 +1,11 @@
+from collections.abc import (
+    Generator,
+    Sequence,
+)
 from types import TracebackType
 from typing import (
     Any,
-    Generator,
     Literal,
-    Sequence,
     overload,
 )
 

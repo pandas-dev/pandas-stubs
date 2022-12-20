@@ -1,3 +1,4 @@
+from collections.abc import Collection
 from datetime import (
     date,
     datetime,
@@ -6,7 +7,6 @@ from datetime import (
 )
 from typing import (
     Any,
-    Collection,
     Literal,
     TypeVar,
     overload,

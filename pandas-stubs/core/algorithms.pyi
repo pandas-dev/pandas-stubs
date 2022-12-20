@@ -1,7 +1,5 @@
-from typing import (
-    Sequence,
-    overload,
-)
+from collections.abc import Sequence
+from typing import overload
 
 import numpy as np
 from pandas import (

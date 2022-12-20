@@ -1,12 +1,14 @@
-from typing import (
-    Any,
+from collections.abc import (
     Callable,
-    Generic,
     Iterable,
     Iterator,
+    Sequence,
+)
+from typing import (
+    Any,
+    Generic,
     Literal,
     NamedTuple,
-    Sequence,
     Union,
     overload,
 )

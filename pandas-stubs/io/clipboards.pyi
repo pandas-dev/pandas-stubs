@@ -1,10 +1,12 @@
 from collections import defaultdict
+from collections.abc import (
+    Callable,
+    Sequence,
+)
 import csv
 from typing import (
     Any,
-    Callable,
     Literal,
-    Sequence,
     overload,
 )
 

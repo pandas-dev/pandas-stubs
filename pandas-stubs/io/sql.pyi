@@ -1,9 +1,11 @@
-import sqlite3
-from typing import (
-    Any,
+from collections.abc import (
     Callable,
     Generator,
     Iterable,
+)
+import sqlite3
+from typing import (
+    Any,
     Literal,
     Union,
     overload,

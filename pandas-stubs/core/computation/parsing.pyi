@@ -1,5 +1,5 @@
+from collections.abc import Iterator
 import tokenize
-from typing import Iterator
 
 BACKTICK_QUOTED_STRING: int
 

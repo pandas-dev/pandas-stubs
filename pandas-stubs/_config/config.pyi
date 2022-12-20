@@ -1,7 +1,7 @@
+from collections.abc import Iterable
 from contextlib import ContextDecorator
 from typing import (
     Any,
-    Iterable,
     Literal,
     overload,
 )

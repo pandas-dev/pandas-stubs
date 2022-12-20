@@ -1,10 +1,12 @@
-from typing import (
+from collections.abc import (
     Callable,
     Generator,
-    Generic,
     Hashable,
-    Literal,
     Mapping,
+)
+from typing import (
+    Generic,
+    Literal,
     overload,
 )
 

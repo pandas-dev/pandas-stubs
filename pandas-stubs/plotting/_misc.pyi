@@ -1,8 +1,10 @@
+from collections.abc import (
+    Hashable,
+    Sequence,
+)
 from typing import (
     Any,
-    Hashable,
     Literal,
-    Sequence,
     Union,
 )
 

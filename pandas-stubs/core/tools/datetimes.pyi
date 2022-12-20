@@ -1,10 +1,10 @@
+from collections.abc import Sequence
 from datetime import (
     date,
     datetime,
 )
 from typing import (
     Literal,
-    Sequence,
     Union,
     overload,
 )

@@ -1,8 +1,10 @@
+from collections.abc import (
+    Hashable,
+    Sequence,
+)
 import datetime as dt
 from typing import (
-    Hashable,
     Literal,
-    Sequence,
     overload,
 )
 

@@ -1,8 +1,8 @@
-from typing import (
-    Any,
+from collections.abc import (
     Callable,
     Mapping,
 )
+from typing import Any
 
 from pandas._libs.properties import cache_readonly as cache_readonly
 from pandas._typing import F
