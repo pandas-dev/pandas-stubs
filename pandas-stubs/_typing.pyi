@@ -161,7 +161,7 @@ ListLike = TypeVar("ListLike", Sequence, np.ndarray, "Series", "Index")
 ListLikeExceptSeriesAndStr = TypeVar(
     "ListLikeExceptSeriesAndStr", MutableSequence, np.ndarray, tuple, "Index"
 )
-ListLikeU: TypeAlias = Union[Sequence, np.ndarray, Series, Index]
+ListLikeU: TypeAlias = Union[Sequence, np.ndarray, Series, Index, set]
 StrLike: TypeAlias = Union[str, np.str_]
 Scalar: TypeAlias = Union[
     str,
