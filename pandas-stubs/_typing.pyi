@@ -318,7 +318,7 @@ MergeHow: TypeAlias = Union[JoinHow, Literal["cross"]]
 JsonFrameOrient: TypeAlias = Literal[
     "split", "records", "index", "columns", "values", "table"
 ]
-JsonSeriesOrient: TypeAlias = Literal["split", "records", "index"]
+JsonSeriesOrient: TypeAlias = Literal["split", "records", "index", "table"]
 
 TimestampConvention: TypeAlias = Literal["start", "end", "s", "e"]
 
