@@ -2,14 +2,16 @@ from collections import (
     abc,
     defaultdict,
 )
+from collections.abc import (
+    Callable,
+    Mapping,
+    Sequence,
+)
 import csv
 from types import TracebackType
 from typing import (
     Any,
-    Callable,
     Literal,
-    Mapping,
-    Sequence,
     overload,
 )
 

@@ -1,7 +1,7 @@
+from collections.abc import Mapping
 from typing import (
     Any,
     Literal,
-    Mapping,
 )
 
 from pandas import (

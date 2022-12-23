@@ -1,11 +1,13 @@
-from typing import (
-    Any,
+from collections.abc import (
     Callable,
     Hashable,
-    Literal,
     Mapping,
-    Pattern,
     Sequence,
+)
+from re import Pattern
+from typing import (
+    Any,
+    Literal,
 )
 
 from pandas.core.frame import DataFrame

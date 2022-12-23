@@ -1,11 +1,13 @@
-from typing import (
+from collections.abc import (
     Callable,
-    ClassVar,
     Hashable,
     Iterable,
     Iterator,
-    Literal,
     Sequence,
+)
+from typing import (
+    ClassVar,
+    Literal,
     overload,
 )
 

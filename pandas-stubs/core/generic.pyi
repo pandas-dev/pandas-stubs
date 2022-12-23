@@ -1,13 +1,15 @@
+from collections.abc import (
+    Callable,
+    Hashable,
+    Iterable,
+    Mapping,
+    Sequence,
+)
 import sqlite3
 from typing import (
     Any,
-    Callable,
     ClassVar,
-    Hashable,
-    Iterable,
     Literal,
-    Mapping,
-    Sequence,
     final,
     overload,
 )

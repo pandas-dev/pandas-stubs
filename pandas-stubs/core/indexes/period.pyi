@@ -1,7 +1,5 @@
-from typing import (
-    Hashable,
-    overload,
-)
+from collections.abc import Hashable
+from typing import overload
 
 import numpy as np
 import pandas as pd

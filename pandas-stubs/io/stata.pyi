@@ -1,10 +1,10 @@
 from collections import abc
+from collections.abc import Sequence
 import datetime
 from io import BytesIO
 from types import TracebackType
 from typing import (
     Literal,
-    Sequence,
     overload,
 )
 

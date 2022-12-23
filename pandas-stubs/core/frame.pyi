@@ -1,16 +1,18 @@
-import datetime
-import datetime as _dt
-from typing import (
-    Any,
+from collections.abc import (
     Callable,
-    ClassVar,
     Hashable,
     Iterable,
     Iterator,
-    Literal,
     Mapping,
-    Pattern,
     Sequence,
+)
+import datetime
+import datetime as _dt
+from re import Pattern
+from typing import (
+    Any,
+    ClassVar,
+    Literal,
     TypeVar,
     overload,
 )

@@ -2,8 +2,8 @@ from abc import (
     ABCMeta,
     abstractmethod,
 )
+from collections.abc import Hashable
 from typing import (
-    Hashable,
     Literal,
     overload,
 )

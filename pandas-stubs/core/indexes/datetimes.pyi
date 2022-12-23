@@ -1,12 +1,12 @@
+from collections.abc import (
+    Hashable,
+    Sequence,
+)
 from datetime import (
     timedelta,
     tzinfo,
 )
-from typing import (
-    Hashable,
-    Sequence,
-    overload,
-)
+from typing import overload
 
 import numpy as np
 from pandas import (

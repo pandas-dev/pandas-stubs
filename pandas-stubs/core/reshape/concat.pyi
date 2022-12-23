@@ -1,8 +1,10 @@
-from typing import (
+from collections.abc import (
     Iterable,
-    Literal,
     Mapping,
     Sequence,
+)
+from typing import (
+    Literal,
     overload,
 )
 

@@ -1,3 +1,11 @@
+from collections.abc import (
+    Callable,
+    Hashable,
+    Iterable,
+    Iterator,
+    Mapping,
+    Sequence,
+)
 from datetime import (
     date,
     datetime,
@@ -5,15 +13,9 @@ from datetime import (
 )
 from typing import (
     Any,
-    Callable,
     ClassVar,
     Generic,
-    Hashable,
-    Iterable,
-    Iterator,
     Literal,
-    Mapping,
-    Sequence,
     Union,
     overload,
 )
