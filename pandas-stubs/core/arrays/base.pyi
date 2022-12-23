@@ -1,4 +1,4 @@
-from typing import Sequence
+from collections.abc import Sequence
 
 import numpy as np
 
@@ -42,11 +42,9 @@ class ExtensionArray:
     ) -> ABCExtensionArray: ...
     def unique(self): ...
     def searchsorted(self, value, side: str = ..., sorter=...): ...
+    # TODO: remove keyword-only when pandas removed na_sentinel
     def factorize(
-        self,
-        # Not actually positional-only, used to handle deprecations in 1.5.0
-        *,
-        use_na_sentinel: bool = ...,
+        self, *, use_na_sentinel: bool = ...
     ) -> tuple[np.ndarray, ABCExtensionArray]: ...
     def repeat(self, repeats, axis=...): ...
     def take(

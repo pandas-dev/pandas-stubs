@@ -1,9 +1,11 @@
+from collections.abc import (
+    Hashable,
+    Sequence,
+)
 import datetime as dt
 from typing import (
     Generic,
-    Hashable,
     Literal,
-    Sequence,
     Union,
     overload,
 )

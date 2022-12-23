@@ -1,4 +1,4 @@
-from typing import (
+from collections.abc import (
     Callable,
     Hashable,
 )
@@ -40,22 +40,6 @@ class BaseGroupBy(PandasObject, SelectionMixin[NDFrameT]):
     axis = ...
     grouper = ...
     exclusions = ...
-    def __init__(
-        self,
-        obj: NDFrame,
-        keys: KeysArgType | None = ...,
-        axis: int = ...,
-        level=...,
-        grouper: ops.BaseGrouper | None = ...,
-        exclusions=...,
-        selection=...,
-        as_index: bool = ...,
-        sort: bool = ...,
-        group_keys: bool = ...,
-        squeeze: bool = ...,
-        observed: bool = ...,
-        mutated: bool = ...,
-    ) -> None: ...
     def __len__(self) -> int: ...
     @property
     def groups(self) -> dict[Hashable, list[Hashable]]: ...

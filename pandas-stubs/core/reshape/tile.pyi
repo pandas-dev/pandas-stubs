@@ -1,6 +1,6 @@
+from collections.abc import Sequence
 from typing import (
     Literal,
-    Sequence,
     overload,
 )
 

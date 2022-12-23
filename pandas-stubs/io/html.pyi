@@ -1,11 +1,13 @@
-from typing import (
-    Any,
+from collections.abc import (
     Callable,
     Hashable,
-    Literal,
     Mapping,
-    Pattern,
     Sequence,
+)
+from re import Pattern
+from typing import (
+    Any,
+    Literal,
 )
 
 from pandas.core.frame import DataFrame
@@ -22,6 +24,7 @@ from pandas._typing import (
 
 def read_html(
     io: FilePath | ReadBuffer[str],
+    *,
     match: str | Pattern = ...,
     flavor: str | None = ...,
     header: int | Sequence[int] | None = ...,

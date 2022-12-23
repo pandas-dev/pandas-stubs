@@ -1,10 +1,12 @@
-from typing import (
+from collections.abc import (
     Callable,
     Generator,
-    Generic,
     Hashable,
-    Literal,
     Mapping,
+)
+from typing import (
+    Generic,
+    Literal,
     overload,
 )
 
@@ -146,9 +148,9 @@ class Resampler(BaseGroupBy, Generic[NDFrameT]):
     def interpolate(
         self,
         method: _Interpolation = ...,
+        *,
         axis: AxisType = ...,
         limit: int | None = ...,
-        *,
         inplace: Literal[True],
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
@@ -159,6 +161,7 @@ class Resampler(BaseGroupBy, Generic[NDFrameT]):
     def interpolate(
         self,
         method: _Interpolation = ...,
+        *,
         axis: AxisType = ...,
         limit: int | None = ...,
         inplace: Literal[False] = ...,

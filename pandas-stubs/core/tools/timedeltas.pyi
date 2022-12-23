@@ -1,8 +1,6 @@
+from collections.abc import Sequence
 from datetime import timedelta
-from typing import (
-    Sequence,
-    overload,
-)
+from typing import overload
 
 from pandas import Index
 from pandas.core.indexes.timedeltas import TimedeltaIndex

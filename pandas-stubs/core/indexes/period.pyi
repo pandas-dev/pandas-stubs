@@ -1,7 +1,5 @@
-from typing import (
-    Hashable,
-    overload,
-)
+from collections.abc import Hashable
+from typing import overload
 
 import numpy as np
 import pandas as pd
@@ -54,6 +52,7 @@ class PeriodIndex(DatetimeIndexOpsMixin, Int64Index):
     def join(
         self,
         other,
+        *,
         how: str = ...,
         level=...,
         return_indexers: bool = ...,

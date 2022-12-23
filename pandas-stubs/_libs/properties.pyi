@@ -1,4 +1,4 @@
-from typing import Callable
+from collections.abc import Callable
 
 class CachedProperty:
     def __init__(self, func: Callable) -> None: ...

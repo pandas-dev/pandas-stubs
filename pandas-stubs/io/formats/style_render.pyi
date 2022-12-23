@@ -1,10 +1,12 @@
+from collections.abc import (
+    Callable,
+    Sequence,
+)
 from typing import (
     Any,
-    Callable,
     Generic,
     Literal,
     Optional,
-    Sequence,
     TypedDict,
     TypeVar,
     Union,

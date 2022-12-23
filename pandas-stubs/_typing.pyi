@@ -1,17 +1,19 @@
 from builtins import type as type_t
+from collections.abc import (
+    Callable,
+    Hashable,
+    Iterator,
+    Mapping,
+    MutableSequence,
+    Sequence,
+)
 import datetime
 from os import PathLike
 from typing import (
     Any,
-    Callable,
-    Hashable,
-    Iterator,
     Literal,
-    Mapping,
-    MutableSequence,
     Optional,
     Protocol,
-    Sequence,
     TypedDict,
     TypeVar,
     Union,

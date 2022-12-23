@@ -2,8 +2,8 @@ from abc import (
     ABCMeta,
     abstractmethod,
 )
+from collections.abc import Hashable
 from typing import (
-    Hashable,
     Literal,
     overload,
 )
@@ -30,10 +30,10 @@ class ReaderBase(metaclass=ABCMeta):
 @overload
 def read_sas(
     filepath_or_buffer: FilePath | ReadBuffer[bytes],
+    *,
     format: Literal["sas7bdat"],
     index: Hashable | None = ...,
     encoding: str | None = ...,
-    *,
     chunksize: int,
     iterator: bool = ...,
     compression: CompressionOptions = ...,
@@ -41,10 +41,10 @@ def read_sas(
 @overload
 def read_sas(
     filepath_or_buffer: FilePath | ReadBuffer[bytes],
+    *,
     format: Literal["xport"],
     index: Hashable | None = ...,
     encoding: str | None = ...,
-    *,
     chunksize: int,
     iterator: bool = ...,
     compression: CompressionOptions = ...,
@@ -52,10 +52,10 @@ def read_sas(
 @overload
 def read_sas(
     filepath_or_buffer: FilePath | ReadBuffer[bytes],
+    *,
     format: None = ...,
     index: Hashable | None = ...,
     encoding: str | None = ...,
-    *,
     chunksize: int,
     iterator: bool = ...,
     compression: CompressionOptions = ...,
@@ -63,39 +63,40 @@ def read_sas(
 @overload
 def read_sas(
     filepath_or_buffer: FilePath | ReadBuffer[bytes],
+    *,
     format: Literal["sas7bdat"],
     index: Hashable | None = ...,
     encoding: str | None = ...,
     chunksize: int | None = ...,
-    *,
     iterator: Literal[True],
     compression: CompressionOptions = ...,
 ) -> SAS7BDATReader: ...
 @overload
 def read_sas(
     filepath_or_buffer: FilePath | ReadBuffer[bytes],
+    *,
     format: Literal["xport"],
     index: Hashable | None = ...,
     encoding: str | None = ...,
     chunksize: int | None = ...,
-    *,
     iterator: Literal[True],
     compression: CompressionOptions = ...,
 ) -> XportReader: ...
 @overload
 def read_sas(
     filepath_or_buffer: FilePath | ReadBuffer[bytes],
+    *,
     format: None = ...,
     index: Hashable | None = ...,
     encoding: str | None = ...,
     chunksize: int | None = ...,
-    *,
     iterator: Literal[True],
     compression: CompressionOptions = ...,
 ) -> XportReader | SAS7BDATReader: ...
 @overload
 def read_sas(
     filepath_or_buffer: FilePath | ReadBuffer[bytes],
+    *,
     format: Literal["xport", "sas7bdat"] | None = ...,
     index: Hashable | None = ...,
     encoding: str | None = ...,

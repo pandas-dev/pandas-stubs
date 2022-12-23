@@ -93,6 +93,7 @@ def read_json(
 @overload
 def read_json(
     path_or_buf: FilePath | ReadBuffer[str] | ReadBuffer[bytes],
+    *,
     orient: JsonFrameOrient | None = ...,
     typ: Literal["frame"] = ...,
     dtype: bool | dict[HashableT, DtypeArg] | None = ...,

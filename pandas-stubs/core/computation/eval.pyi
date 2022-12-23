@@ -1,7 +1,7 @@
+from collections.abc import Mapping
 from typing import (
     Any,
     Literal,
-    Mapping,
 )
 
 from pandas import (
@@ -19,8 +19,6 @@ def eval(
     expr: str | BinOp,
     parser: Literal["pandas", "python"] = ...,
     engine: Literal["python", "numexpr"] | None = ...,
-    # Keyword only due to omitted deprecated argument
-    *,
     local_dict: dict[str, Any] | None = ...,
     global_dict: dict[str, Any] | None = ...,
     resolvers: list[Mapping] | None = ...,
