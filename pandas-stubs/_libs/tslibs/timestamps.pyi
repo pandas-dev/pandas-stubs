@@ -142,7 +142,6 @@ class Timestamp(datetime):
         second: int | None = ...,
         microsecond: int | None = ...,
         tzinfo: _tzinfo | None = ...,
-        *,
         fold: Literal[0, 1] | None = ...,
     ) -> Timestamp: ...
     def astimezone(self: _DatetimeT, tz: _tzinfo | None = ...) -> _DatetimeT: ...

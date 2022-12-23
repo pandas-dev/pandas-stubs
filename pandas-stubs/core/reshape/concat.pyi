@@ -23,6 +23,7 @@ from pandas._typing import (
 @overload
 def concat(
     objs: Iterable[DataFrame] | Mapping[HashableT1, DataFrame],
+    *,
     axis: Literal[0, "index"] = ...,
     join: Literal["inner", "outer"] = ...,
     ignore_index: bool = ...,
@@ -36,6 +37,7 @@ def concat(
 @overload
 def concat(
     objs: Iterable[Series] | Mapping[HashableT1, Series],
+    *,
     axis: Literal[0, "index"] = ...,
     join: Literal["inner", "outer"] = ...,
     ignore_index: bool = ...,
@@ -49,6 +51,7 @@ def concat(
 @overload
 def concat(
     objs: Iterable[Series | DataFrame] | Mapping[HashableT1, Series | DataFrame],
+    *,
     axis: Literal[1, "columns"],
     join: Literal["inner", "outer"] = ...,
     ignore_index: bool = ...,
