@@ -387,12 +387,12 @@ def test_json():
     check(assert_type(read_json(bin_json), DataFrame), DataFrame)
 
 
-def test_json_series():
+@pytest.mark.parametrize("orient", [None, "split", "records", "index", "table"])
+def test_json_series(orient):
     s = DF["a"]
     with ensure_clean() as path:
-        check(assert_type(s.to_json(path), None), type(None))
-        check(assert_type(read_json(path, typ="series"), Series), Series)
-    check(assert_type(DF.to_json(), str), str)
+        check(assert_type(s.to_json(path, orient=orient), None), type(None))
+        check(assert_type(read_json(path, typ="series", orient=orient), Series), Series)
 
 
 def test_json_chunk():
