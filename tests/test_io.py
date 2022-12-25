@@ -387,7 +387,7 @@ def test_json():
     check(assert_type(read_json(bin_json), DataFrame), DataFrame)
 
 
-def test_json_series(orient):
+def test_json_series():
     s = DF["a"]
     check(
         assert_type(
