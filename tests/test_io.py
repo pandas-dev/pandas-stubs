@@ -389,6 +389,10 @@ def test_json():
 
 def test_json_series():
     s = DF["a"]
+    with ensure_clean() as path:
+        check(assert_type(s.to_json(path), None), type(None))
+        check(assert_type(read_json(path, typ="series"), Series), Series)
+    check(assert_type(DF.to_json(), str), str)
     check(
         assert_type(
             read_json(s.to_json(orient=None), typ="series", orient=None), Series
