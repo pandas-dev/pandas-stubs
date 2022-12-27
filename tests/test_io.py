@@ -393,6 +393,37 @@ def test_json_series():
         check(assert_type(s.to_json(path), None), type(None))
         check(assert_type(read_json(path, typ="series"), Series), Series)
     check(assert_type(DF.to_json(), str), str)
+    check(
+        assert_type(
+            read_json(s.to_json(orient=None), typ="series", orient=None), Series
+        ),
+        Series,
+    )
+    check(
+        assert_type(
+            read_json(s.to_json(orient="split"), typ="series", orient="split"), Series
+        ),
+        Series,
+    )
+    check(
+        assert_type(
+            read_json(s.to_json(orient="records"), typ="series", orient="records"),
+            Series,
+        ),
+        Series,
+    )
+    check(
+        assert_type(
+            read_json(s.to_json(orient="index"), typ="series", orient="index"), Series
+        ),
+        Series,
+    )
+    check(
+        assert_type(
+            read_json(s.to_json(orient="table"), typ="series", orient="table"), Series
+        ),
+        Series,
+    )
 
 
 def test_json_chunk():
