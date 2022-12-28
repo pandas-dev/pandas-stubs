@@ -310,7 +310,7 @@ def test_to_datetime_nat() -> None:
     )
     with pytest_warns_bounded(
         UserWarning,
-        match=" Could not infer format, so each element",
+        match="Could not infer format, so each element",
         lower="1.5.99",
     ):
         check(

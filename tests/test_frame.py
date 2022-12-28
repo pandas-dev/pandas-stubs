@@ -1566,7 +1566,7 @@ def test_read_csv() -> None:
             assert_type(pd.read_csv(path, parse_dates=parse_dates_5), pd.DataFrame),
             pd.DataFrame,
         )
-        parse_dates_6 = [[1, 2], [1, 2, 3]]
+        parse_dates_6 = [[1, 2, 3]]
         check(
             assert_type(pd.read_csv(path, parse_dates=parse_dates_6), pd.DataFrame),
             pd.DataFrame,
