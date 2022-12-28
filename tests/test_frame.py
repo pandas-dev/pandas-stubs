@@ -38,6 +38,7 @@ import xarray as xr
 from pandas._typing import Scalar
 
 from tests import (
+    IS_TYPE_CHECKER_MYPY,
     PD_LTE_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
@@ -1775,18 +1776,20 @@ def test_iloc_tuple() -> None:
 def test_set_columns() -> None:
     # GH 73
     df = pd.DataFrame({"a": [1, 2, 3], "b": [0.0, 1, 1]})
-    # Next line should work, but it is a mypy bug
+    # Next lines should work, but it is a mypy bug
     # https://github.com/python/mypy/issues/3004
-    # pyright doesn't need the ignore
-    df.columns = ["c", "d"]  # type: ignore[assignment]
-    df.columns = [1, 2]  # type: ignore[assignment]
-    df.columns = [1, "a"]  # type: ignore[assignment]
-    df.columns = np.array([1, 2])  # type: ignore[assignment]
-    df.columns = pd.Series([1, 2])  # type: ignore[assignment]
-    df.columns = np.array([1, "a"])  # type: ignore[assignment]
-    df.columns = pd.Series([1, "a"])  # type: ignore[assignment]
-    df.columns = (1, 2)  # type: ignore[assignment]
-    df.columns = (1, "a")  # type: ignore[assignment]
+    # pyright accepts this, so we only type check for pyright,
+    # and also test the code with pytest
+    if (TYPE_CHECKING and not IS_TYPE_CHECKER_MYPY) or not TYPE_CHECKING:
+        df.columns = ["c", "d"]
+        df.columns = [1, 2]
+        df.columns = [1, "a"]
+        df.columns = np.array([1, 2])
+        df.columns = pd.Series([1, 2])
+        df.columns = np.array([1, "a"])
+        df.columns = pd.Series([1, "a"])
+        df.columns = (1, 2)
+        df.columns = (1, "a")
 
 
 def test_frame_index_numpy() -> None:
