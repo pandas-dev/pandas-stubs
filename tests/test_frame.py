@@ -1788,6 +1788,8 @@ def test_set_columns() -> None:
     df.columns = pd.Series([1, "a"])  # type: ignore[assignment]
     df.columns = (1, 2)  # type: ignore[assignment]
     df.columns = (1, "a")  # type: ignore[assignment]
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.columns = "abc"  # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_frame_index_numpy() -> None:
@@ -1823,9 +1825,10 @@ def test_not_hashable() -> None:
     def test_func(h: Hashable):
         pass
 
-    test_func(pd.DataFrame())  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
-    test_func(pd.Series([], dtype=object))  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
-    test_func(pd.Index([]))  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+    if TYPE_CHECKING_INVALID_USAGE:
+        test_func(pd.DataFrame())  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+        test_func(pd.Series([], dtype=object))  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+        test_func(pd.Index([]))  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_columns_mixlist() -> None:
