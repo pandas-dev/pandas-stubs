@@ -26,6 +26,7 @@ from pandas._libs.tslibs import (
 from pandas._libs.tslibs.timedeltas import Components
 
 from tests import (
+    IS_TYPE_CHECKER_MYPY,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -782,10 +783,8 @@ def test_timedelta_mul_div() -> None:
         md_float / td  # type: ignore[operator]
         md_ndarray_intp / td  # type: ignore[operator]
         md_ndarray_float / td  # type: ignore[operator]
-        # TODO: Series.__truediv__ says it supports Timedelta
-        #   it does not, in general, except for TimedeltaSeries
-        # mp_series_int / td  # type: ignore[operator]
-        # mp_series_float / td  # type: ignore[operator]
+        mp_series_int / td  # type: ignore[operator]
+        md_series_float / td  # type: ignore[operator]
         md_int64_index / td  # type: ignore[operator]
         md_float_index / td  # type: ignore[operator]
 
@@ -826,8 +825,12 @@ def test_timedelta_mod_abs_unary() -> None:
         pd.TimedeltaIndex,
     )
 
-    # mypy reports dt.timedelta, even though __abs__ returns Timedelta
-    check(assert_type(abs(td), pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type]
+    if TYPE_CHECKING and IS_TYPE_CHECKER_MYPY:
+        # mypy reports dt.timedelta, even though __abs__ returns Timedelta
+        check(assert_type(abs(td), pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type]
+    else:
+        # This is valid for pyright
+        check(assert_type(abs(td), pd.Timedelta), pd.Timedelta)
     check(assert_type(td.__abs__(), pd.Timedelta), pd.Timedelta)
     check(assert_type(-td, pd.Timedelta), pd.Timedelta)
     check(assert_type(+td, pd.Timedelta), pd.Timedelta)
