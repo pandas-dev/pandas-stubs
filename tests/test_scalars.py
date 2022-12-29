@@ -27,6 +27,7 @@ from pandas._libs.tslibs.timedeltas import Components
 
 from tests import (
     IS_TYPE_CHECKER_MYPY,
+    PD_LTE_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -1764,7 +1765,12 @@ def test_period_add_subtract() -> None:
     check(assert_type(p + p.freq, pd.Period), pd.Period)
     # offset_index is tested below
     offset_index = p - as_period_index
-    check(assert_type(p + offset_index, pd.PeriodIndex), pd.PeriodIndex)
+    if PD_LTE_15:
+        check(assert_type(p + offset_index, pd.PeriodIndex), pd.PeriodIndex)
+    else:
+        # https://github.com/pandas-dev/pandas/issues/50162
+        check(assert_type(p + offset_index, pd.PeriodIndex), pd.Index)
+
     check(assert_type(p + as_td_series, PeriodSeries), pd.Series, pd.Period)
     check(assert_type(p + as_timedelta_idx, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(p + as_nat, NaTType), NaTType)

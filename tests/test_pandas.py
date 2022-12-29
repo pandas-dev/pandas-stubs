@@ -31,9 +31,14 @@ from tests import (
 def test_types_to_datetime() -> None:
     df = pd.DataFrame({"year": [2015, 2016], "month": [2, 3], "day": [4, 5]})
     r1: pd.Series = pd.to_datetime(df)
-    r2: pd.Series = pd.to_datetime(
-        df, unit="s", origin="unix", infer_datetime_format=True
-    )
+    with pytest_warns_bounded(
+        UserWarning,
+        match="The argument 'infer_datetime_format' is deprecated",
+        lower="1.5.99",
+    ):
+        r2: pd.Series = pd.to_datetime(
+            df, unit="s", origin="unix", infer_datetime_format=True
+        )
     r3: pd.Series = pd.to_datetime(
         df, unit="ns", dayfirst=True, utc=None, format="%M:%D", exact=False
     )

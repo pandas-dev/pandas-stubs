@@ -30,6 +30,7 @@ else:
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 
 from pandas.tseries.holiday import USFederalHolidayCalendar
@@ -307,13 +308,18 @@ def test_to_datetime_nat() -> None:
         ),
         pd.Timestamp,
     )
-    check(
-        assert_type(
-            pd.to_datetime("not a date", errors="coerce"),
-            "Union[pd.Timestamp, NaTType]",
-        ),
-        NaTType,
-    )
+    with pytest_warns_bounded(
+        UserWarning,
+        match="Could not infer format, so each element",
+        lower="1.5.99",
+    ):
+        check(
+            assert_type(
+                pd.to_datetime("not a date", errors="coerce"),
+                "Union[pd.Timestamp, NaTType]",
+            ),
+            NaTType,
+        )
 
 
 def test_series_dt_accessors() -> None:
