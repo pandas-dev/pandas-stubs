@@ -26,7 +26,6 @@ from pandas._libs.tslibs import (
 from pandas._libs.tslibs.timedeltas import Components
 
 from tests import (
-    IS_TYPE_CHECKER_MYPY,
     PD_LTE_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
@@ -784,8 +783,8 @@ def test_timedelta_mul_div() -> None:
         md_float / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
         md_ndarray_intp / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
         md_ndarray_float / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-        mp_series_int / td  # type: ignore[operator]
-        mp_series_float / td  # type: ignore[operator]
+        mp_series_int / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        md_series_float / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
         md_int64_index / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
         md_float_index / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
 
@@ -826,12 +825,9 @@ def test_timedelta_mod_abs_unary() -> None:
         pd.TimedeltaIndex,
     )
 
-    if TYPE_CHECKING and IS_TYPE_CHECKER_MYPY:
-        # mypy reports dt.timedelta, even though __abs__ returns Timedelta
-        check(assert_type(abs(td), pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type]
-    else:
-        # This is valid for pyright
-        check(assert_type(abs(td), pd.Timedelta), pd.Timedelta)
+    # mypy reports dt.timedelta, even though __abs__ returns Timedelta
+    check(assert_type(abs(td), pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type]
+
     check(assert_type(td.__abs__(), pd.Timedelta), pd.Timedelta)
     check(assert_type(-td, pd.Timedelta), pd.Timedelta)
     check(assert_type(+td, pd.Timedelta), pd.Timedelta)

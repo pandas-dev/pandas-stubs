@@ -560,7 +560,7 @@ def test_types_window() -> None:
     s.expanding()
     s.expanding(axis=0)
     if TYPE_CHECKING_INVALID_USAGE:
-        s.expanding(axis=0, center=True)  # type: ignore[call-arg]  # pyright: ignore[reportGeneralTypeIssues]
+        s.expanding(axis=0, center=True)  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
 
     s.rolling(2)
     s.rolling(2, axis=0, center=True)
@@ -748,7 +748,7 @@ def test_types_rename() -> None:
     s6: None = pd.Series([1, 2, 3]).rename("A", inplace=True)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item]  # pyright: ignore[reportGeneralTypeIssues]
+        s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_types_ne() -> None:

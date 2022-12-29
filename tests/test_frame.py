@@ -1789,7 +1789,7 @@ def test_set_columns() -> None:
     df.columns = (1, 2)  # type: ignore[assignment]
     df.columns = (1, "a")  # type: ignore[assignment]
     if TYPE_CHECKING_INVALID_USAGE:
-        df.columns = "abc"  # pyright: ignore[reportGeneralTypeIssues]
+        df.columns = "abc"  # type: ignore[assignment] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_frame_index_numpy() -> None:
