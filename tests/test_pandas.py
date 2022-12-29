@@ -1208,24 +1208,24 @@ def test_merge_ordered() -> None:
             rs,
             left_on="left",
             right_on="right",
-            left_by="left",  # pyright: ignore
-            right_by="right",  # pyright: ignore
+            left_by="left",  # pyright: ignore[reportGeneralTypeIssues]
+            right_by="right",  # pyright: ignore[reportGeneralTypeIssues]
         )
         pd.merge_ordered(  # type: ignore[call-overload]
             ls,
-            rf,  # pyright: ignore
+            rf,  # pyright: ignore[reportGeneralTypeIssues]
             left_on="left",
             right_on="b",
-            left_by="left",  # pyright: ignore
-            right_by="b",  # pyright: ignore
+            left_by="left",  # pyright: ignore[reportGeneralTypeIssues]
+            right_by="b",  # pyright: ignore[reportGeneralTypeIssues]
         )
         pd.merge_ordered(  # type: ignore[call-overload]
             lf,
             rs,
             left_on="a",
             right_on="right",
-            left_by="a",  # pyright: ignore
-            right_by="right",  # pyright: ignore
+            left_by="a",  # pyright: ignore[reportGeneralTypeIssues]
+            right_by="right",  # pyright: ignore[reportGeneralTypeIssues]
         )
 
 

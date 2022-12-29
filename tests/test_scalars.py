@@ -26,7 +26,6 @@ from pandas._libs.tslibs import (
 from pandas._libs.tslibs.timedeltas import Components
 
 from tests import (
-    IS_TYPE_CHECKER_MYPY,
     PD_LTE_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
@@ -607,14 +606,14 @@ def test_timedelta_add_sub() -> None:
     # TypeError: as_period, as_timestamp, as_datetime, as_date, as_datetime64,
     #            as_period_index, as_datetime_index, as_ndarray_dt64
     if TYPE_CHECKING_INVALID_USAGE:
-        td - as_period  # type: ignore[operator]
-        td - as_timestamp  # type: ignore[operator]
-        td - as_datetime  # type: ignore[operator]
-        td - as_date  # type: ignore[operator]
-        td - as_datetime64  # type: ignore[operator]
-        td - as_period_index  # type: ignore[operator]
-        td - as_datetime_index  # type: ignore[operator]
-        td - as_ndarray_dt64  # type: ignore[operator]
+        td - as_period  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        td - as_timestamp  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        td - as_datetime  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        td - as_date  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        td - as_datetime64  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        td - as_period_index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        td - as_datetime_index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        td - as_ndarray_dt64  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
 
     check(assert_type(td - td, pd.Timedelta), pd.Timedelta)
     check(assert_type(td - as_dt_timedelta, pd.Timedelta), pd.Timedelta)
@@ -746,14 +745,14 @@ def test_timedelta_mul_div() -> None:
     # TypeError: md_int, md_float, md_ndarray_intp, md_ndarray_float, mp_series_int,
     #            mp_series_float, md_int64_index, md_float_index
     if TYPE_CHECKING_INVALID_USAGE:
-        md_int // td  # type: ignore[operator]
-        md_float // td  # type: ignore[operator]
-        md_ndarray_intp // td  # type: ignore[operator]
-        md_ndarray_float // td  # type: ignore[operator]
-        mp_series_int // td  # type: ignore[operator]
-        md_series_float // td  # type: ignore[operator]
-        md_int64_index // td  # type: ignore[operator]
-        md_float_index // td  # type: ignore[operator]
+        md_int // td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        md_float // td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        md_ndarray_intp // td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        md_ndarray_float // td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        mp_series_int // td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        md_series_float // td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        md_int64_index // td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        md_float_index // td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
 
     check(assert_type(td / td, float), float)
     check(assert_type(td / pd.NaT, float), float)
@@ -780,14 +779,14 @@ def test_timedelta_mul_div() -> None:
     # TypeError: md_int, md_float, md_ndarray_intp, md_ndarray_float, mp_series_int,
     #            mp_series_float, md_int64_index, md_float_index
     if TYPE_CHECKING_INVALID_USAGE:
-        md_int / td  # type: ignore[operator]
-        md_float / td  # type: ignore[operator]
-        md_ndarray_intp / td  # type: ignore[operator]
-        md_ndarray_float / td  # type: ignore[operator]
-        mp_series_int / td  # type: ignore[operator]
-        md_series_float / td  # type: ignore[operator]
-        md_int64_index / td  # type: ignore[operator]
-        md_float_index / td  # type: ignore[operator]
+        md_int / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        md_float / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        md_ndarray_intp / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        md_ndarray_float / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        mp_series_int / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        md_series_float / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        md_int64_index / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        md_float_index / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_timedelta_mod_abs_unary() -> None:
@@ -826,12 +825,9 @@ def test_timedelta_mod_abs_unary() -> None:
         pd.TimedeltaIndex,
     )
 
-    if TYPE_CHECKING and IS_TYPE_CHECKER_MYPY:
-        # mypy reports dt.timedelta, even though __abs__ returns Timedelta
-        check(assert_type(abs(td), pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type]
-    else:
-        # This is valid for pyright
-        check(assert_type(abs(td), pd.Timedelta), pd.Timedelta)
+    # mypy reports dt.timedelta, even though __abs__ returns Timedelta
+    check(assert_type(abs(td), pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type]
+
     check(assert_type(td.__abs__(), pd.Timedelta), pd.Timedelta)
     check(assert_type(-td, pd.Timedelta), pd.Timedelta)
     check(assert_type(+td, pd.Timedelta), pd.Timedelta)

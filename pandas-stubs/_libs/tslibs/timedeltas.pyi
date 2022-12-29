@@ -312,7 +312,7 @@ class Timedelta(timedelta):
     def __rtruediv__(self, other: timedelta | Timedelta | NaTType) -> float: ...
     # Override due to more types supported than dt.timedelta
     @overload
-    def __eq__(self, other: timedelta | Timedelta | np.timedelta64) -> bool: ...  # type: ignore[misc]
+    def __eq__(self, other: timedelta | Timedelta | np.timedelta64) -> bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __eq__(self, other: TimedeltaSeries | Series[pd.Timedelta]) -> Series[bool]: ...  # type: ignore[misc]
     @overload
@@ -323,7 +323,7 @@ class Timedelta(timedelta):
     def __eq__(self, other: object) -> Literal[False]: ...
     # Override due to more types supported than dt.timedelta
     @overload
-    def __ne__(self, other: timedelta | Timedelta | np.timedelta64) -> bool: ...  # type: ignore[misc]
+    def __ne__(self, other: timedelta | Timedelta | np.timedelta64) -> bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __ne__(self, other: TimedeltaSeries | Series[pd.Timedelta]) -> Series[bool]: ...  # type: ignore[misc]
     @overload

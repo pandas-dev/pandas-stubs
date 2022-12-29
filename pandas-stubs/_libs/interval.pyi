@@ -193,7 +193,7 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     @overload
     def __le__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_ndarray_bool: ...
     @overload
-    def __eq__(self, other: Interval[_OrderableT]) -> bool: ...  # type: ignore[misc]
+    def __eq__(self, other: Interval[_OrderableT]) -> bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __eq__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload
@@ -201,7 +201,7 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     @overload
     def __eq__(self, other: object) -> Literal[False]: ...
     @overload
-    def __ne__(self, other: Interval[_OrderableT]) -> bool: ...  # type: ignore[misc]
+    def __ne__(self, other: Interval[_OrderableT]) -> bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __ne__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload

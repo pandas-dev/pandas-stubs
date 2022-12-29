@@ -121,15 +121,7 @@ def test_sparse_dtype() -> None:
     check(assert_type(pd.SparseDtype(np.timedelta64), pd.SparseDtype), pd.SparseDtype)
     check(assert_type(pd.SparseDtype("datetime64"), pd.SparseDtype), pd.SparseDtype)
     check(assert_type(pd.SparseDtype(), pd.SparseDtype), pd.SparseDtype)
-    # pyright ignore because mypy does not like non-minimal unions, while pyright
-    # can't minimize to check
-    check(
-        assert_type(
-            s_dt.fill_value,  # pyright: ignore[reportGeneralTypeIssues]
-            Union[Scalar, None],
-        ),
-        int,
-    )
+    check(assert_type(s_dt.fill_value, Union[Scalar, None]), int)
 
 
 def test_string_dtype() -> None:

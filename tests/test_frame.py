@@ -38,7 +38,6 @@ import xarray as xr
 from pandas._typing import Scalar
 
 from tests import (
-    IS_TYPE_CHECKER_MYPY,
     PD_LTE_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
@@ -981,7 +980,7 @@ def test_types_window() -> None:
     df.expanding()
     df.expanding(axis=1)
     if TYPE_CHECKING_INVALID_USAGE:
-        df.expanding(axis=1, center=True)  # type: ignore[call-arg]
+        df.expanding(axis=1, center=True)  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
 
     df.rolling(2)
     df.rolling(2, axis=1, center=True)
@@ -1780,18 +1779,17 @@ def test_set_columns() -> None:
     # https://github.com/python/mypy/issues/3004
     # pyright accepts this, so we only type check for pyright,
     # and also test the code with pytest
-    if (TYPE_CHECKING and not IS_TYPE_CHECKER_MYPY) or not TYPE_CHECKING:
-        df.columns = ["c", "d"]
-        df.columns = [1, 2]
-        df.columns = [1, "a"]
-        df.columns = np.array([1, 2])
-        df.columns = pd.Series([1, 2])
-        df.columns = np.array([1, "a"])
-        df.columns = pd.Series([1, "a"])
-        df.columns = (1, 2)
-        df.columns = (1, "a")
-        if TYPE_CHECKING_INVALID_USAGE:
-            df.columns = "abc"  # pyright: ignore[reportGeneralTypeIssues]
+    df.columns = ["c", "d"]  # type: ignore[assignment]
+    df.columns = [1, 2]  # type: ignore[assignment]
+    df.columns = [1, "a"]  # type: ignore[assignment]
+    df.columns = np.array([1, 2])  # type: ignore[assignment]
+    df.columns = pd.Series([1, 2])  # type: ignore[assignment]
+    df.columns = np.array([1, "a"])  # type: ignore[assignment]
+    df.columns = pd.Series([1, "a"])  # type: ignore[assignment]
+    df.columns = (1, 2)  # type: ignore[assignment]
+    df.columns = (1, "a")  # type: ignore[assignment]
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.columns = "abc"  # type: ignore[assignment] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_frame_index_numpy() -> None:
@@ -1828,9 +1826,9 @@ def test_not_hashable() -> None:
         pass
 
     if TYPE_CHECKING_INVALID_USAGE:
-        test_func(pd.DataFrame())  # type: ignore[arg-type]
-        test_func(pd.Series([], dtype=object))  # type: ignore[arg-type]
-        test_func(pd.Index([]))  # type: ignore[arg-type]
+        test_func(pd.DataFrame())  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+        test_func(pd.Series([], dtype=object))  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+        test_func(pd.Index([]))  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_columns_mixlist() -> None:
