@@ -111,3 +111,15 @@ time-based interval.  Without the `if TYPE_CHECKING` construct, the code would f
 However, it is also desirable to have the type checker pick up this failure, and by
 placing the `# type: ignore` on the line, an indication is made to the type checker
 that we expect this line to not pass the type checker.
+
+## Using ignore comments
+
+When type checkers report errors, they can be ignored through special comments.
+
+- If mypy reports an error, please use `# type: ignore[<error code>]`
+- If pyright reports an error, please use `# pyright: ignore[<error code>]`
+- If mypy and pyright report errors, please ensure that the comment for mypy comes first:
+  `# type: ignore[<error code>] # pyright: ignore[<error code>]`
+
+The ignore comments are typicall needed when testing for invalid behavior inside a
+`TYPE_CHECKING_INVALID_USAGE` block or when overloads overlap.
