@@ -97,7 +97,7 @@ class Period(PeriodMixin):
     #  ignore[misc] here because we know all other comparisons
     #  are False, so we use Literal[False]
     @overload
-    def __eq__(self, other: Period) -> bool: ...  # type: ignore[misc]
+    def __eq__(self, other: Period) -> bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __eq__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...  # type: ignore[misc]
     @overload
@@ -131,7 +131,7 @@ class Period(PeriodMixin):
     #  ignore[misc] here because we know all other comparisons
     #  are False, so we use Literal[False]
     @overload
-    def __ne__(self, other: Period) -> bool: ...  # type: ignore[misc]
+    def __ne__(self, other: Period) -> bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __ne__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...  # type: ignore[misc]
     @overload

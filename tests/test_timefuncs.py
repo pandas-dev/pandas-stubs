@@ -264,7 +264,7 @@ def test_fail_on_adding_two_timestamps() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         ssum: pd.Series = s1 + s2  # TODO both: ignore[operator]
         ts = pd.Timestamp("2022-06-30")
-        tsum: pd.Series = s1 + ts  # pyright: ignore
+        tsum: pd.Series = s1 + ts  # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_dtindex_tzinfo() -> None:
@@ -1057,9 +1057,9 @@ def test_timedelta64_and_arithmatic_operator() -> None:
     check(assert_type((s3 + td), "TimedeltaSeries"), pd.Series, pd.Timedelta)
     check(assert_type((s3 / td), "pd.Series[float]"), pd.Series, float)
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type((s1 * td), Never)  # pyright: ignore
-        assert_type((s1 / td), Never)  # pyright: ignore
-        assert_type((s3 * td), Never)  # pyright: ignore
+        assert_type((s1 * td), Never)  # pyright: ignore[reportGeneralTypeIssues]
+        assert_type((s1 / td), Never)  # pyright: ignore[reportGeneralTypeIssues]
+        assert_type((s3 * td), Never)  # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_timedeltaseries_add_timestampseries() -> None:

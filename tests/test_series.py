@@ -238,7 +238,7 @@ def test_types_sort_values() -> None:
     s = pd.Series([4, 2, 1, 3])
     check(assert_type(s.sort_values(), pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
-        check(assert_type(s.sort_values(0), pd.Series), pd.Series)  # type: ignore[assert-type,call-overload]
+        check(assert_type(s.sort_values(0), pd.Series), pd.Series)  # type: ignore[assert-type,call-overload] # pyright: ignore[reportGeneralTypeIssues]
     check(assert_type(s.sort_values(axis=0), pd.Series), pd.Series)
     check(assert_type(s.sort_values(ascending=False), pd.Series), pd.Series)
     assert assert_type(s.sort_values(inplace=True, kind="quicksort"), None) is None
@@ -560,7 +560,7 @@ def test_types_window() -> None:
     s.expanding()
     s.expanding(axis=0)
     if TYPE_CHECKING_INVALID_USAGE:
-        s.expanding(axis=0, center=True)  # type: ignore[call-arg]
+        s.expanding(axis=0, center=True)  # type: ignore[call-arg]  # pyright: ignore[reportGeneralTypeIssues]
 
     s.rolling(2)
     s.rolling(2, axis=0, center=True)
@@ -748,7 +748,7 @@ def test_types_rename() -> None:
     s6: None = pd.Series([1, 2, 3]).rename("A", inplace=True)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item]
+        s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item]  # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_types_ne() -> None:

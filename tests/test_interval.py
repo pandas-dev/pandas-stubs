@@ -51,9 +51,9 @@ def test_interval_length() -> None:
     check(assert_type(idres, "pd.Interval[pd.Timestamp]"), pd.Interval, pd.Timestamp)
     if TYPE_CHECKING_INVALID_USAGE:
         20 in i1  # TODO both: ignore[operator]
-        i1 + pd.Timestamp("2000-03-03")  # type: ignore[operator]
-        i1 * 3  # type: ignore[operator]
-        i1 * pd.Timedelta(seconds=20)  # type: ignore[operator]
+        i1 + pd.Timestamp("2000-03-03")  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        i1 * 3  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        i1 * pd.Timedelta(seconds=20)  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
 
     i2 = pd.Interval(10, 20)
     check(assert_type(i2.length, int), int)
