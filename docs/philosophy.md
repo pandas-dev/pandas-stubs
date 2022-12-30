@@ -121,7 +121,7 @@ Type checkers report errors
 - when writing `overload`s that return incompatible return values, or
 - when type checkers have bugs themselves.
 
-Since mypy and pyright behave slightly differently, we use spearate ignore comments
+Since mypy and pyright behave slightly differently, we use separate ignore comments
 for them.
 
 - If mypy reports an error, please use `# type: ignore[<error code>]`
