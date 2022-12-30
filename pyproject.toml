@@ -194,3 +194,6 @@ reportUnusedVariable = false
 reportPrivateUsage = false
 # enable optional checks
 reportMissingModuleSource = true
+
+[tool.codespell]
+ignore-words-list = "indext, mose, sav, ser"
