@@ -114,15 +114,15 @@ that we expect this line to not pass the type checker.
 
 ## Using ignore comments
 
-Type checkers report errors, for example, when
+Type checkers report errors
 
-- writing negative tests to reject invalid behavior (inside a
+- when writing negative tests to reject invalid behavior (inside a
   `TYPE_CHECKING_INVALID_USAGE` block),
-- writing `overload`s that return incompatible return values, or
+- when writing `overload`s that return incompatible return values, or
 - when type checkers have bugs themselves.
 
-Since mypy and pyright behave slightly differently, we need separate their specific
-errors.
+Since mypy and pyright behave slightly differently, we use spearate ignore comments
+for them.
 
 - If mypy reports an error, please use `# type: ignore[<error code>]`
 - If pyright reports an error, please use `# pyright: ignore[<error code>]`
