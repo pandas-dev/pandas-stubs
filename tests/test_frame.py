@@ -1798,6 +1798,27 @@ def test_frame_index_numpy() -> None:
     pd.DataFrame([[1.0, 2.0], [3.0, 4.0]], columns=["a", "b"], index=i)
 
 
+def test_frame_stack() -> None:
+
+    multicol2 = pd.MultiIndex.from_tuples([("weight", "kg"), ("height", "m")])
+    df_multi_level_cols2 = pd.DataFrame(
+        [[1.0, 2.0], [3.0, 4.0]], index=["cat", "dog"], columns=multicol2
+    )
+
+    check(
+        assert_type(
+            df_multi_level_cols2.stack(0), Union[pd.DataFrame, "pd.Series[Any]"]
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df_multi_level_cols2.stack([0, 1]), Union[pd.DataFrame, "pd.Series[Any]"]
+        ),
+        pd.Series,
+    )
+
+
 def test_frame_reindex() -> None:
     # GH 84
     df = pd.DataFrame({"a": [1, 2, 3]}, index=[0, 1, 2])
