@@ -7,11 +7,13 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
+    Generic,
     Hashable,
     Iterable,
     Iterator,
     List,
     Sequence,
+    TypeVar,
     cast,
 )
 
@@ -1362,3 +1364,16 @@ def test_AnyArrayLike_and_clip() -> None:
     s2 = ser.clip(upper=ser)
     check(assert_type(s1, pd.Series), pd.Series)
     check(assert_type(s2, pd.Series), pd.Series)
+
+
+def test_pandera_generic() -> None:
+    # GH 497
+    T = TypeVar("T")
+
+    class MySeries(pd.Series, Generic[T]):
+        ...
+
+    def func() -> MySeries[float]:
+        return MySeries[float]([1, 2, 3])
+
+    func()
