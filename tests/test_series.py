@@ -1367,7 +1367,7 @@ def test_AnyArrayLike_and_clip() -> None:
 
 
 def test_pandera_generic() -> None:
-    # GH 497
+    # GH 471
     T = TypeVar("T")
 
     class MySeries(pd.Series, Generic[T]):
