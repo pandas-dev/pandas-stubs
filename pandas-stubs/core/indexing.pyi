@@ -15,7 +15,7 @@ from pandas._typing import (
 )
 
 _IndexSliceTuple: TypeAlias = tuple[
-    Union[Index, MaskType, Scalar, list[ScalarT], slice], ...
+    Union[Index, MaskType, Scalar, list[ScalarT], slice | tuple[ScalarT, ...]], ...
 ]
 
 _IndexSliceUnion: TypeAlias = Union[slice, _IndexSliceTuple]
