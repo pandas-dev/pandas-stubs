@@ -2319,3 +2319,16 @@ def test_getattr_and_dataframe_groupby() -> None:
         assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame),
         pd.DataFrame,
     )
+
+
+def test_getsetitem_multiindex() -> None:
+    # GH 466
+    rows = pd.Index(["project A", "project B", "project C"])
+    years: tuple[str, ...] = ("Year 1", "Year 2", "Year 3")
+    quarters: tuple[str, ...] = ("Q1", "Q2", "Q3", "Q4")
+    index_tuples: list[tuple[str, ...]] = list(itertools.product(years, quarters))
+    cols = pd.MultiIndex.from_tuples(index_tuples)
+    budget = pd.DataFrame(index=rows, columns=cols)
+    multi_index: tuple[str, str] = ("Year 1", "Q1")
+    budget.loc["project A", multi_index] = 4700
+    check(assert_type(budget.loc["project A", multi_index], Scalar), int)
