@@ -100,16 +100,16 @@ Here is an example that illustrates this concept, from `tests/test_interval.py`:
     i1 = pd.Interval(
         pd.Timestamp("2000-01-01"), pd.Timestamp("2000-01-03"), closed="both"
     )
-    if TYPE_CHECKING:
+    if TYPE_CHECKING_INVALID_USAGE:
         i1 + pd.Timestamp("2000-03-03")  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
 
 ```
 
 In this particular example, the stubs consider that `i1` will have the type
 `pd.Interval[pd.Timestamp]`.  It is incorrect code to add a `Timestamp` to a
-time-based interval.  Without the `if TYPE_CHECKING` construct, the code would fail
-at runtime. Further, type checkers should report an error for this incorrect code.
-By placing the `# type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]`
+time-based interval.  Without the `if TYPE_CHECKING_INVALID_USAGE` construct, the
+code would fail at runtime. Further, type checkers should report an error for this
+incorrect code. By placing the `# type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]`
 on the line, type checkers are told to ignore the type error. To ensure that the
 pandas-stubs annotations are not too wide (allow adding a `Timestamp` to a
 time-based interval), mypy and pyright are configured to report unused ignore
