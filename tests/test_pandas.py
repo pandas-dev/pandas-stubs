@@ -973,7 +973,7 @@ def test_merge() -> None:
         ),
         pd.DataFrame,
     )
-    # TOOD: When cross don't need on??
+    # TODO: When cross don't need on??
     check(assert_type(pd.merge(ls, rs, how="cross"), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(
