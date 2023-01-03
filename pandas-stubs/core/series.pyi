@@ -96,6 +96,7 @@ from pandas._typing import (
     IgnoreRaise,
     IndexingInt,
     IntervalClosedType,
+    IntervalT,
     JoinHow,
     JsonSeriesOrient,
     Level,
@@ -217,43 +218,13 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def __new__(
         cls,
-        data: IntervalIndex[Interval[int]],
+        data: IntervalIndex[IntervalT],
         index: Axes | None = ...,
         dtype=...,
         name: Hashable | None = ...,
         copy: bool = ...,
         fastpath: bool = ...,
-    ) -> Series[Interval[int]]: ...
-    @overload
-    def __new__(
-        cls,
-        data: IntervalIndex[Interval[float]],
-        index: Axes | None = ...,
-        dtype=...,
-        name: Hashable | None = ...,
-        copy: bool = ...,
-        fastpath: bool = ...,
-    ) -> Series[Interval[float]]: ...
-    @overload
-    def __new__(
-        cls,
-        data: IntervalIndex[Interval[Timestamp]],
-        index: Axes | None = ...,
-        dtype=...,
-        name: Hashable | None = ...,
-        copy: bool = ...,
-        fastpath: bool = ...,
-    ) -> Series[Interval[Timestamp]]: ...
-    @overload
-    def __new__(
-        cls,
-        data: IntervalIndex[Interval[Timedelta]],
-        index: Axes | None = ...,
-        dtype=...,
-        name: Hashable | None = ...,
-        copy: bool = ...,
-        fastpath: bool = ...,
-    ) -> Series[Interval[Timedelta]]: ...
+    ) -> Series[IntervalT]: ...
     @overload
     def __new__(
         cls,
