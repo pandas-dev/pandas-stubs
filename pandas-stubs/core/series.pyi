@@ -10,6 +10,7 @@ from datetime import (
     date,
     datetime,
     time,
+    timedelta,
 )
 from typing import (
     Any,
@@ -186,7 +187,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def __new__(
         cls,
-        data: DatetimeIndex,
+        data: DatetimeIndex | Sequence[Timestamp | np.datetime64 | datetime],
         index: Axes | None = ...,
         dtype=...,
         name: Hashable | None = ...,
@@ -206,7 +207,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def __new__(
         cls,
-        data: TimedeltaIndex,
+        data: TimedeltaIndex | Sequence[Timedelta | np.timedelta64 | timedelta],
         index: Axes | None = ...,
         dtype=...,
         name: Hashable | None = ...,
@@ -1291,8 +1292,12 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def __div__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __eq__(self, other: object) -> Series[_bool]: ...  # type: ignore[override]
     def __floordiv__(self, other: num | _ListLike | Series[S1]) -> Series[int]: ...
-    def __ge__(self, other: S1 | _ListLike | Series[S1]) -> Series[_bool]: ...
-    def __gt__(self, other: S1 | _ListLike | Series[S1]) -> Series[_bool]: ...
+    def __ge__(
+        self, other: S1 | _ListLike | Series[S1] | datetime | timedelta
+    ) -> Series[_bool]: ...
+    def __gt__(
+        self, other: S1 | _ListLike | Series[S1] | datetime | timedelta
+    ) -> Series[_bool]: ...
     # def __iadd__(self, other: S1) -> Series[S1]: ...
     # def __iand__(self, other: S1) -> Series[_bool]: ...
     # def __idiv__(self, other: S1) -> Series[S1]: ...
@@ -1305,8 +1310,12 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     # def __itruediv__(self, other: S1) -> Series[S1]: ...
     # def __itruediv__(self, other) -> None: ...
     # def __ixor__(self, other: S1) -> Series[_bool]: ...
-    def __le__(self, other: S1 | _ListLike | Series[S1]) -> Series[_bool]: ...
-    def __lt__(self, other: S1 | _ListLike | Series[S1]) -> Series[_bool]: ...
+    def __le__(
+        self, other: S1 | _ListLike | Series[S1] | datetime | timedelta
+    ) -> Series[_bool]: ...
+    def __lt__(
+        self, other: S1 | _ListLike | Series[S1] | datetime | timedelta
+    ) -> Series[_bool]: ...
     @overload
     def __mul__(
         self, other: Timedelta | TimedeltaSeries | np.timedelta64
@@ -1807,6 +1816,31 @@ class TimestampSeries(Series[Timestamp]):
     def __add__(self, other: TimedeltaSeries | np.timedelta64) -> TimestampSeries: ...  # type: ignore[override]
     def __mul__(self, other: TimestampSeries | np.timedelta64 | TimedeltaSeries) -> Never: ...  # type: ignore[override]
     def __truediv__(self, other: TimestampSeries | np.timedelta64 | TimedeltaSeries) -> Never: ...  # type: ignore[override]
+    def mean(  # type: ignore[override]
+        self,
+        axis: SeriesAxisType | None = ...,
+        skipna: _bool = ...,
+        level: None = ...,
+        numeric_only: _bool = ...,
+        **kwargs,
+    ) -> Timestamp: ...
+    def median(  # type: ignore[override]
+        self,
+        axis: SeriesAxisType | None = ...,
+        skipna: _bool = ...,
+        level: None = ...,
+        numeric_only: _bool = ...,
+        **kwargs,
+    ) -> Timestamp: ...
+    def std(  # type: ignore[override]
+        self,
+        axis: SeriesAxisType | None = ...,
+        skipna: _bool | None = ...,
+        level: None = ...,
+        ddof: int = ...,
+        numeric_only: _bool = ...,
+        **kwargs,
+    ) -> Timedelta: ...
 
 class TimedeltaSeries(Series[Timedelta]):
     # ignores needed because of mypy
@@ -1831,6 +1865,31 @@ class TimedeltaSeries(Series[Timedelta]):
     def __truediv__(self, other: Timedelta | TimedeltaSeries | np.timedelta64 | TimedeltaIndex) -> Series[float]: ...  # type: ignore[override]
     @property
     def dt(self) -> TimedeltaProperties: ...  # type: ignore[override]
+    def mean(  # type: ignore[override]
+        self,
+        axis: SeriesAxisType | None = ...,
+        skipna: _bool = ...,
+        level: None = ...,
+        numeric_only: _bool = ...,
+        **kwargs,
+    ) -> Timedelta: ...
+    def median(  # type: ignore[override]
+        self,
+        axis: SeriesAxisType | None = ...,
+        skipna: _bool = ...,
+        level: None = ...,
+        numeric_only: _bool = ...,
+        **kwargs,
+    ) -> Timedelta: ...
+    def std(  # type: ignore[override]
+        self,
+        axis: SeriesAxisType | None = ...,
+        skipna: _bool | None = ...,
+        level: None = ...,
+        ddof: int = ...,
+        numeric_only: _bool = ...,
+        **kwargs,
+    ) -> Timedelta: ...
 
 class PeriodSeries(Series[Period]):
     # ignore needed because of mypy

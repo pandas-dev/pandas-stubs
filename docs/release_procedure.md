@@ -7,7 +7,7 @@
 
 ```shell
 rm dist/*
-poetry pubish --build  # you will get prompted for your pypi username/password
+poetry publish --build  # you will get prompted for your pypi username/password
 git commit -a -m "Version a.b.c.yymmdd"
 git push upstream main
 git tag va.b.c.yymmdd
