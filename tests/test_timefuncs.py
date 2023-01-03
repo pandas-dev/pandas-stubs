@@ -1067,3 +1067,21 @@ def test_timedeltaseries_add_timestampseries() -> None:
     tss = pd.Series(pd.date_range(start="2012-01-01", periods=10, freq="W-MON"))
     plus = tds + tss
     check(assert_type(plus, "TimestampSeries"), pd.Series, pd.Timestamp)
+
+
+def test_mean_median_std() -> None:
+    s = pd.Series([pd.Timedelta("1 ns"), pd.Timedelta("2 ns"), pd.Timedelta("3 ns")])
+    check(assert_type(s.mean(), pd.Timedelta), pd.Timedelta)
+    check(assert_type(s.median(), pd.Timedelta), pd.Timedelta)
+    check(assert_type(s.std(), pd.Timedelta), pd.Timedelta)
+
+    s2 = pd.Series(
+        [
+            pd.Timestamp("2021-01-01"),
+            pd.Timestamp("2021-01-02"),
+            pd.Timestamp("2021-01-03"),
+        ]
+    )
+    check(assert_type(s2.mean(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(s2.median(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(s2.std(), pd.Timedelta), pd.Timedelta)
