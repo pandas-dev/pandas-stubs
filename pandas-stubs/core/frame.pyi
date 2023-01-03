@@ -167,7 +167,7 @@ class _LocIndexerFrame(_LocIndexer):
     def __getitem__(
         self,
         idx: tuple[
-            int | StrLike | tuple[ScalarT, ...], int | StrLike | tuple[ScalarT, ...]
+            int | StrLike | tuple[Scalar, ...], int | StrLike | tuple[Scalar, ...]
         ],
     ) -> Scalar: ...
     @overload
