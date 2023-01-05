@@ -34,3 +34,8 @@ repos:
           # TypeVars in private files are already private
           --per-file-ignores=_*.pyi:Y001
         ]
+-   repo: https://github.com/codespell-project/codespell
+    rev: v2.2.2
+    hooks:
+    - id: codespell
+      additional_dependencies: [ tomli ]

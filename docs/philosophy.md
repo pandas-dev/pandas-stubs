@@ -100,14 +100,36 @@ Here is an example that illustrates this concept, from `tests/test_interval.py`:
     i1 = pd.Interval(
         pd.Timestamp("2000-01-01"), pd.Timestamp("2000-01-03"), closed="both"
     )
-    if TYPE_CHECKING:
-        i1 + pd.Timestamp("2000-03-03")  # type: ignore
+    if TYPE_CHECKING_INVALID_USAGE:
+        i1 + pd.Timestamp("2000-03-03")  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
 
 ```
 
 In this particular example, the stubs consider that `i1` will have the type
 `pd.Interval[pd.Timestamp]`.  It is incorrect code to add a `Timestamp` to a
-time-based interval.  Without the `if TYPE_CHECKING` construct, the code would fail.
-However, it is also desirable to have the type checker pick up this failure, and by
-placing the `# type: ignore` on the line, an indication is made to the type checker
-that we expect this line to not pass the type checker.
+time-based interval.  Without the `if TYPE_CHECKING_INVALID_USAGE` construct, the
+code would fail at runtime. Further, type checkers should report an error for this
+incorrect code. By placing the `# type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]`
+on the line, type checkers are told to ignore the type error. To ensure that the
+pandas-stubs annotations are not too wide (allow adding a `Timestamp` to a
+time-based interval), mypy and pyright are configured to report unused ignore
+statements.
+
+## Using ignore comments
+
+Type checkers report errors
+
+- when writing negative tests to reject invalid behavior (inside a
+  `TYPE_CHECKING_INVALID_USAGE` block),
+- when writing `overload`s that return incompatible return values, or
+- when type checkers have bugs themselves.
+
+Since mypy and pyright behave slightly differently, we use separate ignore comments
+for them.
+
+- If mypy reports an error, please use `# type: ignore[<error code>]`
+- If pyright reports an error, please use `# pyright: ignore[<error code>]`
+
+If mypy and pyright report errors, for example, inside a `TYPE_CHECKING_INVALID_USAGE`
+block, please ensure that the comment for mypy comes first:
+`# type: ignore[<error code>] # pyright: ignore[<error code>]`.
