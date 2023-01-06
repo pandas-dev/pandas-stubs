@@ -2333,13 +2333,12 @@ def test_getsetitem_multiindex() -> None:
     budget.loc["project A", multi_index] = 4700
     check(assert_type(budget.loc["project A", multi_index], Scalar), int)
 
+
 def test_frame_dropna_subset() -> None:
-    data = {'col1': [1, 3, 4], 'col2': [2, 3, 5], 'col3': [2, 4, 4]}
+    # GH 434
+    data = {"col1": [1, 3, 4], "col2": [2, 3, 5], "col3": [2, 4, 4]}
     df = pd.DataFrame(data)
     check(
-        assert_type(
-            df.dropna(subset=df.columns.drop('col1')), pd.DataFrame
-        ),
+        assert_type(df.dropna(subset=df.columns.drop("col1")), pd.DataFrame),
         pd.DataFrame,
     )
-   
