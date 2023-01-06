@@ -789,7 +789,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         how: Literal["any", "all"] = ...,
         thresh: int | None = ...,
-        subset: list | None = ...,
+        subset: ListLikeU | Scalar | None = ...,
         inplace: Literal[True],
     ) -> None: ...
     @overload
@@ -799,7 +799,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         how: Literal["any", "all"] = ...,
         thresh: int | None = ...,
-        subset: list | None = ...,
+        subset: ListLikeU | Scalar | None = ...,
         inplace: Literal[False] = ...,
     ) -> DataFrame: ...
     @overload
@@ -809,7 +809,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisType = ...,
         how: Literal["any", "all"] = ...,
         thresh: int | None = ...,
-        subset: list | None = ...,
+        subset: ListLikeU | Scalar | None = ...,
         inplace: _bool | None = ...,
     ) -> DataFrame | None: ...
     def drop_duplicates(
