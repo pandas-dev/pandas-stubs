@@ -657,3 +657,12 @@ def test_interval_index_tuples():
         pd.IntervalIndex,
         pd.Interval,
     )
+
+
+def test_sorted() -> None:
+    i1 = pd.Index([3, 2, 1])
+    sorted(i1)
+
+
+f = np.array([1, 2, 3])
+f.__iter__()
