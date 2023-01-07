@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime as dt
 from typing import (
+    TYPE_CHECKING,
     Hashable,
     List,
     Tuple,
@@ -15,6 +16,9 @@ from pandas.core.indexes.numeric import NumericIndex
 from typing_extensions import assert_type
 
 from pandas._typing import Scalar
+
+if TYPE_CHECKING:
+    from pandas._typing import IndexIterScalar
 
 from tests import (
     check,
@@ -92,7 +96,11 @@ def test_column_contains() -> None:
 def test_column_sequence() -> None:
     df = pd.DataFrame([1, 2, 3])
     col_list = list(df.columns)
-    check(assert_type(col_list, List[Union[Scalar, Tuple[Hashable, ...]]]), list, int)
+    check(
+        assert_type(col_list, List[Union["IndexIterScalar", Tuple[Hashable, ...]]]),
+        list,
+        int,
+    )
 
 
 def test_difference_none() -> None:
@@ -659,10 +667,20 @@ def test_interval_index_tuples():
     )
 
 
-def test_sorted() -> None:
+def test_sorted_and_list() -> None:
+    # GH 497
     i1 = pd.Index([3, 2, 1])
-    sorted(i1)
-
-
-f = np.array([1, 2, 3])
-f.__iter__()
+    check(
+        assert_type(
+            sorted(i1),
+            list[Union["IndexIterScalar", tuple[Hashable, ...]]],
+        ),
+        list,
+    )
+    check(
+        assert_type(
+            list(i1),
+            list[Union["IndexIterScalar", tuple[Hashable, ...]]],
+        ),
+        list,
+    )

@@ -8,12 +8,9 @@ from collections.abc import (
 from typing import (
     ClassVar,
     Literal,
-    TypeVar,
-    Union,
     overload,
 )
 
-# from _typeshed import SupportsRichComparison
 import numpy as np
 from pandas import (
     DataFrame,
@@ -35,6 +32,7 @@ from pandas._typing import (
     DtypeObj,
     FillnaOptions,
     HashableT,
+    IndexIterScalar,
     IndexT,
     Label,
     Level,
@@ -48,11 +46,6 @@ from pandas._typing import (
 class InvalidIndexError(Exception): ...
 
 _str = str
-
-# _RichCompareIterT = TypeVar(
-#     "_RichCompareIterT",
-#     bound=Union[Scalar, tuple[Hashable, ...]],
-# )
 
 class Index(IndexOpsMixin, PandasObject):
     __hash__: ClassVar[None]  # type: ignore[assignment]
@@ -230,7 +223,7 @@ class Index(IndexOpsMixin, PandasObject):
     def shape(self) -> tuple[int, ...]: ...
     # Extra methods from old stubs
     def __eq__(self, other: object) -> np_ndarray_bool: ...  # type: ignore[override]
-    def __iter__(self) -> Iterator[Scalar | tuple[Hashable, ...]]: ...  # type: ignore[override]
+    def __iter__(self) -> Iterator[IndexIterScalar | tuple[Hashable, ...]]: ...
     def __ne__(self, other: object) -> np_ndarray_bool: ...  # type: ignore[override]
     def __le__(self, other: Index | Scalar) -> np_ndarray_bool: ...
     def __ge__(self, other: Index | Scalar) -> np_ndarray_bool: ...
