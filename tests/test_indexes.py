@@ -673,14 +673,14 @@ def test_sorted_and_list() -> None:
     check(
         assert_type(
             sorted(i1),
-            list[Union["IndexIterScalar", tuple[Hashable, ...]]],
+            List[Union["IndexIterScalar", Tuple[Hashable, ...]]],
         ),
         list,
     )
     check(
         assert_type(
             list(i1),
-            list[Union["IndexIterScalar", tuple[Hashable, ...]]],
+            List[Union["IndexIterScalar", Tuple[Hashable, ...]]],
         ),
         list,
     )
