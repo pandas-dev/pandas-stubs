@@ -165,7 +165,7 @@ ListLikeExceptSeriesAndStr = TypeVar(
 )
 ListLikeU: TypeAlias = Union[Sequence, np.ndarray, Series, Index]
 StrLike: TypeAlias = Union[str, np.str_]
-Scalar: TypeAlias = Union[
+IndexIterScalar: TypeAlias = Union[
     str,
     bytes,
     datetime.date,
@@ -174,9 +174,12 @@ Scalar: TypeAlias = Union[
     bool,
     int,
     float,
-    complex,
     Timestamp,
     Timedelta,
+]
+Scalar: TypeAlias = Union[
+    IndexIterScalar,
+    complex,
 ]
 ScalarT = TypeVar("ScalarT", bound=Scalar)
 # Refine the definitions below in 3.9 to use the specialized type.
