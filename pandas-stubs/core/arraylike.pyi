@@ -7,6 +7,9 @@ from pandas import DataFrame
 
 class OpsMixinProtocol(Protocol): ...
 
+# We would like to use ->Self here so this could be used by Index, but mypy 0.991
+# doesn't support Self.  So we will have to add these operators directly to Index
+
 class OpsMixin:
     def __eq__(self: OpsMixinProtocol, other: object) -> DataFrame: ...  # type: ignore[override]
     def __ne__(self: OpsMixinProtocol, other: object) -> DataFrame: ...  # type: ignore[override]

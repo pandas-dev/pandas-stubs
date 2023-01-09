@@ -684,3 +684,31 @@ def test_sorted_and_list() -> None:
         ),
         list,
     )
+
+
+def test_index_operators() -> None:
+    # GH 405
+    i1 = pd.Index([1, 2, 3])
+    i2 = pd.Index([4, 5, 6])
+
+    check(assert_type(i1 + i2, pd.Index), pd.Index)
+    check(assert_type(i1 + 10, pd.Index), pd.Index)
+    check(assert_type(10 + i1, pd.Index), pd.Index)
+    check(assert_type(i1 - i2, pd.Index), pd.Index)
+    check(assert_type(i1 - 10, pd.Index), pd.Index)
+    check(assert_type(10 - i1, pd.Index), pd.Index)
+    check(assert_type(i1 * i2, pd.Index), pd.Index)
+    check(assert_type(i1 * 10, pd.Index), pd.Index)
+    check(assert_type(10 * i1, pd.Index), pd.Index)
+    check(assert_type(i1 / i2, pd.Index), pd.Index)
+    check(assert_type(i1 / 10, pd.Index), pd.Index)
+    check(assert_type(10 / i1, pd.Index), pd.Index)
+    check(assert_type(i1 // i2, pd.Index), pd.Index)
+    check(assert_type(i1 // 10, pd.Index), pd.Index)
+    check(assert_type(10 // i1, pd.Index), pd.Index)
+    check(assert_type(i1**i2, pd.Index), pd.Index)
+    check(assert_type(i1**2, pd.Index), pd.Index)
+    check(assert_type(2**i1, pd.Index), pd.Index)
+    check(assert_type(i1 % i2, pd.Index), pd.Index)
+    check(assert_type(i1 % 10, pd.Index), pd.Index)
+    check(assert_type(10 % i1, pd.Index), pd.Index)
