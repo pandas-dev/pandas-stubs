@@ -705,6 +705,15 @@ def test_read_excel_list():
         )
 
 
+def test_read_excel_dtypes():
+    # GH 440
+    df = pd.DataFrame({"a": [1, 2, 3], "b": ["x", "y", "z"], "c": [10.0, 20.0, 30.3]})
+    with ensure_clean(".xlsx") as path:
+        check(assert_type(df.to_excel(path), None), type(None))
+        dtypes = {"a": np.int64, "b": str, "c": np.float64}
+        check(assert_type(read_excel(path, dtype=dtypes), pd.DataFrame), pd.DataFrame)
+
+
 def test_excel_writer():
     with ensure_clean(".xlsx") as path:
         with pd.ExcelWriter(path) as ew:
