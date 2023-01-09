@@ -4,6 +4,7 @@ from typing import overload
 import numpy as np
 import pandas as pd
 from pandas import Index
+from pandas.core.indexes.accessors import PeriodIndexFieldOps
 from pandas.core.indexes.datetimelike import (
     DatetimeIndexOpsMixin as DatetimeIndexOpsMixin,
 )
@@ -15,7 +16,7 @@ from pandas._libs.tslibs import (
     Period,
 )
 
-class PeriodIndex(DatetimeIndexOpsMixin, Int64Index):
+class PeriodIndex(DatetimeIndexOpsMixin, Int64Index, PeriodIndexFieldOps):
     def __new__(
         cls,
         data=...,
@@ -61,6 +62,8 @@ class PeriodIndex(DatetimeIndexOpsMixin, Int64Index):
     def intersection(self, other, sort: bool = ...): ...
     def difference(self, other, sort=...): ...
     def memory_usage(self, deep: bool = ...): ...
+    @property
+    def freqstr(self) -> str: ...
 
 def period_range(
     start: str | pd.Period | None = ...,

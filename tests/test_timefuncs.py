@@ -528,6 +528,37 @@ def test_timedeltaindex_accessors() -> None:
     check(assert_type(i0.ceil("D"), pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
 
 
+def test_periodindex_accessors() -> None:
+    # GH 395
+
+    i0 = pd.period_range(start="2022-06-01", periods=10)
+    check(assert_type(i0, pd.PeriodIndex), pd.PeriodIndex, pd.Period)
+
+    check(assert_type(i0.year, IntegerIndex), IntegerIndex, int)
+    check(assert_type(i0.month, IntegerIndex), IntegerIndex, int)
+    check(assert_type(i0.day, IntegerIndex), IntegerIndex, int)
+    check(assert_type(i0.hour, IntegerIndex), IntegerIndex, int)
+    check(assert_type(i0.minute, IntegerIndex), IntegerIndex, int)
+    check(assert_type(i0.second, IntegerIndex), IntegerIndex, int)
+    check(assert_type(i0.dayofweek, IntegerIndex), IntegerIndex, int)
+    check(assert_type(i0.day_of_week, IntegerIndex), IntegerIndex, int)
+    check(assert_type(i0.weekday, IntegerIndex), IntegerIndex, int)
+    check(assert_type(i0.dayofyear, IntegerIndex), IntegerIndex, int)
+    check(assert_type(i0.day_of_year, IntegerIndex), IntegerIndex, int)
+    check(assert_type(i0.quarter, IntegerIndex), IntegerIndex, int)
+    check(assert_type(i0.daysinmonth, IntegerIndex), IntegerIndex, int)
+    check(assert_type(i0.days_in_month, IntegerIndex), IntegerIndex, int)
+    check(assert_type(i0.freq, Optional[BaseOffset]), BaseOffset)
+    check(assert_type(i0.strftime("%Y"), pd.Index), pd.Index, str)
+    check(assert_type(i0.asfreq("D"), pd.PeriodIndex), pd.PeriodIndex, pd.Period)
+    check(assert_type(i0.end_time, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+    check(assert_type(i0.start_time, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+    check(
+        assert_type(i0.to_timestamp(), pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp
+    )
+    check(assert_type(i0.freqstr, str), str)
+
+
 def test_some_offsets() -> None:
     # GH 222
     check(
