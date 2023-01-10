@@ -721,12 +721,39 @@ def test_index_operators() -> None:
     check(assert_type(divmod(10, i1), Tuple[pd.Index, pd.Index]), tuple)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(i1 & i2, Never)  # pyright: ignore[reportGeneralTypeIssues]
-        assert_type(i1 & 10, Never)  # pyright: ignore[reportGeneralTypeIssues]
-        assert_type(10 & i1, Never)  # pyright: ignore[reportGeneralTypeIssues]
-        assert_type(i1 | i2, Never)  # pyright: ignore[reportGeneralTypeIssues]
-        assert_type(i1 | 10, Never)  # pyright: ignore[reportGeneralTypeIssues]
-        assert_type(10 | i1, Never)  # pyright: ignore[reportGeneralTypeIssues]
-        assert_type(i1 ^ i2, Never)  # pyright: ignore[reportGeneralTypeIssues]
-        assert_type(i1 ^ 10, Never)  # pyright: ignore[reportGeneralTypeIssues]
-        assert_type(10 ^ i1, Never)  # pyright: ignore[reportGeneralTypeIssues]
+        assert_type(
+            i1 & i2,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(  # type: ignore[assert-type]
+            i1 & 10,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(  # type: ignore[assert-type]
+            10 & i1,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(
+            i1 | i2,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(  # type: ignore[assert-type]
+            i1 | 10,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(  # type: ignore[assert-type]
+            10 | i1,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(
+            i1 ^ i2,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(  # type: ignore[assert-type]
+            i1 ^ 10,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(  # type: ignore[assert-type]
+            10 ^ i1,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
