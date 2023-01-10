@@ -13,6 +13,7 @@ from typing import (
     Iterator,
     List,
     Sequence,
+    Tuple,
     TypeVar,
     cast,
 )
@@ -452,6 +453,8 @@ def test_types_element_wise_arithmetic() -> None:
 
     res_pow: pd.Series = s ** s2.abs()
     res_pow2: pd.Series = s.pow(s2.abs(), fill_value=0)
+
+    check(assert_type(divmod(s, s2), Tuple[pd.Series, pd.Series]), tuple)
 
 
 def test_types_scalar_arithmetic() -> None:
