@@ -45,7 +45,15 @@ class Properties(PandasDelegate, PandasObject, NoNewAttributesMixin):
 
 _DTFieldOpsReturnType = TypeVar("_DTFieldOpsReturnType", Series[int], IntegerIndex)
 
-class _DatetimeFieldOps(Generic[_DTFieldOpsReturnType]):
+class _DatetimeFieldOps(
+    _DayLikeFieldOps[_DTFieldOpsReturnType], _MiniSeconds[_DTFieldOpsReturnType]
+): ...
+class PeriodIndexFieldOps(
+    _DayLikeFieldOps[IntegerIndex],
+    _PeriodProperties[DatetimeIndex, IntegerIndex, Index, DatetimeIndex, PeriodIndex],
+): ...
+
+class _DayLikeFieldOps(Generic[_DTFieldOpsReturnType]):
     @property
     def year(self) -> _DTFieldOpsReturnType: ...
     @property
@@ -74,6 +82,8 @@ class _DatetimeFieldOps(Generic[_DTFieldOpsReturnType]):
     def days_in_month(self) -> _DTFieldOpsReturnType: ...
     @property
     def daysinmonth(self) -> _DTFieldOpsReturnType: ...
+
+class _MiniSeconds(Generic[_DTFieldOpsReturnType]):
     @property
     def microsecond(self) -> _DTFieldOpsReturnType: ...
     @property
@@ -295,28 +305,44 @@ class TimedeltaProperties(
     _DatetimeRoundingMethods[TimedeltaSeries],
 ): ...
 
-class _PeriodProperties:
+_PeriodDTReturnTypes = TypeVar("_PeriodDTReturnTypes", TimestampSeries, DatetimeIndex)
+_PeriodIntReturnTypes = TypeVar("_PeriodIntReturnTypes", Series[int], IntegerIndex)
+_PeriodStrReturnTypes = TypeVar("_PeriodStrReturnTypes", Series[str], Index)
+_PeriodDTAReturnTypes = TypeVar("_PeriodDTAReturnTypes", DatetimeArray, DatetimeIndex)
+_PeriodPAReturnTypes = TypeVar("_PeriodPAReturnTypes", PeriodArray, PeriodIndex)
+
+class _PeriodProperties(
+    Generic[
+        _PeriodDTReturnTypes,
+        _PeriodIntReturnTypes,
+        _PeriodStrReturnTypes,
+        _PeriodDTAReturnTypes,
+        _PeriodPAReturnTypes,
+    ]
+):
     @property
-    def start_time(self) -> TimestampSeries: ...
+    def start_time(self) -> _PeriodDTReturnTypes: ...
     @property
-    def end_time(self) -> TimestampSeries: ...
+    def end_time(self) -> _PeriodDTReturnTypes: ...
     @property
-    def qyear(self) -> Series[int]: ...
-    def strftime(self, date_format: str) -> Series[str]: ...
+    def qyear(self) -> _PeriodIntReturnTypes: ...
+    def strftime(self, date_format: str) -> _PeriodStrReturnTypes: ...
     def to_timestamp(
         self,
         freq: str | DateOffset | None = ...,
         how: TimestampConvention = ...,
-    ) -> DatetimeArray: ...
+    ) -> _PeriodDTAReturnTypes: ...
     def asfreq(
         self,
         freq: str | DateOffset | None = ...,
         how: Literal["E", "END", "FINISH", "S", "START", "BEGIN"] = ...,
-    ) -> PeriodArray: ...
+    ) -> _PeriodPAReturnTypes: ...
 
 class PeriodProperties(
     Properties,
-    _PeriodProperties,
+    _PeriodProperties[
+        TimestampSeries, Series[int], Series[str], DatetimeArray, PeriodArray
+    ],
     _DatetimeFieldOps[Series[int]],
     _IsLeapYearProperty,
     _FreqProperty[BaseOffset],
