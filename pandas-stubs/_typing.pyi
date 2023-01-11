@@ -36,7 +36,10 @@ from pandas._libs.tslibs import (
     Timestamp,
 )
 
-from pandas.core.dtypes.dtypes import ExtensionDtype
+from pandas.core.dtypes.dtypes import (
+    CategoricalDtype,
+    ExtensionDtype,
+)
 
 from pandas.io.formats.format import EngFormatter
 
@@ -212,6 +215,7 @@ S1 = TypeVar(
     Interval[float],
     Interval[Timestamp],
     Interval[Timedelta],
+    CategoricalDtype,
 )
 T1 = TypeVar(
     "T1", str, int, np.int64, np.uint64, np.float64, float, np.dtype[np.generic]

@@ -870,6 +870,32 @@ def test_cut() -> None:
     check(assert_type(n0, pd.Categorical), pd.Categorical)
     check(assert_type(n1, pd.IntervalIndex), pd.IntervalIndex)
 
+    s1 = pd.Series(data=pd.date_range("1/1/2020", periods=300))
+    check(
+        assert_type(
+            pd.cut(s1, bins=[np.datetime64("2020-01-03"), np.datetime64("2020-09-01")]),
+            "pd.Series[pd.CategoricalDtype]",
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            pd.cut(s1, bins=10),
+            "pd.Series[pd.CategoricalDtype]",
+        ),
+        pd.Series,
+        pd.Interval,
+    )
+    s0r, s1r = pd.cut(s1, bins=10, retbins=True)
+    check(assert_type(s0r, pd.Series), pd.Series, pd.Interval)
+    check(assert_type(s1r, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+    s0rlf, s1rlf = pd.cut(s1, bins=10, labels=False, retbins=True)
+    check(assert_type(s0rlf, pd.Series), pd.Series, int)
+    check(assert_type(s1rlf, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+    s0rls, s1rls = pd.cut(s1, bins=4, labels=["1", "2", "3", "4"], retbins=True)
+    check(assert_type(s0rls, pd.Series), pd.Series, str)
+    check(assert_type(s1rls, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+
 
 def test_qcut() -> None:
     val_list = [random.random() for _ in range(20)]
