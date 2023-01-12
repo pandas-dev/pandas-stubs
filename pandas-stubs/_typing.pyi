@@ -189,7 +189,7 @@ np_ndarray_anyint: TypeAlias = npt.NDArray[np.integer]
 np_ndarray_bool: TypeAlias = npt.NDArray[np.bool_]
 np_ndarray_str: TypeAlias = npt.NDArray[np.str_]
 
-IndexType: TypeAlias = Union[slice, np_ndarray_int64, Index, list[int], Series[int]]
+IndexType: TypeAlias = Union[slice, np_ndarray_anyint, Index, list[int], Series[int]]
 MaskType: TypeAlias = Union[Series[bool], np_ndarray_bool, list[bool]]
 # Scratch types for generics
 S1 = TypeVar(

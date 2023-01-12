@@ -38,6 +38,7 @@ from pandas._typing import (
     Level,
     NaPosition,
     Scalar,
+    np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_int64,
     type_t,
@@ -192,10 +193,10 @@ class Index(IndexOpsMixin, PandasObject):
     @overload
     def __getitem__(
         self: IndexT,
-        idx: slice | np_ndarray_int64 | Index | Series[bool] | np_ndarray_bool,
+        idx: slice | np_ndarray_anyint | Index | Series[bool] | np_ndarray_bool,
     ) -> IndexT: ...
     @overload
-    def __getitem__(self, idx: int | tuple[np_ndarray_int64, ...]) -> Scalar: ...
+    def __getitem__(self, idx: int | tuple[np_ndarray_anyint, ...]) -> Scalar: ...
     def append(self, other): ...
     def putmask(self, mask, value): ...
     def equals(self, other) -> bool: ...
