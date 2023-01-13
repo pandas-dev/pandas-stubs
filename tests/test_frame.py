@@ -22,6 +22,7 @@ from typing import (
     TypedDict,
     TypeVar,
     Union,
+    cast,
 )
 
 import numpy as np
@@ -2364,6 +2365,27 @@ def test_frame_dropna_subset() -> None:
         assert_type(df.dropna(subset=df.columns.drop("col1")), pd.DataFrame),
         pd.DataFrame,
     )
+
+
+def test_loc_callable() -> None:
+    # GH 256
+    df = pd.DataFrame({"x": [1, 2, 3], "y": [4, 5, 6]})
+
+    def select1(df: pd.DataFrame) -> pd.Series:
+        return df["x"] > 2.0
+
+    check(assert_type(df.loc[select1], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[select1, :], pd.DataFrame), pd.DataFrame)
+
+    def select2(df: pd.DataFrame) -> list[Hashable]:
+        return [i for i in df.index if cast(int, i) % 2 == 1]
+
+    check(assert_type(df.loc[select2, "x"], pd.Series), pd.Series)
+
+    def select3(df: pd.DataFrame) -> int:
+        return 1
+
+    check(assert_type(df.loc[select3, "x"], Scalar), np.integer)
 
 
 def test_npint_loc_indexer() -> None:
