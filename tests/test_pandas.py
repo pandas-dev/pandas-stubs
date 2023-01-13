@@ -13,6 +13,7 @@ import numpy.typing as npt
 import pandas as pd
 from pandas import Grouper
 from pandas.api.extensions import ExtensionArray
+from pandas.util.version import Version
 import pytest
 from typing_extensions import assert_type
 
@@ -1705,7 +1706,7 @@ def test_pivot_table() -> None:
         ),
         pd.DataFrame,
     )
-    with pytest.warns(np.VisibleDeprecationWarning):
+    if Version(np.__version__) <= Version("1.23.5"):
         check(
             assert_type(
                 pd.pivot_table(
@@ -1719,7 +1720,6 @@ def test_pivot_table() -> None:
             ),
             pd.DataFrame,
         )
-    with pytest.warns(np.VisibleDeprecationWarning):
         check(
             assert_type(
                 pd.pivot_table(

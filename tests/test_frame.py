@@ -26,6 +26,7 @@ from typing import (
 )
 
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 from pandas._testing import (
     ensure_clean,
@@ -2385,3 +2386,16 @@ def test_loc_callable() -> None:
         return 1
 
     check(assert_type(df.loc[select3, "x"], Scalar), np.integer)
+
+
+def test_npint_loc_indexer() -> None:
+    # GH 508
+
+    df = pd.DataFrame(dict(x=[1, 2, 3]), index=np.array([10, 20, 30], dtype="uint64"))
+
+    def get_NDArray(df: pd.DataFrame, key: npt.NDArray[np.uint64]) -> pd.DataFrame:
+        df2 = df.loc[key]
+        return df2
+
+    a: npt.NDArray[np.uint64] = np.array([10, 30], dtype="uint64")
+    check(assert_type(get_NDArray(df, a), pd.DataFrame), pd.DataFrame)
