@@ -14,10 +14,7 @@ from numpy import typing as npt
 import pandas as pd
 from pandas.core.indexes.numeric import IntegerIndex
 import pytz
-from typing_extensions import (
-    Never,
-    assert_type,
-)
+from typing_extensions import assert_type
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs import BaseOffset
@@ -1088,9 +1085,9 @@ def test_timedelta64_and_arithmatic_operator() -> None:
     check(assert_type((s3 + td), "TimedeltaSeries"), pd.Series, pd.Timedelta)
     check(assert_type((s3 / td), "pd.Series[float]"), pd.Series, float)
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type((s1 * td), Never)  # pyright: ignore[reportGeneralTypeIssues]
-        assert_type((s1 / td), Never)  # pyright: ignore[reportGeneralTypeIssues]
-        assert_type((s3 * td), Never)  # pyright: ignore[reportGeneralTypeIssues]
+        r1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        r2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        r3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_timedeltaseries_add_timestampseries() -> None:
