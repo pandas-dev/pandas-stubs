@@ -120,8 +120,24 @@ def nightly_mypy():
     ]
     subprocess.run(cmd, check=True)
 
+    # ignore unused ignore errors
+    config_file = Path("pyproject.toml")
+    config_file.write_text(
+        config_file.read_text().replace(
+            "warn_unused_ignores = true", "warn_unused_ignores = false"
+        )
+    )
+
 
 def released_mypy():
     version = _get_version_from_pyproject("mypy")
     cmd = [sys.executable, "-m", "pip", "install", f"mypy=={version}"]
     subprocess.run(cmd, check=True)
+
+    # check for unused ignores again
+    config_file = Path("pyproject.toml")
+    config_file.write_text(
+        config_file.read_text().replace(
+            "warn_unused_ignores = false", "warn_unused_ignores = true"
+        )
+    )
