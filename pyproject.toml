@@ -90,7 +90,8 @@ script = "scripts.test.run:style"
 
 [tool.poe.tasks.mypy]
 help = "Run mypy on 'tests' (using the local stubs) and on the local stubs"
-script = "scripts.test.run:mypy_src"
+args = [{name = "mypy_nightly", positional = false, default = false, type = "boolean", required = false, help= "Use mypy nightly (off by default)"}]
+script = "scripts.test:mypy_src(mypy_nightly)"
 
 [tool.poe.tasks.mypy_dist]
 help = "Run mypy on 'tests' using the installed stubs"
