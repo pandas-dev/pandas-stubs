@@ -6,7 +6,6 @@ import datetime
 import io
 import itertools
 from pathlib import Path
-import platform
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -2081,15 +2080,7 @@ def test_generic() -> None:
     def func() -> MyDataFrame[int]:
         return MyDataFrame[int]({"foo": [1, 2, 3]})
 
-    # This should be fixed in pandas 1.5.2, if
-    # https://github.com/pandas-dev/pandas/pull/49736 is included
-    with pytest_warns_bounded(
-        UserWarning,
-        "Pandas doesn't allow columns to be created",
-        lower="3.10.99",
-        version_str=platform.python_version(),
-    ):
-        func()
+    func()
 
 
 def test_to_xarray():
