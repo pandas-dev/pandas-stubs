@@ -1706,6 +1706,7 @@ def test_pivot_table() -> None:
         pd.DataFrame,
     )
     if PD_LTE_15:
+        # Nightly builds failing since 1/12/2023, but this is fixed since then
         check(
             assert_type(
                 pd.pivot_table(
