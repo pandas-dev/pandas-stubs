@@ -1705,19 +1705,20 @@ def test_pivot_table() -> None:
         ),
         pd.DataFrame,
     )
-    check(
-        assert_type(
-            pd.pivot_table(
-                df,
-                values="D",
-                index=["A", "B"],
-                columns=[(7, "seven")],
-                aggfunc=np.sum,
+    if PD_LTE_15:
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df,
+                    values="D",
+                    index=["A", "B"],
+                    columns=[(7, "seven")],
+                    aggfunc=np.sum,
+                ),
+                pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
+        )
     check(
         assert_type(
             pd.pivot_table(
