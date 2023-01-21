@@ -48,6 +48,7 @@ def test_is_bool_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_bool_dtype(ind), bool), bool)
+    check(assert_type(api.is_bool_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_categorical_dtype() -> None:
@@ -59,6 +60,7 @@ def test_is_categorical_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_categorical_dtype(ind), bool), bool)
+    check(assert_type(api.is_categorical_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_complex() -> None:
@@ -82,6 +84,7 @@ def test_is_complex_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_complex_dtype(ind), bool), bool)
+    check(assert_type(api.is_complex_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_datetime64_any_dtype() -> None:
@@ -93,6 +96,7 @@ def test_is_datetime64_any_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_datetime64_any_dtype(ind), bool), bool)
+    check(assert_type(api.is_datetime64_any_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_datetime64_dtype() -> None:
@@ -104,6 +108,7 @@ def test_is_datetime64_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_datetime64_dtype(ind), bool), bool)
+    check(assert_type(api.is_datetime64_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_datetime64_ns_dtype() -> None:
@@ -115,6 +120,7 @@ def test_is_datetime64_ns_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_datetime64_ns_dtype(ind), bool), bool)
+    check(assert_type(api.is_datetime64_ns_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_datetime64tz_dtype() -> None:
@@ -126,6 +132,7 @@ def test_is_datetime64tz_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_datetime64tz_dtype(ind), bool), bool)
+    check(assert_type(api.is_datetime64tz_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_dict_like() -> None:
@@ -153,6 +160,7 @@ def test_is_extension_array_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_extension_array_dtype(ind), bool), bool)
+    check(assert_type(api.is_extension_array_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_file_like() -> None:
@@ -185,6 +193,7 @@ def test_is_float_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_float_dtype(ind), bool), bool)
+    check(assert_type(api.is_float_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_hashable() -> None:
@@ -208,6 +217,7 @@ def test_is_int64_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_int64_dtype(ind), bool), bool)
+    check(assert_type(api.is_int64_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_integer() -> None:
@@ -231,6 +241,7 @@ def test_is_integer_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_integer_dtype(ind), bool), bool)
+    check(assert_type(api.is_integer_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_interval() -> None:
@@ -247,14 +258,15 @@ def test_is_interval() -> None:
 
 def test_is_interval_dtype() -> None:
     check(assert_type(api.is_interval_dtype(obj), bool), bool)
-    check(assert_type(api.is_interval(nparr), bool), bool)
-    check(assert_type(api.is_interval(dtylike), bool), bool)
-    check(assert_type(api.is_interval(arr), bool), bool)
+    check(assert_type(api.is_interval_dtype(nparr), bool), bool)
+    check(assert_type(api.is_interval_dtype(dtylike), bool), bool)
+    check(assert_type(api.is_interval_dtype(arr), bool), bool)
     check(
-        assert_type(api.is_interval(dframe), bool),
+        assert_type(api.is_interval_dtype(dframe), bool),
         bool,
     )
-    check(assert_type(api.is_interval(ind), bool), bool)
+    check(assert_type(api.is_interval_dtype(ind), bool), bool)
+    check(assert_type(api.is_interval_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_iterator() -> None:
@@ -311,6 +323,7 @@ def test_is_numeric_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_numeric_dtype(ind), bool), bool)
+    check(assert_type(api.is_numeric_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_object_dtype() -> None:
@@ -322,6 +335,7 @@ def test_is_object_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_object_dtype(ind), bool), bool)
+    check(assert_type(api.is_object_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_period_dtype() -> None:
@@ -333,6 +347,7 @@ def test_is_period_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_period_dtype(ind), bool), bool)
+    check(assert_type(api.is_period_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_re() -> None:
@@ -374,6 +389,7 @@ def test_is_signed_integer_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_signed_integer_dtype(ind), bool), bool)
+    check(assert_type(api.is_signed_integer_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_sparse() -> None:
@@ -391,6 +407,7 @@ def test_is_string_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_string_dtype(ind), bool), bool)
+    check(assert_type(api.is_string_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_timedelta64_dtype() -> None:
@@ -402,6 +419,7 @@ def test_is_timedelta64_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_timedelta64_dtype(ind), bool), bool)
+    check(assert_type(api.is_timedelta64_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_timedelta64_ns_dtype() -> None:
@@ -413,6 +431,7 @@ def test_is_timedelta64_ns_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_timedelta64_ns_dtype(ind), bool), bool)
+    check(assert_type(api.is_timedelta64_ns_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_unsigned_integer_dtype() -> None:
@@ -427,6 +446,7 @@ def test_is_unsigned_integer_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_unsigned_integer_dtype(ind), bool), bool)
+    check(assert_type(api.is_unsigned_integer_dtype(ExtensionDtype), bool), bool)
 
 
 def test_pandas_dtype() -> None:

@@ -1,6 +1,7 @@
 from typing import Union
 
 import pandas as pd
+from pandas.api.extensions import ExtensionDtype
 from typing_extensions import TypeAlias
 
 from pandas._typing import (
@@ -29,7 +30,7 @@ from pandas.core.dtypes.inference import (
 )
 
 _ArrayOrDtype: TypeAlias = Union[
-    ArrayLike, npt.DTypeLike, pd.Series, pd.DataFrame, pd.Index
+    ArrayLike, npt.DTypeLike, pd.Series, pd.DataFrame, pd.Index, ExtensionDtype
 ]
 
 def is_object_dtype(arr_or_dtype: _ArrayOrDtype) -> bool: ...
