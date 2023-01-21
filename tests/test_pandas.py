@@ -13,7 +13,6 @@ import numpy.typing as npt
 import pandas as pd
 from pandas import Grouper
 from pandas.api.extensions import ExtensionArray
-from pandas.util.version import Version
 import pytest
 from typing_extensions import assert_type
 
@@ -1448,7 +1447,7 @@ def test_crosstab_args() -> None:
     )
     with pytest_warns_bounded(
         FutureWarning,
-        "pivot_table dropped a column because",
+        r"The operation.*failed on a column",
         upper="1.5.99",
         upper_exception=TypeError,
     ):
@@ -1706,7 +1705,8 @@ def test_pivot_table() -> None:
         ),
         pd.DataFrame,
     )
-    if Version(np.__version__) <= Version("1.23.5"):
+    if PD_LTE_15:
+        # Nightly builds failing since 1/12/2023, but this is fixed since then
         check(
             assert_type(
                 pd.pivot_table(
