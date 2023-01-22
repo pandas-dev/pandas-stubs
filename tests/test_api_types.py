@@ -84,7 +84,7 @@ def test_is_complex_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_complex_dtype(ind), bool), bool)
-    # check(assert_type(api.is_complex_dtype(ExtensionDtype), bool), bool)
+    # check(assert_type(api.is_complex_dtype(ExtensionDtype), bool), bool) pandas GH 50923
 
 
 def test_is_datetime64_any_dtype() -> None:
@@ -96,7 +96,7 @@ def test_is_datetime64_any_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_datetime64_any_dtype(ind), bool), bool)
-    # check(assert_type(api.is_datetime64_any_dtype(ExtensionDtype), bool), bool)
+    # check(assert_type(api.is_datetime64_any_dtype(ExtensionDtype), bool), bool) pandas GH 50923
 
 
 def test_is_datetime64_dtype() -> None:
@@ -108,7 +108,7 @@ def test_is_datetime64_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_datetime64_dtype(ind), bool), bool)
-    # check(assert_type(api.is_datetime64_dtype(ExtensionDtype), bool), bool)
+    # check(assert_type(api.is_datetime64_dtype(ExtensionDtype), bool), bool) pandas GH 50923
 
 
 def test_is_datetime64_ns_dtype() -> None:
@@ -193,7 +193,7 @@ def test_is_float_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_float_dtype(ind), bool), bool)
-    # check(assert_type(api.is_float_dtype(ExtensionDtype), bool), bool)
+    # check(assert_type(api.is_float_dtype(ExtensionDtype), bool), bool) pandas GH 50923
 
 
 def test_is_hashable() -> None:
@@ -217,7 +217,7 @@ def test_is_int64_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_int64_dtype(ind), bool), bool)
-    # check(assert_type(api.is_int64_dtype(ExtensionDtype), bool), bool)
+    # check(assert_type(api.is_int64_dtype(ExtensionDtype), bool), bool) pandas GH 50923
 
 
 def test_is_integer() -> None:
@@ -241,7 +241,7 @@ def test_is_integer_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_integer_dtype(ind), bool), bool)
-    # check(assert_type(api.is_integer_dtype(ExtensionDtype), bool), bool)
+    # check(assert_type(api.is_integer_dtype(ExtensionDtype), bool), bool) pandas GH 50923
 
 
 def test_is_interval() -> None:
@@ -323,7 +323,7 @@ def test_is_numeric_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_numeric_dtype(ind), bool), bool)
-    # check(assert_type(api.is_numeric_dtype(ExtensionDtype), bool), bool)
+    # check(assert_type(api.is_numeric_dtype(ExtensionDtype), bool), bool) pandas GH 50923
 
 
 def test_is_object_dtype() -> None:
@@ -335,7 +335,7 @@ def test_is_object_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_object_dtype(ind), bool), bool)
-    # check(assert_type(api.is_object_dtype(ExtensionDtype), bool), bool)
+    # check(assert_type(api.is_object_dtype(ExtensionDtype), bool), bool) pandas GH 50923
 
 
 def test_is_period_dtype() -> None:
@@ -389,7 +389,7 @@ def test_is_signed_integer_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_signed_integer_dtype(ind), bool), bool)
-    # check(assert_type(api.is_signed_integer_dtype(ExtensionDtype), bool), bool)
+    # check(assert_type(api.is_signed_integer_dtype(ExtensionDtype), bool), bool) pandas GH 50923
 
 
 def test_is_sparse() -> None:
@@ -419,7 +419,7 @@ def test_is_timedelta64_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_timedelta64_dtype(ind), bool), bool)
-    # check(assert_type(api.is_timedelta64_dtype(ExtensionDtype), bool), bool)
+    # check(assert_type(api.is_timedelta64_dtype(ExtensionDtype), bool), bool) pandas GH 50923
 
 
 def test_is_timedelta64_ns_dtype() -> None:
@@ -446,7 +446,7 @@ def test_is_unsigned_integer_dtype() -> None:
         bool,
     )
     check(assert_type(api.is_unsigned_integer_dtype(ind), bool), bool)
-    # check(assert_type(api.is_unsigned_integer_dtype(ExtensionDtype), bool), bool)
+    # check(assert_type(api.is_unsigned_integer_dtype(ExtensionDtype), bool), bool) pandas GH 50923
 
 
 def test_pandas_dtype() -> None:
