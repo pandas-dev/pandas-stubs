@@ -8,7 +8,6 @@ from typing import (
     Any,
     Dict,
     Generic,
-    Hashable,
     Iterable,
     Iterator,
     List,
@@ -997,7 +996,7 @@ def test_types_to_list() -> None:
 
 def test_types_to_dict() -> None:
     s = pd.Series(["a", "b", "c"], dtype=str)
-    assert_type(s.to_dict(), Dict[Hashable, str])
+    assert_type(s.to_dict(), Dict[Any, str])
 
 
 def test_categorical_codes():
@@ -1377,3 +1376,11 @@ def test_pandera_generic() -> None:
         return MySeries[float]([1, 2, 3])
 
     func()
+
+
+def test_change_to_dict_return_type() -> None:
+    id = [1, 2, 3]
+    value = ["a", "b", "c"]
+    df = pd.DataFrame(zip(id, value), columns=["id", "value"])
+    fd = df.set_index("id")["value"].to_dict()
+    check(assert_type(fd, Dict[Any, Any]), dict)
