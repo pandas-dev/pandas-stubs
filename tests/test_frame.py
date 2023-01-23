@@ -2397,4 +2397,4 @@ def test_change_to_dict_return_type() -> None:
     value = ["a", "b", "c"]
     df = pd.DataFrame(zip(id, value), columns=["id", "value"])
     fd = df.set_index("id")["value"].to_dict()
-    check(assert_type(fd, dict[Hashable, Any]), dict)
+    check(assert_type(fd, dict[Any, Any]), dict)
