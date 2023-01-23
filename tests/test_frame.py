@@ -2102,8 +2102,8 @@ def test_to_records():
 
 
 def test_to_dict():
-    check(assert_type(DF.to_dict(), Dict[Hashable, Any]), dict)
-    check(assert_type(DF.to_dict("split"), Dict[Hashable, Any]), dict)
+    check(assert_type(DF.to_dict(), Dict[Any, Any]), dict)
+    check(assert_type(DF.to_dict("split"), Dict[Any, Any]), dict)
 
     target: Mapping = defaultdict(list)
     check(assert_type(DF.to_dict(into=target), Mapping[Hashable, Any]), defaultdict)
@@ -2390,3 +2390,11 @@ def test_npint_loc_indexer() -> None:
 
     a: npt.NDArray[np.uint64] = np.array([10, 30], dtype="uint64")
     check(assert_type(get_NDArray(df, a), pd.DataFrame), pd.DataFrame)
+
+
+def test_change_to_dict_return_type() -> None:
+    id = [1, 2, 3]
+    value = ["a", "b", "c"]
+    df = pd.DataFrame(zip(id, value), columns=["id", "value"])
+    fd = df.set_index("id")["value"].to_dict()
+    check(assert_type(fd, dict[Hashable, Any]), dict)

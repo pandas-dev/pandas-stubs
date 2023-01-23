@@ -276,7 +276,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         orient: Literal["dict", "list", "series", "split", "tight", "index"] = ...,
         into: None = ...,
-    ) -> dict[Hashable, Any]: ...
+    ) -> dict: ...
     @overload
     def to_dict(
         self,
