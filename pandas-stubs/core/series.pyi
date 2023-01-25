@@ -1,3 +1,9 @@
+from core.api import(
+    Int8Dtype as Int8Dtype,
+    Int16Dtype as Int16Dtype,
+    Int32Dtype as Int32Dtype,
+    Int64Dtype as Int64Dtype,
+)
 from collections.abc import (
     Callable,
     Hashable,
@@ -1025,12 +1031,26 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType | None = ...,
         ignore_index: _bool = ...,
     ) -> Series[S1]: ...
+    #def astype(
+     #   self,
+      #  dtype: S1 | _str | type[Scalar],
+       # copy: _bool = ...,
+        #errors: IgnoreRaise = ...,
+    #) -> Series: ...
+    @overload
     def astype(
         self,
-        dtype: S1 | _str | type[Scalar],
+        dtype: S1, _str,
         copy: _bool = ...,
-        errors: IgnoreRaise = ...,
-    ) -> Series: ...
+        errors: IgnoreRaise = ...
+        ) -> Series[str]: ...
+    @overload
+    def astype(
+        self,
+        dtype: S1, Int8Dtype, Int16Dtype, Int32Dtype, Int64Dtype,
+        copy: _bool = ...,
+        errors: IgnoreRaise = ...
+        ) -> Series[int]: ...
     def copy(self, deep: _bool = ...) -> Series[S1]: ...
     def infer_objects(self) -> Series[S1]: ...
     def convert_dtypes(
