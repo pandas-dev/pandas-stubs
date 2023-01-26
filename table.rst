@@ -14,27 +14,32 @@ Table for astype
 |                   |  np.int64,np.uint8      |
 |                   |  np.uint16,np.uint32    |
 |                   |  np.uint64,np.intp      |
-|                   |  np.uintp,              |
+|                   |  np.uintp,np.integer    |
 +-------------------+-------------------------+
-|  str              | StringDtype,str         |
+|  str              | StringDtype,str,"str"   |
 +-------------------+-------------------------+
 |  bytes            | np.byte,np.ubyte,bytes  |
+|                   | "bytes"                 | 
 +-------------------+-------------------------+
 |  float            | pd.Float32Dtype,        |
 |                   | pd.Float64Dtype,        |
 |                   | float,"float",np.float16|
 |                   | np.float32,np.float64   |
 |                   | np.float96,np.float128  |
+|                   | np.floating             |
 +-------------------+-------------------------+
 |  complex          | "complex",np.complex64, |
 |                   | np.complex128,          |
 |                   | np.complex192,          |
-|                   | np.complex256           |
+|                   | np.complex256,          |
+|                   | complex                 |
 +-------------------+-------------------------+
 |  bool             | pd.BooleanDtype, bool   |
-|                   | np.bool_,               |
+|                   | np.bool_                |
+|                   | "bool"                  |
 +-------------------+-------------------------+
-|                   | np.timedelta64          |
+| np.timedelta64    | np.timedelta64          |
 +-------------------+-------------------------+
-|  np.datetime64    |                         |
+|  np.datetime64    | np.datetime64           |
 +-------------------+-------------------------+
+
