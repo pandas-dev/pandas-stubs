@@ -1310,17 +1310,25 @@ def test_types_to_parquet() -> None:
 
 def test_types_to_latex() -> None:
     df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
-    with pytest.warns(FutureWarning, match="In future versions `DataFrame.to_latex`"):
+    with pytest_warns_bounded(
+        FutureWarning, match="In future versions `DataFrame.to_latex`", upper="1.5.999"
+    ):
         df.to_latex(
             columns=["A"], label="some_label", caption="some_caption", multirow=True
         )
-    with pytest.warns(FutureWarning, match="In future versions `DataFrame.to_latex`"):
+    with pytest_warns_bounded(
+        FutureWarning, match="In future versions `DataFrame.to_latex`", upper="1.5.999"
+    ):
         df.to_latex(escape=False, decimal=",", column_format="r")
     # position param was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-    with pytest.warns(FutureWarning, match="In future versions `DataFrame.to_latex`"):
+    with pytest_warns_bounded(
+        FutureWarning, match="In future versions `DataFrame.to_latex`", upper="1.5.999"
+    ):
         df.to_latex(position="some")
     # caption param was extended to accept tuple in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-    with pytest.warns(FutureWarning, match="In future versions `DataFrame.to_latex`"):
+    with pytest_warns_bounded(
+        FutureWarning, match="In future versions `DataFrame.to_latex`", upper="1.5.999"
+    ):
         df.to_latex(caption=("cap1", "cap2"))
 
 
