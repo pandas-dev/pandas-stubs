@@ -170,7 +170,7 @@ class Timedelta(timedelta):
     @overload
     def __add__(
         self,
-        other: TimedeltaSeries | Series[pd.Timedelta],
+        other: TimedeltaSeries,
     ) -> TimedeltaSeries: ...
     @overload
     def __add__(self, other: TimestampSeries) -> TimestampSeries: ...
