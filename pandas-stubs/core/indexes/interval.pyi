@@ -56,14 +56,12 @@ _EdgesFloat: TypeAlias = Union[
 _EdgesTimestamp: TypeAlias = Union[
     Sequence[DatetimeLike],
     npt.NDArray[np.datetime64],
-    pd.Series[pd.Timestamp],
     TimestampSeries,
     pd.DatetimeIndex,
 ]
 _EdgesTimedelta: TypeAlias = Union[
     Sequence[pd.Timedelta],
     npt.NDArray[np.timedelta64],
-    pd.Series[pd.Timedelta],
     TimedeltaSeries,
     pd.TimedeltaIndex,
 ]
