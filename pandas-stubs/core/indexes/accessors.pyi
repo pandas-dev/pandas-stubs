@@ -1,4 +1,3 @@
-import datetime as dt
 from datetime import tzinfo
 from typing import (
     Generic,
@@ -126,10 +125,10 @@ class _DatetimeObjectOps(
 ): ...
 
 _DTOtherOpsDateReturnType = TypeVar(
-    "_DTOtherOpsDateReturnType", Series[dt.date], np.ndarray
+    "_DTOtherOpsDateReturnType", Series[np.datetime64], np.ndarray
 )
 _DTOtherOpsTimeReturnType = TypeVar(
-    "_DTOtherOpsTimeReturnType", Series[dt.time], np.ndarray
+    "_DTOtherOpsTimeReturnType", Series[np.datetime64], np.ndarray
 )
 
 class _DatetimeOtherOps(Generic[_DTOtherOpsDateReturnType, _DTOtherOpsTimeReturnType]):
@@ -353,8 +352,8 @@ class CombinedDatetimelikeProperties(
         Series[int],
         Series[bool],
         Series,
-        Series[dt.date],
-        Series[dt.time],
+        Series[np.datetime64],
+        Series[np.datetime64],
         str,
         TimestampSeries,
         Series[str],
@@ -370,8 +369,8 @@ class TimestampProperties(
         Series[int],
         Series[bool],
         TimestampSeries,
-        Series[dt.date],
-        Series[dt.time],
+        Series[np.datetime64],
+        Series[np.datetime64],
         str,
         TimestampSeries,
         Series[str],

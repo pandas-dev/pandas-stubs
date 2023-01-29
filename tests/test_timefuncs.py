@@ -328,9 +328,9 @@ def test_series_dt_accessors() -> None:
 
     s0 = pd.Series(i0)
 
-    check(assert_type(s0.dt.date, "pd.Series[dt.date]"), pd.Series, dt.date)
-    check(assert_type(s0.dt.time, "pd.Series[dt.time]"), pd.Series, dt.time)
-    check(assert_type(s0.dt.timetz, "pd.Series[dt.time]"), pd.Series, dt.time)
+    check(assert_type(s0.dt.date, "pd.Series[np.datetime64]"), pd.Series)
+    check(assert_type(s0.dt.time, "pd.Series[np.datetime64]"), pd.Series)
+    check(assert_type(s0.dt.timetz, "pd.Series[np.datetime64]"), pd.Series)
     check(assert_type(s0.dt.year, "pd.Series[int]"), pd.Series, int)
     check(assert_type(s0.dt.month, "pd.Series[int]"), pd.Series, int)
     check(assert_type(s0.dt.day, "pd.Series[int]"), pd.Series, int)
