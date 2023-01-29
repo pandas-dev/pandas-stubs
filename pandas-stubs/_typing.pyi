@@ -196,6 +196,8 @@ S1 = TypeVar(
     "S1",
     str,
     bytes,
+    datetime.date,
+    datetime.time,
     bool,
     int,
     float,
