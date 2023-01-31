@@ -1337,6 +1337,7 @@ def test_types_explode() -> None:
     res1: pd.DataFrame = df.explode("A")
     res2: pd.DataFrame = df.explode("A", ignore_index=False)
     res3: pd.DataFrame = df.explode("A", ignore_index=True)
+    res4: pd.DataFrame = df.explode(["A", "B"])
 
 
 def test_types_rename() -> None:
