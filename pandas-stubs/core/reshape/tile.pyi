@@ -54,7 +54,7 @@ def cut(
 def cut(  # type: ignore[misc]
     x: TimestampSeries,
     bins: int
-    | Series[Timestamp]
+    | TimestampSeries
     | DatetimeIndex
     | Sequence[Timestamp]
     | Sequence[np.datetime64],
