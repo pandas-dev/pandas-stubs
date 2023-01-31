@@ -157,6 +157,7 @@ class _LocIndexerFrame(_LocIndexer):
         self,
         idx: IndexType
         | MaskType
+        | Callable[[DataFrame], IndexType | MaskType | list[HashableT]]
         | list[HashableT]
         | tuple[
             IndexType | MaskType | list[HashableT] | Hashable,
@@ -167,14 +168,22 @@ class _LocIndexerFrame(_LocIndexer):
     def __getitem__(
         self,
         idx: tuple[
-            int | StrLike | tuple[Scalar, ...], int | StrLike | tuple[Scalar, ...]
+            int | StrLike | tuple[Scalar, ...] | Callable[[DataFrame], ScalarT],
+            int | StrLike | tuple[Scalar, ...],
         ],
     ) -> Scalar: ...
     @overload
     def __getitem__(
         self,
         idx: ScalarT
-        | tuple[IndexType | MaskType | _IndexSliceTuple, ScalarT | None]
+        | Callable[[DataFrame], ScalarT]
+        | tuple[
+            IndexType
+            | MaskType
+            | _IndexSliceTuple
+            | Callable[[DataFrame], ScalarT | list[HashableT] | IndexType | MaskType],
+            ScalarT | None,
+        ]
         | None,
     ) -> Series: ...
     @overload
@@ -1002,7 +1011,9 @@ class DataFrame(NDFrame, OpsMixin):
     def stack(
         self, level: Level | list[Level] = ..., dropna: _bool = ...
     ) -> DataFrame | Series[Any]: ...
-    def explode(self, column: _str | tuple, ignore_index: _bool = ...) -> DataFrame: ...
+    def explode(
+        self, column: Sequence[Hashable], ignore_index: _bool = ...
+    ) -> DataFrame: ...
     def unstack(
         self,
         level: Level = ...,
