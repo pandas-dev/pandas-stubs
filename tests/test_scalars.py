@@ -1256,9 +1256,7 @@ def test_timestamp_cmp() -> None:
     c_dt_datetime = dt.datetime(year=2000, month=1, day=1)
     c_datetimeindex = pd.DatetimeIndex(["2000-1-1"])
     c_np_ndarray_dt64 = np_dt64_arr
-    # Typing provided since there is no way to get a Series[Timestamp],
-    # which is a different type from a TimestampSeries
-    c_series_dt64: pd.Series[pd.Timestamp] = pd.Series(
+    c_series_dt64: pd.Series[np.datetime64] = pd.Series(
         [1, 2, 3], dtype="datetime64[ns]"
     )
     c_series_timestamp = pd.Series(pd.DatetimeIndex(["2000-1-1"]))

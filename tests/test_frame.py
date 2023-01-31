@@ -6,7 +6,6 @@ import datetime
 import io
 import itertools
 from pathlib import Path
-import platform
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -22,9 +21,11 @@ from typing import (
     TypedDict,
     TypeVar,
     Union,
+    cast,
 )
 
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 from pandas._testing import (
     ensure_clean,
@@ -1309,17 +1310,25 @@ def test_types_to_parquet() -> None:
 
 def test_types_to_latex() -> None:
     df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
-    with pytest.warns(FutureWarning, match="In future versions `DataFrame.to_latex`"):
+    with pytest_warns_bounded(
+        FutureWarning, match="In future versions `DataFrame.to_latex`", upper="1.5.999"
+    ):
         df.to_latex(
             columns=["A"], label="some_label", caption="some_caption", multirow=True
         )
-    with pytest.warns(FutureWarning, match="In future versions `DataFrame.to_latex`"):
+    with pytest_warns_bounded(
+        FutureWarning, match="In future versions `DataFrame.to_latex`", upper="1.5.999"
+    ):
         df.to_latex(escape=False, decimal=",", column_format="r")
     # position param was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-    with pytest.warns(FutureWarning, match="In future versions `DataFrame.to_latex`"):
+    with pytest_warns_bounded(
+        FutureWarning, match="In future versions `DataFrame.to_latex`", upper="1.5.999"
+    ):
         df.to_latex(position="some")
     # caption param was extended to accept tuple in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-    with pytest.warns(FutureWarning, match="In future versions `DataFrame.to_latex`"):
+    with pytest_warns_bounded(
+        FutureWarning, match="In future versions `DataFrame.to_latex`", upper="1.5.999"
+    ):
         df.to_latex(caption=("cap1", "cap2"))
 
 
@@ -1328,6 +1337,7 @@ def test_types_explode() -> None:
     res1: pd.DataFrame = df.explode("A")
     res2: pd.DataFrame = df.explode("A", ignore_index=False)
     res3: pd.DataFrame = df.explode("A", ignore_index=True)
+    res4: pd.DataFrame = df.explode(["A", "B"])
 
 
 def test_types_rename() -> None:
@@ -2079,15 +2089,7 @@ def test_generic() -> None:
     def func() -> MyDataFrame[int]:
         return MyDataFrame[int]({"foo": [1, 2, 3]})
 
-    # This should be fixed in pandas 1.5.2, if
-    # https://github.com/pandas-dev/pandas/pull/49736 is included
-    with pytest_warns_bounded(
-        UserWarning,
-        "Pandas doesn't allow columns to be created",
-        lower="3.10.99",
-        version_str=platform.python_version(),
-    ):
-        func()
+    func()
 
 
 def test_to_xarray():
@@ -2363,3 +2365,37 @@ def test_frame_dropna_subset() -> None:
         assert_type(df.dropna(subset=df.columns.drop("col1")), pd.DataFrame),
         pd.DataFrame,
     )
+
+
+def test_loc_callable() -> None:
+    # GH 256
+    df = pd.DataFrame({"x": [1, 2, 3], "y": [4, 5, 6]})
+
+    def select1(df: pd.DataFrame) -> pd.Series:
+        return df["x"] > 2.0
+
+    check(assert_type(df.loc[select1], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[select1, :], pd.DataFrame), pd.DataFrame)
+
+    def select2(df: pd.DataFrame) -> list[Hashable]:
+        return [i for i in df.index if cast(int, i) % 2 == 1]
+
+    check(assert_type(df.loc[select2, "x"], pd.Series), pd.Series)
+
+    def select3(df: pd.DataFrame) -> int:
+        return 1
+
+    check(assert_type(df.loc[select3, "x"], Scalar), np.integer)
+
+
+def test_npint_loc_indexer() -> None:
+    # GH 508
+
+    df = pd.DataFrame(dict(x=[1, 2, 3]), index=np.array([10, 20, 30], dtype="uint64"))
+
+    def get_NDArray(df: pd.DataFrame, key: npt.NDArray[np.uint64]) -> pd.DataFrame:
+        df2 = df.loc[key]
+        return df2
+
+    a: npt.NDArray[np.uint64] = np.array([10, 30], dtype="uint64")
+    check(assert_type(get_NDArray(df, a), pd.DataFrame), pd.DataFrame)

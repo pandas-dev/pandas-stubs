@@ -6,7 +6,8 @@ from pandas._libs.tslibs import BaseOffset
 class DatetimeIndexOpsMixin(ExtensionIndex):
     @property
     def freq(self) -> BaseOffset | None: ...
-    freqstr: str | None
+    @property
+    def freqstr(self) -> str | None: ...
     @property
     def is_all_dates(self) -> bool: ...
     @property

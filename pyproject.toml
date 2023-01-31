@@ -41,8 +41,8 @@ pytest = ">=7.1.2"
 pyright = ">=1.1.286"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
-pandas = "1.5.2"
-numpy = "<=1.23.5"
+pandas = "1.5.3"
+numpy = ">=1.24.1"
 typing-extensions = ">=4.4.0"
 matplotlib = ">=3.5.1"
 pre-commit = ">=2.19.0"
@@ -90,7 +90,8 @@ script = "scripts.test.run:style"
 
 [tool.poe.tasks.mypy]
 help = "Run mypy on 'tests' (using the local stubs) and on the local stubs"
-script = "scripts.test.run:mypy_src"
+args = [{name = "mypy_nightly", positional = false, default = false, type = "boolean", required = false, help= "Use mypy nightly (off by default)"}]
+script = "scripts.test:mypy_src(mypy_nightly)"
 
 [tool.poe.tasks.mypy_dist]
 help = "Run mypy on 'tests' using the installed stubs"

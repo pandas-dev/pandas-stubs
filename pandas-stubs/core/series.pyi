@@ -65,10 +65,7 @@ from pandas.core.window.rolling import (
     Rolling,
     Window,
 )
-from typing_extensions import (
-    Never,
-    TypeAlias,
-)
+from typing_extensions import TypeAlias
 import xarray as xr
 
 from pandas._libs.interval import Interval
@@ -477,7 +474,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def items(self) -> Iterable[tuple[Hashable, S1]]: ...
     def keys(self) -> list: ...
     @overload
-    def to_dict(self) -> dict[Hashable, S1]: ...
+    def to_dict(self) -> dict[Any, S1]: ...
     @overload
     def to_dict(self, into: type[Mapping] | Mapping) -> Mapping[Hashable, S1]: ...
     def to_frame(self, name: object | None = ...) -> DataFrame: ...
@@ -1802,8 +1799,8 @@ class TimestampSeries(Series[Timestamp]):
     @property
     def dt(self) -> TimestampProperties: ...  # type: ignore[override]
     def __add__(self, other: TimedeltaSeries | np.timedelta64) -> TimestampSeries: ...  # type: ignore[override]
-    def __mul__(self, other: TimestampSeries | np.timedelta64 | TimedeltaSeries) -> Never: ...  # type: ignore[override]
-    def __truediv__(self, other: TimestampSeries | np.timedelta64 | TimedeltaSeries) -> Never: ...  # type: ignore[override]
+    def __mul__(self, other: int | float | Series[int] | Series[float] | Sequence[int | float]) -> TimestampSeries: ...  # type: ignore[override]
+    def __truediv__(self, other: int | float | Series[int] | Series[float] | Sequence[int | float]) -> TimestampSeries: ...  # type: ignore[override]
     def mean(  # type: ignore[override]
         self,
         axis: SeriesAxisType | None = ...,
@@ -1841,12 +1838,9 @@ class TimedeltaSeries(Series[Timedelta]):
     @overload
     def __add__(self, other: Timedelta | np.timedelta64) -> TimedeltaSeries: ...
     def __radd__(self, other: Timestamp | TimestampSeries) -> TimestampSeries: ...  # type: ignore[override]
-    @overload  # type: ignore[override]
-    def __mul__(
-        self, other: TimestampSeries | np.timedelta64 | Timedelta | TimedeltaSeries
-    ) -> Never: ...
-    @overload
-    def __mul__(self, other: num) -> TimedeltaSeries: ...
+    def __mul__(  # type: ignore[override]
+        self, other: num | Sequence[num] | Series[int] | Series[float]
+    ) -> TimedeltaSeries: ...
     def __sub__(  # type: ignore[override]
         self, other: Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64
     ) -> TimedeltaSeries: ...
