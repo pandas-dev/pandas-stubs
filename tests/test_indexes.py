@@ -13,7 +13,10 @@ import numpy as np
 from numpy import typing as npt
 import pandas as pd
 from pandas.core.indexes.numeric import NumericIndex
-from typing_extensions import assert_type
+from typing_extensions import (
+    Never,
+    assert_type,
+)
 
 from pandas._typing import Scalar
 
@@ -21,6 +24,7 @@ if TYPE_CHECKING:
     from pandas._typing import IndexIterScalar
 
 from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
 )
@@ -684,3 +688,72 @@ def test_sorted_and_list() -> None:
         ),
         list,
     )
+
+
+def test_index_operators() -> None:
+    # GH 405
+    i1 = pd.Index([1, 2, 3])
+    i2 = pd.Index([4, 5, 6])
+
+    check(assert_type(i1 + i2, pd.Index), pd.Index)
+    check(assert_type(i1 + 10, pd.Index), pd.Index)
+    check(assert_type(10 + i1, pd.Index), pd.Index)
+    check(assert_type(i1 - i2, pd.Index), pd.Index)
+    check(assert_type(i1 - 10, pd.Index), pd.Index)
+    check(assert_type(10 - i1, pd.Index), pd.Index)
+    check(assert_type(i1 * i2, pd.Index), pd.Index)
+    check(assert_type(i1 * 10, pd.Index), pd.Index)
+    check(assert_type(10 * i1, pd.Index), pd.Index)
+    check(assert_type(i1 / i2, pd.Index), pd.Index)
+    check(assert_type(i1 / 10, pd.Index), pd.Index)
+    check(assert_type(10 / i1, pd.Index), pd.Index)
+    check(assert_type(i1 // i2, pd.Index), pd.Index)
+    check(assert_type(i1 // 10, pd.Index), pd.Index)
+    check(assert_type(10 // i1, pd.Index), pd.Index)
+    check(assert_type(i1**i2, pd.Index), pd.Index)
+    check(assert_type(i1**2, pd.Index), pd.Index)
+    check(assert_type(2**i1, pd.Index), pd.Index)
+    check(assert_type(i1 % i2, pd.Index), pd.Index)
+    check(assert_type(i1 % 10, pd.Index), pd.Index)
+    check(assert_type(10 % i1, pd.Index), pd.Index)
+    check(assert_type(divmod(i1, i2), Tuple[pd.Index, pd.Index]), tuple)
+    check(assert_type(divmod(i1, 10), Tuple[pd.Index, pd.Index]), tuple)
+    check(assert_type(divmod(10, i1), Tuple[pd.Index, pd.Index]), tuple)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(
+            i1 & i2,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(  # type: ignore[assert-type]
+            i1 & 10,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(  # type: ignore[assert-type]
+            10 & i1,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(
+            i1 | i2,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(  # type: ignore[assert-type]
+            i1 | 10,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(  # type: ignore[assert-type]
+            10 | i1,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(
+            i1 ^ i2,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(  # type: ignore[assert-type]
+            i1 ^ 10,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(  # type: ignore[assert-type]
+            10 ^ i1,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
