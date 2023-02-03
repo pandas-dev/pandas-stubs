@@ -374,7 +374,7 @@ ValidationOptions: TypeAlias = Literal[
     "m:m",
 ]
 
-RandomState = Union[
+RandomState: TypeAlias = Union[
     int,
     ArrayLike,
     np.random.Generator,
