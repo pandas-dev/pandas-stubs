@@ -1917,7 +1917,7 @@ class DataFrame(NDFrame, OpsMixin):
         frac: float | None = ...,
         replace: _bool = ...,
         weights: _str | ListLike | None = ...,
-        random_state: RandomState = ...,
+        random_state: RandomState | None = ...,
         axis: SeriesAxisType | None = ...,
         ignore_index: _bool = ...,
     ) -> DataFrame: ...
