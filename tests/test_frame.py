@@ -234,7 +234,7 @@ def test_types_sample() -> None:
     check(
         assert_type(df.sample(n=1, random_state=np.random.default_rng()), pd.DataFrame),
         pd.DataFrame,
-    ) 
+    )
 
 
 def test_types_nlargest_nsmallest() -> None:
