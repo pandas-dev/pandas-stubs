@@ -231,6 +231,10 @@ def test_types_sample() -> None:
     # GH 67
     check(assert_type(df.sample(frac=0.5), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.sample(n=1), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.sample(n=1, random_state=np.random.default_rng()), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_types_nlargest_nsmallest() -> None:

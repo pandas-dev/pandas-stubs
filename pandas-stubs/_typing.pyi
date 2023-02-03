@@ -373,4 +373,13 @@ ValidationOptions: TypeAlias = Literal[
     "many_to_many",
     "m:m",
 ]
+
+RandomState: TypeAlias = Union[
+    int,
+    ArrayLike,
+    np.random.Generator,
+    np.random.BitGenerator,
+    np.random.RandomState,
+]
+
 __all__ = ["npt", "type_t"]

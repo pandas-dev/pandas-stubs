@@ -100,6 +100,7 @@ from pandas._typing import (
     MaskType,
     NaPosition,
     QuantileInterpolation,
+    RandomState,
     Renamer,
     ReplaceMethod,
     Scalar,
@@ -1021,7 +1022,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         frac: float | None = ...,
         replace: _bool = ...,
         weights: _str | _ListLike | np.ndarray | None = ...,
-        random_state: int | None = ...,
+        random_state: RandomState | None = ...,
         axis: SeriesAxisType | None = ...,
         ignore_index: _bool = ...,
     ) -> Series[S1]: ...

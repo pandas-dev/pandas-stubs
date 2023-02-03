@@ -33,6 +33,7 @@ from pandas._typing import (
     AxisType,
     Level,
     ListLike,
+    RandomState,
     Scalar,
 )
 
@@ -302,7 +303,7 @@ class DataFrameGroupBy(GroupBy):
         frac: float | None = ...,
         replace: bool = ...,
         weights: ListLike | None = ...,
-        random_state: int | None = ...,
+        random_state: RandomState | None = ...,
     ) -> DataFrame: ...
     def sem(self, ddof: int = ..., numeric_only: bool = ...) -> DataFrame: ...
     def shift(
