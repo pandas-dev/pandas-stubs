@@ -94,6 +94,7 @@ from pandas._typing import (
     NaPosition,
     ParquetEngine,
     QuantileInterpolation,
+    RandomState,
     ReadBuffer,
     Renamer,
     ReplaceMethod,
@@ -1916,7 +1917,7 @@ class DataFrame(NDFrame, OpsMixin):
         frac: float | None = ...,
         replace: _bool = ...,
         weights: _str | ListLike | None = ...,
-        random_state: int | None = ...,
+        random_state: RandomState = ...,
         axis: SeriesAxisType | None = ...,
         ignore_index: _bool = ...,
     ) -> DataFrame: ...
