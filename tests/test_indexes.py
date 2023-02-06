@@ -12,7 +12,6 @@ from typing import (
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
-from pandas.core.indexes.numeric import NumericIndex
 from typing_extensions import (
     Never,
     assert_type,
@@ -20,14 +19,24 @@ from typing_extensions import (
 
 from pandas._typing import Scalar
 
-if TYPE_CHECKING:
-    from pandas._typing import IndexIterScalar
-
 from tests import (
+    PD_LTE_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
 )
+
+if TYPE_CHECKING:
+    from pandas.core.indexes.numeric import NumericIndex
+
+    from pandas._typing import IndexIterScalar
+else:
+    if not PD_LTE_15:
+        from typing_extensions import TypeAlias
+
+        NumericIndex: TypeAlias = pd.Index
+    else:
+        from pandas.core.indexes.numeric import NumericIndex
 
 
 def test_index_unique() -> None:
