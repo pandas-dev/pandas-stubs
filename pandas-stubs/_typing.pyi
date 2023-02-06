@@ -207,7 +207,6 @@ S1 = TypeVar(
     complex,
     Timestamp,
     Timedelta,
-    np.datetime64,
     Period,
     Interval[int],
     Interval[float],

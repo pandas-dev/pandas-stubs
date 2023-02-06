@@ -44,7 +44,6 @@ if TYPE_CHECKING:
 
     from pandas._typing import np_ndarray_bool
 else:
-
     np_ndarray_bool = npt.NDArray[np.bool_]
     TimedeltaSeries: TypeAlias = pd.Series
     TimestampSeries: TypeAlias = pd.Series
@@ -386,7 +385,6 @@ def test_interval_cmp():
 
 
 def test_timedelta_construction() -> None:
-
     check(assert_type(pd.Timedelta(1, "H"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "T"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "S"), pd.Timedelta), pd.Timedelta)
@@ -1078,7 +1076,6 @@ def test_timedelta_cmp_rhs() -> None:
 
 
 def test_timestamp_construction() -> None:
-
     check(assert_type(pd.Timestamp("2000-1-1"), pd.Timestamp), pd.Timestamp)
     check(
         assert_type(pd.Timestamp("2000-1-1", tz="US/Pacific"), pd.Timestamp),
@@ -1256,9 +1253,7 @@ def test_timestamp_cmp() -> None:
     c_dt_datetime = dt.datetime(year=2000, month=1, day=1)
     c_datetimeindex = pd.DatetimeIndex(["2000-1-1"])
     c_np_ndarray_dt64 = np_dt64_arr
-    c_series_dt64: pd.Series[np.datetime64] = pd.Series(
-        [1, 2, 3], dtype="datetime64[ns]"
-    )
+    c_series_dt64: TimestampSeries = pd.Series([1, 2, 3], dtype="datetime64[ns]")
     c_series_timestamp = pd.Series(pd.DatetimeIndex(["2000-1-1"]))
     check(assert_type(c_series_timestamp, TimestampSeries), pd.Series, pd.Timestamp)
     # Use xor to ensure one is True and the other is False

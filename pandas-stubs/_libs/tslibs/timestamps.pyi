@@ -217,7 +217,7 @@ class Timestamp(datetime):
     @overload
     def __eq__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __eq__(self, other: TimestampSeries | Series[np.datetime64]) -> Series[bool]: ...  # type: ignore[misc]
+    def __eq__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[misc]
     @overload
     def __eq__(self, other: npt.NDArray[np.datetime64] | Index) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload
@@ -225,7 +225,7 @@ class Timestamp(datetime):
     @overload
     def __ne__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __ne__(self, other: TimestampSeries | Series[np.datetime64]) -> Series[bool]: ...  # type: ignore[misc]
+    def __ne__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[misc]
     @overload
     def __ne__(self, other: npt.NDArray[np.datetime64] | Index) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload
