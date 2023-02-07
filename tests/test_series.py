@@ -622,6 +622,15 @@ def test_types_compare() -> None:
     s2.compare(s1, align_axis="columns", keep_shape=True, keep_equal=True)
 
 
+def test_types_between() -> None:
+    s1 = pd.Series([1, 2, 3])
+    s2 = pd.Series([0, 1, 2])
+    s3 = pd.Series([2, 3, 4])
+    s1.between(0, 2)
+    s1.between([0, 1, 2], [2, 3, 4])
+    s1.between(s2, s3)
+
+
 def test_types_agg() -> None:
     s = pd.Series([1, 2, 3], index=["col1", "col2", "col3"])
     check(assert_type(s.agg("min"), Any), np.int64)
