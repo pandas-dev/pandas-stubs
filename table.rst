@@ -38,7 +38,7 @@ Table for astype
 |                   | np.bool_                |
 |                   | "bool"                  |
 +-------------------+-------------------------+
-| Timedelta         | "timedelta64[ns]"       |
+| Timedelta         |                         |
 |                   |                         |
 +-------------------+-------------------------+
 |  Timestamp        | "datetime64[ns]"        |
