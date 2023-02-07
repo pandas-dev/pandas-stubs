@@ -627,7 +627,11 @@ def test_types_between() -> None:
     s2 = pd.Series([0, 1, 2])
     s3 = pd.Series([2, 3, 4])
     check(assert_type(s1.between(0, 2), "pd.Series[bool]"), pd.Series, bool)
-    check(assert_type(s1.between([0, 1, 2], [2, 3, 4]), "pd.Series[bool]"), pd.Series, bool)
+    check(
+        assert_type(s1.between([0, 1, 2], [2, 3, 4]), "pd.Series[bool]"),
+        pd.Series,
+        bool,
+    )
     check(assert_type(s1.between(s2, s3), "pd.Series[bool]"), pd.Series, bool)
 
 
