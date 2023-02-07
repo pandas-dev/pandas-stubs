@@ -97,6 +97,7 @@ from pandas._typing import (
     JsonSeriesOrient,
     Level,
     ListLike,
+    ListLikeU,
     MaskType,
     NaPosition,
     QuantileInterpolation,
@@ -935,8 +936,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def isin(self, values: Iterable | Series[S1] | dict) -> Series[_bool]: ...
     def between(
         self,
-        left: Scalar | Sequence | Series,
-        right: Scalar | Sequence | Series,
+        left: Scalar | ListLikeU,
+        right: Scalar | ListLikeU,
         inclusive: Literal["both", "neither", "left", "right"] = ...,
     ) -> Series[_bool]: ...
     def isna(self) -> Series[_bool]: ...
