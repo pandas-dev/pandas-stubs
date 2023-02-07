@@ -12,7 +12,6 @@ from typing import (
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
-from pandas.core.indexes.numeric import NumericIndex
 import pytz
 from typing_extensions import assert_type
 
@@ -25,6 +24,7 @@ if TYPE_CHECKING:
 else:
     FulldatetimeDict = Any
 from tests import (
+    PD_LTE_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -45,6 +45,15 @@ if TYPE_CHECKING:
         TimedeltaSeries,
         TimestampSeries,
     )
+
+if TYPE_CHECKING:
+    from pandas.core.indexes.numeric import NumericIndex
+
+else:
+    if not PD_LTE_15:
+        from pandas import Index as NumericIndex
+    else:
+        from pandas.core.indexes.numeric import NumericIndex
 
 # Separately define here so pytest works
 np_ndarray_bool = npt.NDArray[np.bool_]
