@@ -39,11 +39,11 @@ Table for astype
 |                   | "bool"                  |
 +-------------------+-------------------------+
 | Timedelta         | np.timedelta64,         |
-|                   | Timedelta               |
+|                   | Timedelta,              |
+|                   | "timedelta64[ns]"       |
 |                   |                         |
 +-------------------+-------------------------+
 |  Timestamp        | Timestamp               |
 |                   | "datetime64[ns]"        |
-|                   |                         |
 +-------------------+-------------------------+
 
