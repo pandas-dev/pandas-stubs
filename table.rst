@@ -41,5 +41,6 @@ Table for astype
 | np.timedelta64    | np.timedelta64          |
 +-------------------+-------------------------+
 |  np.datetime64    | np.datetime64           |
+|                   | "datetime64[ns]"        |
 +-------------------+-------------------------+
 
