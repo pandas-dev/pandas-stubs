@@ -51,9 +51,7 @@ if TYPE_CHECKING:
 
 else:
     if not PD_LTE_15:
-        from typing_extensions import TypeAlias
-
-        NumericIndex: TypeAlias = pd.Index
+        from pandas import Index as NumericIndex
     else:
         from pandas.core.indexes.numeric import NumericIndex
 
