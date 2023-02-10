@@ -3,8 +3,6 @@ from __future__ import annotations
 import datetime as dt
 from typing import (
     TYPE_CHECKING,
-    Hashable,
-    List,
     Tuple,
     Union,
 )
@@ -29,7 +27,6 @@ from tests import (
 if TYPE_CHECKING:
     from pandas.core.indexes.numeric import NumericIndex
 
-    from pandas._typing import IndexIterScalar
 else:
     if not PD_LTE_15:
         from pandas import Index as NumericIndex
@@ -108,7 +105,7 @@ def test_column_sequence() -> None:
     df = pd.DataFrame([1, 2, 3])
     col_list = list(df.columns)
     check(
-        assert_type(col_list, List[Union["IndexIterScalar", Tuple[Hashable, ...]]]),
+        assert_type(col_list, list),
         list,
         int,
     )
@@ -684,14 +681,14 @@ def test_sorted_and_list() -> None:
     check(
         assert_type(
             sorted(i1),
-            List[Union["IndexIterScalar", Tuple[Hashable, ...]]],
+            list,
         ),
         list,
     )
     check(
         assert_type(
             list(i1),
-            List[Union["IndexIterScalar", Tuple[Hashable, ...]]],
+            list,
         ),
         list,
     )

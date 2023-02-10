@@ -33,7 +33,6 @@ from pandas._typing import (
     DtypeObj,
     FillnaOptions,
     HashableT,
-    IndexIterScalar,
     IndexT,
     Label,
     Level,
@@ -223,7 +222,7 @@ class Index(IndexOpsMixin, PandasObject):
     def shape(self) -> tuple[int, ...]: ...
     # Extra methods from old stubs
     def __eq__(self, other: object) -> np_ndarray_bool: ...  # type: ignore[override]
-    def __iter__(self) -> Iterator[IndexIterScalar | tuple[Hashable, ...]]: ...
+    def __iter__(self) -> Iterator: ...
     def __ne__(self, other: object) -> np_ndarray_bool: ...  # type: ignore[override]
     def __le__(self, other: Index | Scalar) -> np_ndarray_bool: ...  # type: ignore[override]
     def __ge__(self, other: Index | Scalar) -> np_ndarray_bool: ...  # type: ignore[override]
