@@ -1813,7 +1813,6 @@ def test_frame_index_numpy() -> None:
 
 
 def test_frame_stack() -> None:
-
     multicol2 = pd.MultiIndex.from_tuples([("weight", "kg"), ("height", "m")])
     df_multi_level_cols2 = pd.DataFrame(
         [[1.0, 2.0], [3.0, 4.0]], index=["cat", "dog"], columns=multicol2
@@ -2406,6 +2405,10 @@ def test_npint_loc_indexer() -> None:
 
 
 def test_in_columns() -> None:
+    # GH 532 (PR)
     df = pd.DataFrame(np.random.random((3, 4)), columns=["cat", "dog", "rat", "pig"])
     cols = [c for c in df.columns if "at" in c]
     check(assert_type(cols, list), list, str)
+    check(assert_type(df.loc[:, cols], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df[cols], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.groupby(by=cols).sum(), pd.DataFrame), pd.DataFrame)
