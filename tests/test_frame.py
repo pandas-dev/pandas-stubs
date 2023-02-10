@@ -2403,3 +2403,9 @@ def test_npint_loc_indexer() -> None:
 
     a: npt.NDArray[np.uint64] = np.array([10, 30], dtype="uint64")
     check(assert_type(get_NDArray(df, a), pd.DataFrame), pd.DataFrame)
+
+
+def test_in_columns() -> None:
+    df = pd.DataFrame(np.random.random((3, 4)), columns=["cat", "dog", "rat", "pig"])
+    cols = [c for c in df.columns if "at" in c]
+    check(assert_type(cols, list), list, str)
