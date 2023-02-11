@@ -908,9 +908,7 @@ def test_sqlalchemy_selectable() -> None:
             class Base(metaclass=sqlalchemy.orm.decl_api.DeclarativeMeta):
                 __abstract__ = True
 
-            # error: Metaclass conflict: the metaclass of a derived class must be a
-            # (non-strict) subclass of the metaclasses of all its bases
-            class Temp(Base):  # type: ignore[misc]
+            class Temp(Base):
                 __tablename__ = "part"
                 quantity = sqlalchemy.Column(sqlalchemy.Integer)
 

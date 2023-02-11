@@ -823,8 +823,7 @@ def test_timedelta_mod_abs_unary() -> None:
         pd.TimedeltaIndex,
     )
 
-    # mypy reports dt.timedelta, even though __abs__ returns Timedelta
-    check(assert_type(abs(td), pd.Timedelta), pd.Timedelta)  # type: ignore[assert-type]
+    check(assert_type(abs(td), pd.Timedelta), pd.Timedelta)
 
     check(assert_type(td.__abs__(), pd.Timedelta), pd.Timedelta)
     check(assert_type(-td, pd.Timedelta), pd.Timedelta)
