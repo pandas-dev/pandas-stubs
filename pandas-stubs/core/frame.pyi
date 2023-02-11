@@ -201,7 +201,6 @@ class _LocIndexerFrame(_LocIndexer):
     ) -> None: ...
 
 class DataFrame(NDFrame, OpsMixin):
-
     __hash__: ClassVar[None]  # type: ignore[assignment]
 
     @overload
