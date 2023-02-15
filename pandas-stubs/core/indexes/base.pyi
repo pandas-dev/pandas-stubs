@@ -9,6 +9,7 @@ from typing import (
     ClassVar,
     Generic,
     Literal,
+    TypeVar,
     overload,
 )
 
@@ -50,11 +51,12 @@ class InvalidIndexError(Exception): ...
 
 _str = str
 
+_IndexGetitemMixinT = TypeVar("_IndexGetitemMixinT", bound=_IndexGetitemMixin)
+
 class _IndexGetitemMixin(Generic[S1]):
-    # type ignore needed because it doesn't like the type of self
     @overload
-    def __getitem__(  # type: ignore[misc]
-        self: IndexT,
+    def __getitem__(
+        self: _IndexGetitemMixinT,
         idx: slice
         | np_ndarray_anyint
         | Sequence[int]
@@ -62,7 +64,7 @@ class _IndexGetitemMixin(Generic[S1]):
         | Series[bool]
         | Sequence[bool]
         | np_ndarray_bool,
-    ) -> IndexT: ...
+    ) -> _IndexGetitemMixinT: ...
     @overload
     def __getitem__(self, idx: int) -> S1: ...
 
