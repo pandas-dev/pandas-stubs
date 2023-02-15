@@ -17,6 +17,7 @@ from pandas import (
 )
 from pandas.core.indexes.accessors import DatetimeIndexProperties
 from pandas.core.indexes.api import Float64Index
+from pandas.core.indexes.base import _IndexGetitemMixin
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.series import (
     TimedeltaSeries,
@@ -34,7 +35,12 @@ from pandas.core.dtypes.dtypes import DatetimeTZDtype
 
 from pandas.tseries.offsets import BaseOffset
 
-class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeIndexProperties):
+# type ignore needed because of __getitem__()
+class DatetimeIndex(  # type: ignore[misc]
+    _IndexGetitemMixin[Timestamp],
+    DatetimeTimedeltaMixin,
+    DatetimeIndexProperties,
+):
     def __init__(
         self,
         data: ArrayLike | AnyArrayLike | list | tuple,
@@ -53,11 +59,11 @@ class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeIndexProperties):
     def __reduce__(self): ...
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
-    @overload  # type: ignore[override]
+    @overload
     def __add__(self, other: TimedeltaSeries) -> TimestampSeries: ...
     @overload
     def __add__(self, other: Timedelta | TimedeltaIndex) -> DatetimeIndex: ...
-    @overload  # type: ignore[override]
+    @overload
     def __sub__(self, other: TimedeltaSeries) -> TimestampSeries: ...
     @overload
     def __sub__(self, other: Timedelta | TimedeltaIndex) -> DatetimeIndex: ...

@@ -3,7 +3,10 @@ from collections.abc import (
     Hashable,
     Sequence,
 )
-from typing import Literal
+from typing import (
+    Literal,
+    overload,
+)
 
 import numpy as np
 import pandas as pd
@@ -13,6 +16,7 @@ from pandas._typing import (
     T1,
     DtypeArg,
     HashableT,
+    np_ndarray_anyint,
     np_ndarray_bool,
 )
 
@@ -105,7 +109,19 @@ class MultiIndex(Index):
     @property
     def levshape(self): ...
     def __reduce__(self): ...
-    def __getitem__(self, key): ...
+    @overload  # type: ignore[override]
+    def __getitem__(
+        self,
+        idx: slice
+        | np_ndarray_anyint
+        | Sequence[int]
+        | Index
+        | pd.Series[bool]
+        | Sequence[bool]
+        | np_ndarray_bool,
+    ) -> MultiIndex: ...
+    @overload
+    def __getitem__(self, key: int) -> tuple: ...
     def take(
         self, indices, axis: int = ..., allow_fill: bool = ..., fill_value=..., **kwargs
     ): ...
