@@ -81,9 +81,9 @@ def to_datetime(
 ) -> TimestampSeries: ...
 @overload
 def to_datetime(
-    arg: Sequence[int | float | datetime]
+    arg: Sequence[float | datetime]
     | list[str]
-    | tuple[int | float | str | datetime, ...]
+    | tuple[float | str | datetime, ...]
     | npt.NDArray[np.datetime64]
     | npt.NDArray[np.str_]
     | npt.NDArray[np.int_]

@@ -1810,8 +1810,8 @@ class TimestampSeries(Series[Timestamp]):
     def dt(self) -> TimestampProperties: ...  # type: ignore[override]
     def __add__(self, other: TimedeltaSeries | np.timedelta64) -> TimestampSeries: ...  # type: ignore[override]
     def __radd__(self, other: TimedeltaSeries | np.timedelta64) -> TimestampSeries: ...  # type: ignore[override]
-    def __mul__(self, other: int | float | Series[int] | Series[float] | Sequence[int | float]) -> TimestampSeries: ...  # type: ignore[override]
-    def __truediv__(self, other: int | float | Series[int] | Series[float] | Sequence[int | float]) -> TimestampSeries: ...  # type: ignore[override]
+    def __mul__(self, other: float | Series[int] | Series[float] | Sequence[float]) -> TimestampSeries: ...  # type: ignore[override]
+    def __truediv__(self, other: float | Series[int] | Series[float] | Sequence[float]) -> TimestampSeries: ...  # type: ignore[override]
     def mean(  # type: ignore[override]
         self,
         axis: SeriesAxisType | None = ...,
