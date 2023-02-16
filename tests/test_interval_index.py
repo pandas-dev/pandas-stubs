@@ -3,6 +3,8 @@ from __future__ import annotations
 import pandas as pd
 from typing_extensions import assert_type
 
+from pandas._typing import IntervalClosedType
+
 from tests import check
 
 
@@ -34,3 +36,5 @@ def test_from_tuples() -> None:
 def test_is_overlapping() -> None:
     ind = pd.IntervalIndex.from_tuples([(0, 2), (1, 3), (4, 5)])
     check(assert_type(ind.is_overlapping, bool), bool)
+
+    check(assert_type(ind.closed, IntervalClosedType), str)

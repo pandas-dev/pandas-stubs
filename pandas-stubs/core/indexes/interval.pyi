@@ -70,6 +70,8 @@ _TimestampLike: TypeAlias = Union[pd.Timestamp, np.datetime64, dt.datetime]
 _TimedeltaLike: TypeAlias = Union[pd.Timedelta, np.timedelta64, dt.timedelta]
 
 class IntervalIndex(IntervalMixin, Generic[IntervalT]):
+    closed: IntervalClosedType
+
     def __new__(
         cls,
         data: Sequence[IntervalT],
