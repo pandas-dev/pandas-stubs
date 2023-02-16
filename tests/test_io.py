@@ -329,6 +329,8 @@ def test_hdfstore():
             DataFrame,
         )
         check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
+        for key in store:
+            check(assert_type(key, str), str)
         check(assert_type(store.close(), None), type(None))
 
         store = HDFStore(path, model="r")
