@@ -7,7 +7,9 @@ from collections.abc import (
 )
 from typing import (
     ClassVar,
+    Generic,
     Literal,
+    TypeVar,
     overload,
 )
 
@@ -27,6 +29,7 @@ from pandas.core.strings import StringMethods
 from typing_extensions import Never
 
 from pandas._typing import (
+    S1,
     T1,
     Dtype,
     DtypeArg,
@@ -47,6 +50,23 @@ from pandas._typing import (
 class InvalidIndexError(Exception): ...
 
 _str = str
+
+_IndexGetitemMixinT = TypeVar("_IndexGetitemMixinT", bound=_IndexGetitemMixin)
+
+class _IndexGetitemMixin(Generic[S1]):
+    @overload
+    def __getitem__(
+        self: _IndexGetitemMixinT,
+        idx: slice
+        | np_ndarray_anyint
+        | Sequence[int]
+        | Index
+        | Series[bool]
+        | Sequence[bool]
+        | np_ndarray_bool,
+    ) -> _IndexGetitemMixinT: ...
+    @overload
+    def __getitem__(self, idx: int) -> S1: ...
 
 class Index(IndexOpsMixin, PandasObject):
     __hash__: ClassVar[None]  # type: ignore[assignment]
@@ -158,7 +178,7 @@ class Index(IndexOpsMixin, PandasObject):
     __bool__ = ...
     def union(self, other: list[HashableT] | Index, sort=...) -> Index: ...
     def intersection(self, other: list[T1] | Index, sort: bool = ...) -> Index: ...
-    def difference(self, other: list | Index) -> Index: ...
+    def difference(self, other: list | Index, sort: bool | None = None) -> Index: ...
     def symmetric_difference(
         self, other: list[T1] | Index, result_name=..., sort=...
     ) -> Index: ...
@@ -191,7 +211,13 @@ class Index(IndexOpsMixin, PandasObject):
     @overload
     def __getitem__(
         self: IndexT,
-        idx: slice | np_ndarray_anyint | Index | Series[bool] | np_ndarray_bool,
+        idx: slice
+        | np_ndarray_anyint
+        | Sequence[int]
+        | Index
+        | Series[bool]
+        | Sequence[bool]
+        | np_ndarray_bool,
     ) -> IndexT: ...
     @overload
     def __getitem__(self, idx: int | tuple[np_ndarray_anyint, ...]) -> Scalar: ...

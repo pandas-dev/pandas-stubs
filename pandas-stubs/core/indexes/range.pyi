@@ -1,9 +1,15 @@
+from collections.abc import Sequence
+from typing import overload
+
 import numpy as np
+from pandas import Series
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.numeric import Int64Index
 
 from pandas._typing import (
     HashableT,
+    np_ndarray_anyint,
+    np_ndarray_bool,
     npt,
 )
 
@@ -70,10 +76,22 @@ class RangeIndex(Int64Index):
     def __len__(self) -> int: ...
     @property
     def size(self) -> int: ...
-    def __getitem__(self, key): ...
     def __floordiv__(self, other): ...
     def all(self) -> bool: ...
     def any(self) -> bool: ...
     def union(
         self, other: list[HashableT] | Index, sort=...
     ) -> Index | Int64Index | RangeIndex: ...
+    @overload  # type: ignore[override]
+    def __getitem__(
+        self,
+        idx: slice
+        | np_ndarray_anyint
+        | Sequence[int]
+        | Index
+        | Series[bool]
+        | Sequence[bool]
+        | np_ndarray_bool,
+    ) -> Index: ...
+    @overload
+    def __getitem__(self, idx: int) -> int: ...

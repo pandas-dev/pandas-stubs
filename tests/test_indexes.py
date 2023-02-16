@@ -761,3 +761,96 @@ def test_index_operators() -> None:
             10 ^ i1,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
             Never,
         )
+
+
+def test_getitem() -> None:
+    # GH 536
+    ip = pd.period_range(start="2022-06-01", periods=10)
+    check(assert_type(ip, pd.PeriodIndex), pd.PeriodIndex, pd.Period)
+    check(assert_type(ip[0], pd.Period), pd.Period)
+    check(assert_type(ip[[0, 2, 4]], pd.PeriodIndex), pd.PeriodIndex, pd.Period)
+
+    idt = pd.DatetimeIndex(["2022-08-14", "2022-08-20", "2022-08-24"])
+    check(assert_type(idt, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+    check(assert_type(idt[0], pd.Timestamp), pd.Timestamp)
+    check(assert_type(idt[[0, 2]], pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+
+    itd = pd.date_range("1/1/2021", "1/5/2021") - pd.Timestamp("1/3/2019")
+    check(assert_type(itd, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
+    check(assert_type(itd[0], pd.Timedelta), pd.Timedelta)
+    check(
+        assert_type(itd[[0, 2, 4]], pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta
+    )
+
+    iini = pd.interval_range(0, 10)
+    check(
+        assert_type(iini, "pd.IntervalIndex[pd.Interval[int]]"),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(assert_type(iini[0], "pd.Interval[int]"), pd.Interval)
+    check(
+        assert_type(iini[[0, 2, 4]], "pd.IntervalIndex[pd.Interval[int]]"),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+
+    iinf = pd.interval_range(0.0, 10)
+    check(
+        assert_type(iinf, "pd.IntervalIndex[pd.Interval[float]]"),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(assert_type(iinf[0], "pd.Interval[float]"), pd.Interval)
+    check(
+        assert_type(iinf[[0, 2, 4]], "pd.IntervalIndex[pd.Interval[float]]"),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+
+    iints = pd.interval_range(dt.datetime(2000, 1, 1), dt.datetime(2010, 1, 1), 5)
+    check(
+        assert_type(
+            iints,
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(assert_type(iints[0], "pd.Interval[pd.Timestamp]"), pd.Interval)
+    check(
+        assert_type(iints[[0, 2, 4]], "pd.IntervalIndex[pd.Interval[pd.Timestamp]]"),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+
+    iintd = pd.interval_range(pd.Timedelta("1D"), pd.Timedelta("10D"))
+    check(
+        assert_type(
+            iintd,
+            "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(assert_type(iintd[0], "pd.Interval[pd.Timedelta]"), pd.Interval)
+    check(
+        assert_type(iintd[[0, 2, 4]], "pd.IntervalIndex[pd.Interval[pd.Timedelta]]"),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+
+    iri = pd.RangeIndex(0, 10)
+    check(assert_type(iri, pd.RangeIndex), pd.RangeIndex, int)
+    check(assert_type(iri[0], int), int)
+    check(assert_type(iri[[0, 2, 4]], pd.Index), pd.Index, int)
+
+    mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
+    check(assert_type(mi, pd.MultiIndex), pd.MultiIndex)
+    check(assert_type(mi[0], tuple), tuple)
+    check(assert_type(mi[[0, 2]], pd.MultiIndex), pd.MultiIndex, tuple)
+
+    i0 = pd.Index(["a", "b", "c"])
+    check(assert_type(i0, pd.Index), pd.Index)
+    check(assert_type(i0[0], Scalar), str)
+    check(assert_type(i0[[0, 2]], pd.Index), pd.Index, str)

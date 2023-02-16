@@ -25,7 +25,7 @@ def unique(values: PeriodIndex) -> PeriodIndex: ...  # type: ignore[misc] # pyri
 @overload
 def unique(values: CategoricalIndex) -> CategoricalIndex: ...  # type: ignore[misc]
 @overload
-def unique(values: IntervalIndex[IntervalT]) -> IntervalIndex[IntervalT]: ...  # type: ignore[misc]
+def unique(values: IntervalIndex[IntervalT]) -> IntervalIndex[IntervalT]: ...
 @overload
 def unique(values: Index) -> np.ndarray: ...
 @overload

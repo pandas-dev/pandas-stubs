@@ -13,8 +13,8 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas import Index
-from pandas.core.indexes.extension import ExtensionIndex
 from pandas.core.series import (
+    Series,
     TimedeltaSeries,
     TimestampSeries,
 )
@@ -32,6 +32,7 @@ from pandas._typing import (
     IntervalClosedType,
     IntervalT,
     Label,
+    np_ndarray_anyint,
     np_ndarray_bool,
     npt,
 )
@@ -68,7 +69,7 @@ _EdgesTimedelta: TypeAlias = Union[
 _TimestampLike: TypeAlias = Union[pd.Timestamp, np.datetime64, dt.datetime]
 _TimedeltaLike: TypeAlias = Union[pd.Timedelta, np.timedelta64, dt.timedelta]
 
-class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[IntervalT]):
+class IntervalIndex(IntervalMixin, Generic[IntervalT]):
     def __new__(
         cls,
         data: Sequence[IntervalT],
@@ -78,10 +79,9 @@ class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[IntervalT]):
         name: Hashable = ...,
         verify_integrity: bool = ...,
     ) -> IntervalIndex[IntervalT]: ...
-    # ignore[misc] here due to overlap, e.g., Sequence[int] and Sequence[float]
     @overload
     @classmethod
-    def from_breaks(  # type:ignore[misc]
+    def from_breaks(
         cls,
         breaks: _EdgesInt,
         closed: IntervalClosedType = ...,
@@ -119,10 +119,9 @@ class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[IntervalT]):
         copy: bool = ...,
         dtype: IntervalDtype | None = ...,
     ) -> IntervalIndex[Interval[pd.Timedelta]]: ...
-    # ignore[misc] here due to overlap, e.g., Sequence[int] and Sequence[float]
     @overload
     @classmethod
-    def from_arrays(  # type:ignore[misc]
+    def from_arrays(
         cls,
         left: _EdgesInt,
         right: _EdgesInt,
@@ -250,41 +249,51 @@ class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[IntervalT]):
     @property
     def length(self) -> Index: ...
     def get_value(self, series: ABCSeries, key): ...
+    @overload
+    def __getitem__(
+        self,
+        idx: slice
+        | np_ndarray_anyint
+        | Sequence[int]
+        | Index
+        | Series[bool]
+        | np_ndarray_bool,
+    ) -> IntervalIndex[IntervalT]: ...
+    @overload
+    def __getitem__(self, idx: int) -> IntervalT: ...
     @property
     def is_all_dates(self) -> bool: ...
-    # override is due to additional types for comparison
-    # misc is due to overlap with object below
-    @overload  # type: ignore[override]
+    @overload
     def __gt__(
         self, other: IntervalT | IntervalIndex[IntervalT]
     ) -> np_ndarray_bool: ...
     @overload
     def __gt__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...
-    @overload  # type: ignore[override]
+    @overload
     def __ge__(
         self, other: IntervalT | IntervalIndex[IntervalT]
     ) -> np_ndarray_bool: ...
     @overload
     def __ge__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...
-    @overload  # type: ignore[override]
+    @overload
     def __le__(
         self, other: IntervalT | IntervalIndex[IntervalT]
     ) -> np_ndarray_bool: ...
     @overload
     def __le__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...
-    @overload  # type: ignore[override]
+    @overload
     def __lt__(
         self, other: IntervalT | IntervalIndex[IntervalT]
     ) -> np_ndarray_bool: ...
     @overload
-    def __lt__(self, other: pd.Series[IntervalT]) -> bool: ...  # type: ignore[misc]
-    @overload  # type: ignore[override]
+    def __lt__(self, other: pd.Series[IntervalT]) -> bool: ...
+    @overload
     def __eq__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload
     def __eq__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[misc]
     @overload
     def __eq__(self, other: object) -> Literal[False]: ...
-    @overload  # type: ignore[override]
+    @overload
     def __ne__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload
     def __ne__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[misc]
