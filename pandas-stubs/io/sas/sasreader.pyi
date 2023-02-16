@@ -9,6 +9,7 @@ from typing import (
 )
 
 from pandas import DataFrame
+from typing_extensions import Self
 
 from pandas._typing import (
     CompressionOptions as CompressionOptions,
@@ -24,7 +25,7 @@ class ReaderBase(metaclass=ABCMeta):
     def read(self, nrows: int | None = ...) -> DataFrame: ...
     @abstractmethod
     def close(self) -> None: ...
-    def __enter__(self) -> ReaderBase: ...
+    def __enter__(self) -> Self: ...
     def __exit__(self, exc_type, exc_value, traceback) -> None: ...
 
 @overload

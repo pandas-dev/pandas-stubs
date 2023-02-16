@@ -1,11 +1,11 @@
 from collections.abc import (
     Generator,
+    Iterator,
     Sequence,
 )
 from types import TracebackType
 from typing import (
     Any,
-    Iterator,
     Literal,
     overload,
 )
@@ -16,6 +16,7 @@ from pandas import (
 )
 from pandas.core.computation.pytables import PyTablesExpr
 from pandas.core.generic import NDFrame
+from typing_extensions import Self
 
 from pandas._typing import (
     FilePath,
@@ -114,7 +115,7 @@ class HDFStore:
     def __getattr__(self, name: str) -> DataFrame | Series: ...
     def __contains__(self, key: str) -> bool: ...
     def __len__(self) -> int: ...
-    def __enter__(self) -> HDFStore: ...
+    def __enter__(self) -> Self: ...
     def __exit__(
         self,
         exc_type: type[BaseException] | None,
