@@ -11,6 +11,7 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas.core.indexes.base import Index
+from typing_extensions import Self
 
 from pandas._typing import (
     T1,
@@ -32,7 +33,7 @@ class MultiIndex(Index):
         name=...,
         verify_integrity: bool = ...,
         _set_identity: bool = ...,
-    ) -> MultiIndex: ...
+    ) -> Self: ...
     def __init__(
         self,
         levels=...,

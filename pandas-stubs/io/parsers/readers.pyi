@@ -18,6 +18,7 @@ from typing import (
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
+from typing_extensions import Self
 
 from pandas._typing import (
     CompressionOptions,
@@ -479,7 +480,7 @@ class TextFileReader(abc.Iterator):
     def read(self, nrows: int | None = ...) -> DataFrame: ...
     def get_chunk(self, size: int | None = ...) -> DataFrame: ...
     def __next__(self) -> DataFrame: ...
-    def __enter__(self) -> TextFileReader: ...
+    def __enter__(self) -> Self: ...
     def __exit__(
         self,
         exc_type: type[BaseException] | None,
