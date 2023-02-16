@@ -1,9 +1,3 @@
-from core.api import(
-    Int8Dtype as Int8Dtype,
-    Int16Dtype as Int16Dtype,
-    Int32Dtype as Int32Dtype,
-    Int64Dtype as Int64Dtype,
-)
 from collections.abc import (
     Callable,
     Hashable,
@@ -27,11 +21,18 @@ from typing import (
     overload,
 )
 
+from core.api import (
+    Int8Dtype as Int8Dtype,
+    Int16Dtype as Int16Dtype,
+    Int32Dtype as Int32Dtype,
+    Int64Dtype as Int64Dtype,
+)
 from matplotlib.axes import (
     Axes as PlotAxes,
     SubplotBase,
 )
 import numpy as np
+import pandas as pd
 from pandas import (
     Period,
     Timedelta,
@@ -1031,26 +1032,96 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType | None = ...,
         ignore_index: _bool = ...,
     ) -> Series[S1]: ...
-    #def astype(
-     #   self,
-      #  dtype: S1 | _str | type[Scalar],
-       # copy: _bool = ...,
-        #errors: IgnoreRaise = ...,
-    #) -> Series: ...
     @overload
     def astype(
         self,
-        dtype: S1, _str,
+        dtype: S1
+        | pd.Int8Dtype
+        | pd.Int16Dtype
+        | pd.Int32Dtype
+        | pd.Int64Dtype
+        | np.int8
+        | np.int16
+        | np.int32
+        | np.int64
+        | np.uint8
+        | np.uint16
+        | np.uint32
+        | np.uint64
+        | np.intp
+        | np.uintp
+        | np.integer
+        | int
+        | Literal["int"],
         copy: _bool = ...,
-        errors: IgnoreRaise = ...
-        ) -> Series[str]: ...
+        errors: IgnoreRaise = ...,
+    ) -> Series[int]: ...
     @overload
     def astype(
         self,
-        dtype: S1, Int8Dtype, Int16Dtype, Int32Dtype, Int64Dtype,
+        dtype: S1 | _str | pd.StringDtype | Literal["str"],
         copy: _bool = ...,
-        errors: IgnoreRaise = ...
-        ) -> Series[int]: ...
+        errors: IgnoreRaise = ...,
+    ) -> Series[str]: ...
+    @overload
+    def astype(
+        self,
+        dtype: S1 | np.byte | np.ubyte | bytes,
+        copy: _bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Series[bytes]: ...
+    @overload
+    def astype(
+        self,
+        dtype: S1
+        | pd.Float32Dtype
+        | pd.Float64Dtype
+        | np.float16
+        | np.float32
+        | np.float64
+        | np.float96
+        | np.float128
+        | np.floating
+        | float
+        | Literal["float"],
+        copy: _bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Series[float]: ...
+    @overload
+    def astype(
+        self,
+        dtype: S1
+        | np.complex64
+        | np.complex128
+        | np.complex192
+        | np.complex256
+        | complex
+        | Literal["complex"],
+        copy: _bool = ...,
+        errors: IgnoreRaise = ...,
+    # ) -> Series: ...
+    ) -> Series[complex]: ...
+    @overload
+    def astype(
+        self,
+        dtype: S1 | pd.BooleanDtype | np.bool | bool | Literal["bool"],
+        copy: _bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Series[bool]: ...
+    @overload
+    def astype(
+        self,
+        dtype: S1,
+        copy: _bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Series[Timedelta]: ...
+    @overload
+    def astype(
+        self,
+        dtype: S1 | Literal["datetime64[ns]"],
+        copy: _bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Series[Timestamp]: ...
     def copy(self, deep: _bool = ...) -> Series[S1]: ...
     def infer_objects(self) -> Series[S1]: ...
     def convert_dtypes(
