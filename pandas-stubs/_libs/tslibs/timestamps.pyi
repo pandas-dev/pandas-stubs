@@ -10,7 +10,6 @@ from typing import (
     ClassVar,
     Literal,
     TypeVar,
-    Union,
     overload,
 )
 
@@ -39,10 +38,10 @@ from pandas._typing import (
 )
 
 _DatetimeT = TypeVar("_DatetimeT", bound=datetime)
-_Ambiguous: TypeAlias = Union[bool, Literal["raise", "NaT"]]
-_Nonexistent: TypeAlias = Union[
-    Literal["raise", "NaT", "shift_backward", "shift_forward"], Timedelta, timedelta
-]
+_Ambiguous: TypeAlias = bool | Literal["raise", "NaT"]
+_Nonexistent: TypeAlias = (
+    Literal["raise", "NaT", "shift_backward", "shift_forward"] | Timedelta | timedelta
+)
 
 class Timestamp(datetime):
     min: ClassVar[Timestamp]

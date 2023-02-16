@@ -5,7 +5,6 @@ from typing import (
     Literal,
     NamedTuple,
     TypeVar,
-    Union,
     overload,
 )
 
@@ -91,14 +90,14 @@ TimeDeltaUnitChoices: TypeAlias = Literal[
     "n",
 ]
 
-UnitChoices: TypeAlias = Union[
-    TimeDeltaUnitChoices,
-    Literal[
+UnitChoices: TypeAlias = (
+    TimeDeltaUnitChoices
+    | Literal[
         "Y",
         "y",
         "M",
-    ],
-]
+    ]
+)
 
 _S = TypeVar("_S", bound=timedelta)
 

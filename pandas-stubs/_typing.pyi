@@ -12,11 +12,9 @@ from os import PathLike
 from typing import (
     Any,
     Literal,
-    Optional,
     Protocol,
     TypedDict,
     TypeVar,
-    Union,
 )
 
 import numpy as np
@@ -43,22 +41,20 @@ from pandas.core.dtypes.dtypes import (
 
 from pandas.io.formats.format import EngFormatter
 
-ArrayLike: TypeAlias = Union[ExtensionArray, np.ndarray]
-AnyArrayLike: TypeAlias = Union[Index, Series, np.ndarray]
-PythonScalar: TypeAlias = Union[str, bool, complex]
+ArrayLike: TypeAlias = ExtensionArray | np.ndarray
+AnyArrayLike: TypeAlias = Index | Series | np.ndarray
+PythonScalar: TypeAlias = str | bool | complex
 DatetimeLikeScalar = TypeVar("DatetimeLikeScalar", Period, Timestamp, Timedelta)
-PandasScalar: TypeAlias = Union[
-    bytes, datetime.date, datetime.datetime, datetime.timedelta
-]
-# Scalar: TypeAlias = Union[PythonScalar, PandasScalar]
+PandasScalar: TypeAlias = bytes | datetime.date | datetime.datetime | datetime.timedelta
+# Scalar: TypeAlias = PythonScalar | PandasScalar
 
-DatetimeLike: TypeAlias = Union[datetime.datetime, np.datetime64, Timestamp]
-DateAndDatetimeLike: TypeAlias = Union[datetime.date, DatetimeLike]
+DatetimeLike: TypeAlias = datetime.datetime | np.datetime64 | Timestamp
+DateAndDatetimeLike: TypeAlias = datetime.date | DatetimeLike
 
-DatetimeDictArg: TypeAlias = Union[
-    Sequence[int], Sequence[float], list[str], tuple[Scalar, ...], AnyArrayLike
-]
-DictConvertible: TypeAlias = Union[FulldatetimeDict, DataFrame]
+DatetimeDictArg: TypeAlias = (
+    Sequence[int] | Sequence[float] | list[str] | tuple[Scalar, ...] | AnyArrayLike
+)
+DictConvertible: TypeAlias = FulldatetimeDict | DataFrame
 
 class YearMonthDayDict(TypedDict, total=True):
     year: DatetimeDictArg
@@ -77,14 +73,12 @@ class FulldatetimeDict(YearMonthDayDict, total=False):
     ns: DatetimeDictArg
 
 # dtypes
-NpDtype: TypeAlias = Union[
-    str, np.dtype[np.generic], type[Union[str, complex, bool, object]]
-]
-Dtype: TypeAlias = Union[ExtensionDtype, NpDtype]
-AstypeArg: TypeAlias = Union[ExtensionDtype, npt.DTypeLike]
+NpDtype: TypeAlias = str | np.dtype[np.generic] | type[str | complex | bool | object]
+Dtype: TypeAlias = ExtensionDtype | NpDtype
+AstypeArg: TypeAlias = ExtensionDtype | npt.DTypeLike
 # DtypeArg specifies all allowable dtypes in a functions its dtype argument
-DtypeArg: TypeAlias = Union[Dtype, dict[Any, Dtype]]
-DtypeObj: TypeAlias = Union[np.dtype[np.generic], ExtensionDtype]
+DtypeArg: TypeAlias = Dtype | dict[Any, Dtype]
+DtypeObj: TypeAlias = np.dtype[np.generic] | ExtensionDtype
 
 # filenames and file-like-objects
 AnyStr_cov = TypeVar("AnyStr_cov", str, bytes, covariant=True)
@@ -117,17 +111,17 @@ class ReadCsvBuffer(ReadBuffer[AnyStr_cov], Protocol[AnyStr_cov]):
 class WriteExcelBuffer(WriteBuffer[bytes], Protocol):
     def truncate(self, size: int | None = ...) -> int: ...
 
-FilePath: TypeAlias = Union[str, PathLike[str]]
+FilePath: TypeAlias = str | PathLike[str]
 
-Axis: TypeAlias = Union[str, int]
-IndexLabel: TypeAlias = Union[Hashable, Sequence[Hashable]]
-Label: TypeAlias = Optional[Hashable]
-Level: TypeAlias = Union[Hashable, int]
-Suffixes: TypeAlias = tuple[Optional[str], Optional[str]]
-Ordered: TypeAlias = Optional[bool]
-JSONSerializable: TypeAlias = Union[PythonScalar, list, dict]
-Axes: TypeAlias = Union[AnyArrayLike, list, dict, range, tuple]
-Renamer: TypeAlias = Union[Mapping[Any, Label], Callable[[Any], Label]]
+Axis: TypeAlias = str | int
+IndexLabel: TypeAlias = Hashable | Sequence[Hashable]
+Label: TypeAlias = Hashable | None
+Level: TypeAlias = Hashable | int
+Suffixes: TypeAlias = tuple[str | None, str | None]
+Ordered: TypeAlias = bool | None
+JSONSerializable: TypeAlias = PythonScalar | list | dict
+Axes: TypeAlias = AnyArrayLike | list | dict | range | tuple
+Renamer: TypeAlias = Mapping[Any, Label] | Callable[[Any], Label]
 T = TypeVar("T")
 FuncType: TypeAlias = Callable[..., Any]
 F = TypeVar("F", bound=FuncType)
@@ -138,20 +132,15 @@ HashableT3 = TypeVar("HashableT3", bound=Hashable)
 HashableT4 = TypeVar("HashableT4", bound=Hashable)
 HashableT5 = TypeVar("HashableT5", bound=Hashable)
 
-AggFuncTypeBase: TypeAlias = Union[Callable, str, np.ufunc]
+AggFuncTypeBase: TypeAlias = Callable | str | np.ufunc
 AggFuncTypeDictSeries: TypeAlias = Mapping[HashableT, AggFuncTypeBase]
 AggFuncTypeDictFrame: TypeAlias = Mapping[
-    HashableT, Union[AggFuncTypeBase, list[AggFuncTypeBase]]
+    HashableT, AggFuncTypeBase | list[AggFuncTypeBase]
 ]
-AggFuncTypeSeriesToFrame: TypeAlias = Union[
-    list[AggFuncTypeBase],
-    AggFuncTypeDictSeries,
-]
-AggFuncTypeFrame: TypeAlias = Union[
-    AggFuncTypeBase,
-    list[AggFuncTypeBase],
-    AggFuncTypeDictFrame,
-]
+AggFuncTypeSeriesToFrame: TypeAlias = list[AggFuncTypeBase] | AggFuncTypeDictSeries
+AggFuncTypeFrame: TypeAlias = (
+    AggFuncTypeBase | list[AggFuncTypeBase] | AggFuncTypeDictFrame
+)
 
 num: TypeAlias = complex
 SeriesAxisType: TypeAlias = Literal[
@@ -166,24 +155,21 @@ ListLike = TypeVar("ListLike", Sequence, np.ndarray, "Series", "Index")
 ListLikeExceptSeriesAndStr = TypeVar(
     "ListLikeExceptSeriesAndStr", MutableSequence, np.ndarray, tuple, "Index"
 )
-ListLikeU: TypeAlias = Union[Sequence, np.ndarray, Series, Index]
-StrLike: TypeAlias = Union[str, np.str_]
-IndexIterScalar: TypeAlias = Union[
-    str,
-    bytes,
-    datetime.date,
-    datetime.datetime,
-    datetime.timedelta,
-    bool,
-    int,
-    float,
-    Timestamp,
-    Timedelta,
-]
-Scalar: TypeAlias = Union[
-    IndexIterScalar,
-    complex,
-]
+ListLikeU: TypeAlias = Sequence | np.ndarray | Series | Index
+StrLike: TypeAlias = str | np.str_
+IndexIterScalar: TypeAlias = (
+    str
+    | bytes
+    | datetime.date
+    | datetime.datetime
+    | datetime.timedelta
+    | bool
+    | int
+    | float
+    | Timestamp
+    | Timedelta
+)
+Scalar: TypeAlias = IndexIterScalar | complex
 ScalarT = TypeVar("ScalarT", bound=Scalar)
 # Refine the definitions below in 3.9 to use the specialized type.
 np_ndarray_int64: TypeAlias = npt.NDArray[np.int64]
@@ -192,8 +178,8 @@ np_ndarray_anyint: TypeAlias = npt.NDArray[np.integer]
 np_ndarray_bool: TypeAlias = npt.NDArray[np.bool_]
 np_ndarray_str: TypeAlias = npt.NDArray[np.str_]
 
-IndexType: TypeAlias = Union[slice, np_ndarray_anyint, Index, list[int], Series[int]]
-MaskType: TypeAlias = Union[Series[bool], np_ndarray_bool, list[bool]]
+IndexType: TypeAlias = slice | np_ndarray_anyint | Index | list[int] | Series[int]
+MaskType: TypeAlias = Series[bool] | np_ndarray_bool | list[bool]
 # Scratch types for generics
 S1 = TypeVar(
     "S1",
@@ -219,15 +205,21 @@ T1 = TypeVar(
 )
 T2 = TypeVar("T2", str, int)
 
-IndexingInt: TypeAlias = Union[
-    int, np.int_, np.integer, np.unsignedinteger, np.signedinteger, np.int8
-]
-TimestampConvertibleTypes: TypeAlias = Union[
-    Timestamp, datetime.datetime, datetime.date, np.datetime64, np.int64, float, str
-]
-TimedeltaConvertibleTypes: TypeAlias = Union[
-    Timedelta, datetime.timedelta, np.timedelta64, np.int64, float, str
-]
+IndexingInt: TypeAlias = (
+    int | np.int_ | np.integer | np.unsignedinteger | np.signedinteger | np.int8
+)
+TimestampConvertibleTypes: TypeAlias = (
+    Timestamp
+    | datetime.datetime
+    | datetime.date
+    | np.datetime64
+    | np.int64
+    | float
+    | str
+)
+TimedeltaConvertibleTypes: TypeAlias = (
+    Timedelta | datetime.timedelta | np.timedelta64 | np.int64 | float | str
+)
 # NDFrameT is stricter and ensures that the same subclass of NDFrame always is
 # used. E.g. `def func(a: NDFrameT) -> NDFrameT: ...` means that if a
 # Series is passed into a function, a Series is always returned and if a DataFrame is
@@ -252,51 +244,51 @@ IgnoreRaiseCoerce: TypeAlias = Literal["ignore", "raise", "coerce"]
 IgnoreRaise: TypeAlias = Literal["ignore", "raise"]
 
 # for arbitrary kwargs passed during reading/writing files
-StorageOptions: TypeAlias = Optional[dict[str, Any]]
+StorageOptions: TypeAlias = dict[str, Any] | None
 
 # compression keywords and compression
 CompressionDict: TypeAlias = dict[str, Any]
-CompressionOptions: TypeAlias = Optional[
-    Union[Literal["infer", "gzip", "bz2", "zip", "xz", "zstd"], CompressionDict]
-]
-FormattersType: TypeAlias = Union[
-    list[Callable], tuple[Callable, ...], Mapping[Union[str, int], Callable]
-]
+CompressionOptions: TypeAlias = (
+    None | Literal["infer", "gzip", "bz2", "zip", "xz", "zstd"] | CompressionDict
+)
+FormattersType: TypeAlias = (
+    list[Callable] | tuple[Callable, ...] | Mapping[str | int, Callable]
+)
 FloatFormatType: TypeAlias = str | Callable | EngFormatter
 # converters
 ConvertersArg: TypeAlias = dict[Hashable, Callable[[Dtype], Dtype]]
 
 # parse_dates
-ParseDatesArg: TypeAlias = Union[
-    bool, list[Hashable], list[list[Hashable]], dict[Hashable, list[Hashable]]
-]
+ParseDatesArg: TypeAlias = (
+    bool | list[Hashable] | list[list[Hashable]] | dict[Hashable, list[Hashable]]
+)
 
 # read_xml parsers
 XMLParsers: TypeAlias = Literal["lxml", "etree"]
 
 # Any plain Python or numpy function
-Function: TypeAlias = Union[np.ufunc, Callable[..., Any]]
+Function: TypeAlias = np.ufunc | Callable[..., Any]
 # Use a distinct HashableT in shared types to avoid conflicts with
 # shared HashableT and HashableT#. This one can be used if the identical
 # type is need in a function that uses GroupByObjectNonScalar
 _HashableTa = TypeVar("_HashableTa", bound=Hashable)
-GroupByObjectNonScalar: TypeAlias = Union[
-    tuple,
-    list[_HashableTa],
-    Function,
-    list[Function],
-    Series,
-    list[Series],
-    np.ndarray,
-    list[np.ndarray],
-    Mapping[Label, Any],
-    list[Mapping[Label, Any]],
-    Index,
-    list[Index],
-    Grouper,
-    list[Grouper],
-]
-GroupByObject: TypeAlias = Union[Scalar, GroupByObjectNonScalar]
+GroupByObjectNonScalar: TypeAlias = (
+    tuple
+    | list[_HashableTa]
+    | Function
+    | list[Function]
+    | Series
+    | list[Series]
+    | np.ndarray
+    | list[np.ndarray]
+    | Mapping[Label, Any]
+    | list[Mapping[Label, Any]]
+    | Index
+    | list[Index]
+    | Grouper
+    | list[Grouper]
+)
+GroupByObject: TypeAlias = Scalar | GroupByObjectNonScalar
 
 StataDateFormat: TypeAlias = Literal[
     "tc",
@@ -320,7 +312,7 @@ ReplaceMethod: TypeAlias = Literal["pad", "ffill", "bfill"]
 SortKind: TypeAlias = Literal["quicksort", "mergesort", "heapsort", "stable"]
 NaPosition: TypeAlias = Literal["first", "last"]
 JoinHow: TypeAlias = Literal["left", "right", "outer", "inner"]
-MergeHow: TypeAlias = Union[JoinHow, Literal["cross"]]
+MergeHow: TypeAlias = JoinHow | Literal["cross"]
 JsonFrameOrient: TypeAlias = Literal[
     "split", "records", "index", "columns", "values", "table"
 ]
@@ -342,14 +334,14 @@ ColspaceArgType: TypeAlias = (
 
 # Windowing rank methods
 WindowingRankType: TypeAlias = Literal["average", "min", "max"]
-WindowingEngine: TypeAlias = Union[Literal["cython", "numba"], None]
+WindowingEngine: TypeAlias = Literal["cython", "numba"] | None
 
 class _WindowingNumbaKwargs(TypedDict, total=False):
     nopython: bool
     nogil: bool
     parallel: bool
 
-WindowingEngineKwargs: TypeAlias = Union[_WindowingNumbaKwargs, None]
+WindowingEngineKwargs: TypeAlias = _WindowingNumbaKwargs | None
 QuantileInterpolation: TypeAlias = Literal[
     "linear", "lower", "higher", "midpoint", "nearest"
 ]
@@ -377,12 +369,12 @@ ValidationOptions: TypeAlias = Literal[
     "m:m",
 ]
 
-RandomState: TypeAlias = Union[
-    int,
-    ArrayLike,
-    np.random.Generator,
-    np.random.BitGenerator,
-    np.random.RandomState,
-]
+RandomState: TypeAlias = (
+    int
+    | ArrayLike
+    | np.random.Generator
+    | np.random.BitGenerator
+    | np.random.RandomState
+)
 
 __all__ = ["npt", "type_t"]

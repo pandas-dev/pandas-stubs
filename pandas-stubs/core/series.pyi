@@ -17,7 +17,6 @@ from typing import (
     ClassVar,
     Generic,
     Literal,
-    Union,
     overload,
 )
 
@@ -179,7 +178,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     ) -> None: ...
 
 class Series(IndexOpsMixin, NDFrame, Generic[S1]):
-    _ListLike: TypeAlias = Union[ArrayLike, dict[_str, np.ndarray], list, tuple, Index]
+    _ListLike: TypeAlias = ArrayLike | dict[_str, np.ndarray] | list | tuple | Index
     __hash__: ClassVar[None]
 
     @overload

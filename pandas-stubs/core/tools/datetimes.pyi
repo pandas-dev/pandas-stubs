@@ -5,7 +5,6 @@ from datetime import (
 )
 from typing import (
     Literal,
-    Union,
     overload,
 )
 
@@ -32,11 +31,11 @@ from pandas._typing import (
     npt,
 )
 
-ArrayConvertible: TypeAlias = Union[list, tuple, AnyArrayLike]
-Scalar: TypeAlias = Union[float, str]
-DatetimeScalar: TypeAlias = Union[Scalar, datetime, np.datetime64, date]
+ArrayConvertible: TypeAlias = list | tuple | AnyArrayLike
+Scalar: TypeAlias = float | str
+DatetimeScalar: TypeAlias = Scalar | datetime | np.datetime64 | date
 
-DatetimeScalarOrArrayConvertible: TypeAlias = Union[DatetimeScalar, ArrayConvertible]
+DatetimeScalarOrArrayConvertible: TypeAlias = DatetimeScalar | ArrayConvertible
 
 @overload
 def to_datetime(

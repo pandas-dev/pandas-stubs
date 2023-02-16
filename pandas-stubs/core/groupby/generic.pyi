@@ -9,7 +9,6 @@ from typing import (
     Generic,
     Literal,
     NamedTuple,
-    Union,
     overload,
 )
 
@@ -37,7 +36,7 @@ from pandas._typing import (
     Scalar,
 )
 
-AggScalar: TypeAlias = Union[str, Callable[..., Any]]
+AggScalar: TypeAlias = str | Callable[..., Any]
 ScalarResult = ...
 
 class NamedAgg(NamedTuple):

@@ -6,7 +6,6 @@ import datetime as dt
 from typing import (
     Generic,
     Literal,
-    Union,
     overload,
 )
 
@@ -40,34 +39,31 @@ from pandas._typing import (
 from pandas.core.dtypes.dtypes import IntervalDtype as IntervalDtype
 from pandas.core.dtypes.generic import ABCSeries
 
-_EdgesInt: TypeAlias = Union[
-    Sequence[int],
-    npt.NDArray[np.int64],
-    npt.NDArray[np.int32],
-    npt.NDArray[np.intp],
-    pd.Series[int],
-    pd.Int64Index,
-]
-_EdgesFloat: TypeAlias = Union[
-    Sequence[float],
-    npt.NDArray[np.float64],
-    pd.Series[float],
-    pd.Float64Index,
-]
-_EdgesTimestamp: TypeAlias = Union[
-    Sequence[DatetimeLike],
-    npt.NDArray[np.datetime64],
-    TimestampSeries,
-    pd.DatetimeIndex,
-]
-_EdgesTimedelta: TypeAlias = Union[
-    Sequence[pd.Timedelta],
-    npt.NDArray[np.timedelta64],
-    TimedeltaSeries,
-    pd.TimedeltaIndex,
-]
-_TimestampLike: TypeAlias = Union[pd.Timestamp, np.datetime64, dt.datetime]
-_TimedeltaLike: TypeAlias = Union[pd.Timedelta, np.timedelta64, dt.timedelta]
+_EdgesInt: TypeAlias = (
+    Sequence[int]
+    | npt.NDArray[np.int64]
+    | npt.NDArray[np.int32]
+    | npt.NDArray[np.intp]
+    | pd.Series[int]
+    | pd.Int64Index
+)
+_EdgesFloat: TypeAlias = (
+    Sequence[float] | npt.NDArray[np.float64] | pd.Series[float] | pd.Float64Index
+)
+_EdgesTimestamp: TypeAlias = (
+    Sequence[DatetimeLike]
+    | npt.NDArray[np.datetime64]
+    | TimestampSeries
+    | pd.DatetimeIndex
+)
+_EdgesTimedelta: TypeAlias = (
+    Sequence[pd.Timedelta]
+    | npt.NDArray[np.timedelta64]
+    | TimedeltaSeries
+    | pd.TimedeltaIndex
+)
+_TimestampLike: TypeAlias = pd.Timestamp | np.datetime64 | dt.datetime
+_TimedeltaLike: TypeAlias = pd.Timedelta | np.timedelta64 | dt.timedelta
 
 class IntervalIndex(IntervalMixin, Generic[IntervalT]):
     closed: IntervalClosedType

@@ -1,7 +1,6 @@
 import datetime
 from typing import (
     Literal,
-    Union,
     overload,
 )
 
@@ -29,9 +28,9 @@ class IncompatibleFrequency(ValueError): ...
 
 from pandas._libs.tslibs.offsets import BaseOffset
 
-_PeriodAddSub: TypeAlias = Union[
-    Timedelta, datetime.timedelta, np.timedelta64, np.int64, int, BaseOffset
-]
+_PeriodAddSub: TypeAlias = (
+    Timedelta | datetime.timedelta | np.timedelta64 | np.int64 | int | BaseOffset
+)
 
 _PeriodFreqHow: TypeAlias = Literal[
     "S",
@@ -40,9 +39,9 @@ _PeriodFreqHow: TypeAlias = Literal[
     "end",
 ]
 
-_PeriodToTimestampHow: TypeAlias = Union[
-    _PeriodFreqHow,
-    Literal[
+_PeriodToTimestampHow: TypeAlias = (
+    _PeriodFreqHow
+    | Literal[
         "Start",
         "Finish",
         "Begin",
@@ -51,8 +50,8 @@ _PeriodToTimestampHow: TypeAlias = Union[
         "e",
         "finish",
         "begin",
-    ],
-]
+    ]
+)
 
 class PeriodMixin:
     @property

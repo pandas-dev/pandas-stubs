@@ -8,7 +8,6 @@ from typing import (
     Any,
     Literal,
     NamedTuple,
-    Union,
     overload,
 )
 
@@ -36,12 +35,10 @@ class _BoxPlotT(NamedTuple):
     ax: Axes
     lines: dict[str, list[Line2D]]
 
-_SingleColor: TypeAlias = Union[
-    str, list[float], tuple[float, float, float], tuple[float, float, float, float]
-]
-_PlotAccessorColor: TypeAlias = Union[
-    str, list[_SingleColor], dict[HashableT, _SingleColor]
-]
+_SingleColor: TypeAlias = (
+    str | list[float] | tuple[float, float, float] | tuple[float, float, float, float]
+)
+_PlotAccessorColor: TypeAlias = str | list[_SingleColor] | dict[HashableT, _SingleColor]
 
 @overload
 def boxplot(
