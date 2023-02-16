@@ -4,7 +4,6 @@ from typing import (
     ClassVar,
     Literal,
     NamedTuple,
-    TypeVar,
     overload,
 )
 
@@ -22,7 +21,10 @@ from pandas.core.series import (
     TimedeltaSeries,
     TimestampSeries,
 )
-from typing_extensions import TypeAlias
+from typing_extensions import (
+    Self,
+    TypeAlias,
+)
 
 from pandas._libs.tslibs import (
     BaseOffset,
@@ -99,15 +101,13 @@ UnitChoices: TypeAlias = (
     ]
 )
 
-_S = TypeVar("_S", bound=timedelta)
-
 class Timedelta(timedelta):
     min: ClassVar[Timedelta]
     max: ClassVar[Timedelta]
     resolution: ClassVar[Timedelta]
     value: int
     def __new__(
-        cls: type[_S],
+        cls,
         value: str | int | Timedelta | timedelta | np.timedelta64 = ...,
         unit: TimeDeltaUnitChoices = ...,
         *,
@@ -118,7 +118,7 @@ class Timedelta(timedelta):
         minutes: float | np.integer | np.floating = ...,
         hours: float | np.integer | np.floating = ...,
         weeks: float | np.integer | np.floating = ...,
-    ) -> _S: ...
+    ) -> Self: ...
     # GH 46171
     # While Timedelta can return pd.NaT, having the constructor return
     # a Union with NaTType makes things awkward for users of pandas
@@ -136,9 +136,9 @@ class Timedelta(timedelta):
     @property
     def asm8(self) -> np.timedelta64: ...
     # TODO: round/floor/ceil could return NaT?
-    def round(self: _S, freq: str | BaseOffset) -> _S: ...
-    def floor(self: _S, freq: str | BaseOffset) -> _S: ...
-    def ceil(self: _S, freq: str | BaseOffset) -> _S: ...
+    def round(self, freq: str | BaseOffset) -> Self: ...
+    def floor(self, freq: str | BaseOffset) -> Self: ...
+    def ceil(self, freq: str | BaseOffset) -> Self: ...
     @property
     def resolution_string(self) -> str: ...
     # Override due to more types supported than dt.timedelta
