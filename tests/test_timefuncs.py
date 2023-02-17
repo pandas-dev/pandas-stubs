@@ -12,6 +12,7 @@ from typing import (
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
+import pytest
 import pytz
 from typing_extensions import assert_type
 
@@ -1122,3 +1123,8 @@ def test_mean_median_std() -> None:
     check(assert_type(s2.mean(), pd.Timestamp), pd.Timestamp)
     check(assert_type(s2.median(), pd.Timestamp), pd.Timestamp)
     check(assert_type(s2.std(), pd.Timedelta), pd.Timedelta)
+
+
+def test_timestamp_strptime_fails():
+    with pytest.raises(NotImplementedError):
+        assert_type(pd.Timestamp.strptime("2023-02-16", "%Y-%M-%D"), None)
