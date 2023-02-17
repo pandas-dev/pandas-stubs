@@ -1073,21 +1073,22 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         | type[np.uint64]
         | type[np.intp]
         | type[np.uintp]
-        | type[np.integer],
+        | type[np.integer]
+        |type[np.byte] | type[np.ubyte],
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[int]: ...
     @overload
     def astype(
         self,
-        dtype: type[_str] | pd.StringDtype | Literal["str"],
+        dtype: type[str] | pd.StringDtype | Literal["str"],
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[str]: ...
     @overload
     def astype(
         self,
-        dtype: type[np.byte] | type[np.ubyte] | bytes,
+        dtype: bytes,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[bytes]: ...
@@ -1122,7 +1123,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def astype(
         self,
-        dtype: pd.BooleanDtype | type[np.bool_] | type[bool] | Literal["bool"],
+        dtype: pd.BooleanDtype | type[bool] | Literal["bool"],
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[bool]: ...
