@@ -210,6 +210,7 @@ class IntervalIndex(IntervalMixin, Generic[IntervalT]):
         copy: bool = ...,
         dtype: IntervalDtype | None = ...,
     ) -> IntervalIndex[pd.Interval[pd.Timedelta]]: ...
+    def to_tuples(self, na_tuple: bool = ...) -> pd.Index: ...
     @overload
     def __contains__(self, key: IntervalT) -> bool: ...  # type: ignore[misc]
     @overload
