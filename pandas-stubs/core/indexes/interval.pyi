@@ -12,6 +12,7 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas import Index
+from pandas.core.indexes.extension import ExtensionIndex
 from pandas.core.series import (
     Series,
     TimedeltaSeries,
@@ -65,7 +66,7 @@ _EdgesTimedelta: TypeAlias = (
 _TimestampLike: TypeAlias = pd.Timestamp | np.datetime64 | dt.datetime
 _TimedeltaLike: TypeAlias = pd.Timedelta | np.timedelta64 | dt.timedelta
 
-class IntervalIndex(IntervalMixin, Generic[IntervalT]):
+class IntervalIndex(ExtensionIndex, IntervalMixin, Generic[IntervalT]):
     closed: IntervalClosedType
 
     def __new__(
@@ -248,7 +249,7 @@ class IntervalIndex(IntervalMixin, Generic[IntervalT]):
     @property
     def length(self) -> Index: ...
     def get_value(self, series: ABCSeries, key): ...
-    @overload
+    @overload  # type: ignore[override]
     def __getitem__(
         self,
         idx: slice
@@ -262,37 +263,37 @@ class IntervalIndex(IntervalMixin, Generic[IntervalT]):
     def __getitem__(self, idx: int) -> IntervalT: ...
     @property
     def is_all_dates(self) -> bool: ...
-    @overload
+    @overload  # type: ignore[override]
     def __gt__(
         self, other: IntervalT | IntervalIndex[IntervalT]
     ) -> np_ndarray_bool: ...
     @overload
     def __gt__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...
-    @overload
+    @overload  # type: ignore[override]
     def __ge__(
         self, other: IntervalT | IntervalIndex[IntervalT]
     ) -> np_ndarray_bool: ...
     @overload
     def __ge__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...
-    @overload
+    @overload  # type: ignore[override]
     def __le__(
         self, other: IntervalT | IntervalIndex[IntervalT]
     ) -> np_ndarray_bool: ...
     @overload
     def __le__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...
-    @overload
+    @overload  # type: ignore[override]
     def __lt__(
         self, other: IntervalT | IntervalIndex[IntervalT]
     ) -> np_ndarray_bool: ...
     @overload
-    def __lt__(self, other: pd.Series[IntervalT]) -> bool: ...
-    @overload
+    def __lt__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...
+    @overload  # type: ignore[override]
     def __eq__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload
     def __eq__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[misc]
     @overload
     def __eq__(self, other: object) -> Literal[False]: ...
-    @overload
+    @overload  # type: ignore[override]
     def __ne__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload
     def __ne__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[misc]

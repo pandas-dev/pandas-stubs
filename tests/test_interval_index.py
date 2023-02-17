@@ -38,6 +38,15 @@ def test_to_tuples() -> None:
     check(assert_type(ind, pd.Index), pd.Index, tuple)
 
 
+def test_subclass() -> None:
+    assert issubclass(pd.IntervalIndex, pd.Index)
+
+    def index(test: pd.Index) -> None:
+        ...
+
+    index(pd.IntervalIndex.from_tuples([(0, 1), (1, 2)]))
+
+
 def test_is_overlapping() -> None:
     ind = pd.IntervalIndex.from_tuples([(0, 2), (1, 3), (4, 5)])
     check(assert_type(ind.is_overlapping, bool), bool)
