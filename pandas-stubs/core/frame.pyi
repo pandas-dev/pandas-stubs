@@ -542,7 +542,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         loc: int,
         column,
-        value: int | ListLike,
+        value: Scalar | ListLikeU | None,
         allow_duplicates: _bool = ...,
     ) -> None: ...
     def assign(self, **kwargs) -> DataFrame: ...
