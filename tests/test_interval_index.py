@@ -44,7 +44,9 @@ def test_subclass() -> None:
     def index(test: pd.Index) -> None:
         ...
 
-    index(pd.IntervalIndex.from_tuples([(0, 1), (1, 2)]))
+    interval_index = pd.IntervalIndex.from_tuples([(0, 1), (1, 2)])
+    index(interval_index)
+    pd.DataFrame({"a": [1, 2]}, interval_index)
 
 
 def test_is_overlapping() -> None:
