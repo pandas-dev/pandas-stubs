@@ -5,7 +5,6 @@ from collections.abc import (
 from typing import (
     Any,
     Literal,
-    Union,
 )
 
 from matplotlib.axes import Axes
@@ -22,7 +21,7 @@ from pandas._typing import (
     npt,
 )
 
-_Color: TypeAlias = Union[str, Sequence[float]]
+_Color: TypeAlias = str | Sequence[float]
 
 def table(
     ax: Axes,

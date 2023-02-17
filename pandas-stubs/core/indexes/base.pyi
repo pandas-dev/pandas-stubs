@@ -9,7 +9,6 @@ from typing import (
     ClassVar,
     Generic,
     Literal,
-    TypeVar,
     overload,
 )
 
@@ -26,7 +25,10 @@ from pandas.core.base import (
 )
 from pandas.core.indexes.numeric import NumericIndex
 from pandas.core.strings import StringMethods
-from typing_extensions import Never
+from typing_extensions import (
+    Never,
+    Self,
+)
 
 from pandas._typing import (
     S1,
@@ -51,12 +53,10 @@ class InvalidIndexError(Exception): ...
 
 _str = str
 
-_IndexGetitemMixinT = TypeVar("_IndexGetitemMixinT", bound=_IndexGetitemMixin)
-
 class _IndexGetitemMixin(Generic[S1]):
     @overload
     def __getitem__(
-        self: _IndexGetitemMixinT,
+        self,
         idx: slice
         | np_ndarray_anyint
         | Sequence[int]
@@ -64,7 +64,7 @@ class _IndexGetitemMixin(Generic[S1]):
         | Series[bool]
         | Sequence[bool]
         | np_ndarray_bool,
-    ) -> _IndexGetitemMixinT: ...
+    ) -> Self: ...
     @overload
     def __getitem__(self, idx: int) -> S1: ...
 

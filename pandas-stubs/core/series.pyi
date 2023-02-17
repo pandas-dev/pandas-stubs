@@ -17,7 +17,6 @@ from typing import (
     ClassVar,
     Generic,
     Literal,
-    Union,
     overload,
 )
 
@@ -179,7 +178,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     ) -> None: ...
 
 class Series(IndexOpsMixin, NDFrame, Generic[S1]):
-    _ListLike: TypeAlias = Union[ArrayLike, dict[_str, np.ndarray], list, tuple, Index]
+    _ListLike: TypeAlias = ArrayLike | dict[_str, np.ndarray] | list | tuple | Index
     __hash__: ClassVar[None]
 
     @overload
@@ -1811,8 +1810,8 @@ class TimestampSeries(Series[Timestamp]):
     def dt(self) -> TimestampProperties: ...  # type: ignore[override]
     def __add__(self, other: TimedeltaSeries | np.timedelta64) -> TimestampSeries: ...  # type: ignore[override]
     def __radd__(self, other: TimedeltaSeries | np.timedelta64) -> TimestampSeries: ...  # type: ignore[override]
-    def __mul__(self, other: int | float | Series[int] | Series[float] | Sequence[int | float]) -> TimestampSeries: ...  # type: ignore[override]
-    def __truediv__(self, other: int | float | Series[int] | Series[float] | Sequence[int | float]) -> TimestampSeries: ...  # type: ignore[override]
+    def __mul__(self, other: float | Series[int] | Series[float] | Sequence[float]) -> TimestampSeries: ...  # type: ignore[override]
+    def __truediv__(self, other: float | Series[int] | Series[float] | Sequence[float]) -> TimestampSeries: ...  # type: ignore[override]
     def mean(  # type: ignore[override]
         self,
         axis: SeriesAxisType | None = ...,

@@ -1,6 +1,5 @@
 from typing import (
     Literal,
-    Union,
     overload,
 )
 
@@ -14,7 +13,7 @@ from pandas._typing import (
     npt,
 )
 
-_Downcast: TypeAlias = Union[Literal["integer", "signed", "unsigned", "float"], None]
+_Downcast: TypeAlias = Literal["integer", "signed", "unsigned", "float"] | None
 
 @overload
 def to_numeric(

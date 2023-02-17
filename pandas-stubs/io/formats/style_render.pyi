@@ -6,10 +6,8 @@ from typing import (
     Any,
     Generic,
     Literal,
-    Optional,
     TypedDict,
     TypeVar,
-    Union,
 )
 
 import jinja2
@@ -23,11 +21,11 @@ from pandas._typing import (
     Level,
 )
 
-BaseFormatter: TypeAlias = Union[str, Callable[[object], str]]
-ExtFormatter: TypeAlias = Union[BaseFormatter, dict[Any, Optional[BaseFormatter]]]
-CSSPair: TypeAlias = tuple[str, Union[str, float]]
+BaseFormatter: TypeAlias = str | Callable[[object], str]
+ExtFormatter: TypeAlias = BaseFormatter | dict[Any, BaseFormatter | None]
+CSSPair: TypeAlias = tuple[str, str | float]
 CSSList: TypeAlias = list[CSSPair]
-CSSProperties: TypeAlias = Union[str, CSSList]
+CSSProperties: TypeAlias = str | CSSList
 
 class CSSDict(TypedDict):
     selector: str
@@ -44,7 +42,7 @@ class StyleExportDict(TypedDict, total=False):
     css: dict[str, str | int]
 
 CSSStyles: TypeAlias = list[CSSDict]
-Subset: TypeAlias = Union[_IndexSlice, slice, tuple[slice, ...], list[HashableT], Index]
+Subset: TypeAlias = _IndexSlice | slice | tuple[slice, ...] | list[HashableT] | Index
 
 _StylerT = TypeVar("_StylerT", bound=StylerRenderer)
 

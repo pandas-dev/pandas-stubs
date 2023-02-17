@@ -7,7 +7,6 @@ import sqlite3
 from typing import (
     Any,
     Literal,
-    Union,
     overload,
 )
 
@@ -22,15 +21,11 @@ from pandas._typing import (
     npt,
 )
 
-_SQLConnection: TypeAlias = Union[
-    str,
-    sqlalchemy.engine.Connectable,
-    sqlite3.Connection,
-]
+_SQLConnection: TypeAlias = str | sqlalchemy.engine.Connectable | sqlite3.Connection
 
-_SQLStatement: TypeAlias = Union[
-    str, sqlalchemy.sql.expression.Selectable, sqlalchemy.sql.expression.TextClause
-]
+_SQLStatement: TypeAlias = (
+    str | sqlalchemy.sql.expression.Selectable | sqlalchemy.sql.expression.TextClause
+)
 
 @overload
 def read_sql_table(
