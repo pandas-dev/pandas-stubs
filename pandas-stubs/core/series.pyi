@@ -1033,56 +1033,76 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         ignore_index: _bool = ...,
     ) -> Series[S1]: ...
     @overload
+    # def astype(
+    #     self,
+    #     dtype: Union[
+    #         Literal["int"],
+    #         int,
+    #         pd.Int8Dtype,
+    #         pd.Int16Dtype,
+    #         pd.Int16Dtype,
+    #         pd.Int32Dtype,
+    #         pd.Int64Dtype,
+    #         np.int8,
+    #         np.int16,
+    #         np.int32,
+    #         np.int64,
+    #         np.uint8,
+    #         np.uint16,
+    #         np.uint32,
+    #         np.uint64,
+    #         np.intp,
+    #         np.uintp,
+    #         np.integer,
+    #     ],
     def astype(
         self,
-        dtype: S1
+        dtype: Literal["int"]
+        | type[int]
         | pd.Int8Dtype
         | pd.Int16Dtype
         | pd.Int32Dtype
         | pd.Int64Dtype
-        | np.int8
-        | np.int16
-        | np.int32
-        | np.int64
-        | np.uint8
-        | np.uint16
-        | np.uint32
-        | np.uint64
-        | np.intp
-        | np.uintp
-        | np.integer
-        | int
-        | Literal["int"],
+        | type[np.int8]
+        | type[np.int16]
+        | type[np.int32]
+        | type[np.int64]
+        | type[np.uint8]
+        | type[np.uint16]
+        | type[np.uint32]
+        | type[np.uint64]
+        | type[np.intp]
+        | type[np.uintp]
+        | type[np.integer],
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[int]: ...
     @overload
     def astype(
         self,
-        dtype: S1 | _str | pd.StringDtype | Literal["str"],
+        dtype: type[_str] | pd.StringDtype | Literal["str"],
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[str]: ...
     @overload
     def astype(
         self,
-        dtype: S1 | np.byte | np.ubyte | bytes,
+        dtype: type[np.byte] | type[np.ubyte] | bytes,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[bytes]: ...
     @overload
     def astype(
         self,
-        dtype: S1
-        | pd.Float32Dtype
+        dtype: pd.Float32Dtype
         | pd.Float64Dtype
-        | np.float16
-        | np.float32
-        | np.float64
-        | np.float96
-        | np.float128
-        | np.floating
-        | float
+        | type[np.float16]
+        | type[np.float32]
+        | type[np.float64]
+        | type[np.float96]
+        | type[np.float128]
+        | type[np.floating]
+        | type[float]
         | Literal["float"],
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
@@ -1090,35 +1110,33 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def astype(
         self,
-        dtype: S1
-        | np.complex64
-        | np.complex128
-        | np.complex192
-        | np.complex256
-        | complex
+        dtype: type[np.complex64]
+        | type[np.complex128]
+        | type[np.complex192]
+        | type[np.complex256]
+        | type[complex]
         | Literal["complex"],
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
-    # ) -> Series: ...
     ) -> Series[complex]: ...
     @overload
     def astype(
         self,
-        dtype: S1 | pd.BooleanDtype | np.bool | bool | Literal["bool"],
+        dtype: pd.BooleanDtype | type[np.bool_] | type[bool] | Literal["bool"],
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[bool]: ...
     @overload
     def astype(
         self,
-        dtype: S1,
+        dtype: Literal["timedelta64[ns]"],
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[Timedelta]: ...
     @overload
     def astype(
         self,
-        dtype: S1 | Literal["datetime64[ns]"],
+        dtype: Literal["datetime64[ns]"],
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[Timestamp]: ...
