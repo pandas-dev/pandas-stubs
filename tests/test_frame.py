@@ -2422,4 +2422,3 @@ def test_insert_newvalues() -> None:
     check(assert_type(gh, pd.DataFrame), pd.DataFrame)
     check(assert_type(cd, pd.DataFrame), pd.DataFrame)
     check(assert_type(hi, pd.DataFrame), pd.DataFrame)
-
