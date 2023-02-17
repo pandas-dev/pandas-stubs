@@ -24,6 +24,7 @@ from pandas.core.series import (
     TimestampSeries,
 )
 from typing_extensions import (
+    Never,
     Self,
     TypeAlias,
 )
@@ -146,7 +147,7 @@ class Timestamp(datetime):
     def ctime(self) -> str: ...
     def isoformat(self, sep: str = ..., timespec: str = ...) -> str: ...
     @classmethod
-    def strptime(cls, date_string: str, format: str) -> None: ...  # type: ignore[override]
+    def strptime(cls, date_string: Never, format: Never) -> Never: ...  # type: ignore[override]
     def utcoffset(self) -> timedelta | None: ...
     def tzname(self) -> str | None: ...
     def dst(self) -> timedelta | None: ...
