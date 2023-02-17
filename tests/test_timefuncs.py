@@ -13,7 +13,10 @@ import numpy as np
 from numpy import typing as npt
 import pandas as pd
 import pytz
-from typing_extensions import assert_type
+from typing_extensions import (
+    assert_never,
+    assert_type,
+)
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs import BaseOffset
@@ -1122,3 +1125,13 @@ def test_mean_median_std() -> None:
     check(assert_type(s2.mean(), pd.Timestamp), pd.Timestamp)
     check(assert_type(s2.median(), pd.Timestamp), pd.Timestamp)
     check(assert_type(s2.std(), pd.Timedelta), pd.Timedelta)
+
+
+def test_timestamp_strptime_fails():
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_never(
+            pd.Timestamp.strptime(
+                "2023-02-16",  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+                "%Y-%M-%D",  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+            )
+        )
