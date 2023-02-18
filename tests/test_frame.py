@@ -2414,11 +2414,8 @@ def test_in_columns() -> None:
 
 def test_insert_newvalues() -> None:
     df = pd.DataFrame({"a": [1, 2]})
-    gh = df.insert(loc=0, column="b", value=None)
     ab = pd.DataFrame({"col1": [1, 2], "col2": [3, 4]})
-    cd = ab.insert(loc=0, column="newcol", value=[99, 99])
     ef = pd.DataFrame({"z": [4, 5, 6]})
-    hi = ef.insert(loc=0, column="g", value=4)
-    check(assert_type(gh, None), None)
-    check(assert_type(cd, None), None)
-    check(assert_type(hi, None), None)
+    assert assert_type(df.insert(loc=0, column="b", value=None), None) is None
+    assert assert_type(ab.insert(loc=0, column="newcol", value=[99, 99]), None) is None
+    assert assert_type(ef.insert(loc=0, column="g", value=4), None) is None
