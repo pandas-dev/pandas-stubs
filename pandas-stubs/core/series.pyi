@@ -1033,32 +1033,11 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         ignore_index: _bool = ...,
     ) -> Series[S1]: ...
     @overload
-    # def astype(
-    #     self,
-    #     dtype: Union[
-    #         Literal["int"],
-    #         int,
-    #         pd.Int8Dtype,
-    #         pd.Int16Dtype,
-    #         pd.Int16Dtype,
-    #         pd.Int32Dtype,
-    #         pd.Int64Dtype,
-    #         np.int8,
-    #         np.int16,
-    #         np.int32,
-    #         np.int64,
-    #         np.uint8,
-    #         np.uint16,
-    #         np.uint32,
-    #         np.uint64,
-    #         np.intp,
-    #         np.uintp,
-    #         np.integer,
-    #     ],
     def astype(
         self,
-        dtype: Literal["int"]
+        dtype: Literal["int", "int32"]
         | type[int]
+        | type[bool]
         | pd.Int8Dtype
         | pd.Int16Dtype
         | pd.Int32Dtype
@@ -1074,17 +1053,18 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         | type[np.intp]
         | type[np.uintp]
         | type[np.integer]
-        |type[np.byte] | type[np.ubyte],
+        | type[np.byte]
+        | type[np.ubyte],
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[int]: ...
     @overload
     def astype(
         self,
-        dtype: type[str] | pd.StringDtype | Literal["str"],
+        dtype: type[_str] | pd.StringDtype | Literal["str"],
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
-    ) -> Series[str]: ...
+    ) -> Series[_str]: ...
     @overload
     def astype(
         self,
@@ -1123,7 +1103,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def astype(
         self,
-        dtype: pd.BooleanDtype | type[bool] | Literal["bool"],
+        dtype: pd.BooleanDtype | Literal["bool"],
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[bool]: ...
@@ -1141,6 +1121,13 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[Timestamp]: ...
+    @overload
+    def astype(
+        self,
+        dtype: Literal["category"],
+        copy: _bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Series: ...
     def copy(self, deep: _bool = ...) -> Series[S1]: ...
     def infer_objects(self) -> Series[S1]: ...
     def convert_dtypes(
