@@ -2410,3 +2410,12 @@ def test_in_columns() -> None:
     check(assert_type(df.loc[:, cols], pd.DataFrame), pd.DataFrame)
     check(assert_type(df[cols], pd.DataFrame), pd.DataFrame)
     check(assert_type(df.groupby(by=cols).sum(), pd.DataFrame), pd.DataFrame)
+
+
+def test_insert_newvalues() -> None:
+    df = pd.DataFrame({"a": [1, 2]})
+    ab = pd.DataFrame({"col1": [1, 2], "col2": [3, 4]})
+    ef = pd.DataFrame({"z": [4, 5, 6]})
+    assert assert_type(df.insert(loc=0, column="b", value=None), None) is None
+    assert assert_type(ab.insert(loc=0, column="newcol", value=[99, 99]), None) is None
+    assert assert_type(ef.insert(loc=0, column="g", value=4), None) is None
