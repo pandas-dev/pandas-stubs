@@ -50,7 +50,7 @@ else:
     PeriodSeries: TypeAlias = pd.Series
     OffsetSeries: TypeAlias = pd.Series
 
-if PD_LTE_15:
+if TYPE_CHECKING or PD_LTE_15:
     _TimeDeltaDivResultType = np.int64
 else:
     _TimeDeltaDivResultType = np.longlong
