@@ -1411,12 +1411,12 @@ def test_updated_astype() -> None:
     check(assert_type(s.astype(np.uint64), "Series[int]"), pd.Series, int)
     check(assert_type(s.astype(np.intp), "Series[int]"), pd.Series, int)
     check(assert_type(s.astype(np.uintp), "Series[int]"), pd.Series, int)
-    # check(assert_type(s.astype(np.integer), "Series[int]"), pd.Series)
+    check(assert_type(s.astype(np.integer), "Series[int]"), pd.Series)
     check(assert_type(s.astype(np.byte), "Series[int]"), pd.Series, int)
     check(assert_type(s.astype(np.ubyte), "Series[int]"), pd.Series, int)
 
     check(assert_type(s.astype(str), "Series[str]"), pd.Series, str)
-    # check(assert_type(s.astype(pd.StringDtype()), "Series[str]"), pd.Series)
+    check(assert_type(s.astype(pd.StringDtype()), "Series[str]"), pd.Series)
     check(assert_type(s.astype("str"), "Series[str]"), pd.Series, str)
 
     check(assert_type(s.astype(bytes), "Series[bytes]"), pd.Series)
@@ -1426,17 +1426,12 @@ def test_updated_astype() -> None:
     check(assert_type(s.astype(np.float16), "Series[float]"), pd.Series, float)
     check(assert_type(s.astype(np.float32), "Series[float]"), pd.Series, float)
     check(assert_type(s.astype(np.float64), "Series[float]"), pd.Series, float)
-    # check(assert_type(s.astype(np.float96), "Series[float]"), pd.Series)
-    # check(assert_type(s.astype(np.float96), "Series[float]"), pd.Series, float)
-    # check(assert_type(s.astype(np.float128), "Series[float]"), pd.Series)
-    # check(assert_type(s.astype(np.floating), "Series[float]"), pd.Series, float)
+    check(assert_type(s.astype(np.floating), "Series[float]"), pd.Series)
     check(assert_type(s.astype(float), "Series[float]"), pd.Series, float)
     check(assert_type(s.astype("float"), "Series[float]"), pd.Series, float)
 
     check(assert_type(s.astype(np.complex64), "Series[complex]"), pd.Series, complex)
     check(assert_type(s.astype(np.complex128), "Series[complex]"), pd.Series, complex)
-    # check(assert_type(s.astype(np.complex196), "Series[complex]"), pd.Series, complex)
-    # check(assert_type(s.astype(np.complex256), "Series[complex]"), pd.Series)
     check(assert_type(s.astype(complex), "Series[complex]"), pd.Series, complex)
     check(assert_type(s.astype("complex"), "Series[complex]"), pd.Series, complex)
 

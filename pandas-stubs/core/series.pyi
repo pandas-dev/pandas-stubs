@@ -1079,8 +1079,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         | type[np.float16]
         | type[np.float32]
         | type[np.float64]
-        | type[np.float96]
-        | type[np.float128]
         | type[np.floating]
         | type[float]
         | Literal["float"],
@@ -1092,8 +1090,6 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         dtype: type[np.complex64]
         | type[np.complex128]
-        | type[np.complex192]
-        | type[np.complex256]
         | type[complex]
         | Literal["complex"],
         copy: _bool = ...,
