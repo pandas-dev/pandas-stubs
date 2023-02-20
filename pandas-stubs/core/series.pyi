@@ -1035,9 +1035,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def astype(
         self,
-        dtype: Literal["int", "int32"]
-        | type[int]
-        | type[bool]
+        dtype: Literal["int", "int32"] | type[int] | type[bool]
+        # | type[bytes]
         | pd.Int8Dtype
         | pd.Int16Dtype
         | pd.Int32Dtype
@@ -1068,7 +1067,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def astype(
         self,
-        dtype: bytes,
+        dtype: type[bytes],
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[bytes]: ...
@@ -1114,6 +1113,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[Timedelta]: ...
+    # ) -> TimedeltaSeries: ...
     @overload
     def astype(
         self,
@@ -1121,6 +1121,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[Timestamp]: ...
+    # ) -> TimestampSeries: ...
     @overload
     def astype(
         self,
