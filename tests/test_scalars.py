@@ -736,7 +736,9 @@ def test_timedelta_mul_div() -> None:
     check(assert_type(td // md_series_float, TimedeltaSeries), pd.Series, pd.Timedelta)
     check(assert_type(td // md_int64_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(td // md_float_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(td // md_timedelta_series, "pd.Series[int]"), pd.Series, np.int64)
+    check(
+        assert_type(td // md_timedelta_series, "pd.Series[int]"), pd.Series, np.longlong
+    )
 
     check(assert_type(pd.NaT // td, float), float)
     # Note: None of the reverse floordiv work
