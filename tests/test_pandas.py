@@ -240,10 +240,10 @@ def test_types_json_normalize() -> None:
 def test_isna() -> None:
     # https://github.com/pandas-dev/pandas-stubs/issues/264
     s1 = pd.Series([1, np.nan, 3.2])
-    check(assert_type(pd.isna(s1), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.isna(s1), "pd.Series[bool]"), pd.Series, np.bool_)
 
     s2 = pd.Series([1, 3.2])
-    check(assert_type(pd.notna(s2), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.notna(s2), "pd.Series[bool]"), pd.Series, np.bool_)
 
     df1 = pd.DataFrame({"a": [1, 2, 1, 2], "b": [1, 1, 2, np.nan]})
     check(assert_type(pd.isna(df1), "pd.DataFrame"), pd.DataFrame)
@@ -890,7 +890,7 @@ def test_cut() -> None:
     check(assert_type(s0r, pd.Series), pd.Series, pd.Interval)
     check(assert_type(s1r, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
     s0rlf, s1rlf = pd.cut(s1, bins=10, labels=False, retbins=True)
-    check(assert_type(s0rlf, pd.Series), pd.Series, int)
+    check(assert_type(s0rlf, pd.Series), pd.Series, np.int64)
     check(assert_type(s1rlf, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
     s0rls, s1rls = pd.cut(s1, bins=4, labels=["1", "2", "3", "4"], retbins=True)
     check(assert_type(s0rls, pd.Series), pd.Series, str)
