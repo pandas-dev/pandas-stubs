@@ -127,9 +127,9 @@ def test_multiindex_loc() -> None:
     s = pd.Series(
         [1, 2, 3, 4], index=pd.MultiIndex.from_product([[1, 2], ["a", "b"]]), dtype=int
     )
-    check(assert_type(s.loc[1, :], "pd.Series[int]"), pd.Series, np.int32)
-    check(assert_type(s.loc[pd.Index([1]), :], "pd.Series[int]"), pd.Series, np.int32)
-    check(assert_type(s.loc[1, "a"], int), np.int32)
+    check(assert_type(s.loc[1, :], "pd.Series[int]"), pd.Series, np.int_)
+    check(assert_type(s.loc[pd.Index([1]), :], "pd.Series[int]"), pd.Series, np.int_)
+    check(assert_type(s.loc[1, "a"], int), np.int_)
 
 
 def test_types_boolean_indexing() -> None:
@@ -512,12 +512,12 @@ def test_types_groupby() -> None:
 
 def test_types_groupby_methods() -> None:
     s = pd.Series([4, 2, 1, 8], index=["a", "b", "a", "b"], dtype=int)
-    check(assert_type(s.groupby(level=0).sum(), "pd.Series[int]"), pd.Series, np.int32)
-    check(assert_type(s.groupby(level=0).prod(), "pd.Series[int]"), pd.Series, np.int32)
+    check(assert_type(s.groupby(level=0).sum(), "pd.Series[int]"), pd.Series, np.int_)
+    check(assert_type(s.groupby(level=0).prod(), "pd.Series[int]"), pd.Series, np.int_)
     check(assert_type(s.groupby(level=0).sem(), "pd.Series[float]"), pd.Series, float)
     check(assert_type(s.groupby(level=0).std(), "pd.Series[float]"), pd.Series, float)
     check(assert_type(s.groupby(level=0).var(), "pd.Series[float]"), pd.Series, float)
-    check(assert_type(s.groupby(level=0).tail(), "pd.Series[int]"), pd.Series, np.int32)
+    check(assert_type(s.groupby(level=0).tail(), "pd.Series[int]"), pd.Series, np.int_)
     check(assert_type(s.groupby(level=0).unique(), pd.Series), pd.Series)
 
 
@@ -958,7 +958,7 @@ def test_iloc_getitem_ndarray() -> None:
     # GH 86
     indices_i8 = np.array([0, 1, 2, 3], dtype=np.int8)
     indices_i16 = np.array([0, 1, 2, 3], dtype=np.int16)
-    indices_i32 = np.array([0, 1, 2, 3], dtype=np.int32)
+    indices_i32 = np.array([0, 1, 2, 3], dtype=np.int_)
     indices_i64 = np.array([0, 1, 2, 3], dtype=np.int64)
 
     indices_u8 = np.array([0, 1, 2, 3], dtype=np.uint8)
@@ -984,7 +984,7 @@ def test_iloc_setitem_ndarray() -> None:
     # GH 86
     indices_i8 = np.array([0, 1, 2, 3], dtype=np.int8)
     indices_i16 = np.array([0, 1, 2, 3], dtype=np.int16)
-    indices_i32 = np.array([0, 1, 2, 3], dtype=np.int32)
+    indices_i32 = np.array([0, 1, 2, 3], dtype=np.int_)
     indices_i64 = np.array([0, 1, 2, 3], dtype=np.int64)
 
     indices_u8 = np.array([0, 1, 2, 3], dtype=np.uint8)
@@ -1264,7 +1264,7 @@ def test_neg() -> None:
     sr = pd.Series([1, 2, 3])
     sr_int = pd.Series([1, 2, 3], dtype=int)
     check(assert_type(-sr, pd.Series), pd.Series)
-    check(assert_type(-sr_int, "pd.Series[int]"), pd.Series, np.int32)
+    check(assert_type(-sr_int, "pd.Series[int]"), pd.Series, np.int_)
 
 
 def test_getattr() -> None:
@@ -1301,15 +1301,15 @@ def test_where() -> None:
     def cond1(x: int) -> bool:
         return x % 2 == 0
 
-    check(assert_type(s.where(cond1, other=0), "pd.Series[int]"), pd.Series, np.int32)
+    check(assert_type(s.where(cond1, other=0), "pd.Series[int]"), pd.Series, np.int_)
 
     def cond2(x: pd.Series[int]) -> pd.Series[bool]:
         return x > 1
 
-    check(assert_type(s.where(cond2, other=0), "pd.Series[int]"), pd.Series, np.int32)
+    check(assert_type(s.where(cond2, other=0), "pd.Series[int]"), pd.Series, np.int_)
 
     cond3 = pd.Series([False, True, True])
-    check(assert_type(s.where(cond3, other=0), "pd.Series[int]"), pd.Series, np.int32)
+    check(assert_type(s.where(cond3, other=0), "pd.Series[int]"), pd.Series, np.int_)
 
 
 def test_bitwise_operators() -> None:
@@ -1327,18 +1327,18 @@ def test_bitwise_operators() -> None:
 
     check(assert_type(s & [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type([1, 2, 3, 4] & s, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(s & s2, "pd.Series[int]"), pd.Series, np.int32)
-    check(assert_type(s2 & s, "pd.Series[int]"), pd.Series, np.int32)
+    check(assert_type(s & s2, "pd.Series[int]"), pd.Series, np.int_)
+    check(assert_type(s2 & s, "pd.Series[int]"), pd.Series, np.int_)
 
     check(assert_type(s | [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type([1, 2, 3, 4] | s, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(s | s2, "pd.Series[int]"), pd.Series, np.int32)
-    check(assert_type(s2 | s, "pd.Series[int]"), pd.Series, np.int32)
+    check(assert_type(s | s2, "pd.Series[int]"), pd.Series, np.int_)
+    check(assert_type(s2 | s, "pd.Series[int]"), pd.Series, np.int_)
 
     check(assert_type(s ^ [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type([1, 2, 3, 4] ^ s, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(s ^ s2, "pd.Series[int]"), pd.Series, np.int32)
-    check(assert_type(s2 ^ s, "pd.Series[int]"), pd.Series, np.int32)
+    check(assert_type(s ^ s2, "pd.Series[int]"), pd.Series, np.int_)
+    check(assert_type(s2 ^ s, "pd.Series[int]"), pd.Series, np.int_)
 
 
 def test_logical_operators() -> None:
