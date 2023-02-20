@@ -50,6 +50,11 @@ else:
     PeriodSeries: TypeAlias = pd.Series
     OffsetSeries: TypeAlias = pd.Series
 
+if PD_LTE_15:
+    _TimeDeltaDivResultType = np.int64
+else:
+    _TimeDeltaDivResultType = np.longlong
+
 
 def test_interval() -> None:
     interval_i = pd.Interval(0, 1, closed="left")
@@ -737,7 +742,9 @@ def test_timedelta_mul_div() -> None:
     check(assert_type(td // md_int64_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(td // md_float_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(
-        assert_type(td // md_timedelta_series, "pd.Series[int]"), pd.Series, np.longlong
+        assert_type(td // md_timedelta_series, "pd.Series[int]"),
+        pd.Series,
+        _TimeDeltaDivResultType,
     )
 
     check(assert_type(pd.NaT // td, float), float)
