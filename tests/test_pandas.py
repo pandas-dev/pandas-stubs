@@ -240,10 +240,10 @@ def test_types_json_normalize() -> None:
 def test_isna() -> None:
     # https://github.com/pandas-dev/pandas-stubs/issues/264
     s1 = pd.Series([1, np.nan, 3.2])
-    check(assert_type(pd.isna(s1), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.isna(s1), "pd.Series[bool]"), pd.Series, np.bool_)
 
     s2 = pd.Series([1, 3.2])
-    check(assert_type(pd.notna(s2), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.notna(s2), "pd.Series[bool]"), pd.Series, np.bool_)
 
     df1 = pd.DataFrame({"a": [1, 2, 1, 2], "b": [1, 1, 2, np.nan]})
     check(assert_type(pd.isna(df1), "pd.DataFrame"), pd.DataFrame)
@@ -869,6 +869,32 @@ def test_cut() -> None:
     n0, n1 = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], intval_idx, retbins=True)
     check(assert_type(n0, pd.Categorical), pd.Categorical)
     check(assert_type(n1, pd.IntervalIndex), pd.IntervalIndex)
+
+    s1 = pd.Series(data=pd.date_range("1/1/2020", periods=300))
+    check(
+        assert_type(
+            pd.cut(s1, bins=[np.datetime64("2020-01-03"), np.datetime64("2020-09-01")]),
+            "pd.Series[pd.CategoricalDtype]",
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            pd.cut(s1, bins=10),
+            "pd.Series[pd.CategoricalDtype]",
+        ),
+        pd.Series,
+        pd.Interval,
+    )
+    s0r, s1r = pd.cut(s1, bins=10, retbins=True)
+    check(assert_type(s0r, pd.Series), pd.Series, pd.Interval)
+    check(assert_type(s1r, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+    s0rlf, s1rlf = pd.cut(s1, bins=10, labels=False, retbins=True)
+    check(assert_type(s0rlf, pd.Series), pd.Series, np.int64)
+    check(assert_type(s1rlf, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+    s0rls, s1rls = pd.cut(s1, bins=4, labels=["1", "2", "3", "4"], retbins=True)
+    check(assert_type(s0rls, pd.Series), pd.Series, str)
+    check(assert_type(s1rls, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
 
 
 def test_qcut() -> None:
@@ -1705,34 +1731,32 @@ def test_pivot_table() -> None:
         ),
         pd.DataFrame,
     )
-    if PD_LTE_15:
-        # Nightly builds failing since 1/12/2023, but this is fixed since then
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df,
-                    values="D",
-                    index=["A", "B"],
-                    columns=[(7, "seven")],
-                    aggfunc=np.sum,
-                ),
-                pd.DataFrame,
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=["A", "B"],
+                columns=[(7, "seven")],
+                aggfunc=np.sum,
             ),
             pd.DataFrame,
-        )
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df,
-                    values="D",
-                    index=[("col5",), ("col6", 6)],
-                    columns=[(7, "seven")],
-                    aggfunc=np.sum,
-                ),
-                pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df,
+                values="D",
+                index=[("col5",), ("col6", 6)],
+                columns=[(7, "seven")],
+                aggfunc=np.sum,
             ),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
     check(
         assert_type(
             pd.pivot_table(

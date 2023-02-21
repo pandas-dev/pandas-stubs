@@ -48,12 +48,10 @@ def run_job(steps: List[Step]) -> None:
         logger.info(f"Beginning: '{step.name}'")
 
         try:
-
             rollback_steps.append(step)
             step.run()
 
         except Exception:
-
             logger.error(f"Step: '{step.name}' failed!")
             __rollback_job(rollback_steps)
             failed = True

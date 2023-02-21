@@ -94,6 +94,7 @@ from pandas._typing import (
     NaPosition,
     ParquetEngine,
     QuantileInterpolation,
+    RandomState,
     ReadBuffer,
     Renamer,
     ReplaceMethod,
@@ -200,7 +201,6 @@ class _LocIndexerFrame(_LocIndexer):
     ) -> None: ...
 
 class DataFrame(NDFrame, OpsMixin):
-
     __hash__: ClassVar[None]  # type: ignore[assignment]
 
     @overload
@@ -542,7 +542,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         loc: int,
         column,
-        value: int | ListLike,
+        value: Scalar | ListLikeU | None,
         allow_duplicates: _bool = ...,
     ) -> None: ...
     def assign(self, **kwargs) -> DataFrame: ...
@@ -1011,7 +1011,9 @@ class DataFrame(NDFrame, OpsMixin):
     def stack(
         self, level: Level | list[Level] = ..., dropna: _bool = ...
     ) -> DataFrame | Series[Any]: ...
-    def explode(self, column: _str | tuple, ignore_index: _bool = ...) -> DataFrame: ...
+    def explode(
+        self, column: Sequence[Hashable], ignore_index: _bool = ...
+    ) -> DataFrame: ...
     def unstack(
         self,
         level: Level = ...,
@@ -1914,7 +1916,7 @@ class DataFrame(NDFrame, OpsMixin):
         frac: float | None = ...,
         replace: _bool = ...,
         weights: _str | ListLike | None = ...,
-        random_state: int | None = ...,
+        random_state: RandomState | None = ...,
         axis: SeriesAxisType | None = ...,
         ignore_index: _bool = ...,
     ) -> DataFrame: ...

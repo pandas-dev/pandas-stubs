@@ -6,6 +6,7 @@ from typing import (
 import numpy as np
 from pandas import Index
 from pandas.core.accessor import DirNamesMixin
+from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
 
@@ -27,7 +28,7 @@ class SelectionMixin(Generic[NDFrameT]):
     def ndim(self) -> int: ...
     def __getitem__(self, key): ...
 
-class IndexOpsMixin:
+class IndexOpsMixin(OpsMixin):
     __array_priority__: int = ...
     def transpose(self, *args, **kwargs) -> IndexOpsMixin: ...
     @property

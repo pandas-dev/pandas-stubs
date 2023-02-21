@@ -5,18 +5,25 @@ import numpy as np
 import pandas as pd
 from pandas import Index
 from pandas.core.indexes.accessors import PeriodIndexFieldOps
+from pandas.core.indexes.base import _IndexGetitemMixin
 from pandas.core.indexes.datetimelike import (
     DatetimeIndexOpsMixin as DatetimeIndexOpsMixin,
 )
-from pandas.core.indexes.numeric import Int64Index
-from pandas.core.series import OffsetSeries
+from pandas.core.indexes.timedeltas import TimedeltaIndex
 
 from pandas._libs.tslibs import (
     BaseOffset,
+    NaTType,
     Period,
 )
+from pandas._libs.tslibs.period import _PeriodAddSub
 
-class PeriodIndex(DatetimeIndexOpsMixin, Int64Index, PeriodIndexFieldOps):
+# type ignore needed because of __getitem__()
+class PeriodIndex(  # type: ignore[misc]
+    _IndexGetitemMixin[Period],
+    DatetimeIndexOpsMixin,
+    PeriodIndexFieldOps,
+):
     def __new__(
         cls,
         data=...,
@@ -31,11 +38,22 @@ class PeriodIndex(DatetimeIndexOpsMixin, Int64Index, PeriodIndexFieldOps):
     @property
     def values(self): ...
     def __contains__(self, key) -> bool: ...
-    # Override due to supertype incompatibility which has it for NumericIndex or complex.
-    @overload  # type: ignore[override]
+    @overload
     def __sub__(self, other: Period) -> Index: ...
     @overload
-    def __sub__(self, other: PeriodIndex) -> OffsetSeries: ...
+    def __sub__(self, other: PeriodIndex) -> Index: ...
+    @overload
+    def __sub__(self, other: _PeriodAddSub) -> PeriodIndex: ...
+    @overload
+    def __sub__(self, other: NaTType) -> NaTType: ...
+    @overload
+    def __sub__(self, other: TimedeltaIndex | pd.Timedelta) -> PeriodIndex: ...
+    @overload  # type: ignore[override]
+    def __rsub__(self, other: Period) -> Index: ...
+    @overload
+    def __rsub__(self, other: PeriodIndex) -> Index: ...
+    @overload
+    def __rsub__(self, other: NaTType) -> NaTType: ...
     def __array__(self, dtype=...) -> np.ndarray: ...
     def __array_wrap__(self, result, context=...): ...
     def asof_locs(self, where, mask): ...

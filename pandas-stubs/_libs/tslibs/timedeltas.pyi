@@ -4,8 +4,6 @@ from typing import (
     ClassVar,
     Literal,
     NamedTuple,
-    TypeVar,
-    Union,
     overload,
 )
 
@@ -23,7 +21,10 @@ from pandas.core.series import (
     TimedeltaSeries,
     TimestampSeries,
 )
-from typing_extensions import TypeAlias
+from typing_extensions import (
+    Self,
+    TypeAlias,
+)
 
 from pandas._libs.tslibs import (
     BaseOffset,
@@ -91,16 +92,14 @@ TimeDeltaUnitChoices: TypeAlias = Literal[
     "n",
 ]
 
-UnitChoices: TypeAlias = Union[
-    TimeDeltaUnitChoices,
-    Literal[
+UnitChoices: TypeAlias = (
+    TimeDeltaUnitChoices
+    | Literal[
         "Y",
         "y",
         "M",
-    ],
-]
-
-_S = TypeVar("_S", bound=timedelta)
+    ]
+)
 
 class Timedelta(timedelta):
     min: ClassVar[Timedelta]
@@ -108,7 +107,7 @@ class Timedelta(timedelta):
     resolution: ClassVar[Timedelta]
     value: int
     def __new__(
-        cls: type[_S],
+        cls,
         value: str | int | Timedelta | timedelta | np.timedelta64 = ...,
         unit: TimeDeltaUnitChoices = ...,
         *,
@@ -119,7 +118,7 @@ class Timedelta(timedelta):
         minutes: float | np.integer | np.floating = ...,
         hours: float | np.integer | np.floating = ...,
         weeks: float | np.integer | np.floating = ...,
-    ) -> _S: ...
+    ) -> Self: ...
     # GH 46171
     # While Timedelta can return pd.NaT, having the constructor return
     # a Union with NaTType makes things awkward for users of pandas
@@ -137,9 +136,9 @@ class Timedelta(timedelta):
     @property
     def asm8(self) -> np.timedelta64: ...
     # TODO: round/floor/ceil could return NaT?
-    def round(self: _S, freq: str | BaseOffset) -> _S: ...
-    def floor(self: _S, freq: str | BaseOffset) -> _S: ...
-    def ceil(self: _S, freq: str | BaseOffset) -> _S: ...
+    def round(self, freq: str | BaseOffset) -> Self: ...
+    def floor(self, freq: str | BaseOffset) -> Self: ...
+    def ceil(self, freq: str | BaseOffset) -> Self: ...
     @property
     def resolution_string(self) -> str: ...
     # Override due to more types supported than dt.timedelta
@@ -169,12 +168,11 @@ class Timedelta(timedelta):
     def __add__(self, other: pd.TimedeltaIndex) -> pd.TimedeltaIndex: ...
     @overload
     def __add__(
-        self, other: TimedeltaSeries | Series[pd.Timedelta]
+        self,
+        other: TimedeltaSeries,
     ) -> TimedeltaSeries: ...
     @overload
-    def __add__(
-        self, other: Series[Timestamp] | TimestampSeries
-    ) -> TimestampSeries: ...
+    def __add__(self, other: TimestampSeries) -> TimestampSeries: ...
     @overload
     def __radd__(self, other: np.datetime64) -> Timestamp: ...
     @overload
@@ -277,9 +275,7 @@ class Timedelta(timedelta):
     @overload
     def __floordiv__(self, other: Series[float]) -> TimedeltaSeries: ...
     @overload
-    def __floordiv__(
-        self, other: Series[Timedelta] | TimedeltaSeries
-    ) -> Series[int]: ...
+    def __floordiv__(self, other: TimedeltaSeries) -> Series[int]: ...
     @overload
     def __floordiv__(self, other: NaTType | None) -> float: ...
     @overload
@@ -300,9 +296,7 @@ class Timedelta(timedelta):
         self, other: npt.NDArray[np.integer] | npt.NDArray[np.floating]
     ) -> npt.NDArray[np.timedelta64]: ...
     @overload
-    def __truediv__(
-        self, other: Series[Timedelta] | TimedeltaSeries
-    ) -> Series[float]: ...
+    def __truediv__(self, other: TimedeltaSeries) -> Series[float]: ...
     @overload
     def __truediv__(self, other: Series[int]) -> TimedeltaSeries: ...
     @overload
@@ -347,7 +341,7 @@ class Timedelta(timedelta):
     ) -> npt.NDArray[np.timedelta64]: ...
     @overload
     def __mod__(
-        self, other: Series[int] | Series[float] | Series[Timedelta] | TimedeltaSeries
+        self, other: Series[int] | Series[float] | TimedeltaSeries
     ) -> TimedeltaSeries: ...
     def __divmod__(self, other: timedelta) -> tuple[int, Timedelta]: ...
     # Mypy complains Forward operator "<inequality op>" is not callable, so ignore misc

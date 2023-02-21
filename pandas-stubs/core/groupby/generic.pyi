@@ -9,7 +9,6 @@ from typing import (
     Generic,
     Literal,
     NamedTuple,
-    Union,
     overload,
 )
 
@@ -33,10 +32,11 @@ from pandas._typing import (
     AxisType,
     Level,
     ListLike,
+    RandomState,
     Scalar,
 )
 
-AggScalar: TypeAlias = Union[str, Callable[..., Any]]
+AggScalar: TypeAlias = str | Callable[..., Any]
 ScalarResult = ...
 
 class NamedAgg(NamedTuple):
@@ -302,7 +302,7 @@ class DataFrameGroupBy(GroupBy):
         frac: float | None = ...,
         replace: bool = ...,
         weights: ListLike | None = ...,
-        random_state: int | None = ...,
+        random_state: RandomState | None = ...,
     ) -> DataFrame: ...
     def sem(self, ddof: int = ..., numeric_only: bool = ...) -> DataFrame: ...
     def shift(

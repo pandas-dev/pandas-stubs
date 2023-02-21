@@ -14,6 +14,7 @@ from pandas import (
     Period,
 )
 from pandas.core.indexes.accessors import TimedeltaIndexProperties
+from pandas.core.indexes.base import _IndexGetitemMixin
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.period import PeriodIndex
@@ -30,7 +31,10 @@ from pandas._typing import (
     num,
 )
 
-class TimedeltaIndex(DatetimeTimedeltaMixin, TimedeltaIndexProperties):
+# type ignore needed because of __getitem__()
+class TimedeltaIndex(  # type: ignore[misc]
+    _IndexGetitemMixin[Timedelta], DatetimeTimedeltaMixin, TimedeltaIndexProperties
+):
     def __init__(
         self,
         data: AnyArrayLike
@@ -45,16 +49,16 @@ class TimedeltaIndex(DatetimeTimedeltaMixin, TimedeltaIndexProperties):
     ): ...
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
-    @overload  # type: ignore[override]
+    @overload
     def __add__(self, other: Period) -> PeriodIndex: ...
     @overload
     def __add__(self, other: DatetimeIndex) -> DatetimeIndex: ...
     @overload
     def __add__(self, other: Timedelta | TimedeltaIndex) -> TimedeltaIndex: ...
     def __radd__(self, other: Timestamp | DatetimeIndex) -> DatetimeIndex: ...  # type: ignore[override]
-    def __sub__(self, other: Timedelta | TimedeltaIndex) -> TimedeltaIndex: ...  # type: ignore[override]
-    def __mul__(self, other: num) -> TimedeltaIndex: ...  # type: ignore[override]
-    def __truediv__(self, other: num) -> TimedeltaIndex: ...  # type: ignore[override]
+    def __sub__(self, other: Timedelta | TimedeltaIndex) -> TimedeltaIndex: ...
+    def __mul__(self, other: num) -> TimedeltaIndex: ...
+    def __truediv__(self, other: num) -> TimedeltaIndex: ...
     def astype(self, dtype, copy: bool = ...): ...
     def get_value(self, series, key): ...
     def get_loc(self, key, tolerance=...): ...

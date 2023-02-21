@@ -9,6 +9,7 @@ from typing import (
 )
 
 from pandas.core.frame import DataFrame
+from typing_extensions import Self
 
 from pandas._typing import (
     CompressionOptions,
@@ -92,7 +93,7 @@ class StataReader(StataParser, abc.Iterator):
         compression: CompressionOptions = ...,
         storage_options: StorageOptions = ...,
     ) -> None: ...
-    def __enter__(self) -> StataReader: ...
+    def __enter__(self) -> Self: ...
     def __exit__(
         self,
         exc_type: type[BaseException] | None,

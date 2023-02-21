@@ -3,11 +3,11 @@ ci:
     autofix_prs: false
 repos:
 -   repo: https://github.com/python/black
-    rev: 22.12.0
+    rev: 23.1.0
     hooks:
     -   id: black
 -   repo: https://github.com/PyCQA/isort
-    rev: 5.11.4
+    rev: 5.12.0
     hooks:
     -   id: isort
 -   repo: https://github.com/asottile/pyupgrade
@@ -27,10 +27,10 @@ repos:
     -   id: flake8
         name: flake8 (pyi)
         additional_dependencies:
-        - flake8-pyi==23.1.0
+        - flake8-pyi==23.1.2
         types: [pyi]
         args: [
-          --ignore=E301 E302 E305 E402 E501 E701 E704 F401 F811 W503 Y019 Y034 Y037 Y041 Y042,
+          --ignore=E301 E302 E305 E402 E501 E701 E704 F401 F811 W503 Y042,
           # TypeVars in private files are already private
           --per-file-ignores=_*.pyi:Y001
         ]

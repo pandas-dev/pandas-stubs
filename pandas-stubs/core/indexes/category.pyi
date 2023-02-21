@@ -4,6 +4,7 @@ import numpy as np
 from pandas.core import accessor
 from pandas.core.indexes.base import Index  # , maybe_extract_name
 from pandas.core.indexes.extension import ExtensionIndex
+from typing_extensions import Self
 
 from pandas._typing import DtypeArg
 
@@ -18,7 +19,7 @@ class CategoricalIndex(ExtensionIndex, accessor.PandasDelegate):
         dtype=...,
         copy: bool = ...,
         name=...,
-    ) -> CategoricalIndex: ...
+    ) -> Self: ...
     def equals(self, other): ...
     @property
     def inferred_type(self) -> str: ...

@@ -2,6 +2,7 @@ from collections.abc import (
     Callable,
     Hashable,
     Iterable,
+    Mapping,
     Sequence,
 )
 from types import TracebackType
@@ -15,6 +16,7 @@ from odf.opendocument import OpenDocument
 from openpyxl.workbook.workbook import Workbook
 from pandas.core.frame import DataFrame
 import pyxlsb.workbook
+from typing_extensions import Self
 from xlrd.book import Book
 
 from pandas._typing import (
@@ -41,9 +43,9 @@ def read_excel(
     names: list[str] | None = ...,
     index_col: int | Sequence[int] | None = ...,
     usecols: Sequence[int] | Sequence[str] | Callable[[str], bool] | None = ...,
-    dtype: str | Dtype | dict[str, str | Dtype] | None = ...,
+    dtype: str | Dtype | Mapping[str, str | Dtype] | None = ...,
     engine: Literal["xlrd", "openpyxl", "odf", "pyxlsb"] | None = ...,
-    converters: dict[int | str, Callable[[object], object]] | None = ...,
+    converters: Mapping[int | str, Callable[[object], object]] | None = ...,
     true_values: Iterable[Hashable] | None = ...,
     false_values: Iterable[Hashable] | None = ...,
     skiprows: int | Sequence[int] | Callable[[object], bool] | None = ...,
@@ -79,9 +81,9 @@ def read_excel(
     names: list[str] | None = ...,
     index_col: int | Sequence[int] | None = ...,
     usecols: Sequence[int] | Sequence[str] | Callable[[str], bool] | None = ...,
-    dtype: str | Dtype | dict[str, str | Dtype] | None = ...,
+    dtype: str | Dtype | Mapping[str, str | Dtype] | None = ...,
     engine: Literal["xlrd", "openpyxl", "odf", "pyxlsb"] | None = ...,
-    converters: dict[int | str, Callable[[object], object]] | None = ...,
+    converters: Mapping[int | str, Callable[[object], object]] | None = ...,
     true_values: Iterable[Hashable] | None = ...,
     false_values: Iterable[Hashable] | None = ...,
     skiprows: int | Sequence[int] | Callable[[object], bool] | None = ...,
@@ -129,7 +131,7 @@ class ExcelWriter:
     @property
     def if_sheet_exists(self) -> Literal["error", "new", "replace", "overlay"]: ...
     def __fspath__(self) -> str: ...
-    def __enter__(self) -> ExcelWriter: ...
+    def __enter__(self) -> Self: ...
     def __exit__(
         self,
         exc_type: type[BaseException] | None,
@@ -213,7 +215,7 @@ class ExcelFile:
     @property
     def sheet_names(self) -> list[int | str]: ...
     def close(self) -> None: ...
-    def __enter__(self) -> ExcelFile: ...
+    def __enter__(self) -> Self: ...
     def __exit__(
         self,
         exc_type: type[BaseException] | None,

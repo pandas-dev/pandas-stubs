@@ -28,11 +28,6 @@ lxml_skip = pytest.mark.skipif(
 )
 # This is only needed temporarily due to no wheels being available for lxml on 3.11
 
-pytables_skip = pytest.mark.skipif(
-    sys.version_info >= (3, 11), reason="pytables is not available for 3.11 yet"
-)
-# This is only needed temporarily due to no wheels being available for pytables on 3.11
-
 
 def check(actual: T, klass: type, dtype: type | None = None, attr: str = "left") -> T:
     if not isinstance(actual, klass):
@@ -40,7 +35,11 @@ def check(actual: T, klass: type, dtype: type | None = None, attr: str = "left")
     if dtype is None:
         return actual  # type: ignore[return-value]
 
-    if hasattr(actual, "__iter__"):
+    if isinstance(actual, pd.Series):
+        value = actual.iloc[0]
+    elif isinstance(actual, pd.Index):
+        value = actual[0]  # type: ignore[assignment]
+    elif hasattr(actual, "__iter__"):
         value = next(iter(actual))  # pyright: ignore[reportGeneralTypeIssues]
     else:
         assert hasattr(actual, attr)

@@ -6,7 +6,6 @@ import datetime as dt
 from typing import (
     Generic,
     Literal,
-    Union,
     overload,
 )
 
@@ -15,6 +14,7 @@ import pandas as pd
 from pandas import Index
 from pandas.core.indexes.extension import ExtensionIndex
 from pandas.core.series import (
+    Series,
     TimedeltaSeries,
     TimestampSeries,
 )
@@ -32,6 +32,7 @@ from pandas._typing import (
     IntervalClosedType,
     IntervalT,
     Label,
+    np_ndarray_anyint,
     np_ndarray_bool,
     npt,
 )
@@ -39,38 +40,35 @@ from pandas._typing import (
 from pandas.core.dtypes.dtypes import IntervalDtype as IntervalDtype
 from pandas.core.dtypes.generic import ABCSeries
 
-_EdgesInt: TypeAlias = Union[
-    Sequence[int],
-    npt.NDArray[np.int64],
-    npt.NDArray[np.int32],
-    npt.NDArray[np.intp],
-    pd.Series[int],
-    pd.Int64Index,
-]
-_EdgesFloat: TypeAlias = Union[
-    Sequence[float],
-    npt.NDArray[np.float64],
-    pd.Series[float],
-    pd.Float64Index,
-]
-_EdgesTimestamp: TypeAlias = Union[
-    Sequence[DatetimeLike],
-    npt.NDArray[np.datetime64],
-    pd.Series[pd.Timestamp],
-    TimestampSeries,
-    pd.DatetimeIndex,
-]
-_EdgesTimedelta: TypeAlias = Union[
-    Sequence[pd.Timedelta],
-    npt.NDArray[np.timedelta64],
-    pd.Series[pd.Timedelta],
-    TimedeltaSeries,
-    pd.TimedeltaIndex,
-]
-_TimestampLike: TypeAlias = Union[pd.Timestamp, np.datetime64, dt.datetime]
-_TimedeltaLike: TypeAlias = Union[pd.Timedelta, np.timedelta64, dt.timedelta]
+_EdgesInt: TypeAlias = (
+    Sequence[int]
+    | npt.NDArray[np.int64]
+    | npt.NDArray[np.int32]
+    | npt.NDArray[np.intp]
+    | pd.Series[int]
+    | pd.Int64Index
+)
+_EdgesFloat: TypeAlias = (
+    Sequence[float] | npt.NDArray[np.float64] | pd.Series[float] | pd.Float64Index
+)
+_EdgesTimestamp: TypeAlias = (
+    Sequence[DatetimeLike]
+    | npt.NDArray[np.datetime64]
+    | TimestampSeries
+    | pd.DatetimeIndex
+)
+_EdgesTimedelta: TypeAlias = (
+    Sequence[pd.Timedelta]
+    | npt.NDArray[np.timedelta64]
+    | TimedeltaSeries
+    | pd.TimedeltaIndex
+)
+_TimestampLike: TypeAlias = pd.Timestamp | np.datetime64 | dt.datetime
+_TimedeltaLike: TypeAlias = pd.Timedelta | np.timedelta64 | dt.timedelta
 
-class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[IntervalT]):
+class IntervalIndex(ExtensionIndex, IntervalMixin, Generic[IntervalT]):
+    closed: IntervalClosedType
+
     def __new__(
         cls,
         data: Sequence[IntervalT],
@@ -80,10 +78,9 @@ class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[IntervalT]):
         name: Hashable = ...,
         verify_integrity: bool = ...,
     ) -> IntervalIndex[IntervalT]: ...
-    # ignore[misc] here due to overlap, e.g., Sequence[int] and Sequence[float]
     @overload
     @classmethod
-    def from_breaks(  # type:ignore[misc]
+    def from_breaks(
         cls,
         breaks: _EdgesInt,
         closed: IntervalClosedType = ...,
@@ -121,10 +118,9 @@ class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[IntervalT]):
         copy: bool = ...,
         dtype: IntervalDtype | None = ...,
     ) -> IntervalIndex[Interval[pd.Timedelta]]: ...
-    # ignore[misc] here due to overlap, e.g., Sequence[int] and Sequence[float]
     @overload
     @classmethod
-    def from_arrays(  # type:ignore[misc]
+    def from_arrays(
         cls,
         left: _EdgesInt,
         right: _EdgesInt,
@@ -215,6 +211,7 @@ class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[IntervalT]):
         copy: bool = ...,
         dtype: IntervalDtype | None = ...,
     ) -> IntervalIndex[pd.Interval[pd.Timedelta]]: ...
+    def to_tuples(self, na_tuple: bool = ...) -> pd.Index: ...
     @overload
     def __contains__(self, key: IntervalT) -> bool: ...  # type: ignore[misc]
     @overload
@@ -252,10 +249,20 @@ class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[IntervalT]):
     @property
     def length(self) -> Index: ...
     def get_value(self, series: ABCSeries, key): ...
+    @overload  # type: ignore[override]
+    def __getitem__(
+        self,
+        idx: slice
+        | np_ndarray_anyint
+        | Sequence[int]
+        | Index
+        | Series[bool]
+        | np_ndarray_bool,
+    ) -> IntervalIndex[IntervalT]: ...
+    @overload
+    def __getitem__(self, idx: int) -> IntervalT: ...
     @property
     def is_all_dates(self) -> bool: ...
-    # override is due to additional types for comparison
-    # misc is due to overlap with object below
     @overload  # type: ignore[override]
     def __gt__(
         self, other: IntervalT | IntervalIndex[IntervalT]
@@ -279,7 +286,7 @@ class IntervalIndex(IntervalMixin, ExtensionIndex, Generic[IntervalT]):
         self, other: IntervalT | IntervalIndex[IntervalT]
     ) -> np_ndarray_bool: ...
     @overload
-    def __lt__(self, other: pd.Series[IntervalT]) -> bool: ...  # type: ignore[misc]
+    def __lt__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...
     @overload  # type: ignore[override]
     def __eq__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload

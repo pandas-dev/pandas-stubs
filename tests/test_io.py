@@ -66,10 +66,7 @@ from pandas.io.sas.sas7bdat import SAS7BDATReader
 from pandas.io.sas.sas_xport import XportReader
 from pandas.io.stata import StataReader
 
-from . import (
-    lxml_skip,
-    pytables_skip,
-)
+from . import lxml_skip
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 CWD = os.path.split(os.path.abspath(__file__))[0]
@@ -290,14 +287,12 @@ def test_sas_xport() -> None:
         pass
 
 
-@pytables_skip
 def test_hdf():
     with ensure_clean() as path:
         check(assert_type(DF.to_hdf(path, "df"), None), type(None))
         check(assert_type(read_hdf(path), Union[DataFrame, Series]), DataFrame)
 
 
-@pytables_skip
 def test_hdfstore():
     with ensure_clean() as path:
         store = HDFStore(path, model="w")
@@ -329,6 +324,8 @@ def test_hdfstore():
             DataFrame,
         )
         check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
+        for key in store:
+            check(assert_type(key, str), str)
         check(assert_type(store.close(), None), type(None))
 
         store = HDFStore(path, model="r")
@@ -339,7 +336,6 @@ def test_hdfstore():
         store.close()
 
 
-@pytables_skip
 def test_read_hdf_iterator():
     with ensure_clean() as path:
         check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
@@ -354,7 +350,6 @@ def test_read_hdf_iterator():
         ti.close()
 
 
-@pytables_skip
 def test_hdf_context_manager():
     with ensure_clean() as path:
         check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
@@ -363,7 +358,6 @@ def test_hdf_context_manager():
             check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
 
 
-@pytables_skip
 def test_hdf_series():
     s = DF["a"]
     with ensure_clean() as path:
@@ -705,6 +699,15 @@ def test_read_excel_list():
         )
 
 
+def test_read_excel_dtypes():
+    # GH 440
+    df = pd.DataFrame({"a": [1, 2, 3], "b": ["x", "y", "z"], "c": [10.0, 20.0, 30.3]})
+    with ensure_clean(".xlsx") as path:
+        check(assert_type(df.to_excel(path), None), type(None))
+        dtypes = {"a": np.int64, "b": str, "c": np.float64}
+        check(assert_type(read_excel(path, dtype=dtypes), pd.DataFrame), pd.DataFrame)
+
+
 def test_excel_writer():
     with ensure_clean(".xlsx") as path:
         with pd.ExcelWriter(path) as ew:
@@ -899,9 +902,7 @@ def test_sqlalchemy_selectable() -> None:
             class Base(metaclass=sqlalchemy.orm.decl_api.DeclarativeMeta):
                 __abstract__ = True
 
-            # error: Metaclass conflict: the metaclass of a derived class must be a
-            # (non-strict) subclass of the metaclasses of all its bases
-            class Temp(Base):  # type: ignore[misc]
+            class Temp(Base):
                 __tablename__ = "part"
                 quantity = sqlalchemy.Column(sqlalchemy.Integer)
 

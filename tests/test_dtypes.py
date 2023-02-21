@@ -126,6 +126,7 @@ def test_sparse_dtype() -> None:
 
 def test_string_dtype() -> None:
     s_dt = pd.StringDtype("pyarrow")
+    check(assert_type(pd.StringDtype(), pd.StringDtype), pd.StringDtype)
     check(assert_type(pd.StringDtype("pyarrow"), pd.StringDtype), pd.StringDtype)
     check(assert_type(pd.StringDtype("python"), pd.StringDtype), pd.StringDtype)
     check(assert_type(s_dt.na_value, NAType), NAType)

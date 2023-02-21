@@ -13,6 +13,10 @@ from pandas import (
     Timedelta,
     Timestamp,
 )
+from pandas.core.series import (
+    TimedeltaSeries,
+    TimestampSeries,
+)
 
 from pandas._typing import (
     IntervalClosedType,
@@ -144,7 +148,7 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     @overload
     def __rmul__(self: Interval[Timedelta], y: float) -> Interval[Timedelta]: ...
     @overload
-    def __truediv__(self: Interval[int], y: int | float) -> Interval[float]: ...
+    def __truediv__(self: Interval[int], y: float) -> Interval[float]: ...
     @overload
     def __truediv__(self: Interval[float], y: float) -> Interval[float]: ...
     @overload
@@ -170,7 +174,7 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     @overload
     def __gt__(
         self,
-        other: Series[int] | Series[float] | Series[Timestamp] | Series[Timedelta],
+        other: Series[int] | Series[float] | TimestampSeries | TimedeltaSeries,
     ) -> Series[bool]: ...
     @overload
     def __lt__(self, other: Interval[_OrderableT]) -> bool: ...
@@ -178,7 +182,8 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     def __lt__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_ndarray_bool: ...
     @overload
     def __lt__(
-        self, other: Series[int] | Series[float] | Series[Timestamp] | Series[Timedelta]
+        self,
+        other: Series[int] | Series[float] | TimestampSeries | TimedeltaSeries,
     ) -> Series[bool]: ...
     @overload
     def __ge__(self, other: Interval[_OrderableT]) -> bool: ...
@@ -186,7 +191,8 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     def __ge__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_ndarray_bool: ...
     @overload
     def __ge__(
-        self, other: Series[int] | Series[float] | Series[Timestamp] | Series[Timedelta]
+        self,
+        other: Series[int] | Series[float] | TimestampSeries | TimedeltaSeries,
     ) -> Series[bool]: ...
     @overload
     def __le__(self, other: Interval[_OrderableT]) -> bool: ...
