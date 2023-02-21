@@ -1289,12 +1289,10 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __and__(  # type: ignore[misc]
-        self, other: bool | list[bool] | np_ndarray_bool | Series[bool]
+        self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
     ) -> Series[bool]: ...
     @overload
-    def __and__(
-        self, other: int | list[int] | np_ndarray_anyint | Series[int]
-    ) -> Series[int]: ...
+    def __and__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
     # def __array__(self, dtype: Optional[_bool] = ...) -> _np_ndarray
     def __div__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __eq__(self, other: object) -> Series[_bool]: ...  # type: ignore[override]
@@ -1323,22 +1321,18 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __or__(  # type: ignore[misc]
-        self, other: bool | list[bool] | np_ndarray_bool | Series[bool]
+        self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
     ) -> Series[bool]: ...
     @overload
-    def __or__(
-        self, other: int | list[int] | np_ndarray_anyint | Series[int]
-    ) -> Series[int]: ...
+    def __or__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
     def __radd__(self, other: num | _str | _ListLike | Series[S1]) -> Series[S1]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __rand__(  # type: ignore[misc]
-        self, other: bool | list[bool] | np_ndarray_bool | Series[bool]
+        self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
     ) -> Series[bool]: ...
     @overload
-    def __rand__(
-        self, other: int | list[int] | np_ndarray_anyint | Series[int]
-    ) -> Series[int]: ...
+    def __rand__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...  # type: ignore[misc]
     def __rdiv__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __rdivmod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...  # type: ignore[override]
     def __rfloordiv__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
@@ -1349,12 +1343,10 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __ror__(  # type: ignore[misc]
-        self, other: bool | list[bool] | np_ndarray_bool | Series[bool]
+        self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
     ) -> Series[bool]: ...
     @overload
-    def __ror__(
-        self, other: int | list[int] | np_ndarray_anyint | Series[int]
-    ) -> Series[int]: ...
+    def __ror__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...  # type: ignore[misc]
     def __rsub__(self, other: num | _ListLike | Series[S1]) -> Series: ...
     @overload
     def __rtruediv__(self, other: TimedeltaSeries) -> Series[float]: ...
@@ -1363,12 +1355,10 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __rxor__(  # type: ignore[misc]
-        self, other: bool | list[bool] | np_ndarray_bool | Series[bool]
+        self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
     ) -> Series[bool]: ...
     @overload
-    def __rxor__(
-        self, other: int | list[int] | np_ndarray_anyint | Series[int]
-    ) -> Series[int]: ...
+    def __rxor__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...  # type: ignore[misc]
     @overload
     def __sub__(
         self, other: Timestamp | datetime | TimestampSeries
@@ -1389,12 +1379,10 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __xor__(  # type: ignore[misc]
-        self, other: bool | list[bool] | np_ndarray_bool | Series[bool]
+        self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
     ) -> Series[bool]: ...
     @overload
-    def __xor__(
-        self, other: int | list[int] | np_ndarray_anyint | Series[int]
-    ) -> Series[int]: ...
+    def __xor__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
     def __invert__(self) -> Series[bool]: ...
     # properties
     # @property

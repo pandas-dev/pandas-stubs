@@ -72,13 +72,13 @@ def test_types_init() -> None:
 
 def test_types_all() -> None:
     df = pd.DataFrame([[False, True], [False, False]], columns=["col1", "col2"])
-    check(assert_type(df.all(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(df.all(), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(df.all(axis=None), bool), np.bool_)
 
 
 def test_types_any() -> None:
     df = pd.DataFrame([[False, True], [False, False]], columns=["col1", "col2"])
-    check(assert_type(df.any(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(df.any(), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(df.any(axis=None), bool), np.bool_)
 
 
@@ -496,7 +496,7 @@ def test_types_apply() -> None:
     check(assert_type(df.apply(gethead, args=(4,)), pd.DataFrame), pd.DataFrame)
 
     # Check various return types for default result_type (None) with default axis (0)
-    check(assert_type(df.apply(returns_scalar), "pd.Series[int]"), pd.Series, int)
+    check(assert_type(df.apply(returns_scalar), "pd.Series[int]"), pd.Series, np.int64)
     check(assert_type(df.apply(returns_series), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.apply(returns_listlike_of_3), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.apply(returns_dict), pd.Series), pd.Series)
@@ -507,7 +507,7 @@ def test_types_apply() -> None:
         # to pass a result_type of "expand" to a scalar return
         assert_type(df.apply(returns_scalar, result_type="expand"), "pd.Series[int]"),
         pd.Series,
-        int,
+        np.int64,
     )
     check(
         assert_type(df.apply(returns_series, result_type="expand"), pd.DataFrame),
@@ -530,7 +530,7 @@ def test_types_apply() -> None:
         # to pass a result_type of "reduce" to a scalar return
         assert_type(df.apply(returns_scalar, result_type="reduce"), "pd.Series[int]"),
         pd.Series,
-        int,
+        np.int64,
     )
     check(
         # Note that technically it does not make sense
@@ -548,7 +548,9 @@ def test_types_apply() -> None:
 
     # Check various return types for default result_type (None) with axis=1
     check(
-        assert_type(df.apply(returns_scalar, axis=1), "pd.Series[int]"), pd.Series, int
+        assert_type(df.apply(returns_scalar, axis=1), "pd.Series[int]"),
+        pd.Series,
+        np.int64,
     )
     check(assert_type(df.apply(returns_series, axis=1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.apply(returns_listlike_of_3, axis=1), pd.Series), pd.Series)
@@ -562,7 +564,7 @@ def test_types_apply() -> None:
             df.apply(returns_scalar, axis=1, result_type="expand"), "pd.Series[int]"
         ),
         pd.Series,
-        int,
+        np.int64,
     )
     check(
         assert_type(
@@ -589,7 +591,7 @@ def test_types_apply() -> None:
             df.apply(returns_scalar, axis=1, result_type="reduce"), "pd.Series[int]"
         ),
         pd.Series,
-        int,
+        np.int64,
     )
     check(
         # Note that technically it does not make sense
@@ -668,33 +670,35 @@ def test_types_apply() -> None:
     # Test various other positional/keyword argument combinations
     # to ensure all overloads are supported
     check(
-        assert_type(df.apply(returns_scalar, axis=0), "pd.Series[int]"), pd.Series, int
+        assert_type(df.apply(returns_scalar, axis=0), "pd.Series[int]"),
+        pd.Series,
+        np.int64,
     )
     check(
         assert_type(
             df.apply(returns_scalar, axis=0, result_type=None), "pd.Series[int]"
         ),
         pd.Series,
-        int,
+        np.int64,
     )
     check(
         assert_type(df.apply(returns_scalar, 0, False, None), "pd.Series[int]"),
         pd.Series,
-        int,
+        np.int64,
     )
     check(
         assert_type(
             df.apply(returns_scalar, 0, False, result_type=None), "pd.Series[int]"
         ),
         pd.Series,
-        int,
+        np.int64,
     )
     check(
         assert_type(
             df.apply(returns_scalar, 0, raw=False, result_type=None), "pd.Series[int]"
         ),
         pd.Series,
-        int,
+        np.int64,
     )
 
 
@@ -863,7 +867,7 @@ def test_types_groupby_methods() -> None:
     check(
         assert_type(df.groupby("col1").value_counts(normalize=False), "pd.Series[int]"),
         pd.Series,
-        int,
+        np.int64,
     )
     check(
         assert_type(
@@ -948,12 +952,12 @@ def test_types_groupby_any() -> None:
     check(
         assert_type(df.groupby("col1")["col2"].any(), "pd.Series[bool]"),
         pd.Series,
-        bool,
+        np.bool_,
     )
     check(
         assert_type(df.groupby("col1")["col2"].any(), "pd.Series[bool]"),
         pd.Series,
-        bool,
+        np.bool_,
     )
 
 
@@ -2277,7 +2281,7 @@ def test_series_groupby_and_value_counts() -> None:
     )
     c1 = df.groupby("Animal")["Max Speed"].value_counts()
     c2 = df.groupby("Animal")["Max Speed"].value_counts(normalize=True)
-    check(assert_type(c1, "pd.Series[int]"), pd.Series, int)
+    check(assert_type(c1, "pd.Series[int]"), pd.Series, np.int64)
     check(assert_type(c2, "pd.Series[float]"), pd.Series, float)
 
 

@@ -87,7 +87,7 @@ def test_column_getitem() -> None:
 
     column = df.columns[0]
     check(assert_type(column, Scalar), str)
-    check(assert_type(df[column], pd.Series), pd.Series, int)
+    check(assert_type(df[column], pd.Series), pd.Series, np.int64)
 
 
 def test_column_contains() -> None:
@@ -843,7 +843,7 @@ def test_getitem() -> None:
     iri = pd.RangeIndex(0, 10)
     check(assert_type(iri, pd.RangeIndex), pd.RangeIndex, int)
     check(assert_type(iri[0], int), int)
-    check(assert_type(iri[[0, 2, 4]], pd.Index), pd.Index, int)
+    check(assert_type(iri[[0, 2, 4]], pd.Index), pd.Index, np.int64)
 
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
     check(assert_type(mi, pd.MultiIndex), pd.MultiIndex)
