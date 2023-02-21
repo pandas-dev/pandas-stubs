@@ -163,6 +163,8 @@ IndexIterScalar: TypeAlias = (
     | datetime.date
     | datetime.datetime
     | datetime.timedelta
+    | np.datetime64
+    | np.timedelta64
     | bool
     | int
     | float
