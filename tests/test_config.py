@@ -1,6 +1,8 @@
 from typing import (
     TYPE_CHECKING,
     Any,
+    Callable,
+    Optional,
 )
 
 import pandas as pd
@@ -36,3 +38,13 @@ def test_specific_option():
     check(assert_type(pd.options.plotting.backend, str), str)
     # Just check assignment
     pd.options.plotting.backend = "matplotlib"
+
+
+def test_display_float_format():
+    check(
+        assert_type(pd.options.display.float_format, Optional[Callable[[float], str]]),
+        type(None),
+    )
+    formatter = "{,.2f}".format
+    with pd.option_context("display.float_format", formatter):
+        assert pd.get_option("display.float_format") == formatter
