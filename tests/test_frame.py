@@ -877,6 +877,8 @@ def test_types_groupby_methods() -> None:
         pd.Series,
         float,
     )
+    check(assert_type(df.groupby("col1").idxmax(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.groupby("col1").idxmin(), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_groupby_agg() -> None:

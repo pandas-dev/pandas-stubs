@@ -519,6 +519,8 @@ def test_types_groupby_methods() -> None:
     check(assert_type(s.groupby(level=0).var(), "pd.Series[float]"), pd.Series, float)
     check(assert_type(s.groupby(level=0).tail(), "pd.Series[int]"), pd.Series, np.int_)
     check(assert_type(s.groupby(level=0).unique(), pd.Series), pd.Series)
+    check(assert_type(s.groupby(level=0).idxmax(), pd.Series), pd.Series)
+    check(assert_type(s.groupby(level=0).idxmin(), pd.Series), pd.Series)
 
 
 def test_types_groupby_agg() -> None:
