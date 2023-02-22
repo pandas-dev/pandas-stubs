@@ -266,6 +266,27 @@ def test_isna() -> None:
     assert not check(assert_type(pd.isna(2.5), bool), bool)
     assert check(assert_type(pd.notna(2.5), bool), bool)
 
+    # Checks for datetime, timedelta, np.datetime64 and np.timedelta64
+    py_dt = dt.datetime.now()
+    assert check(assert_type(pd.notna(py_dt), bool), bool)
+    assert not check(assert_type(pd.isna(py_dt), bool), bool)
+
+    py_td = dt.datetime.now() - py_dt
+    assert check(assert_type(pd.notna(py_td), bool), bool)
+    assert not check(assert_type(pd.isna(py_td), bool), bool)
+
+    np_dt = np.datetime64(py_dt)
+    assert check(assert_type(pd.notna(np_dt), bool), bool)
+    assert not check(assert_type(pd.isna(np_dt), bool), bool)
+
+    np_td = np.timedelta64(py_td)
+    assert check(assert_type(pd.notna(np_td), bool), bool)
+    assert not check(assert_type(pd.isna(np_td), bool), bool)
+
+    np_nat = np.timedelta64("NaT")
+    assert check(assert_type(pd.isna(np_nat), bool), bool)
+    assert not check(assert_type(pd.notna(np_nat), bool), bool)
+
     # Check TypeGuard type narrowing functionality
     # TODO: Due to limitations in TypeGuard spec, the true annotations are not always viable
     # and as a result the type narrowing does not always work as it intuitively should
