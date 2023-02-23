@@ -1043,11 +1043,17 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         ignore_index: _bool = ...,
     ) -> Series[S1]: ...
     @overload
+    def astype(  # type: ignore[misc]
+        self,
+        dtype: type[bool] | pd.BooleanDtype | Literal["bool"],
+        copy: _bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Series[bool]: ...
+    @overload
     def astype(
         self,
-        dtype: Literal["int", "int32"]
-        | type[int]
-        | type[bool]
+        dtype: Literal["int", "int32"] | type[int]
+        # | type[bool]
         | pd.Int8Dtype
         | pd.Int16Dtype
         | pd.Int32Dtype
@@ -1107,24 +1113,17 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def astype(
         self,
-        dtype: pd.BooleanDtype | Literal["bool"],
-        copy: _bool = ...,
-        errors: IgnoreRaise = ...,
-    ) -> Series[bool]: ...
-    @overload
-    def astype(
-        self,
         dtype: Literal["timedelta64[ns]"],
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
-    ) -> Series[Timedelta]: ...
+    ) -> TimedeltaSeries: ...
     @overload
     def astype(
         self,
         dtype: Literal["datetime64[ns]"],
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
-    ) -> Series[Timestamp]: ...
+    ) -> TimestampSeries: ...
     @overload
     def astype(
         self,

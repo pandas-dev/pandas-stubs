@@ -24,7 +24,11 @@ from pandas.api.extensions import (
     ExtensionArray,
     ExtensionDtype,
 )
-from pandas.core.series import Series  # noqa: F401
+from pandas.core.series import (  # noqa: F401
+    Series,
+    TimedeltaSeries,
+    TimestampSeries,
+)
 from pandas.core.window import ExponentialMovingWindow
 import pytest
 from typing_extensions import assert_type
@@ -1437,11 +1441,10 @@ def test_updated_astype() -> None:
     check(assert_type(s.astype(int), "Series[int]"), pd.Series)
     check(assert_type(s.astype("int"), "Series[int]"), pd.Series)
     check(assert_type(s.astype("int32"), "Series[int]"), pd.Series)
-    check(assert_type(s.astype(bool), "Series[int]"), pd.Series)
-    check(assert_type(s.astype(pd.Int8Dtype()), "Series[int]"), pd.Series)
-    check(assert_type(s.astype(pd.Int16Dtype()), "Series[int]"), pd.Series)
-    check(assert_type(s.astype(pd.Int32Dtype()), "Series[int]"), pd.Series)
-    check(assert_type(s.astype(pd.Int64Dtype()), "Series[int]"), pd.Series)
+    check(assert_type(s.astype(pd.Int8Dtype()), "Series[int]"), pd.Series, np.int8)
+    check(assert_type(s.astype(pd.Int16Dtype()), "Series[int]"), pd.Series, np.int16)
+    check(assert_type(s.astype(pd.Int32Dtype()), "Series[int]"), pd.Series, np.int32)
+    check(assert_type(s.astype(pd.Int64Dtype()), "Series[int]"), pd.Series, np.int64)
     check(assert_type(s.astype(np.int8), "Series[int]"), pd.Series, np.int8)
     check(assert_type(s.astype(np.int16), "Series[int]"), pd.Series, np.int16)
     check(assert_type(s.astype(np.int32), "Series[int]"), pd.Series, np.int32)
@@ -1456,13 +1459,17 @@ def test_updated_astype() -> None:
     check(assert_type(s.astype(np.ubyte), "Series[int]"), pd.Series, np.ubyte)
 
     check(assert_type(s.astype(str), "Series[str]"), pd.Series, str)
-    check(assert_type(s.astype(pd.StringDtype()), "Series[str]"), pd.Series)
+    check(assert_type(s.astype(pd.StringDtype()), "Series[str]"), pd.Series, str)
     check(assert_type(s.astype("str"), "Series[str]"), pd.Series, str)
 
     check(assert_type(s.astype(bytes), "Series[bytes]"), pd.Series, bytes)
 
-    check(assert_type(s.astype(pd.Float32Dtype()), "Series[float]"), pd.Series)
-    check(assert_type(s.astype(pd.Float64Dtype()), "Series[float]"), pd.Series)
+    check(
+        assert_type(s.astype(pd.Float32Dtype()), "Series[float]"), pd.Series, np.float32
+    )
+    check(
+        assert_type(s.astype(pd.Float64Dtype()), "Series[float]"), pd.Series, np.float64
+    )
     check(assert_type(s.astype(np.float16), "Series[float]"), pd.Series, np.float16)
     check(assert_type(s.astype(np.float32), "Series[float]"), pd.Series, np.float32)
     check(assert_type(s.astype(np.float64), "Series[float]"), pd.Series, np.float64)
@@ -1480,17 +1487,20 @@ def test_updated_astype() -> None:
     check(assert_type(s.astype(complex), "Series[complex]"), pd.Series, complex)
     check(assert_type(s.astype("complex"), "Series[complex]"), pd.Series, complex)
 
-    check(assert_type(s1.astype(pd.BooleanDtype()), "Series[bool]"), pd.Series)
+    check(
+        assert_type(s1.astype(pd.BooleanDtype()), "Series[bool]"), pd.Series, np.bool_
+    )
     check(assert_type(s.astype("bool"), "Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(s.astype(bool), "Series[bool]"), pd.Series, np.bool_)
 
     check(
-        assert_type(s.astype("timedelta64[ns]"), "Series[Timedelta]"),
+        assert_type(s.astype("timedelta64[ns]"), "TimedeltaSeries"),
         pd.Series,
         Timedelta,
     )
 
     check(
-        assert_type(s.astype("datetime64[ns]"), "Series[Timestamp]"),
+        assert_type(s.astype("datetime64[ns]"), "TimestampSeries"),
         pd.Series,
         Timestamp,
     )
