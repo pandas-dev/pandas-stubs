@@ -1445,8 +1445,8 @@ def test_updated_astype() -> None:
     s = pd.Series([3, 4, 5])
     s1 = pd.Series(True)
 
-    check(assert_type(s.astype(int), "pd.Series[int]"), pd.Series, np.int32)
-    check(assert_type(s.astype("int"), "pd.Series[int]"), pd.Series, np.int32)
+    check(assert_type(s.astype(int), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.astype("int"), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.astype("int32"), "pd.Series[int]"), pd.Series, np.int32)
     check(assert_type(s.astype(pd.Int8Dtype()), "pd.Series[int]"), pd.Series, np.int8)
     check(assert_type(s.astype(pd.Int16Dtype()), "pd.Series[int]"), pd.Series, np.int16)
