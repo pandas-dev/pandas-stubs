@@ -24,14 +24,13 @@ from pandas.api.extensions import (
     ExtensionArray,
     ExtensionDtype,
 )
-from pandas.core.series import (  # noqa: F401
-    Series,
-    TimedeltaSeries,
-    TimestampSeries,
-)
+from pandas.core.series import Series  # noqa: F401
 from pandas.core.window import ExponentialMovingWindow
 import pytest
-from typing_extensions import assert_type
+from typing_extensions import (
+    TypeAlias,
+    assert_type,
+)
 import xarray as xr
 
 from pandas._libs.tslibs.timedeltas import Timedelta
@@ -47,6 +46,15 @@ from tests import (
     check,
     pytest_warns_bounded,
 )
+
+if TYPE_CHECKING:
+    from pandas.core.series import (  # noqa: F401
+        TimedeltaSeries,
+        TimestampSeries,
+    )
+else:
+    TimedeltaSeries: TypeAlias = pd.Series  # noqa: F401
+    TimestampSeries: TypeAlias = pd.Series  # noqa: F401
 
 if TYPE_CHECKING:
     from pandas._typing import np_ndarray_int  # noqa: F401
