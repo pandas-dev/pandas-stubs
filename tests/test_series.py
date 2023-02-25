@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+
 # from decimal import Decimal
 from pathlib import Path
 import re
@@ -26,6 +27,7 @@ from pandas.api.extensions import (
     ExtensionDtype,
 )
 from pandas.core.window import ExponentialMovingWindow
+
 # from pandas.tests.extension.decimal import DecimalDtype
 import pytest
 from typing_extensions import (
