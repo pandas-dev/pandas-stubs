@@ -2423,3 +2423,14 @@ def test_insert_newvalues() -> None:
     assert assert_type(df.insert(loc=0, column="b", value=None), None) is None
     assert assert_type(ab.insert(loc=0, column="newcol", value=[99, 99]), None) is None
     assert assert_type(ef.insert(loc=0, column="g", value=4), None) is None
+
+
+def test_astype() -> None:
+    s = pd.DataFrame({"d": [1, 2]})
+
+    check(assert_type(s.astype(int), "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(s.astype(pd.Int64Dtype()), "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(s.astype(str), "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(s.astype(bytes), "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(s.astype(pd.Float64Dtype()), "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(s.astype(complex), "pd.DataFrame"), pd.DataFrame)

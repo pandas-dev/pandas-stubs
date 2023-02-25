@@ -59,6 +59,7 @@ from pandas._typing import (
     AggFuncTypeFrame,
     AnyArrayLike,
     ArrayLike,
+    AstypeArg,
     Axes,
     Axis,
     AxisType,
@@ -1438,11 +1439,19 @@ class DataFrame(NDFrame, OpsMixin):
         normalize: _bool = ...,
         fill_value: Scalar | None = ...,
     ) -> DataFrame: ...
+    @overload
+    def astype(
+        self,
+        dtype: AstypeArg | dict[Any, AstypeArg],
+        copy: _bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> DataFrame: ...
+    @overload
     def astype(
         self,
         dtype: _str | Dtype | Mapping[HashableT, _str | Dtype] | Series,
         copy: _bool = ...,
-        errors: _str = ...,
+        errors: IgnoreRaise = ...,
     ) -> DataFrame: ...
     def at_time(
         self,

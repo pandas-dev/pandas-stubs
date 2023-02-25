@@ -17,6 +17,8 @@ from typing import (
     cast,
 )
 
+# from decimal import Decimal
+# from pandas.tests.extension.decimal import DecimalDtype
 import numpy as np
 import pandas as pd
 from pandas._testing import ensure_clean
@@ -1520,3 +1522,5 @@ def test_updated_astype() -> None:
         pd.Series,
         Timestamp,
     )
+
+    # check(assert_type(pd.Series([Decimal(x) for x in [1,2,3]]).astype(DecimalDtype()), pd.Series), Decimal)
