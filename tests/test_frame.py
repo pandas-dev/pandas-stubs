@@ -2296,6 +2296,9 @@ def test_axes_as_tuple() -> None:
 def test_astype_dict() -> None:
     # GH 447
     df = pd.DataFrame({"a": [1, 2, 3], 43: [4, 5, 6]})
+    columns_types = {"a": "int", 43: "float"}
+    de = df.astype(columns_types)
+    check(assert_type(de, pd.DataFrame), pd.DataFrame)
     check(assert_type(df.astype({"a": "int", 43: "float"}), pd.DataFrame), pd.DataFrame)
 
 

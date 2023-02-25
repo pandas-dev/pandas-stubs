@@ -76,6 +76,7 @@ class FulldatetimeDict(YearMonthDayDict, total=False):
 # dtypes
 NpDtype: TypeAlias = str | np.dtype[np.generic] | type[str | complex | bool | object]
 Dtype: TypeAlias = ExtensionDtype | NpDtype
+DtypeArg: TypeAlias = Dtype | dict[Any, Dtype]
 AstypeArg: TypeAlias = (
     BooleanDtypeArg
     | IntDtypeArg
@@ -89,7 +90,6 @@ AstypeArg: TypeAlias = (
     | ExtensionDtype
 )
 # DtypeArg specifies all allowable dtypes in a functions its dtype argument
-DtypeArg: TypeAlias = Dtype | dict[Any, Dtype]
 DtypeObj: TypeAlias = np.dtype[np.generic] | ExtensionDtype
 
 # filenames and file-like-objects
