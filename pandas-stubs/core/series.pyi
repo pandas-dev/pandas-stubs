@@ -20,6 +20,12 @@ from typing import (
     overload,
 )
 
+from core.api import (
+    Int8Dtype as Int8Dtype,
+    Int16Dtype as Int16Dtype,
+    Int32Dtype as Int32Dtype,
+    Int64Dtype as Int64Dtype,
+)
 from matplotlib.axes import (
     Axes as PlotAxes,
     SubplotBase,
@@ -80,17 +86,23 @@ from pandas._typing import (
     Axes,
     Axis,
     AxisType,
+    BooleanDtypeArg,
+    BytesDtypeArg,
     CalculationMethod,
+    CategoryDtypeArg,
+    ComplexDtypeArg,
     CompressionOptions,
     DtypeObj,
     FilePath,
     FillnaOptions,
+    FloatDtypeArg,
     GroupByObjectNonScalar,
     HashableT1,
     HashableT2,
     HashableT3,
     IgnoreRaise,
     IndexingInt,
+    IntDtypeArg,
     IntervalClosedType,
     JoinHow,
     JsonSeriesOrient,
@@ -106,13 +118,18 @@ from pandas._typing import (
     Scalar,
     SeriesAxisType,
     SortKind,
+    StrDtypeArg,
+    TimedeltaDtypeArg,
     TimestampConvention,
+    TimestampDtypeArg,
     WriteBuffer,
     np_ndarray_anyint,
     np_ndarray_bool,
     npt,
     num,
 )
+
+from pandas.core.dtypes.base import ExtensionDtype
 
 from pandas.plotting import PlotAccessor
 
@@ -1035,9 +1052,73 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         axis: SeriesAxisType | None = ...,
         ignore_index: _bool = ...,
     ) -> Series[S1]: ...
+    @overload
+    def astype(  # type: ignore[misc]
+        self,
+        dtype: BooleanDtypeArg,
+        copy: _bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Series[bool]: ...
+    @overload
     def astype(
         self,
-        dtype: S1 | _str | type[Scalar],
+        dtype: IntDtypeArg,
+        copy: _bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Series[int]: ...
+    @overload
+    def astype(
+        self,
+        dtype: StrDtypeArg,
+        copy: _bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Series[_str]: ...
+    @overload
+    def astype(
+        self,
+        dtype: BytesDtypeArg,
+        copy: _bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Series[bytes]: ...
+    @overload
+    def astype(
+        self,
+        dtype: FloatDtypeArg,
+        copy: _bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Series[float]: ...
+    @overload
+    def astype(
+        self,
+        dtype: ComplexDtypeArg,
+        copy: _bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Series[complex]: ...
+    @overload
+    def astype(
+        self,
+        dtype: TimedeltaDtypeArg,
+        copy: _bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> TimedeltaSeries: ...
+    @overload
+    def astype(
+        self,
+        dtype: TimestampDtypeArg,
+        copy: _bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> TimestampSeries: ...
+    @overload
+    def astype(
+        self,
+        dtype: CategoryDtypeArg,
+        copy: _bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Series: ...
+    @overload
+    def astype(
+        self,
+        dtype: ExtensionDtype,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series: ...

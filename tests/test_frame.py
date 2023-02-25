@@ -2299,8 +2299,9 @@ def test_astype_dict() -> None:
     # GH 447
     df = pd.DataFrame({"a": [1, 2, 3], 43: [4, 5, 6]})
     columns_types = {"a": "int", 43: "float"}
-    df = df.astype(columns_types)
-    check(assert_type(df, pd.DataFrame), pd.DataFrame)
+    de = df.astype(columns_types)
+    check(assert_type(de, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.astype({"a": "int", 43: "float"}), pd.DataFrame), pd.DataFrame)
 
 
 def test_setitem_none() -> None:
@@ -2425,3 +2426,19 @@ def test_insert_newvalues() -> None:
     assert assert_type(df.insert(loc=0, column="b", value=None), None) is None
     assert assert_type(ab.insert(loc=0, column="newcol", value=[99, 99]), None) is None
     assert assert_type(ef.insert(loc=0, column="g", value=4), None) is None
+
+
+def test_astype() -> None:
+    s = pd.DataFrame({"d": [1, 2]})
+    ab = pd.DataFrame({"col1": [1, 2], "col2": ["a", "b"]})
+
+    check(assert_type(s.astype(int), "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(s.astype(pd.Int64Dtype()), "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(s.astype(str), "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(s.astype(bytes), "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(s.astype(pd.Float64Dtype()), "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(s.astype(complex), "pd.DataFrame"), pd.DataFrame)
+    check(
+        assert_type(ab.astype({"col1": "int32", "col2": str}), "pd.DataFrame"),
+        pd.DataFrame,
+    )
