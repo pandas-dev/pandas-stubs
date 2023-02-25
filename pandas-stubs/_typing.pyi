@@ -77,6 +77,47 @@ class FulldatetimeDict(YearMonthDayDict, total=False):
 NpDtype: TypeAlias = str | np.dtype[np.generic] | type[str | complex | bool | object]
 Dtype: TypeAlias = ExtensionDtype | NpDtype
 DtypeArg: TypeAlias = Dtype | dict[Any, Dtype]
+BooleanDtypeArg: TypeAlias = (
+    type[bool] | type[np.bool_] | pd.BooleanDtype | Literal["bool"]
+)
+IntDtypeArg: TypeAlias = (
+    Literal["int", "int32"]
+    | type[int]
+    | pd.Int8Dtype
+    | pd.Int16Dtype
+    | pd.Int32Dtype
+    | pd.Int64Dtype
+    | type[np.int8]
+    | type[np.int16]
+    | type[np.int32]
+    | type[np.int64]
+    | type[np.uint8]
+    | type[np.uint16]
+    | type[np.uint32]
+    | type[np.uint64]
+    | type[np.intp]
+    | type[np.uintp]
+    | type[np.byte]
+    | type[np.ubyte]
+)
+StrDtypeArg: TypeAlias = type[str] | pd.StringDtype | Literal["str"]
+BytesDtypeArg: TypeAlias = type[bytes]
+FloatDtypeArg: TypeAlias = (
+    pd.Float32Dtype
+    | pd.Float64Dtype
+    | type[np.float16]
+    | type[np.float32]
+    | type[np.float64]
+    | type[float]
+    | Literal["float"]
+)
+ComplexDtypeArg: TypeAlias = (
+    type[np.complex64] | type[np.complex128] | type[complex] | Literal["complex"]
+)
+TimedeltaDtypeArg: TypeAlias = Literal["timedelta64[ns]"]
+TimestampDtypeArg: TypeAlias = Literal["datetime64[ns]"]
+CategoryDtypeArg: TypeAlias = Literal["category"]
+
 AstypeArg: TypeAlias = (
     BooleanDtypeArg
     | IntDtypeArg
@@ -390,44 +431,3 @@ RandomState: TypeAlias = (
 )
 
 __all__ = ["npt", "type_t"]
-
-BooleanDtypeArg: TypeAlias = (
-    type[bool] | type[np.bool_] | pd.BooleanDtype | Literal["bool"]
-)
-IntDtypeArg: TypeAlias = (
-    Literal["int", "int32"]
-    | type[int]
-    | pd.Int8Dtype
-    | pd.Int16Dtype
-    | pd.Int32Dtype
-    | pd.Int64Dtype
-    | type[np.int8]
-    | type[np.int16]
-    | type[np.int32]
-    | type[np.int64]
-    | type[np.uint8]
-    | type[np.uint16]
-    | type[np.uint32]
-    | type[np.uint64]
-    | type[np.intp]
-    | type[np.uintp]
-    | type[np.byte]
-    | type[np.ubyte]
-)
-StrDtypeArg: TypeAlias = type[str] | pd.StringDtype | Literal["str"]
-BytesDtypeArg: TypeAlias = type[bytes]
-FloatDtypeArg: TypeAlias = (
-    pd.Float32Dtype
-    | pd.Float64Dtype
-    | type[np.float16]
-    | type[np.float32]
-    | type[np.float64]
-    | type[float]
-    | Literal["float"]
-)
-ComplexDtypeArg: TypeAlias = (
-    type[np.complex64] | type[np.complex128] | type[complex] | Literal["complex"]
-)
-TimedeltaDtypeArg: TypeAlias = Literal["timedelta64[ns]"]
-TimestampDtypeArg: TypeAlias = Literal["datetime64[ns]"]
-CategoryDtypeArg: TypeAlias = Literal["category"]

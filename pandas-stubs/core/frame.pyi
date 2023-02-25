@@ -1441,7 +1441,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def astype(
         self,
-        dtype: AstypeArg | Mapping[Hashable, AstypeArg] | Series | Any,
+        dtype: AstypeArg | Mapping[Any, Dtype] | Series,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> DataFrame: ...
