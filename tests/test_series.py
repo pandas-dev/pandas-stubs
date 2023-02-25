@@ -50,6 +50,7 @@ from tests import (
 
 if TYPE_CHECKING:
     from pandas.core.series import (
+        TimedeltaSeries,
         TimestampSeries,
     )
 else:
