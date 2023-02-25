@@ -2269,7 +2269,7 @@ def test_df_accepting_dicts_iterator() -> None:
 def test_series_added_in_astype() -> None:
     # GH410
     df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
-    check(assert_type(df.astype(df.dtypes), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.astype({"a": int, "b": "int"}), pd.DataFrame), pd.DataFrame)
 
 
 def test_series_groupby_and_value_counts() -> None:
@@ -2296,9 +2296,7 @@ def test_axes_as_tuple() -> None:
 def test_astype_dict() -> None:
     # GH 447
     df = pd.DataFrame({"a": [1, 2, 3], 43: [4, 5, 6]})
-    columns_types = {"a": "int", 43: "float"}
-    df = df.astype(columns_types)
-    check(assert_type(df, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.astype({"a": "int", 43: "float"}), pd.DataFrame), pd.DataFrame)
 
 
 def test_setitem_none() -> None:
@@ -2427,6 +2425,7 @@ def test_insert_newvalues() -> None:
 
 def test_astype() -> None:
     s = pd.DataFrame({"d": [1, 2]})
+    ab = pd.DataFrame({"col1": [1, 2], "col2": ["a", "b"]})
 
     check(assert_type(s.astype(int), "pd.DataFrame"), pd.DataFrame)
     check(assert_type(s.astype(pd.Int64Dtype()), "pd.DataFrame"), pd.DataFrame)
@@ -2434,3 +2433,7 @@ def test_astype() -> None:
     check(assert_type(s.astype(bytes), "pd.DataFrame"), pd.DataFrame)
     check(assert_type(s.astype(pd.Float64Dtype()), "pd.DataFrame"), pd.DataFrame)
     check(assert_type(s.astype(complex), "pd.DataFrame"), pd.DataFrame)
+    check(
+        assert_type(ab.astype({"col1": "int32", "col2": str}), "pd.DataFrame"),
+        pd.DataFrame,
+    )

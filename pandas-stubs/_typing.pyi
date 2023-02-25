@@ -25,10 +25,7 @@ from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexes.base import Index
-from pandas.core.series import (
-    Series,
-    _str,
-)
+from pandas.core.series import Series
 from typing_extensions import TypeAlias
 
 from pandas._libs.interval import Interval
@@ -79,7 +76,6 @@ class FulldatetimeDict(YearMonthDayDict, total=False):
 # dtypes
 NpDtype: TypeAlias = str | np.dtype[np.generic] | type[str | complex | bool | object]
 Dtype: TypeAlias = ExtensionDtype | NpDtype
-# AstypeArg: TypeAlias = ExtensionDtype | npt.DTypeLike
 AstypeArg: TypeAlias = (
     BooleanDtypeArg
     | IntDtypeArg
@@ -418,7 +414,7 @@ IntDtypeArg: TypeAlias = (
     | type[np.byte]
     | type[np.ubyte]
 )
-StrDtypeArg: TypeAlias = type[_str] | pd.StringDtype | Literal["str"]
+StrDtypeArg: TypeAlias = type[str] | pd.StringDtype | Literal["str"]
 BytesDtypeArg: TypeAlias = type[bytes]
 FloatDtypeArg: TypeAlias = (
     pd.Float32Dtype
