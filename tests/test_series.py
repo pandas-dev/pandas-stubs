@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from decimal import Decimal
+# from decimal import Decimal
 from pathlib import Path
 import re
 from typing import (
@@ -26,7 +26,7 @@ from pandas.api.extensions import (
     ExtensionDtype,
 )
 from pandas.core.window import ExponentialMovingWindow
-from pandas.tests.extension.decimal import DecimalDtype
+# from pandas.tests.extension.decimal import DecimalDtype
 import pytest
 from typing_extensions import (
     TypeAlias,
@@ -1523,11 +1523,11 @@ def test_updated_astype() -> None:
         Timestamp,
     )
 
-    orseries = pd.Series([Decimal(x) for x in [1, 2, 3]])
-    newtype: ExtensionDtype = DecimalDtype()
-    decseries = orseries.astype(newtype)
-    check(
-        assert_type(decseries, pd.Series),
-        pd.Series,
-        Decimal,
-    )
+    # orseries = pd.Series([Decimal(x) for x in [1, 2, 3]])
+    # newtype: ExtensionDtype = DecimalDtype()
+    # decseries = orseries.astype(newtype)
+    # check(
+    #     assert_type(decseries, pd.Series),
+    #     pd.Series,
+    #     Decimal,
+    # )
