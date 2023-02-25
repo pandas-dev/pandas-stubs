@@ -2269,7 +2269,7 @@ def test_df_accepting_dicts_iterator() -> None:
 def test_series_added_in_astype() -> None:
     # GH410
     df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
-    check(assert_type(df.astype({"a": int, "b": "int"}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.astype(df.dtypes), pd.DataFrame), pd.DataFrame)
 
 
 def test_series_groupby_and_value_counts() -> None:
