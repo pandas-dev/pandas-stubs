@@ -14,7 +14,9 @@ from pandas.api.extensions import ExtensionArray
 
 from pandas._typing import (
     AnyArrayLike,
+    AxisInt,
     IntervalT,
+    TakeIndexer,
 )
 
 # These are type: ignored because the Index types overlap due to inheritance but indices
@@ -69,3 +71,10 @@ def value_counts(
     bins: int | None = ...,
     dropna: bool = ...,
 ) -> Series: ...
+def take(
+    arr,
+    indices: TakeIndexer,
+    axis: AxisInt = 0,
+    allow_fill: bool = False,
+    fill_value=None,
+): ...

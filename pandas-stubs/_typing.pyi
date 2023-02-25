@@ -113,7 +113,8 @@ class WriteExcelBuffer(WriteBuffer[bytes], Protocol):
 
 FilePath: TypeAlias = str | PathLike[str]
 
-Axis: TypeAlias = str | int
+AxisInt: TypeAlias = Literal[0, 1]
+Axis: TypeAlias = AxisInt | Literal["index", "columns", "rows"]
 IndexLabel: TypeAlias = Hashable | Sequence[Hashable]
 Label: TypeAlias = Hashable | None
 Level: TypeAlias = Hashable | int
@@ -239,6 +240,8 @@ IntervalT = TypeVar(
     Interval[Timedelta],
 )
 IntervalClosedType: TypeAlias = Literal["left", "right", "both", "neither"]
+
+TakeIndexer: TypeAlias = Sequence[int] | Sequence[np.integer] | npt.NDArray[np.integer]
 
 IgnoreRaiseCoerce: TypeAlias = Literal["ignore", "raise", "coerce"]
 

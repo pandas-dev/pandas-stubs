@@ -1,14 +1,16 @@
 import numpy as np
 from pandas import Index
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
+from typing_extensions import Self
 
 from pandas._libs.interval import (
     Interval as Interval,
     IntervalMixin as IntervalMixin,
 )
-from pandas._typing import Axis
-
-from pandas.core.dtypes.generic import ABCExtensionArray
+from pandas._typing import (
+    Axis,
+    TakeIndexer,
+)
 
 class IntervalArray(IntervalMixin, ExtensionArray):
     ndim: int = ...
@@ -40,12 +42,16 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def nbytes(self) -> int: ...
     @property
     def size(self) -> int: ...
-    def shift(
-        self, periods: int = ..., fill_value: object = ...
-    ) -> ABCExtensionArray: ...
-    def take(
-        self, indices, *, allow_fill: bool = ..., fill_value=..., axis=..., **kwargs
-    ): ...
+    def shift(self, periods: int = ..., fill_value: object = ...) -> IntervalArray: ...
+    def take(  # type: ignore[override]
+        self: Self,
+        indices: TakeIndexer,
+        *,
+        allow_fill: bool = ...,
+        fill_value=...,
+        axis=...,
+        **kwargs,
+    ) -> Self: ...
     def value_counts(self, dropna: bool = ...): ...
     @property
     def left(self) -> Index: ...

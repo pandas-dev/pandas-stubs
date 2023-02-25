@@ -1,22 +1,21 @@
-from typing import Literal
+from typing import (
+    Any,
+    Literal,
+)
 
 from pandas.core.arrays import ExtensionArray
 
-from pandas._libs import NaTType
-from pandas._libs.missing import NAType
 from pandas._typing import type_t
 
 class ExtensionDtype:
-    @property
-    def na_value(self) -> NAType | NaTType: ...
-    @property
-    def type(self) -> type_t: ...
+    type: type_t
+    na_value: Any
+    name: str
+
     @property
     def kind(
         self,
     ) -> Literal["b", "i", "u", "f", "c", "m", "M", "O", "S", "U", "V"]: ...
-    @property
-    def name(self) -> str: ...
     @property
     def names(self) -> list[str] | None: ...
     def empty(self, size: int | tuple[int, ...]) -> type_t[ExtensionArray]: ...

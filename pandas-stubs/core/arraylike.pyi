@@ -1,6 +1,11 @@
 from typing import Any
 
+import numpy as np
 from typing_extensions import Self
+
+from pandas._libs.ops_dispatch import (
+    maybe_dispatch_ufunc_to_dunder_op as maybe_dispatch_ufunc_to_dunder_op,
+)
 
 class OpsMixin:
     def __eq__(self, other: object) -> Self: ...  # type: ignore[override]
@@ -35,3 +40,6 @@ class OpsMixin:
     def __rdivmod__(self, other: Any) -> tuple[Self, Self]: ...
     def __pow__(self, other: Any) -> Self: ...
     def __rpow__(self, other: Any) -> Self: ...
+
+def dispatch_ufunc_with_out(self, ufunc: np.ufunc, method: str, *inputs, **kwargs): ...
+def dispatch_reduction_ufunc(self, ufunc: np.ufunc, method: str, *inputs, **kwargs): ...
