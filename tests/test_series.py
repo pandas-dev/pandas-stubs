@@ -49,8 +49,7 @@ from tests import (
 )
 
 if TYPE_CHECKING:
-    from pandas.core.series import (  # noqa: F401
-        TimedeltaSeries,
+    from pandas.core.series import (
         TimestampSeries,
     )
 else:
