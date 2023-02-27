@@ -2,6 +2,10 @@ from typing import Any
 
 from typing_extensions import Self
 
+from pandas._libs.ops_dispatch import (
+    maybe_dispatch_ufunc_to_dunder_op as maybe_dispatch_ufunc_to_dunder_op,
+)
+
 class OpsMixin:
     def __eq__(self, other: object) -> Self: ...  # type: ignore[override]
     def __ne__(self, other: object) -> Self: ...  # type: ignore[override]
