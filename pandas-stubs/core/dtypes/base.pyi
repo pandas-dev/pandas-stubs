@@ -1,5 +1,6 @@
 from typing import (
     Any,
+    ClassVar,
     Literal,
 )
 
@@ -8,9 +9,9 @@ from pandas.core.arrays import ExtensionArray
 from pandas._typing import type_t
 
 class ExtensionDtype:
-    type: type_t
-    na_value: Any
-    name: str
+    type: ClassVar[type_t]
+    na_value: ClassVar[Any]
+    name: ClassVar[str]
 
     @property
     def kind(

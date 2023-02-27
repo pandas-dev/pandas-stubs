@@ -79,7 +79,8 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
                 if np.isnan(val):
                     values[i] = DecimalDtype.na_value
                 else:
-                    values[i] = DecimalDtype.type(val)
+                    fval = float(val)  # Handle numpy case
+                    values[i] = DecimalDtype.type(fval)
             elif not isinstance(val, decimal.Decimal):
                 raise TypeError("All values must be of type " + str(decimal.Decimal))
         values_np = np.asarray(values, dtype=object)
