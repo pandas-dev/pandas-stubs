@@ -1,5 +1,4 @@
 from typing import (
-    Any,
     ClassVar,
     Literal,
 )
@@ -10,9 +9,10 @@ from pandas._typing import type_t
 
 class ExtensionDtype:
     type: ClassVar[type_t]
-    na_value: ClassVar[Any]
     name: ClassVar[str]
 
+    @property
+    def na_value(self) -> object: ...
     @property
     def kind(
         self,

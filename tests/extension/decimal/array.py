@@ -39,8 +39,11 @@ from pandas.core.dtypes.common import (
 class DecimalDtype(ExtensionDtype):
     type = decimal.Decimal
     name = "decimal"
-    na_value = decimal.Decimal("NaN")
     _metadata = ("context",)
+
+    @property
+    def na_value(self) -> decimal.Decimal:
+        return decimal.Decimal("NaN")
 
     def __init__(self, context: decimal.Context | None = None) -> None:
         self.context = context or decimal.getcontext()
@@ -77,7 +80,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         for i, val in enumerate(values):
             if is_float(val):
                 if np.isnan(val):
-                    values[i] = DecimalDtype.na_value
+                    values[i] = DecimalDtype().na_value
                 else:
                     fval = float(val)  # Handle numpy case
                     values[i] = DecimalDtype.type(fval)
@@ -139,7 +142,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
             return result
 
         if "out" in kwargs:
-            return arraylike.dispatch_ufunc_with_out(
+            return arraylike.dispatch_ufunc_with_out(  # type: ignore[attr-defined] # pyright: ignore[reportGeneralTypeIssues]
                 self, ufunc, method, *inputs, **kwargs
             )
 
@@ -147,7 +150,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         result = getattr(ufunc, method)(*inputs, **kwargs)
 
         if method == "reduce":
-            result = arraylike.dispatch_reduction_ufunc(
+            result = arraylike.dispatch_reduction_ufunc(  # type: ignore[attr-defined] # pyright: ignore[reportGeneralTypeIssues]
                 self, ufunc, method, *inputs, **kwargs
             )
             if result is not NotImplemented:
