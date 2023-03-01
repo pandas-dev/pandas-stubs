@@ -103,13 +103,13 @@ IntDtypeArg: TypeAlias = (
 StrDtypeArg: TypeAlias = type[str] | pd.StringDtype | Literal["str"]
 BytesDtypeArg: TypeAlias = type[bytes]
 FloatDtypeArg: TypeAlias = (
-    pd.Float32Dtype
+    Literal["float", "Float32", "Float64"]
+    | pd.Float32Dtype
     | pd.Float64Dtype
     | type[np.float16]
     | type[np.float32]
     | type[np.float64]
     | type[float]
-    | Literal["float"]
 )
 ComplexDtypeArg: TypeAlias = (
     type[np.complex64] | type[np.complex128] | type[complex] | Literal["complex"]

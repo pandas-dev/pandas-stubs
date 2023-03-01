@@ -1479,6 +1479,10 @@ def test_updated_astype() -> None:
 
     check(assert_type(s.astype(bytes), "pd.Series[bytes]"), pd.Series, bytes)
 
+    check(assert_type(s.astype(float), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.astype("float"), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.astype("Float32"), "pd.Series[float]"), pd.Series, np.float32)
+    check(assert_type(s.astype("Float64"), "pd.Series[float]"), pd.Series, np.float64)
     check(
         assert_type(s.astype(pd.Float32Dtype()), "pd.Series[float]"),
         pd.Series,
@@ -1492,8 +1496,6 @@ def test_updated_astype() -> None:
     check(assert_type(s.astype(np.float16), "pd.Series[float]"), pd.Series, np.float16)
     check(assert_type(s.astype(np.float32), "pd.Series[float]"), pd.Series, np.float32)
     check(assert_type(s.astype(np.float64), "pd.Series[float]"), pd.Series, np.float64)
-    check(assert_type(s.astype(float), "pd.Series[float]"), pd.Series, float)
-    check(assert_type(s.astype("float"), "pd.Series[float]"), pd.Series, float)
 
     check(
         assert_type(s.astype(np.complex64), "pd.Series[complex]"),
