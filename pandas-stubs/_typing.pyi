@@ -78,41 +78,73 @@ NpDtype: TypeAlias = str | np.dtype[np.generic] | type[str | complex | bool | ob
 Dtype: TypeAlias = ExtensionDtype | NpDtype
 DtypeArg: TypeAlias = Dtype | dict[Any, Dtype]
 BooleanDtypeArg: TypeAlias = (
-    type[bool] | type[np.bool_] | pd.BooleanDtype | Literal["bool", "boolean"]
+    # Builtin bool type and its string alias
+    type[bool]  # noqa: Y030
+    | Literal["bool"]
+    # Pandas nullable boolean type and its string alias
+    | pd.BooleanDtype
+    | Literal["boolean"]
+    # Numpy bool type
+    | type[np.bool_]
 )
 IntDtypeArg: TypeAlias = (
-    Literal["int", "int32", "Int8", "Int16", "Int32", "Int64"]
-    | type[int]
+    # Builtin integer type and its string alias
+    type[int]  # noqa: Y030
+    | Literal["int"]
+    # Pandas nullable integer types and their string aliases
     | pd.Int8Dtype
     | pd.Int16Dtype
     | pd.Int32Dtype
     | pd.Int64Dtype
+    | Literal["Int8", "Int16", "Int32", "Int64"]
+    # Numpy signed integer types and their string aliases
+    | type[np.byte]
     | type[np.int8]
     | type[np.int16]
     | type[np.int32]
     | type[np.int64]
+    | type[np.intp]
+    | Literal["byte", "int8", "int16", "int32", "int64", "intp"]
+    # Numpy unsigned integer types and their string aliases
+    | type[np.ubyte]
     | type[np.uint8]
     | type[np.uint16]
     | type[np.uint32]
     | type[np.uint64]
-    | type[np.intp]
     | type[np.uintp]
-    | type[np.byte]
-    | type[np.ubyte]
+    | Literal["ubyte", "uint8", "uint16", "uint32", "uint64", "uintp"]
 )
-StrDtypeArg: TypeAlias = type[str] | pd.StringDtype | Literal["str", "string"]
+StrDtypeArg: TypeAlias = (
+    # Builtin str type and its string alias
+    type[str]  # noqa: Y030
+    | Literal["str"]
+    # Pandas nullable string type and its string alias
+    | pd.StringDtype
+    | Literal["string"]
+)
 BytesDtypeArg: TypeAlias = type[bytes]
 FloatDtypeArg: TypeAlias = (
-    Literal["float", "Float32", "Float64"]
+    # Builtin float type and its string alias
+    type[float]  # noqa: Y030
+    | Literal["float"]
+    # Pandas nullable float types and their string aliases
     | pd.Float32Dtype
     | pd.Float64Dtype
+    | Literal["Float32", "Float64"]
+    # Numpy float types and their string aliases
     | type[np.float16]
     | type[np.float32]
     | type[np.float64]
-    | type[float]
+    | Literal["float16", "float32", "float64"]
 )
 ComplexDtypeArg: TypeAlias = (
-    type[np.complex64] | type[np.complex128] | type[complex] | Literal["complex"]
+    # Builtin complex type and its string alias
+    type[complex]  # noqa: Y030
+    | Literal["complex"]
+    # Numpy complex types and their aliases
+    | type[np.complex64]
+    | type[np.complex128]
+    | Literal["complex64", "complex128"]
 )
 TimedeltaDtypeArg: TypeAlias = Literal["timedelta64[ns]"]
 TimestampDtypeArg: TypeAlias = Literal["datetime64[ns]"]
