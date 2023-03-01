@@ -1449,32 +1449,81 @@ def test_updated_astype() -> None:
     s = pd.Series([3, 4, 5])
     s1 = pd.Series(True)
 
+    # Boolean types
+
+    # Builtin bool types
+    check(assert_type(s.astype(bool), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(s.astype("bool"), "pd.Series[bool]"), pd.Series, np.bool_)
+    # Pandas nullable boolean types
+    check(
+        assert_type(s1.astype(pd.BooleanDtype()), "pd.Series[bool]"),
+        pd.Series,
+        np.bool_,
+    )
+    check(assert_type(s1.astype("boolean"), "pd.Series[bool]"), pd.Series, np.bool_)
+    # Numpy bool type
+    check(assert_type(s.astype(np.bool_), "pd.Series[bool]"), pd.Series, np.bool_)
+
+    # Integer types
+
+    # Builtin integer types
     check(assert_type(s.astype(int), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.astype("int"), "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(s.astype("int32"), "pd.Series[int]"), pd.Series, np.int32)
+    # Pandas nullable integer types
     check(assert_type(s.astype(pd.Int8Dtype()), "pd.Series[int]"), pd.Series, np.int8)
     check(assert_type(s.astype(pd.Int16Dtype()), "pd.Series[int]"), pd.Series, np.int16)
     check(assert_type(s.astype(pd.Int32Dtype()), "pd.Series[int]"), pd.Series, np.int32)
     check(assert_type(s.astype(pd.Int64Dtype()), "pd.Series[int]"), pd.Series, np.int64)
+    check(assert_type(s.astype("Int8"), "pd.Series[int]"), pd.Series, np.int8)
+    check(assert_type(s.astype("Int16"), "pd.Series[int]"), pd.Series, np.int16)
+    check(assert_type(s.astype("Int32"), "pd.Series[int]"), pd.Series, np.int32)
+    check(assert_type(s.astype("Int64"), "pd.Series[int]"), pd.Series, np.int64)
+    # Numpy signed integer types
+    check(assert_type(s.astype(np.byte), "pd.Series[int]"), pd.Series, np.byte)
     check(assert_type(s.astype(np.int8), "pd.Series[int]"), pd.Series, np.int8)
     check(assert_type(s.astype(np.int16), "pd.Series[int]"), pd.Series, np.int16)
     check(assert_type(s.astype(np.int32), "pd.Series[int]"), pd.Series, np.int32)
     check(assert_type(s.astype(np.int64), "pd.Series[int]"), pd.Series, np.int64)
+    check(assert_type(s.astype(np.intp), "pd.Series[int]"), pd.Series, np.intp)
+    check(assert_type(s.astype("byte"), "pd.Series[int]"), pd.Series, np.byte)
+    check(assert_type(s.astype("int8"), "pd.Series[int]"), pd.Series, np.int8)
+    check(assert_type(s.astype("int16"), "pd.Series[int]"), pd.Series, np.int16)
+    check(assert_type(s.astype("int32"), "pd.Series[int]"), pd.Series, np.int32)
+    check(assert_type(s.astype("int64"), "pd.Series[int]"), pd.Series, np.int64)
+    check(assert_type(s.astype("intp"), "pd.Series[int]"), pd.Series, np.intp)
+    # Numpy unsigned integer types
+    check(assert_type(s.astype(np.ubyte), "pd.Series[int]"), pd.Series, np.ubyte)
     check(assert_type(s.astype(np.uint8), "pd.Series[int]"), pd.Series, np.uint8)
     check(assert_type(s.astype(np.uint16), "pd.Series[int]"), pd.Series, np.uint16)
     check(assert_type(s.astype(np.uint32), "pd.Series[int]"), pd.Series, np.uint32)
     check(assert_type(s.astype(np.uint64), "pd.Series[int]"), pd.Series, np.uint64)
-    check(assert_type(s.astype(np.intp), "pd.Series[int]"), pd.Series, np.intp)
     check(assert_type(s.astype(np.uintp), "pd.Series[int]"), pd.Series, np.uintp)
-    check(assert_type(s.astype(np.byte), "pd.Series[int]"), pd.Series, np.byte)
-    check(assert_type(s.astype(np.ubyte), "pd.Series[int]"), pd.Series, np.ubyte)
+    check(assert_type(s.astype("ubyte"), "pd.Series[int]"), pd.Series, np.ubyte)
+    check(assert_type(s.astype("uint8"), "pd.Series[int]"), pd.Series, np.uint8)
+    check(assert_type(s.astype("uint16"), "pd.Series[int]"), pd.Series, np.uint16)
+    check(assert_type(s.astype("uint32"), "pd.Series[int]"), pd.Series, np.uint32)
+    check(assert_type(s.astype("uint64"), "pd.Series[int]"), pd.Series, np.uint64)
+    check(assert_type(s.astype("uintp"), "pd.Series[int]"), pd.Series, np.uintp)
 
+    # String types
+
+    # Builtin str types
     check(assert_type(s.astype(str), "pd.Series[str]"), pd.Series, str)
-    check(assert_type(s.astype(pd.StringDtype()), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s.astype("str"), "pd.Series[str]"), pd.Series, str)
+    # Pandas nullable string types
+    check(assert_type(s.astype(pd.StringDtype()), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(s.astype("string"), "pd.Series[str]"), pd.Series, str)
+
+    # Bytes types
 
     check(assert_type(s.astype(bytes), "pd.Series[bytes]"), pd.Series, bytes)
 
+    # Float types
+
+    # Builtin float types
+    check(assert_type(s.astype(float), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.astype("float"), "pd.Series[float]"), pd.Series, float)
+    # Pandas nullable float types
     check(
         assert_type(s.astype(pd.Float32Dtype()), "pd.Series[float]"),
         pd.Series,
@@ -1485,12 +1534,22 @@ def test_updated_astype() -> None:
         pd.Series,
         np.float64,
     )
+    check(assert_type(s.astype("Float32"), "pd.Series[float]"), pd.Series, np.float32)
+    check(assert_type(s.astype("Float64"), "pd.Series[float]"), pd.Series, np.float64)
+    # Numpy float types
     check(assert_type(s.astype(np.float16), "pd.Series[float]"), pd.Series, np.float16)
     check(assert_type(s.astype(np.float32), "pd.Series[float]"), pd.Series, np.float32)
     check(assert_type(s.astype(np.float64), "pd.Series[float]"), pd.Series, np.float64)
-    check(assert_type(s.astype(float), "pd.Series[float]"), pd.Series, float)
-    check(assert_type(s.astype("float"), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.astype("float16"), "pd.Series[float]"), pd.Series, np.float16)
+    check(assert_type(s.astype("float32"), "pd.Series[float]"), pd.Series, np.float32)
+    check(assert_type(s.astype("float64"), "pd.Series[float]"), pd.Series, np.float64)
 
+    # Complex types
+
+    # Builtin complex types
+    check(assert_type(s.astype(complex), "pd.Series[complex]"), pd.Series, complex)
+    check(assert_type(s.astype("complex"), "pd.Series[complex]"), pd.Series, complex)
+    # Numpy complex types
     check(
         assert_type(s.astype(np.complex64), "pd.Series[complex]"),
         pd.Series,
@@ -1501,17 +1560,16 @@ def test_updated_astype() -> None:
         pd.Series,
         np.complex128,
     )
-    check(assert_type(s.astype(complex), "pd.Series[complex]"), pd.Series, complex)
-    check(assert_type(s.astype("complex"), "pd.Series[complex]"), pd.Series, complex)
-
     check(
-        assert_type(s1.astype(pd.BooleanDtype()), "pd.Series[bool]"),
+        assert_type(s.astype("complex64"), "pd.Series[complex]"),
         pd.Series,
-        np.bool_,
+        np.complex64,
     )
-    check(assert_type(s.astype("bool"), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(s.astype(bool), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(s.astype(np.bool_), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(
+        assert_type(s.astype("complex128"), "pd.Series[complex]"),
+        pd.Series,
+        np.complex128,
+    )
 
     check(
         assert_type(s.astype("timedelta64[ns]"), TimedeltaSeries),
