@@ -78,7 +78,7 @@ NpDtype: TypeAlias = str | np.dtype[np.generic] | type[str | complex | bool | ob
 Dtype: TypeAlias = ExtensionDtype | NpDtype
 DtypeArg: TypeAlias = Dtype | dict[Any, Dtype]
 BooleanDtypeArg: TypeAlias = (
-    type[bool] | type[np.bool_] | pd.BooleanDtype | Literal["bool"]
+    type[bool] | type[np.bool_] | pd.BooleanDtype | Literal["bool", "boolean"]
 )
 IntDtypeArg: TypeAlias = (
     Literal["int", "int32", "Int8", "Int16", "Int32", "Int64"]

@@ -1510,13 +1510,14 @@ def test_updated_astype() -> None:
     check(assert_type(s.astype(complex), "pd.Series[complex]"), pd.Series, complex)
     check(assert_type(s.astype("complex"), "pd.Series[complex]"), pd.Series, complex)
 
+    check(assert_type(s.astype(bool), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(s.astype("bool"), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(s1.astype("boolean"), "pd.Series[bool]"), pd.Series, np.bool_)
     check(
         assert_type(s1.astype(pd.BooleanDtype()), "pd.Series[bool]"),
         pd.Series,
         np.bool_,
     )
-    check(assert_type(s.astype("bool"), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(s.astype(bool), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(s.astype(np.bool_), "pd.Series[bool]"), pd.Series, np.bool_)
 
     check(
