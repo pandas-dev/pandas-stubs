@@ -81,7 +81,7 @@ BooleanDtypeArg: TypeAlias = (
     type[bool] | type[np.bool_] | pd.BooleanDtype | Literal["bool"]
 )
 IntDtypeArg: TypeAlias = (
-    Literal["int", "int32"]
+    Literal["int", "int32", "Int8", "Int16", "Int32", "Int64"]
     | type[int]
     | pd.Int8Dtype
     | pd.Int16Dtype
