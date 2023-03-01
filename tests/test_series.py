@@ -1474,8 +1474,9 @@ def test_updated_astype() -> None:
     check(assert_type(s.astype(np.ubyte), "pd.Series[int]"), pd.Series, np.ubyte)
 
     check(assert_type(s.astype(str), "pd.Series[str]"), pd.Series, str)
-    check(assert_type(s.astype(pd.StringDtype()), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s.astype("str"), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(s.astype("string"), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(s.astype(pd.StringDtype()), "pd.Series[str]"), pd.Series, str)
 
     check(assert_type(s.astype(bytes), "pd.Series[bytes]"), pd.Series, bytes)
 

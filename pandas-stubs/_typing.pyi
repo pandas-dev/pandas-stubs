@@ -100,7 +100,7 @@ IntDtypeArg: TypeAlias = (
     | type[np.byte]
     | type[np.ubyte]
 )
-StrDtypeArg: TypeAlias = type[str] | pd.StringDtype | Literal["str"]
+StrDtypeArg: TypeAlias = type[str] | pd.StringDtype | Literal["str", "string"]
 BytesDtypeArg: TypeAlias = type[bytes]
 FloatDtypeArg: TypeAlias = (
     Literal["float", "Float32", "Float64"]
