@@ -21,7 +21,7 @@ from pandas.core.groupby.groupby import BaseGroupBy
 from typing_extensions import TypeAlias
 
 from pandas._typing import (
-    AxisType,
+    Axis,
     NDFrameT,
     Scalar,
     npt,
@@ -149,7 +149,7 @@ class Resampler(BaseGroupBy, Generic[NDFrameT]):
         self,
         method: _Interpolation = ...,
         *,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         limit: int | None = ...,
         inplace: Literal[True],
         limit_direction: Literal["forward", "backward", "both"] = ...,
@@ -162,7 +162,7 @@ class Resampler(BaseGroupBy, Generic[NDFrameT]):
         self,
         method: _Interpolation = ...,
         *,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         limit: int | None = ...,
         inplace: Literal[False] = ...,
         limit_direction: Literal["forward", "backward", "both"] = ...,

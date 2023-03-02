@@ -11,10 +11,10 @@ from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
 
 from pandas._typing import (
+    AxisIndex,
     NaPosition,
     NDFrameT,
     Scalar,
-    SeriesAxisType,
     npt,
 )
 
@@ -56,10 +56,10 @@ class IndexOpsMixin(OpsMixin):
     def max(self, axis=..., skipna: bool = ..., **kwargs): ...
     def min(self, axis=..., skipna: bool = ..., **kwargs): ...
     def argmax(
-        self, axis: SeriesAxisType | None = ..., skipna: bool = ..., *args, **kwargs
+        self, axis: AxisIndex | None = ..., skipna: bool = ..., *args, **kwargs
     ) -> np.ndarray: ...
     def argmin(
-        self, axis: SeriesAxisType | None = ..., skipna: bool = ..., *args, **kwargs
+        self, axis: AxisIndex | None = ..., skipna: bool = ..., *args, **kwargs
     ) -> np.ndarray: ...
     def tolist(self) -> list: ...
     def to_list(self) -> list: ...

@@ -52,7 +52,7 @@ import xarray as xr
 
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
-from pandas._typing import (
+from pandas._typing import (  # AxisType,; AxisIndex,
     S1,
     AggFuncTypeBase,
     AggFuncTypeDictFrame,
@@ -62,9 +62,8 @@ from pandas._typing import (
     AstypeArg,
     Axes,
     Axis,
-    AxisType,
-    AxisTypeColumn,
-    AxisTypeIndex,
+    AxisColumn,
+    AxisIndex,
     CalculationMethod,
     ColspaceArgType,
     CompressionOptions,
@@ -101,7 +100,6 @@ from pandas._typing import (
     ReplaceMethod,
     Scalar,
     ScalarT,
-    SeriesAxisType,
     SortKind,
     StataDateFormat,
     StorageOptions,
@@ -552,21 +550,21 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         other: DataFrame | Series,
         join: JoinHow = ...,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         level: Level | None = ...,
         copy: _bool = ...,
         fill_value=...,
         method: FillnaOptions | None = ...,
         limit: int | None = ...,
-        fill_axis: AxisType = ...,
-        broadcast_axis: AxisType | None = ...,
+        fill_axis: Axis = ...,
+        broadcast_axis: Axis | None = ...,
     ) -> DataFrame: ...
     def reindex(
         self,
         labels: Axes | None = ...,
         index: Axes | None = ...,
         columns: Axes | None = ...,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         method: FillnaOptions | Literal["nearest"] | None = ...,
         copy: bool = ...,
         level: int | _str = ...,
@@ -655,7 +653,7 @@ class DataFrame(NDFrame, OpsMixin):
         value: Scalar | NAType | dict | Series | DataFrame | None = ...,
         *,
         method: FillnaOptions | None = ...,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         limit: int = ...,
         downcast: dict | None = ...,
         inplace: Literal[True],
@@ -666,7 +664,7 @@ class DataFrame(NDFrame, OpsMixin):
         value: Scalar | NAType | dict | Series | DataFrame | None = ...,
         *,
         method: FillnaOptions | None = ...,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         limit: int = ...,
         downcast: dict | None = ...,
         inplace: Literal[False] = ...,
@@ -677,7 +675,7 @@ class DataFrame(NDFrame, OpsMixin):
         value: Scalar | NAType | dict | Series | DataFrame | None = ...,
         *,
         method: FillnaOptions | None = ...,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         inplace: _bool | None = ...,
         limit: int = ...,
         downcast: dict | None = ...,
@@ -719,7 +717,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         periods: int = ...,
         freq=...,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         fill_value: Hashable | None = ...,
     ) -> DataFrame: ...
     @overload
@@ -796,7 +794,7 @@ class DataFrame(NDFrame, OpsMixin):
     def dropna(
         self,
         *,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         how: Literal["any", "all"] = ...,
         thresh: int | None = ...,
         subset: ListLikeU | Scalar | None = ...,
@@ -806,7 +804,7 @@ class DataFrame(NDFrame, OpsMixin):
     def dropna(
         self,
         *,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         how: Literal["any", "all"] = ...,
         thresh: int | None = ...,
         subset: ListLikeU | Scalar | None = ...,
@@ -816,7 +814,7 @@ class DataFrame(NDFrame, OpsMixin):
     def dropna(
         self,
         *,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         how: Literal["any", "all"] = ...,
         thresh: int | None = ...,
         subset: ListLikeU | Scalar | None = ...,
@@ -840,7 +838,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         by: _str | Sequence[_str],
         *,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         ascending: _bool | Sequence[_bool] = ...,
         kind: SortKind = ...,
         na_position: NaPosition = ...,
@@ -853,7 +851,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         by: _str | Sequence[_str],
         *,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         ascending: _bool | Sequence[_bool] = ...,
         kind: SortKind = ...,
         na_position: NaPosition = ...,
@@ -866,7 +864,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         by: _str | Sequence[_str],
         *,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         ascending: _bool | Sequence[_bool] = ...,
         inplace: _bool | None = ...,
         kind: SortKind = ...,
@@ -878,7 +876,7 @@ class DataFrame(NDFrame, OpsMixin):
     def sort_index(
         self,
         *,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | None = ...,
         ascending: _bool | Sequence[_bool] = ...,
         kind: SortKind = ...,
@@ -892,7 +890,7 @@ class DataFrame(NDFrame, OpsMixin):
     def sort_index(
         self,
         *,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | list[int] | list[_str] | None = ...,
         ascending: _bool | Sequence[_bool] = ...,
         kind: SortKind = ...,
@@ -906,7 +904,7 @@ class DataFrame(NDFrame, OpsMixin):
     def sort_index(
         self,
         *,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | list[int] | list[_str] | None = ...,
         ascending: _bool | Sequence[_bool] = ...,
         inplace: _bool | None = ...,
@@ -937,9 +935,9 @@ class DataFrame(NDFrame, OpsMixin):
         keep: NaPosition | Literal["all"] = ...,
     ) -> DataFrame: ...
     def swaplevel(
-        self, i: Level = ..., j: Level = ..., axis: AxisType = ...
+        self, i: Level = ..., j: Level = ..., axis: Axis = ...
     ) -> DataFrame: ...
-    def reorder_levels(self, order: list, axis: AxisType = ...) -> DataFrame: ...
+    def reorder_levels(self, order: list, axis: Axis = ...) -> DataFrame: ...
     def compare(
         self,
         other: DataFrame,
@@ -968,7 +966,7 @@ class DataFrame(NDFrame, OpsMixin):
     def groupby(
         self,
         by: Scalar,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -981,7 +979,7 @@ class DataFrame(NDFrame, OpsMixin):
     def groupby(
         self,
         by: GroupByObjectNonScalar | None = ...,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -1029,31 +1027,31 @@ class DataFrame(NDFrame, OpsMixin):
         col_level: int | _str | None = ...,
         ignore_index: _bool = ...,
     ) -> DataFrame: ...
-    def diff(self, periods: int = ..., axis: AxisType = ...) -> DataFrame: ...
+    def diff(self, periods: int = ..., axis: Axis = ...) -> DataFrame: ...
     @overload
-    def agg(self, func: AggFuncTypeBase, axis: AxisType = ..., **kwargs) -> Series: ...
+    def agg(self, func: AggFuncTypeBase, axis: Axis = ..., **kwargs) -> Series: ...
     @overload
     def agg(
         self,
         func: list[AggFuncTypeBase] | AggFuncTypeDictFrame = ...,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         **kwargs,
     ) -> DataFrame: ...
     @overload
     def aggregate(
-        self, func: AggFuncTypeBase, axis: AxisType = ..., **kwargs
+        self, func: AggFuncTypeBase, axis: Axis = ..., **kwargs
     ) -> Series: ...
     @overload
     def aggregate(
         self,
         func: list[AggFuncTypeBase] | AggFuncTypeDictFrame,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         **kwargs,
     ) -> DataFrame: ...
     def transform(
         self,
         func: AggFuncTypeFrame,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         *args,
         **kwargs,
     ) -> DataFrame: ...
@@ -1063,7 +1061,7 @@ class DataFrame(NDFrame, OpsMixin):
     def apply(
         self,
         f: Callable[..., ListLikeExceptSeriesAndStr | Series],
-        axis: AxisTypeIndex = ...,
+        axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = ...,
         args=...,
@@ -1073,7 +1071,7 @@ class DataFrame(NDFrame, OpsMixin):
     def apply(
         self,
         f: Callable[..., S1],
-        axis: AxisTypeIndex = ...,
+        axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = ...,
         args=...,
@@ -1085,7 +1083,7 @@ class DataFrame(NDFrame, OpsMixin):
     def apply(
         self,
         f: Callable[..., Mapping],
-        axis: AxisTypeIndex = ...,
+        axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = ...,
         args=...,
@@ -1097,7 +1095,7 @@ class DataFrame(NDFrame, OpsMixin):
     def apply(
         self,
         f: Callable[..., S1],
-        axis: AxisType = ...,
+        axis: Axis = ...,
         raw: _bool = ...,
         args=...,
         *,
@@ -1108,7 +1106,7 @@ class DataFrame(NDFrame, OpsMixin):
     def apply(
         self,
         f: Callable[..., ListLikeExceptSeriesAndStr | Series | Mapping],
-        axis: AxisType = ...,
+        axis: Axis = ...,
         raw: _bool = ...,
         args=...,
         *,
@@ -1119,7 +1117,7 @@ class DataFrame(NDFrame, OpsMixin):
     def apply(
         self,
         f: Callable[..., ListLikeExceptSeriesAndStr | Mapping],
-        axis: AxisType = ...,
+        axis: Axis = ...,
         raw: _bool = ...,
         args=...,
         *,
@@ -1130,7 +1128,7 @@ class DataFrame(NDFrame, OpsMixin):
     def apply(
         self,
         f: Callable[..., ListLikeExceptSeriesAndStr | Series | Scalar | Mapping],
-        axis: AxisType = ...,
+        axis: Axis = ...,
         raw: _bool = ...,
         args=...,
         *,
@@ -1143,7 +1141,7 @@ class DataFrame(NDFrame, OpsMixin):
     def apply(
         self,
         f: Callable[..., Series],
-        axis: AxisTypeIndex = ...,
+        axis: AxisIndex = ...,
         raw: _bool = ...,
         args=...,
         *,
@@ -1160,7 +1158,7 @@ class DataFrame(NDFrame, OpsMixin):
         result_type: None = ...,
         args=...,
         *,
-        axis: AxisTypeColumn,
+        axis: AxisColumn,
         **kwargs,
     ) -> Series[S1]: ...
     @overload
@@ -1171,7 +1169,7 @@ class DataFrame(NDFrame, OpsMixin):
         result_type: None = ...,
         args=...,
         *,
-        axis: AxisTypeColumn,
+        axis: AxisColumn,
         **kwargs,
     ) -> Series: ...
     @overload
@@ -1182,7 +1180,7 @@ class DataFrame(NDFrame, OpsMixin):
         result_type: None = ...,
         args=...,
         *,
-        axis: AxisTypeColumn,
+        axis: AxisColumn,
         **kwargs,
     ) -> DataFrame: ...
 
@@ -1194,7 +1192,7 @@ class DataFrame(NDFrame, OpsMixin):
         raw: _bool = ...,
         args=...,
         *,
-        axis: AxisTypeColumn,
+        axis: AxisColumn,
         result_type: Literal["reduce"],
         **kwargs,
     ) -> DataFrame: ...
@@ -1243,30 +1241,30 @@ class DataFrame(NDFrame, OpsMixin):
     def corrwith(
         self,
         other: DataFrame | Series,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         drop: _bool = ...,
         method: Literal["pearson", "kendall", "spearman"] = ...,
         numeric_only: _bool = ...,
     ) -> Series: ...
     @overload
     def count(
-        self, axis: AxisType = ..., numeric_only: _bool = ..., *, level: Level
+        self, axis: Axis = ..., numeric_only: _bool = ..., *, level: Level
     ) -> DataFrame: ...
     @overload
     def count(
-        self, axis: AxisType = ..., level: None = ..., numeric_only: _bool = ...
+        self, axis: Axis = ..., level: None = ..., numeric_only: _bool = ...
     ) -> Series: ...
-    def nunique(self, axis: AxisType = ..., dropna: bool = ...) -> Series: ...
+    def nunique(self, axis: Axis = ..., dropna: bool = ...) -> Series: ...
     def idxmax(
-        self, axis: AxisType = ..., skipna: _bool = ..., numeric_only: _bool = ...
+        self, axis: Axis = ..., skipna: _bool = ..., numeric_only: _bool = ...
     ) -> Series: ...
     def idxmin(
-        self, axis: AxisType = ..., skipna: _bool = ..., numeric_only: _bool = ...
+        self, axis: Axis = ..., skipna: _bool = ..., numeric_only: _bool = ...
     ) -> Series: ...
     @overload
     def mode(
         self,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         skipna: _bool = ...,
         numeric_only: _bool = ...,
         *,
@@ -1276,7 +1274,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def mode(
         self,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         skipna: _bool = ...,
         level: None = ...,
         numeric_only: _bool = ...,
@@ -1286,7 +1284,7 @@ class DataFrame(NDFrame, OpsMixin):
     def quantile(
         self,
         q: float = ...,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         numeric_only: _bool = ...,
         interpolation: QuantileInterpolation = ...,
         method: CalculationMethod = ...,
@@ -1295,7 +1293,7 @@ class DataFrame(NDFrame, OpsMixin):
     def quantile(
         self,
         q: list[float] | np.ndarray,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         numeric_only: _bool = ...,
         interpolation: QuantileInterpolation = ...,
         method: CalculationMethod = ...,
@@ -1304,11 +1302,11 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         freq=...,
         how: TimestampConvention = ...,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         copy: _bool = ...,
     ) -> DataFrame: ...
     def to_period(
-        self, freq: _str | None = ..., axis: AxisType = ..., copy: _bool = ...
+        self, freq: _str | None = ..., axis: Axis = ..., copy: _bool = ...
     ) -> DataFrame: ...
     def isin(self, values: Iterable | Series | DataFrame | dict) -> DataFrame: ...
     @property
@@ -1390,7 +1388,7 @@ class DataFrame(NDFrame, OpsMixin):
     def add(
         self,
         other: num | ListLike | DataFrame,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
@@ -1407,7 +1405,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def all(
         self,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
         **kwargs,
@@ -1425,7 +1423,7 @@ class DataFrame(NDFrame, OpsMixin):
     def any(
         self,
         *,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
         **kwargs,
@@ -1449,19 +1447,19 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         time: _str | datetime.time,
         asof: _bool = ...,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
     ) -> DataFrame: ...
     def between_time(
         self,
         start_time: _str | datetime.time,
         end_time: _str | datetime.time,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
     ) -> DataFrame: ...
     @overload
     def bfill(
         self,
         *,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         inplace: Literal[True],
         limit: int | None = ...,
         downcast: dict | None = ...,
@@ -1470,7 +1468,7 @@ class DataFrame(NDFrame, OpsMixin):
     def bfill(
         self,
         *,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         inplace: Literal[False] = ...,
         limit: int | None = ...,
         downcast: dict | None = ...,
@@ -1480,22 +1478,22 @@ class DataFrame(NDFrame, OpsMixin):
         lower: float | None = ...,
         upper: float | None = ...,
         *,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         inplace: _bool = ...,
         **kwargs,
     ) -> DataFrame: ...
     def copy(self, deep: _bool = ...) -> DataFrame: ...
     def cummax(
-        self, axis: AxisType | None = ..., skipna: _bool = ..., *args, **kwargs
+        self, axis: Axis | None = ..., skipna: _bool = ..., *args, **kwargs
     ) -> DataFrame: ...
     def cummin(
-        self, axis: AxisType | None = ..., skipna: _bool = ..., *args, **kwargs
+        self, axis: Axis | None = ..., skipna: _bool = ..., *args, **kwargs
     ) -> DataFrame: ...
     def cumprod(
-        self, axis: AxisType | None = ..., skipna: _bool = ..., *args, **kwargs
+        self, axis: Axis | None = ..., skipna: _bool = ..., *args, **kwargs
     ) -> DataFrame: ...
     def cumsum(
-        self, axis: AxisType | None = ..., skipna: _bool = ..., *args, **kwargs
+        self, axis: Axis | None = ..., skipna: _bool = ..., *args, **kwargs
     ) -> DataFrame: ...
     def describe(
         self,
@@ -1507,23 +1505,19 @@ class DataFrame(NDFrame, OpsMixin):
     def div(
         self,
         other: num | ListLike | DataFrame,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
     def divide(
         self,
         other: num | ListLike | DataFrame,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
-    def droplevel(
-        self, level: Level | list[Level], axis: AxisType = ...
-    ) -> DataFrame: ...
-    def eq(
-        self, other, axis: AxisType = ..., level: Level | None = ...
-    ) -> DataFrame: ...
+    def droplevel(self, level: Level | list[Level], axis: Axis = ...) -> DataFrame: ...
+    def eq(self, other, axis: Axis = ..., level: Level | None = ...) -> DataFrame: ...
     def equals(self, other: Series | DataFrame) -> _bool: ...
     def ewm(
         self,
@@ -1534,19 +1528,19 @@ class DataFrame(NDFrame, OpsMixin):
         min_periods: int = ...,
         adjust: _bool = ...,
         ignore_na: _bool = ...,
-        axis: AxisType = ...,
+        axis: Axis = ...,
     ) -> ExponentialMovingWindow[DataFrame]: ...
     def expanding(
         self,
         min_periods: int = ...,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         method: CalculationMethod = ...,
     ) -> Expanding[DataFrame]: ...
     @overload
     def ffill(
         self,
         *,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         inplace: Literal[True],
         limit: int | None = ...,
         downcast: dict | None = ...,
@@ -1555,7 +1549,7 @@ class DataFrame(NDFrame, OpsMixin):
     def ffill(
         self,
         *,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         inplace: Literal[False] = ...,
         limit: int | None = ...,
         downcast: dict | None = ...,
@@ -1565,26 +1559,22 @@ class DataFrame(NDFrame, OpsMixin):
         items: list | None = ...,
         like: _str | None = ...,
         regex: _str | None = ...,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
     ) -> DataFrame: ...
     def first(self, offset) -> DataFrame: ...
     def first_valid_index(self) -> Scalar: ...
     def floordiv(
         self,
         other: num | ListLike | DataFrame,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
     # def from_dict
     # def from_records
-    def ge(
-        self, other, axis: AxisType = ..., level: Level | None = ...
-    ) -> DataFrame: ...
+    def ge(self, other, axis: Axis = ..., level: Level | None = ...) -> DataFrame: ...
     # def get
-    def gt(
-        self, other, axis: AxisType = ..., level: Level | None = ...
-    ) -> DataFrame: ...
+    def gt(self, other, axis: Axis = ..., level: Level | None = ...) -> DataFrame: ...
     def head(self, n: int = ...) -> DataFrame: ...
     def infer_objects(self) -> DataFrame: ...
     # def info
@@ -1593,7 +1583,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         method: _str = ...,
         *,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         limit: int | None = ...,
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
@@ -1606,7 +1596,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         method: _str = ...,
         *,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         limit: int | None = ...,
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
@@ -1619,7 +1609,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         method: _str = ...,
         *,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         limit: int | None = ...,
         inplace: _bool | None = ...,
         limit_direction: Literal["forward", "backward", "both"] = ...,
@@ -1630,7 +1620,7 @@ class DataFrame(NDFrame, OpsMixin):
     def keys(self) -> Index: ...
     def kurt(
         self,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
         numeric_only: _bool = ...,
@@ -1638,7 +1628,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> Series: ...
     def kurtosis(
         self,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
         numeric_only: _bool = ...,
@@ -1646,25 +1636,21 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> Series: ...
     def last(self, offset) -> DataFrame: ...
     def last_valid_index(self) -> Scalar: ...
-    def le(
-        self, other, axis: AxisType = ..., level: Level | None = ...
-    ) -> DataFrame: ...
-    def lt(
-        self, other, axis: AxisType = ..., level: Level | None = ...
-    ) -> DataFrame: ...
+    def le(self, other, axis: Axis = ..., level: Level | None = ...) -> DataFrame: ...
+    def lt(self, other, axis: Axis = ..., level: Level | None = ...) -> DataFrame: ...
     def mask(
         self,
         cond: Series | DataFrame | np.ndarray,
         other=...,
         *,
         inplace: _bool = ...,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         level: Level | None = ...,
         try_cast: _bool = ...,
     ) -> DataFrame: ...
     def max(
         self,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
         numeric_only: _bool = ...,
@@ -1672,7 +1658,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> Series: ...
     def mean(
         self,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
         numeric_only: _bool = ...,
@@ -1680,7 +1666,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> Series: ...
     def median(
         self,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
         numeric_only: _bool = ...,
@@ -1688,7 +1674,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> Series: ...
     def min(
         self,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
         numeric_only: _bool = ...,
@@ -1697,27 +1683,25 @@ class DataFrame(NDFrame, OpsMixin):
     def mod(
         self,
         other: num | ListLike | DataFrame,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
     def mul(
         self,
         other: num | ListLike | DataFrame,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
     def multiply(
         self,
         other: num | ListLike | DataFrame,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
-    def ne(
-        self, other, axis: AxisType = ..., level: Level | None = ...
-    ) -> DataFrame: ...
+    def ne(self, other, axis: Axis = ..., level: Level | None = ...) -> DataFrame: ...
     def pct_change(
         self,
         periods: int = ...,
@@ -1736,13 +1720,13 @@ class DataFrame(NDFrame, OpsMixin):
     def pow(
         self,
         other: num | ListLike | DataFrame,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
     def prod(
         self,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
         numeric_only: _bool = ...,
@@ -1751,7 +1735,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> Series: ...
     def product(
         self,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         skipna: _bool = ...,
         level: None = ...,
         numeric_only: _bool = ...,
@@ -1761,13 +1745,13 @@ class DataFrame(NDFrame, OpsMixin):
     def radd(
         self,
         other,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
     def rank(
         self,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         method: Literal["average", "min", "max", "first", "dense"] = ...,
         numeric_only: _bool = ...,
         na_option: Literal["keep", "top", "bottom"] = ...,
@@ -1777,7 +1761,7 @@ class DataFrame(NDFrame, OpsMixin):
     def rdiv(
         self,
         other,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
@@ -1793,7 +1777,7 @@ class DataFrame(NDFrame, OpsMixin):
     def rename_axis(
         self,
         mapper=...,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         copy: _bool = ...,
         *,
         inplace: Literal[True],
@@ -1802,7 +1786,7 @@ class DataFrame(NDFrame, OpsMixin):
     def rename_axis(
         self,
         mapper=...,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         copy: _bool = ...,
         *,
         inplace: Literal[False] = ...,
@@ -1828,7 +1812,7 @@ class DataFrame(NDFrame, OpsMixin):
     def resample(
         self,
         rule,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         closed: _str | None = ...,
         label: _str | None = ...,
         convention: TimestampConvention = ...,
@@ -1843,21 +1827,21 @@ class DataFrame(NDFrame, OpsMixin):
     def rfloordiv(
         self,
         other,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
     def rmod(
         self,
         other,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
     def rmul(
         self,
         other,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
@@ -1868,7 +1852,7 @@ class DataFrame(NDFrame, OpsMixin):
         min_periods: int | None = ...,
         center: _bool = ...,
         on: Hashable | None = ...,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         closed: IntervalClosedType | None = ...,
         step: int | None = ...,
         method: CalculationMethod = ...,
@@ -1882,7 +1866,7 @@ class DataFrame(NDFrame, OpsMixin):
         min_periods: int | None = ...,
         center: _bool = ...,
         on: Hashable | None = ...,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         closed: IntervalClosedType | None = ...,
         step: int | None = ...,
         method: CalculationMethod = ...,
@@ -1892,21 +1876,21 @@ class DataFrame(NDFrame, OpsMixin):
     def rpow(
         self,
         other,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
     def rsub(
         self,
         other,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
     def rtruediv(
         self,
         other,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
@@ -1918,12 +1902,12 @@ class DataFrame(NDFrame, OpsMixin):
         replace: _bool = ...,
         weights: _str | ListLike | None = ...,
         random_state: RandomState | None = ...,
-        axis: SeriesAxisType | None = ...,
+        axis: AxisIndex | None = ...,
         ignore_index: _bool = ...,
     ) -> DataFrame: ...
     def sem(
         self,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
         ddof: int = ...,
@@ -1931,20 +1915,20 @@ class DataFrame(NDFrame, OpsMixin):
         **kwargs,
     ) -> Series: ...
     # Not actually positional, but used to handle removal of deprecated
-    def set_axis(self, labels, *, axis: AxisType, copy: _bool = ...) -> DataFrame: ...
+    def set_axis(self, labels, *, axis: Axis, copy: _bool = ...) -> DataFrame: ...
     def skew(
         self,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
         numeric_only: _bool = ...,
         **kwargs,
     ) -> Series: ...
-    def slice_shift(self, periods: int = ..., axis: AxisType = ...) -> DataFrame: ...
-    def squeeze(self, axis: AxisType | None = ...): ...
+    def slice_shift(self, periods: int = ..., axis: Axis = ...) -> DataFrame: ...
+    def squeeze(self, axis: Axis | None = ...): ...
     def std(
         self,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         skipna: _bool = ...,
         level: None = ...,
         ddof: int = ...,
@@ -1954,40 +1938,36 @@ class DataFrame(NDFrame, OpsMixin):
     def sub(
         self,
         other: num | ListLike | DataFrame,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
     def subtract(
         self,
         other: num | ListLike | DataFrame,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
     def sum(
         self,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
         numeric_only: _bool = ...,
         min_count: int = ...,
         **kwargs,
     ) -> Series: ...
-    def swapaxes(
-        self, axis1: AxisType, axis2: AxisType, copy: _bool = ...
-    ) -> DataFrame: ...
+    def swapaxes(self, axis1: Axis, axis2: Axis, copy: _bool = ...) -> DataFrame: ...
     def tail(self, n: int = ...) -> DataFrame: ...
     def take(
         self,
         indices: list,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         is_copy: _bool | None = ...,
         **kwargs,
     ) -> DataFrame: ...
-    def tshift(
-        self, periods: int = ..., freq=..., axis: AxisType = ...
-    ) -> DataFrame: ...
+    def tshift(self, periods: int = ..., freq=..., axis: Axis = ...) -> DataFrame: ...
     def to_clipboard(
         self, excel: _bool = ..., sep: _str | None = ..., **kwargs
     ) -> None: ...
@@ -2073,7 +2053,7 @@ class DataFrame(NDFrame, OpsMixin):
     def truediv(
         self,
         other: num | ListLike | DataFrame,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
@@ -2081,21 +2061,21 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         before: datetime.date | _str | int | None = ...,
         after: datetime.date | _str | int | None = ...,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         copy: _bool = ...,
     ) -> DataFrame: ...
     # def tshift
     def tz_convert(
         self,
         tz,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | None = ...,
         copy: _bool = ...,
     ) -> DataFrame: ...
     def tz_localize(
         self,
         tz,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | None = ...,
         copy: _bool = ...,
         ambiguous=...,
@@ -2103,7 +2083,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def var(
         self,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
         ddof: int = ...,
@@ -2120,7 +2100,7 @@ class DataFrame(NDFrame, OpsMixin):
         other=...,
         *,
         inplace: _bool = ...,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         level: Level | None = ...,
         try_cast: _bool = ...,
     ) -> DataFrame: ...
