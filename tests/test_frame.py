@@ -2442,3 +2442,5 @@ def test_astype() -> None:
         assert_type(ab.astype({"col1": "int32", "col2": str}), "pd.DataFrame"),
         pd.DataFrame,
     )
+    check(assert_type(s.astype(pd.CategoricalDtype()), "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(s.astype("category"), "pd.DataFrame"), pd.DataFrame)  # GH 559
