@@ -160,6 +160,7 @@ AstypeArg: TypeAlias = (
     | TimedeltaDtypeArg
     | TimestampDtypeArg
     | CategoricalDtype
+    | CategoryDtypeArg
     | ExtensionDtype
 )
 # DtypeArg specifies all allowable dtypes in a functions its dtype argument
