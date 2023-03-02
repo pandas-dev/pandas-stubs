@@ -27,6 +27,7 @@ from pandas._typing import (
     S1,
     ArrayLike,
     Axis,
+    AxisIndex,
     CompressionOptions,
     CSVQuoting,
     Dtype,
@@ -42,7 +43,6 @@ from pandas._typing import (
     Level,
     NDFrameT,
     ReplaceMethod,
-    SeriesAxisType,
     SortKind,
     StorageOptions,
     T,
@@ -77,9 +77,9 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     @property
     def size(self) -> int: ...
     def swapaxes(
-        self, axis1: SeriesAxisType, axis2: SeriesAxisType, copy: _bool = ...
+        self, axis1: AxisIndex, axis2: AxisIndex, copy: _bool = ...
     ) -> NDFrame: ...
-    def droplevel(self, level: Level, axis: SeriesAxisType = ...) -> NDFrame: ...
+    def droplevel(self, level: Level, axis: AxisIndex = ...) -> NDFrame: ...
     def pop(self, item: _str) -> NDFrame: ...
     def squeeze(self, axis=...): ...
     def equals(self, other: Series[S1]) -> _bool: ...
@@ -292,7 +292,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def xs(
         self,
         key: Hashable,
-        axis: SeriesAxisType = ...,
+        axis: AxisIndex = ...,
         level: Level | None = ...,
         drop_level: _bool = ...,
     ) -> DataFrame | Series: ...
@@ -347,7 +347,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def sort_index(
         self,
         *,
-        axis: Literal["columns", "index", 0, 1] = ...,
+        axis: Axis = ...,
         level=...,
         ascending: _bool = ...,
         inplace: _bool = ...,

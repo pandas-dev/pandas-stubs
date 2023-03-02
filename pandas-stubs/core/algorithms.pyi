@@ -1,5 +1,8 @@
 from collections.abc import Sequence
-from typing import overload
+from typing import (
+    Literal,
+    overload,
+)
 
 import numpy as np
 from pandas import (
@@ -14,7 +17,6 @@ from pandas.api.extensions import ExtensionArray
 
 from pandas._typing import (
     AnyArrayLike,
-    AxisInt,
     IntervalT,
     TakeIndexer,
 )
@@ -74,7 +76,7 @@ def value_counts(
 def take(
     arr,
     indices: TakeIndexer,
-    axis: AxisInt = 0,
+    axis: Literal[0, 1] = 0,
     allow_fill: bool = False,
     fill_value=None,
 ): ...

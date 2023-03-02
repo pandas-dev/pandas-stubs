@@ -16,7 +16,7 @@ from pandas.core.indexing import _IndexSlice
 from typing_extensions import TypeAlias
 
 from pandas._typing import (
-    AxisType,
+    Axis,
     HashableT,
     Level,
 )
@@ -67,7 +67,7 @@ class StylerRenderer(Generic[_StylerT]):
     def format_index(
         self,
         formatter: ExtFormatter | None = ...,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | list[Level] | None = ...,
         na_rep: str | None = ...,
         precision: int | None = ...,
@@ -79,6 +79,6 @@ class StylerRenderer(Generic[_StylerT]):
     def relabel_index(
         self,
         labels: Sequence[str] | Index,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | list[Level] | None = ...,
     ) -> _StylerT: ...
