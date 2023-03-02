@@ -52,7 +52,7 @@ import xarray as xr
 
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
-from pandas._typing import (  # AxisType,; AxisIndex,
+from pandas._typing import (
     S1,
     AggFuncTypeBase,
     AggFuncTypeDictFrame,

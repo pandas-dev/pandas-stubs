@@ -347,7 +347,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def sort_index(
         self,
         *,
-        axis: Literal["columns", "index", 0, 1] = ...,
+        axis: Axis = ...,
         level=...,
         ascending: _bool = ...,
         inplace: _bool = ...,

@@ -198,8 +198,6 @@ class WriteExcelBuffer(WriteBuffer[bytes], Protocol):
 
 FilePath: TypeAlias = str | PathLike[str]
 
-# AxisInt: TypeAlias = Literal[0, 1]
-# Axis: TypeAlias = AxisInt | Literal["index", "columns", "rows"]
 IndexLabel: TypeAlias = Hashable | Sequence[Hashable]
 Label: TypeAlias = Hashable | None
 Level: TypeAlias = Hashable | int
@@ -229,15 +227,9 @@ AggFuncTypeFrame: TypeAlias = (
 )
 
 num: TypeAlias = complex
-# SeriesAxisType: TypeAlias = Literal[
-#     "index", 0
-# ]  # Restricted subset of _AxisType for series
 AxisIndex: TypeAlias = Literal["index", 0]
-# AxisIndex: TypeAlias = Literal["index", 0]
 AxisColumn: TypeAlias = Literal["columns", 1]
-# AxisColumn: TypeAlias = Literal["columns", 1]
-Axis: TypeAlias = AxisIndex | AxisColumn | Literal["rows"]
-# AxisType: TypeAlias = AxisIndex | AxisColumn
+Axis: TypeAlias = AxisIndex | AxisColumn
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
 KeysArgType: TypeAlias = Any
 ListLike = TypeVar("ListLike", Sequence, np.ndarray, "Series", "Index")

@@ -85,6 +85,7 @@ from pandas._typing import (
     ArrayLike,
     Axes,
     Axis,
+    AxisColumn,
     AxisIndex,
     BooleanDtypeArg,
     BytesDtypeArg,
@@ -614,7 +615,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def compare(
         self,
         other: Series,
-        align_axis: Literal["columns", 1] = ...,
+        align_axis: AxisColumn = ...,
         keep_shape: bool = ...,
         keep_equal: bool = ...,
     ) -> DataFrame: ...
