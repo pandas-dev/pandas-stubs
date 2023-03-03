@@ -16,6 +16,7 @@ from typing import (
     Tuple,
     TypeVar,
     cast,
+    get_args,
 )
 
 import numpy as np
@@ -1572,26 +1573,26 @@ def test_updated_astype() -> None:
     )
 
     # Check a couple of selected time units, but not all, to avoid excessive test cases
-    check(
-        assert_type(s.astype("timedelta64[M]"), TimedeltaSeries),
-        pd.Series,
-        Timedelta,
-    )
-    check(
-        assert_type(s.astype("datetime64[M]"), TimestampSeries),
-        pd.Series,
-        Timestamp,
-    )
-    check(
-        assert_type(s.astype("timedelta64[ns]"), TimedeltaSeries),
-        pd.Series,
-        Timedelta,
-    )
-    check(
-        assert_type(s.astype("datetime64[ns]"), TimestampSeries),
-        pd.Series,
-        Timestamp,
-    )
+    if TYPE_CHECKING:
+        from pandas._typing import (
+            TimedeltaDtypeArg,
+            TimestampDtypeArg,
+        )
+
+        tdt_types = cast(Tuple[TimedeltaDtypeArg, ...], get_args(TimedeltaDtypeArg))
+        for tdt_type in tdt_types:
+            check(
+                assert_type(s.astype(tdt_type), TimedeltaSeries),
+                pd.Series,
+                Timedelta,
+            )
+        ts_types = cast(Tuple[TimestampDtypeArg, ...], get_args(TimestampDtypeArg))
+        for ts_type in ts_types:
+            check(
+                assert_type(s.astype(ts_type), TimestampSeries),
+                pd.Series,
+                Timestamp,
+            )
 
     orseries = pd.Series([Decimal(x) for x in [1, 2, 3]])
     newtype = DecimalDtype()
