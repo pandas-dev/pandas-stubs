@@ -1591,3 +1591,15 @@ def test_updated_astype() -> None:
         pd.Series,
         Decimal,
     )
+
+    # Categorical
+    check(
+        assert_type(s.astype(pd.CategoricalDtype()), "pd.Series[Any]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.astype("category"), "pd.Series[Any]"),
+        pd.Series,
+        np.integer,
+    )

@@ -148,7 +148,7 @@ ComplexDtypeArg: TypeAlias = (
 )
 TimedeltaDtypeArg: TypeAlias = Literal["timedelta64[ns]"]
 TimestampDtypeArg: TypeAlias = Literal["datetime64[ns]"]
-CategoryDtypeArg: TypeAlias = Literal["category"]
+CategoryDtypeArg: TypeAlias = CategoricalDtype | Literal["category"]
 
 AstypeArg: TypeAlias = (
     BooleanDtypeArg
@@ -159,7 +159,7 @@ AstypeArg: TypeAlias = (
     | ComplexDtypeArg
     | TimedeltaDtypeArg
     | TimestampDtypeArg
-    | CategoricalDtype
+    | CategoryDtypeArg
     | ExtensionDtype
 )
 # DtypeArg specifies all allowable dtypes in a functions its dtype argument
