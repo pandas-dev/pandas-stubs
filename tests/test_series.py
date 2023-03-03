@@ -1571,12 +1571,22 @@ def test_updated_astype() -> None:
         np.complex128,
     )
 
+    # Check a couple of selected time units, but not all, to avoid excessive test cases
+    check(
+        assert_type(s.astype("timedelta64[M]"), TimedeltaSeries),
+        pd.Series,
+        Timedelta,
+    )
+    check(
+        assert_type(s.astype("datetime64[M]"), TimestampSeries),
+        pd.Series,
+        Timestamp,
+    )
     check(
         assert_type(s.astype("timedelta64[ns]"), TimedeltaSeries),
         pd.Series,
         Timedelta,
     )
-
     check(
         assert_type(s.astype("datetime64[ns]"), TimestampSeries),
         pd.Series,
