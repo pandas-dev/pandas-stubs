@@ -146,8 +146,39 @@ ComplexDtypeArg: TypeAlias = (
     | type[np.complex128]
     | Literal["complex64", "complex128"]
 )
-TimedeltaDtypeArg: TypeAlias = Literal["timedelta64[ns]"]
-TimestampDtypeArg: TypeAlias = Literal["datetime64[ns]"]
+# Refer to https://numpy.org/doc/stable/reference/arrays.datetime.html#datetime-units
+TimedeltaDtypeArg: TypeAlias = Literal[
+    "timedelta64[Y]",
+    "timedelta64[M]",
+    "timedelta64[W]",
+    "timedelta64[D]",
+    "timedelta64[h]",
+    "timedelta64[m]",
+    "timedelta64[s]",
+    "timedelta64[ms]",
+    "timedelta64[us]",
+    "timedelta64[μs]",
+    "timedelta64[ns]",
+    "timedelta64[ps]",
+    "timedelta64[fs]",
+    "timedelta64[as]",
+]
+TimestampDtypeArg: TypeAlias = Literal[
+    "datetime64[Y]",
+    "datetime64[M]",
+    "datetime64[W]",
+    "datetime64[D]",
+    "datetime64[h]",
+    "datetime64[m]",
+    "datetime64[s]",
+    "datetime64[ms]",
+    "datetime64[us]",
+    "datetime64[μs]",
+    "datetime64[ns]",
+    "datetime64[ps]",
+    "datetime64[fs]",
+    "datetime64[as]",
+]
 CategoryDtypeArg: TypeAlias = CategoricalDtype | Literal["category"]
 
 AstypeArg: TypeAlias = (

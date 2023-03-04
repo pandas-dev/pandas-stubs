@@ -1572,13 +1572,143 @@ def test_updated_astype() -> None:
     )
 
     check(
+        assert_type(s.astype("timedelta64[Y]"), TimedeltaSeries),
+        pd.Series,
+        Timedelta,
+    )
+    check(
+        assert_type(s.astype("timedelta64[M]"), TimedeltaSeries),
+        pd.Series,
+        Timedelta,
+    )
+    check(
+        assert_type(s.astype("timedelta64[W]"), TimedeltaSeries),
+        pd.Series,
+        Timedelta,
+    )
+    check(
+        assert_type(s.astype("timedelta64[D]"), TimedeltaSeries),
+        pd.Series,
+        Timedelta,
+    )
+    check(
+        assert_type(s.astype("timedelta64[h]"), TimedeltaSeries),
+        pd.Series,
+        Timedelta,
+    )
+    check(
+        assert_type(s.astype("timedelta64[m]"), TimedeltaSeries),
+        pd.Series,
+        Timedelta,
+    )
+    check(
+        assert_type(s.astype("timedelta64[s]"), TimedeltaSeries),
+        pd.Series,
+        Timedelta,
+    )
+    check(
+        assert_type(s.astype("timedelta64[ms]"), TimedeltaSeries),
+        pd.Series,
+        Timedelta,
+    )
+    check(
+        assert_type(s.astype("timedelta64[us]"), TimedeltaSeries),
+        pd.Series,
+        Timedelta,
+    )
+    check(
+        assert_type(s.astype("timedelta64[μs]"), TimedeltaSeries),
+        pd.Series,
+        Timedelta,
+    )
+    check(
         assert_type(s.astype("timedelta64[ns]"), TimedeltaSeries),
+        pd.Series,
+        Timedelta,
+    )
+    check(
+        assert_type(s.astype("timedelta64[ps]"), TimedeltaSeries),
+        pd.Series,
+        Timedelta,
+    )
+    check(
+        assert_type(s.astype("timedelta64[fs]"), TimedeltaSeries),
+        pd.Series,
+        Timedelta,
+    )
+    check(
+        assert_type(s.astype("timedelta64[as]"), TimedeltaSeries),
         pd.Series,
         Timedelta,
     )
 
     check(
+        assert_type(s.astype("datetime64[Y]"), TimestampSeries),
+        pd.Series,
+        Timestamp,
+    )
+    check(
+        assert_type(s.astype("datetime64[M]"), TimestampSeries),
+        pd.Series,
+        Timestamp,
+    )
+    check(
+        assert_type(s.astype("datetime64[W]"), TimestampSeries),
+        pd.Series,
+        Timestamp,
+    )
+    check(
+        assert_type(s.astype("datetime64[D]"), TimestampSeries),
+        pd.Series,
+        Timestamp,
+    )
+    check(
+        assert_type(s.astype("datetime64[h]"), TimestampSeries),
+        pd.Series,
+        Timestamp,
+    )
+    check(
+        assert_type(s.astype("datetime64[m]"), TimestampSeries),
+        pd.Series,
+        Timestamp,
+    )
+    check(
+        assert_type(s.astype("datetime64[s]"), TimestampSeries),
+        pd.Series,
+        Timestamp,
+    )
+    check(
+        assert_type(s.astype("datetime64[ms]"), TimestampSeries),
+        pd.Series,
+        Timestamp,
+    )
+    check(
+        assert_type(s.astype("datetime64[us]"), TimestampSeries),
+        pd.Series,
+        Timestamp,
+    )
+    check(
+        assert_type(s.astype("datetime64[μs]"), TimestampSeries),
+        pd.Series,
+        Timestamp,
+    )
+    check(
         assert_type(s.astype("datetime64[ns]"), TimestampSeries),
+        pd.Series,
+        Timestamp,
+    )
+    check(
+        assert_type(s.astype("datetime64[ps]"), TimestampSeries),
+        pd.Series,
+        Timestamp,
+    )
+    check(
+        assert_type(s.astype("datetime64[fs]"), TimestampSeries),
+        pd.Series,
+        Timestamp,
+    )
+    check(
+        assert_type(s.astype("datetime64[as]"), TimestampSeries),
         pd.Series,
         Timestamp,
     )
