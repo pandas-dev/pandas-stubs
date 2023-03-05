@@ -22,6 +22,7 @@ from pandas._typing import T
 TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 WINDOWS = os.name == "nt" or "cygwin" in platform.system().lower()
 PD_LTE_15 = Version(pd.__version__) < Version("1.5.999")
+PD_LTE_20 = Version(pd.__version__) < Version("2.0.999")
 
 lxml_skip = pytest.mark.skipif(
     sys.version_info >= (3, 11), reason="lxml is not available for 3.11 yet"
