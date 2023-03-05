@@ -40,6 +40,7 @@ from pandas._typing import Scalar
 
 from tests import (
     PD_LTE_15,
+    PD_LTE_20,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -364,8 +365,9 @@ def test_types_mean() -> None:
     s1: pd.Series = df.mean()
     s2: pd.Series = df.mean(axis=0)
     df2: pd.DataFrame = df.groupby(level=0).mean()
-    df3: pd.DataFrame = df.groupby(axis=1, level=0).mean()
-    df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).mean()
+    if PD_LTE_20:
+        df3: pd.DataFrame = df.groupby(axis=1, level=0).mean()
+        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).mean()
     s3: pd.Series = df.mean(axis=1, skipna=True, numeric_only=False)
 
 
@@ -374,8 +376,9 @@ def test_types_median() -> None:
     s1: pd.Series = df.median()
     s2: pd.Series = df.median(axis=0)
     df2: pd.DataFrame = df.groupby(level=0).median()
-    df3: pd.DataFrame = df.groupby(axis=1, level=0).median()
-    df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).median()
+    if PD_LTE_20:
+        df3: pd.DataFrame = df.groupby(axis=1, level=0).median()
+        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).median()
     s3: pd.Series = df.median(axis=1, skipna=True, numeric_only=False)
 
 
