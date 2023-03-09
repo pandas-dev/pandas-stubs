@@ -1722,6 +1722,21 @@ def test_updated_astype() -> None:
         Decimal,
     )
 
+    s4 = pd.Series([1, 1])
+    s5 = pd.Series([s4, 4])
+    population_dict = {
+        "California": 38332521,
+        "Texas": 26448193,
+        "New York": 19651127,
+        "Florida": 19552860,
+        "Illinois": 12882135,
+    }
+    population = pd.Series(population_dict)
+
+    check(assert_type(s4.astype(object), pd.Series), pd.Series, object)
+    check(assert_type(s5.astype(object), pd.Series), pd.Series, object)
+    check(assert_type(population.astype(object), pd.Series), pd.Series, object)
+
     # Categorical
     check(
         assert_type(s.astype(pd.CategoricalDtype()), "pd.Series[Any]"),
