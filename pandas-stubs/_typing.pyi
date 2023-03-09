@@ -192,6 +192,7 @@ AstypeArg: TypeAlias = (
     | TimestampDtypeArg
     | CategoryDtypeArg
     | ExtensionDtype
+    | type[object]
 )
 # DtypeArg specifies all allowable dtypes in a functions its dtype argument
 DtypeObj: TypeAlias = np.dtype[np.generic] | ExtensionDtype

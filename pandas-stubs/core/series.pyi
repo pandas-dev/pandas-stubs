@@ -1118,7 +1118,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def astype(
         self,
-        dtype: ExtensionDtype,
+        dtype: type[object] | ExtensionDtype,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series: ...
