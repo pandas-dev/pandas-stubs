@@ -49,7 +49,6 @@ from tests import (
 from pandas.io.formats.style import Styler
 from pandas.io.parsers import TextFileReader
 
-_AggRetType = Union[pd.DataFrame, pd.Series]
 DF = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
 
@@ -2480,7 +2479,7 @@ def test_xs_frame_new() -> None:
     }
     df = pd.DataFrame(data=d)
     df = df.set_index(["class", "animal", "locomotion"])
-    s1 = df.xs(("mammal"), axis=0)
-    s2 = df.xs(("mammal"), axis=1)
-    check(assert_type(s1, _AggRetType), pd.DataFrame)
-    check(assert_type(s2, _AggRetType), pd.DataFrame)
+    s1 = df.xs("mammal", axis=0)
+    s2 = df.xs("num_legs", axis=1)
+    check(assert_type(s1, Union[pd.Series, pd.DataFrame]), pd.DataFrame)
+    check(assert_type(s2, Union[pd.Series, pd.DataFrame]), pd.DataFrame)
