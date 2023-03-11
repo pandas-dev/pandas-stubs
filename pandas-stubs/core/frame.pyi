@@ -2106,3 +2106,10 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     # Move from generic because Series is Generic and it returns Series[bool] there
     def __invert__(self) -> DataFrame: ...
+    def xs(
+        self,
+        key: Hashable,
+        axis: Axis = ...,
+        level: Level | None = ...,
+        drop_level: _bool = ...,
+    ) -> DataFrame | Series: ...

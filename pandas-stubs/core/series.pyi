@@ -1950,6 +1950,13 @@ class TimedeltaSeries(Series[Timedelta]):
         numeric_only: _bool = ...,
         **kwargs,
     ) -> Timedelta: ...
+    def xs(
+        self,
+        key: Hashable,
+        axis: AxisIndex = ...,
+        level: Level | None = ...,
+        drop_level: _bool = ...,
+    ) -> Series: ...
 
 class PeriodSeries(Series[Period]):
     # ignore needed because of mypy

@@ -15,10 +15,7 @@ from typing import (
 )
 
 import numpy as np
-from pandas import (
-    DataFrame,
-    Index,
-)
+from pandas import Index
 from pandas.core.base import PandasObject
 import pandas.core.indexing as indexing
 import sqlalchemy.engine
@@ -289,13 +286,6 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def take(
         self, indices, axis=..., is_copy: _bool | None = ..., **kwargs
     ) -> NDFrame: ...
-    def xs(
-        self,
-        key: Hashable,
-        axis: AxisIndex = ...,
-        level: Level | None = ...,
-        drop_level: _bool = ...,
-    ) -> DataFrame | Series: ...
     def __delitem__(self, idx: Hashable): ...
     def get(self, key: object, default: Dtype | None = ...) -> Dtype: ...
     def reindex_like(

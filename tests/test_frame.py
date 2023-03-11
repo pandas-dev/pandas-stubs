@@ -49,6 +49,7 @@ from tests import (
 from pandas.io.formats.style import Styler
 from pandas.io.parsers import TextFileReader
 
+_AggRetType = Union[pd.DataFrame, pd.Series]
 DF = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
 
@@ -2467,3 +2468,19 @@ def test_astype() -> None:
 
     states = pd.DataFrame({"population": population, "area": area})
     check(assert_type(states.astype(object), pd.DataFrame), pd.DataFrame, object)
+
+
+def test_xs_frame_new() -> None:
+    d = {
+        "num_legs": [4, 4, 2, 2],
+        "num_wings": [0, 0, 2, 2],
+        "class": ["mammal", "mammal", "mammal", "bird"],
+        "animal": ["cat", "dog", "bat", "penguin"],
+        "locomotion": ["walks", "walks", "flies", "walks"],
+    }
+    df = pd.DataFrame(data=d)
+    df = df.set_index(["class", "animal", "locomotion"])
+    s1 = df.xs(("mammal"), axis=0)
+    s2 = df.xs(("mammal"), axis=1)
+    check(assert_type(s1, _AggRetType), pd.DataFrame)
+    check(assert_type(s2, _AggRetType), pd.DataFrame)
