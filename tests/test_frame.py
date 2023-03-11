@@ -2482,4 +2482,4 @@ def test_xs_frame_new() -> None:
     s1 = df.xs("mammal", axis=0)
     s2 = df.xs("num_wings", axis=1)
     check(assert_type(s1, Union[pd.Series, pd.DataFrame]), pd.DataFrame)
-    check(assert_type(s2, Union[pd.Series, pd.DataFrame]), pd.DataFrame)
+    check(assert_type(s2, Union[pd.Series, pd.DataFrame]), pd.Series)
