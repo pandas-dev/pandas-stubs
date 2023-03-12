@@ -1748,3 +1748,9 @@ def test_updated_astype() -> None:
         pd.Series,
         np.integer,
     )
+
+
+def test_check_xs() -> None:
+    s4 = pd.Series([1, 4])
+    s4.xs(0, axis=0)
+    check(assert_type(s4, pd.Series), pd.Series)
