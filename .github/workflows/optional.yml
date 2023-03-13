@@ -6,6 +6,7 @@ on:
 
 jobs:
   nightly:
+    if: ${{ github.repository == 'pandas-dev/pandas-stubs' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -22,6 +23,7 @@ jobs:
       run: poetry run poe pytest --nightly
 
   mypy_nightly:
+    if: ${{ github.repository == 'pandas-dev/pandas-stubs' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
