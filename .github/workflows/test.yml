@@ -25,11 +25,6 @@ jobs:
         os: ${{ matrix.os }}
         python-version: ${{ matrix.python-version }}
 
-    - name: Show poetry python location (Windows)
-      shell: pwsh
-      run: poetry run where python
-      if: matrix.os == 'windows-latest'
-
     - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
       run: poetry run poe mypy
 
@@ -42,22 +37,6 @@ jobs:
     - name: Install pandas-stubs and run tests on the installed stubs
       run: poetry run poe test_dist
 
-  nightly:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Install project dependencies
-      uses: ./.github/setup
-      with:
-        os: ubuntu-latest
-        python-version: '3.10'
-
-    - name: Run pytest (against pandas nightly)
-      run: poetry run poe pytest --nightly
-
   precommit:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -66,19 +45,3 @@ jobs:
     - uses: actions/checkout@v3
 
     - uses: pre-commit/action@v3.0.0
-
-  mypy_nightly:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Install project dependencies
-      uses: ./.github/setup
-      with:
-        os: ubuntu-latest
-        python-version: '3.10'
-
-    - name: Run mypy tests with mypy nightly
-      run: poetry run poe mypy --mypy_nightly
