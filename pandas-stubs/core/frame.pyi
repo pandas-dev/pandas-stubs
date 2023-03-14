@@ -160,9 +160,8 @@ class _LocIndexerFrame(_LocIndexer):
         | Callable[[DataFrame], IndexType | MaskType | list[HashableT]]
         | list[HashableT]
         | tuple[
-            slice | Hashable | Iterable[HashableT] | IndexType | MaskType,
-            # For the columns use Sequence[H] instead of Iterable[H] to avoid matching `str`.
-            slice | Sequence[HashableT] | Series[bool] | Callable,
+            Iterable[HashableT] | slice | Hashable,
+            list[HashableT] | Series[bool] | slice  | Callable,
         ],
     ) -> DataFrame: ...
     @overload

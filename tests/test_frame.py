@@ -2485,7 +2485,7 @@ def test_xs_frame_new() -> None:
     check(assert_type(s2, Union[pd.Series, pd.DataFrame]), pd.Series)
 
 
-def test_loc_tuple() -> None:
+def test_loc_tuple_slice_list() -> None:
     """Test DataFrame.loc[index, columns]."""
     foo = pd.DataFrame(np.random.rand(10, 3), columns=["a", "b", "c"])
-    check(assert_type(foo.loc[4:5, ("a", "b")], pd.DataFrame), pd.DataFrame)
+    check(assert_type(foo.loc[4:5, ["a", "b"]], pd.DataFrame), pd.DataFrame)
