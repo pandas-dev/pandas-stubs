@@ -92,6 +92,7 @@ from pandas._typing import (
     MaskType,
     MergeHow,
     NaPosition,
+    NDFrameT,
     ParquetEngine,
     QuantileInterpolation,
     RandomState,
@@ -548,7 +549,7 @@ class DataFrame(NDFrame, OpsMixin):
     def lookup(self, row_labels: Sequence, col_labels: Sequence) -> np.ndarray: ...
     def align(
         self,
-        other: DataFrame | Series,
+        other: NDFrameT,
         join: JoinHow = ...,
         axis: Axis | None = ...,
         level: Level | None = ...,
@@ -558,7 +559,7 @@ class DataFrame(NDFrame, OpsMixin):
         limit: int | None = ...,
         fill_axis: Axis = ...,
         broadcast_axis: Axis | None = ...,
-    ) -> DataFrame: ...
+    ) -> tuple[DataFrame, NDFrameT]: ...
     def reindex(
         self,
         labels: Axes | None = ...,
