@@ -2483,3 +2483,41 @@ def test_xs_frame_new() -> None:
     s2 = df.xs("num_wings", axis=1)
     check(assert_type(s1, Union[pd.Series, pd.DataFrame]), pd.DataFrame)
     check(assert_type(s2, Union[pd.Series, pd.DataFrame]), pd.Series)
+
+
+def test_align() -> None:
+    df0 = pd.DataFrame(
+        data=np.array(
+            [
+                ["A0", "A1", "A2", "A3"],
+                ["B0", "B1", "B2", "B3"],
+                ["C0", "C1", "C2", "C3"],
+            ]
+        ).T,
+        index=[0, 1, 2, 3],
+        columns=["A", "B", "C"],
+    )
+
+    s0 = pd.Series(data={1: "1", 3: "3", 5: "5"})
+    aligned_df0, aligned_s0 = df0.align(s0, axis="index")
+    check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
+    check(assert_type(aligned_s0, pd.Series), pd.Series)
+
+    s1 = pd.Series(data={"A": "A", "D": "D"})
+    aligned_df0, aligned_s1 = df0.align(s1, axis="columns")
+    check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
+    check(assert_type(aligned_s1, pd.Series), pd.Series)
+
+    df1 = pd.DataFrame(
+        data=np.array(
+            [
+                ["A1", "A3", "A5"],
+                ["D1", "D3", "D5"],
+            ]
+        ).T,
+        index=[1, 3, 5],
+        columns=["A", "D"],
+    )
+    aligned_df0, aligned_df1 = df0.align(df1)
+    check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
+    check(assert_type(aligned_df1, pd.DataFrame), pd.DataFrame)
