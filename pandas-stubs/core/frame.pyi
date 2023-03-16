@@ -92,6 +92,7 @@ from pandas._typing import (
     MaskType,
     MergeHow,
     NaPosition,
+    NDFrameT,
     ParquetEngine,
     QuantileInterpolation,
     RandomState,
@@ -122,7 +123,6 @@ from pandas.plotting import PlotAccessor
 _str = str
 _bool = bool
 _ScalarOrTupleT = TypeVar("_ScalarOrTupleT", bound=Scalar | tuple[Hashable, ...])
-_SeriesOrFrameT = TypeVar("_SeriesOrFrameT", bound=Series | DataFrame)
 
 class _iLocIndexerFrame(_iLocIndexer):
     @overload
@@ -549,7 +549,7 @@ class DataFrame(NDFrame, OpsMixin):
     def lookup(self, row_labels: Sequence, col_labels: Sequence) -> np.ndarray: ...
     def align(
         self,
-        other: _SeriesOrFrameT,
+        other: NDFrameT,
         join: JoinHow = ...,
         axis: Axis | None = ...,
         level: Level | None = ...,
@@ -559,7 +559,7 @@ class DataFrame(NDFrame, OpsMixin):
         limit: int | None = ...,
         fill_axis: Axis = ...,
         broadcast_axis: Axis | None = ...,
-    ) -> tuple[DataFrame, _SeriesOrFrameT]: ...
+    ) -> tuple[DataFrame, NDFrameT]: ...
     def reindex(
         self,
         labels: Axes | None = ...,
