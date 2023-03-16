@@ -2172,7 +2172,7 @@ def test_loc_slice() -> None:
         {"x": [1, 2, 3, 4]},
         index=pd.MultiIndex.from_product([[1, 2], ["a", "b"]], names=["num", "let"]),
     )
-    check(assert_type(df1.loc[1, :], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df1.loc[1, :], Union[pd.Series, pd.DataFrame]), pd.DataFrame)
 
 
 def test_where() -> None:
@@ -2521,3 +2521,9 @@ def test_align() -> None:
     aligned_df0, aligned_df1 = df0.align(df1)
     check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
     check(assert_type(aligned_df1, pd.DataFrame), pd.DataFrame)
+
+
+def test_loc_new() -> None:
+    df1 = pd.DataFrame({"x": [1, 2, 3, 4]}, index=[10, 20, 30, 40])
+    df2 = df1.loc[10, :]
+    check(assert_type(df2, Union[pd.Series, pd.DataFrame]), pd.Series)

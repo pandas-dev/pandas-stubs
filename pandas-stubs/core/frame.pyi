@@ -161,7 +161,12 @@ class _LocIndexerFrame(_LocIndexer):
         | Callable[[DataFrame], IndexType | MaskType | list[HashableT]]
         | list[HashableT]
         | tuple[
-            IndexType | MaskType | list[HashableT] | Hashable,
+            IndexType
+            | MaskType
+            | list[HashableT]
+            | slice
+            | _IndexSliceTuple
+            | Callable,
             list[HashableT] | slice | Series[bool] | Callable,
         ],
     ) -> DataFrame: ...
@@ -187,6 +192,8 @@ class _LocIndexerFrame(_LocIndexer):
         ]
         | None,
     ) -> Series: ...
+    @overload
+    def __getitem__(self, idx: tuple[ScalarT, slice]) -> Series | DataFrame: ...
     @overload
     def __setitem__(
         self,
