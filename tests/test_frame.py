@@ -992,12 +992,13 @@ def test_types_plot() -> None:
 def test_types_window() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
     df.expanding()
-    df.expanding(axis=1)
+    if PD_LTE_20:
+        df.expanding(axis=1)
+        df.rolling(2, axis=1, center=True)
     if TYPE_CHECKING_INVALID_USAGE:
         df.expanding(axis=1, center=True)  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
 
     df.rolling(2)
-    df.rolling(2, axis=1, center=True)
 
     check(
         assert_type(df.rolling(2).agg("max"), pd.DataFrame),

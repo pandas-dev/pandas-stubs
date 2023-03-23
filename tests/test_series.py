@@ -42,6 +42,7 @@ from pandas._typing import (
 
 from tests import (
     PD_LTE_15,
+    PD_LTE_20,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -580,12 +581,13 @@ def test_types_plot() -> None:
 def test_types_window() -> None:
     s = pd.Series([0, 1, 1, 0, 5, 1, -10])
     s.expanding()
-    s.expanding(axis=0)
+    if PD_LTE_20:
+        s.expanding(axis=0)
+        s.rolling(2, axis=0, center=True)
     if TYPE_CHECKING_INVALID_USAGE:
         s.expanding(axis=0, center=True)  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
 
     s.rolling(2)
-    s.rolling(2, axis=0, center=True)
 
     check(
         assert_type(s.rolling(2).agg("sum"), pd.Series),
@@ -801,12 +803,33 @@ def test_types_bfill() -> None:
 
 def test_types_ewm() -> None:
     s1 = pd.Series([1, 2, 3])
-    w1: ExponentialMovingWindow = s1.ewm(
-        com=0.3, min_periods=0, adjust=False, ignore_na=True, axis=0
+    if PD_LTE_20:
+        check(
+            assert_type(
+                s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True, axis=0),
+                "ExponentialMovingWindow[pd.Series]",
+            ),
+            ExponentialMovingWindow,
+        )
+    check(
+        assert_type(s1.ewm(alpha=0.4), "ExponentialMovingWindow[pd.Series]"),
+        ExponentialMovingWindow,
     )
-    w2: ExponentialMovingWindow = s1.ewm(alpha=0.4)
-    w3: ExponentialMovingWindow = s1.ewm(span=1.6)
-    w4: ExponentialMovingWindow = s1.ewm(halflife=0.7)
+    check(
+        assert_type(s1.ewm(span=1.6), "ExponentialMovingWindow[pd.Series]"),
+        ExponentialMovingWindow,
+    )
+    check(
+        assert_type(s1.ewm(halflife=0.7), "ExponentialMovingWindow[pd.Series]"),
+        ExponentialMovingWindow,
+    )
+    check(
+        assert_type(
+            s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True),
+            "ExponentialMovingWindow[pd.Series]",
+        ),
+        ExponentialMovingWindow,
+    )
 
 
 def test_types_ffill() -> None:
