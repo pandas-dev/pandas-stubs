@@ -811,25 +811,25 @@ def test_types_ewm() -> None:
             ),
             ExponentialMovingWindow,
         )
-        check(
-            assert_type(s1.ewm(alpha=0.4), "ExponentialMovingWindow[pd.Series]"),
-            ExponentialMovingWindow,
-        )
-        check(
-            assert_type(s1.ewm(span=1.6), "ExponentialMovingWindow[pd.Series]"),
-            ExponentialMovingWindow,
-        )
-        check(
-            assert_type(s1.ewm(halflife=0.7), "ExponentialMovingWindow[pd.Series]"),
-            ExponentialMovingWindow,
-        )
-        check(
-            assert_type(
-                s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True),
-                "ExponentialMovingWindow[pd.Series]",
-            ),
-            ExponentialMovingWindow,
-        )
+    check(
+        assert_type(s1.ewm(alpha=0.4), "ExponentialMovingWindow[pd.Series]"),
+        ExponentialMovingWindow,
+    )
+    check(
+        assert_type(s1.ewm(span=1.6), "ExponentialMovingWindow[pd.Series]"),
+        ExponentialMovingWindow,
+    )
+    check(
+        assert_type(s1.ewm(halflife=0.7), "ExponentialMovingWindow[pd.Series]"),
+        ExponentialMovingWindow,
+    )
+    check(
+        assert_type(
+            s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True),
+            "ExponentialMovingWindow[pd.Series]",
+        ),
+        ExponentialMovingWindow,
+    )
 
 
 def test_types_ffill() -> None:
