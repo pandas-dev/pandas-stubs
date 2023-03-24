@@ -1978,5 +1978,4 @@ def test_pivot_table() -> None:
 def test_tolist() -> None:
     data = {"Courses": "pandas", "Fees": 20000, "Duration": "30days"}
     s = pd.Series(data)
-    listObj = s.tolist()
-    check(assert_type(listObj, list), list)
+    check(assert_type(s.array.tolist(), list), list)
