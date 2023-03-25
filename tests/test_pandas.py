@@ -1979,4 +1979,4 @@ def test_tolist() -> None:
     data = {"State": "Texas", "Population": 2000000, "GDP": "2T"}
     s = pd.Series(data)
     check(assert_type(s.array.tolist(), list), list)
-    check(assert_type(pd.array([1,2,3]).tolist(), list), list)
+    check(assert_type(pd.array([1, 2, 3]).tolist(), list), list)
