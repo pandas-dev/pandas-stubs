@@ -1,5 +1,6 @@
 import decimal
 
+import pandas as pd
 from typing_extensions import assert_type
 
 from tests import check
@@ -14,3 +15,10 @@ def test_constructor() -> None:
 
     check(assert_type(arr, DecimalArray), DecimalArray, decimal.Decimal)
     check(assert_type(arr.dtype, DecimalDtype), DecimalDtype)
+
+
+def test_tolist() -> None:
+    data = {"State": "Texas", "Population": 2000000, "GDP": "2T"}
+    s = pd.Series(data)
+    check(assert_type(s.array.tolist(), list), list)
+    check(assert_type(pd.array([1, 2, 3]).tolist(), list), list)  # type: ignore[call-arg]
