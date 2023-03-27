@@ -1,6 +1,7 @@
 from collections.abc import Sequence
 
 import numpy as np
+from pandas.core.arrays.base import ExtensionArray
 from pandas.core.indexes.api import Index
 from pandas.core.series import Series
 
@@ -10,13 +11,12 @@ from pandas._typing import (
 )
 
 from pandas.core.dtypes.dtypes import ExtensionDtype
-from pandas.core.dtypes.generic import ABCExtensionArray
 
 def array(
     data: Sequence[object],
     dtype: str | np.dtype | ExtensionDtype | None = ...,
     copy: bool = ...,
-) -> ABCExtensionArray: ...
+) -> ExtensionArray: ...
 def extract_array(obj, extract_numpy: bool = ...): ...
 def sanitize_array(
     data, index, dtype=..., copy: bool = ..., raise_cast_failure: bool = ...
