@@ -1777,3 +1777,10 @@ def test_check_xs() -> None:
     s4 = pd.Series([1, 4])
     s4.xs(0, axis=0)
     check(assert_type(s4, pd.Series), pd.Series)
+
+
+def test_types_apply_set() -> None:
+    series_of_lists: pd.Series = pd.Series(
+        {"list1": [1, 2, 3], "list2": ["a", "b", "c"], "list3": [True, False, True]}
+    )
+    check(assert_type(series_of_lists.apply(lambda x: set(x)), pd.Series), pd.Series)
