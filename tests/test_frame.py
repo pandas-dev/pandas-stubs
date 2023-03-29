@@ -172,6 +172,13 @@ def test_types_getitem_with_hashable() -> None:
         data=[[12.2, 10], [8.8, 15]], columns=[MyEnum.FIRST, MyEnum.SECOND]
     )
     check(assert_type(df[MyEnum.FIRST], pd.Series), pd.Series)
+    check(assert_type(df[1:], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df[:2], pd.DataFrame), pd.DataFrame)
+
+    df2 = pd.DataFrame(data=[[12.2, 10], [8.8, 15]], columns=[3, 4])
+    check(assert_type(df2[3], pd.Series), pd.Series)
+    check(assert_type(df2[[3]], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df2[[3, 4]], pd.DataFrame), pd.DataFrame)
 
 
 def test_slice_setitem() -> None:
