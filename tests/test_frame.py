@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 import csv
 import datetime
+from enum import Enum
 import io
 import itertools
 from pathlib import Path
@@ -158,6 +159,26 @@ def test_types_getitem() -> None:
     df[a]
     df[select_df]
     df[i]
+
+
+def test_types_getitem_with_hashable() -> None:
+    # Testing getitem support for hashable types that are not scalar
+    # Due to the bug in https://github.com/pandas-dev/pandas-stubs/issues/592
+    class MyEnum(Enum):
+        FIRST = "tayyar"
+        SECOND = "haydar"
+
+    df = pd.DataFrame(
+        data=[[12.2, 10], [8.8, 15]], columns=[MyEnum.FIRST, MyEnum.SECOND]
+    )
+    check(assert_type(df[MyEnum.FIRST], pd.Series), pd.Series)
+    check(assert_type(df[1:], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df[:2], pd.DataFrame), pd.DataFrame)
+
+    df2 = pd.DataFrame(data=[[12.2, 10], [8.8, 15]], columns=[3, 4])
+    check(assert_type(df2[3], pd.Series), pd.Series)
+    check(assert_type(df2[[3]], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df2[[3, 4]], pd.DataFrame), pd.DataFrame)
 
 
 def test_slice_setitem() -> None:
