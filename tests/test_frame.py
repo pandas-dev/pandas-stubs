@@ -169,7 +169,7 @@ def test_types_getitem_with_hashable() -> None:
         SECOND = "haydar"
 
     df = pd.DataFrame(data = [[12.2, 10], [8.8, 15]], columns=[MyEnum.FIRST, MyEnum.SECOND])
-    df[MyEnum.FIRST]
+    check(assert_type(df[MyEnum.FIRST], pd.Series), pd.Series)
 
 
 def test_slice_setitem() -> None:
