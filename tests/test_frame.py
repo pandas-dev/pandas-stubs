@@ -168,7 +168,9 @@ def test_types_getitem_with_hashable() -> None:
         FIRST = "tayyar"
         SECOND = "haydar"
 
-    df = pd.DataFrame(data = [[12.2, 10], [8.8, 15]], columns=[MyEnum.FIRST, MyEnum.SECOND])
+    df = pd.DataFrame(
+        data=[[12.2, 10], [8.8, 15]], columns=[MyEnum.FIRST, MyEnum.SECOND]
+    )
     check(assert_type(df[MyEnum.FIRST], pd.Series), pd.Series)
 
 
