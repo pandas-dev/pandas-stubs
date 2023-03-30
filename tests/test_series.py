@@ -334,8 +334,8 @@ def test_types_sum() -> None:
 
     # Note:
     # 1. Return types of `series.groupby(...).sum(...)` are NOT tested.
-    # 2. Actual return types of `series.groupby(...).sum(...)` with non-default
-    #    kwargs are NOT tested.
+    # 2. Runtime return types of `series.sum(...)` with non-default
+    #    kwargs are NOT tested (because of potential `nan`s).
 
     s0 = assert_type(pd.Series([1, 2, 3, np.nan]), "pd.Series")
     check(assert_type(s0.sum(), "Any"), np.float64)
