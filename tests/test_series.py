@@ -333,32 +333,33 @@ def test_types_sum() -> None:
     s.sum(min_count=4)
 
     # Note:
-    # 1. Return types of `series.groupby(...).sum(...)` are NOT tested.
-    # 2. Runtime return types of `series.sum(...)` with non-default
-    #    kwargs are NOT tested (because of potential `nan`s).
+    # 1. Return types of `series.groupby(...).sum(...)` are NOT tested
+    #    (waiting for stubs).
+    # 2. Runtime return types of `series.sum(min_count=...)` are NOT
+    #    tested (because of potential `nan`s).
 
     s0 = assert_type(pd.Series([1, 2, 3, np.nan]), "pd.Series")
     check(assert_type(s0.sum(), "Any"), np.float64)
-    assert_type(s0.sum(skipna=False), "Any")
-    assert_type(s0.sum(numeric_only=False), "Any")
+    check(assert_type(s0.sum(skipna=False), "Any"), np.float64)
+    check(assert_type(s0.sum(numeric_only=False), "Any"), np.float64)
     assert_type(s0.sum(min_count=4), "Any")
 
     s1 = assert_type(pd.Series([False, True], dtype=bool), "pd.Series[bool]")
     check(assert_type(s1.sum(), "int"), np.int64)
-    assert_type(s1.sum(skipna=False), "int")
-    assert_type(s1.sum(numeric_only=False), "int")
+    check(assert_type(s1.sum(skipna=False), "int"), np.int64)
+    check(assert_type(s1.sum(numeric_only=False), "int"), np.int64)
     assert_type(s1.sum(min_count=4), "int")
 
-    s2 = assert_type(pd.Series([0, 1] * 5, dtype=int), "pd.Series[int]")
+    s2 = assert_type(pd.Series([0, 1], dtype=int), "pd.Series[int]")
     check(assert_type(s2.sum(), "int"), np.int64)
-    assert_type(s2.sum(skipna=False), "int")
-    assert_type(s2.sum(numeric_only=False), "int")
+    check(assert_type(s2.sum(skipna=False), "int"), np.int64)
+    check(assert_type(s2.sum(numeric_only=False), "int"), np.int64)
     assert_type(s2.sum(min_count=4), "int")
 
-    s3 = assert_type(pd.Series([0, 1] * 5, dtype=float), "pd.Series[float]")
+    s3 = assert_type(pd.Series([1, 2, 3, np.nan], dtype=float), "pd.Series[float]")
     check(assert_type(s3.sum(), "float"), np.float64)
-    assert_type(s3.sum(skipna=False), "float")
-    assert_type(s3.sum(numeric_only=False), "float")
+    check(assert_type(s3.sum(skipna=False), "float"), np.float64)
+    check(assert_type(s3.sum(numeric_only=False), "float"), np.float64)
     assert_type(s3.sum(min_count=4), "float")
 
 
