@@ -61,6 +61,9 @@ else:
 if TYPE_CHECKING:
     from pandas._typing import np_ndarray_int  # noqa: F401
 
+    # This will make a explicit `Unknown` type for both mypy and pyright.
+    Unknown: TypeAlias = "."  # type: ignore
+
 
 def test_types_init() -> None:
     pd.Series(1)
@@ -331,6 +334,43 @@ def test_types_sum() -> None:
     s.sum(skipna=False)
     s.sum(numeric_only=False)
     s.sum(min_count=4)
+
+    s0 = assert_type(pd.Series(), "pd.Series[Unknown]")
+    assert_type(s0.sum(), "Any")
+    assert_type(s0.groupby(level=0).sum(), "Any")
+    assert_type(s0.sum(skipna=False), "Any")
+    assert_type(s0.sum(numeric_only=False), "Any")
+    assert_type(s0.sum(min_count=4), "Any")
+
+    s1 = check(
+        assert_type(pd.Series([False, True] * 5, dtype=bool), "pd.Series[bool]"),
+        pd.Series,
+        np.bool_,
+    )
+    check(assert_type(s1.sum(), int), np.int64)
+    check(assert_type(s1.groupby(level=0).sum(), int), np.int64)
+    check(assert_type(s1.sum(skipna=False), int), np.int64)
+    check(assert_type(s1.sum(min_count=4), int), np.int64)
+
+    s2 = check(
+        assert_type(pd.Series([0, 1] * 5, dtype=int), "pd.Series[int]"),
+        pd.Series,
+        np.int64,
+    )
+    check(assert_type(s2.sum(), int), np.int64)
+    check(assert_type(s2.groupby(level=0).sum(), int), np.int64)
+    check(assert_type(s2.sum(skipna=False), int), np.int64)
+    check(assert_type(s2.sum(min_count=4), int), np.int64)
+
+    s3 = check(
+        assert_type(pd.Series([0, 1] * 5, dtype=int), "pd.Series[int]"),
+        pd.Series,
+        np.int64,
+    )
+    check(assert_type(s3.sum(), int), np.int64)
+    check(assert_type(s3.groupby(level=0).sum(), int), np.int64)
+    check(assert_type(s3.sum(skipna=False), int), np.int64)
+    check(assert_type(s3.sum(min_count=4), int), np.int64)
 
 
 def test_types_cumsum() -> None:
