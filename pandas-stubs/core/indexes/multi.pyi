@@ -4,6 +4,7 @@ from collections.abc import (
     Sequence,
 )
 from typing import (
+    Any,
     Literal,
     overload,
 )
@@ -68,6 +69,8 @@ class MultiIndex(Index):
     def __contains__(self, key) -> bool: ...
     @property
     def dtype(self) -> np.dtype: ...
+    @property
+    def dtypes(self) -> pd.Series[Any]: ...
     def memory_usage(self, deep: bool = ...) -> int: ...
     @property
     def nbytes(self) -> int: ...
