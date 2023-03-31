@@ -4,7 +4,6 @@ from collections.abc import (
     Sequence,
 )
 from typing import (
-    Any,
     Literal,
     overload,
 )
@@ -16,6 +15,7 @@ from typing_extensions import Self
 
 from pandas._typing import (
     T1,
+    Dtype,
     DtypeArg,
     HashableT,
     np_ndarray_anyint,
@@ -70,7 +70,7 @@ class MultiIndex(Index):
     @property
     def dtype(self) -> np.dtype: ...
     @property
-    def dtypes(self) -> pd.Series[Any]: ...
+    def dtypes(self) -> pd.Series[Dtype]: ...
     def memory_usage(self, deep: bool = ...) -> int: ...
     @property
     def nbytes(self) -> int: ...

@@ -15,6 +15,7 @@ from typing_extensions import (
     assert_type,
 )
 
+from pandas._typing import Dtype  # noqa: F401
 from pandas._typing import Scalar
 
 from tests import (
@@ -859,4 +860,4 @@ def test_getitem() -> None:
 def test_multiindex_dtypes():
     # GH-597
     mi = pd.MultiIndex.from_tuples([(1, 2.0), (2, 3.0)], names=["foo", "bar"])
-    check(assert_type(mi.dtypes, pd.Series), pd.Series)
+    check(assert_type(mi.dtypes, "pd.Series[Dtype]"), pd.Series)
