@@ -1973,3 +1973,11 @@ def test_pivot_table() -> None:
         ),
         pd.DataFrame,
     )
+
+
+def test_argmin_and_argmax_return() -> None:
+    df = pd.DataFrame({"a": [-1, 0, 1], "b": [1, 2, 3]})
+    i = df.a.abs().argmin()
+    i1 = df.a.abs().argmax()
+    check(assert_type(i, np.int64), np.int64)
+    check(assert_type(i1, np.int64), np.int64)
