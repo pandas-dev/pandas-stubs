@@ -1397,25 +1397,32 @@ def test_bitwise_operators() -> None:
     check(assert_type(s ^ 3, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(3 ^ s, "pd.Series[int]"), pd.Series, np.integer)
 
-    check(assert_type(s & [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type([1, 2, 3, 4] & s, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(s & s2, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s2 & s, "pd.Series[int]"), pd.Series, np.integer)
 
-    check(assert_type(s | [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type([1, 2, 3, 4] | s, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(s | s2, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s2 | s, "pd.Series[int]"), pd.Series, np.integer)
 
-    check(assert_type(s ^ [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type([1, 2, 3, 4] ^ s, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(s ^ s2, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s2 ^ s, "pd.Series[int]"), pd.Series, np.integer)
+
+    with pytest_warns_bounded(
+        FutureWarning, match="Logical Ops(and, or, xor) is deprecated", lower="2.1"
+    ):
+        check(assert_type(s & [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
+        check(assert_type([1, 2, 3, 4] & s, "pd.Series[bool]"), pd.Series, np.bool_)
+
+        check(assert_type(s | [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
+        check(assert_type([1, 2, 3, 4] | s, "pd.Series[bool]"), pd.Series, np.bool_)
+
+        check(assert_type(s ^ [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
+        check(assert_type([1, 2, 3, 4] ^ s, "pd.Series[bool]"), pd.Series, np.bool_)
 
 
 def test_logical_operators() -> None:
     # GH 380
     df = pd.DataFrame({"a": [1, 2, 3], "b": [2, 3, 4]})
+
     check(
         assert_type((df["a"] >= 2) & (df["b"] >= 2), "pd.Series[bool]"),
         pd.Series,
@@ -1432,41 +1439,50 @@ def test_logical_operators() -> None:
         np.bool_,
     )
     check(assert_type((df["a"] >= 2) & True, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(
-        assert_type((df["a"] >= 2) & [True, False, True], "pd.Series[bool]"),
-        pd.Series,
-        np.bool_,
-    )
+
     check(assert_type((df["a"] >= 2) | True, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(
-        assert_type((df["a"] >= 2) | [True, False, True], "pd.Series[bool]"),
-        pd.Series,
-        np.bool_,
-    )
+
     check(assert_type((df["a"] >= 2) ^ True, "pd.Series[bool]"), pd.Series, np.bool_)
-    check(
-        assert_type((df["a"] >= 2) ^ [True, False, True], "pd.Series[bool]"),
-        pd.Series,
-        np.bool_,
-    )
+
     check(assert_type(True & (df["a"] >= 2), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(
-        assert_type([True, False, True] & (df["a"] >= 2), "pd.Series[bool]"),
-        pd.Series,
-        np.bool_,
-    )
+
     check(assert_type(True | (df["a"] >= 2), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(
-        assert_type([True, False, True] | (df["a"] >= 2), "pd.Series[bool]"),
-        pd.Series,
-        np.bool_,
-    )
+
     check(assert_type(True ^ (df["a"] >= 2), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(
-        assert_type([True, False, True] ^ (df["a"] >= 2), "pd.Series[bool]"),
-        pd.Series,
-        np.bool_,
-    )
+
+    with pytest_warns_bounded(
+        FutureWarning, match="Logical Ops(and, or, xor) is deprecated", lower="2.1"
+    ):
+        check(
+            assert_type((df["a"] >= 2) ^ [True, False, True], "pd.Series[bool]"),
+            pd.Series,
+            np.bool_,
+        )
+        check(
+            assert_type((df["a"] >= 2) & [True, False, True], "pd.Series[bool]"),
+            pd.Series,
+            np.bool_,
+        )
+        check(
+            assert_type((df["a"] >= 2) | [True, False, True], "pd.Series[bool]"),
+            pd.Series,
+            np.bool_,
+        )
+        check(
+            assert_type([True, False, True] & (df["a"] >= 2), "pd.Series[bool]"),
+            pd.Series,
+            np.bool_,
+        )
+        check(
+            assert_type([True, False, True] | (df["a"] >= 2), "pd.Series[bool]"),
+            pd.Series,
+            np.bool_,
+        )
+        check(
+            assert_type([True, False, True] ^ (df["a"] >= 2), "pd.Series[bool]"),
+            pd.Series,
+            np.bool_,
+        )
 
 
 def test_AnyArrayLike_and_clip() -> None:
