@@ -306,6 +306,7 @@ S1 = TypeVar(
     int,
     float,
     complex,
+    Dtype,
     Timestamp,
     Timedelta,
     Period,
