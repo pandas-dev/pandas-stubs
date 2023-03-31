@@ -70,7 +70,10 @@ from pandas.core.window.rolling import (
     Rolling,
     Window,
 )
-from typing_extensions import TypeAlias
+from typing_extensions import (
+    Never,
+    TypeAlias,
+)
 import xarray as xr
 
 from pandas._libs.interval import Interval
@@ -761,7 +764,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def apply(
         self,
-        func: Callable[..., Scalar | Sequence | Mapping],
+        func: Callable[..., Scalar | Sequence | set | Mapping],
         convertDType: _bool = ...,
         args: tuple = ...,
         **kwds,
@@ -1811,6 +1814,30 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         fill_value: float | None = ...,
         axis: AxisIndex | None = ...,
     ) -> Series[S1]: ...
+    # ignore needed because of mypy, for using `Never` as type-var.
+    @overload
+    def sum(
+        self: Series[Never],  # type: ignore[type-var]
+        axis: AxisIndex | None = ...,
+        skipna: _bool | None = ...,
+        level: None = ...,
+        numeric_only: _bool = ...,
+        min_count: int = ...,
+        **kwargs,
+    ) -> Any: ...
+    # ignore needed because of mypy, for overlapping overloads
+    # between `Series[bool]` and `Series[int]`.
+    @overload
+    def sum(  # type: ignore[misc]
+        self: Series[bool],
+        axis: AxisIndex | None = ...,
+        skipna: _bool | None = ...,
+        level: None = ...,
+        numeric_only: _bool = ...,
+        min_count: int = ...,
+        **kwargs,
+    ) -> int: ...
+    @overload
     def sum(
         self: Series[S1],
         axis: AxisIndex | None = ...,
