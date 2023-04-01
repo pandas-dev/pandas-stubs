@@ -1,19 +1,37 @@
-# 1:1 copy from https://github.com/orgs/community/discussions/25389 for testing
-name: pull request comment
+name: 'Optional'
 on:
-  issue_comment:                                     
+  issue_comment:
     types: [created, edited, deleted]
 
 jobs:
-job01:
-if: contains(github.event.comment.html_url, '/pull/')    # check if the comments come from pull request, exclude those from issue.
-runs-on: [ubuntu-latest]
-steps:
-- name: say hello
-if: contains(github.event.comment.body, '/support')   # check the comment if it contains the keywords
-run: |
-echo say hello
-- name: test
-if: contains(github.event.comment.body, '/test')  # check the comment if it contains the keywords
-run: |
-echo test
+  nightly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install project dependencies
+      uses: ./.github/setup
+      with:
+        os: ubuntu-latest
+        python-version: '3.11'
+
+    - name: Run pytest (against pandas nightly)
+      run: poetry run poe pytest --nightly
+
+  mypy_nightly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install project dependencies
+      uses: ./.github/setup
+      with:
+        os: ubuntu-latest
+        python-version: '3.11'
+
+    - name: Run mypy tests with mypy nightly
+      run: poetry run poe mypy --mypy_nightly
