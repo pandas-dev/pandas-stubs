@@ -1408,7 +1408,7 @@ def test_bitwise_operators() -> None:
 
     with pytest_warns_bounded(
         FutureWarning,
-        match="Logical Ops(and, or, xor) between Pandas objects and",
+        match="Logical ops (and, or, xor) between Pandas objects and",
         lower="2.1",
     ):
         check(assert_type(s & [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
@@ -1454,7 +1454,7 @@ def test_logical_operators() -> None:
 
     with pytest_warns_bounded(
         FutureWarning,
-        match="Logical Ops(and, or, xor) between Pandas objects and",
+        match="Logical ops (and, or, xor) between Pandas objects and",
         lower="2.1",
     ):
         check(
