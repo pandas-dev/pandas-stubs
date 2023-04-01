@@ -6,10 +6,14 @@ on:
       - main
   workflow_dispatch:
   issue_comment:
-    types: [created, edited]
+    types:
+      - created
+      - edited
 
 jobs:
   nightly:
+    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/pandas_nightly') }}
+
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
