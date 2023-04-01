@@ -5,9 +5,15 @@ on:
     branches:
       - main
   workflow_dispatch:
+  issue_comment:
+    types:
+      - created
+      - edited
 
 jobs:
   nightly:
+    if: ${{ github.event_name != 'issue_comment' || ( github.event.issue.pull_request && contains(github.event.comment.body, '/pandas_nightly') ) }}
+
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -24,6 +30,8 @@ jobs:
       run: poetry run poe pytest --nightly
 
   mypy_nightly:
+    if: ${{ github.event_name != 'issue_comment' || ( github.event.issue.pull_request && contains(github.event.comment.body, '/mypy_nightly') ) }}
+
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
