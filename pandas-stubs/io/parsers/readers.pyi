@@ -26,6 +26,7 @@ from pandas._typing import (
     CSVQuoting,
     DtypeArg,
     FilePath,
+    ListLikeHashable,
     ReadCsvBuffer,
     StorageOptions,
     npt,
@@ -40,7 +41,7 @@ def read_csv(
     sep: str | None = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
-    names: list[str] | None = ...,
+    names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: list[str]
     | tuple[str, ...]
@@ -106,7 +107,7 @@ def read_csv(
     sep: str | None = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
-    names: list[str] | None = ...,
+    names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: list[str]
     | tuple[str, ...]
@@ -172,7 +173,7 @@ def read_csv(
     sep: str | None = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
-    names: list[str] | None = ...,
+    names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: list[str]
     | tuple[str, ...]
@@ -238,7 +239,7 @@ def read_table(
     sep: str | None = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
-    names: list[str] | None = ...,
+    names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: list[str]
     | tuple[str, ...]
@@ -304,7 +305,7 @@ def read_table(
     sep: str | None = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
-    names: list[str] | None = ...,
+    names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: list[str]
     | tuple[str, ...]
@@ -370,7 +371,7 @@ def read_table(
     sep: str | None = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
-    names: list[str] | None = ...,
+    names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: list[str]
     | tuple[str, ...]

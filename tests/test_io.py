@@ -517,6 +517,20 @@ def test_types_read_csv() -> None:
         df12: pd.DataFrame = pd.read_csv(path, usecols=("col1",))
         df13: pd.DataFrame = pd.read_csv(path, usecols=pd.Series(data=["col1"]))
         df14: pd.DataFrame = pd.read_csv(path, converters=None)
+        df15: pd.DataFrame = pd.read_csv(path, names=("first", "second"), header=0)
+        df16: pd.DataFrame = pd.read_csv(path, names=range(2), header=0)
+        df17: pd.DataFrame = pd.read_csv(path, names=(1, "two"), header=0)
+        df18: pd.DataFrame = pd.read_csv(
+            path,
+            names=(
+                (
+                    "first",
+                    1,
+                ),
+                ("last", 2),
+            ),
+            header=0,
+        )
 
         tfr1: TextFileReader = pd.read_csv(path, nrows=2, iterator=True, chunksize=3)
         tfr1.close()
@@ -539,6 +553,37 @@ def test_read_table():
         check(assert_type(read_table(path, chunksize=None), DataFrame), DataFrame)
         check(
             assert_type(read_table(path, dtype=defaultdict(lambda: "f8")), DataFrame),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                read_table(path, names=("first", "second"), header=0), DataFrame
+            ),
+            DataFrame,
+        )
+        check(
+            assert_type(read_table(path, names=range(2), header=0), DataFrame),
+            DataFrame,
+        )
+        check(
+            assert_type(read_table(path, names=(1, "two"), header=0), DataFrame),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                read_table(
+                    path,
+                    names=(
+                        (
+                            "first",
+                            1,
+                        ),
+                        ("last", 2),
+                    ),
+                    header=0,
+                ),
+                DataFrame,
+            ),
             DataFrame,
         )
 
