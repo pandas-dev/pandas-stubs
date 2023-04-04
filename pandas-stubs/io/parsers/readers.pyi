@@ -16,8 +16,6 @@ from typing import (
 )
 
 from pandas.core.frame import DataFrame
-from pandas.core.indexes.base import Index
-from pandas.core.series import Series
 from typing_extensions import Self
 
 from pandas._typing import (
@@ -29,7 +27,7 @@ from pandas._typing import (
     ListLikeHashable,
     ReadCsvBuffer,
     StorageOptions,
-    npt,
+    UsecolsArgType,
 )
 
 from pandas.io.common import IOHandles
@@ -43,14 +41,7 @@ def read_csv(
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
-    usecols: list[str]
-    | tuple[str, ...]
-    | Sequence[int]
-    | Series
-    | Index
-    | npt.NDArray
-    | Callable[[str], bool]
-    | None = ...,
+    usecols: UsecolsArgType = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: Mapping[int | str, Callable[[str], Any]]
@@ -109,14 +100,7 @@ def read_csv(
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
-    usecols: list[str]
-    | tuple[str, ...]
-    | Sequence[int]
-    | Series
-    | Index
-    | npt.NDArray
-    | Callable[[str], bool]
-    | None = ...,
+    usecols: UsecolsArgType = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: Mapping[int | str, Callable[[str], Any]]
@@ -175,14 +159,7 @@ def read_csv(
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
-    usecols: list[str]
-    | tuple[str, ...]
-    | Sequence[int]
-    | Series
-    | Index
-    | npt.NDArray
-    | Callable[[str], bool]
-    | None = ...,
+    usecols: UsecolsArgType = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: Mapping[int | str, Callable[[str], Any]]
@@ -241,14 +218,7 @@ def read_table(
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
-    usecols: list[str]
-    | tuple[str, ...]
-    | Sequence[int]
-    | Series
-    | Index
-    | npt.NDArray
-    | Callable[[str], bool]
-    | None = ...,
+    usecols: UsecolsArgType = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: Mapping[int | str, Callable[[str], Any]]
@@ -307,14 +277,7 @@ def read_table(
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
-    usecols: list[str]
-    | tuple[str, ...]
-    | Sequence[int]
-    | Series
-    | Index
-    | npt.NDArray
-    | Callable[[str], bool]
-    | None = ...,
+    usecols: UsecolsArgType = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: Mapping[int | str, Callable[[str], Any]]
@@ -373,14 +336,7 @@ def read_table(
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
-    usecols: list[str]
-    | tuple[str, ...]
-    | Sequence[int]
-    | Series
-    | Index
-    | npt.NDArray
-    | Callable[[str], bool]
-    | None = ...,
+    usecols: UsecolsArgType = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: Mapping[int | str, Callable[[str], Any]]
