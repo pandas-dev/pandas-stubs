@@ -19,20 +19,20 @@ from pandas._typing import Dtype  # noqa: F401
 from pandas._typing import Scalar
 
 from tests import (
-    PD_LTE_15,
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    pytest_warns_bounded,
 )
 
 if TYPE_CHECKING:
-    from pandas.core.indexes.numeric import NumericIndex
-
+    from pandas.core.indexes.base import (
+        _FloatIndexType,
+        _IntIndexType,
+    )
 else:
-    if not PD_LTE_15:
-        from pandas import Index as NumericIndex
-    else:
-        from pandas.core.indexes.numeric import NumericIndex
+    from pandas.core.indexes.base import (
+        Index as _FloatIndexType,
+        Index as _IntIndexType,
+    )
 
 
 def test_index_unique() -> None:
@@ -155,16 +155,16 @@ def test_types_to_numpy() -> None:
 def test_index_arithmetic() -> None:
     # GH 287
     idx = pd.Index([1, 2.2, 3], dtype=float)
-    check(assert_type(idx + 3, NumericIndex), NumericIndex)
-    check(assert_type(idx - 3, NumericIndex), NumericIndex)
-    check(assert_type(idx * 3, NumericIndex), NumericIndex)
-    check(assert_type(idx / 3, NumericIndex), NumericIndex)
-    check(assert_type(idx // 3, NumericIndex), NumericIndex)
-    check(assert_type(3 + idx, NumericIndex), NumericIndex)
-    check(assert_type(3 - idx, NumericIndex), NumericIndex)
-    check(assert_type(3 * idx, NumericIndex), NumericIndex)
-    check(assert_type(3 / idx, NumericIndex), NumericIndex)
-    check(assert_type(3 // idx, NumericIndex), NumericIndex)
+    check(assert_type(idx + 3, "_FloatIndexType"), _FloatIndexType, np.float64)
+    check(assert_type(idx - 3, "_FloatIndexType"), _FloatIndexType, np.float64)
+    check(assert_type(idx * 3, "_FloatIndexType"), _FloatIndexType, np.float64)
+    check(assert_type(idx / 3, "_FloatIndexType"), _FloatIndexType, np.float64)
+    check(assert_type(idx // 3, "_FloatIndexType"), _FloatIndexType, np.float64)
+    check(assert_type(3 + idx, "_FloatIndexType"), _FloatIndexType, np.float64)
+    check(assert_type(3 - idx, "_FloatIndexType"), _FloatIndexType, np.float64)
+    check(assert_type(3 * idx, "_FloatIndexType"), _FloatIndexType, np.float64)
+    check(assert_type(3 / idx, "_FloatIndexType"), _FloatIndexType, np.float64)
+    check(assert_type(3 // idx, "_FloatIndexType"), _FloatIndexType, np.float64)
 
 
 def test_index_relops() -> None:
@@ -199,33 +199,27 @@ def test_index_relops() -> None:
 
 
 def test_range_index_union():
-    with pytest_warns_bounded(
-        FutureWarning,
-        match="pandas.Int64Index",
-        upper="1.5.99",
-        upper_exception=AttributeError,
-    ):
-        check(
-            assert_type(
-                pd.RangeIndex(0, 10).union(pd.RangeIndex(10, 20)),
-                Union[pd.Index, pd.Int64Index, pd.RangeIndex],
-            ),
-            pd.RangeIndex,
-        )
-        check(
-            assert_type(
-                pd.RangeIndex(0, 10).union([11, 12, 13]),
-                Union[pd.Index, pd.Int64Index, pd.RangeIndex],
-            ),
-            pd.Int64Index,
-        )
-        check(
-            assert_type(
-                pd.RangeIndex(0, 10).union(["a", "b", "c"]),
-                Union[pd.Index, pd.Int64Index, pd.RangeIndex],
-            ),
-            pd.Index,
-        )
+    check(
+        assert_type(
+            pd.RangeIndex(0, 10).union(pd.RangeIndex(10, 20)),
+            Union[pd.Index, _IntIndexType, pd.RangeIndex],
+        ),
+        pd.RangeIndex,
+    )
+    check(
+        assert_type(
+            pd.RangeIndex(0, 10).union([11, 12, 13]),
+            Union[pd.Index, _IntIndexType, pd.RangeIndex],
+        ),
+        pd.Index,
+    )
+    check(
+        assert_type(
+            pd.RangeIndex(0, 10).union(["a", "b", "c"]),
+            Union[pd.Index, _IntIndexType, pd.RangeIndex],
+        ),
+        pd.Index,
+    )
 
 
 def test_interval_range():

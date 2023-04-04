@@ -30,15 +30,12 @@ from pandas.core.groupby import (
 from pandas.core.indexes.api import (
     CategoricalIndex as CategoricalIndex,
     DatetimeIndex as DatetimeIndex,
-    Float64Index as Float64Index,
     Index as Index,
-    Int64Index as Int64Index,
     IntervalIndex as IntervalIndex,
     MultiIndex as MultiIndex,
     PeriodIndex as PeriodIndex,
     RangeIndex as RangeIndex,
     TimedeltaIndex as TimedeltaIndex,
-    UInt64Index as UInt64Index,
 )
 from pandas.core.indexes.datetimes import (
     bdate_range as bdate_range,

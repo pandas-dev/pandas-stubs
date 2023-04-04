@@ -12,6 +12,10 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas import Index
+from pandas.core.indexes.base import (
+    _FloatIndexType,
+    _IntIndexType,
+)
 from pandas.core.indexes.extension import ExtensionIndex
 from pandas.core.series import (
     Series,
@@ -46,10 +50,10 @@ _EdgesInt: TypeAlias = (
     | npt.NDArray[np.int32]
     | npt.NDArray[np.intp]
     | pd.Series[int]
-    | pd.Int64Index
+    | _IntIndexType
 )
 _EdgesFloat: TypeAlias = (
-    Sequence[float] | npt.NDArray[np.float64] | pd.Series[float] | pd.Float64Index
+    Sequence[float] | npt.NDArray[np.float64] | pd.Series[float] | _FloatIndexType
 )
 _EdgesTimestamp: TypeAlias = (
     Sequence[DatetimeLike]
