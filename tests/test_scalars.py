@@ -778,6 +778,8 @@ def test_timedelta_mul_div() -> None:
         md_ndarray_float / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
         mp_series_int / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
         md_series_float / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        md_int64_index / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        md_float_index / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_timedelta_mod_abs_unary() -> None:
