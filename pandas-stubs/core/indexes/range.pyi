@@ -3,8 +3,10 @@ from typing import overload
 
 import numpy as np
 from pandas import Series
-from pandas.core.indexes.base import Index
-from pandas.core.indexes.numeric import Int64Index
+from pandas.core.indexes.base import (
+    Index,
+    _IntIndexType,
+)
 
 from pandas._typing import (
     HashableT,
@@ -13,7 +15,7 @@ from pandas._typing import (
     npt,
 )
 
-class RangeIndex(Int64Index):
+class RangeIndex(_IntIndexType):
     def __new__(
         cls,
         start: int | RangeIndex = ...,
@@ -81,7 +83,7 @@ class RangeIndex(Int64Index):
     def any(self) -> bool: ...
     def union(
         self, other: list[HashableT] | Index, sort=...
-    ) -> Index | Int64Index | RangeIndex: ...
+    ) -> Index | _IntIndexType | RangeIndex: ...
     @overload  # type: ignore[override]
     def __getitem__(
         self,

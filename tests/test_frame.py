@@ -40,11 +40,9 @@ import xarray as xr
 from pandas._typing import Scalar
 
 from tests import (
-    PD_LTE_15,
     PD_LTE_20,
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    pytest_warns_bounded,
 )
 
 from pandas.io.formats.style import Styler
@@ -1178,16 +1176,8 @@ def test_types_describe() -> None:
         }
     )
     df.describe()
-    with pytest_warns_bounded(
-        FutureWarning, match="Treating datetime data as categorical", upper="1.5.999"
-    ):
-        df.describe(percentiles=[0.5], include="all")
-        df.describe(exclude=[np.number])
-    if PD_LTE_15:
-        # datetime_is_numeric param added in 1.1.0
-        # https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-        # Remove in 2.0.0
-        df.describe(datetime_is_numeric=True)
+    df.describe(percentiles=[0.5], include="all")
+    df.describe(exclude=[np.number])
 
 
 def test_types_to_string() -> None:
@@ -1345,26 +1335,13 @@ def test_types_to_parquet() -> None:
 
 def test_types_to_latex() -> None:
     df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
-    with pytest_warns_bounded(
-        FutureWarning, match="In future versions `DataFrame.to_latex`", upper="1.5.999"
-    ):
-        df.to_latex(
-            columns=["A"], label="some_label", caption="some_caption", multirow=True
-        )
-    with pytest_warns_bounded(
-        FutureWarning, match="In future versions `DataFrame.to_latex`", upper="1.5.999"
-    ):
-        df.to_latex(escape=False, decimal=",", column_format="r")
+    df.to_latex(
+        columns=["A"], label="some_label", caption="some_caption", multirow=True
+    )
+    df.to_latex(escape=False, decimal=",", column_format="r")
     # position param was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-    with pytest_warns_bounded(
-        FutureWarning, match="In future versions `DataFrame.to_latex`", upper="1.5.999"
-    ):
-        df.to_latex(position="some")
-    # caption param was extended to accept tuple in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-    with pytest_warns_bounded(
-        FutureWarning, match="In future versions `DataFrame.to_latex`", upper="1.5.999"
-    ):
-        df.to_latex(caption=("cap1", "cap2"))
+    df.to_latex(position="some")
+    df.to_latex(caption=("cap1", "cap2"))
 
 
 def test_types_explode() -> None:
