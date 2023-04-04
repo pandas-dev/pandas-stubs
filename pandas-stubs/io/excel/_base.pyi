@@ -22,6 +22,7 @@ from xlrd.book import Book
 from pandas._typing import (
     Dtype,
     FilePath,
+    ListLikeHashable,
     ReadBuffer,
     StorageOptions,
     WriteExcelBuffer,
@@ -40,7 +41,7 @@ def read_excel(
     sheet_name: list[int | str] | None,
     *,
     header: int | Sequence[int] | None = ...,
-    names: list[str] | None = ...,
+    names: ListLikeHashable | None = ...,
     index_col: int | Sequence[int] | None = ...,
     usecols: Sequence[int] | Sequence[str] | Callable[[str], bool] | None = ...,
     dtype: str | Dtype | Mapping[str, str | Dtype] | None = ...,
@@ -78,7 +79,7 @@ def read_excel(
     sheet_name: int | str = ...,
     *,
     header: int | Sequence[int] | None = ...,
-    names: list[str] | None = ...,
+    names: ListLikeHashable | None = ...,
     index_col: int | Sequence[int] | None = ...,
     usecols: Sequence[int] | Sequence[str] | Callable[[str], bool] | None = ...,
     dtype: str | Dtype | Mapping[str, str | Dtype] | None = ...,
@@ -155,7 +156,7 @@ class ExcelFile:
         self,
         sheet_name: list[int | str] | None,
         header: int | Sequence[int] | None = ...,
-        names: list[str] | None = ...,
+        names: ListLikeHashable | None = ...,
         index_col: int | Sequence[int] | None = ...,
         usecols: str
         | Sequence[int]
@@ -185,7 +186,7 @@ class ExcelFile:
         self,
         sheet_name: int | str,
         header: int | Sequence[int] | None = ...,
-        names: list[str] | None = ...,
+        names: ListLikeHashable | None = ...,
         index_col: int | Sequence[int] | None = ...,
         usecols: str
         | Sequence[int]

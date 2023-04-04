@@ -710,6 +710,25 @@ def test_read_excel() -> None:
             ),
             dict,
         )
+        check(
+            assert_type(pd.read_excel(path, names=("test",), header=0), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(pd.read_excel(path, names=(1,), header=0), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, names=(("higher", "lower"),), header=0),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        ),
+        check(
+            assert_type(pd.read_excel(path, names=range(1), header=0), pd.DataFrame),
+            pd.DataFrame,
+        )
 
 
 def test_read_excel_io_types() -> None:
