@@ -218,6 +218,7 @@ def test_clipboard():
         assert_type(read_clipboard(dtype=defaultdict(lambda: "f8")), DataFrame),
         DataFrame,
     )
+    check(assert_type(read_clipboard(names=None), DataFrame), DataFrame)
 
 
 def test_clipboard_iterator():
