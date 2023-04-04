@@ -19,6 +19,7 @@ from pandas._typing import (
     CSVEngine,
     CSVQuoting,
     DtypeArg,
+    ListLikeHashable,
     StorageOptions,
     npt,
 )
@@ -31,7 +32,7 @@ def read_clipboard(
     *,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
-    names: list[str] | None = ...,
+    names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: list[str]
     | Sequence[int]
@@ -94,7 +95,7 @@ def read_clipboard(
     *,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
-    names: list[str] | None = ...,
+    names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: list[str]
     | Sequence[int]
@@ -157,7 +158,7 @@ def read_clipboard(
     *,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
-    names: list[str] | None = ...,
+    names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: list[str]
     | Sequence[int]

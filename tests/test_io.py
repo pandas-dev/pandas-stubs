@@ -219,6 +219,18 @@ def test_clipboard():
         DataFrame,
     )
     check(assert_type(read_clipboard(names=None), DataFrame), DataFrame)
+    check(
+        assert_type(read_clipboard(names=("first", "second"), header=0), DataFrame),
+        DataFrame,
+    )
+    check(assert_type(read_clipboard(names=range(2), header=0), DataFrame), DataFrame)
+    check(assert_type(read_clipboard(names=(1, "two"), header=0), DataFrame), DataFrame)
+    check(
+        assert_type(
+            read_clipboard(names=(("first", 1), ("last", 2)), header=0), DataFrame
+        ),
+        DataFrame,
+    )
 
 
 def test_clipboard_iterator():
