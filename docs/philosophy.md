@@ -81,7 +81,7 @@ is intended to expand the use of `assert_type()` in the test code.
 
 ## Narrow vs. Wide Arguments
 
-A consideration in creating stubs is too make the set of type annotations for
+A consideration in creating stubs is to make the set of type annotations for
 function arguments "just right", i.e.,
 not too narrow and not too wide.  A type annotation to an argument to a function or
 method is too narrow if it disallows valid arguments.  A type annotation to
