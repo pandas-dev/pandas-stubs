@@ -1,12 +1,12 @@
 # pandas-stubs Type Checking Philosophy
 
 The goal of the pandas-stubs project is to provide type stubs for the public API
-that represent the recommended ways of using pandas.  This is opposed to the 
+that represent the recommended ways of using pandas.  This is opposed to the
 philosophy within the pandas source, as described [here](https://pandas.pydata.org/docs/development/contributing_codebase.html?highlight=typing#type-hints), which
 is to assist with the development of the pandas source code to ensure type safety within
 that source.
 
-Due to the methodology used by Microsoft to develop the original stubs, there are internal 
+Due to the methodology used by Microsoft to develop the original stubs, there are internal
 classes, methods and functions that are annotated within the pandas-stubs project
 that are incorrect with respect to the pandas source, but that have no effect on type
 checking user code that calls the public API.
