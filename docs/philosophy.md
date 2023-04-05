@@ -89,7 +89,7 @@ an argument to a function or method is too wide if
 it allows invalid arguments.  Testing for type annotations that are too narrow is rather
 straightforward.  It is easy to create an example for which the type checker indicates
 the argument is incorrect, and add it to the set of tests in the pandas-stubs
-repository after fixing the appropriate stub.  However, testing for when type annotations 
+repository after fixing the appropriate stub.  However, testing for when type annotations
 are too wide is a bit more complicated.
 In this case, the test will fail when using `pytest`, but it is also desirable to
 have type checkers report errors for code that is expected to fail type checking.
