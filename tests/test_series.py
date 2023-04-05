@@ -234,12 +234,9 @@ def test_pop() -> None:
         FIRST = "tayyar"
         SECOND = "haydar"
 
-    df = pd.DataFrame(
-        data=[[12.2, 10], [8.8, 15]], columns=[MyEnum.FIRST, MyEnum.SECOND]
-    )
-    series = df.loc[0]
-    res = series.pop(MyEnum.FIRST)
-    check(assert_type(res, Any), float)
+    s = pd.Series([3.2, 4.3], index=[MyEnum.FIRST, MyEnum.SECOND], dtype=float)
+    res = s.pop(MyEnum.FIRST)
+    check(assert_type(res, float), np.float64)
 
 
 def test_types_fillna() -> None:
