@@ -909,6 +909,16 @@ def test_read_excel() -> None:
             ),
             pd.DataFrame,
         )
+        check(
+            assert_type(
+                pd.read_excel(
+                    path,
+                    usecols="A",
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
 
 
 def test_read_excel_io_types() -> None:
