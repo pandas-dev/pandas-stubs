@@ -73,7 +73,7 @@ class Index(IndexOpsMixin, PandasObject):
     def __new__(
         cls,
         data: Iterable,
-        dtype: Literal["int"] | type_t[int] | type_t[np.int_] | type_t[np.uint],
+        dtype: Literal["int"] | type_t[int] | type_t[np.integer],
         copy: bool = ...,
         name=...,
         tupleize_cols: bool = ...,
