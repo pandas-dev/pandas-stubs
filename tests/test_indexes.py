@@ -25,11 +25,13 @@ from tests import (
 
 if TYPE_CHECKING:
     from pandas.core.indexes.base import (
+        _ComplexIndexType,
         _FloatIndexType,
         _IntIndexType,
     )
 else:
     from pandas.core.indexes.base import (
+        Index as _ComplexIndexType,
         Index as _FloatIndexType,
         Index as _IntIndexType,
     )
@@ -855,3 +857,80 @@ def test_multiindex_dtypes():
     # GH-597
     mi = pd.MultiIndex.from_tuples([(1, 2.0), (2, 3.0)], names=["foo", "bar"])
     check(assert_type(mi.dtypes, "pd.Series[Dtype]"), pd.Series)
+
+
+def test_index_constructors():
+    # See if we can pick up the different index types in 2.0
+    # Eventually should be using a generic index
+    ilist = [1, 2, 3]
+    check(
+        assert_type(pd.Index(ilist, dtype="int"), _IntIndexType), pd.Index, np.integer
+    )
+    check(assert_type(pd.Index(ilist, dtype=int), _IntIndexType), pd.Index, np.integer)
+    check(assert_type(pd.Index(ilist, dtype=np.int8), _IntIndexType), pd.Index, np.int8)
+    check(
+        assert_type(pd.Index(ilist, dtype=np.int16), _IntIndexType), pd.Index, np.int16
+    )
+    check(
+        assert_type(pd.Index(ilist, dtype=np.int32), _IntIndexType), pd.Index, np.int32
+    )
+    check(
+        assert_type(pd.Index(ilist, dtype=np.int64), _IntIndexType), pd.Index, np.int64
+    )
+    check(
+        assert_type(pd.Index(ilist, dtype=np.uint8), _IntIndexType), pd.Index, np.uint8
+    )
+    check(
+        assert_type(pd.Index(ilist, dtype=np.uint16), _IntIndexType),
+        pd.Index,
+        np.uint16,
+    )
+    check(
+        assert_type(pd.Index(ilist, dtype=np.uint32), _IntIndexType),
+        pd.Index,
+        np.uint32,
+    )
+    check(
+        assert_type(pd.Index(ilist, dtype=np.uint64), _IntIndexType),
+        pd.Index,
+        np.uint64,
+    )
+
+    flist = [1.1, 2.2, 3.3]
+    check(
+        assert_type(pd.Index(flist, dtype="float"), _FloatIndexType),
+        pd.Index,
+        np.float64,
+    )
+    check(
+        assert_type(pd.Index(flist, dtype=float), _FloatIndexType), pd.Index, np.float64
+    )
+    check(
+        assert_type(pd.Index(flist, dtype=np.float32), _FloatIndexType),
+        pd.Index,
+        np.float32,
+    )
+    check(
+        assert_type(pd.Index(flist, dtype=np.float64), _FloatIndexType),
+        pd.Index,
+        np.float64,
+    )
+
+    clist = [1 + 1j, 2 + 2j, 3 + 4j]
+    check(
+        assert_type(pd.Index(clist, dtype="complex"), _ComplexIndexType),
+        pd.Index,
+        complex,
+    )
+    check(
+        assert_type(pd.Index(clist, dtype=complex), _ComplexIndexType),
+        pd.Index,
+        complex,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # This should be detected by the type checker, but for it to work,
+        # we need to change the last overload of __new__ in core/indexes/base.pyi
+        # to specify all the possible dtype options.  For right now, we will leave the
+        # test here as a reminder that we would like this to be seen as incorrect usage.
+        pd.Index(flist, dtype=np.float16)

@@ -73,7 +73,7 @@ class Index(IndexOpsMixin, PandasObject):
     def __new__(
         cls,
         data: Iterable,
-        dtype: Literal["int"] | type_t[int] | type_t[np.int_],
+        dtype: Literal["int"] | type_t[int] | type_t[np.integer],
         copy: bool = ...,
         name=...,
         tupleize_cols: bool = ...,
@@ -83,7 +83,10 @@ class Index(IndexOpsMixin, PandasObject):
     def __new__(
         cls,
         data: Iterable,
-        dtype: Literal["float"] | type_t[float] | type_t[np.float_],
+        dtype: Literal["float"]
+        | type_t[float]
+        | type_t[np.float32]
+        | type_t[np.float64],
         copy: bool = ...,
         name=...,
         tupleize_cols: bool = ...,

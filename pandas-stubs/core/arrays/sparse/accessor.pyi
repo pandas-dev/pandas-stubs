@@ -1,3 +1,4 @@
+from pandas import Series
 from pandas.core.accessor import PandasDelegate
 
 class BaseAccessor:
@@ -5,7 +6,7 @@ class BaseAccessor:
 
 class SparseAccessor(BaseAccessor, PandasDelegate):
     @classmethod
-    def from_coo(cls, A, dense_index: bool = ...): ...
+    def from_coo(cls, A, dense_index: bool = ...) -> Series: ...
     def to_coo(self, row_levels=..., column_levels=..., sort_labels: bool = ...): ...
     def to_dense(self): ...
 
