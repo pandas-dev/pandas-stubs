@@ -269,6 +269,9 @@ ListLikeExceptSeriesAndStr = TypeVar(
     "ListLikeExceptSeriesAndStr", MutableSequence, np.ndarray, tuple, "Index"
 )
 ListLikeU: TypeAlias = Sequence | np.ndarray | Series | Index
+ListLikeHashable: TypeAlias = (
+    MutableSequence[HashableT] | np.ndarray | tuple[HashableT, ...] | range
+)
 StrLike: TypeAlias = str | np.str_
 IndexIterScalar: TypeAlias = (
     str
@@ -295,6 +298,16 @@ np_ndarray_str: TypeAlias = npt.NDArray[np.str_]
 
 IndexType: TypeAlias = slice | np_ndarray_anyint | Index | list[int] | Series[int]
 MaskType: TypeAlias = Series[bool] | np_ndarray_bool | list[bool]
+UsecolsArgType: TypeAlias = (
+    MutableSequence[str]
+    | tuple[str, ...]
+    | Sequence[int]
+    | Series
+    | Index
+    | np.ndarray
+    | Callable[[HashableT], bool]
+    | None
+)
 # Scratch types for generics
 S1 = TypeVar(
     "S1",

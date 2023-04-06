@@ -22,8 +22,10 @@ from xlrd.book import Book
 from pandas._typing import (
     Dtype,
     FilePath,
+    ListLikeHashable,
     ReadBuffer,
     StorageOptions,
+    UsecolsArgType,
     WriteExcelBuffer,
 )
 
@@ -40,9 +42,9 @@ def read_excel(
     sheet_name: list[int | str] | None,
     *,
     header: int | Sequence[int] | None = ...,
-    names: list[str] | None = ...,
+    names: ListLikeHashable | None = ...,
     index_col: int | Sequence[int] | None = ...,
-    usecols: Sequence[int] | Sequence[str] | Callable[[str], bool] | None = ...,
+    usecols: str | UsecolsArgType = ...,
     dtype: str | Dtype | Mapping[str, str | Dtype] | None = ...,
     engine: Literal["xlrd", "openpyxl", "odf", "pyxlsb"] | None = ...,
     converters: Mapping[int | str, Callable[[object], object]] | None = ...,
@@ -78,9 +80,9 @@ def read_excel(
     sheet_name: int | str = ...,
     *,
     header: int | Sequence[int] | None = ...,
-    names: list[str] | None = ...,
+    names: ListLikeHashable | None = ...,
     index_col: int | Sequence[int] | None = ...,
-    usecols: Sequence[int] | Sequence[str] | Callable[[str], bool] | None = ...,
+    usecols: str | UsecolsArgType = ...,
     dtype: str | Dtype | Mapping[str, str | Dtype] | None = ...,
     engine: Literal["xlrd", "openpyxl", "odf", "pyxlsb"] | None = ...,
     converters: Mapping[int | str, Callable[[object], object]] | None = ...,
@@ -155,13 +157,9 @@ class ExcelFile:
         self,
         sheet_name: list[int | str] | None,
         header: int | Sequence[int] | None = ...,
-        names: list[str] | None = ...,
+        names: ListLikeHashable | None = ...,
         index_col: int | Sequence[int] | None = ...,
-        usecols: str
-        | Sequence[int]
-        | Sequence[str]
-        | Callable[[str], bool]
-        | None = ...,
+        usecols: str | UsecolsArgType = ...,
         converters: dict[int | str, Callable[[object], object]] | None = ...,
         true_values: Iterable[Hashable] | None = ...,
         false_values: Iterable[Hashable] | None = ...,
@@ -185,13 +183,9 @@ class ExcelFile:
         self,
         sheet_name: int | str,
         header: int | Sequence[int] | None = ...,
-        names: list[str] | None = ...,
+        names: ListLikeHashable | None = ...,
         index_col: int | Sequence[int] | None = ...,
-        usecols: str
-        | Sequence[int]
-        | Sequence[str]
-        | Callable[[str], bool]
-        | None = ...,
+        usecols: str | UsecolsArgType = ...,
         converters: dict[int | str, Callable[[object], object]] | None = ...,
         true_values: Iterable[Hashable] | None = ...,
         false_values: Iterable[Hashable] | None = ...,

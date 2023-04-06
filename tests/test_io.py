@@ -12,6 +12,7 @@ from typing import (
     Generator,
     List,
     Literal,
+    Tuple,
     Union,
 )
 
@@ -51,6 +52,7 @@ import sqlalchemy.orm.decl_api
 from typing_extensions import assert_type
 
 from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
     WINDOWS,
     check,
 )
@@ -206,6 +208,18 @@ def test_read_stata_iterator():
         check(assert_type(reader, StataReader), StataReader)
 
 
+def _true_if_b(s: str) -> bool:
+    return s == "b"
+
+
+def _true_if_greater_than_0(i: int) -> bool:
+    return i > 0
+
+
+def _true_if_first_param_is_head(t: Tuple[str, int]) -> bool:
+    return t[0] == "head"
+
+
 def test_clipboard():
     try:
         DF.to_clipboard()
@@ -218,6 +232,63 @@ def test_clipboard():
         assert_type(read_clipboard(dtype=defaultdict(lambda: "f8")), DataFrame),
         DataFrame,
     )
+    check(assert_type(read_clipboard(names=None), DataFrame), DataFrame)
+    check(
+        assert_type(read_clipboard(names=("first", "second"), header=0), DataFrame),
+        DataFrame,
+    )
+    check(assert_type(read_clipboard(names=range(2), header=0), DataFrame), DataFrame)
+    check(assert_type(read_clipboard(names=(1, "two"), header=0), DataFrame), DataFrame)
+    check(
+        assert_type(
+            read_clipboard(names=(("first", 1), ("last", 2)), header=0), DataFrame
+        ),
+        DataFrame,
+    )
+    check(
+        assert_type(read_clipboard(usecols=None), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(read_clipboard(usecols=["a"]), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(read_clipboard(usecols=(0,)), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(read_clipboard(usecols=range(1)), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(read_clipboard(usecols=_true_if_b), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            read_clipboard(
+                names=[1, 2], usecols=_true_if_greater_than_0, header=0, index_col=0
+            ),
+            DataFrame,
+        ),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            read_clipboard(
+                names=(("head", 1), ("tail", 2)),
+                usecols=_true_if_first_param_is_head,
+                header=0,
+                index_col=0,
+            ),
+            DataFrame,
+        ),
+        DataFrame,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.read_clipboard(names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        pd.read_clipboard(usecols="abcd")  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_clipboard_iterator():
@@ -488,6 +559,10 @@ def test_read_csv_iterator():
         tfr2.close()
 
 
+def _true_if_col1(s: str) -> bool:
+    return s == "col1"
+
+
 def test_types_read_csv() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     csv_df: str = df.to_csv()
@@ -517,6 +592,39 @@ def test_types_read_csv() -> None:
         df12: pd.DataFrame = pd.read_csv(path, usecols=("col1",))
         df13: pd.DataFrame = pd.read_csv(path, usecols=pd.Series(data=["col1"]))
         df14: pd.DataFrame = pd.read_csv(path, converters=None)
+        df15: pd.DataFrame = pd.read_csv(path, names=("first", "second"), header=0)
+        df16: pd.DataFrame = pd.read_csv(path, names=range(2), header=0)
+        df17: pd.DataFrame = pd.read_csv(path, names=(1, "two"), header=0)
+        df18: pd.DataFrame = pd.read_csv(
+            path,
+            names=(
+                (
+                    "first",
+                    1,
+                ),
+                ("last", 2),
+            ),
+            header=0,
+        )
+        df19: pd.DataFrame = pd.read_csv(path, usecols=None)
+        df20: pd.DataFrame = pd.read_csv(path, usecols=["col1"])
+        df21: pd.DataFrame = pd.read_csv(path, usecols=(0,))
+        df22: pd.DataFrame = pd.read_csv(path, usecols=range(1))
+        df23: pd.DataFrame = pd.read_csv(path, usecols=_true_if_col1)
+        df24: pd.DataFrame = pd.read_csv(
+            path, names=[1, 2], usecols=_true_if_greater_than_0, header=0, index_col=0
+        )
+        df25: pd.DataFrame = pd.read_csv(
+            path,
+            names=(("head", 1), ("tail", 2)),
+            usecols=_true_if_first_param_is_head,
+            header=0,
+            index_col=0,
+        )
+
+        if TYPE_CHECKING_INVALID_USAGE:
+            pd.read_csv(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
+            pd.read_csv(path, usecols="abcd")  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
 
         tfr1: TextFileReader = pd.read_csv(path, nrows=2, iterator=True, chunksize=3)
         tfr1.close()
@@ -541,6 +649,101 @@ def test_read_table():
             assert_type(read_table(path, dtype=defaultdict(lambda: "f8")), DataFrame),
             DataFrame,
         )
+        check(
+            assert_type(
+                read_table(path, names=("first", "second"), header=0), DataFrame
+            ),
+            DataFrame,
+        )
+        check(
+            assert_type(read_table(path, names=range(2), header=0), DataFrame),
+            DataFrame,
+        )
+        check(
+            assert_type(read_table(path, names=(1, "two"), header=0), DataFrame),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                read_table(
+                    path,
+                    names=(
+                        (
+                            "first",
+                            1,
+                        ),
+                        ("last", 2),
+                    ),
+                    header=0,
+                ),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                read_table(path, usecols=None),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                read_table(path, usecols=["a"]),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                read_table(path, usecols=(0,)),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                read_table(path, usecols=range(1)),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                read_table(path, usecols=_true_if_b),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                read_table(
+                    path,
+                    names=[1, 2],
+                    usecols=_true_if_greater_than_0,
+                    header=0,
+                    index_col=0,
+                ),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                read_table(
+                    path,
+                    names=(("head", 1), ("tail", 2)),
+                    usecols=_true_if_first_param_is_head,
+                    header=0,
+                    index_col=0,
+                ),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+        if TYPE_CHECKING_INVALID_USAGE:
+            pd.read_table(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
+            pd.read_table(path, usecols="abcd")  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_read_table_iterator():
@@ -652,6 +855,83 @@ def test_read_excel() -> None:
             ),
             dict,
         )
+        check(
+            assert_type(pd.read_excel(path, names=("test",), header=0), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(pd.read_excel(path, names=(1,), header=0), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, names=(("higher", "lower"),), header=0),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        ),
+        check(
+            assert_type(pd.read_excel(path, names=range(1), header=0), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(pd.read_excel(path, usecols=None), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(pd.read_excel(path, usecols=["A"]), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(pd.read_excel(path, usecols=(0,)), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(pd.read_excel(path, usecols=range(1)), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(pd.read_excel(path, usecols=_true_if_b), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_excel(
+                    path,
+                    names=[1, 2],
+                    usecols=_true_if_greater_than_0,
+                    header=0,
+                    index_col=0,
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_excel(
+                    path,
+                    names=(("head", 1), ("tail", 2)),
+                    usecols=_true_if_first_param_is_head,
+                    header=0,
+                    index_col=0,
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_excel(
+                    path,
+                    usecols="A",
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        if TYPE_CHECKING_INVALID_USAGE:
+            pd.read_excel(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_read_excel_io_types() -> None:
