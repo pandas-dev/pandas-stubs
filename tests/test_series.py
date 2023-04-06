@@ -238,6 +238,9 @@ def test_pop() -> None:
     res = s.pop(MyEnum.FIRST)
     check(assert_type(res, float), np.float64)
 
+    s2 = pd.Series([3, 5], index=["alibaba", "zuhuratbaba"], dtype=int)
+    check(assert_type(s2.pop("alibaba"), int), np.int64)
+
 
 def test_types_fillna() -> None:
     s = pd.Series([1, np.nan, np.nan, 3])
