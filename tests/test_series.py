@@ -239,7 +239,7 @@ def test_pop() -> None:
     check(assert_type(res, float), np.float64)
 
     s2 = pd.Series([3, 5], index=["alibaba", "zuhuratbaba"], dtype=int)
-    check(assert_type(s2.pop("alibaba"), int), np.int64)
+    check(assert_type(s2.pop("alibaba"), int), np.int_)
 
 
 def test_types_fillna() -> None:
