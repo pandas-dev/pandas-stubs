@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime
 from decimal import Decimal
+from enum import Enum
 from pathlib import Path
 import re
 from typing import (
@@ -224,6 +225,21 @@ def test_types_dropna() -> None:
     s = pd.Series([1, np.nan, np.nan])
     check(assert_type(s.dropna(), pd.Series), pd.Series)
     assert assert_type(s.dropna(axis=0, inplace=True), None) is None
+
+
+def test_pop() -> None:
+    # Testing pop support for hashable types
+    # Due to the bug in https://github.com/pandas-dev/pandas-stubs/issues/627
+    class MyEnum(Enum):
+        FIRST = "tayyar"
+        SECOND = "haydar"
+
+    s = pd.Series([3.2, 4.3], index=[MyEnum.FIRST, MyEnum.SECOND], dtype=float)
+    res = s.pop(MyEnum.FIRST)
+    check(assert_type(res, float), np.float64)
+
+    s2 = pd.Series([3, 5], index=["alibaba", "zuhuratbaba"], dtype=int)
+    check(assert_type(s2.pop("alibaba"), int), np.int_)
 
 
 def test_types_fillna() -> None:
