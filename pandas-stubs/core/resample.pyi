@@ -41,7 +41,10 @@ _FrameGroupByFuncArgs: TypeAlias = (
 )
 
 _SeriesGroupByFunc: TypeAlias = (
-    Callable[[Series], Scalar] | Callable[[Series], Series] | np.ufunc
+    Callable[[Series], Scalar]
+    | Callable[[Series], Series]
+    | Callable[[Series], np.float64]
+    | np.ufunc
 )
 _SeriesGroupByFuncTypes: TypeAlias = (
     _SeriesGroupByFunc | str | list[_SeriesGroupByFunc | str]
@@ -85,7 +88,8 @@ class Resampler(BaseGroupBy, Generic[NDFrameT]):
         func: Callable[..., DataFrame]
         | tuple[Callable[..., DataFrame], str]
         | Callable[..., Series]
-        | tuple[Callable[..., Series], str],
+        | tuple[Callable[..., Series], str]
+        | Callable[[DataFrame], np.float64],
         *args,
         **kwargs,
     ) -> DataFrame: ...
