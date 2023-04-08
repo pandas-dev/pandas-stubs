@@ -270,6 +270,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         orient: Literal["dict", "list", "series", "split", "tight", "index"],
         into: Mapping | type[Mapping],
+        index: bool = True,
     ) -> Mapping[Hashable, Any]: ...
     @overload
     def to_dict(
@@ -277,22 +278,25 @@ class DataFrame(NDFrame, OpsMixin):
         orient: Literal["dict", "list", "series", "split", "tight", "index"] = ...,
         *,
         into: Mapping | type[Mapping],
+        index: bool = True,
     ) -> Mapping[Hashable, Any]: ...
     @overload
     def to_dict(
         self,
         orient: Literal["dict", "list", "series", "split", "tight", "index"] = ...,
         into: None = ...,
+        index: bool = True,
     ) -> dict[Hashable, Any]: ...
     @overload
     def to_dict(
         self,
         orient: Literal["records"],
         into: Mapping | type[Mapping],
+        index: bool = True,
     ) -> list[Mapping[Hashable, Any]]: ...
     @overload
     def to_dict(
-        self, orient: Literal["records"], into: None = ...
+        self, orient: Literal["records"], into: None, index: bool = True,
     ) -> list[dict[Hashable, Any]]: ...
     def to_gbq(
         self,
@@ -1400,8 +1404,8 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level | None = ...,
         fill_value: float | None = ...,
     ) -> DataFrame: ...
-    def add_prefix(self, prefix: _str) -> DataFrame: ...
-    def add_suffix(self, suffix: _str) -> DataFrame: ...
+    def add_prefix(self, prefix: _str, axis: Axis | None = None) -> DataFrame: ...
+    def add_suffix(self, suffix: _str, axis: Axis | None = None) -> DataFrame: ...
     @overload
     def all(
         self,
