@@ -166,6 +166,16 @@ def test_concat_args() -> None:
         ),
         pd.DataFrame,
     )
+
+    df_dict = {"df1": df, "df2": df2}
+    check(
+        assert_type(
+            pd.concat(df_dict.values(), keys=df_dict.keys()),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
     check(
         assert_type(pd.concat([df, df2], ignore_index=True), pd.DataFrame), pd.DataFrame
     )
