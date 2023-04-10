@@ -148,7 +148,7 @@ def test_rolling_basic_math_series() -> None:
 def test_rolling_apply_series() -> None:
     check(assert_type(S.rolling(10).apply(np.mean), Series), Series)
 
-    def _mean(df: Series) -> float:
+    def _mean(df: Series) -> np.float64:
         return df.mean()
 
     check(assert_type(S.rolling(10).apply(_mean), Series), Series)
@@ -163,7 +163,7 @@ def test_rolling_aggregate_series() -> None:
     check(assert_type(S.rolling(10).aggregate(np.mean), Series), Series)
     check(assert_type(S.rolling(10).aggregate("mean"), Series), Series)
 
-    def _mean(s: Series) -> float:
+    def _mean(s: Series) -> np.float64:
         return s.mean()
 
     check(assert_type(S.rolling(10).aggregate(_mean), Series), Series)
@@ -256,7 +256,7 @@ def test_expanding_basic_math_series() -> None:
 def test_expanding_apply_series() -> None:
     check(assert_type(S.expanding(10).apply(np.mean), Series), Series)
 
-    def _mean(df: Series) -> float:
+    def _mean(df: Series) -> np.float64:
         return df.mean()
 
     check(assert_type(S.expanding(10).apply(_mean), Series), Series)

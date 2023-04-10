@@ -2019,12 +2019,12 @@ def test_groupby_apply() -> None:
     # GH 167
     df = pd.DataFrame({"col1": [1, 2, 3], "col2": [4, 5, 6]})
 
-    def sum_mean(x: pd.DataFrame) -> float:
+    def sum_mean(x: pd.DataFrame) -> np.float64:
         return x.sum().mean()
 
     check(assert_type(df.groupby("col1").apply(sum_mean), pd.Series), pd.Series)
 
-    lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
+    lfunc: Callable[[pd.DataFrame], np.float64] = lambda x: x.sum().mean()
     check(
         assert_type(df.groupby("col1").apply(lfunc), pd.Series),
         pd.Series,

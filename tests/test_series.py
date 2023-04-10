@@ -306,10 +306,10 @@ def test_types_rank() -> None:
 
 def test_types_mean() -> None:
     s = pd.Series([1, 2, 3, np.nan])
-    f1: float = s.mean()
+    check(assert_type(s.mean(), np.float64), np.float64)
     s1: pd.Series = s.groupby(level=0).mean()
-    f2: float = s.mean(skipna=False)
-    f3: float = s.mean(numeric_only=False)
+    f2: np.float64 = s.mean(skipna=False)
+    f3: np.float64 = s.mean(numeric_only=False)
 
 
 def test_types_median() -> None:
