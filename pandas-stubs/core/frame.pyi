@@ -268,36 +268,46 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def to_dict(
         self,
-        orient: Literal["dict", "list", "series", "split", "tight", "index"],
+        orient: Literal["dict", "list", "series", "index"],
         into: Mapping | type[Mapping],
-        index: bool = True,
+        index: Literal[True] = True,
     ) -> Mapping[Hashable, Any]: ...
     @overload
     def to_dict(
         self,
-        orient: Literal["dict", "list", "series", "split", "tight", "index"] = ...,
+        orient: Literal["dict", "list", "series", "index"] = ...,
         *,
         into: Mapping | type[Mapping],
-        index: bool = True,
+        index: Literal[True] = True,
     ) -> Mapping[Hashable, Any]: ...
     @overload
     def to_dict(
         self,
-        orient: Literal["dict", "list", "series", "split", "tight", "index"] = ...,
+        orient: Literal["dict", "list", "series", "index"] = ...,
         into: None = ...,
-        index: bool = True,
+        index: Literal[True] = True,
     ) -> dict[Hashable, Any]: ...
     @overload
     def to_dict(
         self,
         orient: Literal["records"],
         into: Mapping | type[Mapping],
-        index: bool = True,
+        index: Literal[True] = True,
     ) -> list[Mapping[Hashable, Any]]: ...
     @overload
     def to_dict(
-        self, orient: Literal["records"], into: None, index: bool = True,
+        self,
+        orient: Literal["records"],
+        into: None,
+        index: Literal[True] = True,
     ) -> list[dict[Hashable, Any]]: ...
+    @overload
+    def to_dict(
+        self,
+        orient: Literal["split", "tight"] = ...,
+        into: None = ...,
+        index: bool = ...,
+    ) -> dict[Hashable, Any]: ...
     def to_gbq(
         self,
         destination_table: str,
