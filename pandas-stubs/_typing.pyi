@@ -283,6 +283,8 @@ IndexIterScalar: TypeAlias = (
     | float
     | Timestamp
     | Timedelta
+    | np.integer
+    | np.float_
 )
 Scalar: TypeAlias = IndexIterScalar | complex
 ScalarT = TypeVar("ScalarT", bound=Scalar)

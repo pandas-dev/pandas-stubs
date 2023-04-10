@@ -88,8 +88,7 @@ class Resampler(BaseGroupBy, Generic[NDFrameT]):
         func: Callable[..., DataFrame]
         | tuple[Callable[..., DataFrame], str]
         | Callable[..., Series]
-        | tuple[Callable[..., Series], str]
-        | Callable[[DataFrame], np.float64],
+        | tuple[Callable[..., Series], str],
         *args,
         **kwargs,
     ) -> DataFrame: ...

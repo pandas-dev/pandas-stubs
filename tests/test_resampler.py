@@ -161,7 +161,7 @@ def test_pipe() -> None:
     def h(val: DataFrame) -> np.float64:
         return val.mean().mean()
 
-    check(assert_type(DF.resample("m").pipe(h), DataFrame), Series)
+    check(assert_type(DF.resample("m").pipe(h), Series), Series)
 
 
 def test_transform() -> None:
