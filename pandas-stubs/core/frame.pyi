@@ -318,10 +318,10 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def to_dict(
         self,
-        orient: Literal["split","tight"] = ...,
+        orient: Literal["split", "tight"] = ...,
         *,
         into: Mapping | type[Mapping],
-        index: bool= ...,
+        index: bool = ...,
     ) -> Mapping[Hashable, Any]: ...
     @overload
     def to_dict(
@@ -333,7 +333,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def to_dict(
         self,
-        orient: Literal["split","target"] = ...,
+        orient: Literal["split", "target"] = ...,
         into: None = ...,
         index: bool = ...,
     ) -> dict[Hashable, Any]: ...
