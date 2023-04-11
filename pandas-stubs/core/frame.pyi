@@ -270,14 +270,14 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         orient: Literal["records"],
         into: Mapping | type[Mapping],
-        index: bool = ...,
+        index: Literal[True] = ...,
     ) -> list[Mapping[Hashable, Any]]: ...
     @overload
     def to_dict(
         self,
         orient: Literal["records"],
         into: None = ...,
-        index: bool = ...,
+        index: Literal[True] = ...,
     ) -> list[dict[Hashable, Any]]: ...
     @overload
     def to_dict(
