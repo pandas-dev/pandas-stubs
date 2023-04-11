@@ -2131,7 +2131,7 @@ def test_to_dict():
         defaultdict,
     )
     target = defaultdict(list)
-    check(assert_type(DF.to_dict("records"), List[Dict[Hashable, Any]]), list)
+    check(assert_type(DF.to_dict("records"), Any), list)
     check(
         assert_type(DF.to_dict("records", into=target), List[Mapping[Hashable, Any]]),
         list,

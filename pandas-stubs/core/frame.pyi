@@ -268,9 +268,44 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def to_dict(
         self,
+        orient: Literal["records"],
+        into: Mapping | type[Mapping],
+        index: Literal[True] = ...,
+    ) -> list[Mapping[Hashable, Any]]: ...
+    # @overload
+    # def to_dict(
+    #     self,
+    #     orient: Literal["records"],
+    #     into: Mapping | type[Mapping],
+    #     index: bool = ...,
+    # ) -> list[Mapping[Hashable, Any]]: ...
+    @overload
+    def to_dict(
+        self,
+        orient: Literal["records"],
+        into: None,
+        index: Literal[True] = ...,
+    ) -> list[dict[Hashable, Any]]: ...
+    # @overload
+    # def to_dict(
+    #     self,
+    #     orient: Literal["records"],
+    #     into: None,
+    #     index: bool = ...,
+    # ) -> list[dict[Hashable, Any]]: ...
+    @overload
+    def to_dict(
+        self,
         orient: Literal["dict", "list", "series", "index"],
         into: Mapping | type[Mapping],
-        index: Literal[True] = True,
+        index: Literal[True] = ...,
+    ) -> Mapping[Hashable, Any]: ...
+    @overload
+    def to_dict(
+        self,
+        orient: Literal["split", "tight"],
+        into: Mapping | type[Mapping],
+        index: bool = ...,
     ) -> Mapping[Hashable, Any]: ...
     @overload
     def to_dict(
@@ -278,33 +313,27 @@ class DataFrame(NDFrame, OpsMixin):
         orient: Literal["dict", "list", "series", "index"] = ...,
         *,
         into: Mapping | type[Mapping],
-        index: Literal[True] = True,
+        index: Literal[True] = ...,
+    ) -> Mapping[Hashable, Any]: ...
+    @overload
+    def to_dict(
+        self,
+        orient: Literal["split","tight"] = ...,
+        *,
+        into: Mapping | type[Mapping],
+        index: bool= ...,
     ) -> Mapping[Hashable, Any]: ...
     @overload
     def to_dict(
         self,
         orient: Literal["dict", "list", "series", "index"] = ...,
         into: None = ...,
-        index: Literal[True] = True,
+        index: Literal[True] = ...,
     ) -> dict[Hashable, Any]: ...
     @overload
     def to_dict(
         self,
-        orient: Literal["records"],
-        into: Mapping | type[Mapping],
-        index: Literal[True] = True,
-    ) -> list[Mapping[Hashable, Any]]: ...
-    @overload
-    def to_dict(
-        self,
-        orient: Literal["records"],
-        into: None,
-        index: Literal[True] = True,
-    ) -> list[dict[Hashable, Any]]: ...
-    @overload
-    def to_dict(
-        self,
-        orient: Literal["split", "tight"] = ...,
+        orient: Literal["split","target"] = ...,
         into: None = ...,
         index: bool = ...,
     ) -> dict[Hashable, Any]: ...
