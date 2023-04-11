@@ -270,29 +270,15 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         orient: Literal["records"],
         into: Mapping | type[Mapping],
-        index: Literal[True] = ...,
+        index: bool = ...,
     ) -> list[Mapping[Hashable, Any]]: ...
-    # @overload
-    # def to_dict(
-    #     self,
-    #     orient: Literal["records"],
-    #     into: Mapping | type[Mapping],
-    #     index: bool = ...,
-    # ) -> list[Mapping[Hashable, Any]]: ...
     @overload
     def to_dict(
         self,
         orient: Literal["records"],
-        into: None,
-        index: Literal[True] = ...,
+        into: None = ...,
+        index: bool = ...,
     ) -> list[dict[Hashable, Any]]: ...
-    # @overload
-    # def to_dict(
-    #     self,
-    #     orient: Literal["records"],
-    #     into: None,
-    #     index: bool = ...,
-    # ) -> list[dict[Hashable, Any]]: ...
     @overload
     def to_dict(
         self,
@@ -333,7 +319,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def to_dict(
         self,
-        orient: Literal["split", "target"] = ...,
+        orient: Literal["split", "tight"] = ...,
         into: None = ...,
         index: bool = ...,
     ) -> dict[Hashable, Any]: ...
