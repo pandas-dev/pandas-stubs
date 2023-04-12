@@ -2536,34 +2536,30 @@ def test_to_dict_index() -> None:
         ),
         list,
     )
-    check(assert_type(df.to_dict(orient="dict", index=True), dict[Hashable, Any]), dict)
+    check(assert_type(df.to_dict(orient="dict", index=True), Dict[Hashable, Any]), dict)
     check(
-        assert_type(df.to_dict(orient="series", index=True), dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="series", index=True), Dict[Hashable, Any]), dict
     )
     check(
-        assert_type(df.to_dict(orient="index", index=True), dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="index", index=True), Dict[Hashable, Any]), dict
     )
     check(
-        assert_type(df.to_dict(orient="index", index=True), dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="split", index=True), Dict[Hashable, Any]), dict
     )
     check(
-        assert_type(df.to_dict(orient="split", index=True), dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="tight", index=True), Dict[Hashable, Any]), dict
     )
     check(
-        assert_type(df.to_dict(orient="tight", index=True), dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="tight", index=False), Dict[Hashable, Any]), dict
     )
     check(
-        assert_type(df.to_dict(orient="tight", index=False), dict[Hashable, Any]), dict
-    )
-    check(
-        assert_type(df.to_dict(orient="split", index=False), dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="split", index=False), Dict[Hashable, Any]), dict
     )
     if TYPE_CHECKING_INVALID_USAGE:
         check(assert_type(df.to_dict(orient="records", index=False), List[Dict[Hashable, Any]]), list)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
-        check(assert_type(df.to_dict(orient="dict", index=False), dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
-        check(assert_type(df.to_dict(orient="series", index=False), dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
-        check(assert_type(df.to_dict(orient="index", index=False), dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
-        check(assert_type(df.to_dict(orient="index", index=False), dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        check(assert_type(df.to_dict(orient="dict", index=False), Dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        check(assert_type(df.to_dict(orient="series", index=False), Dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        check(assert_type(df.to_dict(orient="index", index=False), Dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_suffix_prefix_index() -> None:
