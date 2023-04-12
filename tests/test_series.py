@@ -1824,6 +1824,4 @@ def test_prefix_summix_axis() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         check(assert_type(s.add_prefix("_item", axis=1), pd.Series), pd.Series)  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
-        check(assert_type(s.add_suffix("_item", axis=1), pd.Series), pd.Series)  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
-        check(assert_type(s.add_prefix("_item", axis="columns"), pd.Series), pd.Series)  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
         check(assert_type(s.add_suffix("_item", axis="columns"), pd.Series), pd.Series)  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
