@@ -17,7 +17,7 @@ convention of providing stubs in a separate package, as specified in [PEP 561](h
 pandas.  In general, these stubs are narrower than what is possibly allowed by pandas,
 but follow a convention of suggesting best recommended practices for using pandas.
 
-The stubs are likely incomplete in terms of covering the published API of pandas.
+The stubs are likely incomplete in terms of covering the published API of pandas.  NOTE: The current 2.0.x releases of pandas-stubs do not support all of the new features of pandas 2.0.  See this [tracker](https://github.com/pandas-dev/pandas-stubs/issues/624) to understand the current compatibility with version 2.0.
 
 The stubs are tested with [mypy](http://mypy-lang.org/) and [pyright](https://github.com/microsoft/pyright#readme) and are currently shipped with the Visual Studio Code extension
 [pylance](https://github.com/microsoft/pylance-release#readme).
