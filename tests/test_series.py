@@ -1813,3 +1813,15 @@ def test_types_apply_set() -> None:
         {"list1": [1, 2, 3], "list2": ["a", "b", "c"], "list3": [True, False, True]}
     )
     check(assert_type(series_of_lists.apply(lambda x: set(x)), pd.Series), pd.Series)
+
+
+def test_prefix_summix_axis() -> None:
+    s = pd.Series([1, 2, 3, 4])
+    check(assert_type(s.add_suffix("_item", axis=0), pd.Series), pd.Series)
+    check(assert_type(s.add_suffix("_item", axis="index"), pd.Series), pd.Series)
+    check(assert_type(s.add_prefix("_item", axis=0), pd.Series), pd.Series)
+    check(assert_type(s.add_prefix("_item", axis="index"), pd.Series), pd.Series)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        check(assert_type(s.add_prefix("_item", axis=1), pd.Series), pd.Series)  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+        check(assert_type(s.add_suffix("_item", axis="columns"), pd.Series), pd.Series)  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]

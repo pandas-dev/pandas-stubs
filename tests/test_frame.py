@@ -2526,3 +2526,47 @@ def test_loc_returns_series() -> None:
     df1 = pd.DataFrame({"x": [1, 2, 3, 4]}, index=[10, 20, 30, 40])
     df2 = df1.loc[10, :]
     check(assert_type(df2, Union[pd.Series, pd.DataFrame]), pd.Series)
+
+
+def test_to_dict_index() -> None:
+    df = pd.DataFrame({"a": [1, 2], "b": [9, 10]})
+    check(
+        assert_type(
+            df.to_dict(orient="records", index=True), List[Dict[Hashable, Any]]
+        ),
+        list,
+    )
+    check(assert_type(df.to_dict(orient="dict", index=True), Dict[Hashable, Any]), dict)
+    check(
+        assert_type(df.to_dict(orient="series", index=True), Dict[Hashable, Any]), dict
+    )
+    check(
+        assert_type(df.to_dict(orient="index", index=True), Dict[Hashable, Any]), dict
+    )
+    check(
+        assert_type(df.to_dict(orient="split", index=True), Dict[Hashable, Any]), dict
+    )
+    check(
+        assert_type(df.to_dict(orient="tight", index=True), Dict[Hashable, Any]), dict
+    )
+    check(
+        assert_type(df.to_dict(orient="tight", index=False), Dict[Hashable, Any]), dict
+    )
+    check(
+        assert_type(df.to_dict(orient="split", index=False), Dict[Hashable, Any]), dict
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        check(assert_type(df.to_dict(orient="records", index=False), List[Dict[Hashable, Any]]), list)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        check(assert_type(df.to_dict(orient="dict", index=False), Dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        check(assert_type(df.to_dict(orient="series", index=False), Dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        check(assert_type(df.to_dict(orient="index", index=False), Dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
+
+
+def test_suffix_prefix_index() -> None:
+    df = pd.DataFrame({"A": [1, 2, 3, 4], "B": [3, 4, 5, 6]})
+    check(assert_type(df.add_suffix("_col", axis=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.add_suffix("_col", axis="index"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.add_prefix("_col", axis="index"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.add_prefix("_col", axis="columns"), pd.DataFrame), pd.DataFrame
+    )
