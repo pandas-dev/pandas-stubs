@@ -1204,3 +1204,8 @@ def test_sqlalchemy_text() -> None:
                 assert_type(read_sql(sql_select, con=conn), DataFrame),
                 DataFrame,
             )
+
+
+def test_read_sas_encoding() -> None:
+    path = pathlib.Path("pandas", "stubs", "SSHSV1_A.xpt")
+    check(assert_type(read_sas(path, encoding='infer'), DataFrame), DataFrame)
