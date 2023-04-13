@@ -155,7 +155,7 @@ def test_pipe() -> None:
 
     check(assert_type(DF.resample("m").pipe(g), DataFrame), DataFrame)
 
-    def h(val: DataFrame) -> np.float64:
+    def h(val: DataFrame) -> float:
         return val.mean().mean()
 
     check(assert_type(DF.resample("m").pipe(h), Series), Series)
@@ -245,10 +245,10 @@ def test_aggregate_series() -> None:
         DataFrame,
     )
 
-    def f(val: Series) -> np.float64:
+    def f(val: Series) -> float:
         return val.mean()
 
-    check(assert_type(S.resample("m").aggregate(f), _AggRetType), pd.Series)
+    check(assert_type(S.resample("m").aggregate(f), _AggRetType), Series)
 
 
 def test_asfreq_series() -> None:
