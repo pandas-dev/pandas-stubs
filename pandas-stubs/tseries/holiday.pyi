@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Callable
 from datetime import (
     date as _date,
@@ -25,33 +27,14 @@ def before_nearest_workday(dt: datetime) -> datetime: ...
 def after_nearest_workday(dt: datetime) -> datetime: ...
 
 class Holiday:
-    @overload
     def __init__(
         self,
         name: str,
         year: int | None = ...,
         month: int | None = ...,
         day: int | None = ...,
-        offset: BaseOffset | list[BaseOffset] = ...,
-        observance: None = ...,
-        # Values accepted by Timestamp(), or None:
-        start_date: (
-            np.integer | float | str | _date | datetime | np.datetime64 | None
-        ) = ...,
-        end_date: (
-            np.integer | float | str | _date | datetime | np.datetime64 | None
-        ) = ...,
-        days_of_week: tuple[int, ...] | None = ...,
-    ) -> None: ...
-    @overload
-    def __init__(
-        self,
-        name: str,
-        year: int | None = ...,
-        month: int | None = ...,
-        day: int | None = ...,
-        offset: None = ...,
-        observance: Callable[[datetime], datetime] = ...,
+        offset: BaseOffset | list[BaseOffset] | None = ...,
+        observance: Callable[[datetime], datetime] | None = ...,
         # Values accepted by Timestamp(), or None:
         start_date: (
             np.integer | float | str | _date | datetime | np.datetime64 | None
@@ -80,54 +63,49 @@ class Holiday:
         return_name: Literal[True] = ...,
     ) -> Series: ...
 
-holiday_calendars: dict[str, type["AbstractHolidayCalendar"]]
+holiday_calendars: dict[str, type[AbstractHolidayCalendar]]
 
-def register(cls: type["AbstractHolidayCalendar"]) -> None: ...
-def get_calendar(name: str) -> "AbstractHolidayCalendar": ...
+def register(cls: type[AbstractHolidayCalendar]) -> None: ...
+def get_calendar(name: str) -> AbstractHolidayCalendar: ...
 
 class AbstractHolidayCalendar:
     rules: list[Holiday] = ...
     start_date: Timestamp = ...
     end_date: Timestamp = ...
-    _cache: list[tuple[Timestamp, Timestamp, Series[datetime]]] | None = ...
 
-    def __init__(self, name: str = "", rules: list[Holiday] | None=None) -> None: ...
+    def __init__(self, name: str = "", rules: list[Holiday] | None = None) -> None: ...
     def rule_from_name(self, name: str) -> Holiday | None: ...
     @overload
     def holidays(
         self,
         start: datetime | None = ...,
         end: datetime | None = ...,
-        return_name: Literal[False] = False,
-    ) -> DatetimeIndex: ...
+        return_name: Literal[True] = ...,
+    ) -> Series: ...
     @overload
     def holidays(
         self,
         start: datetime | None = ...,
         end: datetime | None = ...,
-        return_name: Literal[True] = ...,
-    ) -> Series[...]: ...
+        return_name: bool = ...,
+    ) -> DatetimeIndex: ...
     @staticmethod
     def merge_class(
-        base: "AbstractHolidayCalendar"
-        | type["AbstractHolidayCalendar"]
-        | list[Holiday],
-        other: "AbstractHolidayCalendar"
-        | type["AbstractHolidayCalendar"]
-        | list[Holiday],
+        base: AbstractHolidayCalendar | type[AbstractHolidayCalendar] | list[Holiday],
+        other: AbstractHolidayCalendar | type[AbstractHolidayCalendar] | list[Holiday],
     ) -> list[Holiday]: ...
     @overload
     def merge(
         self,
-        other: "AbstractHolidayCalendar" | type["AbstractHolidayCalendar"],
-        inplace: Literal[False] = ...,
-    ) -> list[Holiday]: ...
-    @overload
-    def merge(
-        self,
-        other: "AbstractHolidayCalendar" | type["AbstractHolidayCalendar"],
+        other: AbstractHolidayCalendar | type[AbstractHolidayCalendar],
         inplace: Literal[True] = ...,
     ) -> None: ...
+    @overload
+    def merge(
+        self,
+        other: AbstractHolidayCalendar | type[AbstractHolidayCalendar],
+        inplace: bool = ...,
+    ) -> list[Holiday]: ...
 
 USMemorialDay: Holiday
 USLaborDay: Holiday
