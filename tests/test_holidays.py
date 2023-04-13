@@ -1,15 +1,16 @@
 from datetime import datetime
 
 import pandas as pd
-from pandas.tseries.holiday import (
-    Holiday,
-    USMemorialDay,
-    AbstractHolidayCalendar,
-    nearest_workday,
-)
 from typing_extensions import assert_type
 
 from tests import check
+
+from pandas.tseries.holiday import (
+    AbstractHolidayCalendar,
+    Holiday,
+    USMemorialDay,
+    nearest_workday,
+)
 
 
 def test_custom_calendar() -> None:

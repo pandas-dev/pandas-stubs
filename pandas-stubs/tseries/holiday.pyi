@@ -1,17 +1,19 @@
-from __future__ import annotations
-
 from collections.abc import Callable
 from datetime import (
     date as _date,
     datetime,
 )
-from typing import overload, Literal
+from typing import (
+    Literal,
+    overload,
+)
 
 import numpy as np
 from pandas import (
     DatetimeIndex,
     Series,
 )
+
 from pandas._libs.tslibs.offsets import BaseOffset
 from pandas._libs.tslibs.timestamps import Timestamp
 
