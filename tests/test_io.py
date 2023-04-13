@@ -1207,5 +1207,5 @@ def test_sqlalchemy_text() -> None:
 
 
 def test_read_sas_encoding() -> None:
-    path = pathlib.Path("pandas", "stubs", "SSHSV1_A.xpt")
-    check(assert_type(read_sas(path, encoding='infer'), DataFrame), DataFrame)
+    path = pathlib.Path(CWD, "data", "airline.sas7bdat")
+    check(assert_type(read_sas(path), DataFrame), DataFrame)
