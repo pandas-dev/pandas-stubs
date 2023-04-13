@@ -1609,7 +1609,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         level: None = ...,
         numeric_only: _bool = ...,
         **kwargs,
-    ) -> np.float64: ...
+    ) -> float: ...
     def median(
         self,
         axis: AxisIndex | None = ...,
