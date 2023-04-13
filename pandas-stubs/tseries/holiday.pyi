@@ -51,7 +51,7 @@ class Holiday:
             np.integer | float | str | _date | datetime | np.datetime64 | None
         ),
         end_date: (np.integer | float | str | _date | datetime | np.datetime64 | None),
-        return_name: Literal[False] = ...,
+        return_name: Literal[False],
     ) -> DatetimeIndex: ...
     @overload
     def dates(
@@ -80,14 +80,15 @@ class AbstractHolidayCalendar:
         self,
         start: datetime | None = ...,
         end: datetime | None = ...,
-        return_name: Literal[True] = ...,
+        *,
+        return_name: Literal[True],
     ) -> Series: ...
     @overload
     def holidays(
         self,
         start: datetime | None = ...,
         end: datetime | None = ...,
-        return_name: bool = ...,
+        return_name: Literal[False] = ...,
     ) -> DatetimeIndex: ...
     @staticmethod
     def merge_class(
@@ -98,13 +99,13 @@ class AbstractHolidayCalendar:
     def merge(
         self,
         other: AbstractHolidayCalendar | type[AbstractHolidayCalendar],
-        inplace: Literal[True] = ...,
+        inplace: Literal[True],
     ) -> None: ...
     @overload
     def merge(
         self,
         other: AbstractHolidayCalendar | type[AbstractHolidayCalendar],
-        inplace: bool = ...,
+        inplace: Literal[False] = ...,
     ) -> list[Holiday]: ...
 
 USMemorialDay: Holiday
