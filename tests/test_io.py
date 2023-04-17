@@ -621,6 +621,10 @@ def test_types_read_csv() -> None:
             header=0,
             index_col=0,
         )
+        df26: pd.DataFrame = pd.read_csv(path, parse_dates=True, date_format="%Y-%m-%d")
+        df27: pd.DataFrame = pd.read_csv(
+            path, parse_dates=True, date_format={"col1": "%Y-%m-%d"}
+        )
 
         if TYPE_CHECKING_INVALID_USAGE:
             pd.read_csv(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
