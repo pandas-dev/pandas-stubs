@@ -84,6 +84,7 @@ def read_sql(
     columns: list[str] = ...,
     *,
     chunksize: int,
+    dtype: DtypeArg | None = ...,
 ) -> Generator[DataFrame, None, None]: ...
 @overload
 def read_sql(
@@ -95,6 +96,7 @@ def read_sql(
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
     columns: list[str] = ...,
     chunksize: None = ...,
+    dtype: DtypeArg | None = ...,
 ) -> DataFrame: ...
 
 class PandasSQL(PandasObject):
