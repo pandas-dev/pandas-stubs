@@ -22,6 +22,8 @@ from pandas._libs import NaTType
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.offsets import DateOffset
 
+from tests import pytest_warns_bounded
+
 if TYPE_CHECKING:
     from pandas._typing import FulldatetimeDict
 else:
@@ -361,7 +363,13 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s0.dt.freq, Optional[str]), str)
     check(assert_type(s0.dt.isocalendar(), pd.DataFrame), pd.DataFrame)
     check(assert_type(s0.dt.to_period("D"), "PeriodSeries"), pd.Series, pd.Period)
-    check(assert_type(s0.dt.to_pydatetime(), np.ndarray), np.ndarray, dt.datetime)
+
+    with pytest_warns_bounded(
+        FutureWarning,
+        match="The behavior of DatetimeProperties.to_pydatetime is deprecated",
+        lower="2.0.99",
+    ):
+        check(assert_type(s0.dt.to_pydatetime(), np.ndarray), np.ndarray, dt.datetime)
     s0_local = s0.dt.tz_localize("UTC")
     check(
         assert_type(s0_local, "TimestampSeries"),
