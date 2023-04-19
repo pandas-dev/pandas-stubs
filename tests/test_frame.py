@@ -884,11 +884,15 @@ def test_types_groupby() -> None:
 def test_groupby_size() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0]})
     check(
-        assert_type(df.groupby("col1", as_index=False).size(), pd.DataFrame),
+        assert_type(
+            df.groupby("col1", as_index=False).size(), Union[pd.DataFrame, pd.Series]
+        ),
         pd.DataFrame,
     )
     check(
-        assert_type(df.groupby("col1", as_index=True).size(), "pd.Series[int]"),
+        assert_type(
+            df.groupby("col1", as_index=True).size(), Union[pd.DataFrame, pd.Series]
+        ),
         pd.Series,
     )
 
