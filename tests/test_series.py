@@ -13,6 +13,7 @@ from typing import (
     Iterable,
     Iterator,
     List,
+    Hashable,
     Sequence,
     Tuple,
     TypeVar,
@@ -190,6 +191,10 @@ def test_types_filter() -> None:
     s.filter(items=["cow"])
     s.filter(regex="co.*")
     s.filter(like="al")
+
+def test_types_iteritems() -> None:
+    s = pd.Series(["a", "b", "c"], dtype=str)
+    assert_type(s.iteritems(), Iterable[tuple[Hashable, str]])
 
 
 def test_types_setting() -> None:
