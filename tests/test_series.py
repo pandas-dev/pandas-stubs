@@ -450,7 +450,12 @@ def test_types_apply() -> None:
     def makeseries(x: float) -> pd.Series:
         return pd.Series([x, 2 * x])
 
-    check(assert_type(s.apply(makeseries), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        FutureWarning,
+        match="Returning a DataFrame from Series.apply when the supplied functionreturns a Series is deprecated",
+        lower="2.0.99",
+    ):
+        check(assert_type(s.apply(makeseries), pd.DataFrame), pd.DataFrame)
 
     # GH 293
 

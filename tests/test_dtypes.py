@@ -22,7 +22,10 @@ from pandas._libs import NaTType
 from pandas._libs.missing import NAType
 from pandas._typing import Scalar
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 from pandas.tseries.offsets import (
     BusinessDay,
@@ -54,10 +57,8 @@ def test_period_dtype() -> None:
     check(
         assert_type(pd.PeriodDtype(freq=BusinessDay()), pd.PeriodDtype), pd.PeriodDtype
     )
-    check(
-        assert_type(pd.PeriodDtype(freq=CustomBusinessDay()), pd.PeriodDtype),
-        pd.PeriodDtype,
-    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.PeriodDtype(freq=CustomBusinessDay())  # TODO(raises on 2.1)
     check(
         assert_type(p_dt.freq, pd.tseries.offsets.BaseOffset),
         pd.tseries.offsets.DateOffset,
