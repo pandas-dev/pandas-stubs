@@ -1256,6 +1256,10 @@ def test_read_sql_dtypes2() -> None:
         con = sqlite3.connect(path)
         check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
         check(
-            assert_type(read_sql("select * from test", con=con, dtype={"int_column": float}), DataFrame), DataFrame
+            assert_type(
+                read_sql("select * from test", con=con, dtype={"int_column": float}),
+                DataFrame,
+            ),
+            DataFrame,
         )
         con.close()
