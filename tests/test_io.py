@@ -1204,3 +1204,68 @@ def test_sqlalchemy_text() -> None:
                 assert_type(read_sql(sql_select, con=conn), DataFrame),
                 DataFrame,
             )
+
+
+def test_read_sql_dtype() -> None:
+    with ensure_clean() as path:
+        conn = sqlite3.connect(path)
+        df = pd.DataFrame(
+            data=[[0, "10/11/12"], [1, "12/11/10"]],
+            columns=["int_column", "date_column"],
+        )
+        check(assert_type(df.to_sql("test_data", con=conn), Union[int, None]), int)
+        check(
+            assert_type(
+                pd.read_sql(
+                    "SELECT int_column, date_column FROM test_data",
+                    con=conn,
+                    dtype=None,
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_sql(
+                    "SELECT int_column, date_column FROM test_data",
+                    con=conn,
+                    dtype={"int_column": int},
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(assert_type(DF.to_sql("test", con=conn), Union[int, None]), int)
+
+        check(
+            assert_type(
+                read_sql("select * from test", con=conn, dtype=int),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        conn.close()
+
+
+def test_read_sql_dtype_backend() -> None:
+    with ensure_clean() as path:
+        conn2 = sqlite3.connect(path)
+        check(assert_type(DF.to_sql("test", con=conn2), Union[int, None]), int)
+        check(
+            assert_type(
+                read_sql("select * from test", con=conn2, dtype_backend="pyarrow"),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                read_sql(
+                    "select * from test", con=conn2, dtype_backend="numpy_nullable"
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        conn2.close()
