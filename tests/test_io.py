@@ -1206,23 +1206,56 @@ def test_sqlalchemy_text() -> None:
             )
 
 
-def test_read_sql_dtype() -> None:
+# def test_read_sql_dtype() -> None:
+#     with ensure_clean() as path:
+#         conn = sqlite3.connect(path)
+#         df = pd.DataFrame(
+#             data=[[0, "10/11/12"], [1, "12/11/10"]],
+#             columns=["int_column", "date_column"],
+#         )
+#         check(assert_type(df.to_sql("test_data", con=conn), Union[int, None]), int)
+#         check(
+#             assert_type(
+#                 pd.read_sql(
+#                     "SELECT int_column, date_column FROM test_data",
+#                     con=conn,
+#                     dtype={"int_columb":float},
+#                     # dtype=None,
+#                 ),
+#                 pd.DataFrame,
+#             ),
+#             pd.DataFrame,
+#         )
+#         conn.close()
+
+
+# def test_read_sql_dtype1() -> None:
+#     with ensure_clean() as path:
+#         conn = sqlite3.connect(path)
+#         df = pd.DataFrame(
+#             data=[[0, "10/11/12"], [1, "12/11/10"]],
+#             columns=["int_column", "date_column"],
+#         )
+#         check(assert_type(df.to_sql("test_data", con=conn), Union[int, None]), int)
+#         check(
+#             assert_type(
+#                 pd.read_sql(
+#                     "SELECT int_column, date_column FROM test_data",
+#                     con=conn,
+#                     dtype={"int_columb":float},
+#                 ),
+#                 pd.DataFrame,
+#             ),
+#             pd.DataFrame,
+#         )
+#         conn.close()
+
+
+def test_read_sql_dtypes2() -> None:
     with ensure_clean() as path:
-        conn = sqlite3.connect(path)
-        df = pd.DataFrame(
-            data=[[0, "10/11/12"], [1, "12/11/10"]],
-            columns=["int_column", "date_column"],
-        )
-        check(assert_type(df.to_sql("test_data", con=conn), Union[int, None]), int)
+        con = sqlite3.connect(path)
+        check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
         check(
-            assert_type(
-                pd.read_sql(
-                    "SELECT int_column, date_column FROM test_data",
-                    con=conn,
-                    dtype=None,
-                ),
-                pd.DataFrame,
-            ),
-            pd.DataFrame,
+            assert_type(read_sql("select * from test", con=con, dtype={"int_column": float}), DataFrame), DataFrame
         )
-        conn.close()
+        con.close()
