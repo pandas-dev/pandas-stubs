@@ -1228,6 +1228,28 @@ def test_read_sql_dtype() -> None:
         conn.close()
 
 
+def test_read_sql_dtype1() -> None:
+    with ensure_clean() as path:
+        conn2 = sqlite3.connect(path)
+        df = pd.DataFrame(
+            data=[[0, "10/11/12"], [1, "12/11/10"]],
+            columns=["int_column", "date_column"],
+        )
+        check(assert_type(df.to_sql("test_data", con=conn2), Union[int, None]), int)
+        check(
+            assert_type(
+                pd.read_sql(
+                    "SELECT int_column, date_column FROM test_data",
+                    con=conn2,
+                    dtype={"int_column": int},
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        conn2.close()
+
+
 def test_read_sql_dtypes2() -> None:
     with ensure_clean() as path:
         conn1 = sqlite3.connect(path)
