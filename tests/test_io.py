@@ -1236,22 +1236,16 @@ def test_read_sql_dtype() -> None:
             ),
             pd.DataFrame,
         )
-        conn.close()
-
-
-def test_read_sql_dtypes2() -> None:
-    with ensure_clean() as path:
-        conn1 = sqlite3.connect(path)
-        check(assert_type(DF.to_sql("test", con=conn1), Union[int, None]), int)
+        check(assert_type(DF.to_sql("test", con=conn), Union[int, None]), int)
 
         check(
             assert_type(
-                read_sql("select * from test", con=conn1, dtype=int),
+                read_sql("select * from test", con=conn, dtype=int),
                 pd.DataFrame,
             ),
             pd.DataFrame,
         )
-        conn1.close()
+        conn.close()
 
 
 def test_read_sql_dtype_backend() -> None:
