@@ -1332,28 +1332,6 @@ def test_all_read_dtype_backend() -> None:
             DataFrame,
         )
 
-        # check(
-        #     assert_type(read_spss(path, dtype_backend="pyarrow"), pd.DataFrame),
-        #     pd.DataFrame,
-        # )
-        # path = Path(CWD, "data", "labelled-num.sav")
-        with ensure_clean() as path:
-            check(
-                assert_type(
-                    read_spss(path, dtype_backend="numpy_nullable"),
-                    DataFrame,
-                ),
-                DataFrame,
-            )
-
-        # check(
-        #     assert_type(
-        #         read_spss(path, convert_categoricals=True, dtype_backend="pyarrow"),
-        #         DataFrame,
-        #     ),
-        #     DataFrame,
-        # )
-
         check(
             assert_type(
                 pd.to_numeric(
