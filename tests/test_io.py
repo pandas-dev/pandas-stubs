@@ -1340,9 +1340,7 @@ def test_all_read_dtype_backend() -> None:
         with ensure_clean() as path:
             check(
                 assert_type(
-                    read_spss(
-                        path,dtype_backend="numpy_nullable"
-                    ),
+                    read_spss(path, dtype_backend="numpy_nullable"),
                     DataFrame,
                 ),
                 DataFrame,
