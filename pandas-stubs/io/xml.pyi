@@ -3,6 +3,7 @@ from collections.abc import Sequence
 from pandas.core.frame import DataFrame
 
 from pandas._typing import (
+    DtypeBackend,
     CompressionOptions,
     ConvertersArg,
     DtypeArg,
@@ -12,6 +13,8 @@ from pandas._typing import (
     StorageOptions,
     XMLParsers,
 )
+
+from pandas._libs.lib import NoDefault
 
 def read_xml(
     path_or_buffer: FilePath | ReadBuffer[bytes] | ReadBuffer[str],
@@ -31,4 +34,5 @@ def read_xml(
     iterparse: dict[str, list[str]] | None = ...,
     compression: CompressionOptions = ...,
     storage_options: StorageOptions = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> DataFrame: ...

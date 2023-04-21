@@ -15,12 +15,14 @@ from typing import (
 from odf.opendocument import OpenDocument
 from openpyxl.workbook.workbook import Workbook
 from pandas.core.frame import DataFrame
+from pandas._libs.lib import NoDefault
 import pyxlsb.workbook
 from typing_extensions import Self
 from xlrd.book import Book
 
 from pandas._typing import (
     Dtype,
+    DtypeBackend,
     FilePath,
     ListLikeHashable,
     ReadBuffer,
@@ -66,6 +68,7 @@ def read_excel(
     comment: str | None = ...,
     skipfooter: int = ...,
     storage_options: StorageOptions = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> dict[int | str, DataFrame]: ...
 @overload
 def read_excel(
@@ -104,6 +107,7 @@ def read_excel(
     comment: str | None = ...,
     skipfooter: int = ...,
     storage_options: StorageOptions = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> DataFrame: ...
 
 class ExcelWriter:

@@ -12,6 +12,7 @@ from pandas.core.series import Series
 from pandas._typing import (
     CompressionOptions,
     DtypeArg,
+    DtypeBackend,
     FilePath,
     HashableT,
     JsonFrameOrient,
@@ -20,6 +21,8 @@ from pandas._typing import (
     ReadBuffer,
     StorageOptions,
 )
+
+from pandas._libs.lib import NoDefault
 
 @overload
 def read_json(
@@ -43,6 +46,7 @@ def read_json(
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> JsonReader[Series]: ...
 @overload
 def read_json(
@@ -66,6 +70,7 @@ def read_json(
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> JsonReader[DataFrame]: ...
 @overload
 def read_json(
@@ -89,6 +94,7 @@ def read_json(
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> Series: ...
 @overload
 def read_json(
@@ -112,6 +118,7 @@ def read_json(
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> DataFrame: ...
 
 class JsonReader(abc.Iterator, Generic[NDFrameT]):

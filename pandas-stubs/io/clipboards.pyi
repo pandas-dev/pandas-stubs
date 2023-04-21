@@ -17,12 +17,15 @@ from pandas._typing import (
     CSVEngine,
     CSVQuoting,
     DtypeArg,
+    DtypeBackend,
     ListLikeHashable,
     StorageOptions,
     UsecolsArgType,
 )
 
 from pandas.io.parsers import TextFileReader
+
+from pandas._libs.lib import NoDefault
 
 @overload
 def read_clipboard(
@@ -80,6 +83,7 @@ def read_clipboard(
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
     storage_options: StorageOptions | None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> TextFileReader: ...
 @overload
 def read_clipboard(
@@ -137,6 +141,7 @@ def read_clipboard(
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
     storage_options: StorageOptions | None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> TextFileReader: ...
 @overload
 def read_clipboard(
@@ -194,6 +199,7 @@ def read_clipboard(
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
     storage_options: StorageOptions | None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> DataFrame: ...
 def to_clipboard(
     obj, excel: bool = ..., sep: str | None = ..., **kwargs: Any

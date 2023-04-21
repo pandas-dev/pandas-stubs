@@ -74,6 +74,7 @@ from typing_extensions import (
     Never,
     TypeAlias,
 )
+from pandas._libs.lib import NoDefault
 import xarray as xr
 
 from pandas._libs.interval import Interval
@@ -97,6 +98,7 @@ from pandas._typing import (
     ComplexDtypeArg,
     CompressionOptions,
     DtypeObj,
+    DtypeBackend,
     FilePath,
     FillnaOptions,
     FloatDtypeArg,
@@ -1133,6 +1135,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         convert_string: _bool = ...,
         convert_integer: _bool = ...,
         convert_boolean: _bool = ...,
+        dtype_backend: DtypeBackend | NoDefault = ...,
     ) -> Series[S1]: ...
     @overload
     def ffill(

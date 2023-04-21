@@ -13,6 +13,7 @@ from typing import (
 from pandas.core.frame import DataFrame
 
 from pandas._typing import (
+    DtypeBackend,
     FilePath,
     HashableT1,
     HashableT2,
@@ -21,6 +22,8 @@ from pandas._typing import (
     HashableT5,
     ReadBuffer,
 )
+
+from pandas._libs.lib import NoDefault
 
 def read_html(
     io: FilePath | ReadBuffer[str],
@@ -49,4 +52,5 @@ def read_html(
     keep_default_na: bool = ...,
     displayed_only: bool = ...,
     extract_links: Literal["header", "footer", "body", "all"] | None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> list[DataFrame]: ...

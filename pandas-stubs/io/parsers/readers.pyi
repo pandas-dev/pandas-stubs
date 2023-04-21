@@ -23,6 +23,7 @@ from pandas._typing import (
     CSVEngine,
     CSVQuoting,
     DtypeArg,
+    DtypeBackend,
     FilePath,
     ListLikeHashable,
     ReadCsvBuffer,
@@ -32,6 +33,8 @@ from pandas._typing import (
 
 from pandas.io.common import IOHandles
 
+from pandas._libs.lib import NoDefault
+
 @overload
 def read_csv(
     filepath_or_buffer: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str],
@@ -90,6 +93,7 @@ def read_csv(
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
     storage_options: StorageOptions | None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> TextFileReader: ...
 @overload
 def read_csv(
@@ -149,6 +153,7 @@ def read_csv(
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
     storage_options: StorageOptions | None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> TextFileReader: ...
 @overload
 def read_csv(
@@ -208,6 +213,7 @@ def read_csv(
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
     storage_options: StorageOptions | None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> DataFrame: ...
 @overload
 def read_table(
@@ -395,6 +401,7 @@ def read_fwf(
     infer_nrows: int = ...,
     iterator: Literal[True],
     chunksize: int | None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
     **kwds: Any,
 ) -> TextFileReader: ...
 @overload
@@ -406,6 +413,7 @@ def read_fwf(
     infer_nrows: int = ...,
     iterator: bool = ...,
     chunksize: int,
+    dtype_backend: DtypeBackend | NoDefault = ...,
     **kwds: Any,
 ) -> TextFileReader: ...
 @overload
@@ -417,6 +425,7 @@ def read_fwf(
     infer_nrows: int = ...,
     iterator: Literal[False] = ...,
     chunksize: None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
     **kwds: Any,
 ) -> DataFrame: ...
 
