@@ -16,8 +16,10 @@ import sqlalchemy.engine
 import sqlalchemy.sql.expression
 from typing_extensions import TypeAlias
 
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     DtypeArg,
+    DtypeBackend,
     npt,
 )
 
@@ -85,7 +87,7 @@ def read_sql(
     *,
     chunksize: int,
     dtype: DtypeArg | None = ...,
-    dtype_backend: None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> Generator[DataFrame, None, None]: ...
 @overload
 def read_sql(
@@ -98,7 +100,7 @@ def read_sql(
     columns: list[str] = ...,
     chunksize: None = ...,
     dtype: DtypeArg | None = ...,
-    dtype_backend: None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> DataFrame: ...
 
 class PandasSQL(PandasObject):

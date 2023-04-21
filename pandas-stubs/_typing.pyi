@@ -77,6 +77,7 @@ class FulldatetimeDict(YearMonthDayDict, total=False):
 NpDtype: TypeAlias = str | np.dtype[np.generic] | type[str | complex | bool | object]
 Dtype: TypeAlias = ExtensionDtype | NpDtype
 DtypeArg: TypeAlias = Dtype | dict[Any, Dtype]
+DtypeBackend: TypeAlias = Literal["pyarrow", "numpy_nullable"]
 BooleanDtypeArg: TypeAlias = (
     # Builtin bool type and its string alias
     type[bool]  # noqa: Y030
