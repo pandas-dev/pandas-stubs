@@ -16,6 +16,7 @@ from typing import (
     Union,
 )
 
+# import lxml 
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
@@ -1272,6 +1273,7 @@ def test_read_sql_dtype_backend() -> None:
         conn2.close()
 
 
+@lxml_skip
 def test_all_read_dtype_backend() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_csv(path), None), type(None))
