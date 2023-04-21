@@ -9,6 +9,7 @@ from typing import (
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
 
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     CompressionOptions,
     DtypeArg,
@@ -21,8 +22,6 @@ from pandas._typing import (
     ReadBuffer,
     StorageOptions,
 )
-
-from pandas._libs.lib import NoDefault
 
 @overload
 def read_json(

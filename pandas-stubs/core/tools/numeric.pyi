@@ -7,14 +7,13 @@ import numpy as np
 import pandas as pd
 from typing_extensions import TypeAlias
 
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     DtypeBackend,
     IgnoreRaiseCoerce,
     Scalar,
     npt,
 )
-
-from pandas._libs.lib import NoDefault
 
 _Downcast: TypeAlias = Literal["integer", "signed", "unsigned", "float"] | None
 

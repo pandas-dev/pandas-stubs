@@ -1,5 +1,6 @@
 from pandas import DataFrame
 
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     DtypeBackend,
     FilePath,
@@ -7,8 +8,6 @@ from pandas._typing import (
     ReadBuffer,
     StorageOptions,
 )
-
-from pandas._libs.lib import NoDefault
 
 def read_feather(
     path: FilePath | ReadBuffer[bytes],

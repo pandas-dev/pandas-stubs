@@ -15,11 +15,11 @@ from typing import (
 from odf.opendocument import OpenDocument
 from openpyxl.workbook.workbook import Workbook
 from pandas.core.frame import DataFrame
-from pandas._libs.lib import NoDefault
 import pyxlsb.workbook
 from typing_extensions import Self
 from xlrd.book import Book
 
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     Dtype,
     DtypeBackend,

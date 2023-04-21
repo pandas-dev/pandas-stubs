@@ -16,8 +16,8 @@ from typing import (
     Union,
 )
 
-import numpy.typing as npt
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 from pandas import (
     DataFrame,
@@ -45,7 +45,6 @@ from pandas import (
     read_xml,
 )
 from pandas._testing import ensure_clean
-from pandas._libs.missing import NAType
 import pytest
 import sqlalchemy
 import sqlalchemy.ext.declarative
@@ -1276,29 +1275,45 @@ def test_read_sql_dtype_backend() -> None:
 def test_all_read_dtype_backend() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_csv(path), None), type(None))
-        s1 = read_csv(path, iterator=True,dtype_backend="pyarrow")
+        s1 = read_csv(path, iterator=True, dtype_backend="pyarrow")
         check(assert_type(s1, TextFileReader), TextFileReader)
         s1.close()
 
         DF.to_string(path, index=False)
-        check(assert_type(read_fwf(path, dtype_backend="pyarrow"), DataFrame), DataFrame)
+        check(
+            assert_type(read_fwf(path, dtype_backend="pyarrow"), DataFrame), DataFrame
+        )
 
     with ensure_clean() as path:
         check(assert_type(DF.to_html(path), None), type(None))
-        check(assert_type(read_html(path, dtype_backend="numpy_nullable"), List[DataFrame]), list)
+        check(
+            assert_type(
+                read_html(path, dtype_backend="numpy_nullable"), List[DataFrame]
+            ),
+            list,
+        )
 
         check(assert_type(DF.to_xml(path), None), type(None))
-        check(assert_type(read_xml(path, dtype_backend="pyarrow"), DataFrame), DataFrame)
+        check(
+            assert_type(read_xml(path, dtype_backend="pyarrow"), DataFrame), DataFrame
+        )
 
         check(assert_type(DF.to_json(path), None), type(None))
-        check(assert_type(read_json(path, dtype_backend="pyarrow"), DataFrame), DataFrame)
+        check(
+            assert_type(read_json(path, dtype_backend="pyarrow"), DataFrame), DataFrame
+        )
 
     with ensure_clean() as path:
         con = sqlite3.connect(path)
         check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
         check(
             assert_type(
-                read_sql_query("select * from test", con=con, index_col="index", dtype_backend="pyarrow"),
+                read_sql_query(
+                    "select * from test",
+                    con=con,
+                    index_col="index",
+                    dtype_backend="pyarrow",
+                ),
                 DataFrame,
             ),
             DataFrame,
@@ -1306,16 +1321,39 @@ def test_all_read_dtype_backend() -> None:
         con.close()
 
         check(assert_type(DF.to_orc(path), None), type(None))
-        check(assert_type(read_orc(path, dtype_backend="numpy_nullable"), DataFrame), DataFrame)
+        check(
+            assert_type(read_orc(path, dtype_backend="numpy_nullable"), DataFrame),
+            DataFrame,
+        )
 
         check(assert_type(DF.to_feather(path), None), type(None))
-        check(assert_type(read_feather(path, dtype_backend="pyarrow"), DataFrame), DataFrame)
+        check(
+            assert_type(read_feather(path, dtype_backend="pyarrow"), DataFrame),
+            DataFrame,
+        )
 
-        check(assert_type(read_spss(path, dtype_backend="pyarrow"), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(read_spss(path, dtype_backend="pyarrow"), pd.DataFrame),
+            pd.DataFrame,
+        )
         path = Path(CWD, "data", "labelled-num.sav")
-        check(assert_type(read_spss(path, convert_categoricals=True, dtype_backend="pyarrow"), DataFrame), DataFrame)
+        check(
+            assert_type(
+                read_spss(path, convert_categoricals=True, dtype_backend="pyarrow"),
+                DataFrame,
+            ),
+            DataFrame,
+        )
 
-        check(assert_type(pd.to_numeric([1.0, 2.0, "blerg"], errors="ignore", dtype_backend="numpy_nullable"), npt.NDArray),np.ndarray,)
+        check(
+            assert_type(
+                pd.to_numeric(
+                    [1.0, 2.0, "blerg"], errors="ignore", dtype_backend="numpy_nullable"
+                ),
+                npt.NDArray,
+            ),
+            np.ndarray,
+        )
 
         # con = sqlite3.connect(path)
         #     check(assert_type(DF.to_sql("test", con=con), Union[int, None]))
@@ -1324,10 +1362,18 @@ def test_all_read_dtype_backend() -> None:
     with ensure_clean(".xlsx") as path:
         as_str: str = path
         DF.to_excel(path)
-        check(assert_type(pd.read_excel(as_str, dtype_backend="pyarrow"), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(pd.read_excel(as_str, dtype_backend="pyarrow"), pd.DataFrame),
+            pd.DataFrame,
+        )
 
     try:
         DF.to_clipboard()
     except errors.PyperclipException:
         pytest.skip("clipboard not available for testing")
-    check(assert_type(read_clipboard(iterator=True, dtype_backend="pyarrow"), TextFileReader), TextFileReader)
+    check(
+        assert_type(
+            read_clipboard(iterator=True, dtype_backend="pyarrow"), TextFileReader
+        ),
+        TextFileReader,
+    )

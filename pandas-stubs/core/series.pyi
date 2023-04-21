@@ -74,10 +74,10 @@ from typing_extensions import (
     Never,
     TypeAlias,
 )
-from pandas._libs.lib import NoDefault
 import xarray as xr
 
 from pandas._libs.interval import Interval
+from pandas._libs.lib import NoDefault
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
@@ -97,8 +97,8 @@ from pandas._typing import (
     CategoryDtypeArg,
     ComplexDtypeArg,
     CompressionOptions,
-    DtypeObj,
     DtypeBackend,
+    DtypeObj,
     FilePath,
     FillnaOptions,
     FloatDtypeArg,

@@ -12,6 +12,7 @@ from typing import (
 
 from pandas.core.frame import DataFrame
 
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     CompressionOptions,
     CSVEngine,
@@ -24,8 +25,6 @@ from pandas._typing import (
 )
 
 from pandas.io.parsers import TextFileReader
-
-from pandas._libs.lib import NoDefault
 
 @overload
 def read_clipboard(

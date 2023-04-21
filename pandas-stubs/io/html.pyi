@@ -12,6 +12,7 @@ from typing import (
 
 from pandas.core.frame import DataFrame
 
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     DtypeBackend,
     FilePath,
@@ -22,8 +23,6 @@ from pandas._typing import (
     HashableT5,
     ReadBuffer,
 )
-
-from pandas._libs.lib import NoDefault
 
 def read_html(
     io: FilePath | ReadBuffer[str],

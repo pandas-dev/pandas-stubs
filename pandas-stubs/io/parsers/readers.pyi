@@ -18,6 +18,7 @@ from typing import (
 from pandas.core.frame import DataFrame
 from typing_extensions import Self
 
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     CompressionOptions,
     CSVEngine,
@@ -32,8 +33,6 @@ from pandas._typing import (
 )
 
 from pandas.io.common import IOHandles
-
-from pandas._libs.lib import NoDefault
 
 @overload
 def read_csv(

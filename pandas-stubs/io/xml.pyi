@@ -2,19 +2,18 @@ from collections.abc import Sequence
 
 from pandas.core.frame import DataFrame
 
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
-    DtypeBackend,
     CompressionOptions,
     ConvertersArg,
     DtypeArg,
+    DtypeBackend,
     FilePath,
     ParseDatesArg,
     ReadBuffer,
     StorageOptions,
     XMLParsers,
 )
-
-from pandas._libs.lib import NoDefault
 
 def read_xml(
     path_or_buffer: FilePath | ReadBuffer[bytes] | ReadBuffer[str],
