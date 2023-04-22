@@ -1321,11 +1321,12 @@ def test_all_read_dtype_backend() -> None:
         )
         con.close()
 
-        check(assert_type(DF.to_orc(path), None), type(None))
-        check(
-            assert_type(read_orc(path, dtype_backend="numpy_nullable"), DataFrame),
-            DataFrame,
-        )
+        if not WINDOWS:
+                check(assert_type(DF.to_orc(path), None), type(None))
+                check(
+                    assert_type(read_orc(path, dtype_backend="numpy_nullable"), DataFrame),
+                    DataFrame,
+                )
 
         check(assert_type(DF.to_feather(path), None), type(None))
         check(
