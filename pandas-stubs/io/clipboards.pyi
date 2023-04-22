@@ -30,6 +30,7 @@ from pandas.io.parsers import TextFileReader
 def read_clipboard(
     sep: str | None = ...,
     *,
+    dtype_backend: DtypeBackend | NoDefault = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
@@ -82,12 +83,12 @@ def read_clipboard(
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
     storage_options: StorageOptions | None = ...,
-    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> TextFileReader: ...
 @overload
 def read_clipboard(
     sep: str | None = ...,
     *,
+    dtype_backend: DtypeBackend | NoDefault = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
@@ -140,12 +141,12 @@ def read_clipboard(
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
     storage_options: StorageOptions | None = ...,
-    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> TextFileReader: ...
 @overload
 def read_clipboard(
     sep: str | None = ...,
     *,
+    dtype_backend: DtypeBackend | NoDefault = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
@@ -198,7 +199,6 @@ def read_clipboard(
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
     storage_options: StorageOptions | None = ...,
-    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> DataFrame: ...
 def to_clipboard(
     obj, excel: bool = ..., sep: str | None = ..., **kwargs: Any

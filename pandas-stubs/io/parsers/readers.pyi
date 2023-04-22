@@ -398,9 +398,9 @@ def read_fwf(
     colspecs: Sequence[tuple[int, int]] | Literal["infer"] | None = ...,
     widths: Sequence[int] | None = ...,
     infer_nrows: int = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
     iterator: Literal[True],
     chunksize: int | None = ...,
-    dtype_backend: DtypeBackend | NoDefault = ...,
     **kwds: Any,
 ) -> TextFileReader: ...
 @overload
@@ -410,9 +410,9 @@ def read_fwf(
     colspecs: Sequence[tuple[int, int]] | Literal["infer"] | None = ...,
     widths: Sequence[int] | None = ...,
     infer_nrows: int = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
     iterator: bool = ...,
     chunksize: int,
-    dtype_backend: DtypeBackend | NoDefault = ...,
     **kwds: Any,
 ) -> TextFileReader: ...
 @overload
@@ -422,9 +422,9 @@ def read_fwf(
     colspecs: Sequence[tuple[int, int]] | Literal["infer"] | None = ...,
     widths: Sequence[int] | None = ...,
     infer_nrows: int = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
     iterator: Literal[False] = ...,
     chunksize: None = ...,
-    dtype_backend: DtypeBackend | NoDefault = ...,
     **kwds: Any,
 ) -> DataFrame: ...
 

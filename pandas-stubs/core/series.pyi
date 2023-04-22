@@ -1135,7 +1135,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         convert_string: _bool = ...,
         convert_integer: _bool = ...,
         convert_boolean: _bool = ...,
-        dtype_backend: DtypeBackend | NoDefault = ...,
+        dtype_backend: DtypeBackend = ...,
     ) -> Series[S1]: ...
     @overload
     def ffill(

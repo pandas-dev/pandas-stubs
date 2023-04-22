@@ -1272,8 +1272,7 @@ def test_read_sql_dtype_backend() -> None:
         conn2.close()
 
 
-@lxml_skip
-def test_all_read_dtype_backend() -> None:
+def test_all_read_without_lxml_dtype_backend() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_csv(path), None), type(None))
         s1 = read_csv(path, iterator=True, dtype_backend="pyarrow")
@@ -1283,20 +1282,6 @@ def test_all_read_dtype_backend() -> None:
         DF.to_string(path, index=False)
         check(
             assert_type(read_fwf(path, dtype_backend="pyarrow"), DataFrame), DataFrame
-        )
-
-    with ensure_clean() as path:
-        check(assert_type(DF.to_html(path), None), type(None))
-        check(
-            assert_type(
-                read_html(path, dtype_backend="numpy_nullable"), List[DataFrame]
-            ),
-            list,
-        )
-
-        check(assert_type(DF.to_xml(path), None), type(None))
-        check(
-            assert_type(read_xml(path, dtype_backend="pyarrow"), DataFrame), DataFrame
         )
 
         check(assert_type(DF.to_json(path), None), type(None))
@@ -1322,11 +1307,11 @@ def test_all_read_dtype_backend() -> None:
         con.close()
 
         if not WINDOWS:
-                check(assert_type(DF.to_orc(path), None), type(None))
-                check(
-                    assert_type(read_orc(path, dtype_backend="numpy_nullable"), DataFrame),
-                    DataFrame,
-                )
+            check(assert_type(DF.to_orc(path), None), type(None))
+            check(
+                assert_type(read_orc(path, dtype_backend="numpy_nullable"), DataFrame),
+                DataFrame,
+            )
 
         check(assert_type(DF.to_feather(path), None), type(None))
         check(
@@ -1343,10 +1328,6 @@ def test_all_read_dtype_backend() -> None:
             ),
             np.ndarray,
         )
-
-        # con = sqlite3.connect(path)
-        #     check(assert_type(DF.to_sql("test", con=con), Union[int, None]))
-        #     assert_type(read_sql_table("test", con=con), DataFrame)
 
     with ensure_clean(".xlsx") as path:
         as_str: str = path
@@ -1366,3 +1347,30 @@ def test_all_read_dtype_backend() -> None:
         ),
         TextFileReader,
     )
+
+    if TYPE_CHECKING:
+        with ensure_clean() as path:
+            co1 = sqlite3.connect(path)
+            assert_type(DF.to_sql("test", con=co1), Union[int, None])
+            assert_type(
+                read_sql_table("test", con=co1, dtype_backend="numpy_nullable"),
+                DataFrame,
+            )
+            co1.close()
+
+
+@lxml_skip
+def test_read_with_lxml_dtype_backend() -> None:
+    with ensure_clean() as path:
+        check(assert_type(DF.to_html(path), None), type(None))
+        check(
+            assert_type(
+                read_html(path, dtype_backend="numpy_nullable"), List[DataFrame]
+            ),
+            list,
+        )
+
+        check(assert_type(DF.to_xml(path), None), type(None))
+        check(
+            assert_type(read_xml(path, dtype_backend="pyarrow"), DataFrame), DataFrame
+        )
