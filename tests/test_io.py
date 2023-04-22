@@ -621,10 +621,6 @@ def test_types_read_csv() -> None:
             header=0,
             index_col=0,
         )
-        df26: pd.DataFrame = pd.read_csv(path, parse_dates=True, date_format="%Y-%m-%d")
-        df27: pd.DataFrame = pd.read_csv(
-            path, parse_dates=True, date_format={"col1": "%Y-%m-%d"}
-        )
 
         if TYPE_CHECKING_INVALID_USAGE:
             pd.read_csv(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
@@ -641,6 +637,21 @@ def test_types_read_csv() -> None:
 
         tfr4: TextFileReader = pd.read_csv(path, nrows=2, iterator=True)
         tfr4.close()
+
+    df_dates = pd.DataFrame(data={"col1": ["2023-03-15", "2023-04-20"]})
+
+    with ensure_clean() as path:
+        df_dates.to_csv(path)
+
+        df26: pd.DataFrame = pd.read_csv(
+            path, parse_dates=["col1"], date_format="%Y-%m-%d"
+        )
+        df27: pd.DataFrame = pd.read_csv(
+            path, parse_dates=["col1"], date_format={"col1": "%Y-%m-%d"}
+        )
+        df28: pd.DataFrame = pd.read_csv(
+            path, parse_dates=["col1"], date_format={1: "%Y-%m-%d"}
+        )
 
 
 def test_read_table():
