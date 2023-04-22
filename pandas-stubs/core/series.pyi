@@ -77,7 +77,6 @@ from typing_extensions import (
 import xarray as xr
 
 from pandas._libs.interval import Interval
-from pandas._libs.lib import NoDefault
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
