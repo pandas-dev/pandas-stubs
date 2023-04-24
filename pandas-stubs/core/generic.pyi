@@ -29,6 +29,7 @@ from pandas._typing import (
     CSVQuoting,
     Dtype,
     DtypeArg,
+    DtypeBackend,
     FilePath,
     FileWriteMode,
     FillnaOptions,
@@ -373,6 +374,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         convert_string: _bool = ...,
         convert_integer: _bool = ...,
         convert_boolean: _bool = ...,
+        dtype_backend: DtypeBackend = ...,
     ) -> NDFrameT: ...
     def fillna(
         self,

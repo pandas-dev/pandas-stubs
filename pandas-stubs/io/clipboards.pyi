@@ -12,11 +12,13 @@ from typing import (
 
 from pandas.core.frame import DataFrame
 
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     CompressionOptions,
     CSVEngine,
     CSVQuoting,
     DtypeArg,
+    DtypeBackend,
     ListLikeHashable,
     StorageOptions,
     UsecolsArgType,
@@ -28,6 +30,7 @@ from pandas.io.parsers import TextFileReader
 def read_clipboard(
     sep: str | None = ...,
     *,
+    dtype_backend: DtypeBackend | NoDefault = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
@@ -85,6 +88,7 @@ def read_clipboard(
 def read_clipboard(
     sep: str | None = ...,
     *,
+    dtype_backend: DtypeBackend | NoDefault = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
@@ -142,6 +146,7 @@ def read_clipboard(
 def read_clipboard(
     sep: str | None = ...,
     *,
+    dtype_backend: DtypeBackend | NoDefault = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,

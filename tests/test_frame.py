@@ -2597,3 +2597,9 @@ def test_suffix_prefix_index() -> None:
     check(
         assert_type(df.add_prefix("_col", axis="columns"), pd.DataFrame), pd.DataFrame
     )
+
+
+def test_convert_dtypes_dtype_backend() -> None:
+    df = pd.DataFrame({"A": [1, 2, 3, 4], "B": [3, 4, 5, 6]})
+    dfn = df.convert_dtypes(dtype_backend="numpy_nullable")
+    check(assert_type(dfn, pd.DataFrame), pd.DataFrame)

@@ -18,11 +18,13 @@ from typing import (
 from pandas.core.frame import DataFrame
 from typing_extensions import Self
 
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     CompressionOptions,
     CSVEngine,
     CSVQuoting,
     DtypeArg,
+    DtypeBackend,
     FilePath,
     ListLikeHashable,
     ReadCsvBuffer,
@@ -91,6 +93,7 @@ def read_csv(
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
     storage_options: StorageOptions | None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> TextFileReader: ...
 @overload
 def read_csv(
@@ -151,6 +154,7 @@ def read_csv(
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
     storage_options: StorageOptions | None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> TextFileReader: ...
 @overload
 def read_csv(
@@ -211,6 +215,7 @@ def read_csv(
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
     storage_options: StorageOptions | None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> DataFrame: ...
 @overload
 def read_table(
@@ -396,6 +401,7 @@ def read_fwf(
     colspecs: Sequence[tuple[int, int]] | Literal["infer"] | None = ...,
     widths: Sequence[int] | None = ...,
     infer_nrows: int = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
     iterator: Literal[True],
     chunksize: int | None = ...,
     **kwds: Any,
@@ -407,6 +413,7 @@ def read_fwf(
     colspecs: Sequence[tuple[int, int]] | Literal["infer"] | None = ...,
     widths: Sequence[int] | None = ...,
     infer_nrows: int = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
     iterator: bool = ...,
     chunksize: int,
     **kwds: Any,
@@ -418,6 +425,7 @@ def read_fwf(
     colspecs: Sequence[tuple[int, int]] | Literal["infer"] | None = ...,
     widths: Sequence[int] | None = ...,
     infer_nrows: int = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
     iterator: Literal[False] = ...,
     chunksize: None = ...,
     **kwds: Any,
