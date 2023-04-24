@@ -638,6 +638,21 @@ def test_types_read_csv() -> None:
         tfr4: TextFileReader = pd.read_csv(path, nrows=2, iterator=True)
         tfr4.close()
 
+    df_dates = pd.DataFrame(data={"col1": ["2023-03-15", "2023-04-20"]})
+
+    with ensure_clean() as path:
+        df_dates.to_csv(path)
+
+        df26: pd.DataFrame = pd.read_csv(
+            path, parse_dates=["col1"], date_format="%Y-%m-%d"
+        )
+        df27: pd.DataFrame = pd.read_csv(
+            path, parse_dates=["col1"], date_format={"col1": "%Y-%m-%d"}
+        )
+        df28: pd.DataFrame = pd.read_csv(
+            path, parse_dates=["col1"], date_format={1: "%Y-%m-%d"}
+        )
+
 
 def test_read_table():
     with ensure_clean() as path:
