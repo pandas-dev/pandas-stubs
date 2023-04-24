@@ -1349,6 +1349,8 @@ def test_all_read_without_lxml_dtype_backend() -> None:
     )
 
     if TYPE_CHECKING:
+        # sqlite3 doesn't support read_table, which is required for this function
+        # Could only run in pytest if SQLAlchemy was installed
         with ensure_clean() as path:
             co1 = sqlite3.connect(path)
             assert_type(DF.to_sql("test", con=co1), Union[int, None])
