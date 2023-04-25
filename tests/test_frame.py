@@ -1100,7 +1100,7 @@ def test_types_to_feather() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
     with pytest_warns_bounded(
         FutureWarning,
-        match="is_sparse is deprecated and will be removed in a future version. Check `isinstance(dtype, pd.SparseDtype)` instead.",
+        match="is_sparse is deprecated and will be removed in a future version",
         lower="2.0.00",
     ):
         with ensure_clean() as path:
@@ -1346,7 +1346,7 @@ def test_types_to_parquet() -> None:
     with ensure_clean() as path:
         with pytest_warns_bounded(
             FutureWarning,
-            match="is_sparse is deprecated and will be removed in a future version. Check `isinstance(dtype, pd.SparseDtype)` instead.",
+            match="is_sparse is deprecated and will be removed in a future version",
             lower="2.0.00",
         ):
             df.to_parquet(Path(path))
