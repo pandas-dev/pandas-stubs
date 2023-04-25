@@ -365,7 +365,7 @@ def test_is_period_dtype() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         match="is_period_dtype is deprecated and will be removed in a future version. Use `isinstance(dtype, pd.PeriodDtype)` instead",
-        lower="2.0.99",
+        lower="2.0.00",
     ):
         check(assert_type(api.is_period_dtype(arr), bool), bool)
         check(assert_type(api.is_period_dtype(nparr), bool), bool)
@@ -424,7 +424,7 @@ def test_is_sparse() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         match="is_sparse is deprecated and will be removed in a future version. Check `isinstance(dtype, pd.SparseDtype)` instead.",
-        lower="2.0.99",
+        lower="2.0.00",
     ):
         check(assert_type(api.is_sparse(arr), bool), bool)
         check(assert_type(api.is_sparse(nparr), bool), bool)

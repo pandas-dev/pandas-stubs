@@ -84,7 +84,7 @@ def test_orc():
         with pytest_warns_bounded(
             FutureWarning,
             match="is_sparse is deprecated and will be removed in a future version. Check `isinstance(dtype, pd.SparseDtype)` instead.",
-            lower="2.0.99",
+            lower="2.0.00",
         ):
             check(assert_type(DF.to_orc(path), None), type(None))
         check(assert_type(read_orc(path), DataFrame), DataFrame)
@@ -97,7 +97,7 @@ def test_orc_path():
         with pytest_warns_bounded(
             FutureWarning,
             match="is_sparse is deprecated and will be removed in a future version. Check `isinstance(dtype, pd.SparseDtype)` instead.",
-            lower="2.0.99",
+            lower="2.0.00",
         ):
             check(assert_type(DF.to_orc(pathlib_path), None), type(None))
         check(assert_type(read_orc(pathlib_path), DataFrame), DataFrame)
@@ -110,7 +110,7 @@ def test_orc_buffer():
         with pytest_warns_bounded(
             FutureWarning,
             match="is_sparse is deprecated and will be removed in a future version. Check `isinstance(dtype, pd.SparseDtype)` instead.",
-            lower="2.0.99",
+            lower="2.0.00",
         ):
             check(assert_type(DF.to_orc(file_w), None), type(None))
         file_w.close()
@@ -126,7 +126,7 @@ def test_orc_columns():
         with pytest_warns_bounded(
             FutureWarning,
             match="is_sparse is deprecated and will be removed in a future version. Check `isinstance(dtype, pd.SparseDtype)` instead.",
-            lower="2.0.99",
+            lower="2.0.00",
         ):
             check(assert_type(DF.to_orc(path, index=False), None), type(None))
         check(assert_type(read_orc(path, columns=["a"]), DataFrame), DataFrame)
@@ -137,7 +137,7 @@ def test_orc_bytes():
     with pytest_warns_bounded(
         FutureWarning,
         match="is_sparse is deprecated and will be removed in a future version. Check `isinstance(dtype, pd.SparseDtype)` instead.",
-        lower="2.0.99",
+        lower="2.0.00",
     ):
         check(assert_type(DF.to_orc(index=False), bytes), bytes)
 
@@ -535,7 +535,7 @@ def test_parquet():
         with pytest_warns_bounded(
             FutureWarning,
             match="is_sparse is deprecated and will be removed in a future version. Check `isinstance(dtype, pd.SparseDtype)` instead.",
-            lower="2.0.99",
+            lower="2.0.00",
         ):
             check(assert_type(DF.to_parquet(path), None), type(None))
             check(assert_type(DF.to_parquet(), bytes), bytes)
@@ -547,7 +547,7 @@ def test_parquet_options():
         with pytest_warns_bounded(
             FutureWarning,
             match="is_sparse is deprecated and will be removed in a future version. Check `isinstance(dtype, pd.SparseDtype)` instead.",
-            lower="2.0.99",
+            lower="2.0.00",
         ):
             check(
                 assert_type(DF.to_parquet(path, compression=None, index=True), None),
@@ -561,7 +561,7 @@ def test_feather():
         with pytest_warns_bounded(
             FutureWarning,
             match="is_sparse is deprecated and will be removed in a future version. Check `isinstance(dtype, pd.SparseDtype)` instead.",
-            lower="2.0.99",
+            lower="2.0.00",
         ):
             check(assert_type(DF.to_feather(path), None), type(None))
         check(assert_type(read_feather(path), DataFrame), DataFrame)
@@ -570,7 +570,7 @@ def test_feather():
     with pytest_warns_bounded(
         FutureWarning,
         match="is_sparse is deprecated and will be removed in a future version. Check `isinstance(dtype, pd.SparseDtype)` instead.",
-        lower="2.0.99",
+        lower="2.0.00",
     ):
         check(assert_type(DF.to_feather(bio), None), type(None))
     bio.seek(0)
@@ -1373,7 +1373,7 @@ def test_all_read_without_lxml_dtype_backend() -> None:
             with pytest_warns_bounded(
                 FutureWarning,
                 match="is_sparse is deprecated and will be removed in a future version. Check `isinstance(dtype, pd.SparseDtype)` instead.",
-                lower="2.0.99",
+                lower="2.0.00",
             ):
                 check(assert_type(DF.to_orc(path), None), type(None))
             check(
@@ -1383,7 +1383,7 @@ def test_all_read_without_lxml_dtype_backend() -> None:
         with pytest_warns_bounded(
             FutureWarning,
             match="is_sparse is deprecated and will be removed in a future version. Check `isinstance(dtype, pd.SparseDtype)` instead.",
-            lower="2.0.99",
+            lower="2.0.00",
         ):
             check(assert_type(DF.to_feather(path), None), type(None))
         check(

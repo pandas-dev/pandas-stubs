@@ -1347,7 +1347,7 @@ def test_types_to_parquet() -> None:
         with pytest_warns_bounded(
             FutureWarning,
             match="is_sparse is deprecated and will be removed in a future version. Check `isinstance(dtype, pd.SparseDtype)` instead.",
-            lower="2.0.99",
+            lower="2.0.00",
         ):
             df.to_parquet(Path(path))
         # to_parquet() returns bytes when no path given since 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
