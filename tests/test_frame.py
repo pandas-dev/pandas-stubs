@@ -1101,7 +1101,7 @@ def test_types_to_feather() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         match="is_sparse is deprecated and will be removed in a future version. Check `isinstance(dtype, pd.SparseDtype)` instead.",
-        lower="2.0.99",
+        lower="2.0.00",
     ):
         with ensure_clean() as path:
             df.to_feather(path)
