@@ -69,7 +69,10 @@ from pandas.io.sas.sas7bdat import SAS7BDATReader
 from pandas.io.sas.sas_xport import XportReader
 from pandas.io.stata import StataReader
 
-from . import lxml_skip
+from . import (
+    lxml_skip,
+    pytest_warns_bounded,
+)
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 CWD = os.path.split(os.path.abspath(__file__))[0]
@@ -78,7 +81,12 @@ CWD = os.path.split(os.path.abspath(__file__))[0]
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc():
     with ensure_clean() as path:
-        check(assert_type(DF.to_orc(path), None), type(None))
+        with pytest_warns_bounded(
+            FutureWarning,
+            match="As _is_sparse is now deprecated so to_orc now creates a warning",
+            lower="2.0.99",
+        ):
+            check(assert_type(DF.to_orc(path), None), type(None))
         check(assert_type(read_orc(path), DataFrame), DataFrame)
 
 
@@ -86,7 +94,12 @@ def test_orc():
 def test_orc_path():
     with ensure_clean() as path:
         pathlib_path = Path(path)
-        check(assert_type(DF.to_orc(pathlib_path), None), type(None))
+        with pytest_warns_bounded(
+            FutureWarning,
+            match="As _is_sparse is now deprecated so to_feather now creates a warning",
+            lower="2.0.99",
+        ):
+            check(assert_type(DF.to_orc(pathlib_path), None), type(None))
         check(assert_type(read_orc(pathlib_path), DataFrame), DataFrame)
 
 
@@ -94,7 +107,12 @@ def test_orc_path():
 def test_orc_buffer():
     with ensure_clean() as path:
         file_w = open(path, "wb")
-        check(assert_type(DF.to_orc(file_w), None), type(None))
+        with pytest_warns_bounded(
+            FutureWarning,
+            match="As _is_sparse is now deprecated so to_feather now creates a warning",
+            lower="2.0.99",
+        ):
+            check(assert_type(DF.to_orc(file_w), None), type(None))
         file_w.close()
 
         file_r = open(path, "rb")
@@ -105,13 +123,23 @@ def test_orc_buffer():
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_columns():
     with ensure_clean() as path:
-        check(assert_type(DF.to_orc(path, index=False), None), type(None))
+        with pytest_warns_bounded(
+            FutureWarning,
+            match="As _is_sparse is now deprecated so to_feather now creates a warning",
+            lower="2.0.99",
+        ):
+            check(assert_type(DF.to_orc(path, index=False), None), type(None))
         check(assert_type(read_orc(path, columns=["a"]), DataFrame), DataFrame)
 
 
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_bytes():
-    check(assert_type(DF.to_orc(index=False), bytes), bytes)
+    with pytest_warns_bounded(
+        FutureWarning,
+        match="As _is_sparse is now deprecated so to_feather now creates a warning",
+        lower="2.0.99",
+    ):
+        check(assert_type(DF.to_orc(index=False), bytes), bytes)
 
 
 @lxml_skip
@@ -504,27 +532,47 @@ def test_json_chunk():
 
 def test_parquet():
     with ensure_clean() as path:
-        check(assert_type(DF.to_parquet(path), None), type(None))
+        with pytest_warns_bounded(
+            FutureWarning,
+            match="As _is_sparse is now deprecated so to_parquet now creates a warning",
+            lower="2.0.99",
+        ):
+            check(assert_type(DF.to_parquet(path), None), type(None))
+            check(assert_type(DF.to_parquet(), bytes), bytes)
         check(assert_type(read_parquet(path), DataFrame), DataFrame)
-    check(assert_type(DF.to_parquet(), bytes), bytes)
 
 
 def test_parquet_options():
     with ensure_clean(".parquet") as path:
-        check(
-            assert_type(DF.to_parquet(path, compression=None, index=True), None),
-            type(None),
-        )
+        with pytest_warns_bounded(
+            FutureWarning,
+            match="As _is_sparse is now deprecated so to_parquet now creates a warning",
+            lower="2.0.99",
+        ):
+            check(
+                assert_type(DF.to_parquet(path, compression=None, index=True), None),
+                type(None),
+            )
         check(assert_type(read_parquet(path), DataFrame), DataFrame)
 
 
 def test_feather():
     with ensure_clean() as path:
-        check(assert_type(DF.to_feather(path), None), type(None))
+        with pytest_warns_bounded(
+            FutureWarning,
+            match="As _is_sparse is now deprecated so to_feather now creates a warning",
+            lower="2.0.99",
+        ):
+            check(assert_type(DF.to_feather(path), None), type(None))
         check(assert_type(read_feather(path), DataFrame), DataFrame)
         check(assert_type(read_feather(path, columns=["a"]), DataFrame), DataFrame)
     bio = io.BytesIO()
-    check(assert_type(DF.to_feather(bio), None), type(None))
+    with pytest_warns_bounded(
+        FutureWarning,
+        match="As _is_sparse is now deprecated so to_feather now creates a warning",
+        lower="2.0.99",
+    ):
+        check(assert_type(DF.to_feather(bio), None), type(None))
     bio.seek(0)
     check(assert_type(read_feather(bio), DataFrame), DataFrame)
 
@@ -1322,13 +1370,22 @@ def test_all_read_without_lxml_dtype_backend() -> None:
         con.close()
 
         if not WINDOWS:
-            check(assert_type(DF.to_orc(path), None), type(None))
+            with pytest_warns_bounded(
+                FutureWarning,
+                match="As _is_sparse is now deprecated so to_feather now creates a warning",
+                lower="2.0.99",
+            ):
+                check(assert_type(DF.to_orc(path), None), type(None))
             check(
                 assert_type(read_orc(path, dtype_backend="numpy_nullable"), DataFrame),
                 DataFrame,
             )
-
-        check(assert_type(DF.to_feather(path), None), type(None))
+        with pytest_warns_bounded(
+            FutureWarning,
+            match="As _is_sparse is now deprecated so to_feather now creates a warning",
+            lower="2.0.99",
+        ):
+            check(assert_type(DF.to_feather(path), None), type(None))
         check(
             assert_type(read_feather(path, dtype_backend="pyarrow"), DataFrame),
             DataFrame,

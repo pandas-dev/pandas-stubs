@@ -362,15 +362,20 @@ def test_is_object_dtype() -> None:
 
 
 def test_is_period_dtype() -> None:
-    check(assert_type(api.is_period_dtype(arr), bool), bool)
-    check(assert_type(api.is_period_dtype(nparr), bool), bool)
-    check(assert_type(api.is_period_dtype(dtylike), bool), bool)
-    check(
-        assert_type(api.is_period_dtype(dframe), bool),
-        bool,
-    )
-    check(assert_type(api.is_period_dtype(ind), bool), bool)
-    check(assert_type(api.is_period_dtype(ExtensionDtype), bool), bool)
+    with pytest_warns_bounded(
+        FutureWarning,
+        match="is_period_dtype is now deprecate and will be removed in a future version",
+        lower="2.0.99",
+    ):
+        check(assert_type(api.is_period_dtype(arr), bool), bool)
+        check(assert_type(api.is_period_dtype(nparr), bool), bool)
+        check(assert_type(api.is_period_dtype(dtylike), bool), bool)
+        check(
+            assert_type(api.is_period_dtype(dframe), bool),
+            bool,
+        )
+        check(assert_type(api.is_period_dtype(ind), bool), bool)
+        check(assert_type(api.is_period_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_re() -> None:
@@ -416,9 +421,14 @@ def test_is_signed_integer_dtype() -> None:
 
 
 def test_is_sparse() -> None:
-    check(assert_type(api.is_sparse(arr), bool), bool)
-    check(assert_type(api.is_sparse(nparr), bool), bool)
-    check(assert_type(api.is_sparse(dframe), bool), bool)
+    with pytest_warns_bounded(
+        FutureWarning,
+        match="is_sparse is now deprecated and will be removed in a future version",
+        lower="2.0.99",
+    ):
+        check(assert_type(api.is_sparse(arr), bool), bool)
+        check(assert_type(api.is_sparse(nparr), bool), bool)
+        check(assert_type(api.is_sparse(dframe), bool), bool)
 
 
 def test_is_string_dtype() -> None:

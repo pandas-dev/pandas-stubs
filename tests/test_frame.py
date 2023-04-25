@@ -1098,17 +1098,22 @@ def test_to_markdown() -> None:
 def test_types_to_feather() -> None:
     pytest.importorskip("pyarrow")
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
-    with ensure_clean() as path:
-        df.to_feather(path)
-        # kwargs for pyarrow.feather.write_feather added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-        df.to_feather(path, compression="zstd", compression_level=3, chunksize=2)
+    with pytest_warns_bounded(
+        FutureWarning,
+        match="As _is_sparse is now deprecated so to_feather now creates a warning",
+        lower="2.0.99",
+    ):
+        with ensure_clean() as path:
+            df.to_feather(path)
+            # kwargs for pyarrow.feather.write_feather added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
+            df.to_feather(path, compression="zstd", compression_level=3, chunksize=2)
 
-        # to_feather has been able to accept a buffer since pandas 1.0.0
-        # See https://pandas.pydata.org/docs/whatsnew/v1.0.0.html
-        # Docstring and type were updated in 1.2.0.
-        # https://github.com/pandas-dev/pandas/pull/35408
-        with open(path, mode="wb") as file:
-            df.to_feather(file)
+            # to_feather has been able to accept a buffer since pandas 1.0.0
+            # See https://pandas.pydata.org/docs/whatsnew/v1.0.0.html
+            # Docstring and type were updated in 1.2.0.
+            # https://github.com/pandas-dev/pandas/pull/35408
+            with open(path, mode="wb") as file:
+                df.to_feather(file)
 
 
 # compare() method added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
@@ -1339,9 +1344,14 @@ def test_types_to_parquet() -> None:
         allows_duplicate_labels=False
     )
     with ensure_clean() as path:
-        df.to_parquet(Path(path))
-    # to_parquet() returns bytes when no path given since 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-    b: bytes = df.to_parquet()
+        with pytest_warns_bounded(
+            FutureWarning,
+            match="As _is_sparse is now deprecated so to_feather now creates a warning",
+            lower="2.0.99",
+        ):
+            df.to_parquet(Path(path))
+        # to_parquet() returns bytes when no path given since 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
+        b: bytes = df.to_parquet()
 
 
 def test_types_to_latex() -> None:
