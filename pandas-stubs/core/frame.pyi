@@ -547,7 +547,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def __getitem__(
         self,
-        idx: Series[_bool]
+        key: Series[_bool]
         | DataFrame
         | Index
         | np_ndarray_str
@@ -555,9 +555,9 @@ class DataFrame(NDFrame, OpsMixin):
         | list[_ScalarOrTupleT],
     ) -> DataFrame: ...
     @overload
-    def __getitem__(self, idx: Scalar | Hashable) -> Series: ...
+    def __getitem__(self, key: slice) -> DataFrame: ...
     @overload
-    def __getitem__(self, rows: slice) -> DataFrame: ...
+    def __getitem__(self, key: Scalar | Hashable) -> Series: ...
     def isetitem(
         self, loc: int | Sequence[int], value: Scalar | ArrayLike | list[Any]
     ) -> None: ...
