@@ -756,6 +756,10 @@ def test_factorize() -> None:
     check(assert_type(codes, np.ndarray), np.ndarray)
     check(assert_type(uniques, np.ndarray), np.ndarray)
 
+    codes, uniques = pd.factorize(np.recarray((1,), dtype=[("x", int)]))
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(uniques, np.ndarray), np.ndarray)
+
     codes, cat_uniques = pd.factorize(pd.Categorical(["b", "b", "a", "c", "b"]))
     check(assert_type(codes, np.ndarray), np.ndarray)
     check(assert_type(cat_uniques, pd.Categorical), pd.Categorical)
