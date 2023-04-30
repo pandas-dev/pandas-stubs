@@ -87,7 +87,7 @@ def test_applymap_index() -> None:
 
     with pytest_warns_bounded(
         FutureWarning,
-        match="Styler.applymap has been deprecated. Use Styler.map instead.",
+        match="Styler.applymap_index has been deprecated. Use Styler.map_index instead.",
         lower="2.0.99",
     ):
         check(assert_type(DF.style.applymap_index(g), Styler), Styler)
