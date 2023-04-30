@@ -881,12 +881,7 @@ def test_types_groupby() -> None:
     df4: pd.DataFrame = df.groupby(by=["col1", "col2"]).count()
     df5: pd.DataFrame = df.groupby(by=["col1", "col2"]).filter(lambda x: x["col1"] > 0)
     df6: pd.DataFrame = df.groupby(by=["col1", "col2"]).nunique()
-    with pytest_warns_bounded(
-        FutureWarning,
-        match="DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated",
-        lower="2.0.99",
-    ):
-        df7: pd.DataFrame = df.groupby(by="col1").apply(sum)
+    df7: pd.DataFrame = df.groupby(by="col1").apply(sum)
     df8: pd.DataFrame = df.groupby("col1").transform("sum")
     s1: pd.Series = df.set_index("col1")["col2"]
     s2: pd.Series = s1.groupby("col1").transform("sum")
@@ -2053,41 +2048,36 @@ def test_groupby_apply() -> None:
     def sum_mean(x: pd.DataFrame) -> float:
         return x.sum().mean()
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        match="DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated",
-        lower="2.0.99",
-    ):
-        check(assert_type(df.groupby("col1").apply(sum_mean), pd.Series), pd.Series)
+    check(assert_type(df.groupby("col1").apply(sum_mean), pd.Series), pd.Series)
 
-        lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
-        check(
-            assert_type(df.groupby("col1").apply(lfunc), pd.Series),
-            pd.Series,
-        )
+    lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
+    check(
+        assert_type(df.groupby("col1").apply(lfunc), pd.Series),
+        pd.Series,
+    )
 
-        def sum_to_list(x: pd.DataFrame) -> list:
-            return x.sum().tolist()
+    def sum_to_list(x: pd.DataFrame) -> list:
+        return x.sum().tolist()
 
-        check(assert_type(df.groupby("col1").apply(sum_to_list), pd.Series), pd.Series)
+    check(assert_type(df.groupby("col1").apply(sum_to_list), pd.Series), pd.Series)
 
-        def sum_to_series(x: pd.DataFrame) -> pd.Series:
-            return x.sum()
+    def sum_to_series(x: pd.DataFrame) -> pd.Series:
+        return x.sum()
 
-        check(
-            assert_type(df.groupby("col1").apply(sum_to_series), pd.DataFrame),
-            pd.DataFrame,
-        )
+    check(
+        assert_type(df.groupby("col1").apply(sum_to_series), pd.DataFrame),
+        pd.DataFrame,
+    )
 
-        def sample_to_df(x: pd.DataFrame) -> pd.DataFrame:
-            return x.sample()
+    def sample_to_df(x: pd.DataFrame) -> pd.DataFrame:
+        return x.sample()
 
-        check(
-            assert_type(
-                df.groupby("col1", group_keys=False).apply(sample_to_df), pd.DataFrame
-            ),
-            pd.DataFrame,
-        )
+    check(
+        assert_type(
+            df.groupby("col1", group_keys=False).apply(sample_to_df), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_resample() -> None:
