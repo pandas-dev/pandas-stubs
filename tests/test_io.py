@@ -570,7 +570,7 @@ def test_feather():
     with pytest_warns_bounded(
         FutureWarning,
         match="is_sparse is deprecated and will be removed in a future version",
-        lower="2.0.00",
+        lower="2.0.99",
     ):
         check(assert_type(DF.to_feather(bio), None), type(None))
     bio.seek(0)

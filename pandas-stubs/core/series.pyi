@@ -38,6 +38,7 @@ from pandas import (
 )
 from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.categorical import CategoricalAccessor
+from pandas.core.arrays.interval import IntervalArray
 from pandas.core.groupby.generic import (
     _SeriesGroupByNonScalar,
     _SeriesGroupByScalar,
@@ -76,7 +77,10 @@ from typing_extensions import (
 )
 import xarray as xr
 
-from pandas._libs.interval import Interval
+from pandas._libs.interval import (
+    Interval,
+    _OrderableT,
+)
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
@@ -245,43 +249,49 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def __new__(
         cls,
-        data: IntervalIndex[Interval[int]],
+        data: IntervalIndex[Interval[int]] | Interval[int] | Sequence[Interval[int]],
         index: Axes | None = ...,
         dtype=...,
         name: Hashable | None = ...,
         copy: bool = ...,
         fastpath: bool = ...,
-    ) -> Series[Interval[int]]: ...
+    ) -> IntervalSeries[int]: ...
     @overload
     def __new__(
         cls,
-        data: IntervalIndex[Interval[float]],
+        data: IntervalIndex[Interval[float]]
+        | Interval[float]
+        | Sequence[Interval[float]],
         index: Axes | None = ...,
         dtype=...,
         name: Hashable | None = ...,
         copy: bool = ...,
         fastpath: bool = ...,
-    ) -> Series[Interval[float]]: ...
+    ) -> IntervalSeries[float]: ...
     @overload
     def __new__(
         cls,
-        data: IntervalIndex[Interval[Timestamp]],
+        data: IntervalIndex[Interval[Timestamp]]
+        | Interval[Timestamp]
+        | Sequence[Interval[Timestamp]],
         index: Axes | None = ...,
         dtype=...,
         name: Hashable | None = ...,
         copy: bool = ...,
         fastpath: bool = ...,
-    ) -> Series[Interval[Timestamp]]: ...
+    ) -> IntervalSeries[Timestamp]: ...
     @overload
     def __new__(
         cls,
-        data: IntervalIndex[Interval[Timedelta]],
+        data: IntervalIndex[Interval[Timedelta]]
+        | Interval[Timedelta]
+        | Sequence[Interval[Timedelta]],
         index: Axes | None = ...,
         dtype=...,
         name: Hashable | None = ...,
         copy: bool = ...,
         fastpath: bool = ...,
-    ) -> Series[Interval[Timedelta]]: ...
+    ) -> IntervalSeries[Timedelta]: ...
     @overload
     def __new__(
         cls,
@@ -1997,3 +2007,7 @@ class OffsetSeries(Series):
     def __radd__(self, other: Period) -> PeriodSeries: ...
     @overload
     def __radd__(self, other: BaseOffset) -> OffsetSeries: ...
+
+class IntervalSeries(Series, Generic[_OrderableT]):
+    @property
+    def array(self) -> IntervalArray: ...
