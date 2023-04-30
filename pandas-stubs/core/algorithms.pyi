@@ -42,7 +42,7 @@ def unique(values: np.ndarray | list) -> np.ndarray: ...
 def unique(values: ExtensionArray) -> ExtensionArray: ...
 @overload
 def factorize(
-    values: Sequence,
+    values: Sequence | np.recarray,
     sort: bool = ...,
     use_na_sentinel: bool = ...,
     size_hint: int | None = ...,
