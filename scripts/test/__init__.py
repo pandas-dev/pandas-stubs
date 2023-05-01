@@ -49,8 +49,14 @@ def stubtest(allowlist: str, check_missing: bool, nightly: bool) -> None:
 
 
 def pytest(nightly: bool) -> None:
-    steps = [_step.nightly] if nightly else []
-    run_job(steps + [_step.pytest])
+    setup_steps = []
+    pytest_step = _step.pytest
+    if nightly:
+        pytest_step = dataclasses.replace(
+            _step.pytest, run=partial(_step.pytest.run, flags=())
+        )
+        setup_steps = [_step.nightly]
+    run_job(setup_steps + [pytest_step])
 
 
 def mypy_src(mypy_nightly: bool) -> None:

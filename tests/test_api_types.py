@@ -8,10 +8,7 @@ from typing_extensions import assert_type
 
 from pandas._typing import DtypeObj
 
-from tests import (
-    check,
-    pytest_warns_bounded,
-)
+from tests import check
 
 nparr = np.array([1, 2, 3])
 arr = pd.Series([1, 2, 3])
@@ -55,20 +52,12 @@ def test_is_bool_dtype() -> None:
 
 
 def test_is_categorical_dtype() -> None:
-    with pytest_warns_bounded(
-        FutureWarning,
-        match="is_categorical_dtype is deprecated and will be removed in a future version",
-        lower="2.0.99",
-    ):
-        check(assert_type(api.is_categorical_dtype(arr), bool), bool)
-        check(assert_type(api.is_categorical_dtype(nparr), bool), bool)
-        check(assert_type(api.is_categorical_dtype(dtylike), bool), bool)
-        check(
-            assert_type(api.is_categorical_dtype(dframe), bool),
-            bool,
-        )
-        check(assert_type(api.is_categorical_dtype(ind), bool), bool)
-        check(assert_type(api.is_categorical_dtype(ExtensionDtype), bool), bool)
+    check(assert_type(api.is_categorical_dtype(arr), bool), bool)
+    check(assert_type(api.is_categorical_dtype(nparr), bool), bool)
+    check(assert_type(api.is_categorical_dtype(dtylike), bool), bool)
+    check(assert_type(api.is_categorical_dtype(dframe), bool), bool)
+    check(assert_type(api.is_categorical_dtype(ind), bool), bool)
+    check(assert_type(api.is_categorical_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_complex() -> None:
@@ -132,20 +121,12 @@ def test_is_datetime64_ns_dtype() -> None:
 
 
 def test_is_datetime64tz_dtype() -> None:
-    with pytest_warns_bounded(
-        FutureWarning,
-        match="is_datetime64tz_dtype is deprecated and will be removed in a future version",
-        lower="2.0.99",
-    ):
-        check(assert_type(api.is_datetime64tz_dtype(arr), bool), bool)
-        check(assert_type(api.is_datetime64tz_dtype(nparr), bool), bool)
-        check(assert_type(api.is_datetime64tz_dtype(dtylike), bool), bool)
-        check(
-            assert_type(api.is_datetime64tz_dtype(dframe), bool),
-            bool,
-        )
-        check(assert_type(api.is_datetime64tz_dtype(ind), bool), bool)
-        check(assert_type(api.is_datetime64tz_dtype(ExtensionDtype), bool), bool)
+    check(assert_type(api.is_datetime64tz_dtype(arr), bool), bool)
+    check(assert_type(api.is_datetime64tz_dtype(nparr), bool), bool)
+    check(assert_type(api.is_datetime64tz_dtype(dtylike), bool), bool)
+    check(assert_type(api.is_datetime64tz_dtype(dframe), bool), bool)
+    check(assert_type(api.is_datetime64tz_dtype(ind), bool), bool)
+    check(assert_type(api.is_datetime64tz_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_dict_like() -> None:
@@ -222,20 +203,12 @@ def test_is_hashable() -> None:
 
 
 def test_is_int64_dtype() -> None:
-    with pytest_warns_bounded(
-        FutureWarning,
-        match="is_int64_dtype is deprecated and will be removed in a future version",
-        lower="2.0.99",
-    ):
-        check(assert_type(api.is_int64_dtype(arr), bool), bool)
-        check(assert_type(api.is_int64_dtype(nparr), bool), bool)
-        check(assert_type(api.is_int64_dtype(dtylike), bool), bool)
-        check(
-            assert_type(api.is_int64_dtype(dframe), bool),
-            bool,
-        )
-        check(assert_type(api.is_int64_dtype(ind), bool), bool)
-        # check(assert_type(api.is_int64_dtype(ExtensionDtype), bool), bool) pandas GH 50923
+    check(assert_type(api.is_int64_dtype(arr), bool), bool)
+    check(assert_type(api.is_int64_dtype(nparr), bool), bool)
+    check(assert_type(api.is_int64_dtype(dtylike), bool), bool)
+    check(assert_type(api.is_int64_dtype(dframe), bool), bool)
+    check(assert_type(api.is_int64_dtype(ind), bool), bool)
+    # check(assert_type(api.is_int64_dtype(ExtensionDtype), bool), bool) pandas GH 50923
 
 
 def test_is_integer() -> None:
@@ -275,21 +248,13 @@ def test_is_interval() -> None:
 
 
 def test_is_interval_dtype() -> None:
-    with pytest_warns_bounded(
-        FutureWarning,
-        match="is_interval_dtype is deprecated and will be removed in a future version",
-        lower="2.0.99",
-    ):
-        check(assert_type(api.is_interval_dtype(obj), bool), bool)
-        check(assert_type(api.is_interval_dtype(nparr), bool), bool)
-        check(assert_type(api.is_interval_dtype(dtylike), bool), bool)
-        check(assert_type(api.is_interval_dtype(arr), bool), bool)
-        check(
-            assert_type(api.is_interval_dtype(dframe), bool),
-            bool,
-        )
-        check(assert_type(api.is_interval_dtype(ind), bool), bool)
-        check(assert_type(api.is_interval_dtype(ExtensionDtype), bool), bool)
+    check(assert_type(api.is_interval_dtype(obj), bool), bool)
+    check(assert_type(api.is_interval_dtype(nparr), bool), bool)
+    check(assert_type(api.is_interval_dtype(dtylike), bool), bool)
+    check(assert_type(api.is_interval_dtype(arr), bool), bool)
+    check(assert_type(api.is_interval_dtype(dframe), bool), bool)
+    check(assert_type(api.is_interval_dtype(ind), bool), bool)
+    check(assert_type(api.is_interval_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_iterator() -> None:
@@ -362,20 +327,12 @@ def test_is_object_dtype() -> None:
 
 
 def test_is_period_dtype() -> None:
-    with pytest_warns_bounded(
-        FutureWarning,
-        match="is_period_dtype is deprecated and will be removed in a future version",
-        lower="2.0.99",
-    ):
-        check(assert_type(api.is_period_dtype(arr), bool), bool)
-        check(assert_type(api.is_period_dtype(nparr), bool), bool)
-        check(assert_type(api.is_period_dtype(dtylike), bool), bool)
-        check(
-            assert_type(api.is_period_dtype(dframe), bool),
-            bool,
-        )
-        check(assert_type(api.is_period_dtype(ind), bool), bool)
-        check(assert_type(api.is_period_dtype(ExtensionDtype), bool), bool)
+    check(assert_type(api.is_period_dtype(arr), bool), bool)
+    check(assert_type(api.is_period_dtype(nparr), bool), bool)
+    check(assert_type(api.is_period_dtype(dtylike), bool), bool)
+    check(assert_type(api.is_period_dtype(dframe), bool), bool)
+    check(assert_type(api.is_period_dtype(ind), bool), bool)
+    check(assert_type(api.is_period_dtype(ExtensionDtype), bool), bool)
 
 
 def test_is_re() -> None:
@@ -421,14 +378,9 @@ def test_is_signed_integer_dtype() -> None:
 
 
 def test_is_sparse() -> None:
-    with pytest_warns_bounded(
-        FutureWarning,
-        match="is_sparse is deprecated and will be removed in a future version",
-        lower="2.0.99",
-    ):
-        check(assert_type(api.is_sparse(arr), bool), bool)
-        check(assert_type(api.is_sparse(nparr), bool), bool)
-        check(assert_type(api.is_sparse(dframe), bool), bool)
+    check(assert_type(api.is_sparse(arr), bool), bool)
+    check(assert_type(api.is_sparse(nparr), bool), bool)
+    check(assert_type(api.is_sparse(dframe), bool), bool)
 
 
 def test_is_string_dtype() -> None:

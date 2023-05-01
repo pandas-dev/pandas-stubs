@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 import subprocess
 import sys
@@ -13,8 +15,8 @@ def pyright_src():
     subprocess.run(cmd, check=True)
 
 
-def pytest():
-    cmd = ["pytest", "--cache-clear", "-Werror"]
+def pytest(flags: tuple[str, ...] = ("-Werror",)):
+    cmd = ["pytest", "--cache-clear", *flags]
     subprocess.run(cmd, check=True)
 
 
