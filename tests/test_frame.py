@@ -43,7 +43,6 @@ from tests import (
     PD_LTE_20,
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    pytest_warns_bounded,
 )
 
 from pandas.io.formats.style import Styler
@@ -727,17 +726,12 @@ def test_types_apply() -> None:
 
 def test_types_applymap() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    with pytest_warns_bounded(
-        FutureWarning,
-        match="DataFrame.applymap has been deprecated. Use DataFrame.map instead.",
-        lower="2.0.99",
-    ):
-        df.applymap(lambda x: x**2)
-        df.applymap(np.exp)
-        df.applymap(str)
-        # na_action parameter was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-        df.applymap(np.exp, na_action="ignore")
-        df.applymap(str, na_action=None)
+    df.applymap(lambda x: x**2)
+    df.applymap(np.exp)
+    df.applymap(str)
+    # na_action parameter was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
+    df.applymap(np.exp, na_action="ignore")
+    df.applymap(str, na_action=None)
 
 
 def test_types_element_wise_arithmetic() -> None:
@@ -881,12 +875,7 @@ def test_types_groupby() -> None:
     df4: pd.DataFrame = df.groupby(by=["col1", "col2"]).count()
     df5: pd.DataFrame = df.groupby(by=["col1", "col2"]).filter(lambda x: x["col1"] > 0)
     df6: pd.DataFrame = df.groupby(by=["col1", "col2"]).nunique()
-    with pytest_warns_bounded(
-        FutureWarning,
-        match="DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated",
-        lower="2.0.99",
-    ):
-        df7: pd.DataFrame = df.groupby(by="col1").apply(sum)
+    df7: pd.DataFrame = df.groupby(by="col1").apply(sum)
     df8: pd.DataFrame = df.groupby("col1").transform("sum")
     s1: pd.Series = df.set_index("col1")["col2"]
     s2: pd.Series = s1.groupby("col1").transform("sum")
@@ -1098,22 +1087,17 @@ def test_to_markdown() -> None:
 def test_types_to_feather() -> None:
     pytest.importorskip("pyarrow")
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
-    with pytest_warns_bounded(
-        FutureWarning,
-        match="is_sparse is deprecated and will be removed in a future version",
-        lower="2.0.99",
-    ):
-        with ensure_clean() as path:
-            df.to_feather(path)
-            # kwargs for pyarrow.feather.write_feather added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-            df.to_feather(path, compression="zstd", compression_level=3, chunksize=2)
+    with ensure_clean() as path:
+        df.to_feather(path)
+        # kwargs for pyarrow.feather.write_feather added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
+        df.to_feather(path, compression="zstd", compression_level=3, chunksize=2)
 
-            # to_feather has been able to accept a buffer since pandas 1.0.0
-            # See https://pandas.pydata.org/docs/whatsnew/v1.0.0.html
-            # Docstring and type were updated in 1.2.0.
-            # https://github.com/pandas-dev/pandas/pull/35408
-            with open(path, mode="wb") as file:
-                df.to_feather(file)
+        # to_feather has been able to accept a buffer since pandas 1.0.0
+        # See https://pandas.pydata.org/docs/whatsnew/v1.0.0.html
+        # Docstring and type were updated in 1.2.0.
+        # https://github.com/pandas-dev/pandas/pull/35408
+        with open(path, mode="wb") as file:
+            df.to_feather(file)
 
 
 # compare() method added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
@@ -1344,12 +1328,7 @@ def test_types_to_parquet() -> None:
         allows_duplicate_labels=False
     )
     with ensure_clean() as path:
-        with pytest_warns_bounded(
-            FutureWarning,
-            match="is_sparse is deprecated and will be removed in a future version",
-            lower="2.0.99",
-        ):
-            df.to_parquet(Path(path))
+        df.to_parquet(Path(path))
         # to_parquet() returns bytes when no path given since 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
         b: bytes = df.to_parquet()
 
@@ -1475,19 +1454,14 @@ def test_types_regressions() -> None:
 
     # https://github.com/microsoft/python-type-stubs/issues/115
     df = pd.DataFrame({"A": [1, 2, 3], "B": [5, 6, 7]})
-    with pytest_warns_bounded(
-        FutureWarning,
-        match="The 'closed' keyword in DatetimeIndex construction is deprecated",
-        lower="2.0.99",
-    ):
-        pd.DatetimeIndex(
-            data=df["A"],
-            tz=None,
-            normalize=False,
-            closed=None,
-            ambiguous="NaT",
-            copy=True,
-        )
+    pd.DatetimeIndex(
+        data=df["A"],
+        tz=None,
+        normalize=False,
+        closed=None,
+        ambiguous="NaT",
+        copy=True,
+    )
 
 
 def test_read_csv() -> None:
@@ -2053,41 +2027,32 @@ def test_groupby_apply() -> None:
     def sum_mean(x: pd.DataFrame) -> float:
         return x.sum().mean()
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        match="DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated",
-        lower="2.0.99",
-    ):
-        check(assert_type(df.groupby("col1").apply(sum_mean), pd.Series), pd.Series)
+    check(assert_type(df.groupby("col1").apply(sum_mean), pd.Series), pd.Series)
 
-        lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
-        check(
-            assert_type(df.groupby("col1").apply(lfunc), pd.Series),
-            pd.Series,
-        )
+    lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
+    check(assert_type(df.groupby("col1").apply(lfunc), pd.Series), pd.Series)
 
-        def sum_to_list(x: pd.DataFrame) -> list:
-            return x.sum().tolist()
+    def sum_to_list(x: pd.DataFrame) -> list:
+        return x.sum().tolist()
 
-        check(assert_type(df.groupby("col1").apply(sum_to_list), pd.Series), pd.Series)
+    check(assert_type(df.groupby("col1").apply(sum_to_list), pd.Series), pd.Series)
 
-        def sum_to_series(x: pd.DataFrame) -> pd.Series:
-            return x.sum()
+    def sum_to_series(x: pd.DataFrame) -> pd.Series:
+        return x.sum()
 
-        check(
-            assert_type(df.groupby("col1").apply(sum_to_series), pd.DataFrame),
-            pd.DataFrame,
-        )
+    check(
+        assert_type(df.groupby("col1").apply(sum_to_series), pd.DataFrame), pd.DataFrame
+    )
 
-        def sample_to_df(x: pd.DataFrame) -> pd.DataFrame:
-            return x.sample()
+    def sample_to_df(x: pd.DataFrame) -> pd.DataFrame:
+        return x.sample()
 
-        check(
-            assert_type(
-                df.groupby("col1", group_keys=False).apply(sample_to_df), pd.DataFrame
-            ),
-            pd.DataFrame,
-        )
+    check(
+        assert_type(
+            df.groupby("col1", group_keys=False).apply(sample_to_df), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_resample() -> None:
