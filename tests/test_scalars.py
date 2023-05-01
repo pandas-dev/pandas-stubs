@@ -880,8 +880,8 @@ def test_timedelta_cmp() -> None:
     le = check(assert_type(c_dt_timedelta <= td, bool), bool)
     assert gt != le
 
-    gt_b = check(assert_type(c_timedelta64 > td, Any), np.bool_)
-    le_b = check(assert_type(c_timedelta64 <= td, Any), np.bool_)
+    gt_b = check(assert_type(c_timedelta64 > td, Any), bool)
+    le_b = check(assert_type(c_timedelta64 <= td, Any), bool)
     assert gt_b != le_b
 
     gt_a = check(
@@ -948,8 +948,8 @@ def test_timedelta_cmp() -> None:
     ge = check(assert_type(c_dt_timedelta >= td, bool), bool)
     assert lt != ge
 
-    lt_b = check(assert_type(c_timedelta64 < td, Any), np.bool_)
-    ge_b = check(assert_type(c_timedelta64 >= td, Any), np.bool_)
+    lt_b = check(assert_type(c_timedelta64 < td, Any), bool)
+    ge_b = check(assert_type(c_timedelta64 >= td, Any), bool)
     assert lt_b != ge_b
 
     lt_a = check(
@@ -1038,8 +1038,8 @@ def test_timedelta_cmp_rhs() -> None:
     ne = check(assert_type(c_dt_timedelta != td, bool), bool)
     assert eq != ne
 
-    eq = check(assert_type(c_timedelta64 == td, Any), np.bool_)
-    ne = check(assert_type(c_timedelta64 != td, Any), np.bool_)
+    eq = check(assert_type(c_timedelta64 == td, Any), bool)
+    ne = check(assert_type(c_timedelta64 != td, Any), bool)
     assert eq != ne
 
     eq_a = check(assert_type(c_ndarray_td64 == td, Any), np.ndarray, np.bool_)
@@ -1270,8 +1270,8 @@ def test_timestamp_cmp() -> None:
     check(assert_type(ts > c_series_dt64, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(ts <= c_series_dt64, "pd.Series[bool]"), pd.Series, np.bool_)
 
-    check(assert_type(c_np_dt64 > ts, Any), np.bool_)
-    check(assert_type(c_np_dt64 <= ts, Any), np.bool_)
+    check(assert_type(c_np_dt64 > ts, Any), bool)
+    check(assert_type(c_np_dt64 <= ts, Any), bool)
 
     gt = check(assert_type(c_dt_datetime > ts, bool), bool)
     lte = check(assert_type(c_dt_datetime <= ts, bool), bool)
@@ -1314,8 +1314,8 @@ def test_timestamp_cmp() -> None:
     lt = check(assert_type(c_dt_datetime < ts, bool), bool)
     assert gte != lt
 
-    check(assert_type(c_np_dt64 >= ts, Any), np.bool_)
-    check(assert_type(c_np_dt64 < ts, Any), np.bool_)
+    check(assert_type(c_np_dt64 >= ts, Any), bool)
+    check(assert_type(c_np_dt64 < ts, Any), bool)
 
     check(assert_type(c_datetimeindex >= ts, np_ndarray_bool), np.ndarray, np.bool_)
     check(assert_type(c_datetimeindex < ts, np_ndarray_bool), np.ndarray, np.bool_)
@@ -1388,8 +1388,8 @@ def test_timestamp_eq_ne_rhs() -> None:
         [1, 2, 3], dtype="datetime64[ns]"
     )
 
-    eq_a = check(assert_type(c_np_dt64 == ts, Any), np.bool_)
-    ne_a = check(assert_type(c_np_dt64 != ts, Any), np.bool_)
+    eq_a = check(assert_type(c_np_dt64 == ts, Any), bool)
+    ne_a = check(assert_type(c_np_dt64 != ts, Any), bool)
     assert eq_a != ne_a
 
     eq = check(assert_type(c_dt_datetime == ts, bool), bool)

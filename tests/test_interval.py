@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import numpy as np
+from numpy import typing as npt
 import pandas as pd
 from typing_extensions import assert_type
 
@@ -84,3 +86,12 @@ def test_interval_length() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         pd.Timestamp("2001-01-02") in i3  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
         i3 + pd.Timedelta(seconds=20)  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+
+
+def test_interval_array_contains():
+    df = pd.DataFrame({"A": range(1, 10)})
+    obj = pd.Interval(1, 4)
+    ser = pd.Series(obj, index=df.index)
+    arr = ser.array
+    check(assert_type(arr.contains(df["A"]), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(arr.contains(3), npt.NDArray[np.bool_]), np.ndarray)

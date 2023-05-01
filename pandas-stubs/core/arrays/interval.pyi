@@ -1,5 +1,10 @@
+from typing import overload
+
 import numpy as np
-from pandas import Index
+from pandas import (
+    Index,
+    Series,
+)
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
 from typing_extensions import Self
 
@@ -9,7 +14,9 @@ from pandas._libs.interval import (
 )
 from pandas._typing import (
     Axis,
+    Scalar,
     TakeIndexer,
+    np_ndarray_bool,
 )
 
 class IntervalArray(IntervalMixin, ExtensionArray):
@@ -70,5 +77,10 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def __arrow_array__(self, type=...): ...
     def to_tuples(self, na_tuple: bool = ...): ...
     def repeat(self, repeats, axis: Axis | None = ...): ...
-    def contains(self, other): ...
+    @overload
+    def contains(self, other: Series) -> Series[bool]: ...
+    @overload
+    def contains(
+        self, other: Scalar | ExtensionArray | Index | np.ndarray
+    ) -> np_ndarray_bool: ...
     def overlaps(self, other: Interval) -> bool: ...
