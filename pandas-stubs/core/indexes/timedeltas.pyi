@@ -72,7 +72,7 @@ def timedelta_range(
     start: TimedeltaConvertibleTypes = ...,
     end: TimedeltaConvertibleTypes = ...,
     periods: int | None = ...,
-    freq: str | DateOffset | None = ...,
+    freq: str | DateOffset | Timedelta | dt.timedelta | None = ...,
     name: Hashable | None = ...,
     closed: Literal["left", "right"] | None = ...,
 ) -> TimedeltaIndex: ...

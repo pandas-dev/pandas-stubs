@@ -1820,3 +1820,15 @@ def test_convert_dtypes_dtype_backend() -> None:
     s = pd.Series([1, 2, 3, 4])
     s1 = s.convert_dtypes(dtype_backend="numpy_nullable")
     check(assert_type(s1, pd.Series), pd.Series)
+
+
+def test_apply_returns_none() -> None:
+    # GH 557
+    s = pd.Series([1, 2, 3])
+    check(assert_type(s.apply(lambda x: None), pd.Series), pd.Series)
+
+
+def test_loc_callable() -> None:
+    # GH 586
+    s = pd.Series([1, 2])
+    check(assert_type(s.loc[lambda x: x > 1], pd.Series), pd.Series)

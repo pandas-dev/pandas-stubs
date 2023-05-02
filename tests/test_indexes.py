@@ -293,6 +293,30 @@ def test_interval_range():
     )
     check(
         assert_type(
+            pd.interval_range(
+                pd.Timestamp(2000, 1, 1),
+                pd.Timestamp(2010, 1, 1),
+                freq=pd.Timedelta(days=30),
+            ),
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(
+        assert_type(
+            pd.interval_range(
+                pd.Timestamp(2000, 1, 1),
+                pd.Timestamp(2010, 1, 1),
+                freq=dt.timedelta(days=30),
+            ),
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(
+        assert_type(
             pd.interval_range(pd.Timestamp(2000, 1, 1), dt.datetime(2010, 1, 1), 5),
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
@@ -303,6 +327,26 @@ def test_interval_range():
     check(
         assert_type(
             pd.interval_range(pd.Timedelta("1D"), pd.Timedelta("10D")),
+            "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(
+        assert_type(
+            pd.interval_range(
+                pd.Timedelta("1D"), pd.Timedelta("10D"), freq=pd.Timedelta("2D")
+            ),
+            "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(
+        assert_type(
+            pd.interval_range(
+                pd.Timedelta("1D"), pd.Timedelta("10D"), freq=dt.timedelta(days=2)
+            ),
             "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
         ),
         pd.IntervalIndex,

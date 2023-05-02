@@ -1071,6 +1071,20 @@ def test_timedelta_range() -> None:
         ),
         pd.TimedeltaIndex,
     )
+    check(
+        assert_type(
+            pd.timedelta_range("1 day", "10 days", freq=pd.Timedelta("2 days")),
+            pd.TimedeltaIndex,
+        ),
+        pd.TimedeltaIndex,
+    )
+    check(
+        assert_type(
+            pd.timedelta_range("1 day", "10 days", freq=dt.timedelta(days=2)),
+            pd.TimedeltaIndex,
+        ),
+        pd.TimedeltaIndex,
+    )
 
 
 def test_dateoffset_freqstr() -> None:

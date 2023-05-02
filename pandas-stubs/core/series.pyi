@@ -179,7 +179,13 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     @overload
     def __getitem__(
         self,
-        idx: MaskType | Index | Sequence[float] | list[str] | slice | _IndexSliceTuple,
+        idx: MaskType
+        | Index
+        | Sequence[float]
+        | list[str]
+        | slice
+        | _IndexSliceTuple
+        | Callable,
         # _IndexSliceTuple is when having a tuple that includes a slice.  Could just
         # be s.loc[1, :], or s.loc[pd.IndexSlice[1, :]]
     ) -> Series[S1]: ...
@@ -775,7 +781,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def apply(
         self,
-        func: Callable[..., Scalar | Sequence | set | Mapping],
+        func: Callable[..., Scalar | Sequence | set | Mapping | None],
         convertDType: _bool = ...,
         args: tuple = ...,
         **kwds,
