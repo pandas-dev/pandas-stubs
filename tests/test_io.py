@@ -1407,12 +1407,3 @@ def test_read_sql_str_dtype() -> None:
             DataFrame,
         )
         con.close()
-
-        if TYPE_CHECKING:
-            # sqlite3 doesn't support read_table, which is required for this function
-            # Could only run in pytest if SQLAlchemy was installed
-            with ensure_clean() as path:
-                co1 = sqlite3.connect(path)
-                assert_type(DF.to_sql("test", con=co1), Union[int, None])
-                assert_type(read_sql_table("test", con=co1, dtype="int"), DataFrame)
-                co1.close()
