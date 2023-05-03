@@ -1388,3 +1388,31 @@ def test_read_with_lxml_dtype_backend() -> None:
         check(
             assert_type(read_xml(path, dtype_backend="pyarrow"), DataFrame), DataFrame
         )
+
+
+def test_read_sql_str_dtype() -> None:
+    with ensure_clean() as path:
+        con = sqlite3.connect(path)
+        check(assert_type(DF.to_sql("test", con), Union[int, None]), int)
+        check(
+            assert_type(
+                read_sql_query(
+                    "select * from test",
+                    con=con,
+                    index_col="index",
+                    dtype="int",
+                ),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+        con.close()
+
+        if TYPE_CHECKING:
+            # sqlite3 doesn't support read_table, which is required for this function
+            # Could only run in pytest if SQLAlchemy was installed
+            with ensure_clean() as path:
+                co1 = sqlite3.connect(path)
+                assert_type(DF.to_sql("test", con=co1), Union[int, None])
+                assert_type(read_sql_table("test", con=co1, dtype="int"), DataFrame)
+                co1.close()
