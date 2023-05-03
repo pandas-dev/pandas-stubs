@@ -27,11 +27,15 @@ from pandas.core.arraylike import OpsMixin
 from pandas.core.generic import NDFrame
 from pandas.core.groupby.generic import (
     _DataFrameGroupByNonScalar,
+    _DataFrameGroupByPeriod,
     _DataFrameGroupByScalar,
 )
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexers import BaseIndexer
 from pandas.core.indexes.base import Index
+from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.indexes.period import PeriodIndex
+from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.indexing import (
     _iLocIndexer,
     _IndexSliceTuple,
@@ -52,6 +56,7 @@ import xarray as xr
 
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
+from pandas._libs.tslibs.period import Period
 from pandas._typing import (
     S1,
     AggFuncTypeBase,
@@ -1000,9 +1005,9 @@ class DataFrame(NDFrame, OpsMixin):
         errors: IgnoreRaise = ...,
     ) -> None: ...
     @overload
-    def groupby(
+    def groupby(  # type: ignore[misc]
         self,
-        by: Scalar,
+        by: Scalar | DatetimeIndex | TimedeltaIndex,
         axis: Axis = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
@@ -1012,6 +1017,19 @@ class DataFrame(NDFrame, OpsMixin):
         observed: _bool = ...,
         dropna: _bool = ...,
     ) -> _DataFrameGroupByScalar: ...
+    @overload
+    def groupby(  # type: ignore[misc]  # pyright: ignore[reportOverlappingOverload]
+        self,
+        by: PeriodIndex,
+        axis: Axis = ...,
+        level: Level | None = ...,
+        as_index: _bool = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        squeeze: _bool = ...,
+        observed: _bool = ...,
+        dropna: _bool = ...,
+    ) -> _DataFrameGroupByPeriod: ...
     @overload
     def groupby(
         self,

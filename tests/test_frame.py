@@ -1980,6 +1980,46 @@ def test_groupby_result() -> None:
         pass
 
 
+def test_groupby_result_for_scalar_indeces() -> None:
+    # GH 674
+    df = pd.DataFrame({"date": pd.date_range("2020-01-01", "2020-12-31"), "days": 1})
+    period_index = pd.PeriodIndex(df.date, freq="M")
+    iterator = df.groupby(period_index).__iter__()
+    assert_type(iterator, Iterator[Tuple[pd.Period, pd.DataFrame]])
+    index, value = next(iterator)
+    assert_type((index, value), Tuple[pd.Period, pd.DataFrame])
+
+    check(assert_type(index, pd.Period), pd.Period)
+    check(assert_type(value, pd.DataFrame), pd.DataFrame)
+
+    dt_index = pd.DatetimeIndex(df.date)
+    iterator2 = df.groupby(dt_index).__iter__()
+    assert_type(iterator2, Iterator[Tuple[Scalar, pd.DataFrame]])
+    index2, value2 = next(iterator2)
+    assert_type((index2, value2), Tuple[Scalar, pd.DataFrame])
+
+    check(assert_type(index2, Scalar), pd.Timestamp)
+    check(assert_type(value2, pd.DataFrame), pd.DataFrame)
+
+    tdelta_index = pd.TimedeltaIndex(df.date - pd.Timestamp("2020-01-01"))
+    iterator3 = df.groupby(tdelta_index).__iter__()
+    assert_type(iterator3, Iterator[Tuple[Scalar, pd.DataFrame]])
+    index3, value3 = next(iterator3)
+    assert_type((index3, value3), Tuple[Scalar, pd.DataFrame])
+
+    check(assert_type(index3, Scalar), pd.Timedelta)
+    check(assert_type(value3, pd.DataFrame), pd.DataFrame)
+
+    for p, g in df.groupby(period_index):
+        pass
+
+    for dt, g in df.groupby(dt_index):
+        pass
+
+    for tdelta, g in df.groupby(tdelta_index):
+        pass
+
+
 def test_setitem_list():
     # GH 153
     lst1: list[str] = ["a", "b", "c"]

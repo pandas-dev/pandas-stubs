@@ -25,6 +25,7 @@ from pandas.core.groupby.grouper import Grouper
 from pandas.core.series import Series
 from typing_extensions import TypeAlias
 
+from pandas._libs.tslibs.period import Period
 from pandas._typing import (
     S1,
     AggFuncTypeBase,
@@ -148,6 +149,9 @@ class SeriesGroupBy(GroupBy, Generic[S1]):
 
 class _DataFrameGroupByScalar(DataFrameGroupBy):
     def __iter__(self) -> Iterator[tuple[Scalar, DataFrame]]: ...
+
+class _DataFrameGroupByPeriod(DataFrameGroupBy):
+    def __iter__(self) -> Iterator[tuple[Period, DataFrame]]: ...
 
 class _DataFrameGroupByNonScalar(DataFrameGroupBy):
     def __iter__(self) -> Iterator[tuple[tuple, DataFrame]]: ...
