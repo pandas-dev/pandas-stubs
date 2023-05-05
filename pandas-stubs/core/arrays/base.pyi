@@ -1,4 +1,7 @@
-from typing import Any
+from typing import (
+    Any,
+    Literal,
+)
 
 import numpy as np
 from typing_extensions import Self

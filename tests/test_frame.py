@@ -2578,3 +2578,17 @@ def test_convert_dtypes_dtype_backend() -> None:
     df = pd.DataFrame({"A": [1, 2, 3, 4], "B": [3, 4, 5, 6]})
     dfn = df.convert_dtypes(dtype_backend="numpy_nullable")
     check(assert_type(dfn, pd.DataFrame), pd.DataFrame)
+
+
+def test_to_json_mode() -> None:
+    df = pd.DataFrame(
+        [["a", "b"], ["c", "d"]],
+        index=["row 1", "row 2"],
+        columns=["col 1", "col 2"],
+    )
+    result = df.to_json(orient="records", lines="True", mode="a")
+    result1 = df.to_json(orient="split", mode="w")
+    result2 = df.to_json(orient="columns", mode="w")
+    check(assert_type(result, str), str)
+    check(assert_type(result1, str), str)
+    check(assert_type(result2, str), str)
