@@ -1388,3 +1388,23 @@ def test_read_with_lxml_dtype_backend() -> None:
         check(
             assert_type(read_xml(path, dtype_backend="pyarrow"), DataFrame), DataFrame
         )
+
+
+def test_read_sql_dict_str_value_dtype() -> None:
+    # GH 676
+    with ensure_clean() as path:
+        con = sqlite3.connect(path)
+        check(assert_type(DF.to_sql("test", con), Union[int, None]), int)
+        check(
+            assert_type(
+                read_sql_query(
+                    "select * from test",
+                    con=con,
+                    index_col="index",
+                    dtype={"a": "int"},
+                ),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+        con.close()
