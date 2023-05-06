@@ -2076,6 +2076,11 @@ def test_resample() -> None:
     check(assert_type(df.resample("2T").ohlc(), pd.DataFrame), pd.DataFrame)
 
 
+def test_loc_set() -> None:
+    df = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
+    df.loc["a"] = [3, 4]
+
+
 def test_loclist() -> None:
     # GH 189
     df = pd.DataFrame({1: [1, 2], None: 5}, columns=pd.Index([1, None], dtype=object))
