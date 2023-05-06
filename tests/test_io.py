@@ -1391,6 +1391,7 @@ def test_read_with_lxml_dtype_backend() -> None:
 
 
 def test_read_sql_dict_str_value_dtype() -> None:
+    # GH 676
     with ensure_clean() as path:
         con = sqlite3.connect(path)
         check(assert_type(DF.to_sql("test", con), Union[int, None]), int)
@@ -1400,7 +1401,7 @@ def test_read_sql_dict_str_value_dtype() -> None:
                     "select * from test",
                     con=con,
                     index_col="index",
-                    dtype="int",
+                    dtype={"a": "int"},
                 ),
                 DataFrame,
             ),
