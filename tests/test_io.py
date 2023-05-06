@@ -1390,7 +1390,7 @@ def test_read_with_lxml_dtype_backend() -> None:
         )
 
 
-def test_read_sql_str_dtype() -> None:
+def test_read_sql_dict_str_value_dtype() -> None:
     with ensure_clean() as path:
         con = sqlite3.connect(path)
         check(assert_type(DF.to_sql("test", con), Union[int, None]), int)
