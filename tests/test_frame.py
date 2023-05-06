@@ -1972,12 +1972,106 @@ def test_groupby_result() -> None:
     check(assert_type(index2, Scalar), int)
     check(assert_type(value2, pd.DataFrame), pd.DataFrame)
 
+    # GH 674
+    # grouping by pd.MultiIndex should always resolve to a tuple as well
+    multi_index = pd.MultiIndex.from_frame(df[["a", "b"]])
+    iterator3 = df.groupby(multi_index).__iter__()
+    assert_type(iterator3, Iterator[Tuple[Tuple, pd.DataFrame]])
+    index3, value3 = next(iterator3)
+    assert_type((index3, value3), Tuple[Tuple, pd.DataFrame])
+
+    check(assert_type(index3, Tuple), tuple, int)
+    check(assert_type(value3, pd.DataFrame), pd.DataFrame)
+
     # Want to make sure these cases are differentiated
     for (k1, k2), g in df.groupby(["a", "b"]):
         pass
 
     for kk, g in df.groupby("a"):
         pass
+
+    for (k1, k2), g in df.groupby(multi_index):
+        pass
+
+
+def test_groupby_result_for_scalar_indexes() -> None:
+    # GH 674
+    dates = pd.date_range("2020-01-01", "2020-12-31")
+    df = pd.DataFrame({"date": dates, "days": 1})
+    period_index = pd.PeriodIndex(df.date, freq="M")
+    iterator = df.groupby(period_index).__iter__()
+    assert_type(iterator, Iterator[Tuple[pd.Period, pd.DataFrame]])
+    index, value = next(iterator)
+    assert_type((index, value), Tuple[pd.Period, pd.DataFrame])
+
+    check(assert_type(index, pd.Period), pd.Period)
+    check(assert_type(value, pd.DataFrame), pd.DataFrame)
+
+    dt_index = pd.DatetimeIndex(dates)
+    iterator2 = df.groupby(dt_index).__iter__()
+    assert_type(iterator2, Iterator[Tuple[pd.Timestamp, pd.DataFrame]])
+    index2, value2 = next(iterator2)
+    assert_type((index2, value2), Tuple[pd.Timestamp, pd.DataFrame])
+
+    check(assert_type(index2, pd.Timestamp), pd.Timestamp)
+    check(assert_type(value2, pd.DataFrame), pd.DataFrame)
+
+    tdelta_index = pd.TimedeltaIndex(dates - pd.Timestamp("2020-01-01"))
+    iterator3 = df.groupby(tdelta_index).__iter__()
+    assert_type(iterator3, Iterator[Tuple[pd.Timedelta, pd.DataFrame]])
+    index3, value3 = next(iterator3)
+    assert_type((index3, value3), Tuple[pd.Timedelta, pd.DataFrame])
+
+    check(assert_type(index3, pd.Timedelta), pd.Timedelta)
+    check(assert_type(value3, pd.DataFrame), pd.DataFrame)
+
+    intervals: list[pd.Interval[pd.Timestamp]] = [
+        pd.Interval(date, date + pd.DateOffset(days=1), closed="left") for date in dates
+    ]
+    interval_index = pd.IntervalIndex(intervals)
+    assert_type(interval_index, "pd.IntervalIndex[pd.Interval[pd.Timestamp]]")
+    iterator4 = df.groupby(interval_index).__iter__()
+    assert_type(iterator4, Iterator[Tuple["pd.Interval[pd.Timestamp]", pd.DataFrame]])
+    index4, value4 = next(iterator4)
+    assert_type((index4, value4), Tuple["pd.Interval[pd.Timestamp]", pd.DataFrame])
+
+    check(assert_type(index4, "pd.Interval[pd.Timestamp]"), pd.Interval)
+    check(assert_type(value4, pd.DataFrame), pd.DataFrame)
+
+    for p, g in df.groupby(period_index):
+        pass
+
+    for dt, g in df.groupby(dt_index):
+        pass
+
+    for tdelta, g in df.groupby(tdelta_index):
+        pass
+
+    for interval, g in df.groupby(interval_index):
+        pass
+
+
+def test_groupby_result_for_ambiguous_indexes() -> None:
+    # GH 674
+    df = pd.DataFrame({"a": [0, 1, 2], "b": [4, 5, 6], "c": [7, 8, 9]})
+    # this will use pd.Index which is ambiguous
+    iterator = df.groupby(df.index).__iter__()
+    assert_type(iterator, Iterator[Tuple[Any, pd.DataFrame]])
+    index, value = next(iterator)
+    assert_type((index, value), Tuple[Any, pd.DataFrame])
+
+    check(assert_type(index, Any), int)
+    check(assert_type(value, pd.DataFrame), pd.DataFrame)
+
+    # categorical indexes are also ambiguous
+    categorical_index = pd.CategoricalIndex(df.a)
+    iterator2 = df.groupby(categorical_index).__iter__()
+    assert_type(iterator2, Iterator[Tuple[Any, pd.DataFrame]])
+    index2, value2 = next(iterator2)
+    assert_type((index2, value2), Tuple[Any, pd.DataFrame])
+
+    check(assert_type(index2, Any), int)
+    check(assert_type(value2, pd.DataFrame), pd.DataFrame)
 
 
 def test_setitem_list():
