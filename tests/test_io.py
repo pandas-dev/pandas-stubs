@@ -1095,6 +1095,7 @@ def test_read_sql_via_sqlalchemy_connection():
                 assert_type(read_sql("select * from test", con=conn), DataFrame),
                 DataFrame,
             )
+        engine.dispose()
 
 
 def test_read_sql_via_sqlalchemy_engine():
@@ -1107,6 +1108,7 @@ def test_read_sql_via_sqlalchemy_engine():
             assert_type(read_sql("select * from test", con=engine), DataFrame),
             DataFrame,
         )
+        engine.dispose()
 
 
 def test_read_sql_generator():
@@ -1218,6 +1220,7 @@ def test_sqlalchemy_text() -> None:
                 assert_type(read_sql(sql_select, con=conn), DataFrame),
                 DataFrame,
             )
+        engine.dispose()
 
 
 def test_read_sql_dtype() -> None:
