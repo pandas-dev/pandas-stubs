@@ -438,12 +438,11 @@ GroupByObjectNonScalar: TypeAlias = (
     | list[np.ndarray]
     | Mapping[Label, Any]
     | list[Mapping[Label, Any]]
-    | Index
     | list[Index]
     | Grouper
     | list[Grouper]
 )
-GroupByObject: TypeAlias = Scalar | GroupByObjectNonScalar
+GroupByObject: TypeAlias = Scalar | Index | GroupByObjectNonScalar
 
 StataDateFormat: TypeAlias = Literal[
     "tc",

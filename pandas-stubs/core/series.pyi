@@ -39,10 +39,7 @@ from pandas import (
 from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.categorical import CategoricalAccessor
 from pandas.core.arrays.interval import IntervalArray
-from pandas.core.groupby.generic import (
-    _SeriesGroupByNonScalar,
-    _SeriesGroupByScalar,
-)
+from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.indexers import BaseIndexer
 from pandas.core.indexes.accessors import (
     CombinedDatetimelikeProperties,
@@ -51,8 +48,10 @@ from pandas.core.indexes.accessors import (
     TimestampProperties,
 )
 from pandas.core.indexes.base import Index
+from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.interval import IntervalIndex
+from pandas.core.indexes.multi import MultiIndex
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.indexing import (
@@ -65,7 +64,6 @@ from pandas.core.strings import StringMethods
 from pandas.core.window import (
     Expanding,
     ExponentialMovingWindow,
-    Rolling,
 )
 from pandas.core.window.rolling import (
     Rolling,
@@ -113,6 +111,7 @@ from pandas._typing import (
     IndexingInt,
     IntDtypeArg,
     IntervalClosedType,
+    IntervalT,
     JoinHow,
     JsonSeriesOrient,
     Level,
@@ -144,7 +143,6 @@ from pandas.plotting import PlotAccessor
 from .base import IndexOpsMixin
 from .frame import DataFrame
 from .generic import NDFrame
-from .indexes.multi import MultiIndex
 from .indexing import (
     _iLocIndexer,
     _LocIndexer,
@@ -537,11 +535,11 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         squeeze: _bool = ...,
         observed: _bool = ...,
         dropna: _bool = ...,
-    ) -> _SeriesGroupByScalar[S1]: ...
+    ) -> SeriesGroupBy[S1, Scalar]: ...
     @overload
     def groupby(
         self,
-        by: GroupByObjectNonScalar = ...,
+        by: DatetimeIndex,
         axis: AxisIndex = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
@@ -550,7 +548,72 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         squeeze: _bool = ...,
         observed: _bool = ...,
         dropna: _bool = ...,
-    ) -> _SeriesGroupByNonScalar[S1]: ...
+    ) -> SeriesGroupBy[S1, Timestamp]: ...
+    @overload
+    def groupby(
+        self,
+        by: TimedeltaIndex,
+        axis: AxisIndex = ...,
+        level: Level | None = ...,
+        as_index: _bool = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        squeeze: _bool = ...,
+        observed: _bool = ...,
+        dropna: _bool = ...,
+    ) -> SeriesGroupBy[S1, Timedelta]: ...
+    @overload
+    def groupby(
+        self,
+        by: PeriodIndex,
+        axis: AxisIndex = ...,
+        level: Level | None = ...,
+        as_index: _bool = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        squeeze: _bool = ...,
+        observed: _bool = ...,
+        dropna: _bool = ...,
+    ) -> SeriesGroupBy[S1, Period]: ...
+    @overload
+    def groupby(
+        self,
+        by: IntervalIndex[IntervalT],
+        axis: AxisIndex = ...,
+        level: Level | None = ...,
+        as_index: _bool = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        squeeze: _bool = ...,
+        observed: _bool = ...,
+        dropna: _bool = ...,
+    ) -> SeriesGroupBy[S1, IntervalT]: ...
+    @overload
+    def groupby(
+        self,
+        by: MultiIndex | GroupByObjectNonScalar = ...,
+        axis: AxisIndex = ...,
+        level: Level | None = ...,
+        as_index: _bool = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        squeeze: _bool = ...,
+        observed: _bool = ...,
+        dropna: _bool = ...,
+    ) -> SeriesGroupBy[S1, tuple]: ...
+    @overload
+    def groupby(
+        self,
+        by: CategoricalIndex | Index,
+        axis: AxisIndex = ...,
+        level: Level | None = ...,
+        as_index: _bool = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        squeeze: _bool = ...,
+        observed: _bool = ...,
+        dropna: _bool = ...,
+    ) -> SeriesGroupBy[S1, Any]: ...
     # need the ignore because None is Hashable
     @overload
     def count(self, level: None = ...) -> int: ...  # type: ignore[misc]
