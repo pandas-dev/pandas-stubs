@@ -570,7 +570,13 @@ def test_groupby_result() -> None:
     # since there are no columns in a Series, groupby name only works
     # with a named index, we use a MultiIndex, so we can group by more
     # than one level and test the non-scalar case
-    multi_index = pd.MultiIndex.from_tuples([(0, 0), (0, 1), (1, 0)], names=["a", "b"])
+    multi_index = pd.MultiIndex.from_frame(
+        pd.DataFrame(
+            {"a": [0, 1, 1], "b": [0, 1, 0]},
+            # avoid ambiguous integer size on Windows
+            dtype=np.int64,
+        )
+    )
     s = pd.Series([0, 1, 2], index=multi_index, dtype=int)
     # workaround different default integer size on Windows, the series
     # constructor does not work yet with IntDtypeArg, but astype does
@@ -580,7 +586,7 @@ def test_groupby_result() -> None:
     index, value = next(iterator)
     assert_type((index, value), Tuple[Tuple, "pd.Series[int]"])
 
-    check(assert_type(index, Tuple), tuple, np.int_)
+    check(assert_type(index, Tuple), tuple, np.int64)
     check(assert_type(value, "pd.Series[int]"), pd.Series, np.int64)
 
     iterator2 = s.groupby("a").__iter__()
