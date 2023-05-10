@@ -578,7 +578,7 @@ def test_groupby_result() -> None:
     assert_type((index, value), Tuple[Tuple, "pd.Series[int]"])
 
     check(assert_type(index, Tuple), tuple, np.int_)
-    check(assert_type(value, "pd.Series[int]"), pd.Series, np.int_)
+    check(assert_type(value, "pd.Series[int]"), pd.Series, np.int64)
 
     iterator2 = s.groupby("a").__iter__()
     assert_type(iterator2, Iterator[Tuple[Scalar, "pd.Series[int]"]])
@@ -586,7 +586,7 @@ def test_groupby_result() -> None:
     assert_type((index2, value2), Tuple[Scalar, "pd.Series[int]"])
 
     check(assert_type(index2, Scalar), int)
-    check(assert_type(value2, "pd.Series[int]"), pd.Series, np.int_)
+    check(assert_type(value2, "pd.Series[int]"), pd.Series, np.int64)
 
     # GH 674
     # grouping by pd.MultiIndex should always resolve to a tuple as well
@@ -596,7 +596,7 @@ def test_groupby_result() -> None:
     assert_type((index3, value3), Tuple[Tuple, "pd.Series[int]"])
 
     check(assert_type(index3, Tuple), tuple, int)
-    check(assert_type(value3, "pd.Series[int]"), pd.Series, np.int_)
+    check(assert_type(value3, "pd.Series[int]"), pd.Series, np.int64)
 
     # Want to make sure these cases are differentiated
     for (k1, k2), g in s.groupby(["a", "b"]):
@@ -628,7 +628,7 @@ def test_groupby_result_for_scalar_indexes() -> None:
     assert_type((index, value), Tuple[pd.Period, "pd.Series[int]"])
 
     check(assert_type(index, pd.Period), pd.Period)
-    check(assert_type(value, "pd.Series[int]"), pd.Series, np.int_)
+    check(assert_type(value, "pd.Series[int]"), pd.Series, np.int64)
 
     dt_index = pd.DatetimeIndex(dates)
     iterator2 = s.groupby(dt_index).__iter__()
@@ -637,7 +637,7 @@ def test_groupby_result_for_scalar_indexes() -> None:
     assert_type((index2, value2), Tuple[pd.Timestamp, "pd.Series[int]"])
 
     check(assert_type(index2, pd.Timestamp), pd.Timestamp)
-    check(assert_type(value2, "pd.Series[int]"), pd.Series, np.int_)
+    check(assert_type(value2, "pd.Series[int]"), pd.Series, np.int64)
 
     tdelta_index = pd.TimedeltaIndex(dates - pd.Timestamp("2020-01-01"))
     iterator3 = s.groupby(tdelta_index).__iter__()
@@ -646,7 +646,7 @@ def test_groupby_result_for_scalar_indexes() -> None:
     assert_type((index3, value3), Tuple[pd.Timedelta, "pd.Series[int]"])
 
     check(assert_type(index3, pd.Timedelta), pd.Timedelta)
-    check(assert_type(value3, "pd.Series[int]"), pd.Series, np.int_)
+    check(assert_type(value3, "pd.Series[int]"), pd.Series, np.int64)
 
     intervals: list[pd.Interval[pd.Timestamp]] = [
         pd.Interval(date, date + pd.DateOffset(days=1), closed="left") for date in dates
@@ -661,7 +661,7 @@ def test_groupby_result_for_scalar_indexes() -> None:
     assert_type((index4, value4), Tuple["pd.Interval[pd.Timestamp]", "pd.Series[int]"])
 
     check(assert_type(index4, "pd.Interval[pd.Timestamp]"), pd.Interval)
-    check(assert_type(value4, "pd.Series[int]"), pd.Series, np.int_)
+    check(assert_type(value4, "pd.Series[int]"), pd.Series, np.int64)
 
     for p, g in s.groupby(period_index):
         pass
@@ -686,7 +686,7 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     assert_type((index, value), Tuple[Any, "pd.Series[int]"])
 
     check(assert_type(index, Any), str)
-    check(assert_type(value, "pd.Series[int]"), pd.Series, np.int_)
+    check(assert_type(value, "pd.Series[int]"), pd.Series, np.int64)
 
     # categorical indexes are also ambiguous
     categorical_index = pd.CategoricalIndex(s.index)
@@ -696,7 +696,7 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     assert_type((index2, value2), Tuple[Any, "pd.Series[int]"])
 
     check(assert_type(index2, Any), str)
-    check(assert_type(value2, "pd.Series[int]"), pd.Series, np.int_)
+    check(assert_type(value2, "pd.Series[int]"), pd.Series, np.int64)
 
 
 def test_types_groupby_agg() -> None:
