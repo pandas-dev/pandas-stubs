@@ -488,72 +488,72 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def to_json(
         self,
+        *,
         path_or_buf: FilePath | WriteBuffer[str],
-        orient: JsonSeriesOrient | None = ...,
+        orient: Literal["records"],
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: Literal["s", "ms", "us", "ns"] = ...,
         default_handler: Callable[[Any], _str | float | _bool | list | dict]
         | None = ...,
-        lines: _bool = ...,
+        lines: Literal[True],
         compression: CompressionOptions = ...,
         index: _bool = ...,
         indent: int | None = ...,
-        mode: Literal["w"] = ...,
+        mode: Literal["a"],
     ) -> None: ...
     @overload
     def to_json(
         self,
+        *,
         path_or_buf: None = ...,
-        orient: JsonSeriesOrient | None = ...,
+        orient: Literal["records"],
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: Literal["s", "ms", "us", "ns"] = ...,
         default_handler: Callable[[Any], _str | float | _bool | list | dict]
         | None = ...,
-        lines: _bool = ...,
+        lines: Literal[True],
         compression: CompressionOptions = ...,
         index: _bool = ...,
         indent: int | None = ...,
-        mode: Literal["w"] = ...,
+        mode: Literal["a"],
     ) -> _str: ...
     @overload
     def to_json(
         self,
-        *,
         path_or_buf: FilePath | WriteBuffer[str],
-        orient: Literal["records"],
+        orient: JsonSeriesOrient | None = ...,
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: Literal["s", "ms", "us", "ns"] = ...,
         default_handler: Callable[[Any], _str | float | _bool | list | dict]
         | None = ...,
-        lines: Literal[True],
+        lines: _bool = ...,
         compression: CompressionOptions = ...,
         index: _bool = ...,
         indent: int | None = ...,
-        mode: Literal["a"],
+        mode: Literal["w"] = ...,
     ) -> None: ...
     @overload
     def to_json(
         self,
-        *,
         path_or_buf: None = ...,
-        orient: Literal["records"],
+        orient: JsonSeriesOrient | None = ...,
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: Literal["s", "ms", "us", "ns"] = ...,
         default_handler: Callable[[Any], _str | float | _bool | list | dict]
         | None = ...,
-        lines: Literal[True],
+        lines: _bool = ...,
         compression: CompressionOptions = ...,
         index: _bool = ...,
         indent: int | None = ...,
-        mode: Literal["a"],
+        mode: Literal["w"] = ...,
     ) -> _str: ...
     def to_xarray(self) -> xr.DataArray: ...
     def items(self) -> Iterable[tuple[Hashable, S1]]: ...
