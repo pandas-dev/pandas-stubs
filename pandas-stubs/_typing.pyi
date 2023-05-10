@@ -445,7 +445,9 @@ SortKind: TypeAlias = Literal["quicksort", "mergesort", "heapsort", "stable"]
 NaPosition: TypeAlias = Literal["first", "last"]
 JoinHow: TypeAlias = Literal["left", "right", "outer", "inner"]
 MergeHow: TypeAlias = JoinHow | Literal["cross"]
-JsonFrameOrient: TypeAlias = Literal["split", "index", "columns", "values", "table"]
+JsonFrameOrient: TypeAlias = Literal[
+    "split", "records", "index", "columns", "values", "table"
+]
 JsonSeriesOrient: TypeAlias = Literal["split", "records", "index", "table"]
 
 TimestampConvention: TypeAlias = Literal["start", "end", "s", "e"]

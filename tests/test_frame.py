@@ -2586,9 +2586,14 @@ def test_to_json_mode() -> None:
         index=["row 1", "row 2"],
         columns=["col 1", "col 2"],
     )
-    result = df.to_json(orient="records", lines="True", mode="a")
+    result = df.to_json(orient="records", lines=True, mode="a")
     result1 = df.to_json(orient="split", mode="w")
     result2 = df.to_json(orient="columns", mode="w")
     check(assert_type(result, str), str)
     check(assert_type(result1, str), str)
     check(assert_type(result2, str), str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        result3 = df.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload]
+        result4 = df.to_json(orient="records", mode="w")
+        check(assert_type(result3, Any), str)
+        check(assert_type(result4, str), str)
