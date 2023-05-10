@@ -1018,7 +1018,7 @@ class DataFrame(NDFrame, OpsMixin):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Scalar]: ...
     @overload
-    def groupby(  # type: ignore[misc]  # pyright: ignore[reportOverlappingOverload]
+    def groupby(
         self,
         by: DatetimeIndex,
         axis: Axis = ...,
@@ -1031,7 +1031,7 @@ class DataFrame(NDFrame, OpsMixin):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timestamp]: ...
     @overload
-    def groupby(  # type: ignore[misc]
+    def groupby(
         self,
         by: TimedeltaIndex,
         axis: Axis = ...,
@@ -1044,7 +1044,7 @@ class DataFrame(NDFrame, OpsMixin):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timedelta]: ...
     @overload
-    def groupby(  # type: ignore[misc]
+    def groupby(
         self,
         by: PeriodIndex,
         axis: Axis = ...,
@@ -1057,7 +1057,7 @@ class DataFrame(NDFrame, OpsMixin):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Period]: ...
     @overload
-    def groupby(  # type: ignore[misc]
+    def groupby(
         self,
         by: IntervalIndex[IntervalT],
         axis: Axis = ...,
@@ -1072,7 +1072,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def groupby(
         self,
-        by: MultiIndex,
+        by: MultiIndex | GroupByObjectNonScalar | None = ...,
         axis: Axis = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
@@ -1095,19 +1095,6 @@ class DataFrame(NDFrame, OpsMixin):
         observed: _bool = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Any]: ...
-    @overload
-    def groupby(
-        self,
-        by: GroupByObjectNonScalar | None = ...,
-        axis: Axis = ...,
-        level: Level | None = ...,
-        as_index: _bool = ...,
-        sort: _bool = ...,
-        group_keys: _bool = ...,
-        squeeze: _bool = ...,
-        observed: _bool = ...,
-        dropna: _bool = ...,
-    ) -> DataFrameGroupBy[tuple]: ...
     def pivot(
         self,
         *,
