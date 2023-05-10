@@ -572,6 +572,9 @@ def test_groupby_result() -> None:
     # than one level and test the non-scalar case
     multi_index = pd.MultiIndex.from_tuples([(0, 0), (0, 1), (1, 0)], names=["a", "b"])
     s = pd.Series([0, 1, 2], index=multi_index, dtype=int)
+    # workaround different default integer size on Windows, the series
+    # constructor does not work yet with IntDtypeArg, but astype does
+    s = s.astype(np.int64)
     iterator = s.groupby(["a", "b"]).__iter__()
     assert_type(iterator, Iterator[Tuple[Tuple, "pd.Series[int]"]])
     index, value = next(iterator)
@@ -612,6 +615,8 @@ def test_groupby_result() -> None:
 def test_groupby_result_for_scalar_indexes() -> None:
     # GH 674
     s = pd.Series([0, 1, 2], dtype=int)
+    # workaround different default integer size on Windows
+    s = s.astype(np.int64)
     dates = pd.Series(
         [
             pd.Timestamp("2020-01-01"),
@@ -679,6 +684,8 @@ def test_groupby_result_for_scalar_indexes() -> None:
 def test_groupby_result_for_ambiguous_indexes() -> None:
     # GH 674
     s = pd.Series([0, 1, 2], index=["a", "b", "a"], dtype=int)
+    # workaround different default integer size on Windows
+    s = s.astype(np.int64)
     # this will use pd.Index which is ambiguous
     iterator = s.groupby(s.index).__iter__()
     assert_type(iterator, Iterator[Tuple[Any, "pd.Series[int]"]])
