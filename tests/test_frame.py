@@ -2593,7 +2593,9 @@ def test_to_json_mode() -> None:
     check(assert_type(result1, str), str)
     check(assert_type(result2, str), str)
     if TYPE_CHECKING_INVALID_USAGE:
-        result3 = df.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload]
+        result3 = df.to_json(
+            orient="records", lines=False, mode="a"
+        )  # pyright: ignore[reportGeneralTypeIssues] # type: ignore[call-overload]
         result4 = df.to_json(orient="records", mode="w")
         check(assert_type(result3, Any), str)
         check(assert_type(result4, str), str)
