@@ -488,8 +488,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def to_json(
         self,
-        *,
         path_or_buf: FilePath | WriteBuffer[str],
+        *,
         orient: Literal["records"],
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
@@ -506,8 +506,8 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def to_json(
         self,
-        *,
         path_or_buf: None = ...,
+        *,
         orient: Literal["records"],
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
