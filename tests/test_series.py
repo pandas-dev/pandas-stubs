@@ -1966,3 +1966,17 @@ def test_loc_callable() -> None:
     # GH 586
     s = pd.Series([1, 2])
     check(assert_type(s.loc[lambda x: x > 1], pd.Series), pd.Series)
+
+
+def test_to_json_mode() -> None:
+    s = pd.Series([1, 2, 3, 4])
+    result = s.to_json(orient="records", lines=True, mode="a")
+    result1 = s.to_json(orient="split", mode="w")
+    result2 = s.to_json(orient="table", mode="w")
+    result4 = s.to_json(orient="records", mode="w")
+    check(assert_type(result, str), str)
+    check(assert_type(result1, str), str)
+    check(assert_type(result2, str), str)
+    check(assert_type(result4, str), str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        result3 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
