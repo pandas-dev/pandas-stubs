@@ -215,9 +215,9 @@ class DataFrameGroupBy(GroupBy, Generic[ByT]):
         value,
         method: str | None = ...,
         axis: Axis = ...,
+        inplace: Literal[False] = ...,
         limit: int | None = ...,
         downcast: dict | None = ...,
-        inplace: Literal[False] = ...,
     ) -> DataFrame: ...
     def first(self, **kwargs) -> DataFrame: ...
     def head(self, n: int = ...) -> DataFrame: ...
