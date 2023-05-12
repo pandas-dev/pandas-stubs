@@ -69,8 +69,6 @@ from pandas.io.sas.sas7bdat import SAS7BDATReader
 from pandas.io.sas.sas_xport import XportReader
 from pandas.io.stata import StataReader
 
-from . import lxml_skip
-
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 CWD = os.path.split(os.path.abspath(__file__))[0]
 
@@ -112,7 +110,6 @@ def test_orc_bytes():
     check(assert_type(DF.to_orc(index=False), bytes), bytes)
 
 
-@lxml_skip
 def test_xml():
     with ensure_clean() as path:
         check(assert_type(DF.to_xml(path), None), type(None))
@@ -121,7 +118,6 @@ def test_xml():
             check(assert_type(read_xml(f), DataFrame), DataFrame)
 
 
-@lxml_skip
 def test_xml_str():
     with ensure_clean() as path:
         check(assert_type(DF.to_xml(), str), str)
@@ -1170,7 +1166,6 @@ def test_read_sql_query_generator():
         con.close()
 
 
-@lxml_skip
 def test_read_html():
     check(assert_type(DF.to_html(), str), str)
     with ensure_clean() as path:
@@ -1376,7 +1371,6 @@ def test_all_read_without_lxml_dtype_backend() -> None:
             co1.close()
 
 
-@lxml_skip
 def test_read_with_lxml_dtype_backend() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_html(path), None), type(None))
