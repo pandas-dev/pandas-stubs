@@ -1708,7 +1708,7 @@ class DataFrame(NDFrame, OpsMixin):
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
         downcast: Literal["infer"] | None = ...,
-        inplace: Literal[False],
+        inplace: Literal[False] = ...,
         **kwargs,
     ) -> DataFrame: ...
     @overload

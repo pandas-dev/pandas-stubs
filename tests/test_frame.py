@@ -2695,3 +2695,23 @@ def test_to_json_mode() -> None:
     check(assert_type(result4, str), str)
     if TYPE_CHECKING_INVALID_USAGE:
         result3 = df.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
+
+
+def test_interpolate_inplace() -> None:
+    # GH 691
+    df = pd.DataFrame({"a": range(3)})
+    check(assert_type(df.interpolate(method="linear"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.interpolate(method="linear", inplace=False), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.interpolate(method="linear", inplace=True), None), type(None))
+
+
+def test_groupby_fillna_inplace() -> None:
+    # GH 691
+    groupby = pd.DataFrame({"a": range(3), "b": range(3)}).groupby("a")
+    check(assert_type(groupby.fillna(0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(groupby.fillna(0, inplace=False), pd.DataFrame), pd.DataFrame)
+    if TYPE_CHECKING_INVALID_USAGE:
+        groupby.fillna(0, inplace=True)  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
