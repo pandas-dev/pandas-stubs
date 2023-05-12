@@ -7,7 +7,6 @@ from contextlib import (
 )
 import os
 import platform
-import sys
 from typing import (
     TYPE_CHECKING,
     Final,
@@ -22,11 +21,6 @@ from pandas._typing import T
 TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 WINDOWS = os.name == "nt" or "cygwin" in platform.system().lower()
 PD_LTE_20 = Version(pd.__version__) < Version("2.0.999")
-
-lxml_skip = pytest.mark.skipif(
-    sys.version_info >= (3, 11), reason="lxml is not available for 3.11 yet"
-)
-# This is only needed temporarily due to no wheels being available for lxml on 3.11
 
 
 def check(actual: T, klass: type, dtype: type | None = None, attr: str = "left") -> T:
