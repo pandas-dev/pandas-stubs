@@ -210,7 +210,6 @@ class DataFrameGroupBy(GroupBy, Generic[ByT]):
     def cumsum(self, axis: Axis = ..., **kwargs) -> DataFrame: ...
     def describe(self, **kwargs) -> DataFrame: ...
     def ffill(self, limit: int | None = ...) -> DataFrame: ...
-    @overload
     def fillna(
         self,
         value,
@@ -218,30 +217,8 @@ class DataFrameGroupBy(GroupBy, Generic[ByT]):
         axis: Axis = ...,
         limit: int | None = ...,
         downcast: dict | None = ...,
-        *,
-        inplace: Literal[True],
-    ) -> None: ...
-    @overload
-    def fillna(
-        self,
-        value,
-        method: str | None = ...,
-        axis: Axis = ...,
-        limit: int | None = ...,
-        downcast: dict | None = ...,
-        *,
-        inplace: Literal[False],
+        inplace: Literal[False] = ...,
     ) -> DataFrame: ...
-    @overload
-    def fillna(
-        self,
-        value,
-        method: str | None = ...,
-        axis: Axis = ...,
-        inplace: bool = ...,
-        limit: int | None = ...,
-        downcast: dict | None = ...,
-    ) -> DataFrame | None: ...
     def first(self, **kwargs) -> DataFrame: ...
     def head(self, n: int = ...) -> DataFrame: ...
     def hist(
