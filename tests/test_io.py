@@ -1405,3 +1405,18 @@ def test_read_sql_dict_str_value_dtype() -> None:
             DataFrame,
         )
         con.close()
+
+
+def test_added_date_format() -> None:
+    with ensure_clean() as path:
+        DF.to_string(path, index=False)
+        check(assert_type(read_fwf(path, date_format="m"), DataFrame), DataFrame)
+        check(assert_type(read_table(path, date_format="m"), DataFrame), DataFrame)
+    with ensure_clean(".xlsx") as path:
+        check(
+            assert_type(pd.DataFrame({"A": [1, 2, 3]}).to_excel(path), None), type(None)
+        )
+        check(
+            assert_type(pd.read_excel(path, date_format={9: "row"}), pd.DataFrame),
+            pd.DataFrame,
+        )
