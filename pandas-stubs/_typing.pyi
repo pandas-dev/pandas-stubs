@@ -404,6 +404,29 @@ Function: TypeAlias = np.ufunc | Callable[..., Any]
 # shared HashableT and HashableT#. This one can be used if the identical
 # type is need in a function that uses GroupByObjectNonScalar
 _HashableTa = TypeVar("_HashableTa", bound=Hashable)
+ByT = TypeVar(
+    "ByT",
+    str,
+    bytes,
+    datetime.date,
+    datetime.datetime,
+    datetime.timedelta,
+    np.datetime64,
+    np.timedelta64,
+    bool,
+    int,
+    float,
+    complex,
+    Timestamp,
+    Timedelta,
+    Scalar,
+    Period,
+    Interval[int],
+    Interval[float],
+    Interval[Timestamp],
+    Interval[Timedelta],
+    tuple,
+)
 GroupByObjectNonScalar: TypeAlias = (
     tuple
     | list[_HashableTa]
@@ -415,12 +438,11 @@ GroupByObjectNonScalar: TypeAlias = (
     | list[np.ndarray]
     | Mapping[Label, Any]
     | list[Mapping[Label, Any]]
-    | Index
     | list[Index]
     | Grouper
     | list[Grouper]
 )
-GroupByObject: TypeAlias = Scalar | GroupByObjectNonScalar
+GroupByObject: TypeAlias = Scalar | Index | GroupByObjectNonScalar
 
 StataDateFormat: TypeAlias = Literal[
     "tc",

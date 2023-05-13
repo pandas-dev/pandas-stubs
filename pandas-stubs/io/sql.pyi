@@ -13,6 +13,7 @@ from typing import (
 from pandas.core.base import PandasObject
 from pandas.core.frame import DataFrame
 import sqlalchemy.engine
+from sqlalchemy.orm import FromStatement
 import sqlalchemy.sql.expression
 from typing_extensions import TypeAlias
 
@@ -26,7 +27,11 @@ from pandas._typing import (
 _SQLConnection: TypeAlias = str | sqlalchemy.engine.Connectable | sqlite3.Connection
 
 _SQLStatement: TypeAlias = (
-    str | sqlalchemy.sql.expression.Selectable | sqlalchemy.sql.expression.TextClause
+    str
+    | sqlalchemy.sql.expression.Selectable
+    | sqlalchemy.sql.expression.TextClause
+    | sqlalchemy.sql.Select
+    | FromStatement
 )
 
 @overload

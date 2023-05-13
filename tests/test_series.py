@@ -565,6 +565,140 @@ def test_types_groupby_methods() -> None:
     check(assert_type(s.groupby(level=0).idxmin(), pd.Series), pd.Series)
 
 
+def test_groupby_result() -> None:
+    # GH 142
+    # since there are no columns in a Series, groupby name only works
+    # with a named index, we use a MultiIndex, so we can group by more
+    # than one level and test the non-scalar case
+    multi_index = pd.MultiIndex.from_tuples([(0, 0), (0, 1), (1, 0)], names=["a", "b"])
+    s = pd.Series([0, 1, 2], index=multi_index, dtype=int)
+    iterator = s.groupby(["a", "b"]).__iter__()
+    assert_type(iterator, Iterator[Tuple[Tuple, "pd.Series[int]"]])
+    index, value = next(iterator)
+    assert_type((index, value), Tuple[Tuple, "pd.Series[int]"])
+
+    check(assert_type(index, Tuple), tuple, np.integer)
+    check(assert_type(value, "pd.Series[int]"), pd.Series, np.integer)
+
+    iterator2 = s.groupby("a").__iter__()
+    assert_type(iterator2, Iterator[Tuple[Scalar, "pd.Series[int]"]])
+    index2, value2 = next(iterator2)
+    assert_type((index2, value2), Tuple[Scalar, "pd.Series[int]"])
+
+    check(assert_type(index2, Scalar), int)
+    check(assert_type(value2, "pd.Series[int]"), pd.Series, np.integer)
+
+    # GH 674
+    # grouping by pd.MultiIndex should always resolve to a tuple as well
+    iterator3 = s.groupby(multi_index).__iter__()
+    assert_type(iterator3, Iterator[Tuple[Tuple, "pd.Series[int]"]])
+    index3, value3 = next(iterator3)
+    assert_type((index3, value3), Tuple[Tuple, "pd.Series[int]"])
+
+    check(assert_type(index3, Tuple), tuple, int)
+    check(assert_type(value3, "pd.Series[int]"), pd.Series, np.integer)
+
+    # Want to make sure these cases are differentiated
+    for (k1, k2), g in s.groupby(["a", "b"]):
+        pass
+
+    for kk, g in s.groupby("a"):
+        pass
+
+    for (k1, k2), g in s.groupby(multi_index):
+        pass
+
+
+def test_groupby_result_for_scalar_indexes() -> None:
+    # GH 674
+    s = pd.Series([0, 1, 2], dtype=int)
+    dates = pd.Series(
+        [
+            pd.Timestamp("2020-01-01"),
+            pd.Timestamp("2020-01-15"),
+            pd.Timestamp("2020-02-01"),
+        ],
+        dtype="datetime64[ns]",
+    )
+
+    period_index = pd.PeriodIndex(dates, freq="M")
+    iterator = s.groupby(period_index).__iter__()
+    assert_type(iterator, Iterator[Tuple[pd.Period, "pd.Series[int]"]])
+    index, value = next(iterator)
+    assert_type((index, value), Tuple[pd.Period, "pd.Series[int]"])
+
+    check(assert_type(index, pd.Period), pd.Period)
+    check(assert_type(value, "pd.Series[int]"), pd.Series, np.integer)
+
+    dt_index = pd.DatetimeIndex(dates)
+    iterator2 = s.groupby(dt_index).__iter__()
+    assert_type(iterator2, Iterator[Tuple[pd.Timestamp, "pd.Series[int]"]])
+    index2, value2 = next(iterator2)
+    assert_type((index2, value2), Tuple[pd.Timestamp, "pd.Series[int]"])
+
+    check(assert_type(index2, pd.Timestamp), pd.Timestamp)
+    check(assert_type(value2, "pd.Series[int]"), pd.Series, np.integer)
+
+    tdelta_index = pd.TimedeltaIndex(dates - pd.Timestamp("2020-01-01"))
+    iterator3 = s.groupby(tdelta_index).__iter__()
+    assert_type(iterator3, Iterator[Tuple[pd.Timedelta, "pd.Series[int]"]])
+    index3, value3 = next(iterator3)
+    assert_type((index3, value3), Tuple[pd.Timedelta, "pd.Series[int]"])
+
+    check(assert_type(index3, pd.Timedelta), pd.Timedelta)
+    check(assert_type(value3, "pd.Series[int]"), pd.Series, np.integer)
+
+    intervals: list[pd.Interval[pd.Timestamp]] = [
+        pd.Interval(date, date + pd.DateOffset(days=1), closed="left") for date in dates
+    ]
+    interval_index = pd.IntervalIndex(intervals)
+    assert_type(interval_index, "pd.IntervalIndex[pd.Interval[pd.Timestamp]]")
+    iterator4 = s.groupby(interval_index).__iter__()
+    assert_type(
+        iterator4, Iterator[Tuple["pd.Interval[pd.Timestamp]", "pd.Series[int]"]]
+    )
+    index4, value4 = next(iterator4)
+    assert_type((index4, value4), Tuple["pd.Interval[pd.Timestamp]", "pd.Series[int]"])
+
+    check(assert_type(index4, "pd.Interval[pd.Timestamp]"), pd.Interval)
+    check(assert_type(value4, "pd.Series[int]"), pd.Series, np.integer)
+
+    for p, g in s.groupby(period_index):
+        pass
+
+    for dt, g in s.groupby(dt_index):
+        pass
+
+    for tdelta, g in s.groupby(tdelta_index):
+        pass
+
+    for interval, g in s.groupby(interval_index):
+        pass
+
+
+def test_groupby_result_for_ambiguous_indexes() -> None:
+    # GH 674
+    s = pd.Series([0, 1, 2], index=["a", "b", "a"], dtype=int)
+    # this will use pd.Index which is ambiguous
+    iterator = s.groupby(s.index).__iter__()
+    assert_type(iterator, Iterator[Tuple[Any, "pd.Series[int]"]])
+    index, value = next(iterator)
+    assert_type((index, value), Tuple[Any, "pd.Series[int]"])
+
+    check(assert_type(index, Any), str)
+    check(assert_type(value, "pd.Series[int]"), pd.Series, np.integer)
+
+    # categorical indexes are also ambiguous
+    categorical_index = pd.CategoricalIndex(s.index)
+    iterator2 = s.groupby(categorical_index).__iter__()
+    assert_type(iterator2, Iterator[Tuple[Any, "pd.Series[int]"]])
+    index2, value2 = next(iterator2)
+    assert_type((index2, value2), Tuple[Any, "pd.Series[int]"])
+
+    check(assert_type(index2, Any), str)
+    check(assert_type(value2, "pd.Series[int]"), pd.Series, np.integer)
+
+
 def test_types_groupby_agg() -> None:
     s = pd.Series([4, 2, 1, 8], index=["a", "b", "a", "b"])
     check(assert_type(s.groupby(level=0).agg("sum"), pd.Series), pd.Series)
@@ -1832,3 +1966,17 @@ def test_loc_callable() -> None:
     # GH 586
     s = pd.Series([1, 2])
     check(assert_type(s.loc[lambda x: x > 1], pd.Series), pd.Series)
+
+
+def test_to_json_mode() -> None:
+    s = pd.Series([1, 2, 3, 4])
+    result = s.to_json(orient="records", lines=True, mode="a")
+    result1 = s.to_json(orient="split", mode="w")
+    result2 = s.to_json(orient="table", mode="w")
+    result4 = s.to_json(orient="records", mode="w")
+    check(assert_type(result, str), str)
+    check(assert_type(result1, str), str)
+    check(assert_type(result2, str), str)
+    check(assert_type(result4, str), str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        result3 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]

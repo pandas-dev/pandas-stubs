@@ -20,18 +20,22 @@ from typing import (
 from matplotlib.axes import Axes as PlotAxes
 import numpy as np
 from pandas import (
+    Period,
     Timedelta,
     Timestamp,
 )
 from pandas.core.arraylike import OpsMixin
 from pandas.core.generic import NDFrame
-from pandas.core.groupby.generic import (
-    _DataFrameGroupByNonScalar,
-    _DataFrameGroupByScalar,
-)
+from pandas.core.groupby.generic import DataFrameGroupBy
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexers import BaseIndexer
 from pandas.core.indexes.base import Index
+from pandas.core.indexes.category import CategoricalIndex
+from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.indexes.interval import IntervalIndex
+from pandas.core.indexes.multi import MultiIndex
+from pandas.core.indexes.period import PeriodIndex
+from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.indexing import (
     _iLocIndexer,
     _IndexSliceTuple,
@@ -82,6 +86,7 @@ from pandas._typing import (
     IndexLabel,
     IndexType,
     IntervalClosedType,
+    IntervalT,
     JoinHow,
     JsonFrameOrient,
     Label,
@@ -198,7 +203,7 @@ class _LocIndexerFrame(_LocIndexer):
     def __setitem__(
         self,
         idx: MaskType | StrLike | _IndexSliceTuple | list[ScalarT],
-        value: S1 | ArrayLike | Series | DataFrame | None,
+        value: S1 | ArrayLike | Series | DataFrame | list | None,
     ) -> None: ...
     @overload
     def __setitem__(
@@ -1011,11 +1016,11 @@ class DataFrame(NDFrame, OpsMixin):
         squeeze: _bool = ...,
         observed: _bool = ...,
         dropna: _bool = ...,
-    ) -> _DataFrameGroupByScalar: ...
+    ) -> DataFrameGroupBy[Scalar]: ...
     @overload
     def groupby(
         self,
-        by: GroupByObjectNonScalar | None = ...,
+        by: DatetimeIndex,
         axis: Axis = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
@@ -1024,7 +1029,72 @@ class DataFrame(NDFrame, OpsMixin):
         squeeze: _bool = ...,
         observed: _bool = ...,
         dropna: _bool = ...,
-    ) -> _DataFrameGroupByNonScalar: ...
+    ) -> DataFrameGroupBy[Timestamp]: ...
+    @overload
+    def groupby(
+        self,
+        by: TimedeltaIndex,
+        axis: Axis = ...,
+        level: Level | None = ...,
+        as_index: _bool = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        squeeze: _bool = ...,
+        observed: _bool = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[Timedelta]: ...
+    @overload
+    def groupby(
+        self,
+        by: PeriodIndex,
+        axis: Axis = ...,
+        level: Level | None = ...,
+        as_index: _bool = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        squeeze: _bool = ...,
+        observed: _bool = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[Period]: ...
+    @overload
+    def groupby(
+        self,
+        by: IntervalIndex[IntervalT],
+        axis: Axis = ...,
+        level: Level | None = ...,
+        as_index: _bool = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        squeeze: _bool = ...,
+        observed: _bool = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[IntervalT]: ...
+    @overload
+    def groupby(
+        self,
+        by: MultiIndex | GroupByObjectNonScalar | None = ...,
+        axis: Axis = ...,
+        level: Level | None = ...,
+        as_index: _bool = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        squeeze: _bool = ...,
+        observed: _bool = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[tuple]: ...
+    @overload
+    def groupby(
+        self,
+        by: CategoricalIndex | Index,
+        axis: Axis = ...,
+        level: Level | None = ...,
+        as_index: _bool = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        squeeze: _bool = ...,
+        observed: _bool = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[Any]: ...
     def pivot(
         self,
         *,
@@ -1638,7 +1708,7 @@ class DataFrame(NDFrame, OpsMixin):
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
         downcast: Literal["infer"] | None = ...,
-        inplace: Literal[False],
+        inplace: Literal[False] = ...,
         **kwargs,
     ) -> DataFrame: ...
     @overload
@@ -2012,18 +2082,38 @@ class DataFrame(NDFrame, OpsMixin):
     def to_json(
         self,
         path_or_buf: FilePath | WriteBuffer[str],
-        orient: JsonFrameOrient | None = ...,
+        *,
+        orient: Literal["records"],
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: Literal["s", "ms", "us", "ns"] = ...,
         default_handler: Callable[[Any], _str | float | _bool | list | dict]
         | None = ...,
-        lines: _bool = ...,
+        lines: Literal[True],
         compression: CompressionOptions = ...,
         index: _bool = ...,
         indent: int | None = ...,
+        mode: Literal["a"],
     ) -> None: ...
+    @overload
+    def to_json(
+        self,
+        path_or_buf: None = ...,
+        *,
+        orient: Literal["records"],
+        date_format: Literal["epoch", "iso"] | None = ...,
+        double_precision: int = ...,
+        force_ascii: _bool = ...,
+        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        default_handler: Callable[[Any], _str | float | _bool | list | dict]
+        | None = ...,
+        lines: Literal[True],
+        compression: CompressionOptions = ...,
+        index: _bool = ...,
+        indent: int | None = ...,
+        mode: Literal["a"],
+    ) -> _str: ...
     @overload
     def to_json(
         self,
@@ -2039,7 +2129,25 @@ class DataFrame(NDFrame, OpsMixin):
         compression: CompressionOptions = ...,
         index: _bool = ...,
         indent: int | None = ...,
+        mode: Literal["w"] = ...,
     ) -> _str: ...
+    @overload
+    def to_json(
+        self,
+        path_or_buf: FilePath | WriteBuffer[str],
+        orient: JsonFrameOrient | None = ...,
+        date_format: Literal["epoch", "iso"] | None = ...,
+        double_precision: int = ...,
+        force_ascii: _bool = ...,
+        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        default_handler: Callable[[Any], _str | float | _bool | list | dict]
+        | None = ...,
+        lines: _bool = ...,
+        compression: CompressionOptions = ...,
+        index: _bool = ...,
+        indent: int | None = ...,
+        mode: Literal["w"] = ...,
+    ) -> None: ...
     @overload
     def to_string(
         self,
