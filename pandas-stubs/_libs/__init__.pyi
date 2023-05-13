@@ -1,5 +1,5 @@
-from .interval import Interval as Interval
-from .tslibs import (
+from pandas._libs.interval import Interval as Interval
+from pandas._libs.tslibs import (
     NaT as NaT,
     NaTType as NaTType,
     OutOfBoundsDatetime as OutOfBoundsDatetime,

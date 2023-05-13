@@ -20,9 +20,8 @@ from pandas.core.series import (
 from typing_extensions import TypeAlias
 
 from pandas._libs.tslibs import NaTType
+from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import npt
-
-from .timestamps import Timestamp
 
 class IncompatibleFrequency(ValueError): ...
 

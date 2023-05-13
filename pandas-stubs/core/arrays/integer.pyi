@@ -1,8 +1,8 @@
+from pandas.core.arrays.masked import BaseMaskedArray
+
 from pandas._libs.missing import NAType
 
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
-
-from .masked import BaseMaskedArray
 
 class _IntegerDtype(ExtensionDtype):
     base: None
