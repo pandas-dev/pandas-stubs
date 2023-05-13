@@ -1,4 +1,4 @@
-from . import (
+from pandas import (
     api as api,
     arrays as arrays,
     errors as errors,
@@ -8,15 +8,7 @@ from . import (
     tseries as tseries,
     util as util,
 )
-from ._config import (
-    describe_option as describe_option,
-    get_option as get_option,
-    option_context as option_context,
-    options as options,
-    reset_option as reset_option,
-    set_option as set_option,
-)
-from .core.api import (
+from pandas.core.api import (
     NA as NA,
     ArrowDtype as ArrowDtype,
     BooleanDtype as BooleanDtype,
@@ -73,9 +65,9 @@ from .core.api import (
     unique as unique,
     value_counts as value_counts,
 )
-from .core.arrays.sparse import SparseDtype as SparseDtype
-from .core.computation.api import eval as eval
-from .core.reshape.api import (
+from pandas.core.arrays.sparse import SparseDtype as SparseDtype
+from pandas.core.computation.api import eval as eval
+from pandas.core.reshape.api import (
     concat as concat,
     crosstab as crosstab,
     cut as cut,
@@ -91,7 +83,20 @@ from .core.reshape.api import (
     qcut as qcut,
     wide_to_long as wide_to_long,
 )
-from .io.api import (
+
+from pandas._config import (
+    describe_option as describe_option,
+    get_option as get_option,
+    option_context as option_context,
+    options as options,
+    reset_option as reset_option,
+    set_option as set_option,
+)
+
+from pandas.util._print_versions import show_versions as show_versions
+from pandas.util._tester import test as test
+
+from pandas.io.api import (
     ExcelFile as ExcelFile,
     ExcelWriter as ExcelWriter,
     HDFStore as HDFStore,
@@ -117,10 +122,8 @@ from .io.api import (
     read_xml as read_xml,
     to_pickle as to_pickle,
 )
-from .io.json import json_normalize as json_normalize
-from .tseries import offsets as offsets
-from .tseries.api import infer_freq as infer_freq
-from .util._print_versions import show_versions as show_versions
-from .util._tester import test as test
+from pandas.io.json._normalize import json_normalize as json_normalize
+from pandas.tseries import offsets as offsets
+from pandas.tseries.api import infer_freq as infer_freq
 
 __version__: str

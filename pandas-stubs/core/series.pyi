@@ -20,12 +20,6 @@ from typing import (
     overload,
 )
 
-from core.api import (
-    Int8Dtype as Int8Dtype,
-    Int16Dtype as Int16Dtype,
-    Int32Dtype as Int32Dtype,
-    Int64Dtype as Int64Dtype,
-)
 from matplotlib.axes import (
     Axes as PlotAxes,
     SubplotBase,
@@ -36,9 +30,18 @@ from pandas import (
     Timedelta,
     Timestamp,
 )
+from pandas.core.api import (
+    Int8Dtype as Int8Dtype,
+    Int16Dtype as Int16Dtype,
+    Int32Dtype as Int32Dtype,
+    Int64Dtype as Int64Dtype,
+)
 from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.categorical import CategoricalAccessor
 from pandas.core.arrays.interval import IntervalArray
+from pandas.core.base import IndexOpsMixin
+from pandas.core.frame import DataFrame
+from pandas.core.generic import NDFrame
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.indexers import BaseIndexer
 from pandas.core.indexes.accessors import (
@@ -57,7 +60,9 @@ from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.indexing import (
     _AtIndexer,
     _iAtIndexer,
+    _iLocIndexer,
     _IndexSliceTuple,
+    _LocIndexer,
 )
 from pandas.core.resample import Resampler
 from pandas.core.strings import StringMethods
@@ -139,14 +144,6 @@ from pandas._typing import (
 from pandas.core.dtypes.base import ExtensionDtype
 
 from pandas.plotting import PlotAccessor
-
-from .base import IndexOpsMixin
-from .frame import DataFrame
-from .generic import NDFrame
-from .indexing import (
-    _iLocIndexer,
-    _LocIndexer,
-)
 
 _bool = bool
 _str = str

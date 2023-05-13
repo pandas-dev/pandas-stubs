@@ -16,11 +16,10 @@ import numpy as np
 from pandas.core.indexes.datetimes import DatetimeIndex
 from typing_extensions import Self
 
+from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import npt
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
-
-from .timedeltas import Timedelta
 
 _DatetimeT = TypeVar("_DatetimeT", bound=date)
 _TimedeltaT = TypeVar("_TimedeltaT", bound=timedelta)

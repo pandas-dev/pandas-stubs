@@ -1,13 +1,12 @@
 from typing import ClassVar
 
 import numpy as np
+from pandas.core.arrays.masked import BaseMaskedArray as BaseMaskedArray
 
 from pandas._libs.missing import NAType
 from pandas._typing import type_t
 
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
-
-from .masked import BaseMaskedArray as BaseMaskedArray
 
 class BooleanDtype(ExtensionDtype):
     na_value: ClassVar[NAType]

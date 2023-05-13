@@ -1,6 +1,6 @@
-from .accessor import (
+from pandas.core.arrays.sparse.accessor import (
     SparseAccessor as SparseAccessor,
     SparseFrameAccessor as SparseFrameAccessor,
 )
-from .array import SparseArray as SparseArray
-from .dtype import SparseDtype as SparseDtype
+from pandas.core.arrays.sparse.array import SparseArray as SparseArray
+from pandas.core.arrays.sparse.dtype import SparseDtype as SparseDtype
