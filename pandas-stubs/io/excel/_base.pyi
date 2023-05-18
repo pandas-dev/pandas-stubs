@@ -62,7 +62,6 @@ def read_excel(
     | Sequence[int]
     | Sequence[Sequence[str] | Sequence[int]]
     | dict[str, Sequence[int] | list[str]] = ...,
-    date_parser: Callable | None = ...,
     date_format: dict[Hashable, str] | str | None = ...,
     thousands: str | None = ...,
     decimal: str = ...,
@@ -102,7 +101,6 @@ def read_excel(
     | Sequence[int]
     | Sequence[Sequence[str] | Sequence[int]]
     | dict[str, Sequence[int] | list[str]] = ...,
-    date_parser: Callable | None = ...,
     date_format: dict[Hashable, str] | str | None = ...,
     thousands: str | None = ...,
     decimal: str = ...,
