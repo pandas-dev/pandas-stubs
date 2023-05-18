@@ -1405,3 +1405,101 @@ def test_read_sql_dict_str_value_dtype() -> None:
             DataFrame,
         )
         con.close()
+
+
+def test_added_date_format() -> None:
+    with ensure_clean() as path:
+        df_dates = pd.DataFrame(
+            data={
+                "col1": ["2023-03-15", "2023-04-20"],
+            }
+        )
+        df_dates.to_csv(path)
+
+        check(
+            assert_type(
+                pd.read_table(
+                    path, sep=",", parse_dates=["col1"], date_format="%Y-%m-%d"
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_table(
+                    path,
+                    sep=",",
+                    parse_dates=["col1"],
+                    date_format={"col1": "%Y-%m-%d"},
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_table(
+                    path, sep=",", parse_dates=["col1"], date_format={0: "%Y-%m-%d"}
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+
+        check(
+            assert_type(
+                pd.read_fwf(path, date_format="%Y-%m-%d"),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_fwf(path, date_format={"col1": "%Y-%m-%d"}),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_fwf(path, date_format={0: "%Y-%m-%d"}),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    with ensure_clean(".xlsx") as path:
+        check(
+            assert_type(
+                pd.DataFrame(
+                    data={
+                        "col1": ["2023-03-15", "2023-04-20"],
+                    }
+                ).to_excel(path),
+                None,
+            ),
+            type(None),
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, parse_dates=["col1"], date_format={0: "%Y-%m-%d"}),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_excel(
+                    path, parse_dates=["col1"], date_format={"col1": "%Y-%m-%d"}
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, parse_dates=["col1"], date_format="%Y-%m-%d"),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
