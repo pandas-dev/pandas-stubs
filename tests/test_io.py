@@ -1442,23 +1442,21 @@ def test_added_date_format() -> None:
 
         check(
             assert_type(
-                pd.read_fwf(path, parse_dates=["col1"], date_format="%Y-%m-%d"),
+                pd.read_fwf(path, date_format="%Y-%m-%d"),
                 pd.DataFrame,
             ),
             pd.DataFrame,
         )
         check(
             assert_type(
-                pd.read_fwf(
-                    path, parse_dates=["col1"], date_format={"col1": "%Y-%m-%d"}
-                ),
+                pd.read_fwf(path, date_format={"col1": "%Y-%m-%d"}),
                 pd.DataFrame,
             ),
             pd.DataFrame,
         )
         check(
             assert_type(
-                pd.read_fwf(path, parse_dates=["col1"], date_format={10: "%Y-%m-%d"}),
+                pd.read_fwf(path, date_format={10: "%Y-%m-%d"}),
                 pd.DataFrame,
             ),
             pd.DataFrame,
@@ -1477,7 +1475,7 @@ def test_added_date_format() -> None:
         )
         check(
             assert_type(
-                pd.read_excel(path, parse_dates=["col1"], date_format={10:"%Y-%m-%d"}),
+                pd.read_excel(path, parse_dates=["col1"], date_format={10: "%Y-%m-%d"}),
                 pd.DataFrame,
             ),
             pd.DataFrame,
