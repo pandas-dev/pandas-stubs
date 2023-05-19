@@ -635,7 +635,7 @@ def test_some_offsets() -> None:
         pd.DatetimeIndex,
     )
     # GH 320
-    tswm1 = pd.Timestamp("9/23/2022") + pd.offsets.WeekOfMonth(2, 3)
+    tswm1 = pd.Timestamp("9/23/2022") + pd.offsets.WeekOfMonth(2, True)
     check(assert_type(tswm1, pd.Timestamp), pd.Timestamp)
     tswm2 = pd.Timestamp("9/23/2022") + pd.offsets.LastWeekOfMonth(2, 3)
     check(assert_type(tswm2, pd.Timestamp), pd.Timestamp)
@@ -1141,3 +1141,14 @@ def test_timestamp_strptime_fails():
                 "%Y-%M-%D",  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
             )
         )
+
+
+def test_weekofmonth_init():
+    # GH 629
+    check(
+        assert_type(
+            pd.offsets.WeekOfMonth(n=1, week=1, weekday=1, normalize=True),
+            pd.offsets.WeekOfMonth,
+        ),
+        pd.offsets.WeekOfMonth,
+    )
