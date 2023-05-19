@@ -1145,4 +1145,10 @@ def test_timestamp_strptime_fails():
 
 def test_weekofmonth_init():
     # GH 629
-    pd.offsets.WeekOfMonth(n=1, week=1, weekday=1, normalize=True)
+    check(
+        assert_type(
+            pd.offsets.WeekOfMonth(n=1, week=1, weekday=1, normalize=True),
+            pd.offsets.WeekOfMonth,
+        ),
+        pd.offsets.WeekOfMonth,
+    )
