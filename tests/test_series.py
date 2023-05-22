@@ -1980,3 +1980,9 @@ def test_to_json_mode() -> None:
     check(assert_type(result4, str), str)
     if TYPE_CHECKING_INVALID_USAGE:
         result3 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
+
+
+def test_groupby_diff() -> None:
+    # GH 658
+    s = pd.Series([1, 2, 3, np.nan])
+    check(assert_type(s.groupby(level=0).diff(), pd.Series), pd.Series)
