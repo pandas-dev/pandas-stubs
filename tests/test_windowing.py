@@ -1,8 +1,11 @@
+import datetime as dt
+
 import numpy as np
 import pandas as pd
 from pandas import (
     DataFrame,
     Series,
+    Timedelta,
     date_range,
 )
 from pandas.core.window import (
@@ -61,6 +64,14 @@ def test_rolling_datetime_index() -> None:
         Rolling,
         Series,
     )
+
+    td = Timedelta("1D")
+    check(assert_type(DF_DTI.rolling(td), "Rolling[DataFrame]"), Rolling, DataFrame)
+    check(assert_type(S_DTI.rolling(td), "Rolling[Series]"), Rolling, Series)
+
+    dttd = dt.timedelta(days=1)
+    check(assert_type(DF_DTI.rolling(dttd), "Rolling[DataFrame]"), Rolling, DataFrame)
+    check(assert_type(S_DTI.rolling(dttd), "Rolling[Series]"), Rolling, Series)
 
 
 def test_rolling_apply() -> None:
