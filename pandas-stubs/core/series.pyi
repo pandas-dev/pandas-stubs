@@ -1834,7 +1834,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def rolling(
         self,
-        window: int | _str | BaseOffset | BaseIndexer,
+        window: int | _str | Timedelta | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         on: _str | None = ...,
@@ -1848,7 +1848,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def rolling(
         self,
-        window: int | _str | BaseOffset | BaseIndexer,
+        window: int | _str | Timedelta | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         on: _str | None = ...,
