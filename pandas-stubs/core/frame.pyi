@@ -1099,7 +1099,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def groupby(
         self,
-        by: CategoricalIndex | Index,
+        by: CategoricalIndex | Index | Series,
         axis: Axis = ...,
         level: Level | None = ...,
         as_index: _bool = ...,

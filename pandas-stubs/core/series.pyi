@@ -653,7 +653,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def groupby(
         self,
-        by: CategoricalIndex | Index,
+        by: CategoricalIndex | Index | Series,
         axis: AxisIndex = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
