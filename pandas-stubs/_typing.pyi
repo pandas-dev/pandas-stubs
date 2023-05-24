@@ -427,12 +427,28 @@ ByT = TypeVar(
     Interval[Timedelta],
     tuple,
 )
+SeriesByT = TypeVar(
+    "SeriesByT",
+    str,
+    bytes,
+    datetime.date,
+    bool,
+    int,
+    float,
+    complex,
+    Timestamp,
+    Timedelta,
+    Period,
+    Interval[int],
+    Interval[float],
+    Interval[Timestamp],
+    Interval[Timedelta],
+)
 GroupByObjectNonScalar: TypeAlias = (
     tuple
     | list[_HashableTa]
     | Function
     | list[Function]
-    | Series
     | list[Series]
     | np.ndarray
     | list[np.ndarray]
@@ -442,7 +458,7 @@ GroupByObjectNonScalar: TypeAlias = (
     | Grouper
     | list[Grouper]
 )
-GroupByObject: TypeAlias = Scalar | Index | GroupByObjectNonScalar
+GroupByObject: TypeAlias = Scalar | Index | GroupByObjectNonScalar | Series
 
 StataDateFormat: TypeAlias = Literal[
     "tc",

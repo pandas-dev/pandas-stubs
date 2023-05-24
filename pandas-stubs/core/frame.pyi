@@ -106,6 +106,7 @@ from pandas._typing import (
     ReplaceMethod,
     Scalar,
     ScalarT,
+    SeriesByT,
     SortKind,
     StataDateFormat,
     StorageOptions,
@@ -1082,6 +1083,19 @@ class DataFrame(NDFrame, OpsMixin):
         observed: _bool = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[tuple]: ...
+    @overload
+    def groupby(
+        self,
+        by: Series[SeriesByT],
+        axis: Axis = ...,
+        level: Level | None = ...,
+        as_index: _bool = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        squeeze: _bool = ...,
+        observed: _bool = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[SeriesByT]: ...
     @overload
     def groupby(
         self,
