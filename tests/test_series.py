@@ -731,6 +731,20 @@ def test_types_group_by_with_dropna_keyword() -> None:
     s.groupby(level=0).sum()
 
 
+def test_types_groupby_iter() -> None:
+    s = pd.Series([1, 1, 2])
+    series_groupby: pd.Series[bool] = pd.Series([True, True, False])
+    first_group = next(iter(s.groupby(series_groupby)))
+    check(
+        assert_type(first_group[0], "bool"),
+        bool,
+    )
+    check(
+        assert_type(first_group[1], "pd.Series"),
+        pd.Series,
+    )
+
+
 def test_types_plot() -> None:
     s = pd.Series([0, 1, 1, 0, -10])
     if TYPE_CHECKING:  # skip pytest
