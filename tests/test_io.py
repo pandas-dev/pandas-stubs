@@ -1299,6 +1299,9 @@ def test_all_read_without_lxml_dtype_backend() -> None:
         check(
             assert_type(read_json(path, dtype_backend="pyarrow"), DataFrame), DataFrame
         )
+        check(
+            assert_type(read_json(path, dtype={"MatchID": str}), DataFrame), DataFrame
+        )
 
     with ensure_clean() as path:
         con = sqlite3.connect(path)

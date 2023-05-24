@@ -1,4 +1,5 @@
 from collections import abc
+from collections.abc import Mapping
 from types import TracebackType
 from typing import (
     Generic,
@@ -29,7 +30,7 @@ def read_json(
     *,
     orient: JsonSeriesOrient | None = ...,
     typ: Literal["series"],
-    dtype: bool | dict[HashableT, DtypeArg] | None = ...,
+    dtype: bool | Mapping[HashableT, DtypeArg] | None = ...,
     convert_axes: bool | None = ...,
     convert_dates: bool | list[str] = ...,
     keep_default_dates: bool = ...,
@@ -53,7 +54,7 @@ def read_json(
     *,
     orient: JsonFrameOrient | None = ...,
     typ: Literal["frame"] = ...,
-    dtype: bool | dict[HashableT, DtypeArg] | None = ...,
+    dtype: bool | Mapping[HashableT, DtypeArg] | None = ...,
     convert_axes: bool | None = ...,
     convert_dates: bool | list[str] = ...,
     keep_default_dates: bool = ...,
@@ -77,7 +78,7 @@ def read_json(
     *,
     orient: JsonSeriesOrient | None = ...,
     typ: Literal["series"],
-    dtype: bool | dict[HashableT, DtypeArg] | None = ...,
+    dtype: bool | Mapping[HashableT, DtypeArg] | None = ...,
     convert_axes: bool | None = ...,
     convert_dates: bool | list[str] = ...,
     keep_default_dates: bool = ...,
@@ -101,7 +102,7 @@ def read_json(
     *,
     orient: JsonFrameOrient | None = ...,
     typ: Literal["frame"] = ...,
-    dtype: bool | dict[HashableT, DtypeArg] | None = ...,
+    dtype: bool | Mapping[HashableT, DtypeArg] | None = ...,
     convert_axes: bool | None = ...,
     convert_dates: bool | list[str] = ...,
     keep_default_dates: bool = ...,
