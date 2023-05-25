@@ -76,6 +76,7 @@ from pandas.core.window.rolling import (
 )
 from typing_extensions import (
     Never,
+    Self,
     TypeAlias,
 )
 import xarray as xr
@@ -302,16 +303,21 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         name: Hashable | None = ...,
         copy: bool = ...,
         fastpath: bool = ...,
-    ) -> Series[S1]: ...
+    ) -> Self: ...
     @overload
     def __new__(
         cls,
-        data: object
-        | _ListLike
-        | Series[S1]
-        | dict[int, S1]
-        | dict[_str, S1]
-        | None = ...,
+        data: Series[S1] | dict[int, S1] | dict[_str, S1] = ...,
+        index: Axes | None = ...,
+        dtype=...,
+        name: Hashable | None = ...,
+        copy: bool = ...,
+        fastpath: bool = ...,
+    ) -> Self: ...
+    @overload
+    def __new__(
+        cls,
+        data: object | _ListLike | None = ...,
         index: Axes | None = ...,
         dtype=...,
         name: Hashable | None = ...,
@@ -2008,8 +2014,8 @@ class TimestampSeries(Series[Timestamp]):
     # ignore needed because of mypy
     @property
     def dt(self) -> TimestampProperties: ...  # type: ignore[override]
-    def __add__(self, other: TimedeltaSeries | np.timedelta64) -> TimestampSeries: ...  # type: ignore[override]
-    def __radd__(self, other: TimedeltaSeries | np.timedelta64) -> TimestampSeries: ...  # type: ignore[override]
+    def __add__(self, other: TimedeltaSeries | np.timedelta64 | timedelta) -> TimestampSeries: ...  # type: ignore[override]
+    def __radd__(self, other: TimedeltaSeries | np.timedelta64 | timedelta) -> TimestampSeries: ...  # type: ignore[override]
     @overload  # type: ignore[override]
     def __sub__(
         self, other: Timestamp | datetime | TimestampSeries
@@ -2017,7 +2023,7 @@ class TimestampSeries(Series[Timestamp]):
     @overload
     def __sub__(
         self,
-        other: Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64,
+        other: timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64,
     ) -> TimestampSeries: ...
     def __mul__(self, other: float | Series[int] | Series[float] | Sequence[float]) -> TimestampSeries: ...  # type: ignore[override]
     def __truediv__(self, other: float | Series[int] | Series[float] | Sequence[float]) -> TimestampSeries: ...  # type: ignore[override]

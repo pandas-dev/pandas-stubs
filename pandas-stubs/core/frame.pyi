@@ -52,6 +52,7 @@ from pandas.core.window.rolling import (
     Rolling,
     Window,
 )
+from typing_extensions import Self
 import xarray as xr
 
 from pandas._libs.missing import NAType
@@ -227,7 +228,7 @@ class DataFrame(NDFrame, OpsMixin):
         columns: Axes | None = ...,
         dtype=...,
         copy: _bool = ...,
-    ) -> DataFrame: ...
+    ) -> Self: ...
     @overload
     def __new__(
         cls,
@@ -236,7 +237,7 @@ class DataFrame(NDFrame, OpsMixin):
         columns: Axes,
         dtype=...,
         copy: _bool = ...,
-    ) -> DataFrame: ...
+    ) -> Self: ...
     def __dataframe__(
         self, nan_as_null: bool = ..., allow_copy: bool = ...
     ) -> DataFrameXchg: ...

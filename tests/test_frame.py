@@ -2601,12 +2601,12 @@ def test_align() -> None:
     s0 = pd.Series(data={1: "1", 3: "3", 5: "5"})
     aligned_df0, aligned_s0 = df0.align(s0, axis="index")
     check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
-    check(assert_type(aligned_s0, pd.Series), pd.Series)
+    check(assert_type(aligned_s0, "pd.Series[str]"), pd.Series, str)
 
     s1 = pd.Series(data={"A": "A", "D": "D"})
     aligned_df0, aligned_s1 = df0.align(s1, axis="columns")
     check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
-    check(assert_type(aligned_s1, pd.Series), pd.Series)
+    check(assert_type(aligned_s1, "pd.Series[str]"), pd.Series, str)
 
     df1 = pd.DataFrame(
         data=np.array(
