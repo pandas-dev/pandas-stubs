@@ -2715,3 +2715,8 @@ def test_groupby_fillna_inplace() -> None:
     check(assert_type(groupby.fillna(0, inplace=False), pd.DataFrame), pd.DataFrame)
     if TYPE_CHECKING_INVALID_USAGE:
         groupby.fillna(0, inplace=True)  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+
+
+def test_getitem_generator() -> None:
+    # GH 685
+    check(assert_type(DF[(f"col{i+1}" for i in range(2))], pd.DataFrame), pd.DataFrame)
