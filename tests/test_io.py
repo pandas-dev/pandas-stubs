@@ -1506,3 +1506,9 @@ def test_added_date_format() -> None:
             ),
             pd.DataFrame,
         )
+
+
+def test_read_csv_name_none() -> None:
+    with ensure_clean() as path:
+        check(assert_type(DF.to_csv(path), None), type(None))
+        check(assert_type(read_csv(path, na_values=None), DataFrame), DataFrame)

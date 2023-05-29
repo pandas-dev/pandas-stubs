@@ -22,6 +22,8 @@ from pandas._libs import NaTType
 from pandas._libs.missing import NAType
 from pandas._typing import Scalar
 
+from pandas.core.dtypes.common import is_any_real_numeric_dtype
+
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
@@ -144,3 +146,9 @@ def test_arrow_dtype() -> None:
     a_dt = pd.ArrowDtype(pa.int64())
     check(assert_type(a_dt, pd.ArrowDtype), pd.ArrowDtype)
     check(assert_type(a_dt.pyarrow_dtype, pa.DataType), pa.DataType)
+
+
+def test_is_any_real_numeric_dtype() -> None:
+    check(assert_type(is_any_real_numeric_dtype(np.array([1, 2])), bool), bool)
+    check(assert_type(is_any_real_numeric_dtype(int), bool), bool)
+    check(assert_type(is_any_real_numeric_dtype(float), bool), bool)
