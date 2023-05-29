@@ -1929,7 +1929,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     # ignore needed because of mypy, for using `Never` as type-var.
     @overload
     def sum(
-        self: Series[Never],  # type: ignore[type-var]
+        self: Series[Never],
         axis: AxisIndex | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,

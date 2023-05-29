@@ -2598,7 +2598,7 @@ def test_align() -> None:
         columns=["A", "B", "C"],
     )
 
-    s0 = pd.Series(data={1: "1", 3: "3", 5: "5"})
+    s0 = pd.Series(data={0: "1", 3: "3", 5: "5"})
     aligned_df0, aligned_s0 = df0.align(s0, axis="index")
     check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
     check(assert_type(aligned_s0, "pd.Series[str]"), pd.Series, str)

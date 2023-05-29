@@ -155,7 +155,7 @@ class _iLocIndexerFrame(_iLocIndexer):
         | tuple[IndexType, int]
         | tuple[IndexType, IndexType]
         | tuple[int, IndexType],
-        value: S1 | Series | DataFrame | np.ndarray | None,
+        value: Scalar | Series | DataFrame | np.ndarray | None,
     ) -> None: ...
 
 class _LocIndexerFrame(_LocIndexer):
@@ -204,13 +204,13 @@ class _LocIndexerFrame(_LocIndexer):
     def __setitem__(
         self,
         idx: MaskType | StrLike | _IndexSliceTuple | list[ScalarT],
-        value: S1 | ArrayLike | Series | DataFrame | list | None,
+        value: Scalar | ArrayLike | Series | DataFrame | list | None,
     ) -> None: ...
     @overload
     def __setitem__(
         self,
         idx: tuple[_IndexSliceTuple, HashableT],
-        value: S1 | ArrayLike | Series[S1] | list | None,
+        value: Scalar | ArrayLike | Series | list | None,
     ) -> None: ...
 
 class DataFrame(NDFrame, OpsMixin):
