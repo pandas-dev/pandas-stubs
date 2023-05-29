@@ -1,5 +1,6 @@
 from collections.abc import (
     Callable,
+    Generator,
     Hashable,
     Iterable,
     Iterator,
@@ -550,14 +551,15 @@ class DataFrame(NDFrame, OpsMixin):
     def T(self) -> DataFrame: ...
     def __getattr__(self, name: str) -> Series: ...
     @overload
-    def __getitem__(
+    def __getitem__(  # type: ignore[misc]
         self,
         key: Series[_bool]
         | DataFrame
         | Index
         | np_ndarray_str
         | np_ndarray_bool
-        | list[_ScalarOrTupleT],
+        | list[_ScalarOrTupleT]
+        | Generator[_ScalarOrTupleT, None, None],
     ) -> DataFrame: ...
     @overload
     def __getitem__(self, key: slice) -> DataFrame: ...
