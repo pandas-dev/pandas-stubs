@@ -427,6 +427,8 @@ ByT = TypeVar(
     Interval[Timedelta],
     tuple,
 )
+# Use a distinct SeriesByT when using groupby with Series of known dtype.
+# Essentially, an intersection between Series S1 TypeVar, and ByT TypeVar
 SeriesByT = TypeVar(
     "SeriesByT",
     str,

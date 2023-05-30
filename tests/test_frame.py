@@ -990,11 +990,11 @@ def test_types_groupby_iter() -> None:
     series_groupby = pd.Series([True, True, False], dtype=bool)
     first_group = next(iter(df.groupby(series_groupby)))
     check(
-        assert_type(first_group[0], "bool"),
+        assert_type(first_group[0], bool),
         bool,
     )
     check(
-        assert_type(first_group[1], "pd.DataFrame"),
+        assert_type(first_group[1], pd.DataFrame),
         pd.DataFrame,
     )
 
