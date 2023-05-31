@@ -104,6 +104,7 @@ from pandas._typing import (
     CategoryDtypeArg,
     ComplexDtypeArg,
     CompressionOptions,
+    Dtype,
     DtypeBackend,
     DtypeObj,
     FilePath,
@@ -208,55 +209,52 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     _ListLike: TypeAlias = ArrayLike | dict[_str, np.ndarray] | list | tuple | Index
     __hash__: ClassVar[None]
 
+    # TODO: can __new__ be converted to __init__? Pandas implements __init__
     @overload
     def __new__(
         cls,
         data: DatetimeIndex | Sequence[Timestamp | np.datetime64 | datetime],
         index: Axes | None = ...,
-        dtype=...,
+        dtype: Dtype = ...,
         name: Hashable | None = ...,
         copy: bool = ...,
-        fastpath: bool = ...,
     ) -> TimestampSeries: ...
     @overload
-    def __new__(
+    def __new__(  # type: ignore[misc]
         cls,
         data: _ListLike,
-        dtype: Literal["datetime64[ns]"],
         index: Axes | None = ...,
+        *,
+        dtype: Literal["datetime64[ns]"],
         name: Hashable | None = ...,
         copy: bool = ...,
-        fastpath: bool = ...,
     ) -> TimestampSeries: ...
     @overload
     def __new__(
         cls,
         data: PeriodIndex,
         index: Axes | None = ...,
-        dtype=...,
+        dtype: Dtype = ...,
         name: Hashable | None = ...,
         copy: bool = ...,
-        fastpath: bool = ...,
     ) -> PeriodSeries: ...
     @overload
     def __new__(
         cls,
         data: TimedeltaIndex | Sequence[Timedelta | np.timedelta64 | timedelta],
         index: Axes | None = ...,
-        dtype=...,
+        dtype: Dtype = ...,
         name: Hashable | None = ...,
         copy: bool = ...,
-        fastpath: bool = ...,
     ) -> TimedeltaSeries: ...
     @overload
     def __new__(
         cls,
         data: IntervalIndex[Interval[int]] | Interval[int] | Sequence[Interval[int]],
         index: Axes | None = ...,
-        dtype=...,
+        dtype: Dtype = ...,
         name: Hashable | None = ...,
         copy: bool = ...,
-        fastpath: bool = ...,
     ) -> IntervalSeries[int]: ...
     @overload
     def __new__(
@@ -265,10 +263,9 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         | Interval[float]
         | Sequence[Interval[float]],
         index: Axes | None = ...,
-        dtype=...,
+        dtype: Dtype = ...,
         name: Hashable | None = ...,
         copy: bool = ...,
-        fastpath: bool = ...,
     ) -> IntervalSeries[float]: ...
     @overload
     def __new__(
@@ -277,10 +274,9 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         | Interval[Timestamp]
         | Sequence[Interval[Timestamp]],
         index: Axes | None = ...,
-        dtype=...,
+        dtype: Dtype = ...,
         name: Hashable | None = ...,
         copy: bool = ...,
-        fastpath: bool = ...,
     ) -> IntervalSeries[Timestamp]: ...
     @overload
     def __new__(
@@ -289,10 +285,9 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         | Interval[Timedelta]
         | Sequence[Interval[Timedelta]],
         index: Axes | None = ...,
-        dtype=...,
+        dtype: Dtype = ...,
         name: Hashable | None = ...,
         copy: bool = ...,
-        fastpath: bool = ...,
     ) -> IntervalSeries[Timedelta]: ...
     @overload
     def __new__(
@@ -302,27 +297,24 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         index: Axes | None = ...,
         name: Hashable | None = ...,
         copy: bool = ...,
-        fastpath: bool = ...,
     ) -> Self: ...
     @overload
     def __new__(
         cls,
         data: Series[S1] | dict[int, S1] | dict[_str, S1] = ...,
         index: Axes | None = ...,
-        dtype=...,
+        dtype: Dtype = ...,
         name: Hashable | None = ...,
         copy: bool = ...,
-        fastpath: bool = ...,
     ) -> Self: ...
     @overload
     def __new__(
         cls,
         data: object | _ListLike | None = ...,
         index: Axes | None = ...,
-        dtype=...,
+        dtype: Dtype = ...,
         name: Hashable | None = ...,
         copy: bool = ...,
-        fastpath: bool = ...,
     ) -> Series: ...
     @property
     def hasnans(self) -> bool: ...
