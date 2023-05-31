@@ -1989,3 +1989,17 @@ def test_groupby_diff() -> None:
     # GH 658
     s = pd.Series([1, 2, 3, np.nan])
     check(assert_type(s.groupby(level=0).diff(), pd.Series), pd.Series)
+
+
+def test_to_string() -> None:
+    # GH 720
+    s = pd.Series([1])
+    check(
+        assert_type(
+            s.to_string(
+                index=False, header=False, length=False, dtype=False, name=False
+            ),
+            str,
+        ),
+        str,
+    )
