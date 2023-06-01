@@ -1,5 +1,6 @@
 from collections.abc import (
     Callable,
+    Generator,
     Hashable,
     Iterable,
     Iterator,
@@ -52,6 +53,7 @@ from pandas.core.window.rolling import (
     Rolling,
     Window,
 )
+from typing_extensions import Self
 import xarray as xr
 
 from pandas._libs.missing import NAType
@@ -74,7 +76,6 @@ from pandas._typing import (
     Dtype,
     FilePath,
     FillnaOptions,
-    FloatFormatType,
     FormattersType,
     GroupByObjectNonScalar,
     HashableT,
@@ -155,7 +156,7 @@ class _iLocIndexerFrame(_iLocIndexer):
         | tuple[IndexType, int]
         | tuple[IndexType, IndexType]
         | tuple[int, IndexType],
-        value: S1 | Series | DataFrame | np.ndarray | None,
+        value: Scalar | Series | DataFrame | np.ndarray | None,
     ) -> None: ...
 
 class _LocIndexerFrame(_LocIndexer):
@@ -204,13 +205,13 @@ class _LocIndexerFrame(_LocIndexer):
     def __setitem__(
         self,
         idx: MaskType | StrLike | _IndexSliceTuple | list[ScalarT],
-        value: S1 | ArrayLike | Series | DataFrame | list | None,
+        value: Scalar | ArrayLike | Series | DataFrame | list | None,
     ) -> None: ...
     @overload
     def __setitem__(
         self,
         idx: tuple[_IndexSliceTuple, HashableT],
-        value: S1 | ArrayLike | Series[S1] | list | None,
+        value: Scalar | ArrayLike | Series | list | None,
     ) -> None: ...
 
 class DataFrame(NDFrame, OpsMixin):
@@ -228,7 +229,7 @@ class DataFrame(NDFrame, OpsMixin):
         columns: Axes | None = ...,
         dtype=...,
         copy: _bool = ...,
-    ) -> DataFrame: ...
+    ) -> Self: ...
     @overload
     def __new__(
         cls,
@@ -237,7 +238,7 @@ class DataFrame(NDFrame, OpsMixin):
         columns: Axes,
         dtype=...,
         copy: _bool = ...,
-    ) -> DataFrame: ...
+    ) -> Self: ...
     def __dataframe__(
         self, nan_as_null: bool = ..., allow_copy: bool = ...
     ) -> DataFrameXchg: ...
@@ -551,14 +552,15 @@ class DataFrame(NDFrame, OpsMixin):
     def T(self) -> DataFrame: ...
     def __getattr__(self, name: str) -> Series: ...
     @overload
-    def __getitem__(
+    def __getitem__(  # type: ignore[misc]
         self,
         key: Series[_bool]
         | DataFrame
         | Index
         | np_ndarray_str
         | np_ndarray_bool
-        | list[_ScalarOrTupleT],
+        | list[_ScalarOrTupleT]
+        | Generator[_ScalarOrTupleT, None, None],
     ) -> DataFrame: ...
     @overload
     def __getitem__(self, key: slice) -> DataFrame: ...
@@ -2172,7 +2174,7 @@ class DataFrame(NDFrame, OpsMixin):
         index: _bool = ...,
         na_rep: _str = ...,
         formatters: FormattersType | None = ...,
-        float_format: FloatFormatType | None = ...,
+        float_format: Callable[[float], str] | None = ...,
         sparsify: _bool | None = ...,
         index_names: _bool = ...,
         justify: _str | None = ...,
@@ -2195,7 +2197,7 @@ class DataFrame(NDFrame, OpsMixin):
         index: _bool = ...,
         na_rep: _str = ...,
         formatters: FormattersType | None = ...,
-        float_format: FloatFormatType | None = ...,
+        float_format: Callable[[float], str] | None = ...,
         sparsify: _bool | None = ...,
         index_names: _bool = ...,
         justify: _str | None = ...,

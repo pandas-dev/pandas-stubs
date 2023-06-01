@@ -70,7 +70,7 @@ class _IndexGetitemMixin(Generic[S1]):
 class Index(IndexOpsMixin, PandasObject):
     __hash__: ClassVar[None]  # type: ignore[assignment]
     @overload
-    def __new__(
+    def __new__(  # type: ignore[misc]
         cls,
         data: Iterable,
         dtype: Literal["int"] | type_t[int] | type_t[np.integer],
@@ -80,7 +80,7 @@ class Index(IndexOpsMixin, PandasObject):
         **kwargs,
     ) -> _IntIndexType: ...
     @overload
-    def __new__(
+    def __new__(  # type: ignore[misc]
         cls,
         data: Iterable,
         dtype: Literal["float"]
@@ -93,7 +93,7 @@ class Index(IndexOpsMixin, PandasObject):
         **kwargs,
     ) -> _FloatIndexType: ...
     @overload
-    def __new__(
+    def __new__(  # type: ignore[misc]
         cls,
         data: Iterable,
         dtype: Literal["complex"] | type_t[complex],
@@ -111,7 +111,7 @@ class Index(IndexOpsMixin, PandasObject):
         name=...,
         tupleize_cols: bool = ...,
         **kwargs,
-    ) -> Index: ...
+    ) -> Self: ...
     @property
     def str(self) -> StringMethods[Index, MultiIndex]: ...
     @property

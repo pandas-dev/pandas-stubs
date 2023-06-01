@@ -76,6 +76,7 @@ from pandas.core.window.rolling import (
 )
 from typing_extensions import (
     Never,
+    Self,
     TypeAlias,
 )
 import xarray as xr
@@ -303,16 +304,21 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         name: Hashable | None = ...,
         copy: bool = ...,
         fastpath: bool = ...,
-    ) -> Series[S1]: ...
+    ) -> Self: ...
     @overload
     def __new__(
         cls,
-        data: object
-        | _ListLike
-        | Series[S1]
-        | dict[int, S1]
-        | dict[_str, S1]
-        | None = ...,
+        data: Series[S1] | dict[int, S1] | dict[_str, S1] = ...,
+        index: Axes | None = ...,
+        dtype=...,
+        name: Hashable | None = ...,
+        copy: bool = ...,
+        fastpath: bool = ...,
+    ) -> Self: ...
+    @overload
+    def __new__(
+        cls,
+        data: object | _ListLike | None = ...,
         index: Axes | None = ...,
         dtype=...,
         name: Hashable | None = ...,
@@ -448,38 +454,28 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         self,
         buf: FilePath | WriteBuffer[str],
         na_rep: _str = ...,
-        formatters=...,
-        float_format=...,
-        sparsify: _bool | None = ...,
-        index_names: _bool = ...,
-        justify: _str | None = ...,
+        float_format: Callable[[float], str] = ...,
+        header: _bool = ...,
+        index: _bool = ...,
+        length: _bool = ...,
+        dtype: _bool = ...,
+        name: _bool = ...,
         max_rows: int | None = ...,
         min_rows: int | None = ...,
-        max_cols: int | None = ...,
-        show_dimensions: _bool = ...,
-        decimal: _str = ...,
-        line_width: int | None = ...,
-        max_colwidth: int | None = ...,
-        encoding: _str | None = ...,
     ) -> None: ...
     @overload
     def to_string(
         self,
         buf: None = ...,
         na_rep: _str = ...,
-        formatters=...,
-        float_format=...,
-        sparsify: _bool | None = ...,
-        index_names: _bool = ...,
-        justify: _str | None = ...,
+        float_format: Callable[[float], str] = ...,
+        header: _bool = ...,
+        index: _bool = ...,
+        length: _bool = ...,
+        dtype: _bool = ...,
+        name: _bool = ...,
         max_rows: int | None = ...,
         min_rows: int | None = ...,
-        max_cols: int | None = ...,
-        show_dimensions: _bool = ...,
-        decimal: _str = ...,
-        line_width: int | None = ...,
-        max_colwidth: int | None = ...,
-        encoding: _str | None = ...,
     ) -> _str: ...
     @overload
     def to_json(
@@ -1937,7 +1933,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     # ignore needed because of mypy, for using `Never` as type-var.
     @overload
     def sum(
-        self: Series[Never],  # type: ignore[type-var]
+        self: Series[Never],
         axis: AxisIndex | None = ...,
         skipna: _bool | None = ...,
         level: None = ...,
@@ -2022,8 +2018,8 @@ class TimestampSeries(Series[Timestamp]):
     # ignore needed because of mypy
     @property
     def dt(self) -> TimestampProperties: ...  # type: ignore[override]
-    def __add__(self, other: TimedeltaSeries | np.timedelta64) -> TimestampSeries: ...  # type: ignore[override]
-    def __radd__(self, other: TimedeltaSeries | np.timedelta64) -> TimestampSeries: ...  # type: ignore[override]
+    def __add__(self, other: TimedeltaSeries | np.timedelta64 | timedelta) -> TimestampSeries: ...  # type: ignore[override]
+    def __radd__(self, other: TimedeltaSeries | np.timedelta64 | timedelta) -> TimestampSeries: ...  # type: ignore[override]
     @overload  # type: ignore[override]
     def __sub__(
         self, other: Timestamp | datetime | TimestampSeries
@@ -2031,7 +2027,7 @@ class TimestampSeries(Series[Timestamp]):
     @overload
     def __sub__(
         self,
-        other: Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64,
+        other: timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64,
     ) -> TimestampSeries: ...
     def __mul__(self, other: float | Series[int] | Series[float] | Sequence[float]) -> TimestampSeries: ...  # type: ignore[override]
     def __truediv__(self, other: float | Series[int] | Series[float] | Sequence[float]) -> TimestampSeries: ...  # type: ignore[override]

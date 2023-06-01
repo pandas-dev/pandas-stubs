@@ -29,6 +29,7 @@ from pandas.api.extensions import (
 from pandas.core.window import ExponentialMovingWindow
 import pytest
 from typing_extensions import (
+    Self,
     TypeAlias,
     assert_type,
 )
@@ -1615,12 +1616,14 @@ def test_pandera_generic() -> None:
     T = TypeVar("T")
 
     class MySeries(pd.Series, Generic[T]):
-        ...
+        def __new__(cls, *args, **kwargs) -> Self:
+            return object.__new__(cls)
 
     def func() -> MySeries[float]:
         return MySeries[float]([1, 2, 3])
 
-    func()
+    result = func()
+    assert result.iloc[1] == 2
 
 
 def test_change_to_dict_return_type() -> None:
@@ -1997,3 +2000,17 @@ def test_groupby_diff() -> None:
     # GH 658
     s = pd.Series([1, 2, 3, np.nan])
     check(assert_type(s.groupby(level=0).diff(), pd.Series), pd.Series)
+
+
+def test_to_string() -> None:
+    # GH 720
+    s = pd.Series([1])
+    check(
+        assert_type(
+            s.to_string(
+                index=False, header=False, length=False, dtype=False, name=False
+            ),
+            str,
+        ),
+        str,
+    )

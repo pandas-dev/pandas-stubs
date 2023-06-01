@@ -310,25 +310,26 @@ UsecolsArgType: TypeAlias = (
     | None
 )
 # Scratch types for generics
+
 S1 = TypeVar(
     "S1",
-    str,
-    bytes,
-    datetime.date,
-    datetime.time,
-    bool,
-    int,
-    float,
-    complex,
-    Dtype,
-    Timestamp,
-    Timedelta,
-    Period,
-    Interval[int],
-    Interval[float],
-    Interval[Timestamp],
-    Interval[Timedelta],
-    CategoricalDtype,
+    bound=str
+    | bytes
+    | datetime.date
+    | datetime.time
+    | bool
+    | int
+    | float
+    | complex
+    | Dtype
+    | Timestamp
+    | Timedelta
+    | Period
+    | Interval[int]
+    | Interval[float]
+    | Interval[Timestamp]
+    | Interval[Timedelta]
+    | CategoricalDtype,
 )
 T1 = TypeVar(
     "T1", str, int, np.int64, np.uint64, np.float64, float, np.dtype[np.generic]

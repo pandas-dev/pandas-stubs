@@ -2612,15 +2612,15 @@ def test_align() -> None:
         columns=["A", "B", "C"],
     )
 
-    s0 = pd.Series(data={1: "1", 3: "3", 5: "5"})
+    s0 = pd.Series(data={0: "1", 3: "3", 5: "5"})
     aligned_df0, aligned_s0 = df0.align(s0, axis="index")
     check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
-    check(assert_type(aligned_s0, pd.Series), pd.Series)
+    check(assert_type(aligned_s0, "pd.Series[str]"), pd.Series, str)
 
     s1 = pd.Series(data={"A": "A", "D": "D"})
     aligned_df0, aligned_s1 = df0.align(s1, axis="columns")
     check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
-    check(assert_type(aligned_s1, pd.Series), pd.Series)
+    check(assert_type(aligned_s1, "pd.Series[str]"), pd.Series, str)
 
     df1 = pd.DataFrame(
         data=np.array(
@@ -2729,3 +2729,8 @@ def test_groupby_fillna_inplace() -> None:
     check(assert_type(groupby.fillna(0, inplace=False), pd.DataFrame), pd.DataFrame)
     if TYPE_CHECKING_INVALID_USAGE:
         groupby.fillna(0, inplace=True)  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+
+
+def test_getitem_generator() -> None:
+    # GH 685
+    check(assert_type(DF[(f"col{i+1}" for i in range(2))], pd.DataFrame), pd.DataFrame)

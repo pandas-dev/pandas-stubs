@@ -470,3 +470,11 @@ def test_check_extension_dtypes() -> None:
     check_ext_dtype(pd.SparseDtype)
     check_ext_dtype(pd.Float32Dtype)
     check_ext_dtype(pd.Float64Dtype)
+
+
+def test_from_dataframe() -> None:
+    # GH 712
+    check(
+        assert_type(pd.api.interchange.from_dataframe(dframe), pd.DataFrame),
+        pd.DataFrame,
+    )
