@@ -27,6 +27,7 @@ from matplotlib.axes import (
 import numpy as np
 from pandas import (
     Period,
+    PeriodDtype,
     Timedelta,
     Timestamp,
 )
@@ -215,12 +216,12 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         cls,
         data: DatetimeIndex | Sequence[Timestamp | np.datetime64 | datetime],
         index: Axes | None = ...,
-        dtype: Dtype = ...,
+        dtype: TimestampDtypeArg = ...,
         name: Hashable | None = ...,
         copy: bool = ...,
     ) -> TimestampSeries: ...
     @overload
-    def __new__(  # type: ignore[misc]
+    def __new__(
         cls,
         data: _ListLike,
         index: Axes | None = ...,
@@ -234,7 +235,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         cls,
         data: PeriodIndex,
         index: Axes | None = ...,
-        dtype: Dtype = ...,
+        dtype: PeriodDtype = ...,
         name: Hashable | None = ...,
         copy: bool = ...,
     ) -> PeriodSeries: ...
@@ -243,52 +244,21 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         cls,
         data: TimedeltaIndex | Sequence[Timedelta | np.timedelta64 | timedelta],
         index: Axes | None = ...,
-        dtype: Dtype = ...,
+        dtype: TimedeltaDtypeArg = ...,
         name: Hashable | None = ...,
         copy: bool = ...,
     ) -> TimedeltaSeries: ...
     @overload
     def __new__(
         cls,
-        data: IntervalIndex[Interval[int]] | Interval[int] | Sequence[Interval[int]],
+        data: IntervalIndex[Interval[_OrderableT]]
+        | Interval[_OrderableT]
+        | Sequence[Interval[_OrderableT]],
         index: Axes | None = ...,
-        dtype: Dtype = ...,
+        dtype: Literal["Interval"] = ...,
         name: Hashable | None = ...,
         copy: bool = ...,
-    ) -> IntervalSeries[int]: ...
-    @overload
-    def __new__(
-        cls,
-        data: IntervalIndex[Interval[float]]
-        | Interval[float]
-        | Sequence[Interval[float]],
-        index: Axes | None = ...,
-        dtype: Dtype = ...,
-        name: Hashable | None = ...,
-        copy: bool = ...,
-    ) -> IntervalSeries[float]: ...
-    @overload
-    def __new__(
-        cls,
-        data: IntervalIndex[Interval[Timestamp]]
-        | Interval[Timestamp]
-        | Sequence[Interval[Timestamp]],
-        index: Axes | None = ...,
-        dtype: Dtype = ...,
-        name: Hashable | None = ...,
-        copy: bool = ...,
-    ) -> IntervalSeries[Timestamp]: ...
-    @overload
-    def __new__(
-        cls,
-        data: IntervalIndex[Interval[Timedelta]]
-        | Interval[Timedelta]
-        | Sequence[Interval[Timedelta]],
-        index: Axes | None = ...,
-        dtype: Dtype = ...,
-        name: Hashable | None = ...,
-        copy: bool = ...,
-    ) -> IntervalSeries[Timedelta]: ...
+    ) -> IntervalSeries[_OrderableT]: ...
     @overload
     def __new__(
         cls,

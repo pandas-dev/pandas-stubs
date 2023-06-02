@@ -27,9 +27,9 @@ from pandas._typing import (
 
 VALID_CLOSED: frozenset[str]
 
-_OrderableScalarT = TypeVar("_OrderableScalarT", int, float)
-_OrderableTimesT = TypeVar("_OrderableTimesT", Timestamp, Timedelta)
-_OrderableT = TypeVar("_OrderableT", int, float, Timestamp, Timedelta)
+_OrderableScalarT = TypeVar("_OrderableScalarT", bound=int | float)
+_OrderableTimesT = TypeVar("_OrderableTimesT", bound=Timestamp | Timedelta)
+_OrderableT = TypeVar("_OrderableT", bound=int | float | Timestamp | Timedelta)
 
 class _LengthDescriptor:
     @overload

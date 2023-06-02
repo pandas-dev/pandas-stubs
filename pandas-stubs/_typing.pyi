@@ -360,13 +360,7 @@ NDFrameT = TypeVar("NDFrameT", bound=NDFrame)
 IndexT = TypeVar("IndexT", bound=Index)
 
 # Interval closed type
-IntervalT = TypeVar(
-    "IntervalT",
-    Interval[int],
-    Interval[float],
-    Interval[Timestamp],
-    Interval[Timedelta],
-)
+IntervalT = TypeVar("IntervalT", bound=Interval)
 IntervalClosedType: TypeAlias = Literal["left", "right", "both", "neither"]
 
 TakeIndexer: TypeAlias = Sequence[int] | Sequence[np.integer] | npt.NDArray[np.integer]
@@ -407,26 +401,26 @@ Function: TypeAlias = np.ufunc | Callable[..., Any]
 _HashableTa = TypeVar("_HashableTa", bound=Hashable)
 ByT = TypeVar(
     "ByT",
-    str,
-    bytes,
-    datetime.date,
-    datetime.datetime,
-    datetime.timedelta,
-    np.datetime64,
-    np.timedelta64,
-    bool,
-    int,
-    float,
-    complex,
-    Timestamp,
-    Timedelta,
-    Scalar,
-    Period,
-    Interval[int],
-    Interval[float],
-    Interval[Timestamp],
-    Interval[Timedelta],
-    tuple,
+    bound=str
+    | bytes
+    | datetime.date
+    | datetime.datetime
+    | datetime.timedelta
+    | np.datetime64
+    | np.timedelta64
+    | bool
+    | int
+    | float
+    | complex
+    | Timestamp
+    | Timedelta
+    | Scalar
+    | Period
+    | Interval[int]
+    | Interval[float]
+    | Interval[Timestamp]
+    | Interval[Timedelta]
+    | tuple,
 )
 GroupByObjectNonScalar: TypeAlias = (
     tuple
