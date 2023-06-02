@@ -985,6 +985,20 @@ def test_types_groupby_any() -> None:
     )
 
 
+def test_types_groupby_iter() -> None:
+    df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
+    series_groupby = pd.Series([True, True, False], dtype=bool)
+    first_group = next(iter(df.groupby(series_groupby)))
+    check(
+        assert_type(first_group[0], bool),
+        bool,
+    )
+    check(
+        assert_type(first_group[1], pd.DataFrame),
+        pd.DataFrame,
+    )
+
+
 def test_types_merge() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
     df2 = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [0, 1, 0]})
