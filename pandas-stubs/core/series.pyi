@@ -132,6 +132,7 @@ from pandas._typing import (
     Renamer,
     ReplaceMethod,
     Scalar,
+    SeriesByT,
     SortKind,
     StrDtypeArg,
     TimedeltaDtypeArg,
@@ -597,7 +598,20 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def groupby(
         self,
-        by: CategoricalIndex | Index,
+        by: Series[SeriesByT],
+        axis: AxisIndex = ...,
+        level: Level | None = ...,
+        as_index: _bool = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        squeeze: _bool = ...,
+        observed: _bool = ...,
+        dropna: _bool = ...,
+    ) -> SeriesGroupBy[S1, SeriesByT]: ...
+    @overload
+    def groupby(
+        self,
+        by: CategoricalIndex | Index | Series,
         axis: AxisIndex = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
