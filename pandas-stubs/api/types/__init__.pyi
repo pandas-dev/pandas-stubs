@@ -41,6 +41,9 @@ from pandas.core.dtypes.api import (
     is_unsigned_integer_dtype as is_unsigned_integer_dtype,
     pandas_dtype as pandas_dtype,
 )
+from pandas.core.dtypes.common import (
+    is_any_real_numeric_dtype as is_any_real_numeric_dtype,
+)
 from pandas.core.dtypes.concat import union_categoricals as union_categoricals
 from pandas.core.dtypes.dtypes import (
     CategoricalDtype as CategoricalDtype,

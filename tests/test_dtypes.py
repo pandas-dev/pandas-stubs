@@ -13,6 +13,7 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas.api.types import is_any_real_numeric_dtype
 from pandas.core.arrays import BooleanArray  # noqa: F401
 from pandas.core.arrays import IntegerArray  # noqa: F401
 import pyarrow as pa
@@ -21,8 +22,6 @@ from typing_extensions import assert_type
 from pandas._libs import NaTType
 from pandas._libs.missing import NAType
 from pandas._typing import Scalar
-
-from pandas.core.dtypes.common import is_any_real_numeric_dtype
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
