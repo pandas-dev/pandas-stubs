@@ -227,7 +227,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         data: _ListLike,
         index: Axes | None = ...,
         *,
-        dtype: Literal["datetime64[ns]"],
+        dtype: TimestampDtypeArg,
         name: Hashable | None = ...,
         copy: bool = ...,
     ) -> TimestampSeries: ...
