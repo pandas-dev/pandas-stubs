@@ -1,6 +1,7 @@
 from pandas._libs.lib import infer_dtype as infer_dtype
 
 from pandas.core.dtypes.api import (
+    is_any_real_numeric_dtype as is_any_real_numeric_dtype,
     is_array_like as is_array_like,
     is_bool as is_bool,
     is_bool_dtype as is_bool_dtype,
@@ -40,9 +41,6 @@ from pandas.core.dtypes.api import (
     is_timedelta64_ns_dtype as is_timedelta64_ns_dtype,
     is_unsigned_integer_dtype as is_unsigned_integer_dtype,
     pandas_dtype as pandas_dtype,
-)
-from pandas.core.dtypes.common import (
-    is_any_real_numeric_dtype as is_any_real_numeric_dtype,
 )
 from pandas.core.dtypes.concat import union_categoricals as union_categoricals
 from pandas.core.dtypes.dtypes import (
