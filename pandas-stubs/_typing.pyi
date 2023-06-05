@@ -360,13 +360,7 @@ NDFrameT = TypeVar("NDFrameT", bound=NDFrame)
 IndexT = TypeVar("IndexT", bound=Index)
 
 # Interval closed type
-IntervalT = TypeVar(
-    "IntervalT",
-    Interval[int],
-    Interval[float],
-    Interval[Timestamp],
-    Interval[Timedelta],
-)
+IntervalT = TypeVar("IntervalT", bound=Interval)
 IntervalClosedType: TypeAlias = Literal["left", "right", "both", "neither"]
 
 TakeIndexer: TypeAlias = Sequence[int] | Sequence[np.integer] | npt.NDArray[np.integer]
