@@ -13,6 +13,7 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas.api.types import is_any_real_numeric_dtype
 from pandas.core.arrays import BooleanArray  # noqa: F401
 from pandas.core.arrays import IntegerArray  # noqa: F401
 import pyarrow as pa
@@ -144,3 +145,9 @@ def test_arrow_dtype() -> None:
     a_dt = pd.ArrowDtype(pa.int64())
     check(assert_type(a_dt, pd.ArrowDtype), pd.ArrowDtype)
     check(assert_type(a_dt.pyarrow_dtype, pa.DataType), pa.DataType)
+
+
+def test_is_any_real_numeric_dtype() -> None:
+    check(assert_type(is_any_real_numeric_dtype(np.array([1, 2])), bool), bool)
+    check(assert_type(is_any_real_numeric_dtype(int), bool), bool)
+    check(assert_type(is_any_real_numeric_dtype(float), bool), bool)
