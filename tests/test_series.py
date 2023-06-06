@@ -35,6 +35,7 @@ from typing_extensions import (
 )
 import xarray as xr
 
+from pandas._libs.missing import NAType
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
@@ -469,6 +470,8 @@ def test_types_apply() -> None:
 
     ss = s.astype(str)
     check(assert_type(ss.apply(get_depth), pd.Series), pd.Series, np.int64)
+
+    check(assert_type(s.apply(lambda x: pd.NA), pd.Series), pd.Series, NAType)
 
 
 def test_types_element_wise_arithmetic() -> None:
