@@ -2020,13 +2020,13 @@ def test_types_mask() -> None:
     s = pd.Series([1, 2, 3, 4, 5])
 
     # Test case with a boolean condition and a scalar value
-    check(assert_type(s.mask(s > 3, 10), pd.Series), pd.Series, np.int64)
+    check(assert_type(s.mask(s > 3, 10), pd.Series), pd.Series, np.integer)
 
     # Test case with a boolean condition and a callable
     def double(x):
         return x * 2
 
-    check(assert_type(s.mask(s > 3, double), pd.Series), pd.Series, np.int64)
+    check(assert_type(s.mask(s > 3, double), pd.Series), pd.Series, np.integer)
 
     # Test cases with None and pd.NA as other
     check(assert_type(s.mask(s > 3, None), pd.Series), pd.Series, np.float64)
