@@ -1378,7 +1378,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def mask(
         self,
         cond: MaskType,
-        other: Scalar | Series[S1] | DataFrame | Callable = ...,
+        other: Scalar | Series[S1] | DataFrame | Callable | NAType | None = ...,
         *,
         inplace: _bool = ...,
         axis: AxisIndex | None = ...,
