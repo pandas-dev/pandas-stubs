@@ -5,6 +5,7 @@ from typing import (
 )
 
 import numpy as np
+import pandas
 from pandas import (
     Index,
     PeriodIndex,
@@ -61,7 +62,12 @@ class PeriodMixin:
 class Period(PeriodMixin):
     def __init__(
         self,
-        value: Period | str | None = ...,
+        value: Period
+        | str
+        | datetime.datetime
+        | datetime.date
+        | Timestamp
+        | None = ...,
         freq: str | BaseOffset | None = ...,
         ordinal: int | None = ...,
         year: int | None = ...,
