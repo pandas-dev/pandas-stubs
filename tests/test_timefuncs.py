@@ -838,6 +838,27 @@ def test_period_range() -> None:
         ),
         pd.PeriodIndex,
     )
+    check(
+        assert_type(
+            pd.period_range(pd.Timestamp("2001-01-01"), end="2002-01-01", freq="Q"),
+            pd.PeriodIndex,
+        ),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(
+            pd.period_range(dt.datetime(2001, 1, 1), end="2002-01-01", freq="Q"),
+            pd.PeriodIndex,
+        ),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(
+            pd.period_range(dt.date(2001, 1, 1), end="2002-01-01", freq="Q"),
+            pd.PeriodIndex,
+        ),
+        pd.PeriodIndex,
+    )
 
 
 def test_to_datetime_scalar() -> None:

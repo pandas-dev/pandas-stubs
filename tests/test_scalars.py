@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 import datetime as dt
 from typing import (
     TYPE_CHECKING,
@@ -1690,6 +1691,20 @@ def test_period_construction() -> None:
         pd.Period,
     )
     check(assert_type(pd.Period(freq="Q", year=2012, quarter=2), pd.Period), pd.Period)
+    check(
+        assert_type(
+            pd.Period(value=datetime.datetime(2012, 1, 1), freq="D"), pd.Period
+        ),
+        pd.Period,
+    )
+    check(
+        assert_type(pd.Period(value=datetime.date(2012, 1, 1), freq="D"), pd.Period),
+        pd.Period,
+    )
+    check(
+        assert_type(pd.Period(value=pd.Timestamp(2012, 1, 1), freq="D"), pd.Period),
+        pd.Period,
+    )
 
 
 def test_period_properties() -> None:
