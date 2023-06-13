@@ -61,7 +61,12 @@ class PeriodMixin:
 class Period(PeriodMixin):
     def __init__(
         self,
-        value: Period | str | None = ...,
+        value: Period
+        | str
+        | datetime.datetime
+        | datetime.date
+        | Timestamp
+        | None = ...,
         freq: str | BaseOffset | None = ...,
         ordinal: int | None = ...,
         year: int | None = ...,
