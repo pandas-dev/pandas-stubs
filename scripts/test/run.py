@@ -92,7 +92,7 @@ def nightly_pandas():
         "--use-deprecated=legacy-resolver",
         "--upgrade",
         "--extra-index-url",
-        "https://pypi.anaconda.org/scipy-wheels-nightly/simple",
+        "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple",
         "pandas",
     ]
     subprocess.run(cmd, check=True)
