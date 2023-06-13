@@ -5,7 +5,6 @@ from typing import (
 )
 
 import numpy as np
-import pandas
 from pandas import (
     Index,
     PeriodIndex,

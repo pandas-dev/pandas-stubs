@@ -840,21 +840,25 @@ def test_period_range() -> None:
     )
     check(
         assert_type(
-            pd.period_range(pd.Timestamp("2001-01-01"), end="2002-01-01", freq="Q"),
+            pd.period_range(
+                pd.Timestamp("2001-01-01"), end=pd.Timestamp("2002-01-01"), freq="Q"
+            ),
             pd.PeriodIndex,
         ),
         pd.PeriodIndex,
     )
     check(
         assert_type(
-            pd.period_range(dt.datetime(2001, 1, 1), end="2002-01-01", freq="Q"),
+            pd.period_range(
+                dt.datetime(2001, 1, 1), end=dt.datetime(2002, 1, 1), freq="Q"
+            ),
             pd.PeriodIndex,
         ),
         pd.PeriodIndex,
     )
     check(
         assert_type(
-            pd.period_range(dt.date(2001, 1, 1), end="2002-01-01", freq="Q"),
+            pd.period_range(dt.date(2001, 1, 1), end=dt.date(2002, 1, 1), freq="Q"),
             pd.PeriodIndex,
         ),
         pd.PeriodIndex,
