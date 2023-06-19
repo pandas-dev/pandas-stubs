@@ -6,8 +6,10 @@ from datetime import (
     timedelta,
     tzinfo,
 )
-from typing import overload
-
+from typing import (
+    Literal,
+    overload,
+)
 import numpy as np
 from pandas import (
     DataFrame,

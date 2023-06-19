@@ -1178,6 +1178,7 @@ def test_weekofmonth_init():
         pd.offsets.WeekOfMonth,
     )
 
+
 def test_date_range_unit():
     check(
         assert_type(
