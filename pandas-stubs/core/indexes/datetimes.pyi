@@ -104,6 +104,7 @@ def date_range(
     normalize: bool = ...,
     name: Hashable | None = ...,
     inclusive: IntervalClosedType = ...,
+    unit: Literal["s", "ms", "us", "ns"] | None = ...,
 ) -> DatetimeIndex: ...
 @overload
 def bdate_range(

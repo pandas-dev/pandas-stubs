@@ -1177,3 +1177,33 @@ def test_weekofmonth_init():
         ),
         pd.offsets.WeekOfMonth,
     )
+
+def test_date_range_unit():
+    check(
+        assert_type(
+            pd.date_range("1/1/2022", "2/1/2022", unit="s"),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.date_range("1/1/2022", "2/1/2022", unit="ms"),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.date_range("1/1/2022", "2/1/2022", unit="us"),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.date_range("1/1/2022", "2/1/2022", unit="ns"),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
