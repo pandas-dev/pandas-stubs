@@ -159,6 +159,10 @@ class DataFrameGroupBy(GroupBy, Generic[ByT]):
     def apply(  # pyright: ignore[reportOverlappingOverload]
         self, func: Callable[[Iterable], float], *args, **kwargs
     ) -> DataFrame: ...
+    # error: overload 1 overlaps overload 2 as "size" is in AggFuncTypeFrame
+    @overload
+    def aggregate(self, arg: Literal["size"]) -> Series: ...  # type: ignore[misc]  # pyright: ignore[reportOverlappingOverload]
+    @overload
     def aggregate(self, arg: AggFuncTypeFrame = ..., *args, **kwargs) -> DataFrame: ...
     agg = aggregate
     def transform(self, func: Callable | str, *args, **kwargs) -> DataFrame: ...
