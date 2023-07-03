@@ -951,6 +951,9 @@ def test_types_groupby_agg() -> None:
 
     cols_mixed: list[str | int] = ["col1", 0]
     check(assert_type(df.groupby(by=cols_mixed).sum(), pd.DataFrame), pd.DataFrame)
+    # GH 736
+    check(assert_type(df.groupby(by="col1").aggregate("size"), pd.Series), pd.Series)
+    check(assert_type(df.groupby(by="col1").agg("size"), pd.Series), pd.Series)
 
 
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
