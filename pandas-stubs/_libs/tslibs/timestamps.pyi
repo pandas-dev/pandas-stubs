@@ -5,6 +5,7 @@ from datetime import (
     timedelta,
     tzinfo as _tzinfo,
 )
+import sys
 from time import struct_time
 from typing import (
     ClassVar,
@@ -44,6 +45,11 @@ _Ambiguous: TypeAlias = bool | Literal["raise", "NaT"]
 _Nonexistent: TypeAlias = (
     Literal["raise", "NaT", "shift_backward", "shift_forward"] | Timedelta | timedelta
 )
+
+if sys.version_info >= (3, 9):
+    from datetime import _IsoCalendarDate
+else:
+    _IsoCalendarDate: TypeAlias = tuple[int, int, int]
 
 class Timestamp(datetime):
     min: ClassVar[Timestamp]
@@ -227,7 +233,7 @@ class Timestamp(datetime):
     def __ne__(self, other: object) -> Literal[True]: ...
     def weekday(self) -> int: ...
     def isoweekday(self) -> int: ...
-    def isocalendar(self) -> tuple[int, int, int]: ...
+    def isocalendar(self) -> _IsoCalendarDate: ...
     @property
     def is_leap_year(self) -> bool: ...
     @property
