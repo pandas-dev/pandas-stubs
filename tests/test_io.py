@@ -56,6 +56,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     WINDOWS,
     check,
+    pytest_warns_bounded,
 )
 
 from pandas.io.api import to_pickle
@@ -371,57 +372,77 @@ def test_hdfstore():
             assert_type(store.select("df", start=0, stop=1), Union[DataFrame, Series]),
             DataFrame,
         )
-        check(
-            assert_type(store.select("df", where="index>=1"), Union[DataFrame, Series]),
-            DataFrame,
-        )
-        check(
-            assert_type(
-                store.select("df", where=Term("index>=1")),
-                Union[DataFrame, Series],
-            ),
-            DataFrame,
-        )
-        check(
-            assert_type(
-                store.select("df", where=[Term("index>=1")]),
-                Union[DataFrame, Series],
-            ),
-            DataFrame,
-        )
-        check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
-        for key in store:
-            check(assert_type(key, str), str)
-        check(assert_type(store.close(), None), type(None))
+        with pytest_warns_bounded(
+            DeprecationWarning,
+            match="`alltrue` is deprecated as of NumPy 1.25.0",
+            lower="1.24.99",
+            version_str=np.__version__,
+        ):
+            check(
+                assert_type(
+                    store.select("df", where="index>=1"), Union[DataFrame, Series]
+                ),
+                DataFrame,
+            )
+            check(
+                assert_type(
+                    store.select("df", where=Term("index>=1")),
+                    Union[DataFrame, Series],
+                ),
+                DataFrame,
+            )
+            check(
+                assert_type(
+                    store.select("df", where=[Term("index>=1")]),
+                    Union[DataFrame, Series],
+                ),
+                DataFrame,
+            )
+            check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
+            for key in store:
+                check(assert_type(key, str), str)
+            check(assert_type(store.close(), None), type(None))
 
-        store = HDFStore(path, model="r")
-        check(
-            assert_type(read_hdf(store, "df"), Union[DataFrame, Series]),
-            DataFrame,
-        )
-        store.close()
+            store = HDFStore(path, model="r")
+            check(
+                assert_type(read_hdf(store, "df"), Union[DataFrame, Series]),
+                DataFrame,
+            )
+            store.close()
 
 
 def test_read_hdf_iterator():
-    with ensure_clean() as path:
-        check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
-        ti = read_hdf(path, chunksize=1)
-        check(assert_type(ti, TableIterator), TableIterator)
-        ti.close()
+    with pytest_warns_bounded(
+        DeprecationWarning,
+        match="`alltrue` is deprecated as of NumPy 1.25.0",
+        lower="1.24.99",
+        version_str=np.__version__,
+    ):
+        with ensure_clean() as path:
+            check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
+            ti = read_hdf(path, chunksize=1)
+            check(assert_type(ti, TableIterator), TableIterator)
+            ti.close()
 
-        ti = read_hdf(path, "df", iterator=True)
-        check(assert_type(ti, TableIterator), TableIterator)
-        for _ in ti:
-            pass
-        ti.close()
+            ti = read_hdf(path, "df", iterator=True)
+            check(assert_type(ti, TableIterator), TableIterator)
+            for _ in ti:
+                pass
+            ti.close()
 
 
 def test_hdf_context_manager():
-    with ensure_clean() as path:
-        check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
-        with HDFStore(path, mode="r") as store:
-            check(assert_type(store.is_open, bool), bool)
-            check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
+    with pytest_warns_bounded(
+        DeprecationWarning,
+        match="`alltrue` is deprecated as of NumPy 1.25.0",
+        lower="1.24.99",
+        version_str=np.__version__,
+    ):
+        with ensure_clean() as path:
+            check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
+            with HDFStore(path, mode="r") as store:
+                check(assert_type(store.is_open, bool), bool)
+                check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
 
 
 def test_hdf_series():
