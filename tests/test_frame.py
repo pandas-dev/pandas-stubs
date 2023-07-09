@@ -43,6 +43,7 @@ from tests import (
     PD_LTE_20,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 
 from pandas.io.formats.style import Styler
@@ -304,7 +305,10 @@ def test_types_dropna() -> None:
 def test_types_fillna() -> None:
     df = pd.DataFrame(data={"col1": [np.nan, np.nan], "col2": [3, np.nan]})
     res: pd.DataFrame = df.fillna(0)
-    res2: None = df.fillna(method="pad", axis=1, inplace=True)
+    with pytest_warns_bounded(
+        FutureWarning, "DataFrame.fillna with 'method' is deprecated", lower="2.0.99"
+    ):
+        res2: None = df.fillna(method="pad", axis=1, inplace=True)
 
 
 def test_types_sort_index() -> None:
@@ -725,13 +729,16 @@ def test_types_apply() -> None:
 
 
 def test_types_applymap() -> None:
-    df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    df.applymap(lambda x: x**2)
-    df.applymap(np.exp)
-    df.applymap(str)
-    # na_action parameter was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-    df.applymap(np.exp, na_action="ignore")
-    df.applymap(str, na_action=None)
+    with pytest_warns_bounded(
+        FutureWarning, "DataFrame.applymap has been deprecated", lower="2.0.99"
+    ):
+        df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
+        df.applymap(lambda x: x**2)
+        df.applymap(np.exp)
+        df.applymap(str)
+        # na_action parameter was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
+        df.applymap(np.exp, na_action="ignore")
+        df.applymap(str, na_action=None)
 
 
 def test_types_element_wise_arithmetic() -> None:
@@ -875,7 +882,12 @@ def test_types_groupby() -> None:
     df4: pd.DataFrame = df.groupby(by=["col1", "col2"]).count()
     df5: pd.DataFrame = df.groupby(by=["col1", "col2"]).filter(lambda x: x["col1"] > 0)
     df6: pd.DataFrame = df.groupby(by=["col1", "col2"]).nunique()
-    df7: pd.DataFrame = df.groupby(by="col1").apply(sum)
+    with pytest_warns_bounded(
+        FutureWarning,
+        "The provided callable <built-in function sum> is currently using",
+        lower="2.0.99",
+    ):
+        df7: pd.DataFrame = df.groupby(by="col1").apply(sum)
     df8: pd.DataFrame = df.groupby("col1").transform("sum")
     s1: pd.Series = df.set_index("col1")["col2"]
     s2: pd.Series = s1.groupby("col1").transform("sum")
@@ -907,32 +919,44 @@ def test_types_groupby_agg() -> None:
     df = pd.DataFrame(
         data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0], 0: [-1, -1, -1]}
     )
-    check(assert_type(df.groupby("col1")["col3"].agg(min), pd.Series), pd.Series)
-    check(
-        assert_type(df.groupby("col1")["col3"].agg([min, max]), pd.DataFrame),
-        pd.DataFrame,
-    )
     check(assert_type(df.groupby("col1").agg("min"), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.groupby("col1").agg(min), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(df.groupby("col1").agg(["min", "max"]), pd.DataFrame), pd.DataFrame
     )
-    check(assert_type(df.groupby("col1").agg([min, max]), pd.DataFrame), pd.DataFrame)
     agg_dict1 = {"col2": "min", "col3": "max", 0: "sum"}
     check(assert_type(df.groupby("col1").agg(agg_dict1), pd.DataFrame), pd.DataFrame)
-    agg_dict2 = {"col2": min, "col3": max, 0: min}
-    check(assert_type(df.groupby("col1").agg(agg_dict2), pd.DataFrame), pd.DataFrame)
 
     def wrapped_min(x: Any) -> Any:
         return x.min()
 
-    # Here, MyPy infers dict[object, object], so it must be explicitly annotated
-    agg_dict3: dict[str | int, str | Callable] = {
-        "col2": min,
-        "col3": "max",
-        0: wrapped_min,
-    }
-    check(assert_type(df.groupby("col1").agg(agg_dict3), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <built-in function (min|max)> is currently using",
+        lower="2.0.99",
+    ):
+        check(assert_type(df.groupby("col1")["col3"].agg(min), pd.Series), pd.Series)
+        check(
+            assert_type(df.groupby("col1")["col3"].agg([min, max]), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(assert_type(df.groupby("col1").agg(min), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(df.groupby("col1").agg([min, max]), pd.DataFrame), pd.DataFrame
+        )
+        agg_dict2 = {"col2": min, "col3": max, 0: min}
+        check(
+            assert_type(df.groupby("col1").agg(agg_dict2), pd.DataFrame), pd.DataFrame
+        )
+
+        # Here, MyPy infers dict[object, object], so it must be explicitly annotated
+        agg_dict3: dict[str | int, str | Callable] = {
+            "col2": min,
+            "col3": "max",
+            0: wrapped_min,
+        }
+        check(
+            assert_type(df.groupby("col1").agg(agg_dict3), pd.DataFrame), pd.DataFrame
+        )
     agg_dict4 = {"col2": "sum"}
     check(assert_type(df.groupby("col1").agg(agg_dict4), pd.DataFrame), pd.DataFrame)
     agg_dict5 = {0: "sum"}
@@ -1040,16 +1064,30 @@ def test_types_window() -> None:
         assert_type(df.rolling(2).agg("max"), pd.DataFrame),
         pd.DataFrame,
     )
-    check(
-        assert_type(df.rolling(2).agg(max), pd.DataFrame),
-        pd.DataFrame,
-    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <built-in function (min|max)> is currently using",
+        lower="2.0.99",
+    ):
+        check(
+            assert_type(df.rolling(2).agg(max), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(df.rolling(2).agg([max, min]), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(df.rolling(2).agg({"col2": max}), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(df.rolling(2).agg({"col2": [max, min]}), pd.DataFrame),
+            pd.DataFrame,
+        )
+
     check(
         assert_type(df.rolling(2).agg(["max", "min"]), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(df.rolling(2).agg([max, min]), pd.DataFrame),
         pd.DataFrame,
     )
     check(
@@ -1057,15 +1095,7 @@ def test_types_window() -> None:
         pd.DataFrame,
     )
     check(
-        assert_type(df.rolling(2).agg({"col2": max}), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
         assert_type(df.rolling(2).agg({"col2": ["max", "min"]}), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(df.rolling(2).agg({"col2": [max, min]}), pd.DataFrame),
         pd.DataFrame,
     )
 
@@ -1132,18 +1162,23 @@ def test_types_compare() -> None:
 def test_types_agg() -> None:
     df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=["A", "B", "C"])
     check(assert_type(df.agg("min"), pd.Series), pd.Series)
-    check(assert_type(df.agg(min), pd.Series), pd.Series)
     check(assert_type(df.agg(["min", "max"]), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.agg([min, max]), pd.DataFrame), pd.DataFrame)
+
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <built-in function (min|max)> is currently using",
+        lower="2.0.99",
+    ):
+        check(assert_type(df.agg(min), pd.Series), pd.Series)
+        check(assert_type(df.agg([min, max]), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(
+                df.agg(x=("A", max), y=("B", "min"), z=("C", np.mean)), pd.DataFrame
+            ),
+            pd.DataFrame,
+        )
     check(
         assert_type(df.agg({"A": ["min", "max"], "B": "min"}), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(assert_type(df.agg({"A": [min, max], "B": min}), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(
-            df.agg(x=("A", max), y=("B", "min"), z=("C", np.mean)), pd.DataFrame
-        ),
         pd.DataFrame,
     )
     check(assert_type(df.agg("mean", axis=1), pd.Series), pd.Series)
@@ -1152,15 +1187,21 @@ def test_types_agg() -> None:
 def test_types_aggregate() -> None:
     df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=["A", "B", "C"])
     check(assert_type(df.aggregate("min"), pd.Series), pd.Series)
-    check(assert_type(df.aggregate(min), pd.Series), pd.Series)
     check(assert_type(df.aggregate(["min", "max"]), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.aggregate([min, max]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <built-in function (min|max)> is currently using",
+        lower="2.0.99",
+    ):
+        check(assert_type(df.aggregate(min), pd.Series), pd.Series)
+        check(assert_type(df.aggregate([min, max]), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(df.aggregate({"A": [min, max], "B": min}), pd.DataFrame),
+            pd.DataFrame,
+        )
+
     check(
         assert_type(df.aggregate({"A": ["min", "max"], "B": "min"}), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(df.aggregate({"A": [min, max], "B": min}), pd.DataFrame),
         pd.DataFrame,
     )
 
@@ -1471,14 +1512,19 @@ def test_types_regressions() -> None:
 
     # https://github.com/microsoft/python-type-stubs/issues/115
     df = pd.DataFrame({"A": [1, 2, 3], "B": [5, 6, 7]})
-    pd.DatetimeIndex(
-        data=df["A"],
-        tz=None,
-        normalize=False,
-        closed=None,
-        ambiguous="NaT",
-        copy=True,
-    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        "The 'closed' keyword in DatetimeIndex construction is deprecated",
+        lower="2.0.99",
+    ):
+        pd.DatetimeIndex(
+            data=df["A"],
+            tz=None,
+            normalize=False,
+            closed=None,
+            ambiguous="NaT",
+            copy=True,
+        )
 
 
 def test_read_csv() -> None:
@@ -2081,14 +2127,21 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
 
     # categorical indexes are also ambiguous
-    categorical_index = pd.CategoricalIndex(df.a)
-    iterator2 = df.groupby(categorical_index).__iter__()
-    assert_type(iterator2, Iterator[Tuple[Any, pd.DataFrame]])
-    index2, value2 = next(iterator2)
-    assert_type((index2, value2), Tuple[Any, pd.DataFrame])
 
-    check(assert_type(index2, Any), int)
-    check(assert_type(value2, pd.DataFrame), pd.DataFrame)
+    # https://github.com/pandas-dev/pandas/issues/54054 needs to be fixed
+    with pytest_warns_bounded(
+        FutureWarning,
+        "The default of observed=False is deprecated",
+        lower="2.0.99",
+    ):
+        categorical_index = pd.CategoricalIndex(df.a)
+        iterator2 = df.groupby(categorical_index).__iter__()
+        assert_type(iterator2, Iterator[Tuple[Any, pd.DataFrame]])
+        index2, value2 = next(iterator2)
+        assert_type((index2, value2), Tuple[Any, pd.DataFrame])
+
+        check(assert_type(index2, Any), int)
+        check(assert_type(value2, pd.DataFrame), pd.DataFrame)
 
 
 def test_setitem_list():
@@ -2465,11 +2518,16 @@ def test_getattr_and_dataframe_groupby() -> None:
     df = pd.DataFrame(
         data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0], 0: [-1, -1, -1]}
     )
-    check(assert_type(df.groupby("col1").col3.agg(min), pd.Series), pd.Series)
-    check(
-        assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame),
-        pd.DataFrame,
-    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <built-in function (min|max)> is currently using",
+        lower="2.0.99",
+    ):
+        check(assert_type(df.groupby("col1").col3.agg(min), pd.Series), pd.Series)
+        check(
+            assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame),
+            pd.DataFrame,
+        )
 
 
 def test_getsetitem_multiindex() -> None:
