@@ -474,37 +474,45 @@ def test_json_series():
         check(assert_type(s.to_json(path), None), type(None))
         check(assert_type(read_json(path, typ="series"), Series), Series)
     check(assert_type(DF.to_json(), str), str)
-    check(
-        assert_type(
-            read_json(s.to_json(orient=None), typ="series", orient=None), Series
-        ),
-        Series,
-    )
-    check(
-        assert_type(
-            read_json(s.to_json(orient="split"), typ="series", orient="split"), Series
-        ),
-        Series,
-    )
-    check(
-        assert_type(
-            read_json(s.to_json(orient="records"), typ="series", orient="records"),
+    with pytest_warns_bounded(
+        FutureWarning,
+        "Passing literal json to 'read_json' is deprecated ",
+        lower="2.0.99",
+    ):
+        check(
+            assert_type(
+                read_json(s.to_json(orient=None), typ="series", orient=None), Series
+            ),
             Series,
-        ),
-        Series,
-    )
-    check(
-        assert_type(
-            read_json(s.to_json(orient="index"), typ="series", orient="index"), Series
-        ),
-        Series,
-    )
-    check(
-        assert_type(
-            read_json(s.to_json(orient="table"), typ="series", orient="table"), Series
-        ),
-        Series,
-    )
+        )
+        check(
+            assert_type(
+                read_json(s.to_json(orient="split"), typ="series", orient="split"),
+                Series,
+            ),
+            Series,
+        )
+        check(
+            assert_type(
+                read_json(s.to_json(orient="records"), typ="series", orient="records"),
+                Series,
+            ),
+            Series,
+        )
+        check(
+            assert_type(
+                read_json(s.to_json(orient="index"), typ="series", orient="index"),
+                Series,
+            ),
+            Series,
+        )
+        check(
+            assert_type(
+                read_json(s.to_json(orient="table"), typ="series", orient="table"),
+                Series,
+            ),
+            Series,
+        )
 
 
 def test_json_chunk():
@@ -981,7 +989,12 @@ def test_read_excel_io_types() -> None:
             check(assert_type(pd.read_excel(as_file), pd.DataFrame), pd.DataFrame)
 
         as_bytes = as_path.read_bytes()
-        check(assert_type(pd.read_excel(as_bytes), pd.DataFrame), pd.DataFrame)
+        with pytest_warns_bounded(
+            FutureWarning,
+            "Passing bytes to 'read_excel' is deprecated",
+            lower="2.0.99",
+        ):
+            check(assert_type(pd.read_excel(as_bytes), pd.DataFrame), pd.DataFrame)
 
 
 def test_read_excel_basic():

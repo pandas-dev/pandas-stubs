@@ -27,8 +27,10 @@ if TYPE_CHECKING:
 else:
     FulldatetimeDict = Any
 from tests import (
+    PD_LTE_20,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 
 from pandas.tseries.holiday import USFederalHolidayCalendar
@@ -362,7 +364,12 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s0.dt.isocalendar(), pd.DataFrame), pd.DataFrame)
     check(assert_type(s0.dt.to_period("D"), "PeriodSeries"), pd.Series, pd.Period)
 
-    check(assert_type(s0.dt.to_pydatetime(), np.ndarray), np.ndarray, dt.datetime)
+    with pytest_warns_bounded(
+        FutureWarning,
+        "The behavior of DatetimeProperties.to_pydatetime is deprecated",
+        lower="2.0.99",
+    ):
+        check(assert_type(s0.dt.to_pydatetime(), np.ndarray), np.ndarray, dt.datetime)
     s0_local = s0.dt.tz_localize("UTC")
     check(
         assert_type(s0_local, "TimestampSeries"),
@@ -702,7 +709,14 @@ def test_to_timdelta_units() -> None:
     check(assert_type(pd.to_timedelta(1, "minute"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "min"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "minutes"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.to_timedelta(1, "t"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"Unit '[tl]' is deprecated",
+        lower="2.0.99",
+    ):
+        check(assert_type(pd.to_timedelta(1, "t"), pd.Timedelta), pd.Timedelta)
+        check(assert_type(pd.to_timedelta(1, "l"), pd.Timedelta), pd.Timedelta)
+
     check(assert_type(pd.to_timedelta(1, "s"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "seconds"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "sec"), pd.Timedelta), pd.Timedelta)
@@ -712,7 +726,6 @@ def test_to_timdelta_units() -> None:
     check(assert_type(pd.to_timedelta(1, "millisecond"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "milli"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "millis"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.to_timedelta(1, "l"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "us"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "microseconds"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "microsecond"), pd.Timedelta), pd.Timedelta)
@@ -1121,16 +1134,18 @@ def test_timedelta64_and_arithmatic_operator() -> None:
     s1 = pd.Series(data=pd.date_range("1/1/2020", "2/1/2020"))
     s2 = pd.Series(data=pd.date_range("1/1/2021", "2/1/2021"))
     s3 = s2 - s1
-    td = np.timedelta64(1, "M")
-    check(assert_type((s1 - td), "TimestampSeries"), pd.Series, pd.Timestamp)
-    check(assert_type((s1 + td), "TimestampSeries"), pd.Series, pd.Timestamp)
-    check(assert_type((s3 - td), "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    check(assert_type((s3 + td), "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    check(assert_type((s3 / td), "pd.Series[float]"), pd.Series, float)
-    if TYPE_CHECKING_INVALID_USAGE:
-        r1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-        r2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-        r3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+    # https://github.com/pandas-dev/pandas/issues/54059 needs to be fixed
+    if PD_LTE_20:
+        td = np.timedelta64(1, "M")
+        check(assert_type((s1 - td), "TimestampSeries"), pd.Series, pd.Timestamp)
+        check(assert_type((s1 + td), "TimestampSeries"), pd.Series, pd.Timestamp)
+        check(assert_type((s3 - td), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+        check(assert_type((s3 + td), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+        check(assert_type((s3 / td), "pd.Series[float]"), pd.Series, float)
+        if TYPE_CHECKING_INVALID_USAGE:
+            r1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            r2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            r3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_timedeltaseries_add_timestampseries() -> None:

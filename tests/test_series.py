@@ -47,6 +47,7 @@ from tests import (
     PD_LTE_20,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 from tests.extension.decimal.array import DecimalDtype
 
@@ -119,8 +120,13 @@ def test_types_copy() -> None:
 
 def test_types_select() -> None:
     s = pd.Series(data={"row1": 1, "row2": 2})
-    s[0]
-    s[1:]
+    with pytest_warns_bounded(
+        FutureWarning,
+        "Series.__getitem__ treating keys as positions is deprecated",
+        lower="2.0.99",
+    ):
+        s[0]
+        s[1:]
 
 
 def test_types_iloc_iat() -> None:
@@ -247,10 +253,15 @@ def test_types_fillna() -> None:
     s = pd.Series([1, np.nan, np.nan, 3])
     check(assert_type(s.fillna(0), pd.Series), pd.Series)
     check(assert_type(s.fillna(0, axis="index"), pd.Series), pd.Series)
-    check(assert_type(s.fillna(method="backfill", axis=0), pd.Series), pd.Series)
-    assert assert_type(s.fillna(method="bfill", inplace=True), None) is None
-    check(assert_type(s.fillna(method="pad"), pd.Series), pd.Series)
-    check(assert_type(s.fillna(method="ffill", limit=1), pd.Series), pd.Series)
+    with pytest_warns_bounded(
+        FutureWarning,
+        "Series.fillna with 'method' is deprecated",
+        lower="2.0.99",
+    ):
+        check(assert_type(s.fillna(method="backfill", axis=0), pd.Series), pd.Series)
+        assert assert_type(s.fillna(method="bfill", inplace=True), None) is None
+        check(assert_type(s.fillna(method="pad"), pd.Series), pd.Series)
+        check(assert_type(s.fillna(method="ffill", limit=1), pd.Series), pd.Series)
     # GH 263
     check(assert_type(s.fillna(pd.NA), pd.Series), pd.Series)
 
@@ -451,7 +462,13 @@ def test_types_apply() -> None:
     def makeseries(x: float) -> pd.Series:
         return pd.Series([x, 2 * x])
 
-    check(assert_type(s.apply(makeseries), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        FutureWarning,
+        "Returning a DataFrame from Series.apply when the supplied function"
+        "returns a Series is deprecated",
+        lower="2.0.99",
+    ):
+        check(assert_type(s.apply(makeseries), pd.DataFrame), pd.DataFrame)
 
     # GH 293
 
@@ -693,38 +710,56 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     check(assert_type(value, "pd.Series[int]"), pd.Series, np.integer)
 
     # categorical indexes are also ambiguous
-    categorical_index = pd.CategoricalIndex(s.index)
-    iterator2 = s.groupby(categorical_index).__iter__()
-    assert_type(iterator2, Iterator[Tuple[Any, "pd.Series[int]"]])
-    index2, value2 = next(iterator2)
-    assert_type((index2, value2), Tuple[Any, "pd.Series[int]"])
+    # https://github.com/pandas-dev/pandas/issues/54054 needs to be fixed
+    with pytest_warns_bounded(
+        FutureWarning,
+        "The default of observed=False is deprecated",
+        lower="2.0.99",
+    ):
+        categorical_index = pd.CategoricalIndex(s.index)
+        iterator2 = s.groupby(categorical_index).__iter__()
+        assert_type(iterator2, Iterator[Tuple[Any, "pd.Series[int]"]])
+        index2, value2 = next(iterator2)
+        assert_type((index2, value2), Tuple[Any, "pd.Series[int]"])
 
-    check(assert_type(index2, Any), str)
-    check(assert_type(value2, "pd.Series[int]"), pd.Series, np.integer)
+        check(assert_type(index2, Any), str)
+        check(assert_type(value2, "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_types_groupby_agg() -> None:
     s = pd.Series([4, 2, 1, 8], index=["a", "b", "a", "b"])
     check(assert_type(s.groupby(level=0).agg("sum"), pd.Series), pd.Series)
-    check(assert_type(s.groupby(level=0).agg(sum), pd.Series), pd.Series)
     check(
         assert_type(s.groupby(level=0).agg(["min", "sum"]), pd.DataFrame), pd.DataFrame
     )
-    check(assert_type(s.groupby(level=0).agg([min, sum]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <built-in function (min|sum)> is currently using",
+        lower="2.0.99",
+    ):
+        check(assert_type(s.groupby(level=0).agg(sum), pd.Series), pd.Series)
+        check(
+            assert_type(s.groupby(level=0).agg([min, sum]), pd.DataFrame), pd.DataFrame
+        )
 
 
 def test_types_groupby_aggregate() -> None:
     s = pd.Series([4, 2, 1, 8], index=["a", "b", "a", "b"])
     check(assert_type(s.groupby(level=0).aggregate("sum"), pd.Series), pd.Series)
-    check(assert_type(s.groupby(level=0).aggregate(sum), pd.Series), pd.Series)
     check(
         assert_type(s.groupby(level=0).aggregate(["min", "sum"]), pd.DataFrame),
         pd.DataFrame,
     )
-    check(
-        assert_type(s.groupby(level=0).aggregate([min, sum]), pd.DataFrame),
-        pd.DataFrame,
-    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <built-in function (min|sum)> is currently using",
+        lower="2.0.99",
+    ):
+        check(assert_type(s.groupby(level=0).aggregate(sum), pd.Series), pd.Series)
+        check(
+            assert_type(s.groupby(level=0).aggregate([min, sum]), pd.DataFrame),
+            pd.DataFrame,
+        )
 
 
 # This added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
@@ -768,17 +803,22 @@ def test_types_window() -> None:
         pd.Series,
     )
     check(
-        assert_type(s.rolling(2).agg(sum), pd.Series),
-        pd.Series,
-    )
-    check(
         assert_type(s.rolling(2).agg(["max", "min"]), pd.DataFrame),
         pd.DataFrame,
     )
-    check(
-        assert_type(s.rolling(2).agg([max, min]), pd.DataFrame),
-        pd.DataFrame,
-    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <built-in function (min|max|sum)> is currently using",
+        lower="2.0.99",
+    ):
+        check(
+            assert_type(s.rolling(2).agg(sum), pd.Series),
+            pd.Series,
+        )
+        check(
+            assert_type(s.rolling(2).agg([max, min]), pd.DataFrame),
+            pd.DataFrame,
+        )
 
 
 def test_types_cov() -> None:
@@ -832,23 +872,33 @@ def test_types_between() -> None:
 def test_types_agg() -> None:
     s = pd.Series([1, 2, 3], index=["col1", "col2", "col3"])
     check(assert_type(s.agg("min"), Any), np.int64)
-    check(assert_type(s.agg(min), Any), np.int64)
     check(assert_type(s.agg(["min", "max"]), pd.Series), pd.Series)
-    check(assert_type(s.agg([min, max]), pd.Series), pd.Series)
     check(assert_type(s.agg({"a": "min"}), pd.Series), pd.Series)
-    check(assert_type(s.agg({0: min}), pd.Series), pd.Series)
-    check(assert_type(s.agg(x=max, y="min", z=np.mean), pd.Series), pd.Series)
     check(assert_type(s.agg("mean", axis=0), Any), np.float64)
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <built-in function (min|max|mean)> is currently using",
+        lower="2.0.99",
+    ):
+        check(assert_type(s.agg(min), Any), np.int64)
+        check(assert_type(s.agg([min, max]), pd.Series), pd.Series)
+        check(assert_type(s.agg({0: min}), pd.Series), pd.Series)
+        check(assert_type(s.agg(x=max, y="min", z=np.mean), pd.Series), pd.Series)
 
 
 def test_types_aggregate() -> None:
     s = pd.Series([1, 2, 3], index=["col1", "col2", "col3"])
     check(assert_type(s.aggregate("min"), Any), np.int64)
-    check(assert_type(s.aggregate(min), Any), np.int64)
     check(assert_type(s.aggregate(["min", "max"]), pd.Series), pd.Series)
-    check(assert_type(s.aggregate([min, max]), pd.Series), pd.Series)
     check(assert_type(s.aggregate({"a": "min"}), pd.Series), pd.Series)
-    check(assert_type(s.aggregate({0: min}), pd.Series), pd.Series)
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <built-in function (min|max)> is currently using",
+        lower="2.0.99",
+    ):
+        check(assert_type(s.aggregate(min), Any), np.int64)
+        check(assert_type(s.aggregate([min, max]), pd.Series), pd.Series)
+        check(assert_type(s.aggregate({0: min}), pd.Series), pd.Series)
 
 
 def test_types_transform() -> None:
@@ -1533,14 +1583,20 @@ def test_bitwise_operators() -> None:
     check(assert_type(s ^ s2, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s2 ^ s, "pd.Series[int]"), pd.Series, np.integer)
 
-    check(assert_type(s & [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type([1, 2, 3, 4] & s, "pd.Series[bool]"), pd.Series, np.bool_)
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"Logical ops \(and, or, xor\) between Pandas objects and dtype-less sequences "
+        r"\(e.g. list, tuple\) are deprecated",
+        lower="2.0.99",
+    ):
+        check(assert_type(s & [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
+        check(assert_type([1, 2, 3, 4] & s, "pd.Series[bool]"), pd.Series, np.bool_)
 
-    check(assert_type(s | [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type([1, 2, 3, 4] | s, "pd.Series[bool]"), pd.Series, np.bool_)
+        check(assert_type(s | [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
+        check(assert_type([1, 2, 3, 4] | s, "pd.Series[bool]"), pd.Series, np.bool_)
 
-    check(assert_type(s ^ [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type([1, 2, 3, 4] ^ s, "pd.Series[bool]"), pd.Series, np.bool_)
+        check(assert_type(s ^ [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
+        check(assert_type([1, 2, 3, 4] ^ s, "pd.Series[bool]"), pd.Series, np.bool_)
 
 
 def test_logical_operators() -> None:
@@ -1574,36 +1630,42 @@ def test_logical_operators() -> None:
 
     check(assert_type(True ^ (df["a"] >= 2), "pd.Series[bool]"), pd.Series, np.bool_)
 
-    check(
-        assert_type((df["a"] >= 2) ^ [True, False, True], "pd.Series[bool]"),
-        pd.Series,
-        np.bool_,
-    )
-    check(
-        assert_type((df["a"] >= 2) & [True, False, True], "pd.Series[bool]"),
-        pd.Series,
-        np.bool_,
-    )
-    check(
-        assert_type((df["a"] >= 2) | [True, False, True], "pd.Series[bool]"),
-        pd.Series,
-        np.bool_,
-    )
-    check(
-        assert_type([True, False, True] & (df["a"] >= 2), "pd.Series[bool]"),
-        pd.Series,
-        np.bool_,
-    )
-    check(
-        assert_type([True, False, True] | (df["a"] >= 2), "pd.Series[bool]"),
-        pd.Series,
-        np.bool_,
-    )
-    check(
-        assert_type([True, False, True] ^ (df["a"] >= 2), "pd.Series[bool]"),
-        pd.Series,
-        np.bool_,
-    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"Logical ops \(and, or, xor\) between Pandas objects and dtype-less sequences "
+        r"\(e.g. list, tuple\) are deprecated",
+        lower="2.0.99",
+    ):
+        check(
+            assert_type((df["a"] >= 2) ^ [True, False, True], "pd.Series[bool]"),
+            pd.Series,
+            np.bool_,
+        )
+        check(
+            assert_type((df["a"] >= 2) & [True, False, True], "pd.Series[bool]"),
+            pd.Series,
+            np.bool_,
+        )
+        check(
+            assert_type((df["a"] >= 2) | [True, False, True], "pd.Series[bool]"),
+            pd.Series,
+            np.bool_,
+        )
+        check(
+            assert_type([True, False, True] & (df["a"] >= 2), "pd.Series[bool]"),
+            pd.Series,
+            np.bool_,
+        )
+        check(
+            assert_type([True, False, True] | (df["a"] >= 2), "pd.Series[bool]"),
+            pd.Series,
+            np.bool_,
+        )
+        check(
+            assert_type([True, False, True] ^ (df["a"] >= 2), "pd.Series[bool]"),
+            pd.Series,
+            np.bool_,
+        )
 
 
 def test_AnyArrayLike_and_clip() -> None:
