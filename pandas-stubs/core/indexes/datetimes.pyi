@@ -17,6 +17,7 @@ from pandas import (
     Timedelta,
     TimedeltaIndex,
     Timestamp,
+    Index
 )
 from pandas.core.indexes.accessors import DatetimeIndexProperties
 from pandas.core.indexes.base import (
@@ -97,7 +98,7 @@ class DatetimeIndex(  # type: ignore[misc]
     def tzinfo(self) -> tzinfo | None: ...
     @property
     def dtype(self) -> np.dtype | DatetimeTZDtype: ...
-    def intersection(self, other: DatetimeIndex) -> DatetimeIndex: ...
+    def intersection(self, other: Index | list) -> DatetimeIndex: ...
 
 def date_range(
     start: str | DateAndDatetimeLike | None = ...,
