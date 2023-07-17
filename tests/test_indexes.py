@@ -979,11 +979,11 @@ def test_index_constructors():
         # test here as a reminder that we would like this to be seen as incorrect usage.
         pd.Index(flist, dtype=np.float16)
 
-def test_datetimeindex_intersection():
 
-    idx1 = pd.DatetimeIndex(['2022-01-01', '2022-01-02']) 
-    idx2 = pd.DatetimeIndex(['2022-01-02', '2022-01-03'])
+def test_datetimeindex_intersection():
+    idx1 = pd.DatetimeIndex(["2022-01-01", "2022-01-02"])
+    idx2 = pd.DatetimeIndex(["2022-01-02", "2022-01-03"])
 
     result = idx1.intersection(idx2)
 
-    assert_type(result, pd.DatetimeIndex)
+    check(assert_type(result, pd.DatetimeIndex), pd.DatetimeIndex)
