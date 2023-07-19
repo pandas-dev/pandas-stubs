@@ -265,9 +265,9 @@ AxisColumn: TypeAlias = Literal["columns", 1]
 Axis: TypeAlias = AxisIndex | AxisColumn
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
 KeysArgType: TypeAlias = Any
-ListLike = TypeVar("ListLike", Sequence, np.ndarray, "Series", "Index")
+ListLike = TypeVar("ListLike", Sequence, np.ndarray, Series, Index)
 ListLikeExceptSeriesAndStr = TypeVar(
-    "ListLikeExceptSeriesAndStr", MutableSequence, np.ndarray, tuple, "Index"
+    "ListLikeExceptSeriesAndStr", MutableSequence, np.ndarray, tuple, Index
 )
 ListLikeU: TypeAlias = Sequence | np.ndarray | Series | Index
 ListLikeHashable: TypeAlias = (

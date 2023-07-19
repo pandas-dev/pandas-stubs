@@ -89,7 +89,7 @@ class _MiniSeconds(Generic[_DTFieldOpsReturnType]):
     @property
     def nanosecond(self) -> _DTFieldOpsReturnType: ...
 
-_DTBoolOpsReturnType = TypeVar("_DTBoolOpsReturnType", "Series[bool]", np_ndarray_bool)
+_DTBoolOpsReturnType = TypeVar("_DTBoolOpsReturnType", Series[bool], np_ndarray_bool)
 
 class _IsLeapYearProperty(Generic[_DTBoolOpsReturnType]):
     @property
