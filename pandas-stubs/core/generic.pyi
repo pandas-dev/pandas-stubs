@@ -18,6 +18,7 @@ import numpy as np
 from pandas import Index
 from pandas.core.base import PandasObject
 import pandas.core.indexing as indexing
+from pandas.core.series import Series
 import sqlalchemy.engine
 
 from pandas._typing import (
@@ -479,5 +480,3 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     ) -> NDFrame: ...
     def first_valid_index(self): ...
     def last_valid_index(self): ...
-
-from pandas.core.series import Series

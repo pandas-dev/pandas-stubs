@@ -46,11 +46,14 @@ class Properties(PandasDelegate, PandasObject, NoNewAttributesMixin):
 _DTFieldOpsReturnType = TypeVar("_DTFieldOpsReturnType", Series[int], _IntIndexType)
 
 class _DatetimeFieldOps(
-    _DayLikeFieldOps[_DTFieldOpsReturnType], _MiniSeconds[_DTFieldOpsReturnType]
+    _DayLikeFieldOps[_DTFieldOpsReturnType],  # noqa: F821
+    _MiniSeconds[_DTFieldOpsReturnType],  # noqa: F821
 ): ...
 class PeriodIndexFieldOps(
-    _DayLikeFieldOps[_IntIndexType],
-    _PeriodProperties[DatetimeIndex, _IntIndexType, Index, DatetimeIndex, PeriodIndex],
+    _DayLikeFieldOps[_IntIndexType],  # noqa: F821
+    _PeriodProperties[  # noqa: F821
+        DatetimeIndex, _IntIndexType, Index, DatetimeIndex, PeriodIndex
+    ],
 ): ...
 
 class _DayLikeFieldOps(Generic[_DTFieldOpsReturnType]):

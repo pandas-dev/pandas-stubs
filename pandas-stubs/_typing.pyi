@@ -91,7 +91,7 @@ DtypeBackend: TypeAlias = Literal["pyarrow", "numpy_nullable"]
 
 BooleanDtypeArg: TypeAlias = (
     # Builtin bool type and its string alias
-    type[bool]  # noqa: Y030
+    type[bool]
     | Literal["bool"]
     # Pandas nullable boolean type and its string alias
     | pd.BooleanDtype
@@ -105,7 +105,7 @@ BooleanDtypeArg: TypeAlias = (
 )
 IntDtypeArg: TypeAlias = (
     # Builtin integer type and its string alias
-    type[int]  # noqa: Y030
+    type[int]
     | Literal["int"]
     # Pandas nullable integer types and their string aliases
     | pd.Int8Dtype
@@ -164,9 +164,18 @@ UIntDtypeArg: TypeAlias = (
     # PyArrow unsigned integer types and their string aliases
     | Literal["uint8[pyarrow]", "uint16[pyarrow]", "uint32[pyarrow]", "uint64[pyarrow]"]
 )
+StrDtypeArg: TypeAlias = (
+    # Builtin str type and its string alias
+    type[str]
+    | Literal["str"]
+    # Pandas nullable string type and its string alias
+    | pd.StringDtype
+    | Literal["string"]
+)
+BytesDtypeArg: TypeAlias = type[bytes]
 FloatDtypeArg: TypeAlias = (
     # Builtin float type and its string alias
-    type[float]  # noqa: Y030
+    type[float]
     | Literal["float"]
     # Pandas nullable float types and their string aliases
     | pd.Float32Dtype
@@ -197,7 +206,7 @@ FloatDtypeArg: TypeAlias = (
 )
 ComplexDtypeArg: TypeAlias = (
     # Builtin complex type and its string alias
-    type[complex]  # noqa: Y030
+    type[complex]
     | Literal["complex"]
     # Numpy complex types and their aliases
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.csingle

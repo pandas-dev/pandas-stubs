@@ -20,12 +20,11 @@ from pandas.core.series import (
 from typing_extensions import TypeAlias
 
 from pandas._libs.tslibs import NaTType
+from pandas._libs.tslibs.offsets import BaseOffset
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import npt
 
 class IncompatibleFrequency(ValueError): ...
-
-from pandas._libs.tslibs.offsets import BaseOffset
 
 _PeriodAddSub: TypeAlias = (
     Timedelta | datetime.timedelta | np.timedelta64 | np.int64 | int | BaseOffset
