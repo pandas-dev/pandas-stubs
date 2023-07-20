@@ -40,7 +40,7 @@ from pandas.io.formats.style_render import (
     Subset,
 )
 
-class Styler(StylerRenderer[Styler]):
+class Styler(StylerRenderer):
     def __init__(
         self,
         data: DataFrame | Series,
