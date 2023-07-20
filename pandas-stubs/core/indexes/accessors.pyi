@@ -45,17 +45,6 @@ class Properties(PandasDelegate, PandasObject, NoNewAttributesMixin):
 
 _DTFieldOpsReturnType = TypeVar("_DTFieldOpsReturnType", Series[int], _IntIndexType)
 
-class _DatetimeFieldOps(
-    _DayLikeFieldOps[_DTFieldOpsReturnType],  # noqa: F821
-    _MiniSeconds[_DTFieldOpsReturnType],  # noqa: F821
-): ...
-class PeriodIndexFieldOps(
-    _DayLikeFieldOps[_IntIndexType],  # noqa: F821
-    _PeriodProperties[  # noqa: F821
-        DatetimeIndex, _IntIndexType, Index, DatetimeIndex, PeriodIndex
-    ],
-): ...
-
 class _DayLikeFieldOps(Generic[_DTFieldOpsReturnType]):
     @property
     def year(self) -> _DTFieldOpsReturnType: ...
@@ -91,6 +80,10 @@ class _MiniSeconds(Generic[_DTFieldOpsReturnType]):
     def microsecond(self) -> _DTFieldOpsReturnType: ...
     @property
     def nanosecond(self) -> _DTFieldOpsReturnType: ...
+
+class _DatetimeFieldOps(
+    _DayLikeFieldOps[_DTFieldOpsReturnType], _MiniSeconds[_DTFieldOpsReturnType]
+): ...
 
 _DTBoolOpsReturnType = TypeVar("_DTBoolOpsReturnType", Series[bool], np_ndarray_bool)
 
@@ -341,6 +334,10 @@ class _PeriodProperties(
         how: Literal["E", "END", "FINISH", "S", "START", "BEGIN"] = ...,
     ) -> _PeriodPAReturnTypes: ...
 
+class PeriodIndexFieldOps(
+    _DayLikeFieldOps[_IntIndexType],
+    _PeriodProperties[DatetimeIndex, _IntIndexType, Index, DatetimeIndex, PeriodIndex],
+): ...
 class PeriodProperties(
     Properties,
     _PeriodProperties[

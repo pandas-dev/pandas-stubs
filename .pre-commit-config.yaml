@@ -19,7 +19,7 @@ repos:
           --target-version, py38,
           --extend-select, "PYI,UP,RUF100",
           --ignore, "E501,E731,F841,PYI042",
-          --per-file-ignores, "_*.pyi:PYI001, _*.pyi:PYI030",
+          --per-file-ignores, "_*.pyi:PYI001",
           --fix
         ]
 -   repo: https://github.com/codespell-project/codespell
