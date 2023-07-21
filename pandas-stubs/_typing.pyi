@@ -159,10 +159,7 @@ BytesDtypeArg: TypeAlias = type[bytes]
 FloatDtypeArg: TypeAlias = (
     # Builtin float type and its string alias
     type[float]  # noqa: Y030
-    | Literal[
-        "float",
-        "float",
-    ]
+    | Literal["float"]
     # Pandas nullable float types and their string aliases
     | pd.Float32Dtype
     | pd.Float64Dtype
