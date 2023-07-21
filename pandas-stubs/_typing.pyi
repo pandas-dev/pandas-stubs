@@ -86,7 +86,11 @@ BooleanDtypeArg: TypeAlias = (
     | pd.BooleanDtype
     | Literal["boolean"]
     # Numpy bool type
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.bool_
     | type[np.bool_]
+    | Literal["?", "bool8", "bool_"]
+    # PyArrow boolean type and its string alias
+    | Literal["bool[pyarrow]", "boolean[pyarrow]"]
 )
 IntDtypeArg: TypeAlias = (
     # Builtin integer type and its string alias
@@ -98,22 +102,48 @@ IntDtypeArg: TypeAlias = (
     | pd.Int32Dtype
     | pd.Int64Dtype
     | Literal["Int8", "Int16", "Int32", "Int64"]
+    # Pandas nullable unsigned integer types and their string aliases
+    | pd.UInt8Dtype
+    | pd.UInt16Dtype
+    | pd.UInt32Dtype
+    | pd.UInt64Dtype
+    | Literal["UInt8", "UInt16", "UInt32", "UInt64"]
     # Numpy signed integer types and their string aliases
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.byte
     | type[np.byte]
-    | type[np.int8]
+    | Literal["b", "int8", "byte"]
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.short
     | type[np.int16]
-    | type[np.int32]
-    | type[np.int64]
-    | type[np.intp]
-    | Literal["byte", "int8", "int16", "int32", "int64", "intp"]
+    | Literal["h", "int16", "short"]
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.intc
+    | type[np.intc]
+    | Literal["i", "int32", "intc"]
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int_
+    | type[np.int_]
+    | Literal["l", "int64", "int_", "intp", "long"]
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.longlong
+    | type[np.longlong]
+    | Literal["q", "longlong"]  # NOTE: int128 not assigned
     # Numpy unsigned integer types and their string aliases
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.ubyte
     | type[np.ubyte]
-    | type[np.uint8]
-    | type[np.uint16]
-    | type[np.uint32]
-    | type[np.uint64]
-    | type[np.uintp]
-    | Literal["ubyte", "uint8", "uint16", "uint32", "uint64", "uintp"]
+    | Literal["B", "uint8", "ubyte"]
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.ushort
+    | type[np.ushort]
+    | Literal["H", "uint16", "ushort"]
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.uintc
+    | type[np.uintc]
+    | Literal["I", "uint32", "uintc"]
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.uint
+    | type[np.uint]
+    | Literal["L", "uint64", "uint", "uintp"]
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.ulonglong
+    | type[np.ulonglong]
+    | Literal["Q", "ulonglong"]  # NOTE: uint128 not assigned
+    # PyArrow integer types and their string aliases
+    | Literal["int8[pyarrow]", "int16[pyarrow]", "int32[pyarrow]", "int64[pyarrow]"]
+    # PyArrow unsigned integer types and their string aliases
+    | Literal["uint8[pyarrow]", "uint16[pyarrow]", "uint32[pyarrow]", "uint64[pyarrow]"]
 )
 StrDtypeArg: TypeAlias = (
     # Builtin str type and its string alias
@@ -122,30 +152,59 @@ StrDtypeArg: TypeAlias = (
     # Pandas nullable string type and its string alias
     | pd.StringDtype
     | Literal["string"]
+    # PyArrow string type and its string alias
+    | Literal["string[pyarrow]"]
 )
 BytesDtypeArg: TypeAlias = type[bytes]
 FloatDtypeArg: TypeAlias = (
     # Builtin float type and its string alias
     type[float]  # noqa: Y030
-    | Literal["float"]
+    | Literal[
+        "float",
+        "float",
+    ]
     # Pandas nullable float types and their string aliases
     | pd.Float32Dtype
     | pd.Float64Dtype
     | Literal["Float32", "Float64"]
     # Numpy float types and their string aliases
-    | type[np.float16]
-    | type[np.float32]
-    | type[np.float64]
-    | Literal["float16", "float32", "float64"]
+    # NOTE: Alias np.float16 only on Linux x86_64, use np.half instead
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.half
+    | type[np.half]
+    | Literal["e", "float16", "half"]
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.single
+    | type[np.single]
+    | Literal["f", "float32", "single"]
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.double
+    | type[np.double]
+    | Literal["d", "float64", "double", "float_"]
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.longdouble
+    | type[np.longdouble]
+    | Literal["g", "float128", "longdouble", "longfloat"]
+    # PyArrow floating point types and their string aliases
+    | Literal[
+        "float[pyarrow]",
+        "double[pyarrow]",
+        "float16[pyarrow]",
+        "float32[pyarrow]",
+        "float64[pyarrow]",
+    ]
 )
 ComplexDtypeArg: TypeAlias = (
     # Builtin complex type and its string alias
     type[complex]  # noqa: Y030
     | Literal["complex"]
     # Numpy complex types and their aliases
-    | type[np.complex64]
-    | type[np.complex128]
-    | Literal["complex64", "complex128"]
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.csingle
+    | type[np.csingle]
+    | Literal["F", "complex64", "singlecomplex"]
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.cdouble
+    | type[np.cdouble]
+    | Literal["D", "complex128", "cdouble", "cfloat", "complex_"]
+    #  https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.clongdouble
+    # NOTE: Alias np.complex256 only on Linux x86_64, use np.clongdouble instead
+    | type[np.clongdouble]
+    | Literal["G", "complex256", "clongdouble", "clongfloat", "longcomplex"]
 )
 # Refer to https://numpy.org/doc/stable/reference/arrays.datetime.html#datetime-units
 TimedeltaDtypeArg: TypeAlias = Literal[
@@ -163,6 +222,11 @@ TimedeltaDtypeArg: TypeAlias = Literal[
     "timedelta64[ps]",
     "timedelta64[fs]",
     "timedelta64[as]",
+    # PyArrow duration type and its string alias
+    "duration[s][pyarrow]",
+    "duration[ms][pyarrow]",
+    "duration[us][pyarrow]",
+    "duration[ns][pyarrow]",
 ]
 TimestampDtypeArg: TypeAlias = Literal[
     "datetime64[Y]",
@@ -179,8 +243,18 @@ TimestampDtypeArg: TypeAlias = Literal[
     "datetime64[ps]",
     "datetime64[fs]",
     "datetime64[as]",
+    # PyArrow timestamp type and its string alias
+    "date32[pyarrow]",
+    "date64[pyarrow]",
+    "timestamp[s][pyarrow]",
+    "timestamp[ms][pyarrow]",
+    "timestamp[us][pyarrow]",
+    "timestamp[ns][pyarrow]",
 ]
 CategoryDtypeArg: TypeAlias = CategoricalDtype | Literal["category"]
+
+# DtypeArg specifies all allowable dtypes in a functions its dtype argument
+DtypeObj: TypeAlias = np.dtype[np.generic] | ExtensionDtype
 
 AstypeArg: TypeAlias = (
     BooleanDtypeArg
@@ -192,11 +266,10 @@ AstypeArg: TypeAlias = (
     | TimedeltaDtypeArg
     | TimestampDtypeArg
     | CategoryDtypeArg
-    | ExtensionDtype
+    | DtypeObj
     | type[object]
+    | str
 )
-# DtypeArg specifies all allowable dtypes in a functions its dtype argument
-DtypeObj: TypeAlias = np.dtype[np.generic] | ExtensionDtype
 
 # filenames and file-like-objects
 AnyStr_cov = TypeVar("AnyStr_cov", str, bytes, covariant=True)

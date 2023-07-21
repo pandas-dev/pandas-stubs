@@ -329,7 +329,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         is_copy: _bool | None = ...,
         **kwargs,
     ) -> Series[S1]: ...
-    def __getattr__(self, name: str) -> S1: ...
+    def __getattr__(self, name: _str) -> S1: ...
     @overload
     def __getitem__(
         self,
@@ -1208,7 +1208,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def astype(
         self,
-        dtype: type[object] | ExtensionDtype,
+        dtype: type[object] | ExtensionDtype | DtypeObj | _str,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series: ...

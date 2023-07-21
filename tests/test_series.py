@@ -1697,8 +1697,12 @@ def test_updated_astype() -> None:
     s = pd.Series([3, 4, 5])
     s1 = pd.Series(True)
 
-    # Boolean types
+    # dynamically typed
+    string: str = "int"  # not Literal!
+    check(assert_type(s.astype(string), "pd.Series[Any]"), pd.Series, np.integer)
+    check(assert_type(s.astype(s.dtype), "pd.Series[Any]"), pd.Series, np.integer)
 
+    # Boolean types
     # Builtin bool types
     check(assert_type(s.astype(bool), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(s.astype("bool"), "pd.Series[bool]"), pd.Series, np.bool_)
@@ -1791,6 +1795,20 @@ def test_updated_astype() -> None:
     check(assert_type(s.astype("float16"), "pd.Series[float]"), pd.Series, np.float16)
     check(assert_type(s.astype("float32"), "pd.Series[float]"), pd.Series, np.float32)
     check(assert_type(s.astype("float64"), "pd.Series[float]"), pd.Series, np.float64)
+    check(assert_type(s.astype("float64"), "pd.Series[float]"), pd.Series, np.float64)
+    check(assert_type(s.astype("float64"), "pd.Series[float]"), pd.Series, np.float64)
+
+    # pyarrow
+    check(
+        assert_type(s.astype("int64[pyarrow]"), "pd.Series[int]"),
+        pd.Series,
+        int,
+    )
+    check(
+        assert_type(s.astype("float[pyarrow]"), "pd.Series[float]"),
+        pd.Series,
+        float,
+    )
 
     # Complex types
 
@@ -1889,6 +1907,26 @@ def test_updated_astype() -> None:
         pd.Series,
         Timedelta,
     )
+    check(
+        assert_type(s.astype("duration[s][pyarrow]"), TimedeltaSeries),
+        pd.Series,
+        datetime.timedelta,
+    )
+    check(
+        assert_type(s.astype("duration[ms][pyarrow]"), TimedeltaSeries),
+        pd.Series,
+        datetime.timedelta,
+    )
+    check(
+        assert_type(s.astype("duration[us][pyarrow]"), TimedeltaSeries),
+        pd.Series,
+        datetime.timedelta,
+    )
+    check(
+        assert_type(s.astype("duration[ns][pyarrow]"), TimedeltaSeries),
+        pd.Series,
+        datetime.timedelta,
+    )
 
     check(
         assert_type(s.astype("datetime64[Y]"), TimestampSeries),
@@ -1959,6 +1997,26 @@ def test_updated_astype() -> None:
         assert_type(s.astype("datetime64[as]"), TimestampSeries),
         pd.Series,
         Timestamp,
+    )
+    check(
+        assert_type(s.astype("timestamp[s][pyarrow]"), TimestampSeries),
+        pd.Series,
+        datetime.datetime,
+    )
+    check(
+        assert_type(s.astype("timestamp[ms][pyarrow]"), TimestampSeries),
+        pd.Series,
+        datetime.datetime,
+    )
+    check(
+        assert_type(s.astype("timestamp[us][pyarrow]"), TimestampSeries),
+        pd.Series,
+        datetime.datetime,
+    )
+    check(
+        assert_type(s.astype("timestamp[ns][pyarrow]"), TimestampSeries),
+        pd.Series,
+        datetime.datetime,
     )
 
     orseries = pd.Series([Decimal(x) for x in [1, 2, 3]])
