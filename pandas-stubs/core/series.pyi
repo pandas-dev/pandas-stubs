@@ -127,6 +127,7 @@ from pandas._typing import (
     ListLikeU,
     MaskType,
     NaPosition,
+    ObjectDtypeArg,
     QuantileInterpolation,
     RandomState,
     Renamer,
@@ -1208,7 +1209,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def astype(
         self,
-        dtype: type[object] | ExtensionDtype | DtypeObj | _str,
+        dtype: ObjectDtypeArg | ExtensionDtype | DtypeObj | _str,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series: ...

@@ -113,7 +113,7 @@ IntDtypeArg: TypeAlias = (
     | type[np.byte]
     | Literal["b", "int8", "byte"]
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.short
-    | type[np.int16]
+    | type[np.short]
     | Literal["h", "int16", "short"]
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.intc
     | type[np.intc]
@@ -152,10 +152,24 @@ StrDtypeArg: TypeAlias = (
     # Pandas nullable string type and its string alias
     | pd.StringDtype
     | Literal["string"]
+    # Numpy string type and its string alias
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.str_
+    | type[np.str_]
+    | Literal["U", "str_", "unicode"]
     # PyArrow string type and its string alias
     | Literal["string[pyarrow]"]
 )
-BytesDtypeArg: TypeAlias = type[bytes]
+BytesDtypeArg: TypeAlias = (
+    # Builtin bytes type and its string alias
+    type[bytes]  # noqa: Y030
+    | Literal["bytes"]
+    # Numpy bytes type and its string alias
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.bytes_
+    | type[np.bytes_]
+    | Literal["S", "bytes_", "string_"]
+    # PyArrow binary type and its string alias
+    | Literal["binary[pyarrow]"]
+)
 FloatDtypeArg: TypeAlias = (
     # Builtin float type and its string alias
     type[float]  # noqa: Y030
@@ -194,7 +208,7 @@ ComplexDtypeArg: TypeAlias = (
     # Numpy complex types and their aliases
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.csingle
     | type[np.csingle]
-    | Literal["F", "complex64", "singlecomplex"]
+    | Literal["F", "complex64", "csingle", "singlecomplex"]
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.cdouble
     | type[np.cdouble]
     | Literal["D", "complex128", "cdouble", "cfloat", "complex_"]
@@ -250,6 +264,15 @@ TimestampDtypeArg: TypeAlias = Literal[
 ]
 CategoryDtypeArg: TypeAlias = CategoricalDtype | Literal["category"]
 
+ObjectDtypeArg: TypeAlias = (
+    # Builtin object type and its string alias
+    type[object]  # noqa: Y030
+    | Literal["object"]
+    # Numpy object type and its string alias
+    # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.object_
+    | type[np.object_]
+    | Literal["O"]  # NOTE: "object_" not assigned
+)
 # DtypeArg specifies all allowable dtypes in a functions its dtype argument
 DtypeObj: TypeAlias = np.dtype[np.generic] | ExtensionDtype
 
@@ -263,8 +286,8 @@ AstypeArg: TypeAlias = (
     | TimedeltaDtypeArg
     | TimestampDtypeArg
     | CategoryDtypeArg
+    | ObjectDtypeArg
     | DtypeObj
-    | type[object]
     | str
 )
 
