@@ -1209,7 +1209,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def astype(
         self,
-        dtype: ObjectDtypeArg | ExtensionDtype | DtypeObj | _str,
+        dtype: ObjectDtypeArg | ExtensionDtype | DtypeObj,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series: ...

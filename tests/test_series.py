@@ -1697,10 +1697,18 @@ def test_updated_astype() -> None:
     s = pd.Series([3, 4, 5])
     s1 = pd.Series(True)
 
+    # Test incorrect Literal
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.astype("foobar")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
+
     # dynamically typed
-    string: str = "int"  # not Literal!
-    check(assert_type(s.astype(string), "pd.Series[Any]"), pd.Series, np.integer)
-    check(assert_type(s.astype(s.dtype), "pd.Series[Any]"), pd.Series, np.integer)
+    # NOTE: https://github.com/python/typing/issues/801#issuecomment-1646171898
+    # enable in the future if Intersection and Not supported
+    # string: str = "int"  # not Literal!
+    # check(assert_type(s.astype(string), "pd.Series[Any]"), pd.Series, np.integer)
+    # check(assert_type(s.astype(s.dtype), "pd.Series[Any]"), pd.Series, np.integer)
+    # check bad literal
+    # s.astype("some nonsense")
 
     # Boolean types
     # Builtin bool types
