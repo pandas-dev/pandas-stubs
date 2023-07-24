@@ -233,6 +233,21 @@ TimedeltaDtypeArg: TypeAlias = Literal[
     "timedelta64[ps]",
     "timedelta64[fs]",
     "timedelta64[as]",
+    # numpy type codes
+    "<m8[Y]",
+    "<m8[M]",
+    "<m8[W]",
+    "<m8[D]",
+    "<m8[h]",
+    "<m8[m]",
+    "<m8[s]",
+    "<m8[ms]",
+    "<m8[us]",
+    "<m8[μs]",
+    "<m8[ns]",
+    "<m8[ps]",
+    "<m8[fs]",
+    "<m8[as]",
     # PyArrow duration type and its string alias
     "duration[s][pyarrow]",
     "duration[ms][pyarrow]",
@@ -254,6 +269,21 @@ TimestampDtypeArg: TypeAlias = Literal[
     "datetime64[ps]",
     "datetime64[fs]",
     "datetime64[as]",
+    # numpy type codes
+    "<M8[Y]",
+    "<M8[M]",
+    "<M8[W]",
+    "<M8[D]",
+    "<M8[h]",
+    "<M8[m]",
+    "<M8[s]",
+    "<M8[ms]",
+    "<M8[us]",
+    "<M8[μs]",
+    "<M8[ns]",
+    "<M8[ps]",
+    "<M8[fs]",
+    "<M8[as]",
     # PyArrow timestamp type and its string alias
     "date32[pyarrow]",
     "date64[pyarrow]",
@@ -288,7 +318,6 @@ AstypeArg: TypeAlias = (
     | CategoryDtypeArg
     | ObjectDtypeArg
     | DtypeObj
-    | str
 )
 
 # filenames and file-like-objects
