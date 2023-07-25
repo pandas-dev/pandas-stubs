@@ -127,6 +127,7 @@ from pandas._typing import (
     ListLikeU,
     MaskType,
     NaPosition,
+    ObjectDtypeArg,
     QuantileInterpolation,
     RandomState,
     Renamer,
@@ -138,6 +139,8 @@ from pandas._typing import (
     TimedeltaDtypeArg,
     TimestampConvention,
     TimestampDtypeArg,
+    UIntDtypeArg,
+    VoidDtypeArg,
     WriteBuffer,
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -329,7 +332,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
         is_copy: _bool | None = ...,
         **kwargs,
     ) -> Series[S1]: ...
-    def __getattr__(self, name: str) -> S1: ...
+    def __getattr__(self, name: _str) -> S1: ...
     @overload
     def __getitem__(
         self,
@@ -1152,7 +1155,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def astype(
         self,
-        dtype: IntDtypeArg,
+        dtype: IntDtypeArg | UIntDtypeArg,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[int]: ...
@@ -1208,7 +1211,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     @overload
     def astype(
         self,
-        dtype: type[object] | ExtensionDtype,
+        dtype: ObjectDtypeArg | VoidDtypeArg | ExtensionDtype | DtypeObj,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series: ...
