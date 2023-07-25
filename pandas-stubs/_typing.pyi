@@ -185,7 +185,7 @@ FloatDtypeArg: TypeAlias = (
     | Literal["d", "f8", "float64", "double", "float_"]
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.longdouble
     | type[np.longdouble]
-    | Literal["g", "f16", "float96", "float128", "longdouble", "longfloat"]
+    | Literal["g", "f16", "float128", "longdouble", "longfloat"]
     # PyArrow floating point types and their string aliases
     | Literal[
         "float[pyarrow]",
@@ -212,7 +212,6 @@ ComplexDtypeArg: TypeAlias = (
     | Literal[
         "G",
         "c32",
-        "complex192",
         "complex256",
         "clongdouble",
         "clongfloat",

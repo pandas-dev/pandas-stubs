@@ -1761,7 +1761,6 @@ ASTYPE_INT_ARGS: list[tuple[IntDtypeArg, type]] = [
     # numpy int64
     (np.int_, np.int_),
     ("int_", np.int_),
-    ("int0", np.int_),
     ("long", np.int_),
     ("l", np.int_),
     ("int64", np.int64),
@@ -1773,6 +1772,7 @@ ASTYPE_INT_ARGS: list[tuple[IntDtypeArg, type]] = [
     # numpy signed pointer  (platform dependent one of int[8,16,32,64])
     (np.intp, np.intp),
     ("intp", np.intp),
+    ("int0", np.intp),
     ("p", np.intp),
     # pyarrow integer types
     ("int8[pyarrow]", int),
@@ -1815,7 +1815,6 @@ ASTYPE_UINT_ARGS: list[tuple[UIntDtypeArg, type]] = [
     # numpy uint64
     (np.uint, np.uint),
     ("uint", np.uint),
-    ("uint0", np.uint),
     ("ulong", np.uint),
     ("L", np.uint),
     ("uint64", np.uint64),
@@ -1827,6 +1826,7 @@ ASTYPE_UINT_ARGS: list[tuple[UIntDtypeArg, type]] = [
     # numpy unsigned pointer  (platform dependent one of uint[8,16,32,64])
     (np.uintp, np.uintp),
     ("uintp", np.uintp),
+    ("uint0", np.uintp),
     ("P", np.uintp),
     # pyarrow unsigned integer types
     ("uint8[pyarrow]", int),
@@ -1870,7 +1870,7 @@ ASTYPE_FLOAT_ARGS: list[tuple[FloatDtypeArg, type]] = [
     ("longfloat", np.longdouble),
     ("g", np.longdouble),
     ("f16", np.longdouble),
-    ("float96", np.longdouble),  # NOTE: WINDOWS ONLY
+    # ("float96", np.longdouble),  # NOTE: WINDOWS ONLY
     ("float128", np.longdouble),  # NOTE: UNIX ONLY
     # pyarrow float32
     ("float32[pyarrow]", float),
@@ -1906,7 +1906,7 @@ ASTYPE_COMPLEX_ARGS: list[tuple[ComplexDtypeArg, type]] = [
     ("longcomplex", np.clongdouble),
     ("G", np.clongdouble),
     ("c32", np.clongdouble),
-    ("complex192", np.clongdouble),  # NOTE: WINDOWS ONLY
+    # ("complex192", np.clongdouble),  # NOTE: WINDOWS ONLY
     ("complex256", np.clongdouble),  # NOTE: UNIX ONLY
 ]
 
@@ -2234,11 +2234,7 @@ def test_astype_uint(cast_arg: IntDtypeArg, target_type: type) -> None:
 def test_astype_float(cast_arg: FloatDtypeArg, target_type: type) -> None:
     s = pd.Series([1, 2, 3])
 
-    if platform.system() != "Windows" and cast_arg == "float96":
-        with pytest.raises(TypeError):
-            s.astype(cast_arg)
-        pytest.skip("Unix does not support float96")
-    if platform.system() == "Windows" and cast_arg == "float128":
+    if platform.system() == "Windows" and cast_arg in ("f16", "float128"):
         with pytest.raises(TypeError):
             s.astype(cast_arg)
         pytest.skip("Windows does not support float128")
@@ -2293,11 +2289,7 @@ def test_astype_float(cast_arg: FloatDtypeArg, target_type: type) -> None:
 def test_astype_complex(cast_arg: ComplexDtypeArg, target_type: type) -> None:
     s = pd.Series([1, 2, 3])
 
-    if platform.system() != "Windows" and cast_arg == "complex192":
-        with pytest.raises(TypeError):
-            s.astype(cast_arg)
-        pytest.skip("Unix does not support complex192")
-    if platform.system() == "Windows" and cast_arg == "complex256":
+    if platform.system() == "Windows" and cast_arg in ("c32", "complex256"):
         with pytest.raises(TypeError):
             s.astype(cast_arg)
         pytest.skip("Windows does not support complex256")
