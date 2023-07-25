@@ -2109,11 +2109,6 @@ def test_astype_bool(cast_arg: BooleanDtypeArg, target_type: type) -> None:
 def test_astype_int(cast_arg: IntDtypeArg, target_type: type) -> None:
     s = pd.Series([1, 2, 3])
 
-    if platform.system() == "Windows":
-        # Different behavior for uint32, uint64 and uintp on Windows
-        if cast_arg in ["uint32", "uint64", "uintp"]:
-            pass
-
     if cast_arg in (np.longlong, "longlong", "q"):
         pytest.skip(
             "longlong is bugged, for details, see"
