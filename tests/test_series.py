@@ -1743,29 +1743,29 @@ ASTYPE_INT_ARGS: list[tuple[IntDtypeArg, type]] = [
     # numpy int8
     (np.byte, np.byte),
     ("byte", np.byte),
-    ("int8", np.byte),
     ("b", np.byte),
-    ("i1", np.byte),
+    ("int8", np.int8),
+    ("i1", np.int8),
     # numpy int16
     (np.short, np.short),
     ("short", np.short),
-    ("int16", np.short),
     ("h", np.short),
-    ("i2", np.short),
+    ("int16", np.int16),
+    ("i2", np.int16),
     # numpy int32
     (np.intc, np.intc),
     ("intc", np.intc),
-    ("int32", np.intc),
     ("i", np.intc),
-    ("i4", np.intc),
+    ("int32", np.int32),
+    ("i4", np.int32),
     # numpy int64
     (np.int_, np.int_),
     ("int_", np.int_),
     ("int0", np.int_),
-    ("int64", np.int_),
     ("long", np.int_),
     ("l", np.int_),
-    ("i8", np.int_),
+    ("int64", np.int64),
+    ("i8", np.int64),
     # numpy extended int
     (np.longlong, np.longlong),
     ("longlong", np.longlong),
@@ -1797,29 +1797,29 @@ ASTYPE_UINT_ARGS: list[tuple[UIntDtypeArg, type]] = [
     # numpy uint8
     (np.ubyte, np.ubyte),
     ("ubyte", np.ubyte),
-    ("uint8", np.ubyte),
     ("B", np.ubyte),
-    ("u1", np.ubyte),
+    ("uint8", np.uint8),
+    ("u1", np.uint8),
     # numpy uint16
     (np.ushort, np.ushort),
     ("ushort", np.ushort),
-    ("uint16", np.ushort),
     ("H", np.ushort),
-    ("u2", np.ushort),
+    ("uint16", np.uint16),
+    ("u2", np.uint16),
     # numpy uint32
     (np.uintc, np.uintc),
     ("uintc", np.uintc),
-    ("uint32", np.uintc),
     ("I", np.uintc),
-    ("u4", np.uintc),
+    ("uint32", np.uint32),
+    ("u4", np.uint32),
     # numpy uint64
     (np.uint, np.uint),
     ("uint", np.uint),
     ("uint0", np.uint),
-    ("uint64", np.uint),
     ("ulong", np.uint),
     ("L", np.uint),
-    ("u8", np.uint),
+    ("uint64", np.uint64),
+    ("u8", np.uint64),
     # numpy extended uint
     (np.ulonglong, np.ulonglong),
     ("ulonglong", np.ulonglong),
@@ -1848,29 +1848,30 @@ ASTYPE_FLOAT_ARGS: list[tuple[FloatDtypeArg, type]] = [
     # numpy float16
     (np.half, np.half),
     ("half", np.half),
-    ("float16", np.half),
     ("e", np.half),
-    ("f2", np.half),
+    ("float16", np.float16),
+    ("f2", np.float16),
     # numpy float32
     (np.single, np.single),
     ("single", np.single),
-    ("float32", np.single),
     ("f", np.single),
-    ("f4", np.single),
+    ("float32", np.float32),
+    ("f4", np.float32),
     # numpy float64
     (np.double, np.double),
     ("double", np.double),
     ("float_", np.double),
-    ("float64", np.double),
     ("d", np.double),
-    ("f8", np.double),
+    ("float64", np.float64),
+    ("f8", np.float64),
     # numpy float128
     (np.longdouble, np.longdouble),
     ("longdouble", np.longdouble),
     ("longfloat", np.longdouble),
-    ("float128", np.longdouble),
     ("g", np.longdouble),
     ("f16", np.longdouble),
+    ("float96", np.longdouble),  # NOTE: WINDOWS ONLY
+    ("float128", np.longdouble),  # NOTE: UNIX ONLY
     # pyarrow float32
     ("float32[pyarrow]", float),
     ("float[pyarrow]", float),
@@ -1887,25 +1888,26 @@ ASTYPE_COMPLEX_ARGS: list[tuple[ComplexDtypeArg, type]] = [
     (np.csingle, np.csingle),
     ("csingle", np.csingle),
     ("singlecomplex", np.csingle),
-    ("complex64", np.csingle),
     ("F", np.csingle),
-    ("c8", np.csingle),
+    ("complex64", np.complex64),
+    ("c8", np.complex64),
     # numpy complex128
     (np.cdouble, np.cdouble),
     ("cdouble", np.cdouble),
     ("cfloat", np.cdouble),
     ("complex_", np.cdouble),
-    ("complex128", np.cdouble),
     ("D", np.cdouble),
-    ("c16", np.cdouble),
+    ("complex128", np.complex128),
+    ("c16", np.complex128),
     # numpy complex256
     (np.clongdouble, np.clongdouble),
     ("clongdouble", np.clongdouble),
     ("clongfloat", np.clongdouble),
     ("longcomplex", np.clongdouble),
-    ("complex256", np.clongdouble),
     ("G", np.clongdouble),
     ("c32", np.clongdouble),
+    ("complex192", np.clongdouble),  # NOTE: WINDOWS ONLY
+    ("complex256", np.clongdouble),  # NOTE: UNIX ONLY
 ]
 
 
@@ -2232,6 +2234,10 @@ def test_astype_uint(cast_arg: IntDtypeArg, target_type: type) -> None:
 def test_astype_float(cast_arg: FloatDtypeArg, target_type: type) -> None:
     s = pd.Series([1, 2, 3])
 
+    if platform.system() != "Windows" and cast_arg == "float96":
+        with pytest.raises(TypeError):
+            s.astype(cast_arg)
+        pytest.skip("Unix does not support float96")
     if platform.system() == "Windows" and cast_arg == "float128":
         with pytest.raises(TypeError):
             s.astype(cast_arg)
@@ -2287,6 +2293,10 @@ def test_astype_float(cast_arg: FloatDtypeArg, target_type: type) -> None:
 def test_astype_complex(cast_arg: ComplexDtypeArg, target_type: type) -> None:
     s = pd.Series([1, 2, 3])
 
+    if platform.system() != "Windows" and cast_arg == "complex192":
+        with pytest.raises(TypeError):
+            s.astype(cast_arg)
+        pytest.skip("Unix does not support complex192")
     if platform.system() == "Windows" and cast_arg == "complex256":
         with pytest.raises(TypeError):
             s.astype(cast_arg)

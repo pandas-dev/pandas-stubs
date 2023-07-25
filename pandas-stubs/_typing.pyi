@@ -185,7 +185,7 @@ FloatDtypeArg: TypeAlias = (
     | Literal["d", "f8", "float64", "double", "float_"]
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.longdouble
     | type[np.longdouble]
-    | Literal["g", "f16", "float128", "longdouble", "longfloat"]
+    | Literal["g", "f16", "float96", "float128", "longdouble", "longfloat"]
     # PyArrow floating point types and their string aliases
     | Literal[
         "float[pyarrow]",
@@ -209,7 +209,15 @@ ComplexDtypeArg: TypeAlias = (
     #  https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.clongdouble
     # NOTE: Alias np.complex256 only on Linux x86_64, use np.clongdouble instead
     | type[np.clongdouble]
-    | Literal["G", "c32", "complex256", "clongdouble", "clongfloat", "longcomplex"]
+    | Literal[
+        "G",
+        "c32",
+        "complex192",
+        "complex256",
+        "clongdouble",
+        "clongfloat",
+        "longcomplex",
+    ]
 )
 # Refer to https://numpy.org/doc/stable/reference/arrays.datetime.html#datetime-units
 TimedeltaDtypeArg: TypeAlias = Literal[
