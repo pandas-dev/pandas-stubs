@@ -1141,6 +1141,26 @@ def test_read_sql_via_sqlalchemy_engine():
         engine.dispose()
 
 
+def test_read_sql_via_sqlalchemy_engine_with_params():
+    with ensure_clean() as path:
+        db_uri = "sqlite:///" + path
+        engine = sqlalchemy.create_engine(db_uri)
+
+        check(assert_type(DF.to_sql("test", con=engine), Union[int, None]), int)
+        check(
+            assert_type(
+                read_sql(
+                    "select * from test where a = :a and b = :b",
+                    con=engine,
+                    params={"a": 2, "b": 0.0},
+                ),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+        engine.dispose()
+
+
 def test_read_sql_generator():
     with ensure_clean() as path:
         con = sqlite3.connect(path)
@@ -1198,6 +1218,26 @@ def test_read_sql_query_generator():
             Generator,
         )
         con.close()
+
+
+def test_read_sql_query_via_sqlalchemy_engine_with_params():
+    with ensure_clean() as path:
+        db_uri = "sqlite:///" + path
+        engine = sqlalchemy.create_engine(db_uri)
+
+        check(assert_type(DF.to_sql("test", con=engine), Union[int, None]), int)
+        check(
+            assert_type(
+                read_sql_query(
+                    "select * from test where a = :a and b = :b",
+                    con=engine,
+                    params={"a": 2, "b": 0.0},
+                ),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+        engine.dispose()
 
 
 def test_read_html():
