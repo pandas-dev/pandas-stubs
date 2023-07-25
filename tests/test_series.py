@@ -81,7 +81,7 @@ def test_types_init() -> None:
     pd.Series(1)
     pd.Series((1, 2, 3))
     pd.Series(np.array([1, 2, 3]))
-    pd.Series(data=[1, 2, 3, 4], name="pd.Series")
+    pd.Series(data=[1, 2, 3, 4], name="series")
     pd.Series(data=[1, 2, 3, 4], dtype=np.int8)
     pd.Series(data={"row1": [1, 2], "row2": [3, 4]})
     pd.Series(data=[1, 2, 3, 4], index=[4, 3, 2, 1], copy=True)
@@ -135,7 +135,7 @@ def test_types_select() -> None:
     s = pd.Series(data={"row1": 1, "row2": 2})
     with pytest_warns_bounded(
         FutureWarning,
-        "pd.Series.__getitem__ treating keys as positions is deprecated",
+        "Series.__getitem__ treating keys as positions is deprecated",
         lower="2.0.99",
     ):
         s[0]
@@ -268,7 +268,7 @@ def test_types_fillna() -> None:
     check(assert_type(s.fillna(0, axis="index"), pd.Series), pd.Series)
     with pytest_warns_bounded(
         FutureWarning,
-        "pd.Series.fillna with 'method' is deprecated",
+        "Series.fillna with 'method' is deprecated",
         lower="2.0.99",
     ):
         check(assert_type(s.fillna(method="backfill", axis=0), pd.Series), pd.Series)
