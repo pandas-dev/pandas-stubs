@@ -2568,17 +2568,17 @@ def test_all_astype_args_tested() -> None:
     }
     TESTED_ASTYPE_ARGS: list[tuple[Any, type]] = (
         ASTYPE_BOOL_ARGS
-        + ASTYPE_INT_ARGS  # noqa: W503
-        + ASTYPE_UINT_ARGS  # noqa: W503
-        + ASTYPE_FLOAT_ARGS  # noqa: W503
-        + ASTYPE_COMPLEX_ARGS  # noqa: W503
-        + ASTYPE_TIMEDELTA_ARGS  # noqa: W503
-        + ASTYPE_TIMESTAMP_ARGS  # noqa: W503
-        + ASTYPE_BYTES_ARGS  # noqa: W503
-        + ASTYPE_STRING_ARGS  # noqa: W503
-        + ASTYPE_CATEGORICAL_ARGS  # noqa: W503
-        + ASTYPE_OBJECT_ARGS  # noqa: W503
-        + ASTYPE_VOID_ARGS  # noqa: W503
+        + ASTYPE_INT_ARGS
+        + ASTYPE_UINT_ARGS
+        + ASTYPE_FLOAT_ARGS
+        + ASTYPE_COMPLEX_ARGS
+        + ASTYPE_TIMEDELTA_ARGS
+        + ASTYPE_TIMESTAMP_ARGS
+        + ASTYPE_BYTES_ARGS
+        + ASTYPE_STRING_ARGS
+        + ASTYPE_CATEGORICAL_ARGS
+        + ASTYPE_OBJECT_ARGS
+        + ASTYPE_VOID_ARGS
     )
 
     TESTED_ALIASES: set[str] = {

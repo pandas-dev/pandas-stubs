@@ -16,7 +16,7 @@ class BaseIndexer:
         index_array: np.ndarray | None = ...,
         window_size: int = ...,
         **kwargs,
-    ): ...
+    ) -> None: ...
     def get_window_bounds(
         self,
         num_values: int = ...,
@@ -33,7 +33,7 @@ class VariableOffsetWindowIndexer(BaseIndexer):
         index=...,
         offset=...,
         **kwargs,
-    ): ...
+    ) -> None: ...
     def get_window_bounds(
         self,
         num_values: int = ...,

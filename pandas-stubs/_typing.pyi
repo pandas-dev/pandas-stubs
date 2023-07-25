@@ -91,7 +91,7 @@ DtypeBackend: TypeAlias = Literal["pyarrow", "numpy_nullable"]
 
 BooleanDtypeArg: TypeAlias = (
     # Builtin bool type and its string alias
-    type[bool]  # noqa: Y030
+    type[bool]  # noqa: PYI030
     | Literal["bool"]
     # Pandas nullable boolean type and its string alias
     | pd.BooleanDtype
@@ -105,7 +105,7 @@ BooleanDtypeArg: TypeAlias = (
 )
 IntDtypeArg: TypeAlias = (
     # Builtin integer type and its string alias
-    type[int]  # noqa: Y030
+    type[int]  # noqa: PYI030
     | Literal["int"]
     # Pandas nullable integer types and their string aliases
     | pd.Int8Dtype
@@ -137,7 +137,7 @@ IntDtypeArg: TypeAlias = (
 )
 UIntDtypeArg: TypeAlias = (
     # Pandas nullable unsigned integer types and their string aliases
-    pd.UInt8Dtype  # noqa: Y030
+    pd.UInt8Dtype  # noqa: PYI030
     | pd.UInt16Dtype
     | pd.UInt32Dtype
     | pd.UInt64Dtype
@@ -166,7 +166,7 @@ UIntDtypeArg: TypeAlias = (
 )
 FloatDtypeArg: TypeAlias = (
     # Builtin float type and its string alias
-    type[float]  # noqa: Y030
+    type[float]  # noqa: PYI030
     | Literal["float"]
     # Pandas nullable float types and their string aliases
     | pd.Float32Dtype
@@ -197,7 +197,7 @@ FloatDtypeArg: TypeAlias = (
 )
 ComplexDtypeArg: TypeAlias = (
     # Builtin complex type and its string alias
-    type[complex]  # noqa: Y030
+    type[complex]  # noqa: PYI030
     | Literal["complex"]
     # Numpy complex types and their aliases
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.csingle
@@ -326,7 +326,7 @@ TimestampDtypeArg: TypeAlias = Literal[
 
 StrDtypeArg: TypeAlias = (
     # Builtin str type and its string alias
-    type[str]  # noqa: Y030
+    type[str]  # noqa: PYI030
     | Literal["str"]
     # Pandas nullable string type and its string alias
     | pd.StringDtype
@@ -340,7 +340,7 @@ StrDtypeArg: TypeAlias = (
 )
 BytesDtypeArg: TypeAlias = (
     # Builtin bytes type and its string alias
-    type[bytes]  # noqa: Y030
+    type[bytes]  # noqa: PYI030
     | Literal["bytes"]
     # Numpy bytes type and its string alias
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.bytes_
@@ -353,7 +353,7 @@ CategoryDtypeArg: TypeAlias = CategoricalDtype | Literal["category"]
 
 ObjectDtypeArg: TypeAlias = (
     # Builtin object type and its string alias
-    type[object]  # noqa: Y030
+    type[object]  # noqa: PYI030
     | Literal["object"]
     # Numpy object type and its string alias
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.object_

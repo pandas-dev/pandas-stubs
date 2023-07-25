@@ -46,7 +46,7 @@ class TimedeltaIndex(  # type: ignore[misc]
         dtype: Literal["<m8[ns]"] = ...,
         copy: bool = ...,
         name: str = ...,
-    ): ...
+    ) -> None: ...
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
     @overload

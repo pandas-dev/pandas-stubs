@@ -1,4 +1,3 @@
-# flake8: noqa: F841
 from __future__ import annotations
 
 import datetime as dt
@@ -6,7 +5,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Optional,
-    Union,
 )
 
 import numpy as np
@@ -43,11 +41,9 @@ from pandas.tseries.offsets import (
 )
 
 if TYPE_CHECKING:
-    from pandas.core.series import (
-        PeriodSeries,
-        TimedeltaSeries,
-        TimestampSeries,
-    )
+    from pandas.core.series import PeriodSeries  # noqa: F401
+    from pandas.core.series import TimedeltaSeries  # noqa: F401
+    from pandas.core.series import TimestampSeries  # noqa: F401
 
 if TYPE_CHECKING:
     from pandas.core.indexes.base import _IntIndexType
@@ -310,7 +306,7 @@ def test_to_datetime_nat() -> None:
     check(
         assert_type(
             pd.to_datetime("2021-03-01", errors="coerce"),
-            "Union[pd.Timestamp, NaTType]",
+            "pd.Timestamp | NaTType",
         ),
         pd.Timestamp,
     )
@@ -318,7 +314,7 @@ def test_to_datetime_nat() -> None:
     check(
         assert_type(
             pd.to_datetime("not a date", errors="coerce"),
-            "Union[pd.Timestamp, NaTType]",
+            "pd.Timestamp | NaTType",
         ),
         NaTType,
     )
