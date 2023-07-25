@@ -2,6 +2,7 @@ from collections.abc import (
     Callable,
     Generator,
     Iterable,
+    Mapping,
 )
 import sqlite3
 from typing import (
@@ -65,7 +66,7 @@ def read_sql_query(
     con: _SQLConnection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
-    params: list[str] | tuple[str, ...] | dict[str, str] | None = ...,
+    params: list[Any] | tuple[Any, ...] | Mapping[str, Any] | None = ...,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
     *,
     chunksize: int,
@@ -78,7 +79,7 @@ def read_sql_query(
     con: _SQLConnection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
-    params: list[str] | tuple[str, ...] | dict[str, str] | None = ...,
+    params: list[Any] | tuple[Any, ...] | Mapping[str, Any] | None = ...,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
     chunksize: None = ...,
     dtype: DtypeArg | None = ...,
@@ -90,7 +91,7 @@ def read_sql(
     con: _SQLConnection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
-    params: list[str] | tuple[str, ...] | dict[str, str] | None = ...,
+    params: list[Any] | tuple[Any, ...] | Mapping[str, Any] | None = ...,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
     columns: list[str] = ...,
     *,
@@ -104,7 +105,7 @@ def read_sql(
     con: _SQLConnection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
-    params: list[str] | tuple[str, ...] | dict[str, str] | None = ...,
+    params: list[Any] | tuple[Any, ...] | Mapping[str, Any] | None = ...,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
     columns: list[str] = ...,
     chunksize: None = ...,
