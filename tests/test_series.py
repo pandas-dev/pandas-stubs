@@ -2570,14 +2570,14 @@ def test_all_astype_args_tested() -> None:
     """Check that all relevant numpy type aliases are tested."""
     NUMPY_ALIASES: set[str] = {k for k in np.sctypeDict if isinstance(k, str)}
     EXCLUDED_ALIASES = {
-        "M",
-        "m",
-        "object0",
-        "M8",
         "datetime64",
+        "m",
         "m8",
         "timedelta64",
+        "M",
+        "M8",
         "object_",
+        "object0",
     }
     TESTED_ASTYPE_ARGS: list[tuple[Any, type]] = (
         ASTYPE_BOOL_ARGS
