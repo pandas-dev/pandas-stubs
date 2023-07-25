@@ -4,6 +4,7 @@ import datetime
 from decimal import Decimal
 from enum import Enum
 from pathlib import Path
+import platform
 import re
 from typing import (
     TYPE_CHECKING,
@@ -70,6 +71,8 @@ if TYPE_CHECKING:
         StrDtypeArg,
         TimedeltaDtypeArg,
         TimestampDtypeArg,
+        UIntDtypeArg,
+        VoidDtypeArg,
     )
     from pandas._typing import np_ndarray_int  # noqa: F401
 
@@ -1703,7 +1706,7 @@ def test_change_to_dict_return_type() -> None:
     check(assert_type(fd, Dict[Any, Any]), dict)
 
 
-ASTYPE_BOOL: list[tuple[BooleanDtypeArg, type]] = [
+ASTYPE_BOOL_ARGS: list[tuple[BooleanDtypeArg, type]] = [
     # python boolean
     (bool, np.bool_),
     ("bool", np.bool_),
@@ -1715,12 +1718,13 @@ ASTYPE_BOOL: list[tuple[BooleanDtypeArg, type]] = [
     ("bool_", np.bool_),
     ("bool8", np.bool_),
     ("?", np.bool_),
+    ("b1", np.bool_),
     # pyarrow boolean type
     ("bool[pyarrow]", bool),
     ("boolean[pyarrow]", bool),
 ]
 
-ASTYPE_INT: list[tuple[IntDtypeArg, type]] = [
+ASTYPE_INT_ARGS: list[tuple[IntDtypeArg, type]] = [
     # python int
     (int, np.integer),
     ("int", np.integer),
@@ -1741,23 +1745,35 @@ ASTYPE_INT: list[tuple[IntDtypeArg, type]] = [
     ("byte", np.byte),
     ("int8", np.byte),
     ("b", np.byte),
+    ("i1", np.byte),
     # numpy int16
     (np.short, np.short),
     ("short", np.short),
     ("int16", np.short),
     ("h", np.short),
+    ("i2", np.short),
     # numpy int32
     (np.intc, np.intc),
     ("intc", np.intc),
     ("int32", np.intc),
     ("i", np.intc),
+    ("i4", np.intc),
     # numpy int64
     (np.int_, np.int_),
     ("int_", np.int_),
+    ("int0", np.int_),
     ("int64", np.int_),
-    ("intp", np.int_),
     ("long", np.int_),
     ("l", np.int_),
+    ("i8", np.int_),
+    # numpy extended int
+    (np.longlong, np.longlong),
+    ("longlong", np.longlong),
+    ("q", np.longlong),
+    # numpy signed pointer  (platform dependent one of int[8,16,32,64])
+    (np.intp, np.intp),
+    ("intp", np.intp),
+    ("p", np.intp),
     # pyarrow integer types
     ("int8[pyarrow]", int),
     ("int16[pyarrow]", int),
@@ -1765,7 +1781,7 @@ ASTYPE_INT: list[tuple[IntDtypeArg, type]] = [
     ("int64[pyarrow]", int),
 ]
 
-ASTYPE_UINT: list[tuple[IntDtypeArg, type]] = [
+ASTYPE_UINT_ARGS: list[tuple[UIntDtypeArg, type]] = [
     # pandas UInt8
     (pd.UInt8Dtype(), np.uint8),
     ("UInt8", np.uint8),
@@ -1783,22 +1799,35 @@ ASTYPE_UINT: list[tuple[IntDtypeArg, type]] = [
     ("ubyte", np.ubyte),
     ("uint8", np.ubyte),
     ("B", np.ubyte),
+    ("u1", np.ubyte),
     # numpy uint16
     (np.ushort, np.ushort),
     ("ushort", np.ushort),
     ("uint16", np.ushort),
     ("H", np.ushort),
+    ("u2", np.ushort),
     # numpy uint32
     (np.uintc, np.uintc),
     ("uintc", np.uintc),
     ("uint32", np.uintc),
     ("I", np.uintc),
+    ("u4", np.uintc),
     # numpy uint64
     (np.uint, np.uint),
     ("uint", np.uint),
+    ("uint0", np.uint),
     ("uint64", np.uint),
-    ("uintp", np.uint),
+    ("ulong", np.uint),
     ("L", np.uint),
+    ("u8", np.uint),
+    # numpy extended uint
+    (np.ulonglong, np.ulonglong),
+    ("ulonglong", np.ulonglong),
+    ("Q", np.ulonglong),
+    # numpy unsigned pointer  (platform dependent one of uint[8,16,32,64])
+    (np.uintp, np.uintp),
+    ("uintp", np.uintp),
+    ("P", np.uintp),
     # pyarrow unsigned integer types
     ("uint8[pyarrow]", int),
     ("uint16[pyarrow]", int),
@@ -1806,7 +1835,7 @@ ASTYPE_UINT: list[tuple[IntDtypeArg, type]] = [
     ("uint64[pyarrow]", int),
 ]
 
-ASTYPE_FLOAT = [
+ASTYPE_FLOAT_ARGS: list[tuple[FloatDtypeArg, type]] = [
     # python float
     (float, np.floating),
     ("float", np.floating),
@@ -1821,23 +1850,27 @@ ASTYPE_FLOAT = [
     ("half", np.half),
     ("float16", np.half),
     ("e", np.half),
+    ("f2", np.half),
     # numpy float32
     (np.single, np.single),
     ("single", np.single),
     ("float32", np.single),
     ("f", np.single),
+    ("f4", np.single),
     # numpy float64
     (np.double, np.double),
     ("double", np.double),
     ("float_", np.double),
     ("float64", np.double),
     ("d", np.double),
+    ("f8", np.double),
     # numpy float128
     (np.longdouble, np.longdouble),
     ("longdouble", np.longdouble),
     ("longfloat", np.longdouble),
     ("float128", np.longdouble),
     ("g", np.longdouble),
+    ("f16", np.longdouble),
     # pyarrow float32
     ("float32[pyarrow]", float),
     ("float[pyarrow]", float),
@@ -1846,7 +1879,7 @@ ASTYPE_FLOAT = [
     ("double[pyarrow]", float),
 ]
 
-ASTYPE_COMPLEX: list[tuple[ComplexDtypeArg, type]] = [
+ASTYPE_COMPLEX_ARGS: list[tuple[ComplexDtypeArg, type]] = [
     # python complex
     (complex, np.complexfloating),
     ("complex", np.complexfloating),
@@ -1856,6 +1889,7 @@ ASTYPE_COMPLEX: list[tuple[ComplexDtypeArg, type]] = [
     ("singlecomplex", np.csingle),
     ("complex64", np.csingle),
     ("F", np.csingle),
+    ("c8", np.csingle),
     # numpy complex128
     (np.cdouble, np.cdouble),
     ("cdouble", np.cdouble),
@@ -1863,6 +1897,7 @@ ASTYPE_COMPLEX: list[tuple[ComplexDtypeArg, type]] = [
     ("complex_", np.cdouble),
     ("complex128", np.cdouble),
     ("D", np.cdouble),
+    ("c16", np.cdouble),
     # numpy complex256
     (np.clongdouble, np.clongdouble),
     ("clongdouble", np.clongdouble),
@@ -1870,140 +1905,183 @@ ASTYPE_COMPLEX: list[tuple[ComplexDtypeArg, type]] = [
     ("longcomplex", np.clongdouble),
     ("complex256", np.clongdouble),
     ("G", np.clongdouble),
+    ("c32", np.clongdouble),
 ]
 
 
-ASTYPE_TIMESTAMP: list[TimestampDtypeArg] = [
+ASTYPE_TIMESTAMP_ARGS: list[tuple[TimestampDtypeArg, type]] = [
     # numpy datetime64
-    "datetime64[Y]",
-    "datetime64[M]",
-    "datetime64[W]",
-    "datetime64[D]",
-    "datetime64[h]",
-    "datetime64[m]",
-    "datetime64[s]",
-    "datetime64[ms]",
-    "datetime64[us]",
-    "datetime64[μs]",
-    "datetime64[ns]",
-    "datetime64[ps]",
-    "datetime64[fs]",
-    "datetime64[as]",
+    ("datetime64[Y]", datetime.datetime),
+    ("datetime64[M]", datetime.datetime),
+    ("datetime64[W]", datetime.datetime),
+    ("datetime64[D]", datetime.datetime),
+    ("datetime64[h]", datetime.datetime),
+    ("datetime64[m]", datetime.datetime),
+    ("datetime64[s]", datetime.datetime),
+    ("datetime64[ms]", datetime.datetime),
+    ("datetime64[us]", datetime.datetime),
+    ("datetime64[μs]", datetime.datetime),
+    ("datetime64[ns]", datetime.datetime),
+    ("datetime64[ps]", datetime.datetime),
+    ("datetime64[fs]", datetime.datetime),
+    ("datetime64[as]", datetime.datetime),
     # numpy datetime64 type codes
-    "<M8[Y]",
-    "<M8[M]",
-    "<M8[W]",
-    "<M8[D]",
-    "<M8[h]",
-    "<M8[m]",
-    "<M8[s]",
-    "<M8[ms]",
-    "<M8[us]",
-    "<M8[μs]",
-    "<M8[ns]",
-    "<M8[ps]",
-    "<M8[fs]",
-    "<M8[as]",
+    ("M8[Y]", datetime.datetime),
+    ("M8[M]", datetime.datetime),
+    ("M8[W]", datetime.datetime),
+    ("M8[D]", datetime.datetime),
+    ("M8[h]", datetime.datetime),
+    ("M8[m]", datetime.datetime),
+    ("M8[s]", datetime.datetime),
+    ("M8[ms]", datetime.datetime),
+    ("M8[us]", datetime.datetime),
+    ("M8[μs]", datetime.datetime),
+    ("M8[ns]", datetime.datetime),
+    ("M8[ps]", datetime.datetime),
+    ("M8[fs]", datetime.datetime),
+    ("M8[as]", datetime.datetime),
+    # little endian
+    ("<M8[Y]", datetime.datetime),
+    ("<M8[M]", datetime.datetime),
+    ("<M8[W]", datetime.datetime),
+    ("<M8[D]", datetime.datetime),
+    ("<M8[h]", datetime.datetime),
+    ("<M8[m]", datetime.datetime),
+    ("<M8[s]", datetime.datetime),
+    ("<M8[ms]", datetime.datetime),
+    ("<M8[us]", datetime.datetime),
+    ("<M8[μs]", datetime.datetime),
+    ("<M8[ns]", datetime.datetime),
+    ("<M8[ps]", datetime.datetime),
+    ("<M8[fs]", datetime.datetime),
+    ("<M8[as]", datetime.datetime),
     # pyarrow timestamp
-    "timestamp[s][pyarrow]",
-    "timestamp[ms][pyarrow]",
-    "timestamp[us][pyarrow]",
-    "timestamp[ns][pyarrow]",
+    ("timestamp[s][pyarrow]", datetime.datetime),
+    ("timestamp[ms][pyarrow]", datetime.datetime),
+    ("timestamp[us][pyarrow]", datetime.datetime),
+    ("timestamp[ns][pyarrow]", datetime.datetime),
     # pyarrow date
-    "date32[pyarrow]",
-    "date64[pyarrow]",
+    ("date32[pyarrow]", datetime.date),
+    ("date64[pyarrow]", datetime.date),
 ]
 
 
-ASTYPE_TIMEDELTA: list[TimedeltaDtypeArg] = [
+ASTYPE_TIMEDELTA_ARGS: list[tuple[TimedeltaDtypeArg, type]] = [
     # numpy timedelta64
-    "timedelta64[Y]",
-    "timedelta64[M]",
-    "timedelta64[W]",
-    "timedelta64[D]",
-    "timedelta64[h]",
-    "timedelta64[m]",
-    "timedelta64[s]",
-    "timedelta64[ms]",
-    "timedelta64[us]",
-    "timedelta64[μs]",
-    "timedelta64[ns]",
-    "timedelta64[ps]",
-    "timedelta64[fs]",
-    "timedelta64[as]",
+    ("timedelta64[Y]", datetime.timedelta),
+    ("timedelta64[M]", datetime.timedelta),
+    ("timedelta64[W]", datetime.timedelta),
+    ("timedelta64[D]", datetime.timedelta),
+    ("timedelta64[h]", datetime.timedelta),
+    ("timedelta64[m]", datetime.timedelta),
+    ("timedelta64[s]", datetime.timedelta),
+    ("timedelta64[ms]", datetime.timedelta),
+    ("timedelta64[us]", datetime.timedelta),
+    ("timedelta64[μs]", datetime.timedelta),
+    ("timedelta64[ns]", datetime.timedelta),
+    ("timedelta64[ps]", datetime.timedelta),
+    ("timedelta64[fs]", datetime.timedelta),
+    ("timedelta64[as]", datetime.timedelta),
     # numpy timedelta64 type codes
-    "<m8[Y]",
-    "<m8[M]",
-    "<m8[W]",
-    "<m8[D]",
-    "<m8[h]",
-    "<m8[m]",
-    "<m8[s]",
-    "<m8[ms]",
-    "<m8[us]",
-    "<m8[μs]",
-    "<m8[ns]",
-    "<m8[ps]",
-    "<m8[fs]",
-    "<m8[as]",
+    ("m8[Y]", datetime.timedelta),
+    ("m8[M]", datetime.timedelta),
+    ("m8[W]", datetime.timedelta),
+    ("m8[D]", datetime.timedelta),
+    ("m8[h]", datetime.timedelta),
+    ("m8[m]", datetime.timedelta),
+    ("m8[s]", datetime.timedelta),
+    ("m8[ms]", datetime.timedelta),
+    ("m8[us]", datetime.timedelta),
+    ("m8[μs]", datetime.timedelta),
+    ("m8[ns]", datetime.timedelta),
+    ("m8[ps]", datetime.timedelta),
+    ("m8[fs]", datetime.timedelta),
+    ("m8[as]", datetime.timedelta),
+    # little endian
+    ("<m8[Y]", datetime.timedelta),
+    ("<m8[M]", datetime.timedelta),
+    ("<m8[W]", datetime.timedelta),
+    ("<m8[D]", datetime.timedelta),
+    ("<m8[h]", datetime.timedelta),
+    ("<m8[m]", datetime.timedelta),
+    ("<m8[s]", datetime.timedelta),
+    ("<m8[ms]", datetime.timedelta),
+    ("<m8[us]", datetime.timedelta),
+    ("<m8[μs]", datetime.timedelta),
+    ("<m8[ns]", datetime.timedelta),
+    ("<m8[ps]", datetime.timedelta),
+    ("<m8[fs]", datetime.timedelta),
+    ("<m8[as]", datetime.timedelta),
     # pyarrow duration
-    "duration[s][pyarrow]",
-    "duration[ms][pyarrow]",
-    "duration[us][pyarrow]",
-    "duration[ns][pyarrow]",
+    ("duration[s][pyarrow]", datetime.timedelta),
+    ("duration[ms][pyarrow]", datetime.timedelta),
+    ("duration[us][pyarrow]", datetime.timedelta),
+    ("duration[ns][pyarrow]", datetime.timedelta),
 ]
 
 
-ASTYPE_STRING: list[StrDtypeArg] = [
+ASTYPE_STRING_ARGS: list[tuple[StrDtypeArg, type]] = [
     # python string
-    str,
-    "str",
+    (str, str),
+    ("str", str),
     # pandas string
-    pd.StringDtype(),
-    "string",
+    (pd.StringDtype(), str),
+    ("string", str),
     # numpy string
-    np.str_,
-    "str_",
-    "unicode",
-    "U",
+    (np.str_, str),
+    ("str_", str),
+    ("str0", str),
+    ("unicode", str),
+    ("unicode_", str),
+    ("U", str),
     # pyarrow string
-    "string[pyarrow]",
+    ("string[pyarrow]", str),
 ]
 
-ASTYPE_BYTES: list[BytesDtypeArg] = [
+ASTYPE_BYTES_ARGS: list[tuple[BytesDtypeArg, type]] = [
     # python bytes
-    bytes,
-    "bytes",
+    (bytes, bytes),
+    ("bytes", bytes),
     # numpy bytes
-    np.bytes_,
-    "bytes_",
-    "string_",
-    "S",
+    (np.bytes_, np.bytes_),
+    ("bytes_", np.bytes_),
+    ("string_", np.bytes_),
+    ("bytes0", np.bytes_),
+    ("S", np.bytes_),
+    ("a", np.bytes_),
     # pyarrow bytes
-    "binary[pyarrow]",
+    ("binary[pyarrow]", bytes),
 ]
 
-ASTYPE_CATEGORICAL: list[CategoryDtypeArg] = [
+ASTYPE_CATEGORICAL_ARGS: list[tuple[CategoryDtypeArg, type]] = [
     # pandas category
-    pd.CategoricalDtype(),
-    "category",
+    (pd.CategoricalDtype(), object),
+    ("category", object),
     # pyarrow dictionary
     # ("dictionary[pyarrow]", "pd.Series[category]", Categorical),
 ]
 
 
-ASTYPE_OBJECT: list[ObjectDtypeArg] = [
+ASTYPE_OBJECT_ARGS: list[tuple[ObjectDtypeArg, type]] = [
     # python object
-    object,
-    "object",
+    (object, object),
     # numpy object
-    np.object_,
+    (np.object_, object),
+    ("object", object),
     # "object_"  # NOTE: not assigned
-    "O",
+    ("O", object),
+]
+
+ASTYPE_VOID_ARGS: list[tuple[VoidDtypeArg, type]] = [
+    # numpy void
+    (np.void, np.void),
+    ("void", np.void),
+    ("V", np.void),
+    ("void0", np.void),
 ]
 
 
-@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_BOOL, ids=repr)
+@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_BOOL_ARGS, ids=repr)
 def test_astype_bool(cast_arg: BooleanDtypeArg, target_type: type) -> None:
     s = pd.Series([0, 1])
     check(s.astype(cast_arg), pd.Series, target_type)
@@ -2025,9 +2103,21 @@ def test_astype_bool(cast_arg: BooleanDtypeArg, target_type: type) -> None:
         assert_type(s.astype("boolean[pyarrow]"), "pd.Series[bool]")
 
 
-@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_INT, ids=repr)
+@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_INT_ARGS, ids=repr)
 def test_astype_int(cast_arg: IntDtypeArg, target_type: type) -> None:
     s = pd.Series([1, 2, 3])
+
+    if platform.system() == "Windows":
+        # Different behavior for uint32, uint64 and uintp on Windows
+        if cast_arg in ["uint32", "uint64", "uintp"]:
+            pass
+
+    if cast_arg in (np.longlong, "longlong", "q"):
+        pytest.skip(
+            "longlong is bugged, for details, see"
+            "https://github.com/pandas-dev/pandas/issues/54252"
+        )
+
     check(s.astype(cast_arg), pd.Series, target_type)
 
     if TYPE_CHECKING:
@@ -2051,23 +2141,31 @@ def test_astype_int(cast_arg: IntDtypeArg, target_type: type) -> None:
         assert_type(s.astype("byte"), "pd.Series[int]")
         assert_type(s.astype("int8"), "pd.Series[int]")
         assert_type(s.astype("b"), "pd.Series[int]")
+        assert_type(s.astype("i1"), "pd.Series[int]")
         # numpy int16
         assert_type(s.astype(np.short), "pd.Series[int]")
         assert_type(s.astype("short"), "pd.Series[int]")
         assert_type(s.astype("int16"), "pd.Series[int]")
         assert_type(s.astype("h"), "pd.Series[int]")
+        assert_type(s.astype("i2"), "pd.Series[int]")
         # numpy int32
         assert_type(s.astype(np.intc), "pd.Series[int]")
         assert_type(s.astype("intc"), "pd.Series[int]")
         assert_type(s.astype("int32"), "pd.Series[int]")
         assert_type(s.astype("i"), "pd.Series[int]")
+        assert_type(s.astype("i4"), "pd.Series[int]")
         # numpy int64
         assert_type(s.astype(np.int_), "pd.Series[int]")
         assert_type(s.astype("int_"), "pd.Series[int]")
+        assert_type(s.astype("int0"), "pd.Series[int]")
         assert_type(s.astype("int64"), "pd.Series[int]")
-        assert_type(s.astype("intp"), "pd.Series[int]")
         assert_type(s.astype("long"), "pd.Series[int]")
         assert_type(s.astype("l"), "pd.Series[int]")
+        assert_type(s.astype("i8"), "pd.Series[int]")
+        # numpy signed pointer
+        assert_type(s.astype(np.intp), "pd.Series[int]")
+        assert_type(s.astype("intp"), "pd.Series[int]")
+        assert_type(s.astype("p"), "pd.Series[int]")
         # pyarrow integer types
         assert_type(s.astype("int8[pyarrow]"), "pd.Series[int]")
         assert_type(s.astype("int16[pyarrow]"), "pd.Series[int]")
@@ -2075,7 +2173,7 @@ def test_astype_int(cast_arg: IntDtypeArg, target_type: type) -> None:
         assert_type(s.astype("int64[pyarrow]"), "pd.Series[int]")
 
 
-@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_UINT, ids=repr)
+@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_UINT_ARGS, ids=repr)
 def test_astype_uint(cast_arg: IntDtypeArg, target_type: type) -> None:
     s = pd.Series([1, 2, 3])
     check(s.astype(cast_arg), pd.Series, target_type)
@@ -2098,22 +2196,31 @@ def test_astype_uint(cast_arg: IntDtypeArg, target_type: type) -> None:
         assert_type(s.astype("ubyte"), "pd.Series[int]")
         assert_type(s.astype("uint8"), "pd.Series[int]")
         assert_type(s.astype("B"), "pd.Series[int]")
+        assert_type(s.astype("u1"), "pd.Series[int]")
         # numpy uint16
         assert_type(s.astype(np.ushort), "pd.Series[int]")
         assert_type(s.astype("ushort"), "pd.Series[int]")
         assert_type(s.astype("uint16"), "pd.Series[int]")
         assert_type(s.astype("H"), "pd.Series[int]")
+        assert_type(s.astype("u2"), "pd.Series[int]")
         # numpy uint32
         assert_type(s.astype(np.uintc), "pd.Series[int]")
         assert_type(s.astype("uintc"), "pd.Series[int]")
         assert_type(s.astype("uint32"), "pd.Series[int]")
         assert_type(s.astype("I"), "pd.Series[int]")
+        assert_type(s.astype("u4"), "pd.Series[int]")
         # numpy uint64
         assert_type(s.astype(np.uint), "pd.Series[int]")
         assert_type(s.astype("uint"), "pd.Series[int]")
+        assert_type(s.astype("uint0"), "pd.Series[int]")
         assert_type(s.astype("uint64"), "pd.Series[int]")
-        assert_type(s.astype("uintp"), "pd.Series[int]")
+        assert_type(s.astype("ulong"), "pd.Series[int]")
         assert_type(s.astype("L"), "pd.Series[int]")
+        assert_type(s.astype("u8"), "pd.Series[int]")
+        # numpy unsigned pointer
+        assert_type(s.astype(np.uintp), "pd.Series[int]")
+        assert_type(s.astype("uintp"), "pd.Series[int]")
+        assert_type(s.astype("P"), "pd.Series[int]")
         # pyarrow unsigned integer types
         assert_type(s.astype("uint8[pyarrow]"), "pd.Series[int]")
         assert_type(s.astype("uint16[pyarrow]"), "pd.Series[int]")
@@ -2121,9 +2228,15 @@ def test_astype_uint(cast_arg: IntDtypeArg, target_type: type) -> None:
         assert_type(s.astype("uint64[pyarrow]"), "pd.Series[int]")
 
 
-@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_COMPLEX, ids=repr)
+@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_FLOAT_ARGS, ids=repr)
 def test_astype_float(cast_arg: FloatDtypeArg, target_type: type) -> None:
     s = pd.Series([1, 2, 3])
+
+    if platform.system() == "Windows" and cast_arg == "float128":
+        with pytest.raises(TypeError):
+            s.astype(cast_arg)
+        pytest.skip("Windows does not support float128")
+
     check(s.astype(cast_arg), pd.Series, target_type)
 
     if TYPE_CHECKING:
@@ -2141,23 +2254,27 @@ def test_astype_float(cast_arg: FloatDtypeArg, target_type: type) -> None:
         assert_type(s.astype("half"), "pd.Series[float]")
         assert_type(s.astype("float16"), "pd.Series[float]")
         assert_type(s.astype("e"), "pd.Series[float]")
+        assert_type(s.astype("f2"), "pd.Series[float]")
         # numpy float32
         assert_type(s.astype(np.single), "pd.Series[float]")
         assert_type(s.astype("single"), "pd.Series[float]")
         assert_type(s.astype("float32"), "pd.Series[float]")
         assert_type(s.astype("f"), "pd.Series[float]")
+        assert_type(s.astype("f4"), "pd.Series[float]")
         # numpy float64
         assert_type(s.astype(np.double), "pd.Series[float]")
         assert_type(s.astype("double"), "pd.Series[float]")
         assert_type(s.astype("float_"), "pd.Series[float]")
         assert_type(s.astype("float64"), "pd.Series[float]")
         assert_type(s.astype("d"), "pd.Series[float]")
+        assert_type(s.astype("f8"), "pd.Series[float]")
         # numpy float128
         assert_type(s.astype(np.longdouble), "pd.Series[float]")
         assert_type(s.astype("longdouble"), "pd.Series[float]")
         assert_type(s.astype("longfloat"), "pd.Series[float]")
         assert_type(s.astype("float128"), "pd.Series[float]")
         assert_type(s.astype("g"), "pd.Series[float]")
+        assert_type(s.astype("f16"), "pd.Series[float]")
         # pyarrow float32
         assert_type(s.astype("float32[pyarrow]"), "pd.Series[float]")
         assert_type(s.astype("float[pyarrow]"), "pd.Series[float]")
@@ -2166,9 +2283,15 @@ def test_astype_float(cast_arg: FloatDtypeArg, target_type: type) -> None:
         assert_type(s.astype("double[pyarrow]"), "pd.Series[float]")
 
 
-@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_COMPLEX, ids=repr)
+@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_COMPLEX_ARGS, ids=repr)
 def test_astype_complex(cast_arg: ComplexDtypeArg, target_type: type) -> None:
     s = pd.Series([1, 2, 3])
+
+    if platform.system() == "Windows" and cast_arg == "complex256":
+        with pytest.raises(TypeError):
+            s.astype(cast_arg)
+        pytest.skip("Windows does not support complex256")
+
     check(s.astype(cast_arg), pd.Series, target_type)
 
     if TYPE_CHECKING:
@@ -2180,6 +2303,7 @@ def test_astype_complex(cast_arg: ComplexDtypeArg, target_type: type) -> None:
         assert_type(s.astype("singlecomplex"), "pd.Series[complex]")
         assert_type(s.astype("complex64"), "pd.Series[complex]")
         assert_type(s.astype("F"), "pd.Series[complex]")
+        assert_type(s.astype("c8"), "pd.Series[complex]")
         # numpy complex128
         assert_type(s.astype(np.cdouble), "pd.Series[complex]")
         assert_type(s.astype("cdouble"), "pd.Series[complex]")
@@ -2187,6 +2311,7 @@ def test_astype_complex(cast_arg: ComplexDtypeArg, target_type: type) -> None:
         assert_type(s.astype("complex_"), "pd.Series[complex]")
         assert_type(s.astype("complex128"), "pd.Series[complex]")
         assert_type(s.astype("D"), "pd.Series[complex]")
+        assert_type(s.astype("c16"), "pd.Series[complex]")
         # numpy complex256
         assert_type(s.astype(np.clongdouble), "pd.Series[complex]")
         assert_type(s.astype("clongdouble"), "pd.Series[complex]")
@@ -2194,17 +2319,18 @@ def test_astype_complex(cast_arg: ComplexDtypeArg, target_type: type) -> None:
         assert_type(s.astype("longcomplex"), "pd.Series[complex]")
         assert_type(s.astype("complex256"), "pd.Series[complex]")
         assert_type(s.astype("G"), "pd.Series[complex]")
+        assert_type(s.astype("c32"), "pd.Series[complex]")
 
 
-@pytest.mark.parametrize("cast_arg", ASTYPE_TIMESTAMP, ids=repr)
-def test_astype_timestamp(cast_arg: TimestampDtypeArg) -> None:
+@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_TIMESTAMP_ARGS, ids=repr)
+def test_astype_timestamp(cast_arg: TimestampDtypeArg, target_type: type) -> None:
     s = pd.Series([1, 2, 3])
 
     if cast_arg in ("date32[pyarrow]", "date64[pyarrow]"):
         x = pd.Series(pd.date_range("2000-01-01", "2000-02-01"))
-        check(x.astype(cast_arg), TimestampSeries, datetime.date)
+        check(x.astype(cast_arg), TimestampSeries, target_type)
     else:
-        check(s.astype(cast_arg), TimestampSeries, datetime.datetime)
+        check(s.astype(cast_arg), TimestampSeries, target_type)
 
     if TYPE_CHECKING:
         # numpy datetime64
@@ -2222,6 +2348,21 @@ def test_astype_timestamp(cast_arg: TimestampDtypeArg) -> None:
         assert_type(s.astype("datetime64[ps]"), TimestampSeries)
         assert_type(s.astype("datetime64[fs]"), TimestampSeries)
         assert_type(s.astype("datetime64[as]"), TimestampSeries)
+        # numpy datetime64 type codes
+        assert_type(s.astype("M8[Y]"), TimestampSeries)
+        assert_type(s.astype("M8[M]"), TimestampSeries)
+        assert_type(s.astype("M8[W]"), TimestampSeries)
+        assert_type(s.astype("M8[D]"), TimestampSeries)
+        assert_type(s.astype("M8[h]"), TimestampSeries)
+        assert_type(s.astype("M8[m]"), TimestampSeries)
+        assert_type(s.astype("M8[s]"), TimestampSeries)
+        assert_type(s.astype("M8[ms]"), TimestampSeries)
+        assert_type(s.astype("M8[us]"), TimestampSeries)
+        assert_type(s.astype("M8[μs]"), TimestampSeries)
+        assert_type(s.astype("M8[ns]"), TimestampSeries)
+        assert_type(s.astype("M8[ps]"), TimestampSeries)
+        assert_type(s.astype("M8[fs]"), TimestampSeries)
+        assert_type(s.astype("M8[as]"), TimestampSeries)
         # numpy datetime64 type codes
         assert_type(s.astype("<M8[Y]"), TimestampSeries)
         assert_type(s.astype("<M8[M]"), TimestampSeries)
@@ -2247,10 +2388,10 @@ def test_astype_timestamp(cast_arg: TimestampDtypeArg) -> None:
         assert_type(s.astype("date64[pyarrow]"), TimestampSeries)
 
 
-@pytest.mark.parametrize("cast_arg", ASTYPE_TIMEDELTA, ids=repr)
-def test_astype_timedelta(cast_arg: TimedeltaDtypeArg) -> None:
+@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_TIMEDELTA_ARGS, ids=repr)
+def test_astype_timedelta(cast_arg: TimedeltaDtypeArg, target_type: type) -> None:
     s = pd.Series([1, 2, 3])
-    check(s.astype(cast_arg), TimedeltaSeries, datetime.timedelta)
+    check(s.astype(cast_arg), TimedeltaSeries, target_type)
 
     if TYPE_CHECKING:
         assert_type(s.astype("timedelta64[Y]"), "TimedeltaSeries")
@@ -2267,6 +2408,21 @@ def test_astype_timedelta(cast_arg: TimedeltaDtypeArg) -> None:
         assert_type(s.astype("timedelta64[ps]"), "TimedeltaSeries")
         assert_type(s.astype("timedelta64[fs]"), "TimedeltaSeries")
         assert_type(s.astype("timedelta64[as]"), "TimedeltaSeries")
+        # numpy timedelta64 type codes
+        assert_type(s.astype("m8[Y]"), "TimedeltaSeries")
+        assert_type(s.astype("m8[M]"), "TimedeltaSeries")
+        assert_type(s.astype("m8[W]"), "TimedeltaSeries")
+        assert_type(s.astype("m8[D]"), "TimedeltaSeries")
+        assert_type(s.astype("m8[h]"), "TimedeltaSeries")
+        assert_type(s.astype("m8[m]"), "TimedeltaSeries")
+        assert_type(s.astype("m8[s]"), "TimedeltaSeries")
+        assert_type(s.astype("m8[ms]"), "TimedeltaSeries")
+        assert_type(s.astype("m8[us]"), "TimedeltaSeries")
+        assert_type(s.astype("m8[μs]"), "TimedeltaSeries")
+        assert_type(s.astype("m8[ns]"), "TimedeltaSeries")
+        assert_type(s.astype("m8[ps]"), "TimedeltaSeries")
+        assert_type(s.astype("m8[fs]"), "TimedeltaSeries")
+        assert_type(s.astype("m8[as]"), "TimedeltaSeries")
         # numpy timedelta64 type codes
         assert_type(s.astype("<m8[Y]"), "TimedeltaSeries")
         assert_type(s.astype("<m8[M]"), "TimedeltaSeries")
@@ -2289,10 +2445,10 @@ def test_astype_timedelta(cast_arg: TimedeltaDtypeArg) -> None:
         assert_type(s.astype("duration[ns][pyarrow]"), "TimedeltaSeries")
 
 
-@pytest.mark.parametrize("cast_arg", ASTYPE_STRING, ids=repr)
-def test_astype_string(cast_arg: StrDtypeArg) -> None:
+@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_STRING_ARGS, ids=repr)
+def test_astype_string(cast_arg: StrDtypeArg, target_type: type) -> None:
     s = pd.Series(["a", "b"])
-    check(s.astype(cast_arg), pd.Series, str)
+    check(s.astype(cast_arg), pd.Series, target_type)
 
     if TYPE_CHECKING:
         # python string
@@ -2304,16 +2460,18 @@ def test_astype_string(cast_arg: StrDtypeArg) -> None:
         # numpy string
         assert_type(s.astype(np.str_), "pd.Series[str]")
         assert_type(s.astype("str_"), "pd.Series[str]")
+        assert_type(s.astype("str0"), "pd.Series[str]")
         assert_type(s.astype("unicode"), "pd.Series[str]")
+        assert_type(s.astype("unicode_"), "pd.Series[str]")
         assert_type(s.astype("U"), "pd.Series[str]")
         # pyarrow string
         assert_type(s.astype("string[pyarrow]"), "pd.Series[str]")
 
 
-@pytest.mark.parametrize("cast_arg", ASTYPE_BYTES, ids=repr)
-def test_astype_bytes(cast_arg: BytesDtypeArg) -> None:
+@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_BYTES_ARGS, ids=repr)
+def test_astype_bytes(cast_arg: BytesDtypeArg, target_type: type) -> None:
     s = pd.Series(["a", "b"])
-    check(s.astype(cast_arg), pd.Series, bytes)
+    check(s.astype(cast_arg), pd.Series, target_type)
 
     if TYPE_CHECKING:
         # python bytes
@@ -2322,16 +2480,17 @@ def test_astype_bytes(cast_arg: BytesDtypeArg) -> None:
         # numpy bytes
         assert_type(s.astype(np.bytes_), "pd.Series[bytes]")
         assert_type(s.astype("bytes_"), "pd.Series[bytes]")
+        assert_type(s.astype("bytes0"), "pd.Series[bytes]")
         assert_type(s.astype("string_"), "pd.Series[bytes]")
         assert_type(s.astype("S"), "pd.Series[bytes]")
         # pyarrow bytes
         assert_type(s.astype("binary[pyarrow]"), "pd.Series[bytes]")
 
 
-@pytest.mark.parametrize("cast_arg", ASTYPE_CATEGORICAL, ids=repr)
-def test_astype_categorical(cast_arg: CategoryDtypeArg) -> None:
+@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_CATEGORICAL_ARGS, ids=repr)
+def test_astype_categorical(cast_arg: CategoryDtypeArg, target_type: type) -> None:
     s = pd.Series(["a", "b"])
-    check(s.astype("category"), pd.Series, str)
+    check(s.astype("category"), pd.Series, target_type)
 
     if TYPE_CHECKING:
         # pandas category
@@ -2341,10 +2500,10 @@ def test_astype_categorical(cast_arg: CategoryDtypeArg) -> None:
         # assert_type(s.astype("dictionary[pyarrow]"), "pd.Series[Categorical]")
 
 
-@pytest.mark.parametrize("cast_arg", ASTYPE_OBJECT, ids=repr)
-def test_astype_object(cast_arg: ObjectDtypeArg) -> None:
+@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_OBJECT_ARGS, ids=repr)
+def test_astype_object(cast_arg: ObjectDtypeArg, target_type: type) -> None:
     s = pd.Series([1, 2, 3])
-    check(s.astype(cast_arg), pd.Series, object)
+    check(s.astype(cast_arg), pd.Series, target_type)
 
     if TYPE_CHECKING:
         # python object
@@ -2354,6 +2513,19 @@ def test_astype_object(cast_arg: ObjectDtypeArg) -> None:
         assert_type(s.astype(np.object_), "pd.Series[Any]")
         # "object_"  # NOTE: not assigned
         assert_type(s.astype("O"), "pd.Series[Any]")
+
+
+@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_VOID_ARGS, ids=repr)
+def test_astype_void(cast_arg: VoidDtypeArg, target_type: type) -> None:
+    s = pd.Series([1, 2, 3])
+    check(s.astype(cast_arg), pd.Series, target_type)
+
+    if TYPE_CHECKING:
+        # numpy void
+        assert_type(s.astype(np.void), "pd.Series[Any]")
+        assert_type(s.astype("void"), "pd.Series[Any]")
+        assert_type(s.astype("V"), "pd.Series[Any]")
+        assert_type(s.astype("void0"), "pd.Series[Any]")
 
 
 def test_astype_other() -> None:
@@ -2381,6 +2553,39 @@ def test_astype_other() -> None:
     # NOTE: currently unsupported! Enable in future.
     # string: str = "int"  # not Literal!
     # check(assert_type(s.astype(string), "pd.Series[Any]"), pd.Series, np.integer)
+
+
+def test_all_numpy_aliases_tested() -> None:
+    """Check that all relevant numpy type aliases are tested."""
+    NUMPY_ALIASES: set[str] = {k for k in np.sctypeDict if isinstance(k, str)}
+    EXCLUDED_ALIASES = {
+        "M",
+        "m",
+        "object0",
+        "M8",
+        "datetime64",
+        "m8",
+        "timedelta64",
+        "object_",
+    }
+    TESTED_ASTYPE_ARGS: list[tuple[Any, type]] = (
+        ASTYPE_BOOL_ARGS
+        + ASTYPE_INT_ARGS  # noqa: W503
+        + ASTYPE_UINT_ARGS  # noqa: W503
+        + ASTYPE_FLOAT_ARGS  # noqa: W503
+        + ASTYPE_COMPLEX_ARGS  # noqa: W503
+        + ASTYPE_TIMEDELTA_ARGS  # noqa: W503
+        + ASTYPE_TIMESTAMP_ARGS  # noqa: W503
+        + ASTYPE_BYTES_ARGS  # noqa: W503
+        + ASTYPE_STRING_ARGS  # noqa: W503
+        + ASTYPE_CATEGORICAL_ARGS  # noqa: W503
+        + ASTYPE_OBJECT_ARGS  # noqa: W503
+        + ASTYPE_VOID_ARGS  # noqa: W503
+    )
+
+    TESTED_ALIASES = {arg for arg, _ in TESTED_ASTYPE_ARGS if isinstance(arg, str)}
+    UNTESTED = (NUMPY_ALIASES - TESTED_ALIASES) - EXCLUDED_ALIASES
+    assert not UNTESTED, f"following aliases were not tested! {UNTESTED}"
 
 
 def test_check_xs() -> None:
