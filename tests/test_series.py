@@ -1870,7 +1870,7 @@ ASTYPE_FLOAT_ARGS: list[tuple[FloatDtypeArg, type]] = [
     ("longfloat", np.longdouble),
     ("g", np.longdouble),
     ("f16", np.longdouble),
-    # ("float96", np.longdouble),  # NOTE: WINDOWS ONLY
+    # ("float96", np.longdouble),  # NOTE: unsupported
     ("float128", np.longdouble),  # NOTE: UNIX ONLY
     # pyarrow float32
     ("float32[pyarrow]", float),
@@ -1906,7 +1906,7 @@ ASTYPE_COMPLEX_ARGS: list[tuple[ComplexDtypeArg, type]] = [
     ("longcomplex", np.clongdouble),
     ("G", np.clongdouble),
     ("c32", np.clongdouble),
-    # ("complex192", np.clongdouble),  # NOTE: WINDOWS ONLY
+    # ("complex192", np.clongdouble),  # NOTE: unsupported
     ("complex256", np.clongdouble),  # NOTE: UNIX ONLY
 ]
 

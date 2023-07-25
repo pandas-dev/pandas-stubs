@@ -125,13 +125,13 @@ IntDtypeArg: TypeAlias = (
     | Literal["i", "i4", "int32", "intc"]
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int_
     | type[np.int_]
-    | Literal["l", "i8", "int64", "int0", "int_", "long"]
+    | Literal["l", "i8", "int64", "int_", "long"]
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.longlong
     | type[np.longlong]
     | Literal["q", "longlong"]  # NOTE: int128 not assigned
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.intp
     | type[np.intp]  # signed pointer (=`intptr_t`, platform dependent)
-    | Literal["p", "intp"]
+    | Literal["p", "intp", "int0"]
     # PyArrow integer types and their string aliases
     | Literal["int8[pyarrow]", "int16[pyarrow]", "int32[pyarrow]", "int64[pyarrow]"]
 )
@@ -154,13 +154,13 @@ UIntDtypeArg: TypeAlias = (
     | Literal["I", "u4", "uint32", "uintc"]
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.uint
     | type[np.uint]
-    | Literal["L", "u8", "uint", "ulong", "uint64", "uint0"]
+    | Literal["L", "u8", "uint", "ulong", "uint64"]
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.ulonglong
     | type[np.ulonglong]
     | Literal["Q", "ulonglong"]  # NOTE: uint128 not assigned
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.uintp
     | type[np.uintp]  # unsigned pointer (=`uintptr_t`, platform dependent)
-    | Literal["P", "uintp"]
+    | Literal["P", "uintp", "uint0"]
     # PyArrow unsigned integer types and their string aliases
     | Literal["uint8[pyarrow]", "uint16[pyarrow]", "uint32[pyarrow]", "uint64[pyarrow]"]
 )
