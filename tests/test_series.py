@@ -2512,7 +2512,7 @@ def test_astype_categorical(cast_arg: CategoryDtypeArg, target_type: type) -> No
 
 @pytest.mark.parametrize("cast_arg, target_type", ASTYPE_OBJECT_ARGS, ids=repr)
 def test_astype_object(cast_arg: ObjectDtypeArg, target_type: type) -> None:
-    s = pd.Series([1, 2, 3])
+    s = pd.Series([object(), 2, 3])
     check(s.astype(cast_arg), pd.Series, target_type)
 
     if TYPE_CHECKING:
@@ -2521,7 +2521,8 @@ def test_astype_object(cast_arg: ObjectDtypeArg, target_type: type) -> None:
         assert_type(s.astype("object"), "pd.Series[Any]")
         # numpy object
         assert_type(s.astype(np.object_), "pd.Series[Any]")
-        # "object_"  # NOTE: not assigned
+        # assert_type(s.astype("object_"), "pd.Series[Any]")  # NOTE: not assigned
+        # assert_type(s.astype("object0"), "pd.Series[Any]")  # NOTE: not assigned
         assert_type(s.astype("O"), "pd.Series[Any]")
 
 
@@ -2565,7 +2566,7 @@ def test_astype_other() -> None:
     # check(assert_type(s.astype(string), "pd.Series[Any]"), pd.Series, np.integer)
 
 
-def test_all_numpy_aliases_tested() -> None:
+def test_all_astype_args_tested() -> None:
     """Check that all relevant numpy type aliases are tested."""
     NUMPY_ALIASES: set[str] = {k for k in np.sctypeDict if isinstance(k, str)}
     EXCLUDED_ALIASES = {
@@ -2593,9 +2594,17 @@ def test_all_numpy_aliases_tested() -> None:
         + ASTYPE_VOID_ARGS  # noqa: W503
     )
 
-    TESTED_ALIASES = {arg for arg, _ in TESTED_ASTYPE_ARGS if isinstance(arg, str)}
-    UNTESTED = (NUMPY_ALIASES - TESTED_ALIASES) - EXCLUDED_ALIASES
-    assert not UNTESTED, f"following aliases were not tested! {UNTESTED}"
+    TESTED_ALIASES: set[str] = {
+        arg for arg, _ in TESTED_ASTYPE_ARGS if isinstance(arg, str)
+    }
+    UNTESTED_ALIASES = (NUMPY_ALIASES - TESTED_ALIASES) - EXCLUDED_ALIASES
+    assert not UNTESTED_ALIASES, f"{UNTESTED_ALIASES}"
+
+    NUMPY_TYPES: set[type] = set(np.sctypeDict.values())
+    EXCLUDED_TYPES: set[type] = {np.str_, np.object_, np.timedelta64, np.datetime64}
+    TESTED_TYPES: set[type] = {t for _, t in TESTED_ASTYPE_ARGS}
+    UNTESTED_TYPES = (NUMPY_TYPES - TESTED_TYPES) - EXCLUDED_TYPES
+    assert not UNTESTED_TYPES, f"{UNTESTED_TYPES}"
 
 
 def test_check_xs() -> None:
