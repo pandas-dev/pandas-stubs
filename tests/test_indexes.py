@@ -25,15 +25,14 @@ from tests import (
 
 if TYPE_CHECKING:
     MYPY_CHECKING: bool = True
-    if not MYPY_CHECKING:
-        from _typeshed import SupportsRichComparison
-    else:
+    if MYPY_CHECKING:
         from typing import Any
 
         from typing_extensions import TypeAlias
 
         SupportsRichComparison: TypeAlias = Any
-
+    else:
+        from _typeshed import SupportsRichComparison  # noqa: F401
     from pandas.core.indexes.base import (
         _ComplexIndexType,
         _FloatIndexType,
