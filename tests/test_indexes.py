@@ -25,6 +25,8 @@ from tests import (
 
 if TYPE_CHECKING:
     MYPY_CHECKING: bool = True
+    # See test_sorted_and_list() where mypy and pyright do different
+    # inference on sorted(pd.Index)
     if MYPY_CHECKING:
         from typing import Any
 
@@ -728,6 +730,8 @@ def test_interval_index_tuples():
 def test_sorted_and_list() -> None:
     # GH 497
     i1 = pd.Index([3, 2, 1])
+    # mypy infers sorted(i1) as list[Any], while pyright infers sorted(i1) as
+    # list[SupportsRichComparison]
     check(
         assert_type(
             sorted(i1),
