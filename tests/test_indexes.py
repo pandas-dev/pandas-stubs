@@ -35,17 +35,6 @@ if TYPE_CHECKING:
         SupportsRichComparison: TypeAlias = Any
     else:
         from _typeshed import SupportsRichComparison  # noqa: F401
-    from pandas.core.indexes.base import (
-        _ComplexIndexType,
-        _FloatIndexType,
-        _IntIndexType,
-    )
-else:
-    from pandas.core.indexes.base import (
-        Index as _ComplexIndexType,
-        Index as _FloatIndexType,
-        Index as _IntIndexType,
-    )
 
 
 def test_index_unique() -> None:
@@ -91,8 +80,8 @@ def test_multiindex_get_level_values() -> None:
 
 def test_index_tolist() -> None:
     i1 = pd.Index([1, 2, 3])
-    check(assert_type(i1.tolist(), list), list, int)
-    check(assert_type(i1.to_list(), list), list, int)
+    check(assert_type(i1.tolist(), list[int]), list, int)
+    check(assert_type(i1.to_list(), list[int]), list, int)
 
 
 def test_column_getitem() -> None:
@@ -128,23 +117,23 @@ def test_column_sequence() -> None:
 def test_difference_none() -> None:
     # https://github.com/pandas-dev/pandas-stubs/issues/17
     ind = pd.Index([1, 2, 3])
-    check(assert_type(ind.difference([1, None]), pd.Index), pd.Index)
+    check(assert_type(ind.difference([1, None]), "pd.Index[int]"), pd.Index)
     # GH 253
-    check(assert_type(ind.difference([1]), pd.Index), pd.Index)
+    check(assert_type(ind.difference([1]), "pd.Index[int]"), pd.Index)
 
 
 def test_str_split() -> None:
     # GH 194
     ind = pd.Index(["a-b", "c-d"])
-    check(assert_type(ind.str.split("-"), pd.Index), pd.Index)
+    check(assert_type(ind.str.split("-"), "pd.Index[str]"), pd.Index)
     check(assert_type(ind.str.split("-", expand=True), pd.MultiIndex), pd.MultiIndex)
 
 
 def test_index_dropna():
     idx = pd.Index([1, 2])
 
-    check(assert_type(idx.dropna(how="all"), pd.Index), pd.Index)
-    check(assert_type(idx.dropna(how="any"), pd.Index), pd.Index)
+    check(assert_type(idx.dropna(how="all"), "pd.Index[int]"), pd.Index)
+    check(assert_type(idx.dropna(how="any"), "pd.Index[int]"), pd.Index)
 
     midx = pd.MultiIndex.from_arrays([[1, 2], [3, 4]])
 
@@ -155,7 +144,7 @@ def test_index_dropna():
 def test_index_neg():
     # GH 253
     idx = pd.Index([1, 2])
-    check(assert_type(-idx, pd.Index), pd.Index)
+    check(assert_type(-idx, "pd.Index[int]"), pd.Index)
 
 
 def test_types_to_numpy() -> None:
@@ -168,16 +157,16 @@ def test_types_to_numpy() -> None:
 def test_index_arithmetic() -> None:
     # GH 287
     idx = pd.Index([1, 2.2, 3], dtype=float)
-    check(assert_type(idx + 3, "_FloatIndexType"), _FloatIndexType, np.float64)
-    check(assert_type(idx - 3, "_FloatIndexType"), _FloatIndexType, np.float64)
-    check(assert_type(idx * 3, "_FloatIndexType"), _FloatIndexType, np.float64)
-    check(assert_type(idx / 3, "_FloatIndexType"), _FloatIndexType, np.float64)
-    check(assert_type(idx // 3, "_FloatIndexType"), _FloatIndexType, np.float64)
-    check(assert_type(3 + idx, "_FloatIndexType"), _FloatIndexType, np.float64)
-    check(assert_type(3 - idx, "_FloatIndexType"), _FloatIndexType, np.float64)
-    check(assert_type(3 * idx, "_FloatIndexType"), _FloatIndexType, np.float64)
-    check(assert_type(3 / idx, "_FloatIndexType"), _FloatIndexType, np.float64)
-    check(assert_type(3 // idx, "_FloatIndexType"), _FloatIndexType, np.float64)
+    check(assert_type(idx + 3, "pd.Index[float]"), pd.Index, np.float64)
+    check(assert_type(idx - 3, "pd.Index[float]"), pd.Index, np.float64)
+    check(assert_type(idx * 3, "pd.Index[float]"), pd.Index, np.float64)
+    check(assert_type(idx / 3, "pd.Index[float]"), pd.Index, np.float64)
+    check(assert_type(idx // 3, "pd.Index[float]"), pd.Index[float], np.float64)
+    check(assert_type(3 + idx, "pd.Index[float]"), pd.Index[float], np.float64)
+    check(assert_type(3 - idx, "pd.Index[float]"), pd.Index[float], np.float64)
+    check(assert_type(3 * idx, "pd.Index[float]"), pd.Index[float], np.float64)
+    check(assert_type(3 / idx, "pd.Index[float]"), pd.Index[float], np.float64)
+    check(assert_type(3 // idx, "pd.Index[float]"), pd.Index[float], np.float64)
 
 
 def test_index_relops() -> None:
@@ -215,21 +204,21 @@ def test_range_index_union():
     check(
         assert_type(
             pd.RangeIndex(0, 10).union(pd.RangeIndex(10, 20)),
-            Union[pd.Index, _IntIndexType, pd.RangeIndex],
+            Union[pd.Index, pd.Index[int], pd.RangeIndex],
         ),
         pd.RangeIndex,
     )
     check(
         assert_type(
             pd.RangeIndex(0, 10).union([11, 12, 13]),
-            Union[pd.Index, _IntIndexType, pd.RangeIndex],
+            Union[pd.Index, pd.Index[int], pd.RangeIndex],
         ),
         pd.Index,
     )
     check(
         assert_type(
             pd.RangeIndex(0, 10).union(["a", "b", "c"]),
-            Union[pd.Index, _IntIndexType, pd.RangeIndex],
+            Union[pd.Index, pd.Index[int], pd.RangeIndex],
         ),
         pd.Index,
     )
@@ -753,30 +742,30 @@ def test_index_operators() -> None:
     i1 = pd.Index([1, 2, 3])
     i2 = pd.Index([4, 5, 6])
 
-    check(assert_type(i1 + i2, pd.Index), pd.Index)
-    check(assert_type(i1 + 10, pd.Index), pd.Index)
-    check(assert_type(10 + i1, pd.Index), pd.Index)
-    check(assert_type(i1 - i2, pd.Index), pd.Index)
-    check(assert_type(i1 - 10, pd.Index), pd.Index)
-    check(assert_type(10 - i1, pd.Index), pd.Index)
-    check(assert_type(i1 * i2, pd.Index), pd.Index)
-    check(assert_type(i1 * 10, pd.Index), pd.Index)
-    check(assert_type(10 * i1, pd.Index), pd.Index)
-    check(assert_type(i1 / i2, pd.Index), pd.Index)
-    check(assert_type(i1 / 10, pd.Index), pd.Index)
-    check(assert_type(10 / i1, pd.Index), pd.Index)
-    check(assert_type(i1 // i2, pd.Index), pd.Index)
-    check(assert_type(i1 // 10, pd.Index), pd.Index)
-    check(assert_type(10 // i1, pd.Index), pd.Index)
-    check(assert_type(i1**i2, pd.Index), pd.Index)
-    check(assert_type(i1**2, pd.Index), pd.Index)
-    check(assert_type(2**i1, pd.Index), pd.Index)
-    check(assert_type(i1 % i2, pd.Index), pd.Index)
-    check(assert_type(i1 % 10, pd.Index), pd.Index)
-    check(assert_type(10 % i1, pd.Index), pd.Index)
-    check(assert_type(divmod(i1, i2), Tuple[pd.Index, pd.Index]), tuple)
-    check(assert_type(divmod(i1, 10), Tuple[pd.Index, pd.Index]), tuple)
-    check(assert_type(divmod(10, i1), Tuple[pd.Index, pd.Index]), tuple)
+    check(assert_type(i1 + i2, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 + 10, "pd.Index[int]"), pd.Index)
+    check(assert_type(10 + i1, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 - i2, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 - 10, "pd.Index[int]"), pd.Index)
+    check(assert_type(10 - i1, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 * i2, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 * 10, "pd.Index[int]"), pd.Index)
+    check(assert_type(10 * i1, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 / i2, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 / 10, "pd.Index[int]"), pd.Index)
+    check(assert_type(10 / i1, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 // i2, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 // 10, "pd.Index[int]"), pd.Index)
+    check(assert_type(10 // i1, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1**i2, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1**2, "pd.Index[int]"), pd.Index)
+    check(assert_type(2**i1, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 % i2, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 % 10, "pd.Index[int]"), pd.Index)
+    check(assert_type(10 % i1, "pd.Index[int]"), pd.Index)
+    check(assert_type(divmod(i1, i2), Tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
+    check(assert_type(divmod(i1, 10), Tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
+    check(assert_type(divmod(10, i1), Tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
 
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(
@@ -905,9 +894,9 @@ def test_getitem() -> None:
     check(assert_type(mi[[0, 2]], pd.MultiIndex), pd.MultiIndex, tuple)
 
     i0 = pd.Index(["a", "b", "c"])
-    check(assert_type(i0, pd.Index), pd.Index)
-    check(assert_type(i0[0], Scalar), str)
-    check(assert_type(i0[[0, 2]], pd.Index), pd.Index, str)
+    check(assert_type(i0, "pd.Index[str]"), pd.Index)
+    check(assert_type(i0[0], str), str)
+    check(assert_type(i0[[0, 2]], "pd.Index[str]"), pd.Index, str)
 
 
 def test_multiindex_dtypes():
@@ -921,66 +910,80 @@ def test_index_constructors():
     # Eventually should be using a generic index
     ilist = [1, 2, 3]
     check(
-        assert_type(pd.Index(ilist, dtype="int"), _IntIndexType), pd.Index, np.integer
-    )
-    check(assert_type(pd.Index(ilist, dtype=int), _IntIndexType), pd.Index, np.integer)
-    check(assert_type(pd.Index(ilist, dtype=np.int8), _IntIndexType), pd.Index, np.int8)
-    check(
-        assert_type(pd.Index(ilist, dtype=np.int16), _IntIndexType), pd.Index, np.int16
+        assert_type(pd.Index(ilist, dtype="int"), "pd.Index[int]"), pd.Index, np.integer
     )
     check(
-        assert_type(pd.Index(ilist, dtype=np.int32), _IntIndexType), pd.Index, np.int32
+        assert_type(pd.Index(ilist, dtype=int), "pd.Index[int]"), pd.Index, np.integer
     )
     check(
-        assert_type(pd.Index(ilist, dtype=np.int64), _IntIndexType), pd.Index, np.int64
+        assert_type(pd.Index(ilist, dtype=np.int8), "pd.Index[int]"), pd.Index, np.int8
     )
     check(
-        assert_type(pd.Index(ilist, dtype=np.uint8), _IntIndexType), pd.Index, np.uint8
+        assert_type(pd.Index(ilist, dtype=np.int16), "pd.Index[int]"),
+        pd.Index,
+        np.int16,
     )
     check(
-        assert_type(pd.Index(ilist, dtype=np.uint16), _IntIndexType),
+        assert_type(pd.Index(ilist, dtype=np.int32), "pd.Index[int]"),
+        pd.Index,
+        np.int32,
+    )
+    check(
+        assert_type(pd.Index(ilist, dtype=np.int64), "pd.Index[int]"),
+        pd.Index,
+        np.int64,
+    )
+    check(
+        assert_type(pd.Index(ilist, dtype=np.uint8), "pd.Index[int]"),
+        pd.Index,
+        np.uint8,
+    )
+    check(
+        assert_type(pd.Index(ilist, dtype=np.uint16), "pd.Index[int]"),
         pd.Index,
         np.uint16,
     )
     check(
-        assert_type(pd.Index(ilist, dtype=np.uint32), _IntIndexType),
+        assert_type(pd.Index(ilist, dtype=np.uint32), "pd.Index[int]"),
         pd.Index,
         np.uint32,
     )
     check(
-        assert_type(pd.Index(ilist, dtype=np.uint64), _IntIndexType),
+        assert_type(pd.Index(ilist, dtype=np.uint64), "pd.Index[int]"),
         pd.Index,
         np.uint64,
     )
 
     flist = [1.1, 2.2, 3.3]
     check(
-        assert_type(pd.Index(flist, dtype="float"), _FloatIndexType),
+        assert_type(pd.Index(flist, dtype="float"), "pd.Index[float]"),
         pd.Index,
         np.float64,
     )
     check(
-        assert_type(pd.Index(flist, dtype=float), _FloatIndexType), pd.Index, np.float64
+        assert_type(pd.Index(flist, dtype=float), "pd.Index[float]"),
+        pd.Index,
+        np.float64,
     )
     check(
-        assert_type(pd.Index(flist, dtype=np.float32), _FloatIndexType),
+        assert_type(pd.Index(flist, dtype=np.float32), "pd.Index[float]"),
         pd.Index,
         np.float32,
     )
     check(
-        assert_type(pd.Index(flist, dtype=np.float64), _FloatIndexType),
+        assert_type(pd.Index(flist, dtype=np.float64), "pd.Index[float]"),
         pd.Index,
         np.float64,
     )
 
     clist = [1 + 1j, 2 + 2j, 3 + 4j]
     check(
-        assert_type(pd.Index(clist, dtype="complex"), _ComplexIndexType),
+        assert_type(pd.Index(clist, dtype="complex"), "pd.Index[complex]"),
         pd.Index,
         complex,
     )
     check(
-        assert_type(pd.Index(clist, dtype=complex), _ComplexIndexType),
+        assert_type(pd.Index(clist, dtype=complex), "pd.Index[complex]"),
         pd.Index,
         complex,
     )

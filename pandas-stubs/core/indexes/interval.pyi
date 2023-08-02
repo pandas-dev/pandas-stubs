@@ -4,7 +4,6 @@ from collections.abc import (
 )
 import datetime as dt
 from typing import (
-    Generic,
     Literal,
     overload,
 )
@@ -12,10 +11,6 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas import Index
-from pandas.core.indexes.base import (
-    _FloatIndexType,
-    _IntIndexType,
-)
 from pandas.core.indexes.extension import ExtensionIndex
 from pandas.core.series import (
     Series,
@@ -50,10 +45,10 @@ _EdgesInt: TypeAlias = (
     | npt.NDArray[np.int32]
     | npt.NDArray[np.intp]
     | pd.Series[int]
-    | _IntIndexType
+    | Index[int]
 )
 _EdgesFloat: TypeAlias = (
-    Sequence[float] | npt.NDArray[np.float64] | pd.Series[float] | _FloatIndexType
+    Sequence[float] | npt.NDArray[np.float64] | pd.Series[float] | Index[float]
 )
 _EdgesTimestamp: TypeAlias = (
     Sequence[DatetimeLike]
@@ -70,7 +65,7 @@ _EdgesTimedelta: TypeAlias = (
 _TimestampLike: TypeAlias = pd.Timestamp | np.datetime64 | dt.datetime
 _TimedeltaLike: TypeAlias = pd.Timedelta | np.timedelta64 | dt.timedelta
 
-class IntervalIndex(ExtensionIndex, IntervalMixin, Generic[IntervalT]):
+class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
     closed: IntervalClosedType
 
     def __new__(

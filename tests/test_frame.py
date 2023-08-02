@@ -1706,7 +1706,7 @@ def test_indexslice_getitem():
         .set_index(["x", "y"])
     )
     ind = pd.Index([2, 3])
-    check(assert_type(pd.IndexSlice[ind, :], "tuple[pd.Index, slice]"), tuple)
+    check(assert_type(pd.IndexSlice[ind, :], "tuple[pd.Index[int], slice]"), tuple)
     check(assert_type(df.loc[pd.IndexSlice[ind, :]], pd.DataFrame), pd.DataFrame)
     check(assert_type(df.loc[pd.IndexSlice[1:2]], pd.DataFrame), pd.DataFrame)
     check(

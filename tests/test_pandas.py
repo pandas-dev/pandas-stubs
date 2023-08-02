@@ -899,7 +899,7 @@ def test_cut() -> None:
 
     n0, n1 = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], intval_idx, retbins=True)
     check(assert_type(n0, pd.Categorical), pd.Categorical)
-    check(assert_type(n1, pd.IntervalIndex), pd.IntervalIndex)
+    check(assert_type(n1, "pd.IntervalIndex[pd.Interval[int]]"), pd.IntervalIndex)
 
     s1 = pd.Series(data=pd.date_range("1/1/2020", periods=300))
     check(

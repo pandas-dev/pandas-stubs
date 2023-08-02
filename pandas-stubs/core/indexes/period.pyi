@@ -6,11 +6,11 @@ import numpy as np
 import pandas as pd
 from pandas import Index
 from pandas.core.indexes.accessors import PeriodIndexFieldOps
-from pandas.core.indexes.base import _IndexGetitemMixin
 from pandas.core.indexes.datetimelike import (
     DatetimeIndexOpsMixin as DatetimeIndexOpsMixin,
 )
 from pandas.core.indexes.timedeltas import TimedeltaIndex
+from typing_extensions import Self
 
 from pandas._libs.tslibs import (
     BaseOffset,
@@ -19,12 +19,7 @@ from pandas._libs.tslibs import (
 )
 from pandas._libs.tslibs.period import _PeriodAddSub
 
-# type ignore needed because of __getitem__()
-class PeriodIndex(  # type: ignore[misc]
-    _IndexGetitemMixin[Period],
-    DatetimeIndexOpsMixin,
-    PeriodIndexFieldOps,
-):
+class PeriodIndex(DatetimeIndexOpsMixin[pd.Period], PeriodIndexFieldOps):
     def __new__(
         cls,
         data=...,
@@ -42,17 +37,17 @@ class PeriodIndex(  # type: ignore[misc]
     @overload
     def __sub__(self, other: Period) -> Index: ...
     @overload
-    def __sub__(self, other: PeriodIndex) -> Index: ...
+    def __sub__(self, other: Self) -> Index: ...
     @overload
-    def __sub__(self, other: _PeriodAddSub) -> PeriodIndex: ...
+    def __sub__(self, other: _PeriodAddSub) -> Self: ...
     @overload
     def __sub__(self, other: NaTType) -> NaTType: ...
     @overload
-    def __sub__(self, other: TimedeltaIndex | pd.Timedelta) -> PeriodIndex: ...
+    def __sub__(self, other: TimedeltaIndex | pd.Timedelta) -> Self: ...
     @overload  # type: ignore[override]
     def __rsub__(self, other: Period) -> Index: ...
     @overload
-    def __rsub__(self, other: PeriodIndex) -> Index: ...
+    def __rsub__(self, other: Self) -> Index: ...
     @overload
     def __rsub__(self, other: NaTType) -> NaTType: ...
     def __array__(self, dtype=...) -> np.ndarray: ...

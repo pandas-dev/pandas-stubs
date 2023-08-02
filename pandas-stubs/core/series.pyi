@@ -211,7 +211,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
         value: S1 | ArrayLike | Series[S1] | None,
     ) -> None: ...
 
-class Series(IndexOpsMixin, NDFrame, Generic[S1]):
+class Series(IndexOpsMixin[S1], NDFrame):
     _ListLike: TypeAlias = ArrayLike | dict[_str, np.ndarray] | list | tuple | Index
     __hash__: ClassVar[None]
 

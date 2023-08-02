@@ -25,7 +25,6 @@ from pandas.core.base import (
     PandasObject,
 )
 from pandas.core.frame import DataFrame
-from pandas.core.indexes.base import _IntIndexType
 from pandas.core.series import (
     PeriodSeries,
     Series,
@@ -43,7 +42,7 @@ from pandas._typing import (
 class Properties(PandasDelegate, PandasObject, NoNewAttributesMixin):
     def __init__(self, data: Series, orig) -> None: ...
 
-_DTFieldOpsReturnType = TypeVar("_DTFieldOpsReturnType", Series[int], _IntIndexType)
+_DTFieldOpsReturnType = TypeVar("_DTFieldOpsReturnType", Series[int], Index[int])
 
 class _DayLikeFieldOps(Generic[_DTFieldOpsReturnType]):
     @property
@@ -302,7 +301,7 @@ class TimedeltaProperties(
 ): ...
 
 _PeriodDTReturnTypes = TypeVar("_PeriodDTReturnTypes", TimestampSeries, DatetimeIndex)
-_PeriodIntReturnTypes = TypeVar("_PeriodIntReturnTypes", Series[int], _IntIndexType)
+_PeriodIntReturnTypes = TypeVar("_PeriodIntReturnTypes", Series[int], Index[int])
 _PeriodStrReturnTypes = TypeVar("_PeriodStrReturnTypes", Series[str], Index)
 _PeriodDTAReturnTypes = TypeVar("_PeriodDTAReturnTypes", DatetimeArray, DatetimeIndex)
 _PeriodPAReturnTypes = TypeVar("_PeriodPAReturnTypes", PeriodArray, PeriodIndex)
@@ -335,8 +334,8 @@ class _PeriodProperties(
     ) -> _PeriodPAReturnTypes: ...
 
 class PeriodIndexFieldOps(
-    _DayLikeFieldOps[_IntIndexType],
-    _PeriodProperties[DatetimeIndex, _IntIndexType, Index, DatetimeIndex, PeriodIndex],
+    _DayLikeFieldOps[Index[int]],
+    _PeriodProperties[DatetimeIndex, Index[int], Index, DatetimeIndex, PeriodIndex],
 ): ...
 class PeriodProperties(
     Properties,
@@ -382,7 +381,7 @@ class TimestampProperties(
 class DatetimeIndexProperties(
     Properties,
     _DatetimeNoTZProperties[
-        _IntIndexType,
+        Index[int],
         np_ndarray_bool,
         DatetimeIndex,
         np.ndarray,

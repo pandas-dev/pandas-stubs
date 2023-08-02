@@ -11,13 +11,10 @@ import numpy as np
 import pandas as pd
 from pandas import (
     DatetimeIndex,
+    Index,
     PeriodIndex,
     Series,
     TimedeltaIndex,
-)
-from pandas.core.indexes.base import (
-    _FloatIndexType,
-    _IntIndexType,
 )
 from pandas.core.series import (
     TimedeltaSeries,
@@ -245,7 +242,7 @@ class Timedelta(timedelta):
     @overload
     def __mul__(self, other: Series[float]) -> TimedeltaSeries: ...
     @overload
-    def __mul__(self, other: _IntIndexType | _FloatIndexType) -> TimedeltaIndex: ...
+    def __mul__(self, other: Index[int] | Index[float]) -> TimedeltaIndex: ...
     @overload
     def __rmul__(self, other: float) -> Timedelta: ...
     @overload
@@ -255,7 +252,7 @@ class Timedelta(timedelta):
     @overload
     def __rmul__(self, other: Series[float]) -> TimedeltaSeries: ...
     @overload
-    def __rmul__(self, other: _IntIndexType | _FloatIndexType) -> TimedeltaIndex: ...
+    def __rmul__(self, other: Index[int] | Index[float]) -> TimedeltaIndex: ...
     # Override due to more types supported than dt.timedelta
     # error: Signature of "__floordiv__" incompatible with supertype "timedelta"
     @overload  # type: ignore[override]
@@ -271,9 +268,7 @@ class Timedelta(timedelta):
         self, other: npt.NDArray[np.timedelta64]
     ) -> npt.NDArray[np.int_]: ...
     @overload
-    def __floordiv__(
-        self, other: _IntIndexType | _FloatIndexType
-    ) -> TimedeltaIndex: ...
+    def __floordiv__(self, other: Index[int] | Index[float]) -> TimedeltaIndex: ...
     @overload
     def __floordiv__(self, other: Series[int]) -> TimedeltaSeries: ...
     @overload
@@ -306,7 +301,7 @@ class Timedelta(timedelta):
     @overload
     def __truediv__(self, other: Series[float]) -> TimedeltaSeries: ...
     @overload
-    def __truediv__(self, other: _IntIndexType | _FloatIndexType) -> TimedeltaIndex: ...
+    def __truediv__(self, other: Index[int] | Index[float]) -> TimedeltaIndex: ...
     def __rtruediv__(self, other: timedelta | Timedelta | NaTType) -> float: ...
     # Override due to more types supported than dt.timedelta
     @overload
@@ -338,7 +333,7 @@ class Timedelta(timedelta):
     @overload
     def __mod__(self, other: Series[int] | Series[float]) -> TimedeltaSeries: ...
     @overload
-    def __mod__(self, other: _IntIndexType | _FloatIndexType) -> TimedeltaIndex: ...
+    def __mod__(self, other: Index[int] | Index[float]) -> TimedeltaIndex: ...
     @overload
     def __mod__(
         self, other: npt.NDArray[np.integer] | npt.NDArray[np.floating]
