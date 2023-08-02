@@ -32,7 +32,7 @@ if TYPE_CHECKING:
 
         SupportsRichComparison: TypeAlias = Any
     else:
-        from _typeshed import SupportsRichComparison
+        pass
     from pandas.core.indexes.base import (
         _ComplexIndexType,
         _FloatIndexType,
@@ -731,7 +731,7 @@ def test_sorted_and_list() -> None:
     check(
         assert_type(
             sorted(i1),
-            list["SupportsRichComparison"],
+            "list[SupportsRichComparison]",
         ),
         list,
     )
