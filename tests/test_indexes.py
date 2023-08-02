@@ -24,6 +24,15 @@ from tests import (
 )
 
 if TYPE_CHECKING:
+    MYPY_CHECKING: bool = True
+    if MYPY_CHECKING:
+        from typing import Any
+
+        from typing_extensions import TypeAlias
+
+        SupportsRichComparison: TypeAlias = Any
+    else:
+        from _typeshed import SupportsRichComparison
     from pandas.core.indexes.base import (
         _ComplexIndexType,
         _FloatIndexType,
@@ -722,7 +731,7 @@ def test_sorted_and_list() -> None:
     check(
         assert_type(
             sorted(i1),
-            list,
+            list["SupportsRichComparison"],
         ),
         list,
     )
