@@ -1130,7 +1130,14 @@ def test_timedelta64_and_arithmatic_operator() -> None:
     s1 = pd.Series(data=pd.date_range("1/1/2020", "2/1/2020"))
     s2 = pd.Series(data=pd.date_range("1/1/2021", "2/1/2021"))
     s3 = s2 - s1
-    # https://github.com/pandas-dev/pandas/issues/54059 needs to be fixed
+    check(assert_type(s3, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    td1 = pd.Timedelta(1, "D")
+    check(assert_type(s2 - td1, "TimestampSeries"), pd.Series, pd.Timestamp)
+    # GH 758
+    s4 = s1.astype(object)
+    check(assert_type(s4 - td1, "TimestampSeries"), pd.Series, pd.Timestamp)
+
+    # https://github.com/pandas-dev/pandas/issues/54059 says this is invalid
     if PD_LTE_20:
         td = np.timedelta64(1, "M")
         check(assert_type((s1 - td), "TimestampSeries"), pd.Series, pd.Timestamp)

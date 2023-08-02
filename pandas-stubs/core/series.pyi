@@ -1534,6 +1534,16 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     def __rxor__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...  # type: ignore[misc]
     @overload
     def __sub__(
+        self: Series[Timestamp],
+        other: Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64,
+    ) -> TimestampSeries: ...
+    @overload
+    def __sub__(
+        self: Series[Timedelta],
+        other: Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64,
+    ) -> TimedeltaSeries: ...
+    @overload
+    def __sub__(
         self, other: Timestamp | datetime | TimestampSeries
     ) -> TimedeltaSeries: ...
     @overload

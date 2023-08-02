@@ -1272,7 +1272,7 @@ def test_merge_ordered() -> None:
         )
         pd.merge_ordered(  # type: ignore[call-overload]
             ls,
-            rf,  # pyright: ignore[reportGeneralTypeIssues]
+            rf,
             left_on="left",
             right_on="b",
             left_by="left",  # pyright: ignore[reportGeneralTypeIssues]
