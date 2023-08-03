@@ -42,7 +42,6 @@ from pandas._typing import (
     Label,
     Level,
     NaPosition,
-    Scalar,
     np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_int64,
@@ -193,7 +192,7 @@ class Index(IndexOpsMixin[S1], PandasObject):
     def __nonzero__(self) -> None: ...
     __bool__ = ...
     def union(self, other: list[HashableT] | Index, sort=...) -> Index: ...
-    def intersection(self, other: list[T1] | Self, sort: bool = ...) -> Self: ...
+    def intersection(self, other: list[T1] | Index, sort: bool = ...) -> Self: ...
     def difference(self, other: list | Index, sort: bool | None = None) -> Self: ...
     def symmetric_difference(
         self, other: list[T1] | Index, result_name=..., sort=...
@@ -264,12 +263,12 @@ class Index(IndexOpsMixin[S1], PandasObject):
     def shape(self) -> tuple[int, ...]: ...
     # Extra methods from old stubs
     def __eq__(self, other: object) -> np_ndarray_bool: ...  # type: ignore[override]
-    def __iter__(self) -> Iterator: ...
+    def __iter__(self) -> Iterator[S1]: ...
     def __ne__(self, other: object) -> np_ndarray_bool: ...  # type: ignore[override]
-    def __le__(self, other: Index | Scalar) -> np_ndarray_bool: ...  # type: ignore[override]
-    def __ge__(self, other: Index | Scalar) -> np_ndarray_bool: ...  # type: ignore[override]
-    def __lt__(self, other: Index | Scalar) -> np_ndarray_bool: ...  # type: ignore[override]
-    def __gt__(self, other: Index | Scalar) -> np_ndarray_bool: ...  # type: ignore[override]
+    def __le__(self, other: Self | S1) -> np_ndarray_bool: ...  # type: ignore[override]
+    def __ge__(self, other: Self | S1) -> np_ndarray_bool: ...  # type: ignore[override]
+    def __lt__(self, other: Self | S1) -> np_ndarray_bool: ...  # type: ignore[override]
+    def __gt__(self, other: Self | S1) -> np_ndarray_bool: ...  # type: ignore[override]
     # overwrite inherit methods from OpsMixin
     @overload
     def __mul__(  # type: ignore[misc]
