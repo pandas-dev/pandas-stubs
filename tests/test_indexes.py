@@ -16,7 +16,6 @@ from typing_extensions import (
 )
 
 from pandas._typing import Dtype  # noqa: F401
-from pandas._typing import Scalar
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -78,9 +77,9 @@ def test_column_getitem() -> None:
     # https://github.com/microsoft/python-type-stubs/issues/199#issuecomment-1132806594
     df = pd.DataFrame([[1, 2, 3]], columns=["a", "b", "c"])
 
-    column = df.columns[0]
-    check(assert_type(column, Scalar), str)
-    check(assert_type(df[column], pd.Series), pd.Series, np.int64)
+    columns: pd.Index[str] = df.columns
+    check(assert_type(columns[0], str), str)
+    check(assert_type(df[columns[0]], pd.Series), pd.Series, np.int64)
 
 
 def test_column_contains() -> None:
@@ -989,3 +988,16 @@ def test_intersection() -> None:
         assert_type(index.intersection([pd.Timestamp("1/1/2023")]), pd.DatetimeIndex),
         pd.DatetimeIndex,
     )
+
+
+def test_annotate() -> None:
+    # GH 502
+    df = pd.DataFrame({"a": [1, 2]})
+
+    columns: pd.Index[str] = df.columns
+    for column in columns:
+        check(assert_type(column, str), str)
+
+    names: list[str] = list(df.columns)
+    for name in names:
+        check(assert_type(name, str), str)

@@ -1761,7 +1761,8 @@ def test_getmultiindex_columns() -> None:
         [(i, s) for i in [1] for s in df.columns.get_level_values(1)]
     ]
     res4: pd.DataFrame = df[[df.columns[0]]]
-    check(assert_type(df[df.columns[0]], pd.Series), pd.Series)
+    column: Scalar = df.columns[0]
+    check(assert_type(df[column], pd.Series), pd.Series)
     check(assert_type(df[li[0]], pd.Series), pd.Series)
 
 
