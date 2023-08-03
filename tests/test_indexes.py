@@ -151,12 +151,12 @@ def test_index_arithmetic() -> None:
     check(assert_type(idx - 3, "pd.Index[float]"), pd.Index, np.float64)
     check(assert_type(idx * 3, "pd.Index[float]"), pd.Index, np.float64)
     check(assert_type(idx / 3, "pd.Index[float]"), pd.Index, np.float64)
-    check(assert_type(idx // 3, "pd.Index[float]"), pd.Index[float], np.float64)
-    check(assert_type(3 + idx, "pd.Index[float]"), pd.Index[float], np.float64)
-    check(assert_type(3 - idx, "pd.Index[float]"), pd.Index[float], np.float64)
-    check(assert_type(3 * idx, "pd.Index[float]"), pd.Index[float], np.float64)
-    check(assert_type(3 / idx, "pd.Index[float]"), pd.Index[float], np.float64)
-    check(assert_type(3 // idx, "pd.Index[float]"), pd.Index[float], np.float64)
+    check(assert_type(idx // 3, "pd.Index[float]"), pd.Index, np.float64)
+    check(assert_type(3 + idx, "pd.Index[float]"), pd.Index, np.float64)
+    check(assert_type(3 - idx, "pd.Index[float]"), pd.Index, np.float64)
+    check(assert_type(3 * idx, "pd.Index[float]"), pd.Index, np.float64)
+    check(assert_type(3 / idx, "pd.Index[float]"), pd.Index, np.float64)
+    check(assert_type(3 // idx, "pd.Index[float]"), pd.Index, np.float64)
 
 
 def test_index_relops() -> None:
@@ -194,21 +194,21 @@ def test_range_index_union():
     check(
         assert_type(
             pd.RangeIndex(0, 10).union(pd.RangeIndex(10, 20)),
-            Union[pd.Index, pd.Index[int], pd.RangeIndex],
+            Union[pd.Index, "pd.Index[int]", pd.RangeIndex],
         ),
         pd.RangeIndex,
     )
     check(
         assert_type(
             pd.RangeIndex(0, 10).union([11, 12, 13]),
-            Union[pd.Index, pd.Index[int], pd.RangeIndex],
+            Union[pd.Index, "pd.Index[int]", pd.RangeIndex],
         ),
         pd.Index,
     )
     check(
         assert_type(
             pd.RangeIndex(0, 10).union(["a", "b", "c"]),
-            Union[pd.Index, pd.Index[int], pd.RangeIndex],
+            Union[pd.Index, "pd.Index[int]", pd.RangeIndex],
         ),
         pd.Index,
     )
@@ -973,3 +973,19 @@ def test_index_constructors():
         # to specify all the possible dtype options.  For right now, we will leave the
         # test here as a reminder that we would like this to be seen as incorrect usage.
         pd.Index(flist, dtype=np.float16)
+
+
+def test_iter() -> None:
+    # GH 723
+    for ts in pd.date_range(start="1/1/2023", end="1/08/2023", freq="6H"):
+        check(assert_type(ts, pd.Timestamp), pd.Timestamp)
+
+
+def test_intersection() -> None:
+    # GH 744
+    index = pd.DatetimeIndex(["2022-01-01"])
+    check(assert_type(index.intersection(index), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(
+        assert_type(index.intersection([pd.Timestamp("1/1/2023")]), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
