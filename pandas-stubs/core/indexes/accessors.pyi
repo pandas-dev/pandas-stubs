@@ -343,7 +343,6 @@ class PeriodProperties(
     _IsLeapYearProperty,
     _FreqProperty[BaseOffset],
 ): ...
-
 class CombinedDatetimelikeProperties(
     DatetimeProperties[
         Series[int],
@@ -358,9 +357,7 @@ class CombinedDatetimelikeProperties(
     ],
     _TimedeltaPropertiesNoRounding[Series[int], Series[float]],
     _PeriodProperties,
-):
-    def __new__(cls, data: Series): ...
-
+): ...
 class TimestampProperties(
     DatetimeProperties[
         Series[int],

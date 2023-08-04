@@ -180,7 +180,6 @@ stubPath = "."
 include = ["tests", "pandas-stubs"]
 enableTypeIgnoreComments = false  # use pyright-specific ignores
 # disable subset of strict
-reportInconsistentConstructor = false
 reportMissingParameterType = false
 reportMissingTypeArgument = false
 reportMissingTypeStubs = false
@@ -191,7 +190,6 @@ reportUnknownLambdaType = false
 reportUnknownMemberType = false
 reportUnknownParameterType = false
 reportUnknownVariableType = false
-reportUntypedBaseClass = false
 reportUnusedVariable = false
 reportPrivateUsage = false
 # enable optional checks

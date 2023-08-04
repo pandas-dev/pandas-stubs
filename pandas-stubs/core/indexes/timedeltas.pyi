@@ -44,6 +44,18 @@ class TimedeltaIndex(DatetimeTimedeltaMixin[Timedelta], TimedeltaIndexProperties
         copy: bool = ...,
         name: str = ...,
     ) -> None: ...
+    def __new__(
+        cls,
+        data: AnyArrayLike
+        | list[str]
+        | Sequence[dt.timedelta | Timedelta | np.timedelta64 | float] = ...,
+        unit: Literal["D", "h", "m", "s", "ms", "us", "ns"] = ...,
+        freq: str | BaseOffset = ...,
+        closed: object = ...,
+        dtype: Literal["<m8[ns]"] = ...,
+        copy: bool = ...,
+        name: str = ...,
+    ) -> Self: ...
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
     @overload

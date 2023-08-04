@@ -66,6 +66,17 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(  # type: ignore[misc]
         cls,
+        data: Iterable[int | np.integer],
+        *,
+        dtype: Literal["int"] | type_t[int] | type_t[np.integer] = ...,
+        copy: bool = ...,
+        name=...,
+        tupleize_cols: bool = ...,
+        **kwargs,
+    ) -> Index[int]: ...
+    @overload
+    def __new__(  # type: ignore[misc]
+        cls,
         data: Iterable,
         *,
         dtype: Literal["int"] | type_t[int] | type_t[np.integer],
@@ -74,6 +85,20 @@ class Index(IndexOpsMixin[S1]):
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> Index[int]: ...
+    @overload
+    def __new__(  # type: ignore[misc]
+        cls,
+        data: Iterable[float | np.float32 | np.float64],
+        *,
+        dtype: Literal["float"]
+        | type_t[float]
+        | type_t[np.float32]
+        | type_t[np.float64] = ...,
+        copy: bool = ...,
+        name=...,
+        tupleize_cols: bool = ...,
+        **kwargs,
+    ) -> Index[float]: ...
     @overload
     def __new__(  # type: ignore[misc]
         cls,
@@ -88,6 +113,17 @@ class Index(IndexOpsMixin[S1]):
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> Index[float]: ...
+    @overload
+    def __new__(  # type: ignore[misc]
+        cls,
+        data: Iterable[complex],
+        *,
+        dtype: Literal["complex"] | type_t[complex] = ...,
+        copy: bool = ...,
+        name=...,
+        tupleize_cols: bool = ...,
+        **kwargs,
+    ) -> Index[complex]: ...
     @overload
     def __new__(  # type: ignore[misc]
         cls,
@@ -194,7 +230,7 @@ class Index(IndexOpsMixin[S1]):
         cls,
         data: Iterable[S1] = ...,
         *,
-        dtype=...,
+        dtype: type[S1] = ...,
         copy: bool = ...,
         name=...,
         tupleize_cols: bool = ...,
@@ -205,7 +241,7 @@ class Index(IndexOpsMixin[S1]):
         cls,
         data: Iterable = ...,
         *,
-        dtype: type[S1] = ...,
+        dtype: type[S1],
         copy: bool = ...,
         name=...,
         tupleize_cols: bool = ...,
