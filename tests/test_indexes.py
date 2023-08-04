@@ -998,3 +998,31 @@ def test_annotate() -> None:
     names: list[str] = list(df.columns)
     for name in names:
         check(assert_type(name, str), str)
+
+
+def test_new() -> None:
+    check(assert_type(pd.Index([1]), "pd.Index[int]"), pd.Index, np.intp)
+    check(assert_type(pd.Index([1], dtype=float), "pd.Index[float]"), pd.Index, float)
+    check(
+        assert_type(pd.Index([pd.Timestamp(0)]), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(pd.Index([pd.Timedelta(0)]), pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+        pd.Timedelta,
+    )
+    check(
+        assert_type(pd.Index([pd.Period("2012-1-1", freq="D")]), pd.PeriodIndex),
+        pd.PeriodIndex,
+        pd.Period,
+    )
+    check(
+        assert_type(
+            pd.Index([pd.Interval(pd.Timestamp(0), pd.Timestamp(1))]),
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )

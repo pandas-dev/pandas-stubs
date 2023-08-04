@@ -5,7 +5,10 @@ from collections.abc import (
     Iterator,
     Sequence,
 )
-from datetime import timedelta
+from datetime import (
+    datetime,
+    timedelta,
+)
 from typing import (
     Any,
     ClassVar,
@@ -16,7 +19,13 @@ from typing import (
 import numpy as np
 from pandas import (
     DataFrame,
+    DatetimeIndex,
+    Interval,
+    IntervalIndex,
     MultiIndex,
+    Period,
+    PeriodDtype,
+    PeriodIndex,
     Series,
     TimedeltaIndex,
 )
@@ -31,6 +40,7 @@ from typing_extensions import (
     Self,
 )
 
+from pandas._libs.interval import _OrderableT
 from pandas._typing import (
     S1,
     Dtype,
@@ -41,6 +51,8 @@ from pandas._typing import (
     Label,
     Level,
     NaPosition,
+    TimedeltaDtypeArg,
+    TimestampDtypeArg,
     np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_int64,
@@ -53,10 +65,12 @@ _str = str
 
 class Index(IndexOpsMixin[S1], PandasObject):
     __hash__: ClassVar[None]  # type: ignore[assignment]
+    # overloads with additional dtypes
     @overload
     def __new__(  # type: ignore[misc]
         cls,
         data: Iterable,
+        *,
         dtype: Literal["int"] | type_t[int] | type_t[np.integer],
         copy: bool = ...,
         name=...,
@@ -67,6 +81,7 @@ class Index(IndexOpsMixin[S1], PandasObject):
     def __new__(  # type: ignore[misc]
         cls,
         data: Iterable,
+        *,
         dtype: Literal["float"]
         | type_t[float]
         | type_t[np.float32]
@@ -80,16 +95,108 @@ class Index(IndexOpsMixin[S1], PandasObject):
     def __new__(  # type: ignore[misc]
         cls,
         data: Iterable,
+        *,
         dtype: Literal["complex"] | type_t[complex],
         copy: bool = ...,
         name=...,
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> Index[complex]: ...
+    # special overloads with dedicated Index-subclasses
+    @overload
+    def __new__(  # type: ignore[misc]
+        cls,
+        data: Iterable[np.datetime64 | datetime],
+        *,
+        dtype: TimestampDtypeArg = ...,
+        copy: bool = ...,
+        name=...,
+        tupleize_cols: bool = ...,
+        **kwargs,
+    ) -> DatetimeIndex: ...
+    @overload
+    def __new__(  # type: ignore[misc]
+        cls,
+        data: Iterable,
+        *,
+        dtype: TimestampDtypeArg,
+        copy: bool = ...,
+        name=...,
+        tupleize_cols: bool = ...,
+        **kwargs,
+    ) -> DatetimeIndex: ...
+    @overload
+    def __new__(  # type: ignore[misc]
+        cls,
+        data: Iterable[Period],
+        *,
+        dtype: PeriodDtype = ...,
+        copy: bool = ...,
+        name=...,
+        tupleize_cols: bool = ...,
+        **kwargs,
+    ) -> PeriodIndex: ...
+    @overload
+    def __new__(  # type: ignore[misc]
+        cls,
+        data: Iterable,
+        *,
+        dtype: PeriodDtype,
+        copy: bool = ...,
+        name=...,
+        tupleize_cols: bool = ...,
+        **kwargs,
+    ) -> PeriodIndex: ...
+    @overload
+    def __new__(  # type: ignore[misc]
+        cls,
+        data: Iterable[np.timedelta64 | timedelta],
+        *,
+        dtype: TimedeltaDtypeArg = ...,
+        copy: bool = ...,
+        name=...,
+        tupleize_cols: bool = ...,
+        **kwargs,
+    ) -> TimedeltaIndex: ...
+    @overload
+    def __new__(  # type: ignore[misc]
+        cls,
+        data: Iterable,
+        *,
+        dtype: TimedeltaDtypeArg,
+        copy: bool = ...,
+        name=...,
+        tupleize_cols: bool = ...,
+        **kwargs,
+    ) -> TimedeltaIndex: ...
+    @overload
+    def __new__(  # type: ignore[misc]
+        cls,
+        data: Iterable[Interval[_OrderableT]],
+        *,
+        dtype: Literal["Interval"] = ...,
+        copy: bool = ...,
+        name=...,
+        tupleize_cols: bool = ...,
+        **kwargs,
+    ) -> IntervalIndex[Interval[_OrderableT]]: ...
+    @overload
+    def __new__(  # type: ignore[misc]
+        cls,
+        data: Iterable,
+        *,
+        dtype: Literal["Interval"],
+        copy: bool = ...,
+        name=...,
+        tupleize_cols: bool = ...,
+        **kwargs,
+    ) -> IntervalIndex[Interval[Any]]: ...
+    # generic overloads
     @overload
     def __new__(
         cls,
         data: Iterable[S1] = ...,
+        *,
         dtype=...,
         copy: bool = ...,
         name=...,
@@ -100,6 +207,19 @@ class Index(IndexOpsMixin[S1], PandasObject):
     def __new__(
         cls,
         data: Iterable = ...,
+        *,
+        dtype: type[S1] = ...,
+        copy: bool = ...,
+        name=...,
+        tupleize_cols: bool = ...,
+        **kwargs,
+    ) -> Self: ...
+    # fallback overload
+    @overload
+    def __new__(
+        cls,
+        data: Iterable = ...,
+        *,
         dtype=...,
         copy: bool = ...,
         name=...,
@@ -268,7 +388,7 @@ class Index(IndexOpsMixin[S1], PandasObject):
     def __ge__(self, other: Self | S1) -> np_ndarray_bool: ...  # type: ignore[override]
     def __lt__(self, other: Self | S1) -> np_ndarray_bool: ...  # type: ignore[override]
     def __gt__(self, other: Self | S1) -> np_ndarray_bool: ...  # type: ignore[override]
-    # overwrite inherit methods from OpsMixin
+    # overwrite inherited methods from OpsMixin
     @overload
     def __mul__(  # type: ignore[misc]
         self: Index[int] | Index[float], other: timedelta
