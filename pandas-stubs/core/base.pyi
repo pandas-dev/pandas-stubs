@@ -6,7 +6,6 @@ from typing import (
 
 import numpy as np
 from pandas import Index
-from pandas.core.accessor import DirNamesMixin
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
@@ -20,9 +19,6 @@ from pandas._typing import (
     Scalar,
     npt,
 )
-
-class PandasObject(DirNamesMixin):
-    def __sizeof__(self) -> int: ...
 
 class NoNewAttributesMixin:
     def __setattr__(self, key, value) -> None: ...

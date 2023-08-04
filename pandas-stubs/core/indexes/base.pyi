@@ -30,10 +30,7 @@ from pandas import (
     TimedeltaIndex,
 )
 from pandas.core.arrays import ExtensionArray
-from pandas.core.base import (
-    IndexOpsMixin,
-    PandasObject,
-)
+from pandas.core.base import IndexOpsMixin
 from pandas.core.strings import StringMethods
 from typing_extensions import (
     Never,
@@ -63,7 +60,7 @@ class InvalidIndexError(Exception): ...
 
 _str = str
 
-class Index(IndexOpsMixin[S1], PandasObject):
+class Index(IndexOpsMixin[S1]):
     __hash__: ClassVar[None]  # type: ignore[assignment]
     # overloads with additional dtypes
     @overload

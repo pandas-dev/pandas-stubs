@@ -20,10 +20,7 @@ from pandas.core.arrays import (
     DatetimeArray,
     PeriodArray,
 )
-from pandas.core.base import (
-    NoNewAttributesMixin,
-    PandasObject,
-)
+from pandas.core.base import NoNewAttributesMixin
 from pandas.core.frame import DataFrame
 from pandas.core.series import (
     PeriodSeries,
@@ -39,7 +36,7 @@ from pandas._typing import (
     np_ndarray_bool,
 )
 
-class Properties(PandasDelegate, PandasObject, NoNewAttributesMixin):
+class Properties(PandasDelegate, NoNewAttributesMixin):
     def __init__(self, data: Series, orig) -> None: ...
 
 _DTFieldOpsReturnType = TypeVar("_DTFieldOpsReturnType", Series[int], Index[int])

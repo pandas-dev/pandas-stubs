@@ -4,10 +4,7 @@ from collections.abc import (
 )
 
 import numpy as np
-from pandas.core.base import (
-    PandasObject,
-    SelectionMixin,
-)
+from pandas.core.base import SelectionMixin
 from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
 from pandas.core.groupby import ops
@@ -21,12 +18,12 @@ from pandas._typing import (
     npt,
 )
 
-class GroupByPlot(PandasObject):
+class GroupByPlot:
     def __init__(self, groupby) -> None: ...
     def __call__(self, *args, **kwargs): ...
     def __getattr__(self, name: str): ...
 
-class BaseGroupBy(PandasObject, SelectionMixin[NDFrameT]):
+class BaseGroupBy(SelectionMixin[NDFrameT]):
     level = ...
     as_index = ...
     keys = ...
