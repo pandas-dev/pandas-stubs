@@ -34,7 +34,7 @@ def test_types_to_datetime() -> None:
 
     r2: pd.Series = pd.to_datetime(df, unit="s", origin="unix")
     r3: pd.Series = pd.to_datetime(
-        df, unit="ns", dayfirst=True, utc=None, format="%M:%D", exact=False
+        df, unit="ns", dayfirst=True, utc=False, format="%M:%D", exact=False
     )
     r4: pd.DatetimeIndex = pd.to_datetime(
         [1, 2], unit="D", origin=pd.Timestamp("01/01/2000")
