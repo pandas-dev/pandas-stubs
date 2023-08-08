@@ -1745,7 +1745,7 @@ def test_period_add_subtract() -> None:
     as_dt_td = dt.timedelta(days=1)
     as_np_td = np.timedelta64(1, "D")
     as_np_i64 = np.int64(1)
-    as_int = int(1)
+    as_int: int = 1
     as_period_index = pd.period_range("2012-1-1", periods=10, freq="D")
     check(assert_type(as_period_index, pd.PeriodIndex), pd.PeriodIndex)
     as_period = pd.Period("2012-1-1", freq="D")
