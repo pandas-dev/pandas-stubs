@@ -520,10 +520,6 @@ S1 = TypeVar(
     | Interval[Timedelta]
     | CategoricalDtype,
 )
-T1 = TypeVar(
-    "T1", str, int, np.int64, np.uint64, np.float64, float, np.dtype[np.generic]
-)
-T2 = TypeVar("T2", str, int)
 
 IndexingInt: TypeAlias = (
     int | np.int_ | np.integer | np.unsignedinteger | np.signedinteger | np.int8

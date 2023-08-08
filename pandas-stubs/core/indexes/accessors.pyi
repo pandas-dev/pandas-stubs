@@ -36,8 +36,7 @@ from pandas._typing import (
     np_ndarray_bool,
 )
 
-class Properties(PandasDelegate, NoNewAttributesMixin):
-    def __init__(self, data: Series, orig) -> None: ...
+class Properties(PandasDelegate, NoNewAttributesMixin): ...
 
 _DTFieldOpsReturnType = TypeVar("_DTFieldOpsReturnType", Series[int], Index[int])
 
