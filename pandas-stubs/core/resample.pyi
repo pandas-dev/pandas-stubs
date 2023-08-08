@@ -22,6 +22,7 @@ from typing_extensions import TypeAlias
 
 from pandas._typing import (
     Axis,
+    InterpolateOptions,
     NDFrameT,
     Scalar,
     npt,
@@ -49,28 +50,6 @@ _SeriesGroupByFuncTypes: TypeAlias = (
 _SeriesGroupByFuncArgs: TypeAlias = (
     _SeriesGroupByFuncTypes | Mapping[Hashable, _SeriesGroupByFunc | str]
 )
-
-_Interpolation: TypeAlias = Literal[
-    "linear",
-    "time",
-    "index",
-    "pad",
-    "nearest",
-    "zero",
-    "slinear",
-    "quadratic",
-    "cubic",
-    "spline",
-    "barycentric",
-    "polynomial",
-    "krogh",
-    "piecewise_polynomial",
-    "spline",
-    "pchip",
-    "akima",
-    "cubicspline",
-    "from_derivatives",
-]
 
 class Resampler(BaseGroupBy, Generic[NDFrameT]):
     def __getattr__(self, attr: str) -> SeriesGroupBy: ...
@@ -147,7 +126,7 @@ class Resampler(BaseGroupBy, Generic[NDFrameT]):
     @overload
     def interpolate(
         self,
-        method: _Interpolation = ...,
+        method: InterpolateOptions = ...,
         *,
         axis: Axis = ...,
         limit: int | None = ...,
@@ -160,7 +139,7 @@ class Resampler(BaseGroupBy, Generic[NDFrameT]):
     @overload
     def interpolate(
         self,
-        method: _Interpolation = ...,
+        method: InterpolateOptions = ...,
         *,
         axis: Axis = ...,
         limit: int | None = ...,

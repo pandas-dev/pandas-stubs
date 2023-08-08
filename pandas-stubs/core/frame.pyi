@@ -86,6 +86,7 @@ from pandas._typing import (
     IndexingInt,
     IndexLabel,
     IndexType,
+    InterpolateOptions,
     IntervalClosedType,
     IntervalT,
     JoinHow,
@@ -1704,7 +1705,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def interpolate(
         self,
-        method: _str = ...,
+        method: InterpolateOptions = ...,
         *,
         axis: Axis = ...,
         limit: int | None = ...,
@@ -1717,7 +1718,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def interpolate(
         self,
-        method: _str = ...,
+        method: InterpolateOptions = ...,
         *,
         axis: Axis = ...,
         limit: int | None = ...,
@@ -1730,7 +1731,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def interpolate(
         self,
-        method: _str = ...,
+        method: InterpolateOptions = ...,
         *,
         axis: Axis = ...,
         limit: int | None = ...,

@@ -664,6 +664,26 @@ StataDateFormat: TypeAlias = Literal[
 ]
 
 FillnaOptions: TypeAlias = Literal["backfill", "bfill", "ffill", "pad"]
+InterpolateOptions: TypeAlias = Literal[
+    "linear",
+    "time",
+    "index",
+    "pad",
+    "nearest",
+    "zero",
+    "slinear",
+    "quadratic",
+    "cubic",
+    "barycentric",
+    "polynomial",
+    "krogh",
+    "piecewise_polynomial",
+    "spline",
+    "pchip",
+    "akima",
+    "cubicspline",
+    "from_derivatives",
+]
 ReplaceMethod: TypeAlias = Literal["pad", "ffill", "bfill"]
 SortKind: TypeAlias = Literal["quicksort", "mergesort", "heapsort", "stable"]
 NaPosition: TypeAlias = Literal["first", "last"]
