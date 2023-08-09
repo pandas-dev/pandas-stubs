@@ -768,7 +768,7 @@ def test_to_timedelta_index() -> None:
     arg3 = tuple(arg1)
     arg4 = range(0, 10)
     arg5 = np.arange(10)
-    arg6: pd.Index[int] = pd.Index(arg5)
+    arg6 = pd.Index(arg5)
     check(
         assert_type(pd.to_timedelta(arg0, "ms"), pd.TimedeltaIndex), pd.TimedeltaIndex
     )

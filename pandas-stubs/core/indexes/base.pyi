@@ -53,6 +53,7 @@ from pandas._typing import (
     np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_int64,
+    npt,
     type_t,
 )
 
@@ -66,9 +67,9 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(  # type: ignore[misc]
         cls,
-        data: Iterable[int | np.integer],
+        data: Sequence[int | np.integer] | IndexOpsMixin[int] | npt.NDArray[np.integer],
         *,
-        dtype: Literal["int"] | type_t[int] | type_t[np.integer] = ...,
+        dtype: Literal["int"] | type_t[int | np.integer] = ...,
         copy: bool = ...,
         name=...,
         tupleize_cols: bool = ...,
@@ -79,7 +80,7 @@ class Index(IndexOpsMixin[S1]):
         cls,
         data: Iterable,
         *,
-        dtype: Literal["int"] | type_t[int] | type_t[np.integer],
+        dtype: Literal["int"] | type_t[int | np.integer],
         copy: bool = ...,
         name=...,
         tupleize_cols: bool = ...,
@@ -88,12 +89,11 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(  # type: ignore[misc]
         cls,
-        data: Iterable[float | np.float32 | np.float64],
+        data: Sequence[float | np.floating]
+        | IndexOpsMixin[float]
+        | npt.NDArray[np.floating],
         *,
-        dtype: Literal["float"]
-        | type_t[float]
-        | type_t[np.float32]
-        | type_t[np.float64] = ...,
+        dtype: Literal["float"] | type_t[float | np.floating] = ...,
         copy: bool = ...,
         name=...,
         tupleize_cols: bool = ...,
@@ -104,10 +104,7 @@ class Index(IndexOpsMixin[S1]):
         cls,
         data: Iterable,
         *,
-        dtype: Literal["float"]
-        | type_t[float]
-        | type_t[np.float32]
-        | type_t[np.float64],
+        dtype: Literal["float"] | type_t[float | np.floating],
         copy: bool = ...,
         name=...,
         tupleize_cols: bool = ...,
@@ -116,9 +113,11 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(  # type: ignore[misc]
         cls,
-        data: Iterable[complex],
+        data: Sequence[complex | np.complexfloating]
+        | IndexOpsMixin[complex]
+        | npt.NDArray[np.complexfloating],
         *,
-        dtype: Literal["complex"] | type_t[complex] = ...,
+        dtype: Literal["complex"] | type_t[complex | np.complexfloating] = ...,
         copy: bool = ...,
         name=...,
         tupleize_cols: bool = ...,
@@ -129,7 +128,7 @@ class Index(IndexOpsMixin[S1]):
         cls,
         data: Iterable,
         *,
-        dtype: Literal["complex"] | type_t[complex],
+        dtype: Literal["complex"] | type_t[complex | np.complexfloating],
         copy: bool = ...,
         name=...,
         tupleize_cols: bool = ...,
@@ -139,7 +138,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(  # type: ignore[misc]
         cls,
-        data: Iterable[np.datetime64 | datetime],
+        data: Sequence[np.datetime64 | datetime] | IndexOpsMixin[datetime],
         *,
         dtype: TimestampDtypeArg = ...,
         copy: bool = ...,
@@ -161,7 +160,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(  # type: ignore[misc]
         cls,
-        data: Iterable[Period],
+        data: Sequence[Period] | IndexOpsMixin[Period],
         *,
         dtype: PeriodDtype = ...,
         copy: bool = ...,
@@ -183,7 +182,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(  # type: ignore[misc]
         cls,
-        data: Iterable[np.timedelta64 | timedelta],
+        data: Sequence[np.timedelta64 | timedelta] | IndexOpsMixin[timedelta],
         *,
         dtype: TimedeltaDtypeArg = ...,
         copy: bool = ...,
@@ -205,7 +204,8 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(  # type: ignore[misc]
         cls,
-        data: Iterable[Interval[_OrderableT]],
+        data: Sequence[Interval[_OrderableT]]  # type: ignore[type-var]
+        | IndexOpsMixin[Interval[_OrderableT]],
         *,
         dtype: Literal["Interval"] = ...,
         copy: bool = ...,
@@ -228,7 +228,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Iterable[S1] = ...,
+        data: Iterable[S1] | IndexOpsMixin[S1] = ...,
         *,
         dtype: type[S1] = ...,
         copy: bool = ...,

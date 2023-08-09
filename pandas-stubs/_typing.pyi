@@ -511,13 +511,10 @@ S1 = TypeVar(
     | float
     | complex
     | Dtype
-    | Timestamp
-    | Timedelta
+    | datetime.datetime  # includes pd.Timestamp
+    | datetime.timedelta  # includes pd.Timedelta
     | Period
-    | Interval[int]
-    | Interval[float]
-    | Interval[Timestamp]
-    | Interval[Timedelta]
+    | Interval[int | float | Timestamp | Timedelta]
     | CategoricalDtype,
 )
 
@@ -597,14 +594,9 @@ ByT = TypeVar(
     | int
     | float
     | complex
-    | Timestamp
-    | Timedelta
     | Scalar
     | Period
-    | Interval[int]
-    | Interval[float]
-    | Interval[Timestamp]
-    | Interval[Timedelta]
+    | Interval[int | float | Timestamp | Timedelta]
     | tuple,
 )
 # Use a distinct SeriesByT when using groupby with Series of known dtype.
@@ -618,13 +610,10 @@ SeriesByT = TypeVar(
     | int
     | float
     | complex
-    | Timestamp
-    | Timedelta
+    | datetime.datetime
+    | datetime.timedelta
     | Period
-    | Interval[int]
-    | Interval[float]
-    | Interval[Timestamp]
-    | Interval[Timedelta],
+    | Interval[int | float | Timestamp | Timedelta],
 )
 GroupByObjectNonScalar: TypeAlias = (
     tuple

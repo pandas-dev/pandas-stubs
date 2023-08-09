@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import datetime as dt
 from typing import (
-    TYPE_CHECKING,
     Tuple,
     Union,
 )
@@ -21,9 +20,6 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
-
-if TYPE_CHECKING:
-    MYPY_CHECKING: bool = True
 
 
 def test_index_unique() -> None:
@@ -69,8 +65,8 @@ def test_multiindex_get_level_values() -> None:
 
 def test_index_tolist() -> None:
     i1 = pd.Index([1, 2, 3])
-    check(assert_type(i1.tolist(), list[int]), list, int)
-    check(assert_type(i1.to_list(), list[int]), list, int)
+    check(assert_type(i1.tolist(), "list[int]"), list, int)
+    check(assert_type(i1.to_list(), "list[int]"), list, int)
 
 
 def test_column_getitem() -> None:
@@ -708,8 +704,8 @@ def test_interval_index_tuples():
 def test_sorted_and_list() -> None:
     # GH 497
     i1 = pd.Index([3, 2, 1])
-    check(assert_type(sorted(i1), list[int]), list, int)
-    check(assert_type(list(i1), list[int]), list, int)
+    check(assert_type(sorted(i1), "list[int]"), list, int)
+    check(assert_type(list(i1), "list[int]"), list, int)
 
 
 def test_index_operators() -> None:

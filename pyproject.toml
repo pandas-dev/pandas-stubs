@@ -195,7 +195,6 @@ reportPrivateUsage = false
 # enable optional checks
 reportMissingModuleSource = true
 useLibraryCodeForTypes = false
-defineConstant = { MYPY_CHECKING = false }
 
 [tool.codespell]
 ignore-words-list = "indext, mose, sav, ser"
