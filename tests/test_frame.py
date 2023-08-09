@@ -1761,8 +1761,7 @@ def test_getmultiindex_columns() -> None:
         [(i, s) for i in [1] for s in df.columns.get_level_values(1)]
     ]
     res4: pd.DataFrame = df[[df.columns[0]]]
-    column: Scalar = df.columns[0]
-    check(assert_type(df[column], pd.Series), pd.Series)
+    check(assert_type(df[df.columns[0]], pd.Series), pd.Series)
     check(assert_type(df[li[0]], pd.Series), pd.Series)
 
 
@@ -2592,7 +2591,7 @@ def test_in_columns() -> None:
     # GH 532 (PR)
     df = pd.DataFrame(np.random.random((3, 4)), columns=["cat", "dog", "rat", "pig"])
     cols = [c for c in df.columns if "at" in c]
-    check(assert_type(cols, list), list, str)
+    check(assert_type(cols, "list[str]"), list, str)
     check(assert_type(df.loc[:, cols], pd.DataFrame), pd.DataFrame)
     check(assert_type(df[cols], pd.DataFrame), pd.DataFrame)
     check(assert_type(df.groupby(by=cols).sum(), pd.DataFrame), pd.DataFrame)

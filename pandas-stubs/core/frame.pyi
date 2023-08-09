@@ -1482,7 +1482,7 @@ class DataFrame(NDFrame, OpsMixin):
     @property
     def at(self): ...  # Not sure what to do with this yet; look at source
     @property
-    def columns(self) -> Index: ...
+    def columns(self) -> Index[str]: ...
     @columns.setter  # setter needs to be right next to getter; otherwise mypy complains
     def columns(
         self, cols: AnyArrayLike | list[HashableT] | tuple[HashableT, ...]

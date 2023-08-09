@@ -73,9 +73,9 @@ def test_column_getitem() -> None:
     # https://github.com/microsoft/python-type-stubs/issues/199#issuecomment-1132806594
     df = pd.DataFrame([[1, 2, 3]], columns=["a", "b", "c"])
 
-    columns: pd.Index[str] = df.columns
-    check(assert_type(columns[0], str), str)
-    check(assert_type(df[columns[0]], pd.Series), pd.Series, np.int64)
+    column = df.columns[0]
+    check(assert_type(column, str), str)
+    check(assert_type(df[column], pd.Series), pd.Series, np.int64)
 
 
 def test_column_contains() -> None:
@@ -93,7 +93,7 @@ def test_column_sequence() -> None:
     df = pd.DataFrame([1, 2, 3])
     col_list = list(df.columns)
     check(
-        assert_type(col_list, list),
+        assert_type(col_list, "list[str]"),
         list,
         int,
     )
