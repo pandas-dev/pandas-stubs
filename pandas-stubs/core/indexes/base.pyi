@@ -52,8 +52,9 @@ from pandas._typing import (
     TimestampDtypeArg,
     np_ndarray_anyint,
     np_ndarray_bool,
+    np_ndarray_complex,
+    np_ndarray_float,
     np_ndarray_int64,
-    npt,
     type_t,
 )
 
@@ -67,7 +68,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(  # type: ignore[misc]
         cls,
-        data: Sequence[int | np.integer] | IndexOpsMixin[int] | npt.NDArray[np.integer],
+        data: Sequence[int | np.integer] | IndexOpsMixin[int] | np_ndarray_anyint,
         *,
         dtype: Literal["int"] | type_t[int | np.integer] = ...,
         copy: bool = ...,
@@ -89,9 +90,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(  # type: ignore[misc]
         cls,
-        data: Sequence[float | np.floating]
-        | IndexOpsMixin[float]
-        | npt.NDArray[np.floating],
+        data: Sequence[float | np.floating] | IndexOpsMixin[float] | np_ndarray_float,
         *,
         dtype: Literal["float"] | type_t[float | np.floating] = ...,
         copy: bool = ...,
@@ -115,7 +114,7 @@ class Index(IndexOpsMixin[S1]):
         cls,
         data: Sequence[complex | np.complexfloating]
         | IndexOpsMixin[complex]
-        | npt.NDArray[np.complexfloating],
+        | np_ndarray_complex,
         *,
         dtype: Literal["complex"] | type_t[complex | np.complexfloating] = ...,
         copy: bool = ...,
