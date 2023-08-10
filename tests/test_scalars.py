@@ -747,10 +747,12 @@ def test_timedelta_mul_div() -> None:
         mp_series_int // td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
         md_series_float // td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
         assert_type(
-            md_int64_index // td, Never  # pyright: ignore[reportGeneralTypeIssues]
+            md_int64_index // td,  # pyright: ignore[reportGeneralTypeIssues]
+            Never,
         )
         assert_type(
-            md_float_index // td, Never  # pyright: ignore[reportGeneralTypeIssues]
+            md_float_index // td,  # pyright: ignore[reportGeneralTypeIssues]
+            Never,
         )
 
     check(assert_type(td / td, float), float)
@@ -785,10 +787,12 @@ def test_timedelta_mul_div() -> None:
         mp_series_int / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
         md_series_float / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
         assert_type(
-            md_int64_index / td, Never  # pyright: ignore[reportGeneralTypeIssues]
+            md_int64_index / td,  # pyright: ignore[reportGeneralTypeIssues]
+            Never,
         )
         assert_type(
-            md_float_index / td, Never  # pyright: ignore[reportGeneralTypeIssues]
+            md_float_index / td,  # pyright: ignore[reportGeneralTypeIssues]
+            Never,
         )
 
 
