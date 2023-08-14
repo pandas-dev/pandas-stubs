@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime as dt
 from typing import (
+    TYPE_CHECKING,
     Tuple,
     Union,
 )
@@ -11,6 +12,7 @@ from numpy import typing as npt
 import pandas as pd
 from typing_extensions import (
     Never,
+    TypeAlias,
     assert_type,
 )
 
@@ -20,6 +22,11 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
+
+if TYPE_CHECKING:
+    from pandas.core.indexes.timedeltas import TimedeltaIndex
+else:
+    TimedeltaIndex: TypeAlias = pd.Index
 
 
 def test_index_unique() -> None:
@@ -1022,3 +1029,20 @@ def test_new() -> None:
         pd.IntervalIndex,
         pd.Interval,
     )
+
+
+def test_timedelta_div() -> None:
+    index = pd.Index([pd.Timedelta(1)], dtype="timedelta64[s]")
+    delta = dt.timedelta(1)
+
+    check(assert_type(index / delta, "pd.Index[float]"), pd.Index, float)
+    check(assert_type(index / 1, "TimedeltaIndex"), pd.Index, pd.Timedelta)
+    check(assert_type(index // delta, "pd.Index[int]"), pd.Index, np.longlong)
+    check(assert_type(index // 1, "TimedeltaIndex"), pd.Index, pd.Timedelta)
+
+    check(assert_type(delta / index, "pd.Index[float]"), pd.Index, float)
+    check(assert_type(delta // index, "pd.Index[int]"), pd.Index, np.longlong)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        1 / index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        1 // index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
