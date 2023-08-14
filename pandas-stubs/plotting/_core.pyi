@@ -17,7 +17,6 @@ from matplotlib.lines import Line2D
 import numpy as np
 import pandas as pd
 from pandas import Series
-from pandas.core.base import PandasObject
 from pandas.core.frame import DataFrame
 from scipy.stats.kde import gaussian_kde
 from typing_extensions import TypeAlias
@@ -85,7 +84,7 @@ def boxplot(
     **kwargs,
 ) -> _BoxPlotT: ...
 
-class PlotAccessor(PandasObject):
+class PlotAccessor:
     def __init__(self, data) -> None: ...
     @overload
     def __call__(

@@ -91,7 +91,7 @@ DtypeBackend: TypeAlias = Literal["pyarrow", "numpy_nullable"]
 
 BooleanDtypeArg: TypeAlias = (
     # Builtin bool type and its string alias
-    type[bool]  # noqa: PYI030
+    type[bool]  # noqa: PYI030,PYI055
     | Literal["bool"]
     # Pandas nullable boolean type and its string alias
     | pd.BooleanDtype
@@ -105,7 +105,7 @@ BooleanDtypeArg: TypeAlias = (
 )
 IntDtypeArg: TypeAlias = (
     # Builtin integer type and its string alias
-    type[int]  # noqa: PYI030
+    type[int]  # noqa: PYI030,PYI055
     | Literal["int"]
     # Pandas nullable integer types and their string aliases
     | pd.Int8Dtype
@@ -137,7 +137,7 @@ IntDtypeArg: TypeAlias = (
 )
 UIntDtypeArg: TypeAlias = (
     # Pandas nullable unsigned integer types and their string aliases
-    pd.UInt8Dtype  # noqa: PYI030
+    pd.UInt8Dtype  # noqa: PYI030,PYI055
     | pd.UInt16Dtype
     | pd.UInt32Dtype
     | pd.UInt64Dtype
@@ -166,7 +166,7 @@ UIntDtypeArg: TypeAlias = (
 )
 FloatDtypeArg: TypeAlias = (
     # Builtin float type and its string alias
-    type[float]  # noqa: PYI030
+    type[float]  # noqa: PYI030,PYI055
     | Literal["float"]
     # Pandas nullable float types and their string aliases
     | pd.Float32Dtype
@@ -197,7 +197,7 @@ FloatDtypeArg: TypeAlias = (
 )
 ComplexDtypeArg: TypeAlias = (
     # Builtin complex type and its string alias
-    type[complex]  # noqa: PYI030
+    type[complex]  # noqa: PYI030,PYI055
     | Literal["complex"]
     # Numpy complex types and their aliases
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.csingle
@@ -326,7 +326,7 @@ TimestampDtypeArg: TypeAlias = Literal[
 
 StrDtypeArg: TypeAlias = (
     # Builtin str type and its string alias
-    type[str]  # noqa: PYI030
+    type[str]  # noqa: PYI030,PYI055
     | Literal["str"]
     # Pandas nullable string type and its string alias
     | pd.StringDtype
@@ -340,7 +340,7 @@ StrDtypeArg: TypeAlias = (
 )
 BytesDtypeArg: TypeAlias = (
     # Builtin bytes type and its string alias
-    type[bytes]  # noqa: PYI030
+    type[bytes]  # noqa: PYI030,PYI055
     | Literal["bytes"]
     # Numpy bytes type and its string alias
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.bytes_
@@ -353,7 +353,7 @@ CategoryDtypeArg: TypeAlias = CategoricalDtype | Literal["category"]
 
 ObjectDtypeArg: TypeAlias = (
     # Builtin object type and its string alias
-    type[object]  # noqa: PYI030
+    type[object]  # noqa: PYI030,PYI055
     | Literal["object"]
     # Numpy object type and its string alias
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.object_
@@ -483,6 +483,8 @@ ScalarT = TypeVar("ScalarT", bound=Scalar)
 np_ndarray_int64: TypeAlias = npt.NDArray[np.int64]
 np_ndarray_int: TypeAlias = npt.NDArray[np.signedinteger]
 np_ndarray_anyint: TypeAlias = npt.NDArray[np.integer]
+np_ndarray_float: TypeAlias = npt.NDArray[np.floating]
+np_ndarray_complex: TypeAlias = npt.NDArray[np.complexfloating]
 np_ndarray_bool: TypeAlias = npt.NDArray[np.bool_]
 np_ndarray_str: TypeAlias = npt.NDArray[np.str_]
 
@@ -511,19 +513,12 @@ S1 = TypeVar(
     | float
     | complex
     | Dtype
-    | Timestamp
-    | Timedelta
+    | datetime.datetime  # includes pd.Timestamp
+    | datetime.timedelta  # includes pd.Timedelta
     | Period
-    | Interval[int]
-    | Interval[float]
-    | Interval[Timestamp]
-    | Interval[Timedelta]
+    | Interval[int | float | Timestamp | Timedelta]
     | CategoricalDtype,
 )
-T1 = TypeVar(
-    "T1", str, int, np.int64, np.uint64, np.float64, float, np.dtype[np.generic]
-)
-T2 = TypeVar("T2", str, int)
 
 IndexingInt: TypeAlias = (
     int | np.int_ | np.integer | np.unsignedinteger | np.signedinteger | np.int8
@@ -601,14 +596,9 @@ ByT = TypeVar(
     | int
     | float
     | complex
-    | Timestamp
-    | Timedelta
     | Scalar
     | Period
-    | Interval[int]
-    | Interval[float]
-    | Interval[Timestamp]
-    | Interval[Timedelta]
+    | Interval[int | float | Timestamp | Timedelta]
     | tuple,
 )
 # Use a distinct SeriesByT when using groupby with Series of known dtype.
@@ -622,13 +612,10 @@ SeriesByT = TypeVar(
     | int
     | float
     | complex
-    | Timestamp
-    | Timedelta
+    | datetime.datetime
+    | datetime.timedelta
     | Period
-    | Interval[int]
-    | Interval[float]
-    | Interval[Timestamp]
-    | Interval[Timedelta],
+    | Interval[int | float | Timestamp | Timedelta],
 )
 GroupByObjectNonScalar: TypeAlias = (
     tuple

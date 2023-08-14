@@ -1482,7 +1482,7 @@ class DataFrame(NDFrame, OpsMixin):
     @property
     def at(self): ...  # Not sure what to do with this yet; look at source
     @property
-    def columns(self) -> Index: ...
+    def columns(self) -> Index[str]: ...
     @columns.setter  # setter needs to be right next to getter; otherwise mypy complains
     def columns(
         self, cols: AnyArrayLike | list[HashableT] | tuple[HashableT, ...]
@@ -2275,3 +2275,7 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level | None = ...,
         drop_level: _bool = ...,
     ) -> DataFrame | Series: ...
+    # floordiv overload
+    def __floordiv__(
+        self, other: float | DataFrame | Series[int] | Series[float]
+    ) -> Self: ...

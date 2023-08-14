@@ -65,6 +65,7 @@ jinja2 = ">=3.1"
 scipy = ">=1.9.1"
 SQLAlchemy = ">=2.0.12"
 types-python-dateutil = ">=2.8.19"
+numexpr = "<2.8.5"  # https://github.com/pandas-dev/pandas/issues/54449
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -180,7 +181,6 @@ stubPath = "."
 include = ["tests", "pandas-stubs"]
 enableTypeIgnoreComments = false  # use pyright-specific ignores
 # disable subset of strict
-reportInconsistentConstructor = false
 reportMissingParameterType = false
 reportMissingTypeArgument = false
 reportMissingTypeStubs = false
@@ -191,13 +191,11 @@ reportUnknownLambdaType = false
 reportUnknownMemberType = false
 reportUnknownParameterType = false
 reportUnknownVariableType = false
-reportUntypedBaseClass = false
 reportUnusedVariable = false
 reportPrivateUsage = false
 # enable optional checks
 reportMissingModuleSource = true
 useLibraryCodeForTypes = false
-defineConstant = { MYPY_CHECKING = false }
 
 [tool.codespell]
 ignore-words-list = "indext, mose, sav, ser"

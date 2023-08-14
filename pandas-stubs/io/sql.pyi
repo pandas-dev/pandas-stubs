@@ -11,7 +11,6 @@ from typing import (
     overload,
 )
 
-from pandas.core.base import PandasObject
 from pandas.core.frame import DataFrame
 import sqlalchemy.engine
 from sqlalchemy.orm import FromStatement
@@ -114,7 +113,7 @@ def read_sql(
     dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> DataFrame: ...
 
-class PandasSQL(PandasObject):
+class PandasSQL:
     def read_sql(self, *args, **kwargs): ...
     def to_sql(
         self,
@@ -131,7 +130,7 @@ class PandasSQL(PandasObject):
         | None = ...,
     ) -> int | None: ...
 
-class SQLTable(PandasObject):
+class SQLTable:
     name: str
     pd_sql: PandasSQL  # pandas SQL interface
     prefix: str

@@ -3,11 +3,10 @@ from pandas.core.arrays import (
     ExtensionArray,
     ExtensionOpsMixin,
 )
-from pandas.core.base import PandasObject
 
 from pandas._typing import TakeIndexer
 
-class SparseArray(PandasObject, ExtensionArray, ExtensionOpsMixin):
+class SparseArray(ExtensionArray, ExtensionOpsMixin):
     def __init__(
         self,
         data,

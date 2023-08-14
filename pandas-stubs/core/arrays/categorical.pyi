@@ -12,10 +12,7 @@ import numpy as np
 from pandas import Series
 from pandas.core.accessor import PandasDelegate as PandasDelegate
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
-from pandas.core.base import (
-    NoNewAttributesMixin as NoNewAttributesMixin,
-    PandasObject as PandasObject,
-)
+from pandas.core.base import NoNewAttributesMixin as NoNewAttributesMixin
 from pandas.core.indexes.base import Index
 
 from pandas._typing import (
@@ -33,7 +30,7 @@ from pandas.core.dtypes.dtypes import CategoricalDtype as CategoricalDtype
 
 def contains(cat, key, container): ...
 
-class Categorical(ExtensionArray, PandasObject):
+class Categorical(ExtensionArray):
     __array_priority__: int = ...
     def __init__(
         self,
@@ -185,7 +182,7 @@ class Categorical(ExtensionArray, PandasObject):
     def repeat(self, repeats, axis=...): ...
     def isin(self, values): ...
 
-class CategoricalAccessor(PandasDelegate, PandasObject, NoNewAttributesMixin):
+class CategoricalAccessor(PandasDelegate, NoNewAttributesMixin):
     def __init__(self, data) -> None: ...
     @property
     def codes(self) -> Series[int]: ...

@@ -211,7 +211,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
         value: S1 | ArrayLike | Series[S1] | None,
     ) -> None: ...
 
-class Series(IndexOpsMixin, NDFrame, Generic[S1]):
+class Series(IndexOpsMixin[S1], NDFrame):
     _ListLike: TypeAlias = ArrayLike | dict[_str, np.ndarray] | list | tuple | Index
     __hash__: ClassVar[None]
 
@@ -1450,7 +1450,7 @@ class Series(IndexOpsMixin, NDFrame, Generic[S1]):
     # def __array__(self, dtype: Optional[_bool] = ...) -> _np_ndarray
     def __div__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __eq__(self, other: object) -> Series[_bool]: ...  # type: ignore[override]
-    def __floordiv__(self, other: num | _ListLike | Series[S1]) -> Series[int]: ...  # type: ignore[override]
+    def __floordiv__(self, other: num | _ListLike | Series[S1]) -> Series[int]: ...
     def __ge__(  # type: ignore[override]
         self, other: S1 | _ListLike | Series[S1] | datetime | timedelta
     ) -> Series[_bool]: ...

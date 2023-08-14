@@ -14,15 +14,12 @@ from typing import (
 import numpy as np
 from pandas import (
     DataFrame,
+    Index,
     Timedelta,
     TimedeltaIndex,
     Timestamp,
 )
 from pandas.core.indexes.accessors import DatetimeIndexProperties
-from pandas.core.indexes.base import (
-    _FloatIndexType,
-    _IndexGetitemMixin,
-)
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.series import (
     TimedeltaSeries,
@@ -40,12 +37,7 @@ from pandas.core.dtypes.dtypes import DatetimeTZDtype
 
 from pandas.tseries.offsets import BaseOffset
 
-# type ignore needed because of __getitem__()
-class DatetimeIndex(  # type: ignore[misc]
-    _IndexGetitemMixin[Timestamp],
-    DatetimeTimedeltaMixin,
-    DatetimeIndexProperties,
-):
+class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
     def __init__(
         self,
         data: ArrayLike | AnyArrayLike | list | tuple,
@@ -91,7 +83,7 @@ class DatetimeIndex(  # type: ignore[misc]
         self, start_time, end_time, include_start: bool = ..., include_end: bool = ...
     ): ...
     def to_perioddelta(self, freq) -> TimedeltaIndex: ...
-    def to_julian_date(self) -> _FloatIndexType: ...
+    def to_julian_date(self) -> Index[float]: ...
     def isocalendar(self) -> DataFrame: ...
     @property
     def tzinfo(self) -> tzinfo | None: ...

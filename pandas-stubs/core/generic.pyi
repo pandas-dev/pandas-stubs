@@ -16,7 +16,6 @@ from typing import (
 
 import numpy as np
 from pandas import Index
-from pandas.core.base import PandasObject
 import pandas.core.indexing as indexing
 from pandas.core.series import Series
 import sqlalchemy.engine
@@ -54,7 +53,7 @@ from pandas.io.sql import SQLTable
 _bool = bool
 _str = str
 
-class NDFrame(PandasObject, indexing.IndexingMixin):
+class NDFrame(indexing.IndexingMixin):
     __hash__: ClassVar[None]  # type: ignore[assignment]
 
     def set_flags(
