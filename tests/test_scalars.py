@@ -746,14 +746,8 @@ def test_timedelta_mul_div() -> None:
         md_ndarray_float // td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
         mp_series_int // td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
         md_series_float // td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-        assert_type(
-            md_int64_index // td,  # pyright: ignore[reportGeneralTypeIssues]
-            Never,
-        )
-        assert_type(
-            md_float_index // td,  # pyright: ignore[reportGeneralTypeIssues]
-            Never,
-        )
+        md_int64_index // td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        md_float_index // td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
 
     check(assert_type(td / td, float), float)
     check(assert_type(td / pd.NaT, float), float)

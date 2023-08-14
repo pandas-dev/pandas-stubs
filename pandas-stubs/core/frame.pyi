@@ -2275,3 +2275,7 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level | None = ...,
         drop_level: _bool = ...,
     ) -> DataFrame | Series: ...
+    # floordiv overload
+    def __floordiv__(
+        self, other: float | DataFrame | Series[int] | Series[float]
+    ) -> Self: ...

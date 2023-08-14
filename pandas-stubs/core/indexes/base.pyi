@@ -427,10 +427,16 @@ class Index(IndexOpsMixin[S1]):
     ) -> TimedeltaIndex: ...
     @overload
     def __mul__(self, other: Any) -> Self: ...
-    @overload
-    def __floordiv__(self: Index[int] | Index[float], other: timedelta) -> Never: ...
-    @overload
-    def __floordiv__(self, other: Any) -> Self: ...
+    def __floordiv__(
+        self,
+        other: float
+        | Series[int]
+        | Series[float]
+        | Sequence[int]
+        | Sequence[float]
+        | Index[int]
+        | Index[float],
+    ) -> Self: ...
     @overload
     def __truediv__(self: Index[int] | Index[float], other: timedelta) -> Never: ...
     @overload
