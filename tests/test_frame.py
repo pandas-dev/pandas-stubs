@@ -745,59 +745,74 @@ def test_types_element_wise_arithmetic() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     df2 = pd.DataFrame(data={"col1": [10, 20], "col3": [3, 4]})
 
-    res_add1: pd.DataFrame = df + df2
-    res_add2: pd.DataFrame = df.add(df2, fill_value=0)
+    check(assert_type(df + df2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.add(df2, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_sub: pd.DataFrame = df - df2
-    res_sub2: pd.DataFrame = df.sub(df2, fill_value=0)
+    check(assert_type(df - df2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.sub(df2, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_mul: pd.DataFrame = df * df2
-    res_mul2: pd.DataFrame = df.mul(df2, fill_value=0)
+    check(assert_type(df * df2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.mul(df2, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_div: pd.DataFrame = df / df2
-    res_div2: pd.DataFrame = df.div(df2, fill_value=0)
+    check(assert_type(df / df2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.div(df2, fill_value=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df / [2, 2], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.div([2, 2], fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_floordiv: pd.DataFrame = df // df2
-    res_floordiv2: pd.DataFrame = df.floordiv(df2, fill_value=0)
+    check(assert_type(df // df2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.floordiv(df2, fill_value=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df // [2, 2], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.floordiv([2, 2], fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_mod: pd.DataFrame = df % df2
-    res_mod2: pd.DataFrame = df.mod(df2, fill_value=0)
+    check(assert_type(df % df2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.mod(df2, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_pow: pd.DataFrame = df2**df
-    res_pow2: pd.DataFrame = df2.pow(df, fill_value=0)
+    check(assert_type(df2**df, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df2.pow(df, fill_value=0), pd.DataFrame), pd.DataFrame)
 
     # divmod operation was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-    # noinspection PyTypeChecker
-    res_divmod: tuple[pd.DataFrame, pd.DataFrame] = divmod(df, df2)
-    res_divmod2: tuple[pd.DataFrame, pd.DataFrame] = df.__divmod__(df2)
-    res_rdivmod: tuple[pd.DataFrame, pd.DataFrame] = df.__rdivmod__(df2)
+    check(
+        assert_type(divmod(df, df2), tuple[pd.DataFrame, pd.DataFrame]),
+        tuple,
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.__divmod__(df2), tuple[pd.DataFrame, pd.DataFrame]),
+        tuple,
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.__rdivmod__(df2), tuple[pd.DataFrame, pd.DataFrame]),
+        tuple,
+        pd.DataFrame,
+    )
 
 
 def test_types_scalar_arithmetic() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
 
-    res_add1: pd.DataFrame = df + 1
-    res_add2: pd.DataFrame = df.add(1, fill_value=0)
+    check(assert_type(df + 1, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.add(1, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_sub: pd.DataFrame = df - 1
-    res_sub2: pd.DataFrame = df.sub(1, fill_value=0)
+    check(assert_type(df - 1, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.sub(1, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_mul: pd.DataFrame = df * 2
-    res_mul2: pd.DataFrame = df.mul(2, fill_value=0)
+    check(assert_type(df * 2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.mul(2, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_div: pd.DataFrame = df / 2
-    res_div2: pd.DataFrame = df.div(2, fill_value=0)
+    check(assert_type(df / 2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.div(2, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_floordiv: pd.DataFrame = df // 2
-    res_floordiv2: pd.DataFrame = df.floordiv(2, fill_value=0)
+    check(assert_type(df // 2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.floordiv(2, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_mod: pd.DataFrame = df % 2
-    res_mod2: pd.DataFrame = df.mod(2, fill_value=0)
+    check(assert_type(df % 2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.mod(2, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_pow: pd.DataFrame = df**2
-    res_pow1: pd.DataFrame = df**0
-    res_pow2: pd.DataFrame = df**0.213
-    res_pow3: pd.DataFrame = df.pow(0.5)
+    check(assert_type(df**2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df**0, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df**0.213, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.pow(0.5), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_melt() -> None:
