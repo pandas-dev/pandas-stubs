@@ -2028,19 +2028,43 @@ class TimedeltaSeries(Series[Timedelta]):
         self, other: Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64
     ) -> TimedeltaSeries: ...
     @overload  # type: ignore[override]
-    def __truediv__(self, other: float) -> Self: ...
+    def __truediv__(self, other: float | Sequence[float]) -> Self: ...
     @overload
     def __truediv__(
-        self, other: timedelta | TimedeltaSeries | np.timedelta64 | TimedeltaIndex
+        self,
+        other: timedelta
+        | TimedeltaSeries
+        | np.timedelta64
+        | TimedeltaIndex
+        | Sequence[timedelta],
     ) -> Series[float]: ...
-    def __rtruediv__(self, other: timedelta | TimedeltaSeries | np.timedelta64 | TimedeltaIndex) -> Series[float]: ...  # type: ignore[override,misc]
+    def __rtruediv__(  # type: ignore[override]
+        self,
+        other: timedelta
+        | TimedeltaSeries
+        | np.timedelta64
+        | TimedeltaIndex
+        | Sequence[timedelta],
+    ) -> Series[float]: ...
     @overload  # type: ignore[override]
-    def __floordiv__(self, other: float) -> Self: ...
+    def __floordiv__(self, other: float | Sequence[float]) -> Self: ...
     @overload
     def __floordiv__(
-        self, other: timedelta | TimedeltaSeries | np.timedelta64 | TimedeltaIndex
+        self,
+        other: timedelta
+        | TimedeltaSeries
+        | np.timedelta64
+        | TimedeltaIndex
+        | Sequence[timedelta],
     ) -> Series[int]: ...
-    def __rfloordiv__(self, other: timedelta | TimedeltaSeries | np.timedelta64 | TimedeltaIndex) -> Series[int]: ...  # type: ignore[override,misc]
+    def __rfloordiv__(  # type: ignore[override]
+        self,
+        other: timedelta
+        | TimedeltaSeries
+        | np.timedelta64
+        | TimedeltaIndex
+        | Sequence[timedelta],
+    ) -> Series[int]: ...
     @property
     def dt(self) -> TimedeltaProperties: ...  # type: ignore[override]
     def mean(  # type: ignore[override]

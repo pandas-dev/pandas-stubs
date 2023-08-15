@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import datetime as dt
 from typing import (
-    TYPE_CHECKING,
     Tuple,
     Union,
 )
@@ -12,7 +11,6 @@ from numpy import typing as npt
 import pandas as pd
 from typing_extensions import (
     Never,
-    TypeAlias,
     assert_type,
 )
 
@@ -22,11 +20,6 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
-
-if TYPE_CHECKING:
-    from pandas.core.indexes.timedeltas import TimedeltaIndex
-else:
-    TimedeltaIndex: TypeAlias = pd.Index
 
 
 def test_index_unique() -> None:
@@ -1036,9 +1029,9 @@ def test_timedelta_div() -> None:
     delta = dt.timedelta(1)
 
     check(assert_type(index / delta, "pd.Index[float]"), pd.Index, float)
-    check(assert_type(index / 1, "TimedeltaIndex"), pd.Index, pd.Timedelta)
+    check(assert_type(index / 1, "pd.TimedeltaIndex"), pd.TimedeltaIndex, pd.Timedelta)
     check(assert_type(index // delta, "pd.Index[int]"), pd.Index, np.longlong)
-    check(assert_type(index // 1, "TimedeltaIndex"), pd.Index, pd.Timedelta)
+    check(assert_type(index // 1, "pd.TimedeltaIndex"), pd.TimedeltaIndex, pd.Timedelta)
 
     check(assert_type(delta / index, "pd.Index[float]"), pd.Index, float)
     check(assert_type(delta // index, "pd.Index[int]"), pd.Index, np.longlong)

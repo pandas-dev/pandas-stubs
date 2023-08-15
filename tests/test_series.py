@@ -2693,13 +2693,21 @@ def test_timedelta_div() -> None:
     delta = datetime.timedelta(1)
 
     check(assert_type(series / delta, "pd.Series[float]"), pd.Series, float)
+    check(assert_type(series / [delta], "pd.Series[float]"), pd.Series, float)
     check(assert_type(series / 1, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(series / [1], "TimedeltaSeries"), pd.Series, pd.Timedelta)
     check(assert_type(series // delta, "pd.Series[int]"), pd.Series, np.longlong)
+    check(assert_type(series // [delta], "pd.Series[int]"), pd.Series, int)
     check(assert_type(series // 1, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(series // [1], "TimedeltaSeries"), pd.Series, pd.Timedelta)
 
     check(assert_type(delta / series, "pd.Series[float]"), pd.Series, float)
+    check(assert_type([delta] / series, "pd.Series[float]"), pd.Series, float)
     check(assert_type(delta // series, "pd.Series[int]"), pd.Series, np.longlong)
+    check(assert_type([delta] // series, "pd.Series[int]"), pd.Series, np.int64)
 
     if TYPE_CHECKING_INVALID_USAGE:
         1 / series  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        [1] / series  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
         1 // series  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        [1] // series  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
