@@ -772,17 +772,17 @@ def test_types_element_wise_arithmetic() -> None:
 
     # divmod operation was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
     check(
-        assert_type(divmod(df, df2), tuple[pd.DataFrame, pd.DataFrame]),
+        assert_type(divmod(df, df2), "tuple[pd.DataFrame, pd.DataFrame]"),
         tuple,
         pd.DataFrame,
     )
     check(
-        assert_type(df.__divmod__(df2), tuple[pd.DataFrame, pd.DataFrame]),
+        assert_type(df.__divmod__(df2), "tuple[pd.DataFrame, pd.DataFrame]"),
         tuple,
         pd.DataFrame,
     )
     check(
-        assert_type(df.__rdivmod__(df2), tuple[pd.DataFrame, pd.DataFrame]),
+        assert_type(df.__rdivmod__(df2), "tuple[pd.DataFrame, pd.DataFrame]"),
         tuple,
         pd.DataFrame,
     )
