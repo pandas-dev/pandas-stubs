@@ -6,6 +6,7 @@ from enum import Enum
 from pathlib import Path
 import platform
 import re
+import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -2704,7 +2705,10 @@ def test_timedelta_div() -> None:
     check(assert_type(delta / series, "pd.Series[float]"), pd.Series, float)
     check(assert_type([delta] / series, "pd.Series[float]"), pd.Series, float)
     check(assert_type(delta // series, "pd.Series[int]"), pd.Series, np.longlong)
-    check(assert_type([delta] // series, "pd.Series[int]"), pd.Series, np.intp)
+    dtype = np.int64
+    if sys.platform == "win32":
+        dtype = np.int32
+    check(assert_type([delta] // series, "pd.Series[int]"), pd.Series, dtype)
 
     if TYPE_CHECKING_INVALID_USAGE:
         1 / series  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]

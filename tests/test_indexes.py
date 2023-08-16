@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import sys
 from typing import (
     Tuple,
     Union,
@@ -1040,7 +1041,10 @@ def test_timedelta_div() -> None:
     check(assert_type(delta / index, "pd.Index[float]"), pd.Index, float)
     check(assert_type([delta] / index, "pd.Index[float]"), pd.Index, float)
     check(assert_type(delta // index, "pd.Index[int]"), pd.Index, np.longlong)
-    check(assert_type([delta] // index, "pd.Index[int]"), pd.Index, np.intp)
+    dtype = np.int64
+    if sys.platform == "win32":
+        dtype = np.int32
+    check(assert_type([delta] // index, "pd.Index[int]"), pd.Index, dtype)
 
     if TYPE_CHECKING_INVALID_USAGE:
         1 / index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
