@@ -2689,7 +2689,7 @@ def test_types_mask() -> None:
 
 
 def test_timedelta_div() -> None:
-    series = pd.Series([pd.Timedelta(1)])
+    series = pd.Series([pd.Timedelta(days=1)])
     delta = datetime.timedelta(1)
 
     check(assert_type(series / delta, "pd.Series[float]"), pd.Series, float)

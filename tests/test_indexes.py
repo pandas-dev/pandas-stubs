@@ -1025,7 +1025,7 @@ def test_new() -> None:
 
 
 def test_timedelta_div() -> None:
-    index = pd.Index([pd.Timedelta(1)], dtype="timedelta64[s]")
+    index = pd.Index([pd.Timedelta(days=1)], dtype="timedelta64[s]")
     delta = dt.timedelta(1)
 
     check(assert_type(index / delta, "pd.Index[float]"), pd.Index, float)
@@ -1038,11 +1038,9 @@ def test_timedelta_div() -> None:
     check(assert_type(index // [1], pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
 
     check(assert_type(delta / index, "pd.Index[float]"), pd.Index, float)
-    # ZeroDivisionError
-    # check(assert_type([delta] / index, "pd.Index[float]"), pd.Index, float)
+    check(assert_type([delta] / index, "pd.Index[float]"), pd.Index, float)
     check(assert_type(delta // index, "pd.Index[int]"), pd.Index, np.longlong)
-    # ZeroDivisionError
-    # check(assert_type([delta] // index, "pd.Index[int]"), pd.Index, np.longlong)
+    check(assert_type([delta] // index, "pd.Index[int]"), pd.Index, np.int64)
 
     if TYPE_CHECKING_INVALID_USAGE:
         1 / index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
