@@ -1041,7 +1041,7 @@ def test_timedelta_div() -> None:
     check(assert_type(delta / index, "pd.Index[float]"), pd.Index, float)
     check(assert_type([delta] / index, "pd.Index[float]"), pd.Index, float)
     check(assert_type(delta // index, "pd.Index[int]"), pd.Index, np.longlong)
-    dtype = np.int64
+    dtype: type[np.integer] = np.int64
     if sys.platform == "win32":
         dtype = np.int32
     check(assert_type([delta] // index, "pd.Index[int]"), pd.Index, dtype)
