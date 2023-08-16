@@ -1040,7 +1040,7 @@ def test_timedelta_div() -> None:
     check(assert_type(delta / index, "pd.Index[float]"), pd.Index, float)
     check(assert_type([delta] / index, "pd.Index[float]"), pd.Index, float)
     check(assert_type(delta // index, "pd.Index[int]"), pd.Index, np.longlong)
-    check(assert_type([delta] // index, "pd.Index[int]"), pd.Index, np.int64)
+    check(assert_type([delta] // index, "pd.Index[int]"), pd.Index, np.intp)
 
     if TYPE_CHECKING_INVALID_USAGE:
         1 / index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]

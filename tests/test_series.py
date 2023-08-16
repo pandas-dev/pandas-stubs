@@ -2704,7 +2704,7 @@ def test_timedelta_div() -> None:
     check(assert_type(delta / series, "pd.Series[float]"), pd.Series, float)
     check(assert_type([delta] / series, "pd.Series[float]"), pd.Series, float)
     check(assert_type(delta // series, "pd.Series[int]"), pd.Series, np.longlong)
-    check(assert_type([delta] // series, "pd.Series[int]"), pd.Series, np.int64)
+    check(assert_type([delta] // series, "pd.Series[int]"), pd.Series, np.intp)
 
     if TYPE_CHECKING_INVALID_USAGE:
         1 / series  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
