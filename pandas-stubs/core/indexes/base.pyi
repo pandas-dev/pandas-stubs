@@ -430,17 +430,35 @@ class Index(IndexOpsMixin[S1]):
     def __floordiv__(
         self,
         other: float
-        | Series[int]
-        | Series[float]
+        | IndexOpsMixin[int]
+        | IndexOpsMixin[float]
         | Sequence[int]
-        | Sequence[float]
-        | Index[int]
-        | Index[float],
+        | Sequence[float],
     ) -> Self: ...
-    @overload
-    def __truediv__(self: Index[int] | Index[float], other: timedelta) -> Never: ...
-    @overload
-    def __truediv__(self, other: Any) -> Self: ...
+    def __rfloordiv__(
+        self,
+        other: float
+        | IndexOpsMixin[int]
+        | IndexOpsMixin[float]
+        | Sequence[int]
+        | Sequence[float],
+    ) -> Self: ...
+    def __truediv__(
+        self,
+        other: float
+        | IndexOpsMixin[int]
+        | IndexOpsMixin[float]
+        | Sequence[int]
+        | Sequence[float],
+    ) -> Self: ...
+    def __rtruediv__(
+        self,
+        other: float
+        | IndexOpsMixin[int]
+        | IndexOpsMixin[float]
+        | Sequence[int]
+        | Sequence[float],
+    ) -> Self: ...
 
 def ensure_index_from_sequences(
     sequences: Sequence[Sequence[Dtype]], names: list[str] = ...

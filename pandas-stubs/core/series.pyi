@@ -1502,9 +1502,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __ror__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...  # type: ignore[misc]
     def __rsub__(self, other: num | _ListLike | Series[S1]) -> Series: ...
-    @overload
-    def __rtruediv__(self, other: TimedeltaSeries) -> Series[float]: ...
-    @overload
     def __rtruediv__(self, other: num | _ListLike | Series[S1]) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
@@ -2030,7 +2027,44 @@ class TimedeltaSeries(Series[Timedelta]):
     def __sub__(  # type: ignore[override]
         self, other: Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64
     ) -> TimedeltaSeries: ...
-    def __truediv__(self, other: Timedelta | TimedeltaSeries | np.timedelta64 | TimedeltaIndex) -> Series[float]: ...  # type: ignore[override]
+    @overload  # type: ignore[override]
+    def __truediv__(self, other: float | Sequence[float]) -> Self: ...
+    @overload
+    def __truediv__(
+        self,
+        other: timedelta
+        | TimedeltaSeries
+        | np.timedelta64
+        | TimedeltaIndex
+        | Sequence[timedelta],
+    ) -> Series[float]: ...
+    def __rtruediv__(  # type: ignore[override]
+        self,
+        other: timedelta
+        | TimedeltaSeries
+        | np.timedelta64
+        | TimedeltaIndex
+        | Sequence[timedelta],
+    ) -> Series[float]: ...
+    @overload  # type: ignore[override]
+    def __floordiv__(self, other: float | Sequence[float]) -> Self: ...
+    @overload
+    def __floordiv__(
+        self,
+        other: timedelta
+        | TimedeltaSeries
+        | np.timedelta64
+        | TimedeltaIndex
+        | Sequence[timedelta],
+    ) -> Series[int]: ...
+    def __rfloordiv__(  # type: ignore[override]
+        self,
+        other: timedelta
+        | TimedeltaSeries
+        | np.timedelta64
+        | TimedeltaIndex
+        | Sequence[timedelta],
+    ) -> Series[int]: ...
     @property
     def dt(self) -> TimedeltaProperties: ...  # type: ignore[override]
     def mean(  # type: ignore[override]

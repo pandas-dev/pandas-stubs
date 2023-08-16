@@ -2686,3 +2686,28 @@ def test_types_mask() -> None:
     # Test cases with None and pd.NA as other
     check(assert_type(s.mask(s > 3, None), pd.Series), pd.Series, np.float64)
     check(assert_type(s.mask(s > 3, pd.NA), pd.Series), pd.Series, np.float64)
+
+
+def test_timedelta_div() -> None:
+    series = pd.Series([pd.Timedelta(days=1)])
+    delta = datetime.timedelta(1)
+
+    check(assert_type(series / delta, "pd.Series[float]"), pd.Series, float)
+    check(assert_type(series / [delta], "pd.Series[float]"), pd.Series, float)
+    check(assert_type(series / 1, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(series / [1], "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(series // delta, "pd.Series[int]"), pd.Series, np.longlong)
+    check(assert_type(series // [delta], "pd.Series[int]"), pd.Series, int)
+    check(assert_type(series // 1, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(series // [1], "TimedeltaSeries"), pd.Series, pd.Timedelta)
+
+    check(assert_type(delta / series, "pd.Series[float]"), pd.Series, float)
+    check(assert_type([delta] / series, "pd.Series[float]"), pd.Series, float)
+    check(assert_type(delta // series, "pd.Series[int]"), pd.Series, np.longlong)
+    check(assert_type([delta] // series, "pd.Series[int]"), pd.Series, np.signedinteger)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        1 / series  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        [1] / series  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        1 // series  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        [1] // series  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
