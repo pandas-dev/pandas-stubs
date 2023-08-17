@@ -219,7 +219,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     __hash__: ClassVar[None]
 
     @overload
-    def __new__(
+    def __new__(  # type: ignore[misc]
         cls,
         data: DatetimeIndex | Sequence[np.datetime64 | datetime],
         index: Axes | None = ...,
@@ -229,7 +229,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         copy: bool = ...,
     ) -> TimestampSeries: ...
     @overload
-    def __new__(
+    def __new__(  # type: ignore[misc]
         cls,
         data: _ListLike,
         index: Axes | None = ...,
@@ -239,7 +239,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         copy: bool = ...,
     ) -> TimestampSeries: ...
     @overload
-    def __new__(
+    def __new__(  # type: ignore[misc]
         cls,
         data: PeriodIndex,
         index: Axes | None = ...,
@@ -249,7 +249,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         copy: bool = ...,
     ) -> PeriodSeries: ...
     @overload
-    def __new__(
+    def __new__(  # type: ignore[misc]
         cls,
         data: TimedeltaIndex | Sequence[np.timedelta64 | timedelta],
         index: Axes | None = ...,
@@ -283,7 +283,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: _ListLike[S1] | dict[int, S1] | dict[_str, S1] = ...,
+        data: _ListLike[S1] | dict[int, S1] | dict[_str, S1],
         index: Axes | None = ...,
         *,
         dtype: Dtype = ...,
@@ -685,7 +685,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def diff(self, periods: int = ...) -> Series[S1]: ...
     def autocorr(self, lag: int = ...) -> float: ...
     @overload
-    def dot(self, other: Series[S1]) -> Scalar: ...  # pyright: ignore[reportOverlappingOverload]
+    def dot(self, other: Series[S1]) -> Scalar: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
     @overload
     def dot(self, other: DataFrame) -> Series[S1]: ...
     @overload
@@ -693,7 +693,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __matmul__(self, other): ...
     def __rmatmul__(self, other): ...
     @overload
-    def searchsorted(
+    def searchsorted(  # type: ignore[misc]
         self,
         value: _ListLike,
         side: Literal["left", "right"] = ...,
