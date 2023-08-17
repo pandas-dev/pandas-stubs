@@ -6,7 +6,7 @@ from typing import (
 
 import numpy as np
 from pandas.core.arrays import ExtensionArray
-from pandas.core.arrays.masked import BaseMaskedArray as BaseMaskedArray
+from pandas.core.arrays.masked import BaseMaskedArray
 from typing_extensions import TypeAlias
 
 from pandas._libs.missing import NAType
@@ -15,7 +15,7 @@ from pandas._typing import (
     type_t,
 )
 
-from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
+from pandas.core.dtypes.base import ExtensionDtype
 
 class BooleanDtype(ExtensionDtype):
     na_value: ClassVar[NAType]
@@ -44,7 +44,7 @@ class BooleanArray(BaseMaskedArray):
         | npt.NDArray[np.bool_]
         | BooleanArray,
     ) -> None: ...
-    @overload  # type: ignore[override]
+    @overload
     def __getitem__(self, item: int) -> bool | NAType: ...
     @overload
     def __getitem__(self, item: _ArrayKey) -> BooleanArray: ...
@@ -55,4 +55,3 @@ class BooleanArray(BaseMaskedArray):
     ) -> np.ndarray | ExtensionArray: ...
     def any(self, skipna: bool = ..., **kwargs) -> bool: ...
     def all(self, skipna: bool = ..., **kwargs) -> bool: ...
-    def __setitem__(self, key, value) -> None: ...

@@ -8,7 +8,6 @@ from pandas.core.arrays.datetimelike import (
 
 from pandas._libs.tslibs import Period
 from pandas._libs.tslibs.timestamps import Timestamp
-from pandas._typing import npt as npt
 
 from pandas.tseries.offsets import Tick
 

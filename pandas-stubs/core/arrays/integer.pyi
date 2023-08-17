@@ -12,7 +12,6 @@ from pandas.arrays import (
     StringArray,
 )
 from pandas.core.arrays.masked import BaseMaskedArray
-from typing_extensions import Self
 
 from pandas._libs.missing import NAType
 from pandas._typing import npt
@@ -26,7 +25,7 @@ class _IntegerDtype(ExtensionDtype):
     @property
     def itemsize(self) -> int: ...
     @classmethod
-    def construct_array_type(cls) -> type[Self]: ...
+    def construct_array_type(cls) -> type[IntegerArray]: ...
     def __from_arrow__(self, array): ...
 
 class IntegerArray(BaseMaskedArray):
@@ -45,7 +44,7 @@ class IntegerArray(BaseMaskedArray):
         key: Sequence[int] | slice | npt.NDArray[np.integer],
         value: float | NAType | Sequence[float | NAType] | npt.NDArray[np.integer],
     ) -> None: ...
-    @overload  # type: ignore[override]
+    @overload
     def __getitem__(self, item: int) -> int | NAType: ...
     @overload
     def __getitem__(

@@ -39,7 +39,7 @@ numpy = [
 ]
 
 [tool.poetry.dev-dependencies]
-mypy = "1.5.0"
+mypy = "1.5.1"
 pandas = "2.0.3"
 pyarrow = ">=10.0.1"
 pytest = ">=7.1.2"

@@ -12,12 +12,13 @@ from pandas import (
     Index,
     Series,
 )
-from pandas.core.arrays.base import ExtensionArray as ExtensionArray
+from pandas.core.arrays.base import ExtensionArray
+from pandas.core.base import IndexOpsMixin
 from typing_extensions import Self
 
 from pandas._libs.interval import (
-    Interval as Interval,
-    IntervalMixin as IntervalMixin,
+    Interval,
+    IntervalMixin,
 )
 from pandas._typing import (
     Axis,
@@ -41,43 +42,90 @@ class IntervalArray(IntervalMixin, ExtensionArray, Generic[IntervalT]):
     @overload
     @classmethod
     def from_breaks(
-        cls, breaks: Sequence[int], closed: str = ..., copy: bool = ..., dtype=...
+        cls,
+        breaks: Sequence[int] | npt.NDArray[np.integer] | IndexOpsMixin[int],
+        closed: Literal["left", "right", "both", "neither"] = ...,
+        copy: bool = ...,
+        dtype: pd.IntervalDtype = ...,
     ) -> IntervalArray[Interval[int]]: ...
     @overload
     @classmethod
     def from_breaks(
-        cls, breaks: Sequence[float], closed: str = ..., copy: bool = ..., dtype=...
+        cls,
+        breaks: Sequence[float] | npt.NDArray[np.floating] | IndexOpsMixin[float],
+        closed: Literal["left", "right", "both", "neither"] = ...,
+        copy: bool = ...,
+        dtype: pd.IntervalDtype = ...,
     ) -> IntervalArray[Interval[float]]: ...
     @overload
     @classmethod
     def from_breaks(
         cls,
-        breaks: Sequence[pd.Timestamp | np.datetime64 | dt.datetime],
-        closed: str = ...,
+        breaks: Sequence[np.datetime64 | dt.datetime] | IndexOpsMixin[pd.Timestamp],
+        closed: Literal["left", "right", "both", "neither"] = ...,
         copy: bool = ...,
-        dtype=...,
+        dtype: pd.IntervalDtype = ...,
     ) -> IntervalArray[Interval[pd.Timestamp]]: ...
     @overload
     @classmethod
     def from_breaks(
         cls,
-        breaks: Sequence[pd.Timedelta | np.timedelta64 | dt.timedelta],
-        closed: str = ...,
+        breaks: Sequence[np.timedelta64 | dt.timedelta] | IndexOpsMixin[pd.Timedelta],
+        closed: Literal["left", "right", "both", "neither"] = ...,
         copy: bool = ...,
-        dtype=...,
+        dtype: pd.IntervalDtype = ...,
     ) -> IntervalArray[Interval[pd.Timedelta]]: ...
+    @overload
     @classmethod
     def from_arrays(
-        cls, left, right, closed: str = ..., copy: bool = ..., dtype=...
-    ) -> IntervalArray: ...
+        cls,
+        left: Sequence[int] | npt.NDArray[np.integer] | IndexOpsMixin[int],
+        right: Sequence[int] | npt.NDArray[np.integer] | IndexOpsMixin[int],
+        closed: Literal["left", "right", "both", "neither"] = ...,
+        copy: bool = ...,
+        dtype: pd.IntervalDtype = ...,
+    ) -> IntervalArray[Interval[int]]: ...
+    @overload
+    @classmethod
+    def from_arrays(
+        cls,
+        left: Sequence[float] | npt.NDArray[np.floating] | IndexOpsMixin[float],
+        right: Sequence[float] | npt.NDArray[np.floating] | IndexOpsMixin[float],
+        closed: Literal["left", "right", "both", "neither"] = ...,
+        copy: bool = ...,
+        dtype: pd.IntervalDtype = ...,
+    ) -> IntervalArray[Interval[float]]: ...
+    @overload
+    @classmethod
+    def from_arrays(
+        cls,
+        left: Sequence[np.datetime64 | dt.datetime] | pd.DatetimeIndex,
+        right: Sequence[np.datetime64 | dt.datetime] | pd.DatetimeIndex,
+        closed: Literal["left", "right", "both", "neither"] = ...,
+        copy: bool = ...,
+        dtype: pd.IntervalDtype = ...,
+    ) -> IntervalArray[Interval[pd.Timestamp]]: ...
+    @overload
+    @classmethod
+    def from_arrays(
+        cls,
+        left: Sequence[np.timedelta64 | dt.timedelta] | pd.TimedeltaIndex,
+        right: Sequence[np.timedelta64 | dt.timedelta] | pd.TimedeltaIndex,
+        closed: Literal["left", "right", "both", "neither"] = ...,
+        copy: bool = ...,
+        dtype: pd.IntervalDtype = ...,
+    ) -> IntervalArray[Interval[pd.Timedelta]]: ...
     @classmethod
     def from_tuples(
-        cls, data, closed: str = ..., copy: bool = ..., dtype=...
+        cls,
+        data,
+        closed: Literal["left", "right", "both", "neither"] = ...,
+        copy: bool = ...,
+        dtype: pd.IntervalDtype = ...,
     ) -> IntervalArray: ...
     def __iter__(self) -> IntervalT: ...
     def __len__(self) -> int: ...
     def __getitem__(self, value: IntervalT): ...
-    def __setitem__(self, key: int, value: IntervalT) -> None: ...
     def __eq__(self, other): ...
     def __ne__(self, other): ...
     def fillna(self, value=..., method=..., limit=...): ...

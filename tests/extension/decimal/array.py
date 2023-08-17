@@ -3,6 +3,10 @@ from __future__ import annotations
 import decimal
 import numbers
 import sys
+from typing import (
+    Sequence,
+    cast,
+)
 
 import numpy as np
 import pandas as pd
@@ -200,13 +204,15 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
 
         return super().astype(dtype, copy=copy)
 
-    def __setitem__(self, key, value) -> None:
+    def __setitem__(
+        self, key, value: DecimalArray | decimal.Decimal | Sequence[decimal.Decimal]
+    ) -> None:
         if is_list_like(value):
             if is_scalar(key):
                 raise ValueError("setting an array element with a sequence.")
-            value = [decimal.Decimal(v) for v in value]
+            value = [decimal.Decimal(v) for v in cast(Sequence[decimal.Decimal], value)]
         else:
-            value = decimal.Decimal(value)
+            value = decimal.Decimal(cast(decimal.Decimal, value))
 
         key = check_array_indexer(self, key)
         self._data[key] = value
