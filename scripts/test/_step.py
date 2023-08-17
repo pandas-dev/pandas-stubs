@@ -32,3 +32,6 @@ stubtest = Step(
 nightly = Step(
     name="Install pandas nightly", run=run.nightly_pandas, rollback=run.released_pandas
 )
+mypy_nightly = Step(
+    name="Install mypy nightly", run=run.nightly_mypy, rollback=run.released_mypy
+)

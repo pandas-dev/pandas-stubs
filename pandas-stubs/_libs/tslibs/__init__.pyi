@@ -10,21 +10,20 @@ __all__ = [
     "Tick",
     "OutOfBoundsDatetime",
 ]
-from pandas._libs.tslibs.np_datetime import (
-    OutOfBoundsDatetime as OutOfBoundsDatetime,
-    OutOfBoundsTimedelta as OutOfBoundsTimedelta,
-)
-
-from .nattype import (
+from pandas._libs.tslibs.nattype import (
     NaT,
     NaTType,
     iNaT,
     nat_strings,
 )
-from .offsets import (
+from pandas._libs.tslibs.np_datetime import (
+    OutOfBoundsDatetime as OutOfBoundsDatetime,
+    OutOfBoundsTimedelta as OutOfBoundsTimedelta,
+)
+from pandas._libs.tslibs.offsets import (
     BaseOffset,
     Tick,
 )
-from .period import Period
-from .timedeltas import Timedelta
-from .timestamps import Timestamp
+from pandas._libs.tslibs.period import Period
+from pandas._libs.tslibs.timedeltas import Timedelta
+from pandas._libs.tslibs.timestamps import Timestamp

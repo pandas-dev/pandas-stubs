@@ -13,6 +13,10 @@ from pandas import (
     Timedelta,
     Timestamp,
 )
+from pandas.core.series import (
+    TimedeltaSeries,
+    TimestampSeries,
+)
 
 from pandas._typing import (
     IntervalClosedType,
@@ -23,9 +27,9 @@ from pandas._typing import (
 
 VALID_CLOSED: frozenset[str]
 
-_OrderableScalarT = TypeVar("_OrderableScalarT", int, float)
-_OrderableTimesT = TypeVar("_OrderableTimesT", Timestamp, Timedelta)
-_OrderableT = TypeVar("_OrderableT", int, float, Timestamp, Timedelta)
+_OrderableScalarT = TypeVar("_OrderableScalarT", bound=int | float)
+_OrderableTimesT = TypeVar("_OrderableTimesT", bound=Timestamp | Timedelta)
+_OrderableT = TypeVar("_OrderableT", bound=int | float | Timestamp | Timedelta)
 
 class _LengthDescriptor:
     @overload
@@ -73,16 +77,22 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
         left: _OrderableT,
         right: _OrderableT,
         closed: IntervalClosedType = ...,
-    ): ...
+    ) -> None: ...
     def __hash__(self) -> int: ...
+    # for __contains__, it seems that we have to separate out the 4 cases to make
+    # mypy happy
     @overload
-    def __contains__(self: Interval[_OrderableTimesT], _OrderableTimesT) -> bool: ...
+    def __contains__(self: Interval[Timestamp], key: Timestamp) -> bool: ...
     @overload
-    def __contains__(self: Interval[_OrderableScalarT], key: float) -> bool: ...
+    def __contains__(self: Interval[Timedelta], key: Timedelta) -> bool: ...
     @overload
-    def __add__(
-        self: Interval[_OrderableTimesT], y: Timedelta
-    ) -> Interval[_OrderableTimesT]: ...
+    def __contains__(self: Interval[int], key: float) -> bool: ...
+    @overload
+    def __contains__(self: Interval[float], key: float) -> bool: ...
+    @overload
+    def __add__(self: Interval[Timestamp], y: Timedelta) -> Interval[Timestamp]: ...
+    @overload
+    def __add__(self: Interval[Timedelta], y: Timedelta) -> Interval[Timedelta]: ...
     @overload
     def __add__(
         self: Interval[int], y: _OrderableScalarT
@@ -136,7 +146,7 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     @overload
     def __rmul__(self: Interval[Timedelta], y: float) -> Interval[Timedelta]: ...
     @overload
-    def __truediv__(self: Interval[int], y: _OrderableScalarT) -> Interval[float]: ...
+    def __truediv__(self: Interval[int], y: float) -> Interval[float]: ...
     @overload
     def __truediv__(self: Interval[float], y: float) -> Interval[float]: ...
     @overload
@@ -160,25 +170,34 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     @overload
     def __gt__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_ndarray_bool: ...
     @overload
-    def __gt__(self, other: Series[_OrderableT]) -> Series[bool]: ...
+    def __gt__(
+        self,
+        other: Series[int] | Series[float] | TimestampSeries | TimedeltaSeries,
+    ) -> Series[bool]: ...
     @overload
     def __lt__(self, other: Interval[_OrderableT]) -> bool: ...
     @overload
     def __lt__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_ndarray_bool: ...
     @overload
-    def __lt__(self, other: Series[_OrderableT]) -> Series[bool]: ...
+    def __lt__(
+        self,
+        other: Series[int] | Series[float] | TimestampSeries | TimedeltaSeries,
+    ) -> Series[bool]: ...
     @overload
     def __ge__(self, other: Interval[_OrderableT]) -> bool: ...
     @overload
     def __ge__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_ndarray_bool: ...
     @overload
-    def __ge__(self, other: Series[_OrderableT]) -> Series[bool]: ...
+    def __ge__(
+        self,
+        other: Series[int] | Series[float] | TimestampSeries | TimedeltaSeries,
+    ) -> Series[bool]: ...
     @overload
     def __le__(self, other: Interval[_OrderableT]) -> bool: ...
     @overload
     def __le__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_ndarray_bool: ...
     @overload
-    def __eq__(self, other: Interval[_OrderableT]) -> bool: ...  # type: ignore[misc]
+    def __eq__(self, other: Interval[_OrderableT]) -> bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __eq__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload
@@ -186,7 +205,7 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     @overload
     def __eq__(self, other: object) -> Literal[False]: ...
     @overload
-    def __ne__(self, other: Interval[_OrderableT]) -> bool: ...  # type: ignore[misc]
+    def __ne__(self, other: Interval[_OrderableT]) -> bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __ne__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc]
     @overload
@@ -203,7 +222,7 @@ class IntervalTree(IntervalMixin):
         right: np.ndarray,
         closed: IntervalClosedType = ...,
         leaf_size: int = ...,
-    ): ...
+    ) -> None: ...
     def get_indexer(self, target) -> npt.NDArray[np.intp]: ...
     def get_indexer_non_unique(
         self, target

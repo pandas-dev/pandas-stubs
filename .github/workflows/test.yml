@@ -1,7 +1,11 @@
 name: 'Test'
 
 on:
-  [push, pull_request, workflow_dispatch]
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
 
 env:
   MPLBACKEND: 'Agg'
@@ -14,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.8', '3.9', '3.10.6', '3.11']
+        python-version: ['3.8', '3.9', '3.10', '3.11']
 
     steps:
     - uses: actions/checkout@v3
@@ -24,11 +28,6 @@ jobs:
       with:
         os: ${{ matrix.os }}
         python-version: ${{ matrix.python-version }}
-
-    - name: Show poetry python location (Windows)
-      shell: pwsh
-      run: poetry run where python
-      if: matrix.os == 'windows-latest'
 
     - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
       run: poetry run poe mypy
@@ -41,22 +40,6 @@ jobs:
 
     - name: Install pandas-stubs and run tests on the installed stubs
       run: poetry run poe test_dist
-
-  nightly:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Install project dependencies
-      uses: ./.github/setup
-      with:
-        os: ubuntu-latest
-        python-version: '3.10'
-
-    - name: Run pytest (against pandas nightly)
-      run: poetry run poe pytest --nightly
 
   precommit:
     runs-on: ubuntu-latest

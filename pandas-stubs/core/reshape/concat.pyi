@@ -1,8 +1,10 @@
-from typing import (
+from collections.abc import (
     Iterable,
-    Literal,
     Mapping,
     Sequence,
+)
+from typing import (
+    Literal,
     overload,
 )
 
@@ -12,6 +14,8 @@ from pandas import (
 )
 
 from pandas._typing import (
+    AxisColumn,
+    AxisIndex,
     HashableT1,
     HashableT2,
     HashableT3,
@@ -21,10 +25,11 @@ from pandas._typing import (
 @overload
 def concat(
     objs: Iterable[DataFrame] | Mapping[HashableT1, DataFrame],
-    axis: Literal[0, "index"] = ...,
+    *,
+    axis: AxisIndex = ...,
     join: Literal["inner", "outer"] = ...,
     ignore_index: bool = ...,
-    keys: list[HashableT2] = ...,
+    keys: Iterable[HashableT2] = ...,
     levels: Sequence[list[HashableT3] | tuple[HashableT3, ...]] = ...,
     names: list[HashableT4] = ...,
     verify_integrity: bool = ...,
@@ -34,10 +39,11 @@ def concat(
 @overload
 def concat(
     objs: Iterable[Series] | Mapping[HashableT1, Series],
-    axis: Literal[0, "index"] = ...,
+    *,
+    axis: AxisIndex = ...,
     join: Literal["inner", "outer"] = ...,
     ignore_index: bool = ...,
-    keys: list[HashableT2] = ...,
+    keys: Iterable[HashableT2] = ...,
     levels: Sequence[list[HashableT3] | tuple[HashableT3, ...]] = ...,
     names: list[HashableT4] = ...,
     verify_integrity: bool = ...,
@@ -47,10 +53,11 @@ def concat(
 @overload
 def concat(
     objs: Iterable[Series | DataFrame] | Mapping[HashableT1, Series | DataFrame],
-    axis: Literal[1, "columns"],
+    *,
+    axis: AxisColumn,
     join: Literal["inner", "outer"] = ...,
     ignore_index: bool = ...,
-    keys: list[HashableT2] = ...,
+    keys: Iterable[HashableT2] = ...,
     levels: Sequence[list[HashableT3] | tuple[HashableT3, ...]] = ...,
     names: list[HashableT4] = ...,
     verify_integrity: bool = ...,

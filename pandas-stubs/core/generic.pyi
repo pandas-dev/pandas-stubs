@@ -1,34 +1,35 @@
+from collections.abc import (
+    Callable,
+    Hashable,
+    Iterable,
+    Mapping,
+    Sequence,
+)
 import sqlite3
 from typing import (
     Any,
-    Callable,
     ClassVar,
-    Hashable,
-    Iterable,
     Literal,
-    Mapping,
-    Sequence,
     final,
     overload,
 )
 
 import numpy as np
-from pandas import (
-    DataFrame,
-    Index,
-)
-from pandas.core.base import PandasObject
+from pandas import Index
 import pandas.core.indexing as indexing
+from pandas.core.series import Series
 import sqlalchemy.engine
 
 from pandas._typing import (
     S1,
     ArrayLike,
     Axis,
+    AxisIndex,
     CompressionOptions,
     CSVQuoting,
     Dtype,
     DtypeArg,
+    DtypeBackend,
     FilePath,
     FileWriteMode,
     FillnaOptions,
@@ -40,7 +41,6 @@ from pandas._typing import (
     Level,
     NDFrameT,
     ReplaceMethod,
-    SeriesAxisType,
     SortKind,
     StorageOptions,
     T,
@@ -53,7 +53,7 @@ from pandas.io.sql import SQLTable
 _bool = bool
 _str = str
 
-class NDFrame(PandasObject, indexing.IndexingMixin):
+class NDFrame(indexing.IndexingMixin):
     __hash__: ClassVar[None]  # type: ignore[assignment]
 
     def set_flags(
@@ -75,10 +75,9 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     @property
     def size(self) -> int: ...
     def swapaxes(
-        self, axis1: SeriesAxisType, axis2: SeriesAxisType, copy: _bool = ...
+        self, axis1: AxisIndex, axis2: AxisIndex, copy: _bool = ...
     ) -> NDFrame: ...
-    def droplevel(self, level: Level, axis: SeriesAxisType = ...) -> NDFrame: ...
-    def pop(self, item: _str) -> NDFrame: ...
+    def droplevel(self, level: Level, axis: AxisIndex = ...) -> NDFrame: ...
     def squeeze(self, axis=...): ...
     def equals(self, other: Series[S1]) -> _bool: ...
     def __neg__(self: NDFrameT) -> NDFrameT: ...
@@ -109,8 +108,6 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         startcol: int = ...,
         engine: _str | None = ...,
         merge_cells: _bool = ...,
-        # Not actually positional, but used to handle removal of deprecated
-        *,
         inf_rep: _str = ...,
         freeze_panes: tuple[int, int] | None = ...,
     ) -> None: ...
@@ -289,14 +286,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def take(
         self, indices, axis=..., is_copy: _bool | None = ..., **kwargs
     ) -> NDFrame: ...
-    def xs(
-        self,
-        key: Hashable,
-        axis: SeriesAxisType = ...,
-        level: Level | None = ...,
-        drop_level: _bool = ...,
-    ) -> DataFrame | Series: ...
-    def __delitem__(self, idx: Hashable): ...
+    def __delitem__(self, idx: Hashable) -> None: ...
     def get(self, key: object, default: Dtype | None = ...) -> Dtype: ...
     def reindex_like(
         self,
@@ -346,7 +336,8 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def add_suffix(self, suffix: _str) -> NDFrame: ...
     def sort_index(
         self,
-        axis: Literal["columns", "index", 0, 1] = ...,
+        *,
+        axis: Axis = ...,
         level=...,
         ascending: _bool = ...,
         inplace: _bool = ...,
@@ -373,12 +364,6 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def values(self) -> ArrayLike: ...
     @property
     def dtypes(self): ...
-    def astype(
-        self: NDFrameT,
-        dtype,
-        copy: _bool = ...,
-        errors: IgnoreRaise = ...,
-    ) -> NDFrameT: ...
     def copy(self: NDFrameT, deep: _bool = ...) -> NDFrameT: ...
     def __copy__(self, deep: _bool = ...) -> NDFrame: ...
     def __deepcopy__(self, memo=...) -> NDFrame: ...
@@ -389,10 +374,12 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         convert_string: _bool = ...,
         convert_integer: _bool = ...,
         convert_boolean: _bool = ...,
+        dtype_backend: DtypeBackend = ...,
     ) -> NDFrameT: ...
     def fillna(
         self,
         value=...,
+        *,
         method=...,
         axis=...,
         inplace: _bool = ...,
@@ -403,6 +390,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         self,
         to_replace=...,
         value=...,
+        *,
         inplace: _bool = ...,
         limit=...,
         regex: _bool = ...,
@@ -414,7 +402,7 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     def notna(self) -> NDFrame: ...
     def notnull(self) -> NDFrame: ...
     def clip(
-        self, lower=..., upper=..., axis=..., inplace: _bool = ..., *args, **kwargs
+        self, lower=..., upper=..., *, axis=..., inplace: _bool = ..., **kwargs
     ) -> NDFrame: ...
     def asfreq(
         self,
@@ -446,20 +434,20 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
         self,
         cond,
         other=...,
+        *,
         inplace: _bool = ...,
         axis=...,
         level=...,
-        *,  # Not actually positional-only, but needed due to depr in 1.5.0
         try_cast: _bool = ...,
     ): ...
     def mask(
         self,
         cond,
         other=...,
+        *,
         inplace: _bool = ...,
         axis=...,
         level=...,
-        *,  # Not actually positional-only, but needed due to depr in 1.5.0
         try_cast: _bool = ...,
     ): ...
     def shift(self, periods=..., freq=..., axis=..., fill_value=...) -> NDFrame: ...
@@ -491,5 +479,3 @@ class NDFrame(PandasObject, indexing.IndexingMixin):
     ) -> NDFrame: ...
     def first_valid_index(self): ...
     def last_valid_index(self): ...
-
-from pandas.core.series import Series

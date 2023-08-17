@@ -1,34 +1,39 @@
-import sqlite3
-from typing import (
-    Any,
+from collections.abc import (
     Callable,
     Generator,
     Iterable,
+    Mapping,
+)
+import sqlite3
+from typing import (
+    Any,
     Literal,
-    Union,
     overload,
 )
 
-from pandas.core.base import PandasObject
 from pandas.core.frame import DataFrame
 import sqlalchemy.engine
+from sqlalchemy.orm import FromStatement
 import sqlalchemy.sql.expression
 from typing_extensions import TypeAlias
 
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     DtypeArg,
+    DtypeBackend,
+    Scalar,
     npt,
 )
 
-_SQLConnection: TypeAlias = Union[
-    str,
-    sqlalchemy.engine.Connectable,
-    sqlite3.Connection,
-]
+_SQLConnection: TypeAlias = str | sqlalchemy.engine.Connectable | sqlite3.Connection
 
-_SQLStatement: TypeAlias = Union[
-    str, sqlalchemy.sql.expression.Selectable, sqlalchemy.sql.expression.TextClause
-]
+_SQLStatement: TypeAlias = (
+    str
+    | sqlalchemy.sql.expression.Selectable
+    | sqlalchemy.sql.expression.TextClause
+    | sqlalchemy.sql.Select
+    | FromStatement
+)
 
 @overload
 def read_sql_table(
@@ -41,6 +46,7 @@ def read_sql_table(
     columns: list[str] | None = ...,
     *,
     chunksize: int,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> Generator[DataFrame, None, None]: ...
 @overload
 def read_sql_table(
@@ -52,6 +58,7 @@ def read_sql_table(
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
     columns: list[str] | None = ...,
     chunksize: None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> DataFrame: ...
 @overload
 def read_sql_query(
@@ -59,11 +66,12 @@ def read_sql_query(
     con: _SQLConnection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
-    params: list[str] | tuple[str, ...] | dict[str, str] | None = ...,
+    params: list[Scalar] | tuple[Scalar, ...] | Mapping[str, Scalar] | None = ...,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
     *,
     chunksize: int,
     dtype: DtypeArg | None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> Generator[DataFrame, None, None]: ...
 @overload
 def read_sql_query(
@@ -71,10 +79,11 @@ def read_sql_query(
     con: _SQLConnection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
-    params: list[str] | tuple[str, ...] | dict[str, str] | None = ...,
+    params: list[Scalar] | tuple[Scalar, ...] | Mapping[str, Scalar] | None = ...,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
     chunksize: None = ...,
     dtype: DtypeArg | None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> DataFrame: ...
 @overload
 def read_sql(
@@ -82,11 +91,13 @@ def read_sql(
     con: _SQLConnection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
-    params: list[str] | tuple[str, ...] | dict[str, str] | None = ...,
+    params: list[Scalar] | tuple[Scalar, ...] | Mapping[str, Scalar] | None = ...,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
     columns: list[str] = ...,
     *,
     chunksize: int,
+    dtype: DtypeArg | None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> Generator[DataFrame, None, None]: ...
 @overload
 def read_sql(
@@ -94,13 +105,15 @@ def read_sql(
     con: _SQLConnection,
     index_col: str | list[str] | None = ...,
     coerce_float: bool = ...,
-    params: list[str] | tuple[str, ...] | dict[str, str] | None = ...,
+    params: list[Scalar] | tuple[Scalar, ...] | Mapping[str, Scalar] | None = ...,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
     columns: list[str] = ...,
     chunksize: None = ...,
+    dtype: DtypeArg | None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> DataFrame: ...
 
-class PandasSQL(PandasObject):
+class PandasSQL:
     def read_sql(self, *args, **kwargs): ...
     def to_sql(
         self,
@@ -117,7 +130,7 @@ class PandasSQL(PandasObject):
         | None = ...,
     ) -> int | None: ...
 
-class SQLTable(PandasObject):
+class SQLTable:
     name: str
     pd_sql: PandasSQL  # pandas SQL interface
     prefix: str

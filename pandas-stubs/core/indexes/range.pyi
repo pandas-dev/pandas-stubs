@@ -1,13 +1,18 @@
+from collections.abc import Sequence
+from typing import overload
+
 import numpy as np
+from pandas import Series
 from pandas.core.indexes.base import Index
-from pandas.core.indexes.numeric import Int64Index
 
 from pandas._typing import (
     HashableT,
+    np_ndarray_anyint,
+    np_ndarray_bool,
     npt,
 )
 
-class RangeIndex(Int64Index):
+class RangeIndex(Index[int]):
     def __new__(
         cls,
         start: int | RangeIndex = ...,
@@ -25,7 +30,7 @@ class RangeIndex(Int64Index):
         dtype=...,
         copy: bool = ...,
         name=...,
-    ): ...
+    ) -> None: ...
     @classmethod
     def from_range(cls, data, name=..., dtype=...): ...
     def __reduce__(self): ...
@@ -54,17 +59,14 @@ class RangeIndex(Int64Index):
     def max(self, axis=..., skipna: bool = ..., *args, **kwargs): ...
     def argsort(self, *args, **kwargs): ...
     def factorize(
-        self,
-        sort: bool = ...,
-        # Not actually positional-only, used to handle deprecations in 1.5.0
-        *,
-        use_na_sentinel: bool = ...,
+        self, sort: bool = ..., use_na_sentinel: bool = ...
     ) -> tuple[npt.NDArray[np.intp], RangeIndex]: ...
     def equals(self, other): ...
     def intersection(self, other, sort: bool = ...): ...
     def join(
         self,
         other,
+        *,
         how: str = ...,
         level=...,
         return_indexers: bool = ...,
@@ -73,10 +75,22 @@ class RangeIndex(Int64Index):
     def __len__(self) -> int: ...
     @property
     def size(self) -> int: ...
-    def __getitem__(self, key): ...
     def __floordiv__(self, other): ...
     def all(self) -> bool: ...
     def any(self) -> bool: ...
     def union(
         self, other: list[HashableT] | Index, sort=...
-    ) -> Index | Int64Index | RangeIndex: ...
+    ) -> Index | Index[int] | RangeIndex: ...
+    @overload  # type: ignore[override]
+    def __getitem__(
+        self,
+        idx: slice
+        | np_ndarray_anyint
+        | Sequence[int]
+        | Index
+        | Series[bool]
+        | Sequence[bool]
+        | np_ndarray_bool,
+    ) -> Index: ...
+    @overload
+    def __getitem__(self, idx: int) -> int: ...

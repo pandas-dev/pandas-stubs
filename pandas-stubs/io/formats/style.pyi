@@ -1,8 +1,10 @@
+from collections.abc import (
+    Callable,
+    Sequence,
+)
 from typing import (
     Any,
-    Callable,
     Literal,
-    Sequence,
     overload,
 )
 
@@ -12,7 +14,7 @@ from pandas.core.frame import DataFrame
 from pandas.core.series import Series
 
 from pandas._typing import (
-    AxisType,
+    Axis,
     FilePath,
     HashableT,
     HashableT1,
@@ -38,7 +40,7 @@ from pandas.io.formats.style_render import (
     Subset,
 )
 
-class Styler(StylerRenderer[Styler]):
+class Styler(StylerRenderer):
     def __init__(
         self,
         data: DataFrame | Series,
@@ -195,7 +197,7 @@ class Styler(StylerRenderer[Styler]):
     def apply(
         self,
         func: Callable[[Series], list | Series],
-        axis: AxisType = ...,
+        axis: Axis = ...,
         subset: Subset | None = ...,
         **kwargs: Any,
     ) -> Styler: ...
@@ -210,14 +212,14 @@ class Styler(StylerRenderer[Styler]):
     def apply_index(
         self,
         func: Callable[[Series], npt.NDArray[np.str_] | list[str] | Series[str]],
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | list[Level] | None = ...,
         **kwargs: Any,
     ) -> Styler: ...
     def applymap_index(
         self,
         func: Callable[[Scalar], str],
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | list[Level] | None = ...,
         **kwargs: Any,
     ) -> Styler: ...
@@ -231,21 +233,21 @@ class Styler(StylerRenderer[Styler]):
     def set_caption(self, caption: str | tuple[str, str]) -> Styler: ...
     def set_sticky(
         self,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         pixel_size: int | None = ...,
         levels: Level | list[Level] | None = ...,
     ) -> Styler: ...
     def set_table_styles(
         self,
         table_styles: dict[HashableT, CSSStyles] | CSSStyles | None = ...,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         overwrite: bool = ...,
         css_class_names: dict[str, str] | None = ...,
     ) -> Styler: ...
     def hide(
         self,
         subset: Subset | None = ...,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | list[Level] | None = ...,
         names: bool = ...,
     ) -> Styler: ...
@@ -254,7 +256,7 @@ class Styler(StylerRenderer[Styler]):
         cmap: str | Colormap = ...,
         low: float = ...,
         high: float = ...,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         subset: Subset | None = ...,
         text_color_threshold: float = ...,
         vmin: float | None = ...,
@@ -271,7 +273,7 @@ class Styler(StylerRenderer[Styler]):
         cmap: str | Colormap = ...,
         low: float = ...,
         high: float = ...,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         subset: Subset | None = ...,
         # In docs but not in function declaration
         # text_color_threshold: float
@@ -290,7 +292,7 @@ class Styler(StylerRenderer[Styler]):
     def bar(
         self,
         subset: Subset | None = ...,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         *,
         color: str | list[str] | tuple[str, str] | None = ...,
         cmap: str | Colormap = ...,
@@ -313,21 +315,21 @@ class Styler(StylerRenderer[Styler]):
         self,
         subset: Subset | None = ...,
         color: str = ...,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         props: str | None = ...,
     ) -> Styler: ...
     def highlight_min(
         self,
         subset: Subset | None = ...,
         color: str = ...,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         props: str | None = ...,
     ) -> Styler: ...
     def highlight_between(
         self,
         subset: Subset | None = ...,
         color: str = ...,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         left: Scalar | list[Scalar] | None = ...,
         right: Scalar | list[Scalar] | None = ...,
         inclusive: IntervalClosedType = ...,
@@ -337,7 +339,7 @@ class Styler(StylerRenderer[Styler]):
         self,
         subset: Subset | None = ...,
         color: str = ...,
-        axis: AxisType | None = ...,
+        axis: Axis | None = ...,
         q_left: float = ...,
         q_right: float = ...,
         interpolation: QuantileInterpolation = ...,

@@ -20,12 +20,8 @@ from pandas.core.arrays import (
     DatetimeArray,
     PeriodArray,
 )
-from pandas.core.base import (
-    NoNewAttributesMixin,
-    PandasObject,
-)
+from pandas.core.base import NoNewAttributesMixin
 from pandas.core.frame import DataFrame
-from pandas.core.indexes.numeric import IntegerIndex
 from pandas.core.series import (
     PeriodSeries,
     Series,
@@ -40,12 +36,11 @@ from pandas._typing import (
     np_ndarray_bool,
 )
 
-class Properties(PandasDelegate, PandasObject, NoNewAttributesMixin):
-    def __init__(self, data: Series, orig) -> None: ...
+class Properties(PandasDelegate, NoNewAttributesMixin): ...
 
-_DTFieldOpsReturnType = TypeVar("_DTFieldOpsReturnType", Series[int], IntegerIndex)
+_DTFieldOpsReturnType = TypeVar("_DTFieldOpsReturnType", Series[int], Index[int])
 
-class _DatetimeFieldOps(Generic[_DTFieldOpsReturnType]):
+class _DayLikeFieldOps(Generic[_DTFieldOpsReturnType]):
     @property
     def year(self) -> _DTFieldOpsReturnType: ...
     @property
@@ -74,12 +69,18 @@ class _DatetimeFieldOps(Generic[_DTFieldOpsReturnType]):
     def days_in_month(self) -> _DTFieldOpsReturnType: ...
     @property
     def daysinmonth(self) -> _DTFieldOpsReturnType: ...
+
+class _MiniSeconds(Generic[_DTFieldOpsReturnType]):
     @property
     def microsecond(self) -> _DTFieldOpsReturnType: ...
     @property
     def nanosecond(self) -> _DTFieldOpsReturnType: ...
 
-_DTBoolOpsReturnType = TypeVar("_DTBoolOpsReturnType", "Series[bool]", np_ndarray_bool)
+class _DatetimeFieldOps(
+    _DayLikeFieldOps[_DTFieldOpsReturnType], _MiniSeconds[_DTFieldOpsReturnType]
+): ...
+
+_DTBoolOpsReturnType = TypeVar("_DTBoolOpsReturnType", Series[bool], np_ndarray_bool)
 
 class _IsLeapYearProperty(Generic[_DTBoolOpsReturnType]):
     @property
@@ -295,33 +296,52 @@ class TimedeltaProperties(
     _DatetimeRoundingMethods[TimedeltaSeries],
 ): ...
 
-class _PeriodProperties:
+_PeriodDTReturnTypes = TypeVar("_PeriodDTReturnTypes", TimestampSeries, DatetimeIndex)
+_PeriodIntReturnTypes = TypeVar("_PeriodIntReturnTypes", Series[int], Index[int])
+_PeriodStrReturnTypes = TypeVar("_PeriodStrReturnTypes", Series[str], Index)
+_PeriodDTAReturnTypes = TypeVar("_PeriodDTAReturnTypes", DatetimeArray, DatetimeIndex)
+_PeriodPAReturnTypes = TypeVar("_PeriodPAReturnTypes", PeriodArray, PeriodIndex)
+
+class _PeriodProperties(
+    Generic[
+        _PeriodDTReturnTypes,
+        _PeriodIntReturnTypes,
+        _PeriodStrReturnTypes,
+        _PeriodDTAReturnTypes,
+        _PeriodPAReturnTypes,
+    ]
+):
     @property
-    def start_time(self) -> TimestampSeries: ...
+    def start_time(self) -> _PeriodDTReturnTypes: ...
     @property
-    def end_time(self) -> TimestampSeries: ...
+    def end_time(self) -> _PeriodDTReturnTypes: ...
     @property
-    def qyear(self) -> Series[int]: ...
-    def strftime(self, date_format: str) -> Series[str]: ...
+    def qyear(self) -> _PeriodIntReturnTypes: ...
+    def strftime(self, date_format: str) -> _PeriodStrReturnTypes: ...
     def to_timestamp(
         self,
         freq: str | DateOffset | None = ...,
         how: TimestampConvention = ...,
-    ) -> DatetimeArray: ...
+    ) -> _PeriodDTAReturnTypes: ...
     def asfreq(
         self,
         freq: str | DateOffset | None = ...,
         how: Literal["E", "END", "FINISH", "S", "START", "BEGIN"] = ...,
-    ) -> PeriodArray: ...
+    ) -> _PeriodPAReturnTypes: ...
 
+class PeriodIndexFieldOps(
+    _DayLikeFieldOps[Index[int]],
+    _PeriodProperties[DatetimeIndex, Index[int], Index, DatetimeIndex, PeriodIndex],
+): ...
 class PeriodProperties(
     Properties,
-    _PeriodProperties,
+    _PeriodProperties[
+        TimestampSeries, Series[int], Series[str], DatetimeArray, PeriodArray
+    ],
     _DatetimeFieldOps[Series[int]],
     _IsLeapYearProperty,
     _FreqProperty[BaseOffset],
 ): ...
-
 class CombinedDatetimelikeProperties(
     DatetimeProperties[
         Series[int],
@@ -336,9 +356,7 @@ class CombinedDatetimelikeProperties(
     ],
     _TimedeltaPropertiesNoRounding[Series[int], Series[float]],
     _PeriodProperties,
-):
-    def __new__(cls, data: Series): ...
-
+): ...
 class TimestampProperties(
     DatetimeProperties[
         Series[int],
@@ -356,7 +374,7 @@ class TimestampProperties(
 class DatetimeIndexProperties(
     Properties,
     _DatetimeNoTZProperties[
-        IntegerIndex,
+        Index[int],
         np_ndarray_bool,
         DatetimeIndex,
         np.ndarray,

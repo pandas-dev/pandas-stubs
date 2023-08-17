@@ -1,10 +1,12 @@
+from collections.abc import (
+    Callable,
+    Sequence,
+)
 import re
 from typing import (
     Any,
-    Callable,
     Generic,
     Literal,
-    Sequence,
     TypeVar,
     overload,
 )

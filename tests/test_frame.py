@@ -3,10 +3,10 @@ from __future__ import annotations
 from collections import defaultdict
 import csv
 import datetime
+from enum import Enum
 import io
 import itertools
 from pathlib import Path
-import platform
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -19,11 +19,14 @@ from typing import (
     List,
     Mapping,
     Tuple,
+    TypedDict,
     TypeVar,
     Union,
+    cast,
 )
 
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 from pandas._testing import (
     ensure_clean,
@@ -37,7 +40,7 @@ import xarray as xr
 from pandas._typing import Scalar
 
 from tests import (
-    PD_LTE_15,
+    PD_LTE_20,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -70,13 +73,13 @@ def test_types_init() -> None:
 
 def test_types_all() -> None:
     df = pd.DataFrame([[False, True], [False, False]], columns=["col1", "col2"])
-    check(assert_type(df.all(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(df.all(), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(df.all(axis=None), bool), np.bool_)
 
 
 def test_types_any() -> None:
     df = pd.DataFrame([[False, True], [False, False]], columns=["col1", "col2"])
-    check(assert_type(df.any(), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(df.any(), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(df.any(axis=None), bool), np.bool_)
 
 
@@ -84,22 +87,22 @@ def test_types_append() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame({"col1": [10, 20], "col2": [30, 40]})
     if TYPE_CHECKING_INVALID_USAGE:
-        res1: pd.DataFrame = df.append(df2)  # type: ignore[operator]
-        res2: pd.DataFrame = df.append([1, 2, 3])  # type: ignore[operator]
-        res3: pd.DataFrame = df.append([[1, 2, 3]])  # type: ignore[operator]
-        res4: pd.DataFrame = df.append(  # type: ignore[operator]
+        res1: pd.DataFrame = df.append(df2)  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        res2: pd.DataFrame = df.append([1, 2, 3])  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        res3: pd.DataFrame = df.append([[1, 2, 3]])  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        res4: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
             {("a", 1): [1, 2, 3], "b": df2}, ignore_index=True
         )
-        res5: pd.DataFrame = df.append(  # type: ignore[operator]
+        res5: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
             {1: [1, 2, 3]}, ignore_index=True
         )
-        res6: pd.DataFrame = df.append(  # type: ignore[operator]
+        res6: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
             {1: [1, 2, 3], "col2": [1, 2, 3]}, ignore_index=True
         )
-        res7: pd.DataFrame = df.append(  # type: ignore[operator]
+        res7: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
             pd.Series([5, 6]), ignore_index=True
         )
-        res8: pd.DataFrame = df.append(  # type: ignore[operator]
+        res8: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
             pd.Series([5, 6], index=["col1", "col2"]), ignore_index=True
         )
 
@@ -155,6 +158,26 @@ def test_types_getitem() -> None:
     df[a]
     df[select_df]
     df[i]
+
+
+def test_types_getitem_with_hashable() -> None:
+    # Testing getitem support for hashable types that are not scalar
+    # Due to the bug in https://github.com/pandas-dev/pandas-stubs/issues/592
+    class MyEnum(Enum):
+        FIRST = "tayyar"
+        SECOND = "haydar"
+
+    df = pd.DataFrame(
+        data=[[12.2, 10], [8.8, 15]], columns=[MyEnum.FIRST, MyEnum.SECOND]
+    )
+    check(assert_type(df[MyEnum.FIRST], pd.Series), pd.Series)
+    check(assert_type(df[1:], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df[:2], pd.DataFrame), pd.DataFrame)
+
+    df2 = pd.DataFrame(data=[[12.2, 10], [8.8, 15]], columns=[3, 4])
+    check(assert_type(df2[3], pd.Series), pd.Series)
+    check(assert_type(df2[[3]], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df2[[3, 4]], pd.DataFrame), pd.DataFrame)
 
 
 def test_slice_setitem() -> None:
@@ -229,6 +252,10 @@ def test_types_sample() -> None:
     # GH 67
     check(assert_type(df.sample(frac=0.5), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.sample(n=1), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.sample(n=1, random_state=np.random.default_rng()), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_types_nlargest_nsmallest() -> None:
@@ -278,7 +305,10 @@ def test_types_dropna() -> None:
 def test_types_fillna() -> None:
     df = pd.DataFrame(data={"col1": [np.nan, np.nan], "col2": [3, np.nan]})
     res: pd.DataFrame = df.fillna(0)
-    res2: None = df.fillna(method="pad", axis=1, inplace=True)
+    with pytest_warns_bounded(
+        FutureWarning, "DataFrame.fillna with 'method' is deprecated", lower="2.0.99"
+    ):
+        res2: None = df.fillna(method="pad", axis=1, inplace=True)
 
 
 def test_types_sort_index() -> None:
@@ -358,8 +388,9 @@ def test_types_mean() -> None:
     s1: pd.Series = df.mean()
     s2: pd.Series = df.mean(axis=0)
     df2: pd.DataFrame = df.groupby(level=0).mean()
-    df3: pd.DataFrame = df.groupby(axis=1, level=0).mean()
-    df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).mean()
+    if PD_LTE_20:
+        df3: pd.DataFrame = df.groupby(axis=1, level=0).mean()
+        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).mean()
     s3: pd.Series = df.mean(axis=1, skipna=True, numeric_only=False)
 
 
@@ -368,8 +399,9 @@ def test_types_median() -> None:
     s1: pd.Series = df.median()
     s2: pd.Series = df.median(axis=0)
     df2: pd.DataFrame = df.groupby(level=0).median()
-    df3: pd.DataFrame = df.groupby(axis=1, level=0).median()
-    df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).median()
+    if PD_LTE_20:
+        df3: pd.DataFrame = df.groupby(axis=1, level=0).median()
+        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).median()
     s3: pd.Series = df.median(axis=1, skipna=True, numeric_only=False)
 
 
@@ -462,23 +494,26 @@ def test_types_unique() -> None:
 
 
 def test_types_apply() -> None:
-    df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
+    df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4], "col3": [5, 6]})
+
+    def returns_scalar(x: pd.Series) -> int:
+        return 2
 
     def returns_series(x: pd.Series) -> pd.Series:
         return x**2
 
-    check(assert_type(df.apply(returns_series), pd.DataFrame), pd.DataFrame)
+    def returns_listlike_of_2(x: pd.Series) -> tuple[int, int]:
+        return (7, 8)
 
-    def returns_scalar(x: pd.Series) -> float:
-        return 2
+    def returns_listlike_of_3(x: pd.Series) -> tuple[int, int, int]:
+        return (7, 8, 9)
 
-    check(assert_type(df.apply(returns_scalar), pd.Series), pd.Series)
-    check(
-        assert_type(df.apply(returns_scalar, result_type="broadcast"), pd.DataFrame),
-        pd.DataFrame,
-    )
+    def returns_dict(x: pd.Series) -> dict[str, int]:
+        return {"col4": 7, "col5": 8}
+
+    # Misc checks
     check(assert_type(df.apply(np.exp), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.apply(str), pd.Series), pd.Series)
+    check(assert_type(df.apply(str), "pd.Series[str]"), pd.Series, str)
 
     # GH 393
     def gethead(s: pd.Series, y: int) -> pd.Series:
@@ -486,74 +521,298 @@ def test_types_apply() -> None:
 
     check(assert_type(df.apply(gethead, args=(4,)), pd.DataFrame), pd.DataFrame)
 
+    # Check various return types for default result_type (None) with default axis (0)
+    check(assert_type(df.apply(returns_scalar), "pd.Series[int]"), pd.Series, np.int64)
+    check(assert_type(df.apply(returns_series), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.apply(returns_listlike_of_3), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.apply(returns_dict), pd.Series), pd.Series)
+
+    # Check various return types for result_type="expand" with default axis (0)
+    check(
+        # Note that technically it does not make sense
+        # to pass a result_type of "expand" to a scalar return
+        assert_type(df.apply(returns_scalar, result_type="expand"), "pd.Series[int]"),
+        pd.Series,
+        np.int64,
+    )
+    check(
+        assert_type(df.apply(returns_series, result_type="expand"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.apply(returns_listlike_of_3, result_type="expand"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.apply(returns_dict, result_type="expand"), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    # Check various return types for result_type="reduce" with default axis (0)
+    check(
+        # Note that technically it does not make sense
+        # to pass a result_type of "reduce" to a scalar return
+        assert_type(df.apply(returns_scalar, result_type="reduce"), "pd.Series[int]"),
+        pd.Series,
+        np.int64,
+    )
+    check(
+        # Note that technically it does not make sense
+        # to pass a result_type of "reduce" to a series return
+        assert_type(df.apply(returns_series, result_type="reduce"), pd.Series),
+        pd.Series,  # This technically returns a pd.Series[pd.Series], but typing does not support that
+    )
+    check(
+        assert_type(df.apply(returns_listlike_of_3, result_type="reduce"), pd.Series),
+        pd.Series,
+    )
+    check(
+        assert_type(df.apply(returns_dict, result_type="reduce"), pd.Series), pd.Series
+    )
+
+    # Check various return types for default result_type (None) with axis=1
+    check(
+        assert_type(df.apply(returns_scalar, axis=1), "pd.Series[int]"),
+        pd.Series,
+        np.int64,
+    )
+    check(assert_type(df.apply(returns_series, axis=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.apply(returns_listlike_of_3, axis=1), pd.Series), pd.Series)
+    check(assert_type(df.apply(returns_dict, axis=1), pd.Series), pd.Series)
+
+    # Check various return types for result_type="expand" with axis=1
+    check(
+        # Note that technically it does not make sense
+        # to pass a result_type of "expand" to a scalar return
+        assert_type(
+            df.apply(returns_scalar, axis=1, result_type="expand"), "pd.Series[int]"
+        ),
+        pd.Series,
+        np.int64,
+    )
+    check(
+        assert_type(
+            df.apply(returns_series, axis=1, result_type="expand"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.apply(returns_listlike_of_3, axis=1, result_type="expand"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.apply(returns_dict, axis=1, result_type="expand"), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    # Check various return types for result_type="reduce" with axis=1
+    check(
+        # Note that technically it does not make sense
+        # to pass a result_type of "reduce" to a scalar return
+        assert_type(
+            df.apply(returns_scalar, axis=1, result_type="reduce"), "pd.Series[int]"
+        ),
+        pd.Series,
+        np.int64,
+    )
+    check(
+        # Note that technically it does not make sense
+        # to pass a result_type of "reduce" to a series return
+        assert_type(
+            df.apply(returns_series, axis=1, result_type="reduce"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.apply(returns_listlike_of_3, axis=1, result_type="reduce"), pd.Series
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(df.apply(returns_dict, axis=1, result_type="reduce"), pd.Series),
+        pd.Series,
+    )
+
+    # Check various return types for result_type="broadcast" with axis=0 and axis=1
+    check(
+        # Note that technically it does not make sense
+        # to pass a result_type of "broadcast" to a scalar return
+        assert_type(df.apply(returns_scalar, result_type="broadcast"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.apply(returns_series, result_type="broadcast"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        # Can only broadcast a list-like of 2 elements, not 3, because there are 2 rows
+        assert_type(
+            df.apply(returns_listlike_of_2, result_type="broadcast"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        # Note that technicaly it does not make sense
+        # to pass a result_type of "broadcast" to a scalar return
+        assert_type(
+            df.apply(returns_scalar, axis=1, result_type="broadcast"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.apply(returns_series, axis=1, result_type="broadcast"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            # Can only broadcast a list-like of 3 elements, not 2,
+            # as there are 3 columns
+            df.apply(returns_listlike_of_3, axis=1, result_type="broadcast"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    # Since dicts will be assigned to elements of np.ndarray inside broadcasting,
+    # we need to use a DataFrame with object dtype to make the assignment possible.
+    df2 = pd.DataFrame({"col1": ["a", "b"], "col2": ["c", "d"]})
+    check(
+        assert_type(df2.apply(returns_dict, result_type="broadcast"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df2.apply(returns_dict, axis=1, result_type="broadcast"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+    # Test various other positional/keyword argument combinations
+    # to ensure all overloads are supported
+    check(
+        assert_type(df.apply(returns_scalar, axis=0), "pd.Series[int]"),
+        pd.Series,
+        np.int64,
+    )
+    check(
+        assert_type(
+            df.apply(returns_scalar, axis=0, result_type=None), "pd.Series[int]"
+        ),
+        pd.Series,
+        np.int64,
+    )
+    check(
+        assert_type(df.apply(returns_scalar, 0, False, None), "pd.Series[int]"),
+        pd.Series,
+        np.int64,
+    )
+    check(
+        assert_type(
+            df.apply(returns_scalar, 0, False, result_type=None), "pd.Series[int]"
+        ),
+        pd.Series,
+        np.int64,
+    )
+    check(
+        assert_type(
+            df.apply(returns_scalar, 0, raw=False, result_type=None), "pd.Series[int]"
+        ),
+        pd.Series,
+        np.int64,
+    )
+
 
 def test_types_applymap() -> None:
-    df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    df.applymap(lambda x: x**2)
-    df.applymap(np.exp)
-    df.applymap(str)
-    # na_action parameter was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-    df.applymap(np.exp, na_action="ignore")
-    df.applymap(str, na_action=None)
+    with pytest_warns_bounded(
+        FutureWarning, "DataFrame.applymap has been deprecated", lower="2.0.99"
+    ):
+        df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
+        df.applymap(lambda x: x**2)
+        df.applymap(np.exp)
+        df.applymap(str)
+        # na_action parameter was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
+        df.applymap(np.exp, na_action="ignore")
+        df.applymap(str, na_action=None)
 
 
 def test_types_element_wise_arithmetic() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     df2 = pd.DataFrame(data={"col1": [10, 20], "col3": [3, 4]})
 
-    res_add1: pd.DataFrame = df + df2
-    res_add2: pd.DataFrame = df.add(df2, fill_value=0)
+    check(assert_type(df + df2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.add(df2, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_sub: pd.DataFrame = df - df2
-    res_sub2: pd.DataFrame = df.sub(df2, fill_value=0)
+    check(assert_type(df - df2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.sub(df2, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_mul: pd.DataFrame = df * df2
-    res_mul2: pd.DataFrame = df.mul(df2, fill_value=0)
+    check(assert_type(df * df2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.mul(df2, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_div: pd.DataFrame = df / df2
-    res_div2: pd.DataFrame = df.div(df2, fill_value=0)
+    check(assert_type(df / df2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.div(df2, fill_value=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df / [2, 2], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.div([2, 2], fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_floordiv: pd.DataFrame = df // df2
-    res_floordiv2: pd.DataFrame = df.floordiv(df2, fill_value=0)
+    check(assert_type(df // df2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.floordiv(df2, fill_value=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df // [2, 2], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.floordiv([2, 2], fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_mod: pd.DataFrame = df % df2
-    res_mod2: pd.DataFrame = df.mod(df2, fill_value=0)
+    check(assert_type(df % df2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.mod(df2, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_pow: pd.DataFrame = df2**df
-    res_pow2: pd.DataFrame = df2.pow(df, fill_value=0)
+    check(assert_type(df2**df, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df2.pow(df, fill_value=0), pd.DataFrame), pd.DataFrame)
 
     # divmod operation was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-    # noinspection PyTypeChecker
-    res_divmod: tuple[pd.DataFrame, pd.DataFrame] = divmod(df, df2)
-    res_divmod2: tuple[pd.DataFrame, pd.DataFrame] = df.__divmod__(df2)
-    res_rdivmod: tuple[pd.DataFrame, pd.DataFrame] = df.__rdivmod__(df2)
+    check(
+        assert_type(divmod(df, df2), "tuple[pd.DataFrame, pd.DataFrame]"),
+        tuple,
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.__divmod__(df2), "tuple[pd.DataFrame, pd.DataFrame]"),
+        tuple,
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.__rdivmod__(df2), "tuple[pd.DataFrame, pd.DataFrame]"),
+        tuple,
+        pd.DataFrame,
+    )
 
 
 def test_types_scalar_arithmetic() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
 
-    res_add1: pd.DataFrame = df + 1
-    res_add2: pd.DataFrame = df.add(1, fill_value=0)
+    check(assert_type(df + 1, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.add(1, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_sub: pd.DataFrame = df - 1
-    res_sub2: pd.DataFrame = df.sub(1, fill_value=0)
+    check(assert_type(df - 1, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.sub(1, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_mul: pd.DataFrame = df * 2
-    res_mul2: pd.DataFrame = df.mul(2, fill_value=0)
+    check(assert_type(df * 2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.mul(2, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_div: pd.DataFrame = df / 2
-    res_div2: pd.DataFrame = df.div(2, fill_value=0)
+    check(assert_type(df / 2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.div(2, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_floordiv: pd.DataFrame = df // 2
-    res_floordiv2: pd.DataFrame = df.floordiv(2, fill_value=0)
+    check(assert_type(df // 2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.floordiv(2, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_mod: pd.DataFrame = df % 2
-    res_mod2: pd.DataFrame = df.mod(2, fill_value=0)
+    check(assert_type(df % 2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.mod(2, fill_value=0), pd.DataFrame), pd.DataFrame)
 
-    res_pow: pd.DataFrame = df**2
-    res_pow1: pd.DataFrame = df**0
-    res_pow2: pd.DataFrame = df**0.213
-    res_pow3: pd.DataFrame = df.pow(0.5)
+    check(assert_type(df**2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df**0, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df**0.213, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.pow(0.5), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_melt() -> None:
@@ -638,7 +897,12 @@ def test_types_groupby() -> None:
     df4: pd.DataFrame = df.groupby(by=["col1", "col2"]).count()
     df5: pd.DataFrame = df.groupby(by=["col1", "col2"]).filter(lambda x: x["col1"] > 0)
     df6: pd.DataFrame = df.groupby(by=["col1", "col2"]).nunique()
-    df7: pd.DataFrame = df.groupby(by="col1").apply(sum)
+    with pytest_warns_bounded(
+        FutureWarning,
+        "The provided callable <built-in function sum> is currently using",
+        lower="2.0.99",
+    ):
+        df7: pd.DataFrame = df.groupby(by="col1").apply(sum)
     df8: pd.DataFrame = df.groupby("col1").transform("sum")
     s1: pd.Series = df.set_index("col1")["col2"]
     s2: pd.Series = s1.groupby("col1").transform("sum")
@@ -652,7 +916,7 @@ def test_types_groupby_methods() -> None:
     check(
         assert_type(df.groupby("col1").value_counts(normalize=False), "pd.Series[int]"),
         pd.Series,
-        int,
+        np.int64,
     )
     check(
         assert_type(
@@ -662,38 +926,52 @@ def test_types_groupby_methods() -> None:
         pd.Series,
         float,
     )
+    check(assert_type(df.groupby("col1").idxmax(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.groupby("col1").idxmin(), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_groupby_agg() -> None:
     df = pd.DataFrame(
         data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0], 0: [-1, -1, -1]}
     )
-    check(assert_type(df.groupby("col1")["col3"].agg(min), pd.Series), pd.Series)
-    check(
-        assert_type(df.groupby("col1")["col3"].agg([min, max]), pd.DataFrame),
-        pd.DataFrame,
-    )
     check(assert_type(df.groupby("col1").agg("min"), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.groupby("col1").agg(min), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(df.groupby("col1").agg(["min", "max"]), pd.DataFrame), pd.DataFrame
     )
-    check(assert_type(df.groupby("col1").agg([min, max]), pd.DataFrame), pd.DataFrame)
     agg_dict1 = {"col2": "min", "col3": "max", 0: "sum"}
     check(assert_type(df.groupby("col1").agg(agg_dict1), pd.DataFrame), pd.DataFrame)
-    agg_dict2 = {"col2": min, "col3": max, 0: min}
-    check(assert_type(df.groupby("col1").agg(agg_dict2), pd.DataFrame), pd.DataFrame)
 
     def wrapped_min(x: Any) -> Any:
         return x.min()
 
-    # Here, MyPy infers dict[object, object], so it must be explicitly annotated
-    agg_dict3: dict[str | int, str | Callable] = {
-        "col2": min,
-        "col3": "max",
-        0: wrapped_min,
-    }
-    check(assert_type(df.groupby("col1").agg(agg_dict3), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <built-in function (min|max)> is currently using",
+        lower="2.0.99",
+    ):
+        check(assert_type(df.groupby("col1")["col3"].agg(min), pd.Series), pd.Series)
+        check(
+            assert_type(df.groupby("col1")["col3"].agg([min, max]), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(assert_type(df.groupby("col1").agg(min), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(df.groupby("col1").agg([min, max]), pd.DataFrame), pd.DataFrame
+        )
+        agg_dict2 = {"col2": min, "col3": max, 0: min}
+        check(
+            assert_type(df.groupby("col1").agg(agg_dict2), pd.DataFrame), pd.DataFrame
+        )
+
+        # Here, MyPy infers dict[object, object], so it must be explicitly annotated
+        agg_dict3: dict[str | int, str | Callable] = {
+            "col2": min,
+            "col3": "max",
+            0: wrapped_min,
+        }
+        check(
+            assert_type(df.groupby("col1").agg(agg_dict3), pd.DataFrame), pd.DataFrame
+        )
     agg_dict4 = {"col2": "sum"}
     check(assert_type(df.groupby("col1").agg(agg_dict4), pd.DataFrame), pd.DataFrame)
     agg_dict5 = {0: "sum"}
@@ -712,6 +990,9 @@ def test_types_groupby_agg() -> None:
 
     cols_mixed: list[str | int] = ["col1", 0]
     check(assert_type(df.groupby(by=cols_mixed).sum(), pd.DataFrame), pd.DataFrame)
+    # GH 736
+    check(assert_type(df.groupby(by="col1").aggregate("size"), pd.Series), pd.Series)
+    check(assert_type(df.groupby(by="col1").agg("size"), pd.Series), pd.Series)
 
 
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
@@ -737,12 +1018,26 @@ def test_types_groupby_any() -> None:
     check(
         assert_type(df.groupby("col1")["col2"].any(), "pd.Series[bool]"),
         pd.Series,
-        bool,
+        np.bool_,
     )
     check(
         assert_type(df.groupby("col1")["col2"].any(), "pd.Series[bool]"),
         pd.Series,
+        np.bool_,
+    )
+
+
+def test_types_groupby_iter() -> None:
+    df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
+    series_groupby = pd.Series([True, True, False], dtype=bool)
+    first_group = next(iter(df.groupby(series_groupby)))
+    check(
+        assert_type(first_group[0], bool),
         bool,
+    )
+    check(
+        assert_type(first_group[1], pd.DataFrame),
+        pd.DataFrame,
     )
 
 
@@ -772,27 +1067,42 @@ def test_types_plot() -> None:
 def test_types_window() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
     df.expanding()
-    df.expanding(axis=1)
+    if PD_LTE_20:
+        df.expanding(axis=1)
+        df.rolling(2, axis=1, center=True)
     if TYPE_CHECKING_INVALID_USAGE:
-        df.expanding(axis=1, center=True)  # type: ignore[call-arg]
+        df.expanding(axis=1, center=True)  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
 
     df.rolling(2)
-    df.rolling(2, axis=1, center=True)
 
     check(
         assert_type(df.rolling(2).agg("max"), pd.DataFrame),
         pd.DataFrame,
     )
-    check(
-        assert_type(df.rolling(2).agg(max), pd.DataFrame),
-        pd.DataFrame,
-    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <built-in function (min|max)> is currently using",
+        lower="2.0.99",
+    ):
+        check(
+            assert_type(df.rolling(2).agg(max), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(df.rolling(2).agg([max, min]), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(df.rolling(2).agg({"col2": max}), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(df.rolling(2).agg({"col2": [max, min]}), pd.DataFrame),
+            pd.DataFrame,
+        )
+
     check(
         assert_type(df.rolling(2).agg(["max", "min"]), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(df.rolling(2).agg([max, min]), pd.DataFrame),
         pd.DataFrame,
     )
     check(
@@ -800,15 +1110,7 @@ def test_types_window() -> None:
         pd.DataFrame,
     )
     check(
-        assert_type(df.rolling(2).agg({"col2": max}), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
         assert_type(df.rolling(2).agg({"col2": ["max", "min"]}), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(df.rolling(2).agg({"col2": [max, min]}), pd.DataFrame),
         pd.DataFrame,
     )
 
@@ -875,18 +1177,23 @@ def test_types_compare() -> None:
 def test_types_agg() -> None:
     df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=["A", "B", "C"])
     check(assert_type(df.agg("min"), pd.Series), pd.Series)
-    check(assert_type(df.agg(min), pd.Series), pd.Series)
     check(assert_type(df.agg(["min", "max"]), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.agg([min, max]), pd.DataFrame), pd.DataFrame)
+
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <built-in function (min|max)> is currently using",
+        lower="2.0.99",
+    ):
+        check(assert_type(df.agg(min), pd.Series), pd.Series)
+        check(assert_type(df.agg([min, max]), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(
+                df.agg(x=("A", max), y=("B", "min"), z=("C", np.mean)), pd.DataFrame
+            ),
+            pd.DataFrame,
+        )
     check(
         assert_type(df.agg({"A": ["min", "max"], "B": "min"}), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(assert_type(df.agg({"A": [min, max], "B": min}), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(
-            df.agg(x=("A", max), y=("B", "min"), z=("C", np.mean)), pd.DataFrame
-        ),
         pd.DataFrame,
     )
     check(assert_type(df.agg("mean", axis=1), pd.Series), pd.Series)
@@ -895,15 +1202,21 @@ def test_types_agg() -> None:
 def test_types_aggregate() -> None:
     df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=["A", "B", "C"])
     check(assert_type(df.aggregate("min"), pd.Series), pd.Series)
-    check(assert_type(df.aggregate(min), pd.Series), pd.Series)
     check(assert_type(df.aggregate(["min", "max"]), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.aggregate([min, max]), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <built-in function (min|max)> is currently using",
+        lower="2.0.99",
+    ):
+        check(assert_type(df.aggregate(min), pd.Series), pd.Series)
+        check(assert_type(df.aggregate([min, max]), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(df.aggregate({"A": [min, max], "B": min}), pd.DataFrame),
+            pd.DataFrame,
+        )
+
     check(
         assert_type(df.aggregate({"A": ["min", "max"], "B": "min"}), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(df.aggregate({"A": [min, max], "B": min}), pd.DataFrame),
         pd.DataFrame,
     )
 
@@ -936,16 +1249,8 @@ def test_types_describe() -> None:
         }
     )
     df.describe()
-    with pytest_warns_bounded(
-        FutureWarning, match="Treating datetime data as categorical", upper="1.5.999"
-    ):
-        df.describe(percentiles=[0.5], include="all")
-        df.describe(exclude=[np.number])
-    if PD_LTE_15:
-        # datetime_is_numeric param added in 1.1.0
-        # https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-        # Remove in 2.0.0
-        df.describe(datetime_is_numeric=True)
+    df.describe(percentiles=[0.5], include="all")
+    df.describe(exclude=[np.number])
 
 
 def test_types_to_string() -> None:
@@ -1097,24 +1402,19 @@ def test_types_to_parquet() -> None:
     )
     with ensure_clean() as path:
         df.to_parquet(Path(path))
-    # to_parquet() returns bytes when no path given since 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-    b: bytes = df.to_parquet()
+        # to_parquet() returns bytes when no path given since 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
+        b: bytes = df.to_parquet()
 
 
 def test_types_to_latex() -> None:
     df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
-    with pytest.warns(FutureWarning, match="In future versions `DataFrame.to_latex`"):
-        df.to_latex(
-            columns=["A"], label="some_label", caption="some_caption", multirow=True
-        )
-    with pytest.warns(FutureWarning, match="In future versions `DataFrame.to_latex`"):
-        df.to_latex(escape=False, decimal=",", column_format="r")
+    df.to_latex(
+        columns=["A"], label="some_label", caption="some_caption", multirow=True
+    )
+    df.to_latex(escape=False, decimal=",", column_format="r")
     # position param was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-    with pytest.warns(FutureWarning, match="In future versions `DataFrame.to_latex`"):
-        df.to_latex(position="some")
-    # caption param was extended to accept tuple in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-    with pytest.warns(FutureWarning, match="In future versions `DataFrame.to_latex`"):
-        df.to_latex(caption=("cap1", "cap2"))
+    df.to_latex(position="some")
+    df.to_latex(caption=("cap1", "cap2"))
 
 
 def test_types_explode() -> None:
@@ -1122,6 +1422,7 @@ def test_types_explode() -> None:
     res1: pd.DataFrame = df.explode("A")
     res2: pd.DataFrame = df.explode("A", ignore_index=False)
     res3: pd.DataFrame = df.explode("A", ignore_index=True)
+    res4: pd.DataFrame = df.explode(["A", "B"])
 
 
 def test_types_rename() -> None:
@@ -1226,9 +1527,19 @@ def test_types_regressions() -> None:
 
     # https://github.com/microsoft/python-type-stubs/issues/115
     df = pd.DataFrame({"A": [1, 2, 3], "B": [5, 6, 7]})
-    pd.DatetimeIndex(
-        data=df["A"], tz=None, normalize=False, closed=None, ambiguous="NaT", copy=True
-    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        "The 'closed' keyword in DatetimeIndex construction is deprecated",
+        lower="2.0.99",
+    ):
+        pd.DatetimeIndex(
+            data=df["A"],
+            tz=None,
+            normalize=False,
+            closed=None,
+            ambiguous="NaT",
+            copy=True,
+        )
 
 
 def test_read_csv() -> None:
@@ -1278,6 +1589,94 @@ def test_read_csv() -> None:
             pd.DataFrame,
         )
 
+        # Allow a variety of dict types for the converters parameter
+        converters1 = {"A": str, "B": str}
+        check(
+            assert_type(pd.read_csv(path, converters=converters1), pd.DataFrame),
+            pd.DataFrame,
+        )
+        converters2 = {"A": str, "B": float}
+        check(
+            assert_type(pd.read_csv(path, converters=converters2), pd.DataFrame),
+            pd.DataFrame,
+        )
+        converters3 = {0: str, 1: str}
+        check(
+            assert_type(pd.read_csv(path, converters=converters3), pd.DataFrame),
+            pd.DataFrame,
+        )
+        converters4 = {0: str, 1: float}
+        check(
+            assert_type(pd.read_csv(path, converters=converters4), pd.DataFrame),
+            pd.DataFrame,
+        )
+        converters5: dict[int | str, Callable[[str], Any]] = {
+            0: str,
+            "A": float,
+        }
+        check(
+            assert_type(pd.read_csv(path, converters=converters5), pd.DataFrame),
+            pd.DataFrame,
+        )
+
+        class ReadCsvKwargs(TypedDict):
+            converters: dict[int, Callable[[str], Any]]
+
+        read_csv_kwargs: ReadCsvKwargs = {"converters": {0: int}}
+
+        check(
+            assert_type(pd.read_csv(path, **read_csv_kwargs), pd.DataFrame),
+            pd.DataFrame,
+        )
+
+        # Check value covariance for various other parameters too (these only accept a str key)
+        na_values = {"A": ["1"], "B": ["1"]}
+        check(
+            assert_type(pd.read_csv(path, na_values=na_values), pd.DataFrame),
+            pd.DataFrame,
+        )
+
+    # There are several possible inputs for parse_dates
+    with ensure_clean() as path:
+        Path(path).write_text("Date,Year,Month,Day\n20221125,2022,11,25")
+        parse_dates_1 = ["Date"]
+        check(
+            assert_type(pd.read_csv(path, parse_dates=parse_dates_1), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_csv(path, index_col="Date", parse_dates=True), pd.DataFrame
+            ),
+            pd.DataFrame,
+        )
+        parse_dates_2 = {"combined_date": ["Year", "Month", "Day"]}
+        check(
+            assert_type(pd.read_csv(path, parse_dates=parse_dates_2), pd.DataFrame),
+            pd.DataFrame,
+        )
+        parse_dates_3 = {"combined_date": [1, 2, 3]}
+        check(
+            assert_type(pd.read_csv(path, parse_dates=parse_dates_3), pd.DataFrame),
+            pd.DataFrame,
+        )
+        # MyPy calls this Dict[str, object] by default which necessitates the explicit annotation (Pyright does not)
+        parse_dates_4: dict[str, list[str | int]] = {"combined_date": [1, "Month", 3]}
+        check(
+            assert_type(pd.read_csv(path, parse_dates=parse_dates_4), pd.DataFrame),
+            pd.DataFrame,
+        )
+        parse_dates_5 = [0]
+        check(
+            assert_type(pd.read_csv(path, parse_dates=parse_dates_5), pd.DataFrame),
+            pd.DataFrame,
+        )
+        parse_dates_6 = [[1, 2, 3]]
+        check(
+            assert_type(pd.read_csv(path, parse_dates=parse_dates_6), pd.DataFrame),
+            pd.DataFrame,
+        )
+
 
 def test_groupby_series_methods() -> None:
     df = pd.DataFrame({"x": [1, 2, 2, 3, 3], "y": [10, 20, 30, 40, 50]})
@@ -1300,7 +1699,7 @@ def test_groupby_series_methods() -> None:
     gb.min().loc[2]
     gb.nlargest().loc[2]
     gb.nsmallest().loc[2]
-    gb.nth(0).loc[2]
+    gb.nth(0).loc[1]
 
 
 def test_indexslice_setitem():
@@ -1322,7 +1721,7 @@ def test_indexslice_getitem():
         .set_index(["x", "y"])
     )
     ind = pd.Index([2, 3])
-    check(assert_type(pd.IndexSlice[ind, :], "tuple[pd.Index, slice]"), tuple)
+    check(assert_type(pd.IndexSlice[ind, :], "tuple[pd.Index[int], slice]"), tuple)
     check(assert_type(df.loc[pd.IndexSlice[ind, :]], pd.DataFrame), pd.DataFrame)
     check(assert_type(df.loc[pd.IndexSlice[1:2]], pd.DataFrame), pd.DataFrame)
     check(
@@ -1376,7 +1775,9 @@ def test_getmultiindex_columns() -> None:
     res3: pd.DataFrame = df[
         [(i, s) for i in [1] for s in df.columns.get_level_values(1)]
     ]
-    ndf: pd.DataFrame = df[[df.columns[0]]]
+    res4: pd.DataFrame = df[[df.columns[0]]]
+    check(assert_type(df[df.columns[0]], pd.Series), pd.Series)
+    check(assert_type(df[li[0]], pd.Series), pd.Series)
 
 
 def test_frame_getitem_isin() -> None:
@@ -1471,17 +1872,16 @@ def test_iloc_npint() -> None:
 # https://github.com/pandas-dev/pandas-stubs/issues/143
 def test_iloc_tuple() -> None:
     df = pd.DataFrame({"Char": ["A", "B", "C"], "Number": [1, 2, 3]})
-    df = df.iloc[
-        0:2,
-    ]
+    df = df.iloc[0:2,]
 
 
 def test_set_columns() -> None:
     # GH 73
     df = pd.DataFrame({"a": [1, 2, 3], "b": [0.0, 1, 1]})
-    # Next line should work, but it is a mypy bug
+    # Next lines should work, but it is a mypy bug
     # https://github.com/python/mypy/issues/3004
-    # pyright doesn't need the ignore
+    # pyright accepts this, so we only type check for pyright,
+    # and also test the code with pytest
     df.columns = ["c", "d"]  # type: ignore[assignment]
     df.columns = [1, 2]  # type: ignore[assignment]
     df.columns = [1, "a"]  # type: ignore[assignment]
@@ -1491,12 +1891,34 @@ def test_set_columns() -> None:
     df.columns = pd.Series([1, "a"])  # type: ignore[assignment]
     df.columns = (1, 2)  # type: ignore[assignment]
     df.columns = (1, "a")  # type: ignore[assignment]
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.columns = "abc"  # type: ignore[assignment] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_frame_index_numpy() -> None:
     # GH 80
     i = np.array([1.0, 2.0])
     pd.DataFrame([[1.0, 2.0], [3.0, 4.0]], columns=["a", "b"], index=i)
+
+
+def test_frame_stack() -> None:
+    multicol2 = pd.MultiIndex.from_tuples([("weight", "kg"), ("height", "m")])
+    df_multi_level_cols2 = pd.DataFrame(
+        [[1.0, 2.0], [3.0, 4.0]], index=["cat", "dog"], columns=multicol2
+    )
+
+    check(
+        assert_type(
+            df_multi_level_cols2.stack(0), Union[pd.DataFrame, "pd.Series[Any]"]
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df_multi_level_cols2.stack([0, 1]), Union[pd.DataFrame, "pd.Series[Any]"]
+        ),
+        pd.Series,
+    )
 
 
 def test_frame_reindex() -> None:
@@ -1526,9 +1948,10 @@ def test_not_hashable() -> None:
     def test_func(h: Hashable):
         pass
 
-    test_func(pd.DataFrame())  # type: ignore[arg-type]
-    test_func(pd.Series([], dtype=object))  # type: ignore[arg-type]
-    test_func(pd.Index([]))  # type: ignore[arg-type]
+    if TYPE_CHECKING_INVALID_USAGE:
+        test_func(pd.DataFrame())  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+        test_func(pd.Series([], dtype=object))  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+        test_func(pd.Index([]))  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_columns_mixlist() -> None:
@@ -1627,12 +2050,113 @@ def test_groupby_result() -> None:
     check(assert_type(index2, Scalar), int)
     check(assert_type(value2, pd.DataFrame), pd.DataFrame)
 
+    # GH 674
+    # grouping by pd.MultiIndex should always resolve to a tuple as well
+    multi_index = pd.MultiIndex.from_frame(df[["a", "b"]])
+    iterator3 = df.groupby(multi_index).__iter__()
+    assert_type(iterator3, Iterator[Tuple[Tuple, pd.DataFrame]])
+    index3, value3 = next(iterator3)
+    assert_type((index3, value3), Tuple[Tuple, pd.DataFrame])
+
+    check(assert_type(index3, Tuple), tuple, int)
+    check(assert_type(value3, pd.DataFrame), pd.DataFrame)
+
     # Want to make sure these cases are differentiated
     for (k1, k2), g in df.groupby(["a", "b"]):
         pass
 
     for kk, g in df.groupby("a"):
         pass
+
+    for (k1, k2), g in df.groupby(multi_index):
+        pass
+
+
+def test_groupby_result_for_scalar_indexes() -> None:
+    # GH 674
+    dates = pd.date_range("2020-01-01", "2020-12-31")
+    df = pd.DataFrame({"date": dates, "days": 1})
+    period_index = pd.PeriodIndex(df.date, freq="M")
+    iterator = df.groupby(period_index).__iter__()
+    assert_type(iterator, Iterator[Tuple[pd.Period, pd.DataFrame]])
+    index, value = next(iterator)
+    assert_type((index, value), Tuple[pd.Period, pd.DataFrame])
+
+    check(assert_type(index, pd.Period), pd.Period)
+    check(assert_type(value, pd.DataFrame), pd.DataFrame)
+
+    dt_index = pd.DatetimeIndex(dates)
+    iterator2 = df.groupby(dt_index).__iter__()
+    assert_type(iterator2, Iterator[Tuple[pd.Timestamp, pd.DataFrame]])
+    index2, value2 = next(iterator2)
+    assert_type((index2, value2), Tuple[pd.Timestamp, pd.DataFrame])
+
+    check(assert_type(index2, pd.Timestamp), pd.Timestamp)
+    check(assert_type(value2, pd.DataFrame), pd.DataFrame)
+
+    tdelta_index = pd.TimedeltaIndex(dates - pd.Timestamp("2020-01-01"))
+    iterator3 = df.groupby(tdelta_index).__iter__()
+    assert_type(iterator3, Iterator[Tuple[pd.Timedelta, pd.DataFrame]])
+    index3, value3 = next(iterator3)
+    assert_type((index3, value3), Tuple[pd.Timedelta, pd.DataFrame])
+
+    check(assert_type(index3, pd.Timedelta), pd.Timedelta)
+    check(assert_type(value3, pd.DataFrame), pd.DataFrame)
+
+    intervals: list[pd.Interval[pd.Timestamp]] = [
+        pd.Interval(date, date + pd.DateOffset(days=1), closed="left") for date in dates
+    ]
+    interval_index = pd.IntervalIndex(intervals)
+    assert_type(interval_index, "pd.IntervalIndex[pd.Interval[pd.Timestamp]]")
+    iterator4 = df.groupby(interval_index).__iter__()
+    assert_type(iterator4, Iterator[Tuple["pd.Interval[pd.Timestamp]", pd.DataFrame]])
+    index4, value4 = next(iterator4)
+    assert_type((index4, value4), Tuple["pd.Interval[pd.Timestamp]", pd.DataFrame])
+
+    check(assert_type(index4, "pd.Interval[pd.Timestamp]"), pd.Interval)
+    check(assert_type(value4, pd.DataFrame), pd.DataFrame)
+
+    for p, g in df.groupby(period_index):
+        pass
+
+    for dt, g in df.groupby(dt_index):
+        pass
+
+    for tdelta, g in df.groupby(tdelta_index):
+        pass
+
+    for interval, g in df.groupby(interval_index):
+        pass
+
+
+def test_groupby_result_for_ambiguous_indexes() -> None:
+    # GH 674
+    df = pd.DataFrame({"a": [0, 1, 2], "b": [4, 5, 6], "c": [7, 8, 9]})
+    # this will use pd.Index which is ambiguous
+    iterator = df.groupby(df.index).__iter__()
+    assert_type(iterator, Iterator[Tuple[Any, pd.DataFrame]])
+    index, value = next(iterator)
+    assert_type((index, value), Tuple[Any, pd.DataFrame])
+
+    check(assert_type(index, Any), int)
+    check(assert_type(value, pd.DataFrame), pd.DataFrame)
+
+    # categorical indexes are also ambiguous
+
+    # https://github.com/pandas-dev/pandas/issues/54054 needs to be fixed
+    with pytest_warns_bounded(
+        FutureWarning,
+        "The default of observed=False is deprecated",
+        lower="2.0.99",
+    ):
+        categorical_index = pd.CategoricalIndex(df.a)
+        iterator2 = df.groupby(categorical_index).__iter__()
+        assert_type(iterator2, Iterator[Tuple[Any, pd.DataFrame]])
+        index2, value2 = next(iterator2)
+        assert_type((index2, value2), Tuple[Any, pd.DataFrame])
+
+        check(assert_type(index2, Any), int)
+        check(assert_type(value2, pd.DataFrame), pd.DataFrame)
 
 
 def test_setitem_list():
@@ -1685,10 +2209,7 @@ def test_groupby_apply() -> None:
     check(assert_type(df.groupby("col1").apply(sum_mean), pd.Series), pd.Series)
 
     lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
-    check(
-        assert_type(df.groupby("col1").apply(lfunc), pd.Series),
-        pd.Series,
-    )
+    check(assert_type(df.groupby("col1").apply(lfunc), pd.Series), pd.Series)
 
     def sum_to_list(x: pd.DataFrame) -> list:
         return x.sum().tolist()
@@ -1734,6 +2255,11 @@ def test_resample() -> None:
     check(assert_type(df.resample("2T").ohlc(), pd.DataFrame), pd.DataFrame)
 
 
+def test_loc_set() -> None:
+    df = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
+    df.loc["a"] = [3, 4]
+
+
 def test_loclist() -> None:
     # GH 189
     df = pd.DataFrame({1: [1, 2], None: 5}, columns=pd.Index([1, None], dtype=object))
@@ -1758,15 +2284,7 @@ def test_generic() -> None:
     def func() -> MyDataFrame[int]:
         return MyDataFrame[int]({"foo": [1, 2, 3]})
 
-    # This should be fixed in pandas 1.5.2, if
-    # https://github.com/pandas-dev/pandas/pull/49736 is included
-    with pytest_warns_bounded(
-        UserWarning,
-        "Pandas doesn't allow columns to be created",
-        lower="3.10.99",
-        version_str=platform.python_version(),
-    ):
-        func()
+    func()
 
 
 def test_to_xarray():
@@ -1839,7 +2357,7 @@ def test_loc_slice() -> None:
         {"x": [1, 2, 3, 4]},
         index=pd.MultiIndex.from_product([[1, 2], ["a", "b"]], names=["num", "let"]),
     )
-    check(assert_type(df1.loc[1, :], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df1.loc[1, :], Union[pd.Series, pd.DataFrame]), pd.DataFrame)
 
 
 def test_where() -> None:
@@ -1932,13 +2450,363 @@ def test_resample_150_changes() -> None:
     check(assert_type(resampler.apply(f), Union[pd.Series, pd.DataFrame]), pd.DataFrame)
 
 
-def df_accepting_dicts_iterator() -> None:
+def test_df_accepting_dicts_iterator() -> None:
     # GH 392
     data = [{"a": 1, "b": 2}, {"a": 3, "b": 5}]
     check(assert_type(pd.DataFrame(iter(data)), pd.DataFrame), pd.DataFrame)
 
 
-def series_added_in_astype() -> None:
+def test_series_added_in_astype() -> None:
     # GH410
     df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
     check(assert_type(df.astype(df.dtypes), pd.DataFrame), pd.DataFrame)
+
+
+def test_series_groupby_and_value_counts() -> None:
+    df = pd.DataFrame(
+        {
+            "Animal": ["Falcon", "Falcon", "Parrot", "Parrot"],
+            "Max Speed": [380, 370, 24, 26],
+        }
+    )
+    c1 = df.groupby("Animal")["Max Speed"].value_counts()
+    c2 = df.groupby("Animal")["Max Speed"].value_counts(normalize=True)
+    check(assert_type(c1, "pd.Series[int]"), pd.Series, np.int64)
+    check(assert_type(c2, "pd.Series[float]"), pd.Series, float)
+
+
+def test_axes_as_tuple() -> None:
+    # GH 384
+    index = (3, 5, 7)
+    columns = ["a", "b", "c"]
+    df = pd.DataFrame(data=1, index=index, columns=columns)
+    check(assert_type(df, pd.DataFrame), pd.DataFrame)
+
+
+def test_astype_dict() -> None:
+    # GH 447
+    df = pd.DataFrame({"a": [1, 2, 3], 43: [4, 5, 6]})
+    columns_types = {"a": "int", 43: "float"}
+    de = df.astype(columns_types)
+    check(assert_type(de, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.astype({"a": "int", 43: "float"}), pd.DataFrame), pd.DataFrame)
+
+
+def test_setitem_none() -> None:
+    df = pd.DataFrame(
+        {"A": [1, 2, 3], "B": ["abc", "def", "ghi"]}, index=["x", "y", "z"]
+    )
+    df.loc["x", "B"] = None
+    df.iloc[2, 0] = None
+    sb = pd.Series([1, 2, 3], dtype=int)
+    sb.loc["y"] = None
+    sb.iloc[0] = None
+
+
+def test_groupby_and_transform() -> None:
+    df = pd.DataFrame(
+        {
+            "A": ["foo", "bar", "foo", "bar", "foo", "bar"],
+            "B": ["one", "one", "two", "three", "two", "two"],
+            "C": [1, 5, 5, 2, 5, 5],
+            "D": [2.0, 5.0, 8.0, 1.0, 2.0, 9.0],
+        }
+    )
+    ser = pd.Series(
+        [390.0, 350.0, 30.0, 20.0],
+        index=["Falcon", "Falcon", "Parrot", "Parrot"],
+        name="Max Speed",
+    )
+    grouped = df.groupby("A")[["C", "D"]]
+    grouped1 = ser.groupby(ser > 100)
+    c1 = grouped.transform("sum")
+    c2 = grouped.transform(lambda x: (x - x.mean()) / x.std())
+    c3 = grouped1.transform("cumsum")
+    c4 = grouped1.transform(lambda x: x.max() - x.min())
+    check(assert_type(c1, pd.DataFrame), pd.DataFrame)
+    check(assert_type(c2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(c3, pd.Series), pd.Series)
+    check(assert_type(c4, pd.Series), pd.Series)
+
+
+def test_getattr_and_dataframe_groupby() -> None:
+    df = pd.DataFrame(
+        data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0], 0: [-1, -1, -1]}
+    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <built-in function (min|max)> is currently using",
+        lower="2.0.99",
+    ):
+        check(assert_type(df.groupby("col1").col3.agg(min), pd.Series), pd.Series)
+        check(
+            assert_type(df.groupby("col1").col3.agg([min, max]), pd.DataFrame),
+            pd.DataFrame,
+        )
+
+
+def test_getsetitem_multiindex() -> None:
+    # GH 466
+    rows = pd.Index(["project A", "project B", "project C"])
+    years: tuple[str, ...] = ("Year 1", "Year 2", "Year 3")
+    quarters: tuple[str, ...] = ("Q1", "Q2", "Q3", "Q4")
+    index_tuples: list[tuple[str, ...]] = list(itertools.product(years, quarters))
+    cols = pd.MultiIndex.from_tuples(index_tuples)
+    budget = pd.DataFrame(index=rows, columns=cols)
+    multi_index: tuple[str, str] = ("Year 1", "Q1")
+    budget.loc["project A", multi_index] = 4700
+    check(assert_type(budget.loc["project A", multi_index], Scalar), int)
+
+
+def test_frame_dropna_subset() -> None:
+    # GH 434
+    data = {"col1": [1, 3, 4], "col2": [2, 3, 5], "col3": [2, 4, 4]}
+    df = pd.DataFrame(data)
+    check(
+        assert_type(df.dropna(subset=df.columns.drop("col1")), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+
+def test_loc_callable() -> None:
+    # GH 256
+    df = pd.DataFrame({"x": [1, 2, 3], "y": [4, 5, 6]})
+
+    def select1(df: pd.DataFrame) -> pd.Series:
+        return df["x"] > 2.0
+
+    check(assert_type(df.loc[select1], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[select1, :], pd.DataFrame), pd.DataFrame)
+
+    def select2(df: pd.DataFrame) -> list[Hashable]:
+        return [i for i in df.index if cast(int, i) % 2 == 1]
+
+    check(assert_type(df.loc[select2, "x"], pd.Series), pd.Series)
+
+    def select3(df: pd.DataFrame) -> int:
+        return 1
+
+    check(assert_type(df.loc[select3, "x"], Scalar), np.integer)
+
+
+def test_npint_loc_indexer() -> None:
+    # GH 508
+
+    df = pd.DataFrame(dict(x=[1, 2, 3]), index=np.array([10, 20, 30], dtype="uint64"))
+
+    def get_NDArray(df: pd.DataFrame, key: npt.NDArray[np.uint64]) -> pd.DataFrame:
+        df2 = df.loc[key]
+        return df2
+
+    a: npt.NDArray[np.uint64] = np.array([10, 30], dtype="uint64")
+    check(assert_type(get_NDArray(df, a), pd.DataFrame), pd.DataFrame)
+
+
+def test_in_columns() -> None:
+    # GH 532 (PR)
+    df = pd.DataFrame(np.random.random((3, 4)), columns=["cat", "dog", "rat", "pig"])
+    cols = [c for c in df.columns if "at" in c]
+    check(assert_type(cols, "list[str]"), list, str)
+    check(assert_type(df.loc[:, cols], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df[cols], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.groupby(by=cols).sum(), pd.DataFrame), pd.DataFrame)
+
+
+def test_insert_newvalues() -> None:
+    df = pd.DataFrame({"a": [1, 2]})
+    ab = pd.DataFrame({"col1": [1, 2], "col2": [3, 4]})
+    ef = pd.DataFrame({"z": [4, 5, 6]})
+    assert assert_type(df.insert(loc=0, column="b", value=None), None) is None
+    assert assert_type(ab.insert(loc=0, column="newcol", value=[99, 99]), None) is None
+    assert assert_type(ef.insert(loc=0, column="g", value=4), None) is None
+
+
+def test_astype() -> None:
+    s = pd.DataFrame({"d": [1, 2]})
+    ab = pd.DataFrame({"col1": [1, 2], "col2": ["a", "b"]})
+
+    check(assert_type(s.astype(int), "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(s.astype(pd.Int64Dtype()), "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(s.astype(str), "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(s.astype(bytes), "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(s.astype(pd.Float64Dtype()), "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(s.astype(complex), "pd.DataFrame"), pd.DataFrame)
+    check(
+        assert_type(ab.astype({"col1": "int32", "col2": str}), "pd.DataFrame"),
+        pd.DataFrame,
+    )
+    check(assert_type(s.astype(pd.CategoricalDtype()), "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(s.astype("category"), "pd.DataFrame"), pd.DataFrame)  # GH 559
+
+    population_dict = {
+        "California": 38332521,
+        "Texas": 26448193,
+        "New York": 19651127,
+        "Florida": 19552860,
+        "Illinois": 12882135,
+    }
+    area_dict = {
+        "California": 423967,
+        "Texas": 695662,
+        "New York": 141297,
+        "Florida": 170312,
+        "Illinois": 149995,
+    }
+    population = pd.Series(population_dict)
+    area = pd.Series(area_dict)
+
+    states = pd.DataFrame({"population": population, "area": area})
+    check(assert_type(states.astype(object), pd.DataFrame), pd.DataFrame, object)
+
+
+def test_xs_frame_new() -> None:
+    d = {
+        "num_legs": [4, 4, 2, 2],
+        "num_wings": [0, 0, 2, 2],
+        "class": ["mammal", "mammal", "mammal", "bird"],
+        "animal": ["cat", "dog", "bat", "penguin"],
+        "locomotion": ["walks", "walks", "flies", "walks"],
+    }
+    df = pd.DataFrame(data=d)
+    df = df.set_index(["class", "animal", "locomotion"])
+    s1 = df.xs("mammal", axis=0)
+    s2 = df.xs("num_wings", axis=1)
+    check(assert_type(s1, Union[pd.Series, pd.DataFrame]), pd.DataFrame)
+    check(assert_type(s2, Union[pd.Series, pd.DataFrame]), pd.Series)
+
+
+def test_align() -> None:
+    df0 = pd.DataFrame(
+        data=np.array(
+            [
+                ["A0", "A1", "A2", "A3"],
+                ["B0", "B1", "B2", "B3"],
+                ["C0", "C1", "C2", "C3"],
+            ]
+        ).T,
+        index=[0, 1, 2, 3],
+        columns=["A", "B", "C"],
+    )
+
+    s0 = pd.Series(data={0: "1", 3: "3", 5: "5"})
+    aligned_df0, aligned_s0 = df0.align(s0, axis="index")
+    check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
+    check(assert_type(aligned_s0, "pd.Series[str]"), pd.Series, str)
+
+    s1 = pd.Series(data={"A": "A", "D": "D"})
+    aligned_df0, aligned_s1 = df0.align(s1, axis="columns")
+    check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
+    check(assert_type(aligned_s1, "pd.Series[str]"), pd.Series, str)
+
+    df1 = pd.DataFrame(
+        data=np.array(
+            [
+                ["A1", "A3", "A5"],
+                ["D1", "D3", "D5"],
+            ]
+        ).T,
+        index=[1, 3, 5],
+        columns=["A", "D"],
+    )
+    aligned_df0, aligned_df1 = df0.align(df1)
+    check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
+    check(assert_type(aligned_df1, pd.DataFrame), pd.DataFrame)
+
+
+def test_loc_returns_series() -> None:
+    df1 = pd.DataFrame({"x": [1, 2, 3, 4]}, index=[10, 20, 30, 40])
+    df2 = df1.loc[10, :]
+    check(assert_type(df2, Union[pd.Series, pd.DataFrame]), pd.Series)
+
+
+def test_to_dict_index() -> None:
+    df = pd.DataFrame({"a": [1, 2], "b": [9, 10]})
+    check(
+        assert_type(
+            df.to_dict(orient="records", index=True), List[Dict[Hashable, Any]]
+        ),
+        list,
+    )
+    check(assert_type(df.to_dict(orient="dict", index=True), Dict[Hashable, Any]), dict)
+    check(
+        assert_type(df.to_dict(orient="series", index=True), Dict[Hashable, Any]), dict
+    )
+    check(
+        assert_type(df.to_dict(orient="index", index=True), Dict[Hashable, Any]), dict
+    )
+    check(
+        assert_type(df.to_dict(orient="split", index=True), Dict[Hashable, Any]), dict
+    )
+    check(
+        assert_type(df.to_dict(orient="tight", index=True), Dict[Hashable, Any]), dict
+    )
+    check(
+        assert_type(df.to_dict(orient="tight", index=False), Dict[Hashable, Any]), dict
+    )
+    check(
+        assert_type(df.to_dict(orient="split", index=False), Dict[Hashable, Any]), dict
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        check(assert_type(df.to_dict(orient="records", index=False), List[Dict[Hashable, Any]]), list)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        check(assert_type(df.to_dict(orient="dict", index=False), Dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        check(assert_type(df.to_dict(orient="series", index=False), Dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        check(assert_type(df.to_dict(orient="index", index=False), Dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
+
+
+def test_suffix_prefix_index() -> None:
+    df = pd.DataFrame({"A": [1, 2, 3, 4], "B": [3, 4, 5, 6]})
+    check(assert_type(df.add_suffix("_col", axis=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.add_suffix("_col", axis="index"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.add_prefix("_col", axis="index"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.add_prefix("_col", axis="columns"), pd.DataFrame), pd.DataFrame
+    )
+
+
+def test_convert_dtypes_dtype_backend() -> None:
+    df = pd.DataFrame({"A": [1, 2, 3, 4], "B": [3, 4, 5, 6]})
+    dfn = df.convert_dtypes(dtype_backend="numpy_nullable")
+    check(assert_type(dfn, pd.DataFrame), pd.DataFrame)
+
+
+def test_to_json_mode() -> None:
+    df = pd.DataFrame(
+        [["a", "b"], ["c", "d"]],
+        index=["row 1", "row 2"],
+        columns=["col 1", "col 2"],
+    )
+    result = df.to_json(orient="records", lines=True, mode="a")
+    result1 = df.to_json(orient="split", mode="w")
+    result2 = df.to_json(orient="columns", mode="w")
+    result4 = df.to_json(orient="records", mode="w")
+    check(assert_type(result, str), str)
+    check(assert_type(result1, str), str)
+    check(assert_type(result2, str), str)
+    check(assert_type(result4, str), str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        result3 = df.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
+
+
+def test_interpolate_inplace() -> None:
+    # GH 691
+    df = pd.DataFrame({"a": range(3)})
+    check(assert_type(df.interpolate(method="linear"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.interpolate(method="linear", inplace=False), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.interpolate(method="linear", inplace=True), None), type(None))
+
+
+def test_groupby_fillna_inplace() -> None:
+    # GH 691
+    groupby = pd.DataFrame({"a": range(3), "b": range(3)}).groupby("a")
+    check(assert_type(groupby.fillna(0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(groupby.fillna(0, inplace=False), pd.DataFrame), pd.DataFrame)
+    if TYPE_CHECKING_INVALID_USAGE:
+        groupby.fillna(0, inplace=True)  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+
+
+def test_getitem_generator() -> None:
+    # GH 685
+    check(assert_type(DF[(f"col{i+1}" for i in range(2))], pd.DataFrame), pd.DataFrame)

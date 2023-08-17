@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 import subprocess
 import sys
@@ -13,8 +15,8 @@ def pyright_src():
     subprocess.run(cmd, check=True)
 
 
-def pytest():
-    cmd = ["pytest", "--cache-clear", "-Werror"]
+def pytest(flags: tuple[str, ...] = ("-Werror",)):
+    cmd = ["pytest", "--cache-clear", *flags]
     subprocess.run(cmd, check=True)
 
 
@@ -86,22 +88,59 @@ def nightly_pandas():
         "-m",
         "pip",
         "install",
+        "--pre",
         "--use-deprecated=legacy-resolver",
         "--upgrade",
-        "--index-url",
-        "https://pypi.anaconda.org/scipy-wheels-nightly/simple",
+        "--extra-index-url",
+        "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple",
         "pandas",
     ]
     subprocess.run(cmd, check=True)
 
 
-def released_pandas():
-    # query pandas version
+def _get_version_from_pyproject(program: str) -> str:
     text = Path("pyproject.toml").read_text()
     version_line = next(
-        line for line in text.splitlines() if line.startswith("pandas = ")
+        line for line in text.splitlines() if line.startswith(f"{program} = ")
     )
-    version = version_line.split('"')[1]
+    return version_line.split('"')[1]
 
+
+def released_pandas():
+    version = _get_version_from_pyproject("pandas")
     cmd = [sys.executable, "-m", "pip", "install", f"pandas=={version}"]
     subprocess.run(cmd, check=True)
+
+
+def nightly_mypy():
+    cmd = [
+        sys.executable,
+        "-m",
+        "pip",
+        "install",
+        "--upgrade",
+        "git+https://github.com/python/mypy.git",
+    ]
+    subprocess.run(cmd, check=True)
+
+    # ignore unused ignore errors
+    config_file = Path("pyproject.toml")
+    config_file.write_text(
+        config_file.read_text().replace(
+            "warn_unused_ignores = true", "warn_unused_ignores = false"
+        )
+    )
+
+
+def released_mypy():
+    version = _get_version_from_pyproject("mypy")
+    cmd = [sys.executable, "-m", "pip", "install", f"mypy=={version}"]
+    subprocess.run(cmd, check=True)
+
+    # check for unused ignores again
+    config_file = Path("pyproject.toml")
+    config_file.write_text(
+        config_file.read_text().replace(
+            "warn_unused_ignores = false", "warn_unused_ignores = true"
+        )
+    )

@@ -1,24 +1,29 @@
+from collections.abc import Iterable
 from typing import Literal
 
 import numpy as np
 from pandas.core import accessor
-from pandas.core.indexes.base import Index  # , maybe_extract_name
+from pandas.core.indexes.base import Index
 from pandas.core.indexes.extension import ExtensionIndex
+from typing_extensions import Self
 
-from pandas._typing import DtypeArg
+from pandas._typing import (
+    S1,
+    DtypeArg,
+)
 
-class CategoricalIndex(ExtensionIndex, accessor.PandasDelegate):
+class CategoricalIndex(ExtensionIndex[S1], accessor.PandasDelegate):
     codes: np.ndarray = ...
     categories: Index = ...
     def __new__(
         cls,
-        data=...,
+        data: Iterable[S1] = ...,
         categories=...,
         ordered=...,
         dtype=...,
         copy: bool = ...,
         name=...,
-    ) -> CategoricalIndex: ...
+    ) -> Self: ...
     def equals(self, other): ...
     @property
     def inferred_type(self) -> str: ...

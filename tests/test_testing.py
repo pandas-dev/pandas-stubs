@@ -29,7 +29,7 @@ def test_types_assert_series_equal() -> None:
         check_datetimelike_compat=True,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_series_equal(  # type: ignore[call-overload]
+        assert_series_equal(  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
             s1,
             s2,
             check_dtype=True,

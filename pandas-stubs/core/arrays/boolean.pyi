@@ -1,38 +1,29 @@
 from typing import (
+    ClassVar,
     Sequence,
-    Union,
     overload,
 )
 
 import numpy as np
 from pandas.core.arrays import ExtensionArray
+from pandas.core.arrays.masked import BaseMaskedArray as BaseMaskedArray
 from typing_extensions import TypeAlias
 
 from pandas._libs.missing import NAType
 from pandas._typing import (
-    Scalar,
     npt,
     type_t,
 )
 
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
 
-from .masked import BaseMaskedArray as BaseMaskedArray
-
 class BooleanDtype(ExtensionDtype):
-    name: str = ...
-    @property
-    def na_value(self) -> Scalar: ...
-    @property
-    def type(self) -> type_t: ...
-    @property
-    def kind(self) -> str: ...
+    na_value: ClassVar[NAType]
     @classmethod
     def construct_array_type(cls) -> type_t[BooleanArray]: ...
-    def __from_arrow__(self, array): ...
 
-_ScalarType: TypeAlias = Union[bool, np.bool_, NAType, None]
-_ArrayKey: TypeAlias = Union[Sequence[int], npt.NDArray[np.integer], slice]
+_ScalarType: TypeAlias = bool | np.bool_ | NAType | None
+_ArrayKey: TypeAlias = Sequence[int] | npt.NDArray[np.integer] | slice
 
 class BooleanArray(BaseMaskedArray):
     def __init__(
@@ -64,3 +55,4 @@ class BooleanArray(BaseMaskedArray):
     ) -> np.ndarray | ExtensionArray: ...
     def any(self, skipna: bool = ..., **kwargs) -> bool: ...
     def all(self, skipna: bool = ..., **kwargs) -> bool: ...
+    def __setitem__(self, key, value) -> None: ...

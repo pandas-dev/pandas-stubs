@@ -1,6 +1,5 @@
-from typing import Union
-
 import pandas as pd
+from pandas.api.extensions import ExtensionDtype
 from typing_extensions import TypeAlias
 
 from pandas._typing import (
@@ -28,9 +27,9 @@ from pandas.core.dtypes.inference import (
     is_scalar as is_scalar,
 )
 
-_ArrayOrDtype: TypeAlias = Union[
-    ArrayLike, npt.DTypeLike, pd.Series, pd.DataFrame, pd.Index
-]
+_ArrayOrDtype: TypeAlias = (
+    ArrayLike | npt.DTypeLike | pd.Series | pd.DataFrame | pd.Index | ExtensionDtype
+)
 
 def is_object_dtype(arr_or_dtype: _ArrayOrDtype) -> bool: ...
 def is_sparse(arr: ArrayLike | pd.Series | pd.DataFrame) -> bool: ...
@@ -54,4 +53,5 @@ def is_float_dtype(arr_or_dtype: _ArrayOrDtype) -> bool: ...
 def is_bool_dtype(arr_or_dtype: _ArrayOrDtype) -> bool: ...
 def is_extension_array_dtype(arr_or_dtype: _ArrayOrDtype) -> bool: ...
 def is_complex_dtype(arr_or_dtype: _ArrayOrDtype) -> bool: ...
+def is_any_real_numeric_dtype(arr_or_dtype: _ArrayOrDtype) -> bool: ...
 def pandas_dtype(dtype: object) -> DtypeObj: ...

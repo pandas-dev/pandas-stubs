@@ -1,31 +1,32 @@
+from collections.abc import (
+    Callable,
+    Sequence,
+)
 from typing import (
     Any,
-    Callable,
-    Generic,
     Literal,
-    Optional,
-    Sequence,
     TypedDict,
-    TypeVar,
-    Union,
 )
 
 import jinja2
 from pandas import Index
 from pandas.core.indexing import _IndexSlice
-from typing_extensions import TypeAlias
+from typing_extensions import (
+    Self,
+    TypeAlias,
+)
 
 from pandas._typing import (
-    AxisType,
+    Axis,
     HashableT,
     Level,
 )
 
-BaseFormatter: TypeAlias = Union[str, Callable[[object], str]]
-ExtFormatter: TypeAlias = Union[BaseFormatter, dict[Any, Optional[BaseFormatter]]]
-CSSPair: TypeAlias = tuple[str, Union[str, float]]
+BaseFormatter: TypeAlias = str | Callable[[object], str]
+ExtFormatter: TypeAlias = BaseFormatter | dict[Any, BaseFormatter | None]
+CSSPair: TypeAlias = tuple[str, str | float]
 CSSList: TypeAlias = list[CSSPair]
-CSSProperties: TypeAlias = Union[str, CSSList]
+CSSProperties: TypeAlias = str | CSSList
 
 class CSSDict(TypedDict):
     selector: str
@@ -42,11 +43,9 @@ class StyleExportDict(TypedDict, total=False):
     css: dict[str, str | int]
 
 CSSStyles: TypeAlias = list[CSSDict]
-Subset: TypeAlias = Union[_IndexSlice, slice, tuple[slice, ...], list[HashableT], Index]
+Subset: TypeAlias = _IndexSlice | slice | tuple[slice, ...] | list[HashableT] | Index
 
-_StylerT = TypeVar("_StylerT", bound=StylerRenderer)
-
-class StylerRenderer(Generic[_StylerT]):
+class StylerRenderer:
     loader: jinja2.loaders.PackageLoader
     env: jinja2.environment.Environment
     template_html: jinja2.environment.Template
@@ -63,11 +62,11 @@ class StylerRenderer(Generic[_StylerT]):
         thousands: str | None = ...,
         escape: str | None = ...,
         hyperlinks: Literal["html", "latex"] | None = ...,
-    ) -> _StylerT: ...
+    ) -> Self: ...
     def format_index(
         self,
         formatter: ExtFormatter | None = ...,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | list[Level] | None = ...,
         na_rep: str | None = ...,
         precision: int | None = ...,
@@ -75,10 +74,10 @@ class StylerRenderer(Generic[_StylerT]):
         thousands: str | None = ...,
         escape: str | None = ...,
         hyperlinks: Literal["html", "latex"] | None = ...,
-    ) -> _StylerT: ...
+    ) -> Self: ...
     def relabel_index(
         self,
         labels: Sequence[str] | Index,
-        axis: AxisType = ...,
+        axis: Axis = ...,
         level: Level | list[Level] | None = ...,
-    ) -> _StylerT: ...
+    ) -> Self: ...

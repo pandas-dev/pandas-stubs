@@ -1,22 +1,25 @@
+from collections.abc import (
+    Hashable,
+    Sequence,
+)
 from datetime import (
     timedelta,
     tzinfo,
 )
 from typing import (
-    Hashable,
-    Sequence,
+    Literal,
     overload,
 )
 
 import numpy as np
 from pandas import (
     DataFrame,
+    Index,
     Timedelta,
     TimedeltaIndex,
     Timestamp,
 )
 from pandas.core.indexes.accessors import DatetimeIndexProperties
-from pandas.core.indexes.api import Float64Index
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.series import (
     TimedeltaSeries,
@@ -34,7 +37,7 @@ from pandas.core.dtypes.dtypes import DatetimeTZDtype
 
 from pandas.tseries.offsets import BaseOffset
 
-class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeIndexProperties):
+class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
     def __init__(
         self,
         data: ArrayLike | AnyArrayLike | list | tuple,
@@ -48,16 +51,16 @@ class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeIndexProperties):
         dtype=...,
         copy: bool = ...,
         name=...,
-    ): ...
+    ) -> None: ...
     def __array__(self, dtype=...) -> np.ndarray: ...
     def __reduce__(self): ...
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
-    @overload  # type: ignore[override]
+    @overload
     def __add__(self, other: TimedeltaSeries) -> TimestampSeries: ...
     @overload
     def __add__(self, other: Timedelta | TimedeltaIndex) -> DatetimeIndex: ...
-    @overload  # type: ignore[override]
+    @overload
     def __sub__(self, other: TimedeltaSeries) -> TimestampSeries: ...
     @overload
     def __sub__(self, other: Timedelta | TimedeltaIndex) -> DatetimeIndex: ...
@@ -80,7 +83,7 @@ class DatetimeIndex(DatetimeTimedeltaMixin, DatetimeIndexProperties):
         self, start_time, end_time, include_start: bool = ..., include_end: bool = ...
     ): ...
     def to_perioddelta(self, freq) -> TimedeltaIndex: ...
-    def to_julian_date(self) -> Float64Index: ...
+    def to_julian_date(self) -> Index[float]: ...
     def isocalendar(self) -> DataFrame: ...
     @property
     def tzinfo(self) -> tzinfo | None: ...
@@ -96,6 +99,7 @@ def date_range(
     normalize: bool = ...,
     name: Hashable | None = ...,
     inclusive: IntervalClosedType = ...,
+    unit: Literal["s", "ms", "us", "ns"] | None = ...,
 ) -> DatetimeIndex: ...
 @overload
 def bdate_range(

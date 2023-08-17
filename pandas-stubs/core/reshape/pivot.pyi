@@ -1,11 +1,12 @@
-import datetime
-from typing import (
+from collections.abc import (
     Callable,
     Hashable,
-    Literal,
     Mapping,
     Sequence,
-    Union,
+)
+import datetime
+from typing import (
+    Literal,
     overload,
 )
 
@@ -31,31 +32,29 @@ from pandas._typing import (
 
 _PivotAggCallable: TypeAlias = Callable[[Series], ScalarT]
 
-_PivotAggFunc: TypeAlias = Union[
-    _PivotAggCallable,
-    np.ufunc,
-    Literal["mean", "sum", "count", "min", "max", "median", "std", "var"],
-]
+_PivotAggFunc: TypeAlias = (
+    _PivotAggCallable
+    | np.ufunc
+    | Literal["mean", "sum", "count", "min", "max", "median", "std", "var"]
+)
 
-_NonIterableHashable: TypeAlias = Union[
-    str,
-    datetime.date,
-    datetime.datetime,
-    datetime.timedelta,
-    bool,
-    int,
-    float,
-    complex,
-    pd.Timestamp,
-    pd.Timedelta,
-]
+_NonIterableHashable: TypeAlias = (
+    str
+    | datetime.date
+    | datetime.datetime
+    | datetime.timedelta
+    | bool
+    | int
+    | float
+    | complex
+    | pd.Timestamp
+    | pd.Timedelta
+)
 
-_PivotTableIndexTypes: TypeAlias = Union[Label, list[HashableT1], Series, Grouper, None]
-_PivotTableColumnsTypes: TypeAlias = Union[
-    Label, list[HashableT2], Series, Grouper, None
-]
+_PivotTableIndexTypes: TypeAlias = Label | list[HashableT1] | Series | Grouper | None
+_PivotTableColumnsTypes: TypeAlias = Label | list[HashableT2] | Series | Grouper | None
 
-_ExtendedAnyArrayLike: TypeAlias = Union[AnyArrayLike, ArrayLike]
+_ExtendedAnyArrayLike: TypeAlias = AnyArrayLike | ArrayLike
 
 @overload
 def pivot_table(

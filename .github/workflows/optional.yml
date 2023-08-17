@@ -1,0 +1,40 @@
+name: 'Optional'
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  nightly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install project dependencies
+      uses: ./.github/setup
+      with:
+        os: ubuntu-latest
+        python-version: '3.11'
+
+    - name: Run pytest (against pandas nightly)
+      run: poetry run poe pytest --nightly
+
+  mypy_nightly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install project dependencies
+      uses: ./.github/setup
+      with:
+        os: ubuntu-latest
+        python-version: '3.11'
+
+    - name: Run mypy tests with mypy nightly
+      run: poetry run poe mypy --mypy_nightly

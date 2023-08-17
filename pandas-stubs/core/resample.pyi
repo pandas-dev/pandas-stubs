@@ -1,10 +1,12 @@
-from typing import (
+from collections.abc import (
     Callable,
     Generator,
-    Generic,
     Hashable,
-    Literal,
     Mapping,
+)
+from typing import (
+    Generic,
+    Literal,
     overload,
 )
 
@@ -19,7 +21,8 @@ from pandas.core.groupby.groupby import BaseGroupBy
 from typing_extensions import TypeAlias
 
 from pandas._typing import (
-    AxisType,
+    Axis,
+    InterpolateOptions,
     NDFrameT,
     Scalar,
     npt,
@@ -47,28 +50,6 @@ _SeriesGroupByFuncTypes: TypeAlias = (
 _SeriesGroupByFuncArgs: TypeAlias = (
     _SeriesGroupByFuncTypes | Mapping[Hashable, _SeriesGroupByFunc | str]
 )
-
-_Interpolation: TypeAlias = Literal[
-    "linear",
-    "time",
-    "index",
-    "pad",
-    "nearest",
-    "zero",
-    "slinear",
-    "quadratic",
-    "cubic",
-    "spline",
-    "barycentric",
-    "polynomial",
-    "krogh",
-    "piecewise_polynomial",
-    "spline",
-    "pchip",
-    "akima",
-    "cubicspline",
-    "from_derivatives",
-]
 
 class Resampler(BaseGroupBy, Generic[NDFrameT]):
     def __getattr__(self, attr: str) -> SeriesGroupBy: ...
@@ -145,10 +126,10 @@ class Resampler(BaseGroupBy, Generic[NDFrameT]):
     @overload
     def interpolate(
         self,
-        method: _Interpolation = ...,
-        axis: AxisType = ...,
-        limit: int | None = ...,
+        method: InterpolateOptions = ...,
         *,
+        axis: Axis = ...,
+        limit: int | None = ...,
         inplace: Literal[True],
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
@@ -158,8 +139,9 @@ class Resampler(BaseGroupBy, Generic[NDFrameT]):
     @overload
     def interpolate(
         self,
-        method: _Interpolation = ...,
-        axis: AxisType = ...,
+        method: InterpolateOptions = ...,
+        *,
+        axis: Axis = ...,
         limit: int | None = ...,
         inplace: Literal[False] = ...,
         limit_direction: Literal["forward", "backward", "both"] = ...,

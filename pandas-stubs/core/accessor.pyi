@@ -1,8 +1,5 @@
 from typing import Any
 
-class DirNamesMixin:
-    def __dir__(self): ...
-
 class PandasDelegate: ...
 
 def delegate_names(

@@ -1,11 +1,14 @@
-from types import TracebackType
-from typing import (
-    Any,
+from collections.abc import (
     Callable,
     Hashable,
     Iterable,
-    Literal,
+    Mapping,
     Sequence,
+)
+from types import TracebackType
+from typing import (
+    Any,
+    Literal,
     overload,
 )
 
@@ -13,13 +16,18 @@ from odf.opendocument import OpenDocument
 from openpyxl.workbook.workbook import Workbook
 from pandas.core.frame import DataFrame
 import pyxlsb.workbook
+from typing_extensions import Self
 from xlrd.book import Book
 
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     Dtype,
+    DtypeBackend,
     FilePath,
+    ListLikeHashable,
     ReadBuffer,
     StorageOptions,
+    UsecolsArgType,
     WriteExcelBuffer,
 )
 
@@ -36,12 +44,12 @@ def read_excel(
     sheet_name: list[int | str] | None,
     *,
     header: int | Sequence[int] | None = ...,
-    names: list[str] | None = ...,
+    names: ListLikeHashable | None = ...,
     index_col: int | Sequence[int] | None = ...,
-    usecols: Sequence[int] | Sequence[str] | Callable[[str], bool] | None = ...,
-    dtype: str | Dtype | dict[str, str | Dtype] | None = ...,
+    usecols: str | UsecolsArgType = ...,
+    dtype: str | Dtype | Mapping[str, str | Dtype] | None = ...,
     engine: Literal["xlrd", "openpyxl", "odf", "pyxlsb"] | None = ...,
-    converters: dict[int | str, Callable[[object], object]] | None = ...,
+    converters: Mapping[int | str, Callable[[object], object]] | None = ...,
     true_values: Iterable[Hashable] | None = ...,
     false_values: Iterable[Hashable] | None = ...,
     skiprows: int | Sequence[int] | Callable[[object], bool] | None = ...,
@@ -54,12 +62,13 @@ def read_excel(
     | Sequence[int]
     | Sequence[Sequence[str] | Sequence[int]]
     | dict[str, Sequence[int] | list[str]] = ...,
-    date_parser: Callable | None = ...,
+    date_format: dict[Hashable, str] | str | None = ...,
     thousands: str | None = ...,
     decimal: str = ...,
     comment: str | None = ...,
     skipfooter: int = ...,
     storage_options: StorageOptions = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> dict[int | str, DataFrame]: ...
 @overload
 def read_excel(
@@ -74,12 +83,12 @@ def read_excel(
     sheet_name: int | str = ...,
     *,
     header: int | Sequence[int] | None = ...,
-    names: list[str] | None = ...,
+    names: ListLikeHashable | None = ...,
     index_col: int | Sequence[int] | None = ...,
-    usecols: Sequence[int] | Sequence[str] | Callable[[str], bool] | None = ...,
-    dtype: str | Dtype | dict[str, str | Dtype] | None = ...,
+    usecols: str | UsecolsArgType = ...,
+    dtype: str | Dtype | Mapping[str, str | Dtype] | None = ...,
     engine: Literal["xlrd", "openpyxl", "odf", "pyxlsb"] | None = ...,
-    converters: dict[int | str, Callable[[object], object]] | None = ...,
+    converters: Mapping[int | str, Callable[[object], object]] | None = ...,
     true_values: Iterable[Hashable] | None = ...,
     false_values: Iterable[Hashable] | None = ...,
     skiprows: int | Sequence[int] | Callable[[object], bool] | None = ...,
@@ -92,19 +101,20 @@ def read_excel(
     | Sequence[int]
     | Sequence[Sequence[str] | Sequence[int]]
     | dict[str, Sequence[int] | list[str]] = ...,
-    date_parser: Callable | None = ...,
+    date_format: dict[Hashable, str] | str | None = ...,
     thousands: str | None = ...,
     decimal: str = ...,
     comment: str | None = ...,
     skipfooter: int = ...,
     storage_options: StorageOptions = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> DataFrame: ...
 
 class ExcelWriter:
     def __init__(
         self,
         path: FilePath | WriteExcelBuffer | ExcelWriter,
-        engine: Literal["auto", "openpyxl", "pyxlsb", "odf"] | None = ...,
+        engine: Literal["auto", "openpyxl", "odf", "xlsxwriter"] | None = ...,
         date_format: str | None = ...,
         datetime_format: str | None = ...,
         mode: Literal["w", "a"] = ...,
@@ -115,11 +125,11 @@ class ExcelWriter:
     @property
     def supported_extensions(self) -> tuple[str, ...]: ...
     @property
-    def engine(self) -> Literal["openpyxl", "pyxlsb", "odf"]: ...
+    def engine(self) -> Literal["openpyxl", "odf", "xlsxwriter"]: ...
     @property
     def sheets(self) -> dict[str, Any]: ...
     @property
-    def book(self) -> Workbook | OpenDocument | pyxlsb.workbook.Workbook: ...
+    def book(self) -> Workbook | OpenDocument: ...
     @property
     def date_format(self) -> str: ...
     @property
@@ -127,7 +137,7 @@ class ExcelWriter:
     @property
     def if_sheet_exists(self) -> Literal["error", "new", "replace", "overlay"]: ...
     def __fspath__(self) -> str: ...
-    def __enter__(self) -> ExcelWriter: ...
+    def __enter__(self) -> Self: ...
     def __exit__(
         self,
         exc_type: type[BaseException] | None,
@@ -151,13 +161,9 @@ class ExcelFile:
         self,
         sheet_name: list[int | str] | None,
         header: int | Sequence[int] | None = ...,
-        names: list[str] | None = ...,
+        names: ListLikeHashable | None = ...,
         index_col: int | Sequence[int] | None = ...,
-        usecols: str
-        | Sequence[int]
-        | Sequence[str]
-        | Callable[[str], bool]
-        | None = ...,
+        usecols: str | UsecolsArgType = ...,
         converters: dict[int | str, Callable[[object], object]] | None = ...,
         true_values: Iterable[Hashable] | None = ...,
         false_values: Iterable[Hashable] | None = ...,
@@ -181,13 +187,9 @@ class ExcelFile:
         self,
         sheet_name: int | str,
         header: int | Sequence[int] | None = ...,
-        names: list[str] | None = ...,
+        names: ListLikeHashable | None = ...,
         index_col: int | Sequence[int] | None = ...,
-        usecols: str
-        | Sequence[int]
-        | Sequence[str]
-        | Callable[[str], bool]
-        | None = ...,
+        usecols: str | UsecolsArgType = ...,
         converters: dict[int | str, Callable[[object], object]] | None = ...,
         true_values: Iterable[Hashable] | None = ...,
         false_values: Iterable[Hashable] | None = ...,
@@ -211,7 +213,7 @@ class ExcelFile:
     @property
     def sheet_names(self) -> list[int | str]: ...
     def close(self) -> None: ...
-    def __enter__(self) -> ExcelFile: ...
+    def __enter__(self) -> Self: ...
     def __exit__(
         self,
         exc_type: type[BaseException] | None,

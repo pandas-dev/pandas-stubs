@@ -1,11 +1,8 @@
-from typing import (
-    Any,
+from collections.abc import (
     Callable,
     Mapping,
 )
-
-from pandas._libs.properties import cache_readonly as cache_readonly
-from pandas._typing import F
+from typing import Any
 
 def deprecate(
     name: str,
@@ -25,19 +22,4 @@ def deprecate_kwarg(
 def rewrite_axis_style_signature(
     name: str, extra_params: list[tuple[str, Any]]
 ) -> Callable[..., Any]: ...
-
-class Substitution:
-    params = ...
-    def __init__(self, *args, **kwargs) -> None: ...
-    def __call__(self, func: F) -> F: ...
-    def update(self, *args, **kwargs) -> None: ...
-
-class Appender:
-    addendum: str | None
-    join = ...
-    def __init__(
-        self, addendum: str | None, join: str = ..., indents: int = ...
-    ) -> None: ...
-    def __call__(self, func: F) -> F: ...
-
 def indent(text: str | None, indents: int = ...) -> str: ...

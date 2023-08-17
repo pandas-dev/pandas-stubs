@@ -1,7 +1,6 @@
 import datetime
 from typing import (
     Literal,
-    Union,
     overload,
 )
 
@@ -21,17 +20,15 @@ from pandas.core.series import (
 from typing_extensions import TypeAlias
 
 from pandas._libs.tslibs import NaTType
+from pandas._libs.tslibs.offsets import BaseOffset
+from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import npt
-
-from .timestamps import Timestamp
 
 class IncompatibleFrequency(ValueError): ...
 
-from pandas._libs.tslibs.offsets import BaseOffset
-
-_PeriodAddSub: TypeAlias = Union[
-    Timedelta, datetime.timedelta, np.timedelta64, np.int64, int, BaseOffset
-]
+_PeriodAddSub: TypeAlias = (
+    Timedelta | datetime.timedelta | np.timedelta64 | np.int64 | int | BaseOffset
+)
 
 _PeriodFreqHow: TypeAlias = Literal[
     "S",
@@ -40,9 +37,9 @@ _PeriodFreqHow: TypeAlias = Literal[
     "end",
 ]
 
-_PeriodToTimestampHow: TypeAlias = Union[
-    _PeriodFreqHow,
-    Literal[
+_PeriodToTimestampHow: TypeAlias = (
+    _PeriodFreqHow
+    | Literal[
         "Start",
         "Finish",
         "Begin",
@@ -51,8 +48,8 @@ _PeriodToTimestampHow: TypeAlias = Union[
         "e",
         "finish",
         "begin",
-    ],
-]
+    ]
+)
 
 class PeriodMixin:
     @property
@@ -63,7 +60,12 @@ class PeriodMixin:
 class Period(PeriodMixin):
     def __init__(
         self,
-        value: Period | str | None = ...,
+        value: Period
+        | str
+        | datetime.datetime
+        | datetime.date
+        | Timestamp
+        | None = ...,
         freq: str | BaseOffset | None = ...,
         ordinal: int | None = ...,
         year: int | None = ...,
@@ -97,11 +99,11 @@ class Period(PeriodMixin):
     #  ignore[misc] here because we know all other comparisons
     #  are False, so we use Literal[False]
     @overload
-    def __eq__(self, other: Period) -> bool: ...  # type: ignore[misc]
+    def __eq__(self, other: Period) -> bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __eq__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...  # type: ignore[misc]
     @overload
-    def __eq__(self, other: PeriodSeries | Series[Period]) -> Series[bool]: ...  # type: ignore[misc]
+    def __eq__(self, other: PeriodSeries) -> Series[bool]: ...  # type: ignore[misc]
     @overload
     def __eq__(self, other: object) -> Literal[False]: ...
     @overload
@@ -109,33 +111,33 @@ class Period(PeriodMixin):
     @overload
     def __ge__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
     @overload
-    def __ge__(self, other: PeriodSeries | Series[Period]) -> Series[bool]: ...
+    def __ge__(self, other: PeriodSeries) -> Series[bool]: ...
     @overload
     def __gt__(self, other: Period) -> bool: ...
     @overload
     def __gt__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
     @overload
-    def __gt__(self, other: PeriodSeries | Series[Period]) -> Series[bool]: ...
+    def __gt__(self, other: PeriodSeries) -> Series[bool]: ...
     @overload
     def __le__(self, other: Period) -> bool: ...
     @overload
     def __le__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
     @overload
-    def __le__(self, other: PeriodSeries | Series[Period]) -> Series[bool]: ...
+    def __le__(self, other: PeriodSeries) -> Series[bool]: ...
     @overload
     def __lt__(self, other: Period) -> bool: ...
     @overload
     def __lt__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
     @overload
-    def __lt__(self, other: PeriodSeries | Series[Period]) -> Series[bool]: ...
+    def __lt__(self, other: PeriodSeries) -> Series[bool]: ...
     #  ignore[misc] here because we know all other comparisons
     #  are False, so we use Literal[False]
     @overload
-    def __ne__(self, other: Period) -> bool: ...  # type: ignore[misc]
+    def __ne__(self, other: Period) -> bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __ne__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...  # type: ignore[misc]
     @overload
-    def __ne__(self, other: PeriodSeries | Series[Period]) -> Series[bool]: ...  # type: ignore[misc]
+    def __ne__(self, other: PeriodSeries) -> Series[bool]: ...  # type: ignore[misc]
     @overload
     def __ne__(self, other: object) -> Literal[True]: ...
     # Ignored due to indecipherable error from mypy:

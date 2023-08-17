@@ -1,6 +1,6 @@
 from typing import (
+    Literal,
     Sequence,
-    Union,
     overload,
 )
 
@@ -13,24 +13,17 @@ from pandas.core.arrays import (
 from typing_extensions import TypeAlias
 
 from pandas._libs.missing import NAType
-from pandas._typing import (
-    npt,
-    type_t,
-)
+from pandas._typing import npt
 
 from pandas.core.dtypes.base import ExtensionDtype
 
 class StringDtype(ExtensionDtype):
-    name: str = ...
-    na_value = ...
+    def __init__(self, storage: Literal["python", "pyarrow"] | None = None) -> None: ...
     @property
-    def type(self) -> type_t: ...
-    @classmethod
-    def construct_array_type(cls) -> type_t[StringArray]: ...
-    def __from_arrow__(self, array): ...
+    def na_value(self) -> NAType: ...
 
-_ScalarType: TypeAlias = Union[str, NAType, None]
-_ArrayKey: TypeAlias = Union[Sequence[int], npt.NDArray[np.integer], slice]
+_ScalarType: TypeAlias = str | NAType | None
+_ArrayKey: TypeAlias = Sequence[int] | npt.NDArray[np.integer] | slice
 
 class StringArray(PandasArray):
     def __init__(

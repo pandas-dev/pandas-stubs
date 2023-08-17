@@ -1,12 +1,13 @@
-from typing import (
-    Any,
+from collections.abc import (
     Callable,
     Hashable,
     Iterable,
+    Sequence,
+)
+from typing import (
+    Any,
     Literal,
     NamedTuple,
-    Sequence,
-    Union,
     overload,
 )
 
@@ -16,7 +17,6 @@ from matplotlib.lines import Line2D
 import numpy as np
 import pandas as pd
 from pandas import Series
-from pandas.core.base import PandasObject
 from pandas.core.frame import DataFrame
 from scipy.stats.kde import gaussian_kde
 from typing_extensions import TypeAlias
@@ -34,12 +34,10 @@ class _BoxPlotT(NamedTuple):
     ax: Axes
     lines: dict[str, list[Line2D]]
 
-_SingleColor: TypeAlias = Union[
-    str, list[float], tuple[float, float, float], tuple[float, float, float, float]
-]
-_PlotAccessorColor: TypeAlias = Union[
-    str, list[_SingleColor], dict[HashableT, _SingleColor]
-]
+_SingleColor: TypeAlias = (
+    str | list[float] | tuple[float, float, float] | tuple[float, float, float, float]
+)
+_PlotAccessorColor: TypeAlias = str | list[_SingleColor] | dict[HashableT, _SingleColor]
 
 @overload
 def boxplot(
@@ -86,7 +84,7 @@ def boxplot(
     **kwargs,
 ) -> _BoxPlotT: ...
 
-class PlotAccessor(PandasObject):
+class PlotAccessor:
     def __init__(self, data) -> None: ...
     @overload
     def __call__(

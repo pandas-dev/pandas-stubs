@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pandas-stubs"
-version = "1.5.2.221124"
+version = "2.0.3.230814"
 description = "Type annotations for pandas"
 authors = ["The Pandas Development Team <pandas-dev@python.org>"]
 license = "BSD-3-Clause"
@@ -31,35 +31,41 @@ packages = [
 "Documentation" = "https://pandas.pydata.org/pandas-docs/stable"
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.12"
+python = ">=3.8"
 types-pytz = ">= 2022.1.1"
+numpy = [
+    {version = "<=1.24.3", python = "<=3.8"},
+    {version = ">=1.25.0", python = ">=3.9"}
+]
 
 [tool.poetry.dev-dependencies]
-mypy = "0.990"
+mypy = "1.5.0"
+pandas = "2.0.3"
 pyarrow = ">=10.0.1"
 pytest = ">=7.1.2"
-pyright = ">=1.1.281"
-poethepoet = "0.16.0"
+pyright = ">= 1.1.322"
+poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
-pandas = "1.5.2"
-typing-extensions = ">=4.2.0"
+typing-extensions = ">=4.4.0"
 matplotlib = ">=3.5.1"
 pre-commit = ">=2.19.0"
-black = ">=22.8.0"
-isort = ">=5.10.1"
+black = ">=23.3.0"
+isort = ">=5.12.0"
 openpyxl = ">=3.0.10"
-tables = { version = ">=3.7.0", python = "<3.11" }
-lxml = { version = ">=4.7.1,<4.9.0", python = "<3.11" }
+tables = { version = ">=3.8.0" , python = "<4"}  # 3.8.0 depends on blosc2 which caps python to <4
+lxml = ">=4.9.1"
 pyreadstat = ">=1.2.0"
 xlrd = ">=2.0.1"
-pyxlsb = ">=1.0.9"
+xlsxwriter = ">=3.0.3"
+pyxlsb = ">=1.0.10"
 odfpy = ">=1.4.1"
 xarray = ">=22.6.0"
 tabulate = ">=0.8.10"
-jinja2 = "^3.1"
+jinja2 = ">=3.1"
 scipy = ">=1.9.1"
-SQLAlchemy = "^1.4.41"
+SQLAlchemy = ">=2.0.12"
 types-python-dateutil = ">=2.8.19"
+numexpr = "<2.8.5"  # https://github.com/pandas-dev/pandas/issues/54449
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -88,7 +94,8 @@ script = "scripts.test.run:style"
 
 [tool.poe.tasks.mypy]
 help = "Run mypy on 'tests' (using the local stubs) and on the local stubs"
-script = "scripts.test.run:mypy_src"
+args = [{name = "mypy_nightly", positional = false, default = false, type = "boolean", required = false, help= "Use mypy nightly (off by default)"}]
+script = "scripts.test:mypy_src(mypy_nightly)"
 
 [tool.poe.tasks.mypy_dist]
 help = "Run mypy on 'tests' using the installed stubs"
@@ -132,8 +139,6 @@ follow_imports = "normal"
 follow_imports_for_stubs = false
 no_site_packages = false
 no_silence_site_packages = false
-# Platform configuration
-python_version = "3.8"
 # Disallow dynamic typing
 disallow_any_unimported = false # TODO
 disallow_any_expr = false # TODO
@@ -174,19 +179,23 @@ show_error_codes = true
 typeCheckingMode = "strict"
 stubPath = "."
 include = ["tests", "pandas-stubs"]
+enableTypeIgnoreComments = false  # use pyright-specific ignores
 # disable subset of strict
-reportInconsistentConstructor = false
 reportMissingParameterType = false
 reportMissingTypeArgument = false
 reportMissingTypeStubs = false
+reportUnnecessaryTypeIgnoreComment = true
 reportUnknownArgumentType = false
 reportUnusedExpression = false
 reportUnknownLambdaType = false
 reportUnknownMemberType = false
 reportUnknownParameterType = false
 reportUnknownVariableType = false
-reportUntypedBaseClass = false
 reportUnusedVariable = false
 reportPrivateUsage = false
 # enable optional checks
 reportMissingModuleSource = true
+useLibraryCodeForTypes = false
+
+[tool.codespell]
+ignore-words-list = "indext, mose, sav, ser"

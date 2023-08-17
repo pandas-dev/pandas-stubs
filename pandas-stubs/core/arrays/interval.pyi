@@ -8,8 +8,12 @@ from typing import (
 
 import numpy as np
 import pandas as pd
-from pandas import Index
+from pandas import (
+    Index,
+    Series,
+)
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
+from typing_extensions import Self
 
 from pandas._libs.interval import (
     Interval as Interval,
@@ -18,10 +22,10 @@ from pandas._libs.interval import (
 from pandas._typing import (
     Axis,
     IntervalT,
+    Scalar,
+    TakeIndexer,
     npt,
 )
-
-from pandas.core.dtypes.generic import ABCExtensionArray
 
 class IntervalArray(IntervalMixin, ExtensionArray, Generic[IntervalT]):
     ndim: int = ...
@@ -86,12 +90,16 @@ class IntervalArray(IntervalMixin, ExtensionArray, Generic[IntervalT]):
     def nbytes(self) -> int: ...
     @property
     def size(self) -> int: ...
-    def shift(
-        self, periods: int = ..., fill_value: object = ...
-    ) -> ABCExtensionArray: ...
-    def take(
-        self, indices, *, allow_fill: bool = ..., fill_value=..., axis=..., **kwargs
-    ): ...
+    def shift(self, periods: int = ..., fill_value: object = ...) -> IntervalArray: ...
+    def take(  # type: ignore[override]
+        self: Self,
+        indices: TakeIndexer,
+        *,
+        allow_fill: bool = ...,
+        fill_value=...,
+        axis=...,
+        **kwargs,
+    ) -> Self: ...
     def value_counts(self, dropna: bool = ...): ...
     @property
     def left(self) -> Index: ...
@@ -110,9 +118,12 @@ class IntervalArray(IntervalMixin, ExtensionArray, Generic[IntervalT]):
     def __arrow_array__(self, type=...): ...
     def to_tuples(self, na_tuple: bool = ...) -> npt.NDArray[np.object_]: ...
     def repeat(self, repeats, axis: Axis | None = ...): ...
-    def contains(
-        self, other: float | pd.Timestamp | pd.Timedelta
-    ) -> npt.NDArray[np.bool_]: ...
-    def overlaps(self, other: Interval) -> npt.NDArray[np.bool_]: ...
     @property
     def is_empty(self) -> npt.NDArray[np.bool_]: ...
+    @overload
+    def contains(self, other: Series) -> Series[bool]: ...
+    @overload
+    def contains(
+        self, other: Scalar | ExtensionArray | Index | np.ndarray
+    ) -> npt.NDArray[np.bool_]: ...
+    def overlaps(self, other: Interval) -> npt.NDArray[np.bool_]: ...

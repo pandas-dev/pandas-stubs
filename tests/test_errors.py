@@ -14,11 +14,6 @@ def test_abstract_method_error() -> None:
         raise errors.AbstractMethodError(Foo)
 
 
-def test_accessor_registration_warning() -> None:
-    with pytest.warns(errors.AccessorRegistrationWarning):
-        warnings.warn("", errors.AccessorRegistrationWarning)
-
-
 def test_dtype_warning() -> None:
     with pytest.warns(errors.DtypeWarning):
         warnings.warn("", errors.DtypeWarning)

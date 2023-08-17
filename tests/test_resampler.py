@@ -86,41 +86,52 @@ def test_filling() -> None:
 
 
 def test_fillna() -> None:
-    check(assert_type(DF.resample("m").fillna("pad"), DataFrame), DataFrame)
-    check(assert_type(DF.resample("m").fillna("backfill"), DataFrame), DataFrame)
-    check(assert_type(DF.resample("m").fillna("ffill"), DataFrame), DataFrame)
-    check(assert_type(DF.resample("m").fillna("bfill"), DataFrame), DataFrame)
-    check(
-        assert_type(DF.resample("m").fillna("nearest", limit=2), DataFrame), DataFrame
-    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        "DatetimeIndexResampler.fillna is deprecated ",
+        lower="2.0.99",
+    ):
+        check(assert_type(DF.resample("m").fillna("pad"), DataFrame), DataFrame)
+        check(assert_type(DF.resample("m").fillna("backfill"), DataFrame), DataFrame)
+        check(assert_type(DF.resample("m").fillna("ffill"), DataFrame), DataFrame)
+        check(assert_type(DF.resample("m").fillna("bfill"), DataFrame), DataFrame)
+        check(
+            assert_type(DF.resample("m").fillna("nearest", limit=2), DataFrame),
+            DataFrame,
+        )
 
 
 def test_aggregate() -> None:
-    check(assert_type(DF.resample("m").aggregate(np.sum), _AggRetType), DataFrame)
-    check(assert_type(DF.resample("m").agg(np.sum), _AggRetType), DataFrame)
-    check(assert_type(DF.resample("m").apply(np.sum), _AggRetType), DataFrame)
-    check(
-        assert_type(DF.resample("m").aggregate([np.sum, np.mean]), _AggRetType),
-        DataFrame,
-    )
-    check(
-        assert_type(DF.resample("m").aggregate(["sum", np.mean]), _AggRetType),
-        DataFrame,
-    )
-    check(
-        assert_type(
-            DF.resample("m").aggregate({"col1": "sum", "col2": np.mean}),
-            _AggRetType,
-        ),
-        DataFrame,
-    )
-    check(
-        assert_type(
-            DF.resample("m").aggregate({"col1": ["sum", np.mean], "col2": np.mean}),
-            _AggRetType,
-        ),
-        DataFrame,
-    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <function (sum|mean) .*> is currently using ",
+        lower="2.0.99",
+    ):
+        check(assert_type(DF.resample("m").aggregate(np.sum), _AggRetType), DataFrame)
+        check(assert_type(DF.resample("m").agg(np.sum), _AggRetType), DataFrame)
+        check(assert_type(DF.resample("m").apply(np.sum), _AggRetType), DataFrame)
+        check(
+            assert_type(DF.resample("m").aggregate([np.sum, np.mean]), _AggRetType),
+            DataFrame,
+        )
+        check(
+            assert_type(DF.resample("m").aggregate(["sum", np.mean]), _AggRetType),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                DF.resample("m").aggregate({"col1": "sum", "col2": np.mean}),
+                _AggRetType,
+            ),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                DF.resample("m").aggregate({"col1": ["sum", np.mean], "col2": np.mean}),
+                _AggRetType,
+            ),
+            DataFrame,
+        )
 
     def f(val: DataFrame) -> Series:
         return val.mean()
@@ -221,32 +232,42 @@ def test_filling_series() -> None:
 
 
 def test_fillna_series() -> None:
-    check(assert_type(S.resample("m").fillna("pad"), Series), Series)
-    check(assert_type(S.resample("m").fillna("backfill"), Series), Series)
-    check(assert_type(S.resample("m").fillna("ffill"), Series), Series)
-    check(assert_type(S.resample("m").fillna("bfill"), Series), Series)
-    check(assert_type(S.resample("m").fillna("nearest", limit=2), Series), Series)
+    with pytest_warns_bounded(
+        FutureWarning,
+        "DatetimeIndexResampler.fillna is deprecated ",
+        lower="2.0.99",
+    ):
+        check(assert_type(S.resample("m").fillna("pad"), Series), Series)
+        check(assert_type(S.resample("m").fillna("backfill"), Series), Series)
+        check(assert_type(S.resample("m").fillna("ffill"), Series), Series)
+        check(assert_type(S.resample("m").fillna("bfill"), Series), Series)
+        check(assert_type(S.resample("m").fillna("nearest", limit=2), Series), Series)
 
 
 def test_aggregate_series() -> None:
-    check(assert_type(S.resample("m").aggregate(np.sum), _AggRetType), Series)
-    check(assert_type(S.resample("m").agg(np.sum), _AggRetType), Series)
-    check(assert_type(S.resample("m").apply(np.sum), _AggRetType), Series)
-    check(
-        assert_type(S.resample("m").aggregate([np.sum, np.mean]), _AggRetType),
-        DataFrame,
-    )
-    check(
-        assert_type(S.resample("m").aggregate(["sum", np.mean]), _AggRetType),
-        DataFrame,
-    )
-    check(
-        assert_type(
-            S.resample("m").aggregate({"col1": "sum", "col2": np.mean}),
-            _AggRetType,
-        ),
-        DataFrame,
-    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <function (sum|mean) .*> is currently using ",
+        lower="2.0.99",
+    ):
+        check(assert_type(S.resample("m").aggregate(np.sum), _AggRetType), Series)
+        check(assert_type(S.resample("m").agg(np.sum), _AggRetType), Series)
+        check(assert_type(S.resample("m").apply(np.sum), _AggRetType), Series)
+        check(
+            assert_type(S.resample("m").aggregate([np.sum, np.mean]), _AggRetType),
+            DataFrame,
+        )
+        check(
+            assert_type(S.resample("m").aggregate(["sum", np.mean]), _AggRetType),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                S.resample("m").aggregate({"col1": "sum", "col2": np.mean}),
+                _AggRetType,
+            ),
+            DataFrame,
+        )
 
     def f(val: Series) -> float:
         return val.mean()
@@ -298,17 +319,19 @@ def test_aggregate_series_combinations() -> None:
     def s2scalar(val: Series) -> float:
         return float(val.mean())
 
-    check(S.resample("m").aggregate(np.sum), Series)
-    check(S.resample("m").aggregate("sum"), Series)
     with pytest_warns_bounded(
-        FutureWarning, match="Not prepending group keys", upper="1.5.99"
+        FutureWarning,
+        r"The provided callable <function (sum|mean) .*> is currently using ",
+        lower="2.0.99",
     ):
-        check(S.resample("m").aggregate(s2series), Series)
+        check(S.resample("m").aggregate(np.sum), Series)
+        check(S.resample("m").aggregate([np.mean]), DataFrame)
+        check(S.resample("m").aggregate(["sum", np.mean]), DataFrame)
+        check(S.resample("m").aggregate({"sum": np.sum}), DataFrame)
+        check(S.resample("m").aggregate({"sum": np.sum, "mean": np.mean}), DataFrame)
+    check(S.resample("m").aggregate("sum"), Series)
+    check(S.resample("m").aggregate(s2series), Series)
     check(S.resample("m").aggregate(s2scalar), Series)
-    check(S.resample("m").aggregate([np.mean]), DataFrame)
-    check(S.resample("m").aggregate(["sum", np.mean]), DataFrame)
-    check(S.resample("m").aggregate({"sum": np.sum}), DataFrame)
-    check(S.resample("m").aggregate({"sum": np.sum, "mean": np.mean}), DataFrame)
 
 
 def test_aggregate_frame_combinations() -> None:
@@ -321,24 +344,27 @@ def test_aggregate_frame_combinations() -> None:
     def df2scalar(val: DataFrame) -> float:
         return float(val.mean().mean())
 
-    check(DF.resample("m").aggregate(np.sum), DataFrame)
-    check(DF.resample("m").aggregate("sum"), DataFrame)
     with pytest_warns_bounded(
-        FutureWarning, match="Not prepending group keys", upper="1.5.99"
+        FutureWarning,
+        r"The provided callable <function (sum|mean) .*> is currently using ",
+        lower="2.0.99",
     ):
-        check(DF.resample("m").aggregate(df2frame), DataFrame)
+        check(DF.resample("m").aggregate(np.sum), DataFrame)
+        check(DF.resample("m").aggregate([np.mean]), DataFrame)
+        check(DF.resample("m").aggregate(["sum", np.mean]), DataFrame)
+        check(DF.resample("m").aggregate({"col1": np.sum}), DataFrame)
+        check(DF.resample("m").aggregate({"col1": np.sum, "col2": np.mean}), DataFrame)
+        check(
+            DF.resample("m").aggregate({"col1": [np.sum], "col2": ["sum", np.mean]}),
+            DataFrame,
+        )
+        check(
+            DF.resample("m").aggregate({"col1": np.sum, "col2": ["sum", np.mean]}),
+            DataFrame,
+        )
+        check(DF.resample("m").aggregate({"col1": "sum", "col2": [np.mean]}), DataFrame)
+
+    check(DF.resample("m").aggregate("sum"), DataFrame)
+    check(DF.resample("m").aggregate(df2frame), DataFrame)
     check(DF.resample("m").aggregate(df2series), DataFrame)
     check(DF.resample("m").aggregate(df2scalar), DataFrame)
-    check(DF.resample("m").aggregate([np.mean]), DataFrame)
-    check(DF.resample("m").aggregate(["sum", np.mean]), DataFrame)
-    check(DF.resample("m").aggregate({"col1": np.sum}), DataFrame)
-    check(DF.resample("m").aggregate({"col1": np.sum, "col2": np.mean}), DataFrame)
-    check(
-        DF.resample("m").aggregate({"col1": [np.sum], "col2": ["sum", np.mean]}),
-        DataFrame,
-    )
-    check(
-        DF.resample("m").aggregate({"col1": np.sum, "col2": ["sum", np.mean]}),
-        DataFrame,
-    )
-    check(DF.resample("m").aggregate({"col1": "sum", "col2": [np.mean]}), DataFrame)

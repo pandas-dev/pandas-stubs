@@ -11,28 +11,22 @@ from pandas.arrays import (
     DatetimeArray,
     StringArray,
 )
+from pandas.core.arrays.masked import BaseMaskedArray
+from typing_extensions import Self
 
 from pandas._libs.missing import NAType
 from pandas._typing import npt
 
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
 
-from .masked import BaseMaskedArray
-
-_type = type
-
 class _IntegerDtype(ExtensionDtype):
-    name: str
-    base = ...
-    type: _type
-    na_value = ...
-    def is_signed_integer(self): ...
-    def is_unsigned_integer(self): ...
-    def numpy_dtype(self): ...
-    def kind(self): ...
-    def itemsize(self): ...
+    base: None
+    @property
+    def na_value(self) -> NAType: ...
+    @property
+    def itemsize(self) -> int: ...
     @classmethod
-    def construct_array_type(cls): ...
+    def construct_array_type(cls) -> type[Self]: ...
     def __from_arrow__(self, array): ...
 
 class IntegerArray(BaseMaskedArray):
@@ -65,27 +59,20 @@ class IntegerArray(BaseMaskedArray):
     ) -> npt.NDArray[np.str_]: ...
     @overload
     def astype(  # type: ignore[misc]
-        self, dtype: type[bool] | Literal["bool"] | type[np.bool_], copy: bool = ...
+        self, dtype: type[bool | np.bool_] | Literal["bool"], copy: bool = ...
     ) -> npt.NDArray[np.bool_]: ...
     @overload
     def astype(
         self,
-        dtype: type[int]
-        | Literal["i1", "i2", "i4", "i8", "int8", "int16", "int32", "int64"]
-        | type[np.int8]
-        | type[np.int16]
-        | type[np.int32]
-        | type[np.int64],
+        dtype: Literal["i1", "i2", "i4", "i8", "int8", "int16", "int32", "int64"]
+        | type[int | np.signedinteger],
         copy: bool = ...,
     ) -> npt.NDArray[np.signedinteger]: ...
     @overload
     def astype(
         self,
         dtype: Literal["u1", "u2", "u4", "u8", "uint8", "uint16", "uint32", "uint64"]
-        | type[np.uint8]
-        | type[np.uint16]
-        | type[np.uint32]
-        | type[np.uint64],
+        | type[np.unsignedinteger],
         copy: bool = ...,
     ) -> npt.NDArray[np.unsignedinteger]: ...
     @overload
@@ -94,7 +81,7 @@ class IntegerArray(BaseMaskedArray):
     ) -> npt.NDArray[np.float32]: ...
     @overload
     def astype(
-        self, dtype: type[float] | Literal["float", "float64", "f8"] | type[np.float64]
+        self, dtype: Literal["float", "float64", "f8"] | type[np.float64 | float]
     ) -> npt.NDArray[np.float64]: ...
     @overload
     def astype(  # type: ignore[misc]
@@ -103,9 +90,7 @@ class IntegerArray(BaseMaskedArray):
     @overload
     def astype(
         self,
-        dtype: type[complex]
-        | Literal["complex", "complex128", "c16"]
-        | type[np.complex128],
+        dtype: Literal["complex", "complex128", "c16"] | type[np.complex128 | complex],
     ) -> npt.NDArray[np.complex128]: ...
     @overload
     def astype(self, dtype: Literal["boolean"] | pd.BooleanDtype) -> BooleanArray: ...

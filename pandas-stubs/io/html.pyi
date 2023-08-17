@@ -1,16 +1,20 @@
-from typing import (
-    Any,
+from collections.abc import (
     Callable,
     Hashable,
-    Literal,
     Mapping,
-    Pattern,
     Sequence,
+)
+from re import Pattern
+from typing import (
+    Any,
+    Literal,
 )
 
 from pandas.core.frame import DataFrame
 
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
+    DtypeBackend,
     FilePath,
     HashableT1,
     HashableT2,
@@ -22,6 +26,7 @@ from pandas._typing import (
 
 def read_html(
     io: FilePath | ReadBuffer[str],
+    *,
     match: str | Pattern = ...,
     flavor: str | None = ...,
     header: int | Sequence[int] | None = ...,
@@ -46,4 +51,5 @@ def read_html(
     keep_default_na: bool = ...,
     displayed_only: bool = ...,
     extract_links: Literal["header", "footer", "body", "all"] | None = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> list[DataFrame]: ...

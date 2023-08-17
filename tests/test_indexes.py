@@ -1,16 +1,25 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import Union
+from typing import (
+    Tuple,
+    Union,
+)
 
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
-from pandas.core.indexes.numeric import NumericIndex
-import pytest
-from typing_extensions import assert_type
+from typing_extensions import (
+    Never,
+    assert_type,
+)
 
-from tests import check
+from pandas._typing import Dtype  # noqa: F401
+
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 
 def test_index_unique() -> None:
@@ -56,8 +65,8 @@ def test_multiindex_get_level_values() -> None:
 
 def test_index_tolist() -> None:
     i1 = pd.Index([1, 2, 3])
-    check(assert_type(i1.tolist(), list), list, int)
-    check(assert_type(i1.to_list(), list), list, int)
+    check(assert_type(i1.tolist(), "list[int]"), list, int)
+    check(assert_type(i1.to_list(), "list[int]"), list, int)
 
 
 def test_column_getitem() -> None:
@@ -65,7 +74,8 @@ def test_column_getitem() -> None:
     df = pd.DataFrame([[1, 2, 3]], columns=["a", "b", "c"])
 
     column = df.columns[0]
-    check(assert_type(df[column], pd.Series), pd.Series, int)
+    check(assert_type(column, str), str)
+    check(assert_type(df[column], pd.Series), pd.Series, np.int64)
 
 
 def test_column_contains() -> None:
@@ -79,26 +89,36 @@ def test_column_contains() -> None:
     length = len(df.columns[df.columns.str.contains("A|B")])
 
 
+def test_column_sequence() -> None:
+    df = pd.DataFrame([1, 2, 3])
+    col_list = list(df.columns)
+    check(
+        assert_type(col_list, "list[str]"),
+        list,
+        int,
+    )
+
+
 def test_difference_none() -> None:
     # https://github.com/pandas-dev/pandas-stubs/issues/17
     ind = pd.Index([1, 2, 3])
-    check(assert_type(ind.difference([1, None]), pd.Index), pd.Index)
+    check(assert_type(ind.difference([1, None]), "pd.Index[int]"), pd.Index)
     # GH 253
-    check(assert_type(ind.difference([1]), pd.Index), pd.Index)
+    check(assert_type(ind.difference([1]), "pd.Index[int]"), pd.Index)
 
 
 def test_str_split() -> None:
     # GH 194
     ind = pd.Index(["a-b", "c-d"])
-    check(assert_type(ind.str.split("-"), pd.Index), pd.Index)
+    check(assert_type(ind.str.split("-"), "pd.Index[str]"), pd.Index)
     check(assert_type(ind.str.split("-", expand=True), pd.MultiIndex), pd.MultiIndex)
 
 
 def test_index_dropna():
     idx = pd.Index([1, 2])
 
-    check(assert_type(idx.dropna(how="all"), pd.Index), pd.Index)
-    check(assert_type(idx.dropna(how="any"), pd.Index), pd.Index)
+    check(assert_type(idx.dropna(how="all"), "pd.Index[int]"), pd.Index)
+    check(assert_type(idx.dropna(how="any"), "pd.Index[int]"), pd.Index)
 
     midx = pd.MultiIndex.from_arrays([[1, 2], [3, 4]])
 
@@ -109,7 +129,7 @@ def test_index_dropna():
 def test_index_neg():
     # GH 253
     idx = pd.Index([1, 2])
-    check(assert_type(-idx, pd.Index), pd.Index)
+    check(assert_type(-idx, "pd.Index[int]"), pd.Index)
 
 
 def test_types_to_numpy() -> None:
@@ -122,16 +142,16 @@ def test_types_to_numpy() -> None:
 def test_index_arithmetic() -> None:
     # GH 287
     idx = pd.Index([1, 2.2, 3], dtype=float)
-    check(assert_type(idx + 3, NumericIndex), NumericIndex)
-    check(assert_type(idx - 3, NumericIndex), NumericIndex)
-    check(assert_type(idx * 3, NumericIndex), NumericIndex)
-    check(assert_type(idx / 3, NumericIndex), NumericIndex)
-    check(assert_type(idx // 3, NumericIndex), NumericIndex)
-    check(assert_type(3 + idx, NumericIndex), NumericIndex)
-    check(assert_type(3 - idx, NumericIndex), NumericIndex)
-    check(assert_type(3 * idx, NumericIndex), NumericIndex)
-    check(assert_type(3 / idx, NumericIndex), NumericIndex)
-    check(assert_type(3 // idx, NumericIndex), NumericIndex)
+    check(assert_type(idx + 3, "pd.Index[float]"), pd.Index, np.float64)
+    check(assert_type(idx - 3, "pd.Index[float]"), pd.Index, np.float64)
+    check(assert_type(idx * 3, "pd.Index[float]"), pd.Index, np.float64)
+    check(assert_type(idx / 3, "pd.Index[float]"), pd.Index, np.float64)
+    check(assert_type(idx // 3, "pd.Index[float]"), pd.Index, np.float64)
+    check(assert_type(3 + idx, "pd.Index[float]"), pd.Index, np.float64)
+    check(assert_type(3 - idx, "pd.Index[float]"), pd.Index, np.float64)
+    check(assert_type(3 * idx, "pd.Index[float]"), pd.Index, np.float64)
+    check(assert_type(3 / idx, "pd.Index[float]"), pd.Index, np.float64)
+    check(assert_type(3 // idx, "pd.Index[float]"), pd.Index, np.float64)
 
 
 def test_index_relops() -> None:
@@ -166,28 +186,27 @@ def test_index_relops() -> None:
 
 
 def test_range_index_union():
-    with pytest.warns(FutureWarning, match="pandas.Int64Index"):
-        check(
-            assert_type(
-                pd.RangeIndex(0, 10).union(pd.RangeIndex(10, 20)),
-                Union[pd.Index, pd.Int64Index, pd.RangeIndex],
-            ),
-            pd.RangeIndex,
-        )
-        check(
-            assert_type(
-                pd.RangeIndex(0, 10).union([11, 12, 13]),
-                Union[pd.Index, pd.Int64Index, pd.RangeIndex],
-            ),
-            pd.Int64Index,
-        )
-        check(
-            assert_type(
-                pd.RangeIndex(0, 10).union(["a", "b", "c"]),
-                Union[pd.Index, pd.Int64Index, pd.RangeIndex],
-            ),
-            pd.Index,
-        )
+    check(
+        assert_type(
+            pd.RangeIndex(0, 10).union(pd.RangeIndex(10, 20)),
+            Union[pd.Index, "pd.Index[int]", pd.RangeIndex],
+        ),
+        pd.RangeIndex,
+    )
+    check(
+        assert_type(
+            pd.RangeIndex(0, 10).union([11, 12, 13]),
+            Union[pd.Index, "pd.Index[int]", pd.RangeIndex],
+        ),
+        pd.Index,
+    )
+    check(
+        assert_type(
+            pd.RangeIndex(0, 10).union(["a", "b", "c"]),
+            Union[pd.Index, "pd.Index[int]", pd.RangeIndex],
+        ),
+        pd.Index,
+    )
 
 
 def test_interval_range():
@@ -259,6 +278,30 @@ def test_interval_range():
     )
     check(
         assert_type(
+            pd.interval_range(
+                pd.Timestamp(2000, 1, 1),
+                pd.Timestamp(2010, 1, 1),
+                freq=pd.Timedelta(days=30),
+            ),
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(
+        assert_type(
+            pd.interval_range(
+                pd.Timestamp(2000, 1, 1),
+                pd.Timestamp(2010, 1, 1),
+                freq=dt.timedelta(days=30),
+            ),
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(
+        assert_type(
             pd.interval_range(pd.Timestamp(2000, 1, 1), dt.datetime(2010, 1, 1), 5),
             "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
         ),
@@ -269,6 +312,26 @@ def test_interval_range():
     check(
         assert_type(
             pd.interval_range(pd.Timedelta("1D"), pd.Timedelta("10D")),
+            "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(
+        assert_type(
+            pd.interval_range(
+                pd.Timedelta("1D"), pd.Timedelta("10D"), freq=pd.Timedelta("2D")
+            ),
+            "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(
+        assert_type(
+            pd.interval_range(
+                pd.Timedelta("1D"), pd.Timedelta("10D"), freq=dt.timedelta(days=2)
+            ),
             "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
         ),
         pd.IntervalIndex,
@@ -636,3 +699,351 @@ def test_interval_index_tuples():
         pd.IntervalIndex,
         pd.Interval,
     )
+
+
+def test_sorted_and_list() -> None:
+    # GH 497
+    i1 = pd.Index([3, 2, 1])
+    check(assert_type(sorted(i1), "list[int]"), list, int)
+    check(assert_type(list(i1), "list[int]"), list, int)
+
+
+def test_index_operators() -> None:
+    # GH 405
+    i1 = pd.Index([1, 2, 3])
+    i2 = pd.Index([4, 5, 6])
+
+    check(assert_type(i1 + i2, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 + 10, "pd.Index[int]"), pd.Index)
+    check(assert_type(10 + i1, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 - i2, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 - 10, "pd.Index[int]"), pd.Index)
+    check(assert_type(10 - i1, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 * i2, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 * 10, "pd.Index[int]"), pd.Index)
+    check(assert_type(10 * i1, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 / i2, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 / 10, "pd.Index[int]"), pd.Index)
+    check(assert_type(10 / i1, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 // i2, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 // 10, "pd.Index[int]"), pd.Index)
+    check(assert_type(10 // i1, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1**i2, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1**2, "pd.Index[int]"), pd.Index)
+    check(assert_type(2**i1, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 % i2, "pd.Index[int]"), pd.Index)
+    check(assert_type(i1 % 10, "pd.Index[int]"), pd.Index)
+    check(assert_type(10 % i1, "pd.Index[int]"), pd.Index)
+    check(assert_type(divmod(i1, i2), Tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
+    check(assert_type(divmod(i1, 10), Tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
+    check(assert_type(divmod(10, i1), Tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(
+            i1 & i2,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(  # type: ignore[assert-type]
+            i1 & 10,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(  # type: ignore[assert-type]
+            10 & i1,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(
+            i1 | i2,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(  # type: ignore[assert-type]
+            i1 | 10,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(  # type: ignore[assert-type]
+            10 | i1,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(
+            i1 ^ i2,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(  # type: ignore[assert-type]
+            i1 ^ 10,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+        assert_type(  # type: ignore[assert-type]
+            10 ^ i1,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            Never,
+        )
+
+
+def test_getitem() -> None:
+    # GH 536
+    ip = pd.period_range(start="2022-06-01", periods=10)
+    check(assert_type(ip, pd.PeriodIndex), pd.PeriodIndex, pd.Period)
+    check(assert_type(ip[0], pd.Period), pd.Period)
+    check(assert_type(ip[[0, 2, 4]], pd.PeriodIndex), pd.PeriodIndex, pd.Period)
+
+    idt = pd.DatetimeIndex(["2022-08-14", "2022-08-20", "2022-08-24"])
+    check(assert_type(idt, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+    check(assert_type(idt[0], pd.Timestamp), pd.Timestamp)
+    check(assert_type(idt[[0, 2]], pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+
+    itd = pd.date_range("1/1/2021", "1/5/2021") - pd.Timestamp("1/3/2019")
+    check(assert_type(itd, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
+    check(assert_type(itd[0], pd.Timedelta), pd.Timedelta)
+    check(
+        assert_type(itd[[0, 2, 4]], pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta
+    )
+
+    iini = pd.interval_range(0, 10)
+    check(
+        assert_type(iini, "pd.IntervalIndex[pd.Interval[int]]"),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(assert_type(iini[0], "pd.Interval[int]"), pd.Interval)
+    check(
+        assert_type(iini[[0, 2, 4]], "pd.IntervalIndex[pd.Interval[int]]"),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+
+    iinf = pd.interval_range(0.0, 10)
+    check(
+        assert_type(iinf, "pd.IntervalIndex[pd.Interval[float]]"),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(assert_type(iinf[0], "pd.Interval[float]"), pd.Interval)
+    check(
+        assert_type(iinf[[0, 2, 4]], "pd.IntervalIndex[pd.Interval[float]]"),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+
+    iints = pd.interval_range(dt.datetime(2000, 1, 1), dt.datetime(2010, 1, 1), 5)
+    check(
+        assert_type(
+            iints,
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(assert_type(iints[0], "pd.Interval[pd.Timestamp]"), pd.Interval)
+    check(
+        assert_type(iints[[0, 2, 4]], "pd.IntervalIndex[pd.Interval[pd.Timestamp]]"),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+
+    iintd = pd.interval_range(pd.Timedelta("1D"), pd.Timedelta("10D"))
+    check(
+        assert_type(
+            iintd,
+            "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(assert_type(iintd[0], "pd.Interval[pd.Timedelta]"), pd.Interval)
+    check(
+        assert_type(iintd[[0, 2, 4]], "pd.IntervalIndex[pd.Interval[pd.Timedelta]]"),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+
+    iri = pd.RangeIndex(0, 10)
+    check(assert_type(iri, pd.RangeIndex), pd.RangeIndex, int)
+    check(assert_type(iri[0], int), int)
+    check(assert_type(iri[[0, 2, 4]], pd.Index), pd.Index, np.int64)
+
+    mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
+    check(assert_type(mi, pd.MultiIndex), pd.MultiIndex)
+    check(assert_type(mi[0], tuple), tuple)
+    check(assert_type(mi[[0, 2]], pd.MultiIndex), pd.MultiIndex, tuple)
+
+    i0 = pd.Index(["a", "b", "c"])
+    check(assert_type(i0, "pd.Index[str]"), pd.Index)
+    check(assert_type(i0[0], str), str)
+    check(assert_type(i0[[0, 2]], "pd.Index[str]"), pd.Index, str)
+
+
+def test_multiindex_dtypes():
+    # GH-597
+    mi = pd.MultiIndex.from_tuples([(1, 2.0), (2, 3.0)], names=["foo", "bar"])
+    check(assert_type(mi.dtypes, "pd.Series[Dtype]"), pd.Series)
+
+
+def test_index_constructors():
+    # See if we can pick up the different index types in 2.0
+    # Eventually should be using a generic index
+    ilist = [1, 2, 3]
+    check(
+        assert_type(pd.Index(ilist, dtype="int"), "pd.Index[int]"), pd.Index, np.integer
+    )
+    check(
+        assert_type(pd.Index(ilist, dtype=int), "pd.Index[int]"), pd.Index, np.integer
+    )
+    check(
+        assert_type(pd.Index(ilist, dtype=np.int8), "pd.Index[int]"), pd.Index, np.int8
+    )
+    check(
+        assert_type(pd.Index(ilist, dtype=np.int16), "pd.Index[int]"),
+        pd.Index,
+        np.int16,
+    )
+    check(
+        assert_type(pd.Index(ilist, dtype=np.int32), "pd.Index[int]"),
+        pd.Index,
+        np.int32,
+    )
+    check(
+        assert_type(pd.Index(ilist, dtype=np.int64), "pd.Index[int]"),
+        pd.Index,
+        np.int64,
+    )
+    check(
+        assert_type(pd.Index(ilist, dtype=np.uint8), "pd.Index[int]"),
+        pd.Index,
+        np.uint8,
+    )
+    check(
+        assert_type(pd.Index(ilist, dtype=np.uint16), "pd.Index[int]"),
+        pd.Index,
+        np.uint16,
+    )
+    check(
+        assert_type(pd.Index(ilist, dtype=np.uint32), "pd.Index[int]"),
+        pd.Index,
+        np.uint32,
+    )
+    check(
+        assert_type(pd.Index(ilist, dtype=np.uint64), "pd.Index[int]"),
+        pd.Index,
+        np.uint64,
+    )
+
+    flist = [1.1, 2.2, 3.3]
+    check(
+        assert_type(pd.Index(flist, dtype="float"), "pd.Index[float]"),
+        pd.Index,
+        np.float64,
+    )
+    check(
+        assert_type(pd.Index(flist, dtype=float), "pd.Index[float]"),
+        pd.Index,
+        np.float64,
+    )
+    check(
+        assert_type(pd.Index(flist, dtype=np.float32), "pd.Index[float]"),
+        pd.Index,
+        np.float32,
+    )
+    check(
+        assert_type(pd.Index(flist, dtype=np.float64), "pd.Index[float]"),
+        pd.Index,
+        np.float64,
+    )
+
+    clist = [1 + 1j, 2 + 2j, 3 + 4j]
+    check(
+        assert_type(pd.Index(clist, dtype="complex"), "pd.Index[complex]"),
+        pd.Index,
+        complex,
+    )
+    check(
+        assert_type(pd.Index(clist, dtype=complex), "pd.Index[complex]"),
+        pd.Index,
+        complex,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        # This should be detected by the type checker, but for it to work,
+        # we need to change the last overload of __new__ in core/indexes/base.pyi
+        # to specify all the possible dtype options.  For right now, we will leave the
+        # test here as a reminder that we would like this to be seen as incorrect usage.
+        pd.Index(flist, dtype=np.float16)
+
+
+def test_iter() -> None:
+    # GH 723
+    for ts in pd.date_range(start="1/1/2023", end="1/08/2023", freq="6H"):
+        check(assert_type(ts, pd.Timestamp), pd.Timestamp)
+
+
+def test_intersection() -> None:
+    # GH 744
+    index = pd.DatetimeIndex(["2022-01-01"])
+    check(assert_type(index.intersection(index), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(
+        assert_type(index.intersection([pd.Timestamp("1/1/2023")]), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+
+
+def test_annotate() -> None:
+    # GH 502
+    df = pd.DataFrame({"a": [1, 2]})
+
+    columns: pd.Index[str] = df.columns
+    for column in columns:
+        check(assert_type(column, str), str)
+
+    names: list[str] = list(df.columns)
+    for name in names:
+        check(assert_type(name, str), str)
+
+
+def test_new() -> None:
+    check(assert_type(pd.Index([1]), "pd.Index[int]"), pd.Index, np.intp)
+    check(assert_type(pd.Index([1], dtype=float), "pd.Index[float]"), pd.Index, float)
+    check(
+        assert_type(pd.Index([pd.Timestamp(0)]), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(pd.Index([pd.Timedelta(0)]), pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+        pd.Timedelta,
+    )
+    check(
+        assert_type(pd.Index([pd.Period("2012-1-1", freq="D")]), pd.PeriodIndex),
+        pd.PeriodIndex,
+        pd.Period,
+    )
+    check(
+        assert_type(
+            pd.Index([pd.Interval(pd.Timestamp(0), pd.Timestamp(1))]),
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+
+
+def test_timedelta_div() -> None:
+    index = pd.Index([pd.Timedelta(days=1)], dtype="timedelta64[s]")
+    delta = dt.timedelta(1)
+
+    check(assert_type(index / delta, "pd.Index[float]"), pd.Index, float)
+    check(assert_type(index / [delta], "pd.Index[float]"), pd.Index, float)
+    check(assert_type(index / 1, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
+    check(assert_type(index / [1], pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
+    check(assert_type(index // delta, "pd.Index[int]"), pd.Index, np.longlong)
+    check(assert_type(index // [delta], "pd.Index[int]"), pd.Index, int)
+    check(assert_type(index // 1, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
+    check(assert_type(index // [1], pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
+
+    check(assert_type(delta / index, "pd.Index[float]"), pd.Index, float)
+    check(assert_type([delta] / index, "pd.Index[float]"), pd.Index, float)
+    check(assert_type(delta // index, "pd.Index[int]"), pd.Index, np.longlong)
+    check(assert_type([delta] // index, "pd.Index[int]"), pd.Index, np.signedinteger)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        1 / index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        [1] / index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        1 // index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        [1] // index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]

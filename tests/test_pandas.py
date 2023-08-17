@@ -21,19 +21,20 @@ from pandas._libs.tslibs import NaTType
 from pandas._typing import Scalar
 
 from tests import (
+    PD_LTE_20,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 
 
 def test_types_to_datetime() -> None:
     df = pd.DataFrame({"year": [2015, 2016], "month": [2, 3], "day": [4, 5]})
     r1: pd.Series = pd.to_datetime(df)
-    r2: pd.Series = pd.to_datetime(
-        df, unit="s", origin="unix", infer_datetime_format=True
-    )
+
+    r2: pd.Series = pd.to_datetime(df, unit="s", origin="unix")
     r3: pd.Series = pd.to_datetime(
-        df, unit="ns", dayfirst=True, utc=None, format="%M:%D", exact=False
+        df, unit="ns", dayfirst=True, utc=False, format="%M:%D", exact=False
     )
     r4: pd.DatetimeIndex = pd.to_datetime(
         [1, 2], unit="D", origin=pd.Timestamp("01/01/2000")
@@ -167,6 +168,16 @@ def test_concat_args() -> None:
         ),
         pd.DataFrame,
     )
+
+    df_dict = {"df1": df, "df2": df2}
+    check(
+        assert_type(
+            pd.concat(df_dict.values(), keys=df_dict.keys()),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
     check(
         assert_type(pd.concat([df, df2], ignore_index=True), pd.DataFrame), pd.DataFrame
     )
@@ -233,10 +244,10 @@ def test_types_json_normalize() -> None:
 def test_isna() -> None:
     # https://github.com/pandas-dev/pandas-stubs/issues/264
     s1 = pd.Series([1, np.nan, 3.2])
-    check(assert_type(pd.isna(s1), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.isna(s1), "pd.Series[bool]"), pd.Series, np.bool_)
 
     s2 = pd.Series([1, 3.2])
-    check(assert_type(pd.notna(s2), "pd.Series[bool]"), pd.Series, bool)
+    check(assert_type(pd.notna(s2), "pd.Series[bool]"), pd.Series, np.bool_)
 
     df1 = pd.DataFrame({"a": [1, 2, 1, 2], "b": [1, 1, 2, np.nan]})
     check(assert_type(pd.isna(df1), "pd.DataFrame"), pd.DataFrame)
@@ -258,6 +269,27 @@ def test_isna() -> None:
 
     assert not check(assert_type(pd.isna(2.5), bool), bool)
     assert check(assert_type(pd.notna(2.5), bool), bool)
+
+    # Checks for datetime, timedelta, np.datetime64 and np.timedelta64
+    py_dt = dt.datetime.now()
+    assert check(assert_type(pd.notna(py_dt), bool), bool)
+    assert not check(assert_type(pd.isna(py_dt), bool), bool)
+
+    py_td = dt.datetime.now() - py_dt
+    assert check(assert_type(pd.notna(py_td), bool), bool)
+    assert not check(assert_type(pd.isna(py_td), bool), bool)
+
+    np_dt = np.datetime64(py_dt)
+    assert check(assert_type(pd.notna(np_dt), bool), bool)
+    assert not check(assert_type(pd.isna(np_dt), bool), bool)
+
+    np_td = np.timedelta64(py_td)
+    assert check(assert_type(pd.notna(np_td), bool), bool)
+    assert not check(assert_type(pd.isna(np_td), bool), bool)
+
+    np_nat = np.timedelta64("NaT")
+    assert check(assert_type(pd.isna(np_nat), bool), bool)
+    assert not check(assert_type(pd.notna(np_nat), bool), bool)
 
     # Check TypeGuard type narrowing functionality
     # TODO: Due to limitations in TypeGuard spec, the true annotations are not always viable
@@ -382,7 +414,13 @@ def test_unique() -> None:
         pd.DatetimeIndex,
     )
 
-    check(assert_type(pd.unique(list("baabc")), np.ndarray), np.ndarray)
+    with pytest_warns_bounded(
+        FutureWarning,
+        "unique with argument that is not not a Series, Index, ExtensionArray, "
+        "or np.ndarray is deprecated",
+        lower="2.0.99",
+    ):
+        check(assert_type(pd.unique(list("baabc")), np.ndarray), np.ndarray)
 
     check(
         assert_type(
@@ -409,12 +447,18 @@ def test_unique() -> None:
         ),
         pd.Categorical,
     )
-    check(
-        assert_type(
-            pd.unique([("a", "b"), ("b", "a"), ("a", "c"), ("b", "a")]), np.ndarray
-        ),
-        np.ndarray,
-    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        "unique with argument that is not not a Series, Index, ExtensionArray, "
+        "or np.ndarray is deprecated",
+        lower="2.0.99",
+    ):
+        check(
+            assert_type(
+                pd.unique([("a", "b"), ("b", "a"), ("a", "c"), ("b", "a")]), np.ndarray
+            ),
+            np.ndarray,
+        )
     check(
         assert_type(pd.unique(pd.Index(["a", "b", "c", "a"])), np.ndarray),
         np.ndarray,
@@ -722,7 +766,17 @@ def test_lreshape() -> None:
 
 
 def test_factorize() -> None:
-    codes, uniques = pd.factorize(["b", "b", "a", "c", "b"])
+    with pytest_warns_bounded(
+        FutureWarning,
+        "factorize with argument that is not not a Series, Index, ExtensionArray, "
+        "or np.ndarray is deprecated",
+        lower="2.0.99",
+    ):
+        codes, uniques = pd.factorize(["b", "b", "a", "c", "b"])
+        check(assert_type(codes, np.ndarray), np.ndarray)
+        check(assert_type(uniques, np.ndarray), np.ndarray)
+
+    codes, uniques = pd.factorize(np.recarray((1,), dtype=[("x", int)]))
     check(assert_type(codes, np.ndarray), np.ndarray)
     check(assert_type(uniques, np.ndarray), np.ndarray)
 
@@ -738,41 +792,41 @@ def test_factorize() -> None:
     check(assert_type(codes, np.ndarray), np.ndarray)
     check(assert_type(idx_uniques, pd.Index), pd.Index)
 
-    codes, uniques = pd.factorize("bbacb")
-    check(assert_type(codes, np.ndarray), np.ndarray)
-    check(assert_type(uniques, np.ndarray), np.ndarray)
+    with pytest_warns_bounded(
+        FutureWarning,
+        "factorize with argument that is not not a Series, Index, ExtensionArray, "
+        "or np.ndarray is deprecated",
+        lower="2.0.99",
+    ):
+        codes, uniques = pd.factorize("bbacb")
+        check(assert_type(codes, np.ndarray), np.ndarray)
+        check(assert_type(uniques, np.ndarray), np.ndarray)
 
-    codes, uniques = pd.factorize(
-        ["b", "b", "a", "c", "b"], use_na_sentinel=True, size_hint=10
-    )
-    check(assert_type(codes, np.ndarray), np.ndarray)
-    check(assert_type(uniques, np.ndarray), np.ndarray)
+        codes, uniques = pd.factorize(
+            ["b", "b", "a", "c", "b"], use_na_sentinel=True, size_hint=10
+        )
+        check(assert_type(codes, np.ndarray), np.ndarray)
+        check(assert_type(uniques, np.ndarray), np.ndarray)
 
 
 def test_index_unqiue() -> None:
     ci = pd.CategoricalIndex(["a", "b", "a", "c"])
     dti = pd.DatetimeIndex([pd.Timestamp(2000, 1, 1)])
-    with pytest.warns(FutureWarning, match="pandas.Float64Index is deprecated"):
-        fi = pd.Float64Index([1.0, 2.0])
+
     i = pd.Index(["a", "b", "c", "a"])
-    with pytest.warns(FutureWarning, match="pandas.Int64Index is deprecated"):
-        i64i = pd.Int64Index([1, 2, 3, 4])
+
     pi = pd.period_range("2000Q1", periods=2, freq="Q")
     ri = pd.RangeIndex(0, 10)
-    with pytest.warns(FutureWarning, match="pandas.UInt64Index is deprecated"):
-        ui = pd.UInt64Index([0, 1, 2, 3, 5])
+
     tdi = pd.timedelta_range("1 day", "10 days", periods=10)
     mi = pd.MultiIndex.from_product([["a", "b"], ["apple", "banana"]])
     interval_i = pd.interval_range(1, 10, periods=10)
 
     check(assert_type(pd.unique(ci), pd.CategoricalIndex), pd.CategoricalIndex)
     check(assert_type(pd.unique(dti), np.ndarray), np.ndarray)
-    check(assert_type(pd.unique(fi), np.ndarray), np.ndarray)
     check(assert_type(pd.unique(i), np.ndarray), np.ndarray)
-    check(assert_type(pd.unique(i64i), np.ndarray), np.ndarray)
     check(assert_type(pd.unique(pi), pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(pd.unique(ri), np.ndarray), np.ndarray)
-    check(assert_type(pd.unique(ui), np.ndarray), np.ndarray)
     check(assert_type(pd.unique(tdi), np.ndarray), np.ndarray)
     check(assert_type(pd.unique(mi), np.ndarray), np.ndarray)
     check(
@@ -845,7 +899,33 @@ def test_cut() -> None:
 
     n0, n1 = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], intval_idx, retbins=True)
     check(assert_type(n0, pd.Categorical), pd.Categorical)
-    check(assert_type(n1, pd.IntervalIndex), pd.IntervalIndex)
+    check(assert_type(n1, "pd.IntervalIndex[pd.Interval[int]]"), pd.IntervalIndex)
+
+    s1 = pd.Series(data=pd.date_range("1/1/2020", periods=300))
+    check(
+        assert_type(
+            pd.cut(s1, bins=[np.datetime64("2020-01-03"), np.datetime64("2020-09-01")]),
+            "pd.Series[pd.CategoricalDtype]",
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            pd.cut(s1, bins=10),
+            "pd.Series[pd.CategoricalDtype]",
+        ),
+        pd.Series,
+        pd.Interval,
+    )
+    s0r, s1r = pd.cut(s1, bins=10, retbins=True)
+    check(assert_type(s0r, pd.Series), pd.Series, pd.Interval)
+    check(assert_type(s1r, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+    s0rlf, s1rlf = pd.cut(s1, bins=10, labels=False, retbins=True)
+    check(assert_type(s0rlf, pd.Series), pd.Series, np.int64)
+    check(assert_type(s1rlf, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
+    s0rls, s1rls = pd.cut(s1, bins=4, labels=["1", "2", "3", "4"], retbins=True)
+    check(assert_type(s0rls, pd.Series), pd.Series, str)
+    check(assert_type(s1rls, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
 
 
 def test_qcut() -> None:
@@ -950,8 +1030,10 @@ def test_merge() -> None:
         ),
         pd.DataFrame,
     )
-    # TOOD: When cross don't need on??
-    check(assert_type(pd.merge(ls, rs, how="cross"), pd.DataFrame), pd.DataFrame)
+    if PD_LTE_20:
+        # https://github.com/pandas-dev/pandas/issues/54055 needs to be fixed
+        # TODO: When cross don't need on??
+        check(assert_type(pd.merge(ls, rs, how="cross"), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(
             pd.merge(ls, rs, how="inner", left_index=True, right_index=True),
@@ -1185,24 +1267,24 @@ def test_merge_ordered() -> None:
             rs,
             left_on="left",
             right_on="right",
-            left_by="left",  # pyright: ignore
-            right_by="right",  # pyright: ignore
+            left_by="left",  # pyright: ignore[reportGeneralTypeIssues]
+            right_by="right",  # pyright: ignore[reportGeneralTypeIssues]
         )
         pd.merge_ordered(  # type: ignore[call-overload]
             ls,
-            rf,  # pyright: ignore
+            rf,
             left_on="left",
             right_on="b",
-            left_by="left",  # pyright: ignore
-            right_by="b",  # pyright: ignore
+            left_by="left",  # pyright: ignore[reportGeneralTypeIssues]
+            right_by="b",  # pyright: ignore[reportGeneralTypeIssues]
         )
         pd.merge_ordered(  # type: ignore[call-overload]
             lf,
             rs,
             left_on="a",
             right_on="right",
-            left_by="a",  # pyright: ignore
-            right_by="right",  # pyright: ignore
+            left_by="a",  # pyright: ignore[reportGeneralTypeIssues]
+            right_by="right",  # pyright: ignore[reportGeneralTypeIssues]
         )
 
 
@@ -1409,44 +1491,44 @@ def test_crosstab_args() -> None:
     )
     values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     check(
-        assert_type(pd.crosstab(a, b, values=values, aggfunc=np.sum), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
         assert_type(pd.crosstab(a, b, values=values, aggfunc="sum"), pd.DataFrame),
         pd.DataFrame,
     )
-    check(
-        assert_type(
-            pd.crosstab(a, b, values=pd.Index(values), aggfunc=np.sum), pd.DataFrame
-        ),
-        pd.DataFrame,
-    )
-    with pytest.warns(FutureWarning):
-        check(
-            assert_type(
-                pd.crosstab(a, b, values=pd.Categorical(values), aggfunc=np.sum),
-                pd.DataFrame,
-            ),
-            pd.DataFrame,
-        )
     check(
         assert_type(
             pd.crosstab(a, b, values=np.array(values), aggfunc="var"), pd.DataFrame
         ),
         pd.DataFrame,
     )
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <function (sum|mean) .*> is currently using",
+        lower="2.0.99",
+    ):
+        check(
+            assert_type(pd.crosstab(a, b, values=values, aggfunc=np.sum), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.crosstab(a, b, values=pd.Index(values), aggfunc=np.sum), pd.DataFrame
+            ),
+            pd.DataFrame,
+        )
 
-    check(
-        assert_type(
-            pd.crosstab(a, b, values=pd.Series(values), aggfunc=np.sum), pd.DataFrame
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(pd.crosstab(a, b, values=values, aggfunc=np.mean), pd.DataFrame),
-        pd.DataFrame,
-    )
+        check(
+            assert_type(
+                pd.crosstab(a, b, values=pd.Series(values), aggfunc=np.sum),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.crosstab(a, b, values=values, aggfunc=np.mean), pd.DataFrame
+            ),
+            pd.DataFrame,
+        )
     check(
         assert_type(pd.crosstab(a, b, values=values, aggfunc="mean"), pd.DataFrame),
         pd.DataFrame,
@@ -1646,15 +1728,20 @@ def test_pivot_table() -> None:
             ],
         }
     )
-    check(
-        assert_type(
-            pd.pivot_table(
-                df, values="D", index=["A", "B"], columns=["C"], aggfunc=np.sum
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <function sum .*> is currently using",
+        lower="2.0.99",
+    ):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df, values="D", index=["A", "B"], columns=["C"], aggfunc=np.sum
+                ),
+                pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
+        )
     check(
         assert_type(
             pd.pivot_table(
@@ -1677,7 +1764,11 @@ def test_pivot_table() -> None:
         ),
         pd.DataFrame,
     )
-    with pytest.warns(np.VisibleDeprecationWarning):
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <function sum .*> is currently using",
+        lower="2.0.99",
+    ):
         check(
             assert_type(
                 pd.pivot_table(
@@ -1691,7 +1782,6 @@ def test_pivot_table() -> None:
             ),
             pd.DataFrame,
         )
-    with pytest.warns(np.VisibleDeprecationWarning):
         check(
             assert_type(
                 pd.pivot_table(
@@ -1742,15 +1832,24 @@ def test_pivot_table() -> None:
         ),
         pd.DataFrame,
     )
-    check(
-        assert_type(
-            pd.pivot_table(
-                df, values="D", index=["A", "B"], columns=["C"], aggfunc={"D": np.sum}
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <function sum .*> is currently using",
+        lower="2.0.99",
+    ):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df,
+                    values="D",
+                    index=["A", "B"],
+                    columns=["C"],
+                    aggfunc={"D": np.sum},
+                ),
+                pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
+        )
     check(
         assert_type(
             pd.pivot_table(
@@ -1760,90 +1859,95 @@ def test_pivot_table() -> None:
         ),
         pd.DataFrame,
     )
-    check(
-        assert_type(
-            pd.pivot_table(
-                df,
-                values="D",
-                index=["A", "B"],
-                columns=["C"],
-                aggfunc=[f, np.sum, "sum"],
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"The provided callable <function sum .*> is currently using",
+        lower="2.0.99",
+    ):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df,
+                    values="D",
+                    index=["A", "B"],
+                    columns=["C"],
+                    aggfunc=[f, np.sum, "sum"],
+                ),
+                pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            pd.pivot_table(
-                df,
-                values="D",
-                index=["A", "B"],
-                columns=["C"],
-                aggfunc=np.sum,
-                margins=True,
-                margins_name="Total",
+        )
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df,
+                    values="D",
+                    index=["A", "B"],
+                    columns=["C"],
+                    aggfunc=np.sum,
+                    margins=True,
+                    margins_name="Total",
+                ),
+                pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            pd.pivot_table(
-                df,
-                values="D",
-                index=["A", "B"],
-                columns=["C"],
-                aggfunc=np.sum,
-                dropna=True,
+        )
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df,
+                    values="D",
+                    index=["A", "B"],
+                    columns=["C"],
+                    aggfunc=np.sum,
+                    dropna=True,
+                ),
+                pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            pd.pivot_table(
-                df,
-                values="D",
-                index=["A", "B"],
-                columns=["C"],
-                aggfunc=np.sum,
-                dropna=True,
+        )
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df,
+                    values="D",
+                    index=["A", "B"],
+                    columns=["C"],
+                    aggfunc=np.sum,
+                    dropna=True,
+                ),
+                pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            pd.pivot_table(
-                df,
-                values="D",
-                index=["A", "B"],
-                columns=["C"],
-                aggfunc=np.sum,
-                observed=True,
+        )
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df,
+                    values="D",
+                    index=["A", "B"],
+                    columns=["C"],
+                    aggfunc=np.sum,
+                    observed=True,
+                ),
+                pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            pd.pivot_table(
-                df,
-                values="D",
-                index=["A", "B"],
-                columns=["C"],
-                aggfunc=np.sum,
-                sort=False,
+        )
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df,
+                    values="D",
+                    index=["A", "B"],
+                    columns=["C"],
+                    aggfunc=np.sum,
+                    sort=False,
+                ),
+                pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
+        )
 
     idx = pd.DatetimeIndex(
         ["2011-01-01", "2011-02-01", "2011-01-02", "2011-01-01", "2011-01-02"]
@@ -1900,3 +2004,11 @@ def test_pivot_table() -> None:
         ),
         pd.DataFrame,
     )
+
+
+def test_argmin_and_argmax_return() -> None:
+    df = pd.DataFrame({"a": [-1, 0, 1], "b": [1, 2, 3]})
+    i = df.a.abs().argmin()
+    i1 = df.a.abs().argmax()
+    check(assert_type(i, np.int64), np.int64)
+    check(assert_type(i1, np.int64), np.int64)

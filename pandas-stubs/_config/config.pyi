@@ -1,7 +1,10 @@
+from collections.abc import (
+    Callable,
+    Iterable,
+)
 from contextlib import ContextDecorator
 from typing import (
     Any,
-    Iterable,
     Literal,
     overload,
 )
@@ -51,7 +54,7 @@ class Display(DictWrapper):
     date_yearfirst: bool
     encoding: str
     expand_frame_repr: bool
-    float_format: str | None
+    float_format: Callable[[float], str] | None
     html: DisplayHTML
     large_repr: str
     latex: DisplayLaTeX
