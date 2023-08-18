@@ -211,46 +211,57 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
         value: S1 | ArrayLike | Series[S1] | None,
     ) -> None: ...
 
+_ListLike: TypeAlias = (
+    ArrayLike | dict[_str, np.ndarray] | Sequence[S1] | IndexOpsMixin[S1]
+)
+
 class Series(IndexOpsMixin[S1], NDFrame):
-    _ListLike: TypeAlias = ArrayLike | dict[_str, np.ndarray] | list | tuple | Index
     __hash__: ClassVar[None]
 
-    # TODO: can __new__ be converted to __init__? Pandas implements __init__
     @overload
-    def __new__(
+    def __new__(  # type: ignore[misc]
         cls,
-        data: DatetimeIndex | Sequence[Timestamp | np.datetime64 | datetime],
+        data: DatetimeIndex
+        | Sequence[np.datetime64 | datetime]
+        | np.datetime64
+        | datetime,
         index: Axes | None = ...,
+        *,
         dtype: TimestampDtypeArg = ...,
-        name: Hashable | None = ...,
+        name: Hashable = ...,
         copy: bool = ...,
     ) -> TimestampSeries: ...
     @overload
-    def __new__(
+    def __new__(  # type: ignore[misc]
         cls,
         data: _ListLike,
         index: Axes | None = ...,
         *,
         dtype: TimestampDtypeArg,
-        name: Hashable | None = ...,
+        name: Hashable = ...,
         copy: bool = ...,
     ) -> TimestampSeries: ...
     @overload
-    def __new__(
+    def __new__(  # type: ignore[misc]
         cls,
         data: PeriodIndex,
         index: Axes | None = ...,
+        *,
         dtype: PeriodDtype = ...,
-        name: Hashable | None = ...,
+        name: Hashable = ...,
         copy: bool = ...,
     ) -> PeriodSeries: ...
     @overload
-    def __new__(
+    def __new__(  # type: ignore[misc]
         cls,
-        data: TimedeltaIndex | Sequence[Timedelta | np.timedelta64 | timedelta],
+        data: TimedeltaIndex
+        | Sequence[np.timedelta64 | timedelta]
+        | np.timedelta64
+        | timedelta,
         index: Axes | None = ...,
+        *,
         dtype: TimedeltaDtypeArg = ...,
-        name: Hashable | None = ...,
+        name: Hashable = ...,
         copy: bool = ...,
     ) -> TimedeltaSeries: ...
     @overload
@@ -260,35 +271,39 @@ class Series(IndexOpsMixin[S1], NDFrame):
         | Interval[_OrderableT]
         | Sequence[Interval[_OrderableT]],
         index: Axes | None = ...,
+        *,
         dtype: Literal["Interval"] = ...,
-        name: Hashable | None = ...,
+        name: Hashable = ...,
         copy: bool = ...,
     ) -> IntervalSeries[_OrderableT]: ...
     @overload
     def __new__(
         cls,
-        data: object | _ListLike | Series[S1] | dict[int, S1] | dict[_str, S1] | None,
+        data: Scalar | _ListLike | dict[int, Any] | dict[_str, Any] | None,
+        index: Axes | None = ...,
+        *,
         dtype: type[S1],
-        index: Axes | None = ...,
-        name: Hashable | None = ...,
+        name: Hashable = ...,
         copy: bool = ...,
     ) -> Self: ...
     @overload
     def __new__(
         cls,
-        data: Series[S1] | dict[int, S1] | dict[_str, S1] = ...,
+        data: S1 | _ListLike[S1] | dict[int, S1] | dict[_str, S1],
         index: Axes | None = ...,
+        *,
         dtype: Dtype = ...,
-        name: Hashable | None = ...,
+        name: Hashable = ...,
         copy: bool = ...,
     ) -> Self: ...
     @overload
     def __new__(
         cls,
-        data: object | _ListLike | None = ...,
+        data: Scalar | _ListLike | dict[int, Any] | dict[_str, Any] | None = ...,
         index: Axes | None = ...,
+        *,
         dtype: Dtype = ...,
-        name: Hashable | None = ...,
+        name: Hashable = ...,
         copy: bool = ...,
     ) -> Series: ...
     @property
@@ -342,8 +357,8 @@ class Series(IndexOpsMixin[S1], NDFrame):
         | Series[S1]
         | slice
         | MaskType
-        | tuple[S1 | slice, ...],
-    ) -> Series: ...
+        | tuple[Hashable | slice, ...],
+    ) -> Self: ...
     @overload
     def __getitem__(self, idx: int | _str) -> S1: ...
     def __setitem__(self, key, value) -> None: ...
@@ -680,11 +695,13 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def dot(self, other: DataFrame) -> Series[S1]: ...
     @overload
-    def dot(self, other: _ListLike) -> np.ndarray: ...
+    def dot(
+        self, other: ArrayLike | dict[_str, np.ndarray] | Sequence[S1] | Index[S1]
+    ) -> np.ndarray: ...
     def __matmul__(self, other): ...
     def __rmatmul__(self, other): ...
     @overload
-    def searchsorted(
+    def searchsorted(  # type: ignore[misc]
         self,
         value: _ListLike,
         side: Literal["left", "right"] = ...,
@@ -781,7 +798,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         ignore_index: _bool = ...,
         inplace: Literal[False] = ...,
         key: Callable | None = ...,
-    ) -> Series: ...
+    ) -> Self: ...
     @overload
     def sort_index(
         self,
@@ -820,6 +837,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> DataFrame: ...
     def map(self, arg, na_action: Literal["ignore"] | None = ...) -> Series[S1]: ...
     @overload
+    def aggregate(  # type: ignore[misc]
+        self: Series[int],
+        func: Literal["mean"],
+        axis: AxisIndex = ...,
+        *args,
+        **kwargs,
+    ) -> float: ...
+    @overload
     def aggregate(
         self,
         func: AggFuncTypeBase,
@@ -834,7 +859,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: AxisIndex = ...,
         *args,
         **kwargs,
-    ) -> Series[S1]: ...
+    ) -> Series: ...
     agg = aggregate
     @overload
     def transform(
@@ -902,7 +927,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         inplace: Literal[False] = ...,
         level: Level | None = ...,
         errors: IgnoreRaise = ...,
-    ) -> Series: ...
+    ) -> Self: ...
     @overload
     def rename(
         self,
@@ -913,7 +938,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         inplace: Literal[False] = ...,
         level: Level | None = ...,
         errors: IgnoreRaise = ...,
-    ) -> Series: ...
+    ) -> Self: ...
     @overload
     def rename(
         self,
@@ -932,7 +957,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         copy: _bool = ...,
         limit: int | None = ...,
         tolerance: float | None = ...,
-    ) -> Series: ...
+    ) -> Self: ...
     @overload
     def drop(
         self,
@@ -956,7 +981,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         level: Level | None = ...,
         inplace: Literal[False] = ...,
         errors: IgnoreRaise = ...,
-    ) -> Series: ...
+    ) -> Self: ...
     @overload
     def drop(
         self,
@@ -1344,7 +1369,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         na_option: Literal["keep", "top", "bottom"] = ...,
         ascending: _bool = ...,
         pct: _bool = ...,
-    ) -> Series: ...
+    ) -> Series[float]: ...
     def where(
         self,
         cond: Series[S1]
@@ -1431,14 +1456,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
     # just failed to generate these so I couldn't match
     # them up.
     @overload
-    def __add__(self, other: TimestampSeries) -> TimestampSeries: ...
-    @overload
-    def __add__(self, other: DatetimeIndex) -> TimestampSeries: ...
-    @overload
-    def __add__(self, other: Timestamp) -> TimestampSeries: ...
+    def __add__(self, other: S1 | Self) -> Self: ...
     @overload
     def __add__(
-        self, other: num | _str | Timedelta | _ListLike | Series[S1] | np.timedelta64
+        self, other: num | _str | Timedelta | _ListLike | Series | np.timedelta64
     ) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
@@ -1479,7 +1500,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[bool]: ...
     @overload
     def __or__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
-    def __radd__(self, other: num | _str | _ListLike | Series[S1]) -> Series[S1]: ...
+    @overload
+    def __radd__(self, other: S1 | Series[S1]) -> Self: ...
+    @overload
+    def __radd__(self, other: num | _str | _ListLike | Series) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __rand__(  # type: ignore[misc]
@@ -1961,11 +1985,16 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: AxisIndex | None = ...,
         copy: _bool = ...,
         inplace: Literal[False] = ...,
-    ) -> Series: ...
-    def set_axis(
-        self, labels, *, axis: Axis = ..., copy: _bool = ...
-    ) -> Series[S1]: ...
+    ) -> Self: ...
+    def set_axis(self, labels, *, axis: Axis = ..., copy: _bool = ...) -> Self: ...
     def __iter__(self) -> Iterator[S1]: ...
+    def xs(
+        self,
+        key: Hashable,
+        axis: AxisIndex = ...,
+        level: Level | None = ...,
+        drop_level: _bool = ...,
+    ) -> Self: ...
 
 class TimestampSeries(Series[Timestamp]):
     # ignore needed because of mypy
@@ -2092,13 +2121,6 @@ class TimedeltaSeries(Series[Timedelta]):
         numeric_only: _bool = ...,
         **kwargs,
     ) -> Timedelta: ...
-    def xs(
-        self,
-        key: Hashable,
-        axis: AxisIndex = ...,
-        level: Level | None = ...,
-        drop_level: _bool = ...,
-    ) -> Series: ...
 
 class PeriodSeries(Series[Period]):
     # ignore needed because of mypy

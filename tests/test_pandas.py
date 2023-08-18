@@ -921,7 +921,7 @@ def test_cut() -> None:
     check(assert_type(s0r, pd.Series), pd.Series, pd.Interval)
     check(assert_type(s1r, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
     s0rlf, s1rlf = pd.cut(s1, bins=10, labels=False, retbins=True)
-    check(assert_type(s0rlf, pd.Series), pd.Series, np.int64)
+    check(assert_type(s0rlf, pd.Series), pd.Series, np.integer)
     check(assert_type(s1rlf, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
     s0rls, s1rls = pd.cut(s1, bins=4, labels=["1", "2", "3", "4"], retbins=True)
     check(assert_type(s0rls, pd.Series), pd.Series, str)
