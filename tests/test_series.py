@@ -1176,7 +1176,7 @@ def test_series_mul() -> None:
     sm2 = s * s
     check(assert_type(sm2, pd.Series), pd.Series)
     sp = s + 4
-    check(assert_type(sp, pd.Series), pd.Series)
+    check(assert_type(sp, "pd.Series[int]"), pd.Series, np.intp)
 
 
 def test_reset_index() -> None:
@@ -1201,7 +1201,7 @@ def test_reset_index() -> None:
 
 def test_series_add_str() -> None:
     s = pd.Series(["abc", "def"])
-    check(assert_type(s + "x", pd.Series), pd.Series, str)
+    check(assert_type(s + "x", "pd.Series[str]"), pd.Series, str)
     check(assert_type("x" + s, "pd.Series[str]"), pd.Series, str)
 
 
@@ -1733,8 +1733,8 @@ def test_AnyArrayLike_and_clip() -> None:
     ser = pd.Series([1, 2, 3])
     s1 = ser.clip(lower=ser)
     s2 = ser.clip(upper=ser)
-    check(assert_type(s1, "pd.Series[int]"), pd.Series)
-    check(assert_type(s2, "pd.Series[int]"), pd.Series)
+    check(assert_type(s1, "pd.Series[int]"), pd.Series, np.intp)
+    check(assert_type(s2, "pd.Series[int]"), pd.Series, np.intp)
 
 
 def test_pandera_generic() -> None:
@@ -2777,3 +2777,9 @@ def test_timedelta_div() -> None:
         [1] / series  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
         1 // series  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
         [1] // series  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+
+
+def test_rank() -> None:
+    check(
+        assert_type(pd.Series([1, 2]).rank(), "pd.Series[float]"), pd.Series, np.float64
+    )
