@@ -248,7 +248,7 @@ def test_types_drop_multilevel() -> None:
 
 
 def test_types_dropna() -> None:
-    s = pd.Series([1.0, np.nan])
+    s = pd.Series([1.0, np.nan, np.nan])
     check(assert_type(s.dropna(), "pd.Series[float]"), pd.Series, float)
     assert assert_type(s.dropna(axis=0, inplace=True), None) is None
 
@@ -269,7 +269,7 @@ def test_pop() -> None:
 
 
 def test_types_fillna() -> None:
-    s = pd.Series([1.0, np.nan])
+    s = pd.Series([1.0, np.nan, np.nan, 3.0])
     check(assert_type(s.fillna(0), "pd.Series[float]"), pd.Series, float)
     check(assert_type(s.fillna(0, axis="index"), "pd.Series[float]"), pd.Series, float)
     with pytest_warns_bounded(
@@ -294,7 +294,7 @@ def test_types_fillna() -> None:
 
 
 def test_types_sort_index() -> None:
-    s = pd.Series([1, 2], index=[2, 3])
+    s = pd.Series([1, 2, 3], index=[2, 3, 1])
     check(assert_type(s.sort_index(), "pd.Series[int]"), pd.Series, np.integer)
     check(
         assert_type(s.sort_index(ascending=False), "pd.Series[int]"),
@@ -316,7 +316,7 @@ def test_types_sort_index_with_key() -> None:
 
 
 def test_types_sort_values() -> None:
-    s = pd.Series([4, 2])
+    s = pd.Series([4, 2, 1, 3])
     check(assert_type(s.sort_values(), "pd.Series[int]"), pd.Series, np.integer)
     if TYPE_CHECKING_INVALID_USAGE:
         check(assert_type(s.sort_values(0), pd.Series), pd.Series)  # type: ignore[assert-type,call-overload] # pyright: ignore[reportGeneralTypeIssues]
@@ -341,12 +341,12 @@ def test_types_sort_values() -> None:
 
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
 def test_types_sort_values_with_key() -> None:
-    s = pd.Series([1, 2], index=[2, 3])
+    s = pd.Series([1, 2, 3], index=[2, 3, 1])
     res: pd.Series = s.sort_values(key=lambda k: -k)
 
 
 def test_types_shift() -> None:
-    s = pd.Series([1, 2])
+    s = pd.Series([1, 2, 3])
     s.shift()
     s.shift(axis=0, periods=1)
     s.shift(-1, fill_value=0)
@@ -393,7 +393,7 @@ def test_types_sum() -> None:
     # 2. Runtime return types of `series.sum(min_count=...)` are NOT
     #    tested (because of potential `nan`s).
 
-    s0 = assert_type(pd.Series([1.0, np.nan]), "pd.Series[float]")
+    s0 = assert_type(pd.Series([1.0, 2.0, 3.0, np.nan]), "pd.Series[float]")
     check(assert_type(s0.sum(), float), np.float64)
     check(assert_type(s0.sum(skipna=False), float), np.float64)
     check(assert_type(s0.sum(numeric_only=False), float), np.float64)
@@ -876,7 +876,8 @@ def test_update() -> None:
     s1.update(pd.Series([0, 2, 12]))
     # Series.update() accepting objects that can be coerced to a Series was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
     s1.update([1, 2, -4, 3])
-    s1.update([1, "b", "c", "d"])  # type: ignore[list-item] # pyright: ignore[reportGeneralTypeIssues]
+    if TYPE_CHECKING_INVALID_USAGE:
+        s1.update([1, "b", "c", "d"])  # type: ignore[list-item] # pyright: ignore[reportGeneralTypeIssues]
     s1.update({1: 9, 3: 4})
 
 
