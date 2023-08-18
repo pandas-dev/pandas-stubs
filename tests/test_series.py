@@ -1573,7 +1573,7 @@ def test_neg() -> None:
     sr = pd.Series([1, 2, 3])
     sr_int = pd.Series([1, 2, 3], dtype=int)
     check(assert_type(-sr, "pd.Series[int]"), pd.Series, np.intp)
-    check(assert_type(-sr_int, "pd.Series[int]"), pd.Series, np.intp)
+    check(assert_type(-sr_int, "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_getattr() -> None:
