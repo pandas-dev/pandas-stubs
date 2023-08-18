@@ -859,7 +859,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: AxisIndex = ...,
         *args,
         **kwargs,
-    ) -> Self: ...
+    ) -> Series: ...
     agg = aggregate
     @overload
     def transform(

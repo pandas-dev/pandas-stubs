@@ -914,8 +914,8 @@ def test_types_between() -> None:
 def test_types_agg() -> None:
     s = pd.Series([1, 2, 3], index=["col1", "col2", "col3"])
     check(assert_type(s.agg("min"), int), np.integer)
-    check(assert_type(s.agg(["min", "max"]), "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(s.agg({"a": "min"}), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.agg(["min", "max"]), pd.Series), pd.Series, np.integer)
+    check(assert_type(s.agg({"a": "min"}), pd.Series), pd.Series, np.integer)
     check(assert_type(s.agg("mean", axis=0), float), np.float64)
     with pytest_warns_bounded(
         FutureWarning,
@@ -923,15 +923,10 @@ def test_types_agg() -> None:
         lower="2.0.99",
     ):
         check(assert_type(s.agg(min), int), np.integer)
-        check(assert_type(s.agg([min, max]), "pd.Series[int]"), pd.Series, np.integer)
-        check(assert_type(s.agg({0: min}), "pd.Series[int]"), pd.Series, np.integer)
+        check(assert_type(s.agg([min, max]), pd.Series), pd.Series, np.integer)
+        check(assert_type(s.agg({0: min}), pd.Series), pd.Series, np.integer)
         check(
-            assert_type(  # type: ignore[assert-type]
-                s.agg(
-                    x=max, y="min", z=np.mean
-                ),  # pyright: ignore[reportGeneralTypeIssues]
-                "pd.Series[float]",
-            ),
+            assert_type(s.agg(x=max, y="min", z=np.mean), pd.Series),
             pd.Series,
             np.float64,
         )
@@ -941,13 +936,11 @@ def test_types_aggregate() -> None:
     s = pd.Series([1, 2, 3], index=["col1", "col2", "col3"])
     check(assert_type(s.aggregate("min"), int), np.integer)
     check(
-        assert_type(s.aggregate(["min", "max"]), "pd.Series[int]"),
+        assert_type(s.aggregate(["min", "max"]), pd.Series),
         pd.Series,
         np.integer,
     )
-    check(
-        assert_type(s.aggregate({"a": "min"}), "pd.Series[int]"), pd.Series, np.integer
-    )
+    check(assert_type(s.aggregate({"a": "min"}), pd.Series), pd.Series, np.integer)
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <built-in function (min|max)> is currently using",
@@ -955,13 +948,11 @@ def test_types_aggregate() -> None:
     ):
         check(assert_type(s.aggregate(min), int), np.integer)
         check(
-            assert_type(s.aggregate([min, max]), "pd.Series[int]"),
+            assert_type(s.aggregate([min, max]), pd.Series),
             pd.Series,
             np.integer,
         )
-        check(
-            assert_type(s.aggregate({0: min}), "pd.Series[int]"), pd.Series, np.integer
-        )
+        check(assert_type(s.aggregate({0: min}), pd.Series), pd.Series, np.integer)
 
 
 def test_types_transform() -> None:
