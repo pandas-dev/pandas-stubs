@@ -837,6 +837,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> DataFrame: ...
     def map(self, arg, na_action: Literal["ignore"] | None = ...) -> Series[S1]: ...
     @overload
+    def aggregate(  # type: ignore[misc]
+        self: Series[int],
+        func: Literal["mean"],
+        axis: AxisIndex = ...,
+        *args,
+        **kwargs,
+    ) -> float: ...
+    @overload
     def aggregate(
         self,
         func: AggFuncTypeBase,

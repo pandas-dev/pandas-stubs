@@ -75,7 +75,7 @@ def test_column_getitem() -> None:
 
     column = df.columns[0]
     check(assert_type(column, str), str)
-    check(assert_type(df[column], pd.Series), pd.Series, np.int64)
+    check(assert_type(df[column], pd.Series), pd.Series, np.integer)
 
 
 def test_column_contains() -> None:
@@ -857,7 +857,7 @@ def test_getitem() -> None:
     iri = pd.RangeIndex(0, 10)
     check(assert_type(iri, pd.RangeIndex), pd.RangeIndex, int)
     check(assert_type(iri[0], int), int)
-    check(assert_type(iri[[0, 2, 4]], pd.Index), pd.Index, np.int64)
+    check(assert_type(iri[[0, 2, 4]], pd.Index), pd.Index, np.integer)
 
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
     check(assert_type(mi, pd.MultiIndex), pd.MultiIndex)
@@ -997,7 +997,7 @@ def test_annotate() -> None:
 
 
 def test_new() -> None:
-    check(assert_type(pd.Index([1]), "pd.Index[int]"), pd.Index, np.intp)
+    check(assert_type(pd.Index([1]), "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(pd.Index([1], dtype=float), "pd.Index[float]"), pd.Index, float)
     check(
         assert_type(pd.Index([pd.Timestamp(0)]), pd.DatetimeIndex),

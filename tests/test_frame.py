@@ -522,7 +522,9 @@ def test_types_apply() -> None:
     check(assert_type(df.apply(gethead, args=(4,)), pd.DataFrame), pd.DataFrame)
 
     # Check various return types for default result_type (None) with default axis (0)
-    check(assert_type(df.apply(returns_scalar), "pd.Series[int]"), pd.Series, np.int64)
+    check(
+        assert_type(df.apply(returns_scalar), "pd.Series[int]"), pd.Series, np.integer
+    )
     check(assert_type(df.apply(returns_series), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.apply(returns_listlike_of_3), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.apply(returns_dict), pd.Series), pd.Series)
@@ -533,7 +535,7 @@ def test_types_apply() -> None:
         # to pass a result_type of "expand" to a scalar return
         assert_type(df.apply(returns_scalar, result_type="expand"), "pd.Series[int]"),
         pd.Series,
-        np.int64,
+        np.integer,
     )
     check(
         assert_type(df.apply(returns_series, result_type="expand"), pd.DataFrame),
@@ -556,7 +558,7 @@ def test_types_apply() -> None:
         # to pass a result_type of "reduce" to a scalar return
         assert_type(df.apply(returns_scalar, result_type="reduce"), "pd.Series[int]"),
         pd.Series,
-        np.int64,
+        np.integer,
     )
     check(
         # Note that technically it does not make sense
@@ -576,7 +578,7 @@ def test_types_apply() -> None:
     check(
         assert_type(df.apply(returns_scalar, axis=1), "pd.Series[int]"),
         pd.Series,
-        np.int64,
+        np.integer,
     )
     check(assert_type(df.apply(returns_series, axis=1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.apply(returns_listlike_of_3, axis=1), pd.Series), pd.Series)
@@ -590,7 +592,7 @@ def test_types_apply() -> None:
             df.apply(returns_scalar, axis=1, result_type="expand"), "pd.Series[int]"
         ),
         pd.Series,
-        np.int64,
+        np.integer,
     )
     check(
         assert_type(
@@ -617,7 +619,7 @@ def test_types_apply() -> None:
             df.apply(returns_scalar, axis=1, result_type="reduce"), "pd.Series[int]"
         ),
         pd.Series,
-        np.int64,
+        np.integer,
     )
     check(
         # Note that technically it does not make sense
@@ -698,33 +700,33 @@ def test_types_apply() -> None:
     check(
         assert_type(df.apply(returns_scalar, axis=0), "pd.Series[int]"),
         pd.Series,
-        np.int64,
+        np.integer,
     )
     check(
         assert_type(
             df.apply(returns_scalar, axis=0, result_type=None), "pd.Series[int]"
         ),
         pd.Series,
-        np.int64,
+        np.integer,
     )
     check(
         assert_type(df.apply(returns_scalar, 0, False, None), "pd.Series[int]"),
         pd.Series,
-        np.int64,
+        np.integer,
     )
     check(
         assert_type(
             df.apply(returns_scalar, 0, False, result_type=None), "pd.Series[int]"
         ),
         pd.Series,
-        np.int64,
+        np.integer,
     )
     check(
         assert_type(
             df.apply(returns_scalar, 0, raw=False, result_type=None), "pd.Series[int]"
         ),
         pd.Series,
-        np.int64,
+        np.integer,
     )
 
 
@@ -916,7 +918,7 @@ def test_types_groupby_methods() -> None:
     check(
         assert_type(df.groupby("col1").value_counts(normalize=False), "pd.Series[int]"),
         pd.Series,
-        np.int64,
+        np.integer,
     )
     check(
         assert_type(
@@ -1728,7 +1730,7 @@ def test_indexslice_getitem():
         assert_type(df.loc[pd.IndexSlice[:, df["z"] > 40], :], pd.DataFrame),
         pd.DataFrame,
     )
-    check(assert_type(df.loc[pd.IndexSlice[2, 30], "z"], Scalar), np.int64)
+    check(assert_type(df.loc[pd.IndexSlice[2, 30], "z"], Scalar), np.integer)
     check(
         assert_type(df.loc[pd.IndexSlice[[2, 4], [20, 40]], :], pd.DataFrame),
         pd.DataFrame,
@@ -2039,7 +2041,7 @@ def test_groupby_result() -> None:
     index, value = next(iterator)
     assert_type((index, value), Tuple[Tuple, pd.DataFrame])
 
-    check(assert_type(index, Tuple), tuple, np.int64)
+    check(assert_type(index, Tuple), tuple, np.integer)
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
 
     iterator2 = df.groupby("a").__iter__()
@@ -2471,7 +2473,7 @@ def test_series_groupby_and_value_counts() -> None:
     )
     c1 = df.groupby("Animal")["Max Speed"].value_counts()
     c2 = df.groupby("Animal")["Max Speed"].value_counts(normalize=True)
-    check(assert_type(c1, "pd.Series[int]"), pd.Series, np.int64)
+    check(assert_type(c1, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(c2, "pd.Series[float]"), pd.Series, float)
 
 
