@@ -773,17 +773,17 @@ def test_types_element_wise_arithmetic() -> None:
 
     # divmod operation was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
     check(
-        assert_type(divmod(df, df2), "tuple[pd.DataFrame, pd.DataFrame]"),
+        assert_type(divmod(df, df2), tuple[pd.DataFrame, pd.DataFrame]),
         tuple,
         pd.DataFrame,
     )
     check(
-        assert_type(df.__divmod__(df2), "tuple[pd.DataFrame, pd.DataFrame]"),
+        assert_type(df.__divmod__(df2), tuple[pd.DataFrame, pd.DataFrame]),
         tuple,
         pd.DataFrame,
     )
     check(
-        assert_type(df.__rdivmod__(df2), "tuple[pd.DataFrame, pd.DataFrame]"),
+        assert_type(df.__rdivmod__(df2), tuple[pd.DataFrame, pd.DataFrame]),
         tuple,
         pd.DataFrame,
     )
@@ -1722,7 +1722,7 @@ def test_indexslice_getitem():
         .set_index(["x", "y"])
     )
     ind = pd.Index([2, 3])
-    check(assert_type(pd.IndexSlice[ind, :], "tuple[pd.Index[int], slice]"), tuple)
+    check(assert_type(pd.IndexSlice[ind, :], tuple["pd.Index[int]", slice]), tuple)
     check(assert_type(df.loc[pd.IndexSlice[ind, :]], pd.DataFrame), pd.DataFrame)
     check(assert_type(df.loc[pd.IndexSlice[1:2]], pd.DataFrame), pd.DataFrame)
     check(
@@ -2607,7 +2607,7 @@ def test_in_columns() -> None:
     # GH 532 (PR)
     df = pd.DataFrame(np.random.random((3, 4)), columns=["cat", "dog", "rat", "pig"])
     cols = [c for c in df.columns if "at" in c]
-    check(assert_type(cols, "list[str]"), list, str)
+    check(assert_type(cols, list[str]), list, str)
     check(assert_type(df.loc[:, cols], pd.DataFrame), pd.DataFrame)
     check(assert_type(df[cols], pd.DataFrame), pd.DataFrame)
     check(assert_type(df.groupby(by=cols).sum(), pd.DataFrame), pd.DataFrame)

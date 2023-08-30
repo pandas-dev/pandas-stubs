@@ -556,7 +556,7 @@ def test_types_element_wise_arithmetic() -> None:
     res_pow: pd.Series = s ** s2.abs()
     res_pow2: pd.Series = s.pow(s2.abs(), fill_value=0)
 
-    check(assert_type(divmod(s, s2), "tuple[pd.Series[int], pd.Series[int]]"), tuple)
+    check(assert_type(divmod(s, s2), tuple["pd.Series[int]", "pd.Series[int]"]), tuple)
 
 
 def test_types_scalar_arithmetic() -> None:
