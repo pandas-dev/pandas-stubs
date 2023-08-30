@@ -2,10 +2,7 @@ from __future__ import annotations
 
 import os
 import pathlib
-from typing import (
-    TYPE_CHECKING,
-    Type,
-)
+from typing import TYPE_CHECKING
 
 from jinja2.environment import (
     Environment,
@@ -121,7 +118,7 @@ def test_from_custom_template() -> None:
     check(
         assert_type(
             Styler.from_custom_template(str(PWD / "data" / "myhtml_table.tpl")),
-            Type[Styler],
+            type[Styler],
         ),
         type(Styler),
     )

@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import (
-    Tuple,
-    Union,
-)
+from typing import Union
 
 import numpy as np
 from numpy import typing as npt
@@ -65,8 +62,8 @@ def test_multiindex_get_level_values() -> None:
 
 def test_index_tolist() -> None:
     i1 = pd.Index([1, 2, 3])
-    check(assert_type(i1.tolist(), "list[int]"), list, int)
-    check(assert_type(i1.to_list(), "list[int]"), list, int)
+    check(assert_type(i1.tolist(), list[int]), list, int)
+    check(assert_type(i1.to_list(), list[int]), list, int)
 
 
 def test_column_getitem() -> None:
@@ -93,7 +90,7 @@ def test_column_sequence() -> None:
     df = pd.DataFrame([1, 2, 3])
     col_list = list(df.columns)
     check(
-        assert_type(col_list, "list[str]"),
+        assert_type(col_list, list[str]),
         list,
         int,
     )
@@ -704,8 +701,8 @@ def test_interval_index_tuples():
 def test_sorted_and_list() -> None:
     # GH 497
     i1 = pd.Index([3, 2, 1])
-    check(assert_type(sorted(i1), "list[int]"), list, int)
-    check(assert_type(list(i1), "list[int]"), list, int)
+    check(assert_type(sorted(i1), list[int]), list, int)
+    check(assert_type(list(i1), list[int]), list, int)
 
 
 def test_index_operators() -> None:
@@ -734,9 +731,9 @@ def test_index_operators() -> None:
     check(assert_type(i1 % i2, "pd.Index[int]"), pd.Index)
     check(assert_type(i1 % 10, "pd.Index[int]"), pd.Index)
     check(assert_type(10 % i1, "pd.Index[int]"), pd.Index)
-    check(assert_type(divmod(i1, i2), Tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
-    check(assert_type(divmod(i1, 10), Tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
-    check(assert_type(divmod(10, i1), Tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
+    check(assert_type(divmod(i1, i2), tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
+    check(assert_type(divmod(i1, 10), tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
+    check(assert_type(divmod(10, i1), tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
 
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(

@@ -1,8 +1,5 @@
 import io
-from typing import (
-    Any,
-    Dict,
-)
+from typing import Any
 
 import matplotlib.pyplot as plt
 from matplotlib.table import Table
@@ -229,7 +226,7 @@ def test_plot_parallel_coordinates(close_figures) -> None:
 
 
 def test_plot_params(close_figures) -> None:
-    check(assert_type(pd.plotting.plot_params, Dict[str, Any]), dict)
+    check(assert_type(pd.plotting.plot_params, dict[str, Any]), dict)
 
 
 def test_radviz(close_figures) -> None:

@@ -1,6 +1,6 @@
+from collections.abc import Iterator
 from typing import (
     Generic,
-    Iterator,
     Literal,
 )
 

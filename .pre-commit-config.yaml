@@ -11,12 +11,12 @@ repos:
     hooks:
     -   id: isort
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.285
+    rev: v0.0.286
     hooks:
     -   id: ruff
         args: [
           --exit-non-zero-on-fix,
-          --target-version, py38,
+          --target-version, py39,
           --extend-select, "PYI,UP,RUF100",
           --ignore, "E501,E731,F841,PYI042",
           --per-file-ignores, "_*.pyi:PYI001",

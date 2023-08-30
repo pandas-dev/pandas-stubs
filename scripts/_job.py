@@ -1,10 +1,9 @@
+from collections import deque
 from dataclasses import dataclass
 import sys
 import time
 from typing import (
     Callable,
-    Deque,
-    List,
     Optional,
 )
 
@@ -18,7 +17,7 @@ class Step:
     rollback: Optional[Callable[[], None]] = None
 
 
-def __rollback_job(steps: Deque[Step]):
+def __rollback_job(steps: deque[Step]):
     """
     Responsible to run rollback of steps.
     """
@@ -35,12 +34,12 @@ def __rollback_job(steps: Deque[Step]):
                 )
 
 
-def run_job(steps: List[Step]) -> None:
+def run_job(steps: list[Step]) -> None:
     """
     Responsible to run steps with logs.
     """
 
-    rollback_steps = Deque[Step]()
+    rollback_steps = deque[Step]()
     failed = False
 
     for step in steps:

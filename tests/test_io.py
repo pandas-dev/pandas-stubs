@@ -1,4 +1,5 @@
 from collections import defaultdict
+from collections.abc import Generator
 import csv
 import io
 import os.path
@@ -8,11 +9,7 @@ import sqlite3
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
-    Generator,
-    List,
     Literal,
-    Tuple,
     Union,
 )
 
@@ -212,7 +209,7 @@ def _true_if_greater_than_0(i: int) -> bool:
     return i > 0
 
 
-def _true_if_first_param_is_head(t: Tuple[str, int]) -> bool:
+def _true_if_first_param_is_head(t: tuple[str, int]) -> bool:
     return t[0] == "head"
 
 
@@ -366,7 +363,7 @@ def test_hdfstore():
         check(assert_type(store, HDFStore), HDFStore)
         check(assert_type(store.put("df", DF, "table"), None), type(None))
         check(assert_type(store.append("df2", DF, "table"), None), type(None))
-        check(assert_type(store.keys(), List[str]), list)
+        check(assert_type(store.keys(), list[str]), list)
         check(assert_type(store.info(), str), str)
         check(
             assert_type(store.select("df", start=0, stop=1), Union[DataFrame, Series]),
@@ -866,7 +863,7 @@ def test_read_excel() -> None:
         check(
             assert_type(
                 pd.read_excel(path, sheet_name=["Sheet1"]),
-                Dict[Union[int, str], pd.DataFrame],
+                dict[Union[int, str], pd.DataFrame],
             ),
             dict,
         )
@@ -876,21 +873,21 @@ def test_read_excel() -> None:
         )
         check(
             assert_type(
-                pd.read_excel(path, sheet_name=[0]), Dict[Union[int, str], pd.DataFrame]
+                pd.read_excel(path, sheet_name=[0]), dict[Union[int, str], pd.DataFrame]
             ),
             dict,
         )
         check(
             assert_type(
                 pd.read_excel(path, sheet_name=[0, "Sheet1"]),
-                Dict[Union[int, str], pd.DataFrame],
+                dict[Union[int, str], pd.DataFrame],
             ),
             dict,
         )
         check(
             assert_type(
                 pd.read_excel(path, sheet_name=None),
-                Dict[Union[int, str], pd.DataFrame],
+                dict[Union[int, str], pd.DataFrame],
             ),
             dict,
         )
@@ -1011,13 +1008,13 @@ def test_read_excel_list():
         check(
             assert_type(
                 read_excel(path, sheet_name=["Sheet1"]),
-                Dict[Union[str, int], DataFrame],
+                dict[Union[str, int], DataFrame],
             ),
             dict,
         )
         check(
             assert_type(
-                read_excel(path, sheet_name=[0]), Dict[Union[str, int], DataFrame]
+                read_excel(path, sheet_name=[0]), dict[Union[str, int], DataFrame]
             ),
             dict,
         )
@@ -1045,7 +1042,7 @@ def test_excel_writer():
         check(assert_type(read_excel(ef), DataFrame), DataFrame)
         check(assert_type(ef.parse(sheet_name=0), DataFrame), DataFrame)
         check(
-            assert_type(ef.parse(sheet_name=[0]), Dict[Union[str, int], DataFrame]),
+            assert_type(ef.parse(sheet_name=[0]), dict[Union[str, int], DataFrame]),
             dict,
         )
         check(assert_type(ef.close(), None), type(None))
@@ -1244,7 +1241,7 @@ def test_read_html():
     check(assert_type(DF.to_html(), str), str)
     with ensure_clean() as path:
         check(assert_type(DF.to_html(path), None), type(None))
-        check(assert_type(read_html(path), List[DataFrame]), list)
+        check(assert_type(read_html(path), list[DataFrame]), list)
 
 
 def test_csv_quoting():
@@ -1453,7 +1450,7 @@ def test_read_with_lxml_dtype_backend() -> None:
         check(assert_type(DF.to_html(path), None), type(None))
         check(
             assert_type(
-                read_html(path, dtype_backend="numpy_nullable"), List[DataFrame]
+                read_html(path, dtype_backend="numpy_nullable"), list[DataFrame]
             ),
             list,
         )

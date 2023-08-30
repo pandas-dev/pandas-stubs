@@ -14,8 +14,10 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas.api.types import is_any_real_numeric_dtype
-from pandas.core.arrays import BooleanArray  # noqa: F401
-from pandas.core.arrays import IntegerArray  # noqa: F401
+from pandas.core.arrays import (
+    BooleanArray,
+    IntegerArray,
+)
 import pyarrow as pa
 from typing_extensions import assert_type
 
@@ -96,7 +98,7 @@ def test_int64_dtype() -> None:
     i64dt = pd.Int64Dtype()
     check(assert_type(i64dt.itemsize, int), int)
     check(assert_type(i64dt.na_value, NAType), NAType)
-    check(assert_type(i64dt.construct_array_type(), "type[IntegerArray]"), type)
+    check(assert_type(i64dt.construct_array_type(), type[IntegerArray]), type)
 
 
 def test_categorical_dtype() -> None:
@@ -138,7 +140,7 @@ def test_boolean_dtype() -> None:
     b_dt = pd.BooleanDtype()
     check(assert_type(b_dt, pd.BooleanDtype), pd.BooleanDtype)
     check(assert_type(b_dt.na_value, NAType), NAType)
-    check(assert_type(b_dt.construct_array_type(), "type[BooleanArray]"), type)
+    check(assert_type(b_dt.construct_array_type(), type[BooleanArray]), type)
 
 
 def test_arrow_dtype() -> None:

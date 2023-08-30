@@ -1,6 +1,12 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from collections.abc import (
+    Hashable,
+    Iterable,
+    Iterator,
+    Mapping,
+)
 import csv
 import datetime
 from enum import Enum
@@ -11,14 +17,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    Dict,
     Generic,
-    Hashable,
-    Iterable,
-    Iterator,
-    List,
-    Mapping,
-    Tuple,
     TypedDict,
     TypeVar,
     Union,
@@ -774,17 +773,17 @@ def test_types_element_wise_arithmetic() -> None:
 
     # divmod operation was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
     check(
-        assert_type(divmod(df, df2), "tuple[pd.DataFrame, pd.DataFrame]"),
+        assert_type(divmod(df, df2), tuple[pd.DataFrame, pd.DataFrame]),
         tuple,
         pd.DataFrame,
     )
     check(
-        assert_type(df.__divmod__(df2), "tuple[pd.DataFrame, pd.DataFrame]"),
+        assert_type(df.__divmod__(df2), tuple[pd.DataFrame, pd.DataFrame]),
         tuple,
         pd.DataFrame,
     )
     check(
-        assert_type(df.__rdivmod__(df2), "tuple[pd.DataFrame, pd.DataFrame]"),
+        assert_type(df.__rdivmod__(df2), tuple[pd.DataFrame, pd.DataFrame]),
         tuple,
         pd.DataFrame,
     )
@@ -1723,7 +1722,7 @@ def test_indexslice_getitem():
         .set_index(["x", "y"])
     )
     ind = pd.Index([2, 3])
-    check(assert_type(pd.IndexSlice[ind, :], "tuple[pd.Index[int], slice]"), tuple)
+    check(assert_type(pd.IndexSlice[ind, :], tuple["pd.Index[int]", slice]), tuple)
     check(assert_type(df.loc[pd.IndexSlice[ind, :]], pd.DataFrame), pd.DataFrame)
     check(assert_type(df.loc[pd.IndexSlice[1:2]], pd.DataFrame), pd.DataFrame)
     check(
@@ -2037,17 +2036,17 @@ def test_groupby_result() -> None:
     # GH 142
     df = pd.DataFrame({"a": [0, 1, 2], "b": [4, 5, 6], "c": [7, 8, 9]})
     iterator = df.groupby(["a", "b"]).__iter__()
-    assert_type(iterator, Iterator[Tuple[Tuple, pd.DataFrame]])
+    assert_type(iterator, Iterator[tuple[tuple, pd.DataFrame]])
     index, value = next(iterator)
-    assert_type((index, value), Tuple[Tuple, pd.DataFrame])
+    assert_type((index, value), tuple[tuple, pd.DataFrame])
 
-    check(assert_type(index, Tuple), tuple, np.integer)
+    check(assert_type(index, tuple), tuple, np.integer)
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
 
     iterator2 = df.groupby("a").__iter__()
-    assert_type(iterator2, Iterator[Tuple[Scalar, pd.DataFrame]])
+    assert_type(iterator2, Iterator[tuple[Scalar, pd.DataFrame]])
     index2, value2 = next(iterator2)
-    assert_type((index2, value2), Tuple[Scalar, pd.DataFrame])
+    assert_type((index2, value2), tuple[Scalar, pd.DataFrame])
 
     check(assert_type(index2, Scalar), int)
     check(assert_type(value2, pd.DataFrame), pd.DataFrame)
@@ -2056,11 +2055,11 @@ def test_groupby_result() -> None:
     # grouping by pd.MultiIndex should always resolve to a tuple as well
     multi_index = pd.MultiIndex.from_frame(df[["a", "b"]])
     iterator3 = df.groupby(multi_index).__iter__()
-    assert_type(iterator3, Iterator[Tuple[Tuple, pd.DataFrame]])
+    assert_type(iterator3, Iterator[tuple[tuple, pd.DataFrame]])
     index3, value3 = next(iterator3)
-    assert_type((index3, value3), Tuple[Tuple, pd.DataFrame])
+    assert_type((index3, value3), tuple[tuple, pd.DataFrame])
 
-    check(assert_type(index3, Tuple), tuple, int)
+    check(assert_type(index3, tuple), tuple, int)
     check(assert_type(value3, pd.DataFrame), pd.DataFrame)
 
     # Want to make sure these cases are differentiated
@@ -2080,27 +2079,27 @@ def test_groupby_result_for_scalar_indexes() -> None:
     df = pd.DataFrame({"date": dates, "days": 1})
     period_index = pd.PeriodIndex(df.date, freq="M")
     iterator = df.groupby(period_index).__iter__()
-    assert_type(iterator, Iterator[Tuple[pd.Period, pd.DataFrame]])
+    assert_type(iterator, Iterator[tuple[pd.Period, pd.DataFrame]])
     index, value = next(iterator)
-    assert_type((index, value), Tuple[pd.Period, pd.DataFrame])
+    assert_type((index, value), tuple[pd.Period, pd.DataFrame])
 
     check(assert_type(index, pd.Period), pd.Period)
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
 
     dt_index = pd.DatetimeIndex(dates)
     iterator2 = df.groupby(dt_index).__iter__()
-    assert_type(iterator2, Iterator[Tuple[pd.Timestamp, pd.DataFrame]])
+    assert_type(iterator2, Iterator[tuple[pd.Timestamp, pd.DataFrame]])
     index2, value2 = next(iterator2)
-    assert_type((index2, value2), Tuple[pd.Timestamp, pd.DataFrame])
+    assert_type((index2, value2), tuple[pd.Timestamp, pd.DataFrame])
 
     check(assert_type(index2, pd.Timestamp), pd.Timestamp)
     check(assert_type(value2, pd.DataFrame), pd.DataFrame)
 
     tdelta_index = pd.TimedeltaIndex(dates - pd.Timestamp("2020-01-01"))
     iterator3 = df.groupby(tdelta_index).__iter__()
-    assert_type(iterator3, Iterator[Tuple[pd.Timedelta, pd.DataFrame]])
+    assert_type(iterator3, Iterator[tuple[pd.Timedelta, pd.DataFrame]])
     index3, value3 = next(iterator3)
-    assert_type((index3, value3), Tuple[pd.Timedelta, pd.DataFrame])
+    assert_type((index3, value3), tuple[pd.Timedelta, pd.DataFrame])
 
     check(assert_type(index3, pd.Timedelta), pd.Timedelta)
     check(assert_type(value3, pd.DataFrame), pd.DataFrame)
@@ -2111,9 +2110,9 @@ def test_groupby_result_for_scalar_indexes() -> None:
     interval_index = pd.IntervalIndex(intervals)
     assert_type(interval_index, "pd.IntervalIndex[pd.Interval[pd.Timestamp]]")
     iterator4 = df.groupby(interval_index).__iter__()
-    assert_type(iterator4, Iterator[Tuple["pd.Interval[pd.Timestamp]", pd.DataFrame]])
+    assert_type(iterator4, Iterator[tuple["pd.Interval[pd.Timestamp]", pd.DataFrame]])
     index4, value4 = next(iterator4)
-    assert_type((index4, value4), Tuple["pd.Interval[pd.Timestamp]", pd.DataFrame])
+    assert_type((index4, value4), tuple["pd.Interval[pd.Timestamp]", pd.DataFrame])
 
     check(assert_type(index4, "pd.Interval[pd.Timestamp]"), pd.Interval)
     check(assert_type(value4, pd.DataFrame), pd.DataFrame)
@@ -2136,9 +2135,9 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     df = pd.DataFrame({"a": [0, 1, 2], "b": [4, 5, 6], "c": [7, 8, 9]})
     # this will use pd.Index which is ambiguous
     iterator = df.groupby(df.index).__iter__()
-    assert_type(iterator, Iterator[Tuple[Any, pd.DataFrame]])
+    assert_type(iterator, Iterator[tuple[Any, pd.DataFrame]])
     index, value = next(iterator)
-    assert_type((index, value), Tuple[Any, pd.DataFrame])
+    assert_type((index, value), tuple[Any, pd.DataFrame])
 
     check(assert_type(index, Any), int)
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
@@ -2153,9 +2152,9 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     ):
         categorical_index = pd.CategoricalIndex(df.a)
         iterator2 = df.groupby(categorical_index).__iter__()
-        assert_type(iterator2, Iterator[Tuple[Any, pd.DataFrame]])
+        assert_type(iterator2, Iterator[tuple[Any, pd.DataFrame]])
         index2, value2 = next(iterator2)
-        assert_type((index2, value2), Tuple[Any, pd.DataFrame])
+        assert_type((index2, value2), tuple[Any, pd.DataFrame])
 
         check(assert_type(index2, Any), int)
         check(assert_type(value2, pd.DataFrame), pd.DataFrame)
@@ -2308,8 +2307,8 @@ def test_to_records():
 
 
 def test_to_dict():
-    check(assert_type(DF.to_dict(), Dict[Hashable, Any]), dict)
-    check(assert_type(DF.to_dict("split"), Dict[Hashable, Any]), dict)
+    check(assert_type(DF.to_dict(), dict[Hashable, Any]), dict)
+    check(assert_type(DF.to_dict("split"), dict[Hashable, Any]), dict)
 
     target: Mapping = defaultdict(list)
     check(assert_type(DF.to_dict(into=target), Mapping[Hashable, Any]), defaultdict)
@@ -2319,9 +2318,9 @@ def test_to_dict():
         defaultdict,
     )
     target = defaultdict(list)
-    check(assert_type(DF.to_dict("records"), List[Dict[Hashable, Any]]), list)
+    check(assert_type(DF.to_dict("records"), list[dict[Hashable, Any]]), list)
     check(
-        assert_type(DF.to_dict("records", into=target), List[Mapping[Hashable, Any]]),
+        assert_type(DF.to_dict("records", into=target), list[Mapping[Hashable, Any]]),
         list,
     )
 
@@ -2608,7 +2607,7 @@ def test_in_columns() -> None:
     # GH 532 (PR)
     df = pd.DataFrame(np.random.random((3, 4)), columns=["cat", "dog", "rat", "pig"])
     cols = [c for c in df.columns if "at" in c]
-    check(assert_type(cols, "list[str]"), list, str)
+    check(assert_type(cols, list[str]), list, str)
     check(assert_type(df.loc[:, cols], pd.DataFrame), pd.DataFrame)
     check(assert_type(df[cols], pd.DataFrame), pd.DataFrame)
     check(assert_type(df.groupby(by=cols).sum(), pd.DataFrame), pd.DataFrame)
@@ -2725,34 +2724,34 @@ def test_to_dict_index() -> None:
     df = pd.DataFrame({"a": [1, 2], "b": [9, 10]})
     check(
         assert_type(
-            df.to_dict(orient="records", index=True), List[Dict[Hashable, Any]]
+            df.to_dict(orient="records", index=True), list[dict[Hashable, Any]]
         ),
         list,
     )
-    check(assert_type(df.to_dict(orient="dict", index=True), Dict[Hashable, Any]), dict)
+    check(assert_type(df.to_dict(orient="dict", index=True), dict[Hashable, Any]), dict)
     check(
-        assert_type(df.to_dict(orient="series", index=True), Dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="series", index=True), dict[Hashable, Any]), dict
     )
     check(
-        assert_type(df.to_dict(orient="index", index=True), Dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="index", index=True), dict[Hashable, Any]), dict
     )
     check(
-        assert_type(df.to_dict(orient="split", index=True), Dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="split", index=True), dict[Hashable, Any]), dict
     )
     check(
-        assert_type(df.to_dict(orient="tight", index=True), Dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="tight", index=True), dict[Hashable, Any]), dict
     )
     check(
-        assert_type(df.to_dict(orient="tight", index=False), Dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="tight", index=False), dict[Hashable, Any]), dict
     )
     check(
-        assert_type(df.to_dict(orient="split", index=False), Dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="split", index=False), dict[Hashable, Any]), dict
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        check(assert_type(df.to_dict(orient="records", index=False), List[Dict[Hashable, Any]]), list)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
-        check(assert_type(df.to_dict(orient="dict", index=False), Dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
-        check(assert_type(df.to_dict(orient="series", index=False), Dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
-        check(assert_type(df.to_dict(orient="index", index=False), Dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        check(assert_type(df.to_dict(orient="records", index=False), list[dict[Hashable, Any]]), list)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        check(assert_type(df.to_dict(orient="dict", index=False), dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        check(assert_type(df.to_dict(orient="series", index=False), dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        check(assert_type(df.to_dict(orient="index", index=False), dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_suffix_prefix_index() -> None:

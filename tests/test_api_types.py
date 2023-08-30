@@ -1,5 +1,3 @@
-from typing import Type
-
 import numpy as np
 import pandas as pd
 from pandas.api.extensions import ExtensionDtype
@@ -468,7 +466,7 @@ def test_union_categoricals() -> None:
 
 def test_check_extension_dtypes() -> None:
     # GH 315
-    def check_ext_dtype(etype: Type[ExtensionDtype]):
+    def check_ext_dtype(etype: type[ExtensionDtype]):
         assert issubclass(etype, ExtensionDtype)
 
     check_ext_dtype(pd.Int64Dtype)

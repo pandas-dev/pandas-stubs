@@ -1,9 +1,8 @@
-from typing import (
+from collections.abc import (
     Generator,
     Hashable,
-    Tuple,
-    Union,
 )
+from typing import Union
 
 import numpy as np
 import pandas as pd
@@ -40,10 +39,10 @@ def test_props() -> None:
 
 def test_iter() -> None:
     assert_type(
-        iter(DF.resample("m")), Generator[Tuple[Hashable, DataFrame], None, None]
+        iter(DF.resample("m")), Generator[tuple[Hashable, DataFrame], None, None]
     )
     for v in DF.resample("m"):
-        check(assert_type(v, Tuple[Hashable, DataFrame]), tuple)
+        check(assert_type(v, tuple[Hashable, DataFrame]), tuple)
 
 
 def test_agg_funcs() -> None:
@@ -189,7 +188,7 @@ def test_props_series() -> None:
 
 def test_iter_series() -> None:
     for v in S.resample("m"):
-        check(assert_type(v, Tuple[Hashable, Series]), tuple)
+        check(assert_type(v, tuple[Hashable, Series]), tuple)
 
 
 def test_agg_funcs_series() -> None:
