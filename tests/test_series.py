@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Sequence,
+)
 import datetime
 from decimal import Decimal
 from enum import Enum
@@ -9,13 +14,7 @@ import re
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
     Generic,
-    Iterable,
-    Iterator,
-    List,
-    Sequence,
-    Tuple,
     TypeVar,
     cast,
 )
@@ -635,17 +634,17 @@ def test_groupby_result() -> None:
     multi_index = pd.MultiIndex.from_tuples([(0, 0), (0, 1), (1, 0)], names=["a", "b"])
     s = pd.Series([0, 1, 2], index=multi_index, dtype=int)
     iterator = s.groupby(["a", "b"]).__iter__()
-    assert_type(iterator, Iterator[Tuple[Tuple, "pd.Series[int]"]])
+    assert_type(iterator, Iterator[tuple[tuple, "pd.Series[int]"]])
     index, value = next(iterator)
-    assert_type((index, value), Tuple[Tuple, "pd.Series[int]"])
+    assert_type((index, value), tuple[tuple, "pd.Series[int]"])
 
-    check(assert_type(index, Tuple), tuple, np.integer)
+    check(assert_type(index, tuple), tuple, np.integer)
     check(assert_type(value, "pd.Series[int]"), pd.Series, np.integer)
 
     iterator2 = s.groupby("a").__iter__()
-    assert_type(iterator2, Iterator[Tuple[Scalar, "pd.Series[int]"]])
+    assert_type(iterator2, Iterator[tuple[Scalar, "pd.Series[int]"]])
     index2, value2 = next(iterator2)
-    assert_type((index2, value2), Tuple[Scalar, "pd.Series[int]"])
+    assert_type((index2, value2), tuple[Scalar, "pd.Series[int]"])
 
     check(assert_type(index2, Scalar), int)
     check(assert_type(value2, "pd.Series[int]"), pd.Series, np.integer)
@@ -653,11 +652,11 @@ def test_groupby_result() -> None:
     # GH 674
     # grouping by pd.MultiIndex should always resolve to a tuple as well
     iterator3 = s.groupby(multi_index).__iter__()
-    assert_type(iterator3, Iterator[Tuple[Tuple, "pd.Series[int]"]])
+    assert_type(iterator3, Iterator[tuple[tuple, "pd.Series[int]"]])
     index3, value3 = next(iterator3)
-    assert_type((index3, value3), Tuple[Tuple, "pd.Series[int]"])
+    assert_type((index3, value3), tuple[tuple, "pd.Series[int]"])
 
-    check(assert_type(index3, Tuple), tuple, int)
+    check(assert_type(index3, tuple), tuple, int)
     check(assert_type(value3, "pd.Series[int]"), pd.Series, np.integer)
 
     # Want to make sure these cases are differentiated
@@ -685,27 +684,27 @@ def test_groupby_result_for_scalar_indexes() -> None:
 
     period_index = pd.PeriodIndex(dates, freq="M")
     iterator = s.groupby(period_index).__iter__()
-    assert_type(iterator, Iterator[Tuple[pd.Period, "pd.Series[int]"]])
+    assert_type(iterator, Iterator[tuple[pd.Period, "pd.Series[int]"]])
     index, value = next(iterator)
-    assert_type((index, value), Tuple[pd.Period, "pd.Series[int]"])
+    assert_type((index, value), tuple[pd.Period, "pd.Series[int]"])
 
     check(assert_type(index, pd.Period), pd.Period)
     check(assert_type(value, "pd.Series[int]"), pd.Series, np.integer)
 
     dt_index = pd.DatetimeIndex(dates)
     iterator2 = s.groupby(dt_index).__iter__()
-    assert_type(iterator2, Iterator[Tuple[pd.Timestamp, "pd.Series[int]"]])
+    assert_type(iterator2, Iterator[tuple[pd.Timestamp, "pd.Series[int]"]])
     index2, value2 = next(iterator2)
-    assert_type((index2, value2), Tuple[pd.Timestamp, "pd.Series[int]"])
+    assert_type((index2, value2), tuple[pd.Timestamp, "pd.Series[int]"])
 
     check(assert_type(index2, pd.Timestamp), pd.Timestamp)
     check(assert_type(value2, "pd.Series[int]"), pd.Series, np.integer)
 
     tdelta_index = pd.TimedeltaIndex(dates - pd.Timestamp("2020-01-01"))
     iterator3 = s.groupby(tdelta_index).__iter__()
-    assert_type(iterator3, Iterator[Tuple[pd.Timedelta, "pd.Series[int]"]])
+    assert_type(iterator3, Iterator[tuple[pd.Timedelta, "pd.Series[int]"]])
     index3, value3 = next(iterator3)
-    assert_type((index3, value3), Tuple[pd.Timedelta, "pd.Series[int]"])
+    assert_type((index3, value3), tuple[pd.Timedelta, "pd.Series[int]"])
 
     check(assert_type(index3, pd.Timedelta), pd.Timedelta)
     check(assert_type(value3, "pd.Series[int]"), pd.Series, np.integer)
@@ -717,10 +716,10 @@ def test_groupby_result_for_scalar_indexes() -> None:
     assert_type(interval_index, "pd.IntervalIndex[pd.Interval[pd.Timestamp]]")
     iterator4 = s.groupby(interval_index).__iter__()
     assert_type(
-        iterator4, Iterator[Tuple["pd.Interval[pd.Timestamp]", "pd.Series[int]"]]
+        iterator4, Iterator[tuple["pd.Interval[pd.Timestamp]", "pd.Series[int]"]]
     )
     index4, value4 = next(iterator4)
-    assert_type((index4, value4), Tuple["pd.Interval[pd.Timestamp]", "pd.Series[int]"])
+    assert_type((index4, value4), tuple["pd.Interval[pd.Timestamp]", "pd.Series[int]"])
 
     check(assert_type(index4, "pd.Interval[pd.Timestamp]"), pd.Interval)
     check(assert_type(value4, "pd.Series[int]"), pd.Series, np.integer)
@@ -743,9 +742,9 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     s = pd.Series([0, 1, 2], index=["a", "b", "a"], dtype=int)
     # this will use pd.Index which is ambiguous
     iterator = s.groupby(s.index).__iter__()
-    assert_type(iterator, Iterator[Tuple[Any, "pd.Series[int]"]])
+    assert_type(iterator, Iterator[tuple[Any, "pd.Series[int]"]])
     index, value = next(iterator)
-    assert_type((index, value), Tuple[Any, "pd.Series[int]"])
+    assert_type((index, value), tuple[Any, "pd.Series[int]"])
 
     check(assert_type(index, Any), str)
     check(assert_type(value, "pd.Series[int]"), pd.Series, np.integer)
@@ -759,9 +758,9 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     ):
         categorical_index = pd.CategoricalIndex(s.index)
         iterator2 = s.groupby(categorical_index).__iter__()
-        assert_type(iterator2, Iterator[Tuple[Any, "pd.Series[int]"]])
+        assert_type(iterator2, Iterator[tuple[Any, "pd.Series[int]"]])
         index2, value2 = next(iterator2)
-        assert_type((index2, value2), Tuple[Any, "pd.Series[int]"])
+        assert_type((index2, value2), tuple[Any, "pd.Series[int]"])
 
         check(assert_type(index2, Any), str)
         check(assert_type(value2, "pd.Series[int]"), pd.Series, np.integer)
@@ -1324,13 +1323,13 @@ def test_types_iter() -> None:
 
 def test_types_to_list() -> None:
     s = pd.Series(["a", "b", "c"], dtype=str)
-    check(assert_type(s.tolist(), List[str]), list, str)
-    check(assert_type(s.to_list(), List[str]), list, str)
+    check(assert_type(s.tolist(), list[str]), list, str)
+    check(assert_type(s.to_list(), list[str]), list, str)
 
 
 def test_types_to_dict() -> None:
     s = pd.Series(["a", "b", "c"], dtype=str)
-    assert_type(s.to_dict(), Dict[Any, str])
+    assert_type(s.to_dict(), dict[Any, str])
 
 
 def test_categorical_codes():
@@ -1758,7 +1757,7 @@ def test_change_to_dict_return_type() -> None:
     value = ["a", "b", "c"]
     df = pd.DataFrame(zip(id, value), columns=["id", "value"])
     fd = df.set_index("id")["value"].to_dict()
-    check(assert_type(fd, Dict[Any, Any]), dict)
+    check(assert_type(fd, dict[Any, Any]), dict)
 
 
 ASTYPE_BOOL_ARGS: list[tuple[BooleanDtypeArg, type]] = [

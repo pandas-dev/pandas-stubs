@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import (
-    Tuple,
-    Union,
-)
+from typing import Union
 
 import numpy as np
 from numpy import typing as npt
@@ -734,9 +731,9 @@ def test_index_operators() -> None:
     check(assert_type(i1 % i2, "pd.Index[int]"), pd.Index)
     check(assert_type(i1 % 10, "pd.Index[int]"), pd.Index)
     check(assert_type(10 % i1, "pd.Index[int]"), pd.Index)
-    check(assert_type(divmod(i1, i2), Tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
-    check(assert_type(divmod(i1, 10), Tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
-    check(assert_type(divmod(10, i1), Tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
+    check(assert_type(divmod(i1, i2), tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
+    check(assert_type(divmod(i1, 10), tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
+    check(assert_type(divmod(10, i1), tuple["pd.Index[int]", "pd.Index[int]"]), tuple)
 
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(

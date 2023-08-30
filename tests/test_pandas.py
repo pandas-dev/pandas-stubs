@@ -750,7 +750,7 @@ def test_lreshape() -> None:
             "year2": [2008, 2008],
         }
     )
-    from typing import Hashable
+    from collections.abc import Hashable
 
     groups: dict[Hashable, list[Hashable]] = {
         ("year",): [("year1",), "year2"],

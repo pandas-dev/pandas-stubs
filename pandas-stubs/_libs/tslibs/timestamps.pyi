@@ -1,11 +1,11 @@
 from datetime import (
+    _IsoCalendarDate,
     date as _date,
     datetime,
     time as _time,
     timedelta,
     tzinfo as _tzinfo,
 )
-import sys
 from time import struct_time
 from typing import (
     ClassVar,
@@ -45,11 +45,6 @@ _Ambiguous: TypeAlias = bool | Literal["raise", "NaT"]
 _Nonexistent: TypeAlias = (
     Literal["raise", "NaT", "shift_backward", "shift_forward"] | Timedelta | timedelta
 )
-
-if sys.version_info >= (3, 9):
-    from datetime import _IsoCalendarDate
-else:
-    _IsoCalendarDate: TypeAlias = tuple[int, int, int]
 
 class Timestamp(datetime):
     min: ClassVar[Timestamp]

@@ -16,7 +16,6 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -31,12 +30,9 @@ packages = [
 "Documentation" = "https://pandas.pydata.org/pandas-docs/stable"
 
 [tool.poetry.dependencies]
-python = ">=3.8"
+python = ">=3.9"
 types-pytz = ">= 2022.1.1"
-numpy = [
-    {version = "<=1.24.3", python = "<=3.8"},
-    {version = ">=1.25.0", python = ">=3.9"}
-]
+numpy = ">=1.25.0"
 
 [tool.poetry.dev-dependencies]
 mypy = "1.5.1"
@@ -116,7 +112,7 @@ args = [{ name = "allowlist", positional = true, default = "", required = false,
 
 
 [tool.black]
-target-version = ['py38']
+target-version = ['py39']
 
 [tool.isort]
 known_pre_libs = "pandas._config"
