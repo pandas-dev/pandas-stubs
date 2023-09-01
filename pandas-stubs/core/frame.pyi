@@ -1,6 +1,5 @@
 from collections.abc import (
     Callable,
-    Generator,
     Hashable,
     Iterable,
     Iterator,
@@ -14,7 +13,6 @@ from typing import (
     Any,
     ClassVar,
     Literal,
-    TypeVar,
     overload,
 )
 
@@ -119,8 +117,6 @@ from pandas._typing import (
     ValidationOptions,
     WriteBuffer,
     XMLParsers,
-    np_ndarray_bool,
-    np_ndarray_str,
     npt,
     num,
 )
@@ -130,7 +126,6 @@ from pandas.plotting import PlotAccessor
 
 _str = str
 _bool = bool
-_ScalarOrTupleT = TypeVar("_ScalarOrTupleT", bound=Scalar | tuple[Hashable, ...])
 
 class _iLocIndexerFrame(_iLocIndexer):
     @overload
@@ -553,20 +548,11 @@ class DataFrame(NDFrame, OpsMixin):
     def T(self) -> DataFrame: ...
     def __getattr__(self, name: str) -> Series: ...
     @overload
-    def __getitem__(  # type: ignore[misc]
-        self,
-        key: Series
-        | DataFrame
-        | Index
-        | np_ndarray_str
-        | np_ndarray_bool
-        | list[_ScalarOrTupleT]
-        | Generator[_ScalarOrTupleT, None, None],
-    ) -> DataFrame: ...
+    def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[misc]
     @overload
-    def __getitem__(self, key: slice) -> DataFrame: ...
+    def __getitem__(self, key: Iterable[Hashable] | slice) -> DataFrame: ...
     @overload
-    def __getitem__(self, key: Scalar | Hashable) -> Series: ...
+    def __getitem__(self, key: Hashable) -> Series: ...
     def isetitem(
         self, loc: int | Sequence[int], value: Scalar | ArrayLike | list[Any]
     ) -> None: ...
@@ -1477,7 +1463,7 @@ class DataFrame(NDFrame, OpsMixin):
     Name: _str
     #
     # dunder methods
-    def __iter__(self) -> Iterator[float | _str]: ...
+    def __iter__(self) -> Iterator[Hashable]: ...
     # properties
     @property
     def at(self): ...  # Not sure what to do with this yet; look at source
