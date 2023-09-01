@@ -550,7 +550,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[misc]
     @overload
-    def __getitem__(self, key: Iterable[Scalar | Hashable] | slice) -> DataFrame: ...
+    def __getitem__(self, key: Iterable[Hashable] | slice) -> DataFrame: ...
     @overload
     def __getitem__(self, key: Hashable) -> Series: ...
     def isetitem(
@@ -1463,7 +1463,7 @@ class DataFrame(NDFrame, OpsMixin):
     Name: _str
     #
     # dunder methods
-    def __iter__(self) -> Iterator[Scalar | Hashable]: ...
+    def __iter__(self) -> Iterator[Hashable]: ...
     # properties
     @property
     def at(self): ...  # Not sure what to do with this yet; look at source
