@@ -1463,7 +1463,7 @@ class DataFrame(NDFrame, OpsMixin):
     Name: _str
     #
     # dunder methods
-    def __iter__(self) -> Iterator[float | _str]: ...
+    def __iter__(self) -> Iterator[Scalar | Hashable]: ...
     # properties
     @property
     def at(self): ...  # Not sure what to do with this yet; look at source
