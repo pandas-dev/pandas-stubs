@@ -2811,3 +2811,10 @@ def test_groupby_fillna_inplace() -> None:
 def test_getitem_generator() -> None:
     # GH 685
     check(assert_type(DF[(f"col{i+1}" for i in range(2))], pd.DataFrame), pd.DataFrame)
+
+
+def test_getitem_dict_keys() -> None:
+    # GH 770
+    some_columns = {"a": [1], "b": [2]}
+    df = pd.DataFrame.from_dict(some_columns)
+    check(assert_type(df[some_columns.keys()], pd.DataFrame), pd.DataFrame)
