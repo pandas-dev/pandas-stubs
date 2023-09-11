@@ -28,7 +28,7 @@ def read_html(
     io: FilePath | ReadBuffer[str],
     *,
     match: str | Pattern = ...,
-    flavor: str | None = ...,
+    flavor: str | Sequence[str] | None = ...,
     header: int | Sequence[int] | None = ...,
     index_col: int | Sequence[int] | list[HashableT1] | None = ...,
     skiprows: int | Sequence[int] | slice | None = ...,
