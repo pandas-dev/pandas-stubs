@@ -239,46 +239,50 @@ class PlotAccessor:
         **kwargs: Any,
     ) -> pd.Series: ...
     @overload
-    def line(  # type: ignore[misc]
+    def line(
         self,
-        x: Hashable | None = ...,
-        y: Hashable | None = ...,
+        x: Hashable = ...,
+        y: Hashable = ...,
         color: _PlotAccessorColor = ...,
+        *,
         subplots: Literal[False] | None = ...,
         **kwargs,
     ) -> Axes: ...
     @overload
     def line(
         self,
-        x: Hashable | None = ...,
-        y: Hashable | None = ...,
+        x: Hashable = ...,
+        y: Hashable = ...,
         color: _PlotAccessorColor = ...,
-        subplots: Literal[True] = ...,
+        *,
+        subplots: Literal[True],
         **kwargs,
     ) -> npt.NDArray[np.object_]: ...
     @overload
-    def bar(  # type: ignore[misc]
+    def bar(
         self,
-        x: Hashable | None = ...,
-        y: Hashable | None = ...,
+        x: Hashable = ...,
+        y: Hashable = ...,
         color: _PlotAccessorColor = ...,
+        *,
         subplots: Literal[False] | None = ...,
         **kwargs,
     ) -> Axes: ...
     @overload
     def bar(
         self,
-        x: Hashable | None = ...,
-        y: Hashable | None = ...,
+        x: Hashable = ...,
+        y: Hashable = ...,
         color: _PlotAccessorColor = ...,
-        subplots: Literal[True] = ...,
+        *,
+        subplots: Literal[True],
         **kwargs,
     ) -> npt.NDArray[np.object_]: ...
     @overload
-    def barh(  # type: ignore[misc]
+    def barh(
         self,
-        x: Hashable | None = ...,
-        y: Hashable | None = ...,
+        x: Hashable = ...,
+        y: Hashable = ...,
         color: _PlotAccessorColor = ...,
         subplots: Literal[False] | None = ...,
         **kwargs,
@@ -286,24 +290,27 @@ class PlotAccessor:
     @overload
     def barh(
         self,
-        x: Hashable | None = ...,
-        y: Hashable | None = ...,
+        x: Hashable = ...,
+        y: Hashable = ...,
         color: _PlotAccessorColor = ...,
-        subplots: Literal[True] = ...,
+        *,
+        subplots: Literal[True],
         **kwargs,
     ) -> npt.NDArray[np.object_]: ...
     @overload
-    def box(  # type: ignore[misc]
+    def box(
         self,
-        by: Hashable | list[HashableT] | None = ...,
+        by: Hashable | list[HashableT] = ...,
+        *,
         subplots: Literal[False] | None = ...,
         **kwargs,
     ) -> Axes: ...
     @overload
     def box(
         self,
-        by: Hashable | list[HashableT] | None = ...,
-        subplots: Literal[True] = ...,
+        by: Hashable | list[HashableT] = ...,
+        *,
+        subplots: Literal[True],
         **kwargs,
     ) -> Series: ...
     @overload
