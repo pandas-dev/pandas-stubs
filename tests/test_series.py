@@ -998,6 +998,11 @@ def test_types_getitem() -> None:
     value: int = s2[0]
     s3: pd.Series = s[:2]
 
+def test_types_getitem_by_timestamp() -> None:
+    index = pd.date_range("2018-01-01", periods=2, freq="D")
+    series = pd.Series(range(2), index=index)
+    value: int = series[index[-1]]
+
 
 def test_types_eq() -> None:
     s1 = pd.Series([1, 2, 3])
