@@ -1,6 +1,8 @@
 import io
 from typing import Any
 
+from matplotlib.axes import Axes
+from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 from matplotlib.table import Table
 import numpy as np
@@ -178,26 +180,26 @@ IRIS_DF = pd.read_csv(io.StringIO(IRIS))
 
 
 def test_andrews_curves(close_figures) -> None:
-    check(assert_type(pd.plotting.andrews_curves(IRIS_DF, "Name"), plt.Axes), plt.Axes)
+    check(assert_type(pd.plotting.andrews_curves(IRIS_DF, "Name"), Axes), Axes)
 
 
 def test_autocorrelation_plot(close_figures) -> None:
     spacing = np.linspace(-9 * np.pi, 9 * np.pi, num=1000)
     s = pd.Series(0.7 * np.random.rand(1000) + 0.3 * np.sin(spacing))
-    check(assert_type(pd.plotting.autocorrelation_plot(s), plt.Axes), plt.Axes)
+    check(assert_type(pd.plotting.autocorrelation_plot(s), Axes), Axes)
 
 
 def test_bootstrap_plot(close_figures) -> None:
     s = pd.Series(np.random.uniform(size=100))
-    check(assert_type(pd.plotting.bootstrap_plot(s), plt.Figure), plt.Figure)
+    check(assert_type(pd.plotting.bootstrap_plot(s), Figure), Figure)
 
 
 def test_boxplot(close_figures) -> None:
     np.random.seed(1234)
     df = pd.DataFrame(np.random.randn(10, 4), columns=["Col1", "Col2", "Col3", "Col4"])
     check(
-        assert_type(pd.plotting.boxplot(df, column=["Col1", "Col2", "Col3"]), plt.Axes),
-        plt.Axes,
+        assert_type(pd.plotting.boxplot(df, column=["Col1", "Col2", "Col3"]), Axes),
+        Axes,
     )
 
 
@@ -210,7 +212,7 @@ def test_lag_plot(close_figures) -> None:
     np.random.seed(5)
     x = np.cumsum(np.random.normal(loc=1, scale=5, size=50))
     s = pd.Series(x)
-    check(assert_type(pd.plotting.lag_plot(s, lag=1), plt.Axes), plt.Axes)
+    check(assert_type(pd.plotting.lag_plot(s, lag=1), Axes), Axes)
 
 
 def test_plot_parallel_coordinates(close_figures) -> None:
@@ -219,9 +221,9 @@ def test_plot_parallel_coordinates(close_figures) -> None:
             pd.plotting.parallel_coordinates(
                 IRIS_DF, "Name", color=("#556270", "#4ECDC4", "#C7F464")
             ),
-            plt.Axes,
+            Axes,
         ),
-        plt.Axes,
+        Axes,
     )
 
 
@@ -250,7 +252,7 @@ def test_radviz(close_figures) -> None:
             ],
         }
     )
-    check(assert_type(pd.plotting.radviz(df, "Category"), plt.Axes), plt.Axes)
+    check(assert_type(pd.plotting.radviz(df, "Category"), Axes), Axes)
 
 
 def test_scatter_matrix(close_figures) -> None:
@@ -271,9 +273,9 @@ def test_table(close_figures) -> None:
 
 
 def test_plot_line():
-    check(assert_type(IRIS_DF.plot(), plt.Axes), plt.Axes)
-    check(assert_type(IRIS_DF.plot.line(), plt.Axes), plt.Axes)
-    check(assert_type(IRIS_DF.plot(kind="line"), plt.Axes), plt.Axes)
+    check(assert_type(IRIS_DF.plot(), Axes), Axes)
+    check(assert_type(IRIS_DF.plot.line(), Axes), Axes)
+    check(assert_type(IRIS_DF.plot(kind="line"), Axes), Axes)
     check(
         assert_type(
             IRIS_DF.plot.line(subplots=True),
@@ -291,8 +293,8 @@ def test_plot_line():
 
 
 def test_plot_area(close_figures) -> None:
-    check(assert_type(IRIS_DF.plot.area(), plt.Axes), plt.Axes)
-    check(assert_type(IRIS_DF.plot(kind="area"), plt.Axes), plt.Axes)
+    check(assert_type(IRIS_DF.plot.area(), Axes), Axes)
+    check(assert_type(IRIS_DF.plot(kind="area"), Axes), Axes)
     check(
         assert_type(
             IRIS_DF.plot.area(subplots=True),
@@ -310,8 +312,8 @@ def test_plot_area(close_figures) -> None:
 
 
 def test_plot_bar(close_figures) -> None:
-    check(assert_type(IRIS_DF.plot.bar(), plt.Axes), plt.Axes)
-    check(assert_type(IRIS_DF.plot(kind="bar"), plt.Axes), plt.Axes)
+    check(assert_type(IRIS_DF.plot.bar(), Axes), Axes)
+    check(assert_type(IRIS_DF.plot(kind="bar"), Axes), Axes)
     check(
         assert_type(
             IRIS_DF.plot.bar(subplots=True),
@@ -329,8 +331,8 @@ def test_plot_bar(close_figures) -> None:
 
 
 def test_plot_barh(close_figures) -> None:
-    check(assert_type(IRIS_DF.plot.barh(), plt.Axes), plt.Axes)
-    check(assert_type(IRIS_DF.plot(kind="barh"), plt.Axes), plt.Axes)
+    check(assert_type(IRIS_DF.plot.barh(), Axes), Axes)
+    check(assert_type(IRIS_DF.plot(kind="barh"), Axes), Axes)
     check(
         assert_type(
             IRIS_DF.plot.barh(subplots=True),
@@ -348,8 +350,8 @@ def test_plot_barh(close_figures) -> None:
 
 
 def test_plot_box(close_figures) -> None:
-    check(assert_type(IRIS_DF.plot.box(), plt.Axes), plt.Axes)
-    check(assert_type(IRIS_DF.plot(kind="box"), plt.Axes), plt.Axes)
+    check(assert_type(IRIS_DF.plot.box(), Axes), Axes)
+    check(assert_type(IRIS_DF.plot(kind="box"), Axes), Axes)
     check(
         assert_type(
             IRIS_DF.plot.box(subplots=True),
@@ -367,8 +369,8 @@ def test_plot_box(close_figures) -> None:
 
 
 def test_plot_density(close_figures) -> None:
-    check(assert_type(IRIS_DF.plot.density(), plt.Axes), plt.Axes)
-    check(assert_type(IRIS_DF.plot(kind="density"), plt.Axes), plt.Axes)
+    check(assert_type(IRIS_DF.plot.density(), Axes), Axes)
+    check(assert_type(IRIS_DF.plot(kind="density"), Axes), Axes)
     check(
         assert_type(
             IRIS_DF.plot.density(subplots=True),
@@ -387,14 +389,12 @@ def test_plot_density(close_figures) -> None:
 
 def test_plot_hexbin(close_figures) -> None:
     check(
-        assert_type(IRIS_DF.plot.hexbin(x="SepalLength", y="SepalWidth"), plt.Axes),
-        plt.Axes,
+        assert_type(IRIS_DF.plot.hexbin(x="SepalLength", y="SepalWidth"), Axes),
+        Axes,
     )
     check(
-        assert_type(
-            IRIS_DF.plot(x="SepalLength", y="SepalWidth", kind="hexbin"), plt.Axes
-        ),
-        plt.Axes,
+        assert_type(IRIS_DF.plot(x="SepalLength", y="SepalWidth", kind="hexbin"), Axes),
+        Axes,
     )
     check(
         assert_type(
@@ -413,8 +413,8 @@ def test_plot_hexbin(close_figures) -> None:
 
 
 def test_plot_hist(close_figures) -> None:
-    check(assert_type(IRIS_DF.plot.hist(), plt.Axes), plt.Axes)
-    check(assert_type(IRIS_DF.plot(kind="hist"), plt.Axes), plt.Axes)
+    check(assert_type(IRIS_DF.plot.hist(), Axes), Axes)
+    check(assert_type(IRIS_DF.plot(kind="hist"), Axes), Axes)
     check(
         assert_type(
             IRIS_DF.plot.hist(subplots=True),
@@ -432,8 +432,8 @@ def test_plot_hist(close_figures) -> None:
 
 
 def test_plot_kde(close_figures) -> None:
-    check(assert_type(IRIS_DF.plot.kde(), plt.Axes), plt.Axes)
-    check(assert_type(IRIS_DF.plot(kind="kde"), plt.Axes), plt.Axes)
+    check(assert_type(IRIS_DF.plot.kde(), Axes), Axes)
+    check(assert_type(IRIS_DF.plot(kind="kde"), Axes), Axes)
     check(
         assert_type(
             IRIS_DF.plot.kde(subplots=True),
@@ -451,8 +451,8 @@ def test_plot_kde(close_figures) -> None:
 
 
 def test_plot_pie(close_figures) -> None:
-    check(assert_type(IRIS_DF.plot.pie(y="SepalLength"), plt.Axes), plt.Axes)
-    check(assert_type(IRIS_DF.plot(kind="pie", y="SepalLength"), plt.Axes), plt.Axes)
+    check(assert_type(IRIS_DF.plot.pie(y="SepalLength"), Axes), Axes)
+    check(assert_type(IRIS_DF.plot(kind="pie", y="SepalLength"), Axes), Axes)
     check(
         assert_type(
             IRIS_DF.plot.pie(y="SepalLength", subplots=True),
@@ -472,14 +472,14 @@ def test_plot_pie(close_figures) -> None:
 
 def test_plot_scatter(close_figures) -> None:
     check(
-        assert_type(IRIS_DF.plot.scatter(x="SepalLength", y="SepalWidth"), plt.Axes),
-        plt.Axes,
+        assert_type(IRIS_DF.plot.scatter(x="SepalLength", y="SepalWidth"), Axes),
+        Axes,
     )
     check(
         assert_type(
-            IRIS_DF.plot(x="SepalLength", y="SepalWidth", kind="scatter"), plt.Axes
+            IRIS_DF.plot(x="SepalLength", y="SepalWidth", kind="scatter"), Axes
         ),
-        plt.Axes,
+        Axes,
     )
     check(
         assert_type(
@@ -538,9 +538,9 @@ def test_plot_keywords(close_figures):
                 include_bool=True,
                 backend="matplotlib",
             ),
-            plt.Axes,
+            Axes,
         ),
-        plt.Axes,
+        Axes,
     )
 
     df = pd.DataFrame(np.random.rand(50, 4), columns=["a", "b", "c", "d"])
@@ -558,17 +558,15 @@ def test_plot_keywords(close_figures):
                 s=50,
                 colorbar=False,
             ),
-            plt.Axes,
+            Axes,
         ),
-        plt.Axes,
+        Axes,
     )
 
     df = pd.DataFrame(np.random.rand(10, 5), columns=["A", "B", "C", "D", "E"])
     check(
-        assert_type(
-            df.plot(kind="box", vert=False, positions=[1, 4, 5, 6, 8]), plt.Axes
-        ),
-        plt.Axes,
+        assert_type(df.plot(kind="box", vert=False, positions=[1, 4, 5, 6, 8]), Axes),
+        Axes,
     )
 
 

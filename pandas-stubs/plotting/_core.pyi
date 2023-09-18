@@ -239,7 +239,7 @@ class PlotAccessor:
         **kwargs: Any,
     ) -> pd.Series: ...
     @overload
-    def line(
+    def line(  # type: ignore[misc]
         self,
         x: Hashable | None = ...,
         y: Hashable | None = ...,
@@ -257,7 +257,7 @@ class PlotAccessor:
         **kwargs,
     ) -> npt.NDArray[np.object_]: ...
     @overload
-    def bar(
+    def bar(  # type: ignore[misc]
         self,
         x: Hashable | None = ...,
         y: Hashable | None = ...,
@@ -275,7 +275,7 @@ class PlotAccessor:
         **kwargs,
     ) -> npt.NDArray[np.object_]: ...
     @overload
-    def barh(
+    def barh(  # type: ignore[misc]
         self,
         x: Hashable | None = ...,
         y: Hashable | None = ...,
@@ -293,7 +293,7 @@ class PlotAccessor:
         **kwargs,
     ) -> npt.NDArray[np.object_]: ...
     @overload
-    def box(
+    def box(  # type: ignore[misc]
         self,
         by: Hashable | list[HashableT] | None = ...,
         subplots: Literal[False] | None = ...,
