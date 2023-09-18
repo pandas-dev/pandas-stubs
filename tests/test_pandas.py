@@ -13,6 +13,7 @@ import numpy.typing as npt
 import pandas as pd
 from pandas import Grouper
 from pandas.api.extensions import ExtensionArray
+import pandas.util as pdutil
 import pytest
 from typing_extensions import assert_type
 
@@ -520,10 +521,10 @@ def test_arrow_dtype() -> None:
 
 def test_hashing():
     a = np.array([1, 2, 3])
-    check(assert_type(pd.util.hash_array(a), npt.NDArray[np.uint64]), np.ndarray)
+    check(assert_type(pdutil.hash_array(a), npt.NDArray[np.uint64]), np.ndarray)
     check(
         assert_type(
-            pd.util.hash_array(a, encoding="latin1", hash_key="1", categorize=True),
+            pdutil.hash_array(a, encoding="latin1", hash_key="1", categorize=True),
             npt.NDArray[np.uint64],
         ),
         np.ndarray,
@@ -532,12 +533,12 @@ def test_hashing():
     b = pd.Series(a)
     c = pd.DataFrame({"a": a, "b": a})
     d = pd.Index(b)
-    check(assert_type(pd.util.hash_pandas_object(b), pd.Series), pd.Series)
-    check(assert_type(pd.util.hash_pandas_object(c), pd.Series), pd.Series)
-    check(assert_type(pd.util.hash_pandas_object(d), pd.Series), pd.Series)
+    check(assert_type(pdutil.hash_pandas_object(b), pd.Series), pd.Series)
+    check(assert_type(pdutil.hash_pandas_object(c), pd.Series), pd.Series)
+    check(assert_type(pdutil.hash_pandas_object(d), pd.Series), pd.Series)
     check(
         assert_type(
-            pd.util.hash_pandas_object(
+            pdutil.hash_pandas_object(
                 d, index=True, encoding="latin1", hash_key="apple", categorize=True
             ),
             pd.Series,
