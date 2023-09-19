@@ -1002,7 +1002,7 @@ def test_types_getitem() -> None:
 def test_types_getitem_by_timestamp() -> None:
     index = pd.date_range("2018-01-01", periods=2, freq="D")
     series = pd.Series(range(2), index=index)
-    check(assert_type(series[index[-1]], int), int)
+    check(assert_type(series[index[-1]], int), np.integer)
 
 
 def test_types_eq() -> None:
