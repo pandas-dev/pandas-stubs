@@ -999,6 +999,12 @@ def test_types_getitem() -> None:
     s3: pd.Series = s[:2]
 
 
+def test_types_getitem_by_timestamp() -> None:
+    index = pd.date_range("2018-01-01", periods=2, freq="D")
+    series = pd.Series(range(2), index=index)
+    check(assert_type(series[index[-1]], int), np.integer)
+
+
 def test_types_eq() -> None:
     s1 = pd.Series([1, 2, 3])
     res1: pd.Series = s1 == 1
