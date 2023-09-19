@@ -118,7 +118,7 @@ class IO(DictWrapper):
     sql: IOSQL
 
 class Mode(DictWrapper):
-    chained_assignment: str
+    chained_assignment: Literal["warn", "raise"] | None
     data_manager: str
     sim_interactive: bool
     string_storage: str
