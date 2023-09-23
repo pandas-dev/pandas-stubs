@@ -180,9 +180,8 @@ def test_types_getitem_with_hashable() -> None:
 
 
 def test_slice_setitem() -> None:
-    # Due to the bug in pandas 1.2.3(https://github.com/pandas-dev/pandas/issues/40440), this is in separate test case
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4], 5: [6, 7]})
-    df[1:] = ["a", "b", "c"]
+    df[1:] = [10, 11, 12]
 
 
 def test_types_setitem() -> None:

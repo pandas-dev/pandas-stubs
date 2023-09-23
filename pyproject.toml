@@ -30,16 +30,17 @@ packages = [
 "Documentation" = "https://pandas.pydata.org/pandas-docs/stable"
 
 [tool.poetry.dependencies]
-python = ">=3.9"
+python = ">=3.9 <3.13"
 types-pytz = ">= 2022.1.1"
 numpy = ">=1.25.0"
 
 [tool.poetry.dev-dependencies]
 mypy = "1.5.1"
-pandas = "2.0.3"
+pandas = "2.1.1"
 pyarrow = ">=10.0.1"
 pytest = ">=7.1.2"
-pyright = ">= 1.1.327"
+# pyright 1.1.327 has bug fixed in 1.1.328
+pyright = "1.1.326"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
 typing-extensions = ">=4.4.0"
@@ -195,3 +196,7 @@ useLibraryCodeForTypes = false
 
 [tool.codespell]
 ignore-words-list = "indext, mose, sav, ser"
+
+# Next line needed to avoid poetry complaint
+[tool.setuptools_scm]
+

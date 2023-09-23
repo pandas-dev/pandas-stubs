@@ -11,6 +11,10 @@ from pandas.core.series import Series
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs import BaseOffset
+from pandas._libs.tslibs.offsets import (
+    RelativeDeltaOffset,
+    SingleConstructorOffset,
+)
 from pandas._typing import (
     Ordered,
     npt,
@@ -48,7 +52,9 @@ class DatetimeTZDtype(PandasExtensionDtype):
     def na_value(self) -> NaTType: ...
 
 class PeriodDtype(PandasExtensionDtype):
-    def __init__(self, freq: str | BaseOffset = ...) -> None: ...
+    def __init__(
+        self, freq: str | SingleConstructorOffset | RelativeDeltaOffset = ...
+    ) -> None: ...
     @property
     def freq(self) -> BaseOffset: ...
     @property

@@ -57,11 +57,13 @@ def test_period_dtype() -> None:
     p_dt = pd.PeriodDtype(freq="D")
     check(assert_type(p_dt, pd.PeriodDtype), pd.PeriodDtype)
     check(assert_type(pd.PeriodDtype(freq=Day()), pd.PeriodDtype), pd.PeriodDtype)
-    check(
-        assert_type(pd.PeriodDtype(freq=BusinessDay()), pd.PeriodDtype), pd.PeriodDtype
-    )
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.PeriodDtype(freq=CustomBusinessDay())  # TODO(raises on 2.1)
+        pd.PeriodDtype(
+            freq=CustomBusinessDay()  # type:ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+        )
+        pd.PeriodDtype(
+            freq=BusinessDay()  # type:ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+        )
     check(
         assert_type(p_dt.freq, pd.tseries.offsets.BaseOffset),
         pd.tseries.offsets.DateOffset,
