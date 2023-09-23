@@ -832,7 +832,7 @@ def test_types_window() -> None:
     s.rolling(2, center=True)
     if TYPE_CHECKING_INVALID_USAGE:
         s.expanding(axis=0)  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
-        s.rolling(2, axis=0, center=True)  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
+        s.rolling(2, axis=0, center=True)  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
         s.expanding(axis=0, center=True)  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
 
     s.rolling(2)
