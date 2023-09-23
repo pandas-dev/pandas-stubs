@@ -39,7 +39,6 @@ import xarray as xr
 from pandas._typing import Scalar
 
 from tests import (
-    PD_LTE_20,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -386,9 +385,9 @@ def test_types_mean() -> None:
     s1: pd.Series = df.mean()
     s2: pd.Series = df.mean(axis=0)
     df2: pd.DataFrame = df.groupby(level=0).mean()
-    if PD_LTE_20:
-        df3: pd.DataFrame = df.groupby(axis=1, level=0).mean()
-        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).mean()
+    if TYPE_CHECKING_INVALID_USAGE:
+        df3: pd.DataFrame = df.groupby(axis=1, level=0).mean()  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
+        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).mean()  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
     s3: pd.Series = df.mean(axis=1, skipna=True, numeric_only=False)
 
 
@@ -397,9 +396,9 @@ def test_types_median() -> None:
     s1: pd.Series = df.median()
     s2: pd.Series = df.median(axis=0)
     df2: pd.DataFrame = df.groupby(level=0).median()
-    if PD_LTE_20:
-        df3: pd.DataFrame = df.groupby(axis=1, level=0).median()
-        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).median()
+    if TYPE_CHECKING_INVALID_USAGE:
+        df3: pd.DataFrame = df.groupby(axis=1, level=0).median()  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
+        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).median()  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
     s3: pd.Series = df.median(axis=1, skipna=True, numeric_only=False)
 
 
@@ -1067,10 +1066,9 @@ def test_types_plot() -> None:
 def test_types_window() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
     df.expanding()
-    if PD_LTE_20:
-        df.expanding(axis=1)
-        df.rolling(2, axis=1, center=True)
     if TYPE_CHECKING_INVALID_USAGE:
+        df.expanding(axis=1)  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
+        df.rolling(2, axis=1, center=True)  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
         df.expanding(axis=1, center=True)  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
 
     df.rolling(2)
@@ -1310,7 +1308,8 @@ def test_types_to_html() -> None:
 def test_types_resample() -> None:
     df = pd.DataFrame({"values": [2, 11, 3, 13, 14, 18, 17, 19]})
     df["date"] = pd.date_range("01/01/2018", periods=8, freq="W")
-    df.resample("M", on="date")
+    with pytest_warns_bounded(UserWarning, "'M' will be deprecated", lower="2.1.99"):
+        df.resample("M", on="date")
     # origin and offset params added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
     df.resample("20min", origin="epoch", offset=pd.Timedelta(2, "minutes"), on="date")
 
@@ -1354,17 +1353,18 @@ def test_pipe() -> None:
     def foo(df: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame(df)
 
-    val = (
-        pd.DataFrame(
-            {
-                "price": [10, 11, 9, 13, 14, 18, 17, 19],
-                "volume": [50, 60, 40, 100, 50, 100, 40, 50],
-            }
+    with pytest_warns_bounded(UserWarning, "'M' will be deprecated", lower="2.1.99"):
+        val = (
+            pd.DataFrame(
+                {
+                    "price": [10, 11, 9, 13, 14, 18, 17, 19],
+                    "volume": [50, 60, 40, 100, 50, 100, 40, 50],
+                }
+            )
+            .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
+            .resample("M", on="week_starting")
+            .pipe(foo)
         )
-        .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
-        .resample("M", on="week_starting")
-        .pipe(foo)
-    )
 
     check(assert_type(val, pd.DataFrame), pd.DataFrame)
 
@@ -2206,21 +2206,27 @@ def test_groupby_apply() -> None:
     def sum_mean(x: pd.DataFrame) -> float:
         return x.sum().mean()
 
-    check(assert_type(df.groupby("col1").apply(sum_mean), pd.Series), pd.Series)
+    check(
+        assert_type(df.groupby("col1")["col2"].apply(sum_mean), pd.Series),
+        pd.Series,
+    )
 
     lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
-    check(assert_type(df.groupby("col1").apply(lfunc), pd.Series), pd.Series)
+    check(assert_type(df.groupby("col1")["col2"].apply(lfunc), pd.Series), pd.Series)
 
     def sum_to_list(x: pd.DataFrame) -> list:
         return x.sum().tolist()
 
-    check(assert_type(df.groupby("col1").apply(sum_to_list), pd.Series), pd.Series)
+    check(
+        assert_type(df.groupby("col1")["col2"].apply(sum_to_list), pd.Series), pd.Series
+    )
 
     def sum_to_series(x: pd.DataFrame) -> pd.Series:
         return x.sum()
 
     check(
-        assert_type(df.groupby("col1").apply(sum_to_series), pd.DataFrame), pd.DataFrame
+        assert_type(df.groupby("col1")["col2"].apply(sum_to_series), pd.Series),
+        pd.Series,
     )
 
     def sample_to_df(x: pd.DataFrame) -> pd.DataFrame:
@@ -2228,31 +2234,33 @@ def test_groupby_apply() -> None:
 
     check(
         assert_type(
-            df.groupby("col1", group_keys=False).apply(sample_to_df), pd.DataFrame
+            df.groupby("col1", group_keys=False)["col2"].apply(sample_to_df), pd.Series
         ),
-        pd.DataFrame,
+        pd.Series,
     )
 
 
 def test_resample() -> None:
     # GH 181
     N = 10
-    index = pd.date_range("1/1/2000", periods=N, freq="T")
     x = [x for x in range(N)]
-    df = pd.DataFrame({"a": x, "b": x, "c": x}, index=index)
-    check(assert_type(df.resample("2T").std(), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.resample("2T").var(), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.resample("2T").quantile(), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.resample("2T").sum(), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.resample("2T").prod(), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.resample("2T").min(), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.resample("2T").max(), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.resample("2T").first(), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.resample("2T").last(), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.resample("2T").mean(), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.resample("2T").sem(), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.resample("2T").median(), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.resample("2T").ohlc(), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(FutureWarning, "'T' is deprecated", lower="2.1.99"):
+        index = pd.date_range("1/1/2000", periods=N, freq="T")
+        x = [x for x in range(N)]
+        df = pd.DataFrame({"a": x, "b": x, "c": x}, index=index)
+        check(assert_type(df.resample("2T").std(), pd.DataFrame), pd.DataFrame)
+        check(assert_type(df.resample("2T").var(), pd.DataFrame), pd.DataFrame)
+        check(assert_type(df.resample("2T").quantile(), pd.DataFrame), pd.DataFrame)
+        check(assert_type(df.resample("2T").sum(), pd.DataFrame), pd.DataFrame)
+        check(assert_type(df.resample("2T").prod(), pd.DataFrame), pd.DataFrame)
+        check(assert_type(df.resample("2T").min(), pd.DataFrame), pd.DataFrame)
+        check(assert_type(df.resample("2T").max(), pd.DataFrame), pd.DataFrame)
+        check(assert_type(df.resample("2T").first(), pd.DataFrame), pd.DataFrame)
+        check(assert_type(df.resample("2T").last(), pd.DataFrame), pd.DataFrame)
+        check(assert_type(df.resample("2T").mean(), pd.DataFrame), pd.DataFrame)
+        check(assert_type(df.resample("2T").sem(), pd.DataFrame), pd.DataFrame)
+        check(assert_type(df.resample("2T").median(), pd.DataFrame), pd.DataFrame)
+        check(assert_type(df.resample("2T").ohlc(), pd.DataFrame), pd.DataFrame)
 
 
 def test_loc_set() -> None:
@@ -2441,7 +2449,8 @@ def test_quantile_150_changes() -> None:
 def test_resample_150_changes() -> None:
     idx = pd.date_range("2020-1-1", periods=700)
     frame = pd.DataFrame(np.random.standard_normal((700, 1)), index=idx, columns=["a"])
-    resampler = frame.resample("M", group_keys=True)
+    with pytest_warns_bounded(UserWarning, "'M' will be deprecated", lower="2.1.99"):
+        resampler = frame.resample("M", group_keys=True)
     assert_type(resampler, "Resampler[pd.DataFrame]")
 
     def f(s: pd.DataFrame) -> pd.Series:

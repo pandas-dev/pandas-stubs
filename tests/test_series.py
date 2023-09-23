@@ -42,7 +42,6 @@ from pandas._typing import (
 )
 
 from tests import (
-    PD_LTE_20,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -830,10 +829,10 @@ def test_types_plot() -> None:
 def test_types_window() -> None:
     s = pd.Series([0, 1, 1, 0, 5, 1, -10])
     s.expanding()
-    if PD_LTE_20:
-        s.expanding(axis=0)
-        s.rolling(2, axis=0, center=True)
+    s.rolling(2, center=True)
     if TYPE_CHECKING_INVALID_USAGE:
+        s.expanding(axis=0)  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
+        s.rolling(2, axis=0, center=True)  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
         s.expanding(axis=0, center=True)  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
 
     s.rolling(2)
@@ -978,8 +977,8 @@ def test_types_describe() -> None:
 
 
 def test_types_resample() -> None:
-    s = pd.Series(range(9), index=pd.date_range("1/1/2000", periods=9, freq="T"))
-    s.resample("3T").sum()
+    s = pd.Series(range(9), index=pd.date_range("1/1/2000", periods=9, freq="min"))
+    s.resample("3min").sum()
     # origin and offset params added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
     s.resample("20min", origin="epoch", offset=pd.Timedelta(value=2, unit="minutes"))
 
@@ -1069,14 +1068,21 @@ def test_types_bfill() -> None:
 
 def test_types_ewm() -> None:
     s1 = pd.Series([1, 2, 3])
-    if PD_LTE_20:
+    if TYPE_CHECKING_INVALID_USAGE:
         check(
             assert_type(
-                s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True, axis=0),
+                s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True, axis=0),  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
                 "ExponentialMovingWindow[pd.Series]",
             ),
             ExponentialMovingWindow,
         )
+    check(
+        assert_type(
+            s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True),
+            "ExponentialMovingWindow[pd.Series]",
+        ),
+        ExponentialMovingWindow,
+    )
     check(
         assert_type(s1.ewm(alpha=0.4), "ExponentialMovingWindow[pd.Series]"),
         ExponentialMovingWindow,
@@ -1551,22 +1557,22 @@ def test_relops() -> None:
 def test_resample() -> None:
     # GH 181
     N = 10
-    index = pd.date_range("1/1/2000", periods=N, freq="T")
+    index = pd.date_range("1/1/2000", periods=N, freq="min")
     x = [x for x in range(N)]
     df = pd.Series(x, index=index)
-    check(assert_type(df.resample("2T").std(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").var(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").quantile(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").sum(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").prod(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").min(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").max(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").first(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").last(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").mean(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").sem(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").median(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").ohlc(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2min").std(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").var(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").quantile(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").sum(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").prod(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").min(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").max(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").first(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").last(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").mean(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").sem(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").median(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").ohlc(), pd.DataFrame), pd.DataFrame)
 
 
 def test_to_xarray():

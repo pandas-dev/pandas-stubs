@@ -16,6 +16,7 @@ from pandas._typing import Dtype  # noqa: F401
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 
 
@@ -251,16 +252,17 @@ def test_interval_range():
         pd.IntervalIndex,
         pd.Interval,
     )
-    check(
-        assert_type(
-            pd.interval_range(
-                pd.Timestamp(2000, 1, 1), pd.Timestamp(2010, 1, 1), freq="1M"
+    with pytest_warns_bounded(UserWarning, "'M' will be deprecated", lower="2.1.99"):
+        check(
+            assert_type(
+                pd.interval_range(
+                    pd.Timestamp(2000, 1, 1), pd.Timestamp(2010, 1, 1), freq="1M"
+                ),
+                "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
             ),
-            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
-        ),
-        pd.IntervalIndex,
-        pd.Interval,
-    )
+            pd.IntervalIndex,
+            pd.Interval,
+        )
     check(
         assert_type(
             pd.interval_range(

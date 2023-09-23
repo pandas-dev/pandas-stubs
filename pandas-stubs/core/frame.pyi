@@ -998,7 +998,7 @@ class DataFrame(NDFrame, OpsMixin):
     def groupby(
         self,
         by: Scalar,
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -1011,7 +1011,7 @@ class DataFrame(NDFrame, OpsMixin):
     def groupby(
         self,
         by: DatetimeIndex,
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -1024,7 +1024,7 @@ class DataFrame(NDFrame, OpsMixin):
     def groupby(
         self,
         by: TimedeltaIndex,
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -1037,7 +1037,7 @@ class DataFrame(NDFrame, OpsMixin):
     def groupby(
         self,
         by: PeriodIndex,
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -1050,7 +1050,7 @@ class DataFrame(NDFrame, OpsMixin):
     def groupby(
         self,
         by: IntervalIndex[IntervalT],
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -1063,7 +1063,7 @@ class DataFrame(NDFrame, OpsMixin):
     def groupby(
         self,
         by: MultiIndex | GroupByObjectNonScalar | None = ...,
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -1076,7 +1076,7 @@ class DataFrame(NDFrame, OpsMixin):
     def groupby(
         self,
         by: Series[SeriesByT],
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -1089,7 +1089,7 @@ class DataFrame(NDFrame, OpsMixin):
     def groupby(
         self,
         by: CategoricalIndex | Index | Series,
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -1643,7 +1643,7 @@ class DataFrame(NDFrame, OpsMixin):
     def expanding(
         self,
         min_periods: int = ...,
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         method: CalculationMethod = ...,
     ) -> Expanding[DataFrame]: ...
     @overload
@@ -1962,7 +1962,7 @@ class DataFrame(NDFrame, OpsMixin):
         min_periods: int | None = ...,
         center: _bool = ...,
         on: Hashable | None = ...,
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         closed: IntervalClosedType | None = ...,
         step: int | None = ...,
         method: CalculationMethod = ...,
@@ -1976,7 +1976,7 @@ class DataFrame(NDFrame, OpsMixin):
         min_periods: int | None = ...,
         center: _bool = ...,
         on: Hashable | None = ...,
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         closed: IntervalClosedType | None = ...,
         step: int | None = ...,
         method: CalculationMethod = ...,

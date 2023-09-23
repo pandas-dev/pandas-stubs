@@ -353,7 +353,12 @@ def test_sas_xport() -> None:
 
 def test_hdf():
     with ensure_clean() as path:
-        check(assert_type(DF.to_hdf(path, "df"), None), type(None))
+        with pytest_warns_bounded(
+            FutureWarning,
+            r".*all arguments of to_hdf except for the argument 'path_or_buf' will be keyword-only",
+            lower="2.1.99",
+        ):
+            check(assert_type(DF.to_hdf(path, "df"), None), type(None))
         check(assert_type(read_hdf(path), Union[DataFrame, Series]), DataFrame)
 
 
@@ -416,7 +421,14 @@ def test_read_hdf_iterator():
         version_str=np.__version__,
     ):
         with ensure_clean() as path:
-            check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
+            with pytest_warns_bounded(
+                FutureWarning,
+                r".*all arguments of to_hdf except for the argument 'path_or_buf' will be keyword-only",
+                lower="2.1.99",
+            ):
+                check(
+                    assert_type(DF.to_hdf(path, "df", format="table"), None), type(None)
+                )
             ti = read_hdf(path, chunksize=1)
             check(assert_type(ti, TableIterator), TableIterator)
             ti.close()
@@ -436,7 +448,14 @@ def test_hdf_context_manager():
         version_str=np.__version__,
     ):
         with ensure_clean() as path:
-            check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
+            with pytest_warns_bounded(
+                FutureWarning,
+                r".*all arguments of to_hdf except for the argument 'path_or_buf' will be keyword-only",
+                lower="2.1.99",
+            ):
+                check(
+                    assert_type(DF.to_hdf(path, "df", format="table"), None), type(None)
+                )
             with HDFStore(path, mode="r") as store:
                 check(assert_type(store.is_open, bool), bool)
                 check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
@@ -445,7 +464,12 @@ def test_hdf_context_manager():
 def test_hdf_series():
     s = DF["a"]
     with ensure_clean() as path:
-        check(assert_type(s.to_hdf(path, "s"), None), type(None))
+        with pytest_warns_bounded(
+            FutureWarning,
+            r".*all arguments of to_hdf except for the argument 'path_or_buf' will be keyword-only",
+            lower="2.1.99",
+        ):
+            check(assert_type(s.to_hdf(path, "s"), None), type(None))
         check(assert_type(read_hdf(path, "s"), Union[DataFrame, Series]), Series)
 
 

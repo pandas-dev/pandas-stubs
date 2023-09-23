@@ -1637,12 +1637,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
         min_periods: int = ...,
         adjust: _bool = ...,
         ignore_na: _bool = ...,
-        axis: AxisIndex = ...,
     ) -> ExponentialMovingWindow[Series]: ...
     def expanding(
         self,
         min_periods: int = ...,
-        axis: AxisIndex = ...,
         method: CalculationMethod = ...,
     ) -> Expanding[Series]: ...
     def floordiv(
@@ -1825,7 +1823,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         min_periods: int | None = ...,
         center: _bool = ...,
         on: _str | None = ...,
-        axis: AxisIndex = ...,
         closed: IntervalClosedType | None = ...,
         step: int | None = ...,
         method: CalculationMethod = ...,
@@ -1839,7 +1836,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         min_periods: int | None = ...,
         center: _bool = ...,
         on: _str | None = ...,
-        axis: AxisIndex = ...,
         closed: IntervalClosedType | None = ...,
         step: int | None = ...,
         method: CalculationMethod = ...,

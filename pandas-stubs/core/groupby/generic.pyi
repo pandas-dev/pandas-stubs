@@ -49,7 +49,7 @@ def generate_property(name: str, klass: type[NDFrame]): ...
 class SeriesGroupBy(GroupBy, Generic[S1, ByT]):
     def any(self, skipna: bool = ...) -> Series[bool]: ...
     def all(self, skipna: bool = ...) -> Series[bool]: ...
-    def apply(self, func, *args, **kwargs) -> Series: ...
+    def apply(self, func, *args, include_groups: bool = True, **kwargs) -> Series: ...
     @overload
     def aggregate(self, func: list[AggFuncTypeBase], *args, **kwargs) -> DataFrame: ...
     @overload
@@ -146,15 +146,27 @@ class DataFrameGroupBy(GroupBy, Generic[ByT]):
     # error: Overload 3 for "apply" will never be used because its parameters overlap overload 1
     @overload
     def apply(  # type: ignore[misc]
-        self, func: Callable[[DataFrame], Scalar | list | dict], *args, **kwargs
+        self,
+        func: Callable[[DataFrame], Scalar | list | dict],
+        *args,
+        include_groups: bool = True,
+        **kwargs,
     ) -> Series: ...
     @overload
     def apply(
-        self, func: Callable[[DataFrame], Series | DataFrame], *args, **kwargs
+        self,
+        func: Callable[[DataFrame], Series | DataFrame],
+        *args,
+        include_groups: bool = True,
+        **kwargs,
     ) -> DataFrame: ...
     @overload
     def apply(  # pyright: ignore[reportOverlappingOverload]
-        self, func: Callable[[Iterable], float], *args, **kwargs
+        self,
+        func: Callable[[Iterable], float],
+        *args,
+        include_groups: bool = True,
+        **kwargs,
     ) -> DataFrame: ...
     # error: overload 1 overlaps overload 2 because of different return types
     @overload
