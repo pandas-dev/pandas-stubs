@@ -20,7 +20,7 @@ from pandas._typing import T
 
 TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 WINDOWS = os.name == "nt" or "cygwin" in platform.system().lower()
-PD_LTE_20 = Version(pd.__version__) < Version("2.0.999")
+PD_LTE_21 = Version(pd.__version__) < Version("2.1.999")
 
 
 def check(actual: T, klass: type, dtype: type | None = None, attr: str = "left") -> T:
