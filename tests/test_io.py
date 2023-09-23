@@ -887,7 +887,7 @@ def test_read_excel() -> None:
         check(
             assert_type(
                 pd.read_excel(path, sheet_name=["Sheet1"]),
-                dict[Union[int, str], pd.DataFrame],
+                dict[str, pd.DataFrame],
             ),
             dict,
         )
@@ -896,9 +896,7 @@ def test_read_excel() -> None:
             assert_type(pd.read_excel(path, sheet_name=0), pd.DataFrame), pd.DataFrame
         )
         check(
-            assert_type(
-                pd.read_excel(path, sheet_name=[0]), dict[Union[int, str], pd.DataFrame]
-            ),
+            assert_type(pd.read_excel(path, sheet_name=[0]), dict[int, pd.DataFrame]),
             dict,
         )
         check(
@@ -908,10 +906,11 @@ def test_read_excel() -> None:
             ),
             dict,
         )
+        # GH 641
         check(
             assert_type(
                 pd.read_excel(path, sheet_name=None),
-                dict[Union[int, str], pd.DataFrame],
+                dict[str, pd.DataFrame],
             ),
             dict,
         )
@@ -1032,14 +1031,12 @@ def test_read_excel_list():
         check(
             assert_type(
                 read_excel(path, sheet_name=["Sheet1"]),
-                dict[Union[str, int], DataFrame],
+                dict[str, DataFrame],
             ),
             dict,
         )
         check(
-            assert_type(
-                read_excel(path, sheet_name=[0]), dict[Union[str, int], DataFrame]
-            ),
+            assert_type(read_excel(path, sheet_name=[0]), dict[int, DataFrame]),
             dict,
         )
 
