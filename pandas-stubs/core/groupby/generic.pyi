@@ -49,7 +49,7 @@ def generate_property(name: str, klass: type[NDFrame]): ...
 class SeriesGroupBy(GroupBy, Generic[S1, ByT]):
     def any(self, skipna: bool = ...) -> Series[bool]: ...
     def all(self, skipna: bool = ...) -> Series[bool]: ...
-    def apply(self, func, *args, include_groups: bool = True, **kwargs) -> Series: ...
+    def apply(self, func, *args, **kwargs) -> Series: ...
     @overload
     def aggregate(self, func: list[AggFuncTypeBase], *args, **kwargs) -> DataFrame: ...
     @overload
@@ -149,7 +149,6 @@ class DataFrameGroupBy(GroupBy, Generic[ByT]):
         self,
         func: Callable[[DataFrame], Scalar | list | dict],
         *args,
-        include_groups: bool = True,
         **kwargs,
     ) -> Series: ...
     @overload
@@ -157,7 +156,6 @@ class DataFrameGroupBy(GroupBy, Generic[ByT]):
         self,
         func: Callable[[DataFrame], Series | DataFrame],
         *args,
-        include_groups: bool = True,
         **kwargs,
     ) -> DataFrame: ...
     @overload
@@ -165,7 +163,6 @@ class DataFrameGroupBy(GroupBy, Generic[ByT]):
         self,
         func: Callable[[Iterable], float],
         *args,
-        include_groups: bool = True,
         **kwargs,
     ) -> DataFrame: ...
     # error: overload 1 overlaps overload 2 because of different return types

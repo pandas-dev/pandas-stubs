@@ -2206,38 +2206,61 @@ def test_groupby_apply() -> None:
     def sum_mean(x: pd.DataFrame) -> float:
         return x.sum().mean()
 
-    check(
-        assert_type(df.groupby("col1")["col2"].apply(sum_mean), pd.Series),
-        pd.Series,
-    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        "DataFrameGroupBy.apply operated on the grouping columns.",
+        lower="2.1.99",
+    ):
+        check(
+            assert_type(df.groupby("col1").apply(sum_mean), pd.Series),
+            pd.Series,
+        )
 
     lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
-    check(assert_type(df.groupby("col1")["col2"].apply(lfunc), pd.Series), pd.Series)
+    with pytest_warns_bounded(
+        FutureWarning,
+        "DataFrameGroupBy.apply operated on the grouping columns.",
+        lower="2.1.99",
+    ):
+        check(assert_type(df.groupby("col1").apply(lfunc), pd.Series), pd.Series)
 
     def sum_to_list(x: pd.DataFrame) -> list:
         return x.sum().tolist()
 
-    check(
-        assert_type(df.groupby("col1")["col2"].apply(sum_to_list), pd.Series), pd.Series
-    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        "DataFrameGroupBy.apply operated on the grouping columns.",
+        lower="2.1.99",
+    ):
+        check(assert_type(df.groupby("col1").apply(sum_to_list), pd.Series), pd.Series)
 
     def sum_to_series(x: pd.DataFrame) -> pd.Series:
         return x.sum()
 
-    check(
-        assert_type(df.groupby("col1")["col2"].apply(sum_to_series), pd.Series),
-        pd.Series,
-    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        "DataFrameGroupBy.apply operated on the grouping columns.",
+        lower="2.1.99",
+    ):
+        check(
+            assert_type(df.groupby("col1").apply(sum_to_series), pd.DataFrame),
+            pd.DataFrame,
+        )
 
     def sample_to_df(x: pd.DataFrame) -> pd.DataFrame:
         return x.sample()
 
-    check(
-        assert_type(
-            df.groupby("col1", group_keys=False)["col2"].apply(sample_to_df), pd.Series
-        ),
-        pd.Series,
-    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        "DataFrameGroupBy.apply operated on the grouping columns.",
+        lower="2.1.99",
+    ):
+        check(
+            assert_type(
+                df.groupby("col1", group_keys=False).apply(sample_to_df), pd.DataFrame
+            ),
+            pd.DataFrame,
+        )
 
 
 def test_resample() -> None:
