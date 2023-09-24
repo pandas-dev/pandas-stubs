@@ -24,6 +24,7 @@ from pandas._typing import (
     Dtype,
     DtypeBackend,
     FilePath,
+    IntStrT,
     ListLikeHashable,
     ReadBuffer,
     StorageOptions,
@@ -32,8 +33,7 @@ from pandas._typing import (
 )
 
 @overload
-# 1 and 3 overlap with incompatible return types
-def read_excel(  # type:ignore[misc]
+def read_excel(
     io: FilePath
     | ReadBuffer[bytes]
     | bytes
@@ -42,7 +42,7 @@ def read_excel(  # type:ignore[misc]
     | Book
     | OpenDocument
     | pyxlsb.workbook.Workbook,
-    sheet_name: list[int],
+    sheet_name: list[IntStrT],
     *,
     header: int | Sequence[int] | None = ...,
     names: ListLikeHashable | None = ...,
@@ -70,10 +70,9 @@ def read_excel(  # type:ignore[misc]
     skipfooter: int = ...,
     storage_options: StorageOptions = ...,
     dtype_backend: DtypeBackend | NoDefault = ...,
-) -> dict[int, DataFrame]: ...
+) -> dict[IntStrT, DataFrame]: ...
 @overload
-# 2 and 3 overlap with incompatible return types
-def read_excel(  # type:ignore[misc]
+def read_excel(
     io: FilePath
     | ReadBuffer[bytes]
     | bytes
@@ -82,7 +81,7 @@ def read_excel(  # type:ignore[misc]
     | Book
     | OpenDocument
     | pyxlsb.workbook.Workbook,
-    sheet_name: list[str] | None,
+    sheet_name: None,
     *,
     header: int | Sequence[int] | None = ...,
     names: ListLikeHashable | None = ...,
@@ -112,7 +111,8 @@ def read_excel(  # type:ignore[misc]
     dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> dict[str, DataFrame]: ...
 @overload
-def read_excel(
+# mypy says this won't be matched
+def read_excel(  # type: ignore[misc]
     io: FilePath
     | ReadBuffer[bytes]
     | bytes
