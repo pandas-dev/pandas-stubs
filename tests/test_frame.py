@@ -2849,3 +2849,20 @@ def test_getitem_dict_keys() -> None:
     some_columns = {"a": [1], "b": [2]}
     df = pd.DataFrame.from_dict(some_columns)
     check(assert_type(df[some_columns.keys()], pd.DataFrame), pd.DataFrame)
+
+
+def test_frame_setitem_na() -> None:
+    # GH 743
+    df = pd.DataFrame(
+        {"x": [1, 2, 3], "y": pd.date_range("3/1/2023", "3/3/2023")},
+        index=pd.Index(["a", "b", "c"]),
+    ).convert_dtypes()
+
+    ind = pd.Index(["a", "c"])
+
+    df.loc[ind, :] = pd.NA
+    df.iloc[[0, 2], :] = pd.NA
+
+    df["x"] = df["y"] + pd.Timedelta(days=3)
+    df.loc[ind, :] = pd.NaT
+    df.iloc[[0, 2], :] = pd.NaT

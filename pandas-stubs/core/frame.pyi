@@ -56,6 +56,7 @@ import xarray as xr
 
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
+from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     S1,
     AggFuncTypeBase,
@@ -152,7 +153,7 @@ class _iLocIndexerFrame(_iLocIndexer):
         | tuple[IndexType, int]
         | tuple[IndexType, IndexType]
         | tuple[int, IndexType],
-        value: Scalar | Series | DataFrame | np.ndarray | None,
+        value: Scalar | Series | DataFrame | np.ndarray | NAType | NaTType | None,
     ) -> None: ...
 
 class _LocIndexerFrame(_LocIndexer):
@@ -201,13 +202,13 @@ class _LocIndexerFrame(_LocIndexer):
     def __setitem__(
         self,
         idx: MaskType | StrLike | _IndexSliceTuple | list[ScalarT],
-        value: Scalar | ArrayLike | Series | DataFrame | list | None,
+        value: Scalar | NAType | NaTType | ArrayLike | Series | DataFrame | list | None,
     ) -> None: ...
     @overload
     def __setitem__(
         self,
         idx: tuple[_IndexSliceTuple, HashableT],
-        value: Scalar | ArrayLike | Series | list | None,
+        value: Scalar | NAType | NaTType | ArrayLike | Series | list | None,
     ) -> None: ...
 
 class DataFrame(NDFrame, OpsMixin):

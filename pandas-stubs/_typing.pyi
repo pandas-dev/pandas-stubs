@@ -47,6 +47,7 @@ AnyArrayLike: TypeAlias = Index | Series | np.ndarray
 PythonScalar: TypeAlias = str | bool | complex
 DatetimeLikeScalar = TypeVar("DatetimeLikeScalar", Period, Timestamp, Timedelta)
 PandasScalar: TypeAlias = bytes | datetime.date | datetime.datetime | datetime.timedelta
+IntStrT = TypeVar("IntStrT", int, str)
 # Scalar: TypeAlias = PythonScalar | PandasScalar
 
 DatetimeLike: TypeAlias = datetime.datetime | np.datetime64 | Timestamp

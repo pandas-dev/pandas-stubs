@@ -2799,3 +2799,34 @@ def test_rank() -> None:
     check(
         assert_type(pd.Series([1, 2]).rank(), "pd.Series[float]"), pd.Series, np.float64
     )
+
+
+def test_series_setitem_multiindex() -> None:
+    # GH 767
+    df = (
+        pd.DataFrame({"x": [1, 2, 3, 4]})
+        .assign(y=lambda df: df["x"] * 10, z=lambda df: df["x"] * 100)
+        .set_index(["x", "y"])
+    )
+    ind = pd.Index([2, 3])
+    s = df["z"]
+
+    s.loc[pd.IndexSlice[ind, :]] = 30
+
+
+def test_series_setitem_na() -> None:
+    # GH 743
+    df = pd.DataFrame(
+        {"x": [1, 2, 3], "y": pd.date_range("3/1/2023", "3/3/2023")},
+        index=pd.Index(["a", "b", "c"]),
+    ).convert_dtypes()
+
+    ind = pd.Index(["a", "c"])
+    s = df["x"].copy()
+
+    s.loc[ind] = pd.NA
+    s.iloc[[0, 2]] = pd.NA
+
+    s2 = df["y"].copy()
+    s2.loc[ind] = pd.NaT
+    s2.iloc[[0, 2]] = pd.NaT

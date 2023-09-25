@@ -134,9 +134,11 @@ from pandas._typing import (
     Renamer,
     ReplaceMethod,
     Scalar,
+    ScalarT,
     SeriesByT,
     SortKind,
     StrDtypeArg,
+    StrLike,
     TimedeltaDtypeArg,
     TimestampConvention,
     TimestampDtypeArg,
@@ -167,7 +169,9 @@ class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     def __setitem__(self, idx: int, value: S1 | None) -> None: ...
     @overload
     def __setitem__(
-        self, idx: Index | slice | np_ndarray_anyint, value: S1 | Series[S1] | None
+        self,
+        idx: Index | slice | np_ndarray_anyint | list[int],
+        value: S1 | Series[S1] | None,
     ) -> None: ...
 
 class _LocIndexerSeries(_LocIndexer, Generic[S1]):
@@ -207,7 +211,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     @overload
     def __setitem__(
         self,
-        idx: list[int] | list[str] | list[str | int],
+        idx: MaskType | StrLike | _IndexSliceTuple | list[ScalarT],
         value: S1 | ArrayLike | Series[S1] | None,
     ) -> None: ...
 

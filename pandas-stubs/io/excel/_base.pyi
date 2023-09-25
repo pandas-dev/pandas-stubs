@@ -24,6 +24,7 @@ from pandas._typing import (
     Dtype,
     DtypeBackend,
     FilePath,
+    IntStrT,
     ListLikeHashable,
     ReadBuffer,
     StorageOptions,
@@ -41,7 +42,86 @@ def read_excel(
     | Book
     | OpenDocument
     | pyxlsb.workbook.Workbook,
-    sheet_name: list[int | str] | None,
+    sheet_name: list[IntStrT],
+    *,
+    header: int | Sequence[int] | None = ...,
+    names: ListLikeHashable | None = ...,
+    index_col: int | Sequence[int] | None = ...,
+    usecols: str | UsecolsArgType = ...,
+    dtype: str | Dtype | Mapping[str, str | Dtype] | None = ...,
+    engine: Literal["xlrd", "openpyxl", "odf", "pyxlsb"] | None = ...,
+    converters: Mapping[int | str, Callable[[object], object]] | None = ...,
+    true_values: Iterable[Hashable] | None = ...,
+    false_values: Iterable[Hashable] | None = ...,
+    skiprows: int | Sequence[int] | Callable[[object], bool] | None = ...,
+    nrows: int | None = ...,
+    na_values: Sequence[str] | dict[str | int, Sequence[str]] = ...,
+    keep_default_na: bool = ...,
+    na_filter: bool = ...,
+    verbose: bool = ...,
+    parse_dates: bool
+    | Sequence[int]
+    | Sequence[Sequence[str] | Sequence[int]]
+    | dict[str, Sequence[int] | list[str]] = ...,
+    date_format: dict[Hashable, str] | str | None = ...,
+    thousands: str | None = ...,
+    decimal: str = ...,
+    comment: str | None = ...,
+    skipfooter: int = ...,
+    storage_options: StorageOptions = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
+) -> dict[IntStrT, DataFrame]: ...
+@overload
+def read_excel(
+    io: FilePath
+    | ReadBuffer[bytes]
+    | bytes
+    | ExcelFile
+    | Workbook
+    | Book
+    | OpenDocument
+    | pyxlsb.workbook.Workbook,
+    sheet_name: None,
+    *,
+    header: int | Sequence[int] | None = ...,
+    names: ListLikeHashable | None = ...,
+    index_col: int | Sequence[int] | None = ...,
+    usecols: str | UsecolsArgType = ...,
+    dtype: str | Dtype | Mapping[str, str | Dtype] | None = ...,
+    engine: Literal["xlrd", "openpyxl", "odf", "pyxlsb"] | None = ...,
+    converters: Mapping[int | str, Callable[[object], object]] | None = ...,
+    true_values: Iterable[Hashable] | None = ...,
+    false_values: Iterable[Hashable] | None = ...,
+    skiprows: int | Sequence[int] | Callable[[object], bool] | None = ...,
+    nrows: int | None = ...,
+    na_values: Sequence[str] | dict[str | int, Sequence[str]] = ...,
+    keep_default_na: bool = ...,
+    na_filter: bool = ...,
+    verbose: bool = ...,
+    parse_dates: bool
+    | Sequence[int]
+    | Sequence[Sequence[str] | Sequence[int]]
+    | dict[str, Sequence[int] | list[str]] = ...,
+    date_format: dict[Hashable, str] | str | None = ...,
+    thousands: str | None = ...,
+    decimal: str = ...,
+    comment: str | None = ...,
+    skipfooter: int = ...,
+    storage_options: StorageOptions = ...,
+    dtype_backend: DtypeBackend | NoDefault = ...,
+) -> dict[str, DataFrame]: ...
+@overload
+# mypy says this won't be matched
+def read_excel(  # type: ignore[misc]
+    io: FilePath
+    | ReadBuffer[bytes]
+    | bytes
+    | ExcelFile
+    | Workbook
+    | Book
+    | OpenDocument
+    | pyxlsb.workbook.Workbook,
+    sheet_name: list[int | str],
     *,
     header: int | Sequence[int] | None = ...,
     names: ListLikeHashable | None = ...,
