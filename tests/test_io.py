@@ -118,8 +118,7 @@ def test_xml():
 
 def test_xml_str():
     with ensure_clean() as path:
-        check(assert_type(DF.to_xml(), str), str)
-        out: str = DF.to_xml()
+        out = check(assert_type(DF.to_xml(), str), str)
         check(assert_type(read_xml(io.StringIO(out)), DataFrame), DataFrame)
 
 
@@ -136,9 +135,8 @@ def test_pickle():
 def test_pickle_file_handle():
     with ensure_clean() as path:
         check(assert_type(DF.to_pickle(path), None), type(None))
-        file = open(path, "rb")
-        check(assert_type(read_pickle(file), Any), DataFrame)
-        file.close()
+        with open(path, "rb") as file:
+	        check(assert_type(read_pickle(file), Any), DataFrame)
 
 
 def test_pickle_path():
