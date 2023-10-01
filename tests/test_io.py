@@ -136,7 +136,7 @@ def test_pickle_file_handle():
     with ensure_clean() as path:
         check(assert_type(DF.to_pickle(path), None), type(None))
         with open(path, "rb") as file:
-	        check(assert_type(read_pickle(file), Any), DataFrame)
+            check(assert_type(read_pickle(file), Any), DataFrame)
 
 
 def test_pickle_path():
