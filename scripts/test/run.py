@@ -119,7 +119,9 @@ def nightly_mypy():
         "pip",
         "install",
         "--upgrade",
-        "git+https://github.com/python/mypy.git",
+        "--find-links",
+        "https://github.com/mypyc/mypy_mypyc-wheels/releases/",
+        "mypy",
     ]
     subprocess.run(cmd, check=True)
 
