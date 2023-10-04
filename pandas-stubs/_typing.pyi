@@ -517,7 +517,7 @@ S1 = TypeVar(
     | datetime.datetime  # includes pd.Timestamp
     | datetime.timedelta  # includes pd.Timedelta
     | Period
-    | Interval[int | float | Timestamp | Timedelta]
+    | Interval
     | CategoricalDtype,
 )
 

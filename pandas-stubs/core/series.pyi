@@ -269,7 +269,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         copy: bool = ...,
     ) -> TimedeltaSeries: ...
     @overload
-    def __new__(
+    def __new__(  # type: ignore[misc]
         cls,
         data: IntervalIndex[Interval[_OrderableT]]
         | Interval[_OrderableT]
@@ -2134,6 +2134,6 @@ class OffsetSeries(Series):
     @overload
     def __radd__(self, other: BaseOffset) -> OffsetSeries: ...
 
-class IntervalSeries(Series, Generic[_OrderableT]):
+class IntervalSeries(Series[Interval[_OrderableT]], Generic[_OrderableT]):
     @property
     def array(self) -> IntervalArray: ...
