@@ -203,8 +203,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(  # type: ignore[misc]
         cls,
-        data: Sequence[Interval[_OrderableT]]  # type: ignore[type-var]
-        | IndexOpsMixin[Interval[_OrderableT]],
+        data: Sequence[Interval[_OrderableT]] | IndexOpsMixin[Interval[_OrderableT]],
         *,
         dtype: Literal["Interval"] = ...,
         copy: bool = ...,
