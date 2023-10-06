@@ -2835,4 +2835,4 @@ def test_series_setitem_na() -> None:
 def test_round() -> None:
     # GH 791
     check(assert_type(round(pd.DataFrame([])), pd.DataFrame), pd.DataFrame)
-    check(assert_type(round(pd.Series([1])), "pd.Series[int]"), pd.Series)
+    check(assert_type(round(pd.Series([1], dtype=int)), "pd.Series[int]"), pd.Series)
