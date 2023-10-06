@@ -2830,3 +2830,9 @@ def test_series_setitem_na() -> None:
     s2 = df["y"].copy()
     s2.loc[ind] = pd.NaT
     s2.iloc[[0, 2]] = pd.NaT
+
+
+def test_round() -> None:
+    # GH 791
+    check(assert_type(round(pd.DataFrame([])), pd.DataFrame), pd.DataFrame)
+    check(assert_type(round(pd.Series([1], dtype=int)), "pd.Series[int]"), pd.Series)
