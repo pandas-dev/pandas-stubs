@@ -279,7 +279,7 @@ def test_clipboard():
     )
     if TYPE_CHECKING_INVALID_USAGE:
         pd.read_clipboard(names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
-        pd.read_clipboard(usecols="abcd")  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+        pd.read_clipboard(usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_clipboard_iterator():
@@ -667,7 +667,7 @@ def test_types_read_csv() -> None:
 
         if TYPE_CHECKING_INVALID_USAGE:
             pd.read_csv(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
-            pd.read_csv(path, usecols="abcd")  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+            pd.read_csv(path, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
 
         tfr1: TextFileReader = pd.read_csv(path, nrows=2, iterator=True, chunksize=3)
         tfr1.close()
@@ -801,7 +801,7 @@ def test_read_table():
         )
         if TYPE_CHECKING_INVALID_USAGE:
             pd.read_table(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
-            pd.read_table(path, usecols="abcd")  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+            pd.read_table(path, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_read_table_iterator():
