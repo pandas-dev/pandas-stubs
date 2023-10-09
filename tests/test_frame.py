@@ -2795,6 +2795,12 @@ def test_suffix_prefix_index() -> None:
     )
 
 
+def test_convert_dtypes_convert_floating() -> None:
+    df = pd.DataFrame({"A": [1, 2, 3, 4], "B": [3, 4, 5, 6]})
+    dfn = df.convert_dtypes(convert_floating=False)
+    check(assert_type(dfn, pd.DataFrame), pd.DataFrame)
+
+
 def test_convert_dtypes_dtype_backend() -> None:
     df = pd.DataFrame({"A": [1, 2, 3, 4], "B": [3, 4, 5, 6]})
     dfn = df.convert_dtypes(dtype_backend="numpy_nullable")

@@ -2701,6 +2701,12 @@ def test_prefix_summix_axis() -> None:
         s.add_suffix("_item", axis="columns")  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
 
 
+def test_convert_dtypes_convert_floating() -> None:
+    df = pd.Series([1, 2, 3, 4])
+    dfn = df.convert_dtypes(convert_floating=False)
+    check(assert_type(dfn, "pd.Series[int]"), pd.Series, np.integer)
+
+
 def test_convert_dtypes_dtype_backend() -> None:
     s = pd.Series([1, 2, 3, 4])
     s1 = s.convert_dtypes(dtype_backend="numpy_nullable")
