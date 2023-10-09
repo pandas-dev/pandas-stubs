@@ -106,7 +106,6 @@ from pandas._typing import (
     ComplexDtypeArg,
     CompressionOptions,
     Dtype,
-    DtypeBackend,
     DtypeObj,
     FilePath,
     FillnaOptions,
@@ -1245,14 +1244,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series: ...
     def copy(self, deep: _bool = ...) -> Series[S1]: ...
     def infer_objects(self) -> Series[S1]: ...
-    def convert_dtypes(
-        self,
-        infer_objects: _bool = ...,
-        convert_string: _bool = ...,
-        convert_integer: _bool = ...,
-        convert_boolean: _bool = ...,
-        dtype_backend: DtypeBackend = ...,
-    ) -> Series[S1]: ...
     @overload
     def ffill(
         self,
