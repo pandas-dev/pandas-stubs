@@ -6,6 +6,7 @@ from collections.abc import (
     Iterable,
     Iterator,
     Mapping,
+    MutableMapping,
 )
 import csv
 import datetime
@@ -2318,11 +2319,11 @@ def test_generic() -> None:
     func()
 
 
-def test_to_xarray():
+def test_to_xarray() -> None:
     check(assert_type(DF.to_xarray(), xr.Dataset), xr.Dataset)
 
 
-def test_to_records():
+def test_to_records() -> None:
     check(assert_type(DF.to_records(False, "int8"), np.recarray), np.recarray)
     check(
         assert_type(DF.to_records(False, index_dtypes=np.int8), np.recarray),
@@ -2336,23 +2337,33 @@ def test_to_records():
     )
 
 
-def test_to_dict():
+def test_to_dict() -> None:
     check(assert_type(DF.to_dict(), dict[Hashable, Any]), dict)
     check(assert_type(DF.to_dict("split"), dict[Hashable, Any]), dict)
 
-    target: Mapping = defaultdict(list)
-    check(assert_type(DF.to_dict(into=target), Mapping[Hashable, Any]), defaultdict)
+    target: MutableMapping = defaultdict(list)
+    check(
+        assert_type(DF.to_dict(into=target), MutableMapping[Hashable, Any]), defaultdict
+    )
     target = defaultdict(list)
     check(
-        assert_type(DF.to_dict("tight", into=target), Mapping[Hashable, Any]),
+        assert_type(DF.to_dict("tight", into=target), MutableMapping[Hashable, Any]),
         defaultdict,
     )
     target = defaultdict(list)
     check(assert_type(DF.to_dict("records"), list[dict[Hashable, Any]]), list)
     check(
-        assert_type(DF.to_dict("records", into=target), list[Mapping[Hashable, Any]]),
+        assert_type(
+            DF.to_dict("records", into=target), list[MutableMapping[Hashable, Any]]
+        ),
         list,
     )
+    if TYPE_CHECKING_INVALID_USAGE:
+
+        def test(mapping: Mapping) -> None:  # pyright: ignore[reportUnusedFunction]
+            DF.to_dict(  # type: ignore[call-overload]
+                into=mapping  # pyright: ignore[reportGeneralTypeIssues]
+            )
 
 
 def test_neg() -> None:
