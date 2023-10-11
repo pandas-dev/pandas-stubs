@@ -35,12 +35,11 @@ types-pytz = ">= 2022.1.1"
 numpy = { version = ">=1.26.0", python = "<3.13" }
 
 [tool.poetry.dev-dependencies]
-mypy = "1.5.1"
+mypy = "1.6.0"
 pandas = "2.1.1"
 pyarrow = ">=10.0.1"
 pytest = ">=7.1.2"
-# pyright 1.1.329 has bug fixed in 1.1.330
-pyright = "1.1.328"
+pyright = ">=1.1.331"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
 typing-extensions = ">=4.4.0"

@@ -4,6 +4,7 @@ from collections.abc import (
     Iterable,
     Iterator,
     Mapping,
+    MutableMapping,
     Sequence,
 )
 import datetime
@@ -270,61 +271,67 @@ class DataFrame(NDFrame, OpsMixin):
         na_value: Scalar = ...,
     ) -> np.ndarray: ...
     @overload
-    def to_dict(
+    def to_dict(  # type: ignore[misc]
         self,
         orient: Literal["records"],
-        into: Mapping | type[Mapping],
+        *,
+        into: MutableMapping | type[MutableMapping],
         index: Literal[True] = ...,
-    ) -> list[Mapping[Hashable, Any]]: ...
+    ) -> list[MutableMapping[Hashable, Any]]: ...
     @overload
     def to_dict(
         self,
         orient: Literal["records"],
-        into: None = ...,
+        *,
+        into: type[dict] = ...,
         index: Literal[True] = ...,
     ) -> list[dict[Hashable, Any]]: ...
     @overload
-    def to_dict(
+    def to_dict(  # type: ignore[misc]
         self,
         orient: Literal["dict", "list", "series", "index"],
-        into: Mapping | type[Mapping],
+        *,
+        into: MutableMapping | type[MutableMapping],
         index: Literal[True] = ...,
-    ) -> Mapping[Hashable, Any]: ...
+    ) -> MutableMapping[Hashable, Any]: ...
     @overload
-    def to_dict(
+    def to_dict(  # type: ignore[misc]
         self,
         orient: Literal["split", "tight"],
-        into: Mapping | type[Mapping],
+        *,
+        into: MutableMapping | type[MutableMapping],
         index: bool = ...,
-    ) -> Mapping[Hashable, Any]: ...
+    ) -> MutableMapping[Hashable, Any]: ...
     @overload
-    def to_dict(
+    def to_dict(  # type: ignore[misc]
         self,
         orient: Literal["dict", "list", "series", "index"] = ...,
         *,
-        into: Mapping | type[Mapping],
+        into: MutableMapping | type[MutableMapping],
         index: Literal[True] = ...,
-    ) -> Mapping[Hashable, Any]: ...
+    ) -> MutableMapping[Hashable, Any]: ...
     @overload
-    def to_dict(
+    def to_dict(  # type: ignore[misc]
         self,
         orient: Literal["split", "tight"] = ...,
         *,
-        into: Mapping | type[Mapping],
+        into: MutableMapping | type[MutableMapping],
         index: bool = ...,
-    ) -> Mapping[Hashable, Any]: ...
+    ) -> MutableMapping[Hashable, Any]: ...
     @overload
     def to_dict(
         self,
         orient: Literal["dict", "list", "series", "index"] = ...,
-        into: None = ...,
+        *,
+        into: type[dict] = ...,
         index: Literal[True] = ...,
     ) -> dict[Hashable, Any]: ...
     @overload
     def to_dict(
         self,
         orient: Literal["split", "tight"] = ...,
-        into: None = ...,
+        *,
+        into: type[dict] = ...,
         index: bool = ...,
     ) -> dict[Hashable, Any]: ...
     def to_gbq(
