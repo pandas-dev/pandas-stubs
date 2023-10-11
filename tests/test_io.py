@@ -360,7 +360,7 @@ def test_hdf():
         check(assert_type(read_hdf(path), Union[DataFrame, Series]), DataFrame)
 
 
-def test_hdfstore():
+def test_hdfstore() -> None:
     with ensure_clean() as path:
         store = HDFStore(path, model="w")
         check(assert_type(store, HDFStore), HDFStore)
@@ -372,91 +372,67 @@ def test_hdfstore():
             assert_type(store.select("df", start=0, stop=1), Union[DataFrame, Series]),
             DataFrame,
         )
+        check(
+            assert_type(store.select("df", where="index>=1"), Union[DataFrame, Series]),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                store.select("df", where=Term("index>=1")),
+                Union[DataFrame, Series],
+            ),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                store.select("df", where=[Term("index>=1")]),
+                Union[DataFrame, Series],
+            ),
+            DataFrame,
+        )
+        check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
+        for key in store:
+            check(assert_type(key, str), str)
+        check(assert_type(store.close(), None), type(None))
+
+        store = HDFStore(path, model="r")
+        check(
+            assert_type(read_hdf(store, "df"), Union[DataFrame, Series]),
+            DataFrame,
+        )
+        store.close()
+
+
+def test_read_hdf_iterator() -> None:
+    with ensure_clean() as path:
         with pytest_warns_bounded(
-            DeprecationWarning,
-            match="`alltrue` is deprecated as of NumPy 1.25.0",
-            lower="1.24.99",
-            version_str=np.__version__,
+            FutureWarning,
+            r".*all arguments of to_hdf except for the argument 'path_or_buf' will be keyword-only",
+            lower="2.1.99",
         ):
-            check(
-                assert_type(
-                    store.select("df", where="index>=1"), Union[DataFrame, Series]
-                ),
-                DataFrame,
-            )
-            check(
-                assert_type(
-                    store.select("df", where=Term("index>=1")),
-                    Union[DataFrame, Series],
-                ),
-                DataFrame,
-            )
-            check(
-                assert_type(
-                    store.select("df", where=[Term("index>=1")]),
-                    Union[DataFrame, Series],
-                ),
-                DataFrame,
-            )
+            check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
+        ti = read_hdf(path, chunksize=1)
+        check(assert_type(ti, TableIterator), TableIterator)
+        ti.close()
+
+        ti = read_hdf(path, "df", iterator=True)
+        check(assert_type(ti, TableIterator), TableIterator)
+        for _ in ti:
+            pass
+        ti.close()
+
+
+def test_hdf_context_manager() -> None:
+    with ensure_clean() as path:
+        with pytest_warns_bounded(
+            FutureWarning,
+            r".*all arguments of to_hdf except for the argument 'path_or_buf' will be keyword-only",
+            lower="2.1.99",
+        ):
+            check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
+        with HDFStore(path, mode="r") as store:
+            check(assert_type(store.is_open, bool), bool)
             check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
-            for key in store:
-                check(assert_type(key, str), str)
-            check(assert_type(store.close(), None), type(None))
-
-            store = HDFStore(path, model="r")
-            check(
-                assert_type(read_hdf(store, "df"), Union[DataFrame, Series]),
-                DataFrame,
-            )
-            store.close()
-
-
-def test_read_hdf_iterator():
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        match="`alltrue` is deprecated as of NumPy 1.25.0",
-        lower="1.24.99",
-        version_str=np.__version__,
-    ):
-        with ensure_clean() as path:
-            with pytest_warns_bounded(
-                FutureWarning,
-                r".*all arguments of to_hdf except for the argument 'path_or_buf' will be keyword-only",
-                lower="2.1.99",
-            ):
-                check(
-                    assert_type(DF.to_hdf(path, "df", format="table"), None), type(None)
-                )
-            ti = read_hdf(path, chunksize=1)
-            check(assert_type(ti, TableIterator), TableIterator)
-            ti.close()
-
-            ti = read_hdf(path, "df", iterator=True)
-            check(assert_type(ti, TableIterator), TableIterator)
-            for _ in ti:
-                pass
-            ti.close()
-
-
-def test_hdf_context_manager():
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        match="`alltrue` is deprecated as of NumPy 1.25.0",
-        lower="1.24.99",
-        version_str=np.__version__,
-    ):
-        with ensure_clean() as path:
-            with pytest_warns_bounded(
-                FutureWarning,
-                r".*all arguments of to_hdf except for the argument 'path_or_buf' will be keyword-only",
-                lower="2.1.99",
-            ):
-                check(
-                    assert_type(DF.to_hdf(path, "df", format="table"), None), type(None)
-                )
-            with HDFStore(path, mode="r") as store:
-                check(assert_type(store.is_open, bool), bool)
-                check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
 
 
 def test_hdf_series():
