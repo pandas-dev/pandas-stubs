@@ -1316,9 +1316,14 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
 
     # Add spacing between apply() overloads and remaining annotations
+    # Deprecated in pandas 2.1.0 and later
     def applymap(
         self, func: Callable, na_action: Literal["ignore"] | None = ..., **kwargs
     ) -> DataFrame: ...
+    # In pandas 2.1.0 and later: applymap is renamed map, applymap is deprecated
+    def map(
+        self, func: Callable, na_action: Literal["ignore"] | None = ..., **kwargs
+    ) -> DataFrame: ...   
     def join(
         self,
         other: DataFrame | Series | list[DataFrame | Series],
