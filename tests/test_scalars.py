@@ -1668,11 +1668,9 @@ def test_todatetime_fromnumpy() -> None:
 
 def test_timestamp_combine() -> None:
     ts = pd.Timestamp("2022-03-18")
-    # mypy and pyright disagree from actual type due to inheritance.
-    # Same issue with some timedelta ops
     check(
         assert_type(
-            ts.combine(dt.date(2000, 1, 1), dt.time(12, 21, 21, 12)), dt.datetime
+            ts.combine(dt.date(2000, 1, 1), dt.time(12, 21, 21, 12)), pd.Timestamp
         ),
         pd.Timestamp,
     )
