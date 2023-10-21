@@ -729,6 +729,7 @@ def test_types_apply() -> None:
 
 
 def test_types_map() -> None:
+    # GH774
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     df.map(lambda x: x**2)
     df.map(np.exp)
