@@ -728,7 +728,6 @@ def test_types_apply() -> None:
     )
 
 
-# In pandas 2.1.0 and later: applymap is renamed map, applymap is deprecated
 def test_types_map() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     df.map(lambda x: x**2)
