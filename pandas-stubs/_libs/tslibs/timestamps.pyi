@@ -47,10 +47,12 @@ _Nonexistent: TypeAlias = (
 )
 
 class Timestamp(datetime):
-    min: ClassVar[Timestamp]
-    max: ClassVar[Timestamp]
+    min: ClassVar[Timestamp]  # pyright: ignore[reportIncompatibleVariableOverride]
+    max: ClassVar[Timestamp]  # pyright: ignore[reportIncompatibleVariableOverride]
 
-    resolution: ClassVar[Timedelta]
+    resolution: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride]
+        Timedelta
+    ]
     value: int
     def __new__(
         cls,
@@ -117,7 +119,7 @@ class Timestamp(datetime):
     def utcnow(cls) -> Self: ...
     # error: Signature of "combine" incompatible with supertype "datetime"
     @classmethod
-    def combine(cls, date: _date, time: _time) -> datetime: ...  # type: ignore[override]
+    def combine(cls, date: _date, time: _time) -> datetime: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     @classmethod
     def fromisoformat(cls, date_string: str) -> Self: ...
     def strftime(self, format: str) -> str: ...
@@ -132,7 +134,7 @@ class Timestamp(datetime):
     # Override since fold is more precise than datetime.replace(fold:int)
     # Here it is restricted to be 0 or 1 using a Literal
     # Violation of Liskov substitution principle
-    def replace(  # type:ignore[override]
+    def replace(  # type:ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         year: int | None = ...,
         month: int | None = ...,
@@ -148,7 +150,7 @@ class Timestamp(datetime):
     def ctime(self) -> str: ...
     def isoformat(self, sep: str = ..., timespec: str = ...) -> str: ...
     @classmethod
-    def strptime(cls, date_string: Never, format: Never) -> Never: ...  # type: ignore[override]
+    def strptime(cls, date_string: Never, format: Never) -> Never: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def utcoffset(self) -> timedelta | None: ...
     def tzname(self) -> str | None: ...
     def dst(self) -> timedelta | None: ...
@@ -207,7 +209,7 @@ class Timestamp(datetime):
     @overload
     def __sub__(self, other: TimedeltaSeries) -> TimestampSeries: ...
     @overload
-    def __sub__(
+    def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: npt.NDArray[np.timedelta64]
     ) -> npt.NDArray[np.datetime64]: ...
     @overload

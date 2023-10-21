@@ -48,24 +48,6 @@ class BaseWindow(SelectionMixin[NDFrameT], Generic[NDFrameT]):
 class BaseWindowGroupby(BaseWindow[NDFrameT]): ...
 
 class Window(BaseWindow[NDFrameT]):
-    @overload
-    def aggregate(
-        self: Window[Series], func: AggFuncTypeBase, *args: Any, **kwargs: Any
-    ) -> Series: ...
-    @overload
-    def aggregate(
-        self: Window[Series],
-        func: AggFuncTypeSeriesToFrame,
-        *args: Any,
-        **kwargs: Any,
-    ) -> DataFrame: ...
-    @overload
-    def aggregate(
-        self: Window[DataFrame],
-        func: AggFuncTypeFrame,
-        *args: Any,
-        **kwargs: Any,
-    ) -> DataFrame: ...
     def sum(self, numeric_only: bool = ..., **kwargs: Any) -> NDFrameT: ...
     def mean(self, numeric_only: bool = ..., **kwargs: Any) -> NDFrameT: ...
     def var(
@@ -172,24 +154,6 @@ class RollingAndExpandingMixin(BaseWindow[NDFrameT], Generic[NDFrameT]):
     ) -> NDFrameT: ...
 
 class Rolling(RollingAndExpandingMixin[NDFrameT]):
-    @overload
-    def aggregate(
-        self: Rolling[Series], func: AggFuncTypeBase, *args: Any, **kwargs: Any
-    ) -> Series: ...
-    @overload
-    def aggregate(
-        self: Rolling[Series],
-        func: AggFuncTypeSeriesToFrame,
-        *args: Any,
-        **kwargs: Any,
-    ) -> DataFrame: ...
-    @overload
-    def aggregate(
-        self: Rolling[DataFrame],
-        func: AggFuncTypeFrame,
-        *args: Any,
-        **kwargs: Any,
-    ) -> DataFrame: ...
     def apply(
         self,
         func: Callable[..., Any],

@@ -1445,7 +1445,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[int]: ...
     def transpose(self, *args, **kwargs) -> Series[S1]: ...
     @property
-    def T(self) -> Series[S1]: ...
+    def T(self) -> Self: ...
     # The rest of these were left over from the old
     # stubs we shipped in preview. They may belong in
     # the base classes in some cases; I expect stubgen
@@ -1463,21 +1463,23 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
     ) -> Series[bool]: ...
     @overload
-    def __and__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
+    def __and__(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, other: int | np_ndarray_anyint | Series[int]
+    ) -> Series[int]: ...
     # def __array__(self, dtype: Optional[_bool] = ...) -> _np_ndarray
     def __div__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
-    def __eq__(self, other: object) -> Series[_bool]: ...  # type: ignore[override]
+    def __eq__(self, other: object) -> Series[_bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __floordiv__(self, other: num | _ListLike | Series[S1]) -> Series[int]: ...
-    def __ge__(  # type: ignore[override]
+    def __ge__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: S1 | _ListLike | Series[S1] | datetime | timedelta
     ) -> Series[_bool]: ...
-    def __gt__(  # type: ignore[override]
+    def __gt__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: S1 | _ListLike | Series[S1] | datetime | timedelta
     ) -> Series[_bool]: ...
-    def __le__(  # type: ignore[override]
+    def __le__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: S1 | _ListLike | Series[S1] | datetime | timedelta
     ) -> Series[_bool]: ...
-    def __lt__(  # type: ignore[override]
+    def __lt__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: S1 | _ListLike | Series[S1] | datetime | timedelta
     ) -> Series[_bool]: ...
     @overload
@@ -1487,7 +1489,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __mul__(self, other: num | _ListLike | Series) -> Series: ...
     def __mod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
-    def __ne__(self, other: object) -> Series[_bool]: ...  # type: ignore[override]
+    def __ne__(self, other: object) -> Series[_bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __pow__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
@@ -1495,7 +1497,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
     ) -> Series[bool]: ...
     @overload
-    def __or__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
+    def __or__(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, other: int | np_ndarray_anyint | Series[int]
+    ) -> Series[int]: ...
     @overload
     def __radd__(self, other: S1 | Series[S1]) -> Self: ...
     @overload
@@ -1506,9 +1510,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
     ) -> Series[bool]: ...
     @overload
-    def __rand__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...  # type: ignore[misc]
+    def __rand__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...  # type: ignore[misc] # pyright: ignore[reportIncompatibleMethodOverride]
     def __rdiv__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
-    def __rdivmod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...  # type: ignore[override]
+    def __rdivmod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __rfloordiv__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __rmod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __rmul__(self, other: num | _ListLike | Series) -> Series: ...
@@ -1520,7 +1524,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
     ) -> Series[bool]: ...
     @overload
-    def __ror__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...  # type: ignore[misc]
+    def __ror__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...  # type: ignore[misc] # pyright: ignore[reportIncompatibleMethodOverride]
     def __rsub__(self, other: num | _ListLike | Series[S1]) -> Series: ...
     def __rtruediv__(self, other: num | _ListLike | Series[S1]) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
@@ -1529,7 +1533,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
     ) -> Series[bool]: ...
     @overload
-    def __rxor__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...  # type: ignore[misc]
+    def __rxor__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...  # type: ignore[misc] # pyright: ignore[reportIncompatibleMethodOverride]
     @overload
     def __sub__(
         self: Series[Timestamp],
@@ -1553,7 +1557,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
     ) -> Series[bool]: ...
     @overload
-    def __xor__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
+    def __xor__(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, other: int | np_ndarray_anyint | Series[int]
+    ) -> Series[int]: ...
     def __invert__(self) -> Series[bool]: ...
     # properties
     # @property
@@ -1989,23 +1995,22 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Self: ...
 
 class TimestampSeries(Series[Timestamp]):
-    # ignore needed because of mypy
     @property
-    def dt(self) -> TimestampProperties: ...  # type: ignore[override]
-    def __add__(self, other: TimedeltaSeries | np.timedelta64 | timedelta) -> TimestampSeries: ...  # type: ignore[override]
-    def __radd__(self, other: TimedeltaSeries | np.timedelta64 | timedelta) -> TimestampSeries: ...  # type: ignore[override]
+    def dt(self) -> TimestampProperties: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __add__(self, other: TimedeltaSeries | np.timedelta64 | timedelta) -> TimestampSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __radd__(self, other: TimedeltaSeries | np.timedelta64 | timedelta) -> TimestampSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     @overload  # type: ignore[override]
     def __sub__(
         self, other: Timestamp | datetime | TimestampSeries
     ) -> TimedeltaSeries: ...
     @overload
-    def __sub__(
+    def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         other: timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64,
     ) -> TimestampSeries: ...
-    def __mul__(self, other: float | Series[int] | Series[float] | Sequence[float]) -> TimestampSeries: ...  # type: ignore[override]
-    def __truediv__(self, other: float | Series[int] | Series[float] | Sequence[float]) -> TimestampSeries: ...  # type: ignore[override]
-    def mean(  # type: ignore[override]
+    def __mul__(self, other: float | Series[int] | Series[float] | Sequence[float]) -> TimestampSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __truediv__(self, other: float | Series[int] | Series[float] | Sequence[float]) -> TimestampSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def mean(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         axis: AxisIndex | None = ...,
         skipna: _bool = ...,
@@ -2013,7 +2018,7 @@ class TimestampSeries(Series[Timestamp]):
         numeric_only: _bool = ...,
         **kwargs,
     ) -> Timestamp: ...
-    def median(  # type: ignore[override]
+    def median(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         axis: AxisIndex | None = ...,
         skipna: _bool = ...,
@@ -2021,7 +2026,7 @@ class TimestampSeries(Series[Timestamp]):
         numeric_only: _bool = ...,
         **kwargs,
     ) -> Timestamp: ...
-    def std(  # type: ignore[override]
+    def std(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         axis: AxisIndex | None = ...,
         skipna: _bool | None = ...,
@@ -2040,18 +2045,20 @@ class TimedeltaSeries(Series[Timedelta]):
         self, other: Timestamp | TimestampSeries | DatetimeIndex
     ) -> TimestampSeries: ...
     @overload
-    def __add__(self, other: Timedelta | np.timedelta64) -> TimedeltaSeries: ...
-    def __radd__(self, other: Timestamp | TimestampSeries) -> TimestampSeries: ...  # type: ignore[override]
-    def __mul__(  # type: ignore[override]
+    def __add__(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, other: Timedelta | np.timedelta64
+    ) -> TimedeltaSeries: ...
+    def __radd__(self, other: Timestamp | TimestampSeries) -> TimestampSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __mul__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: num | Sequence[num] | Series[int] | Series[float]
     ) -> TimedeltaSeries: ...
-    def __sub__(  # type: ignore[override]
+    def __sub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64
     ) -> TimedeltaSeries: ...
     @overload  # type: ignore[override]
     def __truediv__(self, other: float | Sequence[float]) -> Self: ...
     @overload
-    def __truediv__(
+    def __truediv__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         other: timedelta
         | TimedeltaSeries
@@ -2059,7 +2066,7 @@ class TimedeltaSeries(Series[Timedelta]):
         | TimedeltaIndex
         | Sequence[timedelta],
     ) -> Series[float]: ...
-    def __rtruediv__(  # type: ignore[override]
+    def __rtruediv__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         other: timedelta
         | TimedeltaSeries
@@ -2070,7 +2077,7 @@ class TimedeltaSeries(Series[Timedelta]):
     @overload  # type: ignore[override]
     def __floordiv__(self, other: float | Sequence[float]) -> Self: ...
     @overload
-    def __floordiv__(
+    def __floordiv__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         other: timedelta
         | TimedeltaSeries
@@ -2078,7 +2085,7 @@ class TimedeltaSeries(Series[Timedelta]):
         | TimedeltaIndex
         | Sequence[timedelta],
     ) -> Series[int]: ...
-    def __rfloordiv__(  # type: ignore[override]
+    def __rfloordiv__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         other: timedelta
         | TimedeltaSeries
@@ -2087,8 +2094,8 @@ class TimedeltaSeries(Series[Timedelta]):
         | Sequence[timedelta],
     ) -> Series[int]: ...
     @property
-    def dt(self) -> TimedeltaProperties: ...  # type: ignore[override]
-    def mean(  # type: ignore[override]
+    def dt(self) -> TimedeltaProperties: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def mean(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         axis: AxisIndex | None = ...,
         skipna: _bool = ...,
@@ -2096,7 +2103,7 @@ class TimedeltaSeries(Series[Timedelta]):
         numeric_only: _bool = ...,
         **kwargs,
     ) -> Timedelta: ...
-    def median(  # type: ignore[override]
+    def median(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         axis: AxisIndex | None = ...,
         skipna: _bool = ...,
@@ -2104,7 +2111,7 @@ class TimedeltaSeries(Series[Timedelta]):
         numeric_only: _bool = ...,
         **kwargs,
     ) -> Timedelta: ...
-    def std(  # type: ignore[override]
+    def std(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         axis: AxisIndex | None = ...,
         skipna: _bool | None = ...,
@@ -2115,16 +2122,17 @@ class TimedeltaSeries(Series[Timedelta]):
     ) -> Timedelta: ...
 
 class PeriodSeries(Series[Period]):
-    # ignore needed because of mypy
     @property
-    def dt(self) -> PeriodProperties: ...  # type: ignore[override]
-    def __sub__(self, other: PeriodSeries) -> OffsetSeries: ...  # type: ignore[override]
+    def dt(self) -> PeriodProperties: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __sub__(self, other: PeriodSeries) -> OffsetSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
 
 class OffsetSeries(Series):
     @overload  # type: ignore[override]
     def __radd__(self, other: Period) -> PeriodSeries: ...
     @overload
-    def __radd__(self, other: BaseOffset) -> OffsetSeries: ...
+    def __radd__(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, other: BaseOffset
+    ) -> OffsetSeries: ...
 
 class IntervalSeries(Series[Interval[_OrderableT]], Generic[_OrderableT]):
     @property

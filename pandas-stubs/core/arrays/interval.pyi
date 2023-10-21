@@ -20,7 +20,6 @@ from pandas._typing import (
 )
 
 class IntervalArray(IntervalMixin, ExtensionArray):
-    ndim: int = ...
     can_hold_na: bool = ...
     def __new__(
         cls, data, closed=..., dtype=..., copy: bool = ..., verify_integrity: bool = ...
@@ -50,7 +49,7 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     @property
     def size(self) -> int: ...
     def shift(self, periods: int = ..., fill_value: object = ...) -> IntervalArray: ...
-    def take(  # type: ignore[override]
+    def take(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self: Self,
         indices: TakeIndexer,
         *,

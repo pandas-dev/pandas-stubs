@@ -9,7 +9,7 @@ from pandas._typing import type_t
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
 
 class BooleanDtype(ExtensionDtype):
-    na_value: ClassVar[NAType]
+    na_value: ClassVar[NAType]  # pyright: ignore[reportIncompatibleMethodOverride]
     @classmethod
     def construct_array_type(cls) -> type_t[BooleanArray]: ...
 

@@ -54,7 +54,7 @@ _bool = bool
 _str = str
 
 class NDFrame(indexing.IndexingMixin):
-    __hash__: ClassVar[None]  # type: ignore[assignment]
+    __hash__: ClassVar[None]  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]
 
     def set_flags(
         self,
