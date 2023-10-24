@@ -1316,7 +1316,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
 
     # Add spacing between apply() overloads and remaining annotations
-    def applymap(
+    def map(
         self, func: Callable, na_action: Literal["ignore"] | None = ..., **kwargs
     ) -> DataFrame: ...
     def join(

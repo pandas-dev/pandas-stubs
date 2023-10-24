@@ -728,17 +728,15 @@ def test_types_apply() -> None:
     )
 
 
-def test_types_applymap() -> None:
-    with pytest_warns_bounded(
-        FutureWarning, "DataFrame.applymap has been deprecated", lower="2.0.99"
-    ):
-        df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-        df.applymap(lambda x: x**2)
-        df.applymap(np.exp)
-        df.applymap(str)
-        # na_action parameter was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-        df.applymap(np.exp, na_action="ignore")
-        df.applymap(str, na_action=None)
+def test_types_map() -> None:
+    # GH774
+    df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
+    df.map(lambda x: x**2)
+    df.map(np.exp)
+    df.map(str)
+    # na_action parameter was added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
+    df.map(np.exp, na_action="ignore")
+    df.map(str, na_action=None)
 
 
 def test_types_element_wise_arithmetic() -> None:
