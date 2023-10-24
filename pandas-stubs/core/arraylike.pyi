@@ -7,8 +7,8 @@ from pandas._libs.ops_dispatch import (
 )
 
 class OpsMixin:
-    def __eq__(self, other: object) -> Self: ...  # type: ignore[override]
-    def __ne__(self, other: object) -> Self: ...  # type: ignore[override]
+    def __eq__(self, other: object) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __ne__(self, other: object) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __lt__(self, other: Any) -> Self: ...
     def __le__(self, other: Any) -> Self: ...
     def __gt__(self, other: Any) -> Self: ...

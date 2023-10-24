@@ -1,8 +1,5 @@
 from collections.abc import Callable
-from typing import (
-    Any,
-    overload,
-)
+from typing import Any
 
 from pandas import (
     DataFrame,
@@ -14,9 +11,6 @@ from pandas.core.window.rolling import (
 )
 
 from pandas._typing import (
-    AggFuncTypeBase,
-    AggFuncTypeFrame,
-    AggFuncTypeSeriesToFrame,
     NDFrameT,
     QuantileInterpolation,
     WindowingEngine,
@@ -25,24 +19,6 @@ from pandas._typing import (
 )
 
 class Expanding(RollingAndExpandingMixin[NDFrameT]):
-    @overload
-    def aggregate(
-        self: Expanding[Series], func: AggFuncTypeBase, *args: Any, **kwargs: Any
-    ) -> Series: ...
-    @overload
-    def aggregate(
-        self: Expanding[Series],
-        func: AggFuncTypeSeriesToFrame,
-        *args: Any,
-        **kwargs: Any,
-    ) -> DataFrame: ...
-    @overload
-    def aggregate(
-        self: Expanding[DataFrame],
-        func: AggFuncTypeFrame,
-        *args: Any,
-        **kwargs: Any,
-    ) -> DataFrame: ...
     def count(self) -> NDFrameT: ...
     def apply(
         self,

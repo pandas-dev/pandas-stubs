@@ -1,20 +1,22 @@
 from collections.abc import Sequence
 
 import numpy as np
+from pandas import PeriodDtype
 from pandas.core.arrays.datetimelike import (
     DatelikeOps,
     DatetimeLikeArrayMixin,
 )
 
 from pandas._libs.tslibs import Timestamp
-from pandas._libs.tslibs.period import Period as Period
+from pandas._libs.tslibs.period import Period
 
-from pandas.tseries.offsets import Tick as Tick
+from pandas.tseries.offsets import Tick
 
 class PeriodArray(DatetimeLikeArrayMixin, DatelikeOps):
     __array_priority__: int = ...
     def __init__(self, values, freq=..., dtype=..., copy: bool = ...) -> None: ...
-    def dtype(self): ...
+    @property
+    def dtype(self) -> PeriodDtype: ...
     def __array__(self, dtype=...) -> np.ndarray: ...
     def __arrow_array__(self, type=...): ...
     year: int = ...

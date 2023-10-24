@@ -259,7 +259,9 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
         | np_ndarray_bool,
     ) -> IntervalIndex[IntervalT]: ...
     @overload
-    def __getitem__(self, idx: int) -> IntervalT: ...
+    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, idx: int
+    ) -> IntervalT: ...
     @property
     def is_all_dates(self) -> bool: ...
     @overload  # type: ignore[override]
@@ -291,13 +293,17 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
     @overload
     def __eq__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[misc]
     @overload
-    def __eq__(self, other: object) -> Literal[False]: ...
+    def __eq__(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, other: object
+    ) -> Literal[False]: ...
     @overload  # type: ignore[override]
     def __ne__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __ne__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[misc]
     @overload
-    def __ne__(self, other: object) -> Literal[True]: ...
+    def __ne__(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, other: object
+    ) -> Literal[True]: ...
 
 # misc here because int and float overlap but interval has distinct types
 # int gets hit first and so the correct type is returned

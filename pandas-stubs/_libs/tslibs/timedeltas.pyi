@@ -101,9 +101,11 @@ UnitChoices: TypeAlias = (
 )
 
 class Timedelta(timedelta):
-    min: ClassVar[Timedelta]
-    max: ClassVar[Timedelta]
-    resolution: ClassVar[Timedelta]
+    min: ClassVar[Timedelta]  # pyright: ignore[reportIncompatibleVariableOverride]
+    max: ClassVar[Timedelta]  # pyright: ignore[reportIncompatibleVariableOverride]
+    resolution: ClassVar[  # pyright: ignore[reportIncompatibleVariableOverride]
+        Timedelta
+    ]
     value: int
     def __new__(
         cls,
