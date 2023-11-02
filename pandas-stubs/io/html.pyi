@@ -23,6 +23,7 @@ from pandas._typing import (
     HashableT5,
     HTMLFlavors,
     ReadBuffer,
+    StorageOptions,
 )
 
 def read_html(
@@ -53,4 +54,5 @@ def read_html(
     displayed_only: bool = ...,
     extract_links: Literal["header", "footer", "body", "all"] | None = ...,
     dtype_backend: DtypeBackend | NoDefault = ...,
+    storage_options: StorageOptions = ...,
 ) -> list[DataFrame]: ...

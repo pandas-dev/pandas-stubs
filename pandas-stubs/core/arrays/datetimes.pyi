@@ -16,7 +16,7 @@ class DatetimeArray(DatetimeLikeArrayMixin, TimelikeOps, DatelikeOps):
     def __init__(self, values, dtype=..., freq=..., copy: bool = ...) -> None: ...
     # ignore in dtype() is from the pandas source
     @property
-    def dtype(self) -> np.dtype | DatetimeTZDtype: ...  # type: ignore[override]
+    def dtype(self) -> np.dtype | DatetimeTZDtype: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     @property
     def tz(self): ...
     @tz.setter

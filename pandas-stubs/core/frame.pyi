@@ -4,6 +4,7 @@ from collections.abc import (
     Iterable,
     Iterator,
     Mapping,
+    MutableMapping,
     Sequence,
 )
 import datetime
@@ -56,6 +57,7 @@ import xarray as xr
 
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
+from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     S1,
     AggFuncTypeBase,
@@ -152,7 +154,7 @@ class _iLocIndexerFrame(_iLocIndexer):
         | tuple[IndexType, int]
         | tuple[IndexType, IndexType]
         | tuple[int, IndexType],
-        value: Scalar | Series | DataFrame | np.ndarray | None,
+        value: Scalar | Series | DataFrame | np.ndarray | NAType | NaTType | None,
     ) -> None: ...
 
 class _LocIndexerFrame(_LocIndexer):
@@ -201,13 +203,13 @@ class _LocIndexerFrame(_LocIndexer):
     def __setitem__(
         self,
         idx: MaskType | StrLike | _IndexSliceTuple | list[ScalarT],
-        value: Scalar | ArrayLike | Series | DataFrame | list | None,
+        value: Scalar | NAType | NaTType | ArrayLike | Series | DataFrame | list | None,
     ) -> None: ...
     @overload
     def __setitem__(
         self,
         idx: tuple[_IndexSliceTuple, HashableT],
-        value: Scalar | ArrayLike | Series | list | None,
+        value: Scalar | NAType | NaTType | ArrayLike | Series | list | None,
     ) -> None: ...
 
 class DataFrame(NDFrame, OpsMixin):
@@ -269,61 +271,67 @@ class DataFrame(NDFrame, OpsMixin):
         na_value: Scalar = ...,
     ) -> np.ndarray: ...
     @overload
-    def to_dict(
+    def to_dict(  # type: ignore[misc]
         self,
         orient: Literal["records"],
-        into: Mapping | type[Mapping],
+        *,
+        into: MutableMapping | type[MutableMapping],
         index: Literal[True] = ...,
-    ) -> list[Mapping[Hashable, Any]]: ...
+    ) -> list[MutableMapping[Hashable, Any]]: ...
     @overload
     def to_dict(
         self,
         orient: Literal["records"],
-        into: None = ...,
+        *,
+        into: type[dict] = ...,
         index: Literal[True] = ...,
     ) -> list[dict[Hashable, Any]]: ...
     @overload
-    def to_dict(
+    def to_dict(  # type: ignore[misc]
         self,
         orient: Literal["dict", "list", "series", "index"],
-        into: Mapping | type[Mapping],
+        *,
+        into: MutableMapping | type[MutableMapping],
         index: Literal[True] = ...,
-    ) -> Mapping[Hashable, Any]: ...
+    ) -> MutableMapping[Hashable, Any]: ...
     @overload
-    def to_dict(
+    def to_dict(  # type: ignore[misc]
         self,
         orient: Literal["split", "tight"],
-        into: Mapping | type[Mapping],
+        *,
+        into: MutableMapping | type[MutableMapping],
         index: bool = ...,
-    ) -> Mapping[Hashable, Any]: ...
+    ) -> MutableMapping[Hashable, Any]: ...
     @overload
-    def to_dict(
+    def to_dict(  # type: ignore[misc]
         self,
         orient: Literal["dict", "list", "series", "index"] = ...,
         *,
-        into: Mapping | type[Mapping],
+        into: MutableMapping | type[MutableMapping],
         index: Literal[True] = ...,
-    ) -> Mapping[Hashable, Any]: ...
+    ) -> MutableMapping[Hashable, Any]: ...
     @overload
-    def to_dict(
+    def to_dict(  # type: ignore[misc]
         self,
         orient: Literal["split", "tight"] = ...,
         *,
-        into: Mapping | type[Mapping],
+        into: MutableMapping | type[MutableMapping],
         index: bool = ...,
-    ) -> Mapping[Hashable, Any]: ...
+    ) -> MutableMapping[Hashable, Any]: ...
     @overload
     def to_dict(
         self,
         orient: Literal["dict", "list", "series", "index"] = ...,
-        into: None = ...,
+        *,
+        into: type[dict] = ...,
         index: Literal[True] = ...,
     ) -> dict[Hashable, Any]: ...
     @overload
     def to_dict(
         self,
         orient: Literal["split", "tight"] = ...,
-        into: None = ...,
+        *,
+        into: type[dict] = ...,
         index: bool = ...,
     ) -> dict[Hashable, Any]: ...
     def to_gbq(
@@ -998,7 +1006,7 @@ class DataFrame(NDFrame, OpsMixin):
     def groupby(
         self,
         by: Scalar,
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -1011,7 +1019,7 @@ class DataFrame(NDFrame, OpsMixin):
     def groupby(
         self,
         by: DatetimeIndex,
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -1024,7 +1032,7 @@ class DataFrame(NDFrame, OpsMixin):
     def groupby(
         self,
         by: TimedeltaIndex,
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -1037,7 +1045,7 @@ class DataFrame(NDFrame, OpsMixin):
     def groupby(
         self,
         by: PeriodIndex,
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -1050,7 +1058,7 @@ class DataFrame(NDFrame, OpsMixin):
     def groupby(
         self,
         by: IntervalIndex[IntervalT],
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -1063,7 +1071,7 @@ class DataFrame(NDFrame, OpsMixin):
     def groupby(
         self,
         by: MultiIndex | GroupByObjectNonScalar | None = ...,
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -1076,7 +1084,7 @@ class DataFrame(NDFrame, OpsMixin):
     def groupby(
         self,
         by: Series[SeriesByT],
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -1089,7 +1097,7 @@ class DataFrame(NDFrame, OpsMixin):
     def groupby(
         self,
         by: CategoricalIndex | Index | Series,
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         level: Level | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -1308,7 +1316,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
 
     # Add spacing between apply() overloads and remaining annotations
-    def applymap(
+    def map(
         self, func: Callable, na_action: Literal["ignore"] | None = ..., **kwargs
     ) -> DataFrame: ...
     def join(
@@ -1643,7 +1651,7 @@ class DataFrame(NDFrame, OpsMixin):
     def expanding(
         self,
         min_periods: int = ...,
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         method: CalculationMethod = ...,
     ) -> Expanding[DataFrame]: ...
     @overload
@@ -1962,7 +1970,7 @@ class DataFrame(NDFrame, OpsMixin):
         min_periods: int | None = ...,
         center: _bool = ...,
         on: Hashable | None = ...,
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         closed: IntervalClosedType | None = ...,
         step: int | None = ...,
         method: CalculationMethod = ...,
@@ -1976,7 +1984,7 @@ class DataFrame(NDFrame, OpsMixin):
         min_periods: int | None = ...,
         center: _bool = ...,
         on: Hashable | None = ...,
-        axis: Axis = ...,
+        axis: AxisIndex = ...,
         closed: IntervalClosedType | None = ...,
         step: int | None = ...,
         method: CalculationMethod = ...,

@@ -13,8 +13,10 @@ from typing import (
     Any,
     Literal,
     Protocol,
+    SupportsIndex,
     TypedDict,
     TypeVar,
+    overload,
 )
 
 import numpy as np
@@ -47,6 +49,7 @@ AnyArrayLike: TypeAlias = Index | Series | np.ndarray
 PythonScalar: TypeAlias = str | bool | complex
 DatetimeLikeScalar = TypeVar("DatetimeLikeScalar", Period, Timestamp, Timedelta)
 PandasScalar: TypeAlias = bytes | datetime.date | datetime.datetime | datetime.timedelta
+IntStrT = TypeVar("IntStrT", int, str)
 # Scalar: TypeAlias = PythonScalar | PandasScalar
 
 DatetimeLike: TypeAlias = datetime.datetime | np.datetime64 | Timestamp
@@ -420,6 +423,20 @@ class WriteExcelBuffer(WriteBuffer[bytes], Protocol):
 
 FilePath: TypeAlias = str | PathLike[str]
 
+_T_co = TypeVar("_T_co", covariant=True)
+
+class SequenceNotStr(Protocol[_T_co]):
+    @overload
+    def __getitem__(self, index: SupportsIndex, /) -> _T_co: ...
+    @overload
+    def __getitem__(self, index: slice, /) -> Sequence[_T_co]: ...
+    def __contains__(self, value: object, /) -> bool: ...
+    def __len__(self) -> int: ...
+    def __iter__(self) -> Iterator[_T_co]: ...
+    def index(self, value: Any, /, start: int = 0, stop: int = ...) -> int: ...
+    def count(self, value: Any, /) -> int: ...
+    def __reversed__(self) -> Iterator[_T_co]: ...
+
 IndexLabel: TypeAlias = Hashable | Sequence[Hashable]
 Label: TypeAlias = Hashable | None
 Level: TypeAlias = Hashable | int
@@ -491,14 +508,7 @@ np_ndarray_str: TypeAlias = npt.NDArray[np.str_]
 IndexType: TypeAlias = slice | np_ndarray_anyint | Index | list[int] | Series[int]
 MaskType: TypeAlias = Series[bool] | np_ndarray_bool | list[bool]
 UsecolsArgType: TypeAlias = (
-    MutableSequence[str]
-    | tuple[str, ...]
-    | Sequence[int]
-    | Series
-    | Index
-    | np.ndarray
-    | Callable[[HashableT], bool]
-    | None
+    SequenceNotStr[Hashable] | range | AnyArrayLike | Callable[[HashableT], bool] | None
 )
 # Scratch types for generics
 
@@ -516,7 +526,7 @@ S1 = TypeVar(
     | datetime.datetime  # includes pd.Timestamp
     | datetime.timedelta  # includes pd.Timedelta
     | Period
-    | Interval[int | float | Timestamp | Timedelta]
+    | Interval
     | CategoricalDtype,
 )
 

@@ -118,8 +118,7 @@ def test_xml():
 
 def test_xml_str():
     with ensure_clean() as path:
-        check(assert_type(DF.to_xml(), str), str)
-        out: str = DF.to_xml()
+        out = check(assert_type(DF.to_xml(), str), str)
         check(assert_type(read_xml(io.StringIO(out)), DataFrame), DataFrame)
 
 
@@ -136,9 +135,8 @@ def test_pickle():
 def test_pickle_file_handle():
     with ensure_clean() as path:
         check(assert_type(DF.to_pickle(path), None), type(None))
-        file = open(path, "rb")
-        check(assert_type(read_pickle(file), Any), DataFrame)
-        file.close()
+        with open(path, "rb") as file:
+            check(assert_type(read_pickle(file), Any), DataFrame)
 
 
 def test_pickle_path():
@@ -281,7 +279,7 @@ def test_clipboard():
     )
     if TYPE_CHECKING_INVALID_USAGE:
         pd.read_clipboard(names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
-        pd.read_clipboard(usecols="abcd")  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+        pd.read_clipboard(usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_clipboard_iterator():
@@ -353,11 +351,16 @@ def test_sas_xport() -> None:
 
 def test_hdf():
     with ensure_clean() as path:
-        check(assert_type(DF.to_hdf(path, "df"), None), type(None))
+        with pytest_warns_bounded(
+            FutureWarning,
+            r".*all arguments of to_hdf except for the argument 'path_or_buf' will be keyword-only",
+            lower="2.1.99",
+        ):
+            check(assert_type(DF.to_hdf(path, "df"), None), type(None))
         check(assert_type(read_hdf(path), Union[DataFrame, Series]), DataFrame)
 
 
-def test_hdfstore():
+def test_hdfstore() -> None:
     with ensure_clean() as path:
         store = HDFStore(path, model="w")
         check(assert_type(store, HDFStore), HDFStore)
@@ -369,83 +372,78 @@ def test_hdfstore():
             assert_type(store.select("df", start=0, stop=1), Union[DataFrame, Series]),
             DataFrame,
         )
+        check(
+            assert_type(store.select("df", where="index>=1"), Union[DataFrame, Series]),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                store.select("df", where=Term("index>=1")),
+                Union[DataFrame, Series],
+            ),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                store.select("df", where=[Term("index>=1")]),
+                Union[DataFrame, Series],
+            ),
+            DataFrame,
+        )
+        check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
+        for key in store:
+            check(assert_type(key, str), str)
+        check(assert_type(store.close(), None), type(None))
+
+        store = HDFStore(path, model="r")
+        check(
+            assert_type(read_hdf(store, "df"), Union[DataFrame, Series]),
+            DataFrame,
+        )
+        store.close()
+
+
+def test_read_hdf_iterator() -> None:
+    with ensure_clean() as path:
         with pytest_warns_bounded(
-            DeprecationWarning,
-            match="`alltrue` is deprecated as of NumPy 1.25.0",
-            lower="1.24.99",
-            version_str=np.__version__,
+            FutureWarning,
+            r".*all arguments of to_hdf except for the argument 'path_or_buf' will be keyword-only",
+            lower="2.1.99",
         ):
-            check(
-                assert_type(
-                    store.select("df", where="index>=1"), Union[DataFrame, Series]
-                ),
-                DataFrame,
-            )
-            check(
-                assert_type(
-                    store.select("df", where=Term("index>=1")),
-                    Union[DataFrame, Series],
-                ),
-                DataFrame,
-            )
-            check(
-                assert_type(
-                    store.select("df", where=[Term("index>=1")]),
-                    Union[DataFrame, Series],
-                ),
-                DataFrame,
-            )
+            check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
+        ti = read_hdf(path, chunksize=1)
+        check(assert_type(ti, TableIterator), TableIterator)
+        ti.close()
+
+        ti = read_hdf(path, "df", iterator=True)
+        check(assert_type(ti, TableIterator), TableIterator)
+        for _ in ti:
+            pass
+        ti.close()
+
+
+def test_hdf_context_manager() -> None:
+    with ensure_clean() as path:
+        with pytest_warns_bounded(
+            FutureWarning,
+            r".*all arguments of to_hdf except for the argument 'path_or_buf' will be keyword-only",
+            lower="2.1.99",
+        ):
+            check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
+        with HDFStore(path, mode="r") as store:
+            check(assert_type(store.is_open, bool), bool)
             check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
-            for key in store:
-                check(assert_type(key, str), str)
-            check(assert_type(store.close(), None), type(None))
-
-            store = HDFStore(path, model="r")
-            check(
-                assert_type(read_hdf(store, "df"), Union[DataFrame, Series]),
-                DataFrame,
-            )
-            store.close()
-
-
-def test_read_hdf_iterator():
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        match="`alltrue` is deprecated as of NumPy 1.25.0",
-        lower="1.24.99",
-        version_str=np.__version__,
-    ):
-        with ensure_clean() as path:
-            check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
-            ti = read_hdf(path, chunksize=1)
-            check(assert_type(ti, TableIterator), TableIterator)
-            ti.close()
-
-            ti = read_hdf(path, "df", iterator=True)
-            check(assert_type(ti, TableIterator), TableIterator)
-            for _ in ti:
-                pass
-            ti.close()
-
-
-def test_hdf_context_manager():
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        match="`alltrue` is deprecated as of NumPy 1.25.0",
-        lower="1.24.99",
-        version_str=np.__version__,
-    ):
-        with ensure_clean() as path:
-            check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
-            with HDFStore(path, mode="r") as store:
-                check(assert_type(store.is_open, bool), bool)
-                check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
 
 
 def test_hdf_series():
     s = DF["a"]
     with ensure_clean() as path:
-        check(assert_type(s.to_hdf(path, "s"), None), type(None))
+        with pytest_warns_bounded(
+            FutureWarning,
+            r".*all arguments of to_hdf except for the argument 'path_or_buf' will be keyword-only",
+            lower="2.1.99",
+        ):
+            check(assert_type(s.to_hdf(path, "s"), None), type(None))
         check(assert_type(read_hdf(path, "s"), Union[DataFrame, Series]), Series)
 
 
@@ -645,7 +643,7 @@ def test_types_read_csv() -> None:
 
         if TYPE_CHECKING_INVALID_USAGE:
             pd.read_csv(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
-            pd.read_csv(path, usecols="abcd")  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+            pd.read_csv(path, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
 
         tfr1: TextFileReader = pd.read_csv(path, nrows=2, iterator=True, chunksize=3)
         tfr1.close()
@@ -779,7 +777,7 @@ def test_read_table():
         )
         if TYPE_CHECKING_INVALID_USAGE:
             pd.read_table(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
-            pd.read_table(path, usecols="abcd")  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+            pd.read_table(path, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_read_table_iterator():
@@ -863,7 +861,7 @@ def test_read_excel() -> None:
         check(
             assert_type(
                 pd.read_excel(path, sheet_name=["Sheet1"]),
-                dict[Union[int, str], pd.DataFrame],
+                dict[str, pd.DataFrame],
             ),
             dict,
         )
@@ -872,9 +870,7 @@ def test_read_excel() -> None:
             assert_type(pd.read_excel(path, sheet_name=0), pd.DataFrame), pd.DataFrame
         )
         check(
-            assert_type(
-                pd.read_excel(path, sheet_name=[0]), dict[Union[int, str], pd.DataFrame]
-            ),
+            assert_type(pd.read_excel(path, sheet_name=[0]), dict[int, pd.DataFrame]),
             dict,
         )
         check(
@@ -884,10 +880,11 @@ def test_read_excel() -> None:
             ),
             dict,
         )
+        # GH 641
         check(
             assert_type(
                 pd.read_excel(path, sheet_name=None),
-                dict[Union[int, str], pd.DataFrame],
+                dict[str, pd.DataFrame],
             ),
             dict,
         )
@@ -1008,14 +1005,12 @@ def test_read_excel_list():
         check(
             assert_type(
                 read_excel(path, sheet_name=["Sheet1"]),
-                dict[Union[str, int], DataFrame],
+                dict[str, DataFrame],
             ),
             dict,
         )
         check(
-            assert_type(
-                read_excel(path, sheet_name=[0]), dict[Union[str, int], DataFrame]
-            ),
+            assert_type(read_excel(path, sheet_name=[0]), dict[int, DataFrame]),
             dict,
         )
 

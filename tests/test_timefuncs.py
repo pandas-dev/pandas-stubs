@@ -25,7 +25,6 @@ if TYPE_CHECKING:
 else:
     FulldatetimeDict = Any
 from tests import (
-    PD_LTE_20,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -702,7 +701,7 @@ def test_to_timdelta_units() -> None:
     check(assert_type(pd.to_timedelta(1, "minutes"), pd.Timedelta), pd.Timedelta)
     with pytest_warns_bounded(
         FutureWarning,
-        r"Unit '[tl]' is deprecated",
+        r"'[tl]' is deprecated",
         lower="2.0.99",
     ):
         check(assert_type(pd.to_timedelta(1, "t"), pd.Timedelta), pd.Timedelta)
@@ -723,13 +722,23 @@ def test_to_timdelta_units() -> None:
     check(assert_type(pd.to_timedelta(1, "µs"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "micro"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "micros"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.to_timedelta(1, "u"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"'u' is deprecated",
+        lower="2.1.99",
+    ):
+        check(assert_type(pd.to_timedelta(1, "u"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "ns"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "nanoseconds"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "nano"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "nanos"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "nanosecond"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.to_timedelta(1, "n"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(
+        FutureWarning,
+        r"'n' is deprecated",
+        lower="2.1.99",
+    ):
+        check(assert_type(pd.to_timedelta(1, "n"), pd.Timedelta), pd.Timedelta)
 
 
 def test_to_timedelta_scalar() -> None:
@@ -1132,18 +1141,16 @@ def test_timedelta64_and_arithmatic_operator() -> None:
     s4 = s1.astype(object)
     check(assert_type(s4 - td1, "TimestampSeries"), pd.Series, pd.Timestamp)
 
-    # https://github.com/pandas-dev/pandas/issues/54059 says this is invalid
-    if PD_LTE_20:
-        td = np.timedelta64(1, "M")
-        check(assert_type((s1 - td), "TimestampSeries"), pd.Series, pd.Timestamp)
-        check(assert_type((s1 + td), "TimestampSeries"), pd.Series, pd.Timestamp)
-        check(assert_type((s3 - td), "TimedeltaSeries"), pd.Series, pd.Timedelta)
-        check(assert_type((s3 + td), "TimedeltaSeries"), pd.Series, pd.Timedelta)
-        check(assert_type((s3 / td), "pd.Series[float]"), pd.Series, float)
-        if TYPE_CHECKING_INVALID_USAGE:
-            r1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-            r2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-            r3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+    td = np.timedelta64(1, "D")
+    check(assert_type((s1 - td), "TimestampSeries"), pd.Series, pd.Timestamp)
+    check(assert_type((s1 + td), "TimestampSeries"), pd.Series, pd.Timestamp)
+    check(assert_type((s3 - td), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type((s3 + td), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type((s3 / td), "pd.Series[float]"), pd.Series, float)
+    if TYPE_CHECKING_INVALID_USAGE:
+        r1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        r2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        r3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_timedeltaseries_add_timestampseries() -> None:

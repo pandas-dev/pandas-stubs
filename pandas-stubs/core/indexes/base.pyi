@@ -203,8 +203,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(  # type: ignore[misc]
         cls,
-        data: Sequence[Interval[_OrderableT]]  # type: ignore[type-var]
-        | IndexOpsMixin[Interval[_OrderableT]],
+        data: Sequence[Interval[_OrderableT]] | IndexOpsMixin[Interval[_OrderableT]],
         *,
         dtype: Literal["Interval"] = ...,
         copy: bool = ...,
@@ -318,7 +317,7 @@ class Index(IndexOpsMixin[S1]):
     def is_mixed(self) -> bool: ...
     def holds_integer(self): ...
     @property
-    def inferred_type(self): ...
+    def inferred_type(self) -> _str: ...
     def __reduce__(self): ...
     @property
     def hasnans(self) -> bool: ...
@@ -413,13 +412,13 @@ class Index(IndexOpsMixin[S1]):
     @property
     def shape(self) -> tuple[int, ...]: ...
     # Extra methods from old stubs
-    def __eq__(self, other: object) -> np_ndarray_bool: ...  # type: ignore[override]
+    def __eq__(self, other: object) -> np_ndarray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __iter__(self) -> Iterator[S1]: ...
-    def __ne__(self, other: object) -> np_ndarray_bool: ...  # type: ignore[override]
-    def __le__(self, other: Self | S1) -> np_ndarray_bool: ...  # type: ignore[override]
-    def __ge__(self, other: Self | S1) -> np_ndarray_bool: ...  # type: ignore[override]
-    def __lt__(self, other: Self | S1) -> np_ndarray_bool: ...  # type: ignore[override]
-    def __gt__(self, other: Self | S1) -> np_ndarray_bool: ...  # type: ignore[override]
+    def __ne__(self, other: object) -> np_ndarray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __le__(self, other: Self | S1) -> np_ndarray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __ge__(self, other: Self | S1) -> np_ndarray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __lt__(self, other: Self | S1) -> np_ndarray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __gt__(self, other: Self | S1) -> np_ndarray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     # overwrite inherited methods from OpsMixin
     @overload
     def __mul__(  # type: ignore[misc]

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pandas-stubs"
-version = "2.0.3.230814"
+version = "2.1.1.230928"
 description = "Type annotations for pandas"
 authors = ["The Pandas Development Team <pandas-dev@python.org>"]
 license = "BSD-3-Clause"
@@ -32,14 +32,14 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.9"
 types-pytz = ">= 2022.1.1"
-numpy = ">=1.25.0"
+numpy = { version = ">=1.26.0", python = "<3.13" }
 
 [tool.poetry.dev-dependencies]
-mypy = "1.5.1"
-pandas = "2.0.3"
+mypy = "1.6.0"
+pandas = "2.1.1"
 pyarrow = ">=10.0.1"
 pytest = ">=7.1.2"
-pyright = ">= 1.1.322"
+pyright = ">=1.1.332"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
 typing-extensions = ">=4.4.0"
@@ -58,7 +58,7 @@ odfpy = ">=1.4.1"
 xarray = ">=22.6.0"
 tabulate = ">=0.8.10"
 jinja2 = ">=3.1"
-scipy = ">=1.9.1"
+scipy = { version = ">=1.9.1", python = "<3.13" }
 SQLAlchemy = ">=2.0.12"
 types-python-dateutil = ">=2.8.19"
 numexpr = "<2.8.5"  # https://github.com/pandas-dev/pandas/issues/54449
@@ -197,3 +197,7 @@ useLibraryCodeForTypes = false
 
 [tool.codespell]
 ignore-words-list = "indext, mose, sav, ser"
+
+# Next line needed to avoid poetry complaint
+[tool.setuptools_scm]
+

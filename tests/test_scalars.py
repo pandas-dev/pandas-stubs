@@ -28,6 +28,7 @@ from pandas._libs.tslibs.timedeltas import Components
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 
 from pandas.tseries.offsets import Day
@@ -384,11 +385,16 @@ def test_interval_cmp():
 
 def test_timedelta_construction() -> None:
     check(assert_type(pd.Timedelta(1, "H"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta(1, "T"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta(1, "S"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta(1, "L"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta(1, "U"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta(1, "N"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'T' is deprecated", lower="2.1.99"):
+        check(assert_type(pd.Timedelta(1, "T"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'S' is deprecated", lower="2.1.99"):
+        check(assert_type(pd.Timedelta(1, "S"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'L' is deprecated", lower="2.1.99"):
+        check(assert_type(pd.Timedelta(1, "L"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'U' is deprecated", lower="2.1.99"):
+        check(assert_type(pd.Timedelta(1, "U"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'N' is deprecated", lower="2.1.99"):
+        check(assert_type(pd.Timedelta(1, "N"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "W"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "w"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "D"), pd.Timedelta), pd.Timedelta)
@@ -403,7 +409,8 @@ def test_timedelta_construction() -> None:
     check(assert_type(pd.Timedelta(1, "minute"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "min"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "minutes"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta(1, "t"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'t' is deprecated", lower="2.1.99"):
+        check(assert_type(pd.Timedelta(1, "t"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "s"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "seconds"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "sec"), pd.Timedelta), pd.Timedelta)
@@ -413,20 +420,23 @@ def test_timedelta_construction() -> None:
     check(assert_type(pd.Timedelta(1, "millisecond"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "milli"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "millis"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta(1, "l"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'l' is deprecated", lower="2.1.99"):
+        check(assert_type(pd.Timedelta(1, "l"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "us"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "microseconds"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "microsecond"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "µs"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "micro"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "micros"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta(1, "u"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'u' is deprecated", lower="2.1.99"):
+        check(assert_type(pd.Timedelta(1, "u"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "ns"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "nanoseconds"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "nano"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "nanos"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "nanosecond"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta(1, "n"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'n' is deprecated", lower="2.1.99"):
+        check(assert_type(pd.Timedelta(1, "n"), pd.Timedelta), pd.Timedelta)
 
     check(assert_type(pd.Timedelta("1 W"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 w"), pd.Timedelta), pd.Timedelta)
@@ -442,7 +452,8 @@ def test_timedelta_construction() -> None:
     check(assert_type(pd.Timedelta("1 minute"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 min"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 minutes"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta("1 t"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'t' is deprecated", lower="2.1.99"):
+        check(assert_type(pd.Timedelta("1 t"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 s"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 seconds"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 sec"), pd.Timedelta), pd.Timedelta)
@@ -452,20 +463,23 @@ def test_timedelta_construction() -> None:
     check(assert_type(pd.Timedelta("1 millisecond"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 milli"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 millis"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta("1 l"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'l' is deprecated", lower="2.1.99"):
+        check(assert_type(pd.Timedelta("1 l"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 us"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 microseconds"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 microsecond"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 µs"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 micro"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 micros"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta("1 u"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'u' is deprecated", lower="2.1.99"):
+        check(assert_type(pd.Timedelta("1 u"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 ns"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 nanoseconds"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 nano"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 nanos"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 nanosecond"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta("1 n"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'n' is deprecated", lower="2.1.99"):
+        check(assert_type(pd.Timedelta("1 n"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(days=1), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(seconds=1), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(microseconds=1), pd.Timedelta), pd.Timedelta)
@@ -1516,11 +1530,11 @@ def test_timestamp_misc_methods() -> None:
         pd.Timestamp,
     )
 
-    check(assert_type(ts2.round("1S"), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts2.round("1S", ambiguous="raise"), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts2.round("1S", ambiguous=True), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts2.round("1S", ambiguous=False), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts2.round("1S", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.round("1s"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.round("1s", ambiguous="raise"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.round("1s", ambiguous=True), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.round("1s", ambiguous=False), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.round("1s", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
 
     check(
         assert_type(ts2.round("2H", nonexistent="shift_forward"), pd.Timestamp),
@@ -1541,11 +1555,11 @@ def test_timestamp_misc_methods() -> None:
         pd.Timestamp,
     )
 
-    check(assert_type(ts2.ceil("1S"), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts2.ceil("1S", ambiguous="raise"), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts2.ceil("1S", ambiguous=True), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts2.ceil("1S", ambiguous=False), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts2.ceil("1S", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.ceil("1s"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.ceil("1s", ambiguous="raise"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.ceil("1s", ambiguous=True), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.ceil("1s", ambiguous=False), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.ceil("1s", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
 
     check(
         assert_type(ts2.ceil("2H", nonexistent="shift_forward"), pd.Timestamp),
@@ -1566,11 +1580,11 @@ def test_timestamp_misc_methods() -> None:
         pd.Timestamp,
     )
 
-    check(assert_type(ts2.floor("1S"), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts2.floor("1S", ambiguous="raise"), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts2.floor("1S", ambiguous=True), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts2.floor("1S", ambiguous=False), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts2.floor("1S", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.floor("1s"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.floor("1s", ambiguous="raise"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.floor("1s", ambiguous=True), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.floor("1s", ambiguous=False), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.floor("1s", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
 
     check(
         assert_type(ts2.floor("2H", nonexistent="shift_forward"), pd.Timestamp),
@@ -1654,11 +1668,9 @@ def test_todatetime_fromnumpy() -> None:
 
 def test_timestamp_combine() -> None:
     ts = pd.Timestamp("2022-03-18")
-    # mypy and pyright disagree from actual type due to inheritance.
-    # Same issue with some timedelta ops
     check(
         assert_type(
-            ts.combine(dt.date(2000, 1, 1), dt.time(12, 21, 21, 12)), dt.datetime
+            ts.combine(dt.date(2000, 1, 1), dt.time(12, 21, 21, 12)), pd.Timestamp
         ),
         pd.Timestamp,
     )

@@ -42,7 +42,6 @@ from pandas._typing import (
 )
 
 from tests import (
-    PD_LTE_20,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -830,10 +829,10 @@ def test_types_plot() -> None:
 def test_types_window() -> None:
     s = pd.Series([0, 1, 1, 0, 5, 1, -10])
     s.expanding()
-    if PD_LTE_20:
-        s.expanding(axis=0)
-        s.rolling(2, axis=0, center=True)
+    s.rolling(2, center=True)
     if TYPE_CHECKING_INVALID_USAGE:
+        s.expanding(axis=0)  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
+        s.rolling(2, axis=0, center=True)  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
         s.expanding(axis=0, center=True)  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
 
     s.rolling(2)
@@ -978,8 +977,8 @@ def test_types_describe() -> None:
 
 
 def test_types_resample() -> None:
-    s = pd.Series(range(9), index=pd.date_range("1/1/2000", periods=9, freq="T"))
-    s.resample("3T").sum()
+    s = pd.Series(range(9), index=pd.date_range("1/1/2000", periods=9, freq="min"))
+    s.resample("3min").sum()
     # origin and offset params added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
     s.resample("20min", origin="epoch", offset=pd.Timedelta(value=2, unit="minutes"))
 
@@ -997,6 +996,12 @@ def test_types_getitem() -> None:
     s2 = pd.Series([0, 1, 2, 3])
     value: int = s2[0]
     s3: pd.Series = s[:2]
+
+
+def test_types_getitem_by_timestamp() -> None:
+    index = pd.date_range("2018-01-01", periods=2, freq="D")
+    series = pd.Series(range(2), index=index)
+    check(assert_type(series[index[-1]], int), np.integer)
 
 
 def test_types_eq() -> None:
@@ -1063,14 +1068,21 @@ def test_types_bfill() -> None:
 
 def test_types_ewm() -> None:
     s1 = pd.Series([1, 2, 3])
-    if PD_LTE_20:
+    if TYPE_CHECKING_INVALID_USAGE:
         check(
             assert_type(
-                s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True, axis=0),
+                s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True, axis=0),  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
                 "ExponentialMovingWindow[pd.Series]",
             ),
             ExponentialMovingWindow,
         )
+    check(
+        assert_type(
+            s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True),
+            "ExponentialMovingWindow[pd.Series]",
+        ),
+        ExponentialMovingWindow,
+    )
     check(
         assert_type(s1.ewm(alpha=0.4), "ExponentialMovingWindow[pd.Series]"),
         ExponentialMovingWindow,
@@ -1545,22 +1557,22 @@ def test_relops() -> None:
 def test_resample() -> None:
     # GH 181
     N = 10
-    index = pd.date_range("1/1/2000", periods=N, freq="T")
+    index = pd.date_range("1/1/2000", periods=N, freq="min")
     x = [x for x in range(N)]
     df = pd.Series(x, index=index)
-    check(assert_type(df.resample("2T").std(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").var(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").quantile(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").sum(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").prod(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").min(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").max(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").first(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").last(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").mean(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").sem(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").median(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2T").ohlc(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2min").std(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").var(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").quantile(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").sum(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").prod(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").min(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").max(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").first(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").last(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").mean(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").sem(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").median(), pd.Series), pd.Series)
+    check(assert_type(df.resample("2min").ohlc(), pd.DataFrame), pd.DataFrame)
 
 
 def test_to_xarray():
@@ -2689,6 +2701,12 @@ def test_prefix_summix_axis() -> None:
         s.add_suffix("_item", axis="columns")  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
 
 
+def test_convert_dtypes_convert_floating() -> None:
+    df = pd.Series([1, 2, 3, 4])
+    dfn = df.convert_dtypes(convert_floating=False)
+    check(assert_type(dfn, "pd.Series[int]"), pd.Series, np.integer)
+
+
 def test_convert_dtypes_dtype_backend() -> None:
     s = pd.Series([1, 2, 3, 4])
     s1 = s.convert_dtypes(dtype_backend="numpy_nullable")
@@ -2787,3 +2805,40 @@ def test_rank() -> None:
     check(
         assert_type(pd.Series([1, 2]).rank(), "pd.Series[float]"), pd.Series, np.float64
     )
+
+
+def test_series_setitem_multiindex() -> None:
+    # GH 767
+    df = (
+        pd.DataFrame({"x": [1, 2, 3, 4]})
+        .assign(y=lambda df: df["x"] * 10, z=lambda df: df["x"] * 100)
+        .set_index(["x", "y"])
+    )
+    ind = pd.Index([2, 3])
+    s = df["z"]
+
+    s.loc[pd.IndexSlice[ind, :]] = 30
+
+
+def test_series_setitem_na() -> None:
+    # GH 743
+    df = pd.DataFrame(
+        {"x": [1, 2, 3], "y": pd.date_range("3/1/2023", "3/3/2023")},
+        index=pd.Index(["a", "b", "c"]),
+    ).convert_dtypes()
+
+    ind = pd.Index(["a", "c"])
+    s = df["x"].copy()
+
+    s.loc[ind] = pd.NA
+    s.iloc[[0, 2]] = pd.NA
+
+    s2 = df["y"].copy()
+    s2.loc[ind] = pd.NaT
+    s2.iloc[[0, 2]] = pd.NaT
+
+
+def test_round() -> None:
+    # GH 791
+    check(assert_type(round(pd.DataFrame([])), pd.DataFrame), pd.DataFrame)
+    check(assert_type(round(pd.Series([1], dtype=int)), "pd.Series[int]"), pd.Series)

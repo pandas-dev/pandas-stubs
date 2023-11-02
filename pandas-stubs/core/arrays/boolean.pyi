@@ -1,5 +1,3 @@
-from typing import ClassVar
-
 import numpy as np
 from pandas.core.arrays.masked import BaseMaskedArray as BaseMaskedArray
 
@@ -9,7 +7,8 @@ from pandas._typing import type_t
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
 
 class BooleanDtype(ExtensionDtype):
-    na_value: ClassVar[NAType]
+    @property
+    def na_value(self) -> NAType: ...
     @classmethod
     def construct_array_type(cls) -> type_t[BooleanArray]: ...
 
