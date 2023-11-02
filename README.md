@@ -111,7 +111,7 @@ conda install poetry
 
 ```sh
 # or PyPI
-pip install poetry
+pip install 'poetry>=1.2'
 ```
 
 - Install the project dependencies
