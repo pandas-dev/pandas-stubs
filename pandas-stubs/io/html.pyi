@@ -21,6 +21,7 @@ from pandas._typing import (
     HashableT3,
     HashableT4,
     HashableT5,
+    HTMLFlavors,
     ReadBuffer,
 )
 
@@ -28,7 +29,7 @@ def read_html(
     io: FilePath | ReadBuffer[str],
     *,
     match: str | Pattern = ...,
-    flavor: str | Sequence[str] | None = ...,
+    flavor: HTMLFlavors | Sequence[HTMLFlavors] | None = ...,
     header: int | Sequence[int] | None = ...,
     index_col: int | Sequence[int] | list[HashableT1] | None = ...,
     skiprows: int | Sequence[int] | slice | None = ...,
