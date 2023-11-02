@@ -1237,6 +1237,12 @@ def test_read_html():
     with ensure_clean() as path:
         check(assert_type(DF.to_html(path), None), type(None))
         check(assert_type(read_html(path), list[DataFrame]), list)
+        check(assert_type(read_html(path, flavor=None), list[DataFrame]), list)
+        check(assert_type(read_html(path, flavor="bs4"), list[DataFrame]), list)
+        check(assert_type(read_html(path, flavor=["bs4"]), list[DataFrame]), list)
+        check(
+            assert_type(read_html(path, flavor=["bs4", "lxml"]), list[DataFrame]), list
+        )
 
 
 def test_csv_quoting():

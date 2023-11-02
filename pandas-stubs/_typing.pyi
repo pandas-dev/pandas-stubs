@@ -587,6 +587,9 @@ ParseDatesArg: TypeAlias = (
 # read_xml parsers
 XMLParsers: TypeAlias = Literal["lxml", "etree"]
 
+# read_html flavors
+HTMLFlavors: TypeAlias = Literal["lxml", "html5lib", "bs4"]
+
 # Any plain Python or numpy function
 Function: TypeAlias = np.ufunc | Callable[..., Any]
 # Use a distinct HashableT in shared types to avoid conflicts with
