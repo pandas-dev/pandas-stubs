@@ -202,7 +202,7 @@ class _LocIndexerFrame(_LocIndexer):
     @overload
     def __setitem__(
         self,
-        idx: MaskType | StrLike | _IndexSliceTuple | list[ScalarT],
+        idx: MaskType | StrLike | _IndexSliceTuple | list[ScalarT] | IndexingInt,
         value: Scalar | NAType | NaTType | ArrayLike | Series | DataFrame | list | None,
     ) -> None: ...
     @overload

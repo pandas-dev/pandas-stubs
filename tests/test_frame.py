@@ -2290,6 +2290,16 @@ def test_loc_set() -> None:
     df.loc["a"] = [3, 4]
 
 
+def test_loc_int_set() -> None:
+    df = pd.DataFrame({1: [1, 2], 2: [3, 4]})
+    df.loc[1] = [3, 4]
+    df.loc[np.int_(1)] = pd.Series([1, 2])
+    df.loc[np.uint(1)] = pd.Series([1, 2])
+    df.loc[np.int8(1)] = pd.Series([1, 2])
+    df.loc[np.int32(1)] = [2, 3]
+    df.loc[np.uint64(1)] = [2, 3]
+
+
 def test_loclist() -> None:
     # GH 189
     df = pd.DataFrame({1: [1, 2], None: 5}, columns=pd.Index([1, None], dtype=object))
