@@ -1160,6 +1160,7 @@ def test_timestamp_properties() -> None:
     check(assert_type(ts.dayofyear, int), int)
     check(assert_type(ts.days_in_month, int), int)
     check(assert_type(ts.daysinmonth, int), int)
+    check(assert_type(ts.unit, str), str)
     check(assert_type(ts.is_leap_year, bool), bool)
     check(assert_type(ts.is_month_end, bool), bool)
     check(assert_type(ts.is_month_start, bool), bool)
@@ -1529,6 +1530,8 @@ def test_timestamp_misc_methods() -> None:
         ),
         pd.Timestamp,
     )
+
+    check(assert_type(ts2.as_unit('ns'), pd.Timestamp), pd.Timestamp)
 
     check(assert_type(ts2.round("1s"), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.round("1s", ambiguous="raise"), pd.Timestamp), pd.Timestamp)
