@@ -1958,52 +1958,51 @@ def test_pivot_table() -> None:
         },
         index=idx,
     )
-    with pytest_warns_bounded(UserWarning, "'M' will be deprecated", lower="2.1.99"):
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df, index=pd.Index(idx.month), columns=Grouper(key="dt", freq="M")
-                ),
-                pd.DataFrame,
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=pd.Index(idx.month), columns=Grouper(key="dt", freq="M")
             ),
             pd.DataFrame,
-        )
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df, index=np.array(idx.month), columns=Grouper(key="dt", freq="M")
-                ),
-                pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=np.array(idx.month), columns=Grouper(key="dt", freq="M")
             ),
             pd.DataFrame,
-        )
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df, index=Grouper(key="dt", freq="M"), columns=pd.Index(idx.month)
-                ),
-                pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=Grouper(key="dt", freq="M"), columns=pd.Index(idx.month)
             ),
             pd.DataFrame,
-        )
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df, index=Grouper(key="dt", freq="M"), columns=np.array(idx.month)
-                ),
-                pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=Grouper(key="dt", freq="M"), columns=np.array(idx.month)
             ),
             pd.DataFrame,
-        )
-        check(
-            assert_type(
-                pd.pivot_table(
-                    df, index=Grouper(freq="A"), columns=Grouper(key="dt", freq="M")
-                ),
-                pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.pivot_table(
+                df, index=Grouper(freq="A"), columns=Grouper(key="dt", freq="M")
             ),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_argmin_and_argmax_return() -> None:

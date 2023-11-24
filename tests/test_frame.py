@@ -1307,9 +1307,7 @@ def test_types_to_html() -> None:
 def test_types_resample() -> None:
     df = pd.DataFrame({"values": [2, 11, 3, 13, 14, 18, 17, 19]})
     df["date"] = pd.date_range("01/01/2018", periods=8, freq="W")
-    with pytest_warns_bounded(UserWarning, "'M' will be deprecated", lower="2.1.99"):
-        df.resample("M", on="date")
-    # origin and offset params added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
+    df.resample("M", on="date")
     df.resample("20min", origin="epoch", offset=pd.Timedelta(2, "minutes"), on="date")
 
 
@@ -1352,18 +1350,17 @@ def test_pipe() -> None:
     def foo(df: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame(df)
 
-    with pytest_warns_bounded(UserWarning, "'M' will be deprecated", lower="2.1.99"):
-        val = (
-            pd.DataFrame(
-                {
-                    "price": [10, 11, 9, 13, 14, 18, 17, 19],
-                    "volume": [50, 60, 40, 100, 50, 100, 40, 50],
-                }
-            )
-            .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
-            .resample("M", on="week_starting")
-            .pipe(foo)
+    val = (
+        pd.DataFrame(
+            {
+                "price": [10, 11, 9, 13, 14, 18, 17, 19],
+                "volume": [50, 60, 40, 100, 50, 100, 40, 50],
+            }
         )
+        .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
+        .resample("M", on="week_starting")
+        .pipe(foo)
+    )
 
     check(assert_type(val, pd.DataFrame), pd.DataFrame)
 
@@ -2491,8 +2488,7 @@ def test_quantile_150_changes() -> None:
 def test_resample_150_changes() -> None:
     idx = pd.date_range("2020-1-1", periods=700)
     frame = pd.DataFrame(np.random.standard_normal((700, 1)), index=idx, columns=["a"])
-    with pytest_warns_bounded(UserWarning, "'M' will be deprecated", lower="2.1.99"):
-        resampler = frame.resample("M", group_keys=True)
+    resampler = frame.resample("M", group_keys=True)
     assert_type(resampler, "Resampler[pd.DataFrame]")
 
     def f(s: pd.DataFrame) -> pd.Series:
