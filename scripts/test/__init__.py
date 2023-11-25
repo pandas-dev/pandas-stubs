@@ -52,9 +52,6 @@ def pytest(nightly: bool) -> None:
     setup_steps = []
     pytest_step = _step.pytest
     if nightly:
-        pytest_step = dataclasses.replace(
-            _step.pytest, run=partial(_step.pytest.run, flags=())
-        )
         setup_steps = [_step.nightly]
     run_job(setup_steps + [pytest_step])
 

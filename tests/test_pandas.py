@@ -563,7 +563,10 @@ def test_to_numeric_scalar() -> None:
     check(assert_type(pd.to_numeric(1), float), int)
     check(assert_type(pd.to_numeric("1.2"), float), float)
     check(assert_type(pd.to_numeric("blerg", errors="coerce"), float), float)
-    check(assert_type(pd.to_numeric("blerg", errors="ignore"), Scalar), str)
+    with pytest_warns_bounded(
+        FutureWarning, "errors='ignore' is deprecated", lower="2.1.99"
+    ):
+        check(assert_type(pd.to_numeric("blerg", errors="ignore"), Scalar), str)
     check(assert_type(pd.to_numeric(1, downcast="signed"), float), int)
     check(assert_type(pd.to_numeric(1, downcast="unsigned"), float), int)
     check(assert_type(pd.to_numeric(1, downcast="float"), float), int)
@@ -606,10 +609,15 @@ def test_to_numeric_array_like() -> None:
         ),
         np.ndarray,
     )
-    check(
-        assert_type(pd.to_numeric([1.0, 2.0, "blerg"], errors="ignore"), npt.NDArray),
-        np.ndarray,
-    )
+    with pytest_warns_bounded(
+        FutureWarning, "errors='ignore' is deprecated", lower="2.1.99"
+    ):
+        check(
+            assert_type(
+                pd.to_numeric([1.0, 2.0, "blerg"], errors="ignore"), npt.NDArray
+            ),
+            np.ndarray,
+        )
     check(
         assert_type(
             pd.to_numeric((1.0, 2.0, 3.0)),
@@ -638,12 +646,15 @@ def test_to_numeric_array_series() -> None:
         ),
         pd.Series,
     )
-    check(
-        assert_type(
-            pd.to_numeric(pd.Series([1, 2, "blerg"]), errors="ignore"), pd.Series
-        ),
-        pd.Series,
-    )
+    with pytest_warns_bounded(
+        FutureWarning, "errors='ignore' is deprecated", lower="2.1.99"
+    ):
+        check(
+            assert_type(
+                pd.to_numeric(pd.Series([1, 2, "blerg"]), errors="ignore"), pd.Series
+            ),
+            pd.Series,
+        )
     check(
         assert_type(pd.to_numeric(pd.Series([1, 2, 3]), downcast="signed"), pd.Series),
         pd.Series,
@@ -1958,51 +1969,53 @@ def test_pivot_table() -> None:
         },
         index=idx,
     )
-    check(
-        assert_type(
-            pd.pivot_table(
-                df, index=pd.Index(idx.month), columns=Grouper(key="dt", freq="M")
+    with pytest_warns_bounded(FutureWarning, "'M' is deprecated", lower="2.1.99"):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df, index=pd.Index(idx.month), columns=Grouper(key="dt", freq="M")
+                ),
+                pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            pd.pivot_table(
-                df, index=np.array(idx.month), columns=Grouper(key="dt", freq="M")
+        )
+    with pytest_warns_bounded(FutureWarning, "'M' is deprecated,", lower="2.1.99"):
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df, index=np.array(idx.month), columns=Grouper(key="dt", freq="M")
+                ),
+                pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            pd.pivot_table(
-                df, index=Grouper(key="dt", freq="M"), columns=pd.Index(idx.month)
+        )
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df, index=Grouper(key="dt", freq="M"), columns=pd.Index(idx.month)
+                ),
+                pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            pd.pivot_table(
-                df, index=Grouper(key="dt", freq="M"), columns=np.array(idx.month)
+        )
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df, index=Grouper(key="dt", freq="M"), columns=np.array(idx.month)
+                ),
+                pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            pd.pivot_table(
-                df, index=Grouper(freq="A"), columns=Grouper(key="dt", freq="M")
+        )
+        check(
+            assert_type(
+                pd.pivot_table(
+                    df, index=Grouper(freq="A"), columns=Grouper(key="dt", freq="M")
+                ),
+                pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
+        )
 
 
 def test_argmin_and_argmax_return() -> None:

@@ -246,15 +246,18 @@ def test_is_integer_dtype() -> None:
 
 
 def test_is_interval() -> None:
-    check(assert_type(api.is_interval(obj), bool), bool)
-    check(assert_type(api.is_interval(nparr), bool), bool)
-    check(assert_type(api.is_interval(dtylike), bool), bool)
-    check(assert_type(api.is_interval(arr), bool), bool)
-    check(
-        assert_type(api.is_interval(dframe), bool),
-        bool,
-    )
-    check(assert_type(api.is_interval(ind), bool), bool)
+    with pytest_warns_bounded(
+        FutureWarning, "is_interval is deprecated", lower="2.1.99"
+    ):
+        check(assert_type(api.is_interval(obj), bool), bool)
+        check(assert_type(api.is_interval(nparr), bool), bool)
+        check(assert_type(api.is_interval(dtylike), bool), bool)
+        check(assert_type(api.is_interval(arr), bool), bool)
+        check(
+            assert_type(api.is_interval(dframe), bool),
+            bool,
+        )
+        check(assert_type(api.is_interval(ind), bool), bool)
 
 
 def test_is_interval_dtype() -> None:

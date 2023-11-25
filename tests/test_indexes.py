@@ -16,6 +16,7 @@ from pandas._typing import Dtype  # noqa: F401
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
 )
 
 
@@ -251,16 +252,17 @@ def test_interval_range():
         pd.IntervalIndex,
         pd.Interval,
     )
-    check(
-        assert_type(
-            pd.interval_range(
-                pd.Timestamp(2000, 1, 1), pd.Timestamp(2010, 1, 1), freq="1M"
+    with pytest_warns_bounded(FutureWarning, "'M' is deprecated", lower="2.1.99"):
+        check(
+            assert_type(
+                pd.interval_range(
+                    pd.Timestamp(2000, 1, 1), pd.Timestamp(2010, 1, 1), freq="1M"
+                ),
+                "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
             ),
-            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
-        ),
-        pd.IntervalIndex,
-        pd.Interval,
-    )
+            pd.IntervalIndex,
+            pd.Interval,
+        )
     check(
         assert_type(
             pd.interval_range(
@@ -568,8 +570,9 @@ def test_interval_index_arrays():
         pd.IntervalIndex,
         pd.Interval,
     )
-    left_s_ts = pd.Series(pd.date_range("2000-01-01", "2003-01-01", freq="Y"))
-    right_s_ts = pd.Series(pd.date_range("2001-01-01", "2004-01-01", freq="Y"))
+    with pytest_warns_bounded(FutureWarning, "'Y' is deprecated", lower="2.1.99"):
+        left_s_ts = pd.Series(pd.date_range("2000-01-01", "2003-01-01", freq="Y"))
+        right_s_ts = pd.Series(pd.date_range("2001-01-01", "2004-01-01", freq="Y"))
     check(
         assert_type(
             pd.IntervalIndex.from_arrays(left_s_ts, right_s_ts),
@@ -966,8 +969,9 @@ def test_index_constructors():
 
 def test_iter() -> None:
     # GH 723
-    for ts in pd.date_range(start="1/1/2023", end="1/08/2023", freq="6H"):
-        check(assert_type(ts, pd.Timestamp), pd.Timestamp)
+    with pytest_warns_bounded(FutureWarning, "'H' is deprecated", lower="2.1.99"):
+        for ts in pd.date_range(start="1/1/2023", end="1/08/2023", freq="6H"):
+            check(assert_type(ts, pd.Timestamp), pd.Timestamp)
 
 
 def test_intersection() -> None:

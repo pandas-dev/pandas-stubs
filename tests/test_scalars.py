@@ -384,7 +384,8 @@ def test_interval_cmp():
 
 
 def test_timedelta_construction() -> None:
-    check(assert_type(pd.Timedelta(1, "H"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'H' is deprecated", lower="2.1.99"):
+        check(assert_type(pd.Timedelta(1, "H"), pd.Timedelta), pd.Timedelta)
     with pytest_warns_bounded(FutureWarning, "'T' is deprecated", lower="2.1.99"):
         check(assert_type(pd.Timedelta(1, "T"), pd.Timedelta), pd.Timedelta)
     with pytest_warns_bounded(FutureWarning, "'S' is deprecated", lower="2.1.99"):
@@ -1536,24 +1537,34 @@ def test_timestamp_misc_methods() -> None:
     check(assert_type(ts2.round("1s", ambiguous=False), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.round("1s", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
 
-    check(
-        assert_type(ts2.round("2H", nonexistent="shift_forward"), pd.Timestamp),
-        pd.Timestamp,
-    )
-    check(
-        assert_type(ts2.round("2H", nonexistent="shift_backward"), pd.Timestamp),
-        pd.Timestamp,
-    )
-    check(assert_type(ts2.round("2H", nonexistent="NaT"), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts2.round("2H", nonexistent="raise"), pd.Timestamp), pd.Timestamp)
-    check(
-        assert_type(ts2.round("2H", nonexistent=pd.Timedelta(24, "H")), pd.Timestamp),
-        pd.Timestamp,
-    )
-    check(
-        assert_type(ts2.round("2H", nonexistent=dt.timedelta(hours=24)), pd.Timestamp),
-        pd.Timestamp,
-    )
+    with pytest_warns_bounded(FutureWarning, "'H' is deprecated ", lower="2.1.99"):
+        check(
+            assert_type(ts2.round("2H", nonexistent="shift_forward"), pd.Timestamp),
+            pd.Timestamp,
+        )
+        check(
+            assert_type(ts2.round("2H", nonexistent="shift_backward"), pd.Timestamp),
+            pd.Timestamp,
+        )
+        check(
+            assert_type(ts2.round("2H", nonexistent="NaT"), pd.Timestamp), pd.Timestamp
+        )
+        check(
+            assert_type(ts2.round("2H", nonexistent="raise"), pd.Timestamp),
+            pd.Timestamp,
+        )
+        check(
+            assert_type(
+                ts2.round("2H", nonexistent=pd.Timedelta(24, "H")), pd.Timestamp
+            ),
+            pd.Timestamp,
+        )
+        check(
+            assert_type(
+                ts2.round("2H", nonexistent=dt.timedelta(hours=24)), pd.Timestamp
+            ),
+            pd.Timestamp,
+        )
 
     check(assert_type(ts2.ceil("1s"), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.ceil("1s", ambiguous="raise"), pd.Timestamp), pd.Timestamp)
@@ -1561,24 +1572,33 @@ def test_timestamp_misc_methods() -> None:
     check(assert_type(ts2.ceil("1s", ambiguous=False), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.ceil("1s", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
 
-    check(
-        assert_type(ts2.ceil("2H", nonexistent="shift_forward"), pd.Timestamp),
-        pd.Timestamp,
-    )
-    check(
-        assert_type(ts2.ceil("2H", nonexistent="shift_backward"), pd.Timestamp),
-        pd.Timestamp,
-    )
-    check(assert_type(ts2.ceil("2H", nonexistent="NaT"), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts2.ceil("2H", nonexistent="raise"), pd.Timestamp), pd.Timestamp)
-    check(
-        assert_type(ts2.ceil("2H", nonexistent=pd.Timedelta(24, "H")), pd.Timestamp),
-        pd.Timestamp,
-    )
-    check(
-        assert_type(ts2.ceil("2H", nonexistent=dt.timedelta(hours=24)), pd.Timestamp),
-        pd.Timestamp,
-    )
+    with pytest_warns_bounded(FutureWarning, "'H' is deprecated", lower="2.1.99"):
+        check(
+            assert_type(ts2.ceil("2H", nonexistent="shift_forward"), pd.Timestamp),
+            pd.Timestamp,
+        )
+        check(
+            assert_type(ts2.ceil("2H", nonexistent="shift_backward"), pd.Timestamp),
+            pd.Timestamp,
+        )
+        check(
+            assert_type(ts2.ceil("2H", nonexistent="NaT"), pd.Timestamp), pd.Timestamp
+        )
+        check(
+            assert_type(ts2.ceil("2H", nonexistent="raise"), pd.Timestamp), pd.Timestamp
+        )
+        check(
+            assert_type(
+                ts2.ceil("2H", nonexistent=pd.Timedelta(24, "H")), pd.Timestamp
+            ),
+            pd.Timestamp,
+        )
+        check(
+            assert_type(
+                ts2.ceil("2H", nonexistent=dt.timedelta(hours=24)), pd.Timestamp
+            ),
+            pd.Timestamp,
+        )
 
     check(assert_type(ts2.floor("1s"), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.floor("1s", ambiguous="raise"), pd.Timestamp), pd.Timestamp)
@@ -1586,24 +1606,34 @@ def test_timestamp_misc_methods() -> None:
     check(assert_type(ts2.floor("1s", ambiguous=False), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.floor("1s", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
 
-    check(
-        assert_type(ts2.floor("2H", nonexistent="shift_forward"), pd.Timestamp),
-        pd.Timestamp,
-    )
-    check(
-        assert_type(ts2.floor("2H", nonexistent="shift_backward"), pd.Timestamp),
-        pd.Timestamp,
-    )
-    check(assert_type(ts2.floor("2H", nonexistent="NaT"), pd.Timestamp), pd.Timestamp)
-    check(assert_type(ts2.floor("2H", nonexistent="raise"), pd.Timestamp), pd.Timestamp)
-    check(
-        assert_type(ts2.floor("2H", nonexistent=pd.Timedelta(24, "H")), pd.Timestamp),
-        pd.Timestamp,
-    )
-    check(
-        assert_type(ts2.floor("2H", nonexistent=dt.timedelta(hours=24)), pd.Timestamp),
-        pd.Timestamp,
-    )
+    with pytest_warns_bounded(FutureWarning, "'H' is deprecated", lower="2.1.99"):
+        check(
+            assert_type(ts2.floor("2H", nonexistent="shift_forward"), pd.Timestamp),
+            pd.Timestamp,
+        )
+        check(
+            assert_type(ts2.floor("2H", nonexistent="shift_backward"), pd.Timestamp),
+            pd.Timestamp,
+        )
+        check(
+            assert_type(ts2.floor("2H", nonexistent="NaT"), pd.Timestamp), pd.Timestamp
+        )
+        check(
+            assert_type(ts2.floor("2H", nonexistent="raise"), pd.Timestamp),
+            pd.Timestamp,
+        )
+        check(
+            assert_type(
+                ts2.floor("2H", nonexistent=pd.Timedelta(24, "H")), pd.Timestamp
+            ),
+            pd.Timestamp,
+        )
+        check(
+            assert_type(
+                ts2.floor("2H", nonexistent=dt.timedelta(hours=24)), pd.Timestamp
+            ),
+            pd.Timestamp,
+        )
 
 
 def test_timestamp_types_arithmetic() -> None:
