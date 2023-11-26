@@ -1307,9 +1307,8 @@ def test_types_to_html() -> None:
 def test_types_resample() -> None:
     df = pd.DataFrame({"values": [2, 11, 3, 13, 14, 18, 17, 19]})
     df["date"] = pd.date_range("01/01/2018", periods=8, freq="W")
-    with pytest_warns_bounded(UserWarning, "'M' will be deprecated", lower="2.1.99"):
+    with pytest_warns_bounded(FutureWarning, "'M' is deprecated", lower="2.1.99"):
         df.resample("M", on="date")
-    # origin and offset params added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
     df.resample("20min", origin="epoch", offset=pd.Timedelta(2, "minutes"), on="date")
 
 
@@ -1352,7 +1351,7 @@ def test_pipe() -> None:
     def foo(df: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame(df)
 
-    with pytest_warns_bounded(UserWarning, "'M' will be deprecated", lower="2.1.99"):
+    with pytest_warns_bounded(FutureWarning, "'M' is deprecated", lower="2.1.99"):
         val = (
             pd.DataFrame(
                 {
@@ -1521,7 +1520,8 @@ def test_types_regressions() -> None:
     sseries_plus1: pd.Series = sseries + pd.Timedelta(1, "d")
 
     # https://github.com/microsoft/pylance-release/issues/2133
-    dr = pd.date_range(start="2021-12-01", periods=24, freq="H")
+    with pytest_warns_bounded(FutureWarning, "'H' is deprecated", lower="2.1.99"):
+        dr = pd.date_range(start="2021-12-01", periods=24, freq="H")
     time = dr.strftime("%H:%M:%S")
 
     # https://github.com/microsoft/python-type-stubs/issues/115
@@ -1906,18 +1906,24 @@ def test_frame_stack() -> None:
         [[1.0, 2.0], [3.0, 4.0]], index=["cat", "dog"], columns=multicol2
     )
 
-    check(
-        assert_type(
-            df_multi_level_cols2.stack(0), Union[pd.DataFrame, "pd.Series[Any]"]
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
-            df_multi_level_cols2.stack([0, 1]), Union[pd.DataFrame, "pd.Series[Any]"]
-        ),
-        pd.Series,
-    )
+    with pytest_warns_bounded(
+        FutureWarning,
+        "The previous implementation of stack is deprecated",
+        lower="2.1.99",
+    ):
+        check(
+            assert_type(
+                df_multi_level_cols2.stack(0), Union[pd.DataFrame, "pd.Series[Any]"]
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                df_multi_level_cols2.stack([0, 1]),
+                Union[pd.DataFrame, "pd.Series[Any]"],
+            ),
+            pd.Series,
+        )
 
 
 def test_frame_reindex() -> None:
@@ -2491,7 +2497,7 @@ def test_quantile_150_changes() -> None:
 def test_resample_150_changes() -> None:
     idx = pd.date_range("2020-1-1", periods=700)
     frame = pd.DataFrame(np.random.standard_normal((700, 1)), index=idx, columns=["a"])
-    with pytest_warns_bounded(UserWarning, "'M' will be deprecated", lower="2.1.99"):
+    with pytest_warns_bounded(FutureWarning, "'M' is deprecated", lower="2.1.99"):
         resampler = frame.resample("M", group_keys=True)
     assert_type(resampler, "Resampler[pd.DataFrame]")
 
@@ -2858,8 +2864,11 @@ def test_interpolate_inplace() -> None:
 def test_groupby_fillna_inplace() -> None:
     # GH 691
     groupby = pd.DataFrame({"a": range(3), "b": range(3)}).groupby("a")
-    check(assert_type(groupby.fillna(0), pd.DataFrame), pd.DataFrame)
-    check(assert_type(groupby.fillna(0, inplace=False), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        FutureWarning, "DataFrameGroupBy.fillna is deprecated", lower="2.1.99"
+    ):
+        check(assert_type(groupby.fillna(0), pd.DataFrame), pd.DataFrame)
+        check(assert_type(groupby.fillna(0, inplace=False), pd.DataFrame), pd.DataFrame)
     if TYPE_CHECKING_INVALID_USAGE:
         groupby.fillna(0, inplace=True)  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
 
