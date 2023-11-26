@@ -75,7 +75,12 @@ CWD = os.path.split(os.path.abspath(__file__))[0]
 def test_orc():
     with ensure_clean() as path:
         check(assert_type(DF.to_orc(path), None), type(None))
-        check(assert_type(read_orc(path), DataFrame), DataFrame)
+        with pytest_warns_bounded(
+            DeprecationWarning,
+            "Passing a BlockManager to DataFrame is deprecated",
+            lower="2.1.99",
+        ):
+            check(assert_type(read_orc(path), DataFrame), DataFrame)
 
 
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
@@ -83,7 +88,12 @@ def test_orc_path():
     with ensure_clean() as path:
         pathlib_path = Path(path)
         check(assert_type(DF.to_orc(pathlib_path), None), type(None))
-        check(assert_type(read_orc(pathlib_path), DataFrame), DataFrame)
+        with pytest_warns_bounded(
+            DeprecationWarning,
+            "Passing a BlockManager to DataFrame is deprecated",
+            lower="2.1.99",
+        ):
+            check(assert_type(read_orc(pathlib_path), DataFrame), DataFrame)
 
 
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
@@ -93,14 +103,24 @@ def test_orc_buffer():
             check(assert_type(DF.to_orc(file_w), None), type(None))
 
         with open(path, "rb") as file_r:
-            check(assert_type(read_orc(file_r), DataFrame), DataFrame)
+            with pytest_warns_bounded(
+                DeprecationWarning,
+                "Passing a BlockManager to DataFrame is deprecated",
+                lower="2.1.99",
+            ):
+                check(assert_type(read_orc(file_r), DataFrame), DataFrame)
 
 
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_columns():
     with ensure_clean() as path:
         check(assert_type(DF.to_orc(path, index=False), None), type(None))
-        check(assert_type(read_orc(path, columns=["a"]), DataFrame), DataFrame)
+        with pytest_warns_bounded(
+            DeprecationWarning,
+            "Passing a BlockManager to DataFrame is deprecated",
+            lower="2.1.99",
+        ):
+            check(assert_type(read_orc(path, columns=["a"]), DataFrame), DataFrame)
 
 
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
@@ -524,7 +544,12 @@ def test_parquet():
     with ensure_clean() as path:
         check(assert_type(DF.to_parquet(path), None), type(None))
         check(assert_type(DF.to_parquet(), bytes), bytes)
-        check(assert_type(read_parquet(path), DataFrame), DataFrame)
+        with pytest_warns_bounded(
+            DeprecationWarning,
+            "Passing a BlockManager to DataFrame is deprecated",
+            lower="2.1.99",
+        ):
+            check(assert_type(read_parquet(path), DataFrame), DataFrame)
 
 
 def test_parquet_options():
@@ -533,18 +558,33 @@ def test_parquet_options():
             assert_type(DF.to_parquet(path, compression=None, index=True), None),
             type(None),
         )
-        check(assert_type(read_parquet(path), DataFrame), DataFrame)
+        with pytest_warns_bounded(
+            DeprecationWarning,
+            "Passing a BlockManager to DataFrame is deprecated",
+            lower="2.1.99",
+        ):
+            check(assert_type(read_parquet(path), DataFrame), DataFrame)
 
 
 def test_feather():
     with ensure_clean() as path:
         check(assert_type(DF.to_feather(path), None), type(None))
-        check(assert_type(read_feather(path), DataFrame), DataFrame)
-        check(assert_type(read_feather(path, columns=["a"]), DataFrame), DataFrame)
+        with pytest_warns_bounded(
+            DeprecationWarning,
+            "Passing a BlockManager to DataFrame is deprecated",
+            lower="2.1.99",
+        ):
+            check(assert_type(read_feather(path), DataFrame), DataFrame)
+            check(assert_type(read_feather(path, columns=["a"]), DataFrame), DataFrame)
     with io.BytesIO() as bio:
         check(assert_type(DF.to_feather(bio), None), type(None))
         bio.seek(0)
-        check(assert_type(read_feather(bio), DataFrame), DataFrame)
+        with pytest_warns_bounded(
+            DeprecationWarning,
+            "Passing a BlockManager to DataFrame is deprecated",
+            lower="2.1.99",
+        ):
+            check(assert_type(read_feather(bio), DataFrame), DataFrame)
 
 
 def test_read_csv():
@@ -1394,25 +1434,42 @@ def test_all_read_without_lxml_dtype_backend() -> None:
 
         if not WINDOWS:
             check(assert_type(DF.to_orc(path), None), type(None))
+            with pytest_warns_bounded(
+                DeprecationWarning,
+                "Passing a BlockManager to DataFrame is deprecated",
+                lower="2.1.99",
+            ):
+                check(
+                    assert_type(
+                        read_orc(path, dtype_backend="numpy_nullable"), DataFrame
+                    ),
+                    DataFrame,
+                )
+        check(assert_type(DF.to_feather(path), None), type(None))
+        with pytest_warns_bounded(
+            DeprecationWarning,
+            "Passing a BlockManager to DataFrame is deprecated",
+            lower="2.1.99",
+        ):
             check(
-                assert_type(read_orc(path, dtype_backend="numpy_nullable"), DataFrame),
+                assert_type(read_feather(path, dtype_backend="pyarrow"), DataFrame),
                 DataFrame,
             )
-        check(assert_type(DF.to_feather(path), None), type(None))
-        check(
-            assert_type(read_feather(path, dtype_backend="pyarrow"), DataFrame),
-            DataFrame,
-        )
 
-        check(
-            assert_type(
-                pd.to_numeric(
-                    [1.0, 2.0, "blerg"], errors="ignore", dtype_backend="numpy_nullable"
+        with pytest_warns_bounded(
+            FutureWarning, "errors='ignore' is deprecated", lower="2.1.99"
+        ):
+            check(
+                assert_type(
+                    pd.to_numeric(
+                        [1.0, 2.0, "blerg"],
+                        errors="ignore",
+                        dtype_backend="numpy_nullable",
+                    ),
+                    npt.NDArray,
                 ),
-                npt.NDArray,
-            ),
-            np.ndarray,
-        )
+                np.ndarray,
+            )
 
     with ensure_clean(".xlsx") as path:
         as_str: str = path
