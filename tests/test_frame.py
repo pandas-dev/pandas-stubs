@@ -33,6 +33,7 @@ from pandas._testing import (
     getSeriesData,
 )
 from pandas.core.resample import Resampler  # noqa: F401
+from pandas.core.series import Series
 import pytest
 from typing_extensions import assert_type
 import xarray as xr
@@ -401,6 +402,11 @@ def test_types_median() -> None:
         df3: pd.DataFrame = df.groupby(axis=1, level=0).median()  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
         df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).median()  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
     s3: pd.Series = df.median(axis=1, skipna=True, numeric_only=False)
+
+
+def test_types_iterrows() -> None:
+    df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
+    res1: Iterable[tuple[Hashable, Series]] = df.iterrows()
 
 
 def test_types_itertuples() -> None:
