@@ -844,7 +844,10 @@ def test_timedelta_cmp() -> None:
     c_dt_timedelta = dt.timedelta(days=1)
     c_timedelta64 = np.timedelta64(1, "D")
     c_ndarray_td64 = ndarray_td64
-    c_timedelta_index = pd.TimedeltaIndex([1, 2, 3], unit="D")
+    with pytest_warns_bounded(
+        FutureWarning, "The 'unit' keyword in TimedeltaIndex", lower="2.1.99"
+    ):
+        c_timedelta_index = pd.TimedeltaIndex([1, 2, 3], unit="D")
     c_timedelta_series = pd.Series(pd.TimedeltaIndex([1, 2, 3]))
 
     check(assert_type(td < c_timedelta, bool), bool)
@@ -1047,7 +1050,10 @@ def test_timedelta_cmp_rhs() -> None:
     c_dt_timedelta = dt.timedelta(days=1)
     c_timedelta64 = np.timedelta64(1, "D")
     c_ndarray_td64 = ndarray_td64
-    c_timedelta_index = pd.TimedeltaIndex([1, 2, 3], unit="D")
+    with pytest_warns_bounded(
+        FutureWarning, "The 'unit' keyword in TimedeltaIndex", lower="2.1.99"
+    ):
+        c_timedelta_index = pd.TimedeltaIndex([1, 2, 3], unit="D")
     c_timedelta_series = pd.Series(pd.TimedeltaIndex([1, 2, 3]))
 
     eq = check(assert_type(c_dt_timedelta == td, bool), bool)
@@ -1192,7 +1198,11 @@ def test_timestamp_add_sub() -> None:
     as_pd_timedelta = pd.Timedelta(days=1)
     as_dt_timedelta = dt.timedelta(days=1)
     as_offset = 3 * Day()
-    as_timedelta_index = pd.TimedeltaIndex([1, 2, 3], "D")
+
+    with pytest_warns_bounded(
+        FutureWarning, "The 'unit' keyword in TimedeltaIndex", lower="2.1.99"
+    ):
+        as_timedelta_index = pd.TimedeltaIndex([1, 2, 3], "D")
     as_timedelta_series = pd.Series(as_timedelta_index)
     check(assert_type(as_timedelta_series, TimedeltaSeries), pd.Series, pd.Timedelta)
     as_np_ndarray_td64 = np_td64_arr

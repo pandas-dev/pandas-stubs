@@ -28,10 +28,7 @@ from typing import (
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
-from pandas._testing import (
-    ensure_clean,
-    getSeriesData,
-)
+from pandas._testing import ensure_clean
 from pandas.core.resample import Resampler  # noqa: F401
 from pandas.core.series import Series
 import pytest
@@ -50,6 +47,10 @@ from pandas.io.formats.style import Styler
 from pandas.io.parsers import TextFileReader
 
 DF = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
+
+
+def getSeriesData() -> dict[str, pd.Series[float]]:
+    return {key: pd.Series([1.0, 2.0]) for key in ("A", "B", "C", "D")}
 
 
 def test_types_init() -> None:

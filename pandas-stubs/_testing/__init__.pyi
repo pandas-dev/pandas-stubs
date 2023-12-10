@@ -12,7 +12,6 @@ from pandas import (
     Series,
 )
 
-def getSeriesData(): ...
 def assert_almost_equal(
     left,
     right,
