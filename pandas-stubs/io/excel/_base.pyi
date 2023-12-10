@@ -36,7 +36,6 @@ from pandas._typing import (
 def read_excel(
     io: FilePath
     | ReadBuffer[bytes]
-    | bytes
     | ExcelFile
     | Workbook
     | Book
@@ -75,7 +74,6 @@ def read_excel(
 def read_excel(
     io: FilePath
     | ReadBuffer[bytes]
-    | bytes
     | ExcelFile
     | Workbook
     | Book
@@ -115,7 +113,6 @@ def read_excel(
 def read_excel(  # type: ignore[misc]
     io: FilePath
     | ReadBuffer[bytes]
-    | bytes
     | ExcelFile
     | Workbook
     | Book
@@ -154,7 +151,6 @@ def read_excel(  # type: ignore[misc]
 def read_excel(
     io: FilePath
     | ReadBuffer[bytes]
-    | bytes
     | ExcelFile
     | Workbook
     | Book
