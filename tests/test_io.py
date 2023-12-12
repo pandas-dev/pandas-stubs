@@ -469,8 +469,17 @@ def test_hdf_series():
 
 def test_spss():
     path = Path(CWD, "data", "labelled-num.sav")
-    check(assert_type(read_spss(path, convert_categoricals=True), DataFrame), DataFrame)
-    check(assert_type(read_spss(str(path), usecols=["VAR00002"]), DataFrame), DataFrame)
+    with pytest_warns_bounded(
+        FutureWarning, "ChainedAssignmentError: behaviour will change", lower="2.1.99"
+    ):
+        check(
+            assert_type(read_spss(path, convert_categoricals=True), DataFrame),
+            DataFrame,
+        )
+        check(
+            assert_type(read_spss(str(path), usecols=["VAR00002"]), DataFrame),
+            DataFrame,
+        )
 
 
 def test_json():
@@ -1021,14 +1030,6 @@ def test_read_excel_io_types() -> None:
 
         with as_path.open("rb") as as_file:
             check(assert_type(pd.read_excel(as_file), pd.DataFrame), pd.DataFrame)
-
-        as_bytes = as_path.read_bytes()
-        with pytest_warns_bounded(
-            FutureWarning,
-            "Passing bytes to 'read_excel' is deprecated",
-            lower="2.0.99",
-        ):
-            check(assert_type(pd.read_excel(as_bytes), pd.DataFrame), pd.DataFrame)
 
 
 def test_read_excel_basic():

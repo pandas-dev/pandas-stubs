@@ -14,6 +14,7 @@ from enum import Enum
 import io
 import itertools
 from pathlib import Path
+import string
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -28,10 +29,7 @@ from typing import (
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
-from pandas._testing import (
-    ensure_clean,
-    getSeriesData,
-)
+from pandas._testing import ensure_clean
 from pandas.core.resample import Resampler  # noqa: F401
 from pandas.core.series import Series
 import pytest
@@ -50,6 +48,36 @@ from pandas.io.formats.style import Styler
 from pandas.io.parsers import TextFileReader
 
 DF = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
+
+
+def getCols(k) -> str:
+    return string.ascii_uppercase[:k]
+
+
+def makeStringIndex(k: int = 10) -> pd.Index:
+    return pd.Index(rands_array(nchars=10, size=k), name=None)
+
+
+def rands_array(nchars, size: int) -> np.ndarray:
+    chars = np.array(list(string.ascii_letters + string.digits), dtype=(np.str_, 1))
+    retval = (
+        np.random.default_rng(2)
+        .choice(chars, size=nchars * np.prod(size), replace=True)
+        .view((np.str_, nchars))
+        .reshape(size)
+    )
+    return retval.astype("O")
+
+
+def getSeriesData() -> dict[str, pd.Series]:
+    _N = 30
+    _K = 4
+
+    index = makeStringIndex(_N)
+    return {
+        c: pd.Series(np.random.default_rng(i).standard_normal(_N), index=index)
+        for i, c in enumerate(getCols(_K))
+    }
 
 
 def test_types_init() -> None:
