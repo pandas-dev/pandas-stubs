@@ -178,7 +178,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     # ignore needed because of mypy.  Overlapping, but we want to distinguish
     # having a tuple of just scalars, versus tuples that include slices or Index
     @overload
-    def __getitem__(  # type: ignore[misc]
+    def __getitem__(  # type: ignore[overload-overlap]
         self,
         idx: Scalar | tuple[Scalar, ...],
         # tuple case is for getting a specific element when using a MultiIndex
@@ -223,7 +223,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     __hash__: ClassVar[None]
 
     @overload
-    def __new__(  # type: ignore[misc]
+    def __new__(  # type: ignore[overload-overlap]
         cls,
         data: DatetimeIndex
         | Sequence[np.datetime64 | datetime]
@@ -236,7 +236,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         copy: bool = ...,
     ) -> TimestampSeries: ...
     @overload
-    def __new__(  # type: ignore[misc]
+    def __new__(  # type: ignore[overload-overlap]
         cls,
         data: _ListLike,
         index: Axes | None = ...,
@@ -246,7 +246,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         copy: bool = ...,
     ) -> TimestampSeries: ...
     @overload
-    def __new__(  # type: ignore[misc]
+    def __new__(  # type: ignore[overload-overlap]
         cls,
         data: PeriodIndex,
         index: Axes | None = ...,
@@ -256,7 +256,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         copy: bool = ...,
     ) -> PeriodSeries: ...
     @overload
-    def __new__(  # type: ignore[misc]
+    def __new__(  # type: ignore[overload-overlap]
         cls,
         data: TimedeltaIndex
         | Sequence[np.timedelta64 | timedelta]
@@ -269,7 +269,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         copy: bool = ...,
     ) -> TimedeltaSeries: ...
     @overload
-    def __new__(  # type: ignore[misc]
+    def __new__(  # type: ignore[overload-overlap]
         cls,
         data: IntervalIndex[Interval[_OrderableT]]
         | Interval[_OrderableT]
@@ -648,7 +648,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> SeriesGroupBy[S1, Any]: ...
     # need the ignore because None is Hashable
     @overload
-    def count(self, level: None = ...) -> int: ...  # type: ignore[misc]
+    def count(self, level: None = ...) -> int: ...  # type: ignore[overload-overlap]
     @overload
     def count(self, level: Hashable) -> Series[S1]: ...
     def mode(self, dropna=...) -> Series[S1]: ...
@@ -707,7 +707,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __matmul__(self, other): ...
     def __rmatmul__(self, other): ...
     @overload
-    def searchsorted(  # type: ignore[misc]
+    def searchsorted(  # type: ignore[overload-overlap]
         self,
         value: _ListLike,
         side: Literal["left", "right"] = ...,
@@ -843,7 +843,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> DataFrame: ...
     def map(self, arg, na_action: Literal["ignore"] | None = ...) -> Series[S1]: ...
     @overload
-    def aggregate(  # type: ignore[misc]
+    def aggregate(  # type: ignore[overload-overlap]
         self: Series[int],
         func: Literal["mean"],
         axis: AxisIndex = ...,
@@ -1176,7 +1176,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         ignore_index: _bool = ...,
     ) -> Series[S1]: ...
     @overload
-    def astype(  # type: ignore[misc]
+    def astype(  # type: ignore[overload-overlap]
         self,
         dtype: BooleanDtypeArg,
         copy: _bool = ...,
@@ -1459,7 +1459,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
-    def __and__(  # type: ignore[misc]
+    def __and__(  # type: ignore[overload-overlap]
         self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
     ) -> Series[bool]: ...
     @overload
@@ -1493,7 +1493,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __pow__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
-    def __or__(  # type: ignore[misc]
+    def __or__(  # type: ignore[overload-overlap]
         self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
     ) -> Series[bool]: ...
     @overload
@@ -1506,7 +1506,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __radd__(self, other: num | _str | _ListLike | Series) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
-    def __rand__(  # type: ignore[misc]
+    def __rand__(  # type: ignore[overload-overlap]
         self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
     ) -> Series[bool]: ...
     @overload
@@ -1520,7 +1520,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __rpow__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
-    def __ror__(  # type: ignore[misc]
+    def __ror__(  # type: ignore[overload-overlap]
         self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
     ) -> Series[bool]: ...
     @overload
@@ -1529,7 +1529,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __rtruediv__(self, other: num | _ListLike | Series[S1]) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
-    def __rxor__(  # type: ignore[misc]
+    def __rxor__(  # type: ignore[overload-overlap]
         self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
     ) -> Series[bool]: ...
     @overload
@@ -1553,7 +1553,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __truediv__(self, other: num | _ListLike | Series[S1]) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
-    def __xor__(  # type: ignore[misc]
+    def __xor__(  # type: ignore[overload-overlap]
         self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
     ) -> Series[bool]: ...
     @overload
@@ -1919,7 +1919,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     # ignore needed because of mypy, for overlapping overloads
     # between `Series[bool]` and `Series[int]`.
     @overload
-    def sum(  # type: ignore[misc]
+    def sum(  # type: ignore[overload-overlap]
         self: Series[bool],
         axis: AxisIndex | None = ...,
         skipna: _bool | None = ...,

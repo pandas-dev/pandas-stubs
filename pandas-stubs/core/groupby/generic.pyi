@@ -145,7 +145,7 @@ class DataFrameGroupBy(GroupBy, Generic[ByT]):
     def all(self, skipna: bool = ...) -> DataFrame: ...
     # error: Overload 3 for "apply" will never be used because its parameters overlap overload 1
     @overload
-    def apply(  # type: ignore[misc]
+    def apply(  # type: ignore[overload-overlap]
         self,
         func: Callable[[DataFrame], Scalar | list | dict],
         *args,
@@ -167,7 +167,7 @@ class DataFrameGroupBy(GroupBy, Generic[ByT]):
     ) -> DataFrame: ...
     # error: overload 1 overlaps overload 2 because of different return types
     @overload
-    def aggregate(self, arg: Literal["size"]) -> Series: ...  # type: ignore[misc]  # pyright: ignore[reportOverlappingOverload]
+    def aggregate(self, arg: Literal["size"]) -> Series: ...  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
     @overload
     def aggregate(self, arg: AggFuncTypeFrame = ..., *args, **kwargs) -> DataFrame: ...
     agg = aggregate

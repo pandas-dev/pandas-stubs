@@ -212,7 +212,7 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
     ) -> IntervalIndex[pd.Interval[pd.Timedelta]]: ...
     def to_tuples(self, na_tuple: bool = ...) -> pd.Index: ...
     @overload
-    def __contains__(self, key: IntervalT) -> bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
+    def __contains__(self, key: IntervalT) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __contains__(self, key: object) -> Literal[False]: ...
     def astype(self, dtype: DtypeArg, copy: bool = ...) -> IntervalIndex: ...
@@ -289,17 +289,17 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
     @overload
     def __lt__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...
     @overload  # type: ignore[override]
-    def __eq__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
+    def __eq__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __eq__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[misc]
+    def __eq__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: object
     ) -> Literal[False]: ...
     @overload  # type: ignore[override]
-    def __ne__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
+    def __ne__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_ndarray_bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __ne__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[misc]
+    def __ne__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: object
@@ -308,7 +308,7 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
 # misc here because int and float overlap but interval has distinct types
 # int gets hit first and so the correct type is returned
 @overload
-def interval_range(  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
+def interval_range(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     start: int = ...,
     end: int = ...,
     periods: int | None = ...,

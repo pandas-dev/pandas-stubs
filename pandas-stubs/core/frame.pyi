@@ -273,7 +273,7 @@ class DataFrame(NDFrame, OpsMixin):
         na_value: Scalar = ...,
     ) -> np.ndarray: ...
     @overload
-    def to_dict(  # type: ignore[misc]
+    def to_dict(  # type: ignore[overload-overlap]
         self,
         orient: Literal["records"],
         *,
@@ -289,7 +289,7 @@ class DataFrame(NDFrame, OpsMixin):
         index: Literal[True] = ...,
     ) -> list[dict[Hashable, Any]]: ...
     @overload
-    def to_dict(  # type: ignore[misc]
+    def to_dict(  # type: ignore[overload-overlap]
         self,
         orient: Literal["dict", "list", "series", "index"],
         *,
@@ -297,7 +297,7 @@ class DataFrame(NDFrame, OpsMixin):
         index: Literal[True] = ...,
     ) -> MutableMapping[Hashable, Any]: ...
     @overload
-    def to_dict(  # type: ignore[misc]
+    def to_dict(  # type: ignore[overload-overlap]
         self,
         orient: Literal["split", "tight"],
         *,
@@ -305,7 +305,7 @@ class DataFrame(NDFrame, OpsMixin):
         index: bool = ...,
     ) -> MutableMapping[Hashable, Any]: ...
     @overload
-    def to_dict(  # type: ignore[misc]
+    def to_dict(  # type: ignore[overload-overlap]
         self,
         orient: Literal["dict", "list", "series", "index"] = ...,
         *,
@@ -313,7 +313,7 @@ class DataFrame(NDFrame, OpsMixin):
         index: Literal[True] = ...,
     ) -> MutableMapping[Hashable, Any]: ...
     @overload
-    def to_dict(  # type: ignore[misc]
+    def to_dict(  # type: ignore[overload-overlap]
         self,
         orient: Literal["split", "tight"] = ...,
         *,
@@ -558,7 +558,7 @@ class DataFrame(NDFrame, OpsMixin):
     def T(self) -> DataFrame: ...
     def __getattr__(self, name: str) -> Series: ...
     @overload
-    def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[misc]
+    def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap]
     @overload
     def __getitem__(self, key: Iterable[Hashable] | slice) -> DataFrame: ...
     @overload
