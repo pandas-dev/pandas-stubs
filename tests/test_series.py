@@ -2842,3 +2842,8 @@ def test_round() -> None:
     # GH 791
     check(assert_type(round(pd.DataFrame([])), pd.DataFrame), pd.DataFrame)
     check(assert_type(round(pd.Series([1], dtype=int)), "pd.Series[int]"), pd.Series)
+
+
+def test_series_new_empty() -> None:
+    # GH 826
+    check(assert_type(pd.Series(), "pd.Series[Any]"), pd.Series)
