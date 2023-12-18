@@ -99,11 +99,11 @@ class Period(PeriodMixin):
     #  ignore[misc] here because we know all other comparisons
     #  are False, so we use Literal[False]
     @overload
-    def __eq__(self, other: Period) -> bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
+    def __eq__(self, other: Period) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __eq__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...  # type: ignore[misc]
+    def __eq__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(self, other: PeriodSeries) -> Series[bool]: ...  # type: ignore[misc]
+    def __eq__(self, other: PeriodSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: object) -> Literal[False]: ...
     @overload
@@ -133,11 +133,11 @@ class Period(PeriodMixin):
     #  ignore[misc] here because we know all other comparisons
     #  are False, so we use Literal[False]
     @overload
-    def __ne__(self, other: Period) -> bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
+    def __ne__(self, other: Period) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __ne__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...  # type: ignore[misc]
+    def __ne__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(self, other: PeriodSeries) -> Series[bool]: ...  # type: ignore[misc]
+    def __ne__(self, other: PeriodSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: object) -> Literal[True]: ...
     # Ignored due to indecipherable error from mypy:

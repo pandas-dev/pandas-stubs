@@ -1989,7 +1989,7 @@ def test_period_cmp() -> None:
     assert (lt_s != ge_s).all()
 
 
-def test_period_methods():
+def test_period_methods() -> None:
     p3 = pd.Period("2007-01", freq="M")
     check(assert_type(p3.to_timestamp("D", "S"), pd.Timestamp), pd.Timestamp)
     check(assert_type(p3.to_timestamp("D", "E"), pd.Timestamp), pd.Timestamp)
@@ -2013,3 +2013,9 @@ def test_period_methods():
 
     check(assert_type(p3.strftime("%Y-%m-%d"), str), str)
     check(assert_type(hash(p3), int), int)
+
+
+def test_nattype_hashable() -> None:
+    # GH 827
+    {pd.NaT}
+    check(assert_type(pd.NaT.__hash__(), int), int)

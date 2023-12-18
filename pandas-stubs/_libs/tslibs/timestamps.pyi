@@ -213,19 +213,19 @@ class Timestamp(datetime):
         self, other: npt.NDArray[np.timedelta64]
     ) -> npt.NDArray[np.datetime64]: ...
     @overload
-    def __eq__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
+    def __eq__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __eq__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[misc]
+    def __eq__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(self, other: npt.NDArray[np.datetime64] | Index) -> np_ndarray_bool: ...  # type: ignore[misc]
+    def __eq__(self, other: npt.NDArray[np.datetime64] | Index) -> np_ndarray_bool: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: object) -> Literal[False]: ...
     @overload
-    def __ne__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc] # pyright: ignore[reportOverlappingOverload]
+    def __ne__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __ne__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[misc]
+    def __ne__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(self, other: npt.NDArray[np.datetime64] | Index) -> np_ndarray_bool: ...  # type: ignore[misc]
+    def __ne__(self, other: npt.NDArray[np.datetime64] | Index) -> np_ndarray_bool: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: object) -> Literal[True]: ...
     def __hash__(self) -> int: ...
