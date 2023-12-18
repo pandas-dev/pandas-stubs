@@ -77,7 +77,7 @@ def test_orc():
         check(assert_type(DF.to_orc(path), None), type(None))
         with pytest_warns_bounded(
             DeprecationWarning,
-            "Passing a BlockManager to DataFrame is deprecated",
+            "make_block is deprecated and will be removed",
             lower="2.1.99",
         ):
             check(assert_type(read_orc(path), DataFrame), DataFrame)
@@ -90,7 +90,7 @@ def test_orc_path():
         check(assert_type(DF.to_orc(pathlib_path), None), type(None))
         with pytest_warns_bounded(
             DeprecationWarning,
-            "Passing a BlockManager to DataFrame is deprecated",
+            "make_block is deprecated and will be removed",
             lower="2.1.99",
         ):
             check(assert_type(read_orc(pathlib_path), DataFrame), DataFrame)
@@ -105,7 +105,7 @@ def test_orc_buffer():
         with open(path, "rb") as file_r:
             with pytest_warns_bounded(
                 DeprecationWarning,
-                "Passing a BlockManager to DataFrame is deprecated",
+                "make_block is deprecated and will be removed",
                 lower="2.1.99",
             ):
                 check(assert_type(read_orc(file_r), DataFrame), DataFrame)
@@ -117,7 +117,7 @@ def test_orc_columns():
         check(assert_type(DF.to_orc(path, index=False), None), type(None))
         with pytest_warns_bounded(
             DeprecationWarning,
-            "Passing a BlockManager to DataFrame is deprecated",
+            "make_block is deprecated and will be removed",
             lower="2.1.99",
         ):
             check(assert_type(read_orc(path, columns=["a"]), DataFrame), DataFrame)
@@ -555,7 +555,7 @@ def test_parquet():
         check(assert_type(DF.to_parquet(), bytes), bytes)
         with pytest_warns_bounded(
             DeprecationWarning,
-            "Passing a BlockManager to DataFrame is deprecated",
+            "make_block is deprecated and will be removed",
             lower="2.1.99",
         ):
             check(assert_type(read_parquet(path), DataFrame), DataFrame)
@@ -569,7 +569,7 @@ def test_parquet_options():
         )
         with pytest_warns_bounded(
             DeprecationWarning,
-            "Passing a BlockManager to DataFrame is deprecated",
+            "make_block is deprecated and will be removed",
             lower="2.1.99",
         ):
             check(assert_type(read_parquet(path), DataFrame), DataFrame)
@@ -580,7 +580,7 @@ def test_feather():
         check(assert_type(DF.to_feather(path), None), type(None))
         with pytest_warns_bounded(
             DeprecationWarning,
-            "Passing a BlockManager to DataFrame is deprecated",
+            "make_block is deprecated and will be removed",
             lower="2.1.99",
         ):
             check(assert_type(read_feather(path), DataFrame), DataFrame)
@@ -590,7 +590,7 @@ def test_feather():
         bio.seek(0)
         with pytest_warns_bounded(
             DeprecationWarning,
-            "Passing a BlockManager to DataFrame is deprecated",
+            "make_block is deprecated and will be removed",
             lower="2.1.99",
         ):
             check(assert_type(read_feather(bio), DataFrame), DataFrame)
@@ -1437,7 +1437,7 @@ def test_all_read_without_lxml_dtype_backend() -> None:
             check(assert_type(DF.to_orc(path), None), type(None))
             with pytest_warns_bounded(
                 DeprecationWarning,
-                "Passing a BlockManager to DataFrame is deprecated",
+                "make_block is deprecated and will be removed",
                 lower="2.1.99",
             ):
                 check(
@@ -1449,7 +1449,7 @@ def test_all_read_without_lxml_dtype_backend() -> None:
         check(assert_type(DF.to_feather(path), None), type(None))
         with pytest_warns_bounded(
             DeprecationWarning,
-            "Passing a BlockManager to DataFrame is deprecated",
+            "make_block is deprecated and will be removed",
             lower="2.1.99",
         ):
             check(
