@@ -445,7 +445,11 @@ def test_types_groupby_level() -> None:
         [(0, 0, 1), (0, 1, 2), (0, 0, 3)], names=["col1", "col2", "col3"]
     )
     s = pd.Series([1, 2, 3], index=index)
-    s.groupby(level=["col1", "col2"]).sum()
+    check(
+        assert_type(s.groupby(level=["col1", "col2"]).sum(), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
 
 
 def test_types_quantile() -> None:
