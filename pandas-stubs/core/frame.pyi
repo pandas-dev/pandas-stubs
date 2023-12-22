@@ -113,7 +113,6 @@ from pandas._typing import (
     StorageOptions,
     StrLike,
     Suffixes,
-    T as TType,
     TimestampConvention,
     ValidationOptions,
     WriteBuffer,
@@ -1829,12 +1828,6 @@ class DataFrame(NDFrame, OpsMixin):
         freq=...,
         **kwargs,
     ) -> DataFrame: ...
-    def pipe(
-        self,
-        func: Callable[..., TType] | tuple[Callable[..., TType], _str],
-        *args,
-        **kwargs,
-    ) -> TType: ...
     def pop(self, item: _str) -> Series: ...
     def pow(
         self,
