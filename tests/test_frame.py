@@ -1083,7 +1083,7 @@ def test_types_groupby_level() -> None:
     }
     df = pd.DataFrame(data=data).set_index(["col1", "col2", "col3"])
     check(
-        assert_type(df.groupby(level=["col1", "col2"]).sum(), "pd.DataFrame"),
+        assert_type(df.groupby(level=["col1", "col2"]).sum(), pd.DataFrame),
         pd.DataFrame,
     )
 
