@@ -2949,3 +2949,12 @@ def test_frame_setitem_na() -> None:
     df["x"] = df["y"] + pd.Timedelta(days=3)
     df.loc[ind, :] = pd.NaT
     df.iloc[[0, 2], :] = pd.NaT
+
+
+def test_itertuples() -> None:
+    # GH 822
+    df = pd.DataFrame({"a": [1, 2, 3, 4], "b": [5, 6, 7, 8]})
+
+    for item in df.itertuples():
+        check(assert_type(item, Any), tuple)
+        assert_type(item.a, Any)
