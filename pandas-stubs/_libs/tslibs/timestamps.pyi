@@ -43,7 +43,7 @@ from pandas._typing import (
 
 _Ambiguous: TypeAlias = bool | Literal["raise", "NaT"]
 _Nonexistent: TypeAlias = (
-    Literal["raise", "NaT", "shift_backward", "shift_forward"] | Timedelta | timedelta
+    Literal["raise", "NaT", "shift_backward", "shift_forward"] | timedelta
 )
 
 class Timestamp(datetime):
@@ -157,25 +157,25 @@ class Timestamp(datetime):
     # Mypy complains Forward operator "<inequality op>" is not callable, so ignore misc
     # for le, lt ge and gt
     @overload  # type: ignore[override]
-    def __le__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
+    def __le__(self, other: datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
     def __le__(self, other: Index | npt.NDArray[np.datetime64]) -> np_ndarray_bool: ...
     @overload
     def __le__(self, other: TimestampSeries) -> Series[bool]: ...
     @overload  # type: ignore[override]
-    def __lt__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
+    def __lt__(self, other: datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
     def __lt__(self, other: Index | npt.NDArray[np.datetime64]) -> np_ndarray_bool: ...
     @overload
     def __lt__(self, other: TimestampSeries) -> Series[bool]: ...
     @overload  # type: ignore[override]
-    def __ge__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
+    def __ge__(self, other: datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
     def __ge__(self, other: Index | npt.NDArray[np.datetime64]) -> np_ndarray_bool: ...
     @overload
     def __ge__(self, other: TimestampSeries) -> Series[bool]: ...
     @overload  # type: ignore[override]
-    def __gt__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
+    def __gt__(self, other: datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
     def __gt__(self, other: Index | npt.NDArray[np.datetime64]) -> np_ndarray_bool: ...
     @overload
@@ -201,7 +201,7 @@ class Timestamp(datetime):
     ) -> npt.NDArray[np.datetime64]: ...
     # TODO: test dt64
     @overload  # type: ignore[override]
-    def __sub__(self, other: Timestamp | datetime | np.datetime64) -> Timedelta: ...
+    def __sub__(self, other: datetime | np.datetime64) -> Timedelta: ...
     @overload
     def __sub__(self, other: timedelta | np.timedelta64 | Tick) -> Self: ...
     @overload
@@ -213,7 +213,7 @@ class Timestamp(datetime):
         self, other: npt.NDArray[np.timedelta64]
     ) -> npt.NDArray[np.datetime64]: ...
     @overload
-    def __eq__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __eq__(self, other: datetime | np.datetime64) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __eq__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
@@ -221,7 +221,7 @@ class Timestamp(datetime):
     @overload
     def __eq__(self, other: object) -> Literal[False]: ...
     @overload
-    def __ne__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __ne__(self, other: datetime | np.datetime64) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __ne__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload

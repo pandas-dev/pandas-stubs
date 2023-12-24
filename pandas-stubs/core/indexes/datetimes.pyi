@@ -3,6 +3,7 @@ from collections.abc import (
     Sequence,
 )
 from datetime import (
+    datetime,
     timedelta,
     tzinfo,
 )
@@ -15,7 +16,6 @@ import numpy as np
 from pandas import (
     DataFrame,
     Index,
-    Timedelta,
     TimedeltaIndex,
     Timestamp,
 )
@@ -59,13 +59,13 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
     @overload
     def __add__(self, other: TimedeltaSeries) -> TimestampSeries: ...
     @overload
-    def __add__(self, other: Timedelta | TimedeltaIndex) -> DatetimeIndex: ...
+    def __add__(self, other: timedelta | TimedeltaIndex) -> DatetimeIndex: ...
     @overload
     def __sub__(self, other: TimedeltaSeries) -> TimestampSeries: ...
     @overload
-    def __sub__(self, other: Timedelta | TimedeltaIndex) -> DatetimeIndex: ...
+    def __sub__(self, other: timedelta | TimedeltaIndex) -> DatetimeIndex: ...
     @overload
-    def __sub__(self, other: Timestamp | DatetimeIndex) -> TimedeltaIndex: ...
+    def __sub__(self, other: datetime | DatetimeIndex) -> TimedeltaIndex: ...
     def to_series(self, index=..., name=...) -> TimestampSeries: ...
     def snap(self, freq: str = ...): ...
     def get_value(self, series, key): ...
@@ -90,7 +90,7 @@ def date_range(
     start: str | DateAndDatetimeLike | None = ...,
     end: str | DateAndDatetimeLike | None = ...,
     periods: int | None = ...,
-    freq: str | timedelta | Timedelta | BaseOffset = ...,
+    freq: str | timedelta | BaseOffset = ...,
     tz: str | tzinfo = ...,
     normalize: bool = ...,
     name: Hashable | None = ...,
@@ -102,7 +102,7 @@ def bdate_range(
     start: str | DateAndDatetimeLike | None = ...,
     end: str | DateAndDatetimeLike | None = ...,
     periods: int | None = ...,
-    freq: str | timedelta | Timedelta | BaseOffset = ...,
+    freq: str | timedelta | BaseOffset = ...,
     tz: str | tzinfo = ...,
     normalize: bool = ...,
     name: Hashable | None = ...,
@@ -116,7 +116,7 @@ def bdate_range(
     end: str | DateAndDatetimeLike | None = ...,
     periods: int | None = ...,
     *,
-    freq: str | timedelta | Timedelta | BaseOffset,
+    freq: str | timedelta | BaseOffset,
     tz: str | tzinfo = ...,
     normalize: bool = ...,
     name: Hashable | None = ...,

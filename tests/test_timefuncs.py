@@ -1234,3 +1234,14 @@ def test_date_range_unit():
         ),
         pd.DatetimeIndex,
     )
+
+
+def test_DatetimeIndex_sub_timedelta() -> None:
+    # GH838
+    check(
+        assert_type(
+            pd.date_range("2023-01-01", periods=10, freq="1D") - dt.timedelta(days=1),
+            "pd.DatetimeIndex",
+        ),
+        pd.DatetimeIndex,
+    )

@@ -21,10 +21,7 @@ from pandas.core.indexes.period import PeriodIndex
 from pandas.core.series import TimedeltaSeries
 from typing_extensions import Self
 
-from pandas._libs import (
-    Timedelta,
-    Timestamp,
-)
+from pandas._libs import Timedelta
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     AnyArrayLike,
@@ -37,7 +34,7 @@ class TimedeltaIndex(DatetimeTimedeltaMixin[Timedelta], TimedeltaIndexProperties
         cls,
         data: AnyArrayLike
         | list[str]
-        | Sequence[dt.timedelta | Timedelta | np.timedelta64 | float] = ...,
+        | Sequence[dt.timedelta | np.timedelta64 | float] = ...,
         unit: Literal["D", "h", "m", "s", "ms", "us", "ns"] = ...,
         freq: str | BaseOffset = ...,
         closed: object = ...,
@@ -52,9 +49,9 @@ class TimedeltaIndex(DatetimeTimedeltaMixin[Timedelta], TimedeltaIndexProperties
     @overload
     def __add__(self, other: DatetimeIndex) -> DatetimeIndex: ...
     @overload
-    def __add__(self, other: Timedelta | Self) -> Self: ...
-    def __radd__(self, other: Timestamp | DatetimeIndex) -> DatetimeIndex: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
-    def __sub__(self, other: Timedelta | Self) -> Self: ...
+    def __add__(self, other: dt.timedelta | Self) -> Self: ...
+    def __radd__(self, other: dt.datetime | DatetimeIndex) -> DatetimeIndex: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __sub__(self, other: dt.timedelta | Self) -> Self: ...
     def __mul__(self, other: num) -> Self: ...
     @overload  # type: ignore[override]
     def __truediv__(self, other: num | Sequence[float]) -> Self: ...
@@ -82,7 +79,7 @@ def timedelta_range(
     start: TimedeltaConvertibleTypes = ...,
     end: TimedeltaConvertibleTypes = ...,
     periods: int | None = ...,
-    freq: str | DateOffset | Timedelta | dt.timedelta | None = ...,
+    freq: str | DateOffset | dt.timedelta | None = ...,
     name: Hashable | None = ...,
     closed: Literal["left", "right"] | None = ...,
 ) -> TimedeltaIndex: ...

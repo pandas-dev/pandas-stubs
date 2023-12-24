@@ -109,7 +109,7 @@ class Timedelta(timedelta):
     value: int
     def __new__(
         cls,
-        value: str | int | Timedelta | timedelta | np.timedelta64 = ...,
+        value: str | int | timedelta | np.timedelta64 = ...,
         unit: TimeDeltaUnitChoices = ...,
         *,
         days: float | np.integer | np.floating = ...,
@@ -144,9 +144,9 @@ class Timedelta(timedelta):
     def resolution_string(self) -> str: ...
     # Override due to more types supported than dt.timedelta
     @overload  # type: ignore[override]
-    def __add__(self, other: timedelta | Timedelta | np.timedelta64) -> Timedelta: ...
+    def __add__(self, other: timedelta | np.timedelta64) -> Timedelta: ...
     @overload
-    def __add__(self, other: dt.datetime | np.datetime64 | Timestamp) -> Timestamp: ...
+    def __add__(self, other: dt.datetime | np.datetime64) -> Timestamp: ...
     @overload
     def __add__(self, other: NaTType) -> NaTType: ...
     @overload
@@ -177,7 +177,7 @@ class Timedelta(timedelta):
     @overload
     def __radd__(self, other: np.datetime64) -> Timestamp: ...
     @overload
-    def __radd__(self, other: timedelta | Timedelta | np.timedelta64) -> Timedelta: ...
+    def __radd__(self, other: timedelta | np.timedelta64) -> Timedelta: ...
     @overload
     def __radd__(self, other: NaTType) -> NaTType: ...
     @overload
@@ -194,7 +194,7 @@ class Timedelta(timedelta):
     def __radd__(self, other: pd.PeriodIndex) -> pd.PeriodIndex: ...
     # Override due to more types supported than dt.timedelta
     @overload  # type: ignore[override]
-    def __sub__(self, other: timedelta | Timedelta | np.timedelta64) -> Timedelta: ...
+    def __sub__(self, other: timedelta | np.timedelta64) -> Timedelta: ...
     @overload
     def __sub__(self, other: NaTType) -> NaTType: ...
     @overload
@@ -208,9 +208,10 @@ class Timedelta(timedelta):
         self, other: TimedeltaSeries | Series[pd.Timedelta]
     ) -> TimedeltaSeries: ...
     @overload
-    def __rsub__(self, other: timedelta | Timedelta | np.timedelta64) -> Timedelta: ...
+    def __rsub__(self, other: timedelta | np.timedelta64) -> Timedelta: ...
+    # Timedelta - Timestamp is not allowed but the reverse is
     @overload
-    def __rsub__(self, other: Timestamp | np.datetime64) -> Timestamp: ...
+    def __rsub__(self, other: dt.datetime | np.datetime64) -> Timestamp: ...  # type: ignore[misc]
     @overload
     def __rsub__(self, other: NaTType) -> NaTType: ...
     @overload
@@ -259,7 +260,7 @@ class Timedelta(timedelta):
     # Override due to more types supported than dt.timedelta
     # error: Signature of "__floordiv__" incompatible with supertype "timedelta"
     @overload  # type: ignore[override]
-    def __floordiv__(self, other: timedelta | Timedelta | np.timedelta64) -> int: ...
+    def __floordiv__(self, other: timedelta | np.timedelta64) -> int: ...
     @overload
     def __floordiv__(self, other: float) -> Timedelta: ...
     @overload
@@ -281,7 +282,7 @@ class Timedelta(timedelta):
     @overload
     def __floordiv__(self, other: NaTType | None) -> float: ...
     @overload
-    def __rfloordiv__(self, other: timedelta | Timedelta | str) -> int: ...
+    def __rfloordiv__(self, other: timedelta | str) -> int: ...
     @overload
     def __rfloordiv__(self, other: NaTType | None) -> float: ...
     @overload
@@ -290,7 +291,7 @@ class Timedelta(timedelta):
     ) -> npt.NDArray[np.int_]: ...
     # Override due to more types supported than dt.timedelta
     @overload  # type: ignore[override]
-    def __truediv__(self, other: timedelta | Timedelta | NaTType) -> float: ...
+    def __truediv__(self, other: timedelta | NaTType) -> float: ...
     @overload
     def __truediv__(self, other: float) -> Timedelta: ...
     @overload
@@ -305,10 +306,10 @@ class Timedelta(timedelta):
     def __truediv__(self, other: Series[float]) -> TimedeltaSeries: ...
     @overload
     def __truediv__(self, other: Index[int] | Index[float]) -> TimedeltaIndex: ...
-    def __rtruediv__(self, other: timedelta | Timedelta | NaTType) -> float: ...
+    def __rtruediv__(self, other: timedelta | NaTType) -> float: ...
     # Override due to more types supported than dt.timedelta
     @overload
-    def __eq__(self, other: timedelta | Timedelta | np.timedelta64) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __eq__(self, other: timedelta | np.timedelta64) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __eq__(self, other: TimedeltaSeries | Series[pd.Timedelta]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
@@ -319,7 +320,7 @@ class Timedelta(timedelta):
     def __eq__(self, other: object) -> Literal[False]: ...
     # Override due to more types supported than dt.timedelta
     @overload
-    def __ne__(self, other: timedelta | Timedelta | np.timedelta64) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __ne__(self, other: timedelta | np.timedelta64) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __ne__(self, other: TimedeltaSeries | Series[pd.Timedelta]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
@@ -350,7 +351,7 @@ class Timedelta(timedelta):
     # for le, lt ge and gt
     # Override due to more types supported than dt.timedelta
     @overload  # type: ignore[override]
-    def __le__(self, other: timedelta | Timedelta | np.timedelta64) -> bool: ...  # type: ignore[misc]
+    def __le__(self, other: timedelta | np.timedelta64) -> bool: ...  # type: ignore[misc]
     @overload
     def __le__(
         self, other: TimedeltaIndex | npt.NDArray[np.timedelta64]
@@ -359,7 +360,7 @@ class Timedelta(timedelta):
     def __le__(self, other: TimedeltaSeries | Series[pd.Timedelta]) -> Series[bool]: ...
     # Override due to more types supported than dt.timedelta
     @overload  # type: ignore[override]
-    def __lt__(self, other: timedelta | Timedelta | np.timedelta64) -> bool: ...  # type: ignore[misc]
+    def __lt__(self, other: timedelta | np.timedelta64) -> bool: ...  # type: ignore[misc]
     @overload
     def __lt__(
         self, other: TimedeltaIndex | npt.NDArray[np.timedelta64]
@@ -368,7 +369,7 @@ class Timedelta(timedelta):
     def __lt__(self, other: TimedeltaSeries | Series[pd.Timedelta]) -> Series[bool]: ...
     # Override due to more types supported than dt.timedelta
     @overload  # type: ignore[override]
-    def __ge__(self, other: timedelta | Timedelta | np.timedelta64) -> bool: ...  # type: ignore[misc]
+    def __ge__(self, other: timedelta | np.timedelta64) -> bool: ...  # type: ignore[misc]
     @overload
     def __ge__(
         self, other: TimedeltaIndex | npt.NDArray[np.timedelta64]
@@ -377,7 +378,7 @@ class Timedelta(timedelta):
     def __ge__(self, other: TimedeltaSeries | Series[pd.Timedelta]) -> Series[bool]: ...
     # Override due to more types supported than dt.timedelta
     @overload  # type: ignore[override]
-    def __gt__(self, other: timedelta | Timedelta | np.timedelta64) -> bool: ...  # type: ignore[misc]
+    def __gt__(self, other: timedelta | np.timedelta64) -> bool: ...  # type: ignore[misc]
     @overload
     def __gt__(
         self, other: TimedeltaIndex | npt.NDArray[np.timedelta64]
