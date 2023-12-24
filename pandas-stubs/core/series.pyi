@@ -228,7 +228,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: DatetimeIndex
         | Sequence[np.datetime64 | datetime]
-        | Mapping[Any, np.datetime64 | datetime]
+        | Mapping[HashableT1, np.datetime64 | datetime]
         | np.datetime64
         | datetime,
         index: Axes | None = ...,
@@ -262,7 +262,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: TimedeltaIndex
         | Sequence[np.timedelta64 | timedelta]
-        | Mapping[Any, np.timedelta64 | timedelta]
+        | Mapping[HashableT1, np.timedelta64 | timedelta]
         | np.timedelta64
         | timedelta,
         index: Axes | None = ...,
@@ -277,7 +277,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         data: IntervalIndex[Interval[_OrderableT]]
         | Interval[_OrderableT]
         | Sequence[Interval[_OrderableT]]
-        | Mapping[Any, Interval[_OrderableT]],
+        | Mapping[HashableT1, Interval[_OrderableT]],
         index: Axes | None = ...,
         *,
         dtype: Literal["Interval"] = ...,
@@ -297,7 +297,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: S1 | Mapping[Any, S1] | _ListLike[S1],
+        data: S1 | Mapping[HashableT1, S1] | _ListLike[S1],
         index: Axes | None = ...,
         *,
         dtype: Dtype = ...,
