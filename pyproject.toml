@@ -197,6 +197,14 @@ useLibraryCodeForTypes = false
 [tool.codespell]
 ignore-words-list = "indext, mose, sav, ser"
 
+[tool.pytest.ini_options]
+filterwarnings = [
+  # treat warnings as errors
+  "error",
+  # until there is a new dateutil release: github.com/dateutil/dateutil/pull/1285
+  "ignore:datetime.datetime.utc:DeprecationWarning",
+]
+
 # Next line needed to avoid poetry complaint
 [tool.setuptools_scm]
 

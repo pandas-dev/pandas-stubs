@@ -5,7 +5,6 @@ import io
 import os.path
 import pathlib
 from pathlib import Path
-import platform
 import sqlite3
 from typing import (
     TYPE_CHECKING,
@@ -898,293 +897,233 @@ def test_to_csv_series():
 
 
 def test_read_excel() -> None:
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        match="datetime.datetime.utcnow",
-        lower="3.11.99",
-        version_str=platform.python_version(),
-    ):
-        with ensure_clean(".xlsx") as path:
-            # https://github.com/pandas-dev/pandas-stubs/pull/33
-            check(
-                assert_type(pd.DataFrame({"A": [1, 2, 3]}).to_excel(path), None),
-                type(None),
-            )
-            check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
-            check(
-                assert_type(pd.read_excel(path, sheet_name="Sheet1"), pd.DataFrame),
+    with ensure_clean(".xlsx") as path:
+        # https://github.com/pandas-dev/pandas-stubs/pull/33
+        check(
+            assert_type(pd.DataFrame({"A": [1, 2, 3]}).to_excel(path), None), type(None)
+        )
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(pd.read_excel(path, sheet_name="Sheet1"), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, sheet_name=["Sheet1"]),
+                dict[str, pd.DataFrame],
+            ),
+            dict,
+        )
+        # GH 98
+        check(
+            assert_type(pd.read_excel(path, sheet_name=0), pd.DataFrame), pd.DataFrame
+        )
+        check(
+            assert_type(pd.read_excel(path, sheet_name=[0]), dict[int, pd.DataFrame]),
+            dict,
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, sheet_name=[0, "Sheet1"]),
+                dict[Union[int, str], pd.DataFrame],
+            ),
+            dict,
+        )
+        # GH 641
+        check(
+            assert_type(
+                pd.read_excel(path, sheet_name=None),
+                dict[str, pd.DataFrame],
+            ),
+            dict,
+        )
+        check(
+            assert_type(pd.read_excel(path, names=("test",), header=0), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(pd.read_excel(path, names=(1,), header=0), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, names=(("higher", "lower"),), header=0),
                 pd.DataFrame,
-            )
-            check(
-                assert_type(
-                    pd.read_excel(path, sheet_name=["Sheet1"]),
-                    dict[str, pd.DataFrame],
-                ),
-                dict,
-            )
-            # GH 98
-            check(
-                assert_type(pd.read_excel(path, sheet_name=0), pd.DataFrame),
-                pd.DataFrame,
-            )
-            check(
-                assert_type(
-                    pd.read_excel(path, sheet_name=[0]), dict[int, pd.DataFrame]
-                ),
-                dict,
-            )
-            check(
-                assert_type(
-                    pd.read_excel(path, sheet_name=[0, "Sheet1"]),
-                    dict[Union[int, str], pd.DataFrame],
-                ),
-                dict,
-            )
-            # GH 641
-            check(
-                assert_type(
-                    pd.read_excel(path, sheet_name=None),
-                    dict[str, pd.DataFrame],
-                ),
-                dict,
-            )
-            check(
-                assert_type(
-                    pd.read_excel(path, names=("test",), header=0), pd.DataFrame
-                ),
-                pd.DataFrame,
-            )
-            check(
-                assert_type(pd.read_excel(path, names=(1,), header=0), pd.DataFrame),
-                pd.DataFrame,
-            )
-            check(
-                assert_type(
-                    pd.read_excel(path, names=(("higher", "lower"),), header=0),
-                    pd.DataFrame,
+            ),
+            pd.DataFrame,
+        ),
+        check(
+            assert_type(pd.read_excel(path, names=range(1), header=0), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(pd.read_excel(path, usecols=None), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(pd.read_excel(path, usecols=["A"]), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(pd.read_excel(path, usecols=(0,)), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(pd.read_excel(path, usecols=range(1)), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(pd.read_excel(path, usecols=_true_if_b), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_excel(
+                    path,
+                    names=[1, 2],
+                    usecols=_true_if_greater_than_0,
+                    header=0,
+                    index_col=0,
                 ),
                 pd.DataFrame,
             ),
-            check(
-                assert_type(
-                    pd.read_excel(path, names=range(1), header=0), pd.DataFrame
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_excel(
+                    path,
+                    names=(("head", 1), ("tail", 2)),
+                    usecols=_true_if_first_param_is_head,
+                    header=0,
+                    index_col=0,
                 ),
                 pd.DataFrame,
-            )
-            check(
-                assert_type(pd.read_excel(path, usecols=None), pd.DataFrame),
-                pd.DataFrame,
-            )
-            check(
-                assert_type(pd.read_excel(path, usecols=["A"]), pd.DataFrame),
-                pd.DataFrame,
-            )
-            check(
-                assert_type(pd.read_excel(path, usecols=(0,)), pd.DataFrame),
-                pd.DataFrame,
-            )
-            check(
-                assert_type(pd.read_excel(path, usecols=range(1)), pd.DataFrame),
-                pd.DataFrame,
-            )
-            check(
-                assert_type(pd.read_excel(path, usecols=_true_if_b), pd.DataFrame),
-                pd.DataFrame,
-            )
-            check(
-                assert_type(
-                    pd.read_excel(
-                        path,
-                        names=[1, 2],
-                        usecols=_true_if_greater_than_0,
-                        header=0,
-                        index_col=0,
-                    ),
-                    pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_excel(
+                    path,
+                    usecols="A",
                 ),
                 pd.DataFrame,
-            )
-            check(
-                assert_type(
-                    pd.read_excel(
-                        path,
-                        names=(("head", 1), ("tail", 2)),
-                        usecols=_true_if_first_param_is_head,
-                        header=0,
-                        index_col=0,
-                    ),
-                    pd.DataFrame,
-                ),
-                pd.DataFrame,
-            )
-            check(
-                assert_type(
-                    pd.read_excel(
-                        path,
-                        usecols="A",
-                    ),
-                    pd.DataFrame,
-                ),
-                pd.DataFrame,
-            )
-            if TYPE_CHECKING_INVALID_USAGE:
-                pd.read_excel(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
+            ),
+            pd.DataFrame,
+        )
+        if TYPE_CHECKING_INVALID_USAGE:
+            pd.read_excel(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_read_excel_io_types() -> None:
     # GH 195
     df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        match="datetime.datetime.utcnow",
-        lower="3.11.99",
-        version_str=platform.python_version(),
-    ):
-        with ensure_clean(".xlsx") as path:
-            as_str: str = path
-            df.to_excel(path)
+    with ensure_clean(".xlsx") as path:
+        as_str: str = path
+        df.to_excel(path)
 
-            check(assert_type(pd.read_excel(as_str), pd.DataFrame), pd.DataFrame)
+        check(assert_type(pd.read_excel(as_str), pd.DataFrame), pd.DataFrame)
 
-            as_path = Path(as_str)
-            check(assert_type(pd.read_excel(as_path), pd.DataFrame), pd.DataFrame)
+        as_path = Path(as_str)
+        check(assert_type(pd.read_excel(as_path), pd.DataFrame), pd.DataFrame)
 
-            with as_path.open("rb") as as_file:
-                check(assert_type(pd.read_excel(as_file), pd.DataFrame), pd.DataFrame)
+        with as_path.open("rb") as as_file:
+            check(assert_type(pd.read_excel(as_file), pd.DataFrame), pd.DataFrame)
 
 
 def test_read_excel_basic():
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        match="datetime.datetime.utcnow",
-        lower="3.11.99",
-        version_str=platform.python_version(),
-    ):
-        with ensure_clean(".xlsx") as path:
-            check(assert_type(DF.to_excel(path), None), type(None))
-            check(assert_type(read_excel(path), DataFrame), DataFrame)
-            check(
-                assert_type(read_excel(path, sheet_name="Sheet1"), DataFrame), DataFrame
-            )
-            check(assert_type(read_excel(path, sheet_name=0), DataFrame), DataFrame)
+    with ensure_clean(".xlsx") as path:
+        check(assert_type(DF.to_excel(path), None), type(None))
+        check(assert_type(read_excel(path), DataFrame), DataFrame)
+        check(assert_type(read_excel(path, sheet_name="Sheet1"), DataFrame), DataFrame)
+        check(assert_type(read_excel(path, sheet_name=0), DataFrame), DataFrame)
 
 
 def test_read_excel_list():
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        match="datetime.datetime.utcnow",
-        lower="3.11.99",
-        version_str=platform.python_version(),
-    ):
-        with ensure_clean(".xlsx") as path:
-            check(assert_type(DF.to_excel(path), None), type(None))
-            check(
-                assert_type(
-                    read_excel(path, sheet_name=["Sheet1"]),
-                    dict[str, DataFrame],
-                ),
-                dict,
-            )
-            check(
-                assert_type(read_excel(path, sheet_name=[0]), dict[int, DataFrame]),
-                dict,
-            )
+    with ensure_clean(".xlsx") as path:
+        check(assert_type(DF.to_excel(path), None), type(None))
+        check(
+            assert_type(
+                read_excel(path, sheet_name=["Sheet1"]),
+                dict[str, DataFrame],
+            ),
+            dict,
+        )
+        check(
+            assert_type(read_excel(path, sheet_name=[0]), dict[int, DataFrame]),
+            dict,
+        )
 
 
 def test_read_excel_dtypes():
     # GH 440
     df = pd.DataFrame({"a": [1, 2, 3], "b": ["x", "y", "z"], "c": [10.0, 20.0, 30.3]})
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        match="datetime.datetime.utcnow",
-        lower="3.11.99",
-        version_str=platform.python_version(),
-    ):
-        with ensure_clean(".xlsx") as path:
-            check(assert_type(df.to_excel(path), None), type(None))
-            dtypes = {"a": np.int64, "b": str, "c": np.float64}
-            check(
-                assert_type(read_excel(path, dtype=dtypes), pd.DataFrame), pd.DataFrame
-            )
+    with ensure_clean(".xlsx") as path:
+        check(assert_type(df.to_excel(path), None), type(None))
+        dtypes = {"a": np.int64, "b": str, "c": np.float64}
+        check(assert_type(read_excel(path, dtype=dtypes), pd.DataFrame), pd.DataFrame)
 
 
 def test_excel_writer():
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        match="datetime.datetime.utcnow",
-        lower="3.11.99",
-        version_str=platform.python_version(),
-    ):
-        with ensure_clean(".xlsx") as path:
-            with pd.ExcelWriter(path) as ew:
-                check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
-                DF.to_excel(ew, sheet_name="A")
-            check(assert_type(read_excel(path, sheet_name="A"), DataFrame), DataFrame)
-            check(assert_type(read_excel(path), DataFrame), DataFrame)
-            ef = pd.ExcelFile(path)
-            check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
-            check(assert_type(read_excel(ef, sheet_name="A"), DataFrame), DataFrame)
-            check(assert_type(read_excel(ef), DataFrame), DataFrame)
-            check(assert_type(ef.parse(sheet_name=0), DataFrame), DataFrame)
-            check(
-                assert_type(ef.parse(sheet_name=[0]), dict[Union[str, int], DataFrame]),
-                dict,
-            )
-            check(assert_type(ef.close(), None), type(None))
+    with ensure_clean(".xlsx") as path:
+        with pd.ExcelWriter(path) as ew:
+            check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
+            DF.to_excel(ew, sheet_name="A")
+        check(assert_type(read_excel(path, sheet_name="A"), DataFrame), DataFrame)
+        check(assert_type(read_excel(path), DataFrame), DataFrame)
+        ef = pd.ExcelFile(path)
+        check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
+        check(assert_type(read_excel(ef, sheet_name="A"), DataFrame), DataFrame)
+        check(assert_type(read_excel(ef), DataFrame), DataFrame)
+        check(assert_type(ef.parse(sheet_name=0), DataFrame), DataFrame)
+        check(
+            assert_type(ef.parse(sheet_name=[0]), dict[Union[str, int], DataFrame]),
+            dict,
+        )
+        check(assert_type(ef.close(), None), type(None))
 
 
 def test_excel_writer_engine():
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        match="datetime.datetime.utcnow",
-        lower="3.11.99",
-        version_str=platform.python_version(),
-    ):
-        with ensure_clean(".xlsx") as path:
-            with pd.ExcelWriter(path, engine="auto") as ew:
-                check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
-                DF.to_excel(ew, sheet_name="A")
+    with ensure_clean(".xlsx") as path:
+        with pd.ExcelWriter(path, engine="auto") as ew:
+            check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
+            DF.to_excel(ew, sheet_name="A")
 
-        with ensure_clean(".xlsx") as path:
-            with pd.ExcelWriter(path, engine="openpyxl") as ew:
-                check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
-                DF.to_excel(ew, sheet_name="A")
-                check(
-                    assert_type(ew.engine, Literal["openpyxl", "odf", "xlsxwriter"]),
-                    str,
-                )
+    with ensure_clean(".xlsx") as path:
+        with pd.ExcelWriter(path, engine="openpyxl") as ew:
+            check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
+            DF.to_excel(ew, sheet_name="A")
+            check(
+                assert_type(ew.engine, Literal["openpyxl", "odf", "xlsxwriter"]),
+                str,
+            )
 
-        with ensure_clean(".ods") as path:
-            with pd.ExcelWriter(path, engine="odf") as ew:
-                check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
-                DF.to_excel(ew, sheet_name="A")
-                check(
-                    assert_type(ew.engine, Literal["openpyxl", "odf", "xlsxwriter"]),
-                    str,
-                )
+    with ensure_clean(".ods") as path:
+        with pd.ExcelWriter(path, engine="odf") as ew:
+            check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
+            DF.to_excel(ew, sheet_name="A")
+            check(
+                assert_type(ew.engine, Literal["openpyxl", "odf", "xlsxwriter"]),
+                str,
+            )
 
-        with ensure_clean(".xlsx") as path:
-            with pd.ExcelWriter(path, engine="xlsxwriter") as ew:
-                check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
-                DF.to_excel(ew, sheet_name="A")
-                check(
-                    assert_type(ew.engine, Literal["openpyxl", "odf", "xlsxwriter"]),
-                    str,
-                )
+    with ensure_clean(".xlsx") as path:
+        with pd.ExcelWriter(path, engine="xlsxwriter") as ew:
+            check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
+            DF.to_excel(ew, sheet_name="A")
+            check(
+                assert_type(ew.engine, Literal["openpyxl", "odf", "xlsxwriter"]),
+                str,
+            )
 
 
 def test_excel_writer_append_mode():
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        match="datetime.datetime.utcnow",
-        lower="3.11.99",
-        version_str=platform.python_version(),
-    ):
-        with ensure_clean(".xlsx") as path:
-            with pd.ExcelWriter(path, mode="w") as ew:
-                DF.to_excel(ew, sheet_name="A")
-            with pd.ExcelWriter(path, mode="a", engine="openpyxl") as ew:
-                DF.to_excel(ew, sheet_name="B")
+    with ensure_clean(".xlsx") as path:
+        with pd.ExcelWriter(path, mode="w") as ew:
+            DF.to_excel(ew, sheet_name="A")
+        with pd.ExcelWriter(path, mode="a", engine="openpyxl") as ew:
+            DF.to_excel(ew, sheet_name="B")
 
 
 def test_to_string():
@@ -1458,110 +1397,99 @@ def test_read_sql_dtype_backend() -> None:
 
 
 def test_all_read_without_lxml_dtype_backend() -> None:
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        match="datetime.datetime.utcnow",
-        lower="3.11.99",
-        version_str=platform.python_version(),
-    ):
-        with ensure_clean() as path:
-            check(assert_type(DF.to_csv(path), None), type(None))
-            s1 = read_csv(path, iterator=True, dtype_backend="pyarrow")
-            check(assert_type(s1, TextFileReader), TextFileReader)
-            s1.close()
+    with ensure_clean() as path:
+        check(assert_type(DF.to_csv(path), None), type(None))
+        s1 = read_csv(path, iterator=True, dtype_backend="pyarrow")
+        check(assert_type(s1, TextFileReader), TextFileReader)
+        s1.close()
 
-            DF.to_string(path, index=False)
-            check(
-                assert_type(read_fwf(path, dtype_backend="pyarrow"), DataFrame),
-                DataFrame,
-            )
+        DF.to_string(path, index=False)
+        check(
+            assert_type(read_fwf(path, dtype_backend="pyarrow"), DataFrame), DataFrame
+        )
 
-            check(assert_type(DF.to_json(path), None), type(None))
-            check(
-                assert_type(read_json(path, dtype_backend="pyarrow"), DataFrame),
-                DataFrame,
-            )
-            check(
-                assert_type(read_json(path, dtype={"MatchID": str}), DataFrame),
-                DataFrame,
-            )
+        check(assert_type(DF.to_json(path), None), type(None))
+        check(
+            assert_type(read_json(path, dtype_backend="pyarrow"), DataFrame), DataFrame
+        )
+        check(
+            assert_type(read_json(path, dtype={"MatchID": str}), DataFrame), DataFrame
+        )
 
-        with ensure_clean() as path:
-            con = sqlite3.connect(path)
-            check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
-            check(
-                assert_type(
-                    read_sql_query(
-                        "select * from test",
-                        con=con,
-                        index_col="index",
-                        dtype_backend="pyarrow",
-                    ),
-                    DataFrame,
+    with ensure_clean() as path:
+        con = sqlite3.connect(path)
+        check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
+        check(
+            assert_type(
+                read_sql_query(
+                    "select * from test",
+                    con=con,
+                    index_col="index",
+                    dtype_backend="pyarrow",
                 ),
                 DataFrame,
-            )
-            con.close()
+            ),
+            DataFrame,
+        )
+        con.close()
 
-            if not WINDOWS:
-                check(assert_type(DF.to_orc(path), None), type(None))
-                with pytest_warns_bounded(
-                    DeprecationWarning,
-                    "make_block is deprecated and will be removed",
-                    lower="2.1.99",
-                ):
-                    check(
-                        assert_type(
-                            read_orc(path, dtype_backend="numpy_nullable"), DataFrame
-                        ),
-                        DataFrame,
-                    )
-            check(assert_type(DF.to_feather(path), None), type(None))
+        if not WINDOWS:
+            check(assert_type(DF.to_orc(path), None), type(None))
             with pytest_warns_bounded(
                 DeprecationWarning,
                 "make_block is deprecated and will be removed",
                 lower="2.1.99",
             ):
                 check(
-                    assert_type(read_feather(path, dtype_backend="pyarrow"), DataFrame),
+                    assert_type(
+                        read_orc(path, dtype_backend="numpy_nullable"), DataFrame
+                    ),
                     DataFrame,
                 )
-
-            with pytest_warns_bounded(
-                FutureWarning, "errors='ignore' is deprecated", lower="2.1.99"
-            ):
-                check(
-                    assert_type(
-                        pd.to_numeric(
-                            [1.0, 2.0, "blerg"],
-                            errors="ignore",
-                            dtype_backend="numpy_nullable",
-                        ),
-                        npt.NDArray,
-                    ),
-                    np.ndarray,
-                )
-
-        with ensure_clean(".xlsx") as path:
-            as_str: str = path
-            DF.to_excel(path)
+        check(assert_type(DF.to_feather(path), None), type(None))
+        with pytest_warns_bounded(
+            DeprecationWarning,
+            "make_block is deprecated and will be removed",
+            lower="2.1.99",
+        ):
             check(
-                assert_type(
-                    pd.read_excel(as_str, dtype_backend="pyarrow"), pd.DataFrame
-                ),
-                pd.DataFrame,
+                assert_type(read_feather(path, dtype_backend="pyarrow"), DataFrame),
+                DataFrame,
             )
 
-        try:
-            DF.to_clipboard()
-        except errors.PyperclipException:
-            pytest.skip("clipboard not available for testing")
+        with pytest_warns_bounded(
+            FutureWarning, "errors='ignore' is deprecated", lower="2.1.99"
+        ):
+            check(
+                assert_type(
+                    pd.to_numeric(
+                        [1.0, 2.0, "blerg"],
+                        errors="ignore",
+                        dtype_backend="numpy_nullable",
+                    ),
+                    npt.NDArray,
+                ),
+                np.ndarray,
+            )
+
+    with ensure_clean(".xlsx") as path:
+        as_str: str = path
+        DF.to_excel(path)
         check(
-            assert_type(
-                read_clipboard(iterator=True, dtype_backend="pyarrow"), TextFileReader
-            ),
-            TextFileReader,
+            assert_type(pd.read_excel(as_str, dtype_backend="pyarrow"), pd.DataFrame),
+            pd.DataFrame,
         )
+
+    try:
+        DF.to_clipboard()
+    except errors.PyperclipException:
+        pytest.skip("clipboard not available for testing")
+    check(
+        assert_type(
+            read_clipboard(iterator=True, dtype_backend="pyarrow"), TextFileReader
+        ),
+        TextFileReader,
+    )
 
     if TYPE_CHECKING:
         # sqlite3 doesn't support read_table, which is required for this function
@@ -1613,106 +1541,98 @@ def test_read_sql_dict_str_value_dtype() -> None:
 
 
 def test_added_date_format() -> None:
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        match="datetime.datetime.utcnow",
-        lower="3.11.99",
-        version_str=platform.python_version(),
-    ):
-        with ensure_clean() as path:
-            df_dates = pd.DataFrame(
-                data={
-                    "col1": ["2023-03-15", "2023-04-20"],
-                }
-            )
-            df_dates.to_csv(path)
+    with ensure_clean() as path:
+        df_dates = pd.DataFrame(
+            data={
+                "col1": ["2023-03-15", "2023-04-20"],
+            }
+        )
+        df_dates.to_csv(path)
 
-            check(
-                assert_type(
-                    pd.read_table(
-                        path, sep=",", parse_dates=["col1"], date_format="%Y-%m-%d"
-                    ),
-                    pd.DataFrame,
+        check(
+            assert_type(
+                pd.read_table(
+                    path, sep=",", parse_dates=["col1"], date_format="%Y-%m-%d"
                 ),
                 pd.DataFrame,
-            )
-            check(
-                assert_type(
-                    pd.read_table(
-                        path,
-                        sep=",",
-                        parse_dates=["col1"],
-                        date_format={"col1": "%Y-%m-%d"},
-                    ),
-                    pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_table(
+                    path,
+                    sep=",",
+                    parse_dates=["col1"],
+                    date_format={"col1": "%Y-%m-%d"},
                 ),
                 pd.DataFrame,
-            )
-            check(
-                assert_type(
-                    pd.read_table(
-                        path, sep=",", parse_dates=["col1"], date_format={0: "%Y-%m-%d"}
-                    ),
-                    pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_table(
+                    path, sep=",", parse_dates=["col1"], date_format={0: "%Y-%m-%d"}
                 ),
                 pd.DataFrame,
-            )
+            ),
+            pd.DataFrame,
+        )
 
-            check(
-                assert_type(
-                    pd.read_fwf(path, date_format="%Y-%m-%d"),
-                    pd.DataFrame,
+        check(
+            assert_type(
+                pd.read_fwf(path, date_format="%Y-%m-%d"),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_fwf(path, date_format={"col1": "%Y-%m-%d"}),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_fwf(path, date_format={0: "%Y-%m-%d"}),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+    with ensure_clean(".xlsx") as path:
+        check(
+            assert_type(
+                pd.DataFrame(
+                    data={
+                        "col1": ["2023-03-15", "2023-04-20"],
+                    }
+                ).to_excel(path),
+                None,
+            ),
+            type(None),
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, parse_dates=["col1"], date_format={0: "%Y-%m-%d"}),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_excel(
+                    path, parse_dates=["col1"], date_format={"col1": "%Y-%m-%d"}
                 ),
                 pd.DataFrame,
-            )
-            check(
-                assert_type(
-                    pd.read_fwf(path, date_format={"col1": "%Y-%m-%d"}),
-                    pd.DataFrame,
-                ),
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_excel(path, parse_dates=["col1"], date_format="%Y-%m-%d"),
                 pd.DataFrame,
-            )
-            check(
-                assert_type(
-                    pd.read_fwf(path, date_format={0: "%Y-%m-%d"}),
-                    pd.DataFrame,
-                ),
-                pd.DataFrame,
-            )
-        with ensure_clean(".xlsx") as path:
-            check(
-                assert_type(
-                    pd.DataFrame(
-                        data={
-                            "col1": ["2023-03-15", "2023-04-20"],
-                        }
-                    ).to_excel(path),
-                    None,
-                ),
-                type(None),
-            )
-            check(
-                assert_type(
-                    pd.read_excel(
-                        path, parse_dates=["col1"], date_format={0: "%Y-%m-%d"}
-                    ),
-                    pd.DataFrame,
-                ),
-                pd.DataFrame,
-            )
-            check(
-                assert_type(
-                    pd.read_excel(
-                        path, parse_dates=["col1"], date_format={"col1": "%Y-%m-%d"}
-                    ),
-                    pd.DataFrame,
-                ),
-                pd.DataFrame,
-            )
-            check(
-                assert_type(
-                    pd.read_excel(path, parse_dates=["col1"], date_format="%Y-%m-%d"),
-                    pd.DataFrame,
-                ),
-                pd.DataFrame,
-            )
+            ),
+            pd.DataFrame,
+        )

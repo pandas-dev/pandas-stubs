@@ -7,29 +7,23 @@ from contextlib import (
 )
 import os
 import platform
-import sys
 from typing import (
     TYPE_CHECKING,
     Final,
-    TypeVar,
 )
 
+import pandas as pd
+from pandas.util.version import Version
 import pytest
 
-if sys.version_info < (3, 12):
-    import pandas as pd
-else:
-    with pytest.warns(DeprecationWarning, match="datetime.datetime.utcfromtimestamp"):
-        import pandas as pd
-from pandas.util.version import Version
+from pandas._typing import T
 
-_T = TypeVar("_T")
 TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 WINDOWS = os.name == "nt" or "cygwin" in platform.system().lower()
 PD_LTE_21 = Version(pd.__version__) < Version("2.1.999")
 
 
-def check(actual: _T, klass: type, dtype: type | None = None, attr: str = "left") -> _T:
+def check(actual: T, klass: type, dtype: type | None = None, attr: str = "left") -> T:
     if not isinstance(actual, klass):
         raise RuntimeError(f"Expected type '{klass}' but got '{type(actual)}'")
     if dtype is None:

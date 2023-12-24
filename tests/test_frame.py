@@ -14,7 +14,6 @@ from enum import Enum
 import io
 import itertools
 from pathlib import Path
-import platform
 import string
 from typing import (
     TYPE_CHECKING,
@@ -1822,30 +1821,24 @@ def test_frame_getitem_isin() -> None:
 def test_to_excel() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        match="datetime.datetime.utcnow",
-        lower="3.11.99",
-        version_str=platform.python_version(),
-    ):
-        with ensure_clean() as path:
-            df.to_excel(path, engine="openpyxl")
-            check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
-        with ensure_clean() as path:
-            df.to_excel(Path(path), engine="openpyxl")
-            check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
-        with ensure_clean() as path:
-            df.to_excel(path, engine="openpyxl", startrow=1, startcol=1, header=False)
-            check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
-        with ensure_clean() as path:
-            df.to_excel(path, engine="openpyxl", sheet_name="sheet", index=False)
-            check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
-        with ensure_clean() as path:
-            df.to_excel(path, engine="openpyxl", header=["x", "y"])
-            check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
-        with ensure_clean() as path:
-            df.to_excel(path, engine="openpyxl", columns=["col1"])
-            check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
+    with ensure_clean() as path:
+        df.to_excel(path, engine="openpyxl")
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
+    with ensure_clean() as path:
+        df.to_excel(Path(path), engine="openpyxl")
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
+    with ensure_clean() as path:
+        df.to_excel(path, engine="openpyxl", startrow=1, startcol=1, header=False)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
+    with ensure_clean() as path:
+        df.to_excel(path, engine="openpyxl", sheet_name="sheet", index=False)
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
+    with ensure_clean() as path:
+        df.to_excel(path, engine="openpyxl", header=["x", "y"])
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
+    with ensure_clean() as path:
+        df.to_excel(path, engine="openpyxl", columns=["col1"])
+        check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
 
 
 def test_join() -> None:
