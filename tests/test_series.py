@@ -439,6 +439,19 @@ def test_types_max() -> None:
     s.max(skipna=False)
 
 
+def test_types_groupby_level() -> None:
+    # GH 836
+    index = pd.MultiIndex.from_tuples(
+        [(0, 0, 1), (0, 1, 2), (0, 0, 3)], names=["col1", "col2", "col3"]
+    )
+    s = pd.Series([1, 2, 3], index=index)
+    check(
+        assert_type(s.groupby(level=["col1", "col2"]).sum(), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+
+
 def test_types_quantile() -> None:
     s = pd.Series([1, 2, 3, 10])
     s.quantile([0.25, 0.5])

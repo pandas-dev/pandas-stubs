@@ -1073,6 +1073,21 @@ def test_types_groupby_iter() -> None:
     )
 
 
+def test_types_groupby_level() -> None:
+    # GH 836
+    data = {
+        "col1": [0, 0, 0],
+        "col2": [0, 1, 0],
+        "col3": [1, 2, 3],
+        "col4": [1, 2, 3],
+    }
+    df = pd.DataFrame(data=data).set_index(["col1", "col2", "col3"])
+    check(
+        assert_type(df.groupby(level=["col1", "col2"]).sum(), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+
 def test_types_merge() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
     df2 = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [0, 1, 0]})
