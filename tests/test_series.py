@@ -2860,3 +2860,32 @@ def test_round() -> None:
 def test_series_new_empty() -> None:
     # GH 826
     check(assert_type(pd.Series(), "pd.Series[Any]"), pd.Series)
+
+
+def test_series_mapping() -> None:
+    # GH 831
+    check(
+        assert_type(
+            pd.Series(
+                {
+                    pd.Timestamp(2023, 1, 2): "b",
+                }
+            ),
+            "pd.Series[str]",
+        ),
+        pd.Series,
+        str,
+    )
+
+    check(
+        assert_type(
+            pd.Series(
+                {
+                    ("a", "b"): "c",
+                }
+            ),
+            "pd.Series[str]",
+        ),
+        pd.Series,
+        str,
+    )
