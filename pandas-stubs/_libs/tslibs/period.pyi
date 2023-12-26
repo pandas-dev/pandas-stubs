@@ -9,6 +9,7 @@ from pandas import (
     Index,
     PeriodIndex,
     Series,
+    Timedelta,
     TimedeltaIndex,
 )
 from pandas.core.series import (
@@ -26,7 +27,7 @@ from pandas._typing import npt
 class IncompatibleFrequency(ValueError): ...
 
 _PeriodAddSub: TypeAlias = (
-    datetime.timedelta | np.timedelta64 | np.int64 | int | BaseOffset
+    Timedelta | datetime.timedelta | np.timedelta64 | np.int64 | int | BaseOffset
 )
 
 _PeriodFreqHow: TypeAlias = Literal[

@@ -1538,15 +1538,17 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __sub__(
         self: Series[Timestamp],
-        other: timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64,
+        other: Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64,
     ) -> TimestampSeries: ...
     @overload
     def __sub__(
         self: Series[Timedelta],
-        other: timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64,
+        other: Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64,
     ) -> TimedeltaSeries: ...
     @overload
-    def __sub__(self, other: datetime | TimestampSeries) -> TimedeltaSeries: ...
+    def __sub__(
+        self, other: Timestamp | datetime | TimestampSeries
+    ) -> TimedeltaSeries: ...
     @overload
     def __sub__(self, other: num | _ListLike | Series) -> Series: ...
     def __truediv__(self, other: num | _ListLike | Series[S1]) -> Series: ...
@@ -1999,7 +2001,9 @@ class TimestampSeries(Series[Timestamp]):
     def __add__(self, other: TimedeltaSeries | np.timedelta64 | timedelta) -> TimestampSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __radd__(self, other: TimedeltaSeries | np.timedelta64 | timedelta) -> TimestampSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     @overload  # type: ignore[override]
-    def __sub__(self, other: datetime | TimestampSeries) -> TimedeltaSeries: ...
+    def __sub__(
+        self, other: Timestamp | datetime | TimestampSeries
+    ) -> TimedeltaSeries: ...
     @overload
     def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,

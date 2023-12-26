@@ -34,7 +34,7 @@ class TimedeltaIndex(DatetimeTimedeltaMixin[Timedelta], TimedeltaIndexProperties
         cls,
         data: AnyArrayLike
         | list[str]
-        | Sequence[dt.timedelta | np.timedelta64 | float] = ...,
+        | Sequence[dt.timedelta | Timedelta | np.timedelta64 | float] = ...,
         unit: Literal["D", "h", "m", "s", "ms", "us", "ns"] = ...,
         freq: str | BaseOffset = ...,
         closed: object = ...,
@@ -79,7 +79,7 @@ def timedelta_range(
     start: TimedeltaConvertibleTypes = ...,
     end: TimedeltaConvertibleTypes = ...,
     periods: int | None = ...,
-    freq: str | DateOffset | dt.timedelta | None = ...,
+    freq: str | DateOffset | Timedelta | dt.timedelta | None = ...,
     name: Hashable | None = ...,
     closed: Literal["left", "right"] | None = ...,
 ) -> TimedeltaIndex: ...
