@@ -169,21 +169,24 @@ class _DatetimeRoundingMethods(Generic[_DTRoundingMethodReturnType]):
         freq: str | BaseOffset | None,
         ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
         nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
-        | timedelta = ...,
+        | timedelta
+        | Timedelta = ...,
     ) -> _DTRoundingMethodReturnType: ...
     def floor(
         self,
         freq: str | BaseOffset | None,
         ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
         nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
-        | timedelta = ...,
+        | timedelta
+        | Timedelta = ...,
     ) -> _DTRoundingMethodReturnType: ...
     def ceil(
         self,
         freq: str | BaseOffset | None,
         ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
         nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
-        | timedelta = ...,
+        | timedelta
+        | Timedelta = ...,
     ) -> _DTRoundingMethodReturnType: ...
 
 _DTNormalizeReturnType = TypeVar(
@@ -209,7 +212,8 @@ class _DatetimeLikeNoTZMethods(
         tz: tzinfo | str | None,
         ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
         nonexistent: Literal["shift_forward", "shift_backward", "NaT", "raise"]
-        | timedelta = ...,
+        | timedelta
+        | Timedelta = ...,
     ) -> _DTNormalizeReturnType: ...
     def tz_convert(self, tz: tzinfo | str | None) -> _DTNormalizeReturnType: ...
     def normalize(self) -> _DTNormalizeReturnType: ...

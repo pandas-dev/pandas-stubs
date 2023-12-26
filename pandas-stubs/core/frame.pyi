@@ -1940,7 +1940,7 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level | None = ...,
         origin: Timestamp
         | Literal["epoch", "start", "start_day", "end", "end_day"] = ...,
-        offset: dt.timedelta | _str | None = ...,
+        offset: dt.timedelta | Timedelta | _str | None = ...,
         group_keys: _bool = ...,
     ) -> Resampler[DataFrame]: ...
     def rfloordiv(

@@ -7,6 +7,7 @@ from typing import (
 from pandas import (
     DataFrame,
     Series,
+    Timedelta,
 )
 
 from pandas._typing import (
@@ -99,7 +100,7 @@ def merge_asof(
     | tuple[str, str]
     | tuple[None, str]
     | tuple[str, None] = ...,
-    tolerance: int | timedelta | None = ...,
+    tolerance: int | timedelta | Timedelta | None = ...,
     allow_exact_matches: bool = ...,
     direction: Literal["backward", "forward", "nearest"] = ...,
 ) -> DataFrame: ...

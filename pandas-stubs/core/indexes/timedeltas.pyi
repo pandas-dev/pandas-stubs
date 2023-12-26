@@ -21,7 +21,10 @@ from pandas.core.indexes.period import PeriodIndex
 from pandas.core.series import TimedeltaSeries
 from typing_extensions import Self
 
-from pandas._libs import Timedelta
+from pandas._libs import (
+    Timedelta,
+    Timestamp,
+)
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     AnyArrayLike,
@@ -49,9 +52,9 @@ class TimedeltaIndex(DatetimeTimedeltaMixin[Timedelta], TimedeltaIndexProperties
     @overload
     def __add__(self, other: DatetimeIndex) -> DatetimeIndex: ...
     @overload
-    def __add__(self, other: dt.timedelta | Self) -> Self: ...
-    def __radd__(self, other: dt.datetime | DatetimeIndex) -> DatetimeIndex: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
-    def __sub__(self, other: dt.timedelta | Self) -> Self: ...
+    def __add__(self, other: dt.timedelta | Timedelta | Self) -> Self: ...
+    def __radd__(self, other: dt.datetime | Timestamp | DatetimeIndex) -> DatetimeIndex: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __sub__(self, other: dt.timedelta | Timedelta | Self) -> Self: ...
     def __mul__(self, other: num) -> Self: ...
     @overload  # type: ignore[override]
     def __truediv__(self, other: num | Sequence[float]) -> Self: ...
