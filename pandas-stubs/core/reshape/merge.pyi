@@ -1,3 +1,4 @@
+from datetime import timedelta
 from typing import (
     Literal,
     overload,
@@ -6,9 +7,9 @@ from typing import (
 from pandas import (
     DataFrame,
     Series,
+    Timedelta,
 )
 
-from pandas._libs.tslibs import Timedelta
 from pandas._typing import (
     AnyArrayLike,
     HashableT,
@@ -99,7 +100,7 @@ def merge_asof(
     | tuple[str, str]
     | tuple[None, str]
     | tuple[str, None] = ...,
-    tolerance: int | Timedelta | None = ...,
+    tolerance: int | timedelta | Timedelta | None = ...,
     allow_exact_matches: bool = ...,
     direction: Literal["backward", "forward", "nearest"] = ...,
 ) -> DataFrame: ...
