@@ -447,9 +447,23 @@ def test_types_iterrows() -> None:
 
 def test_types_itertuples() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    res1: Iterable[tuple[Any, ...]] = df.itertuples()
-    res2: Iterable[tuple[Any, ...]] = df.itertuples(index=False, name="Foobar")
-    res3: Iterable[tuple[Any, ...]] = df.itertuples(index=False, name=None)
+    check(
+        assert_type(df.itertuples(), Iterable[_PandasNamedTuple]),
+        Iterable,
+        _PandasNamedTuple,
+    )
+    check(
+        assert_type(
+            df.itertuples(index=False, name="Foobar"), Iterable[_PandasNamedTuple]
+        ),
+        Iterable,
+        _PandasNamedTuple,
+    )
+    check(
+        assert_type(df.itertuples(index=False, name=None), Iterable[_PandasNamedTuple]),
+        Iterable,
+        _PandasNamedTuple,
+    )
 
 
 def test_types_sum() -> None:
