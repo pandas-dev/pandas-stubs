@@ -7,8 +7,7 @@ from collections.abc import (
     MutableMapping,
     Sequence,
 )
-import datetime
-import datetime as _dt
+import datetime as dt
 from re import Pattern
 from typing import (
     Any,
@@ -373,7 +372,7 @@ class DataFrame(NDFrame, OpsMixin):
         convert_dates: dict[HashableT1, StataDateFormat] | None = ...,
         write_index: _bool = ...,
         byteorder: Literal["<", ">", "little", "big"] | None = ...,
-        time_stamp: _dt.datetime | None = ...,
+        time_stamp: dt.datetime | None = ...,
         data_label: _str | None = ...,
         variable_labels: dict[HashableT2, str] | None = ...,
         version: Literal[114, 117, 118, 119] | None = ...,
@@ -1565,14 +1564,14 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def at_time(
         self,
-        time: _str | datetime.time,
+        time: _str | dt.time,
         asof: _bool = ...,
         axis: Axis | None = ...,
     ) -> DataFrame: ...
     def between_time(
         self,
-        start_time: _str | datetime.time,
-        end_time: _str | datetime.time,
+        start_time: _str | dt.time,
+        end_time: _str | dt.time,
         axis: Axis | None = ...,
     ) -> DataFrame: ...
     @overload
@@ -1941,7 +1940,7 @@ class DataFrame(NDFrame, OpsMixin):
         level: Level | None = ...,
         origin: Timestamp
         | Literal["epoch", "start", "start_day", "end", "end_day"] = ...,
-        offset: Timedelta | _str | None = ...,
+        offset: dt.timedelta | Timedelta | _str | None = ...,
         group_keys: _bool = ...,
     ) -> Resampler[DataFrame]: ...
     def rfloordiv(
@@ -1968,7 +1967,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def rolling(
         self,
-        window: int | str | _dt.timedelta | BaseOffset | BaseIndexer,
+        window: int | str | dt.timedelta | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         on: Hashable | None = ...,
@@ -1982,7 +1981,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def rolling(
         self,
-        window: int | str | _dt.timedelta | BaseOffset | BaseIndexer,
+        window: int | str | dt.timedelta | BaseOffset | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         on: Hashable | None = ...,
@@ -2217,8 +2216,8 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def truncate(
         self,
-        before: datetime.date | _str | int | None = ...,
-        after: datetime.date | _str | int | None = ...,
+        before: dt.date | _str | int | None = ...,
+        after: dt.date | _str | int | None = ...,
         axis: Axis | None = ...,
         copy: _bool = ...,
     ) -> DataFrame: ...

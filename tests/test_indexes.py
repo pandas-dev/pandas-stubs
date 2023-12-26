@@ -1048,3 +1048,15 @@ def test_timedelta_div() -> None:
         [1] / index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
         1 // index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
         [1] // index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+
+
+def test_datetime_operators_builtin() -> None:
+    time = pd.date_range("2022-01-01", "2022-01-31", freq="D")
+    check(assert_type(time + dt.timedelta(0), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(time - dt.timedelta(0), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(time - dt.datetime.now(), pd.TimedeltaIndex), pd.TimedeltaIndex)
+
+    delta = check(assert_type(time - time, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(delta + dt.timedelta(0), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(dt.datetime.now() + delta, pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(delta - dt.timedelta(0), pd.TimedeltaIndex), pd.TimedeltaIndex)

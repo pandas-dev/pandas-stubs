@@ -1415,6 +1415,15 @@ def test_merge_asof() -> None:
     check(
         assert_type(
             pd.merge_asof(
+                trades, quotes, on="time", by="ticker", tolerance=dt.timedelta(1)
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.merge_asof(
                 trades,
                 quotes,
                 on="time",

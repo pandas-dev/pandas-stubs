@@ -373,7 +373,10 @@ def test_series_dt_accessors() -> None:
         assert_type(s0.dt.tz_localize(None), "TimestampSeries"), pd.Series, pd.Timestamp
     )
     check(
-        assert_type(s0.dt.tz_localize(pytz.UTC), "TimestampSeries"),
+        assert_type(
+            s0.dt.tz_localize(pytz.UTC, nonexistent=dt.timedelta(0)),
+            "TimestampSeries",
+        ),
         pd.Series,
         pd.Timestamp,
     )
@@ -408,9 +411,21 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s0_local.dt.tz, Optional[dt.tzinfo]), dt.tzinfo)
     check(assert_type(s0.dt.normalize(), "TimestampSeries"), pd.Series, pd.Timestamp)
     check(assert_type(s0.dt.strftime("%Y"), "pd.Series[str]"), pd.Series, str)
-    check(assert_type(s0.dt.round("D"), "TimestampSeries"), pd.Series, pd.Timestamp)
-    check(assert_type(s0.dt.floor("D"), "TimestampSeries"), pd.Series, pd.Timestamp)
-    check(assert_type(s0.dt.ceil("D"), "TimestampSeries"), pd.Series, pd.Timestamp)
+    check(
+        assert_type(s0.dt.round("D", nonexistent=dt.timedelta(1)), "TimestampSeries"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(s0.dt.floor("D", nonexistent=dt.timedelta(1)), "TimestampSeries"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(s0.dt.ceil("D", nonexistent=dt.timedelta(1)), "TimestampSeries"),
+        pd.Series,
+        pd.Timestamp,
+    )
     check(assert_type(s0.dt.month_name(), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s0.dt.day_name(), "pd.Series[str]"), pd.Series, str)
 
@@ -1231,6 +1246,17 @@ def test_date_range_unit():
         assert_type(
             pd.date_range("1/1/2022", "2/1/2022", unit="ns"),
             pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+
+
+def test_DatetimeIndex_sub_timedelta() -> None:
+    # GH838
+    check(
+        assert_type(
+            pd.date_range("2023-01-01", periods=10, freq="1D") - dt.timedelta(days=1),
+            "pd.DatetimeIndex",
         ),
         pd.DatetimeIndex,
     )
