@@ -20,7 +20,6 @@ from typing import (
     Any,
     Callable,
     Generic,
-    TypeAlias,
     TypedDict,
     TypeVar,
     Union,
@@ -34,7 +33,10 @@ from pandas._testing import ensure_clean
 from pandas.core.resample import Resampler  # noqa: F401
 from pandas.core.series import Series
 import pytest
-from typing_extensions import assert_type
+from typing_extensions import (
+    TypeAlias,
+    assert_type,
+)
 import xarray as xr
 
 from pandas._typing import Scalar
