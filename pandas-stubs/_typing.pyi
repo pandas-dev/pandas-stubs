@@ -32,6 +32,7 @@ from typing_extensions import TypeAlias
 
 from pandas._libs.interval import Interval
 from pandas._libs.tslibs import (
+    BaseOffset,
     Period,
     Timedelta,
     Timestamp,
@@ -527,7 +528,8 @@ S1 = TypeVar(
     | datetime.timedelta  # includes pd.Timedelta
     | Period
     | Interval
-    | CategoricalDtype,
+    | CategoricalDtype
+    | BaseOffset,
 )
 
 IndexingInt: TypeAlias = (
