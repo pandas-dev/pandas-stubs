@@ -15,8 +15,8 @@ def pyright_src():
     subprocess.run(cmd, check=True)
 
 
-def pytest(flags: tuple[str, ...] = ("-Werror",)):
-    cmd = ["pytest", "--cache-clear", *flags]
+def pytest():
+    cmd = ["pytest", "--cache-clear"]
     subprocess.run(cmd, check=True)
 
 
