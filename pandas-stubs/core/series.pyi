@@ -228,6 +228,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: DatetimeIndex
         | Sequence[np.datetime64 | datetime]
+        | dict[HashableT1, np.datetime64 | datetime]
         | np.datetime64
         | datetime,
         index: Axes | None = ...,
@@ -261,6 +262,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: TimedeltaIndex
         | Sequence[np.timedelta64 | timedelta]
+        | dict[HashableT1, np.timedelta64 | timedelta]
         | np.timedelta64
         | timedelta,
         index: Axes | None = ...,
@@ -274,7 +276,8 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: IntervalIndex[Interval[_OrderableT]]
         | Interval[_OrderableT]
-        | Sequence[Interval[_OrderableT]],
+        | Sequence[Interval[_OrderableT]]
+        | dict[HashableT1, Interval[_OrderableT]],
         index: Axes | None = ...,
         *,
         dtype: Literal["Interval"] = ...,
@@ -284,7 +287,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: Scalar | _ListLike | dict[int, Any] | dict[_str, Any] | None,
+        data: Scalar | _ListLike | dict[HashableT1, Any] | None,
         index: Axes | None = ...,
         *,
         dtype: type[S1],
@@ -294,7 +297,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: S1 | _ListLike[S1] | dict[int, S1] | dict[_str, S1],
+        data: S1 | _ListLike[S1] | dict[HashableT1, S1],
         index: Axes | None = ...,
         *,
         dtype: Dtype = ...,
@@ -304,7 +307,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: Scalar | _ListLike | dict[int, Any] | dict[_str, Any] | None = ...,
+        data: Scalar | _ListLike | dict[HashableT1, Any] | None = ...,
         index: Axes | None = ...,
         *,
         dtype: Dtype = ...,
