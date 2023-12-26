@@ -217,7 +217,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     ) -> None: ...
 
 _ListLike: TypeAlias = (
-    ArrayLike | dict[_str, np.ndarray] | Sequence[S1] | IndexOpsMixin[S1]
+    ArrayLike | dict[str, np.ndarray] | Sequence[S1] | IndexOpsMixin[S1]
 )
 
 class Series(IndexOpsMixin[S1], NDFrame):
@@ -228,7 +228,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: DatetimeIndex
         | Sequence[np.datetime64 | datetime]
-        | Mapping[HashableT1, np.datetime64 | datetime]
+        | dict[HashableT1, np.datetime64 | datetime]
         | np.datetime64
         | datetime,
         index: Axes | None = ...,
@@ -240,7 +240,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(  # type: ignore[overload-overlap]
         cls,
-        data: Iterable,
+        data: _ListLike,
         index: Axes | None = ...,
         *,
         dtype: TimestampDtypeArg,
@@ -262,7 +262,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: TimedeltaIndex
         | Sequence[np.timedelta64 | timedelta]
-        | Mapping[HashableT1, np.timedelta64 | timedelta]
+        | dict[HashableT1, np.timedelta64 | timedelta]
         | np.timedelta64
         | timedelta,
         index: Axes | None = ...,
@@ -277,7 +277,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         data: IntervalIndex[Interval[_OrderableT]]
         | Interval[_OrderableT]
         | Sequence[Interval[_OrderableT]]
-        | Mapping[HashableT1, Interval[_OrderableT]],
+        | dict[HashableT1, Interval[_OrderableT]],
         index: Axes | None = ...,
         *,
         dtype: Literal["Interval"] = ...,
@@ -287,7 +287,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: Scalar | Iterable | None,
+        data: Scalar | _ListLike | dict[HashableT1, Any] | None,
         index: Axes | None = ...,
         *,
         dtype: type[S1],
@@ -297,7 +297,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: S1 | Mapping[HashableT1, S1] | _ListLike[S1],
+        data: S1 | _ListLike[S1] | dict[HashableT1, S1],
         index: Axes | None = ...,
         *,
         dtype: Dtype = ...,
@@ -307,7 +307,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: Scalar | Iterable | None = ...,
+        data: Scalar | _ListLike | dict[HashableT1, Any] | None = ...,
         index: Axes | None = ...,
         *,
         dtype: Dtype = ...,
