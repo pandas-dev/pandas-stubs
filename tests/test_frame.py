@@ -2992,4 +2992,4 @@ def test_itertuples() -> None:
 
     for item in df.itertuples():
         check(assert_type(item, _PandasNamedTuple), tuple)
-        assert_type(item.a, Any)
+        assert_type(item.a, Scalar)
