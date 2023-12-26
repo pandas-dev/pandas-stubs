@@ -1359,6 +1359,7 @@ def test_types_resample() -> None:
     with pytest_warns_bounded(FutureWarning, "'M' is deprecated", lower="2.1.99"):
         df.resample("M", on="date")
     df.resample("20min", origin="epoch", offset=pd.Timedelta(2, "minutes"), on="date")
+    df.resample("20min", origin="epoch", offset=datetime.timedelta(2), on="date")
 
 
 def test_types_to_dict() -> None:
@@ -1699,31 +1700,43 @@ def test_read_csv() -> None:
             pd.DataFrame,
         )
         parse_dates_2 = {"combined_date": ["Year", "Month", "Day"]}
-        check(
-            assert_type(pd.read_csv(path, parse_dates=parse_dates_2), pd.DataFrame),
-            pd.DataFrame,
-        )
+        with pytest_warns_bounded(
+            FutureWarning, "Support for nested sequences", lower="2.1.99"
+        ):
+            check(
+                assert_type(pd.read_csv(path, parse_dates=parse_dates_2), pd.DataFrame),
+                pd.DataFrame,
+            )
         parse_dates_3 = {"combined_date": [1, 2, 3]}
-        check(
-            assert_type(pd.read_csv(path, parse_dates=parse_dates_3), pd.DataFrame),
-            pd.DataFrame,
-        )
+        with pytest_warns_bounded(
+            FutureWarning, "Support for nested sequences", lower="2.1.99"
+        ):
+            check(
+                assert_type(pd.read_csv(path, parse_dates=parse_dates_3), pd.DataFrame),
+                pd.DataFrame,
+            )
         # MyPy calls this Dict[str, object] by default which necessitates the explicit annotation (Pyright does not)
         parse_dates_4: dict[str, list[str | int]] = {"combined_date": [1, "Month", 3]}
-        check(
-            assert_type(pd.read_csv(path, parse_dates=parse_dates_4), pd.DataFrame),
-            pd.DataFrame,
-        )
+        with pytest_warns_bounded(
+            FutureWarning, "Support for nested sequences", lower="2.1.99"
+        ):
+            check(
+                assert_type(pd.read_csv(path, parse_dates=parse_dates_4), pd.DataFrame),
+                pd.DataFrame,
+            )
         parse_dates_5 = [0]
         check(
             assert_type(pd.read_csv(path, parse_dates=parse_dates_5), pd.DataFrame),
             pd.DataFrame,
         )
         parse_dates_6 = [[1, 2, 3]]
-        check(
-            assert_type(pd.read_csv(path, parse_dates=parse_dates_6), pd.DataFrame),
-            pd.DataFrame,
-        )
+        with pytest_warns_bounded(
+            FutureWarning, "Support for nested sequences", lower="2.1.99"
+        ):
+            check(
+                assert_type(pd.read_csv(path, parse_dates=parse_dates_6), pd.DataFrame),
+                pd.DataFrame,
+            )
 
 
 def test_groupby_series_methods() -> None:
