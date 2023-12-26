@@ -33,7 +33,10 @@ from pandas._testing import ensure_clean
 from pandas.core.resample import Resampler  # noqa: F401
 from pandas.core.series import Series
 import pytest
-from typing_extensions import assert_type
+from typing_extensions import (
+    TypeAlias,
+    assert_type,
+)
 import xarray as xr
 
 from pandas._typing import Scalar
@@ -46,6 +49,11 @@ from tests import (
 
 from pandas.io.formats.style import Styler
 from pandas.io.parsers import TextFileReader
+
+if TYPE_CHECKING:
+    from pandas.core.frame import _PandasNamedTuple
+else:
+    _PandasNamedTuple: TypeAlias = tuple
 
 DF = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
@@ -439,9 +447,23 @@ def test_types_iterrows() -> None:
 
 def test_types_itertuples() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    res1: Iterable[tuple[Any, ...]] = df.itertuples()
-    res2: Iterable[tuple[Any, ...]] = df.itertuples(index=False, name="Foobar")
-    res3: Iterable[tuple[Any, ...]] = df.itertuples(index=False, name=None)
+    check(
+        assert_type(df.itertuples(), Iterable[_PandasNamedTuple]),
+        Iterable,
+        _PandasNamedTuple,
+    )
+    check(
+        assert_type(
+            df.itertuples(index=False, name="Foobar"), Iterable[_PandasNamedTuple]
+        ),
+        Iterable,
+        _PandasNamedTuple,
+    )
+    check(
+        assert_type(df.itertuples(index=False, name=None), Iterable[_PandasNamedTuple]),
+        Iterable,
+        _PandasNamedTuple,
+    )
 
 
 def test_types_sum() -> None:
@@ -2962,3 +2984,12 @@ def test_frame_setitem_na() -> None:
     df["x"] = df["y"] + pd.Timedelta(days=3)
     df.loc[ind, :] = pd.NaT
     df.iloc[[0, 2], :] = pd.NaT
+
+
+def test_itertuples() -> None:
+    # GH 822
+    df = pd.DataFrame({"a": [1, 2, 3, 4], "b": [5, 6, 7, 8]})
+
+    for item in df.itertuples():
+        check(assert_type(item, _PandasNamedTuple), tuple)
+        assert_type(item.a, Scalar)
