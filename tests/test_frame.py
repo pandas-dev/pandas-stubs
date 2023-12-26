@@ -1359,6 +1359,7 @@ def test_types_resample() -> None:
     with pytest_warns_bounded(FutureWarning, "'M' is deprecated", lower="2.1.99"):
         df.resample("M", on="date")
     df.resample("20min", origin="epoch", offset=pd.Timedelta(2, "minutes"), on="date")
+    df.resample("20min", origin="epoch", offset=datetime.timedelta(2), on="date")
 
 
 def test_types_to_dict() -> None:

@@ -994,6 +994,7 @@ def test_types_resample() -> None:
     s.resample("3min").sum()
     # origin and offset params added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
     s.resample("20min", origin="epoch", offset=pd.Timedelta(value=2, unit="minutes"))
+    s.resample("20min", origin=datetime.datetime.now(), offset=datetime.timedelta(1))
 
 
 # set_flags() method added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
@@ -2860,3 +2861,27 @@ def test_round() -> None:
 def test_series_new_empty() -> None:
     # GH 826
     check(assert_type(pd.Series(), "pd.Series[Any]"), pd.Series)
+
+
+def test_timedeltaseries_operators() -> None:
+    series = pd.Series([pd.Timedelta(days=1)])
+    check(
+        assert_type(series + datetime.datetime.now(), TimestampSeries),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(series + datetime.timedelta(1), TimedeltaSeries),
+        pd.Series,
+        pd.Timedelta,
+    )
+    check(
+        assert_type(datetime.datetime.now() + series, TimestampSeries),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(series - datetime.timedelta(1), TimedeltaSeries),
+        pd.Series,
+        pd.Timedelta,
+    )
