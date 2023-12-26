@@ -20,6 +20,7 @@ from typing import (
     Any,
     Callable,
     Generic,
+    TypeAlias,
     TypedDict,
     TypeVar,
     Union,
@@ -46,6 +47,11 @@ from tests import (
 
 from pandas.io.formats.style import Styler
 from pandas.io.parsers import TextFileReader
+
+if TYPE_CHECKING:
+    from pandas.core.frame import _PandasNamedTuple
+else:
+    _PandasNamedTuple: TypeAlias = tuple
 
 DF = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
@@ -2956,5 +2962,5 @@ def test_itertuples() -> None:
     df = pd.DataFrame({"a": [1, 2, 3, 4], "b": [5, 6, 7, 8]})
 
     for item in df.itertuples():
-        check(assert_type(item, Any), tuple)
+        check(assert_type(item, _PandasNamedTuple), tuple)
         assert_type(item.a, Any)
