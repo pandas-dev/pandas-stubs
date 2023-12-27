@@ -19,7 +19,10 @@ from pandas import Index
 import pandas.core.indexing as indexing
 from pandas.core.series import Series
 import sqlalchemy.engine
-from typing_extensions import Self
+from typing_extensions import (
+    Concatenate,
+    Self,
+)
 
 from pandas._typing import (
     S1,
@@ -40,6 +43,7 @@ from pandas._typing import (
     IgnoreRaise,
     IndexLabel,
     Level,
+    P,
     ReplaceMethod,
     SortKind,
     StorageOptions,
@@ -352,8 +356,19 @@ class NDFrame(indexing.IndexingMixin):
     ) -> Self: ...
     def head(self, n: int = ...) -> Self: ...
     def tail(self, n: int = ...) -> Self: ...
+    @overload
     def pipe(
-        self, func: Callable[..., T] | tuple[Callable[..., T], str], *args, **kwargs
+        self,
+        func: Callable[Concatenate[Self, P], T],
+        *args: P.args,
+        **kwargs: P.kwargs,
+    ) -> T: ...
+    @overload
+    def pipe(
+        self,
+        func: tuple[Callable[..., T], str],
+        *args: Any,
+        **kwargs: Any,
     ) -> T: ...
     def __finalize__(self, other, method=..., **kwargs) -> Self: ...
     def __setattr__(self, name: _str, value) -> None: ...

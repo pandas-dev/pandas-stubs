@@ -1436,21 +1436,123 @@ def test_pipe() -> None:
             .pipe(foo)
         )
 
+    df = pd.DataFrame({"a": [1], "b": [2]})
     check(assert_type(val, pd.DataFrame), pd.DataFrame)
 
-    check(assert_type(pd.DataFrame({"a": [1]}).pipe(foo), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.pipe(foo), pd.DataFrame), pd.DataFrame)
 
     def bar(val: Styler) -> Styler:
         return val
 
-    check(
-        assert_type(pd.DataFrame({"a": [1], "b": [1]}).style.pipe(bar), Styler), Styler
-    )
+    check(assert_type(df.style.pipe(bar), Styler), Styler)
 
     def baz(val: Styler) -> str:
         return val.to_latex()
 
-    check(assert_type(pd.DataFrame({"a": [1], "b": [1]}).style.pipe(baz), str), str)
+    check(assert_type(df.style.pipe(baz), str), str)
+
+    def qux(
+        df: pd.DataFrame,
+        positional_only: int,
+        /,
+        argument_1: list[float],
+        argument_2: str,
+        *,
+        keyword_only: tuple[int, int],
+    ) -> pd.DataFrame:
+        return pd.DataFrame(df)
+
+    check(
+        assert_type(
+            df.pipe(qux, 1, [1.0, 2.0], argument_2="hi", keyword_only=(1, 2)),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.pipe(
+            qux,
+            "a",  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+            [1.0, 2.0],
+            argument_2="hi",
+            keyword_only=(1, 2),
+        )
+        df.pipe(
+            qux,
+            1,
+            [1.0, "b"],  # type: ignore[list-item] # pyright: ignore[reportGeneralTypeIssues]
+            argument_2="hi",
+            keyword_only=(1, 2),
+        )
+        df.pipe(
+            qux,
+            1,
+            [1.0, 2.0],
+            argument_2=11,  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+            keyword_only=(1, 2),
+        )
+        df.pipe(
+            qux,
+            1,
+            [1.0, 2.0],
+            argument_2="hi",
+            keyword_only=(1,),  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+        )
+        df.pipe(  # type: ignore[call-arg]
+            qux,
+            1,
+            [1.0, 2.0],
+            argument_3="hi",  # pyright: ignore[reportGeneralTypeIssues]
+            keyword_only=(1, 2),
+        )
+        df.pipe(  # type: ignore[misc]
+            qux,
+            1,
+            [1.0, 2.0],
+            11,  # type: ignore[arg-type]
+            (1, 2),  # pyright: ignore[reportGeneralTypeIssues]
+        )
+        df.pipe(  # type: ignore[call-arg]
+            qux,
+            positional_only=1,  # pyright: ignore[reportGeneralTypeIssues]
+            argument_1=[1.0, 2.0],
+            argument_2=11,  # type: ignore[arg-type]
+            keyword_only=(1, 2),
+        )
+
+    def dataframe_not_first_arg(x: int, df: pd.DataFrame) -> pd.DataFrame:
+        return df
+
+    check(
+        assert_type(
+            df.pipe(
+                (
+                    dataframe_not_first_arg,
+                    "df",
+                ),
+                1,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.pipe(
+            (
+                dataframe_not_first_arg,  # type: ignore[arg-type]
+                1,  # pyright: ignore[reportGeneralTypeIssues]
+            ),
+            1,
+        )
+        df.pipe(
+            (  # pyright: ignore[reportGeneralTypeIssues]
+                1,  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+                "df",
+            ),
+            1,
+        )
 
 
 # set_flags() method added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html

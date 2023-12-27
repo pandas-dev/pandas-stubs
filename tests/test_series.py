@@ -2914,3 +2914,113 @@ def test_timedeltaseries_operators() -> None:
         pd.Series,
         pd.Timedelta,
     )
+
+
+def test_pipe() -> None:
+    ser = pd.Series(range(10))
+
+    def first_arg_series(
+        ser: pd.Series,
+        positional_only: int,
+        /,
+        argument_1: list[float],
+        argument_2: str,
+        *,
+        keyword_only: tuple[int, int],
+    ) -> pd.Series:
+        return ser
+
+    check(
+        assert_type(
+            ser.pipe(
+                first_arg_series,
+                1,
+                [1.0, 2.0],
+                argument_2="hi",
+                keyword_only=(1, 2),
+            ),
+            pd.Series,
+        ),
+        pd.Series,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        ser.pipe(
+            first_arg_series,
+            "a",  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+            [1.0, 2.0],
+            argument_2="hi",
+            keyword_only=(1, 2),
+        )
+        ser.pipe(
+            first_arg_series,
+            1,
+            [1.0, "b"],  # type: ignore[list-item] # pyright: ignore[reportGeneralTypeIssues]
+            argument_2="hi",
+            keyword_only=(1, 2),
+        )
+        ser.pipe(
+            first_arg_series,
+            1,
+            [1.0, 2.0],
+            argument_2=11,  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+            keyword_only=(1, 2),
+        )
+        ser.pipe(
+            first_arg_series,
+            1,
+            [1.0, 2.0],
+            argument_2="hi",
+            keyword_only=(1,),  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+        )
+        ser.pipe(  # type: ignore[call-arg]
+            first_arg_series,
+            1,
+            [1.0, 2.0],
+            argument_3="hi",  # pyright: ignore[reportGeneralTypeIssues]
+            keyword_only=(1, 2),
+        )
+        ser.pipe(  # type: ignore[misc]
+            first_arg_series,
+            1,
+            [1.0, 2.0],
+            11,  # type: ignore[arg-type]
+            (1, 2),  # pyright: ignore[reportGeneralTypeIssues]
+        )
+        ser.pipe(  # type: ignore[call-arg]
+            first_arg_series,
+            positional_only=1,  # pyright: ignore[reportGeneralTypeIssues]
+            argument_1=[1.0, 2.0],
+            argument_2=11,  # type: ignore[arg-type]
+            keyword_only=(1, 2),
+        )
+
+    def first_arg_not_series(argument_1: int, ser: pd.Series) -> pd.Series:
+        return ser
+
+    check(
+        assert_type(
+            ser.pipe(
+                (first_arg_not_series, "ser"),
+                1,
+            ),
+            pd.Series,
+        ),
+        pd.Series,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        ser.pipe(
+            (
+                first_arg_not_series,  # type: ignore[arg-type]
+                1,  # pyright: ignore[reportGeneralTypeIssues]
+            ),
+            1,
+        )
+        ser.pipe(
+            (
+                1,  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+                "df",
+            ),
+            1,
+        )
