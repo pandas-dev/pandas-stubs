@@ -50,7 +50,7 @@ def cut(
     ordered: bool = ...,
 ) -> tuple[npt.NDArray[np.intp], IntervalIndex[IntervalT]]: ...
 @overload
-def cut(  # type: ignore[overload-overlap]
+def cut(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     x: TimestampSeries,
     bins: int
     | TimestampSeries
