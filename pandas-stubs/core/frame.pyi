@@ -174,7 +174,7 @@ class _LocIndexerFrame(_LocIndexer):
         ],
     ) -> DataFrame: ...
     @overload
-    def __getitem__(
+    def __getitem__(  # pyright: ignore[reportOverlappingOverload]
         self,
         idx: tuple[
             int | StrLike | tuple[Scalar, ...] | Callable[[DataFrame], ScalarT],
@@ -556,7 +556,7 @@ class DataFrame(NDFrame, OpsMixin):
     def T(self) -> DataFrame: ...
     def __getattr__(self, name: str) -> Series: ...
     @overload
-    def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap]
+    def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __getitem__(self, key: Iterable[Hashable] | slice) -> DataFrame: ...
     @overload

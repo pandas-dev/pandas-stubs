@@ -79,7 +79,7 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
     ) -> IntervalIndex[IntervalT]: ...
     @overload
     @classmethod
-    def from_breaks(
+    def from_breaks(  # pyright: ignore[reportOverlappingOverload]
         cls,
         breaks: _EdgesInt,
         closed: IntervalClosedType = ...,
@@ -119,7 +119,7 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
     ) -> IntervalIndex[Interval[pd.Timedelta]]: ...
     @overload
     @classmethod
-    def from_arrays(
+    def from_arrays(  # pyright: ignore[reportOverlappingOverload]
         cls,
         left: _EdgesInt,
         right: _EdgesInt,
