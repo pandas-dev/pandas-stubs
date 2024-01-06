@@ -588,7 +588,7 @@ def test_series_groupby_rolling() -> None:
     iterator = iter(GB_S.rolling(1))
     check(assert_type(iterator, "Iterator[Series[float]]"), Iterator)
     check(assert_type(next(iterator), "Series[float]"), Series, float)
-    check(assert_type(list(GB_S.rolling(1)), list[Series[float]]), list, Series)
+    check(assert_type(list(GB_S.rolling(1)), "list[Series[float]]"), list, Series)
 
 
 def test_frame_groupby_expanding() -> None:
@@ -786,7 +786,7 @@ def test_series_groupby_expanding() -> None:
     iterator = iter(GB_S.expanding(1))
     check(assert_type(iterator, "Iterator[Series[float]]"), Iterator)
     check(assert_type(next(iterator), "Series[float]"), Series, float)
-    check(assert_type(list(GB_S.expanding(1)), list[Series[float]]), list, Series)
+    check(assert_type(list(GB_S.expanding(1)), "list[Series[float]]"), list, Series)
 
 
 def test_frame_groupby_ewm() -> None:
@@ -944,4 +944,4 @@ def test_series_groupby_ewm() -> None:
     iterator = iter(GB_S.ewm(1))
     check(assert_type(iterator, "Iterator[Series[float]]"), Iterator)
     check(assert_type(next(iterator), "Series[float]"), Series, float)
-    check(assert_type(list(GB_S.ewm(1)), list[Series[float]]), list, Series)
+    check(assert_type(list(GB_S.ewm(1)), "list[Series[float]]"), list, Series)
