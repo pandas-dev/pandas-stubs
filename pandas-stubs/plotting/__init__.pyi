@@ -1,6 +1,7 @@
 from pandas.plotting._core import (
     PlotAccessor as PlotAccessor,
     boxplot as boxplot,
+    boxplot_frame_groupby as boxplot_frame_groupby,
 )
 from pandas.plotting._misc import (
     andrews_curves as andrews_curves,

@@ -1,7 +1,9 @@
 from collections.abc import (
     Callable,
+    Hashable,
     Iterable,
     Iterator,
+    Mapping,
     Sequence,
 )
 from typing import (
@@ -9,142 +11,181 @@ from typing import (
     Generic,
     Literal,
     NamedTuple,
+    TypeVar,
+    final,
     overload,
 )
 
-from matplotlib.axes import (
-    Axes as PlotAxes,
-    SubplotBase as AxesSubplot,
-)
+from matplotlib.axes import Axes as PlotAxes
+import numpy as np
 from pandas.core.frame import DataFrame
-from pandas.core.generic import NDFrame
-from pandas.core.groupby.groupby import (  # , get_groupby as get_groupby
-    GroupBy as GroupBy,
+from pandas.core.groupby.groupby import (
+    GroupBy,
+    GroupByPlot,
 )
-from pandas.core.groupby.grouper import Grouper
 from pandas.core.series import Series
-from typing_extensions import TypeAlias
+from typing_extensions import (
+    Self,
+    TypeAlias,
+)
 
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     S1,
     AggFuncTypeBase,
     AggFuncTypeFrame,
+    ArrayLike,
     Axis,
     ByT,
+    CorrelationMethod,
+    Dtype,
+    FillnaOptions,
+    IndexLabel,
     Level,
     ListLike,
-    RandomState,
     Scalar,
+    TakeIndexer,
+    WindowingEngine,
+    WindowingEngineKwargs,
 )
 
+from pandas.plotting import boxplot_frame_groupby
+
 AggScalar: TypeAlias = str | Callable[..., Any]
-ScalarResult = ...
+ScalarResult = TypeVar("ScalarResult")  # noqa: PYI001
 
 class NamedAgg(NamedTuple):
-    column: str = ...
-    aggfunc: AggScalar = ...
+    column: str
+    aggfunc: AggScalar
 
-def generate_property(name: str, klass: type[NDFrame]): ...
-
-class SeriesGroupBy(GroupBy, Generic[S1, ByT]):
-    def any(self, skipna: bool = ...) -> Series[bool]: ...
-    def all(self, skipna: bool = ...) -> Series[bool]: ...
-    def apply(self, func, *args, **kwargs) -> Series: ...
+class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
     @overload
-    def aggregate(self, func: list[AggFuncTypeBase], *args, **kwargs) -> DataFrame: ...
+    def aggregate(
+        self,
+        func: list[AggFuncTypeBase],
+        *args,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
+        **kwargs,
+    ) -> DataFrame: ...
     @overload
-    def aggregate(self, func: AggFuncTypeBase, *args, **kwargs) -> Series: ...
+    def aggregate(
+        self,
+        func: AggFuncTypeBase | None = None,
+        *args,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
+        **kwargs,
+    ) -> Series: ...
     agg = aggregate
-    def transform(self, func: Callable | str, *args, **kwargs) -> Series: ...
-    def filter(self, func, dropna: bool = ..., *args, **kwargs): ...
-    def nunique(self, dropna: bool = ...) -> Series: ...
-    def describe(self, **kwargs) -> DataFrame: ...
+    def transform(
+        self,
+        func: Callable | str,
+        *args,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
+        **kwargs,
+    ) -> Series: ...
+    def filter(
+        self, func: Callable | str, dropna: bool = True, *args, **kwargs
+    ) -> Series: ...
+    def nunique(self, dropna: bool = True) -> Series[int]: ...
+    # describe delegates to super() method but here it has keyword-only parameters
+    def describe(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+        self,
+        *,
+        percentiles: Iterable[float] | None = None,
+        include: Literal["all"] | list[Dtype] | None = None,
+        exclude: list[Dtype] | None = None,
+    ) -> DataFrame: ...
     @overload
     def value_counts(
         self,
-        normalize: Literal[False] = ...,
-        sort: bool = ...,
-        ascending: bool = ...,
-        bins=...,
-        dropna: bool = ...,
+        normalize: Literal[False] = False,
+        sort: bool = True,
+        ascending: bool = False,
+        bins=None,
+        dropna: bool = True,
     ) -> Series[int]: ...
     @overload
     def value_counts(
         self,
         normalize: Literal[True],
-        sort: bool = ...,
-        ascending: bool = ...,
-        bins=...,
-        dropna: bool = ...,
+        sort: bool = True,
+        ascending: bool = False,
+        bins=None,
+        dropna: bool = True,
     ) -> Series[float]: ...
-    def count(self) -> Series[int]: ...
-    def pct_change(
+    def fillna(
         self,
-        periods: int = ...,
-        fill_method: str = ...,
-        limit=...,
-        freq=...,
-        axis: Axis = ...,
-    ) -> Series[float]: ...
-    # Overrides and others from original pylance stubs
-    @property
-    def is_monotonic_increasing(self) -> bool: ...
-    @property
-    def is_monotonic_decreasing(self) -> bool: ...
-    def bfill(self, limit: int | None = ...) -> Series[S1]: ...
-    def cummax(self, axis: Axis = ..., **kwargs) -> Series[S1]: ...
-    def cummin(self, axis: Axis = ..., **kwargs) -> Series[S1]: ...
-    def cumprod(self, axis: Axis = ..., **kwargs) -> Series[S1]: ...
-    def cumsum(self, axis: Axis = ..., **kwargs) -> Series[S1]: ...
-    def ffill(self, limit: int | None = ...) -> Series[S1]: ...
-    def first(self, **kwargs) -> Series[S1]: ...
-    def head(self, n: int = ...) -> Series[S1]: ...
-    def last(self, **kwargs) -> Series[S1]: ...
-    def max(self, **kwargs) -> Series[S1]: ...
-    def mean(self, **kwargs) -> Series[S1]: ...
-    def median(self, **kwargs) -> Series[S1]: ...
-    def min(self, **kwargs) -> Series[S1]: ...
-    def nlargest(self, n: int = ..., keep: str = ...) -> Series[S1]: ...
-    def nsmallest(self, n: int = ..., keep: str = ...) -> Series[S1]: ...
-    def nth(self, n: int | Sequence[int], dropna: str | None = ...) -> Series[S1]: ...
-    def sum(
+        value: object | ArrayLike | None = None,
+        method: FillnaOptions | None = None,
+        axis: Axis | None | NoDefault = ...,
+        inplace: bool = False,
+        limit: int | None = None,
+        downcast: dict | None | NoDefault = ...,
+    ) -> Series[S1] | None: ...
+    def take(
         self,
-        numeric_only: bool = ...,
-        min_count: int = ...,
-        engine=...,
-        engine_kwargs=...,
+        indices: TakeIndexer,
+        axis: Axis | NoDefault = ...,
+        **kwargs,
     ) -> Series[S1]: ...
-    def prod(self, numeric_only: bool = ..., min_count: int = ...) -> Series[S1]: ...
-    def sem(self, ddof: int = ..., numeric_only: bool = ...) -> Series[float]: ...
-    def std(self, ddof: int = ..., numeric_only: bool = ...) -> Series[float]: ...
-    def var(self, ddof: int = ..., numeric_only: bool = ...) -> Series[float]: ...
-    def tail(self, n: int = ...) -> Series[S1]: ...
-    def unique(self) -> Series: ...
+    def skew(
+        self,
+        axis: Axis | NoDefault = ...,
+        skipna: bool = True,
+        numeric_only: bool = False,
+        **kwargs,
+    ) -> Series: ...
+    @property
+    def plot(self) -> GroupByPlot[Self]: ...
+    def nlargest(
+        self, n: int = 5, keep: Literal["first", "last", "all"] = "first"
+    ) -> Series[S1]: ...
+    def nsmallest(
+        self, n: int = 5, keep: Literal["first", "last", "all"] = "first"
+    ) -> Series[S1]: ...
+    def idxmin(self, axis: Axis | NoDefault = ..., skipna: bool = True) -> Series: ...
+    def idxmax(self, axis: Axis | NoDefault = ..., skipna: bool = True) -> Series: ...
+    def corr(
+        self,
+        other: Series,
+        method: CorrelationMethod = "pearson",
+        min_periods: int | None = None,
+    ) -> Series: ...
+    def cov(
+        self, other: Series, min_periods: int | None = None, ddof: int | None = 1
+    ) -> Series: ...
+    @property
+    def is_monotonic_increasing(self) -> Series[bool]: ...
+    @property
+    def is_monotonic_decreasing(self) -> Series[bool]: ...
     def hist(
         self,
-        by=...,
-        ax: PlotAxes | None = ...,
-        grid: bool = ...,
-        xlabelsize: int | None = ...,
-        xrot: float | None = ...,
-        ylabelsize: int | None = ...,
-        yrot: float | None = ...,
-        figsize: tuple[float, float] | None = ...,
-        bins: int | Sequence = ...,
-        backend: str | None = ...,
-        legend: bool = ...,
+        by: IndexLabel | None = None,
+        ax: PlotAxes | None = None,
+        grid: bool = True,
+        xlabelsize: float | None = None,
+        xrot: float | None = None,
+        ylabelsize: float | None = None,
+        yrot: float | None = None,
+        figsize: tuple[float, float] | None = None,
+        bins: int | Sequence[int] = 10,
+        backend: str | None = None,
+        legend: bool = False,
         **kwargs,
-    ) -> AxesSubplot: ...
-    def idxmax(self, axis: Axis = ..., skipna: bool = ...) -> Series: ...
-    def idxmin(self, axis: Axis = ..., skipna: bool = ...) -> Series: ...
-    def __iter__(self) -> Iterator[tuple[ByT, Series[S1]]]: ...
-    def diff(self, periods: int = ..., axis: Axis = ...) -> Series: ...
+    ) -> Series: ...  # Series[Axes] but this is not allowed
+    @property
+    def dtype(self) -> Series: ...
+    def unique(self) -> Series: ...
+    # Overrides that provide more precise return types over the GroupBy class
+    @final  # type: ignore[misc]
+    def __iter__(self) -> Iterator[tuple[ByT, Series[S1]]]: ...  # pyright: ignore
 
-class DataFrameGroupBy(GroupBy, Generic[ByT]):
-    def any(self, skipna: bool = ...) -> DataFrame: ...
-    def all(self, skipna: bool = ...) -> DataFrame: ...
+class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
     # error: Overload 3 for "apply" will never be used because its parameters overlap overload 1
-    @overload
+    @overload  # type: ignore[override]
     def apply(  # type: ignore[overload-overlap]
         self,
         func: Callable[[DataFrame], Scalar | list | dict],
@@ -159,7 +200,7 @@ class DataFrameGroupBy(GroupBy, Generic[ByT]):
         **kwargs,
     ) -> DataFrame: ...
     @overload
-    def apply(  # pyright: ignore[reportOverlappingOverload]
+    def apply(  # pyright: ignore[reportOverlappingOverload,reportIncompatibleMethodOverride]
         self,
         func: Callable[[Iterable], float],
         *args,
@@ -167,162 +208,50 @@ class DataFrameGroupBy(GroupBy, Generic[ByT]):
     ) -> DataFrame: ...
     # error: overload 1 overlaps overload 2 because of different return types
     @overload
-    def aggregate(self, arg: Literal["size"]) -> Series: ...  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
+    def aggregate(self, func: Literal["size"]) -> Series: ...  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
     @overload
-    def aggregate(self, arg: AggFuncTypeFrame = ..., *args, **kwargs) -> DataFrame: ...
+    def aggregate(
+        self,
+        func: AggFuncTypeFrame | None = None,
+        *args,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
+        **kwargs,
+    ) -> DataFrame: ...
     agg = aggregate
-    def transform(self, func: Callable | str, *args, **kwargs) -> DataFrame: ...
+    def transform(
+        self,
+        func: Callable | str,
+        *args,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
+        **kwargs,
+    ) -> DataFrame: ...
     def filter(
-        self, func: Callable, dropna: bool = ..., *args, **kwargs
+        self, func: Callable, dropna: bool = True, *args, **kwargs
     ) -> DataFrame: ...
-    def nunique(self, dropna: bool = ...) -> DataFrame: ...
     @overload
-    def __getitem__(self, item: str) -> SeriesGroupBy[Any, ByT]: ...
+    def __getitem__(  # type: ignore[overload-overlap]
+        self, key: Scalar | Hashable | tuple[Hashable, ...]
+    ) -> SeriesGroupBy[Any, ByT]: ...
     @overload
-    def __getitem__(self, item: list[str]) -> DataFrameGroupBy[ByT]: ...
-    def count(self) -> DataFrame: ...
-    def boxplot(
-        self,
-        grouped: DataFrame,
-        subplots: bool = ...,
-        column: str | Sequence | None = ...,
-        fontsize: float | str = ...,
-        rot: float = ...,
-        grid: bool = ...,
-        ax: PlotAxes | None = ...,
-        figsize: tuple[float, float] | None = ...,
-        layout: tuple[int, int] | None = ...,
-        sharex: bool = ...,
-        sharey: bool = ...,
-        bins: int | Sequence = ...,
-        backend: str | None = ...,
-        **kwargs,
-    ) -> AxesSubplot | Sequence[AxesSubplot]: ...
-    # Overrides and others from original pylance stubs
-    # These are "properties" but properties can't have all these arguments?!
-    def corr(self, method: str | Callable, min_periods: int = ...) -> DataFrame: ...
-    def cov(self, min_periods: int = ...) -> DataFrame: ...
-    def diff(self, periods: int = ..., axis: Axis = ...) -> DataFrame: ...
-    def bfill(self, limit: int | None = ...) -> DataFrame: ...
-    def corrwith(
-        self,
-        other: DataFrame,
-        axis: Axis = ...,
-        drop: bool = ...,
-        method: str = ...,
-    ) -> Series: ...
-    def cummax(
-        self, axis: Axis = ..., numeric_only: bool = ..., **kwargs
-    ) -> DataFrame: ...
-    def cummin(
-        self, axis: Axis = ..., numeric_only: bool = ..., **kwargs
-    ) -> DataFrame: ...
-    def cumprod(self, axis: Axis = ..., **kwargs) -> DataFrame: ...
-    def cumsum(self, axis: Axis = ..., **kwargs) -> DataFrame: ...
-    def describe(self, **kwargs) -> DataFrame: ...
-    def ffill(self, limit: int | None = ...) -> DataFrame: ...
-    def fillna(
-        self,
-        value,
-        method: str | None = ...,
-        axis: Axis = ...,
-        inplace: Literal[False] = ...,
-        limit: int | None = ...,
-        downcast: dict | None = ...,
-    ) -> DataFrame: ...
-    def first(self, **kwargs) -> DataFrame: ...
-    def head(self, n: int = ...) -> DataFrame: ...
-    def hist(
-        self,
-        data: DataFrame,
-        column: str | Sequence | None = ...,
-        by=...,
-        grid: bool = ...,
-        xlabelsize: int | None = ...,
-        xrot: float | None = ...,
-        ylabelsize: int | None = ...,
-        yrot: float | None = ...,
-        ax: PlotAxes | None = ...,
-        sharex: bool = ...,
-        sharey: bool = ...,
-        figsize: tuple[float, float] | None = ...,
-        layout: tuple[int, int] | None = ...,
-        bins: int | Sequence = ...,
-        backend: str | None = ...,
-        **kwargs,
-    ) -> AxesSubplot | Sequence[AxesSubplot]: ...
+    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, key: Iterable[Hashable] | slice
+    ) -> DataFrameGroupBy[ByT]: ...
+    def nunique(self, dropna: bool = True) -> DataFrame: ...
     def idxmax(
-        self, axis: Axis = ..., skipna: bool = ..., numeric_only: bool = ...
+        self,
+        axis: Axis | None | NoDefault = ...,
+        skipna: bool = True,
+        numeric_only: bool = False,
     ) -> DataFrame: ...
     def idxmin(
-        self, axis: Axis = ..., skipna: bool = ..., numeric_only: bool = ...
-    ) -> DataFrame: ...
-    def last(self, **kwargs) -> DataFrame: ...
-    def max(self, **kwargs) -> DataFrame: ...
-    def mean(self, **kwargs) -> DataFrame: ...
-    def median(self, **kwargs) -> DataFrame: ...
-    def min(self, **kwargs) -> DataFrame: ...
-    def nth(self, n: int | Sequence[int], dropna: str | None = ...) -> DataFrame: ...
-    def pct_change(
         self,
-        periods: int = ...,
-        fill_method: str = ...,
-        limit=...,
-        freq=...,
-        axis: Axis = ...,
+        axis: Axis | None | NoDefault = ...,
+        skipna: bool = True,
+        numeric_only: bool = False,
     ) -> DataFrame: ...
-    def prod(self, numeric_only: bool = ..., min_count: int = ...) -> DataFrame: ...
-    def quantile(
-        self, q: float = ..., interpolation: str = ..., numeric_only: bool = ...
-    ) -> DataFrame: ...
-    def resample(self, rule, *args, **kwargs) -> Grouper: ...
-    def sample(
-        self,
-        n: int | None = ...,
-        frac: float | None = ...,
-        replace: bool = ...,
-        weights: ListLike | None = ...,
-        random_state: RandomState | None = ...,
-    ) -> DataFrame: ...
-    def sem(self, ddof: int = ..., numeric_only: bool = ...) -> DataFrame: ...
-    def shift(
-        self,
-        periods: int = ...,
-        freq: str = ...,
-        axis: Axis = ...,
-        fill_value=...,
-    ) -> DataFrame: ...
-    @overload
-    def skew(
-        self,
-        axis: Axis = ...,
-        skipna: bool = ...,
-        numeric_only: bool = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> DataFrame: ...
-    @overload
-    def skew(
-        self,
-        axis: Axis = ...,
-        skipna: bool = ...,
-        level: None = ...,
-        numeric_only: bool = ...,
-        **kwargs,
-    ) -> Series: ...
-    def std(self, ddof: int = ..., numeric_only: bool = ...) -> DataFrame: ...
-    def sum(
-        self,
-        numeric_only: bool = ...,
-        min_count: int = ...,
-        engine=...,
-        engine_kwargs=...,
-    ) -> DataFrame: ...
-    def tail(self, n: int = ...) -> DataFrame: ...
-    def take(self, indices: Sequence, axis: Axis = ..., **kwargs) -> DataFrame: ...
-    def tshift(self, periods: int, freq=..., axis: Axis = ...) -> DataFrame: ...
-    def var(self, ddof: int = ..., numeric_only: bool = ...) -> DataFrame: ...
+    boxplot = boxplot_frame_groupby
     @overload
     def value_counts(
         self,
@@ -341,5 +270,82 @@ class DataFrameGroupBy(GroupBy, Generic[ByT]):
         ascending: bool = ...,
         dropna: bool = ...,
     ) -> Series[float]: ...
+    def fillna(
+        self,
+        value: Hashable | Mapping | Series | DataFrame | None = None,
+        method: FillnaOptions | None = None,
+        axis: Axis | None | NoDefault = ...,
+        inplace: Literal[False] = False,
+        limit: int | None = None,
+        downcast: dict | None | NoDefault = ...,
+    ) -> DataFrame: ...
+    def take(
+        self, indices: TakeIndexer, axis: Axis | None | NoDefault = ..., **kwargs
+    ) -> DataFrame: ...
+    @overload
+    def skew(  # type: ignore[overload-overlap]
+        self,
+        axis: Axis | None | NoDefault = ...,
+        skipna: bool = True,
+        numeric_only: bool = False,
+        *,
+        level: Level,
+        **kwargs,
+    ) -> DataFrame: ...
+    @overload
+    def skew(
+        self,
+        axis: Axis | None | NoDefault = ...,
+        skipna: bool = True,
+        numeric_only: bool = False,
+        *,
+        level: None = None,
+        **kwargs,
+    ) -> Series: ...
+    @property
+    def plot(self) -> GroupByPlot[Self]: ...
+    def corr(
+        self,
+        method: str | Callable[[np.ndarray, np.ndarray], float] = "pearson",
+        min_periods: int = 1,
+        numeric_only: bool = False,
+    ) -> DataFrame: ...
+    def cov(
+        self,
+        min_periods: int | None = None,
+        ddof: int | None = 1,
+        numeric_only: bool = False,
+    ) -> DataFrame: ...
+    def hist(
+        self,
+        column: IndexLabel | None = None,
+        by: IndexLabel | None = None,
+        grid: bool = True,
+        xlabelsize: float | None = None,
+        xrot: float | None = None,
+        ylabelsize: float | None = None,
+        yrot: float | None = None,
+        ax: PlotAxes | None = None,
+        sharex: bool = False,
+        sharey: bool = False,
+        figsize: tuple[float, float] | None = None,
+        layout: tuple[int, int] | None = None,
+        bins: int | Sequence[int] = 10,
+        backend: str | None = None,
+        legend: bool = False,
+        **kwargs,
+    ) -> Series: ...  # Series[Axes] but this is not allowed
+    @property
+    def dtypes(self) -> Series: ...
+    def corrwith(
+        self,
+        other: DataFrame | Series,
+        axis: Axis | NoDefault = ...,
+        drop: bool = False,
+        method: CorrelationMethod = "pearson",
+        numeric_only: bool = False,
+    ) -> DataFrame: ...
     def __getattr__(self, name: str) -> SeriesGroupBy[Any, ByT]: ...
-    def __iter__(self) -> Iterator[tuple[ByT, DataFrame]]: ...
+    # Overrides that provide more precise return types over the GroupBy class
+    @final  # type: ignore[misc]
+    def __iter__(self) -> Iterator[tuple[ByT, DataFrame]]: ...  # pyright: ignore

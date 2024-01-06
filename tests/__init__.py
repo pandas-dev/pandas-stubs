@@ -13,6 +13,7 @@ from typing import (
 )
 
 import pandas as pd
+from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.util.version import Version
 import pytest
 
@@ -33,6 +34,8 @@ def check(actual: T, klass: type, dtype: type | None = None, attr: str = "left")
         value = actual.iloc[0]
     elif isinstance(actual, pd.Index):
         value = actual[0]  # type: ignore[assignment]
+    elif isinstance(actual, BaseGroupBy):
+        value = actual.obj
     elif hasattr(actual, "__iter__"):
         value = next(iter(actual))  # pyright: ignore[reportGeneralTypeIssues]
     else:

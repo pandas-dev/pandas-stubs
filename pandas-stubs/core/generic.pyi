@@ -17,6 +17,7 @@ from typing import (
 import numpy as np
 from pandas import Index
 import pandas.core.indexing as indexing
+from pandas.core.resample import DatetimeIndexResampler
 from pandas.core.series import Series
 import sqlalchemy.engine
 from typing_extensions import (
@@ -24,6 +25,7 @@ from typing_extensions import (
     Self,
 )
 
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     S1,
     ArrayLike,
@@ -37,6 +39,7 @@ from pandas._typing import (
     FilePath,
     FileWriteMode,
     FillnaOptions,
+    Frequency,
     HashableT1,
     HashableT2,
     HDFCompLib,
@@ -48,6 +51,10 @@ from pandas._typing import (
     SortKind,
     StorageOptions,
     T,
+    TimedeltaConvertibleTypes,
+    TimeGrouperOrigin,
+    TimestampConvention,
+    TimestampConvertibleTypes,
     WriteBuffer,
 )
 
@@ -432,6 +439,21 @@ class NDFrame(indexing.IndexingMixin):
         end_time,
         axis=...,
     ) -> Self: ...
+    @final
+    def resample(
+        self,
+        rule: Frequency,
+        axis: Axis | NoDefault = ...,
+        closed: Literal["right", "left"] | None = None,
+        label: Literal["right", "left"] | None = None,
+        convention: TimestampConvention = "start",
+        kind: Literal["period", "timestamp", "timedelta"] | None = None,
+        on: Level | None = None,
+        level: Level | None = None,
+        origin: TimeGrouperOrigin | TimestampConvertibleTypes = "start_day",
+        offset: TimedeltaConvertibleTypes | None = None,
+        group_keys: _bool = False,
+    ) -> DatetimeIndexResampler[Self]: ...
     def first(self, offset) -> Self: ...
     def last(self, offset) -> Self: ...
     def rank(

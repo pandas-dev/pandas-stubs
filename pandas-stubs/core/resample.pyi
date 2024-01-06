@@ -1,11 +1,9 @@
 from collections.abc import (
     Callable,
-    Generator,
     Hashable,
     Mapping,
 )
 from typing import (
-    Generic,
     Literal,
     overload,
 )
@@ -13,18 +11,39 @@ from typing import (
 import numpy as np
 from pandas import (
     DataFrame,
+    DatetimeIndex,
     Index,
+    PeriodIndex,
     Series,
+    Timedelta,
+    TimedeltaIndex,
 )
 from pandas.core.groupby.generic import SeriesGroupBy
-from pandas.core.groupby.groupby import BaseGroupBy
-from typing_extensions import TypeAlias
+from pandas.core.groupby.groupby import (
+    BaseGroupBy,
+    GroupBy,
+)
+from pandas.core.groupby.grouper import Grouper
+from pandas.core.groupby.ops import BinGrouper
+from typing_extensions import (
+    Self,
+    TypeAlias,
+)
 
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
+    S1,
     Axis,
+    FillnaOptions,
+    Frequency,
+    IndexLabel,
     InterpolateOptions,
     NDFrameT,
     Scalar,
+    TimedeltaConvertibleTypes,
+    TimeGrouperOrigin,
+    TimestampConvention,
+    TimestampConvertibleTypes,
     npt,
 )
 
@@ -51,138 +70,238 @@ _SeriesGroupByFuncArgs: TypeAlias = (
     _SeriesGroupByFuncTypes | Mapping[Hashable, _SeriesGroupByFunc | str]
 )
 
-class Resampler(BaseGroupBy, Generic[NDFrameT]):
+class Resampler(BaseGroupBy[NDFrameT]):
+    grouper: BinGrouper  # pyright: ignore[reportIncompatibleVariableOverride]  # variance incompatibility
+    binner: DatetimeIndex | TimedeltaIndex | PeriodIndex
+    exclusions: frozenset[Hashable]
+    ax: Index
+    def __init__(
+        self,
+        obj: NDFrameT,
+        timegrouper: TimeGrouper,
+        axis: Axis = 0,
+        kind: str | None = None,
+        *,
+        gpr_index: Index,
+        group_keys: bool = False,
+        selection: IndexLabel | None = None,
+    ) -> None: ...
     def __getattr__(self, attr: str) -> SeriesGroupBy: ...
-    def __iter__(self) -> Generator[tuple[Hashable, NDFrameT], None, None]: ...
-    @property
-    def obj(self) -> NDFrameT: ...
-    @property
-    def ax(self) -> Index: ...
     @overload
-    def pipe(
+    def aggregate(
         self: Resampler[DataFrame],
-        func: Callable[..., DataFrame]
-        | tuple[Callable[..., DataFrame], str]
-        | Callable[..., Series]
-        | tuple[Callable[..., Series], str],
-        *args,
-        **kwargs,
-    ) -> DataFrame: ...
-    @overload
-    def pipe(
-        self: Resampler[DataFrame],
-        func: Callable[..., Scalar] | tuple[Callable[..., Scalar], str],
-        *args,
-        **kwargs,
-    ) -> Series: ...
-    @overload
-    def pipe(
-        self: Resampler[Series],
-        func: Callable[..., Series] | tuple[Callable[..., Series], str],
-        *args,
-        **kwargs,
-    ) -> Series: ...
-    @overload
-    def pipe(
-        self: Resampler[Series],
-        func: Callable[..., Scalar] | tuple[Callable[..., Scalar], str],
-        *args,
-        **kwargs,
-    ) -> Scalar: ...
-    @overload
-    def pipe(
-        self: Resampler[Series],
-        func: Callable[..., DataFrame] | tuple[Callable[..., DataFrame], str],
+        func: _FrameGroupByFuncArgs | None = None,
         *args,
         **kwargs,
     ) -> DataFrame: ...
     @overload
     def aggregate(
-        self: Resampler[DataFrame],
-        func: _FrameGroupByFuncArgs | None = ...,
-        *args,
-        **kwargs,
-    ) -> Series | DataFrame: ...
-    @overload
-    def aggregate(
         self: Resampler[Series],
-        func: _SeriesGroupByFuncArgs | None = ...,
+        func: _SeriesGroupByFuncArgs | None = None,
         *args,
         **kwargs,
     ) -> Series | DataFrame: ...
     agg = aggregate
     apply = aggregate
+    @overload
     def transform(
-        self, arg: Callable[[Series], Series], *args, **kwargs
-    ) -> NDFrameT: ...
-    def ffill(self, limit: int | None = ...) -> NDFrameT: ...
-    def nearest(self, limit: int | None = ...) -> NDFrameT: ...
-    def bfill(self, limit: int | None = ...) -> NDFrameT: ...
+        self: Resampler[Series], arg: Callable[[Series], Series[S1]], *args, **kwargs
+    ) -> Series[S1]: ...
+    @overload
+    def transform(
+        self: Resampler[DataFrame], arg: Callable[[Series], Series[S1]], *args, **kwargs
+    ) -> DataFrame: ...
+    def ffill(self, limit: int | None = None) -> NDFrameT: ...
+    def nearest(self, limit: int | None = None) -> NDFrameT: ...
+    def bfill(self, limit: int | None = None) -> NDFrameT: ...
     def fillna(
-        self,
-        method: Literal["pad", "backfill", "ffill", "bfill", "nearest"],
-        limit: int | None = ...,
+        self, method: Literal[FillnaOptions, "nearest"], limit: int | None = None
     ) -> NDFrameT: ...
     @overload
     def interpolate(
         self,
-        method: InterpolateOptions = ...,
+        method: InterpolateOptions = "linear",
         *,
-        axis: Axis = ...,
-        limit: int | None = ...,
+        axis: Axis = 0,
+        limit: int | None = None,
         inplace: Literal[True],
-        limit_direction: Literal["forward", "backward", "both"] = ...,
-        limit_area: Literal["inside", "outside"] | None = ...,
-        downcast: Literal["infer"] | None = ...,
+        limit_direction: Literal["forward", "backward", "both"] = "forward",
+        limit_area: Literal["inside", "outside"] | None = None,
+        downcast: Literal["infer"] | None | NoDefault = ...,
         **kwargs,
     ) -> None: ...
     @overload
     def interpolate(
         self,
-        method: InterpolateOptions = ...,
+        method: InterpolateOptions = "linear",
         *,
-        axis: Axis = ...,
-        limit: int | None = ...,
-        inplace: Literal[False] = ...,
-        limit_direction: Literal["forward", "backward", "both"] = ...,
-        limit_area: Literal["inside", "outside"] | None = ...,
-        downcast: Literal["infer"] | None = ...,
+        axis: Axis = 0,
+        limit: int | None = None,
+        inplace: Literal[False] = False,
+        limit_direction: Literal["forward", "backward", "both"] = "forward",
+        limit_area: Literal["inside", "outside"] | None = None,
+        downcast: Literal["infer"] | None | NoDefault = ...,
         **kwargs,
     ) -> NDFrameT: ...
-    def asfreq(self, fill_value: Scalar | None = ...) -> NDFrameT: ...
-    def std(
-        self, ddof: int = ..., numeric_only: bool = ..., *args, **kwargs
-    ) -> NDFrameT: ...
-    def var(
-        self, ddof: int = ..., numeric_only: bool = ..., *args, **kwargs
-    ) -> NDFrameT: ...
-    def size(self) -> Series: ...
-    def count(self) -> NDFrameT: ...
-    def quantile(
-        self,
-        q: float | list[float] | npt.NDArray[np.float_] | Series[float] = ...,
-        **kwargs,
-    ) -> NDFrameT: ...
+    def asfreq(self, fill_value: Scalar | None = None) -> NDFrameT: ...
     def sum(
-        self, numeric_only: bool = ..., min_count: int = ..., *args, **kwargs
+        self, numeric_only: bool = False, min_count: int = 0, *args, **kwargs
     ) -> NDFrameT: ...
     def prod(
-        self, numeric_only: bool = ..., min_count: int = ..., *args, **kwargs
+        self, numeric_only: bool = False, min_count: int = 0, *args, **kwargs
     ) -> NDFrameT: ...
     def min(
-        self, numeric_only: bool = ..., min_count: int = ..., *args, **kwargs
+        self, numeric_only: bool = False, min_count: int = 0, *args, **kwargs
     ) -> NDFrameT: ...
     def max(
-        self, numeric_only: bool = ..., min_count: int = ..., *args, **kwargs
+        self, numeric_only: bool = False, min_count: int = 0, *args, **kwargs
     ) -> NDFrameT: ...
     def first(
-        self, numeric_only: bool = ..., min_count: int = ..., *args, **kwargs
+        self, numeric_only: bool = False, min_count: int = 0, *args, **kwargs
     ) -> NDFrameT: ...
     def last(
-        self, numeric_only: bool = ..., min_count: int = ..., *args, **kwargs
+        self, numeric_only: bool = False, min_count: int = 0, *args, **kwargs
     ) -> NDFrameT: ...
-    def mean(self, numeric_only: bool = ..., *args, **kwargs) -> NDFrameT: ...
-    def sem(self, numeric_only: bool = ..., *args, **kwargs) -> NDFrameT: ...
-    def median(self, numeric_only: bool = ..., *args, **kwargs) -> NDFrameT: ...
+    def median(self, numeric_only: bool = False, *args, **kwargs) -> NDFrameT: ...
+    def mean(self, numeric_only: bool = False, *args, **kwargs) -> NDFrameT: ...
+    def std(
+        self, ddof: int = 1, numeric_only: bool = False, *args, **kwargs
+    ) -> NDFrameT: ...
+    def var(
+        self, ddof: int = 1, numeric_only: bool = False, *args, **kwargs
+    ) -> NDFrameT: ...
+    def sem(
+        self, ddof: int = 1, numeric_only: bool = False, *args, **kwargs
+    ) -> NDFrameT: ...
     def ohlc(self, *args, **kwargs) -> DataFrame: ...
-    def nunique(self, *args, **kwargs) -> NDFrameT: ...
+    @overload
+    def nunique(self: Resampler[Series], *args, **kwargs) -> Series[int]: ...
+    @overload
+    def nunique(self: Resampler[DataFrame], *args, **kwargs) -> DataFrame: ...
+    def size(self) -> Series[int]: ...
+    @overload
+    def count(self: Resampler[Series]) -> Series[int]: ...
+    @overload
+    def count(self: Resampler[DataFrame]) -> DataFrame: ...
+    def quantile(
+        self,
+        q: float | list[float] | npt.NDArray[np.float_] | Series[float] = 0.5,
+        **kwargs,
+    ) -> NDFrameT: ...
+
+# We lie about inheriting from Resampler because at runtime inherits all Resampler
+# attributes via setattr
+class _GroupByMixin(Resampler[NDFrameT]):
+    k: str | list[str] | None
+    def __init__(
+        self,
+        *,
+        parent: Resampler,
+        groupby: GroupBy,
+        key=None,
+        selection: IndexLabel | None = None,
+    ) -> None: ...
+    def __getitem__(self, key) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+
+class DatetimeIndexResampler(Resampler[NDFrameT]): ...
+
+class DatetimeIndexResamplerGroupby(
+    _GroupByMixin[NDFrameT], DatetimeIndexResampler[NDFrameT]
+):
+    def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+
+class PeriodIndexResampler(DatetimeIndexResampler[NDFrameT]): ...
+
+class PeriodIndexResamplerGroupby(
+    _GroupByMixin[NDFrameT], PeriodIndexResampler[NDFrameT]
+):
+    def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+
+class TimedeltaIndexResampler(DatetimeIndexResampler[NDFrameT]): ...
+
+class TimedeltaIndexResamplerGroupby(
+    _GroupByMixin[NDFrameT], TimedeltaIndexResampler[NDFrameT]
+):
+    def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+
+_ResamplerGroupBy: TypeAlias = (
+    DatetimeIndexResamplerGroupby[NDFrameT]
+    | PeriodIndexResamplerGroupby[NDFrameT]
+    | TimedeltaIndexResamplerGroupby[NDFrameT]
+)
+
+def get_resampler(
+    obj: NDFrameT,
+    kind: Literal["period", "timestamp", "timedelta"] | None = None,
+    *,
+    # Keyword argumentsmust be kept roughly inline with TimeGrouper.__init__ below
+    freq: Frequency = "Min",
+    closed: Literal["left", "right"] | None = None,
+    label: Literal["left", "right"] | None = None,
+    how: str = "mean",
+    axis: Axis = 0,
+    fill_method: str | None = None,
+    limit: int | None = None,
+    convention: TimestampConvention | None = None,
+    origin: TimeGrouperOrigin | TimestampConvertibleTypes = "start_day",
+    offset: TimedeltaConvertibleTypes | None = None,
+    group_keys: bool = False,
+    **kwds,
+) -> DatetimeIndexResampler[NDFrameT]: ...
+def get_resampler_for_grouping(
+    groupby: GroupBy[NDFrameT],
+    rule: Frequency,
+    how: str | None = None,
+    fill_method: str | None = None,
+    limit: int | None = None,
+    kind: Literal["period", "timestamp", "timedelta"] | None = None,
+    on: Hashable | None = None,
+    *,
+    # Keyword argumentsmust be kept roughly inline with TimeGrouper.__init__ below
+    closed: Literal["left", "right"] | None = None,
+    label: Literal["left", "right"] | None = None,
+    axis: Axis = 0,
+    convention: TimestampConvention | None = None,
+    origin: TimeGrouperOrigin | TimestampConvertibleTypes = "start_day",
+    offset: TimedeltaConvertibleTypes | None = None,
+    group_keys: bool = False,
+    **kwargs,
+) -> _ResamplerGroupBy[NDFrameT]: ...
+
+class TimeGrouper(Grouper):
+    closed: Literal["left", "right"]
+    label: Literal["left", "right"]
+    kind: str | None
+    convention: TimestampConvention
+    how: str
+    fill_method: str | None
+    limit: int | None
+    group_keys: bool
+    origin: TimeGrouperOrigin
+    offset: Timedelta | None
+
+    def __init__(
+        self,
+        freq: Frequency = "Min",
+        closed: Literal["left", "right"] | None = None,
+        label: Literal["left", "right"] | None = None,
+        how: str = "mean",
+        axis: Axis = 0,
+        fill_method: str | None = None,
+        limit: int | None = None,
+        kind: Literal["period", "timestamp", "timedelta"] | None = None,
+        convention: TimestampConvention | None = None,
+        origin: TimeGrouperOrigin | TimestampConvertibleTypes = "start_day",
+        offset: TimedeltaConvertibleTypes | None = None,
+        group_keys: bool = False,
+        **kwargs,
+    ) -> None: ...
+
+def asfreq(
+    obj: NDFrameT,
+    freq: Frequency,
+    method: Literal[FillnaOptions, "nearest"] | None = None,
+    how: str | None = None,
+    normalize: bool = False,
+    fill_value: Scalar | None = None,
+) -> NDFrameT: ...

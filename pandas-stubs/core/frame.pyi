@@ -41,7 +41,6 @@ from pandas.core.indexing import (
     _LocIndexer,
 )
 from pandas.core.interchange.dataframe_protocol import DataFrame as DataFrameXchg
-from pandas.core.resample import Resampler
 from pandas.core.series import Series
 from pandas.core.window import (
     Expanding,
@@ -54,6 +53,7 @@ from pandas.core.window.rolling import (
 from typing_extensions import Self
 import xarray as xr
 
+from pandas._libs.lib import NoDefault
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.nattype import NaTType
@@ -1006,104 +1006,96 @@ class DataFrame(NDFrame, OpsMixin):
     def groupby(
         self,
         by: Scalar,
-        axis: AxisIndex = ...,
+        axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        squeeze: _bool = ...,
-        observed: _bool = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Scalar]: ...
     @overload
     def groupby(
         self,
         by: DatetimeIndex,
-        axis: AxisIndex = ...,
+        axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        squeeze: _bool = ...,
-        observed: _bool = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timestamp]: ...
     @overload
     def groupby(
         self,
         by: TimedeltaIndex,
-        axis: AxisIndex = ...,
+        axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        squeeze: _bool = ...,
-        observed: _bool = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timedelta]: ...
     @overload
     def groupby(
         self,
         by: PeriodIndex,
-        axis: AxisIndex = ...,
+        axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        squeeze: _bool = ...,
-        observed: _bool = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Period]: ...
     @overload
     def groupby(
         self,
         by: IntervalIndex[IntervalT],
-        axis: AxisIndex = ...,
+        axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        squeeze: _bool = ...,
-        observed: _bool = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[IntervalT]: ...
     @overload
     def groupby(
         self,
         by: MultiIndex | GroupByObjectNonScalar | None = ...,
-        axis: AxisIndex = ...,
+        axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        squeeze: _bool = ...,
-        observed: _bool = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[tuple]: ...
     @overload
     def groupby(
         self,
         by: Series[SeriesByT],
-        axis: AxisIndex = ...,
+        axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        squeeze: _bool = ...,
-        observed: _bool = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[SeriesByT]: ...
     @overload
     def groupby(
         self,
         by: CategoricalIndex | Index | Series,
-        axis: AxisIndex = ...,
+        axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        squeeze: _bool = ...,
-        observed: _bool = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Any]: ...
     def pivot(
@@ -1921,21 +1913,6 @@ class DataFrame(NDFrame, OpsMixin):
         *,
         inplace: Literal[False] = ...,
     ) -> DataFrame: ...
-    def resample(
-        self,
-        rule,
-        axis: Axis = ...,
-        closed: _str | None = ...,
-        label: _str | None = ...,
-        convention: TimestampConvention = ...,
-        kind: Literal["timestamp", "period"] | None = ...,
-        on: _str | None = ...,
-        level: Level | None = ...,
-        origin: Timestamp
-        | Literal["epoch", "start", "start_day", "end", "end_day"] = ...,
-        offset: dt.timedelta | Timedelta | _str | None = ...,
-        group_keys: _bool = ...,
-    ) -> Resampler[DataFrame]: ...
     def rfloordiv(
         self,
         other,

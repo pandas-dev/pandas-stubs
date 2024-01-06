@@ -93,6 +93,11 @@ def test_types_init() -> None:
     pd.Series(data=[1, 2, 3, 4], index=None)
     pd.Series(data={"row1": [1, 2], "row2": [3, 4]}, index=None)
 
+    groupby = pd.Series(np.array([1, 2])).groupby(level=0)
+    resampler = pd.Series(np.array([1, 2]), index=dt).resample("1D")
+    pd.Series(data=groupby)
+    pd.Series(data=resampler)
+
 
 def test_types_any() -> None:
     check(assert_type(pd.Series([False, False]).any(), bool), np.bool_)
@@ -670,6 +675,15 @@ def test_groupby_result() -> None:
 
     check(assert_type(index3, tuple), tuple, int)
     check(assert_type(value3, "pd.Series[int]"), pd.Series, np.integer)
+
+    # Explicit by=None
+    iterator4 = s.groupby(None, level=0).__iter__()
+    assert_type(iterator4, Iterator[tuple[Scalar, "pd.Series[int]"]])
+    index4, value4 = next(iterator4)
+    assert_type((index4, value4), tuple[Scalar, "pd.Series[int]"])
+
+    check(assert_type(index4, Scalar), int)
+    check(assert_type(value4, "pd.Series[int]"), pd.Series, np.integer)
 
     # Want to make sure these cases are differentiated
     for (k1, k2), g in s.groupby(["a", "b"]):
@@ -1573,20 +1587,24 @@ def test_resample() -> None:
     N = 10
     index = pd.date_range("1/1/2000", periods=N, freq="min")
     x = [x for x in range(N)]
-    df = pd.Series(x, index=index)
-    check(assert_type(df.resample("2min").std(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").var(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").quantile(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").sum(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").prod(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").min(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").max(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").first(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").last(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").mean(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").sem(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").median(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").ohlc(), pd.DataFrame), pd.DataFrame)
+    s = pd.Series(x, index=index, dtype=float)
+    check(assert_type(s.resample("2min").std(), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.resample("2min").var(), "pd.Series[float]"), pd.Series, float)
+    check(
+        assert_type(s.resample("2min").quantile(), "pd.Series[float]"), pd.Series, float
+    )
+    check(assert_type(s.resample("2min").sum(), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.resample("2min").prod(), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.resample("2min").min(), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.resample("2min").max(), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.resample("2min").first(), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.resample("2min").last(), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.resample("2min").mean(), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.resample("2min").sem(), "pd.Series[float]"), pd.Series, float)
+    check(
+        assert_type(s.resample("2min").median(), "pd.Series[float]"), pd.Series, float
+    )
+    check(assert_type(s.resample("2min").ohlc(), pd.DataFrame), pd.DataFrame)
 
 
 def test_to_xarray():
@@ -2755,8 +2773,12 @@ def test_to_json_mode() -> None:
 
 def test_groupby_diff() -> None:
     # GH 658
-    s = pd.Series([1, 2, 3, np.nan])
-    check(assert_type(s.groupby(level=0).diff(), pd.Series), pd.Series)
+    s = pd.Series([1.0, 2.0, 3.0, np.nan])
+    check(
+        assert_type(s.groupby(level=0).diff(), "pd.Series[float]"),
+        pd.Series,
+        float,
+    )
 
 
 def test_to_string() -> None:

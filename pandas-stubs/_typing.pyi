@@ -48,6 +48,8 @@ from pandas.core.dtypes.dtypes import (
 
 from pandas.io.formats.format import EngFormatter
 
+Incomplete: TypeAlias = Any
+
 ArrayLike: TypeAlias = ExtensionArray | np.ndarray
 AnyArrayLike: TypeAlias = Index | Series | np.ndarray
 PythonScalar: TypeAlias = str | bool | complex
@@ -80,6 +82,10 @@ class FulldatetimeDict(YearMonthDayDict, total=False):
     us: DatetimeDictArg
     ns: DatetimeDictArg
 
+CorrelationMethod: TypeAlias = (
+    Literal["pearson", "kendall", "spearman"]
+    | Callable[[np.ndarray, np.ndarray], float]
+)
 # dtypes
 NpDtype: TypeAlias = str | np.dtype[np.generic] | type[str | complex | bool | object]
 Dtype: TypeAlias = ExtensionDtype | NpDtype
@@ -444,6 +450,7 @@ class SequenceNotStr(Protocol[_T_co]):
 IndexLabel: TypeAlias = Hashable | Sequence[Hashable]
 Label: TypeAlias = Hashable | None
 Level: TypeAlias = Hashable | int
+Shape: TypeAlias = tuple[int, ...]
 Suffixes: TypeAlias = tuple[str | None, str | None]
 Ordered: TypeAlias = bool | None
 JSONSerializable: TypeAlias = PythonScalar | list | dict
@@ -469,8 +476,11 @@ AggFuncTypeSeriesToFrame: TypeAlias = list[AggFuncTypeBase] | AggFuncTypeDictSer
 AggFuncTypeFrame: TypeAlias = (
     AggFuncTypeBase | list[AggFuncTypeBase] | AggFuncTypeDictFrame
 )
+AggFuncTypeDict: TypeAlias = AggFuncTypeDictSeries | AggFuncTypeDictFrame
+AggFuncType: TypeAlias = AggFuncTypeBase | list[AggFuncTypeBase] | AggFuncTypeDict
 
 num: TypeAlias = complex
+AxisInt: TypeAlias = int
 AxisIndex: TypeAlias = Literal["index", 0]
 AxisColumn: TypeAlias = Literal["columns", 1]
 Axis: TypeAlias = AxisIndex | AxisColumn
@@ -563,6 +573,9 @@ IndexT = TypeVar("IndexT", bound=Index)
 IntervalT = TypeVar("IntervalT", bound=Interval)
 IntervalClosedType: TypeAlias = Literal["left", "right", "both", "neither"]
 
+ScalarIndexer: TypeAlias = int | np.integer
+SequenceIndexer: TypeAlias = slice | list[int] | np.ndarray
+PositionalIndexer: TypeAlias = ScalarIndexer | SequenceIndexer
 TakeIndexer: TypeAlias = Sequence[int] | Sequence[np.integer] | npt.NDArray[np.integer]
 
 IgnoreRaiseCoerce: TypeAlias = Literal["ignore", "raise", "coerce"]
@@ -757,6 +770,10 @@ RandomState: TypeAlias = (
     | np.random.Generator
     | np.random.BitGenerator
     | np.random.RandomState
+)
+Frequency: TypeAlias = str | BaseOffset
+TimeGrouperOrigin: TypeAlias = (
+    Timestamp | Literal["epoch", "start", "start_day", "end", "end_day"]
 )
 
 __all__ = ["npt", "type_t"]

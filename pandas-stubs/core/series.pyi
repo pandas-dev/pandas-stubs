@@ -45,6 +45,7 @@ from pandas.core.base import IndexOpsMixin
 from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
 from pandas.core.groupby.generic import SeriesGroupBy
+from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.core.indexers import BaseIndexer
 from pandas.core.indexes.accessors import (
     CombinedDatetimelikeProperties,
@@ -66,7 +67,6 @@ from pandas.core.indexing import (
     _IndexSliceTuple,
     _LocIndexer,
 )
-from pandas.core.resample import Resampler
 from pandas.core.strings import StringMethods
 from pandas.core.window import (
     Expanding,
@@ -87,6 +87,7 @@ from pandas._libs.interval import (
     Interval,
     _OrderableT,
 )
+from pandas._libs.lib import NoDefault
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
@@ -307,7 +308,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: Scalar | _ListLike | dict[HashableT1, Any] | None = ...,
+        data: Scalar | _ListLike | dict[HashableT1, Any] | BaseGroupBy | None = ...,
         index: Axes | None = ...,
         *,
         dtype: Dtype = ...,
@@ -555,8 +556,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        squeeze: _bool = ...,
-        observed: _bool = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, Scalar]: ...
     @overload
@@ -568,8 +568,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        squeeze: _bool = ...,
-        observed: _bool = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, Timestamp]: ...
     @overload
@@ -581,8 +580,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        squeeze: _bool = ...,
-        observed: _bool = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, Timedelta]: ...
     @overload
@@ -594,8 +592,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        squeeze: _bool = ...,
-        observed: _bool = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, Period]: ...
     @overload
@@ -607,23 +604,46 @@ class Series(IndexOpsMixin[S1], NDFrame):
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        squeeze: _bool = ...,
-        observed: _bool = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, IntervalT]: ...
     @overload
     def groupby(
         self,
-        by: MultiIndex | GroupByObjectNonScalar = ...,
+        by: MultiIndex | GroupByObjectNonScalar,
         axis: AxisIndex = ...,
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        squeeze: _bool = ...,
-        observed: _bool = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, tuple]: ...
+    @overload
+    def groupby(
+        self,
+        by: None,
+        axis: AxisIndex,
+        level: IndexLabel,  # level is required when by=None (passed as positional)
+        as_index: _bool = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        observed: _bool | NoDefault = ...,
+        dropna: _bool = ...,
+    ) -> SeriesGroupBy[S1, Scalar]: ...
+    @overload
+    def groupby(
+        self,
+        by: None = None,
+        axis: AxisIndex = ...,
+        *,
+        level: IndexLabel,  # level is required when by=None (passed as keyword)
+        as_index: _bool = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        observed: _bool | NoDefault = ...,
+        dropna: _bool = ...,
+    ) -> SeriesGroupBy[S1, Scalar]: ...
     @overload
     def groupby(
         self,
@@ -633,8 +653,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        squeeze: _bool = ...,
-        observed: _bool = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, SeriesByT]: ...
     @overload
@@ -646,8 +665,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         as_index: _bool = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        squeeze: _bool = ...,
-        observed: _bool = ...,
+        observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, Any]: ...
     # need the ignore because None is Hashable
@@ -1343,23 +1361,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         end_time: _str | time,
         axis: AxisIndex | None = ...,
     ) -> Series[S1]: ...
-    def resample(
-        self,
-        rule,
-        axis: AxisIndex = ...,
-        closed: _str | None = ...,
-        label: _str | None = ...,
-        convention: TimestampConvention = ...,
-        kind: Literal["timestamp", "period"] | None = ...,
-        loffset=...,
-        base: int = ...,
-        on: _str | None = ...,
-        level: Level | None = ...,
-        origin: datetime
-        | Timestamp
-        | Literal["epoch", "start", "start_day", "end", "end_day"] = ...,
-        offset: timedelta | Timedelta | _str | None = ...,
-    ) -> Resampler[Series]: ...
     def first(self, offset) -> Series[S1]: ...
     def last(self, offset) -> Series[S1]: ...
     def rank(
