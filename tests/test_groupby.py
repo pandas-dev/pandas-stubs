@@ -86,7 +86,7 @@ def test_frame_groupby_resample() -> None:
     check(assert_type(GB_DF.resample(M).var(2), DataFrame), DataFrame)
 
     # size / count
-    check(assert_type(GB_DF.resample(M).size(), "Series[int]"), Series, np.int64)
+    check(assert_type(GB_DF.resample(M).size(), "Series[int]"), Series, np.integer)
     check(assert_type(GB_DF.resample(M).count(), DataFrame), DataFrame)
 
     # filling
@@ -264,7 +264,7 @@ def test_series_groupby_resample() -> None:
     check(assert_type(GB_S.resample(M).sum(), "Series[float]"), Series, float)
     check(assert_type(GB_S.resample(M).median(), "Series[float]"), Series, float)
     check(assert_type(GB_S.resample(M).ohlc(), DataFrame), DataFrame)
-    check(assert_type(GB_S.resample(M).nunique(), "Series[int]"), Series, np.int64)
+    check(assert_type(GB_S.resample(M).nunique(), "Series[int]"), Series, np.integer)
 
     # quantile
     check(assert_type(GB_S.resample(M).quantile(0.5), "Series[float]"), Series, float)
@@ -283,8 +283,8 @@ def test_series_groupby_resample() -> None:
     check(assert_type(GB_S.resample(M).var(2), "Series[float]"), Series, float)
 
     # size / count
-    check(assert_type(GB_S.resample(M).size(), "Series[int]"), Series, np.int64)
-    check(assert_type(GB_S.resample(M).count(), "Series[int]"), Series, np.int64)
+    check(assert_type(GB_S.resample(M).size(), "Series[int]"), Series, np.integer)
+    check(assert_type(GB_S.resample(M).count(), "Series[int]"), Series, np.integer)
 
     # filling
     check(assert_type(GB_S.resample(M).ffill(), "Series[float]"), Series, float)

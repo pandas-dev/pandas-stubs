@@ -83,7 +83,7 @@ def test_std_var() -> None:
 
 
 def test_size_count() -> None:
-    check(assert_type(DF.resample(MonthFreq).size(), "Series[int]"), Series, np.int64)
+    check(assert_type(DF.resample(MonthFreq).size(), "Series[int]"), Series, np.integer)
     check(assert_type(DF.resample(MonthFreq).count(), DataFrame), DataFrame)
 
 
@@ -311,7 +311,9 @@ def test_agg_funcs_series() -> None:
     check(assert_type(S.resample(MonthFreq).sum(), Series), Series)
     check(assert_type(S.resample(MonthFreq).median(), Series), Series)
     check(assert_type(S.resample(MonthFreq).ohlc(), DataFrame), DataFrame)
-    check(assert_type(S.resample(MonthFreq).nunique(), "Series[int]"), Series, np.int64)
+    check(
+        assert_type(S.resample(MonthFreq).nunique(), "Series[int]"), Series, np.integer
+    )
 
 
 def test_quantile_series() -> None:
@@ -329,8 +331,8 @@ def test_std_var_series() -> None:
 
 
 def test_size_count_series() -> None:
-    check(assert_type(S.resample(MonthFreq).size(), "Series[int]"), Series, np.int64)
-    check(assert_type(S.resample(MonthFreq).count(), "Series[int]"), Series, np.int64)
+    check(assert_type(S.resample(MonthFreq).size(), "Series[int]"), Series, np.integer)
+    check(assert_type(S.resample(MonthFreq).count(), "Series[int]"), Series, np.integer)
 
 
 def test_filling_series() -> None:
