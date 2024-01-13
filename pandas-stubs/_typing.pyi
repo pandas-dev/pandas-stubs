@@ -48,6 +48,9 @@ from pandas.core.dtypes.dtypes import (
 
 from pandas.io.formats.format import EngFormatter
 
+# `Incomplete` is equivalent to `Any`. Use it to annotate symbols that you don't
+# know the type of yet and that should be changed in the future. Use `Any` only
+# where it is the only acceptable type.
 Incomplete: TypeAlias = Any
 
 ArrayLike: TypeAlias = ExtensionArray | np.ndarray
