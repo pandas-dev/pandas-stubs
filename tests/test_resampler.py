@@ -94,21 +94,9 @@ def test_filling() -> None:
 
 
 def test_fillna() -> None:
-    with pytest_warns_bounded(
-        FutureWarning,
-        "DatetimeIndexResampler.fillna is deprecated ",
-        lower="2.0.99",
-    ):
-        check(assert_type(DF.resample(MonthFreq).fillna("pad"), DataFrame), DataFrame)
-        check(
-            assert_type(DF.resample(MonthFreq).fillna("backfill"), DataFrame), DataFrame
-        )
-        check(assert_type(DF.resample(MonthFreq).fillna("ffill"), DataFrame), DataFrame)
-        check(assert_type(DF.resample(MonthFreq).fillna("bfill"), DataFrame), DataFrame)
-        check(
-            assert_type(DF.resample(MonthFreq).fillna("nearest", limit=2), DataFrame),
-            DataFrame,
-        )
+    # deprecated (and removed from stub)
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.resample(MonthFreq).fillna("pad")  # type: ignore[operator]  # pyright: ignore
 
 
 def test_aggregate() -> None:
@@ -342,19 +330,9 @@ def test_filling_series() -> None:
 
 
 def test_fillna_series() -> None:
-    with pytest_warns_bounded(
-        FutureWarning,
-        "DatetimeIndexResampler.fillna is deprecated ",
-        lower="2.0.99",
-    ):
-        check(assert_type(S.resample(MonthFreq).fillna("pad"), Series), Series)
-        check(assert_type(S.resample(MonthFreq).fillna("backfill"), Series), Series)
-        check(assert_type(S.resample(MonthFreq).fillna("ffill"), Series), Series)
-        check(assert_type(S.resample(MonthFreq).fillna("bfill"), Series), Series)
-        check(
-            assert_type(S.resample(MonthFreq).fillna("nearest", limit=2), Series),
-            Series,
-        )
+    # deprecated (and removed from stub)
+    if TYPE_CHECKING_INVALID_USAGE:
+        S.resample(MonthFreq).fillna("pad")  # type: ignore[operator]  # pyright: ignore
 
 
 def test_aggregate_series() -> None:

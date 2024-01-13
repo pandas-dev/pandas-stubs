@@ -30,6 +30,7 @@ from typing_extensions import assert_type
 
 from tests import (
     PD_LTE_21,
+    TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
 )
@@ -94,18 +95,9 @@ def test_frame_groupby_resample() -> None:
     check(assert_type(GB_DF.resample(M).nearest(), DataFrame), DataFrame)
     check(assert_type(GB_DF.resample(M).bfill(), DataFrame), DataFrame)
 
-    # fillna
-    with pytest_warns_bounded(
-        FutureWarning,
-        "DatetimeIndexResamplerGroupby.fillna is deprecated ",
-        lower="2.0.99",
-    ):
-        check(assert_type(GB_DF.resample(M).fillna("ffill"), DataFrame), DataFrame)
-        check(assert_type(GB_DF.resample(M).fillna("bfill"), DataFrame), DataFrame)
-        check(
-            assert_type(GB_DF.resample(M).fillna("nearest", limit=2), DataFrame),
-            DataFrame,
-        )
+    # fillna (deprecated)
+    if TYPE_CHECKING_INVALID_USAGE:
+        GB_DF.resample(M).fillna("ffill")  # type: ignore[operator] # pyright: ignore
 
     # aggregate / apply
     with pytest_warns_bounded(
@@ -291,27 +283,9 @@ def test_series_groupby_resample() -> None:
     check(assert_type(GB_S.resample(M).nearest(), "Series[float]"), Series, float)
     check(assert_type(GB_S.resample(M).bfill(), "Series[float]"), Series, float)
 
-    # fillna
-    with pytest_warns_bounded(
-        FutureWarning,
-        "DatetimeIndexResamplerGroupby.fillna is deprecated ",
-        lower="2.0.99",
-    ):
-        check(
-            assert_type(GB_S.resample(M).fillna("ffill"), "Series[float]"),
-            Series,
-            float,
-        )
-        check(
-            assert_type(GB_S.resample(M).fillna("bfill"), "Series[float]"),
-            Series,
-            float,
-        )
-        check(
-            assert_type(GB_S.resample(M).fillna("nearest", limit=2), "Series[float]"),
-            Series,
-            float,
-        )
+    # fillna (deprecated)
+    if TYPE_CHECKING_INVALID_USAGE:
+        GB_S.resample(M).fillna("ffill")  # type: ignore[operator] # pyright: ignore
 
     # aggregate
     with pytest_warns_bounded(
