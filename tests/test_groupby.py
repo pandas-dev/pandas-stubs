@@ -18,7 +18,10 @@ from pandas import (
     Timedelta,
     date_range,
 )
-from pandas.core.groupby.generic import SeriesGroupBy
+from pandas.core.groupby.generic import (
+    DataFrameGroupBy,
+    SeriesGroupBy,
+)
 from pandas.core.resample import (
     DatetimeIndexResamplerGroupby,
     Resampler,
@@ -933,3 +936,17 @@ def test_series_groupby_ewm() -> None:
     check(assert_type(iterator, "Iterator[Series[float]]"), Iterator)
     check(assert_type(next(iterator), "Series[float]"), Series, float)
     check(assert_type(list(GB_S.ewm(1)), "list[Series[float]]"), list, Series)
+
+
+def test_engine() -> None:
+    if TYPE_CHECKING_INVALID_USAGE:
+        # See issue #810
+        DataFrameGroupBy().aggregate(
+            "size",
+            "some",
+            "args",
+            engine=0,  # type: ignore[call-overload] # pyright: ignore
+            engine_kwargs="not valid",  # pyright: ignore
+            other_kwarg="",
+        )
+    GB_DF.aggregate("size", engine="cython", engine_kwargs={})
