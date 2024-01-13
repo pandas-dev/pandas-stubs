@@ -2,7 +2,6 @@ from collections.abc import (
     Callable,
     Hashable,
     Iterator,
-    Sequence,
 )
 from typing import (
     Generic,
@@ -17,9 +16,7 @@ from pandas import (
 from pandas.core.groupby import grouper
 
 from pandas._typing import (
-    AnyArrayLike,
     ArrayLike,
-    Axes,
     AxisInt,
     Incomplete,
     NDFrameT,
@@ -32,13 +29,6 @@ from pandas.util._decorators import cache_readonly
 class BaseGrouper:
     axis: Index
     dropna: bool
-    def __init__(
-        self,
-        axis: Index,
-        groupings: Sequence[grouper.Grouping],
-        sort: bool = ...,
-        dropna: bool = ...,
-    ) -> None: ...
     @property
     def groupings(self) -> list[grouper.Grouping]: ...
     @property
@@ -102,12 +92,6 @@ class BinGrouper(BaseGrouper):
     bins: npt.NDArray[np.int64]
     binlabels: Index
     indexer: npt.NDArray[np.intp]
-    def __init__(
-        self,
-        bins: ArrayLike | AnyArrayLike | Sequence[int],
-        binlabels: Axes,
-        indexer: npt.NDArray[np.intp] | None = ...,
-    ) -> None: ...
     @cache_readonly
     def indices(self) -> dict[Incomplete, list[int]]: ...  # type: ignore[override] # pyright: ignore
 
@@ -116,14 +100,4 @@ class DataSplitter(Generic[NDFrameT]):
     labels: npt.NDArray[np.intp]
     ngroups: int
     axis: AxisInt
-    def __init__(
-        self,
-        data: NDFrameT,
-        labels: npt.NDArray[np.intp],
-        ngroups: int,
-        *,
-        sort_idx: npt.NDArray[np.intp],
-        sorted_ids: npt.NDArray[np.intp],
-        axis: AxisInt = ...,
-    ) -> None: ...
     def __iter__(self) -> Iterator[NDFrameT]: ...
