@@ -1385,6 +1385,8 @@ def test_types_resample() -> None:
         df.resample("M", on="date")
     df.resample("20min", origin="epoch", offset=pd.Timedelta(2, "minutes"), on="date")
     df.resample("20min", origin="epoch", offset=datetime.timedelta(2), on="date")
+    df.resample(pd.Timedelta(20, "minutes"), origin="epoch", on="date")
+    df.resample(datetime.timedelta(minutes=20), origin="epoch", on="date")
 
 
 def test_types_to_dict() -> None:
@@ -2692,8 +2694,10 @@ def test_resample_150_changes() -> None:
     frame = pd.DataFrame(np.random.standard_normal((700, 1)), index=idx, columns=["a"])
     with pytest_warns_bounded(FutureWarning, "'M' is deprecated", lower="2.1.99"):
         resampler = frame.resample("M", group_keys=True)
-    assert_type(resampler, "DatetimeIndexResampler[pd.DataFrame]")
-    assert isinstance(resampler, DatetimeIndexResampler)
+    check(
+        assert_type(resampler, "DatetimeIndexResampler[pd.DataFrame]"),
+        DatetimeIndexResampler,
+    )
 
     def f(s: pd.DataFrame) -> pd.Series:
         return s.mean()

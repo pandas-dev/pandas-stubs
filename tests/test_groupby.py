@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
+import datetime as dt
 from typing import (
     TYPE_CHECKING,
     Literal,
@@ -14,6 +15,7 @@ from pandas import (
     DatetimeIndex,
     Index,
     Series,
+    Timedelta,
     date_range,
 )
 from pandas.core.groupby.generic import SeriesGroupBy
@@ -53,6 +55,18 @@ def test_frame_groupby_resample() -> None:
     # basic
     check(
         assert_type(GB_DF.resample(M), "_ResamplerGroupBy[DataFrame]"),
+        DatetimeIndexResamplerGroupby,
+        DataFrame,
+    )
+    check(
+        assert_type(GB_DF.resample(Timedelta(days=30)), "_ResamplerGroupBy[DataFrame]"),
+        DatetimeIndexResamplerGroupby,
+        DataFrame,
+    )
+    check(
+        assert_type(
+            GB_DF.resample(dt.timedelta(days=30)), "_ResamplerGroupBy[DataFrame]"
+        ),
         DatetimeIndexResamplerGroupby,
         DataFrame,
     )

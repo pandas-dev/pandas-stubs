@@ -5,6 +5,7 @@ from collections.abc import (
     Mapping,
     Sequence,
 )
+import datetime as dt
 import sqlite3
 from typing import (
     Any,
@@ -442,12 +443,12 @@ class NDFrame(indexing.IndexingMixin):
     @final
     def resample(
         self,
-        rule: Frequency,
+        rule: Frequency | dt.timedelta,
         axis: Axis | NoDefault = ...,
         closed: Literal["right", "left"] | None = ...,
         label: Literal["right", "left"] | None = ...,
         convention: TimestampConvention = ...,
-        kind: Literal["period", "timestamp", "timedelta"] | None = ...,
+        kind: Literal["period", "timestamp"] | None = ...,
         on: Level | None = ...,
         level: Level | None = ...,
         origin: TimeGrouperOrigin | TimestampConvertibleTypes = ...,

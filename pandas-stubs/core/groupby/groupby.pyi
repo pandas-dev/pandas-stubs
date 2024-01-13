@@ -276,7 +276,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     @final
     def resample(
         self,
-        rule: Frequency,
+        rule: Frequency | dt.timedelta,
         how: str | None = ...,
         fill_method: str | None = ...,
         limit: int | None = ...,
