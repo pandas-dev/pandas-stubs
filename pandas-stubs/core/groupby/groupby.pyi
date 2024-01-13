@@ -302,7 +302,6 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         axis: Axis = ...,
         on: str | Index | None = ...,
         closed: IntervalClosedType | None = ...,
-        step: int | None = ...,
         method: CalculationMethod = ...,
         *,
         selection: IndexLabel | None = ...,
