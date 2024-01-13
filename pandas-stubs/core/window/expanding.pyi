@@ -3,20 +3,7 @@ from pandas.core.window.rolling import (
     RollingAndExpandingMixin,
 )
 
-from pandas._typing import (
-    Axis,
-    IndexLabel,
-    NDFrameT,
-)
+from pandas._typing import NDFrameT
 
-class Expanding(RollingAndExpandingMixin[NDFrameT]):
-    def __init__(
-        self,
-        obj: NDFrameT,
-        min_periods: int = ...,
-        axis: Axis = ...,
-        method: str = ...,
-        selection: IndexLabel | None = ...,
-    ) -> None: ...
-
+class Expanding(RollingAndExpandingMixin[NDFrameT]): ...
 class ExpandingGroupby(BaseWindowGroupby[NDFrameT], Expanding[NDFrameT]): ...

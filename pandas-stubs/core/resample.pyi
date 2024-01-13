@@ -19,10 +19,7 @@ from pandas import (
     TimedeltaIndex,
 )
 from pandas.core.groupby.generic import SeriesGroupBy
-from pandas.core.groupby.groupby import (
-    BaseGroupBy,
-    GroupBy,
-)
+from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.groupby.ops import BinGrouper
 from typing_extensions import (
@@ -34,16 +31,11 @@ from pandas._libs.lib import NoDefault
 from pandas._typing import (
     S1,
     Axis,
-    FillnaOptions,
-    Frequency,
-    IndexLabel,
     InterpolateOptions,
     NDFrameT,
     Scalar,
-    TimedeltaConvertibleTypes,
     TimeGrouperOrigin,
     TimestampConvention,
-    TimestampConvertibleTypes,
     npt,
 )
 
@@ -75,17 +67,6 @@ class Resampler(BaseGroupBy[NDFrameT]):
     binner: DatetimeIndex | TimedeltaIndex | PeriodIndex
     exclusions: frozenset[Hashable]
     ax: Index
-    def __init__(
-        self,
-        obj: NDFrameT,
-        timegrouper: TimeGrouper,
-        axis: Axis = ...,
-        kind: str | None = ...,
-        *,
-        gpr_index: Index,
-        group_keys: bool = ...,
-        selection: IndexLabel | None = ...,
-    ) -> None: ...
     def __getattr__(self, attr: str) -> SeriesGroupBy: ...
     @overload
     def aggregate(
@@ -190,14 +171,6 @@ class Resampler(BaseGroupBy[NDFrameT]):
 # attributes via setattr
 class _GroupByMixin(Resampler[NDFrameT]):
     k: str | list[str] | None
-    def __init__(
-        self,
-        *,
-        parent: Resampler,
-        groupby: GroupBy,
-        key=...,
-        selection: IndexLabel | None = ...,
-    ) -> None: ...
     def __getitem__(self, key) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
 
 class DatetimeIndexResampler(Resampler[NDFrameT]): ...
@@ -232,29 +205,3 @@ class TimeGrouper(Grouper):
     group_keys: bool
     origin: TimeGrouperOrigin
     offset: Timedelta | None
-
-    def __init__(
-        self,
-        freq: Frequency = ...,
-        closed: Literal["left", "right"] | None = ...,
-        label: Literal["left", "right"] | None = ...,
-        how: str = ...,
-        axis: Axis = ...,
-        fill_method: str | None = ...,
-        limit: int | None = ...,
-        kind: Literal["period", "timestamp", "timedelta"] | None = ...,
-        convention: TimestampConvention | None = ...,
-        origin: TimeGrouperOrigin | TimestampConvertibleTypes = ...,
-        offset: TimedeltaConvertibleTypes | None = ...,
-        group_keys: bool = ...,
-        **kwargs,
-    ) -> None: ...
-
-def asfreq(
-    obj: NDFrameT,
-    freq: Frequency,
-    method: Literal[FillnaOptions, "nearest"] | None = ...,
-    how: str | None = ...,
-    normalize: bool = ...,
-    fill_value: Scalar | None = ...,
-) -> NDFrameT: ...

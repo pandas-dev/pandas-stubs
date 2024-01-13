@@ -66,18 +66,6 @@ class Grouping:
     obj: DataFrame | Series | None
     in_axis: bool
     grouping_vector: Incomplete
-    def __init__(
-        self,
-        index: Index,
-        grouper=...,
-        obj: DataFrame | Series | None = ...,
-        level: Level | None = ...,
-        sort: bool = ...,
-        observed: bool = ...,
-        in_axis: bool = ...,
-        dropna: bool = ...,
-        uniques: ArrayLike | None = ...,
-    ) -> None: ...
     def __iter__(self) -> Iterator[Hashable]: ...
     @cache_readonly
     def name(self) -> Hashable: ...

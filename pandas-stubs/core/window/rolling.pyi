@@ -14,7 +14,6 @@ from pandas import (
     Series,
 )
 from pandas.core.base import SelectionMixin
-from pandas.core.groupby.ops import BaseGrouper
 from pandas.core.indexers import BaseIndexer
 from typing_extensions import Self
 
@@ -23,10 +22,8 @@ from pandas._typing import (
     AggFuncTypeBase,
     AggFuncTypeFrame,
     AggFuncTypeSeriesToFrame,
-    Axis,
     AxisInt,
     CalculationMethod,
-    IndexLabel,
     IntervalClosedType,
     NDFrameT,
     QuantileInterpolation,
@@ -45,22 +42,6 @@ class BaseWindow(SelectionMixin[NDFrameT]):
     win_type: str | None
     axis: AxisInt
     method: CalculationMethod
-
-    def __init__(
-        self,
-        obj: NDFrameT,
-        window: int | dt.timedelta | str | BaseOffset | BaseIndexer | None = ...,
-        min_periods: int | None = ...,
-        center: bool | None = ...,
-        win_type: str | None = ...,
-        axis: Axis = ...,
-        on: str | Index | None = ...,
-        closed: IntervalClosedType | None = ...,
-        step: int | None = ...,
-        method: CalculationMethod = ...,
-        *,
-        selection: IndexLabel | None = ...,
-    ) -> None: ...
     def __getitem__(self, key) -> Self: ...
     def __getattr__(self, attr: str) -> Self: ...
     def __iter__(self) -> Iterator[NDFrameT]: ...
@@ -84,24 +65,7 @@ class BaseWindow(SelectionMixin[NDFrameT]):
     ) -> DataFrame: ...
     agg = aggregate
 
-class BaseWindowGroupby(BaseWindow[NDFrameT]):
-    def __init__(
-        self,
-        obj: NDFrameT,
-        window: int | dt.timedelta | str | BaseOffset | BaseIndexer | None = ...,
-        min_periods: int | None = ...,
-        center: bool | None = ...,
-        win_type: str | None = ...,
-        axis: Axis = ...,
-        on: str | Index | None = ...,
-        closed: IntervalClosedType | None = ...,
-        step: int | None = ...,
-        method: CalculationMethod = ...,
-        *,
-        selection: IndexLabel | None = ...,
-        _grouper: BaseGrouper,
-        _as_index: bool = ...,
-    ) -> None: ...
+class BaseWindowGroupby(BaseWindow[NDFrameT]): ...
 
 class Window(BaseWindow[NDFrameT]):
     def sum(self, numeric_only: bool = ..., **kwargs: Any) -> NDFrameT: ...

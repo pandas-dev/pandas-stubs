@@ -164,22 +164,6 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     as_index: bool
     sort: bool
     observed: bool
-    @final
-    def __init__(
-        self,
-        obj: NDFrameT,
-        keys: _KeysArgType | None = ...,
-        axis: Axis = ...,
-        level: IndexLabel | None = ...,
-        grouper: ops.BaseGrouper | None = ...,
-        exclusions: frozenset[Hashable] | None = ...,
-        selection: IndexLabel | None = ...,
-        as_index: bool = ...,
-        sort: bool = ...,
-        group_keys: bool = ...,
-        observed: bool | NoDefault = ...,
-        dropna: bool = ...,
-    ) -> None: ...
     def __getattr__(self, attr: str) -> Any: ...
     def apply(self, func: Callable | str, *args, **kwargs) -> NDFrameT: ...
     @final

@@ -19,13 +19,11 @@ class GroupByIndexingMixin: ...
 
 class GroupByPositionalSelector:
     groupby_object: groupby.GroupBy
-    def __init__(self, groupby_object: groupby.GroupBy) -> None: ...
     def __getitem__(self, arg: PositionalIndexer | tuple) -> DataFrame | Series: ...
 
 class GroupByNthSelector(Generic[_GroupByT]):
     groupby_object: _GroupByT
 
-    def __init__(self, groupby_object: _GroupByT) -> None: ...
     def __call__(
         self,
         n: PositionalIndexer | tuple,
