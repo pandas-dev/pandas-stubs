@@ -11,7 +11,6 @@ from typing import (
 
 import numpy as np
 from pandas import (
-    DataFrame,
     Index,
     Series,
 )
@@ -29,30 +28,6 @@ from pandas._typing import (
     npt,
 )
 from pandas.util._decorators import cache_readonly
-
-def check_result_array(obj, dtype) -> None: ...
-def extract_result(res): ...
-
-class WrappedCythonOp:
-    cast_blocklist: frozenset[str]
-    kind: str
-    how: str
-    has_dropped_na: bool
-
-    def __init__(self, kind: str, how: str, has_dropped_na: bool) -> None: ...
-    @classmethod
-    def get_kind_from_how(cls, how: str) -> str: ...
-    @final
-    def cython_operation(
-        self,
-        *,
-        values: ArrayLike,
-        axis: AxisInt,
-        min_count: int = ...,
-        comp_ids: np.ndarray,
-        ngroups: int,
-        **kwargs,
-    ) -> ArrayLike: ...
 
 class BaseGrouper:
     axis: Index
@@ -152,6 +127,3 @@ class DataSplitter(Generic[NDFrameT]):
         axis: AxisInt = ...,
     ) -> None: ...
     def __iter__(self) -> Iterator[NDFrameT]: ...
-
-class SeriesSplitter(DataSplitter[Series]): ...
-class FrameSplitter(DataSplitter[DataFrame]): ...

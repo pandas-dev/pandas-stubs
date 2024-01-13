@@ -5,10 +5,3 @@ import dataclasses
 class OutputKey:
     label: Hashable
     position: int
-
-plotting_methods: frozenset[str]
-cythonized_kernels: frozenset[str]
-reduction_kernels: frozenset[str]
-transformation_kernels: frozenset[str]
-groupby_other_methods: frozenset[str]
-transform_kernel_allowlist: frozenset[str]

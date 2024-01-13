@@ -11,7 +11,6 @@ from typing import (
     Generic,
     Literal,
     NamedTuple,
-    TypeVar,
     final,
     overload,
 )
@@ -52,7 +51,6 @@ from pandas._typing import (
 from pandas.plotting import boxplot_frame_groupby
 
 AggScalar: TypeAlias = str | Callable[..., Any]
-ScalarResult = TypeVar("ScalarResult")  # noqa: PYI001
 
 class NamedAgg(NamedTuple):
     column: str

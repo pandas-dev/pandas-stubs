@@ -26,8 +26,6 @@ from pandas._typing import (
 )
 from pandas.util._decorators import cache_readonly
 
-class PandasObject: ...
-
 class NoNewAttributesMixin:
     def __setattr__(self, key: str, value: Any) -> None: ...
 

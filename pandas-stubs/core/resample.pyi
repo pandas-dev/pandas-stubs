@@ -224,50 +224,6 @@ class TimedeltaIndexResamplerGroupby(
 ):
     def __getattr__(self, attr: str) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
 
-_ResamplerGroupBy: TypeAlias = (
-    DatetimeIndexResamplerGroupby[NDFrameT]
-    | PeriodIndexResamplerGroupby[NDFrameT]
-    | TimedeltaIndexResamplerGroupby[NDFrameT]
-)
-
-def get_resampler(
-    obj: NDFrameT,
-    kind: Literal["period", "timestamp", "timedelta"] | None = ...,
-    *,
-    # Keyword argumentsmust be kept roughly inline with TimeGrouper.__init__ below
-    freq: Frequency = ...,
-    closed: Literal["left", "right"] | None = ...,
-    label: Literal["left", "right"] | None = ...,
-    how: str = ...,
-    axis: Axis = ...,
-    fill_method: str | None = ...,
-    limit: int | None = ...,
-    convention: TimestampConvention | None = ...,
-    origin: TimeGrouperOrigin | TimestampConvertibleTypes = ...,
-    offset: TimedeltaConvertibleTypes | None = ...,
-    group_keys: bool = ...,
-    **kwds,
-) -> DatetimeIndexResampler[NDFrameT]: ...
-def get_resampler_for_grouping(
-    groupby: GroupBy[NDFrameT],
-    rule: Frequency,
-    how: str | None = ...,
-    fill_method: str | None = ...,
-    limit: int | None = ...,
-    kind: Literal["period", "timestamp", "timedelta"] | None = ...,
-    on: Hashable | None = ...,
-    *,
-    # Keyword argumentsmust be kept roughly inline with TimeGrouper.__init__ below
-    closed: Literal["left", "right"] | None = ...,
-    label: Literal["left", "right"] | None = ...,
-    axis: Axis = ...,
-    convention: TimestampConvention | None = ...,
-    origin: TimeGrouperOrigin | TimestampConvertibleTypes = ...,
-    offset: TimedeltaConvertibleTypes | None = ...,
-    group_keys: bool = ...,
-    **kwargs,
-) -> _ResamplerGroupBy[NDFrameT]: ...
-
 class TimeGrouper(Grouper):
     closed: Literal["left", "right"]
     label: Literal["left", "right"]

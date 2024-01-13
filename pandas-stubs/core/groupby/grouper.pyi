@@ -13,7 +13,6 @@ from pandas import (
     Index,
     Series,
 )
-from pandas.core.groupby.ops import BaseGrouper
 from pandas.core.resample import TimeGrouper
 from typing_extensions import Self
 
@@ -26,7 +25,6 @@ from pandas._typing import (
     KeysArgType,
     Level,
     ListLikeHashable,
-    NDFrameT,
     npt,
 )
 from pandas.util._decorators import cache_readonly
@@ -97,14 +95,3 @@ class Grouping:
     def group_index(self) -> Index: ...
     @cache_readonly
     def groups(self) -> dict[Hashable, np.ndarray]: ...
-
-def get_grouper(
-    obj: NDFrameT,
-    key: KeysArgType | None = ...,
-    axis: Axis = ...,
-    level: Level | ListLikeHashable[Level] | None = ...,
-    sort: bool = ...,
-    observed: bool = ...,
-    validate: bool = ...,
-    dropna: bool = ...,
-) -> tuple[BaseGrouper, frozenset[Hashable], NDFrameT]: ...

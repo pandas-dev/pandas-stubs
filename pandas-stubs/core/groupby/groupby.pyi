@@ -17,10 +17,7 @@ from typing import (
 )
 
 import numpy as np
-from pandas.core.base import (
-    PandasObject,
-    SelectionMixin,
-)
+from pandas.core.base import SelectionMixin
 from pandas.core.frame import DataFrame
 from pandas.core.groupby import (
     generic,
@@ -32,7 +29,11 @@ from pandas.core.groupby.indexing import (
 )
 from pandas.core.indexers import BaseIndexer
 from pandas.core.indexes.api import Index
-from pandas.core.resample import _ResamplerGroupBy
+from pandas.core.resample import (
+    DatetimeIndexResamplerGroupby,
+    PeriodIndexResamplerGroupby,
+    TimedeltaIndexResamplerGroupby,
+)
 from pandas.core.series import Series
 from pandas.core.window import (
     ExpandingGroupby,
@@ -58,7 +59,6 @@ from pandas._typing import (
     Frequency,
     IndexLabel,
     IntervalClosedType,
-    KeysArgType,
     MaskType,
     NDFrameT,
     P,
@@ -86,17 +86,23 @@ _KeysArgType: TypeAlias = (
     | Mapping[Hashable, Hashable]
 )
 
+_ResamplerGroupBy: TypeAlias = (
+    DatetimeIndexResamplerGroupby[NDFrameT]
+    | PeriodIndexResamplerGroupby[NDFrameT]
+    | TimedeltaIndexResamplerGroupby[NDFrameT]
+)
+
 # GroupByPlot does not really inherit from PlotAccessor but it delegates
 # to it using __call__ and __getattr__. We lie here to avoid repeating the
 # whole stub of PlotAccessor
 @final
-class GroupByPlot(PandasObject, PlotAccessor, Generic[_GroupByT]):
+class GroupByPlot(PlotAccessor, Generic[_GroupByT]):
     def __init__(self, groupby: _GroupByT) -> None: ...
     # The following methods are inherited from the fake parent class PlotAccessor
     # def __call__(self, *args, **kwargs): ...
     # def __getattr__(self, name: str): ...
 
-class BaseGroupBy(PandasObject, SelectionMixin[NDFrameT], GroupByIndexingMixin):
+class BaseGroupBy(SelectionMixin[NDFrameT], GroupByIndexingMixin):
     axis: AxisInt
     grouper: ops.BaseGrouper
     keys: _KeysArgType | None
@@ -417,20 +423,3 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         weights: Sequence | Series | None = ...,
         random_state: RandomState | None = ...,
     ) -> NDFrameT: ...
-
-@overload
-def get_groupby(
-    obj: Series,
-    by: KeysArgType | None = ...,
-    axis: int = ...,
-    grouper: ops.BaseGrouper | None = ...,
-    group_keys: bool = ...,
-) -> generic.SeriesGroupBy: ...
-@overload
-def get_groupby(
-    obj: DataFrame,
-    by: KeysArgType | None = ...,
-    axis: int = ...,
-    grouper: ops.BaseGrouper | None = ...,
-    group_keys: bool = ...,
-) -> generic.DataFrameGroupBy: ...
