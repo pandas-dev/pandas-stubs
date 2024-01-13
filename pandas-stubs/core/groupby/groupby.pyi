@@ -277,7 +277,6 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     def resample(
         self,
         rule: Frequency,
-        # Arguments must be kept roughly inline with pandas.core.resample.get_resampler_for_grouping
         how: str | None = ...,
         fill_method: str | None = ...,
         limit: int | None = ...,
@@ -296,7 +295,6 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     @final
     def rolling(
         self,
-        # Arguments must be kept roughly inline with pandas.core.window.RollingGroupby
         window: int | dt.timedelta | str | BaseOffset | BaseIndexer | None = ...,
         min_periods: int | None = ...,
         center: bool | None = ...,
@@ -305,23 +303,21 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         on: str | Index | None = ...,
         closed: IntervalClosedType | None = ...,
         step: int | None = ...,
-        method: str = ...,
+        method: CalculationMethod = ...,
         *,
         selection: IndexLabel | None = ...,
     ) -> RollingGroupby[NDFrameT]: ...
     @final
     def expanding(
         self,
-        # Arguments must be kept roughly inline with pandas.core.window.ExpandingGroupby
         min_periods: int = ...,
         axis: Axis = ...,
-        method: str = ...,
+        method: CalculationMethod = ...,
         selection: IndexLabel | None = ...,
     ) -> ExpandingGroupby[NDFrameT]: ...
     @final
     def ewm(
         self,
-        # Arguments must be kept roughly inline with pandas.core.window.ExponentialMovingWindowGroupby
         com: float | None = ...,
         span: float | None = ...,
         halflife: TimedeltaConvertibleTypes | None = ...,
