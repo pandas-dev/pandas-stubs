@@ -25,22 +25,22 @@ def deprecate(
     name: str,
     alternative: Callable[..., Any],
     version: str,
-    alt_name: str | None = None,
-    klass: type[Warning] | None = None,
-    stacklevel: int = 2,
-    msg: str | None = None,
+    alt_name: str | None = ...,
+    klass: type[Warning] | None = ...,
+    stacklevel: int = ...,
+    msg: str | None = ...,
 ) -> Callable[[F], F]: ...
 def deprecate_kwarg(
     old_arg_name: str,
     new_arg_name: str | None,
-    mapping: Mapping[Any, Any] | Callable[[Any], Any] | None = None,
-    stacklevel: int = 2,
+    mapping: Mapping[Any, Any] | Callable[[Any], Any] | None = ...,
+    stacklevel: int = ...,
 ) -> Callable[[F], F]: ...
 def future_version_msg(version: str | None) -> str: ...
 def deprecate_nonkeyword_arguments(
     version: str | None,
-    allowed_args: list[str] | None = None,
-    name: str | None = None,
+    allowed_args: list[str] | None = ...,
+    name: str | None = ...,
 ) -> Callable[[F], F]: ...
 def doc(*docstrings: str | Callable | None, **params) -> Callable[[F], F]: ...
 
@@ -55,7 +55,7 @@ class Appender:
     join: str
 
     def __init__(
-        self, addendum: str | None, join: str = "", indents: int = 0
+        self, addendum: str | None, join: str = ..., indents: int = ...
     ) -> None: ...
     def __call__(self, func: T) -> T: ...
 

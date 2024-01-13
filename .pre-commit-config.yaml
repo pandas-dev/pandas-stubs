@@ -18,7 +18,7 @@ repos:
           --exit-non-zero-on-fix,
           --target-version, py39,
           --extend-select, "PYI,UP,RUF100",
-          --ignore, "E501,E731,F841,PYI042,PYI053",
+          --ignore, "E501,E731,F841,PYI042",
           --per-file-ignores, "_*.pyi:PYI001",
           --fix
         ]

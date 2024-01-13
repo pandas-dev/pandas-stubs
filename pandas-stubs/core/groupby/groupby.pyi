@@ -162,83 +162,83 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     def __init__(
         self,
         obj: NDFrameT,
-        keys: _KeysArgType | None = None,
-        axis: Axis = 0,
-        level: IndexLabel | None = None,
-        grouper: ops.BaseGrouper | None = None,
-        exclusions: frozenset[Hashable] | None = None,
-        selection: IndexLabel | None = None,
-        as_index: bool = True,
-        sort: bool = True,
-        group_keys: bool = True,
+        keys: _KeysArgType | None = ...,
+        axis: Axis = ...,
+        level: IndexLabel | None = ...,
+        grouper: ops.BaseGrouper | None = ...,
+        exclusions: frozenset[Hashable] | None = ...,
+        selection: IndexLabel | None = ...,
+        as_index: bool = ...,
+        sort: bool = ...,
+        group_keys: bool = ...,
         observed: bool | NoDefault = ...,
-        dropna: bool = True,
+        dropna: bool = ...,
     ) -> None: ...
     def __getattr__(self, attr: str) -> Any: ...
     def apply(self, func: Callable | str, *args, **kwargs) -> NDFrameT: ...
     @final
     @overload
-    def any(self: GroupBy[Series], skipna: bool = True) -> Series[bool]: ...
+    def any(self: GroupBy[Series], skipna: bool = ...) -> Series[bool]: ...
     @overload
-    def any(self: GroupBy[DataFrame], skipna: bool = True) -> DataFrame: ...
+    def any(self: GroupBy[DataFrame], skipna: bool = ...) -> DataFrame: ...
     @final
     @overload
-    def all(self: GroupBy[Series], skipna: bool = True) -> Series[bool]: ...
+    def all(self: GroupBy[Series], skipna: bool = ...) -> Series[bool]: ...
     @overload
-    def all(self: GroupBy[DataFrame], skipna: bool = True) -> DataFrame: ...
+    def all(self: GroupBy[DataFrame], skipna: bool = ...) -> DataFrame: ...
     @final
     def count(self) -> NDFrameT: ...
     @final
     def mean(
         self,
-        numeric_only: bool = False,
-        engine: WindowingEngine = None,
-        engine_kwargs: WindowingEngineKwargs = None,
+        numeric_only: bool = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     @final
-    def median(self, numeric_only: bool = False) -> NDFrameT: ...
+    def median(self, numeric_only: bool = ...) -> NDFrameT: ...
     @final
     @overload
     def std(
         self: GroupBy[Series],
-        ddof: int = 1,
-        engine: WindowingEngine = None,
-        engine_kwargs: WindowingEngineKwargs = None,
-        numeric_only: bool = False,
+        ddof: int = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
+        numeric_only: bool = ...,
     ) -> Series[float]: ...
     @overload
     def std(
         self: GroupBy[DataFrame],
-        ddof: int = 1,
-        engine: WindowingEngine = None,
-        engine_kwargs: WindowingEngineKwargs = None,
-        numeric_only: bool = False,
+        ddof: int = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
+        numeric_only: bool = ...,
     ) -> DataFrame: ...
     @final
     @overload
     def var(
         self: GroupBy[Series],
-        ddof: int = 1,
-        engine: WindowingEngine = None,
-        engine_kwargs: WindowingEngineKwargs = None,
-        numeric_only: bool = False,
+        ddof: int = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
+        numeric_only: bool = ...,
     ) -> Series[float]: ...
     @overload
     def var(
         self: GroupBy[DataFrame],
-        ddof: int = 1,
-        engine: WindowingEngine = None,
-        engine_kwargs: WindowingEngineKwargs = None,
-        numeric_only: bool = False,
+        ddof: int = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
+        numeric_only: bool = ...,
     ) -> DataFrame: ...
     @final
     @overload
     def sem(
-        self: GroupBy[Series], ddof: int = 1, numeric_only: bool = False
+        self: GroupBy[Series], ddof: int = ..., numeric_only: bool = ...
     ) -> Series[float]: ...
     @overload
     def sem(
-        self: GroupBy[DataFrame], ddof: int = 1, numeric_only: bool = False
+        self: GroupBy[DataFrame], ddof: int = ..., numeric_only: bool = ...
     ) -> DataFrame: ...
     @final
     @overload
@@ -248,128 +248,128 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     @final
     def sum(
         self,
-        numeric_only: bool = False,
-        min_count: int = 0,
-        engine: WindowingEngine = None,
-        engine_kwargs: WindowingEngineKwargs = None,
+        numeric_only: bool = ...,
+        min_count: int = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     @final
-    def prod(self, numeric_only: bool = False, min_count: int = 0) -> NDFrameT: ...
+    def prod(self, numeric_only: bool = ..., min_count: int = ...) -> NDFrameT: ...
     @final
     def min(
         self,
-        numeric_only: bool = False,
-        min_count: int = -1,
-        engine: WindowingEngine = None,
-        engine_kwargs: WindowingEngineKwargs = None,
+        numeric_only: bool = ...,
+        min_count: int = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     @final
     def max(
         self,
-        numeric_only: bool = False,
-        min_count: int = -1,
-        engine: WindowingEngine = None,
-        engine_kwargs: WindowingEngineKwargs = None,
+        numeric_only: bool = ...,
+        min_count: int = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     @final
-    def first(self, numeric_only: bool = False, min_count: int = -1) -> NDFrameT: ...
+    def first(self, numeric_only: bool = ..., min_count: int = ...) -> NDFrameT: ...
     @final
-    def last(self, numeric_only: bool = False, min_count: int = -1) -> NDFrameT: ...
+    def last(self, numeric_only: bool = ..., min_count: int = ...) -> NDFrameT: ...
     @final
     def ohlc(self) -> DataFrame: ...
     def describe(
         self,
-        percentiles: Iterable[float] | None = None,
-        include: Literal["all"] | list[Dtype] | None = None,
-        exclude: list[Dtype] | None = None,
+        percentiles: Iterable[float] | None = ...,
+        include: Literal["all"] | list[Dtype] | None = ...,
+        exclude: list[Dtype] | None = ...,
     ) -> DataFrame: ...
     @final
     def resample(
         self,
         rule: Frequency,
         # Arguments must be kept roughly inline with pandas.core.resample.get_resampler_for_grouping
-        how: str | None = None,
-        fill_method: str | None = None,
-        limit: int | None = None,
-        kind: str | None = None,
-        on: Hashable | None = None,
+        how: str | None = ...,
+        fill_method: str | None = ...,
+        limit: int | None = ...,
+        kind: str | None = ...,
+        on: Hashable | None = ...,
         *,
-        closed: Literal["left", "right"] | None = None,
-        label: Literal["left", "right"] | None = None,
-        axis: Axis = 0,
-        convention: TimestampConvention | None = None,
-        origin: TimeGrouperOrigin | TimestampConvertibleTypes = "start_day",
-        offset: TimedeltaConvertibleTypes | None = None,
-        group_keys: bool = False,
+        closed: Literal["left", "right"] | None = ...,
+        label: Literal["left", "right"] | None = ...,
+        axis: Axis = ...,
+        convention: TimestampConvention | None = ...,
+        origin: TimeGrouperOrigin | TimestampConvertibleTypes = ...,
+        offset: TimedeltaConvertibleTypes | None = ...,
+        group_keys: bool = ...,
         **kwargs,
     ) -> _ResamplerGroupBy[NDFrameT]: ...
     @final
     def rolling(
         self,
         # Arguments must be kept roughly inline with pandas.core.window.RollingGroupby
-        window: int | dt.timedelta | str | BaseOffset | BaseIndexer | None = None,
-        min_periods: int | None = None,
-        center: bool | None = False,
-        win_type: str | None = None,
-        axis: Axis = 0,
-        on: str | Index | None = None,
-        closed: IntervalClosedType | None = None,
-        step: int | None = None,
-        method: str = "single",
+        window: int | dt.timedelta | str | BaseOffset | BaseIndexer | None = ...,
+        min_periods: int | None = ...,
+        center: bool | None = ...,
+        win_type: str | None = ...,
+        axis: Axis = ...,
+        on: str | Index | None = ...,
+        closed: IntervalClosedType | None = ...,
+        step: int | None = ...,
+        method: str = ...,
         *,
-        selection: IndexLabel | None = None,
+        selection: IndexLabel | None = ...,
     ) -> RollingGroupby[NDFrameT]: ...
     @final
     def expanding(
         self,
         # Arguments must be kept roughly inline with pandas.core.window.ExpandingGroupby
-        min_periods: int = 1,
-        axis: Axis = 0,
-        method: str = "single",
-        selection: IndexLabel | None = None,
+        min_periods: int = ...,
+        axis: Axis = ...,
+        method: str = ...,
+        selection: IndexLabel | None = ...,
     ) -> ExpandingGroupby[NDFrameT]: ...
     @final
     def ewm(
         self,
         # Arguments must be kept roughly inline with pandas.core.window.ExponentialMovingWindowGroupby
-        com: float | None = None,
-        span: float | None = None,
-        halflife: TimedeltaConvertibleTypes | None = None,
-        alpha: float | None = None,
-        min_periods: int | None = 0,
-        adjust: bool = True,
-        ignore_na: bool = False,
-        axis: Axis = 0,
-        times: str | np.ndarray | Series | np.timedelta64 | None = None,
-        method: CalculationMethod = "single",
+        com: float | None = ...,
+        span: float | None = ...,
+        halflife: TimedeltaConvertibleTypes | None = ...,
+        alpha: float | None = ...,
+        min_periods: int | None = ...,
+        adjust: bool = ...,
+        ignore_na: bool = ...,
+        axis: Axis = ...,
+        times: str | np.ndarray | Series | np.timedelta64 | None = ...,
+        method: CalculationMethod = ...,
         *,
-        selection: IndexLabel | None = None,
+        selection: IndexLabel | None = ...,
     ) -> ExponentialMovingWindowGroupby[NDFrameT]: ...
     @final
-    def ffill(self, limit: int | None = None) -> NDFrameT: ...
+    def ffill(self, limit: int | None = ...) -> NDFrameT: ...
     @final
-    def bfill(self, limit: int | None = None) -> NDFrameT: ...
+    def bfill(self, limit: int | None = ...) -> NDFrameT: ...
     @final
     @property
     def nth(self) -> GroupByNthSelector[Self]: ...
     @final
     def quantile(
         self,
-        q: float | AnyArrayLike = 0.5,
-        interpolation: str = "linear",
-        numeric_only: bool = False,
+        q: float | AnyArrayLike = ...,
+        interpolation: str = ...,
+        numeric_only: bool = ...,
     ) -> NDFrameT: ...
     @final
-    def ngroup(self, ascending: bool = True) -> Series[int]: ...
+    def ngroup(self, ascending: bool = ...) -> Series[int]: ...
     @final
-    def cumcount(self, ascending: bool = True) -> Series[int]: ...
+    def cumcount(self, ascending: bool = ...) -> Series[int]: ...
     @final
     def rank(
         self,
-        method: str = "average",
-        ascending: bool = True,
-        na_option: str = "keep",
-        pct: bool = False,
+        method: str = ...,
+        ascending: bool = ...,
+        na_option: str = ...,
+        pct: bool = ...,
         axis: AxisInt | NoDefault = ...,
     ) -> NDFrameT: ...
     @final
@@ -378,59 +378,59 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     def cumsum(self, axis: Axis | NoDefault = ..., *args, **kwargs) -> NDFrameT: ...
     @final
     def cummin(
-        self, axis: AxisInt | NoDefault = ..., numeric_only: bool = False, **kwargs
+        self, axis: AxisInt | NoDefault = ..., numeric_only: bool = ..., **kwargs
     ) -> NDFrameT: ...
     @final
     def cummax(
-        self, axis: AxisInt | NoDefault = ..., numeric_only: bool = False, **kwargs
+        self, axis: AxisInt | NoDefault = ..., numeric_only: bool = ..., **kwargs
     ) -> NDFrameT: ...
     @final
     def shift(
         self,
-        periods: int | Sequence[int] = 1,
-        freq: Frequency | None = None,
+        periods: int | Sequence[int] = ...,
+        freq: Frequency | None = ...,
         axis: Axis | NoDefault = ...,
         fill_value=...,
-        suffix: str | None = None,
+        suffix: str | None = ...,
     ) -> NDFrameT: ...
     @final
-    def diff(self, periods: int = 1, axis: AxisInt | NoDefault = ...) -> NDFrameT: ...
+    def diff(self, periods: int = ..., axis: AxisInt | NoDefault = ...) -> NDFrameT: ...
     @final
     def pct_change(
         self,
-        periods: int = 1,
+        periods: int = ...,
         fill_method: FillnaOptions | None | NoDefault = ...,
         limit: int | None | NoDefault = ...,
-        freq=None,
+        freq=...,
         axis: Axis | NoDefault = ...,
     ) -> NDFrameT: ...
     @final
-    def head(self, n: int = 5) -> NDFrameT: ...
+    def head(self, n: int = ...) -> NDFrameT: ...
     @final
-    def tail(self, n: int = 5) -> NDFrameT: ...
+    def tail(self, n: int = ...) -> NDFrameT: ...
     @final
     def sample(
         self,
-        n: int | None = None,
-        frac: float | None = None,
-        replace: bool = False,
-        weights: Sequence | Series | None = None,
-        random_state: RandomState | None = None,
+        n: int | None = ...,
+        frac: float | None = ...,
+        replace: bool = ...,
+        weights: Sequence | Series | None = ...,
+        random_state: RandomState | None = ...,
     ) -> NDFrameT: ...
 
 @overload
 def get_groupby(
     obj: Series,
-    by: KeysArgType | None = None,
-    axis: int = 0,
-    grouper: ops.BaseGrouper | None = None,
-    group_keys: bool = True,
+    by: KeysArgType | None = ...,
+    axis: int = ...,
+    grouper: ops.BaseGrouper | None = ...,
+    group_keys: bool = ...,
 ) -> generic.SeriesGroupBy: ...
 @overload
 def get_groupby(
     obj: DataFrame,
-    by: KeysArgType | None = None,
-    axis: int = 0,
-    grouper: ops.BaseGrouper | None = None,
-    group_keys: bool = True,
+    by: KeysArgType | None = ...,
+    axis: int = ...,
+    grouper: ops.BaseGrouper | None = ...,
+    group_keys: bool = ...,
 ) -> generic.DataFrameGroupBy: ...

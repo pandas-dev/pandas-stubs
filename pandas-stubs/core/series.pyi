@@ -634,7 +634,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def groupby(
         self,
-        by: None = None,
+        by: None = ...,
         axis: AxisIndex = ...,
         *,
         level: IndexLabel,  # level is required when by=None (passed as keyword)

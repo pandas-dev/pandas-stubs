@@ -15,10 +15,7 @@ from pandas import (
 )
 from pandas.core.groupby.ops import BaseGrouper
 from pandas.core.resample import TimeGrouper
-from typing_extensions import (
-    Self,
-    deprecated,
-)
+from typing_extensions import Self
 
 from pandas._libs.lib import NoDefault
 from pandas._typing import (
@@ -45,38 +42,23 @@ class Grouper:
     @overload
     def __new__(
         cls,
-        key: KeysArgType | None = None,
-        level: Level | ListLikeHashable[Level] | None = None,
+        key: KeysArgType | None = ...,
+        level: Level | ListLikeHashable[Level] | None = ...,
         axis: Axis | NoDefault = ...,
-        sort: bool = False,
-        dropna: bool = True,
+        sort: bool = ...,
+        dropna: bool = ...,
     ) -> Self: ...
     @overload
     def __new__(cls, *args, freq: Frequency, **kwargs) -> TimeGrouper: ...
     def __init__(
         self,
-        key: KeysArgType | None = None,
-        level: Level | ListLikeHashable[Level] | None = None,
-        freq: Frequency | None = None,
+        key: KeysArgType | None = ...,
+        level: Level | ListLikeHashable[Level] | None = ...,
+        freq: Frequency | None = ...,
         axis: Axis | NoDefault = ...,
-        sort: bool = False,
-        dropna: bool = True,
+        sort: bool = ...,
+        dropna: bool = ...,
     ) -> None: ...
-    @property
-    @deprecated("Grouper.ax is deprecated. Use Resampler.ax instead.")
-    def ax(self): ...
-    @property
-    @deprecated("Grouper.indexer is deprecated. Use Resampler.indexer instead.")
-    def indexer(self): ...
-    @property
-    @deprecated("Grouper.obj is deprecated. Use GroupBy.obj instead.")
-    def obj(self): ...
-    @property
-    @deprecated("Grouper.grouper is deprecated. Use GroupBy.grouper instead.")
-    def grouper(self): ...
-    @property
-    @deprecated("Grouper.groups is deprecated. Use GroupBy.groups instead.")
-    def groups(self): ...
     @final
     def __repr__(self) -> str: ...  # noqa: PYI029 __repr__ here is final
 
@@ -89,14 +71,14 @@ class Grouping:
     def __init__(
         self,
         index: Index,
-        grouper=None,
-        obj: DataFrame | Series | None = None,
-        level: Level | None = None,
-        sort: bool = True,
-        observed: bool = False,
-        in_axis: bool = False,
-        dropna: bool = True,
-        uniques: ArrayLike | None = None,
+        grouper=...,
+        obj: DataFrame | Series | None = ...,
+        level: Level | None = ...,
+        sort: bool = ...,
+        observed: bool = ...,
+        in_axis: bool = ...,
+        dropna: bool = ...,
+        uniques: ArrayLike | None = ...,
     ) -> None: ...
     def __iter__(self) -> Iterator[Hashable]: ...
     @cache_readonly
@@ -118,11 +100,11 @@ class Grouping:
 
 def get_grouper(
     obj: NDFrameT,
-    key: KeysArgType | None = None,
-    axis: Axis = 0,
-    level: Level | ListLikeHashable[Level] | None = None,
-    sort: bool = True,
-    observed: bool = False,
-    validate: bool = True,
-    dropna: bool = True,
+    key: KeysArgType | None = ...,
+    axis: Axis = ...,
+    level: Level | ListLikeHashable[Level] | None = ...,
+    sort: bool = ...,
+    observed: bool = ...,
+    validate: bool = ...,
+    dropna: bool = ...,
 ) -> tuple[BaseGrouper, frozenset[Hashable], NDFrameT]: ...

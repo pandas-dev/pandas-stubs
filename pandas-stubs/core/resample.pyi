@@ -79,25 +79,25 @@ class Resampler(BaseGroupBy[NDFrameT]):
         self,
         obj: NDFrameT,
         timegrouper: TimeGrouper,
-        axis: Axis = 0,
-        kind: str | None = None,
+        axis: Axis = ...,
+        kind: str | None = ...,
         *,
         gpr_index: Index,
-        group_keys: bool = False,
-        selection: IndexLabel | None = None,
+        group_keys: bool = ...,
+        selection: IndexLabel | None = ...,
     ) -> None: ...
     def __getattr__(self, attr: str) -> SeriesGroupBy: ...
     @overload
     def aggregate(
         self: Resampler[DataFrame],
-        func: _FrameGroupByFuncArgs | None = None,
+        func: _FrameGroupByFuncArgs | None = ...,
         *args,
         **kwargs,
     ) -> DataFrame: ...
     @overload
     def aggregate(
         self: Resampler[Series],
-        func: _SeriesGroupByFuncArgs | None = None,
+        func: _SeriesGroupByFuncArgs | None = ...,
         *args,
         **kwargs,
     ) -> Series | DataFrame: ...
@@ -111,67 +111,67 @@ class Resampler(BaseGroupBy[NDFrameT]):
     def transform(
         self: Resampler[DataFrame], arg: Callable[[Series], Series[S1]], *args, **kwargs
     ) -> DataFrame: ...
-    def ffill(self, limit: int | None = None) -> NDFrameT: ...
-    def nearest(self, limit: int | None = None) -> NDFrameT: ...
-    def bfill(self, limit: int | None = None) -> NDFrameT: ...
+    def ffill(self, limit: int | None = ...) -> NDFrameT: ...
+    def nearest(self, limit: int | None = ...) -> NDFrameT: ...
+    def bfill(self, limit: int | None = ...) -> NDFrameT: ...
     def fillna(
-        self, method: Literal[FillnaOptions, "nearest"], limit: int | None = None
+        self, method: Literal[FillnaOptions, "nearest"], limit: int | None = ...
     ) -> NDFrameT: ...
     @overload
     def interpolate(
         self,
-        method: InterpolateOptions = "linear",
+        method: InterpolateOptions = ...,
         *,
-        axis: Axis = 0,
-        limit: int | None = None,
+        axis: Axis = ...,
+        limit: int | None = ...,
         inplace: Literal[True],
-        limit_direction: Literal["forward", "backward", "both"] = "forward",
-        limit_area: Literal["inside", "outside"] | None = None,
+        limit_direction: Literal["forward", "backward", "both"] = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
         downcast: Literal["infer"] | None | NoDefault = ...,
         **kwargs,
     ) -> None: ...
     @overload
     def interpolate(
         self,
-        method: InterpolateOptions = "linear",
+        method: InterpolateOptions = ...,
         *,
-        axis: Axis = 0,
-        limit: int | None = None,
-        inplace: Literal[False] = False,
-        limit_direction: Literal["forward", "backward", "both"] = "forward",
-        limit_area: Literal["inside", "outside"] | None = None,
+        axis: Axis = ...,
+        limit: int | None = ...,
+        inplace: Literal[False] = ...,
+        limit_direction: Literal["forward", "backward", "both"] = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
         downcast: Literal["infer"] | None | NoDefault = ...,
         **kwargs,
     ) -> NDFrameT: ...
-    def asfreq(self, fill_value: Scalar | None = None) -> NDFrameT: ...
+    def asfreq(self, fill_value: Scalar | None = ...) -> NDFrameT: ...
     def sum(
-        self, numeric_only: bool = False, min_count: int = 0, *args, **kwargs
+        self, numeric_only: bool = ..., min_count: int = ..., *args, **kwargs
     ) -> NDFrameT: ...
     def prod(
-        self, numeric_only: bool = False, min_count: int = 0, *args, **kwargs
+        self, numeric_only: bool = ..., min_count: int = ..., *args, **kwargs
     ) -> NDFrameT: ...
     def min(
-        self, numeric_only: bool = False, min_count: int = 0, *args, **kwargs
+        self, numeric_only: bool = ..., min_count: int = ..., *args, **kwargs
     ) -> NDFrameT: ...
     def max(
-        self, numeric_only: bool = False, min_count: int = 0, *args, **kwargs
+        self, numeric_only: bool = ..., min_count: int = ..., *args, **kwargs
     ) -> NDFrameT: ...
     def first(
-        self, numeric_only: bool = False, min_count: int = 0, *args, **kwargs
+        self, numeric_only: bool = ..., min_count: int = ..., *args, **kwargs
     ) -> NDFrameT: ...
     def last(
-        self, numeric_only: bool = False, min_count: int = 0, *args, **kwargs
+        self, numeric_only: bool = ..., min_count: int = ..., *args, **kwargs
     ) -> NDFrameT: ...
-    def median(self, numeric_only: bool = False, *args, **kwargs) -> NDFrameT: ...
-    def mean(self, numeric_only: bool = False, *args, **kwargs) -> NDFrameT: ...
+    def median(self, numeric_only: bool = ..., *args, **kwargs) -> NDFrameT: ...
+    def mean(self, numeric_only: bool = ..., *args, **kwargs) -> NDFrameT: ...
     def std(
-        self, ddof: int = 1, numeric_only: bool = False, *args, **kwargs
+        self, ddof: int = ..., numeric_only: bool = ..., *args, **kwargs
     ) -> NDFrameT: ...
     def var(
-        self, ddof: int = 1, numeric_only: bool = False, *args, **kwargs
+        self, ddof: int = ..., numeric_only: bool = ..., *args, **kwargs
     ) -> NDFrameT: ...
     def sem(
-        self, ddof: int = 1, numeric_only: bool = False, *args, **kwargs
+        self, ddof: int = ..., numeric_only: bool = ..., *args, **kwargs
     ) -> NDFrameT: ...
     def ohlc(self, *args, **kwargs) -> DataFrame: ...
     @overload
@@ -185,7 +185,7 @@ class Resampler(BaseGroupBy[NDFrameT]):
     def count(self: Resampler[DataFrame]) -> DataFrame: ...
     def quantile(
         self,
-        q: float | list[float] | npt.NDArray[np.float_] | Series[float] = 0.5,
+        q: float | list[float] | npt.NDArray[np.float_] | Series[float] = ...,
         **kwargs,
     ) -> NDFrameT: ...
 
@@ -198,8 +198,8 @@ class _GroupByMixin(Resampler[NDFrameT]):
         *,
         parent: Resampler,
         groupby: GroupBy,
-        key=None,
-        selection: IndexLabel | None = None,
+        key=...,
+        selection: IndexLabel | None = ...,
     ) -> None: ...
     def __getitem__(self, key) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
 
@@ -232,39 +232,39 @@ _ResamplerGroupBy: TypeAlias = (
 
 def get_resampler(
     obj: NDFrameT,
-    kind: Literal["period", "timestamp", "timedelta"] | None = None,
+    kind: Literal["period", "timestamp", "timedelta"] | None = ...,
     *,
     # Keyword argumentsmust be kept roughly inline with TimeGrouper.__init__ below
-    freq: Frequency = "Min",
-    closed: Literal["left", "right"] | None = None,
-    label: Literal["left", "right"] | None = None,
-    how: str = "mean",
-    axis: Axis = 0,
-    fill_method: str | None = None,
-    limit: int | None = None,
-    convention: TimestampConvention | None = None,
-    origin: TimeGrouperOrigin | TimestampConvertibleTypes = "start_day",
-    offset: TimedeltaConvertibleTypes | None = None,
-    group_keys: bool = False,
+    freq: Frequency = ...,
+    closed: Literal["left", "right"] | None = ...,
+    label: Literal["left", "right"] | None = ...,
+    how: str = ...,
+    axis: Axis = ...,
+    fill_method: str | None = ...,
+    limit: int | None = ...,
+    convention: TimestampConvention | None = ...,
+    origin: TimeGrouperOrigin | TimestampConvertibleTypes = ...,
+    offset: TimedeltaConvertibleTypes | None = ...,
+    group_keys: bool = ...,
     **kwds,
 ) -> DatetimeIndexResampler[NDFrameT]: ...
 def get_resampler_for_grouping(
     groupby: GroupBy[NDFrameT],
     rule: Frequency,
-    how: str | None = None,
-    fill_method: str | None = None,
-    limit: int | None = None,
-    kind: Literal["period", "timestamp", "timedelta"] | None = None,
-    on: Hashable | None = None,
+    how: str | None = ...,
+    fill_method: str | None = ...,
+    limit: int | None = ...,
+    kind: Literal["period", "timestamp", "timedelta"] | None = ...,
+    on: Hashable | None = ...,
     *,
     # Keyword argumentsmust be kept roughly inline with TimeGrouper.__init__ below
-    closed: Literal["left", "right"] | None = None,
-    label: Literal["left", "right"] | None = None,
-    axis: Axis = 0,
-    convention: TimestampConvention | None = None,
-    origin: TimeGrouperOrigin | TimestampConvertibleTypes = "start_day",
-    offset: TimedeltaConvertibleTypes | None = None,
-    group_keys: bool = False,
+    closed: Literal["left", "right"] | None = ...,
+    label: Literal["left", "right"] | None = ...,
+    axis: Axis = ...,
+    convention: TimestampConvention | None = ...,
+    origin: TimeGrouperOrigin | TimestampConvertibleTypes = ...,
+    offset: TimedeltaConvertibleTypes | None = ...,
+    group_keys: bool = ...,
     **kwargs,
 ) -> _ResamplerGroupBy[NDFrameT]: ...
 
@@ -282,26 +282,26 @@ class TimeGrouper(Grouper):
 
     def __init__(
         self,
-        freq: Frequency = "Min",
-        closed: Literal["left", "right"] | None = None,
-        label: Literal["left", "right"] | None = None,
-        how: str = "mean",
-        axis: Axis = 0,
-        fill_method: str | None = None,
-        limit: int | None = None,
-        kind: Literal["period", "timestamp", "timedelta"] | None = None,
-        convention: TimestampConvention | None = None,
-        origin: TimeGrouperOrigin | TimestampConvertibleTypes = "start_day",
-        offset: TimedeltaConvertibleTypes | None = None,
-        group_keys: bool = False,
+        freq: Frequency = ...,
+        closed: Literal["left", "right"] | None = ...,
+        label: Literal["left", "right"] | None = ...,
+        how: str = ...,
+        axis: Axis = ...,
+        fill_method: str | None = ...,
+        limit: int | None = ...,
+        kind: Literal["period", "timestamp", "timedelta"] | None = ...,
+        convention: TimestampConvention | None = ...,
+        origin: TimeGrouperOrigin | TimestampConvertibleTypes = ...,
+        offset: TimedeltaConvertibleTypes | None = ...,
+        group_keys: bool = ...,
         **kwargs,
     ) -> None: ...
 
 def asfreq(
     obj: NDFrameT,
     freq: Frequency,
-    method: Literal[FillnaOptions, "nearest"] | None = None,
-    how: str | None = None,
-    normalize: bool = False,
-    fill_value: Scalar | None = None,
+    method: Literal[FillnaOptions, "nearest"] | None = ...,
+    how: str | None = ...,
+    normalize: bool = ...,
+    fill_value: Scalar | None = ...,
 ) -> NDFrameT: ...

@@ -48,12 +48,12 @@ ResType = dict[int, Any]  # noqa: PYI026
 def frame_apply(
     obj: DataFrame,
     func: AggFuncType,
-    axis: Axis = 0,
-    raw: bool = False,
-    result_type: str | None = None,
-    by_row: Literal[False, "compat"] = "compat",
-    args=None,
-    kwargs=None,
+    axis: Axis = ...,
+    raw: bool = ...,
+    result_type: str | None = ...,
+    by_row: Literal[False, "compat"] = ...,
+    args=...,
+    kwargs=...,
 ) -> FrameApply: ...
 
 class Apply(Generic[_AggObjT], metaclass=abc.ABCMeta):
@@ -72,7 +72,7 @@ class Apply(Generic[_AggObjT], metaclass=abc.ABCMeta):
         raw: bool,
         result_type: Literal["reduce", "broadcast", "expand"] | None,
         *,
-        by_row: Literal[False, "compat", "_compat"] = "compat",
+        by_row: Literal[False, "compat", "_compat"] = ...,
         args,
         kwargs,
     ) -> None: ...
@@ -132,7 +132,7 @@ class FrameApply(NDFrameApply[DataFrame]):
         raw: bool,
         result_type: Literal["reduce", "broadcast", "expand"] | None,
         *,
-        by_row: Literal[False, "compat"] = False,
+        by_row: Literal[False, "compat"] = ...,
         args,
         kwargs,
     ) -> None: ...
@@ -192,7 +192,7 @@ class SeriesApply(NDFrameApply[Series]):
         func: AggFuncType,
         *,
         convert_dtype: bool | NoDefault = ...,
-        by_row: Literal[False, "compat", "_compat"] = "compat",
+        by_row: Literal[False, "compat", "_compat"] = ...,
         args,
         kwargs,
     ) -> None: ...

@@ -22,92 +22,92 @@ class ExponentialMovingWindow(BaseWindow[NDFrameT]):
     def __init__(
         self,
         obj: NDFrameT,
-        com: float | None = None,
-        span: float | None = None,
-        halflife: TimedeltaConvertibleTypes | None = None,
-        alpha: float | None = None,
-        min_periods: int | None = 0,
-        adjust: bool = True,
-        ignore_na: bool = False,
-        axis: Axis = 0,
-        times: str | np.ndarray | Series | np.timedelta64 | None = None,
-        method: CalculationMethod = "single",
+        com: float | None = ...,
+        span: float | None = ...,
+        halflife: TimedeltaConvertibleTypes | None = ...,
+        alpha: float | None = ...,
+        min_periods: int | None = ...,
+        adjust: bool = ...,
+        ignore_na: bool = ...,
+        axis: Axis = ...,
+        times: str | np.ndarray | Series | None | np.timedelta64 = ...,
+        method: CalculationMethod = ...,
         *,
-        selection: IndexLabel | None = None,
+        selection: IndexLabel | None = ...,
     ) -> None: ...
     def online(
         self,
-        engine: WindowingEngine = "numba",
-        engine_kwargs: WindowingEngineKwargs = None,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
     ) -> OnlineExponentialMovingWindow[NDFrameT]: ...
     def mean(
         self,
-        numeric_only: bool = False,
-        engine: WindowingEngine = None,
-        engine_kwargs: WindowingEngineKwargs = None,
+        numeric_only: bool = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     def sum(
         self,
-        numeric_only: bool = False,
-        engine: WindowingEngine = None,
-        engine_kwargs: WindowingEngineKwargs = None,
+        numeric_only: bool = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
-    def std(self, bias: bool = False, numeric_only: bool = False) -> NDFrameT: ...
-    def var(self, bias: bool = False, numeric_only: bool = False) -> NDFrameT: ...
+    def std(self, bias: bool = ..., numeric_only: bool = ...) -> NDFrameT: ...
+    def var(self, bias: bool = ..., numeric_only: bool = ...) -> NDFrameT: ...
     def cov(
         self,
-        other: DataFrame | Series | None = None,
-        pairwise: bool | None = None,
-        bias: bool = False,
-        numeric_only: bool = False,
+        other: DataFrame | Series | None = ...,
+        pairwise: bool | None = ...,
+        bias: bool = ...,
+        numeric_only: bool = ...,
     ) -> NDFrameT: ...
     def corr(
         self,
-        other: DataFrame | Series | None = None,
-        pairwise: bool | None = None,
-        numeric_only: bool = False,
+        other: DataFrame | Series | None = ...,
+        pairwise: bool | None = ...,
+        numeric_only: bool = ...,
     ) -> NDFrameT: ...
 
 class ExponentialMovingWindowGroupby(
     BaseWindowGroupby[NDFrameT], ExponentialMovingWindow[NDFrameT]
 ):
-    def __init__(self, obj, *args, _grouper=None, **kwargs) -> None: ...
+    def __init__(self, obj, *args, _grouper=..., **kwargs) -> None: ...
 
 class OnlineExponentialMovingWindow(ExponentialMovingWindow[NDFrameT]):
     def __init__(
         self,
         obj: NDFrameT,
-        com: float | None = None,
-        span: float | None = None,
-        halflife: float | TimedeltaConvertibleTypes | None = None,
-        alpha: float | None = None,
-        min_periods: int | None = 0,
-        adjust: bool = True,
-        ignore_na: bool = False,
-        axis: Axis = 0,
-        times: np.ndarray | NDFrameT | None = None,
-        engine: WindowingEngine = "numba",
-        engine_kwargs: WindowingEngineKwargs = None,
+        com: float | None = ...,
+        span: float | None = ...,
+        halflife: float | TimedeltaConvertibleTypes | None = ...,
+        alpha: float | None = ...,
+        min_periods: int | None = ...,
+        adjust: bool = ...,
+        ignore_na: bool = ...,
+        axis: Axis = ...,
+        times: np.ndarray | NDFrameT | None = ...,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
         *,
-        selection: IndexLabel | None = None,
+        selection: IndexLabel | None = ...,
     ) -> None: ...
     def reset(self) -> None: ...
     def aggregate(self, func, *args, **kwargs): ...
-    def std(self, bias: bool = False, *args, **kwargs): ...
+    def std(self, bias: bool = ..., *args, **kwargs): ...
     def corr(
         self,
-        other: DataFrame | Series | None = None,
-        pairwise: bool | None = None,
-        numeric_only: bool = False,
+        other: DataFrame | Series | None = ...,
+        pairwise: bool | None = ...,
+        numeric_only: bool = ...,
     ): ...
     def cov(
         self,
-        other: DataFrame | Series | None = None,
-        pairwise: bool | None = None,
-        bias: bool = False,
-        numeric_only: bool = False,
+        other: DataFrame | Series | None = ...,
+        pairwise: bool | None = ...,
+        bias: bool = ...,
+        numeric_only: bool = ...,
     ): ...
-    def var(self, bias: bool = False, numeric_only: bool = False): ...
+    def var(self, bias: bool = ..., numeric_only: bool = ...): ...
     def mean(
-        self, *args, update: NDFrameT | None = None, update_times: None = None, **kwargs
+        self, *args, update: NDFrameT | None = ..., update_times: None = ..., **kwargs
     ) -> NDFrameT: ...
