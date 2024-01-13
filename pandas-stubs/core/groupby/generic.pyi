@@ -38,7 +38,6 @@ from pandas._typing import (
     ByT,
     CorrelationMethod,
     Dtype,
-    FillnaOptions,
     IndexLabel,
     Level,
     ListLike,
@@ -116,8 +115,10 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
     ) -> Series[float]: ...
     def fillna(
         self,
-        value: object | ArrayLike | None = ...,
-        method: FillnaOptions | None = ...,
+        value: (
+            Scalar | ArrayLike | Series | DataFrame | Mapping[Hashable, Scalar] | None
+        ) = ...,
+        method: Literal["bfill", "ffill"] | None = ...,
         axis: Axis | None | NoDefault = ...,
         inplace: bool = ...,
         limit: int | None = ...,
@@ -270,8 +271,10 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
     ) -> Series[float]: ...
     def fillna(
         self,
-        value: Hashable | Mapping | Series | DataFrame | None = ...,
-        method: FillnaOptions | None = ...,
+        value: (
+            Scalar | ArrayLike | Series | DataFrame | Mapping[Hashable, Scalar] | None
+        ) = ...,
+        method: Literal["bfill", "ffill"] | None = ...,
         axis: Axis | None | NoDefault = ...,
         inplace: Literal[False] = ...,
         limit: int | None = ...,

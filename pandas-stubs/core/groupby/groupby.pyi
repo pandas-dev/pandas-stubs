@@ -55,7 +55,6 @@ from pandas._typing import (
     AxisInt,
     CalculationMethod,
     Dtype,
-    FillnaOptions,
     Frequency,
     IndexLabel,
     IntervalClosedType,
@@ -384,7 +383,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     def pct_change(
         self,
         periods: int = ...,
-        fill_method: FillnaOptions | None | NoDefault = ...,
+        fill_method: Literal["bfill", "ffill"] | None | NoDefault = ...,
         limit: int | None | NoDefault = ...,
         freq=...,
         axis: Axis | NoDefault = ...,
