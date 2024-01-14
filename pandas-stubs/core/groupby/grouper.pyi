@@ -48,15 +48,6 @@ class Grouper:
     ) -> Self: ...
     @overload
     def __new__(cls, *args, freq: Frequency, **kwargs) -> TimeGrouper: ...
-    def __init__(
-        self,
-        key: KeysArgType | None = ...,
-        level: Level | ListLikeHashable[Level] | None = ...,
-        freq: Frequency | None = ...,
-        axis: Axis | NoDefault = ...,
-        sort: bool = ...,
-        dropna: bool = ...,
-    ) -> None: ...
     @final
     def __repr__(self) -> str: ...  # noqa: PYI029 __repr__ here is final
 

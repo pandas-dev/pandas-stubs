@@ -93,7 +93,7 @@ class BinGrouper(BaseGrouper):
     binlabels: Index
     indexer: npt.NDArray[np.intp]
     @cache_readonly
-    def indices(self) -> dict[Incomplete, list[int]]: ...  # type: ignore[override] # pyright: ignore
+    def indices(self) -> dict[Incomplete, list[int]]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
 
 class DataSplitter(Generic[NDFrameT]):
     data: NDFrameT
