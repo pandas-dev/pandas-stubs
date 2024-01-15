@@ -47,8 +47,6 @@ from pandas._typing import (
     WindowingEngineKwargs,
 )
 
-from pandas.plotting import boxplot_frame_groupby
-
 AggScalar: TypeAlias = str | Callable[..., Any]
 
 class NamedAgg(NamedTuple):
@@ -180,7 +178,9 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
     def unique(self) -> Series: ...
     # Overrides that provide more precise return types over the GroupBy class
     @final  # type: ignore[misc]
-    def __iter__(self) -> Iterator[tuple[ByT, Series[S1]]]: ...  # pyright: ignore
+    def __iter__(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self,
+    ) -> Iterator[tuple[ByT, Series[S1]]]: ...
 
 class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
     # error: Overload 3 for "apply" will never be used because its parameters overlap overload 1
@@ -250,7 +250,54 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
         skipna: bool = ...,
         numeric_only: bool = ...,
     ) -> DataFrame: ...
-    boxplot = boxplot_frame_groupby
+    @overload
+    def boxplot(
+        grouped,
+        subplots: Literal[True] = ...,
+        column: IndexLabel | None = ...,
+        fontsize: float | str | None = ...,
+        rot: float = ...,
+        grid: bool = ...,
+        ax: PlotAxes | None = ...,
+        figsize: tuple[float, float] | None = ...,
+        layout: tuple[int, int] | None = ...,
+        sharex: bool = ...,
+        sharey: bool = ...,
+        backend: str | None = ...,
+        **kwargs,
+    ) -> Series: ...  # Series[PlotAxes] but this is not allowed
+    @overload
+    def boxplot(
+        grouped,
+        subplots: Literal[False],
+        column: IndexLabel | None = ...,
+        fontsize: float | str | None = ...,
+        rot: float = ...,
+        grid: bool = ...,
+        ax: PlotAxes | None = ...,
+        figsize: tuple[float, float] | None = ...,
+        layout: tuple[int, int] | None = ...,
+        sharex: bool = ...,
+        sharey: bool = ...,
+        backend: str | None = ...,
+        **kwargs,
+    ) -> PlotAxes: ...
+    @overload
+    def boxplot(
+        grouped,
+        subplots: bool,
+        column: IndexLabel | None = ...,
+        fontsize: float | str | None = ...,
+        rot: float = ...,
+        grid: bool = ...,
+        ax: PlotAxes | None = ...,
+        figsize: tuple[float, float] | None = ...,
+        layout: tuple[int, int] | None = ...,
+        sharex: bool = ...,
+        sharey: bool = ...,
+        backend: str | None = ...,
+        **kwargs,
+    ) -> PlotAxes | Series: ...  # Series[PlotAxes]
     @overload
     def value_counts(
         self,
@@ -349,4 +396,6 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
     def __getattr__(self, name: str) -> SeriesGroupBy[Any, ByT]: ...
     # Overrides that provide more precise return types over the GroupBy class
     @final  # type: ignore[misc]
-    def __iter__(self) -> Iterator[tuple[ByT, DataFrame]]: ...  # pyright: ignore
+    def __iter__(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self,
+    ) -> Iterator[tuple[ByT, DataFrame]]: ...

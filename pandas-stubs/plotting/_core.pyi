@@ -27,7 +27,6 @@ from pandas._typing import (
     HashableT1,
     HashableT2,
     HashableT3,
-    IndexLabel,
     npt,
 )
 
@@ -84,54 +83,6 @@ def boxplot(
     return_type: Literal["both"],
     **kwargs,
 ) -> _BoxPlotT: ...
-@overload
-def boxplot_frame_groupby(
-    grouped,
-    subplots: Literal[True] = ...,
-    column: IndexLabel | None = ...,
-    fontsize: float | str | None = ...,
-    rot: float = ...,
-    grid: bool = ...,
-    ax: Axes | None = ...,
-    figsize: tuple[float, float] | None = ...,
-    layout: tuple[int, int] | None = ...,
-    sharex: bool = ...,
-    sharey: bool = ...,
-    backend: str | None = ...,
-    **kwargs,
-) -> Series: ...  # Series[Axes] but this is not allowed
-@overload
-def boxplot_frame_groupby(
-    grouped,
-    subplots: Literal[False],
-    column: IndexLabel | None = ...,
-    fontsize: float | str | None = ...,
-    rot: float = ...,
-    grid: bool = ...,
-    ax: Axes | None = ...,
-    figsize: tuple[float, float] | None = ...,
-    layout: tuple[int, int] | None = ...,
-    sharex: bool = ...,
-    sharey: bool = ...,
-    backend: str | None = ...,
-    **kwargs,
-) -> Axes: ...
-@overload
-def boxplot_frame_groupby(
-    grouped,
-    subplots: bool,
-    column: IndexLabel | None = ...,
-    fontsize: float | str | None = ...,
-    rot: float = ...,
-    grid: bool = ...,
-    ax: Axes | None = ...,
-    figsize: tuple[float, float] | None = ...,
-    layout: tuple[int, int] | None = ...,
-    sharex: bool = ...,
-    sharey: bool = ...,
-    backend: str | None = ...,
-    **kwargs,
-) -> Axes | Series: ...  # Series[Axes]
 
 class PlotAccessor:
     def __init__(self, data) -> None: ...
