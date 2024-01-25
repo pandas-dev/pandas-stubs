@@ -39,7 +39,7 @@ mypy = "1.8.0"
 pandas = "2.1.4"
 pyarrow = ">=10.0.1"
 pytest = ">=7.1.2"
-pyright = ">=1.1.343"
+pyright = ">=1.1.344"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
 typing-extensions = ">=4.4.0"
@@ -208,4 +208,3 @@ filterwarnings = [
 
 # Next line needed to avoid poetry complaint
 [tool.setuptools_scm]
-
