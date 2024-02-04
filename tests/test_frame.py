@@ -956,7 +956,7 @@ def test_types_groupby() -> None:
     df6: pd.DataFrame = df.groupby(by=["col1", "col2"]).nunique()
     with pytest_warns_bounded(
         FutureWarning,
-        "The provided callable <built-in function sum> is currently using",
+        "(The provided callable <built-in function sum> is currently using|The behavior of DataFrame.sum with)",
         lower="2.0.99",
     ):
         df7: pd.DataFrame = df.groupby(by="col1").apply(sum)
@@ -1252,7 +1252,7 @@ def test_types_agg() -> None:
 
     with pytest_warns_bounded(
         FutureWarning,
-        r"The provided callable <built-in function (min|max)> is currently using",
+        r"The provided callable <(built-in function (min|max|mean)|function mean at 0x[0-9a-f]+)> is currently using",
         lower="2.0.99",
     ):
         check(assert_type(df.agg(min), pd.Series), pd.Series)
@@ -1711,7 +1711,7 @@ def test_types_regressions() -> None:
     df = pd.DataFrame({"A": [1, 2, 3], "B": [5, 6, 7]})
     with pytest_warns_bounded(
         FutureWarning,
-        "The 'closed' keyword in DatetimeIndex construction is deprecated",
+        "The '(closed|normalize)' keyword in DatetimeIndex construction is deprecated",
         lower="2.0.99",
     ):
         pd.DatetimeIndex(
