@@ -191,7 +191,6 @@ reportUnknownParameterType = false
 reportUnknownVariableType = false
 reportUnusedVariable = false
 reportPrivateUsage = false
-reportSelfClsParameterName = false
 # enable optional checks
 reportMissingModuleSource = true
 useLibraryCodeForTypes = false

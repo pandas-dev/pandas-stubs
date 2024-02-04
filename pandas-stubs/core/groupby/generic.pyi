@@ -252,7 +252,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
     ) -> DataFrame: ...
     @overload
     def boxplot(
-        grouped,
+        grouped,  # pyright: ignore[reportSelfClsParameterName]
         subplots: Literal[True] = ...,
         column: IndexLabel | None = ...,
         fontsize: float | str | None = ...,
@@ -268,7 +268,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
     ) -> Series: ...  # Series[PlotAxes] but this is not allowed
     @overload
     def boxplot(
-        grouped,
+        grouped,  # pyright: ignore[reportSelfClsParameterName]
         subplots: Literal[False],
         column: IndexLabel | None = ...,
         fontsize: float | str | None = ...,
@@ -284,7 +284,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
     ) -> PlotAxes: ...
     @overload
     def boxplot(
-        grouped,
+        grouped,  # pyright: ignore[reportSelfClsParameterName]
         subplots: bool,
         column: IndexLabel | None = ...,
         fontsize: float | str | None = ...,
