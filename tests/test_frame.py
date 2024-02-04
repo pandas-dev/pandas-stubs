@@ -1252,7 +1252,7 @@ def test_types_agg() -> None:
 
     with pytest_warns_bounded(
         FutureWarning,
-        r"The provided callable <(built-in function (min|max|mean)|function mean at 0x[0-9a-f]+)> is currently using",
+        r"The provided callable <(built-in function (min|max|mean)|function mean at 0x\w+)> is currently using",
         lower="2.0.99",
     ):
         check(assert_type(df.agg(min), pd.Series), pd.Series)
