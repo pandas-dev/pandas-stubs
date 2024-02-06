@@ -30,7 +30,10 @@ import numpy as np
 import numpy.typing as npt
 import pandas as pd
 from pandas._testing import ensure_clean
-from pandas.core.resample import Resampler  # noqa: F401
+from pandas.core.resample import (
+    DatetimeIndexResampler,
+    Resampler,
+)
 from pandas.core.series import Series
 import pytest
 from typing_extensions import (
@@ -953,7 +956,7 @@ def test_types_groupby() -> None:
     df6: pd.DataFrame = df.groupby(by=["col1", "col2"]).nunique()
     with pytest_warns_bounded(
         FutureWarning,
-        "The provided callable <built-in function sum> is currently using",
+        "(The provided callable <built-in function sum> is currently using|The behavior of DataFrame.sum with)",
         lower="2.0.99",
     ):
         df7: pd.DataFrame = df.groupby(by="col1").apply(sum)
@@ -1249,7 +1252,7 @@ def test_types_agg() -> None:
 
     with pytest_warns_bounded(
         FutureWarning,
-        r"The provided callable <built-in function (min|max)> is currently using",
+        r"The provided callable <(built-in function (min|max|mean)|function mean at 0x\w+)> is currently using",
         lower="2.0.99",
     ):
         check(assert_type(df.agg(min), pd.Series), pd.Series)
@@ -1382,6 +1385,8 @@ def test_types_resample() -> None:
         df.resample("M", on="date")
     df.resample("20min", origin="epoch", offset=pd.Timedelta(2, "minutes"), on="date")
     df.resample("20min", origin="epoch", offset=datetime.timedelta(2), on="date")
+    df.resample(pd.Timedelta(20, "minutes"), origin="epoch", on="date")
+    df.resample(datetime.timedelta(minutes=20), origin="epoch", on="date")
 
 
 def test_types_to_dict() -> None:
@@ -1420,8 +1425,9 @@ def test_types_from_dict() -> None:
 
 
 def test_pipe() -> None:
-    def foo(df: pd.DataFrame) -> pd.DataFrame:
-        return pd.DataFrame(df)
+    def resampler_foo(resampler: Resampler[pd.DataFrame]) -> pd.DataFrame:
+        assert isinstance(resampler, Resampler)
+        return pd.DataFrame(resampler)
 
     with pytest_warns_bounded(FutureWarning, "'M' is deprecated", lower="2.1.99"):
         val = (
@@ -1433,8 +1439,11 @@ def test_pipe() -> None:
             )
             .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
             .resample("M", on="week_starting")
-            .pipe(foo)
+            .pipe(resampler_foo)
         )
+
+    def foo(df: pd.DataFrame) -> pd.DataFrame:
+        return pd.DataFrame(df)
 
     df = pd.DataFrame({"a": [1], "b": [2]})
     check(assert_type(val, pd.DataFrame), pd.DataFrame)
@@ -1702,7 +1711,7 @@ def test_types_regressions() -> None:
     df = pd.DataFrame({"A": [1, 2, 3], "B": [5, 6, 7]})
     with pytest_warns_bounded(
         FutureWarning,
-        "The 'closed' keyword in DatetimeIndex construction is deprecated",
+        "The '(closed|normalize)' keyword in DatetimeIndex construction is deprecated",
         lower="2.0.99",
     ):
         pd.DatetimeIndex(
@@ -2685,12 +2694,15 @@ def test_resample_150_changes() -> None:
     frame = pd.DataFrame(np.random.standard_normal((700, 1)), index=idx, columns=["a"])
     with pytest_warns_bounded(FutureWarning, "'M' is deprecated", lower="2.1.99"):
         resampler = frame.resample("M", group_keys=True)
-    assert_type(resampler, "Resampler[pd.DataFrame]")
+    check(
+        assert_type(resampler, "DatetimeIndexResampler[pd.DataFrame]"),
+        DatetimeIndexResampler,
+    )
 
     def f(s: pd.DataFrame) -> pd.Series:
         return s.mean()
 
-    check(assert_type(resampler.apply(f), Union[pd.Series, pd.DataFrame]), pd.DataFrame)
+    check(assert_type(resampler.apply(f), pd.DataFrame), pd.DataFrame)
 
 
 def test_df_accepting_dicts_iterator() -> None:

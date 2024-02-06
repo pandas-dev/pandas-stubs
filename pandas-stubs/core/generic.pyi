@@ -5,6 +5,7 @@ from collections.abc import (
     Mapping,
     Sequence,
 )
+import datetime as dt
 import sqlite3
 from typing import (
     Any,
@@ -17,6 +18,7 @@ from typing import (
 import numpy as np
 from pandas import Index
 import pandas.core.indexing as indexing
+from pandas.core.resample import DatetimeIndexResampler
 from pandas.core.series import Series
 import sqlalchemy.engine
 from typing_extensions import (
@@ -24,6 +26,7 @@ from typing_extensions import (
     Self,
 )
 
+from pandas._libs.lib import NoDefault
 from pandas._typing import (
     S1,
     ArrayLike,
@@ -37,6 +40,7 @@ from pandas._typing import (
     FilePath,
     FileWriteMode,
     FillnaOptions,
+    Frequency,
     HashableT1,
     HashableT2,
     HDFCompLib,
@@ -48,6 +52,10 @@ from pandas._typing import (
     SortKind,
     StorageOptions,
     T,
+    TimedeltaConvertibleTypes,
+    TimeGrouperOrigin,
+    TimestampConvention,
+    TimestampConvertibleTypes,
     WriteBuffer,
 )
 
@@ -432,6 +440,21 @@ class NDFrame(indexing.IndexingMixin):
         end_time,
         axis=...,
     ) -> Self: ...
+    @final
+    def resample(
+        self,
+        rule: Frequency | dt.timedelta,
+        axis: Axis | NoDefault = ...,
+        closed: Literal["right", "left"] | None = ...,
+        label: Literal["right", "left"] | None = ...,
+        convention: TimestampConvention = ...,
+        kind: Literal["period", "timestamp"] | None = ...,
+        on: Level | None = ...,
+        level: Level | None = ...,
+        origin: TimeGrouperOrigin | TimestampConvertibleTypes = ...,
+        offset: TimedeltaConvertibleTypes | None = ...,
+        group_keys: _bool = ...,
+    ) -> DatetimeIndexResampler[Self]: ...
     def first(self, offset) -> Self: ...
     def last(self, offset) -> Self: ...
     def rank(

@@ -1,20 +1,30 @@
-from collections.abc import Callable
+from collections.abc import (
+    Callable,
+    Iterator,
+)
+import datetime as dt
 from typing import (
     Any,
-    Generic,
     overload,
 )
 
 from pandas import (
     DataFrame,
+    Index,
     Series,
 )
 from pandas.core.base import SelectionMixin
+from pandas.core.indexers import BaseIndexer
+from typing_extensions import Self
 
+from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     AggFuncTypeBase,
     AggFuncTypeFrame,
     AggFuncTypeSeriesToFrame,
+    AxisInt,
+    CalculationMethod,
+    IntervalClosedType,
     NDFrameT,
     QuantileInterpolation,
     WindowingEngine,
@@ -22,9 +32,19 @@ from pandas._typing import (
     WindowingRankType,
 )
 
-class BaseWindow(SelectionMixin[NDFrameT], Generic[NDFrameT]):
-    def __getattr__(self, attr: str): ...
-    def __iter__(self): ...
+class BaseWindow(SelectionMixin[NDFrameT]):
+    on: str | Index | None
+    closed: IntervalClosedType | None
+    step: int | None
+    window: int | dt.timedelta | str | BaseOffset | BaseIndexer | None
+    min_periods: int | None
+    center: bool | None
+    win_type: str | None
+    axis: AxisInt
+    method: CalculationMethod
+    def __getitem__(self, key) -> Self: ...
+    def __getattr__(self, attr: str) -> Self: ...
+    def __iter__(self) -> Iterator[NDFrameT]: ...
     @overload
     def aggregate(
         self: BaseWindow[Series], func: AggFuncTypeBase, *args: Any, **kwargs: Any
@@ -51,14 +71,14 @@ class Window(BaseWindow[NDFrameT]):
     def sum(self, numeric_only: bool = ..., **kwargs: Any) -> NDFrameT: ...
     def mean(self, numeric_only: bool = ..., **kwargs: Any) -> NDFrameT: ...
     def var(
-        self, ddof: int = ..., numeric_only: bool = ..., *args: Any, **kwargs: Any
+        self, ddof: int = ..., numeric_only: bool = ..., **kwargs: Any
     ) -> NDFrameT: ...
     def std(
-        self, ddof: int = ..., numeric_only: bool = ..., *args: Any, **kwargs: Any
+        self, ddof: int = ..., numeric_only: bool = ..., **kwargs: Any
     ) -> NDFrameT: ...
 
-class RollingAndExpandingMixin(BaseWindow[NDFrameT], Generic[NDFrameT]):
-    def count(self) -> NDFrameT: ...
+class RollingAndExpandingMixin(BaseWindow[NDFrameT]):
+    def count(self, numeric_only: bool = ...) -> NDFrameT: ...
     def apply(
         self,
         func: Callable[..., Any],
@@ -71,28 +91,24 @@ class RollingAndExpandingMixin(BaseWindow[NDFrameT], Generic[NDFrameT]):
     def sum(
         self,
         numeric_only: bool = ...,
-        *,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     def max(
         self,
         numeric_only: bool = ...,
-        *,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     def min(
         self,
         numeric_only: bool = ...,
-        *,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     def mean(
         self,
         numeric_only: bool = ...,
-        *,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
@@ -106,7 +122,6 @@ class RollingAndExpandingMixin(BaseWindow[NDFrameT], Generic[NDFrameT]):
         self,
         ddof: int = ...,
         numeric_only: bool = ...,
-        *,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
@@ -114,20 +129,15 @@ class RollingAndExpandingMixin(BaseWindow[NDFrameT], Generic[NDFrameT]):
         self,
         ddof: int = ...,
         numeric_only: bool = ...,
-        *,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...
     def skew(self, numeric_only: bool = ...) -> NDFrameT: ...
-    def sem(
-        self,
-        ddof: int = ...,
-        numeric_only: bool = ...,
-    ) -> NDFrameT: ...
+    def sem(self, ddof: int = ..., numeric_only: bool = ...) -> NDFrameT: ...
     def kurt(self, numeric_only: bool = ...) -> NDFrameT: ...
     def quantile(
         self,
-        quantile: float,
+        q: float,
         interpolation: QuantileInterpolation = ...,
         numeric_only: bool = ...,
     ) -> NDFrameT: ...
@@ -153,15 +163,5 @@ class RollingAndExpandingMixin(BaseWindow[NDFrameT], Generic[NDFrameT]):
         numeric_only: bool = ...,
     ) -> NDFrameT: ...
 
-class Rolling(RollingAndExpandingMixin[NDFrameT]):
-    def apply(
-        self,
-        func: Callable[..., Any],
-        raw: bool = ...,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs | None = ...,
-        args: tuple[Any, ...] | None = ...,
-        kwargs: dict[str, Any] | None = ...,
-    ) -> NDFrameT: ...
-
-class RollingGroupby(BaseWindowGroupby[NDFrameT], Rolling): ...
+class Rolling(RollingAndExpandingMixin[NDFrameT]): ...
+class RollingGroupby(BaseWindowGroupby[NDFrameT], Rolling[NDFrameT]): ...

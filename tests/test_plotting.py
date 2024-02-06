@@ -1,5 +1,9 @@
 import io
-from typing import Any
+import itertools
+from typing import (
+    Any,
+    Union,
+)
 
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
@@ -8,6 +12,7 @@ from matplotlib.table import Table
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
+from pandas import Series
 import pytest
 from typing_extensions import assert_type
 
@@ -577,4 +582,79 @@ def test_plot_subplot_changes_150() -> None:
             df.plot(subplots=[("a", "b"), ("c", "d")]), npt.NDArray[np.object_]
         ),
         np.ndarray,
+    )
+
+
+def test_grouped_dataframe_boxplot(close_figures):
+    tuples = [t for t in itertools.product(range(10), range(2))]
+    index = pd.MultiIndex.from_tuples(tuples, names=["lvl0", "lvl1"])
+    df = pd.DataFrame(
+        data=np.random.randn(len(index), 2), columns=["A", "B"], index=index
+    )
+    grouped = df.groupby(level="lvl1")
+
+    # subplots (default is subplots=True)
+    check(assert_type(grouped.boxplot(), Series), Series)
+    check(assert_type(grouped.boxplot(subplots=True), Series), Series)
+
+    # a single plot
+    check(
+        assert_type(
+            grouped.boxplot(
+                subplots=False, rot=45, fontsize=12, figsize=(8, 10), vert=False
+            ),
+            Axes,
+        ),
+        Axes,
+    )
+
+    # not a literal bool
+    check(assert_type(grouped.boxplot(subplots=bool(0.5)), Union[Axes, Series]), Series)
+
+
+def test_grouped_dataframe_hist(close_figures):
+    df = IRIS_DF.iloc[:50]
+    grouped = df.groupby("Name")
+    check(assert_type(grouped.hist(), Series), Series)
+    check(
+        assert_type(
+            grouped.hist(
+                column="PetalWidth",
+                by="PetalLength",
+                grid=False,
+                xlabelsize=2,
+                ylabelsize=1,
+                yrot=10.0,
+                sharex=True,
+                sharey=False,
+                figsize=(1.5, 1.5),
+                bins=4,
+            ),
+            Series,
+        ),
+        Series,
+    )
+
+
+def test_grouped_series_hist(close_figures):
+    multi_index = pd.MultiIndex.from_tuples([(0, 0), (0, 1), (1, 0)], names=["a", "b"])
+    s = pd.Series([0, 1, 2], index=multi_index, dtype=int)
+    grouped = s.groupby(level=0)
+    check(assert_type(grouped.hist(), Series), Series)
+    check(assert_type(grouped.hist(by="a", grid=False), Series), Series)
+    check(
+        assert_type(
+            grouped.hist(
+                by=["a", "b"],
+                grid=False,
+                xlabelsize=2,
+                ylabelsize=1,
+                yrot=10.0,
+                figsize=(1.5, 1.5),
+                bins=4,
+                legend=True,
+            ),
+            Series,
+        ),
+        Series,
     )

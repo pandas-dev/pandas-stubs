@@ -1,4 +1,7 @@
-from pandas.core.window.ewm import ExponentialMovingWindow as ExponentialMovingWindow
+from pandas.core.window.ewm import (
+    ExponentialMovingWindow as ExponentialMovingWindow,
+    ExponentialMovingWindowGroupby as ExponentialMovingWindowGroupby,
+)
 from pandas.core.window.expanding import (
     Expanding as Expanding,
     ExpandingGroupby as ExpandingGroupby,
