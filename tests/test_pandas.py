@@ -49,6 +49,21 @@ def test_types_to_datetime() -> None:
     )
 
 
+def test_types_concat_none() -> None:
+    """Test concatenation with None values."""
+    s1: pd.Series | None = None
+    s2: pd.Series = pd.Series([7, -5, 10])
+
+    check(assert_type(pd.concat([s1, s2]), pd.Series), pd.Series)
+
+    df1: pd.DataFrame | None = None
+    df2: pd.DataFrame = pd.DataFrame({"a": [7, -5, 10]})
+
+    check(assert_type(pd.concat([df1, df2]), pd.DataFrame), pd.DataFrame)
+
+    check(assert_type(pd.concat([s1, df1, df2]), pd.DataFrame), pd.DataFrame)
+
+
 def test_types_concat() -> None:
     s: pd.Series = pd.Series([0, 1, -10])
     s2: pd.Series = pd.Series([7, -5, 10])
