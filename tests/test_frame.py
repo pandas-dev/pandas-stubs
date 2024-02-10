@@ -2519,8 +2519,7 @@ def test_generic() -> None:
     # GH 197
     T = TypeVar("T")
 
-    class MyDataFrame(pd.DataFrame, Generic[T]):
-        ...
+    class MyDataFrame(pd.DataFrame, Generic[T]): ...
 
     def func() -> MyDataFrame[int]:
         return MyDataFrame[int]({"foo": [1, 2, 3]})

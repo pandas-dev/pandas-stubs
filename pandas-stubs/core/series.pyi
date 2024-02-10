@@ -188,13 +188,15 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     @overload
     def __getitem__(
         self,
-        idx: MaskType
-        | Index
-        | Sequence[float]
-        | list[str]
-        | slice
-        | _IndexSliceTuple
-        | Callable,
+        idx: (
+            MaskType
+            | Index
+            | Sequence[float]
+            | list[str]
+            | slice
+            | _IndexSliceTuple
+            | Callable
+        ),
         # _IndexSliceTuple is when having a tuple that includes a slice.  Could just
         # be s.loc[1, :], or s.loc[pd.IndexSlice[1, :]]
     ) -> Series[S1]: ...
@@ -227,11 +229,13 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(  # type: ignore[overload-overlap]
         cls,
-        data: DatetimeIndex
-        | Sequence[np.datetime64 | datetime]
-        | dict[HashableT1, np.datetime64 | datetime]
-        | np.datetime64
-        | datetime,
+        data: (
+            DatetimeIndex
+            | Sequence[np.datetime64 | datetime]
+            | dict[HashableT1, np.datetime64 | datetime]
+            | np.datetime64
+            | datetime
+        ),
         index: Axes | None = ...,
         *,
         dtype: TimestampDtypeArg = ...,
@@ -261,11 +265,13 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(  # type: ignore[overload-overlap]
         cls,
-        data: TimedeltaIndex
-        | Sequence[np.timedelta64 | timedelta]
-        | dict[HashableT1, np.timedelta64 | timedelta]
-        | np.timedelta64
-        | timedelta,
+        data: (
+            TimedeltaIndex
+            | Sequence[np.timedelta64 | timedelta]
+            | dict[HashableT1, np.timedelta64 | timedelta]
+            | np.timedelta64
+            | timedelta
+        ),
         index: Axes | None = ...,
         *,
         dtype: TimedeltaDtypeArg = ...,
@@ -275,10 +281,12 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(  # type: ignore[overload-overlap]
         cls,
-        data: IntervalIndex[Interval[_OrderableT]]
-        | Interval[_OrderableT]
-        | Sequence[Interval[_OrderableT]]
-        | dict[HashableT1, Interval[_OrderableT]],
+        data: (
+            IntervalIndex[Interval[_OrderableT]]
+            | Interval[_OrderableT]
+            | Sequence[Interval[_OrderableT]]
+            | dict[HashableT1, Interval[_OrderableT]]
+        ),
         index: Axes | None = ...,
         *,
         dtype: Literal["Interval"] = ...,
@@ -361,12 +369,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __getitem__(
         self,
-        idx: list[_str]
-        | Index
-        | Series[S1]
-        | slice
-        | MaskType
-        | tuple[Hashable | slice, ...],
+        idx: (
+            list[_str]
+            | Index
+            | Series[S1]
+            | slice
+            | MaskType
+            | tuple[Hashable | slice, ...]
+        ),
     ) -> Self: ...
     @overload
     def __getitem__(self, idx: Scalar) -> S1: ...
@@ -477,8 +487,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: Callable[[Any], _str | float | _bool | list | dict]
-        | None = ...,
+        default_handler: (
+            Callable[[Any], _str | float | _bool | list | dict] | None
+        ) = ...,
         lines: Literal[True],
         compression: CompressionOptions = ...,
         index: _bool = ...,
@@ -495,8 +506,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: Callable[[Any], _str | float | _bool | list | dict]
-        | None = ...,
+        default_handler: (
+            Callable[[Any], _str | float | _bool | list | dict] | None
+        ) = ...,
         lines: Literal[True],
         compression: CompressionOptions = ...,
         index: _bool = ...,
@@ -512,8 +524,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: Callable[[Any], _str | float | _bool | list | dict]
-        | None = ...,
+        default_handler: (
+            Callable[[Any], _str | float | _bool | list | dict] | None
+        ) = ...,
         lines: _bool = ...,
         compression: CompressionOptions = ...,
         index: _bool = ...,
@@ -529,8 +542,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: Callable[[Any], _str | float | _bool | list | dict]
-        | None = ...,
+        default_handler: (
+            Callable[[Any], _str | float | _bool | list | dict] | None
+        ) = ...,
         lines: _bool = ...,
         compression: CompressionOptions = ...,
         index: _bool = ...,
@@ -1374,11 +1388,13 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[float]: ...
     def where(
         self,
-        cond: Series[S1]
-        | Series[_bool]
-        | np.ndarray
-        | Callable[[Series[S1]], Series[bool]]
-        | Callable[[S1], bool],
+        cond: (
+            Series[S1]
+            | Series[_bool]
+            | np.ndarray
+            | Callable[[Series[S1]], Series[bool]]
+            | Callable[[S1], bool]
+        ),
         other=...,
         *,
         inplace: _bool = ...,
@@ -2061,49 +2077,55 @@ class TimedeltaSeries(Series[Timedelta]):
     ) -> TimedeltaSeries: ...
     def __sub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
-        other: timedelta
-        | Timedelta
-        | TimedeltaSeries
-        | TimedeltaIndex
-        | np.timedelta64,
+        other: (
+            timedelta | Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64
+        ),
     ) -> TimedeltaSeries: ...
     @overload  # type: ignore[override]
     def __truediv__(self, other: float | Sequence[float]) -> Self: ...
     @overload
     def __truediv__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
-        other: timedelta
-        | TimedeltaSeries
-        | np.timedelta64
-        | TimedeltaIndex
-        | Sequence[timedelta],
+        other: (
+            timedelta
+            | TimedeltaSeries
+            | np.timedelta64
+            | TimedeltaIndex
+            | Sequence[timedelta]
+        ),
     ) -> Series[float]: ...
     def __rtruediv__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
-        other: timedelta
-        | TimedeltaSeries
-        | np.timedelta64
-        | TimedeltaIndex
-        | Sequence[timedelta],
+        other: (
+            timedelta
+            | TimedeltaSeries
+            | np.timedelta64
+            | TimedeltaIndex
+            | Sequence[timedelta]
+        ),
     ) -> Series[float]: ...
     @overload  # type: ignore[override]
     def __floordiv__(self, other: float | Sequence[float]) -> Self: ...
     @overload
     def __floordiv__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
-        other: timedelta
-        | TimedeltaSeries
-        | np.timedelta64
-        | TimedeltaIndex
-        | Sequence[timedelta],
+        other: (
+            timedelta
+            | TimedeltaSeries
+            | np.timedelta64
+            | TimedeltaIndex
+            | Sequence[timedelta]
+        ),
     ) -> Series[int]: ...
     def __rfloordiv__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
-        other: timedelta
-        | TimedeltaSeries
-        | np.timedelta64
-        | TimedeltaIndex
-        | Sequence[timedelta],
+        other: (
+            timedelta
+            | TimedeltaSeries
+            | np.timedelta64
+            | TimedeltaIndex
+            | Sequence[timedelta]
+        ),
     ) -> Series[int]: ...
     @property
     def dt(self) -> TimedeltaProperties: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]

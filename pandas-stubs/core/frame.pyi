@@ -139,19 +139,23 @@ class _iLocIndexerFrame(_iLocIndexer):
     @overload
     def __getitem__(
         self,
-        idx: IndexType
-        | MaskType
-        | tuple[IndexType | MaskType, IndexType | MaskType]
-        | tuple[slice],
+        idx: (
+            IndexType
+            | MaskType
+            | tuple[IndexType | MaskType, IndexType | MaskType]
+            | tuple[slice]
+        ),
     ) -> DataFrame: ...
     def __setitem__(
         self,
-        idx: int
-        | IndexType
-        | tuple[int, int]
-        | tuple[IndexType, int]
-        | tuple[IndexType, IndexType]
-        | tuple[int, IndexType],
+        idx: (
+            int
+            | IndexType
+            | tuple[int, int]
+            | tuple[IndexType, int]
+            | tuple[IndexType, IndexType]
+            | tuple[int, IndexType]
+        ),
         value: Scalar | Series | DataFrame | np.ndarray | NAType | NaTType | None,
     ) -> None: ...
 
@@ -159,19 +163,21 @@ class _LocIndexerFrame(_LocIndexer):
     @overload
     def __getitem__(
         self,
-        idx: IndexType
-        | MaskType
-        | Callable[[DataFrame], IndexType | MaskType | list[HashableT]]
-        | list[HashableT]
-        | tuple[
+        idx: (
             IndexType
             | MaskType
+            | Callable[[DataFrame], IndexType | MaskType | list[HashableT]]
             | list[HashableT]
-            | slice
-            | _IndexSliceTuple
-            | Callable,
-            list[HashableT] | slice | Series[bool] | Callable,
-        ],
+            | tuple[
+                IndexType
+                | MaskType
+                | list[HashableT]
+                | slice
+                | _IndexSliceTuple
+                | Callable,
+                list[HashableT] | slice | Series[bool] | Callable,
+            ]
+        ),
     ) -> DataFrame: ...
     @overload
     def __getitem__(  # pyright: ignore[reportOverlappingOverload]
@@ -184,16 +190,20 @@ class _LocIndexerFrame(_LocIndexer):
     @overload
     def __getitem__(
         self,
-        idx: ScalarT
-        | Callable[[DataFrame], ScalarT]
-        | tuple[
-            IndexType
-            | MaskType
-            | _IndexSliceTuple
-            | Callable[[DataFrame], ScalarT | list[HashableT] | IndexType | MaskType],
-            ScalarT | None,
-        ]
-        | None,
+        idx: (
+            ScalarT
+            | Callable[[DataFrame], ScalarT]
+            | tuple[
+                IndexType
+                | MaskType
+                | _IndexSliceTuple
+                | Callable[
+                    [DataFrame], ScalarT | list[HashableT] | IndexType | MaskType
+                ],
+                ScalarT | None,
+            ]
+            | None
+        ),
     ) -> Series: ...
     @overload
     def __getitem__(self, idx: tuple[Scalar, slice]) -> Series | DataFrame: ...
@@ -216,11 +226,13 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def __new__(
         cls,
-        data: ListLikeU
-        | DataFrame
-        | dict[Any, Any]
-        | Iterable[ListLikeU | tuple[Hashable, ListLikeU] | dict[Any, Any]]
-        | None = ...,
+        data: (
+            ListLikeU
+            | DataFrame
+            | dict[Any, Any]
+            | Iterable[ListLikeU | tuple[Hashable, ListLikeU] | dict[Any, Any]]
+            | None
+        ) = ...,
         index: Axes | None = ...,
         columns: Axes | None = ...,
         dtype=...,
@@ -355,14 +367,12 @@ class DataFrame(NDFrame, OpsMixin):
     def to_records(
         self,
         index: _bool = ...,
-        column_dtypes: _str
-        | npt.DTypeLike
-        | Mapping[HashableT1, npt.DTypeLike]
-        | None = ...,
-        index_dtypes: _str
-        | npt.DTypeLike
-        | Mapping[HashableT2, npt.DTypeLike]
-        | None = ...,
+        column_dtypes: (
+            _str | npt.DTypeLike | Mapping[HashableT1, npt.DTypeLike] | None
+        ) = ...,
+        index_dtypes: (
+            _str | npt.DTypeLike | Mapping[HashableT2, npt.DTypeLike] | None
+        ) = ...,
     ) -> np.recarray: ...
     def to_stata(
         self,
@@ -430,27 +440,31 @@ class DataFrame(NDFrame, OpsMixin):
         header: _bool = ...,
         index: _bool = ...,
         na_rep: _str = ...,
-        formatters: list[Callable[[object], str]]
-        | tuple[Callable[[object], str], ...]
-        | Mapping[Hashable, Callable[[object], str]]
-        | None = ...,
+        formatters: (
+            list[Callable[[object], str]]
+            | tuple[Callable[[object], str], ...]
+            | Mapping[Hashable, Callable[[object], str]]
+            | None
+        ) = ...,
         float_format: Callable[[float], str] | None = ...,
         sparsify: _bool | None = ...,
         index_names: _bool = ...,
-        justify: Literal[
-            "left",
-            "right",
-            "center",
-            "justify",
-            "justify-all",
-            "start",
-            "end",
-            "inherit",
-            "match-parent",
-            "initial",
-            "unset",
-        ]
-        | None = ...,
+        justify: (
+            Literal[
+                "left",
+                "right",
+                "center",
+                "justify",
+                "justify-all",
+                "start",
+                "end",
+                "inherit",
+                "match-parent",
+                "initial",
+                "unset",
+            ]
+            | None
+        ) = ...,
         max_rows: int | None = ...,
         max_cols: int | None = ...,
         show_dimensions: _bool = ...,
@@ -473,27 +487,31 @@ class DataFrame(NDFrame, OpsMixin):
         header: _bool = ...,
         index: _bool = ...,
         na_rep: _str = ...,
-        formatters: list[Callable[[object], str]]
-        | tuple[Callable[[object], str], ...]
-        | Mapping[Hashable, Callable[[object], str]]
-        | None = ...,
+        formatters: (
+            list[Callable[[object], str]]
+            | tuple[Callable[[object], str], ...]
+            | Mapping[Hashable, Callable[[object], str]]
+            | None
+        ) = ...,
         float_format: Callable[[float], str] | None = ...,
         sparsify: _bool | None = ...,
         index_names: _bool = ...,
-        justify: Literal[
-            "left",
-            "right",
-            "center",
-            "justify",
-            "justify-all",
-            "start",
-            "end",
-            "inherit",
-            "match-parent",
-            "initial",
-            "unset",
-        ]
-        | None = ...,
+        justify: (
+            Literal[
+                "left",
+                "right",
+                "center",
+                "justify",
+                "justify-all",
+                "start",
+                "end",
+                "inherit",
+                "match-parent",
+                "initial",
+                "unset",
+            ]
+            | None
+        ) = ...,
         max_rows: int | None = ...,
         max_cols: int | None = ...,
         show_dimensions: _bool = ...,
@@ -763,12 +781,9 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def set_index(
         self,
-        keys: Label
-        | Series
-        | Index
-        | np.ndarray
-        | Iterator[HashableT]
-        | list[HashableT],
+        keys: (
+            Label | Series | Index | np.ndarray | Iterator[HashableT] | list[HashableT]
+        ),
         *,
         drop: _bool = ...,
         append: _bool = ...,
@@ -778,12 +793,9 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def set_index(
         self,
-        keys: Label
-        | Series
-        | Index
-        | np.ndarray
-        | Iterator[HashableT]
-        | list[HashableT],
+        keys: (
+            Label | Series | Index | np.ndarray | Iterator[HashableT] | list[HashableT]
+        ),
         *,
         drop: _bool = ...,
         append: _bool = ...,
@@ -2070,8 +2082,9 @@ class DataFrame(NDFrame, OpsMixin):
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: Callable[[Any], _str | float | _bool | list | dict]
-        | None = ...,
+        default_handler: (
+            Callable[[Any], _str | float | _bool | list | dict] | None
+        ) = ...,
         lines: Literal[True],
         compression: CompressionOptions = ...,
         index: _bool = ...,
@@ -2088,8 +2101,9 @@ class DataFrame(NDFrame, OpsMixin):
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: Callable[[Any], _str | float | _bool | list | dict]
-        | None = ...,
+        default_handler: (
+            Callable[[Any], _str | float | _bool | list | dict] | None
+        ) = ...,
         lines: Literal[True],
         compression: CompressionOptions = ...,
         index: _bool = ...,
@@ -2105,8 +2119,9 @@ class DataFrame(NDFrame, OpsMixin):
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: Callable[[Any], _str | float | _bool | list | dict]
-        | None = ...,
+        default_handler: (
+            Callable[[Any], _str | float | _bool | list | dict] | None
+        ) = ...,
         lines: _bool = ...,
         compression: CompressionOptions = ...,
         index: _bool = ...,
@@ -2122,8 +2137,9 @@ class DataFrame(NDFrame, OpsMixin):
         double_precision: int = ...,
         force_ascii: _bool = ...,
         date_unit: Literal["s", "ms", "us", "ns"] = ...,
-        default_handler: Callable[[Any], _str | float | _bool | list | dict]
-        | None = ...,
+        default_handler: (
+            Callable[[Any], _str | float | _bool | list | dict] | None
+        ) = ...,
         lines: _bool = ...,
         compression: CompressionOptions = ...,
         index: _bool = ...,
@@ -2219,11 +2235,13 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> Series: ...
     def where(
         self,
-        cond: Series
-        | DataFrame
-        | np.ndarray
-        | Callable[[DataFrame], DataFrame]
-        | Callable[[Any], _bool],
+        cond: (
+            Series
+            | DataFrame
+            | np.ndarray
+            | Callable[[DataFrame], DataFrame]
+            | Callable[[Any], _bool]
+        ),
         other=...,
         *,
         inplace: _bool = ...,

@@ -49,19 +49,15 @@ class Holiday:
     @overload
     def dates(
         self,
-        start_date: (
-            np.integer | float | str | _date | datetime | np.datetime64 | None
-        ),
-        end_date: (np.integer | float | str | _date | datetime | np.datetime64 | None),
+        start_date: np.integer | float | str | _date | datetime | np.datetime64 | None,
+        end_date: np.integer | float | str | _date | datetime | np.datetime64 | None,
         return_name: Literal[False],
     ) -> DatetimeIndex: ...
     @overload
     def dates(
         self,
-        start_date: (
-            np.integer | float | str | _date | datetime | np.datetime64 | None
-        ),
-        end_date: (np.integer | float | str | _date | datetime | np.datetime64 | None),
+        start_date: np.integer | float | str | _date | datetime | np.datetime64 | None,
+        end_date: np.integer | float | str | _date | datetime | np.datetime64 | None,
         return_name: Literal[True] = ...,
     ) -> Series: ...
 

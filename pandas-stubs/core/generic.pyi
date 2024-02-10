@@ -173,12 +173,14 @@ class NDFrame(indexing.IndexingMixin):
         index_label: IndexLabel = ...,
         chunksize: int | None = ...,
         dtype: DtypeArg | None = ...,
-        method: Literal["multi"]
-        | Callable[
-            [SQLTable, Any, list[str], Iterable[tuple[Any, ...]]],
-            int | None,
-        ]
-        | None = ...,
+        method: (
+            Literal["multi"]
+            | Callable[
+                [SQLTable, Any, list[str], Iterable[tuple[Any, ...]]],
+                int | None,
+            ]
+            | None
+        ) = ...,
     ) -> int | None: ...
     def to_pickle(
         self,

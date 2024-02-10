@@ -62,9 +62,9 @@ def pivot_table(
     values: Label | list[HashableT3] | None = ...,
     index: _PivotTableIndexTypes = ...,
     columns: _PivotTableColumnsTypes = ...,
-    aggfunc: _PivotAggFunc
-    | list[_PivotAggFunc]
-    | Mapping[Hashable, _PivotAggFunc] = ...,
+    aggfunc: (
+        _PivotAggFunc | list[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
+    ) = ...,
     fill_value: Scalar | None = ...,
     margins: bool = ...,
     dropna: bool = ...,
@@ -81,9 +81,9 @@ def pivot_table(
     *,
     index: Grouper,
     columns: _PivotTableColumnsTypes | Index | npt.NDArray = ...,
-    aggfunc: _PivotAggFunc
-    | list[_PivotAggFunc]
-    | Mapping[Hashable, _PivotAggFunc] = ...,
+    aggfunc: (
+        _PivotAggFunc | list[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
+    ) = ...,
     fill_value: Scalar | None = ...,
     margins: bool = ...,
     dropna: bool = ...,
@@ -98,9 +98,9 @@ def pivot_table(
     index: _PivotTableIndexTypes | Index | npt.NDArray = ...,
     *,
     columns: Grouper,
-    aggfunc: _PivotAggFunc
-    | list[_PivotAggFunc]
-    | Mapping[Hashable, _PivotAggFunc] = ...,
+    aggfunc: (
+        _PivotAggFunc | list[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
+    ) = ...,
     fill_value: Scalar | None = ...,
     margins: bool = ...,
     dropna: bool = ...,

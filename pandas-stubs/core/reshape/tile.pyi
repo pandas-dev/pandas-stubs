@@ -52,11 +52,13 @@ def cut(
 @overload
 def cut(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     x: TimestampSeries,
-    bins: int
-    | TimestampSeries
-    | DatetimeIndex
-    | Sequence[Timestamp]
-    | Sequence[np.datetime64],
+    bins: (
+        int
+        | TimestampSeries
+        | DatetimeIndex
+        | Sequence[Timestamp]
+        | Sequence[np.datetime64]
+    ),
     right: bool = ...,
     labels: Literal[False] | Sequence[Label] | None = ...,
     *,
@@ -134,13 +136,15 @@ def cut(
 @overload
 def cut(
     x: Index | npt.NDArray | Sequence[int] | Sequence[float],
-    bins: int
-    | Series
-    | Index[int]
-    | Index[float]
-    | Sequence[int]
-    | Sequence[float]
-    | IntervalIndex,
+    bins: (
+        int
+        | Series
+        | Index[int]
+        | Index[float]
+        | Sequence[int]
+        | Sequence[float]
+        | IntervalIndex
+    ),
     right: bool = ...,
     *,
     labels: Literal[False],
@@ -153,12 +157,14 @@ def cut(
 @overload
 def cut(
     x: TimestampSeries,
-    bins: int
-    | TimestampSeries
-    | DatetimeIndex
-    | Sequence[Timestamp]
-    | Sequence[np.datetime64]
-    | IntervalIndex[Interval[Timestamp]],
+    bins: (
+        int
+        | TimestampSeries
+        | DatetimeIndex
+        | Sequence[Timestamp]
+        | Sequence[np.datetime64]
+        | IntervalIndex[Interval[Timestamp]]
+    ),
     right: bool = ...,
     labels: Literal[False] | Sequence[Label] | None = ...,
     retbins: Literal[False] = ...,
@@ -170,13 +176,15 @@ def cut(
 @overload
 def cut(
     x: Series,
-    bins: int
-    | Series
-    | Index[int]
-    | Index[float]
-    | Sequence[int]
-    | Sequence[float]
-    | IntervalIndex,
+    bins: (
+        int
+        | Series
+        | Index[int]
+        | Index[float]
+        | Sequence[int]
+        | Sequence[float]
+        | IntervalIndex
+    ),
     right: bool = ...,
     labels: Literal[False] | Sequence[Label] | None = ...,
     retbins: Literal[False] = ...,
@@ -188,13 +196,15 @@ def cut(
 @overload
 def cut(
     x: Index | npt.NDArray | Sequence[int] | Sequence[float],
-    bins: int
-    | Series
-    | Index[int]
-    | Index[float]
-    | Sequence[int]
-    | Sequence[float]
-    | IntervalIndex,
+    bins: (
+        int
+        | Series
+        | Index[int]
+        | Index[float]
+        | Sequence[int]
+        | Sequence[float]
+        | IntervalIndex
+    ),
     right: bool = ...,
     labels: Sequence[Label] | None = ...,
     retbins: Literal[False] = ...,

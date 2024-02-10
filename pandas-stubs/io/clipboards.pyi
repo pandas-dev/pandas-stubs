@@ -50,11 +50,13 @@ def read_clipboard(
     na_filter: bool = ...,
     verbose: bool = ...,
     skip_blank_lines: bool = ...,
-    parse_dates: bool
-    | Sequence[int]
-    | list[str]
-    | Sequence[Sequence[int]]
-    | dict[str, Sequence[int]] = ...,
+    parse_dates: (
+        bool
+        | Sequence[int]
+        | list[str]
+        | Sequence[Sequence[int]]
+        | dict[str, Sequence[int]]
+    ) = ...,
     infer_datetime_format: bool = ...,
     keep_date_col: bool = ...,
     date_parser: Callable = ...,
@@ -76,8 +78,9 @@ def read_clipboard(
     dialect: str | csv.Dialect = ...,
     # error_bad_lines: bool | None = ...,  # Deprecated: 1.3.0
     # warn_bad_lines: bool | None = ...,  # Deprecated: 1.3.0
-    on_bad_lines: Literal["error", "warn", "skip"]
-    | Callable[[list[str]], list[str] | None] = ...,
+    on_bad_lines: (
+        Literal["error", "warn", "skip"] | Callable[[list[str]], list[str] | None]
+    ) = ...,
     delim_whitespace: bool = ...,
     low_memory: bool = ...,
     memory_map: bool = ...,
@@ -108,11 +111,13 @@ def read_clipboard(
     na_filter: bool = ...,
     verbose: bool = ...,
     skip_blank_lines: bool = ...,
-    parse_dates: bool
-    | Sequence[int]
-    | list[str]
-    | Sequence[Sequence[int]]
-    | dict[str, Sequence[int]] = ...,
+    parse_dates: (
+        bool
+        | Sequence[int]
+        | list[str]
+        | Sequence[Sequence[int]]
+        | dict[str, Sequence[int]]
+    ) = ...,
     infer_datetime_format: bool = ...,
     keep_date_col: bool = ...,
     date_parser: Callable = ...,
@@ -134,8 +139,9 @@ def read_clipboard(
     dialect: str | csv.Dialect = ...,
     # error_bad_lines: bool | None = ...,  # Deprecated: 1.3.0
     # warn_bad_lines: bool | None = ...,  # Deprecated: 1.3.0
-    on_bad_lines: Literal["error", "warn", "skip"]
-    | Callable[[list[str]], list[str] | None] = ...,
+    on_bad_lines: (
+        Literal["error", "warn", "skip"] | Callable[[list[str]], list[str] | None]
+    ) = ...,
     delim_whitespace: bool = ...,
     low_memory: bool = ...,
     memory_map: bool = ...,
@@ -166,11 +172,13 @@ def read_clipboard(
     na_filter: bool = ...,
     verbose: bool = ...,
     skip_blank_lines: bool = ...,
-    parse_dates: bool
-    | Sequence[int]
-    | list[str]
-    | Sequence[Sequence[int]]
-    | dict[str, Sequence[int]] = ...,
+    parse_dates: (
+        bool
+        | Sequence[int]
+        | list[str]
+        | Sequence[Sequence[int]]
+        | dict[str, Sequence[int]]
+    ) = ...,
     infer_datetime_format: bool = ...,
     keep_date_col: bool = ...,
     date_parser: Callable = ...,
@@ -192,8 +200,9 @@ def read_clipboard(
     dialect: str | csv.Dialect = ...,
     # error_bad_lines: bool | None = ...,  # Deprecated: 1.3.0
     # warn_bad_lines: bool | None = ...,  # Deprecated: 1.3.0
-    on_bad_lines: Literal["error", "warn", "skip"]
-    | Callable[[list[str]], list[str] | None] = ...,
+    on_bad_lines: (
+        Literal["error", "warn", "skip"] | Callable[[list[str]], list[str] | None]
+    ) = ...,
     delim_whitespace: bool = ...,
     low_memory: bool = ...,
     memory_map: bool = ...,

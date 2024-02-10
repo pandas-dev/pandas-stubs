@@ -125,9 +125,11 @@ class PandasSQL:
         schema: str | None = ...,
         chunksize=...,
         dtype: DtypeArg | None = ...,
-        method: Literal["multi"]
-        | Callable[[SQLTable, Any, list[str], Iterable], int | None]
-        | None = ...,
+        method: (
+            Literal["multi"]
+            | Callable[[SQLTable, Any, list[str], Iterable], int | None]
+            | None
+        ) = ...,
     ) -> int | None: ...
 
 class SQLTable:

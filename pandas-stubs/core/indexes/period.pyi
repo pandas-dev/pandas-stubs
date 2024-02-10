@@ -78,18 +78,12 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period], PeriodIndexFieldOps):
     def freqstr(self) -> str: ...
 
 def period_range(
-    start: str
-    | datetime.datetime
-    | datetime.date
-    | pd.Timestamp
-    | pd.Period
-    | None = ...,
-    end: str
-    | datetime.datetime
-    | datetime.date
-    | pd.Timestamp
-    | pd.Period
-    | None = ...,
+    start: (
+        str | datetime.datetime | datetime.date | pd.Timestamp | pd.Period | None
+    ) = ...,
+    end: (
+        str | datetime.datetime | datetime.date | pd.Timestamp | pd.Period | None
+    ) = ...,
     periods: int | None = ...,
     freq: str | BaseOffset | None = ...,
     name: Hashable | None = ...,
