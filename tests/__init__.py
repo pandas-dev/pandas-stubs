@@ -37,7 +37,9 @@ def check(actual: T, klass: type, dtype: type | None = None, attr: str = "left")
     elif isinstance(actual, BaseGroupBy):
         value = actual.obj
     elif hasattr(actual, "__iter__"):
-        value = next(iter(actual))  # pyright: ignore[reportGeneralTypeIssues]
+        value = next(
+            iter(actual)  # pyright: ignore[reportArgumentType,reportCallIssue]
+        )
     else:
         assert hasattr(actual, attr)
         value = getattr(actual, attr)

@@ -142,7 +142,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
             return result
 
         if "out" in kwargs:
-            return arraylike.dispatch_ufunc_with_out(  # type: ignore[attr-defined] # pyright: ignore[reportGeneralTypeIssues]
+            return arraylike.dispatch_ufunc_with_out(  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
                 self, ufunc, method, *inputs, **kwargs
             )
 
@@ -150,7 +150,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         result = getattr(ufunc, method)(*inputs, **kwargs)
 
         if method == "reduce":
-            result = arraylike.dispatch_reduction_ufunc(  # type: ignore[attr-defined] # pyright: ignore[reportGeneralTypeIssues]
+            result = arraylike.dispatch_reduction_ufunc(  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
                 self, ufunc, method, *inputs, **kwargs
             )
             if result is not NotImplemented:

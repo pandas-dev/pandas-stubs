@@ -123,6 +123,7 @@ class NDFrame(indexing.IndexingMixin):
     def to_hdf(
         self,
         path_or_buf: FilePath | HDFStore,
+        *,
         key: _str,
         mode: Literal["a", "w", "r+"] = ...,
         complevel: int | None = ...,
@@ -403,7 +404,6 @@ class NDFrame(indexing.IndexingMixin):
         self,
         value=...,
         *,
-        method=...,
         axis=...,
         inplace: _bool = ...,
         limit=...,

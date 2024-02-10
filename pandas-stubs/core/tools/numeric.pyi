@@ -26,13 +26,6 @@ def to_numeric(
 ) -> float: ...
 @overload
 def to_numeric(
-    arg: Scalar,
-    errors: Literal["ignore"],
-    downcast: _Downcast = ...,
-    dtype_backend: DtypeBackend | NoDefault = ...,
-) -> Scalar: ...
-@overload
-def to_numeric(
     arg: list | tuple | np.ndarray,
     errors: IgnoreRaiseCoerce = ...,
     downcast: _Downcast = ...,

@@ -316,17 +316,6 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
         ascending: bool = ...,
         dropna: bool = ...,
     ) -> Series[float]: ...
-    def fillna(
-        self,
-        value: (
-            Scalar | ArrayLike | Series | DataFrame | Mapping[Hashable, Scalar] | None
-        ) = ...,
-        method: Literal["bfill", "ffill"] | None = ...,
-        axis: Axis | None | NoDefault = ...,
-        inplace: Literal[False] = ...,
-        limit: int | None = ...,
-        downcast: dict | None | NoDefault = ...,
-    ) -> DataFrame: ...
     def take(
         self, indices: TakeIndexer, axis: Axis | None | NoDefault = ..., **kwargs
     ) -> DataFrame: ...

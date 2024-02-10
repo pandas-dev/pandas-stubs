@@ -740,39 +740,48 @@ def test_index_operators() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(
-            i1 & i2,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            i1
+            & i2,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
-            i1 & 10,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            i1
+            & 10,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
-            10 & i1,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            10
+            & i1,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(
-            i1 | i2,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            i1
+            | i2,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
-            i1 | 10,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            i1
+            | 10,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
-            10 | i1,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            10
+            | i1,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(
-            i1 ^ i2,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            i1
+            ^ i2,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
-            i1 ^ 10,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            i1
+            ^ 10,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
-            10 ^ i1,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            10
+            ^ i1,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
 
@@ -1044,10 +1053,10 @@ def test_timedelta_div() -> None:
     check(assert_type([delta] // index, "pd.Index[int]"), pd.Index, np.signedinteger)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        1 / index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-        [1] / index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-        1 // index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-        [1] // index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        1 / index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        [1] / index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        1 // index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        [1] // index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_datetime_operators_builtin() -> None:
