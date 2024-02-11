@@ -61,6 +61,7 @@ from pandas._typing import (
     S1,
     AggFuncTypeBase,
     AggFuncTypeDictFrame,
+    AggFuncTypeDictSeries,
     AggFuncTypeFrame,
     AnyArrayLike,
     ArrayLike,
@@ -1139,7 +1140,9 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def diff(self, periods: int = ..., axis: Axis = ...) -> DataFrame: ...
     @overload
-    def agg(self, func: AggFuncTypeBase, axis: Axis = ..., **kwargs) -> Series: ...
+    def agg(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        self, func: AggFuncTypeBase | AggFuncTypeDictSeries, axis: Axis = ..., **kwargs
+    ) -> Series: ...
     @overload
     def agg(
         self,
@@ -1148,8 +1151,8 @@ class DataFrame(NDFrame, OpsMixin):
         **kwargs,
     ) -> DataFrame: ...
     @overload
-    def aggregate(
-        self, func: AggFuncTypeBase, axis: Axis = ..., **kwargs
+    def aggregate(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        self, func: AggFuncTypeBase | AggFuncTypeDictSeries, axis: Axis = ..., **kwargs
     ) -> Series: ...
     @overload
     def aggregate(
