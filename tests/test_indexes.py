@@ -1060,3 +1060,30 @@ def test_datetime_operators_builtin() -> None:
     check(assert_type(delta + dt.timedelta(0), pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(dt.datetime.now() + delta, pd.DatetimeIndex), pd.DatetimeIndex)
     check(assert_type(delta - dt.timedelta(0), pd.TimedeltaIndex), pd.TimedeltaIndex)
+
+
+def test_get_loc() -> None:
+    unique_index = pd.Index(list("abc"))
+    check(
+        assert_type(
+            unique_index.get_loc("b"), Union[int, slice, npt.NDArray[np.bool_]]
+        ),
+        int,
+    )
+
+    monotonic_index = pd.Index(list("abbc"))
+    check(
+        assert_type(
+            monotonic_index.get_loc("b"), Union[int, slice, npt.NDArray[np.bool_]]
+        ),
+        slice,
+    )
+
+    non_monotonic_index = pd.Index(list("abcb"))
+    check(
+        assert_type(
+            non_monotonic_index.get_loc("b"), Union[int, slice, npt.NDArray[np.bool_]]
+        ),
+        np.ndarray,
+        np.bool_,
+    )
