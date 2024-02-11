@@ -1646,6 +1646,11 @@ def test_timestamp_misc_methods() -> None:
             pd.Timestamp,
         )
 
+    check(assert_type(ts2.as_unit("s"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.as_unit("ms"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.as_unit("us", round_ok=True), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts2.as_unit("ns", round_ok=False), pd.Timestamp), pd.Timestamp)
+
 
 def test_timestamp_types_arithmetic() -> None:
     ts: pd.Timestamp = pd.to_datetime("2021-03-01")
