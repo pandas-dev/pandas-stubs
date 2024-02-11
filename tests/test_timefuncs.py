@@ -522,6 +522,11 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.month_name(), pd.Index), pd.Index, str)
     check(assert_type(i0.day_name(), pd.Index), pd.Index, str)
     check(assert_type(i0.is_normalized, bool), bool)
+    check(assert_type(i0.unit, str), str)
+    check(assert_type(i0.as_unit("s"), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(i0.as_unit("ms"), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(i0.as_unit("us"), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(i0.as_unit("ns"), pd.DatetimeIndex), pd.DatetimeIndex)
 
 
 def test_timedeltaindex_accessors() -> None:
@@ -542,6 +547,11 @@ def test_timedeltaindex_accessors() -> None:
         assert_type(i0.floor("D"), pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta
     )
     check(assert_type(i0.ceil("D"), pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
+    check(assert_type(i0.unit, str), str)
+    check(assert_type(i0.as_unit("s"), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(i0.as_unit("ms"), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(i0.as_unit("us"), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(i0.as_unit("ns"), pd.TimedeltaIndex), pd.TimedeltaIndex)
 
 
 def test_periodindex_accessors() -> None:

@@ -1,5 +1,8 @@
+from typing import Literal
+
 from pandas.core.indexes.extension import ExtensionIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
+from typing_extensions import Self
 
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import S1
@@ -19,4 +22,7 @@ class DatetimeIndexOpsMixin(ExtensionIndex[S1]):
         self, other: DatetimeIndexOpsMixin
     ) -> TimedeltaIndex: ...
 
-class DatetimeTimedeltaMixin(DatetimeIndexOpsMixin[S1]): ...
+class DatetimeTimedeltaMixin(DatetimeIndexOpsMixin[S1]):
+    @property
+    def unit(self) -> str: ...
+    def as_unit(self, unit: Literal["s", "ms", "us", "ns"]) -> Self: ...
