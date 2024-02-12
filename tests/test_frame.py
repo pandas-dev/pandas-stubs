@@ -1276,7 +1276,10 @@ def test_types_agg() -> None:
         assert_type(df.agg({"A": ["min", "max"], "B": "min"}), pd.DataFrame),
         pd.DataFrame,
     )
+    check(assert_type(df.agg({"A": ["mean"]}), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.agg("mean", axis=1), pd.Series), pd.Series)
+    check(assert_type(df.agg({"A": "mean"}), pd.Series), pd.Series)
+    check(assert_type(df.agg({"A": "mean", "B": "sum"}), pd.Series), pd.Series)
 
 
 def test_types_aggregate() -> None:
@@ -1299,6 +1302,10 @@ def test_types_aggregate() -> None:
         assert_type(df.aggregate({"A": ["min", "max"], "B": "min"}), pd.DataFrame),
         pd.DataFrame,
     )
+    check(assert_type(df.aggregate({"A": ["mean"]}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.aggregate("mean", axis=1), pd.Series), pd.Series)
+    check(assert_type(df.aggregate({"A": "mean"}), pd.Series), pd.Series)
+    check(assert_type(df.aggregate({"A": "mean", "B": "sum"}), pd.Series), pd.Series)
 
 
 def test_types_transform() -> None:
