@@ -181,7 +181,6 @@ class _LocIndexerFrame(_LocIndexer):
                 MaskType | list[HashableT] | slice | Callable,
             ]
         ),
-
     ) -> DataFrame: ...
     @overload
     def __getitem__(  # pyright: ignore[reportOverlappingOverload]
