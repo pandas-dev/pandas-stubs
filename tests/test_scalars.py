@@ -1189,6 +1189,7 @@ def test_timestamp_properties() -> None:
     check(assert_type(ts.tzinfo, Optional[dt.tzinfo]), type(None))
     check(assert_type(ts.value, int), int)
     check(assert_type(ts.year, int), int)
+    check(assert_type(ts.unit, str), str)
 
 
 def test_timestamp_add_sub() -> None:
