@@ -178,7 +178,7 @@ class _LocIndexerFrame(_LocIndexer):
                 | slice
                 | _IndexSliceTuple
                 | Callable,
-                MaskType | list[HashableT] | slice  | Callable,
+                MaskType | list[HashableT] | slice | Callable,
             ]
         ),
 
