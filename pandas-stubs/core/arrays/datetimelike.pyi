@@ -1,10 +1,12 @@
 from collections.abc import Sequence
+from typing import Literal
 
 import numpy as np
 from pandas.core.arrays.base import (
     ExtensionArray,
     ExtensionOpsMixin,
 )
+from typing_extensions import Self
 
 from pandas._libs import (
     NaT as NaT,
@@ -15,6 +17,9 @@ class DatelikeOps:
     def strftime(self, date_format): ...
 
 class TimelikeOps:
+    @property
+    def unit(self) -> str: ...
+    def as_unit(self, unit: Literal["s", "ms", "us", "ns"]) -> Self: ...
     def round(self, freq, ambiguous: str = ..., nonexistent: str = ...): ...
     def floor(self, freq, ambiguous: str = ..., nonexistent: str = ...): ...
     def ceil(self, freq, ambiguous: str = ..., nonexistent: str = ...): ...
