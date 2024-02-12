@@ -517,6 +517,7 @@ def test_timedelta_properties_methods() -> None:
     check(assert_type(td.value, int), int)
     check(assert_type(td.resolution_string, str), str)
     check(assert_type(td.components, Components), Components)
+    check(assert_type(td.unit, str), str)
 
     check(assert_type(td.ceil("D"), pd.Timedelta), pd.Timedelta)
     check(assert_type(td.floor(Day()), pd.Timedelta), pd.Timedelta)
