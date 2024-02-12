@@ -210,7 +210,7 @@ def test_pipe() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         DF.resample(MonthFreq).pipe(
             j,
-            "a",  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+            "a",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
             [1.0, 2.0],
             arg2="hi",
             kw=(1,),
@@ -218,7 +218,7 @@ def test_pipe() -> None:
         DF.resample(MonthFreq).pipe(
             j,
             1,
-            [1.0, "b"],  # type: ignore[list-item] # pyright: ignore[reportGeneralTypeIssues]
+            [1.0, "b"],  # type: ignore[list-item] # pyright: ignore[reportArgumentType,reportCallIssue]
             arg2="hi",
             kw=(1,),
         )
@@ -226,7 +226,7 @@ def test_pipe() -> None:
             j,
             1,
             [1.0],
-            arg2=11,  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+            arg2=11,  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
             kw=(1,),
         )
         DF.resample(MonthFreq).pipe(
@@ -234,13 +234,13 @@ def test_pipe() -> None:
             1,
             [1.0],
             arg2="hi",
-            kw=(1, 2),  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+            kw=(1, 2),  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         )
         DF.resample(MonthFreq).pipe(  # type: ignore[call-arg]
             j,
             1,
             [1.0],
-            arg3="hi",  # pyright: ignore[reportGeneralTypeIssues]
+            arg3="hi",  # pyright: ignore[reportCallIssue]
             kw=(1,),
         )
         DF.resample(MonthFreq).pipe(  # type: ignore[misc]
@@ -248,11 +248,11 @@ def test_pipe() -> None:
             1,
             [1.0],
             11,  # type: ignore[arg-type]
-            (1,),  # pyright: ignore[reportGeneralTypeIssues]
+            (1,),  # pyright: ignore[reportCallIssue]
         )
         DF.resample(MonthFreq).pipe(  # type: ignore[call-arg]
             j,
-            pos=1,  # pyright: ignore[reportGeneralTypeIssues]
+            pos=1,  # pyright: ignore[reportCallIssue]
             arg1=[1.0],
             arg2=11,  # type: ignore[arg-type]
             kw=(1,),
@@ -265,8 +265,8 @@ def test_pipe() -> None:
     check(assert_type(DF.resample(MonthFreq).pipe((k, "t"), 1), DataFrame), DataFrame)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        DF.resample(MonthFreq).pipe(
-            (k, 1),  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+        DF.resample(MonthFreq).pipe(  # pyright: ignore[reportCallIssue]
+            (k, 1),  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
             1,
         )
 

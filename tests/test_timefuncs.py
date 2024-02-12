@@ -258,9 +258,9 @@ def test_fail_on_adding_two_timestamps() -> None:
     s1 = pd.Series(pd.to_datetime(["2022-05-01", "2022-06-01"]))
     s2 = pd.Series(pd.to_datetime(["2022-05-15", "2022-06-15"]))
     if TYPE_CHECKING_INVALID_USAGE:
-        ssum: pd.Series = s1 + s2  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        ssum: pd.Series = s1 + s2  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         ts = pd.Timestamp("2022-06-30")
-        tsum: pd.Series = s1 + ts  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        tsum: pd.Series = s1 + ts  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_dtindex_tzinfo() -> None:
@@ -1169,9 +1169,9 @@ def test_timedelta64_and_arithmatic_operator() -> None:
     check(assert_type((s3 + td), "TimedeltaSeries"), pd.Series, pd.Timedelta)
     check(assert_type((s3 / td), "pd.Series[float]"), pd.Series, float)
     if TYPE_CHECKING_INVALID_USAGE:
-        r1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-        r2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-        r3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        r1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        r2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        r3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_timedeltaseries_add_timestampseries() -> None:
@@ -1203,8 +1203,8 @@ def test_timestamp_strptime_fails():
     if TYPE_CHECKING_INVALID_USAGE:
         assert_never(
             pd.Timestamp.strptime(
-                "2023-02-16",  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
-                "%Y-%M-%D",  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+                "2023-02-16",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+                "%Y-%M-%D",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
             )
         )
 

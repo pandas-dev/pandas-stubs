@@ -81,14 +81,16 @@ def to_datetime(
 ) -> TimestampSeries: ...
 @overload
 def to_datetime(
-    arg: Sequence[float | datetime]
-    | list[str]
-    | tuple[float | str | datetime, ...]
-    | npt.NDArray[np.datetime64]
-    | npt.NDArray[np.str_]
-    | npt.NDArray[np.int_]
-    | Index
-    | ExtensionArray,
+    arg: (
+        Sequence[float | datetime]
+        | list[str]
+        | tuple[float | str | datetime, ...]
+        | npt.NDArray[np.datetime64]
+        | npt.NDArray[np.str_]
+        | npt.NDArray[np.int_]
+        | Index
+        | ExtensionArray
+    ),
     errors: IgnoreRaiseCoerce = ...,
     dayfirst: bool = ...,
     yearfirst: bool = ...,

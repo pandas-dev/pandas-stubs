@@ -123,6 +123,7 @@ class NDFrame(indexing.IndexingMixin):
     def to_hdf(
         self,
         path_or_buf: FilePath | HDFStore,
+        *,
         key: _str,
         mode: Literal["a", "w", "r+"] = ...,
         complevel: int | None = ...,
@@ -173,12 +174,14 @@ class NDFrame(indexing.IndexingMixin):
         index_label: IndexLabel = ...,
         chunksize: int | None = ...,
         dtype: DtypeArg | None = ...,
-        method: Literal["multi"]
-        | Callable[
-            [SQLTable, Any, list[str], Iterable[tuple[Any, ...]]],
-            int | None,
-        ]
-        | None = ...,
+        method: (
+            Literal["multi"]
+            | Callable[
+                [SQLTable, Any, list[str], Iterable[tuple[Any, ...]]],
+                int | None,
+            ]
+            | None
+        ) = ...,
     ) -> int | None: ...
     def to_pickle(
         self,
@@ -401,7 +404,6 @@ class NDFrame(indexing.IndexingMixin):
         self,
         value=...,
         *,
-        method=...,
         axis=...,
         inplace: _bool = ...,
         limit=...,

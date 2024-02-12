@@ -44,8 +44,6 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
         data: ArrayLike | AnyArrayLike | list | tuple,
         freq=...,
         tz=...,
-        normalize: bool = ...,
-        closed=...,
         ambiguous: str = ...,
         dayfirst: bool = ...,
         yearfirst: bool = ...,

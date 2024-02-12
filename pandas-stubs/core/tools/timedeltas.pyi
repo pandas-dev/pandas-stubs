@@ -30,12 +30,14 @@ def to_timedelta(
 ) -> TimedeltaSeries: ...
 @overload
 def to_timedelta(
-    arg: Sequence[float | timedelta]
-    | list[str | float | timedelta]
-    | tuple[str | float | timedelta, ...]
-    | range
-    | ArrayLike
-    | Index,
+    arg: (
+        Sequence[float | timedelta]
+        | list[str | float | timedelta]
+        | tuple[str | float | timedelta, ...]
+        | range
+        | ArrayLike
+        | Index
+    ),
     unit: TimeDeltaUnitChoices | None = ...,
     errors: IgnoreRaiseCoerce = ...,
 ) -> TimedeltaIndex: ...
