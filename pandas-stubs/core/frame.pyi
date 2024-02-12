@@ -170,7 +170,7 @@ class _LocIndexerFrame(_LocIndexer):
             | slice
             | _IndexSliceTuple
             | Callable,
-            list[HashableT] | slice | Series[bool] | Callable,
+            MaskType | list[HashableT] | slice | Callable,
         ],
     ) -> DataFrame: ...
     @overload

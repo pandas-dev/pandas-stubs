@@ -259,8 +259,17 @@ def test_types_loc_at() -> None:
 
 def test_types_boolean_indexing() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
-    df[df > 1]
-    df[~(df > 1.0)]
+    check(assert_type(df[df > 1], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df[~(df > 1.0)], pd.DataFrame), pd.DataFrame)
+
+    row_mask = df["col1"] >= 2
+    col_mask = df.columns.isin(["col2"])
+    check(assert_type(df.loc[row_mask], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[~row_mask], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[row_mask, :], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[:, col_mask], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[row_mask, col_mask], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[~row_mask, ~col_mask], pd.DataFrame), pd.DataFrame)
 
 
 def test_types_df_to_df_comparison() -> None:
