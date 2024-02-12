@@ -61,6 +61,7 @@ from pandas._typing import (
     S1,
     AggFuncTypeBase,
     AggFuncTypeDictFrame,
+    AggFuncTypeDictSeries,
     AggFuncTypeFrame,
     AnyArrayLike,
     ArrayLike,
@@ -161,6 +162,8 @@ class _iLocIndexerFrame(_iLocIndexer):
 
 class _LocIndexerFrame(_LocIndexer):
     @overload
+    def __getitem__(self, idx: Scalar) -> Series | DataFrame: ...
+    @overload
     def __getitem__(
         self,
         idx: (
@@ -175,9 +178,10 @@ class _LocIndexerFrame(_LocIndexer):
                 | slice
                 | _IndexSliceTuple
                 | Callable,
-                list[HashableT] | slice | Series[bool] | Callable,
+                MaskType | list[HashableT] | slice  | Callable,
             ]
         ),
+
     ) -> DataFrame: ...
     @overload
     def __getitem__(  # pyright: ignore[reportOverlappingOverload]
@@ -191,8 +195,7 @@ class _LocIndexerFrame(_LocIndexer):
     def __getitem__(
         self,
         idx: (
-            ScalarT
-            | Callable[[DataFrame], ScalarT]
+            Callable[[DataFrame], ScalarT]
             | tuple[
                 IndexType
                 | MaskType
@@ -1148,7 +1151,9 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def diff(self, periods: int = ..., axis: Axis = ...) -> DataFrame: ...
     @overload
-    def agg(self, func: AggFuncTypeBase, axis: Axis = ..., **kwargs) -> Series: ...
+    def agg(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        self, func: AggFuncTypeBase | AggFuncTypeDictSeries, axis: Axis = ..., **kwargs
+    ) -> Series: ...
     @overload
     def agg(
         self,
@@ -1157,8 +1162,8 @@ class DataFrame(NDFrame, OpsMixin):
         **kwargs,
     ) -> DataFrame: ...
     @overload
-    def aggregate(
-        self, func: AggFuncTypeBase, axis: Axis = ..., **kwargs
+    def aggregate(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        self, func: AggFuncTypeBase | AggFuncTypeDictSeries, axis: Axis = ..., **kwargs
     ) -> Series: ...
     @overload
     def aggregate(

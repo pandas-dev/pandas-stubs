@@ -259,8 +259,17 @@ def test_types_loc_at() -> None:
 
 def test_types_boolean_indexing() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
-    df[df > 1]
-    df[~(df > 1.0)]
+    check(assert_type(df[df > 1], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df[~(df > 1.0)], pd.DataFrame), pd.DataFrame)
+
+    row_mask = df["col1"] >= 2
+    col_mask = df.columns.isin(["col2"])
+    check(assert_type(df.loc[row_mask], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[~row_mask], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[row_mask, :], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[:, col_mask], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[row_mask, col_mask], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[~row_mask, ~col_mask], pd.DataFrame), pd.DataFrame)
 
 
 def test_types_df_to_df_comparison() -> None:
@@ -1267,7 +1276,10 @@ def test_types_agg() -> None:
         assert_type(df.agg({"A": ["min", "max"], "B": "min"}), pd.DataFrame),
         pd.DataFrame,
     )
+    check(assert_type(df.agg({"A": ["mean"]}), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.agg("mean", axis=1), pd.Series), pd.Series)
+    check(assert_type(df.agg({"A": "mean"}), pd.Series), pd.Series)
+    check(assert_type(df.agg({"A": "mean", "B": "sum"}), pd.Series), pd.Series)
 
 
 def test_types_aggregate() -> None:
@@ -1290,6 +1302,10 @@ def test_types_aggregate() -> None:
         assert_type(df.aggregate({"A": ["min", "max"], "B": "min"}), pd.DataFrame),
         pd.DataFrame,
     )
+    check(assert_type(df.aggregate({"A": ["mean"]}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.aggregate("mean", axis=1), pd.Series), pd.Series)
+    check(assert_type(df.aggregate({"A": "mean"}), pd.Series), pd.Series)
+    check(assert_type(df.aggregate({"A": "mean", "B": "sum"}), pd.Series), pd.Series)
 
 
 def test_types_transform() -> None:
@@ -2192,16 +2208,16 @@ def test_frame_scalars_slice() -> None:
 
     # Note: bool_ cannot be tested since the index is object and pandas does not
     # support boolean access using loc except when the index is boolean
-    check(assert_type(df.loc[str_], pd.Series), pd.Series)
-    check(assert_type(df.loc[bytes_], pd.Series), pd.Series)
-    check(assert_type(df.loc[date], pd.Series), pd.Series)
-    check(assert_type(df.loc[datetime_], pd.Series), pd.Series)
-    check(assert_type(df.loc[timedelta], pd.Series), pd.Series)
-    check(assert_type(df.loc[int_], pd.Series), pd.Series)
-    check(assert_type(df.loc[float_], pd.Series), pd.Series)
-    check(assert_type(df.loc[complex_], pd.Series), pd.Series)
-    check(assert_type(df.loc[timestamp], pd.Series), pd.Series)
-    check(assert_type(df.loc[pd_timedelta], pd.Series), pd.Series)
+    check(assert_type(df.loc[str_], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[bytes_], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[date], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[datetime_], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[timedelta], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[int_], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[float_], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[complex_], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[timestamp], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[pd_timedelta], Union[pd.Series, pd.DataFrame]), pd.Series)
     check(assert_type(df.loc[none], pd.Series), pd.Series)
 
     check(assert_type(df.loc[:, str_], pd.Series), pd.Series)
@@ -2216,11 +2232,20 @@ def test_frame_scalars_slice() -> None:
     check(assert_type(df.loc[:, pd_timedelta], pd.Series), pd.Series)
     check(assert_type(df.loc[:, none], pd.Series), pd.Series)
 
+    # GH749
+
+    multi_idx = pd.MultiIndex.from_product([["a", "b"], [1, 2]], names=["alpha", "num"])
+    df2 = pd.DataFrame({"col1": range(4)}, index=multi_idx)
+    check(assert_type(df2.loc[str_], Union[pd.Series, pd.DataFrame]), pd.DataFrame)
+
+    df3 = pd.DataFrame({"x": range(2)}, index=pd.Index(["a", "b"]))
+    check(assert_type(df3.loc[str_], Union[pd.Series, pd.DataFrame]), pd.Series)
+
 
 def test_boolean_loc() -> None:
     # Booleans can only be used in loc when the index is boolean
     df = pd.DataFrame([[0, 1], [1, 0]], columns=[True, False], index=[True, False])
-    check(assert_type(df.loc[True], pd.Series), pd.Series)
+    check(assert_type(df.loc[True], Union[pd.Series, pd.DataFrame]), pd.Series)
     check(assert_type(df.loc[:, False], pd.Series), pd.Series)
 
 
