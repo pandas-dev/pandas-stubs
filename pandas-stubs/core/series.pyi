@@ -18,6 +18,7 @@ from typing import (
     ClassVar,
     Generic,
     Literal,
+    TypeVar,
     overload,
 )
 
@@ -159,6 +160,8 @@ from pandas.plotting import PlotAccessor
 
 _bool = bool
 _str = str
+
+_T = TypeVar("_T")
 
 class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     # get item
@@ -381,6 +384,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __getitem__(self, idx: Scalar) -> S1: ...
     def __setitem__(self, key, value) -> None: ...
+    @overload
+    def get(self, key: Hashable, default: None = ...) -> S1 | None: ...
+    @overload
+    def get(self, key: Hashable, default: S1 | _T = ...) -> S1 | _T: ...
     def repeat(
         self, repeats: int | list[int], axis: AxisIndex | None = ...
     ) -> Series[S1]: ...

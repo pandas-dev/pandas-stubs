@@ -16,6 +16,7 @@ from typing import (
     Any,
     Generic,
     TypeVar,
+    Union,
     cast,
 )
 
@@ -2873,6 +2874,24 @@ def test_round() -> None:
     # GH 791
     check(assert_type(round(pd.DataFrame([])), pd.DataFrame), pd.DataFrame)
     check(assert_type(round(pd.Series([1], dtype=int)), "pd.Series[int]"), pd.Series)
+
+
+def test_get() -> None:
+    s_int = pd.Series([1, 2, 3], index=[1, 2, 3])
+
+    check(assert_type(s_int.get(1), Union[int, None]), np.int64)
+    check(assert_type(s_int.get(99), Union[int, None]), type(None))
+    check(assert_type(s_int.get(1, default=None), Union[int, None]), np.int64)
+    check(assert_type(s_int.get(1, default=2), int), np.int64)
+    check(assert_type(s_int.get(99, default="a"), Union[int, str]), str)
+
+    s_str = pd.Series(list("abc"), index=list("abc"))
+
+    check(assert_type(s_str.get("a"), Union[str, None]), str)
+    check(assert_type(s_str.get("z"), Union[str, None]), type(None))
+    check(assert_type(s_str.get("a", default=None), Union[str, None]), str)
+    check(assert_type(s_str.get("a", default="b"), str), str)
+    check(assert_type(s_str.get("z", default=True), Union[str, bool]), bool)
 
 
 def test_series_new_empty() -> None:
