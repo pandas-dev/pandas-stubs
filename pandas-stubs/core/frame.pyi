@@ -13,6 +13,7 @@ from typing import (
     Any,
     ClassVar,
     Literal,
+    TypeVar,
     overload,
 )
 
@@ -127,6 +128,8 @@ from pandas.plotting import PlotAccessor
 
 _str = str
 _bool = bool
+
+_T = TypeVar("_T")
 
 class _iLocIndexerFrame(_iLocIndexer):
     @overload
@@ -1696,7 +1699,14 @@ class DataFrame(NDFrame, OpsMixin):
     # def from_dict
     # def from_records
     def ge(self, other, axis: Axis = ..., level: Level | None = ...) -> DataFrame: ...
-    # def get
+    @overload
+    def get(self, key: Hashable, default: None = ...) -> Series | None: ...
+    @overload
+    def get(self, key: Hashable, default: _T = ...) -> Series | _T: ...
+    @overload
+    def get(self, key: list[Hashable], default: None = ...) -> DataFrame | None: ...
+    @overload
+    def get(self, key: list[Hashable], default: _T = ...) -> DataFrame | _T: ...
     def gt(self, other, axis: Axis = ..., level: Level | None = ...) -> DataFrame: ...
     def head(self, n: int = ...) -> DataFrame: ...
     def infer_objects(self) -> DataFrame: ...
