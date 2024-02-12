@@ -3,9 +3,13 @@ from datetime import (
     timedelta,
     tzinfo as _tzinfo,
 )
+from typing import Literal
 
 import numpy as np
-from typing_extensions import TypeAlias
+from typing_extensions import (
+    Self,
+    TypeAlias,
+)
 
 from pandas._libs.tslibs.period import Period
 
@@ -121,3 +125,8 @@ class NaTType:
     __le__: _NatComparison
     __gt__: _NatComparison
     __ge__: _NatComparison
+    @property
+    def unit(self) -> str: ...
+    def as_unit(
+        self, unit: Literal["s", "ms", "us", "ns"], round_ok: bool = ...
+    ) -> Self: ...
