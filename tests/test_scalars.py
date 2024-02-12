@@ -530,6 +530,11 @@ def test_timedelta_properties_methods() -> None:
     check(assert_type(td.view(np.int64), object), np.int64)
     check(assert_type(td.view("i8"), object), np.int64)
 
+    check(assert_type(td.as_unit("s"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td.as_unit("ms"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td.as_unit("us", round_ok=True), pd.Timedelta), pd.Timedelta)
+    check(assert_type(td.as_unit("ns", round_ok=False), pd.Timedelta), pd.Timedelta)
+
 
 def test_timedelta_add_sub() -> None:
     td = pd.Timedelta("1 day")
