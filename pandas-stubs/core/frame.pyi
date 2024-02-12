@@ -157,6 +157,8 @@ class _iLocIndexerFrame(_iLocIndexer):
 
 class _LocIndexerFrame(_LocIndexer):
     @overload
+    def __getitem__(self, idx: Scalar) -> Series | DataFrame: ...
+    @overload
     def __getitem__(
         self,
         idx: IndexType
@@ -184,8 +186,7 @@ class _LocIndexerFrame(_LocIndexer):
     @overload
     def __getitem__(
         self,
-        idx: ScalarT
-        | Callable[[DataFrame], ScalarT]
+        idx: Callable[[DataFrame], ScalarT]
         | tuple[
             IndexType
             | MaskType
