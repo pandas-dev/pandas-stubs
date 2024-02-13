@@ -45,6 +45,7 @@ import xarray as xr
 from pandas._typing import Scalar
 
 from tests import (
+    PD_LTE_22,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -2257,7 +2258,11 @@ def test_groupby_result() -> None:
     index, value = next(iterator)
     assert_type((index, value), tuple[tuple, pd.DataFrame])
 
-    check(assert_type(index, tuple), tuple, np.integer)
+    if PD_LTE_22:
+        check(assert_type(index, tuple), tuple, np.integer)
+    else:
+        check(assert_type(index, tuple), tuple, int)
+
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
 
     iterator2 = df.groupby("a").__iter__()
@@ -2365,7 +2370,7 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         "The default of observed=False is deprecated",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         categorical_index = pd.CategoricalIndex(df.a)
         iterator2 = df.groupby(categorical_index).__iter__()

@@ -13,20 +13,20 @@ from pandas._libs.tslibs import Timedelta
 from pandas._libs.tslibs.timedeltas import TimeDeltaUnitChoices
 from pandas._typing import (
     ArrayLike,
-    IgnoreRaiseCoerce,
+    RaiseCoerce,
 )
 
 @overload
 def to_timedelta(
     arg: str | float | timedelta,
     unit: TimeDeltaUnitChoices | None = ...,
-    errors: IgnoreRaiseCoerce = ...,
+    errors: RaiseCoerce = ...,
 ) -> Timedelta: ...
 @overload
 def to_timedelta(
     arg: Series,
     unit: TimeDeltaUnitChoices | None = ...,
-    errors: IgnoreRaiseCoerce = ...,
+    errors: RaiseCoerce = ...,
 ) -> TimedeltaSeries: ...
 @overload
 def to_timedelta(
@@ -39,5 +39,5 @@ def to_timedelta(
         | Index
     ),
     unit: TimeDeltaUnitChoices | None = ...,
-    errors: IgnoreRaiseCoerce = ...,
+    errors: RaiseCoerce = ...,
 ) -> TimedeltaIndex: ...

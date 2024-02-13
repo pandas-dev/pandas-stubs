@@ -49,6 +49,7 @@ import sqlalchemy.orm.decl_api
 from typing_extensions import assert_type
 
 from tests import (
+    PD_LTE_22,
     TYPE_CHECKING_INVALID_USAGE,
     WINDOWS,
     check,
@@ -427,10 +428,15 @@ def test_hdf_series():
 
 
 def test_spss():
+    if PD_LTE_22:
+        warning_class = FutureWarning
+        message = "ChainedAssignmentError: behaviour will change"
+    else:
+        warning_class = pd.errors.ChainedAssignmentError  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
+        message = "A value is trying to be set on a copy of a DataFrame"
+
     path = Path(CWD, "data", "labelled-num.sav")
-    with pytest_warns_bounded(
-        FutureWarning, "ChainedAssignmentError: behaviour will change", lower="2.1.99"
-    ):
+    with pytest_warns_bounded(warning_class, message):
         check(
             assert_type(read_spss(path, convert_categoricals=True), DataFrame),
             DataFrame,
