@@ -2882,6 +2882,7 @@ def test_get() -> None:
     check(assert_type(s_int.get(1), Union[int, None]), np.int64)
     check(assert_type(s_int.get(99), Union[int, None]), type(None))
     check(assert_type(s_int.get(1, default=None), Union[int, None]), np.int64)
+    check(assert_type(s_int.get(99, default=None), Union[int, None]), type(None))
     check(assert_type(s_int.get(1, default=2), int), np.int64)
     check(assert_type(s_int.get(99, default="a"), Union[int, str]), str)
 
@@ -2890,6 +2891,7 @@ def test_get() -> None:
     check(assert_type(s_str.get("a"), Union[str, None]), str)
     check(assert_type(s_str.get("z"), Union[str, None]), type(None))
     check(assert_type(s_str.get("a", default=None), Union[str, None]), str)
+    check(assert_type(s_str.get("z", default=None), Union[str, None]), type(None))
     check(assert_type(s_str.get("a", default="b"), str), str)
     check(assert_type(s_str.get("z", default=True), Union[str, bool]), bool)
 

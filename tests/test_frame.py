@@ -3120,6 +3120,7 @@ def test_get() -> None:
         pd.Series,
         np.int64,
     )
+    check(assert_type(df.get("z", default=None), Union[pd.Series, None]), type(None))
     check(
         assert_type(df.get("a", default=1), Union[pd.Series, int]), pd.Series, np.int64
     )
@@ -3132,6 +3133,9 @@ def test_get() -> None:
     check(
         assert_type(df.get(["a", "b"], default=None), Union[pd.DataFrame, None]),
         pd.DataFrame,
+    )
+    check(
+        assert_type(df.get(["z"], default=None), Union[pd.DataFrame, None]), type(None)
     )
     check(
         assert_type(df.get(["a", "b"], default=1), Union[pd.DataFrame, int]),
