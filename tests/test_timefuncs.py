@@ -5,6 +5,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Optional,
+    cast,
 )
 
 import numpy as np
@@ -24,6 +25,8 @@ if TYPE_CHECKING:
     from pandas._typing import FulldatetimeDict
 else:
     FulldatetimeDict = Any
+from pandas._typing import TimeUnit
+
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
@@ -428,6 +431,11 @@ def test_series_dt_accessors() -> None:
     )
     check(assert_type(s0.dt.month_name(), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s0.dt.day_name(), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(s0.dt.unit, TimeUnit), str)
+    check(assert_type(s0.dt.as_unit("s"), "TimestampSeries"), pd.Series, pd.Timestamp)
+    check(assert_type(s0.dt.as_unit("ms"), "TimestampSeries"), pd.Series, pd.Timestamp)
+    check(assert_type(s0.dt.as_unit("us"), "TimestampSeries"), pd.Series, pd.Timestamp)
+    check(assert_type(s0.dt.as_unit("ns"), "TimestampSeries"), pd.Series, pd.Timestamp)
 
     i1 = pd.period_range(start="2022-06-01", periods=10)
 
@@ -455,6 +463,35 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s2.dt.components, pd.DataFrame), pd.DataFrame)
     check(assert_type(s2.dt.to_pytimedelta(), np.ndarray), np.ndarray)
     check(assert_type(s2.dt.total_seconds(), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s2.dt.unit, TimeUnit), str)
+    check(assert_type(s2.dt.as_unit("s"), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(s2.dt.as_unit("ms"), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(s2.dt.as_unit("us"), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(s2.dt.as_unit("ns"), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+
+    # Checks for general Series other than TimestampSeries and TimedeltaSeries
+
+    s4 = cast(
+        "pd.Series[pd.Timestamp]",
+        pd.Series([pd.Timestamp("2024-01-01"), pd.Timestamp("2024-01-02")]),
+    )
+
+    check(assert_type(s4.dt.unit, TimeUnit), str)
+    check(assert_type(s4.dt.as_unit("s"), pd.Series), pd.Series, pd.Timestamp)
+    check(assert_type(s4.dt.as_unit("ms"), pd.Series), pd.Series, pd.Timestamp)
+    check(assert_type(s4.dt.as_unit("us"), pd.Series), pd.Series, pd.Timestamp)
+    check(assert_type(s4.dt.as_unit("ns"), pd.Series), pd.Series, pd.Timestamp)
+
+    s5 = cast(
+        "pd.Series[pd.Timedelta]",
+        pd.Series([pd.Timedelta("1 day"), pd.Timedelta("2 days")]),
+    )
+
+    check(assert_type(s5.dt.unit, TimeUnit), str)
+    check(assert_type(s5.dt.as_unit("s"), pd.Series), pd.Series, pd.Timedelta)
+    check(assert_type(s5.dt.as_unit("ms"), pd.Series), pd.Series, pd.Timedelta)
+    check(assert_type(s5.dt.as_unit("us"), pd.Series), pd.Series, pd.Timedelta)
+    check(assert_type(s5.dt.as_unit("ns"), pd.Series), pd.Series, pd.Timedelta)
 
 
 def test_datetimeindex_accessors() -> None:
@@ -522,6 +559,11 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.month_name(), pd.Index), pd.Index, str)
     check(assert_type(i0.day_name(), pd.Index), pd.Index, str)
     check(assert_type(i0.is_normalized, bool), bool)
+    check(assert_type(i0.unit, TimeUnit), str)
+    check(assert_type(i0.as_unit("s"), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(i0.as_unit("ms"), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(i0.as_unit("us"), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(i0.as_unit("ns"), pd.DatetimeIndex), pd.DatetimeIndex)
 
 
 def test_timedeltaindex_accessors() -> None:
@@ -542,6 +584,11 @@ def test_timedeltaindex_accessors() -> None:
         assert_type(i0.floor("D"), pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta
     )
     check(assert_type(i0.ceil("D"), pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
+    check(assert_type(i0.unit, TimeUnit), str)
+    check(assert_type(i0.as_unit("s"), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(i0.as_unit("ms"), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(i0.as_unit("us"), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(i0.as_unit("ns"), pd.TimedeltaIndex), pd.TimedeltaIndex)
 
 
 def test_periodindex_accessors() -> None:
