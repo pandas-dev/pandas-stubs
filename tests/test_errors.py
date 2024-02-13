@@ -3,7 +3,10 @@ import warnings
 from pandas import errors
 import pytest
 
-from tests import WINDOWS
+from tests import (
+    PD_LTE_22,
+    WINDOWS,
+)
 
 
 def test_abstract_method_error() -> None:
@@ -105,13 +108,15 @@ def test_specification_error() -> None:
 
 
 def test_setting_with_copy_error() -> None:
-    with pytest.raises(errors.SettingWithCopyError):
-        raise errors.SettingWithCopyError()
+    if PD_LTE_22:
+        with pytest.raises(errors.SettingWithCopyError):
+            raise errors.SettingWithCopyError()
 
 
 def test_setting_with_copy_warning() -> None:
-    with pytest.warns(errors.SettingWithCopyWarning):
-        warnings.warn("", errors.SettingWithCopyWarning)
+    if PD_LTE_22:
+        with pytest.warns(errors.SettingWithCopyWarning):
+            warnings.warn("", errors.SettingWithCopyWarning)
 
 
 def test_numexpr_clobbering_error() -> None:
