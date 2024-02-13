@@ -115,6 +115,7 @@ from pandas._typing import (
     StrLike,
     Suffixes,
     TimestampConvention,
+    TimeUnit,
     ValidationOptions,
     WriteBuffer,
     XMLParsers,
@@ -2082,7 +2083,7 @@ class DataFrame(NDFrame, OpsMixin):
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        date_unit: TimeUnit = ...,
         default_handler: (
             Callable[[Any], _str | float | _bool | list | dict] | None
         ) = ...,
@@ -2101,7 +2102,7 @@ class DataFrame(NDFrame, OpsMixin):
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        date_unit: TimeUnit = ...,
         default_handler: (
             Callable[[Any], _str | float | _bool | list | dict] | None
         ) = ...,
@@ -2119,7 +2120,7 @@ class DataFrame(NDFrame, OpsMixin):
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        date_unit: TimeUnit = ...,
         default_handler: (
             Callable[[Any], _str | float | _bool | list | dict] | None
         ) = ...,
@@ -2137,7 +2138,7 @@ class DataFrame(NDFrame, OpsMixin):
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        date_unit: TimeUnit = ...,
         default_handler: (
             Callable[[Any], _str | float | _bool | list | dict] | None
         ) = ...,

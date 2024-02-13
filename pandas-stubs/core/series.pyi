@@ -144,6 +144,7 @@ from pandas._typing import (
     TimedeltaDtypeArg,
     TimestampConvention,
     TimestampDtypeArg,
+    TimeUnit,
     UIntDtypeArg,
     VoidDtypeArg,
     WriteBuffer,
@@ -486,7 +487,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        date_unit: TimeUnit = ...,
         default_handler: (
             Callable[[Any], _str | float | _bool | list | dict] | None
         ) = ...,
@@ -505,7 +506,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        date_unit: TimeUnit = ...,
         default_handler: (
             Callable[[Any], _str | float | _bool | list | dict] | None
         ) = ...,
@@ -523,7 +524,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        date_unit: TimeUnit = ...,
         default_handler: (
             Callable[[Any], _str | float | _bool | list | dict] | None
         ) = ...,
@@ -541,7 +542,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        date_unit: TimeUnit = ...,
         default_handler: (
             Callable[[Any], _str | float | _bool | list | dict] | None
         ) = ...,

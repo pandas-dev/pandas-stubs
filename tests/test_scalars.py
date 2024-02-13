@@ -24,6 +24,7 @@ from pandas._libs.tslibs import (
     NaTType,
 )
 from pandas._libs.tslibs.timedeltas import Components
+from pandas._typing import TimeUnit
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -517,7 +518,7 @@ def test_timedelta_properties_methods() -> None:
     check(assert_type(td.value, int), int)
     check(assert_type(td.resolution_string, str), str)
     check(assert_type(td.components, Components), Components)
-    check(assert_type(td.unit, str), str)
+    check(assert_type(td.unit, TimeUnit), str)
 
     check(assert_type(td.ceil("D"), pd.Timedelta), pd.Timedelta)
     check(assert_type(td.floor(Day()), pd.Timedelta), pd.Timedelta)
@@ -1195,7 +1196,7 @@ def test_timestamp_properties() -> None:
     check(assert_type(ts.tzinfo, Optional[dt.tzinfo]), type(None))
     check(assert_type(ts.value, int), int)
     check(assert_type(ts.year, int), int)
-    check(assert_type(ts.unit, str), str)
+    check(assert_type(ts.unit, TimeUnit), str)
 
 
 def test_timestamp_add_sub() -> None:
