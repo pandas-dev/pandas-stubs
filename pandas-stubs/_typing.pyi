@@ -581,7 +581,7 @@ SequenceIndexer: TypeAlias = slice | list[int] | np.ndarray
 PositionalIndexer: TypeAlias = ScalarIndexer | SequenceIndexer
 TakeIndexer: TypeAlias = Sequence[int] | Sequence[np.integer] | npt.NDArray[np.integer]
 
-IgnoreRaiseCoerce: TypeAlias = Literal["ignore", "raise", "coerce"]
+RaiseCoerce: TypeAlias = Literal["raise", "coerce"]
 
 # Shared by functions such as drop and astype
 IgnoreRaise: TypeAlias = Literal["ignore", "raise"]

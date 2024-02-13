@@ -10,7 +10,7 @@ from typing_extensions import TypeAlias
 from pandas._libs.lib import NoDefault
 from pandas._typing import (
     DtypeBackend,
-    IgnoreRaiseCoerce,
+    RaiseCoerce,
     Scalar,
     npt,
 )
@@ -27,14 +27,14 @@ def to_numeric(
 @overload
 def to_numeric(
     arg: list | tuple | np.ndarray,
-    errors: IgnoreRaiseCoerce = ...,
+    errors: RaiseCoerce = ...,
     downcast: _Downcast = ...,
     dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> npt.NDArray: ...
 @overload
 def to_numeric(
     arg: pd.Series,
-    errors: IgnoreRaiseCoerce = ...,
+    errors: RaiseCoerce = ...,
     downcast: _Downcast = ...,
     dtype_backend: DtypeBackend | NoDefault = ...,
 ) -> pd.Series: ...

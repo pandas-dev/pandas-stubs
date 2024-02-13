@@ -292,13 +292,6 @@ def test_comparisons_datetimeindex() -> None:
 
 def test_to_datetime_nat() -> None:
     # GH 88
-    with pytest_warns_bounded(
-        FutureWarning, "errors='ignore' is deprecated", lower="2.1.99"
-    ):
-        check(
-            assert_type(pd.to_datetime("2021-03-01", errors="ignore"), pd.Timestamp),
-            pd.Timestamp,
-        )
     check(
         assert_type(pd.to_datetime("2021-03-01", errors="raise"), pd.Timestamp),
         pd.Timestamp,
@@ -811,13 +804,6 @@ def test_to_timedelta_scalar() -> None:
         assert_type(pd.to_timedelta(10, "ms", errors="raise"), pd.Timedelta),
         pd.Timedelta,
     )
-    with pytest_warns_bounded(
-        FutureWarning, "errors='ignore' is deprecated", lower="2.1.99"
-    ):
-        check(
-            assert_type(pd.to_timedelta("10ms", errors="ignore"), pd.Timedelta),
-            pd.Timedelta,
-        )
     check(
         assert_type(
             pd.to_timedelta(dt.timedelta(milliseconds=10), errors="coerce"),
