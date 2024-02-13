@@ -34,7 +34,6 @@ from pandas._typing import (
     AxisIndex,
     CompressionOptions,
     CSVQuoting,
-    Dtype,
     DtypeArg,
     DtypeBackend,
     FilePath,
@@ -299,7 +298,6 @@ class NDFrame(indexing.IndexingMixin):
         self, indices, axis=..., is_copy: _bool | None = ..., **kwargs
     ) -> Self: ...
     def __delitem__(self, idx: Hashable) -> None: ...
-    def get(self, key: object, default: Dtype | None = ...) -> Dtype: ...
     def reindex_like(
         self,
         other,

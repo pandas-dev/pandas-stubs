@@ -141,9 +141,11 @@ from pandas._typing import (
     SortKind,
     StrDtypeArg,
     StrLike,
+    T,
     TimedeltaDtypeArg,
     TimestampConvention,
     TimestampDtypeArg,
+    TimeUnit,
     UIntDtypeArg,
     VoidDtypeArg,
     WriteBuffer,
@@ -381,6 +383,12 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __getitem__(self, idx: Scalar) -> S1: ...
     def __setitem__(self, key, value) -> None: ...
+    @overload
+    def get(self, key: Hashable, default: None = ...) -> S1 | None: ...
+    @overload
+    def get(self, key: Hashable, default: S1) -> S1: ...
+    @overload
+    def get(self, key: Hashable, default: T) -> S1 | T: ...
     def repeat(
         self, repeats: int | list[int], axis: AxisIndex | None = ...
     ) -> Series[S1]: ...
@@ -486,7 +494,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        date_unit: TimeUnit = ...,
         default_handler: (
             Callable[[Any], _str | float | _bool | list | dict] | None
         ) = ...,
@@ -505,7 +513,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        date_unit: TimeUnit = ...,
         default_handler: (
             Callable[[Any], _str | float | _bool | list | dict] | None
         ) = ...,
@@ -523,7 +531,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        date_unit: TimeUnit = ...,
         default_handler: (
             Callable[[Any], _str | float | _bool | list | dict] | None
         ) = ...,
@@ -541,7 +549,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        date_unit: TimeUnit = ...,
         default_handler: (
             Callable[[Any], _str | float | _bool | list | dict] | None
         ) = ...,

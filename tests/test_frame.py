@@ -3112,3 +3112,38 @@ def test_itertuples() -> None:
     for item in df.itertuples():
         check(assert_type(item, _PandasNamedTuple), tuple)
         assert_type(item.a, Scalar)
+
+
+def test_get() -> None:
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6], "c": [7, 8, 9]})
+
+    # Get single column
+    check(assert_type(df.get("a"), Union[pd.Series, None]), pd.Series, np.int64)
+    check(assert_type(df.get("z"), Union[pd.Series, None]), type(None))
+    check(
+        assert_type(df.get("a", default=None), Union[pd.Series, None]),
+        pd.Series,
+        np.int64,
+    )
+    check(assert_type(df.get("z", default=None), Union[pd.Series, None]), type(None))
+    check(
+        assert_type(df.get("a", default=1), Union[pd.Series, int]), pd.Series, np.int64
+    )
+    check(assert_type(df.get("z", default=1), Union[pd.Series, int]), int)
+
+    # Get multiple columns
+    check(assert_type(df.get(["a"]), Union[pd.DataFrame, None]), pd.DataFrame)
+    check(assert_type(df.get(["a", "b"]), Union[pd.DataFrame, None]), pd.DataFrame)
+    check(assert_type(df.get(["z"]), Union[pd.DataFrame, None]), type(None))
+    check(
+        assert_type(df.get(["a", "b"], default=None), Union[pd.DataFrame, None]),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.get(["z"], default=None), Union[pd.DataFrame, None]), type(None)
+    )
+    check(
+        assert_type(df.get(["a", "b"], default=1), Union[pd.DataFrame, int]),
+        pd.DataFrame,
+    )
+    check(assert_type(df.get(["z"], default=1), Union[pd.DataFrame, int]), int)

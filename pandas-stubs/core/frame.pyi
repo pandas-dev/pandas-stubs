@@ -114,7 +114,9 @@ from pandas._typing import (
     StorageOptions,
     StrLike,
     Suffixes,
+    T as _T,
     TimestampConvention,
+    TimeUnit,
     ValidationOptions,
     WriteBuffer,
     XMLParsers,
@@ -1696,7 +1698,14 @@ class DataFrame(NDFrame, OpsMixin):
     # def from_dict
     # def from_records
     def ge(self, other, axis: Axis = ..., level: Level | None = ...) -> DataFrame: ...
-    # def get
+    @overload
+    def get(self, key: Hashable, default: None = ...) -> Series | None: ...
+    @overload
+    def get(self, key: Hashable, default: _T) -> Series | _T: ...
+    @overload
+    def get(self, key: list[Hashable], default: None = ...) -> DataFrame | None: ...
+    @overload
+    def get(self, key: list[Hashable], default: _T) -> DataFrame | _T: ...
     def gt(self, other, axis: Axis = ..., level: Level | None = ...) -> DataFrame: ...
     def head(self, n: int = ...) -> DataFrame: ...
     def infer_objects(self) -> DataFrame: ...
@@ -2082,7 +2091,7 @@ class DataFrame(NDFrame, OpsMixin):
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        date_unit: TimeUnit = ...,
         default_handler: (
             Callable[[Any], _str | float | _bool | list | dict] | None
         ) = ...,
@@ -2101,7 +2110,7 @@ class DataFrame(NDFrame, OpsMixin):
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        date_unit: TimeUnit = ...,
         default_handler: (
             Callable[[Any], _str | float | _bool | list | dict] | None
         ) = ...,
@@ -2119,7 +2128,7 @@ class DataFrame(NDFrame, OpsMixin):
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        date_unit: TimeUnit = ...,
         default_handler: (
             Callable[[Any], _str | float | _bool | list | dict] | None
         ) = ...,
@@ -2137,7 +2146,7 @@ class DataFrame(NDFrame, OpsMixin):
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
         force_ascii: _bool = ...,
-        date_unit: Literal["s", "ms", "us", "ns"] = ...,
+        date_unit: TimeUnit = ...,
         default_handler: (
             Callable[[Any], _str | float | _bool | list | dict] | None
         ) = ...,
