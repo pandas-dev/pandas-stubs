@@ -775,6 +775,7 @@ RandomState: TypeAlias = (
     | np.random.RandomState
 )
 Frequency: TypeAlias = str | BaseOffset
+TimeUnit: TypeAlias = Literal["s", "ms", "us", "ns"]
 TimeGrouperOrigin: TypeAlias = (
     Timestamp | Literal["epoch", "start", "start_day", "end", "end_day"]
 )
