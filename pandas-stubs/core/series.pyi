@@ -18,7 +18,6 @@ from typing import (
     ClassVar,
     Generic,
     Literal,
-    TypeVar,
     overload,
 )
 
@@ -142,6 +141,7 @@ from pandas._typing import (
     SortKind,
     StrDtypeArg,
     StrLike,
+    T,
     TimedeltaDtypeArg,
     TimestampConvention,
     TimestampDtypeArg,
@@ -160,8 +160,6 @@ from pandas.plotting import PlotAccessor
 
 _bool = bool
 _str = str
-
-_T = TypeVar("_T")
 
 class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     # get item
@@ -389,7 +387,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def get(self, key: Hashable, default: S1) -> S1: ...
     @overload
-    def get(self, key: Hashable, default: _T) -> S1 | _T: ...
+    def get(self, key: Hashable, default: T) -> S1 | T: ...
     def repeat(
         self, repeats: int | list[int], axis: AxisIndex | None = ...
     ) -> Series[S1]: ...

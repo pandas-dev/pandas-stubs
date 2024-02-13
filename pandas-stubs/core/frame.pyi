@@ -13,7 +13,6 @@ from typing import (
     Any,
     ClassVar,
     Literal,
-    TypeVar,
     overload,
 )
 
@@ -115,6 +114,7 @@ from pandas._typing import (
     StorageOptions,
     StrLike,
     Suffixes,
+    T as _T,
     TimestampConvention,
     ValidationOptions,
     WriteBuffer,
@@ -128,8 +128,6 @@ from pandas.plotting import PlotAccessor
 
 _str = str
 _bool = bool
-
-_T = TypeVar("_T")
 
 class _iLocIndexerFrame(_iLocIndexer):
     @overload
