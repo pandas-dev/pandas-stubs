@@ -154,16 +154,16 @@ class _DatetimeLikeOps(
 # type of the series, we don't know which kind of series was ...ed
 # in to the dt accessor
 
-_DTRoundingMethodReturnType = TypeVar(
-    "_DTRoundingMethodReturnType",
+_DTTimestampTimedeltaReturnType = TypeVar(
+    "_DTTimestampTimedeltaReturnType",
     Series,
-    TimedeltaSeries,
     TimestampSeries,
+    TimedeltaSeries,
     DatetimeIndex,
     TimedeltaIndex,
 )
 
-class _DatetimeRoundingMethods(Generic[_DTRoundingMethodReturnType]):
+class _DatetimeRoundingMethods(Generic[_DTTimestampTimedeltaReturnType]):
     def round(
         self,
         freq: str | BaseOffset | None,
@@ -173,7 +173,7 @@ class _DatetimeRoundingMethods(Generic[_DTRoundingMethodReturnType]):
             | timedelta
             | Timedelta
         ) = ...,
-    ) -> _DTRoundingMethodReturnType: ...
+    ) -> _DTTimestampTimedeltaReturnType: ...
     def floor(
         self,
         freq: str | BaseOffset | None,
@@ -183,7 +183,7 @@ class _DatetimeRoundingMethods(Generic[_DTRoundingMethodReturnType]):
             | timedelta
             | Timedelta
         ) = ...,
-    ) -> _DTRoundingMethodReturnType: ...
+    ) -> _DTTimestampTimedeltaReturnType: ...
     def ceil(
         self,
         freq: str | BaseOffset | None,
@@ -193,7 +193,7 @@ class _DatetimeRoundingMethods(Generic[_DTRoundingMethodReturnType]):
             | timedelta
             | Timedelta
         ) = ...,
-    ) -> _DTRoundingMethodReturnType: ...
+    ) -> _DTTimestampTimedeltaReturnType: ...
 
 _DTNormalizeReturnType = TypeVar(
     "_DTNormalizeReturnType", TimestampSeries, DatetimeIndex
@@ -202,9 +202,9 @@ _DTStrKindReturnType = TypeVar("_DTStrKindReturnType", Series[str], Index)
 _DTToPeriodReturnType = TypeVar("_DTToPeriodReturnType", PeriodSeries, PeriodIndex)
 
 class _DatetimeLikeNoTZMethods(
-    _DatetimeRoundingMethods[_DTRoundingMethodReturnType],
+    _DatetimeRoundingMethods[_DTTimestampTimedeltaReturnType],
     Generic[
-        _DTRoundingMethodReturnType,
+        _DTTimestampTimedeltaReturnType,
         _DTNormalizeReturnType,
         _DTStrKindReturnType,
         _DTToPeriodReturnType,
@@ -238,7 +238,7 @@ class _DatetimeNoTZProperties(
         _DTFreqReturnType,
     ],
     _DatetimeLikeNoTZMethods[
-        _DTRoundingMethodReturnType,
+        _DTTimestampTimedeltaReturnType,
         _DTNormalizeReturnType,
         _DTStrKindReturnType,
         _DTToPeriodReturnType,
@@ -246,7 +246,7 @@ class _DatetimeNoTZProperties(
     Generic[
         _DTFieldOpsReturnType,
         _DTBoolOpsReturnType,
-        _DTRoundingMethodReturnType,
+        _DTTimestampTimedeltaReturnType,
         _DTOtherOpsDateReturnType,
         _DTOtherOpsTimeReturnType,
         _DTFreqReturnType,
@@ -261,7 +261,7 @@ class DatetimeProperties(
     _DatetimeNoTZProperties[
         _DTFieldOpsReturnType,
         _DTBoolOpsReturnType,
-        _DTRoundingMethodReturnType,
+        _DTTimestampTimedeltaReturnType,
         _DTOtherOpsDateReturnType,
         _DTOtherOpsTimeReturnType,
         _DTFreqReturnType,
@@ -272,7 +272,7 @@ class DatetimeProperties(
     Generic[
         _DTFieldOpsReturnType,
         _DTBoolOpsReturnType,
-        _DTRoundingMethodReturnType,
+        _DTTimestampTimedeltaReturnType,
         _DTOtherOpsDateReturnType,
         _DTOtherOpsTimeReturnType,
         _DTFreqReturnType,
@@ -283,6 +283,11 @@ class DatetimeProperties(
 ):
     def to_pydatetime(self) -> np.ndarray: ...
     def isocalendar(self) -> DataFrame: ...
+    @property
+    def unit(self) -> str: ...
+    def as_unit(
+        self, unit: Literal["s", "ms", "us", "ns"]
+    ) -> _DTTimestampTimedeltaReturnType: ...
 
 _TDNoRoundingMethodReturnType = TypeVar(
     "_TDNoRoundingMethodReturnType", Series[int], Index
@@ -309,7 +314,10 @@ class TimedeltaProperties(
     Properties,
     _TimedeltaPropertiesNoRounding[Series[int], Series[float]],
     _DatetimeRoundingMethods[TimedeltaSeries],
-): ...
+):
+    @property
+    def unit(self) -> str: ...
+    def as_unit(self, unit: Literal["s", "ms", "us", "ns"]) -> TimedeltaSeries: ...
 
 _PeriodDTReturnTypes = TypeVar("_PeriodDTReturnTypes", TimestampSeries, DatetimeIndex)
 _PeriodIntReturnTypes = TypeVar("_PeriodIntReturnTypes", Series[int], Index[int])
