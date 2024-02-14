@@ -5,16 +5,21 @@ from pandas.core.arrays.base import (
     ExtensionArray,
     ExtensionOpsMixin,
 )
+from typing_extensions import Self
 
 from pandas._libs import (
     NaT as NaT,
     NaTType as NaTType,
 )
+from pandas._typing import TimeUnit
 
 class DatelikeOps:
     def strftime(self, date_format): ...
 
 class TimelikeOps:
+    @property
+    def unit(self) -> TimeUnit: ...
+    def as_unit(self, unit: TimeUnit) -> Self: ...
     def round(self, freq, ambiguous: str = ..., nonexistent: str = ...): ...
     def floor(self, freq, ambiguous: str = ..., nonexistent: str = ...): ...
     def ceil(self, freq, ambiguous: str = ..., nonexistent: str = ...): ...

@@ -38,6 +38,7 @@ from pandas._libs.tslibs import (
     Timedelta,
 )
 from pandas._typing import (
+    TimeUnit,
     np_ndarray_bool,
     npt,
 )
@@ -310,3 +311,6 @@ class Timestamp(datetime):
     def days_in_month(self) -> int: ...
     @property
     def daysinmonth(self) -> int: ...
+    @property
+    def unit(self) -> TimeUnit: ...
+    def as_unit(self, unit: TimeUnit, round_ok: bool = ...) -> Self: ...

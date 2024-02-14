@@ -13,6 +13,7 @@ from typing import (
     Any,
     ClassVar,
     Literal,
+    final,
     overload,
 )
 
@@ -112,9 +113,11 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(  # type: ignore[overload-overlap]
         cls,
-        data: Sequence[complex | np.complexfloating]
-        | IndexOpsMixin[complex]
-        | np_ndarray_complex,
+        data: (
+            Sequence[complex | np.complexfloating]
+            | IndexOpsMixin[complex]
+            | np_ndarray_complex
+        ),
         *,
         dtype: Literal["complex"] | type_t[complex | np.complexfloating] = ...,
         copy: bool = ...,
@@ -352,7 +355,7 @@ class Index(IndexOpsMixin[S1]):
         key: Label,
         method: FillnaOptions | Literal["nearest"] | None = ...,
         tolerance=...,
-    ): ...
+    ) -> int | slice | np_ndarray_bool: ...
     def get_indexer(self, target, method=..., limit=..., tolerance=...): ...
     def reindex(self, target, method=..., level=..., limit=..., tolerance=...): ...
     def join(
@@ -376,13 +379,15 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __getitem__(
         self,
-        idx: slice
-        | np_ndarray_anyint
-        | Sequence[int]
-        | Index
-        | Series[bool]
-        | Sequence[bool]
-        | np_ndarray_bool,
+        idx: (
+            slice
+            | np_ndarray_anyint
+            | Sequence[int]
+            | Index
+            | Series[bool]
+            | Sequence[bool]
+            | np_ndarray_bool
+        ),
     ) -> Self: ...
     @overload
     def __getitem__(self, idx: int | tuple[np_ndarray_anyint, ...]) -> S1: ...
@@ -400,6 +405,7 @@ class Index(IndexOpsMixin[S1]):
     def set_value(self, arr, key, value) -> None: ...
     def get_indexer_non_unique(self, target): ...
     def get_indexer_for(self, target, **kwargs): ...
+    @final
     def groupby(self, values) -> dict[Hashable, np.ndarray]: ...
     def map(self, mapper, na_action=...) -> Index: ...
     def isin(self, values, level=...) -> np_ndarray_bool: ...
@@ -428,35 +434,43 @@ class Index(IndexOpsMixin[S1]):
     def __mul__(self, other: Any) -> Self: ...
     def __floordiv__(
         self,
-        other: float
-        | IndexOpsMixin[int]
-        | IndexOpsMixin[float]
-        | Sequence[int]
-        | Sequence[float],
+        other: (
+            float
+            | IndexOpsMixin[int]
+            | IndexOpsMixin[float]
+            | Sequence[int]
+            | Sequence[float]
+        ),
     ) -> Self: ...
     def __rfloordiv__(
         self,
-        other: float
-        | IndexOpsMixin[int]
-        | IndexOpsMixin[float]
-        | Sequence[int]
-        | Sequence[float],
+        other: (
+            float
+            | IndexOpsMixin[int]
+            | IndexOpsMixin[float]
+            | Sequence[int]
+            | Sequence[float]
+        ),
     ) -> Self: ...
     def __truediv__(
         self,
-        other: float
-        | IndexOpsMixin[int]
-        | IndexOpsMixin[float]
-        | Sequence[int]
-        | Sequence[float],
+        other: (
+            float
+            | IndexOpsMixin[int]
+            | IndexOpsMixin[float]
+            | Sequence[int]
+            | Sequence[float]
+        ),
     ) -> Self: ...
     def __rtruediv__(
         self,
-        other: float
-        | IndexOpsMixin[int]
-        | IndexOpsMixin[float]
-        | Sequence[int]
-        | Sequence[float],
+        other: (
+            float
+            | IndexOpsMixin[int]
+            | IndexOpsMixin[float]
+            | Sequence[int]
+            | Sequence[float]
+        ),
     ) -> Self: ...
 
 def ensure_index_from_sequences(

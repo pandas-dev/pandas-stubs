@@ -251,12 +251,14 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
     @overload  # type: ignore[override]
     def __getitem__(
         self,
-        idx: slice
-        | np_ndarray_anyint
-        | Sequence[int]
-        | Index
-        | Series[bool]
-        | np_ndarray_bool,
+        idx: (
+            slice
+            | np_ndarray_anyint
+            | Sequence[int]
+            | Index
+            | Series[bool]
+            | np_ndarray_bool
+        ),
     ) -> IntervalIndex[IntervalT]: ...
     @overload
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]

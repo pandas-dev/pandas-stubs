@@ -740,39 +740,48 @@ def test_index_operators() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(
-            i1 & i2,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            i1
+            & i2,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
-            i1 & 10,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            i1
+            & 10,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
-            10 & i1,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            10
+            & i1,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(
-            i1 | i2,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            i1
+            | i2,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
-            i1 | 10,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            i1
+            | 10,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
-            10 | i1,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            10
+            | i1,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(
-            i1 ^ i2,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            i1
+            ^ i2,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
-            i1 ^ 10,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            i1
+            ^ 10,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
         assert_type(  # type: ignore[assert-type]
-            10 ^ i1,  # type:ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+            10
+            ^ i1,  # type:ignore[operator] # pyright: ignore[reportAssertTypeFailure,reportOperatorIssue]
             Never,
         )
 
@@ -1044,10 +1053,10 @@ def test_timedelta_div() -> None:
     check(assert_type([delta] // index, "pd.Index[int]"), pd.Index, np.signedinteger)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        1 / index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-        [1] / index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-        1 // index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-        [1] // index  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        1 / index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        [1] / index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        1 // index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        [1] // index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_datetime_operators_builtin() -> None:
@@ -1060,3 +1069,30 @@ def test_datetime_operators_builtin() -> None:
     check(assert_type(delta + dt.timedelta(0), pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(dt.datetime.now() + delta, pd.DatetimeIndex), pd.DatetimeIndex)
     check(assert_type(delta - dt.timedelta(0), pd.TimedeltaIndex), pd.TimedeltaIndex)
+
+
+def test_get_loc() -> None:
+    unique_index = pd.Index(list("abc"))
+    check(
+        assert_type(
+            unique_index.get_loc("b"), Union[int, slice, npt.NDArray[np.bool_]]
+        ),
+        int,
+    )
+
+    monotonic_index = pd.Index(list("abbc"))
+    check(
+        assert_type(
+            monotonic_index.get_loc("b"), Union[int, slice, npt.NDArray[np.bool_]]
+        ),
+        slice,
+    )
+
+    non_monotonic_index = pd.Index(list("abcb"))
+    check(
+        assert_type(
+            non_monotonic_index.get_loc("b"), Union[int, slice, npt.NDArray[np.bool_]]
+        ),
+        np.ndarray,
+        np.bool_,
+    )

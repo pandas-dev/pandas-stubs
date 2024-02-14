@@ -7,10 +7,7 @@ from datetime import (
     timedelta,
     tzinfo,
 )
-from typing import (
-    Literal,
-    overload,
-)
+from typing import overload
 
 import numpy as np
 from pandas import (
@@ -32,6 +29,7 @@ from pandas._typing import (
     ArrayLike,
     DateAndDatetimeLike,
     IntervalClosedType,
+    TimeUnit,
 )
 
 from pandas.core.dtypes.dtypes import DatetimeTZDtype
@@ -44,8 +42,6 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
         data: ArrayLike | AnyArrayLike | list | tuple,
         freq=...,
         tz=...,
-        normalize: bool = ...,
-        closed=...,
         ambiguous: str = ...,
         dayfirst: bool = ...,
         yearfirst: bool = ...,
@@ -102,7 +98,7 @@ def date_range(
     normalize: bool = ...,
     name: Hashable | None = ...,
     inclusive: IntervalClosedType = ...,
-    unit: Literal["s", "ms", "us", "ns"] | None = ...,
+    unit: TimeUnit | None = ...,
 ) -> DatetimeIndex: ...
 @overload
 def bdate_range(

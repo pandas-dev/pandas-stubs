@@ -6,10 +6,7 @@ from typing_extensions import assert_type
 
 from pandas._typing import DtypeObj
 
-from tests import (
-    check,
-    pytest_warns_bounded,
-)
+from tests import check
 
 nparr = np.array([1, 2, 3])
 arr = pd.Series([1, 2, 3])
@@ -207,21 +204,6 @@ def test_is_integer_dtype() -> None:
     )
     check(assert_type(api.is_integer_dtype(ind), bool), bool)
     # check(assert_type(api.is_integer_dtype(ExtensionDtype), bool), bool) pandas GH 50923
-
-
-def test_is_interval() -> None:
-    with pytest_warns_bounded(
-        FutureWarning, "is_interval is deprecated", lower="2.1.99"
-    ):
-        check(assert_type(api.is_interval(obj), bool), bool)
-        check(assert_type(api.is_interval(nparr), bool), bool)
-        check(assert_type(api.is_interval(dtylike), bool), bool)
-        check(assert_type(api.is_interval(arr), bool), bool)
-        check(
-            assert_type(api.is_interval(dframe), bool),
-            bool,
-        )
-        check(assert_type(api.is_interval(ind), bool), bool)
 
 
 def test_is_iterator() -> None:

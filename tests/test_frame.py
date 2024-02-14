@@ -30,7 +30,10 @@ import numpy as np
 import numpy.typing as npt
 import pandas as pd
 from pandas._testing import ensure_clean
-from pandas.core.resample import Resampler  # noqa: F401
+from pandas.core.resample import (
+    DatetimeIndexResampler,
+    Resampler,
+)
 from pandas.core.series import Series
 import pytest
 from typing_extensions import (
@@ -42,6 +45,7 @@ import xarray as xr
 from pandas._typing import Scalar
 
 from tests import (
+    PD_LTE_22,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -123,22 +127,22 @@ def test_types_append() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame({"col1": [10, 20], "col2": [30, 40]})
     if TYPE_CHECKING_INVALID_USAGE:
-        res1: pd.DataFrame = df.append(df2)  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-        res2: pd.DataFrame = df.append([1, 2, 3])  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-        res3: pd.DataFrame = df.append([[1, 2, 3]])  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-        res4: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        res1: pd.DataFrame = df.append(df2)  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        res2: pd.DataFrame = df.append([1, 2, 3])  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        res3: pd.DataFrame = df.append([[1, 2, 3]])  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        res4: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
             {("a", 1): [1, 2, 3], "b": df2}, ignore_index=True
         )
-        res5: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        res5: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
             {1: [1, 2, 3]}, ignore_index=True
         )
-        res6: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        res6: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
             {1: [1, 2, 3], "col2": [1, 2, 3]}, ignore_index=True
         )
-        res7: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        res7: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
             pd.Series([5, 6]), ignore_index=True
         )
-        res8: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        res8: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
             pd.Series([5, 6], index=["col1", "col2"]), ignore_index=True
         )
 
@@ -256,8 +260,17 @@ def test_types_loc_at() -> None:
 
 def test_types_boolean_indexing() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
-    df[df > 1]
-    df[~(df > 1.0)]
+    check(assert_type(df[df > 1], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df[~(df > 1.0)], pd.DataFrame), pd.DataFrame)
+
+    row_mask = df["col1"] >= 2
+    col_mask = df.columns.isin(["col2"])
+    check(assert_type(df.loc[row_mask], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[~row_mask], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[row_mask, :], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[:, col_mask], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[row_mask, col_mask], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[~row_mask, ~col_mask], pd.DataFrame), pd.DataFrame)
 
 
 def test_types_df_to_df_comparison() -> None:
@@ -340,10 +353,7 @@ def test_types_dropna() -> None:
 def test_types_fillna() -> None:
     df = pd.DataFrame(data={"col1": [np.nan, np.nan], "col2": [3, np.nan]})
     res: pd.DataFrame = df.fillna(0)
-    with pytest_warns_bounded(
-        FutureWarning, "DataFrame.fillna with 'method' is deprecated", lower="2.0.99"
-    ):
-        res2: None = df.fillna(method="pad", axis=1, inplace=True)
+    res2: None = df.fillna(0, axis=1, inplace=True)
 
 
 def test_types_sort_index() -> None:
@@ -424,8 +434,8 @@ def test_types_mean() -> None:
     s2: pd.Series = df.mean(axis=0)
     df2: pd.DataFrame = df.groupby(level=0).mean()
     if TYPE_CHECKING_INVALID_USAGE:
-        df3: pd.DataFrame = df.groupby(axis=1, level=0).mean()  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
-        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).mean()  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        df3: pd.DataFrame = df.groupby(axis=1, level=0).mean()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).mean()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
     s3: pd.Series = df.mean(axis=1, skipna=True, numeric_only=False)
 
 
@@ -435,8 +445,8 @@ def test_types_median() -> None:
     s2: pd.Series = df.median(axis=0)
     df2: pd.DataFrame = df.groupby(level=0).median()
     if TYPE_CHECKING_INVALID_USAGE:
-        df3: pd.DataFrame = df.groupby(axis=1, level=0).median()  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
-        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).median()  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        df3: pd.DataFrame = df.groupby(axis=1, level=0).median()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).median()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
     s3: pd.Series = df.median(axis=1, skipna=True, numeric_only=False)
 
 
@@ -953,10 +963,13 @@ def test_types_groupby() -> None:
     df6: pd.DataFrame = df.groupby(by=["col1", "col2"]).nunique()
     with pytest_warns_bounded(
         FutureWarning,
-        "The provided callable <built-in function sum> is currently using",
-        lower="2.0.99",
+        "(The provided callable <built-in function sum> is currently using|The behavior of DataFrame.sum with)",
     ):
-        df7: pd.DataFrame = df.groupby(by="col1").apply(sum)
+        with pytest_warns_bounded(
+            DeprecationWarning,
+            "DataFrameGroupBy.apply operated on the grouping columns",
+        ):
+            df7: pd.DataFrame = df.groupby(by="col1").apply(sum)
     df8: pd.DataFrame = df.groupby("col1").transform("sum")
     s1: pd.Series = df.set_index("col1")["col2"]
     s2: pd.Series = s1.groupby("col1").transform("sum")
@@ -1137,9 +1150,9 @@ def test_types_window() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
     df.expanding()
     if TYPE_CHECKING_INVALID_USAGE:
-        df.expanding(axis=1)  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
-        df.rolling(2, axis=1, center=True)  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
-        df.expanding(axis=1, center=True)  # type: ignore[arg-type, call-arg] # pyright: ignore[reportGeneralTypeIssues]
+        df.expanding(axis=1)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        df.rolling(2, axis=1, center=True)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        df.expanding(axis=1, center=True)  # type: ignore[arg-type, call-arg] # pyright: ignore[reportCallIssue]
 
     df.rolling(2)
 
@@ -1249,7 +1262,7 @@ def test_types_agg() -> None:
 
     with pytest_warns_bounded(
         FutureWarning,
-        r"The provided callable <built-in function (min|max)> is currently using",
+        r"The provided callable <(built-in function (min|max|mean)|function mean at 0x\w+)> is currently using",
         lower="2.0.99",
     ):
         check(assert_type(df.agg(min), pd.Series), pd.Series)
@@ -1264,7 +1277,10 @@ def test_types_agg() -> None:
         assert_type(df.agg({"A": ["min", "max"], "B": "min"}), pd.DataFrame),
         pd.DataFrame,
     )
+    check(assert_type(df.agg({"A": ["mean"]}), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.agg("mean", axis=1), pd.Series), pd.Series)
+    check(assert_type(df.agg({"A": "mean"}), pd.Series), pd.Series)
+    check(assert_type(df.agg({"A": "mean", "B": "sum"}), pd.Series), pd.Series)
 
 
 def test_types_aggregate() -> None:
@@ -1287,6 +1303,10 @@ def test_types_aggregate() -> None:
         assert_type(df.aggregate({"A": ["min", "max"], "B": "min"}), pd.DataFrame),
         pd.DataFrame,
     )
+    check(assert_type(df.aggregate({"A": ["mean"]}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.aggregate("mean", axis=1), pd.Series), pd.Series)
+    check(assert_type(df.aggregate({"A": "mean"}), pd.Series), pd.Series)
+    check(assert_type(df.aggregate({"A": "mean", "B": "sum"}), pd.Series), pd.Series)
 
 
 def test_types_transform() -> None:
@@ -1382,6 +1402,8 @@ def test_types_resample() -> None:
         df.resample("M", on="date")
     df.resample("20min", origin="epoch", offset=pd.Timedelta(2, "minutes"), on="date")
     df.resample("20min", origin="epoch", offset=datetime.timedelta(2), on="date")
+    df.resample(pd.Timedelta(20, "minutes"), origin="epoch", on="date")
+    df.resample(datetime.timedelta(minutes=20), origin="epoch", on="date")
 
 
 def test_types_to_dict() -> None:
@@ -1420,8 +1442,9 @@ def test_types_from_dict() -> None:
 
 
 def test_pipe() -> None:
-    def foo(df: pd.DataFrame) -> pd.DataFrame:
-        return pd.DataFrame(df)
+    def resampler_foo(resampler: Resampler[pd.DataFrame]) -> pd.DataFrame:
+        assert isinstance(resampler, Resampler)
+        return pd.DataFrame(resampler)
 
     with pytest_warns_bounded(FutureWarning, "'M' is deprecated", lower="2.1.99"):
         val = (
@@ -1433,8 +1456,11 @@ def test_pipe() -> None:
             )
             .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
             .resample("M", on="week_starting")
-            .pipe(foo)
+            .pipe(resampler_foo)
         )
+
+    def foo(df: pd.DataFrame) -> pd.DataFrame:
+        return pd.DataFrame(df)
 
     df = pd.DataFrame({"a": [1], "b": [2]})
     check(assert_type(val, pd.DataFrame), pd.DataFrame)
@@ -1471,51 +1497,51 @@ def test_pipe() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        df.pipe(
+        df.pipe(  # pyright: ignore[reportCallIssue]
             qux,
-            "a",  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+            "a",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
             [1.0, 2.0],
             argument_2="hi",
             keyword_only=(1, 2),
         )
-        df.pipe(
+        df.pipe(  # pyright: ignore[reportCallIssue]
             qux,
             1,
-            [1.0, "b"],  # type: ignore[list-item] # pyright: ignore[reportGeneralTypeIssues]
+            [1.0, "b"],  # type: ignore[list-item] # pyright: ignore[reportArgumentType]
             argument_2="hi",
             keyword_only=(1, 2),
         )
-        df.pipe(
+        df.pipe(  # pyright: ignore[reportCallIssue]
             qux,
             1,
             [1.0, 2.0],
-            argument_2=11,  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+            argument_2=11,  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
             keyword_only=(1, 2),
         )
-        df.pipe(
+        df.pipe(  # pyright: ignore[reportCallIssue]
             qux,
             1,
             [1.0, 2.0],
             argument_2="hi",
-            keyword_only=(1,),  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+            keyword_only=(1,),  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
         )
-        df.pipe(  # type: ignore[call-arg]
+        df.pipe(  # type: ignore[call-arg]  # pyright: ignore[reportCallIssue]
             qux,
             1,
             [1.0, 2.0],
-            argument_3="hi",  # pyright: ignore[reportGeneralTypeIssues]
+            argument_3="hi",  # pyright: ignore[reportCallIssue]
             keyword_only=(1, 2),
         )
-        df.pipe(  # type: ignore[misc]
+        df.pipe(  # type: ignore[misc]  # pyright: ignore[reportCallIssue]
             qux,
             1,
             [1.0, 2.0],
             11,  # type: ignore[arg-type]
-            (1, 2),  # pyright: ignore[reportGeneralTypeIssues]
+            (1, 2),  # pyright: ignore[reportCallIssue]
         )
-        df.pipe(  # type: ignore[call-arg]
+        df.pipe(  # type: ignore[call-arg]  # pyright: ignore[reportCallIssue]
             qux,
-            positional_only=1,  # pyright: ignore[reportGeneralTypeIssues]
+            positional_only=1,  # pyright: ignore[reportCallIssue]
             argument_1=[1.0, 2.0],
             argument_2=11,  # type: ignore[arg-type]
             keyword_only=(1, 2),
@@ -1539,16 +1565,16 @@ def test_pipe() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        df.pipe(
+        df.pipe(  # pyright: ignore[reportCallIssue]
             (
                 dataframe_not_first_arg,  # type: ignore[arg-type]
-                1,  # pyright: ignore[reportGeneralTypeIssues]
+                1,  # pyright: ignore[reportArgumentType]
             ),
             1,
         )
-        df.pipe(
-            (  # pyright: ignore[reportGeneralTypeIssues]
-                1,  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+        df.pipe(  # pyright: ignore[reportCallIssue]
+            (
+                1,  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
                 "df",
             ),
             1,
@@ -1700,19 +1726,12 @@ def test_types_regressions() -> None:
 
     # https://github.com/microsoft/python-type-stubs/issues/115
     df = pd.DataFrame({"A": [1, 2, 3], "B": [5, 6, 7]})
-    with pytest_warns_bounded(
-        FutureWarning,
-        "The 'closed' keyword in DatetimeIndex construction is deprecated",
-        lower="2.0.99",
-    ):
-        pd.DatetimeIndex(
-            data=df["A"],
-            tz=None,
-            normalize=False,
-            closed=None,
-            ambiguous="NaT",
-            copy=True,
-        )
+    pd.DatetimeIndex(
+        data=df["A"],
+        tz=None,
+        ambiguous="NaT",
+        copy=True,
+    )
 
 
 def test_read_csv() -> None:
@@ -2077,7 +2096,7 @@ def test_set_columns() -> None:
     df.columns = (1, 2)  # type: ignore[assignment]
     df.columns = (1, "a")  # type: ignore[assignment]
     if TYPE_CHECKING_INVALID_USAGE:
-        df.columns = "abc"  # type: ignore[assignment] # pyright: ignore[reportGeneralTypeIssues]
+        df.columns = "abc"  # type: ignore[assignment] # pyright: ignore[reportAttributeAccessIssue]
 
 
 def test_frame_index_numpy() -> None:
@@ -2140,9 +2159,9 @@ def test_not_hashable() -> None:
         pass
 
     if TYPE_CHECKING_INVALID_USAGE:
-        test_func(pd.DataFrame())  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
-        test_func(pd.Series([], dtype=object))  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
-        test_func(pd.Index([]))  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+        test_func(pd.DataFrame())  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        test_func(pd.Series([], dtype=object))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        test_func(pd.Index([]))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_columns_mixlist() -> None:
@@ -2190,16 +2209,16 @@ def test_frame_scalars_slice() -> None:
 
     # Note: bool_ cannot be tested since the index is object and pandas does not
     # support boolean access using loc except when the index is boolean
-    check(assert_type(df.loc[str_], pd.Series), pd.Series)
-    check(assert_type(df.loc[bytes_], pd.Series), pd.Series)
-    check(assert_type(df.loc[date], pd.Series), pd.Series)
-    check(assert_type(df.loc[datetime_], pd.Series), pd.Series)
-    check(assert_type(df.loc[timedelta], pd.Series), pd.Series)
-    check(assert_type(df.loc[int_], pd.Series), pd.Series)
-    check(assert_type(df.loc[float_], pd.Series), pd.Series)
-    check(assert_type(df.loc[complex_], pd.Series), pd.Series)
-    check(assert_type(df.loc[timestamp], pd.Series), pd.Series)
-    check(assert_type(df.loc[pd_timedelta], pd.Series), pd.Series)
+    check(assert_type(df.loc[str_], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[bytes_], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[date], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[datetime_], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[timedelta], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[int_], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[float_], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[complex_], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[timestamp], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[pd_timedelta], Union[pd.Series, pd.DataFrame]), pd.Series)
     check(assert_type(df.loc[none], pd.Series), pd.Series)
 
     check(assert_type(df.loc[:, str_], pd.Series), pd.Series)
@@ -2214,11 +2233,20 @@ def test_frame_scalars_slice() -> None:
     check(assert_type(df.loc[:, pd_timedelta], pd.Series), pd.Series)
     check(assert_type(df.loc[:, none], pd.Series), pd.Series)
 
+    # GH749
+
+    multi_idx = pd.MultiIndex.from_product([["a", "b"], [1, 2]], names=["alpha", "num"])
+    df2 = pd.DataFrame({"col1": range(4)}, index=multi_idx)
+    check(assert_type(df2.loc[str_], Union[pd.Series, pd.DataFrame]), pd.DataFrame)
+
+    df3 = pd.DataFrame({"x": range(2)}, index=pd.Index(["a", "b"]))
+    check(assert_type(df3.loc[str_], Union[pd.Series, pd.DataFrame]), pd.Series)
+
 
 def test_boolean_loc() -> None:
     # Booleans can only be used in loc when the index is boolean
     df = pd.DataFrame([[0, 1], [1, 0]], columns=[True, False], index=[True, False])
-    check(assert_type(df.loc[True], pd.Series), pd.Series)
+    check(assert_type(df.loc[True], Union[pd.Series, pd.DataFrame]), pd.Series)
     check(assert_type(df.loc[:, False], pd.Series), pd.Series)
 
 
@@ -2230,7 +2258,11 @@ def test_groupby_result() -> None:
     index, value = next(iterator)
     assert_type((index, value), tuple[tuple, pd.DataFrame])
 
-    check(assert_type(index, tuple), tuple, np.integer)
+    if PD_LTE_22:
+        check(assert_type(index, tuple), tuple, np.integer)
+    else:
+        check(assert_type(index, tuple), tuple, int)
+
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
 
     iterator2 = df.groupby("a").__iter__()
@@ -2338,7 +2370,7 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         "The default of observed=False is deprecated",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         categorical_index = pd.CategoricalIndex(df.a)
         iterator2 = df.groupby(categorical_index).__iter__()
@@ -2398,9 +2430,8 @@ def test_groupby_apply() -> None:
         return x.sum().mean()
 
     with pytest_warns_bounded(
-        FutureWarning,
+        DeprecationWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
-        lower="2.1.99",
     ):
         check(
             assert_type(df.groupby("col1").apply(sum_mean), pd.Series),
@@ -2409,9 +2440,8 @@ def test_groupby_apply() -> None:
 
     lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
     with pytest_warns_bounded(
-        FutureWarning,
+        DeprecationWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
-        lower="2.1.99",
     ):
         check(assert_type(df.groupby("col1").apply(lfunc), pd.Series), pd.Series)
 
@@ -2419,9 +2449,8 @@ def test_groupby_apply() -> None:
         return x.sum().tolist()
 
     with pytest_warns_bounded(
-        FutureWarning,
+        DeprecationWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
-        lower="2.1.99",
     ):
         check(assert_type(df.groupby("col1").apply(sum_to_list), pd.Series), pd.Series)
 
@@ -2429,9 +2458,8 @@ def test_groupby_apply() -> None:
         return x.sum()
 
     with pytest_warns_bounded(
-        FutureWarning,
+        DeprecationWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
-        lower="2.1.99",
     ):
         check(
             assert_type(df.groupby("col1").apply(sum_to_series), pd.DataFrame),
@@ -2442,9 +2470,8 @@ def test_groupby_apply() -> None:
         return x.sample()
 
     with pytest_warns_bounded(
-        FutureWarning,
+        DeprecationWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
-        lower="2.1.99",
     ):
         check(
             assert_type(
@@ -2510,8 +2537,7 @@ def test_generic() -> None:
     # GH 197
     T = TypeVar("T")
 
-    class MyDataFrame(pd.DataFrame, Generic[T]):
-        ...
+    class MyDataFrame(pd.DataFrame, Generic[T]): ...
 
     def func() -> MyDataFrame[int]:
         return MyDataFrame[int]({"foo": [1, 2, 3]})
@@ -2562,7 +2588,7 @@ def test_to_dict() -> None:
 
         def test(mapping: Mapping) -> None:  # pyright: ignore[reportUnusedFunction]
             DF.to_dict(  # type: ignore[call-overload]
-                into=mapping  # pyright: ignore[reportGeneralTypeIssues]
+                into=mapping  # pyright: ignore[reportArgumentType,reportCallIssue]
             )
 
 
@@ -2685,12 +2711,15 @@ def test_resample_150_changes() -> None:
     frame = pd.DataFrame(np.random.standard_normal((700, 1)), index=idx, columns=["a"])
     with pytest_warns_bounded(FutureWarning, "'M' is deprecated", lower="2.1.99"):
         resampler = frame.resample("M", group_keys=True)
-    assert_type(resampler, "Resampler[pd.DataFrame]")
+    check(
+        assert_type(resampler, "DatetimeIndexResampler[pd.DataFrame]"),
+        DatetimeIndexResampler,
+    )
 
     def f(s: pd.DataFrame) -> pd.Series:
         return s.mean()
 
-    check(assert_type(resampler.apply(f), Union[pd.Series, pd.DataFrame]), pd.DataFrame)
+    check(assert_type(resampler.apply(f), pd.DataFrame), pd.DataFrame)
 
 
 def test_df_accepting_dicts_iterator() -> None:
@@ -2990,10 +3019,10 @@ def test_to_dict_index() -> None:
         assert_type(df.to_dict(orient="split", index=False), dict[Hashable, Any]), dict
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        check(assert_type(df.to_dict(orient="records", index=False), list[dict[Hashable, Any]]), list)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
-        check(assert_type(df.to_dict(orient="dict", index=False), dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
-        check(assert_type(df.to_dict(orient="series", index=False), dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
-        check(assert_type(df.to_dict(orient="index", index=False), dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        check(assert_type(df.to_dict(orient="records", index=False), list[dict[Hashable, Any]]), list)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]
+        check(assert_type(df.to_dict(orient="dict", index=False), dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]
+        check(assert_type(df.to_dict(orient="series", index=False), dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]
+        check(assert_type(df.to_dict(orient="index", index=False), dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]
 
 
 def test_suffix_prefix_index() -> None:
@@ -3033,7 +3062,7 @@ def test_to_json_mode() -> None:
     check(assert_type(result2, str), str)
     check(assert_type(result4, str), str)
     if TYPE_CHECKING_INVALID_USAGE:
-        result3 = df.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        result3 = df.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
 def test_interpolate_inplace() -> None:
@@ -3045,18 +3074,6 @@ def test_interpolate_inplace() -> None:
         pd.DataFrame,
     )
     check(assert_type(df.interpolate(method="linear", inplace=True), None), type(None))
-
-
-def test_groupby_fillna_inplace() -> None:
-    # GH 691
-    groupby = pd.DataFrame({"a": range(3), "b": range(3)}).groupby("a")
-    with pytest_warns_bounded(
-        FutureWarning, "DataFrameGroupBy.fillna is deprecated", lower="2.1.99"
-    ):
-        check(assert_type(groupby.fillna(0), pd.DataFrame), pd.DataFrame)
-        check(assert_type(groupby.fillna(0, inplace=False), pd.DataFrame), pd.DataFrame)
-    if TYPE_CHECKING_INVALID_USAGE:
-        groupby.fillna(0, inplace=True)  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
 
 
 def test_getitem_generator() -> None:
@@ -3095,3 +3112,38 @@ def test_itertuples() -> None:
     for item in df.itertuples():
         check(assert_type(item, _PandasNamedTuple), tuple)
         assert_type(item.a, Scalar)
+
+
+def test_get() -> None:
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6], "c": [7, 8, 9]})
+
+    # Get single column
+    check(assert_type(df.get("a"), Union[pd.Series, None]), pd.Series, np.int64)
+    check(assert_type(df.get("z"), Union[pd.Series, None]), type(None))
+    check(
+        assert_type(df.get("a", default=None), Union[pd.Series, None]),
+        pd.Series,
+        np.int64,
+    )
+    check(assert_type(df.get("z", default=None), Union[pd.Series, None]), type(None))
+    check(
+        assert_type(df.get("a", default=1), Union[pd.Series, int]), pd.Series, np.int64
+    )
+    check(assert_type(df.get("z", default=1), Union[pd.Series, int]), int)
+
+    # Get multiple columns
+    check(assert_type(df.get(["a"]), Union[pd.DataFrame, None]), pd.DataFrame)
+    check(assert_type(df.get(["a", "b"]), Union[pd.DataFrame, None]), pd.DataFrame)
+    check(assert_type(df.get(["z"]), Union[pd.DataFrame, None]), type(None))
+    check(
+        assert_type(df.get(["a", "b"], default=None), Union[pd.DataFrame, None]),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.get(["z"], default=None), Union[pd.DataFrame, None]), type(None)
+    )
+    check(
+        assert_type(df.get(["a", "b"], default=1), Union[pd.DataFrame, int]),
+        pd.DataFrame,
+    )
+    check(assert_type(df.get(["z"], default=1), Union[pd.DataFrame, int]), int)

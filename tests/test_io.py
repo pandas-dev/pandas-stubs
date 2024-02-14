@@ -14,7 +14,6 @@ from typing import (
 )
 
 import numpy as np
-import numpy.typing as npt
 import pandas as pd
 from pandas import (
     DataFrame,
@@ -50,6 +49,7 @@ import sqlalchemy.orm.decl_api
 from typing_extensions import assert_type
 
 from tests import (
+    PD_LTE_22,
     TYPE_CHECKING_INVALID_USAGE,
     WINDOWS,
     check,
@@ -75,12 +75,7 @@ CWD = os.path.split(os.path.abspath(__file__))[0]
 def test_orc():
     with ensure_clean() as path:
         check(assert_type(DF.to_orc(path), None), type(None))
-        with pytest_warns_bounded(
-            DeprecationWarning,
-            "make_block is deprecated and will be removed",
-            lower="2.1.99",
-        ):
-            check(assert_type(read_orc(path), DataFrame), DataFrame)
+        check(assert_type(read_orc(path), DataFrame), DataFrame)
 
 
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
@@ -88,12 +83,7 @@ def test_orc_path():
     with ensure_clean() as path:
         pathlib_path = Path(path)
         check(assert_type(DF.to_orc(pathlib_path), None), type(None))
-        with pytest_warns_bounded(
-            DeprecationWarning,
-            "make_block is deprecated and will be removed",
-            lower="2.1.99",
-        ):
-            check(assert_type(read_orc(pathlib_path), DataFrame), DataFrame)
+        check(assert_type(read_orc(pathlib_path), DataFrame), DataFrame)
 
 
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
@@ -103,24 +93,14 @@ def test_orc_buffer():
             check(assert_type(DF.to_orc(file_w), None), type(None))
 
         with open(path, "rb") as file_r:
-            with pytest_warns_bounded(
-                DeprecationWarning,
-                "make_block is deprecated and will be removed",
-                lower="2.1.99",
-            ):
-                check(assert_type(read_orc(file_r), DataFrame), DataFrame)
+            check(assert_type(read_orc(file_r), DataFrame), DataFrame)
 
 
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_columns():
     with ensure_clean() as path:
         check(assert_type(DF.to_orc(path, index=False), None), type(None))
-        with pytest_warns_bounded(
-            DeprecationWarning,
-            "make_block is deprecated and will be removed",
-            lower="2.1.99",
-        ):
-            check(assert_type(read_orc(path, columns=["a"]), DataFrame), DataFrame)
+        check(assert_type(read_orc(path, columns=["a"]), DataFrame), DataFrame)
 
 
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
@@ -298,8 +278,8 @@ def test_clipboard():
         DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_clipboard(names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
-        pd.read_clipboard(usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        pd.read_clipboard(names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        pd.read_clipboard(usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_clipboard_iterator():
@@ -371,12 +351,7 @@ def test_sas_xport() -> None:
 
 def test_hdf():
     with ensure_clean() as path:
-        with pytest_warns_bounded(
-            FutureWarning,
-            r".*all arguments of to_hdf except for the argument 'path_or_buf' will be keyword-only",
-            lower="2.1.99",
-        ):
-            check(assert_type(DF.to_hdf(path, "df"), None), type(None))
+        check(assert_type(DF.to_hdf(path, key="df"), None), type(None))
         check(assert_type(read_hdf(path), Union[DataFrame, Series]), DataFrame)
 
 
@@ -425,12 +400,7 @@ def test_hdfstore() -> None:
 
 def test_read_hdf_iterator() -> None:
     with ensure_clean() as path:
-        with pytest_warns_bounded(
-            FutureWarning,
-            r".*all arguments of to_hdf except for the argument 'path_or_buf' will be keyword-only",
-            lower="2.1.99",
-        ):
-            check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
+        check(assert_type(DF.to_hdf(path, key="df", format="table"), None), type(None))
         ti = read_hdf(path, chunksize=1)
         check(assert_type(ti, TableIterator), TableIterator)
         ti.close()
@@ -444,12 +414,7 @@ def test_read_hdf_iterator() -> None:
 
 def test_hdf_context_manager() -> None:
     with ensure_clean() as path:
-        with pytest_warns_bounded(
-            FutureWarning,
-            r".*all arguments of to_hdf except for the argument 'path_or_buf' will be keyword-only",
-            lower="2.1.99",
-        ):
-            check(assert_type(DF.to_hdf(path, "df", format="table"), None), type(None))
+        check(assert_type(DF.to_hdf(path, key="df", format="table"), None), type(None))
         with HDFStore(path, mode="r") as store:
             check(assert_type(store.is_open, bool), bool)
             check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
@@ -458,20 +423,20 @@ def test_hdf_context_manager() -> None:
 def test_hdf_series():
     s = DF["a"]
     with ensure_clean() as path:
-        with pytest_warns_bounded(
-            FutureWarning,
-            r".*all arguments of to_hdf except for the argument 'path_or_buf' will be keyword-only",
-            lower="2.1.99",
-        ):
-            check(assert_type(s.to_hdf(path, "s"), None), type(None))
+        check(assert_type(s.to_hdf(path, key="s"), None), type(None))
         check(assert_type(read_hdf(path, "s"), Union[DataFrame, Series]), Series)
 
 
 def test_spss():
+    if PD_LTE_22:
+        warning_class = FutureWarning
+        message = "ChainedAssignmentError: behaviour will change"
+    else:
+        warning_class = pd.errors.ChainedAssignmentError  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
+        message = "A value is trying to be set on a copy of a DataFrame"
+
     path = Path(CWD, "data", "labelled-num.sav")
-    with pytest_warns_bounded(
-        FutureWarning, "ChainedAssignmentError: behaviour will change", lower="2.1.99"
-    ):
+    with pytest_warns_bounded(warning_class, message):
         check(
             assert_type(read_spss(path, convert_categoricals=True), DataFrame),
             DataFrame,
@@ -498,45 +463,49 @@ def test_json_series():
         check(assert_type(s.to_json(path), None), type(None))
         check(assert_type(read_json(path, typ="series"), Series), Series)
     check(assert_type(DF.to_json(), str), str)
-    with pytest_warns_bounded(
-        FutureWarning,
-        "Passing literal json to 'read_json' is deprecated ",
-        lower="2.0.99",
-    ):
-        check(
-            assert_type(
-                read_json(s.to_json(orient=None), typ="series", orient=None), Series
+    check(
+        assert_type(
+            read_json(io.StringIO(s.to_json(orient=None)), typ="series", orient=None),
+            Series,
+        ),
+        Series,
+    )
+    check(
+        assert_type(
+            read_json(
+                io.StringIO(s.to_json(orient="split")), typ="series", orient="split"
             ),
             Series,
-        )
-        check(
-            assert_type(
-                read_json(s.to_json(orient="split"), typ="series", orient="split"),
-                Series,
+        ),
+        Series,
+    )
+    check(
+        assert_type(
+            read_json(
+                io.StringIO(s.to_json(orient="records")), typ="series", orient="records"
             ),
             Series,
-        )
-        check(
-            assert_type(
-                read_json(s.to_json(orient="records"), typ="series", orient="records"),
-                Series,
+        ),
+        Series,
+    )
+    check(
+        assert_type(
+            read_json(
+                io.StringIO(s.to_json(orient="index")), typ="series", orient="index"
             ),
             Series,
-        )
-        check(
-            assert_type(
-                read_json(s.to_json(orient="index"), typ="series", orient="index"),
-                Series,
+        ),
+        Series,
+    )
+    check(
+        assert_type(
+            read_json(
+                io.StringIO(s.to_json(orient="table")), typ="series", orient="table"
             ),
             Series,
-        )
-        check(
-            assert_type(
-                read_json(s.to_json(orient="table"), typ="series", orient="table"),
-                Series,
-            ),
-            Series,
-        )
+        ),
+        Series,
+    )
 
 
 def test_json_chunk():
@@ -553,12 +522,7 @@ def test_parquet():
     with ensure_clean() as path:
         check(assert_type(DF.to_parquet(path), None), type(None))
         check(assert_type(DF.to_parquet(), bytes), bytes)
-        with pytest_warns_bounded(
-            DeprecationWarning,
-            "make_block is deprecated and will be removed",
-            lower="2.1.99",
-        ):
-            check(assert_type(read_parquet(path), DataFrame), DataFrame)
+        check(assert_type(read_parquet(path), DataFrame), DataFrame)
 
 
 def test_parquet_options():
@@ -567,33 +531,18 @@ def test_parquet_options():
             assert_type(DF.to_parquet(path, compression=None, index=True), None),
             type(None),
         )
-        with pytest_warns_bounded(
-            DeprecationWarning,
-            "make_block is deprecated and will be removed",
-            lower="2.1.99",
-        ):
-            check(assert_type(read_parquet(path), DataFrame), DataFrame)
+        check(assert_type(read_parquet(path), DataFrame), DataFrame)
 
 
 def test_feather():
     with ensure_clean() as path:
         check(assert_type(DF.to_feather(path), None), type(None))
-        with pytest_warns_bounded(
-            DeprecationWarning,
-            "make_block is deprecated and will be removed",
-            lower="2.1.99",
-        ):
-            check(assert_type(read_feather(path), DataFrame), DataFrame)
-            check(assert_type(read_feather(path, columns=["a"]), DataFrame), DataFrame)
+        check(assert_type(read_feather(path), DataFrame), DataFrame)
+        check(assert_type(read_feather(path, columns=["a"]), DataFrame), DataFrame)
     with io.BytesIO() as bio:
         check(assert_type(DF.to_feather(bio), None), type(None))
         bio.seek(0)
-        with pytest_warns_bounded(
-            DeprecationWarning,
-            "make_block is deprecated and will be removed",
-            lower="2.1.99",
-        ):
-            check(assert_type(read_feather(bio), DataFrame), DataFrame)
+        check(assert_type(read_feather(bio), DataFrame), DataFrame)
 
 
 def test_read_csv():
@@ -691,8 +640,8 @@ def test_types_read_csv() -> None:
         )
 
         if TYPE_CHECKING_INVALID_USAGE:
-            pd.read_csv(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
-            pd.read_csv(path, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
+            pd.read_csv(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+            pd.read_csv(path, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
         tfr1: TextFileReader = pd.read_csv(path, nrows=2, iterator=True, chunksize=3)
         tfr1.close()
@@ -825,8 +774,8 @@ def test_read_table():
             DataFrame,
         )
         if TYPE_CHECKING_INVALID_USAGE:
-            pd.read_table(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
-            pd.read_table(path, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
+            pd.read_table(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+            pd.read_table(path, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_read_table_iterator():
@@ -1013,7 +962,7 @@ def test_read_excel() -> None:
             pd.DataFrame,
         )
         if TYPE_CHECKING_INVALID_USAGE:
-            pd.read_excel(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
+            pd.read_excel(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_read_excel_io_types() -> None:
@@ -1435,42 +1384,15 @@ def test_all_read_without_lxml_dtype_backend() -> None:
 
         if not WINDOWS:
             check(assert_type(DF.to_orc(path), None), type(None))
-            with pytest_warns_bounded(
-                DeprecationWarning,
-                "make_block is deprecated and will be removed",
-                lower="2.1.99",
-            ):
-                check(
-                    assert_type(
-                        read_orc(path, dtype_backend="numpy_nullable"), DataFrame
-                    ),
-                    DataFrame,
-                )
-        check(assert_type(DF.to_feather(path), None), type(None))
-        with pytest_warns_bounded(
-            DeprecationWarning,
-            "make_block is deprecated and will be removed",
-            lower="2.1.99",
-        ):
             check(
-                assert_type(read_feather(path, dtype_backend="pyarrow"), DataFrame),
+                assert_type(read_orc(path, dtype_backend="numpy_nullable"), DataFrame),
                 DataFrame,
             )
-
-        with pytest_warns_bounded(
-            FutureWarning, "errors='ignore' is deprecated", lower="2.1.99"
-        ):
-            check(
-                assert_type(
-                    pd.to_numeric(
-                        [1.0, 2.0, "blerg"],
-                        errors="ignore",
-                        dtype_backend="numpy_nullable",
-                    ),
-                    npt.NDArray,
-                ),
-                np.ndarray,
-            )
+        check(assert_type(DF.to_feather(path), None), type(None))
+        check(
+            assert_type(read_feather(path, dtype_backend="pyarrow"), DataFrame),
+            DataFrame,
+        )
 
     with ensure_clean(".xlsx") as path:
         as_str: str = path

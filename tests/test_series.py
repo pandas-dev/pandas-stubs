@@ -16,6 +16,7 @@ from typing import (
     Any,
     Generic,
     TypeVar,
+    Union,
     cast,
 )
 
@@ -42,6 +43,7 @@ from pandas._typing import (
 )
 
 from tests import (
+    PD_LTE_22,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -92,6 +94,11 @@ def test_types_init() -> None:
     pd.Series(data={"row1": [1, 2], "row2": [3, 4]}, dtype=int, index=None)
     pd.Series(data=[1, 2, 3, 4], index=None)
     pd.Series(data={"row1": [1, 2], "row2": [3, 4]}, index=None)
+
+    groupby = pd.Series(np.array([1, 2])).groupby(level=0)
+    resampler = pd.Series(np.array([1, 2]), index=dt).resample("1D")
+    pd.Series(data=groupby)
+    pd.Series(data=resampler)
 
 
 def test_types_any() -> None:
@@ -270,23 +277,18 @@ def test_types_fillna() -> None:
     s = pd.Series([1.0, np.nan, np.nan, 3.0])
     check(assert_type(s.fillna(0), "pd.Series[float]"), pd.Series, float)
     check(assert_type(s.fillna(0, axis="index"), "pd.Series[float]"), pd.Series, float)
-    with pytest_warns_bounded(
-        FutureWarning,
-        "Series.fillna with 'method' is deprecated",
-        lower="2.0.99",
-    ):
-        check(
-            assert_type(s.fillna(method="backfill", axis=0), "pd.Series[float]"),
-            pd.Series,
-            float,
-        )
-        assert assert_type(s.fillna(method="bfill", inplace=True), None) is None
-        check(assert_type(s.fillna(method="pad"), "pd.Series[float]"), pd.Series, float)
-        check(
-            assert_type(s.fillna(method="ffill", limit=1), "pd.Series[float]"),
-            pd.Series,
-            float,
-        )
+    check(
+        assert_type(s.fillna(0, axis=0), "pd.Series[float]"),
+        pd.Series,
+        float,
+    )
+    assert assert_type(s.fillna(0, inplace=True), None) is None
+    check(assert_type(s.fillna(0), "pd.Series[float]"), pd.Series, float)
+    check(
+        assert_type(s.fillna(0, limit=1), "pd.Series[float]"),
+        pd.Series,
+        float,
+    )
     # GH 263
     check(assert_type(s.fillna(pd.NA), "pd.Series[float]"), pd.Series, float)
 
@@ -317,7 +319,7 @@ def test_types_sort_values() -> None:
     s = pd.Series([4, 2, 1, 3])
     check(assert_type(s.sort_values(), "pd.Series[int]"), pd.Series, np.integer)
     if TYPE_CHECKING_INVALID_USAGE:
-        check(assert_type(s.sort_values(0), pd.Series), pd.Series)  # type: ignore[assert-type,call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        check(assert_type(s.sort_values(0), pd.Series), pd.Series)  # type: ignore[assert-type,call-overload] # pyright: ignore[reportAssertTypeFailure,reportCallIssue]
     check(assert_type(s.sort_values(axis=0), "pd.Series[int]"), pd.Series, np.integer)
     check(
         assert_type(s.sort_values(ascending=False), "pd.Series[int]"),
@@ -650,7 +652,11 @@ def test_groupby_result() -> None:
     index, value = next(iterator)
     assert_type((index, value), tuple[tuple, "pd.Series[int]"])
 
-    check(assert_type(index, tuple), tuple, np.integer)
+    if PD_LTE_22:
+        check(assert_type(index, tuple), tuple, np.integer)
+    else:
+        check(assert_type(index, tuple), tuple, int)
+
     check(assert_type(value, "pd.Series[int]"), pd.Series, np.integer)
 
     iterator2 = s.groupby("a").__iter__()
@@ -670,6 +676,15 @@ def test_groupby_result() -> None:
 
     check(assert_type(index3, tuple), tuple, int)
     check(assert_type(value3, "pd.Series[int]"), pd.Series, np.integer)
+
+    # Explicit by=None
+    iterator4 = s.groupby(None, level=0).__iter__()
+    assert_type(iterator4, Iterator[tuple[Scalar, "pd.Series[int]"]])
+    index4, value4 = next(iterator4)
+    assert_type((index4, value4), tuple[Scalar, "pd.Series[int]"])
+
+    check(assert_type(index4, Scalar), int)
+    check(assert_type(value4, "pd.Series[int]"), pd.Series, np.integer)
 
     # Want to make sure these cases are differentiated
     for (k1, k2), g in s.groupby(["a", "b"]):
@@ -766,7 +781,7 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         "The default of observed=False is deprecated",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         categorical_index = pd.CategoricalIndex(s.index)
         iterator2 = s.groupby(categorical_index).__iter__()
@@ -844,9 +859,9 @@ def test_types_window() -> None:
     s.expanding()
     s.rolling(2, center=True)
     if TYPE_CHECKING_INVALID_USAGE:
-        s.expanding(axis=0)  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
-        s.rolling(2, axis=0, center=True)  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
-        s.expanding(axis=0, center=True)  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
+        s.expanding(axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue]
+        s.rolling(2, axis=0, center=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        s.expanding(axis=0, center=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue]
 
     s.rolling(2)
 
@@ -888,7 +903,7 @@ def test_update() -> None:
     # Series.update() accepting objects that can be coerced to a Series was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
     s1.update([1, 2, -4, 3])
     if TYPE_CHECKING_INVALID_USAGE:
-        s1.update([1, "b", "c", "d"])  # type: ignore[list-item] # pyright: ignore[reportGeneralTypeIssues]
+        s1.update([1, "b", "c", "d"])  # type: ignore[list-item] # pyright: ignore[reportArgumentType]
     s1.update({1: 9, 3: 4})
 
 
@@ -930,7 +945,7 @@ def test_types_agg() -> None:
     check(assert_type(s.agg("mean", axis=0), float), np.float64)
     with pytest_warns_bounded(
         FutureWarning,
-        r"The provided callable <built-in function (min|max|mean)> is currently using",
+        r"The provided callable <(built-in function (min|max|mean)|function mean at 0x\w+)> is currently using",
         lower="2.0.99",
     ):
         check(assert_type(s.agg(min), int), np.integer)
@@ -1064,7 +1079,7 @@ def test_types_rename() -> None:
     s6: None = pd.Series([1, 2, 3]).rename("A", inplace=True)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item] # pyright: ignore[reportGeneralTypeIssues]
+        s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
 def test_types_ne() -> None:
@@ -1085,7 +1100,7 @@ def test_types_ewm() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         check(
             assert_type(
-                s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True, axis=0),  # type: ignore[call-arg] # pyright: ignore[reportGeneralTypeIssues]
+                s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True, axis=0),  # type: ignore[call-arg] # pyright: ignore[reportAssertTypeFailure,reportCallIssue]
                 "ExponentialMovingWindow[pd.Series]",
             ),
             ExponentialMovingWindow,
@@ -1573,20 +1588,24 @@ def test_resample() -> None:
     N = 10
     index = pd.date_range("1/1/2000", periods=N, freq="min")
     x = [x for x in range(N)]
-    df = pd.Series(x, index=index)
-    check(assert_type(df.resample("2min").std(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").var(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").quantile(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").sum(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").prod(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").min(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").max(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").first(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").last(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").mean(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").sem(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").median(), pd.Series), pd.Series)
-    check(assert_type(df.resample("2min").ohlc(), pd.DataFrame), pd.DataFrame)
+    s = pd.Series(x, index=index, dtype=float)
+    check(assert_type(s.resample("2min").std(), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.resample("2min").var(), "pd.Series[float]"), pd.Series, float)
+    check(
+        assert_type(s.resample("2min").quantile(), "pd.Series[float]"), pd.Series, float
+    )
+    check(assert_type(s.resample("2min").sum(), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.resample("2min").prod(), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.resample("2min").min(), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.resample("2min").max(), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.resample("2min").first(), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.resample("2min").last(), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.resample("2min").mean(), "pd.Series[float]"), pd.Series, float)
+    check(assert_type(s.resample("2min").sem(), "pd.Series[float]"), pd.Series, float)
+    check(
+        assert_type(s.resample("2min").median(), "pd.Series[float]"), pd.Series, float
+    )
+    check(assert_type(s.resample("2min").ohlc(), pd.DataFrame), pd.DataFrame)
 
 
 def test_to_xarray():
@@ -2611,7 +2630,7 @@ def test_astype_other() -> None:
 
     # Test incorrect Literal
     if TYPE_CHECKING_INVALID_USAGE:
-        s.astype("foobar")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        s.astype("foobar")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
 
     # Test self-consistent with s.dtype (#747)
     # NOTE: https://github.com/python/typing/issues/801#issuecomment-1646171898
@@ -2711,8 +2730,8 @@ def test_prefix_summix_axis() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s.add_prefix("_item", axis=1)  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
-        s.add_suffix("_item", axis="columns")  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+        s.add_prefix("_item", axis=1)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        s.add_suffix("_item", axis="columns")  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_convert_dtypes_convert_floating() -> None:
@@ -2750,13 +2769,17 @@ def test_to_json_mode() -> None:
     check(assert_type(result2, str), str)
     check(assert_type(result4, str), str)
     if TYPE_CHECKING_INVALID_USAGE:
-        result3 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportGeneralTypeIssues]
+        result3 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
 def test_groupby_diff() -> None:
     # GH 658
-    s = pd.Series([1, 2, 3, np.nan])
-    check(assert_type(s.groupby(level=0).diff(), pd.Series), pd.Series)
+    s = pd.Series([1.0, 2.0, 3.0, np.nan])
+    check(
+        assert_type(s.groupby(level=0).diff(), "pd.Series[float]"),
+        pd.Series,
+        float,
+    )
 
 
 def test_to_string() -> None:
@@ -2809,10 +2832,10 @@ def test_timedelta_div() -> None:
     check(assert_type([delta] // series, "pd.Series[int]"), pd.Series, np.signedinteger)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        1 / series  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-        [1] / series  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-        1 // series  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
-        [1] // series  # type: ignore[operator] # pyright: ignore[reportGeneralTypeIssues]
+        1 / series  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        [1] / series  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        1 // series  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        [1] // series  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_rank() -> None:
@@ -2856,6 +2879,26 @@ def test_round() -> None:
     # GH 791
     check(assert_type(round(pd.DataFrame([])), pd.DataFrame), pd.DataFrame)
     check(assert_type(round(pd.Series([1], dtype=int)), "pd.Series[int]"), pd.Series)
+
+
+def test_get() -> None:
+    s_int = pd.Series([1, 2, 3], index=[1, 2, 3])
+
+    check(assert_type(s_int.get(1), Union[int, None]), np.int64)
+    check(assert_type(s_int.get(99), Union[int, None]), type(None))
+    check(assert_type(s_int.get(1, default=None), Union[int, None]), np.int64)
+    check(assert_type(s_int.get(99, default=None), Union[int, None]), type(None))
+    check(assert_type(s_int.get(1, default=2), int), np.int64)
+    check(assert_type(s_int.get(99, default="a"), Union[int, str]), str)
+
+    s_str = pd.Series(list("abc"), index=list("abc"))
+
+    check(assert_type(s_str.get("a"), Union[str, None]), str)
+    check(assert_type(s_str.get("z"), Union[str, None]), type(None))
+    check(assert_type(s_str.get("a", default=None), Union[str, None]), str)
+    check(assert_type(s_str.get("z", default=None), Union[str, None]), type(None))
+    check(assert_type(s_str.get("a", default="b"), str), str)
+    check(assert_type(s_str.get("z", default=True), Union[str, bool]), bool)
 
 
 def test_series_new_empty() -> None:
@@ -2947,7 +2990,7 @@ def test_pipe() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         ser.pipe(
             first_arg_series,
-            "a",  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+            "a",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
             [1.0, 2.0],
             argument_2="hi",
             keyword_only=(1, 2),
@@ -2955,7 +2998,7 @@ def test_pipe() -> None:
         ser.pipe(
             first_arg_series,
             1,
-            [1.0, "b"],  # type: ignore[list-item] # pyright: ignore[reportGeneralTypeIssues]
+            [1.0, "b"],  # type: ignore[list-item] # pyright: ignore[reportArgumentType,reportCallIssue]
             argument_2="hi",
             keyword_only=(1, 2),
         )
@@ -2963,7 +3006,7 @@ def test_pipe() -> None:
             first_arg_series,
             1,
             [1.0, 2.0],
-            argument_2=11,  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+            argument_2=11,  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
             keyword_only=(1, 2),
         )
         ser.pipe(
@@ -2971,13 +3014,13 @@ def test_pipe() -> None:
             1,
             [1.0, 2.0],
             argument_2="hi",
-            keyword_only=(1,),  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+            keyword_only=(1,),  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         )
         ser.pipe(  # type: ignore[call-arg]
             first_arg_series,
             1,
             [1.0, 2.0],
-            argument_3="hi",  # pyright: ignore[reportGeneralTypeIssues]
+            argument_3="hi",  # pyright: ignore[reportCallIssue]
             keyword_only=(1, 2),
         )
         ser.pipe(  # type: ignore[misc]
@@ -2985,11 +3028,11 @@ def test_pipe() -> None:
             1,
             [1.0, 2.0],
             11,  # type: ignore[arg-type]
-            (1, 2),  # pyright: ignore[reportGeneralTypeIssues]
+            (1, 2),  # pyright: ignore[reportCallIssue]
         )
         ser.pipe(  # type: ignore[call-arg]
             first_arg_series,
-            positional_only=1,  # pyright: ignore[reportGeneralTypeIssues]
+            positional_only=1,  # pyright: ignore[reportCallIssue]
             argument_1=[1.0, 2.0],
             argument_2=11,  # type: ignore[arg-type]
             keyword_only=(1, 2),
@@ -3013,13 +3056,13 @@ def test_pipe() -> None:
         ser.pipe(
             (
                 first_arg_not_series,  # type: ignore[arg-type]
-                1,  # pyright: ignore[reportGeneralTypeIssues]
+                1,  # pyright: ignore[reportArgumentType,reportCallIssue]
             ),
             1,
         )
         ser.pipe(
             (
-                1,  # type: ignore[arg-type] # pyright: ignore[reportGeneralTypeIssues]
+                1,  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
                 "df",
             ),
             1,

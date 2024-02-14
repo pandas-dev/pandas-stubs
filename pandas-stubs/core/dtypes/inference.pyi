@@ -5,7 +5,6 @@ is_integer = lib.is_integer
 is_float = lib.is_float
 is_complex = lib.is_complex
 is_scalar = lib.is_scalar
-is_interval = lib.is_interval
 is_list_like = lib.is_list_like
 is_iterator = lib.is_iterator
 

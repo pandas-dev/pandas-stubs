@@ -31,7 +31,10 @@ from pandas._libs.tslibs import (
 )
 from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timestamps import Timestamp
-from pandas._typing import npt
+from pandas._typing import (
+    TimeUnit,
+    npt,
+)
 
 class Components(NamedTuple):
     days: int
@@ -390,3 +393,6 @@ class Timedelta(timedelta):
     @property
     def components(self) -> Components: ...
     def view(self, dtype: npt.DTypeLike = ...) -> object: ...
+    @property
+    def unit(self) -> TimeUnit: ...
+    def as_unit(self, unit: TimeUnit, round_ok: bool = ...) -> Self: ...

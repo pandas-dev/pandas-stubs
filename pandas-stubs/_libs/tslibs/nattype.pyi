@@ -5,9 +5,13 @@ from datetime import (
 )
 
 import numpy as np
-from typing_extensions import TypeAlias
+from typing_extensions import (
+    Self,
+    TypeAlias,
+)
 
 from pandas._libs.tslibs.period import Period
+from pandas._typing import TimeUnit
 
 NaT: NaTType
 iNaT: int
@@ -121,3 +125,6 @@ class NaTType:
     __le__: _NatComparison
     __gt__: _NatComparison
     __ge__: _NatComparison
+    @property
+    def unit(self) -> TimeUnit: ...
+    def as_unit(self, unit: TimeUnit, round_ok: bool = ...) -> Self: ...

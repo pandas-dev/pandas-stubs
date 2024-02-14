@@ -26,7 +26,7 @@ from pandas._typing import (
     AnyArrayLike,
     DictConvertible,
     IgnoreRaise,
-    IgnoreRaiseCoerce,
+    RaiseCoerce,
     TimestampConvertibleTypes,
     npt,
 )
@@ -68,7 +68,7 @@ def to_datetime(
 @overload
 def to_datetime(
     arg: Series | DictConvertible,
-    errors: IgnoreRaiseCoerce = ...,
+    errors: RaiseCoerce = ...,
     dayfirst: bool = ...,
     yearfirst: bool = ...,
     utc: bool = ...,
@@ -81,15 +81,17 @@ def to_datetime(
 ) -> TimestampSeries: ...
 @overload
 def to_datetime(
-    arg: Sequence[float | datetime]
-    | list[str]
-    | tuple[float | str | datetime, ...]
-    | npt.NDArray[np.datetime64]
-    | npt.NDArray[np.str_]
-    | npt.NDArray[np.int_]
-    | Index
-    | ExtensionArray,
-    errors: IgnoreRaiseCoerce = ...,
+    arg: (
+        Sequence[float | datetime]
+        | list[str]
+        | tuple[float | str | datetime, ...]
+        | npt.NDArray[np.datetime64]
+        | npt.NDArray[np.str_]
+        | npt.NDArray[np.int_]
+        | Index
+        | ExtensionArray
+    ),
+    errors: RaiseCoerce = ...,
     dayfirst: bool = ...,
     yearfirst: bool = ...,
     utc: bool = ...,

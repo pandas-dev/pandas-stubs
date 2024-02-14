@@ -41,8 +41,7 @@ def test_to_tuples() -> None:
 def test_subclass() -> None:
     assert issubclass(pd.IntervalIndex, pd.Index)
 
-    def index(test: pd.Index) -> None:
-        ...
+    def index(test: pd.Index) -> None: ...
 
     interval_index = pd.IntervalIndex.from_tuples([(0, 1), (1, 2)])
     index(interval_index)

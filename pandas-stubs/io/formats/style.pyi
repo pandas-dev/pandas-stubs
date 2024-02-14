@@ -94,8 +94,9 @@ class Styler(StylerRenderer):
         position: str | None = ...,
         position_float: Literal["centering", "raggedleft", "raggedright"] | None = ...,
         hrules: bool | None = ...,
-        clines: Literal["all;data", "all;index", "skip-last;data", "skip-last;index"]
-        | None = ...,
+        clines: (
+            Literal["all;data", "all;index", "skip-last;data", "skip-last;index"] | None
+        ) = ...,
         label: str | None = ...,
         caption: str | tuple[str, str] | None = ...,
         sparse_index: bool | None = ...,
@@ -116,8 +117,9 @@ class Styler(StylerRenderer):
         position: str | None = ...,
         position_float: Literal["centering", "raggedleft", "raggedright"] | None = ...,
         hrules: bool | None = ...,
-        clines: Literal["all;data", "all;index", "skip-last;data", "skip-last;index"]
-        | None = ...,
+        clines: (
+            Literal["all;data", "all;index", "skip-last;data", "skip-last;index"] | None
+        ) = ...,
         label: str | None = ...,
         caption: str | tuple[str, str] | None = ...,
         sparse_index: bool | None = ...,
@@ -216,16 +218,6 @@ class Styler(StylerRenderer):
         level: Level | list[Level] | None = ...,
         **kwargs: Any,
     ) -> Styler: ...
-    def applymap_index(
-        self,
-        func: Callable[[Scalar], str],
-        axis: Axis = ...,
-        level: Level | list[Level] | None = ...,
-        **kwargs: Any,
-    ) -> Styler: ...
-    def applymap(
-        self, func: Callable[[Scalar], str], subset: Subset | None = ..., **kwargs: Any
-    ) -> Styler: ...
     def set_table_attributes(self, attributes: str) -> Styler: ...
     def export(self) -> StyleExportDict: ...
     def use(self, styles: StyleExportDict) -> Styler: ...
@@ -261,12 +253,14 @@ class Styler(StylerRenderer):
         text_color_threshold: float = ...,
         vmin: float | None = ...,
         vmax: float | None = ...,
-        gmap: Sequence[float]
-        | Sequence[Sequence[float]]
-        | npt.NDArray
-        | DataFrame
-        | Series
-        | None = ...,
+        gmap: (
+            Sequence[float]
+            | Sequence[Sequence[float]]
+            | npt.NDArray
+            | DataFrame
+            | Series
+            | None
+        ) = ...,
     ) -> Styler: ...
     def text_gradient(
         self,
@@ -279,12 +273,14 @@ class Styler(StylerRenderer):
         # text_color_threshold: float
         vmin: float | None = ...,
         vmax: float | None = ...,
-        gmap: Sequence[float]
-        | Sequence[Sequence[float]]
-        | npt.NDArray
-        | DataFrame
-        | Series
-        | None = ...,
+        gmap: (
+            Sequence[float]
+            | Sequence[Sequence[float]]
+            | npt.NDArray
+            | DataFrame
+            | Series
+            | None
+        ) = ...,
     ) -> Styler: ...
     def set_properties(
         self, subset: Subset | None = ..., **kwargs: str | int
@@ -298,9 +294,11 @@ class Styler(StylerRenderer):
         cmap: str | Colormap = ...,
         width: float = ...,
         height: float = ...,
-        align: Literal["left", "right", "zero", "mid", "mean"]
-        | float
-        | Callable[[Series | npt.NDArray | DataFrame], float] = ...,
+        align: (
+            Literal["left", "right", "zero", "mid", "mean"]
+            | float
+            | Callable[[Series | npt.NDArray | DataFrame], float]
+        ) = ...,
         vmin: float | None = ...,
         vmax: float | None = ...,
         props: str = ...,

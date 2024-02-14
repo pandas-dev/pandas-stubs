@@ -17,7 +17,6 @@ from pandas.core.dtypes.inference import (
     is_float as is_float,
     is_hashable as is_hashable,
     is_integer as is_integer,
-    is_interval as is_interval,
     is_iterator as is_iterator,
     is_list_like as is_list_like,
     is_named_tuple as is_named_tuple,

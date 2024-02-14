@@ -1,7 +1,12 @@
-from collections.abc import Iterator
+from collections.abc import (
+    Hashable,
+    Iterator,
+)
 from typing import (
+    Any,
     Generic,
     Literal,
+    final,
 )
 
 import numpy as np
@@ -19,13 +24,19 @@ from pandas._typing import (
     Scalar,
     npt,
 )
+from pandas.util._decorators import cache_readonly
 
 class NoNewAttributesMixin:
-    def __setattr__(self, key, value) -> None: ...
+    def __setattr__(self, key: str, value: Any) -> None: ...
 
 class SelectionMixin(Generic[NDFrameT]):
+    obj: NDFrameT
+    exclusions: frozenset[Hashable]
+    @final
+    @cache_readonly
     def ndim(self) -> int: ...
     def __getitem__(self, key): ...
+    def aggregate(self, func, *args, **kwargs): ...
 
 class IndexOpsMixin(OpsMixin, Generic[S1]):
     __array_priority__: int = ...
