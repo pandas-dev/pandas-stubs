@@ -17,7 +17,10 @@ import pandas.util as pdutil
 
 # TODO: github.com/pandas-dev/pandas/issues/55023
 import pytest
-from typing_extensions import assert_type
+from typing_extensions import (
+    Never,
+    assert_type,
+)
 
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import NaTType
@@ -51,17 +54,25 @@ def test_types_to_datetime() -> None:
 
 def test_types_concat_none() -> None:
     """Test concatenation with None values."""
-    s1: pd.Series | None = None
-    s2: pd.Series = pd.Series([7, -5, 10])
+    series = pd.Series([7, -5, 10])
+    df = pd.DataFrame({"a": [7, -5, 10]})
 
-    check(assert_type(pd.concat([s1, s2]), pd.Series), pd.Series)
+    check(assert_type(pd.concat([None, series]), pd.Series), pd.Series)
+    check(assert_type(pd.concat([None, df]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.concat([None, series, df], axis=1), pd.DataFrame), pd.DataFrame
+    )
 
-    df1: pd.DataFrame | None = None
-    df2: pd.DataFrame = pd.DataFrame({"a": [7, -5, 10]})
+    check(assert_type(pd.concat({"a": None, "b": series}), pd.Series), pd.Series)
+    check(assert_type(pd.concat({"a": None, "b": df}), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.concat({"a": None, "b": series, "c": df}, axis=1), pd.DataFrame),
+        pd.DataFrame,
+    )
 
-    check(assert_type(pd.concat([df1, df2]), pd.DataFrame), pd.DataFrame)
-
-    check(assert_type(pd.concat([s1, df1, df2]), pd.DataFrame), pd.DataFrame)
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(pd.concat({"a": None}), Never)
+        assert_type(pd.concat([None]), Never)
 
 
 def test_types_concat() -> None:

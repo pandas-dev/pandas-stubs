@@ -12,8 +12,10 @@ from pandas import (
     DataFrame,
     Series,
 )
+from typing_extensions import Never
 
 from pandas._typing import (
+    Axis,
     AxisColumn,
     AxisIndex,
     HashableT1,
@@ -24,9 +26,23 @@ from pandas._typing import (
 
 @overload
 def concat(
-    objs: Iterable[DataFrame | None] | Mapping[HashableT1, DataFrame],
+    objs: Iterable[None] | Mapping[HashableT1, None],
     *,
-    axis: AxisIndex = ...,
+    axis: Axis = ...,
+    join: Literal["inner", "outer"] = ...,
+    ignore_index: bool = ...,
+    keys: Iterable[HashableT2] = ...,
+    levels: Sequence[list[HashableT3] | tuple[HashableT3, ...]] = ...,
+    names: list[HashableT4] = ...,
+    verify_integrity: bool = ...,
+    sort: bool = ...,
+    copy: bool = ...,
+) -> Never: ...
+@overload
+def concat(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    objs: Iterable[DataFrame | None] | Mapping[HashableT1, DataFrame | None],
+    *,
+    axis: Axis = ...,
     join: Literal["inner", "outer"] = ...,
     ignore_index: bool = ...,
     keys: Iterable[HashableT2] = ...,
@@ -38,7 +54,7 @@ def concat(
 ) -> DataFrame: ...
 @overload
 def concat(
-    objs: Iterable[Series | None] | Mapping[HashableT1, Series],
+    objs: Iterable[Series | None] | Mapping[HashableT1, Series | None],
     *,
     axis: AxisIndex = ...,
     join: Literal["inner", "outer"] = ...,
@@ -52,7 +68,10 @@ def concat(
 ) -> Series: ...
 @overload
 def concat(
-    objs: Iterable[Series | DataFrame | None] | Mapping[HashableT1, Series | DataFrame],
+    objs: (
+        Iterable[Series | DataFrame | None]
+        | Mapping[HashableT1, Series | DataFrame | None]
+    ),
     *,
     axis: AxisColumn,
     join: Literal["inner", "outer"] = ...,
