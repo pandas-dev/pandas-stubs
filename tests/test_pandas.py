@@ -71,6 +71,7 @@ def test_types_concat_none() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
+        # using assert_type as otherwise the second call would not be type-checked
         assert_type(pd.concat({"a": None}), Never)
         assert_type(pd.concat([None]), Never)
 
