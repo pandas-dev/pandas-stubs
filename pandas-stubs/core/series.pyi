@@ -90,6 +90,7 @@ from pandas._libs.interval import (
 from pandas._libs.lib import NoDefault
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
+from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     S1,
     AggFuncTypeBase,
@@ -158,8 +159,6 @@ from pandas._typing import (
 from pandas.core.dtypes.base import ExtensionDtype
 
 from pandas.plotting import PlotAccessor
-
-from pandas._libs.tslibs.nattype import NaTType
 
 _bool = bool
 _str = str
