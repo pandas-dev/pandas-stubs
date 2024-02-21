@@ -81,6 +81,8 @@ def test_types_init() -> None:
     pd.Series(1)
     pd.Series((1, 2, 3))
     pd.Series(np.array([1, 2, 3]))
+    pd.Series(pd.NaT)
+    pd.Series(pd.NA)
     pd.Series(data=[1, 2, 3, 4], name="series")
     pd.Series(data=[1, 2, 3, 4], dtype=np.int8)
     pd.Series(data={"row1": [1, 2], "row2": [3, 4]})

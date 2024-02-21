@@ -90,6 +90,7 @@ from pandas._libs.interval import (
 from pandas._libs.lib import NoDefault
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
+from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     S1,
     AggFuncTypeBase,
@@ -318,7 +319,15 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: Scalar | _ListLike | dict[HashableT1, Any] | BaseGroupBy | None = ...,
+        data: (
+            Scalar
+            | _ListLike
+            | dict[HashableT1, Any]
+            | BaseGroupBy
+            | NaTType
+            | NAType
+            | None
+        ) = ...,
         index: Axes | None = ...,
         *,
         dtype: Dtype = ...,
