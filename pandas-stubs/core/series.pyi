@@ -159,6 +159,8 @@ from pandas.core.dtypes.base import ExtensionDtype
 
 from pandas.plotting import PlotAccessor
 
+from pandas._libs.tslibs.nattype import NaTType
+
 _bool = bool
 _str = str
 
@@ -318,7 +320,15 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: Scalar | _ListLike | dict[HashableT1, Any] | BaseGroupBy | None = ...,
+        data: (
+            Scalar
+            | _ListLike
+            | dict[HashableT1, Any]
+            | BaseGroupBy
+            | NaTType
+            | NAType
+            | None
+        ) = ...,
         index: Axes | None = ...,
         *,
         dtype: Dtype = ...,
