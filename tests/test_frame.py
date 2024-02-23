@@ -3147,3 +3147,25 @@ def test_get() -> None:
         pd.DataFrame,
     )
     check(assert_type(df.get(["z"], default=1), Union[pd.DataFrame, int]), int)
+
+
+def test_info() -> None:
+    df = pd.DataFrame()
+
+    check(assert_type(df.info(verbose=True), None), type(None))
+    check(assert_type(df.info(verbose=False), None), type(None))
+    check(assert_type(df.info(verbose=None), None), type(None))
+
+    check(assert_type(df.info(buf=io.StringIO()), None), type(None))
+
+    check(assert_type(df.info(max_cols=1), None), type(None))
+    check(assert_type(df.info(max_cols=None), None), type(None))
+
+    check(assert_type(df.info(memory_usage=True), None), type(None))
+    check(assert_type(df.info(memory_usage=False), None), type(None))
+    check(assert_type(df.info(memory_usage="deep"), None), type(None))
+    check(assert_type(df.info(memory_usage=None), None), type(None))
+
+    check(assert_type(df.info(show_counts=True), None), type(None))
+    check(assert_type(df.info(show_counts=False), None), type(None))
+    check(assert_type(df.info(show_counts=None), None), type(None))
