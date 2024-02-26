@@ -16,7 +16,6 @@ from typing_extensions import Never
 
 from pandas._typing import (
     Axis,
-    AxisColumn,
     AxisIndex,
     HashableT1,
     HashableT2,
@@ -53,7 +52,7 @@ def concat(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappin
     copy: bool = ...,
 ) -> DataFrame: ...
 @overload
-def concat(
+def concat(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     objs: Iterable[Series | None] | Mapping[HashableT1, Series | None],
     *,
     axis: AxisIndex = ...,
@@ -73,7 +72,7 @@ def concat(
         | Mapping[HashableT1, Series | DataFrame | None]
     ),
     *,
-    axis: AxisColumn,
+    axis: Axis = ...,
     join: Literal["inner", "outer"] = ...,
     ignore_index: bool = ...,
     keys: Iterable[HashableT2] = ...,
