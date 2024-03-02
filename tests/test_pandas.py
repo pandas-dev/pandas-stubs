@@ -62,11 +62,16 @@ def test_types_concat_none() -> None:
     check(
         assert_type(pd.concat([None, series, df], axis=1), pd.DataFrame), pd.DataFrame
     )
+    check(assert_type(pd.concat([None, series, df]), pd.DataFrame), pd.DataFrame)
 
     check(assert_type(pd.concat({"a": None, "b": series}), pd.Series), pd.Series)
     check(assert_type(pd.concat({"a": None, "b": df}), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(pd.concat({"a": None, "b": series, "c": df}, axis=1), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.concat({"a": None, "b": series, "c": df}), pd.DataFrame),
         pd.DataFrame,
     )
 
@@ -77,8 +82,8 @@ def test_types_concat_none() -> None:
 
 
 def test_types_concat() -> None:
-    s: pd.Series = pd.Series([0, 1, -10])
-    s2: pd.Series = pd.Series([7, -5, 10])
+    s = pd.Series([0, 1, -10])
+    s2 = pd.Series([7, -5, 10])
 
     check(assert_type(pd.concat([s, s2]), pd.Series), pd.Series)
     check(assert_type(pd.concat([s, s2], axis=1), pd.DataFrame), pd.DataFrame)
@@ -165,6 +170,9 @@ def test_types_concat() -> None:
     )
     adict = {"a": df, 2: df2}
     check(assert_type(pd.concat(adict), pd.DataFrame), pd.DataFrame)
+
+    data: pd.DataFrame | pd.Series = pd.Series()
+    check(assert_type(pd.concat([pd.DataFrame(), data]), pd.DataFrame), pd.DataFrame)
 
 
 def test_concat_args() -> None:
