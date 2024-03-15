@@ -430,13 +430,13 @@ def test_hdf_series():
 def test_spss():
     if PD_LTE_22:
         warning_class = FutureWarning
-        message = "ChainedAssignmentError: behaviour will change"
+        message = "Placeholder"
     else:
         warning_class = pd.errors.ChainedAssignmentError  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
         message = "A value is trying to be set on a copy of a DataFrame"
 
     path = Path(CWD, "data", "labelled-num.sav")
-    with pytest_warns_bounded(warning_class, message):
+    with pytest_warns_bounded(warning_class, message, "2.3.0"):
         check(
             assert_type(read_spss(path, convert_categoricals=True), DataFrame),
             DataFrame,
