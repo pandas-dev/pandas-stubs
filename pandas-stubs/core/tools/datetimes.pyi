@@ -82,9 +82,9 @@ def to_datetime(
 @overload
 def to_datetime(
     arg: (
-        Sequence[float | datetime]
+        Sequence[float | date]
         | list[str]
-        | tuple[float | str | datetime, ...]
+        | tuple[float | str | date, ...]
         | npt.NDArray[np.datetime64]
         | npt.NDArray[np.str_]
         | npt.NDArray[np.int_]

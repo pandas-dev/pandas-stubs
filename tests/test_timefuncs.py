@@ -1008,6 +1008,19 @@ def test_to_datetime_array() -> None:
     )
     check(
         assert_type(
+            pd.to_datetime(
+                [
+                    dt.date(2000, 1, 1),
+                    dt.date(2000, 1, 2),
+                    dt.date(2000, 1, 3),
+                ]
+            ),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
             pd.to_datetime(["2000-01-01", "2000-01-02", "2000-01-03"]), pd.DatetimeIndex
         ),
         pd.DatetimeIndex,
@@ -1023,6 +1036,19 @@ def test_to_datetime_array() -> None:
                     dt.datetime(2000, 1, 1),
                     dt.datetime(2000, 1, 2),
                     dt.datetime(2000, 1, 3),
+                )
+            ),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime(
+                (
+                    dt.date(2000, 1, 1),
+                    dt.date(2000, 1, 2),
+                    dt.date(2000, 1, 3),
                 )
             ),
             pd.DatetimeIndex,
