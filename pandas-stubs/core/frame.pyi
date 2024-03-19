@@ -1125,7 +1125,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def pivot_table(
         self,
-        values: _str | None = ...,
+        values: _str | None | Sequence[_str] = ...,
         index: _str | Grouper | Sequence | None = ...,
         columns: _str | Grouper | Sequence | None = ...,
         aggfunc=...,
