@@ -932,6 +932,23 @@ def test_types_pivot() -> None:
     )
 
 
+def test_types_pivot_table() -> None:
+    df = pd.DataFrame(
+        data={
+            "col1": ["first", "second", "third", "fourth"],
+            "col2": [50, 70, 56, 111],
+            "col3": ["A", "B", "C", "D"],
+            "col4": [100, 102, 500, 600],
+        }
+    )
+    check(
+        assert_type(
+            df.pivot_table(index="col2", columns="col4", values=["col1", "col3"]), pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+ 
+
 def test_types_groupby() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0]})
     df.index.name = "ind"
