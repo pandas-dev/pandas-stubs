@@ -943,7 +943,7 @@ def test_types_pivot_table() -> None:
     )
     check(
         assert_type(
-            df.pivot_table(index="col2", columns="col4", values=["col1", "col3"]), pd.DataFrame,
+            df.pivot_table(index="col1", columns="col3", values=["col2", "col4"]), pd.DataFrame,
         ),
         pd.DataFrame,
     )
