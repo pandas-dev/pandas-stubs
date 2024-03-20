@@ -943,11 +943,12 @@ def test_types_pivot_table() -> None:
     )
     check(
         assert_type(
-            df.pivot_table(index="col1", columns="col3", values=["col2", "col4"]), pd.DataFrame,
+            df.pivot_table(index="col1", columns="col3", values=["col2", "col4"]),
+            pd.DataFrame,
         ),
         pd.DataFrame,
     )
- 
+
 
 def test_types_groupby() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0]})
