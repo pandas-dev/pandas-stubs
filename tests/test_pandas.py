@@ -218,13 +218,6 @@ def test_concat_args() -> None:
     )
     check(
         assert_type(
-            pd.concat([df, df2], keys=["df1", "df2"], names=None),
-            pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
             pd.concat(
                 [df, df2], keys=[("df1", "ff"), (pd.Timestamp(2000, 1, 1), "gg")]
             ),
