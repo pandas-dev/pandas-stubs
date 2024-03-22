@@ -98,6 +98,13 @@ def test_types_concat() -> None:
         ),
         pd.Series,
     )
+    check(
+        assert_type(
+            pd.concat([s, s2], keys=["first", "second"], names=None),
+            pd.Series,
+        ),
+        pd.Series,
+    )
 
     # Depends on the axis
     check(
@@ -136,6 +143,13 @@ def test_types_concat() -> None:
     check(
         assert_type(
             pd.concat([df, df2], keys=["first", "second"], names=["source", "row"]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.concat([df, df2], keys=["first", "second"], names=None),
             pd.DataFrame,
         ),
         pd.DataFrame,
@@ -186,6 +200,12 @@ def test_concat_args() -> None:
     check(
         assert_type(
             pd.concat([df, df2], keys=["df1", "df2"], names=["one"]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.concat([df, df2], keys=["df1", "df2"], names=None), pd.DataFrame
         ),
         pd.DataFrame,
     )
@@ -243,6 +263,18 @@ def test_concat_args() -> None:
                 keys=[("foo", "one"), ("foo", "two"), ("baz", "one"), ("baz", "two")],
                 levels=levels,
                 names=names,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.concat(
+                [df, df2, df, df2],
+                keys=[("foo", "one"), ("foo", "two"), ("baz", "one"), ("baz", "two")],
+                levels=levels,
+                names=None,
             ),
             pd.DataFrame,
         ),
