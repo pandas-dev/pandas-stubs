@@ -219,7 +219,7 @@ class Timestamp(datetime):
     @overload
     def __sub__(self, other: TimedeltaSeries) -> TimestampSeries: ...
     @overload
-    def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __sub__(
         self, other: npt.NDArray[np.timedelta64]
     ) -> npt.NDArray[np.datetime64]: ...
     @overload
