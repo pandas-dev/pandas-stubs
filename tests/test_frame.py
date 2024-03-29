@@ -1457,6 +1457,19 @@ def test_types_from_dict() -> None:
         },
         orient="tight",
     )
+    # added following #896
+    data = {"l1": [1, 2, 3], "l2": [4, 5, 6]}
+    # testing `dtype`
+    pd.DataFrame.from_dict(data, orient="index", dtype="float")
+    pd.DataFrame.from_dict(data, orient="index", dtype=float)
+    pd.DataFrame.from_dict(data, orient="index", dtype=None)
+    # testing `columns`
+    pd.DataFrame.from_dict(data, orient="index", columns=["a", "b", "c"])
+    pd.DataFrame.from_dict(
+        data, orient="index", columns=[1.0, 2, datetime.datetime.now()]
+    )
+    # with pytest.raises(ValueError):
+    #     pd.DataFrame.from_dict(data, orient='columns', columns=['a', 'b', 'c'])
 
 
 def test_pipe() -> None:
