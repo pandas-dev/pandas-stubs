@@ -1468,8 +1468,8 @@ def test_types_from_dict() -> None:
     pd.DataFrame.from_dict(
         data, orient="index", columns=[1.0, 2, datetime.datetime.now()]
     )
-    # with pytest.raises(ValueError):
-    #     pd.DataFrame.from_dict(data, orient='columns', columns=['a', 'b', 'c'])
+    with pytest.raises(ValueError):
+        pd.DataFrame.from_dict(data, orient="columns", columns=["a", "b", "c"])  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_pipe() -> None:
