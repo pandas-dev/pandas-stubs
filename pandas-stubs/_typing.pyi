@@ -780,7 +780,7 @@ TimeGrouperOrigin: TypeAlias = (
     Timestamp | Literal["epoch", "start", "start_day", "end", "end_day"]
 )
 
-ExcelReadEngine: TypeAlias = Literal["xlrd", "openpyxl", "odf", "pyxlsb"]
+ExcelReadEngine: TypeAlias = Literal["xlrd", "openpyxl", "odf", "pyxlsb", "calamine"]
 ExcelWriteEngine: TypeAlias = Literal["openpyxl", "odf", "xlsxwriter"]
 
 __all__ = ["npt", "type_t"]
