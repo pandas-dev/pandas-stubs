@@ -272,13 +272,22 @@ class DataFrame(NDFrame, OpsMixin):
     def dot(self, other: Series) -> Series: ...
     def __matmul__(self, other): ...
     def __rmatmul__(self, other): ...
+    @overload
     @classmethod
     def from_dict(
         cls,
         data: dict[Any, Any],
-        orient: Literal["columns", "index", "tight"] = ...,
-        dtype: _str = ...,
-        columns: list[_str] = ...,
+        orient: Literal["index"],
+        dtype: AstypeArg | None = ...,
+        columns: Axes | None = ...,
+    ) -> DataFrame: ...
+    @overload
+    @classmethod
+    def from_dict(
+        cls,
+        data: dict[Any, Any],
+        orient: Literal["columns", "tight"] = ...,
+        dtype: AstypeArg | None = ...,
     ) -> DataFrame: ...
     def to_numpy(
         self,

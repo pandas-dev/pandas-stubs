@@ -1438,25 +1438,114 @@ def test_types_to_dict() -> None:
 
 
 def test_types_from_dict() -> None:
-    pd.DataFrame.from_dict({"col_1": [3, 2, 1, 0], "col_2": ["a", "b", "c", "d"]})
-    pd.DataFrame.from_dict({1: [3, 2, 1, 0], 2: ["a", "b", "c", "d"]})
-    pd.DataFrame.from_dict({"a": {1: 2}, "b": {3: 4, 1: 4}}, orient="index")
-    pd.DataFrame.from_dict({"a": {"row1": 2}, "b": {"row2": 4, "row1": 4}})
-    pd.DataFrame.from_dict({"a": (1, 2, 3), "b": (2, 4, 5)})
-    pd.DataFrame.from_dict(
-        data={"col_1": {"a": 1}, "col_2": {"a": 1, "b": 2}}, orient="columns"
+    check(
+        assert_type(
+            pd.DataFrame.from_dict(
+                {"col_1": [3, 2, 1, 0], "col_2": ["a", "b", "c", "d"]}
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.DataFrame.from_dict({1: [3, 2, 1, 0], 2: ["a", "b", "c", "d"]}),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.DataFrame.from_dict({"a": {1: 2}, "b": {3: 4, 1: 4}}, orient="index"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.DataFrame.from_dict({"a": {"row1": 2}, "b": {"row2": 4, "row1": 4}}),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.DataFrame.from_dict({"a": (1, 2, 3), "b": (2, 4, 5)}), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.DataFrame.from_dict(
+                data={"col_1": {"a": 1}, "col_2": {"a": 1, "b": 2}}, orient="columns"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )
     # orient param accepting "tight" added in 1.4.0 https://pandas.pydata.org/docs/whatsnew/v1.4.0.html
-    pd.DataFrame.from_dict(
-        data={
-            "index": [("a", "b"), ("a", "c")],
-            "columns": [("x", 1), ("y", 2)],
-            "data": [[1, 3], [2, 4]],
-            "index_names": ["n1", "n2"],
-            "column_names": ["z1", "z2"],
-        },
-        orient="tight",
+    check(
+        assert_type(
+            pd.DataFrame.from_dict(
+                data={
+                    "index": [("a", "b"), ("a", "c")],
+                    "columns": [("x", 1), ("y", 2)],
+                    "data": [[1, 3], [2, 4]],
+                    "index_names": ["n1", "n2"],
+                    "column_names": ["z1", "z2"],
+                },
+                orient="tight",
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
     )
+    # added following #896
+    data = {"l1": [1, 2, 3], "l2": [4, 5, 6]}
+    # testing `dtype`
+    check(
+        assert_type(
+            pd.DataFrame.from_dict(data, orient="index", dtype="float"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.DataFrame.from_dict(data, orient="index", dtype=float), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.DataFrame.from_dict(data, orient="index", dtype=None), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    # testing `columns`
+    check(
+        assert_type(
+            pd.DataFrame.from_dict(data, orient="index", columns=["a", "b", "c"]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.DataFrame.from_dict(
+                data, orient="index", columns=[1.0, 2, datetime.datetime.now()]
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        check(
+            assert_type(  # type: ignore[assert-type]
+                pd.DataFrame.from_dict(data, orient="columns", columns=["a", "b", "c"]),  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
 
 
 def test_pipe() -> None:
