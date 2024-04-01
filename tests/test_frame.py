@@ -1546,6 +1546,15 @@ def test_types_from_dict() -> None:
             ),
             pd.DataFrame,
         )
+    # check when not using Literal
+    orient_str = "index"
+    check(
+        assert_type(
+            pd.DataFrame.from_dict(data, orient=orient_str),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_pipe() -> None:

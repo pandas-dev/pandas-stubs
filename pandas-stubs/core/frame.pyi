@@ -289,6 +289,14 @@ class DataFrame(NDFrame, OpsMixin):
         orient: Literal["columns", "tight"] = ...,
         dtype: AstypeArg | None = ...,
     ) -> DataFrame: ...
+    @overload
+    @classmethod
+    def from_dict(
+        cls,
+        data: dict[Any, Any],
+        orient: str,
+        dtype: AstypeArg | None = ...,
+    ) -> DataFrame: ...
     def to_numpy(
         self,
         dtype: npt.DTypeLike | None = ...,
