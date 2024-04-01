@@ -277,7 +277,7 @@ class DataFrame(NDFrame, OpsMixin):
     def from_dict(
         cls,
         data: dict[Any, Any],
-        orient: Literal["index"] = ...,
+        orient: Literal["index"],
         dtype: AstypeArg | None = ...,
         columns: Axes | None = ...,
     ) -> DataFrame: ...
