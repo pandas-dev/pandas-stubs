@@ -961,6 +961,16 @@ def test_read_excel() -> None:
             ),
             pd.DataFrame,
         )
+        check(
+            assert_type(
+                pd.read_excel(
+                    path,
+                    engine="calamine",
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
         if TYPE_CHECKING_INVALID_USAGE:
             pd.read_excel(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
