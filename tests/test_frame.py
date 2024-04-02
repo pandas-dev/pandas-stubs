@@ -3154,6 +3154,58 @@ def test_convert_dtypes_dtype_backend() -> None:
     check(assert_type(dfn, pd.DataFrame), pd.DataFrame)
 
 
+def test_select_dtypes() -> None:
+    df = pd.DataFrame({"a": [1, 2] * 3, "b": [True, False] * 3, "c": [1.0, 2.0] * 3})
+    check(assert_type(df.select_dtypes("number"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.select_dtypes(np.number), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.select_dtypes(object), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.select_dtypes(include="bool"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.select_dtypes(include=["float64"], exclude=None), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.select_dtypes(exclude=["int64"], include=None), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.select_dtypes(exclude=["int64", object]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.select_dtypes(
+                exclude=[
+                    np.datetime64,
+                    "datetime64",
+                    "datetime",
+                    np.timedelta64,
+                    "timedelta",
+                    "timedelta64",
+                    "category",
+                    "datetimetz",
+                    "datetime64[ns]",
+                ]
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        # not able to check with typing that inputs lists are empty
+        # check(
+        #     assert_type(df.select_dtypes([], []), pd.DataFrame), pd.DataFrame
+        # )  # ValueError
+
+        # ValueError :
+        check(assert_type(df.select_dtypes(), pd.DataFrame), pd.DataFrame)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportAssertTypeFailure, reportCallIssue]
+
+        # any kind of string dtype is not allowed but strings dtypes are included in AstypeArg...
+        # check(
+        #     assert_type(df.select_dtypes(str), pd.DataFrame), pd.DataFrame
+        # )  # TypeError
+
+
 def test_to_json_mode() -> None:
     df = pd.DataFrame(
         [["a", "b"], ["c", "d"]],
