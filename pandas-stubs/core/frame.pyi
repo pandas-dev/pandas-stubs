@@ -51,6 +51,7 @@ from pandas.core.window.rolling import (
     Window,
 )
 from typing_extensions import (
+    Never,
     Self,
     TypeAlias,
 )
@@ -115,6 +116,7 @@ from pandas._typing import (
     SortKind,
     StataDateFormat,
     StorageOptions,
+    StrDtypeArg,
     StrLike,
     Suffixes,
     T as _T,
@@ -624,6 +626,18 @@ class DataFrame(NDFrame, OpsMixin):
         ]
     )
     AstypeArgExtList: TypeAlias = AstypeArgExt | list[AstypeArgExt]
+    @overload
+    def select_dtypes(
+        self, include: StrDtypeArg, exclude: AstypeArgExtList | None = ...
+    ) -> Never: ...
+    @overload
+    def select_dtypes(
+        self, include: AstypeArgExtList | None, exclude: StrDtypeArg
+    ) -> Never: ...
+    @overload
+    def select_dtypes(self, exclude: StrDtypeArg) -> Never: ...
+    @overload
+    def select_dtypes(self, include: list[Never], exclude: list[Never]) -> Never: ...
     @overload
     def select_dtypes(
         self,

@@ -38,6 +38,7 @@ from pandas.core.series import Series
 import pytest
 from typing_extensions import (
     TypeAlias,
+    assert_never,
     assert_type,
 )
 import xarray as xr
@@ -3192,18 +3193,13 @@ def test_select_dtypes() -> None:
         pd.DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        # not able to check with typing that inputs lists are empty
-        # check(
-        #     assert_type(df.select_dtypes([], []), pd.DataFrame), pd.DataFrame
-        # )  # ValueError
-
-        # ValueError :
-        check(assert_type(df.select_dtypes(), pd.DataFrame), pd.DataFrame)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportAssertTypeFailure, reportCallIssue]
-
-        # any kind of string dtype is not allowed but strings dtypes are included in AstypeArg...
-        # check(
-        #     assert_type(df.select_dtypes(str), pd.DataFrame), pd.DataFrame
-        # )  # TypeError
+        # include and exclude shall not be both empty
+        assert_never(df.select_dtypes([], []))
+        assert_never(df.select_dtypes())
+        # str like dtypes are not allowed
+        assert_never(df.select_dtypes(str))
+        assert_never(df.select_dtypes(exclude=str))
+        assert_never(df.select_dtypes(None, str))
 
 
 def test_to_json_mode() -> None:
