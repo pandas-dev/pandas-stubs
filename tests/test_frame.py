@@ -38,6 +38,7 @@ from pandas.core.series import Series
 import pytest
 from typing_extensions import (
     TypeAlias,
+    assert_never,
     assert_type,
 )
 import xarray as xr
@@ -3152,6 +3153,53 @@ def test_convert_dtypes_dtype_backend() -> None:
     df = pd.DataFrame({"A": [1, 2, 3, 4], "B": [3, 4, 5, 6]})
     dfn = df.convert_dtypes(dtype_backend="numpy_nullable")
     check(assert_type(dfn, pd.DataFrame), pd.DataFrame)
+
+
+def test_select_dtypes() -> None:
+    df = pd.DataFrame({"a": [1, 2] * 3, "b": [True, False] * 3, "c": [1.0, 2.0] * 3})
+    check(assert_type(df.select_dtypes("number"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.select_dtypes(np.number), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.select_dtypes(object), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.select_dtypes(include="bool"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.select_dtypes(include=["float64"], exclude=None), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.select_dtypes(exclude=["int64"], include=None), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.select_dtypes(exclude=["int64", object]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.select_dtypes(
+                exclude=[
+                    np.datetime64,
+                    "datetime64",
+                    "datetime",
+                    np.timedelta64,
+                    "timedelta",
+                    "timedelta64",
+                    "category",
+                    "datetimetz",
+                    "datetime64[ns]",
+                ]
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        # include and exclude shall not be both empty
+        assert_never(df.select_dtypes([], []))
+        assert_never(df.select_dtypes())
+        # str like dtypes are not allowed
+        assert_never(df.select_dtypes(str))
+        assert_never(df.select_dtypes(exclude=str))
+        assert_never(df.select_dtypes(None, str))
 
 
 def test_to_json_mode() -> None:
