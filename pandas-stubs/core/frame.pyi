@@ -50,7 +50,10 @@ from pandas.core.window.rolling import (
     Rolling,
     Window,
 )
-from typing_extensions import Self
+from typing_extensions import (
+    Self,
+    TypeAlias,
+)
 import xarray as xr
 
 from pandas._libs.lib import NoDefault
@@ -608,10 +611,35 @@ class DataFrame(NDFrame, OpsMixin):
         self, expr: _str, *, inplace: Literal[False] = ..., **kwargs
     ) -> DataFrame: ...
     def eval(self, expr: _str, *, inplace: _bool = ..., **kwargs): ...
+    AstypeArgExt: TypeAlias = (
+        AstypeArg
+        | Literal[
+            "number",
+            "datetime64",
+            "datetime",
+            "timedelta",
+            "timedelta64",
+            "datetimetz",
+            "datetime64[ns]",
+        ]
+    )
+    AstypeArgExtList: TypeAlias = AstypeArgExt | list[AstypeArgExt]
+    @overload
     def select_dtypes(
         self,
-        include: _str | list[_str] | None = ...,
-        exclude: _str | list[_str] | None = ...,
+        include: AstypeArgExtList,
+        exclude: AstypeArgExtList | None = ...,
+    ) -> DataFrame: ...
+    @overload
+    def select_dtypes(
+        self,
+        include: AstypeArgExtList | None,
+        exclude: AstypeArgExtList,
+    ) -> DataFrame: ...
+    @overload
+    def select_dtypes(
+        self,
+        exclude: AstypeArgExtList,
     ) -> DataFrame: ...
     def insert(
         self,
