@@ -176,6 +176,20 @@ def test_multiindex_loc() -> None:
     check(assert_type(s.loc[1, "a"], int), np.int_)
 
 
+def test_multiindex_loc_str_tuple() -> None:
+    s = pd.Series(
+        [1, 2, 3, 4, 5, 6],
+        index=pd.MultiIndex.from_product([["A", "B"], ["c", "d", "e"]]),
+        dtype=int,
+    )
+    check(assert_type(s.loc[("A", "c")], int), np.int_)
+    check(
+        assert_type(s.loc[[("A", "c"), ("B", "d")]], "pd.Series[int]"),
+        pd.Series,
+        np.int_
+    )
+
+
 def test_types_boolean_indexing() -> None:
     s = pd.Series([0, 1, 2])
     s[s > 1]
