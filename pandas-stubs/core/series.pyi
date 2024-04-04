@@ -198,6 +198,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
             | list[str]
             | slice
             | _IndexSliceTuple
+            | Sequence[_IndexSliceTuple]
             | Callable
         ),
         # _IndexSliceTuple is when having a tuple that includes a slice.  Could just
