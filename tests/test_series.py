@@ -186,7 +186,7 @@ def test_multiindex_loc_str_tuple() -> None:
     check(
         assert_type(s.loc[[("A", "c"), ("B", "d")]], "pd.Series[int]"),
         pd.Series,
-        np.int_
+        np.int_,
     )
 
 
