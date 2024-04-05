@@ -3072,7 +3072,6 @@ def test_pipe() -> None:
 
 def test_series_apply() -> None:
     s = pd.Series(["A", "B", "AB"])
-    
     s.apply(tuple)
     s.apply(list)
     s.apply(set)
