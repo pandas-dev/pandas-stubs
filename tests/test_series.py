@@ -3072,7 +3072,11 @@ def test_pipe() -> None:
 
 def test_series_apply() -> None:
     s = pd.Series(["A", "B", "AB"])
-    s.apply(tuple)
-    s.apply(list)
-    s.apply(set)
-    s.apply(frozenset)
+
+    check(assert_type(s.apply(tuple), pd.Series), pd.Series, tuple)
+
+    check(assert_type(s.apply(list), pd.Series), pd.Series, list)
+
+    check(assert_type(s.apply(set), pd.Series), pd.Series, set)
+    
+    check(assert_type(s.apply(frozenset), pd.Series), pd.Series, frozenset)
