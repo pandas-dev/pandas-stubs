@@ -3080,6 +3080,17 @@ def test_diff() -> None:
     check(assert_type(s.astype(np.uint32).diff(), "pd.Series[float]"), pd.Series, float)
     # float -> float
     check(assert_type(s.astype(float).diff(), "pd.Series[float]"), pd.Series, float)
+    # datetime.date -> timeDelta
+    check(
+        assert_type(
+            pd.Series(
+                [datetime.datetime.now().date(), datetime.datetime.now().date()]
+            ).diff(),
+            "TimedeltaSeries",
+        ),
+        pd.Series,
+        pd.Timedelta,
+    )
     # timestamp -> timedelta
     times = pd.Series([pd.Timestamp(0), pd.Timestamp(1)])
     check(assert_type(times.diff(), "TimedeltaSeries"), pd.Series, pd.Timedelta)
@@ -3112,6 +3123,19 @@ def test_diff() -> None:
     )
     # object -> object
     check(assert_type(s.astype(object).diff(), "pd.Series[object]"), pd.Series, object)
-    # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
+    # Baseoffset (object) -> object
+    # from pandas.tseries.frequencies import to_offset
+    # pd.Series([to_offset("5min"), to_offset("1D1h")]).diff()
+    # complex -> complex
+    check(
+        assert_type(s.astype(complex).diff(), "pd.Series[complex]"), pd.Series, complex
+    )
     if TYPE_CHECKING_INVALID_USAGE:
+        # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
         assert_never(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff())
+        # bytes -> numpy.core._exceptions._UFuncNoLoopError: ufunc 'subtract' did not contain a loop with signature matching types (dtype('S21'), dtype('S21')) -> None
+        assert_never(s.astype(bytes).diff())
+        # dtype -> TypeError: unsupported operand type(s) for -: 'type' and 'type'
+        assert_never(pd.Series([str, int, bool]).diff())
+        # datetime.time -> TypeError: unsupported operand type(s) for -: 'datetime.time' and 'datetime.time'
+        # pd.Series([datetime.datetime.now().time(), datetime.datetime.now().time()]).diff()
