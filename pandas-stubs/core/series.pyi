@@ -1509,16 +1509,16 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __eq__(self, other: object) -> Series[_bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __floordiv__(self, other: num | _ListLike | Series[S1]) -> Series[int]: ...
     def __ge__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: S1 | _ListLike | Series[S1] | datetime | timedelta
+        self, other: S1 | _ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
     def __gt__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: S1 | _ListLike | Series[S1] | datetime | timedelta
+        self, other: S1 | _ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
     def __le__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: S1 | _ListLike | Series[S1] | datetime | timedelta
+        self, other: S1 | _ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
     def __lt__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: S1 | _ListLike | Series[S1] | datetime | timedelta
+        self, other: S1 | _ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
     @overload
     def __mul__(
