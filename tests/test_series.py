@@ -3108,7 +3108,7 @@ def test_diff() -> None:
             pd.Series(
                 [pd.Period("2012", freq="D"), pd.Period("2012-1-1", freq="D")]
             ).diff(),
-            "pd.Series[object]",
+            "pd.Series[type[object]]",
         ),
         pd.Series,
         object,

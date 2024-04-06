@@ -234,10 +234,11 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: (
             DatetimeIndex
-            | Sequence[np.datetime64 | datetime]
-            | dict[HashableT1, np.datetime64 | datetime]
+            | Sequence[np.datetime64 | datetime | date]
+            | dict[HashableT1, np.datetime64 | datetime | date]
             | np.datetime64
             | datetime
+            | date
         ),
         index: Axes | None = ...,
         *,
@@ -258,7 +259,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(  # type: ignore[overload-overlap]
         cls,
-        data: PeriodIndex,
+        data: PeriodIndex | Sequence[Period],
         index: Axes | None = ...,
         *,
         dtype: PeriodDtype = ...,
@@ -747,7 +748,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def cov(
         self, other: Series[S1], min_periods: int | None = ..., ddof: int = ...
     ) -> float: ...
-    def diff(self, periods: int = ...) -> Series[S1]: ...
+    def diff(self, periods: int = ...) -> Series[float]: ...
     def autocorr(self, lag: int = ...) -> float: ...
     @overload
     def dot(self, other: Series[S1]) -> Scalar: ...
@@ -2072,6 +2073,7 @@ class TimestampSeries(Series[Timestamp]):
         numeric_only: _bool = ...,
         **kwargs,
     ) -> Timedelta: ...
+    def diff(self, periods: int = ...) -> TimedeltaSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
 
 class TimedeltaSeries(Series[Timedelta]):
     # ignores needed because of mypy
@@ -2168,11 +2170,13 @@ class TimedeltaSeries(Series[Timedelta]):
         numeric_only: _bool = ...,
         **kwargs,
     ) -> Timedelta: ...
+    def diff(self, periods: int = ...) -> TimedeltaSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
 
 class PeriodSeries(Series[Period]):
     @property
     def dt(self) -> PeriodProperties: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __sub__(self, other: PeriodSeries) -> OffsetSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def diff(self, periods: int = ...) -> Series[type[object]]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
 
 class OffsetSeries(Series[BaseOffset]):
     @overload  # type: ignore[override]
