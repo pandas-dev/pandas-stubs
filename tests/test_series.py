@@ -3116,16 +3116,22 @@ def test_diff() -> None:
     # bool -> object
     check(
         assert_type(
-            pd.Series([True, True, False, False, True]).diff(), "pd.Series[object]"
+            pd.Series([True, True, False, False, True]).diff(),
+            "pd.Series[type[object]]",
         ),
         pd.Series,
         object,
     )
     # object -> object
-    check(assert_type(s.astype(object).diff(), "pd.Series[object]"), pd.Series, object)
+    check(
+        assert_type(s.astype(object).diff(), "pd.Series[type[object]]"),
+        pd.Series,
+        object,
+    )
     # Baseoffset (object) -> object
     # from pandas.tseries.frequencies import to_offset
     # pd.Series([to_offset("5min"), to_offset("1D1h")]).diff()
+    # pd.Series([pd.DateOffset(days=1), pd.DateOffset(days=2)]).diff()
     # complex -> complex
     check(
         assert_type(s.astype(complex).diff(), "pd.Series[complex]"), pd.Series, complex
