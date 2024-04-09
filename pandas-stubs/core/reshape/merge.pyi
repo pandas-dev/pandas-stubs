@@ -32,7 +32,6 @@ def merge(
     suffixes: (
         list[str | None] | tuple[str, str] | tuple[None, str] | tuple[str, None]
     ) = ...,
-    copy: bool = ...,
     indicator: bool | str = ...,
     validate: ValidationOptions = ...,
 ) -> DataFrame: ...

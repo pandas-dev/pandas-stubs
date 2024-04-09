@@ -833,16 +833,9 @@ def test_lreshape() -> None:
 
 
 def test_factorize() -> None:
-    with pytest_warns_bounded(
-        FutureWarning,
-        "factorize with argument that is not not a Series, Index, ExtensionArray, "
-        "or np.ndarray is deprecated",
-        upper="2.2.99",
-    ):
-        if PD_LTE_22:
-            codes, uniques = pd.factorize(["b", "b", "a", "c", "b"])
-            check(assert_type(codes, np.ndarray), np.ndarray)
-            check(assert_type(uniques, np.ndarray), np.ndarray)
+    codes, uniques = pd.factorize(np.array(["b", "b", "a", "c", "b"]))
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(uniques, np.ndarray), np.ndarray)
 
     codes, uniques = pd.factorize(np.recarray((1,), dtype=[("x", int)]))
     check(assert_type(codes, np.ndarray), np.ndarray)
@@ -860,22 +853,15 @@ def test_factorize() -> None:
     check(assert_type(codes, np.ndarray), np.ndarray)
     check(assert_type(idx_uniques, pd.Index), pd.Index)
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        "factorize with argument that is not not a Series, Index, ExtensionArray, "
-        "or np.ndarray is deprecated",
-        upper="2.2.99",
-    ):
-        if PD_LTE_22:
-            codes, uniques = pd.factorize("bbacb")
-            check(assert_type(codes, np.ndarray), np.ndarray)
-            check(assert_type(uniques, np.ndarray), np.ndarray)
+    codes, uniques = pd.factorize(np.array(list("bbacb")))
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(uniques, np.ndarray), np.ndarray)
 
-            codes, uniques = pd.factorize(
-                ["b", "b", "a", "c", "b"], use_na_sentinel=True, size_hint=10
-            )
-            check(assert_type(codes, np.ndarray), np.ndarray)
-            check(assert_type(uniques, np.ndarray), np.ndarray)
+    codes, uniques = pd.factorize(
+        np.array(["b", "b", "a", "c", "b"]), use_na_sentinel=True, size_hint=10
+    )
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(uniques, np.ndarray), np.ndarray)
 
 
 def test_index_unqiue() -> None:
@@ -1111,26 +1097,20 @@ def test_merge() -> None:
         ),
         pd.DataFrame,
     )
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        "The copy keyword is deprecated and will be removed in a future version.",
-        lower="2.2.99",
-    ):
-        check(
-            assert_type(
-                pd.merge(
-                    ls,
-                    rs,
-                    how="inner",
-                    left_index=True,
-                    right_index=True,
-                    sort=True,
-                    copy=True,
-                ),
-                pd.DataFrame,
+    check(
+        assert_type(
+            pd.merge(
+                ls,
+                rs,
+                how="inner",
+                left_index=True,
+                right_index=True,
+                sort=True,
             ),
             pd.DataFrame,
-        )
+        ),
+        pd.DataFrame,
+    )
     check(
         assert_type(
             pd.merge(
