@@ -940,7 +940,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def apply(
         self,
-        func: Callable[..., Scalar | Sequence | set | Mapping | NAType | None],
+        func: Callable[
+            ..., Scalar | Sequence | set | Mapping | NAType | frozenset | None
+        ],
         convertDType: _bool = ...,
         args: tuple = ...,
         **kwds,

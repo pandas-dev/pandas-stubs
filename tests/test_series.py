@@ -3083,3 +3083,11 @@ def test_pipe() -> None:
             ),
             1,
         )
+
+
+def test_series_apply() -> None:
+    s = pd.Series(["A", "B", "AB"])
+    check(assert_type(s.apply(tuple), "pd.Series[Any]"), pd.Series)
+    check(assert_type(s.apply(list), "pd.Series[Any]"), pd.Series)
+    check(assert_type(s.apply(set), "pd.Series[Any]"), pd.Series)
+    check(assert_type(s.apply(frozenset), "pd.Series[Any]"), pd.Series)
