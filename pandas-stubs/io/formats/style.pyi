@@ -220,7 +220,7 @@ class Styler(StylerRenderer):
     ) -> Styler: ...
     def map_index(
         self,
-        func: Callable[[Series], npt.NDArray[np.str_] | list[str] | Series[str]],
+        func: Callable[[Scalar], str | None],
         axis: Axis = ...,
         level: Level | list[Level] | None = ...,
         **kwargs,
