@@ -19,6 +19,8 @@ from pandas._testing import ensure_clean
 import pytest
 from typing_extensions import assert_type
 
+from pandas._typing import Scalar
+
 from tests import check
 
 from pandas.io.formats.style import Styler
@@ -61,6 +63,13 @@ def test_apply_index() -> None:
         return Series(s, dtype=str)
 
     check(assert_type(DF.style.apply_index(f1), Styler), Styler)
+
+
+def test_map_index() -> None:
+    def f(s: Scalar) -> str | None:
+        return "background-color: yellow;" if s == "B" else None
+
+    check(assert_type(DF.style.map_index(f), Styler), Styler)
 
 
 def test_background_gradient() -> None:
