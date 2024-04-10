@@ -16,6 +16,7 @@ from pandas import (
     Series,
 )
 from pandas._testing import ensure_clean
+from pandas._typing import Scalar
 import pytest
 from typing_extensions import assert_type
 
@@ -64,15 +65,10 @@ def test_apply_index() -> None:
 
 
 def test_map_index() -> None:
-    def f(s: Series) -> npt.NDArray[np.str_]:
-        return np.asarray(s, dtype=np.str_)
+    def f(s: Scalar) -> str | None:
+        return "background-color: yellow;" if s == "B" else None
 
     check(assert_type(DF.style.map_index(f), Styler), Styler)
-
-    def f1(s: Series) -> Series[str]:
-        return Series(s, dtype=str)
-
-    check(assert_type(DF.style.map_index(f1), Styler), Styler)
 
 
 def test_background_gradient() -> None:
