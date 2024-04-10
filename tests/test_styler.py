@@ -63,6 +63,18 @@ def test_apply_index() -> None:
     check(assert_type(DF.style.apply_index(f1), Styler), Styler)
 
 
+def test_map_index() -> None:
+    def f(s: Series) -> npt.NDArray[np.str_]:
+        return np.asarray(s, dtype=np.str_)
+
+    check(assert_type(DF.style.map_index(f), Styler), Styler)
+
+    def f1(s: Series) -> Series[str]:
+        return Series(s, dtype=str)
+
+    check(assert_type(DF.style.map_index(f1), Styler), Styler)
+
+
 def test_background_gradient() -> None:
     check(assert_type(DF.style.background_gradient(), Styler), Styler)
 
