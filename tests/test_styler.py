@@ -16,9 +16,10 @@ from pandas import (
     Series,
 )
 from pandas._testing import ensure_clean
-from pandas._typing import Scalar
 import pytest
 from typing_extensions import assert_type
+
+from pandas._typing import Scalar
 
 from tests import check
 
