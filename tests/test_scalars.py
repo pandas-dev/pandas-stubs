@@ -385,11 +385,9 @@ def test_interval_cmp():
 
 
 def test_timedelta_construction() -> None:
-    with pytest_warns_bounded(FutureWarning, "'H' is deprecated", lower="2.1.99"):
-        check(assert_type(pd.Timedelta(1, "H"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "h"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "min"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'S' is deprecated", lower="2.1.99"):
-        check(assert_type(pd.Timedelta(1, "S"), pd.Timedelta), pd.Timedelta)
+    check(assert_type(pd.Timedelta(1, "s"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "ms"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "us"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "ns"), pd.Timedelta), pd.Timedelta)
@@ -1544,7 +1542,7 @@ def test_timestamp_misc_methods() -> None:
         )
         check(
             assert_type(
-                ts2.round("2H", nonexistent=pd.Timedelta(24, "H")), pd.Timestamp
+                ts2.round("2H", nonexistent=pd.Timedelta(24, "h")), pd.Timestamp
             ),
             pd.Timestamp,
         )
@@ -1578,7 +1576,7 @@ def test_timestamp_misc_methods() -> None:
         )
         check(
             assert_type(
-                ts2.ceil("2H", nonexistent=pd.Timedelta(24, "H")), pd.Timestamp
+                ts2.ceil("2H", nonexistent=pd.Timedelta(24, "h")), pd.Timestamp
             ),
             pd.Timestamp,
         )
@@ -1613,7 +1611,7 @@ def test_timestamp_misc_methods() -> None:
         )
         check(
             assert_type(
-                ts2.floor("2H", nonexistent=pd.Timedelta(24, "H")), pd.Timestamp
+                ts2.floor("2H", nonexistent=pd.Timedelta(24, "h")), pd.Timestamp
             ),
             pd.Timestamp,
         )
