@@ -489,14 +489,7 @@ def test_unique() -> None:
         pd.DatetimeIndex,
     )
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        "unique with argument that is not not a Series, Index, ExtensionArray, "
-        "or np.ndarray is deprecated",
-        upper="2.2.99",
-    ):
-        if PD_LTE_22:
-            check(assert_type(pd.unique(list("baabc")), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(np.array(list("baabc"))), np.ndarray), np.ndarray)
 
     check(
         assert_type(
@@ -523,20 +516,6 @@ def test_unique() -> None:
         ),
         pd.Categorical,
     )
-    with pytest_warns_bounded(
-        FutureWarning,
-        "unique with argument that is not not a Series, Index, ExtensionArray, "
-        "or np.ndarray is deprecated",
-        upper="2.2.99",
-    ):
-        if PD_LTE_22:
-            check(
-                assert_type(
-                    pd.unique([("a", "b"), ("b", "a"), ("a", "c"), ("b", "a")]),
-                    np.ndarray,
-                ),
-                np.ndarray,
-            )
     check(
         assert_type(pd.unique(pd.Index(["a", "b", "c", "a"])), np.ndarray),
         np.ndarray if PD_LTE_22 else pd.Index,
