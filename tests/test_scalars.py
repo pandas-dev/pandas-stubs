@@ -385,12 +385,6 @@ def test_interval_cmp():
 
 
 def test_timedelta_construction() -> None:
-    check(assert_type(pd.Timedelta(1, "h"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta(1, "min"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta(1, "s"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta(1, "ms"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta(1, "us"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta(1, "ns"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "W"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "w"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "D"), pd.Timedelta), pd.Timedelta)

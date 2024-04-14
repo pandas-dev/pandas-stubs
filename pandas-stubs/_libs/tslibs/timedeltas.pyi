@@ -62,7 +62,6 @@ TimeDeltaUnitChoices: TypeAlias = Literal[
     "minute",
     "min",
     "minutes",
-    "t",
     "s",
     "seconds",
     "sec",
@@ -72,20 +71,17 @@ TimeDeltaUnitChoices: TypeAlias = Literal[
     "millisecond",
     "milli",
     "millis",
-    "l",
     "us",
     "microseconds",
     "microsecond",
     "µs",
     "micro",
     "micros",
-    "u",
     "ns",
     "nanoseconds",
     "nano",
     "nanos",
     "nanosecond",
-    "n",
 ]
 
 UnitChoices: TypeAlias = (
