@@ -3139,9 +3139,24 @@ def test_diff() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
         assert_never(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff())
-        # bytes -> numpy.core._exceptions._UFuncNoLoopError: ufunc 'subtract' did not contain a loop with signature matching types (dtype('S21'), dtype('S21')) -> None
-        assert_never(s.astype(bytes).diff())
-        # dtype -> TypeError: unsupported operand type(s) for -: 'type' and 'type'
-        assert_never(pd.Series([str, int, bool]).diff())
         # datetime.time -> TypeError: unsupported operand type(s) for -: 'datetime.time' and 'datetime.time'
         # pd.Series([datetime.datetime.now().time(), datetime.datetime.now().time()]).diff()
+
+
+def test_diff_never1() -> None:
+    s = pd.Series([1, 1, 2, 3, 5, 8])
+    if TYPE_CHECKING_INVALID_USAGE:
+        # bytes -> numpy.core._exceptions._UFuncNoLoopError: ufunc 'subtract' did not contain a loop with signature matching types (dtype('S21'), dtype('S21')) -> None
+        assert_never(s.astype(bytes).diff())
+
+
+def test_diff_never2() -> None:
+    if TYPE_CHECKING_INVALID_USAGE:
+        # dtype -> TypeError: unsupported operand type(s) for -: 'type' and 'type'
+        assert_never(pd.Series([str, int, bool]).diff())
+
+
+def test_diff_never3() -> None:
+    if TYPE_CHECKING_INVALID_USAGE:
+        # str -> TypeError: unsupported operand type(s) for -: 'str' and 'str'
+        assert_never(pd.Series(["a", "b"]).diff())
