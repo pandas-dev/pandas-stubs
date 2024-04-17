@@ -1,4 +1,3 @@
-from collections.abc import Sequence
 from typing import (
     Literal,
     overload,
@@ -37,12 +36,12 @@ def unique(values: Categorical) -> Categorical: ...
 @overload
 def unique(values: Series) -> np.ndarray | ExtensionArray: ...
 @overload
-def unique(values: np.ndarray | list) -> np.ndarray: ...
+def unique(values: np.ndarray) -> np.ndarray: ...
 @overload
 def unique(values: ExtensionArray) -> ExtensionArray: ...
 @overload
 def factorize(
-    values: Sequence | np.recarray,
+    values: np.ndarray,
     sort: bool = ...,
     use_na_sentinel: bool = ...,
     size_hint: int | None = ...,

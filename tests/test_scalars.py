@@ -385,18 +385,6 @@ def test_interval_cmp():
 
 
 def test_timedelta_construction() -> None:
-    with pytest_warns_bounded(FutureWarning, "'H' is deprecated", lower="2.1.99"):
-        check(assert_type(pd.Timedelta(1, "H"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'T' is deprecated", lower="2.1.99"):
-        check(assert_type(pd.Timedelta(1, "T"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'S' is deprecated", lower="2.1.99"):
-        check(assert_type(pd.Timedelta(1, "S"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'L' is deprecated", lower="2.1.99"):
-        check(assert_type(pd.Timedelta(1, "L"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'U' is deprecated", lower="2.1.99"):
-        check(assert_type(pd.Timedelta(1, "U"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'N' is deprecated", lower="2.1.99"):
-        check(assert_type(pd.Timedelta(1, "N"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "W"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "w"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "D"), pd.Timedelta), pd.Timedelta)
@@ -411,8 +399,6 @@ def test_timedelta_construction() -> None:
     check(assert_type(pd.Timedelta(1, "minute"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "min"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "minutes"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'t' is deprecated", lower="2.1.99"):
-        check(assert_type(pd.Timedelta(1, "t"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "s"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "seconds"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "sec"), pd.Timedelta), pd.Timedelta)
@@ -422,23 +408,17 @@ def test_timedelta_construction() -> None:
     check(assert_type(pd.Timedelta(1, "millisecond"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "milli"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "millis"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'l' is deprecated", lower="2.1.99"):
-        check(assert_type(pd.Timedelta(1, "l"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "us"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "microseconds"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "microsecond"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "µs"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "micro"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "micros"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'u' is deprecated", lower="2.1.99"):
-        check(assert_type(pd.Timedelta(1, "u"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "ns"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "nanoseconds"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "nano"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "nanos"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "nanosecond"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'n' is deprecated", lower="2.1.99"):
-        check(assert_type(pd.Timedelta(1, "n"), pd.Timedelta), pd.Timedelta)
 
     check(assert_type(pd.Timedelta("1 W"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 w"), pd.Timedelta), pd.Timedelta)
@@ -454,8 +434,6 @@ def test_timedelta_construction() -> None:
     check(assert_type(pd.Timedelta("1 minute"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 min"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 minutes"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'t' is deprecated", lower="2.1.99"):
-        check(assert_type(pd.Timedelta("1 t"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 s"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 seconds"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 sec"), pd.Timedelta), pd.Timedelta)
@@ -465,23 +443,17 @@ def test_timedelta_construction() -> None:
     check(assert_type(pd.Timedelta("1 millisecond"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 milli"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 millis"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'l' is deprecated", lower="2.1.99"):
-        check(assert_type(pd.Timedelta("1 l"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 us"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 microseconds"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 microsecond"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 µs"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 micro"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 micros"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'u' is deprecated", lower="2.1.99"):
-        check(assert_type(pd.Timedelta("1 u"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 ns"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 nanoseconds"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 nano"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 nanos"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 nanosecond"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'n' is deprecated", lower="2.1.99"):
-        check(assert_type(pd.Timedelta("1 n"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(days=1), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(seconds=1), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(microseconds=1), pd.Timedelta), pd.Timedelta)
@@ -851,10 +823,7 @@ def test_timedelta_cmp() -> None:
     c_dt_timedelta = dt.timedelta(days=1)
     c_timedelta64 = np.timedelta64(1, "D")
     c_ndarray_td64 = ndarray_td64
-    with pytest_warns_bounded(
-        FutureWarning, "The 'unit' keyword in TimedeltaIndex", lower="2.1.99"
-    ):
-        c_timedelta_index = pd.TimedeltaIndex([1, 2, 3], unit="D")
+    c_timedelta_index = pd.to_timedelta([1, 2, 3], unit="D")
     c_timedelta_series = pd.Series(pd.TimedeltaIndex([1, 2, 3]))
 
     check(assert_type(td < c_timedelta, bool), bool)
@@ -1057,10 +1026,7 @@ def test_timedelta_cmp_rhs() -> None:
     c_dt_timedelta = dt.timedelta(days=1)
     c_timedelta64 = np.timedelta64(1, "D")
     c_ndarray_td64 = ndarray_td64
-    with pytest_warns_bounded(
-        FutureWarning, "The 'unit' keyword in TimedeltaIndex", lower="2.1.99"
-    ):
-        c_timedelta_index = pd.TimedeltaIndex([1, 2, 3], unit="D")
+    c_timedelta_index = pd.to_timedelta([1, 2, 3], unit="D")
     c_timedelta_series = pd.Series(pd.TimedeltaIndex([1, 2, 3]))
 
     eq = check(assert_type(c_dt_timedelta == td, bool), bool)
@@ -1207,10 +1173,7 @@ def test_timestamp_add_sub() -> None:
     as_dt_timedelta = dt.timedelta(days=1)
     as_offset = 3 * Day()
 
-    with pytest_warns_bounded(
-        FutureWarning, "The 'unit' keyword in TimedeltaIndex", lower="2.1.99"
-    ):
-        as_timedelta_index = pd.TimedeltaIndex([1, 2, 3], "D")
+    as_timedelta_index = pd.to_timedelta([1, 2, 3], unit="D")
     as_timedelta_series = pd.Series(as_timedelta_index)
     check(assert_type(as_timedelta_series, TimedeltaSeries), pd.Series, pd.Timedelta)
     as_np_ndarray_td64 = np_td64_arr
@@ -1573,7 +1536,7 @@ def test_timestamp_misc_methods() -> None:
         )
         check(
             assert_type(
-                ts2.round("2H", nonexistent=pd.Timedelta(24, "H")), pd.Timestamp
+                ts2.round("2H", nonexistent=pd.Timedelta(24, "h")), pd.Timestamp
             ),
             pd.Timestamp,
         )
@@ -1607,7 +1570,7 @@ def test_timestamp_misc_methods() -> None:
         )
         check(
             assert_type(
-                ts2.ceil("2H", nonexistent=pd.Timedelta(24, "H")), pd.Timestamp
+                ts2.ceil("2H", nonexistent=pd.Timedelta(24, "h")), pd.Timestamp
             ),
             pd.Timestamp,
         )
@@ -1642,7 +1605,7 @@ def test_timestamp_misc_methods() -> None:
         )
         check(
             assert_type(
-                ts2.floor("2H", nonexistent=pd.Timedelta(24, "H")), pd.Timestamp
+                ts2.floor("2H", nonexistent=pd.Timedelta(24, "h")), pd.Timestamp
             ),
             pd.Timestamp,
         )

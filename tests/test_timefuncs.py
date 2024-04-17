@@ -28,6 +28,7 @@ else:
 from pandas._typing import TimeUnit
 
 from tests import (
+    PD_LTE_22,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -356,9 +357,13 @@ def test_series_dt_accessors() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         "The behavior of DatetimeProperties.to_pydatetime is deprecated",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
-        check(assert_type(s0.dt.to_pydatetime(), np.ndarray), np.ndarray, dt.datetime)
+        check(
+            assert_type(s0.dt.to_pydatetime(), np.ndarray),
+            np.ndarray if PD_LTE_22 else pd.Series,
+            dt.datetime,
+        )
     s0_local = s0.dt.tz_localize("UTC")
     check(
         assert_type(s0_local, "TimestampSeries"),
@@ -757,13 +762,6 @@ def test_to_timdelta_units() -> None:
     check(assert_type(pd.to_timedelta(1, "minute"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "min"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "minutes"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"'[tl]' is deprecated",
-        lower="2.0.99",
-    ):
-        check(assert_type(pd.to_timedelta(1, "t"), pd.Timedelta), pd.Timedelta)
-        check(assert_type(pd.to_timedelta(1, "l"), pd.Timedelta), pd.Timedelta)
 
     check(assert_type(pd.to_timedelta(1, "s"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "seconds"), pd.Timedelta), pd.Timedelta)
@@ -780,23 +778,11 @@ def test_to_timdelta_units() -> None:
     check(assert_type(pd.to_timedelta(1, "µs"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "micro"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "micros"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"'u' is deprecated",
-        lower="2.1.99",
-    ):
-        check(assert_type(pd.to_timedelta(1, "u"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "ns"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "nanoseconds"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "nano"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "nanos"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "nanosecond"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"'n' is deprecated",
-        lower="2.1.99",
-    ):
-        check(assert_type(pd.to_timedelta(1, "n"), pd.Timedelta), pd.Timedelta)
 
 
 def test_to_timedelta_scalar() -> None:

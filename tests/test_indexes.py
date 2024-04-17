@@ -14,6 +14,7 @@ from typing_extensions import (
 from pandas._typing import Dtype  # noqa: F401
 
 from tests import (
+    PD_LTE_22,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -866,7 +867,11 @@ def test_getitem() -> None:
     iri = pd.RangeIndex(0, 10)
     check(assert_type(iri, pd.RangeIndex), pd.RangeIndex, int)
     check(assert_type(iri[0], int), int)
-    check(assert_type(iri[[0, 2, 4]], pd.Index), pd.Index, np.integer)
+    check(
+        assert_type(iri[[0, 2, 4]], pd.Index),
+        pd.Index,
+        np.integer if PD_LTE_22 else int,
+    )
 
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
     check(assert_type(mi, pd.MultiIndex), pd.MultiIndex)

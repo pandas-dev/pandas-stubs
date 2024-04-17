@@ -48,12 +48,6 @@ class Components(NamedTuple):
 # This should be kept consistent with the keys in the dict timedelta_abbrevs
 # in pandas/_libs/tslibs/timedeltas.pyx
 TimeDeltaUnitChoices: TypeAlias = Literal[
-    "H",
-    "T",
-    "S",
-    "L",
-    "U",
-    "N",
     "W",
     "w",
     "D",
@@ -68,7 +62,6 @@ TimeDeltaUnitChoices: TypeAlias = Literal[
     "minute",
     "min",
     "minutes",
-    "t",
     "s",
     "seconds",
     "sec",
@@ -78,20 +71,17 @@ TimeDeltaUnitChoices: TypeAlias = Literal[
     "millisecond",
     "milli",
     "millis",
-    "l",
     "us",
     "microseconds",
     "microsecond",
     "µs",
     "micro",
     "micros",
-    "u",
     "ns",
     "nanoseconds",
     "nano",
     "nanos",
     "nanosecond",
-    "n",
 ]
 
 UnitChoices: TypeAlias = (

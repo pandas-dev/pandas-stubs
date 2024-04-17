@@ -818,7 +818,7 @@ def test_types_groupby_agg() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <built-in function (min|sum)> is currently using",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(assert_type(s.groupby(level=0).agg(sum), pd.Series), pd.Series)
         check(
@@ -836,7 +836,7 @@ def test_types_groupby_aggregate() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <built-in function (min|sum)> is currently using",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(assert_type(s.groupby(level=0).aggregate(sum), pd.Series), pd.Series)
         check(
@@ -892,7 +892,7 @@ def test_types_window() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <built-in function (min|max|sum)> is currently using",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(
             assert_type(s.rolling(2).agg(sum), pd.Series),
@@ -962,9 +962,9 @@ def test_types_agg() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <(built-in function (min|max|mean)|function mean at 0x\w+)> is currently using",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
-        check(assert_type(s.agg(min), int), np.integer)
+        check(assert_type(s.agg(min), int), np.integer if PD_LTE_22 else int)
         check(assert_type(s.agg([min, max]), pd.Series), pd.Series, np.integer)
         check(assert_type(s.agg({0: min}), pd.Series), pd.Series, np.integer)
         check(
@@ -986,9 +986,9 @@ def test_types_aggregate() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <built-in function (min|max)> is currently using",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
-        check(assert_type(s.aggregate(min), int), np.integer)
+        check(assert_type(s.aggregate(min), int), np.integer if PD_LTE_22 else int)
         check(
             assert_type(s.aggregate([min, max]), pd.Series),
             pd.Series,

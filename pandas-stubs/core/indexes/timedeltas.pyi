@@ -40,7 +40,6 @@ class TimedeltaIndex(DatetimeTimedeltaMixin[Timedelta], TimedeltaIndexProperties
             | list[str]
             | Sequence[dt.timedelta | Timedelta | np.timedelta64 | float]
         ) = ...,
-        unit: Literal["D", "h", "m", "s", "ms", "us", "ns"] = ...,
         freq: str | BaseOffset = ...,
         closed: object = ...,
         dtype: Literal["<m8[ns]"] = ...,

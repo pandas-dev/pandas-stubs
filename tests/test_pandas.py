@@ -27,6 +27,7 @@ from pandas._libs.tslibs import NaTType
 from pandas._typing import Scalar
 
 from tests import (
+    PD_LTE_22,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -243,7 +244,12 @@ def test_concat_args() -> None:
         pd.DataFrame,
     )
     check(assert_type(pd.concat([df, df2], sort=True), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.concat([df, df2], copy=True), pd.DataFrame), pd.DataFrame)
+    with pytest_warns_bounded(
+        DeprecationWarning,
+        "The copy keyword is deprecated and will be removed in a future version.",
+        lower="2.2.99",
+    ):
+        check(assert_type(pd.concat([df, df2], copy=True), pd.DataFrame), pd.DataFrame)
     check(assert_type(pd.concat([df, df2], join="inner"), pd.DataFrame), pd.DataFrame)
     check(assert_type(pd.concat([df, df2], join="outer"), pd.DataFrame), pd.DataFrame)
     check(assert_type(pd.concat([df, df2], axis=0), pd.DataFrame), pd.DataFrame)
@@ -483,13 +489,7 @@ def test_unique() -> None:
         pd.DatetimeIndex,
     )
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        "unique with argument that is not not a Series, Index, ExtensionArray, "
-        "or np.ndarray is deprecated",
-        lower="2.0.99",
-    ):
-        check(assert_type(pd.unique(list("baabc")), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(np.array(list("baabc"))), np.ndarray), np.ndarray)
 
     check(
         assert_type(
@@ -516,25 +516,13 @@ def test_unique() -> None:
         ),
         pd.Categorical,
     )
-    with pytest_warns_bounded(
-        FutureWarning,
-        "unique with argument that is not not a Series, Index, ExtensionArray, "
-        "or np.ndarray is deprecated",
-        lower="2.0.99",
-    ):
-        check(
-            assert_type(
-                pd.unique([("a", "b"), ("b", "a"), ("a", "c"), ("b", "a")]), np.ndarray
-            ),
-            np.ndarray,
-        )
     check(
         assert_type(pd.unique(pd.Index(["a", "b", "c", "a"])), np.ndarray),
-        np.ndarray,
+        np.ndarray if PD_LTE_22 else pd.Index,
     )
     check(
         assert_type(pd.unique(pd.RangeIndex(0, 10)), np.ndarray),
-        np.ndarray,
+        np.ndarray if PD_LTE_22 else pd.Index,
     )
     check(
         assert_type(pd.unique(pd.Categorical(["a", "b", "c", "a"])), pd.Categorical),
@@ -552,7 +540,7 @@ def test_unique() -> None:
             pd.unique(pd.timedelta_range(start="1 day", periods=4)),
             np.ndarray,
         ),
-        np.ndarray,
+        np.ndarray if PD_LTE_22 else pd.Index,
     )
 
 
@@ -824,15 +812,9 @@ def test_lreshape() -> None:
 
 
 def test_factorize() -> None:
-    with pytest_warns_bounded(
-        FutureWarning,
-        "factorize with argument that is not not a Series, Index, ExtensionArray, "
-        "or np.ndarray is deprecated",
-        lower="2.0.99",
-    ):
-        codes, uniques = pd.factorize(["b", "b", "a", "c", "b"])
-        check(assert_type(codes, np.ndarray), np.ndarray)
-        check(assert_type(uniques, np.ndarray), np.ndarray)
+    codes, uniques = pd.factorize(np.array(["b", "b", "a", "c", "b"]))
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(uniques, np.ndarray), np.ndarray)
 
     codes, uniques = pd.factorize(np.recarray((1,), dtype=[("x", int)]))
     check(assert_type(codes, np.ndarray), np.ndarray)
@@ -850,21 +832,15 @@ def test_factorize() -> None:
     check(assert_type(codes, np.ndarray), np.ndarray)
     check(assert_type(idx_uniques, pd.Index), pd.Index)
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        "factorize with argument that is not not a Series, Index, ExtensionArray, "
-        "or np.ndarray is deprecated",
-        lower="2.0.99",
-    ):
-        codes, uniques = pd.factorize("bbacb")
-        check(assert_type(codes, np.ndarray), np.ndarray)
-        check(assert_type(uniques, np.ndarray), np.ndarray)
+    codes, uniques = pd.factorize(np.array(list("bbacb")))
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(uniques, np.ndarray), np.ndarray)
 
-        codes, uniques = pd.factorize(
-            ["b", "b", "a", "c", "b"], use_na_sentinel=True, size_hint=10
-        )
-        check(assert_type(codes, np.ndarray), np.ndarray)
-        check(assert_type(uniques, np.ndarray), np.ndarray)
+    codes, uniques = pd.factorize(
+        np.array(["b", "b", "a", "c", "b"]), use_na_sentinel=True, size_hint=10
+    )
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(uniques, np.ndarray), np.ndarray)
 
 
 def test_index_unqiue() -> None:
@@ -881,12 +857,16 @@ def test_index_unqiue() -> None:
     interval_i = pd.interval_range(1, 10, periods=10)
 
     check(assert_type(pd.unique(ci), pd.CategoricalIndex), pd.CategoricalIndex)
-    check(assert_type(pd.unique(dti), np.ndarray), np.ndarray)
-    check(assert_type(pd.unique(i), np.ndarray), np.ndarray)
+    check(
+        assert_type(pd.unique(dti), np.ndarray), np.ndarray if PD_LTE_22 else pd.Index
+    )
+    check(assert_type(pd.unique(i), np.ndarray), np.ndarray if PD_LTE_22 else pd.Index)
     check(assert_type(pd.unique(pi), pd.PeriodIndex), pd.PeriodIndex)
-    check(assert_type(pd.unique(ri), np.ndarray), np.ndarray)
-    check(assert_type(pd.unique(tdi), np.ndarray), np.ndarray)
-    check(assert_type(pd.unique(mi), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(ri), np.ndarray), np.ndarray if PD_LTE_22 else pd.Index)
+    check(
+        assert_type(pd.unique(tdi), np.ndarray), np.ndarray if PD_LTE_22 else pd.Index
+    )
+    check(assert_type(pd.unique(mi), np.ndarray), np.ndarray if PD_LTE_22 else pd.Index)
     check(
         assert_type(pd.unique(interval_i), "pd.IntervalIndex[pd.Interval[int]]"),
         pd.IntervalIndex,
@@ -1105,7 +1085,6 @@ def test_merge() -> None:
                 left_index=True,
                 right_index=True,
                 sort=True,
-                copy=True,
             ),
             pd.DataFrame,
         ),
@@ -1567,7 +1546,7 @@ def test_crosstab_args() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(
             assert_type(pd.crosstab(a, b, values=values, aggfunc=np.sum), pd.DataFrame),
@@ -1795,7 +1774,7 @@ def test_pivot_table() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function sum .*> is currently using",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(
             assert_type(
@@ -1831,7 +1810,7 @@ def test_pivot_table() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function sum .*> is currently using",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(
             assert_type(
@@ -1899,7 +1878,7 @@ def test_pivot_table() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function sum .*> is currently using",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(
             assert_type(
@@ -1926,7 +1905,7 @@ def test_pivot_table() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function sum .*> is currently using",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(
             assert_type(
@@ -2064,7 +2043,7 @@ def test_pivot_table() -> None:
         check(
             assert_type(
                 pd.pivot_table(
-                    df, index=Grouper(freq="A"), columns=Grouper(key="dt", freq="M")
+                    df, index=Grouper(freq="YE"), columns=Grouper(key="dt", freq="M")
                 ),
                 pd.DataFrame,
             ),

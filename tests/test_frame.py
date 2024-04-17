@@ -983,12 +983,15 @@ def test_types_groupby() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         "(The provided callable <built-in function sum> is currently using|The behavior of DataFrame.sum with)",
+        upper="2.2.99",
     ):
         with pytest_warns_bounded(
             DeprecationWarning,
             "DataFrameGroupBy.apply operated on the grouping columns",
+            upper="2.2.99",
         ):
-            df7: pd.DataFrame = df.groupby(by="col1").apply(sum)
+            if PD_LTE_22:
+                df7: pd.DataFrame = df.groupby(by="col1").apply(sum)
     df8: pd.DataFrame = df.groupby("col1").transform("sum")
     s1: pd.Series = df.set_index("col1")["col2"]
     s2: pd.Series = s1.groupby("col1").transform("sum")
@@ -1033,7 +1036,7 @@ def test_types_groupby_agg() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <built-in function (min|max)> is currently using",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(assert_type(df.groupby("col1")["col3"].agg(min), pd.Series), pd.Series)
         check(
@@ -1182,7 +1185,7 @@ def test_types_window() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <built-in function (min|max)> is currently using",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(
             assert_type(df.rolling(2).agg(max), pd.DataFrame),
@@ -1282,7 +1285,7 @@ def test_types_agg() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <(built-in function (min|max|mean)|function mean at 0x\w+)> is currently using",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(assert_type(df.agg(min), pd.Series), pd.Series)
         check(assert_type(df.agg([min, max]), pd.DataFrame), pd.DataFrame)
@@ -1309,7 +1312,7 @@ def test_types_aggregate() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <built-in function (min|max)> is currently using",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(assert_type(df.aggregate(min), pd.Series), pd.Series)
         check(assert_type(df.aggregate([min, max]), pd.DataFrame), pd.DataFrame)
@@ -2222,7 +2225,7 @@ def test_frame_stack() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         "The previous implementation of stack is deprecated",
-        lower="2.1.99",
+        upper="2.2.99",
     ):
         check(
             assert_type(
@@ -2593,23 +2596,22 @@ def test_resample() -> None:
     # GH 181
     N = 10
     x = [x for x in range(N)]
-    with pytest_warns_bounded(FutureWarning, "'T' is deprecated", lower="2.1.99"):
-        index = pd.date_range("1/1/2000", periods=N, freq="T")
-        x = [x for x in range(N)]
-        df = pd.DataFrame({"a": x, "b": x, "c": x}, index=index)
-        check(assert_type(df.resample("2T").std(), pd.DataFrame), pd.DataFrame)
-        check(assert_type(df.resample("2T").var(), pd.DataFrame), pd.DataFrame)
-        check(assert_type(df.resample("2T").quantile(), pd.DataFrame), pd.DataFrame)
-        check(assert_type(df.resample("2T").sum(), pd.DataFrame), pd.DataFrame)
-        check(assert_type(df.resample("2T").prod(), pd.DataFrame), pd.DataFrame)
-        check(assert_type(df.resample("2T").min(), pd.DataFrame), pd.DataFrame)
-        check(assert_type(df.resample("2T").max(), pd.DataFrame), pd.DataFrame)
-        check(assert_type(df.resample("2T").first(), pd.DataFrame), pd.DataFrame)
-        check(assert_type(df.resample("2T").last(), pd.DataFrame), pd.DataFrame)
-        check(assert_type(df.resample("2T").mean(), pd.DataFrame), pd.DataFrame)
-        check(assert_type(df.resample("2T").sem(), pd.DataFrame), pd.DataFrame)
-        check(assert_type(df.resample("2T").median(), pd.DataFrame), pd.DataFrame)
-        check(assert_type(df.resample("2T").ohlc(), pd.DataFrame), pd.DataFrame)
+    index = pd.date_range("1/1/2000", periods=N, freq="min")
+    x = [x for x in range(N)]
+    df = pd.DataFrame({"a": x, "b": x, "c": x}, index=index)
+    check(assert_type(df.resample("2min").std(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2min").var(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2min").quantile(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2min").sum(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2min").prod(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2min").min(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2min").max(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2min").first(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2min").last(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2min").mean(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2min").sem(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2min").median(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.resample("2min").ohlc(), pd.DataFrame), pd.DataFrame)
 
 
 def test_loc_set() -> None:
@@ -2916,7 +2918,7 @@ def test_getattr_and_dataframe_groupby() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <built-in function (min|max)> is currently using",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(assert_type(df.groupby("col1").col3.agg(min), pd.Series), pd.Series)
         check(

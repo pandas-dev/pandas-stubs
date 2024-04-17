@@ -100,7 +100,7 @@ def test_rolling_aggregate() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(assert_type(DF.rolling(10).aggregate(np.mean), DataFrame), DataFrame)
         check(
@@ -125,7 +125,7 @@ def test_rolling_aggregate() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(assert_type(DF.rolling(10).aggregate([np.mean]), DataFrame), DataFrame)
         check(
@@ -195,7 +195,7 @@ def test_rolling_aggregate_series() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function mean .*> is currently using ",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(assert_type(S.rolling(10).aggregate(np.mean), Series), Series)
 
@@ -259,7 +259,7 @@ def test_expanding_aggregate() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(assert_type(DF.expanding(10).aggregate(np.mean), DataFrame), DataFrame)
         check(
@@ -313,7 +313,7 @@ def test_expanding_aggregate_series() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(assert_type(S.expanding(10).aggregate(np.mean), Series), Series)
         check(
@@ -342,7 +342,7 @@ def test_ewm_aggregate() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(assert_type(DF.ewm(span=10).aggregate(np.mean), DataFrame), DataFrame)
         check(
@@ -371,7 +371,7 @@ def test_ewm_aggregate_series() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        lower="2.0.99",
+        upper="2.2.99",
     ):
         check(assert_type(S.ewm(span=10).aggregate(np.mean), Series), Series)
         check(

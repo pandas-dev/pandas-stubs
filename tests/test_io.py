@@ -49,11 +49,9 @@ import sqlalchemy.orm.decl_api
 from typing_extensions import assert_type
 
 from tests import (
-    PD_LTE_22,
     TYPE_CHECKING_INVALID_USAGE,
     WINDOWS,
     check,
-    pytest_warns_bounded,
 )
 
 from pandas.io.api import to_pickle
@@ -428,23 +426,15 @@ def test_hdf_series():
 
 
 def test_spss():
-    if PD_LTE_22:
-        warning_class = FutureWarning
-        message = "Placeholder"
-    else:
-        warning_class = pd.errors.ChainedAssignmentError  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
-        message = "A value is trying to be set on a copy of a DataFrame"
-
     path = Path(CWD, "data", "labelled-num.sav")
-    with pytest_warns_bounded(warning_class, message, "2.3.0"):
-        check(
-            assert_type(read_spss(path, convert_categoricals=True), DataFrame),
-            DataFrame,
-        )
-        check(
-            assert_type(read_spss(str(path), usecols=["VAR00002"]), DataFrame),
-            DataFrame,
-        )
+    check(
+        assert_type(read_spss(path, convert_categoricals=True), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(read_spss(str(path), usecols=["VAR00002"]), DataFrame),
+        DataFrame,
+    )
 
 
 def test_json():
