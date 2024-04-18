@@ -3090,10 +3090,16 @@ def test_diff() -> None:
         ),
         pd.Series,
         pd.Timedelta,
+        index_to_check_for_type=-1,
     )
     # timestamp -> timedelta
     times = pd.Series([pd.Timestamp(0), pd.Timestamp(1)])
-    check(assert_type(times.diff(), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(times.diff(), "TimedeltaSeries"),
+        pd.Series,
+        pd.Timedelta,
+        index_to_check_for_type=-1,
+    )
     # timedelta -> timedelta64
     check(
         assert_type(
@@ -3101,18 +3107,22 @@ def test_diff() -> None:
         ),
         pd.Series,
         pd.Timedelta,
+        index_to_check_for_type=-1,
     )
     # period -> object
-    check(
-        assert_type(
-            pd.Series(
-                [pd.Period("2012", freq="D"), pd.Period("2012-1-1", freq="D")]
-            ).diff(),
-            "pd.Series[type[object]]",
-        ),
-        pd.Series,
-        object,
-    )
+    with pytest_warns_bounded(
+        RuntimeWarning, "overflow encountered in scalar multiply"
+    ):
+        check(
+            assert_type(
+                pd.Series(
+                    [pd.Period("2012-1-1", freq="D"), pd.Period("2012-1-2", freq="D")]
+                ).diff(),
+                "pd.Series[type[object]]",
+            ),
+            pd.Series,
+            object,
+        )
     # bool -> object
     check(
         assert_type(
