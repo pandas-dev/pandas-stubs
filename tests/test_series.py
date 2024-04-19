@@ -3110,19 +3110,16 @@ def test_diff() -> None:
         index_to_check_for_type=-1,
     )
     # period -> object
-    with pytest_warns_bounded(
-        RuntimeWarning, "overflow encountered in scalar multiply"
-    ):
-        check(
-            assert_type(
-                pd.Series(
-                    [pd.Period("2012-1-1", freq="D"), pd.Period("2012-1-2", freq="D")]
-                ).diff(),
-                "pd.Series[type[object]]",
-            ),
-            pd.Series,
-            object,
-        )
+    check(
+        assert_type(
+            pd.Series(
+                pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
+            ).diff(),
+            "pd.Series[type[object]]",
+        ),
+        pd.Series,
+        object,
+    )
     # bool -> object
     check(
         assert_type(
@@ -3138,10 +3135,6 @@ def test_diff() -> None:
         pd.Series,
         object,
     )
-    # Baseoffset (object) -> object
-    # from pandas.tseries.frequencies import to_offset
-    # pd.Series([to_offset("5min"), to_offset("1D1h")]).diff()
-    # pd.Series([pd.DateOffset(days=1), pd.DateOffset(days=2)]).diff()
     # complex -> complex
     check(
         assert_type(s.astype(complex).diff(), "pd.Series[complex]"), pd.Series, complex
@@ -3149,8 +3142,10 @@ def test_diff() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
         assert_never(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff())
-        # datetime.time -> TypeError: unsupported operand type(s) for -: 'datetime.time' and 'datetime.time'
-        # pd.Series([datetime.datetime.now().time(), datetime.datetime.now().time()]).diff()
+
+    # note managed by stubs:
+    # datetime.time -> Never (TypeError: unsupported operand type(s) for -: 'datetime.time' and 'datetime.time')
+    # Baseoffset (object) -> object
 
 
 def test_diff_never1() -> None:
