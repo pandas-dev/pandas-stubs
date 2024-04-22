@@ -46,6 +46,7 @@ from pandas._typing import (
 from tests import (
     PD_LTE_22,
     TYPE_CHECKING_INVALID_USAGE,
+    WINDOWS,
     check,
     pytest_warns_bounded,
 )
@@ -3132,16 +3133,31 @@ def test_diff() -> None:
         index_to_check_for_type=-1,
     )
     # period -> object
-    check(
-        assert_type(
-            pd.Series(
-                pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
-            ).diff(),
-            "pd.Series[type[object]]",
-        ),
-        pd.Series,
-        object,
-    )
+    if WINDOWS:
+        with pytest_warns_bounded(
+            RuntimeWarning, "overflow encountered in scalar multiply"
+        ):
+            check(
+                assert_type(
+                    pd.Series(
+                        pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
+                    ).diff(),
+                    "pd.Series[type[object]]",
+                ),
+                pd.Series,
+                object,
+            )
+    else:
+        check(
+            assert_type(
+                pd.Series(
+                    pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
+                ).diff(),
+                "pd.Series[type[object]]",
+            ),
+            pd.Series,
+            object,
+        )
     # bool -> object
     check(
         assert_type(
