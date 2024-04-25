@@ -38,6 +38,7 @@ from typing_extensions import (
 import xarray as xr
 
 from pandas._libs.missing import NAType
+from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     DtypeObj,
     Scalar,
@@ -54,12 +55,14 @@ from tests.extension.decimal.array import DecimalDtype
 
 if TYPE_CHECKING:
     from pandas.core.series import (
+        OffsetSeries,
         TimedeltaSeries,
         TimestampSeries,
     )
 else:
     TimedeltaSeries: TypeAlias = pd.Series
     TimestampSeries: TypeAlias = pd.Series
+    OffsetSeries: TypeAlias = pd.Series
 
 if TYPE_CHECKING:
     from pandas._typing import (
@@ -3142,10 +3145,11 @@ def test_diff() -> None:
                     pd.Series(
                         pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
                     ).diff(),
-                    "pd.Series[type[object]]",
+                    "OffsetSeries",
                 ),
                 pd.Series,
-                object,
+                BaseOffset,
+                index_to_check_for_type=-1,
             )
     else:
         check(
@@ -3153,10 +3157,11 @@ def test_diff() -> None:
                 pd.Series(
                     pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
                 ).diff(),
-                "pd.Series[type[object]]",
+                "OffsetSeries",
             ),
             pd.Series,
-            object,
+            BaseOffset,
+            index_to_check_for_type=-1,
         )
     # bool -> object
     check(

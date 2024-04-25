@@ -2190,7 +2190,7 @@ class PeriodSeries(Series[Period]):
     @property
     def dt(self) -> PeriodProperties: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __sub__(self, other: PeriodSeries) -> OffsetSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def diff(self, periods: int = ...) -> Series[type[object]]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def diff(self, periods: int = ...) -> OffsetSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
 
 class OffsetSeries(Series[BaseOffset]):
     @overload  # type: ignore[override]
