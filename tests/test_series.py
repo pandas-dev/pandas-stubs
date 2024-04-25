@@ -3186,10 +3186,6 @@ def test_diff() -> None:
         # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
         assert_never(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff())
 
-    # note managed by stubs:
-    # datetime.time -> Never (TypeError: unsupported operand type(s) for -: 'datetime.time' and 'datetime.time')
-    # Baseoffset (object) -> object
-
 
 def test_diff_never1() -> None:
     s = pd.Series([1, 1, 2, 3, 5, 8])
