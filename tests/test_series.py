@@ -32,11 +32,13 @@ import pytest
 from typing_extensions import (
     Self,
     TypeAlias,
+    assert_never,
     assert_type,
 )
 import xarray as xr
 
 from pandas._libs.missing import NAType
+from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     DtypeObj,
     Scalar,
@@ -45,6 +47,7 @@ from pandas._typing import (
 from tests import (
     PD_LTE_22,
     TYPE_CHECKING_INVALID_USAGE,
+    WINDOWS,
     check,
     pytest_warns_bounded,
 )
@@ -52,12 +55,14 @@ from tests.extension.decimal.array import DecimalDtype
 
 if TYPE_CHECKING:
     from pandas.core.series import (
+        OffsetSeries,
         TimedeltaSeries,
         TimestampSeries,
     )
 else:
     TimedeltaSeries: TypeAlias = pd.Series
     TimestampSeries: TypeAlias = pd.Series
+    OffsetSeries: TypeAlias = pd.Series
 
 if TYPE_CHECKING:
     from pandas._typing import (
@@ -3091,3 +3096,111 @@ def test_series_apply() -> None:
     check(assert_type(s.apply(list), "pd.Series[Any]"), pd.Series)
     check(assert_type(s.apply(set), "pd.Series[Any]"), pd.Series)
     check(assert_type(s.apply(frozenset), "pd.Series[Any]"), pd.Series)
+
+
+def test_diff() -> None:
+    s = pd.Series([1, 1, 2, 3, 5, 8])
+    # int -> float
+    check(assert_type(s.diff(), "pd.Series[float]"), pd.Series, float)
+    # unint -> float
+    check(assert_type(s.astype(np.uint32).diff(), "pd.Series[float]"), pd.Series, float)
+    # float -> float
+    check(assert_type(s.astype(float).diff(), "pd.Series[float]"), pd.Series, float)
+    # datetime.date -> timeDelta
+    check(
+        assert_type(
+            pd.Series(
+                [datetime.datetime.now().date(), datetime.datetime.now().date()]
+            ).diff(),
+            "TimedeltaSeries",
+        ),
+        pd.Series,
+        pd.Timedelta,
+        index_to_check_for_type=-1,
+    )
+    # timestamp -> timedelta
+    times = pd.Series([pd.Timestamp(0), pd.Timestamp(1)])
+    check(
+        assert_type(times.diff(), "TimedeltaSeries"),
+        pd.Series,
+        pd.Timedelta,
+        index_to_check_for_type=-1,
+    )
+    # timedelta -> timedelta64
+    check(
+        assert_type(
+            pd.Series([pd.Timedelta(0), pd.Timedelta(1)]).diff(), "TimedeltaSeries"
+        ),
+        pd.Series,
+        pd.Timedelta,
+        index_to_check_for_type=-1,
+    )
+    # period -> object
+    if WINDOWS:
+        with pytest_warns_bounded(
+            RuntimeWarning, "overflow encountered in scalar multiply"
+        ):
+            check(
+                assert_type(
+                    pd.Series(
+                        pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
+                    ).diff(),
+                    "OffsetSeries",
+                ),
+                pd.Series,
+                BaseOffset,
+                index_to_check_for_type=-1,
+            )
+    else:
+        check(
+            assert_type(
+                pd.Series(
+                    pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
+                ).diff(),
+                "OffsetSeries",
+            ),
+            pd.Series,
+            BaseOffset,
+            index_to_check_for_type=-1,
+        )
+    # bool -> object
+    check(
+        assert_type(
+            pd.Series([True, True, False, False, True]).diff(),
+            "pd.Series[type[object]]",
+        ),
+        pd.Series,
+        object,
+    )
+    # object -> object
+    check(
+        assert_type(s.astype(object).diff(), "pd.Series[type[object]]"),
+        pd.Series,
+        object,
+    )
+    # complex -> complex
+    check(
+        assert_type(s.astype(complex).diff(), "pd.Series[complex]"), pd.Series, complex
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
+        assert_never(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff())
+
+
+def test_diff_never1() -> None:
+    s = pd.Series([1, 1, 2, 3, 5, 8])
+    if TYPE_CHECKING_INVALID_USAGE:
+        # bytes -> numpy.core._exceptions._UFuncNoLoopError: ufunc 'subtract' did not contain a loop with signature matching types (dtype('S21'), dtype('S21')) -> None
+        assert_never(s.astype(bytes).diff())
+
+
+def test_diff_never2() -> None:
+    if TYPE_CHECKING_INVALID_USAGE:
+        # dtype -> TypeError: unsupported operand type(s) for -: 'type' and 'type'
+        assert_never(pd.Series([str, int, bool]).diff())
+
+
+def test_diff_never3() -> None:
+    if TYPE_CHECKING_INVALID_USAGE:
+        # str -> TypeError: unsupported operand type(s) for -: 'str' and 'str'
+        assert_never(pd.Series(["a", "b"]).diff())

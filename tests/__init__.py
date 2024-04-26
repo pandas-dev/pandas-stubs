@@ -10,6 +10,7 @@ import platform
 from typing import (
     TYPE_CHECKING,
     Final,
+    Literal,
 )
 
 import pandas as pd
@@ -24,16 +25,22 @@ WINDOWS = os.name == "nt" or "cygwin" in platform.system().lower()
 PD_LTE_22 = Version(pd.__version__) < Version("2.2.999")
 
 
-def check(actual: T, klass: type, dtype: type | None = None, attr: str = "left") -> T:
+def check(
+    actual: T,
+    klass: type,
+    dtype: type | None = None,
+    attr: str = "left",
+    index_to_check_for_type: Literal[0, -1] = 0,
+) -> T:
     if not isinstance(actual, klass):
         raise RuntimeError(f"Expected type '{klass}' but got '{type(actual)}'")
     if dtype is None:
         return actual  # type: ignore[return-value]
 
     if isinstance(actual, pd.Series):
-        value = actual.iloc[0]
+        value = actual.iloc[index_to_check_for_type]
     elif isinstance(actual, pd.Index):
-        value = actual[0]  # type: ignore[assignment]
+        value = actual[index_to_check_for_type]  # type: ignore[assignment]
     elif isinstance(actual, BaseGroupBy):
         value = actual.obj
     elif hasattr(actual, "__iter__"):
