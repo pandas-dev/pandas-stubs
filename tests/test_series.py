@@ -38,6 +38,7 @@ from typing_extensions import (
 import xarray as xr
 
 from pandas._libs.missing import NAType
+from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     DtypeObj,
     Scalar,
@@ -46,6 +47,7 @@ from pandas._typing import (
 from tests import (
     PD_LTE_22,
     TYPE_CHECKING_INVALID_USAGE,
+    WINDOWS,
     check,
     pytest_warns_bounded,
 )
@@ -53,12 +55,14 @@ from tests.extension.decimal.array import DecimalDtype
 
 if TYPE_CHECKING:
     from pandas.core.series import (
+        OffsetSeries,
         TimedeltaSeries,
         TimestampSeries,
     )
 else:
     TimedeltaSeries: TypeAlias = pd.Series
     TimestampSeries: TypeAlias = pd.Series
+    OffsetSeries: TypeAlias = pd.Series
 
 if TYPE_CHECKING:
     from pandas._typing import (
@@ -3132,16 +3136,33 @@ def test_diff() -> None:
         index_to_check_for_type=-1,
     )
     # period -> object
-    check(
-        assert_type(
-            pd.Series(
-                pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
-            ).diff(),
-            "pd.Series[type[object]]",
-        ),
-        pd.Series,
-        object,
-    )
+    if WINDOWS:
+        with pytest_warns_bounded(
+            RuntimeWarning, "overflow encountered in scalar multiply"
+        ):
+            check(
+                assert_type(
+                    pd.Series(
+                        pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
+                    ).diff(),
+                    "OffsetSeries",
+                ),
+                pd.Series,
+                BaseOffset,
+                index_to_check_for_type=-1,
+            )
+    else:
+        check(
+            assert_type(
+                pd.Series(
+                    pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
+                ).diff(),
+                "OffsetSeries",
+            ),
+            pd.Series,
+            BaseOffset,
+            index_to_check_for_type=-1,
+        )
     # bool -> object
     check(
         assert_type(
@@ -3164,10 +3185,6 @@ def test_diff() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
         assert_never(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff())
-
-    # note managed by stubs:
-    # datetime.time -> Never (TypeError: unsupported operand type(s) for -: 'datetime.time' and 'datetime.time')
-    # Baseoffset (object) -> object
 
 
 def test_diff_never1() -> None:
