@@ -1558,3 +1558,21 @@ def test_added_date_format() -> None:
             ),
             pd.DataFrame,
         )
+
+
+def test_read_excel_index_col() -> None:
+    with ensure_clean(".xlsx") as path:
+        pd.DataFrame(
+            data={
+                "foo": [1, 3],
+                "bar": [2, 4],
+            }
+        ).to_excel(path)
+
+        check(
+            assert_type(
+                pd.read_excel(path, index_col="bar"),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
