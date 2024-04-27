@@ -471,9 +471,9 @@ def test_types_itertuples() -> None:
         _PandasNamedTuple,
     )
     check(
-        assert_type(df.itertuples(index=False, name=None), Iterable[_PandasNamedTuple]),
+        assert_type(df.itertuples(index=False, name=None), Iterable[tuple[Any, ...]]),
         Iterable,
-        _PandasNamedTuple,
+        object,
     )
 
 
