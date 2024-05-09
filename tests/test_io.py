@@ -1033,6 +1033,16 @@ def test_excel_writer():
         check(assert_type(ef.close(), None), type(None))
 
 
+def test_excel_writer_io():
+    buffer = io.BytesIO()
+    with pd.ExcelWriter(buffer) as writer:
+        DF.to_excel(writer, sheet_name="A")
+
+    ef = pd.ExcelFile(buffer)
+    check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
+    check(assert_type(read_excel(ef, sheet_name="A"), DataFrame), DataFrame)
+
+
 def test_excel_writer_engine():
     with ensure_clean(".xlsx") as path:
         with pd.ExcelWriter(path, engine="auto") as ew:
