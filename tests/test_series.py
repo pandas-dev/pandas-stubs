@@ -2823,6 +2823,12 @@ def test_types_mask() -> None:
     # Test case with a boolean condition and a scalar value
     check(assert_type(s.mask(s > 3, 10), "pd.Series[int]"), pd.Series, np.integer)
 
+    def cond(x: int) -> bool:
+        return x % 2 == 0
+
+    # Test case with a callable condition and a scalar value
+    check(assert_type(s.mask(cond, 10), "pd.Series[int]"), pd.Series, np.integer)
+
     # Test case with a boolean condition and a callable
     def double(x):
         return x * 2
