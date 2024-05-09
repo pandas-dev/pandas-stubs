@@ -2755,6 +2755,15 @@ def test_where() -> None:
     check(assert_type(df.where(cond3), pd.DataFrame), pd.DataFrame)
 
 
+def test_mask() -> None:
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+
+    def cond1(x: int) -> bool:
+        return x % 2 == 0
+
+    check(assert_type(df.mask(cond1), pd.DataFrame), pd.DataFrame)
+
+
 def test_setitem_loc() -> None:
     # GH 254
     df = pd.DataFrame.from_dict(

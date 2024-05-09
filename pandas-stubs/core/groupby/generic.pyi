@@ -199,7 +199,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
         **kwargs,
     ) -> DataFrame: ...
     @overload
-    def apply(  # pyright: ignore[reportOverlappingOverload,reportIncompatibleMethodOverride]
+    def apply(  # pyright: ignore[reportOverlappingOverload]
         self,
         func: Callable[[Iterable], float],
         *args,

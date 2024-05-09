@@ -1433,7 +1433,13 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     def mask(
         self,
-        cond: MaskType,
+        cond: (
+            Series[S1]
+            | Series[_bool]
+            | np.ndarray
+            | Callable[[Series[S1]], Series[bool]]
+            | Callable[[S1], bool]
+        ),
         other: Scalar | Series[S1] | DataFrame | Callable | NAType | None = ...,
         *,
         inplace: _bool = ...,

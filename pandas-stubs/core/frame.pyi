@@ -1833,7 +1833,13 @@ class DataFrame(NDFrame, OpsMixin):
     def lt(self, other, axis: Axis = ..., level: Level | None = ...) -> DataFrame: ...
     def mask(
         self,
-        cond: Series | DataFrame | np.ndarray,
+        cond: (
+            Series
+            | DataFrame
+            | np.ndarray
+            | Callable[[DataFrame], DataFrame]
+            | Callable[[Any], _bool]
+        ),
         other=...,
         *,
         inplace: _bool = ...,
