@@ -264,19 +264,25 @@ def test_frame_groupby_resample() -> None:
                 raise RuntimeError("Should not happen")
 
         if not PD_LTE_22:
+
+            def resample_interpolate(x: DataFrame) -> DataFrame:
+                return x.resample("ME").interpolate()
+
             check(
                 assert_type(
-                    GB_DF.apply(
-                        lambda x: x.resample("ME").interpolate(), include_groups=False
-                    ),
+                    GB_DF.apply(resample_interpolate, include_groups=False),
                     DataFrame,
                 ),
                 DataFrame,
             )
+
+            def resample_interpolate_linear(x: DataFrame) -> DataFrame:
+                return x.resample("ME").interpolate(method="linear")
+
             check(
                 assert_type(
                     GB_DF.apply(
-                        lambda x: x.resample("ME").interpolate(method="linear"),
+                        resample_interpolate_linear,
                         include_groups=False,
                     ),
                     DataFrame,
@@ -421,10 +427,35 @@ def test_series_groupby_resample() -> None:
     check(assert_type(GB_S.resample("ME").asfreq(-1.0), "Series[float]"), Series, float)
 
     # interpolate
-    check(
-        assert_type(GB_S.resample("ME").interpolate(), "Series[float]"), Series, float
-    )
-    check(assert_type(GB_S.resample("ME").interpolate(inplace=True), None), type(None))
+    try:
+        check(
+            assert_type(GB_S.resample("ME").interpolate(), "Series[float]"),
+            Series,
+            float,
+        )
+        check(
+            assert_type(GB_S.resample("ME").interpolate(inplace=True), None), type(None)
+        )
+    except NotImplementedError:
+        if PD_LTE_22:
+            raise RuntimeError("should not happen")
+
+    if not PD_LTE_22:
+        check(
+            assert_type(
+                GB_S.apply(lambda x: x.resample("ME").interpolate()), "Series[float]"
+            ),
+            Series,
+            float,
+        )
+        # This fails typing checks, and should work in 3.0, but is a bug in main
+        # https://github.com/pandas-dev/pandas/issues/58690
+        # check(
+        #     assert_type(
+        #         GB_S.apply(lambda x: x.resample("ME").interpolate(inplace=True)), None
+        #     ),
+        #     type(None),
+        # )
 
     # pipe
     def g(val: Resampler[Series]) -> float:
