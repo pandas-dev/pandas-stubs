@@ -5,6 +5,7 @@ from collections.abc import (
 from typing import (
     Any,
     Literal,
+    Protocol,
     overload,
 )
 
@@ -39,6 +40,9 @@ from pandas.io.formats.style_render import (
     StylerRenderer,
     Subset,
 )
+
+class SeriesFunc(Protocol):
+    def __call__(self, series: Series, *args: Any, **kwargs: Any) -> list | Series: ...
 
 class Styler(StylerRenderer):
     def __init__(
@@ -198,7 +202,7 @@ class Styler(StylerRenderer):
     @overload
     def apply(
         self,
-        func: Callable[[Series], list | Series],
+        func: SeriesFunc,
         axis: Axis = ...,
         subset: Subset | None = ...,
         **kwargs: Any,
