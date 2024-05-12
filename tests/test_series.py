@@ -145,13 +145,15 @@ def test_types_copy() -> None:
 
 def test_types_select() -> None:
     s = pd.Series(data={"row1": 1, "row2": 2})
-    with pytest_warns_bounded(
-        FutureWarning,
-        "Series.__getitem__ treating keys as positions is deprecated",
-        lower="2.0.99",
-    ):
-        s[0]
-        s[1:]
+    if PD_LTE_22:
+        # Not valid in 3.0
+        with pytest_warns_bounded(
+            FutureWarning,
+            "Series.__getitem__ treating keys as positions is deprecated",
+            lower="2.0.99",
+        ):
+            s[0]
+    s[1:]
 
 
 def test_types_iloc_iat() -> None:
@@ -1710,20 +1712,21 @@ def test_bitwise_operators() -> None:
     check(assert_type(s ^ s2, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s2 ^ s, "pd.Series[int]"), pd.Series, np.integer)
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"Logical ops \(and, or, xor\) between Pandas objects and dtype-less sequences "
-        r"\(e.g. list, tuple\) are deprecated",
-        lower="2.0.99",
-    ):
-        check(assert_type(s & [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
-        check(assert_type([1, 2, 3, 4] & s, "pd.Series[bool]"), pd.Series, np.bool_)
+    if PD_LTE_22:
+        with pytest_warns_bounded(
+            FutureWarning,
+            r"Logical ops \(and, or, xor\) between Pandas objects and dtype-less sequences "
+            r"\(e.g. list, tuple\) are deprecated",
+            lower="2.0.99",
+        ):
+            check(assert_type(s & [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
+            check(assert_type([1, 2, 3, 4] & s, "pd.Series[bool]"), pd.Series, np.bool_)
 
-        check(assert_type(s | [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
-        check(assert_type([1, 2, 3, 4] | s, "pd.Series[bool]"), pd.Series, np.bool_)
+            check(assert_type(s | [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
+            check(assert_type([1, 2, 3, 4] | s, "pd.Series[bool]"), pd.Series, np.bool_)
 
-        check(assert_type(s ^ [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
-        check(assert_type([1, 2, 3, 4] ^ s, "pd.Series[bool]"), pd.Series, np.bool_)
+            check(assert_type(s ^ [1, 2, 3, 4], "pd.Series[bool]"), pd.Series, np.bool_)
+            check(assert_type([1, 2, 3, 4] ^ s, "pd.Series[bool]"), pd.Series, np.bool_)
 
 
 def test_logical_operators() -> None:
@@ -1757,42 +1760,43 @@ def test_logical_operators() -> None:
 
     check(assert_type(True ^ (df["a"] >= 2), "pd.Series[bool]"), pd.Series, np.bool_)
 
-    with pytest_warns_bounded(
-        FutureWarning,
-        r"Logical ops \(and, or, xor\) between Pandas objects and dtype-less sequences "
-        r"\(e.g. list, tuple\) are deprecated",
-        lower="2.0.99",
-    ):
-        check(
-            assert_type((df["a"] >= 2) ^ [True, False, True], "pd.Series[bool]"),
-            pd.Series,
-            np.bool_,
-        )
-        check(
-            assert_type((df["a"] >= 2) & [True, False, True], "pd.Series[bool]"),
-            pd.Series,
-            np.bool_,
-        )
-        check(
-            assert_type((df["a"] >= 2) | [True, False, True], "pd.Series[bool]"),
-            pd.Series,
-            np.bool_,
-        )
-        check(
-            assert_type([True, False, True] & (df["a"] >= 2), "pd.Series[bool]"),
-            pd.Series,
-            np.bool_,
-        )
-        check(
-            assert_type([True, False, True] | (df["a"] >= 2), "pd.Series[bool]"),
-            pd.Series,
-            np.bool_,
-        )
-        check(
-            assert_type([True, False, True] ^ (df["a"] >= 2), "pd.Series[bool]"),
-            pd.Series,
-            np.bool_,
-        )
+    if PD_LTE_22:
+        with pytest_warns_bounded(
+            FutureWarning,
+            r"Logical ops \(and, or, xor\) between Pandas objects and dtype-less sequences "
+            r"\(e.g. list, tuple\) are deprecated",
+            lower="2.0.99",
+        ):
+            check(
+                assert_type((df["a"] >= 2) ^ [True, False, True], "pd.Series[bool]"),
+                pd.Series,
+                np.bool_,
+            )
+            check(
+                assert_type((df["a"] >= 2) & [True, False, True], "pd.Series[bool]"),
+                pd.Series,
+                np.bool_,
+            )
+            check(
+                assert_type((df["a"] >= 2) | [True, False, True], "pd.Series[bool]"),
+                pd.Series,
+                np.bool_,
+            )
+            check(
+                assert_type([True, False, True] & (df["a"] >= 2), "pd.Series[bool]"),
+                pd.Series,
+                np.bool_,
+            )
+            check(
+                assert_type([True, False, True] | (df["a"] >= 2), "pd.Series[bool]"),
+                pd.Series,
+                np.bool_,
+            )
+            check(
+                assert_type([True, False, True] ^ (df["a"] >= 2), "pd.Series[bool]"),
+                pd.Series,
+                np.bool_,
+            )
 
 
 def test_AnyArrayLike_and_clip() -> None:

@@ -21,6 +21,7 @@ from pandas.core.resample import DatetimeIndexResampler
 from typing_extensions import assert_type
 
 from tests import (
+    PD_LTE_22,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -148,7 +149,11 @@ def test_interpolate() -> None:
 
 
 def test_interpolate_inplace() -> None:
-    check(assert_type(DF.resample("ME").interpolate(inplace=True), None), type(None))
+    if PD_LTE_22:
+        # Bug in main see https://github.com/pandas-dev/pandas/issues/58690
+        check(
+            assert_type(DF.resample("ME").interpolate(inplace=True), None), type(None)
+        )
 
 
 def test_pipe() -> None:
@@ -360,7 +365,9 @@ def test_interpolate_series() -> None:
 
 
 def test_interpolate_inplace_series() -> None:
-    check(assert_type(S.resample("ME").interpolate(inplace=True), None), type(None))
+    if PD_LTE_22:
+        # Bug in main see https://github.com/pandas-dev/pandas/issues/58690
+        check(assert_type(S.resample("ME").interpolate(inplace=True), None), type(None))
 
 
 def test_pipe_series() -> None:
