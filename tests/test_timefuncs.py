@@ -459,7 +459,12 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s2.dt.microseconds, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s2.dt.nanoseconds, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s2.dt.components, pd.DataFrame), pd.DataFrame)
-    check(assert_type(s2.dt.to_pytimedelta(), np.ndarray), np.ndarray)
+    with pytest_warns_bounded(
+        FutureWarning,
+        "The behavior of TimedeltaProperties.to_pytimedelta is deprecated",
+        lower="2.2.99",
+    ):
+        check(assert_type(s2.dt.to_pytimedelta(), np.ndarray), np.ndarray)
     check(assert_type(s2.dt.total_seconds(), "pd.Series[float]"), pd.Series, float)
     check(assert_type(s2.dt.unit, TimeUnit), str)
     check(assert_type(s2.dt.as_unit("s"), "TimedeltaSeries"), pd.Series, pd.Timedelta)
