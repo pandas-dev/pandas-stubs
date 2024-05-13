@@ -52,6 +52,14 @@ def test_apply():
 
     check(assert_type(DF.style.apply(h, axis=None), Styler), Styler)
 
+    # GH 919
+    def highlight_max(x: Series[int], /, color: str) -> list[str]:
+        return [f"color: {color}" if val == x.max() else "" for val in x]
+
+    check(
+        assert_type(DF.style.apply(highlight_max, color="red", axis=1), Styler), Styler
+    )
+
 
 def test_apply_index() -> None:
     def f(s: Series) -> npt.NDArray[np.str_]:
