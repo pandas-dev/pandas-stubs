@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from pandas.api.extensions import ExtensionDtype
+from pandas.api.interchange import from_dataframe
 import pandas.api.types as api
 from typing_extensions import assert_type
 
@@ -407,8 +408,9 @@ def test_check_extension_dtypes() -> None:
 
 
 def test_from_dataframe() -> None:
+
     # GH 712
     check(
-        assert_type(pd.api.interchange.from_dataframe(dframe), pd.DataFrame),
+        assert_type(from_dataframe(dframe), pd.DataFrame),
         pd.DataFrame,
     )
