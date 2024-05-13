@@ -41,12 +41,12 @@ from pandas.io.formats.style_render import (
     Subset,
 )
 
-class SeriesFunc(Protocol):
+class _SeriesFunc(Protocol):
     def __call__(
         self, series: Series, /, *args: Any, **kwargs: Any
     ) -> list | Series: ...
 
-class DataFrameFunc(Protocol):
+class _DataFrameFunc(Protocol):
     def __call__(
         self, series: DataFrame, /, *args: Any, **kwargs: Any
     ) -> npt.NDArray | DataFrame: ...
@@ -209,7 +209,7 @@ class Styler(StylerRenderer):
     @overload
     def apply(
         self,
-        func: SeriesFunc | Callable[[Series], list | Series],
+        func: _SeriesFunc | Callable[[Series], list | Series],
         axis: Axis = ...,
         subset: Subset | None = ...,
         **kwargs: Any,
@@ -217,7 +217,7 @@ class Styler(StylerRenderer):
     @overload
     def apply(
         self,
-        func: DataFrameFunc | Callable[[DataFrame], npt.NDArray | DataFrame],
+        func: _DataFrameFunc | Callable[[DataFrame], npt.NDArray | DataFrame],
         axis: None,
         subset: Subset | None = ...,
         **kwargs: Any,
