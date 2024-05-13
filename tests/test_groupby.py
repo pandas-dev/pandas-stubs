@@ -246,7 +246,7 @@ def test_frame_groupby_resample() -> None:
         )
 
         # interpolate
-        try:
+        if PD_LTE_22:
             check(assert_type(GB_DF.resample("ME").interpolate(), DataFrame), DataFrame)
             check(
                 assert_type(
@@ -258,12 +258,7 @@ def test_frame_groupby_resample() -> None:
                 assert_type(GB_DF.resample("ME").interpolate(inplace=True), None),
                 type(None),
             )
-        except NotImplementedError:
-            # In version 3.0, this is not allowed
-            if PD_LTE_22:
-                raise RuntimeError("Should not happen")
-
-        if not PD_LTE_22:
+        else:
 
             def resample_interpolate(x: DataFrame) -> DataFrame:
                 return x.resample("ME").interpolate()
@@ -427,7 +422,7 @@ def test_series_groupby_resample() -> None:
     check(assert_type(GB_S.resample("ME").asfreq(-1.0), "Series[float]"), Series, float)
 
     # interpolate
-    try:
+    if PD_LTE_22:
         check(
             assert_type(GB_S.resample("ME").interpolate(), "Series[float]"),
             Series,
@@ -436,11 +431,7 @@ def test_series_groupby_resample() -> None:
         check(
             assert_type(GB_S.resample("ME").interpolate(inplace=True), None), type(None)
         )
-    except NotImplementedError:
-        if PD_LTE_22:
-            raise RuntimeError("should not happen")
-
-    if not PD_LTE_22:
+    else:
         check(
             assert_type(
                 GB_S.apply(lambda x: x.resample("ME").interpolate()), "Series[float]"
