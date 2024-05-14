@@ -34,5 +34,5 @@ def test_ExtensionArray_reduce_accumulate() -> None:
         values=np.array([1, 2, 3], dtype=int),
         mask=np.array([True, False, False], dtype=bool),
     )
-    check(assert_type(_data._reduce("max"), object), np.int32)
+    check(assert_type(_data._reduce("max"), object), np.integer)
     check(assert_type(_data._accumulate("cumsum"), IntegerArray), IntegerArray)
