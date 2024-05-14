@@ -1,6 +1,8 @@
 import decimal
 
+import numpy as np
 import pandas as pd
+from pandas.arrays import IntegerArray
 from typing_extensions import assert_type
 
 from tests import check
@@ -25,3 +27,12 @@ def test_tolist() -> None:
     check(assert_type(s.array.tolist(), list), list)
     check(assert_type(s1.array.tolist(), list), list)
     check(assert_type(pd.array([1, 2, 3]).tolist(), list), list)
+
+
+def test_ExtensionArray_reduce_accumulate() -> None:
+    _data = IntegerArray(
+        values=np.array([1, 2, 3], dtype=int),
+        mask=np.array([True, False, False], dtype=bool),
+    )
+    check(assert_type(_data._reduce("max"), object), np.integer)
+    check(assert_type(_data._accumulate("cumsum"), IntegerArray), IntegerArray)
