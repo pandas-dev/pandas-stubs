@@ -3214,3 +3214,28 @@ def test_diff_never3() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         # str -> TypeError: unsupported operand type(s) for -: 'str' and 'str'
         assert_never(pd.Series(["a", "b"]).diff())
+
+
+def test_operator_constistency() -> None:
+    # created for #748
+    s = pd.Series([1, 2, 3])
+    check(
+        assert_type(s * np.timedelta64(1, "s"), "TimedeltaSeries"),
+        pd.Series,
+        pd.Timedelta,
+    )
+    check(
+        assert_type(np.timedelta64(1, "s") * s, "TimedeltaSeries"),
+        pd.Series,
+        pd.Timedelta,
+    )
+    check(
+        assert_type(s.mul(np.timedelta64(1, "s")), "TimedeltaSeries"),
+        pd.Series,
+        pd.Timedelta,
+    )
+    check(
+        assert_type(s.rmul(np.timedelta64(1, "s")), "TimedeltaSeries"),
+        pd.Series,
+        pd.Timedelta,
+    )

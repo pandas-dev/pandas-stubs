@@ -1573,6 +1573,11 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __rdivmod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __rfloordiv__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __rmod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
+    @overload
+    def __rmul__(
+        self, other: timedelta | Timedelta | TimedeltaSeries | np.timedelta64
+    ) -> TimedeltaSeries: ...
+    @overload
     def __rmul__(self, other: num | _ListLike | Series) -> Series: ...
     def __rnatmul__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __rpow__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
@@ -1794,13 +1799,22 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_value: float | None = ...,
         axis: AxisIndex | None = ...,
     ) -> Series[S1]: ...
+    @overload
     def mul(
         self,
-        other: num | _ListLike | Series[S1],
+        other: timedelta | Timedelta | TimedeltaSeries | np.timedelta64,
         level: Level | None = ...,
         fill_value: float | None = ...,
         axis: AxisIndex | None = ...,
-    ) -> Series[S1]: ...
+    ) -> TimedeltaSeries: ...
+    @overload
+    def mul(
+        self,
+        other: num | _ListLike | Series,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: AxisIndex | None = ...,
+    ) -> Series: ...
     def multiply(
         self,
         other: num | _ListLike | Series[S1],
@@ -1869,13 +1883,22 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_value: float | None = ...,
         axis: AxisIndex = ...,
     ) -> Series[S1]: ...
+    @overload
     def rmul(
         self,
-        other: Series[S1] | Scalar,
+        other: timedelta | Timedelta | TimedeltaSeries | np.timedelta64,
         level: Level | None = ...,
         fill_value: float | None = ...,
         axis: AxisIndex = ...,
-    ) -> Series[S1]: ...
+    ) -> TimedeltaSeries: ...
+    @overload
+    def rmul(
+        self,
+        other: num | _ListLike | Series,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: AxisIndex = ...,
+    ) -> Series: ...
     @overload
     def rolling(
         self,
