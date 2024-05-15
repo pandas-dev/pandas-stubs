@@ -2258,18 +2258,19 @@ def test_frame_stack() -> None:
         )
         check(
             assert_type(
-                df_multi_level_cols2.stack(0, future_stack=False),
-                Union[pd.DataFrame, "pd.Series[Any]"],
-            ),
-            pd.DataFrame,
-        )
-        check(
-            assert_type(
                 df_multi_level_cols2.stack(0, dropna=True, sort=True),
                 Union[pd.DataFrame, "pd.Series[Any]"],
             ),
             pd.DataFrame,
         )
+        if PD_LTE_22:
+            check(
+                assert_type(
+                    df_multi_level_cols2.stack(0, future_stack=False),
+                    Union[pd.DataFrame, "pd.Series[Any]"],
+                ),
+                pd.DataFrame,
+            )
 
 
 def test_frame_reindex() -> None:
