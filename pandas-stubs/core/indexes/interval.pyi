@@ -37,7 +37,6 @@ from pandas._typing import (
 )
 
 from pandas.core.dtypes.dtypes import IntervalDtype as IntervalDtype
-from pandas.core.dtypes.generic import ABCSeries
 
 _EdgesInt: TypeAlias = (
     Sequence[int]
@@ -247,7 +246,6 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
     def mid(self) -> Index: ...
     @property
     def length(self) -> Index: ...
-    def get_value(self, series: ABCSeries, key): ...
     @overload  # type: ignore[override]
     def __getitem__(
         self,
@@ -264,8 +262,6 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, idx: int
     ) -> IntervalT: ...
-    @property
-    def is_all_dates(self) -> bool: ...
     @overload  # type: ignore[override]
     def __gt__(
         self, other: IntervalT | IntervalIndex[IntervalT]
