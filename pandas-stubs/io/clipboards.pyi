@@ -76,8 +76,6 @@ def read_clipboard(
     encoding: str | None = ...,
     encoding_errors: str | None = ...,
     dialect: str | csv.Dialect = ...,
-    # error_bad_lines: bool | None = ...,  # Deprecated: 1.3.0
-    # warn_bad_lines: bool | None = ...,  # Deprecated: 1.3.0
     on_bad_lines: (
         Literal["error", "warn", "skip"] | Callable[[list[str]], list[str] | None]
     ) = ...,
@@ -137,8 +135,6 @@ def read_clipboard(
     encoding: str | None = ...,
     encoding_errors: str | None = ...,
     dialect: str | csv.Dialect = ...,
-    # error_bad_lines: bool | None = ...,  # Deprecated: 1.3.0
-    # warn_bad_lines: bool | None = ...,  # Deprecated: 1.3.0
     on_bad_lines: (
         Literal["error", "warn", "skip"] | Callable[[list[str]], list[str] | None]
     ) = ...,
@@ -198,8 +194,6 @@ def read_clipboard(
     encoding: str | None = ...,
     encoding_errors: str | None = ...,
     dialect: str | csv.Dialect = ...,
-    # error_bad_lines: bool | None = ...,  # Deprecated: 1.3.0
-    # warn_bad_lines: bool | None = ...,  # Deprecated: 1.3.0
     on_bad_lines: (
         Literal["error", "warn", "skip"] | Callable[[list[str]], list[str] | None]
     ) = ...,

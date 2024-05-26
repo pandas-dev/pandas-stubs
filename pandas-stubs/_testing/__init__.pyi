@@ -12,13 +12,7 @@ from pandas import (
     Series,
 )
 
-def assert_almost_equal(
-    left,
-    right,
-    check_dtype: bool | str = ...,
-    check_less_precise: bool | int = ...,
-    **kwargs,
-): ...
+def assert_almost_equal(left, right, check_dtype: bool | str = ..., **kwargs): ...
 def assert_dict_equal(left, right, compare_keys: bool = ...): ...
 def assert_index_equal(left: Index, right: Index) -> None: ...
 def assert_class_equal(left, right, exact: bool | str = ..., obj=...): ...
@@ -48,11 +42,7 @@ def assert_numpy_array_equal(
     obj: str = ...,
 ): ...
 def assert_extension_array_equal(
-    left,
-    right,
-    check_dtype: bool = ...,
-    check_less_precise: bool = ...,
-    check_exact: bool = ...,
+    left, right, check_dtype: bool = ..., check_exact: bool = ...
 ) -> None: ...
 @overload
 def assert_series_equal(
@@ -103,7 +93,6 @@ def assert_frame_equal(
     check_index_type: bool | Literal["equiv"] = ...,
     check_column_type: bool | Literal["equiv"] = ...,
     check_frame_type: bool = ...,
-    check_less_precise: int | bool = ...,
     check_names: bool = ...,
     by_blocks: bool = ...,
     check_exact: bool = ...,
