@@ -486,22 +486,23 @@ def test_plot_scatter(close_figures) -> None:
         ),
         Axes,
     )
-    check(
-        assert_type(
-            IRIS_DF.plot.scatter(x="SepalLength", y="SepalWidth", subplots=True),
-            npt.NDArray[np.object_],
-        ),
-        np.ndarray,
-    )
-    check(
-        assert_type(
-            IRIS_DF.plot(
-                x="SepalLength", y="SepalWidth", subplots=True, kind="scatter"
+    with pytest.warns(UserWarning):
+        check(
+            assert_type(
+                IRIS_DF.plot.scatter(x="SepalLength", y="SepalWidth", subplots=True),
+                npt.NDArray[np.object_],
             ),
-            npt.NDArray[np.object_],
-        ),
-        np.ndarray,
-    )
+            np.ndarray,
+        )
+        check(
+            assert_type(
+                IRIS_DF.plot(
+                    x="SepalLength", y="SepalWidth", subplots=True, kind="scatter"
+                ),
+                npt.NDArray[np.object_],
+            ),
+            np.ndarray,
+        )
 
 
 def test_plot_keywords(close_figures):
