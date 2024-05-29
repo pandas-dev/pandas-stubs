@@ -6,6 +6,7 @@ from typing import (
     overload,
 )
 
+import numpy as np
 from pandas import (
     DataFrame,
     Index,
@@ -42,7 +43,14 @@ def assert_numpy_array_equal(
     obj: str = ...,
 ): ...
 def assert_extension_array_equal(
-    left, right, check_dtype: bool = ..., check_exact: bool = ...
+    left,
+    right,
+    check_dtype: bool = ...,
+    index_values: Index | np.ndarray | None = ...,
+    check_exact: bool = ...,
+    rtol: float = ...,
+    atol: float = ...,
+    obj: str = ...,
 ) -> None: ...
 @overload
 def assert_series_equal(
