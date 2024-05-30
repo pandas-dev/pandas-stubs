@@ -197,7 +197,6 @@ class NDFrame(indexing.IndexingMixin):
         self,
         buf: FilePath | WriteBuffer[str],
         columns: list[_str] | None = ...,
-        col_space: int | None = ...,
         header: _bool | list[_str] = ...,
         index: _bool = ...,
         na_rep: _str = ...,
@@ -223,7 +222,6 @@ class NDFrame(indexing.IndexingMixin):
         self,
         buf: None = ...,
         columns: list[_str] | None = ...,
-        col_space: int | None = ...,
         header: _bool | list[_str] = ...,
         index: _bool = ...,
         na_rep: _str = ...,
@@ -294,9 +292,7 @@ class NDFrame(indexing.IndexingMixin):
         errors: _str = ...,
         storage_options: StorageOptions = ...,
     ) -> _str: ...
-    def take(
-        self, indices, axis=..., is_copy: _bool | None = ..., **kwargs
-    ) -> Self: ...
+    def take(self, indices, axis=..., **kwargs) -> Self: ...
     def __delitem__(self, idx: Hashable) -> None: ...
     def reindex_like(
         self,
@@ -474,7 +470,6 @@ class NDFrame(indexing.IndexingMixin):
         inplace: _bool = ...,
         axis=...,
         level=...,
-        try_cast: _bool = ...,
     ): ...
     def mask(
         self,
@@ -484,11 +479,8 @@ class NDFrame(indexing.IndexingMixin):
         inplace: _bool = ...,
         axis=...,
         level=...,
-        try_cast: _bool = ...,
     ): ...
     def shift(self, periods=..., freq=..., axis=..., fill_value=...) -> Self: ...
-    def slice_shift(self, periods: int = ..., axis=...) -> Self: ...
-    def tshift(self, periods: int = ..., freq=..., axis=...) -> Self: ...
     def truncate(self, before=..., after=..., axis=..., copy: _bool = ...) -> Self: ...
     def tz_convert(self, tz, axis=..., level=..., copy: _bool = ...) -> Self: ...
     def tz_localize(
@@ -501,13 +493,7 @@ class NDFrame(indexing.IndexingMixin):
         nonexistent: str = ...,
     ) -> Self: ...
     def abs(self) -> Self: ...
-    def describe(
-        self,
-        percentiles=...,
-        include=...,
-        exclude=...,
-        datetime_is_numeric: _bool | None = ...,
-    ) -> NDFrame: ...
+    def describe(self, percentiles=..., include=..., exclude=...) -> NDFrame: ...
     def pct_change(
         self, periods=..., fill_method=..., limit=..., freq=..., **kwargs
     ) -> Self: ...

@@ -668,7 +668,6 @@ class DataFrame(NDFrame, OpsMixin):
         allow_duplicates: _bool = ...,
     ) -> None: ...
     def assign(self, **kwargs) -> DataFrame: ...
-    def lookup(self, row_labels: Sequence, col_labels: Sequence) -> np.ndarray: ...
     def align(
         self,
         other: NDFrameT,
@@ -1691,7 +1690,6 @@ class DataFrame(NDFrame, OpsMixin):
         percentiles: list[float] | None = ...,
         include: Literal["all"] | list[Dtype] | None = ...,
         exclude: list[Dtype] | None = ...,
-        datetime_is_numeric: _bool | None = ...,
     ) -> DataFrame: ...
     def div(
         self,
@@ -1850,7 +1848,6 @@ class DataFrame(NDFrame, OpsMixin):
         inplace: _bool = ...,
         axis: Axis | None = ...,
         level: Level | None = ...,
-        try_cast: _bool = ...,
     ) -> DataFrame: ...
     def max(
         self,
@@ -2107,7 +2104,6 @@ class DataFrame(NDFrame, OpsMixin):
         numeric_only: _bool = ...,
         **kwargs,
     ) -> Series: ...
-    def slice_shift(self, periods: int = ..., axis: Axis = ...) -> DataFrame: ...
     def squeeze(self, axis: Axis | None = ...): ...
     def std(
         self,
@@ -2143,14 +2139,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> Series: ...
     def swapaxes(self, axis1: Axis, axis2: Axis, copy: _bool = ...) -> DataFrame: ...
     def tail(self, n: int = ...) -> DataFrame: ...
-    def take(
-        self,
-        indices: list,
-        axis: Axis = ...,
-        is_copy: _bool | None = ...,
-        **kwargs,
-    ) -> DataFrame: ...
-    def tshift(self, periods: int = ..., freq=..., axis: Axis = ...) -> DataFrame: ...
+    def take(self, indices: list, axis: Axis = ..., **kwargs) -> DataFrame: ...
     def to_clipboard(
         self, excel: _bool = ..., sep: _str | None = ..., **kwargs
     ) -> None: ...
@@ -2289,7 +2278,6 @@ class DataFrame(NDFrame, OpsMixin):
         axis: Axis | None = ...,
         copy: _bool = ...,
     ) -> DataFrame: ...
-    # def tshift
     def tz_convert(
         self,
         tz,
@@ -2329,7 +2317,6 @@ class DataFrame(NDFrame, OpsMixin):
         inplace: _bool = ...,
         axis: Axis | None = ...,
         level: Level | None = ...,
-        try_cast: _bool = ...,
     ) -> DataFrame: ...
     # Move from generic because Series is Generic and it returns Series[bool] there
     def __invert__(self) -> DataFrame: ...
