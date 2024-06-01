@@ -112,6 +112,11 @@ def test_str_split() -> None:
     check(assert_type(ind.str.split("-"), "pd.Index[str]"), pd.Index)
     check(assert_type(ind.str.split("-", expand=True), pd.MultiIndex), pd.MultiIndex)
 
+def test_index_rename() -> None:
+    ind = pd.Index([1, 2, 3], name="foo")
+    ind2 = ind.rename("goo")
+    check(assert_type(ind2, pd.Index), pd.Index)
+
 
 def test_index_dropna():
     idx = pd.Index([1, 2])
