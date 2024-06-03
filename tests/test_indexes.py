@@ -115,7 +115,7 @@ def test_str_split() -> None:
 def test_index_rename() -> None:
     ind = pd.Index([1, 2, 3], name="foo")
     ind2 = ind.rename("goo")
-    check(assert_type(ind2, "pd.Index[int]"), pd.Index, int)
+    check(assert_type(ind2, "pd.Index[int]"), pd.Index, np.integer)
 
 
 def test_index_dropna():
