@@ -1840,7 +1840,6 @@ ASTYPE_BOOL_ARGS: list[tuple[BooleanDtypeArg, type]] = [
     # numpy boolean type
     (np.bool_, np.bool_),
     ("bool_", np.bool_),
-    ("bool8", np.bool_),
     ("?", np.bool_),
     ("b1", np.bool_),
     # pyarrow boolean type
@@ -1885,8 +1884,6 @@ ASTYPE_INT_ARGS: list[tuple[IntDtypeArg, type]] = [
     # numpy int64
     (np.int_, np.int_),
     ("int_", np.int_),
-    ("long", np.int_),
-    ("l", np.int_),
     ("int64", np.int64),
     ("i8", np.int64),
     # numpy extended int
@@ -1896,7 +1893,6 @@ ASTYPE_INT_ARGS: list[tuple[IntDtypeArg, type]] = [
     # numpy signed pointer  (platform dependent one of int[8,16,32,64])
     (np.intp, np.intp),
     ("intp", np.intp),
-    ("int0", np.intp),
     ("p", np.intp),
     # pyarrow integer types
     ("int8[pyarrow]", int),
@@ -1939,8 +1935,6 @@ ASTYPE_UINT_ARGS: list[tuple[UIntDtypeArg, type]] = [
     # numpy uint64
     (np.uint, np.uint),
     ("uint", np.uint),
-    ("ulong", np.uint),
-    ("L", np.uint),
     ("uint64", np.uint64),
     ("u8", np.uint64),
     # numpy extended uint
@@ -1950,7 +1944,6 @@ ASTYPE_UINT_ARGS: list[tuple[UIntDtypeArg, type]] = [
     # numpy unsigned pointer  (platform dependent one of uint[8,16,32,64])
     (np.uintp, np.uintp),
     ("uintp", np.uintp),
-    ("uint0", np.uintp),
     ("P", np.uintp),
     # pyarrow unsigned integer types
     ("uint8[pyarrow]", int),
@@ -1984,14 +1977,12 @@ ASTYPE_FLOAT_ARGS: list[tuple[FloatDtypeArg, type]] = [
     # numpy float64
     (np.double, np.double),
     ("double", np.double),
-    ("float_", np.double),
     ("d", np.double),
     ("float64", np.float64),
     ("f8", np.float64),
     # numpy float128
     (np.longdouble, np.longdouble),
     ("longdouble", np.longdouble),
-    ("longfloat", np.longdouble),
     ("g", np.longdouble),
     ("f16", np.longdouble),
     # ("float96", np.longdouble),  # NOTE: unsupported
@@ -2011,23 +2002,18 @@ ASTYPE_COMPLEX_ARGS: list[tuple[ComplexDtypeArg, type]] = [
     # numpy complex64
     (np.csingle, np.csingle),
     ("csingle", np.csingle),
-    ("singlecomplex", np.csingle),
     ("F", np.csingle),
     ("complex64", np.complex64),
     ("c8", np.complex64),
     # numpy complex128
     (np.cdouble, np.cdouble),
     ("cdouble", np.cdouble),
-    ("cfloat", np.cdouble),
-    ("complex_", np.cdouble),
     ("D", np.cdouble),
     ("complex128", np.complex128),
     ("c16", np.complex128),
     # numpy complex256
     (np.clongdouble, np.clongdouble),
     ("clongdouble", np.clongdouble),
-    ("clongfloat", np.clongdouble),
-    ("longcomplex", np.clongdouble),
     ("G", np.clongdouble),
     ("c32", np.clongdouble),
     # ("complex192", np.clongdouble),  # NOTE: unsupported
@@ -2156,9 +2142,7 @@ ASTYPE_STRING_ARGS: list[tuple[StrDtypeArg, type]] = [
     # numpy string
     (np.str_, str),
     ("str_", str),
-    ("str0", str),
     ("unicode", str),
-    ("unicode_", str),
     ("U", str),
     # pyarrow string
     ("string[pyarrow]", str),
@@ -2171,10 +2155,7 @@ ASTYPE_BYTES_ARGS: list[tuple[BytesDtypeArg, type]] = [
     # numpy bytes
     (np.bytes_, np.bytes_),
     ("bytes_", np.bytes_),
-    ("string_", np.bytes_),
-    ("bytes0", np.bytes_),
     ("S", np.bytes_),
-    ("a", np.bytes_),
     # pyarrow bytes
     ("binary[pyarrow]", bytes),
 ]
@@ -2203,7 +2184,6 @@ ASTYPE_VOID_ARGS: list[tuple[VoidDtypeArg, type]] = [
     (np.void, np.void),
     ("void", np.void),
     ("V", np.void),
-    ("void0", np.void),
 ]
 
 
@@ -2222,7 +2202,6 @@ def test_astype_bool(cast_arg: BooleanDtypeArg, target_type: type) -> None:
         # numpy boolean type
         assert_type(s.astype(np.bool_), "pd.Series[bool]")
         assert_type(s.astype("bool_"), "pd.Series[bool]")
-        assert_type(s.astype("bool8"), "pd.Series[bool]")
         assert_type(s.astype("?"), "pd.Series[bool]")
         # pyarrow boolean type
         assert_type(s.astype("bool[pyarrow]"), "pd.Series[bool]")
@@ -2278,7 +2257,6 @@ def test_astype_int(cast_arg: IntDtypeArg, target_type: type) -> None:
         # numpy int64
         assert_type(s.astype(np.int_), "pd.Series[int]")
         assert_type(s.astype("int_"), "pd.Series[int]")
-        assert_type(s.astype("int0"), "pd.Series[int]")
         assert_type(s.astype("int64"), "pd.Series[int]")
         assert_type(s.astype("long"), "pd.Series[int]")
         assert_type(s.astype("l"), "pd.Series[int]")
@@ -2333,7 +2311,6 @@ def test_astype_uint(cast_arg: IntDtypeArg, target_type: type) -> None:
         # numpy uint64
         assert_type(s.astype(np.uint), "pd.Series[int]")
         assert_type(s.astype("uint"), "pd.Series[int]")
-        assert_type(s.astype("uint0"), "pd.Series[int]")
         assert_type(s.astype("uint64"), "pd.Series[int]")
         assert_type(s.astype("ulong"), "pd.Series[int]")
         assert_type(s.astype("L"), "pd.Series[int]")
@@ -2385,14 +2362,12 @@ def test_astype_float(cast_arg: FloatDtypeArg, target_type: type) -> None:
         # numpy float64
         assert_type(s.astype(np.double), "pd.Series[float]")
         assert_type(s.astype("double"), "pd.Series[float]")
-        assert_type(s.astype("float_"), "pd.Series[float]")
         assert_type(s.astype("float64"), "pd.Series[float]")
         assert_type(s.astype("d"), "pd.Series[float]")
         assert_type(s.astype("f8"), "pd.Series[float]")
         # numpy float128
         assert_type(s.astype(np.longdouble), "pd.Series[float]")
         assert_type(s.astype("longdouble"), "pd.Series[float]")
-        assert_type(s.astype("longfloat"), "pd.Series[float]")
         assert_type(s.astype("float128"), "pd.Series[float]")
         assert_type(s.astype("g"), "pd.Series[float]")
         assert_type(s.astype("f16"), "pd.Series[float]")
@@ -2421,23 +2396,18 @@ def test_astype_complex(cast_arg: ComplexDtypeArg, target_type: type) -> None:
         # numpy complex64
         assert_type(s.astype(np.csingle), "pd.Series[complex]")
         assert_type(s.astype("csingle"), "pd.Series[complex]")
-        assert_type(s.astype("singlecomplex"), "pd.Series[complex]")
         assert_type(s.astype("complex64"), "pd.Series[complex]")
         assert_type(s.astype("F"), "pd.Series[complex]")
         assert_type(s.astype("c8"), "pd.Series[complex]")
         # numpy complex128
         assert_type(s.astype(np.cdouble), "pd.Series[complex]")
         assert_type(s.astype("cdouble"), "pd.Series[complex]")
-        assert_type(s.astype("cfloat"), "pd.Series[complex]")
-        assert_type(s.astype("complex_"), "pd.Series[complex]")
         assert_type(s.astype("complex128"), "pd.Series[complex]")
         assert_type(s.astype("D"), "pd.Series[complex]")
         assert_type(s.astype("c16"), "pd.Series[complex]")
         # numpy complex256
         assert_type(s.astype(np.clongdouble), "pd.Series[complex]")
         assert_type(s.astype("clongdouble"), "pd.Series[complex]")
-        assert_type(s.astype("clongfloat"), "pd.Series[complex]")
-        assert_type(s.astype("longcomplex"), "pd.Series[complex]")
         assert_type(s.astype("complex256"), "pd.Series[complex]")
         assert_type(s.astype("G"), "pd.Series[complex]")
         assert_type(s.astype("c32"), "pd.Series[complex]")
@@ -2581,9 +2551,7 @@ def test_astype_string(cast_arg: StrDtypeArg, target_type: type) -> None:
         # numpy string
         assert_type(s.astype(np.str_), "pd.Series[str]")
         assert_type(s.astype("str_"), "pd.Series[str]")
-        assert_type(s.astype("str0"), "pd.Series[str]")
         assert_type(s.astype("unicode"), "pd.Series[str]")
-        assert_type(s.astype("unicode_"), "pd.Series[str]")
         assert_type(s.astype("U"), "pd.Series[str]")
         # pyarrow string
         assert_type(s.astype("string[pyarrow]"), "pd.Series[str]")
@@ -2601,8 +2569,6 @@ def test_astype_bytes(cast_arg: BytesDtypeArg, target_type: type) -> None:
         # numpy bytes
         assert_type(s.astype(np.bytes_), "pd.Series[bytes]")
         assert_type(s.astype("bytes_"), "pd.Series[bytes]")
-        assert_type(s.astype("bytes0"), "pd.Series[bytes]")
-        assert_type(s.astype("string_"), "pd.Series[bytes]")
         assert_type(s.astype("S"), "pd.Series[bytes]")
         # pyarrow bytes
         assert_type(s.astype("binary[pyarrow]"), "pd.Series[bytes]")
@@ -2647,7 +2613,6 @@ def test_astype_void(cast_arg: VoidDtypeArg, target_type: type) -> None:
         assert_type(s.astype(np.void), "pd.Series[Any]")
         assert_type(s.astype("void"), "pd.Series[Any]")
         assert_type(s.astype("V"), "pd.Series[Any]")
-        assert_type(s.astype("void0"), "pd.Series[Any]")
 
 
 def test_astype_other() -> None:
@@ -2689,6 +2654,30 @@ def test_all_astype_args_tested() -> None:
         "M8",
         "object_",
         "object0",
+        "a",  # deprecated in numpy 2.0
+    }
+    NON_NUMPY20_ALIASES = {
+        "complex_",
+        "unicode_",
+        "uint0",
+        "longfloat",
+        "string_",
+        "cfloat",
+        "int0",
+        "void0",
+        "bytes0",
+        "singlecomplex",
+        "longcomplex",
+        "bool8",
+        "clongfloat",
+        "str0",
+        "float_",
+        # Next 4 are excluded because results are incompatible between numpy 1.x
+        # and 2.0, and it's not possible to do numpy version specific typing
+        "long",
+        "l",
+        "ulong",
+        "L",
     }
     TESTED_ASTYPE_ARGS: list[tuple[Any, type]] = (
         ASTYPE_BOOL_ARGS
@@ -2708,7 +2697,9 @@ def test_all_astype_args_tested() -> None:
     TESTED_ALIASES: set[str] = {
         arg for arg, _ in TESTED_ASTYPE_ARGS if isinstance(arg, str)
     }
-    UNTESTED_ALIASES = (NUMPY_ALIASES - TESTED_ALIASES) - EXCLUDED_ALIASES
+    UNTESTED_ALIASES = (
+        NUMPY_ALIASES - TESTED_ALIASES - NON_NUMPY20_ALIASES
+    ) - EXCLUDED_ALIASES
     assert not UNTESTED_ALIASES, f"{UNTESTED_ALIASES}"
 
     NUMPY_TYPES: set[type] = set(np.sctypeDict.values())

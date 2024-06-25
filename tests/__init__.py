@@ -13,6 +13,7 @@ from typing import (
     Literal,
 )
 
+import numpy as np
 import pandas as pd
 from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.util.version import Version
@@ -23,6 +24,7 @@ from pandas._typing import T
 TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 WINDOWS = os.name == "nt" or "cygwin" in platform.system().lower()
 PD_LTE_22 = Version(pd.__version__) < Version("2.2.999")
+NUMPY20 = np.lib.NumpyVersion(np.__version__) >= "2.0.0"
 
 
 def check(
@@ -40,7 +42,7 @@ def check(
     if isinstance(actual, pd.Series):
         value = actual.iloc[index_to_check_for_type]
     elif isinstance(actual, pd.Index):
-        value = actual[index_to_check_for_type]  # type: ignore[assignment]
+        value = actual[index_to_check_for_type]
     elif isinstance(actual, BaseGroupBy):
         value = actual.obj
     elif hasattr(actual, "__iter__"):

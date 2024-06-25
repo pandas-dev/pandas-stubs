@@ -115,7 +115,7 @@ BooleanDtypeArg: TypeAlias = (
     # Numpy bool type
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.bool_
     | type[np.bool_]
-    | Literal["?", "b1", "bool8", "bool_"]
+    | Literal["?", "b1", "bool_"]
     # PyArrow boolean type and its string alias
     | Literal["bool[pyarrow]", "boolean[pyarrow]"]
 )
@@ -147,7 +147,7 @@ IntDtypeArg: TypeAlias = (
     | Literal["q", "longlong"]  # NOTE: int128 not assigned
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.intp
     | type[np.intp]  # signed pointer (=`intptr_t`, platform dependent)
-    | Literal["p", "intp", "int0"]
+    | Literal["p", "intp"]
     # PyArrow integer types and their string aliases
     | Literal["int8[pyarrow]", "int16[pyarrow]", "int32[pyarrow]", "int64[pyarrow]"]
 )
@@ -176,7 +176,7 @@ UIntDtypeArg: TypeAlias = (
     | Literal["Q", "ulonglong"]  # NOTE: uint128 not assigned
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.uintp
     | type[np.uintp]  # unsigned pointer (=`uintptr_t`, platform dependent)
-    | Literal["P", "uintp", "uint0"]
+    | Literal["P", "uintp"]
     # PyArrow unsigned integer types and their string aliases
     | Literal["uint8[pyarrow]", "uint16[pyarrow]", "uint32[pyarrow]", "uint64[pyarrow]"]
 )
@@ -361,7 +361,7 @@ BytesDtypeArg: TypeAlias = (
     # Numpy bytes type and its string alias
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.bytes_
     | type[np.bytes_]
-    | Literal["S", "a", "bytes_", "bytes0", "string_"]
+    | Literal["S", "bytes_", "bytes0", "string_"]
     # PyArrow binary type and its string alias
     | Literal["binary[pyarrow]"]
 )

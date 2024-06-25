@@ -1,9 +1,15 @@
+from contextlib import (
+    AbstractContextManager,
+    nullcontext,
+)
 import platform
 
 import pandas as pd
+import pytest
 from typing_extensions import assert_type
 
 from tests import (
+    NUMPY20,
     check,
     pytest_warns_bounded,
 )
@@ -16,8 +22,14 @@ def test_show_version():
         upper="3.11.99",
         version_str=platform.python_version(),
     ):
-        check(assert_type(pd.show_versions(True), None), type(None))
-        check(assert_type(pd.show_versions(False), None), type(None))
+        context: AbstractContextManager
+        if NUMPY20:  # https://github.com/PyTables/PyTables/issues/1172
+            context = pytest.raises(ValueError)
+        else:
+            context = nullcontext()
+        with context:
+            check(assert_type(pd.show_versions(True), None), type(None))
+            check(assert_type(pd.show_versions(False), None), type(None))
 
 
 def test_dummies():
