@@ -250,7 +250,7 @@ def qcut(
     retbins: Literal[True],
     precision: int = ...,
     duplicates: Literal["raise", "drop"] = ...,
-) -> tuple[npt.NDArray[np.intp], npt.NDArray[np.float_]]: ...
+) -> tuple[npt.NDArray[np.intp], npt.NDArray[np.double]]: ...
 @overload
 def qcut(
     x: Series,
@@ -260,7 +260,7 @@ def qcut(
     retbins: Literal[True],
     precision: int = ...,
     duplicates: Literal["raise", "drop"] = ...,
-) -> tuple[Series, npt.NDArray[np.float_]]: ...
+) -> tuple[Series, npt.NDArray[np.double]]: ...
 @overload
 def qcut(
     x: Index | npt.NDArray | Sequence[int] | Sequence[float],
@@ -270,4 +270,4 @@ def qcut(
     retbins: Literal[True],
     precision: int = ...,
     duplicates: Literal["raise", "drop"] = ...,
-) -> tuple[Categorical, npt.NDArray[np.float_]]: ...
+) -> tuple[Categorical, npt.NDArray[np.double]]: ...

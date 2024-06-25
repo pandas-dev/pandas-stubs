@@ -163,7 +163,7 @@ class Resampler(BaseGroupBy[NDFrameT]):
     def count(self: Resampler[DataFrame]) -> DataFrame: ...
     def quantile(
         self,
-        q: float | list[float] | npt.NDArray[np.float_] | Series[float] = ...,
+        q: float | list[float] | npt.NDArray[np.double] | Series[float] = ...,
         **kwargs,
     ) -> NDFrameT: ...
 
