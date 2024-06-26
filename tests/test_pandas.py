@@ -1004,10 +1004,10 @@ def test_qcut() -> None:
     check(assert_type(c0, pd.Categorical), pd.Categorical)
     check(assert_type(d0, pd.Series), pd.Series)
 
-    check(assert_type(a1, npt.NDArray[np.float_]), np.ndarray)
-    check(assert_type(b1, npt.NDArray[np.float_]), np.ndarray)
-    check(assert_type(c1, npt.NDArray[np.float_]), np.ndarray)
-    check(assert_type(d1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(a1, npt.NDArray[np.double]), np.ndarray)
+    check(assert_type(b1, npt.NDArray[np.double]), np.ndarray)
+    check(assert_type(c1, npt.NDArray[np.double]), np.ndarray)
+    check(assert_type(d1, npt.NDArray[np.double]), np.ndarray)
 
     e0, e1 = pd.qcut(val_list, [0.25, 0.5, 0.75], retbins=True)
     f0, f1 = pd.qcut(val_arr, np.array([0.25, 0.5, 0.75]), retbins=True)
@@ -1023,12 +1023,12 @@ def test_qcut() -> None:
     check(assert_type(i0, npt.NDArray[np.intp]), np.ndarray)
     check(assert_type(j0, npt.NDArray[np.intp]), np.ndarray)
 
-    check(assert_type(e1, npt.NDArray[np.float_]), np.ndarray)
-    check(assert_type(f1, npt.NDArray[np.float_]), np.ndarray)
-    check(assert_type(g1, npt.NDArray[np.float_]), np.ndarray)
-    check(assert_type(h1, npt.NDArray[np.float_]), np.ndarray)
-    check(assert_type(i1, npt.NDArray[np.float_]), np.ndarray)
-    check(assert_type(j1, npt.NDArray[np.float_]), np.ndarray)
+    check(assert_type(e1, npt.NDArray[np.double]), np.ndarray)
+    check(assert_type(f1, npt.NDArray[np.double]), np.ndarray)
+    check(assert_type(g1, npt.NDArray[np.double]), np.ndarray)
+    check(assert_type(h1, npt.NDArray[np.double]), np.ndarray)
+    check(assert_type(i1, npt.NDArray[np.double]), np.ndarray)
+    check(assert_type(j1, npt.NDArray[np.double]), np.ndarray)
 
 
 def test_merge() -> None:

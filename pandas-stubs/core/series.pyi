@@ -233,6 +233,16 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(  # type: ignore[overload-overlap]
         cls,
+        data: npt.NDArray[np.float64],
+        index: Axes | None = ...,
+        *,
+        dtype: Dtype = ...,
+        name: Hashable = ...,
+        copy: bool = ...,
+    ) -> Series[float]: ...
+    @overload
+    def __new__(  # type: ignore[overload-overlap]
+        cls,
         data: (
             DatetimeIndex
             | Sequence[np.datetime64 | datetime | date]

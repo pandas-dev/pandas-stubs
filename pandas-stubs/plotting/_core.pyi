@@ -340,7 +340,7 @@ class PlotAccessor:
             | Callable[[gaussian_kde], float]
             | None
         ) = ...,
-        ind: npt.NDArray[np.float_] | int | None = ...,
+        ind: npt.NDArray[np.double] | int | None = ...,
         *,
         subplots: Literal[False] | None = ...,
         **kwargs,
@@ -354,7 +354,7 @@ class PlotAccessor:
             | Callable[[gaussian_kde], float]
             | None
         ) = ...,
-        ind: npt.NDArray[np.float_] | int | None = ...,
+        ind: npt.NDArray[np.double] | int | None = ...,
         *,
         subplots: Literal[True],
         **kwargs,

@@ -53,6 +53,7 @@ from tests import (
     WINDOWS,
     check,
 )
+from tests import NUMPY20  # See https://github.com/PyTables/PyTables/issues/1172
 
 from pandas.io.api import to_pickle
 from pandas.io.json._json import JsonReader
@@ -347,12 +348,14 @@ def test_sas_xport() -> None:
         pass
 
 
+@pytest.mark.skipif(NUMPY20, reason="numpy 2.0 not compatible with Pytables")
 def test_hdf():
     with ensure_clean() as path:
         check(assert_type(DF.to_hdf(path, key="df"), None), type(None))
         check(assert_type(read_hdf(path), Union[DataFrame, Series]), DataFrame)
 
 
+@pytest.mark.skipif(NUMPY20, reason="numpy 2.0 not compatible with Pytables")
 def test_hdfstore() -> None:
     with ensure_clean() as path:
         store = HDFStore(path, model="w")
@@ -396,6 +399,7 @@ def test_hdfstore() -> None:
         store.close()
 
 
+@pytest.mark.skipif(NUMPY20, reason="numpy 2.0 not compatible with Pytables")
 def test_read_hdf_iterator() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_hdf(path, key="df", format="table"), None), type(None))
@@ -410,6 +414,7 @@ def test_read_hdf_iterator() -> None:
         ti.close()
 
 
+@pytest.mark.skipif(NUMPY20, reason="numpy 2.0 not compatible with Pytables")
 def test_hdf_context_manager() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_hdf(path, key="df", format="table"), None), type(None))
@@ -418,6 +423,7 @@ def test_hdf_context_manager() -> None:
             check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
 
 
+@pytest.mark.skipif(NUMPY20, reason="numpy 2.0 not compatible with Pytables")
 def test_hdf_series():
     s = DF["a"]
     with ensure_clean() as path:
