@@ -549,6 +549,25 @@ S1 = TypeVar(
     | BaseOffset,
 )
 
+S2 = TypeVar(
+    "S2",
+    bound=str
+    | bytes
+    | datetime.date
+    | datetime.time
+    | bool
+    | int
+    | float
+    | complex
+    | Dtype
+    | datetime.datetime  # includes pd.Timestamp
+    | datetime.timedelta  # includes pd.Timedelta
+    | Period
+    | Interval
+    | CategoricalDtype
+    | BaseOffset,
+)
+
 IndexingInt: TypeAlias = (
     int | np.int_ | np.integer | np.unsignedinteger | np.signedinteger | np.int8
 )

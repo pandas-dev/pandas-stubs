@@ -93,6 +93,7 @@ from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     S1,
+    S2,
     AggFuncTypeBase,
     AggFuncTypeDictFrame,
     AggFuncTypeSeriesToFrame,
@@ -913,7 +914,18 @@ class Series(IndexOpsMixin[S1], NDFrame):
         level: Level = ...,
         fill_value: int | _str | dict | None = ...,
     ) -> DataFrame: ...
-    def map(self, arg, na_action: Literal["ignore"] | None = ...) -> Series[S1]: ...
+    @overload
+    def map(
+        self,
+        arg: Callable[[S1], S2 | NAType] | Mapping[S1, S2] | Series[S2],
+        na_action: Literal["ignore"] = ...,
+    ) -> Series[S2]: ...
+    @overload
+    def map(
+        self,
+        arg: Callable[[S1 | NAType], S2 | NAType] | Mapping[S1, S2] | Series[S2],
+        na_action: None = ...,
+    ) -> Series[S2]: ...
     @overload
     def aggregate(  # type: ignore[overload-overlap]
         self: Series[int],
