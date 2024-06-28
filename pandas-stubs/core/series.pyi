@@ -158,6 +158,7 @@ from pandas._typing import (
 )
 
 from pandas.core.dtypes.base import ExtensionDtype
+from pandas.core.dtypes.dtypes import CategoricalDtype
 
 from pandas.plotting import PlotAccessor
 
@@ -1320,14 +1321,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
         dtype: CategoryDtypeArg,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
-    ) -> Series: ...
+    ) -> Series[CategoricalDtype]: ...
     @overload
     def astype(
         self,
         dtype: ObjectDtypeArg | VoidDtypeArg | ExtensionDtype | DtypeObj,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
-    ) -> Series: ...
+    ) -> Series[Any]: ...
     def copy(self, deep: _bool = ...) -> Series[S1]: ...
     def infer_objects(self) -> Series[S1]: ...
     @overload

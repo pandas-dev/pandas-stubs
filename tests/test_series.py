@@ -2581,8 +2581,8 @@ def test_astype_categorical(cast_arg: CategoryDtypeArg, target_type: type) -> No
 
     if TYPE_CHECKING:
         # pandas category
-        assert_type(s.astype(pd.CategoricalDtype()), "pd.Series[Any]")
-        assert_type(s.astype("category"), "pd.Series[Any]")
+        assert_type(s.astype(pd.CategoricalDtype()), "pd.Series[pd.CategoricalDtype]")
+        assert_type(s.astype("category"), "pd.Series[pd.CategoricalDtype]")
         # pyarrow dictionary
         # assert_type(s.astype("dictionary[pyarrow]"), "pd.Series[Categorical]")
 
