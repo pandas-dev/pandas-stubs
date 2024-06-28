@@ -1,4 +1,7 @@
-from typing import overload
+from typing import (
+    Any,
+    overload,
+)
 
 import numpy as np
 from numpy import typing as npt
@@ -7,12 +10,12 @@ from pandas import (
     Index,
     Series,
 )
+from pandas.core.arrays.base import ExtensionArray
 from typing_extensions import TypeGuard
 
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import NaTType
 from pandas._typing import (
-    ArrayLike,
     Scalar,
     ScalarT,
 )
@@ -23,9 +26,11 @@ isneginf_scalar = ...
 @overload
 def isna(obj: DataFrame) -> DataFrame: ...
 @overload
-def isna(obj: Series) -> Series[bool]: ...
+def isna(obj: Series[Any]) -> Series[bool]: ...
 @overload
-def isna(obj: Index | list | ArrayLike) -> npt.NDArray[np.bool_]: ...
+def isna(
+    obj: Index[Any] | list[Any] | ExtensionArray | np.ndarray[Any, Any]
+) -> npt.NDArray[np.bool_]: ...
 @overload
 def isna(
     obj: Scalar | NaTType | NAType | None,
@@ -36,9 +41,11 @@ isnull = isna
 @overload
 def notna(obj: DataFrame) -> DataFrame: ...
 @overload
-def notna(obj: Series) -> Series[bool]: ...
+def notna(obj: Series[Any]) -> Series[bool]: ...
 @overload
-def notna(obj: Index | list | ArrayLike) -> npt.NDArray[np.bool_]: ...
+def notna(
+    obj: Index[Any] | list[Any] | ExtensionArray | np.ndarray[Any, Any]
+) -> npt.NDArray[np.bool_]: ...
 @overload
 def notna(obj: ScalarT | NaTType | NAType | None) -> TypeGuard[ScalarT]: ...
 

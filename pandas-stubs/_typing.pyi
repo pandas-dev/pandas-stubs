@@ -53,7 +53,7 @@ from pandas.io.formats.format import EngFormatter
 # where it is the only acceptable type.
 Incomplete: TypeAlias = Any
 
-ArrayLike: TypeAlias = ExtensionArray | np.ndarray
+ArrayLike: TypeAlias = ExtensionArray | np.ndarray[Any, Any]
 AnyArrayLike: TypeAlias = Index | Series | np.ndarray
 PythonScalar: TypeAlias = str | bool | complex
 DatetimeLikeScalar = TypeVar("DatetimeLikeScalar", Period, Timestamp, Timedelta)
