@@ -1320,7 +1320,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         dtype: CategoryDtypeArg,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
-    ) -> Series[Any]: ...
+    ) -> Series[CategoryDtypeArg]: ...
     @overload
     def astype(
         self,
