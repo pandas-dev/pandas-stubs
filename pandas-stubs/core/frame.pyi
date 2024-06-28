@@ -1403,7 +1403,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def merge(
         self,
-        right: DataFrame | Series,
+        right: DataFrame | Series[Any],
         how: MergeHow = ...,
         on: IndexLabel | AnyArrayLike | None = ...,
         left_on: IndexLabel | AnyArrayLike | None = ...,
