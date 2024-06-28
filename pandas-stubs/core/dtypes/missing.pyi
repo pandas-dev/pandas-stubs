@@ -10,12 +10,12 @@ from pandas import (
     Index,
     Series,
 )
-from pandas.core.arrays.base import ExtensionArray
 from typing_extensions import TypeGuard
 
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import NaTType
 from pandas._typing import (
+    ArrayLike,
     Scalar,
     ScalarT,
 )
@@ -28,9 +28,7 @@ def isna(obj: DataFrame) -> DataFrame: ...
 @overload
 def isna(obj: Series[Any]) -> Series[bool]: ...
 @overload
-def isna(
-    obj: Index[Any] | list[Any] | ExtensionArray | np.ndarray[Any, Any]
-) -> npt.NDArray[np.bool_]: ...
+def isna(obj: Index[Any] | list[Any] | ArrayLike) -> npt.NDArray[np.bool_]: ...
 @overload
 def isna(
     obj: Scalar | NaTType | NAType | None,
@@ -43,9 +41,7 @@ def notna(obj: DataFrame) -> DataFrame: ...
 @overload
 def notna(obj: Series[Any]) -> Series[bool]: ...
 @overload
-def notna(
-    obj: Index[Any] | list[Any] | ExtensionArray | np.ndarray[Any, Any]
-) -> npt.NDArray[np.bool_]: ...
+def notna(obj: Index[Any] | list[Any] | ArrayLike) -> npt.NDArray[np.bool_]: ...
 @overload
 def notna(obj: ScalarT | NaTType | NAType | None) -> TypeGuard[ScalarT]: ...
 
