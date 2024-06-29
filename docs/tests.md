@@ -18,4 +18,5 @@ The following tests are **optional**. Some of them are run by the CI but it is o
 
 - Run pytest against pandas nightly: `poe pytest --nightly`
 - Use mypy nightly to validate the annotations: `poe mypy --mypy_nightly`
+- Use pyright in full strict mode: `poe pyright_strict`
 - Run stubtest to compare the installed pandas-stubs against pandas (this will fail): `poe stubtest`. If you have created an allowlist to ignore certain errors: `poe stubtest path_to_the_allow_list`
