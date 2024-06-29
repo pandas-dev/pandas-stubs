@@ -695,42 +695,6 @@ class DataFrame(NDFrame, OpsMixin):
         tolerance: float | None = ...,
     ) -> DataFrame: ...
     @overload
-    def drop(
-        self,
-        labels: Hashable | Sequence[Hashable] | Index = ...,
-        *,
-        axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] | Index = ...,
-        columns: Hashable | Sequence[Hashable] | Index = ...,
-        level: Level | None = ...,
-        inplace: Literal[True],
-        errors: IgnoreRaise = ...,
-    ) -> None: ...
-    @overload
-    def drop(
-        self,
-        labels: Hashable | Sequence[Hashable] | Index = ...,
-        *,
-        axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] | Index = ...,
-        columns: Hashable | Sequence[Hashable] | Index = ...,
-        level: Level | None = ...,
-        inplace: Literal[False] = ...,
-        errors: IgnoreRaise = ...,
-    ) -> DataFrame: ...
-    @overload
-    def drop(
-        self,
-        labels: Hashable | Sequence[Hashable] | Index = ...,
-        *,
-        axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] | Index = ...,
-        columns: Hashable | Sequence[Hashable] | Index = ...,
-        level: Level | None = ...,
-        inplace: bool = ...,
-        errors: IgnoreRaise = ...,
-    ) -> DataFrame | None: ...
-    @overload
     def rename(
         self,
         mapper: Renamer | None = ...,

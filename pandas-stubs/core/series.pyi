@@ -116,8 +116,6 @@ from pandas._typing import (
     FloatDtypeArg,
     GroupByObjectNonScalar,
     HashableT1,
-    HashableT2,
-    HashableT3,
     IgnoreRaise,
     IndexingInt,
     IndexLabel,
@@ -1051,42 +1049,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         limit: int | None = ...,
         tolerance: float | None = ...,
     ) -> Self: ...
-    @overload
-    def drop(
-        self,
-        labels: Hashable | list[HashableT1] | Index = ...,
-        *,
-        axis: Axis = ...,
-        index: Hashable | list[HashableT2] | Index = ...,
-        columns: Hashable | list[HashableT3] | Index = ...,
-        level: Level | None = ...,
-        inplace: Literal[True],
-        errors: IgnoreRaise = ...,
-    ) -> None: ...
-    @overload
-    def drop(
-        self,
-        labels: Hashable | list[HashableT1] | Index = ...,
-        *,
-        axis: Axis = ...,
-        index: Hashable | list[HashableT2] | Index = ...,
-        columns: Hashable | list[HashableT3] | Index = ...,
-        level: Level | None = ...,
-        inplace: Literal[False] = ...,
-        errors: IgnoreRaise = ...,
-    ) -> Self: ...
-    @overload
-    def drop(
-        self,
-        labels: Hashable | list[HashableT1] | Index = ...,
-        *,
-        axis: Axis = ...,
-        index: Hashable | list[HashableT2] | Index = ...,
-        columns: Hashable | list[HashableT3] | Index = ...,
-        level: Level | None = ...,
-        inplace: bool = ...,
-        errors: IgnoreRaise = ...,
-    ) -> Series | None: ...
     @overload
     def fillna(
         self,

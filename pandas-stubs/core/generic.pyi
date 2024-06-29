@@ -305,11 +305,11 @@ class NDFrame(indexing.IndexingMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] = ...,
+        labels: None = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] = ...,
-        columns: Hashable | Sequence[Hashable] = ...,
+        index: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        columns: Hashable | Sequence[Hashable] | Index[Any],
         level: Level | None = ...,
         inplace: Literal[True],
         errors: IgnoreRaise = ...,
@@ -317,11 +317,35 @@ class NDFrame(indexing.IndexingMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] = ...,
+        labels: None = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] = ...,
-        columns: Hashable | Sequence[Hashable] = ...,
+        index: Hashable | Sequence[Hashable] | Index[Any],
+        columns: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        level: Level | None = ...,
+        inplace: Literal[True],
+        errors: IgnoreRaise = ...,
+    ) -> None: ...
+    @overload
+    def drop(
+        self,
+        labels: Hashable | Sequence[Hashable] | Index[Any],
+        *,
+        axis: Axis = ...,
+        index: None = ...,
+        columns: None = ...,
+        level: Level | None = ...,
+        inplace: Literal[True],
+        errors: IgnoreRaise = ...,
+    ) -> None: ...
+    @overload
+    def drop(
+        self,
+        labels: None = ...,
+        *,
+        axis: Axis = ...,
+        index: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        columns: Hashable | Sequence[Hashable] | Index[Any],
         level: Level | None = ...,
         inplace: Literal[False] = ...,
         errors: IgnoreRaise = ...,
@@ -329,11 +353,59 @@ class NDFrame(indexing.IndexingMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] = ...,
+        labels: None = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] = ...,
-        columns: Hashable | Sequence[Hashable] = ...,
+        index: Hashable | Sequence[Hashable] | Index[Any],
+        columns: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        level: Level | None = ...,
+        inplace: Literal[False] = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Self: ...
+    @overload
+    def drop(
+        self,
+        labels: Hashable | Sequence[Hashable] | Index[Any],
+        *,
+        axis: Axis = ...,
+        index: None = ...,
+        columns: None = ...,
+        level: Level | None = ...,
+        inplace: Literal[False] = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Self: ...
+    @overload
+    def drop(
+        self,
+        labels: None = ...,
+        *,
+        axis: Axis = ...,
+        index: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        columns: Hashable | Sequence[Hashable] | Index[Any],
+        level: Level | None = ...,
+        inplace: _bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Self | None: ...
+    @overload
+    def drop(
+        self,
+        labels: None = ...,
+        *,
+        axis: Axis = ...,
+        index: Hashable | Sequence[Hashable] | Index[Any],
+        columns: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        level: Level | None = ...,
+        inplace: _bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Self | None: ...
+    @overload
+    def drop(
+        self,
+        labels: Hashable | Sequence[Hashable] | Index[Any],
+        *,
+        axis: Axis = ...,
+        index: None = ...,
+        columns: None = ...,
         level: Level | None = ...,
         inplace: _bool = ...,
         errors: IgnoreRaise = ...,

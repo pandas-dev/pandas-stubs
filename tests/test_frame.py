@@ -344,6 +344,20 @@ def test_types_drop() -> None:
     check(assert_type(df.drop(columns=pd.Index(["col1"])), pd.DataFrame), pd.DataFrame)
 
 
+def test_arguments_drop() -> None:
+    # GH 950
+    if TYPE_CHECKING_INVALID_USAGE:
+        df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
+        res1 = df.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        res2 = df.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        res3 = df.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        # These should also fail, but `None` is Hasheable and i do not know how
+        # to type hint a non-None hashable.
+        # res4 = df.drop(columns=None)
+        # res5 = df.drop(index=None)
+        # res6 = df.drop(None)
+
+
 def test_types_dropna() -> None:
     df = pd.DataFrame(data={"col1": [np.nan, np.nan], "col2": [3, np.nan]})
     res: pd.DataFrame = df.dropna()
