@@ -9,6 +9,10 @@ pyright_src = Step(
     name="Run pyright on 'tests' (using the local stubs) and on the local stubs",
     run=run.pyright_src,
 )
+pyright_src_strict = Step(
+    name="Run pyright on 'tests' (using the local stubs) and on the local stubs in full strict mode",
+    run=run.pyright_src_strict,
+)
 pytest = Step(name="Run pytest", run=run.pytest)
 style = Step(name="Run pre-commit", run=run.style)
 build_dist = Step(name="Build pandas-stubs", run=run.build_dist)

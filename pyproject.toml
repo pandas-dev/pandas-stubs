@@ -109,6 +109,10 @@ script = "scripts.test:test(dist=True, type_checker='mypy')"
 help = "Run pyright on 'tests' (using the local stubs) and on the local stubs"
 script = "scripts.test.run:pyright_src"
 
+[tool.poe.tasks.pyright_strict]
+help = "Run pyright on 'tests' (using the local stubs) and on the local stubs in full strict mode"
+script = "scripts.test.run:pyright_src_strict"
+
 [tool.poe.tasks.pyright_dist]
 help = "Run pyright on 'tests' using the installed stubs"
 script = "scripts.test:test(dist=True, type_checker='pyright')"

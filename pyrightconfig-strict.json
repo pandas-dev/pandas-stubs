@@ -1,0 +1,9 @@
+{
+  "typeCheckingMode": "strict",
+  "stubPath": ".",
+  "include": ["tests", "pandas-stubs"],
+  "enableTypeIgnoreComments": false,
+  "reportUnnecessaryTypeIgnoreComment": true,
+  "reportMissingModuleSource": true,
+  "useLibraryCodeForTypes": false
+}
