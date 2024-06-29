@@ -697,10 +697,22 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        labels: None = ...,
         *,
         axis: Axis = ...,
         index: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        columns: Hashable | Sequence[Hashable] | Index[Any],
+        level: Level | None = ...,
+        inplace: Literal[True],
+        errors: IgnoreRaise = ...,
+    ) -> None: ...
+    @overload
+    def drop(
+        self,
+        labels: None = ...,
+        *,
+        axis: Axis = ...,
+        index: Hashable | Sequence[Hashable] | Index[Any],
         columns: Hashable | Sequence[Hashable] | Index[Any] = ...,
         level: Level | None = ...,
         inplace: Literal[True],
@@ -709,10 +721,34 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        labels: Hashable | Sequence[Hashable] | Index[Any],
+        *,
+        axis: Axis = ...,
+        index: None = ...,
+        columns: None = ...,
+        level: Level | None = ...,
+        inplace: Literal[True],
+        errors: IgnoreRaise = ...,
+    ) -> None: ...
+    @overload
+    def drop(
+        self,
+        labels: None = ...,
         *,
         axis: Axis = ...,
         index: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        columns: Hashable | Sequence[Hashable] | Index[Any],
+        level: Level | None = ...,
+        inplace: Literal[False] = ...,
+        errors: IgnoreRaise = ...,
+    ) -> DataFrame: ...
+    @overload
+    def drop(
+        self,
+        labels: None = ...,
+        *,
+        axis: Axis = ...,
+        index: Hashable | Sequence[Hashable] | Index[Any],
         columns: Hashable | Sequence[Hashable] | Index[Any] = ...,
         level: Level | None = ...,
         inplace: Literal[False] = ...,
@@ -721,11 +757,47 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        labels: Hashable | Sequence[Hashable] | Index[Any],
+        *,
+        axis: Axis = ...,
+        index: None = ...,
+        columns: None = ...,
+        level: Level | None = ...,
+        inplace: Literal[False] = ...,
+        errors: IgnoreRaise = ...,
+    ) -> DataFrame: ...
+    @overload
+    def drop(
+        self,
+        labels: None = ...,
         *,
         axis: Axis = ...,
         index: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        columns: Hashable | Sequence[Hashable] | Index[Any],
+        level: Level | None = ...,
+        inplace: bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> DataFrame | None: ...
+    @overload
+    def drop(
+        self,
+        labels: None = ...,
+        *,
+        axis: Axis = ...,
+        index: Hashable | Sequence[Hashable] | Index[Any],
         columns: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        level: Level | None = ...,
+        inplace: bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> DataFrame | None: ...
+    @overload
+    def drop(
+        self,
+        labels: Hashable | Sequence[Hashable] | Index[Any],
+        *,
+        axis: Axis = ...,
+        index: None = ...,
+        columns: None = ...,
         level: Level | None = ...,
         inplace: bool = ...,
         errors: IgnoreRaise = ...,

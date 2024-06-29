@@ -266,6 +266,20 @@ def test_types_drop() -> None:
     )
 
 
+def test_arguments_drop() -> None:
+    # GH 950
+    if TYPE_CHECKING_INVALID_USAGE:
+        s = pd.Series([0, 1, 2])
+        res1 = s.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        res2 = s.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        res3 = s.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        # These should also fail, but `None` is Hasheable and i do not know how
+        # to type hint a non-None hashable.
+        # res4 = s.drop(columns=None)
+        # res5 = s.drop(index=None)
+        # res6 = s.drop(None)
+
+
 def test_types_drop_multilevel() -> None:
     index = pd.MultiIndex(
         levels=[["top", "bottom"], ["first", "second", "third"]],

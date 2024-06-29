@@ -1054,10 +1054,22 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def drop(
         self,
-        labels: Hashable | list[HashableT1] | Index = ...,
+        labels: None = ...,
         *,
         axis: Axis = ...,
         index: Hashable | list[HashableT2] | Index = ...,
+        columns: Hashable | list[HashableT3] | Index,
+        level: Level | None = ...,
+        inplace: Literal[True],
+        errors: IgnoreRaise = ...,
+    ) -> None: ...
+    @overload
+    def drop(
+        self,
+        labels: None = ...,
+        *,
+        axis: Axis = ...,
+        index: Hashable | list[HashableT2] | Index,
         columns: Hashable | list[HashableT3] | Index = ...,
         level: Level | None = ...,
         inplace: Literal[True],
@@ -1066,10 +1078,34 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def drop(
         self,
-        labels: Hashable | list[HashableT1] | Index = ...,
+        labels: Hashable | list[HashableT1] | Index,
+        *,
+        axis: Axis = ...,
+        index: None = ...,
+        columns: None = ...,
+        level: Level | None = ...,
+        inplace: Literal[True],
+        errors: IgnoreRaise = ...,
+    ) -> None: ...
+    @overload
+    def drop(
+        self,
+        labels: None = ...,
         *,
         axis: Axis = ...,
         index: Hashable | list[HashableT2] | Index = ...,
+        columns: Hashable | list[HashableT3] | Index,
+        level: Level | None = ...,
+        inplace: Literal[False] = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Self: ...
+    @overload
+    def drop(
+        self,
+        labels: None = ...,
+        *,
+        axis: Axis = ...,
+        index: Hashable | list[HashableT2] | Index,
         columns: Hashable | list[HashableT3] | Index = ...,
         level: Level | None = ...,
         inplace: Literal[False] = ...,
@@ -1078,11 +1114,47 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def drop(
         self,
-        labels: Hashable | list[HashableT1] | Index = ...,
+        labels: Hashable | list[HashableT1] | Index,
+        *,
+        axis: Axis = ...,
+        index: None = ...,
+        columns: None = ...,
+        level: Level | None = ...,
+        inplace: Literal[False] = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Self: ...
+    @overload
+    def drop(
+        self,
+        labels: None = ...,
         *,
         axis: Axis = ...,
         index: Hashable | list[HashableT2] | Index = ...,
+        columns: Hashable | list[HashableT3] | Index,
+        level: Level | None = ...,
+        inplace: bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Series | None: ...
+    @overload
+    def drop(
+        self,
+        labels: None = ...,
+        *,
+        axis: Axis = ...,
+        index: Hashable | list[HashableT2] | Index,
         columns: Hashable | list[HashableT3] | Index = ...,
+        level: Level | None = ...,
+        inplace: bool = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Series | None: ...
+    @overload
+    def drop(
+        self,
+        labels: Hashable | list[HashableT1] | Index,
+        *,
+        axis: Axis = ...,
+        index: None = ...,
+        columns: None = ...,
         level: Level | None = ...,
         inplace: bool = ...,
         errors: IgnoreRaise = ...,
