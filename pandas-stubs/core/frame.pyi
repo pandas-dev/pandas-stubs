@@ -697,11 +697,11 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] | Index = ...,
+        labels: Hashable | Sequence[Hashable] | Index[Any] = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] | Index = ...,
-        columns: Hashable | Sequence[Hashable] | Index = ...,
+        index: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        columns: Hashable | Sequence[Hashable] | Index[Any] = ...,
         level: Level | None = ...,
         inplace: Literal[True],
         errors: IgnoreRaise = ...,
@@ -709,11 +709,11 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] | Index = ...,
+        labels: Hashable | Sequence[Hashable] | Index[Any] = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] | Index = ...,
-        columns: Hashable | Sequence[Hashable] | Index = ...,
+        index: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        columns: Hashable | Sequence[Hashable] | Index[Any] = ...,
         level: Level | None = ...,
         inplace: Literal[False] = ...,
         errors: IgnoreRaise = ...,
@@ -721,11 +721,11 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] | Index = ...,
+        labels: Hashable | Sequence[Hashable] | Index[Any] = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] | Index = ...,
-        columns: Hashable | Sequence[Hashable] | Index = ...,
+        index: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        columns: Hashable | Sequence[Hashable] | Index[Any] = ...,
         level: Level | None = ...,
         inplace: bool = ...,
         errors: IgnoreRaise = ...,
