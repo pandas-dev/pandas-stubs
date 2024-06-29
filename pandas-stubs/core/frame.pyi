@@ -1250,7 +1250,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Series],
+        f: Callable[..., ListLikeExceptSeriesAndStr | Series[Any]],
         axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = ...,
@@ -1272,7 +1272,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., Mapping],
+        f: Callable[..., Mapping[Any, Any]],
         axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = ...,
@@ -1295,7 +1295,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Series | Mapping],
+        f: Callable[..., ListLikeExceptSeriesAndStr | Series[Any] | Mapping[Any, Any]],
         axis: Axis = ...,
         raw: _bool = ...,
         args=...,
@@ -1317,7 +1317,9 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Series | Scalar | Mapping],
+        f: Callable[
+            ..., ListLikeExceptSeriesAndStr | Series[Any] | Scalar | Mapping[Any, Any]
+        ],
         axis: Axis = ...,
         raw: _bool = ...,
         args=...,
@@ -1330,14 +1332,14 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., Series],
+        f: Callable[..., Series[Any]],
         axis: AxisIndex = ...,
         raw: _bool = ...,
         args=...,
         *,
         result_type: Literal["reduce"],
         **kwargs,
-    ) -> Series: ...
+    ) -> Series[Any]: ...
 
     # apply() overloads with default result_type of None, and keyword axis=1 matters
     @overload
@@ -1365,7 +1367,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., Series],
+        f: Callable[..., Series[Any]],
         raw: _bool = ...,
         result_type: None = ...,
         args=...,
@@ -1378,7 +1380,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., Series],
+        f: Callable[..., Series[Any]],
         raw: _bool = ...,
         args=...,
         *,
