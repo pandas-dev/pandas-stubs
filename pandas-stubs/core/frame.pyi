@@ -1254,8 +1254,8 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = ...,
-        args=...,
-        **kwargs,
+        args: Any = ...,
+        **kwargs: Any,
     ) -> DataFrame: ...
     @overload
     def apply(
@@ -1264,8 +1264,8 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = ...,
-        args=...,
-        **kwargs,
+        args: Any = ...,
+        **kwargs: Any,
     ) -> Series[S1]: ...
     # Since non-scalar type T is not supported in Series[T],
     # we separate this overload from the above one
@@ -1276,9 +1276,9 @@ class DataFrame(NDFrame, OpsMixin):
         axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = ...,
-        args=...,
-        **kwargs,
-    ) -> Series: ...
+        args: Any = ...,
+        **kwargs: Any,
+    ) -> Series[Any]: ...
 
     # apply() overloads with keyword result_type, and axis does not matter
     @overload
@@ -1287,10 +1287,10 @@ class DataFrame(NDFrame, OpsMixin):
         f: Callable[..., S1],
         axis: Axis = ...,
         raw: _bool = ...,
-        args=...,
+        args: Any = ...,
         *,
         result_type: Literal["expand", "reduce"],
-        **kwargs,
+        **kwargs: Any,
     ) -> Series[S1]: ...
     @overload
     def apply(
@@ -1298,22 +1298,22 @@ class DataFrame(NDFrame, OpsMixin):
         f: Callable[..., ListLikeExceptSeriesAndStr | Series[Any] | Mapping[Any, Any]],
         axis: Axis = ...,
         raw: _bool = ...,
-        args=...,
+        args: Any = ...,
         *,
         result_type: Literal["expand"],
-        **kwargs,
+        **kwargs: Any,
     ) -> DataFrame: ...
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Mapping],
+        f: Callable[..., ListLikeExceptSeriesAndStr | Mapping[Any, Any]],
         axis: Axis = ...,
         raw: _bool = ...,
-        args=...,
+        args: Any = ...,
         *,
         result_type: Literal["reduce"],
-        **kwargs,
-    ) -> Series: ...
+        **kwargs: Any,
+    ) -> Series[Any]: ...
     @overload
     def apply(
         self,
@@ -1322,10 +1322,10 @@ class DataFrame(NDFrame, OpsMixin):
         ],
         axis: Axis = ...,
         raw: _bool = ...,
-        args=...,
+        args: Any = ...,
         *,
         result_type: Literal["broadcast"],
-        **kwargs,
+        **kwargs: Any,
     ) -> DataFrame: ...
 
     # apply() overloads with keyword result_type, and axis does matter
@@ -1335,10 +1335,10 @@ class DataFrame(NDFrame, OpsMixin):
         f: Callable[..., Series[Any]],
         axis: AxisIndex = ...,
         raw: _bool = ...,
-        args=...,
+        args: Any = ...,
         *,
         result_type: Literal["reduce"],
-        **kwargs,
+        **kwargs: Any,
     ) -> Series[Any]: ...
 
     # apply() overloads with default result_type of None, and keyword axis=1 matters
@@ -1348,32 +1348,32 @@ class DataFrame(NDFrame, OpsMixin):
         f: Callable[..., S1],
         raw: _bool = ...,
         result_type: None = ...,
-        args=...,
+        args: Any = ...,
         *,
         axis: AxisColumn,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series[S1]: ...
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Mapping],
+        f: Callable[..., ListLikeExceptSeriesAndStr | Mapping[Any, Any]],
         raw: _bool = ...,
         result_type: None = ...,
-        args=...,
+        args: Any = ...,
         *,
         axis: AxisColumn,
-        **kwargs,
-    ) -> Series: ...
+        **kwargs: Any,
+    ) -> Series[Any]: ...
     @overload
     def apply(
         self,
         f: Callable[..., Series[Any]],
         raw: _bool = ...,
         result_type: None = ...,
-        args=...,
+        args: Any = ...,
         *,
         axis: AxisColumn,
-        **kwargs,
+        **kwargs: Any,
     ) -> DataFrame: ...
 
     # apply() overloads with keyword axis=1 and keyword result_type
@@ -1382,11 +1382,11 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         f: Callable[..., Series[Any]],
         raw: _bool = ...,
-        args=...,
+        args: Any = ...,
         *,
         axis: AxisColumn,
         result_type: Literal["reduce"],
-        **kwargs,
+        **kwargs: Any,
     ) -> DataFrame: ...
 
     # Add spacing between apply() overloads and remaining annotations
