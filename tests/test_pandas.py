@@ -56,16 +56,23 @@ def test_types_to_datetime() -> None:
 def test_types_concat_none() -> None:
     """Test concatenation with None values."""
     series = pd.Series([7, -5, 10])
+    series2 = pd.Series([object(), object(), object()])
     df = pd.DataFrame({"a": [7, -5, 10]})
 
-    check(assert_type(pd.concat([None, series]), pd.Series), pd.Series)
+    check(assert_type(pd.concat([None, series]), pd.Series), pd.Series, np.integer)
+    check(assert_type(pd.concat([None, series2]), pd.Series), pd.Series)
     check(assert_type(pd.concat([None, df]), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(pd.concat([None, series, df], axis=1), pd.DataFrame), pd.DataFrame
     )
     check(assert_type(pd.concat([None, series, df]), pd.DataFrame), pd.DataFrame)
 
-    check(assert_type(pd.concat({"a": None, "b": series}), pd.Series), pd.Series)
+    check(
+        assert_type(pd.concat({"a": None, "b": series}), pd.Series),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(pd.concat({"a": None, "b": series2}), pd.Series), pd.Series)
     check(assert_type(pd.concat({"a": None, "b": df}), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(pd.concat({"a": None, "b": series, "c": df}, axis=1), pd.DataFrame),
@@ -85,16 +92,31 @@ def test_types_concat_none() -> None:
 def test_types_concat() -> None:
     s = pd.Series([0, 1, -10])
     s2 = pd.Series([7, -5, 10])
+    s3 = pd.Series([7.0, -5.0, 10.0])
 
-    check(assert_type(pd.concat([s, s2]), pd.Series), pd.Series)
+    check(assert_type(pd.concat([s, s2]), pd.Series), pd.Series, np.integer)
+    check(assert_type(pd.concat([s, s3]), pd.Series), pd.Series)
     check(assert_type(pd.concat([s, s2], axis=1), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(pd.concat([s, s2], keys=["first", "second"], sort=True), pd.Series),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(pd.concat([s, s3], keys=["first", "second"], sort=True), pd.Series),
         pd.Series,
     )
     check(
         assert_type(
             pd.concat([s, s2], keys=["first", "second"], names=["source", "row"]),
+            pd.Series,
+        ),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(
+            pd.concat([s, s3], keys=["first", "second"], names=["source", "row"]),
             pd.Series,
         ),
         pd.Series,
@@ -105,21 +127,40 @@ def test_types_concat() -> None:
             pd.Series,
         ),
         pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(
+            pd.concat([s, s3], keys=["first", "second"], names=None),
+            pd.Series,
+        ),
+        pd.Series,
     )
 
     # Depends on the axis
     check(
         assert_type(pd.concat({"a": s, "b": s2}), pd.Series),
         pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(pd.concat({"a": s, "b": s3}), pd.Series),
+        pd.Series,
     )
     check(
         assert_type(pd.concat({"a": s, "b": s2}, axis=1), pd.DataFrame),
         pd.DataFrame,
     )
-    check(assert_type(pd.concat({1: s, 2: s2}), pd.Series), pd.Series)
+    check(assert_type(pd.concat({1: s, 2: s2}), pd.Series), pd.Series, np.integer)
+    check(assert_type(pd.concat({1: s, 2: s3}), pd.Series), pd.Series)
     check(assert_type(pd.concat({1: s, 2: s2}, axis=1), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(pd.concat({1: s, None: s2}), pd.Series),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(pd.concat({1: s, None: s3}), pd.Series),
         pd.Series,
     )
     check(
