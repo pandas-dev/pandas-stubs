@@ -3288,3 +3288,16 @@ def test_map_na() -> None:
 
     series = pd.Series(["a", "b", "c"])
     check(assert_type(s.map(series, na_action=None), "pd.Series[str]"), pd.Series, str)
+
+
+def test_case_when() -> None:
+    c = pd.Series([6, 7, 8, 9], name="c")
+    a = pd.Series([0, 0, 1, 2])
+    b = pd.Series([0, 3, 4, 5])
+    r = c.case_when(
+        caselist=[
+            (a.gt(0), a),
+            (b.gt(0), b),
+        ]
+    )
+    check(assert_type(r, pd.Series), pd.Series)

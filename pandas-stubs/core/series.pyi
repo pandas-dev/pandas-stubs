@@ -1426,6 +1426,17 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: AxisIndex | None = ...,
         level: Level | None = ...,
     ) -> Series[S1]: ...
+    def case_when(
+        self,
+        caselist: list[
+            tuple[
+                Sequence[bool]
+                | Series[bool]
+                | Callable[[Series], Series | np.ndarray | Sequence[bool]],
+                ListLikeU | Scalar | Callable[[Series], Series | np.ndarray],
+            ],
+        ],
+    ) -> Series: ...
     def truncate(
         self,
         before: date | _str | int | None = ...,
