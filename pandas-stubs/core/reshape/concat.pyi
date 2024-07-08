@@ -4,6 +4,7 @@ from collections.abc import (
     Sequence,
 )
 from typing import (
+    Any,
     Literal,
     overload,
 )
@@ -39,7 +40,7 @@ def concat(
 ) -> DataFrame: ...
 @overload
 def concat(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-    objs: Iterable[Series] | Mapping[HashableT1, Series],
+    objs: Iterable[Series[Any]] | Mapping[HashableT1, Series[Any]],
     *,
     axis: AxisIndex = ...,
     join: Literal["inner", "outer"] = ...,
@@ -50,10 +51,12 @@ def concat(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappin
     verify_integrity: bool = ...,
     sort: bool = ...,
     copy: bool = ...,
-) -> Series: ...
+) -> Series[Any]: ...
 @overload
 def concat(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-    objs: Iterable[Series | DataFrame] | Mapping[HashableT1, Series | DataFrame],
+    objs: (
+        Iterable[Series[Any] | DataFrame] | Mapping[HashableT1, Series[Any] | DataFrame]
+    ),
     *,
     axis: Axis = ...,
     join: Literal["inner", "outer"] = ...,
@@ -95,7 +98,7 @@ def concat(  # type: ignore[overload-overlap]
 ) -> DataFrame: ...
 @overload
 def concat(  # type: ignore[overload-overlap]
-    objs: Iterable[Series | None] | Mapping[HashableT1, Series | None],
+    objs: Iterable[Series[Any] | None] | Mapping[HashableT1, Series[Any] | None],
     *,
     axis: AxisIndex = ...,
     join: Literal["inner", "outer"] = ...,
@@ -106,12 +109,12 @@ def concat(  # type: ignore[overload-overlap]
     verify_integrity: bool = ...,
     sort: bool = ...,
     copy: bool = ...,
-) -> Series: ...
+) -> Series[Any]: ...
 @overload
 def concat(
     objs: (
-        Iterable[Series | DataFrame | None]
-        | Mapping[HashableT1, Series | DataFrame | None]
+        Iterable[Series[Any] | DataFrame | None]
+        | Mapping[HashableT1, Series[Any] | DataFrame | None]
     ),
     *,
     axis: Axis = ...,
