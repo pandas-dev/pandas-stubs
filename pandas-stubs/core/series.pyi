@@ -917,7 +917,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def map(
         self,
         arg: Callable[[S1], S2 | NAType] | Mapping[S1, S2] | Series[S2],
-        na_action: Literal["ignore"] = ...,
+        na_action: Literal["ignore"],
     ) -> Series[S2]: ...
     @overload
     def map(

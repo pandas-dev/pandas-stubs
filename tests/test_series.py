@@ -3276,18 +3276,34 @@ def test_map_na() -> None:
 
     mapping = {1: "a", 2: "b", 3: "c"}
     check(assert_type(s.map(mapping, na_action=None), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(s.map(mapping), "pd.Series[str]"), pd.Series, str)
 
     def callable(x: int | NAType) -> str | NAType:
         if isinstance(x, int):
             return str(x)
         return x
 
+    def bad_callable(x: int) -> int:
+        return x + 1
+
+    s.map(
+        bad_callable, na_action=None  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType]
+    )
+    s.map(bad_callable)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+    check(
+        assert_type(s.map(bad_callable, na_action="ignore"), "pd.Series[int]"),
+        pd.Series,
+        int,
+    )
+
     check(
         assert_type(s.map(callable, na_action=None), "pd.Series[str]"), pd.Series, str
     )
+    check(assert_type(s.map(callable), "pd.Series[str]"), pd.Series, str)
 
     series = pd.Series(["a", "b", "c"])
     check(assert_type(s.map(series, na_action=None), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(s.map(series), "pd.Series[str]"), pd.Series, str)
 
 
 def test_case_when() -> None:
