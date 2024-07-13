@@ -43,6 +43,7 @@ from typing_extensions import (
 )
 import xarray as xr
 
+from pandas._libs.missing import NAType
 from pandas._typing import Scalar
 
 from tests import (
@@ -578,6 +579,9 @@ def test_types_apply() -> None:
     def returns_scalar(x: pd.Series) -> int:
         return 2
 
+    def returns_scalar_na(x: pd.Series) -> int | NAType:
+        return 2 if (x < 5).all() else pd.NA
+
     def returns_series(x: pd.Series) -> pd.Series:
         return x**2
 
@@ -603,6 +607,11 @@ def test_types_apply() -> None:
     # Check various return types for default result_type (None) with default axis (0)
     check(
         assert_type(df.apply(returns_scalar), "pd.Series[int]"), pd.Series, np.integer
+    )
+    check(
+        assert_type(df.apply(returns_scalar_na), "pd.Series[int]"),
+        pd.Series,
+        int,
     )
     check(assert_type(df.apply(returns_series), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.apply(returns_listlike_of_3), pd.DataFrame), pd.DataFrame)
