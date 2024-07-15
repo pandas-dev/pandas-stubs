@@ -1224,7 +1224,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., S1],
+        f: Callable[..., S1 | NAType],
         axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = ...,
@@ -1248,7 +1248,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., S1],
+        f: Callable[..., S1 | NAType],
         axis: Axis = ...,
         raw: _bool = ...,
         args: Any = ...,
@@ -1309,7 +1309,7 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def apply(
         self,
-        f: Callable[..., S1],
+        f: Callable[..., S1 | NAType],
         raw: _bool = ...,
         result_type: None = ...,
         args: Any = ...,
