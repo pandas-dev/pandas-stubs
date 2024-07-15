@@ -25,10 +25,7 @@ if TYPE_CHECKING:
     from pandas._typing import FulldatetimeDict
 else:
     FulldatetimeDict = Any
-from pandas._typing import (
-    SequenceNotStr,
-    TimeUnit,
-)
+from pandas._typing import TimeUnit
 
 from tests import (
     PD_LTE_22,
