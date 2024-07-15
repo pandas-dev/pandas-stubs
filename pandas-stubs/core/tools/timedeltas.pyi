@@ -32,7 +32,7 @@ def to_timedelta(
 @overload
 def to_timedelta(
     arg: (
-        SequenceNotStr[str]
+        SequenceNotStr
         | Sequence[float | timedelta]
         | tuple[str | float | timedelta, ...]
         | range
