@@ -25,7 +25,10 @@ if TYPE_CHECKING:
     from pandas._typing import FulldatetimeDict
 else:
     FulldatetimeDict = Any
-from pandas._typing import TimeUnit
+from pandas._typing import (
+    SequenceNotStr,
+    TimeUnit,
+)
 
 from tests import (
     PD_LTE_22,
@@ -141,7 +144,8 @@ def test_timedelta_series_arithmetic() -> None:
 
 
 def test_timedelta_series_string() -> None:
-    check(assert_type(pd.to_timedelta(["1 day"]), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    seq_list: SequenceNotStr[str] = ["1 day"]
+    check(assert_type(pd.to_timedelta(seq_list), pd.TimedeltaIndex), pd.TimedeltaIndex)
 
 
 def test_timestamp_timedelta_series_arithmetic() -> None:
