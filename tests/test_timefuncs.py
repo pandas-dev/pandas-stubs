@@ -144,7 +144,7 @@ def test_timedelta_series_arithmetic() -> None:
 
 
 def test_timedelta_series_string() -> None:
-    seq_list: SequenceNotStr[str] = ["1 day"]
+    seq_list = ["1 day"]
     check(assert_type(pd.to_timedelta(seq_list), pd.TimedeltaIndex), pd.TimedeltaIndex)
 
 
