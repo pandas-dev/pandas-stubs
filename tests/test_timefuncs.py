@@ -141,12 +141,7 @@ def test_timedelta_series_arithmetic() -> None:
 
 
 def test_timedelta_series_string() -> None:
-    tds1: pd.TimedeltaIndex = pd.to_timedelta(["1 day"])
-    td1: pd.Timedelta = pd.Timedelta("2 days")
-    r1: pd.TimedeltaIndex = tds1 + td1
-    r2: pd.TimedeltaIndex = tds1 - td1
-    r3: pd.TimedeltaIndex = tds1 * 4.3
-    r4: pd.TimedeltaIndex = tds1 / 10.2
+    check(assert_type(pd.to_timedelta(["1 day"]), pd.TimedeltaIndex), pd.TimedeltaIndex)
 
 
 def test_timestamp_timedelta_series_arithmetic() -> None:
