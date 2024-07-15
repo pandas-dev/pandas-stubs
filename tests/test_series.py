@@ -3284,12 +3284,14 @@ def test_map_na() -> None:
         return x
 
     def bad_callable(x: int) -> int:
-        return x + 1
+        return x << 1
 
-    s.map(
-        bad_callable, na_action=None  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType]
-    )
-    s.map(bad_callable)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+    with pytest.raises(TypeError):
+        s.map(
+            bad_callable, na_action=None  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType]
+        )
+    with pytest.raises(TypeError):
+        s.map(bad_callable)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
     check(
         assert_type(s.map(bad_callable, na_action="ignore"), "pd.Series[int]"),
         pd.Series,
