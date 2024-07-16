@@ -140,6 +140,11 @@ def test_timedelta_series_arithmetic() -> None:
     r4: pd.TimedeltaIndex = tds1 / 10.2
 
 
+def test_timedelta_series_string() -> None:
+    seq_list = ["1 day"]
+    check(assert_type(pd.to_timedelta(seq_list), pd.TimedeltaIndex), pd.TimedeltaIndex)
+
+
 def test_timestamp_timedelta_series_arithmetic() -> None:
     ts1 = pd.to_datetime(pd.Series(["2022-03-05", "2022-03-06"]))
     assert isinstance(ts1.iloc[0], pd.Timestamp)

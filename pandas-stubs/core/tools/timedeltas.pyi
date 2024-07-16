@@ -14,6 +14,7 @@ from pandas._libs.tslibs.timedeltas import TimeDeltaUnitChoices
 from pandas._typing import (
     ArrayLike,
     RaiseCoerce,
+    SequenceNotStr,
 )
 
 @overload
@@ -31,8 +32,8 @@ def to_timedelta(
 @overload
 def to_timedelta(
     arg: (
-        Sequence[float | timedelta]
-        | list[str | float | timedelta]
+        SequenceNotStr
+        | Sequence[float | timedelta]
         | tuple[str | float | timedelta, ...]
         | range
         | ArrayLike
