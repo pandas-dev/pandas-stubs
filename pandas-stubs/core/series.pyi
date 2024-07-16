@@ -94,6 +94,7 @@ from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     S1,
     S2,
+    SN,
     AggFuncTypeBase,
     AggFuncTypeDictFrame,
     AggFuncTypeSeriesToFrame,
@@ -913,6 +914,12 @@ class Series(IndexOpsMixin[S1], NDFrame):
         level: Level = ...,
         fill_value: int | _str | dict | None = ...,
     ) -> DataFrame: ...
+    @overload
+    def map(
+        self,
+        arg: Callable[[SN], S2 | NAType] | Mapping[SN, S2] | Series[S2],
+        na_action: Literal["ignore"] = ...,
+    ) -> Series[S2]: ...
     @overload
     def map(
         self,

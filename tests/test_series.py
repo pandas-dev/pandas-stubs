@@ -3283,21 +3283,6 @@ def test_map_na() -> None:
             return str(x)
         return x
 
-    def bad_callable(x: int) -> int:
-        return x << 1
-
-    with pytest.raises(TypeError):
-        s.map(
-            bad_callable, na_action=None  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType]
-        )
-    with pytest.raises(TypeError):
-        s.map(bad_callable)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-    check(
-        assert_type(s.map(bad_callable, na_action="ignore"), "pd.Series[int]"),
-        pd.Series,
-        int,
-    )
-
     check(
         assert_type(s.map(callable, na_action=None), "pd.Series[str]"), pd.Series, str
     )
@@ -3306,6 +3291,40 @@ def test_map_na() -> None:
     series = pd.Series(["a", "b", "c"])
     check(assert_type(s.map(series, na_action=None), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s.map(series), "pd.Series[str]"), pd.Series, str)
+
+    s2: pd.Series[float] = pd.Series([1.0, pd.NA, 3.0])
+
+    def callable2(x: float) -> float:
+        return x + 1
+
+    check(
+        assert_type(s2.map(callable2, na_action="ignore"), "pd.Series[float]"),
+        pd.Series,
+        float,
+    )
+    check(
+        assert_type(s2.map(callable2), "pd.Series[float]"),
+        pd.Series,
+        float,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        s2.map(callable2, na_action=None)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType]
+
+    s3: pd.Series[str] = pd.Series(["A", pd.NA, "C"])
+
+    def callable3(x: str) -> str:
+        return x.lower()
+
+    check(
+        assert_type(s3.map(callable3, na_action="ignore"), "pd.Series[str]"),
+        pd.Series,
+        str,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        s3.map(
+            callable3, na_action=None  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType]
+        )
+        s3.map(callable3)  # type: ignore[type-var] # pyright: ignore[reportCallIssue, reportArgumentType]
 
 
 def test_case_when() -> None:

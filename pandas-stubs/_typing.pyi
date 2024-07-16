@@ -568,6 +568,8 @@ S2 = TypeVar(
     | BaseOffset,
 )
 
+SN = TypeVar("SN", bound=bool | int | float | complex)
+
 IndexingInt: TypeAlias = (
     int | np.int_ | np.integer | np.unsignedinteger | np.signedinteger | np.int8
 )
