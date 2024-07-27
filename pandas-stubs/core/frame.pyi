@@ -1711,7 +1711,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def filter(
         self,
-        items: list | None = ...,
+        items: ListLike | None = ...,
         like: _str | None = ...,
         regex: _str | None = ...,
         axis: Axis | None = ...,

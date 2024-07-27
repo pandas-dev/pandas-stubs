@@ -319,6 +319,8 @@ def test_types_filter() -> None:
     df.filter(items=["col1"])
     df.filter(regex="co.*")
     df.filter(like="1")
+    # [PR 964] Docs state `items` is `list-like`
+    df.filter(items=("col2", "col2", 1, tuple([4])))
 
 
 def test_types_setting() -> None:
