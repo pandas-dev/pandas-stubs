@@ -1025,6 +1025,7 @@ def test_types_groupby_methods() -> None:
     check(assert_type(df.groupby("col1").sum(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.groupby("col1").prod(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.groupby("col1").sample(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.groupby("col1").count(), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(df.groupby("col1").value_counts(normalize=False), "pd.Series[int]"),
         pd.Series,

@@ -676,6 +676,11 @@ def test_types_groupby_methods() -> None:
     check(assert_type(s.groupby(level=0).idxmax(), pd.Series), pd.Series)
     check(assert_type(s.groupby(level=0).idxmin(), pd.Series), pd.Series)
 
+    s2 = pd.Series(["w", "x", "y", "z"], index=[3, 4, 3, 4], dtype=str)
+    check(
+        assert_type(s2.groupby(level=0).count(), "pd.Series[int]"), pd.Series, np.int_
+    )
+
 
 def test_groupby_result() -> None:
     # GH 142
