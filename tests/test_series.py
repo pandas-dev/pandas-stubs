@@ -678,7 +678,9 @@ def test_types_groupby_methods() -> None:
 
     s2 = pd.Series(["w", "x", "y", "z"], index=[3, 4, 3, 4], dtype=str)
     check(
-        assert_type(s2.groupby(level=0).count(), "pd.Series[int]"), pd.Series, np.int_
+        assert_type(s2.groupby(level=0).count(), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
     )
 
 
