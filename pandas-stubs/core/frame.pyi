@@ -624,6 +624,7 @@ class DataFrame(NDFrame, OpsMixin):
             "number",
             "datetime64",
             "datetime",
+            "integer",
             "timedelta",
             "timedelta64",
             "datetimetz",
