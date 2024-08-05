@@ -3226,6 +3226,7 @@ def test_convert_dtypes_dtype_backend() -> None:
 def test_select_dtypes() -> None:
     df = pd.DataFrame({"a": [1, 2] * 3, "b": [True, False] * 3, "c": [1.0, 2.0] * 3})
     check(assert_type(df.select_dtypes("number"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.select_dtypes("integer"), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.select_dtypes(np.number), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.select_dtypes(object), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.select_dtypes(include="bool"), pd.DataFrame), pd.DataFrame)
