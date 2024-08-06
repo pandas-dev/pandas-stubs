@@ -366,52 +366,41 @@ def test_isna() -> None:
     assert check(assert_type(pd.isna(np_nat), bool), bool)
     assert not check(assert_type(pd.notna(np_nat), bool), bool)
 
-    # Check TypeGuard type narrowing functionality
-    # TODO: Due to limitations in TypeGuard spec, the true annotations are not always viable
-    # and as a result the type narrowing does not always work as it intuitively should
-    # There is a proposal being floated for a StrictTypeGuard that will have more rigid narrowing semantics
-    # In the test cases below, a commented out assertion will be included to document the optimal test result
+    # Check TypeIs type narrowing functionality
     nullable1: str | None | NAType | NaTType = random.choice(
         ["value", None, pd.NA, pd.NaT]
     )
     if pd.notna(nullable1):
         check(assert_type(nullable1, str), str)
     if not pd.isna(nullable1):
-        # check(assert_type(nullable1, str), str)  # TODO: Desired result (see comments above)
-        check(assert_type(nullable1, Union[str, NaTType, NAType, None]), str)
+        check(assert_type(nullable1, str), str)
     if pd.isna(nullable1):
         assert_type(nullable1, Union[NaTType, NAType, None])
     if not pd.notna(nullable1):
-        # assert_type(nullable1, Union[NaTType, NAType, None])  # TODO: Desired result (see comments above)
-        assert_type(nullable1, Union[str, NaTType, NAType, None])
+        assert_type(nullable1, Union[NaTType, NAType, None])
 
     nullable2: int | None = random.choice([2, None])
     if pd.notna(nullable2):
         check(assert_type(nullable2, int), int)
     if not pd.isna(nullable2):
-        # check(assert_type(nullable2, int), int)  # TODO: Desired result (see comments above)
-        check(assert_type(nullable2, Union[int, None]), int)
+        check(assert_type(nullable2, int), int)
     if pd.isna(nullable2):
-        # check(assert_type(nullable2, None), type(None))  # TODO: Desired result (see comments above)
-        check(assert_type(nullable2, Union[NaTType, NAType, None]), type(None))
+        check(assert_type(nullable2, None), type(None))
     if not pd.notna(nullable2):
-        # check(assert_type(nullable2, None), type(None))  # TODO: Desired result (see comments above)
+        check(assert_type(nullable2, None), type(None))
         # TODO: MyPy and Pyright produce conflicting results:
         # assert_type(nullable2, Union[int, None])  # MyPy result
         # assert_type(
         #     nullable2, Union[int, NaTType, NAType, None]
         # )  # Pyright result
-        pass
 
     nullable3: bool | None | NAType = random.choice([True, None, pd.NA])
     if pd.notna(nullable3):
         check(assert_type(nullable3, bool), bool)
     if not pd.isna(nullable3):
-        # check(assert_type(nullable3, bool), bool)  # TODO: Desired result (see comments above)
-        check(assert_type(nullable3, Union[bool, NAType, None]), bool)
+        check(assert_type(nullable3, bool), bool)
     if pd.isna(nullable3):
-        # assert_type(nullable3, Union[NAType, None])  # TODO: Desired result (see comments above)
-        assert_type(nullable3, Union[NaTType, NAType, None])
+        assert_type(nullable3, Union[NAType, None])
     if not pd.notna(nullable3):
         # assert_type(nullable3, Union[NAType, None])  # TODO: Desired result (see comments above)
         # TODO: MyPy and Pyright produce conflicting results:
