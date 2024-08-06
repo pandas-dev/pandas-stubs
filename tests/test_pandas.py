@@ -388,11 +388,6 @@ def test_isna() -> None:
         check(assert_type(nullable2, None), type(None))
     if not pd.notna(nullable2):
         check(assert_type(nullable2, None), type(None))
-        # TODO: MyPy and Pyright produce conflicting results:
-        # assert_type(nullable2, Union[int, None])  # MyPy result
-        # assert_type(
-        #     nullable2, Union[int, NaTType, NAType, None]
-        # )  # Pyright result
 
     nullable3: bool | None | NAType = random.choice([True, None, pd.NA])
     if pd.notna(nullable3):
@@ -402,13 +397,7 @@ def test_isna() -> None:
     if pd.isna(nullable3):
         assert_type(nullable3, Union[NAType, None])
     if not pd.notna(nullable3):
-        # assert_type(nullable3, Union[NAType, None])  # TODO: Desired result (see comments above)
-        # TODO: MyPy and Pyright produce conflicting results:
-        # assert_type(nullable3, Union[bool, NAType, None])  # Mypy result
-        # assert_type(
-        #     nullable3, Union[bool, NaTType, NAType, None]
-        # )  # Pyright result
-        pass
+        assert_type(nullable3, Union[NAType, None])
 
 
 # GH 55
