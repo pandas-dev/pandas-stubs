@@ -35,7 +35,7 @@ jobs:
         with:
           os: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
-          numpy-verson: ${{ matrix.numpy-version }}
+          numpy-version: ${{ matrix.numpy-version }}
 
       - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
         run: poetry run poe mypy
