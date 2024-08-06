@@ -1,4 +1,4 @@
-name: 'Test'
+name: "Test"
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 env:
-  MPLBACKEND: 'Agg'
+  MPLBACKEND: "Agg"
 
 jobs:
   released:
@@ -19,34 +19,41 @@ jobs:
       matrix:
         # Don't use macos-latest because it is arm64
         os: [ubuntu-latest, windows-latest, macos-13]
-        python-version: ['3.9', '3.10', '3.11', '3.12']
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        include:
+          - numpy-version: "<2.0"
+          - numpy-version: ">= 2.0"
+            os: ubuntu-latest
+
+    name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Numpy ${{ matrix.numpy-version }}
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Install project dependencies
-      uses: ./.github/setup
-      with:
-        os: ${{ matrix.os }}
-        python-version: ${{ matrix.python-version }}
+      - name: Install project dependencies
+        uses: ./.github/setup
+        with:
+          os: ${{ matrix.os }}
+          python-version: ${{ matrix.python-version }}
+          numpy-verson: ${{ matrix.numpy-version }}
 
-    - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
-      run: poetry run poe mypy
+      - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
+        run: poetry run poe mypy
 
-    - name: Run pyright on 'tests' (using the local stubs) and on the local stubs
-      run: poetry run poe pyright
+      - name: Run pyright on 'tests' (using the local stubs) and on the local stubs
+        run: poetry run poe pyright
 
-    - name: Run pytest
-      run: poetry run poe pytest
+      - name: Run pytest
+        run: poetry run poe pytest
 
-    - name: Install pandas-stubs and run tests on the installed stubs
-      run: poetry run poe test_dist
+      - name: Install pandas-stubs and run tests on the installed stubs
+        run: poetry run poe test_dist
 
   precommit:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - uses: pre-commit/action@v3.0.0
+      - uses: pre-commit/action@v3.0.0

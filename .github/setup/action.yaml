@@ -5,6 +5,8 @@ inputs:
     required: true
   os:
     required: true
+  numpy-version:
+    required: true
 
 runs:
   using: composite
@@ -33,3 +35,7 @@ runs:
     - name: Install project dependencies
       shell: bash
       run: poetry install -vvv --no-root
+      
+    - name: Set numpy version
+      shell: bash
+      run: pip install numpy${{ inputs. numpy-version }}
