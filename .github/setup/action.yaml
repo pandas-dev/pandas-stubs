@@ -38,4 +38,4 @@ runs:
       
     - name: Set numpy version
       shell: bash
-      run: pip install numpy${{ inputs. numpy-version }}
+      run: pip install numpy"${{ inputs. numpy-version }}"
