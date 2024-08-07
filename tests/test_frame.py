@@ -1596,7 +1596,7 @@ def test_pipe() -> None:
         upper="2.2.99",
         upper_exception=ValueError,
     ):
-        val = (
+        (
             pd.DataFrame(
                 {
                     "price": [10, 11, 9, 13, 14, 18, 17, 19],
@@ -1607,6 +1607,7 @@ def test_pipe() -> None:
             .resample("M", on="week_starting")
             .pipe(resampler_foo)
         )
+
     val = (
         pd.DataFrame(
             {
@@ -1615,7 +1616,7 @@ def test_pipe() -> None:
             }
         )
         .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
-        .resample("ME", on="week_starting")
+        .resample("MS", on="week_starting")
         .pipe(resampler_foo)
     )
 
