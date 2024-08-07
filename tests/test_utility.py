@@ -1,7 +1,4 @@
-from contextlib import (
-    AbstractContextManager,
-    nullcontext,
-)
+from contextlib import nullcontext
 import platform
 
 import pandas as pd
@@ -17,17 +14,25 @@ from tests import (
 
 
 def test_show_version():
-    with pytest_warns_bounded(
-        UserWarning,
-        match="Setuptools is replacing distutils",
-        upper="3.11.99",
-        version_str=platform.python_version(),
-    ):
-        context: AbstractContextManager
-        if PD_LTE_22 and NUMPY20:  # https://github.com/PyTables/PyTables/issues/1172
+    """Test show_versions method types with split case for pandas and python versions."""
+    # https://github.com/PyTables/PyTables/issues/1172
+    context = nullcontext()
+    if PD_LTE_22:
+        # distutils warning is only raised with pandas<3.0.0
+        if NUMPY20:
             context = pytest.raises(ValueError)
-        else:
-            context = nullcontext()
+        with (
+            pytest_warns_bounded(
+                UserWarning,
+                match="Setuptools is replacing distutils",
+                upper="3.11.99",
+                version_str=platform.python_version(),
+            ),
+            context,
+        ):
+            check(assert_type(pd.show_versions(True), None), type(None))
+            check(assert_type(pd.show_versions(False), None), type(None))
+    else:
         with context:
             check(assert_type(pd.show_versions(True), None), type(None))
             check(assert_type(pd.show_versions(False), None), type(None))
