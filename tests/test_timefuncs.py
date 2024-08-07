@@ -757,11 +757,13 @@ def test_types_to_numpy() -> None:
     check(assert_type(td_s.to_numpy(na_value=pd.Timedelta(0)), np.ndarray), np.ndarray)
 
 
-def test_to_timdelta_units() -> None:
+def test_to_timedelta_units() -> None:
     check(assert_type(pd.to_timedelta(1, "W"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.to_timedelta(1, "w"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'w' is deprecated", lower="2.2.99"):
+        check(assert_type(pd.to_timedelta(1, "w"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "D"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.to_timedelta(1, "d"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'d' is deprecated", lower="2.2.99"):
+        check(assert_type(pd.to_timedelta(1, "d"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "days"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "day"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "hours"), pd.Timedelta), pd.Timedelta)
