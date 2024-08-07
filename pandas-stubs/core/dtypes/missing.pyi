@@ -10,7 +10,7 @@ from pandas import (
     Index,
     Series,
 )
-from typing_extensions import TypeGuard
+from typing_extensions import TypeIs
 
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import NaTType
@@ -32,7 +32,7 @@ def isna(obj: Index[Any] | list[Any] | ArrayLike) -> npt.NDArray[np.bool_]: ...
 @overload
 def isna(
     obj: Scalar | NaTType | NAType | None,
-) -> TypeGuard[NaTType | NAType | None]: ...
+) -> TypeIs[NaTType | NAType | None]: ...
 
 isnull = isna
 
@@ -43,6 +43,6 @@ def notna(obj: Series[Any]) -> Series[bool]: ...
 @overload
 def notna(obj: Index[Any] | list[Any] | ArrayLike) -> npt.NDArray[np.bool_]: ...
 @overload
-def notna(obj: ScalarT | NaTType | NAType | None) -> TypeGuard[ScalarT]: ...
+def notna(obj: ScalarT | NaTType | NAType | None) -> TypeIs[ScalarT]: ...
 
 notnull = notna
