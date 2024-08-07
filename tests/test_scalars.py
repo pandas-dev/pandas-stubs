@@ -386,9 +386,11 @@ def test_interval_cmp():
 
 def test_timedelta_construction() -> None:
     check(assert_type(pd.Timedelta(1, "W"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta(1, "w"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'w' is deprecated", lower="2.2.99"):
+        check(assert_type(pd.Timedelta(1, "w"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "D"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta(1, "d"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'d' is deprecated", lower="2.2.99"):
+        check(assert_type(pd.Timedelta(1, "d"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "days"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "day"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "hours"), pd.Timedelta), pd.Timedelta)
@@ -421,9 +423,11 @@ def test_timedelta_construction() -> None:
     check(assert_type(pd.Timedelta(1, "nanosecond"), pd.Timedelta), pd.Timedelta)
 
     check(assert_type(pd.Timedelta("1 W"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta("1 w"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'w' is deprecated", lower="2.2.99"):
+        check(assert_type(pd.Timedelta("1 w"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 D"), pd.Timedelta), pd.Timedelta)
-    check(assert_type(pd.Timedelta("1 d"), pd.Timedelta), pd.Timedelta)
+    with pytest_warns_bounded(FutureWarning, "'d' is deprecated", lower="2.2.99"):
+        check(assert_type(pd.Timedelta("1 d"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 days"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 day"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 hours"), pd.Timedelta), pd.Timedelta)
@@ -1518,7 +1522,13 @@ def test_timestamp_misc_methods() -> None:
     check(assert_type(ts2.round("1s", ambiguous=False), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.round("1s", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
 
-    with pytest_warns_bounded(FutureWarning, "'H' is deprecated ", lower="2.1.99"):
+    with pytest_warns_bounded(
+        FutureWarning,
+        "'H' is deprecated ",
+        lower="2.1.99",
+        upper="2.2.99",
+        upper_exception=ValueError,
+    ):
         check(
             assert_type(ts2.round("2H", nonexistent="shift_forward"), pd.Timestamp),
             pd.Timestamp,
@@ -1553,7 +1563,13 @@ def test_timestamp_misc_methods() -> None:
     check(assert_type(ts2.ceil("1s", ambiguous=False), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.ceil("1s", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
 
-    with pytest_warns_bounded(FutureWarning, "'H' is deprecated", lower="2.1.99"):
+    with pytest_warns_bounded(
+        FutureWarning,
+        "'H' is deprecated",
+        lower="2.1.99",
+        upper="2.2.99",
+        upper_exception=ValueError,
+    ):
         check(
             assert_type(ts2.ceil("2H", nonexistent="shift_forward"), pd.Timestamp),
             pd.Timestamp,
@@ -1587,7 +1603,13 @@ def test_timestamp_misc_methods() -> None:
     check(assert_type(ts2.floor("1s", ambiguous=False), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts2.floor("1s", ambiguous="NaT"), pd.Timestamp), pd.Timestamp)
 
-    with pytest_warns_bounded(FutureWarning, "'H' is deprecated", lower="2.1.99"):
+    with pytest_warns_bounded(
+        FutureWarning,
+        "'H' is deprecated",
+        lower="2.1.99",
+        upper="2.2.99",
+        upper_exception=ValueError,
+    ):
         check(
             assert_type(ts2.floor("2H", nonexistent="shift_forward"), pd.Timestamp),
             pd.Timestamp,

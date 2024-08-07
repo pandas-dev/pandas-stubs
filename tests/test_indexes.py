@@ -259,7 +259,13 @@ def test_interval_range():
         pd.IntervalIndex,
         pd.Interval,
     )
-    with pytest_warns_bounded(FutureWarning, "'M' is deprecated", lower="2.1.99"):
+    with pytest_warns_bounded(
+        FutureWarning,
+        "'M' is deprecated",
+        lower="2.1.99",
+        upper="2.2.99",
+        upper_exception=ValueError,
+    ):
         check(
             assert_type(
                 pd.interval_range(
@@ -577,9 +583,18 @@ def test_interval_index_arrays():
         pd.IntervalIndex,
         pd.Interval,
     )
-    with pytest_warns_bounded(FutureWarning, "'Y' is deprecated", lower="2.1.99"):
-        left_s_ts = pd.Series(pd.date_range("2000-01-01", "2003-01-01", freq="Y"))
-        right_s_ts = pd.Series(pd.date_range("2001-01-01", "2004-01-01", freq="Y"))
+    with pytest_warns_bounded(
+        FutureWarning,
+        "'Y' is deprecated",
+        lower="2.1.99",
+        upper="2.2.99",
+        upper_exception=ValueError,
+    ):
+        pd.Series(pd.date_range("2000-01-01", "2003-01-01", freq="Y"))
+        pd.Series(pd.date_range("2001-01-01", "2004-01-01", freq="Y"))
+
+    left_s_ts = pd.Series(pd.date_range("2000-01-01", "2003-01-01", freq="YS"))
+    right_s_ts = pd.Series(pd.date_range("2001-01-01", "2004-01-01", freq="YS"))
     check(
         assert_type(
             pd.IntervalIndex.from_arrays(left_s_ts, right_s_ts),
@@ -989,7 +1004,13 @@ def test_index_constructors():
 
 def test_iter() -> None:
     # GH 723
-    with pytest_warns_bounded(FutureWarning, "'H' is deprecated", lower="2.1.99"):
+    with pytest_warns_bounded(
+        FutureWarning,
+        "'H' is deprecated",
+        lower="2.1.99",
+        upper="2.2.99",
+        upper_exception=ValueError,
+    ):
         for ts in pd.date_range(start="1/1/2023", end="1/08/2023", freq="6H"):
             check(assert_type(ts, pd.Timestamp), pd.Timestamp)
 

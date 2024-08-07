@@ -1980,7 +1980,13 @@ def test_pivot_table() -> None:
         },
         index=idx,
     )
-    with pytest_warns_bounded(FutureWarning, "'M' is deprecated", lower="2.1.99"):
+    with pytest_warns_bounded(
+        FutureWarning,
+        "'M' is deprecated",
+        lower="2.1.99",
+        upper="2.2.99",
+        upper_exception=ValueError,
+    ):
         check(
             assert_type(
                 pd.pivot_table(
@@ -1990,7 +1996,13 @@ def test_pivot_table() -> None:
             ),
             pd.DataFrame,
         )
-    with pytest_warns_bounded(FutureWarning, "'(M|A)' is deprecated", lower="2.1.99"):
+    with pytest_warns_bounded(
+        FutureWarning,
+        "'(M|A)' is deprecated",
+        lower="2.1.99",
+        upper="2.2.99",
+        upper_exception=ValueError,
+    ):
         check(
             assert_type(
                 pd.pivot_table(

@@ -1446,7 +1446,13 @@ def test_types_to_html() -> None:
 def test_types_resample() -> None:
     df = pd.DataFrame({"values": [2, 11, 3, 13, 14, 18, 17, 19]})
     df["date"] = pd.date_range("01/01/2018", periods=8, freq="W")
-    with pytest_warns_bounded(FutureWarning, "'M' is deprecated", lower="2.1.99"):
+    with pytest_warns_bounded(
+        FutureWarning,
+        "'M' is deprecated",
+        lower="2.1.99",
+        upper="2.2.99",
+        upper_exception=ValueError,
+    ):
         df.resample("M", on="date")
     df.resample("20min", origin="epoch", offset=pd.Timedelta(2, "minutes"), on="date")
     df.resample("20min", origin="epoch", offset=datetime.timedelta(2), on="date")
@@ -1583,7 +1589,13 @@ def test_pipe() -> None:
         assert isinstance(resampler, Resampler)
         return pd.DataFrame(resampler)
 
-    with pytest_warns_bounded(FutureWarning, "'M' is deprecated", lower="2.1.99"):
+    with pytest_warns_bounded(
+        FutureWarning,
+        "'M' is deprecated",
+        lower="2.1.99",
+        upper="2.2.99",
+        upper_exception=ValueError,
+    ):
         val = (
             pd.DataFrame(
                 {
@@ -1595,6 +1607,17 @@ def test_pipe() -> None:
             .resample("M", on="week_starting")
             .pipe(resampler_foo)
         )
+    val = (
+        pd.DataFrame(
+            {
+                "price": [10, 11, 9, 13, 14, 18, 17, 19],
+                "volume": [50, 60, 40, 100, 50, 100, 40, 50],
+            }
+        )
+        .assign(week_starting=pd.date_range("01/01/2018", periods=8, freq="W"))
+        .resample("ME", on="week_starting")
+        .pipe(resampler_foo)
+    )
 
     def foo(df: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame(df)
@@ -1854,11 +1877,22 @@ def test_types_regressions() -> None:
     d: datetime.date = pd.Timestamp("2021-01-01")
     tslist: list[pd.Timestamp] = list(pd.to_datetime(["2022-01-01", "2022-01-02"]))
     sseries: pd.Series = pd.Series(tslist)
-    sseries_plus1: pd.Series = sseries + pd.Timedelta(1, "d")
+    with pytest_warns_bounded(FutureWarning, "'d' is deprecated", lower="2.2.99"):
+        sseries + pd.Timedelta(1, "d")
+
+    sseries_plus1: pd.Series = sseries + pd.Timedelta(1, "D")
 
     # https://github.com/microsoft/pylance-release/issues/2133
-    with pytest_warns_bounded(FutureWarning, "'H' is deprecated", lower="2.1.99"):
-        dr = pd.date_range(start="2021-12-01", periods=24, freq="H")
+    with pytest_warns_bounded(
+        FutureWarning,
+        "'H' is deprecated",
+        lower="2.1.99",
+        upper="2.2.99",
+        upper_exception=ValueError,
+    ):
+        pd.date_range(start="2021-12-01", periods=24, freq="H")
+
+    dr = pd.date_range(start="2021-12-01", periods=24, freq="h")
     time = dr.strftime("%H:%M:%S")
 
     # https://github.com/microsoft/python-type-stubs/issues/115
@@ -2885,8 +2919,16 @@ def test_quantile_150_changes() -> None:
 def test_resample_150_changes() -> None:
     idx = pd.date_range("2020-1-1", periods=700)
     frame = pd.DataFrame(np.random.standard_normal((700, 1)), index=idx, columns=["a"])
-    with pytest_warns_bounded(FutureWarning, "'M' is deprecated", lower="2.1.99"):
-        resampler = frame.resample("M", group_keys=True)
+    with pytest_warns_bounded(
+        FutureWarning,
+        "'M' is deprecated",
+        lower="2.1.99",
+        upper="2.2.99",
+        upper_exception=ValueError,
+    ):
+        frame.resample("M", group_keys=True)
+
+    resampler = frame.resample("MS", group_keys=True)
     check(
         assert_type(resampler, "DatetimeIndexResampler[pd.DataFrame]"),
         DatetimeIndexResampler,

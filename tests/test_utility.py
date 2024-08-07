@@ -10,6 +10,7 @@ from typing_extensions import assert_type
 
 from tests import (
     NUMPY20,
+    PD_LTE_22,
     check,
     pytest_warns_bounded,
 )
@@ -23,7 +24,7 @@ def test_show_version():
         version_str=platform.python_version(),
     ):
         context: AbstractContextManager
-        if NUMPY20:  # https://github.com/PyTables/PyTables/issues/1172
+        if PD_LTE_22 and NUMPY20:  # https://github.com/PyTables/PyTables/issues/1172
             context = pytest.raises(ValueError)
         else:
             context = nullcontext()
