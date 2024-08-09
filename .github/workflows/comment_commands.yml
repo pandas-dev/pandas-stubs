@@ -4,7 +4,6 @@ on:
     types: created
 
 permissions:
-  contents: read
   actions: write
   checks: write
   contents: write
