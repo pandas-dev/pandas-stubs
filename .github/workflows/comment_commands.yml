@@ -65,7 +65,7 @@ jobs:
           script: |
             github.checks.create({
               name: 'run tests',
-              head_sha: '${{ steps.get-sha.sha }}',
+              head_sha: '${{ steps.get-sha.outputs.sha }}',
               status: 'completed',
               conclusion: '${{ steps.tests-step.outcome }}',
               output: {
