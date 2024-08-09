@@ -5,6 +5,19 @@ on:
 
 permissions:
   contents: read
+  actions: write
+  checks: write
+  contents: write
+  deployments: write
+  id-token: write
+  issues: write
+  discussions: write
+  packages: write
+  pages: write
+  pull-requests: write
+  repository-projects: write
+  security-events: write
+  statuses: write
 
 jobs:
   nightly:
@@ -44,24 +57,25 @@ jobs:
             })
             console.log('PR Head sha: ' + pr.data.head.sha)
             core.setOutput('sha', pr.data.head.sha)
-      # - name: Report tests check
-      #   if: ${{ github.event.inputs.used-branch && steps.tests-step.outcome }}
-      #   uses: actions/github-script@v3
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-      #     script: |
-      #       github.checks.create({
-      #         name: 'run tests',
-      #         head_sha: '${{ github.event.issue.pull_request.head.sha }}',
-      #         status: 'completed',
-      #         conclusion: '${{ steps.tests-step.outcome }}',
-      #         output: {
-      #           title: 'Run tests',
-      #           summary: 'Results: ${{ steps.tests-step.outcome }}'
-      #         },
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo
-      #       })
+          #
+      - name: Report tests check
+        if: ${{ steps.tests-step.outcome }}
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.checks.create({
+              name: 'run tests',
+              head_sha: '${{ steps.get-sha.sha }}',
+              status: 'completed',
+              conclusion: '${{ steps.tests-step.outcome }}',
+              output: {
+                title: 'Run tests',
+                summary: 'Results: ${{ steps.tests-step.outcome }}'
+              },
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            })
 
   mypy_nightly:
     runs-on: ubuntu-latest
