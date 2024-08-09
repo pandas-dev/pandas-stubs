@@ -28,6 +28,21 @@ jobs:
         run: |
           echo "$GITHUB_CONTEXT"
 
+      - name: get sha from PR number and save output
+        id: get-sha
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            console.log('PR number: ' + ${{ github.event.issue.number }})
+            const pr = await github.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ github.event.issue.number }}
+            })
+            console.log('PR Head sha: ' + pr.data.head.sha)
+            core.setOutput('sha', pr.data.head.sha)
+
       # - name: Report tests check
       #   if: ${{ github.event.inputs.used-branch && steps.tests-step.outcome }}
       #   uses: actions/github-script@v3
