@@ -11,9 +11,7 @@ permissions:
 jobs:
   issue_assign:
     runs-on: ubuntu-latest
-    if: (!github.event.issue.pull_request) && github.event.comment.body == 'take'
-    concurrency:
-      group: ${{ github.actor }}-issue-assign
+    if: (github.event.issue.pull_request) && github.event.comment.body == 'take'
     steps:
       - run: |
           echo "Assigning issue ${{ github.event.issue.number }} to ${{ github.event.comment.user.login }}"
