@@ -5,14 +5,12 @@ on:
 
 permissions:
   contents: read
-  issues: write
-  pull-requests: write
 
 jobs:
   nightly:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: (!github.event.issue.pull_request) && github.event.comment.body == '/nightly'
+    if: (github.event.issue.pull_request) && github.event.comment.body == '/nightly'
 
     steps:
       - uses: actions/checkout@v3
@@ -24,7 +22,31 @@ jobs:
           python-version: "3.11"
 
       - name: Run pytest (against pandas nightly)
+        id: tests-step
         run: poetry run poe pytest --nightly
+      - name: Report tests check
+        run: |
+          echo "Branch ${{ github.event.inputs.used-branch }} Outcome ${{ steps.tests-step.outcome }}";
+          echo "$GITHUB_CONTEXT"
+
+      # - name: Report tests check
+      #   if: ${{ github.event.inputs.used-branch && steps.tests-step.outcome }}
+      #   uses: actions/github-script@v3
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     script: |
+      #       github.checks.create({
+      #         name: 'run tests',
+      #         head_sha: '${{ github.event.issue.pull_request.head.sha }}',
+      #         status: 'completed',
+      #         conclusion: '${{ steps.tests-step.outcome }}',
+      #         output: {
+      #           title: 'Run tests',
+      #           summary: 'Results: ${{ steps.tests-step.outcome }}'
+      #         },
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo
+      #       })
 
   mypy_nightly:
     runs-on: ubuntu-latest
