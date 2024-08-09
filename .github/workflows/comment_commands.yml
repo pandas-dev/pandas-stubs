@@ -26,7 +26,7 @@ jobs:
         run: poetry run poe pytest --nightly
       - name: Report tests check
         run: |
-        echo ${{ github.event.inputs.used-branch }} ${{ steps.tests-step.outcome }}
+          echo "Branch ${{ github.event.inputs.used-branch }} Outcome ${{ steps.tests-step.outcome }}"
 
       # - name: Report tests check
       #   if: ${{ github.event.inputs.used-branch && steps.tests-step.outcome }}
