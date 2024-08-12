@@ -54,7 +54,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            github.checks.create({
+            github.rest.checks.create({
               name: 'Pandas nightly tests',
               head_sha: '${{ steps.get-sha.outputs.sha }}',
               status: 'completed',
@@ -106,7 +106,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            github.checks.create({
+            github.rest.checks.create({
               name: 'Mypy nightly tests',
               head_sha: '${{ steps.get-sha.outputs.sha }}',
               status: 'completed',
@@ -158,7 +158,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            github.checks.create({
+            github.rest.checks.create({
               name: 'Pyright strict tests',
               head_sha: '${{ steps.get-sha.outputs.sha }}',
               status: 'completed',
