@@ -38,6 +38,7 @@ jobs:
         run: poetry run poe pytest --nightly
 
       - name: Get head sha and store value
+        if: always()
         id: get-sha
         uses: actions/github-script@v3
         with:
@@ -51,6 +52,7 @@ jobs:
             core.setOutput('sha', pr.data.head.sha)
           #
       - name: Report results of the tests and publish
+        if: always()
         uses: actions/github-script@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -87,6 +89,7 @@ jobs:
         run: poetry run poe mypy --mypy_nightly
 
       - name: Get head sha and store value
+        if: always()
         id: get-sha
         uses: actions/github-script@v3
         with:
@@ -100,6 +103,7 @@ jobs:
             core.setOutput('sha', pr.data.head.sha)
           #
       - name: Report results of the tests and publish
+        if: always()
         uses: actions/github-script@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -136,6 +140,7 @@ jobs:
         run: poetry run poe pyright_strict
 
       - name: Get head sha and store value
+        if: always()
         id: get-sha
         uses: actions/github-script@v3
         with:
@@ -149,12 +154,13 @@ jobs:
             core.setOutput('sha', pr.data.head.sha)
           #
       - name: Report results of the tests and publish
+        if: always()
         uses: actions/github-script@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.checks.create({
-              name: 'Pandas nightly tests',
+              name: 'Pyright strict tests',
               head_sha: '${{ steps.get-sha.outputs.sha }}',
               status: 'completed',
               conclusion: '${{ steps.tests-step.outcome }}',
