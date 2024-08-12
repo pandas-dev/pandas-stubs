@@ -22,10 +22,10 @@ jobs:
   pandas_nightly:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: (github.event.issue.pull_request) && github.event.comment.body == '/nightly'
+    if: (github.event.issue.pull_request) && github.event.comment.body == '/pandas_nightly'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install project dependencies
         uses: ./.github/setup
@@ -40,7 +40,7 @@ jobs:
       - name: Get head sha and store value
         if: always()
         id: get-sha
-        uses: actions/github-script@v3
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -53,7 +53,7 @@ jobs:
           #
       - name: Report results of the tests and publish
         if: always()
-        uses: actions/github-script@v3
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -63,8 +63,9 @@ jobs:
               status: 'completed',
               conclusion: '${{ steps.tests-step.outcome }}',
               output: {
-                title: 'Run tests',
-                summary: 'Results: ${{ steps.tests-step.outcome }}'
+                title: 'Run pandas nightly tests',
+                summary: 'Results: ${{ steps.tests-step.outcome }}',
+                text: 'See the actions run at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}', 
               },
               owner: context.repo.owner,
               repo: context.repo.repo
@@ -76,7 +77,7 @@ jobs:
     if: (github.event.issue.pull_request) && github.event.comment.body == '/mypy_nightly'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install project dependencies
         uses: ./.github/setup
@@ -91,7 +92,7 @@ jobs:
       - name: Get head sha and store value
         if: always()
         id: get-sha
-        uses: actions/github-script@v3
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -104,17 +105,17 @@ jobs:
           #
       - name: Report results of the tests and publish
         if: always()
-        uses: actions/github-script@v3
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.checks.create({
-              name: 'Pandas nightly tests',
+              name: 'Mypy nightly tests',
               head_sha: '${{ steps.get-sha.outputs.sha }}',
               status: 'completed',
               conclusion: '${{ steps.tests-step.outcome }}',
               output: {
-                title: 'Run tests',
+                title: 'Run mypy nightly tests',
                 summary: 'Results: ${{ steps.tests-step.outcome }}'
               },
               owner: context.repo.owner,
@@ -127,7 +128,7 @@ jobs:
     if: (github.event.issue.pull_request) && github.event.comment.body == '/pyright_strict'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install project dependencies
         uses: ./.github/setup
@@ -142,7 +143,7 @@ jobs:
       - name: Get head sha and store value
         if: always()
         id: get-sha
-        uses: actions/github-script@v3
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -155,7 +156,7 @@ jobs:
           #
       - name: Report results of the tests and publish
         if: always()
-        uses: actions/github-script@v3
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
