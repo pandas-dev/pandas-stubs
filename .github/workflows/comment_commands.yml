@@ -19,7 +19,7 @@ permissions:
   statuses: write
 
 jobs:
-  nightly:
+  pandas_nightly:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     if: (github.event.issue.pull_request) && github.event.comment.body == '/nightly'
@@ -36,35 +36,27 @@ jobs:
       - name: Run pytest (against pandas nightly)
         id: tests-step
         run: poetry run poe pytest --nightly
-      - name: Report tests check
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: |
-          echo "$GITHUB_CONTEXT"
 
-      - name: get sha from PR number and save output
+      - name: Get head sha and store value
         id: get-sha
         uses: actions/github-script@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            console.log('PR number: ' + ${{ github.event.issue.number }})
             const pr = await github.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: ${{ github.event.issue.number }}
             })
-            console.log('PR Head sha: ' + pr.data.head.sha)
             core.setOutput('sha', pr.data.head.sha)
           #
-      - name: Report tests check
-        if: ${{ steps.tests-step.outcome }}
+      - name: Report results of the tests and publish
         uses: actions/github-script@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.checks.create({
-              name: 'run tests',
+              name: 'Pandas nightly tests',
               head_sha: '${{ steps.get-sha.outputs.sha }}',
               status: 'completed',
               conclusion: '${{ steps.tests-step.outcome }}',
@@ -91,7 +83,39 @@ jobs:
           python-version: "3.11"
 
       - name: Run mypy tests with mypy nightly
+        id: tests-step
         run: poetry run poe mypy --mypy_nightly
+
+      - name: Get head sha and store value
+        id: get-sha
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = await github.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ github.event.issue.number }}
+            })
+            core.setOutput('sha', pr.data.head.sha)
+          #
+      - name: Report results of the tests and publish
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.checks.create({
+              name: 'Pandas nightly tests',
+              head_sha: '${{ steps.get-sha.outputs.sha }}',
+              status: 'completed',
+              conclusion: '${{ steps.tests-step.outcome }}',
+              output: {
+                title: 'Run tests',
+                summary: 'Results: ${{ steps.tests-step.outcome }}'
+              },
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            })
 
   pyright_strict:
     runs-on: ubuntu-latest
@@ -108,4 +132,36 @@ jobs:
           python-version: "3.11"
 
       - name: Run pyright tests with full strict mode
+        id: tests-step
         run: poetry run poe pyright_strict
+
+      - name: Get head sha and store value
+        id: get-sha
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = await github.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ github.event.issue.number }}
+            })
+            core.setOutput('sha', pr.data.head.sha)
+          #
+      - name: Report results of the tests and publish
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.checks.create({
+              name: 'Pandas nightly tests',
+              head_sha: '${{ steps.get-sha.outputs.sha }}',
+              status: 'completed',
+              conclusion: '${{ steps.tests-step.outcome }}',
+              output: {
+                title: 'Run tests',
+                summary: 'Results: ${{ steps.tests-step.outcome }}'
+              },
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            })
