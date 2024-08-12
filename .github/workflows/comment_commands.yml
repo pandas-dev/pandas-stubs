@@ -4,15 +4,8 @@ on:
     types: created
 
 permissions:
-  actions: write
   checks: write
-  contents: write
   issues: write
-  packages: write
-  pages: write
-  pull-requests: write
-  repository-projects: write
-  security-events: write
   statuses: write
 
 jobs:
