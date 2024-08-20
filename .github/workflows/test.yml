@@ -19,13 +19,9 @@ jobs:
       matrix:
         # Don't use macos-latest because it is arm64
         os: [ubuntu-latest, windows-latest, macos-13]
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
-        include:
-          - numpy-version: "<2.0"
-          - numpy-version: ">= 2.0"
-            os: ubuntu-latest
+        python-version: ["3.10", "3.11", "3.12"]
 
-    name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }} - Numpy ${{ matrix.numpy-version }}
+    name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }}
 
     steps:
       - uses: actions/checkout@v3
@@ -35,7 +31,6 @@ jobs:
         with:
           os: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
-          numpy-version: ${{ matrix.numpy-version }}
 
       - name: Run mypy on 'tests' (using the local stubs) and on the local stubs
         run: poetry run poe mypy
