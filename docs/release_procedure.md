@@ -7,7 +7,8 @@
 
 ```shell
 rm dist/*
-poetry publish --build  # you will get prompted for your pypi username/password
+poetry build
+twine upload dist/*  # Requires having the pypi API token allowing uploads
 git commit -a -m "Version a.b.c.yymmdd"
 git push upstream main
 git tag va.b.c.yymmdd
@@ -15,5 +16,3 @@ git push upstream --tags
 ```
 
 The conda bots will recognize that a new version has been uploaded to pypi, and generate a pull request sent to the maintainers to approve it.
-
-Note - Changes will need to be made to use pypi API tokens in the near future.

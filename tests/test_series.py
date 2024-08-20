@@ -15,6 +15,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Generic,
+    Literal,
     TypeVar,
     Union,
     cast,
@@ -80,6 +81,23 @@ if TYPE_CHECKING:
         VoidDtypeArg,
     )
     from pandas._typing import np_ndarray_int  # noqa: F401
+
+# Tests will use numpy 2.1 in python 3.10 or later
+# From Numpy 2.1 __init__.pyi
+_DTypeKind: TypeAlias = Literal[
+    "b",  # boolean
+    "i",  # signed integer
+    "u",  # unsigned integer
+    "f",  # floating-point
+    "c",  # complex floating-point
+    "m",  # timedelta64
+    "M",  # datetime64
+    "O",  # python object
+    "S",  # byte-string (fixed-width)
+    "U",  # unicode-string (fixed-width)
+    "V",  # void
+    "T",  # unicode-string (variable-width)
+]
 
 
 def test_types_init() -> None:
@@ -1675,15 +1693,15 @@ def test_dtype_type() -> None:
     # GH 216
     s1 = pd.Series(["foo"], dtype="string")
     check(assert_type(s1.dtype, DtypeObj), ExtensionDtype)
-    check(assert_type(s1.dtype.kind, str), str)
+    check(assert_type(s1.dtype.kind, _DTypeKind), str)
 
     s2 = pd.Series([1], dtype="Int64")
     check(assert_type(s2.dtype, DtypeObj), ExtensionDtype)
-    check(assert_type(s2.dtype.kind, str), str)
+    check(assert_type(s2.dtype.kind, _DTypeKind), str)
 
     s3 = pd.Series([1, 2, 3])
     check(assert_type(s3.dtype, DtypeObj), np.dtype)
-    check(assert_type(s3.dtype.kind, str), str)
+    check(assert_type(s3.dtype.kind, _DTypeKind), str)
 
 
 def test_types_to_numpy() -> None:

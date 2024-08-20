@@ -28,9 +28,9 @@ packages = [{ "include" = "pandas-stubs" }]
 "Documentation" = "https://pandas.pydata.org/pandas-docs/stable"
 
 [tool.poetry.dependencies]
-python = ">=3.9"
+python = ">=3.10"
 types-pytz = ">= 2022.1.1"
-numpy = ">= 1.23.5, <= 2.0.1"
+numpy = ">= 1.23.5"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "1.10.1"
