@@ -10,26 +10,33 @@ from typing_extensions import assert_type
 
 from tests import (
     NUMPY20,
+    PD_LTE_22,
     check,
     pytest_warns_bounded,
 )
 
 
 def test_show_version():
-    with pytest_warns_bounded(
-        UserWarning,
-        match="Setuptools is replacing distutils",
-        upper="3.11.99",
-        version_str=platform.python_version(),
-    ):
-        context: AbstractContextManager
+    """Test show_versions method types with split case for pandas and python versions."""
+    if PD_LTE_22:
+        context: AbstractContextManager = nullcontext()
+        # distutils warning is only raised with pandas<3.0.0
         if NUMPY20:  # https://github.com/PyTables/PyTables/issues/1172
             context = pytest.raises(ValueError)
-        else:
-            context = nullcontext()
-        with context:
+        with (
+            pytest_warns_bounded(
+                UserWarning,
+                match="Setuptools is replacing distutils",
+                upper="3.11.99",
+                version_str=platform.python_version(),
+            ),
+            context,
+        ):
             check(assert_type(pd.show_versions(True), None), type(None))
             check(assert_type(pd.show_versions(False), None), type(None))
+    else:
+        check(assert_type(pd.show_versions(True), None), type(None))
+        check(assert_type(pd.show_versions(False), None), type(None))
 
 
 def test_dummies():
