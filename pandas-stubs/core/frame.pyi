@@ -1632,8 +1632,8 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def clip(
         self,
-        lower: float | None = ...,
-        upper: float | None = ...,
+        lower: float | AnyArrayLike | None = ...,
+        upper: float | AnyArrayLike | None = ...,
         *,
         axis: Axis | None = ...,
         inplace: _bool = ...,
