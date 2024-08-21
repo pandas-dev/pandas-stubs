@@ -527,9 +527,20 @@ def test_types_quantile() -> None:
     df.quantile(np.array([0.25, 0.75]))
 
 
-def test_types_clip() -> None:
+@pytest.mark.parametrize("lower", [None, 5, pd.Series([3, 4])])
+@pytest.mark.parametrize("upper", [None, 15, pd.Series([12, 13])])
+@pytest.mark.parametrize("axis", [None, 0, "index"])
+def test_types_clip(lower, upper, axis) -> None:
+    def is_none_or_numeric(val: Any) -> bool:
+        return val is None or isinstance(val, int | float)
+
     df = pd.DataFrame(data={"col1": [20, 12], "col2": [3, 14]})
-    df.clip(lower=5, upper=15)
+    uses_array = not (is_none_or_numeric(lower) and is_none_or_numeric(upper))
+    if uses_array and axis is None:
+        with pytest.raises(ValueError):
+            df.clip(lower=lower, upper=upper, axis=axis)
+    else:
+        df.clip(lower=lower, upper=upper, axis=axis)
 
 
 def test_types_abs() -> None:
