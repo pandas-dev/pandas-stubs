@@ -540,7 +540,7 @@ def test_types_clip(lower, upper, axis) -> None:
         with pytest.raises(ValueError):
             df.clip(lower=lower, upper=upper, axis=axis)
     else:
-        df.clip(lower=lower, upper=upper, axis=axis)
+        assert_type(df.clip(lower=lower, upper=upper, axis=axis), pd.DataFrame)
 
 
 def test_types_abs() -> None:
