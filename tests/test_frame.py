@@ -29,7 +29,7 @@ from typing import (
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
-from pandas._testing import ensure_clean
+from pandas._testing import ensure_clean, assert_frame_equal
 from pandas.core.resample import (
     DatetimeIndexResampler,
     Resampler,
@@ -366,6 +366,33 @@ def test_types_dropna() -> None:
     res: pd.DataFrame = df.dropna()
     res2: pd.DataFrame = df.dropna(axis=1, thresh=1)
     res3: None = df.dropna(axis=0, how="all", subset=["col1"], inplace=True)
+
+
+@pytest.mark.parametrize(
+    "drop_arg",
+    [
+        {"AAA"},              # set
+        ["AAA"],              # list
+        ("AAA",),             # tuple
+        {"AAA": None},        # dict
+        "AAA",                # str
+    ]
+)
+def test_types_drop_duplicates(drop_arg) -> None:
+
+    # GH#59237
+    df = pd.DataFrame(
+        {
+            "AAA": ["foo", "bar", "foo", "bar", "foo", "bar", "bar", "foo"],
+            "B": ["one", "one", "two", "two", "two", "two", "one", "two"],
+            "C": [1, 1, 2, 2, 2, 2, 1, 2],
+            "D": range(8),
+        }
+    )
+    expected = df[:2]
+
+    result = df.drop_duplicates(drop_arg)
+    assert_frame_equal(result, expected)
 
 
 def test_types_fillna() -> None:
