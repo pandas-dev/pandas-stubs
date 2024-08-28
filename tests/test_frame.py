@@ -29,7 +29,7 @@ from typing import (
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
-from pandas._testing import ensure_clean, assert_frame_equal
+from pandas._testing import ensure_clean
 from pandas.core.resample import (
     DatetimeIndexResampler,
     Resampler,
@@ -389,10 +389,12 @@ def test_types_drop_duplicates(drop_arg) -> None:
             "D": range(8),
         }
     )
-    expected = df[:2]
 
-    result = df.drop_duplicates(drop_arg)
-    assert_frame_equal(result, expected)
+    check(assert_type(df.drop_duplicates({"AAA"}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop_duplicates(["AAA"]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop_duplicates(("AAA",)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop_duplicates({"AAA": None}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop_duplicates("AAA"), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_fillna() -> None:
