@@ -368,18 +368,7 @@ def test_types_dropna() -> None:
     res3: None = df.dropna(axis=0, how="all", subset=["col1"], inplace=True)
 
 
-@pytest.mark.parametrize(
-    "drop_arg",
-    [
-        {"AAA"},              # set
-        ["AAA"],              # list
-        ("AAA",),             # tuple
-        {"AAA": None},        # dict
-        "AAA",                # str
-    ]
-)
-def test_types_drop_duplicates(drop_arg) -> None:
-
+def test_types_drop_duplicates() -> None:
     # GH#59237
     df = pd.DataFrame(
         {
