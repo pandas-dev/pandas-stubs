@@ -379,11 +379,13 @@ def test_types_drop_duplicates() -> None:
         }
     )
 
-    check(assert_type(df.drop_duplicates({"AAA"}), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop_duplicates(["AAA"]), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop_duplicates(("AAA",)), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.drop_duplicates({"AAA": None}), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop_duplicates("AAA"), pd.DataFrame), pd.DataFrame)
+
+    if PD_LTE_22:
+        check(assert_type(df.drop_duplicates({"AAA"}), pd.DataFrame), pd.DataFrame)
+        check(assert_type(df.drop_duplicates({"AAA": None}), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_fillna() -> None:
