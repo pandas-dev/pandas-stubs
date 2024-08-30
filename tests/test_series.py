@@ -1452,6 +1452,7 @@ def test_string_accessors():
     check(assert_type(s.str.cat(sep="X"), str), str)
     check(assert_type(s.str.center(10), pd.Series), pd.Series)
     check(assert_type(s.str.contains("a"), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(s.str.contains(re.compile(r"a")), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(s.str.count("pp"), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.str.decode("utf-8"), pd.Series), pd.Series)
     check(assert_type(s.str.encode("latin-1"), pd.Series), pd.Series)
