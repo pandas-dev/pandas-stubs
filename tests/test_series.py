@@ -1481,7 +1481,7 @@ def test_string_accessors():
     check(assert_type(s.str.ljust(80), pd.Series), pd.Series)
     check(assert_type(s.str.lower(), pd.Series), pd.Series)
     check(assert_type(s.str.lstrip("a"), pd.Series), pd.Series)
-    check(assert_type(s.str.match("pp"), pd.Series), pd.Series)
+    check(assert_type(s.str.match("pp"), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(s.str.normalize("NFD"), pd.Series), pd.Series)
     check(assert_type(s.str.pad(80, "right"), pd.Series), pd.Series)
     check(assert_type(s.str.partition("p"), pd.DataFrame), pd.DataFrame)
