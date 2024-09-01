@@ -259,6 +259,7 @@ class DataFrame(NDFrame, OpsMixin):
     def __dataframe__(
         self, nan_as_null: bool = ..., allow_copy: bool = ...
     ) -> DataFrameXchg: ...
+    def __arrow_c_stream__(self, requested_schema: object | None = None) -> object: ...
     @property
     def axes(self) -> list[Index]: ...
     @property
@@ -1632,8 +1633,8 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def clip(
         self,
-        lower: float | None = ...,
-        upper: float | None = ...,
+        lower: float | AnyArrayLike | None = ...,
+        upper: float | AnyArrayLike | None = ...,
         *,
         axis: Axis | None = ...,
         inplace: _bool = ...,

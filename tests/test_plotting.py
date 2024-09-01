@@ -24,6 +24,11 @@ from pandas.plotting import (
 )
 
 
+@pytest.fixture(autouse=True)
+def autouse_mpl_cleanup(mpl_cleanup):
+    pass
+
+
 @pytest.fixture
 def close_figures():
     plt.close("all")
