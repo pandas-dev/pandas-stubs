@@ -8,15 +8,14 @@ permissions:
 
 env:
   RUN_COMMAND: '{"/pandas_nightly": "pytest --nightly", "/pyright_strict": "pyright_strict", "/mypy_nightly": "mypy --mypy_nightly"}'
-  DISPLAY_COMMAND: '{"/pandas_nightly": "Run pandas nightly tests", "/pyright_strict": "Pyright strict tests", "/mypy_nightly": "Mypy nightly tests"}'
+  DISPLAY_COMMAND: '{"/pandas_nightly": "Pandas nightly tests", "/pyright_strict": "Pyright strict tests", "/mypy_nightly": "Mypy nightly tests"}'
 
 jobs:
-  pandas_nightly:
+  optional_tests:
+    name: "Optional tests run"
     runs-on: ubuntu-latest
-    env:
-      COMMENT: "/pandas_nightly"
     timeout-minutes: 10
-    if: (github.event.issue.pull_request) && contains(fromJSON('["/pandas_nightly", "/pyright_strict"]'), github.event.comment.body)
+    if: (github.event.issue.pull_request) && contains(fromJSON('["/pandas_nightly", "/pyright_strict", "/mypy_nightly]'), github.event.comment.body)
 
     steps:
       - uses: actions/checkout@v4
