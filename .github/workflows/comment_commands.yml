@@ -6,11 +6,16 @@ on:
 permissions:
   checks: write
 
+env:
+  RUN_COMMAND: '{"/pandas_nightly": "pytest --nightly", "/pyright_strict": "pyright_strict", "/mypy_nightly": "mypy --mypy_nightly"}'
+  DISPLAY_COMMAND: '{"/pandas_nightly": "Pandas nightly tests", "/pyright_strict": "Pyright strict tests", "/mypy_nightly": "Mypy nightly tests"}'
+
 jobs:
-  pandas_nightly:
+  optional_tests:
+    name: "Optional tests run"
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: (github.event.issue.pull_request) && github.event.comment.body == '/pandas_nightly'
+    if: (github.event.issue.pull_request) && contains(fromJSON('["/pandas_nightly", "/pyright_strict", "/mypy_nightly"]'), github.event.comment.body)
 
     steps:
       - uses: actions/checkout@v4
@@ -21,61 +26,9 @@ jobs:
           os: ubuntu-latest
           python-version: "3.11"
 
-      - name: Run pytest (against pandas nightly)
+      - name: Run ${{ fromJSON(env.DISPLAY_COMMAND)[github.event.comment.body] }}
         id: tests-step
-        run: poetry run poe pytest --nightly
-
-      - name: Get head sha and store value
-        if: always()
-        id: get-sha
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const pr = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: ${{ github.event.issue.number }}
-            })
-            core.setOutput('sha', pr.data.head.sha)
-          #
-      - name: Report results of the tests and publish
-        if: always()
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.rest.checks.create({
-              name: 'Pandas nightly tests',
-              head_sha: '${{ steps.get-sha.outputs.sha }}',
-              status: 'completed',
-              conclusion: '${{ steps.tests-step.outcome }}',
-              output: {
-                title: 'Run pandas nightly tests',
-                summary: 'Results: ${{ steps.tests-step.outcome }}',
-                text: 'See the actions run at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}', 
-              },
-              owner: context.repo.owner,
-              repo: context.repo.repo
-            })
-
-  mypy_nightly:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    if: (github.event.issue.pull_request) && github.event.comment.body == '/mypy_nightly'
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install project dependencies
-        uses: ./.github/setup
-        with:
-          os: ubuntu-latest
-          python-version: "3.11"
-
-      - name: Run mypy tests with mypy nightly
-        id: tests-step
-        run: poetry run poe mypy --mypy_nightly
+        run: poetry run poe ${{ fromJSON(env.RUN_COMMAND)[github.event.comment.body] }}
 
       - name: Get head sha and store value
         if: always()
@@ -98,66 +51,14 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.rest.checks.create({
-              name: 'Mypy nightly tests',
+              name: '${{ fromJSON(env.DISPLAY_COMMAND)[github.event.comment.body] }}',
               head_sha: '${{ steps.get-sha.outputs.sha }}',
               status: 'completed',
               conclusion: '${{ steps.tests-step.outcome }}',
               output: {
-                title: 'Run mypy nightly tests',
+                title: 'Run ${{ fromJSON(env.DISPLAY_COMMAND)[github.event.comment.body] }}',
                 summary: 'Results: ${{ steps.tests-step.outcome }}',
-                text: 'See the actions run at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}', 
-              },
-              owner: context.repo.owner,
-              repo: context.repo.repo
-            })
-
-  pyright_strict:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    if: (github.event.issue.pull_request) && github.event.comment.body == '/pyright_strict'
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install project dependencies
-        uses: ./.github/setup
-        with:
-          os: ubuntu-latest
-          python-version: "3.11"
-
-      - name: Run pyright tests with full strict mode
-        id: tests-step
-        run: poetry run poe pyright_strict
-
-      - name: Get head sha and store value
-        if: always()
-        id: get-sha
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const pr = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: ${{ github.event.issue.number }}
-            })
-            core.setOutput('sha', pr.data.head.sha)
-          #
-      - name: Report results of the tests and publish
-        if: always()
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.rest.checks.create({
-              name: 'Pyright strict tests',
-              head_sha: '${{ steps.get-sha.outputs.sha }}',
-              status: 'completed',
-              conclusion: '${{ steps.tests-step.outcome }}',
-              output: {
-                title: 'Run pyright strict tests',
-                summary: 'Results: ${{ steps.tests-step.outcome }}',
-                text: 'See the actions run at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}', 
+                text: 'See the actions run at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}',
               },
               owner: context.repo.owner,
               repo: context.repo.repo
