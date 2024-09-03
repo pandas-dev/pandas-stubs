@@ -23,6 +23,6 @@ The following tests are **optional**. Some of them are run by the CI but it is o
 
 Among the tests above, the following can be run directly during a PR by commenting in the discussion.
 
-- Run pytest against pandas nightly by commenting `\pandas_nightly`
-- Use mypy nightly to validate the annotations by commenting `\mypy_nightly`
-- Use pyright in full strict mode by commenting `\pyright_strict`
+- Run pytest against pandas nightly by commenting `/pandas_nightly`
+- Use mypy nightly to validate the annotations by commenting `/mypy_nightly`
+- Use pyright in full strict mode by commenting `/pyright_strict`
