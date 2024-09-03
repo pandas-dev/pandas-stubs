@@ -7,7 +7,9 @@ permissions:
   checks: write
 
 env:
+  # store mapping of commands to use with poetry
   RUN_COMMAND: '{"/pandas_nightly": "pytest --nightly", "/pyright_strict": "pyright_strict", "/mypy_nightly": "mypy --mypy_nightly"}'
+  # store mapping of labels to display in the check runs
   DISPLAY_COMMAND: '{"/pandas_nightly": "Pandas nightly tests", "/pyright_strict": "Pyright strict tests", "/mypy_nightly": "Mypy nightly tests"}'
 
 jobs:
@@ -15,6 +17,7 @@ jobs:
     name: "Optional tests run"
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # if more commends are added, they will need to be added here too as we don't have avvecc to env at this stage
     if: (github.event.issue.pull_request) && contains(fromJSON('["/pandas_nightly", "/pyright_strict", "/mypy_nightly"]'), github.event.comment.body)
 
     steps:
@@ -27,10 +30,12 @@ jobs:
           python-version: "3.11"
 
       - name: Run ${{ fromJSON(env.DISPLAY_COMMAND)[github.event.comment.body] }}
+        # run the tests based on the value of the comment
         id: tests-step
         run: poetry run poe ${{ fromJSON(env.RUN_COMMAND)[github.event.comment.body] }}
 
       - name: Get head sha and store value
+        # get the sha of the last commit to attach the results of the tests
         if: always()
         id: get-sha
         uses: actions/github-script@v7
@@ -45,6 +50,7 @@ jobs:
             core.setOutput('sha', pr.data.head.sha)
 
       - name: Report results of the tests and publish
+        # publish the results to a check run no matter the pass or fail
         if: always()
         uses: actions/github-script@v7
         with:
