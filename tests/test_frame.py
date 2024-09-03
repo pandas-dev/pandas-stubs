@@ -172,6 +172,9 @@ def test_types_to_csv() -> None:
     # Testing support for binary file handles, added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
     df.to_csv(io.BytesIO(), quoting=csv.QUOTE_ALL, encoding="utf-8", compression="gzip")
 
+    with ensure_clean() as path:
+        df.to_csv(path, quoting=csv.QUOTE_STRINGS)
+
 
 def test_types_to_csv_when_path_passed() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})

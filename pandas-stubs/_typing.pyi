@@ -738,7 +738,7 @@ JsonSeriesOrient: TypeAlias = Literal["split", "records", "index", "table"]
 TimestampConvention: TypeAlias = Literal["start", "end", "s", "e"]
 
 CSVEngine: TypeAlias = Literal["c", "python", "pyarrow", "python-fwf"]
-CSVQuoting: TypeAlias = Literal[0, 1, 2, 3]
+CSVQuoting: TypeAlias = Literal[0, 1, 2, 3, 4, 5]
 
 HDFCompLib: TypeAlias = Literal["zlib", "lzo", "bzip2", "blosc"]
 ParquetEngine: TypeAlias = Literal["auto", "pyarrow", "fastparquet"]
