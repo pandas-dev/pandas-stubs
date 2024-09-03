@@ -17,7 +17,7 @@ jobs:
     name: "Optional tests run"
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # if more commends are added, they will need to be added here too as we don't have avvecc to env at this stage
+    # if more commands are added, they will need to be added here too as we don't have avvecc to env at this stage
     if: (github.event.issue.pull_request) && contains(fromJSON('["/pandas_nightly", "/pyright_strict", "/mypy_nightly"]'), github.event.comment.body)
 
     steps:
