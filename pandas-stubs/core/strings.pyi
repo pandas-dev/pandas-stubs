@@ -23,12 +23,15 @@ from pandas.core.base import NoNewAttributesMixin
 from pandas._typing import (
     JoinHow,
     T,
+    np_ndarray_bool,
 )
 
 # The _TS type is what is used for the result of str.split with expand=True
 _TS = TypeVar("_TS", DataFrame, MultiIndex)
+# The _TM type is what is used for the result of str.match
+_TM = TypeVar("_TM", Series[bool], np_ndarray_bool)
 
-class StringMethods(NoNewAttributesMixin, Generic[T, _TS]):
+class StringMethods(NoNewAttributesMixin, Generic[T, _TS, _TM]):
     def __init__(self, data: T) -> None: ...
     def __getitem__(self, key: slice | int) -> T: ...
     def __iter__(self) -> T: ...
@@ -105,7 +108,7 @@ class StringMethods(NoNewAttributesMixin, Generic[T, _TS]):
     ) -> Series[bool]: ...
     def match(
         self, pat: str, case: bool = ..., flags: int = ..., na: Any = ...
-    ) -> T: ...
+    ) -> _TM: ...
     def replace(
         self,
         pat: str,

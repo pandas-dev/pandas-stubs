@@ -113,6 +113,13 @@ def test_str_split() -> None:
     check(assert_type(ind.str.split("-", expand=True), pd.MultiIndex), pd.MultiIndex)
 
 
+def test_str_match() -> None:
+    i = pd.Index(
+        ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
+    )
+    check(assert_type(i.str.match("pp"), npt.NDArray[np.bool_]), np.ndarray, np.bool_)
+
+
 def test_index_rename() -> None:
     ind = pd.Index([1, 2, 3], name="foo")
     ind2 = ind.rename("goo")
