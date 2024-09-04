@@ -5,7 +5,7 @@
 Here are the most important options. Fore more details, please use `poe --help`.
 
 - Run all tests (against both source and installed stubs): `poe test_all`
-- Run tests against the source code: `poe test` 
+- Run tests against the source code: `poe test`
   - Run only mypy: `poe mypy`
   - Run only pyright: `poe pyright`
   - Run only pytest: `poe pytest`
@@ -20,3 +20,9 @@ The following tests are **optional**. Some of them are run by the CI but it is o
 - Use mypy nightly to validate the annotations: `poe mypy --mypy_nightly`
 - Use pyright in full strict mode: `poe pyright_strict`
 - Run stubtest to compare the installed pandas-stubs against pandas (this will fail): `poe stubtest`. If you have created an allowlist to ignore certain errors: `poe stubtest path_to_the_allow_list`
+
+Among the tests above, the following can be run directly during a PR by commenting in the discussion.
+
+- Run pytest against pandas nightly by commenting `/pandas_nightly`
+- Use mypy nightly to validate the annotations by commenting `/mypy_nightly`
+- Use pyright in full strict mode by commenting `/pyright_strict`
