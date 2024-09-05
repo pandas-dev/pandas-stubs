@@ -1874,7 +1874,7 @@ class DataFrame(NDFrame, OpsMixin):
     def pct_change(
         self,
         periods: int = ...,
-        fill_method: _str = ...,
+        fill_method: None = ...,
         limit: int | None = ...,
         freq=...,
         **kwargs,
