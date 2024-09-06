@@ -368,6 +368,28 @@ def test_types_dropna() -> None:
     res3: None = df.dropna(axis=0, how="all", subset=["col1"], inplace=True)
 
 
+def test_types_drop_duplicates() -> None:
+    # GH#59237
+    df = pd.DataFrame(
+        {
+            "AAA": ["foo", "bar", "foo", "bar", "foo", "bar", "bar", "foo"],
+            "B": ["one", "one", "two", "two", "two", "two", "one", "two"],
+            "C": [1, 1, 2, 2, 2, 2, 1, 2],
+            "D": range(8),
+        }
+    )
+
+    check(assert_type(df.drop_duplicates(["AAA"]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop_duplicates(("AAA",)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop_duplicates("AAA"), pd.DataFrame), pd.DataFrame)
+
+    if not PD_LTE_22:
+        check(assert_type(df.drop_duplicates({"AAA"}), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(df.drop_duplicates({"AAA": None}), pd.DataFrame), pd.DataFrame
+        )
+
+
 def test_types_fillna() -> None:
     df = pd.DataFrame(data={"col1": [np.nan, np.nan], "col2": [3, np.nan]})
     res: pd.DataFrame = df.fillna(0)

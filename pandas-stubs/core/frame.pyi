@@ -901,7 +901,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame | None: ...
     def drop_duplicates(
         self,
-        subset=...,
+        subset: Hashable | Iterable[Hashable] | None = ...,
         *,
         keep: NaPosition | _bool = ...,
         inplace: _bool = ...,
@@ -909,7 +909,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def duplicated(
         self,
-        subset: Hashable | Sequence[Hashable] | None = ...,
+        subset: Hashable | Iterable[Hashable] | None = ...,
         keep: NaPosition | _bool = ...,
     ) -> Series: ...
     @overload
