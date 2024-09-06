@@ -18,6 +18,7 @@ from typing import (
     TypeVar,
     overload,
 )
+import sys
 
 import numpy as np
 from numpy import typing as npt
@@ -738,7 +739,20 @@ JsonSeriesOrient: TypeAlias = Literal["split", "records", "index", "table"]
 TimestampConvention: TypeAlias = Literal["start", "end", "s", "e"]
 
 CSVEngine: TypeAlias = Literal["c", "python", "pyarrow", "python-fwf"]
-CSVQuoting: TypeAlias = Literal[0, 1, 2, 3, 4, 5]
+# [pandas-dev/pandas-stubs/991]
+# Ref: https://github.com/python/cpython/blob/5a4fb7ea1c96f67dbb3df5d4ccaf3f66a1e19731/Modules/_csv.c#L88-L91
+# QUOTE_MINIMAL = 0
+# QUOTE_ALL = 1
+# QUOTE_NONNUMERIC = 2
+# QUOTE_NONE = 3
+# Added in 3.12:
+# QUOTE_STRINGS = 4
+# QUOTE_NOTNULL = 5
+CSVQuotingCompat: TypeAlias = Literal[0, 1, 2, 3]
+if sys.version_info < (3, 12):
+    CSVQuoting: TypeAlias = CSVQuotingCompat
+else:
+    CSVQuoting: TypeAlias = CSVQuotingCompat | Literal[4, 5]
 
 HDFCompLib: TypeAlias = Literal["zlib", "lzo", "bzip2", "blosc"]
 ParquetEngine: TypeAlias = Literal["auto", "pyarrow", "fastparquet"]
