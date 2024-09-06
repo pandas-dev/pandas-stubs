@@ -9,6 +9,7 @@ from collections.abc import (
 )
 import datetime
 from os import PathLike
+import sys
 from typing import (
     Any,
     Literal,
@@ -18,7 +19,6 @@ from typing import (
     TypeVar,
     overload,
 )
-import sys
 
 import numpy as np
 from numpy import typing as npt

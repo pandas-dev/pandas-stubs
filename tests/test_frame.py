@@ -15,6 +15,7 @@ import io
 import itertools
 from pathlib import Path
 import string
+import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -25,7 +26,6 @@ from typing import (
     Union,
     cast,
 )
-import sys
 
 import numpy as np
 import numpy.typing as npt
