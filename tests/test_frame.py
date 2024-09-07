@@ -15,6 +15,7 @@ import io
 import itertools
 from pathlib import Path
 import string
+import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -171,6 +172,13 @@ def test_types_to_csv() -> None:
 
     # Testing support for binary file handles, added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
     df.to_csv(io.BytesIO(), quoting=csv.QUOTE_ALL, encoding="utf-8", compression="gzip")
+
+    if sys.version_info >= (3, 12):
+        with ensure_clean() as path:
+            df.to_csv(path, quoting=csv.QUOTE_STRINGS)
+
+        with ensure_clean() as path:
+            df.to_csv(path, quoting=csv.QUOTE_NOTNULL)
 
 
 def test_types_to_csv_when_path_passed() -> None:
