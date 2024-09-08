@@ -1477,14 +1477,24 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     def first_valid_index(self) -> Scalar: ...
     def last_valid_index(self) -> Scalar: ...
+    @overload
     def value_counts(
         self,
-        normalize: _bool = ...,
+        normalize: Literal[False] = ...,
         sort: _bool = ...,
         ascending: _bool = ...,
         bins: int | None = ...,
         dropna: _bool = ...,
     ) -> Series[int]: ...
+    @overload
+    def value_counts(
+        self,
+        normalize: Literal[True],
+        sort: _bool = ...,
+        ascending: _bool = ...,
+        bins: int | None = ...,
+        dropna: _bool = ...,
+    ) -> Series[float]: ...
     def transpose(self, *args, **kwargs) -> Series[S1]: ...
     @property
     def T(self) -> Self: ...

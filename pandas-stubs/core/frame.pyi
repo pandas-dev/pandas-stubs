@@ -993,14 +993,24 @@ class DataFrame(NDFrame, OpsMixin):
         ignore_index: _bool = ...,
         key: Callable | None = ...,
     ) -> DataFrame | None: ...
+    @overload
     def value_counts(
         self,
         subset: Sequence[Hashable] | None = ...,
-        normalize: _bool = ...,
+        normalize: Literal[False] = ...,
         sort: _bool = ...,
         ascending: _bool = ...,
         dropna: _bool = ...,
     ) -> Series[int]: ...
+    @overload
+    def value_counts(
+        self,
+        normalize: Literal[True],
+        subset: Sequence[Hashable] | None = ...,
+        sort: _bool = ...,
+        ascending: _bool = ...,
+        dropna: _bool = ...,
+    ) -> Series[float]: ...
     def nlargest(
         self,
         n: int,
