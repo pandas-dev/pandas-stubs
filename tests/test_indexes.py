@@ -1135,3 +1135,13 @@ def test_get_loc() -> None:
         np.ndarray,
         np.bool_,
     )
+
+
+def test_value_counts() -> None:
+    nmi = pd.Index(list("abcb"))
+    check(assert_type(nmi.value_counts(), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(nmi.value_counts(normalize=True), "pd.Series[float]"),
+        pd.Series,
+        float,
+    )

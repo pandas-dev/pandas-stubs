@@ -610,7 +610,12 @@ def test_types_idxmax() -> None:
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
 def test_types_value_counts() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [1, 4]})
-    df.value_counts()
+    check(assert_type(df.value_counts(), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(df.value_counts(normalize=True), "pd.Series[float]"),
+        pd.Series,
+        float,
+    )
 
 
 def test_types_unique() -> None:

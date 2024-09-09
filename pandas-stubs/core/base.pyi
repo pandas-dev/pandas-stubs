@@ -7,10 +7,14 @@ from typing import (
     Generic,
     Literal,
     final,
+    overload,
 )
 
 import numpy as np
-from pandas import Index
+from pandas import (
+    Index,
+    Series,
+)
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
@@ -76,14 +80,24 @@ class IndexOpsMixin(OpsMixin, Generic[S1]):
     def __iter__(self) -> Iterator[S1]: ...
     @property
     def hasnans(self) -> bool: ...
+    @overload
     def value_counts(
         self,
-        normalize: bool = ...,
+        normalize: Literal[False] = ...,
         sort: bool = ...,
         ascending: bool = ...,
         bins=...,
         dropna: bool = ...,
-    ): ...
+    ) -> Series[int]: ...
+    @overload
+    def value_counts(
+        self,
+        normalize: Literal[True],
+        sort: bool = ...,
+        ascending: bool = ...,
+        bins=...,
+        dropna: bool = ...,
+    ) -> Series[float]: ...
     def nunique(self, dropna: bool = ...) -> int: ...
     @property
     def is_unique(self) -> bool: ...

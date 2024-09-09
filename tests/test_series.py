@@ -557,6 +557,11 @@ def test_types_idxmax() -> None:
 def test_types_value_counts() -> None:
     s = pd.Series(["a", "b"])
     check(assert_type(s.value_counts(), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(s.value_counts(normalize=True), "pd.Series[float]"),
+        pd.Series,
+        float,
+    )
 
 
 def test_types_unique() -> None:
