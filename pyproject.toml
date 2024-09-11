@@ -16,9 +16,9 @@ classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
   "Topic :: Scientific/Engineering",
 ]
 packages = [{ "include" = "pandas-stubs" }]
@@ -125,7 +125,7 @@ args = [
 
 
 [tool.black]
-target-version = ['py39']
+target-version = ['py310']
 
 [tool.isort]
 known_pre_libs = "pandas._config"
