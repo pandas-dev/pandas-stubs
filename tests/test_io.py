@@ -1238,6 +1238,39 @@ def test_read_sql_query_via_sqlalchemy_engine_with_params():
         engine.dispose()
 
 
+@pytest.mark.skip(
+    reason="Only works in Postgres (and MySQL, but with different query syntax)"
+)
+def test_read_sql_query_via_sqlalchemy_engine_with_tuple_valued_params():
+    with ensure_clean() as path:
+        db_uri = "postgresql+psycopg2://postgres@localhost:5432/postgres"
+        engine = sqlalchemy.create_engine(db_uri)
+
+        check(
+            assert_type(
+                read_sql_query(
+                    "select * from test where a in %(a)s",
+                    con=engine,
+                    params={"a": (1, 2)},
+                ),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+        check(
+            assert_type(
+                read_sql_query(
+                    "select * from test where a in %s",
+                    con=engine,
+                    params=((1, 2),),
+                ),
+                DataFrame,
+            ),
+            DataFrame,
+        )
+        engine.dispose()
+
+
 def test_read_html():
     check(assert_type(DF.to_html(), str), str)
     with ensure_clean() as path:
