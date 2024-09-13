@@ -3490,3 +3490,15 @@ def test_info() -> None:
     check(assert_type(df.info(show_counts=True), None), type(None))
     check(assert_type(df.info(show_counts=False), None), type(None))
     check(assert_type(df.info(show_counts=None), None), type(None))
+
+
+def test_series_typed_dict() -> None:
+    """Test that no error is raised when constructing a series from a typed dict."""
+
+    class MyDict(TypedDict):
+        a: str
+        b: str
+
+    my_dict = MyDict(a="", b="")
+    sr = pd.Series(my_dict)
+    check(assert_type(sr, pd.Series), pd.Series)
