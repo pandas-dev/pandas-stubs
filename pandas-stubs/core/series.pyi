@@ -702,6 +702,8 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: AxisIndex = ...,
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, Any]: ...
