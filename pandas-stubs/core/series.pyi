@@ -334,7 +334,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         data: (
             Scalar
             | _ListLike
-            | dict[HashableT1, Any]
+            | Mapping[HashableT1, Any]
             | BaseGroupBy
             | NaTType
             | NAType
