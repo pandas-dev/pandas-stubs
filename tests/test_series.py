@@ -40,6 +40,7 @@ import xarray as xr
 
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
+from pandas._libs.tslibs.offsets import YearEnd
 from pandas._typing import (
     DtypeObj,
     Scalar,
@@ -3027,6 +3028,20 @@ def test_timedeltaseries_operators() -> None:
         assert_type(series - datetime.timedelta(1), TimedeltaSeries),
         pd.Series,
         pd.Timedelta,
+    )
+
+
+def test_timestamp_series() -> None:
+    series = pd.Series([pd.Timestamp(2024, 4, 4)])
+    check(
+        assert_type(series + YearEnd(0), TimestampSeries),
+        TimestampSeries,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(series - YearEnd(0), TimestampSeries),
+        TimestampSeries,
+        pd.Timestamp,
     )
 
 
