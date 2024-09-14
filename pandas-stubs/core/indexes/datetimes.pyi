@@ -63,7 +63,7 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
     def __sub__(self, other: TimedeltaSeries) -> TimestampSeries: ...
     @overload
     def __sub__(
-        self, other: timedelta | Timedelta | TimedeltaIndex
+        self, other: timedelta | Timedelta | TimedeltaIndex | BaseOffset
     ) -> DatetimeIndex: ...
     @overload
     def __sub__(
