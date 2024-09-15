@@ -2073,7 +2073,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
 class TimestampSeries(Series[Timestamp]):
     @property
     def dt(self) -> TimestampProperties: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __add__(self, other: TimedeltaSeries | np.timedelta64 | timedelta) -> TimestampSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __add__(self, other: TimedeltaSeries | np.timedelta64 | timedelta | BaseOffset) -> TimestampSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __radd__(self, other: TimedeltaSeries | np.timedelta64 | timedelta) -> TimestampSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     @overload  # type: ignore[override]
     def __sub__(
@@ -2082,7 +2082,9 @@ class TimestampSeries(Series[Timestamp]):
     @overload
     def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
-        other: timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64,
+        other: (
+            timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64 | BaseOffset
+        ),
     ) -> TimestampSeries: ...
     def __mul__(self, other: float | Series[int] | Series[float] | Sequence[float]) -> TimestampSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __truediv__(self, other: float | Series[int] | Series[float] | Sequence[float]) -> TimestampSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
