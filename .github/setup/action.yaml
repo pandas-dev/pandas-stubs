@@ -13,7 +13,7 @@ runs:
   using: composite
   steps:
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ inputs.python-version }}
 
@@ -27,7 +27,7 @@ runs:
       id: poetry_version
 
     - name: Cache poetry.lock
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: poetry.lock
         key: ${{ inputs.os }}-${{ inputs.python-version }}-poetry-${{ steps.poetry_version.outputs.VERSION }}-${{ hashFiles('pyproject.toml') }}
