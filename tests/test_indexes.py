@@ -912,6 +912,12 @@ def test_getitem() -> None:
     check(assert_type(i0[[0, 2]], "pd.Index[str]"), pd.Index, str)
 
 
+def test_range_index_range() -> None:
+    """Test that pd.RangeIndex can be initialized from range."""
+    iri = pd.RangeIndex(range(5))
+    check(assert_type(iri, pd.RangeIndex), pd.RangeIndex, int)
+
+
 def test_multiindex_dtypes():
     # GH-597
     mi = pd.MultiIndex.from_tuples([(1, 2.0), (2, 3.0)], names=["foo", "bar"])
