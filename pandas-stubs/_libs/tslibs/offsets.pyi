@@ -12,6 +12,7 @@ from typing import (
     overload,
 )
 
+from dateutil.relativedelta import weekday as WeekdayClass
 import numpy as np
 from pandas.core.indexes.datetimes import DatetimeIndex
 from typing_extensions import Self
@@ -257,7 +258,7 @@ class DateOffset(RelativeDeltaOffset):
         year: int = ...,
         month: int = ...,
         day: int = ...,
-        weekday: int = ...,
+        weekday: int | WeekdayClass = ...,
         hour: int = ...,
         minute: int = ...,
         second: int = ...,

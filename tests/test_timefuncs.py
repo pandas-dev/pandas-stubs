@@ -8,6 +8,15 @@ from typing import (
     cast,
 )
 
+from dateutil.relativedelta import (
+    FR,
+    MO,
+    SA,
+    SU,
+    TH,
+    TU,
+    WE,
+)
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
@@ -19,7 +28,12 @@ from typing_extensions import (
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs import BaseOffset
-from pandas._libs.tslibs.offsets import DateOffset
+from pandas._libs.tslibs.offsets import (
+    DateOffset,
+    FY5253Mixin,
+    WeekOfMonth,
+    WeekOfMonthMixin,
+)
 
 if TYPE_CHECKING:
     from pandas._typing import FulldatetimeDict
@@ -1282,6 +1296,21 @@ def test_weekofmonth_init():
         ),
         pd.offsets.WeekOfMonth,
     )
+
+
+def test_dateoffset_weekday():
+    """Check that you can create a `pd.DateOffset` from weekday of int or dateutil.relativedelta."""
+    # check for int
+    check(
+        assert_type(pd.offsets.DateOffset(weekday=1), pd.offsets.DateOffset),
+        pd.offsets.DateOffset,
+    )
+    # check for relativedelta
+    for weekday in [MO, TU, WE, TH, TH, FR, SA, SU]:
+        check(
+            assert_type(pd.offsets.DateOffset(weekday=weekday), pd.offsets.DateOffset),
+            pd.offsets.DateOffset,
+        )
 
 
 def test_date_range_unit():
