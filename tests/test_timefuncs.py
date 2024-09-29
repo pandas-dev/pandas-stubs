@@ -28,12 +28,7 @@ from typing_extensions import (
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs import BaseOffset
-from pandas._libs.tslibs.offsets import (
-    DateOffset,
-    FY5253Mixin,
-    WeekOfMonth,
-    WeekOfMonthMixin,
-)
+from pandas._libs.tslibs.offsets import DateOffset
 
 if TYPE_CHECKING:
     from pandas._typing import FulldatetimeDict
