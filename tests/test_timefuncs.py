@@ -16,12 +16,10 @@ from dateutil.relativedelta import (
     TH,
     TU,
     WE,
-    weekday as WeekdayClass,
 )
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
-import pytest
 import pytz
 from typing_extensions import (
     assert_never,
@@ -1295,11 +1293,38 @@ def test_weekofmonth_init():
     )
 
 
-@pytest.mark.parametrize("weekday", [1, MO, TU, WE, TH, TH, FR, SA, SU])
-def test_dateoffset_weekday(weekday: int | WeekdayClass):
+def test_dateoffset_weekday() -> None:
     """Check that you can create a `pd.DateOffset` from weekday of int or relativedelta.weekday."""
     check(
-        assert_type(pd.offsets.DateOffset(weekday=weekday), pd.offsets.DateOffset),
+        assert_type(pd.offsets.DateOffset(weekday=1), pd.offsets.DateOffset),
+        pd.offsets.DateOffset,
+    )
+    check(
+        assert_type(pd.offsets.DateOffset(weekday=MO), pd.offsets.DateOffset),
+        pd.offsets.DateOffset,
+    )
+    check(
+        assert_type(pd.offsets.DateOffset(weekday=TU), pd.offsets.DateOffset),
+        pd.offsets.DateOffset,
+    )
+    check(
+        assert_type(pd.offsets.DateOffset(weekday=WE), pd.offsets.DateOffset),
+        pd.offsets.DateOffset,
+    )
+    check(
+        assert_type(pd.offsets.DateOffset(weekday=TH), pd.offsets.DateOffset),
+        pd.offsets.DateOffset,
+    )
+    check(
+        assert_type(pd.offsets.DateOffset(weekday=FR), pd.offsets.DateOffset),
+        pd.offsets.DateOffset,
+    )
+    check(
+        assert_type(pd.offsets.DateOffset(weekday=SA), pd.offsets.DateOffset),
+        pd.offsets.DateOffset,
+    )
+    check(
+        assert_type(pd.offsets.DateOffset(weekday=SU), pd.offsets.DateOffset),
         pd.offsets.DateOffset,
     )
 
