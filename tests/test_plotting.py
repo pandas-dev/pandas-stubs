@@ -627,8 +627,32 @@ def test_grouped_dataframe_hist(close_figures):
                 column="PetalWidth",
                 by="PetalLength",
                 grid=False,
-                xlabelsize=2,
-                ylabelsize=1,
+                xlabelsize=2.0,
+                ylabelsize=1.0,
+                yrot=10.0,
+                sharex=True,
+                sharey=False,
+                figsize=(1.5, 1.5),
+                bins=4,
+            ),
+            Series,
+        ),
+        Series,
+    )
+
+
+def test_grouped_dataframe_hist_str(close_figures):
+    df = IRIS_DF.iloc[:50]
+    grouped = df.groupby("Name")
+    check(assert_type(grouped.hist(), Series), Series)
+    check(
+        assert_type(
+            grouped.hist(
+                column="PetalWidth",
+                by="PetalLength",
+                grid=False,
+                xlabelsize="large",
+                ylabelsize="small",
                 yrot=10.0,
                 sharex=True,
                 sharey=False,
