@@ -121,9 +121,18 @@ def test_str_match() -> None:
 
 
 def test_index_rename() -> None:
+    """Test that index rename returns an element of type Index."""
     ind = pd.Index([1, 2, 3], name="foo")
     ind2 = ind.rename("goo")
     check(assert_type(ind2, "pd.Index[int]"), pd.Index, np.integer)
+
+
+def test_index_rename_inplace() -> None:
+    """Test that index rename in-place does not return anything (None)."""
+    ind = pd.Index([1, 2, 3], name="foo")
+    ind2 = ind.rename("goo", inplace=True)
+    check(assert_type(ind2, None), type(None))
+    assert ind2 is None
 
 
 def test_index_dropna():
