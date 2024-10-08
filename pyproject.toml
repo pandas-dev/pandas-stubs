@@ -34,10 +34,10 @@ numpy = ">= 1.23.5"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "1.10.1"
-pandas = "2.2.2"
+pandas = "2.2.3"
 pyarrow = ">=10.0.1"
 pytest = ">=7.1.2"
-pyright = ">= 1.1.374"
+pyright = ">= 1.1.383"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
 typing-extensions = ">=4.4.0"
