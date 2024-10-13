@@ -1025,6 +1025,24 @@ def test_types_pivot_table() -> None:
     )
 
 
+def test_types_groupby_as_index() -> None:
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    check(
+        assert_type(
+            df.groupby("a", as_index=False).size(),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.groupby("a", as_index=True).size(),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+    )
+
+
 def test_types_groupby() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0]})
     df.index.name = "ind"
@@ -1048,7 +1066,7 @@ def test_types_groupby() -> None:
 
     df1: pd.DataFrame = df.groupby(by="col1").agg("sum")
     df2: pd.DataFrame = df.groupby(level="ind").aggregate("sum")
-    df3: pd.DataFrame = df.groupby(by="col1", sort=False, as_index=True).transform(
+    df3: pd.Series = df.groupby(by="col1", sort=False, as_index=True).transform(
         lambda x: x.max()
     )
     df4: pd.DataFrame = df.groupby(by=["col1", "col2"]).count()

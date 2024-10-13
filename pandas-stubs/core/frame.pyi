@@ -25,7 +25,10 @@ from pandas import (
 )
 from pandas.core.arraylike import OpsMixin
 from pandas.core.generic import NDFrame
-from pandas.core.groupby.generic import DataFrameGroupBy
+from pandas.core.groupby.generic import (
+    DataFrameGroupBy,
+    SeriesGroupBy,
+)
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexers import BaseIndexer
 from pandas.core.indexes.base import Index
@@ -1052,17 +1055,29 @@ class DataFrame(NDFrame, OpsMixin):
         errors: IgnoreRaise = ...,
     ) -> None: ...
     @overload
-    def groupby(
+    def groupby(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         self,
         by: Scalar,
         axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
-        as_index: _bool = ...,
+        as_index: Literal[False] = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Scalar]: ...
+    @overload
+    def groupby(
+        self,
+        by: Scalar,
+        axis: AxisIndex | NoDefault = ...,
+        level: IndexLabel | None = ...,
+        as_index: Literal[True] = True,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        observed: _bool | NoDefault = ...,
+        dropna: _bool = ...,
+    ) -> SeriesGroupBy: ...
     @overload
     def groupby(
         self,
