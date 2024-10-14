@@ -664,8 +664,13 @@ def test_some_offsets() -> None:
         ),
         pd.DatetimeIndex,
     )
-    # GH 224
-    check(assert_type(dt.date.today() - Day(), dt.date), dt.date)
+    # GH 755
+    check(assert_type(dt.date.today() - Day(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(dt.date.today() + Day(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(Day() + dt.date.today(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(dt.datetime.now() - Day(), dt.datetime), dt.datetime)
+    check(assert_type(dt.datetime.now() + Day(), dt.datetime), dt.datetime)
+    check(assert_type(Day() + dt.datetime.now(), dt.datetime), dt.datetime)
     # GH 235
     check(
         assert_type(
