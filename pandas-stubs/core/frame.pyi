@@ -12,7 +12,10 @@ from re import Pattern
 from typing import (
     Any,
     ClassVar,
+    Generic,
     Literal,
+    TypeVar,
+    Union,
     overload,
 )
 
@@ -77,6 +80,7 @@ from pandas._typing import (
     Axis,
     AxisColumn,
     AxisIndex,
+    ByT,
     CalculationMethod,
     ColspaceArgType,
     CompressionOptions,
@@ -231,6 +235,14 @@ class _LocIndexerFrame(_LocIndexer):
         idx: tuple[_IndexSliceTuple, HashableT],
         value: Scalar | NAType | NaTType | ArrayLike | Series | list | None,
     ) -> None: ...
+
+TT = TypeVar("TT", bound=Union[Literal[True], Literal[False]])
+
+class DataFrameGroupByGen(DataFrameGroupBy[ByT], Generic[ByT, TT]):
+    pass
+
+class SeriesGroupByGen(SeriesGroupBy, Generic[TT, ByT]):
+    pass
 
 class DataFrame(NDFrame, OpsMixin):
     __hash__: ClassVar[None]  # type: ignore[assignment]
@@ -1055,19 +1067,7 @@ class DataFrame(NDFrame, OpsMixin):
         errors: IgnoreRaise = ...,
     ) -> None: ...
     @overload
-    def groupby(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-        self,
-        by: Scalar,
-        axis: AxisIndex | NoDefault = ...,
-        level: IndexLabel | None = ...,
-        as_index: Literal[False] = ...,
-        sort: _bool = ...,
-        group_keys: _bool = ...,
-        observed: _bool | NoDefault = ...,
-        dropna: _bool = ...,
-    ) -> DataFrameGroupBy[Scalar]: ...
-    @overload
-    def groupby(
+    def groupby(  # type: ignore[overload-overlap] # pyright: ignore reportOverlappingOverload
         self,
         by: Scalar,
         axis: AxisIndex | NoDefault = ...,
@@ -1077,7 +1077,19 @@ class DataFrame(NDFrame, OpsMixin):
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> SeriesGroupBy: ...
+    ) -> DataFrameGroupByGen[Scalar, Literal[True]]: ...
+    @overload
+    def groupby(
+        self,
+        by: Scalar,
+        axis: AxisIndex | NoDefault = ...,
+        level: IndexLabel | None = ...,
+        as_index: Literal[False] = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        observed: _bool | NoDefault = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupByGen[Scalar, Literal[False]]: ...
     @overload
     def groupby(
         self,
