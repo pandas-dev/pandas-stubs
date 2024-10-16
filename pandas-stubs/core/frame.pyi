@@ -15,7 +15,6 @@ from typing import (
     Generic,
     Literal,
     TypeVar,
-    Union,
     overload,
 )
 
@@ -236,13 +235,10 @@ class _LocIndexerFrame(_LocIndexer):
         value: Scalar | NAType | NaTType | ArrayLike | Series | list | None,
     ) -> None: ...
 
-TT = TypeVar("TT", bound=Union[Literal[True], Literal[False]])
+_TT = TypeVar("TT", bound=Literal[True, False])
 
-class DataFrameGroupByGen(DataFrameGroupBy[ByT], Generic[ByT, TT]):
-    pass
-
-class SeriesGroupByGen(SeriesGroupBy, Generic[TT, ByT]):
-    pass
+class DataFrameGroupByGen(DataFrameGroupBy[ByT], Generic[ByT, _TT]): ...
+class SeriesGroupByGen(SeriesGroupBy, Generic[_TT, ByT]): ...
 
 class DataFrame(NDFrame, OpsMixin):
     __hash__: ClassVar[None]  # type: ignore[assignment]
