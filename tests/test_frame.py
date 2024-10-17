@@ -1043,6 +1043,27 @@ def test_types_groupby_as_index() -> None:
     )
 
 
+def test_types_groupby_as_index_timestamp() -> None:
+    """Test groupby size with DatetimeIndex."""
+    idx = pd.DatetimeIndex(["2023-10-01", "2023-10-02", "2023-10-01"], name="date")
+    sub_idx = pd.DatetimeIndex(["2023-10-01", "2023-10-02"], name="date")
+    df = pd.DataFrame({"a": [1, 2, 3]}, index=idx)
+    check(
+        assert_type(
+            df.groupby(sub_idx, as_index=False).size(),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.groupby(sub_idx, as_index=True).size(),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+    )
+
+
 def test_types_groupby_size() -> None:
     """Test for GH886."""
     data = [

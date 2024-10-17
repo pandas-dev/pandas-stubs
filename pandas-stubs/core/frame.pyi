@@ -1076,17 +1076,29 @@ class DataFrame(NDFrame, OpsMixin):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Scalar, Literal[False]]: ...
     @overload
+    def groupby(  # type: ignore[overload-overlap] # pyright: ignore reportOverlappingOverload
+        self,
+        by: DatetimeIndex,
+        axis: AxisIndex | NoDefault = ...,
+        level: IndexLabel | None = ...,
+        as_index: Literal[True] = True,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        observed: _bool | NoDefault = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[Timestamp, Literal[True]]: ...
+    @overload
     def groupby(
         self,
         by: DatetimeIndex,
         axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
-        as_index: _bool = ...,
+        as_index: Literal[False] = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[Timestamp, bool]: ...
+    ) -> DataFrameGroupBy[Timestamp, Literal[False]]: ...
     @overload
     def groupby(
         self,

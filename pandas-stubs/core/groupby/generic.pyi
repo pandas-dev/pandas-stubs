@@ -30,6 +30,7 @@ from typing_extensions import (
 )
 
 from pandas._libs.lib import NoDefault
+from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     S1,
     AggFuncTypeBase,
@@ -395,3 +396,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     def size(self: DataFrameGroupBy[ByT, Literal[True]]) -> Series[int]: ...
     @overload
     def size(self: DataFrameGroupBy[ByT, Literal[False]]) -> DataFrame: ...
+    @overload
+    def size(self: DataFrameGroupBy[Timestamp, Literal[True]]) -> Series[int]: ...
+    @overload
+    def size(self: DataFrameGroupBy[Timestamp, Literal[False]]) -> DataFrame: ...
