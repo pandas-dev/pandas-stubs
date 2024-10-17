@@ -18,10 +18,7 @@ from typing import (
 
 import numpy as np
 from pandas.core.base import SelectionMixin
-from pandas.core.frame import (
-    DataFrame,
-    DataFrameGroupByGen,
-)
+from pandas.core.frame import DataFrame
 from pandas.core.groupby import (
     generic,
     ops,
@@ -56,7 +53,6 @@ from pandas._typing import (
     AnyArrayLike,
     Axis,
     AxisInt,
-    ByT,
     CalculationMethod,
     Dtype,
     Frequency,
@@ -236,13 +232,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     def sem(
         self: GroupBy[DataFrame], ddof: int = ..., numeric_only: bool = ...
     ) -> DataFrame: ...
-    @final
-    @overload
     def size(self: GroupBy[Series]) -> Series[int]: ...
-    @overload
-    def size(self: DataFrameGroupByGen[ByT, Literal[True]]) -> Series[int]: ...  # type: ignore[misc]
-    @overload
-    def size(self: DataFrameGroupByGen[ByT, Literal[False]]) -> DataFrame: ...  # type: ignore[misc]
     @final
     def sum(
         self,

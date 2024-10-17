@@ -1043,6 +1043,22 @@ def test_types_groupby_as_index() -> None:
     )
 
 
+def test_types_groupby_size() -> None:
+    """Test for GH886."""
+    data = [
+        {"date": "2023-12-01", "val": 12},
+        {"date": "2023-12-02", "val": 2},
+        {"date": "2023-12-03", "val": 1},
+        {"date": "2023-12-03", "val": 10},
+    ]
+
+    df = pd.DataFrame(data)
+    groupby = df.groupby("date")
+    size = groupby.size()
+    frame = size.to_frame()
+    check(assert_type(frame.reset_index(), pd.DataFrame), pd.DataFrame)
+
+
 def test_types_groupby() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5], "col3": [0, 1, 0]})
     df.index.name = "ind"
