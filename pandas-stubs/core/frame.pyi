@@ -12,9 +12,7 @@ from re import Pattern
 from typing import (
     Any,
     ClassVar,
-    Generic,
     Literal,
-    TypeVar,
     overload,
 )
 
@@ -27,10 +25,7 @@ from pandas import (
 )
 from pandas.core.arraylike import OpsMixin
 from pandas.core.generic import NDFrame
-from pandas.core.groupby.generic import (
-    DataFrameGroupBy,
-    SeriesGroupBy,
-)
+from pandas.core.groupby.generic import DataFrameGroupBy
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexers import BaseIndexer
 from pandas.core.indexes.base import Index
@@ -79,7 +74,6 @@ from pandas._typing import (
     Axis,
     AxisColumn,
     AxisIndex,
-    ByT,
     CalculationMethod,
     ColspaceArgType,
     CompressionOptions,
@@ -234,11 +228,6 @@ class _LocIndexerFrame(_LocIndexer):
         idx: tuple[_IndexSliceTuple, HashableT],
         value: Scalar | NAType | NaTType | ArrayLike | Series | list | None,
     ) -> None: ...
-
-_TT = TypeVar("TT", bound=Literal[True, False])
-
-class DataFrameGroupByGen(DataFrameGroupBy[ByT], Generic[ByT, _TT]): ...
-class SeriesGroupByGen(SeriesGroupBy, Generic[_TT, ByT]): ...
 
 class DataFrame(NDFrame, OpsMixin):
     __hash__: ClassVar[None]  # type: ignore[assignment]
@@ -1073,7 +1062,7 @@ class DataFrame(NDFrame, OpsMixin):
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupByGen[Scalar, Literal[True]]: ...
+    ) -> DataFrameGroupBy[Scalar, Literal[True]]: ...
     @overload
     def groupby(
         self,
@@ -1085,7 +1074,7 @@ class DataFrame(NDFrame, OpsMixin):
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupByGen[Scalar, Literal[False]]: ...
+    ) -> DataFrameGroupBy[Scalar, Literal[False]]: ...
     @overload
     def groupby(
         self,
@@ -1097,7 +1086,7 @@ class DataFrame(NDFrame, OpsMixin):
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[Timestamp]: ...
+    ) -> DataFrameGroupBy[Timestamp, bool]: ...
     @overload
     def groupby(
         self,
@@ -1109,7 +1098,7 @@ class DataFrame(NDFrame, OpsMixin):
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[Timedelta]: ...
+    ) -> DataFrameGroupBy[Timedelta, bool]: ...
     @overload
     def groupby(
         self,
@@ -1121,7 +1110,7 @@ class DataFrame(NDFrame, OpsMixin):
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[Period]: ...
+    ) -> DataFrameGroupBy[Period, bool]: ...
     @overload
     def groupby(
         self,
@@ -1133,7 +1122,7 @@ class DataFrame(NDFrame, OpsMixin):
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[IntervalT]: ...
+    ) -> DataFrameGroupBy[IntervalT, bool]: ...
     @overload
     def groupby(
         self,
@@ -1145,7 +1134,7 @@ class DataFrame(NDFrame, OpsMixin):
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[tuple]: ...
+    ) -> DataFrameGroupBy[tuple, bool]: ...
     @overload
     def groupby(
         self,
@@ -1157,7 +1146,7 @@ class DataFrame(NDFrame, OpsMixin):
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[SeriesByT]: ...
+    ) -> DataFrameGroupBy[SeriesByT, bool]: ...
     @overload
     def groupby(
         self,
@@ -1169,7 +1158,7 @@ class DataFrame(NDFrame, OpsMixin):
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[Any]: ...
+    ) -> DataFrameGroupBy[Any, bool]: ...
     def pivot(
         self,
         *,
