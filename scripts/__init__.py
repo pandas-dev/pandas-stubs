@@ -1,9 +1,10 @@
 import sys
+from typing import Any
 
 from loguru import logger
 
 # Config the format of log message
-config = {
+config: dict[str, Any] = {
     "handlers": [
         {
             "sink": sys.stderr,

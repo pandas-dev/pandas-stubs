@@ -605,7 +605,9 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __getitem__(self, key: Iterable[Hashable] | slice) -> DataFrame: ...  # pyright: ignore[reportOverlappingOverload]
+    def __getitem__(
+        self, key: Iterable[Hashable] | slice
+    ) -> DataFrame: ...  # pyright: ignore[reportOverlappingOverload]
     @overload
     def __getitem__(self, key: Hashable) -> Series: ...
     def isetitem(
