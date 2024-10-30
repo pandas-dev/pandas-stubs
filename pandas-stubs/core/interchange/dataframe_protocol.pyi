@@ -11,7 +11,7 @@ import enum
 from typing import (
     Any,
     TypedDict,
-    cast
+    cast,
 )
 
 class DlpackDeviceType(enum.IntEnum):
