@@ -120,7 +120,7 @@ def read_excel(
 ) -> dict[str, DataFrame]: ...
 @overload
 # mypy says this won't be matched
-def read_excel(  # type: ignore[misc]
+def read_excel(  # type: ignore[overload-cannot-match]
     io: (
         FilePath
         | ReadBuffer[bytes]

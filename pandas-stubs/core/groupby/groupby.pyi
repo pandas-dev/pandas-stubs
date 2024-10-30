@@ -139,7 +139,7 @@ class BaseGroupBy(SelectionMixin[NDFrameT], GroupByIndexingMixin):
     @final
     def __iter__(self) -> Iterator[tuple[Hashable, NDFrameT]]: ...
     @overload
-    def __getitem__(self: BaseGroupBy[DataFrame], key: Scalar | Hashable | tuple[Hashable, ...]) -> generic.SeriesGroupBy: ...  # type: ignore[overload-overlap]
+    def __getitem__(self: BaseGroupBy[DataFrame], key: Scalar | tuple[Hashable, ...]) -> generic.SeriesGroupBy: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __getitem__(
         self: BaseGroupBy[DataFrame], key: Iterable[Hashable] | slice

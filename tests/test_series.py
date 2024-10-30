@@ -3109,18 +3109,18 @@ def test_pipe() -> None:
             argument_3="hi",  # pyright: ignore[reportCallIssue]
             keyword_only=(1, 2),
         )
-        ser.pipe(  # type: ignore[misc]
+        ser.pipe(  # type: ignore[call-overload]
             first_arg_series,
             1,
             [1.0, 2.0],
-            11,  # type: ignore[arg-type]
+            11,
             (1, 2),  # pyright: ignore[reportCallIssue]
         )
-        ser.pipe(  # type: ignore[call-arg]
+        ser.pipe(  # type: ignore[call-overload]
             first_arg_series,
             positional_only=1,  # pyright: ignore[reportCallIssue]
             argument_1=[1.0, 2.0],
-            argument_2=11,  # type: ignore[arg-type]
+            argument_2=11,
             keyword_only=(1, 2),
         )
 

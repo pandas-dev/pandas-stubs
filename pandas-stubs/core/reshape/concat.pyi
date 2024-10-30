@@ -25,7 +25,7 @@ from pandas._typing import (
 )
 
 @overload
-def concat(
+def concat(  # type: ignore[overload-overlap]
     objs: Iterable[DataFrame] | Mapping[HashableT1, DataFrame],
     *,
     axis: Axis = ...,

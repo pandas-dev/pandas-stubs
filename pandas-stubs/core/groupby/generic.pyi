@@ -185,7 +185,7 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
 class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
     # error: Overload 3 for "apply" will never be used because its parameters overlap overload 1
     @overload  # type: ignore[override]
-    def apply(  # type: ignore[overload-overlap]
+    def apply(
         self,
         func: Callable[[DataFrame], Scalar | list | dict],
         *args,
@@ -229,13 +229,13 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
     def filter(
         self, func: Callable, dropna: bool = ..., *args, **kwargs
     ) -> DataFrame: ...
+    @overload  # type: ignore[override]
+    def __getitem__(self, key: slice) -> DataFrameGroupBy[ByT]: ...
     @overload
-    def __getitem__(  # type: ignore[overload-overlap]
-        self, key: Scalar | Hashable | tuple[Hashable, ...]
-    ) -> SeriesGroupBy[Any, ByT]: ...
+    def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> SeriesGroupBy[Any, ByT]: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, key: Iterable[Hashable] | slice
+        self, key: Iterable[Hashable]
     ) -> DataFrameGroupBy[ByT]: ...
     def nunique(self, dropna: bool = ...) -> DataFrame: ...
     def idxmax(
@@ -320,7 +320,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
         self, indices: TakeIndexer, axis: Axis | None | NoDefault = ..., **kwargs
     ) -> DataFrame: ...
     @overload
-    def skew(  # type: ignore[overload-overlap]
+    def skew(
         self,
         axis: Axis | None | NoDefault = ...,
         skipna: bool = ...,

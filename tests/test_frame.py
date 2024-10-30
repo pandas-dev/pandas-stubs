@@ -1742,18 +1742,18 @@ def test_pipe() -> None:
             argument_3="hi",  # pyright: ignore[reportCallIssue]
             keyword_only=(1, 2),
         )
-        df.pipe(  # type: ignore[misc]  # pyright: ignore[reportCallIssue]
+        df.pipe(  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue]
             qux,
             1,
             [1.0, 2.0],
-            11,  # type: ignore[arg-type]
+            11,
             (1, 2),  # pyright: ignore[reportCallIssue]
         )
-        df.pipe(  # type: ignore[call-arg]  # pyright: ignore[reportCallIssue]
+        df.pipe(  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue]
             qux,
             positional_only=1,  # pyright: ignore[reportCallIssue]
             argument_1=[1.0, 2.0],
-            argument_2=11,  # type: ignore[arg-type]
+            argument_2=11,
             keyword_only=(1, 2),
         )
 
@@ -1928,7 +1928,7 @@ def test_types_regressions() -> None:
     tslist: list[pd.Timestamp] = list(pd.to_datetime(["2022-01-01", "2022-01-02"]))
     sseries: pd.Series = pd.Series(tslist)
     with pytest_warns_bounded(FutureWarning, "'d' is deprecated", lower="2.2.99"):
-        sseries + pd.Timedelta(1, "d")
+        foo = sseries + pd.Timedelta(1, "d")
 
     sseries_plus1: pd.Series = sseries + pd.Timedelta(1, "D")
 

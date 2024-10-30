@@ -190,7 +190,7 @@ class _LocIndexerFrame(_LocIndexer):
         ),
     ) -> DataFrame: ...
     @overload
-    def __getitem__(  # pyright: ignore[reportOverlappingOverload]
+    def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         self,
         idx: tuple[
             int | StrLike | tuple[Scalar, ...] | Callable[[DataFrame], ScalarT],
@@ -307,7 +307,7 @@ class DataFrame(NDFrame, OpsMixin):
         na_value: Scalar = ...,
     ) -> np.ndarray: ...
     @overload
-    def to_dict(  # type: ignore[overload-overlap]
+    def to_dict(
         self,
         orient: Literal["records"],
         *,
@@ -323,7 +323,7 @@ class DataFrame(NDFrame, OpsMixin):
         index: Literal[True] = ...,
     ) -> list[dict[Hashable, Any]]: ...
     @overload
-    def to_dict(  # type: ignore[overload-overlap]
+    def to_dict(
         self,
         orient: Literal["dict", "list", "series", "index"],
         *,
@@ -331,7 +331,7 @@ class DataFrame(NDFrame, OpsMixin):
         index: Literal[True] = ...,
     ) -> MutableMapping[Hashable, Any]: ...
     @overload
-    def to_dict(  # type: ignore[overload-overlap]
+    def to_dict(
         self,
         orient: Literal["split", "tight"],
         *,
@@ -339,7 +339,7 @@ class DataFrame(NDFrame, OpsMixin):
         index: bool = ...,
     ) -> MutableMapping[Hashable, Any]: ...
     @overload
-    def to_dict(  # type: ignore[overload-overlap]
+    def to_dict(
         self,
         orient: Literal["dict", "list", "series", "index"] = ...,
         *,
@@ -347,7 +347,7 @@ class DataFrame(NDFrame, OpsMixin):
         index: Literal[True] = ...,
     ) -> MutableMapping[Hashable, Any]: ...
     @overload
-    def to_dict(  # type: ignore[overload-overlap]
+    def to_dict(
         self,
         orient: Literal["split", "tight"] = ...,
         *,
@@ -605,7 +605,9 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __getitem__(self, key: Iterable[Hashable] | slice) -> DataFrame: ...
+    def __getitem__(  # pyright: ignore[reportOverlappingOverload]
+        self, key: Iterable[Hashable] | slice
+    ) -> DataFrame: ...
     @overload
     def __getitem__(self, key: Hashable) -> Series: ...
     def isetitem(
@@ -1193,7 +1195,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def diff(self, periods: int = ..., axis: Axis = ...) -> DataFrame: ...
     @overload
-    def agg(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def agg(  # pyright: ignore[reportOverlappingOverload]
         self, func: AggFuncTypeBase | AggFuncTypeDictSeries, axis: Axis = ..., **kwargs
     ) -> Series: ...
     @overload
@@ -1204,7 +1206,7 @@ class DataFrame(NDFrame, OpsMixin):
         **kwargs,
     ) -> DataFrame: ...
     @overload
-    def aggregate(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def aggregate(  # pyright: ignore[reportOverlappingOverload]
         self, func: AggFuncTypeBase | AggFuncTypeDictSeries, axis: Axis = ..., **kwargs
     ) -> Series: ...
     @overload
