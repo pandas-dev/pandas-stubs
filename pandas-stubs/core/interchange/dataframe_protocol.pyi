@@ -11,33 +11,34 @@ import enum
 from typing import (
     Any,
     TypedDict,
+    cast
 )
 
 class DlpackDeviceType(enum.IntEnum):
-    CPU: int
-    CUDA: int
-    CPU_PINNED: int
-    OPENCL: int
-    VULKAN: int
-    METAL: int
-    VPI: int
-    ROCM: int
+    CPU = cast(int, ...)
+    CUDA = cast(int, ...)
+    CPU_PINNED = cast(int, ...)
+    OPENCL = cast(int, ...)
+    VULKAN = cast(int, ...)
+    METAL = cast(int, ...)
+    VPI = cast(int, ...)
+    ROCM = cast(int, ...)
 
 class DtypeKind(enum.IntEnum):
-    INT: int
-    UINT: int
-    FLOAT: int
-    BOOL: int
-    STRING: int
-    DATETIME: int
-    CATEGORICAL: int
+    INT = cast(int, ...)
+    UINT = cast(int, ...)
+    FLOAT = cast(int, ...)
+    BOOL = cast(int, ...)
+    STRING = cast(int, ...)
+    DATETIME = cast(int, ...)
+    CATEGORICAL = cast(int, ...)
 
 class ColumnNullType(enum.IntEnum):
-    NON_NULLABLE: int
-    USE_NAN: int
-    USE_SENTINEL: int
-    USE_BITMASK: int
-    USE_BYTEMASK: int
+    NON_NULLABLE = cast(int, ...)
+    USE_NAN = cast(int, ...)
+    USE_SENTINEL = cast(int, ...)
+    USE_BITMASK = cast(int, ...)
+    USE_BYTEMASK = cast(int, ...)
 
 class ColumnBuffers(TypedDict):
     data: tuple[Buffer, Any]
