@@ -1090,7 +1090,7 @@ class DataFrame(NDFrame, OpsMixin):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timestamp, Literal[True]]: ...
     @overload
-    def groupby(
+    def groupby(  # type: ignore[overload-overlap]
         self,
         by: DatetimeIndex,
         axis: AxisIndex | NoDefault = ...,
