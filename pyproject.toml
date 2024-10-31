@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pandas-stubs"
-version = "2.2.2.240909"
+version = "2.2.3.241009"
 description = "Type annotations for pandas"
 authors = ["The Pandas Development Team <pandas-dev@python.org>"]
 license = "BSD-3-Clause"
@@ -37,7 +37,7 @@ mypy = "1.10.1"
 pandas = "2.2.3"
 pyarrow = ">=10.0.1"
 pytest = ">=7.1.2"
-pyright = ">= 1.1.383"
+pyright = ">= 1.1.387"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
 typing-extensions = ">=4.4.0"
