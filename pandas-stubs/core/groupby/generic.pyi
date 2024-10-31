@@ -11,6 +11,7 @@ from typing import (
     Generic,
     Literal,
     NamedTuple,
+    TypeVar,
     final,
     overload,
 )
@@ -29,6 +30,7 @@ from typing_extensions import (
 )
 
 from pandas._libs.lib import NoDefault
+from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     S1,
     AggFuncTypeBase,
@@ -182,7 +184,9 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
         self,
     ) -> Iterator[tuple[ByT, Series[S1]]]: ...
 
-class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
+_TT = TypeVar("_TT", bound=Literal[True, False])
+
+class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     # error: Overload 3 for "apply" will never be used because its parameters overlap overload 1
     @overload  # type: ignore[override]
     def apply(  # type: ignore[overload-overlap]
@@ -236,7 +240,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
     @overload
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride, reportOverlappingOverload]
         self, key: Iterable[Hashable] | slice
-    ) -> DataFrameGroupBy[ByT]: ...
+    ) -> DataFrameGroupBy[ByT, bool]: ...
     def nunique(self, dropna: bool = ...) -> DataFrame: ...
     def idxmax(
         self,
@@ -388,3 +392,11 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
     def __iter__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
     ) -> Iterator[tuple[ByT, DataFrame]]: ...
+    @overload
+    def size(self: DataFrameGroupBy[ByT, Literal[True]]) -> Series[int]: ...
+    @overload
+    def size(self: DataFrameGroupBy[ByT, Literal[False]]) -> DataFrame: ...
+    @overload
+    def size(self: DataFrameGroupBy[Timestamp, Literal[True]]) -> Series[int]: ...
+    @overload
+    def size(self: DataFrameGroupBy[Timestamp, Literal[False]]) -> DataFrame: ...
