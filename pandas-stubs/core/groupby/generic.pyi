@@ -229,10 +229,8 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
     def filter(
         self, func: Callable, dropna: bool = ..., *args, **kwargs
     ) -> DataFrame: ...
-    @overload  # type: ignore[override]
-    def __getitem__(self, key: slice) -> DataFrameGroupBy[ByT]: ...
     @overload
-    def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> SeriesGroupBy[Any, ByT]: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __getitem__(self, key: Scalar) -> SeriesGroupBy[Any, ByT]: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, key: Iterable[Hashable]
