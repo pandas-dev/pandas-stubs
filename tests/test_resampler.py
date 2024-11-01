@@ -234,18 +234,18 @@ def test_pipe() -> None:
             arg3="hi",  # pyright: ignore[reportCallIssue]
             kw=(1,),
         )
-        DF.resample("ME").pipe(  # type: ignore[misc]
+        DF.resample("ME").pipe(  # type: ignore[call-overload]
             j,
             1,
             [1.0],
-            11,  # type: ignore[arg-type]
+            11,
             (1,),  # pyright: ignore[reportCallIssue]
         )
-        DF.resample("ME").pipe(  # type: ignore[call-arg]
+        DF.resample("ME").pipe(  # type: ignore[call-overload]
             j,
             pos=1,  # pyright: ignore[reportCallIssue]
             arg1=[1.0],
-            arg2=11,  # type: ignore[arg-type]
+            arg2=11,
             kw=(1,),
         )
 

@@ -189,7 +189,7 @@ _TT = TypeVar("_TT", bound=Literal[True, False])
 class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     # error: Overload 3 for "apply" will never be used because its parameters overlap overload 1
     @overload  # type: ignore[override]
-    def apply(  # type: ignore[overload-overlap]
+    def apply(
         self,
         func: Callable[[DataFrame], Scalar | list | dict],
         *args,
@@ -234,12 +234,10 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         self, func: Callable, dropna: bool = ..., *args, **kwargs
     ) -> DataFrame: ...
     @overload
-    def __getitem__(  # type: ignore[overload-overlap]
-        self, key: Scalar | Hashable | tuple[Hashable, ...]
-    ) -> SeriesGroupBy[Any, ByT]: ...
+    def __getitem__(self, key: Scalar) -> SeriesGroupBy[Any, ByT]: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride, reportOverlappingOverload]
-        self, key: Iterable[Hashable] | slice
+    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, key: Iterable[Hashable]
     ) -> DataFrameGroupBy[ByT, bool]: ...
     def nunique(self, dropna: bool = ...) -> DataFrame: ...
     def idxmax(
@@ -324,7 +322,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         self, indices: TakeIndexer, axis: Axis | None | NoDefault = ..., **kwargs
     ) -> DataFrame: ...
     @overload
-    def skew(  # type: ignore[overload-overlap]
+    def skew(
         self,
         axis: Axis | None | NoDefault = ...,
         skipna: bool = ...,

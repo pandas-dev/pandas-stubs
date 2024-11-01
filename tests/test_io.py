@@ -896,7 +896,7 @@ def test_read_excel() -> None:
                 pd.DataFrame,
             ),
             pd.DataFrame,
-        ),
+        )
         check(
             assert_type(pd.read_excel(path, names=range(1), header=0), pd.DataFrame),
             pd.DataFrame,

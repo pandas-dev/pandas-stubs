@@ -1052,3 +1052,9 @@ def test_engine() -> None:
             other_kwarg="",
         )
     GB_DF.aggregate("size", engine="cython", engine_kwargs={})
+
+
+def test_groupby_getitem() -> None:
+    df = DataFrame(np.random.random((3, 4)), columns=["a", "b", "c", "d"])
+    check(assert_type(df.groupby("a")["b"].sum(), Series), Series, float)
+    check(assert_type(df.groupby("a")[["b", "c"]].sum(), DataFrame), DataFrame)
