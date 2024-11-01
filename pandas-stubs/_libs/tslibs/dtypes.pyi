@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import cast
 
 from .offsets import BaseOffset
 
@@ -29,16 +30,16 @@ class FreqGroup:
     def get_freq_group(code: int) -> int: ...
 
 class Resolution(Enum):
-    RESO_NS: int
-    RESO_US: int
-    RESO_MS: int
-    RESO_SEC: int
-    RESO_MIN: int
-    RESO_HR: int
-    RESO_DAY: int
-    RESO_MTH: int
-    RESO_QTR: int
-    RESO_YR: int
+    RESO_NS = cast(int, ...)
+    RESO_US = cast(int, ...)
+    RESO_MS = cast(int, ...)
+    RESO_SEC = cast(int, ...)
+    RESO_MIN = cast(int, ...)
+    RESO_HR = cast(int, ...)
+    RESO_DAY = cast(int, ...)
+    RESO_MTH = cast(int, ...)
+    RESO_QTR = cast(int, ...)
+    RESO_YR = cast(int, ...)
 
     def __lt__(self, other) -> bool: ...
     def __ge__(self, other) -> bool: ...
