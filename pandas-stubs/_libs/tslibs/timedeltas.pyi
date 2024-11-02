@@ -102,7 +102,7 @@ class Timedelta(timedelta):
     value: int
     def __new__(
         cls,
-        value: str | int | Timedelta | timedelta | np.timedelta64 | float = ...,
+        value: str | float | Timedelta | timedelta | np.timedelta64 = ...,
         unit: TimeDeltaUnitChoices = ...,
         *,
         days: float | np.integer | np.floating = ...,
