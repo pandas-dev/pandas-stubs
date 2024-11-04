@@ -149,6 +149,11 @@ def test_timedelta_series_arithmetic() -> None:
     r4: pd.TimedeltaIndex = tds1 / 10.2
 
 
+def test_timedelta_float_value() -> None:
+    # GH 1015
+    check(assert_type(pd.Timedelta(1.5, "h"), pd.Timedelta), pd.Timedelta)
+
+
 def test_timedelta_series_string() -> None:
     seq_list = ["1 day"]
     check(assert_type(pd.to_timedelta(seq_list), pd.TimedeltaIndex), pd.TimedeltaIndex)
