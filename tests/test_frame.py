@@ -1026,6 +1026,7 @@ def test_types_pivot_table() -> None:
 
 
 def test_types_groupby_as_index() -> None:
+    """Test type of groupby.size method depending on `as_index`."""
     df = pd.DataFrame({"a": [1, 2, 3]})
     check(
         assert_type(
@@ -1037,6 +1038,25 @@ def test_types_groupby_as_index() -> None:
     check(
         assert_type(
             df.groupby("a", as_index=True).size(),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+    )
+
+
+def test_types_groupby_as_index_value_counts() -> None:
+    """Test type of groupby.value_counts method depending on `as_index`."""
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    check(
+        assert_type(
+            df.groupby("a", as_index=False).value_counts(),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.groupby("a", as_index=True).value_counts(),
             "pd.Series[int]",
         ),
         pd.Series,

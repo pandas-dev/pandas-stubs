@@ -300,9 +300,10 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         backend: str | None = ...,
         **kwargs,
     ) -> PlotAxes | Series: ...  # Series[PlotAxes]
+    # def size(self: DataFrameGroupBy[ByT, Literal[True]]) -> Series[int]: ...
     @overload
     def value_counts(
-        self,
+        self: DataFrameGroupBy[ByT, Literal[True]],
         subset: ListLike | None = ...,
         normalize: Literal[False] = ...,
         sort: bool = ...,
@@ -311,13 +312,31 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     ) -> Series[int]: ...
     @overload
     def value_counts(
-        self,
+        self: DataFrameGroupBy[ByT, Literal[True]],
         subset: ListLike | None,
         normalize: Literal[True],
         sort: bool = ...,
         ascending: bool = ...,
         dropna: bool = ...,
     ) -> Series[float]: ...
+    @overload
+    def value_counts(
+        self: DataFrameGroupBy[ByT, Literal[False]],
+        subset: ListLike | None = ...,
+        normalize: Literal[False] = ...,
+        sort: bool = ...,
+        ascending: bool = ...,
+        dropna: bool = ...,
+    ) -> DataFrame: ...
+    @overload
+    def value_counts(
+        self: DataFrameGroupBy[ByT, Literal[False]],
+        subset: ListLike | None,
+        normalize: Literal[True],
+        sort: bool = ...,
+        ascending: bool = ...,
+        dropna: bool = ...,
+    ) -> DataFrame: ...
     def take(
         self, indices: TakeIndexer, axis: Axis | None | NoDefault = ..., **kwargs
     ) -> DataFrame: ...
