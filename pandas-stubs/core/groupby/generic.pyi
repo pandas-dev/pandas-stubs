@@ -300,7 +300,6 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         backend: str | None = ...,
         **kwargs,
     ) -> PlotAxes | Series: ...  # Series[PlotAxes]
-    # def size(self: DataFrameGroupBy[ByT, Literal[True]]) -> Series[int]: ...
     @overload
     def value_counts(
         self: DataFrameGroupBy[ByT, Literal[True]],
