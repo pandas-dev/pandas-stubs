@@ -2328,7 +2328,12 @@ def test_types_ffill() -> None:
     df = pd.DataFrame([[1, 2, 3]])
     check(assert_type(df.ffill(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.ffill(inplace=False), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.ffill(inplace=False, limit_area="inside"), pd.DataFrame),
+        pd.DataFrame,
+    )
     assert assert_type(df.ffill(inplace=True), None) is None
+    assert assert_type(df.ffill(inplace=True, limit_area="outside"), None) is None
 
 
 def test_types_bfill() -> None:
@@ -2336,7 +2341,12 @@ def test_types_bfill() -> None:
     df = pd.DataFrame([[1, 2, 3]])
     check(assert_type(df.bfill(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.bfill(inplace=False), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.bfill(inplace=False, limit_area="inside"), pd.DataFrame),
+        pd.DataFrame,
+    )
     assert assert_type(df.bfill(inplace=True), None) is None
+    assert assert_type(df.bfill(inplace=True, limit_area="outside"), None) is None
 
 
 def test_types_replace() -> None:
