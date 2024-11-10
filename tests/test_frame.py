@@ -22,7 +22,6 @@ from typing import (
     Any,
     Callable,
     Generic,
-    Never,
     TypedDict,
     TypeVar,
     Union,
@@ -40,6 +39,7 @@ from pandas.core.resample import (
 from pandas.core.series import Series
 import pytest
 from typing_extensions import (
+    Never,
     TypeAlias,
     assert_never,
     assert_type,
