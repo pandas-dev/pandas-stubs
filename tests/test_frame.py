@@ -7,6 +7,7 @@ from collections.abc import (
     Iterator,
     Mapping,
     MutableMapping,
+    Sequence,
 )
 import csv
 import datetime
@@ -21,6 +22,7 @@ from typing import (
     Any,
     Callable,
     Generic,
+    Never,
     TypedDict,
     TypeVar,
     Union,
@@ -3556,3 +3558,9 @@ def test_series_typed_dict() -> None:
     my_dict = MyDict(a="", b="")
     sr = pd.Series(my_dict)
     check(assert_type(sr, pd.Series), pd.Series)
+
+
+def test_series_empty_dtype() -> None:
+    """Test for the creation of a Series from an empty list GH571."""
+    new_tab: Sequence[Never] = []
+    check(assert_type(pd.Series(new_tab), "pd.Series[Any]"), pd.Series)
