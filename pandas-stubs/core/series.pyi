@@ -1300,6 +1300,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: AxisIndex | None = ...,
         inplace: Literal[True],
         limit: int | None = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
         downcast: dict | None = ...,
     ) -> None: ...
     @overload
@@ -1309,6 +1310,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: AxisIndex | None = ...,
         inplace: Literal[False] = ...,
         limit: int | None = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
         downcast: dict | None = ...,
     ) -> Series[S1]: ...
     @overload
@@ -1318,6 +1320,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: AxisIndex | None = ...,
         inplace: Literal[True],
         limit: int | None = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
         downcast: dict | None = ...,
     ) -> None: ...
     @overload
@@ -1327,18 +1330,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: AxisIndex | None = ...,
         inplace: Literal[False] = ...,
         limit: int | None = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
         downcast: dict | None = ...,
     ) -> Series[S1]: ...
-    @overload
-    def bfill(
-        self,
-        *,
-        value: S1 | dict | Series[S1] | DataFrame,
-        axis: AxisIndex = ...,
-        inplace: _bool = ...,
-        limit: int | None = ...,
-        downcast: dict | None = ...,
-    ) -> Series[S1] | None: ...
     def interpolate(
         self,
         method: InterpolateOptions = ...,

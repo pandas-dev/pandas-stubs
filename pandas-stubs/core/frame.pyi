@@ -1656,6 +1656,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: Axis | None = ...,
         inplace: Literal[True],
         limit: int | None = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
         downcast: dict | None = ...,
     ) -> None: ...
     @overload
@@ -1665,6 +1666,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: Axis | None = ...,
         inplace: Literal[False] = ...,
         limit: int | None = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
         downcast: dict | None = ...,
     ) -> DataFrame: ...
     def clip(
@@ -1736,6 +1738,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: Axis | None = ...,
         inplace: Literal[True],
         limit: int | None = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
         downcast: dict | None = ...,
     ) -> None: ...
     @overload
@@ -1745,6 +1748,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: Axis | None = ...,
         inplace: Literal[False] = ...,
         limit: int | None = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
         downcast: dict | None = ...,
     ) -> DataFrame: ...
     def filter(
