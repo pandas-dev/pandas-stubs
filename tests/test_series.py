@@ -1160,7 +1160,13 @@ def test_types_bfill() -> None:
     s1 = pd.Series([1, 2, 3])
     check(assert_type(s1.bfill(), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s1.bfill(inplace=False), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(s1.bfill(inplace=False, limit_area="inside"), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
     assert assert_type(s1.bfill(inplace=True), None) is None
+    assert assert_type(s1.bfill(inplace=True, limit_area="outside"), None) is None
 
 
 def test_types_ewm() -> None:
@@ -1205,7 +1211,13 @@ def test_types_ffill() -> None:
     s1 = pd.Series([1, 2, 3])
     check(assert_type(s1.ffill(), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s1.ffill(inplace=False), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(s1.ffill(inplace=False, limit_area="inside"), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
     assert assert_type(s1.ffill(inplace=True), None) is None
+    assert assert_type(s1.ffill(inplace=True, limit_area="outside"), None) is None
 
 
 def test_types_as_type() -> None:
