@@ -1333,17 +1333,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         limit_area: Literal["inside", "outside"] | None = ...,
         downcast: dict | None = ...,
     ) -> Series[S1]: ...
-    @overload
-    def bfill(
-        self,
-        *,
-        value: S1 | dict | Series[S1] | DataFrame,
-        axis: AxisIndex = ...,
-        inplace: _bool = ...,
-        limit: int | None = ...,
-        limit_area: Literal["inside", "outside"] | None = ...,
-        downcast: dict | None = ...,
-    ) -> Series[S1] | None: ...
     def interpolate(
         self,
         method: InterpolateOptions = ...,
