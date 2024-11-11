@@ -241,6 +241,16 @@ class Series(IndexOpsMixin[S1], NDFrame):
         copy: bool = ...,
     ) -> Series[float]: ...
     @overload
+    def __new__(  # type: ignore[overload-overlap]
+        cls,
+        data: Sequence[Never],
+        index: Axes | None = ...,
+        *,
+        dtype: Dtype = ...,
+        name: Hashable = ...,
+        copy: bool = ...,
+    ) -> Series[Any]: ...
+    @overload
     def __new__(
         cls,
         data: (
