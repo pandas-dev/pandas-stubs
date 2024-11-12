@@ -374,8 +374,12 @@ def test_arguments_drop() -> None:
 def test_types_dropna() -> None:
     df = pd.DataFrame(data={"col1": [np.nan, np.nan], "col2": [3, np.nan]})
     res: pd.DataFrame = df.dropna()
-    res2: pd.DataFrame = df.dropna(axis=1, thresh=1)
-    res3: None = df.dropna(axis=0, how="all", subset=["col1"], inplace=True)
+    res2: pd.DataFrame = df.dropna(ignore_index=True)
+    res3: pd.DataFrame = df.dropna(axis=1, thresh=1)
+    res4: None = df.dropna(axis=0, how="all", subset=["col1"], inplace=True)
+    res5: None = df.dropna(
+        axis=0, how="all", subset=["col1"], inplace=True, ignore_index=False
+    )
 
 
 def test_types_drop_duplicates() -> None:
@@ -392,6 +396,13 @@ def test_types_drop_duplicates() -> None:
     check(assert_type(df.drop_duplicates(["AAA"]), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop_duplicates(("AAA",)), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop_duplicates("AAA"), pd.DataFrame), pd.DataFrame)
+    assert assert_type(df.drop_duplicates("AAA", inplace=True), None) is None
+    check(
+        assert_type(
+            df.drop_duplicates("AAA", inplace=False, ignore_index=True), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
 
     if not PD_LTE_22:
         check(assert_type(df.drop_duplicates({"AAA"}), pd.DataFrame), pd.DataFrame)
