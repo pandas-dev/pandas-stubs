@@ -729,17 +729,17 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self,
         *,
         keep: NaPosition | Literal[False] = ...,
-        inplace: Literal[False] = ...,
+        inplace: Literal[True],
         ignore_index: _bool = ...,
-    ) -> Series[S1]: ...
+    ) -> None: ...
     @overload
     def drop_duplicates(
         self,
         *,
         keep: NaPosition | Literal[False] = ...,
-        inplace: Literal[True],
+        inplace: Literal[False] = ...,
         ignore_index: _bool = ...,
-    ) -> None: ...
+    ) -> Series[S1]: ...
     @overload
     def drop_duplicates(
         self,

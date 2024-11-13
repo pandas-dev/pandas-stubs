@@ -910,18 +910,18 @@ class DataFrame(NDFrame, OpsMixin):
         subset: Hashable | Iterable[Hashable] | None = ...,
         *,
         keep: NaPosition | _bool = ...,
-        inplace: Literal[False] = ...,
+        inplace: Literal[True],
         ignore_index: _bool = ...,
-    ) -> DataFrame: ...
+    ) -> None: ...
     @overload
     def drop_duplicates(
         self,
         subset: Hashable | Iterable[Hashable] | None = ...,
         *,
         keep: NaPosition | _bool = ...,
-        inplace: Literal[True] = ...,
+        inplace: Literal[False] = ...,
         ignore_index: _bool = ...,
-    ) -> None: ...
+    ) -> DataFrame: ...
     @overload
     def drop_duplicates(
         self,
