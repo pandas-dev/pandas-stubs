@@ -726,15 +726,27 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def unique(self) -> np.ndarray: ...
     @overload
     def drop_duplicates(
-        self, *, keep: NaPosition | Literal[False] = ..., inplace: Literal[False] = ...
-    ) -> Series[S1]: ...
-    @overload
-    def drop_duplicates(
-        self, *, keep: NaPosition | Literal[False] = ..., inplace: Literal[True]
+        self,
+        *,
+        keep: NaPosition | Literal[False] = ...,
+        inplace: Literal[True],
+        ignore_index: _bool = ...,
     ) -> None: ...
     @overload
     def drop_duplicates(
-        self, *, keep: NaPosition | Literal[False] = ..., inplace: bool = ...
+        self,
+        *,
+        keep: NaPosition | Literal[False] = ...,
+        inplace: Literal[False] = ...,
+        ignore_index: _bool = ...,
+    ) -> Series[S1]: ...
+    @overload
+    def drop_duplicates(
+        self,
+        *,
+        keep: NaPosition | Literal[False] = ...,
+        inplace: bool = ...,
+        ignore_index: _bool = ...,
     ) -> Series[S1] | None: ...
     def duplicated(self, keep: NaPosition | Literal[False] = ...) -> Series[_bool]: ...
     def idxmax(
@@ -1148,6 +1160,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: AxisIndex = ...,
         inplace: Literal[True],
         how: Literal["any", "all"] | None = ...,
+        ignore_index: _bool = ...,
     ) -> None: ...
     @overload
     def dropna(
@@ -1156,6 +1169,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: AxisIndex = ...,
         inplace: Literal[False] = ...,
         how: Literal["any", "all"] | None = ...,
+        ignore_index: _bool = ...,
     ) -> Series[S1]: ...
     @overload
     def dropna(
@@ -1164,6 +1178,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: AxisIndex = ...,
         inplace: _bool = ...,
         how: Literal["any", "all"] | None = ...,
+        ignore_index: _bool = ...,
     ) -> Series[S1] | None: ...
     def to_timestamp(
         self,
