@@ -1160,3 +1160,14 @@ def test_value_counts() -> None:
         pd.Series,
         float,
     )
+
+
+def test_index_naming() -> None:
+    """Test that we can set the names of an index as a hashable."""
+    df = pd.DataFrame({"a": ["a", "b", "c"], "i": [10, 11, 12]})
+
+    df.index.names = ["idx"]
+
+    df.index.names = ("idx2",)
+    df.index.names = [None]
+    df.index.names = (None,)
