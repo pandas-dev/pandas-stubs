@@ -81,11 +81,17 @@ def test_column_contains() -> None:
     # https://github.com/microsoft/python-type-stubs/issues/199
     df = pd.DataFrame({"A": [1, 2], "B": ["c", "d"], "E": [3, 4]})
 
-    collist = [column for column in df.columns]
-
-    collist2 = [column for column in df.columns[df.columns.str.contains("A|B")]]
-
-    length = len(df.columns[df.columns.str.contains("A|B")])
+    # check accessing the columns as Scalar
+    check(assert_type([column for column in df.columns], list[str]), list)
+    # check slicing the columns with a Series[bool]
+    check(
+        assert_type(
+            [column for column in df.columns[df.columns.str.contains("A|B")]], list[str]
+        ),
+        list,
+    )
+    # check that generic methods are defined on a slice of an index
+    check(assert_type(len(df.columns[df.columns.str.contains("A|B")]), int), int)
 
 
 def test_column_sequence() -> None:
@@ -1163,11 +1169,19 @@ def test_value_counts() -> None:
 
 
 def test_index_naming() -> None:
-    """Test that we can set the names of an index as a hashable."""
+    """
+    Test index names type both for the getter and the setter.
+
+    The names of an index should be settable with a sequence (not str) and names
+    property is a list[str | None] (FrozenList).
+    """
     df = pd.DataFrame({"a": ["a", "b", "c"], "i": [10, 11, 12]})
 
     df.index.names = ["idx"]
-
+    check(assert_type(df.index.names, list[str | None]), list)
     df.index.names = ("idx2",)
+    check(assert_type(df.index.names, list[str | None]), list)
     df.index.names = [None]
+    check(assert_type(df.index.names, list[str | None]), list)
     df.index.names = (None,)
+    check(assert_type(df.index.names, list[str | None]), list)
