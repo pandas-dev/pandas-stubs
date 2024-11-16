@@ -1625,3 +1625,28 @@ def test_read_excel_index_col() -> None:
             ),
             pd.DataFrame,
         )
+
+
+def test_read_json_engine() -> None:
+    """Test the engine argument for `pd.read_json` introduced with pandas 2.0."""
+    data = """{"index": {"0": 0, "1": 1},
+       "a": {"0": 1, "1": null},
+       "b": {"0": 2.5, "1": 4.5},
+       "c": {"0": true, "1": false},
+       "d": {"0": "a", "1": "b"},
+       "e": {"0": 1577.2, "1": 1577.1}}"""
+    check(
+        assert_type(pd.read_json(io.StringIO(data), engine="ujson"), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    data_lines = b"""{"col 1":"a","col 2":"b"}
+    {"col 1":"c","col 2":"d"}"""
+    dd = io.BytesIO(data_lines)
+    check(
+        assert_type(
+            pd.read_json(dd, lines=True, engine="pyarrow"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
