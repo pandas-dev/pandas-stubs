@@ -116,7 +116,7 @@ def test_xml():
 
 
 def test_xml_str():
-    with ensure_clean() as path:
+    with ensure_clean():
         out = check(assert_type(DF.to_xml(), str), str)
         check(assert_type(read_xml(io.StringIO(out)), DataFrame), DataFrame)
 
@@ -578,77 +578,151 @@ def _true_if_col1(s: str) -> bool:
 
 def test_types_read_csv() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
-    csv_df: str = df.to_csv()
+    check(assert_type(df.to_csv(), str), str)
 
     with ensure_clean() as path:
         df.to_csv(path)
-        df2: pd.DataFrame = pd.read_csv(path)
-        df3: pd.DataFrame = pd.read_csv(path, sep="a")
-        df4: pd.DataFrame = pd.read_csv(
-            path,
-            header=None,
-        )
-        df5: pd.DataFrame = pd.read_csv(
-            path, engine="python", true_values=["no", "No", "NO"], na_filter=False
-        )
-        df6: pd.DataFrame = pd.read_csv(
-            path,
-            skiprows=lambda x: x in [0, 2],
-            skip_blank_lines=True,
-            dayfirst=False,
-        )
-        df7: pd.DataFrame = pd.read_csv(path, nrows=2)
-        df8: pd.DataFrame = pd.read_csv(path, dtype={"a": float, "b": int})
-        df9: pd.DataFrame = pd.read_csv(path, usecols=["col1"])
-        df10: pd.DataFrame = pd.read_csv(path, usecols=[0])
-        df11: pd.DataFrame = pd.read_csv(path, usecols=np.array([0]))
-        df12: pd.DataFrame = pd.read_csv(path, usecols=("col1",))
-        df13: pd.DataFrame = pd.read_csv(path, usecols=pd.Series(data=["col1"]))
-        df14: pd.DataFrame = pd.read_csv(path, converters=None)
-        df15: pd.DataFrame = pd.read_csv(path, names=("first", "second"), header=0)
-        df16: pd.DataFrame = pd.read_csv(path, names=range(2), header=0)
-        df17: pd.DataFrame = pd.read_csv(path, names=(1, "two"), header=0)
-        df18: pd.DataFrame = pd.read_csv(
-            path,
-            names=(
-                (
-                    "first",
-                    1,
+        check(assert_type(pd.read_csv(path), pd.DataFrame), pd.DataFrame)
+        check(assert_type(pd.read_csv(path, sep="a"), pd.DataFrame), pd.DataFrame)
+        check(assert_type(pd.read_csv(path, header=None), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(
+                pd.read_csv(
+                    path,
+                    engine="python",
+                    true_values=["no", "No", "NO"],
+                    na_filter=False,
                 ),
-                ("last", 2),
+                pd.DataFrame,
             ),
-            header=0,
+            pd.DataFrame,
         )
-        df19: pd.DataFrame = pd.read_csv(path, usecols=None)
-        df20: pd.DataFrame = pd.read_csv(path, usecols=["col1"])
-        df21: pd.DataFrame = pd.read_csv(path, usecols=(0,))
-        df22: pd.DataFrame = pd.read_csv(path, usecols=range(1))
-        df23: pd.DataFrame = pd.read_csv(path, usecols=_true_if_col1)
-        df24: pd.DataFrame = pd.read_csv(
-            path, names=[1, 2], usecols=_true_if_greater_than_0, header=0, index_col=0
+        check(
+            assert_type(
+                pd.read_csv(
+                    path,
+                    skiprows=lambda x: x in [0, 2],
+                    skip_blank_lines=True,
+                    dayfirst=False,
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
         )
-        df25: pd.DataFrame = pd.read_csv(
-            path,
-            names=(("head", 1), ("tail", 2)),
-            usecols=_true_if_first_param_is_head,
-            header=0,
-            index_col=0,
+        check(assert_type(pd.read_csv(path, nrows=2), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(pd.read_csv(path, dtype={"a": float, "b": int}), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(pd.read_csv(path, usecols=["col1"]), pd.DataFrame), pd.DataFrame
+        )
+        check(assert_type(pd.read_csv(path, usecols=[0]), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(pd.read_csv(path, usecols=np.array([0])), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(pd.read_csv(path, usecols=("col1",)), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_csv(path, usecols=pd.Series(data=["col1"])), pd.DataFrame
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(pd.read_csv(path, converters=None), pd.DataFrame), pd.DataFrame
+        )
+        check(
+            assert_type(
+                pd.read_csv(path, names=("first", "second"), header=0), pd.DataFrame
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(pd.read_csv(path, names=range(2), header=0), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(pd.read_csv(path, names=(1, "two"), header=0), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_csv(
+                    path,
+                    names=(
+                        (
+                            "first",
+                            1,
+                        ),
+                        ("last", 2),
+                    ),
+                    header=0,
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(assert_type(pd.read_csv(path, usecols=None), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(pd.read_csv(path, usecols=["col1"]), pd.DataFrame), pd.DataFrame
+        )
+        check(assert_type(pd.read_csv(path, usecols=(0,)), pd.DataFrame), pd.DataFrame)
+        check(
+            assert_type(pd.read_csv(path, usecols=range(1)), pd.DataFrame), pd.DataFrame
+        )
+        check(
+            assert_type(pd.read_csv(path, usecols=_true_if_col1), pd.DataFrame),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_csv(
+                    path,
+                    names=[1, 2],
+                    usecols=_true_if_greater_than_0,
+                    header=0,
+                    index_col=0,
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
+        )
+        check(
+            assert_type(
+                pd.read_csv(
+                    path,
+                    names=(("head", 1), ("tail", 2)),
+                    usecols=_true_if_first_param_is_head,
+                    header=0,
+                    index_col=0,
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
         )
 
         if TYPE_CHECKING_INVALID_USAGE:
             pd.read_csv(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
             pd.read_csv(path, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
-        tfr1: TextFileReader = pd.read_csv(path, nrows=2, iterator=True, chunksize=3)
+        tfr1 = pd.read_csv(path, nrows=2, iterator=True, chunksize=3)
+        check(assert_type(tfr1, TextFileReader), TextFileReader)
         tfr1.close()
 
-        tfr2: TextFileReader = pd.read_csv(path, nrows=2, chunksize=1)
+        tfr2 = pd.read_csv(path, nrows=2, chunksize=1)
+        check(assert_type(tfr2, TextFileReader), TextFileReader)
         tfr2.close()
 
-        tfr3: TextFileReader = pd.read_csv(path, nrows=2, iterator=False, chunksize=1)
+        tfr3 = pd.read_csv(path, nrows=2, iterator=False, chunksize=1)
+        check(assert_type(tfr3, TextFileReader), TextFileReader)
         tfr3.close()
 
-        tfr4: TextFileReader = pd.read_csv(path, nrows=2, iterator=True)
+        tfr4 = pd.read_csv(path, nrows=2, iterator=True)
+        check(assert_type(tfr4, TextFileReader), TextFileReader)
         tfr4.close()
 
     df_dates = pd.DataFrame(data={"col1": ["2023-03-15", "2023-04-20"]})
@@ -656,14 +730,28 @@ def test_types_read_csv() -> None:
     with ensure_clean() as path:
         df_dates.to_csv(path)
 
-        df26: pd.DataFrame = pd.read_csv(
-            path, parse_dates=["col1"], date_format="%Y-%m-%d"
+        check(
+            assert_type(
+                pd.read_csv(path, parse_dates=["col1"], date_format="%Y-%m-%d"),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
         )
-        df27: pd.DataFrame = pd.read_csv(
-            path, parse_dates=["col1"], date_format={"col1": "%Y-%m-%d"}
+        check(
+            assert_type(
+                pd.read_csv(
+                    path, parse_dates=["col1"], date_format={"col1": "%Y-%m-%d"}
+                ),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
         )
-        df28: pd.DataFrame = pd.read_csv(
-            path, parse_dates=["col1"], date_format={1: "%Y-%m-%d"}
+        check(
+            assert_type(
+                pd.read_csv(path, parse_dates=["col1"], date_format={1: "%Y-%m-%d"}),
+                pd.DataFrame,
+            ),
+            pd.DataFrame,
         )
 
 
@@ -790,8 +878,10 @@ def test_types_read_table():
 
     with ensure_clean() as path:
         df.to_csv(path)
-
-        df2: pd.DataFrame = pd.read_table(path, sep=",", converters=None)
+        check(
+            assert_type(pd.read_table(path, sep=",", converters=None), pd.DataFrame),
+            pd.DataFrame,
+        )
 
 
 def test_btest_read_fwf():
@@ -834,7 +924,6 @@ def test_text_file_reader():
 
 
 def test_to_csv_series():
-    s: Series
     s = DF.iloc[:, 0]
     check(assert_type(s.to_csv(), str), str)
     with ensure_clean() as path:
@@ -1242,7 +1331,7 @@ def test_read_sql_query_via_sqlalchemy_engine_with_params():
     reason="Only works in Postgres (and MySQL, but with different query syntax)"
 )
 def test_read_sql_query_via_sqlalchemy_engine_with_tuple_valued_params():
-    with ensure_clean() as path:
+    with ensure_clean():
         db_uri = "postgresql+psycopg2://postgres@localhost:5432/postgres"
         engine = sqlalchemy.create_engine(db_uri)
 
