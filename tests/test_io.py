@@ -709,16 +709,20 @@ def test_types_read_csv() -> None:
             pd.read_csv(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
             pd.read_csv(path, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
-        tfr1: TextFileReader = pd.read_csv(path, nrows=2, iterator=True, chunksize=3)
+        tfr1 = pd.read_csv(path, nrows=2, iterator=True, chunksize=3)
+        check(assert_type(tfr1, TextFileReader), TextFileReader)
         tfr1.close()
 
-        tfr2: TextFileReader = pd.read_csv(path, nrows=2, chunksize=1)
+        tfr2 = pd.read_csv(path, nrows=2, chunksize=1)
+        check(assert_type(tfr2, TextFileReader), TextFileReader)
         tfr2.close()
 
-        tfr3: TextFileReader = pd.read_csv(path, nrows=2, iterator=False, chunksize=1)
+        tfr3 = pd.read_csv(path, nrows=2, iterator=False, chunksize=1)
+        check(assert_type(tfr3, TextFileReader), TextFileReader)
         tfr3.close()
 
-        tfr4: TextFileReader = pd.read_csv(path, nrows=2, iterator=True)
+        tfr4 = pd.read_csv(path, nrows=2, iterator=True)
+        check(assert_type(tfr4, TextFileReader), TextFileReader)
         tfr4.close()
 
     df_dates = pd.DataFrame(data={"col1": ["2023-03-15", "2023-04-20"]})
@@ -920,7 +924,6 @@ def test_text_file_reader():
 
 
 def test_to_csv_series():
-    s: Series
     s = DF.iloc[:, 0]
     check(assert_type(s.to_csv(), str), str)
     with ensure_clean() as path:
