@@ -28,6 +28,8 @@ from pandas.api.extensions import (
     ExtensionArray,
     ExtensionDtype,
 )
+from pandas.core.arrays.datetimes import DatetimeArray
+from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.window import ExponentialMovingWindow
 import pytest
 from typing_extensions import (
@@ -54,10 +56,6 @@ from tests import (
     pytest_warns_bounded,
 )
 from tests.extension.decimal.array import DecimalDtype
-
-from pandas.core.arrays.datetimes import DatetimeArray
-
-from pandas.core.arrays.timedeltas import TimedeltaArray
 
 if TYPE_CHECKING:
     from pandas.core.series import (
@@ -3381,9 +3379,8 @@ def test_case_when() -> None:
 
 def test_series_unique_timestamp() -> None:
     """Test type return of Series.unique on Series[datetime64[ns]]."""
-    sr = pd.Series(pd.bdate_range('2023-10-10', '2023-10-15'))
+    sr = pd.Series(pd.bdate_range("2023-10-10", "2023-10-15"))
     check(assert_type(sr.unique(), DatetimeArray), DatetimeArray)
-
 
 
 def test_series_unique_timedelta() -> None:
