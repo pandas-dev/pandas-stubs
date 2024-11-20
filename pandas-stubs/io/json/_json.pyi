@@ -73,7 +73,7 @@ def read_json(
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
     dtype_backend: DtypeBackend | NoDefault = ...,
-    engine: Literal["pyarrow"] = ...,
+    engine: Literal["pyarrow"],
 ) -> JsonReader[Series]: ...
 @overload
 def read_json(
@@ -92,13 +92,13 @@ def read_json(
         Literal["strict", "ignore", "replace", "backslashreplace", "surrogateescape"]
         | None
     ) = ...,
-    lines: Literal[True],
+    lines: Literal[True] = True,
     chunksize: int,
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
     dtype_backend: DtypeBackend | NoDefault = ...,
-    engine: Literal["pyarrow"] = ...,
+    engine: Literal["pyarrow"] = "pyarrow",
 ) -> JsonReader[DataFrame]: ...
 @overload
 def read_json(
@@ -142,13 +142,13 @@ def read_json(
         Literal["strict", "ignore", "replace", "backslashreplace", "surrogateescape"]
         | None
     ) = ...,
-    lines: Literal[True] = ...,
+    lines: Literal[True] = True,
     chunksize: None = ...,
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
     dtype_backend: DtypeBackend | NoDefault = ...,
-    engine: Literal["pyarrow"] = ...,
+    engine: Literal["pyarrow"] = "pyarrow",
 ) -> Series: ...
 @overload
 def read_json(
@@ -192,13 +192,13 @@ def read_json(
         Literal["strict", "ignore", "replace", "backslashreplace", "surrogateescape"]
         | None
     ) = ...,
-    lines: Literal[True] = ...,
+    lines: Literal[True] = True,
     chunksize: None = ...,
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
     dtype_backend: DtypeBackend | NoDefault = ...,
-    engine: Literal["pyarrow"] = ...,
+    engine: Literal["pyarrow"],
 ) -> DataFrame: ...
 
 class JsonReader(abc.Iterator, Generic[NDFrameT]):

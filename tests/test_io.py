@@ -1650,3 +1650,8 @@ def test_read_json_engine() -> None:
         ),
         pd.DataFrame,
     )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.read_json(dd, lines=False, engine="pyarrow")  # type: ignore # pyright: ignore
+        pd.read_json(io.StringIO(data), engine="pyarrow")  # type: ignore # pyright: ignore
+        pd.read_json(io.StringIO(data), lines=True, engine="pyarrow")  # type: ignore # pyright: ignore
