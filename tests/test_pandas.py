@@ -790,7 +790,7 @@ def test_lreshape() -> None:
 
 
 def test_factorize() -> None:
-    codes, uniques = pd.factorize(np.array(["b", "b", "a", "c", "b"]))
+    codes, uniques = pd.factorize(np.array(["b", "b", "a", "c", "b"]), sort=False)
     check(assert_type(codes, np.ndarray), np.ndarray)
     check(assert_type(uniques, np.ndarray), np.ndarray)
 
