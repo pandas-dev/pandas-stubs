@@ -880,6 +880,7 @@ class DataFrame(NDFrame, OpsMixin):
         thresh: int | None = ...,
         subset: ListLikeU | Scalar | None = ...,
         inplace: Literal[True],
+        ignore_index: _bool = ...,
     ) -> None: ...
     @overload
     def dropna(
@@ -890,6 +891,7 @@ class DataFrame(NDFrame, OpsMixin):
         thresh: int | None = ...,
         subset: ListLikeU | Scalar | None = ...,
         inplace: Literal[False] = ...,
+        ignore_index: _bool = ...,
     ) -> DataFrame: ...
     @overload
     def dropna(
@@ -900,7 +902,27 @@ class DataFrame(NDFrame, OpsMixin):
         thresh: int | None = ...,
         subset: ListLikeU | Scalar | None = ...,
         inplace: _bool | None = ...,
+        ignore_index: _bool = ...,
     ) -> DataFrame | None: ...
+    @overload
+    def drop_duplicates(
+        self,
+        subset: Hashable | Iterable[Hashable] | None = ...,
+        *,
+        keep: NaPosition | _bool = ...,
+        inplace: Literal[True],
+        ignore_index: _bool = ...,
+    ) -> None: ...
+    @overload
+    def drop_duplicates(
+        self,
+        subset: Hashable | Iterable[Hashable] | None = ...,
+        *,
+        keep: NaPosition | _bool = ...,
+        inplace: Literal[False] = ...,
+        ignore_index: _bool = ...,
+    ) -> DataFrame: ...
+    @overload
     def drop_duplicates(
         self,
         subset: Hashable | Iterable[Hashable] | None = ...,
@@ -908,7 +930,7 @@ class DataFrame(NDFrame, OpsMixin):
         keep: NaPosition | _bool = ...,
         inplace: _bool = ...,
         ignore_index: _bool = ...,
-    ) -> DataFrame: ...
+    ) -> DataFrame | None: ...
     def duplicated(
         self,
         subset: Hashable | Iterable[Hashable] | None = ...,
