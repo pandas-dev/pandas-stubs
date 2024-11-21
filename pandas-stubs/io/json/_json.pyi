@@ -42,7 +42,7 @@ def read_json(
         Literal["strict", "ignore", "replace", "backslashreplace", "surrogateescape"]
         | None
     ) = ...,
-    lines: bool,
+    lines: Literal[True],
     chunksize: int,
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
@@ -92,7 +92,7 @@ def read_json(
         Literal["strict", "ignore", "replace", "backslashreplace", "surrogateescape"]
         | None
     ) = ...,
-    lines: Literal[True] = True,
+    lines: Literal[True],
     chunksize: int,
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
@@ -117,7 +117,7 @@ def read_json(
         Literal["strict", "ignore", "replace", "backslashreplace", "surrogateescape"]
         | None
     ) = ...,
-    lines: Literal[True] = True,
+    lines: Literal[True],
     chunksize: int,
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
@@ -167,7 +167,7 @@ def read_json(
         Literal["strict", "ignore", "replace", "backslashreplace", "surrogateescape"]
         | None
     ) = ...,
-    lines: Literal[True] = True,
+    lines: Literal[True],
     chunksize: None = ...,
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
@@ -217,7 +217,7 @@ def read_json(
         Literal["strict", "ignore", "replace", "backslashreplace", "surrogateescape"]
         | None
     ) = ...,
-    lines: Literal[True] = True,
+    lines: Literal[True],
     chunksize: None = ...,
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
