@@ -729,8 +729,8 @@ InterpolateOptions: TypeAlias = Literal[
 ReplaceMethod: TypeAlias = Literal["pad", "ffill", "bfill"]
 SortKind: TypeAlias = Literal["quicksort", "mergesort", "heapsort", "stable"]
 NaPosition: TypeAlias = Literal["first", "last"]
-JoinHow: TypeAlias = Literal["left", "right", "outer", "inner"]
-MergeHow: TypeAlias = JoinHow | Literal["cross"]
+JoinHow: TypeAlias = Literal["left", "right", "outer", "inner", "cross"]
+MergeHow: TypeAlias = JoinHow
 JsonFrameOrient: TypeAlias = Literal[
     "split", "records", "index", "columns", "values", "table"
 ]
