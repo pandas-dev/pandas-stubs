@@ -6,6 +6,8 @@ from typing import Union
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
+from pandas.core.arrays.categorical import Categorical
+from pandas.core.indexes.base import Index
 from typing_extensions import (
     Never,
     assert_type,
@@ -1160,3 +1162,16 @@ def test_value_counts() -> None:
         pd.Series,
         float,
     )
+
+
+def test_index_factorize() -> None:
+    """Test Index.factorize method."""
+    codes, idx_uniques = pd.Index(["b", "b", "a", "c", "b"]).factorize()
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(idx_uniques, np.ndarray | Index | Categorical), pd.Index)
+
+    codes, idx_uniques = pd.Index(["b", "b", "a", "c", "b"]).factorize(
+        use_na_sentinel=False
+    )
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(idx_uniques, np.ndarray | Index | Categorical), pd.Index)
