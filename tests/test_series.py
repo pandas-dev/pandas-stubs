@@ -1238,16 +1238,17 @@ def test_types_as_type() -> None:
 
 
 def test_types_dot() -> None:
+    """Test typing of multiplication methods (dot and @) for Series."""
     s1 = pd.Series([0, 1, 2, 3])
     s2 = pd.Series([-1, 2, -3, 4])
     df1 = pd.DataFrame([[0, 1], [-2, 3], [4, -5], [6, 7]])
     n1 = np.array([[0, 1], [1, 2], [-1, -1], [2, 0]])
-    sc1: Scalar = s1.dot(s2)
-    sc2: Scalar = s1 @ s2
-    s3: pd.Series = s1.dot(df1)
-    s4: pd.Series = s1 @ df1
-    n2: np.ndarray = s1.dot(n1)
-    n3: np.ndarray = s1 @ n1
+    check(assert_type(s1.dot(s2), Scalar), np.int64)
+    check(assert_type(s1 @ s2, Scalar), np.int64)
+    check(assert_type(s1.dot(df1), "pd.Series[int]"), pd.Series, np.int64)
+    check(assert_type(s1 @ df1, pd.Series), pd.Series)
+    check(assert_type(s1.dot(n1), np.ndarray), np.ndarray)
+    check(assert_type(s1 @ n1, np.ndarray), np.ndarray)
 
 
 def test_series_loc_setitem() -> None:
