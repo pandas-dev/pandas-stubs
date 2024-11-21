@@ -1243,10 +1243,10 @@ def test_types_dot() -> None:
     n1 = np.array([[0, 1], [1, 2], [-1, -1], [2, 0]])
     check(assert_type(s1.dot(s2), Scalar), int)
     check(assert_type(s1 @ s2, Scalar), int)
-    check(assert_type(s1.dot(df1), "pd.Series[int]"),pd.Series, np.int64)
-    check(assert_type(s1 @ df1, pd.Series),pd.Series )
-    check(assert_type(s1.dot(n1), np.ndarray),np.ndarray )
-    check(assert_type(s1 @ n1, np.ndarray),np.ndarray )
+    check(assert_type(s1.dot(df1), "pd.Series[int]"), pd.Series, np.int64)
+    check(assert_type(s1 @ df1, pd.Series), pd.Series)
+    check(assert_type(s1.dot(n1), np.ndarray), np.ndarray)
+    check(assert_type(s1 @ n1, np.ndarray), np.ndarray)
 
 
 def test_series_loc_setitem() -> None:
