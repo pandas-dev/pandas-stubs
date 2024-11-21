@@ -1121,7 +1121,20 @@ def test_types_eq() -> None:
 
 
 def test_types_rename_axis() -> None:
-    s: pd.Series = pd.Series([1, 2, 3]).rename_axis("A")
+    s = pd.Series([1, 2, 3])
+    s.index.name = "a"
+
+    # Rename index with `mapper`
+    s.rename_axis("A")
+    s.rename_axis(["A"])
+    s.rename_axis(None)
+
+    # Rename index with `index`
+    s.rename_axis(index="A")
+    s.rename_axis(index=["A"])
+    s.rename_axis(index={"a": "A"})
+    s.rename_axis(index=lambda name: name.upper())
+    s.rename_axis(index=None)
 
 
 def test_types_values() -> None:

@@ -1955,6 +1955,27 @@ def test_types_rename() -> None:
     df.rename(columns=lambda s: s.upper())
 
 
+def test_types_rename_axis() -> None:
+    df = pd.DataFrame({"col_name": [1, 2, 3]})
+    df.index.name = "a"
+    df.columns.name = "b"
+
+    # Rename axes with `mapper` and `axis`
+    df.rename_axis("A")
+    df.rename_axis(["A"])
+    df.rename_axis(None)
+    df.rename_axis("B", axis=1)
+    df.rename_axis(["B"], axis=1)
+    df.rename_axis(None, axis=1)
+
+    # Rename axes with `index` and `columns`
+    df.rename_axis(index="A", columns="B")
+    df.rename_axis(index=["A"], columns=["B"])
+    df.rename_axis(index={"a": "A"}, columns={"b": "B"})
+    df.rename_axis(index=lambda name: name.upper(), columns=lambda name: name.upper())
+    df.rename_axis(index=None, columns=None)
+
+
 def test_types_eq() -> None:
     df1 = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
     res1: pd.DataFrame = df1 == 1

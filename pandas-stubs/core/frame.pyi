@@ -2070,40 +2070,44 @@ class DataFrame(NDFrame, OpsMixin):
         limit: int | None = ...,
         tolerance=...,
     ) -> DataFrame: ...
+    # Rename axis with `mapper`, `axis`, and `inplace=True`
     @overload
     def rename_axis(
         self,
-        mapper=...,
+        mapper: Scalar | ListLike | None = ...,
+        *,
         axis: Axis | None = ...,
         copy: _bool = ...,
-        *,
         inplace: Literal[True],
     ) -> None: ...
+    # Rename axis with `mapper`, `axis`, and `inplace=False`
     @overload
     def rename_axis(
         self,
-        mapper=...,
+        mapper: Scalar | ListLike | None = ...,
+        *,
         axis: Axis | None = ...,
         copy: _bool = ...,
-        *,
         inplace: Literal[False] = ...,
     ) -> DataFrame: ...
+    # Rename axis with `index` and/or `columns` and `inplace=True`
     @overload
     def rename_axis(
         self,
+        *,
         index: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
         columns: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
         copy: _bool = ...,
-        *,
         inplace: Literal[True],
     ) -> None: ...
+    # Rename axis with `index` and/or `columns` and `inplace=False`
     @overload
     def rename_axis(
         self,
+        *,
         index: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
         columns: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
         copy: _bool = ...,
-        *,
         inplace: Literal[False] = ...,
     ) -> DataFrame: ...
     def rfloordiv(
