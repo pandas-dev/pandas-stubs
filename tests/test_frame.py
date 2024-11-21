@@ -1064,6 +1064,13 @@ def test_types_groupby_as_index() -> None:
         ),
         pd.Series,
     )
+    check(
+        assert_type(
+            df.groupby("a").size(),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+    )
 
 
 def test_types_groupby_as_index_list() -> None:
@@ -1071,14 +1078,21 @@ def test_types_groupby_as_index_list() -> None:
     df = pd.DataFrame({"a": [1, 1, 2], "b": [2, 3, 2]})
     check(
         assert_type(
-            df.groupby("a", as_index=False).size(),
+            df.groupby(["a", "b"], as_index=False).size(),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     check(
         assert_type(
-            df.groupby("a", as_index=True).size(),
+            df.groupby(["a", "b"], as_index=True).size(),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            df.groupby(["a", "b"]).size(),
             "pd.Series[int]",
         ),
         pd.Series,
