@@ -1112,7 +1112,7 @@ class DataFrame(NDFrame, OpsMixin):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timestamp, Literal[True]]: ...
     @overload
-    def groupby(
+    def groupby(  # pyright: ignore reportOverlappingOverload
         self,
         by: DatetimeIndex,
         axis: AxisIndex | NoDefault = ...,
@@ -1124,77 +1124,149 @@ class DataFrame(NDFrame, OpsMixin):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timestamp, Literal[False]]: ...
     @overload
+    def groupby(  # pyright: ignore reportOverlappingOverload
+        self,
+        by: TimedeltaIndex,
+        axis: AxisIndex | NoDefault = ...,
+        level: IndexLabel | None = ...,
+        as_index: Literal[True] = True,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        observed: _bool | NoDefault = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[Timedelta, Literal[True]]: ...
+    @overload
     def groupby(
         self,
         by: TimedeltaIndex,
         axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
-        as_index: _bool = ...,
+        as_index: Literal[False] = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[Timedelta, bool]: ...
+    ) -> DataFrameGroupBy[Timedelta, Literal[False]]: ...
+    @overload
+    def groupby(  # pyright: ignore reportOverlappingOverload
+        self,
+        by: PeriodIndex,
+        axis: AxisIndex | NoDefault = ...,
+        level: IndexLabel | None = ...,
+        as_index: Literal[True] = True,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        observed: _bool | NoDefault = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[Period, Literal[True]]: ...
     @overload
     def groupby(
         self,
         by: PeriodIndex,
         axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
-        as_index: _bool = ...,
+        as_index: Literal[False] = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[Period, bool]: ...
+    ) -> DataFrameGroupBy[Period, Literal[False]]: ...
+    @overload
+    def groupby(  # pyright: ignore reportOverlappingOverload
+        self,
+        by: IntervalIndex[IntervalT],
+        axis: AxisIndex | NoDefault = ...,
+        level: IndexLabel | None = ...,
+        as_index: Literal[True] = True,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        observed: _bool | NoDefault = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[IntervalT, Literal[True]]: ...
     @overload
     def groupby(
         self,
         by: IntervalIndex[IntervalT],
         axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
-        as_index: _bool = ...,
+        as_index: Literal[False] = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[IntervalT, bool]: ...
+    ) -> DataFrameGroupBy[IntervalT, Literal[False]]: ...
     @overload
-    def groupby(
+    def groupby(  # type: ignore[overload-overlap] # pyright: ignore reportOverlappingOverload
         self,
         by: MultiIndex | GroupByObjectNonScalar | None = ...,
         axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
-        as_index: _bool = ...,
+        as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[tuple, bool]: ...
+    ) -> DataFrameGroupBy[tuple, Literal[True]]: ...
+    @overload
+    def groupby(  # type: ignore[overload-overlap]
+        self,
+        by: MultiIndex | GroupByObjectNonScalar | None = ...,
+        axis: AxisIndex | NoDefault = ...,
+        level: IndexLabel | None = ...,
+        as_index: Literal[False] = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        observed: _bool | NoDefault = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[tuple, Literal[False]]: ...
+    @overload
+    def groupby(  # pyright: ignore reportOverlappingOverload
+        self,
+        by: Series[SeriesByT],
+        axis: AxisIndex | NoDefault = ...,
+        level: IndexLabel | None = ...,
+        as_index: Literal[True] = True,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        observed: _bool | NoDefault = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[SeriesByT, Literal[True]]: ...
     @overload
     def groupby(
         self,
         by: Series[SeriesByT],
         axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
-        as_index: _bool = ...,
+        as_index: Literal[False] = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[SeriesByT, bool]: ...
+    ) -> DataFrameGroupBy[SeriesByT, Literal[False]]: ...
     @overload
     def groupby(
         self,
         by: CategoricalIndex | Index | Series,
         axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
-        as_index: _bool = ...,
+        as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[Any, bool]: ...
+    ) -> DataFrameGroupBy[Any, Literal[True]]: ...
+    @overload
+    def groupby(
+        self,
+        by: CategoricalIndex | Index | Series,
+        axis: AxisIndex | NoDefault = ...,
+        level: IndexLabel | None = ...,
+        as_index: Literal[False] = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        observed: _bool | NoDefault = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[Any, Literal[False]]: ...
     def pivot(
         self,
         *,

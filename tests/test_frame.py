@@ -504,8 +504,8 @@ def test_types_mean() -> None:
     s2: pd.Series = df.mean(axis=0)
     df2: pd.DataFrame = df.groupby(level=0).mean()
     if TYPE_CHECKING_INVALID_USAGE:
-        df3: pd.DataFrame = df.groupby(axis=1, level=0).mean()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
-        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).mean()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        df3: pd.DataFrame = df.groupby(axis=1, level=0).mean()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
+        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).mean()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
     s3: pd.Series = df.mean(axis=1, skipna=True, numeric_only=False)
 
 
@@ -515,8 +515,8 @@ def test_types_median() -> None:
     s2: pd.Series = df.median(axis=0)
     df2: pd.DataFrame = df.groupby(level=0).median()
     if TYPE_CHECKING_INVALID_USAGE:
-        df3: pd.DataFrame = df.groupby(axis=1, level=0).median()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
-        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).median()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        df3: pd.DataFrame = df.groupby(axis=1, level=0).median()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
+        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).median()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
     s3: pd.Series = df.median(axis=1, skipna=True, numeric_only=False)
 
 
@@ -1060,6 +1060,39 @@ def test_types_groupby_as_index() -> None:
     check(
         assert_type(
             df.groupby("a", as_index=True).size(),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            df.groupby("a").size(),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+    )
+
+
+def test_types_groupby_as_index_list() -> None:
+    """Test type of groupby.size method depending on list of grouper GH1045."""
+    df = pd.DataFrame({"a": [1, 1, 2], "b": [2, 3, 2]})
+    check(
+        assert_type(
+            df.groupby(["a", "b"], as_index=False).size(),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.groupby(["a", "b"], as_index=True).size(),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            df.groupby(["a", "b"]).size(),
             "pd.Series[int]",
         ),
         pd.Series,
