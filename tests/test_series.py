@@ -1241,8 +1241,8 @@ def test_types_dot() -> None:
     s2 = pd.Series([-1, 2, -3, 4])
     df1 = pd.DataFrame([[0, 1], [-2, 3], [4, -5], [6, 7]])
     n1 = np.array([[0, 1], [1, 2], [-1, -1], [2, 0]])
-    sc1: Scalar = s1.dot(s2)
-    sc2: Scalar = s1 @ s2
+    check(assert_type(s1.dot(s2), Scalar), int)
+    check(assert_type(s1 @ s2, Scalar), int)
     check(assert_type(s1.dot(df1), "pd.Series[int]"),pd.Series, np.int64)
     check(assert_type(s1 @ df1, pd.Series),pd.Series )
     check(assert_type(s1.dot(n1), np.ndarray),np.ndarray )
