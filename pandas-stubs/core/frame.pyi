@@ -1421,7 +1421,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         other: DataFrame | Series | list[DataFrame | Series],
         on: _str | list[_str] | None = ...,
-        how: JoinHow = ...,
+        how: MergeHow = ...,
         lsuffix: _str = ...,
         rsuffix: _str = ...,
         sort: _bool = ...,
