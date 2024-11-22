@@ -1124,16 +1124,12 @@ def test_types_rename_axis() -> None:
     s = pd.Series([1, 2, 3])
     s.index.name = "a"
 
-    # Rename index with `mapper`
     for _s in [
+        # Rename index with `mapper`
         s.rename_axis("A"),
         s.rename_axis(["A"]),
         s.rename_axis(None),
-    ]:
-        check(assert_type(_s, pd.Series[int]), pd.Series[int])
-
-    # Rename index with `index`
-    for _s in [
+        # Rename index with `index`
         s.rename_axis(index="A"),
         s.rename_axis(index=["A"]),
         s.rename_axis(index={"a": "A"}),
