@@ -1960,25 +1960,41 @@ def test_types_rename_axis() -> None:
     df.index.name = "a"
     df.columns.name = "b"
 
-    for _df in [
-        # Rename axes with `mapper` and `axis`
-        df.rename_axis("A"),
-        df.rename_axis(["A"]),
-        df.rename_axis(None),
-        df.rename_axis("B", axis=1),
-        df.rename_axis(["B"], axis=1),
-        df.rename_axis(None, axis=1),
-        # Rename axes with `index` and `columns`
-        df.rename_axis(index="A", columns="B"),
-        df.rename_axis(index=["A"], columns=["B"]),
-        df.rename_axis(index={"a": "A"}, columns={"b": "B"}),
-        df.rename_axis(
-            index=lambda name: name.upper(),
-            columns=lambda name: name.upper(),
+    # Rename axes with `mapper` and `axis`
+    check(assert_type(df.rename_axis("A"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.rename_axis(["A"]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.rename_axis(None), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.rename_axis("B", axis=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.rename_axis(["B"], axis=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.rename_axis(None, axis=1), pd.DataFrame), pd.DataFrame)
+
+    # Rename axes with `index` and `columns`
+    check(
+        assert_type(df.rename_axis(index="A", columns="B"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.rename_axis(index=["A"], columns=["B"]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.rename_axis(index={"a": "A"}, columns={"b": "B"}), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.rename_axis(
+                index=lambda name: name.upper(),
+                columns=lambda name: name.upper(),
+            ),
+            pd.DataFrame,
         ),
-        df.rename_axis(index=None, columns=None),
-    ]:
-        check(assert_type(_df, pd.DataFrame), pd.DataFrame)
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.rename_axis(index=None, columns=None), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_types_eq() -> None:

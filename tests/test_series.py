@@ -1124,19 +1124,20 @@ def test_types_rename_axis() -> None:
     s = pd.Series([1, 2, 3])
     s.index.name = "a"
 
-    for _s in [
-        # Rename index with `mapper`
-        s.rename_axis("A"),
-        s.rename_axis(["A"]),
-        s.rename_axis(None),
-        # Rename index with `index`
-        s.rename_axis(index="A"),
-        s.rename_axis(index=["A"]),
-        s.rename_axis(index={"a": "A"}),
-        s.rename_axis(index=lambda name: name.upper()),
-        s.rename_axis(index=None),
-    ]:
-        check(assert_type(_s, pd.Series[int]), pd.Series[int])
+    # Rename index with `mapper`
+    check(assert_type(s.rename_axis("A"), "pd.Series[int]"), pd.Series)
+    check(assert_type(s.rename_axis(["A"]), "pd.Series[int]"), pd.Series)
+    check(assert_type(s.rename_axis(None), "pd.Series[int]"), pd.Series)
+
+    # Rename index with `index`
+    check(assert_type(s.rename_axis(index="A"), "pd.Series[int]"), pd.Series)
+    check(assert_type(s.rename_axis(index=["A"]), "pd.Series[int]"), pd.Series)
+    check(assert_type(s.rename_axis(index={"a": "A"}), "pd.Series[int]"), pd.Series)
+    check(
+        assert_type(s.rename_axis(index=lambda name: name.upper()), "pd.Series[int]"),
+        pd.Series,
+    )
+    check(assert_type(s.rename_axis(index=None), "pd.Series[int]"), pd.Series)
 
 
 def test_types_values() -> None:
