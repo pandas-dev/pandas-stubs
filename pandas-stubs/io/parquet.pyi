@@ -14,6 +14,5 @@ def read_parquet(
     engine: ParquetEngine = ...,
     columns: list[str] | None = ...,
     storage_options: StorageOptions = ...,
-    use_nullable_dtypes: bool = ...,
     **kwargs: Any,
 ) -> DataFrame: ...
