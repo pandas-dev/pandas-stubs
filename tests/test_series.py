@@ -1121,7 +1121,26 @@ def test_types_eq() -> None:
 
 
 def test_types_rename_axis() -> None:
-    s: pd.Series = pd.Series([1, 2, 3]).rename_axis("A")
+    s = pd.Series([1, 2, 3])
+    s.index.name = "a"
+
+    # Rename index with `mapper`
+    check(assert_type(s.rename_axis("A"), "pd.Series[int]"), pd.Series)
+    check(assert_type(s.rename_axis(["A"]), "pd.Series[int]"), pd.Series)
+    check(assert_type(s.rename_axis(None), "pd.Series[int]"), pd.Series)
+
+    # Rename index with `index`
+    check(assert_type(s.rename_axis(index="A"), "pd.Series[int]"), pd.Series)
+    check(assert_type(s.rename_axis(index=["A"]), "pd.Series[int]"), pd.Series)
+    check(assert_type(s.rename_axis(index={"a": "A"}), "pd.Series[int]"), pd.Series)
+    check(
+        assert_type(s.rename_axis(index=lambda name: name.upper()), "pd.Series[int]"),
+        pd.Series,
+    )
+    check(assert_type(s.rename_axis(index=None), "pd.Series[int]"), pd.Series)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.rename_axis(columns="A")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
 
 
 def test_types_values() -> None:

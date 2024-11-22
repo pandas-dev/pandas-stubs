@@ -2076,24 +2076,41 @@ class Series(IndexOpsMixin[S1], NDFrame):
         numeric_only: _bool = ...,
         **kwargs,
     ) -> Scalar: ...
+    # Rename axis with `mapper`, `axis`, and `inplace=True`
     @overload
     def rename_axis(
         self,
-        mapper: Scalar | ListLike = ...,
-        index: Scalar | ListLike | Callable | dict | None = ...,
-        columns: Scalar | ListLike | Callable | dict | None = ...,
+        mapper: Scalar | ListLike | None = ...,
+        *,
         axis: AxisIndex | None = ...,
         copy: _bool = ...,
-        *,
         inplace: Literal[True],
     ) -> None: ...
+    # Rename axis with `mapper`, `axis`, and `inplace=False`
     @overload
     def rename_axis(
         self,
-        mapper: Scalar | ListLike = ...,
-        index: Scalar | ListLike | Callable | dict | None = ...,
-        columns: Scalar | ListLike | Callable | dict | None = ...,
+        mapper: Scalar | ListLike | None = ...,
+        *,
         axis: AxisIndex | None = ...,
+        copy: _bool = ...,
+        inplace: Literal[False] = ...,
+    ) -> Self: ...
+    # Rename axis with `index` and `inplace=True`
+    @overload
+    def rename_axis(
+        self,
+        *,
+        index: Scalar | ListLike | Callable | dict | None = ...,
+        copy: _bool = ...,
+        inplace: Literal[True],
+    ) -> None: ...
+    # Rename axis with `index` and `inplace=False`
+    @overload
+    def rename_axis(
+        self,
+        *,
+        index: Scalar | ListLike | Callable | dict | None = ...,
         copy: _bool = ...,
         inplace: Literal[False] = ...,
     ) -> Self: ...
