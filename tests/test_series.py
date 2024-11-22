@@ -1125,16 +1125,22 @@ def test_types_rename_axis() -> None:
     s.index.name = "a"
 
     # Rename index with `mapper`
-    s.rename_axis("A")
-    s.rename_axis(["A"])
-    s.rename_axis(None)
+    for _s in [
+        s.rename_axis("A"),
+        s.rename_axis(["A"]),
+        s.rename_axis(None),
+    ]:
+        check(assert_type(_s, pd.Series[int]), pd.Series[int])
 
     # Rename index with `index`
-    s.rename_axis(index="A")
-    s.rename_axis(index=["A"])
-    s.rename_axis(index={"a": "A"})
-    s.rename_axis(index=lambda name: name.upper())
-    s.rename_axis(index=None)
+    for _s in [
+        s.rename_axis(index="A"),
+        s.rename_axis(index=["A"]),
+        s.rename_axis(index={"a": "A"}),
+        s.rename_axis(index=lambda name: name.upper()),
+        s.rename_axis(index=None),
+    ]:
+        check(assert_type(_s, pd.Series[int]), pd.Series[int])
 
 
 def test_types_values() -> None:

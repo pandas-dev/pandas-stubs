@@ -1961,19 +1961,28 @@ def test_types_rename_axis() -> None:
     df.columns.name = "b"
 
     # Rename axes with `mapper` and `axis`
-    df.rename_axis("A")
-    df.rename_axis(["A"])
-    df.rename_axis(None)
-    df.rename_axis("B", axis=1)
-    df.rename_axis(["B"], axis=1)
-    df.rename_axis(None, axis=1)
+    for _df in [
+        df.rename_axis("A"),
+        df.rename_axis(["A"]),
+        df.rename_axis(None),
+        df.rename_axis("B", axis=1),
+        df.rename_axis(["B"], axis=1),
+        df.rename_axis(None, axis=1),
+    ]:
+        check(assert_type(_df, pd.DataFrame), pd.DataFrame)
 
     # Rename axes with `index` and `columns`
-    df.rename_axis(index="A", columns="B")
-    df.rename_axis(index=["A"], columns=["B"])
-    df.rename_axis(index={"a": "A"}, columns={"b": "B"})
-    df.rename_axis(index=lambda name: name.upper(), columns=lambda name: name.upper())
-    df.rename_axis(index=None, columns=None)
+    for _df in [
+        df.rename_axis(index="A", columns="B"),
+        df.rename_axis(index=["A"], columns=["B"]),
+        df.rename_axis(index={"a": "A"}, columns={"b": "B"}),
+        df.rename_axis(
+            index=lambda name: name.upper(),
+            columns=lambda name: name.upper(),
+        ),
+        df.rename_axis(index=None, columns=None),
+    ]:
+        check(assert_type(_df, pd.DataFrame), pd.DataFrame)
 
 
 def test_types_eq() -> None:
