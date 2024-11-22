@@ -2105,7 +2105,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         copy: _bool = ...,
         inplace: Literal[True],
     ) -> None: ...
-    # Rename axis with `index` and `inplace=True`
+    # Rename axis with `index` and `inplace=False`
     @overload
     def rename_axis(
         self,
