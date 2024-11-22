@@ -1139,6 +1139,9 @@ def test_types_rename_axis() -> None:
     )
     check(assert_type(s.rename_axis(index=None), "pd.Series[int]"), pd.Series)
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.rename_axis(columns="A")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+
 
 def test_types_values() -> None:
     n1: np.ndarray | ExtensionArray = pd.Series([1, 2, 3]).values
