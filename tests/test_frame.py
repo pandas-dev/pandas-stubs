@@ -2345,6 +2345,16 @@ def test_join() -> None:
     check(assert_type(left.join(right, validate="1:m"), pd.DataFrame), pd.DataFrame)
 
 
+def test_types_join() -> None:
+    df1 = pd.DataFrame({"A":[1,2], "B": ["test", "test"]})
+    df2 = pd.DataFrame({"C":[2, 3], "D": ["test", "test"]})
+    df1.join(df2, how="cross")
+    df1.join(df2, how="inner")
+    df1.join(df2, how="outer")
+    df1.join(df2, how="left")
+    df1.join(df2, how="right")
+
+
 def test_types_ffill() -> None:
     # GH 44
     df = pd.DataFrame([[1, 2, 3]])
