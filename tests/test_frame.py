@@ -47,6 +47,7 @@ from typing_extensions import (
 import xarray as xr
 
 from pandas._libs.missing import NAType
+from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import Scalar
 
 from tests import (
@@ -58,8 +59,6 @@ from tests import (
 
 from pandas.io.formats.style import Styler
 from pandas.io.parsers import TextFileReader
-
-from pandas._libs.tslibs.timestamps import Timestamp
 
 if TYPE_CHECKING:
     from pandas.core.frame import _PandasNamedTuple
@@ -136,42 +135,42 @@ def test_types_append() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame({"col1": [10, 20], "col2": [30, 40]})
     if TYPE_CHECKING_INVALID_USAGE:
-        s1: pd.DataFrame = df.append(df2)  # type: ignore[operator] # pyright: ignore[reportCallIssue]
-        s2: pd.DataFrame = df.append([1, 2, 3])  # type: ignore[operator] # pyright: ignore[reportCallIssue]
-        s3: pd.DataFrame = df.append([[1, 2, 3]])  # type: ignore[operator] # pyright: ignore[reportCallIssue]
-        s4: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        res1: pd.DataFrame = df.append(df2)  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        res2: pd.DataFrame = df.append([1, 2, 3])  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        res3: pd.DataFrame = df.append([[1, 2, 3]])  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        res4: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
             {("a", 1): [1, 2, 3], "b": df2}, ignore_index=True
         )
-        s5: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        res5: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
             {1: [1, 2, 3]}, ignore_index=True
         )
-        s6: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        res6: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
             {1: [1, 2, 3], "col2": [1, 2, 3]}, ignore_index=True
         )
-        s7: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        res7: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
             pd.Series([5, 6]), ignore_index=True
         )
-        s8: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        res8: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
             pd.Series([5, 6], index=["col1", "col2"]), ignore_index=True
         )
 
 
 def test_types_to_csv() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
-    check(assert_type(df.to_csv(), str), str )
+    check(assert_type(df.to_csv(), str), str)
 
     with ensure_clean() as path:
         df.to_csv(path)
-        check(assert_type(pd.read_csv(path), pd.DataFrame), pd.DataFrame )
+        check(assert_type(pd.read_csv(path), pd.DataFrame), pd.DataFrame)
 
     with ensure_clean() as path:
         df.to_csv(Path(path))
-        check(assert_type(pd.read_csv(Path(path)), pd.DataFrame), pd.DataFrame )
+        check(assert_type(pd.read_csv(Path(path)), pd.DataFrame), pd.DataFrame)
 
     # This keyword was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
     with ensure_clean() as path:
         df.to_csv(path, errors="replace")
-        check(assert_type(pd.read_csv(path), pd.DataFrame), pd.DataFrame )
+        check(assert_type(pd.read_csv(path), pd.DataFrame), pd.DataFrame)
 
     # Testing support for binary file handles, added in 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
     df.to_csv(io.BytesIO(), encoding="utf-8", compression="gzip")
@@ -192,12 +191,12 @@ def test_types_to_csv_when_path_passed() -> None:
     with ensure_clean() as file:
         path = Path(file)
         df.to_csv(path)
-        check(assert_type(pd.read_csv(path), pd.DataFrame), pd.DataFrame )
+        check(assert_type(pd.read_csv(path), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_copy() -> None:
     df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-    check(assert_type(df.copy(), pd.DataFrame), pd.DataFrame )
+    check(assert_type(df.copy(), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_getitem() -> None:
@@ -292,11 +291,11 @@ def test_types_boolean_indexing() -> None:
 def test_types_df_to_df_comparison() -> None:
     df = pd.DataFrame(data={"col1": [1, 2]})
     df2 = pd.DataFrame(data={"col1": [3, 2]})
-    check(assert_type(df > df2, pd.DataFrame), pd.DataFrame )
-    check(assert_type(df >= df2, pd.DataFrame), pd.DataFrame )
-    check(assert_type(df < df2, pd.DataFrame), pd.DataFrame )
-    check(assert_type(df <= df2, pd.DataFrame), pd.DataFrame )
-    check(assert_type(df == df2, pd.DataFrame), pd.DataFrame )
+    check(assert_type(df > df2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df >= df2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df < df2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df <= df2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df == df2, pd.DataFrame), pd.DataFrame)
 
 
 def test_types_head_tail() -> None:
@@ -426,65 +425,90 @@ def test_types_drop_duplicates() -> None:
 
 def test_types_fillna() -> None:
     df = pd.DataFrame(data={"col1": [np.nan, np.nan], "col2": [3, np.nan]})
-    check(assert_type(df.fillna(0), pd.DataFrame), pd.DataFrame )
-    check(assert_type(df.fillna(0, axis=1, inplace=True), None), type(None) )
+    check(assert_type(df.fillna(0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.fillna(0, axis=1, inplace=True), None), type(None))
 
 
 def test_types_sort_index() -> None:
     df = pd.DataFrame(data={"col1": [1, 2, 3, 4]}, index=[5, 1, 3, 2])
     df2 = pd.DataFrame(data={"col1": [1, 2, 3, 4]}, index=["a", "b", "c", "d"])
-    check(assert_type(df.sort_index(), pd.DataFrame), pd.DataFrame )
+    check(assert_type(df.sort_index(), pd.DataFrame), pd.DataFrame)
     level1 = (1, 2)
-    check(assert_type(df.sort_index(ascending=False, level=level1), pd.DataFrame), pd.DataFrame )
+    check(
+        assert_type(df.sort_index(ascending=False, level=level1), pd.DataFrame),
+        pd.DataFrame,
+    )
     level2: list[str] = ["a", "b", "c"]
-    check(assert_type(df2.sort_index(level=level2), pd.DataFrame), pd.DataFrame )
-    check(assert_type(df.sort_index(ascending=False, level=3), pd.DataFrame), pd.DataFrame )
-    check(assert_type(df.sort_index(kind="mergesort", inplace=True), None), type(None) )
+    check(assert_type(df2.sort_index(level=level2), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.sort_index(ascending=False, level=3), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(df.sort_index(kind="mergesort", inplace=True), None), type(None))
 
 
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
 def test_types_sort_index_with_key() -> None:
     df = pd.DataFrame(data={"col1": [1, 2, 3, 4]}, index=["a", "b", "C", "d"])
-    check(assert_type(df.sort_index(key=lambda k: k.str.lower()), pd.DataFrame), pd.DataFrame )
+    check(
+        assert_type(df.sort_index(key=lambda k: k.str.lower()), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_types_set_index() -> None:
     df = pd.DataFrame(
         data={"col1": [1, 2, 3, 4], "col2": ["a", "b", "c", "d"]}, index=[5, 1, 3, 2]
     )
-    check(assert_type(df.set_index("col1"), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.set_index("col1", drop=False), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.set_index("col1", append=True), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.set_index("col1", verify_integrity=True), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.set_index(["col1", "col2"]), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.set_index("col1", inplace=True), None ),type(None) )
+    check(assert_type(df.set_index("col1"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.set_index("col1", drop=False), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.set_index("col1", append=True), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.set_index("col1", verify_integrity=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.set_index(["col1", "col2"]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.set_index("col1", inplace=True), None), type(None))
     # GH 140
-    check(assert_type(df.set_index(pd.Index(["w", "x", "y", "z"])), pd.DataFrame ),pd.DataFrame )
+    check(
+        assert_type(df.set_index(pd.Index(["w", "x", "y", "z"])), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_types_query() -> None:
     df = pd.DataFrame(data={"col1": [1, 2, 3, 4], "col2": [3, 0, 1, 7]})
-    check(assert_type(df.query("col1 > col2"), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.query("col1 % col2 == 0", inplace=True), None ),type(None) )
+    check(assert_type(df.query("col1 > col2"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.query("col1 % col2 == 0", inplace=True), None), type(None))
 
 
 def test_types_eval() -> None:
     df = pd.DataFrame(data={"col1": [1, 2, 3, 4], "col2": [3, 0, 1, 7]})
-    check(assert_type(df.eval("E = col1 > col2", inplace=True), None ),type(None) )
-    check(assert_type(df.eval("C = col1 % col2 == 0", inplace=True), None ),type(None) )
+    check(assert_type(df.eval("E = col1 > col2", inplace=True), None), type(None))
+    check(assert_type(df.eval("C = col1 % col2 == 0", inplace=True), None), type(None))
 
 
 def test_types_sort_values() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    check(assert_type(df.sort_values("col1"), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.sort_values("col1", ascending=False, inplace=True), None ),type(None) )
-    check(assert_type(df.sort_values(by=["col1", "col2"], ascending=[True, False]), pd.DataFrame ),pd.DataFrame )
+    check(assert_type(df.sort_values("col1"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.sort_values("col1", ascending=False, inplace=True), None),
+        type(None),
+    )
+    check(
+        assert_type(
+            df.sort_values(by=["col1", "col2"], ascending=[True, False]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
 
 
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
 def test_types_sort_values_with_key() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    check(assert_type(df.sort_values(by="col1", key=lambda k: -k), pd.DataFrame ),pd.DataFrame )
+    check(
+        assert_type(df.sort_values(by="col1", key=lambda k: -k), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_types_shift() -> None:
@@ -504,10 +528,13 @@ def test_types_rank() -> None:
 
 def test_types_mean() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    check(assert_type(df.mean(), pd.Series ),pd.Series )
-    check(assert_type(df.mean(axis=0), pd.Series ),pd.Series )
-    check(assert_type(df.groupby(level=0).mean(), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.mean(axis=1, skipna=True, numeric_only=False), pd.Series ),pd.Series )
+    check(assert_type(df.mean(), pd.Series), pd.Series)
+    check(assert_type(df.mean(axis=0), pd.Series), pd.Series)
+    check(assert_type(df.groupby(level=0).mean(), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.mean(axis=1, skipna=True, numeric_only=False), pd.Series),
+        pd.Series,
+    )
     if TYPE_CHECKING_INVALID_USAGE:
         df3: pd.DataFrame = df.groupby(axis=1, level=0).mean()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
         df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).mean()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
@@ -515,10 +542,13 @@ def test_types_mean() -> None:
 
 def test_types_median() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    check(assert_type(df.median(), pd.Series ),pd.Series )
-    check(assert_type(df.median(axis=0), pd.Series ),pd.Series )
-    check(assert_type(df.groupby(level=0).median(), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.median(axis=1, skipna=True, numeric_only=False), pd.Series ),pd.Series )
+    check(assert_type(df.median(), pd.Series), pd.Series)
+    check(assert_type(df.median(axis=0), pd.Series), pd.Series)
+    check(assert_type(df.groupby(level=0).median(), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.median(axis=1, skipna=True, numeric_only=False), pd.Series),
+        pd.Series,
+    )
     if TYPE_CHECKING_INVALID_USAGE:
         df3: pd.DataFrame = df.groupby(axis=1, level=0).median()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
         df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).median()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
@@ -1160,12 +1190,34 @@ def test_types_groupby() -> None:
     df.groupby(pd.Grouper(level=0))
     df.groupby([pd.Grouper(level=0), pd.Grouper(key="col1")])
 
-    check(assert_type(df.groupby(by="col1").agg("sum"), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.groupby(level="ind").aggregate("sum"), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.groupby(by="col1", sort=False, as_index=True).transform( lambda x: x.max()), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.groupby(by=["col1", "col2"]).count(), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.groupby(by=["col1", "col2"]).filter(lambda x: x["col1"] > 0), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.groupby(by=["col1", "col2"]).nunique(), pd.DataFrame ),pd.DataFrame )
+    check(assert_type(df.groupby(by="col1").agg("sum"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.groupby(level="ind").aggregate("sum"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.groupby(by="col1", sort=False, as_index=True).transform(
+                lambda x: x.max()
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.groupby(by=["col1", "col2"]).count(), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(
+            df.groupby(by=["col1", "col2"]).filter(lambda x: x["col1"] > 0),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.groupby(by=["col1", "col2"]).nunique(), pd.DataFrame),
+        pd.DataFrame,
+    )
     with pytest_warns_bounded(
         FutureWarning,
         "(The provided callable <built-in function sum> is currently using|The behavior of DataFrame.sum with)",
@@ -1177,10 +1229,13 @@ def test_types_groupby() -> None:
             upper="2.2.99",
         ):
             if PD_LTE_22:
-                check(assert_type(df.groupby(by="col1").apply(sum), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.groupby("col1").transform("sum"), pd.DataFrame ),pd.DataFrame )
+                check(
+                    assert_type(df.groupby(by="col1").apply(sum), pd.DataFrame),
+                    pd.DataFrame,
+                )
+    check(assert_type(df.groupby("col1").transform("sum"), pd.DataFrame), pd.DataFrame)
     s1: pd.Series = df.set_index("col1")["col2"]
-    check(assert_type(s1.groupby("col1").transform("sum"), pd.Series ),pd.Series )
+    check(assert_type(s1.groupby("col1").transform("sum"), pd.Series), pd.Series)
 
 
 def test_types_groupby_methods() -> None:
@@ -1923,7 +1978,7 @@ def test_types_to_parquet() -> None:
     with ensure_clean() as path:
         df.to_parquet(Path(path))
         # to_parquet() returns bytes when no path given since 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
-        check(assert_type(df.to_parquet(), bytes ),bytes )
+        check(assert_type(df.to_parquet(), bytes), bytes)
 
 
 def test_types_to_latex() -> None:
@@ -1939,10 +1994,10 @@ def test_types_to_latex() -> None:
 
 def test_types_explode() -> None:
     df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
-    check(assert_type(df.explode("A"), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.explode("A", ignore_index=False), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.explode("A", ignore_index=True), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.explode(["A", "B"]), pd.DataFrame ),pd.DataFrame )
+    check(assert_type(df.explode("A"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.explode("A", ignore_index=False), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.explode("A", ignore_index=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.explode(["A", "B"]), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_rename() -> None:
@@ -2002,14 +2057,14 @@ def test_types_rename_axis() -> None:
 
 def test_types_eq() -> None:
     df1 = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
-    check(assert_type(df1 == 1, pd.DataFrame ),pd.DataFrame )
+    check(assert_type(df1 == 1, pd.DataFrame), pd.DataFrame)
     df2 = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
-    check(assert_type(df1 == df2, pd.DataFrame ),pd.DataFrame )
+    check(assert_type(df1 == df2, pd.DataFrame), pd.DataFrame)
 
 
 def test_types_as_type() -> None:
     df1 = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"])
-    check(assert_type(df1.astype({"A": "int32"}), pd.DataFrame ),pd.DataFrame )
+    check(assert_type(df1.astype({"A": "int32"}), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_dot() -> None:
@@ -2017,12 +2072,12 @@ def test_types_dot() -> None:
     df2 = pd.DataFrame([[0, 1], [1, 2], [-1, -1], [2, 0]])
     s1 = pd.Series([1, 1, 2, 1])
     np_array = np.array([[0, 1], [1, 2], [-1, -1], [2, 0]])
-    check(assert_type(df1 @ df2, pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df1.dot(df2), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df1 @ np_array, pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df1.dot(np_array), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df1 @ s1, pd.Series ),pd.Series )
-    check(assert_type(df1.dot(s1), pd.Series ),pd.Series )
+    check(assert_type(df1 @ df2, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df1.dot(df2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df1 @ np_array, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df1.dot(np_array), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df1 @ s1, pd.Series), pd.Series)
+    check(assert_type(df1.dot(s1), pd.Series), pd.Series)
 
 
 def test_types_regressions() -> None:
@@ -2031,34 +2086,43 @@ def test_types_regressions() -> None:
     df2: pd.DataFrame = df.astype(int)
 
     # https://github.com/microsoft/python-type-stubs/issues/38
-    check(assert_type(pd.DataFrame({"x": [12, 34], "y": [78, 9]}), pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.sort_values(["x", "y"], ascending=[True, False]), pd.DataFrame ),pd.DataFrame )
+    check(
+        assert_type(pd.DataFrame({"x": [12, 34], "y": [78, 9]}), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.sort_values(["x", "y"], ascending=[True, False]), pd.DataFrame),
+        pd.DataFrame,
+    )
 
     # https://github.com/microsoft/python-type-stubs/issues/55
     df3 = pd.DataFrame([["a", 1], ["b", 2]], columns=["let", "num"]).set_index("let")
-    df4 =  df3.reset_index()
-    check(assert_type(df4, pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df4[["num"]], pd.DataFrame ),pd.DataFrame )
+    df4 = df3.reset_index()
+    check(assert_type(df4, pd.DataFrame), pd.DataFrame)
+    check(assert_type(df4[["num"]], pd.DataFrame), pd.DataFrame)
 
     # https://github.com/microsoft/python-type-stubs/issues/58
     df1 = pd.DataFrame(columns=["a", "b", "c"])
     df2 = pd.DataFrame(columns=["a", "c"])
-    check(assert_type(df1.drop(columns=df2.columns), pd.DataFrame ),pd.DataFrame )
+    check(assert_type(df1.drop(columns=df2.columns), pd.DataFrame), pd.DataFrame)
 
     # https://github.com/microsoft/python-type-stubs/issues/60
     df1 = pd.DataFrame([["a", 1], ["b", 2]], columns=["let", "num"]).set_index("let")
     s2 = df1["num"]
-    check(assert_type(pd.merge(s2, df1, left_index=True, right_index=True), pd.DataFrame ),pd.DataFrame )
+    check(
+        assert_type(pd.merge(s2, df1, left_index=True, right_index=True), pd.DataFrame),
+        pd.DataFrame,
+    )
 
     # https://github.com/microsoft/python-type-stubs/issues/62
     df7: pd.DataFrame = pd.DataFrame({"x": [1, 2, 3]}, index=pd.Index(["a", "b", "c"]))
     index: pd.Index = pd.Index(["b"])
-    check(assert_type(df7.loc[index], pd.DataFrame ),pd.DataFrame )
+    check(assert_type(df7.loc[index], pd.DataFrame), pd.DataFrame)
 
     # https://github.com/microsoft/python-type-stubs/issues/31
     df = pd.DataFrame({"A": [1, 2, 3], "B": [5, 6, 7]})
-    check(assert_type(df.iloc[:, [0]], pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df.iloc[:, 0], pd.Series ),pd.Series )
+    check(assert_type(df.iloc[:, [0]], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.iloc[:, 0], pd.Series), pd.Series)
 
     df = pd.DataFrame(
         {
@@ -2080,14 +2144,18 @@ def test_types_regressions() -> None:
     ts2: pd.Series = pd.concat([s1, s2])
 
     # https://github.com/microsoft/python-type-stubs/issues/110
-    # TODO the type inference below is broken, a Timestamp is not infering as datetime.date
+    # TODO the type inference below is broken, a Timestamp is not inferring as datetime.date
     d: datetime.date = pd.Timestamp("2021-01-01")
     tslist: list[pd.Timestamp] = list(pd.to_datetime(["2022-01-01", "2022-01-02"]))
     sseries = pd.Series(tslist)
     with pytest_warns_bounded(FutureWarning, "'d' is deprecated", lower="2.2.99"):
         sseries + pd.Timedelta(1, "d")
 
-    check(assert_type(sseries + pd.Timedelta(1, "D"), TimestampSeries), pd.Series, Timestamp )
+    check(
+        assert_type(sseries + pd.Timedelta(1, "D"), TimestampSeries),
+        pd.Series,
+        Timestamp,
+    )
 
     # https://github.com/microsoft/pylance-release/issues/2133
     with pytest_warns_bounded(
@@ -2100,7 +2168,7 @@ def test_types_regressions() -> None:
         pd.date_range(start="2021-12-01", periods=24, freq="H")
 
     dr = pd.date_range(start="2021-12-01", periods=24, freq="h")
-    check(assert_type( dr.strftime("%H:%M:%S"), pd.Index), pd.Index, str)
+    check(assert_type(dr.strftime("%H:%M:%S"), pd.Index), pd.Index, str)
 
     # https://github.com/microsoft/python-type-stubs/issues/115
     df = pd.DataFrame({"A": [1, 2, 3], "B": [5, 6, 7]})
@@ -2346,7 +2414,7 @@ def test_indexslice_getitem():
 def test_compute_values():
     df = pd.DataFrame({"x": [1, 2, 3, 4]})
     s: pd.Series = pd.Series([10, 20, 30, 40])
-    check(assert_type(df["x"] + s.values, pd.Series ),pd.Series , np.int64)
+    check(assert_type(df["x"] + s.values, pd.Series), pd.Series, np.int64)
 
 
 # https://github.com/microsoft/python-type-stubs/issues/164
@@ -2357,9 +2425,9 @@ def test_sum_get_add() -> None:
     summer = df.sum(axis=1)
     check(assert_type(summer, pd.Series), pd.Series)
 
-    check(assert_type(s + summer, pd.Series ),pd.Series )
-    check(assert_type(s + df["y"], pd.Series ),pd.Series )
-    check(assert_type(summer + summer, pd.Series ),pd.Series )
+    check(assert_type(s + summer, pd.Series), pd.Series)
+    check(assert_type(s + df["y"], pd.Series), pd.Series)
+    check(assert_type(summer + summer, pd.Series), pd.Series)
 
 
 def test_getset_untyped() -> None:
@@ -2373,10 +2441,16 @@ def test_getmultiindex_columns() -> None:
     mi = pd.MultiIndex.from_product([[1, 2], ["a", "b"]])
     df = pd.DataFrame([[1, 2, 3, 4], [10, 20, 30, 40]], columns=mi)
     li: list[tuple[int, str]] = [(1, "a"), (2, "b")]
-    check(assert_type(df[[(1, "a"), (2, "b")]], pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df[li], pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df[ [(i, s) for i in [1] for s in df.columns.get_level_values(1)] ], pd.DataFrame ),pd.DataFrame )
-    check(assert_type(df[[df.columns[0]]], pd.DataFrame ),pd.DataFrame )
+    check(assert_type(df[[(1, "a"), (2, "b")]], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df[li], pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(
+            df[[(i, s) for i in [1] for s in df.columns.get_level_values(1)]],
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(assert_type(df[[df.columns[0]]], pd.DataFrame), pd.DataFrame)
     check(assert_type(df[df.columns[0]], pd.Series), pd.Series)
     check(assert_type(df[li[0]], pd.Series), pd.Series)
 
