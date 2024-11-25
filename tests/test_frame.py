@@ -2348,11 +2348,11 @@ def test_join() -> None:
 def test_types_join() -> None:
     df1 = pd.DataFrame({"A":[1,2], "B": ["test", "test"]})
     df2 = pd.DataFrame({"C":[2, 3], "D": ["test", "test"]})
-    df1.join(df2, how="cross")
-    df1.join(df2, how="inner")
-    df1.join(df2, how="outer")
-    df1.join(df2, how="left")
-    df1.join(df2, how="right")
+    check(assert_type(df1.join(df2, how="cross"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df1.join(df2, how="inner"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df1.join(df2, how="outer"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df1.join(df2, how="left"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df1.join(df2, how="right"), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_ffill() -> None:
