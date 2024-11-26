@@ -2346,8 +2346,8 @@ def test_join() -> None:
 
 
 def test_types_join() -> None:
-    df1 = pd.DataFrame({"A":[1,2], "B": ["test", "test"]})
-    df2 = pd.DataFrame({"C":[2, 3], "D": ["test", "test"]})
+    df1 = pd.DataFrame({"A": [1, 2], "B": ["test", "test"]})
+    df2 = pd.DataFrame({"C": [2, 3], "D": ["test", "test"]})
     check(assert_type(df1.join(df2, how="cross"), pd.DataFrame), pd.DataFrame)
     check(assert_type(df1.join(df2, how="inner"), pd.DataFrame), pd.DataFrame)
     check(assert_type(df1.join(df2, how="outer"), pd.DataFrame), pd.DataFrame)
