@@ -22,6 +22,8 @@ jobs:
         python-version: ["3.10", "3.11", "3.12"]
 
     name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }}
+    env:
+      HDF5_DIR: /opt/homebrew/opt/hdf5
 
     steps:
       - uses: actions/checkout@v4
