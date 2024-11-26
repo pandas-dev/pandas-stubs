@@ -485,7 +485,12 @@ def test_types_eval() -> None:
     df = pd.DataFrame(data={"col1": [1, 2, 3, 4], "col2": [3, 0, 1, 7]})
     check(assert_type(df.eval("E = col1 > col2", inplace=True), None), type(None))
     check(assert_type(df.eval("C = col1 % col2 == 0", inplace=True), None), type(None))
-    check(assert_type(df.eval("E = col1 > col2"), Scalar | np.ndarray | pd.DataFrame | pd.Series), pd.DataFrame)
+    check(
+        assert_type(
+            df.eval("E = col1 > col2"), Scalar | np.ndarray | pd.DataFrame | pd.Series
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_types_sort_values() -> None:
