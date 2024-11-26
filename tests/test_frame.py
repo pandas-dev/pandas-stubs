@@ -485,6 +485,7 @@ def test_types_eval() -> None:
     df = pd.DataFrame(data={"col1": [1, 2, 3, 4], "col2": [3, 0, 1, 7]})
     check(assert_type(df.eval("E = col1 > col2", inplace=True), None), type(None))
     check(assert_type(df.eval("C = col1 % col2 == 0", inplace=True), None), type(None))
+    check(assert_type(df.eval("E = col1 > col2"), Scalar | np.ndarray | pd.DataFrame | pd.Series), pd.DataFrame)
 
 
 def test_types_sort_values() -> None:
@@ -1234,7 +1235,8 @@ def test_types_groupby() -> None:
                     pd.DataFrame,
                 )
     check(assert_type(df.groupby("col1").transform("sum"), pd.DataFrame), pd.DataFrame)
-    s1: pd.Series = df.set_index("col1")["col2"]
+    s1 = df.set_index("col1")["col2"]
+    check(assert_type(s1, pd.Series), pd.Series)
     check(assert_type(s1.groupby("col1").transform("sum"), pd.Series), pd.Series)
 
 
@@ -2144,8 +2146,7 @@ def test_types_regressions() -> None:
     ts2: pd.Series = pd.concat([s1, s2])
 
     # https://github.com/microsoft/python-type-stubs/issues/110
-    # TODO the type inference below is broken, a Timestamp is not inferring as datetime.date
-    d: datetime.date = pd.Timestamp("2021-01-01")
+    check(assert_type(pd.Timestamp("2021-01-01"), pd.Timestamp), datetime.date)
     tslist: list[pd.Timestamp] = list(pd.to_datetime(["2022-01-01", "2022-01-02"]))
     sseries = pd.Series(tslist)
     with pytest_warns_bounded(FutureWarning, "'d' is deprecated", lower="2.2.99"):
