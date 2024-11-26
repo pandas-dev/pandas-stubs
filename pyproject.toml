@@ -47,7 +47,7 @@ black = ">=23.3.0"
 isort = ">=5.12.0"
 openpyxl = ">=3.0.10"
 # for tables, MacOS gives random CI failures on 3.9.2
-tables = { version = "==3.9.2", python = "<4" }   # 3.8.0 depends on blosc2 which caps python to <4
+tables = { version = ">=3.9.2", python = "<4" }   # 3.8.0 depends on blosc2 which caps python to <4
 lxml = ">=4.9.1"
 pyreadstat = ">=1.2.0"
 xlrd = ">=2.0.1"
