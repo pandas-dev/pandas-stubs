@@ -2429,6 +2429,15 @@ def test_astype_float(cast_arg: FloatDtypeArg, target_type: type) -> None:
             s.astype(cast_arg)
         pytest.skip("Windows does not support float128")
 
+    if (
+        platform.system() == "Darwin"
+        and platform.processor() == "arm"
+        and cast_arg in ("f16", "float128")
+    ):
+        with pytest.raises(TypeError):
+            s.astype(cast_arg)
+        pytest.skip("MacOS arm does not support float128")
+
     check(s.astype(cast_arg), pd.Series, target_type)
 
     if TYPE_CHECKING:
@@ -2481,6 +2490,15 @@ def test_astype_complex(cast_arg: ComplexDtypeArg, target_type: type) -> None:
         with pytest.raises(TypeError):
             s.astype(cast_arg)
         pytest.skip("Windows does not support complex256")
+
+    if (
+        platform.system() == "Darwin"
+        and platform.processor() == "arm"
+        and cast_arg in ("c32", "complex256")
+    ):
+        with pytest.raises(TypeError):
+            s.astype(cast_arg)
+        pytest.skip("MacOS arm does not support complex256")
 
     check(s.astype(cast_arg), pd.Series, target_type)
 

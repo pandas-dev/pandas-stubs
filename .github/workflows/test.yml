@@ -17,8 +17,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Don't use macos-latest because it is arm64
-        os: [ubuntu-latest, windows-latest, macos-13]
+        # macos-13 is intel-based, latest is arm
+        os: [ubuntu-latest, windows-latest, macos-13, macos-latest]
         python-version: ["3.10", "3.11", "3.12"]
 
     name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }}
