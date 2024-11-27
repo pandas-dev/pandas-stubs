@@ -3,7 +3,6 @@
 from typing import (
     TYPE_CHECKING,
     Literal,
-    assert_type,
 )
 
 import numpy as np
@@ -15,6 +14,7 @@ from pandas.api.typing import (
     NAType,
     SeriesGroupBy,
 )
+from typing_extensions import assert_type
 
 from pandas._typing import Scalar
 
