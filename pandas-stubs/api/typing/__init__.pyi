@@ -1,7 +1,3 @@
-"""
-Public API classes that store intermediate results useful for type-hinting.
-"""
-
 from pandas.core.groupby import (
     DataFrameGroupBy as DataFrameGroupBy,
     SeriesGroupBy as SeriesGroupBy,
