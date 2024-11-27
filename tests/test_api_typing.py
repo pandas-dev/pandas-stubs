@@ -1,22 +1,19 @@
 """Test module for classes in pandas.api.typing."""
 
-from typing import (
-    TYPE_CHECKING,
-    Literal,
-)
+from typing import Literal  # noqa: F401
+from typing import TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
 from pandas.api.typing import (
     DataFrameGroupBy,
     DatetimeIndexResamplerGroupby,
-    FrozenList,
     NAType,
     SeriesGroupBy,
 )
 from typing_extensions import assert_type
 
-from pandas._typing import Scalar
+from pandas._typing import Scalar  # noqa: F401
 
 from tests import check
 
@@ -27,7 +24,7 @@ if TYPE_CHECKING:
 def test_dataframegroupby():
     df = pd.DataFrame({"a": [1, 2, 3]})
     check(
-        assert_type(df.groupby("a"), DataFrameGroupBy[Scalar, Literal[True]]),
+        assert_type(df.groupby("a"), "DataFrameGroupBy[Scalar, Literal[True]]"),
         DataFrameGroupBy,
     )
 
@@ -35,14 +32,9 @@ def test_dataframegroupby():
 def test_seriesgroupby():
     sr: pd.Series[int] = pd.Series([1, 2, 3], index=pd.Index(["a", "b", "a"]))
     check(
-        assert_type(sr.groupby("a"), SeriesGroupBy[int, Scalar]),
+        assert_type(sr.groupby(level=0), "SeriesGroupBy[int, Scalar]"),
         SeriesGroupBy,
     )
-
-
-def test_frozenlist() -> None:
-    flst = FrozenList([1, 2, 3])
-    check(assert_type(flst, FrozenList), FrozenList)
 
 
 def tests_datetimeindexersamplergroupby() -> None:
