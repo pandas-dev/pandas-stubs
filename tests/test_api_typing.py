@@ -58,6 +58,13 @@ def tests_datetimeindexersamplergroupby() -> None:
         np.random.standard_normal((365, 2)), index=idx, columns=["col1", "col2"]
     )
     gb_df = df.groupby("col2")
+
+    # TODO the groupby here is too wide and returns _ResamplerGroupby alias
+    # def f1(gb: DatetimeIndexResamplerGroupby):
+    #     check(gb, DatetimeIndexResamplerGroupby)
+    #
+    # f1(gb_df.resample("ME"))
+
     check(gb_df.resample("ME"), DatetimeIndexResamplerGroupby)
 
 
@@ -67,7 +74,28 @@ def test_timedeltaindexresamplergroupby() -> None:
         np.random.standard_normal((5, 2)), index=idx, columns=["col1", "col2"]
     )
     gb_df = df.groupby("col2")
+
+    # TODO the groupby here is too wide and returns _ResamplerGroupby alias
+    # def f1(gb: TimedeltaIndexResamplerGroupby):
+    #     check(gb, TimedeltaIndexResamplerGroupby)
+    #
+    # f1(gb_df.resample("1D"))
+
     check(gb_df.resample("1D"), TimedeltaIndexResamplerGroupby)
+
+
+@pytest.mark.skip("Resampling with a PeriodIndex is deprecated.")
+def test_periodindexresamplergroupby() -> None:
+    idx = pd.period_range("2020-01-28 09:00", periods=4, freq="D")
+    df = pd.DataFrame(data=4 * [range(2)], index=idx, columns=["a", "b"])
+
+    # TODO the groupby here is too wide and returns _ResamplerGroupby alias
+    # def f1(gb: PeriodIndexResamplerGroupby):
+    #     check(gb, PeriodIndexResamplerGroupby)
+    #
+    # f1(df.groupby("a").resample("3min"))
+
+    check(df.groupby("a").resample("3min"), PeriodIndexResamplerGroupby)
 
 
 def test_natype() -> None:
@@ -78,71 +106,102 @@ def test_natype() -> None:
 def test_nattype() -> None:
     td = pd.Timedelta("1 day")
     as_nat = pd.NaT
+
     check(assert_type(td + as_nat, NaTType), NaTType)
 
 
 def test_expanding() -> None:
     df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
-    check(df.expanding(), Expanding)
+
+    def f1(gb: Expanding):
+        check(gb, Expanding)
+
+    f1(df.expanding())
 
 
 def test_expanding_groubpy() -> None:
     df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
-    check(df.groupby("B").expanding(), ExpandingGroupby)
+
+    def f1(gb: ExpandingGroupby):
+        check(gb, ExpandingGroupby)
+
+    f1(df.groupby("B").expanding())
 
 
 def test_ewm() -> None:
     df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
-    check(df.ewm(2), ExponentialMovingWindow)
+
+    def f1(gb: ExponentialMovingWindow):
+        check(gb, ExponentialMovingWindow)
+
+    f1(df.ewm(2))
 
 
 def test_ewm_groubpy() -> None:
     df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
-    check(df.groupby("B").ewm(2), ExponentialMovingWindowGroupby)
+
+    def f1(gb: ExponentialMovingWindowGroupby):
+        check(gb, ExponentialMovingWindowGroupby)
+
+    f1(df.groupby("B").ewm(2))
 
 
 def test_json_reader() -> None:
     df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
 
+    def f1(gb: JsonReader):
+        check(gb, JsonReader)
+
     with ensure_clean() as path:
         check(assert_type(df.to_json(path), None), type(None))
         json_reader = read_json(path, chunksize=1, lines=True)
-        check(json_reader, JsonReader)
+        f1(json_reader)
         json_reader.close()
-
-
-@pytest.mark.skip("Resampling with a PeriodIndex is deprecated.")
-def test_periodindexresamplergroupby() -> None:
-    idx = pd.period_range("2020-01-28 09:00", periods=4, freq="D")
-    df = pd.DataFrame(data=4 * [range(2)], index=idx, columns=["a", "b"])
-    check(
-        df.groupby("a").resample("3min"),
-        PeriodIndexResamplerGroupby,
-    )
 
 
 def test_resampler() -> None:
     s = pd.Series([1, 2, 3, 4, 5], index=pd.date_range("20130101", periods=5, freq="s"))
-    check(s.resample("3min"), Resampler)
+
+    def f1(gb: Resampler):
+        check(gb, Resampler)
+
+    f1(s.resample("3min"))
 
 
 def test_rolling() -> None:
     df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
-    check(df.rolling(2), Rolling)
+
+    def f1(gb: Rolling):
+        check(gb, Rolling)
+
+    f1(df.rolling(2))
 
 
 def test_rolling_groupby() -> None:
     df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
-    check(df.groupby("B").rolling(2), RollingGroupby)
+
+    def f1(gb: RollingGroupby):
+        check(gb, RollingGroupby)
+
+    f1(df.groupby("B").rolling(2))
 
 
 def test_timegrouper() -> None:
-    check(pd.Grouper(key="Publish date", freq="1W"), TimeGrouper)
+    grouper = pd.Grouper(key="Publish date", freq="1W")
+
+    def f1(gb: TimeGrouper):
+        check(gb, TimeGrouper)
+
+    f1(grouper)
 
 
 def test_window() -> None:
     ser = pd.Series([0, 1, 5, 2, 8])
-    check(ser.rolling(2, win_type="gaussian"), Window)
+
+    def f1(gb: Window):
+        check(gb, Window)
+
+    f1(ser.rolling(2, win_type="gaussian"))
 
 
 def test_statereader(tmp_path: Path) -> None:
@@ -153,5 +212,9 @@ def test_statereader(tmp_path: Path) -> None:
     df.to_stata(
         path, time_stamp=time_stamp, variable_labels=variable_labels, version=None
     )
+
+    def f1(gb: StataReader):
+        check(gb, StataReader)
+
     with StataReader(path) as reader:
-        check(reader, StataReader)
+        f1(reader)
