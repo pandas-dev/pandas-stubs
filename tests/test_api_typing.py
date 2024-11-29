@@ -1,7 +1,5 @@
 """Test module for classes in pandas.api.typing."""
 
-from pathlib import Path
-
 import numpy as np
 import pandas as pd
 from pandas._testing import ensure_clean
@@ -20,6 +18,7 @@ from pandas.api.typing import (
     Rolling,
     RollingGroupby,
     SeriesGroupBy,
+    StataReader,
     TimedeltaIndexResamplerGroupby,
     TimeGrouper,
     Window,
@@ -30,7 +29,12 @@ from typing_extensions import assert_type
 from tests import check
 
 from pandas.io.json._json import read_json
-from pandas.io.stata import StataReader
+
+ResamplerGroupBy = (
+    DatetimeIndexResamplerGroupby
+    | PeriodIndexResamplerGroupby
+    | TimedeltaIndexResamplerGroupby
+)
 
 
 def test_dataframegroupby():
@@ -59,13 +63,10 @@ def tests_datetimeindexersamplergroupby() -> None:
     )
     gb_df = df.groupby("col2")
 
-    # TODO the groupby here is too wide and returns _ResamplerGroupby alias
-    # def f1(gb: DatetimeIndexResamplerGroupby):
-    #     check(gb, DatetimeIndexResamplerGroupby)
-    #
-    # f1(gb_df.resample("ME"))
+    def f1(gb: ResamplerGroupBy):
+        check(gb, DatetimeIndexResamplerGroupby)
 
-    check(gb_df.resample("ME"), DatetimeIndexResamplerGroupby)
+    f1(gb_df.resample("ME"))
 
 
 def test_timedeltaindexresamplergroupby() -> None:
@@ -75,13 +76,10 @@ def test_timedeltaindexresamplergroupby() -> None:
     )
     gb_df = df.groupby("col2")
 
-    # TODO the groupby here is too wide and returns _ResamplerGroupby alias
-    # def f1(gb: TimedeltaIndexResamplerGroupby):
-    #     check(gb, TimedeltaIndexResamplerGroupby)
-    #
-    # f1(gb_df.resample("1D"))
+    def f1(gb: ResamplerGroupBy):
+        check(gb, TimedeltaIndexResamplerGroupby)
 
-    check(gb_df.resample("1D"), TimedeltaIndexResamplerGroupby)
+    f1(gb_df.resample("1D"))
 
 
 @pytest.mark.skip("Resampling with a PeriodIndex is deprecated.")
@@ -89,13 +87,10 @@ def test_periodindexresamplergroupby() -> None:
     idx = pd.period_range("2020-01-28 09:00", periods=4, freq="D")
     df = pd.DataFrame(data=4 * [range(2)], index=idx, columns=["a", "b"])
 
-    # TODO the groupby here is too wide and returns _ResamplerGroupby alias
-    # def f1(gb: PeriodIndexResamplerGroupby):
-    #     check(gb, PeriodIndexResamplerGroupby)
-    #
-    # f1(df.groupby("a").resample("3min"))
+    def f1(gb: ResamplerGroupBy):
+        check(gb, PeriodIndexResamplerGroupby)
 
-    check(df.groupby("a").resample("3min"), PeriodIndexResamplerGroupby)
+    f1(df.groupby("a").resample("3min"))
 
 
 def test_natype() -> None:
@@ -204,17 +199,17 @@ def test_window() -> None:
     f1(ser.rolling(2, win_type="gaussian"))
 
 
-def test_statereader(tmp_path: Path) -> None:
+def test_statereader() -> None:
     df = pd.DataFrame([[1, 2], [3, 4]], columns=["col_1", "col_2"])
     time_stamp = pd.Timestamp(2000, 2, 29, 14, 21)
     variable_labels = {"col_1": "This is an example"}
-    path = tmp_path / "file"
-    df.to_stata(
-        path, time_stamp=time_stamp, variable_labels=variable_labels, version=None
-    )
+    with ensure_clean() as path:
+        df.to_stata(
+            path, time_stamp=time_stamp, variable_labels=variable_labels, version=None
+        )
 
-    def f1(gb: StataReader):
-        check(gb, StataReader)
+        def f1(gb: StataReader):
+            check(gb, StataReader)
 
-    with StataReader(path) as reader:
-        f1(reader)
+        with StataReader(path) as reader:
+            f1(reader)
