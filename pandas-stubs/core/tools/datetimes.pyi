@@ -47,7 +47,6 @@ def to_datetime(
     format: str | None = ...,
     exact: bool = ...,
     unit: str | None = ...,
-    infer_datetime_format: bool = ...,
     origin: Literal["julian", "unix"] | TimestampConvertibleTypes = ...,
     cache: bool = ...,
 ) -> Timestamp: ...
@@ -61,7 +60,6 @@ def to_datetime(
     format: str | None = ...,
     exact: bool = ...,
     unit: str | None = ...,
-    infer_datetime_format: bool = ...,
     origin: Literal["julian", "unix"] | TimestampConvertibleTypes = ...,
     cache: bool = ...,
 ) -> Timestamp | NaTType: ...
@@ -75,7 +73,6 @@ def to_datetime(
     format: str | None = ...,
     exact: bool = ...,
     unit: str | None = ...,
-    infer_datetime_format: bool = ...,
     origin: Literal["julian", "unix"] | TimestampConvertibleTypes = ...,
     cache: bool = ...,
 ) -> TimestampSeries: ...
@@ -98,7 +95,6 @@ def to_datetime(
     format: str | None = ...,
     exact: bool = ...,
     unit: str | None = ...,
-    infer_datetime_format: bool = ...,
     origin: Literal["julian", "unix"] | TimestampConvertibleTypes = ...,
     cache: bool = ...,
 ) -> DatetimeIndex: ...
