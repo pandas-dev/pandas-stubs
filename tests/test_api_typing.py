@@ -24,13 +24,16 @@ from pandas.api.typing import (
     Window,
 )
 import pytest
-from typing_extensions import assert_type
+from typing_extensions import (
+    TypeAlias,
+    assert_type,
+)
 
 from tests import check
 
 from pandas.io.json._json import read_json
 
-ResamplerGroupBy = (
+ResamplerGroupBy: TypeAlias = (
     DatetimeIndexResamplerGroupby
     | PeriodIndexResamplerGroupby
     | TimedeltaIndexResamplerGroupby
