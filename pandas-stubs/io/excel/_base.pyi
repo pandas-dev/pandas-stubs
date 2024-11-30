@@ -246,7 +246,7 @@ class ExcelFile:
     def __init__(
         self,
         io: FilePath | ReadBuffer[bytes] | bytes,
-        engine: Literal["xlrd", "openpyxl", "odf", "pyxlsb"] | None = ...,
+        engine: ExcelReadEngine | None = ...,
         storage_options: StorageOptions = ...,
     ) -> None: ...
     def __fspath__(self): ...

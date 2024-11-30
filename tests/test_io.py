@@ -1108,6 +1108,13 @@ def test_read_excel_dtypes():
         dtypes = {"a": np.int64, "b": str, "c": np.float64}
         check(assert_type(read_excel(path, dtype=dtypes), pd.DataFrame), pd.DataFrame)
 
+def test_excel_reader():
+    with ensure_clean(".xlsx") as path:
+        check(assert_type(DF.to_excel(path), None), type(None))
+        with pd.ExcelFile(path, engine="calamine") as ef:
+            check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
+            check(assert_type(pd.read_excel(ef), pd.DataFrame), pd.DataFrame)
+
 
 def test_excel_writer():
     with ensure_clean(".xlsx") as path:
