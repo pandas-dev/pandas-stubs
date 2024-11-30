@@ -71,7 +71,6 @@ def read_csv(
         | Sequence[Sequence[int]]
         | Mapping[str, Sequence[int | str]]
     ) = ...,
-    infer_datetime_format: bool = ...,
     keep_date_col: bool = ...,
     date_format: dict[Hashable, str] | str | None = ...,
     dayfirst: bool = ...,
@@ -136,7 +135,6 @@ def read_csv(
         | Sequence[Sequence[int]]
         | Mapping[str, Sequence[int | str]]
     ) = ...,
-    infer_datetime_format: bool = ...,
     keep_date_col: bool = ...,
     date_format: dict[Hashable, str] | str | None = ...,
     dayfirst: bool = ...,
@@ -201,7 +199,6 @@ def read_csv(
         | Sequence[Sequence[int]]
         | Mapping[str, Sequence[int | str]]
     ) = ...,
-    infer_datetime_format: bool = ...,
     keep_date_col: bool = ...,
     date_format: dict[Hashable, str] | str | None = ...,
     dayfirst: bool = ...,
