@@ -1108,6 +1108,7 @@ def test_read_excel_dtypes():
         dtypes = {"a": np.int64, "b": str, "c": np.float64}
         check(assert_type(read_excel(path, dtype=dtypes), pd.DataFrame), pd.DataFrame)
 
+
 def test_excel_reader():
     with ensure_clean(".xlsx") as path:
         check(assert_type(DF.to_excel(path), None), type(None))
