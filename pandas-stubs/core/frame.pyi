@@ -1955,7 +1955,7 @@ class DataFrame(NDFrame, OpsMixin):
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
-        other=...,
+        other: Scalar | Series[S1] | DataFrame | Callable | NAType | None = ...,
         *,
         inplace: _bool = ...,
         axis: Axis | None = ...,
