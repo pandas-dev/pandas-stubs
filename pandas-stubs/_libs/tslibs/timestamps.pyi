@@ -59,8 +59,6 @@ class Timestamp(datetime):
     def __new__(
         cls,
         ts_input: np.integer | float | str | _date | datetime | np.datetime64 = ...,
-        tz: str | _tzinfo | int | None = ...,
-        unit: str | int | None = ...,
         year: int | None = ...,
         month: int | None = ...,
         day: int | None = ...,
@@ -68,9 +66,11 @@ class Timestamp(datetime):
         minute: int | None = ...,
         second: int | None = ...,
         microsecond: int | None = ...,
+        tzinfo: _tzinfo | None = ...,
         *,
         nanosecond: int | None = ...,
-        tzinfo: _tzinfo | None = ...,
+        tz: str | _tzinfo | int | None = ...,
+        unit: str | int | None = ...,
         fold: Literal[0, 1] | None = ...,
     ) -> Self: ...
     # GH 46171
