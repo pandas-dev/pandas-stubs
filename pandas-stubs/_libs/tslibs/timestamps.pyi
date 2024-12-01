@@ -59,9 +59,6 @@ class Timestamp(datetime):
     def __new__(
         cls,
         ts_input: np.integer | float | str | _date | datetime | np.datetime64 = ...,
-        # Freq is deprecated but is left in to allow code like Timestamp(2000,1,1)
-        # Removing it would make the other arguments position only
-        freq: int | str | BaseOffset | None = ...,
         tz: str | _tzinfo | int | None = ...,
         unit: str | int | None = ...,
         year: int | None = ...,
@@ -71,9 +68,9 @@ class Timestamp(datetime):
         minute: int | None = ...,
         second: int | None = ...,
         microsecond: int | None = ...,
+        *,
         nanosecond: int | None = ...,
         tzinfo: _tzinfo | None = ...,
-        *,
         fold: Literal[0, 1] | None = ...,
     ) -> Self: ...
     # GH 46171
@@ -119,8 +116,6 @@ class Timestamp(datetime):
     def fromordinal(
         cls,
         ordinal: int,
-        # freq produces a FutureWarning about being deprecated in a future version
-        freq: None = ...,
         tz: _tzinfo | str | None = ...,
     ) -> Self: ...
     @classmethod
