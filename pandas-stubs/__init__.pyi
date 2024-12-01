@@ -122,9 +122,7 @@ from pandas.io.api import (
     read_xml as read_xml,
     to_pickle as to_pickle,
 )
-from pandas.io.json import (  # pyright: ignore[reportUnusedImport] # noqa: F401
-    _json_normalize as json_normalize,
-)
+from pandas.io.json._normalize import json_normalize as json_normalize
 from pandas.tseries import offsets as offsets
 from pandas.tseries.api import infer_freq as infer_freq
 
