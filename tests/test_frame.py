@@ -2398,7 +2398,13 @@ def test_indexslice_getitem():
         .set_index(["x", "y"])
     )
     ind = pd.Index([2, 3])
-    check(assert_type(pd.IndexSlice[ind, :], tuple["pd.Index[int]", slice]), tuple)
+    # This next test is written this way to support both mypy 1.13 and newer
+    # versions of mypy and pyright that treat slice as a Generic due to
+    # a change in typeshed.
+    # Once pyright 1.1.390 and mypy 1.14 are released, the test can be
+    # reverted to the standard form.
+    tmp: tuple[pd.Index[int], slice] = pd.IndexSlice[ind, :]
+    check(assert_type(tmp, tuple["pd.Index[int]", slice]), tuple)
     check(assert_type(df.loc[pd.IndexSlice[ind, :]], pd.DataFrame), pd.DataFrame)
     check(assert_type(df.loc[pd.IndexSlice[1:2]], pd.DataFrame), pd.DataFrame)
     check(
