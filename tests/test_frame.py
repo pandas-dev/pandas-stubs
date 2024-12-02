@@ -2403,6 +2403,7 @@ def test_indexslice_getitem():
     # a change in typeshed.
     # Once pyright 1.1.390 and mypy 1.14 are released, the test can be
     # reverted to the standard form.
+    # check(assert_type(pd.IndexSlice[ind, :], tuple["pd.Index[int]", slice]), tuple)
     tmp: tuple[pd.Index[int], slice] = pd.IndexSlice[ind, :]
     check(assert_type(tmp, tuple["pd.Index[int]", slice]), tuple)
     check(assert_type(df.loc[pd.IndexSlice[ind, :]], pd.DataFrame), pd.DataFrame)
