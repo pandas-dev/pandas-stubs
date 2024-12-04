@@ -2404,7 +2404,7 @@ def test_indexslice_getitem():
     # Once pyright 1.1.390 and mypy 1.14 are released, the test can be
     # reverted to the standard form.
     # check(assert_type(pd.IndexSlice[ind, :], tuple["pd.Index[int]", slice]), tuple)
-    tmp: tuple[pd.Index[int], slice] = pd.IndexSlice[ind, :]
+    tmp = cast(tuple["pd.Index[int]", slice], pd.IndexSlice[ind, :])  # type: ignore[redundant-cast]
     check(assert_type(tmp, tuple["pd.Index[int]", slice]), tuple)
     check(assert_type(df.loc[pd.IndexSlice[ind, :]], pd.DataFrame), pd.DataFrame)
     check(assert_type(df.loc[pd.IndexSlice[1:2]], pd.DataFrame), pd.DataFrame)
