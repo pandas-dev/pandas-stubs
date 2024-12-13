@@ -1,19 +1,19 @@
 name: Install project dependencies
+description: Install project dependencies
 
 inputs:
   python-version:
+    description: The python version to use
     required: true
   os:
-    required: true
-  numpy-version:
+    description: The OS to run on
     required: true
 
 runs:
   using: composite
   steps:
-
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ inputs.python-version }}
 
@@ -27,7 +27,7 @@ runs:
       id: poetry_version
 
     - name: Cache poetry.lock
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: poetry.lock
         key: ${{ inputs.os }}-${{ inputs.python-version }}-poetry-${{ steps.poetry_version.outputs.VERSION }}-${{ hashFiles('pyproject.toml') }}
@@ -35,7 +35,3 @@ runs:
     - name: Install project dependencies
       shell: bash
       run: poetry install -vvv --no-root
-      
-    - name: Set numpy version
-      shell: bash
-      run: pip install numpy"${{ inputs. numpy-version }}"
