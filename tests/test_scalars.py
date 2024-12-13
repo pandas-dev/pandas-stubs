@@ -578,6 +578,7 @@ def test_timedelta_add_sub() -> None:
         ),
         pd.Timedelta,
     )
+    # this is now an issue
     check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)
     check(assert_type(as_timedelta_index + td, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(
