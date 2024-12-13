@@ -66,7 +66,7 @@ class Index(IndexOpsMixin[S1]):
     __hash__: ClassVar[None]  # type: ignore[assignment]
     # overloads with additional dtypes
     @overload
-    def __new__(  # type: ignore[overload-overlap]
+    def __new__(
         cls,
         data: Sequence[int | np.integer] | IndexOpsMixin[int] | np_ndarray_anyint,
         *,
@@ -77,7 +77,7 @@ class Index(IndexOpsMixin[S1]):
         **kwargs,
     ) -> Index[int]: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]
+    def __new__(
         cls,
         data: Iterable,
         *,
@@ -88,7 +88,7 @@ class Index(IndexOpsMixin[S1]):
         **kwargs,
     ) -> Index[int]: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]
+    def __new__(
         cls,
         data: Sequence[float | np.floating] | IndexOpsMixin[float] | np_ndarray_float,
         *,
@@ -99,7 +99,7 @@ class Index(IndexOpsMixin[S1]):
         **kwargs,
     ) -> Index[float]: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]
+    def __new__(
         cls,
         data: Iterable,
         *,
@@ -110,7 +110,7 @@ class Index(IndexOpsMixin[S1]):
         **kwargs,
     ) -> Index[float]: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]
+    def __new__(
         cls,
         data: (
             Sequence[complex | np.complexfloating]
@@ -125,7 +125,7 @@ class Index(IndexOpsMixin[S1]):
         **kwargs,
     ) -> Index[complex]: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]
+    def __new__(
         cls,
         data: Iterable,
         *,
@@ -137,7 +137,7 @@ class Index(IndexOpsMixin[S1]):
     ) -> Index[complex]: ...
     # special overloads with dedicated Index-subclasses
     @overload
-    def __new__(  # type: ignore[overload-overlap]
+    def __new__(
         cls,
         data: Sequence[np.datetime64 | datetime] | IndexOpsMixin[datetime],
         *,
@@ -148,7 +148,7 @@ class Index(IndexOpsMixin[S1]):
         **kwargs,
     ) -> DatetimeIndex: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]
+    def __new__(
         cls,
         data: Iterable,
         *,
@@ -159,7 +159,7 @@ class Index(IndexOpsMixin[S1]):
         **kwargs,
     ) -> DatetimeIndex: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]
+    def __new__(
         cls,
         data: Sequence[Period] | IndexOpsMixin[Period],
         *,
@@ -170,7 +170,7 @@ class Index(IndexOpsMixin[S1]):
         **kwargs,
     ) -> PeriodIndex: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]
+    def __new__(
         cls,
         data: Iterable,
         *,
@@ -181,7 +181,7 @@ class Index(IndexOpsMixin[S1]):
         **kwargs,
     ) -> PeriodIndex: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]
+    def __new__(
         cls,
         data: Sequence[np.timedelta64 | timedelta] | IndexOpsMixin[timedelta],
         *,
@@ -192,7 +192,7 @@ class Index(IndexOpsMixin[S1]):
         **kwargs,
     ) -> TimedeltaIndex: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]
+    def __new__(
         cls,
         data: Iterable,
         *,
@@ -203,7 +203,7 @@ class Index(IndexOpsMixin[S1]):
         **kwargs,
     ) -> TimedeltaIndex: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]
+    def __new__(
         cls,
         data: Sequence[Interval[_OrderableT]] | IndexOpsMixin[Interval[_OrderableT]],
         *,
@@ -214,7 +214,7 @@ class Index(IndexOpsMixin[S1]):
         **kwargs,
     ) -> IntervalIndex[Interval[_OrderableT]]: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]
+    def __new__(
         cls,
         data: Iterable,
         *,
@@ -260,7 +260,7 @@ class Index(IndexOpsMixin[S1]):
         **kwargs,
     ) -> Self: ...
     @property
-    def str(self) -> StringMethods[Self, MultiIndex]: ...
+    def str(self) -> StringMethods[Self, MultiIndex, np_ndarray_bool]: ...
     def is_(self, other) -> bool: ...
     def __len__(self) -> int: ...
     def __array__(self, dtype=...) -> np.ndarray: ...
@@ -292,7 +292,10 @@ class Index(IndexOpsMixin[S1]):
     @names.setter
     def names(self, names: list[_str]): ...
     def set_names(self, names, *, level=..., inplace: bool = ...): ...
-    def rename(self, name, inplace: bool = ...) -> Self: ...
+    @overload
+    def rename(self, name, inplace: Literal[False] = False) -> Self: ...
+    @overload
+    def rename(self, name, inplace: Literal[True]) -> None: ...
     @property
     def nlevels(self) -> int: ...
     def sortlevel(self, level=..., ascending: bool = ..., sort_remaining=...): ...
@@ -306,14 +309,6 @@ class Index(IndexOpsMixin[S1]):
     def is_unique(self) -> bool: ...
     @property
     def has_duplicates(self) -> bool: ...
-    def is_boolean(self) -> bool: ...
-    def is_integer(self) -> bool: ...
-    def is_floating(self) -> bool: ...
-    def is_numeric(self) -> bool: ...
-    def is_object(self) -> bool: ...
-    def is_categorical(self) -> bool: ...
-    def is_interval(self) -> bool: ...
-    def holds_integer(self): ...
     @property
     def inferred_type(self) -> _str: ...
     def __reduce__(self): ...
@@ -419,7 +414,7 @@ class Index(IndexOpsMixin[S1]):
     def __gt__(self, other: Self | S1) -> np_ndarray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     # overwrite inherited methods from OpsMixin
     @overload
-    def __mul__(  # type: ignore[overload-overlap]
+    def __mul__(
         self: Index[int] | Index[float], other: timedelta
     ) -> TimedeltaIndex: ...
     @overload

@@ -6,6 +6,8 @@ from typing import Union
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
+from pandas.core.arrays.categorical import Categorical
+from pandas.core.indexes.base import Index
 from typing_extensions import (
     Never,
     assert_type,
@@ -113,10 +115,26 @@ def test_str_split() -> None:
     check(assert_type(ind.str.split("-", expand=True), pd.MultiIndex), pd.MultiIndex)
 
 
+def test_str_match() -> None:
+    i = pd.Index(
+        ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
+    )
+    check(assert_type(i.str.match("pp"), npt.NDArray[np.bool_]), np.ndarray, np.bool_)
+
+
 def test_index_rename() -> None:
+    """Test that index rename returns an element of type Index."""
     ind = pd.Index([1, 2, 3], name="foo")
     ind2 = ind.rename("goo")
     check(assert_type(ind2, "pd.Index[int]"), pd.Index, np.integer)
+
+
+def test_index_rename_inplace() -> None:
+    """Test that index rename in-place does not return anything (None)."""
+    ind = pd.Index([1, 2, 3], name="foo")
+    ind2 = ind.rename("goo", inplace=True)
+    check(assert_type(ind2, None), type(None))
+    assert ind2 is None
 
 
 def test_index_dropna():
@@ -905,6 +923,12 @@ def test_getitem() -> None:
     check(assert_type(i0[[0, 2]], "pd.Index[str]"), pd.Index, str)
 
 
+def test_range_index_range() -> None:
+    """Test that pd.RangeIndex can be initialized from range."""
+    iri = pd.RangeIndex(range(5))
+    check(assert_type(iri, pd.RangeIndex), pd.RangeIndex, int)
+
+
 def test_multiindex_dtypes():
     # GH-597
     mi = pd.MultiIndex.from_tuples([(1, 2.0), (2, 3.0)], names=["foo", "bar"])
@@ -1128,3 +1152,26 @@ def test_get_loc() -> None:
         np.ndarray,
         np.bool_,
     )
+
+
+def test_value_counts() -> None:
+    nmi = pd.Index(list("abcb"))
+    check(assert_type(nmi.value_counts(), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(nmi.value_counts(normalize=True), "pd.Series[float]"),
+        pd.Series,
+        float,
+    )
+
+
+def test_index_factorize() -> None:
+    """Test Index.factorize method."""
+    codes, idx_uniques = pd.Index(["b", "b", "a", "c", "b"]).factorize()
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(idx_uniques, np.ndarray | Index | Categorical), pd.Index)
+
+    codes, idx_uniques = pd.Index(["b", "b", "a", "c", "b"]).factorize(
+        use_na_sentinel=False
+    )
+    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(idx_uniques, np.ndarray | Index | Categorical), pd.Index)

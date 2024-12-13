@@ -190,7 +190,7 @@ class _LocIndexerFrame(_LocIndexer):
         ),
     ) -> DataFrame: ...
     @overload
-    def __getitem__(  # pyright: ignore[reportOverlappingOverload]
+    def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         self,
         idx: tuple[
             int | StrLike | tuple[Scalar, ...] | Callable[[DataFrame], ScalarT],
@@ -259,6 +259,7 @@ class DataFrame(NDFrame, OpsMixin):
     def __dataframe__(
         self, nan_as_null: bool = ..., allow_copy: bool = ...
     ) -> DataFrameXchg: ...
+    def __arrow_c_stream__(self, requested_schema: object | None = None) -> object: ...
     @property
     def axes(self) -> list[Index]: ...
     @property
@@ -280,7 +281,12 @@ class DataFrame(NDFrame, OpsMixin):
     def dot(self, other: DataFrame | ArrayLike) -> DataFrame: ...
     @overload
     def dot(self, other: Series) -> Series: ...
-    def __matmul__(self, other): ...
+    @overload
+    def __matmul__(self, other: DataFrame) -> DataFrame: ...
+    @overload
+    def __matmul__(self, other: Series) -> Series: ...
+    @overload
+    def __matmul__(self, other: np.ndarray) -> DataFrame: ...
     def __rmatmul__(self, other): ...
     @overload
     @classmethod
@@ -306,7 +312,7 @@ class DataFrame(NDFrame, OpsMixin):
         na_value: Scalar = ...,
     ) -> np.ndarray: ...
     @overload
-    def to_dict(  # type: ignore[overload-overlap]
+    def to_dict(
         self,
         orient: Literal["records"],
         *,
@@ -322,7 +328,7 @@ class DataFrame(NDFrame, OpsMixin):
         index: Literal[True] = ...,
     ) -> list[dict[Hashable, Any]]: ...
     @overload
-    def to_dict(  # type: ignore[overload-overlap]
+    def to_dict(
         self,
         orient: Literal["dict", "list", "series", "index"],
         *,
@@ -330,7 +336,7 @@ class DataFrame(NDFrame, OpsMixin):
         index: Literal[True] = ...,
     ) -> MutableMapping[Hashable, Any]: ...
     @overload
-    def to_dict(  # type: ignore[overload-overlap]
+    def to_dict(
         self,
         orient: Literal["split", "tight"],
         *,
@@ -338,7 +344,7 @@ class DataFrame(NDFrame, OpsMixin):
         index: bool = ...,
     ) -> MutableMapping[Hashable, Any]: ...
     @overload
-    def to_dict(  # type: ignore[overload-overlap]
+    def to_dict(
         self,
         orient: Literal["dict", "list", "series", "index"] = ...,
         *,
@@ -346,7 +352,7 @@ class DataFrame(NDFrame, OpsMixin):
         index: Literal[True] = ...,
     ) -> MutableMapping[Hashable, Any]: ...
     @overload
-    def to_dict(  # type: ignore[overload-overlap]
+    def to_dict(
         self,
         orient: Literal["split", "tight"] = ...,
         *,
@@ -604,7 +610,9 @@ class DataFrame(NDFrame, OpsMixin):
     @overload
     def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __getitem__(self, key: Iterable[Hashable] | slice) -> DataFrame: ...
+    def __getitem__(  # pyright: ignore[reportOverlappingOverload]
+        self, key: Iterable[Hashable] | slice
+    ) -> DataFrame: ...
     @overload
     def __getitem__(self, key: Hashable) -> Series: ...
     def isetitem(
@@ -617,7 +625,12 @@ class DataFrame(NDFrame, OpsMixin):
     def query(
         self, expr: _str, *, inplace: Literal[False] = ..., **kwargs
     ) -> DataFrame: ...
-    def eval(self, expr: _str, *, inplace: _bool = ..., **kwargs): ...
+    @overload
+    def eval(self, expr: _str, *, inplace: Literal[True], **kwargs) -> None: ...
+    @overload
+    def eval(
+        self, expr: _str, *, inplace: Literal[False] = ..., **kwargs
+    ) -> Scalar | np.ndarray | DataFrame | Series: ...
     AstypeArgExt: TypeAlias = (
         AstypeArg
         | Literal[
@@ -877,6 +890,7 @@ class DataFrame(NDFrame, OpsMixin):
         thresh: int | None = ...,
         subset: ListLikeU | Scalar | None = ...,
         inplace: Literal[True],
+        ignore_index: _bool = ...,
     ) -> None: ...
     @overload
     def dropna(
@@ -887,6 +901,7 @@ class DataFrame(NDFrame, OpsMixin):
         thresh: int | None = ...,
         subset: ListLikeU | Scalar | None = ...,
         inplace: Literal[False] = ...,
+        ignore_index: _bool = ...,
     ) -> DataFrame: ...
     @overload
     def dropna(
@@ -897,18 +912,38 @@ class DataFrame(NDFrame, OpsMixin):
         thresh: int | None = ...,
         subset: ListLikeU | Scalar | None = ...,
         inplace: _bool | None = ...,
+        ignore_index: _bool = ...,
     ) -> DataFrame | None: ...
+    @overload
     def drop_duplicates(
         self,
-        subset=...,
+        subset: Hashable | Iterable[Hashable] | None = ...,
+        *,
+        keep: NaPosition | _bool = ...,
+        inplace: Literal[True],
+        ignore_index: _bool = ...,
+    ) -> None: ...
+    @overload
+    def drop_duplicates(
+        self,
+        subset: Hashable | Iterable[Hashable] | None = ...,
+        *,
+        keep: NaPosition | _bool = ...,
+        inplace: Literal[False] = ...,
+        ignore_index: _bool = ...,
+    ) -> DataFrame: ...
+    @overload
+    def drop_duplicates(
+        self,
+        subset: Hashable | Iterable[Hashable] | None = ...,
         *,
         keep: NaPosition | _bool = ...,
         inplace: _bool = ...,
         ignore_index: _bool = ...,
-    ) -> DataFrame: ...
+    ) -> DataFrame | None: ...
     def duplicated(
         self,
-        subset: Hashable | Sequence[Hashable] | None = ...,
+        subset: Hashable | Iterable[Hashable] | None = ...,
         keep: NaPosition | _bool = ...,
     ) -> Series: ...
     @overload
@@ -992,14 +1027,24 @@ class DataFrame(NDFrame, OpsMixin):
         ignore_index: _bool = ...,
         key: Callable | None = ...,
     ) -> DataFrame | None: ...
+    @overload
     def value_counts(
         self,
         subset: Sequence[Hashable] | None = ...,
-        normalize: _bool = ...,
+        normalize: Literal[False] = ...,
         sort: _bool = ...,
         ascending: _bool = ...,
         dropna: _bool = ...,
     ) -> Series[int]: ...
+    @overload
+    def value_counts(
+        self,
+        normalize: Literal[True],
+        subset: Sequence[Hashable] | None = ...,
+        sort: _bool = ...,
+        ascending: _bool = ...,
+        dropna: _bool = ...,
+    ) -> Series[float]: ...
     def nlargest(
         self,
         n: int,
@@ -1041,101 +1086,197 @@ class DataFrame(NDFrame, OpsMixin):
         errors: IgnoreRaise = ...,
     ) -> None: ...
     @overload
+    def groupby(  # pyright: ignore reportOverlappingOverload
+        self,
+        by: Scalar,
+        axis: AxisIndex | NoDefault = ...,
+        level: IndexLabel | None = ...,
+        as_index: Literal[True] = True,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        observed: _bool | NoDefault = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[Scalar, Literal[True]]: ...
+    @overload
     def groupby(
         self,
         by: Scalar,
         axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
-        as_index: _bool = ...,
+        as_index: Literal[False] = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[Scalar]: ...
+    ) -> DataFrameGroupBy[Scalar, Literal[False]]: ...
     @overload
-    def groupby(
+    def groupby(  # pyright: ignore reportOverlappingOverload
         self,
         by: DatetimeIndex,
         axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
-        as_index: _bool = ...,
+        as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[Timestamp]: ...
+    ) -> DataFrameGroupBy[Timestamp, Literal[True]]: ...
+    @overload
+    def groupby(  # pyright: ignore reportOverlappingOverload
+        self,
+        by: DatetimeIndex,
+        axis: AxisIndex | NoDefault = ...,
+        level: IndexLabel | None = ...,
+        as_index: Literal[False] = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        observed: _bool | NoDefault = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[Timestamp, Literal[False]]: ...
+    @overload
+    def groupby(  # pyright: ignore reportOverlappingOverload
+        self,
+        by: TimedeltaIndex,
+        axis: AxisIndex | NoDefault = ...,
+        level: IndexLabel | None = ...,
+        as_index: Literal[True] = True,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        observed: _bool | NoDefault = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[Timedelta, Literal[True]]: ...
     @overload
     def groupby(
         self,
         by: TimedeltaIndex,
         axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
-        as_index: _bool = ...,
+        as_index: Literal[False] = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[Timedelta]: ...
+    ) -> DataFrameGroupBy[Timedelta, Literal[False]]: ...
+    @overload
+    def groupby(  # pyright: ignore reportOverlappingOverload
+        self,
+        by: PeriodIndex,
+        axis: AxisIndex | NoDefault = ...,
+        level: IndexLabel | None = ...,
+        as_index: Literal[True] = True,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        observed: _bool | NoDefault = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[Period, Literal[True]]: ...
     @overload
     def groupby(
         self,
         by: PeriodIndex,
         axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
-        as_index: _bool = ...,
+        as_index: Literal[False] = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[Period]: ...
+    ) -> DataFrameGroupBy[Period, Literal[False]]: ...
+    @overload
+    def groupby(  # pyright: ignore reportOverlappingOverload
+        self,
+        by: IntervalIndex[IntervalT],
+        axis: AxisIndex | NoDefault = ...,
+        level: IndexLabel | None = ...,
+        as_index: Literal[True] = True,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        observed: _bool | NoDefault = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[IntervalT, Literal[True]]: ...
     @overload
     def groupby(
         self,
         by: IntervalIndex[IntervalT],
         axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
-        as_index: _bool = ...,
+        as_index: Literal[False] = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[IntervalT]: ...
+    ) -> DataFrameGroupBy[IntervalT, Literal[False]]: ...
     @overload
-    def groupby(
+    def groupby(  # type: ignore[overload-overlap] # pyright: ignore reportOverlappingOverload
         self,
         by: MultiIndex | GroupByObjectNonScalar | None = ...,
         axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
-        as_index: _bool = ...,
+        as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[tuple]: ...
+    ) -> DataFrameGroupBy[tuple, Literal[True]]: ...
+    @overload
+    def groupby(  # type: ignore[overload-overlap]
+        self,
+        by: MultiIndex | GroupByObjectNonScalar | None = ...,
+        axis: AxisIndex | NoDefault = ...,
+        level: IndexLabel | None = ...,
+        as_index: Literal[False] = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        observed: _bool | NoDefault = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[tuple, Literal[False]]: ...
+    @overload
+    def groupby(  # pyright: ignore reportOverlappingOverload
+        self,
+        by: Series[SeriesByT],
+        axis: AxisIndex | NoDefault = ...,
+        level: IndexLabel | None = ...,
+        as_index: Literal[True] = True,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        observed: _bool | NoDefault = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[SeriesByT, Literal[True]]: ...
     @overload
     def groupby(
         self,
         by: Series[SeriesByT],
         axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
-        as_index: _bool = ...,
+        as_index: Literal[False] = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[SeriesByT]: ...
+    ) -> DataFrameGroupBy[SeriesByT, Literal[False]]: ...
     @overload
     def groupby(
         self,
         by: CategoricalIndex | Index | Series,
         axis: AxisIndex | NoDefault = ...,
         level: IndexLabel | None = ...,
-        as_index: _bool = ...,
+        as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | NoDefault = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[Any]: ...
+    ) -> DataFrameGroupBy[Any, Literal[True]]: ...
+    @overload
+    def groupby(
+        self,
+        by: CategoricalIndex | Index | Series,
+        axis: AxisIndex | NoDefault = ...,
+        level: IndexLabel | None = ...,
+        as_index: Literal[False] = ...,
+        sort: _bool = ...,
+        group_keys: _bool = ...,
+        observed: _bool | NoDefault = ...,
+        dropna: _bool = ...,
+    ) -> DataFrameGroupBy[Any, Literal[False]]: ...
     def pivot(
         self,
         *,
@@ -1182,7 +1323,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> DataFrame: ...
     def diff(self, periods: int = ..., axis: Axis = ...) -> DataFrame: ...
     @overload
-    def agg(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def agg(  # pyright: ignore[reportOverlappingOverload]
         self, func: AggFuncTypeBase | AggFuncTypeDictSeries, axis: Axis = ..., **kwargs
     ) -> Series: ...
     @overload
@@ -1193,7 +1334,7 @@ class DataFrame(NDFrame, OpsMixin):
         **kwargs,
     ) -> DataFrame: ...
     @overload
-    def aggregate(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def aggregate(  # pyright: ignore[reportOverlappingOverload]
         self, func: AggFuncTypeBase | AggFuncTypeDictSeries, axis: Axis = ..., **kwargs
     ) -> Series: ...
     @overload
@@ -1362,7 +1503,7 @@ class DataFrame(NDFrame, OpsMixin):
         self,
         other: DataFrame | Series | list[DataFrame | Series],
         on: _str | list[_str] | None = ...,
-        how: JoinHow = ...,
+        how: MergeHow = ...,
         lsuffix: _str = ...,
         rsuffix: _str = ...,
         sort: _bool = ...,
@@ -1473,9 +1614,9 @@ class DataFrame(NDFrame, OpsMixin):
         column: _str | list[_str] | None = ...,
         by: _str | ListLike | None = ...,
         grid: _bool = ...,
-        xlabelsize: int | None = ...,
+        xlabelsize: float | str | None = ...,
         xrot: float | None = ...,
-        ylabelsize: int | None = ...,
+        ylabelsize: float | str | None = ...,
         yrot: float | None = ...,
         ax: PlotAxes | None = ...,
         sharex: _bool = ...,
@@ -1619,6 +1760,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: Axis | None = ...,
         inplace: Literal[True],
         limit: int | None = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
         downcast: dict | None = ...,
     ) -> None: ...
     @overload
@@ -1628,12 +1770,13 @@ class DataFrame(NDFrame, OpsMixin):
         axis: Axis | None = ...,
         inplace: Literal[False] = ...,
         limit: int | None = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
         downcast: dict | None = ...,
     ) -> DataFrame: ...
     def clip(
         self,
-        lower: float | None = ...,
-        upper: float | None = ...,
+        lower: float | AnyArrayLike | None = ...,
+        upper: float | AnyArrayLike | None = ...,
         *,
         axis: Axis | None = ...,
         inplace: _bool = ...,
@@ -1699,6 +1842,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: Axis | None = ...,
         inplace: Literal[True],
         limit: int | None = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
         downcast: dict | None = ...,
     ) -> None: ...
     @overload
@@ -1708,6 +1852,7 @@ class DataFrame(NDFrame, OpsMixin):
         axis: Axis | None = ...,
         inplace: Literal[False] = ...,
         limit: int | None = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
         downcast: dict | None = ...,
     ) -> DataFrame: ...
     def filter(
@@ -1810,7 +1955,7 @@ class DataFrame(NDFrame, OpsMixin):
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
-        other=...,
+        other: Scalar | Series[S1] | DataFrame | Callable | NAType | None = ...,
         *,
         inplace: _bool = ...,
         axis: Axis | None = ...,
@@ -1873,7 +2018,7 @@ class DataFrame(NDFrame, OpsMixin):
     def pct_change(
         self,
         periods: int = ...,
-        fill_method: _str = ...,
+        fill_method: None = ...,
         limit: int | None = ...,
         freq=...,
         **kwargs,
@@ -1935,40 +2080,44 @@ class DataFrame(NDFrame, OpsMixin):
         limit: int | None = ...,
         tolerance=...,
     ) -> DataFrame: ...
+    # Rename axis with `mapper`, `axis`, and `inplace=True`
     @overload
     def rename_axis(
         self,
-        mapper=...,
+        mapper: Scalar | ListLike | None = ...,
+        *,
         axis: Axis | None = ...,
         copy: _bool = ...,
-        *,
         inplace: Literal[True],
     ) -> None: ...
+    # Rename axis with `mapper`, `axis`, and `inplace=False`
     @overload
     def rename_axis(
         self,
-        mapper=...,
+        mapper: Scalar | ListLike | None = ...,
+        *,
         axis: Axis | None = ...,
         copy: _bool = ...,
-        *,
         inplace: Literal[False] = ...,
     ) -> DataFrame: ...
+    # Rename axis with `index` and/or `columns` and `inplace=True`
     @overload
     def rename_axis(
         self,
+        *,
         index: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
         columns: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
         copy: _bool = ...,
-        *,
         inplace: Literal[True],
     ) -> None: ...
+    # Rename axis with `index` and/or `columns` and `inplace=False`
     @overload
     def rename_axis(
         self,
+        *,
         index: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
         columns: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
         copy: _bool = ...,
-        *,
         inplace: Literal[False] = ...,
     ) -> DataFrame: ...
     def rfloordiv(

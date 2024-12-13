@@ -880,8 +880,8 @@ def test_timedelta_cmp() -> None:
     le = check(assert_type(c_dt_timedelta <= td, bool), bool)
     assert gt != le
 
-    gt_b = check(assert_type(c_timedelta64 > td, Any), bool)
-    le_b = check(assert_type(c_timedelta64 <= td, Any), bool)
+    gt_b = check(assert_type(c_timedelta64 > td, np.bool), bool)
+    le_b = check(assert_type(c_timedelta64 <= td, np.bool), bool)
     assert gt_b != le_b
 
     gt_a = check(
@@ -948,8 +948,8 @@ def test_timedelta_cmp() -> None:
     ge = check(assert_type(c_dt_timedelta >= td, bool), bool)
     assert lt != ge
 
-    lt_b = check(assert_type(c_timedelta64 < td, Any), bool)
-    ge_b = check(assert_type(c_timedelta64 >= td, Any), bool)
+    lt_b = check(assert_type(c_timedelta64 < td, np.bool), bool)
+    ge_b = check(assert_type(c_timedelta64 >= td, np.bool), bool)
     assert lt_b != ge_b
 
     lt_a = check(
@@ -1272,8 +1272,8 @@ def test_timestamp_cmp() -> None:
     check(assert_type(ts > c_series_dt64, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(ts <= c_series_dt64, "pd.Series[bool]"), pd.Series, np.bool_)
 
-    check(assert_type(c_np_dt64 > ts, Any), bool)
-    check(assert_type(c_np_dt64 <= ts, Any), bool)
+    check(assert_type(c_np_dt64 > ts, np.bool), bool)
+    check(assert_type(c_np_dt64 <= ts, np.bool), bool)
 
     gt = check(assert_type(c_dt_datetime > ts, bool), bool)
     lte = check(assert_type(c_dt_datetime <= ts, bool), bool)
@@ -1316,8 +1316,8 @@ def test_timestamp_cmp() -> None:
     lt = check(assert_type(c_dt_datetime < ts, bool), bool)
     assert gte != lt
 
-    check(assert_type(c_np_dt64 >= ts, Any), bool)
-    check(assert_type(c_np_dt64 < ts, Any), bool)
+    check(assert_type(c_np_dt64 >= ts, np.bool), bool)
+    check(assert_type(c_np_dt64 < ts, np.bool), bool)
 
     check(assert_type(c_datetimeindex >= ts, np_ndarray_bool), np.ndarray, np.bool_)
     check(assert_type(c_datetimeindex < ts, np_ndarray_bool), np.ndarray, np.bool_)
@@ -2016,5 +2016,5 @@ def test_period_methods() -> None:
 
 def test_nattype_hashable() -> None:
     # GH 827
-    {pd.NaT}
+    aset = {pd.NaT}
     check(assert_type(pd.NaT.__hash__(), int), int)

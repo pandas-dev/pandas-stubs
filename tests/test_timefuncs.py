@@ -8,6 +8,15 @@ from typing import (
     cast,
 )
 
+from dateutil.relativedelta import (
+    FR,
+    MO,
+    SA,
+    SU,
+    TH,
+    TU,
+    WE,
+)
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
@@ -138,6 +147,11 @@ def test_timedelta_series_arithmetic() -> None:
     r2: pd.TimedeltaIndex = tds1 - td1
     r3: pd.TimedeltaIndex = tds1 * 4.3
     r4: pd.TimedeltaIndex = tds1 / 10.2
+
+
+def test_timedelta_float_value() -> None:
+    # GH 1015
+    check(assert_type(pd.Timedelta(1.5, "h"), pd.Timedelta), pd.Timedelta)
 
 
 def test_timedelta_series_string() -> None:
@@ -655,8 +669,13 @@ def test_some_offsets() -> None:
         ),
         pd.DatetimeIndex,
     )
-    # GH 224
-    check(assert_type(dt.date.today() - Day(), dt.date), dt.date)
+    # GH 755
+    check(assert_type(dt.date.today() - Day(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(dt.date.today() + Day(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(Day() + dt.date.today(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(dt.datetime.now() - Day(), dt.datetime), dt.datetime)
+    check(assert_type(dt.datetime.now() + Day(), dt.datetime), dt.datetime)
+    check(assert_type(Day() + dt.datetime.now(), dt.datetime), dt.datetime)
     # GH 235
     check(
         assert_type(
@@ -748,6 +767,13 @@ def test_some_offsets() -> None:
         ),
         CustomBusinessHour,
     )
+
+
+def test_timestampseries_offset() -> None:
+    """Test that adding an offset to a timestamp series works."""
+    vv = pd.bdate_range("2024-09-01", "2024-09-10")
+    shifted_vv = vv + pd.tseries.offsets.YearEnd(0)
+    check(assert_type(shifted_vv, pd.DatetimeIndex), pd.DatetimeIndex)
 
 
 def test_types_to_numpy() -> None:
@@ -1274,6 +1300,42 @@ def test_weekofmonth_init():
             pd.offsets.WeekOfMonth,
         ),
         pd.offsets.WeekOfMonth,
+    )
+
+
+def test_dateoffset_weekday() -> None:
+    """Check that you can create a `pd.DateOffset` from weekday of int or relativedelta.weekday."""
+    check(
+        assert_type(pd.offsets.DateOffset(weekday=1), pd.offsets.DateOffset),
+        pd.offsets.DateOffset,
+    )
+    check(
+        assert_type(pd.offsets.DateOffset(weekday=MO), pd.offsets.DateOffset),
+        pd.offsets.DateOffset,
+    )
+    check(
+        assert_type(pd.offsets.DateOffset(weekday=TU), pd.offsets.DateOffset),
+        pd.offsets.DateOffset,
+    )
+    check(
+        assert_type(pd.offsets.DateOffset(weekday=WE), pd.offsets.DateOffset),
+        pd.offsets.DateOffset,
+    )
+    check(
+        assert_type(pd.offsets.DateOffset(weekday=TH), pd.offsets.DateOffset),
+        pd.offsets.DateOffset,
+    )
+    check(
+        assert_type(pd.offsets.DateOffset(weekday=FR), pd.offsets.DateOffset),
+        pd.offsets.DateOffset,
+    )
+    check(
+        assert_type(pd.offsets.DateOffset(weekday=SA), pd.offsets.DateOffset),
+        pd.offsets.DateOffset,
+    )
+    check(
+        assert_type(pd.offsets.DateOffset(weekday=SU), pd.offsets.DateOffset),
+        pd.offsets.DateOffset,
     )
 
 

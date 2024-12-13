@@ -15,22 +15,13 @@ from pandas._typing import (
 class RangeIndex(Index[int]):
     def __new__(
         cls,
-        start: int | RangeIndex = ...,
+        start: int | RangeIndex | range = ...,
         stop: int = ...,
         step: int = ...,
         dtype=...,
         copy: bool = ...,
         name=...,
     ): ...
-    def __init__(
-        self,
-        start: int | RangeIndex = ...,
-        stop: int = ...,
-        step: int = ...,
-        dtype=...,
-        copy: bool = ...,
-        name=...,
-    ) -> None: ...
     @classmethod
     def from_range(cls, data, name=..., dtype=...): ...
     def __reduce__(self): ...

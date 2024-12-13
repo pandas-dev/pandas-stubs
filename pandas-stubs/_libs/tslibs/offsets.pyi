@@ -12,7 +12,9 @@ from typing import (
     overload,
 )
 
+from dateutil.relativedelta import weekday as WeekdayClass
 import numpy as np
+from pandas import Timestamp
 from pandas.core.indexes.datetimes import DatetimeIndex
 from typing_extensions import Self
 
@@ -21,7 +23,7 @@ from pandas._typing import npt
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
 
-_DatetimeT = TypeVar("_DatetimeT", bound=date)
+_DatetimeT = TypeVar("_DatetimeT", bound=datetime)
 _TimedeltaT = TypeVar("_TimedeltaT", bound=timedelta)
 
 prefix_mapping: dict[str, type]
@@ -41,26 +43,32 @@ class BaseOffset:
     @overload
     def __add__(self, other: npt.NDArray[np.object_]) -> npt.NDArray[np.object_]: ...
     @overload
-    def __add__(self, other: BaseOffset) -> Self: ...
+    def __add__(self, other: _DatetimeT) -> _DatetimeT: ...  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __add__(self, other: _DatetimeT) -> _DatetimeT: ...
+    def __add__(self, other: date) -> Timestamp: ...
+    @overload
+    def __add__(self, other: BaseOffset) -> Self: ...
     @overload
     def __add__(self, other: _TimedeltaT) -> _TimedeltaT: ...
     @overload
     def __radd__(self, other: npt.NDArray[np.object_]) -> npt.NDArray[np.object_]: ...
     @overload
-    def __radd__(self, other: BaseOffset) -> Self: ...
+    def __radd__(self, other: _DatetimeT) -> _DatetimeT: ...  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __radd__(self, other: _DatetimeT) -> _DatetimeT: ...
+    def __radd__(self, other: date) -> Timestamp: ...
+    @overload
+    def __radd__(self, other: BaseOffset) -> Self: ...
     @overload
     def __radd__(self, other: _TimedeltaT) -> _TimedeltaT: ...
     def __sub__(self, other: BaseOffset) -> Self: ...
     @overload
     def __rsub__(self, other: npt.NDArray[np.object_]) -> npt.NDArray[np.object_]: ...
     @overload
-    def __rsub__(self, other: BaseOffset) -> Self: ...
+    def __rsub__(self, other: _DatetimeT) -> _DatetimeT: ...  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __rsub__(self, other: _DatetimeT) -> _DatetimeT: ...
+    def __rsub__(self, other: date) -> Timestamp: ...
+    @overload
+    def __rsub__(self, other: BaseOffset) -> Self: ...
     @overload
     def __rsub__(self, other: _TimedeltaT) -> _TimedeltaT: ...
     def __call__(self, other): ...
@@ -257,7 +265,7 @@ class DateOffset(RelativeDeltaOffset):
         year: int = ...,
         month: int = ...,
         day: int = ...,
-        weekday: int = ...,
+        weekday: int | WeekdayClass = ...,
         hour: int = ...,
         minute: int = ...,
         second: int = ...,

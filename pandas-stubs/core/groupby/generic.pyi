@@ -11,6 +11,7 @@ from typing import (
     Generic,
     Literal,
     NamedTuple,
+    TypeVar,
     final,
     overload,
 )
@@ -29,6 +30,7 @@ from typing_extensions import (
 )
 
 from pandas._libs.lib import NoDefault
+from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     S1,
     AggFuncTypeBase,
@@ -163,9 +165,9 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
         by: IndexLabel | None = ...,
         ax: PlotAxes | None = ...,
         grid: bool = ...,
-        xlabelsize: int | None = ...,
+        xlabelsize: float | str | None = ...,
         xrot: float | None = ...,
-        ylabelsize: int | None = ...,
+        ylabelsize: float | str | None = ...,
         yrot: float | None = ...,
         figsize: tuple[float, float] | None = ...,
         bins: int | Sequence[int] = ...,
@@ -182,10 +184,12 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
         self,
     ) -> Iterator[tuple[ByT, Series[S1]]]: ...
 
-class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
+_TT = TypeVar("_TT", bound=Literal[True, False])
+
+class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     # error: Overload 3 for "apply" will never be used because its parameters overlap overload 1
     @overload  # type: ignore[override]
-    def apply(  # type: ignore[overload-overlap]
+    def apply(
         self,
         func: Callable[[DataFrame], Scalar | list | dict],
         *args,
@@ -230,13 +234,11 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
         self, func: Callable, dropna: bool = ..., *args, **kwargs
     ) -> DataFrame: ...
     @overload
-    def __getitem__(  # type: ignore[overload-overlap]
-        self, key: Scalar | Hashable | tuple[Hashable, ...]
-    ) -> SeriesGroupBy[Any, ByT]: ...
+    def __getitem__(self, key: Scalar) -> SeriesGroupBy[Any, ByT]: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, key: Iterable[Hashable] | slice
-    ) -> DataFrameGroupBy[ByT]: ...
+        self, key: Iterable[Hashable]
+    ) -> DataFrameGroupBy[ByT, bool]: ...
     def nunique(self, dropna: bool = ...) -> DataFrame: ...
     def idxmax(
         self,
@@ -300,7 +302,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
     ) -> PlotAxes | Series: ...  # Series[PlotAxes]
     @overload
     def value_counts(
-        self,
+        self: DataFrameGroupBy[ByT, Literal[True]],
         subset: ListLike | None = ...,
         normalize: Literal[False] = ...,
         sort: bool = ...,
@@ -309,18 +311,36 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
     ) -> Series[int]: ...
     @overload
     def value_counts(
-        self,
+        self: DataFrameGroupBy[ByT, Literal[True]],
         subset: ListLike | None,
         normalize: Literal[True],
         sort: bool = ...,
         ascending: bool = ...,
         dropna: bool = ...,
     ) -> Series[float]: ...
+    @overload
+    def value_counts(
+        self: DataFrameGroupBy[ByT, Literal[False]],
+        subset: ListLike | None = ...,
+        normalize: Literal[False] = ...,
+        sort: bool = ...,
+        ascending: bool = ...,
+        dropna: bool = ...,
+    ) -> DataFrame: ...
+    @overload
+    def value_counts(
+        self: DataFrameGroupBy[ByT, Literal[False]],
+        subset: ListLike | None,
+        normalize: Literal[True],
+        sort: bool = ...,
+        ascending: bool = ...,
+        dropna: bool = ...,
+    ) -> DataFrame: ...
     def take(
         self, indices: TakeIndexer, axis: Axis | None | NoDefault = ..., **kwargs
     ) -> DataFrame: ...
     @overload
-    def skew(  # type: ignore[overload-overlap]
+    def skew(
         self,
         axis: Axis | None | NoDefault = ...,
         skipna: bool = ...,
@@ -358,9 +378,9 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
         column: IndexLabel | None = ...,
         by: IndexLabel | None = ...,
         grid: bool = ...,
-        xlabelsize: int | None = ...,
+        xlabelsize: float | str | None = ...,
         xrot: float | None = ...,
-        ylabelsize: int | None = ...,
+        ylabelsize: float | str | None = ...,
         yrot: float | None = ...,
         ax: PlotAxes | None = ...,
         sharex: bool = ...,
@@ -388,3 +408,11 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT]):
     def __iter__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
     ) -> Iterator[tuple[ByT, DataFrame]]: ...
+    @overload
+    def size(self: DataFrameGroupBy[ByT, Literal[True]]) -> Series[int]: ...
+    @overload
+    def size(self: DataFrameGroupBy[ByT, Literal[False]]) -> DataFrame: ...
+    @overload
+    def size(self: DataFrameGroupBy[Timestamp, Literal[True]]) -> Series[int]: ...
+    @overload
+    def size(self: DataFrameGroupBy[Timestamp, Literal[False]]) -> DataFrame: ...

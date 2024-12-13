@@ -120,7 +120,7 @@ def read_excel(
 ) -> dict[str, DataFrame]: ...
 @overload
 # mypy says this won't be matched
-def read_excel(  # type: ignore[misc]
+def read_excel(  # type: ignore[overload-cannot-match]
     io: (
         FilePath
         | ReadBuffer[bytes]
@@ -246,7 +246,7 @@ class ExcelFile:
     def __init__(
         self,
         io: FilePath | ReadBuffer[bytes] | bytes,
-        engine: Literal["xlrd", "openpyxl", "odf", "pyxlsb"] | None = ...,
+        engine: ExcelReadEngine | None = ...,
         storage_options: StorageOptions = ...,
     ) -> None: ...
     def __fspath__(self): ...

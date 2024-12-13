@@ -102,7 +102,7 @@ class Timedelta(timedelta):
     value: int
     def __new__(
         cls,
-        value: str | int | Timedelta | timedelta | np.timedelta64 = ...,
+        value: str | float | Timedelta | timedelta | np.timedelta64 = ...,
         unit: TimeDeltaUnitChoices = ...,
         *,
         days: float | np.integer | np.floating = ...,
@@ -248,7 +248,7 @@ class Timedelta(timedelta):
     def __rmul__(self, other: Series[float]) -> TimedeltaSeries: ...
     # maybe related to https://github.com/python/mypy/issues/10755
     @overload
-    def __rmul__(self, other: Index[int] | Index[float]) -> TimedeltaIndex: ...  # type: ignore[misc]
+    def __rmul__(self, other: Index[int] | Index[float]) -> TimedeltaIndex: ...
     # Override due to more types supported than dt.timedelta
     # error: Signature of "__floordiv__" incompatible with supertype "timedelta"
     @overload  # type: ignore[override]

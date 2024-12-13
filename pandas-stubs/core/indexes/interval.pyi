@@ -306,7 +306,7 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
 # misc here because int and float overlap but interval has distinct types
 # int gets hit first and so the correct type is returned
 @overload
-def interval_range(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+def interval_range(  # pyright: ignore[reportOverlappingOverload]
     start: int = ...,
     end: int = ...,
     periods: int | None = ...,
