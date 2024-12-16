@@ -13,7 +13,6 @@ import pandas as pd
 from pandas import Index
 from pandas.core.indexes.extension import ExtensionIndex
 from pandas.core.series import (
-    Series,
     TimedeltaSeries,
     TimestampSeries,
 )
@@ -31,6 +30,7 @@ from pandas._typing import (
     IntervalClosedType,
     IntervalT,
     Label,
+    MaskType,
     np_ndarray_anyint,
     np_ndarray_bool,
     npt,
@@ -254,7 +254,7 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
             | np_ndarray_anyint
             | Sequence[int]
             | Index
-            | Series[bool]
+            | MaskType
             | np_ndarray_bool
         ),
     ) -> IntervalIndex[IntervalT]: ...

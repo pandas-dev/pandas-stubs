@@ -18,6 +18,7 @@ from pandas._typing import (
     Dtype,
     DtypeArg,
     HashableT,
+    MaskType,
     np_ndarray_anyint,
     np_ndarray_bool,
 )
@@ -114,15 +115,7 @@ class MultiIndex(Index[Any]):
     @overload  # type: ignore[override]
     def __getitem__(
         self,
-        idx: (
-            slice
-            | np_ndarray_anyint
-            | Sequence[int]
-            | Index
-            | pd.Series[bool]
-            | Sequence[bool]
-            | np_ndarray_bool
-        ),
+        idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType,
     ) -> Self: ...
     @overload
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]

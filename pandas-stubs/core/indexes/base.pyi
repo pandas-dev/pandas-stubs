@@ -48,6 +48,7 @@ from pandas._typing import (
     HashableT,
     Label,
     Level,
+    MaskType,
     NaPosition,
     TimedeltaDtypeArg,
     TimestampDtypeArg,
@@ -368,15 +369,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __getitem__(
         self,
-        idx: (
-            slice
-            | np_ndarray_anyint
-            | Sequence[int]
-            | Index
-            | Series[bool]
-            | Sequence[bool]
-            | np_ndarray_bool
-        ),
+        idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType,
     ) -> Self: ...
     @overload
     def __getitem__(self, idx: int | tuple[np_ndarray_anyint, ...]) -> S1: ...
