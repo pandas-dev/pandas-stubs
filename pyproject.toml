@@ -30,7 +30,7 @@ packages = [{ "include" = "pandas-stubs" }]
 [tool.poetry.dependencies]
 python = ">=3.10"
 types-pytz = ">= 2022.1.1"
-numpy = ">= 1.23.5"
+numpy = ">= 1.23.5,< 2.2.0" # wait till numpy 2.2.1 to clear
 
 [tool.poetry.group.dev.dependencies]
 mypy = "1.13.0"
