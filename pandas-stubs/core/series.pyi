@@ -152,7 +152,6 @@ from pandas._typing import (
     VoidDtypeArg,
     WriteBuffer,
     np_ndarray_anyint,
-    np_ndarray_bool,
     npt,
     num,
 )
@@ -1544,7 +1543,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __and__(  # pyright: ignore[reportOverlappingOverload]
-        self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
+        self, other: bool | list[int] | MaskType
     ) -> Series[bool]: ...
     @overload
     def __and__(  # pyright: ignore[reportIncompatibleMethodOverride]
@@ -1578,7 +1577,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __or__(  # pyright: ignore[reportOverlappingOverload]
-        self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
+        self, other: bool | list[int] | MaskType
     ) -> Series[bool]: ...
     @overload
     def __or__(  # pyright: ignore[reportIncompatibleMethodOverride]
@@ -1591,7 +1590,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __rand__(  # pyright: ignore[reportOverlappingOverload]
-        self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
+        self, other: bool | MaskType | list[int]
     ) -> Series[bool]: ...
     @overload
     def __rand__(  # pyright: ignore[reportIncompatibleMethodOverride]
@@ -1612,7 +1611,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __ror__(  # pyright: ignore[reportOverlappingOverload]
-        self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
+        self, other: bool | MaskType | list[int]
     ) -> Series[bool]: ...
     @overload
     def __ror__(  # pyright: ignore[reportIncompatibleMethodOverride]
@@ -1623,7 +1622,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __rxor__(  # pyright: ignore[reportOverlappingOverload]
-        self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
+        self, other: bool | MaskType | list[int]
     ) -> Series[bool]: ...
     @overload
     def __rxor__(  # pyright: ignore[reportIncompatibleMethodOverride]
@@ -1649,7 +1648,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __xor__(  # pyright: ignore[reportOverlappingOverload]
-        self, other: bool | list[bool] | list[int] | np_ndarray_bool | Series[bool]
+        self, other: bool | MaskType | list[int]
     ) -> Series[bool]: ...
     @overload
     def __xor__(  # pyright: ignore[reportIncompatibleMethodOverride]

@@ -2,13 +2,12 @@ from collections.abc import Sequence
 from typing import overload
 
 import numpy as np
-from pandas import Series
 from pandas.core.indexes.base import Index
 
 from pandas._typing import (
     HashableT,
+    MaskType,
     np_ndarray_anyint,
-    np_ndarray_bool,
     npt,
 )
 
@@ -73,15 +72,7 @@ class RangeIndex(Index[int]):
     @overload  # type: ignore[override]
     def __getitem__(
         self,
-        idx: (
-            slice
-            | np_ndarray_anyint
-            | Sequence[int]
-            | Index
-            | Series[bool]
-            | Sequence[bool]
-            | np_ndarray_bool
-        ),
+        idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType,
     ) -> Index: ...
     @overload
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
