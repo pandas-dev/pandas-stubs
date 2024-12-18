@@ -547,7 +547,8 @@ S1 = TypeVar(
     | Period
     | Interval
     | CategoricalDtype
-    | BaseOffset,
+    | BaseOffset
+    | list[str],
 )
 
 S2 = TypeVar(
@@ -566,7 +567,8 @@ S2 = TypeVar(
     | Period
     | Interval
     | CategoricalDtype
-    | BaseOffset,
+    | BaseOffset
+    | list[str],
 )
 
 IndexingInt: TypeAlias = (
