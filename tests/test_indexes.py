@@ -114,7 +114,7 @@ def test_str_split() -> None:
     check(assert_type(ind.str.split("-"), "pd.Index[str]"), pd.Index)
     check(assert_type(ind.str.split("-", expand=True), pd.MultiIndex), pd.MultiIndex)
     check(
-        assert_type(ind.str.split("-", expand=False), "pd.Index[list[str]]"), pd.Index
+        assert_type(ind.str.split("-", expand=False), "pd.Index[list[str]]"), pd.Index, list
     )
 
 
