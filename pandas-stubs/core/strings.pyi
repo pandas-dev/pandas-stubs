@@ -69,7 +69,12 @@ class StringMethods(NoNewAttributesMixin, Generic[T, _TS, _TM, _TS2]):
     ) -> _TS: ...
     @overload
     def split(
-        self, pat: str = ..., *, n: int = ..., expand: Literal[False] = ..., regex: bool = ...
+        self,
+        pat: str = ...,
+        *,
+        n: int = ...,
+        expand: Literal[False] = ...,
+        regex: bool = ...,
     ) -> _TS2: ...
     @overload
     def rsplit(self, pat: str = ..., *, n: int = ..., expand: Literal[True]) -> _TS: ...
