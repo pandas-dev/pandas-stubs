@@ -15,6 +15,7 @@ import numpy as np
 import pandas as pd
 from pandas import (
     DataFrame,
+    Index,
     MultiIndex,
     Series,
 )
@@ -28,10 +29,12 @@ from pandas._typing import (
 
 # The _TS type is what is used for the result of str.split with expand=True
 _TS = TypeVar("_TS", DataFrame, MultiIndex)
+# The _TS2 type is what is used for the result of str.split with expand=False
+_TS2 = TypeVar("_TS2", Series[list[str]], Index[list[str]])
 # The _TM type is what is used for the result of str.match
 _TM = TypeVar("_TM", Series[bool], np_ndarray_bool)
 
-class StringMethods(NoNewAttributesMixin, Generic[T, _TS, _TM]):
+class StringMethods(NoNewAttributesMixin, Generic[T, _TS, _TM, _TS2]):
     def __init__(self, data: T) -> None: ...
     def __getitem__(self, key: slice | int) -> T: ...
     def __iter__(self) -> T: ...
@@ -67,7 +70,7 @@ class StringMethods(NoNewAttributesMixin, Generic[T, _TS, _TM]):
     @overload
     def split(
         self, pat: str = ..., *, n: int = ..., expand: Literal[False], regex: bool = ...
-    ) -> Series[list[str]]: ...
+    ) -> _TS2: ...
     @overload
     def split(
         self, pat: str = ..., *, n: int = ..., expand: bool = ..., regex: bool = ...
