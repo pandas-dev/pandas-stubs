@@ -1553,7 +1553,7 @@ def test_string_accessors():
     check(assert_type(s.str.rstrip(), pd.Series), pd.Series)
     check(assert_type(s.str.slice(0, 4, 2), pd.Series), pd.Series)
     check(assert_type(s.str.slice_replace(0, 2, "XX"), pd.Series), pd.Series)
-    check(assert_type(s.str.split("a"), pd.Series), pd.Series)
+    check(assert_type(s.str.split("a"), "pd.Series[list[str]]"), pd.Series, list)
     # GH 194
     check(assert_type(s.str.split("a", expand=True), pd.DataFrame), pd.DataFrame)
     check(
