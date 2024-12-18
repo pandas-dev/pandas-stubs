@@ -254,6 +254,26 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
+        data: Sequence[list[str]],
+        index: Axes | None = ...,
+        *,
+        dtype: Dtype = ...,
+        name: Hashable = ...,
+        copy: bool = ...,
+    ) -> Series[list[str]]: ...
+    @overload
+    def __new__(
+        cls,
+        data: Sequence[str],
+        index: Axes | None = ...,
+        *,
+        dtype: Dtype = ...,
+        name: Hashable = ...,
+        copy: bool = ...,
+    ) -> Series[str]: ...
+    @overload
+    def __new__(
+        cls,
         data: (
             DatetimeIndex
             | Sequence[np.datetime64 | datetime | date]
@@ -1199,7 +1219,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     def to_period(self, freq: _str | None = ..., copy: _bool = ...) -> DataFrame: ...
     @property
-    def str(self) -> StringMethods[Series, DataFrame, Series[bool]]: ...
+    def str(
+        self,
+    ) -> StringMethods[Series, DataFrame, Series[bool], Series[list[str]]]: ...
     @property
     def dt(self) -> CombinedDatetimelikeProperties: ...
     @property
