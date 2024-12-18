@@ -1557,7 +1557,7 @@ def test_string_accessors():
     # GH 194
     check(assert_type(s.str.split("a", expand=True), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(s.str.split("a", expand=False), "pd.Series[list[str]]"), pd.Series
+        assert_type(s.str.split("a", expand=False), "pd.Series[list[str]]"), pd.Series, list
     )
     check(assert_type(s.str.startswith("a"), "pd.Series[bool]"), pd.Series, np.bool_)
     check(
