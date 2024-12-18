@@ -111,7 +111,7 @@ def test_difference_none() -> None:
 def test_str_split() -> None:
     # GH 194
     ind = pd.Index(["a-b", "c-d"])
-    check(assert_type(ind.str.split("-"), "pd.Index[str]"), pd.Index)
+    check(assert_type(ind.str.split("-"), "pd.Index[list[str]]"), pd.Index)
     check(assert_type(ind.str.split("-", expand=True), pd.MultiIndex), pd.MultiIndex)
     check(
         assert_type(ind.str.split("-", expand=False), "pd.Index[list[str]]"), pd.Index, list
