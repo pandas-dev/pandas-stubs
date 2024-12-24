@@ -1295,7 +1295,7 @@ class DataFrame(NDFrame, OpsMixin):
         dropna: _bool = ...,
         margins_name: _str = ...,
         observed: _bool = ...,
-        sort: _bool = True,
+        sort: _bool = ...,
     ) -> DataFrame: ...
     @overload
     def stack(

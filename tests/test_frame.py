@@ -1094,8 +1094,8 @@ def test_types_pivot_table() -> None:
              'c': [5, 6],
              'd': [7, 8]}
         )
-        result = df.pivot_table(values='a', index='b', columns='c', sort=True)
-        assert result is not None
+        check(assert_type(df.pivot_table(values='a', index='b', columns='c', sort=True),
+                          pd.DataFrame), pd.DataFrame)
 
 
 def test_types_groupby_as_index() -> None:
