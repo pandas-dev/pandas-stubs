@@ -1087,6 +1087,16 @@ def test_types_pivot_table() -> None:
         pd.DataFrame,
     )
 
+    def test_pivot_table_sort():
+        df = DataFrame(
+            {'a': [1, 2],
+             'b': [3, 4],
+             'c': [5, 6],
+             'd': [7, 8]}
+        )
+        result = df.pivot_table(values='a', index='b', columns='c', sort=True)
+        assert result is not None
+
 
 def test_types_groupby_as_index() -> None:
     """Test type of groupby.size method depending on `as_index`."""
