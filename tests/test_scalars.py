@@ -578,7 +578,13 @@ def test_timedelta_add_sub() -> None:
         ),
         pd.Timedelta,
     )
-    check(assert_type(as_timedelta64 + td, pd.Timedelta), pd.Timedelta)
+    check(
+        assert_type(  # type: ignore[assert-type]
+            as_timedelta64 + td,  # pyright: ignore[reportAssertTypeFailure]
+            pd.Timedelta,
+        ),
+        pd.Timedelta,
+    )
     check(assert_type(as_timedelta_index + td, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(
         assert_type(as_timedelta_series + td, TimedeltaSeries), pd.Series, pd.Timedelta
@@ -637,7 +643,13 @@ def test_timedelta_add_sub() -> None:
         ),
         pd.Timedelta,
     )
-    check(assert_type(as_timedelta64 - td, pd.Timedelta), pd.Timedelta)
+    check(
+        assert_type(  # type: ignore[assert-type]
+            as_timedelta64 - td,  # pyright: ignore[reportAssertTypeFailure]
+            pd.Timedelta,
+        ),
+        pd.Timedelta,
+    )
     check(assert_type(as_timedelta_index - td, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(
         assert_type(as_timedelta_series - td, TimedeltaSeries), pd.Series, pd.Timedelta
