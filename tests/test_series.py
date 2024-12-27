@@ -2766,7 +2766,7 @@ def test_astype_other() -> None:
 
 def test_all_astype_args_tested() -> None:
     """Check that all relevant numpy type aliases are tested."""
-    NUMPY_ALIASES: set[str] = {k for k in np.sctypeDict if isinstance(k, str)}
+    NUMPY_ALIASES: set[str] = {k for k in np.sctypeDict}
     EXCLUDED_ALIASES = {
         "datetime64",
         "m",
