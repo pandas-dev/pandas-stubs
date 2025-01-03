@@ -3781,3 +3781,16 @@ def test_frame_index_timestamp() -> None:
     df2 = pd.DataFrame({"x": s})
     check(assert_type(df2.loc[dt1, "x"], Scalar), np.integer)
     check(assert_type(df2.loc[[dt1], "x"], pd.Series), pd.Series, np.integer)
+
+
+def test_frame_bool_fails() -> None:
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+
+    try:
+        # We want the type checker to tell us the next line is invalid
+        # mypy doesn't seem to figure that out, but pyright does
+        if df == "foo":  # pyright: ignore[reportGeneralTypeIssues]
+            # Next line is unreachable.
+            s = df["a"]
+    except ValueError:
+        pass

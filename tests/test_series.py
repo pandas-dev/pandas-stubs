@@ -3505,3 +3505,16 @@ def test_series_index_timestamp() -> None:
     s = pd.Series([1, 2], index=[dt1, dt2])
     check(assert_type(s[dt1], int), np.integer)
     check(assert_type(s.loc[[dt1]], "pd.Series[int]"), pd.Series, np.integer)
+
+
+def test_series_bool_fails() -> None:
+    s = pd.Series([1, 2, 3])
+
+    try:
+        # We want the type checker to tell us the next line is invalid
+        # mypy doesn't seem to figure that out, but pyright does
+        if s == "foo":  # pyright: ignore[reportGeneralTypeIssues]
+            # Next line is unreachable.
+            a = s[0]
+    except ValueError:
+        pass

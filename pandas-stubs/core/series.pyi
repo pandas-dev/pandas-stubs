@@ -18,6 +18,7 @@ from typing import (
     ClassVar,
     Generic,
     Literal,
+    NoReturn,
     overload,
 )
 
@@ -2152,6 +2153,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         level: Level | None = ...,
         drop_level: _bool = ...,
     ) -> Self: ...
+    def __bool__(self) -> NoReturn: ...
 
 class TimestampSeries(Series[Timestamp]):
     @property
