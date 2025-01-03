@@ -3435,3 +3435,22 @@ def test_series_unique_timedelta() -> None:
     """Test type return of Series.unique on Series[timedeta64[ns]]."""
     sr = pd.Series([pd.Timedelta("1 days"), pd.Timedelta("3 days")])
     check(assert_type(sr.unique(), TimedeltaArray), TimedeltaArray)
+
+
+def test_slice_timestamp() -> None:
+    dti = pd.date_range("1/1/2025", "2/28/2025")
+
+    s = pd.Series([i for i in range(len(dti))], index=dti)
+
+    # For `s1`, see discussion in GH 397.  Needs mypy fix.
+    # s1 = s.loc["2025-01-15":"2025-01-20"]
+
+    # GH 397
+    check(
+        assert_type(
+            s.loc[pd.Timestamp("2025-01-15") : pd.Timestamp("2025-01-20")],
+            "pd.Series[int]",
+        ),
+        pd.Series,
+        np.integer,
+    )

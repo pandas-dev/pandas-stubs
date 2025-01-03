@@ -11,6 +11,7 @@ from time import struct_time
 from typing import (
     ClassVar,
     Literal,
+    SupportsIndex,
     overload,
 )
 
@@ -48,7 +49,7 @@ _Nonexistent: TypeAlias = (
     Literal["raise", "NaT", "shift_backward", "shift_forward"] | Timedelta | timedelta
 )
 
-class Timestamp(datetime):
+class Timestamp(datetime, SupportsIndex):
     min: ClassVar[Timestamp]  # pyright: ignore[reportIncompatibleVariableOverride]
     max: ClassVar[Timestamp]  # pyright: ignore[reportIncompatibleVariableOverride]
 
@@ -309,3 +310,5 @@ class Timestamp(datetime):
     @property
     def unit(self) -> TimeUnit: ...
     def as_unit(self, unit: TimeUnit, round_ok: bool = ...) -> Self: ...
+    # To support slicing
+    def __index__(self) -> int: ...
