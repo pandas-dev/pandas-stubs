@@ -16,6 +16,7 @@ from typing import (
     Any,
     Generic,
     Literal,
+    TypedDict,
     TypeVar,
     Union,
     cast,
@@ -33,6 +34,7 @@ from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.window import ExponentialMovingWindow
 import pytest
 from typing_extensions import (
+    Never,
     Self,
     TypeAlias,
     assert_never,
@@ -3465,3 +3467,32 @@ def test_apply_dateoffset() -> None:
         pd.Series,
         pd.DateOffset,
     )
+
+
+def test_series_single_slice() -> None:
+    # GH 572
+    s = pd.Series([1, 2, 3])
+    check(assert_type(s.loc[:], "pd.Series[int]"), pd.Series, np.integer)
+
+    s.loc[:] = 1 + s
+
+
+def test_series_typed_dict() -> None:
+    """Test that no error is raised when constructing a series from a typed dict."""
+
+    class MyDict(TypedDict):
+        a: str
+        b: str
+
+    my_dict = MyDict(a="", b="")
+    sr = pd.Series(my_dict)
+    check(assert_type(sr, pd.Series), pd.Series)
+
+
+def test_series_empty_dtype() -> None:
+    """Test for the creation of a Series from an empty list GH571 to map to a Series[Any]."""
+    new_tab: Sequence[Never] = []  # need to be typehinted to please mypy
+    check(assert_type(pd.Series(new_tab), "pd.Series[Any]"), pd.Series)
+    check(assert_type(pd.Series([]), "pd.Series[Any]"), pd.Series)
+    # ensure that an empty string does not get matched to Sequence[Never]
+    check(assert_type(pd.Series(""), "pd.Series[str]"), pd.Series)

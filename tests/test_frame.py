@@ -7,7 +7,6 @@ from collections.abc import (
     Iterator,
     Mapping,
     MutableMapping,
-    Sequence,
 )
 import csv
 import datetime
@@ -39,7 +38,6 @@ from pandas.core.resample import (
 from pandas.core.series import Series
 import pytest
 from typing_extensions import (
-    Never,
     TypeAlias,
     assert_never,
     assert_type,
@@ -3763,22 +3761,9 @@ def test_info() -> None:
     check(assert_type(df.info(show_counts=None), None), type(None))
 
 
-def test_series_typed_dict() -> None:
-    """Test that no error is raised when constructing a series from a typed dict."""
+def test_frame_single_slice() -> None:
+    # GH 572
+    df = pd.DataFrame([1, 2, 3])
+    check(assert_type(df.loc[:], pd.DataFrame), pd.DataFrame)
 
-    class MyDict(TypedDict):
-        a: str
-        b: str
-
-    my_dict = MyDict(a="", b="")
-    sr = pd.Series(my_dict)
-    check(assert_type(sr, pd.Series), pd.Series)
-
-
-def test_series_empty_dtype() -> None:
-    """Test for the creation of a Series from an empty list GH571 to map to a Series[Any]."""
-    new_tab: Sequence[Never] = []  # need to be typehinted to please mypy
-    check(assert_type(pd.Series(new_tab), "pd.Series[Any]"), pd.Series)
-    check(assert_type(pd.Series([]), "pd.Series[Any]"), pd.Series)
-    # ensure that an empty string does not get matched to Sequence[Never]
-    check(assert_type(pd.Series(""), "pd.Series[str]"), pd.Series)
+    df.loc[:] = 1 + df
