@@ -28,11 +28,11 @@ from pandas._typing import (
 )
 
 # The _TS type is what is used for the result of str.split with expand=True
-_TS = TypeVar("_TS", DataFrame, MultiIndex)
+_TS = TypeVar("_TS", bound=DataFrame | MultiIndex)
 # The _TS2 type is what is used for the result of str.split with expand=False
-_TS2 = TypeVar("_TS2", Series[list[str]], Index[list[str]])
+_TS2 = TypeVar("_TS2", bound=Series[list[str]] | Index[list[str]])
 # The _TM type is what is used for the result of str.match
-_TM = TypeVar("_TM", Series[bool], np_ndarray_bool)
+_TM = TypeVar("_TM", bound=Series[bool] | np_ndarray_bool)
 
 class StringMethods(NoNewAttributesMixin, Generic[T, _TS, _TM, _TS2]):
     def __init__(self, data: T) -> None: ...
