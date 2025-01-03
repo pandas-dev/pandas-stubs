@@ -3784,6 +3784,8 @@ def test_frame_index_timestamp() -> None:
 
 
 def test_frame_bool_fails() -> None:
+    # GH 663
+
     df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
 
     try:

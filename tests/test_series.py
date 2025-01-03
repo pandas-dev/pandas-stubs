@@ -3508,6 +3508,7 @@ def test_series_index_timestamp() -> None:
 
 
 def test_series_bool_fails() -> None:
+    # GH 663
     s = pd.Series([1, 2, 3])
 
     try:
@@ -3518,3 +3519,13 @@ def test_series_bool_fails() -> None:
             a = s[0]
     except ValueError:
         pass
+
+
+def test_path_div() -> None:
+    # GH 682
+    folder = Path.cwd()
+    files = pd.Series(["a.png", "b.png"])
+    check(assert_type(folder / files, pd.Series), pd.Series, Path)
+
+    folders = pd.Series([folder, folder])
+    check(assert_type(folders / Path("a.png"), pd.Series), pd.Series, Path)

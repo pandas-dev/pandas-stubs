@@ -13,6 +13,7 @@ from datetime import (
     time,
     timedelta,
 )
+from pathlib import Path
 from typing import (
     Any,
     ClassVar,
@@ -1649,6 +1650,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: int | np_ndarray_anyint | Series[int]
     ) -> Series[int]: ...
     def __rsub__(self, other: num | _ListLike | Series[S1]) -> Series: ...
+    @overload
+    def __rtruediv__(self, other: Path) -> Series: ...
+    @overload
     def __rtruediv__(self, other: num | _ListLike | Series[S1]) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
@@ -1675,6 +1679,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> TimedeltaSeries: ...
     @overload
     def __sub__(self, other: num | _ListLike | Series) -> Series: ...
+    @overload
+    def __truediv__(self, other: Path) -> Series: ...
+    @overload
     def __truediv__(self, other: num | _ListLike | Series[S1]) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
