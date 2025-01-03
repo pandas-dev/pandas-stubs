@@ -1,3 +1,4 @@
+from collections import dict_keys  # type: ignore[attr-defined]
 from collections.abc import (
     Callable,
     Hashable,
@@ -354,7 +355,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: S1 | _ListLike[S1] | dict[HashableT1, S1],
+        data: S1 | _ListLike[S1] | dict[HashableT1, S1] | dict_keys[S1, Any],
         index: Axes | None = ...,
         *,
         dtype: Dtype = ...,

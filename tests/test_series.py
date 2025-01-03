@@ -3529,3 +3529,12 @@ def test_path_div() -> None:
 
     folders = pd.Series([folder, folder])
     check(assert_type(folders / Path("a.png"), pd.Series), pd.Series, Path)
+
+
+def test_series_dict() -> None:
+    # GH 812
+    check(
+        assert_type(pd.Series({"a": 1, "b": 2}.keys()), "pd.Series[str]"),
+        pd.Series,
+        str,
+    )
