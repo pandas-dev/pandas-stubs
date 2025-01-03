@@ -9,6 +9,7 @@ from collections.abc import (
 )
 import datetime as dt
 from re import Pattern
+import sys
 from typing import (
     Any,
     ClassVar,
@@ -229,8 +230,32 @@ class _LocIndexerFrame(_LocIndexer):
         value: Scalar | NAType | NaTType | ArrayLike | Series | list | None,
     ) -> None: ...
 
-class DataFrame(NDFrame, OpsMixin):
-    __hash__: ClassVar[None]  # type: ignore[assignment]
+# With mypy 1.14.1 and python 3.12, the second overload needs a type-ignore statement
+if sys.version_info >= (3, 12):
+    class _GetItemHack:
+        @overload
+        def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        @overload
+        def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+            self, key: Iterable[Hashable] | slice
+        ) -> DataFrame: ...
+        @overload
+        def __getitem__(self, key: Hashable) -> Series: ...
+
+else:
+    class _GetItemHack:
+        @overload
+        def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        @overload
+        def __getitem__(  # pyright: ignore[reportOverlappingOverload]
+            self, key: Iterable[Hashable] | slice
+        ) -> DataFrame: ...
+        @overload
+        def __getitem__(self, key: Hashable) -> Series: ...
+
+class DataFrame(NDFrame, OpsMixin, _GetItemHack):
+
+    __hash__: ClassVar[None]  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]
 
     @overload
     def __new__(
@@ -607,14 +632,6 @@ class DataFrame(NDFrame, OpsMixin):
     @property
     def T(self) -> DataFrame: ...
     def __getattr__(self, name: str) -> Series: ...
-    @overload
-    def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-    @overload
-    def __getitem__(  # pyright: ignore[reportOverlappingOverload]
-        self, key: Iterable[Hashable] | slice
-    ) -> DataFrame: ...
-    @overload
-    def __getitem__(self, key: Hashable) -> Series: ...
     def isetitem(
         self, loc: int | Sequence[int], value: Scalar | ArrayLike | list[Any]
     ) -> None: ...
