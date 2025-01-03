@@ -1032,6 +1032,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def apply(
         self,
+        func: Callable[..., BaseOffset],
+        convertDType: _bool = ...,
+        args: tuple = ...,
+        **kwds,
+    ) -> OffsetSeries: ...
+    @overload
+    def apply(
+        self,
         func: Callable[..., Series],
         convertDType: _bool = ...,
         args: tuple = ...,

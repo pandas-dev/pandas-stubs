@@ -3454,3 +3454,14 @@ def test_slice_timestamp() -> None:
         pd.Series,
         np.integer,
     )
+
+
+def test_apply_dateoffset() -> None:
+    # GH 454
+    months = [1, 2, 3]
+    s = pd.Series(months)
+    check(
+        assert_type(s.apply(lambda x: pd.DateOffset(months=x)), "OffsetSeries"),
+        pd.Series,
+        pd.DateOffset,
+    )
