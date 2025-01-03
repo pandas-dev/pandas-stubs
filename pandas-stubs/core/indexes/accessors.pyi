@@ -42,7 +42,7 @@ from pandas._typing import (
 
 class Properties(PandasDelegate, NoNewAttributesMixin): ...
 
-_DTFieldOpsReturnType = TypeVar("_DTFieldOpsReturnType", Series[int], Index[int])
+_DTFieldOpsReturnType = TypeVar("_DTFieldOpsReturnType", bound=Series[int] | Index[int])
 
 class _DayLikeFieldOps(Generic[_DTFieldOpsReturnType]):
     @property
@@ -84,7 +84,9 @@ class _DatetimeFieldOps(
     _DayLikeFieldOps[_DTFieldOpsReturnType], _MiniSeconds[_DTFieldOpsReturnType]
 ): ...
 
-_DTBoolOpsReturnType = TypeVar("_DTBoolOpsReturnType", Series[bool], np_ndarray_bool)
+_DTBoolOpsReturnType = TypeVar(
+    "_DTBoolOpsReturnType", bound=Series[bool] | np_ndarray_bool
+)
 
 class _IsLeapYearProperty(Generic[_DTBoolOpsReturnType]):
     @property
@@ -106,7 +108,7 @@ class _DatetimeBoolOps(
     @property
     def is_year_end(self) -> _DTBoolOpsReturnType: ...
 
-_DTFreqReturnType = TypeVar("_DTFreqReturnType", str, BaseOffset)
+_DTFreqReturnType = TypeVar("_DTFreqReturnType", bound=str | BaseOffset)
 
 class _FreqProperty(Generic[_DTFreqReturnType]):
     @property
@@ -121,10 +123,10 @@ class _DatetimeObjectOps(
 ): ...
 
 _DTOtherOpsDateReturnType = TypeVar(
-    "_DTOtherOpsDateReturnType", Series[dt.date], np.ndarray
+    "_DTOtherOpsDateReturnType", bound=Series[dt.date] | np.ndarray
 )
 _DTOtherOpsTimeReturnType = TypeVar(
-    "_DTOtherOpsTimeReturnType", Series[dt.time], np.ndarray
+    "_DTOtherOpsTimeReturnType", bound=Series[dt.time] | np.ndarray
 )
 
 class _DatetimeOtherOps(Generic[_DTOtherOpsDateReturnType, _DTOtherOpsTimeReturnType]):
@@ -157,11 +159,7 @@ class _DatetimeLikeOps(
 
 _DTTimestampTimedeltaReturnType = TypeVar(
     "_DTTimestampTimedeltaReturnType",
-    Series,
-    TimestampSeries,
-    TimedeltaSeries,
-    DatetimeIndex,
-    TimedeltaIndex,
+    bound=Series | TimestampSeries | TimedeltaSeries | DatetimeIndex | TimedeltaIndex,
 )
 
 class _DatetimeRoundingMethods(Generic[_DTTimestampTimedeltaReturnType]):
@@ -199,8 +197,10 @@ class _DatetimeRoundingMethods(Generic[_DTTimestampTimedeltaReturnType]):
 _DTNormalizeReturnType = TypeVar(
     "_DTNormalizeReturnType", TimestampSeries, DatetimeIndex
 )
-_DTStrKindReturnType = TypeVar("_DTStrKindReturnType", Series[str], Index)
-_DTToPeriodReturnType = TypeVar("_DTToPeriodReturnType", PeriodSeries, PeriodIndex)
+_DTStrKindReturnType = TypeVar("_DTStrKindReturnType", bound=Series[str] | Index)
+_DTToPeriodReturnType = TypeVar(
+    "_DTToPeriodReturnType", bound=PeriodSeries | PeriodIndex
+)
 
 class _DatetimeLikeNoTZMethods(
     _DatetimeRoundingMethods[_DTTimestampTimedeltaReturnType],
@@ -289,9 +289,11 @@ class DatetimeProperties(
     def as_unit(self, unit: TimeUnit) -> _DTTimestampTimedeltaReturnType: ...
 
 _TDNoRoundingMethodReturnType = TypeVar(
-    "_TDNoRoundingMethodReturnType", Series[int], Index
+    "_TDNoRoundingMethodReturnType", bound=Series[int] | Index
 )
-_TDTotalSecondsReturnType = TypeVar("_TDTotalSecondsReturnType", Series[float], Index)
+_TDTotalSecondsReturnType = TypeVar(
+    "_TDTotalSecondsReturnType", bound=Series[float] | Index
+)
 
 class _TimedeltaPropertiesNoRounding(
     Generic[_TDNoRoundingMethodReturnType, _TDTotalSecondsReturnType]
@@ -318,11 +320,15 @@ class TimedeltaProperties(
     def unit(self) -> TimeUnit: ...
     def as_unit(self, unit: TimeUnit) -> TimedeltaSeries: ...
 
-_PeriodDTReturnTypes = TypeVar("_PeriodDTReturnTypes", TimestampSeries, DatetimeIndex)
-_PeriodIntReturnTypes = TypeVar("_PeriodIntReturnTypes", Series[int], Index[int])
-_PeriodStrReturnTypes = TypeVar("_PeriodStrReturnTypes", Series[str], Index)
-_PeriodDTAReturnTypes = TypeVar("_PeriodDTAReturnTypes", DatetimeArray, DatetimeIndex)
-_PeriodPAReturnTypes = TypeVar("_PeriodPAReturnTypes", PeriodArray, PeriodIndex)
+_PeriodDTReturnTypes = TypeVar(
+    "_PeriodDTReturnTypes", bound=TimestampSeries | DatetimeIndex
+)
+_PeriodIntReturnTypes = TypeVar("_PeriodIntReturnTypes", bound=Series[int] | Index[int])
+_PeriodStrReturnTypes = TypeVar("_PeriodStrReturnTypes", bound=Series[str] | Index)
+_PeriodDTAReturnTypes = TypeVar(
+    "_PeriodDTAReturnTypes", bound=DatetimeArray | DatetimeIndex
+)
+_PeriodPAReturnTypes = TypeVar("_PeriodPAReturnTypes", bound=PeriodArray | PeriodIndex)
 
 class _PeriodProperties(
     Generic[
