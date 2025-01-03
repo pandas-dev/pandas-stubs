@@ -113,6 +113,7 @@ from pandas._typing import (
     ReplaceMethod,
     Scalar,
     ScalarT,
+    SequenceNotStr,
     SeriesByT,
     SortKind,
     StataDateFormat,
@@ -194,7 +195,11 @@ class _LocIndexerFrame(_LocIndexer):
     def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         self,
         idx: tuple[
-            int | StrLike | tuple[Scalar, ...] | Callable[[DataFrame], ScalarT],
+            int
+            | StrLike
+            | Timestamp
+            | tuple[Scalar, ...]
+            | Callable[[DataFrame], ScalarT],
             int | StrLike | tuple[Scalar, ...],
         ],
     ) -> Scalar: ...
@@ -207,6 +212,7 @@ class _LocIndexerFrame(_LocIndexer):
                 IndexType
                 | MaskType
                 | _IndexSliceTuple
+                | SequenceNotStr[float | str | Timestamp]
                 | Callable[
                     [DataFrame], ScalarT | list[HashableT] | IndexType | MaskType
                 ],

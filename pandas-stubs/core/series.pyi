@@ -139,6 +139,7 @@ from pandas._typing import (
     ReplaceMethod,
     Scalar,
     ScalarT,
+    SequenceNotStr,
     SeriesByT,
     SortKind,
     StrDtypeArg,
@@ -195,8 +196,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
         idx: (
             MaskType
             | Index
-            | Sequence[float]
-            | list[str]
+            | SequenceNotStr[float | str | Timestamp]
             | slice
             | _IndexSliceTuple
             | Sequence[_IndexSliceTuple]

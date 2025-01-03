@@ -3767,3 +3767,17 @@ def test_frame_single_slice() -> None:
     check(assert_type(df.loc[:], pd.DataFrame), pd.DataFrame)
 
     df.loc[:] = 1 + df
+
+
+def test_frame_index_timestamp() -> None:
+    # GH 620
+    dt1 = pd.to_datetime("2023-05-01")
+    dt2 = pd.to_datetime("2023-05-02")
+    s = pd.Series([1, 2], index=[dt1, dt2])
+    df = pd.DataFrame(s)
+    # Next result is Series or DataFrame because the index could be a MultiIndex
+    check(assert_type(df.loc[dt1, :], pd.Series | pd.DataFrame), pd.Series)
+    check(assert_type(df.loc[[dt1], :], pd.DataFrame), pd.DataFrame)
+    df2 = pd.DataFrame({"x": s})
+    check(assert_type(df2.loc[dt1, "x"], Scalar), np.integer)
+    check(assert_type(df2.loc[[dt1], "x"], pd.Series), pd.Series, np.integer)

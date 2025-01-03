@@ -3496,3 +3496,12 @@ def test_series_empty_dtype() -> None:
     check(assert_type(pd.Series([]), "pd.Series[Any]"), pd.Series)
     # ensure that an empty string does not get matched to Sequence[Never]
     check(assert_type(pd.Series(""), "pd.Series[str]"), pd.Series)
+
+
+def test_series_index_timestamp() -> None:
+    # GH 620
+    dt1 = pd.to_datetime("2023-05-01")
+    dt2 = pd.to_datetime("2023-05-02")
+    s = pd.Series([1, 2], index=[dt1, dt2])
+    check(assert_type(s[dt1], int), np.integer)
+    check(assert_type(s.loc[[dt1]], "pd.Series[int]"), pd.Series, np.integer)
