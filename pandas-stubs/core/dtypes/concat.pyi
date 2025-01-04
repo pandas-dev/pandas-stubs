@@ -6,7 +6,7 @@ from pandas import (
     Series,
 )
 
-_CatT = TypeVar("_CatT", Categorical, CategoricalIndex, Series)
+_CatT = TypeVar("_CatT", bound=Categorical | CategoricalIndex | Series)
 
 def union_categoricals(
     to_union: list[_CatT], sort_categories: bool = ..., ignore_order: bool = ...

@@ -9,10 +9,12 @@ from collections.abc import (
 )
 import datetime as dt
 from re import Pattern
+import sys
 from typing import (
     Any,
     ClassVar,
     Literal,
+    NoReturn,
     overload,
 )
 
@@ -112,6 +114,7 @@ from pandas._typing import (
     ReplaceMethod,
     Scalar,
     ScalarT,
+    SequenceNotStr,
     SeriesByT,
     SortKind,
     StataDateFormat,
@@ -193,7 +196,11 @@ class _LocIndexerFrame(_LocIndexer):
     def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         self,
         idx: tuple[
-            int | StrLike | tuple[Scalar, ...] | Callable[[DataFrame], ScalarT],
+            int
+            | StrLike
+            | Timestamp
+            | tuple[Scalar, ...]
+            | Callable[[DataFrame], ScalarT],
             int | StrLike | tuple[Scalar, ...],
         ],
     ) -> Scalar: ...
@@ -206,6 +213,7 @@ class _LocIndexerFrame(_LocIndexer):
                 IndexType
                 | MaskType
                 | _IndexSliceTuple
+                | SequenceNotStr[float | str | Timestamp]
                 | Callable[
                     [DataFrame], ScalarT | list[HashableT] | IndexType | MaskType
                 ],
@@ -219,7 +227,9 @@ class _LocIndexerFrame(_LocIndexer):
     @overload
     def __setitem__(
         self,
-        idx: MaskType | StrLike | _IndexSliceTuple | list[ScalarT] | IndexingInt,
+        idx: (
+            MaskType | StrLike | _IndexSliceTuple | list[ScalarT] | IndexingInt | slice
+        ),
         value: Scalar | NAType | NaTType | ArrayLike | Series | DataFrame | list | None,
     ) -> None: ...
     @overload
@@ -229,8 +239,32 @@ class _LocIndexerFrame(_LocIndexer):
         value: Scalar | NAType | NaTType | ArrayLike | Series | list | None,
     ) -> None: ...
 
-class DataFrame(NDFrame, OpsMixin):
-    __hash__: ClassVar[None]  # type: ignore[assignment]
+# With mypy 1.14.1 and python 3.12, the second overload needs a type-ignore statement
+if sys.version_info >= (3, 12):
+    class _GetItemHack:
+        @overload
+        def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        @overload
+        def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+            self, key: Iterable[Hashable] | slice
+        ) -> DataFrame: ...
+        @overload
+        def __getitem__(self, key: Hashable) -> Series: ...
+
+else:
+    class _GetItemHack:
+        @overload
+        def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        @overload
+        def __getitem__(  # pyright: ignore[reportOverlappingOverload]
+            self, key: Iterable[Hashable] | slice
+        ) -> DataFrame: ...
+        @overload
+        def __getitem__(self, key: Hashable) -> Series: ...
+
+class DataFrame(NDFrame, OpsMixin, _GetItemHack):
+
+    __hash__: ClassVar[None]  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]
 
     @overload
     def __new__(
@@ -607,14 +641,6 @@ class DataFrame(NDFrame, OpsMixin):
     @property
     def T(self) -> DataFrame: ...
     def __getattr__(self, name: str) -> Series: ...
-    @overload
-    def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-    @overload
-    def __getitem__(  # pyright: ignore[reportOverlappingOverload]
-        self, key: Iterable[Hashable] | slice
-    ) -> DataFrame: ...
-    @overload
-    def __getitem__(self, key: Hashable) -> Series: ...
     def isetitem(
         self, loc: int | Sequence[int], value: Scalar | ArrayLike | list[Any]
     ) -> None: ...
@@ -2453,6 +2479,7 @@ class DataFrame(NDFrame, OpsMixin):
     ) -> Self: ...
     def __truediv__(self, other: float | DataFrame | Series | Sequence) -> Self: ...
     def __rtruediv__(self, other: float | DataFrame | Series | Sequence) -> Self: ...
+    def __bool__(self) -> NoReturn: ...
 
 class _PandasNamedTuple(tuple[Any, ...]):
     def __getattr__(self, field: str) -> Scalar: ...

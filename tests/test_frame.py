@@ -7,7 +7,6 @@ from collections.abc import (
     Iterator,
     Mapping,
     MutableMapping,
-    Sequence,
 )
 import csv
 import datetime
@@ -39,7 +38,6 @@ from pandas.core.resample import (
 from pandas.core.series import Series
 import pytest
 from typing_extensions import (
-    Never,
     TypeAlias,
     assert_never,
     assert_type,
@@ -2409,14 +2407,12 @@ def test_indexslice_getitem():
         .set_index(["x", "y"])
     )
     ind = pd.Index([2, 3])
-    # This next test is written this way to support both mypy 1.13 and newer
-    # versions of mypy and pyright that treat slice as a Generic due to
-    # a change in typeshed.
-    # Once pyright 1.1.390 and mypy 1.14 are released, the test can be
-    # reverted to the standard form.
-    # check(assert_type(pd.IndexSlice[ind, :], tuple["pd.Index[int]", slice]), tuple)
-    tmp = cast(tuple["pd.Index[int]", slice], pd.IndexSlice[ind, :])  # type: ignore[redundant-cast]
-    check(assert_type(tmp, tuple["pd.Index[int]", slice]), tuple)
+    check(
+        assert_type(
+            pd.IndexSlice[ind, :], tuple["pd.Index[int]", "slice[None, None, None]"]
+        ),
+        tuple,
+    )
     check(assert_type(df.loc[pd.IndexSlice[ind, :]], pd.DataFrame), pd.DataFrame)
     check(assert_type(df.loc[pd.IndexSlice[1:2]], pd.DataFrame), pd.DataFrame)
     check(
@@ -3765,22 +3761,38 @@ def test_info() -> None:
     check(assert_type(df.info(show_counts=None), None), type(None))
 
 
-def test_series_typed_dict() -> None:
-    """Test that no error is raised when constructing a series from a typed dict."""
+def test_frame_single_slice() -> None:
+    # GH 572
+    df = pd.DataFrame([1, 2, 3])
+    check(assert_type(df.loc[:], pd.DataFrame), pd.DataFrame)
 
-    class MyDict(TypedDict):
-        a: str
-        b: str
-
-    my_dict = MyDict(a="", b="")
-    sr = pd.Series(my_dict)
-    check(assert_type(sr, pd.Series), pd.Series)
+    df.loc[:] = 1 + df
 
 
-def test_series_empty_dtype() -> None:
-    """Test for the creation of a Series from an empty list GH571 to map to a Series[Any]."""
-    new_tab: Sequence[Never] = []  # need to be typehinted to please mypy
-    check(assert_type(pd.Series(new_tab), "pd.Series[Any]"), pd.Series)
-    check(assert_type(pd.Series([]), "pd.Series[Any]"), pd.Series)
-    # ensure that an empty string does not get matched to Sequence[Never]
-    check(assert_type(pd.Series(""), "pd.Series[str]"), pd.Series)
+def test_frame_index_timestamp() -> None:
+    # GH 620
+    dt1 = pd.to_datetime("2023-05-01")
+    dt2 = pd.to_datetime("2023-05-02")
+    s = pd.Series([1, 2], index=[dt1, dt2])
+    df = pd.DataFrame(s)
+    # Next result is Series or DataFrame because the index could be a MultiIndex
+    check(assert_type(df.loc[dt1, :], pd.Series | pd.DataFrame), pd.Series)
+    check(assert_type(df.loc[[dt1], :], pd.DataFrame), pd.DataFrame)
+    df2 = pd.DataFrame({"x": s})
+    check(assert_type(df2.loc[dt1, "x"], Scalar), np.integer)
+    check(assert_type(df2.loc[[dt1], "x"], pd.Series), pd.Series, np.integer)
+
+
+def test_frame_bool_fails() -> None:
+    # GH 663
+
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+
+    try:
+        # We want the type checker to tell us the next line is invalid
+        # mypy doesn't seem to figure that out, but pyright does
+        if df == "foo":  # pyright: ignore[reportGeneralTypeIssues]
+            # Next line is unreachable.
+            s = df["a"]
+    except ValueError:
+        pass

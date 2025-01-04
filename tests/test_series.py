@@ -16,6 +16,7 @@ from typing import (
     Any,
     Generic,
     Literal,
+    TypedDict,
     TypeVar,
     Union,
     cast,
@@ -33,6 +34,7 @@ from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.window import ExponentialMovingWindow
 import pytest
 from typing_extensions import (
+    Never,
     Self,
     TypeAlias,
     assert_never,
@@ -3435,3 +3437,105 @@ def test_series_unique_timedelta() -> None:
     """Test type return of Series.unique on Series[timedeta64[ns]]."""
     sr = pd.Series([pd.Timedelta("1 days"), pd.Timedelta("3 days")])
     check(assert_type(sr.unique(), TimedeltaArray), TimedeltaArray)
+
+
+def test_slice_timestamp() -> None:
+    dti = pd.date_range("1/1/2025", "2/28/2025")
+
+    s = pd.Series([i for i in range(len(dti))], index=dti)
+
+    # For `s1`, see discussion in GH 397.  Needs mypy fix.
+    # s1 = s.loc["2025-01-15":"2025-01-20"]
+
+    # GH 397
+    check(
+        assert_type(
+            s.loc[pd.Timestamp("2025-01-15") : pd.Timestamp("2025-01-20")],
+            "pd.Series[int]",
+        ),
+        pd.Series,
+        np.integer,
+    )
+
+
+def test_apply_dateoffset() -> None:
+    # GH 454
+    months = [1, 2, 3]
+    s = pd.Series(months)
+    check(
+        assert_type(s.apply(lambda x: pd.DateOffset(months=x)), "OffsetSeries"),
+        pd.Series,
+        pd.DateOffset,
+    )
+
+
+def test_series_single_slice() -> None:
+    # GH 572
+    s = pd.Series([1, 2, 3])
+    check(assert_type(s.loc[:], "pd.Series[int]"), pd.Series, np.integer)
+
+    s.loc[:] = 1 + s
+
+
+def test_series_typed_dict() -> None:
+    """Test that no error is raised when constructing a series from a typed dict."""
+
+    class MyDict(TypedDict):
+        a: str
+        b: str
+
+    my_dict = MyDict(a="", b="")
+    sr = pd.Series(my_dict)
+    check(assert_type(sr, pd.Series), pd.Series)
+
+
+def test_series_empty_dtype() -> None:
+    """Test for the creation of a Series from an empty list GH571 to map to a Series[Any]."""
+    new_tab: Sequence[Never] = []  # need to be typehinted to please mypy
+    check(assert_type(pd.Series(new_tab), "pd.Series[Any]"), pd.Series)
+    check(assert_type(pd.Series([]), "pd.Series[Any]"), pd.Series)
+    # ensure that an empty string does not get matched to Sequence[Never]
+    check(assert_type(pd.Series(""), "pd.Series[str]"), pd.Series)
+
+
+def test_series_index_timestamp() -> None:
+    # GH 620
+    dt1 = pd.to_datetime("2023-05-01")
+    dt2 = pd.to_datetime("2023-05-02")
+    s = pd.Series([1, 2], index=[dt1, dt2])
+    check(assert_type(s[dt1], int), np.integer)
+    check(assert_type(s.loc[[dt1]], "pd.Series[int]"), pd.Series, np.integer)
+
+
+def test_series_bool_fails() -> None:
+    # GH 663
+    s = pd.Series([1, 2, 3])
+
+    try:
+        # We want the type checker to tell us the next line is invalid
+        # mypy doesn't seem to figure that out, but pyright does
+        if s == "foo":  # pyright: ignore[reportGeneralTypeIssues]
+            # Next line is unreachable.
+            a = s[0]
+            assert False
+    except ValueError:
+        pass
+
+
+def test_path_div() -> None:
+    # GH 682
+    folder = Path.cwd()
+    files = pd.Series(["a.png", "b.png"])
+    check(assert_type(folder / files, pd.Series), pd.Series, Path)
+
+    folders = pd.Series([folder, folder])
+    check(assert_type(folders / Path("a.png"), pd.Series), pd.Series, Path)
+
+
+def test_series_dict() -> None:
+    # GH 812
+    check(
+        assert_type(pd.Series({"a": 1, "b": 2}.keys()), "pd.Series[str]"),
+        pd.Series,
+        str,
+    )

@@ -57,7 +57,7 @@ Incomplete: TypeAlias = Any
 ArrayLike: TypeAlias = ExtensionArray | np.ndarray[Any, Any]
 AnyArrayLike: TypeAlias = Index[Any] | Series[Any] | np.ndarray[Any, Any]
 PythonScalar: TypeAlias = str | bool | complex
-DatetimeLikeScalar = TypeVar("DatetimeLikeScalar", Period, Timestamp, Timedelta)
+DatetimeLikeScalar = TypeVar("DatetimeLikeScalar", bound=Period | Timestamp | Timedelta)
 PandasScalar: TypeAlias = bytes | datetime.date | datetime.datetime | datetime.timedelta
 IntStrT = TypeVar("IntStrT", int, str)
 # Scalar: TypeAlias = PythonScalar | PandasScalar
@@ -490,7 +490,8 @@ AxisColumn: TypeAlias = Literal["columns", 1]
 Axis: TypeAlias = AxisIndex | AxisColumn
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
 KeysArgType: TypeAlias = Any
-ListLike = TypeVar("ListLike", Sequence, np.ndarray, Series, Index)
+ListLike: TypeAlias = Sequence | np.ndarray | Series | Index
+ListLikeT = TypeVar("ListLikeT", bound=ListLike)
 ListLikeExceptSeriesAndStr: TypeAlias = (
     MutableSequence[Any] | np.ndarray[Any, Any] | tuple[Any, ...] | Index[Any]
 )

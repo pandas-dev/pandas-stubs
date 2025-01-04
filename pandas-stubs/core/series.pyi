@@ -1,3 +1,4 @@
+from collections import dict_keys  # type: ignore[attr-defined]
 from collections.abc import (
     Callable,
     Hashable,
@@ -13,11 +14,13 @@ from datetime import (
     time,
     timedelta,
 )
+from pathlib import Path
 from typing import (
     Any,
     ClassVar,
     Generic,
     Literal,
+    NoReturn,
     overload,
 )
 
@@ -139,6 +142,7 @@ from pandas._typing import (
     ReplaceMethod,
     Scalar,
     ScalarT,
+    SequenceNotStr,
     SeriesByT,
     SortKind,
     StrDtypeArg,
@@ -195,8 +199,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
         idx: (
             MaskType
             | Index
-            | Sequence[float]
-            | list[str]
+            | SequenceNotStr[float | str | Timestamp]
             | slice
             | _IndexSliceTuple
             | Sequence[_IndexSliceTuple]
@@ -208,7 +211,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     @overload
     def __setitem__(
         self,
-        idx: Index | MaskType,
+        idx: Index | MaskType | slice,
         value: S1 | ArrayLike | Series[S1] | None,
     ) -> None: ...
     @overload
@@ -352,7 +355,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: S1 | _ListLike[S1] | dict[HashableT1, S1],
+        data: S1 | _ListLike[S1] | dict[HashableT1, S1] | dict_keys[S1, Any],
         index: Axes | None = ...,
         *,
         dtype: Dtype = ...,
@@ -1032,6 +1035,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def apply(
         self,
+        func: Callable[..., BaseOffset],
+        convertDType: _bool = ...,
+        args: tuple = ...,
+        **kwds,
+    ) -> OffsetSeries: ...
+    @overload
+    def apply(
+        self,
         func: Callable[..., Series],
         convertDType: _bool = ...,
         args: tuple = ...,
@@ -1640,7 +1651,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: int | np_ndarray_anyint | Series[int]
     ) -> Series[int]: ...
     def __rsub__(self, other: num | _ListLike | Series[S1]) -> Series: ...
-    def __rtruediv__(self, other: num | _ListLike | Series[S1]) -> Series: ...
+    def __rtruediv__(self, other: num | _ListLike | Series[S1] | Path) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __rxor__(  # pyright: ignore[reportOverlappingOverload]
@@ -1666,7 +1677,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> TimedeltaSeries: ...
     @overload
     def __sub__(self, other: num | _ListLike | Series) -> Series: ...
-    def __truediv__(self, other: num | _ListLike | Series[S1]) -> Series: ...
+    def __truediv__(self, other: num | _ListLike | Series[S1] | Path) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __xor__(  # pyright: ignore[reportOverlappingOverload]
@@ -2144,6 +2155,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         level: Level | None = ...,
         drop_level: _bool = ...,
     ) -> Self: ...
+    def __bool__(self) -> NoReturn: ...
 
 class TimestampSeries(Series[Timestamp]):
     @property
