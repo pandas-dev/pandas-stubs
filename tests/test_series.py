@@ -3517,6 +3517,7 @@ def test_series_bool_fails() -> None:
         if s == "foo":  # pyright: ignore[reportGeneralTypeIssues]
             # Next line is unreachable.
             a = s[0]
+            assert False
     except ValueError:
         pass
 
