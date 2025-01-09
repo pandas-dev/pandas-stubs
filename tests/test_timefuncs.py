@@ -63,17 +63,37 @@ np_ndarray_bool = npt.NDArray[np.bool_]
 
 
 def test_types_init() -> None:
-    ts: pd.Timestamp = pd.Timestamp("2021-03-01T12")
-    ts1: pd.Timestamp = pd.Timestamp(dt.date(2021, 3, 15))
-    ts2: pd.Timestamp = pd.Timestamp(dt.datetime(2021, 3, 10, 12))
-    ts3: pd.Timestamp = pd.Timestamp(pd.Timestamp("2021-03-01T12"))
-    ts4: pd.Timestamp = pd.Timestamp(1515590000.1, unit="s")
-    ts5: pd.Timestamp = pd.Timestamp(1515590000.1, unit="s", tz="US/Pacific")
-    ts6: pd.Timestamp = pd.Timestamp(1515590000100000000)  # plain integer (nanosecond)
-    ts7: pd.Timestamp = pd.Timestamp(2021, 3, 10, 12)
-    ts8: pd.Timestamp = pd.Timestamp(year=2021, month=3, day=10, hour=12)
-    ts9: pd.Timestamp = pd.Timestamp(
-        year=2021, month=3, day=10, hour=12, tz="US/Pacific"
+    check(assert_type(pd.Timestamp("2021-03-01T12"), pd.Timestamp), pd.Timestamp)
+    check(assert_type(pd.Timestamp(dt.date(2021, 3, 15)), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(pd.Timestamp(dt.datetime(2021, 3, 10, 12)), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(pd.Timestamp(pd.Timestamp("2021-03-01T12")), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(assert_type(pd.Timestamp(1515590000.1, unit="s"), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(
+            pd.Timestamp(1515590000.1, unit="s", tz="US/Pacific"), pd.Timestamp
+        ),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(pd.Timestamp(1515590000100000000), pd.Timestamp), pd.Timestamp
+    )  # plain integer (nanosecond)
+    check(assert_type(pd.Timestamp(2021, 3, 10, 12), pd.Timestamp), pd.Timestamp)
+    check(
+        assert_type(pd.Timestamp(year=2021, month=3, day=10, hour=12), pd.Timestamp),
+        pd.Timestamp,
+    )
+    check(
+        assert_type(
+            pd.Timestamp(year=2021, month=3, day=10, hour=12, tz="US/Pacific"),
+            pd.Timestamp,
+        ),
+        pd.Timestamp,
     )
 
 
@@ -82,18 +102,18 @@ def test_types_arithmetic() -> None:
     ts2: pd.Timestamp = pd.to_datetime("2021-01-01")
     delta: pd.Timedelta = pd.to_timedelta("1 day")
 
-    tsr: pd.Timedelta = ts - ts2
-    tsr2: pd.Timestamp = ts + delta
-    tsr3: pd.Timestamp = ts - delta
-    tsr4: pd.Timedelta = ts - dt.datetime(2021, 1, 3)
+    check(assert_type(ts - ts2, pd.Timedelta), pd.Timedelta)
+    check(assert_type(ts + delta, pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts - delta, pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts - dt.datetime(2021, 1, 3), pd.Timedelta), pd.Timedelta)
 
 
 def test_types_comparison() -> None:
     ts: pd.Timestamp = pd.to_datetime("2021-03-01")
     ts2: pd.Timestamp = pd.to_datetime("2021-01-01")
 
-    tsr: bool = ts < ts2
-    tsr2: bool = ts > ts2
+    check(assert_type(ts < ts2, bool), bool)
+    check(assert_type(ts > ts2, bool), bool)
 
 
 def test_types_timestamp_series_comparisons() -> None:
@@ -121,32 +141,37 @@ def test_types_timestamp_series_comparisons() -> None:
 def test_types_pydatetime() -> None:
     ts: pd.Timestamp = pd.Timestamp("2021-03-01T12")
 
-    datet: dt.datetime = ts.to_pydatetime()
-    datet2: dt.datetime = ts.to_pydatetime(False)
-    datet3: dt.datetime = ts.to_pydatetime(warn=True)
+    check(assert_type(ts.to_pydatetime(), dt.datetime), dt.datetime)
+    check(assert_type(ts.to_pydatetime(False), dt.datetime), dt.datetime)
+    check(assert_type(ts.to_pydatetime(warn=True), dt.datetime), dt.datetime)
 
 
 def test_to_timedelta() -> None:
-    td: pd.Timedelta = pd.to_timedelta(3, "days")
-    tds: pd.TimedeltaIndex = pd.to_timedelta([2, 3], "minutes")
+    check(assert_type(pd.to_timedelta(3, "days"), pd.Timedelta), pd.Timedelta)
+    check(
+        assert_type(pd.to_timedelta([2, 3], "minutes"), pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+    )
 
 
 def test_timedelta_arithmetic() -> None:
     td1: pd.Timedelta = pd.to_timedelta(3, "days")
     td2: pd.Timedelta = pd.to_timedelta(4, "hours")
     td3: pd.Timedelta = td1 + td2
-    td4: pd.Timedelta = td1 - td2
-    td5: pd.Timedelta = td1 * 4.3
-    td6: pd.Timedelta = td3 / 10.2
+    check(assert_type(td1 - td2, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td1 * 4.3, pd.Timedelta), pd.Timedelta)
+    check(assert_type(td3 / 10.2, pd.Timedelta), pd.Timedelta)
 
 
 def test_timedelta_series_arithmetic() -> None:
-    tds1: pd.TimedeltaIndex = pd.to_timedelta([2, 3], "minutes")
-    td1: pd.Timedelta = pd.Timedelta("2 days")
-    r1: pd.TimedeltaIndex = tds1 + td1
-    r2: pd.TimedeltaIndex = tds1 - td1
-    r3: pd.TimedeltaIndex = tds1 * 4.3
-    r4: pd.TimedeltaIndex = tds1 / 10.2
+    tds1 = pd.to_timedelta([2, 3], "minutes")
+    td1 = pd.Timedelta("2 days")
+    check(assert_type(tds1, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(td1, pd.Timedelta), pd.Timedelta)
+    check(assert_type(tds1 + td1, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(tds1 - td1, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(tds1 * 4.3, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(tds1 / 10.2, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
 
 def test_timedelta_float_value() -> None:
@@ -190,11 +215,18 @@ def test_timestamp_timedelta_series_arithmetic() -> None:
 def test_timestamp_dateoffset_arithmetic() -> None:
     ts = pd.Timestamp("2022-03-18")
     do = pd.DateOffset(days=366)
-    r1: pd.Timestamp = ts + do
+    check(assert_type(ts + do, pd.Timestamp), pd.Timestamp)
 
 
 def test_datetimeindex_plus_timedelta() -> None:
-    tscheck = pd.Series([pd.Timestamp("2022-03-05"), pd.Timestamp("2022-03-06")])
+    check(
+        assert_type(
+            pd.Series([pd.Timestamp("2022-03-05"), pd.Timestamp("2022-03-06")]),
+            "TimestampSeries",
+        ),
+        pd.Series,
+        pd.Timestamp,
+    )
     dti = pd.to_datetime(["2022-03-08", "2022-03-15"])
     td_s = pd.to_timedelta(pd.Series([10, 20]), "minutes")
     dti_td_s = dti + td_s
@@ -222,7 +254,14 @@ def test_datetimeindex_plus_timedelta() -> None:
 
 def test_datetimeindex_minus_timedelta() -> None:
     # GH 280
-    tscheck = pd.Series([pd.Timestamp("2022-03-05"), pd.Timestamp("2022-03-06")])
+    check(
+        assert_type(
+            pd.Series([pd.Timestamp("2022-03-05"), pd.Timestamp("2022-03-06")]),
+            "TimestampSeries",
+        ),
+        pd.Series,
+        pd.Timestamp,
+    )
     dti = pd.to_datetime(["2022-03-08", "2022-03-15"])
     td_s = pd.to_timedelta(pd.Series([10, 20]), "minutes")
     dti_td_s = dti - td_s
@@ -241,7 +280,14 @@ def test_datetimeindex_minus_timedelta() -> None:
 
 
 def test_timestamp_plus_timedelta_series() -> None:
-    tscheck = pd.Series([pd.Timestamp("2022-03-05"), pd.Timestamp("2022-03-06")])
+    check(
+        assert_type(
+            pd.Series([pd.Timestamp("2022-03-05"), pd.Timestamp("2022-03-06")]),
+            "TimestampSeries",
+        ),
+        pd.Series,
+        pd.Timestamp,
+    )
     ts = pd.Timestamp("2022-03-05")
     td = pd.to_timedelta(pd.Series([10, 20]), "minutes")
     r3 = td + ts
@@ -265,10 +311,10 @@ def test_timedelta_series_sum() -> None:
         pd.to_datetime(["04/05/2022 08:00", "04/03/2022 09:00"])
     )
     ssum = s.sum()
-    ires: int = ssum.days
+    check(assert_type(ssum.days, int), int)
 
     sf = pd.Series([1.0, 2.2, 3.3])
-    sfsum: float = sf.sum()
+    check(assert_type(sf.sum(), float), float)
 
 
 def test_iso_calendar() -> None:

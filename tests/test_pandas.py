@@ -223,7 +223,7 @@ def test_types_concat() -> None:
 
     check(
         assert_type(
-            pd.concat(map(lambda x: s2, ["some_value", 3]), axis=1), pd.DataFrame
+            pd.concat(map(lambda _: s2, ["some_value", 3]), axis=1), pd.DataFrame
         ),
         pd.DataFrame,
     )
