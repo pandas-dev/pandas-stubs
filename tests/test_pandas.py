@@ -19,6 +19,7 @@ import pandas.util as pdutil
 import pytest
 from typing_extensions import (
     Never,
+    TypeAlias,
     assert_type,
 )
 
@@ -33,23 +34,66 @@ from tests import (
     pytest_warns_bounded,
 )
 
+if TYPE_CHECKING:
+    from pandas.core.series import TimestampSeries
+else:
+    TimestampSeries: TypeAlias = pd.Series
+
 
 def test_types_to_datetime() -> None:
     df = pd.DataFrame({"year": [2015, 2016], "month": [2, 3], "day": [4, 5]})
-    r1: pd.Series = pd.to_datetime(df)
+    check(assert_type(pd.to_datetime(df), TimestampSeries), pd.Series, pd.Timestamp)
 
-    r2: pd.Series = pd.to_datetime(df, unit="s", origin="unix")
-    r3: pd.Series = pd.to_datetime(
-        df, unit="ns", dayfirst=True, utc=False, format="%M:%D", exact=False
+    check(
+        assert_type(pd.to_datetime(df, unit="s", origin="unix"), TimestampSeries),
+        pd.Series,
+        pd.Timestamp,
     )
-    r4: pd.DatetimeIndex = pd.to_datetime(
-        [1, 2], unit="D", origin=pd.Timestamp("01/01/2000")
+    check(
+        assert_type(
+            pd.to_datetime(
+                df, unit="ns", dayfirst=True, utc=False, format="%M:%D", exact=False
+            ),
+            TimestampSeries,
+        ),
+        pd.Series,
+        pd.Timestamp,
     )
-    r5: pd.DatetimeIndex = pd.to_datetime([1, 2], unit="D", origin=3)
-    r6: pd.DatetimeIndex = pd.to_datetime(["2022-01-03", "2022-02-22"])
-    r7: pd.DatetimeIndex = pd.to_datetime(pd.Index(["2022-01-03", "2022-02-22"]))
-    r8: pd.Series = pd.to_datetime(
-        {"year": [2015, 2016], "month": [2, 3], "day": [4, 5]}
+    check(
+        assert_type(
+            pd.to_datetime([1, 2], unit="D", origin=pd.Timestamp("01/01/2000")),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime([1, 2], unit="D", origin=3),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime(["2022-01-03", "2022-02-22"]),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime(pd.Index(["2022-01-03", "2022-02-22"])),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.to_datetime({"year": [2015, 2016], "month": [2, 3], "day": [4, 5]}),
+            TimestampSeries,
+        ),
+        pd.Series,
+        pd.Timestamp,
     )
 
 
@@ -179,7 +223,7 @@ def test_types_concat() -> None:
 
     check(
         assert_type(
-            pd.concat(map(lambda x: s2, ["some_value", 3]), axis=1), pd.DataFrame
+            pd.concat(map(lambda _: s2, ["some_value", 3]), axis=1), pd.DataFrame
         ),
         pd.DataFrame,
     )
@@ -306,14 +350,32 @@ def test_types_json_normalize() -> None:
         {"name": {"given": "Mose", "family": "Regner"}},
         {"id": 2, "name": "Faye Raker"},
     ]
-    df1: pd.DataFrame = pd.json_normalize(data=data1)
-    df2: pd.DataFrame = pd.json_normalize(data=data1, max_level=0, sep=";")
-    df3: pd.DataFrame = pd.json_normalize(
-        data=data1, meta_prefix="id", record_prefix="name", errors="raise"
+    check(assert_type(pd.json_normalize(data=data1), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.json_normalize(data=data1, max_level=0, sep=";"), pd.DataFrame),
+        pd.DataFrame,
     )
-    df4: pd.DataFrame = pd.json_normalize(data=data1, record_path=None, meta="id")
+    check(
+        assert_type(
+            pd.json_normalize(
+                data=data1, meta_prefix="id", record_prefix="name", errors="raise"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.json_normalize(data=data1, record_path=None, meta="id"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
     data2: dict[str, Any] = {"name": {"given": "Mose", "family": "Regner"}}
-    df5: pd.DataFrame = pd.json_normalize(data=data2)
+    check(
+        assert_type(data2, dict[str, Any]),
+        dict,
+    )
+    check(assert_type(pd.json_normalize(data=data2), pd.DataFrame), pd.DataFrame)
 
 
 def test_isna() -> None:

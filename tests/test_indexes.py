@@ -84,10 +84,13 @@ def test_column_contains() -> None:
     df = pd.DataFrame({"A": [1, 2], "B": ["c", "d"], "E": [3, 4]})
 
     collist = [column for column in df.columns]
+    check(assert_type(collist, list[str]), list, str)
 
     collist2 = [column for column in df.columns[df.columns.str.contains("A|B")]]
+    check(assert_type(collist2, list[str]), list, str)
 
     length = len(df.columns[df.columns.str.contains("A|B")])
+    check(assert_type(length, int), int)
 
 
 def test_column_sequence() -> None:

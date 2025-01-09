@@ -2958,6 +2958,7 @@ def test_groupby_apply() -> None:
     with pytest_warns_bounded(
         DeprecationWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
+        upper="2.99",
     ):
         check(
             assert_type(df.groupby("col1").apply(sum_mean), pd.Series),
@@ -2968,6 +2969,7 @@ def test_groupby_apply() -> None:
     with pytest_warns_bounded(
         DeprecationWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
+        upper="2.99",
     ):
         check(assert_type(df.groupby("col1").apply(lfunc), pd.Series), pd.Series)
 
@@ -2977,6 +2979,7 @@ def test_groupby_apply() -> None:
     with pytest_warns_bounded(
         DeprecationWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
+        upper="2.99",
     ):
         check(assert_type(df.groupby("col1").apply(sum_to_list), pd.Series), pd.Series)
 
@@ -2986,6 +2989,7 @@ def test_groupby_apply() -> None:
     with pytest_warns_bounded(
         DeprecationWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
+        upper="2.99",
     ):
         check(
             assert_type(df.groupby("col1").apply(sum_to_series), pd.DataFrame),
@@ -2998,6 +3002,7 @@ def test_groupby_apply() -> None:
     with pytest_warns_bounded(
         DeprecationWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
+        upper="2.99",
     ):
         check(
             assert_type(
