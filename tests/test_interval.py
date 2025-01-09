@@ -12,28 +12,61 @@ from tests import (
 
 
 def test_interval_init() -> None:
-    i1: pd.Interval = pd.Interval(1, 2, closed="both")
-    i2: pd.Interval = pd.Interval(1, right=2, closed="right")
-    i3: pd.Interval = pd.Interval(left=1, right=2, closed="left")
+    check(
+        assert_type(pd.Interval(1, 2, closed="both"), "pd.Interval[int]"),
+        pd.Interval,
+        int,
+    )
+    check(
+        assert_type(pd.Interval(1, right=2, closed="right"), "pd.Interval[int]"),
+        pd.Interval,
+        int,
+    )
+    check(
+        assert_type(pd.Interval(left=1, right=2, closed="left"), "pd.Interval[int]"),
+        pd.Interval,
+        int,
+    )
 
 
 def test_interval_arithmetic() -> None:
-    i1: pd.Interval = pd.Interval(1, 2, closed="both")
-    i2: pd.Interval = pd.Interval(1, right=2, closed="right")
+    i1 = pd.Interval(1, 2, closed="both")
+    check(assert_type(i1, "pd.Interval[int]"), pd.Interval, int)
+    check(
+        assert_type(pd.Interval(1, right=2, closed="right"), "pd.Interval[int]"),
+        pd.Interval,
+        int,
+    )
 
-    i3: pd.Interval = i1 + 1
-    i4: pd.Interval = i1 - 1
-    i5: pd.Interval = i1 * 2
-    i6: pd.Interval = i1 / 2
-    i7: pd.Interval = i1 // 2
+    check(assert_type(i1 + 1, "pd.Interval[int]"), pd.Interval, int)
+    check(assert_type(i1 - 1, "pd.Interval[int]"), pd.Interval, int)
+    check(assert_type(i1 * 2, "pd.Interval[int]"), pd.Interval, int)
+    check(assert_type(i1 / 2, "pd.Interval[float]"), pd.Interval, float)
+    check(assert_type(i1 // 2, "pd.Interval[int]"), pd.Interval, int)
 
 
 def test_max_intervals() -> None:
-    i1 = pd.Interval(
-        pd.Timestamp("2000-01-01"), pd.Timestamp("2000-01-02"), closed="both"
+    check(
+        assert_type(
+            pd.Interval(
+                pd.Timestamp("2000-01-01"), pd.Timestamp("2000-01-02"), closed="both"
+            ),
+            "pd.Interval[pd.Timestamp]",
+        ),
+        pd.Interval,
+        pd.Timestamp,
     )
-    i2 = pd.Interval(
-        pd.Timestamp("2000-01-01T12:00:00"), pd.Timestamp("2000-01-02"), closed="both"
+    check(
+        assert_type(
+            pd.Interval(
+                pd.Timestamp("2000-01-01T12:00:00"),
+                pd.Timestamp("2000-01-02"),
+                closed="both",
+            ),
+            "pd.Interval[pd.Timestamp]",
+        ),
+        pd.Interval,
+        pd.Timestamp,
     )
 
 

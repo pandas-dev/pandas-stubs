@@ -80,6 +80,7 @@ def test_frame_groupby_resample() -> None:
     with pytest_warns_bounded(
         DeprecationWarning,
         "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
+        upper="2.99",
     ):
         check(assert_type(GB_DF.resample("ME").sum(), DataFrame), DataFrame)
         check(assert_type(GB_DF.resample("ME").prod(), DataFrame), DataFrame)
@@ -126,6 +127,7 @@ def test_frame_groupby_resample() -> None:
     with pytest_warns_bounded(
         DeprecationWarning,
         "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
+        upper="2.99",
     ):
         with pytest_warns_bounded(
             FutureWarning,
@@ -173,6 +175,7 @@ def test_frame_groupby_resample() -> None:
     with pytest_warns_bounded(
         DeprecationWarning,
         "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
+        upper="2.99",
     ):
         check(assert_type(GB_DF.resample("ME").aggregate(f), DataFrame), DataFrame)
 
@@ -189,6 +192,7 @@ def test_frame_groupby_resample() -> None:
     with pytest_warns_bounded(
         DeprecationWarning,
         "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
+        upper="2.99",
     ):
         with pytest_warns_bounded(
             FutureWarning,

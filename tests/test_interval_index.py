@@ -9,27 +9,63 @@ from tests import check
 
 
 def test_from_breaks() -> None:
-    ind1: pd.IntervalIndex = pd.IntervalIndex.from_breaks([0, 1, 2, 3], name="test")
-    ind2: pd.IntervalIndex = pd.IntervalIndex.from_breaks(
-        [0, 1, 2, 3], closed="right", name=123
+    check(
+        assert_type(
+            pd.IntervalIndex.from_breaks([0, 1, 2, 3], name="test"),
+            "pd.IntervalIndex[pd.Interval[int]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+    check(
+        assert_type(
+            pd.IntervalIndex.from_breaks([0, 1, 2, 3], closed="right", name=123),
+            "pd.IntervalIndex[pd.Interval[int]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
     )
 
 
 def test_from_arrays() -> None:
-    ind1: pd.IntervalIndex = pd.IntervalIndex.from_arrays(
-        [0, 1, 2], [1, 2, 3], name="test"
+    check(
+        assert_type(
+            pd.IntervalIndex.from_arrays([0, 1, 2], [1, 2, 3], name="test"),
+            "pd.IntervalIndex[pd.Interval[int]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
     )
-    ind2: pd.IntervalIndex = pd.IntervalIndex.from_arrays(
-        [0, 1, 2], [1, 2, 3], closed="right", name=123
+    check(
+        assert_type(
+            pd.IntervalIndex.from_arrays(
+                [0, 1, 2], [1, 2, 3], closed="right", name=123
+            ),
+            "pd.IntervalIndex[pd.Interval[int]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
     )
 
 
 def test_from_tuples() -> None:
-    ind1: pd.IntervalIndex = pd.IntervalIndex.from_tuples(
-        [(0, 1), (1, 2), (2, 3)], name="test"
+    check(
+        assert_type(
+            pd.IntervalIndex.from_tuples([(0, 1), (1, 2), (2, 3)], name="test"),
+            "pd.IntervalIndex[pd.Interval[int]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
     )
-    ind2: pd.IntervalIndex = pd.IntervalIndex.from_tuples(
-        [(0, 1), (1, 2), (2, 3)], closed="right", name=123
+    check(
+        assert_type(
+            pd.IntervalIndex.from_tuples(
+                [(0, 1), (1, 2), (2, 3)], closed="right", name=123
+            ),
+            "pd.IntervalIndex[pd.Interval[int]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
     )
 
 
