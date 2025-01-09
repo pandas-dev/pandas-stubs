@@ -229,7 +229,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Iterable[S1] | IndexOpsMixin[S1] = ...,
+        data: Iterable[S1] | IndexOpsMixin[S1],
         *,
         dtype: type[S1] = ...,
         copy: bool = ...,
@@ -252,7 +252,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Iterable = ...,
+        data: Iterable,
         *,
         dtype=...,
         copy: bool = ...,

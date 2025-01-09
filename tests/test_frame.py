@@ -3801,3 +3801,20 @@ def test_frame_bool_fails() -> None:
             s = df["a"]
     except ValueError:
         pass
+
+
+def test_frame_subclass() -> None:
+    class MyClass(pd.DataFrame):
+        @property
+        def _constructor(self) -> type[MyClass]:
+            return MyClass
+
+    df = MyClass({"a": [1, 2, 3], "b": [4, 5, 6]})
+    check(assert_type(df.iloc[1:2], MyClass), MyClass)
+    check(assert_type(df.loc[:, ["a", "b"]], MyClass), MyClass)
+    check(assert_type(df[["a", "b"]], MyClass), MyClass)
+
+
+# GH 906
+@pd.api.extensions.register_dataframe_accessor("geo")
+class GeoAccessor: ...

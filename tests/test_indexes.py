@@ -1195,3 +1195,9 @@ def test_index_factorize() -> None:
     )
     check(assert_type(codes, np.ndarray), np.ndarray)
     check(assert_type(idx_uniques, np.ndarray | Index | Categorical), pd.Index)
+
+
+def test_disallow_empty_index() -> None:
+    # From GH 826
+    if TYPE_CHECKING_INVALID_USAGE:
+        i0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
