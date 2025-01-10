@@ -145,20 +145,20 @@ def test_types_all() -> None:
 
 def test_types_csv() -> None:
     s = pd.Series(data=[1, 2, 3])
-    csv_df: str = s.to_csv()
+    check(assert_type(s.to_csv(), str), str)
 
     with ensure_clean() as path:
         s.to_csv(path)
-        s2: pd.DataFrame = pd.read_csv(path)
+        check(assert_type(pd.read_csv(path), pd.DataFrame), pd.DataFrame)
 
     with ensure_clean() as path:
         s.to_csv(Path(path))
-        s3: pd.DataFrame = pd.read_csv(Path(path))
+        check(assert_type(pd.read_csv(Path(path)), pd.DataFrame), pd.DataFrame)
 
     # This keyword was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
     with ensure_clean() as path:
         s.to_csv(path, errors="replace")
-        s4: pd.DataFrame = pd.read_csv(path)
+        check(assert_type(pd.read_csv(path), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_copy() -> None:
@@ -229,11 +229,11 @@ def test_types_boolean_indexing() -> None:
 def test_types_df_to_df_comparison() -> None:
     s = pd.Series(data={"col1": [1, 2]})
     s2 = pd.Series(data={"col1": [3, 2]})
-    res_gt: pd.Series = s > s2
-    res_ge: pd.Series = s >= s2
-    res_lt: pd.Series = s < s2
-    res_le: pd.Series = s <= s2
-    res_e: pd.Series = s == s2
+    check(assert_type(s > s2, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(s >= s2, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(s < s2, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(s <= s2, "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(s == s2, "pd.Series[bool]"), pd.Series, np.bool_)
 
 
 def test_types_head_tail() -> None:
@@ -309,7 +309,11 @@ def test_types_drop_multilevel() -> None:
         codes=[[0, 0, 0, 1, 1, 1], [0, 1, 2, 0, 1, 2]],
     )
     s = pd.Series(data=[1, 2, 3, 4, 5, 6], index=index)
-    res: pd.Series = s.drop(labels="first", level=1)
+    check(
+        assert_type(s.drop(labels="first", level=1), "pd.Series[int]"),
+        pd.Series,
+        np.int64,
+    )
 
 
 def test_types_drop_duplicates() -> None:
@@ -382,7 +386,11 @@ def test_types_sort_index() -> None:
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
 def test_types_sort_index_with_key() -> None:
     s = pd.Series([1, 2, 3], index=["a", "B", "c"])
-    res: pd.Series = s.sort_index(key=lambda k: k.str.lower())
+    check(
+        assert_type(s.sort_index(key=lambda k: k.str.lower()), "pd.Series[int]"),
+        pd.Series,
+        np.int64,
+    )
 
 
 def test_types_sort_values() -> None:
@@ -412,7 +420,11 @@ def test_types_sort_values() -> None:
 # This was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
 def test_types_sort_values_with_key() -> None:
     s = pd.Series([1, 2, 3], index=[2, 3, 1])
-    res: pd.Series = s.sort_values(key=lambda k: -k)
+    check(
+        assert_type(s.sort_values(key=lambda k: -k), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
 
 
 def test_types_shift() -> None:
@@ -435,18 +447,32 @@ def test_types_rank() -> None:
 
 def test_types_mean() -> None:
     s = pd.Series([1, 2, 3, np.nan])
-    f1: float = s.mean()
-    s1: pd.Series = s.groupby(level=0).mean()
-    f2: float = s.mean(skipna=False)
-    f3: float = s.mean(numeric_only=False)
+    check(assert_type(s.mean(), float), float)
+    check(
+        assert_type(
+            s.groupby(level=0).mean(),  # pyright: ignore[reportAssertTypeFailure]
+            "pd.Series[float]",
+        ),
+        pd.Series,
+        float,
+    )
+    check(assert_type(s.mean(skipna=False), float), float)
+    check(assert_type(s.mean(numeric_only=False), float), float)
 
 
 def test_types_median() -> None:
     s = pd.Series([1, 2, 3, np.nan])
-    f1: float = s.median()
-    s1: pd.Series = s.groupby(level=0).median()
-    f2: float = s.median(skipna=False)
-    f3: float = s.median(numeric_only=False)
+    check(assert_type(s.median(), float), float)
+    check(
+        assert_type(
+            s.groupby(level=0).median(),  # pyright: ignore[reportAssertTypeFailure]
+            "pd.Series[float]",
+        ),
+        pd.Series,
+        float,
+    )
+    check(assert_type(s.median(skipna=False), float), float)
+    check(assert_type(s.median(numeric_only=False), float), float)
 
 
 def test_types_sum() -> None:
@@ -624,26 +650,36 @@ def test_types_element_wise_arithmetic() -> None:
     s = pd.Series([0, 1, -10])
     s2 = pd.Series([7, -5, 10])
 
-    res_add1: pd.Series = s + s2
-    res_add2: pd.Series = s.add(s2, fill_value=0)
+    check(assert_type(s + s2, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.add(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
-    res_sub: pd.Series = s - s2
-    res_sub2: pd.Series = s.sub(s2, fill_value=0)
+    check(assert_type(s - s2, pd.Series), pd.Series, np.integer)
+    check(assert_type(s.sub(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
-    res_mul: pd.Series = s * s2
-    res_mul2: pd.Series = s.mul(s2, fill_value=0)
+    check(assert_type(s * s2, pd.Series), pd.Series, np.integer)
+    check(assert_type(s.mul(s2, fill_value=0), pd.Series), pd.Series, np.integer)
 
-    res_div: pd.Series = s / s2
-    res_div2: pd.Series = s.div(s2, fill_value=0)
+    check(assert_type(s / s2, pd.Series), pd.Series, np.float64)
+    check(
+        assert_type(s.div(s2, fill_value=0), "pd.Series[float]"), pd.Series, np.float64
+    )
 
-    res_floordiv: pd.Series = s // s2
-    res_floordiv2: pd.Series = s.floordiv(s2, fill_value=0)
+    check(assert_type(s // s2, "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(s.floordiv(s2, fill_value=0), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
 
-    res_mod: pd.Series = s % s2
-    res_mod2: pd.Series = s.mod(s2, fill_value=0)
+    check(assert_type(s % s2, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.mod(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
-    res_pow: pd.Series = s ** s2.abs()
-    res_pow2: pd.Series = s.pow(s2.abs(), fill_value=0)
+    check(assert_type(s ** s2.abs(), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(s.pow(s2.abs(), fill_value=0), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
 
     check(assert_type(divmod(s, s2), tuple["pd.Series[int]", "pd.Series[int]"]), tuple)
 
@@ -651,36 +687,42 @@ def test_types_element_wise_arithmetic() -> None:
 def test_types_scalar_arithmetic() -> None:
     s = pd.Series([0, 1, -10])
 
-    res_add1: pd.Series = s + 1
-    res_add2: pd.Series = s.add(1, fill_value=0)
+    check(assert_type(s + 1, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.add(1, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
-    res_sub: pd.Series = s - 1
-    res_sub2: pd.Series = s.sub(1, fill_value=0)
+    check(assert_type(s - 1, pd.Series), pd.Series, np.integer)
+    check(assert_type(s.sub(1, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
-    res_mul: pd.Series = s * 2
-    res_mul2: pd.Series = s.mul(2, fill_value=0)
+    check(assert_type(s * 2, pd.Series), pd.Series, np.integer)
+    check(assert_type(s.mul(2, fill_value=0), pd.Series), pd.Series, np.integer)
 
-    res_div: pd.Series = s / 2
-    res_div2: pd.Series = s.div(2, fill_value=0)
+    check(assert_type(s / 2, pd.Series), pd.Series, np.float64)
+    check(
+        assert_type(s.div(2, fill_value=0), "pd.Series[float]"), pd.Series, np.float64
+    )
 
-    res_floordiv: pd.Series = s // 2
-    res_floordiv2: pd.Series = s.floordiv(2, fill_value=0)
+    check(assert_type(s // 2, "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(s.floordiv(2, fill_value=0), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
 
-    res_mod: pd.Series = s % 2
-    res_mod2: pd.Series = s.mod(2, fill_value=0)
+    check(assert_type(s % 2, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.mod(2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
-    res_pow: pd.Series = s**2
-    res_pow1: pd.Series = s**0
-    res_pow2: pd.Series = s**0.213
-    res_pow3: pd.Series = s.pow(0.5)
+    check(assert_type(s**2, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s**0, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s**0.213, "pd.Series[int]"), pd.Series, np.float64)
+    check(assert_type(s.pow(0.5), "pd.Series[int]"), pd.Series, np.float64)
 
 
 # GH 103
 def test_types_complex_arithmetic() -> None:
     c = 1 + 1j
     s = pd.Series([1.0, 2.0, 3.0])
-    x = s + c
-    y = s - c
+    check(assert_type(s + c, pd.Series), pd.Series)
+    check(assert_type(s - c, pd.Series), pd.Series)
 
 
 def test_types_groupby() -> None:
@@ -1105,8 +1147,8 @@ def test_types_getitem() -> None:
     s = pd.Series({"key": [0, 1, 2, 3]})
     key: list[int] = s["key"]
     s2 = pd.Series([0, 1, 2, 3])
-    value: int = s2[0]
-    s3: pd.Series = s[:2]
+    check(assert_type(s2[0], int), np.integer)
+    check(assert_type(s[:2], pd.Series), pd.Series)
 
 
 def test_types_getitem_by_timestamp() -> None:
@@ -1117,9 +1159,9 @@ def test_types_getitem_by_timestamp() -> None:
 
 def test_types_eq() -> None:
     s1 = pd.Series([1, 2, 3])
-    res1: pd.Series = s1 == 1
+    check(assert_type(s1 == 1, "pd.Series[bool]"), pd.Series, np.bool_)
     s2 = pd.Series([1, 2, 4])
-    res2: pd.Series = s1 == s2
+    check(assert_type(s1 == s2, "pd.Series[bool]"), pd.Series, np.bool_)
 
 
 def test_types_rename_axis() -> None:
@@ -1317,7 +1359,7 @@ def test_series_multiindex_getitem() -> None:
     s = pd.Series(
         [1, 2, 3, 4], index=pd.MultiIndex.from_product([["a", "b"], ["x", "y"]])
     )
-    s1: pd.Series = s["a", :]
+    check(assert_type(s["a", :], "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_series_mul() -> None:
@@ -1408,13 +1450,19 @@ def test_cat_accessor() -> None:
 
 
 def test_cat_ctor_values() -> None:
-    c1 = pd.Categorical(["a", "b", "a"])
+    check(assert_type(pd.Categorical(["a", "b", "a"]), pd.Categorical), pd.Categorical)
     # GH 95
-    c2 = pd.Categorical(pd.Series(["a", "b", "a"]))
+    check(
+        assert_type(pd.Categorical(pd.Series(["a", "b", "a"])), pd.Categorical),
+        pd.Categorical,
+    )
     s: Sequence = cast(Sequence, ["a", "b", "a"])
-    c3 = pd.Categorical(s)
+    check(assert_type(pd.Categorical(s), pd.Categorical), pd.Categorical)
     # GH 107
-    c4 = pd.Categorical(np.array([1, 2, 3, 1, 1]))
+    check(
+        assert_type(pd.Categorical(np.array([1, 2, 3, 1, 1])), pd.Categorical),
+        pd.Categorical,
+    )
 
 
 def test_iloc_getitem_ndarray() -> None:
@@ -2768,7 +2816,7 @@ def test_astype_other() -> None:
 
 def test_all_astype_args_tested() -> None:
     """Check that all relevant numpy type aliases are tested."""
-    NUMPY_ALIASES: set[str] = {k for k in np.sctypeDict}
+    NUMPY_ALIASES: set[str | int] = {k for k in np.sctypeDict}
     EXCLUDED_ALIASES = {
         "datetime64",
         "m",
@@ -2889,7 +2937,7 @@ def test_convert_dtypes_dtype_backend() -> None:
 def test_apply_returns_none() -> None:
     # GH 557
     s = pd.Series([1, 2, 3])
-    check(assert_type(s.apply(lambda x: None), pd.Series), pd.Series)
+    check(assert_type(s.apply(lambda _: None), pd.Series), pd.Series)
 
 
 def test_loc_callable() -> None:

@@ -2409,7 +2409,7 @@ def test_indexslice_getitem():
     ind = pd.Index([2, 3])
     check(
         assert_type(
-            pd.IndexSlice[ind, :], tuple["pd.Index[int]", "slice[None, None, None]"]
+            pd.IndexSlice[ind, :], tuple["pd.Index[int]", "slice[None, None, None]"]  # type: ignore[type-arg]
         ),
         tuple,
     )
@@ -2451,10 +2451,10 @@ def test_sum_get_add() -> None:
 
 
 def test_getset_untyped() -> None:
-    result: int = 10
     df = pd.DataFrame({"x": [1, 2, 3, 4, 5], "y": [10, 20, 30, 40, 50]})
     # Tests that Dataframe.__getitem__ needs to return untyped series.
-    result = df["x"].max()
+    # TODO this typecheck is actually bogus as the right part is "Unknown"
+    result: pd.Series = df["x"].max()
 
 
 def test_getmultiindex_columns() -> None:
@@ -2965,7 +2965,9 @@ def test_groupby_apply() -> None:
             pd.Series,
         )
 
-    lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
+    def lfunc(x: pd.DataFrame) -> float:
+        return x.sum().mean()
+
     with pytest_warns_bounded(
         DeprecationWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
