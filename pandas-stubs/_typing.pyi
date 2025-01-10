@@ -464,6 +464,7 @@ T = TypeVar("T")
 P = ParamSpec("P")
 FuncType: TypeAlias = Callable[..., Any]
 F = TypeVar("F", bound=FuncType)
+TypeT = TypeVar("TypeT", bound=type)
 HashableT = TypeVar("HashableT", bound=Hashable)
 HashableT1 = TypeVar("HashableT1", bound=Hashable)
 HashableT2 = TypeVar("HashableT2", bound=Hashable)
