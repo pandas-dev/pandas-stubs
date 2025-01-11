@@ -246,7 +246,7 @@ if sys.version_info >= (3, 12):
         @overload
         def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         @overload
-        def __getitem__(  # pyright: ignore[reportOverlappingOverload]
+        def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
             self, key: Iterable[Hashable] | slice
         ) -> Self: ...
         @overload
