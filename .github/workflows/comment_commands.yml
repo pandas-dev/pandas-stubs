@@ -21,7 +21,26 @@ jobs:
     if: (github.event.issue.pull_request) && contains(fromJSON('["/pandas_nightly", "/pyright_strict", "/mypy_nightly"]'), github.event.comment.body)
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Get head sha, branch name and store value
+        # get the sha of the last commit to attach the results of the tests
+        if: always()
+        id: get-branch-info
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ github.event.issue.number }}
+            })
+            core.setOutput('sha', pr.data.head.sha)
+            core.setOutput('branch', pr.data.head.ref)
+
+      - name: Checkout code on the correct branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.get-branch-info.outputs.branch }}
 
       - name: Install project dependencies
         uses: ./.github/setup
@@ -34,21 +53,6 @@ jobs:
         id: tests-step
         run: poetry run poe ${{ fromJSON(env.RUN_COMMAND)[github.event.comment.body] }}
 
-      - name: Get head sha and store value
-        # get the sha of the last commit to attach the results of the tests
-        if: always()
-        id: get-sha
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const pr = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: ${{ github.event.issue.number }}
-            })
-            core.setOutput('sha', pr.data.head.sha)
-
       - name: Report results of the tests and publish
         # publish the results to a check run no matter the pass or fail
         if: always()
@@ -58,7 +62,7 @@ jobs:
           script: |
             github.rest.checks.create({
               name: '${{ fromJSON(env.DISPLAY_COMMAND)[github.event.comment.body] }}',
-              head_sha: '${{ steps.get-sha.outputs.sha }}',
+              head_sha: '${{ steps.get-branch-info.outputs.sha }}',
               status: 'completed',
               conclusion: '${{ steps.tests-step.outcome }}',
               output: {
