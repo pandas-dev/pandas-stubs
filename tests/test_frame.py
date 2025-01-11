@@ -2409,7 +2409,7 @@ def test_indexslice_getitem():
     ind = pd.Index([2, 3])
     check(
         assert_type(
-            pd.IndexSlice[ind, :], tuple["pd.Index[int]", "slice[None, None, None]"]  # type: ignore[type-arg]
+            pd.IndexSlice[ind, :], tuple["pd.Index[int]", "slice[None, None, None]"]
         ),
         tuple,
     )
