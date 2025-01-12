@@ -40,13 +40,15 @@ jobs:
       - name: Checkout code on the correct branch
         uses: actions/checkout@v4
         with:
+          # context is not aware which branch to checkout so it would otherwise
+          # default to main
           ref: ${{ steps.get-branch-info.outputs.branch }}
 
       - name: Install project dependencies
         uses: ./.github/setup
         with:
           os: ubuntu-latest
-          python-version: "3.11"
+          python-version: "3.12"
 
       - name: Run ${{ fromJSON(env.DISPLAY_COMMAND)[github.event.comment.body] }}
         # run the tests based on the value of the comment
