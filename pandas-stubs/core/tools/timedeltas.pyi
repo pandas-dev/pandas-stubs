@@ -33,7 +33,7 @@ def to_timedelta(
 def to_timedelta(
     arg: (
         SequenceNotStr
-        | Sequence[float | timedelta]
+        | Sequence[float | timedelta | str]
         | tuple[str | float | timedelta, ...]
         | range
         | ArrayLike

@@ -1425,3 +1425,10 @@ def test_DatetimeIndex_sub_timedelta() -> None:
         ),
         pd.DatetimeIndex,
     )
+
+
+def test_datetimeindex_as_unit() -> None:
+    """Test that we can pass a list of str for `to_timedelta` GH1095."""
+    tdelta_idx = pd.to_timedelta(["1 day 3 min 2 us 42 ns"])
+    check(assert_type(tdelta_idx, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    check(assert_type(tdelta_idx.as_unit("s"), pd.TimedeltaIndex), pd.TimedeltaIndex)
