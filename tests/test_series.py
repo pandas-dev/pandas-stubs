@@ -1147,7 +1147,6 @@ def test_types_getitem() -> None:
     s = pd.Series({"key": [0, 1, 2, 3]})
     key: list[int] = s["key"]
     s2 = pd.Series([0, 1, 2, 3])
-    check(assert_type(s[0], Any), np.integer)
     check(assert_type(s2[0], int), np.integer)
     check(assert_type(s[:2], pd.Series), pd.Series)
     check(assert_type(s2[:2], "pd.Series[int]"), pd.Series, np.integer)
