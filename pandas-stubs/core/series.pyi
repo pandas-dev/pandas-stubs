@@ -1894,6 +1894,15 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: AxisIndex = ...,
     ) -> Series[_bool]: ...
     def nunique(self, dropna: _bool = ...) -> int: ...
+    @overload
+    def pow(
+        self: Series[int],
+        other: float,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: AxisIndex | None = ...,
+    ) -> Series[float]: ...
+    @overload
     def pow(
         self,
         other: num | _ListLike | Series[S1],

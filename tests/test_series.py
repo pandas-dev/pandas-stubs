@@ -714,7 +714,7 @@ def test_types_scalar_arithmetic() -> None:
     check(assert_type(s**2, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s**0, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s**0.213, "pd.Series[int]"), pd.Series, np.float64)
-    check(assert_type(s.pow(0.5), "pd.Series[int]"), pd.Series, np.float64)
+    check(assert_type(s.pow(0.5), "pd.Series[float]"), pd.Series, np.float64)
 
 
 # GH 103
