@@ -312,7 +312,7 @@ def test_types_drop_multilevel() -> None:
     check(
         assert_type(s.drop(labels="first", level=1), "pd.Series[int]"),
         pd.Series,
-        np.int64,
+        np.integer,
     )
 
 
@@ -389,7 +389,7 @@ def test_types_sort_index_with_key() -> None:
     check(
         assert_type(s.sort_index(key=lambda k: k.str.lower()), "pd.Series[int]"),
         pd.Series,
-        np.int64,
+        np.integer,
     )
 
 
@@ -1147,8 +1147,10 @@ def test_types_getitem() -> None:
     s = pd.Series({"key": [0, 1, 2, 3]})
     key: list[int] = s["key"]
     s2 = pd.Series([0, 1, 2, 3])
+    check(assert_type(s[0], Any), np.integer)
     check(assert_type(s2[0], int), np.integer)
     check(assert_type(s[:2], pd.Series), pd.Series)
+    check(assert_type(s2[:2], "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_types_getitem_by_timestamp() -> None:
@@ -1306,9 +1308,9 @@ def test_types_dot() -> None:
     s2 = pd.Series([-1, 2, -3, 4])
     df1 = pd.DataFrame([[0, 1], [-2, 3], [4, -5], [6, 7]])
     n1 = np.array([[0, 1], [1, 2], [-1, -1], [2, 0]])
-    check(assert_type(s1.dot(s2), Scalar), np.int64)
-    check(assert_type(s1 @ s2, Scalar), np.int64)
-    check(assert_type(s1.dot(df1), "pd.Series[int]"), pd.Series, np.int64)
+    check(assert_type(s1.dot(s2), Scalar), np.integer)
+    check(assert_type(s1 @ s2, Scalar), np.integer)
+    check(assert_type(s1.dot(df1), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s1 @ df1, pd.Series), pd.Series)
     check(assert_type(s1.dot(n1), np.ndarray), np.ndarray)
     check(assert_type(s1 @ n1, np.ndarray), np.ndarray)
