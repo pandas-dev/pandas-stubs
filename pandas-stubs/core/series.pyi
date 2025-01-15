@@ -343,7 +343,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         copy: bool = ...,
     ) -> IntervalSeries[_OrderableT]: ...
     @overload
-    def __new__(
+    def __new__(  # type: ignore[overload-overlap]
         cls,
         data: Scalar | _ListLike | dict[HashableT1, Any] | None,
         index: Axes | None = ...,
@@ -352,6 +352,46 @@ class Series(IndexOpsMixin[S1], NDFrame):
         name: Hashable = ...,
         copy: bool = ...,
     ) -> Self: ...
+    @overload
+    def __new__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        cls,
+        data: Sequence[bool],
+        index: Axes | None = ...,
+        *,
+        dtype: Dtype = ...,
+        name: Hashable = ...,
+        copy: bool = ...,
+    ) -> Series[bool]: ...
+    @overload
+    def __new__(  # type: ignore[overload-overlap]
+        cls,
+        data: Sequence[int],
+        index: Axes | None = ...,
+        *,
+        dtype: Dtype = ...,
+        name: Hashable = ...,
+        copy: bool = ...,
+    ) -> Series[int]: ...
+    @overload
+    def __new__(
+        cls,
+        data: Sequence[float],
+        index: Axes | None = ...,
+        *,
+        dtype: Dtype = ...,
+        name: Hashable = ...,
+        copy: bool = ...,
+    ) -> Series[float]: ...
+    @overload
+    def __new__(  # type: ignore[overload-cannot-match] # pyright: ignore[reportOverlappingOverload]
+        cls,
+        data: Sequence[int | float],
+        index: Axes | None = ...,
+        *,
+        dtype: Dtype = ...,
+        name: Hashable = ...,
+        copy: bool = ...,
+    ) -> Series[float]: ...
     @overload
     def __new__(
         cls,

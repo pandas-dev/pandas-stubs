@@ -3588,3 +3588,16 @@ def test_series_dict() -> None:
         pd.Series,
         str,
     )
+
+
+def test_series_int_float() -> None:
+    # pyright infers mixtures of int and float in a list as list[int | float]
+    check(assert_type(pd.Series([1, 2, 3]), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(pd.Series([1.0, 2.0, 3.0]), "pd.Series[float]"),
+        pd.Series,
+        np.float64,
+    )
+    check(
+        assert_type(pd.Series([1, 2.0, 3]), "pd.Series[float]"), pd.Series, np.float64
+    )
