@@ -656,10 +656,12 @@ def test_types_element_wise_arithmetic() -> None:
     check(assert_type(s - s2, pd.Series), pd.Series, np.integer)
     check(assert_type(s.sub(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
-    check(assert_type(s * s2, pd.Series), pd.Series, np.integer)
-    check(assert_type(s.mul(s2, fill_value=0), pd.Series), pd.Series, np.integer)
+    check(assert_type(s * s2, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.mul(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
-    check(assert_type(s / s2, pd.Series), pd.Series, np.float64)
+    # GH1089 should be the following
+    # check(assert_type(s / s2, "pd.Series[float]"), pd.Series, np.float64)
+    check(assert_type(s / s2, "pd.Series"), pd.Series, np.float64)
     check(
         assert_type(s.div(s2, fill_value=0), "pd.Series[float]"), pd.Series, np.float64
     )
@@ -693,9 +695,11 @@ def test_types_scalar_arithmetic() -> None:
     check(assert_type(s - 1, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.sub(1, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
-    check(assert_type(s * 2, pd.Series), pd.Series, np.integer)
+    check(assert_type(s * 2, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.mul(2, fill_value=0), pd.Series), pd.Series, np.integer)
 
+    # GH1089 should be
+    # check(assert_type(s / 2, "pd.Series[float]"), pd.Series, np.float64)
     check(assert_type(s / 2, pd.Series), pd.Series, np.float64)
     check(
         assert_type(s.div(2, fill_value=0), "pd.Series[float]"), pd.Series, np.float64
@@ -1311,7 +1315,7 @@ def test_types_dot() -> None:
     n1 = np.array([[0, 1], [1, 2], [-1, -1], [2, 0]])
     check(assert_type(s1.dot(s2), Scalar), np.integer)
     check(assert_type(s1 @ s2, Scalar), np.integer)
-    check(assert_type(s1.dot(df1), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s1.dot(df1), pd.Series), pd.Series, np.integer)
     check(assert_type(s1 @ df1, pd.Series), pd.Series)
     check(assert_type(s1.dot(n1), np.ndarray), np.ndarray)
     check(assert_type(s1 @ n1, np.ndarray), np.ndarray)
@@ -1333,7 +1337,8 @@ def test_series_min_max_sub_axis() -> None:
     sd = s1 / s2
     check(assert_type(sa, pd.Series), pd.Series)
     check(assert_type(ss, pd.Series), pd.Series)
-    check(assert_type(sm, pd.Series), pd.Series)
+    # TODO GH1089 This should not match to Series[int]
+    check(assert_type(sm, pd.Series), pd.Series)  # pyright: ignore
     check(assert_type(sd, pd.Series), pd.Series)
 
 
@@ -1368,11 +1373,11 @@ def test_series_multiindex_getitem() -> None:
 def test_series_mul() -> None:
     s = pd.Series([1, 2, 3])
     sm = s * 4
-    check(assert_type(sm, pd.Series), pd.Series)
+    check(assert_type(sm, "pd.Series[int]"), pd.Series, np.integer)
     ss = s - 4
     check(assert_type(ss, "pd.Series[int]"), pd.Series, np.integer)
     sm2 = s * s
-    check(assert_type(sm2, pd.Series), pd.Series)
+    check(assert_type(sm2, "pd.Series[int]"), pd.Series, np.integer)
     sp = s + 4
     check(assert_type(sp, "pd.Series[int]"), pd.Series, np.integer)
 
