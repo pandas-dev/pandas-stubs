@@ -1611,6 +1611,11 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __add__(
         self,
+        other: complex,
+    ) -> Series[complex]: ...
+    @overload
+    def __add__(
+        self,
         other: num | _str | timedelta | Timedelta | _ListLike | Series | np.timedelta64,
     ) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
@@ -1716,6 +1721,16 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: Timestamp | datetime | TimestampSeries
     ) -> TimedeltaSeries: ...
     @overload
+    def __sub__(
+        self: Series[int],
+        other: int,
+    ) -> Series[int]: ...
+    @overload
+    def __sub__(
+        self,
+        other: complex,
+    ) -> Series[complex]: ...
+    @overload
     def __sub__(self, other: num | _ListLike | Series) -> Series: ...
     def __truediv__(self, other: num | _ListLike | Series[S1] | Path) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
@@ -1742,6 +1757,23 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @property
     def loc(self) -> _LocIndexerSeries[S1]: ...
     # Methods
+    @overload
+    def add(
+        self: Series[int],
+        other: int,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Series[int]: ...
+    @overload
+    def add(
+        self,
+        other: complex,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Series[complex]: ...
+    @overload
     def add(
         self,
         other: Series[S1] | Scalar,
@@ -2085,6 +2117,31 @@ class Series(IndexOpsMixin[S1], NDFrame):
         numeric_only: _bool = ...,
         **kwargs,
     ) -> float: ...
+    @overload
+    def sub(
+        self: Series[int],
+        other: int,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: AxisIndex | None = ...,
+    ) -> Series[int]: ...
+    @overload
+    def sub(
+        self: Series[int],
+        other: float,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: AxisIndex | None = ...,
+    ) -> Series[int]: ...
+    @overload
+    def sub(
+        self,
+        other: complex,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: AxisIndex | None = ...,
+    ) -> Series[complex]: ...
+    @overload
     def sub(
         self,
         other: num | _ListLike | Series[S1],

@@ -450,7 +450,7 @@ def test_types_mean() -> None:
     check(assert_type(s.mean(), float), float)
     check(
         assert_type(
-            s.groupby(level=0).mean(),  # pyright: ignore[reportAssertTypeFailure]
+            s.groupby(level=0).mean(),
             "pd.Series[float]",
         ),
         pd.Series,
@@ -465,7 +465,7 @@ def test_types_median() -> None:
     check(assert_type(s.median(), float), float)
     check(
         assert_type(
-            s.groupby(level=0).median(),  # pyright: ignore[reportAssertTypeFailure]
+            s.groupby(level=0).median(),
             "pd.Series[float]",
         ),
         pd.Series,
@@ -690,7 +690,7 @@ def test_types_scalar_arithmetic() -> None:
     check(assert_type(s + 1, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.add(1, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
-    check(assert_type(s - 1, pd.Series), pd.Series, np.integer)
+    check(assert_type(s - 1, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.sub(1, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
     check(assert_type(s * 2, pd.Series), pd.Series, np.integer)
@@ -721,8 +721,10 @@ def test_types_scalar_arithmetic() -> None:
 def test_types_complex_arithmetic() -> None:
     c = 1 + 1j
     s = pd.Series([1.0, 2.0, 3.0])
-    check(assert_type(s + c, pd.Series), pd.Series)
-    check(assert_type(s - c, pd.Series), pd.Series)
+    check(assert_type(s + c, "pd.Series[complex]"), pd.Series, complex)
+    check(assert_type(s.add(c), "pd.Series[complex]"), pd.Series, complex)
+    check(assert_type(s - c, "pd.Series[complex]"), pd.Series, complex)
+    check(assert_type(s.sub(c), "pd.Series[complex]"), pd.Series, complex)
 
 
 def test_types_groupby() -> None:
@@ -1368,7 +1370,7 @@ def test_series_mul() -> None:
     sm = s * 4
     check(assert_type(sm, pd.Series), pd.Series)
     ss = s - 4
-    check(assert_type(ss, pd.Series), pd.Series)
+    check(assert_type(ss, "pd.Series[int]"), pd.Series, np.integer)
     sm2 = s * s
     check(assert_type(sm2, pd.Series), pd.Series)
     sp = s + 4
