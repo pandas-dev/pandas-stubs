@@ -1338,7 +1338,8 @@ def test_series_min_max_sub_axis() -> None:
     check(assert_type(sa, pd.Series), pd.Series)
     check(assert_type(ss, pd.Series), pd.Series)
     # TODO GH1089 This should not match to Series[int]
-    check(assert_type(sm, pd.Series), pd.Series)  # pyright: ignore
+    # check(assert_type(sm, pd.Series), pd.Series)
+    check(assert_type(sm, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(sd, pd.Series), pd.Series)
 
 
