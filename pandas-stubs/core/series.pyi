@@ -1628,12 +1628,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: int | np_ndarray_anyint | Series[int]
     ) -> Series[int]: ...
     # def __array__(self, dtype: Optional[_bool] = ...) -> _np_ndarray
-    @overload
-    def __div__(self: Series[int], other: Series[int]) -> Series[float]: ...
-    @overload
-    def __div__(self: Series[int], other: int) -> Series[float]: ...
-    @overload
-    def __div__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __eq__(self, other: object) -> Series[_bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __floordiv__(self, other: num | _ListLike | Series[S1]) -> Series[int]: ...
     def __ge__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
@@ -1649,15 +1643,19 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: S1 | _ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
     @overload
+    def __mul__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        self, other: S1 | Self
+    ) -> Self: ...
+    @overload
     def __mul__(
         self, other: timedelta | Timedelta | TimedeltaSeries | np.timedelta64
     ) -> TimedeltaSeries: ...
     @overload
-    def __mul__(self: Series[int], other: int) -> Series[int]: ...
+    def __mul__(  # pyright: ignore[reportOverlappingOverload]
+        self: Series[int], other: Series[int] | int
+    ) -> Series[int]: ...
     @overload
-    def __mul__(self: Series[int], other: Series[int]) -> Series[int]: ...
-    @overload
-    def __mul__(self: Series[int], other: Series[float]) -> Series[float]: ...
+    def __mul__(self: Series[int], other: Series[float] | float) -> Series[float]: ...
     @overload
     def __mul__(self: Series[Any], other: Series[Any]) -> Series: ...
     @overload
@@ -1687,12 +1685,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __rand__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: int | np_ndarray_anyint | Series[int]
     ) -> Series[int]: ...
-    @overload
-    def __rdiv__(self: Series[int], other: int) -> Series[float]: ...
-    @overload
-    def __rdiv__(self: Series[int], other: Series[int]) -> Series[float]: ...
-    @overload
-    def __rdiv__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __rdivmod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __rfloordiv__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __rmod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
@@ -1741,7 +1733,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __sub__(
         self: Series[int],
-        other: int,
+        other: int | Series[int],
     ) -> Series[int]: ...
     @overload
     def __sub__(
@@ -1749,8 +1741,15 @@ class Series(IndexOpsMixin[S1], NDFrame):
         other: complex,
     ) -> Series[complex]: ...
     @overload
+    def __sub__(self, other: S1 | Self) -> Self: ...
+    @overload
     def __sub__(self, other: num | _ListLike | Series) -> Series: ...
-    def __truediv__(self, other: num | _ListLike | Series[S1] | Path) -> Series: ...
+    @overload
+    def __truediv__(self: Series[int], other: Series[int] | int) -> Series[float]: ...
+    @overload
+    def __truediv__(
+        self, other: num | _ListLike | Series[S1] | Path
+    ) -> Series | Self: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __xor__(  # pyright: ignore[reportOverlappingOverload]
@@ -1956,9 +1955,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def mul(
         self: Series[int],
-        other: Series[int],
+        other: Series[int] | int,
         level: Level | None = ...,
-        fill_value: float | None = ...,
+        fill_value: int | None = ...,
         axis: AxisIndex | None = ...,
     ) -> Series[int]: ...
     @overload
@@ -2152,7 +2151,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         **kwargs,
     ) -> float: ...
     @overload
-    def sub(
+    def sub(  # pyright: ignore[reportOverlappingOverload]
         self: Series[int],
         other: int,
         level: Level | None = ...,
@@ -2166,7 +2165,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         level: Level | None = ...,
         fill_value: float | None = ...,
         axis: AxisIndex | None = ...,
-    ) -> Series[int]: ...
+    ) -> Series[float]: ...
     @overload
     def sub(
         self,
