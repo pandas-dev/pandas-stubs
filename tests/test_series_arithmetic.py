@@ -1,5 +1,7 @@
 """Test module for arithmetic operations on Series."""
 
+from typing import cast
+
 import numpy as np
 import pandas as pd
 from typing_extensions import assert_type
@@ -188,3 +190,21 @@ def test_element_wise_float_float() -> None:
     check(
         assert_type(divmod(s, s2), tuple["pd.Series[float]", "pd.Series[float]"]), tuple
     )
+
+
+def test_element_wise_int_unknown() -> None:
+    s = cast(pd.Series, pd.Series([7, -5, 10]))
+    s2 = pd.Series([0, 1, -105])
+
+    check(assert_type(s + s2, pd.Series), pd.Series)
+    check(assert_type(s.add(s2, fill_value=0), "pd.Series[float]"), pd.Series)
+
+    check(assert_type(s - s2, pd.Series), pd.Series)
+    check(assert_type(s.sub(s2, fill_value=0), pd.Series), pd.Series)
+
+    check(assert_type(s * s2, pd.Series), pd.Series)
+    check(assert_type(s.mul(s2, fill_value=0), pd.Series), pd.Series)
+
+    # GH1089 should be the following
+    check(assert_type(s / s2, "pd.Series[float]"), pd.Series)
+    check(assert_type(s.div(s2, fill_value=0), "pd.Series[float]"), pd.Series)

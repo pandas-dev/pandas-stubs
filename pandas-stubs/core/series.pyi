@@ -1954,7 +1954,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         level: Level | None = ...,
         fill_value: float | None = ...,
         axis: AxisIndex | None = ...,
-    ) -> Series[S1]: ...
+    ) -> Self: ...
     def ge(
         self,
         other: Scalar | Series[S1],
@@ -2065,6 +2065,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: AxisIndex | None = ...,
     ) -> Series[S1]: ...
     @overload
+    def mul(  # type: ignore[overload-overlap]
+        self,
+        other: Series[S1] | Self,
+        level: Level | None = ...,
+        fill_value: int | None = ...,
+        axis: AxisIndex | None = ...,
+    ) -> Self: ...
+    @overload
     def mul(  # pyright: ignore[reportOverlappingOverload]
         self: Series[int],
         other: Series[int] | int,
@@ -2103,7 +2111,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         level: Level | None = ...,
         fill_value: float | None = ...,
         axis: AxisIndex | None = ...,
-    ) -> Series: ...
+    ) -> Self: ...
     def multiply(
         self,
         other: num | _ListLike | Series[S1],
