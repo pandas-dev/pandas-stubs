@@ -431,10 +431,10 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         index: _bool = ...,
         column_dtypes: (
-            _str | npt.DTypeLike | Mapping[Hashable, npt.DTypeLike] | None
+            _str | npt.DTypeLike | Mapping[HashableT1, npt.DTypeLike] | None
         ) = ...,
         index_dtypes: (
-            _str | npt.DTypeLike | Mapping[Hashable, npt.DTypeLike] | None
+            _str | npt.DTypeLike | Mapping[HashableT2, npt.DTypeLike] | None
         ) = ...,
     ) -> np.recarray: ...
     def to_stata(

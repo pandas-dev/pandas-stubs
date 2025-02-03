@@ -3091,6 +3091,11 @@ def test_to_records() -> None:
         ),
         np.recarray,
     )
+    dtypes = {"col1": np.int8, "col2": np.int16}
+    check(
+        assert_type(DF.to_records(False, dtypes), np.recarray),
+        np.recarray,
+    )
 
 
 def test_to_dict() -> None:
