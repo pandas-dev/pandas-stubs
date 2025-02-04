@@ -3820,6 +3820,37 @@ def test_frame_subclass() -> None:
     check(assert_type(df[["a", "b"]], MyClass), MyClass)
 
 
+def test_hashable_args() -> None:
+    # GH 1104
+    df = pd.DataFrame([["abc"]], columns=["test"], index=["ind"])
+    test = ["test"]
+
+    with ensure_clean() as path:
+
+        df.to_stata(path, version=117, convert_strl=test)
+        df.to_stata(path, version=117, convert_strl=["test"])
+
+        df.to_html(path, columns=test)
+        df.to_html(path, columns=["test"])
+
+        df.to_xml(path, attr_cols=test)
+        df.to_xml(path, attr_cols=["test"])
+
+        df.to_xml(path, elem_cols=test)
+        df.to_xml(path, elem_cols=["test"])
+
+    # Next lines should work, but it is a mypy bug
+    # https://github.com/python/mypy/issues/3004
+    # pyright accepts this, so we only type check for pyright,
+    # and also test the code with pytest
+    df.columns = test  # type: ignore[assignment]
+    df.columns = ["test"]  # type: ignore[assignment]
+
+    testDict = {"test": 1}
+    df.to_string("test", col_space=testDict)
+    df.to_string("test", col_space={"test": 1})
+
+
 # GH 906
 @pd.api.extensions.register_dataframe_accessor("geo")
 class GeoAccessor: ...
