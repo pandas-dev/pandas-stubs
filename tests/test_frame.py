@@ -3091,6 +3091,11 @@ def test_to_records() -> None:
         ),
         np.recarray,
     )
+    dtypes = {"col1": np.int8, "col2": np.int16}
+    check(
+        assert_type(DF.to_records(False, dtypes), np.recarray),
+        np.recarray,
+    )
 
 
 def test_to_dict() -> None:
@@ -3813,6 +3818,37 @@ def test_frame_subclass() -> None:
     check(assert_type(df.iloc[1:2], MyClass), MyClass)
     check(assert_type(df.loc[:, ["a", "b"]], MyClass), MyClass)
     check(assert_type(df[["a", "b"]], MyClass), MyClass)
+
+
+def test_hashable_args() -> None:
+    # GH 1104
+    df = pd.DataFrame([["abc"]], columns=["test"], index=["ind"])
+    test = ["test"]
+
+    with ensure_clean() as path:
+
+        df.to_stata(path, version=117, convert_strl=test)
+        df.to_stata(path, version=117, convert_strl=["test"])
+
+        df.to_html(path, columns=test)
+        df.to_html(path, columns=["test"])
+
+        df.to_xml(path, attr_cols=test)
+        df.to_xml(path, attr_cols=["test"])
+
+        df.to_xml(path, elem_cols=test)
+        df.to_xml(path, elem_cols=["test"])
+
+    # Next lines should work, but it is a mypy bug
+    # https://github.com/python/mypy/issues/3004
+    # pyright accepts this, so we only type check for pyright,
+    # and also test the code with pytest
+    df.columns = test  # type: ignore[assignment]
+    df.columns = ["test"]  # type: ignore[assignment]
+
+    testDict = {"test": 1}
+    df.to_string("test", col_space=testDict)
+    df.to_string("test", col_space={"test": 1})
 
 
 # GH 906
