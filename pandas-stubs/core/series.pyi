@@ -1822,15 +1822,23 @@ class Series(IndexOpsMixin[S1], NDFrame):
     # Met    @overload
     @overload
     def add(
+        self,
+        other: S1 | Self,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Self: ...
+    @overload
+    def add(  # pyright: ignore[reportOverlappingOverload]
         self: Series[int],
-        other: int,
+        other: Series[int] | int,
         level: Level | None = ...,
         fill_value: float | None = ...,
         axis: int = ...,
     ) -> Series[int]: ...
     @overload
-    def add(  # pyright: ignore[reportOverlappingOverload]
-        self,
+    def add(
+        self: Series[int] | Series[float],
         other: float | Series[float],
         level: Level | None = ...,
         fill_value: float | None = ...,
@@ -1846,7 +1854,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[float]: ...
     @overload
     def add(
-        self,
+        self: Series[complex],
         other: complex,
         level: Level | None = ...,
         fill_value: float | None = ...,
@@ -1860,14 +1868,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_value: float | None = ...,
         axis: int = ...,
     ) -> Series[S1]: ...
-    @overload
-    def add(
-        self,
-        other: S1 | Self,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: int = ...,
-    ) -> Series: ...
     def all(
         self,
         axis: AxisIndex = ...,
@@ -2278,6 +2278,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
         numeric_only: _bool = ...,
         **kwargs,
     ) -> float: ...
+    @overload
+    def sub(
+        self,
+        other: S1 | Self,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Self: ...
     @overload
     def sub(  # pyright: ignore[reportOverlappingOverload]
         self: Series[int],
