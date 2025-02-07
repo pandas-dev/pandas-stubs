@@ -29,7 +29,6 @@ from typing_extensions import (
 from pandas._libs.lib import NoDefault
 from pandas._typing import (
     S1,
-    AnyArrayLike,
     ArrayLike,
     Axis,
     AxisIndex,
@@ -49,7 +48,6 @@ from pandas._typing import (
     Level,
     P,
     ReplaceMethod,
-    Scalar,
     SortKind,
     StorageOptions,
     T,
@@ -302,7 +300,7 @@ class NDFrame(indexing.IndexingMixin):
         method: _str | None = ...,
         copy: _bool = ...,
         limit=...,
-        tolerance: Scalar | AnyArrayLike | Sequence[Scalar] = ...,
+        tolerance=...,
     ) -> Self: ...
     @overload
     def drop(

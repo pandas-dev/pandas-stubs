@@ -3562,4 +3562,11 @@ def test_series_reindex() -> None:
 def test_series_reindex_like() -> None:
     s = pd.Series([1, 2, 3], index=[0, 1, 2])
     other = pd.Series([1, 2], index=[1, 0])
-    s.reindex_like(other, method="nearest", tolerance=[0.5, 0.2])
+    check(
+        assert_type(
+            s.reindex_like(other, method="nearest", tolerance=[0.5, 0.2]),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+        np.integer,
+    )
