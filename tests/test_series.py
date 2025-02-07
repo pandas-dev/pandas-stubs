@@ -3556,7 +3556,7 @@ def test_series_int_float() -> None:
 
 def test_series_reindex() -> None:
     s = pd.Series([1, 2, 3], index=[0, 1, 2])
-    s.reindex([2, 1, 0])
+    check(assert_type(s.reindex([2, 1, 0]), "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_series_reindex_like() -> None:
