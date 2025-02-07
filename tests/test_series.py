@@ -3552,3 +3552,21 @@ def test_series_int_float() -> None:
     check(
         assert_type(pd.Series([1, 2.0, 3]), "pd.Series[float]"), pd.Series, np.float64
     )
+
+
+def test_series_reindex() -> None:
+    s = pd.Series([1, 2, 3], index=[0, 1, 2])
+    check(assert_type(s.reindex([2, 1, 0]), "pd.Series[int]"), pd.Series, np.integer)
+
+
+def test_series_reindex_like() -> None:
+    s = pd.Series([1, 2, 3], index=[0, 1, 2])
+    other = pd.Series([1, 2], index=[1, 0])
+    check(
+        assert_type(
+            s.reindex_like(other, method="nearest", tolerance=[0.5, 0.2]),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+        np.integer,
+    )

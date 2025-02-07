@@ -294,14 +294,6 @@ class NDFrame(indexing.IndexingMixin):
     ) -> _str: ...
     def take(self, indices, axis=..., **kwargs) -> Self: ...
     def __delitem__(self, idx: Hashable) -> None: ...
-    def reindex_like(
-        self,
-        other,
-        method: _str | None = ...,
-        copy: _bool = ...,
-        limit=...,
-        tolerance=...,
-    ) -> Self: ...
     @overload
     def drop(
         self,
