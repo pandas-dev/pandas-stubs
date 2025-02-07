@@ -2663,6 +2663,13 @@ def test_frame_reindex() -> None:
     df.reindex([2, 1, 0])
 
 
+def test_frame_reindex_like() -> None:
+    # GH 84
+    df = pd.DataFrame({"a": [1, 2, 3]}, index=[0, 1, 2])
+    other = pd.DataFrame({"a": [1, 2]}, index=[1, 0])
+    df.reindex_like(other, method="nearest", tolerance=[0.5, 0.2])
+
+
 def test_frame_ndarray_assignmment() -> None:
     # GH 100
     df_a = pd.DataFrame({"a": [0.0] * 10})

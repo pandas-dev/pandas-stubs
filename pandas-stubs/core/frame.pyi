@@ -2127,7 +2127,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         method: _str | FillnaOptions | Literal["nearest"] | None = ...,
         copy: _bool = ...,
         limit: int | None = ...,
-        tolerance=...,
+        tolerance: Scalar | AnyArrayLike | Sequence[Scalar] = ...,
     ) -> Self: ...
     # Rename axis with `mapper`, `axis`, and `inplace=True`
     @overload

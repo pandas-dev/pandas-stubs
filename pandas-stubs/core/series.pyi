@@ -1151,7 +1151,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         method: _str | FillnaOptions | Literal["nearest"] | None = ...,
         copy: _bool = ...,
         limit: int | None = ...,
-        tolerance: float | None = ...,
+        tolerance: Scalar | AnyArrayLike | Sequence[Scalar] = ...,
     ) -> Self: ...
     @overload
     def fillna(

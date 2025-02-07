@@ -26,7 +26,6 @@ from pandas.core.series import (
 
 from pandas._typing import (
     AnyArrayLike,
-    ArrayLike,
     DateAndDatetimeLike,
     IntervalClosedType,
     TimeUnit,
@@ -39,7 +38,7 @@ from pandas.tseries.offsets import BaseOffset
 class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
     def __init__(
         self,
-        data: ArrayLike | AnyArrayLike | list | tuple,
+        data: AnyArrayLike | list | tuple,
         freq=...,
         tz=...,
         ambiguous: str = ...,
