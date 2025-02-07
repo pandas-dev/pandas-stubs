@@ -3543,9 +3543,8 @@ def test_series_dict() -> None:
 
 def test_series_keys_type() -> None:
     # GH 1101
-    if TYPE_CHECKING:
-        s = pd.Series([1, 2, 3])
-        assert_type(s.keys(), pd.Index)
+   s = pd.Series([1, 2, 3])
+   check(assert_type(s.keys(), pd.Index), pd.Index)
 
 
 def test_series_int_float() -> None:
