@@ -416,10 +416,11 @@ def test_types_sort_values_with_key() -> None:
 
 
 def test_types_shift() -> None:
-    s = pd.Series([1, 2, 3])
+    s = pd.Series([1, 2, 3], index=pd.date_range("2020", periods=3))
     s.shift()
     s.shift(axis=0, periods=1)
     s.shift(-1, fill_value=0)
+    s.shift(freq="1D")
 
 
 def test_types_rank() -> None:
