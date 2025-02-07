@@ -3541,6 +3541,13 @@ def test_series_dict() -> None:
     )
 
 
+def test_series_keys_type() -> None:
+    # GH 1101
+    if TYPE_CHECKING:
+        s = pd.Series([1, 2, 3])
+        assert_type(s.keys(), pd.Index)
+
+
 def test_series_int_float() -> None:
     # pyright infers mixtures of int and float in a list as list[int | float]
     check(assert_type(pd.Series([1, 2, 3]), "pd.Series[int]"), pd.Series, np.integer)
