@@ -2667,7 +2667,12 @@ def test_frame_reindex_like() -> None:
     # GH 84
     df = pd.DataFrame({"a": [1, 2, 3]}, index=[0, 1, 2])
     other = pd.DataFrame({"a": [1, 2]}, index=[1, 0])
-    df.reindex_like(other, method="nearest", tolerance=[0.5, 0.2])
+    check(
+        assert_type(
+            df.reindex_like(other, method="nearest", tolerance=[0.5, 0.2]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_frame_ndarray_assignmment() -> None:
