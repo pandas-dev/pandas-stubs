@@ -28,7 +28,9 @@ from typing_extensions import (
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs import BaseOffset
-from pandas._libs.tslibs.offsets import DateOffset
+
+from pandas.tseries.frequencies import to_offset
+from pandas.tseries.offsets import DateOffset
 
 if TYPE_CHECKING:
     from pandas._typing import FulldatetimeDict
@@ -1425,3 +1427,8 @@ def test_DatetimeIndex_sub_timedelta() -> None:
         ),
         pd.DatetimeIndex,
     )
+
+
+def test_to_offset() -> None:
+    check(assert_type(to_offset(None), None), type(None))
+    check(assert_type(to_offset("1D"), DateOffset), DateOffset)
