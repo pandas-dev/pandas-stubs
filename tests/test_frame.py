@@ -519,10 +519,10 @@ def test_types_shift() -> None:
     df = pd.DataFrame(
         data={"col1": [1, 1], "col2": [3, 4]}, index=pd.date_range("2020", periods=2)
     )
-    df.shift()
-    df.shift(1)
-    df.shift(-1)
-    df.shift(freq="1D")
+    check(assert_type(df.shift(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.shift(1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.shift(-1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.shift(freq="1D"), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_rank() -> None:
