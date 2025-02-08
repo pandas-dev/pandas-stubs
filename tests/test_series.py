@@ -417,10 +417,19 @@ def test_types_sort_values_with_key() -> None:
 
 def test_types_shift() -> None:
     s = pd.Series([1, 2, 3], index=pd.date_range("2020", periods=3))
-    s.shift()
-    s.shift(axis=0, periods=1)
-    s.shift(-1, fill_value=0)
-    s.shift(freq="1D")
+    # Return type "Series[int]"" not quite correct
+    # - https://github.com/pandas-dev/pandas-stubs/issues/1111
+    # - https://github.com/pandas-dev/pandas-stubs/issues/1110
+    check(assert_type(s.shift(), "pd.Series[int]"), pd.Series, np.floating)
+    check(
+        assert_type(s.shift(axis=0, periods=1), "pd.Series[int]"),
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(s.shift(-1, fill_value=0), "pd.Series[int]"), pd.Series, np.integer
+    )
+    check(assert_type(s.shift(freq="1D"), "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_types_rank() -> None:
