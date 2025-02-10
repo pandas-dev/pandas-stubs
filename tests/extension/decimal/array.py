@@ -28,8 +28,10 @@ from pandas._typing import (
 )
 
 from pandas.core.dtypes.base import ExtensionDtype
+from pandas.core.dtypes.common import (
+    is_dtype_equal,  # pyright: ignore[reportAttributeAccessIssue]
+)
 from pandas.core.dtypes.common import (  # type: ignore[attr-defined]
-    is_dtype_equal,
     is_float,
     pandas_dtype,
 )
