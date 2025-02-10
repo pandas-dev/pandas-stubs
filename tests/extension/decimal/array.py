@@ -28,7 +28,7 @@ from pandas._typing import (
 )
 
 from pandas.core.dtypes.base import ExtensionDtype
-from pandas.core.dtypes.common import (
+from pandas.core.dtypes.common import (  # type: ignore[attr-defined]
     is_dtype_equal,
     is_float,
     pandas_dtype,
