@@ -419,7 +419,7 @@ def test_types_shift() -> None:
     s = pd.Series([1, 2, 3], index=pd.date_range("2020", periods=3))
     check(assert_type(s.shift(), pd.Series), pd.Series, np.floating)
     check(
-        assert_type(s.shift(axis=0, periods=1), "pd.Series[Any]"),
+        assert_type(s.shift(axis=0, periods=1), pd.Series),
         pd.Series,
         np.floating,
     )
