@@ -84,6 +84,7 @@ from pandas._typing import (
     FilePath,
     FillnaOptions,
     FormattersType,
+    Frequency,
     GroupByObjectNonScalar,
     HashableT,
     HashableT1,
@@ -855,7 +856,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def shift(
         self,
         periods: int = ...,
-        freq=...,
+        freq: Frequency | dt.timedelta | None = ...,
         axis: Axis = ...,
         fill_value: Hashable | None = ...,
     ) -> Self: ...

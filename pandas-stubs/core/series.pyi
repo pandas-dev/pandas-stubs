@@ -119,6 +119,7 @@ from pandas._typing import (
     FilePath,
     FillnaOptions,
     FloatDtypeArg,
+    Frequency,
     GroupByObjectNonScalar,
     HashableT1,
     IgnoreRaise,
@@ -1219,10 +1220,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def shift(
         self,
         periods: int = ...,
-        freq=...,
+        freq: Frequency | timedelta | None = ...,
         axis: AxisIndex = ...,
         fill_value: object | None = ...,
-    ) -> Series[S1]: ...
+    ) -> Series: ...
     def memory_usage(self, index: _bool = ..., deep: _bool = ...) -> int: ...
     def isin(self, values: Iterable | Series[S1] | dict) -> Series[_bool]: ...
     def between(
