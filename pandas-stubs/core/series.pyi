@@ -30,6 +30,7 @@ from matplotlib.axes import (
 )
 import numpy as np
 from pandas import (
+    Index,
     Period,
     PeriodDtype,
     Timedelta,
@@ -58,7 +59,6 @@ from pandas.core.indexes.accessors import (
     TimedeltaProperties,
     TimestampProperties,
 )
-from pandas.core.indexes.base import Index
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.interval import IntervalIndex
@@ -653,7 +653,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> _str: ...
     def to_xarray(self) -> xr.DataArray: ...
     def items(self) -> Iterable[tuple[Hashable, S1]]: ...
-    def keys(self) -> list: ...
+    def keys(self) -> Index: ...
     @overload
     def to_dict(self, *, into: type[dict] = ...) -> dict[Any, S1]: ...
     @overload
