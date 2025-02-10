@@ -3,20 +3,17 @@ from collections.abc import (
     Iterable,
 )
 
-from pandas import (
-    DataFrame,
-    Series,
-)
+from pandas import DataFrame
 
 from pandas._typing import (
-    ArrayLike,
+    AnyArrayLike,
     Dtype,
     HashableT1,
     HashableT2,
 )
 
 def get_dummies(
-    data: ArrayLike | DataFrame | Series,
+    data: AnyArrayLike | DataFrame,
     prefix: str | Iterable[str] | dict[HashableT1, str] | None = ...,
     prefix_sep: str = ...,
     dummy_na: bool = ...,
