@@ -252,6 +252,13 @@ def test_range_index_union():
     )
 
 
+def test_range_index_start_stop_step():
+    idx = pd.RangeIndex(3)
+    check(assert_type(idx.start, int), int)
+    check(assert_type(idx.stop, int), int)
+    check(assert_type(idx.step, int), int)
+
+
 def test_interval_range():
     check(
         assert_type(pd.interval_range(0, 10), "pd.IntervalIndex[pd.Interval[int]]"),
