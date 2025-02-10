@@ -28,13 +28,7 @@ from pandas._typing import (
 )
 
 from pandas.core.dtypes.base import ExtensionDtype
-from pandas.core.dtypes.common import (
-    is_dtype_equal,  # pyright: ignore[reportAttributeAccessIssue]
-)
-from pandas.core.dtypes.common import (  # type: ignore[attr-defined]
-    is_float,
-    pandas_dtype,
-)
+import pandas.core.dtypes.common as dtypes_common
 
 
 @register_extension_dtype
@@ -80,7 +74,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         context=None,
     ) -> None:
         for i, val in enumerate(values):
-            if is_float(val):
+            if dtypes_common.is_float(val):
                 if np.isnan(val):
                     values[i] = DecimalDtype().na_value
                 else:
@@ -193,10 +187,10 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         return type(self)(self._data.copy(), dtype=self.dtype)
 
     def astype(self, dtype, copy=True):
-        if is_dtype_equal(dtype, self._dtype):
+        if dtypes_common.is_dtype_equal(dtype, self._dtype):  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
             if not copy:
                 return self
-        dtype = pandas_dtype(dtype)
+        dtype = dtypes_common.pandas_dtype(dtype)
         if isinstance(dtype, type(self.dtype)):
             return type(self)(self._data, copy=copy, context=dtype.context)
 
