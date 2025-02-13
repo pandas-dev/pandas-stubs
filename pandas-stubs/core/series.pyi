@@ -1224,6 +1224,13 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: AxisIndex = ...,
         fill_value: object | None = ...,
     ) -> Series: ...
+    def info(
+        self,
+        verbose: bool | None = ...,
+        buf: WriteBuffer[str] = ...,
+        memory_usage: bool | Literal["deep"] | None = ...,
+        show_counts: bool | None = ...,
+    ) -> None: ...
     def memory_usage(self, index: _bool = ..., deep: _bool = ...) -> int: ...
     def isin(self, values: Iterable | Series[S1] | dict) -> Series[_bool]: ...
     def between(
