@@ -9,6 +9,7 @@ from typing import (
     TypeVar,
 )
 
+from _typing import TimeZones
 import numpy as np
 import numpy.typing as npt
 from pandas import (
@@ -216,7 +217,7 @@ class _DatetimeLikeNoTZMethods(
     ) -> _DTToPeriodReturnType: ...
     def tz_localize(
         self,
-        tz: tzinfo | str | None,
+        tz: TimeZones,
         ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
         nonexistent: (
             Literal["shift_forward", "shift_backward", "NaT", "raise"]
@@ -224,7 +225,7 @@ class _DatetimeLikeNoTZMethods(
             | Timedelta
         ) = ...,
     ) -> _DTNormalizeReturnType: ...
-    def tz_convert(self, tz: tzinfo | str | None) -> _DTNormalizeReturnType: ...
+    def tz_convert(self, tz: TimeZones) -> _DTNormalizeReturnType: ...
     def normalize(self) -> _DTNormalizeReturnType: ...
     def strftime(self, date_format: str) -> _DTStrKindReturnType: ...
     def month_name(self, locale: str | None = ...) -> _DTStrKindReturnType: ...

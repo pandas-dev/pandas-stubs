@@ -1496,6 +1496,7 @@ def test_timestamp_misc_methods() -> None:
     check(assert_type(ts2, pd.Timestamp), pd.Timestamp)
     check(assert_type(ts.tz_localize("US/Pacific", False), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts.tz_localize("US/Pacific", True), pd.Timestamp), pd.Timestamp)
+    check(assert_type(ts.tz_localize(1, True), pd.Timestamp), pd.Timestamp)
     check(assert_type(ts.tz_localize("US/Pacific", "NaT"), pd.Timestamp), pd.Timestamp)
     check(
         assert_type(ts.tz_localize("US/Pacific", "raise"), pd.Timestamp), pd.Timestamp
