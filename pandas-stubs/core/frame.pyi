@@ -19,6 +19,7 @@ from typing import (
     overload,
 )
 
+from _typing import TimeZones
 from matplotlib.axes import Axes as PlotAxes
 import numpy as np
 from pandas import (
@@ -2446,14 +2447,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def tz_convert(
         self,
-        tz,
+        tz: TimeZones,
         axis: Axis = ...,
         level: Level | None = ...,
         copy: _bool = ...,
     ) -> Self: ...
     def tz_localize(
         self,
-        tz,
+        tz: TimeZones,
         axis: Axis = ...,
         level: Level | None = ...,
         copy: _bool = ...,

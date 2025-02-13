@@ -24,6 +24,7 @@ from typing import (
     overload,
 )
 
+from _typing import TimeZones
 from matplotlib.axes import (
     Axes as PlotAxes,
     SubplotBase,
@@ -1550,14 +1551,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     def tz_convert(
         self,
-        tz,
+        tz: TimeZones,
         axis: AxisIndex = ...,
         level: Level | None = ...,
         copy: _bool = ...,
     ) -> Series[S1]: ...
     def tz_localize(
         self,
-        tz,
+        tz: TimeZones,
         axis: AxisIndex = ...,
         level: Level | None = ...,
         copy: _bool = ...,

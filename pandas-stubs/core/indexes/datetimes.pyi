@@ -9,6 +9,7 @@ from datetime import (
 )
 from typing import overload
 
+from _typing import TimeZones
 import numpy as np
 from pandas import (
     DataFrame,
@@ -92,7 +93,7 @@ def date_range(
     end: str | DateAndDatetimeLike | None = ...,
     periods: int | None = ...,
     freq: str | timedelta | Timedelta | BaseOffset = ...,
-    tz: str | tzinfo = ...,
+    tz: TimeZones = ...,
     normalize: bool = ...,
     name: Hashable | None = ...,
     inclusive: IntervalClosedType = ...,
@@ -104,7 +105,7 @@ def bdate_range(
     end: str | DateAndDatetimeLike | None = ...,
     periods: int | None = ...,
     freq: str | timedelta | Timedelta | BaseOffset = ...,
-    tz: str | tzinfo = ...,
+    tz: TimeZones = ...,
     normalize: bool = ...,
     name: Hashable | None = ...,
     weekmask: str | None = ...,
@@ -118,7 +119,7 @@ def bdate_range(
     periods: int | None = ...,
     *,
     freq: str | timedelta | Timedelta | BaseOffset,
-    tz: str | tzinfo = ...,
+    tz: TimeZones = ...,
     normalize: bool = ...,
     name: Hashable | None = ...,
     weekmask: str | None = ...,

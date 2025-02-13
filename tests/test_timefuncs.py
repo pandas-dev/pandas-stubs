@@ -469,6 +469,11 @@ def test_series_dt_accessors() -> None:
         pd.Timestamp,
     )
     check(
+        assert_type(s0_local.dt.tz_convert(1), "TimestampSeries"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
         assert_type(
             s0_local.dt.tz_convert(pytz.timezone("US/Eastern")), "TimestampSeries"
         ),
@@ -707,6 +712,19 @@ def test_some_offsets() -> None:
     )
     check(
         assert_type(
+            pd.date_range("1/1/2022", "2/1/2022", tz="Asia/Kathmandu", freq="1D"),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.date_range("1/1/2022", "2/1/2022", tz=3, freq="1D"), pd.DatetimeIndex
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
             pd.date_range("1/1/2022", "2/1/2022", freq=Day()), pd.DatetimeIndex
         ),
         pd.DatetimeIndex,
@@ -714,6 +732,15 @@ def test_some_offsets() -> None:
     check(
         assert_type(
             pd.bdate_range("1/1/2022", "2/1/2022", freq=BusinessDay()), pd.DatetimeIndex
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.bdate_range(
+                "1/1/2022", "2/1/2022", tz="Asia/Kathmandu", freq=BusinessDay()
+            ),
+            pd.DatetimeIndex,
         ),
         pd.DatetimeIndex,
     )

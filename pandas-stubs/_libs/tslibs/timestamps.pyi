@@ -15,6 +15,7 @@ from typing import (
     overload,
 )
 
+from _typing import TimeZones
 import numpy as np
 from pandas import (
     DatetimeIndex,
@@ -70,7 +71,7 @@ class Timestamp(datetime, SupportsIndex):
         tzinfo: _tzinfo | None = ...,
         *,
         nanosecond: int | None = ...,
-        tz: str | _tzinfo | int | None = ...,
+        tz: TimeZones = ...,
         unit: str | int | None = ...,
         fold: Literal[0, 1] | None = ...,
     ) -> Self: ...
@@ -258,11 +259,11 @@ class Timestamp(datetime, SupportsIndex):
     def to_julian_date(self) -> np.float64: ...
     @property
     def asm8(self) -> np.datetime64: ...
-    def tz_convert(self, tz: _tzinfo | str | None) -> Self: ...
+    def tz_convert(self, tz: TimeZones) -> Self: ...
     # TODO: could return NaT?
     def tz_localize(
         self,
-        tz: _tzinfo | str | None,
+        tz: TimeZones,
         ambiguous: _Ambiguous = ...,
         nonexistent: _Nonexistent = ...,
     ) -> Self: ...
