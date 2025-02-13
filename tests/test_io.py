@@ -1116,6 +1116,14 @@ def test_excel_reader():
             check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
             check(assert_type(pd.read_excel(ef), pd.DataFrame), pd.DataFrame)
 
+        with pd.ExcelFile(
+            path_or_buffer=path,
+            engine="openpyxl",
+            engine_kwargs={"data_only": True},
+        ) as ef:
+            check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
+            check(assert_type(pd.read_excel(ef), pd.DataFrame), pd.DataFrame)
+
 
 def test_excel_writer():
     with ensure_clean(".xlsx") as path:
