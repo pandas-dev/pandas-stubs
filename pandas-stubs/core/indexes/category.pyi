@@ -1,4 +1,7 @@
-from collections.abc import Iterable
+from collections.abc import (
+    Hashable,
+    Iterable,
+)
 from typing import Literal
 
 import numpy as np
@@ -22,7 +25,7 @@ class CategoricalIndex(ExtensionIndex[S1], accessor.PandasDelegate):
         ordered=...,
         dtype=...,
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
     ) -> Self: ...
     def equals(self, other): ...
     @property

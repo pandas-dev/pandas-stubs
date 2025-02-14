@@ -9,7 +9,10 @@ from datetime import (
 )
 from typing import overload
 
-from _typing import TimeZones
+from _typing import (
+    Frequency,
+    TimeZones,
+)
 import numpy as np
 from pandas import (
     DataFrame,
@@ -29,6 +32,7 @@ from pandas._typing import (
     AnyArrayLike,
     ArrayLike,
     DateAndDatetimeLike,
+    Dtype,
     IntervalClosedType,
     TimeUnit,
 )
@@ -41,14 +45,14 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
     def __init__(
         self,
         data: ArrayLike | AnyArrayLike | list | tuple,
-        freq=...,
-        tz=...,
+        freq: Frequency = ...,
+        tz: TimeZones = ...,
         ambiguous: str = ...,
         dayfirst: bool = ...,
         yearfirst: bool = ...,
-        dtype=...,
+        dtype: Dtype = ...,
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
     ) -> None: ...
     def __array__(self, dtype=...) -> np.ndarray: ...
     def __reduce__(self): ...
@@ -70,7 +74,7 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
     def __sub__(
         self, other: datetime | Timestamp | DatetimeIndex
     ) -> TimedeltaIndex: ...
-    def to_series(self, index=..., name=...) -> TimestampSeries: ...
+    def to_series(self, index=..., name: Hashable = ...) -> TimestampSeries: ...
     def snap(self, freq: str = ...): ...
     def slice_indexer(self, start=..., end=..., step=...): ...
     def searchsorted(self, value, side: str = ..., sorter=...): ...

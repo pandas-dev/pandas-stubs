@@ -1053,6 +1053,22 @@ def test_index_constructors():
         pd.Index(flist, dtype=np.float16)
 
 
+def test_datetime_index_constructor() -> None:
+    check(assert_type(pd.DatetimeIndex(["2020"]), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(
+        assert_type(pd.DatetimeIndex(["2020"], name="ts"), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(pd.DatetimeIndex(["2020"], freq="D"), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(pd.DatetimeIndex(["2020"], tz="Asia/Kathmandu"), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+
+
 def test_iter() -> None:
     # GH 723
     with pytest_warns_bounded(

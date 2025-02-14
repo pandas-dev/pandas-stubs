@@ -73,7 +73,7 @@ class Index(IndexOpsMixin[S1]):
         *,
         dtype: Literal["int"] | type_t[int | np.integer] = ...,
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> Index[int]: ...
@@ -84,7 +84,7 @@ class Index(IndexOpsMixin[S1]):
         *,
         dtype: Literal["int"] | type_t[int | np.integer],
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> Index[int]: ...
@@ -95,7 +95,7 @@ class Index(IndexOpsMixin[S1]):
         *,
         dtype: Literal["float"] | type_t[float | np.floating] = ...,
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> Index[float]: ...
@@ -106,7 +106,7 @@ class Index(IndexOpsMixin[S1]):
         *,
         dtype: Literal["float"] | type_t[float | np.floating],
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> Index[float]: ...
@@ -121,7 +121,7 @@ class Index(IndexOpsMixin[S1]):
         *,
         dtype: Literal["complex"] | type_t[complex | np.complexfloating] = ...,
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> Index[complex]: ...
@@ -132,7 +132,7 @@ class Index(IndexOpsMixin[S1]):
         *,
         dtype: Literal["complex"] | type_t[complex | np.complexfloating],
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> Index[complex]: ...
@@ -144,7 +144,7 @@ class Index(IndexOpsMixin[S1]):
         *,
         dtype: TimestampDtypeArg = ...,
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> DatetimeIndex: ...
@@ -155,7 +155,7 @@ class Index(IndexOpsMixin[S1]):
         *,
         dtype: TimestampDtypeArg,
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> DatetimeIndex: ...
@@ -166,7 +166,7 @@ class Index(IndexOpsMixin[S1]):
         *,
         dtype: PeriodDtype = ...,
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> PeriodIndex: ...
@@ -177,7 +177,7 @@ class Index(IndexOpsMixin[S1]):
         *,
         dtype: PeriodDtype,
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> PeriodIndex: ...
@@ -188,7 +188,7 @@ class Index(IndexOpsMixin[S1]):
         *,
         dtype: TimedeltaDtypeArg = ...,
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> TimedeltaIndex: ...
@@ -199,7 +199,7 @@ class Index(IndexOpsMixin[S1]):
         *,
         dtype: TimedeltaDtypeArg,
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> TimedeltaIndex: ...
@@ -210,7 +210,7 @@ class Index(IndexOpsMixin[S1]):
         *,
         dtype: Literal["Interval"] = ...,
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> IntervalIndex[Interval[_OrderableT]]: ...
@@ -221,7 +221,7 @@ class Index(IndexOpsMixin[S1]):
         *,
         dtype: Literal["Interval"],
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> IntervalIndex[Interval[Any]]: ...
@@ -233,7 +233,7 @@ class Index(IndexOpsMixin[S1]):
         *,
         dtype: type[S1] = ...,
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> Self: ...
@@ -244,7 +244,7 @@ class Index(IndexOpsMixin[S1]):
         *,
         dtype: type[S1],
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> Self: ...
@@ -256,7 +256,7 @@ class Index(IndexOpsMixin[S1]):
         *,
         dtype=...,
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
         tupleize_cols: bool = ...,
         **kwargs,
     ) -> Self: ...
@@ -277,15 +277,15 @@ class Index(IndexOpsMixin[S1]):
         self, indices, axis: int = ..., allow_fill: bool = ..., fill_value=..., **kwargs
     ): ...
     def repeat(self, repeats, axis=...): ...
-    def copy(self, name=..., deep: bool = ...) -> Self: ...
+    def copy(self, name: Hashable = ..., deep: bool = ...) -> Self: ...
     def __copy__(self, **kwargs): ...
     def __deepcopy__(self, memo=...): ...
     def format(
         self, name: bool = ..., formatter: Callable | None = ..., na_rep: _str = ...
     ) -> list[_str]: ...
     def to_flat_index(self): ...
-    def to_series(self, index=..., name=...) -> Series: ...
-    def to_frame(self, index: bool = ..., name=...) -> DataFrame: ...
+    def to_series(self, index=..., name: Hashable = ...) -> Series: ...
+    def to_frame(self, index: bool = ..., name: Hashable = ...) -> DataFrame: ...
     @property
     def name(self): ...
     @name.setter
@@ -341,7 +341,7 @@ class Index(IndexOpsMixin[S1]):
     def intersection(self, other: list[S1] | Self, sort: bool = ...) -> Self: ...
     def difference(self, other: list | Index, sort: bool | None = None) -> Self: ...
     def symmetric_difference(
-        self, other: list[S1] | Self, result_name=..., sort=...
+        self, other: list[S1] | Self, result_name: Hashable = ..., sort=...
     ) -> Self: ...
     def get_loc(
         self,

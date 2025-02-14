@@ -32,7 +32,7 @@ class MultiIndex(Index[Any]):
         names=...,
         dtype=...,
         copy=...,
-        name=...,
+        name: Hashable = ...,
         verify_integrity: bool = ...,
         _set_identity: bool = ...,
     ) -> Self: ...
@@ -44,7 +44,7 @@ class MultiIndex(Index[Any]):
         names=...,
         dtype=...,
         copy=...,
-        name=...,
+        name: Hashable = ...,
         verify_integrity: bool = ...,
         _set_identity: bool = ...,
     ) -> None: ...
