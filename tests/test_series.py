@@ -8,6 +8,7 @@ from collections.abc import (
 import datetime
 from decimal import Decimal
 from enum import Enum
+import io
 from pathlib import Path
 import platform
 import re
@@ -3581,3 +3582,18 @@ def test_series_reindex_like() -> None:
         pd.Series,
         np.integer,
     )
+
+
+def test_info() -> None:
+    s = pd.Series()
+    check(assert_type(s.info(verbose=True), None), type(None))
+    check(assert_type(s.info(verbose=False), None), type(None))
+    check(assert_type(s.info(verbose=None), None), type(None))
+    check(assert_type(s.info(buf=io.StringIO()), None), type(None))
+    check(assert_type(s.info(memory_usage=True), None), type(None))
+    check(assert_type(s.info(memory_usage=False), None), type(None))
+    check(assert_type(s.info(memory_usage="deep"), None), type(None))
+    check(assert_type(s.info(memory_usage=None), None), type(None))
+    check(assert_type(s.info(show_counts=True), None), type(None))
+    check(assert_type(s.info(show_counts=False), None), type(None))
+    check(assert_type(s.info(show_counts=None), None), type(None))
