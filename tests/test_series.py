@@ -1186,7 +1186,7 @@ def test_types_rename() -> None:
     s6: None = pd.Series([1, 2, 3]).rename("A", inplace=True)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType,reportCallIssue]
+        s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_types_ne() -> None:
