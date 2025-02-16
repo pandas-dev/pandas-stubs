@@ -35,7 +35,6 @@ from pandas.core.resample import (
     DatetimeIndexResampler,
     Resampler,
 )
-from pandas.core.series import Series
 import pytest
 from typing_extensions import (
     TypeAlias,
@@ -560,8 +559,11 @@ def test_types_median() -> None:
 
 def test_types_iterrows() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
-    # TODO rewrite the below with check assert_type
-    vv: Iterable[tuple[Hashable, Series]] = df.iterrows()
+    check(
+        assert_type(df.iterrows(), "Iterable[tuple[Hashable, pd.Series]]"),
+        Iterable,
+        tuple,
+    )
 
 
 def test_types_itertuples() -> None:
@@ -2155,13 +2157,16 @@ def test_types_regressions() -> None:
     s1 = pd.Series([1, 2, 3])
     s2 = pd.Series([4, 5, 6])
     df = pd.concat([s1, s2], axis=1)
-    # TODO the inference here returns Any, should return Series
-    ts1: pd.Series = pd.concat([s1, s2], axis=0)
-    ts2: pd.Series = pd.concat([s1, s2])
+    ts1 = pd.concat([s1, s2], axis=0)
+    ts2 = pd.concat([s1, s2])
+
+    check(assert_type(ts1, pd.Series), pd.Series)
+    check(assert_type(ts2, pd.Series), pd.Series)
 
     # https://github.com/microsoft/python-type-stubs/issues/110
     check(assert_type(pd.Timestamp("2021-01-01"), pd.Timestamp), datetime.date)
-    tslist: list[pd.Timestamp] = list(pd.to_datetime(["2022-01-01", "2022-01-02"]))
+    tslist = list(pd.to_datetime(["2022-01-01", "2022-01-02"]))
+    check(assert_type(tslist, list[pd.Timestamp]), list, pd.Timestamp)
     sseries = pd.Series(tslist)
     with pytest_warns_bounded(FutureWarning, "'d' is deprecated", lower="2.2.99"):
         sseries + pd.Timedelta(1, "d")
