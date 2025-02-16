@@ -3574,7 +3574,12 @@ def test_series_reindex() -> None:
 def test_series_reindex_like() -> None:
     s = pd.Series([1, 2, 3], index=[0, 1, 2])
     other = pd.Series([1, 2], index=[1, 0])
-    check(
+    with pytest_warns_bounded(
+        FutureWarning,
+        "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
+        upper="3.0.99",
+    ):
+        check(
         assert_type(
             s.reindex_like(other, method="nearest", tolerance=[0.5, 0.2]),
             "pd.Series[int]",
