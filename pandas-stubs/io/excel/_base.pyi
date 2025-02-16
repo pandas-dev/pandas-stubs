@@ -245,9 +245,10 @@ class ExcelFile:
     io: FilePath | ReadBuffer[bytes] | bytes = ...
     def __init__(
         self,
-        io: FilePath | ReadBuffer[bytes] | bytes,
+        path_or_buffer: FilePath | ReadBuffer[bytes] | bytes,
         engine: ExcelReadEngine | None = ...,
         storage_options: StorageOptions = ...,
+        engine_kwargs: dict[str, Any] | None = ...,
     ) -> None: ...
     def __fspath__(self): ...
     @overload

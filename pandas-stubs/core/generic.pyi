@@ -294,14 +294,6 @@ class NDFrame(indexing.IndexingMixin):
     ) -> _str: ...
     def take(self, indices, axis=..., **kwargs) -> Self: ...
     def __delitem__(self, idx: Hashable) -> None: ...
-    def reindex_like(
-        self,
-        other,
-        method: _str | None = ...,
-        copy: _bool = ...,
-        limit=...,
-        tolerance=...,
-    ) -> Self: ...
     @overload
     def drop(
         self,
@@ -374,56 +366,34 @@ class NDFrame(indexing.IndexingMixin):
         inplace: Literal[False] = ...,
         errors: IgnoreRaise = ...,
     ) -> Self: ...
-    @overload
-    def drop(
-        self,
-        labels: None = ...,
-        *,
-        axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] | Index[Any] = ...,
-        columns: Hashable | Sequence[Hashable] | Index[Any],
-        level: Level | None = ...,
-        inplace: _bool = ...,
-        errors: IgnoreRaise = ...,
-    ) -> Self | None: ...
-    @overload
-    def drop(
-        self,
-        labels: None = ...,
-        *,
-        axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] | Index[Any],
-        columns: Hashable | Sequence[Hashable] | Index[Any] = ...,
-        level: Level | None = ...,
-        inplace: _bool = ...,
-        errors: IgnoreRaise = ...,
-    ) -> Self | None: ...
-    @overload
-    def drop(
-        self,
-        labels: Hashable | Sequence[Hashable] | Index[Any],
-        *,
-        axis: Axis = ...,
-        index: None = ...,
-        columns: None = ...,
-        level: Level | None = ...,
-        inplace: _bool = ...,
-        errors: IgnoreRaise = ...,
-    ) -> Self | None: ...
     def add_prefix(self, prefix: _str) -> Self: ...
     def add_suffix(self, suffix: _str) -> Self: ...
+    @overload
     def sort_index(
         self,
         *,
         axis: Axis = ...,
         level=...,
         ascending: _bool = ...,
-        inplace: _bool = ...,
+        inplace: Literal[True],
         kind: SortKind = ...,
         na_position: Literal["first", "last"] = ...,
         sort_remaining: _bool = ...,
         ignore_index: _bool = ...,
-    ): ...
+    ) -> None: ...
+    @overload
+    def sort_index(
+        self,
+        *,
+        axis: Axis = ...,
+        level=...,
+        ascending: _bool = ...,
+        inplace: Literal[False] = ...,
+        kind: SortKind = ...,
+        na_position: Literal["first", "last"] = ...,
+        sort_remaining: _bool = ...,
+        ignore_index: _bool = ...,
+    ) -> Self: ...
     def filter(
         self,
         items=...,
@@ -466,32 +436,60 @@ class NDFrame(indexing.IndexingMixin):
         convert_floating: _bool = ...,
         dtype_backend: DtypeBackend = ...,
     ) -> Self: ...
+    @overload
     def fillna(
         self,
         value=...,
         *,
         axis=...,
-        inplace: _bool = ...,
+        inplace: Literal[True],
         limit=...,
         downcast=...,
-    ) -> NDFrame | None: ...
+    ) -> None: ...
+    @overload
+    def fillna(
+        self,
+        value=...,
+        *,
+        axis=...,
+        inplace: Literal[False] = ...,
+        limit=...,
+        downcast=...,
+    ) -> NDFrame: ...
+    @overload
     def replace(
         self,
         to_replace=...,
         value=...,
         *,
-        inplace: _bool = ...,
+        inplace: Literal[True],
         limit=...,
         regex: _bool = ...,
         method: ReplaceMethod = ...,
-    ): ...
+    ) -> None: ...
+    @overload
+    def replace(
+        self,
+        to_replace=...,
+        value=...,
+        *,
+        inplace: Literal[False] = ...,
+        limit=...,
+        regex: _bool = ...,
+        method: ReplaceMethod = ...,
+    ) -> NDFrame: ...
     def asof(self, where, subset=...): ...
     def isna(self) -> NDFrame: ...
     def isnull(self) -> NDFrame: ...
     def notna(self) -> NDFrame: ...
     def notnull(self) -> NDFrame: ...
+    @overload
     def clip(
-        self, lower=..., upper=..., *, axis=..., inplace: _bool = ..., **kwargs
+        self, lower=..., upper=..., *, axis=..., inplace: Literal[True], **kwargs
+    ) -> None: ...
+    @overload
+    def clip(
+        self, lower=..., upper=..., *, axis=..., inplace: Literal[False] = ..., **kwargs
     ) -> Self: ...
     def asfreq(
         self,
@@ -534,36 +532,48 @@ class NDFrame(indexing.IndexingMixin):
         ascending: _bool = ...,
         pct: _bool = ...,
     ) -> NDFrame: ...
+    @overload
     def where(
         self,
         cond,
         other=...,
         *,
-        inplace: _bool = ...,
+        inplace: Literal[True],
         axis=...,
         level=...,
-    ): ...
+    ) -> None: ...
+    @overload
+    def where(
+        self,
+        cond,
+        other=...,
+        *,
+        inplace: Literal[False] = ...,
+        axis=...,
+        level=...,
+    ) -> Self: ...
+    @overload
     def mask(
         self,
         cond,
         other=...,
         *,
-        inplace: _bool = ...,
+        inplace: Literal[True],
         axis=...,
         level=...,
-    ): ...
+    ) -> None: ...
+    @overload
+    def mask(
+        self,
+        cond,
+        other=...,
+        *,
+        inplace: Literal[False] = ...,
+        axis=...,
+        level=...,
+    ) -> Self: ...
     def shift(self, periods=..., freq=..., axis=..., fill_value=...) -> Self: ...
     def truncate(self, before=..., after=..., axis=..., copy: _bool = ...) -> Self: ...
-    def tz_convert(self, tz, axis=..., level=..., copy: _bool = ...) -> Self: ...
-    def tz_localize(
-        self,
-        tz,
-        axis=...,
-        level=...,
-        copy: _bool = ...,
-        ambiguous=...,
-        nonexistent: str = ...,
-    ) -> Self: ...
     def abs(self) -> Self: ...
     def describe(self, percentiles=..., include=..., exclude=...) -> NDFrame: ...
     def pct_change(

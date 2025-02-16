@@ -5,6 +5,7 @@ from typing import (
     TypeVar,
 )
 
+from _typing import TimeZones
 import numpy as np
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
@@ -41,9 +42,7 @@ class CategoricalDtype(PandasExtensionDtype, ExtensionDtype):
     def ordered(self) -> Ordered: ...
 
 class DatetimeTZDtype(PandasExtensionDtype):
-    def __init__(
-        self, unit: Literal["ns"] = ..., tz: str | int | dt.tzinfo | None = ...
-    ) -> None: ...
+    def __init__(self, unit: Literal["ns"] = ..., tz: TimeZones = ...) -> None: ...
     @property
     def unit(self) -> Literal["ns"]: ...
     @property

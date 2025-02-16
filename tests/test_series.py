@@ -8,6 +8,7 @@ from collections.abc import (
 import datetime
 from decimal import Decimal
 from enum import Enum
+import io
 from pathlib import Path
 import platform
 import re
@@ -428,10 +429,15 @@ def test_types_sort_values_with_key() -> None:
 
 
 def test_types_shift() -> None:
-    s = pd.Series([1, 2, 3])
-    s.shift()
-    s.shift(axis=0, periods=1)
-    s.shift(-1, fill_value=0)
+    s = pd.Series([1, 2, 3], index=pd.date_range("2020", periods=3))
+    check(assert_type(s.shift(), pd.Series), pd.Series, np.floating)
+    check(
+        assert_type(s.shift(axis=0, periods=1), pd.Series),
+        pd.Series,
+        np.floating,
+    )
+    check(assert_type(s.shift(-1, fill_value=0), pd.Series), pd.Series, np.integer)
+    check(assert_type(s.shift(freq="1D"), pd.Series), pd.Series, np.integer)
 
 
 def test_types_rank() -> None:
@@ -1209,7 +1215,7 @@ def test_types_rename() -> None:
     s6: None = pd.Series([1, 2, 3]).rename("A", inplace=True)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType,reportCallIssue]
+        s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_types_ne() -> None:
@@ -3576,6 +3582,12 @@ def test_series_dict() -> None:
     )
 
 
+def test_series_keys_type() -> None:
+    # GH 1101
+    s = pd.Series([1, 2, 3])
+    check(assert_type(s.keys(), pd.Index), pd.Index)
+
+
 def test_series_int_float() -> None:
     # pyright infers mixtures of int and float in a list as list[int | float]
     check(assert_type(pd.Series([1, 2, 3]), "pd.Series[int]"), pd.Series, np.integer)
@@ -3587,3 +3599,36 @@ def test_series_int_float() -> None:
     check(
         assert_type(pd.Series([1, 2.0, 3]), "pd.Series[float]"), pd.Series, np.float64
     )
+
+
+def test_series_reindex() -> None:
+    s = pd.Series([1, 2, 3], index=[0, 1, 2])
+    check(assert_type(s.reindex([2, 1, 0]), "pd.Series[int]"), pd.Series, np.integer)
+
+
+def test_series_reindex_like() -> None:
+    s = pd.Series([1, 2, 3], index=[0, 1, 2])
+    other = pd.Series([1, 2], index=[1, 0])
+    check(
+        assert_type(
+            s.reindex_like(other, method="nearest", tolerance=[0.5, 0.2]),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+        np.integer,
+    )
+
+
+def test_info() -> None:
+    s = pd.Series()
+    check(assert_type(s.info(verbose=True), None), type(None))
+    check(assert_type(s.info(verbose=False), None), type(None))
+    check(assert_type(s.info(verbose=None), None), type(None))
+    check(assert_type(s.info(buf=io.StringIO()), None), type(None))
+    check(assert_type(s.info(memory_usage=True), None), type(None))
+    check(assert_type(s.info(memory_usage=False), None), type(None))
+    check(assert_type(s.info(memory_usage="deep"), None), type(None))
+    check(assert_type(s.info(memory_usage=None), None), type(None))
+    check(assert_type(s.info(show_counts=True), None), type(None))
+    check(assert_type(s.info(show_counts=False), None), type(None))
+    check(assert_type(s.info(show_counts=None), None), type(None))

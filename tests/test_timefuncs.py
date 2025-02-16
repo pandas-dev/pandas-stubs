@@ -28,7 +28,9 @@ from typing_extensions import (
 
 from pandas._libs import NaTType
 from pandas._libs.tslibs import BaseOffset
-from pandas._libs.tslibs.offsets import DateOffset
+
+from pandas.tseries.frequencies import to_offset
+from pandas.tseries.offsets import DateOffset
 
 if TYPE_CHECKING:
     from pandas._typing import FulldatetimeDict
@@ -467,6 +469,11 @@ def test_series_dt_accessors() -> None:
         pd.Timestamp,
     )
     check(
+        assert_type(s0_local.dt.tz_convert(1), "TimestampSeries"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
         assert_type(
             s0_local.dt.tz_convert(pytz.timezone("US/Eastern")), "TimestampSeries"
         ),
@@ -705,6 +712,19 @@ def test_some_offsets() -> None:
     )
     check(
         assert_type(
+            pd.date_range("1/1/2022", "2/1/2022", tz="Asia/Kathmandu", freq="1D"),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.date_range("1/1/2022", "2/1/2022", tz=3, freq="1D"), pd.DatetimeIndex
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
             pd.date_range("1/1/2022", "2/1/2022", freq=Day()), pd.DatetimeIndex
         ),
         pd.DatetimeIndex,
@@ -712,6 +732,15 @@ def test_some_offsets() -> None:
     check(
         assert_type(
             pd.bdate_range("1/1/2022", "2/1/2022", freq=BusinessDay()), pd.DatetimeIndex
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.bdate_range(
+                "1/1/2022", "2/1/2022", tz="Asia/Kathmandu", freq=BusinessDay()
+            ),
+            pd.DatetimeIndex,
         ),
         pd.DatetimeIndex,
     )
@@ -1425,3 +1454,8 @@ def test_DatetimeIndex_sub_timedelta() -> None:
         ),
         pd.DatetimeIndex,
     )
+
+
+def test_to_offset() -> None:
+    check(assert_type(to_offset(None), None), type(None))
+    check(assert_type(to_offset("1D"), DateOffset), DateOffset)

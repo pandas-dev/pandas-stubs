@@ -515,10 +515,13 @@ def test_types_sort_values_with_key() -> None:
 
 
 def test_types_shift() -> None:
-    df = pd.DataFrame(data={"col1": [1, 1], "col2": [3, 4]})
-    df.shift()
-    df.shift(1)
-    df.shift(-1)
+    df = pd.DataFrame(
+        data={"col1": [1, 1], "col2": [3, 4]}, index=pd.date_range("2020", periods=2)
+    )
+    check(assert_type(df.shift(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.shift(1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.shift(-1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.shift(freq="1D"), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_rank() -> None:
@@ -2666,6 +2669,18 @@ def test_frame_reindex() -> None:
     # GH 84
     df = pd.DataFrame({"a": [1, 2, 3]}, index=[0, 1, 2])
     df.reindex([2, 1, 0])
+
+
+def test_frame_reindex_like() -> None:
+    # GH 84
+    df = pd.DataFrame({"a": [1, 2, 3]}, index=[0, 1, 2])
+    other = pd.DataFrame({"a": [1, 2]}, index=[1, 0])
+    check(
+        assert_type(
+            df.reindex_like(other, method="nearest", tolerance=[0.5, 0.2]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_frame_ndarray_assignmment() -> None:
