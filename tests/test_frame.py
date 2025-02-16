@@ -2454,10 +2454,9 @@ def test_sum_get_add() -> None:
 
 
 def test_getset_untyped() -> None:
-    result: int = 10
     df = pd.DataFrame({"x": [1, 2, 3, 4, 5], "y": [10, 20, 30, 40, 50]})
     # Tests that Dataframe.__getitem__ needs to return untyped series.
-    result = df["x"].max()
+    check(assert_type(df["x"].max(), Any), np.integer)
 
 
 def test_getmultiindex_columns() -> None:
@@ -2981,6 +2980,7 @@ def test_groupby_apply() -> None:
         )
 
     lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
+
     with pytest_warns_bounded(
         DeprecationWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",

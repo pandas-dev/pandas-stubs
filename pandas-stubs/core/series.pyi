@@ -820,7 +820,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def dot(self, other: Series[S1]) -> Scalar: ...
     @overload
-    def dot(self, other: DataFrame) -> Series[S1]: ...
+    def dot(self, other: DataFrame) -> Series: ...
     @overload
     def dot(
         self, other: ArrayLike | dict[_str, np.ndarray] | Sequence[S1] | Index[S1]
@@ -1561,6 +1561,21 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __add__(self, other: S1 | Self) -> Self: ...
     @overload
     def __add__(
+        self: Series[int] | Series[float],
+        other: float | Series[float],
+    ) -> Series[float]: ...
+    @overload
+    def __add__(
+        self: Series[float],
+        other: int | Series[int],
+    ) -> Series[float]: ...
+    @overload
+    def __add__(
+        self,
+        other: complex,
+    ) -> Series[complex]: ...
+    @overload
+    def __add__(
         self,
         other: num | _str | timedelta | Timedelta | _ListLike | Series | np.timedelta64,
     ) -> Series: ...
@@ -1574,8 +1589,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: int | np_ndarray_anyint | Series[int]
     ) -> Series[int]: ...
     # def __array__(self, dtype: Optional[_bool] = ...) -> _np_ndarray
-    def __div__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __eq__(self, other: object) -> Series[_bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    @overload
+    def __floordiv__(self: Series[float], other: Series[float] | Series[int] | float) -> Series[float]: ...  # type: ignore[overload-overlap]
+    @overload
     def __floordiv__(self, other: num | _ListLike | Series[S1]) -> Series[int]: ...
     def __ge__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: S1 | _ListLike | Series[S1] | datetime | timedelta | date
@@ -1590,13 +1607,43 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: S1 | _ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
     @overload
+    def __mul__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        self, other: S1 | Self
+    ) -> Self: ...
+    @overload
     def __mul__(
         self, other: timedelta | Timedelta | TimedeltaSeries | np.timedelta64
     ) -> TimedeltaSeries: ...
     @overload
+    def __mul__(  # pyright: ignore[reportOverlappingOverload]
+        self: Series[int], other: Series[int] | int
+    ) -> Series[int]: ...
+    @overload
+    def __mul__(self: Series[int], other: Series[float] | float) -> Series[float]: ...
+    @overload
+    def __mul__(self: Series[float], other: Series[int] | int) -> Series[float]: ...
+    @overload
+    def __mul__(self: Series[Any], other: Series[Any]) -> Series: ...
+    @overload
     def __mul__(self, other: num | _ListLike | Series) -> Series: ...
+    @overload
+    def __mod__(  # pyright: ignore[reportOverlappingOverload]
+        self: Series[int], other: int | Series[int]
+    ) -> Series[int]: ...
+    @overload
+    def __mod__(self: Series[int], other: float | Series[float]) -> Series[float]: ...
+    @overload
+    def __mod__(
+        self: Series[float], other: float | Series[int] | Series[float]
+    ) -> Series[float]: ...
+    @overload
     def __mod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __ne__(self, other: object) -> Series[_bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    @overload
+    def __pow__(self: Series[int], other: Series[int] | int) -> Series[int]: ...
+    @overload
+    def __pow__(self, other: Series[float] | float) -> Series[float]: ...
+    @overload
     def __pow__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
@@ -1620,9 +1667,13 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __rand__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: int | np_ndarray_anyint | Series[int]
     ) -> Series[int]: ...
-    def __rdiv__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __rdivmod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __rfloordiv__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
+    @overload
+    def __rfloordiv__(self: Series[float], other: float | Series[int] | Series[float]) -> Series[float]: ...  # type: ignore[misc]
+    @overload
+    def __rfloordiv__(
+        self, other: num | _ListLike | Series[float]
+    ) -> Series[float]: ...
     def __rmod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     @overload
     def __rmul__(
@@ -1667,8 +1718,35 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: Timestamp | datetime | TimestampSeries
     ) -> TimedeltaSeries: ...
     @overload
+    def __sub__(self, other: S1 | Self) -> Self: ...
+    @overload
+    def __sub__(  # pyright: ignore[reportOverlappingOverload]
+        self: Series[int],
+        other: int | Series[int],
+    ) -> Series[int]: ...
+    @overload
+    def __sub__(
+        self: Series[int],
+        other: float | Series[float],
+    ) -> Series[float]: ...
+    @overload
+    def __sub__(
+        self: Series[float],
+        other: int | Series[int],
+    ) -> Series[float]: ...
+    @overload
+    def __sub__(
+        self,
+        other: complex,
+    ) -> Series[complex]: ...
+    @overload
     def __sub__(self, other: num | _ListLike | Series) -> Series: ...
-    def __truediv__(self, other: num | _ListLike | Series[S1] | Path) -> Series: ...
+    @overload
+    def __truediv__(self: Series[int], other: Series[int] | int) -> Series[float]: ...
+    @overload
+    def __truediv__(self, other: Path) -> Series: ...
+    @overload
+    def __truediv__(self, other: num | _ListLike | Series[S1]) -> Series[float]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __xor__(  # pyright: ignore[reportOverlappingOverload]
@@ -1692,7 +1770,48 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def iloc(self) -> _iLocIndexerSeries[S1]: ...
     @property
     def loc(self) -> _LocIndexerSeries[S1]: ...
-    # Methods
+    # Met    @overload
+    @overload
+    def add(
+        self,
+        other: S1 | Self,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Self: ...
+    @overload
+    def add(  # pyright: ignore[reportOverlappingOverload]
+        self: Series[int],
+        other: Series[int] | int,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Series[int]: ...
+    @overload
+    def add(
+        self: Series[int] | Series[float],
+        other: float | Series[float],
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Series[float]: ...
+    @overload
+    def add(
+        self: Series[float],
+        other: int | Series[int],
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Series[float]: ...
+    @overload
+    def add(
+        self: Series[complex],
+        other: complex,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Series[complex]: ...
+    @overload
     def add(
         self,
         other: Series[S1] | Scalar,
@@ -1763,13 +1882,30 @@ class Series(IndexOpsMixin[S1], NDFrame):
         min_periods: int = ...,
         method: CalculationMethod = ...,
     ) -> Expanding[Series]: ...
+    @overload
+    def floordiv(  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
+        self: Series[int],
+        other: Series[int] | int,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: AxisIndex | None = ...,
+    ) -> Series[int]: ...
+    @overload
+    def floordiv(
+        self: Series[int] | Series[float],
+        other: num | _ListLike | Series[S1],
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: AxisIndex | None = ...,
+    ) -> Series[float]: ...
+    @overload
     def floordiv(
         self,
         other: num | _ListLike | Series[S1],
         level: Level | None = ...,
         fill_value: float | None = ...,
         axis: AxisIndex | None = ...,
-    ) -> Series[int]: ...
+    ) -> Self: ...
     def ge(
         self,
         other: Scalar | Series[S1],
@@ -1847,6 +1983,31 @@ class Series(IndexOpsMixin[S1], NDFrame):
         numeric_only: _bool = ...,
         **kwargs,
     ) -> S1: ...
+    @overload
+    def mod(  # pyright: ignore[reportOverlappingOverload]
+        self: Series[int],
+        other: Series[int] | int,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: AxisIndex | None = ...,
+    ) -> Series[int]: ...
+    @overload
+    def mod(
+        self: Series[int],
+        other: Series[float] | float,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: AxisIndex | None = ...,
+    ) -> Series[float]: ...
+    @overload
+    def mod(
+        self: Series[float],
+        other: Series[int] | Series[float] | float,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: AxisIndex | None = ...,
+    ) -> Series[float]: ...
+    @overload
     def mod(
         self,
         other: num | _ListLike | Series[S1],
@@ -1854,6 +2015,38 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_value: float | None = ...,
         axis: AxisIndex | None = ...,
     ) -> Series[S1]: ...
+    @overload
+    def mul(  # type: ignore[overload-overlap]
+        self,
+        other: Series[S1] | Self,
+        level: Level | None = ...,
+        fill_value: int | None = ...,
+        axis: AxisIndex | None = ...,
+    ) -> Self: ...
+    @overload
+    def mul(  # pyright: ignore[reportOverlappingOverload]
+        self: Series[int],
+        other: Series[int] | int,
+        level: Level | None = ...,
+        fill_value: int | None = ...,
+        axis: AxisIndex | None = ...,
+    ) -> Series[int]: ...
+    @overload
+    def mul(
+        self: Series[float],
+        other: Series[int] | Series[float] | int,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: AxisIndex | None = ...,
+    ) -> Series[float]: ...
+    @overload
+    def mul(
+        self: Series[int],
+        other: Series[float] | float,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: AxisIndex | None = ...,
+    ) -> Series[float]: ...
     @overload
     def mul(
         self,
@@ -1869,7 +2062,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         level: Level | None = ...,
         fill_value: float | None = ...,
         axis: AxisIndex | None = ...,
-    ) -> Series: ...
+    ) -> Self: ...
     def multiply(
         self,
         other: num | _ListLike | Series[S1],
@@ -1885,6 +2078,15 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: AxisIndex = ...,
     ) -> Series[_bool]: ...
     def nunique(self, dropna: _bool = ...) -> int: ...
+    @overload
+    def pow(
+        self: Series[int],
+        other: float | Series[float],
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: AxisIndex | None = ...,
+    ) -> Series[float]: ...
+    @overload
     def pow(
         self,
         other: num | _ListLike | Series[S1],
@@ -2027,6 +2229,39 @@ class Series(IndexOpsMixin[S1], NDFrame):
         numeric_only: _bool = ...,
         **kwargs,
     ) -> float: ...
+    @overload
+    def sub(
+        self,
+        other: S1 | Self,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Self: ...
+    @overload
+    def sub(  # pyright: ignore[reportOverlappingOverload]
+        self: Series[int],
+        other: int,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: AxisIndex | None = ...,
+    ) -> Series[int]: ...
+    @overload
+    def sub(
+        self: Series[int],
+        other: float | Series[float],
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: AxisIndex | None = ...,
+    ) -> Series[float]: ...
+    @overload
+    def sub(
+        self,
+        other: complex,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: AxisIndex | None = ...,
+    ) -> Series[complex]: ...
+    @overload
     def sub(
         self,
         other: num | _ListLike | Series[S1],
