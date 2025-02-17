@@ -64,6 +64,15 @@ def test_multiindex_get_level_values() -> None:
     check(assert_type(i1, pd.Index), pd.Index)
 
 
+def test_multiindex_initialization() -> None:
+    check(
+        assert_type(
+            pd.MultiIndex([[1], [4]], codes=[[0], [0]], name=["a", "b"]), pd.MultiIndex
+        ),
+        pd.MultiIndex,
+    )
+
+
 def test_index_tolist() -> None:
     i1 = pd.Index([1, 2, 3])
     check(assert_type(i1.tolist(), list[int]), list, int)

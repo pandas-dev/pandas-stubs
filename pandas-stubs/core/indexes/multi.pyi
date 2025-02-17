@@ -9,6 +9,7 @@ from typing import (
     overload,
 )
 
+from _typing import SequenceNotStr
 import numpy as np
 import pandas as pd
 from pandas.core.indexes.base import Index
@@ -24,18 +25,6 @@ from pandas._typing import (
 )
 
 class MultiIndex(Index[Any]):
-    def __new__(
-        cls,
-        levels=...,
-        codes=...,
-        sortorder=...,
-        names=...,
-        dtype=...,
-        copy=...,
-        name: Hashable = ...,
-        verify_integrity: bool = ...,
-        _set_identity: bool = ...,
-    ) -> Self: ...
     def __init__(
         self,
         levels=...,
@@ -44,7 +33,7 @@ class MultiIndex(Index[Any]):
         names=...,
         dtype=...,
         copy=...,
-        name: Hashable = ...,
+        name: SequenceNotStr[Hashable] = ...,
         verify_integrity: bool = ...,
         _set_identity: bool = ...,
     ) -> None: ...
