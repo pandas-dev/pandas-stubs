@@ -71,6 +71,12 @@ def test_multiindex_initialization() -> None:
         ),
         pd.MultiIndex,
     )
+    check(
+        assert_type(
+            pd.MultiIndex([[1], [4]], codes=[[0], [0]], names=["a", "b"]), pd.MultiIndex
+        ),
+        pd.MultiIndex,
+    )
 
 
 def test_index_tolist() -> None:
