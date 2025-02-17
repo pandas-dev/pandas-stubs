@@ -25,6 +25,18 @@ from pandas._typing import (
 )
 
 class MultiIndex(Index[Any]):
+    def __new__(
+        cls,
+        levels=...,
+        codes=...,
+        sortorder=...,
+        names: SequenceNotStr[Hashable] = ...,
+        dtype=...,
+        copy=...,
+        name: SequenceNotStr[Hashable] = ...,
+        verify_integrity: bool = ...,
+        _set_identity: bool = ...,
+    ) -> Self: ...
     def __init__(
         self,
         levels=...,
