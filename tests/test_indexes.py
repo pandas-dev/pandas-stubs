@@ -64,6 +64,21 @@ def test_multiindex_get_level_values() -> None:
     check(assert_type(i1, pd.Index), pd.Index)
 
 
+def test_multiindex_constructor() -> None:
+    check(
+        assert_type(
+            pd.MultiIndex([[1], [4]], codes=[[0], [0]], name=["a", "b"]), pd.MultiIndex
+        ),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(
+            pd.MultiIndex([[1], [4]], codes=[[0], [0]], names=["a", "b"]), pd.MultiIndex
+        ),
+        pd.MultiIndex,
+    )
+
+
 def test_index_tolist() -> None:
     i1 = pd.Index([1, 2, 3])
     check(assert_type(i1.tolist(), list[int]), list, int)
@@ -1051,6 +1066,22 @@ def test_index_constructors():
         # to specify all the possible dtype options.  For right now, we will leave the
         # test here as a reminder that we would like this to be seen as incorrect usage.
         pd.Index(flist, dtype=np.float16)
+
+
+def test_datetime_index_constructor() -> None:
+    check(assert_type(pd.DatetimeIndex(["2020"]), pd.DatetimeIndex), pd.DatetimeIndex)
+    check(
+        assert_type(pd.DatetimeIndex(["2020"], name="ts"), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(pd.DatetimeIndex(["2020"], freq="D"), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(pd.DatetimeIndex(["2020"], tz="Asia/Kathmandu"), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
 
 
 def test_iter() -> None:

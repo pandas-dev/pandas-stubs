@@ -26,7 +26,7 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period], PeriodIndexFieldOps):
         tz=...,
         dtype=...,
         copy: bool = ...,
-        name=...,
+        name: Hashable = ...,
         **fields,
     ): ...
     @property

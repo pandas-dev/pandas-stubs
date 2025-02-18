@@ -9,6 +9,7 @@ from typing import (
     overload,
 )
 
+from _typing import SequenceNotStr
 import numpy as np
 import pandas as pd
 from pandas.core.indexes.base import Index
@@ -29,33 +30,29 @@ class MultiIndex(Index[Any]):
         levels=...,
         codes=...,
         sortorder=...,
-        names=...,
+        names: SequenceNotStr[Hashable] = ...,
         dtype=...,
         copy=...,
-        name=...,
+        name: SequenceNotStr[Hashable] = ...,
         verify_integrity: bool = ...,
         _set_identity: bool = ...,
     ) -> Self: ...
-    def __init__(
-        self,
-        levels=...,
-        codes=...,
-        sortorder=...,
-        names=...,
-        dtype=...,
-        copy=...,
-        name=...,
-        verify_integrity: bool = ...,
-        _set_identity: bool = ...,
-    ) -> None: ...
     @classmethod
-    def from_arrays(cls, arrays, sortorder=..., names=...) -> Self: ...
+    def from_arrays(
+        cls, arrays, sortorder=..., names: SequenceNotStr[Hashable] = ...
+    ) -> Self: ...
     @classmethod
-    def from_tuples(cls, tuples, sortorder=..., names=...) -> Self: ...
+    def from_tuples(
+        cls, tuples, sortorder=..., names: SequenceNotStr[Hashable] = ...
+    ) -> Self: ...
     @classmethod
-    def from_product(cls, iterables, sortorder=..., names=...) -> Self: ...
+    def from_product(
+        cls, iterables, sortorder=..., names: SequenceNotStr[Hashable] = ...
+    ) -> Self: ...
     @classmethod
-    def from_frame(cls, df, sortorder=..., names=...) -> Self: ...
+    def from_frame(
+        cls, df, sortorder=..., names: SequenceNotStr[Hashable] = ...
+    ) -> Self: ...
     @property
     def shape(self): ...
     @property  # Should be read-only
