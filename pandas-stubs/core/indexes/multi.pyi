@@ -21,6 +21,7 @@ from pandas._typing import (
     Dtype,
     DtypeArg,
     HashableT,
+    ListLike,
     MaskType,
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -29,8 +30,8 @@ from pandas._typing import (
 class MultiIndex(Index[Any]):
     def __new__(
         cls,
-        levels: SequenceNotStr[SequenceNotStr[Hashable] | AnyArrayLike] = ...,
-        codes: SequenceNotStr[SequenceNotStr[int]] = ...,
+        levels: SequenceNotStr[ListLike] = ...,
+        codes: SequenceNotStr[ListLike] = ...,
         sortorder: int | None = ...,
         names: SequenceNotStr[Hashable] = ...,
         copy: bool = ...,
