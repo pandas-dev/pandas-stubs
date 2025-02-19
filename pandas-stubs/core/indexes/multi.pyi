@@ -17,7 +17,6 @@ from pandas.core.indexes.base import Index
 from typing_extensions import Self
 
 from pandas._typing import (
-    AnyArrayLike,
     Dtype,
     DtypeArg,
     HashableT,
@@ -42,7 +41,7 @@ class MultiIndex(Index[Any]):
     @classmethod
     def from_arrays(
         cls,
-        arrays: SequenceNotStr[SequenceNotStr[Hashable] | AnyArrayLike],
+        arrays: SequenceNotStr[ListLike],
         sortorder: int | None = ...,
         names: SequenceNotStr[Hashable] = ...,
     ) -> Self: ...
