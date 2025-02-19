@@ -1,7 +1,6 @@
 from collections.abc import (
     Callable,
     Hashable,
-    Iterable,
     Sequence,
 )
 from typing import (
@@ -17,10 +16,10 @@ from pandas.core.indexes.base import Index
 from typing_extensions import Self
 
 from pandas._typing import (
+    Axes,
     Dtype,
     DtypeArg,
     HashableT,
-    ListLike,
     MaskType,
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -29,33 +28,32 @@ from pandas._typing import (
 class MultiIndex(Index[Any]):
     def __new__(
         cls,
-        levels: SequenceNotStr[ListLike] = ...,
-        codes: SequenceNotStr[ListLike] = ...,
+        levels: Sequence[SequenceNotStr[Hashable]] = ...,
+        codes: Sequence[Sequence[int]] = ...,
         sortorder: int | None = ...,
         names: SequenceNotStr[Hashable] = ...,
         copy: bool = ...,
         name: SequenceNotStr[Hashable] = ...,
         verify_integrity: bool = ...,
-        _set_identity: bool = ...,
     ) -> Self: ...
     @classmethod
     def from_arrays(
         cls,
-        arrays: SequenceNotStr[ListLike],
+        arrays: Sequence[Axes],
         sortorder: int | None = ...,
         names: SequenceNotStr[Hashable] = ...,
     ) -> Self: ...
     @classmethod
     def from_tuples(
         cls,
-        tuples: Iterable[tuple[Hashable, ...]],
+        tuples: Sequence[tuple[Hashable, ...]],
         sortorder: int | None = ...,
         names: SequenceNotStr[Hashable] = ...,
     ) -> Self: ...
     @classmethod
     def from_product(
         cls,
-        iterables: SequenceNotStr[Iterable[Hashable]],
+        iterables: Sequence[SequenceNotStr[Hashable]],
         sortorder: int | None = ...,
         names: SequenceNotStr[Hashable] = ...,
     ) -> Self: ...
