@@ -29,7 +29,7 @@ from pandas._typing import (
 class MultiIndex(Index[Any]):
     def __new__(
         cls,
-        levels: SequenceNotStr[SequenceNotStr[Hashable]] = ...,
+        levels: SequenceNotStr[SequenceNotStr[Hashable] | AnyArrayLike] = ...,
         codes: SequenceNotStr[SequenceNotStr[int]] = ...,
         sortorder: int | None = ...,
         names: SequenceNotStr[Hashable] = ...,
@@ -41,7 +41,7 @@ class MultiIndex(Index[Any]):
     @classmethod
     def from_arrays(
         cls,
-        arrays: SequenceNotStr[SequenceNotStr[Hashable]] | SequenceNotStr[AnyArrayLike],
+        arrays: SequenceNotStr[SequenceNotStr[Hashable] | AnyArrayLike],
         sortorder: int | None = ...,
         names: SequenceNotStr[Hashable] = ...,
     ) -> Self: ...
