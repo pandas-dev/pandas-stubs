@@ -16,6 +16,7 @@ from pandas.core.indexes.base import Index
 from typing_extensions import Self
 
 from pandas._typing import (
+    Axes,
     Dtype,
     DtypeArg,
     HashableT,
@@ -27,31 +28,41 @@ from pandas._typing import (
 class MultiIndex(Index[Any]):
     def __new__(
         cls,
-        levels=...,
-        codes=...,
-        sortorder=...,
+        levels: Sequence[SequenceNotStr[Hashable]] = ...,
+        codes: Sequence[Sequence[int]] = ...,
+        sortorder: int | None = ...,
         names: SequenceNotStr[Hashable] = ...,
-        dtype=...,
-        copy=...,
+        copy: bool = ...,
         name: SequenceNotStr[Hashable] = ...,
         verify_integrity: bool = ...,
-        _set_identity: bool = ...,
     ) -> Self: ...
     @classmethod
     def from_arrays(
-        cls, arrays, sortorder=..., names: SequenceNotStr[Hashable] = ...
+        cls,
+        arrays: Sequence[Axes],
+        sortorder: int | None = ...,
+        names: SequenceNotStr[Hashable] = ...,
     ) -> Self: ...
     @classmethod
     def from_tuples(
-        cls, tuples, sortorder=..., names: SequenceNotStr[Hashable] = ...
+        cls,
+        tuples: Sequence[tuple[Hashable, ...]],
+        sortorder: int | None = ...,
+        names: SequenceNotStr[Hashable] = ...,
     ) -> Self: ...
     @classmethod
     def from_product(
-        cls, iterables, sortorder=..., names: SequenceNotStr[Hashable] = ...
+        cls,
+        iterables: Sequence[SequenceNotStr[Hashable]],
+        sortorder: int | None = ...,
+        names: SequenceNotStr[Hashable] = ...,
     ) -> Self: ...
     @classmethod
     def from_frame(
-        cls, df, sortorder=..., names: SequenceNotStr[Hashable] = ...
+        cls,
+        df: pd.DataFrame,
+        sortorder: int | None = ...,
+        names: SequenceNotStr[Hashable] = ...,
     ) -> Self: ...
     @property
     def shape(self): ...

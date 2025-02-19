@@ -64,7 +64,7 @@ def test_multiindex_get_level_values() -> None:
     check(assert_type(i1, pd.Index), pd.Index)
 
 
-def test_multiindex_constructor() -> None:
+def test_multiindex_constructors() -> None:
     check(
         assert_type(
             pd.MultiIndex([[1], [4]], codes=[[0], [0]], name=["a", "b"]), pd.MultiIndex
@@ -73,8 +73,33 @@ def test_multiindex_constructor() -> None:
     )
     check(
         assert_type(
-            pd.MultiIndex([[1], [4]], codes=[[0], [0]], names=["a", "b"]), pd.MultiIndex
+            pd.MultiIndex(
+                [[1], [4]],
+                codes=[[0], [0]],
+                names=["a", "b"],
+                sortorder=0,
+                copy=True,
+                verify_integrity=True,
+            ),
+            pd.MultiIndex,
         ),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(pd.MultiIndex.from_arrays([[1], [4]]), pd.MultiIndex), pd.MultiIndex
+    )
+    check(
+        assert_type(
+            pd.MultiIndex.from_arrays([np.arange(3), np.arange(3)]), pd.MultiIndex
+        ),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(pd.MultiIndex.from_tuples([(1, 3), (2, 4)]), pd.MultiIndex),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(pd.MultiIndex.from_frame(pd.DataFrame({"a": [1]})), pd.MultiIndex),
         pd.MultiIndex,
     )
 
