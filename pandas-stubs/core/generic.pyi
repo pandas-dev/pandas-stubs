@@ -29,16 +29,13 @@ from typing_extensions import (
 from pandas._libs.lib import NoDefault
 from pandas._typing import (
     S1,
-    ArrayLike,
     Axis,
-    AxisIndex,
     CompressionOptions,
     CSVQuoting,
     DtypeArg,
     DtypeBackend,
     FilePath,
     FileWriteMode,
-    FillnaOptions,
     Frequency,
     HashableT1,
     HashableT2,
@@ -47,8 +44,6 @@ from pandas._typing import (
     IndexLabel,
     Level,
     P,
-    ReplaceMethod,
-    SortKind,
     StorageOptions,
     T,
     TimedeltaConvertibleTypes,
@@ -80,13 +75,9 @@ class NDFrame(indexing.IndexingMixin):
     @property
     def shape(self) -> tuple[int, ...]: ...
     @property
-    def axes(self) -> list[Index]: ...
-    @property
     def ndim(self) -> int: ...
     @property
     def size(self) -> int: ...
-    def droplevel(self, level: Level, axis: AxisIndex = ...) -> Self: ...
-    def squeeze(self, axis=...): ...
     def equals(self, other: Series[S1]) -> _bool: ...
     def __neg__(self) -> Self: ...
     def __pos__(self) -> Self: ...
@@ -95,8 +86,6 @@ class NDFrame(indexing.IndexingMixin):
     def bool(self) -> _bool: ...
     def __abs__(self) -> Self: ...
     def __round__(self, decimals: int = ...) -> Self: ...
-    def keys(self): ...
-    def __len__(self) -> int: ...
     def __contains__(self, key) -> _bool: ...
     @property
     def empty(self) -> _bool: ...
@@ -292,7 +281,6 @@ class NDFrame(indexing.IndexingMixin):
         errors: _str = ...,
         storage_options: StorageOptions = ...,
     ) -> _str: ...
-    def take(self, indices, axis=..., **kwargs) -> Self: ...
     def __delitem__(self, idx: Hashable) -> None: ...
     @overload
     def drop(
@@ -366,43 +354,6 @@ class NDFrame(indexing.IndexingMixin):
         inplace: Literal[False] = ...,
         errors: IgnoreRaise = ...,
     ) -> Self: ...
-    def add_prefix(self, prefix: _str) -> Self: ...
-    def add_suffix(self, suffix: _str) -> Self: ...
-    @overload
-    def sort_index(
-        self,
-        *,
-        axis: Axis = ...,
-        level=...,
-        ascending: _bool = ...,
-        inplace: Literal[True],
-        kind: SortKind = ...,
-        na_position: Literal["first", "last"] = ...,
-        sort_remaining: _bool = ...,
-        ignore_index: _bool = ...,
-    ) -> None: ...
-    @overload
-    def sort_index(
-        self,
-        *,
-        axis: Axis = ...,
-        level=...,
-        ascending: _bool = ...,
-        inplace: Literal[False] = ...,
-        kind: SortKind = ...,
-        na_position: Literal["first", "last"] = ...,
-        sort_remaining: _bool = ...,
-        ignore_index: _bool = ...,
-    ) -> Self: ...
-    def filter(
-        self,
-        items=...,
-        like: _str | None = ...,
-        regex: _str | None = ...,
-        axis=...,
-    ) -> Self: ...
-    def head(self, n: int = ...) -> Self: ...
-    def tail(self, n: int = ...) -> Self: ...
     @overload
     def pipe(
         self,
@@ -419,14 +370,8 @@ class NDFrame(indexing.IndexingMixin):
     ) -> T: ...
     def __finalize__(self, other, method=..., **kwargs) -> Self: ...
     def __setattr__(self, name: _str, value) -> None: ...
-    @property
-    def values(self) -> ArrayLike: ...
-    @property
-    def dtypes(self): ...
-    def copy(self, deep: _bool = ...) -> Self: ...
     def __copy__(self, deep: _bool = ...) -> Self: ...
     def __deepcopy__(self, memo=...) -> Self: ...
-    def infer_objects(self) -> Self: ...
     def convert_dtypes(
         self,
         infer_objects: _bool = ...,
@@ -435,76 +380,6 @@ class NDFrame(indexing.IndexingMixin):
         convert_boolean: _bool = ...,
         convert_floating: _bool = ...,
         dtype_backend: DtypeBackend = ...,
-    ) -> Self: ...
-    @overload
-    def fillna(
-        self,
-        value=...,
-        *,
-        axis=...,
-        inplace: Literal[True],
-        limit=...,
-        downcast=...,
-    ) -> None: ...
-    @overload
-    def fillna(
-        self,
-        value=...,
-        *,
-        axis=...,
-        inplace: Literal[False] = ...,
-        limit=...,
-        downcast=...,
-    ) -> NDFrame: ...
-    @overload
-    def replace(
-        self,
-        to_replace=...,
-        value=...,
-        *,
-        inplace: Literal[True],
-        limit=...,
-        regex: _bool = ...,
-        method: ReplaceMethod = ...,
-    ) -> None: ...
-    @overload
-    def replace(
-        self,
-        to_replace=...,
-        value=...,
-        *,
-        inplace: Literal[False] = ...,
-        limit=...,
-        regex: _bool = ...,
-        method: ReplaceMethod = ...,
-    ) -> NDFrame: ...
-    def asof(self, where, subset=...): ...
-    def isna(self) -> NDFrame: ...
-    def isnull(self) -> NDFrame: ...
-    def notna(self) -> NDFrame: ...
-    def notnull(self) -> NDFrame: ...
-    @overload
-    def clip(
-        self, lower=..., upper=..., *, axis=..., inplace: Literal[True], **kwargs
-    ) -> None: ...
-    @overload
-    def clip(
-        self, lower=..., upper=..., *, axis=..., inplace: Literal[False] = ..., **kwargs
-    ) -> Self: ...
-    def asfreq(
-        self,
-        freq,
-        method: FillnaOptions | None = ...,
-        how: Literal["start", "end"] | None = ...,
-        normalize: _bool = ...,
-        fill_value=...,
-    ) -> Self: ...
-    def at_time(self, time, asof: _bool = ..., axis=...) -> Self: ...
-    def between_time(
-        self,
-        start_time,
-        end_time,
-        axis=...,
     ) -> Self: ...
     @final
     def resample(
@@ -521,63 +396,3 @@ class NDFrame(indexing.IndexingMixin):
         offset: TimedeltaConvertibleTypes | None = ...,
         group_keys: _bool = ...,
     ) -> DatetimeIndexResampler[Self]: ...
-    def first(self, offset) -> Self: ...
-    def last(self, offset) -> Self: ...
-    def rank(
-        self,
-        axis=...,
-        method: Literal["average", "min", "max", "first", "dense"] = ...,
-        numeric_only: _bool = ...,
-        na_option: Literal["keep", "top", "bottom"] = ...,
-        ascending: _bool = ...,
-        pct: _bool = ...,
-    ) -> NDFrame: ...
-    @overload
-    def where(
-        self,
-        cond,
-        other=...,
-        *,
-        inplace: Literal[True],
-        axis=...,
-        level=...,
-    ) -> None: ...
-    @overload
-    def where(
-        self,
-        cond,
-        other=...,
-        *,
-        inplace: Literal[False] = ...,
-        axis=...,
-        level=...,
-    ) -> Self: ...
-    @overload
-    def mask(
-        self,
-        cond,
-        other=...,
-        *,
-        inplace: Literal[True],
-        axis=...,
-        level=...,
-    ) -> None: ...
-    @overload
-    def mask(
-        self,
-        cond,
-        other=...,
-        *,
-        inplace: Literal[False] = ...,
-        axis=...,
-        level=...,
-    ) -> Self: ...
-    def shift(self, periods=..., freq=..., axis=..., fill_value=...) -> Self: ...
-    def truncate(self, before=..., after=..., axis=..., copy: _bool = ...) -> Self: ...
-    def abs(self) -> Self: ...
-    def describe(self, percentiles=..., include=..., exclude=...) -> NDFrame: ...
-    def pct_change(
-        self, periods=..., fill_method=..., limit=..., freq=..., **kwargs
-    ) -> Self: ...
-    def first_valid_index(self): ...
-    def last_valid_index(self): ...
