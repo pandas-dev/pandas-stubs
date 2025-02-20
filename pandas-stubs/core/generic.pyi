@@ -437,24 +437,6 @@ class NDFrame(indexing.IndexingMixin):
         dtype_backend: DtypeBackend = ...,
     ) -> Self: ...
     @overload
-    def fillna(
-        self,
-        value=...,
-        *,
-        axis=...,
-        inplace: Literal[True],
-        limit=...,
-    ) -> None: ...
-    @overload
-    def fillna(
-        self,
-        value=...,
-        *,
-        axis=...,
-        inplace: Literal[False] = ...,
-        limit=...,
-    ) -> NDFrame: ...
-    @overload
     def replace(
         self,
         to_replace=...,
