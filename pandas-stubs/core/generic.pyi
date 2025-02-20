@@ -444,7 +444,6 @@ class NDFrame(indexing.IndexingMixin):
         axis=...,
         inplace: Literal[True],
         limit=...,
-        downcast=...,
     ) -> None: ...
     @overload
     def fillna(
@@ -454,7 +453,6 @@ class NDFrame(indexing.IndexingMixin):
         axis=...,
         inplace: Literal[False] = ...,
         limit=...,
-        downcast=...,
     ) -> NDFrame: ...
     @overload
     def replace(

@@ -1075,7 +1075,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         *,
         axis: AxisIndex = ...,
         limit: int | None = ...,
-        downcast: dict | None = ...,
         inplace: Literal[True],
     ) -> None: ...
     @overload
@@ -1085,7 +1084,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         *,
         axis: AxisIndex = ...,
         limit: int | None = ...,
-        downcast: dict | None = ...,
         inplace: Literal[False] = ...,
     ) -> Series[S1]: ...
     @overload
@@ -1302,7 +1300,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         inplace: Literal[True],
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
-        downcast: dict | None = ...,
     ) -> None: ...
     @overload
     def ffill(
@@ -1312,7 +1309,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         inplace: Literal[False] = ...,
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
-        downcast: dict | None = ...,
     ) -> Series[S1]: ...
     @overload
     def bfill(
@@ -1322,7 +1318,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         inplace: Literal[True],
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
-        downcast: dict | None = ...,
     ) -> None: ...
     @overload
     def bfill(
@@ -1332,7 +1327,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         inplace: Literal[False] = ...,
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
-        downcast: dict | None = ...,
     ) -> Series[S1]: ...
     @overload
     def interpolate(
@@ -1344,7 +1338,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         inplace: Literal[True],
         limit_direction: Literal["forward", "backward", "both"] | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
-        downcast: Literal["infer"] | None = ...,
         **kwargs,
     ) -> None: ...
     @overload
@@ -1357,7 +1350,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         inplace: Literal[False] = ...,
         limit_direction: Literal["forward", "backward", "both"] | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
-        downcast: Literal["infer"] | None = ...,
         **kwargs,
     ) -> Series[S1]: ...
     def asof(
