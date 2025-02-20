@@ -785,7 +785,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         *,
         axis: Axis | None = ...,
         limit: int = ...,
-        downcast: dict | None = ...,
         inplace: Literal[True],
     ) -> None: ...
     @overload
@@ -795,7 +794,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         *,
         axis: Axis | None = ...,
         limit: int = ...,
-        downcast: dict | None = ...,
         inplace: Literal[False] = ...,
     ) -> Self: ...
     @overload
@@ -1719,7 +1717,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         inplace: Literal[True],
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
-        downcast: dict | None = ...,
     ) -> None: ...
     @overload
     def bfill(
@@ -1729,7 +1726,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         inplace: Literal[False] = ...,
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
-        downcast: dict | None = ...,
     ) -> Self: ...
     @overload
     def clip(
@@ -1812,7 +1808,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         inplace: Literal[True],
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
-        downcast: dict | None = ...,
     ) -> None: ...
     @overload
     def ffill(
@@ -1822,7 +1817,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         inplace: Literal[False] = ...,
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
-        downcast: dict | None = ...,
     ) -> Self: ...
     def filter(
         self,
@@ -1864,7 +1858,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         limit: int | None = ...,
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
-        downcast: Literal["infer"] | None = ...,
         inplace: Literal[True],
         **kwargs,
     ) -> None: ...
@@ -1877,7 +1870,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         limit: int | None = ...,
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
-        downcast: Literal["infer"] | None = ...,
         inplace: Literal[False] = ...,
         **kwargs,
     ) -> Self: ...
