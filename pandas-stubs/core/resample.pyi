@@ -27,7 +27,6 @@ from typing_extensions import (
     TypeAlias,
 )
 
-from pandas._libs.lib import NoDefault
 from pandas._typing import (
     S1,
     Axis,
@@ -105,7 +104,6 @@ class Resampler(BaseGroupBy[NDFrameT]):
         inplace: Literal[True],
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
-        downcast: Literal["infer"] | None | NoDefault = ...,
         **kwargs,
     ) -> None: ...
     @overload
@@ -118,7 +116,6 @@ class Resampler(BaseGroupBy[NDFrameT]):
         inplace: Literal[False] = ...,
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
-        downcast: Literal["infer"] | None | NoDefault = ...,
         **kwargs,
     ) -> NDFrameT: ...
     def asfreq(self, fill_value: Scalar | None = ...) -> NDFrameT: ...
