@@ -799,23 +799,53 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def replace(
         self,
-        to_replace=...,
-        value: Scalar | NAType | Sequence | Mapping | Pattern | None = ...,
+        to_replace: (
+            Scalar
+            | NAType
+            | Sequence[Scalar | Pattern]
+            | Mapping[Hashable, Scalar | Pattern]
+            | Pattern
+            | None
+        ) = ...,
+        value: (
+            Scalar | NAType | Sequence[Scalar] | Mapping[Hashable, Scalar] | None
+        ) = ...,
         *,
         inplace: Literal[True],
         limit: int | None = ...,
-        regex=...,
+        regex: (
+            bool
+            | str
+            | Pattern
+            | Sequence[str | Pattern]
+            | Mapping[Hashable, str | Pattern]
+        ) = ...,
         method: ReplaceMethod = ...,
     ) -> None: ...
     @overload
     def replace(
         self,
-        to_replace=...,
-        value: Scalar | NAType | Sequence | Mapping | Pattern | None = ...,
+        to_replace: (
+            Scalar
+            | NAType
+            | Sequence[Scalar | Pattern]
+            | Mapping[Hashable, Scalar | Pattern]
+            | Pattern
+            | None
+        ) = ...,
+        value: (
+            Scalar | NAType | Sequence[Scalar] | Mapping[Hashable, Scalar] | None
+        ) = ...,
         *,
         inplace: Literal[False] = ...,
         limit: int | None = ...,
-        regex=...,
+        regex: (
+            bool
+            | str
+            | Pattern
+            | Sequence[str | Pattern]
+            | Mapping[Hashable, str | Pattern]
+        ) = ...,
         method: ReplaceMethod = ...,
     ) -> Self: ...
     def shift(
