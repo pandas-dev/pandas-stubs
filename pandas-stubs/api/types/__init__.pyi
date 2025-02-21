@@ -11,7 +11,6 @@ from pandas.core.dtypes.api import (
     is_datetime64_dtype as is_datetime64_dtype,
     is_datetime64_ns_dtype as is_datetime64_ns_dtype,
     is_dict_like as is_dict_like,
-    is_dtype_equal as is_dtype_equal,
     is_extension_array_dtype as is_extension_array_dtype,
     is_file_like as is_file_like,
     is_float as is_float,
