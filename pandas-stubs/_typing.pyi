@@ -738,7 +738,7 @@ ReplaceValue: TypeAlias = (
     | Pattern
     | NAType
     | Sequence[Scalar | Pattern]
-    | Mapping[Scalar | Pattern, Scalar]
+    | Mapping[Hashable, Scalar]
     | Series[Any]
     | None
 )
