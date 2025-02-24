@@ -8,7 +8,6 @@ from collections.abc import (
     Sequence,
 )
 import datetime as dt
-from re import Pattern
 import sys
 from typing import (
     Any,
@@ -113,7 +112,7 @@ from pandas._typing import (
     RandomState,
     ReadBuffer,
     Renamer,
-    ReplaceMethod,
+    ReplaceValue,
     Scalar,
     ScalarT,
     SequenceNotStr,
@@ -799,24 +798,20 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def replace(
         self,
-        to_replace=...,
-        value: Scalar | NAType | Sequence | Mapping | Pattern | None = ...,
+        to_replace: ReplaceValue | Mapping[Hashable, ReplaceValue] = ...,
+        value: ReplaceValue | Mapping[Hashable, ReplaceValue] = ...,
         *,
         inplace: Literal[True],
-        limit: int | None = ...,
-        regex=...,
-        method: ReplaceMethod = ...,
+        regex: ReplaceValue | Mapping[Hashable, ReplaceValue] = ...,
     ) -> None: ...
     @overload
     def replace(
         self,
-        to_replace=...,
-        value: Scalar | NAType | Sequence | Mapping | Pattern | None = ...,
+        to_replace: ReplaceValue | Mapping[Hashable, ReplaceValue] = ...,
+        value: ReplaceValue | Mapping[Hashable, ReplaceValue] = ...,
         *,
         inplace: Literal[False] = ...,
-        limit: int | None = ...,
-        regex=...,
-        method: ReplaceMethod = ...,
+        regex: ReplaceValue | Mapping[Hashable, ReplaceValue] = ...,
     ) -> Self: ...
     def shift(
         self,

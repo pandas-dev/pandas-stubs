@@ -10,6 +10,7 @@ from collections.abc import (
 import datetime
 from datetime import tzinfo
 from os import PathLike
+from re import Pattern
 import sys
 from typing import (
     Any,
@@ -36,6 +37,7 @@ from typing_extensions import (
 )
 
 from pandas._libs.interval import Interval
+from pandas._libs.missing import NAType
 from pandas._libs.tslibs import (
     BaseOffset,
     Period,
@@ -731,7 +733,17 @@ InterpolateOptions: TypeAlias = Literal[
     "cubicspline",
     "from_derivatives",
 ]
-ReplaceMethod: TypeAlias = Literal["pad", "ffill", "bfill"]
+# Can be passed to `to_replace`, `value`, or `regex` in `Series.replace`.
+# `DataFrame.replace` also accepts mappings of these.
+ReplaceValue: TypeAlias = (
+    Scalar
+    | Pattern
+    | NAType
+    | Sequence[Scalar | Pattern]
+    | Mapping[Hashable, Scalar]
+    | Series[Any]
+    | None
+)
 SortKind: TypeAlias = Literal["quicksort", "mergesort", "heapsort", "stable"]
 NaPosition: TypeAlias = Literal["first", "last"]
 JoinHow: TypeAlias = Literal["left", "right", "outer", "inner"]

@@ -1410,6 +1410,40 @@ def test_types_replace() -> None:
     assert assert_type(s.replace(1, 2, inplace=True), None) is None
 
 
+def test_series_replace() -> None:
+    s: pd.Series[str] = pd.DataFrame({"col1": ["a", "ab", "ba"]})["col1"]
+    pattern = re.compile(r"^a.*")
+    check(assert_type(s.replace("a", "x"), "pd.Series[str]"), pd.Series)
+    check(assert_type(s.replace(pattern, "x"), "pd.Series[str]"), pd.Series)
+    check(
+        assert_type(s.replace({"a": "z"}), "pd.Series[str]"),
+        pd.Series,
+    )
+    check(
+        assert_type(s.replace(pd.Series({"a": "z"})), "pd.Series[str]"),
+        pd.Series,
+    )
+    check(
+        assert_type(s.replace({pattern: "z"}), "pd.Series[str]"),
+        pd.Series,
+    )
+    check(assert_type(s.replace(["a"], ["x"]), "pd.Series[str]"), pd.Series)
+    check(assert_type(s.replace([pattern], ["x"]), "pd.Series[str]"), pd.Series)
+    check(assert_type(s.replace(r"^a.*", "x", regex=True), "pd.Series[str]"), pd.Series)
+    check(assert_type(s.replace(value="x", regex=r"^a.*"), "pd.Series[str]"), pd.Series)
+    check(
+        assert_type(s.replace(value="x", regex=[r"^a.*"]), "pd.Series[str]"), pd.Series
+    )
+    check(assert_type(s.replace(value="x", regex=pattern), "pd.Series[str]"), pd.Series)
+    check(
+        assert_type(s.replace(value="x", regex=[pattern]), "pd.Series[str]"), pd.Series
+    )
+    check(assert_type(s.replace(regex={"a": "x"}), "pd.Series[str]"), pd.Series)
+    check(
+        assert_type(s.replace(regex=pd.Series({"a": "x"})), "pd.Series[str]"), pd.Series
+    )
+
+
 def test_cat_accessor() -> None:
     # GH 43
     s: pd.Series[str] = pd.Series(

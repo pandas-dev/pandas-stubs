@@ -24,7 +24,10 @@ from typing import (
     overload,
 )
 
-from _typing import TimeZones
+from _typing import (
+    ReplaceValue,
+    TimeZones,
+)
 from matplotlib.axes import (
     Axes as PlotAxes,
     SubplotBase,
@@ -141,7 +144,6 @@ from pandas._typing import (
     QuantileInterpolation,
     RandomState,
     Renamer,
-    ReplaceMethod,
     Scalar,
     ScalarT,
     SequenceNotStr,
@@ -1089,24 +1091,20 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def replace(
         self,
-        to_replace: _str | list | dict | Series[S1] | float | None = ...,
-        value: Scalar | NAType | dict | list | _str | None = ...,
+        to_replace: ReplaceValue = ...,
+        value: ReplaceValue = ...,
         *,
-        limit: int | None = ...,
-        regex=...,
-        method: ReplaceMethod = ...,
+        regex: ReplaceValue = ...,
         inplace: Literal[True],
     ) -> None: ...
     @overload
     def replace(
         self,
-        to_replace: _str | list | dict | Series[S1] | float | None = ...,
-        value: Scalar | NAType | dict | list | _str | None = ...,
+        to_replace: ReplaceValue = ...,
+        value: ReplaceValue = ...,
         *,
+        regex: ReplaceValue = ...,
         inplace: Literal[False] = ...,
-        limit: int | None = ...,
-        regex=...,
-        method: ReplaceMethod = ...,
     ) -> Series[S1]: ...
     def shift(
         self,
