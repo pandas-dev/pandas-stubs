@@ -733,6 +733,8 @@ InterpolateOptions: TypeAlias = Literal[
     "cubicspline",
     "from_derivatives",
 ]
+# Can be passed to `to_replace`, `value`, or `regex` in `Series.replace`.
+# `DataFrame.replace` also accepts mappings of these.
 ReplaceValue: TypeAlias = (
     Scalar
     | Pattern
