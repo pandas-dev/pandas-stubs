@@ -2575,6 +2575,8 @@ def test_dataframe_replace() -> None:
     df = pd.DataFrame({"col1": ["a", "ab", "ba"]})
     pattern = re.compile(r"^a.*")
     check(assert_type(df.replace("a", "x"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.replace({"a": "x"}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.replace(pd.Series({"a": "x"})), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.replace(pattern, "x"), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(df.replace({"col1": "a"}, {"col1": "x"}), pd.DataFrame),
@@ -2600,6 +2602,10 @@ def test_dataframe_replace() -> None:
     check(
         assert_type(df.replace(value="x", regex={"col1": pattern}), pd.DataFrame),
         pd.DataFrame,
+    )
+    check(assert_type(df.replace(regex={"a": "x"}), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.replace(regex=pd.Series({"a": "x"})), pd.DataFrame), pd.DataFrame
     )
 
 

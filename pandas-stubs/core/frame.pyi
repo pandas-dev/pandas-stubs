@@ -113,7 +113,6 @@ from pandas._typing import (
     RandomState,
     ReadBuffer,
     Renamer,
-    ReplaceMethod,
     Scalar,
     ScalarT,
     SequenceNotStr,
@@ -804,6 +803,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | NAType
             | Sequence[Scalar | Pattern]
             | Mapping[Hashable, Scalar | Pattern]
+            | Series[Any]
             | Pattern
             | None
         ) = ...,
@@ -812,15 +812,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         ) = ...,
         *,
         inplace: Literal[True],
-        limit: int | None = ...,
         regex: (
             bool
             | str
             | Pattern
             | Sequence[str | Pattern]
             | Mapping[Hashable, str | Pattern]
+            | Series[Any]
         ) = ...,
-        method: ReplaceMethod = ...,
     ) -> None: ...
     @overload
     def replace(
@@ -830,6 +829,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | NAType
             | Sequence[Scalar | Pattern]
             | Mapping[Hashable, Scalar | Pattern]
+            | Series[Any]
             | Pattern
             | None
         ) = ...,
@@ -838,15 +838,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         ) = ...,
         *,
         inplace: Literal[False] = ...,
-        limit: int | None = ...,
         regex: (
             bool
             | str
             | Pattern
             | Sequence[str | Pattern]
             | Mapping[Hashable, str | Pattern]
+            | Series[Any]
         ) = ...,
-        method: ReplaceMethod = ...,
     ) -> Self: ...
     def shift(
         self,

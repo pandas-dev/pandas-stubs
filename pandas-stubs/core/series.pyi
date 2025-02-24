@@ -15,6 +15,7 @@ from datetime import (
     timedelta,
 )
 from pathlib import Path
+from re import Pattern
 from typing import (
     Any,
     ClassVar,
@@ -141,7 +142,6 @@ from pandas._typing import (
     QuantileInterpolation,
     RandomState,
     Renamer,
-    ReplaceMethod,
     Scalar,
     ScalarT,
     SequenceNotStr,
@@ -1089,24 +1089,54 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def replace(
         self,
-        to_replace: _str | list | dict | Series[S1] | float | None = ...,
-        value: Scalar | NAType | dict | list | _str | None = ...,
+        to_replace: (
+            Scalar
+            | NAType
+            | Sequence[Scalar | Pattern]
+            | Mapping[Scalar | Pattern, Scalar]
+            | Series[Any]
+            | Pattern
+            | None
+        ) = ...,
+        value: (
+            Scalar | NAType | Sequence[Scalar] | Mapping[Scalar, Scalar] | None
+        ) = ...,
         *,
-        limit: int | None = ...,
-        regex=...,
-        method: ReplaceMethod = ...,
+        regex: (
+            bool
+            | str
+            | Pattern
+            | Sequence[str | Pattern]
+            | Mapping[Scalar | Pattern, Scalar]
+            | Series[Any]
+        ) = ...,
         inplace: Literal[True],
     ) -> None: ...
     @overload
     def replace(
         self,
-        to_replace: _str | list | dict | Series[S1] | float | None = ...,
-        value: Scalar | NAType | dict | list | _str | None = ...,
+        to_replace: (
+            Scalar
+            | NAType
+            | Sequence[Scalar | Pattern]
+            | Mapping[Scalar | Pattern, Scalar]
+            | Series[Any]
+            | Pattern
+            | None
+        ) = ...,
+        value: (
+            Scalar | NAType | Sequence[Scalar] | Mapping[Scalar, Scalar] | None
+        ) = ...,
         *,
         inplace: Literal[False] = ...,
-        limit: int | None = ...,
-        regex=...,
-        method: ReplaceMethod = ...,
+        regex: (
+            bool
+            | str
+            | Pattern
+            | Sequence[str | Pattern]
+            | Mapping[Scalar | Pattern, Scalar]
+            | Series[Any]
+        ) = ...,
     ) -> Series[S1]: ...
     def shift(
         self,
