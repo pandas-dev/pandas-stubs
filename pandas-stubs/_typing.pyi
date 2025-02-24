@@ -731,7 +731,6 @@ InterpolateOptions: TypeAlias = Literal[
     "cubicspline",
     "from_derivatives",
 ]
-ReplaceMethod: TypeAlias = Literal["pad", "ffill", "bfill"]
 SortKind: TypeAlias = Literal["quicksort", "mergesort", "heapsort", "stable"]
 NaPosition: TypeAlias = Literal["first", "last"]
 JoinHow: TypeAlias = Literal["left", "right", "outer", "inner"]
