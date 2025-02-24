@@ -2574,10 +2574,31 @@ def test_types_replace() -> None:
 def test_dataframe_replace() -> None:
     df = pd.DataFrame({"col1": ["a", "ab", "ba"]})
     pattern = re.compile(r"^a.*")
+    # global scalar replacement
     check(assert_type(df.replace("a", "x"), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.replace({"a": "x"}), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.replace(pd.Series({"a": "x"})), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.replace(pattern, "x"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.replace("a", "x", regex=True), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.replace(pattern, "x"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.replace(regex="a", value="x"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.replace(regex=pattern, value="x"), pd.DataFrame), pd.DataFrame)
+    # global sequence replacement
+    check(assert_type(df.replace(["a"], ["x"]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.replace([pattern], ["x"]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.replace(regex=["a"], value=["x"]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.replace(regex=[pattern], value=["x"]), pd.DataFrame),
+        pd.DataFrame,
+    )
+    # global mapping
+    check(assert_type(df.replace({"a": "x"}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.replace({pattern: "x"}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.replace(pd.Series({"a": "x"})), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.replace(regex={"a": "x"}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.replace(regex={pattern: "x"}), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.replace(regex=pd.Series({"a": "x"})), pd.DataFrame), pd.DataFrame
+    )
+    # per-column scalar-scalar replacement
     check(
         assert_type(df.replace({"col1": "a"}, {"col1": "x"}), pd.DataFrame),
         pd.DataFrame,
@@ -2586,26 +2607,83 @@ def test_dataframe_replace() -> None:
         assert_type(df.replace({"col1": pattern}, {"col1": "x"}), pd.DataFrame),
         pd.DataFrame,
     )
-    check(assert_type(df.replace(["a"], ["x"]), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.replace([pattern], ["x"]), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.replace("^a.*", "x", regex=True), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.replace(value="x", regex="^a."), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.replace(value="x", regex=["^a."]), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(df.replace(value="x", regex={"col1": "^a."}), pd.DataFrame),
+        assert_type(
+            df.replace(pd.Series({"col1": "a"}), pd.Series({"col1": "x"})), pd.DataFrame
+        ),
         pd.DataFrame,
     )
-    check(assert_type(df.replace(value="x", regex=pattern), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(df.replace(value="x", regex=[pattern]), pd.DataFrame), pd.DataFrame
-    )
-    check(
-        assert_type(df.replace(value="x", regex={"col1": pattern}), pd.DataFrame),
+        assert_type(df.replace(regex={"col1": "a"}, value={"col1": "x"}), pd.DataFrame),
         pd.DataFrame,
     )
-    check(assert_type(df.replace(regex={"a": "x"}), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(df.replace(regex=pd.Series({"a": "x"})), pd.DataFrame), pd.DataFrame
+        assert_type(
+            df.replace(regex={"col1": pattern}, value={"col1": "x"}), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.replace(regex=pd.Series({"col1": "a"}), value=pd.Series({"col1": "x"})),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    # per-column sequence replacement
+    check(
+        assert_type(df.replace({"col1": ["a"]}, {"col1": ["x"]}), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.replace({"col1": [pattern]}, {"col1": ["x"]}), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.replace(pd.Series({"col1": ["a"]}), pd.Series({"col1": ["x"]})),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.replace(regex={"col1": ["a"]}, value={"col1": ["x"]}), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.replace(regex={"col1": [pattern]}, value={"col1": ["x"]}), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.replace(
+                regex=pd.Series({"col1": ["a"]}), value=pd.Series({"col1": ["x"]})
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    # per-column mapping
+    check(assert_type(df.replace({"col1": {"a": "x"}}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.replace({"col1": {pattern: "x"}}), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.replace({"col1": pd.Series({"a": "x"})}), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.replace(regex={"col1": {"a": "x"}}), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df.replace(regex={"col1": {pattern: "x"}}), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.replace(regex={"col1": pd.Series({"a": "x"})}), pd.DataFrame),
+        pd.DataFrame,
     )
 
 

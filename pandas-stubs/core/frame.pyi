@@ -802,23 +802,41 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             Scalar
             | NAType
             | Sequence[Scalar | Pattern]
+            | Mapping[Scalar | Pattern, Scalar]
             | Mapping[Hashable, Scalar | Pattern]
+            | Mapping[Hashable, Sequence[Scalar | Pattern]]
+            | Mapping[Hashable, Mapping[Scalar | Pattern, Scalar]]
+            | Mapping[Hashable, Series[Any]]
             | Series[Any]
             | Pattern
             | None
         ) = ...,
         value: (
-            Scalar | NAType | Sequence[Scalar] | Mapping[Hashable, Scalar] | None
+            Scalar
+            | NAType
+            | Sequence[Scalar]
+            | Mapping[Scalar, Scalar]
+            | Mapping[Hashable, Scalar]
+            | Mapping[Hashable, Sequence[Scalar]]
+            | Mapping[Hashable, Mapping[Scalar, Scalar]]
+            | Mapping[Hashable, Series[Any]]
+            | Series[Any]
+            | None
         ) = ...,
         *,
         inplace: Literal[True],
         regex: (
-            bool
-            | str
-            | Pattern
-            | Sequence[str | Pattern]
-            | Mapping[Hashable, str | Pattern]
+            Scalar
+            | NAType
+            | Sequence[Scalar | Pattern]
+            | Mapping[Scalar | Pattern, Scalar]
+            | Mapping[Hashable, Scalar | Pattern]
+            | Mapping[Hashable, Sequence[Scalar | Pattern]]
+            | Mapping[Hashable, Mapping[Scalar | Pattern, Scalar]]
+            | Mapping[Hashable, Series[Any]]
             | Series[Any]
+            | Pattern
+            | None
         ) = ...,
     ) -> None: ...
     @overload
@@ -828,23 +846,41 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             Scalar
             | NAType
             | Sequence[Scalar | Pattern]
+            | Mapping[Scalar | Pattern, Scalar]
             | Mapping[Hashable, Scalar | Pattern]
+            | Mapping[Hashable, Sequence[Scalar | Pattern]]
+            | Mapping[Hashable, Mapping[Scalar | Pattern, Scalar]]
+            | Mapping[Hashable, Series[Any]]
             | Series[Any]
             | Pattern
             | None
         ) = ...,
         value: (
-            Scalar | NAType | Sequence[Scalar] | Mapping[Hashable, Scalar] | None
+            Scalar
+            | NAType
+            | Sequence[Scalar]
+            | Mapping[Scalar, Scalar]
+            | Mapping[Hashable, Scalar]
+            | Mapping[Hashable, Sequence[Scalar]]
+            | Mapping[Hashable, Mapping[Scalar, Scalar]]
+            | Mapping[Hashable, Series[Any]]
+            | Series[Any]
+            | None
         ) = ...,
         *,
         inplace: Literal[False] = ...,
         regex: (
-            bool
-            | str
-            | Pattern
-            | Sequence[str | Pattern]
-            | Mapping[Hashable, str | Pattern]
+            Scalar
+            | NAType
+            | Sequence[Scalar | Pattern]
+            | Mapping[Scalar | Pattern, Scalar]
+            | Mapping[Hashable, Scalar | Pattern]
+            | Mapping[Hashable, Sequence[Scalar | Pattern]]
+            | Mapping[Hashable, Mapping[Scalar | Pattern, Scalar]]
+            | Mapping[Hashable, Series[Any]]
             | Series[Any]
+            | Pattern
+            | None
         ) = ...,
     ) -> Self: ...
     def shift(
