@@ -15,7 +15,6 @@ from datetime import (
     timedelta,
 )
 from pathlib import Path
-from re import Pattern
 from typing import (
     Any,
     ClassVar,
@@ -25,7 +24,10 @@ from typing import (
     overload,
 )
 
-from _typing import TimeZones
+from _typing import (
+    ReplaceValue,
+    TimeZones,
+)
 from matplotlib.axes import (
     Axes as PlotAxes,
     SubplotBase,
@@ -1089,54 +1091,20 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def replace(
         self,
-        to_replace: (
-            Scalar
-            | NAType
-            | Sequence[Scalar | Pattern]
-            | Mapping[Scalar | Pattern, Scalar]
-            | Series[Any]
-            | Pattern
-            | None
-        ) = ...,
-        value: (
-            Scalar | NAType | Sequence[Scalar] | Mapping[Scalar, Scalar] | None
-        ) = ...,
+        to_replace: ReplaceValue = ...,
+        value: ReplaceValue = ...,
         *,
-        regex: (
-            bool
-            | str
-            | Pattern
-            | Sequence[str | Pattern]
-            | Mapping[Scalar | Pattern, Scalar]
-            | Series[Any]
-        ) = ...,
+        regex: ReplaceValue = ...,
         inplace: Literal[True],
     ) -> None: ...
     @overload
     def replace(
         self,
-        to_replace: (
-            Scalar
-            | NAType
-            | Sequence[Scalar | Pattern]
-            | Mapping[Scalar | Pattern, Scalar]
-            | Series[Any]
-            | Pattern
-            | None
-        ) = ...,
-        value: (
-            Scalar | NAType | Sequence[Scalar] | Mapping[Scalar, Scalar] | None
-        ) = ...,
+        to_replace: ReplaceValue = ...,
+        value: ReplaceValue = ...,
         *,
+        regex: ReplaceValue = ...,
         inplace: Literal[False] = ...,
-        regex: (
-            bool
-            | str
-            | Pattern
-            | Sequence[str | Pattern]
-            | Mapping[Scalar | Pattern, Scalar]
-            | Series[Any]
-        ) = ...,
     ) -> Series[S1]: ...
     def shift(
         self,

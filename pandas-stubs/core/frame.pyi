@@ -8,7 +8,6 @@ from collections.abc import (
     Sequence,
 )
 import datetime as dt
-from re import Pattern
 import sys
 from typing import (
     Any,
@@ -113,6 +112,7 @@ from pandas._typing import (
     RandomState,
     ReadBuffer,
     Renamer,
+    ReplaceValue,
     Scalar,
     ScalarT,
     SequenceNotStr,
@@ -798,90 +798,20 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def replace(
         self,
-        to_replace: (
-            Scalar
-            | NAType
-            | Sequence[Scalar | Pattern]
-            | Mapping[Scalar | Pattern, Scalar]
-            | Mapping[Hashable, Scalar | Pattern]
-            | Mapping[Hashable, Sequence[Scalar | Pattern]]
-            | Mapping[Hashable, Mapping[Scalar | Pattern, Scalar]]
-            | Mapping[Hashable, Series[Any]]
-            | Series[Any]
-            | Pattern
-            | None
-        ) = ...,
-        value: (
-            Scalar
-            | NAType
-            | Sequence[Scalar]
-            | Mapping[Scalar, Scalar]
-            | Mapping[Hashable, Scalar]
-            | Mapping[Hashable, Sequence[Scalar]]
-            | Mapping[Hashable, Mapping[Scalar, Scalar]]
-            | Mapping[Hashable, Series[Any]]
-            | Series[Any]
-            | None
-        ) = ...,
+        to_replace: ReplaceValue | Mapping[Hashable, ReplaceValue] = ...,
+        value: ReplaceValue | Mapping[Hashable, ReplaceValue] = ...,
         *,
         inplace: Literal[True],
-        regex: (
-            Scalar
-            | NAType
-            | Sequence[Scalar | Pattern]
-            | Mapping[Scalar | Pattern, Scalar]
-            | Mapping[Hashable, Scalar | Pattern]
-            | Mapping[Hashable, Sequence[Scalar | Pattern]]
-            | Mapping[Hashable, Mapping[Scalar | Pattern, Scalar]]
-            | Mapping[Hashable, Series[Any]]
-            | Series[Any]
-            | Pattern
-            | None
-        ) = ...,
+        regex: ReplaceValue | Mapping[Hashable, ReplaceValue] = ...,
     ) -> None: ...
     @overload
     def replace(
         self,
-        to_replace: (
-            Scalar
-            | NAType
-            | Sequence[Scalar | Pattern]
-            | Mapping[Scalar | Pattern, Scalar]
-            | Mapping[Hashable, Scalar | Pattern]
-            | Mapping[Hashable, Sequence[Scalar | Pattern]]
-            | Mapping[Hashable, Mapping[Scalar | Pattern, Scalar]]
-            | Mapping[Hashable, Series[Any]]
-            | Series[Any]
-            | Pattern
-            | None
-        ) = ...,
-        value: (
-            Scalar
-            | NAType
-            | Sequence[Scalar]
-            | Mapping[Scalar, Scalar]
-            | Mapping[Hashable, Scalar]
-            | Mapping[Hashable, Sequence[Scalar]]
-            | Mapping[Hashable, Mapping[Scalar, Scalar]]
-            | Mapping[Hashable, Series[Any]]
-            | Series[Any]
-            | None
-        ) = ...,
+        to_replace: ReplaceValue | Mapping[Hashable, ReplaceValue] = ...,
+        value: ReplaceValue | Mapping[Hashable, ReplaceValue] = ...,
         *,
         inplace: Literal[False] = ...,
-        regex: (
-            Scalar
-            | NAType
-            | Sequence[Scalar | Pattern]
-            | Mapping[Scalar | Pattern, Scalar]
-            | Mapping[Hashable, Scalar | Pattern]
-            | Mapping[Hashable, Sequence[Scalar | Pattern]]
-            | Mapping[Hashable, Mapping[Scalar | Pattern, Scalar]]
-            | Mapping[Hashable, Series[Any]]
-            | Series[Any]
-            | Pattern
-            | None
-        ) = ...,
+        regex: ReplaceValue | Mapping[Hashable, ReplaceValue] = ...,
     ) -> Self: ...
     def shift(
         self,
