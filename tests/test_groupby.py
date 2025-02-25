@@ -1062,3 +1062,30 @@ def test_groupby_getitem() -> None:
     df = DataFrame(np.random.random((3, 4)), columns=["a", "b", "c", "d"])
     check(assert_type(df.groupby("a")["b"].sum(), Series), Series, float)
     check(assert_type(df.groupby("a")[["b", "c"]].sum(), DataFrame), DataFrame)
+
+
+def test_series_value_counts() -> None:
+    df = DataFrame({"a": [1, 1, 2], "b": [4, 5, 6]})
+    check(
+        assert_type(df.groupby("a")["b"].value_counts(), "Series[int]"),
+        Series,
+        np.int64,
+    )
+    check(
+        assert_type(df.groupby("a")["b"].value_counts(bins=[3, 5, 7]), "Series[int]"),
+        Series,
+        np.int64,
+    )
+    check(
+        assert_type(df.groupby("a")["b"].value_counts(normalize=True), "Series[float]"),
+        Series,
+        np.float64,
+    )
+    check(
+        assert_type(
+            df.groupby("a")["b"].value_counts(bins=(3, 5, 7), normalize=True),
+            "Series[float]",
+        ),
+        Series,
+        np.float64,
+    )

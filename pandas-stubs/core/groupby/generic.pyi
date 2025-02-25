@@ -101,7 +101,7 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
         normalize: Literal[False] = ...,
         sort: bool = ...,
         ascending: bool = ...,
-        bins=...,
+        bins: int | Sequence[int] | None = ...,
         dropna: bool = ...,
     ) -> Series[int]: ...
     @overload
@@ -110,7 +110,7 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
         normalize: Literal[True],
         sort: bool = ...,
         ascending: bool = ...,
-        bins=...,
+        bins: int | Sequence[int] | None = ...,
         dropna: bool = ...,
     ) -> Series[float]: ...
     def fillna(
