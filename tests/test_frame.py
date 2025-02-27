@@ -344,6 +344,8 @@ def test_types_drop() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     check(assert_type(df.drop("col1", axis=1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop(columns=["col1"]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop(columns=pd.Index(["col1"])), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.drop(columns={"col1"}), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop(columns=iter(["col1"])), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop([0]), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop(index=[0]), pd.DataFrame), pd.DataFrame)
