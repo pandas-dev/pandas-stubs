@@ -1201,3 +1201,11 @@ def test_disallow_empty_index() -> None:
     # From GH 826
     if TYPE_CHECKING_INVALID_USAGE:
         i0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+
+
+def test_datetime_index_max_min_reductions() -> None:
+    dtidx = pd.DatetimeIndex(["2020-01-01", "2020-01-02"])
+    check(assert_type(dtidx.argmax(), np.int64), np.int64)
+    check(assert_type(dtidx.argmin(), np.int64), np.int64)
+    check(assert_type(dtidx.max(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(dtidx.min(), pd.Timestamp), pd.Timestamp)
