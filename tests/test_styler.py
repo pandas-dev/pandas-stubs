@@ -14,13 +14,13 @@ import numpy.typing as npt
 from pandas import (
     DataFrame,
     Series,
+    Index
 )
 from pandas._testing import ensure_clean
 import pytest
 from typing_extensions import assert_type
 
 from pandas._typing import Scalar
-from pandas import Index
 
 from tests import check
 
