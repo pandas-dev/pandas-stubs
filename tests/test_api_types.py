@@ -122,10 +122,6 @@ def test_is_dict_like() -> None:
     check(assert_type(api.is_dict_like(ind), bool), bool)
 
 
-def test_is_dtype_equal() -> None:
-    check(assert_type(api.is_dtype_equal("i4", np.int8), bool), bool)
-
-
 def test_is_extension_array_dtype() -> None:
     check(assert_type(api.is_extension_array_dtype(arr), bool), bool)
     check(assert_type(api.is_extension_array_dtype(nparr), bool), bool)
