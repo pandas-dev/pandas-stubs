@@ -20,6 +20,7 @@ import pytest
 from typing_extensions import assert_type
 
 from pandas._typing import Scalar
+from pandas import Index
 
 from tests import check
 
@@ -224,3 +225,9 @@ def test_subset() -> None:
     check(assert_type(DF.style.highlight_min(subset=IndexSlice[1:2]), Styler), Styler)
     check(assert_type(DF.style.highlight_min(subset=[1]), Styler), Styler)
     check(assert_type(DF.style.highlight_min(subset=DF.columns[1:]), Styler), Styler)
+
+
+def test_styler_columns_and_index() -> None:
+    styler = DF.style
+    check(assert_type(styler.columns, Index), Index)
+    check(assert_type(styler.index, Index), Index)
