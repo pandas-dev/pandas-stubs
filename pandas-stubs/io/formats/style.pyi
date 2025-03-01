@@ -13,6 +13,7 @@ from matplotlib.colors import Colormap
 import numpy as np
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
+from pandas import Index
 
 from pandas._typing import (
     Axis,
@@ -52,6 +53,10 @@ class _DataFrameFunc(Protocol):
     ) -> npt.NDArray | DataFrame: ...
 
 class Styler(StylerRenderer):
+    @property
+    def columns(self) -> Index[Any]: ...
+    @property
+    def index(self) -> Index[Any]: ...
     def __init__(
         self,
         data: DataFrame | Series,
