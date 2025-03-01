@@ -36,13 +36,16 @@ jobs:
             })
             core.setOutput('sha', pr.data.head.sha)
             core.setOutput('branch', pr.data.head.ref)
+            core.setOutput('repository', pr.data.head.repo.full_name)
 
       - name: Checkout code on the correct branch
         uses: actions/checkout@v4
         with:
           # context is not aware which branch to checkout so it would otherwise
-          # default to main
+          # default to main (we also need repo name to source from the right user
+          # otherwise it will look for the branch in pandas-stubs repo)
           ref: ${{ steps.get-branch-info.outputs.branch }}
+          repository: ${{ steps.get-branch-info.outputs.repository }}
 
       - name: Install project dependencies
         uses: ./.github/setup
