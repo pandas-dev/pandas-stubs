@@ -11,9 +11,9 @@ from typing import (
 
 from matplotlib.colors import Colormap
 import numpy as np
+from pandas import Index
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
-from pandas import Index
 
 from pandas._typing import (
     Axis,

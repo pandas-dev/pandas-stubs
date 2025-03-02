@@ -13,8 +13,8 @@ import numpy as np
 import numpy.typing as npt
 from pandas import (
     DataFrame,
+    Index,
     Series,
-    Index
 )
 from pandas._testing import ensure_clean
 import pytest
