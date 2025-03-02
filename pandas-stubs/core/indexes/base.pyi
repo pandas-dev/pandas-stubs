@@ -67,7 +67,7 @@ class Index(IndexOpsMixin[S1]):
     __hash__: ClassVar[None]  # type: ignore[assignment]
     # overloads with additional dtypes
     @overload
-    def __new__(
+    def __new__(  # pyright: ignore[reportOverlappingOverload]
         cls,
         data: Sequence[int | np.integer] | IndexOpsMixin[int] | np_ndarray_anyint,
         *,
