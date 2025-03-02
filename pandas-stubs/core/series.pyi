@@ -1034,11 +1034,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: Axis | None = ...,
         level: Level | None = ...,
         copy: _bool = ...,
-        fill_value=...,
-        method: FillnaOptions | None = ...,
-        limit: int | None = ...,
-        fill_axis: AxisIndex = ...,
-        broadcast_axis: AxisIndex | None = ...,
+        fill_value: Hashable | None = ...,
     ) -> tuple[Series, Series]: ...
     @overload
     def rename(
