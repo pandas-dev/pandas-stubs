@@ -720,7 +720,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def insert(
         self,
         loc: int,
-        column,
+        column: Hashable,
         value: Scalar | ListLikeU | None,
         allow_duplicates: _bool = ...,
     ) -> None: ...
