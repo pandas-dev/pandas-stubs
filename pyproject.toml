@@ -19,6 +19,7 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
   "Topic :: Scientific/Engineering",
   "Typing :: Stubs Only",
 ]
@@ -42,13 +43,12 @@ pyright = ">=1.1.396"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
 typing-extensions = ">=4.4.0"
-matplotlib = ">=3.5.1,<3.9.0" # TODO https://github.com/pandas-dev/pandas/issues/58851
+matplotlib = ">=3.5.1"
 pre-commit = ">=2.19.0"
 black = ">=23.3.0"
 isort = ">=5.12.0"
 openpyxl = ">=3.0.10"
-# for tables, MacOS gives random CI failures on 3.9.2
-tables = { version = "==3.10.1", python = "<4" }   # 3.8.0 depends on blosc2 which caps python to <4
+tables = { version = "==3.10.1", python = "<4" }
 lxml = ">=4.9.1"
 pyreadstat = ">=1.2.0"
 xlrd = ">=2.0.1"
