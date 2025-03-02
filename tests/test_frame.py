@@ -4000,3 +4000,15 @@ def test_hashable_args() -> None:
 # GH 906
 @pd.api.extensions.register_dataframe_accessor("geo")
 class GeoAccessor: ...
+
+
+def test_combine() -> None:
+    df1 = pd.DataFrame({"A": [0, 0], "B": [4, 4]})
+    df2 = pd.DataFrame({"A": [1, 1], "B": [3, 3]})
+    take_smaller = lambda s1, s2: s1 if s1.sum() < s2.sum() else s2
+    assert_type(
+        check(
+            df1.combine(df2, take_smaller, fill_value=0, overwrite=False), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
