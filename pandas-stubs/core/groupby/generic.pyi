@@ -3,7 +3,6 @@ from collections.abc import (
     Hashable,
     Iterable,
     Iterator,
-    Mapping,
     Sequence,
 )
 from typing import (
@@ -29,14 +28,11 @@ from typing_extensions import (
     TypeAlias,
 )
 
-from pandas._libs.lib import NoDefault
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     S1,
     AggFuncTypeBase,
     AggFuncTypeFrame,
-    ArrayLike,
-    Axis,
     ByT,
     CorrelationMethod,
     Dtype,
@@ -113,26 +109,13 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
         bins: int | Sequence[int] | None = ...,
         dropna: bool = ...,
     ) -> Series[float]: ...
-    def fillna(
-        self,
-        value: (
-            Scalar | ArrayLike | Series | DataFrame | Mapping[Hashable, Scalar] | None
-        ) = ...,
-        method: Literal["bfill", "ffill"] | None = ...,
-        axis: Axis | None | NoDefault = ...,
-        inplace: bool = ...,
-        limit: int | None = ...,
-        downcast: dict | None | NoDefault = ...,
-    ) -> Series[S1] | None: ...
     def take(
         self,
         indices: TakeIndexer,
-        axis: Axis | NoDefault = ...,
         **kwargs,
     ) -> Series[S1]: ...
     def skew(
         self,
-        axis: Axis | NoDefault = ...,
         skipna: bool = ...,
         numeric_only: bool = ...,
         **kwargs,
@@ -145,8 +128,8 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
     def nsmallest(
         self, n: int = ..., keep: Literal["first", "last", "all"] = ...
     ) -> Series[S1]: ...
-    def idxmin(self, axis: Axis | NoDefault = ..., skipna: bool = ...) -> Series: ...
-    def idxmax(self, axis: Axis | NoDefault = ..., skipna: bool = ...) -> Series: ...
+    def idxmin(self, skipna: bool = ...) -> Series: ...
+    def idxmax(self, skipna: bool = ...) -> Series: ...
     def corr(
         self,
         other: Series,
@@ -242,13 +225,11 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     def nunique(self, dropna: bool = ...) -> DataFrame: ...
     def idxmax(
         self,
-        axis: Axis | None | NoDefault = ...,
         skipna: bool = ...,
         numeric_only: bool = ...,
     ) -> DataFrame: ...
     def idxmin(
         self,
-        axis: Axis | None | NoDefault = ...,
         skipna: bool = ...,
         numeric_only: bool = ...,
     ) -> DataFrame: ...
@@ -336,13 +317,10 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         ascending: bool = ...,
         dropna: bool = ...,
     ) -> DataFrame: ...
-    def take(
-        self, indices: TakeIndexer, axis: Axis | None | NoDefault = ..., **kwargs
-    ) -> DataFrame: ...
+    def take(self, indices: TakeIndexer, **kwargs) -> DataFrame: ...
     @overload
     def skew(
         self,
-        axis: Axis | None | NoDefault = ...,
         skipna: bool = ...,
         numeric_only: bool = ...,
         *,
@@ -352,7 +330,6 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def skew(
         self,
-        axis: Axis | None | NoDefault = ...,
         skipna: bool = ...,
         numeric_only: bool = ...,
         *,
@@ -394,14 +371,6 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     ) -> Series: ...  # Series[Axes] but this is not allowed
     @property
     def dtypes(self) -> Series: ...
-    def corrwith(
-        self,
-        other: DataFrame | Series,
-        axis: Axis | NoDefault = ...,
-        drop: bool = ...,
-        method: CorrelationMethod = ...,
-        numeric_only: bool = ...,
-    ) -> DataFrame: ...
     def __getattr__(self, name: str) -> SeriesGroupBy[Any, ByT]: ...
     # Overrides that provide more precise return types over the GroupBy class
     @final  # type: ignore[misc]
