@@ -1025,7 +1025,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         other: DataFrame,
         func: Callable,
-        fill_value=...,
+        fill_value: Scalar | None = ...,
         overwrite: _bool = ...,
     ) -> Self: ...
     def combine_first(self, other: DataFrame) -> Self: ...
