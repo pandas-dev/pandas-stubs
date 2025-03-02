@@ -48,7 +48,9 @@ pre-commit = ">=2.19.0"
 black = ">=23.3.0"
 isort = ">=5.12.0"
 openpyxl = ">=3.0.10"
-tables = { version = ">=3.10.1", python = "<4" }
+# for tables, MacOS gives random CI failures on 3.9.2
+# for tables, Windows build fails on 3.10.1
+tables = { version = ">=3.10.1", python = "<4" }  # 3.8.0 depends on blosc2 which caps python to <4
 lxml = ">=4.9.1"
 pyreadstat = ">=1.2.0"
 xlrd = ">=2.0.1"
@@ -63,7 +65,7 @@ SQLAlchemy = ">=2.0.12"
 types-python-dateutil = ">=2.8.19"
 beautifulsoup4 = ">=4.12.2"
 html5lib = ">=1.1"
-python-calamine = ">=0.3.0"
+python-calamine = ">=0.2.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
