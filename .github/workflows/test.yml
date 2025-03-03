@@ -19,7 +19,7 @@ jobs:
       matrix:
         # macos-latest is arm
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
 
     name: OS ${{ matrix.os }} - Python ${{ matrix.python-version }}
 
