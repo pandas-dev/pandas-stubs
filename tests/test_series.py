@@ -70,6 +70,7 @@ else:
     TimedeltaSeries: TypeAlias = pd.Series
     TimestampSeries: TypeAlias = pd.Series
     OffsetSeries: TypeAlias = pd.Series
+    ExtensionArray: TypeAlias = np.ndarray
 
 if TYPE_CHECKING:
     from pandas._typing import (
@@ -1137,7 +1138,6 @@ def test_types_set_flags() -> None:
 
 def test_types_getitem() -> None:
     s = pd.Series({"key": [0, 1, 2, 3]})
-    key: list[int] = s["key"]
     s2 = pd.Series([0, 1, 2, 3])
     check(assert_type(s2[0], int), np.integer)
     check(assert_type(s[:2], pd.Series), pd.Series)
@@ -1180,12 +1180,28 @@ def test_types_rename_axis() -> None:
 
 
 def test_types_values() -> None:
-    n1: np.ndarray | ExtensionArray = pd.Series([1, 2, 3]).values
-    n2: np.ndarray | ExtensionArray = pd.Series(list("aabc")).values
-    n3: np.ndarray | ExtensionArray = pd.Series(list("aabc")).astype("category").values
-    n4: np.ndarray | ExtensionArray = pd.Series(
-        pd.date_range("20130101", periods=3, tz="US/Eastern")
-    ).values
+    check(
+        assert_type(pd.Series([1, 2, 3]).values, "np.ndarray | ExtensionArray"),
+        np.ndarray,
+    )
+    check(
+        assert_type(pd.Series(list("aabc")).values, " np.ndarray | ExtensionArray "),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            pd.Series(list("aabc")).astype("category").values,
+            "np.ndarray | ExtensionArray",
+        ),
+        pd.Categorical,
+    )
+    check(
+        assert_type(
+            pd.Series(pd.date_range("20130101", periods=3, tz="US/Eastern")).values,
+            "np.ndarray | ExtensionArray",
+        ),
+        np.ndarray,
+    )
 
 
 def test_types_rename() -> None:
@@ -1212,7 +1228,10 @@ def test_types_rename() -> None:
     check(assert_type(s5, "pd.Series[int]"), pd.Series, np.integer)
     # inplace
     # TODO fix issue with inplace=True returning a Series, cf pandas #60942
-    s6: None = pd.Series([1, 2, 3]).rename("A", inplace=True)
+    check(
+        assert_type(pd.Series([1, 2, 3]).rename("A", inplace=True), "pd.Series[int]"),
+        pd.Series,
+    )
 
     if TYPE_CHECKING_INVALID_USAGE:
         s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
