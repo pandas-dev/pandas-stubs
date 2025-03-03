@@ -3672,3 +3672,14 @@ def test_info() -> None:
     check(assert_type(s.info(show_counts=True), None), type(None))
     check(assert_type(s.info(show_counts=False), None), type(None))
     check(assert_type(s.info(show_counts=None), None), type(None))
+
+
+def test_align() -> None:
+    s0 = pd.Series(data={0: 1, 3: 3, 5: 5})
+    s1 = pd.Series(data={0: 1, 2: 2})
+    aligned_s0, aligned_s1 = s0.align(s1)
+    check(assert_type(aligned_s0, pd.Series), pd.Series)
+    check(assert_type(aligned_s1, pd.Series), pd.Series)
+    aligned_s0, aligned_s1 = s0.align(s1, fill_value=0, axis=0, level=0, copy=False)
+    check(assert_type(aligned_s0, pd.Series), pd.Series)
+    check(assert_type(aligned_s1, pd.Series), pd.Series)
