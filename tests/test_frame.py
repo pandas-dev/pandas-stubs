@@ -4000,3 +4000,10 @@ def test_hashable_args() -> None:
 # GH 906
 @pd.api.extensions.register_dataframe_accessor("geo")
 class GeoAccessor: ...
+
+
+def test_transpose() -> None:
+    df = pd.DataFrame({"a": [1, 1, 2], "b": [4, 5, 6]})
+    check(assert_type(df.transpose(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.transpose(None), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.transpose(copy=True), pd.DataFrame), pd.DataFrame)

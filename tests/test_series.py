@@ -3672,3 +3672,10 @@ def test_info() -> None:
     check(assert_type(s.info(show_counts=True), None), type(None))
     check(assert_type(s.info(show_counts=False), None), type(None))
     check(assert_type(s.info(show_counts=None), None), type(None))
+
+
+def test_transpose() -> None:
+    s: pd.Series[int] = pd.Series([1, 1, 2])
+    check(assert_type(s.transpose(), "pd.Series[int]"), pd.Series, np.int64)
+    check(assert_type(s.transpose(None), "pd.Series[int]"), pd.Series, np.int64)
+    check(assert_type(s.transpose(axes=None), "pd.Series[int]"), pd.Series, np.int64)
