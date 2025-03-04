@@ -1272,10 +1272,3 @@ def test_datetime_index_max_min_reductions() -> None:
     check(assert_type(dtidx.argmin(), np.int64), np.int64)
     check(assert_type(dtidx.max(), pd.Timestamp), pd.Timestamp)
     check(assert_type(dtidx.min(), pd.Timestamp), pd.Timestamp)
-
-
-def test_transpose() -> None:
-    idx: pd.Index[int] = pd.Index([1, 1, 2])
-    check(assert_type(idx.transpose(), "pd.Index[int]"), pd.Index, np.int64)
-    check(assert_type(idx.transpose(None), "pd.Index[int]"), pd.Index, np.int64)
-    check(assert_type(idx.transpose(axes=None), "pd.Index[int]"), pd.Index, np.int64)

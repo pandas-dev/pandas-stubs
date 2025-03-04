@@ -19,6 +19,7 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
   "Topic :: Scientific/Engineering",
   "Typing :: Stubs Only",
 ]
@@ -34,11 +35,11 @@ types-pytz = ">= 2022.1.1"
 numpy = ">= 1.23.5"
 
 [tool.poetry.group.dev.dependencies]
-mypy = "1.14.1"
+mypy = "1.15.0"
 pandas = "2.2.3"
 pyarrow = ">=10.0.1"
 pytest = ">=7.1.2"
-pyright = ">= 1.1.393"
+pyright = ">=1.1.396"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
 typing-extensions = ">=4.4.0"
@@ -47,8 +48,7 @@ pre-commit = ">=2.19.0"
 black = ">=23.3.0"
 isort = ">=5.12.0"
 openpyxl = ">=3.0.10"
-# for tables, MacOS gives random CI failures on 3.9.2
-tables = { version = "==3.10.1", python = "<4" }   # 3.8.0 depends on blosc2 which caps python to <4
+tables = { version = ">=3.10.1", python = "<4" }
 lxml = ">=4.9.1"
 pyreadstat = ">=1.2.0"
 xlrd = ">=2.0.1"
@@ -58,12 +58,12 @@ odfpy = ">=1.4.1"
 xarray = ">=22.6.0"
 tabulate = ">=0.8.10"
 jinja2 = ">=3.1"
-scipy = { version = ">=1.9.1", python = "<3.13" }
+scipy = { version = ">=1.9.1", python = "<3.14" }
 SQLAlchemy = ">=2.0.12"
 types-python-dateutil = ">=2.8.19"
 beautifulsoup4 = ">=4.12.2"
 html5lib = ">=1.1"
-python-calamine = "0.2.0"
+python-calamine = ">=0.2.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

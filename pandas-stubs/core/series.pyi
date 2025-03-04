@@ -249,7 +249,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         copy: bool = ...,
     ) -> Series[float]: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]
+    def __new__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         cls,
         data: Sequence[Never],
         index: Axes | None = ...,
@@ -1034,11 +1034,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: Axis | None = ...,
         level: Level | None = ...,
         copy: _bool = ...,
-        fill_value=...,
-        method: FillnaOptions | None = ...,
-        limit: int | None = ...,
-        fill_axis: AxisIndex = ...,
-        broadcast_axis: AxisIndex | None = ...,
+        fill_value: Scalar | NAType | None = ...,
     ) -> tuple[Series, Series]: ...
     @overload
     def rename(

@@ -3662,6 +3662,9 @@ def test_align() -> None:
     aligned_df0, aligned_s0 = df0.align(s0, axis="index")
     check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
     check(assert_type(aligned_s0, "pd.Series[str]"), pd.Series, str)
+    aligned_df0, aligned_s0 = df0.align(s0, axis="index", fill_value=0)
+    check(assert_type(aligned_df0, pd.DataFrame), pd.DataFrame)
+    check(assert_type(aligned_s0, "pd.Series[str]"), pd.Series, str)
 
     s1 = pd.Series(data={"A": "A", "D": "D"})
     aligned_df0, aligned_s1 = df0.align(s1, axis="columns")
@@ -4007,3 +4010,15 @@ def test_transpose() -> None:
     check(assert_type(df.transpose(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.transpose(None), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.transpose(copy=True), pd.DataFrame), pd.DataFrame)
+
+
+def test_combine() -> None:
+    df1 = pd.DataFrame({"A": [0, 0], "B": [4, 4]})
+    df2 = pd.DataFrame({"A": [1, 1], "B": [3, 3]})
+    take_smaller = lambda s1, s2: s1 if s1.sum() < s2.sum() else s2
+    assert_type(
+        check(
+            df1.combine(df2, take_smaller, fill_value=0, overwrite=False), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
