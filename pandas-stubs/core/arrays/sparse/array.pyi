@@ -1,11 +1,8 @@
-from typing import Any
-
 import numpy as np
 from pandas.core.arrays import (
     ExtensionArray,
     ExtensionOpsMixin,
 )
-from typing_extensions import Self
 
 class SparseArray(ExtensionArray, ExtensionOpsMixin):
     def __init__(
@@ -56,7 +53,6 @@ class SparseArray(ExtensionArray, ExtensionOpsMixin):
     def sum(self, axis: int = ..., *args, **kwargs): ...
     def cumsum(self, axis: int = ..., *args, **kwargs): ...
     def mean(self, axis: int = ..., *args, **kwargs): ...
-    def transpose(self, *axes: Any) -> Self: ...
     @property
     def T(self): ...
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs): ...
