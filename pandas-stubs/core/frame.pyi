@@ -732,11 +732,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis | None = ...,
         level: Level | None = ...,
         copy: _bool = ...,
-        fill_value=...,
-        method: FillnaOptions | None = ...,
-        limit: int | None = ...,
-        fill_axis: Axis = ...,
-        broadcast_axis: Axis | None = ...,
+        fill_value: Scalar | NAType | None = ...,
     ) -> tuple[Self, NDFrameT]: ...
     def reindex(
         self,
