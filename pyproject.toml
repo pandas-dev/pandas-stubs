@@ -48,7 +48,7 @@ pre-commit = ">=2.19.0"
 black = ">=23.3.0"
 isort = ">=5.12.0"
 openpyxl = ">=3.0.10"
-tables = { version = ">=3.10.2", python = "<4" }
+tables = { version = ">=3.10.1", python = "<4" }
 lxml = ">=4.9.1"
 pyreadstat = ">=1.2.0"
 xlrd = ">=2.0.1"
