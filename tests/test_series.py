@@ -1138,6 +1138,7 @@ def test_types_set_flags() -> None:
 
 def test_types_getitem() -> None:
     s = pd.Series({"key": [0, 1, 2, 3]})
+    check(assert_type(s["key"], Any), list)
     s2 = pd.Series([0, 1, 2, 3])
     check(assert_type(s2[0], int), np.integer)
     check(assert_type(s[:2], pd.Series), pd.Series)
@@ -1227,11 +1228,19 @@ def test_types_rename() -> None:
     s5 = pd.Series([1, 2, 3]).rename({1: 10})
     check(assert_type(s5, "pd.Series[int]"), pd.Series, np.integer)
     # inplace
-    # TODO fix issue with inplace=True returning a Series, cf pandas #60942
     check(
         assert_type(pd.Series([1, 2, 3]).rename("A", inplace=True), "pd.Series[int]"),
         pd.Series,
+        np.integer,
     )
+    check(
+        assert_type(pd.Series([1, 2, 3]).rename({1: 4, 2: 5}, inplace=True), None),
+        type(None),
+    )
+    # TODO this should not raise an error, the lambda is matched with Hashable
+    # check(
+    #     assert_type(pd.Series([1, 2, 3]).rename(lambda x: x**2, inplace=True), None), type(None)
+    # )
 
     if TYPE_CHECKING_INVALID_USAGE:
         s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]

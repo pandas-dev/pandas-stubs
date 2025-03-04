@@ -1041,9 +1041,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
         broadcast_axis: AxisIndex | None = ...,
     ) -> tuple[Series, Series]: ...
     @overload
-    def rename(  # pyright: ignore[reportOverlappingOverload]
+    def rename(
         self,
-        index: Hashable = ...,
+        index: Hashable,
         *,
         axis: Axis | None = ...,
         copy: bool = ...,
@@ -1052,7 +1052,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         errors: IgnoreRaise = ...,
     ) -> Self: ...
     @overload
-    def rename(  # type: ignore[overload-cannot-match]
+    def rename(
         self,
         index: Renamer | None = ...,
         *,
