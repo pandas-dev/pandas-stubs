@@ -249,7 +249,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         copy: bool = ...,
     ) -> Series[float]: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]
+    def __new__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         cls,
         data: Sequence[Never],
         index: Axes | None = ...,

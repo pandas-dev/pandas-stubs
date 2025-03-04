@@ -720,7 +720,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def insert(
         self,
         loc: int,
-        column,
+        column: Hashable,
         value: Scalar | ListLikeU | None,
         allow_duplicates: _bool = ...,
     ) -> None: ...
@@ -1025,7 +1025,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         other: DataFrame,
         func: Callable,
-        fill_value=...,
+        fill_value: Scalar | None = ...,
         overwrite: _bool = ...,
     ) -> Self: ...
     def combine_first(self, other: DataFrame) -> Self: ...
