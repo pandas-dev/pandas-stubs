@@ -4005,6 +4005,13 @@ def test_hashable_args() -> None:
 class GeoAccessor: ...
 
 
+def test_transpose() -> None:
+    df = pd.DataFrame({"a": [1, 1, 2], "b": [4, 5, 6]})
+    check(assert_type(df.transpose(), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.transpose(None), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.transpose(copy=True), pd.DataFrame), pd.DataFrame)
+
+
 def test_combine() -> None:
     df1 = pd.DataFrame({"A": [0, 0], "B": [4, 4]})
     df2 = pd.DataFrame({"A": [1, 1], "B": [3, 3]})
