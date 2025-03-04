@@ -1043,6 +1043,17 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def rename(
         self,
+        index: None = ...,
+        *,
+        axis: Axis | None = ...,
+        copy: bool = ...,
+        inplace: Literal[True],
+        level: Level | None = ...,
+        errors: IgnoreRaise = ...,
+    ) -> None: ...
+    @overload
+    def rename(
+        self,
         index: Hashable,
         *,
         axis: Axis | None = ...,
