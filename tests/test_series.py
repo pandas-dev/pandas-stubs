@@ -1238,8 +1238,11 @@ def test_types_rename() -> None:
         type(None),
     )
     check(
-        assert_type(pd.Series([1, 2, 3]).rename(index=None, inplace=True), None),
-        type(None),
+        assert_type(
+            pd.Series([1, 2, 3]).rename(index=None, inplace=True), "pd.Series[int]"
+        ),
+        pd.Series,
+        np.integer,
     )
     # TODO this should not raise an error, the lambda is matched with Hashable
     # check(
