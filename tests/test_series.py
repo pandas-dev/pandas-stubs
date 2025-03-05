@@ -1244,10 +1244,8 @@ def test_types_rename() -> None:
         pd.Series,
         np.integer,
     )
-    # TODO this should not raise an error, the lambda is matched with Hashable
-    # check(
-    #     assert_type(pd.Series([1, 2, 3]).rename(lambda x: x**2, inplace=True), None), type(None)
-    # )
+    s6 = pd.Series([1, 2, 3])
+    check(assert_type(s6.rename(lambda x: x**2, inplace=True), None), type(None))
 
     if TYPE_CHECKING_INVALID_USAGE:
         s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]

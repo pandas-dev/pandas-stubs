@@ -25,6 +25,7 @@ from typing import (
 )
 
 from _typing import (
+    Label,
     ReplaceValue,
     TimeZones,
 )
@@ -1041,7 +1042,29 @@ class Series(IndexOpsMixin[S1], NDFrame):
         broadcast_axis: AxisIndex | None = ...,
     ) -> tuple[Series, Series]: ...
     @overload
+    def rename(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        self,
+        index: Callable[[Any], Label],
+        *,
+        axis: Axis | None = ...,
+        copy: bool = ...,
+        inplace: Literal[True],
+        level: Level | None = ...,
+        errors: IgnoreRaise = ...,
+    ) -> None: ...
+    @overload
     def rename(
+        self,
+        index: Mapping[Any, Label],
+        *,
+        axis: Axis | None = ...,
+        copy: bool = ...,
+        inplace: Literal[True],
+        level: Level | None = ...,
+        errors: IgnoreRaise = ...,
+    ) -> None: ...
+    @overload
+    def rename(  # type: ignore[overload-overlap]
         self,
         index: Hashable | None,
         *,
@@ -1051,17 +1074,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         level: Level | None = ...,
         errors: IgnoreRaise = ...,
     ) -> Self: ...
-    @overload
-    def rename(
-        self,
-        index: Renamer = ...,
-        *,
-        axis: Axis | None = ...,
-        copy: bool = ...,
-        inplace: Literal[True],
-        level: Level | None = ...,
-        errors: IgnoreRaise = ...,
-    ) -> None: ...
     @overload
     def rename(
         self,
