@@ -1182,7 +1182,7 @@ def test_types_rename_axis() -> None:
 
 def test_types_values() -> None:
     check(
-        assert_type(pd.Series([1, 2, 3]).values, "np.ndarray | ExtensionArray"),
+        assert_type(pd.Series([1, 2, 3]).values, "ExtensionArray | np.ndarray"),
         np.ndarray,
     )
     check(
@@ -1244,11 +1244,13 @@ def test_types_rename() -> None:
         pd.Series,
         np.integer,
     )
-    s6 = pd.Series([1, 2, 3])
-    check(assert_type(s6.rename(lambda x: x**2, inplace=True), None), type(None))
+    check(
+        assert_type(pd.Series([1, 2, 3]).rename(lambda x: x**2, inplace=True), None),
+        type(None),
+    )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType]
 
 
 def test_types_ne() -> None:
