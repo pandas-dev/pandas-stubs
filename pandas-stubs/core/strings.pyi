@@ -110,7 +110,7 @@ class StringMethods(NoNewAttributesMixin, Generic[T, _TS, _TM, _TS2]):
     def join(self, sep: str) -> T: ...
     def contains(
         self,
-        pat: str | re.Pattern[str],
+        pat: str | re.Pattern,
         case: bool = ...,
         flags: int = ...,
         na: Scalar | NaTType | None = ...,
