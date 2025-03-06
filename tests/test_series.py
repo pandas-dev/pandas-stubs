@@ -70,7 +70,6 @@ else:
     TimedeltaSeries: TypeAlias = pd.Series
     TimestampSeries: TypeAlias = pd.Series
     OffsetSeries: TypeAlias = pd.Series
-    ExtensionArray: TypeAlias = np.ndarray
 
 if TYPE_CHECKING:
     from pandas._typing import (
@@ -1182,24 +1181,24 @@ def test_types_rename_axis() -> None:
 
 def test_types_values() -> None:
     check(
-        assert_type(pd.Series([1, 2, 3]).values, "ExtensionArray | np.ndarray"),
+        assert_type(pd.Series([1, 2, 3]).values, Union[ExtensionArray, np.ndarray]),
         np.ndarray,
     )
     check(
-        assert_type(pd.Series(list("aabc")).values, " np.ndarray | ExtensionArray "),
+        assert_type(pd.Series(list("aabc")).values, Union[np.ndarray, ExtensionArray]),
         np.ndarray,
     )
     check(
         assert_type(
             pd.Series(list("aabc")).astype("category").values,
-            "np.ndarray | ExtensionArray",
+            Union[np.ndarray, ExtensionArray],
         ),
         pd.Categorical,
     )
     check(
         assert_type(
             pd.Series(pd.date_range("20130101", periods=3, tz="US/Eastern")).values,
-            "np.ndarray | ExtensionArray",
+            Union[np.ndarray, ExtensionArray],
         ),
         np.ndarray,
     )
