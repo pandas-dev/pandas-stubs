@@ -49,6 +49,7 @@ from pandas._libs.tslibs.offsets import YearEnd
 from pandas._typing import (
     DtypeObj,
     Scalar,
+    UnknownSeries,
 )
 
 from tests import (
@@ -1594,7 +1595,7 @@ def test_string_accessors():
     check(assert_type(s3.str.extract(r"([ab])?(\d)"), pd.DataFrame), pd.DataFrame)
     check(assert_type(s3.str.extractall(r"([ab])?(\d)"), pd.DataFrame), pd.DataFrame)
     check(assert_type(s.str.find("p"), pd.Series), pd.Series)
-    check(assert_type(s.str.findall("pp"), pd.Series), pd.Series)
+    check(assert_type(s.str.findall("pp"), UnknownSeries), pd.Series)
     check(assert_type(s.str.fullmatch("apple"), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(s.str.get(2), pd.Series), pd.Series)
     check(assert_type(s.str.get_dummies(), pd.DataFrame), pd.DataFrame)

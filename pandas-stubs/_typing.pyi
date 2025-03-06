@@ -576,8 +576,8 @@ S2 = TypeVar(
     | list[str],
 )
 
-UnknownSeries: TypeAlias = Series[Any]
-UnknownIndex: TypeAlias = Index[Any]
+class UnknownSeries(Series[Any]): ...
+class UnknownIndex(Index[Any]): ...
 
 IndexingInt: TypeAlias = (
     int | np.int_ | np.integer | np.unsignedinteger | np.signedinteger | np.int8
