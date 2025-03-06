@@ -63,7 +63,9 @@ class StringMethods(NoNewAttributesMixin, Generic[T, _TS, _TM, _TS2]):
     @overload
     def cat(
         self,
-        others: UnknownIndex | pd.DataFrame | npt.NDArray[Any] | list[Any],
+        others: (
+            UnknownSeries | UnknownIndex | pd.DataFrame | npt.NDArray[Any] | list[Any]
+        ),
         sep: str = ...,
         na_rep: str | None = ...,
         join: JoinHow = ...,
