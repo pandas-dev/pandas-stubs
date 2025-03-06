@@ -21,14 +21,14 @@ from pandas import (
     Series,
 )
 from pandas.core.base import NoNewAttributesMixin
+from pandas.core.indexes.base import UnknownIndex
+from pandas.core.series import UnknownSeries
 
 from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     JoinHow,
     Scalar,
     T,
-    UnknownIndex,
-    UnknownSeries,
     np_ndarray_bool,
 )
 

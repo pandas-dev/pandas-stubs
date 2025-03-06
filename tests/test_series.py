@@ -73,6 +73,8 @@ else:
     OffsetSeries: TypeAlias = pd.Series
 
 if TYPE_CHECKING:
+    from pandas.core.series import UnknownSeries  # noqa: F401
+
     from pandas._typing import (
         BooleanDtypeArg,
         BytesDtypeArg,
@@ -87,7 +89,6 @@ if TYPE_CHECKING:
         UIntDtypeArg,
         VoidDtypeArg,
     )
-    from pandas._typing import UnknownSeries  # noqa: F401
     from pandas._typing import np_ndarray_int  # noqa: F401
 
 # Tests will use numpy 2.1 in python 3.10 or later
