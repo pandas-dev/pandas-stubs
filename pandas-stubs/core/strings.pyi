@@ -11,7 +11,7 @@ from typing import (
     overload,
 )
 
-import numpy as np
+import numpy.typing as npt
 import pandas as pd
 from pandas import (
     DataFrame,
@@ -21,9 +21,13 @@ from pandas import (
 )
 from pandas.core.base import NoNewAttributesMixin
 
+from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     JoinHow,
+    Scalar,
     T,
+    UnknownIndex,
+    UnknownSeries,
     np_ndarray_bool,
 )
 
@@ -58,7 +62,7 @@ class StringMethods(NoNewAttributesMixin, Generic[T, _TS, _TM, _TS2]):
     @overload
     def cat(
         self,
-        others: Series | pd.Index | pd.DataFrame | np.ndarray | list[Any],
+        others: UnknownIndex | pd.DataFrame | npt.NDArray[Any] | list[Any],
         sep: str = ...,
         na_rep: str | None = ...,
         join: JoinHow = ...,
@@ -106,10 +110,10 @@ class StringMethods(NoNewAttributesMixin, Generic[T, _TS, _TM, _TS2]):
     def join(self, sep: str) -> T: ...
     def contains(
         self,
-        pat: str | re.Pattern,
+        pat: str | re.Pattern[str],
         case: bool = ...,
         flags: int = ...,
-        na=...,
+        na: Scalar | NaTType | None = ...,
         regex: bool = ...,
     ) -> Series[bool]: ...
     def match(
@@ -118,7 +122,7 @@ class StringMethods(NoNewAttributesMixin, Generic[T, _TS, _TM, _TS2]):
     def replace(
         self,
         pat: str,
-        repl: str | Callable[[re.Match], str],
+        repl: str | Callable[[re.Match[str]], str],
         n: int = ...,
         case: bool | None = ...,
         flags: int = ...,
@@ -160,7 +164,7 @@ class StringMethods(NoNewAttributesMixin, Generic[T, _TS, _TM, _TS2]):
     def count(self, pat: str, flags: int = ...) -> Series[int]: ...
     def startswith(self, pat: str | tuple[str, ...], na: Any = ...) -> Series[bool]: ...
     def endswith(self, pat: str | tuple[str, ...], na: Any = ...) -> Series[bool]: ...
-    def findall(self, pat: str, flags: int = ...) -> Series: ...
+    def findall(self, pat: str, flags: int = ...) -> UnknownSeries: ...
     @overload
     def extract(
         self, pat: str, flags: int = ..., *, expand: Literal[True] = ...
