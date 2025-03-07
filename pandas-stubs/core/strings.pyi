@@ -12,6 +12,7 @@ from typing import (
     overload,
 )
 
+import numpy as np
 import numpy.typing as npt
 import pandas as pd
 from pandas import (
@@ -21,8 +22,6 @@ from pandas import (
     Series,
 )
 from pandas.core.base import NoNewAttributesMixin
-from pandas.core.indexes.base import UnknownIndex
-from pandas.core.series import UnknownSeries
 
 from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
@@ -64,7 +63,7 @@ class StringMethods(NoNewAttributesMixin, Generic[T, _TS, _TM, _TS2]):
     def cat(
         self,
         others: (
-            UnknownSeries | UnknownIndex | pd.DataFrame | npt.NDArray[Any] | list[Any]
+            Series[str] | Index[str] | pd.DataFrame | npt.NDArray[np.str_] | list[str]
         ),
         sep: str = ...,
         na_rep: str | None = ...,
@@ -167,7 +166,7 @@ class StringMethods(NoNewAttributesMixin, Generic[T, _TS, _TM, _TS2]):
     def count(self, pat: str, flags: int = ...) -> Series[int]: ...
     def startswith(self, pat: str | tuple[str, ...], na: Any = ...) -> Series[bool]: ...
     def endswith(self, pat: str | tuple[str, ...], na: Any = ...) -> Series[bool]: ...
-    def findall(self, pat: str, flags: int = ...) -> UnknownSeries: ...
+    def findall(self, pat: str, flags: int = ...) -> Series[list[str]]: ...
     @overload
     def extract(
         self, pat: str, flags: int = ..., *, expand: Literal[True] = ...

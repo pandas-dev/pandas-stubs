@@ -67,14 +67,15 @@ if TYPE_CHECKING:
         TimestampSeries,
     )
 
+    from pandas._typing import UnknownSeries
+
 else:
     TimedeltaSeries: TypeAlias = pd.Series
     TimestampSeries: TypeAlias = pd.Series
     OffsetSeries: TypeAlias = pd.Series
+    UnknownSeries: TypeAlias = pd.Series
 
 if TYPE_CHECKING:
-    from pandas.core.series import UnknownSeries  # noqa: F401
-
     from pandas._typing import (
         BooleanDtypeArg,
         BytesDtypeArg,
@@ -90,6 +91,7 @@ if TYPE_CHECKING:
         VoidDtypeArg,
     )
     from pandas._typing import np_ndarray_int  # noqa: F401
+
 
 # Tests will use numpy 2.1 in python 3.10 or later
 # From Numpy 2.1 __init__.pyi
@@ -1597,7 +1599,7 @@ def test_string_accessors():
     check(assert_type(s3.str.extract(r"([ab])?(\d)"), pd.DataFrame), pd.DataFrame)
     check(assert_type(s3.str.extractall(r"([ab])?(\d)"), pd.DataFrame), pd.DataFrame)
     check(assert_type(s.str.find("p"), pd.Series), pd.Series)
-    check(assert_type(s.str.findall("pp"), "UnknownSeries"), pd.Series)
+    check(assert_type(s.str.findall("pp"), "pd.Series[list[str]]"), pd.Series, list)
     check(assert_type(s.str.fullmatch("apple"), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(s.str.get(2), pd.Series), pd.Series)
     check(assert_type(s.str.get_dummies(), pd.DataFrame), pd.DataFrame)
@@ -1668,8 +1670,17 @@ def test_series_overloads_cat():
     check(assert_type(s.str.cat(sep=";"), str), str)
     check(assert_type(s.str.cat(None, sep=";"), str), str)
     check(
-        assert_type(s.str.cat(["A", "B", "C", "D", "E", "F", "G"], sep=";"), pd.Series),
-        pd.Series,
+        assert_type(
+            s.str.cat(["A", "B", "C", "D", "E", "F", "G"], sep=";"), UnknownSeries
+        ),
+        UnknownSeries,
+    )
+    check(
+        assert_type(
+            s.str.cat(pd.Series(["A", "B", "C", "D", "E", "F", "G"]), sep=";"),
+            UnknownSeries,
+        ),
+        UnknownSeries,
     )
 
 
