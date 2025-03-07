@@ -3,7 +3,6 @@ from __future__ import annotations
 from collections.abc import (
     Iterable,
     Iterator,
-    Mapping,
     Sequence,
 )
 import datetime
@@ -1659,9 +1658,8 @@ def test_string_accessors():
     check(assert_type(s.str.strip(), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s.str.swapcase(), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s.str.title(), "pd.Series[str]"), pd.Series, str)
-    translation_table: Mapping = str.maketrans({"ñ": "n", "ç": "c"})
     check(
-        assert_type(s.str.translate(translation_table), "pd.Series[str]"),
+        assert_type(s.str.translate({241: "n"}), "pd.Series[str]"),
         pd.Series,
         str,
     )
