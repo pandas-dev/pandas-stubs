@@ -66,14 +66,10 @@ if TYPE_CHECKING:
         TimedeltaSeries,
         TimestampSeries,
     )
-
-    from pandas._typing import UnknownSeries
-
 else:
     TimedeltaSeries: TypeAlias = pd.Series
     TimestampSeries: TypeAlias = pd.Series
     OffsetSeries: TypeAlias = pd.Series
-    UnknownSeries: TypeAlias = pd.Series
 
 if TYPE_CHECKING:
     from pandas._typing import (
@@ -1671,16 +1667,18 @@ def test_series_overloads_cat():
     check(assert_type(s.str.cat(None, sep=";"), str), str)
     check(
         assert_type(
-            s.str.cat(["A", "B", "C", "D", "E", "F", "G"], sep=";"), UnknownSeries
+            s.str.cat(["A", "B", "C", "D", "E", "F", "G"], sep=";"), "pd.Series[str]"
         ),
-        UnknownSeries,
+        pd.Series,
+        str,
     )
     check(
         assert_type(
             s.str.cat(pd.Series(["A", "B", "C", "D", "E", "F", "G"]), sep=";"),
-            UnknownSeries,
+            "pd.Series[str]",
         ),
-        UnknownSeries,
+        pd.Series,
+        str,
     )
 
 
