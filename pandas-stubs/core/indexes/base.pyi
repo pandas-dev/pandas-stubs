@@ -13,6 +13,7 @@ from typing import (
     Any,
     ClassVar,
     Literal,
+    TypeAlias,
     final,
     overload,
 )
@@ -455,7 +456,7 @@ class Index(IndexOpsMixin[S1]):
         ),
     ) -> Self: ...
 
-class UnknownIndex(Index[Any]): ...
+UnknownIndex: TypeAlias = Index[Any]
 
 def ensure_index_from_sequences(
     sequences: Sequence[Sequence[Dtype]], names: list[str] = ...
