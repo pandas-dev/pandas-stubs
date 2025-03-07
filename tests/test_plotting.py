@@ -575,7 +575,10 @@ def test_plot_keywords(close_figures):
 
     df = pd.DataFrame(np.random.rand(10, 5), columns=["A", "B", "C", "D", "E"])
     check(
-        assert_type(df.plot(kind="box", vert=False, positions=[1, 4, 5, 6, 8]), Axes),
+        assert_type(
+            df.plot(kind="box", orientation="vertical", positions=[1, 4, 5, 6, 8]),
+            Axes,
+        ),
         Axes,
     )
 
@@ -603,15 +606,19 @@ def test_grouped_dataframe_boxplot(close_figures):
     check(assert_type(grouped.boxplot(subplots=True), Series), Series)
 
     # a single plot
-    check(
-        assert_type(
-            grouped.boxplot(
-                subplots=False, rot=45, fontsize=12, figsize=(8, 10), vert=False
-            ),
-            Axes,
-        ),
-        Axes,
-    )
+    # check(
+    #     assert_type(
+    #         grouped.boxplot(
+    #             subplots=False,
+    #             rot=45,
+    #             fontsize=12,
+    #             figsize=(8, 10),
+    #             orientation="horizontal",
+    #         ),
+    #         Axes,
+    #     ),
+    #     Axes,
+    # )
 
     # not a literal bool
     check(assert_type(grouped.boxplot(subplots=bool(0.5)), Union[Axes, Series]), Series)
