@@ -1,11 +1,12 @@
+# pyright: strict
 from datetime import (
-    _IsoCalendarDate,
     date as _date,
     datetime,
     time as _time,
     timedelta,
     tzinfo as _tzinfo,
 )
+from datetime import _IsoCalendarDate  # pyright: ignore[reportPrivateUsage]
 import sys
 from time import struct_time
 from typing import (
@@ -166,25 +167,33 @@ class Timestamp(datetime, SupportsIndex):
     @overload  # type: ignore[override]
     def __le__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
-    def __le__(self, other: Index | npt.NDArray[np.datetime64]) -> np_ndarray_bool: ...
+    def __le__(
+        self, other: Index[Timestamp] | npt.NDArray[np.datetime64]
+    ) -> np_ndarray_bool: ...
     @overload
     def __le__(self, other: TimestampSeries) -> Series[bool]: ...
     @overload  # type: ignore[override]
     def __lt__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
-    def __lt__(self, other: Index | npt.NDArray[np.datetime64]) -> np_ndarray_bool: ...
+    def __lt__(
+        self, other: Index[Timestamp] | npt.NDArray[np.datetime64]
+    ) -> np_ndarray_bool: ...
     @overload
     def __lt__(self, other: TimestampSeries) -> Series[bool]: ...
     @overload  # type: ignore[override]
     def __ge__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
-    def __ge__(self, other: Index | npt.NDArray[np.datetime64]) -> np_ndarray_bool: ...
+    def __ge__(
+        self, other: Index[Timestamp] | npt.NDArray[np.datetime64]
+    ) -> np_ndarray_bool: ...
     @overload
     def __ge__(self, other: TimestampSeries) -> Series[bool]: ...
     @overload  # type: ignore[override]
     def __gt__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
-    def __gt__(self, other: Index | npt.NDArray[np.datetime64]) -> np_ndarray_bool: ...
+    def __gt__(
+        self, other: Index[Timestamp] | npt.NDArray[np.datetime64]
+    ) -> np_ndarray_bool: ...
     @overload
     def __gt__(self, other: TimestampSeries) -> Series[bool]: ...
     # error: Signature of "__add__" incompatible with supertype "date"/"datetime"
@@ -224,7 +233,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __eq__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(self, other: npt.NDArray[np.datetime64] | Index) -> np_ndarray_bool: ...  # type: ignore[overload-overlap]
+    def __eq__(self, other: npt.NDArray[np.datetime64] | Index[Timestamp]) -> np_ndarray_bool: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: object) -> Literal[False]: ...
     @overload
@@ -232,7 +241,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __ne__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(self, other: npt.NDArray[np.datetime64] | Index) -> np_ndarray_bool: ...  # type: ignore[overload-overlap]
+    def __ne__(self, other: npt.NDArray[np.datetime64] | Index[Timestamp]) -> np_ndarray_bool: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: object) -> Literal[True]: ...
     def __hash__(self) -> int: ...

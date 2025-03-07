@@ -713,8 +713,16 @@ def test_timedelta_mul_div() -> None:
 
     check(assert_type(md_int * td, pd.Timedelta), pd.Timedelta)
     check(assert_type(md_float * td, pd.Timedelta), pd.Timedelta)
-    check(assert_type(md_ndarray_intp * td, np.ndarray), np.ndarray, np.timedelta64)
-    check(assert_type(md_ndarray_float * td, np.ndarray), np.ndarray, np.timedelta64)
+    check(
+        assert_type(md_ndarray_intp * td, npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
+    check(
+        assert_type(md_ndarray_float * td, npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
     check(assert_type(mp_series_int * td, TimedeltaSeries), pd.Series, pd.Timedelta)
     check(assert_type(md_series_float * td, TimedeltaSeries), pd.Series, pd.Timedelta)
     check(assert_type(md_int64_index * td, pd.TimedeltaIndex), pd.TimedeltaIndex)
