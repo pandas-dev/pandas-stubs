@@ -264,7 +264,15 @@ class Index(IndexOpsMixin[S1]):
     @property
     def str(
         self,
-    ) -> StringMethods[Self, MultiIndex, np_ndarray_bool, Index[list[str]]]: ...
+    ) -> StringMethods[
+        Self,
+        MultiIndex,
+        np_ndarray_bool,
+        Index[list[str]],
+        Index[int],
+        Index[bytes],
+        Index[str],
+    ]: ...
     def is_(self, other) -> bool: ...
     def __len__(self) -> int: ...
     def __array__(self, dtype=...) -> np.ndarray: ...

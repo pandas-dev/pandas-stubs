@@ -1156,7 +1156,15 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @property
     def str(
         self,
-    ) -> StringMethods[Self, DataFrame, Series[bool], Series[list[str]]]: ...
+    ) -> StringMethods[
+        Self,
+        DataFrame,
+        Series[bool],
+        Series[list[str]],
+        Series[int],
+        Series[bytes],
+        Series[str],
+    ]: ...
     @property
     def dt(self) -> CombinedDatetimelikeProperties: ...
     @property
