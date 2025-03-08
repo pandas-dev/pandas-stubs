@@ -205,11 +205,25 @@ def test_string_accessors_list_index():
     _check(assert_type(idx.str.rsplit("a", expand=False), "pd.Index[list[str]]"))
 
 
-# def test_string_accessors_expanding():
-#     check(assert_type(s3.str.extract(r"([ab])?(\d)"), pd.DataFrame), pd.DataFrame)
-#     check(assert_type(s3.str.extractall(r"([ab])?(\d)"), pd.DataFrame), pd.DataFrame)
-#     check(assert_type(s.str.get_dummies(), pd.DataFrame), pd.DataFrame)
-#     check(assert_type(s.str.partition("p"), pd.DataFrame), pd.DataFrame)
-#     check(assert_type(s.str.rpartition("p"), pd.DataFrame), pd.DataFrame)
-#     check(assert_type(s.str.rsplit("a", expand=True), pd.DataFrame), pd.DataFrame)
-#     check(assert_type(s.str.split("a", expand=True), pd.DataFrame), pd.DataFrame)
+def test_string_accessors_expanding_series():
+    s = pd.Series(["a1", "b2", "c3"])
+    _check = functools.partial(check, klass=pd.DataFrame)
+    _check(assert_type(s.str.extract(r"([ab])?(\d)"), pd.DataFrame))
+    _check(assert_type(s.str.extractall(r"([ab])?(\d)"), pd.DataFrame))
+    _check(assert_type(s.str.get_dummies(), pd.DataFrame))
+    _check(assert_type(s.str.partition("p"), pd.DataFrame))
+    _check(assert_type(s.str.rpartition("p"), pd.DataFrame))
+    _check(assert_type(s.str.rsplit("a", expand=True), pd.DataFrame))
+    _check(assert_type(s.str.split("a", expand=True), pd.DataFrame))
+
+
+def test_string_accessors_expanding_index():
+    idx = pd.Index(["a1", "b2", "c3"])
+    _check = functools.partial(check, klass=pd.MultiIndex)
+    _check(assert_type(idx.str.extract(r"([ab])?(\d)"), pd.MultiIndex))
+    _check(assert_type(idx.str.extractall(r"([ab])?(\d)"), pd.MultiIndex))
+    _check(assert_type(idx.str.get_dummies(), pd.MultiIndex))
+    _check(assert_type(idx.str.partition("p"), pd.MultiIndex))
+    _check(assert_type(idx.str.rpartition("p"), pd.MultiIndex))
+    _check(assert_type(idx.str.rsplit("a", expand=True), pd.MultiIndex))
+    _check(assert_type(idx.str.split("a", expand=True), pd.MultiIndex))
