@@ -183,24 +183,26 @@ def test_string_accessors_bytes_index():
     check(assert_type(s.str.encode("latin-1"), "pd.Index[bytes]"), pd.Index, bytes)
 
 
-def test_string_accessors_list():
-    s = pd.Series(
-        ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
-    )
-    check(assert_type(s.str.findall("pp"), "pd.Series[list[str]]"), pd.Series, list)
-    check(assert_type(s.str.split("a"), "pd.Series[list[str]]"), pd.Series, list)
+def test_string_accessors_list_series():
+    s = pd.Series(DATA)
+    _check = functools.partial(check, klass=pd.Series, dtype=list)
+    _check(assert_type(s.str.findall("pp"), "pd.Series[list[str]]"))
+    _check(assert_type(s.str.split("a"), "pd.Series[list[str]]"))
     # GH 194
-    check(
-        assert_type(s.str.split("a", expand=False), "pd.Series[list[str]]"),
-        pd.Series,
-        list,
-    )
-    check(assert_type(s.str.rsplit("a"), "pd.Series[list[str]]"), pd.Series, list)
-    check(
-        assert_type(s.str.rsplit("a", expand=False), "pd.Series[list[str]]"),
-        pd.Series,
-        list,
-    )
+    _check(assert_type(s.str.split("a", expand=False), "pd.Series[list[str]]"))
+    _check(assert_type(s.str.rsplit("a"), "pd.Series[list[str]]"))
+    _check(assert_type(s.str.rsplit("a", expand=False), "pd.Series[list[str]]"))
+
+
+def test_string_accessors_list_index():
+    idx = pd.Index(DATA)
+    _check = functools.partial(check, klass=pd.Index, dtype=list)
+    _check(assert_type(idx.str.findall("pp"), "pd.Index[list[str]]"))
+    _check(assert_type(idx.str.split("a"), "pd.Index[list[str]]"))
+    # GH 194
+    _check(assert_type(idx.str.split("a", expand=False), "pd.Index[list[str]]"))
+    _check(assert_type(idx.str.rsplit("a"), "pd.Index[list[str]]"))
+    _check(assert_type(idx.str.rsplit("a", expand=False), "pd.Index[list[str]]"))
 
 
 # def test_string_accessors_expanding():
