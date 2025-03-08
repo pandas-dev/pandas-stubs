@@ -7,10 +7,11 @@ from typing_extensions import assert_type
 
 from tests import check
 
+DATA = ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
+
 
 def test_string_accessors_type_preserving_series() -> None:
-    data = ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
-    s = pd.Series(data)
+    s = pd.Series(DATA)
     _check = functools.partial(check, klass=pd.Series, dtype=str)
     _check(assert_type(s.str.capitalize(), "pd.Series[str]"))
     _check(assert_type(s.str.casefold(), "pd.Series[str]"))
@@ -42,8 +43,7 @@ def test_string_accessors_type_preserving_series() -> None:
 
 
 def test_string_accessors_type_preserving_index() -> None:
-    data = ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
-    idx = pd.Index(data)
+    idx = pd.Index(DATA)
     _check = functools.partial(check, klass=pd.Index, dtype=str)
     _check(assert_type(idx.str.capitalize(), "pd.Index[str]"))
     _check(assert_type(idx.str.casefold(), "pd.Index[str]"))
@@ -75,8 +75,7 @@ def test_string_accessors_type_preserving_index() -> None:
 
 
 def test_string_accessors_type_boolean_series():
-    data = ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
-    s = pd.Series(data)
+    s = pd.Series(DATA)
     _check = functools.partial(check, klass=pd.Series, dtype=bool)
     _check(assert_type(s.str.startswith("a"), "pd.Series[bool]"))
     _check(
@@ -104,8 +103,7 @@ def test_string_accessors_type_boolean_series():
 
 
 def test_string_accessors_type_boolean_index():
-    data = ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
-    idx = pd.Index(data)
+    idx = pd.Index(DATA)
     _check = functools.partial(check, klass=np.ndarray, dtype=np.bool_)
     _check(assert_type(idx.str.startswith("a"), "npt.NDArray[np.bool_]"))
     _check(
@@ -132,16 +130,26 @@ def test_string_accessors_type_boolean_index():
     _check(assert_type(idx.str.match("pp"), "npt.NDArray[np.bool_]"))
 
 
-def test_string_accessors_type_integer():
-    s = pd.Series(
-        ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
-    )
-    check(assert_type(s.str.find("p"), "pd.Series[int]"), pd.Series, np.int64)
-    check(assert_type(s.str.index("p"), "pd.Series[int]"), pd.Series, np.int64)
-    check(assert_type(s.str.rfind("e"), "pd.Series[int]"), pd.Series, np.int64)
-    check(assert_type(s.str.rindex("p"), "pd.Series[int]"), pd.Series, np.int64)
-    check(assert_type(s.str.count("pp"), "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(s.str.len(), "pd.Series[int]"), pd.Series, np.integer)
+def test_string_accessors_type_integer_series():
+    s = pd.Series(DATA)
+    _check = functools.partial(check, klass=pd.Series, dtype=np.integer)
+    _check(assert_type(s.str.find("p"), "pd.Series[int]"))
+    _check(assert_type(s.str.index("p"), "pd.Series[int]"))
+    _check(assert_type(s.str.rfind("e"), "pd.Series[int]"))
+    _check(assert_type(s.str.rindex("p"), "pd.Series[int]"))
+    _check(assert_type(s.str.count("pp"), "pd.Series[int]"))
+    _check(assert_type(s.str.len(), "pd.Series[int]"))
+
+
+def test_string_accessors_type_integer_index():
+    idx = pd.Index(DATA)
+    _check = functools.partial(check, klass=pd.Index, dtype=np.integer)
+    _check(assert_type(idx.str.find("p"), "pd.Index[int]"))
+    _check(assert_type(idx.str.index("p"), "pd.Index[int]"))
+    _check(assert_type(idx.str.rfind("e"), "pd.Index[int]"))
+    _check(assert_type(idx.str.rindex("p"), "pd.Index[int]"))
+    _check(assert_type(idx.str.count("pp"), "pd.Index[int]"))
+    _check(assert_type(idx.str.len(), "pd.Index[int]"))
 
 
 def test_string_accessors_encode_decode():
