@@ -1,25 +1,14 @@
 import functools
 import re
-from typing import Any
 
 import numpy as np
 import pandas as pd
-import pytest
 from typing_extensions import assert_type
 
 from tests import check
 
 
-@pytest.mark.parametrize("constructor", ["series", "index"])
-@pytest.mark.parametrize(
-    ("method", "kwargs"),
-    [
-        ("capitalize", {}),
-    ],
-)
-def test_string_accessors_type_preserving_series(
-    constructor: Any, method: str, kwargs: Any
-) -> None:
+def test_string_accessors_type_preserving_series() -> None:
     data = ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
     s = pd.Series(data)
     _check = functools.partial(check, klass=pd.Series, dtype=str)
@@ -50,6 +39,39 @@ def test_string_accessors_type_preserving_series(
     _check(assert_type(s.str.upper(), "pd.Series[str]"))
     _check(assert_type(s.str.wrap(80), "pd.Series[str]"))
     _check(assert_type(s.str.zfill(10), "pd.Series[str]"))
+
+
+def test_string_accessors_type_preserving_index() -> None:
+    data = ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
+    idx = pd.Index(data)
+    _check = functools.partial(check, klass=pd.Index, dtype=str)
+    _check(assert_type(idx.str.capitalize(), "pd.Index[str]"))
+    _check(assert_type(idx.str.casefold(), "pd.Index[str]"))
+    check(assert_type(idx.str.cat(sep="X"), str), str)
+    _check(assert_type(idx.str.center(10), "pd.Index[str]"))
+    _check(assert_type(idx.str.get(2), "pd.Index[str]"))
+    _check(assert_type(idx.str.ljust(80), "pd.Index[str]"))
+    _check(assert_type(idx.str.lower(), "pd.Index[str]"))
+    _check(assert_type(idx.str.lstrip("a"), "pd.Index[str]"))
+    _check(assert_type(idx.str.normalize("NFD"), "pd.Index[str]"))
+    _check(assert_type(idx.str.pad(80, "right"), "pd.Index[str]"))
+    _check(assert_type(idx.str.removeprefix("a"), "pd.Index[str]"))
+    _check(assert_type(idx.str.removesuffix("e"), "pd.Index[str]"))
+    _check(assert_type(idx.str.repeat(2), "pd.Index[str]"))
+    _check(assert_type(idx.str.replace("a", "X"), "pd.Index[str]"))
+    _check(assert_type(idx.str.rjust(80), "pd.Index[str]"))
+    _check(assert_type(idx.str.rstrip(), "pd.Index[str]"))
+    _check(assert_type(idx.str.slice(0, 4, 2), "pd.Index[str]"))
+    _check(assert_type(idx.str.slice_replace(0, 2, "XX"), "pd.Index[str]"))
+    _check(assert_type(idx.str.strip(), "pd.Index[str]"))
+    _check(assert_type(idx.str.swapcase(), "pd.Index[str]"))
+    _check(assert_type(idx.str.title(), "pd.Index[str]"))
+    _check(
+        assert_type(idx.str.translate({241: "n"}), "pd.Index[str]"),
+    )
+    _check(assert_type(idx.str.upper(), "pd.Index[str]"))
+    _check(assert_type(idx.str.wrap(80), "pd.Index[str]"))
+    _check(assert_type(idx.str.zfill(10), "pd.Index[str]"))
 
 
 def test_string_accessors_type_boolean():
