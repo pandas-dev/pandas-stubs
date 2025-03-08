@@ -299,3 +299,53 @@ def test_index_overloads_partition():
         pd.Index,
         object,
     )
+
+
+def test_series_overloads_cat():
+    s = pd.Series(DATA)
+    check(assert_type(s.str.cat(sep=";"), str), str)
+    check(assert_type(s.str.cat(None, sep=";"), str), str)
+    check(
+        assert_type(
+            s.str.cat(["A", "B", "C", "D", "E", "F", "G"], sep=";"),
+            "pd.Series[str]",
+        ),
+        pd.Series,
+        str,
+    )
+    check(
+        assert_type(
+            s.str.cat(pd.Series(["A", "B", "C", "D", "E", "F", "G"]), sep=";"),
+            "pd.Series[str]",
+        ),
+        pd.Series,
+        str,
+    )
+    unknown_s = pd.DataFrame({"a": ["a", "b"]})["a"]
+    check(assert_type(s.str.cat(unknown_s, sep=";"), "pd.Series[str]"), pd.Series, str)
+
+
+def test_index_overloads_cat():
+    idx = pd.Index(DATA)
+    check(assert_type(idx.str.cat(sep=";"), str), str)
+    check(assert_type(idx.str.cat(None, sep=";"), str), str)
+    check(
+        assert_type(
+            idx.str.cat(["A", "B", "C", "D", "E", "F", "G"], sep=";"),
+            "pd.Index[str]",
+        ),
+        pd.Index,
+        str,
+    )
+    check(
+        assert_type(
+            idx.str.cat(pd.Index(["A", "B", "C", "D", "E", "F", "G"]), sep=";"),
+            "pd.Index[str]",
+        ),
+        pd.Index,
+        str,
+    )
+    unknown_idx = pd.DataFrame({"a": ["a", "b"]}).set_index("a").index
+    check(
+        assert_type(idx.str.cat(unknown_idx, sep=";"), "pd.Index[str]"), pd.Index, str
+    )
