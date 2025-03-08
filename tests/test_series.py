@@ -1571,30 +1571,6 @@ def test_categorical_codes():
     assert_type(cat.codes, "np_ndarray_int")
 
 
-def test_series_overloads_extract():
-    s = pd.Series(
-        ["appl;ep", "ban;anap", "Cherr;yp", "DATEp", "eGGp;LANTp", "12;3p", "23.45p"]
-    )
-    check(assert_type(s.str.extract(r"[ab](\d)"), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(s.str.extract(r"[ab](\d)", expand=True), pd.DataFrame), pd.DataFrame
-    )
-    check(
-        assert_type(
-            s.str.extract(r"[ab](\d)", expand=False), "pd.Series[type[object]]"
-        ),
-        pd.Series,
-        object,
-    )
-    check(
-        assert_type(
-            s.str.extract(r"[ab](\d)", re.IGNORECASE, False), "pd.Series[type[object]]"
-        ),
-        pd.Series,
-        object,
-    )
-
-
 def test_relops() -> None:
     # GH 175
     s: str = "abc"

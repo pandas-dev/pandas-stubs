@@ -349,3 +349,48 @@ def test_index_overloads_cat():
     check(
         assert_type(idx.str.cat(unknown_idx, sep=";"), "pd.Index[str]"), pd.Index, str
     )
+
+
+def test_series_overloads_extract():
+    s = pd.Series(DATA)
+    check(assert_type(s.str.extract(r"[ab](\d)"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(s.str.extract(r"[ab](\d)", expand=True), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(
+            s.str.extract(r"[ab](\d)", expand=False), "pd.Series[type[object]]"
+        ),
+        pd.Series,
+        object,
+    )
+    check(
+        assert_type(
+            s.str.extract(r"[ab](\d)", re.IGNORECASE, False), "pd.Series[type[object]]"
+        ),
+        pd.Series,
+        object,
+    )
+
+
+def test_index_overloads_extract():
+    idx = pd.Index(DATA)
+    check(assert_type(idx.str.extract(r"[ab](\d)"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(idx.str.extract(r"[ab](\d)", expand=True), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            idx.str.extract(r"[ab](\d)", expand=False), "pd.Index[type[object]]"
+        ),
+        pd.Index,
+        object,
+    )
+    check(
+        assert_type(
+            idx.str.extract(r"[ab](\d)", re.IGNORECASE, False), "pd.Index[type[object]]"
+        ),
+        pd.Index,
+        object,
+    )
