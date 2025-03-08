@@ -1164,6 +1164,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         Series[int],
         Series[bytes],
         Series[str],
+        Series[type[object]],
     ]: ...
     @property
     def dt(self) -> CombinedDatetimelikeProperties: ...

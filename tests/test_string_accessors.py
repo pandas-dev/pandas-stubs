@@ -81,7 +81,7 @@ def test_string_accessors_type_preserving_index() -> None:
 
 def test_string_accessors_boolean_series():
     s = pd.Series(DATA)
-    _check = functools.partial(check, klass=pd.Series, dtype=bool)
+    _check = functools.partial(check, klass=pd.Series, dtype=np.bool_)
     _check(assert_type(s.str.startswith("a"), "pd.Series[bool]"))
     _check(
         assert_type(s.str.startswith(("a", "b")), "pd.Series[bool]"),
@@ -220,10 +220,82 @@ def test_string_accessors_expanding_series():
 def test_string_accessors_expanding_index():
     idx = pd.Index(["a1", "b2", "c3"])
     _check = functools.partial(check, klass=pd.MultiIndex)
-    _check(assert_type(idx.str.extract(r"([ab])?(\d)"), pd.MultiIndex))
-    _check(assert_type(idx.str.extractall(r"([ab])?(\d)"), pd.MultiIndex))
     _check(assert_type(idx.str.get_dummies(), pd.MultiIndex))
     _check(assert_type(idx.str.partition("p"), pd.MultiIndex))
     _check(assert_type(idx.str.rpartition("p"), pd.MultiIndex))
     _check(assert_type(idx.str.rsplit("a", expand=True), pd.MultiIndex))
     _check(assert_type(idx.str.split("a", expand=True), pd.MultiIndex))
+
+    # These ones are the odd ones out?
+    check(assert_type(idx.str.extractall(r"([ab])?(\d)"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(idx.str.extract(r"([ab])?(\d)"), pd.DataFrame), pd.DataFrame)
+
+
+def test_series_overloads_partition():
+    s = pd.Series(
+        [
+            "ap;pl;ep",
+            "ban;an;ap",
+            "Che;rr;yp",
+            "DA;TEp",
+            "eGGp;LANT;p",
+            "12;3p",
+            "23.45p",
+        ]
+    )
+    check(assert_type(s.str.partition(sep=";"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(s.str.partition(sep=";", expand=True), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(s.str.partition(sep=";", expand=False), "pd.Series[type[object]]"),
+        pd.Series,
+        object,
+    )
+
+    check(assert_type(s.str.rpartition(sep=";"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(s.str.rpartition(sep=";", expand=True), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(s.str.rpartition(sep=";", expand=False), "pd.Series[type[object]]"),
+        pd.Series,
+        object,
+    )
+
+
+def test_index_overloads_partition():
+    idx = pd.Index(
+        [
+            "ap;pl;ep",
+            "ban;an;ap",
+            "Che;rr;yp",
+            "DA;TEp",
+            "eGGp;LANT;p",
+            "12;3p",
+            "23.45p",
+        ]
+    )
+    check(assert_type(idx.str.partition(sep=";"), pd.MultiIndex), pd.MultiIndex)
+    check(
+        assert_type(idx.str.partition(sep=";", expand=True), pd.MultiIndex),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(idx.str.partition(sep=";", expand=False), "pd.Index[type[object]]"),
+        pd.Index,
+        object,
+    )
+
+    check(assert_type(idx.str.rpartition(sep=";"), pd.MultiIndex), pd.MultiIndex)
+    check(
+        assert_type(idx.str.rpartition(sep=";", expand=True), pd.MultiIndex),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(
+            idx.str.rpartition(sep=";", expand=False), "pd.Index[type[object]]"
+        ),
+        pd.Index,
+        object,
+    )
