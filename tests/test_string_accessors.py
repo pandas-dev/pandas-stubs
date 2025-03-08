@@ -169,7 +169,9 @@ def test_string_accessors_string_index():
     idx = pd.Index([b"a1", b"b2", b"c3"])
     _check = functools.partial(check, klass=pd.Index, dtype=str)
     _check(assert_type(idx.str.decode("utf-8"), "pd.Index[str]"))
-    idx2 = pd.Index([["apple", "banana"], ["cherry", "date"], [1, "eggplant"]])
+    idx2: "pd.Index[list]" = pd.Index(
+        [["apple", "banana"], ["cherry", "date"], [1, "eggplant"]]
+    )
     _check(assert_type(idx2.str.join("-"), "pd.Index[str]"))
 
 
