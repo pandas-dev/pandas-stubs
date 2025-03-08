@@ -79,7 +79,7 @@ def test_string_accessors_type_preserving_index() -> None:
     _check(assert_type(idx.str.zfill(10), "pd.Index[str]"))
 
 
-def test_string_accessors_type_boolean_series():
+def test_string_accessors_boolean_series():
     s = pd.Series(DATA)
     _check = functools.partial(check, klass=pd.Series, dtype=bool)
     _check(assert_type(s.str.startswith("a"), "pd.Series[bool]"))
@@ -107,7 +107,7 @@ def test_string_accessors_type_boolean_series():
     _check(assert_type(s.str.match("pp"), "pd.Series[bool]"))
 
 
-def test_string_accessors_type_boolean_index():
+def test_string_accessors_boolean_index():
     idx = pd.Index(DATA)
     _check = functools.partial(check, klass=np.ndarray, dtype=np.bool_)
     _check(assert_type(idx.str.startswith("a"), np_ndarray_bool))
@@ -135,7 +135,7 @@ def test_string_accessors_type_boolean_index():
     _check(assert_type(idx.str.match("pp"), np_ndarray_bool))
 
 
-def test_string_accessors_type_integer_series():
+def test_string_accessors_integer_series():
     s = pd.Series(DATA)
     _check = functools.partial(check, klass=pd.Series, dtype=np.integer)
     _check(assert_type(s.str.find("p"), "pd.Series[int]"))
@@ -146,7 +146,7 @@ def test_string_accessors_type_integer_series():
     _check(assert_type(s.str.len(), "pd.Series[int]"))
 
 
-def test_string_accessors_type_integer_index():
+def test_string_accessors_integer_index():
     idx = pd.Index(DATA)
     _check = functools.partial(check, klass=pd.Index, dtype=np.integer)
     _check(assert_type(idx.str.find("p"), "pd.Index[int]"))
@@ -157,19 +157,30 @@ def test_string_accessors_type_integer_index():
     _check(assert_type(idx.str.len(), "pd.Index[int]"))
 
 
-def test_string_accessors_encode_decode():
-    s_str = pd.Series(["a1", "b2", "c3"])
-    s_bytes = pd.Series([b"a1", b"b2", b"c3"])
+def test_string_accessors_string_series():
+    s = pd.Series([b"a1", b"b2", b"c3"])
+    _check = functools.partial(check, klass=pd.Series, dtype=str)
+    _check(assert_type(s.str.decode("utf-8"), "pd.Series[str]"))
     s2 = pd.Series([["apple", "banana"], ["cherry", "date"], [1, "eggplant"]])
-    check(
-        assert_type(s_bytes.str.decode("utf-8"), "pd.Series[str]"),
-        pd.Series,
-        str,
-    )
-    check(
-        assert_type(s_str.str.encode("latin-1"), "pd.Series[bytes]"), pd.Series, bytes
-    )
-    check(assert_type(s2.str.join("-"), "pd.Series[str]"), pd.Series, str)
+    _check(assert_type(s2.str.join("-"), "pd.Series[str]"))
+
+
+def test_string_accessors_string_index():
+    idx = pd.Index([b"a1", b"b2", b"c3"])
+    _check = functools.partial(check, klass=pd.Index, dtype=str)
+    _check(assert_type(idx.str.decode("utf-8"), "pd.Index[str]"))
+    idx2 = pd.Index([["apple", "banana"], ["cherry", "date"], [1, "eggplant"]])
+    _check(assert_type(idx2.str.join("-"), "pd.Index[str]"))
+
+
+def test_string_accessors_bytes_series():
+    s = pd.Series(["a1", "b2", "c3"])
+    check(assert_type(s.str.encode("latin-1"), "pd.Series[bytes]"), pd.Series, bytes)
+
+
+def test_string_accessors_bytes_index():
+    s = pd.Index(["a1", "b2", "c3"])
+    check(assert_type(s.str.encode("latin-1"), "pd.Index[bytes]"), pd.Index, bytes)
 
 
 def test_string_accessors_list():
