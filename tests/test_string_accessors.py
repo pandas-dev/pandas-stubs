@@ -2,10 +2,15 @@ import functools
 import re
 
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 from typing_extensions import assert_type
 
 from tests import check
+
+# Separately define here so pytest works
+np_ndarray_bool = npt.NDArray[np.bool_]
+
 
 DATA = ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
 
@@ -105,29 +110,29 @@ def test_string_accessors_type_boolean_series():
 def test_string_accessors_type_boolean_index():
     idx = pd.Index(DATA)
     _check = functools.partial(check, klass=np.ndarray, dtype=np.bool_)
-    _check(assert_type(idx.str.startswith("a"), "npt.NDArray[np.bool_]"))
+    _check(assert_type(idx.str.startswith("a"), np_ndarray_bool))
     _check(
-        assert_type(idx.str.startswith(("a", "b")), "npt.NDArray[np.bool_]"),
+        assert_type(idx.str.startswith(("a", "b")), np_ndarray_bool),
     )
     _check(
-        assert_type(idx.str.contains("a"), "npt.NDArray[np.bool_]"),
+        assert_type(idx.str.contains("a"), np_ndarray_bool),
     )
     _check(
-        assert_type(idx.str.contains(re.compile(r"a")), "npt.NDArray[np.bool_]"),
+        assert_type(idx.str.contains(re.compile(r"a")), np_ndarray_bool),
     )
-    _check(assert_type(idx.str.endswith("e"), "npt.NDArray[np.bool_]"))
-    _check(assert_type(idx.str.endswith(("e", "f")), "npt.NDArray[np.bool_]"))
-    _check(assert_type(idx.str.fullmatch("apple"), "npt.NDArray[np.bool_]"))
-    _check(assert_type(idx.str.isalnum(), "npt.NDArray[np.bool_]"))
-    _check(assert_type(idx.str.isalpha(), "npt.NDArray[np.bool_]"))
-    _check(assert_type(idx.str.isdecimal(), "npt.NDArray[np.bool_]"))
-    _check(assert_type(idx.str.isdigit(), "npt.NDArray[np.bool_]"))
-    _check(assert_type(idx.str.isnumeric(), "npt.NDArray[np.bool_]"))
-    _check(assert_type(idx.str.islower(), "npt.NDArray[np.bool_]"))
-    _check(assert_type(idx.str.isspace(), "npt.NDArray[np.bool_]"))
-    _check(assert_type(idx.str.istitle(), "npt.NDArray[np.bool_]"))
-    _check(assert_type(idx.str.isupper(), "npt.NDArray[np.bool_]"))
-    _check(assert_type(idx.str.match("pp"), "npt.NDArray[np.bool_]"))
+    _check(assert_type(idx.str.endswith("e"), np_ndarray_bool))
+    _check(assert_type(idx.str.endswith(("e", "f")), np_ndarray_bool))
+    _check(assert_type(idx.str.fullmatch("apple"), np_ndarray_bool))
+    _check(assert_type(idx.str.isalnum(), np_ndarray_bool))
+    _check(assert_type(idx.str.isalpha(), np_ndarray_bool))
+    _check(assert_type(idx.str.isdecimal(), np_ndarray_bool))
+    _check(assert_type(idx.str.isdigit(), np_ndarray_bool))
+    _check(assert_type(idx.str.isnumeric(), np_ndarray_bool))
+    _check(assert_type(idx.str.islower(), np_ndarray_bool))
+    _check(assert_type(idx.str.isspace(), np_ndarray_bool))
+    _check(assert_type(idx.str.istitle(), np_ndarray_bool))
+    _check(assert_type(idx.str.isupper(), np_ndarray_bool))
+    _check(assert_type(idx.str.match("pp"), np_ndarray_bool))
 
 
 def test_string_accessors_type_integer_series():
