@@ -605,20 +605,28 @@ def test_grouped_dataframe_boxplot(close_figures):
     check(assert_type(grouped.boxplot(), Series), Series)
     check(assert_type(grouped.boxplot(subplots=True), Series), Series)
 
+
+def test_grouped_dataframe_boxplot_single(close_figures):
+    tuples = [t for t in itertools.product(range(10), range(2))]
+    index = pd.MultiIndex.from_tuples(tuples, names=["lvl0", "lvl1"])
+    df = pd.DataFrame(
+        data=np.random.randn(len(index), 2), columns=["A", "B"], index=index
+    )
+    grouped = df.groupby(level="lvl1")
+
     # a single plot
-    # check(
-    #     assert_type(
-    #         grouped.boxplot(
-    #             subplots=False,
-    #             rot=45,
-    #             fontsize=12,
-    #             figsize=(8, 10),
-    #             orientation="horizontal",
-    #         ),
-    #         Axes,
-    #     ),
-    #     Axes,
-    # )
+    check(
+        assert_type(
+            grouped.boxplot(
+                subplots=False,
+                rot=45,
+                fontsize=12,
+                figsize=(8, 10),
+            ),
+            Axes,
+        ),
+        Axes,
+    )
 
     # not a literal bool
     check(assert_type(grouped.boxplot(subplots=bool(0.5)), Union[Axes, Series]), Series)
