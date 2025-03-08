@@ -65,13 +65,11 @@ if TYPE_CHECKING:
         OffsetSeries,
         TimedeltaSeries,
         TimestampSeries,
-        UnknownSeries,
     )
 else:
     TimedeltaSeries: TypeAlias = pd.Series
     TimestampSeries: TypeAlias = pd.Series
     OffsetSeries: TypeAlias = pd.Series
-    UnknownSeries: TypeAlias = pd.Series
 
 if TYPE_CHECKING:
     from pandas._typing import (
