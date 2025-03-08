@@ -74,37 +74,62 @@ def test_string_accessors_type_preserving_index() -> None:
     _check(assert_type(idx.str.zfill(10), "pd.Index[str]"))
 
 
-def test_string_accessors_type_boolean():
-    s = pd.Series(
-        ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
-    )
-    check(assert_type(s.str.startswith("a"), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(
+def test_string_accessors_type_boolean_series():
+    data = ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
+    s = pd.Series(data)
+    _check = functools.partial(check, klass=pd.Series, dtype=bool)
+    _check(assert_type(s.str.startswith("a"), "pd.Series[bool]"))
+    _check(
         assert_type(s.str.startswith(("a", "b")), "pd.Series[bool]"),
-        pd.Series,
-        np.bool_,
     )
-    check(assert_type(s.str.contains("a"), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(
+    _check(
+        assert_type(s.str.contains("a"), "pd.Series[bool]"),
+    )
+    _check(
         assert_type(s.str.contains(re.compile(r"a")), "pd.Series[bool]"),
-        pd.Series,
-        np.bool_,
     )
-    check(assert_type(s.str.endswith("e"), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(
-        assert_type(s.str.endswith(("e", "f")), "pd.Series[bool]"), pd.Series, np.bool_
+    _check(assert_type(s.str.endswith("e"), "pd.Series[bool]"))
+    _check(assert_type(s.str.endswith(("e", "f")), "pd.Series[bool]"))
+    _check(assert_type(s.str.fullmatch("apple"), "pd.Series[bool]"))
+    _check(assert_type(s.str.isalnum(), "pd.Series[bool]"))
+    _check(assert_type(s.str.isalpha(), "pd.Series[bool]"))
+    _check(assert_type(s.str.isdecimal(), "pd.Series[bool]"))
+    _check(assert_type(s.str.isdigit(), "pd.Series[bool]"))
+    _check(assert_type(s.str.isnumeric(), "pd.Series[bool]"))
+    _check(assert_type(s.str.islower(), "pd.Series[bool]"))
+    _check(assert_type(s.str.isspace(), "pd.Series[bool]"))
+    _check(assert_type(s.str.istitle(), "pd.Series[bool]"))
+    _check(assert_type(s.str.isupper(), "pd.Series[bool]"))
+    _check(assert_type(s.str.match("pp"), "pd.Series[bool]"))
+
+
+def test_string_accessors_type_boolean_index():
+    data = ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
+    idx = pd.Index(data)
+    _check = functools.partial(check, klass=np.ndarray, dtype=np.bool_)
+    _check(assert_type(idx.str.startswith("a"), "npt.NDArray[np.bool_]"))
+    _check(
+        assert_type(idx.str.startswith(("a", "b")), "npt.NDArray[np.bool_]"),
     )
-    check(assert_type(s.str.fullmatch("apple"), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(s.str.isalnum(), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(s.str.isalpha(), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(s.str.isdecimal(), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(s.str.isdigit(), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(s.str.isnumeric(), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(s.str.islower(), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(s.str.isspace(), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(s.str.istitle(), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(s.str.isupper(), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(s.str.match("pp"), "pd.Series[bool]"), pd.Series, np.bool_)
+    _check(
+        assert_type(idx.str.contains("a"), "npt.NDArray[np.bool_]"),
+    )
+    _check(
+        assert_type(idx.str.contains(re.compile(r"a")), "npt.NDArray[np.bool_]"),
+    )
+    _check(assert_type(idx.str.endswith("e"), "npt.NDArray[np.bool_]"))
+    _check(assert_type(idx.str.endswith(("e", "f")), "npt.NDArray[np.bool_]"))
+    _check(assert_type(idx.str.fullmatch("apple"), "npt.NDArray[np.bool_]"))
+    _check(assert_type(idx.str.isalnum(), "npt.NDArray[np.bool_]"))
+    _check(assert_type(idx.str.isalpha(), "npt.NDArray[np.bool_]"))
+    _check(assert_type(idx.str.isdecimal(), "npt.NDArray[np.bool_]"))
+    _check(assert_type(idx.str.isdigit(), "npt.NDArray[np.bool_]"))
+    _check(assert_type(idx.str.isnumeric(), "npt.NDArray[np.bool_]"))
+    _check(assert_type(idx.str.islower(), "npt.NDArray[np.bool_]"))
+    _check(assert_type(idx.str.isspace(), "npt.NDArray[np.bool_]"))
+    _check(assert_type(idx.str.istitle(), "npt.NDArray[np.bool_]"))
+    _check(assert_type(idx.str.isupper(), "npt.NDArray[np.bool_]"))
+    _check(assert_type(idx.str.match("pp"), "npt.NDArray[np.bool_]"))
 
 
 def test_string_accessors_type_integer():
@@ -125,7 +150,7 @@ def test_string_accessors_encode_decode():
     s2 = pd.Series([["apple", "banana"], ["cherry", "date"], [1, "eggplant"]])
     check(
         assert_type(s_bytes.str.decode("utf-8"), "pd.Series[str]"),
-        "pd.Series[str]",
+        pd.Series,
         str,
     )
     check(
