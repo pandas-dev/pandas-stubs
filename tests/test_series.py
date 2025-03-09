@@ -3714,6 +3714,19 @@ def test_align() -> None:
     aligned_s0, aligned_s1 = s0.align(s1)
     check(assert_type(aligned_s0, pd.Series), pd.Series)
     check(assert_type(aligned_s1, pd.Series), pd.Series)
-    aligned_s0, aligned_s1 = s0.align(s1, fill_value=0, axis=0, level=0, copy=False)
+
+    msg = (
+        r"The copy keyword is deprecated and will be removed in a future version\. Copy"
+        r"-on-Write is active in pandas since 3\.0 which utilizes a lazy copy mechanism"
+        r" that defers copies until necessary\. Use \.copy\(\) to make an eager copy if"
+        " necessary.*"
+    )
+    with pytest_warns_bounded(
+        DeprecationWarning,
+        msg,
+        lower="2.2.99",
+    ):
+        aligned_s0, aligned_s1 = s0.align(s1, fill_value=0, axis=0, level=0, copy=False)
+
     check(assert_type(aligned_s0, pd.Series), pd.Series)
     check(assert_type(aligned_s1, pd.Series), pd.Series)

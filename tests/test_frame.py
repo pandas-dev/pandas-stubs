@@ -3996,8 +3996,9 @@ def test_hashable_args() -> None:
     df.columns = ["test"]  # type: ignore[assignment]
 
     testDict = {"test": 1}
-    df.to_string("test", col_space=testDict)
-    df.to_string("test", col_space={"test": 1})
+    with ensure_clean() as path:
+        df.to_string(path, col_space=testDict)
+        df.to_string(path, col_space={"test": 1})
 
 
 # GH 906
@@ -4009,7 +4010,19 @@ def test_transpose() -> None:
     df = pd.DataFrame({"a": [1, 1, 2], "b": [4, 5, 6]})
     check(assert_type(df.transpose(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.transpose(None), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.transpose(copy=True), pd.DataFrame), pd.DataFrame)
+
+    msg = (
+        r"The copy keyword is deprecated and will be removed in a future version\. Copy"
+        r"-on-Write is active in pandas since 3\.0 which utilizes a lazy copy mechanism"
+        r" that defers copies until necessary\. Use \.copy\(\) to make an eager copy if"
+        " necessary.*"
+    )
+    with pytest_warns_bounded(
+        DeprecationWarning,
+        msg,
+        lower="2.2.99",
+    ):
+        check(assert_type(df.transpose(copy=True), pd.DataFrame), pd.DataFrame)
 
 
 def test_combine() -> None:
