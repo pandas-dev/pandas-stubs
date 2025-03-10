@@ -16,7 +16,10 @@ from pandas import Series
 import pytest
 from typing_extensions import assert_type
 
-from tests import check
+from tests import (
+    PD_LTE_22,
+    check,
+)
 
 from pandas.plotting import (
     deregister_matplotlib_converters,
@@ -605,8 +608,31 @@ def test_grouped_dataframe_boxplot(close_figures):
     check(assert_type(grouped.boxplot(), Series), Series)
     check(assert_type(grouped.boxplot(subplots=True), Series), Series)
 
+    # a single plot
+    if not PD_LTE_22:
+        check(
+            assert_type(
+                grouped.boxplot(
+                    subplots=False,
+                    rot=45,
+                    fontsize=12,
+                    figsize=(8, 10),
+                    orientation="horizontal",
+                ),
+                Axes,
+            ),
+            Axes,
+        )
+
 
 def test_grouped_dataframe_boxplot_single(close_figures):
+    """
+    Test with pandas 2.2.3 separated to make it pass.
+
+    With pandas 2.2.3 the passing of certain keywords is broken so this test
+    is put separately to  make sure that we have no Axes already created.
+    It will fail with `orientation="horizontal"`.
+    """
     tuples = [t for t in itertools.product(range(10), range(2))]
     index = pd.MultiIndex.from_tuples(tuples, names=["lvl0", "lvl1"])
     df = pd.DataFrame(
@@ -627,6 +653,21 @@ def test_grouped_dataframe_boxplot_single(close_figures):
         ),
         Axes,
     )
+
+    if not PD_LTE_22:
+        check(
+            assert_type(
+                grouped.boxplot(
+                    subplots=False,
+                    rot=45,
+                    fontsize=12,
+                    figsize=(8, 10),
+                    orientation="horizontal",
+                ),
+                Axes,
+            ),
+            Axes,
+        )
 
     # not a literal bool
     check(assert_type(grouped.boxplot(subplots=bool(0.5)), Union[Axes, Series]), Series)
