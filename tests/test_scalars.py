@@ -1261,6 +1261,8 @@ def test_timestamp_cmp() -> None:
     c_np_dt64 = np.datetime64(1, "ns")
     c_dt_datetime = dt.datetime(year=2000, month=1, day=1)
     c_datetimeindex = pd.DatetimeIndex(["2000-1-1"])
+    # DatetimeIndex, but the type checker detects it to be Index[Unknown].
+    c_unknown_index = pd.DataFrame({"a": [1]}, index=c_datetimeindex).index
     c_np_ndarray_dt64 = np_dt64_arr
     c_series_dt64: TimestampSeries = pd.Series([1, 2, 3], dtype="datetime64[ns]")
     c_series_timestamp = pd.Series(pd.DatetimeIndex(["2000-1-1"]))
@@ -1281,6 +1283,8 @@ def test_timestamp_cmp() -> None:
 
     check(assert_type(ts > c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_)
     check(assert_type(ts <= c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(ts > c_unknown_index, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(ts <= c_unknown_index, np_ndarray_bool), np.ndarray, np.bool_)
 
     check(assert_type(ts > c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_)
     check(assert_type(ts <= c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_)

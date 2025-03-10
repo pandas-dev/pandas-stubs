@@ -20,7 +20,6 @@ from _typing import TimeZones
 import numpy as np
 from pandas import (
     DatetimeIndex,
-    Index,
     TimedeltaIndex,
 )
 from pandas.core.series import (
@@ -168,7 +167,7 @@ class Timestamp(datetime, SupportsIndex):
     def __le__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
     def __le__(
-        self, other: Index[Timestamp] | npt.NDArray[np.datetime64]
+        self, other: DatetimeIndex | npt.NDArray[np.datetime64]
     ) -> np_ndarray_bool: ...
     @overload
     def __le__(self, other: TimestampSeries) -> Series[bool]: ...
@@ -176,7 +175,7 @@ class Timestamp(datetime, SupportsIndex):
     def __lt__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
     def __lt__(
-        self, other: Index[Timestamp] | npt.NDArray[np.datetime64]
+        self, other: DatetimeIndex | npt.NDArray[np.datetime64]
     ) -> np_ndarray_bool: ...
     @overload
     def __lt__(self, other: TimestampSeries) -> Series[bool]: ...
@@ -184,7 +183,7 @@ class Timestamp(datetime, SupportsIndex):
     def __ge__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
     def __ge__(
-        self, other: Index[Timestamp] | npt.NDArray[np.datetime64]
+        self, other: DatetimeIndex | npt.NDArray[np.datetime64]
     ) -> np_ndarray_bool: ...
     @overload
     def __ge__(self, other: TimestampSeries) -> Series[bool]: ...
@@ -192,7 +191,7 @@ class Timestamp(datetime, SupportsIndex):
     def __gt__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
     def __gt__(
-        self, other: Index[Timestamp] | npt.NDArray[np.datetime64]
+        self, other: DatetimeIndex | npt.NDArray[np.datetime64]
     ) -> np_ndarray_bool: ...
     @overload
     def __gt__(self, other: TimestampSeries) -> Series[bool]: ...
@@ -233,7 +232,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __eq__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(self, other: npt.NDArray[np.datetime64] | Index[Timestamp]) -> np_ndarray_bool: ...  # type: ignore[overload-overlap]
+    def __eq__(self, other: npt.NDArray[np.datetime64] | DatetimeIndex) -> np_ndarray_bool: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: object) -> Literal[False]: ...
     @overload
@@ -241,7 +240,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __ne__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(self, other: npt.NDArray[np.datetime64] | Index[Timestamp]) -> np_ndarray_bool: ...  # type: ignore[overload-overlap]
+    def __ne__(self, other: npt.NDArray[np.datetime64] | DatetimeIndex) -> np_ndarray_bool: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: object) -> Literal[True]: ...
     def __hash__(self) -> int: ...
