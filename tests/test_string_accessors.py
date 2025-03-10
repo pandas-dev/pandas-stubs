@@ -13,70 +13,21 @@ np_ndarray_bool = npt.NDArray[np.bool_]
 
 
 DATA = ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
+DATA_BYTES = [b"applep", b"bananap"]
 
 
 def test_string_accessors_type_preserving_series() -> None:
-    s = pd.Series(DATA)
-    _check = functools.partial(check, klass=pd.Series, dtype=str)
-    _check(assert_type(s.str.capitalize(), "pd.Series[str]"))
-    _check(assert_type(s.str.casefold(), "pd.Series[str]"))
-    check(assert_type(s.str.cat(sep="X"), str), str)
-    _check(assert_type(s.str.center(10), "pd.Series[str]"))
-    _check(assert_type(s.str.get(2), "pd.Series[str]"))
-    _check(assert_type(s.str.ljust(80), "pd.Series[str]"))
-    _check(assert_type(s.str.lower(), "pd.Series[str]"))
-    _check(assert_type(s.str.lstrip("a"), "pd.Series[str]"))
-    _check(assert_type(s.str.normalize("NFD"), "pd.Series[str]"))
-    _check(assert_type(s.str.pad(80, "right"), "pd.Series[str]"))
-    _check(assert_type(s.str.removeprefix("a"), "pd.Series[str]"))
-    _check(assert_type(s.str.removesuffix("e"), "pd.Series[str]"))
-    _check(assert_type(s.str.repeat(2), "pd.Series[str]"))
-    _check(assert_type(s.str.replace("a", "X"), "pd.Series[str]"))
-    _check(assert_type(s.str.rjust(80), "pd.Series[str]"))
-    _check(assert_type(s.str.rstrip(), "pd.Series[str]"))
-    _check(assert_type(s.str.slice(0, 4, 2), "pd.Series[str]"))
-    _check(assert_type(s.str.slice_replace(0, 2, "XX"), "pd.Series[str]"))
-    _check(assert_type(s.str.strip(), "pd.Series[str]"))
-    _check(assert_type(s.str.swapcase(), "pd.Series[str]"))
-    _check(assert_type(s.str.title(), "pd.Series[str]"))
-    _check(
-        assert_type(s.str.translate({241: "n"}), "pd.Series[str]"),
-    )
-    _check(assert_type(s.str.upper(), "pd.Series[str]"))
-    _check(assert_type(s.str.wrap(80), "pd.Series[str]"))
-    _check(assert_type(s.str.zfill(10), "pd.Series[str]"))
+    s_str = pd.Series(DATA)
+    s_bytes = pd.Series(DATA_BYTES)
+    check(assert_type(s_str.str.slice(0, 4, 2), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(s_bytes.str.slice(0, 4, 2), "pd.Series[bytes]"), pd.Series, bytes)
 
 
 def test_string_accessors_type_preserving_index() -> None:
-    idx = pd.Index(DATA)
-    _check = functools.partial(check, klass=pd.Index, dtype=str)
-    _check(assert_type(idx.str.capitalize(), "pd.Index[str]"))
-    _check(assert_type(idx.str.casefold(), "pd.Index[str]"))
-    check(assert_type(idx.str.cat(sep="X"), str), str)
-    _check(assert_type(idx.str.center(10), "pd.Index[str]"))
-    _check(assert_type(idx.str.get(2), "pd.Index[str]"))
-    _check(assert_type(idx.str.ljust(80), "pd.Index[str]"))
-    _check(assert_type(idx.str.lower(), "pd.Index[str]"))
-    _check(assert_type(idx.str.lstrip("a"), "pd.Index[str]"))
-    _check(assert_type(idx.str.normalize("NFD"), "pd.Index[str]"))
-    _check(assert_type(idx.str.pad(80, "right"), "pd.Index[str]"))
-    _check(assert_type(idx.str.removeprefix("a"), "pd.Index[str]"))
-    _check(assert_type(idx.str.removesuffix("e"), "pd.Index[str]"))
-    _check(assert_type(idx.str.repeat(2), "pd.Index[str]"))
-    _check(assert_type(idx.str.replace("a", "X"), "pd.Index[str]"))
-    _check(assert_type(idx.str.rjust(80), "pd.Index[str]"))
-    _check(assert_type(idx.str.rstrip(), "pd.Index[str]"))
-    _check(assert_type(idx.str.slice(0, 4, 2), "pd.Index[str]"))
-    _check(assert_type(idx.str.slice_replace(0, 2, "XX"), "pd.Index[str]"))
-    _check(assert_type(idx.str.strip(), "pd.Index[str]"))
-    _check(assert_type(idx.str.swapcase(), "pd.Index[str]"))
-    _check(assert_type(idx.str.title(), "pd.Index[str]"))
-    _check(
-        assert_type(idx.str.translate({241: "n"}), "pd.Index[str]"),
-    )
-    _check(assert_type(idx.str.upper(), "pd.Index[str]"))
-    _check(assert_type(idx.str.wrap(80), "pd.Index[str]"))
-    _check(assert_type(idx.str.zfill(10), "pd.Index[str]"))
+    idx_str = pd.Index(DATA)
+    idx_bytes = pd.Index(DATA_BYTES)
+    check(assert_type(idx_str.str.slice(0, 4, 2), "pd.Index[str]"), pd.Index, str)
+    check(assert_type(idx_bytes.str.slice(0, 4, 2), "pd.Index[bytes]"), pd.Index, bytes)
 
 
 def test_string_accessors_boolean_series():
@@ -158,21 +109,73 @@ def test_string_accessors_integer_index():
 
 
 def test_string_accessors_string_series():
-    s = pd.Series([b"a1", b"b2", b"c3"])
+    s = pd.Series(DATA)
     _check = functools.partial(check, klass=pd.Series, dtype=str)
-    _check(assert_type(s.str.decode("utf-8"), "pd.Series[str]"))
-    s2 = pd.Series([["apple", "banana"], ["cherry", "date"], [1, "eggplant"]])
-    _check(assert_type(s2.str.join("-"), "pd.Series[str]"))
+    _check(assert_type(s.str.capitalize(), "pd.Series[str]"))
+    _check(assert_type(s.str.casefold(), "pd.Series[str]"))
+    check(assert_type(s.str.cat(sep="X"), str), str)
+    _check(assert_type(s.str.center(10), "pd.Series[str]"))
+    _check(assert_type(s.str.get(2), "pd.Series[str]"))
+    _check(assert_type(s.str.ljust(80), "pd.Series[str]"))
+    _check(assert_type(s.str.lower(), "pd.Series[str]"))
+    _check(assert_type(s.str.lstrip("a"), "pd.Series[str]"))
+    _check(assert_type(s.str.normalize("NFD"), "pd.Series[str]"))
+    _check(assert_type(s.str.pad(80, "right"), "pd.Series[str]"))
+    _check(assert_type(s.str.removeprefix("a"), "pd.Series[str]"))
+    _check(assert_type(s.str.removesuffix("e"), "pd.Series[str]"))
+    _check(assert_type(s.str.repeat(2), "pd.Series[str]"))
+    _check(assert_type(s.str.replace("a", "X"), "pd.Series[str]"))
+    _check(assert_type(s.str.rjust(80), "pd.Series[str]"))
+    _check(assert_type(s.str.rstrip(), "pd.Series[str]"))
+    _check(assert_type(s.str.slice_replace(0, 2, "XX"), "pd.Series[str]"))
+    _check(assert_type(s.str.strip(), "pd.Series[str]"))
+    _check(assert_type(s.str.swapcase(), "pd.Series[str]"))
+    _check(assert_type(s.str.title(), "pd.Series[str]"))
+    _check(
+        assert_type(s.str.translate({241: "n"}), "pd.Series[str]"),
+    )
+    _check(assert_type(s.str.upper(), "pd.Series[str]"))
+    _check(assert_type(s.str.wrap(80), "pd.Series[str]"))
+    _check(assert_type(s.str.zfill(10), "pd.Series[str]"))
+    s_bytes = pd.Series([b"a1", b"b2", b"c3"])
+    _check(assert_type(s_bytes.str.decode("utf-8"), "pd.Series[str]"))
+    s_list = pd.Series([["apple", "banana"], ["cherry", "date"], [1, "eggplant"]])
+    _check(assert_type(s_list.str.join("-"), "pd.Series[str]"))
 
 
 def test_string_accessors_string_index():
-    idx = pd.Index([b"a1", b"b2", b"c3"])
+    idx = pd.Index(DATA)
     _check = functools.partial(check, klass=pd.Index, dtype=str)
-    _check(assert_type(idx.str.decode("utf-8"), "pd.Index[str]"))
-    idx2: "pd.Index[list]" = pd.Index(
-        [["apple", "banana"], ["cherry", "date"], [1, "eggplant"]]
+    _check(assert_type(idx.str.capitalize(), "pd.Index[str]"))
+    _check(assert_type(idx.str.casefold(), "pd.Index[str]"))
+    check(assert_type(idx.str.cat(sep="X"), str), str)
+    _check(assert_type(idx.str.center(10), "pd.Index[str]"))
+    _check(assert_type(idx.str.get(2), "pd.Index[str]"))
+    _check(assert_type(idx.str.ljust(80), "pd.Index[str]"))
+    _check(assert_type(idx.str.lower(), "pd.Index[str]"))
+    _check(assert_type(idx.str.lstrip("a"), "pd.Index[str]"))
+    _check(assert_type(idx.str.normalize("NFD"), "pd.Index[str]"))
+    _check(assert_type(idx.str.pad(80, "right"), "pd.Index[str]"))
+    _check(assert_type(idx.str.removeprefix("a"), "pd.Index[str]"))
+    _check(assert_type(idx.str.removesuffix("e"), "pd.Index[str]"))
+    _check(assert_type(idx.str.repeat(2), "pd.Index[str]"))
+    _check(assert_type(idx.str.replace("a", "X"), "pd.Index[str]"))
+    _check(assert_type(idx.str.rjust(80), "pd.Index[str]"))
+    _check(assert_type(idx.str.rstrip(), "pd.Index[str]"))
+    _check(assert_type(idx.str.slice_replace(0, 2, "XX"), "pd.Index[str]"))
+    _check(assert_type(idx.str.strip(), "pd.Index[str]"))
+    _check(assert_type(idx.str.swapcase(), "pd.Index[str]"))
+    _check(assert_type(idx.str.title(), "pd.Index[str]"))
+    _check(
+        assert_type(idx.str.translate({241: "n"}), "pd.Index[str]"),
     )
-    _check(assert_type(idx2.str.join("-"), "pd.Index[str]"))
+    _check(assert_type(idx.str.upper(), "pd.Index[str]"))
+    _check(assert_type(idx.str.wrap(80), "pd.Index[str]"))
+    _check(assert_type(idx.str.zfill(10), "pd.Index[str]"))
+    idx_bytes = pd.Index([b"a1", b"b2", b"c3"])
+    _check(assert_type(idx_bytes.str.decode("utf-8"), "pd.Index[str]"))
+    idx_list = pd.Index([["apple", "banana"], ["cherry", "date"], [1, "eggplant"]])
+    _check(assert_type(idx_list.str.join("-"), "pd.Index[str]"))
 
 
 def test_string_accessors_bytes_series():
@@ -325,6 +328,12 @@ def test_series_overloads_cat():
     )
     unknown_s = pd.DataFrame({"a": list("abcdefg")})["a"]
     check(assert_type(s.str.cat(unknown_s, sep=";"), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(unknown_s.str.cat(s, sep=";"), "pd.Series[str]"), pd.Series, str)
+    check(
+        assert_type(unknown_s.str.cat(unknown_s, sep=";"), "pd.Series[str]"),
+        pd.Series,
+        str,
+    )
 
 
 def test_index_overloads_cat():
@@ -350,6 +359,14 @@ def test_index_overloads_cat():
     unknown_idx = pd.DataFrame({"a": list("abcdefg")}).set_index("a").index
     check(
         assert_type(idx.str.cat(unknown_idx, sep=";"), "pd.Index[str]"), pd.Index, str
+    )
+    check(
+        assert_type(unknown_idx.str.cat(idx, sep=";"), "pd.Index[str]"), pd.Index, str
+    )
+    check(
+        assert_type(unknown_idx.str.cat(unknown_idx, sep=";"), "pd.Index[str]"),
+        pd.Index,
+        str,
     )
 
 
