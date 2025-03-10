@@ -1325,6 +1325,8 @@ def test_timestamp_cmp() -> None:
 
     check(assert_type(ts >= c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_)
     check(assert_type(ts < c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(ts >= c_unknown_index, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(ts < c_unknown_index, np_ndarray_bool), np.ndarray, np.bool_)
 
     check(assert_type(ts >= c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_)
     check(assert_type(ts < c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_)
@@ -1368,6 +1370,13 @@ def test_timestamp_cmp() -> None:
     )
     ne_arr = check(
         assert_type(ts != c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    assert (eq_arr != ne_arr).all()
+    eq_arr = check(
+        assert_type(ts == c_unknown_index, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    ne_arr = check(
+        assert_type(ts != c_unknown_index, np_ndarray_bool), np.ndarray, np.bool_
     )
     assert (eq_arr != ne_arr).all()
 
