@@ -174,7 +174,9 @@ def test_string_accessors_string_index():
     _check(assert_type(idx.str.zfill(10), "pd.Index[str]"))
     idx_bytes = pd.Index([b"a1", b"b2", b"c3"])
     _check(assert_type(idx_bytes.str.decode("utf-8"), "pd.Index[str]"))
-    idx_list = pd.Index([["apple", "banana"], ["cherry", "date"], [1, "eggplant"]])
+    idx_list: "pd.Index[list]" = pd.Index(
+        [["apple", "banana"], ["cherry", "date"], [1, "eggplant"]]
+    )
     _check(assert_type(idx_list.str.join("-"), "pd.Index[str]"))
 
 
