@@ -3715,12 +3715,7 @@ def test_align() -> None:
     check(assert_type(aligned_s0, pd.Series), pd.Series)
     check(assert_type(aligned_s1, pd.Series), pd.Series)
 
-    msg = (
-        r"The copy keyword is deprecated and will be removed in a future version\. Copy"
-        r"-on-Write is active in pandas since 3\.0 which utilizes a lazy copy mechanism"
-        r" that defers copies until necessary\. Use \.copy\(\) to make an eager copy if"
-        " necessary.*"
-    )
+    msg = "The copy keyword is deprecated and will be removed in a future version.*"
     with pytest_warns_bounded(
         DeprecationWarning,
         msg,

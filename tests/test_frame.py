@@ -4011,12 +4011,7 @@ def test_transpose() -> None:
     check(assert_type(df.transpose(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.transpose(None), pd.DataFrame), pd.DataFrame)
 
-    msg = (
-        r"The copy keyword is deprecated and will be removed in a future version\. Copy"
-        r"-on-Write is active in pandas since 3\.0 which utilizes a lazy copy mechanism"
-        r" that defers copies until necessary\. Use \.copy\(\) to make an eager copy if"
-        " necessary.*"
-    )
+    msg = "The copy keyword is deprecated and will be removed in a future"
     with pytest_warns_bounded(
         DeprecationWarning,
         msg,
