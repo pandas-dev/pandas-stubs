@@ -1,12 +1,11 @@
-# pyright: strict
 from datetime import (
+    _IsoCalendarDate,
     date as _date,
     datetime,
     time as _time,
     timedelta,
     tzinfo as _tzinfo,
 )
-from datetime import _IsoCalendarDate  # pyright: ignore[reportPrivateUsage]
 import sys
 from time import struct_time
 from typing import (
