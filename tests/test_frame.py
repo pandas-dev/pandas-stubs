@@ -3996,8 +3996,10 @@ def test_hashable_args() -> None:
     df.columns = ["test"]  # type: ignore[assignment]
 
     testDict = {"test": 1}
-    df.to_string("test", col_space=testDict)
-    df.to_string("test", col_space={"test": 1})
+
+    with ensure_clean() as path:
+        df.to_string(path, col_space=testDict)
+        df.to_string(path, col_space={"test": 1})
 
 
 # GH 906
