@@ -9,10 +9,7 @@ from pandas.core.arrays.datetimes import DatetimeArray as DatetimeArray
 from pandas.core.arrays.integer import IntegerArray as IntegerArray
 from pandas.core.arrays.interval import IntervalArray as IntervalArray
 from pandas.core.arrays.numpy_ import PandasArray as PandasArray
-from pandas.core.arrays.period import (
-    PeriodArray as PeriodArray,
-    period_array as period_array,
-)
+from pandas.core.arrays.period import PeriodArray as PeriodArray
 from pandas.core.arrays.sparse import SparseArray as SparseArray
 from pandas.core.arrays.string_ import StringArray as StringArray
 from pandas.core.arrays.timedeltas import TimedeltaArray as TimedeltaArray
