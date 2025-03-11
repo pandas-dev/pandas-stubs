@@ -51,6 +51,7 @@ _Nonexistent: TypeAlias = (
     Literal["raise", "NaT", "shift_backward", "shift_forward"] | Timedelta | timedelta
 )
 # Repeated from `_typing.pyi` so as to satisfy mixed strict / non-strict paths.
+# https://github.com/pandas-dev/pandas-stubs/pull/1151#issuecomment-2715130190
 TimeZones: TypeAlias = str | _tzinfo | None | int
 
 class Timestamp(datetime, SupportsIndex):
