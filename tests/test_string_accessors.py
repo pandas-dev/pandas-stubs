@@ -139,7 +139,7 @@ def test_string_accessors_string_series():
     _check(assert_type(s.str.zfill(10), "pd.Series[str]"))
     s_bytes = pd.Series([b"a1", b"b2", b"c3"])
     _check(assert_type(s_bytes.str.decode("utf-8"), "pd.Series[str]"))
-    s_list = pd.Series([["apple", "banana"], ["cherry", "date"], [1, "eggplant"]])
+    s_list = pd.Series([["apple", "banana"], ["cherry", "date"], ["one", "eggplant"]])
     _check(assert_type(s_list.str.join("-"), "pd.Series[str]"))
 
 
@@ -174,9 +174,7 @@ def test_string_accessors_string_index():
     _check(assert_type(idx.str.zfill(10), "pd.Index[str]"))
     idx_bytes = pd.Index([b"a1", b"b2", b"c3"])
     _check(assert_type(idx_bytes.str.decode("utf-8"), "pd.Index[str]"))
-    idx_list: "pd.Index[list]" = pd.Index(
-        [["apple", "banana"], ["cherry", "date"], [1, "eggplant"]]
-    )
+    idx_list = pd.Index([["apple", "banana"], ["cherry", "date"], ["one", "eggplant"]])
     _check(assert_type(idx_list.str.join("-"), "pd.Index[str]"))
 
 
