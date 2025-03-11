@@ -25,6 +25,7 @@ from typing import (
 )
 
 from _typing import (
+    Label,
     ReplaceValue,
     TimeZones,
 )
@@ -1039,7 +1040,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def rename(
         self,
-        index: Renamer | Hashable | None = ...,
+        index: Callable[[Any], Label],
         *,
         axis: Axis | None = ...,
         copy: bool = ...,
@@ -1050,7 +1051,29 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def rename(
         self,
-        index: Renamer | Hashable | None = ...,
+        index: Mapping[Any, Label],
+        *,
+        axis: Axis | None = ...,
+        copy: bool = ...,
+        inplace: Literal[True],
+        level: Level | None = ...,
+        errors: IgnoreRaise = ...,
+    ) -> None: ...
+    @overload
+    def rename(
+        self,
+        index: Scalar | tuple[Hashable, ...] | None = None,
+        *,
+        axis: Axis | None = ...,
+        copy: bool = ...,
+        inplace: Literal[True],
+        level: Level | None = ...,
+        errors: IgnoreRaise = ...,
+    ) -> Self: ...
+    @overload
+    def rename(
+        self,
+        index: Renamer | Scalar | tuple[Hashable, ...] | None = ...,
         *,
         axis: Axis | None = ...,
         copy: bool = ...,

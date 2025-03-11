@@ -1138,7 +1138,7 @@ def test_types_set_flags() -> None:
 
 def test_types_getitem() -> None:
     s = pd.Series({"key": [0, 1, 2, 3]})
-    key: list[int] = s["key"]
+    check(assert_type(s["key"], Any), list)
     s2 = pd.Series([0, 1, 2, 3])
     check(assert_type(s2[0], int), np.integer)
     check(assert_type(s[:2], pd.Series), pd.Series)
@@ -1181,12 +1181,28 @@ def test_types_rename_axis() -> None:
 
 
 def test_types_values() -> None:
-    n1: np.ndarray | ExtensionArray = pd.Series([1, 2, 3]).values
-    n2: np.ndarray | ExtensionArray = pd.Series(list("aabc")).values
-    n3: np.ndarray | ExtensionArray = pd.Series(list("aabc")).astype("category").values
-    n4: np.ndarray | ExtensionArray = pd.Series(
-        pd.date_range("20130101", periods=3, tz="US/Eastern")
-    ).values
+    check(
+        assert_type(pd.Series([1, 2, 3]).values, Union[ExtensionArray, np.ndarray]),
+        np.ndarray,
+    )
+    check(
+        assert_type(pd.Series(list("aabc")).values, Union[np.ndarray, ExtensionArray]),
+        np.ndarray,
+    )
+    check(
+        assert_type(
+            pd.Series(list("aabc")).astype("category").values,
+            Union[np.ndarray, ExtensionArray],
+        ),
+        pd.Categorical,
+    )
+    check(
+        assert_type(
+            pd.Series(pd.date_range("20130101", periods=3, tz="US/Eastern")).values,
+            Union[np.ndarray, ExtensionArray],
+        ),
+        np.ndarray,
+    )
 
 
 def test_types_rename() -> None:
@@ -1212,11 +1228,29 @@ def test_types_rename() -> None:
     s5 = pd.Series([1, 2, 3]).rename({1: 10})
     check(assert_type(s5, "pd.Series[int]"), pd.Series, np.integer)
     # inplace
-    # TODO fix issue with inplace=True returning a Series, cf pandas #60942
-    s6: None = pd.Series([1, 2, 3]).rename("A", inplace=True)
+    check(
+        assert_type(pd.Series([1, 2, 3]).rename("A", inplace=True), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(pd.Series([1, 2, 3]).rename({1: 4, 2: 5}, inplace=True), None),
+        type(None),
+    )
+    check(
+        assert_type(
+            pd.Series([1, 2, 3]).rename(index=None, inplace=True), "pd.Series[int]"
+        ),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(pd.Series([1, 2, 3]).rename(lambda x: x**2, inplace=True), None),
+        type(None),
+    )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType]
 
 
 def test_types_ne() -> None:
