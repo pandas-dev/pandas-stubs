@@ -44,10 +44,7 @@ from pandas.core.indexing import (
     _LocIndexer,
 )
 from pandas.core.interchange.dataframe_protocol import DataFrame as DataFrameXchg
-from pandas.core.series import (
-    Series,
-    UnknownSeries,
-)
+from pandas.core.series import Series
 from pandas.core.window import (
     Expanding,
     ExponentialMovingWindow,
@@ -247,24 +244,24 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
 if sys.version_info >= (3, 12):
     class _GetItemHack:
         @overload
-        def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> UnknownSeries: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         @overload
         def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
             self, key: Iterable[Hashable] | slice
         ) -> Self: ...
         @overload
-        def __getitem__(self, key: Hashable) -> UnknownSeries: ...
+        def __getitem__(self, key: Hashable) -> Series: ...
 
 else:
     class _GetItemHack:
         @overload
-        def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> UnknownSeries: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         @overload
         def __getitem__(  # pyright: ignore[reportOverlappingOverload]
             self, key: Iterable[Hashable] | slice
         ) -> Self: ...
         @overload
-        def __getitem__(self, key: Hashable) -> UnknownSeries: ...
+        def __getitem__(self, key: Hashable) -> Series: ...
 
 class DataFrame(NDFrame, OpsMixin, _GetItemHack):
 

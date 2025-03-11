@@ -6,10 +6,7 @@ import numpy.typing as npt
 import pandas as pd
 from typing_extensions import assert_type
 
-from tests import (
-    TYPE_CHECKING_INVALID_USAGE,
-    check,
-)
+from tests import check
 
 # Separately define here so pytest works
 np_ndarray_bool = npt.NDArray[np.bool_]
@@ -142,7 +139,7 @@ def test_string_accessors_string_series():
     _check(assert_type(s.str.zfill(10), "pd.Series[str]"))
     s_bytes = pd.Series([b"a1", b"b2", b"c3"])
     _check(assert_type(s_bytes.str.decode("utf-8"), "pd.Series[str]"))
-    s_list = pd.Series([["apple", "banana"], ["cherry", "date"], ["foo", "eggplant"]])
+    s_list = pd.Series([["apple", "banana"], ["cherry", "date"], [1, "eggplant"]])
     _check(assert_type(s_list.str.join("-"), "pd.Series[str]"))
 
 
@@ -418,10 +415,3 @@ def test_index_overloads_extract():
         pd.Index,
         object,
     )
-
-
-def test_series_unknown():
-    if TYPE_CHECKING_INVALID_USAGE:
-        s = pd.Series([1, 2, 3])
-        s.str.startswith("a")  # type:ignore[attr-defined]
-        s.str.slice(2, 4)  # type:ignore[attr-defined]

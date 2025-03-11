@@ -231,54 +231,6 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
         value: S1 | ArrayLike | Series[S1] | None,
     ) -> None: ...
 
-class _StrMethods:
-    @overload
-    def __get__(self, instance: Series[str], owner: Any) -> StringMethods[
-        Series[str],
-        DataFrame,
-        Series[bool],
-        Series[list[str]],
-        Series[int],
-        Series[bytes],
-        Series[str],
-        Series[type[object]],
-    ]: ...
-    @overload
-    def __get__(self, instance: Series[bytes], owner: Any) -> StringMethods[
-        Series[bytes],
-        DataFrame,
-        Series[bool],
-        Series[list[str]],
-        Series[int],
-        Series[bytes],
-        Series[str],
-        Series[type[object]],
-    ]: ...
-    @overload
-    def __get__(self, instance: Series[list[str]], owner: Any) -> StringMethods[
-        Series[list[str]],
-        DataFrame,
-        Series[bool],
-        Series[list[str]],
-        Series[int],
-        Series[bytes],
-        Series[str],
-        Series[type[object]],
-    ]: ...
-    @overload
-    def __get__(self, instance: Series[S1], owner: Any) -> NoReturn: ...
-    @overload
-    def __get__(self, instance: UnknownSeries, owner: Any) -> StringMethods[
-        Series,
-        DataFrame,
-        Series[bool],
-        Series[list[str]],
-        Series[int],
-        Series[bytes],
-        Series[str],
-        Series[type[object]],
-    ]: ...
-
 _ListLike: TypeAlias = (
     ArrayLike | dict[_str, np.ndarray] | Sequence[S1] | IndexOpsMixin[S1]
 )
@@ -1201,7 +1153,19 @@ class Series(IndexOpsMixin[S1], NDFrame):
         copy: _bool = ...,
     ) -> Series[S1]: ...
     def to_period(self, freq: _str | None = ..., copy: _bool = ...) -> DataFrame: ...
-    str: _StrMethods
+    @property
+    def str(
+        self,
+    ) -> StringMethods[
+        Self,
+        DataFrame,
+        Series[bool],
+        Series[list[str]],
+        Series[int],
+        Series[bytes],
+        Series[str],
+        Series[type[object]],
+    ]: ...
     @property
     def dt(self) -> CombinedDatetimelikeProperties: ...
     @property
