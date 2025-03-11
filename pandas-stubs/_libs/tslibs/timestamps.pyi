@@ -17,7 +17,6 @@ from typing import (
     overload,
 )
 
-from _typing import TimeZones
 import numpy as np
 from pandas import (
     DatetimeIndex,
@@ -51,6 +50,8 @@ _Ambiguous: TypeAlias = bool | Literal["raise", "NaT"]
 _Nonexistent: TypeAlias = (
     Literal["raise", "NaT", "shift_backward", "shift_forward"] | Timedelta | timedelta
 )
+# Repeated from `_typing.pyi` so as to satisfy mixed strict / non-strict paths.
+TimeZones: TypeAlias = str | _tzinfo | None | int
 
 class Timestamp(datetime, SupportsIndex):
     min: ClassVar[Timestamp]  # pyright: ignore[reportIncompatibleVariableOverride]
