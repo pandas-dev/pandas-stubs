@@ -8,7 +8,7 @@ from collections.abc import (
     Sequence,
 )
 import datetime
-from datetime import tzinfo
+from datetime import tzinfo as _tzinfo
 from os import PathLike
 from re import Pattern
 import sys
@@ -833,6 +833,6 @@ TimeGrouperOrigin: TypeAlias = (
 ExcelReadEngine: TypeAlias = Literal["xlrd", "openpyxl", "odf", "pyxlsb", "calamine"]
 ExcelWriteEngine: TypeAlias = Literal["openpyxl", "odf", "xlsxwriter"]
 
-TimeZones: TypeAlias = str | tzinfo | None | int
+TimeZones: TypeAlias = str | _tzinfo | None | int
 
 __all__ = ["npt", "type_t"]

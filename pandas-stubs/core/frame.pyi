@@ -31,7 +31,10 @@ from pandas.core.generic import NDFrame
 from pandas.core.groupby.generic import DataFrameGroupBy
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexers import BaseIndexer
-from pandas.core.indexes.base import Index
+from pandas.core.indexes.base import (
+    Index,
+    UnknownIndex,
+)
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.interval import IntervalIndex
@@ -1617,7 +1620,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @property
     def iloc(self) -> _iLocIndexerFrame[Self]: ...
     @property
-    def index(self) -> Index: ...
+    def index(self) -> UnknownIndex: ...
     @index.setter
     def index(self, idx: Index) -> None: ...
     @property
