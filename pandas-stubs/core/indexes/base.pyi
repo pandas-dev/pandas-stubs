@@ -13,6 +13,7 @@ from typing import (
     Any,
     ClassVar,
     Literal,
+    TypeAlias,
     final,
     overload,
 )
@@ -263,7 +264,16 @@ class Index(IndexOpsMixin[S1]):
     @property
     def str(
         self,
-    ) -> StringMethods[Self, MultiIndex, np_ndarray_bool, Index[list[str]]]: ...
+    ) -> StringMethods[
+        Self,
+        MultiIndex,
+        np_ndarray_bool,
+        Index[list[str]],
+        Index[int],
+        Index[bytes],
+        Index[str],
+        Index[type[object]],
+    ]: ...
     def is_(self, other) -> bool: ...
     def __len__(self) -> int: ...
     def __array__(self, dtype=...) -> np.ndarray: ...
@@ -454,6 +464,8 @@ class Index(IndexOpsMixin[S1]):
             | Sequence[float]
         ),
     ) -> Self: ...
+
+UnknownIndex: TypeAlias = Index[Any]
 
 def ensure_index_from_sequences(
     sequences: Sequence[Sequence[Dtype]], names: list[str] = ...

@@ -1179,7 +1179,16 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @property
     def str(
         self,
-    ) -> StringMethods[Series, DataFrame, Series[bool], Series[list[str]]]: ...
+    ) -> StringMethods[
+        Self,
+        DataFrame,
+        Series[bool],
+        Series[list[str]],
+        Series[int],
+        Series[bytes],
+        Series[str],
+        Series[type[object]],
+    ]: ...
     @property
     def dt(self) -> CombinedDatetimelikeProperties: ...
     @property
@@ -2318,3 +2327,5 @@ class IntervalSeries(Series[Interval[_OrderableT]], Generic[_OrderableT]):
     @property
     def array(self) -> IntervalArray: ...
     def diff(self, periods: int = ...) -> Never: ...
+
+UnknownSeries: TypeAlias = Series[Any]
