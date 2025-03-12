@@ -185,7 +185,7 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
             IndexType
             | MaskType
             | Callable[[DataFrame], IndexType | MaskType | Sequence[Hashable]]
-            | list[Hashable]
+            | list[HashableT]
             | tuple[
                 IndexType
                 | MaskType

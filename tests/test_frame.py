@@ -3586,6 +3586,18 @@ def test_in_columns() -> None:
     check(assert_type(df.groupby(by=cols).sum(), pd.DataFrame), pd.DataFrame)
 
 
+def test_loc_list_str() -> None:
+    # GH 1162 (PR)
+    df = pd.DataFrame(
+        [[1, 2], [4, 5], [7, 8]],
+        index=["cobra", "viper", "sidewinder"],
+        columns=["max_speed", "shield"],
+    )
+
+    result = df.loc[["viper", "sidewinder"]]
+    check(assert_type(result, pd.DataFrame), pd.DataFrame)
+
+
 def test_insert_newvalues() -> None:
     df = pd.DataFrame({"a": [1, 2]})
     ab = pd.DataFrame({"col1": [1, 2], "col2": [3, 4]})
