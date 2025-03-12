@@ -1,3 +1,4 @@
+# pyright: strict
 import datetime as dt
 from datetime import timedelta
 from typing import (
@@ -241,7 +242,9 @@ class Timedelta(timedelta):
     @overload
     def __rmul__(self, other: float) -> Timedelta: ...
     @overload
-    def __rmul__(self, other: np.ndarray) -> np.ndarray: ...
+    def __rmul__(
+        self, other: npt.NDArray[np.floating] | npt.NDArray[np.integer]
+    ) -> npt.NDArray[np.timedelta64]: ...
     @overload
     def __rmul__(self, other: Series[int]) -> TimedeltaSeries: ...
     @overload

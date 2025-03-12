@@ -713,8 +713,16 @@ def test_timedelta_mul_div() -> None:
 
     check(assert_type(md_int * td, pd.Timedelta), pd.Timedelta)
     check(assert_type(md_float * td, pd.Timedelta), pd.Timedelta)
-    check(assert_type(md_ndarray_intp * td, np.ndarray), np.ndarray, np.timedelta64)
-    check(assert_type(md_ndarray_float * td, np.ndarray), np.ndarray, np.timedelta64)
+    check(
+        assert_type(md_ndarray_intp * td, npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
+    check(
+        assert_type(md_ndarray_float * td, npt.NDArray[np.timedelta64]),
+        np.ndarray,
+        np.timedelta64,
+    )
     check(assert_type(mp_series_int * td, TimedeltaSeries), pd.Series, pd.Timedelta)
     check(assert_type(md_series_float * td, TimedeltaSeries), pd.Series, pd.Timedelta)
     check(assert_type(md_int64_index * td, pd.TimedeltaIndex), pd.TimedeltaIndex)
@@ -1253,6 +1261,8 @@ def test_timestamp_cmp() -> None:
     c_np_dt64 = np.datetime64(1, "ns")
     c_dt_datetime = dt.datetime(year=2000, month=1, day=1)
     c_datetimeindex = pd.DatetimeIndex(["2000-1-1"])
+    # DatetimeIndex, but the type checker detects it to be UnknownIndex.
+    c_unknown_index = pd.DataFrame({"a": [1]}, index=c_datetimeindex).index
     c_np_ndarray_dt64 = np_dt64_arr
     c_series_dt64: TimestampSeries = pd.Series([1, 2, 3], dtype="datetime64[ns]")
     c_series_timestamp = pd.Series(pd.DatetimeIndex(["2000-1-1"]))
@@ -1273,6 +1283,8 @@ def test_timestamp_cmp() -> None:
 
     check(assert_type(ts > c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_)
     check(assert_type(ts <= c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(ts > c_unknown_index, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(ts <= c_unknown_index, np_ndarray_bool), np.ndarray, np.bool_)
 
     check(assert_type(ts > c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_)
     check(assert_type(ts <= c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_)
@@ -1292,6 +1304,8 @@ def test_timestamp_cmp() -> None:
 
     check(assert_type(c_datetimeindex > ts, np_ndarray_bool), np.ndarray, np.bool_)
     check(assert_type(c_datetimeindex <= ts, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(c_unknown_index > ts, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(c_unknown_index <= ts, np_ndarray_bool), np.ndarray, np.bool_)
 
     check(assert_type(c_np_ndarray_dt64 > ts, np_ndarray_bool), np.ndarray, np.bool_)
     check(assert_type(c_np_ndarray_dt64 <= ts, np_ndarray_bool), np.ndarray, np.bool_)
@@ -1313,6 +1327,8 @@ def test_timestamp_cmp() -> None:
 
     check(assert_type(ts >= c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_)
     check(assert_type(ts < c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(ts >= c_unknown_index, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(ts < c_unknown_index, np_ndarray_bool), np.ndarray, np.bool_)
 
     check(assert_type(ts >= c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_)
     check(assert_type(ts < c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_)
@@ -1332,6 +1348,8 @@ def test_timestamp_cmp() -> None:
 
     check(assert_type(c_datetimeindex >= ts, np_ndarray_bool), np.ndarray, np.bool_)
     check(assert_type(c_datetimeindex < ts, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(c_unknown_index >= ts, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(c_unknown_index < ts, np_ndarray_bool), np.ndarray, np.bool_)
 
     check(assert_type(c_np_ndarray_dt64 >= ts, np_ndarray_bool), np.ndarray, np.bool_)
     check(assert_type(c_np_ndarray_dt64 < ts, np_ndarray_bool), np.ndarray, np.bool_)
@@ -1356,6 +1374,13 @@ def test_timestamp_cmp() -> None:
     )
     ne_arr = check(
         assert_type(ts != c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    assert (eq_arr != ne_arr).all()
+    eq_arr = check(
+        assert_type(ts == c_unknown_index, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    ne_arr = check(
+        assert_type(ts != c_unknown_index, np_ndarray_bool), np.ndarray, np.bool_
     )
     assert (eq_arr != ne_arr).all()
 
@@ -1396,6 +1421,8 @@ def test_timestamp_eq_ne_rhs() -> None:
     c_np_dt64 = np.datetime64(1, "ns")
     c_dt_datetime = dt.datetime(year=2000, month=1, day=1)
     c_datetimeindex = pd.DatetimeIndex(["2000-1-1"])
+    # DatetimeIndex, but the type checker detects it to be UnknownIndex.
+    c_unknown_index = pd.DataFrame({"a": [1]}, index=c_datetimeindex).index
     c_np_ndarray_dt64 = np_dt64_arr
     c_series_dt64: pd.Series[pd.Timestamp] = pd.Series(
         [1, 2, 3], dtype="datetime64[ns]"
@@ -1414,6 +1441,13 @@ def test_timestamp_eq_ne_rhs() -> None:
     )
     ne_arr = check(
         assert_type(c_datetimeindex != ts, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    assert (eq_arr != ne_arr).all()
+    eq_arr = check(
+        assert_type(c_unknown_index == ts, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    ne_arr = check(
+        assert_type(c_unknown_index != ts, np_ndarray_bool), np.ndarray, np.bool_
     )
     assert (eq_arr != ne_arr).all()
 
