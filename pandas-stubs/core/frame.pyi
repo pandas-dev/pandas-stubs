@@ -92,6 +92,7 @@ from pandas._typing import (
     HashableT,
     HashableT1,
     HashableT2,
+    HashableT3,
     IgnoreRaise,
     IndexingInt,
     IndexLabel,
@@ -798,19 +799,19 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def replace(
         self,
         to_replace: ReplaceValue | Mapping[HashableT2, ReplaceValue] = ...,
-        value: ReplaceValue | Mapping[HashableT2, ReplaceValue] = ...,
+        value: ReplaceValue | Mapping[HashableT3, ReplaceValue] = ...,
         *,
         inplace: Literal[True],
-        regex: ReplaceValue | Mapping[HashableT2, ReplaceValue] = ...,
+        regex: ReplaceValue | Mapping[HashableT3, ReplaceValue] = ...,
     ) -> None: ...
     @overload
     def replace(
         self,
         to_replace: ReplaceValue | Mapping[HashableT2, ReplaceValue] = ...,
-        value: ReplaceValue | Mapping[HashableT2, ReplaceValue] = ...,
+        value: ReplaceValue | Mapping[HashableT3, ReplaceValue] = ...,
         *,
         inplace: Literal[False] = ...,
-        regex: ReplaceValue | Mapping[HashableT2, ReplaceValue] = ...,
+        regex: ReplaceValue | Mapping[HashableT3, ReplaceValue] = ...,
     ) -> Self: ...
     def shift(
         self,
