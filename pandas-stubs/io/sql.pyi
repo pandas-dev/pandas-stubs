@@ -33,6 +33,7 @@ _SQLStatement: TypeAlias = (
     | sqlalchemy.sql.expression.TextClause
     | sqlalchemy.sql.Select
     | FromStatement
+    | sqlalchemy.sql.expression.UpdateBase
 )
 
 @overload
