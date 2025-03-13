@@ -1415,9 +1415,12 @@ def test_sqlalchemy_selectable() -> None:
 
             Session = sqlalchemy.orm.sessionmaker(engine)
             with Session() as session:
-                pd.read_sql(
-                    session.query(Temp.quantity).statement, session.connection()
-                )
+                stmt = sqlalchemy.select(Temp.quantity)
+                pd.read_sql(stmt, session.connection())
+
+                # pd.read_sql(
+                #    #session.query(Temp.quantity).statement, session.connection()
+                # )
 
 
 def test_sqlalchemy_text() -> None:
