@@ -2574,8 +2574,10 @@ def test_types_replace() -> None:
 
 
 def test_dataframe_replace() -> None:
-    df = pd.DataFrame({"col1": ["a", "ab", "ba"]})
+    df = pd.DataFrame({"col1": ["a", "ab", "ba"], "col2": [0, 1, 2]})
     pattern = re.compile(r"^a.*")
+    replace_dict_scalar = {0: 1}
+    replace_dict_per_column = {"col2": {0: 1}}
     check(assert_type(df.replace("a", "x"), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.replace(pattern, "x"), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.replace("a", "x", regex=True), pd.DataFrame), pd.DataFrame)
@@ -2592,6 +2594,7 @@ def test_dataframe_replace() -> None:
     )
 
     check(assert_type(df.replace({"a": "x"}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.replace(replace_dict_scalar), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.replace({pattern: "x"}), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.replace(pd.Series({"a": "x"})), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.replace(regex={"a": "x"}), pd.DataFrame), pd.DataFrame)
@@ -2670,6 +2673,7 @@ def test_dataframe_replace() -> None:
     )
 
     check(assert_type(df.replace({"col1": {"a": "x"}}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.replace(replace_dict_per_column), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.replace({"col1": {pattern: "x"}}), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(df.replace({"col1": pd.Series({"a": "x"})}), pd.DataFrame),
@@ -3580,6 +3584,18 @@ def test_in_columns() -> None:
     check(assert_type(df.loc[:, cols], pd.DataFrame), pd.DataFrame)
     check(assert_type(df[cols], pd.DataFrame), pd.DataFrame)
     check(assert_type(df.groupby(by=cols).sum(), pd.DataFrame), pd.DataFrame)
+
+
+def test_loc_list_str() -> None:
+    # GH 1162 (PR)
+    df = pd.DataFrame(
+        [[1, 2], [4, 5], [7, 8]],
+        index=["cobra", "viper", "sidewinder"],
+        columns=["max_speed", "shield"],
+    )
+
+    result = df.loc[["viper", "sidewinder"]]
+    check(assert_type(result, pd.DataFrame), pd.DataFrame)
 
 
 def test_insert_newvalues() -> None:

@@ -740,7 +740,7 @@ ReplaceValue: TypeAlias = (
     | Pattern
     | NAType
     | Sequence[Scalar | Pattern]
-    | Mapping[Hashable, Scalar]
+    | Mapping[HashableT, ScalarT]
     | Series[Any]
     | None
 )
@@ -833,6 +833,8 @@ TimeGrouperOrigin: TypeAlias = (
 ExcelReadEngine: TypeAlias = Literal["xlrd", "openpyxl", "odf", "pyxlsb", "calamine"]
 ExcelWriteEngine: TypeAlias = Literal["openpyxl", "odf", "xlsxwriter"]
 
+# Repeated in `timestamps.pyi` so as to satisfy mixed strict / non-strict paths.
+# https://github.com/pandas-dev/pandas-stubs/pull/1151#issuecomment-2715130190
 TimeZones: TypeAlias = str | tzinfo | None | int
 
 __all__ = ["npt", "type_t"]

@@ -31,7 +31,10 @@ from pandas.core.generic import NDFrame
 from pandas.core.groupby.generic import DataFrameGroupBy
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexers import BaseIndexer
-from pandas.core.indexes.base import Index
+from pandas.core.indexes.base import (
+    Index,
+    UnknownIndex,
+)
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.interval import IntervalIndex
@@ -89,6 +92,7 @@ from pandas._typing import (
     HashableT,
     HashableT1,
     HashableT2,
+    HashableT3,
     IgnoreRaise,
     IndexingInt,
     IndexLabel,
@@ -181,7 +185,7 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
             IndexType
             | MaskType
             | Callable[[DataFrame], IndexType | MaskType | Sequence[Hashable]]
-            | list[Hashable]
+            | list[HashableT]
             | tuple[
                 IndexType
                 | MaskType
@@ -794,20 +798,20 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def replace(
         self,
-        to_replace: ReplaceValue | Mapping[Hashable, ReplaceValue] = ...,
-        value: ReplaceValue | Mapping[Hashable, ReplaceValue] = ...,
+        to_replace: ReplaceValue | Mapping[HashableT2, ReplaceValue] = ...,
+        value: ReplaceValue | Mapping[HashableT3, ReplaceValue] = ...,
         *,
         inplace: Literal[True],
-        regex: ReplaceValue | Mapping[Hashable, ReplaceValue] = ...,
+        regex: ReplaceValue | Mapping[HashableT3, ReplaceValue] = ...,
     ) -> None: ...
     @overload
     def replace(
         self,
-        to_replace: ReplaceValue | Mapping[Hashable, ReplaceValue] = ...,
-        value: ReplaceValue | Mapping[Hashable, ReplaceValue] = ...,
+        to_replace: ReplaceValue | Mapping[HashableT2, ReplaceValue] = ...,
+        value: ReplaceValue | Mapping[HashableT3, ReplaceValue] = ...,
         *,
         inplace: Literal[False] = ...,
-        regex: ReplaceValue | Mapping[Hashable, ReplaceValue] = ...,
+        regex: ReplaceValue | Mapping[HashableT3, ReplaceValue] = ...,
     ) -> Self: ...
     def shift(
         self,
@@ -1617,7 +1621,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @property
     def iloc(self) -> _iLocIndexerFrame[Self]: ...
     @property
-    def index(self) -> Index: ...
+    def index(self) -> UnknownIndex: ...
     @index.setter
     def index(self, idx: Index) -> None: ...
     @property

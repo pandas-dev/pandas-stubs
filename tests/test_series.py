@@ -1448,10 +1448,15 @@ def test_types_replace() -> None:
 def test_series_replace() -> None:
     s: pd.Series[str] = pd.DataFrame({"col1": ["a", "ab", "ba"]})["col1"]
     pattern = re.compile(r"^a.*")
+    replace_dict = {"a": "b"}
     check(assert_type(s.replace("a", "x"), "pd.Series[str]"), pd.Series)
     check(assert_type(s.replace(pattern, "x"), "pd.Series[str]"), pd.Series)
     check(
         assert_type(s.replace({"a": "z"}), "pd.Series[str]"),
+        pd.Series,
+    )
+    check(
+        assert_type(s.replace(replace_dict), "pd.Series[str]"),
         pd.Series,
     )
     check(

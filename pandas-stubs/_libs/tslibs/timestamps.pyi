@@ -1,11 +1,12 @@
+# pyright: strict
 from datetime import (
-    _IsoCalendarDate,
     date as _date,
     datetime,
     time as _time,
     timedelta,
     tzinfo as _tzinfo,
 )
+from datetime import _IsoCalendarDate  # pyright: ignore[reportPrivateUsage]
 import sys
 from time import struct_time
 from typing import (
@@ -15,13 +16,12 @@ from typing import (
     overload,
 )
 
-from _typing import TimeZones
 import numpy as np
 from pandas import (
     DatetimeIndex,
-    Index,
     TimedeltaIndex,
 )
+from pandas.core.indexes.base import UnknownIndex
 from pandas.core.series import (
     Series,
     TimedeltaSeries,
@@ -49,6 +49,9 @@ _Ambiguous: TypeAlias = bool | Literal["raise", "NaT"]
 _Nonexistent: TypeAlias = (
     Literal["raise", "NaT", "shift_backward", "shift_forward"] | Timedelta | timedelta
 )
+# Repeated from `_typing.pyi` so as to satisfy mixed strict / non-strict paths.
+# https://github.com/pandas-dev/pandas-stubs/pull/1151#issuecomment-2715130190
+TimeZones: TypeAlias = str | _tzinfo | None | int
 
 class Timestamp(datetime, SupportsIndex):
     min: ClassVar[Timestamp]  # pyright: ignore[reportIncompatibleVariableOverride]
@@ -166,25 +169,33 @@ class Timestamp(datetime, SupportsIndex):
     @overload  # type: ignore[override]
     def __le__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
-    def __le__(self, other: Index | npt.NDArray[np.datetime64]) -> np_ndarray_bool: ...
+    def __le__(
+        self, other: DatetimeIndex | npt.NDArray[np.datetime64]
+    ) -> np_ndarray_bool: ...
     @overload
     def __le__(self, other: TimestampSeries) -> Series[bool]: ...
     @overload  # type: ignore[override]
     def __lt__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
-    def __lt__(self, other: Index | npt.NDArray[np.datetime64]) -> np_ndarray_bool: ...
+    def __lt__(
+        self, other: DatetimeIndex | npt.NDArray[np.datetime64]
+    ) -> np_ndarray_bool: ...
     @overload
     def __lt__(self, other: TimestampSeries) -> Series[bool]: ...
     @overload  # type: ignore[override]
     def __ge__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
-    def __ge__(self, other: Index | npt.NDArray[np.datetime64]) -> np_ndarray_bool: ...
+    def __ge__(
+        self, other: DatetimeIndex | npt.NDArray[np.datetime64]
+    ) -> np_ndarray_bool: ...
     @overload
     def __ge__(self, other: TimestampSeries) -> Series[bool]: ...
     @overload  # type: ignore[override]
     def __gt__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
-    def __gt__(self, other: Index | npt.NDArray[np.datetime64]) -> np_ndarray_bool: ...
+    def __gt__(
+        self, other: DatetimeIndex | npt.NDArray[np.datetime64]
+    ) -> np_ndarray_bool: ...
     @overload
     def __gt__(self, other: TimestampSeries) -> Series[bool]: ...
     # error: Signature of "__add__" incompatible with supertype "date"/"datetime"
@@ -224,7 +235,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __eq__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(self, other: npt.NDArray[np.datetime64] | Index) -> np_ndarray_bool: ...  # type: ignore[overload-overlap]
+    def __eq__(self, other: npt.NDArray[np.datetime64] | UnknownIndex) -> np_ndarray_bool: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: object) -> Literal[False]: ...
     @overload
@@ -232,7 +243,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __ne__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(self, other: npt.NDArray[np.datetime64] | Index) -> np_ndarray_bool: ...  # type: ignore[overload-overlap]
+    def __ne__(self, other: npt.NDArray[np.datetime64] | UnknownIndex) -> np_ndarray_bool: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: object) -> Literal[True]: ...
     def __hash__(self) -> int: ...
