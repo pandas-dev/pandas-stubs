@@ -5,7 +5,6 @@ from typing import (
     Union,
 )
 
-import matplotlib as mpl
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
@@ -14,7 +13,6 @@ import numpy as np
 import numpy.typing as npt
 import pandas as pd
 from pandas import Series
-from pandas.util.version import Version
 import pytest
 from typing_extensions import assert_type
 
@@ -579,22 +577,13 @@ def test_plot_keywords(close_figures):
     )
 
     df = pd.DataFrame(np.random.rand(10, 5), columns=["A", "B", "C", "D", "E"])
-    if Version(mpl.__version__) >= Version("3.10.1"):
-        check(
-            assert_type(
-                df.plot(kind="box", orientation="vertical", positions=[1, 4, 5, 6, 8]),
-                Axes,
-            ),
+    check(
+        assert_type(
+            df.plot(kind="box", orientation="vertical", positions=[1, 4, 5, 6, 8]),
             Axes,
-        )
-    else:
-        check(
-            assert_type(
-                df.plot(kind="box", vert=False, positions=[1, 4, 5, 6, 8]),
-                Axes,
-            ),
-            Axes,
-        )
+        ),
+        Axes,
+    )
 
 
 def test_plot_subplot_changes_150() -> None:
@@ -620,7 +609,7 @@ def test_grouped_dataframe_boxplot(close_figures):
     check(assert_type(grouped.boxplot(subplots=True), Series), Series)
 
     # a single plot
-    if not PD_LTE_22 and Version(mpl.__version__) >= Version("3.10.1"):
+    if not PD_LTE_22:
         check(
             assert_type(
                 grouped.boxplot(
@@ -665,7 +654,7 @@ def test_grouped_dataframe_boxplot_single(close_figures):
         Axes,
     )
 
-    if not PD_LTE_22 and Version(mpl.__version__) >= Version("3.10.1"):
+    if not PD_LTE_22:
         check(
             assert_type(
                 grouped.boxplot(
