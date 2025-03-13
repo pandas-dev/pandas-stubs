@@ -1418,6 +1418,10 @@ def test_sqlalchemy_selectable() -> None:
                 stmt = sqlalchemy.select(Temp.quantity)
                 pd.read_sql(stmt, session.connection())
 
+                # pd.read_sql(
+                #    #session.query(Temp.quantity).statement, session.connection()
+                # )
+
 
 def test_sqlalchemy_text() -> None:
     with ensure_clean() as path:
