@@ -15,7 +15,6 @@ from pandas.core.frame import DataFrame
 import sqlalchemy.engine
 from sqlalchemy.orm import FromStatement
 import sqlalchemy.sql.expression
-from sqlalchemy.sql.expression import UpdateBase
 from typing_extensions import TypeAlias
 
 from pandas._libs.lib import NoDefault
@@ -34,7 +33,7 @@ _SQLStatement: TypeAlias = (
     | sqlalchemy.sql.expression.TextClause
     | sqlalchemy.sql.Select
     | FromStatement
-    | UpdateBase
+    | sqlalchemy.sql.expression.UpdateBase
 )
 
 @overload
