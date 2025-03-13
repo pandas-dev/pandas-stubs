@@ -4012,7 +4012,6 @@ def test_hashable_args() -> None:
     df.columns = ["test"]  # type: ignore[assignment]
 
     testDict = {"test": 1}
-
     with ensure_clean() as path:
         df.to_string(path, col_space=testDict)
         df.to_string(path, col_space={"test": 1})
@@ -4027,7 +4026,14 @@ def test_transpose() -> None:
     df = pd.DataFrame({"a": [1, 1, 2], "b": [4, 5, 6]})
     check(assert_type(df.transpose(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.transpose(None), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.transpose(copy=True), pd.DataFrame), pd.DataFrame)
+
+    msg = "The copy keyword is deprecated and will be removed in a future"
+    with pytest_warns_bounded(
+        DeprecationWarning,
+        msg,
+        lower="2.2.99",
+    ):
+        check(assert_type(df.transpose(copy=True), pd.DataFrame), pd.DataFrame)
 
 
 def test_combine() -> None:

@@ -3578,6 +3578,14 @@ def test_align() -> None:
     aligned_s0, aligned_s1 = s0.align(s1)
     check(assert_type(aligned_s0, pd.Series), pd.Series)
     check(assert_type(aligned_s1, pd.Series), pd.Series)
-    aligned_s0, aligned_s1 = s0.align(s1, fill_value=0, axis=0, level=0, copy=False)
+
+    msg = "The copy keyword is deprecated and will be removed in a future version.*"
+    with pytest_warns_bounded(
+        DeprecationWarning,
+        msg,
+        lower="2.2.99",
+    ):
+        aligned_s0, aligned_s1 = s0.align(s1, fill_value=0, axis=0, level=0, copy=False)
+
     check(assert_type(aligned_s0, pd.Series), pd.Series)
     check(assert_type(aligned_s1, pd.Series), pd.Series)
