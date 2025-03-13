@@ -1579,6 +1579,8 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __add__(self, other: S1 | Self) -> Self: ...
     @overload
+    def __add__(self, other: complex) -> Series[complex]: ...
+    @overload
     def __add__(
         self,
         other: num | _str | timedelta | Timedelta | _ListLike | Series | np.timedelta64,
