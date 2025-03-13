@@ -3538,6 +3538,12 @@ def test_series_reindex() -> None:
     check(assert_type(s.reindex([2, 1, 0]), "pd.Series[int]"), pd.Series, np.integer)
 
 
+def test_series_add_complex() -> None:
+    c = 1 + 1j
+    s = pd.Series([1.0, 2.0, 3.0])
+    check(assert_type(s + c, "pd.Series[complex]"), pd.Series)
+
+
 def test_series_reindex_like() -> None:
     s = pd.Series([1, 2, 3], index=[0, 1, 2])
     other = pd.Series([1, 2], index=[1, 0])
