@@ -3543,6 +3543,14 @@ def test_series_add_complex() -> None:
     s = pd.Series([1.0, 2.0, 3.0])
     check(assert_type(s + c, "pd.Series[complex]"), pd.Series)
 
+    c1 = 1
+    s1 = pd.Series([1.0, 2.0, 3.0])
+    check(assert_type(s1 + c1, "pd.Series[float]"), pd.Series)
+
+    c2 = 1
+    s2 = pd.Series([1, 2, 3])
+    check(assert_type(s2 + c2, "pd.Series[int]"), pd.Series)
+
 
 def test_series_reindex_like() -> None:
     s = pd.Series([1, 2, 3], index=[0, 1, 2])
