@@ -476,7 +476,9 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         storage_options: StorageOptions = ...,
         value_labels: dict[Hashable, dict[float, str]] | None = ...,
     ) -> None: ...
-    def to_feather(self, path: FilePath | WriteBuffer[bytes], **kwargs) -> None: ...
+    def to_feather(
+        self, path: FilePath | WriteBuffer[bytes], **kwargs: Any
+    ) -> None: ...
     @overload
     def to_parquet(
         self,
@@ -669,14 +671,26 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> None: ...
     def __setitem__(self, key, value) -> None: ...
     @overload
-    def query(self, expr: _str, *, inplace: Literal[True], **kwargs) -> None: ...
+    def query(
+        self,
+        expr: _str,
+        *,
+        inplace: Literal[True],
+        **kwargs: Any,  # TODO: make more precise https://github.com/pandas-dev/pandas-stubs/issues/1173
+    ) -> None: ...
     @overload
-    def query(self, expr: _str, *, inplace: Literal[False] = ..., **kwargs) -> Self: ...
+    def query(
+        self,
+        expr: _str,
+        *,
+        inplace: Literal[False] = ...,
+        **kwargs: Any,  # TODO: make more precise https://github.com/pandas-dev/pandas-stubs/issues/1173
+    ) -> Self: ...
     @overload
-    def eval(self, expr: _str, *, inplace: Literal[True], **kwargs) -> None: ...
+    def eval(self, expr: _str, *, inplace: Literal[True], **kwargs: Any) -> None: ...
     @overload
     def eval(
-        self, expr: _str, *, inplace: Literal[False] = ..., **kwargs
+        self, expr: _str, *, inplace: Literal[False] = ..., **kwargs: Any
     ) -> Scalar | np.ndarray | Self | Series: ...
     AstypeArgExt: TypeAlias = (
         AstypeArg
@@ -1277,32 +1291,38 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def diff(self, periods: int = ..., axis: Axis = ...) -> Self: ...
     @overload
     def agg(  # pyright: ignore[reportOverlappingOverload]
-        self, func: AggFuncTypeBase | AggFuncTypeDictSeries, axis: Axis = ..., **kwargs
+        self,
+        func: AggFuncTypeBase | AggFuncTypeDictSeries,
+        axis: Axis = ...,
+        **kwargs: Any,
     ) -> Series: ...
     @overload
     def agg(
         self,
         func: list[AggFuncTypeBase] | AggFuncTypeDictFrame = ...,
         axis: Axis = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Self: ...
     @overload
     def aggregate(  # pyright: ignore[reportOverlappingOverload]
-        self, func: AggFuncTypeBase | AggFuncTypeDictSeries, axis: Axis = ..., **kwargs
+        self,
+        func: AggFuncTypeBase | AggFuncTypeDictSeries,
+        axis: Axis = ...,
+        **kwargs: Any,
     ) -> Series: ...
     @overload
     def aggregate(
         self,
         func: list[AggFuncTypeBase] | AggFuncTypeDictFrame,
         axis: Axis = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Self: ...
     def transform(
         self,
         func: AggFuncTypeFrame,
         axis: Axis = ...,
-        *args,
-        **kwargs,
+        *args: Any,
+        **kwargs: Any,
     ) -> Self: ...
 
     # apply() overloads with default result_type of None, and is indifferent to axis
@@ -1450,7 +1470,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
 
     # Add spacing between apply() overloads and remaining annotations
     def map(
-        self, func: Callable, na_action: Literal["ignore"] | None = ..., **kwargs
+        self, func: Callable, na_action: Literal["ignore"] | None = ..., **kwargs: Any
     ) -> Self: ...
     def join(
         self,
@@ -1477,7 +1497,9 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         indicator: _bool | _str = ...,
         validate: _str | None = ...,
     ) -> Self: ...
-    def round(self, decimals: int | dict | Series = ..., *args, **kwargs) -> Self: ...
+    def round(
+        self, decimals: int | dict | Series = ..., *args: Any, **kwargs: Any
+    ) -> Self: ...
     def corr(
         self,
         method: Literal["pearson", "kendall", "spearman"] = ...,
@@ -1510,24 +1532,11 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def idxmin(
         self, axis: Axis = ..., skipna: _bool = ..., numeric_only: _bool = ...
     ) -> Series: ...
-    @overload
     def mode(
         self,
         axis: Axis = ...,
-        skipna: _bool = ...,
         numeric_only: _bool = ...,
-        *,
-        level: Level,
-        **kwargs,
-    ) -> Self: ...
-    @overload
-    def mode(
-        self,
-        axis: Axis = ...,
-        skipna: _bool = ...,
-        level: None = ...,
-        numeric_only: _bool = ...,
-        **kwargs,
+        dropna: _bool = ...,
     ) -> Series: ...
     @overload
     def quantile(
@@ -1576,7 +1585,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         layout: tuple[int, int] | None = ...,
         bins: int | list = ...,
         backend: _str | None = ...,
-        **kwargs,
+        **kwargs: Any,
     ): ...
     def boxplot(
         self,
@@ -1590,7 +1599,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         layout: tuple[int, int] | None = ...,
         return_type: Literal["axes", "dict", "both"] | None = ...,
         backend: _str | None = ...,
-        **kwargs,
+        **kwargs: Any,
     ): ...
     sparse = ...
 
@@ -1649,7 +1658,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: None,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> _bool: ...
     @overload
     def all(
@@ -1657,7 +1666,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis = ...,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series[_bool]: ...
     @overload
     def any(
@@ -1666,7 +1675,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: None,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> _bool: ...
     @overload
     def any(
@@ -1675,7 +1684,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis = ...,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series[_bool]: ...
     def asof(self, where, subset: _str | list[_str] | None = ...) -> Self: ...
     def asfreq(
@@ -1730,7 +1739,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         *,
         axis: Axis | None = ...,
         inplace: Literal[True],
-        **kwargs,
+        **kwargs: Any,
     ) -> None: ...
     @overload
     def clip(
@@ -1740,20 +1749,20 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         *,
         axis: Axis | None = ...,
         inplace: Literal[False] = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Self: ...
     def copy(self, deep: _bool = ...) -> Self: ...
     def cummax(
-        self, axis: Axis | None = ..., skipna: _bool = ..., *args, **kwargs
+        self, axis: Axis | None = ..., skipna: _bool = ..., *args: Any, **kwargs: Any
     ) -> Self: ...
     def cummin(
-        self, axis: Axis | None = ..., skipna: _bool = ..., *args, **kwargs
+        self, axis: Axis | None = ..., skipna: _bool = ..., *args: Any, **kwargs: Any
     ) -> Self: ...
     def cumprod(
-        self, axis: Axis | None = ..., skipna: _bool = ..., *args, **kwargs
+        self, axis: Axis | None = ..., skipna: _bool = ..., *args: Any, **kwargs: Any
     ) -> Self: ...
     def cumsum(
-        self, axis: Axis | None = ..., skipna: _bool = ..., *args, **kwargs
+        self, axis: Axis | None = ..., skipna: _bool = ..., *args: Any, **kwargs: Any
     ) -> Self: ...
     def describe(
         self,
@@ -1854,7 +1863,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
         inplace: Literal[True],
-        **kwargs,
+        **kwargs: Any,
     ) -> None: ...
     @overload
     def interpolate(
@@ -1866,7 +1875,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
         inplace: Literal[False] = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Self: ...
     def keys(self) -> Index: ...
     def kurt(
@@ -1875,7 +1884,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         skipna: _bool | None = ...,
         level: None = ...,
         numeric_only: _bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series: ...
     def kurtosis(
         self,
@@ -1883,7 +1892,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         skipna: _bool | None = ...,
         level: None = ...,
         numeric_only: _bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series: ...
     def last(self, offset) -> Self: ...
     def last_valid_index(self) -> Scalar: ...
@@ -1927,7 +1936,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         skipna: _bool | None = ...,
         level: None = ...,
         numeric_only: _bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series: ...
     def mean(
         self,
@@ -1935,7 +1944,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         skipna: _bool | None = ...,
         level: None = ...,
         numeric_only: _bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series: ...
     def median(
         self,
@@ -1943,7 +1952,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         skipna: _bool | None = ...,
         level: None = ...,
         numeric_only: _bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series: ...
     def min(
         self,
@@ -1951,7 +1960,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         skipna: _bool | None = ...,
         level: None = ...,
         numeric_only: _bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series: ...
     def mod(
         self,
@@ -1981,7 +1990,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         fill_method: None = ...,
         limit: int | None = ...,
         freq=...,
-        **kwargs,
+        **kwargs: Any,  # TODO: make more precise https://github.com/pandas-dev/pandas-stubs/issues/1169
     ) -> Self: ...
     def pop(self, item: _str) -> Series: ...
     def pow(
@@ -1998,7 +2007,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: None = ...,
         numeric_only: _bool = ...,
         min_count: int = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series: ...
     def product(
         self,
@@ -2007,7 +2016,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: None = ...,
         numeric_only: _bool = ...,
         min_count: int = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series: ...
     def radd(
         self,
@@ -2168,7 +2177,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: None = ...,
         ddof: int = ...,
         numeric_only: _bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series: ...
     # Not actually positional, but used to handle removal of deprecated
     def set_axis(self, labels, *, axis: Axis, copy: _bool = ...) -> Self: ...
@@ -2178,7 +2187,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         skipna: _bool | None = ...,
         level: None = ...,
         numeric_only: _bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series: ...
     def squeeze(self, axis: Axis | None = ...): ...
     def std(
@@ -2188,7 +2197,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: None = ...,
         ddof: int = ...,
         numeric_only: _bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series: ...
     def sub(
         self,
@@ -2211,13 +2220,16 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: None = ...,
         numeric_only: _bool = ...,
         min_count: int = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series: ...
     def swapaxes(self, axis1: Axis, axis2: Axis, copy: _bool = ...) -> Self: ...
     def tail(self, n: int = ...) -> Self: ...
-    def take(self, indices: list, axis: Axis = ..., **kwargs) -> Self: ...
+    def take(self, indices: list, axis: Axis = ..., **kwargs: Any) -> Self: ...
     def to_clipboard(
-        self, excel: _bool = ..., sep: _str | None = ..., **kwargs
+        self,
+        excel: _bool = ...,
+        sep: _str | None = ...,
+        **kwargs: Any,  # TODO: make more precise https://github.com/pandas-dev/pandas-stubs/issues/1174
     ) -> None: ...
     @overload
     def to_json(
@@ -2377,7 +2389,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: None = ...,
         ddof: int = ...,
         numeric_only: _bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series: ...
     @overload
     def where(
