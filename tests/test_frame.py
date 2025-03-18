@@ -327,9 +327,14 @@ def test_assign() -> None:
         assert_type(df.assign(c=lambda df: df["a"].to_numpy()), pd.DataFrame),
         pd.DataFrame,
     )
+    check(
+        assert_type(df.assign(c=lambda df: df["a"].max()), pd.DataFrame),
+        pd.DataFrame,
+    )
     check(assert_type(df.assign(c=df["a"] * 2), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=df["a"].index), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=df["a"].to_numpy()), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.assign(c=2), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=my_unnamed_func), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=my_named_func_1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=my_named_func_2), pd.DataFrame), pd.DataFrame)

@@ -837,7 +837,9 @@ ExcelWriteEngine: TypeAlias = Literal["openpyxl", "odf", "xlsxwriter"]
 # https://github.com/pandas-dev/pandas-stubs/pull/1151#issuecomment-2715130190
 TimeZones: TypeAlias = str | tzinfo | None | int
 
-# Evaluates to ArrayLike in DataFrame.assign context.
-IntoArrayLike: TypeAlias = AnyArrayLike | Callable[[DataFrame], AnyArrayLike]
+# Evaluates to a DataFrame column in DataFrame.assign context.
+IntoColumn: TypeAlias = (
+    AnyArrayLike | Scalar | Callable[[DataFrame], AnyArrayLike | Scalar]
+)
 
 __all__ = ["npt", "type_t"]
