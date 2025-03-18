@@ -308,6 +308,33 @@ def test_types_assign() -> None:
     df["col3"] = df.sum(axis=1)
 
 
+def test_assign() -> None:
+    df = pd.DataFrame({"a": [1, 2, 3], 1: [4, 5, 6]})
+
+    my_unnamed_func = lambda df: df["a"] * 2
+
+    def my_named_func_1(df: pd.DataFrame) -> pd.Series[str]:
+        return df["a"]
+
+    def my_named_func_2(df: pd.DataFrame) -> pd.Series[Any]:
+        return df["a"]
+
+    check(assert_type(df.assign(c=lambda df: df["a"] * 2), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.assign(c=lambda df: df["a"].index), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df.assign(c=lambda df: df["a"].to_numpy()), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(assert_type(df.assign(c=df["a"] * 2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.assign(c=df["a"].index), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.assign(c=df["a"].to_numpy()), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.assign(c=my_unnamed_func), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.assign(c=my_named_func_1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.assign(c=my_named_func_2), pd.DataFrame), pd.DataFrame)
+
+
 def test_types_sample() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     # GH 67

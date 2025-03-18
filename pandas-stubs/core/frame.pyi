@@ -100,6 +100,7 @@ from pandas._typing import (
     InterpolateOptions,
     IntervalClosedType,
     IntervalT,
+    IntoArrayLike,
     JoinHow,
     JsonFrameOrient,
     Label,
@@ -728,7 +729,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         value: Scalar | ListLikeU | None,
         allow_duplicates: _bool = ...,
     ) -> None: ...
-    def assign(self, **kwargs) -> Self: ...
+    def assign(self, **kwargs: IntoArrayLike) -> Self: ...
     def align(
         self,
         other: NDFrameT,
