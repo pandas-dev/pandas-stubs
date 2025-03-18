@@ -3589,3 +3589,13 @@ def test_align() -> None:
 
     check(assert_type(aligned_s0, pd.Series), pd.Series)
     check(assert_type(aligned_s1, pd.Series), pd.Series)
+
+
+def test_unknown() -> None:
+    s = pd.Series(pd.NA)
+
+    def foo(sf: pd.Series) -> None:
+        pass
+
+    foo(s)
+    check(assert_type(s + pd.Series([1]), pd.Series), pd.Series)
