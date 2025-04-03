@@ -167,7 +167,7 @@ class _DatetimeRoundingMethods(Generic[_DTTimestampTimedeltaReturnType]):
     def round(
         self,
         freq: str | BaseOffset | None,
-        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+        ambiguous: Literal["raise", "infer", "NaT"] | bool | np_ndarray_bool = ...,
         nonexistent: (
             Literal["shift_forward", "shift_backward", "NaT", "raise"]
             | timedelta
@@ -177,7 +177,7 @@ class _DatetimeRoundingMethods(Generic[_DTTimestampTimedeltaReturnType]):
     def floor(
         self,
         freq: str | BaseOffset | None,
-        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+        ambiguous: Literal["raise", "infer", "NaT"] | bool | np_ndarray_bool = ...,
         nonexistent: (
             Literal["shift_forward", "shift_backward", "NaT", "raise"]
             | timedelta
@@ -187,7 +187,7 @@ class _DatetimeRoundingMethods(Generic[_DTTimestampTimedeltaReturnType]):
     def ceil(
         self,
         freq: str | BaseOffset | None,
-        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
+        ambiguous: Literal["raise", "infer", "NaT"] | bool | np_ndarray_bool = ...,
         nonexistent: (
             Literal["shift_forward", "shift_backward", "NaT", "raise"]
             | timedelta

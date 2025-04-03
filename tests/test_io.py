@@ -43,7 +43,6 @@ from pandas import (
 from pandas._testing import ensure_clean
 import pytest
 import sqlalchemy
-import sqlalchemy.ext.declarative
 import sqlalchemy.orm
 import sqlalchemy.orm.decl_api
 from typing_extensions import assert_type

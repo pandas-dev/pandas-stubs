@@ -490,12 +490,27 @@ def test_series_dt_accessors() -> None:
         pd.Timestamp,
     )
     check(
+        assert_type(s0.dt.round("D", ambiguous=False), "TimestampSeries"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
         assert_type(s0.dt.floor("D", nonexistent=dt.timedelta(1)), "TimestampSeries"),
         pd.Series,
         pd.Timestamp,
     )
     check(
+        assert_type(s0.dt.floor("D", ambiguous=False), "TimestampSeries"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
         assert_type(s0.dt.ceil("D", nonexistent=dt.timedelta(1)), "TimestampSeries"),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(s0.dt.ceil("D", ambiguous=False), "TimestampSeries"),
         pd.Series,
         pd.Timestamp,
     )
