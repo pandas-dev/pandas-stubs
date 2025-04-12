@@ -1660,7 +1660,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
         **kwargs: Any,
-    ) -> _bool: ...
+    ) -> np.bool: ...
+    # FIXME the type below is not correct, should be pd.Series[np.bool]
     @overload
     def all(
         self,
@@ -1677,7 +1678,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
         **kwargs: Any,
-    ) -> _bool: ...
+    ) -> np.bool: ...
+    # FIXME the type below is not correct, should be pd.Series[np.bool]
     @overload
     def any(
         self,

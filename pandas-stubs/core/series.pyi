@@ -1744,7 +1744,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
         **kwargs: Any,
-    ) -> _bool: ...
+    ) -> np.bool: ...
     def any(
         self,
         *,
@@ -1752,7 +1752,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
         **kwargs: Any,
-    ) -> _bool: ...
+    ) -> np.bool: ...
     def cummax(
         self,
         axis: AxisIndex | None = ...,
