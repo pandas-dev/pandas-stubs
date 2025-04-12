@@ -452,6 +452,22 @@ def test_json():
     check(assert_type(read_json(bin_json), DataFrame), DataFrame)
 
 
+def test_json_dataframe_bytes():
+    """Test DataFrame.to_json with bytesIO buffer."""
+    buffer = io.BytesIO()
+    df = pd.DataFrame()
+    check(assert_type(df.to_json(buffer, compression="gzip"), None), type(None))
+    check(assert_type(df.to_json(buffer), None), type(None))
+
+
+def test_json_series_bytes():
+    """Test Series.to_json with bytesIO buffer."""
+    buffer = io.BytesIO()
+    sr = pd.Series()
+    check(assert_type(sr.to_json(buffer, compression="gzip"), None), type(None))
+    check(assert_type(sr.to_json(buffer), None), type(None))
+
+
 def test_json_series():
     s = DF["a"]
     with ensure_clean() as path:

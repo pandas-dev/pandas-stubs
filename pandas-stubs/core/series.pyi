@@ -594,7 +594,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def to_json(
         self,
-        path_or_buf: FilePath | WriteBuffer[str],
+        path_or_buf: FilePath | WriteBuffer[str] | WriteBuffer[bytes],
         orient: JsonSeriesOrient | None = ...,
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
