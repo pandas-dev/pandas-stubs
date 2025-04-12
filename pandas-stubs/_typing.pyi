@@ -542,7 +542,6 @@ S1 = TypeVar(
     | bytes
     | datetime.date
     | datetime.time
-    | np.bool
     | bool
     | int
     | float
