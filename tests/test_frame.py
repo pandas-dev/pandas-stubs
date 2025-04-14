@@ -899,7 +899,7 @@ def test_types_apply() -> None:
         pd.DataFrame,
     )
     check(
-        # Note that technicaly it does not make sense
+        # Note that technically it does not make sense
         # to pass a result_type of "broadcast" to a scalar return
         assert_type(
             df.apply(returns_scalar, axis=1, result_type="broadcast"), pd.DataFrame
