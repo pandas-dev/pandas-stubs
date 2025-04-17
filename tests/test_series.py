@@ -134,15 +134,15 @@ def test_types_init() -> None:
 
 
 def test_types_any() -> None:
-    check(assert_type(pd.Series([False, False]).any(), bool), np.bool_)
-    check(assert_type(pd.Series([False, False]).any(bool_only=False), bool), np.bool_)
-    check(assert_type(pd.Series([np.nan]).any(skipna=False), bool), np.bool_)
+    check(assert_type(pd.Series([False, False]).any(), np.bool), np.bool)
+    check(assert_type(pd.Series([False, False]).any(bool_only=False), np.bool), np.bool)
+    check(assert_type(pd.Series([np.nan]).any(skipna=False), np.bool), np.bool)
 
 
 def test_types_all() -> None:
-    check(assert_type(pd.Series([False, False]).all(), bool), np.bool_)
-    check(assert_type(pd.Series([False, False]).all(bool_only=False), bool), np.bool_)
-    check(assert_type(pd.Series([np.nan]).all(skipna=False), bool), np.bool_)
+    check(assert_type(pd.Series([False, False]).all(), np.bool), np.bool)
+    check(assert_type(pd.Series([False, False]).all(bool_only=False), np.bool), np.bool)
+    check(assert_type(pd.Series([np.nan]).all(skipna=False), np.bool), np.bool)
 
 
 def test_types_csv() -> None:
