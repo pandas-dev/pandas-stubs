@@ -2230,7 +2230,27 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         excel: _bool = ...,
         sep: _str | None = ...,
-        **kwargs: Any,  # TODO: make more precise https://github.com/pandas-dev/pandas-stubs/issues/1174
+        *,
+        path_or_buf: FilePath | WriteBuffer[bytes] | WriteBuffer[str],
+        na_rep: _str = ...,
+        float_format: _str | Callable[[object], _str] | None = ...,
+        columns: list[HashableT1] | None = ...,
+        header: _bool | list[_str] = ...,
+        index: _bool = ...,
+        index_label: Literal[False] | _str | list[HashableT2] | None = ...,
+        mode: FileWriteMode = ...,
+        encoding: _str | None = ...,
+        compression: CompressionOptions = ...,
+        quoting: CSVQuoting = ...,
+        quotechar: _str = ...,
+        lineterminator: _str | None = ...,
+        chunksize: int | None = ...,
+        date_format: _str | None = ...,
+        doublequote: _bool = ...,
+        escapechar: _str | None = ...,
+        decimal: _str = ...,
+        errors: _str = ...,
+        storage_options: StorageOptions = ...,
     ) -> None: ...
     @overload
     def to_json(
