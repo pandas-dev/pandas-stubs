@@ -16,6 +16,7 @@ from typing import (
     Literal,
     NoReturn,
     overload,
+    Unpack,
 )
 
 from _typing import TimeZones
@@ -113,6 +114,7 @@ from pandas._typing import (
     NaPosition,
     NDFrameT,
     ParquetEngine,
+    PctChangeKwargs,
     QuantileInterpolation,
     RandomState,
     ReadBuffer,
@@ -1991,7 +1993,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         fill_method: None = ...,
         limit: int | None = ...,
         freq=...,
-        **kwargs: Any,  # TODO: make more precise https://github.com/pandas-dev/pandas-stubs/issues/1169
+        **kwargs: Unpack[PctChangeKwargs],
     ) -> Self: ...
     def pop(self, item: _str) -> Series: ...
     def pow(

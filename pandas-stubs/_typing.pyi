@@ -8,7 +8,7 @@ from collections.abc import (
     Sequence,
 )
 import datetime
-from datetime import tzinfo
+from datetime import timedelta, tzinfo
 from os import PathLike
 from re import Pattern
 import sys
@@ -841,5 +841,11 @@ TimeZones: TypeAlias = str | tzinfo | None | int
 IntoColumn: TypeAlias = (
     AnyArrayLike | Scalar | Callable[[DataFrame], AnyArrayLike | Scalar]
 )
+
+class PctChangeKwargs(TypedDict, total=False):
+    periods: int
+    freq: Frequency | timedelta | None
+    axis: AxisIndex
+    fill_value: object | None
 
 __all__ = ["npt", "type_t"]

@@ -22,6 +22,7 @@ from typing import (
     Literal,
     NoReturn,
     overload,
+    Unpack,
 )
 
 from _typing import (
@@ -143,6 +144,7 @@ from pandas._typing import (
     MaskType,
     NaPosition,
     ObjectDtypeArg,
+    PctChangeKwargs,
     QuantileInterpolation,
     RandomState,
     Renamer,
@@ -1552,7 +1554,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_method: _str = ...,
         limit: int | None = ...,
         freq=...,
-        **kwargs: Any,  # TODO: make more precise https://github.com/pandas-dev/pandas-stubs/issues/1169
+        **kwargs: Unpack[PctChangeKwargs],
     ) -> Series[S1]: ...
     def first_valid_index(self) -> Scalar: ...
     def last_valid_index(self) -> Scalar: ...
