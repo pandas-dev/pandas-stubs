@@ -27,6 +27,7 @@ from pandas.core.series import (
     TimedeltaSeries,
     TimestampSeries,
 )
+from typing_extensions import Self
 
 from pandas._typing import (
     AnyArrayLike,
@@ -90,6 +91,7 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
     def tzinfo(self) -> tzinfo | None: ...
     @property
     def dtype(self) -> np.dtype | DatetimeTZDtype: ...
+    def shift(self, periods: int = ..., freq=...) -> Self: ...
 
 def date_range(
     start: str | DateAndDatetimeLike | None = ...,

@@ -1272,3 +1272,18 @@ def test_datetime_index_max_min_reductions() -> None:
     check(assert_type(dtidx.argmin(), np.int64), np.int64)
     check(assert_type(dtidx.max(), pd.Timestamp), pd.Timestamp)
     check(assert_type(dtidx.min(), pd.Timestamp), pd.Timestamp)
+
+
+def test_periodindex_shift() -> None:
+    ind = pd.period_range(start="2022-06-01", periods=10)
+    check(assert_type(ind.shift(1), pd.PeriodIndex), pd.PeriodIndex)
+
+
+def test_datetimeindex_shift() -> None:
+    ind = pd.date_range("2023-01-01", "2023-02-01")
+    check(assert_type(ind.shift(1), pd.DatetimeIndex), pd.DatetimeIndex)
+
+
+def test_timedeltaindex_shift() -> None:
+    ind = pd.date_range("1/1/2021", "1/5/2021") - pd.Timestamp("1/3/2019")
+    check(assert_type(ind.shift(1), pd.TimedeltaIndex), pd.TimedeltaIndex)

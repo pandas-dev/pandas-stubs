@@ -1474,3 +1474,11 @@ def test_DatetimeIndex_sub_timedelta() -> None:
 def test_to_offset() -> None:
     check(assert_type(to_offset(None), None), type(None))
     check(assert_type(to_offset("1D"), DateOffset), DateOffset)
+
+
+def test_timestamp_sub_series() -> None:
+    """Test subtracting Series[Timestamp] from Timestamp (see GH1189)."""
+    ts1 = pd.to_datetime(pd.Series(["2022-03-05", "2022-03-06"]))
+    one_ts = ts1.iloc[0]
+    check(assert_type(ts1.iloc[0], pd.Timestamp), pd.Timestamp)
+    check(assert_type(one_ts - ts1, "TimedeltaSeries"), pd.Series, pd.Timedelta)
