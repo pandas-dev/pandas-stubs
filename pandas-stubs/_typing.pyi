@@ -518,7 +518,9 @@ IndexIterScalar: TypeAlias = (
     | Timestamp
     | Timedelta
 )
-Scalar: TypeAlias = IndexIterScalar | complex
+Scalar: TypeAlias = (
+    IndexIterScalar | complex | np.integer | np.floating | np.complexfloating
+)
 ScalarT = TypeVar("ScalarT", bound=Scalar)
 # Refine the definitions below in 3.9 to use the specialized type.
 np_ndarray_int64: TypeAlias = npt.NDArray[np.int64]
