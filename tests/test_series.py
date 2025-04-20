@@ -1749,6 +1749,9 @@ def test_types_to_numpy() -> None:
     check(assert_type(s.to_numpy(), np.ndarray), np.ndarray)
     check(assert_type(s.to_numpy(dtype="str", copy=True), np.ndarray), np.ndarray)
     check(assert_type(s.to_numpy(na_value=0), np.ndarray), np.ndarray)
+    check(assert_type(s.to_numpy(na_value=np.int32(4)), np.ndarray), np.ndarray)
+    check(assert_type(s.to_numpy(na_value=np.float16(4)), np.ndarray), np.ndarray)
+    check(assert_type(s.to_numpy(na_value=np.complex128(4, 7)), np.ndarray), np.ndarray)
 
 
 def test_where() -> None:
