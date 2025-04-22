@@ -8,7 +8,7 @@ from collections.abc import (
     Sequence,
 )
 import datetime
-from datetime import timedelta, tzinfo
+from datetime import tzinfo
 from os import PathLike
 from re import Pattern
 import sys
@@ -843,8 +843,6 @@ IntoColumn: TypeAlias = (
 )
 
 class PctChangeKwargs(TypedDict, total=False):
-    periods: int
-    freq: Frequency | timedelta | None
     axis: AxisIndex
     fill_value: object | None
 

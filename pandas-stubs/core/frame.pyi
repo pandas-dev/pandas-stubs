@@ -15,8 +15,8 @@ from typing import (
     Generic,
     Literal,
     NoReturn,
-    overload,
     Unpack,
+    overload,
 )
 
 from _typing import TimeZones
@@ -1989,10 +1989,10 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def ne(self, other, axis: Axis = ..., level: Level | None = ...) -> Self: ...
     def pct_change(
         self,
-        periods: int = ...,
+        periods: int = 1,
         fill_method: None = ...,
         limit: int | None = ...,
-        freq=...,
+        freq: Frequency | dt.timedelta | None = None,
         **kwargs: Unpack[PctChangeKwargs],
     ) -> Self: ...
     def pop(self, item: _str) -> Series: ...

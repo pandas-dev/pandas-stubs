@@ -21,8 +21,8 @@ from typing import (
     Generic,
     Literal,
     NoReturn,
-    overload,
     Unpack,
+    overload,
 )
 
 from _typing import (
@@ -1550,10 +1550,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     def pct_change(
         self,
-        periods: int = ...,
-        fill_method: _str = ...,
+        periods: int = 1,
+        fill_method: None = ...,
         limit: int | None = ...,
-        freq=...,
+        freq: Frequency | timedelta | None = None,
         **kwargs: Unpack[PctChangeKwargs],
     ) -> Series[S1]: ...
     def first_valid_index(self) -> Scalar: ...
