@@ -842,8 +842,4 @@ IntoColumn: TypeAlias = (
     AnyArrayLike | Scalar | Callable[[DataFrame], AnyArrayLike | Scalar]
 )
 
-class PctChangeKwargs(TypedDict, total=False):
-    axis: AxisIndex
-    fill_value: object | None
-
 __all__ = ["npt", "type_t"]

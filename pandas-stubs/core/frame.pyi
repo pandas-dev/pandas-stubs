@@ -15,7 +15,6 @@ from typing import (
     Generic,
     Literal,
     NoReturn,
-    Unpack,
     overload,
 )
 
@@ -114,7 +113,6 @@ from pandas._typing import (
     NaPosition,
     NDFrameT,
     ParquetEngine,
-    PctChangeKwargs,
     QuantileInterpolation,
     RandomState,
     ReadBuffer,
@@ -1993,7 +1991,9 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         fill_method: None = ...,
         limit: int | None = ...,
         freq: Frequency | dt.timedelta | None = None,
-        **kwargs: Unpack[PctChangeKwargs],
+        *,
+        axis: AxisIndex = ...,
+        fill_value: object | None = ...,
     ) -> Self: ...
     def pop(self, item: _str) -> Series: ...
     def pow(

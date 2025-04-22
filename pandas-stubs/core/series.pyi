@@ -21,7 +21,6 @@ from typing import (
     Generic,
     Literal,
     NoReturn,
-    Unpack,
     overload,
 )
 
@@ -144,7 +143,6 @@ from pandas._typing import (
     MaskType,
     NaPosition,
     ObjectDtypeArg,
-    PctChangeKwargs,
     QuantileInterpolation,
     RandomState,
     Renamer,
@@ -1554,7 +1552,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_method: None = ...,
         limit: int | None = ...,
         freq: Frequency | timedelta | None = None,
-        **kwargs: Unpack[PctChangeKwargs],
+        *,
+        axis: AxisIndex = ...,
+        fill_value: object | None = ...,
     ) -> Series[S1]: ...
     def first_valid_index(self) -> Scalar: ...
     def last_valid_index(self) -> Scalar: ...
