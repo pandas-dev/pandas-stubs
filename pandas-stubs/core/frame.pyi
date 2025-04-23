@@ -830,8 +830,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def shift(
         self,
-        periods: int = ...,
-        freq: DateOffset | dt.timedelta | None = ...,
+        periods: int | Sequence[int] = ...,
+        freq: DateOffset | dt.timedelta | _str | None = ...,
         axis: Axis = ...,
         fill_value: Scalar | NAType | None = ...,
     ) -> Self: ...
@@ -1989,7 +1989,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         periods: int = ...,
         fill_method: None = ...,
-        freq: DateOffset | dt.timedelta | None = ...,
+        freq: DateOffset | dt.timedelta | _str | None = ...,
         *,
         axis: Axis = ...,
         fill_value: Scalar | NAType | None = ...,

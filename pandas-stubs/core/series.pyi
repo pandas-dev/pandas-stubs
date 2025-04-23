@@ -1130,9 +1130,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     def shift(
         self,
-        periods: int = ...,
-        freq: DateOffset | timedelta | None = ...,
-        axis: AxisIndex = ...,
+        periods: int | Sequence[int] = ...,
+        freq: DateOffset | timedelta | _str | None = ...,
+        axis: Axis = ...,
         fill_value: Scalar | NAType | None = ...,
     ) -> UnknownSeries: ...
     def info(
@@ -1550,7 +1550,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self,
         periods: int = ...,
         fill_method: None = ...,
-        freq: DateOffset | dt.timedelta | None = ...,
+        freq: DateOffset | timedelta | _str | None = ...,
         *,
         fill_value: Scalar | NAType | None = ...,
     ) -> Series[S1]: ...
