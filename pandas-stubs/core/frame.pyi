@@ -83,10 +83,8 @@ from pandas._typing import (
     CalculationMethod,
     ColspaceArgType,
     CompressionOptions,
-    CSVQuoting,
     Dtype,
     FilePath,
-    FileWriteMode,
     FillnaOptions,
     FormattersType,
     Frequency,
@@ -2228,32 +2226,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def swapaxes(self, axis1: Axis, axis2: Axis, copy: _bool = ...) -> Self: ...
     def tail(self, n: int = ...) -> Self: ...
     def take(self, indices: list, axis: Axis = ..., **kwargs: Any) -> Self: ...
-    def to_clipboard(
-        self,
-        excel: _bool = True,
-        sep: _str | None = None,
-        *,
-        path_or_buf: FilePath | WriteBuffer[bytes] | WriteBuffer[str] | None = None,
-        na_rep: _str = "",
-        float_format: _str | Callable[[object], _str] | None = None,
-        columns: list[HashableT1] | None = None,
-        header: _bool | list[_str] = True,
-        index: _bool = True,
-        index_label: Literal[False] | _str | list[HashableT2] | None = None,
-        mode: FileWriteMode = "w",
-        encoding: _str | None = None,
-        compression: CompressionOptions = "infer",
-        quoting: CSVQuoting = ...,
-        quotechar: _str = '"',
-        lineterminator: _str | None = None,
-        chunksize: int | None = None,
-        date_format: _str | None = None,
-        doublequote: _bool = True,
-        escapechar: _str | None = None,
-        decimal: _str = ".",
-        errors: _str = "strict",
-        storage_options: StorageOptions = None,
-    ) -> None: ...
     @overload
     def to_json(
         self,

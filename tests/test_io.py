@@ -275,6 +275,9 @@ def test_clipboard():
         ),
         DataFrame,
     )
+    # Passing kwargs for to_csv
+    DF.to_clipboard(quoting=csv.QUOTE_ALL)
+    DF.to_clipboard(sep=",", index=False)
     if TYPE_CHECKING_INVALID_USAGE:
         pd.read_clipboard(names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
         pd.read_clipboard(usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
