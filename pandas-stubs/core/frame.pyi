@@ -67,6 +67,7 @@ from pandas._libs.lib import NoDefault
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.nattype import NaTType
+from pandas._libs.tslibs.offsets import DateOffset
 from pandas._typing import (
     S1,
     AggFuncTypeBase,
@@ -87,7 +88,6 @@ from pandas._typing import (
     FilePath,
     FillnaOptions,
     FormattersType,
-    Frequency,
     GroupByObjectNonScalar,
     HashableT,
     HashableT1,
@@ -831,9 +831,9 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def shift(
         self,
         periods: int = ...,
-        freq: Frequency | dt.timedelta | None = ...,
+        freq: DateOffset | dt.timedelta | None = ...,
         axis: Axis = ...,
-        fill_value: Hashable | None = ...,
+        fill_value: Scalar | NAType | None = ...,
     ) -> Self: ...
     @overload
     def set_index(
@@ -1987,13 +1987,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def ne(self, other, axis: Axis = ..., level: Level | None = ...) -> Self: ...
     def pct_change(
         self,
-        periods: int = 1,
+        periods: int = ...,
         fill_method: None = ...,
-        limit: int | None = ...,
-        freq: Frequency | dt.timedelta | None = None,
+        freq: DateOffset | dt.timedelta | None = ...,
         *,
         axis: AxisIndex = ...,
-        fill_value: object | None = ...,
+        fill_value: Scalar | NAType | None = ...,
     ) -> Self: ...
     def pop(self, item: _str) -> Series: ...
     def pow(

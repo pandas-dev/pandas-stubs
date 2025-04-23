@@ -102,6 +102,7 @@ from pandas._libs.lib import NoDefault
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.nattype import NaTType
+from pandas._libs.tslibs.offsets import DateOffset
 from pandas._typing import (
     S1,
     S2,
@@ -125,7 +126,6 @@ from pandas._typing import (
     FilePath,
     FillnaOptions,
     FloatDtypeArg,
-    Frequency,
     GroupByObjectNonScalar,
     HashableT1,
     IgnoreRaise,
@@ -1131,9 +1131,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def shift(
         self,
         periods: int = ...,
-        freq: Frequency | timedelta | None = ...,
+        freq: DateOffset | timedelta | None = ...,
         axis: AxisIndex = ...,
-        fill_value: object | None = ...,
+        fill_value: Scalar | NAType | None = ...,
     ) -> UnknownSeries: ...
     def info(
         self,
@@ -1548,13 +1548,11 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     def pct_change(
         self,
-        periods: int = 1,
+        periods: int = ...,
         fill_method: None = ...,
-        limit: int | None = ...,
-        freq: Frequency | timedelta | None = None,
+        freq: DateOffset | dt.timedelta | None = ...,
         *,
-        axis: AxisIndex = ...,
-        fill_value: object | None = ...,
+        fill_value: Scalar | NAType | None = ...,
     ) -> Series[S1]: ...
     def first_valid_index(self) -> Scalar: ...
     def last_valid_index(self) -> Scalar: ...
