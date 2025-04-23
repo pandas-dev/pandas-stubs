@@ -1287,3 +1287,33 @@ def test_datetimeindex_shift() -> None:
 def test_timedeltaindex_shift() -> None:
     ind = pd.date_range("1/1/2021", "1/5/2021") - pd.Timestamp("1/3/2019")
     check(assert_type(ind.shift(1), pd.TimedeltaIndex), pd.TimedeltaIndex)
+
+
+def test_index_insert() -> None:
+    """Test the return type of Index.insert GH1196."""
+    idx = pd.Index([1, 2, 3, 4, 5])
+    check(assert_type(idx.insert(2, 3), "pd.Index[int]"), pd.Index, np.integer)
+
+    ind = pd.date_range("1/1/2021", "1/5/2021") - pd.Timestamp("1/3/2019")
+    check(
+        assert_type(ind.insert(2, pd.Timedelta("1D")), pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+    )
+
+    dt_ind = pd.date_range("2023-01-01", "2023-02-01")
+    check(
+        assert_type(dt_ind.insert(2, pd.Timestamp(2024, 3, 5)), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+
+
+def test_index_delete() -> None:
+    """Test the return type of Index.delete GH1196."""
+    idx = pd.Index([1, 2, 3, 4, 5])
+    check(assert_type(idx.delete(2), "pd.Index[int]"), pd.Index, np.integer)
+
+    ind = pd.date_range("1/1/2021", "1/5/2021") - pd.Timestamp("1/3/2019")
+    check(assert_type(ind.delete(2), pd.TimedeltaIndex), pd.TimedeltaIndex)
+
+    dt_ind = pd.date_range("2023-01-01", "2023-02-01")
+    check(assert_type(dt_ind.delete(2), pd.DatetimeIndex), pd.DatetimeIndex)
