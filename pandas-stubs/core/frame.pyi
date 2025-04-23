@@ -1991,7 +1991,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         fill_method: None = ...,
         freq: DateOffset | dt.timedelta | None = ...,
         *,
-        axis: AxisIndex = ...,
+        axis: Axis = ...,
         fill_value: Scalar | NAType | None = ...,
     ) -> Self: ...
     def pop(self, item: _str) -> Series: ...

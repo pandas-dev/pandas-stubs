@@ -2428,7 +2428,10 @@ def test_groupby_series_methods() -> None:
 
 def test_dataframe_pct_change() -> None:
     df = pd.DataFrame({"x": [1, 2, 2, 3, 3], "y": [10, 20, 30, 40, 50]})
+    df.pct_change()
     df.pct_change(fill_method=None)
+    df.pct_change(axis="columns", periods=-1)
+    df.pct_change(fill_value=0)
 
 
 def test_indexslice_setitem():
