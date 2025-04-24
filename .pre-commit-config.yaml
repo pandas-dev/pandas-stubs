@@ -3,15 +3,15 @@ ci:
     autofix_prs: false
 repos:
 -   repo: https://github.com/python/black
-    rev: 24.3.0
+    rev: 25.1.0
     hooks:
     -   id: black
 -   repo: https://github.com/PyCQA/isort
-    rev: 5.13.2
+    rev: 6.0.1
     hooks:
     -   id: isort
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.3.5
+    rev: v0.11.5
     hooks:
     -   id: ruff
         args: [
@@ -23,7 +23,8 @@ repos:
           --fix
         ]
 -   repo: https://github.com/codespell-project/codespell
-    rev: v2.2.6
+    rev: v2.4.1
     hooks:
     - id: codespell
       additional_dependencies: [ tomli ]
+      args: [-L, "THIRDPARTY"]

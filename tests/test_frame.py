@@ -120,13 +120,13 @@ def test_types_init() -> None:
 def test_types_all() -> None:
     df = pd.DataFrame([[False, True], [False, False]], columns=["col1", "col2"])
     check(assert_type(df.all(), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(df.all(axis=None), bool), np.bool_)
+    check(assert_type(df.all(axis=None), np.bool_), np.bool_)
 
 
 def test_types_any() -> None:
     df = pd.DataFrame([[False, True], [False, False]], columns=["col1", "col2"])
     check(assert_type(df.any(), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(df.any(axis=None), bool), np.bool_)
+    check(assert_type(df.any(axis=None), np.bool_), np.bool_)
 
 
 def test_types_append() -> None:
@@ -899,7 +899,7 @@ def test_types_apply() -> None:
         pd.DataFrame,
     )
     check(
-        # Note that technicaly it does not make sense
+        # Note that technically it does not make sense
         # to pass a result_type of "broadcast" to a scalar return
         assert_type(
             df.apply(returns_scalar, axis=1, result_type="broadcast"), pd.DataFrame

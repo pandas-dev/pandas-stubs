@@ -1660,7 +1660,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
         **kwargs: Any,
-    ) -> _bool: ...
+    ) -> np.bool: ...
     @overload
     def all(
         self,
@@ -1677,7 +1677,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
         **kwargs: Any,
-    ) -> _bool: ...
+    ) -> np.bool: ...
     @overload
     def any(
         self,
@@ -2291,7 +2291,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def to_json(
         self,
-        path_or_buf: FilePath | WriteBuffer[str],
+        path_or_buf: FilePath | WriteBuffer[str] | WriteBuffer[bytes],
         orient: JsonFrameOrient | None = ...,
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
