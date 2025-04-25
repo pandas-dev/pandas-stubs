@@ -965,6 +965,12 @@ class Series(IndexOpsMixin[S1], NDFrame):
         na_action: None = ...,
     ) -> Series[S2]: ...
     @overload
+    def map(
+        self,
+        arg: Callable[[Any], Any] | Mapping[Any, Any] | UnknownSeries,
+        na_action: Literal["ignore"] | None = ...,
+    ) -> UnknownSeries: ...
+    @overload
     def aggregate(
         self: Series[int],
         func: Literal["mean"],
