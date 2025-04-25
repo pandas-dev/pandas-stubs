@@ -25,6 +25,7 @@ from typing import (
 )
 
 from _typing import (
+    FloatFormatType,
     Label,
     ReplaceValue,
     TimeZones,
@@ -530,7 +531,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self,
         buf: FilePath | WriteBuffer[str],
         na_rep: _str = ...,
-        float_format: Callable[[float], str] = ...,
+        float_format: FloatFormatType | Callable[[float], str] = ...,
         header: _bool = ...,
         index: _bool = ...,
         length: _bool = ...,
@@ -544,7 +545,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self,
         buf: None = ...,
         na_rep: _str = ...,
-        float_format: Callable[[float], str] = ...,
+        float_format: FloatFormatType | Callable[[float], str] = ...,
         header: _bool = ...,
         index: _bool = ...,
         length: _bool = ...,

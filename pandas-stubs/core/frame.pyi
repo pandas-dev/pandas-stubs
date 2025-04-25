@@ -18,7 +18,10 @@ from typing import (
     overload,
 )
 
-from _typing import TimeZones
+from _typing import (
+    FloatFormatType,
+    TimeZones,
+)
 from matplotlib.axes import Axes as PlotAxes
 import numpy as np
 from pandas import (
@@ -2311,7 +2314,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         index: _bool = ...,
         na_rep: _str = ...,
         formatters: FormattersType | None = ...,
-        float_format: Callable[[float], str] | None = ...,
+        float_format: FloatFormatType | Callable[[float], str] | None = ...,
         sparsify: _bool | None = ...,
         index_names: _bool = ...,
         justify: _str | None = ...,
@@ -2334,7 +2337,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         index: _bool = ...,
         na_rep: _str = ...,
         formatters: FormattersType | None = ...,
-        float_format: Callable[[float], str] | None = ...,
+        float_format: FloatFormatType | Callable[[float], str] | None = ...,
         sparsify: _bool | None = ...,
         index_names: _bool = ...,
         justify: _str | None = ...,
