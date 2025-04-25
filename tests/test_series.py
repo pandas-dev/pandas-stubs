@@ -2953,7 +2953,8 @@ def test_series_to_string_float_fmt() -> None:
         ),
         str,
     )
-    check(assert_type(sr.to_string(float_format=".2%"), str), str)
+    check(assert_type(sr.to_string(float_format="%.2f"), str), str)
+    check(assert_type(sr.to_string(float_format="%.2f"), str), str)
 
 
 def test_types_mask() -> None:

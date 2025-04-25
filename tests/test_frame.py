@@ -1718,7 +1718,7 @@ def test_dataframe_to_string_float_fmt() -> None:
         ),
         str,
     )
-    check(assert_type(df.to_string(float_format=".2%"), str), str)
+    check(assert_type(df.to_string(float_format="%.2f"), str), str)
 
 
 def test_types_to_html() -> None:
