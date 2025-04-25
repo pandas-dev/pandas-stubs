@@ -1732,9 +1732,13 @@ def test_resample() -> None:
 
 def test_squeeze() -> None:
     s1 = pd.Series([1, 2, 3])
-    check(s1.squeeze(), pd.Series, np.integer)
+    check(
+        assert_type(s1.squeeze(), Union["pd.Series[int]", Scalar]),
+        pd.Series,
+        np.integer,
+    )
     s2 = pd.Series([1])
-    check(s2.squeeze(), np.integer)
+    check(assert_type(s2.squeeze(), Union["pd.Series[int]", Scalar]), np.integer)
 
 
 def test_to_xarray():

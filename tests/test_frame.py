@@ -3233,13 +3233,21 @@ def test_resample() -> None:
 
 def test_squeeze() -> None:
     df1 = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
-    check(df1.squeeze(), pd.DataFrame)
+    check(
+        assert_type(df1.squeeze(), Union[pd.DataFrame, pd.Series, Scalar]), pd.DataFrame
+    )
     df2 = pd.DataFrame({"a": [1, 2]})
-    check(df2.squeeze(), pd.Series)
+    check(assert_type(df2.squeeze(), Union[pd.DataFrame, pd.Series, Scalar]), pd.Series)
     df3 = pd.DataFrame({"a": [1], "b": [2]})
-    check(df3.squeeze(), pd.Series, np.integer)
+    check(
+        assert_type(df3.squeeze(), Union[pd.DataFrame, pd.Series, Scalar]),
+        pd.Series,
+        np.integer,
+    )
     df4 = pd.DataFrame({"a": [1]})
-    check(df4.squeeze(), np.integer)
+    check(
+        assert_type(df4.squeeze(), Union[pd.DataFrame, pd.Series, Scalar]), np.integer
+    )
 
 
 def test_loc_set() -> None:
