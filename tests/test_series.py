@@ -3390,6 +3390,12 @@ def test_map() -> None:
         assert_type(s.map(series, na_action="ignore"), "pd.Series[str]"), pd.Series, str
     )
 
+    unknown_series = pd.Series([1, 0, None])
+    check(
+        assert_type(unknown_series.map({1: True, 0: False, None: None}), "pd.Series"),
+        pd.Series,
+    )
+
 
 def test_map_na() -> None:
     s: pd.Series[int] = pd.Series([1, pd.NA, 3])
