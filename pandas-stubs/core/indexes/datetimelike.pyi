@@ -29,7 +29,7 @@ class DatetimeIndexOpsMixin(ExtensionIndex[S1]):
     def argmax(
         self, axis: AxisIndex | None = ..., skipna: bool = ..., *args, **kwargs
     ) -> np.int64: ...
-    def __rsub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __rsub__(  # type: ignore[override]
         self, other: DatetimeIndexOpsMixin
     ) -> TimedeltaIndex: ...
 
