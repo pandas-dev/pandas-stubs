@@ -60,6 +60,8 @@ from tests import (
 )
 from tests.extension.decimal.array import DecimalDtype
 
+from pandas.io.formats.format import EngFormatter
+
 if TYPE_CHECKING:
     from pandas.core.series import (
         OffsetSeries,
@@ -2930,6 +2932,27 @@ def test_to_string() -> None:
         ),
         str,
     )
+
+
+def test_series_to_string_float_fmt() -> None:
+    """Test the different argument types for float_format."""
+    sr = pd.Series(
+        [2.304, 1.1, 3487392, 13.4732894237, 14.3, 18.0, 17.434, 19.3], name="values"
+    )
+    check(assert_type(sr.to_string(), str), str)
+
+    def _formatter(x) -> str:
+        return f"{x:.2f}"
+
+    check(assert_type(sr.to_string(float_format=_formatter), str), str)
+    check(
+        assert_type(
+            sr.to_string(float_format=EngFormatter(accuracy=2, use_eng_prefix=False)),
+            str,
+        ),
+        str,
+    )
+    check(assert_type(sr.to_string(float_format="%.2f"), str), str)
 
 
 def test_types_mask() -> None:

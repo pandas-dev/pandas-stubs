@@ -55,6 +55,7 @@ from tests import (
     pytest_warns_bounded,
 )
 
+from pandas.io.formats.format import EngFormatter
 from pandas.io.formats.style import Styler
 from pandas.io.parsers import TextFileReader
 
@@ -1696,6 +1697,27 @@ def test_types_to_string() -> None:
     # col_space accepting list or dict added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
     df.to_string(col_space=[1, 2])
     df.to_string(col_space={"col1": 1, "col2": 3})
+
+
+def test_dataframe_to_string_float_fmt() -> None:
+    """Test the different argument types for float_format."""
+    df = pd.DataFrame(
+        {"values": [2.304, 1.1, 3487392, 13.4732894237, 14.3, 18.0, 17.434, 19.3]}
+    )
+    check(assert_type(df.to_string(), str), str)
+
+    def _formatter(x) -> str:
+        return f"{x:.2f}"
+
+    check(assert_type(df.to_string(float_format=_formatter), str), str)
+    check(
+        assert_type(
+            df.to_string(float_format=EngFormatter(accuracy=2, use_eng_prefix=False)),
+            str,
+        ),
+        str,
+    )
+    check(assert_type(df.to_string(float_format="%.2f"), str), str)
 
 
 def test_types_to_html() -> None:
