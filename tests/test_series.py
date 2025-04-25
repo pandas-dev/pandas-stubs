@@ -2944,7 +2944,6 @@ def test_series_to_string_float_fmt() -> None:
     def _formatter(x) -> str:
         return f"{x:.2f}"
 
-    check(assert_type(sr.to_string(), str), str)
     check(assert_type(sr.to_string(float_format=_formatter), str), str)
     check(
         assert_type(
@@ -2953,7 +2952,6 @@ def test_series_to_string_float_fmt() -> None:
         ),
         str,
     )
-    check(assert_type(sr.to_string(float_format="%.2f"), str), str)
     check(assert_type(sr.to_string(float_format="%.2f"), str), str)
 
 

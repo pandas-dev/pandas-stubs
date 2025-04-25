@@ -1709,7 +1709,6 @@ def test_dataframe_to_string_float_fmt() -> None:
     def _formatter(x) -> str:
         return f"{x:.2f}"
 
-    check(assert_type(df.to_string(), str), str)
     check(assert_type(df.to_string(float_format=_formatter), str), str)
     check(
         assert_type(

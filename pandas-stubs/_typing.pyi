@@ -626,7 +626,7 @@ CompressionOptions: TypeAlias = (
 FormattersType: TypeAlias = (
     list[Callable] | tuple[Callable, ...] | Mapping[str | int, Callable]
 )
-FloatFormatType: TypeAlias = str | Callable | EngFormatter
+FloatFormatType: TypeAlias = str | Callable[[float], str] | EngFormatter
 # converters
 ConvertersArg: TypeAlias = dict[Hashable, Callable[[Dtype], Dtype]]
 
