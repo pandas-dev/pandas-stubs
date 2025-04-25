@@ -1730,6 +1730,13 @@ def test_resample() -> None:
     check(assert_type(s.resample("2min").ohlc(), pd.DataFrame), pd.DataFrame)
 
 
+def test_squeeze() -> None:
+    s1 = pd.Series([1, 2, 3])
+    check(s1.squeeze(), pd.Series, np.integer)
+    s2 = pd.Series([1])
+    check(s2.squeeze(), np.integer)
+
+
 def test_to_xarray():
     s = pd.Series([1, 2])
     check(assert_type(s.to_xarray(), xr.DataArray), xr.DataArray)

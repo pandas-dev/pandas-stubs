@@ -3231,6 +3231,17 @@ def test_resample() -> None:
     check(assert_type(df.resample("2min").ohlc(), pd.DataFrame), pd.DataFrame)
 
 
+def test_squeeze() -> None:
+    df1 = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
+    check(df1.squeeze(), pd.DataFrame)
+    df2 = pd.DataFrame({"a": [1, 2]})
+    check(df2.squeeze(), pd.Series)
+    df3 = pd.DataFrame({"a": [1], "b": [2]})
+    check(df3.squeeze(), pd.Series, np.integer)
+    df4 = pd.DataFrame({"a": [1]})
+    check(df4.squeeze(), np.integer)
+
+
 def test_loc_set() -> None:
     df = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
     df.loc["a"] = [3, 4]
