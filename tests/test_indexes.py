@@ -1321,3 +1321,12 @@ def test_index_delete() -> None:
 
     dt_ind = pd.date_range("2023-01-01", "2023-02-01")
     check(assert_type(dt_ind.delete(2), pd.DatetimeIndex), pd.DatetimeIndex)
+
+
+def test_index_dict() -> None:
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.DatetimeIndex(
+            {  # type: ignore[arg-type]
+                "Jan. 1, 2008": "New Year’s Day"  # pyright: ignore[reportArgumentType]
+            }
+        )
