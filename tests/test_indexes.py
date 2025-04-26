@@ -1324,9 +1324,22 @@ def test_index_delete() -> None:
 
 
 def test_index_dict() -> None:
-    if TYPE_CHECKING_INVALID_USAGE:
-        pd.DatetimeIndex(
-            {  # type: ignore[arg-type]
-                "Jan. 1, 2008": "New Year’s Day"  # pyright: ignore[reportArgumentType]
-            }
-        )
+    """Test passing an ordered iterables to Index and subclasses constructor GH828."""
+    check(
+        assert_type(pd.Index({"Jan. 1, 2008": "New Year’s Day"}), "pd.Index[str]"),
+        pd.Index,
+        str,
+    )
+    check(
+        assert_type(
+            pd.DatetimeIndex({"Jan. 1, 2008": "New Year’s Day"}), pd.DatetimeIndex
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.TimedeltaIndex({pd.Timedelta(days=1): "New Year’s Day"}),
+            pd.TimedeltaIndex,
+        ),
+        pd.TimedeltaIndex,
+    )
