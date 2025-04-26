@@ -1,6 +1,7 @@
 from collections.abc import (
     Callable,
     Hashable,
+    Iterable,
     Sequence,
 )
 from typing import (
@@ -46,7 +47,7 @@ class MultiIndex(Index[Any]):
     @classmethod
     def from_tuples(
         cls,
-        tuples: Sequence[tuple[Hashable, ...]],
+        tuples: Iterable[tuple[Hashable, ...]],
         sortorder: int | None = ...,
         names: SequenceNotStr[Hashable] = ...,
     ) -> Self: ...
