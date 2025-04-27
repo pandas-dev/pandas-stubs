@@ -1321,3 +1321,25 @@ def test_index_delete() -> None:
 
     dt_ind = pd.date_range("2023-01-01", "2023-02-01")
     check(assert_type(dt_ind.delete(2), pd.DatetimeIndex), pd.DatetimeIndex)
+
+
+def test_index_dict() -> None:
+    """Test passing an ordered iterables to Index and subclasses constructor GH828."""
+    check(
+        assert_type(pd.Index({"Jan. 1, 2008": "New Year’s Day"}), "pd.Index[str]"),
+        pd.Index,
+        str,
+    )
+    check(
+        assert_type(
+            pd.DatetimeIndex({"Jan. 1, 2008": "New Year’s Day"}), pd.DatetimeIndex
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.TimedeltaIndex({pd.Timedelta(days=1): "New Year’s Day"}),
+            pd.TimedeltaIndex,
+        ),
+        pd.TimedeltaIndex,
+    )
