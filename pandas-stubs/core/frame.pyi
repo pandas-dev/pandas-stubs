@@ -176,7 +176,9 @@ class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
             | tuple[IndexType, IndexType]
             | tuple[int, IndexType]
         ),
-        value: Scalar | Series | DataFrame | np.ndarray | NAType | NaTType | None,
+        value: (
+            Scalar | Series | DataFrame | np.ndarray | NAType | NaTType | dict | None
+        ),
     ) -> None: ...
 
 class _LocIndexerFrame(_LocIndexer, Generic[_T]):
@@ -239,13 +241,23 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
         idx: (
             MaskType | StrLike | _IndexSliceTuple | list[ScalarT] | IndexingInt | slice
         ),
-        value: Scalar | NAType | NaTType | ArrayLike | Series | DataFrame | list | None,
+        value: (
+            Scalar
+            | NAType
+            | NaTType
+            | ArrayLike
+            | Series
+            | DataFrame
+            | list
+            | dict
+            | None
+        ),
     ) -> None: ...
     @overload
     def __setitem__(
         self,
         idx: tuple[_IndexSliceTuple, Hashable],
-        value: Scalar | NAType | NaTType | ArrayLike | Series | list | None,
+        value: Scalar | NAType | NaTType | ArrayLike | Series | list | dict | None,
     ) -> None: ...
 
 # With mypy 1.14.1 and python 3.12, the second overload needs a type-ignore statement
