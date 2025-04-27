@@ -177,7 +177,14 @@ class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
             | tuple[int, IndexType]
         ),
         value: (
-            Scalar | Series | DataFrame | np.ndarray | NAType | NaTType | dict | None
+            Scalar
+            | Series
+            | DataFrame
+            | np.ndarray
+            | NAType
+            | NaTType
+            | Mapping[Hashable, Scalar | NAType | NaTType]
+            | None
         ),
     ) -> None: ...
 
@@ -249,7 +256,7 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
             | Series
             | DataFrame
             | list
-            | dict
+            | Mapping[Hashable, Scalar | NAType | NaTType]
             | None
         ),
     ) -> None: ...
