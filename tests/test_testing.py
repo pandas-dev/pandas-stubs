@@ -3,7 +3,6 @@ from __future__ import annotations
 import os.path
 
 import pandas as pd
-from pandas._testing import ensure_clean
 from pandas.testing import (
     assert_frame_equal,
     assert_series_equal,
@@ -13,6 +12,7 @@ from typing_extensions import assert_type
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    ensure_clean,
 )
 
 

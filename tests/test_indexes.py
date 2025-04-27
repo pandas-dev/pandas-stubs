@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import Union
+from typing import (
+    TYPE_CHECKING,
+    Union,
+)
 
 import numpy as np
 from numpy import typing as npt
@@ -13,7 +16,8 @@ from typing_extensions import (
     assert_type,
 )
 
-from pandas._typing import Dtype  # noqa: F401
+if TYPE_CHECKING:
+    from tests import Dtype  # noqa: F401
 
 from tests import (
     PD_LTE_22,

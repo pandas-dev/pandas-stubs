@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from builtins import type as type_t
 import decimal
 import numbers
 import sys
@@ -24,7 +25,6 @@ from pandas.core.indexers import check_array_indexer
 
 from pandas._typing import (
     TakeIndexer,
-    type_t,
 )
 
 from pandas.core.dtypes.base import ExtensionDtype

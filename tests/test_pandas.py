@@ -13,6 +13,10 @@ import numpy.typing as npt
 import pandas as pd
 from pandas import Grouper
 from pandas.api.extensions import ExtensionArray
+from pandas.api.typing import (
+    NaTType,
+    NAType,
+)
 import pandas.util as pdutil
 
 # TODO: github.com/pandas-dev/pandas/issues/55023
@@ -23,8 +27,6 @@ from typing_extensions import (
     assert_type,
 )
 
-from pandas._libs.missing import NAType
-from pandas._libs.tslibs import NaTType
 from pandas._typing import Scalar
 
 from tests import (
