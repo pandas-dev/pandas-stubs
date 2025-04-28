@@ -4134,3 +4134,13 @@ def test_combine() -> None:
         ),
         pd.DataFrame,
     )
+
+
+def test_df_loc_dict() -> None:
+    """Test that we can set a dict to a df.loc result GH1203."""
+    df = pd.DataFrame(columns=["X"])
+    df.loc[0] = {"X": 0}
+    check(assert_type(df, pd.DataFrame), pd.DataFrame)
+
+    df.iloc[0] = {"X": 0}
+    check(assert_type(df, pd.DataFrame), pd.DataFrame)
