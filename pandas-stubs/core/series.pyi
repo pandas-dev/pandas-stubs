@@ -1394,6 +1394,16 @@ class Series(IndexOpsMixin[S1], NDFrame):
         subset: _str | Sequence[_str] | None = ...,
     ) -> Scalar | Series[S1]: ...
     @overload
+    def clip(  # pyright: ignore[reportOverlappingOverload]
+        self,
+        lower: None = ...,
+        upper: None = ...,
+        *,
+        axis: AxisIndex | None = ...,
+        inplace: Literal[True],
+        **kwargs: Any,
+    ) -> Self: ...
+    @overload
     def clip(
         self,
         lower: AnyArrayLike | float | None = ...,

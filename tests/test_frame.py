@@ -659,23 +659,124 @@ def test_types_quantile() -> None:
     df.quantile(np.array([0.25, 0.75]))
 
 
-@pytest.mark.parametrize("lower", [None, 5, pd.Series([3, 4])])
-@pytest.mark.parametrize("upper", [None, 15, pd.Series([12, 13])])
-@pytest.mark.parametrize("axis", [None, 0, "index"])
-def test_types_clip(lower, upper, axis) -> None:
-    def is_none_or_numeric(val: Any) -> bool:
-        return val is None or isinstance(val, int | float)
-
+def test_dataframe_clip() -> None:
+    """Test different clipping combinations for dataframe."""
     df = pd.DataFrame(data={"col1": [20, 12], "col2": [3, 14]})
-    uses_array = not (is_none_or_numeric(lower) and is_none_or_numeric(upper))
-    if uses_array and axis is None:
-        with pytest.raises(ValueError):
-            df.clip(lower=lower, upper=upper, axis=axis)
-    else:
-        check(
-            assert_type(df.clip(lower=lower, upper=upper, axis=axis), pd.DataFrame),
-            pd.DataFrame,
-        )
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.clip(lower=pd.Series([4, 5]), upper=None, axis=None)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        df.clip(lower=None, upper=pd.Series([4, 5]), axis=None)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        df.clip(lower=pd.Series([1, 2]), upper=pd.Series([4, 5]), axis=None)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        df.copy().clip(lower=pd.Series([1, 2]), upper=None, axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        df.copy().clip(lower=None, upper=pd.Series([1, 2]), axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        df.copy().clip(lower=pd.Series([4, 5]), upper=pd.Series([1, 2]), axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+
+    check(
+        assert_type(df.clip(lower=None, upper=None, axis=None), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.clip(lower=5, upper=None, axis=None), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df.clip(lower=None, upper=15, axis=None), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.clip(lower=None, upper=None, axis=None, inplace=True), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.clip(lower=5, upper=None, axis=None, inplace=True), None),
+        type(None),
+    )
+    check(
+        assert_type(df.clip(lower=None, upper=15, axis=None, inplace=True), None),
+        type(None),
+    )
+
+    check(
+        assert_type(df.clip(lower=None, upper=None, axis=0), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(df.clip(lower=5, upper=None, axis=0), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.clip(lower=None, upper=15, axis=0), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(df.clip(lower=pd.Series([1, 2]), upper=None, axis=0), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.clip(lower=None, upper=pd.Series([1, 2]), axis=0), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.clip(lower=None, upper=None, axis="index", inplace=True), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.clip(lower=5, upper=None, axis="index", inplace=True), None),
+        type(None),
+    )
+    check(
+        assert_type(df.clip(lower=None, upper=15, axis="index", inplace=True), None),
+        type(None),
+    )
+    check(
+        assert_type(
+            df.clip(lower=pd.Series([1, 2]), upper=None, axis="index", inplace=True),
+            None,
+        ),
+        type(None),
+    )
+    check(
+        assert_type(
+            df.clip(lower=None, upper=pd.Series([1, 2]), axis="index", inplace=True),
+            None,
+        ),
+        type(None),
+    )
+    check(
+        assert_type(df.clip(lower=None, upper=None, axis="index"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.clip(lower=5, upper=None, axis="index"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.clip(lower=None, upper=15, axis="index"), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.clip(lower=pd.Series([1, 2]), upper=None, axis="index"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.clip(lower=None, upper=pd.Series([1, 2]), axis="index"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.clip(lower=None, upper=None, axis=0, inplace=True), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.clip(lower=5, upper=None, axis=0, inplace=True), None),
+        type(None),
+    )
+    check(
+        assert_type(df.clip(lower=None, upper=15, axis=0, inplace=True), None),
+        type(None),
+    )
 
 
 def test_types_abs() -> None:

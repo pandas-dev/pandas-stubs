@@ -1738,8 +1738,48 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def clip(
         self,
-        lower: float | AnyArrayLike | None = ...,
-        upper: float | AnyArrayLike | None = ...,
+        lower: float | None = ...,
+        upper: float | None = ...,
+        *,
+        axis: Axis | None = ...,
+        inplace: Literal[False] = ...,
+        **kwargs: Any,
+    ) -> Self: ...
+    @overload
+    def clip(
+        self,
+        lower: AnyArrayLike = ...,
+        upper: AnyArrayLike | None = ...,
+        *,
+        axis: Axis = ...,
+        inplace: Literal[False] = ...,
+        **kwargs: Any,
+    ) -> Self: ...
+    @overload
+    def clip(
+        self,
+        lower: AnyArrayLike | None = ...,
+        upper: AnyArrayLike = ...,
+        *,
+        axis: Axis = ...,
+        inplace: Literal[False] = ...,
+        **kwargs: Any,
+    ) -> Self: ...
+    @overload
+    def clip(  # pyright: ignore[reportOverlappingOverload]
+        self,
+        lower: None = ...,
+        upper: None = ...,
+        *,
+        axis: Axis | None = ...,
+        inplace: Literal[True],
+        **kwargs: Any,
+    ) -> Self: ...
+    @overload
+    def clip(
+        self,
+        lower: float | None = ...,
+        upper: float | None = ...,
         *,
         axis: Axis | None = ...,
         inplace: Literal[True],
@@ -1748,13 +1788,23 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def clip(
         self,
-        lower: float | AnyArrayLike | None = ...,
-        upper: float | AnyArrayLike | None = ...,
+        lower: AnyArrayLike = ...,
+        upper: AnyArrayLike | None = ...,
         *,
-        axis: Axis | None = ...,
-        inplace: Literal[False] = ...,
+        axis: Axis = ...,
+        inplace: Literal[True],
         **kwargs: Any,
-    ) -> Self: ...
+    ) -> None: ...
+    @overload
+    def clip(
+        self,
+        lower: AnyArrayLike | None = ...,
+        upper: AnyArrayLike = ...,
+        *,
+        axis: Axis = ...,
+        inplace: Literal[True],
+        **kwargs: Any,
+    ) -> None: ...
     def copy(self, deep: _bool = ...) -> Self: ...
     def cummax(
         self, axis: Axis | None = ..., skipna: _bool = ..., *args: Any, **kwargs: Any

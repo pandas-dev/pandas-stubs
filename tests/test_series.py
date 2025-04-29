@@ -583,8 +583,35 @@ def test_types_quantile() -> None:
 
 def test_types_clip() -> None:
     s = pd.Series([-10, 2, 3, 10])
-    s.clip(lower=0, upper=5)
-    s.clip(lower=0, upper=5, inplace=True)
+    check(
+        assert_type(s.clip(lower=None, upper=None), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.clip(lower=0, upper=5), "pd.Series[int]"), pd.Series, np.integer
+    )
+    check(
+        assert_type(s.clip(lower=0, upper=None), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.clip(lower=None, upper=5), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.clip(lower=None, upper=None, inplace=True), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(s.clip(lower=0, upper=5, inplace=True), None), type(None))
+    check(assert_type(s.clip(lower=0, upper=None, inplace=True), None), type(None))
+    check(
+        assert_type(s.clip(lower=None, upper=5, inplace=True), None),
+        type(None),
+    )
 
 
 def test_types_abs() -> None:
