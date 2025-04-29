@@ -13,16 +13,13 @@ import dateutil.tz
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
+from pandas.api.typing import NaTType
 import pytz
 from typing_extensions import (
     TypeAlias,
     assert_type,
 )
 
-from pandas._libs.tslibs import (
-    BaseOffset,
-    NaTType,
-)
 from pandas._libs.tslibs.timedeltas import Components
 from pandas._typing import TimeUnit
 
@@ -32,7 +29,10 @@ from tests import (
     pytest_warns_bounded,
 )
 
-from pandas.tseries.offsets import Day
+from pandas.tseries.offsets import (
+    BaseOffset,
+    Day,
+)
 
 if TYPE_CHECKING:
     from pandas.core.series import (
@@ -42,13 +42,13 @@ if TYPE_CHECKING:
         TimestampSeries,
     )
 
-    from pandas._typing import np_ndarray_bool
 else:
-    np_ndarray_bool = npt.NDArray[np.bool_]
     TimedeltaSeries: TypeAlias = pd.Series
     TimestampSeries: TypeAlias = pd.Series
     PeriodSeries: TypeAlias = pd.Series
     OffsetSeries: TypeAlias = pd.Series
+
+from tests import np_ndarray_bool
 
 
 def test_interval() -> None:

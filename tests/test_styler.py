@@ -16,13 +16,15 @@ from pandas import (
     Index,
     Series,
 )
-from pandas._testing import ensure_clean
 import pytest
 from typing_extensions import assert_type
 
 from pandas._typing import Scalar
 
-from tests import check
+from tests import (
+    check,
+    ensure_clean,
+)
 
 from pandas.io.formats.style import Styler
 

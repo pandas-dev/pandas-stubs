@@ -25,11 +25,11 @@ from typing import (
 
 import numpy as np
 import pandas as pd
-from pandas._testing import ensure_clean
 from pandas.api.extensions import (
     ExtensionArray,
     ExtensionDtype,
 )
+from pandas.api.typing import NAType
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.window import ExponentialMovingWindow
@@ -43,9 +43,6 @@ from typing_extensions import (
 )
 import xarray as xr
 
-from pandas._libs.missing import NAType
-from pandas._libs.tslibs import BaseOffset
-from pandas._libs.tslibs.offsets import YearEnd
 from pandas._typing import (
     DtypeObj,
     Scalar,
@@ -56,11 +53,16 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     WINDOWS,
     check,
+    ensure_clean,
     pytest_warns_bounded,
 )
 from tests.extension.decimal.array import DecimalDtype
 
 from pandas.io.formats.format import EngFormatter
+from pandas.tseries.offsets import (
+    BaseOffset,
+    YearEnd,
+)
 
 if TYPE_CHECKING:
     from pandas.core.series import (
@@ -68,13 +70,8 @@ if TYPE_CHECKING:
         TimedeltaSeries,
         TimestampSeries,
     )
-else:
-    TimedeltaSeries: TypeAlias = pd.Series
-    TimestampSeries: TypeAlias = pd.Series
-    OffsetSeries: TypeAlias = pd.Series
 
-if TYPE_CHECKING:
-    from pandas._typing import (
+    from tests import (
         BooleanDtypeArg,
         BytesDtypeArg,
         CategoryDtypeArg,
@@ -88,7 +85,12 @@ if TYPE_CHECKING:
         UIntDtypeArg,
         VoidDtypeArg,
     )
-    from pandas._typing import np_ndarray_int  # noqa: F401
+    from tests import np_ndarray_int  # noqa: F401
+
+else:
+    TimedeltaSeries: TypeAlias = pd.Series
+    TimestampSeries: TypeAlias = pd.Series
+    OffsetSeries: TypeAlias = pd.Series
 
 
 # Tests will use numpy 2.1 in python 3.10 or later

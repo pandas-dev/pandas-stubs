@@ -31,7 +31,8 @@ from typing import (
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
-from pandas._testing import ensure_clean
+from pandas import Timestamp
+from pandas.api.typing import NAType
 from pandas.core.resample import (
     DatetimeIndexResampler,
     Resampler,
@@ -44,14 +45,13 @@ from typing_extensions import (
 )
 import xarray as xr
 
-from pandas._libs.missing import NAType
-from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import Scalar
 
 from tests import (
     PD_LTE_22,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    ensure_clean,
     pytest_warns_bounded,
 )
 

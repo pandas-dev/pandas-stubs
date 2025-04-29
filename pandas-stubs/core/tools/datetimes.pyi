@@ -5,6 +5,7 @@ from datetime import (
 )
 from typing import (
     Literal,
+    TypedDict,
     overload,
 )
 
@@ -36,6 +37,24 @@ Scalar: TypeAlias = float | str
 DatetimeScalar: TypeAlias = Scalar | datetime | np.datetime64 | date
 
 DatetimeScalarOrArrayConvertible: TypeAlias = DatetimeScalar | ArrayConvertible
+
+DatetimeDictArg: TypeAlias = list[Scalar] | tuple[Scalar, ...] | AnyArrayLike
+
+class YearMonthDayDict(TypedDict, total=True):
+    year: DatetimeDictArg
+    month: DatetimeDictArg
+    day: DatetimeDictArg
+
+class FulldatetimeDict(YearMonthDayDict, total=False):
+    hour: DatetimeDictArg
+    hours: DatetimeDictArg
+    minute: DatetimeDictArg
+    minutes: DatetimeDictArg
+    second: DatetimeDictArg
+    seconds: DatetimeDictArg
+    ms: DatetimeDictArg
+    us: DatetimeDictArg
+    ns: DatetimeDictArg
 
 @overload
 def to_datetime(

@@ -3,7 +3,6 @@ from __future__ import annotations
 import datetime as dt
 from typing import (
     TYPE_CHECKING,
-    Any,
     Optional,
     cast,
 )
@@ -20,22 +19,14 @@ from dateutil.relativedelta import (
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
+from pandas.api.typing import NaTType
+from pandas.core.tools.datetimes import FulldatetimeDict
 import pytz
 from typing_extensions import (
     assert_never,
     assert_type,
 )
 
-from pandas._libs import NaTType
-from pandas._libs.tslibs import BaseOffset
-
-from pandas.tseries.frequencies import to_offset
-from pandas.tseries.offsets import DateOffset
-
-if TYPE_CHECKING:
-    from pandas._typing import FulldatetimeDict
-else:
-    FulldatetimeDict = Any
 from pandas._typing import TimeUnit
 
 from tests import (
@@ -45,12 +36,15 @@ from tests import (
     pytest_warns_bounded,
 )
 
+from pandas.tseries.frequencies import to_offset
 from pandas.tseries.holiday import USFederalHolidayCalendar
 from pandas.tseries.offsets import (
+    BaseOffset,
     BusinessDay,
     BusinessHour,
     CustomBusinessDay,
     CustomBusinessHour,
+    DateOffset,
     Day,
 )
 
@@ -59,9 +53,7 @@ if TYPE_CHECKING:
     from pandas.core.series import TimedeltaSeries  # noqa: F401
     from pandas.core.series import TimestampSeries  # noqa: F401
 
-
-# Separately define here so pytest works
-np_ndarray_bool = npt.NDArray[np.bool_]
+from tests import np_ndarray_bool
 
 
 def test_types_init() -> None:
