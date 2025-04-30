@@ -780,7 +780,6 @@ def test_dataframe_clip() -> None:
 
     # without lower
     check(assert_type(df.clip(upper=None, axis=None), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.clip(upper=None, axis=None), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.clip(upper=15, axis=None), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(df.clip(upper=None, axis=None, inplace=True), pd.DataFrame),
@@ -789,15 +788,9 @@ def test_dataframe_clip() -> None:
     check(assert_type(df.clip(upper=15, axis=None, inplace=True), None), type(None))
 
     check(assert_type(df.clip(upper=None, axis=0), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.clip(upper=None, axis=0), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.clip(upper=15, axis=0), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.clip(upper=None, axis=0), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(df.clip(upper=pd.Series([1, 2]), axis=0), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(df.clip(upper=None, axis="index", inplace=True), pd.DataFrame),
         pd.DataFrame,
     )
     check(
@@ -809,42 +802,21 @@ def test_dataframe_clip() -> None:
         type(None),
     )
     check(
-        assert_type(df.clip(upper=None, axis="index", inplace=True), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
         assert_type(df.clip(upper=pd.Series([1, 2]), axis="index", inplace=True), None),
         type(None),
     )
     check(assert_type(df.clip(upper=None, axis="index"), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.clip(upper=None, axis="index"), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.clip(upper=15, axis="index"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.clip(upper=None, axis="index"), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(
-            df.clip(lower=pd.Series([1, 2]), upper=None, axis="index"), pd.DataFrame
-        ),
+        assert_type(df.clip(upper=pd.Series([1, 2]), axis="index"), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(
-            df.clip(lower=None, upper=pd.Series([1, 2]), axis="index"), pd.DataFrame
-        ),
+        assert_type(df.clip(upper=None, axis=0, inplace=True), pd.DataFrame),
         pd.DataFrame,
     )
-    check(
-        assert_type(
-            df.clip(lower=None, upper=None, axis=0, inplace=True), pd.DataFrame
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(df.clip(lower=5, upper=None, axis=0, inplace=True), None),
-        type(None),
-    )
-    check(
-        assert_type(df.clip(lower=None, upper=15, axis=0, inplace=True), None),
-        type(None),
-    )
+    check(assert_type(df.clip(upper=15, axis=0, inplace=True), None), type(None))
 
     # without upper
     check(
@@ -880,10 +852,7 @@ def test_dataframe_clip() -> None:
         type(None),
     )
     check(
-        assert_type(
-            df.clip(lower=pd.Series([1, 2]), axis="index", inplace=True),
-            None,
-        ),
+        assert_type(df.clip(lower=pd.Series([1, 2]), axis="index", inplace=True), None),
         type(None),
     )
     check(
@@ -914,10 +883,7 @@ def test_dataframe_clip() -> None:
         assert_type(df.clip(lower=None, axis=0, inplace=True), pd.DataFrame),
         pd.DataFrame,
     )
-    check(
-        assert_type(df.clip(lower=5, axis=0, inplace=True), None),
-        type(None),
-    )
+    check(assert_type(df.clip(lower=5, axis=0, inplace=True), None), type(None))
     check(
         assert_type(df.clip(lower=None, axis=0, inplace=True), pd.DataFrame),
         pd.DataFrame,
