@@ -584,9 +584,130 @@ def test_types_quantile() -> None:
 
 
 def test_types_clip() -> None:
+    """Test different overloads of Series.clip GH984."""
     s = pd.Series([-10, 2, 3, 10])
-    s.clip(lower=0, upper=5)
-    s.clip(lower=0, upper=5, inplace=True)
+    lower = pd.Series([-10, -10, -3, -10])
+    upper = pd.Series([50, 52, 53, 51])
+    check(
+        assert_type(s.clip(lower=None, upper=None), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.clip(lower=0, upper=5), "pd.Series[int]"), pd.Series, np.integer
+    )
+    check(
+        assert_type(s.clip(lower=0, upper=None), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.clip(lower=None, upper=5), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.clip(lower=None, upper=None, inplace=True), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(s.clip(lower=0, upper=5, inplace=True), None), type(None))
+    check(assert_type(s.clip(lower=0, upper=None, inplace=True), None), type(None))
+    check(
+        assert_type(s.clip(lower=None, upper=None, inplace=True), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.clip(lower=None, upper=5, inplace=True), None),
+        type(None),
+    )
+    check(
+        assert_type(s.clip(lower=lower, upper=upper), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.clip(lower=lower, upper=upper, axis=0), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.clip(lower=lower, upper=upper, axis="index"), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(s.clip(lower=lower, upper=upper, inplace=True), None), type(None))
+    check(
+        assert_type(s.clip(lower=lower, upper=upper, axis=0, inplace=True), None),
+        type(None),
+    )
+    check(
+        assert_type(s.clip(lower=lower, upper=upper, axis="index", inplace=True), None),
+        type(None),
+    )
+
+    # without lower
+    check(assert_type(s.clip(upper=None), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.clip(upper=5), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(s.clip(upper=None, inplace=True), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(s.clip(upper=5, inplace=True), None), type(None))
+    check(assert_type(s.clip(upper=upper), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(s.clip(upper=upper, axis=0), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.clip(upper=upper, axis="index"), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(s.clip(upper=upper, inplace=True), None), type(None))
+    check(assert_type(s.clip(upper=upper, axis=0, inplace=True), None), type(None))
+    check(
+        assert_type(s.clip(upper=upper, axis="index", inplace=True), None), type(None)
+    )
+
+    # without upper
+    check(assert_type(s.clip(lower=None), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.clip(lower=0), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.clip(lower=None), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(s.clip(lower=None, inplace=True), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(s.clip(lower=0, inplace=True), None), type(None))
+    check(
+        assert_type(s.clip(lower=None, inplace=True), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(s.clip(lower=lower), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(s.clip(lower=lower, axis=0), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.clip(lower=lower, axis="index"), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(s.clip(lower=lower, inplace=True), None), type(None))
+    check(assert_type(s.clip(lower=lower, axis=0, inplace=True), None), type(None))
+    check(
+        assert_type(s.clip(lower=lower, axis="index", inplace=True), None), type(None)
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.clip(lower=lower, axis=1)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        s.clip(lower=lower, axis="column")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_types_abs() -> None:
