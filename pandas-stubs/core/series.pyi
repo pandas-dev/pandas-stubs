@@ -297,9 +297,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __new__(
         cls,
         data: _ListLike,
-        dtype: TimestampDtypeArg,
-        *,
         index: Axes | None = ...,
+        *,
+        dtype: TimestampDtypeArg,
         name: Hashable = ...,
         copy: bool = ...,
     ) -> TimestampSeries: ...
@@ -342,12 +342,12 @@ class Series(IndexOpsMixin[S1], NDFrame):
         copy: bool = ...,
     ) -> IntervalSeries[_OrderableT]: ...
     @overload
-    def __new__(
+    def __new__(  # type: ignore[overload-overlap]
         cls,
         data: Scalar | _ListLike | dict[HashableT1, Any] | None,
-        dtype: type[S1],
-        *,
         index: Axes | None = ...,
+        *,
+        dtype: type[S1],
         name: Hashable = ...,
         copy: bool = ...,
     ) -> Self: ...
