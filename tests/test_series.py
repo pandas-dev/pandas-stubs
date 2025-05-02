@@ -136,6 +136,19 @@ def test_types_init() -> None:
     pd.Series(data=groupby)
     pd.Series(data=resampler)
 
+    check(
+        assert_type(pd.Series([1], pd.Index([1]), float), "pd.Series[float]"),
+        pd.Series,
+        float,
+    )
+    check(
+        assert_type(
+            pd.Series([1], pd.DatetimeIndex([1]), float, "f"), "pd.Series[float]"
+        ),
+        pd.Series,
+        float,
+    )
+
 
 def test_types_any() -> None:
     check(assert_type(pd.Series([False, False]).any(), np.bool), np.bool)
