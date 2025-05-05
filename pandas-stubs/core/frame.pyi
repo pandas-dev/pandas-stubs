@@ -691,14 +691,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         expr: _str,
         *,
-        parser: Literal["pandas", "python"] = "pandas",
-        engine: Literal["python", "numexpr"] | None = "numexpr",
-        local_dict: dict[_str, Any] | None = None,
-        global_dict: dict[_str, Any] | None = None,
-        resolvers: list[Mapping] | None = None,
-        level: int = 0,
-        target: object | None = None,
         inplace: Literal[False] = ...,
+        parser: Literal["pandas", "python"] = ...,
+        engine: Literal["python", "numexpr"] | None = ...,
+        local_dict: dict[_str, Any] | None = ...,
+        global_dict: dict[_str, Any] | None = ...,
+        resolvers: list[Mapping] | None = ...,
+        level: int = ...,
+        target: object | None = ...,
         **kwargs: Any,  # TODO: make more precise https://github.com/pandas-dev/pandas-stubs/issues/1173
     ) -> Self: ...
     @overload
