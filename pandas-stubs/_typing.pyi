@@ -31,6 +31,7 @@ from pandas.core.generic import NDFrame
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
+from pandas.core.tools.datetimes import FulldatetimeDict
 from typing_extensions import (
     ParamSpec,
     TypeAlias,
@@ -72,22 +73,6 @@ DatetimeDictArg: TypeAlias = (
     Sequence[int] | Sequence[float] | list[str] | tuple[Scalar, ...] | AnyArrayLike
 )
 DictConvertible: TypeAlias = FulldatetimeDict | DataFrame
-
-class YearMonthDayDict(TypedDict, total=True):
-    year: DatetimeDictArg
-    month: DatetimeDictArg
-    day: DatetimeDictArg
-
-class FulldatetimeDict(YearMonthDayDict, total=False):
-    hour: DatetimeDictArg
-    hours: DatetimeDictArg
-    minute: DatetimeDictArg
-    minutes: DatetimeDictArg
-    second: DatetimeDictArg
-    seconds: DatetimeDictArg
-    ms: DatetimeDictArg
-    us: DatetimeDictArg
-    ns: DatetimeDictArg
 
 CorrelationMethod: TypeAlias = (
     Literal["pearson", "kendall", "spearman"]
@@ -518,7 +503,9 @@ IndexIterScalar: TypeAlias = (
     | Timestamp
     | Timedelta
 )
-Scalar: TypeAlias = IndexIterScalar | complex
+Scalar: TypeAlias = (
+    IndexIterScalar | complex | np.integer | np.floating | np.complexfloating
+)
 ScalarT = TypeVar("ScalarT", bound=Scalar)
 # Refine the definitions below in 3.9 to use the specialized type.
 np_ndarray_int64: TypeAlias = npt.NDArray[np.int64]
@@ -624,7 +611,7 @@ CompressionOptions: TypeAlias = (
 FormattersType: TypeAlias = (
     list[Callable] | tuple[Callable, ...] | Mapping[str | int, Callable]
 )
-FloatFormatType: TypeAlias = str | Callable | EngFormatter
+FloatFormatType: TypeAlias = str | Callable[[float], str] | EngFormatter
 # converters
 ConvertersArg: TypeAlias = dict[Hashable, Callable[[Dtype], Dtype]]
 

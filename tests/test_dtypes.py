@@ -14,6 +14,10 @@ from typing import (
 import numpy as np
 import pandas as pd
 from pandas.api.types import is_any_real_numeric_dtype
+from pandas.api.typing import (
+    NaTType,
+    NAType,
+)
 from pandas.core.arrays import (
     BooleanArray,
     IntegerArray,
@@ -21,8 +25,6 @@ from pandas.core.arrays import (
 import pyarrow as pa
 from typing_extensions import assert_type
 
-from pandas._libs import NaTType
-from pandas._libs.missing import NAType
 from pandas._typing import Scalar
 
 from tests import (

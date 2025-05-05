@@ -10,6 +10,7 @@ from datetime import (
 from typing import overload
 
 from _typing import (
+    Axes,
     Frequency,
     TimeZones,
 )
@@ -30,7 +31,6 @@ from pandas.core.series import (
 from typing_extensions import Self
 
 from pandas._typing import (
-    AnyArrayLike,
     DateAndDatetimeLike,
     Dtype,
     IntervalClosedType,
@@ -44,7 +44,7 @@ from pandas.tseries.offsets import BaseOffset
 class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
     def __init__(
         self,
-        data: AnyArrayLike | list | tuple,
+        data: Axes,
         freq: Frequency = ...,
         tz: TimeZones = ...,
         ambiguous: str = ...,
@@ -80,7 +80,6 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
     def searchsorted(self, value, side: str = ..., sorter=...): ...
     @property
     def inferred_type(self) -> str: ...
-    def insert(self, loc, item): ...
     def indexer_at_time(self, time, asof: bool = ...): ...
     def indexer_between_time(
         self, start_time, end_time, include_start: bool = ..., include_end: bool = ...

@@ -18,7 +18,10 @@ from typing import (
     overload,
 )
 
-from _typing import TimeZones
+from _typing import (
+    FloatFormatType,
+    TimeZones,
+)
 from matplotlib.axes import Axes as PlotAxes
 import numpy as np
 from pandas import (
@@ -67,6 +70,7 @@ from pandas._libs.lib import NoDefault
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.nattype import NaTType
+from pandas._libs.tslibs.offsets import DateOffset
 from pandas._typing import (
     S1,
     AggFuncTypeBase,
@@ -87,7 +91,6 @@ from pandas._typing import (
     FilePath,
     FillnaOptions,
     FormattersType,
-    Frequency,
     GroupByObjectNonScalar,
     HashableT,
     HashableT1,
@@ -173,7 +176,16 @@ class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
             | tuple[IndexType, IndexType]
             | tuple[int, IndexType]
         ),
-        value: Scalar | Series | DataFrame | np.ndarray | NAType | NaTType | None,
+        value: (
+            Scalar
+            | Series
+            | DataFrame
+            | np.ndarray
+            | NAType
+            | NaTType
+            | Mapping[Hashable, Scalar | NAType | NaTType]
+            | None
+        ),
     ) -> None: ...
 
 class _LocIndexerFrame(_LocIndexer, Generic[_T]):
@@ -236,13 +248,23 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
         idx: (
             MaskType | StrLike | _IndexSliceTuple | list[ScalarT] | IndexingInt | slice
         ),
-        value: Scalar | NAType | NaTType | ArrayLike | Series | DataFrame | list | None,
+        value: (
+            Scalar
+            | NAType
+            | NaTType
+            | ArrayLike
+            | Series
+            | DataFrame
+            | list
+            | Mapping[Hashable, Scalar | NAType | NaTType]
+            | None
+        ),
     ) -> None: ...
     @overload
     def __setitem__(
         self,
         idx: tuple[_IndexSliceTuple, Hashable],
-        value: Scalar | NAType | NaTType | ArrayLike | Series | list | None,
+        value: Scalar | NAType | NaTType | ArrayLike | Series | list | dict | None,
     ) -> None: ...
 
 # With mypy 1.14.1 and python 3.12, the second overload needs a type-ignore statement
@@ -844,10 +866,10 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def shift(
         self,
-        periods: int = ...,
-        freq: Frequency | dt.timedelta | None = ...,
+        periods: int | Sequence[int] = ...,
+        freq: DateOffset | dt.timedelta | _str | None = ...,
         axis: Axis = ...,
-        fill_value: Hashable | None = ...,
+        fill_value: Scalar | NAType | None = ...,
     ) -> Self: ...
     @overload
     def set_index(
@@ -1749,8 +1771,48 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def clip(
         self,
-        lower: float | AnyArrayLike | None = ...,
-        upper: float | AnyArrayLike | None = ...,
+        lower: float | None = ...,
+        upper: float | None = ...,
+        *,
+        axis: Axis | None = ...,
+        inplace: Literal[False] = ...,
+        **kwargs: Any,
+    ) -> Self: ...
+    @overload
+    def clip(
+        self,
+        lower: AnyArrayLike = ...,
+        upper: AnyArrayLike | None = ...,
+        *,
+        axis: Axis = ...,
+        inplace: Literal[False] = ...,
+        **kwargs: Any,
+    ) -> Self: ...
+    @overload
+    def clip(
+        self,
+        lower: AnyArrayLike | None = ...,
+        upper: AnyArrayLike = ...,
+        *,
+        axis: Axis = ...,
+        inplace: Literal[False] = ...,
+        **kwargs: Any,
+    ) -> Self: ...
+    @overload
+    def clip(  # pyright: ignore[reportOverlappingOverload]
+        self,
+        lower: None = ...,
+        upper: None = ...,
+        *,
+        axis: Axis | None = ...,
+        inplace: Literal[True],
+        **kwargs: Any,
+    ) -> Self: ...
+    @overload
+    def clip(
+        self,
+        lower: float | None = ...,
+        upper: float | None = ...,
         *,
         axis: Axis | None = ...,
         inplace: Literal[True],
@@ -1759,13 +1821,23 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def clip(
         self,
-        lower: float | AnyArrayLike | None = ...,
-        upper: float | AnyArrayLike | None = ...,
+        lower: AnyArrayLike = ...,
+        upper: AnyArrayLike | None = ...,
         *,
-        axis: Axis | None = ...,
-        inplace: Literal[False] = ...,
+        axis: Axis = ...,
+        inplace: Literal[True],
         **kwargs: Any,
-    ) -> Self: ...
+    ) -> None: ...
+    @overload
+    def clip(
+        self,
+        lower: AnyArrayLike | None = ...,
+        upper: AnyArrayLike = ...,
+        *,
+        axis: Axis = ...,
+        inplace: Literal[True],
+        **kwargs: Any,
+    ) -> None: ...
     def copy(self, deep: _bool = ...) -> Self: ...
     def cummax(
         self, axis: Axis | None = ..., skipna: _bool = ..., *args: Any, **kwargs: Any
@@ -2003,9 +2075,10 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         periods: int = ...,
         fill_method: None = ...,
-        limit: int | None = ...,
-        freq=...,
-        **kwargs: Any,  # TODO: make more precise https://github.com/pandas-dev/pandas-stubs/issues/1169
+        freq: DateOffset | dt.timedelta | _str | None = ...,
+        *,
+        axis: Axis = ...,
+        fill_value: Scalar | NAType | None = ...,
     ) -> Self: ...
     def pop(self, item: _str) -> Series: ...
     def pow(
@@ -2204,7 +2277,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         numeric_only: _bool = ...,
         **kwargs: Any,
     ) -> Series: ...
-    def squeeze(self, axis: Axis | None = ...): ...
+    def squeeze(self, axis: Axis | None = ...) -> DataFrame | Series | Scalar: ...
     def std(
         self,
         axis: Axis = ...,
@@ -2240,12 +2313,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def swapaxes(self, axis1: Axis, axis2: Axis, copy: _bool = ...) -> Self: ...
     def tail(self, n: int = ...) -> Self: ...
     def take(self, indices: list, axis: Axis = ..., **kwargs: Any) -> Self: ...
-    def to_clipboard(
-        self,
-        excel: _bool = ...,
-        sep: _str | None = ...,
-        **kwargs: Any,  # TODO: make more precise https://github.com/pandas-dev/pandas-stubs/issues/1174
-    ) -> None: ...
     @overload
     def to_json(
         self,
@@ -2330,7 +2397,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         index: _bool = ...,
         na_rep: _str = ...,
         formatters: FormattersType | None = ...,
-        float_format: Callable[[float], str] | None = ...,
+        float_format: FloatFormatType | None = ...,
         sparsify: _bool | None = ...,
         index_names: _bool = ...,
         justify: _str | None = ...,
@@ -2353,7 +2420,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         index: _bool = ...,
         na_rep: _str = ...,
         formatters: FormattersType | None = ...,
-        float_format: Callable[[float], str] | None = ...,
+        float_format: FloatFormatType | None = ...,
         sparsify: _bool | None = ...,
         index_names: _bool = ...,
         justify: _str | None = ...,

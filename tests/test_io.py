@@ -40,7 +40,7 @@ from pandas import (
     read_table,
     read_xml,
 )
-from pandas._testing import ensure_clean
+from pandas.api.typing import JsonReader
 import pytest
 import sqlalchemy
 import sqlalchemy.orm
@@ -51,11 +51,11 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     WINDOWS,
     check,
+    ensure_clean,
 )
 from tests import NUMPY20  # See https://github.com/PyTables/PyTables/issues/1172
 
 from pandas.io.api import to_pickle
-from pandas.io.json._json import JsonReader
 from pandas.io.parsers import TextFileReader
 from pandas.io.pytables import (
     TableIterator,
@@ -275,6 +275,9 @@ def test_clipboard():
         ),
         DataFrame,
     )
+    # Passing kwargs for to_csv
+    DF.to_clipboard(quoting=csv.QUOTE_ALL)
+    DF.to_clipboard(sep=",", index=False)
     if TYPE_CHECKING_INVALID_USAGE:
         pd.read_clipboard(names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
         pd.read_clipboard(usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]

@@ -14,12 +14,39 @@ from typing import (
 )
 
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
+
+# Next set of imports is to keep the private imports needed for testing
+# in one place
+from pandas._testing import ensure_clean as ensure_clean
 from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.util.version import Version
 import pytest
 
-from pandas._typing import T
+if TYPE_CHECKING:
+    from pandas._typing import (
+        BooleanDtypeArg as BooleanDtypeArg,
+        BytesDtypeArg as BytesDtypeArg,
+        CategoryDtypeArg as CategoryDtypeArg,
+        ComplexDtypeArg as ComplexDtypeArg,
+        Dtype as Dtype,
+        FloatDtypeArg as FloatDtypeArg,
+        IntDtypeArg as IntDtypeArg,
+        ObjectDtypeArg as ObjectDtypeArg,
+        StrDtypeArg as StrDtypeArg,
+        T as T,
+        TimedeltaDtypeArg as TimedeltaDtypeArg,
+        TimestampDtypeArg as TimestampDtypeArg,
+        UIntDtypeArg as UIntDtypeArg,
+        VoidDtypeArg as VoidDtypeArg,
+        np_ndarray_bool as np_ndarray_bool,
+        np_ndarray_int as np_ndarray_int,
+    )
+else:
+    # Separately define here so pytest works
+    np_ndarray_bool = npt.NDArray[np.bool_]
+    np_ndarray_int = npt.NDArray[np.signedinteger]
 
 TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 WINDOWS = os.name == "nt" or "cygwin" in platform.system().lower()

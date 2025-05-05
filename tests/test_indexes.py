@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import Union
+from typing import (
+    TYPE_CHECKING,
+    Union,
+)
 
 import numpy as np
 from numpy import typing as npt
@@ -13,7 +16,8 @@ from typing_extensions import (
     assert_type,
 )
 
-from pandas._typing import Dtype  # noqa: F401
+if TYPE_CHECKING:
+    from tests import Dtype  # noqa: F401
 
 from tests import (
     PD_LTE_22,
@@ -92,6 +96,10 @@ def test_multiindex_constructors() -> None:
         assert_type(
             pd.MultiIndex.from_arrays([np.arange(3), np.arange(3)]), pd.MultiIndex
         ),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(pd.MultiIndex.from_tuples(zip([1, 2], [3, 4])), pd.MultiIndex),
         pd.MultiIndex,
     )
     check(
@@ -1287,3 +1295,55 @@ def test_datetimeindex_shift() -> None:
 def test_timedeltaindex_shift() -> None:
     ind = pd.date_range("1/1/2021", "1/5/2021") - pd.Timestamp("1/3/2019")
     check(assert_type(ind.shift(1), pd.TimedeltaIndex), pd.TimedeltaIndex)
+
+
+def test_index_insert() -> None:
+    """Test the return type of Index.insert GH1196."""
+    idx = pd.Index([1, 2, 3, 4, 5])
+    check(assert_type(idx.insert(2, 3), "pd.Index[int]"), pd.Index, np.integer)
+
+    ind = pd.date_range("1/1/2021", "1/5/2021") - pd.Timestamp("1/3/2019")
+    check(
+        assert_type(ind.insert(2, pd.Timedelta("1D")), pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+    )
+
+    dt_ind = pd.date_range("2023-01-01", "2023-02-01")
+    check(
+        assert_type(dt_ind.insert(2, pd.Timestamp(2024, 3, 5)), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+
+
+def test_index_delete() -> None:
+    """Test the return type of Index.delete GH1196."""
+    idx = pd.Index([1, 2, 3, 4, 5])
+    check(assert_type(idx.delete(2), "pd.Index[int]"), pd.Index, np.integer)
+
+    ind = pd.date_range("1/1/2021", "1/5/2021") - pd.Timestamp("1/3/2019")
+    check(assert_type(ind.delete(2), pd.TimedeltaIndex), pd.TimedeltaIndex)
+
+    dt_ind = pd.date_range("2023-01-01", "2023-02-01")
+    check(assert_type(dt_ind.delete(2), pd.DatetimeIndex), pd.DatetimeIndex)
+
+
+def test_index_dict() -> None:
+    """Test passing an ordered iterables to Index and subclasses constructor GH828."""
+    check(
+        assert_type(pd.Index({"Jan. 1, 2008": "New Year’s Day"}), "pd.Index[str]"),
+        pd.Index,
+        str,
+    )
+    check(
+        assert_type(
+            pd.DatetimeIndex({"Jan. 1, 2008": "New Year’s Day"}), pd.DatetimeIndex
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.TimedeltaIndex({pd.Timedelta(days=1): "New Year’s Day"}),
+            pd.TimedeltaIndex,
+        ),
+        pd.TimedeltaIndex,
+    )

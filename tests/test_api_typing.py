@@ -2,7 +2,7 @@
 
 import numpy as np
 import pandas as pd
-from pandas._testing import ensure_clean
+from pandas import read_json
 from pandas.api.typing import (
     DataFrameGroupBy,
     DatetimeIndexResamplerGroupby,
@@ -29,9 +29,10 @@ from typing_extensions import (
     assert_type,
 )
 
-from tests import check
-
-from pandas.io.json._json import read_json
+from tests import (
+    check,
+    ensure_clean,
+)
 
 ResamplerGroupBy: TypeAlias = (
     DatetimeIndexResamplerGroupby

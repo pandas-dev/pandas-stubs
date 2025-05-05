@@ -2,15 +2,13 @@ import functools
 import re
 
 import numpy as np
-import numpy.typing as npt
 import pandas as pd
 from typing_extensions import assert_type
 
-from tests import check
-
-# Separately define here so pytest works
-np_ndarray_bool = npt.NDArray[np.bool_]
-
+from tests import (
+    check,
+    np_ndarray_bool,
+)
 
 DATA = ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
 DATA_BYTES = [b"applep", b"bananap"]

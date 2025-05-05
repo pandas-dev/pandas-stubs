@@ -25,6 +25,7 @@ from typing import (
 )
 
 from _typing import (
+    FloatFormatType,
     Label,
     ReplaceValue,
     TimeZones,
@@ -102,6 +103,7 @@ from pandas._libs.lib import NoDefault
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.nattype import NaTType
+from pandas._libs.tslibs.offsets import DateOffset
 from pandas._typing import (
     S1,
     S2,
@@ -125,7 +127,6 @@ from pandas._typing import (
     FilePath,
     FillnaOptions,
     FloatDtypeArg,
-    Frequency,
     GroupByObjectNonScalar,
     HashableT1,
     IgnoreRaise,
@@ -245,7 +246,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: npt.NDArray[np.float64],
         index: Axes | None = ...,
-        *,
         dtype: Dtype = ...,
         name: Hashable = ...,
         copy: bool = ...,
@@ -255,7 +255,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: Sequence[Never],
         index: Axes | None = ...,
-        *,
         dtype: Dtype = ...,
         name: Hashable = ...,
         copy: bool = ...,
@@ -265,7 +264,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: Sequence[list[str]],
         index: Axes | None = ...,
-        *,
         dtype: Dtype = ...,
         name: Hashable = ...,
         copy: bool = ...,
@@ -275,7 +273,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: Sequence[str],
         index: Axes | None = ...,
-        *,
         dtype: Dtype = ...,
         name: Hashable = ...,
         copy: bool = ...,
@@ -292,7 +289,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
             | date
         ),
         index: Axes | None = ...,
-        *,
         dtype: TimestampDtypeArg = ...,
         name: Hashable = ...,
         copy: bool = ...,
@@ -312,7 +308,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: PeriodIndex | Sequence[Period],
         index: Axes | None = ...,
-        *,
         dtype: PeriodDtype = ...,
         name: Hashable = ...,
         copy: bool = ...,
@@ -328,7 +323,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
             | timedelta
         ),
         index: Axes | None = ...,
-        *,
         dtype: TimedeltaDtypeArg = ...,
         name: Hashable = ...,
         copy: bool = ...,
@@ -343,7 +337,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
             | dict[HashableT1, Interval[_OrderableT]]
         ),
         index: Axes | None = ...,
-        *,
         dtype: Literal["Interval"] = ...,
         name: Hashable = ...,
         copy: bool = ...,
@@ -363,7 +356,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: Sequence[bool],
         index: Axes | None = ...,
-        *,
         dtype: Dtype = ...,
         name: Hashable = ...,
         copy: bool = ...,
@@ -373,7 +365,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: Sequence[int],
         index: Axes | None = ...,
-        *,
         dtype: Dtype = ...,
         name: Hashable = ...,
         copy: bool = ...,
@@ -383,7 +374,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: Sequence[float],
         index: Axes | None = ...,
-        *,
         dtype: Dtype = ...,
         name: Hashable = ...,
         copy: bool = ...,
@@ -393,7 +383,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: Sequence[int | float],
         index: Axes | None = ...,
-        *,
         dtype: Dtype = ...,
         name: Hashable = ...,
         copy: bool = ...,
@@ -403,7 +392,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: S1 | _ListLike[S1] | dict[HashableT1, S1] | dict_keys[S1, Any],
         index: Axes | None = ...,
-        *,
         dtype: Dtype = ...,
         name: Hashable = ...,
         copy: bool = ...,
@@ -421,7 +409,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
             | None
         ) = ...,
         index: Axes | None = ...,
-        *,
         dtype: Dtype = ...,
         name: Hashable = ...,
         copy: bool = ...,
@@ -530,7 +517,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self,
         buf: FilePath | WriteBuffer[str],
         na_rep: _str = ...,
-        float_format: Callable[[float], str] = ...,
+        float_format: FloatFormatType = ...,
         header: _bool = ...,
         index: _bool = ...,
         length: _bool = ...,
@@ -544,7 +531,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self,
         buf: None = ...,
         na_rep: _str = ...,
-        float_format: Callable[[float], str] = ...,
+        float_format: FloatFormatType = ...,
         header: _bool = ...,
         index: _bool = ...,
         length: _bool = ...,
@@ -965,6 +952,12 @@ class Series(IndexOpsMixin[S1], NDFrame):
         na_action: None = ...,
     ) -> Series[S2]: ...
     @overload
+    def map(
+        self,
+        arg: Callable[[Any], Any] | Mapping[Any, Any] | UnknownSeries,
+        na_action: Literal["ignore"] | None = ...,
+    ) -> UnknownSeries: ...
+    @overload
     def aggregate(
         self: Series[int],
         func: Literal["mean"],
@@ -1130,10 +1123,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     def shift(
         self,
-        periods: int = ...,
-        freq: Frequency | timedelta | None = ...,
-        axis: AxisIndex = ...,
-        fill_value: object | None = ...,
+        periods: int | Sequence[int] = ...,
+        freq: DateOffset | timedelta | _str | None = ...,
+        axis: Axis = ...,
+        fill_value: Scalar | NAType | None = ...,
     ) -> UnknownSeries: ...
     def info(
         self,
@@ -1216,7 +1209,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     def droplevel(self, level: Level | list[Level], axis: AxisIndex = ...) -> Self: ...
     def pop(self, item: Hashable) -> S1: ...
-    def squeeze(self, axis: AxisIndex | None = ...) -> Scalar: ...
+    def squeeze(self) -> Series[S1] | Scalar: ...
     def __abs__(self) -> Series[S1]: ...
     def add_prefix(self, prefix: _str, axis: AxisIndex | None = ...) -> Series[S1]: ...
     def add_suffix(self, suffix: _str, axis: AxisIndex | None = ...) -> Series[S1]: ...
@@ -1387,6 +1380,16 @@ class Series(IndexOpsMixin[S1], NDFrame):
         subset: _str | Sequence[_str] | None = ...,
     ) -> Scalar | Series[S1]: ...
     @overload
+    def clip(  # pyright: ignore[reportOverlappingOverload]
+        self,
+        lower: None = ...,
+        upper: None = ...,
+        *,
+        axis: AxisIndex | None = ...,
+        inplace: Literal[True],
+        **kwargs: Any,
+    ) -> Self: ...
+    @overload
     def clip(
         self,
         lower: AnyArrayLike | float | None = ...,
@@ -1549,11 +1552,11 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def pct_change(
         self,
         periods: int = ...,
-        fill_method: _str = ...,
-        limit: int | None = ...,
-        freq=...,
-        **kwargs: Any,  # TODO: make more precise https://github.com/pandas-dev/pandas-stubs/issues/1169
-    ) -> Series[S1]: ...
+        fill_method: None = ...,
+        freq: DateOffset | timedelta | _str | None = ...,
+        *,
+        fill_value: Scalar | NAType | None = ...,
+    ) -> Series[float]: ...
     def first_valid_index(self) -> Scalar: ...
     def last_valid_index(self) -> Scalar: ...
     @overload
@@ -1602,23 +1605,21 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: bool | list[int] | MaskType
     ) -> Series[bool]: ...
     @overload
-    def __and__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: int | np_ndarray_anyint | Series[int]
-    ) -> Series[int]: ...
+    def __and__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
     # def __array__(self, dtype: Optional[_bool] = ...) -> _np_ndarray
     def __div__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __eq__(self, other: object) -> Series[_bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __floordiv__(self, other: num | _ListLike | Series[S1]) -> Series[int]: ...
-    def __ge__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __ge__(  # type: ignore[override]
         self, other: S1 | _ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
-    def __gt__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __gt__(  # type: ignore[override]
         self, other: S1 | _ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
-    def __le__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __le__(  # type: ignore[override]
         self, other: S1 | _ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
-    def __lt__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __lt__(  # type: ignore[override]
         self, other: S1 | _ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
     @overload
@@ -1636,9 +1637,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: bool | list[int] | MaskType
     ) -> Series[bool]: ...
     @overload
-    def __or__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: int | np_ndarray_anyint | Series[int]
-    ) -> Series[int]: ...
+    def __or__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
     @overload
     def __radd__(self, other: S1 | Series[S1]) -> Self: ...
     @overload
@@ -1651,9 +1650,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: bool | MaskType | list[int]
     ) -> Series[bool]: ...
     @overload
-    def __rand__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: int | np_ndarray_anyint | Series[int]
-    ) -> Series[int]: ...
+    def __rand__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
     def __rdiv__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __rdivmod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __rfloordiv__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
@@ -1672,9 +1669,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: bool | MaskType | list[int]
     ) -> Series[bool]: ...
     @overload
-    def __ror__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: int | np_ndarray_anyint | Series[int]
-    ) -> Series[int]: ...
+    def __ror__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
     def __rsub__(self, other: num | _ListLike | Series[S1]) -> UnknownSeries: ...
     def __rtruediv__(
         self, other: num | _ListLike | Series[S1] | Path
@@ -1685,9 +1680,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: bool | MaskType | list[int]
     ) -> Series[bool]: ...
     @overload
-    def __rxor__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: int | np_ndarray_anyint | Series[int]
-    ) -> Series[int]: ...
+    def __rxor__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
     @overload
     def __sub__(
         self: Series[Timestamp],
@@ -1713,9 +1706,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: bool | MaskType | list[int]
     ) -> Series[bool]: ...
     @overload
-    def __xor__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: int | np_ndarray_anyint | Series[int]
-    ) -> Series[int]: ...
+    def __xor__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
     def __invert__(self) -> Series[bool]: ...
     # properties
     # @property

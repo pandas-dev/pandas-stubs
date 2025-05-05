@@ -25,11 +25,11 @@ from typing import (
 
 import numpy as np
 import pandas as pd
-from pandas._testing import ensure_clean
 from pandas.api.extensions import (
     ExtensionArray,
     ExtensionDtype,
 )
+from pandas.api.typing import NAType
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.window import ExponentialMovingWindow
@@ -43,9 +43,6 @@ from typing_extensions import (
 )
 import xarray as xr
 
-from pandas._libs.missing import NAType
-from pandas._libs.tslibs import BaseOffset
-from pandas._libs.tslibs.offsets import YearEnd
 from pandas._typing import (
     DtypeObj,
     Scalar,
@@ -56,9 +53,16 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     WINDOWS,
     check,
+    ensure_clean,
     pytest_warns_bounded,
 )
 from tests.extension.decimal.array import DecimalDtype
+
+from pandas.io.formats.format import EngFormatter
+from pandas.tseries.offsets import (
+    BaseOffset,
+    YearEnd,
+)
 
 if TYPE_CHECKING:
     from pandas.core.series import (
@@ -66,13 +70,8 @@ if TYPE_CHECKING:
         TimedeltaSeries,
         TimestampSeries,
     )
-else:
-    TimedeltaSeries: TypeAlias = pd.Series
-    TimestampSeries: TypeAlias = pd.Series
-    OffsetSeries: TypeAlias = pd.Series
 
-if TYPE_CHECKING:
-    from pandas._typing import (
+    from tests import (
         BooleanDtypeArg,
         BytesDtypeArg,
         CategoryDtypeArg,
@@ -86,7 +85,12 @@ if TYPE_CHECKING:
         UIntDtypeArg,
         VoidDtypeArg,
     )
-    from pandas._typing import np_ndarray_int  # noqa: F401
+    from tests import np_ndarray_int  # noqa: F401
+
+else:
+    TimedeltaSeries: TypeAlias = pd.Series
+    TimestampSeries: TypeAlias = pd.Series
+    OffsetSeries: TypeAlias = pd.Series
 
 
 # Tests will use numpy 2.1 in python 3.10 or later
@@ -131,6 +135,18 @@ def test_types_init() -> None:
     resampler = pd.Series(np.array([1, 2]), index=dt).resample("1D")
     pd.Series(data=groupby)
     pd.Series(data=resampler)
+
+    pd.Series([], pd.DatetimeIndex([]), float, "name")
+    check(
+        assert_type(pd.Series([1.0], pd.DatetimeIndex([1]), float), "pd.Series[float]"),
+        pd.Series,
+        float,
+    )
+    check(
+        assert_type(pd.Series([1.0], pd.Index([1]), float, "f"), "pd.Series[float]"),
+        pd.Series,
+        float,
+    )
 
 
 def test_types_any() -> None:
@@ -441,6 +457,26 @@ def test_types_shift() -> None:
     check(assert_type(s.shift(freq="1D"), pd.Series), pd.Series, np.integer)
 
 
+def test_series_pct_change() -> None:
+    s = pd.Series([1, 2, 3], index=pd.date_range("2020", periods=3))
+    check(assert_type(s.pct_change(), "pd.Series[float]"), pd.Series, np.floating)
+    check(
+        assert_type(s.pct_change(fill_method=None), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(s.pct_change(periods=-1), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(s.pct_change(fill_value=0), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
+
+
 def test_types_rank() -> None:
     s = pd.Series([1, 1, 2, 5, 6, np.nan])
     s.rank()
@@ -560,9 +596,130 @@ def test_types_quantile() -> None:
 
 
 def test_types_clip() -> None:
+    """Test different overloads of Series.clip GH984."""
     s = pd.Series([-10, 2, 3, 10])
-    s.clip(lower=0, upper=5)
-    s.clip(lower=0, upper=5, inplace=True)
+    lower = pd.Series([-10, -10, -3, -10])
+    upper = pd.Series([50, 52, 53, 51])
+    check(
+        assert_type(s.clip(lower=None, upper=None), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.clip(lower=0, upper=5), "pd.Series[int]"), pd.Series, np.integer
+    )
+    check(
+        assert_type(s.clip(lower=0, upper=None), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.clip(lower=None, upper=5), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.clip(lower=None, upper=None, inplace=True), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(s.clip(lower=0, upper=5, inplace=True), None), type(None))
+    check(assert_type(s.clip(lower=0, upper=None, inplace=True), None), type(None))
+    check(
+        assert_type(s.clip(lower=None, upper=None, inplace=True), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.clip(lower=None, upper=5, inplace=True), None),
+        type(None),
+    )
+    check(
+        assert_type(s.clip(lower=lower, upper=upper), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.clip(lower=lower, upper=upper, axis=0), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.clip(lower=lower, upper=upper, axis="index"), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(s.clip(lower=lower, upper=upper, inplace=True), None), type(None))
+    check(
+        assert_type(s.clip(lower=lower, upper=upper, axis=0, inplace=True), None),
+        type(None),
+    )
+    check(
+        assert_type(s.clip(lower=lower, upper=upper, axis="index", inplace=True), None),
+        type(None),
+    )
+
+    # without lower
+    check(assert_type(s.clip(upper=None), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.clip(upper=5), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(s.clip(upper=None, inplace=True), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(s.clip(upper=5, inplace=True), None), type(None))
+    check(assert_type(s.clip(upper=upper), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(s.clip(upper=upper, axis=0), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.clip(upper=upper, axis="index"), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(s.clip(upper=upper, inplace=True), None), type(None))
+    check(assert_type(s.clip(upper=upper, axis=0, inplace=True), None), type(None))
+    check(
+        assert_type(s.clip(upper=upper, axis="index", inplace=True), None), type(None)
+    )
+
+    # without upper
+    check(assert_type(s.clip(lower=None), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.clip(lower=0), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(s.clip(lower=None), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(s.clip(lower=None, inplace=True), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(s.clip(lower=0, inplace=True), None), type(None))
+    check(
+        assert_type(s.clip(lower=None, inplace=True), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(s.clip(lower=lower), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(s.clip(lower=lower, axis=0), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.clip(lower=lower, axis="index"), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(s.clip(lower=lower, inplace=True), None), type(None))
+    check(assert_type(s.clip(lower=lower, axis=0, inplace=True), None), type(None))
+    check(
+        assert_type(s.clip(lower=lower, axis="index", inplace=True), None), type(None)
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.clip(lower=lower, axis=1)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        s.clip(lower=lower, axis="column")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_types_abs() -> None:
@@ -1710,6 +1867,17 @@ def test_resample() -> None:
     check(assert_type(s.resample("2min").ohlc(), pd.DataFrame), pd.DataFrame)
 
 
+def test_squeeze() -> None:
+    s1 = pd.Series([1, 2, 3])
+    check(
+        assert_type(s1.squeeze(), Union["pd.Series[int]", Scalar]),
+        pd.Series,
+        np.integer,
+    )
+    s2 = pd.Series([1])
+    check(assert_type(s2.squeeze(), Union["pd.Series[int]", Scalar]), np.integer)
+
+
 def test_to_xarray():
     s = pd.Series([1, 2])
     check(assert_type(s.to_xarray(), xr.DataArray), xr.DataArray)
@@ -1749,6 +1917,9 @@ def test_types_to_numpy() -> None:
     check(assert_type(s.to_numpy(), np.ndarray), np.ndarray)
     check(assert_type(s.to_numpy(dtype="str", copy=True), np.ndarray), np.ndarray)
     check(assert_type(s.to_numpy(na_value=0), np.ndarray), np.ndarray)
+    check(assert_type(s.to_numpy(na_value=np.int32(4)), np.ndarray), np.ndarray)
+    check(assert_type(s.to_numpy(na_value=np.float16(4)), np.ndarray), np.ndarray)
+    check(assert_type(s.to_numpy(na_value=np.complex128(4, 7)), np.ndarray), np.ndarray)
 
 
 def test_where() -> None:
@@ -2909,6 +3080,27 @@ def test_to_string() -> None:
     )
 
 
+def test_series_to_string_float_fmt() -> None:
+    """Test the different argument types for float_format."""
+    sr = pd.Series(
+        [2.304, 1.1, 3487392, 13.4732894237, 14.3, 18.0, 17.434, 19.3], name="values"
+    )
+    check(assert_type(sr.to_string(), str), str)
+
+    def _formatter(x) -> str:
+        return f"{x:.2f}"
+
+    check(assert_type(sr.to_string(float_format=_formatter), str), str)
+    check(
+        assert_type(
+            sr.to_string(float_format=EngFormatter(accuracy=2, use_eng_prefix=False)),
+            str,
+        ),
+        str,
+    )
+    check(assert_type(sr.to_string(float_format="%.2f"), str), str)
+
+
 def test_types_mask() -> None:
     s = pd.Series([1, 2, 3, 4, 5])
 
@@ -3365,6 +3557,12 @@ def test_map() -> None:
     series = pd.Series(["a", "b", "c"])
     check(
         assert_type(s.map(series, na_action="ignore"), "pd.Series[str]"), pd.Series, str
+    )
+
+    unknown_series = pd.Series([1, 0, None])
+    check(
+        assert_type(unknown_series.map({1: True, 0: False, None: None}), "pd.Series"),
+        pd.Series,
     )
 
 
