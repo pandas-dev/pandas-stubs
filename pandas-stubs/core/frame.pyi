@@ -706,7 +706,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: int = ...,
         target: object | None = ...,
         inplace: Literal[True],
-        **kwargs: Any,  # TODO: make more precise https://github.com/pandas-dev/pandas-stubs/issues/1173
+    ) -> None: ...
+    @overload
+    def query(
+        self,
+        expr: _str,
+        *,
+        inplace: Literal[True],
+        **kwargs: Any,
     ) -> None: ...
     @overload
     def query(
@@ -721,7 +728,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         resolvers: list[Mapping] | None = ...,
         level: int = ...,
         target: object | None = ...,
-        **kwargs: Any,  # TODO: make more precise https://github.com/pandas-dev/pandas-stubs/issues/1173
+    ) -> Self: ...
+    @overload
+    def query(
+        self,
+        expr: _str,
+        *,
+        inplace: Literal[False] = ...,
+        **kwargs: Any,
     ) -> Self: ...
     @overload
     def eval(self, expr: _str, *, inplace: Literal[True], **kwargs: Any) -> None: ...
