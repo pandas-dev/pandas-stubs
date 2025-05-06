@@ -2984,6 +2984,21 @@ def test_iloc_tuple() -> None:
     df = df.iloc[0:2,]
 
 
+def test_take_list() -> None:
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    check(assert_type(df.take([0, 1]), pd.DataFrame), pd.DataFrame)
+
+
+def test_take_list_npint() -> None:
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    check(assert_type(df.take([np.int64(0), np.int64(1)]), pd.DataFrame), pd.DataFrame)
+
+
+def test_take_ndarray() -> None:
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    check(assert_type(df.take(np.array([0, 1])), pd.DataFrame), pd.DataFrame)
+
+
 def test_set_columns() -> None:
     # GH 73
     df = pd.DataFrame({"a": [1, 2, 3], "b": [0.0, 1, 1]})

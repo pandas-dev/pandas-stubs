@@ -1715,6 +1715,24 @@ def test_iloc_getitem_ndarray() -> None:
     check(assert_type(values_s.iloc[indices_u64], pd.Series), pd.Series)
 
 
+def test_take_list() -> None:
+    s = pd.Series(np.arange(10), name="a")
+    check(assert_type(s.take([0, 1]), pd.Series), pd.Series)
+
+
+def test_take_list_npint() -> None:
+    s = pd.Series(np.arange(10), name="a")
+    check(
+        assert_type(s.take([np.int64(0), np.int64(1)]), pd.Series),
+        pd.Series,
+    )
+
+
+def test_take_ndarray() -> None:
+    s = pd.Series(np.arange(10), name="a")
+    check(assert_type(s.take(np.array([0, 1])), pd.Series), pd.Series)
+
+
 def test_iloc_setitem_ndarray() -> None:
     # GH 85
     # GH 86
