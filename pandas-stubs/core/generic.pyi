@@ -46,6 +46,7 @@ from pandas._typing import (
     P,
     StorageOptions,
     T,
+    TakeIndexer,
     TimedeltaConvertibleTypes,
     TimeGrouperOrigin,
     TimestampConvention,
@@ -418,3 +419,5 @@ class NDFrame(indexing.IndexingMixin):
         offset: TimedeltaConvertibleTypes | None = ...,
         group_keys: _bool = ...,
     ) -> DatetimeIndexResampler[Self]: ...
+    @final
+    def take(self, indices: TakeIndexer, axis: Axis = ..., **kwargs: Any) -> Self: ...
