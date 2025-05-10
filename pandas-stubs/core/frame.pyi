@@ -712,14 +712,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         expr: _str,
         *,
-        inplace: Literal[True],
-        **kwargs: Any,
-    ) -> None: ...
-    @overload
-    def query(
-        self,
-        expr: _str,
-        *,
         inplace: Literal[False] = ...,
         parser: Literal["pandas", "python"] = ...,
         engine: Literal["python", "numexpr"] | None = ...,
@@ -728,14 +720,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         resolvers: list[Mapping] | None = ...,
         level: int = ...,
         target: object | None = ...,
-    ) -> Self: ...
-    @overload
-    def query(
-        self,
-        expr: _str,
-        *,
-        inplace: Literal[False] = ...,
-        **kwargs: Any,
     ) -> Self: ...
     @overload
     def eval(self, expr: _str, *, inplace: Literal[True], **kwargs: Any) -> None: ...

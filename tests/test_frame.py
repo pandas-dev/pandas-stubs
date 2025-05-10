@@ -529,16 +529,6 @@ def test_types_query_kwargs() -> None:
         ),
         type(None),
     )
-    kwargs = {"parser": "pandas", "engine": "numexpr"}
-    check(
-        assert_type(df.query("col1 > col2", inplace=False, **kwargs), pd.DataFrame),
-        pd.DataFrame,
-    )
-
-    check(
-        assert_type(df.query("col1 % col2 == 0", inplace=True, **kwargs), None),
-        type(None),
-    )
 
 
 def test_types_eval() -> None:
