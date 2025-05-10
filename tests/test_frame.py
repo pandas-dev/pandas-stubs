@@ -514,6 +514,23 @@ def test_types_query() -> None:
     check(assert_type(df.query("col1 % col2 == 0", inplace=True), None), type(None))
 
 
+def test_types_query_kwargs() -> None:
+    df = pd.DataFrame(data={"col1": [1, 2, 3, 4], "col2": [3, 0, 1, 7]})
+    check(
+        assert_type(
+            df.query("col1 > col2", parser="pandas", engine="numexpr"), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.query("col1 > col2", parser="pandas", engine="numexpr", inplace=True),
+            None,
+        ),
+        type(None),
+    )
+
+
 def test_types_eval() -> None:
     df = pd.DataFrame(data={"col1": [1, 2, 3, 4], "col2": [3, 0, 1, 7]})
     check(assert_type(df.eval("E = col1 > col2", inplace=True), None), type(None))

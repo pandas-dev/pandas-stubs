@@ -698,8 +698,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         expr: _str,
         *,
+        parser: Literal["pandas", "python"] = ...,
+        engine: Literal["python", "numexpr"] | None = ...,
+        local_dict: dict[_str, Any] | None = ...,
+        global_dict: dict[_str, Any] | None = ...,
+        resolvers: list[Mapping] | None = ...,
+        level: int = ...,
+        target: object | None = ...,
         inplace: Literal[True],
-        **kwargs: Any,  # TODO: make more precise https://github.com/pandas-dev/pandas-stubs/issues/1173
     ) -> None: ...
     @overload
     def query(
@@ -707,7 +713,13 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         expr: _str,
         *,
         inplace: Literal[False] = ...,
-        **kwargs: Any,  # TODO: make more precise https://github.com/pandas-dev/pandas-stubs/issues/1173
+        parser: Literal["pandas", "python"] = ...,
+        engine: Literal["python", "numexpr"] | None = ...,
+        local_dict: dict[_str, Any] | None = ...,
+        global_dict: dict[_str, Any] | None = ...,
+        resolvers: list[Mapping] | None = ...,
+        level: int = ...,
+        target: object | None = ...,
     ) -> Self: ...
     @overload
     def eval(self, expr: _str, *, inplace: Literal[True], **kwargs: Any) -> None: ...
