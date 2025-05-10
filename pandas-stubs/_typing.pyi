@@ -58,7 +58,7 @@ from pandas.io.formats.format import EngFormatter
 # where it is the only acceptable type.
 Incomplete: TypeAlias = Any
 
-ArrayLike: TypeAlias = ExtensionArray | np.ndarray[Any, Any]
+ArrayLike: TypeAlias = ExtensionArray | np.ndarray
 AnyArrayLike: TypeAlias = ArrayLike | Index[Any] | Series[Any]
 PythonScalar: TypeAlias = str | bool | complex
 DatetimeLikeScalar = TypeVar("DatetimeLikeScalar", bound=Period | Timestamp | Timedelta)
@@ -482,7 +482,7 @@ KeysArgType: TypeAlias = Any
 ListLike: TypeAlias = Sequence | np.ndarray | Series | Index
 ListLikeT = TypeVar("ListLikeT", bound=ListLike)
 ListLikeExceptSeriesAndStr: TypeAlias = (
-    MutableSequence[Any] | np.ndarray[Any, Any] | tuple[Any, ...] | Index[Any]
+    MutableSequence[Any] | np.ndarray | tuple[Any, ...] | Index[Any]
 )
 ListLikeU: TypeAlias = Sequence | np.ndarray | Series | Index
 ListLikeHashable: TypeAlias = (
