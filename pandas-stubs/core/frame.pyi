@@ -1300,7 +1300,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def unstack(
         self,
         level: Level = ...,
-        fill_value: int | _str | dict | None = ...,
+        fill_value: Scalar | None = ...,
+        sort: _bool = ...,
     ) -> Self | Series: ...
     def melt(
         self,

@@ -4339,3 +4339,49 @@ def test_df_loc_dict() -> None:
 
     df.iloc[0] = {"X": 0}
     check(assert_type(df, pd.DataFrame), pd.DataFrame)
+
+
+def test_unstack() -> None:
+    """Test different types of argument for `fill_value` in DataFrame.unstack."""
+    df = pd.DataFrame(
+        [
+            ["a", "b", pd.Timestamp(2021, 3, 2)],
+            ["a", "a", pd.Timestamp(2023, 4, 2)],
+            ["b", "b", pd.Timestamp(2024, 3, 2)],
+        ]
+    ).set_index([0, 1])
+
+    check(assert_type(df.unstack(0), pd.DataFrame | pd.Series), pd.DataFrame)
+    check(
+        assert_type(
+            df.unstack(1, fill_value=pd.Timestamp(2023, 4, 5)), pd.DataFrame | pd.Series
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.unstack(1, fill_value=0.0), pd.DataFrame | pd.Series),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.unstack(1, fill_value=1), pd.DataFrame | pd.Series), pd.DataFrame
+    )
+    check(
+        assert_type(df.unstack(1, fill_value="string"), pd.DataFrame | pd.Series),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.unstack(0, sort=False), pd.DataFrame | pd.Series), pd.DataFrame
+    )
+    check(
+        assert_type(
+            df.unstack(1, fill_value=pd.Timestamp(2023, 4, 5), sort=True),
+            pd.DataFrame | pd.Series,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            df.unstack(1, fill_value=0.0, sort=False), pd.DataFrame | pd.Series
+        ),
+        pd.DataFrame,
+    )
