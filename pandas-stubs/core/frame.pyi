@@ -50,9 +50,9 @@ from pandas.core.indexing import (
 )
 from pandas.core.interchange.dataframe_protocol import DataFrame as DataFrameXchg
 from pandas.core.reshape.pivot import (
-    PivotTableColumnsTypes,
-    PivotTableIndexTypes,
-    PivotTableValuesTypes,
+    _PivotTableColumnsTypes,
+    _PivotTableIndexTypes,
+    _PivotTableValuesTypes,
 )
 from pandas.core.series import Series
 from pandas.core.window import (
@@ -1291,9 +1291,9 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def pivot_table(
         self,
-        values: PivotTableValuesTypes = ...,
-        index: PivotTableIndexTypes = ...,
-        columns: PivotTableColumnsTypes = ...,
+        values: _PivotTableValuesTypes = ...,
+        index: _PivotTableIndexTypes = ...,
+        columns: _PivotTableColumnsTypes = ...,
         aggfunc=...,
         fill_value: Scalar | None = ...,
         margins: _bool = ...,

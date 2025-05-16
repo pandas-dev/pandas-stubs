@@ -51,20 +51,22 @@ _NonIterableHashable: TypeAlias = (
     | pd.Timedelta
 )
 
-PivotTableIndexTypes: TypeAlias = Label | Sequence[HashableT1] | Series | Grouper | None
-PivotTableColumnsTypes: TypeAlias = (
+_PivotTableIndexTypes: TypeAlias = (
+    Label | Sequence[HashableT1] | Series | Grouper | None
+)
+_PivotTableColumnsTypes: TypeAlias = (
     Label | Sequence[HashableT2] | Series | Grouper | None
 )
-PivotTableValuesTypes: TypeAlias = Label | Sequence[HashableT3] | None
+_PivotTableValuesTypes: TypeAlias = Label | Sequence[HashableT3] | None
 
 _ExtendedAnyArrayLike: TypeAlias = AnyArrayLike | ArrayLike
 
 @overload
 def pivot_table(
     data: DataFrame,
-    values: PivotTableValuesTypes = ...,
-    index: PivotTableIndexTypes = ...,
-    columns: PivotTableColumnsTypes = ...,
+    values: _PivotTableValuesTypes = ...,
+    index: _PivotTableIndexTypes = ...,
+    columns: _PivotTableColumnsTypes = ...,
     aggfunc: (
         _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
     ) = ...,
@@ -80,10 +82,10 @@ def pivot_table(
 @overload
 def pivot_table(
     data: DataFrame,
-    values: PivotTableValuesTypes = ...,
+    values: _PivotTableValuesTypes = ...,
     *,
     index: Grouper,
-    columns: PivotTableColumnsTypes | Index | npt.NDArray = ...,
+    columns: _PivotTableColumnsTypes | Index | npt.NDArray = ...,
     aggfunc: (
         _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
     ) = ...,
@@ -97,8 +99,8 @@ def pivot_table(
 @overload
 def pivot_table(
     data: DataFrame,
-    values: PivotTableValuesTypes = ...,
-    index: PivotTableIndexTypes | Index | npt.NDArray = ...,
+    values: _PivotTableValuesTypes = ...,
+    index: _PivotTableIndexTypes | Index | npt.NDArray = ...,
     *,
     columns: Grouper,
     aggfunc: (
