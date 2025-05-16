@@ -4350,6 +4350,20 @@ def test_unstack() -> None:
             ["b", "b", pd.Timestamp(2024, 3, 2)],
         ]
     ).set_index([0, 1])
+    df_sr = pd.DataFrame(
+        [
+            ["a", "b", "abc"],
+            ["a", "a", "def"],
+            ["b", "b", "ghi"],
+        ]
+    ).set_index([0, 1])
+    df_flt = pd.DataFrame(
+        [
+            ["a", "b", 1],
+            ["a", "a", 12],
+            ["b", "b", 14],
+        ]
+    ).set_index([0, 1])
 
     check(assert_type(df.unstack(0), pd.DataFrame | pd.Series), pd.DataFrame)
     check(
@@ -4359,14 +4373,15 @@ def test_unstack() -> None:
         pd.DataFrame,
     )
     check(
-        assert_type(df.unstack(1, fill_value=0.0), pd.DataFrame | pd.Series),
+        assert_type(df_flt.unstack(1, fill_value=0.0), pd.DataFrame | pd.Series),
         pd.DataFrame,
     )
     check(
-        assert_type(df.unstack(1, fill_value=1), pd.DataFrame | pd.Series), pd.DataFrame
+        assert_type(df_flt.unstack(1, fill_value=1), pd.DataFrame | pd.Series),
+        pd.DataFrame,
     )
     check(
-        assert_type(df.unstack(1, fill_value="string"), pd.DataFrame | pd.Series),
+        assert_type(df_sr.unstack(1, fill_value="string"), pd.DataFrame | pd.Series),
         pd.DataFrame,
     )
     check(
@@ -4381,7 +4396,7 @@ def test_unstack() -> None:
     )
     check(
         assert_type(
-            df.unstack(1, fill_value=0.0, sort=False), pd.DataFrame | pd.Series
+            df_flt.unstack(1, fill_value=0.0, sort=False), pd.DataFrame | pd.Series
         ),
         pd.DataFrame,
     )
