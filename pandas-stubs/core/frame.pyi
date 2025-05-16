@@ -32,7 +32,6 @@ from pandas import (
 from pandas.core.arraylike import OpsMixin
 from pandas.core.generic import NDFrame
 from pandas.core.groupby.generic import DataFrameGroupBy
-from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexers import BaseIndexer
 from pandas.core.indexes.base import (
     Index,
@@ -50,6 +49,11 @@ from pandas.core.indexing import (
     _LocIndexer,
 )
 from pandas.core.interchange.dataframe_protocol import DataFrame as DataFrameXchg
+from pandas.core.reshape.pivot import (
+    _PivotTableColumnsTypes,
+    _PivotTableIndexTypes,
+    _PivotTableValuesTypes,
+)
 from pandas.core.series import Series
 from pandas.core.window import (
     Expanding,
@@ -1287,9 +1291,9 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def pivot_table(
         self,
-        values: _str | None | Sequence[_str] = ...,
-        index: _str | Grouper | Sequence | None = ...,
-        columns: _str | Grouper | Sequence | None = ...,
+        values: _PivotTableValuesTypes = ...,
+        index: _PivotTableIndexTypes = ...,
+        columns: _PivotTableColumnsTypes = ...,
         aggfunc=...,
         fill_value: Scalar | None = ...,
         margins: _bool = ...,

@@ -1337,6 +1337,17 @@ def test_types_pivot_table() -> None:
         ),
         pd.DataFrame,
     )
+    check(
+        assert_type(
+            df.pivot_table(
+                index=df["col1"].name,
+                columns=df["col3"].name,
+                values=[df["col2"].name, df["col4"].name],
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_pivot_table_sort():

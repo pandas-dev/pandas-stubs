@@ -51,19 +51,24 @@ _NonIterableHashable: TypeAlias = (
     | pd.Timedelta
 )
 
-_PivotTableIndexTypes: TypeAlias = Label | list[HashableT1] | Series | Grouper | None
-_PivotTableColumnsTypes: TypeAlias = Label | list[HashableT2] | Series | Grouper | None
+_PivotTableIndexTypes: TypeAlias = (
+    Label | Sequence[HashableT1] | Series | Grouper | None
+)
+_PivotTableColumnsTypes: TypeAlias = (
+    Label | Sequence[HashableT2] | Series | Grouper | None
+)
+_PivotTableValuesTypes: TypeAlias = Label | Sequence[HashableT3] | None
 
 _ExtendedAnyArrayLike: TypeAlias = AnyArrayLike | ArrayLike
 
 @overload
 def pivot_table(
     data: DataFrame,
-    values: Label | list[HashableT3] | None = ...,
+    values: _PivotTableValuesTypes = ...,
     index: _PivotTableIndexTypes = ...,
     columns: _PivotTableColumnsTypes = ...,
     aggfunc: (
-        _PivotAggFunc | list[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
+        _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
     ) = ...,
     fill_value: Scalar | None = ...,
     margins: bool = ...,
@@ -77,12 +82,12 @@ def pivot_table(
 @overload
 def pivot_table(
     data: DataFrame,
-    values: Label | list[HashableT3] | None = ...,
+    values: _PivotTableValuesTypes = ...,
     *,
     index: Grouper,
     columns: _PivotTableColumnsTypes | Index | npt.NDArray = ...,
     aggfunc: (
-        _PivotAggFunc | list[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
+        _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
     ) = ...,
     fill_value: Scalar | None = ...,
     margins: bool = ...,
@@ -94,12 +99,12 @@ def pivot_table(
 @overload
 def pivot_table(
     data: DataFrame,
-    values: Label | list[HashableT3] | None = ...,
+    values: _PivotTableValuesTypes = ...,
     index: _PivotTableIndexTypes | Index | npt.NDArray = ...,
     *,
     columns: Grouper,
     aggfunc: (
-        _PivotAggFunc | list[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
+        _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
     ) = ...,
     fill_value: Scalar | None = ...,
     margins: bool = ...,
@@ -111,9 +116,9 @@ def pivot_table(
 def pivot(
     data: DataFrame,
     *,
-    index: _NonIterableHashable | list[HashableT1] = ...,
-    columns: _NonIterableHashable | list[HashableT2] = ...,
-    values: _NonIterableHashable | list[HashableT3] = ...,
+    index: _NonIterableHashable | Sequence[HashableT1] = ...,
+    columns: _NonIterableHashable | Sequence[HashableT2] = ...,
+    values: _NonIterableHashable | Sequence[HashableT3] = ...,
 ) -> DataFrame: ...
 @overload
 def crosstab(
