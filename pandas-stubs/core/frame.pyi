@@ -679,7 +679,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def info(
         self,
         verbose: bool | None = ...,
-        buf: WriteBuffer[str] = ...,
+        buf: WriteBuffer[str] | None = ...,
         max_cols: int | None = ...,
         memory_usage: bool | Literal["deep"] | None = ...,
         show_counts: bool | None = ...,

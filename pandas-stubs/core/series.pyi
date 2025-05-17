@@ -1131,7 +1131,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def info(
         self,
         verbose: bool | None = ...,
-        buf: WriteBuffer[str] = ...,
+        buf: WriteBuffer[str] | None = ...,
         memory_usage: bool | Literal["deep"] | None = ...,
         show_counts: bool | None = ...,
     ) -> None: ...
