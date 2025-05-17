@@ -204,7 +204,8 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
             | Callable[[DataFrame], IndexType | MaskType | Sequence[Hashable]]
             | list[HashableT]
             | tuple[
-                IndexType
+                int
+                | IndexType
                 | MaskType
                 | list[HashableT]
                 | slice
