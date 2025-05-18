@@ -11,7 +11,6 @@ from typing import (
 
 from matplotlib.colors import Colormap
 import numpy as np
-from pandas import Index
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
 
@@ -26,6 +25,7 @@ from pandas._typing import (
     Level,
     QuantileInterpolation,
     Scalar,
+    StorageOptions,
     T,
     WriteBuffer,
     WriteExcelBuffer,
@@ -53,10 +53,6 @@ class _DataFrameFunc(Protocol):
     ) -> npt.NDArray | DataFrame: ...
 
 class Styler(StylerRenderer):
-    @property
-    def columns(self) -> Index[Any]: ...
-    @property
-    def index(self) -> Index[Any]: ...
     def __init__(
         self,
         data: DataFrame | Series,
@@ -79,6 +75,7 @@ class Styler(StylerRenderer):
         ttips: DataFrame,
         props: CSSProperties | None = ...,
         css_class: str | None = ...,
+        as_title_attribute: bool = ...,
     ) -> Styler: ...
     def to_excel(
         self,
@@ -98,8 +95,7 @@ class Styler(StylerRenderer):
         inf_rep: str = ...,
         verbose: bool = ...,
         freeze_panes: tuple[int, int] | None = ...,
-        # TODO: Listed in docs but not in function decl
-        # storage_options: StorageOptions = ...,
+        storage_options: StorageOptions | None = ...,
     ) -> None: ...
     @overload
     def to_latex(
@@ -314,7 +310,7 @@ class Styler(StylerRenderer):
         axis: Axis | None = ...,
         *,
         color: str | list[str] | tuple[str, str] | None = ...,
-        cmap: str | Colormap = ...,
+        cmap: str | Colormap | None = ...,
         width: float = ...,
         height: float = ...,
         align: (

@@ -105,7 +105,6 @@ from pandas.io.api import (
     read_excel as read_excel,
     read_feather as read_feather,
     read_fwf as read_fwf,
-    read_gbq as read_gbq,
     read_hdf as read_hdf,
     read_html as read_html,
     read_json as read_json,
