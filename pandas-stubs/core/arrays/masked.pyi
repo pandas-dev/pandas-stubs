@@ -1,16 +1,27 @@
+from typing import (
+    Any,
+    overload,
+)
+
 import numpy as np
 from pandas.core.arrays import (
     ExtensionArray as ExtensionArray,
     ExtensionOpsMixin,
 )
+from typing_extensions import Self
 
 from pandas._typing import (
     Scalar,
+    ScalarIndexer,
+    SequenceIndexer,
     npt,
 )
 
 class BaseMaskedArray(ExtensionArray, ExtensionOpsMixin):
-    def __getitem__(self, item): ...
+    @overload
+    def __getitem__(self, item: ScalarIndexer) -> Any: ...
+    @overload
+    def __getitem__(self, item: SequenceIndexer) -> Self: ...
     def __iter__(self): ...
     def __len__(self) -> int: ...
     def __invert__(self): ...

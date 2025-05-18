@@ -20,7 +20,6 @@ from typing import (
     TypedDict,
     TypeVar,
     Union,
-    cast,
 )
 
 import numpy as np
@@ -1680,7 +1679,7 @@ def test_cat_ctor_values() -> None:
         assert_type(pd.Categorical(pd.Series(["a", "b", "a"])), pd.Categorical),
         pd.Categorical,
     )
-    s: Sequence = cast(Sequence, ["a", "b", "a"])
+    s = ["a", "b", "a"]
     check(assert_type(pd.Categorical(s), pd.Categorical), pd.Categorical)
     # GH 107
     check(

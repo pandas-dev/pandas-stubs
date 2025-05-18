@@ -23,7 +23,7 @@ from typing_extensions import Self
 from pandas._typing import (
     S1,
     AxisIndex,
-    NaPosition,
+    DropKeep,
     NDFrameT,
     Scalar,
     npt,
@@ -110,4 +110,4 @@ class IndexOpsMixin(OpsMixin, Generic[S1]):
     def searchsorted(
         self, value, side: Literal["left", "right"] = ..., sorter=...
     ) -> int | list[int]: ...
-    def drop_duplicates(self, *, keep: NaPosition | Literal[False] = ...) -> Self: ...
+    def drop_duplicates(self, *, keep: DropKeep = ...) -> Self: ...

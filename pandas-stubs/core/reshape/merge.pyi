@@ -16,6 +16,7 @@ from pandas._typing import (
     JoinHow,
     Label,
     MergeHow,
+    Suffixes,
     ValidationOptions,
 )
 
@@ -29,9 +30,7 @@ def merge(
     left_index: bool = ...,
     right_index: bool = ...,
     sort: bool = ...,
-    suffixes: (
-        list[str | None] | tuple[str, str] | tuple[None, str] | tuple[str, None]
-    ) = ...,
+    suffixes: Suffixes = ...,
     indicator: bool | str = ...,
     validate: ValidationOptions = ...,
 ) -> DataFrame: ...
@@ -45,9 +44,7 @@ def merge_ordered(
     left_by: Label | list[HashableT] | None = ...,
     right_by: Label | list[HashableT] | None = ...,
     fill_method: Literal["ffill"] | None = ...,
-    suffixes: (
-        list[str | None] | tuple[str, str] | tuple[None, str] | tuple[str, None]
-    ) = ...,
+    suffixes: Suffixes = ...,
     how: JoinHow = ...,
 ) -> DataFrame: ...
 @overload
@@ -75,9 +72,7 @@ def merge_ordered(
     left_by: None = ...,
     right_by: None = ...,
     fill_method: Literal["ffill"] | None = ...,
-    suffixes: (
-        list[str | None] | tuple[str, str] | tuple[None, str] | tuple[str, None]
-    ) = ...,
+    suffixes: Suffixes = ...,
     how: JoinHow = ...,
 ) -> DataFrame: ...
 def merge_asof(
@@ -91,9 +86,7 @@ def merge_asof(
     by: Label | list[HashableT] | None = ...,
     left_by: Label | list[HashableT] | None = ...,
     right_by: Label | list[HashableT] | None = ...,
-    suffixes: (
-        list[str | None] | tuple[str, str] | tuple[None, str] | tuple[str, None]
-    ) = ...,
+    suffixes: Suffixes = ...,
     tolerance: int | timedelta | Timedelta | None = ...,
     allow_exact_matches: bool = ...,
     direction: Literal["backward", "forward", "nearest"] = ...,

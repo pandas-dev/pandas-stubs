@@ -27,7 +27,7 @@ from pandas._libs import (
 )
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
-    Axes,
+    AxesData,
     TimedeltaConvertibleTypes,
     num,
 )
@@ -35,7 +35,9 @@ from pandas._typing import (
 class TimedeltaIndex(DatetimeTimedeltaMixin[Timedelta], TimedeltaIndexProperties):
     def __new__(
         cls,
-        data: Sequence[dt.timedelta | Timedelta | np.timedelta64 | float] | Axes = ...,
+        data: (
+            Sequence[dt.timedelta | Timedelta | np.timedelta64 | float] | AxesData
+        ) = ...,
         freq: str | BaseOffset = ...,
         closed: object = ...,
         dtype: Literal["<m8[ns]"] = ...,

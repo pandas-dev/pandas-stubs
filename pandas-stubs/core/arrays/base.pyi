@@ -1,4 +1,7 @@
-from typing import Any
+from typing import (
+    Any,
+    overload,
+)
 
 import numpy as np
 from typing_extensions import Self
@@ -6,6 +9,8 @@ from typing_extensions import Self
 from pandas._typing import (
     ArrayLike,
     Scalar,
+    ScalarIndexer,
+    SequenceIndexer,
     TakeIndexer,
     npt,
 )
@@ -13,7 +18,10 @@ from pandas._typing import (
 from pandas.core.dtypes.dtypes import ExtensionDtype as ExtensionDtype
 
 class ExtensionArray:
-    def __getitem__(self, item) -> Any: ...
+    @overload
+    def __getitem__(self, item: ScalarIndexer) -> Any: ...
+    @overload
+    def __getitem__(self, item: SequenceIndexer) -> Self: ...
     def __setitem__(self, key: int | slice | np.ndarray, value) -> None: ...
     def __len__(self) -> int: ...
     def __iter__(self): ...

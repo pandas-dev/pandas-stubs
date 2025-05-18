@@ -25,7 +25,7 @@ from pandas.core.base import NoNewAttributesMixin
 
 from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
-    JoinHow,
+    AlignJoin,
     Scalar,
     T,
     np_ndarray_bool,
@@ -59,7 +59,7 @@ class StringMethods(
         *,
         sep: str,
         na_rep: str | None = ...,
-        join: JoinHow = ...,
+        join: AlignJoin = ...,
     ) -> str: ...
     @overload
     def cat(
@@ -68,7 +68,7 @@ class StringMethods(
         *,
         sep: str,
         na_rep: str | None = ...,
-        join: JoinHow = ...,
+        join: AlignJoin = ...,
     ) -> str: ...
     @overload
     def cat(
@@ -78,7 +78,7 @@ class StringMethods(
         ),
         sep: str = ...,
         na_rep: str | None = ...,
-        join: JoinHow = ...,
+        join: AlignJoin = ...,
     ) -> _T_STR: ...
     @overload
     def split(

@@ -1,8 +1,23 @@
+from enum import Enum
+from typing import (
+    Any,
+    overload,
+)
+
 import numpy as np
 from pandas.core.arrays import (
     ExtensionArray,
     ExtensionOpsMixin,
 )
+from typing_extensions import Self
+
+from pandas._typing import (
+    ScalarIndexer,
+    SequenceIndexer,
+)
+
+class ellipsis(Enum):
+    Ellipsis = "..."
 
 class SparseArray(ExtensionArray, ExtensionOpsMixin):
     def __init__(
@@ -42,7 +57,13 @@ class SparseArray(ExtensionArray, ExtensionOpsMixin):
     def shift(self, periods: int = ..., fill_value=...): ...
     def unique(self): ...
     def value_counts(self, dropna: bool = ...): ...
-    def __getitem__(self, key): ...
+    @overload
+    def __getitem__(self, key: ScalarIndexer) -> Any: ...
+    @overload
+    def __getitem__(
+        self,
+        key: SequenceIndexer | tuple[int | ellipsis, ...],
+    ) -> Self: ...
     def copy(self): ...
     def astype(self, dtype=..., copy: bool = ...): ...
     def map(self, mapper): ...

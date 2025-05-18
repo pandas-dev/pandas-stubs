@@ -17,6 +17,7 @@ from pandas.core.series import Series
 
 from pandas._typing import (
     Axis,
+    ExcelWriterMergeCells,
     FilePath,
     HashableT,
     HashableT1,
@@ -93,7 +94,7 @@ class Styler(StylerRenderer):
         startrow: int = ...,
         startcol: int = ...,
         engine: Literal["openpyxl", "xlsxwriter"] | None = ...,
-        merge_cells: bool = ...,
+        merge_cells: ExcelWriterMergeCells = ...,
         encoding: str | None = ...,
         inf_rep: str = ...,
         verbose: bool = ...,

@@ -42,7 +42,9 @@ from typing_extensions import (
 from pandas._libs.interval import _OrderableT
 from pandas._typing import (
     S1,
-    Axes,
+    AnyAll,
+    AxesData,
+    DropKeep,
     Dtype,
     DtypeArg,
     DtypeObj,
@@ -51,7 +53,8 @@ from pandas._typing import (
     Label,
     Level,
     MaskType,
-    NaPosition,
+    ReindexMethod,
+    SliceType,
     TimedeltaDtypeArg,
     TimestampDtypeArg,
     np_ndarray_anyint,
@@ -82,7 +85,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Axes,
+        data: AxesData,
         *,
         dtype: Literal["int"] | type_t[int | np.integer],
         copy: bool = ...,
@@ -104,7 +107,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Axes,
+        data: AxesData,
         *,
         dtype: Literal["float"] | type_t[float | np.floating],
         copy: bool = ...,
@@ -130,7 +133,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Axes,
+        data: AxesData,
         *,
         dtype: Literal["complex"] | type_t[complex | np.complexfloating],
         copy: bool = ...,
@@ -153,7 +156,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Axes,
+        data: AxesData,
         *,
         dtype: TimestampDtypeArg,
         copy: bool = ...,
@@ -175,7 +178,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Axes,
+        data: AxesData,
         *,
         dtype: PeriodDtype,
         copy: bool = ...,
@@ -197,7 +200,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Axes,
+        data: AxesData,
         *,
         dtype: TimedeltaDtypeArg,
         copy: bool = ...,
@@ -219,7 +222,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Axes,
+        data: AxesData,
         *,
         dtype: Literal["Interval"],
         copy: bool = ...,
@@ -242,7 +245,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Axes = ...,
+        data: AxesData = ...,
         *,
         dtype: type[S1],
         copy: bool = ...,
@@ -254,7 +257,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Axes,
+        data: AxesData,
         *,
         dtype=...,
         copy: bool = ...,
@@ -333,12 +336,10 @@ class Index(IndexOpsMixin[S1]):
     def notna(self): ...
     notnull = ...
     def fillna(self, value=...): ...
-    def dropna(self, how: Literal["any", "all"] = ...) -> Self: ...
+    def dropna(self, how: AnyAll = ...) -> Self: ...
     def unique(self, level=...) -> Self: ...
-    def drop_duplicates(self, *, keep: NaPosition | Literal[False] = ...) -> Self: ...
-    def duplicated(
-        self, keep: Literal["first", "last", False] = ...
-    ) -> np_ndarray_bool: ...
+    def drop_duplicates(self, *, keep: DropKeep = ...) -> Self: ...
+    def duplicated(self, keep: DropKeep = ...) -> np_ndarray_bool: ...
     def __and__(self, other: Never) -> Never: ...
     def __rand__(self, other: Never) -> Never: ...
     def __or__(self, other: Never) -> Never: ...
@@ -360,8 +361,17 @@ class Index(IndexOpsMixin[S1]):
         method: FillnaOptions | Literal["nearest"] | None = ...,
         tolerance=...,
     ) -> int | slice | np_ndarray_bool: ...
-    def get_indexer(self, target, method=..., limit=..., tolerance=...): ...
-    def reindex(self, target, method=..., level=..., limit=..., tolerance=...): ...
+    def get_indexer(
+        self, target, method: ReindexMethod | None = ..., limit=..., tolerance=...
+    ): ...
+    def reindex(
+        self,
+        target,
+        method: ReindexMethod | None = ...,
+        level=...,
+        limit=...,
+        tolerance=...,
+    ): ...
     def join(
         self,
         other,
@@ -403,7 +413,7 @@ class Index(IndexOpsMixin[S1]):
     def isin(self, values, level=...) -> np_ndarray_bool: ...
     def slice_indexer(self, start=..., end=..., step=...): ...
     def get_slice_bound(self, label, side): ...
-    def slice_locs(self, start=..., end=..., step=...): ...
+    def slice_locs(self, start: SliceType = ..., end: SliceType = ..., step=...): ...
     def delete(self, loc) -> Self: ...
     def insert(self, loc, item) -> Self: ...
     def drop(self, labels, errors: _str = ...) -> Self: ...
