@@ -1,4 +1,3 @@
-from abc import abstractmethod
 from collections.abc import (
     Callable,
     Generator,
@@ -144,7 +143,6 @@ def read_sql(
 ) -> DataFrame: ...
 
 class PandasSQL:
-    @abstractmethod
     def to_sql(
         self,
         frame: DataFrame,
@@ -161,7 +159,7 @@ class PandasSQL:
             | None
         ) = ...,
         engine: str = ...,
-        **engine_kwargs,
+        **engine_kwargs: dict[str, Any] | None,
     ) -> int | None: ...
 
 class SQLTable:
