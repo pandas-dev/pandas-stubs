@@ -83,7 +83,7 @@ class SequenceNotStr(Protocol[_T_co]):
     def count(self, value: Any, /) -> int: ...
     def __reversed__(self) -> Iterator[_T_co]: ...
 
-ListLike: TypeAlias = AnyArrayLike | SequenceNotStr | range
+ListLike: TypeAlias = AnyArrayLike | SequenceNotStr[Any] | range
 
 # scalars
 
@@ -118,7 +118,7 @@ TimestampConvertibleTypes: TypeAlias = (
     | datetime.datetime
     | datetime.date
     | np.datetime64
-    | np.int64
+    | np.integer
     | float
     | str
 )
@@ -128,10 +128,10 @@ TimestampNonexistent: TypeAlias = (
     | datetime.timedelta
 )
 TimedeltaConvertibleTypes: TypeAlias = (
-    Timedelta | datetime.timedelta | np.timedelta64 | np.int64 | float | str
+    Timedelta | datetime.timedelta | np.timedelta64 | np.integer | float | str
 )
 
-Timezone: TypeAlias = str | tzinfo  # Not used
+Timezone: TypeAlias = str | tzinfo  # Not used in pandas or the stubs
 
 ToTimestampHow: TypeAlias = Literal["s", "e", "start", "end"]
 
@@ -484,11 +484,11 @@ DtypeArg: TypeAlias = Dtype | Mapping[Hashable, Dtype]
 DtypeObj: TypeAlias = np.dtype[np.generic] | ExtensionDtype
 
 # converters
-ConvertersArg: TypeAlias = dict[Hashable, Callable[[Dtype], Dtype]]
+ConvertersArg: TypeAlias = Mapping[Hashable, Callable[[Dtype], Dtype]]
 
 # parse_dates
 ParseDatesArg: TypeAlias = (
-    bool | list[Hashable] | list[list[Hashable]] | dict[Hashable, list[Hashable]]
+    bool | list[Hashable] | list[list[Hashable]] | Mapping[HashableT, list[HashableT2]]
 )
 
 # Not in pandas
