@@ -45,10 +45,10 @@ jobs:
         run: poetry run poe test_dist
 
       - name: Run ty on current repo
-        run: poetry run ty check pandas-stubs
+        run: poetry run ty check tests
 
       - name: Run ty on current repo
-        run: poetry run ty check tests
+        run: poetry run ty check pandas-stubs
 
   precommit:
     runs-on: ubuntu-latest
