@@ -599,7 +599,7 @@ def test_types_median() -> None:
 def test_types_iterrows() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(
-        assert_type(df.iterrows(), "Iterable[tuple[Hashable, pd.Series]]"),
+        assert_type(df.iterrows(), "Iterator[tuple[Hashable, pd.Series]]"),
         Iterable,
         tuple,
     )
@@ -608,22 +608,31 @@ def test_types_iterrows() -> None:
 def test_types_itertuples() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(
-        assert_type(df.itertuples(), Iterable[_PandasNamedTuple]),
-        Iterable,
+        assert_type(df.itertuples(), Iterator[_PandasNamedTuple]),
+        Iterator,
         _PandasNamedTuple,
     )
     check(
         assert_type(
-            df.itertuples(index=False, name="Foobar"), Iterable[_PandasNamedTuple]
+            df.itertuples(index=False, name="Foobar"), Iterator[_PandasNamedTuple]
         ),
-        Iterable,
+        Iterator,
         _PandasNamedTuple,
     )
     check(
-        assert_type(df.itertuples(index=False, name=None), Iterable[tuple[Any, ...]]),
-        Iterable,
+        assert_type(df.itertuples(index=False, name=None), Iterator[tuple[Any, ...]]),
+        Iterator,
         object,
     )
+
+
+def test_frame_iterator() -> None:
+    """Test iterator methods for a dataframe GH1217."""
+    df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
+
+    check(assert_type(next(df.items()), tuple[Hashable, "pd.Series"]), tuple)
+    check(assert_type(next(df.iterrows()), tuple[Hashable, "pd.Series"]), tuple)
+    check(assert_type(next(df.itertuples()), _PandasNamedTuple), _PandasNamedTuple)
 
 
 def test_types_sum() -> None:
