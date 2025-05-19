@@ -1,17 +1,31 @@
 from collections.abc import Sequence
+from typing import overload
 
 import numpy as np
 from pandas.core.arrays.base import (
     ExtensionArray,
     ExtensionOpsMixin,
 )
-from typing_extensions import Self
+from typing_extensions import (
+    Self,
+    TypeAlias,
+)
 
 from pandas._libs import (
     NaT as NaT,
     NaTType as NaTType,
 )
-from pandas._typing import TimeUnit
+from pandas._typing import (
+    DatetimeLikeScalar,
+    PositionalIndexerTuple,
+    ScalarIndexer,
+    SequenceIndexer,
+    TimeAmbiguous,
+    TimeNonexistent,
+    TimeUnit,
+)
+
+DTScalarOrNaT: TypeAlias = DatetimeLikeScalar | NaTType
 
 class DatelikeOps:
     def strftime(self, date_format): ...
@@ -20,9 +34,15 @@ class TimelikeOps:
     @property
     def unit(self) -> TimeUnit: ...
     def as_unit(self, unit: TimeUnit) -> Self: ...
-    def round(self, freq, ambiguous: str = ..., nonexistent: str = ...): ...
-    def floor(self, freq, ambiguous: str = ..., nonexistent: str = ...): ...
-    def ceil(self, freq, ambiguous: str = ..., nonexistent: str = ...): ...
+    def round(
+        self, freq, ambiguous: TimeAmbiguous = ..., nonexistent: TimeNonexistent = ...
+    ): ...
+    def floor(
+        self, freq, ambiguous: TimeAmbiguous = ..., nonexistent: TimeNonexistent = ...
+    ): ...
+    def ceil(
+        self, freq, ambiguous: TimeAmbiguous = ..., nonexistent: TimeNonexistent = ...
+    ): ...
 
 class DatetimeLikeArrayMixin(ExtensionOpsMixin, ExtensionArray):
     @property
@@ -40,7 +60,13 @@ class DatetimeLikeArrayMixin(ExtensionOpsMixin, ExtensionArray):
     @property
     def size(self) -> int: ...
     def __len__(self) -> int: ...
-    def __getitem__(self, key): ...
+    @overload
+    def __getitem__(self, key: ScalarIndexer) -> DTScalarOrNaT: ...
+    @overload
+    def __getitem__(
+        self,
+        key: SequenceIndexer | PositionalIndexerTuple,
+    ) -> Self: ...
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self, key: int | Sequence[int] | Sequence[bool] | slice, value
     ) -> None: ...

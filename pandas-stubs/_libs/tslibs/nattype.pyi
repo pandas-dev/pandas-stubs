@@ -4,6 +4,7 @@ from datetime import (
     timedelta,
     tzinfo as _tzinfo,
 )
+from typing import Literal
 
 import numpy as np
 from typing_extensions import (
@@ -13,7 +14,9 @@ from typing_extensions import (
 
 from pandas._libs.tslibs.period import Period
 from pandas._typing import (
+    Frequency,
     NpDtype,
+    TimestampNonexistent,
     TimeUnit,
 )
 
@@ -75,11 +78,31 @@ class NaTType:
     def now(self, tz: _tzinfo | str | None = ...) -> NaTType: ...
     def to_pydatetime(self) -> NaTType: ...
     def date(self) -> NaTType: ...
-    def round(self) -> NaTType: ...
-    def floor(self) -> NaTType: ...
-    def ceil(self) -> NaTType: ...
+    def round(
+        self,
+        freq: Frequency,
+        ambiguous: bool | Literal["raise"] | NaTType = ...,
+        nonexistent: TimestampNonexistent = ...,
+    ) -> NaTType: ...
+    def floor(
+        self,
+        freq: Frequency,
+        ambiguous: bool | Literal["raise"] | NaTType = ...,
+        nonexistent: TimestampNonexistent = ...,
+    ) -> NaTType: ...
+    def ceil(
+        self,
+        freq: Frequency,
+        ambiguous: bool | Literal["raise"] | NaTType = ...,
+        nonexistent: TimestampNonexistent = ...,
+    ) -> NaTType: ...
     def tz_convert(self) -> NaTType: ...
-    def tz_localize(self) -> NaTType: ...
+    def tz_localize(
+        self,
+        tz: _tzinfo | str | None,
+        ambiguous: bool | Literal["raise"] | NaTType = ...,
+        nonexistent: TimestampNonexistent = ...,
+    ) -> NaTType: ...
     def replace(
         self,
         year: int | None = ...,

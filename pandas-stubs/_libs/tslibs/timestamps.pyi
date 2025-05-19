@@ -40,15 +40,14 @@ from pandas._libs.tslibs import (
     Timedelta,
 )
 from pandas._typing import (
+    TimestampNonexistent,
     TimeUnit,
     np_ndarray_bool,
     npt,
 )
 
 _Ambiguous: TypeAlias = bool | Literal["raise", "NaT"]
-_Nonexistent: TypeAlias = (
-    Literal["raise", "NaT", "shift_backward", "shift_forward"] | Timedelta | timedelta
-)
+
 # Repeated from `_typing.pyi` so as to satisfy mixed strict / non-strict paths.
 # https://github.com/pandas-dev/pandas-stubs/pull/1151#issuecomment-2715130190
 TimeZones: TypeAlias = str | _tzinfo | None | int
@@ -278,7 +277,7 @@ class Timestamp(datetime, SupportsIndex):
         self,
         tz: TimeZones,
         ambiguous: _Ambiguous = ...,
-        nonexistent: _Nonexistent = ...,
+        nonexistent: TimestampNonexistent = ...,
     ) -> Self: ...
     def normalize(self) -> Self: ...
     # TODO: round/floor/ceil could return NaT?
@@ -286,19 +285,19 @@ class Timestamp(datetime, SupportsIndex):
         self,
         freq: str,
         ambiguous: _Ambiguous = ...,
-        nonexistent: _Nonexistent = ...,
+        nonexistent: TimestampNonexistent = ...,
     ) -> Self: ...
     def floor(
         self,
         freq: str,
         ambiguous: _Ambiguous = ...,
-        nonexistent: _Nonexistent = ...,
+        nonexistent: TimestampNonexistent = ...,
     ) -> Self: ...
     def ceil(
         self,
         freq: str,
         ambiguous: _Ambiguous = ...,
-        nonexistent: _Nonexistent = ...,
+        nonexistent: TimestampNonexistent = ...,
     ) -> Self: ...
     def day_name(self, locale: str | None = ...) -> str: ...
     def month_name(self, locale: str | None = ...) -> str: ...

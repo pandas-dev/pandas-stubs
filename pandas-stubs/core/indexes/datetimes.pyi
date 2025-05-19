@@ -10,7 +10,7 @@ from datetime import (
 from typing import overload
 
 from _typing import (
-    Axes,
+    AxesData,
     Frequency,
     TimeZones,
 )
@@ -44,7 +44,7 @@ from pandas.tseries.offsets import BaseOffset
 class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
     def __init__(
         self,
-        data: Axes,
+        data: AxesData,
         freq: Frequency = ...,
         tz: TimeZones = ...,
         ambiguous: str = ...,

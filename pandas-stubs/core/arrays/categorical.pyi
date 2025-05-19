@@ -2,7 +2,10 @@ from collections.abc import (
     Callable,
     Sequence,
 )
-from typing import Any
+from typing import (
+    Any,
+    overload,
+)
 
 import numpy as np
 from pandas import Series
@@ -10,13 +13,17 @@ from pandas.core.accessor import PandasDelegate as PandasDelegate
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
 from pandas.core.base import NoNewAttributesMixin as NoNewAttributesMixin
 from pandas.core.indexes.base import Index
+from typing_extensions import Self
 
 from pandas._typing import (
     ArrayLike,
     Dtype,
     ListLike,
     Ordered,
+    PositionalIndexerTuple,
     Scalar,
+    ScalarIndexer,
+    SequenceIndexer,
     TakeIndexer,
     np_ndarray_bool,
     np_ndarray_int,
@@ -107,7 +114,13 @@ class Categorical(ExtensionArray):
     def __len__(self) -> int: ...
     def __iter__(self): ...
     def __contains__(self, key) -> bool: ...
-    def __getitem__(self, key): ...
+    @overload
+    def __getitem__(self, key: ScalarIndexer) -> Any: ...
+    @overload
+    def __getitem__(
+        self,
+        key: SequenceIndexer | PositionalIndexerTuple,
+    ) -> Self: ...
     def __setitem__(self, key, value) -> None: ...
     def min(self, *, skipna: bool = ...): ...
     def max(self, *, skipna: bool = ...): ...

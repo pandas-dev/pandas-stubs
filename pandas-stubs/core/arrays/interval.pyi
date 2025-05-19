@@ -6,7 +6,10 @@ from pandas import (
     Series,
 )
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
-from typing_extensions import Self
+from typing_extensions import (
+    Self,
+    TypeAlias,
+)
 
 from pandas._libs.interval import (
     Interval as Interval,
@@ -15,9 +18,13 @@ from pandas._libs.interval import (
 from pandas._typing import (
     Axis,
     Scalar,
+    ScalarIndexer,
+    SequenceIndexer,
     TakeIndexer,
     np_ndarray_bool,
 )
+
+IntervalOrNA: TypeAlias = Interval | float
 
 class IntervalArray(IntervalMixin, ExtensionArray):
     can_hold_na: bool = ...
@@ -34,7 +41,10 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def from_tuples(cls, data, closed: str = ..., copy: bool = ..., dtype=...): ...
     def __iter__(self): ...
     def __len__(self) -> int: ...
-    def __getitem__(self, value): ...
+    @overload
+    def __getitem__(self, key: ScalarIndexer) -> IntervalOrNA: ...
+    @overload
+    def __getitem__(self, key: SequenceIndexer) -> Self: ...
     def __setitem__(self, key, value) -> None: ...
     def __eq__(self, other): ...
     def __ne__(self, other): ...

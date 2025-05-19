@@ -25,6 +25,7 @@ from pandas._typing import (
     DtypeBackend,
     ExcelReadEngine,
     ExcelWriteEngine,
+    ExcelWriterIfSheetExists,
     FilePath,
     IntStrT,
     ListLikeHashable,
@@ -217,7 +218,7 @@ class ExcelWriter:
         datetime_format: str | None = ...,
         mode: Literal["w", "a"] = ...,
         storage_options: StorageOptions = ...,
-        if_sheet_exists: Literal["error", "new", "replace", "overlay"] | None = ...,
+        if_sheet_exists: ExcelWriterIfSheetExists | None = ...,
         engine_kwargs: dict[str, Any] | None = ...,
     ) -> None: ...
     @property

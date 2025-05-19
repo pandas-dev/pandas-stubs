@@ -36,6 +36,8 @@ from pandas.core.series import (
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.offsets import DateOffset
 from pandas._typing import (
+    TimeAmbiguous,
+    TimeNonexistent,
     TimestampConvention,
     TimeUnit,
     np_ndarray_bool,
@@ -218,12 +220,8 @@ class _DatetimeLikeNoTZMethods(
     def tz_localize(
         self,
         tz: TimeZones,
-        ambiguous: Literal["raise", "infer", "NaT"] | np_ndarray_bool = ...,
-        nonexistent: (
-            Literal["shift_forward", "shift_backward", "NaT", "raise"]
-            | timedelta
-            | Timedelta
-        ) = ...,
+        ambiguous: TimeAmbiguous = ...,
+        nonexistent: TimeNonexistent = ...,
     ) -> _DTNormalizeReturnType: ...
     def tz_convert(self, tz: TimeZones) -> _DTNormalizeReturnType: ...
     def normalize(self) -> _DTNormalizeReturnType: ...
