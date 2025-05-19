@@ -44,6 +44,12 @@ jobs:
       - name: Install pandas-stubs and run tests on the installed stubs
         run: poetry run poe test_dist
 
+      - name: Run ty on current repo
+        run: poetry run ty check pandas-stubs
+
+      - name: Run ty on current repo
+        run: poetry run ty check tests
+
   precommit:
     runs-on: ubuntu-latest
     timeout-minutes: 10

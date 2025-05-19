@@ -33,6 +33,7 @@ packages = [{ "include" = "pandas-stubs" }]
 python = ">=3.10"
 types-pytz = ">= 2022.1.1"
 numpy = ">= 1.23.5"
+ty = "^0.0.1a5"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "1.15.0"
