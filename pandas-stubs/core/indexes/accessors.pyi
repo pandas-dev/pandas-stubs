@@ -9,7 +9,6 @@ from typing import (
     TypeVar,
 )
 
-from _typing import TimeZones
 import numpy as np
 import numpy.typing as npt
 from pandas import (
@@ -40,6 +39,7 @@ from pandas._typing import (
     TimeNonexistent,
     TimestampConvention,
     TimeUnit,
+    TimeZones,
     np_ndarray_bool,
 )
 
