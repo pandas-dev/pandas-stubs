@@ -632,6 +632,19 @@ def test_types_itertuples() -> None:
         check(assert_type(t1, _PandasNamedTuple), _PandasNamedTuple)
 
 
+def test_types_items() -> None:
+    df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
+    check(
+        assert_type(df.items(), Iterator[tuple[Hashable, pd.Series]]),
+        Iterator,
+        tuple,
+    )
+
+    for t1, t2 in df.items():
+        check(assert_type(t1, Hashable), Hashable)
+        check(assert_type(t2, pd.Series), pd.Series)
+
+
 def test_frame_iterator() -> None:
     """Test iterator methods for a dataframe GH1217."""
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
