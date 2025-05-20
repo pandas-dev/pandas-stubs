@@ -603,6 +603,9 @@ def test_types_iterrows() -> None:
         Iterable,
         tuple,
     )
+    for t1, t2 in df.iterrows():
+        check(assert_type(t1, Hashable), Hashable)
+        check(assert_type(t2, pd.Series), pd.Series)
 
 
 def test_types_itertuples() -> None:
@@ -624,6 +627,9 @@ def test_types_itertuples() -> None:
         Iterator,
         object,
     )
+
+    for t1 in df.itertuples():
+        check(assert_type(t1, _PandasNamedTuple), _PandasNamedTuple)
 
 
 def test_frame_iterator() -> None:
