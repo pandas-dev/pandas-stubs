@@ -9,11 +9,6 @@ from datetime import (
 )
 from typing import overload
 
-from _typing import (
-    AxesData,
-    Frequency,
-    TimeZones,
-)
 import numpy as np
 from pandas import (
     DataFrame,
@@ -31,10 +26,13 @@ from pandas.core.series import (
 from typing_extensions import Self
 
 from pandas._typing import (
+    AxesData,
     DateAndDatetimeLike,
     Dtype,
+    Frequency,
     IntervalClosedType,
     TimeUnit,
+    TimeZones,
 )
 
 from pandas.core.dtypes.dtypes import DatetimeTZDtype

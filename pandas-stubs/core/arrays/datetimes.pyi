@@ -1,6 +1,5 @@
 from datetime import tzinfo
 
-from _typing import TimeZones
 import numpy as np
 from pandas.core.arrays.datetimelike import (
     DatelikeOps,
@@ -11,6 +10,7 @@ from pandas.core.arrays.datetimelike import (
 from pandas._typing import (
     TimeAmbiguous,
     TimeNonexistent,
+    TimeZones,
 )
 
 from pandas.core.dtypes.dtypes import DatetimeTZDtype as DatetimeTZDtype

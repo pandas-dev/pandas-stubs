@@ -9,7 +9,6 @@ from typing import (
     overload,
 )
 
-from _typing import SequenceNotStr
 import numpy as np
 import pandas as pd
 from pandas.core.indexes.base import Index
@@ -23,6 +22,7 @@ from pandas._typing import (
     DtypeArg,
     HashableT,
     MaskType,
+    SequenceNotStr,
     np_ndarray_anyint,
     np_ndarray_bool,
 )

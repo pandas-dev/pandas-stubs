@@ -2,6 +2,7 @@ from pandas.core.groupby import (
     DataFrameGroupBy as DataFrameGroupBy,
     SeriesGroupBy as SeriesGroupBy,
 )
+from pandas.core.indexes.frozen import FrozenList as FrozenList
 from pandas.core.resample import (
     DatetimeIndexResamplerGroupby as DatetimeIndexResamplerGroupby,
     PeriodIndexResamplerGroupby as PeriodIndexResamplerGroupby,
@@ -20,6 +21,7 @@ from pandas.core.window import (
 )
 
 from pandas._libs import NaTType as NaTType
+from pandas._libs.lib import NoDefault as NoDefault
 from pandas._libs.missing import NAType as NAType
 
 from pandas.io.json._json import JsonReader as JsonReader

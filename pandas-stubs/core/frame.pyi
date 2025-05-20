@@ -18,10 +18,6 @@ from typing import (
     overload,
 )
 
-from _typing import (
-    FloatFormatType,
-    TimeZones,
-)
 from matplotlib.axes import Axes as PlotAxes
 import numpy as np
 from pandas import (
@@ -97,6 +93,7 @@ from pandas._typing import (
     Dtype,
     FilePath,
     FillnaOptions,
+    FloatFormatType,
     FormattersType,
     GroupByObjectNonScalar,
     HashableT,
@@ -147,6 +144,7 @@ from pandas._typing import (
     TimeAmbiguous,
     TimeNonexistent,
     TimeUnit,
+    TimeZones,
     ToStataByteorder,
     ToTimestampHow,
     UpdateJoin,

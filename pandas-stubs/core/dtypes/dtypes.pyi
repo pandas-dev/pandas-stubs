@@ -5,7 +5,6 @@ from typing import (
     TypeVar,
 )
 
-from _typing import TimeZones
 import numpy as np
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
@@ -18,6 +17,7 @@ from pandas._libs.tslibs.offsets import (
 )
 from pandas._typing import (
     Ordered,
+    TimeZones,
     npt,
 )
 
