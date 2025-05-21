@@ -616,31 +616,74 @@ def test_types_median() -> None:
 def test_types_iterrows() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(
-        assert_type(df.iterrows(), "Iterable[tuple[Hashable, pd.Series]]"),
+        assert_type(df.iterrows(), "Iterator[tuple[Hashable, pd.Series]]"),
         Iterable,
         tuple,
     )
+    for t1, t2 in df.iterrows():
+        check(assert_type(t1, Hashable), Hashable)
+        check(assert_type(t2, pd.Series), pd.Series)
 
 
 def test_types_itertuples() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(
-        assert_type(df.itertuples(), Iterable[_PandasNamedTuple]),
-        Iterable,
+        assert_type(df.itertuples(), Iterator[_PandasNamedTuple]),
+        Iterator,
         _PandasNamedTuple,
     )
     check(
         assert_type(
-            df.itertuples(index=False, name="Foobar"), Iterable[_PandasNamedTuple]
+            df.itertuples(index=False, name="Foobar"), Iterator[_PandasNamedTuple]
         ),
-        Iterable,
+        Iterator,
         _PandasNamedTuple,
     )
     check(
-        assert_type(df.itertuples(index=False, name=None), Iterable[tuple[Any, ...]]),
-        Iterable,
+        assert_type(df.itertuples(index=False, name=None), Iterator[tuple[Any, ...]]),
+        Iterator,
         object,
     )
+
+    for t1 in df.itertuples():
+        assert_type(t1, _PandasNamedTuple)
+        assert t1.__class__.__name__ == "Pandas"
+        assert isinstance(t1.Index, int)
+        assert isinstance(t1.col1, int)
+        assert isinstance(t1.col2, int)
+        for k in [0, 1, 2]:
+            assert isinstance(t1[k], int)
+
+    for t1 in df.itertuples(name="FooBar"):
+        assert_type(t1, _PandasNamedTuple)
+        assert t1.__class__.__name__ == "FooBar"
+        assert isinstance(t1.Index, int)
+        assert isinstance(t1.col1, int)
+        assert isinstance(t1.col2, int)
+        for k in [0, 1, 2]:
+            assert isinstance(t1[k], int)
+
+
+def test_types_items() -> None:
+    df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
+    check(
+        assert_type(df.items(), Iterator[tuple[Hashable, pd.Series]]),
+        Iterator,
+        tuple,
+    )
+
+    for t1, t2 in df.items():
+        check(assert_type(t1, Hashable), Hashable)
+        check(assert_type(t2, pd.Series), pd.Series)
+
+
+def test_frame_iterator() -> None:
+    """Test iterator methods for a dataframe GH1217."""
+    df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
+
+    check(assert_type(next(df.items()), tuple[Hashable, "pd.Series"]), tuple)
+    check(assert_type(next(df.iterrows()), tuple[Hashable, "pd.Series"]), tuple)
+    check(assert_type(next(df.itertuples()), _PandasNamedTuple), _PandasNamedTuple)
 
 
 def test_types_sum() -> None:

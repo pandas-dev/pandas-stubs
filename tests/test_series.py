@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import (
+    Hashable,
     Iterable,
     Iterator,
     Sequence,
@@ -3806,3 +3807,9 @@ def test_unknown() -> None:
 
     foo(s)
     check(assert_type(s + pd.Series([1]), pd.Series), pd.Series)
+
+
+def test_series_items() -> None:
+    s = pd.Series(data=[1, 2, 3, 4], index=["cow", "coal", "coalesce", ""])
+    check(assert_type(next(s.items()), tuple[Hashable, int]), tuple)
+    check(assert_type(s.items(), Iterator[tuple[Hashable, int]]), Iterator)
