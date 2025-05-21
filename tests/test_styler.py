@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import os
 import pathlib
-from typing import TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+)
 
 from jinja2.environment import (
     Environment,
@@ -242,6 +245,19 @@ def test_styler_map() -> None:
             df.style.map(
                 lambda v: "color: red;" if isinstance(v, float) and v < 0 else None
             ),
+            Styler,
+        ),
+        Styler,
+    )
+
+    def color_negative(v: Scalar, color: str) -> str | None:
+        return f"color: {color};" if isinstance(v, float) and v < 0 else None
+
+    df = DataFrame(np.random.randn(5, 2), columns=["A", "B"])
+
+    check(
+        assert_type(
+            df.style.map(color_negative, color="red"),
             Styler,
         ),
         Styler,

@@ -71,11 +71,18 @@ class Styler(StylerRenderer):
         formatter: ExtFormatter | None = ...,
     ) -> None: ...
     def concat(self, other: Styler) -> Styler: ...
+    @overload
     def map(
         self,
         func: Callable[[Scalar], str | None],
         subset: Subset | None = ...,
-        **kwargs: dict[str, Any],
+    ) -> Styler: ...
+    @overload
+    def map(
+        self,
+        func: Callable[..., str | None],
+        subset: Subset | None = ...,
+        **kwargs: Any,
     ) -> Styler: ...
     def set_tooltips(
         self,
