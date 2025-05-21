@@ -72,7 +72,10 @@ class Styler(StylerRenderer):
     ) -> None: ...
     def concat(self, other: Styler) -> Styler: ...
     def map(
-        self, func: Callable[[Scalar], str], subset: Subset | None = ..., **kwargs: dict[str, Any]
+        self,
+        func: Callable[[Scalar], str | None],
+        subset: Subset | None = ...,
+        **kwargs: dict[str, Any],
     ) -> Styler: ...
     def set_tooltips(
         self,

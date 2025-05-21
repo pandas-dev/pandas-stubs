@@ -238,6 +238,11 @@ def test_styler_map() -> None:
     """Test type returned with Styler.map GH1226."""
     df = DataFrame(data={"col1": [1, -2], "col2": [-3, 4]})
     check(
-        assert_type(df.style.map(lambda v: "color: red;" if v < 0 else None), Styler),
+        assert_type(
+            df.style.map(
+                lambda v: "color: red;" if isinstance(v, float) and v < 0 else None
+            ),
+            Styler,
+        ),
         Styler,
     )
