@@ -634,7 +634,7 @@ def test_types_itertuples() -> None:
         assert isinstance(t1.Index, int)
         assert isinstance(t1.col1, int)
         assert isinstance(t1.col2, int)
-        for k in [0, 1]:
+        for k in [0, 1, 2]:
             assert isinstance(t1[k], int)
 
     for t1 in df.itertuples(name="FooBar"):
@@ -643,7 +643,7 @@ def test_types_itertuples() -> None:
         assert isinstance(t1.Index, int)
         assert isinstance(t1.col1, int)
         assert isinstance(t1.col2, int)
-        for k in [0, 1]:
+        for k in [0, 1, 2]:
             assert isinstance(t1[k], int)
 
 
