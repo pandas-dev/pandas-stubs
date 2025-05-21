@@ -71,6 +71,9 @@ class Styler(StylerRenderer):
         formatter: ExtFormatter | None = ...,
     ) -> None: ...
     def concat(self, other: Styler) -> Styler: ...
+    def map(
+        self, func: Callable, subset: Subset | None = ..., **kwargs: Any
+    ) -> Styler: ...
     def set_tooltips(
         self,
         ttips: DataFrame,
