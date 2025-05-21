@@ -2,7 +2,6 @@ import datetime as dt
 from typing import (
     Any,
     Literal,
-    TypeVar,
 )
 
 import numpy as np
@@ -21,11 +20,10 @@ from pandas._typing import (
     npt,
 )
 
-from .base import ExtensionDtype as ExtensionDtype
-
-_ExtensionDtypeT = TypeVar("_ExtensionDtypeT", bound=ExtensionDtype)
-
-def register_extension_dtype(cls: type[_ExtensionDtypeT]) -> type[_ExtensionDtypeT]: ...
+from pandas.core.dtypes.base import (
+    ExtensionDtype as ExtensionDtype,
+    register_extension_dtype as register_extension_dtype,
+)
 
 class BaseMaskedDtype(ExtensionDtype): ...
 class PandasExtensionDtype(ExtensionDtype): ...

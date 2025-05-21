@@ -4,6 +4,7 @@ from typing import (
 )
 
 from pandas.core.arrays import ExtensionArray
+from typing_extensions import TypeVar
 
 from pandas._typing import type_t
 
@@ -28,3 +29,7 @@ class ExtensionDtype:
     def is_dtype(cls, dtype: object) -> bool: ...
 
 class StorageExtensionDtype(ExtensionDtype): ...
+
+_ExtensionDtypeT = TypeVar("_ExtensionDtypeT", bound=ExtensionDtype)
+
+def register_extension_dtype(cls: type[_ExtensionDtypeT]) -> type[_ExtensionDtypeT]: ...
