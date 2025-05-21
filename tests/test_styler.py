@@ -2,10 +2,7 @@ from __future__ import annotations
 
 import os
 import pathlib
-from typing import (
-    TYPE_CHECKING,
-    Any,
-)
+from typing import TYPE_CHECKING
 
 from jinja2.environment import (
     Environment,
