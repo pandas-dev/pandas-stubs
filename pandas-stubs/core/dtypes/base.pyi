@@ -1,10 +1,10 @@
 from typing import (
     ClassVar,
     Literal,
+    TypeVar,
 )
 
 from pandas.core.arrays import ExtensionArray
-from typing_extensions import TypeVar
 
 from pandas._typing import type_t
 
