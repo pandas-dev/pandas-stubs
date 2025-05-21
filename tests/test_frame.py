@@ -629,7 +629,22 @@ def test_types_itertuples() -> None:
     )
 
     for t1 in df.itertuples():
-        check(assert_type(t1, _PandasNamedTuple), _PandasNamedTuple)
+        assert_type(t1, _PandasNamedTuple)
+        assert t1.__class__.__name__ == "Pandas"
+        assert isinstance(t1.Index, int)
+        assert isinstance(t1.col1, int)
+        assert isinstance(t1.col2, int)
+        for k in [0, 1]:
+            assert isinstance(t1[k], int)
+
+    for t1 in df.itertuples(name="FooBar"):
+        assert_type(t1, _PandasNamedTuple)
+        assert t1.__class__.__name__ == "FooBar"
+        assert isinstance(t1.Index, int)
+        assert isinstance(t1.col1, int)
+        assert isinstance(t1.col2, int)
+        for k in [0, 1]:
+            assert isinstance(t1[k], int)
 
 
 def test_types_items() -> None:
