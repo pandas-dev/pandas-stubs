@@ -53,6 +53,11 @@ class _DataFrameFunc(Protocol):
         self, series: DataFrame, /, *args: Any, **kwargs: Any
     ) -> npt.NDArray | DataFrame: ...
 
+class _MapCallable(Protocol):
+    def __call__(
+        self, first_arg: Scalar, /, *args: Any, **kwargs: Any
+    ) -> str | None: ...
+
 class Styler(StylerRenderer):
     def __init__(
         self,
@@ -71,6 +76,19 @@ class Styler(StylerRenderer):
         formatter: ExtFormatter | None = ...,
     ) -> None: ...
     def concat(self, other: Styler) -> Styler: ...
+    @overload
+    def map(
+        self,
+        func: Callable[[Scalar], str | None],
+        subset: Subset | None = ...,
+    ) -> Styler: ...
+    @overload
+    def map(
+        self,
+        func: _MapCallable,
+        subset: Subset | None = ...,
+        **kwargs: Any,
+    ) -> Styler: ...
     def set_tooltips(
         self,
         ttips: DataFrame,

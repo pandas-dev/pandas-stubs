@@ -30,7 +30,6 @@ from pandas.io.formats.style import Styler
 
 DF = DataFrame({"a": [1, 2, 3], "b": [3.14, 2.72, 1.61]})
 
-
 PWD = pathlib.Path(os.path.split(os.path.abspath(__file__))[0])
 
 if TYPE_CHECKING:
@@ -233,3 +232,30 @@ def test_styler_columns_and_index() -> None:
     styler = DF.style
     check(assert_type(styler.columns, Index), Index)
     check(assert_type(styler.index, Index), Index)
+
+
+def test_styler_map() -> None:
+    """Test type returned with Styler.map GH1226."""
+    df = DataFrame(data={"col1": [1, -2], "col2": [-3, 4]})
+    check(
+        assert_type(
+            df.style.map(
+                lambda v: "color: red;" if isinstance(v, float) and v < 0 else None
+            ),
+            Styler,
+        ),
+        Styler,
+    )
+
+    def color_negative(v: Scalar, /, color: str) -> str | None:
+        return f"color: {color};" if isinstance(v, float) and v < 0 else None
+
+    df = DataFrame(np.random.randn(5, 2), columns=["A", "B"])
+
+    check(
+        assert_type(
+            df.style.map(color_negative, color="red"),
+            Styler,
+        ),
+        Styler,
+    )
