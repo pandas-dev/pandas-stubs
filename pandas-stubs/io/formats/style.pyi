@@ -53,6 +53,13 @@ class _DataFrameFunc(Protocol):
         self, series: DataFrame, /, *args: Any, **kwargs: Any
     ) -> npt.NDArray | DataFrame: ...
 
+class _MapCallable(Protocol):
+    """Dedicated signature for functions passed in Styler.map."""
+
+    def __call__(
+        self, first_arg: Scalar, /, *args: Any, **kwargs: Any
+    ) -> str | None: ...
+
 class Styler(StylerRenderer):
     def __init__(
         self,
@@ -80,7 +87,7 @@ class Styler(StylerRenderer):
     @overload
     def map(
         self,
-        func: Callable[..., str | None],
+        func: _MapCallable,
         subset: Subset | None = ...,
         **kwargs: Any,
     ) -> Styler: ...

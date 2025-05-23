@@ -247,7 +247,7 @@ def test_styler_map() -> None:
         Styler,
     )
 
-    def color_negative(v: Scalar, color: str) -> str | None:
+    def color_negative(v: Scalar, /, color: str) -> str | None:
         return f"color: {color};" if isinstance(v, float) and v < 0 else None
 
     df = DataFrame(np.random.randn(5, 2), columns=["A", "B"])
