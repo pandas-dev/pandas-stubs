@@ -54,8 +54,6 @@ class _DataFrameFunc(Protocol):
     ) -> npt.NDArray | DataFrame: ...
 
 class _MapCallable(Protocol):
-    """Dedicated signature for functions passed in Styler.map."""
-
     def __call__(
         self, first_arg: Scalar, /, *args: Any, **kwargs: Any
     ) -> str | None: ...
