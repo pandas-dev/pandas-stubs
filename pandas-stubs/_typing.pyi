@@ -65,7 +65,7 @@ HashableT5 = TypeVar("HashableT5", bound=Hashable)
 # array-like
 
 ArrayLike: TypeAlias = ExtensionArray | np.ndarray
-AnyArrayLike: TypeAlias = ArrayLike | Index[Any] | Series[Any]
+AnyArrayLike: TypeAlias = ArrayLike | Index[Any] | Series
 
 # list-like
 
@@ -950,7 +950,7 @@ ReplaceValue: TypeAlias = (
     | NAType
     | Sequence[Scalar | Pattern]
     | Mapping[HashableT, ScalarT]
-    | Series[Any]
+    | Series
     | None
 )
 

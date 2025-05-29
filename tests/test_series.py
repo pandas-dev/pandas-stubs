@@ -2872,13 +2872,13 @@ def test_astype_object(cast_arg: ObjectDtypeArg, target_type: type) -> None:
 
     if TYPE_CHECKING:
         # python object
-        assert_type(s.astype(object), "pd.Series[Any]")
-        assert_type(s.astype("object"), "pd.Series[Any]")
+        assert_type(s.astype(object), "pd.Series")
+        assert_type(s.astype("object"), "pd.Series")
         # numpy object
-        assert_type(s.astype(np.object_), "pd.Series[Any]")
-        # assert_type(s.astype("object_"), "pd.Series[Any]")  # NOTE: not assigned
-        # assert_type(s.astype("object0"), "pd.Series[Any]")  # NOTE: not assigned
-        assert_type(s.astype("O"), "pd.Series[Any]")
+        assert_type(s.astype(np.object_), "pd.Series")
+        # assert_type(s.astype("object_"), "pd.Series")  # NOTE: not assigned
+        # assert_type(s.astype("object0"), "pd.Series")  # NOTE: not assigned
+        assert_type(s.astype("O"), "pd.Series")
 
 
 @pytest.mark.parametrize("cast_arg, target_type", ASTYPE_VOID_ARGS, ids=repr)
@@ -2888,9 +2888,9 @@ def test_astype_void(cast_arg: VoidDtypeArg, target_type: type) -> None:
 
     if TYPE_CHECKING:
         # numpy void
-        assert_type(s.astype(np.void), "pd.Series[Any]")
-        assert_type(s.astype("void"), "pd.Series[Any]")
-        assert_type(s.astype("V"), "pd.Series[Any]")
+        assert_type(s.astype(np.void), "pd.Series")
+        assert_type(s.astype("void"), "pd.Series")
+        assert_type(s.astype("V"), "pd.Series")
 
 
 def test_astype_other() -> None:
@@ -2902,7 +2902,7 @@ def test_astype_other() -> None:
 
     # Test self-consistent with s.dtype (#747)
     # NOTE: https://github.com/python/typing/issues/801#issuecomment-1646171898
-    check(assert_type(s.astype(s.dtype), "pd.Series[Any]"), pd.Series, np.integer)
+    check(assert_type(s.astype(s.dtype), "pd.Series"), pd.Series, np.integer)
 
     # test DecimalDtype
     orseries = pd.Series([Decimal(x) for x in [1, 2, 3]])
@@ -2917,7 +2917,7 @@ def test_astype_other() -> None:
     # Test non-literal string
     # NOTE: currently unsupported! Enable in future.
     # string: str = "int"  # not Literal!
-    # check(assert_type(s.astype(string), "pd.Series[Any]"), pd.Series, np.integer)
+    # check(assert_type(s.astype(string), "pd.Series"), pd.Series, np.integer)
 
 
 def test_all_astype_args_tested() -> None:
@@ -3224,7 +3224,7 @@ def test_get() -> None:
 
 def test_series_new_empty() -> None:
     # GH 826
-    check(assert_type(pd.Series(), "pd.Series[Any]"), pd.Series)
+    check(assert_type(pd.Series(), "pd.Series"), pd.Series)
 
 
 def test_series_mapping() -> None:
@@ -3406,10 +3406,10 @@ def test_pipe() -> None:
 
 def test_series_apply() -> None:
     s = pd.Series(["A", "B", "AB"])
-    check(assert_type(s.apply(tuple), "pd.Series[Any]"), pd.Series)
-    check(assert_type(s.apply(list), "pd.Series[Any]"), pd.Series)
-    check(assert_type(s.apply(set), "pd.Series[Any]"), pd.Series)
-    check(assert_type(s.apply(frozenset), "pd.Series[Any]"), pd.Series)
+    check(assert_type(s.apply(tuple), "pd.Series"), pd.Series)
+    check(assert_type(s.apply(list), "pd.Series"), pd.Series)
+    check(assert_type(s.apply(set), "pd.Series"), pd.Series)
+    check(assert_type(s.apply(frozenset), "pd.Series"), pd.Series)
 
 
 def test_diff() -> None:
@@ -3671,10 +3671,10 @@ def test_series_typed_dict() -> None:
 
 
 def test_series_empty_dtype() -> None:
-    """Test for the creation of a Series from an empty list GH571 to map to a Series[Any]."""
+    """Test for the creation of a Series from an empty list GH571 to map to a Series."""
     new_tab: Sequence[Never] = []  # need to be typehinted to please mypy
-    check(assert_type(pd.Series(new_tab), "pd.Series[Any]"), pd.Series)
-    check(assert_type(pd.Series([]), "pd.Series[Any]"), pd.Series)
+    check(assert_type(pd.Series(new_tab), "pd.Series"), pd.Series)
+    check(assert_type(pd.Series([]), "pd.Series"), pd.Series)
     # ensure that an empty string does not get matched to Sequence[Never]
     check(assert_type(pd.Series(""), "pd.Series[str]"), pd.Series)
 
