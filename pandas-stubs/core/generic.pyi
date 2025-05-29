@@ -19,7 +19,9 @@ import numpy as np
 from pandas import Index
 import pandas.core.indexing as indexing
 from pandas.core.resample import DatetimeIndexResampler
-from pandas.core.series import Series
+from pandas.core.series import (
+    UnknownSeries,
+)
 import sqlalchemy.engine
 from typing_extensions import (
     Concatenate,
@@ -28,7 +30,6 @@ from typing_extensions import (
 
 from pandas._libs.lib import NoDefault
 from pandas._typing import (
-    S1,
     Axis,
     CompressionOptions,
     CSVQuoting,
@@ -81,7 +82,7 @@ class NDFrame(indexing.IndexingMixin):
     def ndim(self) -> int: ...
     @property
     def size(self) -> int: ...
-    def equals(self, other: Series[S1]) -> _bool: ...
+    def equals(self, other: UnknownSeries) -> _bool: ...
     def __neg__(self) -> Self: ...
     def __pos__(self) -> Self: ...
     def __nonzero__(self) -> None: ...
