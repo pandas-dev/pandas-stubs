@@ -75,7 +75,7 @@ from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.nattype import NaTType
 from pandas._libs.tslibs.offsets import DateOffset
 from pandas._typing import (
-    S1,
+    S2,
     AggFuncTypeBase,
     AggFuncTypeDictFrame,
     AggFuncTypeDictSeries,
@@ -1392,13 +1392,13 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., S1 | NAType],
+        f: Callable[..., S2 | NAType],
         axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = ...,
         args: Any = ...,
         **kwargs: Any,
-    ) -> Series[S1]: ...
+    ) -> Series[S2]: ...
     # Since non-scalar type T is not supported in Series[T],
     # we separate this overload from the above one
     @overload
@@ -1416,14 +1416,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., S1 | NAType],
+        f: Callable[..., S2 | NAType],
         axis: Axis = ...,
         raw: _bool = ...,
         args: Any = ...,
         *,
         result_type: Literal["expand", "reduce"],
         **kwargs: Any,
-    ) -> Series[S1]: ...
+    ) -> Series[S2]: ...
     @overload
     def apply(
         self,
@@ -1477,14 +1477,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., S1 | NAType],
+        f: Callable[..., S2 | NAType],
         raw: _bool = ...,
         result_type: None = ...,
         args: Any = ...,
         *,
         axis: AxisColumn,
         **kwargs: Any,
-    ) -> Series[S1]: ...
+    ) -> Series[S2]: ...
     @overload
     def apply(
         self,

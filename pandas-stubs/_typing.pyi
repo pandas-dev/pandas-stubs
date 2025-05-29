@@ -18,7 +18,6 @@ from typing import (
     Protocol,
     SupportsIndex,
     TypedDict,
-    TypeVar,
     overload,
 )
 
@@ -35,6 +34,7 @@ from pandas.core.tools.datetimes import FulldatetimeDict
 from typing_extensions import (
     ParamSpec,
     TypeAlias,
+    TypeVar,
 )
 
 from pandas._libs.interval import Interval
@@ -842,6 +842,7 @@ S1 = TypeVar(
     | CategoricalDtype
     | BaseOffset
     | list[str],
+    default=Any,
 )
 
 S2 = TypeVar(
