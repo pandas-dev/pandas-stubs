@@ -30,7 +30,7 @@ from typing_extensions import (
 
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
-    S2,
+    S1,
     AggFuncTypeBase,
     AggFuncTypeFrame,
     ByT,
@@ -52,7 +52,7 @@ class NamedAgg(NamedTuple):
     column: str
     aggfunc: AggScalar
 
-class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
+class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
     @overload
     def aggregate(
         self,
@@ -114,7 +114,7 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
         self,
         indices: TakeIndexer,
         **kwargs,
-    ) -> Series[S2]: ...
+    ) -> Series[S1]: ...
     def skew(
         self,
         skipna: bool = ...,
@@ -125,10 +125,10 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     def plot(self) -> GroupByPlot[Self]: ...
     def nlargest(
         self, n: int = ..., keep: NsmallestNlargestKeep = ...
-    ) -> Series[S2]: ...
+    ) -> Series[S1]: ...
     def nsmallest(
         self, n: int = ..., keep: NsmallestNlargestKeep = ...
-    ) -> Series[S2]: ...
+    ) -> Series[S1]: ...
     def idxmin(self, skipna: bool = ...) -> Series: ...
     def idxmax(self, skipna: bool = ...) -> Series: ...
     def corr(
@@ -166,9 +166,9 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     @final  # type: ignore[misc]
     def __iter__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
-    ) -> Iterator[tuple[ByT, Series[S2]]]: ...
+    ) -> Iterator[tuple[ByT, Series[S1]]]: ...
 
-_TT = TypeVar("_TT", bound=Literal[True, False])
+_TT = TypeVar("_TT", bound=Literal[True, False], default=Literal[True])
 
 class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     # error: Overload 3 for "apply" will never be used because its parameters overlap overload 1
@@ -217,7 +217,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     def filter(
         self, func: Callable, dropna: bool = ..., *args, **kwargs
     ) -> DataFrame: ...
-    @overload
+    @overload  # type: ignore[override]
     def __getitem__(self, key: Scalar) -> SeriesGroupBy[Any, ByT]: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
