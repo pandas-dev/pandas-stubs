@@ -59,7 +59,6 @@ from pandas.core.indexes.accessors import (
     TimedeltaProperties,
     TimestampProperties,
 )
-from pandas.core.indexes.base import UnknownIndex
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.interval import IntervalIndex
@@ -732,7 +731,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def groupby(
         self,
-        by: CategoricalIndex | UnknownIndex | Series,
+        by: CategoricalIndex | Index | Series,
         axis: AxisIndex = ...,
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
