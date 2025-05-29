@@ -50,7 +50,10 @@ from pandas.core.reshape.pivot import (
     _PivotTableIndexTypes,
     _PivotTableValuesTypes,
 )
-from pandas.core.series import Series
+from pandas.core.series import (
+    Series,
+    UnknownSeries,
+)
 from pandas.core.window import (
     Expanding,
     ExponentialMovingWindow,
@@ -2008,7 +2011,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
-        other: Scalar | Series[S1] | DataFrame | Callable | NAType | None = ...,
+        other: Scalar | UnknownSeries | DataFrame | Callable | NAType | None = ...,
         *,
         inplace: Literal[True],
         axis: Axis | None = ...,
@@ -2024,7 +2027,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
-        other: Scalar | Series[S1] | DataFrame | Callable | NAType | None = ...,
+        other: Scalar | UnknownSeries | DataFrame | Callable | NAType | None = ...,
         *,
         inplace: Literal[False] = ...,
         axis: Axis | None = ...,
