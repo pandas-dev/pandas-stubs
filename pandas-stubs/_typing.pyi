@@ -65,7 +65,7 @@ HashableT5 = TypeVar("HashableT5", bound=Hashable)
 # array-like
 
 ArrayLike: TypeAlias = ExtensionArray | np.ndarray
-AnyArrayLike: TypeAlias = ArrayLike | Index[Any] | Series
+AnyArrayLike: TypeAlias = ArrayLike | Index | Series
 
 # list-like
 
@@ -801,7 +801,7 @@ DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
 KeysArgType: TypeAlias = Any
 ListLikeT = TypeVar("ListLikeT", bound=ListLike)
 ListLikeExceptSeriesAndStr: TypeAlias = (
-    MutableSequence[Any] | np.ndarray | tuple[Any, ...] | Index[Any]
+    MutableSequence[Any] | np.ndarray | tuple[Any, ...] | Index
 )
 ListLikeU: TypeAlias = Sequence | np.ndarray | Series | Index
 ListLikeHashable: TypeAlias = (

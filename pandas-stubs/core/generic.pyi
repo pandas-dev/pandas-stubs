@@ -306,7 +306,7 @@ class NDFrame(indexing.IndexingMixin):
         labels: None = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        index: Hashable | Sequence[Hashable] | Index = ...,
         columns: Hashable | Iterable[Hashable],
         level: Level | None = ...,
         inplace: Literal[True],
@@ -318,7 +318,7 @@ class NDFrame(indexing.IndexingMixin):
         labels: None = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] | Index[Any],
+        index: Hashable | Sequence[Hashable] | Index,
         columns: Hashable | Iterable[Hashable] = ...,
         level: Level | None = ...,
         inplace: Literal[True],
@@ -327,7 +327,7 @@ class NDFrame(indexing.IndexingMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] | Index[Any],
+        labels: Hashable | Sequence[Hashable] | Index,
         *,
         axis: Axis = ...,
         index: None = ...,
@@ -342,7 +342,7 @@ class NDFrame(indexing.IndexingMixin):
         labels: None = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        index: Hashable | Sequence[Hashable] | Index = ...,
         columns: Hashable | Iterable[Hashable],
         level: Level | None = ...,
         inplace: Literal[False] = ...,
@@ -354,7 +354,7 @@ class NDFrame(indexing.IndexingMixin):
         labels: None = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] | Index[Any],
+        index: Hashable | Sequence[Hashable] | Index,
         columns: Hashable | Iterable[Hashable] = ...,
         level: Level | None = ...,
         inplace: Literal[False] = ...,
@@ -363,7 +363,7 @@ class NDFrame(indexing.IndexingMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] | Index[Any],
+        labels: Hashable | Sequence[Hashable] | Index,
         *,
         axis: Axis = ...,
         index: None = ...,
