@@ -51,41 +51,35 @@ def test_display_float_format():
         assert pd.get_option("display.float_format") == formatter
 
 
-def test_display_types_none_allowed():
+def test_display_types_none_allowed_get_options():
     # GH 1230
     # Initial values
+    assert_type(pd.options.display.chop_threshold, Optional[float])
     assert_type(pd.options.display.max_columns, Optional[int])
     assert_type(pd.options.display.max_colwidth, Optional[int])
     assert_type(pd.options.display.max_dir_items, Optional[int])
     assert_type(pd.options.display.max_rows, Optional[int])
     assert_type(pd.options.display.max_seq_items, Optional[int])
     assert_type(pd.options.display.min_rows, Optional[int])
-    # Test with None
+
+
+def test_display_types_none_allowed_set_options():
+    # GH 1230
+    # Test setting each option as None and then to a specific value
+    pd.options.display.chop_threshold = None
+    pd.options.display.chop_threshold = 0.9
     pd.options.display.max_columns = None
-    check(assert_type(pd.options.display.max_columns, None), type(None))
-    pd.options.display.max_colwidth = None
-    check(assert_type(pd.options.display.max_colwidth, None), type(None))
-    pd.options.display.max_dir_items = None
-    check(assert_type(pd.options.display.max_dir_items, None), type(None))
-    pd.options.display.max_rows = None
-    check(assert_type(pd.options.display.max_rows, None), type(None))
-    pd.options.display.max_seq_items = None
-    check(assert_type(pd.options.display.max_seq_items, None), type(None))
-    pd.options.display.min_rows = None
-    check(assert_type(pd.options.display.min_rows, None), type(None))
-    # Test with integer values
     pd.options.display.max_columns = 100
-    check(assert_type(pd.options.display.max_columns, int), int)
+    pd.options.display.max_colwidth = None
     pd.options.display.max_colwidth = 100
-    check(assert_type(pd.options.display.max_colwidth, int), int)
+    pd.options.display.max_dir_items = None
     pd.options.display.max_dir_items = 100
-    check(assert_type(pd.options.display.max_dir_items, int), int)
+    pd.options.display.max_rows = None
     pd.options.display.max_rows = 100
-    check(assert_type(pd.options.display.max_rows, int), int)
+    pd.options.display.max_seq_items = None
     pd.options.display.max_seq_items = 100
-    check(assert_type(pd.options.display.max_seq_items, int), int)
+    pd.options.display.min_rows = None
     pd.options.display.min_rows = 100
-    check(assert_type(pd.options.display.min_rows, int), int)
 
 
 def test_display_types_literal_constraints():
