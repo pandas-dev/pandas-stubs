@@ -256,9 +256,9 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
             ]
             | None
         ),
-    ) -> Series: ...
+    ) -> UnknownSeries: ...
     @overload
-    def __getitem__(self, idx: tuple[Scalar, slice]) -> Series | _T: ...
+    def __getitem__(self, idx: tuple[Scalar, slice]) -> UnknownSeries | _T: ...
     @overload
     def __setitem__(
         self,
@@ -288,13 +288,13 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
 if sys.version_info >= (3, 12):
     class _GetItemHack:
         @overload
-        def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> UnknownSeries: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         @overload
         def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
             self, key: Iterable[Hashable] | slice
         ) -> Self: ...
         @overload
-        def __getitem__(self, key: Hashable) -> Series: ...
+        def __getitem__(self, key: Hashable) -> UnknownSeries: ...
 
 else:
     class _GetItemHack:

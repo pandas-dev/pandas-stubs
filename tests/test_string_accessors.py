@@ -6,6 +6,7 @@ import pandas as pd
 from typing_extensions import assert_type
 
 from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
     check,
     np_ndarray_bool,
 )
@@ -411,3 +412,10 @@ def test_index_overloads_extract():
         pd.Index,
         object,
     )
+
+
+def test_series_unknown():
+    if TYPE_CHECKING_INVALID_USAGE:
+        s = pd.Series([1, 2, 3])
+        s.str.startswith("a")  # type:ignore[attr-defined]
+        s.str.slice(2, 4)  # type:ignore[attr-defined]
