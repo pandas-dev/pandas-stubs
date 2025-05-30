@@ -48,7 +48,7 @@ class DisplayUnicode(DictWrapper):
     east_asian_width: bool
 
 class Display(DictWrapper):
-    chop_threshold: int | None
+    chop_threshold: float | None
     colheader_justify: Literal["left", "right"]
     date_dayfirst: bool
     date_yearfirst: bool
