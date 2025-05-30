@@ -5,7 +5,6 @@ from collections.abc import (
     Sequence,
 )
 from typing import (
-    Any,
     overload,
 )
 
@@ -27,7 +26,7 @@ from pandas._typing import (
     np_ndarray_bool,
 )
 
-class MultiIndex(Index[Any]):
+class MultiIndex(Index):
     def __new__(
         cls,
         levels: Sequence[SequenceNotStr[Hashable]] = ...,

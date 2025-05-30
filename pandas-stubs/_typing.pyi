@@ -18,7 +18,6 @@ from typing import (
     Protocol,
     SupportsIndex,
     TypedDict,
-    TypeVar,
     overload,
 )
 
@@ -35,6 +34,7 @@ from pandas.core.tools.datetimes import FulldatetimeDict
 from typing_extensions import (
     ParamSpec,
     TypeAlias,
+    TypeVar,
 )
 
 from pandas._libs.interval import Interval
@@ -65,7 +65,7 @@ HashableT5 = TypeVar("HashableT5", bound=Hashable)
 # array-like
 
 ArrayLike: TypeAlias = ExtensionArray | np.ndarray
-AnyArrayLike: TypeAlias = ArrayLike | Index[Any] | Series[Any]
+AnyArrayLike: TypeAlias = ArrayLike | Index | Series
 
 # list-like
 
@@ -801,7 +801,7 @@ DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
 KeysArgType: TypeAlias = Any
 ListLikeT = TypeVar("ListLikeT", bound=ListLike)
 ListLikeExceptSeriesAndStr: TypeAlias = (
-    MutableSequence[Any] | np.ndarray | tuple[Any, ...] | Index[Any]
+    MutableSequence[Any] | np.ndarray | tuple[Any, ...] | Index
 )
 ListLikeU: TypeAlias = Sequence | np.ndarray | Series | Index
 ListLikeHashable: TypeAlias = (
@@ -842,6 +842,7 @@ S1 = TypeVar(
     | CategoricalDtype
     | BaseOffset
     | list[str],
+    default=Any,
 )
 
 S2 = TypeVar(
@@ -891,6 +892,7 @@ ByT = TypeVar(
     | Period
     | Interval[int | float | Timestamp | Timedelta]
     | tuple,
+    default=Any,
 )
 # Use a distinct SeriesByT when using groupby with Series of known dtype.
 # Essentially, an intersection between Series S1 TypeVar, and ByT TypeVar
@@ -949,7 +951,7 @@ ReplaceValue: TypeAlias = (
     | NAType
     | Sequence[Scalar | Pattern]
     | Mapping[HashableT, ScalarT]
-    | Series[Any]
+    | Series
     | None
 )
 

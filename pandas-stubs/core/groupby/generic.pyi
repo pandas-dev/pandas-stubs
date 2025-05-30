@@ -168,7 +168,7 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
         self,
     ) -> Iterator[tuple[ByT, Series[S1]]]: ...
 
-_TT = TypeVar("_TT", bound=Literal[True, False])
+_TT = TypeVar("_TT", bound=Literal[True, False], default=Literal[True])
 
 class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     # error: Overload 3 for "apply" will never be used because its parameters overlap overload 1
@@ -217,7 +217,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     def filter(
         self, func: Callable, dropna: bool = ..., *args, **kwargs
     ) -> DataFrame: ...
-    @overload
+    @overload  # type: ignore[override]
     def __getitem__(self, key: Scalar) -> SeriesGroupBy[Any, ByT]: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
