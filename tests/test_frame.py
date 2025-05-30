@@ -3069,19 +3069,15 @@ def test_take() -> None:
 def test_set_columns() -> None:
     # GH 73
     df = pd.DataFrame({"a": [1, 2, 3], "b": [0.0, 1, 1]})
-    # Next lines should work, but it is a mypy bug
-    # https://github.com/python/mypy/issues/3004
-    # pyright accepts this, so we only type check for pyright,
-    # and also test the code with pytest
-    df.columns = ["c", "d"]  # type: ignore[assignment]
-    df.columns = [1, 2]  # type: ignore[assignment]
-    df.columns = [1, "a"]  # type: ignore[assignment]
-    df.columns = np.array([1, 2])  # type: ignore[assignment]
-    df.columns = pd.Series([1, 2])  # type: ignore[assignment]
-    df.columns = np.array([1, "a"])  # type: ignore[assignment]
-    df.columns = pd.Series([1, "a"])  # type: ignore[assignment]
-    df.columns = (1, 2)  # type: ignore[assignment]
-    df.columns = (1, "a")  # type: ignore[assignment]
+    df.columns = ["c", "d"]
+    df.columns = [1, 2]
+    df.columns = [1, "a"]
+    df.columns = np.array([1, 2])
+    df.columns = pd.Series([1, 2])
+    df.columns = np.array([1, "a"])
+    df.columns = pd.Series([1, "a"])
+    df.columns = (1, 2)
+    df.columns = (1, "a")
     if TYPE_CHECKING_INVALID_USAGE:
         df.columns = "abc"  # type: ignore[assignment] # pyright: ignore[reportAttributeAccessIssue]
 
@@ -4369,12 +4365,8 @@ def test_hashable_args() -> None:
         df.to_xml(path, elem_cols=test)
         df.to_xml(path, elem_cols=["test"])
 
-    # Next lines should work, but it is a mypy bug
-    # https://github.com/python/mypy/issues/3004
-    # pyright accepts this, so we only type check for pyright,
-    # and also test the code with pytest
-    df.columns = test  # type: ignore[assignment]
-    df.columns = ["test"]  # type: ignore[assignment]
+    df.columns = test
+    df.columns = ["test"]
 
     testDict = {"test": 1}
     with ensure_clean() as path:
