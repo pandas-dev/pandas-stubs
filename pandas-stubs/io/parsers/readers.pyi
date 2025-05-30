@@ -27,6 +27,7 @@ from pandas._typing import (
     DtypeArg,
     DtypeBackend,
     FilePath,
+    HashableT,
     ListLikeHashable,
     ReadCsvBuffer,
     StorageOptions,
@@ -44,7 +45,7 @@ def read_csv(
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
-    usecols: UsecolsArgType = ...,
+    usecols: UsecolsArgType[HashableT] = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: (
@@ -108,7 +109,7 @@ def read_csv(
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
-    usecols: UsecolsArgType = ...,
+    usecols: UsecolsArgType[HashableT] = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: (
@@ -172,7 +173,7 @@ def read_csv(
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
-    usecols: UsecolsArgType = ...,
+    usecols: UsecolsArgType[HashableT] = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: (
@@ -236,7 +237,7 @@ def read_table(
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
-    usecols: UsecolsArgType = ...,
+    usecols: UsecolsArgType[HashableT] = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: (
@@ -300,7 +301,7 @@ def read_table(
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
-    usecols: UsecolsArgType = ...,
+    usecols: UsecolsArgType[HashableT] = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: (
@@ -364,7 +365,7 @@ def read_table(
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
-    usecols: UsecolsArgType = ...,
+    usecols: UsecolsArgType[HashableT] = ...,
     dtype: DtypeArg | defaultdict | None = ...,
     engine: CSVEngine | None = ...,
     converters: (
