@@ -727,6 +727,11 @@ def test_types_read_csv() -> None:
             pd.read_csv(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
             pd.read_csv(path, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
+            def cols2(x: set[float]) -> bool:
+                return sum(x) < 1.0
+
+            pd.read_csv("file.csv", usecols=cols2)  # type: ignore[type-var] # pyright: ignore[reportArgumentType]
+
         tfr1 = pd.read_csv(path, nrows=2, iterator=True, chunksize=3)
         check(assert_type(tfr1, TextFileReader), TextFileReader)
         tfr1.close()
