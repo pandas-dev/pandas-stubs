@@ -575,6 +575,11 @@ def test_read_csv():
             DataFrame,
         )
 
+        def cols(x: str) -> bool:
+            return x in ["a", "b"]
+
+        pd.read_csv(path, usecols=cols)
+
 
 def test_read_csv_iterator():
     with ensure_clean() as path:
