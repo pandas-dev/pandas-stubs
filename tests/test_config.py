@@ -54,13 +54,13 @@ def test_display_float_format():
 def test_display_types_none_allowed_get_options():
     # GH 1230
     # Initial values
-    assert_type(pd.options.display.chop_threshold, Optional[float])
-    assert_type(pd.options.display.max_columns, Optional[int])
-    assert_type(pd.options.display.max_colwidth, Optional[int])
-    assert_type(pd.options.display.max_dir_items, Optional[int])
-    assert_type(pd.options.display.max_rows, Optional[int])
-    assert_type(pd.options.display.max_seq_items, Optional[int])
-    assert_type(pd.options.display.min_rows, Optional[int])
+    check(assert_type(pd.options.display.chop_threshold, Optional[float]), type(None))
+    check(assert_type(pd.options.display.max_columns, Optional[int]), int)
+    check(assert_type(pd.options.display.max_colwidth, Optional[int]), int)
+    check(assert_type(pd.options.display.max_dir_items, Optional[int]), int)
+    check(assert_type(pd.options.display.max_rows, Optional[int]), int)
+    check(assert_type(pd.options.display.max_seq_items, Optional[int]), int)
+    check(assert_type(pd.options.display.min_rows, Optional[int]), int)
 
 
 def test_display_types_none_allowed_set_options():
