@@ -2,6 +2,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
+    Literal,
     Optional,
 )
 
@@ -48,3 +49,72 @@ def test_display_float_format():
     formatter = "{,.2f}".format
     with pd.option_context("display.float_format", formatter):
         assert pd.get_option("display.float_format") == formatter
+
+
+def test_display_types_none_allowed_get_options():
+    # GH 1230
+    # Initial values
+    check(assert_type(pd.options.display.chop_threshold, Optional[float]), type(None))
+    check(assert_type(pd.options.display.max_columns, Optional[int]), int)
+    check(assert_type(pd.options.display.max_colwidth, Optional[int]), int)
+    check(assert_type(pd.options.display.max_dir_items, Optional[int]), int)
+    check(assert_type(pd.options.display.max_rows, Optional[int]), int)
+    check(assert_type(pd.options.display.max_seq_items, Optional[int]), int)
+    check(assert_type(pd.options.display.min_rows, Optional[int]), int)
+
+
+def test_display_types_none_allowed_set_options():
+    # GH 1230
+    # Test setting each option as None and then to a specific value
+    pd.options.display.chop_threshold = None
+    pd.options.display.chop_threshold = 0.9
+    pd.options.display.max_columns = None
+    pd.options.display.max_columns = 100
+    pd.options.display.max_colwidth = None
+    pd.options.display.max_colwidth = 100
+    pd.options.display.max_dir_items = None
+    pd.options.display.max_dir_items = 100
+    pd.options.display.max_rows = None
+    pd.options.display.max_rows = 100
+    pd.options.display.max_seq_items = None
+    pd.options.display.max_seq_items = 100
+    pd.options.display.min_rows = None
+    pd.options.display.min_rows = 100
+
+
+def test_display_types_literal_constraints():
+    # GH 1230
+    # Various display options have specific allowed values
+    # Test colheader_justify with allowed values
+    assert_type(pd.options.display.colheader_justify, Literal["left", "right"])
+    pd.options.display.colheader_justify = "left"
+    check(assert_type(pd.options.display.colheader_justify, Literal["left"]), str)
+    pd.options.display.colheader_justify = "right"
+    check(assert_type(pd.options.display.colheader_justify, Literal["right"]), str)
+
+    # Test large_repr with allowed values
+    assert_type(pd.options.display.large_repr, Literal["truncate", "info"])
+    pd.options.display.large_repr = "truncate"
+    check(assert_type(pd.options.display.large_repr, Literal["truncate"]), str)
+    pd.options.display.large_repr = "info"
+    check(assert_type(pd.options.display.large_repr, Literal["info"]), str)
+
+    # Test memory_usage with allowed values
+    assert_type(pd.options.display.memory_usage, Optional[Literal[True, False, "deep"]])
+    pd.options.display.memory_usage = True
+    check(assert_type(pd.options.display.memory_usage, Literal[True]), bool)
+    pd.options.display.memory_usage = False
+    check(assert_type(pd.options.display.memory_usage, Literal[False]), bool)
+    pd.options.display.memory_usage = "deep"
+    check(assert_type(pd.options.display.memory_usage, Literal["deep"]), str)
+    pd.options.display.memory_usage = None
+    check(assert_type(pd.options.display.memory_usage, None), type(None))
+
+    # Test show_dimensions with allowed values
+    assert_type(pd.options.display.show_dimensions, Literal[True, False, "truncate"])
+    pd.options.display.show_dimensions = True
+    check(assert_type(pd.options.display.show_dimensions, Literal[True]), bool)
+    pd.options.display.show_dimensions = False
+    check(assert_type(pd.options.display.show_dimensions, Literal[False]), bool)
+    pd.options.display.show_dimensions = "truncate"
+    check(assert_type(pd.options.display.show_dimensions, Literal["truncate"]), str)
