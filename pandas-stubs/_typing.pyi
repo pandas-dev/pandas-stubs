@@ -1011,7 +1011,7 @@ TimeZones: TypeAlias = str | tzinfo | None | int
 
 # Evaluates to a DataFrame column in DataFrame.assign context.
 IntoColumn: TypeAlias = (
-    AnyArrayLike | Scalar | Callable[[DataFrame], AnyArrayLike | Scalar]
+    AnyArrayLike | Scalar | Callable[[DataFrame], AnyArrayLike | Scalar] | None
 )
 
 DatetimeLike: TypeAlias = datetime.datetime | np.datetime64 | Timestamp
