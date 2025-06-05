@@ -69,8 +69,8 @@ class NDFrame(indexing.IndexingMixin):
     def set_flags(
         self,
         *,
-        copy: bool = ...,
-        allows_duplicate_labels: bool | None = ...,
+        copy: _bool = ...,
+        allows_duplicate_labels: _bool | None = ...,
     ) -> Self: ...
     @property
     def attrs(self) -> dict[Hashable | None, Any]: ...

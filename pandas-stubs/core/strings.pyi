@@ -46,12 +46,14 @@ _T_STR = TypeVar("_T_STR", bound=Series[str] | Index[str])
 # Used for the result of str.partition
 _T_OBJECT = TypeVar("_T_OBJECT", bound=Series[type[object]] | Index[type[object]])
 
+_slice = slice
+
 class StringMethods(
     NoNewAttributesMixin,
     Generic[T, _T_EXPANDING, _T_BOOL, _T_LIST_STR, _T_INT, _T_BYTES, _T_STR, _T_OBJECT],
 ):
     def __init__(self, data: T) -> None: ...
-    def __getitem__(self, key: slice | int) -> _T_STR: ...
+    def __getitem__(self, key: _slice | int) -> _T_STR: ...
     def __iter__(self) -> _T_STR: ...
     @overload
     def cat(
