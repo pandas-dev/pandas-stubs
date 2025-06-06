@@ -925,44 +925,6 @@ GroupByObjectNonScalar: TypeAlias = (
     | list[Grouper]
 )
 GroupByObject: TypeAlias = Scalar | Index | GroupByObjectNonScalar | Series
-GroupByFuncStrs: TypeAlias = Literal[
-    # Reduction/aggregation functions
-    "all",
-    "any",
-    "corrwith",
-    "count",
-    "first",
-    "idxmax",
-    "idxmin",
-    "last",
-    "max",
-    "mean",
-    "median",
-    "min",
-    "nunique",
-    "prod",
-    "quantile",
-    "sem",
-    "size",
-    "skew",
-    "std",
-    "sum",
-    "var",
-    # Transformation functions
-    "bfill",
-    "cumcount",
-    "cummax",
-    "cummin",
-    "cumprod",
-    "cumsum",
-    "diff",
-    "ffill",
-    "fillna",
-    "ngroup",
-    "pct_change",
-    "rank",
-    "shift",
-]
 
 StataDateFormat: TypeAlias = Literal[
     "tc",

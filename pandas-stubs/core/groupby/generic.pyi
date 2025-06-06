@@ -19,6 +19,7 @@ from typing import (
 from matplotlib.axes import Axes as PlotAxes
 import numpy as np
 from pandas.core.frame import DataFrame
+from pandas.core.groupby.base import transform_kernel_allowlist
 from pandas.core.groupby.groupby import (
     GroupBy,
     GroupByPlot,
@@ -41,7 +42,6 @@ from pandas._typing import (
     ByT,
     CorrelationMethod,
     Dtype,
-    GroupByFuncStrs,
     IndexLabel,
     Level,
     ListLike,
@@ -109,7 +109,9 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
         **kwargs: Any,
     ) -> UnknownSeries: ...
     @overload
-    def transform(self, func: GroupByFuncStrs, *args, **kwargs) -> UnknownSeries: ...
+    def transform(
+        self, func: transform_kernel_allowlist, *args, **kwargs
+    ) -> UnknownSeries: ...
     def filter(
         self, func: Callable | str, dropna: bool = ..., *args, **kwargs
     ) -> Series: ...
@@ -253,7 +255,9 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         **kwargs: Any,
     ) -> DataFrame: ...
     @overload
-    def transform(self, func: GroupByFuncStrs, *args, **kwargs) -> DataFrame: ...
+    def transform(
+        self, func: transform_kernel_allowlist, *args, **kwargs
+    ) -> DataFrame: ...
     def filter(
         self, func: Callable, dropna: bool = ..., *args, **kwargs
     ) -> DataFrame: ...
