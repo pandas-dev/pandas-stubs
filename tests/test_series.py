@@ -1084,6 +1084,24 @@ def test_types_groupby_agg() -> None:
         )
 
 
+def test_types_groupby_transform() -> None:
+    s: pd.Series[int] = pd.Series([4, 2, 1, 8], index=["a", "b", "a", "b"])
+
+    def transform_func(
+        x: pd.Series[int], pos_arg: bool, kw_arg: str
+    ) -> pd.Series[float]:
+        return x / (2.0 if pos_arg else 1.0)
+
+    check(
+        assert_type(
+            s.groupby(lambda x: x).transform(transform_func, True, kw_arg="foo"),
+            "pd.Series[float]",
+        ),
+        pd.Series,
+        float,
+    )
+
+
 def test_types_groupby_aggregate() -> None:
     s = pd.Series([4, 2, 1, 8], index=["a", "b", "a", "b"])
     check(assert_type(s.groupby(level=0).aggregate("sum"), pd.Series), pd.Series)

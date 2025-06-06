@@ -7,6 +7,7 @@ from collections.abc import (
 )
 from typing import (
     Any,
+    Concatenate,
     Generic,
     Literal,
     NamedTuple,
@@ -31,15 +32,18 @@ from typing_extensions import (
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     S1,
+    S2,
     AggFuncTypeBase,
     AggFuncTypeFrame,
     ByT,
     CorrelationMethod,
     Dtype,
+    GroupByFuncStrs,
     IndexLabel,
     Level,
     ListLike,
     NsmallestNlargestKeep,
+    P,
     Scalar,
     TakeIndexer,
     WindowingEngine,
@@ -72,14 +76,24 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
         **kwargs,
     ) -> Series: ...
     agg = aggregate
+    @overload
     def transform(
         self,
-        func: Callable | str,
-        *args,
+        func: Callable[Concatenate[Series[S1], P], Series[S2]],
+        *args: Any,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
-        **kwargs,
+        **kwargs: Any,
+    ) -> Series[S2]: ...
+    @overload
+    def transform(
+        self,
+        func: Callable,
+        *args: Any,
+        **kwargs: Any,
     ) -> Series: ...
+    @overload
+    def transform(self, func: GroupByFuncStrs, *args, **kwargs) -> Series: ...
     def filter(
         self, func: Callable | str, dropna: bool = ..., *args, **kwargs
     ) -> Series: ...
@@ -206,14 +220,24 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         **kwargs,
     ) -> DataFrame: ...
     agg = aggregate
+    @overload
     def transform(
         self,
-        func: Callable | str,
-        *args,
+        func: Callable[Concatenate[DataFrame, P], DataFrame],
+        *args: Any,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> DataFrame: ...
+    @overload
+    def transform(
+        self,
+        func: Callable,
+        *args: Any,
+        **kwargs: Any,
+    ) -> DataFrame: ...
+    @overload
+    def transform(self, func: GroupByFuncStrs, *args, **kwargs) -> DataFrame: ...
     def filter(
         self, func: Callable, dropna: bool = ..., *args, **kwargs
     ) -> DataFrame: ...
