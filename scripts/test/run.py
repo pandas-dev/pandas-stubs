@@ -151,3 +151,8 @@ def released_mypy():
             "warn_unused_ignores = false", "warn_unused_ignores = true"
         )
     )
+
+
+def ty():
+    cmd = ["ty", "check", "pandas-stubs"]
+    subprocess.run(cmd, check=True)
