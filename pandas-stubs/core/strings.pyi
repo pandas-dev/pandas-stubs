@@ -8,6 +8,7 @@ from typing import (
     Any,
     Generic,
     Literal,
+    TypeAlias,
     TypeVar,
     overload,
 )

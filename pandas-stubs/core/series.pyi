@@ -179,8 +179,8 @@ from pandas.core.dtypes.dtypes import CategoricalDtype
 
 from pandas.plotting import PlotAccessor
 
-_bool = bool
-_str = str
+_bool: TypeAlias = bool
+_str: TypeAlias = str
 
 class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     # get item

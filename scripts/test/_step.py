@@ -5,6 +5,10 @@ mypy_src = Step(
     name="Run mypy on 'tests' (using the local stubs) and on the local stubs",
     run=run.mypy_src,
 )
+ty_src = Step(
+    name="Run ty on 'pandas-stubs' (using the local stubs) and on the local stubs",
+    run=run.ty,
+)
 pyright_src = Step(
     name="Run pyright on 'tests' (using the local stubs) and on the local stubs",
     run=run.pyright_src,
