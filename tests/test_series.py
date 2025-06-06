@@ -1078,7 +1078,16 @@ def test_types_groupby_agg() -> None:
         r"The provided callable <built-in function (min|sum)> is currently using",
         upper="2.2.99",
     ):
-        check(assert_type(s.groupby(level=0).agg(sum), pd.Series), pd.Series)
+
+        def sum_sr(s: pd.Series[int]) -> int:
+            # type of `sum` not well inferred by mypy
+            return sum(s)
+
+        check(
+            assert_type(s.groupby(level=0).agg(sum_sr), "pd.Series[int]"),
+            pd.Series,
+            np.integer,
+        )
         check(
             assert_type(s.groupby(level=0).agg([min, sum]), pd.DataFrame), pd.DataFrame
         )
@@ -1100,6 +1109,16 @@ def test_types_groupby_transform() -> None:
         pd.Series,
         float,
     )
+    check(
+        assert_type(
+            s.groupby(lambda x: x).transform(
+                transform_func, True, engine="cython", kw_arg="foo"
+            ),
+            "pd.Series[float]",
+        ),
+        pd.Series,
+        float,
+    )
 
 
 def test_types_groupby_aggregate() -> None:
@@ -1109,12 +1128,40 @@ def test_types_groupby_aggregate() -> None:
         assert_type(s.groupby(level=0).aggregate(["min", "sum"]), pd.DataFrame),
         pd.DataFrame,
     )
+
+    def func(s: pd.Series[int]) -> float:
+        return s.astype(float).min()
+
+    s = pd.Series([1, 2, 3, 4])
+    s.groupby([1, 1, 2, 2]).agg(lambda x: x.astype(float).min())
+    check(
+        assert_type(s.groupby(level=0).aggregate(func), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(
+            s.groupby(level=0).aggregate(func, engine="cython"), "pd.Series[float]"
+        ),
+        pd.Series,
+        np.floating,
+    )
+
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <built-in function (min|sum)> is currently using",
         upper="2.2.99",
     ):
-        check(assert_type(s.groupby(level=0).aggregate(sum), pd.Series), pd.Series)
+
+        def sum_sr(s: pd.Series[int]) -> int:
+            # type of `sum` not well inferred by mypy
+            return sum(s)
+
+        check(
+            assert_type(s.groupby(level=0).aggregate(sum_sr), "pd.Series[int]"),
+            pd.Series,
+            np.integer,
+        )
         check(
             assert_type(s.groupby(level=0).aggregate([min, sum]), pd.DataFrame),
             pd.DataFrame,

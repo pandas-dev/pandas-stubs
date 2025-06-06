@@ -23,7 +23,10 @@ from pandas.core.groupby.groupby import (
     GroupBy,
     GroupByPlot,
 )
-from pandas.core.series import Series
+from pandas.core.series import (
+    Series,
+    UnknownSeries,
+)
 from typing_extensions import (
     Self,
     TypeAlias,
@@ -60,7 +63,18 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
     @overload
     def aggregate(
         self,
+        func: Callable[Concatenate[Series[S1], P], S2],
+        /,
+        *args,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
+        **kwargs,
+    ) -> Series[S2]: ...
+    @overload
+    def aggregate(
+        self,
         func: list[AggFuncTypeBase],
+        /,
         *args,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
@@ -70,16 +84,18 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
     def aggregate(
         self,
         func: AggFuncTypeBase | None = ...,
+        /,
         *args,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
         **kwargs,
-    ) -> Series: ...
+    ) -> UnknownSeries: ...
     agg = aggregate
     @overload
     def transform(
         self,
         func: Callable[Concatenate[Series[S1], P], Series[S2]],
+        /,
         *args: Any,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
@@ -91,9 +107,9 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
         func: Callable,
         *args: Any,
         **kwargs: Any,
-    ) -> Series: ...
+    ) -> UnknownSeries: ...
     @overload
-    def transform(self, func: GroupByFuncStrs, *args, **kwargs) -> Series: ...
+    def transform(self, func: GroupByFuncStrs, *args, **kwargs) -> UnknownSeries: ...
     def filter(
         self, func: Callable | str, dropna: bool = ..., *args, **kwargs
     ) -> Series: ...
