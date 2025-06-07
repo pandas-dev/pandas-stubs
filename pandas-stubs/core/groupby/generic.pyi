@@ -7,6 +7,7 @@ from collections.abc import (
 )
 from typing import (
     Any,
+    Concatenate,
     Generic,
     Literal,
     NamedTuple,
@@ -18,11 +19,15 @@ from typing import (
 from matplotlib.axes import Axes as PlotAxes
 import numpy as np
 from pandas.core.frame import DataFrame
+from pandas.core.groupby.base import TransformReductionListType
 from pandas.core.groupby.groupby import (
     GroupBy,
     GroupByPlot,
 )
-from pandas.core.series import Series
+from pandas.core.series import (
+    Series,
+    UnknownSeries,
+)
 from typing_extensions import (
     Self,
     TypeAlias,
@@ -31,6 +36,7 @@ from typing_extensions import (
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     S1,
+    S2,
     AggFuncTypeBase,
     AggFuncTypeFrame,
     ByT,
@@ -40,6 +46,7 @@ from pandas._typing import (
     Level,
     ListLike,
     NsmallestNlargestKeep,
+    P,
     Scalar,
     TakeIndexer,
     WindowingEngine,
@@ -56,7 +63,27 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
     @overload
     def aggregate(
         self,
+        func: Callable[Concatenate[Series[S1], P], S2],
+        /,
+        *args,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
+        **kwargs,
+    ) -> Series[S2]: ...
+    @overload
+    def aggregate(
+        self,
+        func: Callable[[Series], S2],
+        *args,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
+        **kwargs,
+    ) -> Series[S2]: ...
+    @overload
+    def aggregate(
+        self,
         func: list[AggFuncTypeBase],
+        /,
         *args,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
@@ -66,20 +93,34 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
     def aggregate(
         self,
         func: AggFuncTypeBase | None = ...,
+        /,
         *args,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
         **kwargs,
-    ) -> Series: ...
+    ) -> UnknownSeries: ...
     agg = aggregate
+    @overload
     def transform(
         self,
-        func: Callable | str,
-        *args,
+        func: Callable[Concatenate[Series[S1], P], Series[S2]],
+        /,
+        *args: Any,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
-        **kwargs,
-    ) -> Series: ...
+        **kwargs: Any,
+    ) -> Series[S2]: ...
+    @overload
+    def transform(
+        self,
+        func: Callable,
+        *args: Any,
+        **kwargs: Any,
+    ) -> UnknownSeries: ...
+    @overload
+    def transform(
+        self, func: TransformReductionListType, *args, **kwargs
+    ) -> UnknownSeries: ...
     def filter(
         self, func: Callable | str, dropna: bool = ..., *args, **kwargs
     ) -> Series: ...
@@ -206,13 +247,25 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         **kwargs,
     ) -> DataFrame: ...
     agg = aggregate
+    @overload
     def transform(
         self,
-        func: Callable | str,
-        *args,
+        func: Callable[Concatenate[DataFrame, P], DataFrame],
+        *args: Any,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
-        **kwargs,
+        **kwargs: Any,
+    ) -> DataFrame: ...
+    @overload
+    def transform(
+        self,
+        func: Callable,
+        *args: Any,
+        **kwargs: Any,
+    ) -> DataFrame: ...
+    @overload
+    def transform(
+        self, func: TransformReductionListType, *args, **kwargs
     ) -> DataFrame: ...
     def filter(
         self, func: Callable, dropna: bool = ..., *args, **kwargs
