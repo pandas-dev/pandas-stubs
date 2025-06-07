@@ -1,3 +1,7 @@
+from builtins import (
+    bool as _bool,
+    str as _str,
+)
 from collections.abc import (
     Callable,
     Hashable,
@@ -59,9 +63,6 @@ from pandas._typing import (
 
 from pandas.io.pytables import HDFStore
 from pandas.io.sql import SQLTable
-
-_bool = bool
-_str = str
 
 class NDFrame(indexing.IndexingMixin):
     __hash__: ClassVar[None]  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]

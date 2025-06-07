@@ -1,3 +1,4 @@
+from builtins import str as _str
 from collections.abc import (
     Callable,
     Hashable,
@@ -65,8 +66,6 @@ from pandas._typing import (
 )
 
 class InvalidIndexError(Exception): ...
-
-_str = str
 
 class Index(IndexOpsMixin[S1]):
     __hash__: ClassVar[None]  # type: ignore[assignment]
