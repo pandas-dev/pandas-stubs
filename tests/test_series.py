@@ -1081,7 +1081,7 @@ def test_types_groupby_agg() -> None:
 
         def sum_sr(s: pd.Series[int]) -> int:
             # type of `sum` not well inferred by mypy
-            return sum(s)
+            return s.sum()
 
         check(
             assert_type(s.groupby(level=0).agg(sum_sr), "pd.Series[int]"),
@@ -1133,7 +1133,11 @@ def test_types_groupby_aggregate() -> None:
         return s.astype(float).min()
 
     s = pd.Series([1, 2, 3, 4])
-    s.groupby([1, 1, 2, 2]).agg(lambda x: x.astype(float).min())
+    check(
+        assert_type(s.groupby([1, 1, 2, 2]).agg(func), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
     check(
         assert_type(s.groupby(level=0).aggregate(func), "pd.Series[float]"),
         pd.Series,
@@ -1155,7 +1159,7 @@ def test_types_groupby_aggregate() -> None:
 
         def sum_sr(s: pd.Series[int]) -> int:
             # type of `sum` not well inferred by mypy
-            return sum(s)
+            return s.sum()
 
         check(
             assert_type(s.groupby(level=0).aggregate(sum_sr), "pd.Series[int]"),

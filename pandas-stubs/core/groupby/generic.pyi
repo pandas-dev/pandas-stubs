@@ -19,7 +19,7 @@ from typing import (
 from matplotlib.axes import Axes as PlotAxes
 import numpy as np
 from pandas.core.frame import DataFrame
-from pandas.core.groupby.base import transform_kernel_allowlist
+from pandas.core.groupby.base import TransformReductionListType
 from pandas.core.groupby.groupby import (
     GroupBy,
     GroupByPlot,
@@ -110,7 +110,7 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
     ) -> UnknownSeries: ...
     @overload
     def transform(
-        self, func: transform_kernel_allowlist, *args, **kwargs
+        self, func: TransformReductionListType, *args, **kwargs
     ) -> UnknownSeries: ...
     def filter(
         self, func: Callable | str, dropna: bool = ..., *args, **kwargs
@@ -256,7 +256,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     ) -> DataFrame: ...
     @overload
     def transform(
-        self, func: transform_kernel_allowlist, *args, **kwargs
+        self, func: TransformReductionListType, *args, **kwargs
     ) -> DataFrame: ...
     def filter(
         self, func: Callable, dropna: bool = ..., *args, **kwargs

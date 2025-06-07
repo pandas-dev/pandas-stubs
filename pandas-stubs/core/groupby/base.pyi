@@ -10,7 +10,7 @@ class OutputKey:
     label: Hashable
     position: int
 
-reduction_kernels: TypeAlias = Literal[
+ReductionKernelType: TypeAlias = Literal[
     "all",
     "any",
     "corrwith",
@@ -37,7 +37,7 @@ reduction_kernels: TypeAlias = Literal[
     "var",
 ]
 
-transformation_kernels: TypeAlias = Literal[
+TransformationKernelType: TypeAlias = Literal[
     "bfill",
     "cumcount",
     "cummax",
@@ -53,4 +53,4 @@ transformation_kernels: TypeAlias = Literal[
     "shift",
 ]
 
-transform_kernel_allowlist: TypeAlias = reduction_kernels | transformation_kernels
+TransformReductionListType: TypeAlias = ReductionKernelType | TransformationKernelType
