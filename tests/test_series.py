@@ -1119,6 +1119,20 @@ def test_types_groupby_transform() -> None:
         pd.Series,
         float,
     )
+    check(
+        assert_type(
+            s.groupby(lambda x: x).transform("mean"),
+            "pd.Series",
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            s.groupby(lambda x: x).transform("first"),
+            "pd.Series",
+        ),
+        pd.Series,
+    )
 
 
 def test_types_groupby_aggregate() -> None:

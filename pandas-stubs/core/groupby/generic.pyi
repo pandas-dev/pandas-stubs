@@ -73,6 +73,15 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
     @overload
     def aggregate(
         self,
+        func: Callable[[Series], S2],
+        *args,
+        engine: WindowingEngine = ...,
+        engine_kwargs: WindowingEngineKwargs = ...,
+        **kwargs,
+    ) -> Series[S2]: ...
+    @overload
+    def aggregate(
+        self,
         func: list[AggFuncTypeBase],
         /,
         *args,
