@@ -2334,6 +2334,13 @@ class TimedeltaSeries(Series[Timedelta]):
         **kwargs: Any,
     ) -> Timedelta: ...
     def diff(self, periods: int = ...) -> TimedeltaSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def cumsum(
+        self,
+        axis: AxisIndex | None = ...,
+        skipna: _bool = ...,
+        *args: Any,
+        **kwargs: Any,
+    ) -> TimedeltaSeries: ...
 
 class PeriodSeries(Series[Period]):
     @property

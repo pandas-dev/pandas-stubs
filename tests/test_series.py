@@ -3813,3 +3813,14 @@ def test_series_items() -> None:
     s = pd.Series(data=[1, 2, 3, 4], index=["cow", "coal", "coalesce", ""])
     check(assert_type(next(s.items()), tuple[Hashable, int]), tuple)
     check(assert_type(s.items(), Iterator[tuple[Hashable, int]]), Iterator)
+
+
+def test_cumsum_timedelta() -> None:
+
+    s = pd.Series(pd.to_timedelta([1, 2, 3], "h"))
+    check(assert_type(s.cumsum(), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(pd.Timestamp(0) + s.cumsum(), "TimestampSeries"),
+        pd.Series,
+        pd.Timestamp,
+    )
