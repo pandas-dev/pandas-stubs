@@ -1,4 +1,5 @@
 # pyright: strict
+from builtins import slice as _slice
 from collections.abc import (
     Callable,
     Sequence,
@@ -8,7 +9,6 @@ from typing import (
     Any,
     Generic,
     Literal,
-    TypeAlias,
     TypeVar,
     overload,
 )
@@ -46,8 +46,6 @@ _T_BYTES = TypeVar("_T_BYTES", bound=Series[bytes] | Index[bytes])
 _T_STR = TypeVar("_T_STR", bound=Series[str] | Index[str])
 # Used for the result of str.partition
 _T_OBJECT = TypeVar("_T_OBJECT", bound=Series[type[object]] | Index[type[object]])
-
-_slice: TypeAlias = slice
 
 class StringMethods(
     NoNewAttributesMixin,

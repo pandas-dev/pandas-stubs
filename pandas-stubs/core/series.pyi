@@ -1,3 +1,7 @@
+from builtins import (
+    bool as _bool,
+    str as _str,
+)
 from collections import dict_keys  # type: ignore[attr-defined]
 from collections.abc import (
     Callable,
@@ -178,9 +182,6 @@ from pandas.core.dtypes.base import ExtensionDtype
 from pandas.core.dtypes.dtypes import CategoricalDtype
 
 from pandas.plotting import PlotAccessor
-
-_bool: TypeAlias = bool
-_str: TypeAlias = str
 
 class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     # get item
@@ -1078,7 +1079,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def reindex_like(
         self,
         other: Series[S1],
-        method: _str | FillnaOptions | Literal["nearest"] | None = ...,
+        method: FillnaOptions | Literal["nearest"] | None = ...,
         copy: _bool = ...,
         limit: int | None = ...,
         tolerance: Scalar | AnyArrayLike | Sequence[Scalar] = ...,
