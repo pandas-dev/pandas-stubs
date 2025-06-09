@@ -1,3 +1,7 @@
+from builtins import (
+    bool as _bool,
+    str as _str,
+)
 from collections.abc import (
     Callable,
     Hashable,
@@ -159,9 +163,6 @@ from pandas._typing import (
 
 from pandas.io.formats.style import Styler
 from pandas.plotting import PlotAccessor
-
-_str = str
-_bool = bool
 
 class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
     @overload
@@ -2150,7 +2151,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def reindex_like(
         self,
         other: DataFrame,
-        method: _str | FillnaOptions | Literal["nearest"] | None = ...,
+        method: FillnaOptions | Literal["nearest"] | None = ...,
         copy: _bool = ...,
         limit: int | None = ...,
         tolerance: Scalar | AnyArrayLike | Sequence[Scalar] = ...,

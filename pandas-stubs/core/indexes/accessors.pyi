@@ -1,7 +1,7 @@
 import datetime as dt
 from datetime import (
     timedelta,
-    tzinfo,
+    tzinfo as _tzinfo,
 )
 from typing import (
     Generic,
@@ -119,7 +119,7 @@ class _FreqProperty(Generic[_DTFreqReturnType]):
 
 class _TZProperty:
     @property
-    def tz(self) -> tzinfo | None: ...
+    def tz(self) -> _tzinfo | None: ...
 
 class _DatetimeObjectOps(
     _FreqProperty[_DTFreqReturnType], _TZProperty, Generic[_DTFreqReturnType]
@@ -416,7 +416,7 @@ class DatetimeIndexProperties(
     @property
     def is_normalized(self) -> bool: ...
     @property
-    def tzinfo(self) -> tzinfo | None: ...
+    def tzinfo(self) -> _tzinfo | None: ...
     def to_pydatetime(self) -> npt.NDArray[np.object_]: ...
     def std(
         self, axis: int | None = ..., ddof: int = ..., skipna: bool = ...

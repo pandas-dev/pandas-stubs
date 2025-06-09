@@ -18,6 +18,7 @@ from typing import (
     Protocol,
     SupportsIndex,
     TypedDict,
+    Union,
     overload,
 )
 
@@ -463,6 +464,10 @@ VoidDtypeArg: TypeAlias = (
     | Literal["V", "void", "void0"]
 )
 
+# DtypeArg specifies all allowable dtypes in a functions its dtype argument
+DtypeArg: TypeAlias = Dtype | Mapping[Hashable, Dtype]
+DtypeObj: TypeAlias = np.dtype[np.generic] | ExtensionDtype
+
 AstypeArg: TypeAlias = (
     BooleanDtypeArg
     | IntDtypeArg
@@ -478,10 +483,6 @@ AstypeArg: TypeAlias = (
     | VoidDtypeArg
     | DtypeObj
 )
-
-# DtypeArg specifies all allowable dtypes in a functions its dtype argument
-DtypeArg: TypeAlias = Dtype | Mapping[Hashable, Dtype]
-DtypeObj: TypeAlias = np.dtype[np.generic] | ExtensionDtype
 
 # converters
 ConvertersArg: TypeAlias = Mapping[Hashable, Callable[[Dtype], Dtype]]
@@ -513,7 +514,8 @@ IndexKeyFunc: TypeAlias = Callable[[Index], Index | AnyArrayLike] | None
 
 # types of `func` kwarg for DataFrame.aggregate and Series.aggregate
 # More specific than what is in pandas
-AggFuncTypeBase: TypeAlias = Callable | str | np.ufunc
+# following Union is here to make it ty compliant https://github.com/astral-sh/ty/issues/591
+AggFuncTypeBase: TypeAlias = Union[Callable, str, np.ufunc]  # noqa: UP007
 AggFuncTypeDictSeries: TypeAlias = Mapping[HashableT, AggFuncTypeBase]
 AggFuncTypeDictFrame: TypeAlias = Mapping[
     HashableT, AggFuncTypeBase | list[AggFuncTypeBase]
@@ -993,7 +995,7 @@ TimeZones: TypeAlias = str | tzinfo | None | int
 
 # Evaluates to a DataFrame column in DataFrame.assign context.
 IntoColumn: TypeAlias = (
-    AnyArrayLike | Scalar | Callable[[DataFrame], AnyArrayLike | Scalar]
+    AnyArrayLike | Scalar | Callable[[DataFrame], AnyArrayLike | Scalar] | None
 )
 
 DatetimeLike: TypeAlias = datetime.datetime | np.datetime64 | Timestamp

@@ -33,9 +33,10 @@ packages = [{ "include" = "pandas-stubs" }]
 python = ">=3.10"
 types-pytz = ">= 2022.1.1"
 numpy = ">= 1.23.5"
+ty = "^0.0.1a8"
 
 [tool.poetry.group.dev.dependencies]
-mypy = "1.15.0"
+mypy = "1.16.0"
 pandas = "2.2.3"
 pyarrow = ">=10.0.1"
 pytest = ">=7.1.2"
@@ -102,6 +103,10 @@ script = "scripts.test:mypy_src(mypy_nightly)"
 [tool.poe.tasks.mypy_dist]
 help = "Run mypy on 'tests' using the installed stubs"
 script = "scripts.test:test(dist=True, type_checker='mypy')"
+
+[tool.poe.tasks.ty]
+help = "Run ty on pandas-stubs"
+script = "scripts.test.run:ty"
 
 [tool.poe.tasks.pyright]
 help = "Run pyright on 'tests' (using the local stubs) and on the local stubs"
@@ -234,3 +239,6 @@ filterwarnings = [
 
 # Next line needed to avoid poetry complaint
 [tool.setuptools_scm]
+
+[tool.ty.rules]
+unresolved-import = "ignore"

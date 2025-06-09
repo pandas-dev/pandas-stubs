@@ -1,3 +1,7 @@
+from builtins import (
+    bool as _bool,
+    str as _str,
+)
 from collections.abc import (
     Callable,
     Hashable,
@@ -60,17 +64,14 @@ from pandas._typing import (
 from pandas.io.pytables import HDFStore
 from pandas.io.sql import SQLTable
 
-_bool = bool
-_str = str
-
 class NDFrame(indexing.IndexingMixin):
     __hash__: ClassVar[None]  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]
 
     def set_flags(
         self,
         *,
-        copy: bool = ...,
-        allows_duplicate_labels: bool | None = ...,
+        copy: _bool = ...,
+        allows_duplicate_labels: _bool | None = ...,
     ) -> Self: ...
     @property
     def attrs(self) -> dict[Hashable | None, Any]: ...

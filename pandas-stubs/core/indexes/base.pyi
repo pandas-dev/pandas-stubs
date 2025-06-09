@@ -1,3 +1,4 @@
+from builtins import str as _str
 from collections.abc import (
     Callable,
     Hashable,
@@ -65,8 +66,6 @@ from pandas._typing import (
 )
 
 class InvalidIndexError(Exception): ...
-
-_str = str
 
 class Index(IndexOpsMixin[S1]):
     __hash__: ClassVar[None]  # type: ignore[assignment]
@@ -272,10 +271,10 @@ class Index(IndexOpsMixin[S1]):
         Self,
         MultiIndex,
         np_ndarray_bool,
-        Index[list[str]],
+        Index[list[_str]],
         Index[int],
         Index[bytes],
-        Index[str],
+        Index[_str],
         Index[type[object]],
     ]: ...
     def is_(self, other) -> bool: ...
@@ -478,7 +477,7 @@ class Index(IndexOpsMixin[S1]):
 UnknownIndex: TypeAlias = Index[Any]
 
 def ensure_index_from_sequences(
-    sequences: Sequence[Sequence[Dtype]], names: list[str] = ...
+    sequences: Sequence[Sequence[Dtype]], names: list[_str] = ...
 ) -> Index: ...
 def ensure_index(index_like: Sequence | Index, copy: bool = ...) -> Index: ...
 def maybe_extract_name(name, obj, cls) -> Label: ...

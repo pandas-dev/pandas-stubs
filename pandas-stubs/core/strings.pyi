@@ -1,4 +1,5 @@
 # pyright: strict
+from builtins import slice as _slice
 from collections.abc import (
     Callable,
     Sequence,
@@ -51,7 +52,7 @@ class StringMethods(
     Generic[T, _T_EXPANDING, _T_BOOL, _T_LIST_STR, _T_INT, _T_BYTES, _T_STR, _T_OBJECT],
 ):
     def __init__(self, data: T) -> None: ...
-    def __getitem__(self, key: slice | int) -> _T_STR: ...
+    def __getitem__(self, key: _slice | int) -> _T_STR: ...
     def __iter__(self) -> _T_STR: ...
     @overload
     def cat(
