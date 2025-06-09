@@ -1391,6 +1391,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
+        # Use S2 (TypeVar without `default=Any`) instead of S1 due to https://github.com/python/mypy/issues/19182.
         f: Callable[..., S2 | NAType],
         axis: AxisIndex = ...,
         raw: _bool = ...,
@@ -1415,6 +1416,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
+        # Use S2 (TypeVar without `default=Any`) instead of S1 due to https://github.com/python/mypy/issues/19182.
         f: Callable[..., S2 | NAType],
         axis: Axis = ...,
         raw: _bool = ...,
@@ -1476,6 +1478,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
+        # Use S2 (TypeVar without `default=Any`) instead of S1 due to https://github.com/python/mypy/issues/19182.
         f: Callable[..., S2 | NAType],
         raw: _bool = ...,
         result_type: None = ...,
