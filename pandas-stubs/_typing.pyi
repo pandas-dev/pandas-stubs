@@ -824,9 +824,8 @@ MaskType: TypeAlias = Series[bool] | np_ndarray_bool | list[bool]
 
 # Scratch types for generics
 
-S1 = TypeVar(
-    "S1",
-    bound=str
+SeriesDType: TypeAlias = (
+    str
     | bytes
     | datetime.date
     | datetime.time
@@ -841,29 +840,11 @@ S1 = TypeVar(
     | Interval
     | CategoricalDtype
     | BaseOffset
-    | list[str],
-    default=Any,
+    | list[str]
 )
-
-S2 = TypeVar(
-    "S2",
-    bound=str
-    | bytes
-    | datetime.date
-    | datetime.time
-    | bool
-    | int
-    | float
-    | complex
-    | Dtype
-    | datetime.datetime  # includes pd.Timestamp
-    | datetime.timedelta  # includes pd.Timedelta
-    | Period
-    | Interval
-    | CategoricalDtype
-    | BaseOffset
-    | list[str],
-)
+S1 = TypeVar("S1", bound=SeriesDType, default=Any)
+# Like S1, but without `default=Any`.
+S2 = TypeVar("S2", bound=SeriesDType)
 
 IndexingInt: TypeAlias = (
     int | np.int_ | np.integer | np.unsignedinteger | np.signedinteger | np.int8
