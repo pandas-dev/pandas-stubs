@@ -136,7 +136,6 @@ from pandas._typing import (
     ScalarT,
     SequenceNotStr,
     SeriesByT,
-    SeriesDType,
     SortKind,
     StataDateFormat,
     StorageOptions,
@@ -1392,23 +1391,13 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., S2],
+        f: Callable[..., S2 | NAType],
         axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = ...,
         args: Any = ...,
         **kwargs: Any,
     ) -> Series[S2]: ...
-    @overload
-    def apply(
-        self,
-        f: Callable[..., SeriesDType | NAType],
-        axis: AxisIndex = ...,
-        raw: _bool = ...,
-        result_type: None = ...,
-        args: Any = ...,
-        **kwargs: Any,
-    ) -> Series: ...
     # Since non-scalar type T is not supported in Series[T],
     # we separate this overload from the above one
     @overload
@@ -1426,7 +1415,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., S2],
+        f: Callable[..., S2 | NAType],
         axis: Axis = ...,
         raw: _bool = ...,
         args: Any = ...,
@@ -1434,17 +1423,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         result_type: Literal["expand", "reduce"],
         **kwargs: Any,
     ) -> Series[S2]: ...
-    @overload
-    def apply(
-        self,
-        f: Callable[..., SeriesDType | NAType],
-        axis: Axis = ...,
-        raw: _bool = ...,
-        args: Any = ...,
-        *,
-        result_type: Literal["expand", "reduce"],
-        **kwargs: Any,
-    ) -> Series: ...
     @overload
     def apply(
         self,
@@ -1495,11 +1473,10 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Series: ...
 
     # apply() overloads with default result_type of None, and keyword axis=1 matters
-    # Use S2 (TypeVar without the `Any` default) to avoid MyPy issue https://github.com/python/mypy/issues/19182.
     @overload
     def apply(
         self,
-        f: Callable[..., S2],
+        f: Callable[..., S2 | NAType],
         raw: _bool = ...,
         result_type: None = ...,
         args: Any = ...,
@@ -1507,17 +1484,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: AxisColumn,
         **kwargs: Any,
     ) -> Series[S2]: ...
-    @overload
-    def apply(
-        self,
-        f: Callable[..., SeriesDType | NAType],
-        raw: _bool = ...,
-        result_type: None = ...,
-        args: Any = ...,
-        *,
-        axis: AxisColumn,
-        **kwargs: Any,
-    ) -> Series: ...
     @overload
     def apply(
         self,
