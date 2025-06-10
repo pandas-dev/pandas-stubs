@@ -126,7 +126,7 @@ def concat(
 ) -> DataFrame: ...
 
 # Including either of the next 2 overloads causes mypy to complain about
-# test_pandas.py:test_types_concat() in assert_type(pd.concat([s, s2]), "pd.Series")
+# test_pandas.py:test_types_concat() in assert_type(pd.concat([s, s2]), pd.Series)
 # It thinks that pd.concat([s, s2]) is Any .  May be due to Series being
 # Generic, or the axis argument being unspecified, and then there is partial
 # overlap with the first 2 overloads.
