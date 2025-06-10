@@ -50,6 +50,7 @@ else:
 
 TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 WINDOWS = os.name == "nt" or "cygwin" in platform.system().lower()
+PD_LTE_23 = Version(pd.__version__) < Version("2.3.999")
 PD_LTE_22 = Version(pd.__version__) < Version("2.2.999")
 NUMPY20 = np.lib.NumpyVersion(np.__version__) >= "2.0.0"
 

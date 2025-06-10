@@ -30,7 +30,7 @@ from typing_extensions import (
 from pandas._typing import TimeUnit
 
 from tests import (
-    PD_LTE_22,
+    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -416,11 +416,11 @@ def test_series_dt_accessors() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         "The behavior of DatetimeProperties.to_pydatetime is deprecated",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(
             assert_type(s0.dt.to_pydatetime(), np.ndarray),
-            np.ndarray if PD_LTE_22 else pd.Series,
+            np.ndarray if PD_LTE_23 else pd.Series,
             dt.datetime,
         )
     s0_local = s0.dt.tz_localize("UTC")
@@ -541,7 +541,7 @@ def test_series_dt_accessors() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         "The behavior of TimedeltaProperties.to_pytimedelta is deprecated",
-        lower="2.2.99",
+        lower="2.3.99",
     ):
         check(assert_type(s2.dt.to_pytimedelta(), np.ndarray), np.ndarray)
     check(assert_type(s2.dt.total_seconds(), "pd.Series[float]"), pd.Series, float)
@@ -867,10 +867,10 @@ def test_types_to_numpy() -> None:
 
 def test_to_timedelta_units() -> None:
     check(assert_type(pd.to_timedelta(1, "W"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'w' is deprecated", lower="2.2.99"):
+    with pytest_warns_bounded(FutureWarning, "'w' is deprecated", lower="2.3.99"):
         check(assert_type(pd.to_timedelta(1, "w"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "D"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'d' is deprecated", lower="2.2.99"):
+    with pytest_warns_bounded(FutureWarning, "'d' is deprecated", lower="2.3.99"):
         check(assert_type(pd.to_timedelta(1, "d"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "days"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "day"), pd.Timedelta), pd.Timedelta)

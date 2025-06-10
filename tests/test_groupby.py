@@ -34,7 +34,7 @@ from pandas.core.window import (
 from typing_extensions import assert_type
 
 from tests import (
-    PD_LTE_22,
+    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -77,10 +77,18 @@ def test_frame_groupby_resample() -> None:
     check(assert_type(GB_DF.resample("ME").ax, Index), DatetimeIndex)
 
     # agg funcs
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
-        upper="2.99",
+    with (
+        pytest_warns_bounded(
+            DeprecationWarning,
+            "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
+            upper="2.2.99",
+        ),
+        pytest_warns_bounded(
+            FutureWarning,
+            "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
+            lower="2.2.99",
+            upper="2.3.99",
+        ),
     ):
         check(assert_type(GB_DF.resample("ME").sum(), DataFrame), DataFrame)
         check(assert_type(GB_DF.resample("ME").prod(), DataFrame), DataFrame)
@@ -124,15 +132,23 @@ def test_frame_groupby_resample() -> None:
         GB_DF.resample("ME").fillna("ffill")  # type: ignore[operator] # pyright: ignore
 
     # aggregate / apply
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
-        upper="2.99",
+    with (
+        pytest_warns_bounded(
+            DeprecationWarning,
+            "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
+            upper="2.2.99",
+        ),
+        pytest_warns_bounded(
+            FutureWarning,
+            "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
+            lower="2.2.99",
+            upper="2.3.99",
+        ),
     ):
         with pytest_warns_bounded(
             FutureWarning,
             r"The provided callable <function (sum|mean) .*> is currently using ",
-            upper="2.2.99",
+            upper="2.3.99",
         ):
             check(
                 assert_type(GB_DF.resample("ME").aggregate(np.sum), DataFrame),
@@ -172,10 +188,18 @@ def test_frame_groupby_resample() -> None:
     def f(val: DataFrame) -> Series:
         return val.mean()
 
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
-        upper="2.99",
+    with (
+        pytest_warns_bounded(
+            DeprecationWarning,
+            "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
+            upper="2.2.99",
+        ),
+        pytest_warns_bounded(
+            FutureWarning,
+            "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
+            lower="2.2.99",
+            upper="2.3.99",
+        ),
     ):
         check(assert_type(GB_DF.resample("ME").aggregate(f), DataFrame), DataFrame)
 
@@ -189,15 +213,23 @@ def test_frame_groupby_resample() -> None:
     def df2scalar(val: DataFrame) -> float:
         return float(val.mean().mean())
 
-    with pytest_warns_bounded(
-        DeprecationWarning,
-        "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
-        upper="2.99",
+    with (
+        pytest_warns_bounded(
+            DeprecationWarning,
+            "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
+            upper="2.2.99",
+        ),
+        pytest_warns_bounded(
+            FutureWarning,
+            "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
+            lower="2.2.99",
+            upper="2.3.99",
+        ),
     ):
         with pytest_warns_bounded(
             FutureWarning,
             r"The provided callable <function (sum|mean) .*> is currently using ",
-            upper="2.2.99",
+            upper="2.3.99",
         ):
             check(GB_DF.resample("ME").aggregate(np.sum), DataFrame)
             check(GB_DF.resample("ME").aggregate([np.mean]), DataFrame)
@@ -250,7 +282,7 @@ def test_frame_groupby_resample() -> None:
         )
 
         # interpolate
-        if PD_LTE_22:
+        if PD_LTE_23:
             check(assert_type(GB_DF.resample("ME").interpolate(), DataFrame), DataFrame)
             check(
                 assert_type(
@@ -377,7 +409,7 @@ def test_series_groupby_resample() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(
             assert_type(
@@ -426,7 +458,7 @@ def test_series_groupby_resample() -> None:
     check(assert_type(GB_S.resample("ME").asfreq(-1.0), "Series[float]"), Series, float)
 
     # interpolate
-    if PD_LTE_22:
+    if PD_LTE_23:
         check(
             assert_type(GB_S.resample("ME").interpolate(), "Series[float]"),
             Series,
@@ -475,7 +507,7 @@ def test_series_groupby_resample() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(GB_S.resample("ME").aggregate(np.sum), Series)
         check(GB_S.resample("ME").aggregate([np.mean]), DataFrame)
@@ -501,7 +533,7 @@ def test_frame_groupby_rolling() -> None:
     check(assert_type(GB_DF.rolling(1).obj, DataFrame), DataFrame)
     check(assert_type(GB_DF.rolling(1).on, Union[str, Index, None]), type(None))
     check(assert_type(GB_DF.rolling(1).method, Literal["single", "table"]), str)
-    if PD_LTE_22:
+    if PD_LTE_23:
         check(assert_type(GB_DF.rolling(1).axis, int), int)
 
     # agg funcs
@@ -522,7 +554,7 @@ def test_frame_groupby_rolling() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(GB_DF.rolling(1).aggregate(np.sum), DataFrame), DataFrame)
         check(assert_type(GB_DF.rolling(1).agg(np.sum), DataFrame), DataFrame)
@@ -566,7 +598,7 @@ def test_frame_groupby_rolling() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(GB_DF.rolling(1).aggregate(np.sum), DataFrame)
         check(GB_DF.rolling(1).aggregate([np.mean]), DataFrame)
@@ -644,7 +676,7 @@ def test_series_groupby_rolling() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(GB_S.rolling(1).aggregate("sum"), Series), Series)
         check(assert_type(GB_S.rolling(1).aggregate(np.sum), Series), Series)
@@ -696,7 +728,7 @@ def test_frame_groupby_expanding() -> None:
     check(assert_type(GB_DF.expanding(1).obj, DataFrame), DataFrame)
     check(assert_type(GB_DF.expanding(1).on, Union[str, Index, None]), type(None))
     check(assert_type(GB_DF.expanding(1).method, Literal["single", "table"]), str)
-    if PD_LTE_22:
+    if PD_LTE_23:
         check(assert_type(GB_DF.expanding(1).axis, int), int)
 
     # agg funcs
@@ -717,7 +749,7 @@ def test_frame_groupby_expanding() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(GB_DF.expanding(1).aggregate(np.sum), DataFrame), DataFrame)
         check(assert_type(GB_DF.expanding(1).agg(np.sum), DataFrame), DataFrame)
@@ -763,7 +795,7 @@ def test_frame_groupby_expanding() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(GB_DF.expanding(1).aggregate(np.sum), DataFrame)
         check(GB_DF.expanding(1).aggregate([np.mean]), DataFrame)
@@ -843,7 +875,7 @@ def test_series_groupby_expanding() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(GB_S.expanding(1).aggregate("sum"), Series), Series)
         check(assert_type(GB_S.expanding(1).aggregate(np.sum), Series), Series)
@@ -895,7 +927,7 @@ def test_frame_groupby_ewm() -> None:
     check(assert_type(GB_DF.ewm(1).obj, DataFrame), DataFrame)
     check(assert_type(GB_DF.ewm(1).on, Union[str, Index, None]), type(None))
     check(assert_type(GB_DF.ewm(1).method, Literal["single", "table"]), str)
-    if PD_LTE_22:
+    if PD_LTE_23:
         check(assert_type(GB_DF.ewm(1).axis, int), int)
 
     # agg funcs
@@ -908,11 +940,11 @@ def test_frame_groupby_ewm() -> None:
     check(assert_type(GB_DF.ewm(1).var(), DataFrame), DataFrame)
 
     # aggregate
-    if PD_LTE_22:
+    if PD_LTE_23:
         with pytest_warns_bounded(
             FutureWarning,
             r"The provided callable <function (sum|mean) .*> is currently using ",
-            upper="2.2.99",
+            upper="2.3.99",
         ):
             check(assert_type(GB_DF.ewm(1).aggregate(np.sum), DataFrame), DataFrame)
             check(assert_type(GB_DF.ewm(1).agg(np.sum), DataFrame), DataFrame)
@@ -943,7 +975,7 @@ def test_frame_groupby_ewm() -> None:
         with pytest_warns_bounded(
             FutureWarning,
             r"The provided callable <function (sum|mean) .*> is currently using ",
-            upper="2.2.99",
+            upper="2.3.99",
         ):
             check(GB_DF.ewm(1).aggregate(np.sum), DataFrame)
             check(GB_DF.ewm(1).aggregate([np.mean]), DataFrame)
@@ -1016,10 +1048,10 @@ def test_series_groupby_ewm() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(GB_S.ewm(1).aggregate("sum"), Series), Series)
-        if PD_LTE_22:
+        if PD_LTE_23:
             check(assert_type(GB_S.ewm(1).aggregate(np.sum), Series), Series)
             check(assert_type(GB_S.ewm(1).agg(np.sum), Series), Series)
             check(

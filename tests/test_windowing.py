@@ -15,7 +15,7 @@ from pandas.core.window import (
 from typing_extensions import assert_type
 
 from tests import (
-    PD_LTE_22,
+    PD_LTE_23,
     check,
     pytest_warns_bounded,
 )
@@ -101,7 +101,7 @@ def test_rolling_aggregate() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(DF.rolling(10).aggregate(np.mean), DataFrame), DataFrame)
         check(
@@ -126,7 +126,7 @@ def test_rolling_aggregate() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(DF.rolling(10).aggregate([np.mean]), DataFrame), DataFrame)
         check(
@@ -196,7 +196,7 @@ def test_rolling_aggregate_series() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function mean .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(S.rolling(10).aggregate(np.mean), Series), Series)
 
@@ -260,7 +260,7 @@ def test_expanding_aggregate() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(DF.expanding(10).aggregate(np.mean), DataFrame), DataFrame)
         check(
@@ -314,7 +314,7 @@ def test_expanding_aggregate_series() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(S.expanding(10).aggregate(np.mean), Series), Series)
         check(
@@ -340,11 +340,11 @@ def test_ewm_basic_math() -> None:
 
 
 def test_ewm_aggregate() -> None:
-    if PD_LTE_22:
+    if PD_LTE_23:
         with pytest_warns_bounded(
             FutureWarning,
             r"The provided callable <function (sum|mean) .*> is currently using ",
-            upper="2.2.99",
+            upper="2.3.99",
         ):
             check(assert_type(DF.ewm(span=10).aggregate(np.mean), DataFrame), DataFrame)
             check(
@@ -371,11 +371,11 @@ def test_ewm_basic_math_series() -> None:
 
 
 def test_ewm_aggregate_series() -> None:
-    if PD_LTE_22:
+    if PD_LTE_23:
         with pytest_warns_bounded(
             FutureWarning,
             r"The provided callable <function (sum|mean) .*> is currently using ",
-            upper="2.2.99",
+            upper="2.3.99",
         ):
             check(assert_type(S.ewm(span=10).aggregate(np.mean), Series), Series)
             check(

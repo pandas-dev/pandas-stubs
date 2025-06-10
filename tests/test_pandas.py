@@ -30,7 +30,7 @@ from typing_extensions import (
 from pandas._typing import Scalar
 
 from tests import (
-    PD_LTE_22,
+    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -293,7 +293,7 @@ def test_concat_args() -> None:
     with pytest_warns_bounded(
         DeprecationWarning,
         "The copy keyword is deprecated and will be removed in a future version.",
-        lower="2.2.99",
+        lower="2.3.99",
     ):
         check(assert_type(pd.concat([df, df2], copy=True), pd.DataFrame), pd.DataFrame)
     check(assert_type(pd.concat([df, df2], join="inner"), pd.DataFrame), pd.DataFrame)
@@ -560,11 +560,11 @@ def test_unique() -> None:
     )
     check(
         assert_type(pd.unique(pd.Index(["a", "b", "c", "a"])), np.ndarray),
-        np.ndarray if PD_LTE_22 else pd.Index,
+        np.ndarray if PD_LTE_23 else pd.Index,
     )
     check(
         assert_type(pd.unique(pd.RangeIndex(0, 10)), np.ndarray),
-        np.ndarray if PD_LTE_22 else pd.Index,
+        np.ndarray if PD_LTE_23 else pd.Index,
     )
     check(
         assert_type(pd.unique(pd.Categorical(["a", "b", "c", "a"])), pd.Categorical),
@@ -582,7 +582,7 @@ def test_unique() -> None:
             pd.unique(pd.timedelta_range(start="1 day", periods=4)),
             np.ndarray,
         ),
-        np.ndarray if PD_LTE_22 else pd.Index,
+        np.ndarray if PD_LTE_23 else pd.Index,
     )
 
 
@@ -900,15 +900,15 @@ def test_index_unqiue() -> None:
 
     check(assert_type(pd.unique(ci), pd.CategoricalIndex), pd.CategoricalIndex)
     check(
-        assert_type(pd.unique(dti), np.ndarray), np.ndarray if PD_LTE_22 else pd.Index
+        assert_type(pd.unique(dti), np.ndarray), np.ndarray if PD_LTE_23 else pd.Index
     )
-    check(assert_type(pd.unique(i), np.ndarray), np.ndarray if PD_LTE_22 else pd.Index)
+    check(assert_type(pd.unique(i), np.ndarray), np.ndarray if PD_LTE_23 else pd.Index)
     check(assert_type(pd.unique(pi), pd.PeriodIndex), pd.PeriodIndex)
-    check(assert_type(pd.unique(ri), np.ndarray), np.ndarray if PD_LTE_22 else pd.Index)
+    check(assert_type(pd.unique(ri), np.ndarray), np.ndarray if PD_LTE_23 else pd.Index)
     check(
-        assert_type(pd.unique(tdi), np.ndarray), np.ndarray if PD_LTE_22 else pd.Index
+        assert_type(pd.unique(tdi), np.ndarray), np.ndarray if PD_LTE_23 else pd.Index
     )
-    check(assert_type(pd.unique(mi), np.ndarray), np.ndarray if PD_LTE_22 else pd.Index)
+    check(assert_type(pd.unique(mi), np.ndarray), np.ndarray if PD_LTE_23 else pd.Index)
     check(
         assert_type(pd.unique(interval_i), "pd.IntervalIndex[pd.Interval[int]]"),
         pd.IntervalIndex,
@@ -1588,7 +1588,7 @@ def test_crosstab_args() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(
             assert_type(pd.crosstab(a, b, values=values, aggfunc=np.sum), pd.DataFrame),
@@ -1816,7 +1816,7 @@ def test_pivot_table() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function sum .*> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(
             assert_type(
@@ -1852,7 +1852,7 @@ def test_pivot_table() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function sum .*> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(
             assert_type(
@@ -1920,7 +1920,7 @@ def test_pivot_table() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function sum .*> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(
             assert_type(
@@ -1947,7 +1947,7 @@ def test_pivot_table() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function sum .*> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(
             assert_type(
@@ -2048,7 +2048,7 @@ def test_pivot_table() -> None:
         FutureWarning,
         "'M' is deprecated",
         lower="2.1.99",
-        upper="2.2.99",
+        upper="2.3.99",
         upper_exception=ValueError,
     ):
         check(
@@ -2064,7 +2064,7 @@ def test_pivot_table() -> None:
         FutureWarning,
         "'(M|A)' is deprecated",
         lower="2.1.99",
-        upper="2.2.99",
+        upper="2.3.99",
         upper_exception=ValueError,
     ):
         check(
