@@ -29,8 +29,8 @@ lt = s < 3
 
 In the pandas source, `lt` is a `Series` with a `dtype` of `bool`.  In the pandas-stubs,
 the type of `lt` is `Series[bool]`.  This allows further type checking to occur in other
-pandas methods.  Note that in the above example, `s` is typed as `Series[Any]` because
-its type cannot be statically inferred.
+pandas methods.  Note that in the above example, `s` is just typed as `Series` (which
+defaults to `Series[Any]`) because its type cannot be statically inferred.
 
 This also allows type checking for operations on series that contain date/time data.  Consider
 the following example that creates two series of datetimes with corresponding arithmetic.

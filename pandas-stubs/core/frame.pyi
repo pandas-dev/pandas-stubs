@@ -56,7 +56,6 @@ from pandas.core.reshape.pivot import (
 )
 from pandas.core.series import (
     Series,
-    UnknownSeries,
 )
 from pandas.core.window import (
     Expanding,
@@ -79,7 +78,7 @@ from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.nattype import NaTType
 from pandas._libs.tslibs.offsets import DateOffset
 from pandas._typing import (
-    S1,
+    S2,
     AggFuncTypeBase,
     AggFuncTypeDictFrame,
     AggFuncTypeDictSeries,
@@ -1319,11 +1318,11 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def stack(
         self, level: Level | list[Level] = ..., dropna: _bool = ..., sort: _bool = ...
-    ) -> Self | Series[Any]: ...
+    ) -> Self | Series: ...
     @overload
     def stack(
         self, level: Level | list[Level] = ..., future_stack: _bool = ...
-    ) -> Self | Series[Any]: ...
+    ) -> Self | Series: ...
     def explode(
         self, column: Sequence[Hashable], ignore_index: _bool = ...
     ) -> Self: ...
@@ -1383,7 +1382,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Series[Any]],
+        f: Callable[..., ListLikeExceptSeriesAndStr | Series],
         axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = ...,
@@ -1393,13 +1392,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., S1 | NAType],
+        # Use S2 (TypeVar without `default=Any`) instead of S1 due to https://github.com/python/mypy/issues/19182.
+        f: Callable[..., S2 | NAType],
         axis: AxisIndex = ...,
         raw: _bool = ...,
         result_type: None = ...,
         args: Any = ...,
         **kwargs: Any,
-    ) -> Series[S1]: ...
+    ) -> Series[S2]: ...
     # Since non-scalar type T is not supported in Series[T],
     # we separate this overload from the above one
     @overload
@@ -1411,24 +1411,25 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         result_type: None = ...,
         args: Any = ...,
         **kwargs: Any,
-    ) -> Series[Any]: ...
+    ) -> Series: ...
 
     # apply() overloads with keyword result_type, and axis does not matter
     @overload
     def apply(
         self,
-        f: Callable[..., S1 | NAType],
+        # Use S2 (TypeVar without `default=Any`) instead of S1 due to https://github.com/python/mypy/issues/19182.
+        f: Callable[..., S2 | NAType],
         axis: Axis = ...,
         raw: _bool = ...,
         args: Any = ...,
         *,
         result_type: Literal["expand", "reduce"],
         **kwargs: Any,
-    ) -> Series[S1]: ...
+    ) -> Series[S2]: ...
     @overload
     def apply(
         self,
-        f: Callable[..., ListLikeExceptSeriesAndStr | Series[Any] | Mapping[Any, Any]],
+        f: Callable[..., ListLikeExceptSeriesAndStr | Series | Mapping[Any, Any]],
         axis: Axis = ...,
         raw: _bool = ...,
         args: Any = ...,
@@ -1446,12 +1447,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         *,
         result_type: Literal["reduce"],
         **kwargs: Any,
-    ) -> Series[Any]: ...
+    ) -> Series: ...
     @overload
     def apply(
         self,
         f: Callable[
-            ..., ListLikeExceptSeriesAndStr | Series[Any] | Scalar | Mapping[Any, Any]
+            ..., ListLikeExceptSeriesAndStr | Series | Scalar | Mapping[Any, Any]
         ],
         axis: Axis = ...,
         raw: _bool = ...,
@@ -1465,27 +1466,28 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., Series[Any]],
+        f: Callable[..., Series],
         axis: AxisIndex = ...,
         raw: _bool = ...,
         args: Any = ...,
         *,
         result_type: Literal["reduce"],
         **kwargs: Any,
-    ) -> Series[Any]: ...
+    ) -> Series: ...
 
     # apply() overloads with default result_type of None, and keyword axis=1 matters
     @overload
     def apply(
         self,
-        f: Callable[..., S1 | NAType],
+        # Use S2 (TypeVar without `default=Any`) instead of S1 due to https://github.com/python/mypy/issues/19182.
+        f: Callable[..., S2 | NAType],
         raw: _bool = ...,
         result_type: None = ...,
         args: Any = ...,
         *,
         axis: AxisColumn,
         **kwargs: Any,
-    ) -> Series[S1]: ...
+    ) -> Series[S2]: ...
     @overload
     def apply(
         self,
@@ -1496,11 +1498,11 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         *,
         axis: AxisColumn,
         **kwargs: Any,
-    ) -> Series[Any]: ...
+    ) -> Series: ...
     @overload
     def apply(
         self,
-        f: Callable[..., Series[Any]],
+        f: Callable[..., Series],
         raw: _bool = ...,
         result_type: None = ...,
         args: Any = ...,
@@ -1513,7 +1515,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def apply(
         self,
-        f: Callable[..., Series[Any]],
+        f: Callable[..., Series],
         raw: _bool = ...,
         args: Any = ...,
         *,
@@ -1538,7 +1540,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def merge(
         self,
-        right: DataFrame | Series[Any],
+        right: DataFrame | Series,
         how: MergeHow = ...,
         on: IndexLabel | AnyArrayLike | None = ...,
         left_on: IndexLabel | AnyArrayLike | None = ...,
@@ -1684,6 +1686,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @property
     def iloc(self) -> _iLocIndexerFrame[Self]: ...
     @property
+    # mypy complains if we use Index[Any] instead of UnknownIndex here, even though
+    # the latter is aliased to the former ¯\_(ツ)_/¯.
     def index(self) -> UnknownIndex: ...
     @index.setter
     def index(self, idx: Index) -> None: ...
@@ -2012,7 +2016,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
-        other: Scalar | UnknownSeries | DataFrame | Callable | NAType | None = ...,
+        other: Scalar | Series | DataFrame | Callable | NAType | None = ...,
         *,
         inplace: Literal[True],
         axis: Axis | None = ...,
@@ -2028,7 +2032,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
-        other: Scalar | UnknownSeries | DataFrame | Callable | NAType | None = ...,
+        other: Scalar | Series | DataFrame | Callable | NAType | None = ...,
         *,
         inplace: Literal[False] = ...,
         axis: Axis | None = ...,
