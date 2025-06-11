@@ -1165,8 +1165,8 @@ def test_types_groupby_aggregate() -> None:
         np.floating,
     )
 
-    # test below passes with mypy but pyright correctly sees it as pd.Series[float]
-    # check(assert_type(s.groupby([1,1,2,2]).agg(lambda x: x.astype(float).min()), pd.Series), pd.Series, float)
+    # test below fails with mypy but pyright correctly sees it as pd.Series[float]
+    # check(assert_type(s.groupby([1,1,2,2]).agg(lambda x: x.astype(float).min()), "pd.Series[float]"), pd.Series, float)
 
     with pytest_warns_bounded(
         FutureWarning,
