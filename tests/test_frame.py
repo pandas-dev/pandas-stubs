@@ -1541,6 +1541,21 @@ def test_types_groupby() -> None:
         assert_type(df.groupby(by=["col1", "col2"]).nunique(), pd.DataFrame),
         pd.DataFrame,
     )
+    with pytest_warns_bounded(
+        FutureWarning,
+        "(The provided callable <built-in function sum> is currently using|The behavior of DataFrame.sum with)",
+        upper="2.3.99",
+    ):
+        with pytest_warns_bounded(
+            FutureWarning,
+            "DataFrameGroupBy.apply operated on the grouping columns",
+            upper="2.3.99",
+        ):
+            if PD_LTE_23:
+                check(
+                    assert_type(df.groupby(by="col1").apply(sum), pd.DataFrame),
+                    pd.DataFrame,
+                )
     check(assert_type(df.groupby("col1").transform("sum"), pd.DataFrame), pd.DataFrame)
     s1 = df.set_index("col1")["col2"]
     check(assert_type(s1, pd.Series), pd.Series)
@@ -3435,7 +3450,7 @@ def test_groupby_apply() -> None:
         FutureWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
         lower="2.2.99",
-        upper="2.3.99",
+        upper="2.99",
     ):
         check(
             assert_type(df.groupby("col1").apply(sum_mean), pd.Series),
@@ -3447,7 +3462,7 @@ def test_groupby_apply() -> None:
         FutureWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
         lower="2.2.99",
-        upper="2.99.99",
+        upper="2.99",
     ):
         check(assert_type(df.groupby("col1").apply(lfunc), pd.Series), pd.Series)
 
@@ -3458,7 +3473,7 @@ def test_groupby_apply() -> None:
         FutureWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
         lower="2.2.99",
-        upper="2.3.99",
+        upper="2.99",
     ):
         check(assert_type(df.groupby("col1").apply(sum_to_list), pd.Series), pd.Series)
 
@@ -3469,7 +3484,7 @@ def test_groupby_apply() -> None:
         FutureWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
         lower="2.2.99",
-        upper="2.3.99",
+        upper="2.99",
     ):
         check(
             assert_type(df.groupby("col1").apply(sum_to_series), pd.DataFrame),
@@ -3483,7 +3498,7 @@ def test_groupby_apply() -> None:
         FutureWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
         lower="2.2.99",
-        upper="2.3.99",
+        upper="2.99",
     ):
         check(
             assert_type(
@@ -3757,7 +3772,7 @@ def test_resample_150_changes() -> None:
         FutureWarning,
         "'M' is deprecated",
         lower="2.1.99",
-        upper="2.3.99",
+        upper="2.99",
         upper_exception=ValueError,
     ):
         frame.resample("M", group_keys=True)
@@ -4377,7 +4392,6 @@ def test_transpose() -> None:
         DeprecationWarning,
         msg,
         lower="2.3.99",
-        upper="3.0.0",
     ):
         check(assert_type(df.transpose(copy=True), pd.DataFrame), pd.DataFrame)
 
