@@ -77,18 +77,11 @@ def test_frame_groupby_resample() -> None:
     check(assert_type(GB_DF.resample("ME").ax, Index), DatetimeIndex)
 
     # agg funcs
-    with (
-        pytest_warns_bounded(
-            DeprecationWarning,
-            "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
-            upper="2.2.99",
-        ),
-        pytest_warns_bounded(
-            FutureWarning,
-            "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
-            lower="2.2.99",
-            upper="2.3.99",
-        ),
+    with pytest_warns_bounded(
+        FutureWarning,
+        "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
+        lower="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(GB_DF.resample("ME").sum(), DataFrame), DataFrame)
         check(assert_type(GB_DF.resample("ME").prod(), DataFrame), DataFrame)
@@ -132,18 +125,11 @@ def test_frame_groupby_resample() -> None:
         GB_DF.resample("ME").fillna("ffill")  # type: ignore[operator] # pyright: ignore
 
     # aggregate / apply
-    with (
-        pytest_warns_bounded(
-            DeprecationWarning,
-            "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
-            upper="2.2.99",
-        ),
-        pytest_warns_bounded(
-            FutureWarning,
-            "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
-            lower="2.2.99",
-            upper="2.3.99",
-        ),
+    with pytest_warns_bounded(
+        FutureWarning,
+        "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
+        lower="2.2.99",
+        upper="2.3.99",
     ):
         with pytest_warns_bounded(
             FutureWarning,
@@ -188,18 +174,11 @@ def test_frame_groupby_resample() -> None:
     def f(val: DataFrame) -> Series:
         return val.mean()
 
-    with (
-        pytest_warns_bounded(
-            DeprecationWarning,
-            "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
-            upper="2.2.99",
-        ),
-        pytest_warns_bounded(
-            FutureWarning,
-            "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
-            lower="2.2.99",
-            upper="2.3.99",
-        ),
+    with pytest_warns_bounded(
+        FutureWarning,
+        "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
+        lower="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(GB_DF.resample("ME").aggregate(f), DataFrame), DataFrame)
 
@@ -213,18 +192,11 @@ def test_frame_groupby_resample() -> None:
     def df2scalar(val: DataFrame) -> float:
         return float(val.mean().mean())
 
-    with (
-        pytest_warns_bounded(
-            DeprecationWarning,
-            "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
-            upper="2.2.99",
-        ),
-        pytest_warns_bounded(
-            FutureWarning,
-            "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
-            lower="2.2.99",
-            upper="2.3.99",
-        ),
+    with pytest_warns_bounded(
+        FutureWarning,
+        "DataFrameGroupBy.(apply|resample) operated on the grouping columns",
+        lower="2.2.99",
+        upper="2.3.99",
     ):
         with pytest_warns_bounded(
             FutureWarning,

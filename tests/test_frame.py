@@ -48,7 +48,6 @@ import xarray as xr
 from pandas._typing import Scalar
 
 from tests import (
-    PD_LTE_22,
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
@@ -1542,21 +1541,6 @@ def test_types_groupby() -> None:
         assert_type(df.groupby(by=["col1", "col2"]).nunique(), pd.DataFrame),
         pd.DataFrame,
     )
-    with pytest_warns_bounded(
-        FutureWarning,
-        "(The provided callable <built-in function sum> is currently using|The behavior of DataFrame.sum with)",
-        upper="2.2.99",
-    ):
-        with pytest_warns_bounded(
-            DeprecationWarning,
-            "DataFrameGroupBy.apply operated on the grouping columns",
-            upper="2.2.99",
-        ):
-            if PD_LTE_22:
-                check(
-                    assert_type(df.groupby(by="col1").apply(sum), pd.DataFrame),
-                    pd.DataFrame,
-                )
     check(assert_type(df.groupby("col1").transform("sum"), pd.DataFrame), pd.DataFrame)
     s1 = df.set_index("col1")["col2"]
     check(assert_type(s1, pd.Series), pd.Series)
@@ -3134,19 +3118,17 @@ def test_frame_stack() -> None:
 def test_frame_reindex() -> None:
     # GH 84
     df = pd.DataFrame({"a": [1, 2, 3]}, index=[0, 1, 2])
-    df.reindex([2, 1, 0])
+    check(assert_type(df.reindex([2, 1, 0]), pd.DataFrame), pd.DataFrame)
 
 
 def test_frame_reindex_like() -> None:
     # GH 84
     df = pd.DataFrame({"a": [1, 2, 3]}, index=[0, 1, 2])
     other = pd.DataFrame({"a": [1, 2]}, index=[1, 0])
-
     with pytest_warns_bounded(
         FutureWarning,
         "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
-        lower="2.2.99",
-        upper="2.2.99",
+        lower="2.3.0",
     ):
         check(
             assert_type(
@@ -3449,18 +3431,11 @@ def test_groupby_apply() -> None:
     def sum_mean(x: pd.DataFrame) -> float:
         return x.sum().mean()
 
-    with (
-        pytest_warns_bounded(
-            DeprecationWarning,
-            "DataFrameGroupBy.apply operated on the grouping columns.",
-            upper="2.2.99",
-        ),
-        pytest_warns_bounded(
-            FutureWarning,
-            "DataFrameGroupBy.apply operated on the grouping columns.",
-            lower="2.2.99",
-            upper="2.3.99",
-        ),
+    with pytest_warns_bounded(
+        FutureWarning,
+        "DataFrameGroupBy.apply operated on the grouping columns.",
+        lower="2.2.99",
+        upper="2.3.99",
     ):
         check(
             assert_type(df.groupby("col1").apply(sum_mean), pd.Series),
@@ -3468,53 +3443,33 @@ def test_groupby_apply() -> None:
         )
 
     lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
-    with (
-        pytest_warns_bounded(
-            DeprecationWarning,
-            "DataFrameGroupBy.apply operated on the grouping columns.",
-            upper="2.2.99",
-        ),
-        pytest_warns_bounded(
-            FutureWarning,
-            "DataFrameGroupBy.apply operated on the grouping columns.",
-            lower="2.2.99",
-        ),
+    with pytest_warns_bounded(
+        FutureWarning,
+        "DataFrameGroupBy.apply operated on the grouping columns.",
+        lower="2.2.99",
+        upper="2.99.99",
     ):
         check(assert_type(df.groupby("col1").apply(lfunc), pd.Series), pd.Series)
 
     def sum_to_list(x: pd.DataFrame) -> list:
         return x.sum().tolist()
 
-    with (
-        pytest_warns_bounded(
-            DeprecationWarning,
-            "DataFrameGroupBy.apply operated on the grouping columns.",
-            upper="2.2.99",
-        ),
-        pytest_warns_bounded(
-            FutureWarning,
-            "DataFrameGroupBy.apply operated on the grouping columns.",
-            lower="2.2.99",
-            upper="2.3.99",
-        ),
+    with pytest_warns_bounded(
+        FutureWarning,
+        "DataFrameGroupBy.apply operated on the grouping columns.",
+        lower="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(df.groupby("col1").apply(sum_to_list), pd.Series), pd.Series)
 
     def sum_to_series(x: pd.DataFrame) -> pd.Series:
         return x.sum()
 
-    with (
-        pytest_warns_bounded(
-            DeprecationWarning,
-            "DataFrameGroupBy.apply operated on the grouping columns.",
-            upper="2.2.99",
-        ),
-        pytest_warns_bounded(
-            FutureWarning,
-            "DataFrameGroupBy.apply operated on the grouping columns.",
-            lower="2.2.99",
-            upper="2.3.99",
-        ),
+    with pytest_warns_bounded(
+        FutureWarning,
+        "DataFrameGroupBy.apply operated on the grouping columns.",
+        lower="2.2.99",
+        upper="2.3.99",
     ):
         check(
             assert_type(df.groupby("col1").apply(sum_to_series), pd.DataFrame),
@@ -3524,18 +3479,11 @@ def test_groupby_apply() -> None:
     def sample_to_df(x: pd.DataFrame) -> pd.DataFrame:
         return x.sample()
 
-    with (
-        pytest_warns_bounded(
-            DeprecationWarning,
-            "DataFrameGroupBy.apply operated on the grouping columns.",
-            upper="2.2.99",
-        ),
-        pytest_warns_bounded(
-            FutureWarning,
-            "DataFrameGroupBy.apply operated on the grouping columns.",
-            lower="2.2.99",
-            upper="2.3.99",
-        ),
+    with pytest_warns_bounded(
+        FutureWarning,
+        "DataFrameGroupBy.apply operated on the grouping columns.",
+        lower="2.2.99",
+        upper="2.3.99",
     ):
         check(
             assert_type(
@@ -4424,13 +4372,12 @@ def test_transpose() -> None:
     df = pd.DataFrame({"a": [1, 1, 2], "b": [4, 5, 6]})
     check(assert_type(df.transpose(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.transpose(None), pd.DataFrame), pd.DataFrame)
-
     msg = "The copy keyword is deprecated and will be removed in a future"
     with pytest_warns_bounded(
         DeprecationWarning,
         msg,
-        lower="2.2.99",
-        upper="2.2.99",
+        lower="2.3.99",
+        upper="3.0.0",
     ):
         check(assert_type(df.transpose(copy=True), pd.DataFrame), pd.DataFrame)
 
