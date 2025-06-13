@@ -305,8 +305,21 @@ def test_types_head_tail() -> None:
 
 def test_types_assign() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
-    df.assign(col3=lambda frame: frame.sum(axis=1))
+
+    check(
+        assert_type(df.assign(col3=lambda frame: frame.sum(axis=1)), pd.DataFrame),
+        pd.DataFrame,
+    )
     df["col3"] = df.sum(axis=1)
+
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    check(
+        assert_type(
+            df.assign(b=lambda df: range(len(df)), c=lambda df: [10, 20, 30]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_assign() -> None:
