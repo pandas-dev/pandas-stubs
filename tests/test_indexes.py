@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from tests import Dtype  # noqa: F401
 
 from tests import (
-    PD_LTE_22,
+    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -356,7 +356,7 @@ def test_interval_range():
         FutureWarning,
         "'M' is deprecated",
         lower="2.1.99",
-        upper="2.2.99",
+        upper="2.3.99",
         upper_exception=ValueError,
     ):
         check(
@@ -680,7 +680,7 @@ def test_interval_index_arrays():
         FutureWarning,
         "'Y' is deprecated",
         lower="2.1.99",
-        upper="2.2.99",
+        upper="2.3.99",
         upper_exception=ValueError,
     ):
         pd.Series(pd.date_range("2000-01-01", "2003-01-01", freq="Y"))
@@ -984,7 +984,7 @@ def test_getitem() -> None:
     check(
         assert_type(iri[[0, 2, 4]], pd.Index),
         pd.Index,
-        np.integer if PD_LTE_22 else int,
+        np.integer if PD_LTE_23 else int,
     )
 
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
@@ -1123,7 +1123,7 @@ def test_iter() -> None:
         FutureWarning,
         "'H' is deprecated",
         lower="2.1.99",
-        upper="2.2.99",
+        upper="2.3.99",
         upper_exception=ValueError,
     ):
         for ts in pd.date_range(start="1/1/2023", end="1/08/2023", freq="6H"):

@@ -4,7 +4,7 @@ from pandas import errors
 import pytest
 
 from tests import (
-    PD_LTE_22,
+    PD_LTE_23,
     WINDOWS,
 )
 
@@ -108,13 +108,13 @@ def test_specification_error() -> None:
 
 
 def test_setting_with_copy_error() -> None:
-    if PD_LTE_22:
+    if PD_LTE_23:
         with pytest.raises(errors.SettingWithCopyError):
             raise errors.SettingWithCopyError()
 
 
 def test_setting_with_copy_warning() -> None:
-    if PD_LTE_22:
+    if PD_LTE_23:
         with pytest.warns(errors.SettingWithCopyWarning):
             warnings.warn("", errors.SettingWithCopyWarning)
 

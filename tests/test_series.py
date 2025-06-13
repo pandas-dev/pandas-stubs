@@ -49,7 +49,7 @@ from pandas._typing import (
 )
 
 from tests import (
-    PD_LTE_22,
+    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     WINDOWS,
     check,
@@ -186,7 +186,7 @@ def test_types_copy() -> None:
 
 def test_types_select() -> None:
     s = pd.Series(data={"row1": 1, "row2": 2})
-    if PD_LTE_22:
+    if PD_LTE_23:
         # Not valid in 3.0
         with pytest_warns_bounded(
             FutureWarning,
@@ -926,7 +926,7 @@ def test_groupby_result() -> None:
     index, value = next(iterator)
     assert_type((index, value), tuple[tuple, "pd.Series[int]"])
 
-    if PD_LTE_22:
+    if PD_LTE_23:
         check(assert_type(index, tuple), tuple, np.integer)
     else:
         check(assert_type(index, tuple), tuple, int)
@@ -1055,7 +1055,7 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         "The default of observed=False is deprecated",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         categorical_index = pd.CategoricalIndex(s.index)
         iterator2 = s.groupby(categorical_index).__iter__()
@@ -1076,7 +1076,7 @@ def test_types_groupby_agg() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <built-in function (min|sum)> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(s.groupby(level=0).agg(sum), pd.Series), pd.Series)
         check(
@@ -1094,7 +1094,7 @@ def test_types_groupby_aggregate() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <built-in function (min|sum)> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(s.groupby(level=0).aggregate(sum), pd.Series), pd.Series)
         check(
@@ -1150,7 +1150,7 @@ def test_types_window() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <built-in function (min|max|sum)> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(
             assert_type(s.rolling(2).agg(sum), pd.Series),
@@ -1220,9 +1220,9 @@ def test_types_agg() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <(built-in function (min|max|mean)|function mean at 0x\w+)> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
-        check(assert_type(s.agg(min), int), np.integer if PD_LTE_22 else int)
+        check(assert_type(s.agg(min), int), np.integer if PD_LTE_23 else int)
         check(assert_type(s.agg([min, max]), pd.Series), pd.Series, np.integer)
         check(assert_type(s.agg({0: min}), pd.Series), pd.Series, np.integer)
         check(
@@ -1244,9 +1244,9 @@ def test_types_aggregate() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <built-in function (min|max)> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
-        check(assert_type(s.aggregate(min), int), np.integer if PD_LTE_22 else int)
+        check(assert_type(s.aggregate(min), int), np.integer if PD_LTE_23 else int)
         check(
             assert_type(s.aggregate([min, max]), pd.Series),
             pd.Series,
@@ -1972,7 +1972,7 @@ def test_bitwise_operators() -> None:
     check(assert_type(s ^ s2, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s2 ^ s, "pd.Series[int]"), pd.Series, np.integer)
 
-    if PD_LTE_22:
+    if PD_LTE_23:
         with pytest_warns_bounded(
             FutureWarning,
             r"Logical ops \(and, or, xor\) between Pandas objects and dtype-less sequences "
@@ -2020,7 +2020,7 @@ def test_logical_operators() -> None:
 
     check(assert_type(True ^ (df["a"] >= 2), "pd.Series[bool]"), pd.Series, np.bool_)
 
-    if PD_LTE_22:
+    if PD_LTE_23:
         with pytest_warns_bounded(
             FutureWarning,
             r"Logical ops \(and, or, xor\) between Pandas objects and dtype-less sequences "
@@ -3752,7 +3752,7 @@ def test_series_reindex_like() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
-        lower="2.2.99",
+        lower="2.3.99",
         upper="3.0.99",
     ):
         check(
@@ -3791,7 +3791,7 @@ def test_align() -> None:
     with pytest_warns_bounded(
         DeprecationWarning,
         msg,
-        lower="2.2.99",
+        lower="2.3.99",
     ):
         aligned_s0, aligned_s1 = s0.align(s1, fill_value=0, axis=0, level=0, copy=False)
 

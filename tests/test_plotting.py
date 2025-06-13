@@ -17,7 +17,7 @@ import pytest
 from typing_extensions import assert_type
 
 from tests import (
-    PD_LTE_22,
+    PD_LTE_23,
     check,
 )
 
@@ -609,7 +609,7 @@ def test_grouped_dataframe_boxplot(close_figures):
     check(assert_type(grouped.boxplot(subplots=True), Series), Series)
 
     # a single plot
-    if not PD_LTE_22:
+    if not PD_LTE_23:
         check(
             assert_type(
                 grouped.boxplot(
@@ -654,7 +654,7 @@ def test_grouped_dataframe_boxplot_single(close_figures):
         Axes,
     )
 
-    if not PD_LTE_22:
+    if not PD_LTE_23:
         check(
             assert_type(
                 grouped.boxplot(
