@@ -1016,6 +1016,8 @@ IntoColumn: TypeAlias = (
     AnyArrayLike
     | Scalar
     | Callable[[DataFrame], AnyArrayLike | Scalar | list[Scalar] | range]
+    | list[Scalar]
+    | range
     | None
 )
 

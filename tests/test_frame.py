@@ -45,7 +45,9 @@ from typing_extensions import (
 )
 import xarray as xr
 
-from pandas._typing import Scalar
+from pandas._typing import (
+    Scalar,
+)
 
 from tests import (
     PD_LTE_23,
@@ -315,9 +317,13 @@ def test_types_assign() -> None:
     df = pd.DataFrame({"a": [1, 2, 3]})
     check(
         assert_type(
-            df.assign(b=lambda df: range(len(df)), c=lambda df: [10, 20, 30]),
+            df.assign(b=lambda df: range(len(df)), c=lambda _: [10, 20, 30]),
             pd.DataFrame,
         ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.assign(b=range(len(df)), c=[10, 20, 30]), pd.DataFrame),
         pd.DataFrame,
     )
 
