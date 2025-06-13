@@ -1078,10 +1078,61 @@ def test_types_groupby_agg() -> None:
         r"The provided callable <built-in function (min|sum)> is currently using",
         upper="2.3.99",
     ):
-        check(assert_type(s.groupby(level=0).agg(sum), pd.Series), pd.Series)
+
+        def sum_sr(s: pd.Series[int]) -> int:
+            # type of `sum` not well inferred by mypy
+            return s.sum()
+
+        check(
+            assert_type(s.groupby(level=0).agg(sum_sr), "pd.Series[int]"),
+            pd.Series,
+            np.integer,
+        )
         check(
             assert_type(s.groupby(level=0).agg([min, sum]), pd.DataFrame), pd.DataFrame
         )
+
+
+def test_types_groupby_transform() -> None:
+    s: pd.Series[int] = pd.Series([4, 2, 1, 8], index=["a", "b", "a", "b"])
+
+    def transform_func(
+        x: pd.Series[int], pos_arg: bool, kw_arg: str
+    ) -> pd.Series[float]:
+        return x / (2.0 if pos_arg else 1.0)
+
+    check(
+        assert_type(
+            s.groupby(lambda x: x).transform(transform_func, True, kw_arg="foo"),
+            "pd.Series[float]",
+        ),
+        pd.Series,
+        float,
+    )
+    check(
+        assert_type(
+            s.groupby(lambda x: x).transform(
+                transform_func, True, engine="cython", kw_arg="foo"
+            ),
+            "pd.Series[float]",
+        ),
+        pd.Series,
+        float,
+    )
+    check(
+        assert_type(
+            s.groupby(lambda x: x).transform("mean"),
+            "pd.Series",
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(
+            s.groupby(lambda x: x).transform("first"),
+            "pd.Series",
+        ),
+        pd.Series,
+    )
 
 
 def test_types_groupby_aggregate() -> None:
@@ -1091,12 +1142,47 @@ def test_types_groupby_aggregate() -> None:
         assert_type(s.groupby(level=0).aggregate(["min", "sum"]), pd.DataFrame),
         pd.DataFrame,
     )
+
+    def func(s: pd.Series[int]) -> float:
+        return s.astype(float).min()
+
+    s = pd.Series([1, 2, 3, 4])
+    check(
+        assert_type(s.groupby([1, 1, 2, 2]).agg(func), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(s.groupby(level=0).aggregate(func), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(
+            s.groupby(level=0).aggregate(func, engine="cython"), "pd.Series[float]"
+        ),
+        pd.Series,
+        np.floating,
+    )
+
+    # test below fails with mypy but pyright correctly sees it as pd.Series[float]
+    # check(assert_type(s.groupby([1,1,2,2]).agg(lambda x: x.astype(float).min()), "pd.Series[float]"), pd.Series, float)
+
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <built-in function (min|sum)> is currently using",
         upper="2.3.99",
     ):
-        check(assert_type(s.groupby(level=0).aggregate(sum), pd.Series), pd.Series)
+
+        def sum_sr(s: pd.Series[int]) -> int:
+            # type of `sum` not well inferred by mypy
+            return s.sum()
+
+        check(
+            assert_type(s.groupby(level=0).aggregate(sum_sr), "pd.Series[int]"),
+            pd.Series,
+            np.integer,
+        )
         check(
             assert_type(s.groupby(level=0).aggregate([min, sum]), pd.DataFrame),
             pd.DataFrame,
