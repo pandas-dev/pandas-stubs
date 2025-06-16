@@ -2276,7 +2276,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         replace: _bool = ...,
         weights: _str | ListLike | None = ...,
         random_state: RandomState | None = ...,
-        axis: AxisIndex | None = ...,
+        axis: Axis | None = ...,
         ignore_index: _bool = ...,
     ) -> Self: ...
     def sem(

@@ -37,7 +37,7 @@ ty = "^0.0.1a8"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "1.16.0"
-pandas = "2.2.3"
+pandas = "2.3.0"
 pyarrow = ">=10.0.1"
 pytest = ">=7.1.2"
 pyright = ">=1.1.400"

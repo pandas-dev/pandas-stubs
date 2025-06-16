@@ -45,10 +45,12 @@ from typing_extensions import (
 )
 import xarray as xr
 
-from pandas._typing import Scalar
+from pandas._typing import (
+    Scalar,
+)
 
 from tests import (
-    PD_LTE_22,
+    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     ensure_clean,
@@ -305,8 +307,25 @@ def test_types_head_tail() -> None:
 
 def test_types_assign() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
-    df.assign(col3=lambda frame: frame.sum(axis=1))
+
+    check(
+        assert_type(df.assign(col3=lambda frame: frame.sum(axis=1)), pd.DataFrame),
+        pd.DataFrame,
+    )
     df["col3"] = df.sum(axis=1)
+
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    check(
+        assert_type(
+            df.assign(b=lambda df: range(len(df)), c=lambda _: [10, 20, 30]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(df.assign(b=range(len(df)), c=[10, 20, 30]), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_assign() -> None:
@@ -351,6 +370,7 @@ def test_types_sample() -> None:
         assert_type(df.sample(n=1, random_state=np.random.default_rng()), pd.DataFrame),
         pd.DataFrame,
     )
+    check(assert_type(df.sample(n=1, axis=1), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_nlargest_nsmallest() -> None:
@@ -450,7 +470,7 @@ def test_types_drop_duplicates() -> None:
         pd.DataFrame,
     )
 
-    if not PD_LTE_22:
+    if not PD_LTE_23:
         check(assert_type(df.drop_duplicates({"AAA"}), pd.DataFrame), pd.DataFrame)
         check(
             assert_type(df.drop_duplicates({"AAA": None}), pd.DataFrame), pd.DataFrame
@@ -1544,14 +1564,14 @@ def test_types_groupby() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         "(The provided callable <built-in function sum> is currently using|The behavior of DataFrame.sum with)",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         with pytest_warns_bounded(
-            DeprecationWarning,
+            FutureWarning,
             "DataFrameGroupBy.apply operated on the grouping columns",
-            upper="2.2.99",
+            upper="2.3.99",
         ):
-            if PD_LTE_22:
+            if PD_LTE_23:
                 check(
                     assert_type(df.groupby(by="col1").apply(sum), pd.DataFrame),
                     pd.DataFrame,
@@ -1602,7 +1622,7 @@ def test_types_groupby_agg() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <built-in function (min|max)> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(df.groupby("col1")["col3"].agg(min), pd.Series), pd.Series)
         check(
@@ -1751,7 +1771,7 @@ def test_types_window() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <built-in function (min|max)> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(
             assert_type(df.rolling(2).agg(max), pd.DataFrame),
@@ -1860,7 +1880,7 @@ def test_types_agg() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <(built-in function (min|max|mean)|function mean at 0x\w+)> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(df.agg(min), pd.Series), pd.Series)
         check(assert_type(df.agg([min, max]), pd.DataFrame), pd.DataFrame)
@@ -1887,7 +1907,7 @@ def test_types_aggregate() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <built-in function (min|max)> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(df.aggregate(min), pd.Series), pd.Series)
         check(assert_type(df.aggregate([min, max]), pd.DataFrame), pd.DataFrame)
@@ -2020,7 +2040,7 @@ def test_types_resample() -> None:
         FutureWarning,
         "'M' is deprecated",
         lower="2.1.99",
-        upper="2.2.99",
+        upper="2.3.99",
         upper_exception=ValueError,
     ):
         df.resample("M", on="date")
@@ -2163,7 +2183,7 @@ def test_pipe() -> None:
         FutureWarning,
         "'M' is deprecated",
         lower="2.1.99",
-        upper="2.2.99",
+        upper="2.3.99",
         upper_exception=ValueError,
     ):
         (
@@ -2504,7 +2524,7 @@ def test_types_regressions() -> None:
     tslist = list(pd.to_datetime(["2022-01-01", "2022-01-02"]))
     check(assert_type(tslist, list[pd.Timestamp]), list, pd.Timestamp)
     sseries = pd.Series(tslist)
-    with pytest_warns_bounded(FutureWarning, "'d' is deprecated", lower="2.2.99"):
+    with pytest_warns_bounded(FutureWarning, "'d' is deprecated", lower="2.3.99"):
         sseries + pd.Timedelta(1, "d")
 
     check(
@@ -2518,7 +2538,7 @@ def test_types_regressions() -> None:
         FutureWarning,
         "'H' is deprecated",
         lower="2.1.99",
-        upper="2.2.99",
+        upper="2.3.99",
         upper_exception=ValueError,
     ):
         pd.date_range(start="2021-12-01", periods=24, freq="H")
@@ -2644,7 +2664,7 @@ def test_read_csv() -> None:
             ),
             pd.DataFrame,
         )
-        if PD_LTE_22:
+        if PD_LTE_23:
             parse_dates_2 = {"combined_date": ["Year", "Month", "Day"]}
             with pytest_warns_bounded(
                 FutureWarning,
@@ -3098,7 +3118,7 @@ def test_frame_stack() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         "The previous implementation of stack is deprecated",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(
             assert_type(df_multi_level_cols2.stack(0), Union[pd.DataFrame, pd.Series]),
@@ -3111,7 +3131,7 @@ def test_frame_stack() -> None:
             ),
             pd.Series,
         )
-        if PD_LTE_22:
+        if PD_LTE_23:
             check(
                 assert_type(
                     df_multi_level_cols2.stack(0, future_stack=False),
@@ -3131,19 +3151,17 @@ def test_frame_stack() -> None:
 def test_frame_reindex() -> None:
     # GH 84
     df = pd.DataFrame({"a": [1, 2, 3]}, index=[0, 1, 2])
-    df.reindex([2, 1, 0])
+    check(assert_type(df.reindex([2, 1, 0]), pd.DataFrame), pd.DataFrame)
 
 
 def test_frame_reindex_like() -> None:
     # GH 84
     df = pd.DataFrame({"a": [1, 2, 3]}, index=[0, 1, 2])
     other = pd.DataFrame({"a": [1, 2]}, index=[1, 0])
-
     with pytest_warns_bounded(
         FutureWarning,
         "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
-        lower="2.2.99",
-        upper="3.0.99",
+        lower="2.3.0",
     ):
         check(
             assert_type(
@@ -3275,7 +3293,7 @@ def test_groupby_result() -> None:
     index, value = next(iterator)
     assert_type((index, value), tuple[tuple, pd.DataFrame])
 
-    if PD_LTE_22:
+    if PD_LTE_23:
         check(assert_type(index, tuple), tuple, np.integer)
     else:
         check(assert_type(index, tuple), tuple, int)
@@ -3387,7 +3405,7 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         "The default of observed=False is deprecated",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         categorical_index = pd.CategoricalIndex(df.a)
         iterator2 = df.groupby(categorical_index).__iter__()
@@ -3447,8 +3465,9 @@ def test_groupby_apply() -> None:
         return x.sum().mean()
 
     with pytest_warns_bounded(
-        DeprecationWarning,
+        FutureWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
+        lower="2.2.99",
         upper="2.99",
     ):
         check(
@@ -3458,8 +3477,9 @@ def test_groupby_apply() -> None:
 
     lfunc: Callable[[pd.DataFrame], float] = lambda x: x.sum().mean()
     with pytest_warns_bounded(
-        DeprecationWarning,
+        FutureWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
+        lower="2.2.99",
         upper="2.99",
     ):
         check(assert_type(df.groupby("col1").apply(lfunc), pd.Series), pd.Series)
@@ -3468,8 +3488,9 @@ def test_groupby_apply() -> None:
         return x.sum().tolist()
 
     with pytest_warns_bounded(
-        DeprecationWarning,
+        FutureWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
+        lower="2.2.99",
         upper="2.99",
     ):
         check(assert_type(df.groupby("col1").apply(sum_to_list), pd.Series), pd.Series)
@@ -3478,8 +3499,9 @@ def test_groupby_apply() -> None:
         return x.sum()
 
     with pytest_warns_bounded(
-        DeprecationWarning,
+        FutureWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
+        lower="2.2.99",
         upper="2.99",
     ):
         check(
@@ -3491,8 +3513,9 @@ def test_groupby_apply() -> None:
         return x.sample()
 
     with pytest_warns_bounded(
-        DeprecationWarning,
+        FutureWarning,
         "DataFrameGroupBy.apply operated on the grouping columns.",
+        lower="2.2.99",
         upper="2.99",
     ):
         check(
@@ -3767,7 +3790,7 @@ def test_resample_150_changes() -> None:
         FutureWarning,
         "'M' is deprecated",
         lower="2.1.99",
-        upper="2.2.99",
+        upper="2.99",
         upper_exception=ValueError,
     ):
         frame.resample("M", group_keys=True)
@@ -3870,7 +3893,7 @@ def test_getattr_and_dataframe_groupby() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <built-in function (min|max)> is currently using",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(df.groupby("col1").col3.agg(min), pd.Series), pd.Series)
         check(
@@ -4382,12 +4405,11 @@ def test_transpose() -> None:
     df = pd.DataFrame({"a": [1, 1, 2], "b": [4, 5, 6]})
     check(assert_type(df.transpose(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.transpose(None), pd.DataFrame), pd.DataFrame)
-
     msg = "The copy keyword is deprecated and will be removed in a future"
     with pytest_warns_bounded(
         DeprecationWarning,
         msg,
-        lower="2.2.99",
+        lower="2.3.99",
     ):
         check(assert_type(df.transpose(copy=True), pd.DataFrame), pd.DataFrame)
 

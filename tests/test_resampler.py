@@ -21,7 +21,7 @@ from pandas.core.resample import DatetimeIndexResampler
 from typing_extensions import assert_type
 
 from tests import (
-    PD_LTE_22,
+    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -96,7 +96,7 @@ def test_aggregate() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(DF.resample("ME").aggregate(np.sum), DataFrame), DataFrame)
         check(assert_type(DF.resample("ME").agg(np.sum), DataFrame), DataFrame)
@@ -149,7 +149,7 @@ def test_interpolate() -> None:
 
 
 def test_interpolate_inplace() -> None:
-    if PD_LTE_22:
+    if PD_LTE_23:
         # Bug in main see https://github.com/pandas-dev/pandas/issues/58690
         check(
             assert_type(DF.resample("ME").interpolate(inplace=True), None), type(None)
@@ -328,7 +328,7 @@ def test_aggregate_series() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(assert_type(S.resample("ME").aggregate(np.sum), _AggRetType), Series)
         check(assert_type(S.resample("ME").agg(np.sum), _AggRetType), Series)
@@ -365,7 +365,7 @@ def test_interpolate_series() -> None:
 
 
 def test_interpolate_inplace_series() -> None:
-    if PD_LTE_22:
+    if PD_LTE_23:
         # Bug in main see https://github.com/pandas-dev/pandas/issues/58690
         check(assert_type(S.resample("ME").interpolate(inplace=True), None), type(None))
 
@@ -407,7 +407,7 @@ def test_aggregate_series_combinations() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(S.resample("ME").aggregate(np.sum), Series)
         check(S.resample("ME").aggregate([np.mean]), DataFrame)
@@ -432,7 +432,7 @@ def test_aggregate_frame_combinations() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         r"The provided callable <function (sum|mean) .*> is currently using ",
-        upper="2.2.99",
+        upper="2.3.99",
     ):
         check(DF.resample("ME").aggregate(np.sum), DataFrame)
         check(DF.resample("ME").aggregate([np.mean]), DataFrame)

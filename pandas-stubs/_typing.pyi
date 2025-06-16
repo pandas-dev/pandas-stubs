@@ -847,6 +847,7 @@ SeriesDType: TypeAlias = (
 S1 = TypeVar("S1", bound=SeriesDType, default=Any)
 # Like S1, but without `default=Any`.
 S2 = TypeVar("S2", bound=SeriesDType)
+S3 = TypeVar("S3", bound=SeriesDType)
 
 IndexingInt: TypeAlias = (
     int | np.int_ | np.integer | np.unsignedinteger | np.signedinteger | np.int8
@@ -995,7 +996,12 @@ TimeZones: TypeAlias = str | tzinfo | None | int
 
 # Evaluates to a DataFrame column in DataFrame.assign context.
 IntoColumn: TypeAlias = (
-    AnyArrayLike | Scalar | Callable[[DataFrame], AnyArrayLike | Scalar] | None
+    AnyArrayLike
+    | Scalar
+    | Callable[[DataFrame], AnyArrayLike | Scalar | list[Scalar] | range]
+    | list[Scalar]
+    | range
+    | None
 )
 
 DatetimeLike: TypeAlias = datetime.datetime | np.datetime64 | Timestamp
