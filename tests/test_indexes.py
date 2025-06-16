@@ -61,6 +61,20 @@ def test_index_astype() -> None:
         pd.DataFrame,
     )
 
+    df = pd.DataFrame({"a": [1, 2, 3]})
+    check(
+        assert_type(
+            pd.MultiIndex.from_product([["x", "y"], df.columns]), pd.MultiIndex
+        ),
+        pd.MultiIndex,
+    )
+    check(
+        assert_type(
+            pd.MultiIndex.from_product([["x", "y"], pd.Series([1, 2])]), pd.MultiIndex
+        ),
+        pd.MultiIndex,
+    )
+
 
 def test_multiindex_get_level_values() -> None:
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
