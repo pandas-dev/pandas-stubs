@@ -24,7 +24,7 @@ from pandas import Index
 import pandas.core.indexing as indexing
 from pandas.core.resample import DatetimeIndexResampler
 from pandas.core.series import (
-    UnknownSeries,
+    Series,
 )
 import sqlalchemy.engine
 from typing_extensions import (
@@ -83,7 +83,7 @@ class NDFrame(indexing.IndexingMixin):
     def ndim(self) -> int: ...
     @property
     def size(self) -> int: ...
-    def equals(self, other: UnknownSeries) -> _bool: ...
+    def equals(self, other: Series) -> _bool: ...
     def __neg__(self) -> Self: ...
     def __pos__(self) -> Self: ...
     def __nonzero__(self) -> None: ...
@@ -307,7 +307,7 @@ class NDFrame(indexing.IndexingMixin):
         labels: None = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        index: Hashable | Sequence[Hashable] | Index = ...,
         columns: Hashable | Iterable[Hashable],
         level: Level | None = ...,
         inplace: Literal[True],
@@ -319,7 +319,7 @@ class NDFrame(indexing.IndexingMixin):
         labels: None = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] | Index[Any],
+        index: Hashable | Sequence[Hashable] | Index,
         columns: Hashable | Iterable[Hashable] = ...,
         level: Level | None = ...,
         inplace: Literal[True],
@@ -328,7 +328,7 @@ class NDFrame(indexing.IndexingMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] | Index[Any],
+        labels: Hashable | Sequence[Hashable] | Index,
         *,
         axis: Axis = ...,
         index: None = ...,
@@ -343,7 +343,7 @@ class NDFrame(indexing.IndexingMixin):
         labels: None = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] | Index[Any] = ...,
+        index: Hashable | Sequence[Hashable] | Index = ...,
         columns: Hashable | Iterable[Hashable],
         level: Level | None = ...,
         inplace: Literal[False] = ...,
@@ -355,7 +355,7 @@ class NDFrame(indexing.IndexingMixin):
         labels: None = ...,
         *,
         axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] | Index[Any],
+        index: Hashable | Sequence[Hashable] | Index,
         columns: Hashable | Iterable[Hashable] = ...,
         level: Level | None = ...,
         inplace: Literal[False] = ...,
@@ -364,7 +364,7 @@ class NDFrame(indexing.IndexingMixin):
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] | Index[Any],
+        labels: Hashable | Sequence[Hashable] | Index,
         *,
         axis: Axis = ...,
         index: None = ...,

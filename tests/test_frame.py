@@ -336,7 +336,7 @@ def test_assign() -> None:
     def my_named_func_1(df: pd.DataFrame) -> pd.Series[str]:
         return df["a"]
 
-    def my_named_func_2(df: pd.DataFrame) -> pd.Series[Any]:
+    def my_named_func_2(df: pd.DataFrame) -> pd.Series:
         return df["a"]
 
     check(assert_type(df.assign(c=lambda df: df["a"] * 2), pd.DataFrame), pd.DataFrame)
@@ -702,8 +702,8 @@ def test_frame_iterator() -> None:
     """Test iterator methods for a dataframe GH1217."""
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
 
-    check(assert_type(next(df.items()), tuple[Hashable, "pd.Series"]), tuple)
-    check(assert_type(next(df.iterrows()), tuple[Hashable, "pd.Series"]), tuple)
+    check(assert_type(next(df.items()), tuple[Hashable, pd.Series]), tuple)
+    check(assert_type(next(df.iterrows()), tuple[Hashable, pd.Series]), tuple)
     check(assert_type(next(df.itertuples()), _PandasNamedTuple), _PandasNamedTuple)
 
 
@@ -3121,15 +3121,13 @@ def test_frame_stack() -> None:
         upper="2.3.99",
     ):
         check(
-            assert_type(
-                df_multi_level_cols2.stack(0), Union[pd.DataFrame, "pd.Series[Any]"]
-            ),
+            assert_type(df_multi_level_cols2.stack(0), Union[pd.DataFrame, pd.Series]),
             pd.DataFrame,
         )
         check(
             assert_type(
                 df_multi_level_cols2.stack([0, 1]),
-                Union[pd.DataFrame, "pd.Series[Any]"],
+                Union[pd.DataFrame, pd.Series],
             ),
             pd.Series,
         )
@@ -3137,14 +3135,14 @@ def test_frame_stack() -> None:
             check(
                 assert_type(
                     df_multi_level_cols2.stack(0, future_stack=False),
-                    Union[pd.DataFrame, "pd.Series[Any]"],
+                    Union[pd.DataFrame, pd.Series],
                 ),
                 pd.DataFrame,
             )
             check(
                 assert_type(
                     df_multi_level_cols2.stack(0, dropna=True, sort=True),
-                    Union[pd.DataFrame, "pd.Series[Any]"],
+                    Union[pd.DataFrame, pd.Series],
                 ),
                 pd.DataFrame,
             )

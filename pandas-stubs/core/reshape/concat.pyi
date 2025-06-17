@@ -4,7 +4,6 @@ from collections.abc import (
     Sequence,
 )
 from typing import (
-    Any,
     Literal,
     overload,
 )
@@ -40,7 +39,7 @@ def concat(  # type: ignore[overload-overlap]
 ) -> DataFrame: ...
 @overload
 def concat(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-    objs: Iterable[Series[Any]] | Mapping[HashableT1, Series[Any]],
+    objs: Iterable[Series] | Mapping[HashableT1, Series],
     *,
     axis: AxisIndex = ...,
     join: Literal["inner", "outer"] = ...,
@@ -51,12 +50,10 @@ def concat(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappin
     verify_integrity: bool = ...,
     sort: bool = ...,
     copy: bool = ...,
-) -> Series[Any]: ...
+) -> Series: ...
 @overload
 def concat(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-    objs: (
-        Iterable[Series[Any] | DataFrame] | Mapping[HashableT1, Series[Any] | DataFrame]
-    ),
+    objs: Iterable[Series | DataFrame] | Mapping[HashableT1, Series | DataFrame],
     *,
     axis: Axis = ...,
     join: Literal["inner", "outer"] = ...,
@@ -98,7 +95,7 @@ def concat(  # type: ignore[overload-overlap]
 ) -> DataFrame: ...
 @overload
 def concat(  # type: ignore[overload-overlap]
-    objs: Iterable[Series[Any] | None] | Mapping[HashableT1, Series[Any] | None],
+    objs: Iterable[Series | None] | Mapping[HashableT1, Series | None],
     *,
     axis: AxisIndex = ...,
     join: Literal["inner", "outer"] = ...,
@@ -109,12 +106,12 @@ def concat(  # type: ignore[overload-overlap]
     verify_integrity: bool = ...,
     sort: bool = ...,
     copy: bool = ...,
-) -> Series[Any]: ...
+) -> Series: ...
 @overload
 def concat(
     objs: (
-        Iterable[Series[Any] | DataFrame | None]
-        | Mapping[HashableT1, Series[Any] | DataFrame | None]
+        Iterable[Series | DataFrame | None]
+        | Mapping[HashableT1, Series | DataFrame | None]
     ),
     *,
     axis: Axis = ...,
@@ -129,7 +126,7 @@ def concat(
 ) -> DataFrame: ...
 
 # Including either of the next 2 overloads causes mypy to complain about
-# test_pandas.py:test_types_concat() in assert_type(pd.concat([s, s2]), "pd.Series")
+# test_pandas.py:test_types_concat() in assert_type(pd.concat([s, s2]), pd.Series)
 # It thinks that pd.concat([s, s2]) is Any .  May be due to Series being
 # Generic, or the axis argument being unspecified, and then there is partial
 # overlap with the first 2 overloads.

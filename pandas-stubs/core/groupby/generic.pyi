@@ -24,10 +24,7 @@ from pandas.core.groupby.groupby import (
     GroupBy,
     GroupByPlot,
 )
-from pandas.core.series import (
-    Series,
-    UnknownSeries,
-)
+from pandas.core.series import Series
 from typing_extensions import (
     Self,
     TypeAlias,
@@ -35,8 +32,8 @@ from typing_extensions import (
 
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
-    S1,
     S2,
+    S3,
     AggFuncTypeBase,
     AggFuncTypeFrame,
     ByT,
@@ -59,26 +56,26 @@ class NamedAgg(NamedTuple):
     column: str
     aggfunc: AggScalar
 
-class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
+class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     @overload
     def aggregate(
         self,
-        func: Callable[Concatenate[Series[S1], P], S2],
+        func: Callable[Concatenate[Series[S2], P], S3],
         /,
         *args,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
         **kwargs,
-    ) -> Series[S2]: ...
+    ) -> Series[S3]: ...
     @overload
     def aggregate(
         self,
-        func: Callable[[Series], S2],
+        func: Callable[[Series], S3],
         *args,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
         **kwargs,
-    ) -> Series[S2]: ...
+    ) -> Series[S3]: ...
     @overload
     def aggregate(
         self,
@@ -98,29 +95,29 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
         **kwargs,
-    ) -> UnknownSeries: ...
+    ) -> Series: ...
     agg = aggregate
     @overload
     def transform(
         self,
-        func: Callable[Concatenate[Series[S1], P], Series[S2]],
+        func: Callable[Concatenate[Series[S2], P], Series[S3]],
         /,
         *args: Any,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
         **kwargs: Any,
-    ) -> Series[S2]: ...
+    ) -> Series[S3]: ...
     @overload
     def transform(
         self,
         func: Callable,
         *args: Any,
         **kwargs: Any,
-    ) -> UnknownSeries: ...
+    ) -> Series: ...
     @overload
     def transform(
         self, func: TransformReductionListType, *args, **kwargs
-    ) -> UnknownSeries: ...
+    ) -> Series: ...
     def filter(
         self, func: Callable | str, dropna: bool = ..., *args, **kwargs
     ) -> Series: ...
@@ -155,7 +152,7 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
         self,
         indices: TakeIndexer,
         **kwargs,
-    ) -> Series[S1]: ...
+    ) -> Series[S2]: ...
     def skew(
         self,
         skipna: bool = ...,
@@ -166,10 +163,10 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
     def plot(self) -> GroupByPlot[Self]: ...
     def nlargest(
         self, n: int = ..., keep: NsmallestNlargestKeep = ...
-    ) -> Series[S1]: ...
+    ) -> Series[S2]: ...
     def nsmallest(
         self, n: int = ..., keep: NsmallestNlargestKeep = ...
-    ) -> Series[S1]: ...
+    ) -> Series[S2]: ...
     def idxmin(self, skipna: bool = ...) -> Series: ...
     def idxmax(self, skipna: bool = ...) -> Series: ...
     def corr(
@@ -207,7 +204,7 @@ class SeriesGroupBy(GroupBy[Series[S1]], Generic[S1, ByT]):
     @final  # type: ignore[misc]
     def __iter__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
-    ) -> Iterator[tuple[ByT, Series[S1]]]: ...
+    ) -> Iterator[tuple[ByT, Series[S2]]]: ...
 
 _TT = TypeVar("_TT", bound=Literal[True, False])
 

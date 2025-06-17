@@ -45,7 +45,7 @@ mypy round.py
 we get the following error message:
 
 ```text
-round.py:6: error: Argument "decimals" to "round" of "DataFrame" has incompatible type "DataFrame"; expected "Union[int, Dict[Any, Any], Series[Any]]"  [arg-type]
+round.py:6: error: Argument "decimals" to "round" of "DataFrame" has incompatible type "DataFrame"; expected "Union[int, Dict[Any, Any], Series]"  [arg-type]
 Found 1 error in 1 file (checked 1 source file)
 ```
 
