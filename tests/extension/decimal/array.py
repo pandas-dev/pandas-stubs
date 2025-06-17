@@ -134,13 +134,6 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         ):
             return NotImplemented
 
-        result = arraylike.maybe_dispatch_ufunc_to_dunder_op(
-            self, ufunc, method, *inputs, **kwargs
-        )
-        if result is not NotImplemented:
-            # e.g. test_array_ufunc_series_scalar_other
-            return result
-
         if "out" in kwargs:
             return arraylike.dispatch_ufunc_with_out(  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
                 self, ufunc, method, *inputs, **kwargs

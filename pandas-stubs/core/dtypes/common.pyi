@@ -10,7 +10,6 @@ from pandas._typing import (
 )
 
 from pandas.core.dtypes.inference import (
-    is_array_like as is_array_like,
     is_bool as is_bool,
     is_complex as is_complex,
     is_dict_like as is_dict_like,

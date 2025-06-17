@@ -18,17 +18,6 @@ dtylike = np.dtype(np.int32)
 ind = pd.Index([1, 2.0])
 
 
-def test_is_array_like() -> None:
-    check(assert_type(api.is_array_like(arr), bool), bool)
-    check(assert_type(api.is_array_like(nparr), bool), bool)
-    check(assert_type(api.is_array_like(dtylike), bool), bool)
-    check(
-        assert_type(api.is_array_like(dframe), bool),
-        bool,
-    )
-    check(assert_type(api.is_array_like(ind), bool), bool)
-
-
 def test_is_bool() -> None:
     check(assert_type(api.is_bool(obj), bool), bool)
     check(assert_type(api.is_bool(nparr), bool), bool)
