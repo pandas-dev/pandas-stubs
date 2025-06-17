@@ -46,7 +46,6 @@ from pandas._typing import (
     AnyAll,
     AxesData,
     DropKeep,
-    Dtype,
     DtypeArg,
     DtypeObj,
     FillnaOptions,
@@ -475,4 +474,5 @@ class Index(IndexOpsMixin[S1]):
     ) -> Self: ...
 
 UnknownIndex: TypeAlias = Index[Any]
+
 def ensure_index(index_like: Sequence | Index, copy: bool = ...) -> Index: ...

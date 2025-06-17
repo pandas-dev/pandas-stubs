@@ -1,6 +1,5 @@
 from typing import TypeVar
 
-import numpy as np
 from pandas.core.indexes.api import Index
 from typing_extensions import TypeAlias
 
