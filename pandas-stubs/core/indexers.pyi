@@ -1,6 +1,5 @@
 import numpy as np
 
-def length_of_indexer(indexer, target=...) -> int: ...
 def check_array_indexer(arrayArrayLike, indexer): ...
 
 class BaseIndexer:
