@@ -1093,3 +1093,12 @@ def test_series_value_counts() -> None:
         Series,
         np.float64,
     )
+
+
+def test_dataframe_value_counts() -> None:
+    df = DataFrame({"a": [1, 1, 2], "b": [4, 5, 6], "c": [5, 5, 2]})
+    check(
+        assert_type(df.groupby("a")[["b", "c"]].value_counts(), "Series[int]"),
+        Series,
+        np.int64,
+    )
