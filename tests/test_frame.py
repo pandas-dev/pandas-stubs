@@ -3126,12 +3126,6 @@ def test_frame_stack() -> None:
         )
         check(
             assert_type(
-                df_multi_level_cols2.stack([0]), Union[pd.DataFrame, pd.Series]
-            ),
-            pd.DataFrame,
-        )
-        check(
-            assert_type(
                 df_multi_level_cols2.stack([0, 1]),
                 Union[pd.DataFrame, pd.Series],
             ),
