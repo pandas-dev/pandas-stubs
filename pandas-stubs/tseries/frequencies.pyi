@@ -10,7 +10,6 @@ from pandas._typing import Frequency
 
 from pandas.tseries.offsets import DateOffset
 
-def get_period_alias(offset_str: str) -> str | None: ...
 @overload
 def to_offset(freq: None, is_period: bool = ...) -> None: ...
 @overload
