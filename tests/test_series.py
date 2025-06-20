@@ -3914,6 +3914,7 @@ def test_cumsum_timedelta() -> None:
 def test_series_unstack() -> None:
     df = pd.DataFrame([[1, 3, 5], [2, 4, 6]])
     s = df.transpose().stack([*range(df.index.nlevels)])
+    check(assert_type(s, Union[pd.Series, pd.DataFrame]), pd.Series)
     check(
         assert_type(
             s.unstack([*range(s.index.nlevels // 2)]),
