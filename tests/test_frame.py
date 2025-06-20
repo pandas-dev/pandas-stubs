@@ -4461,6 +4461,7 @@ def test_unstack() -> None:
     ).set_index([0, 1])
 
     check(assert_type(df.unstack(0), pd.DataFrame | pd.Series), pd.DataFrame)
+    check(assert_type(df.unstack([0]), pd.DataFrame | pd.Series), pd.DataFrame)
     check(
         assert_type(
             df.unstack(1, fill_value=pd.Timestamp(2023, 4, 5)), pd.DataFrame | pd.Series
