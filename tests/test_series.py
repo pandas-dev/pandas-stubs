@@ -3902,11 +3902,22 @@ def test_series_items() -> None:
 
 
 def test_cumsum_timedelta() -> None:
-
     s = pd.Series(pd.to_timedelta([1, 2, 3], "h"))
     check(assert_type(s.cumsum(), "TimedeltaSeries"), pd.Series, pd.Timedelta)
     check(
         assert_type(pd.Timestamp(0) + s.cumsum(), "TimestampSeries"),
         pd.Series,
         pd.Timestamp,
+    )
+
+
+def test_series_unstack() -> None:
+    df = pd.DataFrame([[1, 3, 5], [2, 4, 6]])
+    s = df.transpose().stack([*range(df.index.nlevels)])
+    check(
+        assert_type(
+            s.unstack([*range(s.index.nlevels // 2)]),
+            Union[pd.Series, pd.DataFrame],
+        ),
+        pd.DataFrame,
     )

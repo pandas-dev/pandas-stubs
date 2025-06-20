@@ -934,7 +934,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def explode(self) -> Series[S1]: ...
     def unstack(
         self,
-        level: Level = ...,
+        level: IndexLabel = ...,
         fill_value: int | _str | dict | None = ...,
     ) -> DataFrame: ...
     @overload
