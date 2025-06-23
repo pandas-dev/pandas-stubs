@@ -317,7 +317,11 @@ def test_types_assign() -> None:
     df = pd.DataFrame({"a": [1, 2, 3]})
     check(
         assert_type(
-            df.assign(b=lambda df: range(len(df)), c=lambda _: [10, 20, 30]),
+            df.assign(
+                b=lambda df: range(len(df)),
+                c=lambda _: [10, 20, 30],
+                d=lambda _: (10, 20, 30),
+            ),
             pd.DataFrame,
         ),
         pd.DataFrame,
@@ -326,6 +330,9 @@ def test_types_assign() -> None:
         assert_type(df.assign(b=range(len(df)), c=[10, 20, 30]), pd.DataFrame),
         pd.DataFrame,
     )
+
+    df = pd.DataFrame()
+    check(assert_type(df.assign(a=[], b=()), pd.DataFrame), pd.DataFrame)
 
 
 def test_assign() -> None:
