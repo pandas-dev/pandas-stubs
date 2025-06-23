@@ -998,8 +998,8 @@ TimeZones: TypeAlias = str | tzinfo | None | int
 IntoColumn: TypeAlias = (
     AnyArrayLike
     | Scalar
-    | Callable[[DataFrame], AnyArrayLike | Scalar | list[Scalar] | range]
-    | list[Scalar]
+    | Callable[[DataFrame], AnyArrayLike | Scalar | Sequence[Scalar] | range]
+    | Sequence[Scalar]
     | range
     | None
 )
