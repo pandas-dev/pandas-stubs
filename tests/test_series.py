@@ -868,7 +868,7 @@ def test_types_scalar_arithmetic() -> None:
 
 
 def test_types_complex_arithmetic() -> None:
-    # GH 103
+    """Test adding complex number to pd.Series[float] GH 103."""
     c = 1 + 1j
     s = pd.Series([1.0, 2.0, 3.0])
     x = s + c
@@ -3922,3 +3922,22 @@ def test_series_unstack() -> None:
         ),
         pd.DataFrame,
     )
+
+
+def test_series_index_type() -> None:
+    index = {"a": 3, "c": 4}
+    lst = [1, 2]
+
+    check(
+        assert_type(pd.Series(lst, index=index), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(pd.Series([1, 2], index=index.keys()), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        t = pd.Series([1, 2], index="ab")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
