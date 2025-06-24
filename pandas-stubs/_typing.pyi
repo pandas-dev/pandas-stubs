@@ -1,4 +1,7 @@
-from builtins import type as type_t
+from builtins import (
+    str,
+    type as type_t,
+)
 from collections.abc import (
     Callable,
     Hashable,

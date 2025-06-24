@@ -4,7 +4,6 @@ from collections.abc import (
     Hashable,
     Iterable,
     Iterator,
-    Mapping,
     Sequence,
 )
 import datetime
@@ -45,7 +44,6 @@ from typing_extensions import (
 import xarray as xr
 
 from pandas._typing import (
-    AxesData,
     DtypeObj,
     Scalar,
 )
@@ -3928,7 +3926,6 @@ def test_series_unstack() -> None:
 def test_series_index_type() -> None:
     index = {"a":3, "c": 4}
     lst = [1, 2]
-    assert_type(index, Mapping[str, Any])
 
     check(assert_type(pd.Series(lst, index=index), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(pd.Series([1, 2], index=index.keys()), "pd.Series[int]"), pd.Series, np.integer)
