@@ -14,6 +14,7 @@ from re import Pattern
 import sys
 from typing import (
     Any,
+    KeysView,
     Literal,
     Protocol,
     SupportsIndex,
@@ -796,9 +797,6 @@ SliceType: TypeAlias = Hashable | None
 
 num: TypeAlias = complex
 
-# AxesData is used for data for Index
-AxesData: TypeAlias = Axes | dict
-
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
 KeysArgType: TypeAlias = Any
 ListLikeT = TypeVar("ListLikeT", bound=ListLike)
@@ -852,6 +850,9 @@ S3 = TypeVar("S3", bound=SeriesDType)
 IndexingInt: TypeAlias = (
     int | np.int_ | np.integer | np.unsignedinteger | np.signedinteger | np.int8
 )
+
+# AxesData is used for data for Index
+AxesData: TypeAlias = Mapping[SeriesDType, Any] | Axes | KeysView
 
 # Any plain Python or numpy function
 Function: TypeAlias = np.ufunc | Callable[..., Any]

@@ -4,6 +4,7 @@ from collections.abc import (
     Hashable,
     Iterable,
     Iterator,
+    Mapping,
     Sequence,
 )
 import datetime
@@ -44,6 +45,7 @@ from typing_extensions import (
 import xarray as xr
 
 from pandas._typing import (
+    AxesData,
     DtypeObj,
     Scalar,
 )
@@ -867,7 +869,6 @@ def test_types_scalar_arithmetic() -> None:
     res_pow3: pd.Series = s.pow(0.5)
 
 
-def test_types_complex_arithmetic() -> None:
     # GH 103
     c = 1 + 1j
     s = pd.Series([1.0, 2.0, 3.0])
@@ -3922,3 +3923,15 @@ def test_series_unstack() -> None:
         ),
         pd.DataFrame,
     )
+
+
+def test_series_index_type() -> None:
+    index = {"a":3, "c": 4}
+    lst = [1, 2]
+    assert_type(index, Mapping[str, Any])
+
+    check(assert_type(pd.Series(lst, index=index), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(pd.Series([1, 2], index=index.keys()), "pd.Series[int]"), pd.Series, np.integer)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        t = pd.Series([1,2], index="ab")  # type: ignore # pyright: ignore[reportCallIssue, reportArgumentType]
