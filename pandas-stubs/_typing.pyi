@@ -1,11 +1,9 @@
-from builtins import (
-    str,
-    type as type_t,
-)
+from builtins import type as type_t
 from collections.abc import (
     Callable,
     Hashable,
     Iterator,
+    KeysView,
     Mapping,
     MutableSequence,
     Sequence,
@@ -17,7 +15,6 @@ from re import Pattern
 import sys
 from typing import (
     Any,
-    KeysView,
     Literal,
     Protocol,
     SupportsIndex,
@@ -855,7 +852,7 @@ IndexingInt: TypeAlias = (
 )
 
 # AxesData is used for data for Index
-AxesData: TypeAlias = Mapping[SeriesDType, Any] | Axes | KeysView
+AxesData: TypeAlias = Mapping[S3, Any] | Axes | KeysView
 
 # Any plain Python or numpy function
 Function: TypeAlias = np.ufunc | Callable[..., Any]

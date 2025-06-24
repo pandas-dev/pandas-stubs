@@ -866,12 +866,11 @@ def test_types_scalar_arithmetic() -> None:
     res_pow2: pd.Series = s**0.213
     res_pow3: pd.Series = s.pow(0.5)
 
-
     # GH 103
     c = 1 + 1j
-    s = pd.Series([1.0, 2.0, 3.0])
-    x = s + c
-    y = s - c
+    s_flt = pd.Series([1.0, 2.0, 3.0])
+    x = s_flt + c
+    y = s_flt - c
 
 
 def test_types_groupby() -> None:
@@ -3924,11 +3923,19 @@ def test_series_unstack() -> None:
 
 
 def test_series_index_type() -> None:
-    index = {"a":3, "c": 4}
+    index = {"a": 3, "c": 4}
     lst = [1, 2]
 
-    check(assert_type(pd.Series(lst, index=index), "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(pd.Series([1, 2], index=index.keys()), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(pd.Series(lst, index=index), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(pd.Series([1, 2], index=index.keys()), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        t = pd.Series([1,2], index="ab")  # type: ignore # pyright: ignore[reportCallIssue, reportArgumentType]
+        t = pd.Series([1, 2], index="ab")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
