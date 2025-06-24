@@ -866,11 +866,12 @@ def test_types_scalar_arithmetic() -> None:
     res_pow2: pd.Series = s**0.213
     res_pow3: pd.Series = s.pow(0.5)
 
-    # GH 103
+def test_types_complex_arithmetic() -> None:
+    """ Test adding complex number to pd.Series[float] GH 103."""
     c = 1 + 1j
-    s_flt = pd.Series([1.0, 2.0, 3.0])
-    x = s_flt + c
-    y = s_flt - c
+    s = pd.Series([1.0, 2.0, 3.0])
+    x = s + c
+    y = s - c
 
 
 def test_types_groupby() -> None:
