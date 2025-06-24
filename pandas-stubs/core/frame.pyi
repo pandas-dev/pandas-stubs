@@ -72,7 +72,7 @@ from typing_extensions import (
 )
 import xarray as xr
 
-from pandas._libs.lib import NoDefault
+from pandas._libs.lib import NoDefaultDoNotUse
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.nattype import NaTType
@@ -1107,192 +1107,192 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def groupby(  # pyright: ignore reportOverlappingOverload
         self,
         by: Scalar,
-        axis: AxisIndex | NoDefault = ...,
+        axis: AxisIndex | NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefault = ...,
+        observed: _bool | NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Scalar, Literal[True]]: ...
     @overload
     def groupby(
         self,
         by: Scalar,
-        axis: AxisIndex | NoDefault = ...,
+        axis: AxisIndex | NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefault = ...,
+        observed: _bool | NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Scalar, Literal[False]]: ...
     @overload
     def groupby(  # pyright: ignore reportOverlappingOverload
         self,
         by: DatetimeIndex,
-        axis: AxisIndex | NoDefault = ...,
+        axis: AxisIndex | NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefault = ...,
+        observed: _bool | NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timestamp, Literal[True]]: ...
     @overload
     def groupby(  # pyright: ignore reportOverlappingOverload
         self,
         by: DatetimeIndex,
-        axis: AxisIndex | NoDefault = ...,
+        axis: AxisIndex | NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefault = ...,
+        observed: _bool | NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timestamp, Literal[False]]: ...
     @overload
     def groupby(  # pyright: ignore reportOverlappingOverload
         self,
         by: TimedeltaIndex,
-        axis: AxisIndex | NoDefault = ...,
+        axis: AxisIndex | NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefault = ...,
+        observed: _bool | NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timedelta, Literal[True]]: ...
     @overload
     def groupby(
         self,
         by: TimedeltaIndex,
-        axis: AxisIndex | NoDefault = ...,
+        axis: AxisIndex | NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefault = ...,
+        observed: _bool | NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Timedelta, Literal[False]]: ...
     @overload
     def groupby(  # pyright: ignore reportOverlappingOverload
         self,
         by: PeriodIndex,
-        axis: AxisIndex | NoDefault = ...,
+        axis: AxisIndex | NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefault = ...,
+        observed: _bool | NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Period, Literal[True]]: ...
     @overload
     def groupby(
         self,
         by: PeriodIndex,
-        axis: AxisIndex | NoDefault = ...,
+        axis: AxisIndex | NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefault = ...,
+        observed: _bool | NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Period, Literal[False]]: ...
     @overload
     def groupby(  # pyright: ignore reportOverlappingOverload
         self,
         by: IntervalIndex[IntervalT],
-        axis: AxisIndex | NoDefault = ...,
+        axis: AxisIndex | NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefault = ...,
+        observed: _bool | NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[IntervalT, Literal[True]]: ...
     @overload
     def groupby(
         self,
         by: IntervalIndex[IntervalT],
-        axis: AxisIndex | NoDefault = ...,
+        axis: AxisIndex | NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefault = ...,
+        observed: _bool | NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[IntervalT, Literal[False]]: ...
     @overload
     def groupby(  # type: ignore[overload-overlap] # pyright: ignore reportOverlappingOverload
         self,
         by: MultiIndex | GroupByObjectNonScalar | None = ...,
-        axis: AxisIndex | NoDefault = ...,
+        axis: AxisIndex | NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefault = ...,
+        observed: _bool | NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[tuple, Literal[True]]: ...
     @overload
     def groupby(  # type: ignore[overload-overlap]
         self,
         by: MultiIndex | GroupByObjectNonScalar | None = ...,
-        axis: AxisIndex | NoDefault = ...,
+        axis: AxisIndex | NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefault = ...,
+        observed: _bool | NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[tuple, Literal[False]]: ...
     @overload
     def groupby(  # pyright: ignore reportOverlappingOverload
         self,
         by: Series[SeriesByT],
-        axis: AxisIndex | NoDefault = ...,
+        axis: AxisIndex | NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefault = ...,
+        observed: _bool | NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[SeriesByT, Literal[True]]: ...
     @overload
     def groupby(
         self,
         by: Series[SeriesByT],
-        axis: AxisIndex | NoDefault = ...,
+        axis: AxisIndex | NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefault = ...,
+        observed: _bool | NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[SeriesByT, Literal[False]]: ...
     @overload
     def groupby(
         self,
         by: CategoricalIndex | Index | Series,
-        axis: AxisIndex | NoDefault = ...,
+        axis: AxisIndex | NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefault = ...,
+        observed: _bool | NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Any, Literal[True]]: ...
     @overload
     def groupby(
         self,
         by: CategoricalIndex | Index | Series,
-        axis: AxisIndex | NoDefault = ...,
+        axis: AxisIndex | NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = ...,
         sort: _bool = ...,
         group_keys: _bool = ...,
-        observed: _bool | NoDefault = ...,
+        observed: _bool | NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Any, Literal[False]]: ...
     def pivot(
