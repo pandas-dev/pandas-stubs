@@ -62,7 +62,7 @@ _SeriesGroupByFuncArgs: TypeAlias = (
 )
 
 class Resampler(BaseGroupBy[NDFrameT]):
-    grouper: BinGrouper  # pyright: ignore[reportIncompatibleVariableOverride]  # variance incompatibility
+    grouper: BinGrouper  # pyright: ignore[reportIncompatibleVariableOverride]  # pyrefly: ignore  # variance incompatibility
     binner: DatetimeIndex | TimedeltaIndex | PeriodIndex
     exclusions: frozenset[Hashable]
     ax: Index

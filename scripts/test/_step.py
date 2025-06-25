@@ -9,6 +9,10 @@ ty_src = Step(
     name="Run ty on 'pandas-stubs' (using the local stubs) and on the local stubs",
     run=run.ty,
 )
+pyrefly_src = Step(
+    name="Run pyrefly on the local stubs",
+    run=run.pyrefly,
+)
 pyright_src = Step(
     name="Run pyright on 'tests' (using the local stubs) and on the local stubs",
     run=run.pyright_src,

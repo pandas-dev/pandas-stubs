@@ -38,6 +38,9 @@ jobs:
       - name: Run ty on 'pandas-stubs' (using the local stubs) and on the local stubs
         run: poetry run poe ty
 
+      - name: Run pyrefly on the local stubs
+        run: poetry run poe pyrefly
+
       - name: Run pyright on 'tests' (using the local stubs) and on the local stubs
         run: poetry run poe pyright
 
