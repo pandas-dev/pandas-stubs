@@ -1554,7 +1554,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def first_valid_index(self) -> Scalar: ...
     def last_valid_index(self) -> Scalar: ...
     @overload
-    def value_counts(
+    def value_counts(  # pyrefly: ignore
         self,
         normalize: Literal[False] = ...,
         sort: _bool = ...,
