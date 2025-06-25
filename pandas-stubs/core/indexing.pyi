@@ -17,8 +17,8 @@ _IndexSliceTuple: TypeAlias = tuple[
 _IndexSliceUnion: TypeAlias = slice | _IndexSliceTuple
 
 _IndexSliceUnionT = TypeVar(
-    "_IndexSliceUnionT", bound=_IndexSliceUnion
-)  # pyrefly: ignore
+    "_IndexSliceUnionT", bound=_IndexSliceUnion  # pyrefly: ignore
+)
 
 class _IndexSlice:
     def __getitem__(self, arg: _IndexSliceUnionT) -> _IndexSliceUnionT: ...
