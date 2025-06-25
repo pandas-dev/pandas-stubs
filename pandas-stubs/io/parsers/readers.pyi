@@ -19,7 +19,7 @@ from typing import (
 from pandas.core.frame import DataFrame
 from typing_extensions import Self
 
-from pandas._libs.lib import NoDefaultDoNotUse
+from pandas._libs.lib import _NoDefaultDoNotUse
 from pandas._typing import (
     CompressionOptions,
     CSVEngine,
@@ -98,7 +98,7 @@ def read_csv(
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
     storage_options: StorageOptions | None = ...,
-    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
 ) -> TextFileReader: ...
 @overload
 def read_csv(
@@ -162,7 +162,7 @@ def read_csv(
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
     storage_options: StorageOptions | None = ...,
-    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
 ) -> TextFileReader: ...
 @overload
 def read_csv(
@@ -226,7 +226,7 @@ def read_csv(
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
     storage_options: StorageOptions | None = ...,
-    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
 ) -> DataFrame: ...
 @overload
 def read_table(
@@ -427,7 +427,7 @@ def read_fwf(
     colspecs: Sequence[tuple[int, int]] | Literal["infer"] | None = ...,
     widths: Sequence[int] | None = ...,
     infer_nrows: int = ...,
-    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     date_format: dict[Hashable, str] | str | None = ...,
     iterator: Literal[True],
     chunksize: int | None = ...,
@@ -440,7 +440,7 @@ def read_fwf(
     colspecs: Sequence[tuple[int, int]] | Literal["infer"] | None = ...,
     widths: Sequence[int] | None = ...,
     infer_nrows: int = ...,
-    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     date_format: dict[Hashable, str] | str | None = ...,
     iterator: bool = ...,
     chunksize: int,
@@ -453,7 +453,7 @@ def read_fwf(
     colspecs: Sequence[tuple[int, int]] | Literal["infer"] | None = ...,
     widths: Sequence[int] | None = ...,
     infer_nrows: int = ...,
-    dtype_backend: DtypeBackend | NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     date_format: dict[Hashable, str] | str | None = ...,
     iterator: Literal[False] = ...,
     chunksize: None = ...,
