@@ -105,7 +105,7 @@ class Timestamp(datetime, SupportsIndex):
 
     if sys.version_info >= (3, 12):
         @classmethod
-        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride]
+        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore
             cls, t: float, tz: _tzinfo | str | None = ...
         ) -> Self: ...
     else:
