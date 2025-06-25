@@ -19,7 +19,7 @@ import pyxlsb.workbook
 from typing_extensions import Self
 from xlrd.book import Book
 
-from pandas._libs.lib import NoDefault
+from pandas._libs.lib import _NoDefaultDoNotUse
 from pandas._typing import (
     Dtype,
     DtypeBackend,
@@ -75,7 +75,7 @@ def read_excel(
     comment: str | None = ...,
     skipfooter: int = ...,
     storage_options: StorageOptions = ...,
-    dtype_backend: DtypeBackend | NoDefault = ...,
+    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     engine_kwargs: dict[str, Any] | None = ...,
 ) -> dict[IntStrT, DataFrame]: ...
 @overload
@@ -118,7 +118,7 @@ def read_excel(
     comment: str | None = ...,
     skipfooter: int = ...,
     storage_options: StorageOptions = ...,
-    dtype_backend: DtypeBackend | NoDefault = ...,
+    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     engine_kwargs: dict[str, Any] | None = ...,
 ) -> dict[str, DataFrame]: ...
 @overload
@@ -162,7 +162,7 @@ def read_excel(  # type: ignore[overload-cannot-match]
     comment: str | None = ...,
     skipfooter: int = ...,
     storage_options: StorageOptions = ...,
-    dtype_backend: DtypeBackend | NoDefault = ...,
+    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     engine_kwargs: dict[str, Any] | None = ...,
 ) -> dict[int | str, DataFrame]: ...
 @overload
@@ -205,7 +205,7 @@ def read_excel(
     comment: str | None = ...,
     skipfooter: int = ...,
     storage_options: StorageOptions = ...,
-    dtype_backend: DtypeBackend | NoDefault = ...,
+    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     engine_kwargs: dict[str, Any] | None = ...,
 ) -> DataFrame: ...
 

@@ -12,7 +12,7 @@ from typing import (
 
 from pandas.core.frame import DataFrame
 
-from pandas._libs.lib import NoDefault
+from pandas._libs.lib import _NoDefaultDoNotUse
 from pandas._typing import (
     CompressionOptions,
     CSVEngine,
@@ -30,7 +30,7 @@ from pandas.io.parsers import TextFileReader
 def read_clipboard(
     sep: str | None = ...,
     *,
-    dtype_backend: DtypeBackend | NoDefault = ...,
+    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
@@ -89,7 +89,7 @@ def read_clipboard(
 def read_clipboard(
     sep: str | None = ...,
     *,
-    dtype_backend: DtypeBackend | NoDefault = ...,
+    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,
@@ -148,7 +148,7 @@ def read_clipboard(
 def read_clipboard(
     sep: str | None = ...,
     *,
-    dtype_backend: DtypeBackend | NoDefault = ...,
+    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
     names: ListLikeHashable | None = ...,

@@ -12,7 +12,7 @@ from typing import (
 
 from pandas.core.frame import DataFrame
 
-from pandas._libs.lib import NoDefault
+from pandas._libs.lib import _NoDefaultDoNotUse
 from pandas._typing import (
     DtypeBackend,
     FilePath,
@@ -53,6 +53,6 @@ def read_html(
     keep_default_na: bool = ...,
     displayed_only: bool = ...,
     extract_links: Literal["header", "footer", "body", "all"] | None = ...,
-    dtype_backend: DtypeBackend | NoDefault = ...,
+    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     storage_options: StorageOptions = ...,
 ) -> list[DataFrame]: ...

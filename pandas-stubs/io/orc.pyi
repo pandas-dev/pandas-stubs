@@ -2,7 +2,7 @@ from typing import Any
 
 from pandas import DataFrame
 
-from pandas._libs.lib import NoDefault
+from pandas._libs.lib import _NoDefaultDoNotUse
 from pandas._typing import (
     DtypeBackend,
     FilePath,
@@ -13,7 +13,7 @@ from pandas._typing import (
 def read_orc(
     path: FilePath | ReadBuffer[bytes],
     columns: list[HashableT] | None = ...,
-    dtype_backend: DtypeBackend | NoDefault = ...,
+    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     # TODO type with the correct pyarrow types
     # filesystem: pyarrow.fs.FileSystem | fsspec.spec.AbstractFileSystem
     filesystem: Any | None = ...,
