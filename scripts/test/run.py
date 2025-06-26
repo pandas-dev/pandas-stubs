@@ -156,3 +156,8 @@ def released_mypy():
 def ty():
     cmd = ["ty", "check", "pandas-stubs"]
     subprocess.run(cmd, check=True)
+
+
+def pyrefly():
+    cmd = ["pyrefly", "check", "pandas-stubs"]
+    subprocess.run(cmd, check=True)
