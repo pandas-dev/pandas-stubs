@@ -5,6 +5,7 @@ from collections.abc import (
     Sequence,
 )
 from typing import (
+    Literal,
     overload,
 )
 
@@ -140,7 +141,11 @@ class MultiIndex(Index):
     def swaplevel(self, i: int = ..., j: int = ...): ...
     def reorder_levels(self, order): ...
     def sortlevel(
-        self, level: int = ..., ascending: bool = ..., sort_remaining: bool = ...
+        self,
+        level: int = ...,
+        ascending: bool = ...,
+        sort_remaining: bool = ...,
+        na_position: Literal["first", "last"] = ...,
     ): ...
     def get_indexer(self, target, method=..., limit=..., tolerance=...): ...
     def get_indexer_non_unique(self, target): ...
