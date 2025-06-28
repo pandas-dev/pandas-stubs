@@ -1102,3 +1102,23 @@ def test_dataframe_value_counts() -> None:
         Series,
         np.int64,
     )
+
+
+def test_dataframe_apply_kwargs() -> None:
+    # GH 1266
+    df = DataFrame({"group": ["A", "A", "B", "B", "C"], "value": [10, 15, 10, 25, 30]})
+
+    def add_constant_to_mean(group: DataFrame, constant: int) -> DataFrame:
+        mean_val = group["value"].mean()
+        group["adjusted"] = mean_val + constant
+        return group
+
+    check(
+        assert_type(
+            df.groupby("group", group_keys=False)[["group", "value"]].apply(
+                add_constant_to_mean, constant=5
+            ),
+            DataFrame,
+        ),
+        DataFrame,
+    )

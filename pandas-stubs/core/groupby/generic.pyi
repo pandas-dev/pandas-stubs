@@ -11,6 +11,7 @@ from typing import (
     Generic,
     Literal,
     NamedTuple,
+    Protocol,
     TypeVar,
     final,
     overload,
@@ -208,26 +209,35 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
 
 _TT = TypeVar("_TT", bound=Literal[True, False])
 
+class DFCallable1(Protocol):
+    def __call__(self, df: DataFrame, /, *args, **kwargs) -> Scalar | list | dict: ...
+
+class DFCallable2(Protocol):
+    def __call__(self, df: DataFrame, /, *args, **kwargs) -> DataFrame | Series: ...
+
+class DFCallable3(Protocol):
+    def __call__(self, df: Iterable, /, *args, **kwargs) -> float: ...
+
 class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     # error: Overload 3 for "apply" will never be used because its parameters overlap overload 1
     @overload  # type: ignore[override]
     def apply(
         self,
-        func: Callable[[DataFrame], Scalar | list | dict],
+        func: DFCallable1,
         *args,
         **kwargs,
     ) -> Series: ...
     @overload
     def apply(
         self,
-        func: Callable[[DataFrame], Series | DataFrame],
+        func: DFCallable2,
         *args,
         **kwargs,
     ) -> DataFrame: ...
     @overload
     def apply(  # pyright: ignore[reportOverlappingOverload]
         self,
-        func: Callable[[Iterable], float],
+        func: DFCallable3,
         *args,
         **kwargs,
     ) -> DataFrame: ...
