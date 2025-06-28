@@ -1739,9 +1739,18 @@ class Series(IndexOpsMixin[S1], NDFrame):
         *args: Any,
         **kwargs: Any,
     ) -> Series[S1]: ...
+    @overload
+    def cumprod(
+        self: Series[_str],
+        axis: AxisIndex = ...,
+        skipna: _bool = ...,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Never: ...
+    @overload
     def cumprod(
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex = ...,
         skipna: _bool = ...,
         *args: Any,
         **kwargs: Any,
@@ -2219,6 +2228,13 @@ class TimestampSeries(Series[Timestamp]):
         **kwargs: Any,
     ) -> Timedelta: ...
     def diff(self, periods: int = ...) -> TimedeltaSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def cumprod(
+        self,
+        axis: AxisIndex = ...,
+        skipna: _bool = ...,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Never: ...
 
 class TimedeltaSeries(Series[Timedelta]):
     # ignores needed because of mypy
@@ -2324,12 +2340,26 @@ class TimedeltaSeries(Series[Timedelta]):
         *args: Any,
         **kwargs: Any,
     ) -> TimedeltaSeries: ...
+    def cumprod(
+        self,
+        axis: AxisIndex = ...,
+        skipna: _bool = ...,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Never: ...
 
 class PeriodSeries(Series[Period]):
     @property
     def dt(self) -> PeriodProperties: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __sub__(self, other: PeriodSeries) -> OffsetSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def diff(self, periods: int = ...) -> OffsetSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def cumprod(
+        self,
+        axis: AxisIndex = ...,
+        skipna: _bool = ...,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Never: ...
 
 class OffsetSeries(Series[BaseOffset]):
     @overload  # type: ignore[override]
@@ -2338,6 +2368,13 @@ class OffsetSeries(Series[BaseOffset]):
     def __radd__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: BaseOffset
     ) -> OffsetSeries: ...
+    def cumprod(
+        self,
+        axis: AxisIndex = ...,
+        skipna: _bool = ...,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Never: ...
 
 class IntervalSeries(Series[Interval[_OrderableT]], Generic[_OrderableT]):
     @property
