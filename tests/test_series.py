@@ -3941,3 +3941,8 @@ def test_series_index_type() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         t = pd.Series([1, 2], index="ab")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+
+
+def test_timedelta_index_cumsum() -> None:
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(pd.Series([pd.Timedelta(0), pd.Timedelta(1)]).cumprod(), Never)

@@ -172,6 +172,10 @@ def test_difference_none() -> None:
     # GH 253
     check(assert_type(ind.difference([1]), "pd.Index[int]"), pd.Index)
 
+    # check with sort parameter
+    check(assert_type(ind.difference([1, None], sort=False), "pd.Index[int]"), pd.Index)
+    check(assert_type(ind.difference([1], sort=True), "pd.Index[int]"), pd.Index)
+
 
 def test_str_split() -> None:
     # GH 194
@@ -308,6 +312,20 @@ def test_range_index_union():
     check(
         assert_type(
             pd.RangeIndex(0, 10).union(["a", "b", "c"]),
+            Union[pd.Index, "pd.Index[int]", pd.RangeIndex],
+        ),
+        pd.Index,
+    )
+    check(
+        assert_type(
+            pd.RangeIndex(0, 10).union(["a", "b", "c"], sort=True),
+            Union[pd.Index, "pd.Index[int]", pd.RangeIndex],
+        ),
+        pd.Index,
+    )
+    check(
+        assert_type(
+            pd.RangeIndex(0, 10).union(["a", "b", "c"], sort=False),
             Union[pd.Index, "pd.Index[int]", pd.RangeIndex],
         ),
         pd.Index,
@@ -1361,3 +1379,10 @@ def test_index_dict() -> None:
         ),
         pd.TimedeltaIndex,
     )
+
+
+def test_index_infer_objects() -> None:
+    """Test infer_objects method on Index."""
+    df = pd.DataFrame({"A": ["a", 1, 2, 3]})
+    idx = df.set_index("A").index[1:]
+    check(assert_type(idx.infer_objects(), pd.Index), pd.Index)

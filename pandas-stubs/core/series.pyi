@@ -2324,6 +2324,13 @@ class TimedeltaSeries(Series[Timedelta]):
         *args: Any,
         **kwargs: Any,
     ) -> TimedeltaSeries: ...
+    def cumprod(
+        self,
+        axis: AxisIndex | None = ...,
+        skipna: _bool = ...,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Never: ...
 
 class PeriodSeries(Series[Period]):
     @property
