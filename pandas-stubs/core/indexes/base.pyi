@@ -52,6 +52,7 @@ from pandas._typing import (
     Label,
     Level,
     MaskType,
+    NaPosition,
     ReindexMethod,
     SliceType,
     TimedeltaDtypeArg,
@@ -312,13 +313,6 @@ class Index(IndexOpsMixin[S1]):
     def rename(self, name, inplace: Literal[True]) -> None: ...
     @property
     def nlevels(self) -> int: ...
-    def sortlevel(
-        self,
-        level=...,
-        ascending: bool = ...,
-        sort_remaining=...,
-        na_position: Literal["first", "last"] = ...,
-    ): ...
     def get_level_values(self, level: int | _str) -> Index: ...
     def droplevel(self, level: Level | list[Level] = ...): ...
     @property
@@ -405,8 +399,8 @@ class Index(IndexOpsMixin[S1]):
         *,
         return_indexer: bool = ...,
         ascending: bool = ...,
-        na_position: Literal["first", "last"] = ...,
-        key: Callable | None = None,
+        na_position: NaPosition = ...,
+        key: Callable[[Index], Index] | None = None,
     ): ...
     def sort(self, *args, **kwargs) -> None: ...
     def argsort(self, *args, **kwargs): ...

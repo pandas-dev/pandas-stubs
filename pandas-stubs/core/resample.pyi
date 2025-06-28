@@ -11,17 +11,12 @@ from typing import (
 import numpy as np
 from pandas import (
     DataFrame,
-    DatetimeIndex,
-    Index,
-    PeriodIndex,
     Series,
     Timedelta,
-    TimedeltaIndex,
 )
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.core.groupby.grouper import Grouper
-from pandas.core.groupby.ops import BinGrouper
 from typing_extensions import (
     Self,
     TypeAlias,
@@ -62,10 +57,6 @@ _SeriesGroupByFuncArgs: TypeAlias = (
 )
 
 class Resampler(BaseGroupBy[NDFrameT]):
-    _grouper: BinGrouper
-    binner: DatetimeIndex | TimedeltaIndex | PeriodIndex
-    exclusions: frozenset[Hashable]
-    ax: Index
     def __getattr__(self, attr: str) -> SeriesGroupBy: ...
     @overload
     def aggregate(
