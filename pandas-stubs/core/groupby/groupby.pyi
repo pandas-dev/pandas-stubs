@@ -3,7 +3,6 @@ from collections.abc import (
     Hashable,
     Iterable,
     Iterator,
-    Mapping,
     Sequence,
 )
 import datetime as dt
@@ -74,14 +73,6 @@ from pandas._typing import (
 
 from pandas.plotting import PlotAccessor
 
-_KeysArgType: TypeAlias = (
-    Hashable
-    | list[Hashable]
-    | Callable[[Hashable], Hashable]
-    | list[Callable[[Hashable], Hashable]]
-    | Mapping[Hashable, Hashable]
-)
-
 _ResamplerGroupBy: TypeAlias = (
     DatetimeIndexResamplerGroupby[NDFrameT]
     | PeriodIndexResamplerGroupby[NDFrameT]
@@ -89,9 +80,6 @@ _ResamplerGroupBy: TypeAlias = (
 )
 
 class GroupBy(BaseGroupBy[NDFrameT]):
-    as_index: bool
-    sort: bool
-    observed: bool
     def __getattr__(self, attr: str) -> Any: ...
     def apply(self, func: Callable | str, *args, **kwargs) -> NDFrameT: ...
     @final
@@ -355,10 +343,6 @@ class GroupByPlot(PlotAccessor, Generic[_GroupByT]):
     # def __getattr__(self, name: str): ...
 
 class BaseGroupBy(SelectionMixin[NDFrameT], GroupByIndexingMixin):
-    axis: AxisInt
-    keys: _KeysArgType | None
-    level: IndexLabel | None
-    group_keys: bool
     @final
     def __len__(self) -> int: ...
     @final
