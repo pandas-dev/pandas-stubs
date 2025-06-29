@@ -21,7 +21,6 @@ from pandas.core.base import SelectionMixin
 from pandas.core.frame import DataFrame
 from pandas.core.groupby import (
     generic,
-    ops,
 )
 from pandas.core.groupby.indexing import (
     GroupByIndexingMixin,
@@ -357,7 +356,6 @@ class GroupByPlot(PlotAccessor, Generic[_GroupByT]):
 
 class BaseGroupBy(SelectionMixin[NDFrameT], GroupByIndexingMixin):
     axis: AxisInt
-    grouper: ops.BaseGrouper
     keys: _KeysArgType | None
     level: IndexLabel | None
     group_keys: bool

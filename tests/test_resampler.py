@@ -8,8 +8,6 @@ import numpy as np
 import pandas as pd
 from pandas import (
     DataFrame,
-    DatetimeIndex,
-    Index,
     Series,
     date_range,
 )
@@ -38,7 +36,6 @@ _AggRetType = Union[DataFrame, Series]
 
 def test_props() -> None:
     check(assert_type(DF.resample("ME").obj, DataFrame), DataFrame)
-    check(assert_type(DF.resample("ME").ax, Index), DatetimeIndex)
 
 
 def test_iter() -> None:
@@ -273,7 +270,6 @@ def test_transform() -> None:
 
 def test_props_series() -> None:
     check(assert_type(S.resample("ME").obj, Series), Series)
-    check(assert_type(S.resample("ME").ax, Index), DatetimeIndex)
 
 
 def test_iter_series() -> None:
