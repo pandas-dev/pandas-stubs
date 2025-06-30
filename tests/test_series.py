@@ -3941,3 +3941,37 @@ def test_series_index_type() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         t = pd.Series([1, 2], index="ab")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+
+
+def test_timedelta_index_cumprod() -> None:
+    dates = pd.Series(
+        [
+            pd.Timestamp("2020-01-01"),
+            pd.Timestamp("2020-01-15"),
+            pd.Timestamp("2020-02-01"),
+        ],
+        dtype="datetime64[ns]",
+    )
+    as_period_series = pd.Series(pd.PeriodIndex(dates, freq="M"))
+
+    offset_series = as_period_series - as_period_series
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(pd.Series(["a", "b"]).cumprod(), Never)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(offset_series.cumprod(), Never)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(pd.Series([pd.Timedelta(0), pd.Timedelta(1)]).cumprod(), Never)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(
+            pd.Series(
+                [pd.Timestamp("2024-04-29"), pd.Timestamp("2034-08-28")]
+            ).cumprod(),
+            Never,
+        )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(as_period_series.cumprod(), Never)
