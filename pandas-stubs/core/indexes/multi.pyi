@@ -4,9 +4,7 @@ from collections.abc import (
     Iterable,
     Sequence,
 )
-from typing import (
-    overload,
-)
+from typing import overload
 
 import numpy as np
 import pandas as pd
@@ -20,7 +18,9 @@ from pandas._typing import (
     Dtype,
     DtypeArg,
     HashableT,
+    Level,
     MaskType,
+    NaPosition,
     SequenceNotStr,
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -140,7 +140,11 @@ class MultiIndex(Index):
     def swaplevel(self, i: int = ..., j: int = ...): ...
     def reorder_levels(self, order): ...
     def sortlevel(
-        self, level: int = ..., ascending: bool = ..., sort_remaining: bool = ...
+        self,
+        level: Level | Sequence[Level] = ...,
+        ascending: bool = ...,
+        sort_remaining: bool = ...,
+        na_position: NaPosition = ...,
     ): ...
     def get_indexer(self, target, method=..., limit=..., tolerance=...): ...
     def get_indexer_non_unique(self, target): ...

@@ -12,7 +12,6 @@ from typing import (
 import numpy as np
 from pandas import (
     DataFrame,
-    DatetimeIndex,
     Index,
     Series,
     Timedelta,
@@ -74,7 +73,6 @@ def test_frame_groupby_resample() -> None:
 
     # props
     check(assert_type(GB_DF.resample("ME").obj, DataFrame), DataFrame)
-    check(assert_type(GB_DF.resample("ME").ax, Index), DatetimeIndex)
 
     # agg funcs
     with pytest_warns_bounded(
@@ -329,7 +327,6 @@ def test_series_groupby_resample() -> None:
 
     # props
     check(assert_type(GB_S.resample("ME").obj, "Series[float]"), Series, float)
-    check(assert_type(GB_S.resample("ME").ax, Index), DatetimeIndex)
 
     # agg funcs
     check(assert_type(GB_S.resample("ME").sum(), "Series[float]"), Series, float)
