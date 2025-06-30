@@ -11,6 +11,7 @@ from typing import (
     Generic,
     Literal,
     NamedTuple,
+    Protocol,
     TypeVar,
     final,
     overload,
@@ -208,28 +209,45 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
 
 _TT = TypeVar("_TT", bound=Literal[True, False])
 
+# ty ignore needed because of https://github.com/astral-sh/ty/issues/157#issuecomment-3017337945
+class DFCallable1(Protocol[P]):  # ty: ignore[invalid-argument-type]
+    def __call__(
+        self, df: DataFrame, /, *args: P.args, **kwargs: P.kwargs
+    ) -> Scalar | list | dict: ...
+
+class DFCallable2(Protocol[P]):  # ty: ignore[invalid-argument-type]
+    def __call__(
+        self, df: DataFrame, /, *args: P.args, **kwargs: P.kwargs
+    ) -> DataFrame | Series: ...
+
+class DFCallable3(Protocol[P]):  # ty: ignore[invalid-argument-type]
+    def __call__(self, df: Iterable, /, *args: P.args, **kwargs: P.kwargs) -> float: ...
+
 class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     # error: Overload 3 for "apply" will never be used because its parameters overlap overload 1
     @overload  # type: ignore[override]
     def apply(
         self,
-        func: Callable[[DataFrame], Scalar | list | dict],
-        *args,
-        **kwargs,
+        func: DFCallable1[P],
+        /,
+        *args: P.args,
+        **kwargs: P.kwargs,
     ) -> Series: ...
     @overload
     def apply(
         self,
-        func: Callable[[DataFrame], Series | DataFrame],
-        *args,
-        **kwargs,
+        func: DFCallable2[P],
+        /,
+        *args: P.args,
+        **kwargs: P.kwargs,
     ) -> DataFrame: ...
     @overload
-    def apply(  # pyright: ignore[reportOverlappingOverload]
+    def apply(
         self,
-        func: Callable[[Iterable], float],
-        *args,
-        **kwargs,
+        func: DFCallable3[P],
+        /,
+        *args: P.args,
+        **kwargs: P.kwargs,
     ) -> DataFrame: ...
     # error: overload 1 overlaps overload 2 because of different return types
     @overload

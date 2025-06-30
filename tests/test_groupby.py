@@ -271,7 +271,7 @@ def test_frame_groupby_resample() -> None:
 
             check(
                 assert_type(
-                    GB_DF.apply(resample_interpolate, include_groups=False),
+                    GB_DF.apply(resample_interpolate),
                     DataFrame,
                 ),
                 DataFrame,
@@ -284,7 +284,6 @@ def test_frame_groupby_resample() -> None:
                 assert_type(
                     GB_DF.apply(
                         resample_interpolate_linear,
-                        include_groups=False,
                     ),
                     DataFrame,
                 ),
@@ -1099,3 +1098,28 @@ def test_dataframe_value_counts() -> None:
         Series,
         np.int64,
     )
+
+
+def test_dataframe_apply_kwargs() -> None:
+    # GH 1266
+    df = DataFrame({"group": ["A", "A", "B", "B", "C"], "value": [10, 15, 10, 25, 30]})
+
+    def add_constant_to_mean(group: DataFrame, constant: int) -> DataFrame:
+        mean_val = group["value"].mean()
+        group["adjusted"] = mean_val + constant
+        return group
+
+    check(
+        assert_type(
+            df.groupby("group", group_keys=False)[["group", "value"]].apply(
+                add_constant_to_mean, constant=5
+            ),
+            DataFrame,
+        ),
+        DataFrame,
+    )
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.groupby("group", group_keys=False)[["group", "value"]].apply(
+            add_constant_to_mean,
+            constant="5",  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        )
