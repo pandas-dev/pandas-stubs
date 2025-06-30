@@ -1121,3 +1121,8 @@ def test_dataframe_apply_kwargs() -> None:
         ),
         DataFrame,
     )
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.groupby("group", group_keys=False)[["group", "value"]].apply(
+            add_constant_to_mean,
+            constant="5",  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        )
