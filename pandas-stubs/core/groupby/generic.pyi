@@ -209,6 +209,7 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
 
 _TT = TypeVar("_TT", bound=Literal[True, False])
 
+# ty ignore needed because of https://github.com/astral-sh/ty/issues/157#issuecomment-3017337945
 class DFCallable1(Protocol[P]):  # ty: ignore[invalid-argument-type]
     def __call__(
         self, df: DataFrame, /, *args: P.args, **kwargs: P.kwargs
@@ -227,23 +228,26 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload  # type: ignore[override]
     def apply(
         self,
-        func: DFCallable1,
-        *args,
-        **kwargs,
+        func: DFCallable1[P],
+        /,
+        *args: P.args,
+        **kwargs: P.kwargs,
     ) -> Series: ...
     @overload
     def apply(
         self,
-        func: DFCallable2,
-        *args,
-        **kwargs,
+        func: DFCallable2[P],
+        /,
+        *args: P.args,
+        **kwargs: P.kwargs,
     ) -> DataFrame: ...
     @overload
-    def apply(  # pyright: ignore[reportOverlappingOverload]
+    def apply(
         self,
-        func: DFCallable3,
-        *args,
-        **kwargs,
+        func: DFCallable3[P],
+        /,
+        *args: P.args,
+        **kwargs: P.kwargs,
     ) -> DataFrame: ...
     # error: overload 1 overlaps overload 2 because of different return types
     @overload

@@ -273,7 +273,7 @@ def test_frame_groupby_resample() -> None:
 
             check(
                 assert_type(
-                    GB_DF.apply(resample_interpolate, include_groups=False),
+                    GB_DF.apply(resample_interpolate),
                     DataFrame,
                 ),
                 DataFrame,
@@ -286,7 +286,6 @@ def test_frame_groupby_resample() -> None:
                 assert_type(
                     GB_DF.apply(
                         resample_interpolate_linear,
-                        include_groups=False,
                     ),
                     DataFrame,
                 ),
