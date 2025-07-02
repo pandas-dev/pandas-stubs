@@ -33,8 +33,6 @@ packages = [{ "include" = "pandas-stubs" }]
 python = ">=3.10"
 types-pytz = ">= 2022.1.1"
 numpy = ">= 1.23.5"
-ty = "^0.0.1a8"
-pyrefly = "^0.21.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "1.16.0"
@@ -42,6 +40,8 @@ pandas = "2.3.0"
 pyarrow = ">=10.0.1"
 pytest = ">=7.1.2"
 pyright = ">=1.1.400"
+ty = "^0.0.1a8"
+pyrefly = "^0.21.0"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
 typing-extensions = ">=4.4.0"
