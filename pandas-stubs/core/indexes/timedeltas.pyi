@@ -5,6 +5,7 @@ from collections.abc import (
 import datetime as dt
 from typing import (
     Literal,
+    final,
     overload,
 )
 
@@ -73,6 +74,7 @@ class TimedeltaIndex(DatetimeTimedeltaMixin[Timedelta], TimedeltaIndexProperties
     def searchsorted(self, value, side: str = ..., sorter=...): ...
     @property
     def inferred_type(self) -> str: ...
+    @final
     def to_series(self, index=..., name: Hashable = ...) -> TimedeltaSeries: ...
     def shift(self, periods: int = ..., freq=...) -> Self: ...
 

@@ -67,6 +67,7 @@ from pandas.io.sql import SQLTable
 class NDFrame(indexing.IndexingMixin):
     __hash__: ClassVar[None]  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]
 
+    @final
     def set_flags(
         self,
         *,
@@ -84,18 +85,24 @@ class NDFrame(indexing.IndexingMixin):
     @property
     def size(self) -> int: ...
     def equals(self, other: Series) -> _bool: ...
+    @final
     def __neg__(self) -> Self: ...
+    @final
     def __pos__(self) -> Self: ...
+    @final
     def __nonzero__(self) -> None: ...
     @final
     def bool(self) -> _bool: ...
     def __abs__(self) -> Self: ...
+    @final
     def __round__(self, decimals: int = ...) -> Self: ...
+    @final
     def __contains__(self, key) -> _bool: ...
     @property
     def empty(self) -> _bool: ...
     __array_priority__: int = ...
     def __array__(self, dtype=...) -> np.ndarray: ...
+    @final
     def to_excel(
         self,
         excel_writer,
@@ -113,6 +120,7 @@ class NDFrame(indexing.IndexingMixin):
         inf_rep: _str = ...,
         freeze_panes: tuple[int, int] | None = ...,
     ) -> None: ...
+    @final
     def to_hdf(
         self,
         path_or_buf: FilePath | HDFStore,
@@ -149,6 +157,7 @@ class NDFrame(indexing.IndexingMixin):
         storage_options: StorageOptions = ...,
         **kwargs: Any,
     ) -> _str: ...
+    @final
     def to_sql(
         self,
         name: _str,
@@ -168,6 +177,7 @@ class NDFrame(indexing.IndexingMixin):
             | None
         ) = ...,
     ) -> int | None: ...
+    @final
     def to_pickle(
         self,
         path: FilePath | WriteBuffer[bytes],
@@ -175,6 +185,7 @@ class NDFrame(indexing.IndexingMixin):
         protocol: int = ...,
         storage_options: StorageOptions = ...,
     ) -> None: ...
+    @final
     def to_clipboard(
         self,
         excel: _bool = ...,
@@ -300,6 +311,7 @@ class NDFrame(indexing.IndexingMixin):
         errors: OpenFileErrors = ...,
         storage_options: StorageOptions = ...,
     ) -> _str: ...
+    @final
     def __delitem__(self, idx: Hashable) -> None: ...
     @overload
     def drop(
@@ -387,10 +399,15 @@ class NDFrame(indexing.IndexingMixin):
         *args: Any,
         **kwargs: Any,
     ) -> T: ...
+    @final
     def __finalize__(self, other, method=..., **kwargs) -> Self: ...
+    @final
     def __setattr__(self, name: _str, value) -> None: ...
+    @final
     def __copy__(self, deep: _bool = ...) -> Self: ...
+    @final
     def __deepcopy__(self, memo=...) -> Self: ...
+    @final
     def convert_dtypes(
         self,
         infer_objects: _bool = ...,
