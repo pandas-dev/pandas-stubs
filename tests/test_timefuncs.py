@@ -1309,6 +1309,18 @@ def test_timedelta_range() -> None:
         ),
         pd.TimedeltaIndex,
     )
+    check(
+        assert_type(
+            pd.timedelta_range(
+                pd.Timedelta(1, unit="D"),
+                pd.Timedelta(10, unit="D"),
+                periods=10,
+                unit="s",
+            ),
+            pd.TimedeltaIndex,
+        ),
+        pd.TimedeltaIndex,
+    )
 
 
 def test_dateoffset_freqstr() -> None:

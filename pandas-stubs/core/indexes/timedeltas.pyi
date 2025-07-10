@@ -83,4 +83,6 @@ def timedelta_range(
     freq: str | DateOffset | Timedelta | dt.timedelta | None = ...,
     name: Hashable | None = ...,
     closed: Literal["left", "right"] | None = ...,
+    *,
+    unit: None | str = ...,
 ) -> TimedeltaIndex: ...
