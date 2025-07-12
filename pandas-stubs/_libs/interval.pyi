@@ -13,7 +13,6 @@ from pandas import (
     Timedelta,
     Timestamp,
 )
-from pandas.core.series import TimedeltaSeries
 
 from pandas._typing import (
     IntervalClosedType,
@@ -171,7 +170,7 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     @overload
     def __gt__(
         self,
-        other: Series[int] | Series[float] | Series[Timestamp] | TimedeltaSeries,
+        other: Series[int] | Series[float] | Series[Timestamp] | Series[Timedelta],
     ) -> Series[bool]: ...
     @overload
     def __lt__(self, other: Interval[_OrderableT]) -> bool: ...
@@ -180,7 +179,7 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     @overload
     def __lt__(
         self,
-        other: Series[int] | Series[float] | Series[Timestamp] | TimedeltaSeries,
+        other: Series[int] | Series[float] | Series[Timestamp] | Series[Timedelta],
     ) -> Series[bool]: ...
     @overload
     def __ge__(self, other: Interval[_OrderableT]) -> bool: ...
@@ -189,7 +188,7 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     @overload
     def __ge__(
         self,
-        other: Series[int] | Series[float] | Series[Timestamp] | TimedeltaSeries,
+        other: Series[int] | Series[float] | Series[Timestamp] | Series[Timedelta],
     ) -> Series[bool]: ...
     @overload
     def __le__(self, other: Interval[_OrderableT]) -> bool: ...

@@ -22,10 +22,7 @@ from pandas import (
     Index,
     TimedeltaIndex,
 )
-from pandas.core.series import (
-    Series,
-    TimedeltaSeries,
-)
+from pandas.core.series import Series
 from typing_extensions import (
     Never,
     Self,
@@ -204,7 +201,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __add__(self, other: timedelta | np.timedelta64 | Tick) -> Self: ...
     @overload
-    def __add__(self, other: TimedeltaSeries) -> Series[Timestamp]: ...
+    def __add__(self, other: Series[Timedelta]) -> Series[Timestamp]: ...
     @overload
     def __add__(self, other: TimedeltaIndex) -> DatetimeIndex: ...
     @overload
@@ -223,9 +220,9 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __sub__(self, other: TimedeltaIndex) -> DatetimeIndex: ...
     @overload
-    def __sub__(self, other: TimedeltaSeries) -> Series[Timestamp]: ...
+    def __sub__(self, other: Series[Timedelta]) -> Series[Timestamp]: ...
     @overload
-    def __sub__(self, other: Series[Timestamp]) -> TimedeltaSeries: ...
+    def __sub__(self, other: Series[Timestamp]) -> Series[Timedelta]: ...
     @overload
     def __sub__(
         self, other: npt.NDArray[np.timedelta64]

@@ -22,10 +22,7 @@ from pandas import (
 )
 from pandas.core.indexes.accessors import DatetimeIndexProperties
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
-from pandas.core.series import (
-    Series,
-    TimedeltaSeries,
-)
+from pandas.core.series import Series
 from typing_extensions import Self
 
 from pandas._typing import (
@@ -60,13 +57,13 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
     @overload
-    def __add__(self, other: TimedeltaSeries) -> Series[Timestamp]: ...
+    def __add__(self, other: Series[Timedelta]) -> Series[Timestamp]: ...
     @overload
     def __add__(
         self, other: timedelta | Timedelta | TimedeltaIndex | BaseOffset
     ) -> DatetimeIndex: ...
     @overload
-    def __sub__(self, other: TimedeltaSeries) -> Series[Timestamp]: ...
+    def __sub__(self, other: Series[Timedelta]) -> Series[Timestamp]: ...
     @overload
     def __sub__(
         self, other: timedelta | Timedelta | TimedeltaIndex | BaseOffset

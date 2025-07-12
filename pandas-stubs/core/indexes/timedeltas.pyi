@@ -19,7 +19,7 @@ from pandas.core.indexes.accessors import TimedeltaIndexProperties
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.period import PeriodIndex
-from pandas.core.series import TimedeltaSeries
+from pandas.core.series import Series
 from typing_extensions import Self
 
 from pandas._libs import (
@@ -75,7 +75,7 @@ class TimedeltaIndex(DatetimeTimedeltaMixin[Timedelta], TimedeltaIndexProperties
     @property
     def inferred_type(self) -> str: ...
     @final
-    def to_series(self, index=..., name: Hashable = ...) -> TimedeltaSeries: ...
+    def to_series(self, index=..., name: Hashable = ...) -> Series[Timedelta]: ...
     def shift(self, periods: int = ..., freq=...) -> Self: ...
 
 def timedelta_range(

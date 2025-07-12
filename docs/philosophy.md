@@ -56,13 +56,13 @@ revealed as follows:
 ```text
 ttest.py:4: note: Revealed type is "pandas.core.series.Series[pandas._libs.tslibs.timestamps.Timestamp]"
 ttest.py:6: note: Revealed type is "pandas.core.series.Series[pandas._libs.tslibs.timestamps.Timestamp]"
-ttest.py:8: note: Revealed type is "pandas.core.series.TimedeltaSeries"
+ttest.py:8: note: Revealed type is "pandas.core.series.Series[pandas._libs.tslibs.timedeltas.Timedelta]"
 ttest.py:9: error: Need type annotation for "ssum"  [var-annotated]
 ttest.py:10: note: Revealed type is "Never"
 ```
 
 The type `Series[Timestamp]` is the result of creating a series from `pd.to_datetime()`, while
-the type `TimedeltaSeries` is the result of subtracting two `Series[Timestamp]` as well as
+the type `Series[Timedelta]` is the result of subtracting two `Series[Timestamp]` as well as
 the result of `pd.to_timedelta()`.
 
 ### Interval is Generic
