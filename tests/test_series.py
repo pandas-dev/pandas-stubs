@@ -3979,7 +3979,7 @@ def test_timedelta_index_cumprod() -> None:
 
 def test_series_str_upper() -> None:
     """Test the returns of StringMethods match the type of the input series GH1149."""
-    s_str = pd.Series(['a', 'b'])
+    s_str = pd.Series(["a", "b"])
     check(assert_type(s_str, "pd.Series[str]"), pd.Series, str)
     check(assert_type(s_str.str.upper(), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s_str.str.lower(), "pd.Series[str]"), pd.Series, str)
