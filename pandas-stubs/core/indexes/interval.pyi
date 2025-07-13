@@ -15,7 +15,6 @@ from pandas import Index
 from pandas.core.indexes.extension import ExtensionIndex
 from pandas.core.series import (
     TimedeltaSeries,
-    TimestampSeries,
 )
 from typing_extensions import TypeAlias
 
@@ -53,7 +52,7 @@ _EdgesFloat: TypeAlias = (
 _EdgesTimestamp: TypeAlias = (
     Sequence[DatetimeLike]
     | npt.NDArray[np.datetime64]
-    | TimestampSeries
+    | pd.Series[pd.Timestamp]
     | pd.DatetimeIndex
 )
 _EdgesTimedelta: TypeAlias = (
