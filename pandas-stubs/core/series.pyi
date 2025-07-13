@@ -175,6 +175,8 @@ from pandas._typing import (
     VoidDtypeArg,
     WriteBuffer,
     np_ndarray_anyint,
+    np_ndarray_complex,
+    np_ndarray_float,
     npt,
     num,
 )
@@ -1617,6 +1619,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
     # just failed to generate these so I couldn't match
     # them up.
     @overload
+    def __add__(
+        self: Series[int], other: int | Sequence[int] | Series[int]
+    ) -> Series[int]: ...
+    @overload
     def __add__(self, other: S1 | Self) -> Self: ...
     @overload
     def __add__(
@@ -1743,7 +1749,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
     # Methods
     def add(
         self,
-        other: Series[S1] | Scalar,
+        other: (
+            Sequence[S1]
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | np_ndarray_complex
+            | Series[S1]
+            | Scalar
+        ),
         level: Level | None = ...,
         fill_value: float | None = ...,
         axis: int = ...,
@@ -1987,7 +2000,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Scalar: ...
     def radd(
         self,
-        other: Series[S1] | Scalar,
+        other: (
+            Sequence[S1]
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | np_ndarray_complex
+            | Series[S1]
+            | Scalar
+        ),
         level: Level | None = ...,
         fill_value: float | None = ...,
         axis: AxisIndex = ...,
