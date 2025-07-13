@@ -31,7 +31,6 @@ from typing import (
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
-from pandas import Timestamp
 from pandas.api.typing import NAType
 from pandas.core.resample import (
     DatetimeIndexResampler,
@@ -63,10 +62,8 @@ from pandas.io.parsers import TextFileReader
 
 if TYPE_CHECKING:
     from pandas.core.frame import _PandasNamedTuple
-    from pandas.core.series import TimestampSeries
 else:
     _PandasNamedTuple: TypeAlias = tuple
-    TimestampSeries: TypeAlias = pd.Series
 
 DF = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
@@ -2535,9 +2532,9 @@ def test_types_regressions() -> None:
         sseries + pd.Timedelta(1, "d")
 
     check(
-        assert_type(sseries + pd.Timedelta(1, "D"), TimestampSeries),
+        assert_type(sseries + pd.Timedelta(1, "D"), "pd.Series[pd.Timestamp]"),
         pd.Series,
-        Timestamp,
+        pd.Timestamp,
     )
 
     # https://github.com/microsoft/pylance-release/issues/2133
@@ -2819,9 +2816,9 @@ def test_sum_get_add() -> None:
     summer = df.sum(axis=1)
     check(assert_type(summer, pd.Series), pd.Series)
 
-    check(assert_type(s + summer, pd.Series), pd.Series)
-    check(assert_type(s + df["y"], pd.Series), pd.Series)
-    check(assert_type(summer + summer, pd.Series), pd.Series)
+    check(assert_type(s + summer, pd.Series), pd.Series)  # type: ignore[assert-type]
+    check(assert_type(s + df["y"], pd.Series), pd.Series)  # type: ignore[assert-type]
+    check(assert_type(summer + summer, pd.Series), pd.Series)  # type: ignore[assert-type]
 
 
 def test_getset_untyped() -> None:
@@ -3479,6 +3476,7 @@ def test_groupby_apply() -> None:
     df = pd.DataFrame({"col1": [1, 2, 3], "col2": [4, 5, 6]})
 
     def sum_mean(x: pd.DataFrame) -> float:
+        x.sum()
         return x.sum().mean()
 
     with pytest_warns_bounded(
