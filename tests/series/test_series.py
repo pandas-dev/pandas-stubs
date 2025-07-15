@@ -1604,10 +1604,7 @@ def test_series_min_max_sub_axis() -> None:
     ss = s1 - s2
     sm = s1 * s2
     sd = s1 / s2
-    check(
-        assert_type(sa, pd.Series),  # pyright: ignore[reportAssertTypeFailure]  # why?
-        pd.Series,
-    )
+    check(assert_type(sa, pd.Series), pd.Series)
     check(assert_type(ss, pd.Series), pd.Series)
     check(assert_type(sm, pd.Series), pd.Series)
     check(assert_type(sd, pd.Series), pd.Series)

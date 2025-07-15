@@ -79,22 +79,13 @@ def test_add_pd_series() -> None:
     f = pd.Series([1.0, 2.0, 3.0])
     c = pd.Series([1.1j, 2.2j, 4.1j])
 
-    # check(assert_type(left + i, pd.Series), pd.Series)  # why?
+    check(assert_type(left + i, pd.Series), pd.Series)
     check(assert_type(left + f, pd.Series), pd.Series)
     check(assert_type(left + c, pd.Series), pd.Series)
 
-    check(
-        assert_type(i + left, pd.Series),  # pyright: ignore[reportAssertTypeFailure]
-        pd.Series,
-    )
-    check(
-        assert_type(f + left, pd.Series),  # pyright: ignore[reportAssertTypeFailure]
-        pd.Series,
-    )
-    check(
-        assert_type(c + left, pd.Series),  # pyright: ignore[reportAssertTypeFailure]
-        pd.Series,
-    )
+    check(assert_type(i + left, pd.Series), pd.Series)
+    check(assert_type(f + left, pd.Series), pd.Series)
+    check(assert_type(c + left, pd.Series), pd.Series)
 
     check(assert_type(left.add(i), pd.Series), pd.Series)
     check(assert_type(left.add(f), pd.Series), pd.Series)

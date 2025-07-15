@@ -25,6 +25,7 @@ from typing import (
     Generic,
     Literal,
     NoReturn,
+    TypeVar,
     final,
     overload,
 )
@@ -185,6 +186,8 @@ from pandas.core.dtypes.base import ExtensionDtype
 from pandas.core.dtypes.dtypes import CategoricalDtype
 
 from pandas.plotting import PlotAccessor
+
+_T_COMPLEX = TypeVar("_T_COMPLEX", bound=complex)
 
 class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     # get item
@@ -1620,8 +1623,34 @@ class Series(IndexOpsMixin[S1], NDFrame):
     # them up.
     @overload
     def __add__(
-        self: Series[int], other: int | Sequence[int] | Series[int]
-    ) -> Series[int]: ...
+        self: Series[Never],
+        other: num | _str | timedelta | Timedelta | _ListLike | Series | np.timedelta64,
+    ) -> Series: ...
+    @overload
+    def __add__(self: Series[int], other: Series[Never]) -> Series: ...
+    @overload
+    def __add__(
+        self: Series[int], other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX]
+    ) -> Series[_T_COMPLEX]: ...
+    @overload
+    def __add__(self: Series[int], other: np_ndarray_anyint) -> Series[int]: ...
+    @overload
+    def __add__(self: Series[int], other: np_ndarray_float) -> Series[float]: ...
+    @overload
+    def __add__(self: Series[int], other: np_ndarray_complex) -> Series[complex]: ...
+    @overload
+    def __add__(self: Series[float], other: Series[Never]) -> Series: ...
+    @overload
+    def __add__(
+        self: Series[float],
+        other: int | Sequence[int] | np_ndarray_anyint | Series[int],
+    ) -> Series[float]: ...
+    @overload
+    def __add__(self: Series[complex], other: Series[Never]) -> Series: ...
+    @overload
+    def __add__(
+        self: Series[complex], other: int | Sequence[int] | Series[int]
+    ) -> Series[complex]: ...
     @overload
     def __add__(self, other: S1 | Self) -> Self: ...
     @overload
@@ -1668,6 +1697,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[bool]: ...
     @overload
     def __or__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
+    @overload
+    def __radd__(
+        self: Series[Never], other: num | _str | _ListLike | Series
+    ) -> Series: ...
+    @overload
+    def __radd__(
+        self: Series[int], other: _T_COMPLEX | Sequence[_T_COMPLEX]
+    ) -> Series[_T_COMPLEX]: ...
     @overload
     def __radd__(self, other: S1 | Series[S1]) -> Self: ...
     @overload
@@ -1747,16 +1784,57 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @property
     def loc(self) -> _LocIndexerSeries[S1]: ...
     # Methods
+    @overload
     def add(
-        self,
+        self: Series[Never],
         other: (
-            Sequence[S1]
+            Sequence
             | np_ndarray_anyint
             | np_ndarray_float
             | np_ndarray_complex
-            | Series[S1]
+            | Series
             | Scalar
         ),
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Series: ...
+    @overload
+    def add(
+        self: Series[int],
+        other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX],
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Series[_T_COMPLEX]: ...
+    @overload
+    def add(
+        self: Series[int],
+        other: np_ndarray_anyint,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Series[int]: ...
+    @overload
+    def add(
+        self: Series[int],
+        other: np_ndarray_float,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Series[float]: ...
+    @overload
+    def add(
+        self: Series[int],
+        other: np_ndarray_complex,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Series[complex]: ...
+    @overload
+    def add(
+        self,
+        other: Series[S1] | Scalar,
         level: Level | None = ...,
         fill_value: float | None = ...,
         axis: int = ...,
@@ -1998,16 +2076,57 @@ class Series(IndexOpsMixin[S1], NDFrame):
         min_count: int = ...,
         **kwargs: Any,
     ) -> Scalar: ...
+    @overload
     def radd(
-        self,
+        self: Series[Never],
         other: (
-            Sequence[S1]
+            Sequence
             | np_ndarray_anyint
             | np_ndarray_float
             | np_ndarray_complex
-            | Series[S1]
+            | Series
             | Scalar
         ),
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: AxisIndex = ...,
+    ) -> Series: ...
+    @overload
+    def radd(
+        self: Series[int],
+        other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX],
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Series[_T_COMPLEX]: ...
+    @overload
+    def radd(
+        self: Series[int],
+        other: np_ndarray_anyint,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Series[int]: ...
+    @overload
+    def radd(
+        self: Series[int],
+        other: np_ndarray_float,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Series[float]: ...
+    @overload
+    def radd(
+        self: Series[int],
+        other: np_ndarray_complex,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Series[complex]: ...
+    @overload
+    def radd(
+        self,
+        other: Series[S1] | Scalar,
         level: Level | None = ...,
         fill_value: float | None = ...,
         axis: AxisIndex = ...,
