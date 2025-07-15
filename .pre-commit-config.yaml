@@ -11,9 +11,9 @@ repos:
     hooks:
     -   id: isort
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.13
+    rev: v0.12.3
     hooks:
-    -   id: ruff
+    -   id: ruff-check
         args: [
           --exit-non-zero-on-fix,
           --target-version, py39,
