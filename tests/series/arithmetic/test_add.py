@@ -1,7 +1,6 @@
-from typing import assert_type
-
 import numpy as np
 import pandas as pd
+from typing_extensions import assert_type
 
 from tests import check
 
@@ -12,7 +11,7 @@ def test_add_py_scalar() -> None:
     """Test pd.Series[Any] + Python native scalars"""
     i, f, c = 1, 1.0, 1j
 
-    # check(assert_type(left + i, pd.Series), pd.Series)  # why?
+    check(assert_type(left + i, pd.Series), pd.Series)
     check(assert_type(left + f, pd.Series), pd.Series)
     check(assert_type(left + c, pd.Series), pd.Series)
 
@@ -33,7 +32,7 @@ def test_add_py_sequence() -> None:
     """Test pd.Series[Any] + Python native sequence"""
     i, f, c = [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
-    # check(assert_type(left + i, pd.Series), pd.Series)  # why?
+    check(assert_type(left + i, pd.Series), pd.Series)
     check(assert_type(left + f, pd.Series), pd.Series)
     check(assert_type(left + c, pd.Series), pd.Series)
 
