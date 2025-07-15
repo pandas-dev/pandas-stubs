@@ -1657,7 +1657,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __add__(
         self: Series[complex],
-        other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX],
+        other: (
+            _T_COMPLEX
+            | Sequence[_T_COMPLEX]
+            | Series[_T_COMPLEX]
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | np_ndarray_complex
+        ),
     ) -> Series[complex]: ...
     @overload
     def __add__(self, other: S1 | Self) -> Self: ...
@@ -1719,6 +1726,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __radd__(
         self: Series[float], other: _T_COMPLEX | Sequence[_T_COMPLEX]
     ) -> Series[_T_COMPLEX]: ...
+    @overload
+    def __radd__(
+        self: Series[complex], other: _T_COMPLEX | Sequence[_T_COMPLEX]
+    ) -> Series[complex]: ...
     @overload
     def __radd__(self, other: S1 | Series[S1]) -> Self: ...
     @overload
@@ -1865,6 +1876,20 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def add(
         self: Series[float],
         other: np_ndarray_complex,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Series[complex]: ...
+    @overload
+    def add(
+        self: Series[complex],
+        other: (
+            Sequence[_T_COMPLEX]
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | np_ndarray_complex
+            | Series[_T_COMPLEX]
+        ),
         level: Level | None = ...,
         fill_value: float | None = ...,
         axis: int = ...,
@@ -2181,6 +2206,20 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def radd(
         self: Series[float],
         other: np_ndarray_complex,
+        level: Level | None = ...,
+        fill_value: float | None = ...,
+        axis: int = ...,
+    ) -> Series[complex]: ...
+    @overload
+    def radd(
+        self: Series[complex],
+        other: (
+            Sequence[_T_COMPLEX]
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | np_ndarray_complex
+            | Series[_T_COMPLEX]
+        ),
         level: Level | None = ...,
         fill_value: float | None = ...,
         axis: int = ...,
