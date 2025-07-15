@@ -3892,7 +3892,7 @@ def test_unknown() -> None:
         pass
 
     foo(s)
-    # check(assert_type(s + pd.Series([1]), pd.Series), pd.Series)  # why?
+    check(assert_type(s + pd.Series([1]), pd.Series), pd.Series)
 
 
 def test_series_items() -> None:
