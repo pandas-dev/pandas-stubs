@@ -59,9 +59,25 @@ def test_add_numpy_array() -> None:
     check(assert_type(left + f, pd.Series), pd.Series)
     check(assert_type(left + c, pd.Series), pd.Series)
 
-    # check(assert_type(i + l, pd.Series), pd.Series)
-    # check(assert_type(f + l, pd.Series), pd.Series)
-    # check(assert_type(c + l, pd.Series), pd.Series)
+    # numpy typing gives ndarray instead of `pd.Series[...]` in reality, which we cannot fix
+    check(
+        assert_type(  # type: ignore[assert-type]
+            i + left, pd.Series  # pyright: ignore[reportAssertTypeFailure]
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(  # type: ignore[assert-type]
+            f + left, pd.Series  # pyright: ignore[reportAssertTypeFailure]
+        ),
+        pd.Series,
+    )
+    check(
+        assert_type(  # type: ignore[assert-type]
+            c + left, pd.Series  # pyright: ignore[reportAssertTypeFailure]
+        ),
+        pd.Series,
+    )
 
     check(assert_type(left.add(i), pd.Series), pd.Series)
     check(assert_type(left.add(f), pd.Series), pd.Series)
