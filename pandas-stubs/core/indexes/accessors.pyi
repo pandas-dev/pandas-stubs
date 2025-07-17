@@ -4,9 +4,11 @@ from datetime import (
     tzinfo as _tzinfo,
 )
 from typing import (
+    Any,
     Generic,
     Literal,
     TypeVar,
+    overload,
 )
 
 import numpy as np
@@ -17,6 +19,7 @@ from pandas import (
     PeriodIndex,
     Timedelta,
     TimedeltaIndex,
+    Timestamp,
 )
 from pandas.core.accessor import PandasDelegate
 from pandas.core.arrays import (
@@ -29,12 +32,13 @@ from pandas.core.series import (
     PeriodSeries,
     Series,
     TimedeltaSeries,
-    TimestampSeries,
 )
+from typing_extensions import Never
 
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.offsets import DateOffset
 from pandas._typing import (
+    S1,
     TimeAmbiguous,
     TimeNonexistent,
     TimestampConvention,
@@ -155,14 +159,13 @@ class _DatetimeLikeOps(
     ],
 ): ...
 
-# Ideally, the rounding methods would return TimestampSeries when `Series.dt.method`
+# Ideally, the rounding methods would return Series[Timestamp] when `Series.dt.method`
 # is invoked, but because of how Series.dt is hooked in and that we may not know the
 # type of the series, we don't know which kind of series was ...ed
 # in to the dt accessor
 
 _DTTimestampTimedeltaReturnType = TypeVar(
-    "_DTTimestampTimedeltaReturnType",
-    bound=Series | TimestampSeries | TimedeltaSeries | DatetimeIndex | TimedeltaIndex,
+    "_DTTimestampTimedeltaReturnType", bound=Series | DatetimeIndex | TimedeltaIndex
 )
 
 class _DatetimeRoundingMethods(Generic[_DTTimestampTimedeltaReturnType]):
@@ -198,7 +201,7 @@ class _DatetimeRoundingMethods(Generic[_DTTimestampTimedeltaReturnType]):
     ) -> _DTTimestampTimedeltaReturnType: ...
 
 _DTNormalizeReturnType = TypeVar(
-    "_DTNormalizeReturnType", TimestampSeries, DatetimeIndex
+    "_DTNormalizeReturnType", Series[Timestamp], DatetimeIndex
 )
 _DTStrKindReturnType = TypeVar("_DTStrKindReturnType", bound=Series[str] | Index)
 _DTToPeriodReturnType = TypeVar(
@@ -320,7 +323,7 @@ class TimedeltaProperties(
     def as_unit(self, unit: TimeUnit) -> TimedeltaSeries: ...
 
 _PeriodDTReturnTypes = TypeVar(
-    "_PeriodDTReturnTypes", bound=TimestampSeries | DatetimeIndex
+    "_PeriodDTReturnTypes", bound=Series[Timestamp] | DatetimeIndex
 )
 _PeriodIntReturnTypes = TypeVar("_PeriodIntReturnTypes", bound=Series[int] | Index[int])
 _PeriodStrReturnTypes = TypeVar("_PeriodStrReturnTypes", bound=Series[str] | Index)
@@ -363,7 +366,7 @@ class PeriodIndexFieldOps(
 class PeriodProperties(
     Properties,
     _PeriodProperties[
-        TimestampSeries, Series[int], Series[str], DatetimeArray, PeriodArray
+        Series[Timestamp], Series[int], Series[str], DatetimeArray, PeriodArray
     ],
     _DatetimeFieldOps[Series[int]],
     _IsLeapYearProperty,
@@ -377,7 +380,7 @@ class CombinedDatetimelikeProperties(
         Series[dt.date],
         Series[dt.time],
         str,
-        TimestampSeries,
+        Series[Timestamp],
         Series[str],
         PeriodSeries,
     ],
@@ -388,11 +391,11 @@ class TimestampProperties(
     DatetimeProperties[
         Series[int],
         Series[bool],
-        TimestampSeries,
+        Series[Timestamp],
         Series[dt.date],
         Series[dt.time],
         str,
-        TimestampSeries,
+        Series[Timestamp],
         Series[str],
         PeriodSeries,
     ]
@@ -427,3 +430,46 @@ class TimedeltaIndexProperties(
     _TimedeltaPropertiesNoRounding[Index, Index],
     _DatetimeRoundingMethods[TimedeltaIndex],
 ): ...
+
+class _dtDescriptor(CombinedDatetimelikeProperties, Generic[S1]):
+    @overload
+    def __get__(self, instance: Series[Never], owner: Any) -> Never: ...
+    @overload
+    def __get__(
+        self, instance: Series[Timestamp], owner: Any
+    ) -> TimestampProperties: ...
+    @overload
+    def __get__(
+        self, instance: Series[S1], owner: Any
+    ) -> CombinedDatetimelikeProperties: ...
+    def round(
+        self,
+        freq: str | BaseOffset | None,
+        ambiguous: Literal["raise", "infer", "NaT"] | bool | np_ndarray_bool = ...,
+        nonexistent: (
+            Literal["shift_forward", "shift_backward", "NaT", "raise"]
+            | timedelta
+            | Timedelta
+        ) = ...,
+    ) -> Series[S1]: ...
+    def floor(
+        self,
+        freq: str | BaseOffset | None,
+        ambiguous: Literal["raise", "infer", "NaT"] | bool | np_ndarray_bool = ...,
+        nonexistent: (
+            Literal["shift_forward", "shift_backward", "NaT", "raise"]
+            | timedelta
+            | Timedelta
+        ) = ...,
+    ) -> Series[S1]: ...
+    def ceil(
+        self,
+        freq: str | BaseOffset | None,
+        ambiguous: Literal["raise", "infer", "NaT"] | bool | np_ndarray_bool = ...,
+        nonexistent: (
+            Literal["shift_forward", "shift_backward", "NaT", "raise"]
+            | timedelta
+            | Timedelta
+        ) = ...,
+    ) -> Series[S1]: ...
+    def as_unit(self, unit: TimeUnit) -> Series[S1]: ...
