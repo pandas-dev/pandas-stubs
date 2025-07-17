@@ -22,10 +22,7 @@ from pandas import (
 )
 from pandas.core.indexes.accessors import DatetimeIndexProperties
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
-from pandas.core.series import (
-    TimedeltaSeries,
-    TimestampSeries,
-)
+from pandas.core.series import Series
 from typing_extensions import Self
 
 from pandas._typing import (
@@ -60,13 +57,13 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
     @overload
-    def __add__(self, other: TimedeltaSeries) -> TimestampSeries: ...
+    def __add__(self, other: Series[Timedelta]) -> Series[Timestamp]: ...
     @overload
     def __add__(
         self, other: timedelta | Timedelta | TimedeltaIndex | BaseOffset
     ) -> DatetimeIndex: ...
     @overload
-    def __sub__(self, other: TimedeltaSeries) -> TimestampSeries: ...
+    def __sub__(self, other: Series[Timedelta]) -> Series[Timestamp]: ...
     @overload
     def __sub__(
         self, other: timedelta | Timedelta | TimedeltaIndex | BaseOffset
@@ -76,7 +73,7 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
         self, other: datetime | Timestamp | DatetimeIndex
     ) -> TimedeltaIndex: ...
     @final
-    def to_series(self, index=..., name: Hashable = ...) -> TimestampSeries: ...
+    def to_series(self, index=..., name: Hashable = ...) -> Series[Timestamp]: ...
     def snap(self, freq: str = ...): ...
     def slice_indexer(self, start=..., end=..., step=...): ...
     def searchsorted(self, value, side: str = ..., sorter=...): ...

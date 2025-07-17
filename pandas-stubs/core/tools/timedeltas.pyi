@@ -4,10 +4,7 @@ from typing import overload
 
 from pandas import Index
 from pandas.core.indexes.timedeltas import TimedeltaIndex
-from pandas.core.series import (
-    Series,
-    TimedeltaSeries,
-)
+from pandas.core.series import Series
 
 from pandas._libs.tslibs import Timedelta
 from pandas._libs.tslibs.timedeltas import TimeDeltaUnitChoices
@@ -28,7 +25,7 @@ def to_timedelta(
     arg: Series,
     unit: TimeDeltaUnitChoices | None = ...,
     errors: RaiseCoerce = ...,
-) -> TimedeltaSeries: ...
+) -> Series[Timedelta]: ...
 @overload
 def to_timedelta(
     arg: (
