@@ -64,7 +64,7 @@ def check(
     if not isinstance(actual, klass):
         raise RuntimeError(f"Expected type '{klass}' but got '{type(actual)}'")
     if dtype is None:
-        return actual  # type: ignore[return-value]
+        return actual
 
     if isinstance(actual, pd.Series):
         value = actual.iloc[index_to_check_for_type]
@@ -82,7 +82,7 @@ def check(
 
     if not isinstance(value, dtype):
         raise RuntimeError(f"Expected type '{dtype}' but got '{type(value)}'")
-    return actual  # type: ignore[return-value]
+    return actual
 
 
 def pytest_warns_bounded(
