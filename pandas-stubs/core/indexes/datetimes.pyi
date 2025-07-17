@@ -7,7 +7,10 @@ from datetime import (
     timedelta,
     tzinfo as _tzinfo,
 )
-from typing import overload
+from typing import (
+    final,
+    overload,
+)
 
 import numpy as np
 from pandas import (
@@ -72,6 +75,7 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
     def __sub__(
         self, other: datetime | Timestamp | DatetimeIndex
     ) -> TimedeltaIndex: ...
+    @final
     def to_series(self, index=..., name: Hashable = ...) -> TimestampSeries: ...
     def snap(self, freq: str = ...): ...
     def slice_indexer(self, start=..., end=..., step=...): ...

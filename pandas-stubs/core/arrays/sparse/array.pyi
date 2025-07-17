@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import (
     Any,
+    final,
     overload,
 )
 
@@ -16,6 +17,7 @@ from pandas._typing import (
     SequenceIndexer,
 )
 
+@final
 class ellipsis(Enum):
     Ellipsis = "..."
 

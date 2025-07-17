@@ -5,6 +5,7 @@ from collections.abc import (
 import datetime as dt
 from typing import (
     Literal,
+    final,
     overload,
 )
 
@@ -228,6 +229,7 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
         method: FillnaOptions | Literal["nearest"] | None = ...,
         tolerance=...,
     ) -> int | slice | npt.NDArray[np.bool_]: ...
+    @final
     def get_indexer(
         self,
         target: Index,
