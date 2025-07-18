@@ -1028,6 +1028,49 @@ def test_getitem() -> None:
     check(assert_type(i0[[0, 2]], "pd.Index[str]"), pd.Index, str)
 
 
+def test_append_any() -> None:
+    """Test pd.Index.append that gives pd.Index[Any]"""
+    first = pd.Index([1])
+    second = pd.Index(["a"])
+    third = pd.Index([1, "a"])
+    check(assert_type(first.append(second), pd.Index), pd.Index)
+    check(assert_type(first.append([second]), pd.Index), pd.Index)
+
+    check(assert_type(first.append(third), pd.Index), pd.Index)
+    check(assert_type(first.append([third]), pd.Index), pd.Index)
+    check(assert_type(first.append([second, third]), pd.Index), pd.Index)
+
+    check(assert_type(third.append([]), "pd.Index[str | int]"), pd.Index)  # type: ignore[assert-type]
+    check(assert_type(third.append([first]), pd.Index), pd.Index)
+
+
+def test_append_int() -> None:
+    """Test pd.Index[int].append"""
+    first = pd.Index([1])
+    second = pd.Index([2])
+    check(assert_type(first.append([]), "pd.Index[int]"), pd.Index, np.int64)
+    check(assert_type(first.append(second), "pd.Index[int]"), pd.Index, np.int64)
+    check(assert_type(first.append([second]), "pd.Index[int]"), pd.Index, np.int64)
+
+
+def test_append_str() -> None:
+    """Test pd.Index[str].append"""
+    first = pd.Index(["str"])
+    second = pd.Index(["rts"])
+    check(assert_type(first.append([]), "pd.Index[str]"), pd.Index, str)
+    check(assert_type(first.append(second), "pd.Index[str]"), pd.Index, str)
+    check(assert_type(first.append([second]), "pd.Index[str]"), pd.Index, str)
+
+
+def test_append_list_str() -> None:
+    """Test pd.Index[list[str]].append"""
+    first = pd.Index([["str", "rts"]])
+    second = pd.Index([["srt", "trs"]])
+    check(assert_type(first.append([]), "pd.Index[list[str]]"), pd.Index, list)
+    check(assert_type(first.append(second), "pd.Index[list[str]]"), pd.Index, list)
+    check(assert_type(first.append([second]), "pd.Index[list[str]]"), pd.Index, list)
+
+
 def test_range_index_range() -> None:
     """Test that pd.RangeIndex can be initialized from range."""
     iri = pd.RangeIndex(range(5))
