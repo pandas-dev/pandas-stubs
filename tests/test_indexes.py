@@ -3,7 +3,9 @@ from __future__ import annotations
 import datetime as dt
 from typing import (
     TYPE_CHECKING,
+    Any,
     Union,
+    cast,
 )
 
 import numpy as np
@@ -1028,20 +1030,37 @@ def test_getitem() -> None:
     check(assert_type(i0[[0, 2]], "pd.Index[str]"), pd.Index, str)
 
 
-def test_append_any() -> None:
+def test_append_mix() -> None:
     """Test pd.Index.append that gives pd.Index[Any]"""
     first = pd.Index([1])
     second = pd.Index(["a"])
     third = pd.Index([1, "a"])
-    check(assert_type(first.append(second), pd.Index), pd.Index)
-    check(assert_type(first.append([second]), pd.Index), pd.Index)
+    check(assert_type(first.append(second), "pd.Index[int | str]"), pd.Index)
+    check(assert_type(first.append([second]), "pd.Index[int | str]"), pd.Index)
 
-    check(assert_type(first.append(third), pd.Index), pd.Index)
-    check(assert_type(first.append([third]), pd.Index), pd.Index)
-    check(assert_type(first.append([second, third]), pd.Index), pd.Index)
+    check(assert_type(first.append(third), "pd.Index[int | str]"), pd.Index)  # type: ignore[assert-type]
+    check(assert_type(first.append([third]), "pd.Index[int | str]"), pd.Index)  # type: ignore[assert-type]
+    check(
+        assert_type(  # type: ignore[assert-type]
+            first.append([second, third]),  # pyright: ignore[reportAssertTypeFailure]
+            "pd.Index[int | str]",
+        ),
+        pd.Index,
+    )
 
-    check(assert_type(third.append([]), "pd.Index[str | int]"), pd.Index)  # type: ignore[assert-type]
-    check(assert_type(third.append([first]), pd.Index), pd.Index)
+    check(assert_type(third.append([]), "pd.Index[int | str]"), pd.Index)  # type: ignore[assert-type]
+    check(
+        assert_type(third.append(cast("list[Index[Any]]", [])), "pd.Index[int | str]"),  # type: ignore[assert-type]
+        pd.Index,
+    )
+    check(assert_type(third.append([first]), "pd.Index[int | str]"), pd.Index)  # type: ignore[assert-type]
+    check(
+        assert_type(  # type: ignore[assert-type]
+            third.append([first, second]),  # pyright: ignore[reportAssertTypeFailure]
+            "pd.Index[int | str]",
+        ),
+        pd.Index,
+    )
 
 
 def test_append_int() -> None:
