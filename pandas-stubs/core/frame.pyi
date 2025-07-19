@@ -19,6 +19,7 @@ from typing import (
     Generic,
     Literal,
     NoReturn,
+    TypeVar,
     final,
     overload,
 )
@@ -164,6 +165,8 @@ from pandas._typing import (
 
 from pandas.io.formats.style import Styler
 from pandas.plotting import PlotAccessor
+
+_T_MUTABLE_MAPPING = TypeVar("_T_MUTABLE_MAPPING", bound=MutableMapping, covariant=True)
 
 class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
     @overload
@@ -396,9 +399,9 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["records"],
         *,
-        into: MutableMapping | type[MutableMapping],
+        into: _T_MUTABLE_MAPPING | type[_T_MUTABLE_MAPPING],
         index: Literal[True] = ...,
-    ) -> list[MutableMapping[Hashable, Any]]: ...
+    ) -> list[_T_MUTABLE_MAPPING]: ...
     @overload
     def to_dict(
         self,
@@ -412,33 +415,33 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["dict", "list", "series", "index"],
         *,
-        into: MutableMapping | type[MutableMapping],
+        into: _T_MUTABLE_MAPPING | type[_T_MUTABLE_MAPPING],
         index: Literal[True] = ...,
-    ) -> MutableMapping[Hashable, Any]: ...
+    ) -> _T_MUTABLE_MAPPING: ...
     @overload
     def to_dict(
         self,
         orient: Literal["split", "tight"],
         *,
-        into: MutableMapping | type[MutableMapping],
+        into: _T_MUTABLE_MAPPING | type[_T_MUTABLE_MAPPING],
         index: bool = ...,
-    ) -> MutableMapping[Hashable, Any]: ...
+    ) -> _T_MUTABLE_MAPPING: ...
     @overload
     def to_dict(
         self,
         orient: Literal["dict", "list", "series", "index"] = ...,
         *,
-        into: MutableMapping | type[MutableMapping],
+        into: _T_MUTABLE_MAPPING | type[_T_MUTABLE_MAPPING],
         index: Literal[True] = ...,
-    ) -> MutableMapping[Hashable, Any]: ...
+    ) -> _T_MUTABLE_MAPPING: ...
     @overload
     def to_dict(
         self,
         orient: Literal["split", "tight"] = ...,
         *,
-        into: MutableMapping | type[MutableMapping],
+        into: _T_MUTABLE_MAPPING | type[_T_MUTABLE_MAPPING],
         index: bool = ...,
-    ) -> MutableMapping[Hashable, Any]: ...
+    ) -> _T_MUTABLE_MAPPING: ...
     @overload
     def to_dict(
         self,
