@@ -15,6 +15,7 @@ from typing import (
     ClassVar,
     Literal,
     TypeAlias,
+    TypeVar,
     final,
     overload,
 )
@@ -64,6 +65,8 @@ from pandas._typing import (
     np_ndarray_float,
     type_t,
 )
+
+_T_INDEX = TypeVar("_T_INDEX", bound=Index)  # ty: ignore[unresolved-reference]
 
 class InvalidIndexError(Exception): ...
 
@@ -406,6 +409,8 @@ class Index(IndexOpsMixin[S1]):
     def append(self, other: Index[S1] | Sequence[Index[S1]]) -> Self: ...
     @overload
     def append(self, other: Index[S2] | Sequence[Index[S2]]) -> Index[S1 | S2]: ...
+    @overload
+    def append(self, other: Sequence[_T_INDEX]) -> Self | _T_INDEX: ...
     @overload
     def append(self, other: Index | Sequence) -> Index: ...
     def putmask(self, mask, value): ...
