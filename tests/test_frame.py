@@ -3643,20 +3643,20 @@ def test_to_dict() -> None:
     check(assert_type(DF.to_dict("split"), dict[Hashable, Any]), dict)
 
     target: MutableMapping = defaultdict(list)
-    check(
-        assert_type(DF.to_dict(into=target), MutableMapping[Hashable, Any]), defaultdict
-    )
+    check(assert_type(DF.to_dict(into=target), defaultdict[Any, list]), defaultdict)
+    # check(
+    #     assert_type(DF.to_dict("index", into=target), MutableMapping[Hashable, MutableMapping[Hashable, Any]]), defaultdict
+    # )
+
     target = defaultdict(list)
     check(
-        assert_type(DF.to_dict("tight", into=target), MutableMapping[Hashable, Any]),
+        assert_type(DF.to_dict("tight", into=target), defaultdict[Any, list]),
         defaultdict,
     )
     target = defaultdict(list)
     check(assert_type(DF.to_dict("records"), list[dict[Hashable, Any]]), list)
     check(
-        assert_type(
-            DF.to_dict("records", into=target), list[MutableMapping[Hashable, Any]]
-        ),
+        assert_type(DF.to_dict("records", into=target), list[defaultdict[Any, list]]),
         list,
     )
     if TYPE_CHECKING_INVALID_USAGE:
