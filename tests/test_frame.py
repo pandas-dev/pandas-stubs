@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from collections.abc import (
+    Callable,
     Hashable,
     Iterable,
     Iterator,
@@ -20,7 +21,6 @@ import sys
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     Generic,
     TypedDict,
     TypeVar,
@@ -39,6 +39,7 @@ from pandas.core.resample import (
 )
 import pytest
 from typing_extensions import (
+    Never,
     TypeAlias,
     assert_never,
     assert_type,
@@ -3649,6 +3650,15 @@ def test_to_dict_simple() -> None:
             DF.to_dict(  # type: ignore[call-overload]
                 into=mapping  # pyright: ignore[reportArgumentType,reportCallIssue]
             )
+
+        assert_type(DF.to_dict(into=defaultdict), Never)
+        assert_type(DF.to_dict("records", into=defaultdict), Never)
+        assert_type(DF.to_dict("index", into=defaultdict), Never)
+        assert_type(DF.to_dict("dict", into=defaultdict), Never)
+        assert_type(DF.to_dict("list", into=defaultdict), Never)
+        assert_type(DF.to_dict("series", into=defaultdict), Never)
+        assert_type(DF.to_dict("split", into=defaultdict), Never)
+        assert_type(DF.to_dict("tight", into=defaultdict), Never)
 
 
 def test_to_dict_into_defaultdict_any() -> None:

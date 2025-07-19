@@ -2,6 +2,7 @@ from builtins import (
     bool as _bool,
     str as _str,
 )
+from collections import defaultdict
 from collections.abc import (
     Callable,
     Hashable,
@@ -394,6 +395,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         copy: bool = ...,
         na_value: Scalar = ...,
     ) -> np.ndarray: ...
+    @overload
+    def to_dict(
+        self,
+        orient=...,
+        *,
+        into: type[defaultdict],
+        index: Literal[True] = ...,
+    ) -> Never: ...
     @overload
     def to_dict(
         self,
