@@ -3638,33 +3638,83 @@ def test_to_records() -> None:
     )
 
 
-def test_to_dict() -> None:
+def test_to_dict_simple() -> None:
     check(assert_type(DF.to_dict(), dict[Hashable, Any]), dict)
     check(assert_type(DF.to_dict("split"), dict[Hashable, Any]), dict)
-
-    target: MutableMapping = defaultdict(list)
-    check(
-        assert_type(DF.to_dict(into=target), MutableMapping[Hashable, Any]), defaultdict
-    )
-    target = defaultdict(list)
-    check(
-        assert_type(DF.to_dict("tight", into=target), MutableMapping[Hashable, Any]),
-        defaultdict,
-    )
-    target = defaultdict(list)
     check(assert_type(DF.to_dict("records"), list[dict[Hashable, Any]]), list)
-    check(
-        assert_type(
-            DF.to_dict("records", into=target), list[MutableMapping[Hashable, Any]]
-        ),
-        list,
-    )
+
     if TYPE_CHECKING_INVALID_USAGE:
 
         def test(mapping: Mapping) -> None:  # pyright: ignore[reportUnusedFunction]
             DF.to_dict(  # type: ignore[call-overload]
                 into=mapping  # pyright: ignore[reportArgumentType,reportCallIssue]
             )
+
+
+def test_to_dict_into_defaultdict_any() -> None:
+    """Test DataFrame.to_dict with `into=defaultdict[Any, list]`"""
+
+    data = pd.DataFrame({("str", "rts"): [[1, 2, 4], [2, 3], [3]]})
+    target: defaultdict[Hashable, list[Any]] = defaultdict(list)
+
+    check(
+        assert_type(data.to_dict(into=target), defaultdict[Hashable, list[Any]]),
+        defaultdict,
+    )
+    check(
+        assert_type(
+            data.to_dict("index", into=target),
+            MutableMapping[Hashable, defaultdict[Hashable, list[Any]]],
+        ),
+        defaultdict,
+    )
+    check(
+        assert_type(
+            data.to_dict("tight", into=target), defaultdict[Hashable, list[Any]]
+        ),
+        defaultdict,
+    )
+    check(
+        assert_type(
+            data.to_dict("records", into=target), list[defaultdict[Hashable, list[Any]]]
+        ),
+        list,
+    )
+
+
+def test_to_dict_into_defaultdict_typed() -> None:
+    """Test DataFrame.to_dict with `into=defaultdict[tuple[str, str], list[int]]`"""
+
+    data = pd.DataFrame({("str", "rts"): [[1, 2, 4], [2, 3], [3]]})
+    target: defaultdict[tuple[str, str], list[int]] = defaultdict(list)
+    target[("str", "rts")].append(1)
+
+    check(
+        assert_type(data.to_dict(into=target), defaultdict[tuple[str, str], list[int]]),
+        defaultdict,
+        tuple,
+    )
+    check(
+        assert_type(
+            data.to_dict("index", into=target),
+            MutableMapping[Hashable, defaultdict[tuple[str, str], list[int]]],
+        ),
+        defaultdict,
+    )
+    check(
+        assert_type(
+            data.to_dict("tight", into=target), defaultdict[tuple[str, str], list[int]]
+        ),
+        defaultdict,
+    )
+    check(
+        assert_type(
+            data.to_dict("records", into=target),
+            list[defaultdict[tuple[str, str], list[int]]],
+        ),
+        list,
+        defaultdict,
+    )
 
 
 def test_neg() -> None:
@@ -4111,7 +4161,10 @@ def test_to_dict_index() -> None:
         assert_type(df.to_dict(orient="series", index=True), dict[Hashable, Any]), dict
     )
     check(
-        assert_type(df.to_dict(orient="index", index=True), dict[Hashable, Any]), dict
+        assert_type(
+            df.to_dict(orient="index", index=True), dict[Hashable, dict[Hashable, Any]]
+        ),
+        dict,
     )
     check(
         assert_type(df.to_dict(orient="split", index=True), dict[Hashable, Any]), dict
