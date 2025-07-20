@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from collections import defaultdict
+from collections import (
+    OrderedDict,
+    defaultdict,
+)
 from collections.abc import (
     Callable,
     Hashable,
@@ -3641,8 +3644,13 @@ def test_to_records() -> None:
 
 def test_to_dict_simple() -> None:
     check(assert_type(DF.to_dict(), dict[Hashable, Any]), dict)
-    check(assert_type(DF.to_dict("split"), dict[Hashable, Any]), dict)
     check(assert_type(DF.to_dict("records"), list[dict[Hashable, Any]]), list)
+    check(assert_type(DF.to_dict("index"), dict[Hashable, dict[Hashable, Any]]), dict)
+    check(assert_type(DF.to_dict("dict"), dict[Hashable, Any]), dict)
+    check(assert_type(DF.to_dict("list"), dict[Hashable, Any]), dict)
+    check(assert_type(DF.to_dict("series"), dict[Hashable, Any]), dict)
+    check(assert_type(DF.to_dict("split"), dict[str, list]), dict, str)
+    check(assert_type(DF.to_dict("tight"), dict[str, list]), dict, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
 
@@ -3661,69 +3669,58 @@ def test_to_dict_simple() -> None:
         assert_type(DF.to_dict("tight", into=defaultdict), Never)
 
 
-def test_to_dict_into_defaultdict_any() -> None:
-    """Test DataFrame.to_dict with `into=defaultdict[Any, list]`"""
+def test_to_dict_into_defaultdict() -> None:
+    """Test DataFrame.to_dict with `into` is an instance of defaultdict[Any, list]"""
 
     data = pd.DataFrame({("str", "rts"): [[1, 2, 4], [2, 3], [3]]})
-    target: defaultdict[Hashable, list[Any]] = defaultdict(list)
+    target: defaultdict[Any, list] = defaultdict(list)
 
     check(
-        assert_type(data.to_dict(into=target), defaultdict[Hashable, list[Any]]),
-        defaultdict,
-    )
-    check(
-        assert_type(
-            data.to_dict("index", into=target),
-            MutableMapping[Hashable, defaultdict[Hashable, list[Any]]],
-        ),
-        defaultdict,
-    )
-    check(
-        assert_type(
-            data.to_dict("tight", into=target), defaultdict[Hashable, list[Any]]
-        ),
-        defaultdict,
-    )
-    check(
-        assert_type(
-            data.to_dict("records", into=target), list[defaultdict[Hashable, list[Any]]]
-        ),
-        list,
-    )
-
-
-def test_to_dict_into_defaultdict_typed() -> None:
-    """Test DataFrame.to_dict with `into=defaultdict[tuple[str, str], list[int]]`"""
-
-    data = pd.DataFrame({("str", "rts"): [[1, 2, 4], [2, 3], [3]]})
-    target: defaultdict[tuple[str, str], list[int]] = defaultdict(list)
-    target[("str", "rts")].append(1)
-
-    check(
-        assert_type(data.to_dict(into=target), defaultdict[tuple[str, str], list[int]]),
+        assert_type(data.to_dict(into=target), defaultdict[Any, list]),
         defaultdict,
         tuple,
     )
     check(
-        assert_type(
+        assert_type(  # type: ignore[assert-type]
             data.to_dict("index", into=target),
-            MutableMapping[Hashable, defaultdict[tuple[str, str], list[int]]],
+            defaultdict[Hashable, dict[Hashable, Any]],
         ),
         defaultdict,
     )
     check(
-        assert_type(
-            data.to_dict("tight", into=target), defaultdict[tuple[str, str], list[int]]
-        ),
+        assert_type(data.to_dict("tight", into=target), MutableMapping[str, list]),
         defaultdict,
+        str,
     )
     check(
-        assert_type(
-            data.to_dict("records", into=target),
-            list[defaultdict[tuple[str, str], list[int]]],
-        ),
+        assert_type(data.to_dict("records", into=target), list[defaultdict[Any, list]]),
         list,
         defaultdict,
+    )
+
+
+def test_to_dict_into_ordered_dict() -> None:
+    """Test DataFrame.to_dict with `into=OrderedDict`"""
+
+    data = pd.DataFrame({("str", "rts"): [[1, 2, 4], [2, 3], [3]]})
+
+    check(assert_type(data.to_dict(into=OrderedDict), OrderedDict), OrderedDict, tuple)
+    check(
+        assert_type(
+            data.to_dict("index", into=OrderedDict),
+            OrderedDict[Hashable, dict[Hashable, Any]],
+        ),
+        OrderedDict,
+    )
+    check(
+        assert_type(data.to_dict("tight", into=OrderedDict), MutableMapping[str, list]),
+        OrderedDict,
+        str,
+    )
+    check(
+        assert_type(data.to_dict("records", into=OrderedDict), list[OrderedDict]),
+        list,
+        OrderedDict,
     )
 
 
@@ -4177,16 +4174,16 @@ def test_to_dict_index() -> None:
         dict,
     )
     check(
-        assert_type(df.to_dict(orient="split", index=True), dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="split", index=True), dict[str, list]), dict, str
     )
     check(
-        assert_type(df.to_dict(orient="tight", index=True), dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="tight", index=True), dict[str, list]), dict, str
     )
     check(
-        assert_type(df.to_dict(orient="tight", index=False), dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="tight", index=False), dict[str, list]), dict, str
     )
     check(
-        assert_type(df.to_dict(orient="split", index=False), dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="split", index=False), dict[str, list]), dict, str
     )
     if TYPE_CHECKING_INVALID_USAGE:
         check(assert_type(df.to_dict(orient="records", index=False), list[dict[Hashable, Any]]), list)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]

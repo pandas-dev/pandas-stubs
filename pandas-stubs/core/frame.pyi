@@ -2,7 +2,10 @@ from builtins import (
     bool as _bool,
     str as _str,
 )
-from collections import defaultdict
+from collections import (
+    OrderedDict,
+    defaultdict,
+)
 from collections.abc import (
     Callable,
     Hashable,
@@ -398,7 +401,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def to_dict(
         self,
-        orient=...,
+        orient: str = ...,
         *,
         into: type[defaultdict],
         index: Literal[True] = ...,
@@ -424,9 +427,25 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["index"],
         *,
-        into: _T_MUTABLE_MAPPING | type[_T_MUTABLE_MAPPING],
+        into: defaultdict,
         index: Literal[True] = ...,
-    ) -> MutableMapping[Hashable, _T_MUTABLE_MAPPING]: ...
+    ) -> defaultdict[Hashable, dict[Hashable, Any]]: ...
+    @overload
+    def to_dict(
+        self,
+        orient: Literal["index"],
+        *,
+        into: OrderedDict | type[OrderedDict],
+        index: Literal[True] = ...,
+    ) -> OrderedDict[Hashable, dict[Hashable, Any]]: ...
+    @overload
+    def to_dict(
+        self,
+        orient: Literal["index"],
+        *,
+        into: MutableMapping | type[MutableMapping],
+        index: Literal[True] = ...,
+    ) -> MutableMapping[Hashable, dict[Hashable, Any]]: ...
     @overload
     def to_dict(
         self,
@@ -438,51 +457,35 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def to_dict(
         self,
-        orient: Literal["dict", "list", "series"],
+        orient: Literal["dict", "list", "series"] = ...,
         *,
         into: _T_MUTABLE_MAPPING | type[_T_MUTABLE_MAPPING],
         index: Literal[True] = ...,
     ) -> _T_MUTABLE_MAPPING: ...
+    @overload
+    def to_dict(
+        self,
+        orient: Literal["dict", "list", "series"] = ...,
+        *,
+        into: type[dict] = ...,
+        index: Literal[True] = ...,
+    ) -> dict[Hashable, Any]: ...
     @overload
     def to_dict(
         self,
         orient: Literal["split", "tight"],
         *,
-        into: _T_MUTABLE_MAPPING | type[_T_MUTABLE_MAPPING],
+        into: MutableMapping | type[MutableMapping],
         index: bool = ...,
-    ) -> _T_MUTABLE_MAPPING: ...
+    ) -> MutableMapping[str, list]: ...
     @overload
     def to_dict(
         self,
-        orient: Literal["dict", "list", "series"] = ...,
-        *,
-        into: _T_MUTABLE_MAPPING | type[_T_MUTABLE_MAPPING],
-        index: Literal[True] = ...,
-    ) -> _T_MUTABLE_MAPPING: ...
-    @overload
-    def to_dict(
-        self,
-        orient: Literal["split", "tight"] = ...,
-        *,
-        into: _T_MUTABLE_MAPPING | type[_T_MUTABLE_MAPPING],
-        index: bool = ...,
-    ) -> _T_MUTABLE_MAPPING: ...
-    @overload
-    def to_dict(
-        self,
-        orient: Literal["dict", "list", "series"] = ...,
-        *,
-        into: type[dict] = ...,
-        index: Literal[True] = ...,
-    ) -> dict[Hashable, Any]: ...
-    @overload
-    def to_dict(
-        self,
-        orient: Literal["split", "tight"] = ...,
+        orient: Literal["split", "tight"],
         *,
         into: type[dict] = ...,
         index: bool = ...,
-    ) -> dict[Hashable, Any]: ...
+    ) -> dict[str, list]: ...
     def to_gbq(
         self,
         destination_table: str,
