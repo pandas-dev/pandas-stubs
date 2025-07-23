@@ -2371,8 +2371,9 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         default_handler: Callable[[Any], JSONSerializable] | None = ...,
         lines: Literal[True],
         compression: CompressionOptions = ...,
-        index: _bool = ...,
+        index: _bool | None = ...,
         indent: int | None = ...,
+        storage_options: dict | None = ...,
         mode: Literal["a"],
     ) -> None: ...
     @overload
@@ -2388,14 +2389,16 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         default_handler: Callable[[Any], JSONSerializable] | None = ...,
         lines: Literal[True],
         compression: CompressionOptions = ...,
-        index: _bool = ...,
+        index: _bool | None = ...,
         indent: int | None = ...,
+        storage_options: dict | None = ...,
         mode: Literal["a"],
     ) -> _str: ...
     @overload
     def to_json(
         self,
         path_or_buf: None = ...,
+        *,
         orient: JsonFrameOrient | None = ...,
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
@@ -2404,14 +2407,16 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         default_handler: Callable[[Any], JSONSerializable] | None = ...,
         lines: _bool = ...,
         compression: CompressionOptions = ...,
-        index: _bool = ...,
+        index: _bool | None = ...,
         indent: int | None = ...,
+        storage_options: dict | None = ...,
         mode: Literal["w"] = ...,
     ) -> _str: ...
     @overload
     def to_json(
         self,
         path_or_buf: FilePath | WriteBuffer[str] | WriteBuffer[bytes],
+        *,
         orient: JsonFrameOrient | None = ...,
         date_format: Literal["epoch", "iso"] | None = ...,
         double_precision: int = ...,
@@ -2420,8 +2425,9 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         default_handler: Callable[[Any], JSONSerializable] | None = ...,
         lines: _bool = ...,
         compression: CompressionOptions = ...,
-        index: _bool = ...,
+        index: _bool | None = ...,
         indent: int | None = ...,
+        storage_options: dict | None = ...,
         mode: Literal["w"] = ...,
     ) -> None: ...
     @overload

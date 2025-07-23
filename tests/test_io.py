@@ -546,6 +546,10 @@ def test_parquet_options():
             type(None),
         )
         check(assert_type(read_parquet(path), DataFrame), DataFrame)
+        check(assert_type(read_parquet(path), DataFrame), DataFrame)
+
+        sel = [("a", ">", 2)]
+        check(assert_type(read_parquet(path, filters=sel), DataFrame), DataFrame)
 
 
 def test_feather():

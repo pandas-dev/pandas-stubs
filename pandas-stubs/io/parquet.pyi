@@ -3,6 +3,7 @@ from typing import Any
 from pandas import DataFrame
 
 from pandas._typing import (
+    DtypeBackend,
     FilePath,
     ParquetEngine,
     ReadBuffer,
@@ -14,5 +15,9 @@ def read_parquet(
     engine: ParquetEngine = ...,
     columns: list[str] | None = ...,
     storage_options: StorageOptions = ...,
+    use_nullable_dtypes: bool = ...,  # deprecated since 2.0
+    dtype_backend: DtypeBackend = ...,
+    filesystem: Any = None,
+    filters: list[tuple] | list[list[tuple]] | None = None,
     **kwargs: Any,
 ) -> DataFrame: ...
