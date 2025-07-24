@@ -1428,9 +1428,14 @@ def test_types_values() -> None:
         assert_type(pd.Series([1, 2, 3]).values, Union[ExtensionArray, np.ndarray]),
         np.ndarray,
     )
+    valresult_type: type[np.ndarray | ExtensionArray]
+    if PD_LTE_23:
+        valresult_type = np.ndarray
+    else:
+        valresult_type = ExtensionArray
     check(
         assert_type(pd.Series(list("aabc")).values, Union[np.ndarray, ExtensionArray]),
-        np.ndarray,
+        valresult_type,
     )
     check(
         assert_type(
@@ -1707,11 +1712,14 @@ def test_series_replace() -> None:
         pd.Series,
     )
     check(
-        assert_type(s.replace({pattern: "z"}), "pd.Series[str]"),
+        assert_type(s.replace({pattern: "z"}, regex=True), "pd.Series[str]"),
         pd.Series,
     )
     check(assert_type(s.replace(["a"], ["x"]), "pd.Series[str]"), pd.Series)
-    check(assert_type(s.replace([pattern], ["x"]), "pd.Series[str]"), pd.Series)
+    check(
+        assert_type(s.replace([pattern], ["x"], regex=True), "pd.Series[str]"),
+        pd.Series,
+    )
     check(assert_type(s.replace(r"^a.*", "x", regex=True), "pd.Series[str]"), pd.Series)
     check(assert_type(s.replace(value="x", regex=r"^a.*"), "pd.Series[str]"), pd.Series)
     check(
@@ -3793,7 +3801,9 @@ def test_path_div() -> None:
     # GH 682
     folder = Path.cwd()
     files = pd.Series(["a.png", "b.png"])
-    check(assert_type(folder / files, pd.Series), pd.Series, Path)
+    if PD_LTE_23:
+        # Bug in 3.0 https://github.com/pandas-dev/pandas/issues/61940
+        check(assert_type(folder / files, pd.Series), pd.Series, Path)
 
     folders = pd.Series([folder, folder])
     check(assert_type(folders / Path("a.png"), pd.Series), pd.Series, Path)

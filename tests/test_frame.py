@@ -2949,7 +2949,10 @@ def test_dataframe_replace() -> None:
     check(assert_type(df.replace(regex=pattern, value="x"), pd.DataFrame), pd.DataFrame)
 
     check(assert_type(df.replace(["a"], ["x"]), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.replace([pattern], ["x"]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.replace([pattern], ["x"], regex=True), pd.DataFrame),
+        pd.DataFrame,
+    )
     check(assert_type(df.replace(regex=["a"], value=["x"]), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(df.replace(regex=[pattern], value=["x"]), pd.DataFrame),
@@ -2958,7 +2961,9 @@ def test_dataframe_replace() -> None:
 
     check(assert_type(df.replace({"a": "x"}), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.replace(replace_dict_scalar), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.replace({pattern: "x"}), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.replace({pattern: "x"}, regex=True), pd.DataFrame), pd.DataFrame
+    )
     check(assert_type(df.replace(pd.Series({"a": "x"})), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.replace(regex={"a": "x"}), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.replace(regex={pattern: "x"}), pd.DataFrame), pd.DataFrame)
@@ -3003,7 +3008,9 @@ def test_dataframe_replace() -> None:
         pd.DataFrame,
     )
     check(
-        assert_type(df.replace({"col1": [pattern]}, {"col1": ["x"]}), pd.DataFrame),
+        assert_type(
+            df.replace({"col1": [pattern]}, {"col1": ["x"]}, regex=True), pd.DataFrame
+        ),
         pd.DataFrame,
     )
     check(
@@ -3037,7 +3044,10 @@ def test_dataframe_replace() -> None:
 
     check(assert_type(df.replace({"col1": {"a": "x"}}), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.replace(replace_dict_per_column), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.replace({"col1": {pattern: "x"}}), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.replace({"col1": {pattern: "x"}}, regex=True), pd.DataFrame),
+        pd.DataFrame,
+    )
     check(
         assert_type(df.replace({"col1": pd.Series({"a": "x"})}), pd.DataFrame),
         pd.DataFrame,
@@ -3168,7 +3178,7 @@ def test_frame_reindex_like() -> None:
     with pytest_warns_bounded(
         FutureWarning,
         "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
-        lower="2.3.0",
+        lower="2.3.99",
     ):
         check(
             assert_type(
