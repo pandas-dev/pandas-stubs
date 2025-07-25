@@ -7,6 +7,7 @@ import pytest
 from typing_extensions import assert_type
 
 from tests import (
+    PD_LTE_23,
     check,
     np_ndarray_bool,
 )
@@ -39,9 +40,13 @@ def test_string_accessors_boolean_series():
     _check(
         assert_type(s.str.contains("a"), "pd.Series[bool]"),
     )
-    _check(
-        assert_type(s.str.contains(re.compile(r"a")), "pd.Series[bool]"),
-    )
+    if PD_LTE_23:
+        # Bug in pandas 3.0 dev  https://github.com/pandas-dev/pandas/issues/61942
+        _check(
+            assert_type(
+                s.str.contains(re.compile(r"a"), regex=True), "pd.Series[bool]"
+            ),
+        )
     _check(assert_type(s.str.endswith("e"), "pd.Series[bool]"))
     _check(assert_type(s.str.endswith(("e", "f")), "pd.Series[bool]"))
     _check(assert_type(s.str.fullmatch("apple"), "pd.Series[bool]"))
@@ -69,9 +74,13 @@ def test_string_accessors_boolean_index():
     _check(
         assert_type(idx.str.contains("a"), np_ndarray_bool),
     )
-    _check(
-        assert_type(idx.str.contains(re.compile(r"a")), np_ndarray_bool),
-    )
+    if PD_LTE_23:
+        # Bug in pandas 3.0 dev  https://github.com/pandas-dev/pandas/issues/61942
+        _check(
+            assert_type(
+                idx.str.contains(re.compile(r"a"), regex=True), np_ndarray_bool
+            ),
+        )
     _check(assert_type(idx.str.endswith("e"), np_ndarray_bool))
     _check(assert_type(idx.str.endswith(("e", "f")), np_ndarray_bool))
     _check(assert_type(idx.str.fullmatch("apple"), np_ndarray_bool))
