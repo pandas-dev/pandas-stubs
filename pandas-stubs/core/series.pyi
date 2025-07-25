@@ -1135,7 +1135,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         freq: DateOffset | timedelta | _str | None = ...,
         axis: Axis = ...,
         fill_value: Scalar | NAType | None = ...,
-        suffix: _str | None = ...,  # has no effect at the moment
     ) -> Series: ...
     def info(
         self,
