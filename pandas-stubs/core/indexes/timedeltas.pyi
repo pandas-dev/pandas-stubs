@@ -79,8 +79,8 @@ class TimedeltaIndex(DatetimeTimedeltaMixin[Timedelta], TimedeltaIndexProperties
     def shift(self, periods: int = ..., freq=...) -> Self: ...
 
 def timedelta_range(
-    start: TimedeltaConvertibleTypes = None,
-    end: TimedeltaConvertibleTypes = None,
+    start: TimedeltaConvertibleTypes | None = None,
+    end: TimedeltaConvertibleTypes | None = None,
     periods: int | None = None,
     freq: str | DateOffset | Timedelta | dt.timedelta | None = ...,
     name: Hashable | None = None,

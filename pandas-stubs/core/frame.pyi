@@ -892,7 +892,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         periods: int | Sequence[int] = ...,
         freq: DateOffset | dt.timedelta | _str | None = ...,
-        axis: Axis = None,
+        axis: Axis | None = None,
         fill_value: Scalar | NAType | None = ...,
     ) -> Self: ...
     @overload
