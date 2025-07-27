@@ -345,31 +345,31 @@ class Styler(StylerRenderer):
         self,
         color: str | None = ...,
         subset: Subset | None = ...,
-        props: str | None = ...,
+        props: str | None = None,
     ) -> Styler: ...
     def highlight_max(
         self,
         subset: Subset | None = ...,
         color: str = ...,
         axis: Axis | None = ...,
-        props: str | None = ...,
+        props: str | None = None,
     ) -> Styler: ...
     def highlight_min(
         self,
         subset: Subset | None = ...,
         color: str = ...,
         axis: Axis | None = ...,
-        props: str | None = ...,
+        props: str | None = None,
     ) -> Styler: ...
     def highlight_between(
         self,
         subset: Subset | None = ...,
         color: str = ...,
         axis: Axis | None = ...,
-        left: Scalar | list[Scalar] | None = ...,
-        right: Scalar | list[Scalar] | None = ...,
+        left: Scalar | list[Scalar] | None = None,
+        right: Scalar | list[Scalar] | None = None,
         inclusive: IntervalClosedType = ...,
-        props: str | None = ...,
+        props: str | None = None,
     ) -> Styler: ...
     def highlight_quantile(
         self,
@@ -380,7 +380,7 @@ class Styler(StylerRenderer):
         q_right: float = ...,
         interpolation: QuantileInterpolation = ...,
         inclusive: IntervalClosedType = ...,
-        props: str | None = ...,
+        props: str | None = None,
     ) -> Styler: ...
     @classmethod
     def from_custom_template(

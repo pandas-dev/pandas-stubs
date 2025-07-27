@@ -125,11 +125,17 @@ class Resampler(BaseGroupBy[NDFrameT]):
     def max(self, numeric_only: bool = ..., min_count: int = ...) -> NDFrameT: ...
     @final
     def first(
-        self, numeric_only: bool = ..., min_count: int = ..., skipna: bool = ...
+        self,
+        numeric_only: bool = ...,
+        min_count: int = ...,
+        skipna: bool = ...,
     ) -> NDFrameT: ...
     @final
     def last(
-        self, numeric_only: bool = ..., min_count: int = ..., skipna: bool = ...
+        self,
+        numeric_only: bool = ...,
+        min_count: int = ...,
+        skipna: bool = ...,
     ) -> NDFrameT: ...
     @final
     def median(self, numeric_only: bool = ...) -> NDFrameT: ...

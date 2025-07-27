@@ -101,8 +101,8 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     def mean(
         self,
         numeric_only: bool = ...,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
     ) -> NDFrameT: ...
     @final
     def median(self, numeric_only: bool = ...) -> NDFrameT: ...
@@ -155,8 +155,8 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         self,
         numeric_only: bool = ...,
         min_count: int = ...,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
     ) -> NDFrameT: ...
     @final
     def prod(self, numeric_only: bool = ..., min_count: int = ...) -> NDFrameT: ...
@@ -165,16 +165,16 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         self,
         numeric_only: bool = ...,
         min_count: int = ...,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
     ) -> NDFrameT: ...
     @final
     def max(
         self,
         numeric_only: bool = ...,
         min_count: int = ...,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
     ) -> NDFrameT: ...
     @final
     def first(self, numeric_only: bool = ..., min_count: int = ...) -> NDFrameT: ...
@@ -211,12 +211,12 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     def rolling(
         self,
         window: int | dt.timedelta | str | BaseOffset | BaseIndexer | None = ...,
-        min_periods: int | None = ...,
+        min_periods: int | None = None,
         center: bool | None = ...,
-        win_type: str | None = ...,
+        win_type: str | None = None,
         axis: Axis = ...,
         on: str | Index | None = ...,
-        closed: IntervalClosedType | None = ...,
+        closed: IntervalClosedType | None = None,
         method: CalculationMethod = ...,
         *,
         selection: IndexLabel | None = ...,
@@ -371,7 +371,7 @@ class BaseGroupBy(SelectionMixin[NDFrameT], GroupByIndexingMixin):
         **kwargs: Any,
     ) -> T: ...
     @final
-    def get_group(self, name, obj: NDFrameT | None = ...) -> NDFrameT: ...
+    def get_group(self, name, obj: NDFrameT | None = None) -> NDFrameT: ...
     @final
     def __iter__(self) -> Iterator[tuple[Hashable, NDFrameT]]: ...
     @overload

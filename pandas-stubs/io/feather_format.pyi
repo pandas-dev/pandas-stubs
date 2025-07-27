@@ -11,7 +11,7 @@ from pandas._typing import (
 
 def read_feather(
     path: FilePath | ReadBuffer[bytes],
-    columns: list[HashableT] | None = ...,
+    columns: list[HashableT] | None = None,
     use_threads: bool = ...,
     storage_options: StorageOptions = ...,
     dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,

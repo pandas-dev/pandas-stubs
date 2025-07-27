@@ -12,10 +12,10 @@ from pandas._typing import (
 
 def read_orc(
     path: FilePath | ReadBuffer[bytes],
-    columns: list[HashableT] | None = ...,
+    columns: list[HashableT] | None = None,
     dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     # TODO type with the correct pyarrow types
     # filesystem: pyarrow.fs.FileSystem | fsspec.spec.AbstractFileSystem
-    filesystem: Any | None = ...,
+    filesystem: Any | None = None,
     **kwargs: Any,
 ) -> DataFrame: ...

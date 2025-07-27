@@ -87,7 +87,7 @@ def merge_asof(
     left_by: Label | list[HashableT] | None = ...,
     right_by: Label | list[HashableT] | None = ...,
     suffixes: Suffixes = ...,
-    tolerance: int | timedelta | Timedelta | None = ...,
+    tolerance: int | timedelta | Timedelta | None = None,
     allow_exact_matches: bool = ...,
     direction: Literal["backward", "forward", "nearest"] = ...,
 ) -> DataFrame: ...

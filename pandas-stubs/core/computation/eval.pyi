@@ -23,6 +23,6 @@ def eval(
     global_dict: dict[str, Any] | None = ...,
     resolvers: list[Mapping] | None = ...,
     level: int = ...,
-    target: object | None = ...,
+    target: object | None = None,
     inplace: bool = ...,
 ) -> npt.NDArray | Scalar | DataFrame | Series | None: ...

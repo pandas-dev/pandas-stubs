@@ -165,7 +165,7 @@ class NDFrame(indexing.IndexingMixin):
         schema: _str | None = ...,
         if_exists: Literal["fail", "replace", "append"] = ...,
         index: _bool = ...,
-        index_label: IndexLabel = ...,
+        index_label: IndexLabel = None,
         chunksize: int | None = ...,
         dtype: DtypeArg | None = ...,
         method: (
@@ -422,14 +422,14 @@ class NDFrame(indexing.IndexingMixin):
         self,
         rule: Frequency | dt.timedelta,
         axis: Axis | _NoDefaultDoNotUse = ...,
-        closed: Literal["right", "left"] | None = ...,
-        label: Literal["right", "left"] | None = ...,
+        closed: Literal["right", "left"] | None = None,
+        label: Literal["right", "left"] | None = None,
         convention: ToTimestampHow = ...,
-        kind: Literal["period", "timestamp"] | None = ...,
+        kind: Literal["period", "timestamp"] | None = None,
         on: Level | None = ...,
         level: Level | None = ...,
         origin: TimeGrouperOrigin | TimestampConvertibleTypes = ...,
-        offset: TimedeltaConvertibleTypes | None = ...,
+        offset: TimedeltaConvertibleTypes | None = None,
         group_keys: _bool = ...,
     ) -> DatetimeIndexResampler[Self]: ...
     @final

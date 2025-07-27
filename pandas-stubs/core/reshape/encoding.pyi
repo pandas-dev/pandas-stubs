@@ -14,16 +14,16 @@ from pandas._typing import (
 
 def get_dummies(
     data: AnyArrayLike | DataFrame,
-    prefix: str | Iterable[str] | dict[HashableT1, str] | None = ...,
+    prefix: str | Iterable[str] | dict[HashableT1, str] | None = None,
     prefix_sep: str = ...,
     dummy_na: bool = ...,
-    columns: list[HashableT2] | None = ...,
+    columns: list[HashableT2] | None = None,
     sparse: bool = ...,
     drop_first: bool = ...,
     dtype: Dtype | None = ...,
 ) -> DataFrame: ...
 def from_dummies(
     data: DataFrame,
-    sep: str | None = ...,
-    default_category: Hashable | dict[str, Hashable] | None = ...,
+    sep: str | None = None,
+    default_category: Hashable | dict[str, Hashable] | None = None,
 ) -> DataFrame: ...

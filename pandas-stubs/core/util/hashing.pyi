@@ -18,5 +18,8 @@ def hash_pandas_object(
     categorize: bool = ...,
 ) -> Series: ...
 def hash_array(
-    vals: ArrayLike, encoding: str = ..., hash_key: str = ..., categorize: bool = ...
+    vals: ArrayLike,
+    encoding: str = ...,
+    hash_key: str = ...,
+    categorize: bool = ...,
 ) -> npt.NDArray[np.uint64]: ...

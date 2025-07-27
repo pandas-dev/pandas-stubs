@@ -17,33 +17,33 @@ class ExponentialMovingWindow(BaseWindow[NDFrameT]):
     def online(
         self,
         engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine_kwargs: WindowingEngineKwargs = None,
     ) -> OnlineExponentialMovingWindow[NDFrameT]: ...
     def mean(
         self,
         numeric_only: bool = ...,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
     ) -> NDFrameT: ...
     def sum(
         self,
         numeric_only: bool = ...,
-        engine: WindowingEngine = ...,
-        engine_kwargs: WindowingEngineKwargs = ...,
+        engine: WindowingEngine = None,
+        engine_kwargs: WindowingEngineKwargs = None,
     ) -> NDFrameT: ...
     def std(self, bias: bool = ..., numeric_only: bool = ...) -> NDFrameT: ...
     def var(self, bias: bool = ..., numeric_only: bool = ...) -> NDFrameT: ...
     def cov(
         self,
         other: DataFrame | Series | None = ...,
-        pairwise: bool | None = ...,
+        pairwise: bool | None = None,
         bias: bool = ...,
         numeric_only: bool = ...,
     ) -> NDFrameT: ...
     def corr(
         self,
         other: DataFrame | Series | None = ...,
-        pairwise: bool | None = ...,
+        pairwise: bool | None = None,
         numeric_only: bool = ...,
     ) -> NDFrameT: ...
 
@@ -58,13 +58,13 @@ class OnlineExponentialMovingWindow(ExponentialMovingWindow[NDFrameT]):
     def corr(
         self,
         other: DataFrame | Series | None = ...,
-        pairwise: bool | None = ...,
+        pairwise: bool | None = None,
         numeric_only: bool = ...,
     ): ...
     def cov(
         self,
         other: DataFrame | Series | None = ...,
-        pairwise: bool | None = ...,
+        pairwise: bool | None = None,
         bias: bool = ...,
         numeric_only: bool = ...,
     ): ...

@@ -78,7 +78,7 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period], PeriodIndexFieldOps):
         sort: bool = ...,
     ): ...
     @final
-    def difference(self, other, sort=...): ...
+    def difference(self, other, sort=None): ...
     def memory_usage(self, deep: bool = ...): ...
     @property
     def freqstr(self) -> str: ...
@@ -87,11 +87,11 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period], PeriodIndexFieldOps):
 def period_range(
     start: (
         str | datetime.datetime | datetime.date | pd.Timestamp | pd.Period | None
-    ) = ...,
+    ) = None,
     end: (
         str | datetime.datetime | datetime.date | pd.Timestamp | pd.Period | None
-    ) = ...,
-    periods: int | None = ...,
+    ) = None,
+    periods: int | None = None,
     freq: str | BaseOffset | None = ...,
-    name: Hashable | None = ...,
+    name: Hashable | None = None,
 ) -> PeriodIndex: ...

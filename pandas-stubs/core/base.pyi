@@ -69,10 +69,18 @@ class IndexOpsMixin(OpsMixin, Generic[S1]):
     def max(self, axis=..., skipna: bool = ..., **kwargs): ...
     def min(self, axis=..., skipna: bool = ..., **kwargs): ...
     def argmax(
-        self, axis: AxisIndex | None = ..., skipna: bool = ..., *args, **kwargs
+        self,
+        axis: AxisIndex | None = ...,
+        skipna: bool = ...,
+        *args,
+        **kwargs,
     ) -> np.int64: ...
     def argmin(
-        self, axis: AxisIndex | None = ..., skipna: bool = ..., *args, **kwargs
+        self,
+        axis: AxisIndex | None = ...,
+        skipna: bool = ...,
+        *args,
+        **kwargs,
     ) -> np.int64: ...
     def tolist(self) -> list[S1]: ...
     def to_list(self) -> list[S1]: ...

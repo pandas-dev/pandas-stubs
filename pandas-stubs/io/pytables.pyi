@@ -178,8 +178,8 @@ class HDFStore:
         complevel: int | None = ...,
         min_itemsize: int | dict[HashableT1, int] | None = ...,
         nan_rep: str | None = ...,
-        data_columns: Literal[True] | list[HashableT2] | None = ...,
-        encoding: str | None = ...,
+        data_columns: Literal[True] | list[HashableT2] | None = None,
+        encoding: str | None = None,
         errors: Literal[
             "strict",
             "ignore",
@@ -208,8 +208,8 @@ class HDFStore:
         chunksize: int | None = ...,
         expectedrows: int | None = ...,
         dropna: bool | None = ...,
-        data_columns: Literal[True] | list[HashableT3] | None = ...,
-        encoding: str | None = ...,
+        data_columns: Literal[True] | list[HashableT3] | None = None,
+        encoding: str | None = None,
         errors: Literal[
             "strict",
             "ignore",

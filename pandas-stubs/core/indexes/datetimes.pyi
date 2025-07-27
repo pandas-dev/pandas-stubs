@@ -84,7 +84,11 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
     def inferred_type(self) -> str: ...
     def indexer_at_time(self, time, asof: bool = ...): ...
     def indexer_between_time(
-        self, start_time, end_time, include_start: bool = ..., include_end: bool = ...
+        self,
+        start_time,
+        end_time,
+        include_start: bool = ...,
+        include_end: bool = ...,
     ): ...
     def to_julian_date(self) -> Index[float]: ...
     def isocalendar(self) -> DataFrame: ...
@@ -101,9 +105,9 @@ def date_range(
     freq: str | timedelta | Timedelta | BaseOffset = ...,
     tz: TimeZones = ...,
     normalize: bool = ...,
-    name: Hashable | None = ...,
+    name: Hashable | None = None,
     inclusive: IntervalClosedType = ...,
-    unit: TimeUnit | None = ...,
+    unit: TimeUnit | None = None,
 ) -> DatetimeIndex: ...
 @overload
 def bdate_range(

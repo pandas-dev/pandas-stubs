@@ -177,7 +177,10 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
         min_periods: int | None = ...,
     ) -> Series: ...
     def cov(
-        self, other: Series, min_periods: int | None = ..., ddof: int | None = ...
+        self,
+        other: Series,
+        min_periods: int | None = ...,
+        ddof: int | None = ...,
     ) -> Series: ...
     @property
     def is_monotonic_increasing(self) -> Series[bool]: ...
@@ -188,13 +191,13 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
         by: IndexLabel | None = ...,
         ax: PlotAxes | None = ...,
         grid: bool = ...,
-        xlabelsize: float | str | None = ...,
-        xrot: float | None = ...,
-        ylabelsize: float | str | None = ...,
-        yrot: float | None = ...,
-        figsize: tuple[float, float] | None = ...,
+        xlabelsize: float | str | None = None,
+        xrot: float | None = None,
+        ylabelsize: float | str | None = None,
+        yrot: float | None = None,
+        figsize: tuple[float, float] | None = None,
         bins: int | Sequence[int] = ...,
-        backend: str | None = ...,
+        backend: str | None = None,
         legend: bool = ...,
         **kwargs,
     ) -> Series: ...  # Series[Axes] but this is not allowed
@@ -424,17 +427,17 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         column: IndexLabel | None = ...,
         by: IndexLabel | None = ...,
         grid: bool = ...,
-        xlabelsize: float | str | None = ...,
-        xrot: float | None = ...,
-        ylabelsize: float | str | None = ...,
-        yrot: float | None = ...,
-        ax: PlotAxes | None = ...,
+        xlabelsize: float | str | None = None,
+        xrot: float | None = None,
+        ylabelsize: float | str | None = None,
+        yrot: float | None = None,
+        ax: PlotAxes | None = None,
         sharex: bool = ...,
         sharey: bool = ...,
         figsize: tuple[float, float] | None = ...,
         layout: tuple[int, int] | None = ...,
         bins: int | Sequence[int] = ...,
-        backend: str | None = ...,
+        backend: str | None = None,
         legend: bool = ...,
         **kwargs,
     ) -> Series: ...  # Series[Axes] but this is not allowed

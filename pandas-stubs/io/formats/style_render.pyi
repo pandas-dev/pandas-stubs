@@ -63,7 +63,7 @@ class StylerRenderer:
         na_rep: str | None = ...,
         precision: int | None = ...,
         decimal: str = ...,
-        thousands: str | None = ...,
+        thousands: str | None = None,
         escape: str | None = ...,
         hyperlinks: Literal["html", "latex"] | None = ...,
     ) -> Self: ...
@@ -75,7 +75,7 @@ class StylerRenderer:
         na_rep: str | None = ...,
         precision: int | None = ...,
         decimal: str = ...,
-        thousands: str | None = ...,
+        thousands: str | None = None,
         escape: str | None = ...,
         hyperlinks: Literal["html", "latex"] | None = ...,
     ) -> Self: ...
