@@ -143,7 +143,8 @@ class NDFrame(indexing.IndexingMixin):
     def to_markdown(
         self,
         buf: FilePath | WriteBuffer[str],
-        mode: FileWriteMode | None = ...,
+        *,
+        mode: FileWriteMode = ...,
         index: _bool = ...,
         storage_options: StorageOptions = ...,
         **kwargs: Any,
@@ -152,6 +153,7 @@ class NDFrame(indexing.IndexingMixin):
     def to_markdown(
         self,
         buf: None = ...,
+        *,
         mode: FileWriteMode | None = ...,
         index: _bool = ...,
         storage_options: StorageOptions = ...,
