@@ -164,6 +164,7 @@ from pandas._typing import (
 
 from pandas.io.formats.style import Styler
 from pandas.plotting import PlotAccessor
+from pandas.plotting._core import hist_frame
 
 class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
     @overload
@@ -1308,8 +1309,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def pivot(
         self,
         *,
+        columns: IndexLabel,
         index: IndexLabel = ...,
-        columns: IndexLabel = ...,
         values: IndexLabel = ...,
     ) -> Self: ...
     def pivot_table(
@@ -1591,14 +1592,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         method: Literal["pearson", "kendall", "spearman"] = ...,
         numeric_only: _bool = ...,
     ) -> Series: ...
-    @overload
-    def count(
-        self, axis: Axis = ..., numeric_only: _bool = ..., *, level: Level
-    ) -> Self: ...
-    @overload
-    def count(
-        self, axis: Axis = ..., level: None = ..., numeric_only: _bool = ...
-    ) -> Series: ...
+    def count(self, axis: Axis = ..., numeric_only: _bool = ...) -> Self: ...
     def nunique(self, axis: Axis = ..., dropna: bool = ...) -> Series: ...
     def idxmax(
         self, axis: Axis = ..., skipna: _bool = ..., numeric_only: _bool = ...
@@ -1643,7 +1637,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def isin(self, values: Iterable | Series | DataFrame | dict) -> Self: ...
     @property
     def plot(self) -> PlotAccessor: ...
-    hist = ...
+    hist = hist_frame
     def boxplot(
         self,
         column: _str | list[_str] | None = ...,
@@ -2447,7 +2441,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         buf: None = ...,
         *,
-        level: None = ...,
         columns: Sequence[Hashable] | Index | Series | None = ...,
         col_space: int | list[int] | dict[Hashable, int] | None = ...,
         header: _bool | Sequence[_str] = ...,
