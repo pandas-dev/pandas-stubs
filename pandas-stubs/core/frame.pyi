@@ -2149,7 +2149,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def pct_change(
         self,
         periods: int = 1,
-        fill_method: None = "pad",
+        fill_method: None = None,
         freq: DateOffset | dt.timedelta | _str | None = ...,
         *,
         axis: Axis = ...,

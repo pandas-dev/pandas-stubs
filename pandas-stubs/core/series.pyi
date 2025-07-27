@@ -1589,7 +1589,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def pct_change(
         self,
         periods: int = 1,
-        fill_method: None = "pad",
+        fill_method: None = None,
         freq: DateOffset | timedelta | _str | None = ...,
         *,
         fill_value: Scalar | NAType | None = ...,
