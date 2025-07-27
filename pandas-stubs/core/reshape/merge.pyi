@@ -23,15 +23,15 @@ from pandas._typing import (
 def merge(
     left: DataFrame | Series,
     right: DataFrame | Series,
-    how: MergeHow = ...,
+    how: MergeHow = "inner",
     on: Label | list[HashableT] | AnyArrayLike | None = ...,
     left_on: Label | list[HashableT] | AnyArrayLike | None = ...,
     right_on: Label | list[HashableT] | AnyArrayLike | None = ...,
-    left_index: bool = ...,
-    right_index: bool = ...,
-    sort: bool = ...,
+    left_index: bool = False,
+    right_index: bool = False,
+    sort: bool = False,
     suffixes: Suffixes = ...,
-    indicator: bool | str = ...,
+    indicator: bool | str = False,
     validate: ValidationOptions = ...,
 ) -> DataFrame: ...
 @overload
@@ -88,6 +88,6 @@ def merge_asof(
     right_by: Label | list[HashableT] | None = ...,
     suffixes: Suffixes = ...,
     tolerance: int | timedelta | Timedelta | None = None,
-    allow_exact_matches: bool = ...,
+    allow_exact_matches: bool = True,
     direction: Literal["backward", "forward", "nearest"] = ...,
 ) -> DataFrame: ...

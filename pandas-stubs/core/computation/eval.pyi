@@ -17,12 +17,12 @@ from pandas._typing import (
 
 def eval(
     expr: str | BinOp,
-    parser: Literal["pandas", "python"] = ...,
-    engine: Literal["python", "numexpr"] | None = ...,
+    parser: Literal["pandas", "python"] = "pandas",
+    engine: Literal["python", "numexpr"] | None = "numexpr",
     local_dict: dict[str, Any] | None = ...,
     global_dict: dict[str, Any] | None = ...,
     resolvers: list[Mapping] | None = ...,
     level: int = ...,
     target: object | None = None,
-    inplace: bool = ...,
+    inplace: bool = False,
 ) -> npt.NDArray | Scalar | DataFrame | Series | None: ...

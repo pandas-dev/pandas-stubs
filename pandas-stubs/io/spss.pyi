@@ -11,5 +11,5 @@ def read_spss(
     path: FilePath,
     usecols: list[HashableT] | None = ...,
     convert_categoricals: bool = True,
-    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
+    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = "numpy_nullable",
 ) -> DataFrame: ...

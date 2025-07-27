@@ -60,7 +60,7 @@ class IndexOpsMixin(OpsMixin, Generic[S1]):
     def to_numpy(
         self,
         dtype: npt.DTypeLike | None = ...,
-        copy: bool = ...,
+        copy: bool = False,
         na_value: Scalar = ...,
         **kwargs,
     ) -> np.ndarray: ...
@@ -71,14 +71,14 @@ class IndexOpsMixin(OpsMixin, Generic[S1]):
     def argmax(
         self,
         axis: AxisIndex | None = ...,
-        skipna: bool = ...,
+        skipna: bool = True,
         *args,
         **kwargs,
     ) -> np.int64: ...
     def argmin(
         self,
         axis: AxisIndex | None = ...,
-        skipna: bool = ...,
+        skipna: bool = True,
         *args,
         **kwargs,
     ) -> np.int64: ...
@@ -105,7 +105,7 @@ class IndexOpsMixin(OpsMixin, Generic[S1]):
         bins=...,
         dropna: bool = ...,
     ) -> Series[float]: ...
-    def nunique(self, dropna: bool = ...) -> int: ...
+    def nunique(self, dropna: bool = True) -> int: ...
     @property
     def is_unique(self) -> bool: ...
     @property
@@ -113,7 +113,7 @@ class IndexOpsMixin(OpsMixin, Generic[S1]):
     @property
     def is_monotonic_increasing(self) -> bool: ...
     def factorize(
-        self, sort: bool = ..., use_na_sentinel: bool = ...
+        self, sort: bool = False, use_na_sentinel: bool = True
     ) -> tuple[np.ndarray, np.ndarray | Index | Categorical]: ...
     def searchsorted(
         self, value, side: Literal["left", "right"] = ..., sorter=...

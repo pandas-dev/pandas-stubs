@@ -10,20 +10,20 @@ def melt(
     id_vars: tuple | list | np.ndarray | None = ...,
     value_vars: tuple | list | np.ndarray | None = ...,
     var_name: str | None = None,
-    value_name: Hashable = ...,
+    value_name: Hashable = "value",
     col_level: int | str | None = ...,
-    ignore_index: bool = ...,
+    ignore_index: bool = True,
 ) -> DataFrame: ...
 def lreshape(
     data: DataFrame,
     groups: dict[HashableT, list[HashableT]],
-    dropna: bool = ...,
+    dropna: bool = True,
 ) -> DataFrame: ...
 def wide_to_long(
     df: DataFrame,
     stubnames: str | list[str],
     i: str | list[str],
     j: str,
-    sep: str = ...,
-    suffix: str = ...,
+    sep: str = "",
+    suffix: str = "\\d+",
 ) -> DataFrame: ...

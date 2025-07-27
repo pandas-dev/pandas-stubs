@@ -8,5 +8,5 @@ from pandas.core.dtypes.dtypes import ExtensionDtype
 def array(
     data: Sequence[object],
     dtype: str | np.dtype | ExtensionDtype | None = ...,
-    copy: bool = ...,
+    copy: bool = True,
 ) -> ExtensionArray: ...

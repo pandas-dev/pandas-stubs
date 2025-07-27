@@ -106,18 +106,18 @@ class NDFrame(indexing.IndexingMixin):
     def to_excel(
         self,
         excel_writer,
-        sheet_name: _str = ...,
-        na_rep: _str = ...,
+        sheet_name: _str = "Sheet1",
+        na_rep: _str = "",
         float_format: _str | None = ...,
         columns: _str | Sequence[_str] | None = ...,
-        header: _bool | list[_str] = ...,
-        index: _bool = ...,
+        header: _bool | list[_str] = True,
+        index: _bool = True,
         index_label: _str | Sequence[_str] | None = ...,
-        startrow: int = ...,
-        startcol: int = ...,
+        startrow: int = 0,
+        startcol: int = 0,
         engine: _str | None = ...,
-        merge_cells: ExcelWriterMergeCells = ...,
-        inf_rep: _str = ...,
+        merge_cells: ExcelWriterMergeCells = True,
+        inf_rep: _str = "inf",
         freeze_panes: tuple[int, int] | None = ...,
     ) -> None: ...
     @final
@@ -163,8 +163,8 @@ class NDFrame(indexing.IndexingMixin):
         name: _str,
         con: str | sqlalchemy.engine.Connectable | sqlite3.Connection,
         schema: _str | None = ...,
-        if_exists: Literal["fail", "replace", "append"] = ...,
-        index: _bool = ...,
+        if_exists: Literal["fail", "replace", "append"] = "fail",
+        index: _bool = True,
         index_label: IndexLabel = None,
         chunksize: int | None = ...,
         dtype: DtypeArg | None = ...,
@@ -181,15 +181,15 @@ class NDFrame(indexing.IndexingMixin):
     def to_pickle(
         self,
         path: FilePath | WriteBuffer[bytes],
-        compression: CompressionOptions = ...,
+        compression: CompressionOptions = "infer",
         protocol: int = ...,
         storage_options: StorageOptions = ...,
     ) -> None: ...
     @final
     def to_clipboard(
         self,
-        excel: _bool = ...,
-        sep: _str | None = ...,
+        excel: _bool = True,
+        sep: _str | None = "\t",
         *,
         na_rep: _str = ...,
         float_format: _str | Callable[[object], _str] | None = ...,
@@ -410,27 +410,27 @@ class NDFrame(indexing.IndexingMixin):
     @final
     def convert_dtypes(
         self,
-        infer_objects: _bool = ...,
-        convert_string: _bool = ...,
-        convert_integer: _bool = ...,
+        infer_objects: _bool = True,
+        convert_string: _bool = True,
+        convert_integer: _bool = True,
         convert_boolean: _bool = ...,
         convert_floating: _bool = ...,
-        dtype_backend: DtypeBackend = ...,
+        dtype_backend: DtypeBackend = "numpy_nullable",
     ) -> Self: ...
     @final
     def resample(
         self,
         rule: Frequency | dt.timedelta,
-        axis: Axis | _NoDefaultDoNotUse = ...,
+        axis: Axis | _NoDefaultDoNotUse = 0,
         closed: Literal["right", "left"] | None = None,
         label: Literal["right", "left"] | None = None,
-        convention: ToTimestampHow = ...,
+        convention: ToTimestampHow = "start",
         kind: Literal["period", "timestamp"] | None = None,
         on: Level | None = ...,
         level: Level | None = ...,
-        origin: TimeGrouperOrigin | TimestampConvertibleTypes = ...,
+        origin: TimeGrouperOrigin | TimestampConvertibleTypes = "start_day",
         offset: TimedeltaConvertibleTypes | None = None,
-        group_keys: _bool = ...,
+        group_keys: _bool = False,
     ) -> DatetimeIndexResampler[Self]: ...
     @final
-    def take(self, indices: TakeIndexer, axis: Axis = ..., **kwargs: Any) -> Self: ...
+    def take(self, indices: TakeIndexer, axis: Axis = 0, **kwargs: Any) -> Self: ...

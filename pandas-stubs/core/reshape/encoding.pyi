@@ -15,11 +15,11 @@ from pandas._typing import (
 def get_dummies(
     data: AnyArrayLike | DataFrame,
     prefix: str | Iterable[str] | dict[HashableT1, str] | None = None,
-    prefix_sep: str = ...,
-    dummy_na: bool = ...,
+    prefix_sep: str = "_",
+    dummy_na: bool = False,
     columns: list[HashableT2] | None = None,
-    sparse: bool = ...,
-    drop_first: bool = ...,
+    sparse: bool = False,
+    drop_first: bool = False,
     dtype: Dtype | None = ...,
 ) -> DataFrame: ...
 def from_dummies(

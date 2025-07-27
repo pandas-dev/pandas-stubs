@@ -64,11 +64,11 @@ def factorize(
 ) -> tuple[np.ndarray, Categorical]: ...
 def value_counts(
     values: AnyArrayLike | list | tuple,
-    sort: bool = ...,
-    ascending: bool = ...,
-    normalize: bool = ...,
+    sort: bool = True,
+    ascending: bool = False,
+    normalize: bool = False,
     bins: int | None = ...,
-    dropna: bool = ...,
+    dropna: bool = True,
 ) -> Series: ...
 def take(
     arr,

@@ -105,13 +105,13 @@ class StataReader(StataParser, abc.Iterator):
     def read(
         self,
         nrows: int | None = ...,
-        convert_dates: bool | None = ...,
-        convert_categoricals: bool | None = ...,
+        convert_dates: bool | None = True,
+        convert_categoricals: bool | None = True,
         index_col: str | None = ...,
-        convert_missing: bool | None = ...,
-        preserve_dtypes: bool | None = ...,
+        convert_missing: bool | None = False,
+        preserve_dtypes: bool | None = True,
         columns: list[str] | None = ...,
-        order_categoricals: bool | None = ...,
+        order_categoricals: bool | None = True,
     ): ...
     @property
     def data_label(self) -> str: ...

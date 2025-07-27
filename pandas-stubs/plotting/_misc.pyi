@@ -40,7 +40,7 @@ def scatter_matrix(
     marker: str = ...,
     density_kwds: dict[str, Any] | None = ...,
     hist_kwds: dict[str, Any] | None = ...,
-    range_padding: float = ...,
+    range_padding: float = 0.05,
     **kwargs,
 ) -> npt.NDArray[np.object_]: ...
 def radviz(
@@ -63,8 +63,8 @@ def andrews_curves(
 def bootstrap_plot(
     series: Series,
     fig: Figure | None = None,
-    size: int = ...,
-    samples: int = ...,
+    size: int = 50,
+    samples: int = 500,
     **kwds,
 ) -> Figure: ...
 def parallel_coordinates(
@@ -78,10 +78,10 @@ def parallel_coordinates(
     colormap: str | Colormap | None = None,
     axvlines: bool = ...,
     axvlines_kwds: dict[str, Any] | None = ...,
-    sort_labels: bool = ...,
+    sort_labels: bool = False,
     **kwargs,
 ) -> Axes: ...
-def lag_plot(series: Series, lag: int = ..., ax: Axes | None = ..., **kwds) -> Axes: ...
+def lag_plot(series: Series, lag: int = 1, ax: Axes | None = ..., **kwds) -> Axes: ...
 def autocorrelation_plot(series: Series, ax: Axes | None = ..., **kwargs) -> Axes: ...
 
 plot_params: dict[str, Any]

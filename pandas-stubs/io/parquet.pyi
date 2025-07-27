@@ -12,10 +12,10 @@ from pandas._typing import (
 
 def read_parquet(
     path: FilePath | ReadBuffer[bytes],
-    engine: ParquetEngine = ...,
+    engine: ParquetEngine = "auto",
     columns: list[str] | None = ...,
     storage_options: StorageOptions = ...,
-    dtype_backend: DtypeBackend = ...,
+    dtype_backend: DtypeBackend = "numpy_nullable",
     filesystem: Any = None,
     filters: list[tuple] | list[list[tuple]] | None = None,
     **kwargs: Any,

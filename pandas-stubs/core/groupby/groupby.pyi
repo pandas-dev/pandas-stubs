@@ -100,12 +100,12 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     @final
     def mean(
         self,
-        numeric_only: bool = ...,
+        numeric_only: bool = False,
         engine: WindowingEngine = None,
         engine_kwargs: WindowingEngineKwargs = None,
     ) -> NDFrameT: ...
     @final
-    def median(self, numeric_only: bool = ...) -> NDFrameT: ...
+    def median(self, numeric_only: bool = False) -> NDFrameT: ...
     @final
     @overload
     def std(
@@ -153,33 +153,33 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     @final
     def sum(
         self,
-        numeric_only: bool = ...,
-        min_count: int = ...,
+        numeric_only: bool = False,
+        min_count: int = 0,
         engine: WindowingEngine = None,
         engine_kwargs: WindowingEngineKwargs = None,
     ) -> NDFrameT: ...
     @final
-    def prod(self, numeric_only: bool = ..., min_count: int = ...) -> NDFrameT: ...
+    def prod(self, numeric_only: bool = False, min_count: int = 0) -> NDFrameT: ...
     @final
     def min(
         self,
-        numeric_only: bool = ...,
-        min_count: int = ...,
+        numeric_only: bool = False,
+        min_count: int = -1,
         engine: WindowingEngine = None,
         engine_kwargs: WindowingEngineKwargs = None,
     ) -> NDFrameT: ...
     @final
     def max(
         self,
-        numeric_only: bool = ...,
-        min_count: int = ...,
+        numeric_only: bool = False,
+        min_count: int = -1,
         engine: WindowingEngine = None,
         engine_kwargs: WindowingEngineKwargs = None,
     ) -> NDFrameT: ...
     @final
-    def first(self, numeric_only: bool = ..., min_count: int = ...) -> NDFrameT: ...
+    def first(self, numeric_only: bool = False, min_count: int = -1) -> NDFrameT: ...
     @final
-    def last(self, numeric_only: bool = ..., min_count: int = ...) -> NDFrameT: ...
+    def last(self, numeric_only: bool = False, min_count: int = -1) -> NDFrameT: ...
     @final
     def ohlc(self) -> DataFrame: ...
     def describe(
@@ -212,12 +212,12 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         self,
         window: int | dt.timedelta | str | BaseOffset | BaseIndexer | None = ...,
         min_periods: int | None = None,
-        center: bool | None = ...,
+        center: bool | None = False,
         win_type: str | None = None,
-        axis: Axis = ...,
+        axis: Axis = 0,
         on: str | Index | None = ...,
         closed: IntervalClosedType | None = None,
-        method: CalculationMethod = ...,
+        method: CalculationMethod = "single",
         *,
         selection: IndexLabel | None = ...,
     ) -> RollingGroupby[NDFrameT]: ...
@@ -255,22 +255,22 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     @final
     def quantile(
         self,
-        q: float | AnyArrayLike = ...,
+        q: float | AnyArrayLike = 0.5,
         interpolation: str = ...,
-        numeric_only: bool = ...,
+        numeric_only: bool = False,
     ) -> NDFrameT: ...
     @final
-    def ngroup(self, ascending: bool = ...) -> Series[int]: ...
+    def ngroup(self, ascending: bool = True) -> Series[int]: ...
     @final
-    def cumcount(self, ascending: bool = ...) -> Series[int]: ...
+    def cumcount(self, ascending: bool = True) -> Series[int]: ...
     @final
     def rank(
         self,
-        method: str = ...,
-        ascending: bool = ...,
-        na_option: str = ...,
-        pct: bool = ...,
-        axis: AxisInt | _NoDefaultDoNotUse = ...,
+        method: str = "average",
+        ascending: bool = True,
+        na_option: str = "keep",
+        pct: bool = False,
+        axis: AxisInt | _NoDefaultDoNotUse = 0,
     ) -> NDFrameT: ...
     @final
     def cumprod(
@@ -297,15 +297,15 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     @final
     def shift(
         self,
-        periods: int | Sequence[int] = ...,
+        periods: int | Sequence[int] = 1,
         freq: Frequency | None = ...,
-        axis: Axis | _NoDefaultDoNotUse = ...,
+        axis: Axis | _NoDefaultDoNotUse = 0,
         fill_value=...,
         suffix: str | None = ...,
     ) -> NDFrameT: ...
     @final
     def diff(
-        self, periods: int = ..., axis: AxisInt | _NoDefaultDoNotUse = ...
+        self, periods: int = 1, axis: AxisInt | _NoDefaultDoNotUse = 0
     ) -> NDFrameT: ...
     @final
     def pct_change(
@@ -325,7 +325,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         self,
         n: int | None = ...,
         frac: float | None = ...,
-        replace: bool = ...,
+        replace: bool = False,
         weights: Sequence | Series | None = ...,
         random_state: RandomState | None = ...,
     ) -> NDFrameT: ...

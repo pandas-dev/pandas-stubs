@@ -122,9 +122,9 @@ class HDFStore:
         exc_value: BaseException | None,
         traceback: TracebackType | None,
     ) -> None: ...
-    def keys(self, include=...) -> list[str]: ...
+    def keys(self, include="pandas") -> list[str]: ...
     def __iter__(self) -> Iterator[str]: ...
-    def open(self, mode: Literal["a", "w", "r", "r+"] = ..., **kwargs) -> None: ...
+    def open(self, mode: Literal["a", "w", "r", "r+"] = "a", **kwargs) -> None: ...
     def close(self) -> None: ...
     @property
     def is_open(self) -> bool: ...
@@ -171,9 +171,9 @@ class HDFStore:
         self,
         key: str,
         value: NDFrame,
-        format: Literal["t", "table", "f", "fixed"] = ...,
-        index: bool = ...,
-        append: bool = ...,
+        format: Literal["t", "table", "f", "fixed"] = "fixed",
+        index: bool = True,
+        append: bool = False,
         complib: HDFCompLib | None = ...,
         complevel: int | None = ...,
         min_itemsize: int | dict[HashableT1, int] | None = ...,
@@ -189,8 +189,8 @@ class HDFStore:
             "backslashreplace",
             "namereplace",
         ] = ...,
-        track_times: bool = ...,
-        dropna: bool = ...,
+        track_times: bool = True,
+        dropna: bool = False,
     ) -> None: ...
     def append(
         self,
@@ -198,8 +198,8 @@ class HDFStore:
         value: NDFrame,
         format: Literal["t", "table", "f", "fixed"] = ...,
         axes: int | None = ...,
-        index: bool = ...,
-        append: bool = ...,
+        index: bool = True,
+        append: bool = True,
         complib: HDFCompLib | None = ...,
         complevel: int | None = ...,
         columns: list[HashableT1] | None = ...,
@@ -207,7 +207,7 @@ class HDFStore:
         nan_rep: str | None = ...,
         chunksize: int | None = ...,
         expectedrows: int | None = ...,
-        dropna: bool | None = ...,
+        dropna: bool | None = False,
         data_columns: Literal[True] | list[HashableT3] | None = None,
         encoding: str | None = None,
         errors: Literal[
@@ -222,7 +222,7 @@ class HDFStore:
     ) -> None: ...
     def groups(self) -> list: ...
     def walk(
-        self, where: str = ...
+        self, where: str = "/"
     ) -> Generator[tuple[str, list, list[str]], None, None]: ...
     def info(self) -> str: ...
 

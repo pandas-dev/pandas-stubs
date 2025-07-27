@@ -99,19 +99,19 @@ class Styler(StylerRenderer):
     def to_excel(
         self,
         excel_writer: FilePath | WriteExcelBuffer | ExcelWriter,
-        sheet_name: str = ...,
-        na_rep: str = ...,
+        sheet_name: str = "Sheet1",
+        na_rep: str = "",
         float_format: str | None = ...,
         columns: list[HashableT1] | None = ...,
-        header: list[HashableT2] | bool = ...,
-        index: bool = ...,
+        header: list[HashableT2] | bool = True,
+        index: bool = True,
         index_label: IndexLabel | None = ...,
-        startrow: int = ...,
-        startcol: int = ...,
+        startrow: int = 0,
+        startcol: int = 0,
         engine: Literal["openpyxl", "xlsxwriter"] | None = ...,
-        merge_cells: ExcelWriterMergeCells = ...,
+        merge_cells: ExcelWriterMergeCells = True,
         encoding: str | None = ...,
-        inf_rep: str = ...,
+        inf_rep: str = "inf",
         verbose: bool = ...,
         freeze_panes: tuple[int, int] | None = ...,
         storage_options: StorageOptions | None = ...,
@@ -263,15 +263,15 @@ class Styler(StylerRenderer):
     def set_caption(self, caption: str | tuple[str, str]) -> Styler: ...
     def set_sticky(
         self,
-        axis: Axis = ...,
+        axis: Axis = 0,
         pixel_size: int | None = ...,
         levels: Level | list[Level] | None = ...,
     ) -> Styler: ...
     def set_table_styles(
         self,
         table_styles: dict[HashableT, CSSStyles] | CSSStyles | None = ...,
-        axis: Axis = ...,
-        overwrite: bool = ...,
+        axis: Axis = 0,
+        overwrite: bool = True,
         css_class_names: dict[str, str] | None = ...,
     ) -> Styler: ...
     def hide(
@@ -286,7 +286,7 @@ class Styler(StylerRenderer):
         cmap: str | Colormap = ...,
         low: float = ...,
         high: float = ...,
-        axis: Axis | None = ...,
+        axis: Axis | None = 0,
         subset: Subset | None = ...,
         text_color_threshold: float = ...,
         vmin: float | None = ...,
@@ -305,7 +305,7 @@ class Styler(StylerRenderer):
         cmap: str | Colormap = ...,
         low: float = ...,
         high: float = ...,
-        axis: Axis | None = ...,
+        axis: Axis | None = 0,
         subset: Subset | None = ...,
         # In docs but not in function declaration
         # text_color_threshold: float
@@ -326,7 +326,7 @@ class Styler(StylerRenderer):
     def bar(
         self,
         subset: Subset | None = ...,
-        axis: Axis | None = ...,
+        axis: Axis | None = 0,
         *,
         color: str | list[str] | tuple[str, str] | None = ...,
         cmap: str | Colormap | None = ...,
@@ -343,29 +343,29 @@ class Styler(StylerRenderer):
     ) -> Styler: ...
     def highlight_null(
         self,
-        color: str | None = ...,
+        color: str | None = "red",
         subset: Subset | None = ...,
         props: str | None = None,
     ) -> Styler: ...
     def highlight_max(
         self,
         subset: Subset | None = ...,
-        color: str = ...,
-        axis: Axis | None = ...,
+        color: str = "yellow",
+        axis: Axis | None = 0,
         props: str | None = None,
     ) -> Styler: ...
     def highlight_min(
         self,
         subset: Subset | None = ...,
-        color: str = ...,
-        axis: Axis | None = ...,
+        color: str = "yellow",
+        axis: Axis | None = 0,
         props: str | None = None,
     ) -> Styler: ...
     def highlight_between(
         self,
         subset: Subset | None = ...,
-        color: str = ...,
-        axis: Axis | None = ...,
+        color: str = "yellow",
+        axis: Axis | None = 0,
         left: Scalar | list[Scalar] | None = None,
         right: Scalar | list[Scalar] | None = None,
         inclusive: IntervalClosedType = ...,
@@ -374,10 +374,10 @@ class Styler(StylerRenderer):
     def highlight_quantile(
         self,
         subset: Subset | None = ...,
-        color: str = ...,
-        axis: Axis | None = ...,
-        q_left: float = ...,
-        q_right: float = ...,
+        color: str = "yellow",
+        axis: Axis | None = 0,
+        q_left: float = 0,
+        q_right: float = 1,
         interpolation: QuantileInterpolation = ...,
         inclusive: IntervalClosedType = ...,
         props: str | None = None,

@@ -87,8 +87,8 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
         self,
         start_time,
         end_time,
-        include_start: bool = ...,
-        include_end: bool = ...,
+        include_start: bool = True,
+        include_end: bool = True,
     ): ...
     def to_julian_date(self) -> Index[float]: ...
     def isocalendar(self) -> DataFrame: ...
@@ -96,17 +96,17 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
     def tzinfo(self) -> _tzinfo | None: ...
     @property
     def dtype(self) -> np.dtype | DatetimeTZDtype: ...
-    def shift(self, periods: int = ..., freq=...) -> Self: ...
+    def shift(self, periods: int = 1, freq=...) -> Self: ...
 
 def date_range(
     start: str | DateAndDatetimeLike | None = ...,
     end: str | DateAndDatetimeLike | None = ...,
     periods: int | None = ...,
-    freq: str | timedelta | Timedelta | BaseOffset = ...,
+    freq: str | timedelta | Timedelta | BaseOffset = "D",
     tz: TimeZones = ...,
-    normalize: bool = ...,
+    normalize: bool = False,
     name: Hashable | None = None,
-    inclusive: IntervalClosedType = ...,
+    inclusive: IntervalClosedType = "both",
     unit: TimeUnit | None = None,
 ) -> DatetimeIndex: ...
 @overload

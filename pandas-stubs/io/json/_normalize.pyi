@@ -8,7 +8,7 @@ def json_normalize(
     meta: str | list[str | list[str]] | None = None,
     meta_prefix: str | None = None,
     record_prefix: str | None = None,
-    errors: IgnoreRaise = ...,
-    sep: str = ...,
+    errors: IgnoreRaise = "raise",
+    sep: str = ".",
     max_level: int | None = None,
 ) -> DataFrame: ...

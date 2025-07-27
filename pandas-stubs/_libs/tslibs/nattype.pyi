@@ -81,27 +81,27 @@ class NaTType:
     def round(
         self,
         freq: Frequency,
-        ambiguous: bool | Literal["raise"] | NaTType = ...,
-        nonexistent: TimestampNonexistent = ...,
+        ambiguous: bool | Literal["raise"] | NaTType = "raise",
+        nonexistent: TimestampNonexistent = "raise",
     ) -> NaTType: ...
     def floor(
         self,
         freq: Frequency,
-        ambiguous: bool | Literal["raise"] | NaTType = ...,
-        nonexistent: TimestampNonexistent = ...,
+        ambiguous: bool | Literal["raise"] | NaTType = "raise",
+        nonexistent: TimestampNonexistent = "raise",
     ) -> NaTType: ...
     def ceil(
         self,
         freq: Frequency,
-        ambiguous: bool | Literal["raise"] | NaTType = ...,
-        nonexistent: TimestampNonexistent = ...,
+        ambiguous: bool | Literal["raise"] | NaTType = "raise",
+        nonexistent: TimestampNonexistent = "raise",
     ) -> NaTType: ...
     def tz_convert(self) -> NaTType: ...
     def tz_localize(
         self,
         tz: _tzinfo | str | None,
-        ambiguous: bool | Literal["raise"] | NaTType = ...,
-        nonexistent: TimestampNonexistent = ...,
+        ambiguous: bool | Literal["raise"] | NaTType = "raise",
+        nonexistent: TimestampNonexistent = "raise",
     ) -> NaTType: ...
     def replace(
         self,
@@ -154,4 +154,4 @@ class NaTType:
     __ge__: _NatComparison
     @property
     def unit(self) -> TimeUnit: ...
-    def as_unit(self, unit: TimeUnit, round_ok: bool = ...) -> Self: ...
+    def as_unit(self, unit: TimeUnit, round_ok: bool = True) -> Self: ...
