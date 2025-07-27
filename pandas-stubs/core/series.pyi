@@ -77,7 +77,7 @@ from pandas.core.indexing import (
     _IndexSliceTuple,
     _LocIndexer,
 )
-from pandas.core.strings import StringMethods
+from pandas.core.strings.accessor import StringMethods
 from pandas.core.window import (
     Expanding,
     ExponentialMovingWindow,
