@@ -37,6 +37,7 @@ the following example that creates two series of datetimes with corresponding ar
 
 ```python
 import pandas as pd
+from typing import reveal_type
 
 s1 = pd.Series(pd.to_datetime(["2022-05-01", "2022-06-01"]))
 reveal_type(s1)
@@ -51,14 +52,14 @@ reveal_type(ssum)
 The above code (without the `reveal_type()` statements) will get a `Never`
 on the computation of `ssum` because it is
 inappropriate to add two series containing `Timestamp` values.  The types will be
-revealed as follows:
+revealed by `mypy` as follows:
 
 ```text
-ttest.py:4: note: Revealed type is "pandas.core.series.Series[pandas._libs.tslibs.timestamps.Timestamp]"
-ttest.py:6: note: Revealed type is "pandas.core.series.Series[pandas._libs.tslibs.timestamps.Timestamp]"
-ttest.py:8: note: Revealed type is "pandas.core.series.TimedeltaSeries"
-ttest.py:9: error: Need type annotation for "ssum"  [var-annotated]
-ttest.py:10: note: Revealed type is "Never"
+ttest.py:5: note: Revealed type is "pandas.core.series.Series[pandas._libs.tslibs.timestamps.Timestamp]"
+ttest.py:7: note: Revealed type is "pandas.core.series.Series[pandas._libs.tslibs.timestamps.Timestamp]"
+ttest.py:9: note: Revealed type is "pandas.core.series.TimedeltaSeries"
+ttest.py:10: error: Need type annotation for "ssum"  [var-annotated]
+ttest.py:11: note: Revealed type is "Never"
 ```
 
 The type `Series[Timestamp]` is the result of creating a series from `pd.to_datetime()`, while
