@@ -1384,3 +1384,16 @@ def test_index_infer_objects() -> None:
     df = pd.DataFrame({"A": ["a", 1, 2, 3]})
     idx = df.set_index("A").index[1:]
     check(assert_type(idx.infer_objects(), pd.Index), pd.Index)
+
+
+def test_multiindex_range() -> None:
+    """Test using range in `MultiIndex.from_product` GH1285."""
+    midx = pd.MultiIndex.from_product(
+        [range(3), range(5)],
+    )
+    check(assert_type(midx, pd.MultiIndex), pd.MultiIndex)
+
+    midx_mixed_types = pd.MultiIndex.from_product(
+        [range(3), pd.Series([2, 3, 5])],
+    )
+    check(assert_type(midx_mixed_types, pd.MultiIndex), pd.MultiIndex)
