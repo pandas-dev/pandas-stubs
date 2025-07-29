@@ -1521,12 +1521,12 @@ def test_types_bfill() -> None:
 def test_types_ewm() -> None:
     s1 = pd.Series([1, 2, 3])
     check(
-            assert_type(
-                s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True),
-                "ExponentialMovingWindow[pd.Series]",
-            ),
-            ExponentialMovingWindow,
-        )
+        assert_type(
+            s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True),
+            "ExponentialMovingWindow[pd.Series]",
+        ),
+        ExponentialMovingWindow,
+    )
     check(
         assert_type(
             s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True),
