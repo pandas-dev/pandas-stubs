@@ -1782,10 +1782,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     # just failed to generate these so I couldn't match
     # them up.
     @overload
-    def __add__(
-        self: Series[Never],
-        other: Scalar | _ListLike | Series,
-    ) -> Series: ...
+    def __add__(self: Series[Never], other: Scalar | _ListLike | Series) -> Series: ...
     @overload
     def __add__(self, other: Series[Never]) -> Series: ...
     @overload
@@ -1980,10 +1977,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __sub__(self, other: num | _ListLike | Series) -> Series: ...
     @overload
     def __truediv__(
-        self: Series[Never], other: num | _ListLike | Series | Path
+        self: Series[Never], other: Path | Scalar | _ListLike | Series
     ) -> Series: ...
     @overload
-    def __truediv__(self: Series, other: Series[Never]) -> Series: ...
+    def __truediv__(self, other: Series[Never]) -> Series: ...
     @overload
     def __truediv__(
         self: Series[int],
@@ -2023,8 +2020,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
             | Series[_T_COMPLEX]
         ),
     ) -> Series[complex]: ...
-    @overload
-    def __truediv__(self, other: num | _ListLike | Series[S1] | Path) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __xor__(  # pyright: ignore[reportOverlappingOverload]
@@ -2186,13 +2181,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         *args: Any,
         **kwargs: Any,
     ) -> Series[S1]: ...
-    def divide(
-        self,
-        other: num | _ListLike | Series[S1],
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
-    ) -> Series[float]: ...
     def divmod(
         self,
         other: num | _ListLike | Series[S1],
