@@ -164,7 +164,6 @@ from pandas._typing import (
 
 from pandas.io.formats.style import Styler
 from pandas.plotting import PlotAccessor
-from pandas.plotting._core import hist_frame
 
 class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
     @overload
@@ -309,7 +308,7 @@ else:
         @overload
         def __getitem__(self, key: Hashable) -> Series: ...
 
-AstypeArgExt: TypeAlias = (
+_AstypeArgExt: TypeAlias = (
     AstypeArg
     | Literal[
         "number",
@@ -322,7 +321,7 @@ AstypeArgExt: TypeAlias = (
         "datetime64[ns]",
     ]
 )
-AstypeArgExtList: TypeAlias = AstypeArgExt | list[AstypeArgExt]
+_AstypeArgExtList: TypeAlias = _AstypeArgExt | list[_AstypeArgExt]
 
 class DataFrame(NDFrame, OpsMixin, _GetItemHack):
 
@@ -769,11 +768,11 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Scalar | np.ndarray | Self | Series: ...
     @overload
     def select_dtypes(
-        self, include: StrDtypeArg, exclude: AstypeArgExtList | None = ...
+        self, include: StrDtypeArg, exclude: _AstypeArgExtList | None = ...
     ) -> Never: ...
     @overload
     def select_dtypes(
-        self, include: AstypeArgExtList | None, exclude: StrDtypeArg
+        self, include: _AstypeArgExtList | None, exclude: StrDtypeArg
     ) -> Never: ...
     @overload
     def select_dtypes(self, exclude: StrDtypeArg) -> Never: ...
@@ -782,19 +781,19 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def select_dtypes(
         self,
-        include: AstypeArgExtList,
-        exclude: AstypeArgExtList | None = ...,
+        include: _AstypeArgExtList,
+        exclude: _AstypeArgExtList | None = ...,
     ) -> Self: ...
     @overload
     def select_dtypes(
         self,
-        include: AstypeArgExtList | None,
-        exclude: AstypeArgExtList,
+        include: _AstypeArgExtList | None,
+        exclude: _AstypeArgExtList,
     ) -> Self: ...
     @overload
     def select_dtypes(
         self,
-        exclude: AstypeArgExtList,
+        exclude: _AstypeArgExtList,
     ) -> Self: ...
     def insert(
         self,
@@ -1330,17 +1329,15 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def stack(
         self,
         level: IndexLabel = ...,
-        dropna: _bool = ...,
-        sort: _bool = ...,
-        future_stack: Literal[False] = ...,
+        future_stack: Literal[True] = ...,
     ) -> Self | Series: ...
     @overload
     def stack(
         self,
         level: IndexLabel = ...,
-        dropna: _NoDefaultDoNotUse = ...,
-        sort: _NoDefaultDoNotUse = ...,
-        future_stack: Literal[True] = ...,
+        dropna: _bool = ...,
+        sort: _bool = ...,
+        future_stack: Literal[False] = ...,
     ) -> Self | Series: ...
     def explode(
         self, column: Sequence[Hashable], ignore_index: _bool = ...
@@ -1376,9 +1373,9 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         **kwargs: Any,
     ) -> Self: ...
     @overload
-    def aggregate(
+    def aggregate(  # pyright: ignore[reportOverlappingOverload]
         self,
-        func: AggFuncTypeBase | AggFuncTypeDictSeries = ...,
+        func: AggFuncTypeBase | AggFuncTypeDictSeries,
         axis: Axis = ...,
         **kwargs: Any,
     ) -> Series: ...
@@ -1592,7 +1589,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         method: Literal["pearson", "kendall", "spearman"] = ...,
         numeric_only: _bool = ...,
     ) -> Series: ...
-    def count(self, axis: Axis = ..., numeric_only: _bool = ...) -> Self: ...
+    def count(self, axis: Axis = ..., numeric_only: _bool = ...) -> Series[int]: ...
     def nunique(self, axis: Axis = ..., dropna: bool = ...) -> Series: ...
     def idxmax(
         self, axis: Axis = ..., skipna: _bool = ..., numeric_only: _bool = ...
@@ -1637,7 +1634,24 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def isin(self, values: Iterable | Series | DataFrame | dict) -> Self: ...
     @property
     def plot(self) -> PlotAccessor: ...
-    hist = hist_frame
+    def hist(
+        self,
+        column: _str | list[_str] | None = ...,
+        by: _str | ListLike | None = ...,
+        grid: _bool = ...,
+        xlabelsize: float | str | None = ...,
+        xrot: float | None = ...,
+        ylabelsize: float | str | None = ...,
+        yrot: float | None = ...,
+        ax: PlotAxes | None = ...,
+        sharex: _bool = ...,
+        sharey: _bool = ...,
+        figsize: tuple[float, float] | None = ...,
+        layout: tuple[int, int] | None = ...,
+        bins: int | list = ...,
+        backend: _str | None = ...,
+        **kwargs: Any,
+    ): ...
     def boxplot(
         self,
         column: _str | list[_str] | None = ...,

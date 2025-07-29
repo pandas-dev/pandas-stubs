@@ -1520,8 +1520,7 @@ def test_types_bfill() -> None:
 
 def test_types_ewm() -> None:
     s1 = pd.Series([1, 2, 3])
-    if TYPE_CHECKING_INVALID_USAGE:
-        check(
+    check(
             assert_type(
                 s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True),
                 "ExponentialMovingWindow[pd.Series]",

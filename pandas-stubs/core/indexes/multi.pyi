@@ -45,28 +45,28 @@ class MultiIndex(Index):
         cls,
         arrays: Sequence[Axes],
         sortorder: int | None = ...,
-        names: SequenceNotStr[Hashable] | None = ...,
+        names: SequenceNotStr[Hashable] = ...,
     ) -> Self: ...
     @classmethod
     def from_tuples(
         cls,
         tuples: Iterable[tuple[Hashable, ...]],
         sortorder: int | None = ...,
-        names: SequenceNotStr[Hashable] | None = ...,
+        names: SequenceNotStr[Hashable] = ...,
     ) -> Self: ...
     @classmethod
     def from_product(
         cls,
         iterables: Sequence[SequenceNotStr[Hashable] | pd.Series | pd.Index],
         sortorder: int | None = ...,
-        names: SequenceNotStr[Hashable] | None = ...,
+        names: SequenceNotStr[Hashable] = ...,
     ) -> Self: ...
     @classmethod
     def from_frame(
         cls,
         df: pd.DataFrame,
         sortorder: int | None = ...,
-        names: SequenceNotStr[Hashable] | None = ...,
+        names: SequenceNotStr[Hashable] = ...,
     ) -> Self: ...
     @property
     def shape(self): ...
@@ -77,7 +77,7 @@ class MultiIndex(Index):
     def codes(self): ...
     def set_codes(self, codes, *, level=..., verify_integrity: bool = ...): ...
     def copy(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore
-        self, names: SequenceNotStr[Hashable] = ..., deep: bool = ..., name: None = ...
+        self, names: SequenceNotStr[Hashable] = ..., deep: bool = ...
     ) -> Self: ...
     def view(self, cls=...): ...
     def __contains__(self, key) -> bool: ...

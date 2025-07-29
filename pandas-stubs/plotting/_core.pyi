@@ -435,23 +435,3 @@ class PlotAccessor:
     ) -> npt.NDArray[np.object_]: ...
 
     density = kde
-
-def hist_frame(
-    data: DataFrame,
-    column: Axes | None = None,
-    by=None,
-    grid: bool = True,
-    xlabelsize: int | None = None,
-    xrot: float | None = None,
-    ylabelsize: int | None = None,
-    yrot: float | None = None,
-    ax=None,
-    sharex: bool = False,
-    sharey: bool = False,
-    figsize: tuple[int, int] | None = None,
-    layout: tuple[int, int] | None = None,
-    bins: int | Sequence[int] = 10,
-    backend: str | None = None,
-    legend: bool = False,
-    **kwargs,
-) -> Axes | list[Axes]: ...
