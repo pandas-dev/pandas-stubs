@@ -1704,23 +1704,40 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __or__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
     @overload
-    def __radd__(self: Series[Never], other: Scalar | _ListLike | Series) -> Series: ...
+    def __radd__(self: Series[Never], other: Scalar | _ListLike) -> Series: ...
     @overload
     def __radd__(
         self: Series[int], other: _T_COMPLEX | Sequence[_T_COMPLEX]
     ) -> Series[_T_COMPLEX]: ...
     @overload
-    def __radd__(self: Series[float], other: int | Sequence[int]) -> Series[float]: ...
+    def __radd__(self: Series[int], other: np_ndarray_anyint) -> Series[int]: ...
+    @overload
+    def __radd__(self: Series[int], other: np_ndarray_float) -> Series[float]: ...
+    @overload
+    def __radd__(self: Series[int], other: np_ndarray_complex) -> Series[complex]: ...
+    @overload
+    def __radd__(
+        self: Series[float],
+        other: int | Sequence[int] | np_ndarray_anyint | np_ndarray_float,
+    ) -> Series[float]: ...
     @overload
     def __radd__(
         self: Series[float], other: _T_COMPLEX | Sequence[_T_COMPLEX]
     ) -> Series[_T_COMPLEX]: ...
     @overload
+    def __radd__(self: Series[float], other: np_ndarray_complex) -> Series[complex]: ...
+    @overload
     def __radd__(
-        self: Series[complex], other: complex | Sequence[complex]
+        self: Series[complex],
+        other: (
+            np_ndarray_anyint
+            | np_ndarray_float
+            | np_ndarray_complex
+            | Sequence[_T_COMPLEX]
+        ),
     ) -> Series[complex]: ...
     @overload
-    def __radd__(self, other: S1 | Series[S1]) -> Self: ...
+    def __radd__(self, other: S1) -> Self: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __rand__(  # pyright: ignore[reportOverlappingOverload]
@@ -2608,7 +2625,7 @@ class PeriodSeries(Series[Period]):
     ) -> Never: ...
 
 class OffsetSeries(Series[BaseOffset]):
-    @overload  # type: ignore[override]
+    @overload
     def __radd__(self, other: Period) -> PeriodSeries: ...
     @overload
     def __radd__(  # pyright: ignore[reportIncompatibleMethodOverride]

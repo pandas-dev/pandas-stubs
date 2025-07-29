@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import typing as npt  # noqa: F401
 import pandas as pd
 from typing_extensions import assert_type
 
@@ -59,25 +60,13 @@ def test_add_numpy_array() -> None:
     check(assert_type(left + f, "pd.Series[float]"), pd.Series, np.float64)
     check(assert_type(left + c, "pd.Series[complex]"), pd.Series, np.complex128)
 
-    # numpy typing gives ndarray instead of `pd.Series[...]` in reality, which we cannot fix
+    # `numpy` typing gives the corresponding `ndarray`s in the static type
+    # checking, where our `__radd__` cannot override. At runtime, they return
+    # `Series`s with the correct element type.
+    check(assert_type(i + left, "npt.NDArray[np.int64]"), pd.Series, np.int64)
+    check(assert_type(f + left, "npt.NDArray[np.float64]"), pd.Series, np.float64)
     check(
-        assert_type(  # type: ignore[assert-type]
-            i + left, "pd.Series[int]"  # pyright: ignore[reportAssertTypeFailure]
-        ),
-        pd.Series,
-        np.int64,
-    )
-    check(
-        assert_type(  # type: ignore[assert-type]
-            f + left, "pd.Series[float]"  # pyright: ignore[reportAssertTypeFailure]
-        ),
-        pd.Series,
-        np.float64,
-    )
-    check(
-        assert_type(  # type: ignore[assert-type]
-            c + left, "pd.Series[complex]"  # pyright: ignore[reportAssertTypeFailure]
-        ),
+        assert_type(c + left, "npt.NDArray[np.complex128]"),
         pd.Series,
         np.complex128,
     )
