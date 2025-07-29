@@ -1036,31 +1036,31 @@ def test_append_mix() -> None:
     second = pd.Index(["a"])
     third = pd.Index([1, "a"])
     check(assert_type(first.append(second), "pd.Index[int | str]"), pd.Index)
-    check(assert_type(first.append([second]), "pd.Index[int | str]"), pd.Index)
+    check(assert_type(first.append([second]), pd.Index), pd.Index)
 
-    check(assert_type(first.append(third), "pd.Index[int | str]"), pd.Index)  # type: ignore[assert-type]
-    check(assert_type(first.append([third]), "pd.Index[int | str]"), pd.Index)  # type: ignore[assert-type]
     check(
         assert_type(  # type: ignore[assert-type]
-            first.append([second, third]),  # pyright: ignore[reportAssertTypeFailure]
-            "pd.Index[int | str]",
+            first.append(third), "pd.Index[int | str]"
         ),
         pd.Index,
     )
+    check(assert_type(first.append([third]), pd.Index), pd.Index)
+    check(assert_type(first.append([second, third]), pd.Index), pd.Index)
 
-    check(assert_type(third.append([]), "pd.Index[int | str]"), pd.Index)  # type: ignore[assert-type]
-    check(
-        assert_type(third.append(cast("list[Index[Any]]", [])), "pd.Index[int | str]"),  # type: ignore[assert-type]
-        pd.Index,
-    )
-    check(assert_type(third.append([first]), "pd.Index[int | str]"), pd.Index)  # type: ignore[assert-type]
     check(
         assert_type(  # type: ignore[assert-type]
-            third.append([first, second]),  # pyright: ignore[reportAssertTypeFailure]
-            "pd.Index[int | str]",
+            third.append([]), "pd.Index[int | str]"
         ),
         pd.Index,
     )
+    check(
+        assert_type(  # type: ignore[assert-type]
+            third.append(cast("list[Index[Any]]", [])), "pd.Index[int | str]"
+        ),
+        pd.Index,
+    )
+    check(assert_type(third.append([first]), pd.Index), pd.Index)
+    check(assert_type(third.append([first, second]), pd.Index), pd.Index)
 
 
 def test_append_int() -> None:
