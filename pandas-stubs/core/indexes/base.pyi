@@ -34,7 +34,7 @@ from pandas import (
 )
 from pandas.core.arrays import ExtensionArray
 from pandas.core.base import IndexOpsMixin
-from pandas.core.strings import StringMethods
+from pandas.core.strings.accessor import StringMethods
 from typing_extensions import (
     Never,
     Self,
