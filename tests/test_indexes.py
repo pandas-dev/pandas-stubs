@@ -1031,19 +1031,14 @@ def test_getitem() -> None:
 
 
 def test_append_mix() -> None:
-    """Test pd.Index.append that gives pd.Index[Any]"""
+    """Test pd.Index.append with mixed types"""
     first = pd.Index([1])
     second = pd.Index(["a"])
     third = pd.Index([1, "a"])
-    check(assert_type(first.append(second), "pd.Index[int | str]"), pd.Index)
+    check(assert_type(first.append(second), pd.Index), pd.Index)
     check(assert_type(first.append([second]), pd.Index), pd.Index)
 
-    check(
-        assert_type(  # type: ignore[assert-type]
-            first.append(third), "pd.Index[int | str]"
-        ),
-        pd.Index,
-    )
+    check(assert_type(first.append(third), pd.Index), pd.Index)
     check(assert_type(first.append([third]), pd.Index), pd.Index)
     check(assert_type(first.append([second, third]), pd.Index), pd.Index)
 
