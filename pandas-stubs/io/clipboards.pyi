@@ -204,5 +204,5 @@ def read_clipboard(
     storage_options: StorageOptions | None = ...,
 ) -> DataFrame: ...
 def to_clipboard(
-    obj, excel: bool = True, sep: str | None = ..., **kwargs: Any
+    obj, excel: bool = True, sep: str | None = None, **kwargs: Any
 ) -> None: ...

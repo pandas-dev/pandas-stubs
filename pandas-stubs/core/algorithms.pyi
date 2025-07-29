@@ -67,7 +67,7 @@ def value_counts(
     sort: bool = True,
     ascending: bool = False,
     normalize: bool = False,
-    bins: int | None = ...,
+    bins: int | None = None,
     dropna: bool = True,
 ) -> Series: ...
 def take(

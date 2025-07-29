@@ -20,7 +20,7 @@ def get_dummies(
     columns: list[HashableT2] | None = None,
     sparse: bool = False,
     drop_first: bool = False,
-    dtype: Dtype | None = ...,
+    dtype: Dtype | None = None,
 ) -> DataFrame: ...
 def from_dummies(
     data: DataFrame,

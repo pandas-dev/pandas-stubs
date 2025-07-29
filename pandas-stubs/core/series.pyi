@@ -1208,8 +1208,8 @@ class Series(IndexOpsMixin[S1], NDFrame):
     sparse = ...
     def hist(
         self,
-        by: object | None = ...,
-        ax: PlotAxes | None = ...,
+        by: object | None = None,
+        ax: PlotAxes | None = None,
         grid: _bool = True,
         xlabelsize: float | _str | None = None,
         xrot: float | None = None,

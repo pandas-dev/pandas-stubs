@@ -92,6 +92,6 @@ def period_range(
         str | datetime.datetime | datetime.date | pd.Timestamp | pd.Period | None
     ) = None,
     periods: int | None = None,
-    freq: str | BaseOffset | None = ...,
+    freq: str | BaseOffset | None = None,
     name: Hashable | None = None,
 ) -> PeriodIndex: ...

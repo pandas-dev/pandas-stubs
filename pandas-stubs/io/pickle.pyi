@@ -13,10 +13,10 @@ def to_pickle(
     filepath_or_buffer: FilePath | WriteBuffer[bytes],
     compression: CompressionOptions = "infer",
     protocol: int = ...,
-    storage_options: StorageOptions = ...,
+    storage_options: StorageOptions = None,
 ) -> None: ...
 def read_pickle(
     filepath_or_buffer: FilePath | ReadPickleBuffer,
     compression: CompressionOptions = "infer",
-    storage_options: StorageOptions = ...,
+    storage_options: StorageOptions = None,
 ) -> Any: ...

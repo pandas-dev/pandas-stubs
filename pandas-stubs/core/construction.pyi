@@ -7,6 +7,6 @@ from pandas.core.dtypes.dtypes import ExtensionDtype
 
 def array(
     data: Sequence[object],
-    dtype: str | np.dtype | ExtensionDtype | None = ...,
+    dtype: str | np.dtype | ExtensionDtype | None = None,
     copy: bool = True,
 ) -> ExtensionArray: ...

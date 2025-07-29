@@ -99,11 +99,11 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
     def shift(self, periods: int = 1, freq=...) -> Self: ...
 
 def date_range(
-    start: str | DateAndDatetimeLike | None = ...,
-    end: str | DateAndDatetimeLike | None = ...,
-    periods: int | None = ...,
+    start: str | DateAndDatetimeLike | None = None,
+    end: str | DateAndDatetimeLike | None = None,
+    periods: int | None = None,
     freq: str | timedelta | Timedelta | BaseOffset = "D",
-    tz: TimeZones = ...,
+    tz: TimeZones = None,
     normalize: bool = False,
     name: Hashable | None = None,
     inclusive: IntervalClosedType = "both",

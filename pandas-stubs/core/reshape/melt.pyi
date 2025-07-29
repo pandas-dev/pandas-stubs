@@ -7,11 +7,11 @@ from pandas._typing import HashableT
 
 def melt(
     frame: DataFrame,
-    id_vars: tuple | list | np.ndarray | None = ...,
-    value_vars: tuple | list | np.ndarray | None = ...,
+    id_vars: tuple | list | np.ndarray | None = None,
+    value_vars: tuple | list | np.ndarray | None = None,
     var_name: str | None = None,
     value_name: Hashable = "value",
-    col_level: int | str | None = ...,
+    col_level: int | str | None = None,
     ignore_index: bool = True,
 ) -> DataFrame: ...
 def lreshape(

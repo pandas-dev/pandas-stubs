@@ -32,22 +32,22 @@ def register() -> None: ...
 def deregister() -> None: ...
 def scatter_matrix(
     frame: DataFrame,
-    alpha: float = ...,
-    figsize: tuple[float, float] | None = ...,
-    ax: Axes | None = ...,
-    grid: bool = ...,
-    diagonal: Literal["hist", "kde"] = ...,
-    marker: str = ...,
-    density_kwds: dict[str, Any] | None = ...,
-    hist_kwds: dict[str, Any] | None = ...,
+    alpha: float = 0.5,
+    figsize: tuple[float, float] | None = None,
+    ax: Axes | None = None,
+    grid: bool = False,
+    diagonal: Literal["hist", "kde"] = "hist",
+    marker: str = ".",
+    density_kwds: dict[str, Any] | None = None,
+    hist_kwds: dict[str, Any] | None = None,
     range_padding: float = 0.05,
     **kwargs,
 ) -> npt.NDArray[np.object_]: ...
 def radviz(
     frame: DataFrame,
     class_column: Hashable,
-    ax: Axes | None = ...,
-    color: _Color | Sequence[_Color] | None = ...,
+    ax: Axes | None = None,
+    color: _Color | Sequence[_Color] | None = None,
     colormap: str | Colormap | None = None,
     **kwds,
 ) -> Axes: ...
@@ -55,8 +55,8 @@ def andrews_curves(
     frame: DataFrame,
     class_column: Hashable,
     ax: Axes | None = None,
-    samples: int = ...,
-    color: _Color | Sequence[_Color] | None = ...,
+    samples: int = 200,
+    color: _Color | Sequence[_Color] | None = None,
     colormap: str | Colormap | None = None,
     **kwargs,
 ) -> Axes: ...
@@ -70,18 +70,18 @@ def bootstrap_plot(
 def parallel_coordinates(
     frame: DataFrame,
     class_column: Hashable,
-    cols: list[HashableT] | None = ...,
-    ax: Axes | None = ...,
-    color: _Color | Sequence[_Color] | None = ...,
-    use_columns: bool = ...,
-    xticks: Sequence[float] | None = ...,
+    cols: list[HashableT] | None = None,
+    ax: Axes | None = None,
+    color: _Color | Sequence[_Color] | None = None,
+    use_columns: bool = False,
+    xticks: Sequence[float] | None = None,
     colormap: str | Colormap | None = None,
-    axvlines: bool = ...,
-    axvlines_kwds: dict[str, Any] | None = ...,
+    axvlines: bool = True,
+    axvlines_kwds: dict[str, Any] | None = None,
     sort_labels: bool = False,
     **kwargs,
 ) -> Axes: ...
-def lag_plot(series: Series, lag: int = 1, ax: Axes | None = ..., **kwds) -> Axes: ...
-def autocorrelation_plot(series: Series, ax: Axes | None = ..., **kwargs) -> Axes: ...
+def lag_plot(series: Series, lag: int = 1, ax: Axes | None = None, **kwds) -> Axes: ...
+def autocorrelation_plot(series: Series, ax: Axes | None = None, **kwargs) -> Axes: ...
 
 plot_params: dict[str, Any]

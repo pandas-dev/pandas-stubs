@@ -19,10 +19,10 @@ def eval(
     expr: str | BinOp,
     parser: Literal["pandas", "python"] = "pandas",
     engine: Literal["python", "numexpr"] | None = "numexpr",
-    local_dict: dict[str, Any] | None = ...,
-    global_dict: dict[str, Any] | None = ...,
+    local_dict: dict[str, Any] | None = None,
+    global_dict: dict[str, Any] | None = None,
     resolvers: list[Mapping] | None = ...,
-    level: int = ...,
+    level: int = 0,
     target: object | None = None,
     inplace: bool = False,
 ) -> npt.NDArray | Scalar | DataFrame | Series | None: ...
