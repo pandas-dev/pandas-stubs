@@ -32,7 +32,7 @@ def merge(
     sort: bool = False,
     suffixes: Suffixes = ...,
     indicator: bool | str = False,
-    validate: ValidationOptions = None,
+    validate: ValidationOptions | None = None,
 ) -> DataFrame: ...
 @overload
 def merge_ordered(

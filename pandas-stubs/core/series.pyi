@@ -484,7 +484,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def get(self, key: Hashable, default: _T) -> S1 | _T: ...
     def repeat(
-        self, repeats: int | list[int], axis: AxisIndex | None = ...
+        self, repeats: int | list[int], axis: AxisIndex | None = 0
     ) -> Series[S1]: ...
     @property
     def index(self) -> Index | MultiIndex: ...
@@ -1140,7 +1140,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def shift(
         self,
         periods: int | Sequence[int] = ...,
-        freq: DateOffset | timedelta | _str | None = ...,
+        freq: DateOffset | timedelta | _str | None = None,
         axis: Axis | None = None,
         fill_value: Scalar | NAType | None = ...,
     ) -> Series: ...
@@ -1346,7 +1346,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def ffill(
         self,
         *,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         inplace: Literal[True],
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
@@ -1355,7 +1355,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def ffill(
         self,
         *,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         inplace: Literal[False] = ...,
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
@@ -1364,7 +1364,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def bfill(
         self,
         *,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         inplace: Literal[True],
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
@@ -1373,7 +1373,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def bfill(
         self,
         *,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         inplace: Literal[False] = ...,
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
@@ -1383,7 +1383,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self,
         method: InterpolateOptions = ...,
         *,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         limit: int | None = ...,
         inplace: Literal[True],
         limit_direction: Literal["forward", "backward", "both"] | None = ...,
@@ -1395,7 +1395,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self,
         method: InterpolateOptions = ...,
         *,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         limit: int | None = ...,
         inplace: Literal[False] = ...,
         limit_direction: Literal["forward", "backward", "both"] | None = ...,
@@ -1414,7 +1414,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         lower: None = ...,
         upper: None = ...,
         *,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         inplace: Literal[True],
         **kwargs: Any,
     ) -> Self: ...
@@ -1424,7 +1424,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         lower: AnyArrayLike | float | None = ...,
         upper: AnyArrayLike | float | None = ...,
         *,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         inplace: Literal[True],
         **kwargs: Any,
     ) -> None: ...
@@ -1434,7 +1434,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         lower: AnyArrayLike | float | None = ...,
         upper: AnyArrayLike | float | None = ...,
         *,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         inplace: Literal[False] = ...,
         **kwargs: Any,
     ) -> Series[S1]: ...
@@ -1488,7 +1488,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         other=...,
         *,
         inplace: Literal[True],
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         level: Level | None = ...,
     ) -> None: ...
     @overload
@@ -1504,7 +1504,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         other=...,
         *,
         inplace: Literal[False] = ...,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         level: Level | None = ...,
     ) -> Self: ...
     @overload
@@ -1520,7 +1520,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         other: Scalar | Series[S1] | DataFrame | Callable | NAType | None = ...,
         *,
         inplace: Literal[True],
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         level: Level | None = ...,
     ) -> None: ...
     @overload
@@ -1536,7 +1536,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         other: Scalar | Series[S1] | DataFrame | Callable | NAType | None = ...,
         *,
         inplace: Literal[False] = ...,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         level: Level | None = ...,
     ) -> Series[S1]: ...
     def case_when(
@@ -1555,7 +1555,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self,
         before: date | _str | int | None = ...,
         after: date | _str | int | None = ...,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         copy: _bool = ...,
     ) -> Series[S1]: ...
     @final
@@ -1590,9 +1590,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self,
         periods: int = 1,
         fill_method: None = None,
-        freq: DateOffset | timedelta | _str | None = ...,
-        *,
-        fill_value: Scalar | NAType | None = ...,
+        freq: DateOffset | timedelta | _str | None = None,
     ) -> Series[float]: ...
     @final
     def first_valid_index(self) -> Scalar: ...
@@ -1832,10 +1830,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @final
     def ewm(
         self,
-        com: float | None = ...,
-        span: float | None = ...,
-        halflife: float | None = ...,
-        alpha: float | None = ...,
+        com: float | None = None,
+        span: float | None = None,
+        halflife: float | None = None,
+        alpha: float | None = None,
         min_periods: int = 0,
         adjust: _bool = True,
         ignore_na: _bool = False,
@@ -1851,7 +1849,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         other: num | _ListLike | Series[S1],
         level: Level | None = ...,
         fill_value: float | None = None,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
     ) -> Series[int]: ...
     def ge(
         self,
@@ -1871,7 +1869,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def item(self) -> S1: ...
     def kurt(
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool = True,
         level: None = ...,
         numeric_only: _bool = False,
@@ -1879,7 +1877,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Scalar: ...
     def kurtosis(
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool = True,
         level: None = ...,
         numeric_only: _bool = False,
@@ -1901,7 +1899,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[_bool]: ...
     def max(
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool = True,
         level: None = ...,
         numeric_only: _bool = False,
@@ -1909,7 +1907,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> S1: ...
     def mean(
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool = True,
         level: None = ...,
         numeric_only: _bool = False,
@@ -1917,7 +1915,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> float: ...
     def median(
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool = True,
         level: None = ...,
         numeric_only: _bool = False,
@@ -1925,7 +1923,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> float: ...
     def min(
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool = True,
         level: None = ...,
         numeric_only: _bool = False,
@@ -1936,30 +1934,30 @@ class Series(IndexOpsMixin[S1], NDFrame):
         other: num | _ListLike | Series[S1],
         level: Level | None = ...,
         fill_value: float | None = None,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
     ) -> Series[S1]: ...
     @overload
     def mul(
         self,
         other: timedelta | Timedelta | TimedeltaSeries | np.timedelta64,
         level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex | None = 0,
     ) -> TimedeltaSeries: ...
     @overload
     def mul(
         self,
         other: num | _ListLike | Series,
         level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex | None = 0,
     ) -> Series: ...
     def multiply(
         self,
         other: num | _ListLike | Series[S1],
         level: Level | None = ...,
         fill_value: float | None = None,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
     ) -> Series[S1]: ...
     def ne(
         self,
@@ -1975,11 +1973,11 @@ class Series(IndexOpsMixin[S1], NDFrame):
         other: num | _ListLike | Series[S1],
         level: Level | None = ...,
         fill_value: float | None = None,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
     ) -> Series[S1]: ...
     def prod(
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
         min_count: int = 0,
@@ -1987,7 +1985,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Scalar: ...
     def product(
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
         min_count: int = 0,
@@ -2026,7 +2024,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self,
         other: timedelta | Timedelta | TimedeltaSeries | np.timedelta64,
         level: Level | None = ...,
-        fill_value: float | None = ...,
+        fill_value: float | None = None,
         axis: AxisIndex = ...,
     ) -> TimedeltaSeries: ...
     @overload
@@ -2034,7 +2032,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self,
         other: num | _ListLike | Series,
         level: Level | None = ...,
-        fill_value: float | None = ...,
+        fill_value: float | None = None,
         axis: AxisIndex = ...,
     ) -> Series: ...
     @overload
@@ -2086,7 +2084,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     def sem(
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         ddof: int = 1,
         numeric_only: _bool = False,
@@ -2094,14 +2092,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Scalar: ...
     def skew(
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
         **kwargs: Any,
     ) -> Scalar: ...
     def std(
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         ddof: int = 1,
         numeric_only: _bool = False,
@@ -2112,19 +2110,19 @@ class Series(IndexOpsMixin[S1], NDFrame):
         other: num | _ListLike | Series[S1],
         level: Level | None = ...,
         fill_value: float | None = None,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
     ) -> Series[S1]: ...
     def subtract(
         self,
         other: num | _ListLike | Series[S1],
         level: Level | None = ...,
         fill_value: float | None = None,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
     ) -> Series[S1]: ...
     @overload
     def sum(
         self: Series[Never],
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool | None = ...,
         numeric_only: _bool = ...,
         min_count: int = ...,
@@ -2134,7 +2132,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def sum(
         self: Series[bool],
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool | None = ...,
         numeric_only: _bool = ...,
         min_count: int = ...,
@@ -2143,7 +2141,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def sum(
         self: Series[S1],
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool | None = ...,
         numeric_only: _bool = ...,
         min_count: int = ...,
@@ -2168,7 +2166,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[float]: ...
     def var(
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         ddof: int = 1,
         numeric_only: _bool = False,
@@ -2180,7 +2178,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self,
         mapper: Scalar | ListLike | None = ...,
         *,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         copy: _bool = ...,
         inplace: Literal[True],
     ) -> None: ...
@@ -2190,7 +2188,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self,
         mapper: Scalar | ListLike | None = ...,
         *,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         copy: _bool = ...,
         inplace: Literal[False] = ...,
     ) -> Self: ...
@@ -2246,7 +2244,7 @@ class TimestampSeries(Series[Timestamp]):
     def unique(self) -> DatetimeArray: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def mean(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool = ...,
         level: None = ...,
         numeric_only: _bool = ...,
@@ -2254,7 +2252,7 @@ class TimestampSeries(Series[Timestamp]):
     ) -> Timestamp: ...
     def median(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool = ...,
         level: None = ...,
         numeric_only: _bool = ...,
@@ -2262,7 +2260,7 @@ class TimestampSeries(Series[Timestamp]):
     ) -> Timestamp: ...
     def std(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool | None = ...,
         ddof: int = ...,
         numeric_only: _bool = ...,
@@ -2350,7 +2348,7 @@ class TimedeltaSeries(Series[Timedelta]):
     def dt(self) -> TimedeltaProperties: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def mean(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool = ...,
         level: None = ...,
         numeric_only: _bool = ...,
@@ -2358,7 +2356,7 @@ class TimedeltaSeries(Series[Timedelta]):
     ) -> Timedelta: ...
     def median(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool = ...,
         level: None = ...,
         numeric_only: _bool = ...,
@@ -2366,7 +2364,7 @@ class TimedeltaSeries(Series[Timedelta]):
     ) -> Timedelta: ...
     def std(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool | None = ...,
         level: None = ...,
         ddof: int = ...,
@@ -2376,7 +2374,7 @@ class TimedeltaSeries(Series[Timedelta]):
     def diff(self, periods: int = ...) -> TimedeltaSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def cumsum(
         self,
-        axis: AxisIndex | None = ...,
+        axis: AxisIndex | None = 0,
         skipna: _bool = ...,
         *args: Any,
         **kwargs: Any,
