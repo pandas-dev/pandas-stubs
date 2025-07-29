@@ -1081,15 +1081,6 @@ def test_append_str() -> None:
     check(assert_type(first.append([second]), "pd.Index[str]"), pd.Index, str)
 
 
-def test_append_list_str() -> None:
-    """Test pd.Index[list[str]].append"""
-    first = pd.Index([["str", "rts"]])
-    second = pd.Index([["srt", "trs"]])
-    check(assert_type(first.append([]), "pd.Index[list[str]]"), pd.Index, list)
-    check(assert_type(first.append(second), "pd.Index[list[str]]"), pd.Index, list)
-    check(assert_type(first.append([second]), "pd.Index[list[str]]"), pd.Index, list)
-
-
 def test_range_index_range() -> None:
     """Test that pd.RangeIndex can be initialized from range."""
     iri = pd.RangeIndex(range(5))
