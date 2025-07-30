@@ -1329,6 +1329,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def stack(
         self,
         level: IndexLabel = ...,
+        *,
         future_stack: Literal[True],
     ) -> Self | Series: ...
     @overload
