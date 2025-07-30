@@ -1,4 +1,3 @@
-import numpy as np
 from pandas.core.indexes.extension import ExtensionIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from typing_extensions import Self
@@ -6,7 +5,6 @@ from typing_extensions import Self
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     S1,
-    AxisIndex,
     TimeUnit,
 )
 
@@ -17,34 +15,6 @@ class DatetimeIndexOpsMixin(ExtensionIndex[S1]):
     def freqstr(self) -> str | None: ...
     @property
     def is_all_dates(self) -> bool: ...
-    def min(
-        self,
-        axis: AxisIndex | None = ...,
-        skipna: bool = True,
-        *args,
-        **kwargs,
-    ) -> S1: ...
-    def argmin(
-        self,
-        axis: AxisIndex | None = ...,
-        skipna: bool = True,
-        *args,
-        **kwargs,
-    ) -> np.int64: ...
-    def max(
-        self,
-        axis: AxisIndex | None = ...,
-        skipna: bool = True,
-        *args,
-        **kwargs,
-    ) -> S1: ...
-    def argmax(
-        self,
-        axis: AxisIndex | None = ...,
-        skipna: bool = True,
-        *args,
-        **kwargs,
-    ) -> np.int64: ...
     def __rsub__(  # type: ignore[override]
         self, other: DatetimeIndexOpsMixin
     ) -> TimedeltaIndex: ...

@@ -28,6 +28,7 @@ from pandas.core.series import (
 )
 from typing_extensions import Self
 
+from pandas._libs.tslibs.offsets import DateOffset
 from pandas._typing import (
     AxesData,
     DateAndDatetimeLike,
@@ -85,8 +86,8 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
     def indexer_at_time(self, time, asof: bool = ...): ...
     def indexer_between_time(
         self,
-        start_time,
-        end_time,
+        start_time: datetime | str,
+        end_time: datetime | str,
         include_start: bool = True,
         include_end: bool = True,
     ): ...
@@ -96,7 +97,9 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
     def tzinfo(self) -> _tzinfo | None: ...
     @property
     def dtype(self) -> np.dtype | DatetimeTZDtype: ...
-    def shift(self, periods: int = 1, freq=...) -> Self: ...
+    def shift(
+        self, periods: int = 1, freq: DateOffset | Timedelta | str | None = None
+    ) -> Self: ...
 
 def date_range(
     start: str | DateAndDatetimeLike | None = None,

@@ -14,11 +14,6 @@ from pandas._typing import (
 )
 
 class ExponentialMovingWindow(BaseWindow[NDFrameT]):
-    def online(
-        self,
-        engine: WindowingEngine = "numba",
-        engine_kwargs: WindowingEngineKwargs = None,
-    ) -> OnlineExponentialMovingWindow[NDFrameT]: ...
     def mean(
         self,
         numeric_only: bool = False,
@@ -35,14 +30,14 @@ class ExponentialMovingWindow(BaseWindow[NDFrameT]):
     def var(self, bias: bool = False, numeric_only: bool = False) -> NDFrameT: ...
     def cov(
         self,
-        other: DataFrame | Series | None = ...,
+        other: DataFrame | Series | None = None,
         pairwise: bool | None = None,
         bias: bool = False,
         numeric_only: bool = False,
     ) -> NDFrameT: ...
     def corr(
         self,
-        other: DataFrame | Series | None = ...,
+        other: DataFrame | Series | None = None,
         pairwise: bool | None = None,
         numeric_only: bool = False,
     ) -> NDFrameT: ...
@@ -57,13 +52,13 @@ class OnlineExponentialMovingWindow(ExponentialMovingWindow[NDFrameT]):
     def std(self, bias: bool = False, *args, **kwargs): ...  # pyrefly: ignore
     def corr(
         self,
-        other: DataFrame | Series | None = ...,
+        other: DataFrame | Series | None = None,
         pairwise: bool | None = None,
         numeric_only: bool = False,
     ): ...
     def cov(
         self,
-        other: DataFrame | Series | None = ...,
+        other: DataFrame | Series | None = None,
         pairwise: bool | None = None,
         bias: bool = False,
         numeric_only: bool = False,

@@ -177,9 +177,13 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         engine_kwargs: WindowingEngineKwargs = None,
     ) -> NDFrameT: ...
     @final
-    def first(self, numeric_only: bool = False, min_count: int = -1) -> NDFrameT: ...
+    def first(
+        self, numeric_only: bool = False, min_count: int = -1, skipna: bool = True
+    ) -> NDFrameT: ...
     @final
-    def last(self, numeric_only: bool = False, min_count: int = -1) -> NDFrameT: ...
+    def last(
+        self, numeric_only: bool = False, min_count: int = -1, skipna: bool = True
+    ) -> NDFrameT: ...
     @final
     def ohlc(self) -> DataFrame: ...
     def describe(
@@ -215,11 +219,11 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         center: bool | None = False,
         win_type: str | None = None,
         axis: Axis = 0,
-        on: str | Index | None = ...,
+        on: str | Index | None = None,
         closed: IntervalClosedType | None = None,
         method: CalculationMethod = "single",
         *,
-        selection: IndexLabel | None = ...,
+        selection: IndexLabel | None = None,
     ) -> RollingGroupby[NDFrameT]: ...
     @final
     def expanding(
@@ -256,7 +260,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     def quantile(
         self,
         q: float | AnyArrayLike = 0.5,
-        interpolation: str = ...,
+        interpolation: str = "linear",
         numeric_only: bool = False,
     ) -> NDFrameT: ...
     @final
@@ -323,8 +327,8 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     @final
     def sample(
         self,
-        n: int | None = ...,
-        frac: float | None = ...,
+        n: int | None = None,
+        frac: float | None = None,
         replace: bool = False,
         weights: Sequence | Series | None = ...,
         random_state: RandomState | None = ...,
@@ -371,7 +375,7 @@ class BaseGroupBy(SelectionMixin[NDFrameT], GroupByIndexingMixin):
         **kwargs: Any,
     ) -> T: ...
     @final
-    def get_group(self, name, obj: NDFrameT | None = None) -> NDFrameT: ...
+    def get_group(self, name) -> NDFrameT: ...
     @final
     def __iter__(self) -> Iterator[tuple[Hashable, NDFrameT]]: ...
     @overload

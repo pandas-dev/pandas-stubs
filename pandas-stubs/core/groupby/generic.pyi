@@ -179,7 +179,7 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     def cov(
         self,
         other: Series,
-        min_periods: int | None = ...,
+        min_periods: int | None = None,
         ddof: int | None = 1,
     ) -> Series: ...
     @property
@@ -188,8 +188,8 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     def is_monotonic_decreasing(self) -> Series[bool]: ...
     def hist(
         self,
-        by: IndexLabel | None = ...,
-        ax: PlotAxes | None = ...,
+        by: IndexLabel | None = None,
+        ax: PlotAxes | None = None,
         grid: bool = True,
         xlabelsize: float | str | None = None,
         xrot: float | None = None,
@@ -424,18 +424,18 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     ) -> DataFrame: ...
     def hist(
         self,
-        column: IndexLabel | None = ...,
-        by: IndexLabel | None = ...,
+        column: IndexLabel | None = None,
+        by: IndexLabel | None = None,
         grid: bool = True,
         xlabelsize: float | str | None = None,
         xrot: float | None = None,
         ylabelsize: float | str | None = None,
         yrot: float | None = None,
         ax: PlotAxes | None = None,
-        sharex: bool = ...,
+        sharex: bool = False,
         sharey: bool = False,
-        figsize: tuple[float, float] | None = ...,
-        layout: tuple[int, int] | None = ...,
+        figsize: tuple[float, float] | None = None,
+        layout: tuple[int, int] | None = None,
         bins: int | Sequence[int] = 10,
         backend: str | None = None,
         legend: bool = False,
