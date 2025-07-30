@@ -1042,6 +1042,8 @@ def test_append_mix() -> None:
     check(assert_type(first.append([third]), pd.Index), pd.Index)
     check(assert_type(first.append([second, third]), pd.Index), pd.Index)
 
+    # mypy thinks the following two are of the type `Index[Any]`, whereas
+    # pyright recognises them as `Index[int | str]`
     check(
         assert_type(  # type: ignore[assert-type]
             third.append([]), "pd.Index[int | str]"
