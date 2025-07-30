@@ -1344,8 +1344,8 @@ def test_datetime_index_max_min_reductions() -> None:
     dtidx = pd.DatetimeIndex(["2020-01-01", "2020-01-02"])
     check(assert_type(dtidx.argmax(), np.int64), np.int64)
     check(assert_type(dtidx.argmin(), np.int64), np.int64)
-    check(assert_type(dtidx.max(), Any), pd.Timestamp)
-    check(assert_type(dtidx.min(), Any), pd.Timestamp)
+    check(assert_type(dtidx.max(), pd.Timestamp), pd.Timestamp)
+    check(assert_type(dtidx.min(), pd.Timestamp), pd.Timestamp)
 
 
 def test_periodindex_shift() -> None:
