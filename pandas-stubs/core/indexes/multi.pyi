@@ -57,7 +57,7 @@ class MultiIndex(Index):
     @classmethod
     def from_product(
         cls,
-        iterables: Sequence[SequenceNotStr[Hashable] | pd.Series | pd.Index],
+        iterables: Sequence[SequenceNotStr[Hashable] | pd.Series | pd.Index | range],
         sortorder: int | None = ...,
         names: SequenceNotStr[Hashable] = ...,
     ) -> Self: ...
@@ -132,7 +132,7 @@ class MultiIndex(Index):
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, key: int
     ) -> tuple: ...
-    def append(self, other): ...
+    def append(self, other): ...  # pyrefly: ignore
     def argsort(self, *args, **kwargs): ...
     def repeat(self, repeats, axis=...): ...
     def drop(self, codes, level: Level | None = None, errors: str = "raise") -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]

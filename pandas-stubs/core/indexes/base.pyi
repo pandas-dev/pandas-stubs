@@ -34,7 +34,7 @@ from pandas import (
 )
 from pandas.core.arrays import ExtensionArray
 from pandas.core.base import IndexOpsMixin
-from pandas.core.strings import StringMethods
+from pandas.core.strings.accessor import StringMethods
 from typing_extensions import (
     Never,
     Self,
@@ -42,6 +42,7 @@ from typing_extensions import (
 
 from pandas._libs.interval import _OrderableT
 from pandas._typing import (
+    C2,
     S1,
     AnyAll,
     ArrayLike,
@@ -411,7 +412,12 @@ class Index(IndexOpsMixin[S1]):
     ) -> Self: ...
     @overload
     def __getitem__(self, idx: int | tuple[np_ndarray_anyint, ...]) -> S1: ...
-    def append(self, other): ...
+    @overload
+    def append(
+        self: Index[C2], other: Index[C2] | Sequence[Index[C2]]
+    ) -> Index[C2]: ...
+    @overload
+    def append(self, other: Index | Sequence[Index]) -> Index: ...
     def putmask(self, mask, value): ...
     def equals(self, other) -> bool: ...
     @final
