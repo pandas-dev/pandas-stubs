@@ -124,7 +124,6 @@ class HDFStore:
     ) -> None: ...
     def keys(self, include="pandas") -> list[str]: ...
     def __iter__(self) -> Iterator[str]: ...
-    def open(self, mode: Literal["a", "w", "r", "r+"] = "a", **kwargs) -> None: ...
     def close(self) -> None: ...
     @property
     def is_open(self) -> bool: ...
@@ -171,13 +170,13 @@ class HDFStore:
         self,
         key: str,
         value: NDFrame,
-        format: Literal["t", "table", "f", "fixed"] = "fixed",
+        format: Literal["t", "table", "f", "fixed"] | None = None,
         index: bool = True,
         append: bool = False,
-        complib: HDFCompLib | None = ...,
-        complevel: int | None = ...,
-        min_itemsize: int | dict[HashableT1, int] | None = ...,
-        nan_rep: str | None = ...,
+        complib: HDFCompLib | None = None,
+        complevel: int | None = None,
+        min_itemsize: int | dict[HashableT1, int] | None = None,
+        nan_rep: str | None = None,
         data_columns: Literal[True] | list[HashableT2] | None = None,
         encoding: str | None = None,
         errors: Literal[
@@ -188,7 +187,7 @@ class HDFStore:
             "xmlcharrefreplace",
             "backslashreplace",
             "namereplace",
-        ] = ...,
+        ] = "strict",
         track_times: bool = True,
         dropna: bool = False,
     ) -> None: ...
@@ -196,17 +195,17 @@ class HDFStore:
         self,
         key: str,
         value: NDFrame,
-        format: Literal["t", "table", "f", "fixed"] = ...,
-        axes: int | None = ...,
+        format: Literal["t", "table", "f", "fixed"] | None = None,
+        axes: int | None = None,
         index: bool = True,
         append: bool = True,
-        complib: HDFCompLib | None = ...,
-        complevel: int | None = ...,
-        columns: list[HashableT1] | None = ...,
-        min_itemsize: int | dict[HashableT2, int] | None = ...,
-        nan_rep: str | None = ...,
-        chunksize: int | None = ...,
-        expectedrows: int | None = ...,
+        complib: HDFCompLib | None = None,
+        complevel: int | None = None,
+        columns: list[HashableT1] | None = None,
+        min_itemsize: int | dict[HashableT2, int] | None = None,
+        nan_rep: str | None = None,
+        chunksize: int | None = None,
+        expectedrows: int | None = None,
         dropna: bool | None = False,
         data_columns: Literal[True] | list[HashableT3] | None = None,
         encoding: str | None = None,
@@ -218,7 +217,7 @@ class HDFStore:
             "xmlcharrefreplace",
             "backslashreplace",
             "namereplace",
-        ] = ...,
+        ] = "strict",
     ) -> None: ...
     def groups(self) -> list: ...
     def walk(

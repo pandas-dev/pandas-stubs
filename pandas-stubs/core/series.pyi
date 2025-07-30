@@ -774,14 +774,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def duplicated(self, keep: DropKeep = "first") -> Series[_bool]: ...
     def idxmax(
         self,
-        axis: AxisIndex = ...,
+        axis: AxisIndex = 0,
         skipna: _bool = True,
         *args: Any,
         **kwargs: Any,
     ) -> int | _str: ...
     def idxmin(
         self,
-        axis: AxisIndex = ...,
+        axis: AxisIndex = 0,
         skipna: _bool = True,
         *args: Any,
         **kwargs: Any,
@@ -806,7 +806,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         min_periods: int = ...,
     ) -> float: ...
     def cov(
-        self, other: Series[S1], min_periods: int | None = ..., ddof: int = 1
+        self, other: Series[S1], min_periods: int | None = None, ddof: int = 1
     ) -> float: ...
     @overload
     def diff(self: Series[_bool], periods: int = ...) -> Series[type[object]]: ...  # type: ignore[overload-overlap]
@@ -932,9 +932,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     def argsort(
         self,
-        axis: AxisIndex = ...,
+        axis: AxisIndex = 0,
         kind: SortKind = "quicksort",
-        order: None = ...,
+        order: None = None,
+        stable: None = None,
     ) -> Series[int]: ...
     def nlargest(
         self, n: int = 5, keep: NsmallestNlargestKeep = "first"
@@ -943,13 +944,13 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, n: int = 5, keep: NsmallestNlargestKeep = "first"
     ) -> Series[S1]: ...
     def swaplevel(
-        self, i: Level = ..., j: Level = ..., copy: _bool = True
+        self, i: Level = -2, j: Level = -1, copy: _bool = True
     ) -> Series[S1]: ...
     def reorder_levels(self, order: list) -> Series[S1]: ...
     def explode(self) -> Series[S1]: ...
     def unstack(
         self,
-        level: IndexLabel = ...,
+        level: IndexLabel = -1,
         fill_value: int | _str | dict | None = None,
         sort: _bool = True,
     ) -> DataFrame: ...
@@ -1043,10 +1044,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self,
         other: DataFrame | Series,
         join: JoinHow = "outer",
-        axis: Axis | None = None,
+        axis: Axis | None = 0,
         level: Level | None = None,
         copy: _bool = True,
-        fill_value: Scalar | NAType | None = ...,
+        fill_value: Scalar | NAType | None = None,
     ) -> tuple[Series, Series]: ...
     @overload
     def rename(
@@ -1096,10 +1097,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def reindex_like(
         self,
         other: Series[S1],
-        method: FillnaOptions | Literal["nearest"] | None = ...,
+        method: FillnaOptions | Literal["nearest"] | None = None,
         copy: _bool = True,
         limit: int | None = None,
-        tolerance: Scalar | AnyArrayLike | Sequence[Scalar] = ...,
+        tolerance: Scalar | AnyArrayLike | Sequence[Scalar] | None = None,
     ) -> Self: ...
     @overload
     def fillna(
@@ -1184,7 +1185,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def to_timestamp(
         self,
         freq=...,
-        how: ToTimestampHow = ...,
+        how: ToTimestampHow = "start",
         copy: _bool = True,
     ) -> Series[S1]: ...
     def to_period(self, freq: _str | None = None, copy: _bool = True) -> DataFrame: ...
@@ -1238,19 +1239,19 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def add_suffix(self, suffix: _str, axis: AxisIndex | None = None) -> Series[S1]: ...
     def reindex(
         self,
-        index: Axes | None = ...,
-        method: ReindexMethod | None = ...,
+        index: Axes | None = None,
+        method: ReindexMethod | None = None,
         copy: bool = True,
-        level: int | _str = ...,
-        fill_value: Scalar | None = ...,
+        level: int | _str | None = None,
+        fill_value: Scalar | None = None,
         limit: int | None = None,
-        tolerance: float | None = ...,
+        tolerance: float | None = None,
     ) -> Series[S1]: ...
     def filter(
         self,
-        items: _ListLike | None = ...,
-        like: _str | None = ...,
-        regex: _str | None = ...,
+        items: _ListLike | None = None,
+        like: _str | None = None,
+        regex: _str | None = None,
         axis: AxisIndex | None = None,
     ) -> Series[S1]: ...
     @final
@@ -1260,11 +1261,11 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @final
     def sample(
         self,
-        n: int | None = ...,
-        frac: float | None = ...,
+        n: int | None = None,
+        frac: float | None = None,
         replace: _bool = False,
-        weights: _str | _ListLike | np.ndarray | None = ...,
-        random_state: RandomState | None = ...,
+        weights: _str | _ListLike | np.ndarray | None = None,
+        random_state: RandomState | None = None,
         axis: AxisIndex | None = None,
         ignore_index: _bool = False,
     ) -> Series[S1]: ...
@@ -1441,17 +1442,17 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @final
     def asfreq(
         self,
-        freq,
+        freq: DateOffset | _str,
         method: FillnaOptions | None = None,
-        how: Literal["start", "end"] | None = ...,
+        how: Literal["start", "end"] | None = None,
         normalize: _bool = False,
-        fill_value: Scalar | None = ...,
+        fill_value: Scalar | None = None,
     ) -> Series[S1]: ...
     @final
     def at_time(
         self,
         time: _str | time,
-        asof: _bool = ...,
+        asof: _bool = False,
         axis: AxisIndex | None = 0,
     ) -> Series[S1]: ...
     @final
@@ -1459,6 +1460,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self,
         start_time: _str | time,
         end_time: _str | time,
+        inclusive: IntervalClosedType = "both",
         axis: AxisIndex | None = 0,
     ) -> Series[S1]: ...
     @final

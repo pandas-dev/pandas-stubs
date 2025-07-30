@@ -101,20 +101,20 @@ class Styler(StylerRenderer):
         excel_writer: FilePath | WriteExcelBuffer | ExcelWriter,
         sheet_name: str = "Sheet1",
         na_rep: str = "",
-        float_format: str | None = ...,
-        columns: list[HashableT1] | None = ...,
+        float_format: str | None = None,
+        columns: list[HashableT1] | None = None,
         header: list[HashableT2] | bool = True,
         index: bool = True,
-        index_label: IndexLabel | None = ...,
+        index_label: IndexLabel | None = None,
         startrow: int = 0,
         startcol: int = 0,
-        engine: Literal["openpyxl", "xlsxwriter"] | None = ...,
+        engine: Literal["openpyxl", "xlsxwriter"] | None = None,
         merge_cells: ExcelWriterMergeCells = True,
-        encoding: str | None = ...,
+        encoding: str | None = None,
         inf_rep: str = "inf",
-        verbose: bool = ...,
-        freeze_panes: tuple[int, int] | None = ...,
-        storage_options: StorageOptions | None = ...,
+        verbose: bool = True,
+        freeze_panes: tuple[int, int] | None = None,
+        storage_options: StorageOptions | None = None,
     ) -> None: ...
     @overload
     def to_latex(
@@ -264,15 +264,15 @@ class Styler(StylerRenderer):
     def set_sticky(
         self,
         axis: Axis = 0,
-        pixel_size: int | None = ...,
-        levels: Level | list[Level] | None = ...,
+        pixel_size: int | None = None,
+        levels: Level | list[Level] | None = None,
     ) -> Styler: ...
     def set_table_styles(
         self,
-        table_styles: dict[HashableT, CSSStyles] | CSSStyles | None = ...,
+        table_styles: dict[HashableT, CSSStyles] | CSSStyles | None = None,
         axis: Axis = 0,
         overwrite: bool = True,
-        css_class_names: dict[str, str] | None = ...,
+        css_class_names: dict[str, str] | None = None,
     ) -> Styler: ...
     def hide(
         self,
@@ -283,14 +283,14 @@ class Styler(StylerRenderer):
     ) -> Styler: ...
     def background_gradient(
         self,
-        cmap: str | Colormap = ...,
-        low: float = ...,
-        high: float = ...,
+        cmap: str | Colormap = "PuBu",
+        low: float = 0,
+        high: float = 0,
         axis: Axis | None = 0,
-        subset: Subset | None = ...,
-        text_color_threshold: float = ...,
-        vmin: float | None = ...,
-        vmax: float | None = ...,
+        subset: Subset | None = None,
+        text_color_threshold: float = 0.408,
+        vmin: float | None = None,
+        vmax: float | None = None,
         gmap: (
             Sequence[float]
             | Sequence[Sequence[float]]
@@ -298,19 +298,17 @@ class Styler(StylerRenderer):
             | DataFrame
             | Series
             | None
-        ) = ...,
+        ) = None,
     ) -> Styler: ...
     def text_gradient(
         self,
-        cmap: str | Colormap = ...,
-        low: float = ...,
-        high: float = ...,
+        cmap: str | Colormap = "PuBu",
+        low: float = 0,
+        high: float = 0,
         axis: Axis | None = 0,
-        subset: Subset | None = ...,
-        # In docs but not in function declaration
-        # text_color_threshold: float
-        vmin: float | None = ...,
-        vmax: float | None = ...,
+        subset: Subset | None = None,
+        vmin: float | None = None,
+        vmax: float | None = None,
         gmap: (
             Sequence[float]
             | Sequence[Sequence[float]]
@@ -318,68 +316,68 @@ class Styler(StylerRenderer):
             | DataFrame
             | Series
             | None
-        ) = ...,
+        ) = None,
     ) -> Styler: ...
     def set_properties(
         self, subset: Subset | None = ..., **kwargs: str | int
     ) -> Styler: ...
     def bar(
         self,
-        subset: Subset | None = ...,
+        subset: Subset | None = None,
         axis: Axis | None = 0,
         *,
-        color: str | list[str] | tuple[str, str] | None = ...,
-        cmap: str | Colormap | None = ...,
-        width: float = ...,
-        height: float = ...,
+        color: str | list[str] | tuple[str, str] | None = None,
+        cmap: str | Colormap | None = None,
+        width: float = 100,
+        height: float = 100,
         align: (
             Literal["left", "right", "zero", "mid", "mean"]
             | float
             | Callable[[Series | npt.NDArray | DataFrame], float]
-        ) = ...,
-        vmin: float | None = ...,
-        vmax: float | None = ...,
-        props: str = ...,
+        ) = "mid",
+        vmin: float | None = None,
+        vmax: float | None = None,
+        props: str = "width: 10em;",
     ) -> Styler: ...
     def highlight_null(
         self,
         color: str | None = "red",
-        subset: Subset | None = ...,
+        subset: Subset | None = None,
         props: str | None = None,
     ) -> Styler: ...
     def highlight_max(
         self,
-        subset: Subset | None = ...,
+        subset: Subset | None = None,
         color: str = "yellow",
         axis: Axis | None = 0,
         props: str | None = None,
     ) -> Styler: ...
     def highlight_min(
         self,
-        subset: Subset | None = ...,
+        subset: Subset | None = None,
         color: str = "yellow",
         axis: Axis | None = 0,
         props: str | None = None,
     ) -> Styler: ...
     def highlight_between(
         self,
-        subset: Subset | None = ...,
+        subset: Subset | None = None,
         color: str = "yellow",
         axis: Axis | None = 0,
         left: Scalar | list[Scalar] | None = None,
         right: Scalar | list[Scalar] | None = None,
-        inclusive: IntervalClosedType = ...,
+        inclusive: IntervalClosedType = "both",
         props: str | None = None,
     ) -> Styler: ...
     def highlight_quantile(
         self,
-        subset: Subset | None = ...,
+        subset: Subset | None = None,
         color: str = "yellow",
         axis: Axis | None = 0,
         q_left: float = 0,
         q_right: float = 1,
-        interpolation: QuantileInterpolation = ...,
-        inclusive: IntervalClosedType = ...,
+        interpolation: QuantileInterpolation = "linear",
+        inclusive: IntervalClosedType = "both",
         props: str | None = None,
     ) -> Styler: ...
     @classmethod
