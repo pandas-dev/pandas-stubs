@@ -3,7 +3,9 @@ from __future__ import annotations
 import datetime as dt
 from typing import (
     TYPE_CHECKING,
+    Any,
     Union,
+    cast,
 )
 
 import numpy as np
@@ -1026,6 +1028,42 @@ def test_getitem() -> None:
     check(assert_type(i0, "pd.Index[str]"), pd.Index)
     check(assert_type(i0[0], str), str)
     check(assert_type(i0[[0, 2]], "pd.Index[str]"), pd.Index, str)
+
+
+def test_append_mix() -> None:
+    """Test pd.Index.append with mixed types"""
+    first = pd.Index([1])
+    second = pd.Index(["a"])
+    third = pd.Index([1, "a"])
+    check(assert_type(first.append(second), pd.Index), pd.Index)
+    check(assert_type(first.append([second]), pd.Index), pd.Index)
+
+    check(assert_type(first.append(third), pd.Index), pd.Index)
+    check(assert_type(first.append([third]), pd.Index), pd.Index)
+    check(assert_type(first.append([second, third]), pd.Index), pd.Index)
+
+    check(assert_type(third.append([]), pd.Index), pd.Index)
+    check(assert_type(third.append(cast("list[Index[Any]]", [])), pd.Index), pd.Index)
+    check(assert_type(third.append([first]), pd.Index), pd.Index)
+    check(assert_type(third.append([first, second]), pd.Index), pd.Index)
+
+
+def test_append_int() -> None:
+    """Test pd.Index[int].append"""
+    first = pd.Index([1])
+    second = pd.Index([2])
+    check(assert_type(first.append([]), "pd.Index[int]"), pd.Index, np.int64)
+    check(assert_type(first.append(second), "pd.Index[int]"), pd.Index, np.int64)
+    check(assert_type(first.append([second]), "pd.Index[int]"), pd.Index, np.int64)
+
+
+def test_append_str() -> None:
+    """Test pd.Index[str].append"""
+    first = pd.Index(["str"])
+    second = pd.Index(["rts"])
+    check(assert_type(first.append([]), "pd.Index[str]"), pd.Index, str)
+    check(assert_type(first.append(second), "pd.Index[str]"), pd.Index, str)
+    check(assert_type(first.append([second]), "pd.Index[str]"), pd.Index, str)
 
 
 def test_range_index_range() -> None:

@@ -847,6 +847,26 @@ S1 = TypeVar("S1", bound=SeriesDType, default=Any)
 S2 = TypeVar("S2", bound=SeriesDType)
 S3 = TypeVar("S3", bound=SeriesDType)
 
+# Constraint, instead of bound
+C2 = TypeVar(
+    "C2",
+    str,
+    bytes,
+    datetime.date,
+    datetime.time,
+    bool,
+    int,
+    float,
+    complex,
+    Dtype,
+    datetime.datetime,  # includes pd.Timestamp
+    datetime.timedelta,  # includes pd.Timedelta
+    Period,
+    Interval,
+    CategoricalDtype,
+    BaseOffset,
+)
+
 IndexingInt: TypeAlias = (
     int | np.int_ | np.integer | np.unsignedinteger | np.signedinteger | np.int8
 )
