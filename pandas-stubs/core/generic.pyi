@@ -57,7 +57,6 @@ from pandas._typing import (
     TimedeltaConvertibleTypes,
     TimeGrouperOrigin,
     TimestampConvertibleTypes,
-    ToTimestampHow,
     WriteBuffer,
 )
 
@@ -182,14 +181,14 @@ class NDFrame(indexing.IndexingMixin):
         self,
         path: FilePath | WriteBuffer[bytes],
         compression: CompressionOptions = "infer",
-        protocol: int = ...,
+        protocol: int = 5,
         storage_options: StorageOptions = ...,
     ) -> None: ...
     @final
     def to_clipboard(
         self,
         excel: _bool = True,
-        sep: _str | None = "\t",
+        sep: _str | None = None,
         *,
         na_rep: _str = ...,
         float_format: _str | Callable[[object], _str] | None = ...,
@@ -413,8 +412,8 @@ class NDFrame(indexing.IndexingMixin):
         infer_objects: _bool = True,
         convert_string: _bool = True,
         convert_integer: _bool = True,
-        convert_boolean: _bool = ...,
-        convert_floating: _bool = ...,
+        convert_boolean: _bool = True,
+        convert_floating: _bool = True,
         dtype_backend: DtypeBackend = "numpy_nullable",
     ) -> Self: ...
     @final
@@ -424,10 +423,8 @@ class NDFrame(indexing.IndexingMixin):
         axis: Axis | _NoDefaultDoNotUse = 0,
         closed: Literal["right", "left"] | None = None,
         label: Literal["right", "left"] | None = None,
-        convention: ToTimestampHow = "start",
-        kind: Literal["period", "timestamp"] | None = None,
-        on: Level | None = ...,
-        level: Level | None = ...,
+        on: Level | None = None,
+        level: Level | None = None,
         origin: TimeGrouperOrigin | TimestampConvertibleTypes = "start_day",
         offset: TimedeltaConvertibleTypes | None = None,
         group_keys: _bool = False,

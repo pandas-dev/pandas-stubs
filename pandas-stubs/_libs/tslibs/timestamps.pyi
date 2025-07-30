@@ -157,7 +157,19 @@ class Timestamp(datetime, SupportsIndex):
     ) -> Timestamp: ...
     def astimezone(self, tz: _tzinfo | None = ...) -> Self: ...
     def ctime(self) -> str: ...
-    def isoformat(self, sep: str = "T", timespec: str = "auto") -> str: ...
+    def isoformat(
+        self,
+        sep: str = "T",
+        timespec: Literal[
+            "auto",
+            "hours",
+            "minutes",
+            "seconds",
+            "milliseconds",
+            "microseconds",
+            "nanoseconds",
+        ] = "auto",
+    ) -> str: ...
     @classmethod
     def strptime(cls, date_string: Never, format: Never) -> Never: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def utcoffset(self) -> timedelta | None: ...

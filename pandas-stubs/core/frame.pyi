@@ -455,29 +455,15 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         into: type[dict] = ...,
         index: bool = ...,
     ) -> dict[Hashable, Any]: ...
-    def to_gbq(
-        self,
-        destination_table: str,
-        project_id: str | None = ...,
-        chunksize: int | None = ...,
-        reauth: bool = False,
-        if_exists: Literal["fail", "replace", "append"] = "fail",
-        auth_local_webserver: bool = True,
-        table_schema: list[dict[str, str]] | None = ...,
-        location: str | None = ...,
-        progress_bar: bool = True,
-        # Google type, not available
-        credentials: Any = ...,
-    ) -> None: ...
     @classmethod
     def from_records(
         cls,
         data,
         index=...,
-        exclude=None,
-        columns=None,
-        coerce_float=False,
-        nrows=None,
+        exclude: Sequence[str] | None = None,
+        columns: Sequence[str] | None = None,
+        coerce_float: bool = False,
+        nrows: int | None = None,
     ) -> Self: ...
     def to_records(
         self,
@@ -1321,7 +1307,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         margins: _bool = False,
         dropna: _bool = True,
         margins_name: _str = "All",
-        observed: _bool = False,
+        observed: _bool = True,
         sort: _bool = True,
     ) -> Self: ...
     @overload
@@ -1338,7 +1324,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def unstack(
         self,
         level: IndexLabel = -1,
-        fill_value: Scalar | None = ...,
+        fill_value: Scalar | None = None,
         sort: _bool = True,
     ) -> Self | Series: ...
     def melt(
@@ -1560,20 +1546,20 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         suffixes: Suffixes = ...,
         copy: _bool = True,
         indicator: _bool | _str = False,
-        validate: MergeValidate | None = ...,
+        validate: MergeValidate | None = None,
     ) -> Self: ...
     def round(
         self, decimals: int | dict | Series = ..., *args: Any, **kwargs: Any
     ) -> Self: ...
     def corr(
         self,
-        method: Literal["pearson", "kendall", "spearman"] = ...,
+        method: Literal["pearson", "kendall", "spearman"] = "pearson",
         min_periods: int = ...,
         numeric_only: _bool = False,
     ) -> Self: ...
     def cov(
         self,
-        min_periods: int | None = ...,
+        min_periods: int | None = None,
         ddof: int = 1,
         numeric_only: _bool = False,
     ) -> Self: ...
@@ -1639,7 +1625,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def to_period(
         self,
-        freq: _str | None = ...,
+        freq: _str | None = None,
         axis: Axis = 0,
         copy: _bool = True,
     ) -> Self: ...
@@ -1790,7 +1776,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def at_time(
         self,
         time: _str | dt.time,
-        asof: _bool = ...,
+        asof: _bool = False,
         axis: Axis | None = 0,
     ) -> Self: ...
     @final
@@ -1892,28 +1878,28 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def copy(self, deep: _bool = True) -> Self: ...
     def cummax(
         self,
-        axis: Axis | None = 0,
+        axis: Axis | None = None,
         skipna: _bool = True,
         *args: Any,
         **kwargs: Any,
     ) -> Self: ...
     def cummin(
         self,
-        axis: Axis | None = 0,
+        axis: Axis | None = None,
         skipna: _bool = True,
         *args: Any,
         **kwargs: Any,
     ) -> Self: ...
     def cumprod(
         self,
-        axis: Axis | None = 0,
+        axis: Axis | None = None,
         skipna: _bool = True,
         *args: Any,
         **kwargs: Any,
     ) -> Self: ...
     def cumsum(
         self,
-        axis: Axis | None = 0,
+        axis: Axis | None = None,
         skipna: _bool = True,
         *args: Any,
         **kwargs: Any,
@@ -1999,8 +1985,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: Level | None = ...,
         fill_value: float | None = None,
     ) -> Self: ...
-    # def from_dict
-    # def from_records
     def ge(self, other, axis: Axis = "columns", level: Level | None = ...) -> Self: ...
     @overload
     def get(self, key: Hashable, default: None = ...) -> Series | None: ...
@@ -2015,7 +1999,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def head(self, n: int = 5) -> Self: ...
     @final
     def infer_objects(self) -> Self: ...
-    # def info
     @overload
     def interpolate(
         self,

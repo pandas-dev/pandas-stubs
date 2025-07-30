@@ -18,7 +18,7 @@ from pandas._typing import (
 def eval(
     expr: str | BinOp,
     parser: Literal["pandas", "python"] = "pandas",
-    engine: Literal["python", "numexpr"] | None = "numexpr",
+    engine: Literal["python", "numexpr"] | None = ...,
     local_dict: dict[str, Any] | None = None,
     global_dict: dict[str, Any] | None = None,
     resolvers: list[Mapping] | None = ...,
