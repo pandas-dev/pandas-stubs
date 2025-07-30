@@ -443,7 +443,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["index"],
         *,
-        into: MutableMapping | type[MutableMapping],
+        into: type[MutableMapping],
         index: Literal[True] = ...,
     ) -> MutableMapping[Hashable, dict[Hashable, Any]]: ...
     @overload

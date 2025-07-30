@@ -3681,7 +3681,7 @@ def test_to_dict_into_defaultdict() -> None:
         tuple,
     )
     check(
-        assert_type(  # type: ignore[assert-type]
+        assert_type(
             data.to_dict("index", into=target),
             defaultdict[Hashable, dict[Hashable, Any]],
         ),
