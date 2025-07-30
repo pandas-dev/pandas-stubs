@@ -221,14 +221,7 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
     def memory_usage(self, deep: bool = ...) -> int: ...
     @property
     def is_overlapping(self) -> bool: ...
-    # Note: tolerance no effect. It is included in all get_loc so
-    # that signatures are consistent with base even though it is usually not used
-    def get_loc(
-        self,
-        key: Label,
-        method: FillnaOptions | Literal["nearest"] | None = ...,
-        tolerance=...,
-    ) -> int | slice | npt.NDArray[np.bool_]: ...
+    def get_loc(self, key: Label) -> int | slice | npt.NDArray[np.bool_]: ...
     @final
     def get_indexer(
         self,
