@@ -42,6 +42,7 @@ from typing_extensions import (
 
 from pandas._libs.interval import _OrderableT
 from pandas._typing import (
+    C2,
     S1,
     AnyAll,
     AxesData,
@@ -402,7 +403,9 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __getitem__(self, idx: int | tuple[np_ndarray_anyint, ...]) -> S1: ...
     @overload
-    def append(self, other: Index[S1] | Sequence[Index[S1]]) -> Self: ...
+    def append(
+        self: Index[C2], other: Index[C2] | Sequence[Index[C2]]
+    ) -> Index[C2]: ...
     @overload
     def append(self, other: Index | Sequence[Index]) -> Index: ...
     def putmask(self, mask, value): ...
