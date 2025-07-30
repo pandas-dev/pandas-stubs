@@ -160,15 +160,7 @@ class Timestamp(datetime, SupportsIndex):
     def isoformat(
         self,
         sep: str = "T",
-        timespec: Literal[
-            "auto",
-            "hours",
-            "minutes",
-            "seconds",
-            "milliseconds",
-            "microseconds",
-            "nanoseconds",
-        ] = "auto",
+        timespec: str = "auto",
     ) -> str: ...
     @classmethod
     def strptime(cls, date_string: Never, format: Never) -> Never: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
