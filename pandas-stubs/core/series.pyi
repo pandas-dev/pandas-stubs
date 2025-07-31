@@ -1920,11 +1920,12 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __rsub__(self, other: num | _ListLike | Series[S1]) -> Series: ...
     @overload
     def __rtruediv__(
-        self: Series[Never], other: num | _ListLike | Series | Path
+        self: Series[Never], other: Path | Scalar | _ListLike
     ) -> Series: ...
     @overload
     def __rtruediv__(
-        self: Series[int], other: int | Sequence[int]
+        self: Series[int],
+        other: int | Sequence[int] | np_ndarray_anyint | np_ndarray_float,
     ) -> Series[float]: ...
     @overload
     def __rtruediv__(
@@ -1932,9 +1933,21 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[_T_COMPLEX]: ...
     @overload
     def __rtruediv__(
+        self: Series[int], other: np_ndarray_complex
+    ) -> Series[complex]: ...
+    @overload
+    def __rtruediv__(
         self: Series[float],
         other: int | Sequence[int] | np_ndarray_anyint | np_ndarray_float,
     ) -> Series[float]: ...
+    @overload
+    def __rtruediv__(
+        self: Series[float], other: _T_COMPLEX | Sequence[_T_COMPLEX]
+    ) -> Series[_T_COMPLEX]: ...
+    @overload
+    def __rtruediv__(
+        self: Series[float], other: np_ndarray_complex
+    ) -> Series[complex]: ...
     @overload
     def __rtruediv__(
         self: Series[complex],
@@ -1947,11 +1960,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         ),
     ) -> Series[complex]: ...
     @overload
-    def __rtruediv__(
-        self: Series[float], other: _T_COMPLEX | Sequence[_T_COMPLEX]
-    ) -> Series[_T_COMPLEX]: ...
-    @overload
-    def __rtruediv__(self, other: num | _ListLike | Series[S1] | Path) -> Series: ...
+    def __rtruediv__(self, other: Path) -> Series: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __rxor__(  # pyright: ignore[reportOverlappingOverload]
@@ -2527,7 +2536,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def rtruediv(
         self: Series[Never],
-        other: Scalar | _ListLike | Series,
+        other: Path | Scalar | _ListLike | Series,
         level: Level | None = ...,
         fill_value: float | None = ...,
         axis: AxisIndex = ...,
@@ -2598,7 +2607,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def rtruediv(
         self,
-        other: Scalar | _ListLike | Series,
+        other: Path,
         level: Level | None = ...,
         fill_value: float | None = ...,
         axis: AxisIndex = ...,
