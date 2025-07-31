@@ -5,7 +5,6 @@ from typing import (
     overload,
 )
 
-import numpy as np
 import pandas as pd
 from pandas import Index
 from pandas.core.indexes.accessors import PeriodIndexFieldOps
@@ -53,7 +52,6 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period], PeriodIndexFieldOps):
     def __rsub__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: NaTType
     ) -> NaTType: ...
-    def __array__(self, dtype=...) -> np.ndarray: ...
     @final
     def __array_wrap__(self, result, context=...): ...
     def asof_locs(self, where, mask): ...

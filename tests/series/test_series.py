@@ -33,6 +33,8 @@ from pandas.api.typing import NAType
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.window import ExponentialMovingWindow
+from pandas.core.window.expanding import Expanding
+from pandas.core.window.rolling import Rolling
 import pytest
 from typing_extensions import (
     Never,
@@ -1211,14 +1213,10 @@ def test_types_plot() -> None:
 
 def test_types_window() -> None:
     s = pd.Series([0, 1, 1, 0, 5, 1, -10])
-    s.expanding()
-    s.rolling(2, center=True)
-    if TYPE_CHECKING_INVALID_USAGE:
-        s.expanding(axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue]
-        s.rolling(2, axis=0, center=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        s.expanding(axis=0, center=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue]
+    check(assert_type(s.expanding(), "Expanding[pd.Series]"), Expanding)
+    check(assert_type(s.rolling(2, center=True), "Rolling[pd.Series]"), Rolling)
 
-    s.rolling(2)
+    check(assert_type(s.rolling(2), "Rolling[pd.Series]"), Rolling)
 
     check(
         assert_type(s.rolling(2).agg("sum"), pd.Series),
@@ -1517,14 +1515,13 @@ def test_types_bfill() -> None:
 
 def test_types_ewm() -> None:
     s1 = pd.Series([1, 2, 3])
-    if TYPE_CHECKING_INVALID_USAGE:
-        check(
-            assert_type(
-                s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True, axis=0),  # type: ignore[call-arg] # pyright: ignore[reportAssertTypeFailure,reportCallIssue]
-                "ExponentialMovingWindow[pd.Series]",
-            ),
-            ExponentialMovingWindow,
-        )
+    check(
+        assert_type(
+            s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True),
+            "ExponentialMovingWindow[pd.Series]",
+        ),
+        ExponentialMovingWindow,
+    )
     check(
         assert_type(
             s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True),
@@ -3988,3 +3985,11 @@ def test_series_str_methods() -> None:
     check(assert_type(s_str, "pd.Series[str]"), pd.Series, str)
     check(assert_type(s_str.str.upper(), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s_str.str.lower(), "pd.Series[str]"), pd.Series, str)
+
+
+def test_series_explode() -> None:
+    """Test Series.explode method."""
+    s = pd.Series([[1, 2, 3], "foo", [], [3, 4]])
+
+    check(assert_type(s.explode(), pd.Series), pd.Series)
+    check(assert_type(s.explode(ignore_index=True), pd.Series), pd.Series)

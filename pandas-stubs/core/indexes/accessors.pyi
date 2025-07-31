@@ -140,7 +140,6 @@ class _DatetimeOtherOps(Generic[_DTOtherOpsDateReturnType, _DTOtherOpsTimeReturn
     @property
     def timetz(self) -> _DTOtherOpsTimeReturnType: ...
 
-class DatetimeAndPeriodProperties(_DatetimeFieldOps[Series[int]]): ...
 class _DatetimeLikeOps(
     _DatetimeFieldOps[_DTFieldOpsReturnType],
     _DatetimeObjectOps[_DTFreqReturnType],

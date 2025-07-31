@@ -2756,7 +2756,7 @@ def test_dataframe_pct_change() -> None:
     check(assert_type(df.pct_change(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(fill_method=None), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(df.pct_change(axis="columns", periods=-1), pd.DataFrame),
+        assert_type(df.pct_change(periods=-1), pd.DataFrame),
         pd.DataFrame,
     )
     check(assert_type(df.pct_change(fill_value=0), pd.DataFrame), pd.DataFrame)
