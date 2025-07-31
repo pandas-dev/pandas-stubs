@@ -2681,7 +2681,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def truediv(
         self: Series[Never],
-        other: Scalar | _ListLike | Series,
+        other: Path | Scalar | _ListLike | Series,
         level: Level | None = ...,
         fill_value: float | None = ...,
         axis: AxisIndex = ...,
@@ -2757,14 +2757,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_value: float | None = ...,
         axis: AxisIndex = ...,
     ) -> Series[complex]: ...
-    @overload
-    def truediv(
-        self,
-        other: Scalar | _ListLike | Series,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
-    ) -> Series: ...
     def var(
         self,
         axis: AxisIndex | None = ...,
