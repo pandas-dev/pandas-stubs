@@ -470,28 +470,13 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         into: type[dict] = ...,
         index: bool = ...,
     ) -> dict[Hashable, Any]: ...
-    def to_gbq(
-        self,
-        destination_table: str,
-        *,
-        project_id: str | None = ...,
-        chunksize: int | None = ...,
-        reauth: bool = ...,
-        if_exists: Literal["fail", "replace", "append"] = ...,
-        auth_local_webserver: bool = ...,
-        table_schema: list[dict[str, str]] | None = ...,
-        location: str | None = ...,
-        progress_bar: bool = ...,
-        # Google type, not available
-        credentials: Any = ...,
-    ) -> None: ...
     @classmethod
     def from_records(
         cls,
         data,
         index=...,
-        exclude: Sequence[str] | None = None,
-        columns: Sequence[str] | None = None,
+        exclude: SequenceNotStr[str] | None = None,
+        columns: SequenceNotStr[str] | None = None,
         coerce_float: bool = False,
         nrows: int | None = None,
     ) -> Self: ...
@@ -1596,11 +1581,11 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: DataFrame | Series,
         axis: Axis | None = 0,
         drop: _bool = False,
-        method: Literal["pearson", "kendall", "spearman"] = ...,
+        method: Literal["pearson", "kendall", "spearman"] = "pearson",
         numeric_only: _bool = False,
     ) -> Series: ...
-    def count(self, axis: Axis = 0, numeric_only: _bool = ...) -> Series[int]: ...
-    def nunique(self, axis: Axis = 0, dropna: bool = ...) -> Series: ...
+    def count(self, axis: Axis = 0, numeric_only: _bool = False) -> Series[int]: ...
+    def nunique(self, axis: Axis = 0, dropna: bool = True) -> Series[int]: ...
     def idxmax(
         self,
         axis: Axis = 0,
@@ -1681,7 +1666,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         grid: _bool = True,
         figsize: tuple[float, float] | None = None,
         layout: tuple[int, int] | None = None,
-        return_type: Literal["axes", "dict", "both"] | None = "axes",
+        return_type: Literal["axes", "dict", "both"] | None = None,
         backend: _str | None = None,
         **kwargs: Any,
     ): ...
@@ -1805,7 +1790,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         start_time: _str | dt.time,
         end_time: _str | dt.time,
-        inclusive: IntervalClosedType = ...,
+        inclusive: IntervalClosedType = "both",
         axis: Axis | None = 0,
     ) -> Self: ...
     @overload
@@ -2377,7 +2362,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def sum(
         self,
-        axis: Axis = ...,
+        axis: Axis = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
         min_count: int = 0,

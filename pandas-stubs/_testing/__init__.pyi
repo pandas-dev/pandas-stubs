@@ -5,7 +5,6 @@ from collections.abc import (
 )
 from contextlib import contextmanager
 from typing import (
-    Any,
     Literal,
     overload,
 )
@@ -81,10 +80,16 @@ def assert_period_array_equal(
     left: PeriodArray, right: PeriodArray, obj: str = "PeriodArray"
 ) -> None: ...
 def assert_datetime_array_equal(
-    left: DatetimeArray, right: DatetimeArray, check_freq: bool = True
+    left: DatetimeArray,
+    right: DatetimeArray,
+    obj: str = "DatetimeArray",
+    check_freq: bool = True,
 ) -> None: ...
 def assert_timedelta_array_equal(
-    left: TimedeltaArray, right: TimedeltaArray, check_freq: bool = True
+    left: TimedeltaArray,
+    right: TimedeltaArray,
+    obj: str = "TimedeltaArray",
+    check_freq: bool = True,
 ) -> None: ...
 def assert_numpy_array_equal(
     left,
@@ -184,6 +189,4 @@ def assert_produces_warning(
     match: str | None = None,
 ) -> Generator[list[warnings.WarningMessage], None, None]: ...
 @contextmanager
-def ensure_clean(
-    filename: str | None = None, return_filelike: bool = False, **kwargs: Any
-) -> Generator[str, None, None]: ...
+def ensure_clean(filename: str | None = None) -> Generator[str, None, None]: ...

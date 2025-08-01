@@ -1145,7 +1145,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self,
         periods: int | Sequence[int] = ...,
         freq: DateOffset | timedelta | _str | None = None,
-        axis: Axis | None = None,
+        axis: Axis = 0,
         fill_value: Scalar | NAType | None = ...,
     ) -> Series: ...
     def info(
@@ -1984,9 +1984,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
         min_periods: int = 0,
         adjust: _bool = True,
         ignore_na: _bool = False,
-        axis: Axes = ...,
-        times: np.ndarray | Series | None = ...,
-        method: CalculationMethod = ...,
+        axis: Axis = 0,
+        times: np.ndarray | Series | None = None,
+        method: CalculationMethod = "single",
     ) -> ExponentialMovingWindow[Series]: ...
     @final
     def expanding(
