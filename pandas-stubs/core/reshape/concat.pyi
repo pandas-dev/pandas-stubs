@@ -42,7 +42,7 @@ def concat(  # type: ignore[overload-overlap]
 def concat(  # pyright: ignore[reportOverlappingOverload]
     objs: Iterable[Series[S2]],
     *,
-    axis: Literal[0, "index"] = ...,
+    axis: AxisIndex = ...,
     join: Literal["inner", "outer"] = ...,
     ignore_index: bool = ...,
     keys: Iterable[HashableT2] = ...,
