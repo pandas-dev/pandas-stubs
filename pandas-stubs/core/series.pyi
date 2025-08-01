@@ -1136,7 +1136,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def shift(
         self,
         periods: int | Sequence[int] = ...,
-        freq: DateOffset | timedelta | _str | None = ...,
+        freq: BaseOffset | timedelta | _str | None = ...,
         axis: Axis = ...,
         fill_value: Scalar | NAType | None = ...,
     ) -> Series: ...
