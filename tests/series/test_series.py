@@ -833,9 +833,7 @@ def test_types_element_wise_arithmetic() -> None:
     # check(assert_type(s.mul(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.mul(s2, fill_value=0), pd.Series), pd.Series, np.integer)
 
-    # TODO these two below should type pd.Series[float]
-    # check(assert_type(s / s2, "pd.Series[float]"), pd.Series, np.float64)
-    check(assert_type(s / s2, pd.Series), pd.Series, np.float64)
+    check(assert_type(s / s2, "pd.Series[float]"), pd.Series, np.float64)
     check(
         assert_type(s.div(s2, fill_value=0), "pd.Series[float]"), pd.Series, np.float64
     )
