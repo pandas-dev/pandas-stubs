@@ -132,14 +132,14 @@ def test_types_concat() -> None:
     s = pd.Series([0, 1, -10])
     s2 = pd.Series([7, -5, 10])
 
-    check(assert_type(pd.concat([s, s2]), "pd.Series[int]"), pd.Series, np.int64)
+    check(assert_type(pd.concat([s, s2]), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(pd.concat([s, s2], axis=1), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(
             pd.concat([s, s2], keys=["first", "second"], sort=True), "pd.Series[int]"
         ),
         pd.Series,
-        np.int64,
+        np.integer,
     )
     check(
         assert_type(
@@ -147,7 +147,7 @@ def test_types_concat() -> None:
             "pd.Series[int]",
         ),
         pd.Series,
-        np.int64,
+        np.integer,
     )
     check(
         assert_type(
@@ -155,7 +155,7 @@ def test_types_concat() -> None:
             "pd.Series[int]",
         ),
         pd.Series,
-        np.int64,
+        np.integer,
     )
 
     # Depends on the axis
@@ -248,11 +248,11 @@ def test_concat_series_mixed_numeric() -> None:
     s = pd.Series([0, 1, -10])
     s2 = pd.Series([7.0, -5, 10])
 
-    check(assert_type(pd.concat([s, s2]), pd.Series), pd.Series, np.float64)
+    check(assert_type(pd.concat([s, s2]), pd.Series), pd.Series, np.floating)
     check(
         assert_type(pd.concat([s, s2], keys=["first", "second"], sort=True), pd.Series),
         pd.Series,
-        np.float64,
+        np.floating,
     )
     check(
         assert_type(
@@ -260,7 +260,7 @@ def test_concat_series_mixed_numeric() -> None:
             pd.Series,
         ),
         pd.Series,
-        np.float64,
+        np.floating,
     )
     check(
         assert_type(
@@ -268,7 +268,7 @@ def test_concat_series_mixed_numeric() -> None:
             pd.Series,
         ),
         pd.Series,
-        np.float64,
+        np.floating,
     )
 
 

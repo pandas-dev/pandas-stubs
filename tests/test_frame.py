@@ -2523,8 +2523,8 @@ def test_types_regressions() -> None:
     ts1 = pd.concat([s1, s2], axis=0)
     ts2 = pd.concat([s1, s2])
 
-    check(assert_type(ts1, "pd.Series[int]"), pd.Series, np.int64)
-    check(assert_type(ts2, "pd.Series[int]"), pd.Series, np.int64)
+    check(assert_type(ts1, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(ts2, "pd.Series[int]"), pd.Series, np.integer)
 
     # https://github.com/microsoft/python-type-stubs/issues/110
     check(assert_type(pd.Timestamp("2021-01-01"), pd.Timestamp), datetime.date)
