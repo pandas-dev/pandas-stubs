@@ -132,25 +132,30 @@ def test_types_concat() -> None:
     s = pd.Series([0, 1, -10])
     s2 = pd.Series([7, -5, 10])
 
-    check(assert_type(pd.concat([s, s2]), pd.Series), pd.Series)
+    check(assert_type(pd.concat([s, s2]), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(pd.concat([s, s2], axis=1), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(pd.concat([s, s2], keys=["first", "second"], sort=True), pd.Series),
+        assert_type(
+            pd.concat([s, s2], keys=["first", "second"], sort=True), "pd.Series[int]"
+        ),
         pd.Series,
+        np.integer,
     )
     check(
         assert_type(
             pd.concat([s, s2], keys=["first", "second"], names=["source", "row"]),
-            pd.Series,
+            "pd.Series[int]",
         ),
         pd.Series,
+        np.integer,
     )
     check(
         assert_type(
             pd.concat([s, s2], keys=["first", "second"], names=None),
-            pd.Series,
+            "pd.Series[int]",
         ),
         pd.Series,
+        np.integer,
     )
 
     # Depends on the axis
@@ -234,6 +239,37 @@ def test_types_concat() -> None:
 
     data: pd.DataFrame | pd.Series = pd.Series()
     check(assert_type(pd.concat([pd.DataFrame(), data]), pd.DataFrame), pd.DataFrame)
+
+
+def test_concat_series_mixed_numeric() -> None:
+    """Test concatenation of Series with mixed numeric types.
+
+    Derived from test_types_concat."""
+    s = pd.Series([0, 1, -10])
+    s2 = pd.Series([7.0, -5, 10])
+
+    check(assert_type(pd.concat([s, s2]), pd.Series), pd.Series, np.floating)
+    check(
+        assert_type(pd.concat([s, s2], keys=["first", "second"], sort=True), pd.Series),
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(
+            pd.concat([s, s2], keys=["first", "second"], names=["source", "row"]),
+            pd.Series,
+        ),
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(
+            pd.concat([s, s2], keys=["first", "second"], names=None),
+            pd.Series,
+        ),
+        pd.Series,
+        np.floating,
+    )
 
 
 def test_concat_args() -> None:
