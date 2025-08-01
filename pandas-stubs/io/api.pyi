@@ -17,7 +17,6 @@ from pandas.io.parsers import (
 )
 from pandas.io.pickle import (
     read_pickle as read_pickle,
-    to_pickle as to_pickle,
 )
 from pandas.io.pytables import (
     HDFStore as HDFStore,

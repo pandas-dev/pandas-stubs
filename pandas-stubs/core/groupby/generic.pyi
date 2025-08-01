@@ -156,20 +156,20 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     ) -> Series[S2]: ...
     def skew(
         self,
-        skipna: bool = ...,
-        numeric_only: bool = ...,
+        skipna: bool = True,
+        numeric_only: bool = False,
         **kwargs,
     ) -> Series: ...
     @property
     def plot(self) -> GroupByPlot[Self]: ...
     def nlargest(
-        self, n: int = ..., keep: NsmallestNlargestKeep = ...
+        self, n: int = 5, keep: NsmallestNlargestKeep = "first"
     ) -> Series[S2]: ...
     def nsmallest(
-        self, n: int = ..., keep: NsmallestNlargestKeep = ...
+        self, n: int = 5, keep: NsmallestNlargestKeep = "first"
     ) -> Series[S2]: ...
-    def idxmin(self, skipna: bool = ...) -> Series: ...
-    def idxmax(self, skipna: bool = ...) -> Series: ...
+    def idxmin(self, skipna: bool = True) -> Series: ...
+    def idxmax(self, skipna: bool = True) -> Series: ...
     def corr(
         self,
         other: Series,
@@ -177,7 +177,10 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
         min_periods: int | None = ...,
     ) -> Series: ...
     def cov(
-        self, other: Series, min_periods: int | None = ..., ddof: int | None = ...
+        self,
+        other: Series,
+        min_periods: int | None = None,
+        ddof: int | None = 1,
     ) -> Series: ...
     @property
     def is_monotonic_increasing(self) -> Series[bool]: ...
@@ -185,17 +188,17 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     def is_monotonic_decreasing(self) -> Series[bool]: ...
     def hist(
         self,
-        by: IndexLabel | None = ...,
-        ax: PlotAxes | None = ...,
-        grid: bool = ...,
-        xlabelsize: float | str | None = ...,
-        xrot: float | None = ...,
-        ylabelsize: float | str | None = ...,
-        yrot: float | None = ...,
-        figsize: tuple[float, float] | None = ...,
-        bins: int | Sequence[int] = ...,
-        backend: str | None = ...,
-        legend: bool = ...,
+        by: IndexLabel | None = None,
+        ax: PlotAxes | None = None,
+        grid: bool = True,
+        xlabelsize: float | str | None = None,
+        xrot: float | None = None,
+        ylabelsize: float | str | None = None,
+        yrot: float | None = None,
+        figsize: tuple[float, float] | None = None,
+        bins: int | Sequence[int] = 10,
+        backend: str | None = None,
+        legend: bool = False,
         **kwargs,
     ) -> Series: ...  # Series[Axes] but this is not allowed
     @property
@@ -291,16 +294,16 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, key: Iterable[Hashable]
     ) -> DataFrameGroupBy[ByT, _TT]: ...
-    def nunique(self, dropna: bool = ...) -> DataFrame: ...
+    def nunique(self, dropna: bool = True) -> DataFrame: ...
     def idxmax(
         self,
-        skipna: bool = ...,
-        numeric_only: bool = ...,
+        skipna: bool = True,
+        numeric_only: bool = False,
     ) -> DataFrame: ...
     def idxmin(
         self,
-        skipna: bool = ...,
-        numeric_only: bool = ...,
+        skipna: bool = True,
+        numeric_only: bool = False,
     ) -> DataFrame: ...
     @overload
     def boxplot(
@@ -411,31 +414,31 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         self,
         method: str | Callable[[np.ndarray, np.ndarray], float] = ...,
         min_periods: int = ...,
-        numeric_only: bool = ...,
+        numeric_only: bool = False,
     ) -> DataFrame: ...
     def cov(
         self,
         min_periods: int | None = ...,
-        ddof: int | None = ...,
-        numeric_only: bool = ...,
+        ddof: int | None = 1,
+        numeric_only: bool = False,
     ) -> DataFrame: ...
     def hist(
         self,
-        column: IndexLabel | None = ...,
-        by: IndexLabel | None = ...,
-        grid: bool = ...,
-        xlabelsize: float | str | None = ...,
-        xrot: float | None = ...,
-        ylabelsize: float | str | None = ...,
-        yrot: float | None = ...,
-        ax: PlotAxes | None = ...,
-        sharex: bool = ...,
-        sharey: bool = ...,
-        figsize: tuple[float, float] | None = ...,
-        layout: tuple[int, int] | None = ...,
-        bins: int | Sequence[int] = ...,
-        backend: str | None = ...,
-        legend: bool = ...,
+        column: IndexLabel | None = None,
+        by: IndexLabel | None = None,
+        grid: bool = True,
+        xlabelsize: float | str | None = None,
+        xrot: float | None = None,
+        ylabelsize: float | str | None = None,
+        yrot: float | None = None,
+        ax: PlotAxes | None = None,
+        sharex: bool = False,
+        sharey: bool = False,
+        figsize: tuple[float, float] | None = None,
+        layout: tuple[int, int] | None = None,
+        bins: int | Sequence[int] = 10,
+        backend: str | None = None,
+        legend: bool = False,
         **kwargs,
     ) -> Series: ...  # Series[Axes] but this is not allowed
     @property

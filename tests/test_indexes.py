@@ -56,8 +56,6 @@ def test_index_astype() -> None:
     indc = indi.astype(inds.dtype)
     check(assert_type(indc, pd.Index), pd.Index)
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
-    mia = mi.astype(object)  # object is only valid parameter for MultiIndex.astype()
-    check(assert_type(mia, pd.MultiIndex), pd.MultiIndex)
     check(
         assert_type(mi.to_frame(name=[3, 7], allow_duplicates=True), pd.DataFrame),
         pd.DataFrame,

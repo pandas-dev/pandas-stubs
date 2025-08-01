@@ -482,11 +482,6 @@ def test_series_pct_change() -> None:
         pd.Series,
         np.floating,
     )
-    check(
-        assert_type(s.pct_change(fill_value=0), "pd.Series[float]"),
-        pd.Series,
-        np.floating,
-    )
 
 
 def test_types_rank() -> None:
