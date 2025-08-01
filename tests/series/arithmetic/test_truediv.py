@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import numpy as np
+from numpy import typing as npt  # noqa: F401
 import pandas as pd
 from typing_extensions import assert_type
 
@@ -137,3 +138,17 @@ def test_truediv_pd_series() -> None:
     check(assert_type(left.rdiv(i), pd.Series), pd.Series)
     check(assert_type(left.rdiv(f), pd.Series), pd.Series)
     check(assert_type(left.rdiv(c), pd.Series), pd.Series)
+
+
+def test_truediv_path() -> None:
+    """Test pd.Series / path object"""
+    left, p = pd.Series(["pat", "ath", "path"]), Path()
+
+    check(assert_type(left / p, pd.Series), pd.Series, Path)
+    check(assert_type(p / left, pd.Series), pd.Series, Path)
+
+    check(assert_type(left.truediv(p), pd.Series), pd.Series, Path)
+    check(assert_type(left.div(p), pd.Series), pd.Series, Path)
+
+    check(assert_type(left.rtruediv(p), pd.Series), pd.Series, Path)
+    check(assert_type(left.rdiv(p), pd.Series), pd.Series, Path)
