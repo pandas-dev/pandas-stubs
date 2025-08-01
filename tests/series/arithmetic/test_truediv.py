@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 from typing_extensions import assert_type
@@ -75,24 +77,18 @@ def test_truediv_numpy_array() -> None:
     check(assert_type(left / f, pd.Series), pd.Series)
     check(assert_type(left / c, pd.Series), pd.Series)
 
-    # numpy typing gives ndarray instead of `pd.Series[...]` in reality, which we cannot fix
+    # `numpy` typing gives the corresponding `ndarray`s in the static type
+    # checking, where our `__rtruediv__` cannot override. At runtime, they return
+    # `Series`s.
+    # `mypy` thinks the return types are `Any`, which is a bug.
     check(
-        assert_type(  # type: ignore[assert-type]
-            i / left, pd.Series  # pyright: ignore[reportAssertTypeFailure]
-        ),
-        pd.Series,
+        assert_type(i / left, "npt.NDArray[np.float64]"), pd.Series  # type: ignore[assert-type]
     )
     check(
-        assert_type(  # type: ignore[assert-type]
-            f / left, pd.Series  # pyright: ignore[reportAssertTypeFailure]
-        ),
-        pd.Series,
+        assert_type(f / left, "npt.NDArray[np.float64]"), pd.Series  # type: ignore[assert-type]
     )
     check(
-        assert_type(  # type: ignore[assert-type]
-            c / left, pd.Series  # pyright: ignore[reportAssertTypeFailure]
-        ),
-        pd.Series,
+        assert_type(c / left, "npt.NDArray[np.complex128]"), pd.Series  # type: ignore[assert-type]
     )
 
     check(assert_type(left.truediv(i), pd.Series), pd.Series)
