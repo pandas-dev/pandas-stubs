@@ -2,6 +2,10 @@ from builtins import (
     bool as _bool,
     str as _str,
 )
+from collections import (
+    OrderedDict,
+    defaultdict,
+)
 from collections.abc import (
     Callable,
     Hashable,
@@ -19,6 +23,7 @@ from typing import (
     Generic,
     Literal,
     NoReturn,
+    TypeVar,
     final,
     overload,
 )
@@ -164,6 +169,8 @@ from pandas._typing import (
 
 from pandas.io.formats.style import Styler
 from pandas.plotting import PlotAccessor
+
+_T_MUTABLE_MAPPING = TypeVar("_T_MUTABLE_MAPPING", bound=MutableMapping, covariant=True)
 
 class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
     @overload
@@ -409,11 +416,19 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def to_dict(
         self,
+        orient: str = ...,
+        *,
+        into: type[defaultdict],
+        index: Literal[True] = ...,
+    ) -> Never: ...
+    @overload
+    def to_dict(
+        self,
         orient: Literal["records"],
         *,
-        into: MutableMapping | type[MutableMapping],
+        into: _T_MUTABLE_MAPPING | type[_T_MUTABLE_MAPPING],
         index: Literal[True] = ...,
-    ) -> list[MutableMapping[Hashable, Any]]: ...
+    ) -> list[_T_MUTABLE_MAPPING]: ...
     @overload
     def to_dict(
         self,
@@ -425,11 +440,51 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def to_dict(
         self,
-        orient: Literal["dict", "list", "series", "index"],
+        orient: Literal["index"],
         *,
-        into: MutableMapping | type[MutableMapping],
+        into: defaultdict,
         index: Literal[True] = ...,
-    ) -> MutableMapping[Hashable, Any]: ...
+    ) -> defaultdict[Hashable, dict[Hashable, Any]]: ...
+    @overload
+    def to_dict(
+        self,
+        orient: Literal["index"],
+        *,
+        into: OrderedDict | type[OrderedDict],
+        index: Literal[True] = ...,
+    ) -> OrderedDict[Hashable, dict[Hashable, Any]]: ...
+    @overload
+    def to_dict(
+        self,
+        orient: Literal["index"],
+        *,
+        into: type[MutableMapping],
+        index: Literal[True] = ...,
+    ) -> MutableMapping[Hashable, dict[Hashable, Any]]: ...
+    @overload
+    def to_dict(
+        self,
+        orient: Literal["index"],
+        *,
+        into: type[dict] = ...,
+        index: Literal[True] = ...,
+    ) -> dict[Hashable, dict[Hashable, Any]]: ...
+    @overload
+    def to_dict(
+        self,
+        orient: Literal["dict", "list", "series"] = ...,
+        *,
+        into: _T_MUTABLE_MAPPING | type[_T_MUTABLE_MAPPING],
+        index: Literal[True] = ...,
+    ) -> _T_MUTABLE_MAPPING: ...
+    @overload
+    def to_dict(
+        self,
+        orient: Literal["dict", "list", "series"] = ...,
+        *,
+        into: type[dict] = ...,
+        index: Literal[True] = ...,
+    ) -> dict[Hashable, Any]: ...
     @overload
     def to_dict(
         self,
@@ -437,39 +492,15 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         *,
         into: MutableMapping | type[MutableMapping],
         index: bool = ...,
-    ) -> MutableMapping[Hashable, Any]: ...
+    ) -> MutableMapping[str, list]: ...
     @overload
     def to_dict(
         self,
-        orient: Literal["dict", "list", "series", "index"] = ...,
-        *,
-        into: MutableMapping | type[MutableMapping],
-        index: Literal[True] = ...,
-    ) -> MutableMapping[Hashable, Any]: ...
-    @overload
-    def to_dict(
-        self,
-        orient: Literal["split", "tight"] = ...,
-        *,
-        into: MutableMapping | type[MutableMapping],
-        index: bool = ...,
-    ) -> MutableMapping[Hashable, Any]: ...
-    @overload
-    def to_dict(
-        self,
-        orient: Literal["dict", "list", "series", "index"] = ...,
-        *,
-        into: type[dict] = ...,
-        index: Literal[True] = ...,
-    ) -> dict[Hashable, Any]: ...
-    @overload
-    def to_dict(
-        self,
-        orient: Literal["split", "tight"] = ...,
+        orient: Literal["split", "tight"],
         *,
         into: type[dict] = ...,
         index: bool = ...,
-    ) -> dict[Hashable, Any]: ...
+    ) -> dict[str, list]: ...
     def to_gbq(
         self,
         destination_table: str,
