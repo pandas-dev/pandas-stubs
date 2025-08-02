@@ -883,7 +883,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def shift(
         self,
         periods: int | Sequence[int] = ...,
-        freq: DateOffset | dt.timedelta | _str | None = ...,
+        freq: BaseOffset | dt.timedelta | _str | None = ...,
         axis: Axis | None = None,
         fill_value: Scalar | NAType | None = ...,
     ) -> Self: ...
