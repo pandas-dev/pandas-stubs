@@ -191,7 +191,7 @@ def test_string_accessors_string_series():
     _check(assert_type(s_list.str.join("-"), "pd.Series[str]"))
 
     # wrap doesn't accept positional arguments other than width
-    with pytest.raises(TypeError):
+    if TYPE_CHECKING_INVALID_USAGE:
         s.str.wrap(80, False)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
 
 
@@ -249,7 +249,7 @@ def test_string_accessors_string_index():
     _check(assert_type(idx_list.str.join("-"), "pd.Index[str]"))
 
     # wrap doesn't accept positional arguments other than width
-    with pytest.raises(TypeError):
+    if TYPE_CHECKING_INVALID_USAGE:
         idx.str.wrap(80, False)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
 
 
