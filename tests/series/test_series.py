@@ -3802,18 +3802,6 @@ def test_series_bool_fails() -> None:
         pass
 
 
-def test_path_div() -> None:
-    # GH 682
-    folder = Path.cwd()
-    files = pd.Series(["a.png", "b.png"])
-    if PD_LTE_23:
-        # Bug in 3.0 https://github.com/pandas-dev/pandas/issues/61940
-        check(assert_type(folder / files, pd.Series), pd.Series, Path)
-
-    folders = pd.Series([folder, folder])
-    check(assert_type(folders / Path("a.png"), pd.Series), pd.Series, Path)
-
-
 def test_series_dict() -> None:
     # GH 812
     check(

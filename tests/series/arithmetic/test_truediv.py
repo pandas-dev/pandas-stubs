@@ -5,7 +5,10 @@ from numpy import typing as npt  # noqa: F401
 import pandas as pd
 from typing_extensions import assert_type
 
-from tests import check
+from tests import (
+    PD_LTE_23,
+    check,
+)
 
 left = pd.DataFrame({"a": [1, 2, 3]})["a"]  # left operand
 
@@ -140,12 +143,24 @@ def test_truediv_pd_series() -> None:
     check(assert_type(left.rdiv(c), pd.Series), pd.Series)
 
 
+def test_path_div() -> None:
+    # GH 682
+    folder = Path.cwd()
+
+    folders = pd.Series([folder, folder])
+    check(assert_type(folders / Path("a.png"), pd.Series), pd.Series, Path)
+
+
 def test_truediv_path() -> None:
-    """Test pd.Series / path object"""
-    left, p = pd.Series(["pat", "ath", "path"]), Path()
+    """Test pd.Series / path object.
+
+    Also GH 682."""
+    left, p = pd.Series(["a.png", "b.gz", "c.txt"]), Path.cwd()
 
     check(assert_type(left / p, pd.Series), pd.Series, Path)
-    check(assert_type(p / left, pd.Series), pd.Series, Path)
+    if PD_LTE_23:
+        # Bug in 3.0 https://github.com/pandas-dev/pandas/issues/61940
+        check(assert_type(p / left, pd.Series), pd.Series, Path)
 
     check(assert_type(left.truediv(p), pd.Series), pd.Series, Path)
     check(assert_type(left.div(p), pd.Series), pd.Series, Path)
