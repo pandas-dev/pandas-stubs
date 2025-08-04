@@ -2828,9 +2828,9 @@ def test_sum_get_add() -> None:
     summer = df.sum(axis=1)
     check(assert_type(summer, pd.Series), pd.Series)
 
-    check(assert_type(s + summer, pd.Series), pd.Series)  # type: ignore[assert-type]
-    check(assert_type(s + df["y"], pd.Series), pd.Series)  # type: ignore[assert-type]
-    check(assert_type(summer + summer, pd.Series), pd.Series)  # type: ignore[assert-type]
+    check(assert_type(s + summer, pd.Series), pd.Series)
+    check(assert_type(s + df["y"], pd.Series), pd.Series)
+    check(assert_type(summer + summer, pd.Series), pd.Series)
 
 
 def test_getset_untyped() -> None:

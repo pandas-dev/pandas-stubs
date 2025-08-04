@@ -1636,7 +1636,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __add__(self: Series[Never], other: Scalar | _ListLike | Series) -> Series: ...  # type: ignore[overload-overlap]
     @overload
-    def __add__(self, other: Series[Never]) -> Series: ...  # type: ignore[overload-overlap]
+    def __add__(self, other: Series[Never]) -> Series: ...
     @overload
     def __add__(
         self: Series[int], other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX]
@@ -1673,7 +1673,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[complex]: ...
     @overload
     def __add__(
-        self: Series[Timestamp], other: _nonseries_timestamp | Series[Timestamp]
+        self: Series[Timestamp], other: _nonseries_timestamp  # | Series[Timestamp]
     ) -> Never: ...
     @overload
     def __add__(
