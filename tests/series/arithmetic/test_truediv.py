@@ -7,7 +7,6 @@ from typing_extensions import assert_type
 
 from tests import (
     PD_LTE_23,
-    WINDOWS,
     check,
 )
 
@@ -168,12 +167,10 @@ def test_truediv_path(tmp_path: Path) -> None:
     fnames = pd.Series(["a.png", "b.gz", "c.txt"])
 
     if PD_LTE_23:
-        # Bug in 3.0 https://github.com/pandas-dev/pandas/issues/61940
+        # Bug in 3.0 https://github.com/pandas-dev/pandas/issues/61940 (pyarrow.lib.ArrowInvalid)
         check(assert_type(fnames / tmp_path, pd.Series), pd.Series, Path)
         check(assert_type(tmp_path / fnames, pd.Series), pd.Series, Path)
 
-    if PD_LTE_23 or not WINDOWS:
-        # pyarrow.lib.ArrowInvalid: Could not convert WindowsPath('...') with type WindowsPath: did not recognize Python value type when inferring an Arrow data type
         check(assert_type(fnames.truediv(tmp_path), pd.Series), pd.Series, Path)
         check(assert_type(fnames.div(tmp_path), pd.Series), pd.Series, Path)
 
