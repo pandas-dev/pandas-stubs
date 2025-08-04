@@ -144,7 +144,7 @@ def test_truediv_pd_series() -> None:
     check(assert_type(left.rdiv(c), pd.Series), pd.Series)
 
 
-def test_path_div(tmp_path: Path) -> None:
+def test_truediv_paths(tmp_path: Path) -> None:
     """Test pd.Series of paths / path object.
 
     Also GH 682."""
@@ -155,7 +155,8 @@ def test_path_div(tmp_path: Path) -> None:
     check(assert_type(folders.truediv(fpath), pd.Series), pd.Series, Path)
     check(assert_type(folders.div(fpath), pd.Series), pd.Series, Path)
 
-    check(assert_type(tmp_path / fpaths, pd.Series), pd.Series, Path)
+    # mypy thinks it's `Path`, in contrast to Series.__rtruediv__(self, other: Path) -> Series: ...
+    check(assert_type(tmp_path / fpaths, pd.Series), pd.Series, Path)  # type: ignore[assert-type]
     check(assert_type(fpaths.rtruediv(tmp_path), pd.Series), pd.Series, Path)
     check(assert_type(fpaths.rdiv(tmp_path), pd.Series), pd.Series, Path)
 
