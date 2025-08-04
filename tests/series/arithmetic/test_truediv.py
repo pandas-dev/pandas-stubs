@@ -7,6 +7,7 @@ from typing_extensions import assert_type
 
 from tests import (
     PD_LTE_23,
+    WINDOWS,
     check,
 )
 
@@ -143,27 +144,37 @@ def test_truediv_pd_series() -> None:
     check(assert_type(left.rdiv(c), pd.Series), pd.Series)
 
 
-def test_path_div() -> None:
-    # GH 682
-    folder = Path.cwd()
+def test_path_div(tmp_path: Path) -> None:
+    """Test pd.Series of paths / path object.
 
-    folders = pd.Series([folder, folder])
-    check(assert_type(folders / Path("a.png"), pd.Series), pd.Series, Path)
+    Also GH 682."""
+    fpath = Path("a.png")
+    folders, fpaths = pd.Series([tmp_path, tmp_path]), pd.Series([fpath, fpath])
+
+    check(assert_type(folders / fpath, pd.Series), pd.Series, Path)
+    check(assert_type(folders.truediv(fpath), pd.Series), pd.Series, Path)
+    check(assert_type(folders.div(fpath), pd.Series), pd.Series, Path)
+
+    check(assert_type(tmp_path / fpaths, pd.Series), pd.Series, Path)
+    check(assert_type(fpaths.rtruediv(tmp_path), pd.Series), pd.Series, Path)
+    check(assert_type(fpaths.rdiv(tmp_path), pd.Series), pd.Series, Path)
 
 
-def test_truediv_path() -> None:
+def test_truediv_path(tmp_path: Path) -> None:
     """Test pd.Series / path object.
 
     Also GH 682."""
-    left, p = pd.Series(["a.png", "b.gz", "c.txt"]), Path.cwd()
+    fnames = pd.Series(["a.png", "b.gz", "c.txt"])
 
-    check(assert_type(left / p, pd.Series), pd.Series, Path)
     if PD_LTE_23:
         # Bug in 3.0 https://github.com/pandas-dev/pandas/issues/61940
-        check(assert_type(p / left, pd.Series), pd.Series, Path)
+        check(assert_type(fnames / tmp_path, pd.Series), pd.Series, Path)
+        check(assert_type(tmp_path / fnames, pd.Series), pd.Series, Path)
 
-    check(assert_type(left.truediv(p), pd.Series), pd.Series, Path)
-    check(assert_type(left.div(p), pd.Series), pd.Series, Path)
+    if PD_LTE_23 or not WINDOWS:
+        # pyarrow.lib.ArrowInvalid: Could not convert WindowsPath('...') with type WindowsPath: did not recognize Python value type when inferring an Arrow data type
+        check(assert_type(fnames.truediv(tmp_path), pd.Series), pd.Series, Path)
+        check(assert_type(fnames.div(tmp_path), pd.Series), pd.Series, Path)
 
-    check(assert_type(left.rtruediv(p), pd.Series), pd.Series, Path)
-    check(assert_type(left.rdiv(p), pd.Series), pd.Series, Path)
+        check(assert_type(fnames.rtruediv(tmp_path), pd.Series), pd.Series, Path)
+        check(assert_type(fnames.rdiv(tmp_path), pd.Series), pd.Series, Path)
