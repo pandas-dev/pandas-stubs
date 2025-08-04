@@ -356,12 +356,12 @@ def test_series_overloads_partition():
         assert_type(s.str.partition(sep=";", expand=True), pd.DataFrame), pd.DataFrame
     )
     check(
-        assert_type(s.str.partition(sep=";", expand=False), "pd.Series[type[object]]"),
+        assert_type(s.str.partition(sep=";", expand=False), pd.Series),
         pd.Series,
         object,
     )
     check(
-        assert_type(s.str.partition(expand=False), "pd.Series[type[object]]"),
+        assert_type(s.str.partition(expand=False), pd.Series),
         pd.Series,
         object,
     )
@@ -371,15 +371,11 @@ def test_series_overloads_partition():
         assert_type(s.str.rpartition(sep=";", expand=True), pd.DataFrame), pd.DataFrame
     )
     check(
-        assert_type(s.str.rpartition(sep=";", expand=False), "pd.Series[type[object]]"),
+        assert_type(s.str.rpartition(sep=";", expand=False), pd.Series),
         pd.Series,
         object,
     )
-    check(
-        assert_type(s.str.rpartition(expand=False), "pd.Series[type[object]]"),
-        pd.Series,
-        object,
-    )
+    check(assert_type(s.str.rpartition(expand=False), pd.Series), pd.Series, object)
 
 
 def test_index_overloads_partition():
@@ -400,7 +396,7 @@ def test_index_overloads_partition():
         pd.MultiIndex,
     )
     check(
-        assert_type(idx.str.partition(sep=";", expand=False), "pd.Index[type[object]]"),
+        assert_type(idx.str.partition(sep=";", expand=False), pd.Index),
         pd.Index,
         object,
     )
@@ -411,9 +407,7 @@ def test_index_overloads_partition():
         pd.MultiIndex,
     )
     check(
-        assert_type(
-            idx.str.rpartition(sep=";", expand=False), "pd.Index[type[object]]"
-        ),
+        assert_type(idx.str.rpartition(sep=";", expand=False), pd.Index),
         pd.Index,
         object,
     )
@@ -490,16 +484,12 @@ def test_series_overloads_extract():
         assert_type(s.str.extract(r"[ab](\d)", expand=True), pd.DataFrame), pd.DataFrame
     )
     check(
-        assert_type(
-            s.str.extract(r"[ab](\d)", expand=False), "pd.Series[type[object]]"
-        ),
+        assert_type(s.str.extract(r"[ab](\d)", expand=False), pd.Series),
         pd.Series,
         object,
     )
     check(
-        assert_type(
-            s.str.extract(r"[ab](\d)", re.IGNORECASE, False), "pd.Series[type[object]]"
-        ),
+        assert_type(s.str.extract(r"[ab](\d)", re.IGNORECASE, False), pd.Series),
         pd.Series,
         object,
     )
@@ -513,16 +503,12 @@ def test_index_overloads_extract():
         pd.DataFrame,
     )
     check(
-        assert_type(
-            idx.str.extract(r"[ab](\d)", expand=False), "pd.Index[type[object]]"
-        ),
+        assert_type(idx.str.extract(r"[ab](\d)", expand=False), pd.Index),
         pd.Index,
         object,
     )
     check(
-        assert_type(
-            idx.str.extract(r"[ab](\d)", re.IGNORECASE, False), "pd.Index[type[object]]"
-        ),
+        assert_type(idx.str.extract(r"[ab](\d)", re.IGNORECASE, False), pd.Index),
         pd.Index,
         object,
     )

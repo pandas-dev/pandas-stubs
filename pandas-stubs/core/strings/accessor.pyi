@@ -47,7 +47,7 @@ _T_BYTES = TypeVar("_T_BYTES", bound=Series[bytes] | Index[bytes])
 # Used for the result of str.decode
 _T_STR = TypeVar("_T_STR", bound=Series[str] | Index[str])
 # Used for the result of str.partition
-_T_OBJECT = TypeVar("_T_OBJECT", bound=Series[type[object]] | Index[type[object]])
+_T_OBJECT = TypeVar("_T_OBJECT", bound=Series | Index)
 
 class StringMethods(
     NoNewAttributesMixin,
