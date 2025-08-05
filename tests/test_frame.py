@@ -3488,7 +3488,6 @@ def test_groupby_apply() -> None:
     df = pd.DataFrame({"col1": [1, 2, 3], "col2": [4, 5, 6]})
 
     def sum_mean(x: pd.DataFrame) -> float:
-        x.sum()
         return x.sum().mean()
 
     with pytest_warns_bounded(

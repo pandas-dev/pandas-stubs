@@ -104,6 +104,7 @@ from pandas._libs.tslibs.nattype import NaTType
 from pandas._libs.tslibs.offsets import DateOffset
 from pandas._typing import (
     S1,
+    S1C,
     S2,
     AggFuncTypeBase,
     AggFuncTypeDictFrame,
@@ -186,29 +187,26 @@ from pandas.core.dtypes.dtypes import CategoricalDtype
 
 from pandas.plotting import PlotAccessor
 
-_T_FLOAT = TypeVar("_T_FLOAT", bound=float)
 _T_COMPLEX = TypeVar("_T_COMPLEX", bound=complex)
 
-_scalar_timestamp: TypeAlias = datetime | np.datetime64 | Timestamp
+_scalar_timestamp: TypeAlias = date | datetime | np.datetime64
 _vector_timestamp: TypeAlias = (
-    Sequence[datetime]
+    Sequence[date]
+    | Sequence[datetime]
     | Sequence[np.datetime64]
-    | Sequence[Timestamp]
     | np.typing.NDArray[np.datetime64]
     | DatetimeIndex
 )
 _nonseries_timestamp: TypeAlias = _scalar_timestamp | _vector_timestamp
 
-_scalar_timedelta: TypeAlias = timedelta | np.timedelta64 | BaseOffset | Timedelta
+_scalar_timedelta: TypeAlias = timedelta | np.timedelta64 | BaseOffset
 _vector_timedelta: TypeAlias = (
     Sequence[timedelta]
     | Sequence[np.timedelta64]
-    | Sequence[Timedelta]
     | np.typing.NDArray[np.timedelta64]
     | TimedeltaIndex
 )
 _nonseries_timedelta: TypeAlias = _scalar_timedelta | _vector_timedelta
-_T_TIMESTAMP = TypeVar("_T_TIMESTAMP", bound=Timestamp)
 
 class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     # get item
@@ -1634,9 +1632,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
     # just failed to generate these so I couldn't match
     # them up.
     @overload
-    def __add__(self: Series[Never], other: Scalar | _ListLike | Series) -> Series: ...  # type: ignore[overload-overlap]
+    def __add__(self: Series[Never], other: Scalar | _ListLike | Series) -> Series: ...
     @overload
-    def __add__(self, other: Series[Never]) -> Series: ...
+    def __add__(self: Series[S1C], other: Series[Never]) -> Series: ...
     @overload
     def __add__(
         self: Series[int], other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX]
@@ -1671,10 +1669,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
             | np_ndarray_complex
         ),
     ) -> Series[complex]: ...
-    @overload
-    def __add__(
-        self: Series[Timestamp], other: _nonseries_timestamp  # | Series[Timestamp]
-    ) -> Never: ...
+    # @overload
+    # def __add__(
+    #     self: Series[Timestamp], other: _nonseries_timestamp  # | Series[Timestamp]
+    # ) -> Never: ...
     @overload
     def __add__(
         self: Series[Timestamp],
@@ -1687,7 +1685,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self: Series[Timedelta], other: _nonseries_timestamp | Series[Timestamp]
     ) -> Series[Timestamp]: ...
     @overload
-    def __add__(self, other: S1 | Series[S1]) -> Self: ...
+    def __add__(self: Series[S1C], other: S1C | Series[S1C]) -> Series[S1C]: ...
     @overload
     def add(
         self: Series[Never],
@@ -1937,7 +1935,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __mul__(self: Series[Never], other: num | _ListLike | Series) -> Series: ...
     @overload
-    def __mul__(self, other: Series[Never]) -> Series: ...  # type: ignore[overload-overlap]
+    def __mul__(self: Series[S1C], other: Series[Never]) -> Series: ...  # type: ignore[overload-overlap]
     @overload
     def __mul__(
         self: Series[int], other: _T_COMPLEX | Series[_T_COMPLEX]
@@ -1955,7 +1953,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Never: ...
     @overload
     def __mul__(
-        self: Series[_T_FLOAT], other: _nonseries_timedelta | TimedeltaSeries
+        self, other: timedelta | Timedelta | TimedeltaSeries | np.timedelta64
     ) -> TimedeltaSeries: ...
     @overload
     def __mul__(self, other: num | _ListLike | Series) -> Series: ...
@@ -2014,7 +2012,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[Timestamp]: ...
     @overload
     def __sub__(
-        self: Series[Timestamp], other: _nonseries_timestamp | Series[_T_TIMESTAMP]
+        self: Series[Timestamp], other: _nonseries_timestamp | Series[Timestamp]
     ) -> TimedeltaSeries: ...
     @overload
     def __sub__(self, other: S1 | Self) -> Self: ...
