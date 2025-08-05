@@ -1669,10 +1669,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
             | np_ndarray_complex
         ),
     ) -> Series[complex]: ...
-    # @overload
-    # def __add__(
-    #     self: Series[Timestamp], other: _nonseries_timestamp  # | Series[Timestamp]
-    # ) -> Never: ...
     @overload
     def __add__(
         self: Series[Timestamp],
@@ -2007,6 +2003,42 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __sub__(self: Series[Never], other: num | _ListLike | Series) -> Series: ...
     @overload
+    def __sub__(self: Series[S1C], other: Series[Never]) -> Series: ...
+    @overload
+    def __sub__(
+        self: Series[int], other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX]
+    ) -> Series[_T_COMPLEX]: ...
+    @overload
+    def __sub__(self: Series[int], other: np_ndarray_anyint) -> Series[int]: ...
+    @overload
+    def __sub__(self: Series[int], other: np_ndarray_float) -> Series[float]: ...
+    @overload
+    def __sub__(self: Series[int], other: np_ndarray_complex) -> Series[complex]: ...
+    @overload
+    def __sub__(
+        self: Series[float],
+        other: int | Sequence[int] | np_ndarray_anyint | np_ndarray_float | Series[int],
+    ) -> Series[float]: ...
+    @overload
+    def __sub__(
+        self: Series[float],
+        other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX],
+    ) -> Series[_T_COMPLEX]: ...
+    @overload
+    def __sub__(self: Series[float], other: np_ndarray_complex) -> Series[complex]: ...
+    @overload
+    def __sub__(
+        self: Series[complex],
+        other: (
+            _T_COMPLEX
+            | Sequence[_T_COMPLEX]
+            | Series[_T_COMPLEX]
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | np_ndarray_complex
+        ),
+    ) -> Series[complex]: ...
+    @overload
     def __sub__(
         self: Series[Timestamp], other: _nonseries_timedelta | TimedeltaSeries
     ) -> Series[Timestamp]: ...
@@ -2014,10 +2046,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __sub__(
         self: Series[Timestamp], other: _nonseries_timestamp | Series[Timestamp]
     ) -> TimedeltaSeries: ...
-    @overload
-    def __sub__(self, other: S1 | Self) -> Self: ...
-    @overload
-    def __sub__(self, other: num | _ListLike | Series) -> Series: ...
     @overload
     def __truediv__(
         self: Series[Never], other: Scalar | _ListLike | Series
