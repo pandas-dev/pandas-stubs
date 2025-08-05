@@ -49,8 +49,7 @@ ssum = s1 + s2
 reveal_type(ssum)
 ```
 
-The above code (without the `reveal_type()` statements) will get a `Never`
-on the computation of `ssum` because it is
+The above code (without the `reveal_type()` statements) will get an error on the computation of `ssum` because it is
 inappropriate to add two series containing `Timestamp` values.  The types will be
 revealed by `mypy` as follows:
 
@@ -58,8 +57,8 @@ revealed by `mypy` as follows:
 ttest.py:5: note: Revealed type is "pandas.core.series.Series[pandas._libs.tslibs.timestamps.Timestamp]"
 ttest.py:7: note: Revealed type is "pandas.core.series.Series[pandas._libs.tslibs.timestamps.Timestamp]"
 ttest.py:9: note: Revealed type is "pandas.core.series.TimedeltaSeries"
-ttest.py:10: error: Need type annotation for "ssum"  [var-annotated]
-ttest.py:11: note: Revealed type is "Never"
+ttest.py:10: error: Unsupported operand types for + ("Series[Timestamp]" and "Series[Timestamp]")  [operator]
+ttest.py:11: note: Revealed type is "pandas.core.series.Series[pandas._libs.tslibs.timestamps.Timestamp]"
 ```
 
 The type `Series[Timestamp]` is the result of creating a series from `pd.to_datetime()`, while
