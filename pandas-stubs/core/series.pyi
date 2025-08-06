@@ -188,6 +188,7 @@ from pandas.core.dtypes.dtypes import CategoricalDtype
 from pandas.plotting import PlotAccessor
 
 _T_COMPLEX = TypeVar("_T_COMPLEX", bound=complex)
+_T_TIMESTAMP = TypeVar("_T_TIMESTAMP", bound=Timestamp)
 
 _scalar_timestamp: TypeAlias = date | datetime | np.datetime64
 _vector_timestamp: TypeAlias = (
@@ -2051,7 +2052,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[Timestamp]: ...
     @overload
     def __sub__(
-        self: Series[Timestamp], other: _nonseries_timestamp | Series[Timestamp]
+        self: Series[Timestamp], other: _nonseries_timestamp | Series[_T_TIMESTAMP]
     ) -> TimedeltaSeries: ...
     @overload
     def __truediv__(
@@ -2917,7 +2918,7 @@ class TimedeltaSeries(Series[Timedelta]):
         numeric_only: _bool = ...,
         **kwargs: Any,
     ) -> Timedelta: ...
-    def median(  # mypy: ignore[override]
+    def median(  # type: ignore[override]
         self,
         axis: AxisIndex | None = ...,
         skipna: _bool = ...,

@@ -838,6 +838,7 @@ SeriesDTypeClosure: TypeAlias = (
     | list[str]
 )
 S1C = TypeVar("S1C", bound=SeriesDTypeClosure, default=Any)
+S2C = TypeVar("S2C", bound=SeriesDTypeClosure)
 
 SeriesDType: TypeAlias = (
     SeriesDTypeClosure
