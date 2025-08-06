@@ -1269,6 +1269,9 @@ def test_timestamp_cmp() -> None:
     c_unknown_index = pd.DataFrame({"a": [1]}, index=c_datetimeindex).index
     c_np_ndarray_dt64 = np_dt64_arr
     c_series_dt64 = pd.Series([1, 2, 3], dtype="datetime64[ns]")
+    check(
+        assert_type(c_series_dt64, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp
+    )
     c_series_timestamp = pd.Series(pd.DatetimeIndex(["2000-1-1"]))
     check(
         assert_type(c_series_timestamp, "pd.Series[pd.Timestamp]"),
