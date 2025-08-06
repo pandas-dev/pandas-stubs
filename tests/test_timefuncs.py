@@ -609,6 +609,7 @@ def test_series_dt_accessors() -> None:
 
     s4 = pd.Series([pd.Timestamp("2024-01-01"), pd.Timestamp("2024-01-02")])
 
+    check(assert_type(s4, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
     check(assert_type(s4.dt.unit, TimeUnit), str)
     check(
         assert_type(s4.dt.as_unit("s"), "pd.Series[pd.Timestamp]"),
