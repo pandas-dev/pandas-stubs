@@ -1435,3 +1435,21 @@ def test_multiindex_range() -> None:
         [range(3), pd.Series([2, 3, 5])],
     )
     check(assert_type(midx_mixed_types, pd.MultiIndex), pd.MultiIndex)
+
+
+def test_index_naming() -> None:
+    """
+    Test index names type both for the getter and the setter.
+    The names of an index should be settable with a sequence (not str) and names
+    property is a list[str | None] (FrozenList).
+    """
+    df = pd.DataFrame({"a": ["a", "b", "c"], "i": [10, 11, 12]})
+
+    df.index.names = ["idx"]
+    check(assert_type(df.index.names, list[str | None]), list)
+    df.index.names = ("idx2",)
+    check(assert_type(df.index.names, list[str | None]), list)
+    df.index.names = [None]
+    check(assert_type(df.index.names, list[str | None]), list)
+    df.index.names = (None,)
+    check(assert_type(df.index.names, list[str | None]), list)
