@@ -63,6 +63,10 @@ from tests.extension.decimal.array import DecimalDtype
 from pandas.io.formats.format import EngFormatter
 from pandas.tseries.offsets import (
     BaseOffset,
+    BDay,
+    BQuarterEnd,
+    MonthEnd,
+    Week,
     YearEnd,
 )
 
@@ -448,6 +452,7 @@ def test_types_sort_values_with_key() -> None:
 
 
 def test_types_shift() -> None:
+    """Test shift operator on series with different arguments."""
     s = pd.Series([1, 2, 3], index=pd.date_range("2020", periods=3))
     check(assert_type(s.shift(), pd.Series), pd.Series, np.floating)
     check(
@@ -457,6 +462,11 @@ def test_types_shift() -> None:
     )
     check(assert_type(s.shift(-1, fill_value=0), pd.Series), pd.Series, np.integer)
     check(assert_type(s.shift(freq="1D"), pd.Series), pd.Series, np.integer)
+    check(assert_type(s.shift(freq=BDay(1)), pd.Series), pd.Series, np.integer)
+    check(assert_type(s.shift(freq=BQuarterEnd(5)), pd.Series), pd.Series, np.integer)
+    check(assert_type(s.shift(freq=MonthEnd(3)), pd.Series), pd.Series, np.integer)
+    check(assert_type(s.shift(freq=Week(4)), pd.Series), pd.Series, np.integer)
+    check(assert_type(s.shift(freq=YearEnd(2)), pd.Series), pd.Series, np.integer)
 
 
 def test_series_pct_change() -> None:
@@ -469,11 +479,6 @@ def test_series_pct_change() -> None:
     )
     check(
         assert_type(s.pct_change(periods=-1), "pd.Series[float]"),
-        pd.Series,
-        np.floating,
-    )
-    check(
-        assert_type(s.pct_change(fill_value=0), "pd.Series[float]"),
         pd.Series,
         np.floating,
     )
@@ -823,9 +828,7 @@ def test_types_element_wise_arithmetic() -> None:
     # check(assert_type(s.mul(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.mul(s2, fill_value=0), pd.Series), pd.Series, np.integer)
 
-    # TODO these two below should type pd.Series[float]
-    # check(assert_type(s / s2, "pd.Series[float]"), pd.Series, np.float64)
-    check(assert_type(s / s2, pd.Series), pd.Series, np.float64)
+    check(assert_type(s / s2, "pd.Series[float]"), pd.Series, np.float64)
     check(
         assert_type(s.div(s2, fill_value=0), "pd.Series[float]"), pd.Series, np.float64
     )
@@ -3792,18 +3795,6 @@ def test_series_bool_fails() -> None:
             assert False
     except ValueError:
         pass
-
-
-def test_path_div() -> None:
-    # GH 682
-    folder = Path.cwd()
-    files = pd.Series(["a.png", "b.png"])
-    if PD_LTE_23:
-        # Bug in 3.0 https://github.com/pandas-dev/pandas/issues/61940
-        check(assert_type(folder / files, pd.Series), pd.Series, Path)
-
-    folders = pd.Series([folder, folder])
-    check(assert_type(folders / Path("a.png"), pd.Series), pd.Series, Path)
 
 
 def test_series_dict() -> None:

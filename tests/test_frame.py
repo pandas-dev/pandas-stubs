@@ -60,6 +60,13 @@ from tests import (
 from pandas.io.formats.format import EngFormatter
 from pandas.io.formats.style import Styler
 from pandas.io.parsers import TextFileReader
+from pandas.tseries.offsets import (
+    BDay,
+    BQuarterEnd,
+    MonthEnd,
+    Week,
+    YearEnd,
+)
 
 if TYPE_CHECKING:
     from pandas.core.frame import _PandasNamedTuple
@@ -603,6 +610,11 @@ def test_types_shift() -> None:
     check(assert_type(df.shift(1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.shift(-1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.shift(freq="1D"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.shift(freq=BDay(1)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.shift(freq=BQuarterEnd(5)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.shift(freq=MonthEnd(3)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.shift(freq=Week(4)), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.shift(freq=YearEnd(2)), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_rank() -> None:
@@ -2523,8 +2535,8 @@ def test_types_regressions() -> None:
     ts1 = pd.concat([s1, s2], axis=0)
     ts2 = pd.concat([s1, s2])
 
-    check(assert_type(ts1, pd.Series), pd.Series)
-    check(assert_type(ts2, pd.Series), pd.Series)
+    check(assert_type(ts1, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(ts2, "pd.Series[int]"), pd.Series, np.integer)
 
     # https://github.com/microsoft/python-type-stubs/issues/110
     check(assert_type(pd.Timestamp("2021-01-01"), pd.Timestamp), datetime.date)

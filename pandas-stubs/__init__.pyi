@@ -119,7 +119,6 @@ from pandas.io.api import (
     read_stata as read_stata,
     read_table as read_table,
     read_xml as read_xml,
-    to_pickle as to_pickle,
 )
 from pandas.io.json._normalize import json_normalize as json_normalize
 from pandas.tseries import offsets as offsets
