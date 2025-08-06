@@ -824,7 +824,7 @@ MaskType: TypeAlias = Series[bool] | np_ndarray_bool | list[bool]
 
 # Scratch types for generics
 
-# Closure upon add, sub, mul
+# Closure upon add and mul
 SeriesDTypeClosure: TypeAlias = (
     str
     | bytes

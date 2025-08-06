@@ -319,7 +319,7 @@ class TimedeltaProperties(
 ):
     @property
     def unit(self) -> TimeUnit: ...
-    def as_unit(self, unit: TimeUnit) -> TimedeltaSeries: ...
+    def as_unit(self, unit: TimeUnit) -> Series[Timedelta]: ...
 
 _PeriodDTReturnTypes = TypeVar(
     "_PeriodDTReturnTypes", bound=Series[Timestamp] | DatetimeIndex
@@ -437,6 +437,10 @@ class _dtDescriptor(CombinedDatetimelikeProperties, Generic[S1]):
     def __get__(
         self, instance: Series[Timestamp], owner: Any
     ) -> TimestampProperties: ...
+    @overload
+    def __get__(
+        self, instance: Series[Timedelta], owner: Any
+    ) -> TimedeltaProperties: ...
     @overload
     def __get__(
         self, instance: Series[S1], owner: Any

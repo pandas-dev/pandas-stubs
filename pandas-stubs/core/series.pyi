@@ -2831,7 +2831,7 @@ class TimedeltaSeries(Series[Timedelta]):
         self, other: num | Sequence[num] | Series[int] | Series[float]
     ) -> TimedeltaSeries: ...
     def unique(self) -> TimedeltaArray: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __sub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __sub__(  # type: ignore[override]
         self,
         other: (
             timedelta | Timedelta | TimedeltaSeries | TimedeltaIndex | np.timedelta64
@@ -2889,7 +2889,9 @@ class TimedeltaSeries(Series[Timedelta]):
         ),
     ) -> Series[int]: ...
     @property
-    def dt(self) -> TimedeltaProperties: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def dt(
+        self,
+    ) -> TimedeltaProperties: ...  # pyright: ignore[reportIncompatibleMethodOverride]
     def mean(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         axis: AxisIndex | None = ...,
@@ -2934,7 +2936,7 @@ class TimedeltaSeries(Series[Timedelta]):
 class PeriodSeries(Series[Period]):
     @property
     def dt(self) -> PeriodProperties: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __sub__(self, other: PeriodSeries) -> OffsetSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __sub__(self, other: PeriodSeries) -> OffsetSeries: ...  # type: ignore[override]
     def diff(self, periods: int = ...) -> OffsetSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def cumprod(
         self,

@@ -584,10 +584,26 @@ def test_series_dt_accessors() -> None:
         check(assert_type(s2.dt.to_pytimedelta(), np.ndarray), np.ndarray)
     check(assert_type(s2.dt.total_seconds(), "pd.Series[float]"), pd.Series, float)
     check(assert_type(s2.dt.unit, TimeUnit), str)
-    check(assert_type(s2.dt.as_unit("s"), "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    check(assert_type(s2.dt.as_unit("ms"), "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    check(assert_type(s2.dt.as_unit("us"), "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    check(assert_type(s2.dt.as_unit("ns"), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(s2.dt.as_unit("s"), "pd.Series[pd.Timedelta]"),
+        pd.Series,
+        pd.Timedelta,
+    )
+    check(
+        assert_type(s2.dt.as_unit("ms"), "pd.Series[pd.Timedelta]"),
+        pd.Series,
+        pd.Timedelta,
+    )
+    check(
+        assert_type(s2.dt.as_unit("us"), "pd.Series[pd.Timedelta]"),
+        pd.Series,
+        pd.Timedelta,
+    )
+    check(
+        assert_type(s2.dt.as_unit("ns"), "pd.Series[pd.Timedelta]"),
+        pd.Series,
+        pd.Timedelta,
+    )
 
     # Checks for general Series other than Series[Timestamp] and TimedeltaSeries
 
@@ -622,22 +638,22 @@ def test_series_dt_accessors() -> None:
 
     check(assert_type(s5.dt.unit, TimeUnit), str)
     check(
-        assert_type(s5.dt.as_unit("s"), "pd.Series[pd.Timedelta]"),  # type: ignore[assert-type]
+        assert_type(s5.dt.as_unit("s"), "pd.Series[pd.Timedelta]"),
         pd.Series,
         pd.Timedelta,
     )
     check(
-        assert_type(s5.dt.as_unit("ms"), "pd.Series[pd.Timedelta]"),  # type: ignore[assert-type]
+        assert_type(s5.dt.as_unit("ms"), "pd.Series[pd.Timedelta]"),
         pd.Series,
         pd.Timedelta,
     )
     check(
-        assert_type(s5.dt.as_unit("us"), "pd.Series[pd.Timedelta]"),  # type: ignore[assert-type]
+        assert_type(s5.dt.as_unit("us"), "pd.Series[pd.Timedelta]"),
         pd.Series,
         pd.Timedelta,
     )
     check(
-        assert_type(s5.dt.as_unit("ns"), "pd.Series[pd.Timedelta]"),  # type: ignore[assert-type]
+        assert_type(s5.dt.as_unit("ns"), "pd.Series[pd.Timedelta]"),
         pd.Series,
         pd.Timedelta,
     )
