@@ -2889,9 +2889,9 @@ class TimedeltaSeries(Series[Timedelta]):
         ),
     ) -> Series[int]: ...
     @property
-    def dt(
+    def dt(  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore
         self,
-    ) -> TimedeltaProperties: ...  # pyright: ignore[reportIncompatibleMethodOverride]
+    ) -> TimedeltaProperties: ...
     def mean(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         axis: AxisIndex | None = ...,
