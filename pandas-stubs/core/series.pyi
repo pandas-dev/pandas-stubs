@@ -1657,65 +1657,65 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def add(
         self: Series[Never],
         other: Scalar | _ListLike | Series,
-        level: Level | None = ...,
+        level: Level | None = None,
         fill_value: float | None = None,
-        axis: int = ...,
+        axis: int = 0,
     ) -> Series: ...
     @overload
     def add(
         self: Series[int],
         other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX],
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: int = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Series[_T_COMPLEX]: ...
     @overload
     def add(
         self: Series[int],
         other: np_ndarray_anyint,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: int = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Series[int]: ...
     @overload
     def add(
         self: Series[int],
         other: np_ndarray_float,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: int = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Series[float]: ...
     @overload
     def add(
         self: Series[int],
         other: np_ndarray_complex,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: int = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Series[complex]: ...
     @overload
     def add(
         self: Series[float],
         other: int | Sequence[int] | np_ndarray_anyint | np_ndarray_float | Series[int],
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: int = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Series[float]: ...
     @overload
     def add(
         self: Series[float],
         other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX],
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: int = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Series[_T_COMPLEX]: ...
     @overload
     def add(
         self: Series[float],
         other: np_ndarray_complex,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: int = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Series[complex]: ...
     @overload
     def add(
@@ -1727,17 +1727,17 @@ class Series(IndexOpsMixin[S1], NDFrame):
             | np_ndarray_complex
             | Series[_T_COMPLEX]
         ),
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: int = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Series[complex]: ...
     @overload
     def add(
         self,
         other: S1 | Series[S1],
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: int = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Self: ...
     @overload
     def __radd__(self: Series[Never], other: Scalar | _ListLike) -> Series: ...
@@ -1778,65 +1778,65 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def radd(
         self: Series[Never],
         other: Scalar | _ListLike | Series,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Series: ...
     @overload
     def radd(
         self: Series[int],
         other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX],
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: int = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Series[_T_COMPLEX]: ...
     @overload
     def radd(
         self: Series[int],
         other: np_ndarray_anyint,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: int = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Series[int]: ...
     @overload
     def radd(
         self: Series[int],
         other: np_ndarray_float,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: int = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Series[float]: ...
     @overload
     def radd(
         self: Series[int],
         other: np_ndarray_complex,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: int = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Series[complex]: ...
     @overload
     def radd(
         self: Series[float],
         other: int | Sequence[int] | np_ndarray_anyint | np_ndarray_float | Series[int],
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: int = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Series[float]: ...
     @overload
     def radd(
         self: Series[float],
         other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX],
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: int = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Series[_T_COMPLEX]: ...
     @overload
     def radd(
         self: Series[float],
         other: np_ndarray_complex,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: int = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Series[complex]: ...
     @overload
     def radd(
@@ -1848,17 +1848,17 @@ class Series(IndexOpsMixin[S1], NDFrame):
             | np_ndarray_complex
             | Series[_T_COMPLEX]
         ),
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: int = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Series[complex]: ...
     @overload
     def radd(
         self,
         other: S1 | Series[S1],
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Self: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
@@ -1996,65 +1996,65 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def truediv(
         self: Series[Never],
         other: Scalar | _ListLike | Series,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
     ) -> Series: ...
     @overload
     def truediv(
         self,
         other: Series[Never],
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
     ) -> Series: ...
     @overload
     def truediv(
         self: Series[int],
         other: int | Sequence[int] | np_ndarray_anyint | np_ndarray_float | Series[int],
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
     ) -> Series[float]: ...
     @overload
     def truediv(
         self: Series[int],
         other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX],
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
     ) -> Series[_T_COMPLEX]: ...
     @overload
     def truediv(
         self: Series[int],
         other: np_ndarray_complex,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
     ) -> Series[complex]: ...
     @overload
     def truediv(
         self: Series[float],
         other: int | Sequence[int] | np_ndarray_anyint | np_ndarray_float | Series[int],
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
     ) -> Series[float]: ...
     @overload
     def truediv(
         self: Series[float],
         other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX],
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
     ) -> Series[_T_COMPLEX]: ...
     @overload
     def truediv(
         self: Series[float],
         other: np_ndarray_complex,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
     ) -> Series[complex]: ...
     @overload
     def truediv(
@@ -2067,17 +2067,17 @@ class Series(IndexOpsMixin[S1], NDFrame):
             | np_ndarray_complex
             | Series[_T_COMPLEX]
         ),
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
     ) -> Series[complex]: ...
     @overload
     def truediv(
         self,
         other: Path,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
     ) -> Series: ...
     div = truediv
     @overload
@@ -2125,57 +2125,57 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def rtruediv(
         self: Series[Never],
         other: Scalar | _ListLike | Series,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
     ) -> Series: ...
     @overload
     def rtruediv(
         self: Series[int],
         other: int | Sequence[int] | np_ndarray_anyint | np_ndarray_float | Series[int],
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
     ) -> Series[float]: ...
     @overload
     def rtruediv(
         self: Series[int],
         other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX],
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
     ) -> Series[_T_COMPLEX]: ...
     @overload
     def rtruediv(
         self: Series[int],
         other: np_ndarray_complex,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
     ) -> Series[complex]: ...
     @overload
     def rtruediv(
         self: Series[float],
         other: int | Sequence[int] | np_ndarray_anyint | np_ndarray_float | Series[int],
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
     ) -> Series[float]: ...
     @overload
     def rtruediv(
         self: Series[float],
         other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX],
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
     ) -> Series[_T_COMPLEX]: ...
     @overload
     def rtruediv(
         self: Series[float],
         other: np_ndarray_complex,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
     ) -> Series[complex]: ...
     @overload
     def rtruediv(
@@ -2188,17 +2188,17 @@ class Series(IndexOpsMixin[S1], NDFrame):
             | np_ndarray_complex
             | Series[_T_COMPLEX]
         ),
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
     ) -> Series[complex]: ...
     @overload
     def rtruediv(
         self,
         other: Path,
-        level: Level | None = ...,
-        fill_value: float | None = ...,
-        axis: AxisIndex = ...,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
     ) -> Series: ...
     rdiv = rtruediv
     # ignore needed for mypy as we want different results based on the arguments

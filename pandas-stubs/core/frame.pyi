@@ -1718,8 +1718,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def add(
         self,
         other: num | ListLike | DataFrame,
-        axis: Axis | None = ...,
-        level: Level | None = ...,
+        axis: Axis | None = "columns",
+        level: Level | None = None,
         fill_value: float | None = None,
     ) -> Self: ...
     @final
@@ -2168,8 +2168,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def radd(
         self,
         other,
-        axis: Axis = ...,
-        level: Level | None = ...,
+        axis: Axis = "columns",
+        level: Level | None = None,
         fill_value: float | None = None,
     ) -> Self: ...
     @final
@@ -2304,8 +2304,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def rtruediv(
         self,
         other,
-        axis: Axis = ...,
-        level: Level | None = ...,
+        axis: Axis = "columns",
+        level: Level | None = None,
         fill_value: float | None = None,
     ) -> Self: ...
     @final
@@ -2497,8 +2497,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def truediv(
         self,
         other: num | ListLike | DataFrame,
-        axis: Axis | None = ...,
-        level: Level | None = ...,
+        axis: Axis | None = "columns",
+        level: Level | None = None,
         fill_value: float | None = None,
     ) -> Self: ...
     @final
