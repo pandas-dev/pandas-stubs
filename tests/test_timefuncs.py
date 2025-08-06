@@ -1430,7 +1430,7 @@ def test_timedelta64_and_arithmatic_operator() -> None:
     check(assert_type((s3 + td), "TimedeltaSeries"), pd.Series, pd.Timedelta)
     check(assert_type((s3 / td), "pd.Series[float]"), pd.Series, float)
     if TYPE_CHECKING_INVALID_USAGE:
-        r1 = s1 * td  # type: ignore[var-annotated]
+        r1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         r2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         r3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 

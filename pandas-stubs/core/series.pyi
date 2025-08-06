@@ -1945,11 +1945,18 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[Timestamp]: ...
     @overload
     def __mul__(
-        self: Series[Timestamp], other: _nonseries_timedelta | TimedeltaSeries
-    ) -> Never: ...
+        self: Series[int],
+        other: timedelta | Timedelta | TimedeltaSeries | np.timedelta64,
+    ) -> TimedeltaSeries: ...
     @overload
     def __mul__(
-        self, other: timedelta | Timedelta | TimedeltaSeries | np.timedelta64
+        self: Series[float],
+        other: timedelta | Timedelta | TimedeltaSeries | np.timedelta64,
+    ) -> TimedeltaSeries: ...
+    @overload
+    def __mul__(
+        self: Series[bool],
+        other: timedelta | Timedelta | TimedeltaSeries | np.timedelta64,
     ) -> TimedeltaSeries: ...
     @overload
     def __mul__(self, other: num | _ListLike | Series) -> Series: ...
