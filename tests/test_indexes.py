@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Hashable
 import datetime as dt
 from typing import (
     TYPE_CHECKING,
@@ -1439,15 +1440,17 @@ def test_index_naming() -> None:
     """
     Test index names type both for the getter and the setter.
     The names of an index should be settable with a sequence (not str) and names
-    property is a list[str | None] (FrozenList).
+    property is a list[Hashable | None] (FrozenList).
     """
     df = pd.DataFrame({"a": ["a", "b", "c"], "i": [10, 11, 12]})
 
     df.index.names = ["idx"]
-    check(assert_type(df.index.names, list[str | None]), list)
+    check(assert_type(df.index.names, list[Hashable | None]), list)
+    df.index.names = [3]
+    check(assert_type(df.index.names, list[Hashable | None]), list)
     df.index.names = ("idx2",)
-    check(assert_type(df.index.names, list[str | None]), list)
+    check(assert_type(df.index.names, list[Hashable | None]), list)
     df.index.names = [None]
-    check(assert_type(df.index.names, list[str | None]), list)
+    check(assert_type(df.index.names, list[Hashable | None]), list)
     df.index.names = (None,)
-    check(assert_type(df.index.names, list[str | None]), list)
+    check(assert_type(df.index.names, list[Hashable | None]), list)
