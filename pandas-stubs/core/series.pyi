@@ -2521,14 +2521,24 @@ class Series(IndexOpsMixin[S1], NDFrame):
         numeric_only: _bool = ...,
         **kwargs: Any,
     ) -> float: ...
+    @overload
     def median(
-        self,
+        self: Series[float],
         axis: AxisIndex | None = ...,
         skipna: _bool = ...,
         level: None = ...,
         numeric_only: _bool = ...,
         **kwargs: Any,
-    ) -> S1: ...
+    ) -> float: ...
+    @overload
+    def median(
+        self: Series[Timestamp],
+        axis: AxisIndex | None = ...,
+        skipna: _bool = ...,
+        level: None = ...,
+        numeric_only: _bool = ...,
+        **kwargs: Any,
+    ) -> Timestamp: ...
     def min(
         self,
         axis: AxisIndex | None = ...,
@@ -2907,7 +2917,7 @@ class TimedeltaSeries(Series[Timedelta]):
         numeric_only: _bool = ...,
         **kwargs: Any,
     ) -> Timedelta: ...
-    def median(
+    def median(  # mypy: ignore[override]
         self,
         axis: AxisIndex | None = ...,
         skipna: _bool = ...,
