@@ -14,6 +14,7 @@ from typing import (
 )
 
 import numpy as np
+from functools import partial
 import pandas as pd
 from pandas import (
     DataFrame,
@@ -304,23 +305,23 @@ def test_sas_bdat() -> None:
     path = pathlib.Path(CWD, "data", "airline.sas7bdat")
     check(assert_type(read_sas(path), DataFrame), DataFrame)
     with check(
-        assert_type(read_sas(path, iterator=True), Union[SAS7BDATReader, XportReader]),
-        SAS7BDATReader,
+            assert_type(read_sas(path, iterator=True), Union[SAS7BDATReader, XportReader]),
+            SAS7BDATReader,
     ):
         pass
     with check(
-        assert_type(read_sas(path, iterator=True, format="sas7bdat"), SAS7BDATReader),
-        SAS7BDATReader,
+            assert_type(read_sas(path, iterator=True, format="sas7bdat"), SAS7BDATReader),
+            SAS7BDATReader,
     ):
         pass
     with check(
-        assert_type(read_sas(path, chunksize=1), Union[SAS7BDATReader, XportReader]),
-        SAS7BDATReader,
+            assert_type(read_sas(path, chunksize=1), Union[SAS7BDATReader, XportReader]),
+            SAS7BDATReader,
     ):
         pass
     with check(
-        assert_type(read_sas(path, chunksize=1, format="sas7bdat"), SAS7BDATReader),
-        SAS7BDATReader,
+            assert_type(read_sas(path, chunksize=1, format="sas7bdat"), SAS7BDATReader),
+            SAS7BDATReader,
     ):
         pass
 
@@ -329,23 +330,23 @@ def test_sas_xport() -> None:
     path = pathlib.Path(CWD, "data", "SSHSV1_A.xpt")
     check(assert_type(read_sas(path), DataFrame), DataFrame)
     with check(
-        assert_type(read_sas(path, iterator=True), Union[SAS7BDATReader, XportReader]),
-        XportReader,
+            assert_type(read_sas(path, iterator=True), Union[SAS7BDATReader, XportReader]),
+            XportReader,
     ):
         pass
     with check(
-        assert_type(read_sas(path, iterator=True, format="xport"), XportReader),
-        XportReader,
+            assert_type(read_sas(path, iterator=True, format="xport"), XportReader),
+            XportReader,
     ):
         pass
     with check(
-        assert_type(read_sas(path, chunksize=1), Union[SAS7BDATReader, XportReader]),
-        XportReader,
+            assert_type(read_sas(path, chunksize=1), Union[SAS7BDATReader, XportReader]),
+            XportReader,
     ):
         pass
     with check(
-        assert_type(read_sas(path, chunksize=1, format="xport"), XportReader),
-        XportReader,
+            assert_type(read_sas(path, chunksize=1, format="xport"), XportReader),
+            XportReader,
     ):
         pass
 
@@ -1149,9 +1150,9 @@ def test_excel_reader():
             check(assert_type(pd.read_excel(ef), pd.DataFrame), pd.DataFrame)
 
         with pd.ExcelFile(
-            path_or_buffer=path,
-            engine="openpyxl",
-            engine_kwargs={"data_only": True},
+                path_or_buffer=path,
+                engine="openpyxl",
+                engine_kwargs={"data_only": True},
         ) as ef:
             check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
             check(assert_type(pd.read_excel(ef), pd.DataFrame), pd.DataFrame)
@@ -1795,10 +1796,12 @@ def test_read_json_engine() -> None:
 
 
 def test_converters_partial() -> None:
-    from functools import partial
-    import pandas as pd
-    from typing_extensions import assert_type
-
+    df = pd.DataFrame({"field_1": ["2020-01-01", "not a date"]})
     partial_func = partial(pd.to_datetime, errors="coerce")
-    df = pd.read_excel("foo.xlsx", converters={"field_1": partial_func})
-    assert_type(df, pd.DataFrame)
+
+    with ensure_clean(".xlsx") as path:
+        check(assert_type(df.to_excel(path, index=False), None), type(None))
+
+        result = pd.read_excel(path, converters={"field_1": partial_func})
+        check(assert_type(result, pd.DataFrame), pd.DataFrame)
+
