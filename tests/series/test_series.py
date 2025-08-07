@@ -3826,8 +3826,30 @@ def test_series_int_float() -> None:
 
 
 def test_series_reindex() -> None:
+    """Test Series.reindex without any arguments and with tolerance."""
     s = pd.Series([1, 2, 3], index=[0, 1, 2])
     check(assert_type(s.reindex([2, 1, 0]), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(
+            s.reindex([2, 1, 0], method="backfill", tolerance=1), "pd.Series[int]"
+        ),
+        pd.Series,
+        np.integer,
+    )
+
+    sr = pd.Series([1, 2], pd.to_datetime(["2023-01-01", "2023-01-02"]))
+    check(
+        assert_type(
+            sr.reindex(
+                index=pd.to_datetime(["2023-01-02", "2023-01-03"]),
+                method="ffill",
+                tolerance=pd.Timedelta("1D"),
+            ),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+        np.integer,
+    )
 
 
 def test_series_reindex_like() -> None:
