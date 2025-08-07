@@ -1606,6 +1606,7 @@ def test_series_min_max_sub_axis() -> None:
     sm = s1 * s2
     sd = s1 / s2
     check(assert_type(sa, pd.Series), pd.Series)
+    # Will be fixed after removing TimedeltaSeries, see Series.__sub__ in series.pyi
     check(assert_type(ss, pd.Series), pd.Series)  # type: ignore[assert-type]
     check(assert_type(sm, pd.Series), pd.Series)
     check(assert_type(sd, pd.Series), pd.Series)

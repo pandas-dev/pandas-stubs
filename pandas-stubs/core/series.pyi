@@ -188,7 +188,6 @@ from pandas.core.dtypes.dtypes import CategoricalDtype
 from pandas.plotting import PlotAccessor
 
 _T_COMPLEX = TypeVar("_T_COMPLEX", bound=complex)
-_T_TIMESTAMP = TypeVar("_T_TIMESTAMP", bound=Timestamp)
 
 _scalar_timestamp: TypeAlias = date | datetime | np.datetime64
 _vector_timestamp: TypeAlias = (
@@ -2052,7 +2051,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[Timestamp]: ...
     @overload
     def __sub__(
-        self: Series[Timestamp], other: _nonseries_timestamp | Series[_T_TIMESTAMP]
+        self: Series[Timestamp], other: _nonseries_timestamp
+    ) -> TimedeltaSeries: ...
+    # The following overload confuses mypy and disable it from recognising
+    # Series[Any] - Series[Any] should give Series[Any]. It will be fixed
+    # after removing TimedeltaSeries.
+    @overload
+    def __sub__(
+        self: Series[Timestamp], other: Series[Timestamp]
     ) -> TimedeltaSeries: ...
     @overload
     def __truediv__(
