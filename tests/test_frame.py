@@ -281,7 +281,6 @@ def test_types_loc_at() -> None:
     df.loc[0, "col1"]
 
 
-
 def test_types_boolean_indexing() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     check(assert_type(df[df > 1], pd.DataFrame), pd.DataFrame)
@@ -3756,7 +3755,6 @@ def test_loc_slice() -> None:
     check(assert_type(df.loc[mask, ind], pd.DataFrame), pd.DataFrame)
     # loc with index for columns
     check(assert_type(df.loc[mask, mask_col], pd.DataFrame), pd.DataFrame)
-
 
 
 def test_where() -> None:
