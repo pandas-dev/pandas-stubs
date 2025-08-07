@@ -3178,9 +3178,29 @@ def test_frame_stack() -> None:
 
 
 def test_frame_reindex() -> None:
+    """Test DataFrame.reindex with different arguments."""
     # GH 84
     df = pd.DataFrame({"a": [1, 2, 3]}, index=[0, 1, 2])
     check(assert_type(df.reindex([2, 1, 0]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.reindex([2, 1, 0], method="pad", tolerance=2.3), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    # GH1307
+    sr = pd.Series([1, 2], pd.to_datetime(["2023-01-01", "2023-01-02"]))
+    df = sr.to_frame()
+    check(
+        assert_type(
+            df.reindex(
+                index=pd.to_datetime(["2023-01-02", "2023-01-03"]),
+                method="ffill",
+                tolerance=pd.Timedelta("1D"),
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
 
 
 def test_frame_reindex_like() -> None:

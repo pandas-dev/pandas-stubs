@@ -816,7 +816,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: int | _str = ...,
         fill_value: Scalar | None = ...,
         limit: int | None = None,
-        tolerance: float | None = ...,
+        tolerance: float | Timedelta | None = ...,
     ) -> Self: ...
     @overload
     def rename(

@@ -1234,7 +1234,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         level: int | _str | None = None,
         fill_value: Scalar | None = None,
         limit: int | None = None,
-        tolerance: float | None = None,
+        tolerance: float | Timedelta | None = None,
     ) -> Series[S1]: ...
     def filter(
         self,
