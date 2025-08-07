@@ -5,7 +5,10 @@ from numpy import typing as npt  # noqa: F401
 import pandas as pd
 from typing_extensions import assert_type
 
-from tests import check
+from tests import (
+    PD_LTE_23,
+    check,
+)
 
 left = pd.DataFrame({"a": [1, 2, 3]})["a"]  # left operand
 
@@ -140,15 +143,36 @@ def test_truediv_pd_series() -> None:
     check(assert_type(left.rdiv(c), pd.Series), pd.Series)
 
 
-def test_truediv_path() -> None:
-    """Test pd.Series / path object"""
-    left, p = pd.Series(["pat", "ath", "path"]), Path()
+def test_truediv_paths(tmp_path: Path) -> None:
+    """Test pd.Series of paths / path object.
 
-    check(assert_type(left / p, pd.Series), pd.Series, Path)
-    check(assert_type(p / left, pd.Series), pd.Series, Path)
+    Also GH 682."""
+    fpath = Path("a.png")
+    folders, fpaths = pd.Series([tmp_path, tmp_path]), pd.Series([fpath, fpath])
 
-    check(assert_type(left.truediv(p), pd.Series), pd.Series, Path)
-    check(assert_type(left.div(p), pd.Series), pd.Series, Path)
+    check(assert_type(folders / fpath, pd.Series), pd.Series, Path)
+    check(assert_type(folders.truediv(fpath), pd.Series), pd.Series, Path)
+    check(assert_type(folders.div(fpath), pd.Series), pd.Series, Path)
 
-    check(assert_type(left.rtruediv(p), pd.Series), pd.Series, Path)
-    check(assert_type(left.rdiv(p), pd.Series), pd.Series, Path)
+    # mypy thinks it's `Path`, in contrast to Series.__rtruediv__(self, other: Path) -> Series: ...
+    check(assert_type(tmp_path / fpaths, pd.Series), pd.Series, Path)  # type: ignore[assert-type]
+    check(assert_type(fpaths.rtruediv(tmp_path), pd.Series), pd.Series, Path)
+    check(assert_type(fpaths.rdiv(tmp_path), pd.Series), pd.Series, Path)
+
+
+def test_truediv_path(tmp_path: Path) -> None:
+    """Test pd.Series / path object.
+
+    Also GH 682."""
+    fnames = pd.Series(["a.png", "b.gz", "c.txt"])
+
+    if PD_LTE_23:
+        # Bug in 3.0 https://github.com/pandas-dev/pandas/issues/61940 (pyarrow.lib.ArrowInvalid)
+        check(assert_type(fnames / tmp_path, pd.Series), pd.Series, Path)
+        check(assert_type(tmp_path / fnames, pd.Series), pd.Series, Path)
+
+        check(assert_type(fnames.truediv(tmp_path), pd.Series), pd.Series, Path)
+        check(assert_type(fnames.div(tmp_path), pd.Series), pd.Series, Path)
+
+        check(assert_type(fnames.rtruediv(tmp_path), pd.Series), pd.Series, Path)
+        check(assert_type(fnames.rdiv(tmp_path), pd.Series), pd.Series, Path)

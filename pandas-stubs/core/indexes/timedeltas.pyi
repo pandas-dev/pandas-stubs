@@ -70,21 +70,20 @@ class TimedeltaIndex(DatetimeTimedeltaMixin[Timedelta], TimedeltaIndexProperties
         self, other: dt.timedelta | Sequence[dt.timedelta]
     ) -> Index[int]: ...
     def __rfloordiv__(self, other: dt.timedelta | Sequence[dt.timedelta]) -> Index[int]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def astype(self, dtype, copy: bool = ...): ...
     def searchsorted(self, value, side: str = ..., sorter=...): ...
     @property
     def inferred_type(self) -> str: ...
     @final
     def to_series(self, index=..., name: Hashable = ...) -> TimedeltaSeries: ...
-    def shift(self, periods: int = ..., freq=...) -> Self: ...
+    def shift(self, periods: int = 1, freq=...) -> Self: ...
 
 def timedelta_range(
-    start: TimedeltaConvertibleTypes = ...,
-    end: TimedeltaConvertibleTypes = ...,
-    periods: int | None = ...,
-    freq: str | DateOffset | Timedelta | dt.timedelta | None = ...,
-    name: Hashable | None = ...,
-    closed: Literal["left", "right"] | None = ...,
+    start: TimedeltaConvertibleTypes | None = None,
+    end: TimedeltaConvertibleTypes | None = None,
+    periods: int | None = None,
+    freq: str | DateOffset | Timedelta | dt.timedelta | None = None,
+    name: Hashable | None = None,
+    closed: Literal["left", "right"] | None = None,
     *,
     unit: None | str = ...,
 ) -> TimedeltaIndex: ...

@@ -145,6 +145,10 @@ def test_string_accessors_string_series():
     check(assert_type(s.str.cat(sep="X"), str), str)
     _check(assert_type(s.str.center(10), "pd.Series[str]"))
     _check(assert_type(s.str.get(2), "pd.Series[str]"))
+    s_dict = pd.Series(  # example from the doc of str.get
+        [{"name": "Hello", "value": "World"}, {"name": "Goodbye", "value": "Planet"}]
+    )
+    _check(assert_type(s_dict.str.get("name"), "pd.Series[str]"))
     _check(assert_type(s.str.ljust(80), "pd.Series[str]"))
     _check(assert_type(s.str.lower(), "pd.Series[str]"))
     _check(assert_type(s.str.lstrip("a"), "pd.Series[str]"))
@@ -166,13 +170,29 @@ def test_string_accessors_string_series():
     _check(
         assert_type(s.str.translate({241: "n"}), "pd.Series[str]"),
     )
+    _check(
+        assert_type(s.str.translate({241: 240}), "pd.Series[str]"),
+    )
+    trans_table: dict[int, int] = {ord("a"): ord("b")}
+    _check(  # tests covariance of table values (table is read-only)
+        assert_type(s.str.translate(trans_table), "pd.Series[str]"),
+    )
     _check(assert_type(s.str.upper(), "pd.Series[str]"))
     _check(assert_type(s.str.wrap(80), "pd.Series[str]"))
     _check(assert_type(s.str.zfill(10), "pd.Series[str]"))
     s_bytes = pd.Series([b"a1", b"b2", b"c3"])
     _check(assert_type(s_bytes.str.decode("utf-8"), "pd.Series[str]"))
+    _check(
+        assert_type(
+            s_bytes.str.decode("utf-8", dtype=pd.StringDtype()), "pd.Series[str]"
+        )
+    )
     s_list = pd.Series([["apple", "banana"], ["cherry", "date"], ["one", "eggplant"]])
     _check(assert_type(s_list.str.join("-"), "pd.Series[str]"))
+
+    # wrap doesn't accept positional arguments other than width
+    if TYPE_CHECKING_INVALID_USAGE:
+        s.str.wrap(80, False)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
 
 
 def test_string_accessors_string_index():
@@ -183,6 +203,10 @@ def test_string_accessors_string_index():
     check(assert_type(idx.str.cat(sep="X"), str), str)
     _check(assert_type(idx.str.center(10), "pd.Index[str]"))
     _check(assert_type(idx.str.get(2), "pd.Index[str]"))
+    idx_dict = pd.Index(
+        [{"name": "Hello", "value": "World"}, {"name": "Goodbye", "value": "Planet"}]
+    )
+    _check(assert_type(idx_dict.str.get("name"), "pd.Index[str]"))
     _check(assert_type(idx.str.ljust(80), "pd.Index[str]"))
     _check(assert_type(idx.str.lower(), "pd.Index[str]"))
     _check(assert_type(idx.str.lstrip("a"), "pd.Index[str]"))
@@ -204,13 +228,29 @@ def test_string_accessors_string_index():
     _check(
         assert_type(idx.str.translate({241: "n"}), "pd.Index[str]"),
     )
+    _check(
+        assert_type(idx.str.translate({241: 240}), "pd.Index[str]"),
+    )
+    trans_table: dict[int, int] = {ord("a"): ord("b")}
+    _check(  # tests covariance of table values (table is read-only)
+        assert_type(idx.str.translate(trans_table), "pd.Index[str]"),
+    )
     _check(assert_type(idx.str.upper(), "pd.Index[str]"))
     _check(assert_type(idx.str.wrap(80), "pd.Index[str]"))
     _check(assert_type(idx.str.zfill(10), "pd.Index[str]"))
     idx_bytes = pd.Index([b"a1", b"b2", b"c3"])
     _check(assert_type(idx_bytes.str.decode("utf-8"), "pd.Index[str]"))
+    _check(
+        assert_type(
+            idx_bytes.str.decode("utf-8", dtype=pd.StringDtype()), "pd.Index[str]"
+        )
+    )
     idx_list = pd.Index([["apple", "banana"], ["cherry", "date"], ["one", "eggplant"]])
     _check(assert_type(idx_list.str.join("-"), "pd.Index[str]"))
+
+    # wrap doesn't accept positional arguments other than width
+    if TYPE_CHECKING_INVALID_USAGE:
+        idx.str.wrap(80, False)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
 
 
 def test_string_accessors_bytes_series():
@@ -316,7 +356,12 @@ def test_series_overloads_partition():
         assert_type(s.str.partition(sep=";", expand=True), pd.DataFrame), pd.DataFrame
     )
     check(
-        assert_type(s.str.partition(sep=";", expand=False), "pd.Series[type[object]]"),
+        assert_type(s.str.partition(sep=";", expand=False), pd.Series),
+        pd.Series,
+        object,
+    )
+    check(
+        assert_type(s.str.partition(expand=False), pd.Series),
         pd.Series,
         object,
     )
@@ -326,10 +371,11 @@ def test_series_overloads_partition():
         assert_type(s.str.rpartition(sep=";", expand=True), pd.DataFrame), pd.DataFrame
     )
     check(
-        assert_type(s.str.rpartition(sep=";", expand=False), "pd.Series[type[object]]"),
+        assert_type(s.str.rpartition(sep=";", expand=False), pd.Series),
         pd.Series,
         object,
     )
+    check(assert_type(s.str.rpartition(expand=False), pd.Series), pd.Series, object)
 
 
 def test_index_overloads_partition():
@@ -350,7 +396,7 @@ def test_index_overloads_partition():
         pd.MultiIndex,
     )
     check(
-        assert_type(idx.str.partition(sep=";", expand=False), "pd.Index[type[object]]"),
+        assert_type(idx.str.partition(sep=";", expand=False), pd.Index),
         pd.Index,
         object,
     )
@@ -361,9 +407,7 @@ def test_index_overloads_partition():
         pd.MultiIndex,
     )
     check(
-        assert_type(
-            idx.str.rpartition(sep=";", expand=False), "pd.Index[type[object]]"
-        ),
+        assert_type(idx.str.rpartition(sep=";", expand=False), pd.Index),
         pd.Index,
         object,
     )
@@ -440,16 +484,12 @@ def test_series_overloads_extract():
         assert_type(s.str.extract(r"[ab](\d)", expand=True), pd.DataFrame), pd.DataFrame
     )
     check(
-        assert_type(
-            s.str.extract(r"[ab](\d)", expand=False), "pd.Series[type[object]]"
-        ),
+        assert_type(s.str.extract(r"[ab](\d)", expand=False), pd.Series),
         pd.Series,
         object,
     )
     check(
-        assert_type(
-            s.str.extract(r"[ab](\d)", re.IGNORECASE, False), "pd.Series[type[object]]"
-        ),
+        assert_type(s.str.extract(r"[ab](\d)", re.IGNORECASE, False), pd.Series),
         pd.Series,
         object,
     )
@@ -463,16 +503,12 @@ def test_index_overloads_extract():
         pd.DataFrame,
     )
     check(
-        assert_type(
-            idx.str.extract(r"[ab](\d)", expand=False), "pd.Index[type[object]]"
-        ),
+        assert_type(idx.str.extract(r"[ab](\d)", expand=False), pd.Index),
         pd.Index,
         object,
     )
     check(
-        assert_type(
-            idx.str.extract(r"[ab](\d)", re.IGNORECASE, False), "pd.Index[type[object]]"
-        ),
+        assert_type(idx.str.extract(r"[ab](\d)", re.IGNORECASE, False), pd.Index),
         pd.Index,
         object,
     )
