@@ -818,7 +818,6 @@ def test_types_element_wise_arithmetic() -> None:
     check(assert_type(s + s2, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.add(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
-    # TODO this one below should type pd.Series[int]
     check(assert_type(s - s2, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.sub(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
