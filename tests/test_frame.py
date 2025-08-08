@@ -31,7 +31,6 @@ from typing import (
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
-from pandas import Timestamp
 from pandas.api.typing import NAType
 from pandas.core.resample import (
     DatetimeIndexResampler,
@@ -70,10 +69,8 @@ from pandas.tseries.offsets import (
 
 if TYPE_CHECKING:
     from pandas.core.frame import _PandasNamedTuple
-    from pandas.core.series import TimestampSeries
 else:
     _PandasNamedTuple: TypeAlias = tuple
-    TimestampSeries: TypeAlias = pd.Series
 
 DF = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
@@ -2547,9 +2544,9 @@ def test_types_regressions() -> None:
         sseries + pd.Timedelta(1, "d")
 
     check(
-        assert_type(sseries + pd.Timedelta(1, "D"), TimestampSeries),
+        assert_type(sseries + pd.Timedelta(1, "D"), "pd.Series[pd.Timestamp]"),
         pd.Series,
-        Timestamp,
+        pd.Timestamp,
     )
 
     # https://github.com/microsoft/pylance-release/issues/2133

@@ -25,7 +25,6 @@ from pandas import (
 from pandas.core.series import (
     Series,
     TimedeltaSeries,
-    TimestampSeries,
 )
 from typing_extensions import (
     Never,
@@ -184,7 +183,7 @@ class Timestamp(datetime, SupportsIndex):
         self, other: DatetimeIndex | npt.NDArray[np.datetime64]
     ) -> np_ndarray_bool: ...
     @overload
-    def __le__(self, other: TimestampSeries) -> Series[bool]: ...
+    def __le__(self, other: Series[Timestamp]) -> Series[bool]: ...
     @overload  # type: ignore[override]
     def __lt__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
@@ -192,7 +191,7 @@ class Timestamp(datetime, SupportsIndex):
         self, other: DatetimeIndex | npt.NDArray[np.datetime64]
     ) -> np_ndarray_bool: ...
     @overload
-    def __lt__(self, other: TimestampSeries) -> Series[bool]: ...
+    def __lt__(self, other: Series[Timestamp]) -> Series[bool]: ...
     @overload  # type: ignore[override]
     def __ge__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
@@ -200,7 +199,7 @@ class Timestamp(datetime, SupportsIndex):
         self, other: DatetimeIndex | npt.NDArray[np.datetime64]
     ) -> np_ndarray_bool: ...
     @overload
-    def __ge__(self, other: TimestampSeries) -> Series[bool]: ...
+    def __ge__(self, other: Series[Timestamp]) -> Series[bool]: ...
     @overload  # type: ignore[override]
     def __gt__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
@@ -208,7 +207,7 @@ class Timestamp(datetime, SupportsIndex):
         self, other: DatetimeIndex | npt.NDArray[np.datetime64]
     ) -> np_ndarray_bool: ...
     @overload
-    def __gt__(self, other: TimestampSeries) -> Series[bool]: ...
+    def __gt__(self, other: Series[Timestamp]) -> Series[bool]: ...
     # error: Signature of "__add__" incompatible with supertype "date"/"datetime"
     @overload  # type: ignore[override]
     def __add__(
@@ -217,7 +216,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __add__(self, other: timedelta | np.timedelta64 | Tick) -> Self: ...
     @overload
-    def __add__(self, other: TimedeltaSeries) -> TimestampSeries: ...
+    def __add__(self, other: TimedeltaSeries) -> Series[Timestamp]: ...
     @overload
     def __add__(self, other: TimedeltaIndex) -> DatetimeIndex: ...
     @overload
@@ -236,9 +235,9 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __sub__(self, other: TimedeltaIndex) -> DatetimeIndex: ...
     @overload
-    def __sub__(self, other: TimedeltaSeries) -> TimestampSeries: ...
+    def __sub__(self, other: TimedeltaSeries) -> Series[Timestamp]: ...
     @overload
-    def __sub__(self, other: TimestampSeries) -> TimedeltaSeries: ...
+    def __sub__(self, other: Series[Timestamp]) -> TimedeltaSeries: ...
     @overload
     def __sub__(
         self, other: npt.NDArray[np.timedelta64]
@@ -246,7 +245,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __eq__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __eq__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
+    def __eq__(self, other: Series[Timestamp]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: npt.NDArray[np.datetime64] | Index) -> np_ndarray_bool: ...  # type: ignore[overload-overlap]
     @overload
@@ -254,7 +253,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __ne__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __ne__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
+    def __ne__(self, other: Series[Timestamp]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: npt.NDArray[np.datetime64] | Index) -> np_ndarray_bool: ...  # type: ignore[overload-overlap]
     @overload
