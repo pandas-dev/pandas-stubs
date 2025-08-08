@@ -3737,12 +3737,24 @@ def test_xs_key() -> None:
 
 
 def test_loc_slice() -> None:
-    # GH 277
+    """Test DataFrame.loc with a slice, Index, Series."""
+    # GH277
     df1 = pd.DataFrame(
         {"x": [1, 2, 3, 4]},
         index=pd.MultiIndex.from_product([[1, 2], ["a", "b"]], names=["num", "let"]),
     )
     check(assert_type(df1.loc[1, :], Union[pd.Series, pd.DataFrame]), pd.DataFrame)
+
+    # GH1299
+    ind = pd.Index(["a", "b"])
+    mask = pd.Series([True, False])
+    mask_col = pd.Series([True, False], index=pd.Index(["a", "b"]))
+    df = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
+
+    # loc with index for columns
+    check(assert_type(df.loc[mask, ind], pd.DataFrame), pd.DataFrame)
+    # loc with index for columns
+    check(assert_type(df.loc[mask, mask_col], pd.DataFrame), pd.DataFrame)
 
 
 def test_where() -> None:
