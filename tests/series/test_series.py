@@ -819,7 +819,7 @@ def test_types_element_wise_arithmetic() -> None:
     check(assert_type(s.add(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
     # TODO this one below should type pd.Series[int]
-    check(assert_type(s - s2, pd.Series), pd.Series, np.integer)
+    check(assert_type(s - s2, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.sub(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
     # TODO these two below should type pd.Series[int]
@@ -1643,7 +1643,7 @@ def test_series_mul() -> None:
     sm = s * 4
     check(assert_type(sm, pd.Series), pd.Series)
     ss = s - 4
-    check(assert_type(ss, pd.Series), pd.Series)
+    check(assert_type(ss, "pd.Series[int]"), pd.Series, np.integer)
     sm2 = s * s
     check(assert_type(sm2, pd.Series), pd.Series)
     sp = s + 4
