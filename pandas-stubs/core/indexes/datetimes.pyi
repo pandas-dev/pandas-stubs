@@ -23,6 +23,7 @@ from pandas import (
 from pandas.core.indexes.accessors import DatetimeIndexProperties
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.series import (
+    Series,
     TimedeltaSeries,
     TimestampSeries,
 )
@@ -56,6 +57,19 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
         copy: bool = ...,
         name: Hashable = ...,
     ) -> None: ...
+    @classmethod
+    def __new__(
+        cls,
+        data: AxesData | Series,
+        freq: Frequency = ...,
+        tz: TimeZones = ...,
+        ambiguous: str = ...,
+        dayfirst: bool = ...,
+        yearfirst: bool = ...,
+        dtype: Dtype = ...,
+        copy: bool = ...,
+        name: Hashable = ...,
+    ) -> Self: ...
     def __reduce__(self): ...
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
