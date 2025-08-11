@@ -310,30 +310,8 @@ class IntervalIndex(ExtensionIndex[IntervalT], IntervalMixin):
 # int gets hit first and so the correct type is returned
 @overload
 def interval_range(  # pyright: ignore[reportOverlappingOverload]
-    start: int = ...,
-    end: int = ...,
-    periods: int | None = ...,
-    freq: int | None = ...,
-    name: Hashable = ...,
-    closed: IntervalClosedType = ...,
-) -> IntervalIndex[Interval[int]]: ...
-
-# Overlaps since int is a subclass of float
-@overload
-def interval_range(  # pyright: ignore[reportOverlappingOverload]
-    start: int,
-    *,
-    end: None = ...,
-    periods: int | None = ...,
-    freq: int | None = ...,
-    name: Hashable = ...,
-    closed: IntervalClosedType = ...,
-) -> IntervalIndex[Interval[int]]: ...
-@overload
-def interval_range(  # pyright: ignore[reportOverlappingOverload]
-    *,
-    start: None = ...,
-    end: int,
+    start: int | None = ...,
+    end: int | None = ...,
     periods: int | None = ...,
     freq: int | None = ...,
     name: Hashable = ...,
@@ -341,28 +319,8 @@ def interval_range(  # pyright: ignore[reportOverlappingOverload]
 ) -> IntervalIndex[Interval[int]]: ...
 @overload
 def interval_range(
-    start: float = ...,
-    end: float = ...,
-    periods: int | None = ...,
-    freq: int | None = ...,
-    name: Hashable = ...,
-    closed: IntervalClosedType = ...,
-) -> IntervalIndex[Interval[float]]: ...
-@overload
-def interval_range(
-    start: float,
-    *,
-    end: None = ...,
-    periods: int | None = ...,
-    freq: int | None = ...,
-    name: Hashable = ...,
-    closed: IntervalClosedType = ...,
-) -> IntervalIndex[Interval[float]]: ...
-@overload
-def interval_range(
-    *,
-    start: None = ...,
-    end: float,
+    start: float | None = ...,
+    end: float | None = ...,
     periods: int | None = ...,
     freq: int | None = ...,
     name: Hashable = ...,
@@ -371,7 +329,7 @@ def interval_range(
 @overload
 def interval_range(
     start: _TimestampLike,
-    end: _TimestampLike = ...,
+    end: _TimestampLike | None = ...,
     periods: int | None = ...,
     freq: str | BaseOffset | pd.Timedelta | dt.timedelta | None = ...,
     name: Hashable = ...,
@@ -389,18 +347,8 @@ def interval_range(
 ) -> IntervalIndex[Interval[pd.Timestamp]]: ...
 @overload
 def interval_range(
-    start: _TimestampLike,
-    *,
-    end: None = ...,
-    periods: int | None = ...,
-    freq: str | BaseOffset | pd.Timedelta | dt.timedelta | None = ...,
-    name: Hashable = ...,
-    closed: IntervalClosedType = ...,
-) -> IntervalIndex[Interval[pd.Timestamp]]: ...
-@overload
-def interval_range(
     start: _TimedeltaLike,
-    end: _TimedeltaLike = ...,
+    end: _TimedeltaLike | None = ...,
     periods: int | None = ...,
     freq: str | BaseOffset | pd.Timedelta | dt.timedelta | None = ...,
     name: Hashable = ...,
@@ -411,16 +359,6 @@ def interval_range(
     *,
     start: None = ...,
     end: _TimedeltaLike,
-    periods: int | None = ...,
-    freq: str | BaseOffset | pd.Timedelta | dt.timedelta | None = ...,
-    name: Hashable = ...,
-    closed: IntervalClosedType = ...,
-) -> IntervalIndex[Interval[pd.Timedelta]]: ...
-@overload
-def interval_range(
-    start: _TimedeltaLike,
-    *,
-    end: None = ...,
     periods: int | None = ...,
     freq: str | BaseOffset | pd.Timedelta | dt.timedelta | None = ...,
     name: Hashable = ...,
