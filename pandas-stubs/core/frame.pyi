@@ -288,44 +288,11 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     ) -> None: ...
 
 class _iAtIndexerFrame(_iAtIndexer, Generic[_T]):
-    @overload
     def __getitem__(self, idx: tuple[int, int]) -> Scalar: ...
-    @overload
-    def __getitem__(self, idx: IndexingInt) -> Series: ...
-    @overload
-    def __getitem__(self, idx: tuple[IndexType | MaskType, int]) -> Series: ...
-    @overload
-    def __getitem__(self, idx: tuple[int, IndexType | MaskType]) -> Series: ...
-    @overload
-    def __getitem__(
-        self,
-        idx: (
-            IndexType
-            | MaskType
-            | tuple[IndexType | MaskType, IndexType | MaskType]
-            | tuple[slice]
-        ),
-    ) -> _T: ...
     def __setitem__(
         self,
-        idx: (
-            int
-            | IndexType
-            | tuple[int, int]
-            | tuple[IndexType, int]
-            | tuple[IndexType, IndexType]
-            | tuple[int, IndexType]
-        ),
-        value: (
-            Scalar
-            | Series
-            | DataFrame
-            | np.ndarray
-            | NAType
-            | NaTType
-            | Mapping[Hashable, Scalar | NAType | NaTType]
-            | None
-        ),
+        idx: tuple[int, int],
+        value: Scalar | NAType | NaTType | None,
     ) -> None: ...
 
 class _AtIndexerFrame(_AtIndexer, Generic[_T]):
