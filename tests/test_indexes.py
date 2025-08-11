@@ -1183,6 +1183,17 @@ def test_datetime_index_constructor() -> None:
         pd.DatetimeIndex,
     )
 
+    # https://github.com/microsoft/python-type-stubs/issues/115
+    df = pd.DataFrame({"A": [1, 2, 3], "B": [5, 6, 7]})
+
+    check(
+        assert_type(
+            pd.DatetimeIndex(data=df["A"], tz=None, ambiguous="NaT", copy=True),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+
 
 def test_iter() -> None:
     # GH 723

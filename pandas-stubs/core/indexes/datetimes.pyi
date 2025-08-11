@@ -23,7 +23,6 @@ from pandas import (
 from pandas.core.indexes.accessors import DatetimeIndexProperties
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.series import (
-    Series,
     TimedeltaSeries,
     TimestampSeries,
 )
@@ -45,22 +44,9 @@ from pandas.core.dtypes.dtypes import DatetimeTZDtype
 from pandas.tseries.offsets import BaseOffset
 
 class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
-    def __init__(
-        self,
-        data: AxesData,
-        freq: Frequency = ...,
-        tz: TimeZones = ...,
-        ambiguous: str = ...,
-        dayfirst: bool = ...,
-        yearfirst: bool = ...,
-        dtype: Dtype = ...,
-        copy: bool = ...,
-        name: Hashable = ...,
-    ) -> None: ...
-    @classmethod
     def __new__(
         cls,
-        data: AxesData | Series,
+        data: AxesData,
         freq: Frequency = ...,
         tz: TimeZones = ...,
         ambiguous: str = ...,
