@@ -5,11 +5,11 @@ from typing_extensions import assert_type
 
 from tests import check
 
-left = pd.Series([1, 2, 3])  # left operand
+left = pd.Series([True, True, False])  # left operand
 
 
 def test_sub_py_scalar() -> None:
-    """Test pd.Series[int] - Python native scalars"""
+    """Test pd.Series[bool] - Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
 
     check(assert_type(left - i, "pd.Series[int]"), pd.Series, np.integer)
@@ -32,7 +32,7 @@ def test_sub_py_scalar() -> None:
 
 
 def test_sub_py_sequence() -> None:
-    """Test pd.Series[int] - Python native sequence"""
+    """Test pd.Series[bool] - Python native sequence"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
     check(assert_type(left - i, "pd.Series[int]"), pd.Series, np.integer)
@@ -55,7 +55,7 @@ def test_sub_py_sequence() -> None:
 
 
 def test_sub_numpy_array() -> None:
-    """Test pd.Series[int] - numpy array"""
+    """Test pd.Series[bool] - numpy array"""
     b = np.array([True, False, True], np.bool_)
     i = np.array([2, 3, 5], np.int64)
     f = np.array([1.0, 2.0, 3.0], np.float64)
@@ -88,7 +88,7 @@ def test_sub_numpy_array() -> None:
 
 
 def test_sub_pd_series() -> None:
-    """Test pd.Series[int] - pandas series"""
+    """Test pd.Series[bool] - pandas series"""
     b = pd.Series([True, False, True])
     i = pd.Series([2, 3, 5])
     f = pd.Series([1.0, 2.0, 3.0])
