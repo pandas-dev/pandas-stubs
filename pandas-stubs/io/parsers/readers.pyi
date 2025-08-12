@@ -54,13 +54,13 @@ def read_csv(
         | Mapping[str, Callable[[str], Any]]
         | None
     ) = ...,
-    true_values: list[str] = ...,
-    false_values: list[str] = ...,
+    true_values: list[str] | None = ...,
+    false_values: list[str] | None = ...,
     skipinitialspace: bool = ...,
-    skiprows: int | Sequence[int] | Callable[[int], bool] = ...,
+    skiprows: int | Sequence[int] | Callable[[int], bool] | None = ...,
     skipfooter: int = ...,
     nrows: int | None = ...,
-    na_values: Sequence[str] | Mapping[str, Sequence[str]] = ...,
+    na_values: Sequence[str] | Mapping[str, Sequence[str]] | None = ...,
     keep_default_na: bool = ...,
     na_filter: bool = ...,
     verbose: bool = ...,
@@ -71,6 +71,7 @@ def read_csv(
         | list[str]
         | Sequence[Sequence[int]]
         | Mapping[str, Sequence[int | str]]
+        | None
     ) = ...,
     keep_date_col: bool = ...,
     date_format: dict[Hashable, str] | str | None = ...,
@@ -89,7 +90,7 @@ def read_csv(
     comment: str | None = ...,
     encoding: str | None = ...,
     encoding_errors: str | None = ...,
-    dialect: str | csv.Dialect = ...,
+    dialect: str | csv.Dialect | None = ...,
     on_bad_lines: (
         Literal["error", "warn", "skip"] | Callable[[list[str]], list[str] | None]
     ) = ...,
@@ -118,13 +119,13 @@ def read_csv(
         | Mapping[str, Callable[[str], Any]]
         | None
     ) = ...,
-    true_values: list[str] = ...,
-    false_values: list[str] = ...,
+    true_values: list[str] | None = ...,
+    false_values: list[str] | None = ...,
     skipinitialspace: bool = ...,
     skiprows: int | Sequence[int] | Callable[[int], bool] = ...,
     skipfooter: int = ...,
     nrows: int | None = ...,
-    na_values: Sequence[str] | Mapping[str, Sequence[str]] = ...,
+    na_values: Sequence[str] | Mapping[str, Sequence[str]] | None = ...,
     keep_default_na: bool = ...,
     na_filter: bool = ...,
     verbose: bool = ...,
@@ -135,6 +136,7 @@ def read_csv(
         | list[str]
         | Sequence[Sequence[int]]
         | Mapping[str, Sequence[int | str]]
+        | None
     ) = ...,
     keep_date_col: bool = ...,
     date_format: dict[Hashable, str] | str | None = ...,
@@ -153,7 +155,7 @@ def read_csv(
     comment: str | None = ...,
     encoding: str | None = ...,
     encoding_errors: str | None = ...,
-    dialect: str | csv.Dialect = ...,
+    dialect: str | csv.Dialect | None = ...,
     on_bad_lines: (
         Literal["error", "warn", "skip"] | Callable[[list[str]], list[str] | None]
     ) = ...,
@@ -182,13 +184,13 @@ def read_csv(
         | Mapping[str, Callable[[str], Any]]
         | None
     ) = ...,
-    true_values: list[str] = ...,
-    false_values: list[str] = ...,
+    true_values: list[str] | None = ...,
+    false_values: list[str] | None = ...,
     skipinitialspace: bool = ...,
-    skiprows: int | Sequence[int] | Callable[[int], bool] = ...,
+    skiprows: int | Sequence[int] | Callable[[int], bool] | None = ...,
     skipfooter: int = ...,
     nrows: int | None = ...,
-    na_values: Sequence[str] | Mapping[str, Sequence[str]] = ...,
+    na_values: Sequence[str] | Mapping[str, Sequence[str]] | None = ...,
     keep_default_na: bool = ...,
     na_filter: bool = ...,
     verbose: bool = ...,
@@ -199,6 +201,7 @@ def read_csv(
         | list[str]
         | Sequence[Sequence[int]]
         | Mapping[str, Sequence[int | str]]
+        | None
     ) = ...,
     keep_date_col: bool = ...,
     date_format: dict[Hashable, str] | str | None = ...,
@@ -217,7 +220,7 @@ def read_csv(
     comment: str | None = ...,
     encoding: str | None = ...,
     encoding_errors: str | None = ...,
-    dialect: str | csv.Dialect = ...,
+    dialect: str | csv.Dialect | None = ...,
     on_bad_lines: (
         Literal["error", "warn", "skip"] | Callable[[list[str]], list[str] | None]
     ) = ...,
@@ -246,13 +249,13 @@ def read_table(
         | Mapping[str, Callable[[str], Any]]
         | None
     ) = ...,
-    true_values: list[str] = ...,
-    false_values: list[str] = ...,
+    true_values: list[str] | None = ...,
+    false_values: list[str] | None = ...,
     skipinitialspace: bool = ...,
-    skiprows: int | Sequence[int] | Callable[[int], bool] = ...,
+    skiprows: int | Sequence[int] | Callable[[int], bool] | None = ...,
     skipfooter: int = ...,
     nrows: int | None = ...,
-    na_values: Sequence[str] | Mapping[str, Sequence[str]] = ...,
+    na_values: Sequence[str] | Mapping[str, Sequence[str]] | None = ...,
     keep_default_na: bool = ...,
     na_filter: bool = ...,
     verbose: bool = ...,
@@ -263,6 +266,7 @@ def read_table(
         | list[str]
         | Sequence[Sequence[int]]
         | Mapping[str, Sequence[int | str]]
+        | None
     ) = ...,
     infer_datetime_format: bool = ...,
     keep_date_col: bool = ...,
@@ -310,13 +314,13 @@ def read_table(
         | Mapping[str, Callable[[str], Any]]
         | None
     ) = ...,
-    true_values: list[str] = ...,
-    false_values: list[str] = ...,
+    true_values: list[str] | None = ...,
+    false_values: list[str] | None = ...,
     skipinitialspace: bool = ...,
-    skiprows: int | Sequence[int] | Callable[[int], bool] = ...,
+    skiprows: int | Sequence[int] | Callable[[int], bool] | None = ...,
     skipfooter: int = ...,
     nrows: int | None = ...,
-    na_values: Sequence[str] | Mapping[str, Sequence[str]] = ...,
+    na_values: Sequence[str] | Mapping[str, Sequence[str]] | None = ...,
     keep_default_na: bool = ...,
     na_filter: bool = ...,
     verbose: bool = ...,
@@ -327,6 +331,7 @@ def read_table(
         | list[str]
         | Sequence[Sequence[int]]
         | Mapping[str, Sequence[int | str]]
+        | None
     ) = ...,
     infer_datetime_format: bool = ...,
     keep_date_col: bool = ...,
@@ -374,13 +379,13 @@ def read_table(
         | Mapping[str, Callable[[str], Any]]
         | None
     ) = ...,
-    true_values: list[str] = ...,
-    false_values: list[str] = ...,
+    true_values: list[str] | None = ...,
+    false_values: list[str] | None = ...,
     skipinitialspace: bool = ...,
-    skiprows: int | Sequence[int] | Callable[[int], bool] = ...,
+    skiprows: int | Sequence[int] | Callable[[int], bool] | None = ...,
     skipfooter: int = ...,
     nrows: int | None = ...,
-    na_values: Sequence[str] | Mapping[str, Sequence[str]] = ...,
+    na_values: Sequence[str] | Mapping[str, Sequence[str]] | None = ...,
     keep_default_na: bool = ...,
     na_filter: bool = ...,
     verbose: bool = ...,
@@ -391,6 +396,7 @@ def read_table(
         | list[str]
         | Sequence[Sequence[int]]
         | Mapping[str, Sequence[int | str]]
+        | None
     ) = ...,
     infer_datetime_format: bool = ...,
     keep_date_col: bool = ...,
