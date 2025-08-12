@@ -1,9 +1,10 @@
-from typing import Never
-
 import numpy as np
 from numpy import typing as npt  # noqa: F401
 import pandas as pd
-from typing_extensions import assert_type
+from typing_extensions import (
+    Never,
+    assert_type,
+)
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
