@@ -45,6 +45,8 @@ from pandas.core.indexes.multi import MultiIndex
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.indexing import (
+    _AtIndexer,
+    _iAtIndexer,
     _iLocIndexer,
     _IndexSliceTuple,
     _LocIndexer,
@@ -283,6 +285,44 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
         self,
         idx: tuple[_IndexSliceTuple, Hashable],
         value: Scalar | NAType | NaTType | ArrayLike | Series | list | dict | None,
+    ) -> None: ...
+
+class _iAtIndexerFrame(_iAtIndexer):
+    def __getitem__(self, idx: tuple[int, int]) -> Scalar: ...
+    def __setitem__(
+        self,
+        idx: tuple[int, int],
+        value: Scalar | NAType | NaTType | None,
+    ) -> None: ...
+
+class _AtIndexerFrame(_AtIndexer):
+    def __getitem__(
+        self,
+        idx: tuple[
+            int
+            | StrLike
+            | Timestamp
+            | tuple[Scalar, ...]
+            | Callable[[DataFrame], ScalarT],
+            int | StrLike | tuple[Scalar, ...],
+        ],
+    ) -> Scalar: ...
+    def __setitem__(
+        self,
+        idx: (
+            MaskType | StrLike | _IndexSliceTuple | list[ScalarT] | IndexingInt | slice
+        ),
+        value: (
+            Scalar
+            | NAType
+            | NaTType
+            | ArrayLike
+            | Series
+            | DataFrame
+            | list
+            | Mapping[Hashable, Scalar | NAType | NaTType]
+            | None
+        ),
     ) -> None: ...
 
 # With mypy 1.14.1 and python 3.12, the second overload needs a type-ignore statement
@@ -1591,13 +1631,13 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis = 0,
         skipna: _bool = True,
         numeric_only: _bool = False,
-    ) -> Series: ...
+    ) -> Series[int]: ...
     def idxmin(
         self,
         axis: Axis = 0,
         skipna: _bool = True,
         numeric_only: _bool = False,
-    ) -> Series: ...
+    ) -> Series[int]: ...
     def mode(
         self,
         axis: Axis = 0,
@@ -1683,7 +1723,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def __iter__(self) -> Iterator[Hashable]: ...
     # properties
     @property
-    def at(self): ...  # Not sure what to do with this yet; look at source
+    def at(self) -> _AtIndexerFrame: ...
     @property
     def columns(self) -> Index[str]: ...
     @columns.setter  # setter needs to be right next to getter; otherwise mypy complains
@@ -1695,7 +1735,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @property
     def empty(self) -> _bool: ...
     @property
-    def iat(self): ...  # Not sure what to do with this yet; look at source
+    def iat(self) -> _iAtIndexerFrame: ...
     @property
     def iloc(self) -> _iLocIndexerFrame[Self]: ...
     @property
