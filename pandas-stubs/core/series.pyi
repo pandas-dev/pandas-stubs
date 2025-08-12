@@ -2238,7 +2238,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def truediv(
         self: Series[float],
-        other: int | Sequence[int] | np_ndarray_anyint | np_ndarray_float | Series[int],
+        other: (
+            int
+            | Sequence[int]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Series[_T_INT]
+        ),
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
@@ -2395,7 +2402,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def rtruediv(
         self: Series[float],
-        other: int | Sequence[int] | np_ndarray_anyint | np_ndarray_float | Series[int],
+        other: (
+            int
+            | Sequence[int]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Series[_T_INT]
+        ),
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
