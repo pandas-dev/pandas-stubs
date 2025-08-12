@@ -287,7 +287,7 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
         value: Scalar | NAType | NaTType | ArrayLike | Series | list | dict | None,
     ) -> None: ...
 
-class _iAtIndexerFrame(_iAtIndexer, Generic[_T]):
+class _iAtIndexerFrame(_iAtIndexer):
     def __getitem__(self, idx: tuple[int, int]) -> Scalar: ...
     def __setitem__(
         self,
@@ -295,7 +295,7 @@ class _iAtIndexerFrame(_iAtIndexer, Generic[_T]):
         value: Scalar | NAType | NaTType | None,
     ) -> None: ...
 
-class _AtIndexerFrame(_AtIndexer, Generic[_T]):
+class _AtIndexerFrame(_AtIndexer):
     def __getitem__(
         self,
         idx: tuple[
@@ -1723,9 +1723,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def __iter__(self) -> Iterator[Hashable]: ...
     # properties
     @property
-    def at(
-        self,
-    ) -> _AtIndexerFrame: ...  # Not sure what to do with this yet; look at source
+    def at(self) -> _AtIndexerFrame: ...
     @property
     def columns(self) -> Index[str]: ...
     @columns.setter  # setter needs to be right next to getter; otherwise mypy complains
@@ -1737,9 +1735,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @property
     def empty(self) -> _bool: ...
     @property
-    def iat(
-        self,
-    ) -> _iAtIndexerFrame: ...  # Not sure what to do with this yet; look at source
+    def iat(self) -> _iAtIndexerFrame: ...
     @property
     def iloc(self) -> _iLocIndexerFrame[Self]: ...
     @property

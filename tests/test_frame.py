@@ -3380,8 +3380,8 @@ def test_frame_scalars_slice() -> None:
     check(assert_type(df3.loc[str_], Union[pd.Series, pd.DataFrame]), pd.Series)
 
     # https://github.com/microsoft/python-type-stubs/issues/62
-    df7: pd.DataFrame = pd.DataFrame({"x": [1, 2, 3]}, index=pd.Index(["a", "b", "c"]))
-    index: pd.Index = pd.Index(["b"])
+    df7 = pd.DataFrame({"x": [1, 2, 3]}, index=pd.Index(["a", "b", "c"]))
+    index = pd.Index(["b"])
     check(assert_type(df7.loc[index], pd.DataFrame), pd.DataFrame)
 
 
