@@ -2319,7 +2319,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __rtruediv__(
         self: Series[float],
-        other: int | Sequence[int] | np_ndarray_anyint | np_ndarray_float,
+        other: (
+            int | Sequence[int] | np_ndarray_bool | np_ndarray_anyint | np_ndarray_float
+        ),
     ) -> Series[float]: ...
     @overload
     def __rtruediv__(
