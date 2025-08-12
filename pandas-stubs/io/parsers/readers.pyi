@@ -122,7 +122,7 @@ def read_csv(
     true_values: list[str] | None = ...,
     false_values: list[str] | None = ...,
     skipinitialspace: bool = ...,
-    skiprows: int | Sequence[int] | Callable[[int], bool] = ...,
+    skiprows: int | Sequence[int] | Callable[[int], bool] | None = ...,
     skipfooter: int = ...,
     nrows: int | None = ...,
     na_values: Sequence[str] | Mapping[str, Sequence[str]] | None = ...,
