@@ -286,7 +286,7 @@ def read_table(
     comment: str | None = ...,
     encoding: str | None = ...,
     encoding_errors: str | None = ...,
-    dialect: str | csv.Dialect = ...,
+    dialect: str | csv.Dialect | None = ...,
     on_bad_lines: (
         Literal["error", "warn", "skip"] | Callable[[list[str]], list[str] | None]
     ) = ...,
@@ -351,7 +351,7 @@ def read_table(
     comment: str | None = ...,
     encoding: str | None = ...,
     encoding_errors: str | None = ...,
-    dialect: str | csv.Dialect = ...,
+    dialect: str | csv.Dialect | None = ...,
     on_bad_lines: (
         Literal["error", "warn", "skip"] | Callable[[list[str]], list[str] | None]
     ) = ...,
@@ -416,7 +416,7 @@ def read_table(
     comment: str | None = ...,
     encoding: str | None = ...,
     encoding_errors: str | None = ...,
-    dialect: str | csv.Dialect = ...,
+    dialect: str | csv.Dialect | None = ...,
     on_bad_lines: (
         Literal["error", "warn", "skip"] | Callable[[list[str]], list[str] | None]
     ) = ...,
