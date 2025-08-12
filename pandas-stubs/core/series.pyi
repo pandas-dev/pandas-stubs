@@ -1652,8 +1652,8 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __add__(
         self: Series[float],
         other: (
-            _T_INT
-            | Sequence[_T_INT]
+            int
+            | Sequence[int]
             | np_ndarray_bool
             | np_ndarray_anyint
             | np_ndarray_float
@@ -1767,8 +1767,8 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def add(
         self: Series[float],
         other: (
-            _T_INT
-            | Sequence[_T_INT]
+            int
+            | Sequence[int]
             | np_ndarray_bool
             | np_ndarray_anyint
             | np_ndarray_float
@@ -1848,11 +1848,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __radd__(
         self: Series[float],
         other: (
-            _T_INT
-            | Sequence[_T_INT]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
+            int | Sequence[int] | np_ndarray_bool | np_ndarray_anyint | np_ndarray_float
         ),
     ) -> Series[float]: ...
     @overload
@@ -1960,8 +1956,8 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def radd(
         self: Series[float],
         other: (
-            _T_INT
-            | Sequence[_T_INT]
+            int
+            | Sequence[int]
             | np_ndarray_bool
             | np_ndarray_anyint
             | np_ndarray_float
