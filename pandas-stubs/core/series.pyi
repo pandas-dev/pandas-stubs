@@ -188,6 +188,7 @@ from pandas.core.dtypes.dtypes import CategoricalDtype
 
 from pandas.plotting import PlotAccessor
 
+_T_NUM_NON_BOOL = TypeVar("_T_NUM_NON_BOOL", int, float, complex)
 _T_INT = TypeVar("_T_INT", bound=int)
 _T_COMPLEX = TypeVar("_T_COMPLEX", bound=complex)
 
@@ -2100,17 +2101,22 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self: Series[Never], other: complex | _ListLike | Series
     ) -> Series: ...
     @overload
-    def __truediv__(self, other: Series[Never]) -> Series: ...
+    def __truediv__(self, other: Series[Never]) -> Series: ...  # type: ignore[overload-overlap]
+    @overload
+    def __truediv__(
+        self: Series[bool],
+        other: bool | np_ndarray_bool | Series[bool],
+    ) -> Never: ...
     @overload
     def __truediv__(
         self: Series[bool],
         other: int | Sequence[int] | np_ndarray_anyint | np_ndarray_float | Series[int],
     ) -> Series[float]: ...
     @overload
-    def __truediv__(
+    def __truediv__(  # type: ignore[overload-overlap]
         self: Series[bool],
-        other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX],
-    ) -> Series[_T_COMPLEX]: ...
+        other: _T_NUM_NON_BOOL | Sequence[_T_NUM_NON_BOOL] | Series[_T_NUM_NON_BOOL],
+    ) -> Series[_T_NUM_NON_BOOL]: ...
     @overload
     def __truediv__(
         self: Series[int],
@@ -2172,7 +2178,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: AxisIndex = 0,
     ) -> Series: ...
     @overload
-    def truediv(
+    def truediv(  # type: ignore[overload-overlap]
         self,
         other: Series[Never],
         level: Level | None = None,
@@ -2182,19 +2188,27 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def truediv(
         self: Series[bool],
+        other: bool | np_ndarray_bool | Series[bool],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
+    ) -> Never: ...
+    @overload
+    def truediv(
+        self: Series[bool],
         other: int | Sequence[int] | np_ndarray_anyint | np_ndarray_float | Series[int],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
     ) -> Series[float]: ...
     @overload
-    def truediv(
+    def truediv(  # type: ignore[overload-overlap]
         self: Series[bool],
-        other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX],
+        other: _T_NUM_NON_BOOL | Sequence[_T_NUM_NON_BOOL] | Series[_T_NUM_NON_BOOL],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
-    ) -> Series[_T_COMPLEX]: ...
+    ) -> Series[_T_NUM_NON_BOOL]: ...
     @overload
     def truediv(
         self: Series[int],
@@ -2271,12 +2285,17 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __rtruediv__(
         self: Series[bool],
-        other: _T_INT | Sequence[_T_INT] | np_ndarray_anyint | np_ndarray_float,
-    ) -> Series[float]: ...
+        other: bool | np_ndarray_bool,
+    ) -> Never: ...
     @overload
     def __rtruediv__(
-        self: Series[bool], other: _T_COMPLEX | Sequence[_T_COMPLEX]
-    ) -> Series[_T_COMPLEX]: ...
+        self: Series[bool],
+        other: int | Sequence[int] | np_ndarray_anyint | np_ndarray_float,
+    ) -> Series[float]: ...
+    @overload
+    def __rtruediv__(  # type: ignore[overload-overlap]
+        self: Series[bool], other: _T_NUM_NON_BOOL | Sequence[_T_NUM_NON_BOOL]
+    ) -> Series[_T_NUM_NON_BOOL]: ...
     @overload
     def __rtruediv__(
         self: Series[int],
@@ -2329,19 +2348,27 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def rtruediv(
         self: Series[bool],
+        other: bool | np_ndarray_bool | Series[bool],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: AxisIndex = 0,
+    ) -> Never: ...
+    @overload
+    def rtruediv(
+        self: Series[bool],
         other: int | Sequence[int] | np_ndarray_anyint | np_ndarray_float | Series[int],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
     ) -> Series[float]: ...
     @overload
-    def rtruediv(
+    def rtruediv(  # type: ignore[overload-overlap]
         self: Series[bool],
-        other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX],
+        other: _T_NUM_NON_BOOL | Sequence[_T_NUM_NON_BOOL] | Series[_T_NUM_NON_BOOL],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
-    ) -> Series[_T_COMPLEX]: ...
+    ) -> Series[_T_NUM_NON_BOOL]: ...
     @overload
     def rtruediv(
         self: Series[int],

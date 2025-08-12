@@ -145,7 +145,7 @@ def test_truediv_pd_series() -> None:
     check(assert_type(left / f, pd.Series), pd.Series)
     check(assert_type(left / c, pd.Series), pd.Series)
 
-    check(assert_type(b / left, pd.Series), pd.Series)
+    check(assert_type(b / left, pd.Series), pd.Series)  # type: ignore[assert-type]
     check(assert_type(i / left, pd.Series), pd.Series)
     check(assert_type(f / left, pd.Series), pd.Series)
     check(assert_type(c / left, pd.Series), pd.Series)

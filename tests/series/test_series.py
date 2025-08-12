@@ -1607,7 +1607,7 @@ def test_series_min_max_sub_axis() -> None:
     check(assert_type(sa, pd.Series), pd.Series)
     check(assert_type(ss, pd.Series), pd.Series)
     check(assert_type(sm, pd.Series), pd.Series)
-    check(assert_type(sd, pd.Series), pd.Series)
+    check(assert_type(sd, pd.Series), pd.Series)  # type: ignore[assert-type]
 
 
 def test_series_index_isin() -> None:
