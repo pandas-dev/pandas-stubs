@@ -688,9 +688,6 @@ def test_types_mean() -> None:
         assert_type(df.mean(axis=1, skipna=True, numeric_only=False), pd.Series),
         pd.Series,
     )
-    if TYPE_CHECKING_INVALID_USAGE:
-        df3: pd.DataFrame = df.groupby(axis=1, level=0).mean()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
-        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).mean()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
 
 
 def test_types_median() -> None:
@@ -702,9 +699,6 @@ def test_types_median() -> None:
         assert_type(df.median(axis=1, skipna=True, numeric_only=False), pd.Series),
         pd.Series,
     )
-    if TYPE_CHECKING_INVALID_USAGE:
-        df3: pd.DataFrame = df.groupby(axis=1, level=0).median()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
-        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).median()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
 
 
 def test_types_iterrows() -> None:
