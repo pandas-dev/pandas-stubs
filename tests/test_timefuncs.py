@@ -56,6 +56,11 @@ if TYPE_CHECKING:
 else:
     TimestampSeries: TypeAlias = pd.Series
 
+if not PD_LTE_23:
+    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore  # isort: skip
+else:
+    Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
+
 from tests import np_ndarray_bool
 
 
@@ -549,7 +554,7 @@ def test_series_dt_accessors() -> None:
             upper="2.99",
         ),
         pytest_warns_bounded(
-            Warning,  # should be Pandas4Warning but only exposed starting pandas 3.0.0
+            Pandas4Warning,  # should be Pandas4Warning but only exposed starting pandas 3.0.0
             "The behavior of TimedeltaProperties.to_pytimedelta is deprecated",
             lower="2.99",
             upper="3.0.99",

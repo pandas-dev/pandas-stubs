@@ -98,6 +98,10 @@ else:
     TimestampSeries: TypeAlias = pd.Series
     OffsetSeries: TypeAlias = pd.Series
 
+if not PD_LTE_23:
+    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore  # isort: skip
+else:
+    Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
 # Tests will use numpy 2.1 in python 3.10 or later
 # From Numpy 2.1 __init__.pyi
@@ -3863,7 +3867,7 @@ def test_series_reindex_like() -> None:
             upper="2.99",
         ),
         pytest_warns_bounded(
-            Warning,  # should be Pandas4Warning but only exposed starting pandas 3.0.0
+            Pandas4Warning,
             "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
             lower="2.99",
             upper="3.0.99",
