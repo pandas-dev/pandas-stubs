@@ -626,7 +626,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def groupby(
         self,
         by: Scalar,
-        axis: AxisIndex = ...,
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -638,7 +637,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def groupby(
         self,
         by: DatetimeIndex,
-        axis: AxisIndex = ...,
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -650,7 +648,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def groupby(
         self,
         by: TimedeltaIndex,
-        axis: AxisIndex = ...,
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -662,7 +659,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def groupby(
         self,
         by: PeriodIndex,
-        axis: AxisIndex = ...,
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -674,7 +670,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def groupby(
         self,
         by: IntervalIndex[IntervalT],
-        axis: AxisIndex = ...,
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -686,7 +681,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def groupby(
         self,
         by: MultiIndex | GroupByObjectNonScalar,
-        axis: AxisIndex = ...,
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -698,7 +692,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def groupby(
         self,
         by: None,
-        axis: AxisIndex,
         level: IndexLabel,  # level is required when by=None (passed as positional)
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -710,7 +703,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def groupby(
         self,
         by: None = ...,
-        axis: AxisIndex = ...,
         *,
         level: IndexLabel,  # level is required when by=None (passed as keyword)
         as_index: _bool = ...,
@@ -723,7 +715,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def groupby(
         self,
         by: Series[SeriesByT],
-        axis: AxisIndex = ...,
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -735,7 +726,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def groupby(
         self,
         by: CategoricalIndex | Index | Series,
-        axis: AxisIndex = ...,
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,

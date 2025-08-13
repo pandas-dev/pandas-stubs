@@ -1148,7 +1148,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def groupby(  # pyright: ignore reportOverlappingOverload
         self,
         by: Scalar,
-        axis: AxisIndex | _NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
@@ -1160,7 +1159,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def groupby(
         self,
         by: Scalar,
-        axis: AxisIndex | _NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = ...,
         sort: _bool = ...,
@@ -1172,7 +1170,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def groupby(  # pyright: ignore reportOverlappingOverload
         self,
         by: DatetimeIndex,
-        axis: AxisIndex | _NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
@@ -1184,7 +1181,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def groupby(  # pyright: ignore reportOverlappingOverload
         self,
         by: DatetimeIndex,
-        axis: AxisIndex | _NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = ...,
         sort: _bool = ...,
@@ -1196,7 +1192,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def groupby(  # pyright: ignore reportOverlappingOverload
         self,
         by: TimedeltaIndex,
-        axis: AxisIndex | _NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
@@ -1208,7 +1203,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def groupby(
         self,
         by: TimedeltaIndex,
-        axis: AxisIndex | _NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = ...,
         sort: _bool = ...,
@@ -1220,7 +1214,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def groupby(  # pyright: ignore reportOverlappingOverload
         self,
         by: PeriodIndex,
-        axis: AxisIndex | _NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
@@ -1232,7 +1225,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def groupby(
         self,
         by: PeriodIndex,
-        axis: AxisIndex | _NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = ...,
         sort: _bool = ...,
@@ -1244,7 +1236,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def groupby(  # pyright: ignore reportOverlappingOverload
         self,
         by: IntervalIndex[IntervalT],
-        axis: AxisIndex | _NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
@@ -1256,7 +1247,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def groupby(
         self,
         by: IntervalIndex[IntervalT],
-        axis: AxisIndex | _NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = ...,
         sort: _bool = ...,
@@ -1268,7 +1258,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def groupby(  # type: ignore[overload-overlap] # pyright: ignore reportOverlappingOverload
         self,
         by: MultiIndex | GroupByObjectNonScalar | None = ...,
-        axis: AxisIndex | _NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
@@ -1280,7 +1269,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def groupby(  # type: ignore[overload-overlap]
         self,
         by: MultiIndex | GroupByObjectNonScalar | None = ...,
-        axis: AxisIndex | _NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = ...,
         sort: _bool = ...,
@@ -1292,7 +1280,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def groupby(  # pyright: ignore reportOverlappingOverload
         self,
         by: Series[SeriesByT],
-        axis: AxisIndex | _NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
@@ -1304,7 +1291,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def groupby(
         self,
         by: Series[SeriesByT],
-        axis: AxisIndex | _NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = ...,
         sort: _bool = ...,
@@ -1316,7 +1302,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def groupby(
         self,
         by: CategoricalIndex | Index | Series,
-        axis: AxisIndex | _NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
@@ -1328,7 +1313,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def groupby(
         self,
         by: CategoricalIndex | Index | Series,
-        axis: AxisIndex | _NoDefaultDoNotUse = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = ...,
         sort: _bool = ...,
