@@ -1691,6 +1691,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series: ...
     @overload
     def add(
+        self,
+        other: Series[Never],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series: ...
+    @overload
+    def add(
         self: Series[bool],
         other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX],
         level: Level | None = None,
@@ -1876,7 +1884,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self: Series[_T_COMPLEX], other: np_ndarray_complex
     ) -> Series[complex]: ...
     @overload
-    def __radd__(self, other: S1) -> Self: ...
+    def __radd__(self, other: S1 | Series[S1]) -> Self: ...
     @overload
     def radd(
         self: Series[Never],
