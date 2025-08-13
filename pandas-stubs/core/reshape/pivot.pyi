@@ -64,25 +64,25 @@ _ExtendedAnyArrayLike: TypeAlias = AnyArrayLike | ArrayLike
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes = ...,
-    index: _PivotTableIndexTypes = ...,
-    columns: _PivotTableColumnsTypes = ...,
+    values: _PivotTableValuesTypes = None,
+    index: _PivotTableIndexTypes = None,
+    columns: _PivotTableColumnsTypes = None,
     aggfunc: (
         _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
-    ) = ...,
-    fill_value: Scalar | None = ...,
-    margins: bool = ...,
-    dropna: bool = ...,
-    margins_name: str = ...,
+    ) = "mean",
+    fill_value: Scalar | None = None,
+    margins: bool = False,
+    dropna: bool = True,
+    margins_name: str = "All",
     observed: bool = ...,
-    sort: bool = ...,
+    sort: bool = True,
 ) -> DataFrame: ...
 
 # Can only use Index or ndarray when index or columns is a Grouper
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes = ...,
+    values: _PivotTableValuesTypes = None,
     *,
     index: Grouper,
     columns: _PivotTableColumnsTypes | Index | npt.NDArray = ...,
@@ -99,8 +99,8 @@ def pivot_table(
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes = ...,
-    index: _PivotTableIndexTypes | Index | npt.NDArray = ...,
+    values: _PivotTableValuesTypes = None,
+    index: _PivotTableIndexTypes | Index | npt.NDArray = None,
     *,
     columns: Grouper,
     aggfunc: (
@@ -125,8 +125,8 @@ def crosstab(
     index: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
     columns: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
     values: list | _ExtendedAnyArrayLike,
-    rownames: list[HashableT1] | None = ...,
-    colnames: list[HashableT2] | None = ...,
+    rownames: list[HashableT1] | None = None,
+    colnames: list[HashableT2] | None = None,
     *,
     aggfunc: str | np.ufunc | Callable[[Series], float],
     margins: bool = ...,
@@ -138,12 +138,12 @@ def crosstab(
 def crosstab(
     index: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
     columns: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
-    values: None = ...,
-    rownames: list[HashableT1] | None = ...,
-    colnames: list[HashableT2] | None = ...,
-    aggfunc: None = ...,
-    margins: bool = ...,
-    margins_name: str = ...,
-    dropna: bool = ...,
-    normalize: bool | Literal[0, 1, "all", "index", "columns"] = ...,
+    values: None = None,
+    rownames: list[HashableT1] | None = None,
+    colnames: list[HashableT2] | None = None,
+    aggfunc: None = None,
+    margins: bool = False,
+    margins_name: str = "All",
+    dropna: bool = True,
+    normalize: bool | Literal[0, 1, "all", "index", "columns"] = False,
 ) -> DataFrame: ...

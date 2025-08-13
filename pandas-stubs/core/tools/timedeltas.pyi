@@ -20,14 +20,14 @@ from pandas._typing import (
 @overload
 def to_timedelta(
     arg: str | float | timedelta,
-    unit: TimeDeltaUnitChoices | None = ...,
-    errors: RaiseCoerce = ...,
+    unit: TimeDeltaUnitChoices | None = None,
+    errors: RaiseCoerce = "raise",
 ) -> Timedelta: ...
 @overload
 def to_timedelta(
     arg: Series,
-    unit: TimeDeltaUnitChoices | None = ...,
-    errors: RaiseCoerce = ...,
+    unit: TimeDeltaUnitChoices | None = None,
+    errors: RaiseCoerce = "raise",
 ) -> TimedeltaSeries: ...
 @overload
 def to_timedelta(
@@ -39,6 +39,6 @@ def to_timedelta(
         | ArrayLike
         | Index
     ),
-    unit: TimeDeltaUnitChoices | None = ...,
-    errors: RaiseCoerce = ...,
+    unit: TimeDeltaUnitChoices | None = None,
+    errors: RaiseCoerce = "raise",
 ) -> TimedeltaIndex: ...

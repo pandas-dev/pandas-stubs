@@ -113,22 +113,22 @@ def date_range(
 ) -> DatetimeIndex: ...
 @overload
 def bdate_range(
-    start: str | DateAndDatetimeLike | None = ...,
-    end: str | DateAndDatetimeLike | None = ...,
-    periods: int | None = ...,
-    freq: str | timedelta | Timedelta | BaseOffset = ...,
-    tz: TimeZones = ...,
-    normalize: bool = ...,
-    name: Hashable | None = ...,
-    weekmask: str | None = ...,
-    holidays: None = ...,
-    inclusive: IntervalClosedType = ...,
+    start: str | DateAndDatetimeLike | None = None,
+    end: str | DateAndDatetimeLike | None = None,
+    periods: int | None = None,
+    freq: str | timedelta | Timedelta | BaseOffset = "B",
+    tz: TimeZones = None,
+    normalize: bool = True,
+    name: Hashable | None = None,
+    weekmask: str | None = None,
+    holidays: None = None,
+    inclusive: IntervalClosedType = "both",
 ) -> DatetimeIndex: ...
 @overload
 def bdate_range(
-    start: str | DateAndDatetimeLike | None = ...,
-    end: str | DateAndDatetimeLike | None = ...,
-    periods: int | None = ...,
+    start: str | DateAndDatetimeLike | None = None,
+    end: str | DateAndDatetimeLike | None = None,
+    periods: int | None = None,
     *,
     freq: str | timedelta | Timedelta | BaseOffset,
     tz: TimeZones = ...,
