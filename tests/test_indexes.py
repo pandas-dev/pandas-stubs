@@ -1372,7 +1372,9 @@ def test_datetimeindex_shift() -> None:
 
 def test_timedeltaindex_shift() -> None:
     ind = pd.date_range("1/1/2021", "1/5/2021") - pd.Timestamp("1/3/2019")
-    check(assert_type(ind.shift(1), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    if PD_LTE_23:
+        # cannot shift with no freq starting in pandas 3.0.0
+        check(assert_type(ind.shift(1), pd.TimedeltaIndex), pd.TimedeltaIndex)
 
 
 def test_index_insert() -> None:
