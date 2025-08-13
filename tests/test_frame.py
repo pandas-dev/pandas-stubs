@@ -689,8 +689,8 @@ def test_types_mean() -> None:
         pd.Series,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        df3: pd.DataFrame = df.groupby(axis=1, level=0).mean()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
-        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).mean()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
+        df3: pd.DataFrame = df.groupby(axis=1, level=0).mean()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).mean()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_types_median() -> None:
@@ -703,8 +703,8 @@ def test_types_median() -> None:
         pd.Series,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        df3: pd.DataFrame = df.groupby(axis=1, level=0).median()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
-        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).median()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
+        df3: pd.DataFrame = df.groupby(axis=1, level=0).median()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        df4: pd.DataFrame = df.groupby(axis=1, level=0, dropna=True).median()  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_types_iterrows() -> None:
