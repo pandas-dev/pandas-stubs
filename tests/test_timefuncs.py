@@ -56,6 +56,11 @@ if TYPE_CHECKING:
 else:
     TimestampSeries: TypeAlias = pd.Series
 
+if not PD_LTE_23:
+    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore  # isort: skip
+else:
+    Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
+
 from tests import np_ndarray_bool
 
 
@@ -95,9 +100,9 @@ def test_types_init() -> None:
 
 
 def test_types_arithmetic() -> None:
-    ts: pd.Timestamp = pd.to_datetime("2021-03-01")
-    ts2: pd.Timestamp = pd.to_datetime("2021-01-01")
-    delta: pd.Timedelta = pd.to_timedelta("1 day")
+    ts = pd.to_datetime("2021-03-01")
+    ts2 = pd.to_datetime("2021-01-01")
+    delta = pd.to_timedelta("1 day")
 
     check(assert_type(ts - ts2, pd.Timedelta), pd.Timedelta)
     check(assert_type(ts + delta, pd.Timestamp), pd.Timestamp)
@@ -106,8 +111,8 @@ def test_types_arithmetic() -> None:
 
 
 def test_types_comparison() -> None:
-    ts: pd.Timestamp = pd.to_datetime("2021-03-01")
-    ts2: pd.Timestamp = pd.to_datetime("2021-01-01")
+    ts = pd.to_datetime("2021-03-01")
+    ts2 = pd.to_datetime("2021-01-01")
 
     check(assert_type(ts < ts2, bool), bool)
     check(assert_type(ts > ts2, bool), bool)
@@ -136,7 +141,7 @@ def test_types_timestamp_series_comparisons() -> None:
 
 
 def test_types_pydatetime() -> None:
-    ts: pd.Timestamp = pd.Timestamp("2021-03-01T12")
+    ts = pd.Timestamp("2021-03-01T12")
 
     check(assert_type(ts.to_pydatetime(), dt.datetime), dt.datetime)
     check(assert_type(ts.to_pydatetime(False), dt.datetime), dt.datetime)
@@ -152,9 +157,9 @@ def test_to_timedelta() -> None:
 
 
 def test_timedelta_arithmetic() -> None:
-    td1: pd.Timedelta = pd.to_timedelta(3, "days")
-    td2: pd.Timedelta = pd.to_timedelta(4, "hours")
-    td3: pd.Timedelta = td1 + td2
+    td1 = pd.to_timedelta(3, "days")
+    td2 = pd.to_timedelta(4, "hours")
+    td3 = td1 + td2
     check(assert_type(td1 - td2, pd.Timedelta), pd.Timedelta)
     check(assert_type(td1 * 4.3, pd.Timedelta), pd.Timedelta)
     check(assert_type(td3 / 10.2, pd.Timedelta), pd.Timedelta)
@@ -541,10 +546,19 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s2.dt.microseconds, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s2.dt.nanoseconds, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s2.dt.components, pd.DataFrame), pd.DataFrame)
-    with pytest_warns_bounded(
-        FutureWarning,
-        "The behavior of TimedeltaProperties.to_pytimedelta is deprecated",
-        lower="2.3.99",
+    with (
+        pytest_warns_bounded(
+            FutureWarning,
+            "The behavior of TimedeltaProperties.to_pytimedelta is deprecated",
+            lower="2.3.99",
+            upper="2.99",
+        ),
+        pytest_warns_bounded(
+            Pandas4Warning,  # should be Pandas4Warning but only exposed starting pandas 3.0.0
+            "The behavior of TimedeltaProperties.to_pytimedelta is deprecated",
+            lower="2.99",
+            upper="3.0.99",
+        ),
     ):
         check(assert_type(s2.dt.to_pytimedelta(), np.ndarray), np.ndarray)
     check(assert_type(s2.dt.total_seconds(), "pd.Series[float]"), pd.Series, float)
