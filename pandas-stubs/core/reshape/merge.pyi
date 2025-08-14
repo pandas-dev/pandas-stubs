@@ -38,42 +38,42 @@ def merge(
 def merge_ordered(
     left: DataFrame,
     right: DataFrame,
-    on: Label | list[HashableT] | None = ...,
-    left_on: Label | list[HashableT] | None = ...,
-    right_on: Label | list[HashableT] | None = ...,
-    left_by: Label | list[HashableT] | None = ...,
-    right_by: Label | list[HashableT] | None = ...,
-    fill_method: Literal["ffill"] | None = ...,
+    on: Label | list[HashableT] | None = None,
+    left_on: Label | list[HashableT] | None = None,
+    right_on: Label | list[HashableT] | None = None,
+    left_by: Label | list[HashableT] | None = None,
+    right_by: Label | list[HashableT] | None = None,
+    fill_method: Literal["ffill"] | None = None,
     suffixes: Suffixes = ...,
-    how: JoinHow = ...,
+    how: JoinHow = "outer",
 ) -> DataFrame: ...
 @overload
 def merge_ordered(
     left: Series,
     right: DataFrame | Series,
-    on: Label | list[HashableT] | None = ...,
-    left_on: Label | list[HashableT] | None = ...,
-    right_on: Label | list[HashableT] | None = ...,
-    left_by: None = ...,
-    right_by: None = ...,
-    fill_method: Literal["ffill"] | None = ...,
+    on: Label | list[HashableT] | None = None,
+    left_on: Label | list[HashableT] | None = None,
+    right_on: Label | list[HashableT] | None = None,
+    left_by: None = None,
+    right_by: None = None,
+    fill_method: Literal["ffill"] | None = None,
     suffixes: (
         list[str | None] | tuple[str, str] | tuple[None, str] | tuple[str, None]
     ) = ...,
-    how: JoinHow = ...,
+    how: JoinHow = "outer",
 ) -> DataFrame: ...
 @overload
 def merge_ordered(
     left: DataFrame | Series,
     right: Series,
-    on: Label | list[HashableT] | None = ...,
-    left_on: Label | list[HashableT] | None = ...,
-    right_on: Label | list[HashableT] | None = ...,
-    left_by: None = ...,
-    right_by: None = ...,
-    fill_method: Literal["ffill"] | None = ...,
+    on: Label | list[HashableT] | None = None,
+    left_on: Label | list[HashableT] | None = None,
+    right_on: Label | list[HashableT] | None = None,
+    left_by: None = None,
+    right_by: None = None,
+    fill_method: Literal["ffill"] | None = None,
     suffixes: Suffixes = ...,
-    how: JoinHow = ...,
+    how: JoinHow = "outer",
 ) -> DataFrame: ...
 def merge_asof(
     left: DataFrame | Series,

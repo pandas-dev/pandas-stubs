@@ -176,7 +176,7 @@ def read_excel(
         | OpenDocument
         | pyxlsb.workbook.Workbook
     ),
-    sheet_name: int | str = ...,
+    sheet_name: int | str = 0,
     *,
     header: int | Sequence[int] | None = ...,
     names: ListLikeHashable | None = ...,

@@ -28,7 +28,7 @@ from pandas.io.parsers import TextFileReader
 
 @overload
 def read_clipboard(
-    sep: str | None = ...,
+    sep: str | None = r"\s+",
     *,
     dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     delimiter: str | None = ...,
@@ -87,7 +87,7 @@ def read_clipboard(
 ) -> TextFileReader: ...
 @overload
 def read_clipboard(
-    sep: str | None = ...,
+    sep: str | None = r"\s+",
     *,
     dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     delimiter: str | None = ...,
@@ -146,7 +146,7 @@ def read_clipboard(
 ) -> TextFileReader: ...
 @overload
 def read_clipboard(
-    sep: str | None = ...,
+    sep: str | None = r"\s+",
     *,
     dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     delimiter: str | None = ...,
