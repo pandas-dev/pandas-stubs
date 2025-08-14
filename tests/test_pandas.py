@@ -173,6 +173,16 @@ def test_types_concat() -> None:
         assert_type(pd.concat({1: s, None: s2}), pd.Series),
         pd.Series,
     )
+
+    # https://github.com/microsoft/python-type-stubs/issues/69
+    s1 = pd.Series([1, 2, 3])
+    s2 = pd.Series([4, 5, 6])
+    df = pd.concat([s1, s2], axis=1)
+    ts1 = pd.concat([s1, s2], axis=0)
+    ts2 = pd.concat([s1, s2])
+
+    check(assert_type(ts1, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(ts2, "pd.Series[int]"), pd.Series, np.integer)
     check(
         assert_type(
             pd.concat({1: s, None: s2}, axis=1),
