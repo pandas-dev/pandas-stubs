@@ -55,7 +55,6 @@ from tests import (
 )
 from tests import NUMPY20  # See https://github.com/PyTables/PyTables/issues/1172
 
-from pandas.io.api import to_pickle
 from pandas.io.parsers import TextFileReader
 from pandas.io.pytables import (
     TableIterator,
@@ -123,10 +122,6 @@ def test_xml_str():
 def test_pickle():
     with ensure_clean() as path:
         check(assert_type(DF.to_pickle(path), None), type(None))
-        check(assert_type(read_pickle(path), Any), DataFrame)
-
-    with ensure_clean() as path:
-        check(assert_type(to_pickle(DF, path), None), type(None))
         check(assert_type(read_pickle(path), Any), DataFrame)
 
 
@@ -546,6 +541,10 @@ def test_parquet_options():
             type(None),
         )
         check(assert_type(read_parquet(path), DataFrame), DataFrame)
+        check(assert_type(read_parquet(path), DataFrame), DataFrame)
+
+        sel = [("a", ">", 2)]
+        check(assert_type(read_parquet(path, filters=sel), DataFrame), DataFrame)
 
 
 def test_feather():

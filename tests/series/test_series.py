@@ -33,6 +33,8 @@ from pandas.api.typing import NAType
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.window import ExponentialMovingWindow
+from pandas.core.window.expanding import Expanding
+from pandas.core.window.rolling import Rolling
 import pytest
 from typing_extensions import (
     Never,
@@ -61,6 +63,10 @@ from tests.extension.decimal.array import DecimalDtype
 from pandas.io.formats.format import EngFormatter
 from pandas.tseries.offsets import (
     BaseOffset,
+    BDay,
+    BQuarterEnd,
+    MonthEnd,
+    Week,
     YearEnd,
 )
 
@@ -92,6 +98,10 @@ else:
     TimestampSeries: TypeAlias = pd.Series
     OffsetSeries: TypeAlias = pd.Series
 
+if not PD_LTE_23:
+    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore  # isort: skip
+else:
+    Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
 # Tests will use numpy 2.1 in python 3.10 or later
 # From Numpy 2.1 __init__.pyi
@@ -446,6 +456,7 @@ def test_types_sort_values_with_key() -> None:
 
 
 def test_types_shift() -> None:
+    """Test shift operator on series with different arguments."""
     s = pd.Series([1, 2, 3], index=pd.date_range("2020", periods=3))
     check(assert_type(s.shift(), pd.Series), pd.Series, np.floating)
     check(
@@ -455,6 +466,11 @@ def test_types_shift() -> None:
     )
     check(assert_type(s.shift(-1, fill_value=0), pd.Series), pd.Series, np.integer)
     check(assert_type(s.shift(freq="1D"), pd.Series), pd.Series, np.integer)
+    check(assert_type(s.shift(freq=BDay(1)), pd.Series), pd.Series, np.integer)
+    check(assert_type(s.shift(freq=BQuarterEnd(5)), pd.Series), pd.Series, np.integer)
+    check(assert_type(s.shift(freq=MonthEnd(3)), pd.Series), pd.Series, np.integer)
+    check(assert_type(s.shift(freq=Week(4)), pd.Series), pd.Series, np.integer)
+    check(assert_type(s.shift(freq=YearEnd(2)), pd.Series), pd.Series, np.integer)
 
 
 def test_series_pct_change() -> None:
@@ -467,11 +483,6 @@ def test_series_pct_change() -> None:
     )
     check(
         assert_type(s.pct_change(periods=-1), "pd.Series[float]"),
-        pd.Series,
-        np.floating,
-    )
-    check(
-        assert_type(s.pct_change(fill_value=0), "pd.Series[float]"),
         pd.Series,
         np.floating,
     )
@@ -821,9 +832,7 @@ def test_types_element_wise_arithmetic() -> None:
     # check(assert_type(s.mul(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.mul(s2, fill_value=0), pd.Series), pd.Series, np.integer)
 
-    # TODO these two below should type pd.Series[float]
-    # check(assert_type(s / s2, "pd.Series[float]"), pd.Series, np.float64)
-    check(assert_type(s / s2, pd.Series), pd.Series, np.float64)
+    check(assert_type(s / s2, "pd.Series[float]"), pd.Series, np.float64)
     check(
         assert_type(s.div(s2, fill_value=0), "pd.Series[float]"), pd.Series, np.float64
     )
@@ -1216,14 +1225,10 @@ def test_types_plot() -> None:
 
 def test_types_window() -> None:
     s = pd.Series([0, 1, 1, 0, 5, 1, -10])
-    s.expanding()
-    s.rolling(2, center=True)
-    if TYPE_CHECKING_INVALID_USAGE:
-        s.expanding(axis=0)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue]
-        s.rolling(2, axis=0, center=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        s.expanding(axis=0, center=True)  # type: ignore[call-arg] # pyright: ignore[reportCallIssue]
+    check(assert_type(s.expanding(), "Expanding[pd.Series]"), Expanding)
+    check(assert_type(s.rolling(2, center=True), "Rolling[pd.Series]"), Rolling)
 
-    s.rolling(2)
+    check(assert_type(s.rolling(2), "Rolling[pd.Series]"), Rolling)
 
     check(
         assert_type(s.rolling(2).agg("sum"), pd.Series),
@@ -1428,9 +1433,14 @@ def test_types_values() -> None:
         assert_type(pd.Series([1, 2, 3]).values, Union[ExtensionArray, np.ndarray]),
         np.ndarray,
     )
+    valresult_type: type[np.ndarray | ExtensionArray]
+    if PD_LTE_23:
+        valresult_type = np.ndarray
+    else:
+        valresult_type = ExtensionArray
     check(
         assert_type(pd.Series(list("aabc")).values, Union[np.ndarray, ExtensionArray]),
-        np.ndarray,
+        valresult_type,
     )
     check(
         assert_type(
@@ -1517,14 +1527,13 @@ def test_types_bfill() -> None:
 
 def test_types_ewm() -> None:
     s1 = pd.Series([1, 2, 3])
-    if TYPE_CHECKING_INVALID_USAGE:
-        check(
-            assert_type(
-                s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True, axis=0),  # type: ignore[call-arg] # pyright: ignore[reportAssertTypeFailure,reportCallIssue]
-                "ExponentialMovingWindow[pd.Series]",
-            ),
-            ExponentialMovingWindow,
-        )
+    check(
+        assert_type(
+            s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True),
+            "ExponentialMovingWindow[pd.Series]",
+        ),
+        ExponentialMovingWindow,
+    )
     check(
         assert_type(
             s1.ewm(com=0.3, min_periods=0, adjust=False, ignore_na=True),
@@ -1707,11 +1716,14 @@ def test_series_replace() -> None:
         pd.Series,
     )
     check(
-        assert_type(s.replace({pattern: "z"}), "pd.Series[str]"),
+        assert_type(s.replace({pattern: "z"}, regex=True), "pd.Series[str]"),
         pd.Series,
     )
     check(assert_type(s.replace(["a"], ["x"]), "pd.Series[str]"), pd.Series)
-    check(assert_type(s.replace([pattern], ["x"]), "pd.Series[str]"), pd.Series)
+    check(
+        assert_type(s.replace([pattern], ["x"], regex=True), "pd.Series[str]"),
+        pd.Series,
+    )
     check(assert_type(s.replace(r"^a.*", "x", regex=True), "pd.Series[str]"), pd.Series)
     check(assert_type(s.replace(value="x", regex=r"^a.*"), "pd.Series[str]"), pd.Series)
     check(
@@ -3789,16 +3801,6 @@ def test_series_bool_fails() -> None:
         pass
 
 
-def test_path_div() -> None:
-    # GH 682
-    folder = Path.cwd()
-    files = pd.Series(["a.png", "b.png"])
-    check(assert_type(folder / files, pd.Series), pd.Series, Path)
-
-    folders = pd.Series([folder, folder])
-    check(assert_type(folders / Path("a.png"), pd.Series), pd.Series, Path)
-
-
 def test_series_dict() -> None:
     # GH 812
     check(
@@ -3828,18 +3830,48 @@ def test_series_int_float() -> None:
 
 
 def test_series_reindex() -> None:
+    """Test Series.reindex without any arguments and with tolerance."""
     s = pd.Series([1, 2, 3], index=[0, 1, 2])
     check(assert_type(s.reindex([2, 1, 0]), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(
+            s.reindex([2, 1, 0], method="backfill", tolerance=1), "pd.Series[int]"
+        ),
+        pd.Series,
+        np.integer,
+    )
+
+    sr = pd.Series([1, 2], pd.to_datetime(["2023-01-01", "2023-01-02"]))
+    check(
+        assert_type(
+            sr.reindex(
+                index=pd.to_datetime(["2023-01-02", "2023-01-03"]),
+                method="ffill",
+                tolerance=pd.Timedelta("1D"),
+            ),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+        np.integer,
+    )
 
 
 def test_series_reindex_like() -> None:
     s = pd.Series([1, 2, 3], index=[0, 1, 2])
     other = pd.Series([1, 2], index=[1, 0])
-    with pytest_warns_bounded(
-        FutureWarning,
-        "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
-        lower="2.3.99",
-        upper="3.0.99",
+    with (
+        pytest_warns_bounded(
+            FutureWarning,
+            "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
+            lower="2.3.99",
+            upper="2.99",
+        ),
+        pytest_warns_bounded(
+            Pandas4Warning,
+            "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
+            lower="2.99",
+            upper="3.0.99",
+        ),
     ):
         check(
             assert_type(
@@ -3983,3 +4015,11 @@ def test_series_str_methods() -> None:
     check(assert_type(s_str, "pd.Series[str]"), pd.Series, str)
     check(assert_type(s_str.str.upper(), "pd.Series[str]"), pd.Series, str)
     check(assert_type(s_str.str.lower(), "pd.Series[str]"), pd.Series, str)
+
+
+def test_series_explode() -> None:
+    """Test Series.explode method."""
+    s = pd.Series([[1, 2, 3], "foo", [], [3, 4]])
+
+    check(assert_type(s.explode(), pd.Series), pd.Series)
+    check(assert_type(s.explode(ignore_index=True), pd.Series), pd.Series)

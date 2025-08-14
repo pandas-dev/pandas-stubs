@@ -5,7 +5,6 @@ from typing import (
     overload,
 )
 
-import numpy as np
 import pandas as pd
 from pandas import Index
 from pandas.core.indexes.accessors import PeriodIndexFieldOps
@@ -53,11 +52,9 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period], PeriodIndexFieldOps):
     def __rsub__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: NaTType
     ) -> NaTType: ...
-    def __array__(self, dtype=...) -> np.ndarray: ...
     @final
     def __array_wrap__(self, result, context=...): ...
     def asof_locs(self, where, mask): ...
-    def astype(self, dtype, copy: bool = ...): ...
     def searchsorted(self, value, side: str = ..., sorter=...): ...
     @property
     def is_full(self) -> bool: ...
@@ -77,21 +74,18 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period], PeriodIndexFieldOps):
         return_indexers: bool = ...,
         sort: bool = ...,
     ): ...
-    @final
-    def difference(self, other, sort=...): ...
-    def memory_usage(self, deep: bool = ...): ...
     @property
     def freqstr(self) -> str: ...
-    def shift(self, periods: int = ..., freq=...) -> Self: ...
+    def shift(self, periods: int = 1, freq=...) -> Self: ...
 
 def period_range(
     start: (
         str | datetime.datetime | datetime.date | pd.Timestamp | pd.Period | None
-    ) = ...,
+    ) = None,
     end: (
         str | datetime.datetime | datetime.date | pd.Timestamp | pd.Period | None
-    ) = ...,
-    periods: int | None = ...,
-    freq: str | BaseOffset | None = ...,
-    name: Hashable | None = ...,
+    ) = None,
+    periods: int | None = None,
+    freq: str | BaseOffset | None = None,
+    name: Hashable | None = None,
 ) -> PeriodIndex: ...

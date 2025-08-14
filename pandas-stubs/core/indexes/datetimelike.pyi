@@ -18,16 +18,16 @@ class DatetimeIndexOpsMixin(ExtensionIndex[S1]):
     @property
     def is_all_dates(self) -> bool: ...
     def min(
-        self, axis: AxisIndex | None = ..., skipna: bool = ..., *args, **kwargs
+        self, axis: AxisIndex | None = None, skipna: bool = True, *args, **kwargs
     ) -> S1: ...
     def argmin(
-        self, axis: AxisIndex | None = ..., skipna: bool = ..., *args, **kwargs
+        self, axis: AxisIndex | None = None, skipna: bool = True, *args, **kwargs
     ) -> np.int64: ...
     def max(
-        self, axis: AxisIndex | None = ..., skipna: bool = ..., *args, **kwargs
+        self, axis: AxisIndex | None = None, skipna: bool = True, *args, **kwargs
     ) -> S1: ...
     def argmax(
-        self, axis: AxisIndex | None = ..., skipna: bool = ..., *args, **kwargs
+        self, axis: AxisIndex | None = None, skipna: bool = True, *args, **kwargs
     ) -> np.int64: ...
     def __rsub__(  # type: ignore[override]
         self, other: DatetimeIndexOpsMixin

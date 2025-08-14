@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+from collections.abc import Hashable
 import datetime as dt
 from typing import (
     TYPE_CHECKING,
+    Any,
     Union,
+    cast,
 )
 
 import numpy as np
@@ -54,8 +57,6 @@ def test_index_astype() -> None:
     indc = indi.astype(inds.dtype)
     check(assert_type(indc, pd.Index), pd.Index)
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
-    mia = mi.astype(object)  # object is only valid parameter for MultiIndex.astype()
-    check(assert_type(mia, pd.MultiIndex), pd.MultiIndex)
     check(
         assert_type(mi.to_frame(name=[3, 7], allow_duplicates=True), pd.DataFrame),
         pd.DataFrame,
@@ -1028,6 +1029,42 @@ def test_getitem() -> None:
     check(assert_type(i0[[0, 2]], "pd.Index[str]"), pd.Index, str)
 
 
+def test_append_mix() -> None:
+    """Test pd.Index.append with mixed types"""
+    first = pd.Index([1])
+    second = pd.Index(["a"])
+    third = pd.Index([1, "a"])
+    check(assert_type(first.append(second), pd.Index), pd.Index)
+    check(assert_type(first.append([second]), pd.Index), pd.Index)
+
+    check(assert_type(first.append(third), pd.Index), pd.Index)
+    check(assert_type(first.append([third]), pd.Index), pd.Index)
+    check(assert_type(first.append([second, third]), pd.Index), pd.Index)
+
+    check(assert_type(third.append([]), pd.Index), pd.Index)
+    check(assert_type(third.append(cast("list[Index[Any]]", [])), pd.Index), pd.Index)
+    check(assert_type(third.append([first]), pd.Index), pd.Index)
+    check(assert_type(third.append([first, second]), pd.Index), pd.Index)
+
+
+def test_append_int() -> None:
+    """Test pd.Index[int].append"""
+    first = pd.Index([1])
+    second = pd.Index([2])
+    check(assert_type(first.append([]), "pd.Index[int]"), pd.Index, np.int64)
+    check(assert_type(first.append(second), "pd.Index[int]"), pd.Index, np.int64)
+    check(assert_type(first.append([second]), "pd.Index[int]"), pd.Index, np.int64)
+
+
+def test_append_str() -> None:
+    """Test pd.Index[str].append"""
+    first = pd.Index(["str"])
+    second = pd.Index(["rts"])
+    check(assert_type(first.append([]), "pd.Index[str]"), pd.Index, str)
+    check(assert_type(first.append(second), "pd.Index[str]"), pd.Index, str)
+    check(assert_type(first.append([second]), "pd.Index[str]"), pd.Index, str)
+
+
 def test_range_index_range() -> None:
     """Test that pd.RangeIndex can be initialized from range."""
     iri = pd.RangeIndex(range(5))
@@ -1143,6 +1180,17 @@ def test_datetime_index_constructor() -> None:
     )
     check(
         assert_type(pd.DatetimeIndex(["2020"], tz="Asia/Kathmandu"), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+
+    # https://github.com/microsoft/python-type-stubs/issues/115
+    df = pd.DataFrame({"A": [1, 2, 3], "B": [5, 6, 7]})
+
+    check(
+        assert_type(
+            pd.DatetimeIndex(data=df["A"], tz=None, ambiguous="NaT", copy=True),
+            pd.DatetimeIndex,
+        ),
         pd.DatetimeIndex,
     )
 
@@ -1324,6 +1372,7 @@ def test_datetimeindex_shift() -> None:
 
 def test_timedeltaindex_shift() -> None:
     ind = pd.date_range("1/1/2021", "1/5/2021") - pd.Timestamp("1/3/2019")
+    # broken on 3.0.0.dev0 as of 20250813, fix with pandas-dev/pandas/issues/62094
     check(assert_type(ind.shift(1), pd.TimedeltaIndex), pd.TimedeltaIndex)
 
 
@@ -1384,3 +1433,36 @@ def test_index_infer_objects() -> None:
     df = pd.DataFrame({"A": ["a", 1, 2, 3]})
     idx = df.set_index("A").index[1:]
     check(assert_type(idx.infer_objects(), pd.Index), pd.Index)
+
+
+def test_multiindex_range() -> None:
+    """Test using range in `MultiIndex.from_product` GH1285."""
+    midx = pd.MultiIndex.from_product(
+        [range(3), range(5)],
+    )
+    check(assert_type(midx, pd.MultiIndex), pd.MultiIndex)
+
+    midx_mixed_types = pd.MultiIndex.from_product(
+        [range(3), pd.Series([2, 3, 5])],
+    )
+    check(assert_type(midx_mixed_types, pd.MultiIndex), pd.MultiIndex)
+
+
+def test_index_naming() -> None:
+    """
+    Test index names type both for the getter and the setter.
+    The names of an index should be settable with a sequence (not str) and names
+    property is a list[Hashable | None] (FrozenList).
+    """
+    df = pd.DataFrame({"a": ["a", "b", "c"], "i": [10, 11, 12]})
+
+    df.index.names = ["idx"]
+    check(assert_type(df.index.names, list[Hashable | None]), list)
+    df.index.names = [3]
+    check(assert_type(df.index.names, list[Hashable | None]), list)
+    df.index.names = ("idx2",)
+    check(assert_type(df.index.names, list[Hashable | None]), list)
+    df.index.names = [None]
+    check(assert_type(df.index.names, list[Hashable | None]), list)
+    df.index.names = (None,)
+    check(assert_type(df.index.names, list[Hashable | None]), list)
