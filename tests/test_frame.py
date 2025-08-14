@@ -1,7 +1,11 @@
 from __future__ import annotations
 
-from collections import defaultdict
+from collections import (
+    OrderedDict,
+    defaultdict,
+)
 from collections.abc import (
+    Callable,
     Hashable,
     Iterable,
     Iterator,
@@ -20,7 +24,6 @@ import sys
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     Generic,
     TypedDict,
     TypeVar,
@@ -38,6 +41,7 @@ from pandas.core.resample import (
 )
 import pytest
 from typing_extensions import (
+    Never,
     TypeAlias,
     assert_never,
     assert_type,
@@ -2199,19 +2203,6 @@ def test_types_resample() -> None:
     df.resample(datetime.timedelta(minutes=20), origin="epoch", on="date")
 
 
-def test_types_to_dict() -> None:
-    data = pd.DataFrame({"a": [1], "b": [2]})
-    check(assert_type(data.to_dict(orient="records"), list[dict[Hashable, Any]]), list)
-    check(assert_type(data.to_dict(orient="dict"), dict[Hashable, Any]), dict)
-    check(assert_type(data.to_dict(orient="list"), dict[Hashable, Any]), dict)
-    check(assert_type(data.to_dict(orient="series"), dict[Hashable, Any]), dict)
-    check(assert_type(data.to_dict(orient="split"), dict[Hashable, Any]), dict)
-    check(assert_type(data.to_dict(orient="index"), dict[Hashable, Any]), dict)
-
-    # orient param accepting "tight" added in 1.4.0 https://pandas.pydata.org/docs/whatsnew/v1.4.0.html
-    check(assert_type(data.to_dict(orient="tight"), dict[Hashable, Any]), dict)
-
-
 def test_types_from_dict() -> None:
     check(
         assert_type(
@@ -3746,33 +3737,87 @@ def test_to_records() -> None:
     )
 
 
-def test_to_dict() -> None:
-    check(assert_type(DF.to_dict(), dict[Hashable, Any]), dict)
-    check(assert_type(DF.to_dict("split"), dict[Hashable, Any]), dict)
+def test_to_dict_simple() -> None:
+    data = pd.DataFrame({"a": [1], "b": [2]})
+    check(assert_type(data.to_dict(), dict[Hashable, Any]), dict)
+    check(assert_type(data.to_dict("records"), list[dict[Hashable, Any]]), list)
+    check(assert_type(data.to_dict("index"), dict[Hashable, dict[Hashable, Any]]), dict)
+    check(assert_type(data.to_dict("dict"), dict[Hashable, Any]), dict)
+    check(assert_type(data.to_dict("list"), dict[Hashable, Any]), dict)
+    check(assert_type(data.to_dict("series"), dict[Hashable, Any]), dict)
+    check(assert_type(data.to_dict("split"), dict[str, list]), dict, str)
 
-    target: MutableMapping = defaultdict(list)
-    check(
-        assert_type(DF.to_dict(into=target), MutableMapping[Hashable, Any]), defaultdict
-    )
-    target = defaultdict(list)
-    check(
-        assert_type(DF.to_dict("tight", into=target), MutableMapping[Hashable, Any]),
-        defaultdict,
-    )
-    target = defaultdict(list)
-    check(assert_type(DF.to_dict("records"), list[dict[Hashable, Any]]), list)
-    check(
-        assert_type(
-            DF.to_dict("records", into=target), list[MutableMapping[Hashable, Any]]
-        ),
-        list,
-    )
+    # orient param accepting "tight" added in 1.4.0 https://pandas.pydata.org/docs/whatsnew/v1.4.0.html
+    check(assert_type(data.to_dict("tight"), dict[str, list]), dict, str)
+
     if TYPE_CHECKING_INVALID_USAGE:
 
         def test(mapping: Mapping) -> None:  # pyright: ignore[reportUnusedFunction]
-            DF.to_dict(  # type: ignore[call-overload]
-                into=mapping  # pyright: ignore[reportArgumentType,reportCallIssue]
-            )
+            data.to_dict(into=mapping)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+
+        assert_type(data.to_dict(into=defaultdict), Never)
+        assert_type(data.to_dict("records", into=defaultdict), Never)
+        assert_type(data.to_dict("index", into=defaultdict), Never)
+        assert_type(data.to_dict("dict", into=defaultdict), Never)
+        assert_type(data.to_dict("list", into=defaultdict), Never)
+        assert_type(data.to_dict("series", into=defaultdict), Never)
+        assert_type(data.to_dict("split", into=defaultdict), Never)
+        assert_type(data.to_dict("tight", into=defaultdict), Never)
+
+
+def test_to_dict_into_defaultdict() -> None:
+    """Test DataFrame.to_dict with `into` is an instance of defaultdict[Any, list]"""
+
+    data = pd.DataFrame({("str", "rts"): [[1, 2, 4], [2, 3], [3]]})
+    target: defaultdict[Any, list] = defaultdict(list)
+
+    check(
+        assert_type(data.to_dict(into=target), defaultdict[Any, list]),
+        defaultdict,
+        tuple,
+    )
+    check(
+        assert_type(
+            data.to_dict("index", into=target),
+            defaultdict[Hashable, dict[Hashable, Any]],
+        ),
+        defaultdict,
+    )
+    check(
+        assert_type(data.to_dict("tight", into=target), MutableMapping[str, list]),
+        defaultdict,
+        str,
+    )
+    check(
+        assert_type(data.to_dict("records", into=target), list[defaultdict[Any, list]]),
+        list,
+        defaultdict,
+    )
+
+
+def test_to_dict_into_ordered_dict() -> None:
+    """Test DataFrame.to_dict with `into=OrderedDict`"""
+
+    data = pd.DataFrame({("str", "rts"): [[1, 2, 4], [2, 3], [3]]})
+
+    check(assert_type(data.to_dict(into=OrderedDict), OrderedDict), OrderedDict, tuple)
+    check(
+        assert_type(
+            data.to_dict("index", into=OrderedDict),
+            OrderedDict[Hashable, dict[Hashable, Any]],
+        ),
+        OrderedDict,
+    )
+    check(
+        assert_type(data.to_dict("tight", into=OrderedDict), MutableMapping[str, list]),
+        OrderedDict,
+        str,
+    )
+    check(
+        assert_type(data.to_dict("records", into=OrderedDict), list[OrderedDict]),
+        list,
+        OrderedDict,
+    )
 
 
 def test_neg() -> None:
@@ -4247,19 +4292,22 @@ def test_to_dict_index() -> None:
         assert_type(df.to_dict(orient="series", index=True), dict[Hashable, Any]), dict
     )
     check(
-        assert_type(df.to_dict(orient="index", index=True), dict[Hashable, Any]), dict
+        assert_type(
+            df.to_dict(orient="index", index=True), dict[Hashable, dict[Hashable, Any]]
+        ),
+        dict,
     )
     check(
-        assert_type(df.to_dict(orient="split", index=True), dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="split", index=True), dict[str, list]), dict, str
     )
     check(
-        assert_type(df.to_dict(orient="tight", index=True), dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="tight", index=True), dict[str, list]), dict, str
     )
     check(
-        assert_type(df.to_dict(orient="tight", index=False), dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="tight", index=False), dict[str, list]), dict, str
     )
     check(
-        assert_type(df.to_dict(orient="split", index=False), dict[Hashable, Any]), dict
+        assert_type(df.to_dict(orient="split", index=False), dict[str, list]), dict, str
     )
     if TYPE_CHECKING_INVALID_USAGE:
         check(assert_type(df.to_dict(orient="records", index=False), list[dict[Hashable, Any]]), list)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]
