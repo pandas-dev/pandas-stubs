@@ -56,6 +56,7 @@ from tests import (
     WINDOWS,
     check,
     ensure_clean,
+    np_1darray,
     pytest_warns_bounded,
 )
 from tests.extension.decimal.array import DecimalDtype
@@ -91,7 +92,6 @@ if TYPE_CHECKING:
         UIntDtypeArg,
         VoidDtypeArg,
     )
-    from tests import np_ndarray_int  # noqa: F401
 
 else:
     TimedeltaSeries: TypeAlias = pd.Series
@@ -1870,7 +1870,7 @@ def test_types_to_dict() -> None:
 def test_categorical_codes():
     # GH-111
     cat = pd.Categorical(["a", "b", "a"])
-    assert_type(cat.codes, "np_ndarray_int")
+    check(assert_type(cat.codes, np_1darray[np.signedinteger]), np_1darray[np.int8])
 
 
 def test_relops() -> None:
@@ -2022,12 +2022,12 @@ def test_dtype_type() -> None:
 
 def test_types_to_numpy() -> None:
     s = pd.Series(["a", "b", "c"], dtype=str)
-    check(assert_type(s.to_numpy(), np.ndarray), np.ndarray)
-    check(assert_type(s.to_numpy(dtype="str", copy=True), np.ndarray), np.ndarray)
-    check(assert_type(s.to_numpy(na_value=0), np.ndarray), np.ndarray)
-    check(assert_type(s.to_numpy(na_value=np.int32(4)), np.ndarray), np.ndarray)
-    check(assert_type(s.to_numpy(na_value=np.float16(4)), np.ndarray), np.ndarray)
-    check(assert_type(s.to_numpy(na_value=np.complex128(4, 7)), np.ndarray), np.ndarray)
+    check(assert_type(s.to_numpy(), np_1darray), np_1darray)
+    check(assert_type(s.to_numpy(dtype="str", copy=True), np_1darray), np_1darray)
+    check(assert_type(s.to_numpy(na_value=0), np_1darray), np_1darray)
+    check(assert_type(s.to_numpy(na_value=np.int32(4)), np_1darray), np_1darray)
+    check(assert_type(s.to_numpy(na_value=np.float16(4)), np_1darray), np_1darray)
+    check(assert_type(s.to_numpy(na_value=np.complex128(4, 7)), np_1darray), np_1darray)
 
 
 def test_where() -> None:

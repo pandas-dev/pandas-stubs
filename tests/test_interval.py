@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import numpy as np
-from numpy import typing as npt
 import pandas as pd
 from typing_extensions import assert_type
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    np_1darray,
 )
 
 
@@ -127,4 +127,4 @@ def test_interval_array_contains():
     ser = pd.Series(obj, index=df.index)
     arr = ser.array
     check(assert_type(arr.contains(df["A"]), "pd.Series[bool]"), pd.Series, np.bool_)
-    check(assert_type(arr.contains(3), npt.NDArray[np.bool_]), np.ndarray)
+    check(assert_type(arr.contains(3), np_1darray[np.bool]), np_1darray[np.bool])

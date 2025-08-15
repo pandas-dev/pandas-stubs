@@ -57,6 +57,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     ensure_clean,
+    np_2darray,
     pytest_warns_bounded,
 )
 
@@ -1946,18 +1947,18 @@ def test_types_cov() -> None:
 
 def test_types_to_numpy() -> None:
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
-    check(assert_type(df.to_numpy(), np.ndarray), np.ndarray)
-    check(assert_type(df.to_numpy(dtype="str", copy=True), np.ndarray), np.ndarray)
+    check(assert_type(df.to_numpy(), np_2darray), np_2darray)
+    check(assert_type(df.to_numpy(dtype="str", copy=True), np_2darray), np_2darray)
     # na_value param was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    check(assert_type(df.to_numpy(na_value=0), np.ndarray), np.ndarray)
+    check(assert_type(df.to_numpy(na_value=0), np_2darray), np_2darray)
 
     df = pd.DataFrame(data={"col1": [1, 1, 2]}, dtype=np.complex128)
-    check(assert_type(df.to_numpy(na_value=0), np.ndarray), np.ndarray)
-    check(assert_type(df.to_numpy(na_value=np.int32(4)), np.ndarray), np.ndarray)
-    check(assert_type(df.to_numpy(na_value=np.float16(3.68)), np.ndarray), np.ndarray)
+    check(assert_type(df.to_numpy(na_value=0), np_2darray), np_2darray)
+    check(assert_type(df.to_numpy(na_value=np.int32(4)), np_2darray), np_2darray)
+    check(assert_type(df.to_numpy(na_value=np.float16(3.68)), np_2darray), np_2darray)
     check(
-        assert_type(df.to_numpy(na_value=np.complex128(3.8, -493.2)), np.ndarray),
-        np.ndarray,
+        assert_type(df.to_numpy(na_value=np.complex128(3.8, -493.2)), np_2darray),
+        np_2darray,
     )
 
 
