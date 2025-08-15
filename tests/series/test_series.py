@@ -3801,13 +3801,11 @@ def test_series_bool_fails() -> None:
         pass
 
 
-def test_series_dict() -> None:
+def test_series_from_dict_views() -> None:
     # GH 812
-    check(
-        assert_type(pd.Series({"a": 1, "b": 2}.keys()), "pd.Series[str]"),
-        pd.Series,
-        str,
-    )
+    d = {"a": 1, "b": 2}
+    check(assert_type(pd.Series(d.keys()), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(pd.Series(d.values()), "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_series_keys_type() -> None:
