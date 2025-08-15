@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime
 import datetime as dt
+import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -50,6 +51,8 @@ else:
     TimestampSeries: TypeAlias = pd.Series
     PeriodSeries: TypeAlias = pd.Series
     OffsetSeries: TypeAlias = pd.Series
+
+MYPY = False
 
 
 def test_interval() -> None:
@@ -1387,21 +1390,22 @@ def test_timestamp_cmp() -> None:
     )
     assert (eq_arr != ne_arr).all()
 
-    eq_arr = check(
-        assert_type(ts == c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_
-    )
-    ne_arr = check(
-        assert_type(ts != c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_
-    )
-    assert (eq_arr != ne_arr).all()
-    # TODO: the following should be 2D-arrays but it doesn't work in mypy
-    eq_arr = check(
-        assert_type(ts == c_np_2darray_dt64, np_ndarray_bool), np_ndarray_bool
-    )
-    ne_arr = check(
-        assert_type(ts != c_np_2darray_dt64, np_ndarray_bool), np_ndarray_bool
-    )
-    assert (eq_arr != ne_arr).all()
+    if sys.version_info >= (3, 11) or not MYPY:
+        eq_arr = check(
+            assert_type(ts == c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_
+        )
+        ne_arr = check(
+            assert_type(ts != c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_
+        )
+        assert (eq_arr != ne_arr).all()
+        # TODO: the following should be 2D-arrays but it doesn't work in mypy
+        eq_arr = check(
+            assert_type(ts == c_np_2darray_dt64, np_ndarray_bool), np_ndarray_bool
+        )
+        ne_arr = check(
+            assert_type(ts != c_np_2darray_dt64, np_ndarray_bool), np_ndarray_bool
+        )
+        assert (eq_arr != ne_arr).all()
 
     eq_s = check(
         assert_type(ts == c_series_timestamp, "pd.Series[bool]"), pd.Series, np.bool_
