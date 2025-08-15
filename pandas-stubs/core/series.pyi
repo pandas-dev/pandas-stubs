@@ -2,15 +2,16 @@ from builtins import (
     bool as _bool,
     str as _str,
 )
-from collections import dict_keys  # type: ignore[attr-defined]
 from collections.abc import (
     Callable,
     Hashable,
     Iterable,
     Iterator,
+    KeysView,
     Mapping,
     MutableMapping,
     Sequence,
+    ValuesView,
 )
 from datetime import (
     date,
@@ -406,7 +407,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: S1 | _ListLike[S1] | dict[HashableT1, S1] | dict_keys[S1, Any],
+        data: S1 | _ListLike[S1] | dict[HashableT1, S1] | KeysView[S1] | ValuesView[S1],
         index: AxesData | None = ...,
         dtype: Dtype = ...,
         name: Hashable = ...,
