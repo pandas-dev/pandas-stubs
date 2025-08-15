@@ -1313,6 +1313,22 @@ def test_get_loc() -> None:
         np_1darray[np.bool],
     )
 
+    i1, i2, i3 = pd.Interval(0, 1), pd.Interval(1, 2), pd.Interval(0, 2)
+    unique_interval_index = pd.IntervalIndex([i1, i2])
+    check(
+        assert_type(
+            unique_interval_index.get_loc(i1), Union[int, slice, np_1darray[np.bool]]
+        ),
+        np.int64,
+    )
+    overlap_interval_index = pd.IntervalIndex([i1, i2, i3])
+    check(
+        assert_type(
+            overlap_interval_index.get_loc(1), Union[int, slice, np_1darray[np.bool]]
+        ),
+        np_1darray[np.bool],
+    )
+
 
 def test_value_counts() -> None:
     nmi = pd.Index(list("abcb"))

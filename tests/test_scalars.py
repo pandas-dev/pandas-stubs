@@ -1239,7 +1239,9 @@ def test_timestamp_cmp() -> None:
     np_dt64_arr: npt.NDArray[np.datetime64] = np.array(
         [1, 2, 3], dtype="datetime64[ns]"
     )
-    np_dt64_arr2d = np.arange(6).astype(dtype=np.datetime64).reshape(3, 2)
+    np_dt64_arr2d: np.ndarray[tuple[int, int], np.dtype[np.datetime64]] = (
+        np.arange(6).astype(dtype=np.datetime64).reshape(3, 2)
+    )
 
     c_timestamp = ts
     c_np_dt64 = np.datetime64(1, "ns")
