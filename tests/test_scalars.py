@@ -1391,6 +1391,8 @@ def test_timestamp_cmp() -> None:
     assert (eq_arr != ne_arr).all()
 
     if sys.version_info >= (3, 11) or not MYPY:
+        # tests in this block fail with mypy on Python 3.10 in CI only
+        # I couldn't reproduce the failure locally so skip mypy on Python 3.10
         eq_arr = check(
             assert_type(ts == c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_
         )
