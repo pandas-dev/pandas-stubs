@@ -7,6 +7,7 @@ from typing import (
     Any,
     Literal,
     Optional,
+    cast,
 )
 
 import dateutil.tz
@@ -1911,9 +1912,10 @@ def test_period_cmp_index() -> None:
 
 def test_period_cmp_array() -> None:
     p = pd.Period("2012-1-1", freq="D")
-    arr_nd: npt.NDArray[np.object_] = pd.period_range(
-        "2012-1-1", periods=4, freq="D"
-    ).to_numpy()
+    arr_nd = cast(  # cast to avoid pyright narrowing to a more precise shape
+        npt.NDArray[np.object_],
+        pd.period_range("2012-1-1", periods=4, freq="D").to_numpy(),
+    )
     arr_2d = arr_nd.reshape(2, 2)
 
     # >, <=
