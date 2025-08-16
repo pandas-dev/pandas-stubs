@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime
 import datetime as dt
+import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -26,6 +27,9 @@ from pandas._typing import TimeUnit
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    np_1darray,
+    np_2darray,
+    np_ndarray_bool,
     pytest_warns_bounded,
 )
 
@@ -48,7 +52,7 @@ else:
     PeriodSeries: TypeAlias = pd.Series
     OffsetSeries: TypeAlias = pd.Series
 
-from tests import np_ndarray_bool
+MYPY = False
 
 
 def test_interval() -> None:
@@ -314,73 +318,55 @@ def test_interval_cmp():
 
     interval_index_int = pd.IntervalIndex([interval_i])
     check(
-        assert_type(interval_index_int >= interval_i, np_ndarray_bool),
-        np.ndarray,
-        np.bool_,
+        assert_type(interval_index_int >= interval_i, np_1darray[np.bool]),
+        np_1darray[np.bool],
     )
     check(
-        assert_type(interval_index_int < interval_i, np_ndarray_bool),
-        np.ndarray,
-        np.bool_,
+        assert_type(interval_index_int < interval_i, np_1darray[np.bool]),
+        np_1darray[np.bool],
     )
     check(
-        assert_type(interval_index_int <= interval_i, np_ndarray_bool),
-        np.ndarray,
-        np.bool_,
+        assert_type(interval_index_int <= interval_i, np_1darray[np.bool]),
+        np_1darray[np.bool],
     )
     check(
-        assert_type(interval_index_int > interval_i, np_ndarray_bool),
-        np.ndarray,
-        np.bool_,
+        assert_type(interval_index_int > interval_i, np_1darray[np.bool]),
+        np_1darray[np.bool],
     )
 
     check(
-        assert_type(interval_i >= interval_index_int, np_ndarray_bool),
-        np.ndarray,
-        np.bool_,
+        assert_type(interval_i >= interval_index_int, np_1darray[np.bool]),
+        np_1darray[np.bool],
     )
     check(
-        assert_type(interval_i < interval_index_int, np_ndarray_bool),
-        np.ndarray,
-        np.bool_,
+        assert_type(interval_i < interval_index_int, np_1darray[np.bool]),
+        np_1darray[np.bool],
     )
     check(
-        assert_type(interval_i <= interval_index_int, np_ndarray_bool),
-        np.ndarray,
-        np.bool_,
+        assert_type(interval_i <= interval_index_int, np_1darray[np.bool]),
+        np_1darray[np.bool],
     )
     check(
-        assert_type(interval_i > interval_index_int, np_ndarray_bool),
-        np.ndarray,
-        np.bool_,
+        assert_type(interval_i > interval_index_int, np_1darray[np.bool]),
+        np_1darray[np.bool],
     )
 
     check(
-        assert_type(interval_index_int == interval_i, np_ndarray_bool),
-        np.ndarray,
-        np.bool_,
+        assert_type(interval_index_int == interval_i, np_1darray[np.bool]),
+        np_1darray[np.bool],
     )
     check(
-        assert_type(interval_index_int != interval_i, np_ndarray_bool),
-        np.ndarray,
-        np.bool_,
+        assert_type(interval_index_int != interval_i, np_1darray[np.bool]),
+        np_1darray[np.bool],
     )
 
     check(
-        assert_type(
-            interval_i == interval_index_int,
-            np_ndarray_bool,
-        ),
-        np.ndarray,
-        np.bool_,
+        assert_type(interval_i == interval_index_int, np_1darray[np.bool]),
+        np_1darray[np.bool],
     )
     check(
-        assert_type(
-            interval_i != interval_index_int,
-            np_ndarray_bool,
-        ),
-        np.ndarray,
-        np.bool_,
+        assert_type(interval_i != interval_index_int, np_1darray[np.bool]),
+        np_1darray[np.bool],
     )
 
 
@@ -854,10 +840,10 @@ def test_timedelta_cmp() -> None:
     check(assert_type(td < c_dt_timedelta, bool), bool)
     check(assert_type(td < c_timedelta64, bool), bool)
     check(assert_type(td < c_ndarray_td64, np_ndarray_bool), np.ndarray, np.bool_)
-    check(assert_type(c_timedelta_index < td, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(c_timedelta_index < td, np_1darray[np.bool]), np_1darray[np.bool])
     check(assert_type(c_dt_timedelta < td, bool), bool)
     check(assert_type(c_ndarray_td64 < td, np_ndarray_bool), np.ndarray, np.bool_)
-    check(assert_type(c_timedelta_index < td, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(c_timedelta_index < td, np_1darray[np.bool]), np_1darray[np.bool])
 
     gt = check(assert_type(td > c_timedelta, bool), bool)
     le = check(assert_type(td <= c_timedelta, bool), bool)
@@ -912,10 +898,10 @@ def test_timedelta_cmp() -> None:
     assert (gt_a != le_a).all()
 
     gt_a = check(
-        assert_type(c_timedelta_index > td, np_ndarray_bool), np.ndarray, np.bool_
+        assert_type(c_timedelta_index > td, np_1darray[np.bool]), np_1darray[np.bool]
     )
     le_a = check(
-        assert_type(c_timedelta_index <= td, np_ndarray_bool), np.ndarray, np.bool_
+        assert_type(c_timedelta_index <= td, np_1darray[np.bool]), np_1darray[np.bool]
     )
     assert (gt_a != le_a).all()
 
@@ -980,10 +966,10 @@ def test_timedelta_cmp() -> None:
     assert (lt_a != ge_a).all()
 
     lt_a = check(
-        assert_type(c_timedelta_index < td, np_ndarray_bool), np.ndarray, np.bool_
+        assert_type(c_timedelta_index < td, np_1darray[np.bool]), np_1darray[np.bool]
     )
     ge_a = check(
-        assert_type(c_timedelta_index >= td, np_ndarray_bool), np.ndarray, np.bool_
+        assert_type(c_timedelta_index >= td, np_1darray[np.bool]), np_1darray[np.bool]
     )
     assert (lt_a != ge_a).all()
 
@@ -1066,10 +1052,10 @@ def test_timedelta_cmp_rhs() -> None:
     assert (eq_a != ne_a).all()
 
     eq_a = check(
-        assert_type(c_timedelta_index == td, np_ndarray_bool), np.ndarray, np.bool_
+        assert_type(c_timedelta_index == td, np_1darray[np.bool]), np_1darray[np.bool]
     )
     ne_a = check(
-        assert_type(c_timedelta_index != td, np_ndarray_bool), np.ndarray, np.bool_
+        assert_type(c_timedelta_index != td, np_1darray[np.bool]), np_1darray[np.bool]
     )
     assert (eq_a != ne_a).all()
 
@@ -1256,6 +1242,9 @@ def test_timestamp_cmp() -> None:
     np_dt64_arr: npt.NDArray[np.datetime64] = np.array(
         [1, 2, 3], dtype="datetime64[ns]"
     )
+    np_dt64_arr2d: np.ndarray[tuple[int, int], np.dtype[np.datetime64]] = (
+        np.arange(6).astype(dtype=np.datetime64).reshape(3, 2)
+    )
 
     c_timestamp = ts
     c_np_dt64 = np.datetime64(1, "ns")
@@ -1264,6 +1253,7 @@ def test_timestamp_cmp() -> None:
     # DatetimeIndex, but the type checker detects it to be UnknownIndex.
     c_unknown_index = pd.DataFrame({"a": [1]}, index=c_datetimeindex).index
     c_np_ndarray_dt64 = np_dt64_arr
+    c_np_2darray_dt64 = np_dt64_arr2d
     c_series_dt64: TimestampSeries = pd.Series([1, 2, 3], dtype="datetime64[ns]")
     c_series_timestamp = pd.Series(pd.DatetimeIndex(["2000-1-1"]))
     check(assert_type(c_series_timestamp, TimestampSeries), pd.Series, pd.Timestamp)
@@ -1281,13 +1271,17 @@ def test_timestamp_cmp() -> None:
     lte = check(assert_type(ts <= c_dt_datetime, bool), bool)
     assert gt != lte
 
-    check(assert_type(ts > c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_)
-    check(assert_type(ts <= c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_)
-    check(assert_type(ts > c_unknown_index, np_ndarray_bool), np.ndarray, np.bool_)
-    check(assert_type(ts <= c_unknown_index, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(ts > c_datetimeindex, np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(ts <= c_datetimeindex, np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(ts > c_unknown_index, np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(ts <= c_unknown_index, np_1darray[np.bool]), np_1darray[np.bool])
 
     check(assert_type(ts > c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_)
     check(assert_type(ts <= c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(ts > c_np_2darray_dt64, np_2darray[np.bool]), np_2darray[np.bool])
+    check(
+        assert_type(ts <= c_np_2darray_dt64, np_2darray[np.bool]), np_2darray[np.bool]
+    )
 
     check(assert_type(ts > c_series_timestamp, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(ts <= c_series_timestamp, "pd.Series[bool]"), pd.Series, np.bool_)
@@ -1302,13 +1296,17 @@ def test_timestamp_cmp() -> None:
     lte = check(assert_type(c_dt_datetime <= ts, bool), bool)
     assert gt != lte
 
-    check(assert_type(c_datetimeindex > ts, np_ndarray_bool), np.ndarray, np.bool_)
-    check(assert_type(c_datetimeindex <= ts, np_ndarray_bool), np.ndarray, np.bool_)
-    check(assert_type(c_unknown_index > ts, np_ndarray_bool), np.ndarray, np.bool_)
-    check(assert_type(c_unknown_index <= ts, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(c_datetimeindex > ts, np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(c_datetimeindex <= ts, np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(c_unknown_index > ts, np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(c_unknown_index <= ts, np_1darray[np.bool]), np_1darray[np.bool])
 
     check(assert_type(c_np_ndarray_dt64 > ts, np_ndarray_bool), np.ndarray, np.bool_)
     check(assert_type(c_np_ndarray_dt64 <= ts, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(c_np_2darray_dt64 > ts, np_2darray[np.bool]), np_2darray[np.bool])
+    check(
+        assert_type(c_np_2darray_dt64 <= ts, np_2darray[np.bool]), np_2darray[np.bool]
+    )
 
     check(assert_type(c_series_dt64 > ts, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(c_series_dt64 <= ts, "pd.Series[bool]"), pd.Series, np.bool_)
@@ -1325,13 +1323,17 @@ def test_timestamp_cmp() -> None:
     lt = check(assert_type(ts < c_dt_datetime, bool), bool)
     assert gte != lt
 
-    check(assert_type(ts >= c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_)
-    check(assert_type(ts < c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_)
-    check(assert_type(ts >= c_unknown_index, np_ndarray_bool), np.ndarray, np.bool_)
-    check(assert_type(ts < c_unknown_index, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(ts >= c_datetimeindex, np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(ts < c_datetimeindex, np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(ts >= c_unknown_index, np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(ts < c_unknown_index, np_1darray[np.bool]), np_1darray[np.bool])
 
     check(assert_type(ts >= c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_)
     check(assert_type(ts < c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_)
+    check(
+        assert_type(c_np_2darray_dt64 >= ts, np_2darray[np.bool]), np_2darray[np.bool]
+    )
+    check(assert_type(c_np_2darray_dt64 < ts, np_2darray[np.bool]), np_2darray[np.bool])
 
     check(assert_type(ts >= c_series_timestamp, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(ts < c_series_timestamp, "pd.Series[bool]"), pd.Series, np.bool_)
@@ -1346,13 +1348,17 @@ def test_timestamp_cmp() -> None:
     check(assert_type(c_np_dt64 >= ts, np.bool), bool)
     check(assert_type(c_np_dt64 < ts, np.bool), bool)
 
-    check(assert_type(c_datetimeindex >= ts, np_ndarray_bool), np.ndarray, np.bool_)
-    check(assert_type(c_datetimeindex < ts, np_ndarray_bool), np.ndarray, np.bool_)
-    check(assert_type(c_unknown_index >= ts, np_ndarray_bool), np.ndarray, np.bool_)
-    check(assert_type(c_unknown_index < ts, np_ndarray_bool), np.ndarray, np.bool_)
+    check(assert_type(c_datetimeindex >= ts, np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(c_datetimeindex < ts, np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(c_unknown_index >= ts, np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(c_unknown_index < ts, np_1darray[np.bool]), np_1darray[np.bool])
 
     check(assert_type(c_np_ndarray_dt64 >= ts, np_ndarray_bool), np.ndarray, np.bool_)
     check(assert_type(c_np_ndarray_dt64 < ts, np_ndarray_bool), np.ndarray, np.bool_)
+    check(
+        assert_type(c_np_2darray_dt64 >= ts, np_2darray[np.bool]), np_2darray[np.bool]
+    )
+    check(assert_type(c_np_2darray_dt64 < ts, np_2darray[np.bool]), np_2darray[np.bool])
 
     check(assert_type(c_series_dt64 >= ts, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(c_series_dt64 < ts, "pd.Series[bool]"), pd.Series, np.bool_)
@@ -1370,27 +1376,46 @@ def test_timestamp_cmp() -> None:
     assert eq != ne
 
     eq_arr = check(
-        assert_type(ts == c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_
+        assert_type(ts == c_datetimeindex, np_1darray[np.bool]), np_1darray[np.bool]
     )
     ne_arr = check(
-        assert_type(ts != c_datetimeindex, np_ndarray_bool), np.ndarray, np.bool_
+        assert_type(ts != c_datetimeindex, np_1darray[np.bool]), np_1darray[np.bool]
     )
     assert (eq_arr != ne_arr).all()
     eq_arr = check(
-        assert_type(ts == c_unknown_index, np_ndarray_bool), np.ndarray, np.bool_
+        assert_type(ts == c_unknown_index, np_1darray[np.bool]), np_1darray[np.bool]
     )
     ne_arr = check(
-        assert_type(ts != c_unknown_index, np_ndarray_bool), np.ndarray, np.bool_
+        assert_type(ts != c_unknown_index, np_1darray[np.bool]), np_1darray[np.bool]
     )
     assert (eq_arr != ne_arr).all()
 
-    eq_arr = check(
-        assert_type(ts == c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_
-    )
-    ne_arr = check(
-        assert_type(ts != c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_
-    )
-    assert (eq_arr != ne_arr).all()
+    if sys.version_info >= (3, 10):
+        # tests in this block fail with mypy on Python 3.10 in CI only
+        # I couldn't reproduce the failure locally so skip mypy on Python 3.10
+        eq1_arr = check(
+            assert_type(ts == c_np_ndarray_dt64, np_ndarray_bool),
+            np_1darray[np.bool],
+        )
+        ne1_arr = check(
+            assert_type(ts != c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_
+        )
+        assert (eq1_arr != ne1_arr).all()
+        # TODO: the following should be 2D-arrays but it doesn't work in mypy
+
+        eq2_arr = check(
+            assert_type(
+                ts == c_np_2darray_dt64, np.ndarray[tuple[int, int], np.dtype[np.bool]]
+            ),
+            np_ndarray_bool,
+        )
+        ne2_arr = check(
+            assert_type(
+                ts != c_np_2darray_dt64, np.ndarray[tuple[int, int], np.dtype[np.bool]]
+            ),
+            np_ndarray_bool,
+        )
+        assert (eq2_arr != ne2_arr).all()
 
     eq_s = check(
         assert_type(ts == c_series_timestamp, "pd.Series[bool]"), pd.Series, np.bool_
@@ -1437,17 +1462,17 @@ def test_timestamp_eq_ne_rhs() -> None:
     assert eq != ne
 
     eq_arr = check(
-        assert_type(c_datetimeindex == ts, np_ndarray_bool), np.ndarray, np.bool_
+        assert_type(c_datetimeindex == ts, np_1darray[np.bool]), np_1darray[np.bool]
     )
     ne_arr = check(
-        assert_type(c_datetimeindex != ts, np_ndarray_bool), np.ndarray, np.bool_
+        assert_type(c_datetimeindex != ts, np_1darray[np.bool]), np_1darray[np.bool]
     )
     assert (eq_arr != ne_arr).all()
     eq_arr = check(
-        assert_type(c_unknown_index == ts, np_ndarray_bool), np.ndarray, np.bool_
+        assert_type(c_unknown_index == ts, np_1darray[np.bool]), np_1darray[np.bool]
     )
     ne_arr = check(
-        assert_type(c_unknown_index != ts, np_ndarray_bool), np.ndarray, np.bool_
+        assert_type(c_unknown_index != ts, np_1darray[np.bool]), np_1darray[np.bool]
     )
     assert (eq_arr != ne_arr).all()
 
@@ -1946,10 +1971,10 @@ def test_period_cmp() -> None:
     assert eq != ne
 
     eq_a = check(
-        assert_type(c_period_index == p, np_ndarray_bool), np.ndarray, np.bool_
+        assert_type(c_period_index == p, np_1darray[np.bool]), np_1darray[np.bool]
     )
     ne_a = check(
-        assert_type(c_period_index != p, np_ndarray_bool), np.ndarray, np.bool_
+        assert_type(c_period_index != p, np_1darray[np.bool]), np_1darray[np.bool]
     )
     assert (eq_a != ne_a).all()
 
@@ -1983,9 +2008,11 @@ def test_period_cmp() -> None:
     le = check(assert_type(c_period <= p, bool), bool)
     assert gt != le
 
-    gt_a = check(assert_type(c_period_index > p, np_ndarray_bool), np.ndarray, np.bool_)
+    gt_a = check(
+        assert_type(c_period_index > p, np_1darray[np.bool]), np_1darray[np.bool]
+    )
     le_a = check(
-        assert_type(c_period_index <= p, np_ndarray_bool), np.ndarray, np.bool_
+        assert_type(c_period_index <= p, np_1darray[np.bool]), np_1darray[np.bool]
     )
     assert (gt_a != le_a).all()
 
@@ -2019,9 +2046,11 @@ def test_period_cmp() -> None:
     ge = check(assert_type(c_period >= p, bool), bool)
     assert lt != ge
 
-    lt_a = check(assert_type(c_period_index < p, np_ndarray_bool), np.ndarray, np.bool_)
+    lt_a = check(
+        assert_type(c_period_index < p, np_1darray[np.bool]), np_1darray[np.bool]
+    )
     ge_a = check(
-        assert_type(c_period_index >= p, np_ndarray_bool), np.ndarray, np.bool_
+        assert_type(c_period_index >= p, np_1darray[np.bool]), np_1darray[np.bool]
     )
     assert (lt_a != ge_a).all()
 

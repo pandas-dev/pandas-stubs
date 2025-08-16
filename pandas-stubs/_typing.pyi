@@ -819,6 +819,15 @@ np_ndarray_complex: TypeAlias = npt.NDArray[np.complexfloating]
 np_ndarray_bool: TypeAlias = npt.NDArray[np.bool_]
 np_ndarray_str: TypeAlias = npt.NDArray[np.str_]
 
+# Define shape and generic type variables with defaults similar to numpy
+GenericT = TypeVar("GenericT", bound=np.generic, default=Any)
+ShapeT = TypeVar("ShapeT", bound=tuple[int, ...], default=tuple[Any, ...])
+# Numpy ndarray with more ergonomic typevar
+np_ndarray: TypeAlias = np.ndarray[ShapeT, np.dtype[GenericT]]
+# Numpy arrays with known shape (Do not use as argument types, only as return types)
+np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[GenericT]]
+np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[GenericT]]
+
 IndexType: TypeAlias = slice | np_ndarray_anyint | Index | list[int] | Series[int]
 MaskType: TypeAlias = Series[bool] | np_ndarray_bool | list[bool]
 
