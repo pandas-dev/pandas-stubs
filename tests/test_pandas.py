@@ -23,7 +23,6 @@ import pandas.util as pdutil
 import pytest
 from typing_extensions import (
     Never,
-    TypeAlias,
     assert_type,
 )
 
@@ -36,18 +35,19 @@ from tests import (
     pytest_warns_bounded,
 )
 
-if TYPE_CHECKING:
-    from pandas.core.series import TimestampSeries
-else:
-    TimestampSeries: TypeAlias = pd.Series
-
 
 def test_types_to_datetime() -> None:
     df = pd.DataFrame({"year": [2015, 2016], "month": [2, 3], "day": [4, 5]})
-    check(assert_type(pd.to_datetime(df), TimestampSeries), pd.Series, pd.Timestamp)
+    check(
+        assert_type(pd.to_datetime(df), "pd.Series[pd.Timestamp]"),
+        pd.Series,
+        pd.Timestamp,
+    )
 
     check(
-        assert_type(pd.to_datetime(df, unit="s", origin="unix"), TimestampSeries),
+        assert_type(
+            pd.to_datetime(df, unit="s", origin="unix"), "pd.Series[pd.Timestamp]"
+        ),
         pd.Series,
         pd.Timestamp,
     )
@@ -56,7 +56,7 @@ def test_types_to_datetime() -> None:
             pd.to_datetime(
                 df, unit="ns", dayfirst=True, utc=False, format="%M:%D", exact=False
             ),
-            TimestampSeries,
+            "pd.Series[pd.Timestamp]",
         ),
         pd.Series,
         pd.Timestamp,
@@ -92,7 +92,7 @@ def test_types_to_datetime() -> None:
     check(
         assert_type(
             pd.to_datetime({"year": [2015, 2016], "month": [2, 3], "day": [4, 5]}),
-            TimestampSeries,
+            "pd.Series[pd.Timestamp]",
         ),
         pd.Series,
         pd.Timestamp,

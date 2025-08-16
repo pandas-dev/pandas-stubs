@@ -12,10 +12,9 @@ from pandas import (
     Index,
     Interval,
     IntervalIndex,
-    Series,
     Timestamp,
 )
-from pandas.core.series import TimestampSeries
+from pandas.core.series import Series
 
 from pandas._typing import (
     IntervalT,
@@ -51,10 +50,10 @@ def cut(
 ) -> tuple[npt.NDArray[np.intp], IntervalIndex[IntervalT]]: ...
 @overload
 def cut(  # pyright: ignore[reportOverlappingOverload]
-    x: TimestampSeries,
+    x: Series[Timestamp],
     bins: (
         int
-        | TimestampSeries
+        | Series[Timestamp]
         | DatetimeIndex
         | Sequence[Timestamp]
         | Sequence[np.datetime64]
@@ -70,7 +69,7 @@ def cut(  # pyright: ignore[reportOverlappingOverload]
 ) -> tuple[Series, DatetimeIndex]: ...
 @overload
 def cut(
-    x: TimestampSeries,
+    x: Series[Timestamp],
     bins: IntervalIndex[Interval[Timestamp]],
     right: bool = ...,
     labels: Sequence[Label] | None = ...,
@@ -156,10 +155,10 @@ def cut(
 ) -> npt.NDArray[np.intp]: ...
 @overload
 def cut(
-    x: TimestampSeries,
+    x: Series[Timestamp],
     bins: (
         int
-        | TimestampSeries
+        | Series[Timestamp]
         | DatetimeIndex
         | Sequence[Timestamp]
         | Sequence[np.datetime64]
