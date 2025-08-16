@@ -260,7 +260,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __eq__(self, other: Index) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
     @overload  # TODO: using shape-aware arrays similar to other methods doesn't work in mypy
-    def __eq__(self, other: npt.NDArray[np.datetime64]) -> npt.NDArray[np.bool]: ...  # type: ignore[overload-overlap]
+    def __eq__(self, other: npt.NDArray[np.datetime64]) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: object) -> Literal[False]: ...
     @overload
@@ -270,7 +270,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __ne__(self, other: Index) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
     @overload  # TODO: using shape-aware arrays similar to other methods doesn't work in mypy
-    def __ne__(self, other: npt.NDArray[np.datetime64]) -> npt.NDArray[np.bool]: ...  # type: ignore[overload-overlap]
+    def __ne__(self, other: npt.NDArray[np.datetime64]) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: object) -> Literal[True]: ...
     def __hash__(self) -> int: ...

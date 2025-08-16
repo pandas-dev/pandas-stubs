@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import datetime
 import datetime as dt
-import sys
+
+# import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -1390,22 +1391,28 @@ def test_timestamp_cmp() -> None:
     )
     assert (eq_arr != ne_arr).all()
 
-    if sys.version_info >= (3, 11) or not MYPY:
+    if True:  # sys.version_info >= (3, 11) or not MYPY:
         # tests in this block fail with mypy on Python 3.10 in CI only
         # I couldn't reproduce the failure locally so skip mypy on Python 3.10
         eq_arr = check(
-            assert_type(ts == c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_
+            assert_type(ts == c_np_ndarray_dt64, np_1darray[np.bool]),
+            np_1darray[np.bool],
+            np.bool_,
         )
         ne_arr = check(
-            assert_type(ts != c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_
+            assert_type(ts != c_np_ndarray_dt64, np_1darray[np.bool]),
+            np_1darray[np.bool],
+            np.bool_,
         )
         assert (eq_arr != ne_arr).all()
         # TODO: the following should be 2D-arrays but it doesn't work in mypy
         eq_arr = check(
-            assert_type(ts == c_np_2darray_dt64, np_ndarray_bool), np_ndarray_bool
+            assert_type(ts == c_np_2darray_dt64, np_1darray[np.bool]),
+            np_1darray[np.bool],
         )
         ne_arr = check(
-            assert_type(ts != c_np_2darray_dt64, np_ndarray_bool), np_ndarray_bool
+            assert_type(ts != c_np_2darray_dt64, np_1darray[np.bool]),
+            np_1darray[np.bool],
         )
         assert (eq_arr != ne_arr).all()
 
