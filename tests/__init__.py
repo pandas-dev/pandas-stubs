@@ -11,6 +11,7 @@ from typing import (
     TYPE_CHECKING,
     Final,
     Literal,
+    TypeAlias,
     TypeVar,
     get_args,
     get_origin,
@@ -51,10 +52,10 @@ if TYPE_CHECKING:
 else:
     _G = TypeVar("_G", bound=np.generic)
     # Separately define here so pytest works
-    np_1darray = np.ndarray[tuple[int], np.dtype[_G]]
-    np_2darray = np.ndarray[tuple[int, int], np.dtype[_G]]
-    np_ndarray_bool = npt.NDArray[np.bool_]
-    np_ndarray_int = npt.NDArray[np.signedinteger]
+    np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[_G]]
+    np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[_G]]
+    np_ndarray_bool: TypeAlias = npt.NDArray[np.bool_]
+    np_ndarray_int: TypeAlias = npt.NDArray[np.signedinteger]
 
 TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 WINDOWS = os.name == "nt" or "cygwin" in platform.system().lower()

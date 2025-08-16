@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import datetime
 import datetime as dt
-import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -51,8 +50,6 @@ else:
     TimestampSeries: TypeAlias = pd.Series
     PeriodSeries: TypeAlias = pd.Series
     OffsetSeries: TypeAlias = pd.Series
-
-MYPY = False
 
 
 def test_interval() -> None:
@@ -1375,55 +1372,52 @@ def test_timestamp_cmp() -> None:
     ne = check(assert_type(ts != c_dt_datetime, bool), bool)
     assert eq != ne
 
-    eq_arr = check(
+    eq_arr1 = check(
         assert_type(ts == c_datetimeindex, np_1darray[np.bool]), np_1darray[np.bool]
     )
-    ne_arr = check(
+    ne_arr1 = check(
         assert_type(ts != c_datetimeindex, np_1darray[np.bool]), np_1darray[np.bool]
     )
-    assert (eq_arr != ne_arr).all()
-    eq_arr = check(
+    assert (eq_arr1 != ne_arr1).all()
+    eq_arr2 = check(
         assert_type(ts == c_unknown_index, np_1darray[np.bool]), np_1darray[np.bool]
     )
-    ne_arr = check(
+    ne_arr2 = check(
         assert_type(ts != c_unknown_index, np_1darray[np.bool]), np_1darray[np.bool]
     )
-    assert (eq_arr != ne_arr).all()
+    assert (eq_arr2 != ne_arr2).all()
 
-    if sys.version_info >= (3, 11) or not MYPY:
-        # tests in this block fail with mypy on Python 3.10 in CI only
-        # I couldn't reproduce the failure locally so skip mypy on Python 3.10
-        eq_arr = check(
-            assert_type(ts == c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_
-        )
-        ne_arr = check(
-            assert_type(ts != c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_
-        )
-        assert (eq_arr != ne_arr).all()
-        # TODO: the following should be 2D-arrays but it doesn't work in mypy
-        eq_arr = check(
-            assert_type(ts == c_np_2darray_dt64, np_ndarray_bool), np_ndarray_bool
-        )
-        ne_arr = check(
-            assert_type(ts != c_np_2darray_dt64, np_ndarray_bool), np_ndarray_bool
-        )
-        assert (eq_arr != ne_arr).all()
+    eq_arr3 = check(
+        assert_type(ts == c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    ne_arr3 = check(
+        assert_type(ts != c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_
+    )
+    assert (eq_arr3 != ne_arr3).all()
 
-    eq_s = check(
+    eq_arr4 = check(
+        assert_type(ts == c_np_2darray_dt64, np_2darray[np.bool]), np_2darray[np.bool]
+    )
+    ne_arr4 = check(
+        assert_type(ts != c_np_2darray_dt64, np_2darray[np.bool]), np_2darray[np.bool]
+    )
+    assert (eq_arr4 != ne_arr4).all()
+
+    eq_s1 = check(
         assert_type(ts == c_series_timestamp, "pd.Series[bool]"), pd.Series, np.bool_
     )
-    ne_s = check(
+    ne_s1 = check(
         assert_type(ts != c_series_timestamp, "pd.Series[bool]"), pd.Series, np.bool_
     )
-    assert (eq_s != ne_s).all()
+    assert (eq_s1 != ne_s1).all()
 
-    eq_s = check(
+    eq_s2 = check(
         assert_type(ts == c_series_dt64, "pd.Series[bool]"), pd.Series, np.bool_
     )
-    ne_s = check(
+    ne_s2 = check(
         assert_type(ts != c_series_dt64, "pd.Series[bool]"), pd.Series, np.bool_
     )
-    assert (eq_s != ne_s).all()
+    assert (eq_s2 != ne_s2).all()
 
 
 def test_timestamp_eq_ne_rhs() -> None:

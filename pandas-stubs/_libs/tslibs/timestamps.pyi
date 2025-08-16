@@ -45,7 +45,6 @@ from pandas._typing import (
     TimeUnit,
     np_1darray,
     np_ndarray,
-    npt,
 )
 
 _Ambiguous: TypeAlias = bool | Literal["raise", "NaT"]
@@ -259,8 +258,8 @@ class Timestamp(datetime, SupportsIndex):
     def __eq__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: Index) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
-    @overload  # TODO: using shape-aware arrays similar to other methods doesn't work in mypy
-    def __eq__(self, other: npt.NDArray[np.datetime64]) -> npt.NDArray[np.bool]: ...  # type: ignore[overload-overlap]
+    @overload
+    def __eq__(self, other: np_ndarray[ShapeT, np.datetime64]) -> np_ndarray[ShapeT, np.bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: object) -> Literal[False]: ...
     @overload
@@ -269,8 +268,8 @@ class Timestamp(datetime, SupportsIndex):
     def __ne__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: Index) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
-    @overload  # TODO: using shape-aware arrays similar to other methods doesn't work in mypy
-    def __ne__(self, other: npt.NDArray[np.datetime64]) -> npt.NDArray[np.bool]: ...  # type: ignore[overload-overlap]
+    @overload
+    def __ne__(self, other: np_ndarray[ShapeT, np.datetime64]) -> np_ndarray[ShapeT, np.bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: object) -> Literal[True]: ...
     def __hash__(self) -> int: ...
