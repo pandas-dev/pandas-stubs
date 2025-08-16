@@ -1394,20 +1394,28 @@ def test_timestamp_cmp() -> None:
         # tests in this block fail with mypy on Python 3.10 in CI only
         # I couldn't reproduce the failure locally so skip mypy on Python 3.10
         eq1_arr = check(
-            assert_type(ts == c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_
+            assert_type(ts == c_np_ndarray_dt64, np_ndarray_bool),
+            np_1darray[np.bool],
         )
         ne1_arr = check(
             assert_type(ts != c_np_ndarray_dt64, np_ndarray_bool), np.ndarray, np.bool_
         )
         assert (eq1_arr != ne1_arr).all()
         # TODO: the following should be 2D-arrays but it doesn't work in mypy
-        eq1_arr = check(
-            assert_type(ts == c_np_2darray_dt64, np_ndarray_bool), np_ndarray_bool
+
+        eq2_arr = check(
+            assert_type(
+                ts == c_np_2darray_dt64, np.ndarray[tuple[int, int], np.dtype[np.bool]]
+            ),
+            np_ndarray_bool,
         )
-        ne1_arr = check(
-            assert_type(ts != c_np_2darray_dt64, np_ndarray_bool), np_ndarray_bool
+        ne2_arr = check(
+            assert_type(
+                ts != c_np_2darray_dt64, np.ndarray[tuple[int, int], np.dtype[np.bool]]
+            ),
+            np_ndarray_bool,
         )
-        assert (eq1_arr != ne1_arr).all()
+        assert (eq2_arr != ne2_arr).all()
 
     eq_s = check(
         assert_type(ts == c_series_timestamp, "pd.Series[bool]"), pd.Series, np.bool_
