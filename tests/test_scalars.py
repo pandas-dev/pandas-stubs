@@ -1824,128 +1824,143 @@ def test_period_add_subtract() -> None:
     check(assert_type(as_period_index - p, pd.Index), pd.Index)
 
 
-def test_period_cmp() -> None:
+def test_period_cmp_scalar() -> None:
     p = pd.Period("2012-1-1", freq="D")
+    p2 = pd.Period("2012-1-2", freq="D")
 
-    c_period = pd.Period("2012-1-1", freq="D")
-    c_period_index = pd.period_range("2012-1-1", periods=10, freq="D")
-    c_period_series = pd.Series(c_period_index)
+    # >, <=
+    gt1 = check(assert_type(p > p2, bool), bool)
+    le1 = check(assert_type(p <= p2, bool), bool)
+    assert gt1 != le1
 
-    eq = check(assert_type(p == c_period, bool), bool)
-    ne = check(assert_type(p != c_period, bool), bool)
-    assert eq != ne
+    # <, >=
+    lt1 = check(assert_type(p < p2, bool), bool)
+    ge1 = check(assert_type(p >= p2, bool), bool)
+    assert lt1 != ge1
 
-    eq_a = check(
-        assert_type(p == c_period_index, np_ndarray_bool), np.ndarray, np.bool_
-    )
-    ne_q = check(
-        assert_type(p != c_period_index, np_ndarray_bool), np.ndarray, np.bool_
-    )
-    assert (eq_a != ne_q).all()
+    # ==, !=
+    eq1 = check(assert_type(p == p2, bool), bool)
+    ne1 = check(assert_type(p != p2, bool), bool)
+    assert eq1 != ne1
+    eq2 = check(assert_type(p == 1, Literal[False]), bool)
+    ne2 = check(assert_type(p != 1, Literal[True]), bool)
+    assert eq2 != ne2
 
-    eq_s = check(
-        assert_type(p == c_period_series, "pd.Series[bool]"), pd.Series, np.bool_
-    )
-    ne_s = check(
-        assert_type(p != c_period_series, "pd.Series[bool]"), pd.Series, np.bool_
-    )
-    assert (eq_s != ne_s).all()
 
-    eq = check(assert_type(c_period == p, bool), bool)
-    ne = check(assert_type(c_period != p, bool), bool)
-    assert eq != ne
+def test_period_cmp_series() -> None:
+    p = pd.Period("2012-1-1", freq="D")
+    p_ser = pd.Series(pd.period_range("2012-1-1", periods=10, freq="D"))
 
-    eq_a = check(
-        assert_type(c_period_index == p, np_1darray[np.bool]), np_1darray[np.bool]
-    )
-    ne_a = check(
-        assert_type(c_period_index != p, np_1darray[np.bool]), np_1darray[np.bool]
-    )
-    assert (eq_a != ne_a).all()
+    # >, <=
+    gt1 = check(assert_type(p > p_ser, "pd.Series[bool]"), pd.Series, np.bool)
+    le1 = check(assert_type(p <= p_ser, "pd.Series[bool]"), pd.Series, np.bool)
+    assert (gt1 != le1).all()
+    gt2 = check(assert_type(p_ser > p, "pd.Series[bool]"), pd.Series, np.bool)
+    le2 = check(assert_type(p_ser <= p, "pd.Series[bool]"), pd.Series, np.bool)
+    assert (gt2 != le2).all()
 
-    eq_s = check(
-        assert_type(c_period_series == p, "pd.Series[bool]"), pd.Series, np.bool_
-    )
-    ne_s = check(
-        assert_type(c_period_series != p, "pd.Series[bool]"), pd.Series, np.bool_
-    )
-    assert (eq_s != ne_s).all()
+    # <, >=
+    lt1 = check(assert_type(p < p_ser, "pd.Series[bool]"), pd.Series, np.bool)
+    ge1 = check(assert_type(p >= p_ser, "pd.Series[bool]"), pd.Series, np.bool)
+    assert (lt1 != ge1).all()
+    lt2 = check(assert_type(p_ser < p, "pd.Series[bool]"), pd.Series, np.bool)
+    ge2 = check(assert_type(p_ser >= p, "pd.Series[bool]"), pd.Series, np.bool)
+    assert (lt2 != ge2).all()
 
-    gt = check(assert_type(p > c_period, bool), bool)
-    le = check(assert_type(p <= c_period, bool), bool)
-    assert gt != le
+    # ==, !=
+    eq1 = check(assert_type(p == p_ser, "pd.Series[bool]"), pd.Series, np.bool)
+    ne1 = check(assert_type(p != p_ser, "pd.Series[bool]"), pd.Series, np.bool)
+    assert (eq1 != ne1).all()
 
-    gt_a = check(assert_type(p > c_period_index, np_ndarray_bool), np.ndarray, np.bool_)
-    le_a = check(
-        assert_type(p <= c_period_index, np_ndarray_bool), np.ndarray, np.bool_
-    )
-    assert (gt_a != le_a).all()
+    # ==, != (p on the rhs, use == and != of lhs)
+    eq_rhs1 = check(assert_type(p_ser == p, "pd.Series[bool]"), pd.Series, np.bool)
+    ne_rhs1 = check(assert_type(p_ser != p, "pd.Series[bool]"), pd.Series, np.bool)
+    assert (eq_rhs1 != ne_rhs1).all()
 
-    gt_s = check(
-        assert_type(p > c_period_series, "pd.Series[bool]"), pd.Series, np.bool_
-    )
-    le_s = check(
-        assert_type(p <= c_period_series, "pd.Series[bool]"), pd.Series, np.bool_
-    )
-    assert (gt_s != le_s).all()
 
-    gt = check(assert_type(c_period > p, bool), bool)
-    le = check(assert_type(c_period <= p, bool), bool)
-    assert gt != le
+def test_period_cmp_index() -> None:
+    p = pd.Period("2012-1-1", freq="D")
+    p_idx = pd.period_range("2012-1-1", periods=10, freq="D")
 
-    gt_a = check(
-        assert_type(c_period_index > p, np_1darray[np.bool]), np_1darray[np.bool]
-    )
-    le_a = check(
-        assert_type(c_period_index <= p, np_1darray[np.bool]), np_1darray[np.bool]
-    )
-    assert (gt_a != le_a).all()
+    # >, <=
+    gt1 = check(assert_type(p > p_idx, np_1darray[np.bool]), np_1darray[np.bool])
+    le1 = check(assert_type(p <= p_idx, np_1darray[np.bool]), np_1darray[np.bool])
+    assert (gt1 != le1).all()
+    gt2 = check(assert_type(p_idx > p, np_1darray[np.bool]), np_1darray[np.bool])
+    le2 = check(assert_type(p_idx <= p, np_1darray[np.bool]), np_1darray[np.bool])
+    assert (gt2 != le2).all()
 
-    gt_s = check(
-        assert_type(c_period_series > p, "pd.Series[bool]"), pd.Series, np.bool_
-    )
-    le_s = check(
-        assert_type(c_period_series <= p, "pd.Series[bool]"), pd.Series, np.bool_
-    )
-    assert (gt_s != le_s).all()
+    # <, >=
+    lt1 = check(assert_type(p < p_idx, np_1darray[np.bool]), np_1darray[np.bool])
+    ge1 = check(assert_type(p >= p_idx, np_1darray[np.bool]), np_1darray[np.bool])
+    assert (lt1 != ge1).all()
+    lt2 = check(assert_type(p_idx < p, np_1darray[np.bool]), np_1darray[np.bool])
+    ge2 = check(assert_type(p_idx >= p, np_1darray[np.bool]), np_1darray[np.bool])
+    assert (lt2 != ge2).all()
 
-    lt = check(assert_type(p < c_period, bool), bool)
-    ge = check(assert_type(p >= c_period, bool), bool)
-    assert lt != ge
+    # ==, !=
+    eq1 = check(assert_type(p == p_idx, np_1darray[np.bool]), np_1darray[np.bool])
+    ne1 = check(assert_type(p != p_idx, np_1darray[np.bool]), np_1darray[np.bool])
+    assert (eq1 != ne1).all()
 
-    lt_a = check(assert_type(p < c_period_index, np_ndarray_bool), np.ndarray, np.bool_)
-    ge_a = check(
-        assert_type(p >= c_period_index, np_ndarray_bool), np.ndarray, np.bool_
-    )
-    assert (lt_a != ge_a).all()
+    # ==, != (p on the rhs, use == and != of lhs)
+    eq_rhs1 = check(assert_type(p_idx == p, np_1darray[np.bool]), np_1darray[np.bool])
+    ne_rhs1 = check(assert_type(p_idx != p, np_1darray[np.bool]), np_1darray[np.bool])
+    assert (eq_rhs1 != ne_rhs1).all()
 
-    lt_s = check(
-        assert_type(p < c_period_series, "pd.Series[bool]"), pd.Series, np.bool_
-    )
-    ge_s = check(
-        assert_type(p >= c_period_series, "pd.Series[bool]"), pd.Series, np.bool_
-    )
-    assert (lt_s != ge_s).all()
 
-    lt = check(assert_type(c_period < p, bool), bool)
-    ge = check(assert_type(c_period >= p, bool), bool)
-    assert lt != ge
+def test_period_cmp_array() -> None:
+    p = pd.Period("2012-1-1", freq="D")
+    arr_nd: npt.NDArray[np.object_] = pd.period_range(
+        "2012-1-1", periods=4, freq="D"
+    ).to_numpy()
+    arr_2d = arr_nd.reshape(2, 2)
 
-    lt_a = check(
-        assert_type(c_period_index < p, np_1darray[np.bool]), np_1darray[np.bool]
-    )
-    ge_a = check(
-        assert_type(c_period_index >= p, np_1darray[np.bool]), np_1darray[np.bool]
-    )
-    assert (lt_a != ge_a).all()
+    # >, <=
+    gt_nd1 = check(assert_type(p > arr_nd, np_ndarray_bool), np.ndarray, np.bool)
+    le_nd1 = check(assert_type(p <= arr_nd, np_ndarray_bool), np.ndarray, np.bool)
+    assert (gt_nd1 != le_nd1).all()
+    gt_2d1 = check(assert_type(p > arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
+    le_2d1 = check(assert_type(p <= arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
+    assert (gt_2d1 != le_2d1).all()
+    # p on the rhs, type depends on np.ndarray > and <= methods
+    gt_nd2 = check(assert_type(arr_nd > p, np_ndarray_bool), np.ndarray, np.bool)
+    le_nd2 = check(assert_type(arr_nd <= p, np_ndarray_bool), np.ndarray, np.bool)
+    assert (gt_nd2 != le_nd2).all()
+    gt_2d2 = check(assert_type(arr_2d > p, np_ndarray_bool), np_2darray[np.bool])
+    le_2d2 = check(assert_type(arr_2d <= p, np_ndarray_bool), np_2darray[np.bool])
+    assert (gt_2d2 != le_2d2).all()
 
-    lt_s = check(
-        assert_type(c_period_series < p, "pd.Series[bool]"), pd.Series, np.bool_
-    )
-    ge_s = check(
-        assert_type(c_period_series >= p, "pd.Series[bool]"), pd.Series, np.bool_
-    )
-    assert (lt_s != ge_s).all()
+    # <, >=
+    lt_nd1 = check(assert_type(p < arr_nd, np_ndarray_bool), np.ndarray, np.bool)
+    ge_nd1 = check(assert_type(p >= arr_nd, np_ndarray_bool), np.ndarray, np.bool)
+    assert (lt_nd1 != ge_nd1).all()
+    lt_2d1 = check(assert_type(p < arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
+    ge_2d1 = check(assert_type(p >= arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
+    assert (lt_2d1 != ge_2d1).all()
+    # p on the rhs, type depends on np.ndarray < and >= methods
+    lt_nd2 = check(assert_type(arr_nd < p, np_ndarray_bool), np.ndarray, np.bool)
+    ge_nd2 = check(assert_type(arr_nd >= p, np_ndarray_bool), np.ndarray, np.bool)
+    assert (lt_nd2 != ge_nd2).all()
+    lt_2d2 = check(assert_type(arr_2d < p, np_ndarray_bool), np_2darray[np.bool])
+    ge_2d2 = check(assert_type(arr_2d >= p, np_ndarray_bool), np_2darray[np.bool])
+    assert (lt_2d2 != ge_2d2).all()
+
+    # ==, !=
+    eq_nd1 = check(assert_type(p == arr_nd, np_ndarray_bool), np.ndarray, np.bool)
+    ne_nd1 = check(assert_type(p != arr_nd, np_ndarray_bool), np.ndarray, np.bool)
+    assert (eq_nd1 != ne_nd1).all()
+    eq_2d1 = check(assert_type(p == arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
+    ne_2d1 = check(assert_type(p != arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
+    assert (eq_2d1 != ne_2d1).all()
+
+    # ==, != (td on the rhs, use == and != of lhs)
+    eq_rhs_nd1 = check(assert_type(arr_nd == p, Any), np_ndarray_bool)
+    ne_rhs_nd1 = check(assert_type(arr_nd != p, Any), np_ndarray_bool)
+    assert (eq_rhs_nd1 != ne_rhs_nd1).all()
+    eq_rhs_2d1 = check(assert_type(arr_2d == p, Any), np_2darray[np.bool])
+    ne_rhs_2d1 = check(assert_type(arr_2d != p, Any), np_2darray[np.bool])
+    assert (eq_rhs_2d1 != ne_rhs_2d1).all()
 
 
 def test_period_methods() -> None:
