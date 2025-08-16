@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Hashable
 import datetime as dt
 from typing import (
     TYPE_CHECKING,
@@ -1182,6 +1183,17 @@ def test_datetime_index_constructor() -> None:
         pd.DatetimeIndex,
     )
 
+    # https://github.com/microsoft/python-type-stubs/issues/115
+    df = pd.DataFrame({"A": [1, 2, 3], "B": [5, 6, 7]})
+
+    check(
+        assert_type(
+            pd.DatetimeIndex(data=df["A"], tz=None, ambiguous="NaT", copy=True),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+
 
 def test_iter() -> None:
     # GH 723
@@ -1433,3 +1445,23 @@ def test_multiindex_range() -> None:
         [range(3), pd.Series([2, 3, 5])],
     )
     check(assert_type(midx_mixed_types, pd.MultiIndex), pd.MultiIndex)
+
+
+def test_index_naming() -> None:
+    """
+    Test index names type both for the getter and the setter.
+    The names of an index should be settable with a sequence (not str) and names
+    property is a list[Hashable | None] (FrozenList).
+    """
+    df = pd.DataFrame({"a": ["a", "b", "c"], "i": [10, 11, 12]})
+
+    df.index.names = ["idx"]
+    check(assert_type(df.index.names, list[Hashable | None]), list)
+    df.index.names = [3]
+    check(assert_type(df.index.names, list[Hashable | None]), list)
+    df.index.names = ("idx2",)
+    check(assert_type(df.index.names, list[Hashable | None]), list)
+    df.index.names = [None]
+    check(assert_type(df.index.names, list[Hashable | None]), list)
+    df.index.names = (None,)
+    check(assert_type(df.index.names, list[Hashable | None]), list)

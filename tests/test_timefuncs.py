@@ -1570,3 +1570,34 @@ def test_timestamp_sub_series() -> None:
     one_ts = ts1.iloc[0]
     check(assert_type(ts1.iloc[0], pd.Timestamp), pd.Timestamp)
     check(assert_type(one_ts - ts1, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+
+
+def test_creating_date_range() -> None:
+    # https://github.com/microsoft/pylance-release/issues/2133
+    with pytest_warns_bounded(
+        FutureWarning,
+        "'H' is deprecated",
+        lower="2.1.99",
+        upper="2.3.99",
+        upper_exception=ValueError,
+    ):
+        pd.date_range(start="2021-12-01", periods=24, freq="H")
+
+    dr = pd.date_range(start="2021-12-01", periods=24, freq="h")
+    check(assert_type(dr.strftime("%H:%M:%S"), pd.Index), pd.Index, str)
+
+
+def test_timestamp_to_list_add() -> None:
+    # https://github.com/microsoft/python-type-stubs/issues/110
+    check(assert_type(pd.Timestamp("2021-01-01"), pd.Timestamp), dt.date)
+    tslist = list(pd.to_datetime(["2022-01-01", "2022-01-02"]))
+    check(assert_type(tslist, list[pd.Timestamp]), list, pd.Timestamp)
+    sseries = pd.Series(tslist)
+    with pytest_warns_bounded(FutureWarning, "'d' is deprecated", lower="2.3.99"):
+        sseries + pd.Timedelta(1, "d")
+
+    check(
+        assert_type(sseries + pd.Timedelta(1, "D"), pd.Series[pd.Timestamp]),
+        pd.Series,
+        pd.Timestamp,
+    )

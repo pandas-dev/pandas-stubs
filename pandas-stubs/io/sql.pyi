@@ -115,7 +115,7 @@ def read_sql(
         | None
     ) = ...,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
-    columns: list[str] = ...,
+    columns: list[str] | None = ...,
     *,
     chunksize: int,
     dtype: DtypeArg | None = ...,
@@ -136,7 +136,7 @@ def read_sql(
         | None
     ) = ...,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
-    columns: list[str] = ...,
+    columns: list[str] | None = ...,
     chunksize: None = ...,
     dtype: DtypeArg | None = ...,
     dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,

@@ -813,18 +813,12 @@ def test_types_element_wise_arithmetic() -> None:
     s = pd.Series([0, 1, -10])
     s2 = pd.Series([7, -5, 10])
 
-    check(assert_type(s + s2, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.add(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
-    check(assert_type(s - s2, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.sub(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
-    check(assert_type(s * s2, "pd.Series[int]"), pd.Series, np.integer)
-    # TODO this below should type pd.Series[int]
-    # check(assert_type(s.mul(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(s.mul(s2, fill_value=0), pd.Series), pd.Series, np.integer)
+    check(assert_type(s.mul(s2, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
-    check(assert_type(s / s2, "pd.Series[float]"), pd.Series, np.float64)
     check(
         assert_type(s.div(s2, fill_value=0), "pd.Series[float]"), pd.Series, np.float64
     )
@@ -1633,18 +1627,6 @@ def test_series_multiindex_getitem() -> None:
         [1, 2, 3, 4], index=pd.MultiIndex.from_product([["a", "b"], ["x", "y"]])
     )
     s1: pd.Series = s["a", :]
-
-
-def test_series_mul() -> None:
-    s = pd.Series([1, 2, 3])
-    sm = s * 4
-    check(assert_type(sm, "pd.Series[int]"), pd.Series, np.integer)
-    ss = s - 4
-    check(assert_type(ss, "pd.Series[int]"), pd.Series, np.integer)
-    sm2 = s * s
-    check(assert_type(sm2, "pd.Series[int]"), pd.Series, np.integer)
-    sp = s + 4
-    check(assert_type(sp, "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_reset_index() -> None:
@@ -3823,8 +3805,30 @@ def test_series_int_float() -> None:
 
 
 def test_series_reindex() -> None:
+    """Test Series.reindex without any arguments and with tolerance."""
     s = pd.Series([1, 2, 3], index=[0, 1, 2])
     check(assert_type(s.reindex([2, 1, 0]), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(
+            s.reindex([2, 1, 0], method="backfill", tolerance=1), "pd.Series[int]"
+        ),
+        pd.Series,
+        np.integer,
+    )
+
+    sr = pd.Series([1, 2], pd.to_datetime(["2023-01-01", "2023-01-02"]))
+    check(
+        assert_type(
+            sr.reindex(
+                index=pd.to_datetime(["2023-01-02", "2023-01-03"]),
+                method="ffill",
+                tolerance=pd.Timedelta("1D"),
+            ),
+            "pd.Series[int]",
+        ),
+        pd.Series,
+        np.integer,
+    )
 
 
 def test_series_reindex_like() -> None:

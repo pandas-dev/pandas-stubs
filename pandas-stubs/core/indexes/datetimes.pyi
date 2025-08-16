@@ -44,8 +44,8 @@ from pandas.core.dtypes.dtypes import DatetimeTZDtype
 from pandas.tseries.offsets import BaseOffset
 
 class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
-    def __init__(
-        self,
+    def __new__(
+        cls,
         data: AxesData,
         freq: Frequency = ...,
         tz: TimeZones = ...,
@@ -55,7 +55,7 @@ class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
         dtype: Dtype = ...,
         copy: bool = ...,
         name: Hashable = ...,
-    ) -> None: ...
+    ) -> Self: ...
     def __reduce__(self): ...
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
