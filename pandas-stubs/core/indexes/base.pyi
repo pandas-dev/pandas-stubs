@@ -13,10 +13,12 @@ from datetime import (
 from typing import (
     Any,
     ClassVar,
+    Generic,
     Literal,
     TypeAlias,
     final,
     overload,
+    type_check_only,
 )
 
 import numpy as np
@@ -49,7 +51,10 @@ from pandas._typing import (
     AxesData,
     DropKeep,
     DtypeArg,
+    DTypeLike,
     DtypeObj,
+    GenericT,
+    GenericT_co,
     HashableT,
     IgnoreRaise,
     Label,
@@ -60,6 +65,7 @@ from pandas._typing import (
     Scalar,
     SequenceNotStr,
     SliceType,
+    SupportsDType,
     TimedeltaDtypeArg,
     TimestampDtypeArg,
     np_1darray,
@@ -519,3 +525,30 @@ class Index(IndexOpsMixin[S1]):
     def infer_objects(self, copy: bool = True) -> Self: ...
 
 UnknownIndex: TypeAlias = Index[Any]
+
+@type_check_only
+class _IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):
+    @overload
+    def to_numpy(
+        self,
+        dtype: None = None,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np_1darray[GenericT_co]: ...
+    @overload
+    def to_numpy(
+        self,
+        dtype: np.dtype[GenericT] | SupportsDType[GenericT] | type[GenericT],
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np_1darray[GenericT]: ...
+    @overload
+    def to_numpy(
+        self,
+        dtype: DTypeLike,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np_1darray: ...

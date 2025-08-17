@@ -24,10 +24,13 @@ from pandas._typing import (
     S1,
     AxisIndex,
     DropKeep,
+    DTypeLike,
+    GenericT,
+    GenericT_co,
     NDFrameT,
     Scalar,
+    SupportsDType,
     np_1darray,
-    npt,
 )
 from pandas.util._decorators import cache_readonly
 
@@ -43,7 +46,7 @@ class SelectionMixin(Generic[NDFrameT]):
     def __getitem__(self, key): ...
     def aggregate(self, func, *args, **kwargs): ...
 
-class IndexOpsMixin(OpsMixin, Generic[S1]):
+class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
     __array_priority__: int = ...
     @property
     def T(self) -> Self: ...
@@ -58,9 +61,26 @@ class IndexOpsMixin(OpsMixin, Generic[S1]):
     def size(self) -> int: ...
     @property
     def array(self) -> ExtensionArray: ...
+    @overload
     def to_numpy(
         self,
-        dtype: npt.DTypeLike | None = ...,
+        dtype: None = None,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np_1darray[GenericT_co]: ...
+    @overload
+    def to_numpy(
+        self,
+        dtype: np.dtype[GenericT] | SupportsDType[GenericT] | type[GenericT],
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np_1darray[GenericT]: ...
+    @overload
+    def to_numpy(
+        self,
+        dtype: DTypeLike,
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs,

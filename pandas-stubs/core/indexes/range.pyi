@@ -8,7 +8,10 @@ from typing import (
 )
 
 import numpy as np
-from pandas.core.indexes.base import Index
+from pandas.core.indexes.base import (
+    Index,
+    _IndexSubclassBase,
+)
 
 from pandas._typing import (
     HashableT,
@@ -17,7 +20,7 @@ from pandas._typing import (
     np_ndarray_anyint,
 )
 
-class RangeIndex(Index[int]):
+class RangeIndex(_IndexSubclassBase[int, np.int64]):
     def __new__(
         cls,
         start: int | RangeIndex | range = ...,

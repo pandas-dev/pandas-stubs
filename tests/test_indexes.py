@@ -242,6 +242,22 @@ def test_types_to_numpy() -> None:
     check(assert_type(idx.to_numpy(dtype="int", copy=True), np_1darray), np_1darray)
     check(assert_type(idx.to_numpy(na_value=0), np_1darray), np_1darray)
 
+    r_idx = pd.RangeIndex(2)
+    check(assert_type(r_idx.to_numpy(), np_1darray[np.int64]), np_1darray[np.int64])
+    check(
+        assert_type(r_idx.to_numpy(na_value=0), np_1darray[np.int64]),
+        np_1darray[np.int64],
+    )
+    check(
+        assert_type(r_idx.to_numpy(dtype="int", copy=True), np_1darray),
+        np_1darray,
+        dtype=np.integer,
+    )
+    check(
+        assert_type(r_idx.to_numpy(dtype=np.int32), np_1darray[np.int32]),
+        np_1darray[np.int32],
+    )
+
 
 def test_index_arithmetic() -> None:
     # GH 287

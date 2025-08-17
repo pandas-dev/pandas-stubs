@@ -46,14 +46,17 @@ if TYPE_CHECKING:
         VoidDtypeArg as VoidDtypeArg,
         np_1darray as np_1darray,
         np_2darray as np_2darray,
+        np_ndarray as np_ndarray,
         np_ndarray_bool as np_ndarray_bool,
         np_ndarray_int as np_ndarray_int,
     )
 else:
     _G = TypeVar("_G", bound=np.generic)
+    _S = TypeVar("_S", bound=tuple[int, ...])
     # Separately define here so pytest works
     np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[_G]]
     np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[_G]]
+    np_ndarray: TypeAlias = np.ndarray[_S, np.dtype[_G]]
     np_ndarray_bool: TypeAlias = npt.NDArray[np.bool_]
     np_ndarray_int: TypeAlias = npt.NDArray[np.signedinteger]
 
