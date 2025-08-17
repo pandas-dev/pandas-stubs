@@ -25,6 +25,7 @@ from typing import (
     Generic,
     Literal,
     NoReturn,
+    Protocol,
     TypeVar,
     final,
     overload,
@@ -91,6 +92,7 @@ from typing_extensions import (
     Never,
     Self,
     TypeAlias,
+    override,
 )
 import xarray as xr
 
@@ -190,6 +192,14 @@ from pandas.plotting import PlotAccessor
 
 _T_INT = TypeVar("_T_INT", bound=int)
 _T_COMPLEX = TypeVar("_T_COMPLEX", bound=complex)
+
+class Just(Protocol, Generic[_T]):
+    @property  # type: ignore[override]
+    @override
+    def __class__(self, /) -> type[_T]: ...
+    @__class__.setter
+    @override
+    def __class__(self, t: type[_T], /) -> None: ...
 
 class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     # get item
@@ -2151,19 +2161,27 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def sub(
         self: Series[bool],
-        other: bool | Sequence[bool],
+        other: Just[int] | Sequence[Just[int]],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
-    ) -> Never: ...
+    ) -> Series[int]: ...
     @overload
     def sub(
         self: Series[bool],
-        other: _T_COMPLEX | Sequence[_T_COMPLEX],
+        other: Just[float] | Sequence[Just[float]],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
-    ) -> Series[_T_COMPLEX]: ...
+    ) -> Series[float]: ...
+    @overload
+    def sub(
+        self: Series[bool],
+        other: Just[complex] | Sequence[Just[complex]],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[complex]: ...
     @overload
     def sub(
         self: Series[bool],

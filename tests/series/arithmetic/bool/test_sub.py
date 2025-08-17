@@ -33,7 +33,7 @@ def test_sub_py_scalar() -> None:
     check(assert_type(c - left, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(left.sub(b), Never)
+        left.sub(b)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType]
     check(assert_type(left.sub(i), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(left.sub(f), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.sub(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
@@ -64,7 +64,7 @@ def test_sub_py_sequence() -> None:
     check(assert_type(c - left, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(left.sub(b), Never)
+        left.sub(b)  # type: ignore[arg-type] # pyright: ignore[reportCallIssue, reportArgumentType]
     check(assert_type(left.sub(i), "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(left.sub(f), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.sub(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
@@ -128,7 +128,7 @@ def test_sub_pd_series() -> None:
 
     # In the following two cases, mypy fails to recognise the second operand as pd.Series[bool]
     if TYPE_CHECKING_INVALID_USAGE:
-        _ = left - cast("pd.Series[bool]", b)  # type: ignore[redundant-cast,operator] # pyright: ignore[reportUnnecessaryCast,reportOperatorIssue]
+        result = left - b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left - i, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(left - f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left - c, "pd.Series[complex]"), pd.Series, np.complexfloating)
