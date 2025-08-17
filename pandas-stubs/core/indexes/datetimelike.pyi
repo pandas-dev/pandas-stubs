@@ -7,10 +7,11 @@ from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     S1,
     AxisIndex,
+    GenericT_co,
     TimeUnit,
 )
 
-class DatetimeIndexOpsMixin(ExtensionIndex[S1]):
+class DatetimeIndexOpsMixin(ExtensionIndex[S1, GenericT_co]):
     @property
     def freq(self) -> BaseOffset | None: ...
     @property
@@ -33,7 +34,7 @@ class DatetimeIndexOpsMixin(ExtensionIndex[S1]):
         self, other: DatetimeIndexOpsMixin
     ) -> TimedeltaIndex: ...
 
-class DatetimeTimedeltaMixin(DatetimeIndexOpsMixin[S1]):
+class DatetimeTimedeltaMixin(DatetimeIndexOpsMixin[S1, GenericT_co]):
     @property
     def unit(self) -> TimeUnit: ...
     def as_unit(self, unit: TimeUnit) -> Self: ...

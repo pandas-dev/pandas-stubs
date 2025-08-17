@@ -26,6 +26,7 @@ from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    np_1darray,
     pytest_warns_bounded,
 )
 
@@ -42,13 +43,13 @@ def test_index_duplicated() -> None:
     df = pd.DataFrame({"x": [1, 2, 3, 4]}, index=pd.Index([1, 2, 3, 2]))
     ind = df.index
     duplicated = ind.duplicated("first")
-    check(assert_type(duplicated, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
+    check(assert_type(duplicated, np_1darray[np.bool]), np_1darray[np.bool])
 
 
 def test_index_isin() -> None:
     ind = pd.Index([1, 2, 3, 4, 5])
     isin = ind.isin([2, 4])
-    check(assert_type(isin, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
+    check(assert_type(isin, np_1darray[np.bool]), np_1darray[np.bool])
 
 
 def test_index_astype() -> None:
@@ -202,13 +203,6 @@ def test_str_rsplit() -> None:
     )
 
 
-def test_str_match() -> None:
-    i = pd.Index(
-        ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
-    )
-    check(assert_type(i.str.match("pp"), npt.NDArray[np.bool_]), np.ndarray, np.bool_)
-
-
 def test_index_rename() -> None:
     """Test that index rename returns an element of type Index."""
     ind = pd.Index([1, 2, 3], name="foo")
@@ -244,9 +238,25 @@ def test_index_neg():
 
 def test_types_to_numpy() -> None:
     idx = pd.Index([1, 2])
-    check(assert_type(idx.to_numpy(), np.ndarray), np.ndarray)
-    check(assert_type(idx.to_numpy(dtype="int", copy=True), np.ndarray), np.ndarray)
-    check(assert_type(idx.to_numpy(na_value=0), np.ndarray), np.ndarray)
+    check(assert_type(idx.to_numpy(), np_1darray), np_1darray)
+    check(assert_type(idx.to_numpy(dtype="int", copy=True), np_1darray), np_1darray)
+    check(assert_type(idx.to_numpy(na_value=0), np_1darray), np_1darray)
+
+    r_idx = pd.RangeIndex(2)
+    check(assert_type(r_idx.to_numpy(), np_1darray[np.int64]), np_1darray[np.int64])
+    check(
+        assert_type(r_idx.to_numpy(na_value=0), np_1darray[np.int64]),
+        np_1darray[np.int64],
+    )
+    check(
+        assert_type(r_idx.to_numpy(dtype="int", copy=True), np_1darray),
+        np_1darray,
+        dtype=np.integer,
+    )
+    check(
+        assert_type(r_idx.to_numpy(dtype=np.int32), np_1darray[np.int32]),
+        np_1darray[np.int32],
+    )
 
 
 def test_index_arithmetic() -> None:
@@ -289,10 +299,10 @@ def test_index_relops() -> None:
     check(assert_type(data[dt_idx > x], pd.DatetimeIndex), pd.DatetimeIndex)
 
     ind = pd.Index([1, 2, 3])
-    check(assert_type(ind <= 2, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
-    check(assert_type(ind >= 2, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
-    check(assert_type(ind < 2, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
-    check(assert_type(ind > 2, npt.NDArray[np.bool_]), np.ndarray, np.bool_)
+    check(assert_type(ind <= 2, np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(ind >= 2, np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(ind < 2, np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(ind > 2, np_1darray[np.bool]), np_1darray[np.bool])
 
 
 def test_range_index_union():
@@ -1299,16 +1309,14 @@ def test_datetime_operators_builtin() -> None:
 def test_get_loc() -> None:
     unique_index = pd.Index(list("abc"))
     check(
-        assert_type(
-            unique_index.get_loc("b"), Union[int, slice, npt.NDArray[np.bool_]]
-        ),
+        assert_type(unique_index.get_loc("b"), Union[int, slice, np_1darray[np.bool]]),
         int,
     )
 
     monotonic_index = pd.Index(list("abbc"))
     check(
         assert_type(
-            monotonic_index.get_loc("b"), Union[int, slice, npt.NDArray[np.bool_]]
+            monotonic_index.get_loc("b"), Union[int, slice, np_1darray[np.bool]]
         ),
         slice,
     )
@@ -1316,10 +1324,25 @@ def test_get_loc() -> None:
     non_monotonic_index = pd.Index(list("abcb"))
     check(
         assert_type(
-            non_monotonic_index.get_loc("b"), Union[int, slice, npt.NDArray[np.bool_]]
+            non_monotonic_index.get_loc("b"), Union[int, slice, np_1darray[np.bool]]
         ),
-        np.ndarray,
-        np.bool_,
+        np_1darray[np.bool],
+    )
+
+    i1, i2, i3 = pd.Interval(0, 1), pd.Interval(1, 2), pd.Interval(0, 2)
+    unique_interval_index = pd.IntervalIndex([i1, i2])
+    check(
+        assert_type(
+            unique_interval_index.get_loc(i1), Union[int, slice, np_1darray[np.bool]]
+        ),
+        np.int64,
+    )
+    overlap_interval_index = pd.IntervalIndex([i1, i2, i3])
+    check(
+        assert_type(
+            overlap_interval_index.get_loc(1), Union[int, slice, np_1darray[np.bool]]
+        ),
+        np_1darray[np.bool],
     )
 
 
@@ -1336,14 +1359,14 @@ def test_value_counts() -> None:
 def test_index_factorize() -> None:
     """Test Index.factorize method."""
     codes, idx_uniques = pd.Index(["b", "b", "a", "c", "b"]).factorize()
-    check(assert_type(codes, np.ndarray), np.ndarray)
-    check(assert_type(idx_uniques, np.ndarray | Index | Categorical), pd.Index)
+    check(assert_type(codes, np_1darray), np_1darray)
+    check(assert_type(idx_uniques, np_1darray | Index | Categorical), pd.Index)
 
     codes, idx_uniques = pd.Index(["b", "b", "a", "c", "b"]).factorize(
         use_na_sentinel=False
     )
-    check(assert_type(codes, np.ndarray), np.ndarray)
-    check(assert_type(idx_uniques, np.ndarray | Index | Categorical), pd.Index)
+    check(assert_type(codes, np_1darray), np_1darray)
+    check(assert_type(idx_uniques, np_1darray | Index | Categorical), pd.Index)
 
 
 def test_disallow_empty_index() -> None:

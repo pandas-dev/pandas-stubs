@@ -29,6 +29,7 @@ from typing import (
     TypeVar,
     final,
     overload,
+    type_check_only,
 )
 
 from matplotlib.axes import (
@@ -126,11 +127,14 @@ from pandas._typing import (
     CompressionOptions,
     DropKeep,
     Dtype,
+    DTypeLike,
     DtypeObj,
     FilePath,
     FillnaOptions,
     FloatDtypeArg,
     FloatFormatType,
+    GenericT,
+    GenericT_co,
     GroupByObjectNonScalar,
     HashableT1,
     IgnoreRaise,
@@ -165,6 +169,7 @@ from pandas._typing import (
     StrDtypeArg,
     StrLike,
     Suffixes,
+    SupportsDType,
     T as _T,
     TimeAmbiguous,
     TimedeltaDtypeArg,
@@ -176,6 +181,7 @@ from pandas._typing import (
     ValueKeyFunc,
     VoidDtypeArg,
     WriteBuffer,
+    np_1darray,
     np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_complex,
@@ -453,7 +459,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ): ...
     def __array__(
         self, dtype: _str | np.dtype = ..., copy: bool | None = ...
-    ) -> np.ndarray: ...
+    ) -> np_1darray: ...
     @property
     def axes(self) -> list: ...
     @final
@@ -2878,14 +2884,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         **kwargs: Any,
     ) -> S1: ...
     def to_list(self) -> list[S1]: ...
-    @final
-    def to_numpy(
-        self,
-        dtype: npt.DTypeLike | None = ...,
-        copy: bool = False,
-        na_value: Scalar = ...,
-        **kwargs: Any,
-    ) -> np.ndarray: ...
     def tolist(self) -> list[S1]: ...
     def var(
         self,
@@ -2946,7 +2944,34 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @final
     def __bool__(self) -> NoReturn: ...
 
-class TimestampSeries(Series[Timestamp]):
+@type_check_only
+class _SeriesSubclassBase(Series[S1], Generic[S1, GenericT_co]):
+    @overload
+    def to_numpy(  # pyrefly: ignore
+        self,
+        dtype: None = None,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np_1darray[GenericT_co]: ...
+    @overload
+    def to_numpy(
+        self,
+        dtype: np.dtype[GenericT] | SupportsDType[GenericT] | type[GenericT],
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np_1darray[GenericT]: ...
+    @overload
+    def to_numpy(
+        self,
+        dtype: DTypeLike,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np_1darray: ...
+
+class TimestampSeries(_SeriesSubclassBase[Timestamp, np.datetime64]):
     @property
     def dt(self) -> TimestampProperties: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __add__(self, other: TimedeltaSeries | np.timedelta64 | timedelta | BaseOffset) -> TimestampSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
@@ -2998,7 +3023,7 @@ class TimestampSeries(Series[Timestamp]):
         **kwargs: Any,
     ) -> Never: ...
 
-class TimedeltaSeries(Series[Timedelta]):
+class TimedeltaSeries(_SeriesSubclassBase[Timedelta, np.timedelta64]):
     # ignores needed because of mypy
     @overload  # type: ignore[override]
     def __add__(self, other: Period) -> PeriodSeries: ...
@@ -3110,7 +3135,7 @@ class TimedeltaSeries(Series[Timedelta]):
         **kwargs: Any,
     ) -> Never: ...
 
-class PeriodSeries(Series[Period]):
+class PeriodSeries(_SeriesSubclassBase[Period, np.object_]):
     @property
     def dt(self) -> PeriodProperties: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __sub__(self, other: PeriodSeries) -> OffsetSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
@@ -3123,7 +3148,7 @@ class PeriodSeries(Series[Period]):
         **kwargs: Any,
     ) -> Never: ...
 
-class OffsetSeries(Series[BaseOffset]):
+class OffsetSeries(_SeriesSubclassBase[BaseOffset, np.object_]):
     @overload  # type: ignore[override]
     def __radd__(self, other: Period) -> PeriodSeries: ...
     @overload
@@ -3138,7 +3163,9 @@ class OffsetSeries(Series[BaseOffset]):
         **kwargs: Any,
     ) -> Never: ...
 
-class IntervalSeries(Series[Interval[_OrderableT]], Generic[_OrderableT]):
+class IntervalSeries(
+    _SeriesSubclassBase[Interval[_OrderableT], np.object_], Generic[_OrderableT]
+):
     @property
     def array(self) -> IntervalArray: ...
     def diff(self, periods: int = ...) -> Never: ...

@@ -165,6 +165,7 @@ from pandas._typing import (
     ValueKeyFunc,
     WriteBuffer,
     XMLParsers,
+    np_2darray,
     npt,
     num,
 )
@@ -452,7 +453,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         dtype: npt.DTypeLike | None = ...,
         copy: bool = False,
         na_value: Scalar = ...,
-    ) -> np.ndarray: ...
+    ) -> np_2darray: ...
     @overload
     def to_dict(
         self,
@@ -1766,7 +1767,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @property
     def size(self) -> int: ...
     @property
-    def values(self) -> np.ndarray: ...
+    def values(self) -> np_2darray: ...
     # methods
     @final
     def abs(self) -> Self: ...
