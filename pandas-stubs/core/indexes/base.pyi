@@ -529,7 +529,7 @@ UnknownIndex: TypeAlias = Index[Any]
 @type_check_only
 class _IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):
     @overload
-    def to_numpy(
+    def to_numpy(  # pyrefly: ignore
         self,
         dtype: None = None,
         copy: bool = False,
