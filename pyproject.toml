@@ -134,8 +134,6 @@ args = [
   { name = "nightly", positional = false, default = false, type = "boolean", required = false, help = "Compare against pandas nightly (off by default)" },
 ]
 
-[tool.ruff]
-target-version = 'py310'
 
 [tool.black]
 target-version = ['py310']
