@@ -22,7 +22,6 @@ from typing import (
     TypedDict,
     Union,
     overload,
-    override,
 )
 
 import numpy as np
@@ -39,6 +38,7 @@ from typing_extensions import (
     ParamSpec,
     TypeAlias,
     TypeVar,
+    override,
 )
 
 from pandas._libs.interval import Interval
