@@ -1,5 +1,3 @@
-from typing import cast
-
 import numpy as np
 from numpy import typing as npt  # noqa: F401
 import pandas as pd
@@ -128,13 +126,13 @@ def test_sub_pd_series() -> None:
 
     # In the following two cases, mypy fails to recognise the second operand as pd.Series[bool]
     if TYPE_CHECKING_INVALID_USAGE:
-        _ = left - cast("pd.Series[bool]", b)  # type: ignore[redundant-cast,operator] # pyright: ignore[reportUnnecessaryCast,reportOperatorIssue]
+        _0 = left - b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left - i, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(left - f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left - c, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _ = b - cast("pd.Series[bool]", left)  # type: ignore[redundant-cast,operator] # pyright: ignore[reportUnnecessaryCast,reportOperatorIssue]
+        _1 = b - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(i - left, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(f - left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c - left, "pd.Series[complex]"), pd.Series, np.complexfloating)

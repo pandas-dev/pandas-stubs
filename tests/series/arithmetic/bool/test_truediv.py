@@ -179,13 +179,13 @@ def test_truediv_pd_series() -> None:
     c = pd.Series([1.1j, 2.2j, 4.1j])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _ = left / b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _0 = left / b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left / i, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / c, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _ = b / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _1 = b / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(i / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(f / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
