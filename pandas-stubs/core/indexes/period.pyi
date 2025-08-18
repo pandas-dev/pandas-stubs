@@ -5,6 +5,7 @@ from typing import (
     overload,
 )
 
+import numpy as np
 import pandas as pd
 from pandas import Index
 from pandas.core.indexes.accessors import PeriodIndexFieldOps
@@ -19,7 +20,7 @@ from pandas._libs.tslibs import (
 )
 from pandas._libs.tslibs.period import _PeriodAddSub
 
-class PeriodIndex(DatetimeIndexOpsMixin[pd.Period], PeriodIndexFieldOps):
+class PeriodIndex(DatetimeIndexOpsMixin[pd.Period, np.object_], PeriodIndexFieldOps):
     def __new__(
         cls,
         data=...,

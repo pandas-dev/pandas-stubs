@@ -11,6 +11,10 @@ from typing import (
     TYPE_CHECKING,
     Final,
     Literal,
+    TypeAlias,
+    TypeVar,
+    get_args,
+    get_origin,
 )
 
 import numpy as np
@@ -40,13 +44,21 @@ if TYPE_CHECKING:
         TimestampDtypeArg as TimestampDtypeArg,
         UIntDtypeArg as UIntDtypeArg,
         VoidDtypeArg as VoidDtypeArg,
+        np_1darray as np_1darray,
+        np_2darray as np_2darray,
+        np_ndarray as np_ndarray,
         np_ndarray_bool as np_ndarray_bool,
         np_ndarray_int as np_ndarray_int,
     )
 else:
+    _G = TypeVar("_G", bound=np.generic)
+    _S = TypeVar("_S", bound=tuple[int, ...])
     # Separately define here so pytest works
-    np_ndarray_bool = npt.NDArray[np.bool_]
-    np_ndarray_int = npt.NDArray[np.signedinteger]
+    np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[_G]]
+    np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[_G]]
+    np_ndarray: TypeAlias = np.ndarray[_S, np.dtype[_G]]
+    np_ndarray_bool: TypeAlias = npt.NDArray[np.bool_]
+    np_ndarray_int: TypeAlias = npt.NDArray[np.signedinteger]
 
 TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 WINDOWS = os.name == "nt" or "cygwin" in platform.system().lower()
@@ -61,8 +73,39 @@ def check(
     attr: str = "left",
     index_to_check_for_type: Literal[0, -1] = 0,
 ) -> T:
-    if not isinstance(actual, klass):
+    __tracebackhide__ = True
+    origin = get_origin(klass)
+    if not isinstance(actual, origin or klass):
         raise RuntimeError(f"Expected type '{klass}' but got '{type(actual)}'")
+    if origin is np.ndarray:
+        # Check shape and dtype
+        args = get_args(klass)
+        shape_type = args[0] if len(args) >= 1 else None
+        dtype_type = args[1] if len(args) >= 2 else None
+        if (
+            shape_type
+            and get_origin(shape_type) is tuple
+            and (tuple_args := get_args(shape_type))
+            and ... not in tuple_args  # fixed-length tuple
+            and (arr_ndim := getattr(actual, "ndim"))
+            != (expected_ndim := len(tuple_args))
+        ):
+            raise RuntimeError(
+                f"Array has wrong dimension {arr_ndim}, expected {expected_ndim}"
+            )
+
+        if (
+            dtype_type
+            and get_origin(dtype_type) is np.dtype
+            and (dtype_args := get_args(dtype_type))
+            and isinstance((expected_dtype := dtype_args[0]), type)
+            and issubclass(expected_dtype, np.generic)
+            and (arr_dtype := getattr(actual, "dtype")) != expected_dtype
+        ):
+            raise RuntimeError(
+                f"Array has wrong dtype {arr_dtype}, expected {expected_dtype.__name__}"
+            )
+
     if dtype is None:
         return actual
 

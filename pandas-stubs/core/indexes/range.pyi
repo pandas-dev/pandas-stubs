@@ -8,16 +8,19 @@ from typing import (
 )
 
 import numpy as np
-from pandas.core.indexes.base import Index
+from pandas.core.indexes.base import (
+    Index,
+    _IndexSubclassBase,
+)
 
 from pandas._typing import (
     HashableT,
     MaskType,
+    np_1darray,
     np_ndarray_anyint,
-    npt,
 )
 
-class RangeIndex(Index[int]):
+class RangeIndex(_IndexSubclassBase[int, np.int64]):
     def __new__(
         cls,
         start: int | RangeIndex | range = ...,
@@ -58,7 +61,7 @@ class RangeIndex(Index[int]):
     def argsort(self, *args, **kwargs): ...
     def factorize(
         self, sort: bool = False, use_na_sentinel: bool = True
-    ) -> tuple[npt.NDArray[np.intp], RangeIndex]: ...
+    ) -> tuple[np_1darray[np.intp], RangeIndex]: ...
     def equals(self, other): ...
     @final
     def join(
