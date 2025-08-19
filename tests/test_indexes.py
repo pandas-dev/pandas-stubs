@@ -1509,6 +1509,8 @@ def test_period_index_asof_locs() -> None:
     where = pd.DatetimeIndex(["2023-05-30 00:12:00", "2023-06-01 00:00:00"])
     mask = np.ones(2, dtype=bool)
     check(
-        assert_type(idx.asof_locs(where, mask), pd.PeriodIndex),
-        pd.PeriodIndex,
+        assert_type(
+            idx.asof_locs(where, mask), np.ndarray[tuple[int], np.dtype[np.integer]]
+        ),
+        np.ndarray,
     )
