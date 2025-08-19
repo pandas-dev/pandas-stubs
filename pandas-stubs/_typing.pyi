@@ -820,6 +820,8 @@ np_ndarray_float: TypeAlias = npt.NDArray[np.floating]
 np_ndarray_complex: TypeAlias = npt.NDArray[np.complexfloating]
 np_ndarray_bool: TypeAlias = npt.NDArray[np.bool_]
 np_ndarray_str: TypeAlias = npt.NDArray[np.str_]
+np_ndarray_dt: TypeAlias = npt.NDArray[np.datetime64]
+np_ndarray_td: TypeAlias = npt.NDArray[np.timedelta64]
 
 # Define shape and generic type variables with defaults similar to numpy
 GenericT = TypeVar("GenericT", bound=np.generic, default=Any)

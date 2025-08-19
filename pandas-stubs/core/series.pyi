@@ -186,6 +186,7 @@ from pandas._typing import (
     np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_complex,
+    np_ndarray_dt,
     np_ndarray_float,
     npt,
     num,
@@ -2071,6 +2072,11 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __rxor__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
     @overload
+    def __sub__(
+        self: Series[Never],
+        other: datetime | np.datetime64 | np_ndarray_dt | TimestampSeries,
+    ) -> TimedeltaSeries: ...
+    @overload
     def __sub__(self: Series[Never], other: complex | _ListLike | Series) -> Series: ...
     @overload
     def __sub__(self, other: Series[Never]) -> Series: ...  # type: ignore[overload-overlap]
@@ -2146,6 +2152,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __sub__(
         self: Series[Timedelta],
         other: timedelta | np.timedelta64 | TimedeltaSeries | TimedeltaIndex,
+    ) -> TimedeltaSeries: ...
+    @overload
+    def sub(
+        self: Series[Never],
+        other: datetime | np.datetime64 | np_ndarray_dt | TimestampSeries,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> TimedeltaSeries: ...
     @overload
     def sub(
@@ -2236,6 +2250,19 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[complex]: ...
     @overload
     def sub(
+        self: Series[_T_COMPLEX],
+        other: (
+            Just[complex]
+            | Sequence[Just[complex]]
+            | np_ndarray_complex
+            | Series[complex]
+        ),
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[complex]: ...
+    @overload
+    def sub(
         self: Series[Timestamp],
         other: timedelta | np.timedelta64 | TimedeltaSeries | TimedeltaIndex,
         level: Level | None = None,
@@ -2251,18 +2278,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: int = 0,
     ) -> Series[complex]: ...
     @overload
-    def sub(
-        self: Series[_T_COMPLEX],
-        other: (
-            Just[complex]
-            | Sequence[Just[complex]]
-            | np_ndarray_complex
-            | Series[complex]
-        ),
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[complex]: ...
+    def __rsub__(  # type: ignore[misc]
+        self: Series[Never],
+        other: datetime | np.datetime64 | np_ndarray_dt | TimestampSeries,
+    ) -> TimedeltaSeries: ...
     @overload
     def __rsub__(
         self: Series[Never], other: complex | _ListLike | Series
@@ -2332,6 +2351,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
             | Series[complex]
         ),
     ) -> Series[complex]: ...
+    @overload
+    def rsub(
+        self: Series[Never],
+        other: datetime | np.datetime64 | np_ndarray_dt | TimestampSeries,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> TimedeltaSeries: ...
     @overload
     def rsub(
         self: Series[Never],
