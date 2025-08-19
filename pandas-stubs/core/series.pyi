@@ -188,6 +188,7 @@ from pandas._typing import (
     np_ndarray_complex,
     np_ndarray_dt,
     np_ndarray_float,
+    np_ndarray_td,
     npt,
     num,
 )
@@ -2146,12 +2147,24 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __sub__(
         self: Series[Timestamp],
-        other: timedelta | np.timedelta64 | TimedeltaSeries | TimedeltaIndex,
+        other: (
+            timedelta
+            | np.timedelta64
+            | np_ndarray_td
+            | TimedeltaSeries
+            | TimedeltaIndex
+        ),
     ) -> TimestampSeries: ...
     @overload
     def __sub__(
         self: Series[Timedelta],
-        other: timedelta | np.timedelta64 | TimedeltaSeries | TimedeltaIndex,
+        other: (
+            timedelta
+            | np.timedelta64
+            | np_ndarray_td
+            | TimedeltaSeries
+            | TimedeltaIndex
+        ),
     ) -> TimedeltaSeries: ...
     @overload
     def sub(
@@ -2170,7 +2183,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: int = 0,
     ) -> Series: ...
     @overload
-    def sub(
+    def sub(  # type: ignore[overload-overlap]
         self,
         other: Series[Never],
         level: Level | None = None,
@@ -2264,19 +2277,31 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def sub(
         self: Series[Timestamp],
-        other: timedelta | np.timedelta64 | TimedeltaSeries | TimedeltaIndex,
+        other: (
+            timedelta
+            | np.timedelta64
+            | np_ndarray_td
+            | TimedeltaSeries
+            | TimedeltaIndex
+        ),
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
-    ) -> Series[complex]: ...
+    ) -> TimestampSeries: ...
     @overload
     def sub(
         self: Series[Timedelta],
-        other: timedelta | np.timedelta64 | TimedeltaSeries | TimedeltaIndex,
+        other: (
+            timedelta
+            | np.timedelta64
+            | np_ndarray_td
+            | TimedeltaSeries
+            | TimedeltaIndex
+        ),
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
-    ) -> Series[complex]: ...
+    ) -> TimedeltaSeries: ...
     @overload
     def __rsub__(  # type: ignore[misc]
         self: Series[Never],
