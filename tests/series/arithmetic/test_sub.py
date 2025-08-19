@@ -156,7 +156,7 @@ def test_sub_py_datetime() -> None:
 def test_sub_numpy_datetime() -> None:
     """Test pd.Series[Any] - numpy datetime(s)"""
     s = np.datetime64(anchor)
-    a = np.array([s + np.timedelta64(m, "m") for m in range(3)], dtype=np.datetime64)
+    a = np.array([s + np.timedelta64(m, "m") for m in range(3)], np.datetime64)
 
     check(assert_type(left_ts - s, "TimedeltaSeries"), pd.Series, pd.Timedelta)
     check(assert_type(left_ts - a, "TimedeltaSeries"), pd.Series, pd.Timedelta)
