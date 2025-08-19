@@ -1502,3 +1502,13 @@ def test_period_index_constructor() -> None:
         ),
         pd.PeriodIndex,
     )
+
+
+def test_period_index_asof_locs() -> None:
+    idx = pd.PeriodIndex(["2000", "2001"], freq="D")
+    where = pd.DatetimeIndex(["2023-05-30 00:12:00", "2023-06-01 00:00:00"])
+    mask = np.ones(2, dtype=bool)
+    check(
+        assert_type(idx.asof_locs(where, mask), pd.PeriodIndex),
+        pd.PeriodIndex,
+    )
