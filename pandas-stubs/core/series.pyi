@@ -265,6 +265,8 @@ _ListLike: TypeAlias = (
 )
 
 class Series(IndexOpsMixin[S1], NDFrame):
+    # Define __index__ because mypy thinks Series follows protocol `SupportsIndex` https://github.com/pandas-dev/pandas-stubs/pull/1332#discussion_r2285648790
+    __index__: ClassVar[None]
     __hash__: ClassVar[None]
 
     @overload
