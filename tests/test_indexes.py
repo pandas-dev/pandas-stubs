@@ -1510,7 +1510,7 @@ def test_period_index_asof_locs() -> None:
     mask = np.ones(2, dtype=bool)
     check(
         assert_type(
-            idx.asof_locs(where, mask), np.ndarray[tuple[int], np.dtype[np.integer]]
+            idx.asof_locs(where, mask), np.ndarray[tuple[int], np.dtype[np.intp]]
         ),
         np.ndarray,
     )
