@@ -1,7 +1,6 @@
 from collections.abc import Hashable
 import datetime
 from typing import (
-    final,
     overload,
 )
 
@@ -14,27 +13,27 @@ from pandas.core.indexes.timedeltas import TimedeltaIndex
 from typing_extensions import Self
 
 from pandas._libs.tslibs import (
-    BaseOffset,
     NaTType,
     Period,
 )
 from pandas._libs.tslibs.period import _PeriodAddSub
+from pandas._typing import (
+    AxesData,
+    Dtype,
+    Frequency,
+)
 
 class PeriodIndex(DatetimeIndexOpsMixin[pd.Period, np.object_], PeriodIndexFieldOps):
     def __new__(
         cls,
-        data=...,
-        ordinal=...,
-        freq=...,
-        tz=...,
-        dtype=...,
-        copy: bool = ...,
-        name: Hashable = ...,
-        **fields,
+        data: AxesData | None = None,
+        freq: Frequency | None = None,
+        dtype: Dtype | None = None,
+        copy: bool = False,
+        name: Hashable | None = None,
     ): ...
     @property
-    def values(self): ...
-    def __contains__(self, key) -> bool: ...
+    def values(self) -> np.ndarray[tuple[int], np.dtype[np.object_]]: ...
     @overload
     def __sub__(self, other: Period) -> Index: ...
     @overload
@@ -53,28 +52,11 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period, np.object_], PeriodIndexField
     def __rsub__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: NaTType
     ) -> NaTType: ...
-    @final
-    def __array_wrap__(self, result, context=...): ...
     def asof_locs(self, where, mask): ...
-    def searchsorted(self, value, side: str = ..., sorter=...): ...
     @property
     def is_full(self) -> bool: ...
     @property
     def inferred_type(self) -> str: ...
-    @final
-    def get_indexer(self, target, method=..., limit=..., tolerance=...): ...
-    def get_indexer_non_unique(self, target): ...
-    def insert(self, loc, item): ...
-    @final
-    def join(
-        self,
-        other,
-        *,
-        how: str = ...,
-        level=...,
-        return_indexers: bool = ...,
-        sort: bool = ...,
-    ): ...
     @property
     def freqstr(self) -> str: ...
     def shift(self, periods: int = 1, freq=...) -> Self: ...
@@ -87,6 +69,6 @@ def period_range(
         str | datetime.datetime | datetime.date | pd.Timestamp | pd.Period | None
     ) = None,
     periods: int | None = None,
-    freq: str | BaseOffset | None = None,
+    freq: Frequency | None = None,
     name: Hashable | None = None,
 ) -> PeriodIndex: ...

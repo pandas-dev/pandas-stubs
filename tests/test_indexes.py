@@ -1489,3 +1489,16 @@ def test_index_naming() -> None:
     check(assert_type(df.index.names, list[Hashable | None]), list)
     df.index.names = (None,)
     check(assert_type(df.index.names, list[Hashable | None]), list)
+
+
+def test_period_index_constructor() -> None:
+    check(
+        assert_type(pd.PeriodIndex(["2000"], dtype="period[D]"), pd.PeriodIndex),
+        pd.PeriodIndex,
+    )
+    check(
+        assert_type(
+            pd.PeriodIndex(["2000"], freq="D", name="foo", copy=True), pd.PeriodIndex
+        ),
+        pd.PeriodIndex,
+    )
