@@ -42,11 +42,10 @@ def test_mul_py_sequence() -> None:
     check(assert_type(left * f, pd.Series), pd.Series)
     check(assert_type(left * c, pd.Series), pd.Series)
 
-    # `mypy` thinks the return types are `list[_T]`
-    check(assert_type(b * left, pd.Series), pd.Series)  # type: ignore[assert-type]
-    check(assert_type(i * left, pd.Series), pd.Series)  # type: ignore[assert-type]
-    check(assert_type(f * left, pd.Series), pd.Series)  # type: ignore[assert-type]
-    check(assert_type(c * left, pd.Series), pd.Series)  # type: ignore[assert-type]
+    check(assert_type(b * left, pd.Series), pd.Series)
+    check(assert_type(i * left, pd.Series), pd.Series)
+    check(assert_type(f * left, pd.Series), pd.Series)
+    check(assert_type(c * left, pd.Series), pd.Series)
 
     check(assert_type(left.mul(b), pd.Series), pd.Series)
     check(assert_type(left.mul(i), pd.Series), pd.Series)

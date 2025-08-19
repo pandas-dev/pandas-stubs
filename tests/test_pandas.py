@@ -32,6 +32,9 @@ from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    np_1darray,
+    np_2darray,
+    np_ndarray_bool,
     pytest_warns_bounded,
 )
 
@@ -428,20 +431,47 @@ def test_types_json_normalize() -> None:
 
 def test_isna() -> None:
     # https://github.com/pandas-dev/pandas-stubs/issues/264
-    s1 = pd.Series([1, np.nan, 3.2])
-    check(assert_type(pd.isna(s1), "pd.Series[bool]"), pd.Series, np.bool_)
+    s = pd.Series([1, np.nan, 3.2])
+    check(assert_type(pd.isna(s), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(pd.notna(s), "pd.Series[bool]"), pd.Series, np.bool_)
 
-    s2 = pd.Series([1, 3.2])
-    check(assert_type(pd.notna(s2), "pd.Series[bool]"), pd.Series, np.bool_)
+    df = pd.DataFrame({"a": [1, 2, 1, 2], "b": [1, 1, 2, np.nan]})
+    check(assert_type(pd.isna(df), "pd.DataFrame"), pd.DataFrame)
+    check(assert_type(pd.notna(df), "pd.DataFrame"), pd.DataFrame)
 
-    df1 = pd.DataFrame({"a": [1, 2, 1, 2], "b": [1, 1, 2, np.nan]})
-    check(assert_type(pd.isna(df1), "pd.DataFrame"), pd.DataFrame)
+    idx = pd.Index([1, 2, np.nan, float("nan")])
+    check(assert_type(pd.isna(idx), np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(pd.notna(idx), np_1darray[np.bool]), np_1darray[np.bool])
 
-    idx1 = pd.Index([1, 2, np.nan])
-    check(assert_type(pd.isna(idx1), npt.NDArray[np.bool_]), np.ndarray, np.bool_)
+    # ExtensionArray
+    ext_arr = idx.array
+    check(assert_type(pd.isna(ext_arr), np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(pd.notna(ext_arr), np_1darray[np.bool]), np_1darray[np.bool])
 
-    idx2 = pd.Index([1, 2])
-    check(assert_type(pd.notna(idx2), npt.NDArray[np.bool_]), np.ndarray, np.bool_)
+    # 1-D numpy array
+    arr_1d = idx.to_numpy()
+    check(assert_type(pd.isna(arr_1d), np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(pd.notna(arr_1d), np_1darray[np.bool]), np_1darray[np.bool])
+
+    # 2-D numpy array
+    arr_2d = idx.to_numpy().reshape(2, 2)
+    check(assert_type(pd.isna(arr_2d), np_2darray[np.bool]), np_2darray[np.bool])
+    check(assert_type(pd.notna(arr_2d), np_2darray[np.bool]), np_2darray[np.bool])
+
+    # N-D numpy array
+    arr_nd = idx.to_numpy().reshape([2, 2])
+    check(assert_type(pd.isna(arr_nd), np_ndarray_bool), np_ndarray_bool)
+    check(assert_type(pd.notna(arr_nd), np_ndarray_bool), np_ndarray_bool)
+
+    # List of scalars
+    l_sca = [1, 2.5, float("nan")]
+    check(assert_type(pd.isna(l_sca), np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(pd.notna(l_sca), np_1darray[np.bool]), np_1darray[np.bool])
+
+    # List of unknown members
+    l_any: list[object] = [arr_1d, ext_arr]
+    check(assert_type(pd.isna(l_any), np_ndarray_bool), np_ndarray_bool)
+    check(assert_type(pd.notna(l_any), np_ndarray_bool), np_ndarray_bool)
 
     assert check(assert_type(pd.isna(pd.NA), bool), bool)
     assert not check(assert_type(pd.notna(pd.NA), bool), bool)
@@ -909,15 +939,15 @@ def test_factorize() -> None:
     check(assert_type(uniques, np.ndarray), np.ndarray)
 
     codes, cat_uniques = pd.factorize(pd.Categorical(["b", "b", "a", "c", "b"]))
-    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(codes, np_1darray), np_1darray)
     check(assert_type(cat_uniques, pd.Categorical), pd.Categorical)
 
     codes, idx_uniques = pd.factorize(pd.Index(["b", "b", "a", "c", "b"]))
-    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(codes, np_1darray), np_1darray)
     check(assert_type(idx_uniques, pd.Index), pd.Index)
 
     codes, idx_uniques = pd.factorize(pd.Series(["b", "b", "a", "c", "b"]))
-    check(assert_type(codes, np.ndarray), np.ndarray)
+    check(assert_type(codes, np_1darray), np_1darray)
     check(assert_type(idx_uniques, pd.Index), pd.Index)
 
     codes, uniques = pd.factorize(np.array(list("bbacb")))

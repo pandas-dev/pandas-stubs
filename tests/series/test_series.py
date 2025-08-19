@@ -56,6 +56,7 @@ from tests import (
     WINDOWS,
     check,
     ensure_clean,
+    np_1darray,
     pytest_warns_bounded,
 )
 from tests.extension.decimal.array import DecimalDtype
@@ -90,12 +91,15 @@ if TYPE_CHECKING:
         UIntDtypeArg,
         VoidDtypeArg,
     )
-    from tests import np_ndarray_int  # noqa: F401
 
 else:
     TimedeltaSeries: TypeAlias = pd.Series
     OffsetSeries: TypeAlias = pd.Series
 
+if not PD_LTE_23:
+    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore  # isort: skip
+else:
+    Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
 # Tests will use numpy 2.1 in python 3.10 or later
 # From Numpy 2.1 __init__.pyi
@@ -1595,8 +1599,7 @@ def test_series_min_max_sub_axis() -> None:
     sm = s1 * s2
     sd = s1 / s2
     check(assert_type(sa, pd.Series), pd.Series)
-    # Will be fixed after removing TimedeltaSeries, see Series.__sub__ in series.pyi
-    check(assert_type(ss, pd.Series), pd.Series)  # type: ignore[assert-type]
+    check(assert_type(ss, pd.Series), pd.Series)
     check(assert_type(sm, pd.Series), pd.Series)
     check(assert_type(sd, pd.Series), pd.Series)
 
@@ -1845,7 +1848,7 @@ def test_types_to_dict() -> None:
 def test_categorical_codes():
     # GH-111
     cat = pd.Categorical(["a", "b", "a"])
-    assert_type(cat.codes, "np_ndarray_int")
+    check(assert_type(cat.codes, np_1darray[np.signedinteger]), np_1darray[np.int8])
 
 
 def test_relops() -> None:
@@ -1997,12 +2000,12 @@ def test_dtype_type() -> None:
 
 def test_types_to_numpy() -> None:
     s = pd.Series(["a", "b", "c"], dtype=str)
-    check(assert_type(s.to_numpy(), np.ndarray), np.ndarray)
-    check(assert_type(s.to_numpy(dtype="str", copy=True), np.ndarray), np.ndarray)
-    check(assert_type(s.to_numpy(na_value=0), np.ndarray), np.ndarray)
-    check(assert_type(s.to_numpy(na_value=np.int32(4)), np.ndarray), np.ndarray)
-    check(assert_type(s.to_numpy(na_value=np.float16(4)), np.ndarray), np.ndarray)
-    check(assert_type(s.to_numpy(na_value=np.complex128(4, 7)), np.ndarray), np.ndarray)
+    check(assert_type(s.to_numpy(), np_1darray), np_1darray)
+    check(assert_type(s.to_numpy(dtype="str", copy=True), np_1darray), np_1darray)
+    check(assert_type(s.to_numpy(na_value=0), np_1darray), np_1darray)
+    check(assert_type(s.to_numpy(na_value=np.int32(4)), np_1darray), np_1darray)
+    check(assert_type(s.to_numpy(na_value=np.float16(4)), np_1darray), np_1darray)
+    check(assert_type(s.to_numpy(na_value=np.complex128(4, 7)), np_1darray), np_1darray)
 
 
 def test_where() -> None:
@@ -3776,13 +3779,11 @@ def test_series_bool_fails() -> None:
         pass
 
 
-def test_series_dict() -> None:
+def test_series_from_dict_views() -> None:
     # GH 812
-    check(
-        assert_type(pd.Series({"a": 1, "b": 2}.keys()), "pd.Series[str]"),
-        pd.Series,
-        str,
-    )
+    d = {"a": 1, "b": 2}
+    check(assert_type(pd.Series(d.keys()), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(pd.Series(d.values()), "pd.Series[int]"), pd.Series, np.integer)
 
 
 def test_series_keys_type() -> None:
@@ -3834,11 +3835,19 @@ def test_series_reindex() -> None:
 def test_series_reindex_like() -> None:
     s = pd.Series([1, 2, 3], index=[0, 1, 2])
     other = pd.Series([1, 2], index=[1, 0])
-    with pytest_warns_bounded(
-        FutureWarning,
-        "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
-        lower="2.3.99",
-        upper="3.0.99",
+    with (
+        pytest_warns_bounded(
+            FutureWarning,
+            "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
+            lower="2.3.99",
+            upper="2.99",
+        ),
+        pytest_warns_bounded(
+            Pandas4Warning,
+            "the 'method' keyword is deprecated and will be removed in a future version. Please take steps to stop the use of 'method'",
+            lower="2.99",
+            upper="3.0.99",
+        ),
     ):
         check(
             assert_type(

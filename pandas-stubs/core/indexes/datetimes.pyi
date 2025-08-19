@@ -43,7 +43,9 @@ from pandas.core.dtypes.dtypes import DatetimeTZDtype
 
 from pandas.tseries.offsets import BaseOffset
 
-class DatetimeIndex(DatetimeTimedeltaMixin[Timestamp], DatetimeIndexProperties):
+class DatetimeIndex(
+    DatetimeTimedeltaMixin[Timestamp, np.datetime64], DatetimeIndexProperties
+):
     def __new__(
         cls,
         data: AxesData,

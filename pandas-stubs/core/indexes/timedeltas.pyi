@@ -33,7 +33,9 @@ from pandas._typing import (
     num,
 )
 
-class TimedeltaIndex(DatetimeTimedeltaMixin[Timedelta], TimedeltaIndexProperties):
+class TimedeltaIndex(
+    DatetimeTimedeltaMixin[Timedelta, np.timedelta64], TimedeltaIndexProperties
+):
     def __new__(
         cls,
         data: (

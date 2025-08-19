@@ -22,7 +22,11 @@ from typing_extensions import TypeAlias
 from pandas._libs.tslibs import NaTType
 from pandas._libs.tslibs.offsets import BaseOffset
 from pandas._libs.tslibs.timestamps import Timestamp
-from pandas._typing import npt
+from pandas._typing import (
+    ShapeT,
+    np_1darray,
+    np_ndarray,
+)
 
 class IncompatibleFrequency(ValueError): ...
 
@@ -98,43 +102,63 @@ class Period(PeriodMixin):
     @overload
     def __eq__(self, other: Period) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __eq__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...  # type: ignore[overload-overlap]
+    def __eq__(self, other: PeriodIndex) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: PeriodSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
+    @overload
+    def __eq__(self, other: np_ndarray[ShapeT, np.object_]) -> np_ndarray[ShapeT, np.bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: object) -> Literal[False]: ...
     @overload
     def __ge__(self, other: Period) -> bool: ...
     @overload
-    def __ge__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
+    def __ge__(self, other: PeriodIndex) -> np_1darray[np.bool]: ...
     @overload
     def __ge__(self, other: PeriodSeries) -> Series[bool]: ...
     @overload
+    def __ge__(
+        self, other: np_ndarray[ShapeT, np.object_]
+    ) -> np_ndarray[ShapeT, np.bool]: ...
+    @overload
     def __gt__(self, other: Period) -> bool: ...
     @overload
-    def __gt__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
+    def __gt__(self, other: PeriodIndex) -> np_1darray[np.bool]: ...
     @overload
     def __gt__(self, other: PeriodSeries) -> Series[bool]: ...
     @overload
+    def __gt__(
+        self, other: np_ndarray[ShapeT, np.object_]
+    ) -> np_ndarray[ShapeT, np.bool]: ...
+    @overload
     def __le__(self, other: Period) -> bool: ...
     @overload
-    def __le__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
+    def __le__(self, other: PeriodIndex) -> np_1darray[np.bool]: ...
     @overload
     def __le__(self, other: PeriodSeries) -> Series[bool]: ...
     @overload
+    def __le__(
+        self, other: np_ndarray[ShapeT, np.object_]
+    ) -> np_ndarray[ShapeT, np.bool]: ...
+    @overload
     def __lt__(self, other: Period) -> bool: ...
     @overload
-    def __lt__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...
+    def __lt__(self, other: PeriodIndex) -> np_1darray[np.bool]: ...
     @overload
     def __lt__(self, other: PeriodSeries) -> Series[bool]: ...
+    @overload
+    def __lt__(
+        self, other: np_ndarray[ShapeT, np.object_]
+    ) -> np_ndarray[ShapeT, np.bool]: ...
     #  ignore[misc] here because we know all other comparisons
     #  are False, so we use Literal[False]
     @overload
     def __ne__(self, other: Period) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __ne__(self, other: PeriodIndex) -> npt.NDArray[np.bool_]: ...  # type: ignore[overload-overlap]
+    def __ne__(self, other: PeriodIndex) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: PeriodSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
+    @overload
+    def __ne__(self, other: np_ndarray[ShapeT, np.object_]) -> np_ndarray[ShapeT, np.bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: object) -> Literal[True]: ...
     # Ignored due to indecipherable error from mypy:
