@@ -889,7 +889,7 @@ IndexingInt: TypeAlias = (
 )
 
 # AxesData is used for data for Index
-AxesData: TypeAlias = Mapping[S3, Any] | Axes | KeysView
+AxesData: TypeAlias = Mapping[S3, Any] | Axes | KeysView[S3]
 
 # Any plain Python or numpy function
 Function: TypeAlias = np.ufunc | Callable[..., Any]
