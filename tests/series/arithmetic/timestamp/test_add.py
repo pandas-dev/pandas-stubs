@@ -16,7 +16,7 @@ from tests import (
     check,
 )
 
-left = pd.Series([pd.Timestamp(2025, 8, 20)])
+left = pd.Series([pd.Timestamp(2025, 8, 20)])  # left operand
 
 
 def test_add_py_scalar() -> None:
