@@ -845,30 +845,23 @@ MaskType: TypeAlias = Series[bool] | np_ndarray_bool | list[bool]
 
 # Scratch types for generics
 
-# Closure upon add and mul
-SeriesDTypeClosure: TypeAlias = (
+SeriesDType: TypeAlias = (
     str
     | bytes
+    | datetime.date
+    | datetime.time
     | bool
     | int
     | float
     | complex
     | Dtype
-    | Interval
-    | CategoricalDtype
-    | list[str]
-)
-S1C = TypeVar("S1C", bound=SeriesDTypeClosure, default=Any)
-S2C = TypeVar("S2C", bound=SeriesDTypeClosure)
-
-SeriesDType: TypeAlias = (
-    SeriesDTypeClosure
-    | datetime.date
-    | datetime.time
     | datetime.datetime  # includes pd.Timestamp
     | datetime.timedelta  # includes pd.Timedelta
     | Period
+    | Interval
+    | CategoricalDtype
     | BaseOffset
+    | list[str]
 )
 S1 = TypeVar("S1", bound=SeriesDType, default=Any)
 # Like S1, but without `default=Any`.
