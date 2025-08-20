@@ -52,14 +52,7 @@ def test_add_numpy_array() -> None:
     # checking, where our `__radd__` cannot override. At runtime, they return
     # `Series`s.
     if sys.version_info >= (3, 11):
-        check(
-            assert_type(
-                r0 + left,  # pyright: ignore[reportAssertTypeFailure]
-                "npt.NDArray[np.str_]",
-            ),
-            pd.Series,
-            str,
-        )
+        check(assert_type(r0 + left, "npt.NDArray[np.str_]"), pd.Series, str)
     else:
         check(assert_type(r0 + left, Any), pd.Series, str)
 
