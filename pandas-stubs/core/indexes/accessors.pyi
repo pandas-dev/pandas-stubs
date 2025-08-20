@@ -164,7 +164,8 @@ class _DatetimeLikeOps(
 # in to the dt accessor
 
 _DTTimestampTimedeltaReturnType = TypeVar(
-    "_DTTimestampTimedeltaReturnType", bound=Series | DatetimeIndex | TimedeltaIndex
+    "_DTTimestampTimedeltaReturnType",
+    bound=Series | Series[Timestamp] | TimedeltaSeries | DatetimeIndex | TimedeltaIndex,
 )
 
 class _DatetimeRoundingMethods(Generic[_DTTimestampTimedeltaReturnType]):
