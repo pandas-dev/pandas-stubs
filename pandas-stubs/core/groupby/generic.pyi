@@ -213,17 +213,17 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
 _TT = TypeVar("_TT", bound=Literal[True, False])
 
 # ty ignore needed because of https://github.com/astral-sh/ty/issues/157#issuecomment-3017337945
-class DFCallable1(Protocol[P]):  # ty: ignore[invalid-argument-type]
+class DFCallable1(Protocol[P]):
     def __call__(
         self, df: DataFrame, /, *args: P.args, **kwargs: P.kwargs
     ) -> Scalar | list | dict: ...
 
-class DFCallable2(Protocol[P]):  # ty: ignore[invalid-argument-type]
+class DFCallable2(Protocol[P]):
     def __call__(
         self, df: DataFrame, /, *args: P.args, **kwargs: P.kwargs
     ) -> DataFrame | Series: ...
 
-class DFCallable3(Protocol[P]):  # ty: ignore[invalid-argument-type]
+class DFCallable3(Protocol[P]):
     def __call__(self, df: Iterable, /, *args: P.args, **kwargs: P.kwargs) -> float: ...
 
 class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):

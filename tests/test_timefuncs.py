@@ -1563,6 +1563,13 @@ def test_timedelta_range() -> None:
         pd.TimedeltaIndex,
     )
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        day1 = pd.Timedelta(1, unit="D")
+        day10 = pd.Timedelta(10, unit="D")
+        pd.timedelta_range(
+            day1, day10, periods=10, freq="D"  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType]
+        )
+
 
 def test_dateoffset_freqstr() -> None:
     offset = DateOffset(minutes=10)

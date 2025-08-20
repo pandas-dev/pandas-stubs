@@ -79,10 +79,51 @@ class TimedeltaIndex(
     def to_series(self, index=..., name: Hashable = ...) -> TimedeltaSeries: ...
     def shift(self, periods: int = 1, freq=...) -> Self: ...
 
+@overload
 def timedelta_range(
-    start: TimedeltaConvertibleTypes | None = None,
-    end: TimedeltaConvertibleTypes | None = None,
-    periods: int | None = None,
+    start: TimedeltaConvertibleTypes,
+    end: TimedeltaConvertibleTypes,
+    periods: int,
+    freq: None = None,
+    name: Hashable | None = None,
+    closed: Literal["left", "right"] | None = None,
+    *,
+    unit: None | str = ...,
+) -> TimedeltaIndex: ...
+@overload
+def timedelta_range(
+    start: TimedeltaConvertibleTypes,
+    periods: int,
+    freq: None = None,
+    name: Hashable | None = None,
+    closed: Literal["left", "right"] | None = None,
+    *,
+    unit: None | str = ...,
+) -> TimedeltaIndex: ...
+@overload
+def timedelta_range(
+    start: TimedeltaConvertibleTypes,
+    periods: int,
+    freq: str | DateOffset | Timedelta | dt.timedelta | None = None,
+    name: Hashable | None = None,
+    closed: Literal["left", "right"] | None = None,
+    *,
+    unit: None | str = ...,
+) -> TimedeltaIndex: ...
+@overload
+def timedelta_range(
+    start: TimedeltaConvertibleTypes,
+    end: TimedeltaConvertibleTypes,
+    freq: str | DateOffset | Timedelta | dt.timedelta | None = None,
+    name: Hashable | None = None,
+    closed: Literal["left", "right"] | None = None,
+    *,
+    unit: None | str = ...,
+) -> TimedeltaIndex: ...
+@overload
+def timedelta_range(
+    end: TimedeltaConvertibleTypes,
+    periods: int,
     freq: str | DateOffset | Timedelta | dt.timedelta | None = None,
     name: Hashable | None = None,
     closed: Literal["left", "right"] | None = None,

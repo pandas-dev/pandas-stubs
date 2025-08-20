@@ -102,11 +102,45 @@ class DatetimeIndex(
         self, periods: int = 1, freq: DateOffset | Timedelta | str | None = None
     ) -> Self: ...
 
+@overload
 def date_range(
-    start: str | DateAndDatetimeLike | None = None,
-    end: str | DateAndDatetimeLike | None = None,
-    periods: int | None = None,
-    freq: str | timedelta | Timedelta | BaseOffset = "D",
+    end: str | DateAndDatetimeLike,
+    periods: int,
+    freq: str | timedelta | Timedelta | BaseOffset | None = None,
+    tz: TimeZones = None,
+    normalize: bool = False,
+    name: Hashable | None = None,
+    inclusive: IntervalClosedType = "both",
+    unit: TimeUnit | None = None,
+) -> DatetimeIndex: ...
+@overload
+def date_range(
+    start: str | DateAndDatetimeLike,
+    periods: int,
+    freq: str | timedelta | Timedelta | BaseOffset | None = None,
+    tz: TimeZones = None,
+    normalize: bool = False,
+    name: Hashable | None = None,
+    inclusive: IntervalClosedType = "both",
+    unit: TimeUnit | None = None,
+) -> DatetimeIndex: ...
+@overload
+def date_range(
+    start: str | DateAndDatetimeLike | None,
+    end: str | DateAndDatetimeLike | None,
+    freq: str | timedelta | Timedelta | BaseOffset | None = None,
+    tz: TimeZones = None,
+    normalize: bool = False,
+    name: Hashable | None = None,
+    inclusive: IntervalClosedType = "both",
+    unit: TimeUnit | None = None,
+) -> DatetimeIndex: ...
+@overload
+def date_range(
+    start: str | DateAndDatetimeLike,
+    end: str | DateAndDatetimeLike,
+    periods: int,
+    freq: None = None,
     tz: TimeZones = None,
     normalize: bool = False,
     name: Hashable | None = None,
