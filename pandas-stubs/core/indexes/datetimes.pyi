@@ -104,8 +104,9 @@ class DatetimeIndex(
 
 @overload
 def date_range(
-    end: str | DateAndDatetimeLike,
-    periods: int,
+    *,
+    end: str | DateAndDatetimeLike = ...,
+    periods: int = ...,
     freq: str | timedelta | Timedelta | BaseOffset | None = None,
     tz: TimeZones = None,
     normalize: bool = False,
@@ -116,7 +117,8 @@ def date_range(
 @overload
 def date_range(
     start: str | DateAndDatetimeLike,
-    periods: int,
+    *,
+    periods: int = ...,
     freq: str | timedelta | Timedelta | BaseOffset | None = None,
     tz: TimeZones = None,
     normalize: bool = False,
@@ -126,8 +128,9 @@ def date_range(
 ) -> DatetimeIndex: ...
 @overload
 def date_range(
-    start: str | DateAndDatetimeLike | None,
-    end: str | DateAndDatetimeLike | None,
+    start: str | DateAndDatetimeLike = ...,
+    end: str | DateAndDatetimeLike = ...,
+    *,
     freq: str | timedelta | Timedelta | BaseOffset | None = None,
     tz: TimeZones = None,
     normalize: bool = False,
@@ -137,10 +140,10 @@ def date_range(
 ) -> DatetimeIndex: ...
 @overload
 def date_range(
-    start: str | DateAndDatetimeLike,
-    end: str | DateAndDatetimeLike,
-    periods: int,
-    freq: None = None,
+    start: str | DateAndDatetimeLike = ...,
+    end: str | DateAndDatetimeLike = ...,
+    periods: int = ...,
+    *,
     tz: TimeZones = None,
     normalize: bool = False,
     name: Hashable | None = None,

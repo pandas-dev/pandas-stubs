@@ -81,9 +81,18 @@ class TimedeltaIndex(
 
 @overload
 def timedelta_range(
-    start: TimedeltaConvertibleTypes,
-    end: TimedeltaConvertibleTypes,
-    periods: int,
+    start: TimedeltaConvertibleTypes = ...,
+    end: TimedeltaConvertibleTypes = ...,
+    periods: int = ...,
+    *,
+    name: Hashable | None = None,
+    closed: Literal["left", "right"] | None = None,
+    unit: None | str = ...,
+) -> TimedeltaIndex: ...
+@overload
+def timedelta_range(
+    start: TimedeltaConvertibleTypes = ...,
+    periods: int = ...,
     freq: None = None,
     name: Hashable | None = None,
     closed: Literal["left", "right"] | None = None,
@@ -92,41 +101,31 @@ def timedelta_range(
 ) -> TimedeltaIndex: ...
 @overload
 def timedelta_range(
-    start: TimedeltaConvertibleTypes,
-    periods: int,
-    freq: None = None,
-    name: Hashable | None = None,
-    closed: Literal["left", "right"] | None = None,
+    start: TimedeltaConvertibleTypes = ...,
     *,
-    unit: None | str = ...,
-) -> TimedeltaIndex: ...
-@overload
-def timedelta_range(
-    start: TimedeltaConvertibleTypes,
-    periods: int,
+    periods: int = ...,
     freq: str | DateOffset | Timedelta | dt.timedelta | None = None,
     name: Hashable | None = None,
     closed: Literal["left", "right"] | None = None,
-    *,
     unit: None | str = ...,
 ) -> TimedeltaIndex: ...
 @overload
 def timedelta_range(
-    start: TimedeltaConvertibleTypes,
-    end: TimedeltaConvertibleTypes,
+    start: TimedeltaConvertibleTypes = ...,
+    end: TimedeltaConvertibleTypes = ...,
+    *,
     freq: str | DateOffset | Timedelta | dt.timedelta | None = None,
     name: Hashable | None = None,
     closed: Literal["left", "right"] | None = None,
-    *,
     unit: None | str = ...,
 ) -> TimedeltaIndex: ...
 @overload
 def timedelta_range(
+    *,
     end: TimedeltaConvertibleTypes,
     periods: int,
     freq: str | DateOffset | Timedelta | dt.timedelta | None = None,
     name: Hashable | None = None,
     closed: Literal["left", "right"] | None = None,
-    *,
     unit: None | str = ...,
 ) -> TimedeltaIndex: ...
