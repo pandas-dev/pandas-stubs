@@ -545,10 +545,15 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @classmethod
     def from_records(
         cls,
-        data,
-        index=...,
-        exclude: SequenceNotStr[str] | None = None,
+        data: (
+            np.ndarray
+            | Sequence[Any]
+            | Iterable[Mapping[str, Any]]
+            | Mapping[str, Sequence[Any]]
+        ),
+        index: str | Sequence[str] | None = None,
         columns: SequenceNotStr[str] | None = None,
+        exclude: SequenceNotStr[str] | None = None,
         coerce_float: bool = False,
         nrows: int | None = None,
     ) -> Self: ...

@@ -4688,3 +4688,101 @@ def test_unstack() -> None:
         ),
         pd.DataFrame,
     )
+
+
+def test_from_records() -> None:
+    # testing with list of tuples
+    data_tuples = [(1, "a"), (2, "b"), (3, "c")]
+    check(
+        assert_type(
+            pd.DataFrame.from_records(data_tuples, columns=["id", "name"]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    # Testing with numpy structured array
+    data_array = np.array(
+        [(1, "a"), (2, "b"), (3, "c")],
+        dtype=[("id", int), ("name", "U1")],
+    )
+    check(
+        assert_type(pd.DataFrame.from_records(data_array), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    # testing with list of dictionaries
+    data_dicts = [{"id": 1, "name": "a"}, {"id": 2, "name": "b"}]
+    check(
+        assert_type(pd.DataFrame.from_records(data_dicts), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    # Testing with mapping of sequences
+    data_mapping = {"id": [1, 2, 3], "name": ["a", "b", "c"]}
+    check(
+        assert_type(pd.DataFrame.from_records(data_mapping), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    # Testing with index parameter as string
+    check(
+        assert_type(
+            pd.DataFrame.from_records(
+                data_tuples, columns=["id", "name"], index="id"
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    #Testing with index parameter as sequence
+    check(
+        assert_type(
+            pd.DataFrame.from_records(
+                data_tuples, columns=["id", "name"], index=["id"]
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    # Testing  with exclude parameter
+    check(
+        assert_type(
+            pd.DataFrame.from_records(
+                [(1, "a", "extra"), (2, "b", "extra")],
+                columns=["id", "name", "extra"],
+                exclude=["extra"],
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    #Testing with all parameters
+    check(
+        assert_type(
+            pd.DataFrame.from_records(
+                data_tuples,
+                index=None,
+                columns=["id", "name"],
+                exclude=None,
+                coerce_float=True,
+                nrows=2,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    # Testing parameter order
+    check(
+        assert_type(
+            pd.DataFrame.from_records(
+                data_tuples, columns=["id", "name"], exclude=None
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
