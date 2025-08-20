@@ -1624,9 +1624,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
     # just failed to generate these so I couldn't match
     # them up.
     @overload
-    def __add__(self: Series[Never], other: Scalar | _ListLike | Series) -> Series: ...
+    def __add__(self: Series[Never], other: Scalar | _ListLike | Series) -> Series: ...  # type: ignore[overload-overlap]
     @overload
-    def __add__(self, other: Series[Never]) -> Series: ...
+    def __add__(self, other: Series[Never]) -> Series: ...  # type: ignore[overload-overlap]
     @overload
     def __add__(
         self: Series[bool],
@@ -1708,6 +1708,15 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self: Series[Timedelta],
         other: datetime | np.datetime64 | np_ndarray_dt | Series[Timestamp],
     ) -> Series[Timestamp]: ...
+    @overload
+    def __add__(
+        self: Series[Timedelta],
+        other: timedelta | np.timedelta64 | np_ndarray_td | TimedeltaSeries,
+    ) -> TimedeltaSeries: ...
+    @overload
+    def __add__(
+        self: Series[Timedelta], other: Series[Timedelta]
+    ) -> Series[Timedelta]: ...
     @overload
     def __add__(self: Series[Timedelta], other: Period) -> PeriodSeries: ...
     @overload
@@ -2235,15 +2244,37 @@ class Series(IndexOpsMixin[S1], NDFrame):
         other: timedelta | np.timedelta64 | np_ndarray_td | TimedeltaSeries,
     ) -> TimedeltaSeries: ...
     @overload
+    def __mul__(self: Series[bool], other: Series[Timedelta]) -> Series[Timedelta]: ...  # type: ignore[overload-overlap]
+    @overload
     def __mul__(
         self: Series[int],
         other: timedelta | np.timedelta64 | np_ndarray_td | TimedeltaSeries,
     ) -> TimedeltaSeries: ...
     @overload
+    def __mul__(self: Series[int], other: Series[Timedelta]) -> Series[Timedelta]: ...
+    @overload
     def __mul__(
         self: Series[float],
         other: timedelta | np.timedelta64 | np_ndarray_td | TimedeltaSeries,
     ) -> TimedeltaSeries: ...
+    @overload
+    def __mul__(self: Series[float], other: Series[Timedelta]) -> Series[Timedelta]: ...
+    @overload
+    def __mul__(
+        self: Series[Timedelta],
+        other: (
+            float
+            | Sequence[float]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+        ),
+    ) -> TimedeltaSeries: ...
+    @overload
+    def __mul__(
+        self: Series[Timedelta],
+        other: Series[bool] | Series[int] | Series[float],
+    ) -> Series[Timedelta]: ...
     @overload
     def mul(
         self: Series[Never],
@@ -2436,19 +2467,49 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self: Series[_T_COMPLEX], other: np_ndarray_complex
     ) -> Series[complex]: ...
     @overload
-    def __rmul__(
+    def __rmul__(  # type: ignore[misc]
         self: Series[bool],
-        other: timedelta | np.timedelta64 | np_ndarray_td | TimedeltaSeries,
+        other: (
+            timedelta
+            | np.timedelta64
+            | np_ndarray_td
+            | Series[Timedelta]
+            | TimedeltaSeries
+        ),
     ) -> TimedeltaSeries: ...
     @overload
-    def __rmul__(
+    def __rmul__(  # type: ignore[misc]
         self: Series[int],
-        other: timedelta | np.timedelta64 | np_ndarray_td | TimedeltaSeries,
+        other: (
+            timedelta
+            | np.timedelta64
+            | np_ndarray_td
+            | Series[Timedelta]
+            | TimedeltaSeries
+        ),
+    ) -> TimedeltaSeries: ...
+    @overload
+    def __rmul__(  # type: ignore[misc]
+        self: Series[float],
+        other: (
+            timedelta
+            | np.timedelta64
+            | np_ndarray_td
+            | Series[Timedelta]
+            | TimedeltaSeries
+        ),
     ) -> TimedeltaSeries: ...
     @overload
     def __rmul__(
-        self: Series[float],
-        other: timedelta | np.timedelta64 | np_ndarray_td | TimedeltaSeries,
+        self: Series[Timedelta],
+        other: (
+            float
+            | Sequence[float]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Series[_T_INT]
+        ),
     ) -> TimedeltaSeries: ...
     @overload
     def rmul(
@@ -2627,16 +2688,17 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __rxor__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
     @overload
-    def __sub__(self, other: Series[Never]) -> Series: ...  # type: ignore[overload-overlap]
+    def __sub__(self: Series[Never], other: Series[Never]) -> Series: ...  # type: ignore[overload-overlap]
     @overload
     def __sub__(
-        self: Series[Never],
-        other: datetime | np.datetime64 | np_ndarray_dt | Series[Timestamp],
+        self: Series[Never], other: datetime | np.datetime64 | np_ndarray_dt
     ) -> TimedeltaSeries: ...
     @overload
-    def __sub__(  # type: ignore[overload-overlap]
-        self: Series[Never], other: complex | _ListLike | Series
-    ) -> Series: ...
+    def __sub__(self: Series[Never], other: Series[Timestamp]) -> Series[Timedelta]: ...
+    @overload
+    def __sub__(self: Series[Never], other: complex | _ListLike | Series) -> Series: ...
+    @overload
+    def __sub__(self, other: Series[Never]) -> Series: ...  # type: ignore[overload-overlap]
     @overload
     def __sub__(
         self: Series[bool],
@@ -2702,9 +2764,12 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[complex]: ...
     @overload
     def __sub__(
-        self: Series[Timestamp],
-        other: datetime | np.datetime64 | np_ndarray_dt | Series[Timestamp],
+        self: Series[Timestamp], other: datetime | np.datetime64 | np_ndarray_dt
     ) -> TimedeltaSeries: ...
+    @overload
+    def __sub__(
+        self: Series[Timestamp], other: Series[Timestamp]
+    ) -> Series[Timedelta]: ...
     @overload
     def __sub__(
         self: Series[Timestamp],
@@ -2713,7 +2778,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
             | np.timedelta64
             | np_ndarray_td
             | TimedeltaIndex
-            | Series[Timedelta]
             | TimedeltaSeries
             | BaseOffset
         ),
@@ -2726,7 +2790,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
             | np.timedelta64
             | np_ndarray_td
             | TimedeltaIndex
-            | Series[Timedelta]
             | TimedeltaSeries
         ),
     ) -> TimedeltaSeries: ...

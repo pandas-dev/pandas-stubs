@@ -180,7 +180,7 @@ def test_sub_pd_datetime() -> None:
     a = pd.Series([s + pd.Timedelta(minutes=m) for m in range(3)])
 
     check(assert_type(left_ts - s, "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    check(assert_type(left_ts - a, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_ts - a, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
     check(assert_type(s - left_ts, pd.Series), pd.Series, pd.Timedelta)
     check(assert_type(a - left_ts, pd.Series), pd.Series, pd.Timedelta)

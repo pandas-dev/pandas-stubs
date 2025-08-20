@@ -191,7 +191,7 @@ def test_timestamp_timedelta_series_arithmetic() -> None:
     td1 = pd.to_timedelta([2, 3], "seconds")
     ts2 = pd.to_datetime(pd.Series(["2022-03-08", "2022-03-10"]))
     r1 = ts1 - ts2
-    check(assert_type(r1, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(r1, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     r2 = r1 / td1
     check(assert_type(r2, "pd.Series[float]"), pd.Series, float)
     r3 = r1 - td1
@@ -201,7 +201,7 @@ def test_timestamp_timedelta_series_arithmetic() -> None:
     sb = pd.Series([1, 2]) == pd.Series([1, 3])
     check(assert_type(sb, "pd.Series[bool]"), pd.Series, np.bool_)
     r5 = sb * r1
-    check(assert_type(r5, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(r5, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     r6 = r1 * 4
     check(assert_type(r6, "TimedeltaSeries"), pd.Series, pd.Timedelta)
 
@@ -1655,7 +1655,7 @@ def test_timedelta64_and_arithmatic_operator() -> None:
     s1 = pd.Series(data=pd.date_range("1/1/2020", "2/1/2020"))
     s2 = pd.Series(data=pd.date_range("1/1/2021", "2/1/2021"))
     s3 = s2 - s1
-    check(assert_type(s3, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(s3, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     td1 = pd.Timedelta(1, "D")
     check(assert_type(s2 - td1, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
     # GH 758
@@ -1808,7 +1808,7 @@ def test_timestamp_sub_series() -> None:
     ts1 = pd.to_datetime(pd.Series(["2022-03-05", "2022-03-06"]))
     one_ts = ts1.iloc[0]
     check(assert_type(ts1.iloc[0], pd.Timestamp), pd.Timestamp)
-    check(assert_type(one_ts - ts1, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(one_ts - ts1, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
 def test_creating_date_range() -> None:
