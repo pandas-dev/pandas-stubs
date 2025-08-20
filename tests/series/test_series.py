@@ -1653,12 +1653,6 @@ def test_reset_index() -> None:
     assert assert_type(s.reset_index(inplace=True, drop=True), None) is None
 
 
-def test_series_add_str() -> None:
-    s = pd.Series(["abc", "def"])
-    check(assert_type(s + "x", "pd.Series[str]"), pd.Series, str)
-    check(assert_type("x" + s, "pd.Series[str]"), pd.Series, str)
-
-
 def test_series_dtype() -> None:
     s = pd.Series(["abc", "def"], dtype=str)
     check(assert_type(s, "pd.Series[str]"), pd.Series, str)

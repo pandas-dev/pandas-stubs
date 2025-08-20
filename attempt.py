@@ -1,11 +1,14 @@
-from typing import assert_type, reveal_type
+import datetime as dt
+from typing import (
+    assert_type,
+    reveal_type,
+)
+
+import numpy as np
 import pandas as pd
 from pandas.core.series import TimedeltaSeries  # noqa: F401
-import numpy as np
-import datetime as dt
 
 from tests import check
-
 
 df = pd.DataFrame({"x": [1, 2, 3, 4, 5], "y": [5, 4, 3, 2, 1]})
 s1 = df.min(axis=1)

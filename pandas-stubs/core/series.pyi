@@ -187,6 +187,7 @@ from pandas._typing import (
     np_ndarray_complex,
     np_ndarray_dt,
     np_ndarray_float,
+    np_ndarray_str,
     np_ndarray_td,
     npt,
     num,
@@ -1688,8 +1689,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[complex]: ...
     @overload
     def __add__(
-        self: Series[_str], other: _str | Sequence[_str] | Series[_str]
+        self: Series[_str], other: _str | Sequence[_str] | np_ndarray_str | Series[_str]
     ) -> Series[_str]: ...
+    @overload
+    def __add__(self: Series[Timestamp], other: np_ndarray_dt) -> Never: ...
     @overload
     def __add__(
         self: Series[Timestamp],
@@ -1842,7 +1845,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def add(
         self: Series[_str],
-        other: _str | Sequence[_str] | Series[_str],
+        other: _str | Sequence[_str] | np_ndarray_str | Series[_str],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -1949,8 +1952,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[complex]: ...
     @overload
     def __radd__(
-        self: Series[_str], other: _str | Sequence[_str] | Series[_str]
+        self: Series[_str], other: _str | Sequence[_str] | np_ndarray_str | Series[_str]
     ) -> Series[_str]: ...
+    @overload
+    def __radd__(self: Series[Timestamp], other: np_ndarray_dt) -> Never: ...
     @overload
     def __radd__(
         self: Series[Timestamp],
@@ -2094,7 +2099,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def radd(
         self: Series[_str],
-        other: _str | Sequence[_str] | Series[_str],
+        other: _str | Sequence[_str] | np_ndarray_str | Series[_str],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,

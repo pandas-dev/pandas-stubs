@@ -1836,7 +1836,7 @@ def test_timestamp_to_list_add() -> None:
         sseries + pd.Timedelta(1, "d")
 
     check(
-        assert_type(sseries + pd.Timedelta(1, "D"), pd.Series[pd.Timestamp]),
+        assert_type(sseries + pd.Timedelta(1, "D"), "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
     )
