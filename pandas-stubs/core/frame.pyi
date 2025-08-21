@@ -546,12 +546,11 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def from_records(
         cls,
         data: (
-            np_2d_array
-            | Sequence[Any]
-            | Iterable[Mapping[str, Any]]
-            | Mapping[str, Sequence[Any]]
+            Sequence[SequenceNotStr]
+            | Sequence[Mapping[str, Scalar]]
+            | Mapping[str, Sequence[Scalar]]
         ),
-        index: str | Sequence[str] | None = None,
+        index: str | SequenceNotStr[str] | None = None,
         columns: ListLike | None = None,
         exclude: ListLike | None = None,
         coerce_float: bool = False,
