@@ -546,14 +546,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def from_records(
         cls,
         data: (
-            np.ndarray
+            np_2d_array
             | Sequence[Any]
             | Iterable[Mapping[str, Any]]
             | Mapping[str, Sequence[Any]]
         ),
         index: str | Sequence[str] | None = None,
-        columns: SequenceNotStr[str] | None = None,
-        exclude: SequenceNotStr[str] | None = None,
+        columns: ListLike | None = None,
+        exclude: ListLike | None = None,
         coerce_float: bool = False,
         nrows: int | None = None,
     ) -> Self: ...

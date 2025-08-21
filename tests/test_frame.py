@@ -4701,6 +4701,15 @@ def test_from_records() -> None:
         pd.DataFrame,
     )
 
+    # testing with pd.Index as columns parameter
+    check(
+        assert_type(
+            pd.DataFrame.from_records(data_tuples, columns=pd.Index(["id", "name"])),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
     # Testing with numpy structured array
     data_array = np.array(
         [(1, "a"), (2, "b"), (3, "c")],
