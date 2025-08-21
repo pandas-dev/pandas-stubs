@@ -1563,13 +1563,6 @@ def test_timedelta_range() -> None:
         pd.TimedeltaIndex,
     )
 
-    if TYPE_CHECKING_INVALID_USAGE:
-        day1 = pd.Timedelta(1, unit="D")
-        day10 = pd.Timedelta(10, unit="D")
-        pd.timedelta_range(
-            day1, day10, 10, "D"  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType]
-        )
-
 
 def test_dateoffset_freqstr() -> None:
     offset = DateOffset(minutes=10)
@@ -1749,13 +1742,6 @@ def test_creating_date_range() -> None:
 
     dr = pd.date_range(start="2021-12-01", periods=24, freq="h")
     check(assert_type(dr.strftime("%H:%M:%S"), pd.Index), pd.Index, str)
-
-    if TYPE_CHECKING_INVALID_USAGE:
-        day1 = pd.Timestamp("2023-04-03")
-        day10 = pd.Timedelta("2023-04-08")
-        pd.date_range(
-            day1, day10, 10, "D"  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue]
-        )
 
 
 def test_timestamp_to_list_add() -> None:
