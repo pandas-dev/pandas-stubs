@@ -546,7 +546,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def from_records(
         cls,
         data: (
-            Sequence[SequenceNotStr]
+            np_2darray
+            | Sequence[SequenceNotStr]
             | Sequence[Mapping[str, Scalar]]
             | Mapping[str, Sequence[Scalar]]
         ),

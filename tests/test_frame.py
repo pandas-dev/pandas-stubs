@@ -4691,6 +4691,11 @@ def test_unstack() -> None:
 
 
 def test_from_records() -> None:
+    
+    #test with np.ndarray
+    arr = np.array([(1, "a"), (2, "b")], dtype=[("x", "i4"), ("y", "S1")])
+    check(assert_type(pd.DataFrame.from_records(arr), pd.DataFrame), pd.DataFrame)
+    
     # testing with list of tuples
     data_tuples = [(1, "a"), (2, "b"), (3, "c")]
     check(
