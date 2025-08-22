@@ -22,6 +22,7 @@ from pandas._typing import (
     AxesData,
     Dtype,
     Frequency,
+    np_1darray,
 )
 
 class PeriodIndex(DatetimeIndexOpsMixin[pd.Period, np.object_], PeriodIndexFieldOps):
@@ -34,7 +35,7 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period, np.object_], PeriodIndexField
         name: Hashable | None = None,
     ) -> Self: ...
     @property
-    def values(self) -> np.ndarray[tuple[int], np.dtype[np.object_]]: ...
+    def values(self) -> np_1darray[np.object_]: ...
     @overload
     def __sub__(self, other: Period) -> Index: ...
     @overload
@@ -57,7 +58,7 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period, np.object_], PeriodIndexField
         self,
         where: pd.DatetimeIndex | PeriodIndex,
         mask: np.ndarray[tuple[int], np.dtype[np.bool_]],
-    ) -> np.ndarray[tuple[int], np.dtype[np.intp]]: ...
+    ) -> np_1darray[np.intp]: ...
     @property
     def is_full(self) -> bool: ...
     @property
