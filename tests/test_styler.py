@@ -22,6 +22,7 @@ from typing_extensions import assert_type
 from pandas._typing import Scalar
 
 from tests import (
+    PD_LTE_23,
     check,
     ensure_clean,
 )
@@ -141,7 +142,9 @@ def test_highlight_quantile() -> None:
 
 
 def test_loader() -> None:
-    check(assert_type(DF.style.loader, PackageLoader), PackageLoader)
+    if PD_LTE_23:
+        # see GH62123 for pandas main repo, type changes in pandas 3.0
+        check(assert_type(DF.style.loader, PackageLoader), PackageLoader)
 
 
 def test_pipe() -> None:

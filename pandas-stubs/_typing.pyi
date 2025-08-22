@@ -15,6 +15,7 @@ from re import Pattern
 import sys
 from typing import (
     Any,
+    Generic,
     Literal,
     Protocol,
     SupportsIndex,
@@ -37,6 +38,7 @@ from typing_extensions import (
     ParamSpec,
     TypeAlias,
     TypeVar,
+    override,
 )
 
 from pandas._libs.interval import Interval
@@ -818,6 +820,8 @@ np_ndarray_float: TypeAlias = npt.NDArray[np.floating]
 np_ndarray_complex: TypeAlias = npt.NDArray[np.complexfloating]
 np_ndarray_bool: TypeAlias = npt.NDArray[np.bool_]
 np_ndarray_str: TypeAlias = npt.NDArray[np.str_]
+np_ndarray_dt: TypeAlias = npt.NDArray[np.datetime64]
+np_ndarray_td: TypeAlias = npt.NDArray[np.timedelta64]
 
 # Define shape and generic type variables with defaults similar to numpy
 GenericT = TypeVar("GenericT", bound=np.generic, default=Any)
@@ -1054,5 +1058,15 @@ DictConvertible: TypeAlias = FulldatetimeDict | DataFrame
 # know the type of yet and that should be changed in the future. Use `Any` only
 # where it is the only acceptable type.
 Incomplete: TypeAlias = Any
+
+# differentiating between bool and int/float/complex
+# https://github.com/pandas-dev/pandas-stubs/pull/1312#pullrequestreview-3126128971
+class Just(Protocol, Generic[T]):
+    @property  # type: ignore[override]
+    @override
+    def __class__(self, /) -> type[T]: ...
+    @__class__.setter
+    @override
+    def __class__(self, t: type[T], /) -> None: ...
 
 __all__ = ["npt", "type_t"]
