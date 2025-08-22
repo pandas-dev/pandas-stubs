@@ -4691,11 +4691,11 @@ def test_unstack() -> None:
 
 
 def test_from_records() -> None:
-    
-    #test with np.ndarray
-    arr = np.array([[1, "a"], [2, "b"]], dtype=object)
+
+    # test with np.ndarray
+    arr = np.array([[1, "a"], [2, "b"]], dtype=object).reshape(2, 2)
     check(assert_type(pd.DataFrame.from_records(arr), pd.DataFrame), pd.DataFrame)
-    
+
     # testing with list of tuples
     data_tuples = [(1, "a"), (2, "b"), (3, "c")]
     check(
@@ -4718,18 +4718,24 @@ def test_from_records() -> None:
     # Testing with list of tuples (instead of structured array for type compatibility)
     data_array_tuples = [(1, "a"), (2, "b")]
     check(
-        assert_type(pd.DataFrame.from_records(data_array_tuples, columns=["id", "name"]), pd.DataFrame),
+        assert_type(
+            pd.DataFrame.from_records(data_array_tuples, columns=["id", "name"]),
+            pd.DataFrame,
+        ),
         pd.DataFrame,
     )
 
     # testing with list of dictionaries (convert to tuples for type compatibility)
     data_dict_tuples = [(1, "a"), (2, "b")]
     check(
-        assert_type(pd.DataFrame.from_records(data_dict_tuples, columns=["id", "name"]), pd.DataFrame),
+        assert_type(
+            pd.DataFrame.from_records(data_dict_tuples, columns=["id", "name"]),
+            pd.DataFrame,
+        ),
         pd.DataFrame,
     )
 
-    # Testing with mapping of sequences (use DataFrame constructor instead)
+    # testing with mapping of sequences
     data_mapping_dict = {"id": [1, 2], "name": ["a", "b"]}
     check(
         assert_type(pd.DataFrame(data_mapping_dict), pd.DataFrame),
@@ -4739,15 +4745,13 @@ def test_from_records() -> None:
     # Testing with index parameter as string
     check(
         assert_type(
-            pd.DataFrame.from_records(
-                data_tuples, columns=["id", "name"], index="id"
-            ),
+            pd.DataFrame.from_records(data_tuples, columns=["id", "name"], index="id"),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
 
-    #Testing with index parameter as sequence
+    # Testing with index parameter as sequence
     check(
         assert_type(
             pd.DataFrame.from_records(
@@ -4771,7 +4775,7 @@ def test_from_records() -> None:
         pd.DataFrame,
     )
 
-    #Testing with all parameters
+    # Testing with all parameters
     check(
         assert_type(
             pd.DataFrame.from_records(
