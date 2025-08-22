@@ -1123,3 +1123,19 @@ def test_dataframe_apply_kwargs() -> None:
             add_constant_to_mean,
             constant="5",  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
         )
+
+
+def test_frame_groupby_aggregate() -> None:
+    """Test DataFrame.groupby.aggregate (GH1339)."""
+    df = DataFrame(
+        {
+            "a": [1, 2, 3],
+            "b": [4, 5, 6],
+            "c": [7, 8, 9],
+        }
+    )
+
+    dico = {"a": ("a", "mean")}
+
+    check(assert_type(df.groupby("b").agg(a=("a", "mean")), DataFrame), DataFrame)
+    check(assert_type(df.groupby("b").agg(**dico), DataFrame), DataFrame)

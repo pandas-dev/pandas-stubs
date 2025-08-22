@@ -264,6 +264,13 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         engine_kwargs: WindowingEngineKwargs = ...,
         **kwargs,
     ) -> DataFrame: ...
+    @overload
+    def aggregate(
+        self,
+        func: AggFuncTypeFrame | None = None,
+        /,
+        **kwargs,
+    ) -> DataFrame: ...
     agg = aggregate
     @overload
     def transform(
