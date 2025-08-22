@@ -4738,7 +4738,7 @@ def test_from_records() -> None:
     # test with single dictionary
     data_single_dict = {"id": 1, "name": "a"}
     check(
-        assert_type(pd.DataFrame.from_records(data_single_dict, index=[0]), pd.DataFrame),
+        assert_type(pd.DataFrame.from_records(data_single_dict, index=["0"]), pd.DataFrame),
         pd.DataFrame,
     )
 
