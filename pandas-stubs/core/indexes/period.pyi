@@ -57,7 +57,7 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period, np.object_], PeriodIndexField
     def asof_locs(
         self,
         where: pd.DatetimeIndex | PeriodIndex,
-        mask: np.ndarray[tuple[int], np.dtype[np.bool_]],
+        mask: np_1darray[np.bool_],
     ) -> np_1darray[np.intp]: ...
     @property
     def is_full(self) -> bool: ...
