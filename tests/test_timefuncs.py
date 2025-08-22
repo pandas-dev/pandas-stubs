@@ -1787,6 +1787,110 @@ def test_date_range_unit():
     )
 
 
+def test_date_range_overloads() -> None:
+    """Test different overloads of pd.date_range (GH1327)."""
+    t1 = pd.Timestamp("2023-04-05")
+    t2 = pd.Timestamp("2023-05-05")
+    # start end (freq None)
+    check(assert_type(pd.date_range(t1, t2), pd.DatetimeIndex), pd.DatetimeIndex)
+    # start end positional (freq None)
+    check(
+        assert_type(pd.date_range(start=t1, end=t2), pd.DatetimeIndex), pd.DatetimeIndex
+    )
+    # start periods (freq None)
+    check(
+        assert_type(pd.date_range(start=t1, periods=10), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    # end periods (freq None)
+    check(
+        assert_type(pd.date_range(end=t2, periods=10), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    # start periods (freq None)
+    check(assert_type(pd.date_range(t1, t2, 10), pd.DatetimeIndex), pd.DatetimeIndex)
+    # start end periods
+    check(
+        assert_type(pd.date_range(start=t1, end=t2, periods=10), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    # start end freq
+    check(
+        assert_type(pd.date_range(start=t1, end=t2, freq="ME"), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    # start periods freq
+    check(
+        assert_type(pd.date_range(start=t1, periods=10, freq="ME"), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.date_range(t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.date_range(start=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.date_range(end=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.date_range(periods=10)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.date_range(freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.date_range(start=t1, end=t2, periods=10, freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+
+
+def test_timedelta_range_overloads() -> None:
+    """Test different overloads of pd.timedelta_range (GH1327)."""
+    t1 = "1 day"
+    t2 = "20 day"
+    # start end (freq None)
+    check(assert_type(pd.timedelta_range(t1, t2), pd.TimedeltaIndex), pd.TimedeltaIndex)
+    # start end positional (freq None)
+    check(
+        assert_type(pd.timedelta_range(start=t1, end=t2), pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+    )
+    # start periods (freq None)
+    check(
+        assert_type(pd.timedelta_range(start=t1, periods=10), pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+    )
+    # end periods (freq None)
+    check(
+        assert_type(pd.timedelta_range(end=t2, periods=10), pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+    )
+    # start periods (freq None)
+    check(
+        assert_type(pd.timedelta_range(t1, t2, 10), pd.TimedeltaIndex),
+        pd.TimedeltaIndex,
+    )
+    # start end periods
+    check(
+        assert_type(
+            pd.timedelta_range(start=t1, end=t2, periods=10), pd.TimedeltaIndex
+        ),
+        pd.TimedeltaIndex,
+    )
+    # start end freq
+    check(
+        assert_type(
+            pd.timedelta_range(start=t1, end=t2, freq="48h"), pd.TimedeltaIndex
+        ),
+        pd.TimedeltaIndex,
+    )
+    # start periods freq
+    check(
+        assert_type(
+            pd.timedelta_range(start=t1, periods=10, freq="48h"), pd.TimedeltaIndex
+        ),
+        pd.TimedeltaIndex,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        pd.timedelta_range(t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.timedelta_range(start=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.timedelta_range(end=t1)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.timedelta_range(periods=10)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.timedelta_range(freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        pd.timedelta_range(start=t1, end=t2, periods=10, freq="BD")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+
+
 def test_DatetimeIndex_sub_timedelta() -> None:
     # GH838
     check(

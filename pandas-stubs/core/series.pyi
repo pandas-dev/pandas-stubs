@@ -1689,6 +1689,13 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[complex]: ...
     @overload
     def __add__(
+        self: Series[_str],
+        other: (
+            np_ndarray_bool | np_ndarray_anyint | np_ndarray_float | np_ndarray_complex
+        ),
+    ) -> Never: ...
+    @overload
+    def __add__(
         self: Series[_str], other: _str | Sequence[_str] | np_ndarray_str | Series[_str]
     ) -> Series[_str]: ...
     @overload
@@ -1950,6 +1957,13 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __radd__(
         self: Series[_T_COMPLEX], other: np_ndarray_complex
     ) -> Series[complex]: ...
+    @overload
+    def __radd__(
+        self: Series[_str],
+        other: (
+            np_ndarray_bool | np_ndarray_anyint | np_ndarray_float | np_ndarray_complex
+        ),
+    ) -> Never: ...
     @overload
     def __radd__(
         self: Series[_str], other: _str | Sequence[_str] | np_ndarray_str | Series[_str]
