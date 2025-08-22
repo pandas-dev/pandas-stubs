@@ -4725,13 +4725,20 @@ def test_from_records() -> None:
         pd.DataFrame,
     )
 
-    # testing with list of dictionaries (convert to tuples for type compatibility)
-    data_dict_tuples = [(1, "a"), (2, "b")]
+    # testing with list of dictionaries
+    data_dict_list = [{"id": 1, "name": "a"}, {"id": 2, "name": "b"}]
     check(
         assert_type(
-            pd.DataFrame.from_records(data_dict_tuples, columns=["id", "name"]),
+            pd.DataFrame.from_records(data_dict_list, columns=["id", "name"]),
             pd.DataFrame,
         ),
+        pd.DataFrame,
+    )
+
+    # test with single dictionary
+    data_single_dict = {"id": 1, "name": "a"}
+    check(
+        assert_type(pd.DataFrame.from_records(data_single_dict, index=[0]), pd.DataFrame),
         pd.DataFrame,
     )
 

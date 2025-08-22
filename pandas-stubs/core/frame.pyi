@@ -549,6 +549,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             np_2darray
             | Sequence[SequenceNotStr]
             | Sequence[Mapping[str, Any]]
+            | Mapping[str, Any]
             | Mapping[str, SequenceNotStr[Any]]
         ),
         index: str | SequenceNotStr[str] | None = None,
