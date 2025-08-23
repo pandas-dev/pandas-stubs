@@ -207,7 +207,7 @@ def test_sub_ts_pd_datetime() -> None:
         _0 = left_td - s
     check(assert_type(left_ts - a, "TimedeltaSeries"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = left_ts - a
+        _1 = left_td - a
 
     check(assert_type(s - left_ts, pd.Series), pd.Series, pd.Timedelta)
     check(assert_type(s - left_td, pd.Series), pd.Series, pd.Timestamp)
