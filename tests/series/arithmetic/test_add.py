@@ -5,7 +5,9 @@ from typing_extensions import assert_type
 
 from tests import check
 
-left_i = pd.DataFrame({"a": [1, 2, 3]})["a"]  # left operand
+# left operands
+left_i = pd.DataFrame({"a": [1, 2, 3]})["a"]
+left_str = pd.DataFrame({"a": ["1", "2", "3_"]})["a"]
 
 
 def test_add_i_py_scalar() -> None:
