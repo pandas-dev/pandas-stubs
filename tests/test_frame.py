@@ -4747,7 +4747,7 @@ def test_from_records() -> None:
     # testing with mapping of sequences
     data_mapping_dict = {"id": [1, 2], "name": ["a", "b"]}
     check(
-        assert_type(pd.DataFrame(data_mapping_dict), pd.DataFrame),
+        assert_type(pd.DataFrame.from_records(data_mapping_dict), pd.DataFrame),
         pd.DataFrame,
     )
 
