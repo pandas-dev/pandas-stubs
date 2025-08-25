@@ -18,7 +18,7 @@ left = pd.Series(["1", "23", "456"])  # left operand
 
 
 def test_add_py_scalar() -> None:
-    """Testpd.Series[str]+ Python native 'scalar's"""
+    """Test pd.Series[str] + Python native 'scalar's"""
     i = 4
     r0 = "right"
 
@@ -40,7 +40,7 @@ def test_add_py_scalar() -> None:
 
 
 def test_add_py_sequence() -> None:
-    """Testpd.Series[str]+ Python native sequence"""
+    """Test pd.Series[str] + Python native sequence"""
     i = [3, 5, 8]
     r0 = ["a", "bc", "def"]
     r1 = tuple(r0)
@@ -67,7 +67,7 @@ def test_add_py_sequence() -> None:
 
 
 def test_add_numpy_array() -> None:
-    """Testpd.Series[str]+ numpy array"""
+    """Test pd.Series[str] + numpy array"""
     i = np.array([3, 5, 8], np.int64)
     r0 = np.array(["a", "bc", "def"], np.str_)
 
@@ -101,7 +101,7 @@ def test_add_numpy_array() -> None:
 
 
 def test_add_pd_series() -> None:
-    """Testpd.Series[str]+ pandas series"""
+    """Test pd.Series[str] + pandas series"""
     i = pd.Series([3, 5, 8])
     r0 = pd.Series(["a", "bc", "def"])
 
