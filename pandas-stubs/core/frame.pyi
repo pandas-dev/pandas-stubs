@@ -552,7 +552,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Mapping[str, Any]
             | Mapping[str, SequenceNotStr[Any]]
         ),
-        index: str | SequenceNotStr[str] | None = None,
+        index: str | SequenceNotStr[Hashable] | None = None,
         columns: ListLike | None = None,
         exclude: ListLike | None = None,
         coerce_float: bool = False,
