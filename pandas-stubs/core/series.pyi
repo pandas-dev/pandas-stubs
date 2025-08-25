@@ -260,7 +260,8 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
         value: S1 | ArrayLike | Series[S1] | None,
     ) -> None: ...
 
-_ListLike: TypeAlias = (
+_ListLike: TypeAlias = ArrayLike | dict[_str, np.ndarray] | SequenceNotStr[S1]
+_ListLikeS1: TypeAlias = (
     ArrayLike | dict[_str, np.ndarray] | Sequence[S1] | IndexOpsMixin[S1]
 )
 _NumListLike: TypeAlias = (
@@ -428,7 +429,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: S1 | _ListLike[S1] | dict[HashableT1, S1] | KeysView[S1] | ValuesView[S1],
+        data: (
+            S1 | _ListLikeS1[S1] | dict[HashableT1, S1] | KeysView[S1] | ValuesView[S1]
+        ),
         index: AxesData | None = ...,
         dtype: Dtype = ...,
         name: Hashable = ...,
@@ -2060,7 +2063,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: S1 | _ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
     @overload
-    def __mul__(self: Series[Never], other: complex | _ListLike | Series) -> Series: ...
+    def __mul__(
+        self: Series[Never], other: complex | _NumListLike | Series
+    ) -> Series: ...
     @overload
     def __mul__(self, other: Series[Never]) -> Series: ...  # type: ignore[overload-overlap]
     @overload
@@ -2255,7 +2260,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> TimedeltaSeries: ...
     @overload
     def __rmul__(
-        self: Series[Never], other: complex | _ListLike | Series
+        self: Series[Never], other: complex | _NumListLike | Series
     ) -> Series: ...
     @overload
     def __rmul__(self, other: Series[Never]) -> Series: ...  # type: ignore[overload-overlap]
@@ -2892,8 +2897,8 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: int = 0,
     ) -> Series[complex]: ...
     @overload
-    def __truediv__(
-        self: Series[Never], other: complex | _ListLike | Series
+    def __truediv__(  # type:ignore[overload-overlap]
+        self: Series[Never], other: complex | _NumListLike | Series
     ) -> Series: ...
     @overload
     def __truediv__(self, other: Series[Never]) -> Series: ...
@@ -3088,8 +3093,8 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series: ...
     div = truediv
     @overload
-    def __rtruediv__(
-        self: Series[Never], other: complex | _ListLike | Series
+    def __rtruediv__(  # type:ignore[overload-overlap]
+        self: Series[Never], other: complex | _NumListLike | Series
     ) -> Series: ...
     @overload
     def __rtruediv__(self, other: Series[Never]) -> Series: ...
