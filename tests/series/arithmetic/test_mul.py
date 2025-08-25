@@ -3,7 +3,10 @@ from numpy import typing as npt  # noqa: F401
 import pandas as pd
 from typing_extensions import assert_type
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 left_i = pd.DataFrame({"a": [1, 2, 3]})["a"]  # left operand
 
@@ -129,3 +132,14 @@ def test_mul_pd_series() -> None:
     check(assert_type(left_i.rmul(i), pd.Series), pd.Series)
     check(assert_type(left_i.rmul(f), pd.Series), pd.Series)
     check(assert_type(left_i.rmul(c), pd.Series), pd.Series)
+
+
+def test_mul_str_py_str() -> None:
+    """Test pd.Series[Any] (int) * Python str"""
+    s = "abc"
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        left_i * s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
+        s * left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
+        left_i.mul(s)  # type: ignore[type-var] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left_i.rmul(s)  # type: ignore[type-var] # pyright: ignore[reportArgumentType,reportCallIssue]

@@ -7,6 +7,7 @@ from typing_extensions import assert_type
 
 from tests import (
     PD_LTE_23,
+    TYPE_CHECKING_INVALID_USAGE,
     check,
 )
 
@@ -211,3 +212,18 @@ def test_truediv_path(tmp_path: Path) -> None:
 
         check(assert_type(fnames.rtruediv(tmp_path), pd.Series), pd.Series, Path)
         check(assert_type(fnames.rdiv(tmp_path), pd.Series), pd.Series, Path)
+
+
+def test_truediv_str_py_str() -> None:
+    """Test pd.Series[Any] (int) / Python str"""
+    s = "abc"
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = left_i / s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
+        _1 = s / left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
+
+        left_i.truediv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left_i.div(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+
+        left_i.rtruediv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left_i.rdiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]

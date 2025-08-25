@@ -4,8 +4,9 @@ from typing import Any
 import numpy as np
 from numpy import typing as npt  # noqa: F401
 import pandas as pd
+import pytest
 from typing_extensions import (
-    Never,
+    assert_never,
     assert_type,
 )
 
@@ -72,7 +73,8 @@ def test_add_numpy_array() -> None:
     r0 = np.array(["a", "bc", "def"], np.str_)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(left + i, Never)
+        with pytest.raises(AssertionError):
+            assert_never(left + i)
     check(assert_type(left + r0, "pd.Series[str]"), pd.Series, str)
 
     # `numpy` typing gives `npt.NDArray[np.int64]` in the static type

@@ -74,6 +74,7 @@ from pandas.tseries.offsets import (
 
 if TYPE_CHECKING:
     from pandas.core.frame import _PandasNamedTuple
+    from pandas.core.series import TimestampSeries
 else:
     _PandasNamedTuple: TypeAlias = tuple
 
@@ -4440,7 +4441,7 @@ def test_frame_setitem_na() -> None:
     df.loc[ind, :] = pd.NA
     df.iloc[[0, 2], :] = pd.NA
 
-    df["x"] = df["y"] + pd.Timedelta(days=3)
+    df["x"] = cast("TimestampSeries", df["y"]) + pd.Timedelta(days=3)
     df.loc[ind, :] = pd.NaT
     df.iloc[[0, 2], :] = pd.NaT
 

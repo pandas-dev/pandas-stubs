@@ -7,9 +7,11 @@ from typing import NoReturn
 import numpy as np
 from numpy import typing as npt  # noqa: F401
 import pandas as pd
+import pytest
 from typing_extensions import (
-    Never,
+    assert_never,
     assert_type,
+    Never
 )
 
 from tests import (
@@ -179,8 +181,6 @@ def test_sub_ts_numpy_datetime() -> None:
     a = np.array([s + np.timedelta64(m, "m") for m in range(3)], np.datetime64)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        # `numpy` typing gives the corresponding `ndarray`s in the static type
-        # checking, where our `__rsub__` cannot override.
         _0 = left_ts - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         # _1 = left_ts - a
         _2 = left_td - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
@@ -210,45 +210,39 @@ def test_sub_ts_pd_datetime() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         _0 = left_ts - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         assert_type(left_ts - a, Never)
+
         _2 = left_td - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         assert_type(left_td - a, Never)
 
         _4 = s - left_ts  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         assert_type(a - left_ts, Never)
+
         _6 = s - left_td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         assert_type(a - left_td, Never)
 
         left_ts.sub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        assert_type(left_ts.sub(a), Never)
+        with pytest.raises(AssertionError):
+            assert_never(left_ts.sub(a))
 
+        left_td.sub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        with pytest.raises(AssertionError):
+            assert_never(left_td.sub(a))
 
-def test_sub_ts_pd_datetime_1() -> None:
-    """Test pd.Series[Any] (Timestamp | Timedelta) - Pandas datetime(s)"""
-    s = pd.Timestamp(anchor)
-    a = pd.Series([s + pd.Timedelta(minutes=m) for m in range(3)])
-
-    if TYPE_CHECKING_INVALID_USAGE:
-        # When I merge this one to the previous one, mypy does not allow me to pass
         left_ts.rsub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        assert_type(left_ts.rsub(a), Never)
+        with pytest.raises(AssertionError):
+            assert_never(left_ts.rsub(a))
 
-
-def test_sub_ts_pd_datetime_2() -> None:
-    """Test pd.Series[Any] (Timestamp | Timedelta) - Pandas datetime(s)"""
-    s = pd.Timestamp(anchor)
-    a = pd.Series([s + pd.Timedelta(minutes=m) for m in range(3)])
-
-    if TYPE_CHECKING_INVALID_USAGE:
-        # When I merge this one to the previous one, mypy does not allow me to pass
         left_td.rsub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        assert_type(left_td.rsub(a), Never)
+        with pytest.raises(AssertionError):
+            assert_never(left_td.rsub(a))
 
 
-def test_str_sub() -> None:
+def test_sub_str_py_str() -> None:
+    """Test pd.Series[Any] (int) - Python str"""
+    s = "abc"
+
     if TYPE_CHECKING_INVALID_USAGE:
-        left_i - "abc"  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
-        "abc" - left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
-        left_i * "abc"  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
-        "abc" * left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
-        left_i / "abc"  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
-        "abc" / left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
+        _0 = left_i - s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
+        _1 = s - left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
+        left_i.sub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left_i.rsub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]

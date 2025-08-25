@@ -1631,7 +1631,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
     # just failed to generate these so I couldn't match
     # them up.
     @overload
-    def __add__(self: Series[Never], other: Scalar | _ListLike | Series) -> Series: ...
+    def __add__(self: Series[Never], other: _str) -> Never: ...
+    @overload
+    def __add__(self: Series[Never], other: complex | _ListLike | Series) -> Series: ...
     @overload
     def __add__(self, other: Series[Never]) -> Series: ...
     @overload
@@ -1709,7 +1711,15 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def add(
         self: Series[Never],
-        other: Scalar | _ListLike | Series,
+        other: _str,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Never: ...
+    @overload
+    def add(
+        self: Series[Never],
+        other: complex | _ListLike | Series,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -1852,7 +1862,11 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: int = 0,
     ) -> Series[_str]: ...
     @overload  # type: ignore[override]
-    def __radd__(self: Series[Never], other: Scalar | _ListLike) -> Series: ...
+    def __radd__(self: Series[Never], other: _str) -> Never: ...
+    @overload
+    def __radd__(
+        self: Series[Never], other: complex | _ListLike | Series
+    ) -> Series: ...
     @overload
     def __radd__(
         self: Series[bool],
@@ -1924,7 +1938,15 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def radd(
         self: Series[Never],
-        other: Scalar | _ListLike | Series,
+        other: _str,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Never: ...
+    @overload
+    def radd(
+        self: Series[Never],
+        other: complex | _ListLike | Series,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,

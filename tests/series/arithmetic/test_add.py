@@ -1,9 +1,16 @@
 import numpy as np
 from numpy import typing as npt  # noqa: F401
 import pandas as pd
-from typing_extensions import assert_type
+import pytest
+from typing_extensions import (
+    assert_never,
+    assert_type,
+)
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 # left operands
 left_i = pd.DataFrame({"a": [1, 2, 3]})["a"]
@@ -131,3 +138,18 @@ def test_add_i_pd_series() -> None:
     check(assert_type(left_i.radd(i), pd.Series), pd.Series)
     check(assert_type(left_i.radd(f), pd.Series), pd.Series)
     check(assert_type(left_i.radd(c), pd.Series), pd.Series)
+
+
+def test_add_str_py_str() -> None:
+    """Test pd.Series[Any] (int) + Python str"""
+    s = "abc"
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        with pytest.raises(AssertionError):
+            assert_never(left_i + s)
+        with pytest.raises(AssertionError):
+            assert_never(s + left_i)
+        with pytest.raises(AssertionError):
+            assert_never(left_i.add(s))
+        with pytest.raises(AssertionError):
+            assert_never(left_i.radd(s))
