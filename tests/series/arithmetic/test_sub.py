@@ -9,9 +9,9 @@ from numpy import typing as npt  # noqa: F401
 import pandas as pd
 import pytest
 from typing_extensions import (
+    Never,
     assert_never,
     assert_type,
-    Never
 )
 
 from tests import (

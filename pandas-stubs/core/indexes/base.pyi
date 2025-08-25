@@ -50,6 +50,7 @@ from pandas._typing import (
     ArrayLike,
     AxesData,
     DropKeep,
+    Dtype,
     DtypeArg,
     DTypeLike,
     DtypeObj,
@@ -89,7 +90,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> Index[int]: ...
     @overload
     def __new__(
@@ -100,7 +100,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> Index[int]: ...
     @overload
     def __new__(
@@ -111,7 +110,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> Index[float]: ...
     @overload
     def __new__(
@@ -122,7 +120,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> Index[float]: ...
     @overload
     def __new__(
@@ -137,7 +134,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> Index[complex]: ...
     @overload
     def __new__(
@@ -148,7 +144,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> Index[complex]: ...
     # special overloads with dedicated Index-subclasses
     @overload
@@ -160,7 +155,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> DatetimeIndex: ...
     @overload
     def __new__(
@@ -171,7 +165,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> DatetimeIndex: ...
     @overload
     def __new__(
@@ -182,7 +175,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> PeriodIndex: ...
     @overload
     def __new__(
@@ -193,7 +185,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> PeriodIndex: ...
     @overload
     def __new__(
@@ -204,7 +195,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> TimedeltaIndex: ...
     @overload
     def __new__(
@@ -215,7 +205,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> TimedeltaIndex: ...
     @overload
     def __new__(
@@ -226,7 +215,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> IntervalIndex[Interval[_OrderableT]]: ...
     @overload
     def __new__(
@@ -237,7 +225,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> IntervalIndex[Interval[Any]]: ...
     # generic overloads
     @overload
@@ -249,7 +236,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> Self: ...
     @overload
     def __new__(
@@ -260,7 +246,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> Self: ...
     # fallback overload
     @overload
@@ -268,11 +253,10 @@ class Index(IndexOpsMixin[S1]):
         cls,
         data: AxesData,
         *,
-        dtype=...,
+        dtype: Dtype = ...,
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> Self: ...
     @property
     def str(
