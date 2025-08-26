@@ -92,15 +92,17 @@ def test_arithmetic() -> None:
         # bug upstream: https://github.com/pandas-dev/pandas/issues/62196
         check(
             assert_type(
-                divmod(na, s_int), tuple[pd.Series, pd.Series]
-            ),  # pyright: ignore[reportAssertTypeFailure]
+                divmod(na, s_int),  # pyright: ignore[reportAssertTypeFailure]
+                tuple[pd.Series, pd.Series],
+            ),
             tuple,
         )
     with pytest.raises(RuntimeError):
         check(
             assert_type(
-                divmod(na, idx_int), tuple[pd.Index, pd.Index]
-            ),  # pyright: ignore[reportAssertTypeFailure]
+                divmod(na, idx_int),  # pyright: ignore[reportAssertTypeFailure]
+                tuple[pd.Index, pd.Index],
+            ),
             tuple,
         )
     check(assert_type(divmod(na, 1), tuple[NAType, NAType]), tuple)
