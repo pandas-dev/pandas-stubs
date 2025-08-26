@@ -146,11 +146,11 @@ def test_sub_py_datetime() -> None:
 
     check(assert_type(left_ts - s, "TimedeltaSeries"), pd.Series, pd.Timedelta)
 
-    check(assert_type(s - left_ts, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(s - left_ts, pd.Series), pd.Series, pd.Timedelta)
 
     check(assert_type(left_ts.sub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
 
-    check(assert_type(left_ts.rsub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_ts.rsub(s), pd.Series), pd.Series, pd.Timedelta)
 
 
 def test_sub_numpy_datetime() -> None:
@@ -161,7 +161,7 @@ def test_sub_numpy_datetime() -> None:
     check(assert_type(left_ts - s, "TimedeltaSeries"), pd.Series, pd.Timedelta)
     check(assert_type(left_ts - a, "TimedeltaSeries"), pd.Series, pd.Timedelta)
 
-    check(assert_type(s - left_ts, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(s - left_ts, pd.Series), pd.Series, pd.Timedelta)
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__rsub__` cannot override. At runtime, they return
     # `Series`s.
@@ -170,8 +170,8 @@ def test_sub_numpy_datetime() -> None:
     check(assert_type(left_ts.sub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
     check(assert_type(left_ts.sub(a), "TimedeltaSeries"), pd.Series, pd.Timedelta)
 
-    check(assert_type(left_ts.rsub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    check(assert_type(left_ts.rsub(a), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_ts.rsub(s), pd.Series), pd.Series, pd.Timedelta)
+    check(assert_type(left_ts.rsub(a), pd.Series), pd.Series, pd.Timedelta)
 
 
 def test_sub_pd_datetime() -> None:
@@ -180,13 +180,13 @@ def test_sub_pd_datetime() -> None:
     a = pd.Series([s + pd.Timedelta(minutes=m) for m in range(3)])
 
     check(assert_type(left_ts - s, "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    check(assert_type(left_ts - a, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_ts - a, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
-    check(assert_type(s - left_ts, "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    check(assert_type(a - left_ts, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(s - left_ts, pd.Series), pd.Series, pd.Timedelta)
+    check(assert_type(a - left_ts, pd.Series), pd.Series, pd.Timedelta)
 
     check(assert_type(left_ts.sub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
     check(assert_type(left_ts.sub(a), "TimedeltaSeries"), pd.Series, pd.Timedelta)
 
-    check(assert_type(left_ts.rsub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    check(assert_type(left_ts.rsub(a), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_ts.rsub(s), pd.Series), pd.Series, pd.Timedelta)
+    check(assert_type(left_ts.rsub(a), pd.Series), pd.Series, pd.Timedelta)
