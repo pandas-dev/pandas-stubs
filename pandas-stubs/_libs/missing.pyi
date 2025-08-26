@@ -10,6 +10,7 @@ from pandas import (
     Index,
     Series,
 )
+from pandas.core.arrays.boolean import BooleanArray
 from typing_extensions import Self
 
 class NAType:
@@ -25,7 +26,7 @@ class NAType:
     @overload
     def __add__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
     @overload
-    def __add__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    def __add__(self, other: npt.NDArray[Any], /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
     def __add__(self, other: object, /) -> NAType: ...
     @overload
@@ -34,8 +35,6 @@ class NAType:
     ) -> Series: ...
     @overload
     def __radd__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
-    @overload
-    def __radd__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
     def __radd__(self, other: object, /) -> NAType: ...
     @overload
@@ -118,7 +117,7 @@ class NAType:
         self, other: Series, /
     ) -> Series: ...
     @overload
-    def __rfloordiv__(self, other: Index, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    def __rfloordiv__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
     @overload
     def __rfloordiv__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
@@ -166,9 +165,9 @@ class NAType:
     @overload  # type: ignore[override]
     def __eq__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
         self, other: Series, /
-    ) -> Series: ...
+    ) -> BooleanArray: ...
     @overload
-    def __eq__(self, other: Index, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    def __eq__(self, other: Index, /) -> BooleanArray: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
@@ -180,7 +179,7 @@ class NAType:
         self, other: Series, /
     ) -> Series: ...
     @overload
-    def __ne__(self, other: Index, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    def __ne__(self, other: Index, /) -> BooleanArray: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
@@ -192,7 +191,7 @@ class NAType:
         self, other: Series, /
     ) -> Series: ...
     @overload
-    def __le__(self, other: Index, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    def __le__(self, other: Index, /) -> BooleanArray: ...  # type: ignore[overload-overlap]
     @overload
     def __le__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
@@ -202,7 +201,7 @@ class NAType:
         self, other: Series, /
     ) -> Series: ...
     @overload
-    def __lt__(self, other: Index, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    def __lt__(self, other: Index, /) -> BooleanArray: ...  # type: ignore[overload-overlap]
     @overload
     def __lt__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
@@ -212,7 +211,7 @@ class NAType:
         self, other: Series, /
     ) -> Series: ...
     @overload
-    def __gt__(self, other: Index, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    def __gt__(self, other: Index, /) -> BooleanArray: ...  # type: ignore[overload-overlap]
     @overload
     def __gt__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
@@ -222,7 +221,7 @@ class NAType:
         self, other: Series, /
     ) -> Series: ...
     @overload
-    def __ge__(self, other: Index, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    def __ge__(self, other: Index, /) -> BooleanArray: ...  # type: ignore[overload-overlap]
     @overload
     def __ge__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
@@ -260,7 +259,9 @@ class NAType:
     @overload
     def __and__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
-    def __and__(self, other: object, /) -> Literal[False] | NAType: ...
+    def __and__(self, other: Literal[False], /) -> Literal[False]: ...
+    @overload
+    def __and__(self, other: object, /) -> NAType: ...
     @overload
     def __rand__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
         self, other: Series, /
@@ -270,7 +271,9 @@ class NAType:
     @overload
     def __rand__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
-    def __rand__(self, other: object, /) -> Literal[False] | NAType: ...
+    def __rand__(self, other: Literal[False], /) -> Literal[False]: ...
+    @overload
+    def __rand__(self, other: object, /) -> NAType: ...
     @overload
     def __or__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
         self, other: Series, /
@@ -280,7 +283,9 @@ class NAType:
     @overload
     def __or__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
-    def __or__(self, other: object, /) -> Literal[True] | NAType: ...
+    def __or__(self, other: Literal[True], /) -> Literal[True]: ...
+    @overload
+    def __or__(self, other: object, /) -> NAType: ...
     @overload
     def __ror__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
         self, other: Series, /
@@ -290,7 +295,9 @@ class NAType:
     @overload
     def __ror__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
-    def __ror__(self, other: object, /) -> Literal[True] | NAType: ...
+    def __ror__(self, other: Literal[True], /) -> Literal[True]: ...
+    @overload
+    def __ror__(self, other: object, /) -> NAType: ...
     @overload
     def __xor__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
         self, other: Series, /
