@@ -3,6 +3,7 @@ from numpy import typing as npt  # noqa: F401
 import pandas as pd
 import pytest
 from typing_extensions import (
+    Never,
     assert_never,
     assert_type,
 )
@@ -145,10 +146,8 @@ def test_add_str_py_str() -> None:
     s = "abc"
 
     if TYPE_CHECKING_INVALID_USAGE:
-        with pytest.raises(AssertionError):
-            assert_never(left_i + s)
-        with pytest.raises(AssertionError):
-            assert_never(s + left_i)
+        assert_type(left_i + s, Never)
+        assert_type(s + left_i, Never)
         with pytest.raises(AssertionError):
             assert_never(left_i.add(s))
         with pytest.raises(AssertionError):
