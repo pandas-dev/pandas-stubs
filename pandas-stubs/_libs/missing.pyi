@@ -171,7 +171,7 @@ class NAType:
         self, other: Series, /
     ) -> Series: ...
     @overload
-    def __eq__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    def __eq__(self, other: Index, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
@@ -183,7 +183,7 @@ class NAType:
         self, other: Series, /
     ) -> Series: ...
     @overload
-    def __ne__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    def __ne__(self, other: Index, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
@@ -195,7 +195,7 @@ class NAType:
         self, other: Series, /
     ) -> Series: ...
     @overload
-    def __le__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    def __le__(self, other: Index, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
     def __le__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
@@ -205,7 +205,7 @@ class NAType:
         self, other: Series, /
     ) -> Series: ...
     @overload
-    def __lt__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    def __lt__(self, other: Index, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
     def __lt__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
@@ -215,7 +215,7 @@ class NAType:
         self, other: Series, /
     ) -> Series: ...
     @overload
-    def __gt__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    def __gt__(self, other: Index, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
     def __gt__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
@@ -225,7 +225,7 @@ class NAType:
         self, other: Series, /
     ) -> Series: ...
     @overload
-    def __ge__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    def __ge__(self, other: Index, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
     def __ge__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
