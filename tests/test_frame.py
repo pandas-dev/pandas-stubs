@@ -4441,6 +4441,8 @@ def test_frame_setitem_na() -> None:
     df.loc[ind, :] = pd.NA
     df.iloc[[0, 2], :] = pd.NA
 
+    # reveal_type(df["y"]) gives Series[Any], so we have to cast to tell the
+    # type checker what kind of type it is when adding to a Timedelta
     df["x"] = cast("TimestampSeries", df["y"]) + pd.Timedelta(days=3)
     df.loc[ind, :] = pd.NaT
     df.iloc[[0, 2], :] = pd.NaT
