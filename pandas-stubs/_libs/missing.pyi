@@ -1,9 +1,10 @@
 from typing import (
     Any,
+    Callable,
+    Literal,
     overload,
 )
 
-import numpy as np
 import numpy.typing as npt
 from pandas import (
     Index,
@@ -12,64 +13,310 @@ from pandas import (
 from typing_extensions import Self
 
 class NAType:
-    def __new__(cls, *args, **kwargs) -> Self: ...
+    def __new__(cls, *args: Any, **kwargs: Any) -> Self: ...
     def __format__(self, format_spec: str) -> str: ...
     def __bool__(self) -> None: ...
     def __hash__(self) -> int: ...
     def __reduce__(self) -> str: ...
-    def __add__(self, other) -> NAType: ...
-    def __radd__(self, other) -> NAType: ...
     @overload
-    def __sub__(
+    def __add__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
         self, other: Series, /
-    ) -> Series[type[object]]: ...  # pyright: ignore[reportOverlappingOverload]
+    ) -> Series: ...
     @overload
-    def __sub__(self, other: Index, /) -> Index[type[object]]: ...
+    def __add__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
     @overload
-    def __sub__(self, other: npt.NDArray[Any], /) -> npt.NDArray[np.object_]: ...
+    def __add__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
-    def __sub__(self, other: Any, /) -> NAType: ...
+    def __add__(self, other: object, /) -> NAType: ...
     @overload
-    def __rsub__(
+    def __radd__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
         self, other: Series, /
-    ) -> Series[type[object]]: ...  # pyright: ignore[reportOverlappingOverload]
+    ) -> Series: ...
     @overload
-    def __rsub__(self, other: Index, /) -> Index[type[object]]: ...
+    def __radd__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
     @overload
-    def __rsub__(self, other: npt.NDArray[Any], /) -> npt.NDArray[np.object_]: ...
+    def __radd__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
-    def __rsub__(self, other: Any, /) -> NAType: ...
-    def __mul__(self, other) -> NAType: ...
-    def __rmul__(self, other) -> NAType: ...
-    def __matmul__(self, other) -> NAType: ...
-    def __rmatmul__(self, other) -> NAType: ...
-    def __truediv__(self, other) -> NAType: ...
-    def __rtruediv__(self, other) -> NAType: ...
-    def __floordiv__(self, other) -> NAType: ...
-    def __rfloordiv__(self, other) -> NAType: ...
-    def __mod__(self, other) -> NAType: ...
-    def __rmod__(self, other) -> NAType: ...
-    def __divmod__(self, other) -> NAType: ...
-    def __rdivmod__(self, other) -> NAType: ...
-    def __eq__(self, other) -> bool: ...
-    def __ne__(self, other) -> bool: ...
-    def __le__(self, other) -> bool: ...
-    def __lt__(self, other) -> bool: ...
-    def __gt__(self, other) -> bool: ...
-    def __ge__(self, other) -> bool: ...
-    def __neg__(self, other) -> NAType: ...
-    def __pos__(self, other) -> NAType: ...
-    def __abs__(self, other) -> NAType: ...
-    def __invert__(self, other) -> NAType: ...
-    def __pow__(self, other) -> NAType: ...
-    def __rpow__(self, other) -> NAType: ...
-    def __and__(self, other) -> NAType | None: ...
-    __rand__ = __and__
-    def __or__(self, other) -> bool | NAType: ...
-    __ror__ = __or__
-    def __xor__(self, other) -> NAType: ...
-    __rxor__ = __xor__
+    def __radd__(self, other: object, /) -> NAType: ...
+    @overload
+    def __sub__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __sub__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __sub__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __sub__(self, other: object, /) -> NAType: ...
+    @overload
+    def __rsub__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __rsub__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __rsub__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __rsub__(self, other: object, /) -> NAType: ...
+    @overload
+    def __mul__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __mul__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __mul__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __mul__(self, other: object, /) -> NAType: ...
+    @overload
+    def __rmul__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __rmul__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __rmul__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __rmul__(self, other: object, /) -> NAType: ...
+    @overload
+    def __matmul__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
+    @overload
+    def __matmul__(self, other: object, /) -> NAType: ...
+    @overload
+    def __rmatmul__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
+    @overload
+    def __rmatmul__(self, other: object, /) -> NAType: ...
+    @overload
+    def __truediv__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __truediv__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __truediv__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __truediv__(self, other: object, /) -> NAType: ...
+    @overload
+    def __rtruediv__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __rtruediv__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __rtruediv__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __rtruediv__(self, other: object, /) -> NAType: ...
+    @overload
+    def __floordiv__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __floordiv__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __floordiv__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __floordiv__(self, other: object, /) -> NAType: ...
+    @overload
+    def __rfloordiv__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __rfloordiv__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __rfloordiv__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __rfloordiv__(self, other: object, /) -> NAType: ...
+    @overload
+    def __mod__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __mod__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __mod__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __mod__(self, other: object, /) -> NAType: ...
+    @overload
+    def __rmod__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __rmod__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __rmod__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __rmod__(self, other: object, /) -> NAType: ...
+    @overload
+    def __divmod__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> tuple[Series, Series]: ...
+    @overload
+    def __divmod__(self, other: Index, /) -> tuple[Index, Index]: ...  # type: ignore[overload-overlap]
+    @overload
+    def __divmod__(self, other: npt.NDArray, /) -> tuple[npt.NDArray, npt.NDArray]: ...  # type: ignore[overload-overlap]
+    @overload
+    def __divmod__(self, other: object, /) -> tuple[NAType, NAType]: ...
+    @overload
+    def __rdivmod__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> tuple[Series, Series]: ...
+    @overload
+    def __rdivmod__(self, other: Index, /) -> tuple[Index, Index]: ...  # type: ignore[overload-overlap]
+    @overload
+    def __rdivmod__(self, other: npt.NDArray, /) -> tuple[npt.NDArray, npt.NDArray]: ...  # type: ignore[overload-overlap]
+    @overload
+    def __rdivmod__(self, other: object, /) -> tuple[NAType, NAType]: ...
+    @overload  # type: ignore[override]
+    def __eq__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __eq__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __eq__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __eq__(
+        self, other: object, /
+    ) -> NAType: ...  # pyright: ignore[reportIncompatibleMethodOverride]
+    @overload  # type: ignore[override]
+    def __ne__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __ne__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __ne__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __ne__(
+        self, other: object, /
+    ) -> NAType: ...  # pyright: ignore[reportIncompatibleMethodOverride]
+    @overload
+    def __le__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __le__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __le__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __le__(self, other: object, /) -> NAType: ...
+    @overload
+    def __lt__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __lt__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __lt__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __lt__(self, other: object, /) -> NAType: ...
+    @overload
+    def __gt__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __gt__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __gt__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __gt__(self, other: object, /) -> NAType: ...
+    @overload
+    def __ge__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __ge__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __ge__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __ge__(self, other: object, /) -> NAType: ...
+    def __neg__(self) -> NAType: ...
+    def __pos__(self) -> NAType: ...
+    def __abs__(self) -> NAType: ...
+    def __invert__(self) -> NAType: ...
+    @overload
+    def __pow__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __pow__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __pow__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __pow__(self, other: object, /) -> NAType: ...
+    @overload
+    def __rpow__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __rpow__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __rpow__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __rpow__(self, other: object, /) -> NAType: ...
+    @overload
+    def __and__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __and__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __and__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __and__(self, other: object, /) -> Literal[False] | NAType: ...
+    @overload
+    def __rand__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __rand__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __rand__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __rand__(self, other: object, /) -> Literal[False] | NAType: ...
+    @overload
+    def __or__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __or__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __or__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __or__(self, other: object, /) -> Literal[True] | NAType: ...
+    @overload
+    def __ror__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __ror__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __ror__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __ror__(self, other: object, /) -> Literal[True] | NAType: ...
+    @overload
+    def __xor__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __xor__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __xor__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __xor__(self, other: object, /) -> NAType: ...
+    @overload
+    def __rxor__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
+        self, other: Series, /
+    ) -> Series: ...
+    @overload
+    def __rxor__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
+    def __rxor__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
+    @overload
+    def __rxor__(self, other: object, /) -> NAType: ...
     __array_priority__: int
-    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs): ...
+    def __array_ufunc__(
+        self, ufunc: Callable[..., Any], method: str, *inputs: Any, **kwargs: Any
+    ) -> Any: ...
 
 NA: NAType = ...
