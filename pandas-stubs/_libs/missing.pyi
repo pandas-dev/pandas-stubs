@@ -211,7 +211,7 @@ class NAType:
     @overload
     def __and__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
     @overload
-    def __and__(self, other: Literal[False], /) -> Literal[False]: ...
+    def __and__(self, other: Literal[False], /) -> Literal[False]: ...  # type: ignore[overload-overlap]
     @overload
     def __and__(self, other: object, /) -> NAType: ...
     @overload
@@ -221,7 +221,7 @@ class NAType:
     @overload
     def __rand__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
     @overload
-    def __rand__(self, other: Literal[False], /) -> Literal[False]: ...
+    def __rand__(self, other: Literal[False], /) -> Literal[False]: ...  # type: ignore[overload-overlap]
     @overload
     def __rand__(self, other: object, /) -> NAType: ...
     @overload
@@ -231,7 +231,7 @@ class NAType:
     @overload
     def __or__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
     @overload
-    def __or__(self, other: Literal[True], /) -> Literal[True]: ...
+    def __or__(self, other: Literal[True], /) -> Literal[True]: ...  # type: ignore[overload-overlap]
     @overload
     def __or__(self, other: object, /) -> NAType: ...
     @overload
@@ -241,7 +241,7 @@ class NAType:
     @overload
     def __ror__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
     @overload
-    def __ror__(self, other: Literal[True], /) -> Literal[True]: ...
+    def __ror__(self, other: Literal[True], /) -> Literal[True]: ...  # type: ignore[overload-overlap]
     @overload
     def __ror__(self, other: object, /) -> NAType: ...
     @overload
