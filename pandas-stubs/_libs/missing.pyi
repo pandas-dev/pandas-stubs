@@ -165,7 +165,7 @@ class NAType:
     @overload  # type: ignore[override]
     def __eq__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
         self, other: Series, /
-    ) -> BooleanArray: ...
+    ) -> Series: ...
     @overload
     def __eq__(self, other: Index, /) -> BooleanArray: ...  # type: ignore[overload-overlap]
     @overload
