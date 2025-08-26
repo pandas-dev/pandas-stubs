@@ -31,7 +31,7 @@ def test_add_py_scalar() -> None:
     check(assert_type(r0 + left, "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.add(i)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.add(r0), "pd.Series[str]"), pd.Series, str)
 
     if TYPE_CHECKING_INVALID_USAGE:

@@ -1716,7 +1716,15 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series: ...
     @overload
     def add(
-        self,
+        self: Series[_str],
+        other: _str | Sequence[_str] | np_ndarray_str | Series[_str],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[_str]: ...
+    @overload
+    def add(
+        self: Series[S1],
         other: Series[Never],
         level: Level | None = None,
         fill_value: float | None = None,
@@ -1843,14 +1851,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: int = 0,
     ) -> Series[complex]: ...
-    @overload
-    def add(
-        self: Series[_str],
-        other: _str | Sequence[_str] | np_ndarray_str | Series[_str],
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[_str]: ...
     @overload  # type: ignore[override]
     def __radd__(self: Series[Never], other: Scalar | _ListLike) -> Series: ...
     @overload
@@ -1929,6 +1929,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: int = 0,
     ) -> Series: ...
+    @overload
+    def radd(
+        self: Series[_str],
+        other: _str | Sequence[_str] | np_ndarray_str | Series[_str],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[_str]: ...
     @overload
     def radd(
         self: Series[bool],
@@ -2033,14 +2041,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: int = 0,
     ) -> Series[complex]: ...
-    @overload
-    def radd(
-        self: Series[_str],
-        other: _str | Sequence[_str] | np_ndarray_str | Series[_str],
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[_str]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     def __and__(  # pyright: ignore[reportOverlappingOverload]
