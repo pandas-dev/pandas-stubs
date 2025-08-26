@@ -1953,6 +1953,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series: ...
     @overload
     def radd(
+        self: Series[S1],
+        other: Series[Never],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series: ...
+    @overload
+    def radd(
         self: Series[bool],
         other: _T_COMPLEX | Sequence[_T_COMPLEX] | Series[_T_COMPLEX],
         level: Level | None = None,
