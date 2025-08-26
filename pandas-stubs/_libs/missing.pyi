@@ -175,9 +175,9 @@ class NAType:
     @overload
     def __eq__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(
+    def __eq__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: object, /
-    ) -> NAType: ...  # pyright: ignore[reportIncompatibleMethodOverride]
+    ) -> NAType: ...
     @overload  # type: ignore[override]
     def __ne__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
         self, other: Series, /
@@ -187,9 +187,9 @@ class NAType:
     @overload
     def __ne__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(
+    def __ne__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: object, /
-    ) -> NAType: ...  # pyright: ignore[reportIncompatibleMethodOverride]
+    ) -> NAType: ...
     @overload
     def __le__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
         self, other: Series, /
