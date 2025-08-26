@@ -14,6 +14,7 @@ def test_arithmetic() -> None:
     s_int = pd.Series([1, 2, 3])
     idx_int = pd.Index([1, 2, 3])
     arr_int: npt.NDArray[Any] = np.array([1, 2, 3])
+    ma_int: npt.NDArray[Any] = np.array([[1, 2, 3], [4, 5, 6]])
 
     # __add__
     check(assert_type(na + s_int, pd.Series), pd.Series)
@@ -52,17 +53,12 @@ def test_arithmetic() -> None:
     check(assert_type(arr_int * na, npt.NDArray), npt.NDArray)  # type: ignore[assert-type]  # pyright: ignore[reportAssertTypeFailure]
     check(assert_type(1 * na, NAType), NAType)
 
-    # __floordiv__
-    check(assert_type(na // s_int, pd.Series), pd.Series)
-    check(assert_type(na // idx_int, pd.Index), pd.Index)
-    check(assert_type(na // arr_int, npt.NDArray), npt.NDArray)  # type: ignore[assert-type] # mypy bug? pyright fine
-    check(assert_type(na // 1, NAType), NAType)
+    # __matmul__
+    check(assert_type(na @ ma_int, npt.NDArray), npt.NDArray)
+    check(assert_type(na @ 1, NAType), NAType)
 
-    # __rfloordiv__
-    # check(assert_type(/ s_int/na, pd.Series), pd.Series)
-    # check(assert_type(/ idx_int/na, pd.Index), pd.Index)
-    # check(assert_type(/ arr_int/na, npt.NDArray), npt.NDArray)
-    # check(assert_type(/ 1/na, NAType), NAType)
+    # __rmatmul__
+    check(assert_type(1 @ na, NAType), NAType)
 
     # __truediv__
     check(assert_type(na / s_int, pd.Series), pd.Series)
@@ -75,6 +71,18 @@ def test_arithmetic() -> None:
     check(assert_type(idx_int / na, pd.Index), pd.Index)
     check(assert_type(arr_int / na, npt.NDArray), npt.NDArray)  # type: ignore[assert-type]  # pyright: ignore[reportAssertTypeFailure]
     check(assert_type(1 / na, NAType), NAType)
+
+    # __floordiv__
+    check(assert_type(na // s_int, pd.Series), pd.Series)
+    check(assert_type(na // idx_int, pd.Index), pd.Index)
+    check(assert_type(na // arr_int, npt.NDArray), npt.NDArray)  # type: ignore[assert-type] # mypy bug? pyright fine
+    check(assert_type(na // 1, NAType), NAType)
+
+    # __rfloordiv__
+    check(assert_type(s_int // na, pd.Series), pd.Series)
+    check(assert_type(idx_int // na, npt.NDArray), npt.NDArray)
+    check(assert_type(arr_int // na, npt.NDArray), npt.NDArray)  # type: ignore[assert-type]  # pyright: ignore[reportAssertTypeFailure]
+    check(assert_type(1 // na, NAType), NAType)
 
     # __mod__
     check(assert_type(na % s_int, pd.Series), pd.Series)

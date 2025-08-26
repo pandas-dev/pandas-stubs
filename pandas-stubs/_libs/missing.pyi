@@ -82,9 +82,6 @@ class NAType:
     def __matmul__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
     @overload
     def __matmul__(self, other: object, /) -> NAType: ...
-    @overload
-    def __rmatmul__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
-    @overload
     def __rmatmul__(self, other: object, /) -> NAType: ...
     @overload
     def __truediv__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
@@ -121,7 +118,7 @@ class NAType:
         self, other: Series, /
     ) -> Series: ...
     @overload
-    def __rfloordiv__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    def __rfloordiv__(self, other: Index, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
     def __rfloordiv__(self, other: npt.NDArray, /) -> npt.NDArray: ...  # type: ignore[overload-overlap]
     @overload
