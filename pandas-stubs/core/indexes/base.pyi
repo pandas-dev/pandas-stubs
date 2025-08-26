@@ -15,7 +15,6 @@ from typing import (
     ClassVar,
     Generic,
     Literal,
-    TypeAlias,
     final,
     overload,
     type_check_only,
@@ -507,8 +506,6 @@ class Index(IndexOpsMixin[S1]):
         ),
     ) -> Self: ...
     def infer_objects(self, copy: bool = True) -> Self: ...
-
-UnknownIndex: TypeAlias = Index[Any]
 
 @type_check_only
 class _IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):
