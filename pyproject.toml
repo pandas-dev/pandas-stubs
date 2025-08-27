@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pandas-stubs"
-version = "2.3.0.250703"
+version = "2.3.2.250827"
 description = "Type annotations for pandas"
 authors = ["The Pandas Development Team <pandas-dev@python.org>"]
 license = "BSD-3-Clause"
@@ -23,7 +23,8 @@ classifiers = [
   "Topic :: Scientific/Engineering",
   "Typing :: Stubs Only",
 ]
-packages = [{ "include" = "pandas-stubs" }]
+packages = [{ include = "pandas-stubs" }]
+exclude = [ "pandas-stubs/__init__.py" ]
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/pandas-dev/pandas-stubs/issues"
@@ -36,7 +37,7 @@ numpy = ">= 1.23.5"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "1.17.1"
-pandas = "2.3.1"
+pandas = "2.3.2"
 pyarrow = ">=10.0.1"
 pytest = ">=7.1.2"
 pyright = ">=1.1.404"
