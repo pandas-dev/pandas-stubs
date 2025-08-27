@@ -1322,6 +1322,7 @@ def test_timestamp_cmp_index() -> None:
     eq_dt1 = check(assert_type(ts == dt_idx, np_1darray[np.bool]), np_1darray[np.bool])
     ne_dt1 = check(assert_type(ts != dt_idx, np_1darray[np.bool]), np_1darray[np.bool])
     assert (eq_dt1 != ne_dt1).all()
+    # there is a mypy bug where ts.__eq__(Index) gets revealed as Any and not np_1darray
     eq_un1 = check(assert_type(ts == un_idx, np_1darray[np.bool]), np_1darray[np.bool])  # type: ignore[assert-type]
     ne_un1 = check(assert_type(ts != un_idx, np_1darray[np.bool]), np_1darray[np.bool])  # type: ignore[assert-type]
     assert (eq_un1 != ne_un1).all()
