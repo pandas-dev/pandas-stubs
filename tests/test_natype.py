@@ -14,7 +14,7 @@ from tests import check
 def test_arithmetic() -> None:
     na = pd.NA
 
-    s_int: pd.Series[int] = pd.Series([1, 2, 3], dtype="Int64")
+    s_int = pd.Series([1, 2, 3], dtype="Int64")
     idx_int: pd.Index[int] = pd.Index([1, 2, 3], dtype="Int64")
 
     # __add__
