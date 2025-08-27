@@ -123,32 +123,32 @@ def test_arithmetic() -> None:
     check(assert_type(divmod(1, na), tuple[NAType, NAType]), tuple)
 
     # __eq__
-    check(assert_type(na == s_int, pd.Series), pd.Series)
+    check(assert_type(na == s_int, "pd.Series[bool]"), pd.Series)
     check(assert_type(na == idx_int, BooleanArray), BooleanArray)
     check(assert_type(na == 1, NAType), NAType)
 
     # __ne__
-    check(assert_type(na != s_int, pd.Series), pd.Series)
+    check(assert_type(na != s_int, "pd.Series[bool]"), pd.Series)
     check(assert_type(na != idx_int, BooleanArray), BooleanArray)
     check(assert_type(na != 1, NAType), NAType)
 
     # __le__
-    check(assert_type(na <= s_int, pd.Series), pd.Series)
+    check(assert_type(na <= s_int, "pd.Series[bool]"), pd.Series)
     check(assert_type(na <= idx_int, BooleanArray), BooleanArray)
     check(assert_type(na <= 1, NAType), NAType)
 
     # __lt__
-    check(assert_type(na < s_int, pd.Series), pd.Series)
+    check(assert_type(na < s_int, "pd.Series[bool]"), pd.Series)
     check(assert_type(na < idx_int, BooleanArray), BooleanArray)
     check(assert_type(na < 1, NAType), NAType)
 
     # __gt__
-    check(assert_type(na > s_int, pd.Series), pd.Series)
+    check(assert_type(na > s_int, "pd.Series[bool]"), pd.Series)
     check(assert_type(na > idx_int, BooleanArray), BooleanArray)
     check(assert_type(na > 1, NAType), NAType)
 
     # __ge__
-    check(assert_type(na >= s_int, pd.Series), pd.Series)
+    check(assert_type(na >= s_int, "pd.Series[bool]"), pd.Series)
     check(assert_type(na >= idx_int, BooleanArray), BooleanArray)
     check(assert_type(na >= 1, NAType), NAType)
 
@@ -164,27 +164,19 @@ def test_arithmetic() -> None:
     check(assert_type(2**na, NAType), NAType)
 
     # __and__
-    check(assert_type(na & s_int, pd.Series), pd.Series)
-    check(assert_type(na & idx_int, pd.Index), pd.Index)
     check(assert_type(na & False, Literal[False]), bool)
     check(assert_type(na & True, NAType), NAType)
     check(assert_type(na & na, NAType), NAType)
 
     # __rand__
-    check(assert_type(s_int & na, pd.Series), pd.Series)
-    check(assert_type(idx_int & na, pd.Index), pd.Index)
     check(assert_type(False & na, Literal[False]), bool)
     check(assert_type(True & na, NAType), NAType)
 
     # __or__
-    check(assert_type(na | s_int, pd.Series), pd.Series)
-    check(assert_type(na | idx_int, pd.Index), pd.Index)
     check(assert_type(na | False, NAType), NAType)
     check(assert_type(na | True, Literal[True]), bool)
 
     # __ror__
-    check(assert_type(s_int | na, pd.Series), pd.Series)
-    check(assert_type(idx_int | na, pd.Index), pd.Index)
     check(assert_type(False | na, NAType), NAType)
     check(assert_type(True | na, Literal[True]), bool)
 

@@ -15,7 +15,6 @@ from typing_extensions import Self
 class NAType:
     def __new__(cls, *args: Any, **kwargs: Any) -> Self: ...
     def __format__(self, format_spec: str) -> str: ...
-    def __bool__(self) -> None: ...
     def __hash__(self) -> int: ...
     def __reduce__(self) -> str: ...
     @overload
@@ -135,7 +134,7 @@ class NAType:
     @overload  # type: ignore[override]
     def __eq__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
         self, other: Series, /
-    ) -> Series: ...
+    ) -> Series[bool]: ...
     @overload
     def __eq__(self, other: Index, /) -> BooleanArray: ...  # type: ignore[overload-overlap]
     @overload
@@ -145,7 +144,7 @@ class NAType:
     @overload  # type: ignore[override]
     def __ne__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
         self, other: Series, /
-    ) -> Series: ...
+    ) -> Series[bool]: ...
     @overload
     def __ne__(self, other: Index, /) -> BooleanArray: ...  # type: ignore[overload-overlap]
     @overload
@@ -155,7 +154,7 @@ class NAType:
     @overload
     def __le__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
         self, other: Series, /
-    ) -> Series: ...
+    ) -> Series[bool]: ...
     @overload
     def __le__(self, other: Index, /) -> BooleanArray: ...  # type: ignore[overload-overlap]
     @overload
@@ -163,7 +162,7 @@ class NAType:
     @overload
     def __lt__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
         self, other: Series, /
-    ) -> Series: ...
+    ) -> Series[bool]: ...
     @overload
     def __lt__(self, other: Index, /) -> BooleanArray: ...  # type: ignore[overload-overlap]
     @overload
@@ -171,7 +170,7 @@ class NAType:
     @overload
     def __gt__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
         self, other: Series, /
-    ) -> Series: ...
+    ) -> Series[bool]: ...
     @overload
     def __gt__(self, other: Index, /) -> BooleanArray: ...  # type: ignore[overload-overlap]
     @overload
@@ -179,7 +178,7 @@ class NAType:
     @overload
     def __ge__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
         self, other: Series, /
-    ) -> Series: ...
+    ) -> Series[bool]: ...
     @overload
     def __ge__(self, other: Index, /) -> BooleanArray: ...  # type: ignore[overload-overlap]
     @overload
@@ -205,45 +204,21 @@ class NAType:
     @overload
     def __rpow__(self, other: object, /) -> NAType: ...
     @overload
-    def __and__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
-        self, other: Series, /
-    ) -> Series: ...
+    def __and__(self, other: Literal[False], /) -> Literal[False]: ...  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
     @overload
-    def __and__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    def __and__(self, other: bool | NAType, /) -> NAType: ...
     @overload
-    def __and__(self, other: Literal[False], /) -> Literal[False]: ...  # type: ignore[overload-overlap]
+    def __rand__(self, other: Literal[False], /) -> Literal[False]: ...  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
     @overload
-    def __and__(self, other: object, /) -> NAType: ...
+    def __rand__(self, other: bool, /) -> NAType: ...
     @overload
-    def __rand__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
-        self, other: Series, /
-    ) -> Series: ...
+    def __or__(self, other: Literal[True], /) -> Literal[True]: ...  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
     @overload
-    def __rand__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
+    def __or__(self, other: bool | NAType, /) -> NAType: ...
     @overload
-    def __rand__(self, other: Literal[False], /) -> Literal[False]: ...  # type: ignore[overload-overlap]
+    def __ror__(self, other: Literal[True], /) -> Literal[True]: ...  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
     @overload
-    def __rand__(self, other: object, /) -> NAType: ...
-    @overload
-    def __or__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
-        self, other: Series, /
-    ) -> Series: ...
-    @overload
-    def __or__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
-    @overload
-    def __or__(self, other: Literal[True], /) -> Literal[True]: ...  # type: ignore[overload-overlap]
-    @overload
-    def __or__(self, other: object, /) -> NAType: ...
-    @overload
-    def __ror__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
-        self, other: Series, /
-    ) -> Series: ...
-    @overload
-    def __ror__(self, other: Index, /) -> Index: ...  # type: ignore[overload-overlap]
-    @overload
-    def __ror__(self, other: Literal[True], /) -> Literal[True]: ...  # type: ignore[overload-overlap]
-    @overload
-    def __ror__(self, other: object, /) -> NAType: ...
+    def __ror__(self, other: bool | NAType, /) -> NAType: ...
     @overload
     def __xor__(  # type: ignore[overload-overlap] #  pyright: ignore[reportOverlappingOverload]
         self, other: Series, /
