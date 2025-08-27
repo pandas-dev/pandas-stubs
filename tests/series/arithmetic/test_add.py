@@ -1,10 +1,8 @@
 import numpy as np
 from numpy import typing as npt  # noqa: F401
 import pandas as pd
-import pytest
 from typing_extensions import (
     Never,
-    assert_never,
     assert_type,
 )
 
@@ -148,7 +146,9 @@ def test_add_str_py_str() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(left_i + s, Never)
         assert_type(s + left_i, Never)
-        with pytest.raises(AssertionError):
-            assert_never(left_i.add(s))
-        with pytest.raises(AssertionError):
-            assert_never(left_i.radd(s))
+
+        def _type_checking_enabler_0() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_i.add(s), Never)
+
+        def _type_checking_enabler_1() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_i.radd(s), Never)

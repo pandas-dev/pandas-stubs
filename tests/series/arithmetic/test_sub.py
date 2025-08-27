@@ -7,10 +7,8 @@ from typing import NoReturn
 import numpy as np
 from numpy import typing as npt  # noqa: F401
 import pandas as pd
-import pytest
 from typing_extensions import (
     Never,
-    assert_never,
     assert_type,
 )
 
@@ -181,6 +179,7 @@ def test_sub_ts_numpy_datetime() -> None:
     a = np.array([s + np.timedelta64(m, "m") for m in range(3)], np.datetime64)
 
     if TYPE_CHECKING_INVALID_USAGE:
+        # We would like to have _1, _3, _5 and _7 below as invalid, but numpy.ndarray.__rsub__ overrides our efforts
         _0 = left_ts - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         # _1 = left_ts - a
         _2 = left_td - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
@@ -221,20 +220,24 @@ def test_sub_ts_pd_datetime() -> None:
         assert_type(a - left_td, Never)
 
         left_ts.sub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        with pytest.raises(AssertionError):
-            assert_never(left_ts.sub(a))
+
+        def _type_checking_enabler_0() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_ts.sub(a), Never)
 
         left_td.sub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        with pytest.raises(AssertionError):
-            assert_never(left_td.sub(a))
+
+        def _type_checking_enabler_1() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_td.sub(a), Never)
 
         left_ts.rsub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        with pytest.raises(AssertionError):
-            assert_never(left_ts.rsub(a))
+
+        def _type_checking_enabler_2() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_ts.rsub(a), Never)
 
         left_td.rsub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        with pytest.raises(AssertionError):
-            assert_never(left_td.rsub(a))
+
+        def _type_checking_enabler_3() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_td.rsub(a), Never)
 
 
 def test_sub_str_py_str() -> None:
