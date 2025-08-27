@@ -845,6 +845,8 @@ MaskType: TypeAlias = Series[bool] | np_ndarray_bool | list[bool]
 
 # Scratch types for generics
 
+T_INT = TypeVar("T_INT", bound=int)
+T_COMPLEX = TypeVar("T_COMPLEX", bound=complex)
 SeriesDType: TypeAlias = (
     str
     | bytes
