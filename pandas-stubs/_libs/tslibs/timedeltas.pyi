@@ -311,7 +311,7 @@ class Timedelta(timedelta):
     @overload
     def __eq__(self, other: TimedeltaSeries | Series[pd.Timedelta]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(self, other: TimedeltaIndex) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
+    def __eq__(self, other: Index) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(  # type: ignore[overload-overlap]
         self, other: np_ndarray[ShapeT, np.timedelta64]
@@ -324,7 +324,7 @@ class Timedelta(timedelta):
     @overload
     def __ne__(self, other: TimedeltaSeries | Series[pd.Timedelta]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(self, other: TimedeltaIndex) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
+    def __ne__(self, other: Index) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(  # type: ignore[overload-overlap]
         self, other: np_ndarray[ShapeT, np.timedelta64]
