@@ -139,7 +139,7 @@ def test_add_i_pd_series() -> None:
     check(assert_type(left_i.radd(c), pd.Series), pd.Series)
 
 
-def test_add_str_py_str() -> None:
+def test_add_i_py_str() -> None:
     """Test pd.Series[Any] (int) + Python str"""
     s = "abc"
 
