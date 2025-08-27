@@ -15,7 +15,6 @@ from typing import (
     ClassVar,
     Generic,
     Literal,
-    TypeAlias,
     final,
     overload,
     type_check_only,
@@ -50,6 +49,7 @@ from pandas._typing import (
     ArrayLike,
     AxesData,
     DropKeep,
+    Dtype,
     DtypeArg,
     DTypeLike,
     DtypeObj,
@@ -89,7 +89,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> Index[int]: ...
     @overload
     def __new__(
@@ -100,7 +99,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> Index[int]: ...
     @overload
     def __new__(
@@ -111,7 +109,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> Index[float]: ...
     @overload
     def __new__(
@@ -122,7 +119,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> Index[float]: ...
     @overload
     def __new__(
@@ -137,7 +133,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> Index[complex]: ...
     @overload
     def __new__(
@@ -148,7 +143,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> Index[complex]: ...
     # special overloads with dedicated Index-subclasses
     @overload
@@ -160,7 +154,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> DatetimeIndex: ...
     @overload
     def __new__(
@@ -171,7 +164,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> DatetimeIndex: ...
     @overload
     def __new__(
@@ -182,7 +174,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> PeriodIndex: ...
     @overload
     def __new__(
@@ -193,7 +184,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> PeriodIndex: ...
     @overload
     def __new__(
@@ -204,7 +194,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> TimedeltaIndex: ...
     @overload
     def __new__(
@@ -215,7 +204,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> TimedeltaIndex: ...
     @overload
     def __new__(
@@ -226,7 +214,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> IntervalIndex[Interval[_OrderableT]]: ...
     @overload
     def __new__(
@@ -237,7 +224,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> IntervalIndex[Interval[Any]]: ...
     # generic overloads
     @overload
@@ -249,7 +235,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> Self: ...
     @overload
     def __new__(
@@ -260,7 +245,6 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> Self: ...
     # fallback overload
     @overload
@@ -268,11 +252,10 @@ class Index(IndexOpsMixin[S1]):
         cls,
         data: AxesData,
         *,
-        dtype=...,
+        dtype: Dtype = ...,
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-        **kwargs,
     ) -> Self: ...
     @property
     def str(
@@ -476,6 +459,8 @@ class Index(IndexOpsMixin[S1]):
     def __lt__(self, other: Self | S1) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __gt__(self, other: Self | S1) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     # overwrite inherited methods from OpsMixin
+    def __sub__(self, other: Any) -> Self: ...
+    def __rsub__(self, other: Any) -> Self: ...
     @overload
     def __mul__(
         self: Index[int] | Index[float], other: timedelta
@@ -523,8 +508,6 @@ class Index(IndexOpsMixin[S1]):
         ),
     ) -> Self: ...
     def infer_objects(self, copy: bool = True) -> Self: ...
-
-UnknownIndex: TypeAlias = Index[Any]
 
 @type_check_only
 class _IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):

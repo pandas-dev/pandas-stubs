@@ -1912,7 +1912,7 @@ def test_timestamp_sub_series() -> None:
     ts1 = pd.to_datetime(pd.Series(["2022-03-05", "2022-03-06"]))
     one_ts = ts1.iloc[0]
     check(assert_type(ts1.iloc[0], pd.Timestamp), pd.Timestamp)
-    check(assert_type(one_ts - ts1, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(assert_type(one_ts - ts1, "TimedeltaSeries"), pd.Series, pd.Timedelta)
 
 
 def test_creating_date_range() -> None:

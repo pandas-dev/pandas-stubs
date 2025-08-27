@@ -68,7 +68,7 @@ def test_sub_pd_scalar() -> None:
     check(assert_type(left - s, "TimedeltaSeries"), pd.Series, pd.Timedelta)
     check(assert_type(left - d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
-    check(assert_type(s - left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(assert_type(s - left, "TimedeltaSeries"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         _ = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
@@ -134,9 +134,9 @@ def test_sub_pd_series() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         _ = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-    check(assert_type(left.sub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left.sub(s), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left - d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
-    check(assert_type(left.rsub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left.rsub(s), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         left.rsub(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]

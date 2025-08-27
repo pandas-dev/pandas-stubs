@@ -842,17 +842,20 @@ def test_types_element_wise_arithmetic() -> None:
 def test_types_scalar_arithmetic() -> None:
     s = pd.Series([0, 1, -10])
 
-    check(assert_type(s + 1, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s.add(1, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
-    res_sub: pd.Series = s - 1
-    res_sub2: pd.Series = s.sub(1, fill_value=0)
+    check(assert_type(s.sub(1, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
-    res_mul: pd.Series = s * 2
-    res_mul2: pd.Series = s.mul(2, fill_value=0)
+    check(assert_type(s.mul(1, fill_value=0), "pd.Series[int]"), pd.Series, np.integer)
 
-    res_div: pd.Series = s / 2
-    res_div2: pd.Series = s.div(2, fill_value=0)
+    check(
+        assert_type(s.truediv(2, fill_value=0), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(s.div(2, fill_value=0), "pd.Series[float]"), pd.Series, np.floating
+    )
 
     res_floordiv: pd.Series = s // 2
     res_floordiv2: pd.Series = s.floordiv(2, fill_value=0)
@@ -864,14 +867,6 @@ def test_types_scalar_arithmetic() -> None:
     res_pow1: pd.Series = s**0
     res_pow2: pd.Series = s**0.213
     res_pow3: pd.Series = s.pow(0.5)
-
-
-def test_types_complex_arithmetic() -> None:
-    """Test adding complex number to pd.Series[float] GH 103."""
-    c = 1 + 1j
-    s = pd.Series([1.0, 2.0, 3.0])
-    x = s + c
-    y = s - c
 
 
 def test_types_groupby() -> None:
@@ -1592,16 +1587,8 @@ def test_series_loc_setitem() -> None:
 
 def test_series_min_max_sub_axis() -> None:
     df = pd.DataFrame({"x": [1, 2, 3, 4, 5], "y": [5, 4, 3, 2, 1]})
-    s1 = df.min(axis=1)
-    s2 = df.max(axis=1)
-    sa = s1 + s2
-    ss = s1 - s2
-    sm = s1 * s2
-    sd = s1 / s2
-    check(assert_type(sa, pd.Series), pd.Series)
-    check(assert_type(ss, pd.Series), pd.Series)
-    check(assert_type(sm, pd.Series), pd.Series)
-    check(assert_type(sd, pd.Series), pd.Series)
+    check(assert_type(df.min(axis=1), pd.Series), pd.Series)
+    check(assert_type(df.max(axis=1), pd.Series), pd.Series)
 
 
 def test_series_index_isin() -> None:

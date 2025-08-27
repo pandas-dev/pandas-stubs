@@ -4440,7 +4440,9 @@ def test_frame_setitem_na() -> None:
     df.loc[ind, :] = pd.NA
     df.iloc[[0, 2], :] = pd.NA
 
-    df["x"] = df["y"] + pd.Timedelta(days=3)
+    # reveal_type(df["y"]) gives Series[Any], so we have to cast to tell the
+    # type checker what kind of type it is when adding to a Timedelta
+    df["x"] = cast("pd.Series[pd.Timestamp]", df["y"]) + pd.Timedelta(days=3)
     df.loc[ind, :] = pd.NaT
     df.iloc[[0, 2], :] = pd.NaT
 
@@ -4685,6 +4687,128 @@ def test_unstack() -> None:
     check(
         assert_type(
             df_flt.unstack(1, fill_value=0.0, sort=False), pd.DataFrame | pd.Series
+        ),
+        pd.DataFrame,
+    )
+
+
+def test_from_records() -> None:
+
+    # test with np.ndarray
+    arr = np.array([[1, "a"], [2, "b"]], dtype=object).reshape(2, 2)
+    check(assert_type(pd.DataFrame.from_records(arr), pd.DataFrame), pd.DataFrame)
+
+    # testing with list of tuples
+    data_tuples = [(1, "a"), (2, "b"), (3, "c")]
+    check(
+        assert_type(
+            pd.DataFrame.from_records(data_tuples, columns=["id", "name"]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    # testing with pd.Index as columns parameter
+    check(
+        assert_type(
+            pd.DataFrame.from_records(data_tuples, columns=pd.Index(["id", "name"])),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    # Testing with list of tuples (instead of structured array for type compatibility)
+    data_array_tuples = [(1, "a"), (2, "b")]
+    check(
+        assert_type(
+            pd.DataFrame.from_records(data_array_tuples, columns=["id", "name"]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    # testing with list of dictionaries
+    data_dict_list = [{"id": 1, "name": "a"}, {"id": 2, "name": "b"}]
+    check(
+        assert_type(
+            pd.DataFrame.from_records(data_dict_list, columns=["id", "name"]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    # test with single dictionary
+    data_single_dict = {"id": 1, "name": "a"}
+    check(
+        assert_type(
+            pd.DataFrame.from_records(data_single_dict, index=["0"]), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
+    # testing with mapping of sequences
+    data_mapping_dict = {"id": [1, 2], "name": ["a", "b"]}
+    check(
+        assert_type(pd.DataFrame.from_records(data_mapping_dict), pd.DataFrame),
+        pd.DataFrame,
+    )
+
+    # Testing with index parameter as string
+    check(
+        assert_type(
+            pd.DataFrame.from_records(data_tuples, columns=["id", "name"], index="id"),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    # Testing with index parameter as sequence
+    check(
+        assert_type(
+            pd.DataFrame.from_records(
+                data_tuples, columns=["id", "name"], index=["id"]
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    # Testing  with exclude parameter
+    check(
+        assert_type(
+            pd.DataFrame.from_records(
+                [(1, "a", "extra"), (2, "b", "extra")],
+                columns=["id", "name", "extra"],
+                exclude=["extra"],
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    # Testing with all parameters
+    check(
+        assert_type(
+            pd.DataFrame.from_records(
+                data_tuples,
+                index=None,
+                columns=["id", "name"],
+                exclude=None,
+                coerce_float=True,
+                nrows=2,
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    # Testing parameter order
+    check(
+        assert_type(
+            pd.DataFrame.from_records(
+                data_tuples, columns=["id", "name"], exclude=None
+            ),
+            pd.DataFrame,
         ),
         pd.DataFrame,
     )

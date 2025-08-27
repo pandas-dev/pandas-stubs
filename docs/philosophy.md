@@ -63,6 +63,43 @@ The type `Series[Timestamp]` is the result of creating a series from `pd.to_date
 the type `TimedeltaSeries` is the result of subtracting two `Series[Timestamp]` as well as
 the result of `pd.to_timedelta()`.
 
+### Generic Series have restricted arithmetic
+
+Consider the following Series from a DataFrame:
+
+```python
+import pandas as pd
+from typing_extensions import reveal_type
+from typing import TYPE_CHECKING, cast
+
+if TYPE_CHECKING:
+    from pandas.core.series import TimestampSeries  # noqa: F401
+
+
+frame = pd.DataFrame({"timestamp": [pd.Timestamp(2025, 8, 26)], "tag": ["one"], "value": [1.0]})
+values = frame["value"]
+reveal_type(values)  # type checker: Series[Any], runtime: Series
+new_values = values + 2
+
+timestamps = frame["timestamp"]
+reveal_type(timestamps)  # type checker: Series[Any], runtime: Series
+reveal_type(timestamps - pd.Timestamp(2025, 7, 12))  # type checker: Unknown and error, runtime: Series
+reveal_type(cast("TimestampSeries", timestamps) - pd.Timestamp(2025, 7, 12))  # type checker: TimedeltaSeries, runtime: Series
+
+tags = frame["tag"]
+reveal_type("suffix" + tags)  # type checker: Never, runtime: Series
+```
+
+Since they are taken from a DataFrame, all three of them, `values`, `timestamps`
+and `tags`, are recognized by type checkers as `Series[Any]`.  The code snippet
+runs fine at runtime. In the stub for type checking, however, we restrict
+generic Series to perform arithmetic operations only with numeric types, and
+give `Series[Any]` for the results. For `Timedelta`, `Timestamp`, `str`, etc.,
+arithmetic is restricted to `Series[Any]` and the result is either undefined, 
+showing `Unknown` and errors, or `Never`. Users are encouraged to cast such
+generic Series to ones with concrete types, so that type checkers can provide
+meaningful results.
+
 ### Interval is Generic
 
 A pandas `Interval` can be a time interval, an interval of integers, or an interval of

@@ -19,9 +19,9 @@ from typing import (
 import numpy as np
 from pandas import (
     DatetimeIndex,
-    Index,
     TimedeltaIndex,
 )
+from pandas.core.indexes.base import Index
 from pandas.core.series import (
     Series,
     TimedeltaSeries,
@@ -245,10 +245,6 @@ class Timestamp(datetime, SupportsIndex):
     def __sub__(self, other: TimedeltaIndex) -> DatetimeIndex: ...
     @overload
     def __sub__(self, other: TimedeltaSeries) -> Series[Timestamp]: ...
-    @overload
-    def __sub__(self, other: Series[Never]) -> Series: ...
-    @overload
-    def __sub__(self, other: Series[Timestamp]) -> Series[Timedelta]: ...
     @overload
     def __sub__(
         self, other: np_ndarray[ShapeT, np.timedelta64]
