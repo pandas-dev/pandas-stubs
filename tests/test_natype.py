@@ -97,6 +97,8 @@ def test_arithmetic() -> None:
     # )
     # check(
     #     assert_type(
+    #         # pyright bug: https://github.com/microsoft/pyright/issues/10849, will
+    #         # require `pyright: ignore[reportAssertTypeFailure]` until fixed.
     #         divmod(na, idx_int),
     #         tuple[pd.Index, pd.Index],
     #     ),
