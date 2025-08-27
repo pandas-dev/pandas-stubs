@@ -21,6 +21,7 @@ from pandas import (
     DatetimeIndex,
     TimedeltaIndex,
 )
+from pandas.core.indexes.base import Index
 from pandas.core.series import (
     Series,
     TimedeltaSeries,
@@ -256,7 +257,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __eq__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(self, other: DatetimeIndex) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
+    def __eq__(self, other: Index) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: np_ndarray[ShapeT, np.datetime64]) -> np_ndarray[ShapeT, np.bool]: ...  # type: ignore[overload-overlap]
     @overload
@@ -266,7 +267,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __ne__(self, other: TimestampSeries) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(self, other: DatetimeIndex) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
+    def __ne__(self, other: Index) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: np_ndarray[ShapeT, np.datetime64]) -> np_ndarray[ShapeT, np.bool]: ...  # type: ignore[overload-overlap]
     @overload
