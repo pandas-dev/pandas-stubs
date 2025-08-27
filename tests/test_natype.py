@@ -5,7 +5,6 @@ from typing import (
 import pandas as pd
 from pandas.api.typing import NAType
 from pandas.core.arrays.boolean import BooleanArray
-import pytest
 from typing_extensions import assert_type
 
 from tests import check
@@ -24,8 +23,8 @@ def test_arithmetic() -> None:
 
     # __radd__
     check(assert_type(s_int + na, pd.Series), pd.Series)
-    # https://github.com/pandas-dev/pandas-stubs/issues/1347
-    check(assert_type(idx_int + na, pd.Index), pd.Index)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
+    # requires orthogonal fix: https://github.com/pandas-dev/pandas-stubs/issues/1347
+    # check(assert_type(idx_int + na, pd.Index), pd.Index)
     check(assert_type(1 + na, NAType), NAType)
 
     # __sub__
@@ -35,8 +34,8 @@ def test_arithmetic() -> None:
 
     # __rsub__
     check(assert_type(s_int - na, pd.Series), pd.Series)
-    # https://github.com/pandas-dev/pandas-stubs/issues/1347
-    check(assert_type(idx_int - na, pd.Index), pd.Index)  # type: ignore[assert-type]# pyright: ignore[reportAssertTypeFailure]
+    # requires orthogonal fix: https://github.com/pandas-dev/pandas-stubs/issues/1347
+    # check(assert_type(idx_int - na, pd.Index), pd.Index)
     check(assert_type(1 - na, NAType), NAType)
 
     # __mul__
@@ -46,8 +45,8 @@ def test_arithmetic() -> None:
 
     # __rmul__
     check(assert_type(s_int * na, pd.Series), pd.Series)
-    # https://github.com/pandas-dev/pandas-stubs/issues/1347
-    check(assert_type(idx_int * na, pd.Index), pd.Index)  # type: ignore[assert-type]# pyright: ignore[reportAssertTypeFailure]
+    # requires orthogonal fix: https://github.com/pandas-dev/pandas-stubs/issues/1347
+    # check(assert_type(idx_int * na, pd.Index), pd.Index)
     check(assert_type(1 * na, NAType), NAType)
 
     # __matmul__
@@ -83,43 +82,39 @@ def test_arithmetic() -> None:
 
     # __rmod__
     check(assert_type(s_int % na, pd.Series), pd.Series)
-    # https://github.com/pandas-dev/pandas-stubs/issues/1347
-    check(assert_type(idx_int % na, pd.Index), pd.Index)  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
+    # requires orthogonal fix: https://github.com/pandas-dev/pandas-stubs/issues/1347
+    # check(assert_type(idx_int % na, pd.Index), pd.Index)
     check(assert_type(1 % na, NAType), NAType)
 
     # __divmod__
-    with pytest.raises(RuntimeError):
-        # bug upstream: https://github.com/pandas-dev/pandas/issues/62196
-        check(
-            assert_type(
-                divmod(na, s_int),  # pyright: ignore[reportAssertTypeFailure]
-                tuple[pd.Series, pd.Series],
-            ),
-            tuple,
-        )
-    with pytest.raises(RuntimeError):
-        check(
-            assert_type(
-                divmod(na, idx_int),  # pyright: ignore[reportAssertTypeFailure]
-                tuple[pd.Index, pd.Index],
-            ),
-            tuple,
-        )
+    # bug upstream: https://github.com/pandas-dev/pandas/issues/62196
+    # check(
+    #     assert_type(
+    #         divmod(na, s_int),
+    #         tuple[pd.Series, pd.Series],
+    #     ),
+    #     tuple,
+    # )
+    # check(
+    #     assert_type(
+    #         divmod(na, idx_int),
+    #         tuple[pd.Index, pd.Index],
+    #     ),
+    #     tuple,
+    # )
     check(assert_type(divmod(na, 1), tuple[NAType, NAType]), tuple)
 
     # __rdivmod__
-    with pytest.raises(RuntimeError):
-        # bug upstream: https://github.com/pandas-dev/pandas/issues/62196
-        check(
-            assert_type(divmod(s_int, na), tuple[pd.Series, pd.Series]),  # type: ignore[assert-type] # pyright: ignore[reportAssertTypeFailure]
-            tuple,
-        )
-    with pytest.raises(RuntimeError):
-        # https://github.com/pandas-dev/pandas-stubs/issues/1347
-        check(
-            assert_type(divmod(idx_int, na), tuple[pd.Index, pd.Index]),  # type: ignore[assert-type]  # pyright: ignore[reportAssertTypeFailure]
-            tuple,
-        )
+    # bug upstream: https://github.com/pandas-dev/pandas/issues/62196
+    # check(
+    #     assert_type(divmod(s_int, na), tuple[pd.Series, pd.Series]),
+    #     tuple,
+    # )
+    # https://github.com/pandas-dev/pandas-stubs/issues/1347
+    # check(
+    #     assert_type(divmod(idx_int, na), tuple[pd.Index, pd.Index]),
+    #     tuple,
+    # )
     check(assert_type(divmod(1, na), tuple[NAType, NAType]), tuple)
 
     # __eq__
@@ -159,8 +154,8 @@ def test_arithmetic() -> None:
 
     # __rpow__
     check(assert_type(s_int**na, pd.Series), pd.Series)
-    # https://github.com/pandas-dev/pandas-stubs/issues/1347
-    check(assert_type(idx_int**na, pd.Index), pd.Index)  # type: ignore[assert-type]  # pyright: ignore[reportAssertTypeFailure]
+    # requires orthogonal fix: https://github.com/pandas-dev/pandas-stubs/issues/1347
+    # check(assert_type(idx_int**na, pd.Index), pd.Index)
     check(assert_type(2**na, NAType), NAType)
 
     # __and__
