@@ -1334,6 +1334,23 @@ def test_to_datetime_series() -> None:
     check(assert_type(pd.to_datetime(d), "TimestampSeries"), pd.Series)
     check(assert_type(pd.to_datetime(d_ex), "TimestampSeries"), pd.Series)
 
+    # GH1352
+    ts = pd.date_range("2023-10-01", "2024-05-01", freq="1h")
+    check(
+        assert_type(
+            pd.to_datetime(
+                {
+                    "year": ts.year,
+                    "month": ts.month,
+                    "day": 1,
+                }
+            ),
+            "TimestampSeries",
+        ),
+        pd.Series,
+        pd.Timestamp,
+    )
+
 
 def test_to_datetime_array() -> None:
     check(assert_type(pd.to_datetime([1, 2, 3]), pd.DatetimeIndex), pd.DatetimeIndex)
