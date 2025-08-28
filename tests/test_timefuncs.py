@@ -1108,10 +1108,10 @@ def test_index_types_to_numpy() -> None:
 
 def test_to_timedelta_units() -> None:
     check(assert_type(pd.to_timedelta(1, "W"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'w' is deprecated", lower="2.3.99"):
+    with pytest_warns_bounded(Pandas4Warning, "'w' is deprecated", lower="2.3.99"):
         check(assert_type(pd.to_timedelta(1, "w"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "D"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'d' is deprecated", lower="2.3.99"):
+    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", lower="2.3.99"):
         check(assert_type(pd.to_timedelta(1, "d"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "days"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.to_timedelta(1, "day"), pd.Timedelta), pd.Timedelta)
@@ -1871,7 +1871,7 @@ def test_timestamp_to_list_add() -> None:
     tslist = list(pd.to_datetime(["2022-01-01", "2022-01-02"]))
     check(assert_type(tslist, list[pd.Timestamp]), list, pd.Timestamp)
     sseries = pd.Series(tslist)
-    with pytest_warns_bounded(FutureWarning, "'d' is deprecated", lower="2.3.99"):
+    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", lower="2.3.99"):
         sseries + pd.Timedelta(1, "d")
 
     check(
