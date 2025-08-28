@@ -127,3 +127,33 @@ def test_add_pd_series() -> None:
     check(
         assert_type(left.radd(c), "pd.Series[complex]"), pd.Series, np.complexfloating
     )
+
+
+def test_add_pd_index() -> None:
+    """Test pd.Series[int] + pandas index"""
+    b = pd.Index([True, False, True])
+    i = pd.Index([2, 3, 5])
+    f = pd.Index([1.0, 2.0, 3.0])
+    c = pd.Index([1.1j, 2.2j, 4.1j])
+
+    check(assert_type(left + b, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left + i, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left + f, "pd.Series[float]"), pd.Series, np.floating)
+    check(assert_type(left + c, "pd.Series[complex]"), pd.Series, np.complexfloating)
+
+    check(assert_type(b + left, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(i + left, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(f + left, "pd.Series[float]"), pd.Series, np.floating)
+    check(assert_type(c + left, "pd.Series[complex]"), pd.Series, np.complexfloating)
+
+    check(assert_type(left.add(b), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.add(i), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.add(f), "pd.Series[float]"), pd.Series, np.floating)
+    check(assert_type(left.add(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
+
+    check(assert_type(left.radd(b), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.radd(i), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.radd(f), "pd.Series[float]"), pd.Series, np.floating)
+    check(
+        assert_type(left.radd(c), "pd.Series[complex]"), pd.Series, np.complexfloating
+    )

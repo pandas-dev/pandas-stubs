@@ -64,7 +64,7 @@ def test_add_numpy_array() -> None:
     )
 
 
-def test_add_pd_series() -> None:
+def test_add_pd_index() -> None:
     """Test pd.Index[int] + pandas index"""
     b = pd.Index([True, False, True])
     i = pd.Index([2, 3, 5])
