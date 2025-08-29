@@ -6,6 +6,7 @@ from typing import (
     Any,
     Generic,
     Literal,
+    TypeAlias,
     final,
     overload,
 )
@@ -22,6 +23,7 @@ from typing_extensions import Self
 
 from pandas._typing import (
     S1,
+    ArrayLike,
     AxisIndex,
     DropKeep,
     DTypeLike,
@@ -29,10 +31,13 @@ from pandas._typing import (
     GenericT_co,
     NDFrameT,
     Scalar,
+    SequenceNotStr,
     SupportsDType,
     np_1darray,
 )
 from pandas.util._decorators import cache_readonly
+
+_ListLike: TypeAlias = ArrayLike | dict[str, np.ndarray] | SequenceNotStr[S1]
 
 class NoNewAttributesMixin:
     def __setattr__(self, key: str, value: Any) -> None: ...
@@ -51,7 +56,7 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
     @property
     def T(self) -> Self: ...
     @property
-    def shape(self) -> tuple: ...
+    def shape(self) -> tuple[int, ...]: ...
     @property
     def ndim(self) -> int: ...
     def item(self) -> S1: ...
@@ -67,7 +72,7 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
         dtype: None = None,
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray[GenericT_co]: ...
     @overload
     def to_numpy(
@@ -75,7 +80,7 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
         dtype: np.dtype[GenericT] | SupportsDType[GenericT] | type[GenericT],
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray[GenericT]: ...
     @overload
     def to_numpy(
@@ -83,25 +88,29 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
         dtype: DTypeLike,
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray: ...
     @property
     def empty(self) -> bool: ...
-    def max(self, axis=..., skipna: bool = ..., **kwargs): ...
-    def min(self, axis=..., skipna: bool = ..., **kwargs): ...
+    def max(
+        self, axis: AxisIndex | None = ..., skipna: bool = ..., **kwargs: Any
+    ) -> S1: ...
+    def min(
+        self, axis: AxisIndex | None = ..., skipna: bool = ..., **kwargs: Any
+    ) -> S1: ...
     def argmax(
         self,
         axis: AxisIndex | None = ...,
         skipna: bool = True,
-        *args,
-        **kwargs,
+        *args: Any,
+        **kwargs: Any,
     ) -> np.int64: ...
     def argmin(
         self,
         axis: AxisIndex | None = ...,
         skipna: bool = True,
-        *args,
-        **kwargs,
+        *args: Any,
+        **kwargs: Any,
     ) -> np.int64: ...
     def tolist(self) -> list[S1]: ...
     def to_list(self) -> list[S1]: ...
@@ -114,7 +123,7 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
         normalize: Literal[False] = ...,
         sort: bool = ...,
         ascending: bool = ...,
-        bins=...,
+        bins: int | None = ...,
         dropna: bool = ...,
     ) -> Series[int]: ...
     @overload
@@ -123,7 +132,7 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
         normalize: Literal[True],
         sort: bool = ...,
         ascending: bool = ...,
-        bins=...,
+        bins: int | None = ...,
         dropna: bool = ...,
     ) -> Series[float]: ...
     def nunique(self, dropna: bool = True) -> int: ...
@@ -136,7 +145,18 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
     def factorize(
         self, sort: bool = False, use_na_sentinel: bool = True
     ) -> tuple[np_1darray, np_1darray | Index | Categorical]: ...
+    @overload
     def searchsorted(
-        self, value, side: Literal["left", "right"] = ..., sorter=...
-    ) -> int | list[int]: ...
+        self,
+        value: _ListLike,
+        side: Literal["left", "right"] = ...,
+        sorter: _ListLike | None = ...,
+    ) -> np_1darray[np.intp]: ...
+    @overload
+    def searchsorted(
+        self,
+        value: Scalar,
+        side: Literal["left", "right"] = ...,
+        sorter: _ListLike | None = ...,
+    ) -> np.intp: ...
     def drop_duplicates(self, *, keep: DropKeep = ...) -> Self: ...
