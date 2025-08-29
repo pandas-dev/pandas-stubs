@@ -1342,6 +1342,20 @@ def test_to_datetime_series() -> None:
                 {
                     "year": ts.year,
                     "month": ts.month,
+                    "day": "1",
+                }
+            ),
+            "TimestampSeries",
+        ),
+        pd.Series,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(
+            pd.to_datetime(
+                {
+                    "year": [2024, "2023"],
+                    "month": 4,
                     "day": 1,
                 }
             ),
