@@ -154,7 +154,13 @@ def released_mypy():
 
 
 def ty():
-    cmd = ["ty", "check", "pandas-stubs"]
+    cmd = [
+        "ty",
+        "check",
+        "pandas-stubs",
+        "--python",
+        sys.executable,
+    ]
     subprocess.run(cmd, check=True)
 
 
