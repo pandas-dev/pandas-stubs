@@ -1876,7 +1876,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: int = 0,
     ) -> Series[_str]: ...
-    @overload  # type: ignore[override]
+    @overload
     def __radd__(self: Series[Never], other: _str) -> Never: ...
     @overload
     def __radd__(
