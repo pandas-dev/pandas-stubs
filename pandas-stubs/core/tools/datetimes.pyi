@@ -38,7 +38,9 @@ DatetimeScalar: TypeAlias = Scalar | datetime | np.datetime64 | date
 
 DatetimeScalarOrArrayConvertible: TypeAlias = DatetimeScalar | ArrayConvertible
 
-DatetimeDictArg: TypeAlias = list[Scalar] | tuple[Scalar, ...] | AnyArrayLike
+DatetimeDictArg: TypeAlias = (
+    list[int | str] | tuple[int | str, ...] | AnyArrayLike | int | str
+)
 
 class YearMonthDayDict(TypedDict, total=True):
     year: DatetimeDictArg
