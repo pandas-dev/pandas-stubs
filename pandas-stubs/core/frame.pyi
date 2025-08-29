@@ -1772,10 +1772,19 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     # methods
     @final
     def abs(self) -> Self: ...
+    def __add__(self, other: Any) -> Self: ...
     def add(
         self,
         other: num | ListLike | DataFrame,
         axis: Axis | None = "columns",
+        level: Level | None = None,
+        fill_value: float | None = None,
+    ) -> Self: ...
+    def __radd__(self, other: Any) -> Self: ...
+    def radd(
+        self,
+        other,
+        axis: Axis = "columns",
         level: Level | None = None,
         fill_value: float | None = None,
     ) -> Self: ...
@@ -2222,13 +2231,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         min_count: int = 0,
         **kwargs: Any,
     ) -> Series: ...
-    def radd(
-        self,
-        other,
-        axis: Axis = "columns",
-        level: Level | None = None,
-        fill_value: float | None = None,
-    ) -> Self: ...
     @final
     def rank(
         self,

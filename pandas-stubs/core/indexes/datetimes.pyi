@@ -61,10 +61,10 @@ class DatetimeIndex(
     def __reduce__(self): ...
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
-    @overload
+    @overload  # type: ignore[override]
     def __add__(self, other: TimedeltaSeries) -> TimestampSeries: ...
     @overload
-    def __add__(
+    def __add__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: timedelta | Timedelta | TimedeltaIndex | BaseOffset
     ) -> DatetimeIndex: ...
     @overload

@@ -120,3 +120,25 @@ def test_add_pd_series() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue]
     check(assert_type(left.radd(r0), "pd.Series[str]"), pd.Series, str)
+
+
+def test_add_pd_index() -> None:
+    """Test pd.Series[str] + pandas index"""
+    i = pd.Index([3, 5, 8])
+    r0 = pd.Index(["a", "bc", "def"])
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = left + i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+    check(assert_type(left + r0, "pd.Series[str]"), pd.Series, str)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _1 = i + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+    check(assert_type(r0 + left, "pd.Series[str]"), pd.Series, str)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.add(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.add(r0), "pd.Series[str]"), pd.Series, str)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue]
+    check(assert_type(left.radd(r0), "pd.Series[str]"), pd.Series, str)
