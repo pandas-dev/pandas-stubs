@@ -67,14 +67,14 @@ class DatetimeIndex(
     def __add__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: timedelta | Timedelta | TimedeltaIndex | BaseOffset
     ) -> DatetimeIndex: ...
-    @overload
+    @overload  # type: ignore[override]
     def __sub__(self, other: TimedeltaSeries) -> TimestampSeries: ...
     @overload
     def __sub__(
         self, other: timedelta | Timedelta | TimedeltaIndex | BaseOffset
     ) -> DatetimeIndex: ...
     @overload
-    def __sub__(
+    def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: datetime | Timestamp | DatetimeIndex
     ) -> TimedeltaIndex: ...
     @final
