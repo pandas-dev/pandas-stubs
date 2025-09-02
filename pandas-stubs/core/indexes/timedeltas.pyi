@@ -30,6 +30,7 @@ from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     AxesData,
     TimedeltaConvertibleTypes,
+    np_ndarray_td,
     num,
 )
 
@@ -59,7 +60,7 @@ class TimedeltaIndex(
     ) -> Self: ...
     def __radd__(self, other: dt.datetime | Timestamp | DatetimeIndex) -> DatetimeIndex: ...  # type: ignore[override]
     def __sub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: dt.timedelta | Timedelta | Self
+        self, other: dt.timedelta | np.timedelta64 | np_ndarray_td | Self
     ) -> Self: ...
     def __mul__(self, other: num) -> Self: ...
     @overload  # type: ignore[override]

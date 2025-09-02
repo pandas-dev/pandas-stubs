@@ -37,6 +37,8 @@ from pandas._typing import (
     IntervalClosedType,
     TimeUnit,
     TimeZones,
+    np_ndarray_dt,
+    np_ndarray_td,
 )
 
 from pandas.core.dtypes.dtypes import DatetimeTZDtype
@@ -71,11 +73,12 @@ class DatetimeIndex(
     def __sub__(self, other: TimedeltaSeries) -> TimestampSeries: ...
     @overload
     def __sub__(
-        self, other: timedelta | Timedelta | TimedeltaIndex | BaseOffset
+        self,
+        other: timedelta | np.timedelta64 | np_ndarray_td | TimedeltaIndex | BaseOffset,
     ) -> DatetimeIndex: ...
     @overload
     def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: datetime | Timestamp | DatetimeIndex
+        self, other: datetime | np.datetime64 | np_ndarray_dt | DatetimeIndex
     ) -> TimedeltaIndex: ...
     @final
     def to_series(self, index=..., name: Hashable = ...) -> TimestampSeries: ...

@@ -10,9 +10,8 @@ from tests import (
     check,
 )
 
-# left operands
+# left operand
 left_i = pd.MultiIndex.from_tuples([(1,), (2,), (3,)]).levels[0]
-left_str = pd.MultiIndex.from_tuples([("1",), ("2",), ("3_",)]).levels[0]
 
 
 def test_sub_i_py_scalar() -> None:

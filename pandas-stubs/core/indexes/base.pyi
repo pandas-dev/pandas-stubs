@@ -31,17 +31,18 @@ from pandas import (
     PeriodDtype,
     PeriodIndex,
     Series,
-    Timedelta,
     TimedeltaIndex,
-    Timestamp,
 )
 from pandas.core.arrays import ExtensionArray
-from pandas.core.base import IndexOpsMixin
+from pandas.core.base import (
+    IndexOpsMixin,
+    NumListLike,
+    _ListLike,
+)
 from pandas.core.strings.accessor import StringMethods
 from typing_extensions import (
     Never,
     Self,
-    TypeAlias,
 )
 
 from pandas._libs.interval import _OrderableT
@@ -80,23 +81,10 @@ from pandas._typing import (
     np_ndarray_complex,
     np_ndarray_float,
     np_ndarray_str,
-    np_ndarray_td,
     type_t,
 )
 
 class InvalidIndexError(Exception): ...
-
-_ListLike: TypeAlias = ArrayLike | dict[_str, np.ndarray] | SequenceNotStr[S1]
-_NumListLike: TypeAlias = (
-    ExtensionArray
-    | np_ndarray_bool
-    | np_ndarray_anyint
-    | np_ndarray_float
-    | np_ndarray_complex
-    | dict[_str, np.ndarray]
-    | Sequence[complex]
-    | IndexOpsMixin[complex]
-)
 
 class Index(IndexOpsMixin[S1]):
     __hash__: ClassVar[None]  # type: ignore[assignment]
@@ -642,9 +630,9 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __sub__(self: Index[Never], other: DatetimeIndex) -> Never: ...
     @overload
-    def __sub__(self: Index[Never], other: complex | _NumListLike | Index) -> Index: ...
+    def __sub__(self: Index[Never], other: complex | NumListLike | Index) -> Index: ...
     @overload
-    def __sub__(self, other: Index[Never]) -> Index: ...  # type: ignore[overload-overlap]
+    def __sub__(self, other: Index[Never]) -> Index: ...
     @overload
     def __sub__(
         self: Index[bool],
@@ -709,21 +697,9 @@ class Index(IndexOpsMixin[S1]):
         ),
     ) -> Index[complex]: ...
     @overload
-    def __sub__(
-        self: Index[Timestamp],
-        other: timedelta | np.timedelta64 | np_ndarray_td | TimedeltaIndex,
-    ) -> DatetimeIndex: ...
-    @overload
-    def __sub__(
-        self: Index[Timedelta],
-        other: timedelta | np.timedelta64 | np_ndarray_td | TimedeltaIndex,
-    ) -> TimedeltaIndex: ...
-    @overload
     def __rsub__(self: Index[Never], other: DatetimeIndex) -> Never: ...  # type: ignore[misc]
     @overload
-    def __rsub__(
-        self: Index[Never], other: complex | _NumListLike | Index
-    ) -> Index: ...
+    def __rsub__(self: Index[Never], other: complex | NumListLike | Index) -> Index: ...
     @overload
     def __rsub__(self, other: Index[Never]) -> Index: ...
     @overload
