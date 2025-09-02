@@ -43,16 +43,6 @@ from pandas._typing import (
 from pandas.util._decorators import cache_readonly
 
 _ListLike: TypeAlias = ArrayLike | dict[str, np.ndarray] | SequenceNotStr[S1]
-NumListLike: TypeAlias = (
-    ExtensionArray
-    | np_ndarray_bool
-    | np_ndarray_anyint
-    | np_ndarray_float
-    | np_ndarray_complex
-    | dict[str, np.ndarray]
-    | Sequence[complex]
-    | IndexOpsMixin[complex]
-)
 
 class NoNewAttributesMixin:
     def __setattr__(self, key: str, value: Any) -> None: ...
@@ -175,3 +165,14 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
         sorter: _ListLike | None = ...,
     ) -> np.intp: ...
     def drop_duplicates(self, *, keep: DropKeep = ...) -> Self: ...
+
+NumListLike: TypeAlias = (
+    ExtensionArray
+    | np_ndarray_bool
+    | np_ndarray_anyint
+    | np_ndarray_float
+    | np_ndarray_complex
+    | dict[str, np.ndarray]
+    | Sequence[complex]
+    | IndexOpsMixin[complex]
+)
