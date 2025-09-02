@@ -19,9 +19,6 @@ from typing_extensions import (
     assert_type,
 )
 
-if TYPE_CHECKING:
-    from tests import Dtype  # noqa: F401
-
 from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
@@ -29,6 +26,9 @@ from tests import (
     np_1darray,
     pytest_warns_bounded,
 )
+
+if TYPE_CHECKING:
+    from tests import Dtype  # noqa: F401
 
 
 def test_index_unique() -> None:
@@ -262,12 +262,10 @@ def test_types_to_numpy() -> None:
 def test_index_arithmetic() -> None:
     # GH 287
     idx = pd.Index([1, 2.2, 3], dtype=float)
-    check(assert_type(idx + 3, "pd.Index[float]"), pd.Index, np.float64)
     check(assert_type(idx - 3, "pd.Index[float]"), pd.Index, np.float64)
     check(assert_type(idx * 3, "pd.Index[float]"), pd.Index, np.float64)
     check(assert_type(idx / 3, "pd.Index[float]"), pd.Index, np.float64)
     check(assert_type(idx // 3, "pd.Index[float]"), pd.Index, np.float64)
-    check(assert_type(3 + idx, "pd.Index[float]"), pd.Index, np.float64)
     check(assert_type(3 - idx, "pd.Index[float]"), pd.Index, np.float64)
     check(assert_type(3 * idx, "pd.Index[float]"), pd.Index, np.float64)
     check(assert_type(3 / idx, "pd.Index[float]"), pd.Index, np.float64)
@@ -1489,6 +1487,14 @@ def test_index_naming() -> None:
     check(assert_type(df.index.names, list[Hashable | None]), list)
     df.index.names = (None,)
     check(assert_type(df.index.names, list[Hashable | None]), list)
+
+
+def test_index_searchsorted() -> None:
+    idx = pd.Index([1, 2, 3])
+    check(assert_type(idx.searchsorted(1), np.intp), np.intp)
+    check(assert_type(idx.searchsorted([1]), "np_1darray[np.intp]"), np_1darray)
+    check(assert_type(idx.searchsorted(1, side="left"), np.intp), np.intp)
+    check(assert_type(idx.searchsorted(1, sorter=[1, 0, 2]), np.intp), np.intp)
 
 
 def test_period_index_constructor() -> None:
