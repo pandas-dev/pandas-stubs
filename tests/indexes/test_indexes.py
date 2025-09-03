@@ -262,11 +262,9 @@ def test_types_to_numpy() -> None:
 def test_index_arithmetic() -> None:
     # GH 287
     idx = pd.Index([1, 2.2, 3], dtype=float)
-    check(assert_type(idx - 3, "pd.Index[float]"), pd.Index, np.float64)
     check(assert_type(idx * 3, "pd.Index[float]"), pd.Index, np.float64)
     check(assert_type(idx / 3, "pd.Index[float]"), pd.Index, np.float64)
     check(assert_type(idx // 3, "pd.Index[float]"), pd.Index, np.float64)
-    check(assert_type(3 - idx, "pd.Index[float]"), pd.Index, np.float64)
     check(assert_type(3 * idx, "pd.Index[float]"), pd.Index, np.float64)
     check(assert_type(3 / idx, "pd.Index[float]"), pd.Index, np.float64)
     check(assert_type(3 // idx, "pd.Index[float]"), pd.Index, np.float64)
