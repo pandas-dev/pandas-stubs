@@ -1,6 +1,7 @@
 from collections.abc import (
     Hashable,
     Iterator,
+    Sequence,
 )
 from typing import (
     Any,
@@ -34,6 +35,10 @@ from pandas._typing import (
     SequenceNotStr,
     SupportsDType,
     np_1darray,
+    np_ndarray_anyint,
+    np_ndarray_bool,
+    np_ndarray_complex,
+    np_ndarray_float,
 )
 from pandas.util._decorators import cache_readonly
 
@@ -160,3 +165,14 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
         sorter: _ListLike | None = ...,
     ) -> np.intp: ...
     def drop_duplicates(self, *, keep: DropKeep = ...) -> Self: ...
+
+NumListLike: TypeAlias = (
+    ExtensionArray
+    | np_ndarray_bool
+    | np_ndarray_anyint
+    | np_ndarray_float
+    | np_ndarray_complex
+    | dict[str, np.ndarray]
+    | Sequence[complex]
+    | IndexOpsMixin[complex]
+)

@@ -1788,6 +1788,22 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: Level | None = None,
         fill_value: float | None = None,
     ) -> Self: ...
+    def __sub__(self, other: Any) -> Self: ...
+    def sub(
+        self,
+        other: num | ListLike | DataFrame,
+        axis: Axis | None = ...,
+        level: Level | None = ...,
+        fill_value: float | None = None,
+    ) -> Self: ...
+    def __rsub__(self, other: Any) -> Self: ...
+    def rsub(
+        self,
+        other,
+        axis: Axis = ...,
+        level: Level | None = ...,
+        fill_value: float | None = None,
+    ) -> Self: ...
     @final
     def add_prefix(self, prefix: _str, axis: Axis | None = None) -> Self: ...
     @final
@@ -2353,13 +2369,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: Level | None = ...,
         fill_value: float | None = None,
     ) -> Self: ...
-    def rsub(
-        self,
-        other,
-        axis: Axis = ...,
-        level: Level | None = ...,
-        fill_value: float | None = None,
-    ) -> Self: ...
     def rtruediv(
         self,
         other,
@@ -2405,15 +2414,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         numeric_only: _bool = False,
         **kwargs: Any,
     ) -> Series: ...
-    def __sub__(self, other: Any) -> Self: ...
-    def __rsub__(self, other: Any) -> Self: ...
-    def sub(
-        self,
-        other: num | ListLike | DataFrame,
-        axis: Axis | None = ...,
-        level: Level | None = ...,
-        fill_value: float | None = None,
-    ) -> Self: ...
     def sum(
         self,
         axis: Axis = 0,
