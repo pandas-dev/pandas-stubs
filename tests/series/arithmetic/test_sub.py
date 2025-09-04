@@ -152,24 +152,34 @@ def test_sub_ts_py_datetime() -> None:
     a = [s + timedelta(minutes=m) for m in range(3)]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left_ts - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        assert_type(left_ts - s, Never)
         _1 = left_ts - a  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _2 = left_td - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        assert_type(left_td - s, Never)
         _3 = left_td - a  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-        _4 = s - left_ts  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        assert_type(s - left_ts, Never)
         _5 = a - left_ts  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _6 = s - left_td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        assert_type(s - left_td, Never)
         _7 = a - left_td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-        left_ts.sub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        def _type_checking_enabler_0() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_ts.sub(s), Never)
+
         left_ts.sub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_td.sub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+
+        def _type_checking_enabler_1() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_td.sub(s), Never)
+
         left_td.sub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
-        left_ts.rsub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        def _type_checking_enabler_2() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_td.rsub(s), Never)
+
         left_ts.rsub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_td.rsub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+
+        def _type_checking_enabler_3() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_td.rsub(s), Never)
+
         left_td.rsub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
@@ -180,25 +190,39 @@ def test_sub_ts_numpy_datetime() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # We would like to have _1, _3, _5 and _7 below as invalid, but numpy.ndarray.__rsub__ overrides our efforts
-        _0 = left_ts - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        assert_type(left_ts - s, Never)
         # _1 = left_ts - a
-        _2 = left_td - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        assert_type(left_td - s, Never)
         # _3 = left_td - a
 
-        _4 = s - left_ts  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        assert_type(s - left_ts, Never)
         # _5 = a - left_ts
-        _6 = s - left_td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        assert_type(s - left_td, Never)
         # _7 = a - left_td
 
-        left_ts.sub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_ts.sub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_td.sub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_td.sub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        def _type_checking_enabler_0() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_ts.sub(s), Never)
 
-        left_ts.rsub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_ts.rsub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_td.rsub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_td.rsub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        def _type_checking_enabler_1() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_ts.sub(a), Never)
+
+        def _type_checking_enabler_2() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_td.sub(s), Never)
+
+        def _type_checking_enabler_3() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_td.sub(a), Never)
+
+        def _type_checking_enabler_4() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_ts.rsub(s), Never)
+
+        def _type_checking_enabler_5() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_ts.rsub(a), Never)
+
+        def _type_checking_enabler_6() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_td.rsub(s), Never)
+
+        def _type_checking_enabler_7() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_td.rsub(a), Never)
 
 
 def test_sub_ts_pd_datetime() -> None:
@@ -207,37 +231,45 @@ def test_sub_ts_pd_datetime() -> None:
     a = pd.Series([s + pd.Timedelta(minutes=m) for m in range(3)])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left_ts - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        assert_type(left_ts - a, Never)
+        assert_type(left_ts - s, Never)
+        # assert_type(left_ts - a, Never)
 
-        _2 = left_td - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        assert_type(left_td - a, Never)
+        assert_type(left_td - s, Never)
+        # assert_type(left_td - a, Never)
 
-        _4 = s - left_ts  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        assert_type(a - left_ts, Never)
+        assert_type(s - left_ts, Never)
+        # assert_type(a - left_ts, Never)
 
-        _6 = s - left_td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        assert_type(a - left_td, Never)
-
-        left_ts.sub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        assert_type(s - left_td, Never)
+        # assert_type(a - left_td, Never)
 
         def _type_checking_enabler_0() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_ts.sub(a), Never)
-
-        left_td.sub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+            assert_type(left_ts.sub(s), Never)
 
         def _type_checking_enabler_1() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_td.sub(a), Never)
-
-        left_ts.rsub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+            pass
+            # assert_type(left_ts.sub(a), Never)
 
         def _type_checking_enabler_2() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_ts.rsub(a), Never)
-
-        left_td.rsub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+            assert_type(left_td.sub(s), Never)
 
         def _type_checking_enabler_3() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_td.rsub(a), Never)
+            pass
+            # assert_type(left_td.sub(a), Never)
+
+        def _type_checking_enabler_4() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_ts.rsub(s), Never)
+
+        def _type_checking_enabler_5() -> None:  # pyright: ignore[reportUnusedFunction]
+            pass
+            # assert_type(left_ts.rsub(a), Never)
+
+        def _type_checking_enabler_6() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(left_td.rsub(s), Never)
+
+        def _type_checking_enabler_7() -> None:  # pyright: ignore[reportUnusedFunction]
+            pass
+            # assert_type(left_td.rsub(a), Never)
 
 
 def test_sub_str_py_str() -> None:

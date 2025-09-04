@@ -75,7 +75,6 @@ if TYPE_CHECKING:
     from pandas.core.series import (
         OffsetSeries,
         TimedeltaSeries,
-        TimestampSeries,
     )
 
     from tests import (
@@ -95,7 +94,6 @@ if TYPE_CHECKING:
 
 else:
     TimedeltaSeries: TypeAlias = pd.Series
-    TimestampSeries: TypeAlias = pd.Series
     OffsetSeries: TypeAlias = pd.Series
 
 if not PD_LTE_23:
@@ -2756,64 +2754,64 @@ def test_astype_timestamp(cast_arg: TimestampDtypeArg, target_type: type) -> Non
 
     if cast_arg in ("date32[pyarrow]", "date64[pyarrow]"):
         x = pd.Series(pd.date_range("2000-01-01", "2000-02-01"))
-        check(x.astype(cast_arg), TimestampSeries, target_type)
+        check(x.astype(cast_arg), pd.Series, target_type)
     else:
-        check(s.astype(cast_arg), TimestampSeries, target_type)
+        check(s.astype(cast_arg), pd.Series, target_type)
 
     if TYPE_CHECKING:
         # numpy datetime64
-        assert_type(s.astype("datetime64[Y]"), TimestampSeries)
-        assert_type(s.astype("datetime64[M]"), TimestampSeries)
-        assert_type(s.astype("datetime64[W]"), TimestampSeries)
-        assert_type(s.astype("datetime64[D]"), TimestampSeries)
-        assert_type(s.astype("datetime64[h]"), TimestampSeries)
-        assert_type(s.astype("datetime64[m]"), TimestampSeries)
-        assert_type(s.astype("datetime64[s]"), TimestampSeries)
-        assert_type(s.astype("datetime64[ms]"), TimestampSeries)
-        assert_type(s.astype("datetime64[us]"), TimestampSeries)
-        assert_type(s.astype("datetime64[μs]"), TimestampSeries)
-        assert_type(s.astype("datetime64[ns]"), TimestampSeries)
-        assert_type(s.astype("datetime64[ps]"), TimestampSeries)
-        assert_type(s.astype("datetime64[fs]"), TimestampSeries)
-        assert_type(s.astype("datetime64[as]"), TimestampSeries)
+        assert_type(s.astype("datetime64[Y]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("datetime64[M]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("datetime64[W]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("datetime64[D]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("datetime64[h]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("datetime64[m]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("datetime64[s]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("datetime64[ms]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("datetime64[us]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("datetime64[μs]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("datetime64[ns]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("datetime64[ps]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("datetime64[fs]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("datetime64[as]"), "pd.Series[pd.Timestamp]")
         # numpy datetime64 type codes
-        assert_type(s.astype("M8[Y]"), TimestampSeries)
-        assert_type(s.astype("M8[M]"), TimestampSeries)
-        assert_type(s.astype("M8[W]"), TimestampSeries)
-        assert_type(s.astype("M8[D]"), TimestampSeries)
-        assert_type(s.astype("M8[h]"), TimestampSeries)
-        assert_type(s.astype("M8[m]"), TimestampSeries)
-        assert_type(s.astype("M8[s]"), TimestampSeries)
-        assert_type(s.astype("M8[ms]"), TimestampSeries)
-        assert_type(s.astype("M8[us]"), TimestampSeries)
-        assert_type(s.astype("M8[μs]"), TimestampSeries)
-        assert_type(s.astype("M8[ns]"), TimestampSeries)
-        assert_type(s.astype("M8[ps]"), TimestampSeries)
-        assert_type(s.astype("M8[fs]"), TimestampSeries)
-        assert_type(s.astype("M8[as]"), TimestampSeries)
+        assert_type(s.astype("M8[Y]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("M8[M]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("M8[W]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("M8[D]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("M8[h]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("M8[m]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("M8[s]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("M8[ms]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("M8[us]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("M8[μs]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("M8[ns]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("M8[ps]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("M8[fs]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("M8[as]"), "pd.Series[pd.Timestamp]")
         # numpy datetime64 type codes
-        assert_type(s.astype("<M8[Y]"), TimestampSeries)
-        assert_type(s.astype("<M8[M]"), TimestampSeries)
-        assert_type(s.astype("<M8[W]"), TimestampSeries)
-        assert_type(s.astype("<M8[D]"), TimestampSeries)
-        assert_type(s.astype("<M8[h]"), TimestampSeries)
-        assert_type(s.astype("<M8[m]"), TimestampSeries)
-        assert_type(s.astype("<M8[s]"), TimestampSeries)
-        assert_type(s.astype("<M8[ms]"), TimestampSeries)
-        assert_type(s.astype("<M8[us]"), TimestampSeries)
-        assert_type(s.astype("<M8[μs]"), TimestampSeries)
-        assert_type(s.astype("<M8[ns]"), TimestampSeries)
-        assert_type(s.astype("<M8[ps]"), TimestampSeries)
-        assert_type(s.astype("<M8[fs]"), TimestampSeries)
-        assert_type(s.astype("<M8[as]"), TimestampSeries)
+        assert_type(s.astype("<M8[Y]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("<M8[M]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("<M8[W]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("<M8[D]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("<M8[h]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("<M8[m]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("<M8[s]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("<M8[ms]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("<M8[us]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("<M8[μs]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("<M8[ns]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("<M8[ps]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("<M8[fs]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("<M8[as]"), "pd.Series[pd.Timestamp]")
         # pyarrow timestamp
-        assert_type(s.astype("timestamp[s][pyarrow]"), TimestampSeries)
-        assert_type(s.astype("timestamp[ms][pyarrow]"), TimestampSeries)
-        assert_type(s.astype("timestamp[us][pyarrow]"), TimestampSeries)
-        assert_type(s.astype("timestamp[ns][pyarrow]"), TimestampSeries)
+        assert_type(s.astype("timestamp[s][pyarrow]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("timestamp[ms][pyarrow]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("timestamp[us][pyarrow]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("timestamp[ns][pyarrow]"), "pd.Series[pd.Timestamp]")
         # pyarrow date
-        assert_type(s.astype("date32[pyarrow]"), TimestampSeries)
-        assert_type(s.astype("date64[pyarrow]"), TimestampSeries)
+        assert_type(s.astype("date32[pyarrow]"), "pd.Series[pd.Timestamp]")
+        assert_type(s.astype("date64[pyarrow]"), "pd.Series[pd.Timestamp]")
 
 
 @pytest.mark.parametrize("cast_arg, target_type", ASTYPE_TIMEDELTA_ARGS, ids=repr)
@@ -3318,7 +3316,7 @@ def test_series_mapping() -> None:
 def test_timedeltaseries_operators() -> None:
     series = pd.Series([pd.Timedelta(days=1)])
     check(
-        assert_type(series + datetime.datetime.now(), TimestampSeries),
+        assert_type(series + datetime.datetime.now(), "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
     )
@@ -3328,7 +3326,7 @@ def test_timedeltaseries_operators() -> None:
         pd.Timedelta,
     )
     check(
-        assert_type(datetime.datetime.now() + series, TimestampSeries),
+        assert_type(datetime.datetime.now() + series, "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
     )
@@ -3342,13 +3340,13 @@ def test_timedeltaseries_operators() -> None:
 def test_timestamp_series() -> None:
     series = pd.Series([pd.Timestamp(2024, 4, 4)])
     check(
-        assert_type(series + YearEnd(0), TimestampSeries),
-        TimestampSeries,
+        assert_type(series + YearEnd(0), "pd.Series[pd.Timestamp]"),
+        pd.Series,
         pd.Timestamp,
     )
     check(
-        assert_type(series - YearEnd(0), TimestampSeries),
-        TimestampSeries,
+        assert_type(series - YearEnd(0), "pd.Series[pd.Timestamp]"),
+        pd.Series,
         pd.Timestamp,
     )
 
@@ -3896,7 +3894,7 @@ def test_cumsum_timedelta() -> None:
     s = pd.Series(pd.to_timedelta([1, 2, 3], "h"))
     check(assert_type(s.cumsum(), "TimedeltaSeries"), pd.Series, pd.Timedelta)
     check(
-        assert_type(pd.Timestamp(0) + s.cumsum(), "TimestampSeries"),
+        assert_type(pd.Timestamp(0) + s.cumsum(), "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
     )
