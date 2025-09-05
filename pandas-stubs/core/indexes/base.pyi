@@ -15,7 +15,6 @@ from typing import (
     ClassVar,
     Generic,
     Literal,
-    TypeAlias,
     final,
     overload,
     type_check_only,
@@ -35,7 +34,11 @@ from pandas import (
     TimedeltaIndex,
 )
 from pandas.core.arrays import ExtensionArray
-from pandas.core.base import IndexOpsMixin
+from pandas.core.base import (
+    IndexOpsMixin,
+    NumListLike,
+    _ListLike,
+)
 from pandas.core.strings.accessor import StringMethods
 from typing_extensions import (
     Never,
@@ -46,6 +49,8 @@ from pandas._libs.interval import _OrderableT
 from pandas._typing import (
     C2,
     S1,
+    T_COMPLEX,
+    T_INT,
     AnyAll,
     ArrayLike,
     AxesData,
@@ -58,6 +63,7 @@ from pandas._typing import (
     GenericT_co,
     HashableT,
     IgnoreRaise,
+    Just,
     Label,
     Level,
     MaskType,
@@ -71,8 +77,10 @@ from pandas._typing import (
     TimestampDtypeArg,
     np_1darray,
     np_ndarray_anyint,
+    np_ndarray_bool,
     np_ndarray_complex,
     np_ndarray_float,
+    np_ndarray_str,
     type_t,
 )
 
@@ -83,6 +91,16 @@ class Index(IndexOpsMixin[S1]):
     # overloads with additional dtypes
     @overload
     def __new__(  # pyright: ignore[reportOverlappingOverload]
+        cls,
+        data: Sequence[bool | np.bool_] | IndexOpsMixin[bool] | np_ndarray_bool,
+        *,
+        dtype: Literal["bool"] | type_t[bool | np.bool_] = ...,
+        copy: bool = ...,
+        name: Hashable = ...,
+        tupleize_cols: bool = ...,
+    ) -> Index[bool]: ...
+    @overload
+    def __new__(
         cls,
         data: Sequence[int | np.integer] | IndexOpsMixin[int] | np_ndarray_anyint,
         *,
@@ -461,6 +479,293 @@ class Index(IndexOpsMixin[S1]):
     def __gt__(self, other: Self | S1) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     # overwrite inherited methods from OpsMixin
     @overload
+    def __add__(self: Index[Never], other: _str) -> Never: ...
+    @overload
+    def __add__(self: Index[Never], other: complex | _ListLike | Index) -> Index: ...
+    @overload
+    def __add__(self, other: Index[Never]) -> Index: ...
+    @overload
+    def __add__(
+        self: Index[bool],
+        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX],
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __add__(self: Index[bool], other: np_ndarray_bool) -> Index[bool]: ...
+    @overload
+    def __add__(self: Index[bool], other: np_ndarray_anyint) -> Index[int]: ...
+    @overload
+    def __add__(self: Index[bool], other: np_ndarray_float) -> Index[float]: ...
+    @overload
+    def __add__(self: Index[bool], other: np_ndarray_complex) -> Index[complex]: ...
+    @overload
+    def __add__(
+        self: Index[int],
+        other: (
+            bool | Sequence[bool] | np_ndarray_bool | np_ndarray_anyint | Index[bool]
+        ),
+    ) -> Index[int]: ...
+    @overload
+    def __add__(
+        self: Index[int],
+        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX],
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __add__(self: Index[int], other: np_ndarray_float) -> Index[float]: ...
+    @overload
+    def __add__(self: Index[int], other: np_ndarray_complex) -> Index[complex]: ...
+    @overload
+    def __add__(
+        self: Index[float],
+        other: (
+            int
+            | Sequence[int]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Index[T_INT]
+        ),
+    ) -> Index[float]: ...
+    @overload
+    def __add__(
+        self: Index[float],
+        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX],
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __add__(self: Index[float], other: np_ndarray_complex) -> Index[complex]: ...
+    @overload
+    def __add__(
+        self: Index[complex],
+        other: (
+            T_COMPLEX
+            | Sequence[T_COMPLEX]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | np_ndarray_complex
+            | Index[T_COMPLEX]
+        ),
+    ) -> Index[complex]: ...
+    @overload
+    def __add__(
+        self: Index[_str],
+        other: (
+            np_ndarray_bool | np_ndarray_anyint | np_ndarray_float | np_ndarray_complex
+        ),
+    ) -> Never: ...
+    @overload
+    def __add__(
+        self: Index[_str], other: _str | Sequence[_str] | np_ndarray_str | Index[_str]
+    ) -> Index[_str]: ...
+    @overload
+    def __radd__(self: Index[Never], other: _str) -> Never: ...
+    @overload
+    def __radd__(self: Index[Never], other: complex | _ListLike | Index) -> Index: ...
+    @overload
+    def __radd__(
+        self: Index[bool],
+        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX],
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __radd__(self: Index[bool], other: np_ndarray_bool) -> Index[bool]: ...
+    @overload
+    def __radd__(self: Index[bool], other: np_ndarray_anyint) -> Index[int]: ...
+    @overload
+    def __radd__(self: Index[bool], other: np_ndarray_float) -> Index[float]: ...
+    @overload
+    def __radd__(
+        self: Index[int],
+        other: (
+            bool | Sequence[bool] | np_ndarray_bool | np_ndarray_anyint | Index[bool]
+        ),
+    ) -> Index[int]: ...
+    @overload
+    def __radd__(
+        self: Index[int], other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX]
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __radd__(self: Index[int], other: np_ndarray_float) -> Index[float]: ...
+    @overload
+    def __radd__(
+        self: Index[float],
+        other: (
+            int
+            | Sequence[int]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Index[T_INT]
+        ),
+    ) -> Index[float]: ...
+    @overload
+    def __radd__(
+        self: Index[float], other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX]
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __radd__(
+        self: Index[complex],
+        other: (
+            T_COMPLEX
+            | Sequence[T_COMPLEX]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Index[T_COMPLEX]
+        ),
+    ) -> Index[complex]: ...
+    @overload
+    def __radd__(
+        self: Index[T_COMPLEX], other: np_ndarray_complex
+    ) -> Index[complex]: ...
+    @overload
+    def __radd__(
+        self: Index[_str],
+        other: (
+            np_ndarray_bool | np_ndarray_anyint | np_ndarray_float | np_ndarray_complex
+        ),
+    ) -> Never: ...
+    @overload
+    def __radd__(
+        self: Index[_str], other: _str | Sequence[_str] | np_ndarray_str | Index[_str]
+    ) -> Index[_str]: ...
+    @overload
+    def __sub__(self: Index[Never], other: DatetimeIndex) -> Never: ...
+    @overload
+    def __sub__(self: Index[Never], other: complex | NumListLike | Index) -> Index: ...
+    @overload
+    def __sub__(self, other: Index[Never]) -> Index: ...
+    @overload
+    def __sub__(
+        self: Index[bool],
+        other: Just[int] | Sequence[Just[int]] | np_ndarray_anyint | Index[int],
+    ) -> Index[int]: ...
+    @overload
+    def __sub__(
+        self: Index[bool],
+        other: Just[float] | Sequence[Just[float]] | np_ndarray_float | Index[float],
+    ) -> Index[float]: ...
+    @overload
+    def __sub__(
+        self: Index[int],
+        other: (
+            int
+            | Sequence[int]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | Index[bool]
+            | Index[int]
+        ),
+    ) -> Index[int]: ...
+    @overload
+    def __sub__(
+        self: Index[int],
+        other: Just[float] | Sequence[Just[float]] | np_ndarray_float | Index[float],
+    ) -> Index[float]: ...
+    @overload
+    def __sub__(
+        self: Index[float],
+        other: (
+            float
+            | Sequence[float]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Index[bool]
+            | Index[int]
+            | Index[float]
+        ),
+    ) -> Index[float]: ...
+    @overload
+    def __sub__(
+        self: Index[complex],
+        other: (
+            T_COMPLEX
+            | Sequence[T_COMPLEX]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Index[T_COMPLEX]
+        ),
+    ) -> Index[complex]: ...
+    @overload
+    def __sub__(
+        self: Index[T_COMPLEX],
+        other: (
+            Just[complex]
+            | Sequence[Just[complex]]
+            | np_ndarray_complex
+            | Index[complex]
+        ),
+    ) -> Index[complex]: ...
+    @overload
+    def __rsub__(self: Index[Never], other: DatetimeIndex) -> Never: ...  # type: ignore[misc]
+    @overload
+    def __rsub__(self: Index[Never], other: complex | NumListLike | Index) -> Index: ...
+    @overload
+    def __rsub__(self, other: Index[Never]) -> Index: ...
+    @overload
+    def __rsub__(
+        self: Index[bool],
+        other: Just[int] | Sequence[Just[int]] | np_ndarray_anyint | Index[int],
+    ) -> Index[int]: ...
+    @overload
+    def __rsub__(
+        self: Index[bool],
+        other: Just[float] | Sequence[Just[float]] | np_ndarray_float | Index[float],
+    ) -> Index[float]: ...
+    @overload
+    def __rsub__(
+        self: Index[int],
+        other: (
+            int
+            | Sequence[int]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | Index[bool]
+            | Index[int]
+        ),
+    ) -> Index[int]: ...
+    @overload
+    def __rsub__(
+        self: Index[int],
+        other: Just[float] | Sequence[Just[float]] | np_ndarray_float | Index[float],
+    ) -> Index[float]: ...
+    @overload
+    def __rsub__(
+        self: Index[float],
+        other: (
+            float
+            | Sequence[float]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Index[bool]
+            | Index[int]
+            | Index[float]
+        ),
+    ) -> Index[float]: ...
+    @overload
+    def __rsub__(
+        self: Index[complex],
+        other: (
+            T_COMPLEX
+            | Sequence[T_COMPLEX]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Index[T_COMPLEX]
+        ),
+    ) -> Index[complex]: ...
+    @overload
+    def __rsub__(
+        self: Index[T_COMPLEX],
+        other: (
+            Just[complex]
+            | Sequence[Just[complex]]
+            | np_ndarray_complex
+            | Index[complex]
+        ),
+    ) -> Index[complex]: ...
+    @overload
     def __mul__(
         self: Index[int] | Index[float], other: timedelta
     ) -> TimedeltaIndex: ...
@@ -507,8 +812,6 @@ class Index(IndexOpsMixin[S1]):
         ),
     ) -> Self: ...
     def infer_objects(self, copy: bool = True) -> Self: ...
-
-UnknownIndex: TypeAlias = Index[Any]
 
 @type_check_only
 class _IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):

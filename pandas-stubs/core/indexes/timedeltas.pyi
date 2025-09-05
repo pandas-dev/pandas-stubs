@@ -30,6 +30,7 @@ from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     AxesData,
     TimedeltaConvertibleTypes,
+    np_ndarray_td,
     num,
 )
 
@@ -49,14 +50,18 @@ class TimedeltaIndex(
     ) -> Self: ...
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
-    @overload
+    @overload  # type: ignore[override]
     def __add__(self, other: Period) -> PeriodIndex: ...
     @overload
     def __add__(self, other: DatetimeIndex) -> DatetimeIndex: ...
     @overload
-    def __add__(self, other: dt.timedelta | Timedelta | Self) -> Self: ...
+    def __add__(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, other: dt.timedelta | Timedelta | Self
+    ) -> Self: ...
     def __radd__(self, other: dt.datetime | Timestamp | DatetimeIndex) -> DatetimeIndex: ...  # type: ignore[override]
-    def __sub__(self, other: dt.timedelta | Timedelta | Self) -> Self: ...
+    def __sub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+        self, other: dt.timedelta | np.timedelta64 | np_ndarray_td | Self
+    ) -> Self: ...
     def __mul__(self, other: num) -> Self: ...
     @overload  # type: ignore[override]
     def __truediv__(self, other: num | Sequence[float]) -> Self: ...

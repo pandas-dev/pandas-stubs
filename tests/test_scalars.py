@@ -24,6 +24,7 @@ from pandas._libs.tslibs.timedeltas import Components
 from pandas._typing import TimeUnit
 
 from tests import (
+    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     np_1darray,
@@ -44,12 +45,16 @@ if TYPE_CHECKING:
         TimedeltaSeries,
         TimestampSeries,
     )
-
 else:
     TimedeltaSeries: TypeAlias = pd.Series
     TimestampSeries: TypeAlias = pd.Series
     PeriodSeries: TypeAlias = pd.Series
     OffsetSeries: TypeAlias = pd.Series
+
+if not PD_LTE_23:
+    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore  # isort: skip
+else:
+    Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
 
 def test_interval() -> None:
@@ -369,10 +374,15 @@ def test_interval_cmp():
 
 def test_timedelta_construction() -> None:
     check(assert_type(pd.Timedelta(1, "W"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'w' is deprecated", lower="2.3.99"):
+    with pytest_warns_bounded(
+        Pandas4Warning,  # should be Pandas4Warning but only exposed starting pandas 3.0.0
+        "'w' is deprecated and will",
+        lower="2.3.99",
+        upper="3.0.99",
+    ):
         check(assert_type(pd.Timedelta(1, "w"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "D"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'d' is deprecated", lower="2.3.99"):
+    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", lower="2.3.99"):
         check(assert_type(pd.Timedelta(1, "d"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "days"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta(1, "day"), pd.Timedelta), pd.Timedelta)
@@ -406,10 +416,10 @@ def test_timedelta_construction() -> None:
     check(assert_type(pd.Timedelta(1, "nanosecond"), pd.Timedelta), pd.Timedelta)
 
     check(assert_type(pd.Timedelta("1 W"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'w' is deprecated", lower="2.3.99"):
+    with pytest_warns_bounded(Pandas4Warning, "'w' is deprecated", lower="2.3.99"):
         check(assert_type(pd.Timedelta("1 w"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 D"), pd.Timedelta), pd.Timedelta)
-    with pytest_warns_bounded(FutureWarning, "'d' is deprecated", lower="2.3.99"):
+    with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", lower="2.3.99"):
         check(assert_type(pd.Timedelta("1 d"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 days"), pd.Timedelta), pd.Timedelta)
     check(assert_type(pd.Timedelta("1 day"), pd.Timedelta), pd.Timedelta)
@@ -1287,7 +1297,7 @@ def test_timestamp_cmp_series() -> None:
 def test_timestamp_cmp_index() -> None:
     ts = pd.Timestamp(year=2000, month=3, day=24, hour=12, minute=27)
     dt_idx = pd.DatetimeIndex(["2000-1-1"])
-    # DatetimeIndex, but the type checker thinks it is UnknownIndex.
+    # DatetimeIndex, but the type checker thinks it is Index[Any].
     un_idx = pd.DataFrame({"a": [1]}, index=dt_idx).index
 
     # >, <=
@@ -1322,8 +1332,9 @@ def test_timestamp_cmp_index() -> None:
     eq_dt1 = check(assert_type(ts == dt_idx, np_1darray[np.bool]), np_1darray[np.bool])
     ne_dt1 = check(assert_type(ts != dt_idx, np_1darray[np.bool]), np_1darray[np.bool])
     assert (eq_dt1 != ne_dt1).all()
-    eq_un1 = check(assert_type(ts == un_idx, np_1darray[np.bool]), np_1darray[np.bool])
-    ne_un1 = check(assert_type(ts != un_idx, np_1darray[np.bool]), np_1darray[np.bool])
+    # there is a mypy bug where ts.__eq__(Index) gets revealed as Any and not np_1darray
+    eq_un1 = check(assert_type(ts == un_idx, np_1darray[np.bool]), np_1darray[np.bool])  # type: ignore[assert-type]
+    ne_un1 = check(assert_type(ts != un_idx, np_1darray[np.bool]), np_1darray[np.bool])  # type: ignore[assert-type]
     assert (eq_un1 != ne_un1).all()
 
     # ==, != (ts on the rhs, use == and != of lhs)

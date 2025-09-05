@@ -39,10 +39,7 @@ from pandas.core.arraylike import OpsMixin
 from pandas.core.generic import NDFrame
 from pandas.core.groupby.generic import DataFrameGroupBy
 from pandas.core.indexers import BaseIndexer
-from pandas.core.indexes.base import (
-    Index,
-    UnknownIndex,
-)
+from pandas.core.indexes.base import Index
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.interval import IntervalIndex
@@ -1761,9 +1758,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @property
     def iloc(self) -> _iLocIndexerFrame[Self]: ...
     @property
-    # mypy complains if we use Index[Any] instead of UnknownIndex here, even though
-    # the latter is aliased to the former ¯\_(ツ)_/¯.
-    def index(self) -> UnknownIndex: ...
+    def index(self) -> Index: ...
     @index.setter
     def index(self, idx: Index) -> None: ...
     @property
@@ -1777,11 +1772,36 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     # methods
     @final
     def abs(self) -> Self: ...
+    def __add__(self, other: Any) -> Self: ...
     def add(
         self,
         other: num | ListLike | DataFrame,
         axis: Axis | None = "columns",
         level: Level | None = None,
+        fill_value: float | None = None,
+    ) -> Self: ...
+    def __radd__(self, other: Any) -> Self: ...
+    def radd(
+        self,
+        other,
+        axis: Axis = "columns",
+        level: Level | None = None,
+        fill_value: float | None = None,
+    ) -> Self: ...
+    def __sub__(self, other: Any) -> Self: ...
+    def sub(
+        self,
+        other: num | ListLike | DataFrame,
+        axis: Axis | None = ...,
+        level: Level | None = ...,
+        fill_value: float | None = None,
+    ) -> Self: ...
+    def __rsub__(self, other: Any) -> Self: ...
+    def rsub(
+        self,
+        other,
+        axis: Axis = ...,
+        level: Level | None = ...,
         fill_value: float | None = None,
     ) -> Self: ...
     @final
@@ -2227,13 +2247,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         min_count: int = 0,
         **kwargs: Any,
     ) -> Series: ...
-    def radd(
-        self,
-        other,
-        axis: Axis = "columns",
-        level: Level | None = None,
-        fill_value: float | None = None,
-    ) -> Self: ...
     @final
     def rank(
         self,
@@ -2356,13 +2369,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: Level | None = ...,
         fill_value: float | None = None,
     ) -> Self: ...
-    def rsub(
-        self,
-        other,
-        axis: Axis = ...,
-        level: Level | None = ...,
-        fill_value: float | None = None,
-    ) -> Self: ...
     def rtruediv(
         self,
         other,
@@ -2408,20 +2414,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         numeric_only: _bool = False,
         **kwargs: Any,
     ) -> Series: ...
-    def sub(
-        self,
-        other: num | ListLike | DataFrame,
-        axis: Axis | None = ...,
-        level: Level | None = ...,
-        fill_value: float | None = None,
-    ) -> Self: ...
-    def subtract(
-        self,
-        other: num | ListLike | DataFrame,
-        axis: Axis | None = ...,
-        level: Level | None = ...,
-        fill_value: float | None = None,
-    ) -> Self: ...
     def sum(
         self,
         axis: Axis = 0,
