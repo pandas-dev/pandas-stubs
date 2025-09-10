@@ -26,11 +26,13 @@ from typing import (
     Generic,
     Literal,
     NoReturn,
+    Protocol,
     final,
     overload,
     type_check_only,
 )
 
+from _typeshed import SupportsGetItem
 from matplotlib.axes import (
     Axes as PlotAxes,
     SubplotBase,
@@ -187,6 +189,7 @@ from pandas._typing import (
     ValueKeyFunc,
     VoidDtypeArg,
     WriteBuffer,
+    _T_co,
     np_1darray,
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -202,6 +205,10 @@ from pandas.core.dtypes.base import ExtensionDtype
 from pandas.core.dtypes.dtypes import CategoricalDtype
 
 from pandas.plotting import PlotAccessor
+
+@type_check_only
+class _SupportsAdd(Protocol[_T_co]):
+    def __add__(self, value: Self, /) -> _T_co: ...
 
 class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     # get item
@@ -3751,34 +3758,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
         numeric_only: _bool = False,
         **kwargs: Any,
     ) -> float: ...
-    @overload
     def sum(
-        self: Series[Never],
+        self: SupportsGetItem[Scalar, _SupportsAdd[_T]],
         axis: AxisIndex | None = 0,
         skipna: _bool | None = ...,
         numeric_only: _bool = ...,
         min_count: int = ...,
         **kwargs: Any,
-    ) -> Any: ...
-    # between `Series[bool]` and `Series[int]`.
-    @overload
-    def sum(
-        self: Series[bool],
-        axis: AxisIndex | None = 0,
-        skipna: _bool | None = ...,
-        numeric_only: _bool = ...,
-        min_count: int = ...,
-        **kwargs: Any,
-    ) -> int: ...
-    @overload
-    def sum(
-        self: Series[S1],
-        axis: AxisIndex | None = 0,
-        skipna: _bool | None = ...,
-        numeric_only: _bool = ...,
-        min_count: int = ...,
-        **kwargs: Any,
-    ) -> S1: ...
+    ) -> _T: ...
     def to_list(self) -> list[S1]: ...
     def tolist(self) -> list[S1]: ...
     def var(
