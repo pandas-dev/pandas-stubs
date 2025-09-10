@@ -3982,3 +3982,12 @@ def test_series_explode() -> None:
 
     check(assert_type(s.explode(), pd.Series), pd.Series)
     check(assert_type(s.explode(ignore_index=True), pd.Series), pd.Series)
+
+
+def test_series_index_setter() -> None:
+    """Test Series.index setter property GH1366."""
+    sr = pd.Series(["a", "b"])
+
+    check(assert_type(sr.index, pd.Index), pd.Index)
+    sr.index = [2, 3]
+    check(assert_type(sr.index, pd.Index), pd.Index)

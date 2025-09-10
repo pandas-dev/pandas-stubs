@@ -4813,3 +4813,12 @@ def test_from_records() -> None:
         ),
         pd.DataFrame,
     )
+
+
+def test_frame_index_setter() -> None:
+    """Test DataFrame.index setter property GH1366."""
+    df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
+
+    check(assert_type(df.index, pd.Index), pd.Index)
+    df.index = [2, 3]
+    check(assert_type(df.index, pd.Index), pd.Index)

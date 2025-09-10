@@ -507,7 +507,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @property
     def index(self) -> Index: ...
     @index.setter
-    def index(self, idx: Index) -> None: ...
+    def index(
+        self, idx: AnyArrayLike | SequenceNotStr[Hashable] | tuple[Hashable, ...]
+    ) -> None: ...
     @overload
     def reset_index(
         self,
