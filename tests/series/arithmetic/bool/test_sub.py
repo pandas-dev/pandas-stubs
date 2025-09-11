@@ -124,7 +124,40 @@ def test_sub_pd_series() -> None:
     f = pd.Series([1.0, 2.0, 3.0])
     c = pd.Series([1.1j, 2.2j, 4.1j])
 
-    # In the following two cases, mypy fails to recognise the second operand as pd.Series[bool]
+    if TYPE_CHECKING_INVALID_USAGE:
+        _0 = left - b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+    check(assert_type(left - i, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left - f, "pd.Series[float]"), pd.Series, np.floating)
+    check(assert_type(left - c, "pd.Series[complex]"), pd.Series, np.complexfloating)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _1 = b - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+    check(assert_type(i - left, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(f - left, "pd.Series[float]"), pd.Series, np.floating)
+    check(assert_type(c - left, "pd.Series[complex]"), pd.Series, np.complexfloating)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.sub(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.sub(i), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.sub(f), "pd.Series[float]"), pd.Series, np.floating)
+    check(assert_type(left.sub(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.rsub(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.rsub(i), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.rsub(f), "pd.Series[float]"), pd.Series, np.floating)
+    check(
+        assert_type(left.rsub(c), "pd.Series[complex]"), pd.Series, np.complexfloating
+    )
+
+
+def test_sub_pd_index() -> None:
+    """Test pd.Series[bool] - pandas index"""
+    b = pd.Index([True, False, True])
+    i = pd.Index([2, 3, 5])
+    f = pd.Index([1.0, 2.0, 3.0])
+    c = pd.Index([1.1j, 2.2j, 4.1j])
+
     if TYPE_CHECKING_INVALID_USAGE:
         _0 = left - b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left - i, "pd.Series[int]"), pd.Series, np.integer)
