@@ -4650,7 +4650,7 @@ def test_unstack() -> None:
     df_flt = pd.DataFrame(
         [
             ["a", "b", 1],
-            ["a", "a", 12],
+            ["a", "a", 12.2],
             ["b", "b", 14],
         ]
     ).set_index([0, 1])
