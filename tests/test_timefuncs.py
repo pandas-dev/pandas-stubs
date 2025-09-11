@@ -200,8 +200,12 @@ def test_timestamp_timedelta_series_arithmetic() -> None:
     check(assert_type(r4, "pd.Series[float]"), pd.Series, float)
     sb = pd.Series([1, 2]) == pd.Series([1, 3])
     check(assert_type(sb, "pd.Series[bool]"), pd.Series, np.bool_)
-    r5 = sb * r1
-    check(assert_type(r5, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+
+    # https://github.com/pandas-dev/pandas/issues/62316
+    if PD_LTE_23:
+        r5 = sb * r1
+        check(assert_type(r5, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+
     r6 = r1 * 4
     check(assert_type(r6, "TimedeltaSeries"), pd.Series, pd.Timedelta)
 

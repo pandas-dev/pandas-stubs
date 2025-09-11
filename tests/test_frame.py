@@ -4649,7 +4649,7 @@ def test_unstack() -> None:
     df_flt = pd.DataFrame(
         [
             ["a", "b", 1],
-            ["a", "a", 12],
+            ["a", "a", 12.2],
             ["b", "b", 14],
         ]
     ).set_index([0, 1])
@@ -4812,3 +4812,12 @@ def test_from_records() -> None:
         ),
         pd.DataFrame,
     )
+
+
+def test_frame_index_setter() -> None:
+    """Test DataFrame.index setter property GH1366."""
+    df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
+
+    check(assert_type(df.index, pd.Index), pd.Index)
+    df.index = [2, 3]
+    check(assert_type(df.index, pd.Index), pd.Index)
