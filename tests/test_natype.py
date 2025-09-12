@@ -23,8 +23,7 @@ def test_arithmetic() -> None:
 
     # __radd__
     check(assert_type(s_int + na, pd.Series), pd.Series)
-    # requires orthogonal fix: https://github.com/pandas-dev/pandas-stubs/issues/1347
-    # check(assert_type(idx_int + na, pd.Index), pd.Index)
+    check(assert_type(idx_int + na, pd.Index), pd.Index)
     check(assert_type(1 + na, NAType), NAType)
 
     # __sub__
@@ -34,8 +33,7 @@ def test_arithmetic() -> None:
 
     # __rsub__
     check(assert_type(s_int - na, pd.Series), pd.Series)
-    # requires orthogonal fix: https://github.com/pandas-dev/pandas-stubs/issues/1347
-    # check(assert_type(idx_int - na, pd.Index), pd.Index)
+    check(assert_type(idx_int - na, pd.Index), pd.Index)
     check(assert_type(1 - na, NAType), NAType)
 
     # __mul__
@@ -45,8 +43,7 @@ def test_arithmetic() -> None:
 
     # __rmul__
     check(assert_type(s_int * na, pd.Series), pd.Series)
-    # requires orthogonal fix: https://github.com/pandas-dev/pandas-stubs/issues/1347
-    # check(assert_type(idx_int * na, pd.Index), pd.Index)
+    check(assert_type(idx_int * na, pd.Index), pd.Index)
     check(assert_type(1 * na, NAType), NAType)
 
     # __matmul__
@@ -82,8 +79,7 @@ def test_arithmetic() -> None:
 
     # __rmod__
     check(assert_type(s_int % na, pd.Series), pd.Series)
-    # requires orthogonal fix: https://github.com/pandas-dev/pandas-stubs/issues/1347
-    # check(assert_type(idx_int % na, pd.Index), pd.Index)
+    check(assert_type(idx_int % na, pd.Index), pd.Index)
     check(assert_type(1 % na, NAType), NAType)
 
     # __divmod__
@@ -104,8 +100,9 @@ def test_arithmetic() -> None:
     # )
     # https://github.com/microsoft/pyright/issues/10899.
     check(
-        assert_type(divmod(na, 1), tuple[NAType, NAType]), tuple
-    )  # pyright: ignore[reportArgumentType, reportCallIssue, reportAssertTypeFailure]
+        assert_type(divmod(na, 1), tuple[NAType, NAType]),
+        tuple,  # pyright: ignore[reportArgumentType, reportCallIssue, reportAssertTypeFailure]
+    )
 
     # __rdivmod__
     # bug upstream: https://github.com/pandas-dev/pandas/issues/62196
