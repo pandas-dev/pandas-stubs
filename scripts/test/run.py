@@ -94,7 +94,6 @@ def nightly_pandas():
         "pip",
         "install",
         "--pre",
-        "--use-deprecated=legacy-resolver",
         "--upgrade",
         "--extra-index-url",
         "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple",

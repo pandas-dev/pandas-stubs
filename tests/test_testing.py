@@ -10,6 +10,7 @@ from pandas.testing import (
 from typing_extensions import assert_type
 
 from tests import (
+    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     ensure_clean,
@@ -20,14 +21,23 @@ def test_types_assert_series_equal() -> None:
     s1 = pd.Series([0, 1, 1, 0])
     s2 = pd.Series([0, 1, 1, 0])
     assert_series_equal(left=s1, right=s2)
-    assert_series_equal(
-        s1,
-        s2,
-        check_freq=False,
-        check_categorical=True,
-        check_flags=True,
-        check_datetimelike_compat=True,
-    )
+    if PD_LTE_23:
+        assert_series_equal(
+            s1,
+            s2,
+            check_freq=False,
+            check_categorical=True,
+            check_flags=True,
+            check_datetimelike_compat=True,
+        )
+    else:
+        assert_series_equal(
+            s1,
+            s2,
+            check_freq=False,
+            check_categorical=True,
+            check_flags=True,
+        )
     if TYPE_CHECKING_INVALID_USAGE:
         assert_series_equal(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
             s1,
