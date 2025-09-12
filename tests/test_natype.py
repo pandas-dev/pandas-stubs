@@ -102,7 +102,10 @@ def test_arithmetic() -> None:
     #     ),
     #     tuple,
     # )
-    check(assert_type(na.__divmod__(1), tuple[NAType, NAType]), tuple)
+    # https://github.com/microsoft/pyright/issues/10899.
+    check(
+        assert_type(divmod(na, 1), tuple[NAType, NAType]), tuple
+    )  # pyright: ignore[reportArgumentType, reportCallIssue, reportAssertTypeFailure]
 
     # __rdivmod__
     # bug upstream: https://github.com/pandas-dev/pandas/issues/62196
