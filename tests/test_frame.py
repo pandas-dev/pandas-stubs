@@ -74,7 +74,6 @@ from pandas.tseries.offsets import (
 
 if TYPE_CHECKING:
     from pandas.core.frame import _PandasNamedTuple
-    from pandas.core.series import TimestampSeries
 else:
     _PandasNamedTuple: TypeAlias = tuple
 
@@ -4445,7 +4444,7 @@ def test_frame_setitem_na() -> None:
 
     # reveal_type(df["y"]) gives Series[Any], so we have to cast to tell the
     # type checker what kind of type it is when adding to a Timedelta
-    df["x"] = cast("TimestampSeries", df["y"]) + pd.Timedelta(days=3)
+    df["x"] = cast("pd.Series[pd.Timestamp]", df["y"]) + pd.Timedelta(days=3)
     df.loc[ind, :] = pd.NaT
     df.iloc[[0, 2], :] = pd.NaT
 

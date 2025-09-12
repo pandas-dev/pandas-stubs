@@ -36,6 +36,9 @@ This also allows type checking for operations on series that contain date/time d
 the following example that creates two series of datetimes with corresponding arithmetic.
 
 ```python
+import pandas as pd
+from typing import reveal_type
+
 s1 = pd.Series(pd.to_datetime(["2022-05-01", "2022-06-01"]))
 reveal_type(s1)
 s2 = pd.Series(pd.to_datetime(["2022-05-15", "2022-06-15"]))
@@ -43,22 +46,21 @@ reveal_type(s2)
 td = s1 - s2
 reveal_type(td)
 ssum = s1 + s2
-reveal_type(ssum)
 ```
 
-The above code (without the `reveal_type()` statements) will raise an `Exception` on the computation of `ssum` because it is
+The above code (without the `reveal_type()` statements) will get an error on the computation of `ssum` because it is
 inappropriate to add two series containing `Timestamp` values.  The types will be
-revealed as follows:
+revealed by `mypy` as follows:
 
 ```text
-ttest.py:4: note: Revealed type is "pandas.core.series.TimestampSeries"
-ttest.py:6: note: Revealed type is "pandas.core.series.TimestampSeries"
-ttest.py:8: note: Revealed type is "pandas.core.series.TimedeltaSeries"
-ttest.py:10: note: Revealed type is "builtins.Exception"
+ttest.py:5: note: Revealed type is "pandas.core.series.Series[pandas._libs.tslibs.timestamps.Timestamp]"
+ttest.py:7: note: Revealed type is "pandas.core.series.Series[pandas._libs.tslibs.timestamps.Timestamp]"
+ttest.py:9: note: Revealed type is "pandas.core.series.TimedeltaSeries"
+ttest.py:10: error: Unsupported operand types for + ("Series[Timestamp]" and "Series[Timestamp]")  [operator]
 ```
 
-The type `TimestampSeries` is the result of creating a series from `pd.to_datetime()`, while
-the type `TimedeltaSeries` is the result of subtracting two `TimestampSeries` as well as
+The type `Series[Timestamp]` is the result of creating a series from `pd.to_datetime()`, while
+the type `TimedeltaSeries` is the result of subtracting two `Series[Timestamp]` as well as
 the result of `pd.to_timedelta()`.
 
 ### Generic Series have restricted arithmetic
