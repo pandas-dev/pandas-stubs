@@ -101,8 +101,11 @@ def test_arithmetic() -> None:
     # https://github.com/microsoft/pyright/issues/10899.
     check(
         assert_type(
-            divmod(na, 1), tuple[NAType, NAType]
-        ),  # pyright: ignore[reportArgumentType, reportCallIssue, reportAssertTypeFailure]
+            divmod(  # pyright: ignore[reportCallIssue, reportAssertTypeFailure]
+                na, 1  # pyright: ignore[reportArgumentType]
+            ),
+            tuple[NAType, NAType],
+        ),
         tuple,
     )
 
