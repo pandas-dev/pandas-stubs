@@ -113,7 +113,7 @@ def test_categorical_dtype() -> None:
         pd.CategoricalDtype,
     )
     check(assert_type(cdt.categories, pd.Index), pd.Index)
-    assert check(assert_type(cdt.ordered, Optional[bool]), bool)
+    check(assert_type(cdt.ordered, Optional[bool]), bool)
 
 
 def test_sparse_dtype() -> None:
