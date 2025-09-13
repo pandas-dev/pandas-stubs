@@ -2,20 +2,22 @@ from datetime import (
     datetime,
     timedelta,
 )
-from typing import NoReturn
+from typing import (
+    TYPE_CHECKING,
+    Any,
+)
 
 import numpy as np
-from numpy import typing as npt  # noqa: F401
 import pandas as pd
-from typing_extensions import (
-    Never,
-    assert_type,
-)
+from typing_extensions import assert_type
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
+
+if TYPE_CHECKING:
+    from pandas.core.series import TimedeltaSeries  # noqa: F401
 
 anchor = datetime(2025, 8, 18)
 
@@ -88,18 +90,24 @@ def test_sub_i_numpy_array() -> None:
     check(assert_type(left_i - c, pd.Series), pd.Series)
 
     # `numpy` typing gives the corresponding `ndarray`s in the static type
-    # checking, where our `__rsub__` cannot override. At runtime, they return
-    # `Series`s.
-    # `mypy` thinks the return types are `Any`, which is a bug.
-    check(assert_type(b - left_i, NoReturn), pd.Series)  # type: ignore[assert-type]
+    # checking, where our `__rsub_` cannot override. At runtime, they return
+    # `Series`.
+    # microsoft/pyright#10924
     check(
-        assert_type(i - left_i, "npt.NDArray[np.int64]"), pd.Series  # type: ignore[assert-type]
+        assert_type(b - left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
     )
     check(
-        assert_type(f - left_i, "npt.NDArray[np.float64]"), pd.Series  # type: ignore[assert-type]
+        assert_type(i - left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
     )
     check(
-        assert_type(c - left_i, "npt.NDArray[np.complex128]"), pd.Series  # type: ignore[assert-type]
+        assert_type(f - left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+    )
+    check(
+        assert_type(c - left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
     )
 
     check(assert_type(left_i.sub(b), pd.Series), pd.Series)
@@ -151,35 +159,32 @@ def test_sub_ts_py_datetime() -> None:
     s = anchor
     a = [s + timedelta(minutes=m) for m in range(3)]
 
+    check(assert_type(left_ts - s, "TimedeltaSeries"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(left_ts - s, Never)
         _1 = left_ts - a  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        assert_type(left_td - s, Never)
+    check(assert_type(left_td - s, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    if TYPE_CHECKING_INVALID_USAGE:
         _3 = left_td - a  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-        assert_type(s - left_ts, Never)
+    check(assert_type(s - left_ts, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    if TYPE_CHECKING_INVALID_USAGE:
         _5 = a - left_ts  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        assert_type(s - left_td, Never)
+    check(assert_type(s - left_td, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    if TYPE_CHECKING_INVALID_USAGE:
         _7 = a - left_td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-        def _type_checking_enabler_0() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_ts.sub(s), Never)
-
+    check(assert_type(left_ts.sub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    if TYPE_CHECKING_INVALID_USAGE:
         left_ts.sub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-
-        def _type_checking_enabler_1() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_td.sub(s), Never)
-
+    check(assert_type(left_td.sub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    if TYPE_CHECKING_INVALID_USAGE:
         left_td.sub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
-        def _type_checking_enabler_2() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_td.rsub(s), Never)
-
+    check(assert_type(left_td.rsub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    if TYPE_CHECKING_INVALID_USAGE:
         left_ts.rsub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-
-        def _type_checking_enabler_3() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_td.rsub(s), Never)
-
+    check(assert_type(left_td.rsub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    if TYPE_CHECKING_INVALID_USAGE:
         left_td.rsub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
@@ -188,41 +193,37 @@ def test_sub_ts_numpy_datetime() -> None:
     s = np.datetime64(anchor)
     a = np.array([s + np.timedelta64(m, "m") for m in range(3)], np.datetime64)
 
-    if TYPE_CHECKING_INVALID_USAGE:
-        # We would like to have _1, _3, _5 and _7 below as invalid, but numpy.ndarray.__rsub__ overrides our efforts
-        assert_type(left_ts - s, Never)
-        # _1 = left_ts - a
-        assert_type(left_td - s, Never)
-        # _3 = left_td - a
+    check(assert_type(left_ts - s, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_ts - a, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_td - s, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_td - a, "TimedeltaSeries"), pd.Series, pd.Timedelta)
 
-        assert_type(s - left_ts, Never)
-        # _5 = a - left_ts
-        assert_type(s - left_td, Never)
-        # _7 = a - left_td
+    # `numpy` typing gives the corresponding `ndarray`s in the static type
+    # checking, where our `__rsub__` cannot override. At runtime, they return
+    # `Series`.
+    # microsoft/pyright#10924
+    check(assert_type(s - left_ts, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(a - left_ts, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+        pd.Timedelta,
+    )
+    check(assert_type(s - left_td, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(a - left_td, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+        pd.Timedelta,
+    )
 
-        def _type_checking_enabler_0() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_ts.sub(s), Never)
+    check(assert_type(left_ts.sub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_ts.sub(a), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_td.sub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_td.sub(a), "TimedeltaSeries"), pd.Series, pd.Timedelta)
 
-        def _type_checking_enabler_1() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_ts.sub(a), Never)
-
-        def _type_checking_enabler_2() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_td.sub(s), Never)
-
-        def _type_checking_enabler_3() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_td.sub(a), Never)
-
-        def _type_checking_enabler_4() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_ts.rsub(s), Never)
-
-        def _type_checking_enabler_5() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_ts.rsub(a), Never)
-
-        def _type_checking_enabler_6() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_td.rsub(s), Never)
-
-        def _type_checking_enabler_7() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_td.rsub(a), Never)
+    check(assert_type(left_ts.rsub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_ts.rsub(a), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_td.rsub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_td.rsub(a), "TimedeltaSeries"), pd.Series, pd.Timedelta)
 
 
 def test_sub_ts_pd_datetime() -> None:
@@ -230,46 +231,30 @@ def test_sub_ts_pd_datetime() -> None:
     s = pd.Timestamp(anchor)
     a = pd.Series([s + pd.Timedelta(minutes=m) for m in range(3)])
 
-    if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(left_ts - s, Never)
-        # assert_type(left_ts - a, Never)
+    check(assert_type(left_ts - s, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_ts - a, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(assert_type(left_td - s, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_td - a, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
-        assert_type(left_td - s, Never)
-        # assert_type(left_td - a, Never)
+    left_ts.__rsub__(s)
+    check(assert_type(s - left_ts, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(a - left_ts, pd.Series), pd.Series, pd.Timedelta)
+    check(assert_type(s - left_td, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(a - left_td, pd.Series), pd.Series, pd.Timedelta)
 
-        assert_type(s - left_ts, Never)
-        # assert_type(a - left_ts, Never)
+    check(assert_type(left_ts.sub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(left_ts.sub(a), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta
+    )
+    check(assert_type(left_td.sub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(left_td.sub(a), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta
+    )
 
-        assert_type(s - left_td, Never)
-        # assert_type(a - left_td, Never)
-
-        def _type_checking_enabler_0() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_ts.sub(s), Never)
-
-        def _type_checking_enabler_1() -> None:  # pyright: ignore[reportUnusedFunction]
-            pass
-            # assert_type(left_ts.sub(a), Never)
-
-        def _type_checking_enabler_2() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_td.sub(s), Never)
-
-        def _type_checking_enabler_3() -> None:  # pyright: ignore[reportUnusedFunction]
-            pass
-            # assert_type(left_td.sub(a), Never)
-
-        def _type_checking_enabler_4() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_ts.rsub(s), Never)
-
-        def _type_checking_enabler_5() -> None:  # pyright: ignore[reportUnusedFunction]
-            pass
-            # assert_type(left_ts.rsub(a), Never)
-
-        def _type_checking_enabler_6() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_td.rsub(s), Never)
-
-        def _type_checking_enabler_7() -> None:  # pyright: ignore[reportUnusedFunction]
-            pass
-            # assert_type(left_td.rsub(a), Never)
+    check(assert_type(left_ts.rsub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_ts.rsub(a), pd.Series), pd.Series, pd.Timedelta)
+    check(assert_type(left_td.rsub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_td.rsub(a), pd.Series), pd.Series, pd.Timedelta)
 
 
 def test_sub_str_py_str() -> None:

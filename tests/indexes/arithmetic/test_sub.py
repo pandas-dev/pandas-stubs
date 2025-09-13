@@ -59,7 +59,7 @@ def test_sub_i_numpy_array() -> None:
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__rsub__` cannot override. At runtime, they return
     # `Index`s.
-    # `mypy` thinks the return types are `Any`, which is a bug.
+    # microsoft/pyright#10924
     check(assert_type(b - left_i, NoReturn), pd.Index)  # type: ignore[assert-type]
     check(
         assert_type(i - left_i, "npt.NDArray[np.int64]"), pd.Index  # type: ignore[assert-type]

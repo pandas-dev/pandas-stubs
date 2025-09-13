@@ -4,17 +4,10 @@ from typing import (
 )
 
 import numpy as np
-from numpy import typing as npt  # noqa: F401
 import pandas as pd
-from typing_extensions import (
-    Never,
-    assert_type,
-)
+from typing_extensions import assert_type
 
-from tests import (
-    TYPE_CHECKING_INVALID_USAGE,
-    check,
-)
+from tests import check
 
 # left operands
 left_i = pd.DataFrame({"a": [1, 2, 3]})["a"]
@@ -94,19 +87,23 @@ def test_add_i_numpy_array() -> None:
 
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__radd__` cannot override. At runtime, they return
-    # `Series`s.
-    # `mypy` thinks the return types are `Any`, which is a bug.
+    # `Series`.
+    # microsoft/pyright#10924
     check(
-        assert_type(b + left_i, "npt.NDArray[np.bool_]"), pd.Series  # type: ignore[assert-type]
+        assert_type(b + left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
     )
     check(
-        assert_type(i + left_i, "npt.NDArray[np.int64]"), pd.Series  # type: ignore[assert-type]
+        assert_type(i + left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
     )
     check(
-        assert_type(f + left_i, "npt.NDArray[np.float64]"), pd.Series  # type: ignore[assert-type]
+        assert_type(f + left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
     )
     check(
-        assert_type(c + left_i, "npt.NDArray[np.complex128]"), pd.Series  # type: ignore[assert-type]
+        assert_type(c + left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
     )
 
     check(assert_type(left_i.add(b), pd.Series), pd.Series)
@@ -184,18 +181,3 @@ def test_add_i_pd_index() -> None:
     check(assert_type(left_i.radd(i), pd.Series), pd.Series)
     check(assert_type(left_i.radd(f), pd.Series), pd.Series)
     check(assert_type(left_i.radd(c), pd.Series), pd.Series)
-
-
-def test_add_i_py_str() -> None:
-    """Test pd.Series[Any] (int) + Python str"""
-    s = "abc"
-
-    if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(left_i + s, Never)
-        assert_type(s + left_i, Never)
-
-        def _type_checking_enabler_0() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_i.add(s), Never)
-
-        def _type_checking_enabler_1() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_i.radd(s), Never)

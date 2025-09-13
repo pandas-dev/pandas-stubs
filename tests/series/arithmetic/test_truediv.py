@@ -98,7 +98,7 @@ def test_truediv_numpy_array() -> None:
 
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__rtruediv__` cannot override. At runtime, they return
-    # `Series`s.
+    # `Series`.
     # `mypy` thinks the return types are `Any`, which is a bug.
     check(
         assert_type(b / left_i, "npt.NDArray[np.float64]"), pd.Series  # type: ignore[assert-type]

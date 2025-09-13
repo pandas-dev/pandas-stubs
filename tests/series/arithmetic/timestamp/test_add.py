@@ -115,7 +115,7 @@ def test_add_numpy_array() -> None:
 
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__radd__` cannot override. At runtime, they return
-    # `Series`s.
+    # `Series`.
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(s + left, "npt.NDArray[np.datetime64]")
     check(assert_type(d + left, "npt.NDArray[np.timedelta64]"), pd.Series, pd.Timestamp)

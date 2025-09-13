@@ -108,8 +108,8 @@ def test_sub_numpy_array() -> None:
     check(assert_type(left - d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     # `numpy` typing gives the corresponding `ndarray`s in the static type
-    # checking, where our `__radd__` cannot override. At runtime, they return
-    # `Series`s.
+    # checking, where our `__rsub__` cannot override. At runtime, they return
+    # `Series`.
     check(assert_type(s - left, "npt.NDArray[np.datetime64]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(d - left, "npt.NDArray[np.timedelta64]")
