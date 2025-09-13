@@ -187,7 +187,7 @@ def test_timedelta_series_string() -> None:
 
 def test_timestamp_timedelta_series_arithmetic() -> None:
     ts1 = pd.to_datetime(pd.Series(["2022-03-05", "2022-03-06"]))
-    assert isinstance(ts1.iloc[0], pd.Timestamp)
+    check(assert_type(ts1.iloc[0], pd.Timestamp), pd.Timestamp)
     td1 = pd.to_timedelta([2, 3], "seconds")
     ts2 = pd.to_datetime(pd.Series(["2022-03-08", "2022-03-10"]))
     r1 = ts1 - ts2
@@ -325,7 +325,7 @@ def test_timedelta_series_sum() -> None:
 def test_iso_calendar() -> None:
     # GH 31
     dates = pd.date_range(start="2012-01-01", end="2019-12-31", freq="W-MON")
-    dates.isocalendar()
+    check(assert_type(dates.isocalendar(), pd.DataFrame), pd.DataFrame)
 
 
 def test_fail_on_adding_two_timestamps() -> None:
@@ -340,7 +340,7 @@ def test_fail_on_adding_two_timestamps() -> None:
 def test_dtindex_tzinfo() -> None:
     # GH 71
     dti = pd.date_range("2000-1-1", periods=10)
-    assert assert_type(dti.tzinfo, Optional[dt.tzinfo]) is None
+    check(assert_type(dti.tzinfo, Optional[dt.tzinfo]), type(None))
 
 
 def test_todatetime_fromnumpy() -> None:
@@ -421,7 +421,7 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s0.dt.is_leap_year, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(s0.dt.daysinmonth, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s0.dt.days_in_month, "pd.Series[int]"), pd.Series, np.integer)
-    assert assert_type(s0.dt.tz, Optional[dt.tzinfo]) is None
+    check(assert_type(s0.dt.tz, Optional[dt.tzinfo]), type(None))
     check(assert_type(s0.dt.freq, Optional[str]), str)
     check(assert_type(s0.dt.isocalendar(), pd.DataFrame), pd.DataFrame)
     check(assert_type(s0.dt.to_period("D"), "PeriodSeries"), pd.Series, pd.Period)
@@ -1289,19 +1289,61 @@ def test_to_timedelta_index() -> None:
 
 
 def test_bdate_range_holidays() -> None:
-    pd.bdate_range("2000-1-1", "2001-1-1", freq="C", holidays=["2000-12-15"])
-    pd.bdate_range("2000-1-1", "2001-1-1", freq="C", holidays=[dt.date(2000, 12, 15)])
-    pd.bdate_range(
-        "2000-1-1", "2001-1-1", freq="C", holidays=[pd.Timestamp(2000, 12, 15)]
+    check(
+        assert_type(
+            pd.bdate_range("2000-1-1", "2001-1-1", freq="C", holidays=["2000-12-15"]),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
     )
-    pd.bdate_range(
-        "2000-1-1", "2001-1-1", freq="C", holidays=[np.datetime64("2000-12-15")]
+    check(
+        assert_type(
+            pd.bdate_range(
+                "2000-1-1", "2001-1-1", freq="C", holidays=[dt.date(2000, 12, 15)]
+            ),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
     )
-    pd.bdate_range(
-        "2000-1-1", "2001-1-1", freq="C", holidays=[dt.datetime(2000, 12, 15)]
+    check(
+        assert_type(
+            pd.bdate_range(
+                "2000-1-1", "2001-1-1", freq="C", holidays=[pd.Timestamp(2000, 12, 15)]
+            ),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
     )
-    pd.bdate_range(
-        "2000-1-1", "2001-1-1", freq="C", holidays=[dt.date(2000, 12, 15)], name=("a",)
+    check(
+        assert_type(
+            pd.bdate_range(
+                "2000-1-1", "2001-1-1", freq="C", holidays=[np.datetime64("2000-12-15")]
+            ),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.bdate_range(
+                "2000-1-1", "2001-1-1", freq="C", holidays=[dt.datetime(2000, 12, 15)]
+            ),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(
+            pd.bdate_range(
+                "2000-1-1",
+                "2001-1-1",
+                freq="C",
+                holidays=[dt.date(2000, 12, 15)],
+                name=("a",),
+            ),
+            pd.DatetimeIndex,
+        ),
+        pd.DatetimeIndex,
     )
 
 

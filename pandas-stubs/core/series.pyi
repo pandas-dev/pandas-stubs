@@ -1205,7 +1205,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @property
     def str(
         self,
-    ) -> StringMethods[
+    ) -> StringMethods[  # pyrefly: ignore[bad-specialization]
         Self,
         DataFrame,
         Series[bool],
@@ -4163,7 +4163,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> _T: ...
     def to_list(self) -> list[S1]: ...
     @overload  # type: ignore[override]
-    def to_numpy(
+    def to_numpy(  # pyrefly: ignore[bad-override]
         self: Series[Timestamp],
         dtype: None = None,
         copy: bool = False,

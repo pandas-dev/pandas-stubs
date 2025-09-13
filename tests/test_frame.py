@@ -462,7 +462,7 @@ def test_types_drop() -> None:
     check(assert_type(df.drop(index=[0]), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop(index=1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.drop(labels=0), pd.DataFrame), pd.DataFrame)
-    assert assert_type(df.drop([0, 0], inplace=True), None) is None
+    check(assert_type(df.drop([0, 0], inplace=True), None), type(None))
     to_drop: list[str] = ["col1"]
     check(assert_type(df.drop(columns=to_drop), pd.DataFrame), pd.DataFrame)
     # GH 302
@@ -2967,8 +2967,8 @@ def test_types_ffill() -> None:
         assert_type(df.ffill(inplace=False, limit_area="inside"), pd.DataFrame),
         pd.DataFrame,
     )
-    assert assert_type(df.ffill(inplace=True), None) is None
-    assert assert_type(df.ffill(inplace=True, limit_area="outside"), None) is None
+    check(assert_type(df.ffill(inplace=True), None), type(None))
+    check(assert_type(df.ffill(inplace=True, limit_area="outside"), None), type(None))
 
 
 def test_types_bfill() -> None:
@@ -2980,8 +2980,8 @@ def test_types_bfill() -> None:
         assert_type(df.bfill(inplace=False, limit_area="inside"), pd.DataFrame),
         pd.DataFrame,
     )
-    assert assert_type(df.bfill(inplace=True), None) is None
-    assert assert_type(df.bfill(inplace=True, limit_area="outside"), None) is None
+    check(assert_type(df.bfill(inplace=True), None), type(None))
+    check(assert_type(df.bfill(inplace=True, limit_area="outside"), None), type(None))
 
 
 def test_types_replace() -> None:
@@ -2989,7 +2989,7 @@ def test_types_replace() -> None:
     df = pd.DataFrame([[1, 2, 3]])
     check(assert_type(df.replace(1, 2), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.replace(1, 2, inplace=False), pd.DataFrame), pd.DataFrame)
-    assert assert_type(df.replace(1, 2, inplace=True), None) is None
+    check(assert_type(df.replace(1, 2, inplace=True), None), type(None))
 
 
 def test_dataframe_replace() -> None:
@@ -3285,12 +3285,12 @@ def test_frame_ndarray_assignmment() -> None:
 
 def test_not_hashable() -> None:
     # GH 113
-    assert assert_type(pd.DataFrame.__hash__, None) is None
-    assert assert_type(pd.DataFrame().__hash__, None) is None
-    assert assert_type(pd.Series.__hash__, None) is None
-    assert assert_type(pd.Series([], dtype=object).__hash__, None) is None
-    assert assert_type(pd.Index.__hash__, None) is None
-    assert assert_type(pd.Index([]).__hash__, None) is None
+    check(assert_type(pd.DataFrame.__hash__, None), type(None))
+    check(assert_type(pd.DataFrame().__hash__, None), type(None))
+    check(assert_type(pd.Series.__hash__, None), type(None))
+    check(assert_type(pd.Series([], dtype=object).__hash__, None), type(None))
+    check(assert_type(pd.Index.__hash__, None), type(None))
+    check(assert_type(pd.Index([]).__hash__, None), type(None))
 
     def test_func(_: Hashable):
         pass
@@ -4170,9 +4170,11 @@ def test_insert_newvalues() -> None:
     df = pd.DataFrame({"a": [1, 2]})
     ab = pd.DataFrame({"col1": [1, 2], "col2": [3, 4]})
     ef = pd.DataFrame({"z": [4, 5, 6]})
-    assert assert_type(df.insert(loc=0, column="b", value=None), None) is None
-    assert assert_type(ab.insert(loc=0, column="newcol", value=[99, 99]), None) is None
-    assert assert_type(ef.insert(loc=0, column="g", value=4), None) is None
+    check(assert_type(df.insert(loc=0, column="b", value=None), None), type(None))
+    check(
+        assert_type(ab.insert(loc=0, column="newcol", value=[99, 99]), None), type(None)
+    )
+    check(assert_type(ef.insert(loc=0, column="g", value=4), None), type(None))
 
 
 def test_astype() -> None:

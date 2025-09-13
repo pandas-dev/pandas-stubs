@@ -95,7 +95,7 @@ and `tags`, are recognized by type checkers as `Series[Any]`.  The code snippet
 runs fine at runtime. In the stub for type checking, however, we restrict
 generic Series to perform arithmetic operations only with numeric types, and
 give `Series[Any]` for the results. For `Timedelta`, `Timestamp`, `str`, etc.,
-arithmetic is restricted to `Series[Any]` and the result is either undefined, 
+arithmetic is restricted to `Series[Any]` and the result is either undefined,
 showing `Unknown` and errors, or `Never`. Users are encouraged to cast such
 generic Series to ones with concrete types, so that type checkers can provide
 meaningful results.
