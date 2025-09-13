@@ -1198,7 +1198,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @property
     def str(
         self,
-    ) -> StringMethods[
+    ) -> StringMethods[  # pyrefly: ignore[bad-specialization]
         Self,
         DataFrame,
         Series[bool],

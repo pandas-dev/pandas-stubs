@@ -229,7 +229,7 @@ class DFCallable3(Protocol[P]):  # ty: ignore[invalid-argument-type]
 class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     # error: Overload 3 for "apply" will never be used because its parameters overlap overload 1
     @overload  # type: ignore[override]
-    def apply(
+    def apply(  # pyrefly: ignore[bad-override]
         self,
         func: DFCallable1[P],
         /,

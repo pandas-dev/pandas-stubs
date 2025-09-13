@@ -1,5 +1,6 @@
+from typing import Any
+
 import numpy as np
-from numpy import typing as npt  # noqa: F401
 import pandas as pd
 from typing_extensions import assert_type
 
@@ -76,18 +77,22 @@ def test_mul_numpy_array() -> None:
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__rmul__` cannot override. At runtime, they return
     # `Series`s.
-    # `mypy` thinks the return types are `Any`, which is a bug.
+    # microsoft/pyright#10924
     check(
-        assert_type(b * left_i, "npt.NDArray[np.bool_]"), pd.Series  # type: ignore[assert-type]
+        assert_type(b * left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
     )
     check(
-        assert_type(i * left_i, "npt.NDArray[np.int64]"), pd.Series  # type: ignore[assert-type]
+        assert_type(i * left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
     )
     check(
-        assert_type(f * left_i, "npt.NDArray[np.float64]"), pd.Series  # type: ignore[assert-type]
+        assert_type(f * left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
     )
     check(
-        assert_type(c * left_i, "npt.NDArray[np.complex128]"), pd.Series  # type: ignore[assert-type]
+        assert_type(c * left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
     )
 
     check(assert_type(left_i.mul(b), pd.Series), pd.Series)
