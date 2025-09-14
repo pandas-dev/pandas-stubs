@@ -88,7 +88,7 @@ def test_sub_i_numpy_array() -> None:
 
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__rsub__` cannot override. At runtime, they return
-    # `Series`s.
+    # `Series`.
     # microsoft/pyright#10924
     check(
         assert_type(b - left_i, Any),  # pyright: ignore[reportAssertTypeFailure]

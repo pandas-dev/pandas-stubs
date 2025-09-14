@@ -78,7 +78,7 @@ def test_sub_numpy_array() -> None:
 
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__rsub__` cannot override. At runtime, they return
-    # `Series`s with the correct element type.
+    # `Series` with the correct element type.
     check(assert_type(b - left, NoReturn), pd.Series, np.floating)
     check(assert_type(i - left, "npt.NDArray[np.int64]"), pd.Series, np.floating)
     check(assert_type(f - left, "npt.NDArray[np.float64]"), pd.Series, np.floating)
