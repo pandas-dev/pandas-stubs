@@ -59,13 +59,13 @@ def test_add_numpy_array() -> None:
 
     # `numpy` typing gives `npt.NDArray[np.int64]` in the static type
     # checking, where our `__radd__` cannot override. At runtime, they return
-    # `Index`s.
+    # `Index`es.
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(i + left, "npt.NDArray[np.int64]")
     if sys.version_info >= (3, 11):
         # `numpy` typing gives `npt.NDArray[np.int64]` in the static type
         # checking, where our `__radd__` cannot override. At runtime, they return
-        # `Index`s.
+        # `Index`es.
         check(assert_type(r0 + left, "npt.NDArray[np.str_]"), pd.Index, str)
     else:
         # Python 3.10 uses NumPy 2.2.6, and it has for r0 ndarray[tuple[int,...], dtype[str_]]
