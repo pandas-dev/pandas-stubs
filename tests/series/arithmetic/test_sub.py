@@ -90,7 +90,7 @@ def test_sub_i_numpy_array() -> None:
     check(assert_type(left_i - c, pd.Series), pd.Series)
 
     # `numpy` typing gives the corresponding `ndarray`s in the static type
-    # checking, where our `__rsub_` cannot override. At runtime, they return
+    # checking, where our `__rsub__` cannot override. At runtime, they return
     # `Series`.
     # microsoft/pyright#10924
     check(
