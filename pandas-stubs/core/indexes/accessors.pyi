@@ -440,7 +440,7 @@ class _dtDescriptor(CombinedDatetimelikeProperties, Generic[S1]):
     ) -> TimestampProperties: ...
     @overload
     def __get__(
-        self, instance: Series[Timedelta], owner: Any
+        self, instance: Series[Timedelta] | TimedeltaSeries, owner: Any
     ) -> TimedeltaProperties: ...
     @overload
     def __get__(
