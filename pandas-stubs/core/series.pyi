@@ -4002,7 +4002,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> float: ...
     @overload
     def median(
-        self: Series[float],
+        self: Series[Never],
         axis: AxisIndex | None = 0,
         skipna: _bool = True,
         level: None = ...,
@@ -4018,6 +4018,15 @@ class Series(IndexOpsMixin[S1], NDFrame):
         numeric_only: _bool = False,
         **kwargs: Any,
     ) -> Timestamp: ...
+    @overload
+    def median(
+        self,
+        axis: AxisIndex | None = 0,
+        skipna: _bool = True,
+        level: None = ...,
+        numeric_only: _bool = False,
+        **kwargs: Any,
+    ) -> float: ...
     def min(
         self,
         axis: AxisIndex | None = 0,
