@@ -4373,7 +4373,7 @@ class TimedeltaSeries(_SeriesSubclassBase[Timedelta, np.timedelta64]):
         numeric_only: _bool = ...,
         **kwargs: Any,
     ) -> Timedelta: ...
-    def median(  # type: ignore[override]
+    def median(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         axis: AxisIndex | None = 0,
         skipna: _bool = ...,
