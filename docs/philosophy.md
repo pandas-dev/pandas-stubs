@@ -63,42 +63,43 @@ The type `Series[Timestamp]` is the result of creating a series from `pd.to_date
 the type `TimedeltaSeries` is the result of subtracting two `Series[Timestamp]` as well as
 the result of `pd.to_timedelta()`.
 
-### Generic Series have restricted arithmetic
+### Progressive arithmetic typing for generic Series
 
 Consider the following Series from a DataFrame:
 
 ```python
 import pandas as pd
 from typing_extensions import reveal_type
-from typing import TYPE_CHECKING, cast
-
-if TYPE_CHECKING:
-    from pandas.core.series import TimestampSeries  # noqa: F401
 
 
-frame = pd.DataFrame({"timestamp": [pd.Timestamp(2025, 8, 26)], "tag": ["one"], "value": [1.0]})
+frame = pd.DataFrame({"timestamp": [pd.Timestamp(2025, 9, 15)], "tag": ["one"], "value": [1.0]})
 values = frame["value"]
 reveal_type(values)  # type checker: Series[Any], runtime: Series
 new_values = values + 2
 
 timestamps = frame["timestamp"]
-reveal_type(timestamps)  # type checker: Series[Any], runtime: Series
-reveal_type(timestamps - pd.Timestamp(2025, 7, 12))  # type checker: Unknown and error, runtime: Series
-reveal_type(cast("TimestampSeries", timestamps) - pd.Timestamp(2025, 7, 12))  # type checker: TimedeltaSeries, runtime: Series
+reveal_type(timestamps - pd.Timestamp(2025, 7, 12))  # type checker: TimedeltaSeries, runtime: Series
 
 tags = frame["tag"]
-reveal_type("suffix" + tags)  # type checker: Never, runtime: Series
+reveal_type("suffix" + tags)  # type checker: Series[str], runtime: Series
 ```
 
-Since they are taken from a DataFrame, all three of them, `values`, `timestamps`
+Since these Series are taken from a DataFrame, all three of them, `values`, `timestamps`
 and `tags`, are recognized by type checkers as `Series[Any]`.  The code snippet
-runs fine at runtime. In the stub for type checking, however, we restrict
-generic Series to perform arithmetic operations only with numeric types, and
-give `Series[Any]` for the results. For `Timedelta`, `Timestamp`, `str`, etc.,
-arithmetic is restricted to `Series[Any]` and the result is either undefined,
-showing `Unknown` and errors, or `Never`. Users are encouraged to cast such
-generic Series to ones with concrete types, so that type checkers can provide
-meaningful results.
+runs fine at runtime.  In the stub for type checking, when there is only one
+valid outcome, we provide the typing of this outcome as the result.  For
+example, if a `Timestamp` is subtracted from a `Series[Any]`, or a `str`
+is added to a `Series[Any]`, valid outcomes can only be `TimedeltaSeries` and
+`Series[str]`, respectively, which will be realized when the left operands
+are actually `Series[Timestamp]` and `Series[str]`, respectively.
+
+Note that static type checkers cannot determine the contents of a `Series[Any]`
+at runtime.  Users are invited to verify the results provided progressivly by the
+type checkers and be warned if they are unreasonable.
+
+When there are several possible valid outcomes of an arithmetic expression,
+for example numeric types `Series[bool]`, `Series[int]`, etc., `Series[Any]` 
+will be given as the resulting typing.
 
 ### Interval is Generic
 
