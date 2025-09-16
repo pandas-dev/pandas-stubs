@@ -2211,23 +2211,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __and__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
     def __eq__(self, other: object) -> Series[_bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    @overload
-    def __floordiv__(
-        self: Series[Timedelta], other: float | Sequence[float]
-    ) -> TimedeltaSeries: ...
-    @overload
-    def __floordiv__(
-        self: Series[Timedelta],
-        other: (
-            timedelta
-            | np.timedelta64
-            | np_ndarray_td
-            | TimedeltaIndex
-            | Series[Timedelta]
-            | TimedeltaSeries
-        ),
-    ) -> Series[int]: ...
-    @overload
     def __floordiv__(self, other: num | _ListLike | Series[S1]) -> Series[int]: ...
     def __ge__(  # type: ignore[override]
         self, other: S1 | _ListLike | Series[S1] | datetime | timedelta | date
@@ -2750,19 +2733,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __rand__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
     def __rdivmod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    @overload
-    def __rfloordiv__(
-        self: Series[Timedelta],
-        other: (
-            timedelta
-            | np.timedelta64
-            | np_ndarray_td
-            | TimedeltaIndex
-            | Series[Timedelta]
-            | TimedeltaSeries
-        ),
-    ) -> Series[int]: ...
-    @overload
     def __rfloordiv__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __rmod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __rpow__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
@@ -3034,7 +3004,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def sub(
         self: Series[Timestamp],
-        other: datetime | np.datetime64 | np_ndarray_dt,
+        other: datetime | Sequence[datetime] | np.datetime64 | np_ndarray_dt,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -3052,6 +3022,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self: Series[Timestamp],
         other: (
             timedelta
+            | Sequence[timedelta]
             | np.timedelta64
             | np_ndarray_td
             | TimedeltaIndex
@@ -3177,8 +3148,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
             | Series[complex]
         ),
     ) -> Series[complex]: ...
-    # @overload
-    # def __rsub__(self: Series[Timestamp], other: np_ndarray_td) -> Never: ...
     @overload
     def __rsub__(
         self: Series[Timestamp], other: datetime | np.datetime64 | np_ndarray_dt
@@ -3322,18 +3291,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: int = 0,
     ) -> Series[complex]: ...
-    # @overload
-    # def rsub(
-    #     self: Series[Timestamp],
-    #     other: np_ndarray_td,
-    #     level: Level | None = None,
-    #     fill_value: float | None = None,
-    #     axis: int = 0,
-    # ) -> Never: ...
     @overload
     def rsub(
         self: Series[Timestamp],
-        other: datetime | np.datetime64 | np_ndarray_dt,
+        other: datetime | Sequence[datetime] | np.datetime64 | np_ndarray_dt,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,

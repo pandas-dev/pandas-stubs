@@ -118,6 +118,8 @@ def test_add_numpy_array() -> None:
     # `Series`.
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(s + left, "npt.NDArray[np.datetime64]")
+    # Here even the dtype of `NDArray` is in the wrong direction.
+    # `np.datetime64` would be more sensible.
     check(assert_type(d + left, "npt.NDArray[np.timedelta64]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:

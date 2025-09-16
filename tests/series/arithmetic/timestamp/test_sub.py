@@ -92,11 +92,12 @@ def test_sub_py_sequence() -> None:
         _1 = s - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _b = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-        left.sub(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.sub(d)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+    left.sub(s)
+    left.sub(d)
 
-        left.rsub(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.rsub(d)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+    left.rsub(s)
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.rsub(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
 def test_sub_numpy_array() -> None:

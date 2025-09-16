@@ -99,7 +99,7 @@ type checkers and be warned if they are unreasonable.
 
 When there are several possible valid outcomes of an arithmetic expression,
 for example numeric types `Series[bool]`, `Series[int]`, etc., `Series[Any]` 
-will be given as the resulting typing.
+will be given as the resulting type of the arithmetic operation.
 
 ### Interval is Generic
 

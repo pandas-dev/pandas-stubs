@@ -167,12 +167,10 @@ def test_sub_ts_py_datetime() -> None:
         _5 = a - left_ts  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(left_ts.sub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    if TYPE_CHECKING_INVALID_USAGE:
-        left_ts.sub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left_ts.sub(a), "TimedeltaSeries"), pd.Series, pd.Timedelta)
 
     check(assert_type(left_ts.rsub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    if TYPE_CHECKING_INVALID_USAGE:
-        left_ts.rsub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left_ts.rsub(a), "TimedeltaSeries"), pd.Series, pd.Timedelta)
 
 
 def test_sub_ts_numpy_datetime() -> None:
