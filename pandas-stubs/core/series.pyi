@@ -3050,10 +3050,13 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: int = 0,
     ) -> TimedeltaSeries: ...
     @overload
-    def __rsub__(
+    def __rsub__(  # type: ignore[overload-overlap]
         self: Series[Never],
         other: (
             complex
+            | datetime
+            | np.datetime64
+            | np_ndarray_dt
             | NumListLike
             | Index[T_COMPLEX]
             | Series[T_COMPLEX]
@@ -3160,13 +3163,18 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[Timedelta]: ...
     @overload
     def __rsub__(
-        self: Series[Timedelta], other: Series[Timestamp]
+        self: Series[Timedelta],
+        other: datetime | np.datetime64 | np_ndarray_dt | Series[Timestamp],
     ) -> Series[Timestamp]: ...
     @overload
-    def rsub(
+    def rsub(  # type: ignore[overload-overlap]
         self: Series[Never],
         other: (
             complex
+            | datetime
+            | Sequence[datetime]
+            | np.datetime64
+            | np_ndarray_dt
             | NumListLike
             | Index[T_COMPLEX]
             | Series[T_COMPLEX]
@@ -3312,7 +3320,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def rsub(
         self: Series[Timedelta],
-        other: Series[Timestamp],
+        other: datetime | np.datetime64 | np_ndarray_dt | Series[Timestamp],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
