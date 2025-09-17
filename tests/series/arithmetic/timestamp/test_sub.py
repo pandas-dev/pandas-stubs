@@ -86,7 +86,9 @@ def test_sub_py_sequence() -> None:
     d = [timedelta(seconds=1)]
 
     if TYPE_CHECKING_INVALID_USAGE:
+        # Series[Timestamp] - Sequence[timestamp] should work, see pandas-dev/pandas#62353
         _0 = left - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        # Series[Timestamp] - Sequence[timedelta] should work, see pandas-dev/pandas#62353
         _a = left - d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
         _1 = s - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]

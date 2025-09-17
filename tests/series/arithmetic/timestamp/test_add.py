@@ -92,16 +92,19 @@ def test_add_py_sequence() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         _0 = left + s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        # Series[Timestamp] + Sequence[timedelta] should work, see pandas-dev/pandas#62353
         _a = left + d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
         _1 = s + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _b = d + left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-        left.add(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.add(d)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    left.add(d)
 
-        left.radd(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.radd(d)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.radd(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    left.radd(d)
 
 
 def test_add_numpy_array() -> None:

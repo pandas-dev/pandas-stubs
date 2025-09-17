@@ -1892,6 +1892,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self: Series[Timestamp],
         other: (
             timedelta
+            | Sequence[timedelta]
             | np.timedelta64
             | np_ndarray_td
             | TimedeltaIndex
@@ -2169,6 +2170,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self: Series[Timestamp],
         other: (
             timedelta
+            | Sequence[timedelta]
             | np.timedelta64
             | np_ndarray_td
             | TimedeltaIndex
