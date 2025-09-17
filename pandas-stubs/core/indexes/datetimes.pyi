@@ -66,7 +66,7 @@ class DatetimeIndex(
     # Override the array property to return DatetimeArray instead of ExtensionArray
     @property
     def array(self) -> DatetimeArray: ...
-    
+
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
     @overload  # type: ignore[override]

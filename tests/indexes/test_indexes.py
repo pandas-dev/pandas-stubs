@@ -12,10 +12,9 @@ from typing import (
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
+from pandas.core.arrays import DatetimeArray
 from pandas.core.arrays.categorical import Categorical
 from pandas.core.indexes.base import Index
-from pandas.core.arrays import DatetimeArray
-from typing import assert_type
 from typing_extensions import (
     Never,
     assert_type,
@@ -1520,13 +1519,12 @@ def test_period_index_asof_locs() -> None:
     )
 
 
-def test_datetime_index_array_property():
+def test_datetime_index_array_property() -> None:
     """Test that DatetimeIndex.array returns DatetimeArray instead of ExtensionArray."""
-    # Test with to_datetime
+    # Test with pd.to_datetime().array - this is the main issue reported
     arr = pd.to_datetime(["2020-01-01", "2020-01-02"]).array
-    assert_type(arr, DatetimeArray)
-    
-    # Test with DatetimeIndex directly
+    check(assert_type(arr, DatetimeArray), DatetimeArray)
+
+    # Test with DatetimeIndex constructor directly
     dt_index = pd.DatetimeIndex(["2020-01-01", "2020-01-02"])
-    assert_type(dt_index.array, DatetimeArray)
-    
+    check(assert_type(dt_index.array, DatetimeArray), DatetimeArray)
