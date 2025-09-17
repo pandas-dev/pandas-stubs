@@ -43,11 +43,9 @@ if TYPE_CHECKING:
         OffsetSeries,
         PeriodSeries,
         TimedeltaSeries,
-        TimestampSeries,
     )
 else:
     TimedeltaSeries: TypeAlias = pd.Series
-    TimestampSeries: TypeAlias = pd.Series
     PeriodSeries: TypeAlias = pd.Series
     OffsetSeries: TypeAlias = pd.Series
 
@@ -1161,10 +1159,14 @@ def test_timestamp_add_sub() -> None:
     check(assert_type(as_timedelta_index + ts, pd.DatetimeIndex), pd.DatetimeIndex)
 
     check(
-        assert_type(ts + as_timedelta_series, TimestampSeries), pd.Series, pd.Timestamp
+        assert_type(ts + as_timedelta_series, "pd.Series[pd.Timestamp]"),
+        pd.Series,
+        pd.Timestamp,
     )
     check(
-        assert_type(as_timedelta_series + ts, TimestampSeries), pd.Series, pd.Timestamp
+        assert_type(as_timedelta_series + ts, "pd.Series[pd.Timestamp]"),
+        pd.Series,
+        pd.Timestamp,
     )
 
     check(
@@ -1187,7 +1189,9 @@ def test_timestamp_add_sub() -> None:
     check(assert_type(ts - as_offset, pd.Timestamp), pd.Timestamp)
     check(assert_type(ts - as_timedelta_index, pd.DatetimeIndex), pd.DatetimeIndex)
     check(
-        assert_type(ts - as_timedelta_series, TimestampSeries), pd.Series, pd.Timestamp
+        assert_type(ts - as_timedelta_series, "pd.Series[pd.Timestamp]"),
+        pd.Series,
+        pd.Timestamp,
     )
     check(
         assert_type(ts - as_np_ndarray_td64, npt.NDArray[np.datetime64]),
@@ -1265,7 +1269,7 @@ def test_timestamp_cmp_scalar() -> None:
 def test_timestamp_cmp_series() -> None:
     ts = pd.Timestamp(year=2000, month=3, day=24, hour=12, minute=27)
     ts_ser = pd.Series(pd.DatetimeIndex(["2000-1-1", "2000-1-2"]))
-    check(assert_type(ts_ser, TimestampSeries), pd.Series, pd.Timestamp)
+    check(assert_type(ts_ser, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     # >, <=
     gt1 = check(assert_type(ts > ts_ser, "pd.Series[bool]"), pd.Series, np.bool)
@@ -1684,7 +1688,7 @@ def test_types_timestamp_series_comparisons() -> None:
     data = pd.date_range("2022-01-01", "2022-01-31", freq="D")
     s = pd.Series(data)
     ts2 = pd.Timestamp("2022-01-15")
-    check(assert_type(s, TimestampSeries), pd.Series, pd.Timestamp)
+    check(assert_type(s, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
     check(assert_type(ts2 <= s, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(ts2 >= s, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(ts2 < s, "pd.Series[bool]"), pd.Series, np.bool_)

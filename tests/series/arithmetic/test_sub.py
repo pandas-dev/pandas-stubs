@@ -2,19 +2,22 @@ from datetime import (
     datetime,
     timedelta,
 )
-from typing import Any
+from typing import (
+    TYPE_CHECKING,
+    Any,
+)
 
 import numpy as np
 import pandas as pd
-from typing_extensions import (
-    Never,
-    assert_type,
-)
+from typing_extensions import assert_type
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
+
+if TYPE_CHECKING:
+    from pandas.core.series import TimedeltaSeries  # noqa: F401
 
 anchor = datetime(2025, 8, 18)
 
@@ -156,93 +159,118 @@ def test_sub_ts_py_datetime() -> None:
     s = anchor
     a = [s + timedelta(minutes=m) for m in range(3)]
 
+    check(assert_type(left_ts - s, "TimedeltaSeries"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left_ts - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        # Series[Any] (Timestamp) - Sequence[datetime] should work, see pandas-dev/pandas#62353
         _1 = left_ts - a  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _2 = left_td - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+    # Series[Any] (Timedelta) - datetime fails at runtime,
+    # which cannot be revealed by our static type checking
+    # _2 = left_td - s
+    if TYPE_CHECKING_INVALID_USAGE:
+        # Series[Any] (Timedelta) - Sequence[datetime] is not supported by Pandas,
+        # see pandas-dev/pandas#62353. Even if such __sub__ is supported
+        # it will fail at runtime here,
+        # which cannot be revealed by our static type checking
         _3 = left_td - a  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-        _4 = s - left_ts  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+    check(assert_type(s - left_ts, pd.Series), pd.Series, pd.Timedelta)
+    if TYPE_CHECKING_INVALID_USAGE:
+        # Sequence[datetime] - Series[Any] (Timestamp) should work, see pandas-dev/pandas#62353
         _5 = a - left_ts  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _6 = s - left_td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+    check(assert_type(s - left_td, pd.Series), pd.Series, pd.Timestamp)
+    if TYPE_CHECKING_INVALID_USAGE:
+        # Sequence[datetime] - Series[Any] (Timedelta) should work, see pandas-dev/pandas#62353
         _7 = a - left_td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-        left_ts.sub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_ts.sub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_td.sub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_td.sub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left_ts.sub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_ts.sub(a), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    # Series[Any] (Timedelta).sub(datetime or Sequence[datetime]) fails at runtime,
+    # which cannot be revealed by our static type checking
+    # left_td.sub(s)
+    # left_td.sub(a)
 
-        left_ts.rsub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_ts.rsub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_td.rsub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_td.rsub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left_ts.rsub(s), pd.Series), pd.Series, pd.Timedelta)
+    check(assert_type(left_ts.rsub(a), pd.Series), pd.Series, pd.Timedelta)
+    check(assert_type(left_td.rsub(s), pd.Series), pd.Series, pd.Timestamp)
+    check(assert_type(left_td.rsub(a), pd.Series), pd.Series, pd.Timestamp)
 
 
 def test_sub_ts_numpy_datetime() -> None:
-    """Test pd.Series[Any] (Timestamp | Timedelta) - numpy datetime(s)"""
+    """Test pd.Series[Any] (Timestamp) - numpy datetime(s)"""
     s = np.datetime64(anchor)
     a = np.array([s + np.timedelta64(m, "m") for m in range(3)], np.datetime64)
 
-    if TYPE_CHECKING_INVALID_USAGE:
-        # We would like to have _1, _3, _5 and _7 below as invalid, but numpy.ndarray.__rsub__ overrides our efforts
-        _0 = left_ts - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        # _1 = left_ts - a
-        _2 = left_td - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        # _3 = left_td - a
+    check(assert_type(left_ts - s, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_ts - a, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    # Series[Any] (Timedelta) - np.datetime64 or np.typing.NDArray[np.datetime64]
+    # fails at runtime,
+    # which cannot be revealed by our static type checking
+    # left_td - s
+    # left_td - a
 
-        _4 = s - left_ts  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        # _5 = a - left_ts
-        _6 = s - left_td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        # _7 = a - left_td
+    # `numpy` typing gives the corresponding `ndarray`s in the static type
+    # checking, where our `__rsub__` cannot override. At runtime, they return
+    # `Series`.
+    # microsoft/pyright#10924
+    check(assert_type(s - left_ts, pd.Series), pd.Series, pd.Timedelta)
+    check(
+        assert_type(a - left_ts, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+        pd.Timedelta,
+    )
+    check(assert_type(s - left_td, pd.Series), pd.Series, pd.Timestamp)
+    check(
+        assert_type(a - left_td, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+        pd.Timestamp,
+    )
 
-        left_ts.sub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_ts.sub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_td.sub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_td.sub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left_ts.sub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_ts.sub(a), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    # Series[Any] (Timedelta).sub(np.datetime64 or np.typing.NDArray[np.datetime64])
+    # fails at runtime,
+    # which cannot be revealed by our static type checking
+    # left_td.sub(s)
+    # left_td.sub(a)
 
-        left_ts.rsub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_ts.rsub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_td.rsub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left_td.rsub(a)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left_ts.rsub(s), pd.Series), pd.Series, pd.Timedelta)
+    check(assert_type(left_ts.rsub(a), pd.Series), pd.Series, pd.Timedelta)
+    check(assert_type(left_td.rsub(s), pd.Series), pd.Series, pd.Timestamp)
+    check(assert_type(left_td.rsub(a), pd.Series), pd.Series, pd.Timestamp)
 
 
 def test_sub_ts_pd_datetime() -> None:
-    """Test pd.Series[Any] (Timestamp | Timedelta) - Pandas datetime(s)"""
+    """Test pd.Series[Any] (Timestamp) - Pandas datetime(s)"""
     s = pd.Timestamp(anchor)
     a = pd.Series([s + pd.Timedelta(minutes=m) for m in range(3)])
 
-    if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left_ts - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        assert_type(left_ts - a, Never)
+    check(assert_type(left_ts - s, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(left_ts - a, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    # Series[Any] (Timedelta) - Timestamp or Series[Timestamp]
+    # fails at runtime,
+    # which cannot be revealed by our static type checking
+    # left_td - s
+    # left_td - a
 
-        _2 = left_td - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        assert_type(left_td - a, Never)
+    check(assert_type(s - left_ts, pd.Series), pd.Series, pd.Timedelta)
+    check(assert_type(a - left_ts, pd.Series), pd.Series, pd.Timedelta)
+    check(assert_type(s - left_td, pd.Series), pd.Series, pd.Timestamp)
+    check(assert_type(a - left_td, pd.Series), pd.Series, pd.Timestamp)
 
-        _4 = s - left_ts  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        assert_type(a - left_ts, Never)
+    check(assert_type(left_ts.sub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(left_ts.sub(a), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta
+    )
+    # Series[Any] (Timedelta).sub(Timestamp or Series[Timestamp])
+    # fails at runtime,
+    # which cannot be revealed by our static type checking
+    # left_td.sub(s)
+    # left_td.sub(a)
 
-        _6 = s - left_td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        assert_type(a - left_td, Never)
-
-        left_ts.sub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-
-        def _type_checking_enabler_0() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_ts.sub(a), Never)
-
-        left_td.sub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-
-        def _type_checking_enabler_1() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_td.sub(a), Never)
-
-        left_ts.rsub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-
-        def _type_checking_enabler_2() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_ts.rsub(a), Never)
-
-        left_td.rsub(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-
-        def _type_checking_enabler_3() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_td.rsub(a), Never)
+    check(assert_type(left_ts.rsub(s), pd.Series), pd.Series, pd.Timedelta)
+    check(assert_type(left_ts.rsub(a), pd.Series), pd.Series, pd.Timedelta)
+    check(assert_type(left_td.rsub(s), pd.Series), pd.Series, pd.Timestamp)
+    check(assert_type(left_td.rsub(a), pd.Series), pd.Series, pd.Timestamp)
 
 
 def test_sub_str_py_str() -> None:
