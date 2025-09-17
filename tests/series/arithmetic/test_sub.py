@@ -202,7 +202,7 @@ def test_sub_ts_numpy_datetime() -> None:
 
     check(assert_type(left_ts - s, "TimedeltaSeries"), pd.Series, pd.Timedelta)
     check(assert_type(left_ts - a, "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    # Series[Any] (Timedelta) - np.datetime64 or np.NDArray[np.datetime64]
+    # Series[Any] (Timedelta) - np.datetime64 or np.typing.NDArray[np.datetime64]
     # fails at runtime,
     # which cannot be revealed by our static type checking
     # left_td - s
@@ -227,7 +227,7 @@ def test_sub_ts_numpy_datetime() -> None:
 
     check(assert_type(left_ts.sub(s), "TimedeltaSeries"), pd.Series, pd.Timedelta)
     check(assert_type(left_ts.sub(a), "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    # Series[Any] (Timedelta).sub(np.datetime64 or np.NDArray[np.datetime64])
+    # Series[Any] (Timedelta).sub(np.datetime64 or np.typing.NDArray[np.datetime64])
     # fails at runtime,
     # which cannot be revealed by our static type checking
     # left_td.sub(s)
@@ -246,7 +246,7 @@ def test_sub_ts_pd_datetime() -> None:
 
     check(assert_type(left_ts - s, "TimedeltaSeries"), pd.Series, pd.Timedelta)
     check(assert_type(left_ts - a, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
-    # Series[Any] (Timedelta) - Timestamp or Seriesp[Timestamp]
+    # Series[Any] (Timedelta) - Timestamp or Series[Timestamp]
     # fails at runtime,
     # which cannot be revealed by our static type checking
     # left_td - s
@@ -261,7 +261,7 @@ def test_sub_ts_pd_datetime() -> None:
     check(
         assert_type(left_ts.sub(a), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta
     )
-    # Series[Any] (Timedelta).sub(Timestamp or Seriesp[Timestamp])
+    # Series[Any] (Timedelta).sub(Timestamp or Series[Timestamp])
     # fails at runtime,
     # which cannot be revealed by our static type checking
     # left_td.sub(s)
