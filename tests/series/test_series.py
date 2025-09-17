@@ -3948,24 +3948,18 @@ def test_timedelta_index_cumprod() -> None:
     offset_series = as_period_series - as_period_series
 
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(pd.Series(["a", "b"]).cumprod(), Never)
+        offset_series.cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(offset_series.cumprod(), Never)
+        pd.Series([pd.Timedelta(0), pd.Timedelta(1)]).cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(pd.Series([pd.Timedelta(0), pd.Timedelta(1)]).cumprod(), Never)
+        pd.Series(  # type: ignore[misc]
+            [pd.Timestamp("2024-04-29"), pd.Timestamp("2034-08-28")]
+        ).cumprod()  # pyright: ignore[reportAttributeAccessIssue]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(
-            pd.Series(
-                [pd.Timestamp("2024-04-29"), pd.Timestamp("2034-08-28")]
-            ).cumprod(),
-            Never,
-        )
-
-    if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(as_period_series.cumprod(), Never)
+        as_period_series.cumprod()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 
 
 def test_series_str_methods() -> None:
