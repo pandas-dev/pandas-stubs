@@ -8,7 +8,7 @@ from tests import (
 )
 
 
-def test_cumul_any_int() -> None:
+def test_cumul_any_float() -> None:
     series = pd.DataFrame({"A": [1.0, float("nan"), 2.0]})["A"]
     check(assert_type(series.cumprod(), pd.Series), pd.Series, np.floating)
 
