@@ -19,9 +19,9 @@ from typing import (
 import numpy as np
 from pandas import (
     DatetimeIndex,
-    Index,
     TimedeltaIndex,
 )
+from pandas.core.indexes.base import Index
 from pandas.core.series import Series
 from typing_extensions import (
     Never,
@@ -36,10 +36,11 @@ from pandas._libs.tslibs import (
     Timedelta,
 )
 from pandas._typing import (
+    ShapeT,
     TimestampNonexistent,
     TimeUnit,
-    np_ndarray_bool,
-    npt,
+    np_1darray,
+    np_ndarray,
 )
 
 _Ambiguous: TypeAlias = bool | Literal["raise", "NaT"]
@@ -111,7 +112,7 @@ class Timestamp(datetime, SupportsIndex):
     @classmethod
     def utcfromtimestamp(cls, ts: float) -> Self: ...
     @classmethod
-    def today(cls, tz: _tzinfo | str | None = ...) -> Self: ...
+    def today(cls, tz: _tzinfo | str | None = None) -> Self: ...
     @classmethod
     def fromordinal(
         cls,
@@ -119,7 +120,7 @@ class Timestamp(datetime, SupportsIndex):
         tz: _tzinfo | str | None = ...,
     ) -> Self: ...
     @classmethod
-    def now(cls, tz: _tzinfo | str | None = ...) -> Self: ...
+    def now(cls, tz: _tzinfo | str | None = None) -> Self: ...
     @classmethod
     def utcnow(cls) -> Self: ...
     # error: Signature of "combine" incompatible with supertype "datetime"
@@ -153,7 +154,19 @@ class Timestamp(datetime, SupportsIndex):
     ) -> Timestamp: ...
     def astimezone(self, tz: _tzinfo | None = ...) -> Self: ...
     def ctime(self) -> str: ...
-    def isoformat(self, sep: str = ..., timespec: str = ...) -> str: ...
+    def isoformat(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+        self,
+        sep: str = "T",
+        timespec: Literal[
+            "auto",
+            "hours",
+            "minutes",
+            "seconds",
+            "milliseconds",
+            "microseconds",
+            "nanoseconds",
+        ] = "auto",
+    ) -> str: ...
     @classmethod
     def strptime(cls, date_string: Never, format: Never) -> Never: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def utcoffset(self) -> timedelta | None: ...
@@ -164,44 +177,50 @@ class Timestamp(datetime, SupportsIndex):
     @overload  # type: ignore[override]
     def __le__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
+    def __le__(self, other: DatetimeIndex) -> np_1darray[np.bool]: ...
+    @overload
     def __le__(
-        self, other: DatetimeIndex | npt.NDArray[np.datetime64]
-    ) -> np_ndarray_bool: ...
+        self, other: np_ndarray[ShapeT, np.datetime64]
+    ) -> np_ndarray[ShapeT, np.bool]: ...
     @overload
     def __le__(self, other: Series[Timestamp]) -> Series[bool]: ...
     @overload  # type: ignore[override]
     def __lt__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
+    def __lt__(self, other: DatetimeIndex) -> np_1darray[np.bool]: ...
+    @overload
     def __lt__(
-        self, other: DatetimeIndex | npt.NDArray[np.datetime64]
-    ) -> np_ndarray_bool: ...
+        self, other: np_ndarray[ShapeT, np.datetime64]
+    ) -> np_ndarray[ShapeT, np.bool]: ...
     @overload
     def __lt__(self, other: Series[Timestamp]) -> Series[bool]: ...
     @overload  # type: ignore[override]
     def __ge__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
+    def __ge__(self, other: DatetimeIndex) -> np_1darray[np.bool]: ...
+    @overload
     def __ge__(
-        self, other: DatetimeIndex | npt.NDArray[np.datetime64]
-    ) -> np_ndarray_bool: ...
+        self, other: np_ndarray[ShapeT, np.datetime64]
+    ) -> np_ndarray[ShapeT, np.bool]: ...
     @overload
     def __ge__(self, other: Series[Timestamp]) -> Series[bool]: ...
     @overload  # type: ignore[override]
     def __gt__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
     @overload
+    def __gt__(self, other: DatetimeIndex) -> np_1darray[np.bool]: ...
+    @overload
     def __gt__(
-        self, other: DatetimeIndex | npt.NDArray[np.datetime64]
-    ) -> np_ndarray_bool: ...
+        self, other: np_ndarray[ShapeT, np.datetime64]
+    ) -> np_ndarray[ShapeT, np.bool]: ...
     @overload
     def __gt__(self, other: Series[Timestamp]) -> Series[bool]: ...
     # error: Signature of "__add__" incompatible with supertype "date"/"datetime"
     @overload  # type: ignore[override]
     def __add__(
-        self, other: npt.NDArray[np.timedelta64]
-    ) -> npt.NDArray[np.datetime64]: ...
+        self, other: np_ndarray[ShapeT, np.timedelta64]
+    ) -> np_ndarray[ShapeT, np.datetime64]: ...
     @overload
     def __add__(self, other: timedelta | np.timedelta64 | Tick) -> Self: ...
-    @overload
-    def __add__(self, other: Series[Timedelta]) -> Series[Timestamp]: ...
     @overload
     def __add__(self, other: TimedeltaIndex) -> DatetimeIndex: ...
     @overload
@@ -210,29 +229,27 @@ class Timestamp(datetime, SupportsIndex):
     def __radd__(self, other: TimedeltaIndex) -> DatetimeIndex: ...
     @overload
     def __radd__(
-        self, other: npt.NDArray[np.timedelta64]
-    ) -> npt.NDArray[np.datetime64]: ...
+        self, other: np_ndarray[ShapeT, np.timedelta64]
+    ) -> np_ndarray[ShapeT, np.datetime64]: ...
     # TODO: test dt64
     @overload  # type: ignore[override]
-    def __sub__(self, other: Timestamp | datetime | np.datetime64) -> Timedelta: ...
+    def __sub__(self, other: datetime | np.datetime64) -> Timedelta: ...
     @overload
     def __sub__(self, other: timedelta | np.timedelta64 | Tick) -> Self: ...
     @overload
     def __sub__(self, other: TimedeltaIndex) -> DatetimeIndex: ...
     @overload
-    def __sub__(self, other: Series[Timedelta]) -> Series[Timestamp]: ...
-    @overload
-    def __sub__(self, other: Series[Timestamp]) -> Series[Timedelta]: ...
-    @overload
     def __sub__(
-        self, other: npt.NDArray[np.timedelta64]
-    ) -> npt.NDArray[np.datetime64]: ...
+        self, other: np_ndarray[ShapeT, np.timedelta64]
+    ) -> np_ndarray[ShapeT, np.datetime64]: ...
     @overload
     def __eq__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __eq__(self, other: Series[Timestamp]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(self, other: npt.NDArray[np.datetime64] | Index) -> np_ndarray_bool: ...  # type: ignore[overload-overlap]
+    def __eq__(self, other: Index) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
+    @overload
+    def __eq__(self, other: np_ndarray[ShapeT, np.datetime64]) -> np_ndarray[ShapeT, np.bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: object) -> Literal[False]: ...
     @overload
@@ -240,7 +257,9 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __ne__(self, other: Series[Timestamp]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(self, other: npt.NDArray[np.datetime64] | Index) -> np_ndarray_bool: ...  # type: ignore[overload-overlap]
+    def __ne__(self, other: Index) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
+    @overload
+    def __ne__(self, other: np_ndarray[ShapeT, np.datetime64]) -> np_ndarray[ShapeT, np.bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: object) -> Literal[True]: ...
     def __hash__(self) -> int: ...
@@ -272,31 +291,31 @@ class Timestamp(datetime, SupportsIndex):
     def tz_localize(
         self,
         tz: TimeZones,
-        ambiguous: _Ambiguous = ...,
-        nonexistent: TimestampNonexistent = ...,
+        ambiguous: _Ambiguous = "raise",
+        nonexistent: TimestampNonexistent = "raise",
     ) -> Self: ...
     def normalize(self) -> Self: ...
     # TODO: round/floor/ceil could return NaT?
     def round(
         self,
         freq: str,
-        ambiguous: _Ambiguous = ...,
-        nonexistent: TimestampNonexistent = ...,
+        ambiguous: _Ambiguous = "raise",
+        nonexistent: TimestampNonexistent = "raise",
     ) -> Self: ...
     def floor(
         self,
         freq: str,
-        ambiguous: _Ambiguous = ...,
-        nonexistent: TimestampNonexistent = ...,
+        ambiguous: _Ambiguous = "raise",
+        nonexistent: TimestampNonexistent = "raise",
     ) -> Self: ...
     def ceil(
         self,
         freq: str,
-        ambiguous: _Ambiguous = ...,
-        nonexistent: TimestampNonexistent = ...,
+        ambiguous: _Ambiguous = "raise",
+        nonexistent: TimestampNonexistent = "raise",
     ) -> Self: ...
-    def day_name(self, locale: str | None = ...) -> str: ...
-    def month_name(self, locale: str | None = ...) -> str: ...
+    def day_name(self, locale: str | None = None) -> str: ...
+    def month_name(self, locale: str | None = None) -> str: ...
     @property
     def day_of_week(self) -> int: ...
     @property
@@ -318,6 +337,6 @@ class Timestamp(datetime, SupportsIndex):
     def daysinmonth(self) -> int: ...
     @property
     def unit(self) -> TimeUnit: ...
-    def as_unit(self, unit: TimeUnit, round_ok: bool = ...) -> Self: ...
+    def as_unit(self, unit: TimeUnit, round_ok: bool = True) -> Self: ...
     # To support slicing
     def __index__(self) -> int: ...

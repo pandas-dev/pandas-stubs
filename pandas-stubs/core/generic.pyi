@@ -57,7 +57,6 @@ from pandas._typing import (
     TimedeltaConvertibleTypes,
     TimeGrouperOrigin,
     TimestampConvertibleTypes,
-    ToTimestampHow,
     WriteBuffer,
 )
 
@@ -106,18 +105,18 @@ class NDFrame(indexing.IndexingMixin):
     def to_excel(
         self,
         excel_writer,
-        sheet_name: _str = ...,
-        na_rep: _str = ...,
+        sheet_name: _str = "Sheet1",
+        na_rep: _str = "",
         float_format: _str | None = ...,
         columns: _str | Sequence[_str] | None = ...,
-        header: _bool | list[_str] = ...,
-        index: _bool = ...,
+        header: _bool | list[_str] = True,
+        index: _bool = True,
         index_label: _str | Sequence[_str] | None = ...,
-        startrow: int = ...,
-        startcol: int = ...,
+        startrow: int = 0,
+        startcol: int = 0,
         engine: _str | None = ...,
-        merge_cells: ExcelWriterMergeCells = ...,
-        inf_rep: _str = ...,
+        merge_cells: ExcelWriterMergeCells = True,
+        inf_rep: _str = "inf",
         freeze_panes: tuple[int, int] | None = ...,
     ) -> None: ...
     @final
@@ -143,7 +142,8 @@ class NDFrame(indexing.IndexingMixin):
     def to_markdown(
         self,
         buf: FilePath | WriteBuffer[str],
-        mode: FileWriteMode | None = ...,
+        *,
+        mode: FileWriteMode = ...,
         index: _bool = ...,
         storage_options: StorageOptions = ...,
         **kwargs: Any,
@@ -152,6 +152,7 @@ class NDFrame(indexing.IndexingMixin):
     def to_markdown(
         self,
         buf: None = ...,
+        *,
         mode: FileWriteMode | None = ...,
         index: _bool = ...,
         storage_options: StorageOptions = ...,
@@ -163,9 +164,9 @@ class NDFrame(indexing.IndexingMixin):
         name: _str,
         con: str | sqlalchemy.engine.Connectable | sqlite3.Connection,
         schema: _str | None = ...,
-        if_exists: Literal["fail", "replace", "append"] = ...,
-        index: _bool = ...,
-        index_label: IndexLabel = ...,
+        if_exists: Literal["fail", "replace", "append"] = "fail",
+        index: _bool = True,
+        index_label: IndexLabel = None,
         chunksize: int | None = ...,
         dtype: DtypeArg | None = ...,
         method: (
@@ -181,15 +182,15 @@ class NDFrame(indexing.IndexingMixin):
     def to_pickle(
         self,
         path: FilePath | WriteBuffer[bytes],
-        compression: CompressionOptions = ...,
-        protocol: int = ...,
+        compression: CompressionOptions = "infer",
+        protocol: int = 5,
         storage_options: StorageOptions = ...,
     ) -> None: ...
     @final
     def to_clipboard(
         self,
-        excel: _bool = ...,
-        sep: _str | None = ...,
+        excel: _bool = True,
+        sep: _str | None = None,
         *,
         na_rep: _str = ...,
         float_format: _str | Callable[[object], _str] | None = ...,
@@ -410,27 +411,25 @@ class NDFrame(indexing.IndexingMixin):
     @final
     def convert_dtypes(
         self,
-        infer_objects: _bool = ...,
-        convert_string: _bool = ...,
-        convert_integer: _bool = ...,
-        convert_boolean: _bool = ...,
-        convert_floating: _bool = ...,
-        dtype_backend: DtypeBackend = ...,
+        infer_objects: _bool = True,
+        convert_string: _bool = True,
+        convert_integer: _bool = True,
+        convert_boolean: _bool = True,
+        convert_floating: _bool = True,
+        dtype_backend: DtypeBackend = "numpy_nullable",
     ) -> Self: ...
     @final
     def resample(
         self,
         rule: Frequency | dt.timedelta,
-        axis: Axis | _NoDefaultDoNotUse = ...,
-        closed: Literal["right", "left"] | None = ...,
-        label: Literal["right", "left"] | None = ...,
-        convention: ToTimestampHow = ...,
-        kind: Literal["period", "timestamp"] | None = ...,
-        on: Level | None = ...,
-        level: Level | None = ...,
-        origin: TimeGrouperOrigin | TimestampConvertibleTypes = ...,
-        offset: TimedeltaConvertibleTypes | None = ...,
-        group_keys: _bool = ...,
-    ) -> DatetimeIndexResampler[Self]: ...
+        axis: Axis | _NoDefaultDoNotUse = 0,
+        closed: Literal["right", "left"] | None = None,
+        label: Literal["right", "left"] | None = None,
+        on: Level | None = None,
+        level: Level | None = None,
+        origin: TimeGrouperOrigin | TimestampConvertibleTypes = "start_day",
+        offset: TimedeltaConvertibleTypes | None = None,
+        group_keys: _bool = False,
+    ) -> DatetimeIndexResampler[Self]: ...  # pyrefly: ignore[bad-specialization]
     @final
-    def take(self, indices: TakeIndexer, axis: Axis = ..., **kwargs: Any) -> Self: ...
+    def take(self, indices: TakeIndexer, axis: Axis = 0, **kwargs: Any) -> Self: ...

@@ -94,7 +94,6 @@ def nightly_pandas():
         "pip",
         "install",
         "--pre",
-        "--use-deprecated=legacy-resolver",
         "--upgrade",
         "--extra-index-url",
         "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple",
@@ -154,7 +153,13 @@ def released_mypy():
 
 
 def ty():
-    cmd = ["ty", "check", "pandas-stubs"]
+    cmd = [
+        "ty",
+        "check",
+        "pandas-stubs",
+        "--python",
+        sys.executable,
+    ]
     subprocess.run(cmd, check=True)
 
 

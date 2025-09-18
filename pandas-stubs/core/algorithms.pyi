@@ -18,6 +18,7 @@ from pandas._typing import (
     AnyArrayLike,
     IntervalT,
     TakeIndexer,
+    np_1darray,
 )
 
 # These are type: ignored because the Index types overlap due to inheritance but indices
@@ -54,21 +55,21 @@ def factorize(
     sort: bool = ...,
     use_na_sentinel: bool = ...,
     size_hint: int | None = ...,
-) -> tuple[np.ndarray, Index]: ...
+) -> tuple[np_1darray, Index]: ...
 @overload
 def factorize(
     values: Categorical,
     sort: bool = ...,
     use_na_sentinel: bool = ...,
     size_hint: int | None = ...,
-) -> tuple[np.ndarray, Categorical]: ...
+) -> tuple[np_1darray, Categorical]: ...
 def value_counts(
     values: AnyArrayLike | list | tuple,
-    sort: bool = ...,
-    ascending: bool = ...,
-    normalize: bool = ...,
-    bins: int | None = ...,
-    dropna: bool = ...,
+    sort: bool = True,
+    ascending: bool = False,
+    normalize: bool = False,
+    bins: int | None = None,
+    dropna: bool = True,
 ) -> Series: ...
 def take(
     arr,
