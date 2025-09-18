@@ -549,9 +549,9 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Mapping[str, Any]
             | Mapping[str, SequenceNotStr[Any]]
         ),
-        index: str | SequenceNotStr[Hashable] | None = None,
-        columns: ListLike | None = None,
+        index: str | Axes | None = None,
         exclude: ListLike | None = None,
+        columns: ListLike | None = None,
         coerce_float: bool = False,
         nrows: int | None = None,
     ) -> Self: ...
