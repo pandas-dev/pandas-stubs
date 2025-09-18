@@ -17,10 +17,7 @@ from pandas import (
     Series,
     TimedeltaIndex,
 )
-from pandas.core.series import (
-    TimedeltaSeries,
-    TimestampSeries,
-)
+from pandas.core.series import TimedeltaSeries
 from typing_extensions import (
     Self,
     TypeAlias,
@@ -170,7 +167,7 @@ class Timedelta(timedelta):
         other: TimedeltaSeries,
     ) -> TimedeltaSeries: ...
     @overload
-    def __add__(self, other: TimestampSeries) -> TimestampSeries: ...
+    def __add__(self, other: Series[Timestamp]) -> Series[Timestamp]: ...
     @overload
     def __radd__(self, other: np.datetime64) -> Timestamp: ...
     @overload

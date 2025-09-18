@@ -16,10 +16,7 @@ from pandas import (
 )
 from pandas.core.arrays import ExtensionArray
 from pandas.core.indexes.datetimes import DatetimeIndex
-from pandas.core.series import (
-    Series,
-    TimestampSeries,
-)
+from pandas.core.series import Series
 from typing_extensions import TypeAlias
 
 from pandas._libs.tslibs import NaTType
@@ -96,7 +93,7 @@ def to_datetime(
     unit: str | None = ...,
     origin: Literal["julian", "unix"] | TimestampConvertibleTypes = ...,
     cache: bool = ...,
-) -> TimestampSeries: ...
+) -> Series[Timestamp]: ...
 @overload
 def to_datetime(
     arg: (

@@ -5,15 +5,9 @@ from typing import (
 
 import numpy as np
 import pandas as pd
-from typing_extensions import (
-    Never,
-    assert_type,
-)
+from typing_extensions import assert_type
 
-from tests import (
-    TYPE_CHECKING_INVALID_USAGE,
-    check,
-)
+from tests import check
 
 # left operands
 left_i = pd.DataFrame({"a": [1, 2, 3]})["a"]
@@ -187,18 +181,3 @@ def test_add_i_pd_index() -> None:
     check(assert_type(left_i.radd(i), pd.Series), pd.Series)
     check(assert_type(left_i.radd(f), pd.Series), pd.Series)
     check(assert_type(left_i.radd(c), pd.Series), pd.Series)
-
-
-def test_add_i_py_str() -> None:
-    """Test pd.Series[Any] (int) + Python str"""
-    s = "abc"
-
-    if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(left_i + s, Never)
-        assert_type(s + left_i, Never)
-
-        def _type_checking_enabler_0() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_i.add(s), Never)
-
-        def _type_checking_enabler_1() -> None:  # pyright: ignore[reportUnusedFunction]
-            assert_type(left_i.radd(s), Never)
