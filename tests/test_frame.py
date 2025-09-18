@@ -4815,6 +4815,40 @@ def test_from_records() -> None:
         pd.DataFrame,
     )
 
+    # GH1358
+    data, py_l = [[1, 2, 3], [4, 5, 6]], ["a", "b"]
+
+    check(
+        assert_type(pd.DataFrame.from_records(data, pd.Index(py_l)), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.DataFrame.from_records(data, pd.Series(py_l)), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.DataFrame.from_records(data, pd.Series(py_l).array), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.DataFrame.from_records(data, pd.Series(py_l).values), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.DataFrame.from_records(data, np.asarray(py_l)), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.DataFrame.from_records(data, np.asarray(py_l, np.str_)), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+
 
 def test_frame_index_setter() -> None:
     """Test DataFrame.index setter property GH1366."""
