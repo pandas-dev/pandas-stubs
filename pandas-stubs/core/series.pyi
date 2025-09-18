@@ -210,6 +210,10 @@ from pandas.plotting import PlotAccessor
 class _SupportsAdd(Protocol[_T_co]):
     def __add__(self, value: Self, /) -> _T_co: ...
 
+@type_check_only
+class _SupportsMul(Protocol[_T_co]):
+    def __mul__(self, value: Self, /) -> _T_co: ...
+
 class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     # get item
     @overload
@@ -3821,23 +3825,23 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     @overload
     def cumprod(
-        self: Series[_str],
+        self: Series[Never],
         axis: AxisIndex = ...,
         skipna: _bool = ...,
         *args: Any,
         **kwargs: Any,
-    ) -> Never: ...
+    ) -> Series: ...
     @overload
     def cumprod(
-        self: Series[Timestamp],
+        self: Series[bool],
         axis: AxisIndex = ...,
         skipna: _bool = ...,
         *args: Any,
         **kwargs: Any,
-    ) -> Never: ...
+    ) -> Series[int]: ...
     @overload
     def cumprod(
-        self,
+        self: SupportsGetItem[Scalar, _SupportsMul[S1]],
         axis: AxisIndex = ...,
         skipna: _bool = ...,
         *args: Any,
@@ -4369,39 +4373,18 @@ class TimedeltaSeries(_SeriesSubclassBase[Timedelta, np.timedelta64]):
         *args: Any,
         **kwargs: Any,
     ) -> TimedeltaSeries: ...
-    def cumprod(  # pyrefly: ignore
-        self,
-        axis: AxisIndex = ...,
-        skipna: _bool = ...,
-        *args: Any,
-        **kwargs: Any,
-    ) -> Never: ...
 
 class PeriodSeries(_SeriesSubclassBase[Period, np.object_]):
     @property
     def dt(self) -> PeriodProperties: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __sub__(self, other: PeriodSeries) -> OffsetSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def diff(self, periods: int = ...) -> OffsetSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def cumprod(
-        self,
-        axis: AxisIndex = ...,
-        skipna: _bool = ...,
-        *args: Any,
-        **kwargs: Any,
-    ) -> Never: ...
 
 class OffsetSeries(_SeriesSubclassBase[BaseOffset, np.object_]):
     @overload  # type: ignore[override]
     def __radd__(self, other: Period) -> PeriodSeries: ...
     @overload
     def __radd__(self, other: BaseOffset) -> OffsetSeries: ...
-    def cumprod(  # pyrefly: ignore
-        self,
-        axis: AxisIndex = ...,
-        skipna: _bool = ...,
-        *args: Any,
-        **kwargs: Any,
-    ) -> Never: ...
 
 class IntervalSeries(
     _SeriesSubclassBase[Interval[_OrderableT], np.object_], Generic[_OrderableT]
