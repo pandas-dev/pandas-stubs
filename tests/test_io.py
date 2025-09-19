@@ -1,6 +1,7 @@
 from collections import defaultdict
 from collections.abc import Generator
 import csv
+from functools import partial
 import io
 import os.path
 import pathlib
@@ -1787,3 +1788,14 @@ def test_read_json_engine() -> None:
         pd.read_json(dd, lines=False, engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
         pd.read_json(io.StringIO(data), engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
         pd.read_json(io.StringIO(data), lines=True, engine="pyarrow")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType, reportCallIssue]
+
+
+def test_converters_partial() -> None:
+    df = pd.DataFrame({"field_1": ["2020-01-01", "not a date"]})
+    partial_func = partial(pd.to_datetime, errors="coerce")
+
+    with ensure_clean(".xlsx") as path:
+        check(assert_type(df.to_excel(path, index=False), None), type(None))
+
+        result = pd.read_excel(path, converters={"field_1": partial_func})
+        check(assert_type(result, pd.DataFrame), pd.DataFrame)
