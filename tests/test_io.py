@@ -1804,4 +1804,3 @@ def test_converters_partial() -> None:
 
         result = pd.read_excel(path, converters={"field_1": partial_func})
         check(assert_type(result, pd.DataFrame), pd.DataFrame)
-
