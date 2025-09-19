@@ -1,6 +1,7 @@
 from collections import defaultdict
 from collections.abc import Generator
 import csv
+from functools import partial
 import io
 import os.path
 import pathlib
@@ -14,7 +15,6 @@ from typing import (
 )
 
 import numpy as np
-from functools import partial
 import pandas as pd
 from pandas import (
     DataFrame,
