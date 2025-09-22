@@ -42,7 +42,7 @@ def test_add_py_scalar() -> None:
 
 
 def test_add_py_sequence() -> None:
-    """Test pd.Series[complex] + Python native sequence"""
+    """Test pd.Series[complex] + Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
     check(assert_type(left + b, "pd.Series[complex]"), pd.Series, np.complexfloating)
@@ -75,7 +75,7 @@ def test_add_py_sequence() -> None:
 
 
 def test_add_numpy_array() -> None:
-    """Test pd.Series[complex] + numpy array"""
+    """Test pd.Series[complex] + numpy arrays"""
     b = np.array([True, False, True], np.bool_)
     i = np.array([2, 3, 5], np.int64)
     f = np.array([1.0, 2.0, 3.0], np.float64)

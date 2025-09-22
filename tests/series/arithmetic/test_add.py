@@ -40,7 +40,7 @@ def test_add_i_py_scalar() -> None:
 
 
 def test_add_i_py_sequence() -> None:
-    """Test pd.Series[Any] (int) + Python native sequence"""
+    """Test pd.Series[Any] (int) + Python native sequences"""
     # mypy believe it is already list[Any], whereas pyright gives list[bool | int | complex]
     a = cast(list[Any], [True, 3, 5j])  # type: ignore[redundant-cast]
     b = [True, False, True]
@@ -74,7 +74,7 @@ def test_add_i_py_sequence() -> None:
 
 
 def test_add_i_numpy_array() -> None:
-    """Test pd.Series[Any] (int) + numpy array"""
+    """Test pd.Series[Any] (int) + numpy arrays"""
     b = np.array([True, False, True], np.bool_)
     i = np.array([2, 3, 5], np.int64)
     f = np.array([1.0, 2.0, 3.0], np.float64)

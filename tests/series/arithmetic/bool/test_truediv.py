@@ -66,7 +66,7 @@ def test_truediv_py_scalar() -> None:
 
 
 def test_truediv_py_sequence() -> None:
-    """Test pd.Series[bool] / Python native sequence"""
+    """Test pd.Series[bool] / Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
     check(assert_type(left / b, "pd.Series[float]"), pd.Series, np.floating)
@@ -111,7 +111,7 @@ def test_truediv_py_sequence() -> None:
 
 
 def test_truediv_numpy_array() -> None:
-    """Test pd.Series[bool] / numpy array"""
+    """Test pd.Series[bool] / numpy arrays"""
     b = np.array([True, False, True], np.bool_)
     i = np.array([2, 3, 5], np.int64)
     f = np.array([1.0, 2.0, 3.0], np.float64)

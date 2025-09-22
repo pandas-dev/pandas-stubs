@@ -3098,6 +3098,8 @@ class Series(IndexOpsMixin[S1], NDFrame):
         ),
     ) -> Series[Timestamp]: ...
     @overload
+    def __sub__(self: Series[Timedelta], other: np_ndarray_dt) -> Never: ...
+    @overload
     def __sub__(
         self: Series[Timedelta],
         other: (

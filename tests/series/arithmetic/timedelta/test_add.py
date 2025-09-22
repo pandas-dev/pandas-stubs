@@ -71,7 +71,7 @@ def test_add_pd_scalar() -> None:
 
 
 def test_add_py_sequence() -> None:
-    """Test pd.Series[pd.Timedelta] + Python native sequence"""
+    """Test pd.Series[pd.Timedelta] + Python native sequences"""
     s = [datetime(2025, 8, 20)]
     d = [timedelta(seconds=1)]
 
@@ -92,7 +92,7 @@ def test_add_py_sequence() -> None:
 
 
 def test_add_numpy_array() -> None:
-    """Test pd.Series[pd.Timedelta] + numpy array"""
+    """Test pd.Series[pd.Timedelta] + numpy arrays"""
     s = np.array([np.datetime64("2025-08-20")], np.datetime64)
     d = np.array([np.timedelta64(1, "s")], np.timedelta64)
 
@@ -113,7 +113,7 @@ def test_add_numpy_array() -> None:
 
 
 def test_add_pd_index() -> None:
-    """Test pd.Series[pd.Timedelta] + pandas Index"""
+    """Test pd.Series[pd.Timedelta] + pandas Indexes"""
     s = pd.Index([pd.Timestamp("2025-08-20")])
     d = pd.Index([pd.Timedelta(seconds=1)])
 

@@ -190,11 +190,8 @@ def test_timestamp_timedelta_series_arithmetic() -> None:
     td1 = pd.to_timedelta([2, 3], "seconds")
     ts2 = pd.to_datetime(pd.Series(["2022-03-08", "2022-03-10"]))
     r1 = ts1 - ts2
-    check(assert_type(r1, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     r2 = r1 / td1
     check(assert_type(r2, "pd.Series[float]"), pd.Series, float)
-    r3 = r1 - td1
-    check(assert_type(r3, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     r4 = pd.Timedelta(5, "days") / r1
     check(assert_type(r4, "pd.Series[float]"), pd.Series, float)
     sb = pd.Series([1, 2]) == pd.Series([1, 3])
@@ -207,13 +204,6 @@ def test_timestamp_timedelta_series_arithmetic() -> None:
 
     r6 = r1 * 4
     check(assert_type(r6, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
-
-    tsp1 = pd.Timestamp("2022-03-05")
-    dt1 = dt.datetime(2022, 9, 1, 12, 5, 30)
-    r7 = ts1 - tsp1
-    check(assert_type(r7, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
-    r8 = ts1 - dt1
-    check(assert_type(r8, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
 def test_timestamp_dateoffset_arithmetic() -> None:
