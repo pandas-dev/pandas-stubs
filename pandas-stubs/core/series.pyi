@@ -1922,7 +1922,12 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def add(
         self: Series[Timedelta],
         other: (
-            datetime | np.datetime64 | np_ndarray_dt | DatetimeIndex | Series[Timestamp]
+            datetime
+            | Sequence[datetime]
+            | np.datetime64
+            | np_ndarray_dt
+            | DatetimeIndex
+            | Series[Timestamp]
         ),
         level: Level | None = None,
         fill_value: float | None = None,
@@ -1933,6 +1938,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self: Series[Timedelta],
         other: (
             timedelta
+            | Sequence[timedelta]
             | np.timedelta64
             | np_ndarray_td
             | TimedeltaIndex
@@ -2222,7 +2228,12 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def radd(
         self: Series[Timedelta],
         other: (
-            datetime | np.datetime64 | np_ndarray_dt | DatetimeIndex | Series[Timestamp]
+            datetime
+            | Sequence[datetime]
+            | np.datetime64
+            | np_ndarray_dt
+            | DatetimeIndex
+            | Series[Timestamp]
         ),
         level: Level | None = None,
         fill_value: float | None = None,
@@ -2233,6 +2244,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self: Series[Timedelta],
         other: (
             timedelta
+            | Sequence[timedelta]
             | np.timedelta64
             | np_ndarray_td
             | TimedeltaIndex
