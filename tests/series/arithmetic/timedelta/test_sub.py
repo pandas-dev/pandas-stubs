@@ -124,7 +124,7 @@ def test_sub_numpy_array() -> None:
 
 
 def test_sub_pd_index() -> None:
-    """Test pd.Series[pd.Timedelta] - pandas Indexes"""
+    """Test pd.Series[pd.Timedelta] - pandas indexes"""
     s = pd.Index([pd.Timestamp("2025-08-20")])
     d = pd.Index([pd.Timedelta(seconds=1)])
 
@@ -144,7 +144,7 @@ def test_sub_pd_index() -> None:
 
 
 def test_sub_pd_series() -> None:
-    """Test pd.Series[pd.Timedelta] - pandas Series"""
+    """Test pd.Series[pd.Timedelta] - pandas series"""
     s = pd.Series([pd.Timestamp("2025-08-20")])
     d = pd.Series([pd.Timedelta(seconds=1)])
 

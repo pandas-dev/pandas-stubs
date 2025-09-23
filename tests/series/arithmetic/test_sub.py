@@ -115,6 +115,39 @@ def test_sub_i_numpy_array() -> None:
     check(assert_type(left_i.rsub(c), pd.Series), pd.Series)
 
 
+def test_sub_i_pd_index() -> None:
+    """Test pd.Series[Any] (int) - pandas indexes"""
+    a = pd.MultiIndex.from_tuples([(1,), (2,), (3,)]).levels[0]
+    b = pd.Index([True, False, True])
+    i = pd.Index([2, 3, 5])
+    f = pd.Index([1.0, 2.0, 3.0])
+    c = pd.Index([1.1j, 2.2j, 4.1j])
+
+    check(assert_type(left_i - a, pd.Series), pd.Series)
+    check(assert_type(left_i - b, pd.Series), pd.Series)
+    check(assert_type(left_i - i, pd.Series), pd.Series)
+    check(assert_type(left_i - f, pd.Series), pd.Series)
+    check(assert_type(left_i - c, pd.Series), pd.Series)
+
+    check(assert_type(a - left_i, pd.Series), pd.Series)
+    check(assert_type(b - left_i, pd.Series), pd.Series)
+    check(assert_type(i - left_i, pd.Series), pd.Series)
+    check(assert_type(f - left_i, pd.Series), pd.Series)
+    check(assert_type(c - left_i, pd.Series), pd.Series)
+
+    check(assert_type(left_i.sub(a), pd.Series), pd.Series)
+    check(assert_type(left_i.sub(b), pd.Series), pd.Series)
+    check(assert_type(left_i.sub(i), pd.Series), pd.Series)
+    check(assert_type(left_i.sub(f), pd.Series), pd.Series)
+    check(assert_type(left_i.sub(c), pd.Series), pd.Series)
+
+    check(assert_type(left_i.rsub(a), pd.Series), pd.Series)
+    check(assert_type(left_i.rsub(b), pd.Series), pd.Series)
+    check(assert_type(left_i.rsub(i), pd.Series), pd.Series)
+    check(assert_type(left_i.rsub(f), pd.Series), pd.Series)
+    check(assert_type(left_i.rsub(c), pd.Series), pd.Series)
+
+
 def test_sub_i_pd_series() -> None:
     """Test pd.Series[Any] (int) - pandas series"""
     a = pd.DataFrame({"a": [1, 2, 3]})["a"]

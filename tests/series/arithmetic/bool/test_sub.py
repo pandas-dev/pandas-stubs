@@ -117,12 +117,12 @@ def test_sub_numpy_array() -> None:
     )
 
 
-def test_sub_pd_series() -> None:
-    """Test pd.Series[bool] - pandas series"""
-    b = pd.Series([True, False, True])
-    i = pd.Series([2, 3, 5])
-    f = pd.Series([1.0, 2.0, 3.0])
-    c = pd.Series([1.1j, 2.2j, 4.1j])
+def test_sub_pd_index() -> None:
+    """Test pd.Series[bool] - pandas indexes"""
+    b = pd.Index([True, False, True])
+    i = pd.Index([2, 3, 5])
+    f = pd.Index([1.0, 2.0, 3.0])
+    c = pd.Index([1.1j, 2.2j, 4.1j])
 
     if TYPE_CHECKING_INVALID_USAGE:
         _0 = left - b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
@@ -151,12 +151,12 @@ def test_sub_pd_series() -> None:
     )
 
 
-def test_sub_pd_index() -> None:
-    """Test pd.Series[bool] - pandas index"""
-    b = pd.Index([True, False, True])
-    i = pd.Index([2, 3, 5])
-    f = pd.Index([1.0, 2.0, 3.0])
-    c = pd.Index([1.1j, 2.2j, 4.1j])
+def test_sub_pd_series() -> None:
+    """Test pd.Series[bool] - pandas series"""
+    b = pd.Series([True, False, True])
+    i = pd.Series([2, 3, 5])
+    f = pd.Series([1.0, 2.0, 3.0])
+    c = pd.Series([1.1j, 2.2j, 4.1j])
 
     if TYPE_CHECKING_INVALID_USAGE:
         _0 = left - b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]

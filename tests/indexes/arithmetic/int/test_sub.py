@@ -67,7 +67,7 @@ def test_sub_numpy_array() -> None:
 
 
 def test_sub_pd_index() -> None:
-    """Test pd.Index[int] - pandas index"""
+    """Test pd.Index[int] - pandas indexes"""
     b = pd.Index([True, False, True])
     i = pd.Index([2, 3, 5])
     f = pd.Index([1.0, 2.0, 3.0])

@@ -2457,7 +2457,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: S1 | _ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
     @overload
-    def __mul__(
+    def __mul__(  # type: ignore[overload-overlap]
         self: Series[Never], other: complex | NumListLike | Series
     ) -> Series: ...
     @overload
@@ -2531,6 +2531,8 @@ class Series(IndexOpsMixin[S1], NDFrame):
             | Series[Timedelta]
         ),
     ) -> Series[Timedelta]: ...
+    @overload
+    def __mul__(self: Series[Timedelta], other: np_ndarray_complex) -> Never: ...
     @overload
     def __mul__(
         self: Series[Timedelta],
@@ -2704,7 +2706,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: AxisIndex | None = 0,
     ) -> Series[Timedelta]: ...
     @overload
-    def __rmul__(
+    def __rmul__(  # type: ignore[overload-overlap]
         self: Series[Never], other: complex | NumListLike | Series
     ) -> Series: ...
     @overload
@@ -2777,6 +2779,8 @@ class Series(IndexOpsMixin[S1], NDFrame):
             | Series[Timedelta]
         ),
     ) -> Series[Timedelta]: ...
+    @overload
+    def __rmul__(self: Series[Timedelta], other: np_ndarray_complex) -> Never: ...
     @overload
     def __rmul__(
         self: Series[Timedelta],

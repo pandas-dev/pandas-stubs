@@ -121,6 +121,42 @@ def test_sub_numpy_array() -> None:
     )
 
 
+def test_sub_pd_index() -> None:
+    """Test pd.Series[complex] - pandas indexes"""
+    b = pd.Index([True, False, True])
+    i = pd.Index([2, 3, 5])
+    f = pd.Index([1.0, 2.0, 3.0])
+    c = pd.Index([1.1j, 2.2j, 4.1j])
+
+    check(assert_type(left - b, "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(assert_type(left - i, "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(assert_type(left - f, "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(assert_type(left - c, "pd.Series[complex]"), pd.Series, np.complexfloating)
+
+    check(assert_type(b - left, "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(assert_type(i - left, "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(assert_type(f - left, "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(assert_type(c - left, "pd.Series[complex]"), pd.Series, np.complexfloating)
+
+    check(assert_type(left.sub(b), "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(assert_type(left.sub(i), "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(assert_type(left.sub(f), "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(assert_type(left.sub(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
+
+    check(
+        assert_type(left.rsub(b), "pd.Series[complex]"), pd.Series, np.complexfloating
+    )
+    check(
+        assert_type(left.rsub(i), "pd.Series[complex]"), pd.Series, np.complexfloating
+    )
+    check(
+        assert_type(left.rsub(f), "pd.Series[complex]"), pd.Series, np.complexfloating
+    )
+    check(
+        assert_type(left.rsub(c), "pd.Series[complex]"), pd.Series, np.complexfloating
+    )
+
+
 def test_sub_pd_series() -> None:
     """Test pd.Series[complex] - pandas series"""
     b = pd.Series([True, False, True])
