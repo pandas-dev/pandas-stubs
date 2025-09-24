@@ -249,8 +249,86 @@ def test_truediv_numpy_array() -> None:
     )
 
 
+def test_truediv_pd_index() -> None:
+    """Test pd.Series[complex] / pandas Indexes"""
+    b = pd.Index([True, False, True])
+    i = pd.Index([2, 3, 5])
+    f = pd.Index([1.0, 2.0, 3.0])
+    c = pd.Index([1.1j, 2.2j, 4.1j])
+
+    check(assert_type(left / b, "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(assert_type(left / i, "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(assert_type(left / f, "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(assert_type(left / c, "pd.Series[complex]"), pd.Series, np.complexfloating)
+
+    check(assert_type(b / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(assert_type(i / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(assert_type(f / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(assert_type(c / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
+
+    check(
+        assert_type(left.truediv(b), "pd.Series[complex]"),
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(left.truediv(i), "pd.Series[complex]"),
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(left.truediv(f), "pd.Series[complex]"),
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(left.truediv(c), "pd.Series[complex]"),
+        pd.Series,
+        np.complexfloating,
+    )
+
+    check(assert_type(left.div(b), "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(assert_type(left.div(i), "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(assert_type(left.div(f), "pd.Series[complex]"), pd.Series, np.complexfloating)
+    check(assert_type(left.div(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
+
+    check(
+        assert_type(left.rtruediv(b), "pd.Series[complex]"),
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(left.rtruediv(i), "pd.Series[complex]"),
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(left.rtruediv(f), "pd.Series[complex]"),
+        pd.Series,
+        np.complexfloating,
+    )
+    check(
+        assert_type(left.rtruediv(c), "pd.Series[complex]"),
+        pd.Series,
+        np.complexfloating,
+    )
+
+    check(
+        assert_type(left.rdiv(b), "pd.Series[complex]"), pd.Series, np.complexfloating
+    )
+    check(
+        assert_type(left.rdiv(i), "pd.Series[complex]"), pd.Series, np.complexfloating
+    )
+    check(
+        assert_type(left.rdiv(f), "pd.Series[complex]"), pd.Series, np.complexfloating
+    )
+    check(
+        assert_type(left.rdiv(c), "pd.Series[complex]"), pd.Series, np.complexfloating
+    )
+
+
 def test_truediv_pd_series() -> None:
-    """Test pd.Series[complex] / pandas series"""
+    """Test pd.Series[complex] / pandas Series"""
     b = pd.Series([True, False, True])
     i = pd.Series([2, 3, 5])
     f = pd.Series([1.0, 2.0, 3.0])

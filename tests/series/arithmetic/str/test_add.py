@@ -101,7 +101,7 @@ def test_add_numpy_array() -> None:
 
 
 def test_add_pd_index() -> None:
-    """Test pd.Series[str] + pandas indexes"""
+    """Test pd.Series[str] + pandas Indexes"""
     i = pd.Index([3, 5, 8])
     r0 = pd.Index(["a", "bc", "def"])
 
@@ -123,7 +123,7 @@ def test_add_pd_index() -> None:
 
 
 def test_add_pd_series() -> None:
-    """Test pd.Series[str] + pandas series"""
+    """Test pd.Series[str] + pandas Series"""
     i = pd.Series([3, 5, 8])
     r0 = pd.Series(["a", "bc", "def"])
 

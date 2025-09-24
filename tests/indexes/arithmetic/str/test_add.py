@@ -75,7 +75,7 @@ def test_add_numpy_array() -> None:
 
 
 def test_add_pd_index() -> None:
-    """Test pd.Index[str] + pandas indexes"""
+    """Test pd.Index[str] + pandas Indexes"""
     i = pd.Index([3, 5, 8])
     r0 = pd.Index(["a", "bc", "def"])
 

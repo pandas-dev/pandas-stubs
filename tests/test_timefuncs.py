@@ -187,23 +187,8 @@ def test_timedelta_series_string() -> None:
 def test_timestamp_timedelta_series_arithmetic() -> None:
     ts1 = pd.to_datetime(pd.Series(["2022-03-05", "2022-03-06"]))
     check(assert_type(ts1.iloc[0], pd.Timestamp), pd.Timestamp)
-    td1 = pd.to_timedelta([2, 3], "seconds")
-    ts2 = pd.to_datetime(pd.Series(["2022-03-08", "2022-03-10"]))
-    r1 = ts1 - ts2
-    r2 = r1 / td1
-    check(assert_type(r2, "pd.Series[float]"), pd.Series, float)
-    r4 = pd.Timedelta(5, "days") / r1
-    check(assert_type(r4, "pd.Series[float]"), pd.Series, float)
     sb = pd.Series([1, 2]) == pd.Series([1, 3])
     check(assert_type(sb, "pd.Series[bool]"), pd.Series, np.bool_)
-
-    # https://github.com/pandas-dev/pandas/issues/62316
-    if PD_LTE_23:
-        r5 = sb * r1
-        check(assert_type(r5, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
-
-    r6 = r1 * 4
-    check(assert_type(r6, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
 def test_timestamp_dateoffset_arithmetic() -> None:

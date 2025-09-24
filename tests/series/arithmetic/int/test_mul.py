@@ -99,8 +99,38 @@ def test_mul_numpy_array() -> None:
     )
 
 
+def test_mul_pd_index() -> None:
+    """Test pd.Series[int] * pandas Indexes"""
+    b = pd.Index([True, False, True])
+    i = pd.Index([2, 3, 5])
+    f = pd.Index([1.0, 2.0, 3.0])
+    c = pd.Index([1.1j, 2.2j, 4.1j])
+
+    check(assert_type(left * b, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left * i, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left * f, "pd.Series[float]"), pd.Series, np.floating)
+    check(assert_type(left * c, "pd.Series[complex]"), pd.Series, np.complexfloating)
+
+    check(assert_type(b * left, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(i * left, "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(f * left, "pd.Series[float]"), pd.Series, np.floating)
+    check(assert_type(c * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
+
+    check(assert_type(left.mul(b), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.mul(i), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.mul(f), "pd.Series[float]"), pd.Series, np.floating)
+    check(assert_type(left.mul(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
+
+    check(assert_type(left.rmul(b), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.rmul(i), "pd.Series[int]"), pd.Series, np.integer)
+    check(assert_type(left.rmul(f), "pd.Series[float]"), pd.Series, np.floating)
+    check(
+        assert_type(left.rmul(c), "pd.Series[complex]"), pd.Series, np.complexfloating
+    )
+
+
 def test_mul_pd_series() -> None:
-    """Test pd.Series[int] * pandas series"""
+    """Test pd.Series[int] * pandas Series"""
     b = pd.Series([True, False, True])
     i = pd.Series([2, 3, 5])
     f = pd.Series([1.0, 2.0, 3.0])

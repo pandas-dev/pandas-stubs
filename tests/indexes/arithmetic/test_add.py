@@ -82,7 +82,7 @@ def test_add_i_numpy_array() -> None:
 
 
 def test_add_i_pd_index() -> None:
-    """Test pd.Index[Any] (int) + pandas indexes"""
+    """Test pd.Index[Any] (int) + pandas Indexes"""
     a = pd.MultiIndex.from_tuples([(1,), (2,), (3,)]).levels[0]
     b = pd.Index([True, False, True])
     i = pd.Index([2, 3, 5])

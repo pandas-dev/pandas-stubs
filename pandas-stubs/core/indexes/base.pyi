@@ -770,47 +770,23 @@ class Index(IndexOpsMixin[S1]):
         self: Index[int] | Index[float], other: timedelta
     ) -> TimedeltaIndex: ...
     @overload
-    def __mul__(self, other: S1 | Sequence[S1] | Index[S1]) -> Self: ...
-    def __rmul__(self, other: S1 | Sequence[S1] | Index[S1]) -> Self: ...
+    def __mul__(
+        self, other: float | Sequence[float] | Index[int] | Index[float]
+    ) -> Self: ...
+    def __rmul__(
+        self, other: float | Sequence[float] | Index[int] | Index[float]
+    ) -> Self: ...
     def __floordiv__(
-        self,
-        other: (
-            float
-            | IndexOpsMixin[int]
-            | IndexOpsMixin[float]
-            | Sequence[int]
-            | Sequence[float]
-        ),
+        self, other: float | Sequence[float] | Index[int] | Index[float]
     ) -> Self: ...
     def __rfloordiv__(
-        self,
-        other: (
-            float
-            | IndexOpsMixin[int]
-            | IndexOpsMixin[float]
-            | Sequence[int]
-            | Sequence[float]
-        ),
+        self, other: float | Sequence[float] | Index[int] | Index[float]
     ) -> Self: ...
     def __truediv__(
-        self,
-        other: (
-            float
-            | IndexOpsMixin[int]
-            | IndexOpsMixin[float]
-            | Sequence[int]
-            | Sequence[float]
-        ),
+        self, other: float | Sequence[float] | Index[int] | Index[float]
     ) -> Self: ...
     def __rtruediv__(
-        self,
-        other: (
-            float
-            | IndexOpsMixin[int]
-            | IndexOpsMixin[float]
-            | Sequence[int]
-            | Sequence[float]
-        ),
+        self, other: float | Sequence[float] | Index[int] | Index[float]
     ) -> Self: ...
     def infer_objects(self, copy: bool = True) -> Self: ...
 

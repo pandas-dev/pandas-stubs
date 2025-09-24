@@ -116,7 +116,7 @@ def test_sub_i_numpy_array() -> None:
 
 
 def test_sub_i_pd_index() -> None:
-    """Test pd.Series[Any] (int) - pandas indexes"""
+    """Test pd.Series[Any] (int) - pandas Indexes"""
     a = pd.MultiIndex.from_tuples([(1,), (2,), (3,)]).levels[0]
     b = pd.Index([True, False, True])
     i = pd.Index([2, 3, 5])
@@ -149,7 +149,7 @@ def test_sub_i_pd_index() -> None:
 
 
 def test_sub_i_pd_series() -> None:
-    """Test pd.Series[Any] (int) - pandas series"""
+    """Test pd.Series[Any] (int) - pandas Series"""
     a = pd.DataFrame({"a": [1, 2, 3]})["a"]
     b = pd.Series([True, False, True])
     i = pd.Series([2, 3, 5])

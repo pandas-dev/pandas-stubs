@@ -118,7 +118,7 @@ def test_sub_numpy_array() -> None:
 
 
 def test_sub_pd_index() -> None:
-    """Test pd.Series[bool] - pandas indexes"""
+    """Test pd.Series[bool] - pandas Indexes"""
     b = pd.Index([True, False, True])
     i = pd.Index([2, 3, 5])
     f = pd.Index([1.0, 2.0, 3.0])
@@ -152,7 +152,7 @@ def test_sub_pd_index() -> None:
 
 
 def test_sub_pd_series() -> None:
-    """Test pd.Series[bool] - pandas series"""
+    """Test pd.Series[bool] - pandas Series"""
     b = pd.Series([True, False, True])
     i = pd.Series([2, 3, 5])
     f = pd.Series([1.0, 2.0, 3.0])
