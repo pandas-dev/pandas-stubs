@@ -19,25 +19,36 @@ def test_mul_py_scalar() -> None:
     """Test pd.Series[pd.Timedelta] * Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
 
-    check(assert_type(left * b, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    # pandas-dev/pandas#62316
+    if PD_LTE_23:
+        check(assert_type(left * b, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left * i, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left * f, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         _0 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-    check(assert_type(b * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    if PD_LTE_23:
+        check(assert_type(b * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(i * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(f * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         _1 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-    check(assert_type(left.mul(b), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    if PD_LTE_23:
+        check(
+            assert_type(left.mul(b), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta
+        )
     check(assert_type(left.mul(i), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left.mul(f), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(c)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
 
-    check(assert_type(left.rmul(b), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    if PD_LTE_23:
+        check(
+            assert_type(left.rmul(b), "pd.Series[pd.Timedelta]"),
+            pd.Series,
+            pd.Timedelta,
+        )
     check(assert_type(left.rmul(i), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left.rmul(f), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
@@ -48,25 +59,36 @@ def test_mul_py_sequence() -> None:
     """Test pd.Series[pd.Timedelta] * Python native sequences"""
     b, i, f, c = [True], [2], [1.5], [1.7j]
 
-    check(assert_type(left * b, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    # pandas-dev/pandas#62316
+    if PD_LTE_23:
+        check(assert_type(left * b, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left * i, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left * f, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         _0 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-    check(assert_type(b * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    if PD_LTE_23:
+        check(assert_type(b * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(i * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(f * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         _1 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-    check(assert_type(left.mul(b), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    if PD_LTE_23:
+        check(
+            assert_type(left.mul(b), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta
+        )
     check(assert_type(left.mul(i), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left.mul(f), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
-    check(assert_type(left.rmul(b), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    if PD_LTE_23:
+        check(
+            assert_type(left.rmul(b), "pd.Series[pd.Timedelta]"),
+            pd.Series,
+            pd.Timedelta,
+        )
     check(assert_type(left.rmul(i), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left.rmul(f), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
@@ -80,7 +102,9 @@ def test_mul_numpy_array() -> None:
     f = np.array([1.5], np.float64)
     c = np.array([1.7j], np.complex128)
 
-    check(assert_type(left * b, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    # pandas-dev/pandas#62316
+    if PD_LTE_23:
+        check(assert_type(left * b, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left * i, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left * f, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
@@ -89,20 +113,29 @@ def test_mul_numpy_array() -> None:
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__rmul__` cannot override. At runtime, they return
     # `Series` with the correct element type.
-    check(assert_type(b * left, "npt.NDArray[np.bool_]"), pd.Series, pd.Timedelta)
+    if PD_LTE_23:
+        check(assert_type(b * left, "npt.NDArray[np.bool_]"), pd.Series, pd.Timedelta)
     check(assert_type(i * left, "npt.NDArray[np.int64]"), pd.Series, pd.Timedelta)
     check(assert_type(f * left, "npt.NDArray[np.float64]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         # We made it Never, but numpy takes over
         assert_type(c * left, "npt.NDArray[np.complex128]")
 
-    check(assert_type(left.mul(b), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    if PD_LTE_23:
+        check(
+            assert_type(left.mul(b), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta
+        )
     check(assert_type(left.mul(i), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left.mul(f), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
-    check(assert_type(left.rmul(b), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    if PD_LTE_23:
+        check(
+            assert_type(left.rmul(b), "pd.Series[pd.Timedelta]"),
+            pd.Series,
+            pd.Timedelta,
+        )
     check(assert_type(left.rmul(i), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left.rmul(f), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
@@ -116,25 +149,36 @@ def test_mul_pd_index() -> None:
     f = pd.Index([1.5])
     c = pd.Index([1.7j])
 
-    check(assert_type(left * b, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    # pandas-dev/pandas#62316
+    if PD_LTE_23:
+        check(assert_type(left * b, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left * i, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left * f, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         _0 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-    check(assert_type(b * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    if PD_LTE_23:
+        check(assert_type(b * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(i * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(f * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         _1 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-    check(assert_type(left.mul(b), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    if PD_LTE_23:
+        check(
+            assert_type(left.mul(b), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta
+        )
     check(assert_type(left.mul(i), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left.mul(f), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
-    check(assert_type(left.rmul(b), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    if PD_LTE_23:
+        check(
+            assert_type(left.rmul(b), "pd.Series[pd.Timedelta]"),
+            pd.Series,
+            pd.Timedelta,
+        )
     check(assert_type(left.rmul(i), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left.rmul(f), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
@@ -156,7 +200,6 @@ def test_mul_pd_series() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         _0 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-    # pandas-dev/pandas#62316
     if PD_LTE_23:
         check(assert_type(b * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(i * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
@@ -164,7 +207,6 @@ def test_mul_pd_series() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         _1 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-    # pandas-dev/pandas#62316
     if PD_LTE_23:
         check(
             assert_type(left.mul(b), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta
@@ -174,7 +216,6 @@ def test_mul_pd_series() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
-    # pandas-dev/pandas#62316
     if PD_LTE_23:
         check(
             assert_type(left.rmul(b), "pd.Series[pd.Timedelta]"),
