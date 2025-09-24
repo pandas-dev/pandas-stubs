@@ -189,6 +189,7 @@ from pandas._typing import (
     WriteBuffer,
     _T_co,
     np_1darray,
+    np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_complex,
@@ -2274,34 +2275,68 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __floordiv__(self, other: Index[Never] | Series[Never]) -> Series: ...
     @overload
     def __floordiv__(
-        self: Series[bool] | Series[int] | Series[float],
+        self: Series[int] | Series[float],
+        other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt | np_ndarray_td,
+    ) -> Never: ...
+    @overload
+    def __floordiv__(
+        self: Series[bool] | Series[complex], other: np_ndarray
+    ) -> Never: ...
+    @overload
+    def __floordiv__(
+        self: Series[int],
         other: (
-            float
-            | Sequence[float]
-            | np_ndarray_bool
+            Just[int]
+            | Sequence[Just[int]]
             | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[bool]
             | Index[int]
-            | Index[float]
-            | Series[bool]
             | Series[int]
-            | Series[float]
         ),
     ) -> Series[int]: ...
     @overload
     def __floordiv__(
-        self: Series[Timedelta],
+        self: Series[int],
         other: (
-            float
-            | Sequence[float]
-            | np_ndarray_bool
+            Just[float]
+            | Sequence[Just[float]]
+            | np_ndarray_float
+            | Index[float]
+            | Series[float]
+        ),
+    ) -> Series[float]: ...
+    @overload
+    def __floordiv__(
+        self: Series[float],
+        other: (
+            Just[int]
+            | Just[float]
+            | Sequence[Just[int]]
+            | Sequence[Just[float]]
             | np_ndarray_anyint
             | np_ndarray_float
-            | Index[bool]
             | Index[int]
             | Index[float]
-            | Series[bool]
+            | Series[int]
+            | Series[float]
+        ),
+    ) -> Series[float]: ...
+    @overload
+    def __floordiv__(
+        self: Series[Timedelta],
+        other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt,
+    ) -> Never: ...
+    @overload
+    def __floordiv__(
+        self: Series[Timedelta],
+        other: (
+            Just[int]
+            | Just[float]
+            | Sequence[Just[int]]
+            | Sequence[Just[float]]
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Index[int]
+            | Index[float]
             | Series[int]
             | Series[float]
         ),
@@ -2309,7 +2344,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __floordiv__(
         self: Series[Timedelta],
-        other: timedelta | Sequence[timedelta] | np.timedelta64 | Series[Timedelta],
+        other: (
+            timedelta
+            | Sequence[timedelta]
+            | np.timedelta64
+            | np_ndarray_td
+            | TimedeltaIndex
+            | Series[Timedelta]
+        ),
     ) -> Series[int]: ...
     @overload
     def floordiv(
@@ -2321,19 +2363,13 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series: ...
     @overload
     def floordiv(
-        self: Series[bool] | Series[int] | Series[float],
+        self: Series[int],
         other: (
-            float
-            | Sequence[float]
-            | np_ndarray_bool
+            Just[int]
+            | Sequence[Just[int]]
             | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[bool]
             | Index[int]
-            | Index[float]
-            | Series[bool]
             | Series[int]
-            | Series[float]
         ),
         level: Level | None = ...,
         fill_value: float | None = None,
@@ -2341,17 +2377,49 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[int]: ...
     @overload
     def floordiv(
-        self: Series[Timedelta],
+        self: Series[int],
         other: (
-            float
-            | Sequence[float]
-            | np_ndarray_bool
+            Just[float]
+            | Sequence[Just[float]]
+            | np_ndarray_float
+            | Index[float]
+            | Series[float]
+        ),
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex | None = 0,
+    ) -> Series[float]: ...
+    @overload
+    def floordiv(
+        self: Series[float],
+        other: (
+            Just[int]
+            | Just[float]
+            | Sequence[Just[int]]
+            | Sequence[Just[float]]
             | np_ndarray_anyint
             | np_ndarray_float
-            | Index[bool]
             | Index[int]
             | Index[float]
-            | Series[bool]
+            | Series[int]
+            | Series[float]
+        ),
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex | None = 0,
+    ) -> Series[float]: ...
+    @overload
+    def floordiv(
+        self: Series[Timedelta],
+        other: (
+            Just[int]
+            | Just[float]
+            | Sequence[Just[int]]
+            | Sequence[Just[float]]
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Index[int]
+            | Index[float]
             | Series[int]
             | Series[float]
         ),
@@ -2366,6 +2434,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
             timedelta
             | Sequence[timedelta]
             | np.timedelta64
+            | np_ndarray_td
             | TimedeltaIndex
             | Series[Timedelta]
         ),
@@ -2377,21 +2446,62 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __rfloordiv__(self, other: Index[Never] | Series[Never]) -> Series: ...
     @overload
     def __rfloordiv__(
-        self: Series[bool] | Series[int] | Series[float],
+        self: Series[int] | Series[float],
+        other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt | np_ndarray_td,
+    ) -> Never: ...
+    @overload
+    def __rfloordiv__(
+        self: Series[bool] | Series[complex], other: np_ndarray
+    ) -> Never: ...
+    @overload
+    def __rfloordiv__(
+        self: Series[int],
         other: (
-            float
-            | Sequence[float]
-            | np_ndarray_bool
+            Just[int]
+            | Sequence[Just[int]]
+            | np_ndarray_anyint
+            | Index[int]
+            | Series[int]
+        ),
+    ) -> Series[int]: ...
+    @overload
+    def __rfloordiv__(
+        self: Series[int],
+        other: (
+            Just[float]
+            | Sequence[Just[float]]
+            | np_ndarray_float
+            | Index[float]
+            | Series[float]
+        ),
+    ) -> Series[float]: ...
+    @overload
+    def __rfloordiv__(
+        self: Series[float],
+        other: (
+            Just[int]
+            | Just[float]
+            | Sequence[Just[int]]
+            | Sequence[Just[float]]
             | np_ndarray_anyint
             | np_ndarray_float
-            | Index[bool]
             | Index[int]
             | Index[float]
-            | Series[bool]
             | Series[int]
             | Series[float]
         ),
-    ) -> Series[int]: ...
+    ) -> Series[float]: ...
+    @overload
+    def __rfloordiv__(
+        self: Series[Timedelta],
+        other: (
+            np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | np_ndarray_complex
+            | np_ndarray_dt
+        ),
+    ) -> Never: ...
     @overload
     def __rfloordiv__(
         self: Series[Timedelta],
@@ -2399,6 +2509,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
             timedelta
             | Sequence[timedelta]
             | np.timedelta64
+            | np_ndarray_td
             | TimedeltaIndex
             | Series[Timedelta]
         ),
@@ -2413,18 +2524,13 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series: ...
     @overload
     def rfloordiv(
-        self: Series[bool] | Series[int] | Series[float],
+        self: Series[int],
         other: (
-            float
-            | Sequence[float]
-            | np_ndarray_bool
+            Just[int]
+            | Sequence[Just[int]]
             | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[bool]
             | Index[int]
-            | Index[float]
-            | Series[bool]
-            | Series[float]
+            | Series[int]
         ),
         level: Level | None = ...,
         fill_value: float | None = None,
@@ -2432,11 +2538,45 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[int]: ...
     @overload
     def rfloordiv(
+        self: Series[int],
+        other: (
+            Just[float]
+            | Sequence[Just[float]]
+            | np_ndarray_float
+            | Index[float]
+            | Series[float]
+        ),
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[float]: ...
+    @overload
+    def rfloordiv(
+        self: Series[float],
+        other: (
+            Just[int]
+            | Just[float]
+            | Sequence[Just[int]]
+            | Sequence[Just[float]]
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Index[int]
+            | Index[float]
+            | Series[int]
+            | Series[float]
+        ),
+        level: Level | None = ...,
+        fill_value: float | None = None,
+        axis: AxisIndex = ...,
+    ) -> Series[float]: ...
+    @overload
+    def rfloordiv(
         self: Series[Timedelta],
         other: (
             timedelta
             | Sequence[timedelta]
             | np.timedelta64
+            | np_ndarray_td
             | TimedeltaIndex
             | Series[Timedelta]
         ),
