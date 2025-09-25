@@ -507,7 +507,6 @@ def test_types_mean() -> None:
 
 def test_types_median() -> None:
     s = pd.Series([1, 2, 3, np.nan])
-    check(assert_type(s.median(), float), float)
     check(
         assert_type(s.groupby(level=0).median(), "pd.Series[float]"),
         pd.Series,

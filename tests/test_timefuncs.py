@@ -1042,6 +1042,11 @@ def test_series_types_to_numpy() -> None:
         dtype=np.int64,
     )
     check(
+        assert_type(td_s.to_numpy(dtype=np.timedelta64), np_1darray[np.timedelta64]),
+        np_1darray,
+        dtype=np.timedelta64,
+    )
+    check(
         assert_type(ts_s.to_numpy(dtype=np.int64), np_1darray[np.int64]),
         np_1darray,
         dtype=np.int64,
@@ -1718,10 +1723,9 @@ def test_timedeltaseries_add_timestampseries() -> None:
     check(assert_type(plus, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
 
-def test_mean_median_std() -> None:
+def test_mean_std() -> None:
     s = pd.Series([pd.Timedelta("1 ns"), pd.Timedelta("2 ns"), pd.Timedelta("3 ns")])
     check(assert_type(s.mean(), pd.Timedelta), pd.Timedelta)
-    check(assert_type(s.median(), pd.Timedelta), pd.Timedelta)
     check(assert_type(s.std(), pd.Timedelta), pd.Timedelta)
 
     s2 = pd.Series(
@@ -1732,7 +1736,6 @@ def test_mean_median_std() -> None:
         ]
     )
     check(assert_type(s2.mean(), pd.Timestamp), pd.Timestamp)
-    check(assert_type(s2.median(), pd.Timestamp), pd.Timestamp)
     check(assert_type(s2.std(), pd.Timedelta), pd.Timedelta)
 
 

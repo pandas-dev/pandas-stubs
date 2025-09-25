@@ -763,7 +763,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def to_xml(
         self,
-        path_or_buffer: Literal[None] = ...,
+        path_or_buffer: None = ...,
         index: bool = ...,
         root_name: str | None = ...,
         row_name: str | None = ...,

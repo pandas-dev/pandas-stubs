@@ -215,9 +215,13 @@ class _SupportsMul(Protocol[_T_co]):
     def __mul__(self, value: Self, /) -> _T_co: ...
 
 @type_check_only
-class _SupportsAddRMul(Protocol[_T_co]):
+class _SupportsAdd_MulFloat(Protocol[_T_co]):
     def __add__(self, value: Self, /) -> _T_co: ...
     def __mul__(self, value: float, /) -> _T_co: ...
+
+@type_check_only
+class SupportsTruedivInt(Protocol[_T_co]):
+    def __truediv__(self, value: int, /) -> _T_co: ...
 
 class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     # get item
@@ -4474,7 +4478,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Timestamp: ...
     @overload
     def mean(
-        self: SupportsGetItem[Scalar, _SupportsAddRMul[S1]],
+        self: SupportsGetItem[Scalar, _SupportsAdd_MulFloat[S1]],
         axis: AxisIndex | None = 0,
         skipna: _bool = True,
         level: None = ...,
@@ -4489,7 +4493,25 @@ class Series(IndexOpsMixin[S1], NDFrame):
         level: None = ...,
         numeric_only: _bool = False,
         **kwargs: Any,
+    ) -> Any: ...
+    @overload
+    def median(
+        self: Series[complex],
+        axis: AxisIndex | None = 0,
+        skipna: _bool = True,
+        level: None = ...,
+        numeric_only: _bool = False,
+        **kwargs: Any,
     ) -> float: ...
+    @overload
+    def median(
+        self: SupportsGetItem[Scalar, SupportsTruedivInt[S2]],
+        axis: AxisIndex | None = 0,
+        skipna: _bool = True,
+        level: None = ...,
+        numeric_only: _bool = False,
+        **kwargs: Any,
+    ) -> S2: ...
     @overload
     def median(
         self: Series[Timestamp],
@@ -4499,15 +4521,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         numeric_only: _bool = False,
         **kwargs: Any,
     ) -> Timestamp: ...
-    @overload
-    def median(
-        self,
-        axis: AxisIndex | None = 0,
-        skipna: _bool = True,
-        level: None = ...,
-        numeric_only: _bool = False,
-        **kwargs: Any,
-    ) -> S1: ...
     def min(
         self,
         axis: AxisIndex | None = 0,

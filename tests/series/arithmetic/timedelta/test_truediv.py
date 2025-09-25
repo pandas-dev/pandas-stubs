@@ -161,7 +161,7 @@ def test_truediv_numpy_array() -> None:
     check(assert_type(left / d, "pd.Series[float]"), pd.Series, np.floating)
 
     # `numpy` typing gives the corresponding `ndarray`s in the static type
-    # checking, where our `__rsub__` cannot override. At runtime, they lead to
+    # checking, where our `__rtruediv__` cannot override. At runtime, they lead to
     # errors or pd.Series.
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(b / left, "npt.NDArray[np.float64]")

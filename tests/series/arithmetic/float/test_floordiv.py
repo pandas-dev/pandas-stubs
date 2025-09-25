@@ -91,7 +91,7 @@ def test_floordiv_numpy_array() -> None:
         assert_type(left // c, Never)
 
         # `numpy` typing gives the corresponding `ndarray`s in the static type
-        # checking, where our `__rsub__` cannot override. At runtime, they lead to
+        # checking, where our `__rfloordiv__` cannot override. At runtime, they lead to
         # errors or pd.Series.
         assert_type(b // left, "npt.NDArray[np.int8]")
     check(i // left, pd.Series, np.floating)
