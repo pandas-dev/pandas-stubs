@@ -13,9 +13,6 @@ import numpy as np
 import pandas as pd
 from pandas import Index
 from pandas.core.indexes.extension import ExtensionIndex
-from pandas.core.series import (
-    TimedeltaSeries,
-)
 from typing_extensions import TypeAlias
 
 from pandas._libs.interval import (
@@ -59,7 +56,7 @@ _EdgesTimestamp: TypeAlias = (
 _EdgesTimedelta: TypeAlias = (
     Sequence[pd.Timedelta]
     | npt.NDArray[np.timedelta64]
-    | TimedeltaSeries
+    | pd.Series[pd.Timedelta]
     | pd.TimedeltaIndex
 )
 _TimestampLike: TypeAlias = pd.Timestamp | np.datetime64 | dt.datetime

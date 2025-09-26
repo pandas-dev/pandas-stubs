@@ -50,7 +50,7 @@ def test_truediv_py_scalar() -> None:
 
 
 def test_truediv_py_sequence() -> None:
-    """Test pd.Series[Any] (int) / Python native sequence"""
+    """Test pd.Series[Any] (int) / Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
     check(assert_type(left_i / b, pd.Series), pd.Series)
@@ -85,7 +85,7 @@ def test_truediv_py_sequence() -> None:
 
 
 def test_truediv_numpy_array() -> None:
-    """Test pd.Series[Any] (int) / numpy array"""
+    """Test pd.Series[Any] (int) / numpy arrays"""
     b = np.array([True, False, True], np.bool_)
     i = np.array([2, 3, 5], np.int64)
     f = np.array([1.0, 2.0, 3.0], np.float64)
@@ -138,8 +138,53 @@ def test_truediv_numpy_array() -> None:
     check(assert_type(left_i.rdiv(c), pd.Series), pd.Series)
 
 
+def test_truediv_pd_index() -> None:
+    """Test pd.Series[Any] (int) / pandas Indexes"""
+    a = pd.MultiIndex.from_tuples([(1,), (2,), (3,)]).levels[0]
+    b = pd.Index([True, False, True])
+    i = pd.Index([2, 3, 5])
+    f = pd.Index([1.0, 2.0, 3.0])
+    c = pd.Index([1.1j, 2.2j, 4.1j])
+
+    check(assert_type(left_i / a, pd.Series), pd.Series)
+    check(assert_type(left_i / b, pd.Series), pd.Series)
+    check(assert_type(left_i / i, pd.Series), pd.Series)
+    check(assert_type(left_i / f, pd.Series), pd.Series)
+    check(assert_type(left_i / c, pd.Series), pd.Series)
+
+    check(assert_type(a / left_i, pd.Series), pd.Series)
+    check(assert_type(b / left_i, pd.Series), pd.Series)
+    check(assert_type(i / left_i, pd.Series), pd.Series)
+    check(assert_type(f / left_i, pd.Series), pd.Series)
+    check(assert_type(c / left_i, pd.Series), pd.Series)
+
+    check(assert_type(left_i.truediv(a), pd.Series), pd.Series)
+    check(assert_type(left_i.truediv(b), pd.Series), pd.Series)
+    check(assert_type(left_i.truediv(i), pd.Series), pd.Series)
+    check(assert_type(left_i.truediv(f), pd.Series), pd.Series)
+    check(assert_type(left_i.truediv(c), pd.Series), pd.Series)
+
+    check(assert_type(left_i.div(a), pd.Series), pd.Series)
+    check(assert_type(left_i.div(b), pd.Series), pd.Series)
+    check(assert_type(left_i.div(i), pd.Series), pd.Series)
+    check(assert_type(left_i.div(f), pd.Series), pd.Series)
+    check(assert_type(left_i.div(c), pd.Series), pd.Series)
+
+    check(assert_type(left_i.rtruediv(a), pd.Series), pd.Series)
+    check(assert_type(left_i.rtruediv(b), pd.Series), pd.Series)
+    check(assert_type(left_i.rtruediv(i), pd.Series), pd.Series)
+    check(assert_type(left_i.rtruediv(f), pd.Series), pd.Series)
+    check(assert_type(left_i.rtruediv(c), pd.Series), pd.Series)
+
+    check(assert_type(left_i.rdiv(a), pd.Series), pd.Series)
+    check(assert_type(left_i.rdiv(b), pd.Series), pd.Series)
+    check(assert_type(left_i.rdiv(i), pd.Series), pd.Series)
+    check(assert_type(left_i.rdiv(f), pd.Series), pd.Series)
+    check(assert_type(left_i.rdiv(c), pd.Series), pd.Series)
+
+
 def test_truediv_pd_series() -> None:
-    """Test pd.Series[Any] (int) / pandas series"""
+    """Test pd.Series[Any] (int) / pandas Series"""
     a = pd.DataFrame({"a": [1, 2, 3]})["a"]
     b = pd.Series([True, False, True])
     i = pd.Series([2, 3, 5])

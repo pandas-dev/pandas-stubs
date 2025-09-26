@@ -72,10 +72,7 @@ from pandas.tseries.offsets import (
 )
 
 if TYPE_CHECKING:
-    from pandas.core.series import (
-        OffsetSeries,
-        TimedeltaSeries,
-    )
+    from pandas.core.series import OffsetSeries
 
     from tests import (
         BooleanDtypeArg,
@@ -93,7 +90,6 @@ if TYPE_CHECKING:
     )
 
 else:
-    TimedeltaSeries: TypeAlias = pd.Series
     OffsetSeries: TypeAlias = pd.Series
 
 if not PD_LTE_23:
@@ -499,7 +495,6 @@ def test_types_rank() -> None:
 
 def test_types_mean() -> None:
     s = pd.Series([1, 2, 3, np.nan])
-    check(assert_type(s.mean(), float), float)
     check(
         assert_type(s.groupby(level=0).mean(), "pd.Series[float]"),
         pd.Series,
@@ -511,7 +506,6 @@ def test_types_mean() -> None:
 
 def test_types_median() -> None:
     s = pd.Series([1, 2, 3, np.nan])
-    check(assert_type(s.median(), float), float)
     check(
         assert_type(s.groupby(level=0).median(), "pd.Series[float]"),
         pd.Series,
@@ -745,7 +739,6 @@ def test_types_var() -> None:
 
 def test_types_std() -> None:
     s = pd.Series([-10, 2, 3, 10])
-    s.std()
     s.std(axis=0, ddof=1)
     s.std(skipna=True, numeric_only=False)
 
@@ -2817,58 +2810,58 @@ def test_astype_timestamp(cast_arg: TimestampDtypeArg, target_type: type) -> Non
 @pytest.mark.parametrize("cast_arg, target_type", ASTYPE_TIMEDELTA_ARGS, ids=repr)
 def test_astype_timedelta(cast_arg: TimedeltaDtypeArg, target_type: type) -> None:
     s = pd.Series([1, 2, 3])
-    check(s.astype(cast_arg), TimedeltaSeries, target_type)
+    check(s.astype(cast_arg), pd.Series, target_type)
 
     if TYPE_CHECKING:
-        assert_type(s.astype("timedelta64[Y]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[M]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[W]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[D]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[h]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[m]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[s]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[ms]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[us]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[μs]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[ns]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[ps]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[fs]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[as]"), "TimedeltaSeries")
+        assert_type(s.astype("timedelta64[Y]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[M]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[W]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[D]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[h]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[m]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[s]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[ms]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[us]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[μs]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[ns]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[ps]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[fs]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[as]"), "pd.Series[pd.Timedelta]")
         # numpy timedelta64 type codes
-        assert_type(s.astype("m8[Y]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[M]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[W]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[D]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[h]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[m]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[s]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[ms]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[us]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[μs]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[ns]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[ps]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[fs]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[as]"), "TimedeltaSeries")
+        assert_type(s.astype("m8[Y]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[M]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[W]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[D]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[h]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[m]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[s]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[ms]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[us]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[μs]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[ns]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[ps]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[fs]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[as]"), "pd.Series[pd.Timedelta]")
         # numpy timedelta64 type codes
-        assert_type(s.astype("<m8[Y]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[M]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[W]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[D]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[h]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[m]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[s]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[ms]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[us]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[μs]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[ns]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[ps]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[fs]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[as]"), "TimedeltaSeries")
+        assert_type(s.astype("<m8[Y]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[M]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[W]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[D]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[h]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[m]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[s]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[ms]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[us]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[μs]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[ns]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[ps]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[fs]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[as]"), "pd.Series[pd.Timedelta]")
         # pyarrow duration
-        assert_type(s.astype("duration[s][pyarrow]"), "TimedeltaSeries")
-        assert_type(s.astype("duration[ms][pyarrow]"), "TimedeltaSeries")
-        assert_type(s.astype("duration[us][pyarrow]"), "TimedeltaSeries")
-        assert_type(s.astype("duration[ns][pyarrow]"), "TimedeltaSeries")
+        assert_type(s.astype("duration[s][pyarrow]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("duration[ms][pyarrow]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("duration[us][pyarrow]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("duration[ns][pyarrow]"), "pd.Series[pd.Timedelta]")
 
 
 @pytest.mark.parametrize("cast_arg, target_type", ASTYPE_STRING_ARGS, ids=repr)
@@ -3191,31 +3184,6 @@ def test_types_mask() -> None:
     check(assert_type(s.mask(s > 3, pd.NA), "pd.Series[int]"), pd.Series, np.float64)
 
 
-def test_timedelta_div() -> None:
-    series = pd.Series([pd.Timedelta(days=1)])
-    delta = datetime.timedelta(1)
-
-    check(assert_type(series / delta, "pd.Series[float]"), pd.Series, float)
-    check(assert_type(series / [delta], "pd.Series[float]"), pd.Series, float)
-    check(assert_type(series / 1, "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    check(assert_type(series / [1], "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    check(assert_type(series // delta, "pd.Series[int]"), pd.Series, np.longlong)
-    check(assert_type(series // [delta], "pd.Series[int]"), pd.Series, int)
-    check(assert_type(series // 1, "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    check(assert_type(series // [1], "TimedeltaSeries"), pd.Series, pd.Timedelta)
-
-    check(assert_type(delta / series, "pd.Series[float]"), pd.Series, float)
-    check(assert_type([delta] / series, "pd.Series[float]"), pd.Series, float)
-    check(assert_type(delta // series, "pd.Series[int]"), pd.Series, np.longlong)
-    check(assert_type([delta] // series, "pd.Series[int]"), pd.Series, np.signedinteger)
-
-    if TYPE_CHECKING_INVALID_USAGE:
-        1 / series  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        [1] / series  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        1 // series  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        [1] // series  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-
-
 def test_rank() -> None:
     check(
         assert_type(pd.Series([1, 2]).rank(), "pd.Series[float]"), pd.Series, np.float64
@@ -3321,7 +3289,7 @@ def test_timedeltaseries_operators() -> None:
         pd.Timestamp,
     )
     check(
-        assert_type(series + datetime.timedelta(1), TimedeltaSeries),
+        assert_type(series + datetime.timedelta(1), "pd.Series[pd.Timedelta]"),
         pd.Series,
         pd.Timedelta,
     )
@@ -3331,7 +3299,7 @@ def test_timedeltaseries_operators() -> None:
         pd.Timestamp,
     )
     check(
-        assert_type(series - datetime.timedelta(1), TimedeltaSeries),
+        assert_type(series - datetime.timedelta(1), "pd.Series[pd.Timedelta]"),
         pd.Series,
         pd.Timedelta,
     )
@@ -3483,7 +3451,7 @@ def test_diff() -> None:
             pd.Series(
                 [datetime.datetime.now().date(), datetime.datetime.now().date()]
             ).diff(),
-            "TimedeltaSeries",
+            "pd.Series[pd.Timedelta]",
         ),
         pd.Series,
         pd.Timedelta,
@@ -3492,7 +3460,7 @@ def test_diff() -> None:
     # timestamp -> timedelta
     times = pd.Series([pd.Timestamp(0), pd.Timestamp(1)])
     check(
-        assert_type(times.diff(), "TimedeltaSeries"),
+        assert_type(times.diff(), "pd.Series[pd.Timedelta]"),
         pd.Series,
         pd.Timedelta,
         index_to_check_for_type=-1,
@@ -3500,7 +3468,8 @@ def test_diff() -> None:
     # timedelta -> timedelta64
     check(
         assert_type(
-            pd.Series([pd.Timedelta(0), pd.Timedelta(1)]).diff(), "TimedeltaSeries"
+            pd.Series([pd.Timedelta(0), pd.Timedelta(1)]).diff(),
+            "pd.Series[pd.Timedelta]",
         ),
         pd.Series,
         pd.Timedelta,
@@ -3581,22 +3550,22 @@ def test_operator_constistency() -> None:
     # created for #748
     s = pd.Series([1, 2, 3])
     check(
-        assert_type(s * np.timedelta64(1, "s"), "TimedeltaSeries"),
+        assert_type(s * np.timedelta64(1, "s"), "pd.Series[pd.Timedelta]"),
         pd.Series,
         pd.Timedelta,
     )
     check(
-        assert_type(np.timedelta64(1, "s") * s, "TimedeltaSeries"),
+        assert_type(np.timedelta64(1, "s") * s, "pd.Series[pd.Timedelta]"),
         pd.Series,
         pd.Timedelta,
     )
     check(
-        assert_type(s.mul(np.timedelta64(1, "s")), "TimedeltaSeries"),
+        assert_type(s.mul(np.timedelta64(1, "s")), "pd.Series[pd.Timedelta]"),
         pd.Series,
         pd.Timedelta,
     )
     check(
-        assert_type(s.rmul(np.timedelta64(1, "s")), "TimedeltaSeries"),
+        assert_type(s.rmul(np.timedelta64(1, "s")), "pd.Series[pd.Timedelta]"),
         pd.Series,
         pd.Timedelta,
     )
@@ -3892,7 +3861,7 @@ def test_series_items() -> None:
 
 def test_cumsum_timedelta() -> None:
     s = pd.Series(pd.to_timedelta([1, 2, 3], "h"))
-    check(assert_type(s.cumsum(), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(s.cumsum(), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(
         assert_type(pd.Timestamp(0) + s.cumsum(), "pd.Series[pd.Timestamp]"),
         pd.Series,

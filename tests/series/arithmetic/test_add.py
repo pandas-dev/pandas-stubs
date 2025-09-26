@@ -40,7 +40,7 @@ def test_add_i_py_scalar() -> None:
 
 
 def test_add_i_py_sequence() -> None:
-    """Test pd.Series[Any] (int) + Python native sequence"""
+    """Test pd.Series[Any] (int) + Python native sequences"""
     # mypy believe it is already list[Any], whereas pyright gives list[bool | int | complex]
     a = cast(list[Any], [True, 3, 5j])  # type: ignore[redundant-cast]
     b = [True, False, True]
@@ -74,7 +74,7 @@ def test_add_i_py_sequence() -> None:
 
 
 def test_add_i_numpy_array() -> None:
-    """Test pd.Series[Any] (int) + numpy array"""
+    """Test pd.Series[Any] (int) + numpy arrays"""
     b = np.array([True, False, True], np.bool_)
     i = np.array([2, 3, 5], np.int64)
     f = np.array([1.0, 2.0, 3.0], np.float64)
@@ -117,13 +117,13 @@ def test_add_i_numpy_array() -> None:
     check(assert_type(left_i.radd(c), pd.Series), pd.Series)
 
 
-def test_add_i_pd_series() -> None:
-    """Test pd.Series[Any] (int) + pandas series"""
-    a = pd.DataFrame({"a": [1, 2, 3]})["a"]
-    b = pd.Series([True, False, True])
-    i = pd.Series([2, 3, 5])
-    f = pd.Series([1.0, 2.0, 3.0])
-    c = pd.Series([1.1j, 2.2j, 4.1j])
+def test_add_i_pd_index() -> None:
+    """Test pd.Series[Any] (int) + pandas Indexes"""
+    a = pd.MultiIndex.from_tuples([(1,), (2,), (3,)]).levels[0]
+    b = pd.Index([True, False, True])
+    i = pd.Index([2, 3, 5])
+    f = pd.Index([1.0, 2.0, 3.0])
+    c = pd.Index([1.1j, 2.2j, 4.1j])
 
     check(assert_type(left_i + a, pd.Series), pd.Series)
     check(assert_type(left_i + b, pd.Series), pd.Series)
@@ -150,13 +150,13 @@ def test_add_i_pd_series() -> None:
     check(assert_type(left_i.radd(c), pd.Series), pd.Series)
 
 
-def test_add_i_pd_index() -> None:
-    """Test pd.Series[Any] (int) + pandas index"""
-    a = pd.MultiIndex.from_tuples([(1,), (2,), (3,)]).levels[0]
-    b = pd.Index([True, False, True])
-    i = pd.Index([2, 3, 5])
-    f = pd.Index([1.0, 2.0, 3.0])
-    c = pd.Index([1.1j, 2.2j, 4.1j])
+def test_add_i_pd_series() -> None:
+    """Test pd.Series[Any] (int) + pandas Series"""
+    a = pd.DataFrame({"a": [1, 2, 3]})["a"]
+    b = pd.Series([True, False, True])
+    i = pd.Series([2, 3, 5])
+    f = pd.Series([1.0, 2.0, 3.0])
+    c = pd.Series([1.1j, 2.2j, 4.1j])
 
     check(assert_type(left_i + a, pd.Series), pd.Series)
     check(assert_type(left_i + b, pd.Series), pd.Series)

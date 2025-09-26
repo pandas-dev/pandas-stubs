@@ -55,12 +55,12 @@ revealed by `mypy` as follows:
 ```text
 ttest.py:5: note: Revealed type is "pandas.core.series.Series[pandas._libs.tslibs.timestamps.Timestamp]"
 ttest.py:7: note: Revealed type is "pandas.core.series.Series[pandas._libs.tslibs.timestamps.Timestamp]"
-ttest.py:9: note: Revealed type is "pandas.core.series.TimedeltaSeries"
+ttest.py:9: note: Revealed type is "pandas.core.series.Series[pandas._libs.tslibs.timestamps.Timedelta]"
 ttest.py:10: error: Unsupported operand types for + ("Series[Timestamp]" and "Series[Timestamp]")  [operator]
 ```
 
 The type `Series[Timestamp]` is the result of creating a series from `pd.to_datetime()`, while
-the type `TimedeltaSeries` is the result of subtracting two `Series[Timestamp]` as well as
+the type `Series[Timedelta]` is the result of subtracting two `Series[Timestamp]` as well as
 the result of `pd.to_timedelta()`.
 
 ### Progressive arithmetic typing for generic Series

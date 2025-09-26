@@ -763,7 +763,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def to_xml(
         self,
-        path_or_buffer: Literal[None] = ...,
+        path_or_buffer: None = ...,
         index: bool = ...,
         root_name: str | None = ...,
         row_name: str | None = ...,
@@ -1806,6 +1806,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: Level | None = ...,
         fill_value: float | None = None,
     ) -> Self: ...
+    def __mul__(self, other: Any) -> Self: ...
+    def __rmul__(self, other: Any) -> Self: ...
     @final
     def add_prefix(self, prefix: _str, axis: Axis | None = None) -> Self: ...
     @final

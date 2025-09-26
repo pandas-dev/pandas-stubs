@@ -30,7 +30,6 @@ from pandas.core.frame import DataFrame
 from pandas.core.series import (
     PeriodSeries,
     Series,
-    TimedeltaSeries,
 )
 from typing_extensions import Never
 
@@ -165,7 +164,11 @@ class _DatetimeLikeOps(
 
 _DTTimestampTimedeltaReturnType = TypeVar(
     "_DTTimestampTimedeltaReturnType",
-    bound=Series | Series[Timestamp] | TimedeltaSeries | DatetimeIndex | TimedeltaIndex,
+    bound=Series
+    | Series[Timestamp]
+    | Series[Timedelta]
+    | DatetimeIndex
+    | TimedeltaIndex,
 )
 
 class _DatetimeRoundingMethods(Generic[_DTTimestampTimedeltaReturnType]):
@@ -316,7 +319,7 @@ class _TimedeltaPropertiesNoRounding(
 class TimedeltaProperties(
     Properties,
     _TimedeltaPropertiesNoRounding[Series[int], Series[float]],
-    _DatetimeRoundingMethods[TimedeltaSeries],
+    _DatetimeRoundingMethods[Series[Timedelta]],
 ):
     @property
     def unit(self) -> TimeUnit: ...
@@ -440,7 +443,7 @@ class _dtDescriptor(CombinedDatetimelikeProperties, Generic[S1]):
     ) -> TimestampProperties: ...
     @overload
     def __get__(
-        self, instance: Series[Timedelta] | TimedeltaSeries, owner: Any
+        self, instance: Series[Timedelta], owner: Any
     ) -> TimedeltaProperties: ...
     @overload
     def __get__(

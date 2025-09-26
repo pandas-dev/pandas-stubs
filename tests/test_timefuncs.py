@@ -50,12 +50,11 @@ from pandas.tseries.offsets import (
 )
 
 if TYPE_CHECKING:
-    from pandas.core.series import (
+    from pandas.core.series import (  # noqa: F401
         IntervalSeries,
         OffsetSeries,
+        PeriodSeries,
     )
-    from pandas.core.series import PeriodSeries  # noqa: F401
-    from pandas.core.series import TimedeltaSeries  # noqa: F401
 
 if not PD_LTE_23:
     from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore  # isort: skip
@@ -188,33 +187,8 @@ def test_timedelta_series_string() -> None:
 def test_timestamp_timedelta_series_arithmetic() -> None:
     ts1 = pd.to_datetime(pd.Series(["2022-03-05", "2022-03-06"]))
     check(assert_type(ts1.iloc[0], pd.Timestamp), pd.Timestamp)
-    td1 = pd.to_timedelta([2, 3], "seconds")
-    ts2 = pd.to_datetime(pd.Series(["2022-03-08", "2022-03-10"]))
-    r1 = ts1 - ts2
-    check(assert_type(r1, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
-    r2 = r1 / td1
-    check(assert_type(r2, "pd.Series[float]"), pd.Series, float)
-    r3 = r1 - td1
-    check(assert_type(r3, "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    r4 = pd.Timedelta(5, "days") / r1
-    check(assert_type(r4, "pd.Series[float]"), pd.Series, float)
     sb = pd.Series([1, 2]) == pd.Series([1, 3])
     check(assert_type(sb, "pd.Series[bool]"), pd.Series, np.bool_)
-
-    # https://github.com/pandas-dev/pandas/issues/62316
-    if PD_LTE_23:
-        r5 = sb * r1
-        check(assert_type(r5, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
-
-    r6 = r1 * 4
-    check(assert_type(r6, "TimedeltaSeries"), pd.Series, pd.Timedelta)
-
-    tsp1 = pd.Timestamp("2022-03-05")
-    dt1 = dt.datetime(2022, 9, 1, 12, 5, 30)
-    r7 = ts1 - tsp1
-    check(assert_type(r7, "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    r8 = ts1 - dt1
-    check(assert_type(r8, "TimedeltaSeries"), pd.Series, pd.Timedelta)
 
 
 def test_timestamp_dateoffset_arithmetic() -> None:
@@ -304,11 +278,7 @@ def test_timestamp_plus_timedelta_series() -> None:
 def test_timedelta_series_mult() -> None:
     df = pd.DataFrame({"x": [1, 3, 5], "y": [2, 2, 6]})
     std = (df["x"] < df["y"]) * pd.Timedelta(10, "minutes")
-    check(
-        assert_type(std, "TimedeltaSeries"),
-        pd.Series,
-        pd.Timedelta,
-    )
+    check(assert_type(std, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
 def test_timedelta_series_sum() -> None:
@@ -332,9 +302,9 @@ def test_fail_on_adding_two_timestamps() -> None:
     s1 = pd.Series(pd.to_datetime(["2022-05-01", "2022-06-01"]))
     s2 = pd.Series(pd.to_datetime(["2022-05-15", "2022-06-15"]))
     if TYPE_CHECKING_INVALID_USAGE:
-        ssum: pd.Series = s1 + s2  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        ssum = s1 + s2  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         ts = pd.Timestamp("2022-06-30")
-        tsum: pd.Series = s1 + ts  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        tsum = s1 + ts  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_dtindex_tzinfo() -> None:
@@ -369,16 +339,14 @@ def test_to_datetime_nat() -> None:
     )
     check(
         assert_type(
-            pd.to_datetime("2021-03-01", errors="coerce"),
-            "pd.Timestamp | NaTType",
+            pd.to_datetime("2021-03-01", errors="coerce"), "pd.Timestamp | NaTType"
         ),
         pd.Timestamp,
     )
 
     check(
         assert_type(
-            pd.to_datetime("not a date", errors="coerce"),
-            "pd.Timestamp | NaTType",
+            pd.to_datetime("not a date", errors="coerce"), "pd.Timestamp | NaTType"
         ),
         NaTType,
     )
@@ -437,6 +405,7 @@ def test_series_dt_accessors() -> None:
             dt.datetime,
         )
     s0_local = s0.dt.tz_localize("UTC")
+    check(assert_type(s0_local, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
     check(
         assert_type(s0_local, "pd.Series[pd.Timestamp]"),
         pd.Series,
@@ -579,7 +548,9 @@ def test_series_dt_accessors() -> None:
     i2 = pd.timedelta_range(start="1 day", periods=10)
     check(assert_type(i2, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
-    check(assert_type(i2.to_series(), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(i2.to_series(), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta
+    )
 
     s2 = pd.Series(i2)
 
@@ -630,7 +601,7 @@ def test_series_dt_accessors() -> None:
         pd.Timedelta,
     )
 
-    # Checks for general Series other than Series[Timestamp] and TimedeltaSeries
+    # Checks for general Series other than Series[Timestamp] and Series[Timedelta]
 
     s4 = pd.Series([pd.Timestamp("2024-01-01"), pd.Timestamp("2024-01-02")])
 
@@ -657,10 +628,7 @@ def test_series_dt_accessors() -> None:
         pd.Timestamp,
     )
 
-    s5 = cast(
-        "pd.Series[pd.Timedelta]",
-        pd.Series([pd.Timedelta("1 day"), pd.Timedelta("2 days")]),
-    )
+    s5 = pd.Series([pd.Timedelta("1 day"), pd.Timedelta("2 days")])
 
     check(assert_type(s5.dt.unit, TimeUnit), str)
     check(
@@ -1074,9 +1042,19 @@ def test_series_types_to_numpy() -> None:
         dtype=np.int64,
     )
     check(
+        assert_type(td_s.to_numpy(dtype=np.timedelta64), np_1darray[np.timedelta64]),
+        np_1darray,
+        dtype=np.timedelta64,
+    )
+    check(
         assert_type(ts_s.to_numpy(dtype=np.int64), np_1darray[np.int64]),
         np_1darray,
         dtype=np.int64,
+    )
+    check(
+        assert_type(ts_s.to_numpy(dtype=np.datetime64), np_1darray[np.datetime64]),
+        np_1darray,
+        dtype=np.datetime64,
     )
     check(
         assert_type(p_s.to_numpy(dtype=np.int64), np_1darray[np.int64]),
@@ -1249,8 +1227,8 @@ def test_to_timedelta_scalar() -> None:
 def test_to_timedelta_series() -> None:
     s = pd.Series([10, 20, 30, 40])
     s2 = pd.Series(["10ms", "20ms", "30ms"])
-    check(assert_type(pd.to_timedelta(s, "ms"), "TimedeltaSeries"), pd.Series)
-    check(assert_type(pd.to_timedelta(s2), "TimedeltaSeries"), pd.Series)
+    check(assert_type(pd.to_timedelta(s, "ms"), "pd.Series[pd.Timedelta]"), pd.Series)
+    check(assert_type(pd.to_timedelta(s2), "pd.Series[pd.Timedelta]"), pd.Series)
 
 
 def test_to_timedelta_index() -> None:
@@ -1594,9 +1572,7 @@ def test_to_datetime_array() -> None:
         pd.DatetimeIndex,
     )
     pd.to_datetime(
-        pd.Index([2451544.5, 2451545.5, 2451546.5]),
-        unit="D",
-        origin="julian",
+        pd.Index([2451544.5, 2451545.5, 2451546.5]), unit="D", origin="julian"
     )
     check(
         assert_type(
@@ -1732,18 +1708,12 @@ def test_timedelta64_and_arithmatic_operator() -> None:
     s1 = pd.Series(data=pd.date_range("1/1/2020", "2/1/2020"))
     s2 = pd.Series(data=pd.date_range("1/1/2021", "2/1/2021"))
     s3 = s2 - s1
-    check(assert_type(s3, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     td1 = pd.Timedelta(1, "D")
-    check(assert_type(s2 - td1, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
     # GH 758
     s4 = s1.astype(object)
     check(assert_type(s4 - td1, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     td = np.timedelta64(1, "D")
-    check(assert_type((s1 - td), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    check(assert_type((s1 + td), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    check(assert_type((s3 - td), "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    check(assert_type((s3 + td), "TimedeltaSeries"), pd.Series, pd.Timedelta)
     check(assert_type((s3 / td), "pd.Series[float]"), pd.Series, float)
     if TYPE_CHECKING_INVALID_USAGE:
         r1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
@@ -1756,24 +1726,6 @@ def test_timedeltaseries_add_timestampseries() -> None:
     tss = pd.Series(pd.date_range(start="2012-01-01", periods=10, freq="W-MON"))
     plus = tds + tss
     check(assert_type(plus, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-
-
-def test_mean_median_std() -> None:
-    s = pd.Series([pd.Timedelta("1 ns"), pd.Timedelta("2 ns"), pd.Timedelta("3 ns")])
-    check(assert_type(s.mean(), pd.Timedelta), pd.Timedelta)
-    check(assert_type(s.median(), pd.Timedelta), pd.Timedelta)
-    check(assert_type(s.std(), pd.Timedelta), pd.Timedelta)
-
-    s2 = pd.Series(
-        [
-            pd.Timestamp("2021-01-01"),
-            pd.Timestamp("2021-01-02"),
-            pd.Timestamp("2021-01-03"),
-        ]
-    )
-    check(assert_type(s2.mean(), pd.Timestamp), pd.Timestamp)
-    check(assert_type(s2.median(), pd.Timestamp), pd.Timestamp)
-    check(assert_type(s2.std(), pd.Timedelta), pd.Timedelta)
 
 
 def test_timestamp_strptime_fails():
@@ -1835,31 +1787,19 @@ def test_dateoffset_weekday() -> None:
 
 def test_date_range_unit():
     check(
-        assert_type(
-            pd.date_range("1/1/2022", "2/1/2022", unit="s"),
-            pd.DatetimeIndex,
-        ),
+        assert_type(pd.date_range("1/1/2022", "2/1/2022", unit="s"), pd.DatetimeIndex),
         pd.DatetimeIndex,
     )
     check(
-        assert_type(
-            pd.date_range("1/1/2022", "2/1/2022", unit="ms"),
-            pd.DatetimeIndex,
-        ),
+        assert_type(pd.date_range("1/1/2022", "2/1/2022", unit="ms"), pd.DatetimeIndex),
         pd.DatetimeIndex,
     )
     check(
-        assert_type(
-            pd.date_range("1/1/2022", "2/1/2022", unit="us"),
-            pd.DatetimeIndex,
-        ),
+        assert_type(pd.date_range("1/1/2022", "2/1/2022", unit="us"), pd.DatetimeIndex),
         pd.DatetimeIndex,
     )
     check(
-        assert_type(
-            pd.date_range("1/1/2022", "2/1/2022", unit="ns"),
-            pd.DatetimeIndex,
-        ),
+        assert_type(pd.date_range("1/1/2022", "2/1/2022", unit="ns"), pd.DatetimeIndex),
         pd.DatetimeIndex,
     )
 
@@ -1989,7 +1929,7 @@ def test_timestamp_sub_series() -> None:
     ts1 = pd.to_datetime(pd.Series(["2022-03-05", "2022-03-06"]))
     one_ts = ts1.iloc[0]
     check(assert_type(ts1.iloc[0], pd.Timestamp), pd.Timestamp)
-    check(assert_type(one_ts - ts1, "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(one_ts - ts1, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
 def test_creating_date_range() -> None:

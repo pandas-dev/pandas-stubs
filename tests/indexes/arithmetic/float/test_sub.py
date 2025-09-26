@@ -27,7 +27,7 @@ def test_sub_py_scalar() -> None:
 
 
 def test_sub_py_sequence() -> None:
-    """Test pd.Index[float] - Python native sequence"""
+    """Test pd.Index[float] - Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
     check(assert_type(left - b, "pd.Index[float]"), pd.Index, np.floating)
@@ -42,7 +42,7 @@ def test_sub_py_sequence() -> None:
 
 
 def test_sub_numpy_array() -> None:
-    """Test pd.Index[float] - numpy array"""
+    """Test pd.Index[float] - numpy arrays"""
     b = np.array([True, False, True], np.bool_)
     i = np.array([2, 3, 5], np.int64)
     f = np.array([1.0, 2.0, 3.0], np.float64)
@@ -67,7 +67,7 @@ def test_sub_numpy_array() -> None:
 
 
 def test_sub_pd_index() -> None:
-    """Test pd.Index[float] - pandas index"""
+    """Test pd.Index[float] - pandas Indexes"""
     b = pd.Index([True, False, True])
     i = pd.Index([2, 3, 5])
     f = pd.Index([1.0, 2.0, 3.0])

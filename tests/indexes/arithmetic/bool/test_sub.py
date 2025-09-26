@@ -32,7 +32,7 @@ def test_sub_py_scalar() -> None:
 
 
 def test_sub_py_sequence() -> None:
-    """Test pd.Index[bool] - Python native sequence"""
+    """Test pd.Index[bool] - Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
     if TYPE_CHECKING_INVALID_USAGE:
@@ -49,7 +49,7 @@ def test_sub_py_sequence() -> None:
 
 
 def test_sub_numpy_array() -> None:
-    """Test pd.Index[bool] - numpy array"""
+    """Test pd.Index[bool] - numpy arrays"""
     b = np.array([True, False, True], np.bool_)
     i = np.array([2, 3, 5], np.int64)
     f = np.array([1.0, 2.0, 3.0], np.float64)
@@ -76,7 +76,7 @@ def test_sub_numpy_array() -> None:
 
 
 def test_sub_pd_index() -> None:
-    """Test pd.Index[bool] - pandas index"""
+    """Test pd.Index[bool] - pandas Indexes"""
     b = pd.Index([True, False, True])
     i = pd.Index([2, 3, 5])
     f = pd.Index([1.0, 2.0, 3.0])

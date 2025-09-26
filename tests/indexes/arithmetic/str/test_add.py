@@ -32,7 +32,7 @@ def test_add_py_scalar() -> None:
 
 
 def test_add_py_sequence() -> None:
-    """Test pd.Index[str] + Python native sequence"""
+    """Test pd.Index[str] + Python native sequences"""
     i = [3, 5, 8]
     r0 = ["a", "bc", "def"]
     r1 = tuple(r0)
@@ -49,7 +49,7 @@ def test_add_py_sequence() -> None:
 
 
 def test_add_numpy_array() -> None:
-    """Test pd.Index[str] + numpy array"""
+    """Test pd.Index[str] + numpy arrays"""
     i = np.array([3, 5, 8], np.int64)
     r0 = np.array(["a", "bc", "def"], np.str_)
 
@@ -75,7 +75,7 @@ def test_add_numpy_array() -> None:
 
 
 def test_add_pd_index() -> None:
-    """Test pd.Index[str] + pandas index"""
+    """Test pd.Index[str] + pandas Indexes"""
     i = pd.Index([3, 5, 8])
     r0 = pd.Index(["a", "bc", "def"])
 

@@ -13,7 +13,6 @@ def test_add_py_scalar() -> None:
     """Test pd.Index[bool] + Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
 
-    left.__add__(b)
     check(assert_type(left + b, "pd.Index[bool]"), pd.Index, np.bool_)
     check(assert_type(left + i, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(left + f, "pd.Index[float]"), pd.Index, np.floating)
@@ -26,7 +25,7 @@ def test_add_py_scalar() -> None:
 
 
 def test_add_py_sequence() -> None:
-    """Test pd.Index[bool] + Python native sequence"""
+    """Test pd.Index[bool] + Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
     check(assert_type(left + b, "pd.Index[bool]"), pd.Index, np.bool_)
@@ -41,7 +40,7 @@ def test_add_py_sequence() -> None:
 
 
 def test_add_numpy_array() -> None:
-    """Test pd.Index[bool] + numpy array"""
+    """Test pd.Index[bool] + numpy arrays"""
     b = np.array([True, False, True], np.bool_)
     i = np.array([2, 3, 5], np.int64)
     f = np.array([1.0, 2.0, 3.0], np.float64)
@@ -66,7 +65,7 @@ def test_add_numpy_array() -> None:
 
 
 def test_add_pd_index() -> None:
-    """Test pd.Index[bool] + pandas index"""
+    """Test pd.Index[bool] + pandas Indexes"""
     b = pd.Index([True, False, True])
     i = pd.Index([2, 3, 5])
     f = pd.Index([1.0, 2.0, 3.0])

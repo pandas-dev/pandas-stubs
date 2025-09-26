@@ -27,6 +27,6 @@ class GroupByNthSelector(Generic[_GroupByT]):
     def __call__(
         self,
         n: PositionalIndexer | tuple,
-        dropna: Literal["any", "all", None] = ...,
+        dropna: Literal["any", "all"] | None = ...,
     ) -> DataFrame | Series: ...
     def __getitem__(self, n: PositionalIndexer | tuple) -> DataFrame | Series: ...

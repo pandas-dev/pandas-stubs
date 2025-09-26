@@ -477,7 +477,6 @@ class Index(IndexOpsMixin[S1]):
     def __ge__(self, other: Self | S1) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __lt__(self, other: Self | S1) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __gt__(self, other: Self | S1) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    # overwrite inherited methods from OpsMixin
     @overload
     def __add__(self: Index[Never], other: _str) -> Never: ...
     @overload
@@ -630,7 +629,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __sub__(self: Index[Never], other: DatetimeIndex) -> Never: ...
     @overload
-    def __sub__(self: Index[Never], other: complex | NumListLike | Index) -> Index: ...
+    def __sub__(self: Index[Never], other: complex | _ListLike | Index) -> Index: ...
     @overload
     def __sub__(self, other: Index[Never]) -> Index: ...
     @overload
@@ -770,46 +769,23 @@ class Index(IndexOpsMixin[S1]):
         self: Index[int] | Index[float], other: timedelta
     ) -> TimedeltaIndex: ...
     @overload
-    def __mul__(self, other: Any) -> Self: ...
+    def __mul__(
+        self, other: float | Sequence[float] | Index[int] | Index[float]
+    ) -> Self: ...
+    def __rmul__(
+        self, other: float | Sequence[float] | Index[int] | Index[float]
+    ) -> Self: ...
     def __floordiv__(
-        self,
-        other: (
-            float
-            | IndexOpsMixin[int]
-            | IndexOpsMixin[float]
-            | Sequence[int]
-            | Sequence[float]
-        ),
+        self, other: float | Sequence[float] | Index[int] | Index[float]
     ) -> Self: ...
     def __rfloordiv__(
-        self,
-        other: (
-            float
-            | IndexOpsMixin[int]
-            | IndexOpsMixin[float]
-            | Sequence[int]
-            | Sequence[float]
-        ),
+        self, other: float | Sequence[float] | Index[int] | Index[float]
     ) -> Self: ...
     def __truediv__(
-        self,
-        other: (
-            float
-            | IndexOpsMixin[int]
-            | IndexOpsMixin[float]
-            | Sequence[int]
-            | Sequence[float]
-        ),
+        self, other: float | Sequence[float] | Index[int] | Index[float]
     ) -> Self: ...
     def __rtruediv__(
-        self,
-        other: (
-            float
-            | IndexOpsMixin[int]
-            | IndexOpsMixin[float]
-            | Sequence[int]
-            | Sequence[float]
-        ),
+        self, other: float | Sequence[float] | Index[int] | Index[float]
     ) -> Self: ...
     def infer_objects(self, copy: bool = True) -> Self: ...
 
