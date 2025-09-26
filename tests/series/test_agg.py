@@ -1,5 +1,3 @@
-from typing import Any
-
 import numpy as np
 import pandas as pd
 from typing_extensions import assert_type
@@ -13,9 +11,9 @@ from tests import (
 
 def test_agg_any_float() -> None:
     series = pd.DataFrame({"A": [1.0, float("nan"), 2.0]})["A"]
-    check(assert_type(series.mean(), Any), np.float64)
-    check(assert_type(series.median(), Any), np.float64)
-    check(assert_type(series.std(), Any), np.float64)
+    check(assert_type(series.mean(), float), np.float64)
+    check(assert_type(series.median(), float), np.float64)
+    check(assert_type(series.std(), float), np.float64)
 
 
 def test_agg_bool() -> None:

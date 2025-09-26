@@ -1042,8 +1042,7 @@ def test_series_types_to_numpy() -> None:
         dtype=np.int64,
     )
     check(
-        # mypy gives error: Expression is of type "ndarray[tuple[int], dtype[timedelta64[Any]]]", not "ndarray[tuple[int], dtype[timedelta64[timedelta | int | None]]]"  [assert-type]
-        assert_type(td_s.to_numpy(dtype=np.timedelta64), np_1darray[np.timedelta64]),  # type: ignore[assert-type]
+        assert_type(td_s.to_numpy(dtype=np.timedelta64), np_1darray[np.timedelta64]),
         np_1darray,
         dtype=np.timedelta64,
     )
@@ -1051,6 +1050,11 @@ def test_series_types_to_numpy() -> None:
         assert_type(ts_s.to_numpy(dtype=np.int64), np_1darray[np.int64]),
         np_1darray,
         dtype=np.int64,
+    )
+    check(
+        assert_type(ts_s.to_numpy(dtype=np.datetime64), np_1darray[np.datetime64]),
+        np_1darray,
+        dtype=np.datetime64,
     )
     check(
         assert_type(p_s.to_numpy(dtype=np.int64), np_1darray[np.int64]),

@@ -825,14 +825,6 @@ np_ndarray_td: TypeAlias = npt.NDArray[np.timedelta64]
 
 # Define shape and generic type variables with defaults similar to numpy
 GenericT = TypeVar("GenericT", bound=np.generic, default=Any)
-TD64ItemT = TypeVar(
-    "TD64ItemT",
-    bound=datetime.timedelta | int | None,
-    default=datetime.timedelta | int | None,
-)
-DT64ItemT = TypeVar(
-    "DT64ItemT", bound=datetime.date | int | None, default=datetime.date | int | None
-)
 GenericT_co = TypeVar("GenericT_co", bound=np.generic, default=Any, covariant=True)
 ShapeT = TypeVar("ShapeT", bound=tuple[int, ...], default=tuple[Any, ...])
 # Numpy ndarray with more ergonomic typevar

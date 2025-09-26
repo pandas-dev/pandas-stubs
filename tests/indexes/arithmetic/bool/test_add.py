@@ -13,7 +13,6 @@ def test_add_py_scalar() -> None:
     """Test pd.Index[bool] + Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
 
-    left.__add__(b)
     check(assert_type(left + b, "pd.Index[bool]"), pd.Index, np.bool_)
     check(assert_type(left + i, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(left + f, "pd.Index[float]"), pd.Index, np.floating)

@@ -477,7 +477,6 @@ class Index(IndexOpsMixin[S1]):
     def __ge__(self, other: Self | S1) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __lt__(self, other: Self | S1) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __gt__(self, other: Self | S1) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    # overwrite inherited methods from OpsMixin
     @overload
     def __add__(self: Index[Never], other: _str) -> Never: ...
     @overload

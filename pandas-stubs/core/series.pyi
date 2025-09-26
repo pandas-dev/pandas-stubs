@@ -4461,7 +4461,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         level: None = ...,
         numeric_only: _bool = False,
         **kwargs: Any,
-    ) -> Any: ...
+    ) -> float: ...
     @overload
     def mean(
         self: Series[Timestamp],
@@ -4488,7 +4488,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         level: None = ...,
         numeric_only: _bool = False,
         **kwargs: Any,
-    ) -> Any: ...
+    ) -> float: ...
     @overload
     def median(
         self: Series[complex],
@@ -4633,7 +4633,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         ddof: int = 1,
         numeric_only: _bool = False,
         **kwargs: Any,
-    ) -> Any: ...
+    ) -> float: ...
     @overload
     def std(
         self: Series[complex],
@@ -4675,7 +4675,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload  # type: ignore[override]
     def to_numpy(  # pyrefly: ignore[bad-override]
         self: Series[Timestamp],
-        dtype: None = None,
+        dtype: None | type[np.datetime64] = None,
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs,
@@ -4691,7 +4691,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def to_numpy(  # pyrefly: ignore[bad-override]
         self: Series[Timedelta],
-        dtype: None = None,
+        dtype: None | type[np.timedelta64] = None,
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs,
