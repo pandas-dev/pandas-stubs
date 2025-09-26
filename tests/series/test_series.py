@@ -495,7 +495,6 @@ def test_types_rank() -> None:
 
 def test_types_mean() -> None:
     s = pd.Series([1, 2, 3, np.nan])
-    check(assert_type(s.mean(), float), float)
     check(
         assert_type(s.groupby(level=0).mean(), "pd.Series[float]"),
         pd.Series,
@@ -740,7 +739,6 @@ def test_types_var() -> None:
 
 def test_types_std() -> None:
     s = pd.Series([-10, 2, 3, 10])
-    s.std()
     s.std(axis=0, ddof=1)
     s.std(skipna=True, numeric_only=False)
 

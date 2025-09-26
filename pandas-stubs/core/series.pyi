@@ -215,11 +215,6 @@ class _SupportsMul(Protocol[_T_co]):
     def __mul__(self, value: Self, /) -> _T_co: ...
 
 @type_check_only
-class _SupportsAdd_MulFloat(Protocol[_T_co]):
-    def __add__(self, value: Self, /) -> _T_co: ...
-    def __mul__(self, value: float, /) -> _T_co: ...
-
-@type_check_only
 class SupportsTruedivInt(Protocol[_T_co]):
     def __truediv__(self, value: int, /) -> _T_co: ...
 
@@ -4466,7 +4461,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         level: None = ...,
         numeric_only: _bool = False,
         **kwargs: Any,
-    ) -> float: ...
+    ) -> Any: ...
     @overload
     def mean(
         self: Series[Timestamp],
@@ -4478,13 +4473,13 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Timestamp: ...
     @overload
     def mean(
-        self: SupportsGetItem[Scalar, _SupportsAdd_MulFloat[S1]],
+        self: SupportsGetItem[Scalar, SupportsTruedivInt[S2]],
         axis: AxisIndex | None = 0,
         skipna: _bool = True,
         level: None = ...,
         numeric_only: _bool = False,
         **kwargs: Any,
-    ) -> S1: ...
+    ) -> S2: ...
     @overload
     def median(
         self: Series[Never],
@@ -4632,7 +4627,26 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Scalar: ...
     @overload
     def std(
-        self: Series[Timestamp] | Series[Timedelta],
+        self: Series[Never],
+        axis: AxisIndex | None = 0,
+        skipna: _bool | None = True,
+        ddof: int = 1,
+        numeric_only: _bool = False,
+        **kwargs: Any,
+    ) -> Any: ...
+    @overload
+    def std(
+        self: Series[complex],
+        axis: AxisIndex | None = 0,
+        skipna: _bool | None = True,
+        level: None = ...,
+        ddof: int = ...,
+        numeric_only: _bool = False,
+        **kwargs: Any,
+    ) -> np.float64: ...
+    @overload
+    def std(
+        self: Series[Timestamp],
         axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         level: None = ...,
@@ -4642,13 +4656,13 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Timedelta: ...
     @overload
     def std(
-        self,
+        self: SupportsGetItem[Scalar, SupportsTruedivInt[S2]],
         axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         ddof: int = 1,
         numeric_only: _bool = False,
         **kwargs: Any,
-    ) -> float: ...
+    ) -> S2: ...
     def sum(
         self: SupportsGetItem[Scalar, _SupportsAdd[_T]],
         axis: AxisIndex | None = 0,

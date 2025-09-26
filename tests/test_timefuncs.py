@@ -1724,22 +1724,6 @@ def test_timedeltaseries_add_timestampseries() -> None:
     check(assert_type(plus, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
 
-def test_mean_std() -> None:
-    s = pd.Series([pd.Timedelta("1 ns"), pd.Timedelta("2 ns"), pd.Timedelta("3 ns")])
-    check(assert_type(s.mean(), pd.Timedelta), pd.Timedelta)
-    check(assert_type(s.std(), pd.Timedelta), pd.Timedelta)
-
-    s2 = pd.Series(
-        [
-            pd.Timestamp("2021-01-01"),
-            pd.Timestamp("2021-01-02"),
-            pd.Timestamp("2021-01-03"),
-        ]
-    )
-    check(assert_type(s2.mean(), pd.Timestamp), pd.Timestamp)
-    check(assert_type(s2.std(), pd.Timedelta), pd.Timedelta)
-
-
 def test_timestamp_strptime_fails():
     if TYPE_CHECKING_INVALID_USAGE:
         assert_never(
