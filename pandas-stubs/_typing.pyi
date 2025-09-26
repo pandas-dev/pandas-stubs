@@ -877,8 +877,6 @@ S1_CT = TypeVar("S1_CT", bound=SeriesDType, default=Any, contravariant=True)
 # Like S1, but without `default=Any`.
 S2 = TypeVar("S2", bound=SeriesDType)
 S3 = TypeVar("S3", bound=SeriesDType)
-S2_CO = TypeVar("S2_CO", bound=SeriesDType, covariant=True)
-S2_CT = TypeVar("S2_CT", bound=SeriesDType, contravariant=True)
 
 # Constraint, instead of bound
 C2 = TypeVar(
