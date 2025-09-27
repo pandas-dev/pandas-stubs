@@ -1,0 +1,62 @@
+from typing import TYPE_CHECKING
+
+import numpy as np
+import pandas as pd
+from pandas.core.arrays import DatetimeArray
+from pandas.core.arrays.base import ExtensionArray
+from pandas.core.arrays.interval import IntervalArray
+from pandas.core.arrays.timedeltas import TimedeltaArray
+from pandas.core.indexes.accessors import (
+    DatetimeProperties,
+    TimedeltaProperties,
+)
+from typing_extensions import assert_type
+
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
+
+if TYPE_CHECKING:
+    from pandas.core.indexes.accessors import (  # noqa: F401
+        TimedeltaProperties,
+        TimestampProperties,
+    )
+
+
+def test_dt_property() -> None:
+    """Test the Series.dt property"""
+    check(
+        assert_type(pd.Series([pd.Timestamp(2025, 9, 28)]).dt, "TimestampProperties"),
+        DatetimeProperties,
+    )
+    check(
+        assert_type(pd.Series([pd.Timedelta(1, "s")]).dt, TimedeltaProperties),
+        TimedeltaProperties,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _ = pd.Series([1]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue]
+
+
+def test_array_property() -> None:
+    """Test that Series.array returns ExtensionArray and its subclasses"""
+    # pandas-dev/pandas-stubs#1383
+    # check(assert_type(pd.Series([1], dtype="category").array, pd.Categorical), pd.Categorical, np.int64)
+    check(
+        assert_type(pd.Series(pd.interval_range(0, 1)).array, IntervalArray),
+        IntervalArray,
+        pd.Interval,
+    )
+    check(
+        assert_type(pd.Series([pd.Timestamp(2025, 9, 28)]).array, DatetimeArray),
+        DatetimeArray,
+        pd.Timestamp,
+    )
+    check(
+        assert_type(pd.Series([pd.Timedelta(1, "s")]).array, TimedeltaArray),
+        TimedeltaArray,
+        pd.Timedelta,
+    )
+    # Should be NumpyExtensionArray
+    check(assert_type(pd.Series([1]).array, ExtensionArray), ExtensionArray, np.integer)

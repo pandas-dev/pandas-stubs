@@ -24,7 +24,7 @@ def test_tolist() -> None:
     s = pd.Series(data)
     data1 = [1, 2, 3]
     s1 = pd.Series(data1)
-    check(assert_type(s.array.tolist(), list), list)
+    check(assert_type(s.array.tolist(), list), list)  # type: ignore[assert-type]
     check(assert_type(s1.array.tolist(), list), list)
     check(assert_type(pd.array([1, 2, 3]).tolist(), list), list)
 

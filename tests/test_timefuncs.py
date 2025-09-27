@@ -51,7 +51,6 @@ from pandas.tseries.offsets import (
 
 if TYPE_CHECKING:
     from pandas.core.series import (  # noqa: F401
-        IntervalSeries,
         OffsetSeries,
         PeriodSeries,
     )
@@ -357,10 +356,6 @@ def test_series_dt_accessors() -> None:
     i0 = pd.date_range(start="2022-06-01", periods=10)
     check(assert_type(i0, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
 
-    check(
-        assert_type(i0.to_series(), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp
-    )
-
     s0 = pd.Series(i0)
 
     check(assert_type(s0.dt.date, "pd.Series[dt.date]"), pd.Series, dt.date)
@@ -530,8 +525,6 @@ def test_series_dt_accessors() -> None:
     i1 = pd.period_range(start="2022-06-01", periods=10)
 
     check(assert_type(i1, pd.PeriodIndex), pd.PeriodIndex)
-
-    check(assert_type(i1.to_series(), pd.Series), pd.Series, pd.Period)
 
     s1 = pd.Series(i1)
 
@@ -948,7 +941,7 @@ def test_series_types_to_numpy() -> None:
     o_s = cast(
         "OffsetSeries", pd.Series([pd.DateOffset(days=1), pd.DateOffset(days=2)])
     )
-    i_s = cast("IntervalSeries", pd.interval_range(1, 2).to_series())
+    i_s = pd.interval_range(1, 2).to_series()
 
     # default dtype
     check(

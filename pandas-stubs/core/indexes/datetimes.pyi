@@ -20,7 +20,6 @@ from pandas import (
     TimedeltaIndex,
     Timestamp,
 )
-from pandas.core.arrays import DatetimeArray
 from pandas.core.indexes.accessors import DatetimeIndexProperties
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.series import Series
@@ -59,10 +58,6 @@ class DatetimeIndex(
         name: Hashable = ...,
     ) -> Self: ...
     def __reduce__(self): ...
-
-    # Override the array property to return DatetimeArray instead of ExtensionArray
-    @property
-    def array(self) -> DatetimeArray: ...
 
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types

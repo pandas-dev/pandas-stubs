@@ -12,8 +12,11 @@ from typing import (
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
-from pandas.core.arrays import DatetimeArray
+from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
+from pandas.core.arrays.datetimes import DatetimeArray
+from pandas.core.arrays.interval import IntervalArray
+from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.indexes.base import Index
 from typing_extensions import (
     Never,
@@ -29,6 +32,8 @@ from tests import (
 )
 
 if TYPE_CHECKING:
+    from pandas.core.series import PeriodSeries  # noqa: F401
+
     from tests import Dtype  # noqa: F401
 
 
@@ -1519,12 +1524,77 @@ def test_period_index_asof_locs() -> None:
     )
 
 
-def test_datetime_index_array_property() -> None:
-    """Test that DatetimeIndex.array returns DatetimeArray instead of ExtensionArray."""
+def test_array_property() -> None:
+    """Test that Index.array and semantic Index.array return ExtensionArray and its subclasses"""
+    # pandas-dev/pandas-stubs#1383
+    # check(assert_type(Index([1], dtype="category").array, pd.Categorical), pd.Categorical, np.int64)
+    check(
+        assert_type(pd.interval_range(0, 1).array, IntervalArray),
+        IntervalArray,
+        pd.Interval,
+    )
+
     # Test with pd.to_datetime().array - this is the main issue reported
     arr = pd.to_datetime(["2020-01-01", "2020-01-02"]).array
-    check(assert_type(arr, DatetimeArray), DatetimeArray)
+    check(assert_type(arr, DatetimeArray), DatetimeArray, pd.Timestamp)
 
     # Test with DatetimeIndex constructor directly
     dt_index = pd.DatetimeIndex(["2020-01-01", "2020-01-02"])
-    check(assert_type(dt_index.array, DatetimeArray), DatetimeArray)
+    check(assert_type(dt_index.array, DatetimeArray), DatetimeArray, pd.Timestamp)
+
+    check(
+        assert_type(pd.to_timedelta(["1s"]).array, TimedeltaArray),
+        TimedeltaArray,
+        pd.Timedelta,
+    )
+    # Should be NumpyExtensionArray
+    check(assert_type(Index([1]).array, ExtensionArray), ExtensionArray, np.integer)
+
+
+def test_to_series() -> None:
+    """Test that Index.to_series return typed Series"""
+    check(
+        assert_type(pd.interval_range(0, 1).to_series(), "pd.Series[pd.Interval[int]]"),
+        pd.Series,
+        pd.Interval,
+    )
+    check(
+        assert_type(
+            pd.date_range(start="2022-06-01", periods=10).to_series(),
+            "pd.Series[pd.Timestamp]",
+        ),
+        pd.Series,
+        pd.Timestamp,
+    )
+
+    check(
+        assert_type(
+            pd.timedelta_range(start="1 day", periods=10).to_series(),
+            "pd.Series[pd.Timedelta]",
+        ),
+        pd.Series,
+        pd.Timedelta,
+    )
+    check(
+        assert_type(
+            pd.period_range(start="2022-06-01", periods=10).to_series(), "PeriodSeries"
+        ),
+        pd.Series,
+        pd.Period,
+    )
+
+    check(
+        assert_type(Index([True]).to_series(), "pd.Series[bool]"), pd.Series, np.bool_
+    )
+    check(assert_type(Index([1]).to_series(), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(Index([1.0]).to_series(), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(Index([1j]).to_series(), "pd.Series[complex]"),
+        pd.Series,
+        np.complexfloating,
+    )
+    check(assert_type(Index(["1"]).to_series(), "pd.Series[str]"), pd.Series, str)

@@ -11,6 +11,7 @@ from pandas import Index
 from pandas.core.indexes.accessors import PeriodIndexFieldOps
 from pandas.core.indexes.datetimelike import DatetimeIndexOpsMixin
 from pandas.core.indexes.timedeltas import TimedeltaIndex
+from pandas.core.series import PeriodSeries
 from typing_extensions import Self
 
 from pandas._libs.tslibs import (
@@ -74,6 +75,7 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period, np.object_], PeriodIndexField
     @property
     def freqstr(self) -> str: ...
     def shift(self, periods: int = 1, freq: Frequency | None = None) -> Self: ...
+    def to_series(self, index=..., name: Hashable = ...) -> PeriodSeries: ...
 
 def period_range(
     start: (
