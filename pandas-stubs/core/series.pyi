@@ -36,7 +36,9 @@ from typing import (
 from _typeshed import (
     SupportsAdd,
     SupportsGetItem,
+    SupportsMul,
     SupportsRAdd,
+    SupportsRMul,
 )
 from matplotlib.axes import (
     Axes as PlotAxes,
@@ -112,6 +114,7 @@ from pandas._libs.tslibs.offsets import DateOffset
 from pandas._typing import (
     S1,
     S1_CO,
+    S1_CO_NSDT,
     S1_CT,
     S1_CT_NDT,
     S2,
@@ -2543,81 +2546,21 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __mul__(self, other: Index[Never] | Series[Never]) -> Series: ...
     @overload
-    def __mul__(
-        self: Series[bool],
-        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX] | Series[T_COMPLEX],
-    ) -> Series[T_COMPLEX]: ...
-    @overload
-    def __mul__(self: Series[bool], other: np_ndarray_bool) -> Series[bool]: ...
-    @overload
-    def __mul__(self: Series[bool], other: np_ndarray_anyint) -> Series[int]: ...
-    @overload
-    def __mul__(self: Series[bool], other: np_ndarray_float) -> Series[float]: ...
-    @overload
-    def __mul__(
-        self: Series[int],
-        other: (
-            bool
-            | Sequence[bool]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | Index[bool]
-            | Series[bool]
-        ),
-    ) -> Series[int]: ...
-    @overload
-    def __mul__(
-        self: Series[int],
-        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX] | Series[T_COMPLEX],
-    ) -> Series[T_COMPLEX]: ...
-    @overload
-    def __mul__(self: Series[int], other: np_ndarray_float) -> Series[float]: ...
-    @overload
-    def __mul__(
-        self: Series[float],
-        other: (
-            int
-            | Sequence[int]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[T_INT]
-            | Series[T_INT]
-        ),
-    ) -> Series[float]: ...
-    @overload
-    def __mul__(
-        self: Series[float],
-        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX] | Series[T_COMPLEX],
-    ) -> Series[T_COMPLEX]: ...
-    @overload
-    def __mul__(
-        self: Series[complex],
-        other: (
-            T_COMPLEX
-            | Sequence[T_COMPLEX]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[T_COMPLEX]
-            | Series[T_COMPLEX]
-        ),
-    ) -> Series[complex]: ...
-    @overload
-    def __mul__(
-        self: Series[T_COMPLEX], other: np_ndarray_complex
-    ) -> Series[complex]: ...
+    def __mul__(self, other: np_ndarray_dt) -> Never: ...
     @overload
     def __mul__(
         self: Series[bool] | Series[int] | Series[float],
         other: (
             timedelta
+            | Sequence[timedelta]
             | np.timedelta64
             | np_ndarray_td
             | TimedeltaIndex
             | Series[Timedelta]
         ),
     ) -> Series[Timedelta]: ...
+    @overload
+    def __mul__(self: Series[Timestamp], other: np_ndarray) -> Never: ...
     @overload
     def __mul__(self: Series[Timedelta], other: np_ndarray_complex) -> Never: ...
     @overload
@@ -2638,6 +2581,47 @@ class Series(IndexOpsMixin[S1], NDFrame):
         ),
     ) -> Series[Timedelta]: ...
     @overload
+    def __mul__(self: Series[T_INT], other: bool | Sequence[bool]) -> Series[T_INT]: ...
+    @overload
+    def __mul__(self: Series[float], other: int | Sequence[int]) -> Series[float]: ...
+    @overload
+    def __mul__(
+        self: Series[complex], other: float | Sequence[float]
+    ) -> Series[complex]: ...
+    @overload
+    def __mul__(
+        self: Series[S1_CT],
+        other: (
+            SupportsRMul[S1_CT, S1_CO_NSDT] | Sequence[SupportsRMul[S1_CT, S1_CO_NSDT]]
+        ),
+    ) -> Series[S1_CO_NSDT]: ...
+    @overload
+    def __mul__(
+        self: Series[T_COMPLEX], other: np_ndarray_bool | Index[bool] | Series[bool]
+    ) -> Series[T_COMPLEX]: ...
+    @overload
+    def __mul__(
+        self: Series[bool], other: np_ndarray_anyint | Index[int] | Series[int]
+    ) -> Series[int]: ...
+    @overload
+    def __mul__(
+        self: Series[T_COMPLEX], other: np_ndarray_anyint | Index[int] | Series[int]
+    ) -> Series[T_COMPLEX]: ...
+    @overload
+    def __mul__(
+        self: Series[bool] | Series[int],
+        other: np_ndarray_float | Index[float] | Series[float],
+    ) -> Series[float]: ...
+    @overload
+    def __mul__(
+        self: Series[T_COMPLEX], other: np_ndarray_float | Index[float] | Series[float]
+    ) -> Series[T_COMPLEX]: ...
+    @overload
+    def __mul__(
+        self: Series[T_COMPLEX],
+        other: np_ndarray_complex | Index[complex] | Series[complex],
+    ) -> Series[complex]: ...
+    @overload
     def mul(
         self: Series[Never],
         other: complex | _ListLike | Index | Series,
@@ -2653,117 +2637,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: int = 0,
     ) -> Series: ...
-    @overload
-    def mul(
-        self: Series[bool],
-        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX] | Series[T_COMPLEX],
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[T_COMPLEX]: ...
-    @overload
-    def mul(
-        self: Series[bool],
-        other: np_ndarray_bool,
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[bool]: ...
-    @overload
-    def mul(
-        self: Series[bool],
-        other: np_ndarray_anyint,
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[int]: ...
-    @overload
-    def mul(
-        self: Series[bool],
-        other: np_ndarray_float,
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[float]: ...
-    @overload
-    def mul(
-        self: Series[int],
-        other: (
-            bool
-            | Sequence[bool]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | Index[bool]
-            | Series[bool]
-        ),
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[int]: ...
-    @overload
-    def mul(
-        self: Series[int],
-        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX] | Series[T_COMPLEX],
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[T_COMPLEX]: ...
-    @overload
-    def mul(
-        self: Series[int],
-        other: np_ndarray_float,
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[float]: ...
-    @overload
-    def mul(
-        self: Series[float],
-        other: (
-            int
-            | Sequence[int]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[T_INT]
-            | Series[T_INT]
-        ),
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[float]: ...
-    @overload
-    def mul(
-        self: Series[float],
-        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX] | Series[T_COMPLEX],
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[T_COMPLEX]: ...
-    @overload
-    def mul(
-        self: Series[complex],
-        other: (
-            T_COMPLEX
-            | Sequence[T_COMPLEX]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[T_COMPLEX]
-            | Series[T_COMPLEX]
-        ),
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[complex]: ...
-    @overload
-    def mul(
-        self: Series[T_COMPLEX],
-        other: np_ndarray_complex,
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[complex]: ...
     @overload
     def mul(
         self: Series[bool] | Series[int] | Series[float],
@@ -2800,87 +2673,109 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: AxisIndex | None = 0,
     ) -> Series[Timedelta]: ...
     @overload
+    def mul(
+        self: Series[T_INT],
+        other: bool | Sequence[bool],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[T_INT]: ...
+    @overload
+    def mul(
+        self: Series[float],
+        other: int | Sequence[int],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[float]: ...
+    @overload
+    def mul(
+        self: Series[complex],
+        other: float | Sequence[float],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[complex]: ...
+    @overload
+    def mul(
+        self: Series[S1_CT],
+        other: (
+            SupportsRMul[S1_CT, S1_CO_NSDT] | Sequence[SupportsRMul[S1_CT, S1_CO_NSDT]]
+        ),
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[S1_CO_NSDT]: ...
+    @overload
+    def mul(
+        self: Series[T_COMPLEX],
+        other: np_ndarray_bool | Index[bool] | Series[bool],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[T_COMPLEX]: ...
+    @overload
+    def mul(
+        self: Series[bool],
+        other: np_ndarray_anyint | Index[int] | Series[int],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[int]: ...
+    @overload
+    def mul(
+        self: Series[T_COMPLEX],
+        other: np_ndarray_anyint | Index[int] | Series[int],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[T_COMPLEX]: ...
+    @overload
+    def mul(
+        self: Series[bool] | Series[int],
+        other: np_ndarray_float | Index[float] | Series[float],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[float]: ...
+    @overload
+    def mul(
+        self: Series[T_COMPLEX],
+        other: np_ndarray_float | Index[float] | Series[float],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[T_COMPLEX]: ...
+    @overload
+    def mul(
+        self: Series[T_COMPLEX],
+        other: np_ndarray_complex | Index[complex] | Series[complex],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[complex]: ...
+    @overload
     def __rmul__(  # type: ignore[overload-overlap]
         self: Series[Never], other: complex | NumListLike | Index | Series
     ) -> Series: ...
     @overload
-    def __rmul__(self, other: Index[Never] | Series[Never]) -> Series: ...
+    def __rmul__(self, other: Index[Never] | Series[Never]) -> Series: ...  # type: ignore[misc]
     @overload
-    def __rmul__(
-        self: Series[bool],
-        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX] | Series[T_COMPLEX],
-    ) -> Series[T_COMPLEX]: ...
-    @overload
-    def __rmul__(self: Series[bool], other: np_ndarray_bool) -> Series[bool]: ...
-    @overload
-    def __rmul__(self: Series[bool], other: np_ndarray_anyint) -> Series[int]: ...
-    @overload
-    def __rmul__(self: Series[bool], other: np_ndarray_float) -> Series[float]: ...
-    @overload
-    def __rmul__(
-        self: Series[int],
-        other: (
-            bool
-            | Sequence[bool]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | Index[bool]
-            | Series[bool]
-        ),
-    ) -> Series[int]: ...
-    @overload
-    def __rmul__(
-        self: Series[int],
-        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX] | Series[T_COMPLEX],
-    ) -> Series[T_COMPLEX]: ...
-    @overload
-    def __rmul__(self: Series[int], other: np_ndarray_float) -> Series[float]: ...
-    @overload
-    def __rmul__(
-        self: Series[float],
-        other: (
-            int
-            | Sequence[int]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[T_INT]
-            | Series[T_INT]
-        ),
-    ) -> Series[float]: ...
-    @overload
-    def __rmul__(
-        self: Series[float],
-        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX] | Series[T_COMPLEX],
-    ) -> Series[T_COMPLEX]: ...
-    @overload
-    def __rmul__(
-        self: Series[complex],
-        other: (
-            T_COMPLEX
-            | Sequence[T_COMPLEX]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[T_COMPLEX]
-            | Series[T_COMPLEX]
-        ),
-    ) -> Series[complex]: ...
-    @overload
-    def __rmul__(
-        self: Series[T_COMPLEX], other: np_ndarray_complex
-    ) -> Series[complex]: ...
+    def __rmul__(self, other: np_ndarray_dt) -> Never: ...
     @overload
     def __rmul__(
         self: Series[bool] | Series[int] | Series[float],
         other: (
             timedelta
+            | Sequence[timedelta]
             | np.timedelta64
             | np_ndarray_td
             | TimedeltaIndex
             | Series[Timedelta]
         ),
     ) -> Series[Timedelta]: ...
+    @overload
+    def __rmul__(self: Series[Timestamp], other: np_ndarray) -> Never: ...
     @overload
     def __rmul__(self: Series[Timedelta], other: np_ndarray_complex) -> Never: ...
     @overload
@@ -2901,6 +2796,49 @@ class Series(IndexOpsMixin[S1], NDFrame):
         ),
     ) -> Series[Timedelta]: ...
     @overload
+    def __rmul__(
+        self: Series[T_INT], other: bool | Sequence[bool]
+    ) -> Series[T_INT]: ...
+    @overload
+    def __rmul__(self: Series[float], other: int | Sequence[int]) -> Series[float]: ...
+    @overload
+    def __rmul__(
+        self: Series[complex], other: float | Sequence[float]
+    ) -> Series[complex]: ...
+    @overload
+    def __rmul__(
+        self: Series[S1_CT],
+        other: (
+            SupportsMul[S1_CT, S1_CO_NSDT] | Sequence[SupportsMul[S1_CT, S1_CO_NSDT]]
+        ),
+    ) -> Series[S1_CO_NSDT]: ...
+    @overload
+    def __rmul__(
+        self: Series[T_COMPLEX], other: np_ndarray_bool | Index[bool] | Series[bool]
+    ) -> Series[T_COMPLEX]: ...
+    @overload
+    def __rmul__(
+        self: Series[bool], other: np_ndarray_anyint | Index[int] | Series[int]
+    ) -> Series[int]: ...
+    @overload
+    def __rmul__(
+        self: Series[T_COMPLEX], other: np_ndarray_anyint | Index[int] | Series[int]
+    ) -> Series[T_COMPLEX]: ...
+    @overload
+    def __rmul__(
+        self: Series[bool] | Series[int],
+        other: np_ndarray_float | Index[float] | Series[float],
+    ) -> Series[float]: ...
+    @overload
+    def __rmul__(
+        self: Series[T_COMPLEX], other: np_ndarray_float | Index[float] | Series[float]
+    ) -> Series[T_COMPLEX]: ...
+    @overload
+    def __rmul__(
+        self: Series[T_COMPLEX],
+        other: np_ndarray_complex | Index[complex] | Series[complex],
+    ) -> Series[complex]: ...
+    @overload
     def rmul(
         self: Series[Never],
         other: complex | _ListLike | Index | Series,
@@ -2916,117 +2854,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: int = 0,
     ) -> Series: ...
-    @overload
-    def rmul(
-        self: Series[bool],
-        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX] | Series[T_COMPLEX],
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[T_COMPLEX]: ...
-    @overload
-    def rmul(
-        self: Series[bool],
-        other: np_ndarray_bool,
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[bool]: ...
-    @overload
-    def rmul(
-        self: Series[bool],
-        other: np_ndarray_anyint,
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[int]: ...
-    @overload
-    def rmul(
-        self: Series[bool],
-        other: np_ndarray_float,
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[float]: ...
-    @overload
-    def rmul(
-        self: Series[int],
-        other: (
-            bool
-            | Sequence[bool]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | Index[bool]
-            | Series[bool]
-        ),
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[int]: ...
-    @overload
-    def rmul(
-        self: Series[int],
-        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX] | Series[T_COMPLEX],
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[T_COMPLEX]: ...
-    @overload
-    def rmul(
-        self: Series[int],
-        other: np_ndarray_float,
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[float]: ...
-    @overload
-    def rmul(
-        self: Series[float],
-        other: (
-            int
-            | Sequence[int]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[T_INT]
-            | Series[T_INT]
-        ),
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[float]: ...
-    @overload
-    def rmul(
-        self: Series[float],
-        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX] | Series[T_COMPLEX],
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[T_COMPLEX]: ...
-    @overload
-    def rmul(
-        self: Series[complex],
-        other: (
-            T_COMPLEX
-            | Sequence[T_COMPLEX]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[T_COMPLEX]
-            | Series[T_COMPLEX]
-        ),
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[complex]: ...
-    @overload
-    def rmul(
-        self: Series[T_COMPLEX],
-        other: np_ndarray_complex,
-        level: Level | None = None,
-        fill_value: float | None = None,
-        axis: int = 0,
-    ) -> Series[complex]: ...
     @overload
     def rmul(
         self: Series[bool] | Series[int] | Series[float],
@@ -3062,6 +2889,88 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[Timedelta]: ...
+    @overload
+    def rmul(
+        self: Series[T_INT],
+        other: bool | Sequence[bool],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[T_INT]: ...
+    @overload
+    def rmul(
+        self: Series[float],
+        other: int | Sequence[int],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[float]: ...
+    @overload
+    def rmul(
+        self: Series[complex],
+        other: float | Sequence[float],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[complex]: ...
+    @overload
+    def rmul(
+        self: Series[S1_CT],
+        other: (
+            SupportsMul[S1_CT, S1_CO_NSDT] | Sequence[SupportsMul[S1_CT, S1_CO_NSDT]]
+        ),
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[S1_CO_NSDT]: ...
+    @overload
+    def rmul(
+        self: Series[T_COMPLEX],
+        other: np_ndarray_bool | Index[bool] | Series[bool],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[T_COMPLEX]: ...
+    @overload
+    def rmul(
+        self: Series[bool],
+        other: np_ndarray_anyint | Index[int] | Series[int],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[int]: ...
+    @overload
+    def rmul(
+        self: Series[T_COMPLEX],
+        other: np_ndarray_anyint | Index[int] | Series[int],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[T_COMPLEX]: ...
+    @overload
+    def rmul(
+        self: Series[bool] | Series[int],
+        other: np_ndarray_float | Index[float] | Series[float],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[float]: ...
+    @overload
+    def rmul(
+        self: Series[T_COMPLEX],
+        other: np_ndarray_float | Index[float] | Series[float],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[T_COMPLEX]: ...
+    @overload
+    def rmul(
+        self: Series[T_COMPLEX],
+        other: np_ndarray_complex | Index[complex] | Series[complex],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[complex]: ...
     def __mod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
     def __ne__(self, other: object) -> Series[_bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __pow__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...

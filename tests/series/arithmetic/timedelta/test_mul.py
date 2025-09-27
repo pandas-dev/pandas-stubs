@@ -41,7 +41,7 @@ def test_mul_py_scalar() -> None:
     check(assert_type(left.mul(i), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left.mul(f), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        left.mul(c)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.mul(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
     if PD_LTE_23:
         check(
@@ -52,7 +52,7 @@ def test_mul_py_scalar() -> None:
     check(assert_type(left.rmul(i), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left.rmul(f), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        left.rmul(c)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rmul(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
 def test_mul_py_sequence() -> None:

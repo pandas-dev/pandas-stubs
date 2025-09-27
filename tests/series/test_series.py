@@ -3282,30 +3282,6 @@ def test_series_mapping() -> None:
     )
 
 
-def test_timedeltaseries_operators() -> None:
-    series = pd.Series([pd.Timedelta(days=1)])
-    check(
-        assert_type(series + datetime.datetime.now(), "pd.Series[pd.Timestamp]"),
-        pd.Series,
-        pd.Timestamp,
-    )
-    check(
-        assert_type(series + datetime.timedelta(1), "pd.Series[pd.Timedelta]"),
-        pd.Series,
-        pd.Timedelta,
-    )
-    check(
-        assert_type(datetime.datetime.now() + series, "pd.Series[pd.Timestamp]"),
-        pd.Series,
-        pd.Timestamp,
-    )
-    check(
-        assert_type(series - datetime.timedelta(1), "pd.Series[pd.Timedelta]"),
-        pd.Series,
-        pd.Timedelta,
-    )
-
-
 def test_timestamp_series() -> None:
     series = pd.Series([pd.Timestamp(2024, 4, 4)])
     check(

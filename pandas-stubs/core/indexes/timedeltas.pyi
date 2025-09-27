@@ -27,6 +27,10 @@ from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     AxesData,
     TimedeltaConvertibleTypes,
+    np_ndarray_anyint,
+    np_ndarray_bool,
+    np_ndarray_dt,
+    np_ndarray_float,
     np_ndarray_td,
     num,
 )
@@ -64,9 +68,42 @@ class TimedeltaIndex(
         self, other: dt.timedelta | Self
     ) -> Self: ...
     def __sub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: dt.timedelta | np.timedelta64 | np_ndarray_td | Self
+        self, other: dt.timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self
     ) -> Self: ...
-    def __mul__(self, other: float) -> Self: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
+    @overload  # type: ignore[override]
+    def __rsub__(
+        self, other: dt.timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self
+    ) -> Self: ...
+    @overload
+    def __rsub__(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, other: dt.datetime | np.datetime64 | np_ndarray_dt | DatetimeIndex
+    ) -> DatetimeIndex: ...
+    def __mul__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+        self,
+        other: (  # type: ignore[override]
+            float
+            | Sequence[float]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Index[bool]
+            | Index[int]
+            | Index[float]
+        ),
+    ) -> Self: ...
+    def __rmul__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+        self,
+        other: (  # type: ignore[override]
+            float
+            | Sequence[float]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Index[bool]
+            | Index[int]
+            | Index[float]
+        ),
+    ) -> Self: ...
     @overload  # type: ignore[override]
     def __truediv__(self, other: float | Sequence[float]) -> Self: ...
     @overload
