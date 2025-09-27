@@ -298,7 +298,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         cls,
-        data: Sequence[Never],
+        data: Iterator[Never],
         index: AxesData | None = ...,
         dtype: Dtype = ...,
         name: Hashable = ...,
@@ -307,7 +307,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: Sequence[list[_str]],
+        data: Iterator[list[_str]],
         index: AxesData | None = ...,
         dtype: Dtype = ...,
         name: Hashable = ...,
@@ -316,7 +316,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: Sequence[_str],
+        data: Iterator[_str],
         index: AxesData | None = ...,
         dtype: Dtype = ...,
         name: Hashable = ...,
@@ -327,7 +327,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: (
             DatetimeIndex
-            | Sequence[np.datetime64 | datetime | date]
+            | Iterator[np.datetime64 | datetime | date]
             | dict[HashableT1, np.datetime64 | datetime | date]
             | np.datetime64
             | datetime
@@ -341,7 +341,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: _ListLike,
+        data: _ListLike | Iterator[S1],
         index: AxesData | None = ...,
         *,
         dtype: TimestampDtypeArg,
@@ -351,7 +351,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: PeriodIndex | Sequence[Period],
+        data: PeriodIndex | Iterator[Period],
         index: AxesData | None = ...,
         dtype: PeriodDtype = ...,
         name: Hashable = ...,
@@ -362,7 +362,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: (
             TimedeltaIndex
-            | Sequence[np.timedelta64 | timedelta]
+            | Iterator[np.timedelta64 | timedelta]
             | dict[HashableT1, np.timedelta64 | timedelta]
             | np.timedelta64
             | timedelta
@@ -378,7 +378,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         data: (
             IntervalIndex[Interval[_OrderableT]]
             | Interval[_OrderableT]
-            | Sequence[Interval[_OrderableT]]
+            | Iterator[Interval[_OrderableT]]
             | dict[HashableT1, Interval[_OrderableT]]
         ),
         index: AxesData | None = ...,
@@ -389,7 +389,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(  # type: ignore[overload-overlap]
         cls,
-        data: Scalar | _ListLike | dict[HashableT1, Any] | None,
+        data: Scalar | _ListLike | Iterator[S1] | dict[HashableT1, Any] | None,
         index: AxesData | None = ...,
         *,
         dtype: type[S1],
@@ -399,7 +399,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         cls,
-        data: Sequence[bool],
+        data: Iterator[bool],
         index: AxesData | None = ...,
         dtype: Dtype = ...,
         name: Hashable = ...,
@@ -408,7 +408,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(  # type: ignore[overload-overlap]
         cls,
-        data: Sequence[int],
+        data: Iterator[int],
         index: AxesData | None = ...,
         dtype: Dtype = ...,
         name: Hashable = ...,
@@ -417,7 +417,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: Sequence[float],
+        data: Iterator[float],
         index: AxesData | None = ...,
         dtype: Dtype = ...,
         name: Hashable = ...,
@@ -426,7 +426,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(  # type: ignore[overload-cannot-match] # pyright: ignore[reportOverlappingOverload]
         cls,
-        data: Sequence[int | float],
+        data: Iterator[int | float],
         index: AxesData | None = ...,
         dtype: Dtype = ...,
         name: Hashable = ...,
@@ -449,6 +449,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         data: (
             Scalar
             | _ListLike
+            | Iterator[S1]
             | Mapping[HashableT1, Any]
             | BaseGroupBy
             | NaTType
