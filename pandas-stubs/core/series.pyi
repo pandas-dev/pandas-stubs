@@ -33,6 +33,7 @@ from typing import (
 )
 
 from _typeshed import (
+    SupportsAdd,
     SupportsGetItem,
     SupportsRAdd,
 )
@@ -1969,12 +1970,12 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[complex]: ...
     @overload
     def __radd__(
-        self: Series[S1_CT], other: SupportsRAdd[S1_CT, S1_CO]
+        self: Series[S1_CT], other: SupportsAdd[S1_CT, S1_CO]
     ) -> Series[S1_CO]: ...
     # pandas-dev/pandas#62353
     @overload
     def __radd__(
-        self: Series[S1_CT_NDT], other: Sequence[SupportsRAdd[S1_CT_NDT, S1_CO]]
+        self: Series[S1_CT_NDT], other: Sequence[SupportsAdd[S1_CT_NDT, S1_CO]]
     ) -> Series[S1_CO]: ...
     @overload
     def __radd__(
@@ -2119,7 +2120,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def radd(
         self: Series[S1_CT],
-        other: SupportsRAdd[S1_CT, S1_CO] | Sequence[SupportsRAdd[S1_CT, S1_CO]],
+        other: SupportsAdd[S1_CT, S1_CO] | Sequence[SupportsAdd[S1_CT, S1_CO]],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
