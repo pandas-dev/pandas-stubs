@@ -33,11 +33,11 @@ def test_add_py_scalar() -> None:
     check(assert_type(d + left, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.add(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.add(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.radd(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.radd(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.radd(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
 
@@ -55,11 +55,11 @@ def test_add_numpy_scalar() -> None:
     check(assert_type(d + left, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.add(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.add(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.radd(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.radd(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.radd(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
 
@@ -77,11 +77,11 @@ def test_add_pd_scalar() -> None:
     check(assert_type(d + left, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.add(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.add(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.radd(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.radd(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.radd(d), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
 

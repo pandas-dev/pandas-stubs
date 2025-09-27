@@ -22,10 +22,7 @@ from pandas.core.indexes.period import PeriodIndex
 from pandas.core.series import Series
 from typing_extensions import Self
 
-from pandas._libs import (
-    Timedelta,
-    Timestamp,
-)
+from pandas._libs import Timedelta
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     AxesData,
@@ -53,12 +50,19 @@ class TimedeltaIndex(
     @overload  # type: ignore[override]
     def __add__(self, other: Period) -> PeriodIndex: ...
     @overload
-    def __add__(self, other: DatetimeIndex) -> DatetimeIndex: ...
+    def __add__(self, other: dt.datetime | DatetimeIndex) -> DatetimeIndex: ...
     @overload
     def __add__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: dt.timedelta | Timedelta | Self
+        self, other: dt.timedelta | Self
     ) -> Self: ...
-    def __radd__(self, other: dt.datetime | Timestamp | DatetimeIndex) -> DatetimeIndex: ...  # type: ignore[override]
+    @overload  # type: ignore[override]
+    def __radd__(self, other: Period) -> PeriodIndex: ...
+    @overload
+    def __radd__(self, other: dt.datetime | DatetimeIndex) -> DatetimeIndex: ...
+    @overload
+    def __radd__(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, other: dt.timedelta | Self
+    ) -> Self: ...
     def __sub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: dt.timedelta | np.timedelta64 | np_ndarray_td | Self
     ) -> Self: ...

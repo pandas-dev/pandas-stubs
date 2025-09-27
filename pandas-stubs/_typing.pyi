@@ -847,25 +847,33 @@ MaskType: TypeAlias = Series[bool] | np_ndarray_bool | list[bool]
 
 T_INT = TypeVar("T_INT", bound=int)
 T_COMPLEX = TypeVar("T_COMPLEX", bound=complex)
-SeriesDType: TypeAlias = (
+SeriesDTypeNoDateTime: TypeAlias = (
     str
     | bytes
-    | datetime.date
-    | datetime.time
     | bool
     | int
     | float
     | complex
     | Dtype
-    | datetime.datetime  # includes pd.Timestamp
-    | datetime.timedelta  # includes pd.Timedelta
     | Period
     | Interval
     | CategoricalDtype
     | BaseOffset
     | list[str]
 )
+SeriesDType: TypeAlias = (
+    SeriesDTypeNoDateTime
+    | datetime.date
+    | datetime.time
+    | datetime.datetime  # includes pd.Timestamp
+    | datetime.timedelta  # includes pd.Timedelta
+)
 S1 = TypeVar("S1", bound=SeriesDType, default=Any)
+S1_CT_NDT = TypeVar(
+    "S1_CT_NDT", bound=SeriesDTypeNoDateTime, default=Any, contravariant=True
+)
+S1_CO = TypeVar("S1_CO", bound=SeriesDType, default=Any, covariant=True)
+S1_CT = TypeVar("S1_CT", bound=SeriesDType, default=Any, contravariant=True)
 # Like S1, but without `default=Any`.
 S2 = TypeVar("S2", bound=SeriesDType)
 S3 = TypeVar("S3", bound=SeriesDType)

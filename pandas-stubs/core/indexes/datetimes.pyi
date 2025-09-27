@@ -66,8 +66,11 @@ class DatetimeIndex(
 
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
-    def __add__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: timedelta | Timedelta | TimedeltaIndex | BaseOffset  # type: ignore[override]
+    def __add__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+        self, other: timedelta | TimedeltaIndex | BaseOffset
+    ) -> DatetimeIndex: ...
+    def __radd__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+        self, other: timedelta | TimedeltaIndex | BaseOffset
     ) -> DatetimeIndex: ...
     @overload  # type: ignore[override]
     def __sub__(
