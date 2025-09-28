@@ -7,43 +7,39 @@ from datetime import (
 from typing import (
     Generic,
     Literal,
-    Never,
     TypeVar,
     overload,
     type_check_only,
 )
 
 import numpy as np
-from pandas import (
-    DatetimeIndex,
-    Index,
-    PeriodIndex,
-    Timedelta,
-    TimedeltaIndex,
-    Timestamp,
-)
 from pandas.core.accessor import PandasDelegate
-from pandas.core.arrays import (
-    DatetimeArray,
-    PeriodArray,
-)
 from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
+from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.interval import IntervalArray
+from pandas.core.arrays.period import PeriodArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.base import (
     IndexOpsMixin,
     NoNewAttributesMixin,
 )
 from pandas.core.frame import DataFrame
+from pandas.core.indexes.base import Index
+from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.indexes.period import PeriodIndex
+from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import (
     PeriodSeries,
     Series,
 )
+from typing_extensions import Never
 
 from pandas._libs.interval import Interval
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.offsets import DateOffset
+from pandas._libs.tslibs.timedeltas import Timedelta
+from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     TimeAmbiguous,
     TimeNonexistent,
