@@ -7,6 +7,7 @@ from datetime import (
 from typing import (
     Generic,
     Literal,
+    Never,
     TypeVar,
     overload,
     type_check_only,
@@ -399,6 +400,8 @@ class CombinedDatetimelikeProperties(
     _TimedeltaPropertiesNoRounding[Series[int], Series[float]],
     _PeriodProperties,
 ): ...
+
+@type_check_only
 class TimestampProperties(
     DatetimeProperties[
         Series[int],
@@ -446,6 +449,8 @@ class TimedeltaIndexProperties(
 @type_check_only
 class DtDescriptor:
     @overload
+    def __get__(self, instance: Series[Never], owner: type[Series]) -> Never: ...
+    @overload
     def __get__(
         self, instance: Series[Timestamp], owner: type[Series]
     ) -> TimestampProperties: ...
@@ -456,6 +461,10 @@ class DtDescriptor:
 
 @type_check_only
 class ArrayDescriptor:
+    @overload
+    def __get__(
+        self, instance: IndexOpsMixin[Never], owner: type[IndexOpsMixin]
+    ) -> ExtensionArray: ...
     @overload
     def __get__(
         self, instance: IndexOpsMixin[CategoricalDtype], owner: type[IndexOpsMixin]

@@ -1547,7 +1547,6 @@ def test_array_property() -> None:
         TimedeltaArray,
         pd.Timedelta,
     )
-    # Should be NumpyExtensionArray
     check(assert_type(Index([1]).array, ExtensionArray), ExtensionArray, np.integer)
 
 

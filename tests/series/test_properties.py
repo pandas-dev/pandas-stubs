@@ -33,7 +33,9 @@ def test_dt_property() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _ = pd.Series([1]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue]
+        # mypy gives Any
+        _0 = pd.Series([1, "s"]).dt  # pyright: ignore[reportAttributeAccessIssue]
+        _1 = pd.Series([1]).dt  # type: ignore[arg-type,var-annotated] # pyright: ignore[reportAttributeAccessIssue]
 
 
 def test_array_property() -> None:
@@ -55,5 +57,6 @@ def test_array_property() -> None:
         TimedeltaArray,
         pd.Timedelta,
     )
-    # Should be NumpyExtensionArray
     check(assert_type(pd.Series([1]).array, ExtensionArray), ExtensionArray, np.integer)
+    # mypy gives Any
+    check(assert_type(pd.Series([1, "s"]).array, ExtensionArray), ExtensionArray)  # type: ignore[assert-type]
