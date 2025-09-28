@@ -27,14 +27,12 @@ from pandas.core.arrays import (
 )
 from pandas.core.base import NoNewAttributesMixin
 from pandas.core.frame import DataFrame
-from pandas.core.series import (
-    PeriodSeries,
-    Series,
-)
+from pandas.core.series import Series
 from typing_extensions import Never
 
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.offsets import DateOffset
+from pandas._libs.tslibs.period import Period
 from pandas._typing import (
     S1,
     TimeAmbiguous,
@@ -208,7 +206,7 @@ _DTNormalizeReturnType = TypeVar(
 )
 _DTStrKindReturnType = TypeVar("_DTStrKindReturnType", bound=Series[str] | Index)
 _DTToPeriodReturnType = TypeVar(
-    "_DTToPeriodReturnType", bound=PeriodSeries | PeriodIndex
+    "_DTToPeriodReturnType", bound=Series[Period] | PeriodIndex
 )
 
 class _DatetimeLikeNoTZMethods(
@@ -369,7 +367,11 @@ class PeriodIndexFieldOps(
 class PeriodProperties(
     Properties,
     _PeriodProperties[
-        Series[Timestamp], Series[int], Series[str], DatetimeArray, PeriodArray
+        Series[Timestamp],
+        Series[int],
+        Series[str],
+        DatetimeArray,
+        PeriodArray,
     ],
     _DatetimeFieldOps[Series[int]],
     _IsLeapYearProperty,
@@ -385,7 +387,7 @@ class CombinedDatetimelikeProperties(
         str,
         Series[Timestamp],
         Series[str],
-        PeriodSeries,
+        Series[Period],
     ],
     _TimedeltaPropertiesNoRounding[Series[int], Series[float]],
     _PeriodProperties,
@@ -400,7 +402,7 @@ class TimestampProperties(
         str,
         Series[Timestamp],
         Series[str],
-        PeriodSeries,
+        Series[Period],
     ]
 ): ...
 
@@ -437,6 +439,8 @@ class TimedeltaIndexProperties(
 class _dtDescriptor(CombinedDatetimelikeProperties, Generic[S1]):
     @overload
     def __get__(self, instance: Series[Never], owner: Any) -> Never: ...
+    @overload
+    def __get__(self, instance: Series[Period], owner: Any) -> PeriodProperties: ...
     @overload
     def __get__(
         self, instance: Series[Timestamp], owner: Any
