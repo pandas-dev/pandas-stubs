@@ -3,7 +3,6 @@ from __future__ import annotations
 import datetime
 import datetime as dt
 from typing import (
-    TYPE_CHECKING,
     Any,
     Literal,
     Optional,
@@ -37,13 +36,6 @@ from pandas.tseries.offsets import (
     BaseOffset,
     Day,
 )
-
-if TYPE_CHECKING:
-    from pandas.core.series import (
-        OffsetSeries,
-    )
-else:
-    OffsetSeries: TypeAlias = pd.Series
 
 if not PD_LTE_23:
     from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore  # isort: skip
@@ -1878,7 +1870,7 @@ def test_period_add_subtract() -> None:
     check(assert_type(p + as_timedelta_idx, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(p + as_nat, NaTType), NaTType)
     offset_series = as_period_series - as_period_series
-    check(assert_type(offset_series, OffsetSeries), pd.Series)
+    check(assert_type(offset_series, "pd.Series[BaseOffset]"), pd.Series)
     check(assert_type(p + offset_series, "pd.Series[pd.Period]"), pd.Series, pd.Period)
     check(assert_type(p - as_pd_td, pd.Period), pd.Period)
     check(assert_type(p - as_dt_td, pd.Period), pd.Period)

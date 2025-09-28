@@ -50,7 +50,7 @@ from pandas.tseries.offsets import (
 )
 
 if TYPE_CHECKING:
-    from pandas.core.series import (  # noqa: F401
+    from pandas.core.series import (
         IntervalSeries,
         OffsetSeries,
     )

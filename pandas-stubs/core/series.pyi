@@ -1233,8 +1233,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         Series[_str],
         Series,
     ]: ...
-    @property
-    def dt(self) -> _dtDescriptor[S1]: ...
+    dt = _dtDescriptor[S1]()  # type: ignore[misc]
     @property
     def plot(self) -> PlotAccessor: ...
     sparse = ...
@@ -3078,7 +3077,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         other: complex | NumListLike | Index[T_COMPLEX] | Series[T_COMPLEX],
     ) -> Series: ...
     @overload
-    def __sub__(self, other: Index[Never] | Series[Never]) -> Series: ...    # type: ignore[overload-overlap]
+    def __sub__(self, other: Index[Never] | Series[Never]) -> Series: ...
     @overload
     def __sub__(
         self: Series[bool],
@@ -3200,7 +3199,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
         ),
     ) -> Series[Timedelta]: ...
     @overload
-    def __sub__(self: Series[Period], other: Series[Period]) -> OffsetSeries: ...
+    def __sub__(
+        self: Series[Period], other: Series[Period] | Period
+    ) -> Series[BaseOffset]: ...
     @overload
     def sub(
         self: Series[Never],
@@ -3373,6 +3374,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: int = 0,
     ) -> Series[Timedelta]: ...
     @overload
+    def sub(
+        self: Series[Period],
+        other: Period | Sequence[Period] | PeriodIndex | Series[Period],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[BaseOffset]: ...
+    @overload
     def __rsub__(
         self: Series[Never],
         other: (
@@ -3502,6 +3511,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
             | Series[Timedelta]
         ),
     ) -> Series[Timedelta]: ...
+    @overload
+    def __rsub__(
+        self: Series[Period], other: Series[Period] | Period
+    ) -> Series[BaseOffset]: ...
     @overload
     def rsub(
         self: Series[Never],
@@ -3682,6 +3695,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: int = 0,
     ) -> Series[Timedelta]: ...
+    @overload
+    def rsub(
+        self: Series[Period],
+        other: Period | Sequence[Period] | PeriodIndex | Series[Period],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[BaseOffset]: ...
     @overload
     def __truediv__(  # type: ignore[overload-overlap]
         self: Series[Never], other: complex | NumListLike | Index | Series
@@ -4732,7 +4753,6 @@ class _SeriesSubclassBase(Series[S1], Generic[S1, GenericT_co]):
         na_value: Scalar = ...,
         **kwargs,
     ) -> np_1darray: ...
-
 
 class OffsetSeries(_SeriesSubclassBase[BaseOffset, np.object_]):
     @overload  # type: ignore[override]
