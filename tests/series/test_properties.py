@@ -18,10 +18,7 @@ from tests import (
 )
 
 if TYPE_CHECKING:
-    from pandas.core.indexes.accessors import (  # noqa: F401
-        TimedeltaProperties,
-        TimestampProperties,
-    )
+    from pandas.core.indexes.accessors import TimestampProperties  # noqa: F401
 
 
 def test_dt_property() -> None:
