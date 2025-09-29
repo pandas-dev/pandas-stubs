@@ -3508,8 +3508,25 @@ def test_diff() -> None:
             pd.Series([True, True, False, False, True]).diff(), "pd.Series[Any]"
         ),
         pd.Series,
-        object,
+        bool,
+        index_to_check_for_type=-1,
     )
+    # nullable bool -> nullable bool
+    with pytest_warns_bounded(
+        UserWarning,
+        r"Instantiating BooleanDtype without any arguments.Pass a BooleanDtype instance to silence this warning.",
+    ):
+        check(
+            assert_type(
+                pd.Series(
+                    [True, True, False, False, True], dtype=pd.BooleanDtype
+                ).diff(),
+                "pd.Series[pd.BooleanDtype]",
+            ),
+            pd.Series,
+            np.bool_,
+            index_to_check_for_type=-1,
+        )
     # Any -> float
     s_o = s.astype(object)
     assert_type(s_o, "pd.Series[Any]")
@@ -3519,21 +3536,19 @@ def test_diff() -> None:
         assert_type(s.astype(complex).diff(), "pd.Series[complex]"), pd.Series, complex
     )
 
-    def _diff_invalid0():  # pyright: ignore[reportUnusedFunction]
-        # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
-        assert_type(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff(), Never)
-
-    def _diff_invalid1() -> None:  # pyright: ignore[reportUnusedFunction]
+    if TYPE_CHECKING_INVALID_USAGE:
         # bytes -> numpy.core._exceptions._UFuncNoLoopError: ufunc 'subtract' did not contain a loop with signature matching types (dtype('S21'), dtype('S21')) -> None
         pd.Series([1, 1, 2, 3, 5, 8]).astype(bytes).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 
-    def _diff_invalid2() -> None:  # pyright: ignore[reportUnusedFunction]
         # dtype -> TypeError: unsupported operand type(s) for -: 'type' and 'type'
         pd.Series([str, int, bool]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 
-    def _diff_invalid3() -> None:  # pyright: ignore[reportUnusedFunction]
         # str -> TypeError: unsupported operand type(s) for -: 'str' and 'str'
         pd.Series(["a", "b"]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
+
+    def _diff_invalid0():  # pyright: ignore[reportUnusedFunction]
+        # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
+        assert_type(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff(), Never)
 
 
 def test_operator_constistency() -> None:

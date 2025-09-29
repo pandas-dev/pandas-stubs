@@ -56,6 +56,7 @@ from pandas.core.api import (
     Int32Dtype as Int32Dtype,
     Int64Dtype as Int64Dtype,
 )
+from pandas.core.arrays.boolean import BooleanDtype
 from pandas.core.arrays.categorical import CategoricalAccessor
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
@@ -842,6 +843,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[float]: ...
     @overload
     def diff(self: Series[_bool], periods: int = ...) -> Series: ...
+    @overload
+    def diff(
+        self: Series[BooleanDtype], periods: int = ...
+    ) -> Series[BooleanDtype]: ...
     @overload
     def diff(self: Series[Period], periods: int = ...) -> OffsetSeries: ...
     @overload

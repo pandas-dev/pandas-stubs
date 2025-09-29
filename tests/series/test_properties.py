@@ -1,6 +1,5 @@
 from typing import (
     TYPE_CHECKING,
-    Any,
 )
 
 import numpy as np
@@ -12,6 +11,7 @@ from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.indexes.accessors import (
     DatetimeProperties,
     PeriodProperties,
+    Properties,
     TimedeltaProperties,
 )
 from typing_extensions import assert_type
@@ -45,8 +45,9 @@ def test_dt_property() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         s = pd.DataFrame({"a": [1]})["a"]
-        assert_type(s.dt, Any)
-        assert_type(s.dt.year, Any)
+        # python/mypy#19952: mypy believes Properties and its subclasses have a
+        # conflict and gives Any for s.dt
+        assert_type(s.dt, Properties)  # type: ignore[assert-type]
         _1 = pd.Series([1]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue]
 
 

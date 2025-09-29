@@ -5,7 +5,6 @@ from datetime import (
     tzinfo as _tzinfo,
 )
 from typing import (
-    Any,
     Generic,
     Literal,
     TypeVar,
@@ -444,7 +443,7 @@ class TimedeltaIndexProperties(
 @type_check_only
 class DtDescriptor:
     @overload
-    def __get__(self, instance: Series[Never], owner: type[Series]) -> Any: ...
+    def __get__(self, instance: Series[Never], owner: type[Series]) -> Properties: ...
     @overload
     def __get__(
         self, instance: Series[Timestamp], owner: type[Series]
