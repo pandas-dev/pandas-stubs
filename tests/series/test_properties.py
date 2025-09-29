@@ -11,6 +11,7 @@ from pandas.core.arrays.interval import IntervalArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.indexes.accessors import (
     DatetimeProperties,
+    PeriodProperties,
     TimedeltaProperties,
 )
 from typing_extensions import assert_type
@@ -33,6 +34,13 @@ def test_dt_property() -> None:
     check(
         assert_type(pd.Series([pd.Timedelta(1, "s")]).dt, TimedeltaProperties),
         TimedeltaProperties,
+    )
+    check(
+        assert_type(
+            pd.period_range(start="2022-06-01", periods=10).to_series().dt,
+            PeriodProperties,
+        ),
+        PeriodProperties,
     )
 
     if TYPE_CHECKING_INVALID_USAGE:

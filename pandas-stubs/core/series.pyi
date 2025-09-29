@@ -70,7 +70,6 @@ from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.core.indexers import BaseIndexer
 from pandas.core.indexes.accessors import (
     DtDescriptor,
-    PeriodProperties,
 )
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
@@ -4724,8 +4723,7 @@ class _SeriesSubclassBase(Series[S1], Generic[S1, GenericT_co]):
     ) -> np_1darray: ...
 
 class PeriodSeries(_SeriesSubclassBase[Period, np.object_]):
-    @property
-    def dt(self) -> PeriodProperties: ...
+    dt: ClassVar = DtDescriptor()  # noqa
     def __sub__(self, other: PeriodSeries) -> OffsetSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def diff(self, periods: int = ...) -> OffsetSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
 

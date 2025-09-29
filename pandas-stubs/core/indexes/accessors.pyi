@@ -39,6 +39,7 @@ from typing_extensions import Never
 from pandas._libs.interval import Interval
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.offsets import DateOffset
+from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
@@ -456,6 +457,12 @@ class DtDescriptor:
     def __get__(
         self, instance: Series[Timedelta], owner: type[Series]
     ) -> TimedeltaProperties: ...
+    @overload
+    def __get__(
+        self,
+        instance: Series[Period] | PeriodSeries,
+        owner: type[Series | PeriodSeries],
+    ) -> PeriodProperties: ...
 
 @type_check_only
 class ArrayDescriptor:
