@@ -32,8 +32,6 @@ from tests import (
 )
 
 if TYPE_CHECKING:
-    from pandas.core.series import PeriodSeries  # noqa: F401
-
     from tests import Dtype  # noqa: F401
 
 
@@ -1576,7 +1574,8 @@ def test_to_series() -> None:
     )
     check(
         assert_type(
-            pd.period_range(start="2022-06-01", periods=10).to_series(), "PeriodSeries"
+            pd.period_range(start="2022-06-01", periods=10).to_series(),
+            "pd.Series[pd.Period]",
         ),
         pd.Series,
         pd.Period,

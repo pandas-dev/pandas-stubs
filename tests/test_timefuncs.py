@@ -50,10 +50,7 @@ from pandas.tseries.offsets import (
 )
 
 if TYPE_CHECKING:
-    from pandas.core.series import (  # noqa: F401
-        OffsetSeries,
-        PeriodSeries,
-    )
+    from pandas.core.series import OffsetSeries
 
 if not PD_LTE_23:
     from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore  # isort: skip
@@ -387,7 +384,9 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s0.dt.tz, Optional[dt.tzinfo]), type(None))
     check(assert_type(s0.dt.freq, Optional[str]), str)
     check(assert_type(s0.dt.isocalendar(), pd.DataFrame), pd.DataFrame)
-    check(assert_type(s0.dt.to_period("D"), "PeriodSeries"), pd.Series, pd.Period)
+    check(
+        assert_type(s0.dt.to_period("D"), "pd.Series[pd.Period]"), pd.Series, pd.Period
+    )
 
     with pytest_warns_bounded(
         FutureWarning,

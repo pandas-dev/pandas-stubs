@@ -3,7 +3,6 @@ from __future__ import annotations
 import datetime
 import datetime as dt
 from typing import (
-    TYPE_CHECKING,
     Any,
     Literal,
     Optional,
@@ -37,15 +36,6 @@ from pandas.tseries.offsets import (
     BaseOffset,
     Day,
 )
-
-if TYPE_CHECKING:
-    from pandas.core.series import (
-        OffsetSeries,
-        PeriodSeries,
-    )
-else:
-    PeriodSeries: TypeAlias = pd.Series
-    OffsetSeries: TypeAlias = pd.Series
 
 if not PD_LTE_23:
     from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore  # isort: skip
@@ -1861,7 +1851,7 @@ def test_period_add_subtract() -> None:
     as_td_series = pd.Series(pd.timedelta_range(scale, scale, freq="D"))
     check(assert_type(as_td_series, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     as_period_series = pd.Series(as_period_index)
-    check(assert_type(as_period_series, PeriodSeries), pd.Series, pd.Period)
+    check(assert_type(as_period_series, "pd.Series[pd.Period]"), pd.Series, pd.Period)
     as_timedelta_idx = pd.timedelta_range(scale, scale, freq="D")
     as_nat = pd.NaT
 
@@ -1876,12 +1866,12 @@ def test_period_add_subtract() -> None:
     # https://github.com/pandas-dev/pandas/issues/50162
     check(assert_type(p + offset_index, pd.PeriodIndex), pd.Index)
 
-    check(assert_type(p + as_td_series, PeriodSeries), pd.Series, pd.Period)
+    check(assert_type(p + as_td_series, "pd.Series[pd.Period]"), pd.Series, pd.Period)
     check(assert_type(p + as_timedelta_idx, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(p + as_nat, NaTType), NaTType)
     offset_series = as_period_series - as_period_series
-    check(assert_type(offset_series, OffsetSeries), pd.Series)
-    check(assert_type(p + offset_series, PeriodSeries), pd.Series, pd.Period)
+    check(assert_type(offset_series, "pd.Series[BaseOffset]"), pd.Series)
+    check(assert_type(p + offset_series, "pd.Series[pd.Period]"), pd.Series, pd.Period)
     check(assert_type(p - as_pd_td, pd.Period), pd.Period)
     check(assert_type(p - as_dt_td, pd.Period), pd.Period)
     check(assert_type(p - as_np_td, pd.Period), pd.Period)
@@ -1889,7 +1879,7 @@ def test_period_add_subtract() -> None:
     check(assert_type(p - as_int, pd.Period), pd.Period)
     check(assert_type(offset_index, pd.Index), pd.Index)
     check(assert_type(p - as_period, BaseOffset), Day)
-    check(assert_type(p - as_td_series, PeriodSeries), pd.Series, pd.Period)
+    check(assert_type(p - as_td_series, "pd.Series[pd.Period]"), pd.Series, pd.Period)
     check(assert_type(p - as_timedelta_idx, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(p - as_nat, NaTType), NaTType)
     check(assert_type(p - p.freq, pd.Period), pd.Period)
@@ -1912,7 +1902,7 @@ def test_period_add_subtract() -> None:
     check(assert_type(as_int + p, pd.Period), pd.Period)
     check(assert_type(p.__radd__(as_int), pd.Period), pd.Period)
 
-    check(assert_type(as_td_series + p, PeriodSeries), pd.Series, pd.Period)
+    check(assert_type(as_td_series + p, "pd.Series[pd.Period]"), pd.Series, pd.Period)
 
     check(assert_type(as_timedelta_idx + p, pd.PeriodIndex), pd.PeriodIndex)
 

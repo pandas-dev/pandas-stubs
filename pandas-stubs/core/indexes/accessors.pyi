@@ -30,10 +30,7 @@ from pandas.core.indexes.base import Index
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
-from pandas.core.series import (
-    PeriodSeries,
-    Series,
-)
+from pandas.core.series import Series
 from typing_extensions import Never
 
 from pandas._libs.interval import Interval
@@ -216,7 +213,7 @@ _DTNormalizeReturnType = TypeVar(
 )
 _DTStrKindReturnType = TypeVar("_DTStrKindReturnType", bound=Series[str] | Index)
 _DTToPeriodReturnType = TypeVar(
-    "_DTToPeriodReturnType", bound=PeriodSeries | PeriodIndex
+    "_DTToPeriodReturnType", bound=Series[Period] | PeriodIndex
 )
 
 class _DatetimeLikeNoTZMethods(
@@ -393,7 +390,7 @@ class CombinedDatetimelikeProperties(
         str,
         Series[Timestamp],
         Series[str],
-        PeriodSeries,
+        Series[Period],
     ],
     _TimedeltaPropertiesNoRounding[Series[int], Series[float]],
     _PeriodProperties,
@@ -410,7 +407,7 @@ class TimestampProperties(
         str,
         Series[Timestamp],
         Series[str],
-        PeriodSeries,
+        Series[Period],
     ]
 ): ...
 
@@ -460,8 +457,8 @@ class DtDescriptor:
     @overload
     def __get__(
         self,
-        instance: Series[Period] | PeriodSeries,
-        owner: type[Series | PeriodSeries],
+        instance: Series[Period],
+        owner: type[Series],
     ) -> PeriodProperties: ...
 
 @type_check_only
