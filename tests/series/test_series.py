@@ -40,7 +40,6 @@ from typing_extensions import (
     Never,
     Self,
     TypeAlias,
-    assert_never,
     assert_type,
 )
 import xarray as xr
@@ -3503,47 +3502,39 @@ def test_diff() -> None:
             BaseOffset,
             index_to_check_for_type=-1,
         )
-    # bool -> object
+    # bool -> Any
     check(
         assert_type(
-            pd.Series([True, True, False, False, True]).diff(),
-            "pd.Series[type[object]]",
+            pd.Series([True, True, False, False, True]).diff(), "pd.Series[Any]"
         ),
         pd.Series,
         object,
     )
-    # object -> object
-    check(
-        assert_type(s.astype(object).diff(), "pd.Series[type[object]]"),
-        pd.Series,
-        object,
-    )
+    # Any -> float
+    s_o = s.astype(object)
+    assert_type(s_o, "pd.Series[Any]")
+    check(assert_type(s_o.diff(), "pd.Series[float]"), pd.Series, float)
     # complex -> complex
     check(
         assert_type(s.astype(complex).diff(), "pd.Series[complex]"), pd.Series, complex
     )
-    if TYPE_CHECKING_INVALID_USAGE:
+
+    def _diff_invalid0():  # pyright: ignore[reportUnusedFunction]
         # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
-        assert_never(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff())
+        assert_type(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff(), Never)
 
-
-def test_diff_never1() -> None:
-    s = pd.Series([1, 1, 2, 3, 5, 8])
-    if TYPE_CHECKING_INVALID_USAGE:
+    def _diff_invalid1() -> None:  # pyright: ignore[reportUnusedFunction]
+        s = pd.Series([1, 1, 2, 3, 5, 8])
         # bytes -> numpy.core._exceptions._UFuncNoLoopError: ufunc 'subtract' did not contain a loop with signature matching types (dtype('S21'), dtype('S21')) -> None
-        assert_never(s.astype(bytes).diff())
+        s.astype(bytes).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 
-
-def test_diff_never2() -> None:
-    if TYPE_CHECKING_INVALID_USAGE:
+    def _diff_invalid2() -> None:  # pyright: ignore[reportUnusedFunction]
         # dtype -> TypeError: unsupported operand type(s) for -: 'type' and 'type'
-        assert_never(pd.Series([str, int, bool]).diff())
+        pd.Series([str, int, bool]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 
-
-def test_diff_never3() -> None:
-    if TYPE_CHECKING_INVALID_USAGE:
+    def _diff_invalid3() -> None:  # pyright: ignore[reportUnusedFunction]
         # str -> TypeError: unsupported operand type(s) for -: 'str' and 'str'
-        assert_never(pd.Series(["a", "b"]).diff())
+        pd.Series(["a", "b"]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 
 
 def test_operator_constistency() -> None:

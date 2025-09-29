@@ -1063,6 +1063,11 @@ def test_series_types_to_numpy() -> None:
         np_1darray,
         dtype=np.bytes_,
     )
+    check(
+        assert_type(i_s.to_numpy(dtype=np.str_), np_1darray[np.str_]),
+        np_1darray,
+        dtype=np.str_,
+    )
 
 
 def test_index_types_to_numpy() -> None:

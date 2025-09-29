@@ -27,6 +27,7 @@ from typing import (
     Literal,
     NoReturn,
     Protocol,
+    TypeVar,
     final,
     overload,
     type_check_only,
@@ -210,9 +211,15 @@ from pandas.core.dtypes.dtypes import CategoricalDtype
 
 from pandas.plotting import PlotAccessor
 
+_T_INTERVAL_NP = TypeVar("_T_INTERVAL_NP", bound=np.bytes_ | np.str_)
+
 @type_check_only
 class _SupportsAdd(Protocol[_T_co]):
     def __add__(self, value: Self, /) -> _T_co: ...
+
+@type_check_only
+class SupportsSelfSub(Protocol[_T_co]):
+    def __sub__(self, x: Self, /) -> _T_co: ...
 
 @type_check_only
 class _SupportsMul(Protocol[_T_co]):
@@ -832,22 +839,19 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: Series[S1], min_periods: int | None = None, ddof: int = 1
     ) -> float: ...
     @overload
-    def diff(self: Series[_bool], periods: int = ...) -> Series[type[object]]: ...  # type: ignore[overload-overlap]
+    def diff(  # type: ignore[overload-overlap]
+        self: Series[Never] | Series[int], periods: int = ...
+    ) -> Series[float]: ...
     @overload
-    def diff(self: Series[complex], periods: int = ...) -> Series[complex]: ...  # type: ignore[overload-overlap]
+    def diff(self: Series[_bool], periods: int = ...) -> Series: ...
+    @overload
+    def diff(self: Series[Period], periods: int = ...) -> OffsetSeries: ...
+    @overload
+    def diff(self: Series[Interval], periods: int = ...) -> Never: ...
     @overload
     def diff(
-        self: Series[bytes] | Series[type] | Series[_str] | Series[Interval],
-        periods: int = ...,
-    ) -> Never: ...
-    @overload
-    def diff(self: Series[Timestamp], periods: int = ...) -> Series[Timedelta]: ...  # type: ignore[overload-overlap]
-    @overload
-    def diff(self: Series[Timedelta], periods: int = ...) -> Series[Timedelta]: ...  # type: ignore[overload-overlap]
-    @overload
-    def diff(self: Series[Period], periods: int = ...) -> OffsetSeries: ...  # type: ignore[overload-overlap]
-    @overload
-    def diff(self, periods: int = ...) -> Series[float]: ...
+        self: SupportsGetItem[Scalar, SupportsSelfSub[S1_CO]], periods: int = ...
+    ) -> Series[S1_CO]: ...
     def autocorr(self, lag: int = 1) -> float: ...
     @overload
     def dot(self, other: Series[S1]) -> Scalar: ...
@@ -4665,11 +4669,11 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def to_numpy(
         self: Series[Interval],
-        dtype: type[np.bytes_],
+        dtype: type[_T_INTERVAL_NP],
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs,
-    ) -> np_1darray[np.bytes_]: ...
+    ) -> np_1darray[_T_INTERVAL_NP]: ...
     @overload
     def to_numpy(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
