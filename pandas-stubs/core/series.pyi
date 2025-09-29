@@ -4624,7 +4624,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def to_numpy(
         self: Series[Interval],
-        dtype: np.dtype[np.bytes_],
+        dtype: type[np.bytes_],
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs,
