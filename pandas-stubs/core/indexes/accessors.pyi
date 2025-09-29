@@ -443,7 +443,6 @@ class TimedeltaIndexProperties(
 
 @type_check_only
 class DtDescriptor:
-    # microsoft/pyright#10924
     @overload
     def __get__(self, instance: Series[Never], owner: type[Series]) -> Any: ...
     @overload
@@ -456,9 +455,7 @@ class DtDescriptor:
     ) -> TimedeltaProperties: ...
     @overload
     def __get__(
-        self,
-        instance: Series[Period],
-        owner: type[Series],
+        self, instance: Series[Period], owner: type[Series]
     ) -> PeriodProperties: ...
 
 @type_check_only

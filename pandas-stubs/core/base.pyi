@@ -5,7 +5,6 @@ from collections.abc import (
 )
 from typing import (
     Any,
-    ClassVar,
     Generic,
     Literal,
     TypeAlias,
@@ -71,7 +70,7 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
     def nbytes(self) -> int: ...
     @property
     def size(self) -> int: ...
-    array: ClassVar = ArrayDescriptor()  # noqa
+    array = ArrayDescriptor()
     @overload
     def to_numpy(
         self,

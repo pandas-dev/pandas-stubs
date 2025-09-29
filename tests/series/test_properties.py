@@ -44,7 +44,9 @@ def test_dt_property() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(pd.DataFrame({"a": [1]})["a"].dt, Any)
+        s = pd.DataFrame({"a": [1]})["a"]
+        assert_type(s.dt, Any)
+        assert_type(s.dt.year, Any)
         _1 = pd.Series([1]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue]
 
 
@@ -68,5 +70,6 @@ def test_array_property() -> None:
         pd.Timedelta,
     )
     check(assert_type(pd.Series([1]).array, ExtensionArray), ExtensionArray, np.integer)
-    # mypy gives Any
+    # python/mypy#19952: mypy believes ExtensionArray and its subclasses have a
+    # conflict and gives Any for s.array
     check(assert_type(pd.Series([1, "s"]).array, ExtensionArray), ExtensionArray)  # type: ignore[assert-type]
