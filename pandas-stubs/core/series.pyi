@@ -4624,11 +4624,11 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def to_numpy(
         self: Series[Interval],
-        dtype: np.dtype[GenericT] | SupportsDType[GenericT] | type[GenericT],
+        dtype: np.dtype[np.bytes_],
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs,
-    ) -> np_1darray[GenericT]: ...
+    ) -> np_1darray[np.bytes_]: ...
     @overload
     def to_numpy(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
@@ -4725,7 +4725,7 @@ class _SeriesSubclassBase(Series[S1], Generic[S1, GenericT_co]):
 
 class PeriodSeries(_SeriesSubclassBase[Period, np.object_]):
     @property
-    def dt(self) -> PeriodProperties: ...  # type: ignore[override]
+    def dt(self) -> PeriodProperties: ...
     def __sub__(self, other: PeriodSeries) -> OffsetSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def diff(self, periods: int = ...) -> OffsetSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
 

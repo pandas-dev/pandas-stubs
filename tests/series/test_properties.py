@@ -1,4 +1,7 @@
-from typing import TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+)
 
 import numpy as np
 import pandas as pd
@@ -33,9 +36,8 @@ def test_dt_property() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        # mypy gives Any
-        _0 = pd.Series([1, "s"]).dt  # pyright: ignore[reportAttributeAccessIssue]
-        _1 = pd.Series([1]).dt  # type: ignore[arg-type,var-annotated] # pyright: ignore[reportAttributeAccessIssue]
+        assert_type(pd.DataFrame({"a": [1]})["a"].dt, Any)
+        _1 = pd.Series([1]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue]
 
 
 def test_array_property() -> None:
