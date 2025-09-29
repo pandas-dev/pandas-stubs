@@ -1981,6 +1981,8 @@ def test_types_to_numpy() -> None:
     check(assert_type(s.to_numpy(na_value=np.float16(4)), np_1darray), np_1darray)
     check(assert_type(s.to_numpy(na_value=np.complex128(4, 7)), np_1darray), np_1darray)
 
+    check(assert_type(pd.Series().to_numpy(), np_1darray), np_1darray)
+
 
 def test_where() -> None:
     s = pd.Series([1, 2, 3], dtype=int)

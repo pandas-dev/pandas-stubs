@@ -4613,9 +4613,17 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> _T: ...
     def to_list(self) -> list[S1]: ...
     @overload  # type: ignore[override]
+    def to_numpy(
+        self: Series[Never],
+        dtype: DTypeLike | None = None,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np_1darray: ...
+    @overload
     def to_numpy(  # pyrefly: ignore[bad-override]
         self: Series[Timestamp],
-        dtype: None | type[np.datetime64] = None,
+        dtype: type[np.datetime64] | None = None,
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs,
@@ -4631,7 +4639,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def to_numpy(  # pyrefly: ignore[bad-override]
         self: Series[Timedelta],
-        dtype: None | type[np.timedelta64] = None,
+        dtype: type[np.timedelta64] | None = None,
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs,
