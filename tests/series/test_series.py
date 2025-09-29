@@ -3524,9 +3524,8 @@ def test_diff() -> None:
         assert_type(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff(), Never)
 
     def _diff_invalid1() -> None:  # pyright: ignore[reportUnusedFunction]
-        s = pd.Series([1, 1, 2, 3, 5, 8])
         # bytes -> numpy.core._exceptions._UFuncNoLoopError: ufunc 'subtract' did not contain a loop with signature matching types (dtype('S21'), dtype('S21')) -> None
-        s.astype(bytes).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
+        pd.Series([1, 1, 2, 3, 5, 8]).astype(bytes).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 
     def _diff_invalid2() -> None:  # pyright: ignore[reportUnusedFunction]
         # dtype -> TypeError: unsupported operand type(s) for -: 'type' and 'type'
