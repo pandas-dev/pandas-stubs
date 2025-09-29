@@ -69,9 +69,7 @@ from pandas.core.generic import NDFrame
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.core.indexers import BaseIndexer
-from pandas.core.indexes.accessors import (
-    DtDescriptor,
-)
+from pandas.core.indexes.accessors import DtDescriptor
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.interval import IntervalIndex
