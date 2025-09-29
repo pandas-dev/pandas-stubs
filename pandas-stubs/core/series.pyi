@@ -70,10 +70,7 @@ from pandas.core.generic import NDFrame
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.core.indexers import BaseIndexer
-from pandas.core.indexes.accessors import (
-    PeriodProperties,
-    _dtDescriptor,
-)
+from pandas.core.indexes.accessors import _dtDescriptor
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.interval import IntervalIndex
@@ -363,7 +360,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         dtype: PeriodDtype = ...,
         name: Hashable = ...,
         copy: bool = ...,
-    ) -> PeriodSeries: ...
+    ) -> Series[Period]: ...
     @overload
     def __new__(
         cls,
@@ -851,6 +848,8 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def diff(self: Series[Timedelta], periods: int = ...) -> Series[Timedelta]: ...  # type: ignore[overload-overlap]
     @overload
+    def diff(self: Series[Period], periods: int = ...) -> OffsetSeries: ...  # type: ignore[overload-overlap]
+    @overload
     def diff(self, periods: int = ...) -> Series[float]: ...
     def autocorr(self, lag: int = 1) -> float: ...
     @overload
@@ -1234,8 +1233,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         Series[_str],
         Series,
     ]: ...
-    @property
-    def dt(self) -> _dtDescriptor[S1]: ...
+    dt = _dtDescriptor()
     @property
     def plot(self) -> PlotAccessor: ...
     sparse = ...
@@ -1695,7 +1693,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         ),
     ) -> Series[Timedelta]: ...
     @overload
-    def __add__(self: Series[Timedelta], other: Period) -> PeriodSeries: ...
+    def __add__(self: Series[Timedelta], other: Period) -> Series[Period]: ...
     @overload
     def __add__(self: Series[bool], other: bool | Sequence[bool]) -> Series[bool]: ...
     @overload
@@ -1822,7 +1820,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
-    ) -> PeriodSeries: ...
+    ) -> Series[Period]: ...
     @overload
     def add(
         self: Series[bool],
@@ -1957,7 +1955,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         ),
     ) -> Series[Timedelta]: ...
     @overload
-    def __radd__(self: Series[Timedelta], other: Period) -> PeriodSeries: ...
+    def __radd__(self: Series[Timedelta], other: Period) -> Series[Period]: ...
     @overload
     def __radd__(self: Series[bool], other: bool | Sequence[bool]) -> Series[bool]: ...
     @overload
@@ -2084,7 +2082,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
-    ) -> PeriodSeries: ...
+    ) -> Series[Period]: ...
     @overload
     def radd(
         self: Series[bool],
@@ -3201,6 +3199,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
         ),
     ) -> Series[Timedelta]: ...
     @overload
+    def __sub__(
+        self: Series[Period], other: Series[Period] | Period
+    ) -> Series[BaseOffset]: ...
+    @overload
     def sub(
         self: Series[Never],
         other: complex | NumListLike | Index[T_COMPLEX] | Series[T_COMPLEX],
@@ -3372,6 +3374,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
         axis: int = 0,
     ) -> Series[Timedelta]: ...
     @overload
+    def sub(
+        self: Series[Period],
+        other: Period | Sequence[Period] | PeriodIndex | Series[Period],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[BaseOffset]: ...
+    @overload
     def __rsub__(
         self: Series[Never],
         other: (
@@ -3501,6 +3511,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
             | Series[Timedelta]
         ),
     ) -> Series[Timedelta]: ...
+    @overload
+    def __rsub__(
+        self: Series[Period], other: Series[Period] | Period
+    ) -> Series[BaseOffset]: ...
     @overload
     def rsub(
         self: Series[Never],
@@ -3681,6 +3695,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: int = 0,
     ) -> Series[Timedelta]: ...
+    @overload
+    def rsub(
+        self: Series[Period],
+        other: Period | Sequence[Period] | PeriodIndex | Series[Period],
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[BaseOffset]: ...
     @overload
     def __truediv__(  # type: ignore[overload-overlap]
         self: Series[Never], other: complex | NumListLike | Index | Series
@@ -4623,6 +4645,22 @@ class Series(IndexOpsMixin[S1], NDFrame):
         **kwargs,
     ) -> np_1darray[GenericT]: ...
     @overload
+    def to_numpy(
+        self: Series[Period],
+        dtype: None = None,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np_1darray[np.object_]: ...
+    @overload
+    def to_numpy(
+        self: Series[Period],
+        dtype: type[np.int64],
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np_1darray[np.int64]: ...
+    @overload
     def to_numpy(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         dtype: DTypeLike | None = None,
@@ -4716,15 +4754,9 @@ class _SeriesSubclassBase(Series[S1], Generic[S1, GenericT_co]):
         **kwargs,
     ) -> np_1darray: ...
 
-class PeriodSeries(_SeriesSubclassBase[Period, np.object_]):
-    @property
-    def dt(self) -> PeriodProperties: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __sub__(self, other: PeriodSeries) -> OffsetSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def diff(self, periods: int = ...) -> OffsetSeries: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-
 class OffsetSeries(_SeriesSubclassBase[BaseOffset, np.object_]):
     @overload  # type: ignore[override]
-    def __radd__(self, other: Period) -> PeriodSeries: ...
+    def __radd__(self, other: Period) -> Series[Period]: ...
     @overload
     def __radd__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: BaseOffset
