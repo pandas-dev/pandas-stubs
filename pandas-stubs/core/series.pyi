@@ -4689,6 +4689,22 @@ class Series(IndexOpsMixin[S1], NDFrame):
         **kwargs,
     ) -> np_1darray[np.bytes_]: ...
     @overload
+    def to_numpy(
+        self: Series[DateOffset],
+        dtype: None = None,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np_1darray[np.object_]: ...
+    @overload
+    def to_numpy(
+        self: Series[DateOffset],
+        dtype: type[np.bytes_],
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np_1darray[np.bytes_]: ...
+    @overload
     def to_numpy(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         dtype: DTypeLike | None = None,
