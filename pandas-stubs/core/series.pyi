@@ -27,6 +27,7 @@ from typing import (
     Literal,
     NoReturn,
     Protocol,
+    TypeVar,
     final,
     overload,
     type_check_only,
@@ -55,11 +56,10 @@ from pandas.core.api import (
     Int32Dtype as Int32Dtype,
     Int64Dtype as Int64Dtype,
 )
-from pandas.core.arrays import TimedeltaArray
-from pandas.core.arrays.base import ExtensionArray
+from pandas.core.arrays.boolean import BooleanDtype
 from pandas.core.arrays.categorical import CategoricalAccessor
 from pandas.core.arrays.datetimes import DatetimeArray
-from pandas.core.arrays.interval import IntervalArray
+from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.base import (
     IndexOpsMixin,
     NumListLike,
@@ -70,7 +70,7 @@ from pandas.core.generic import NDFrame
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.core.indexers import BaseIndexer
-from pandas.core.indexes.accessors import _dtDescriptor
+from pandas.core.indexes.accessors import DtDescriptor
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.interval import IntervalIndex
@@ -210,9 +210,15 @@ from pandas.core.dtypes.dtypes import CategoricalDtype
 
 from pandas.plotting import PlotAccessor
 
+_T_INTERVAL_NP = TypeVar("_T_INTERVAL_NP", bound=np.bytes_ | np.str_)
+
 @type_check_only
 class _SupportsAdd(Protocol[_T_co]):
     def __add__(self, value: Self, /) -> _T_co: ...
+
+@type_check_only
+class SupportsSelfSub(Protocol[_T_co]):
+    def __sub__(self, x: Self, /) -> _T_co: ...
 
 @type_check_only
 class _SupportsMul(Protocol[_T_co]):
@@ -300,7 +306,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         copy: bool = ...,
     ) -> Series[float]: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __new__(
         cls,
         data: Sequence[Never],
         index: AxesData | None = ...,
@@ -374,6 +380,15 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
+        data: Sequence[BaseOffset],
+        index: AxesData | None = ...,
+        dtype: PeriodDtype = ...,
+        name: Hashable = ...,
+        copy: bool = ...,
+    ) -> Series[BaseOffset]: ...
+    @overload
+    def __new__(
+        cls,
         data: (
             TimedeltaIndex
             | Sequence[np.timedelta64 | timedelta]
@@ -399,7 +414,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         dtype: Literal["Interval"] = ...,
         name: Hashable = ...,
         copy: bool = ...,
-    ) -> IntervalSeries[_OrderableT]: ...
+    ) -> Series[Interval[_OrderableT]]: ...
     @overload
     def __new__(  # type: ignore[overload-overlap]
         cls,
@@ -486,8 +501,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def name(self, value: Hashable | None) -> None: ...
     @property
     def values(self) -> ArrayLike: ...
-    @property
-    def array(self) -> ExtensionArray: ...
     def ravel(self, order: _str = ...) -> np.ndarray: ...
     def __len__(self) -> int: ...
     def view(self, dtype=...) -> Series[S1]: ...
@@ -844,23 +857,21 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self, other: Series[S1], min_periods: int | None = None, ddof: int = 1
     ) -> float: ...
     @overload
-    def diff(self: Series[_bool], periods: int = ...) -> Series[type[object]]: ...  # type: ignore[overload-overlap]
+    def diff(  # type: ignore[overload-overlap]
+        self: Series[Never] | Series[int], periods: int = ...
+    ) -> Series[float]: ...
     @overload
-    def diff(self: Series[complex], periods: int = ...) -> Series[complex]: ...  # type: ignore[overload-overlap]
+    def diff(self: Series[_bool], periods: int = ...) -> Series: ...
     @overload
-    def diff(self: Series[bytes], periods: int = ...) -> Never: ...
+    def diff(
+        self: Series[BooleanDtype], periods: int = ...
+    ) -> Series[BooleanDtype]: ...
     @overload
-    def diff(self: Series[type], periods: int = ...) -> Never: ...
+    def diff(self: Series[Interval], periods: int = ...) -> Never: ...
     @overload
-    def diff(self: Series[_str], periods: int = ...) -> Never: ...
-    @overload
-    def diff(self: Series[Timestamp], periods: int = ...) -> Series[Timedelta]: ...  # type: ignore[overload-overlap]
-    @overload
-    def diff(self: Series[Timedelta], periods: int = ...) -> Series[Timedelta]: ...  # type: ignore[overload-overlap]
-    @overload
-    def diff(self: Series[Period], periods: int = ...) -> OffsetSeries: ...  # type: ignore[overload-overlap]
-    @overload
-    def diff(self, periods: int = ...) -> Series[float]: ...
+    def diff(
+        self: SupportsGetItem[Scalar, SupportsSelfSub[S1_CO]], periods: int = ...
+    ) -> Series[S1_CO]: ...
     def autocorr(self, lag: int = 1) -> float: ...
     @overload
     def dot(self, other: Series[S1]) -> Scalar: ...
@@ -1071,7 +1082,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         convertDType: _bool = ...,
         args: tuple = ...,
         **kwargs: Any,
-    ) -> OffsetSeries: ...
+    ) -> Series[BaseOffset]: ...
     @overload
     def apply(
         self,
@@ -1243,7 +1254,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         Series[_str],
         Series,
     ]: ...
-    dt = _dtDescriptor()
+    dt = DtDescriptor()
     @property
     def plot(self) -> PlotAccessor: ...
     sparse = ...
@@ -2023,6 +2034,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self: Series[_str],
         other: _str | Sequence[_str] | np_ndarray_str | Index[_str] | Series[_str],
     ) -> Series[_str]: ...
+    @overload
+    def __radd__(self: Series[BaseOffset], other: Period) -> Series[Period]: ...
+    @overload
+    def __radd__(self: Series[BaseOffset], other: BaseOffset) -> Series[BaseOffset]: ...
     @overload
     def radd(
         self: Series[Never],
@@ -4243,9 +4258,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __xor__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
     @final
     def __invert__(self) -> Series[bool]: ...
-    # properties
-    # @property
-    # def array(self) -> _npndarray
     @property
     def at(self) -> _AtIndexer: ...
     @property
@@ -4679,6 +4691,38 @@ class Series(IndexOpsMixin[S1], NDFrame):
         **kwargs,
     ) -> np_1darray[np.int64]: ...
     @overload
+    def to_numpy(
+        self: Series[BaseOffset],
+        dtype: None = None,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np_1darray[np.object_]: ...
+    @overload
+    def to_numpy(
+        self: Series[BaseOffset],
+        dtype: type[np.bytes_],
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np_1darray[np.bytes_]: ...
+    @overload
+    def to_numpy(
+        self: Series[Interval],
+        dtype: type[np.object_] | None = None,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np_1darray[np.object_]: ...
+    @overload
+    def to_numpy(
+        self: Series[Interval],
+        dtype: type[_T_INTERVAL_NP],
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np_1darray[_T_INTERVAL_NP]: ...
+    @overload
     def to_numpy(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         dtype: DTypeLike | None = None,
@@ -4771,18 +4815,3 @@ class _SeriesSubclassBase(Series[S1], Generic[S1, GenericT_co]):
         na_value: Scalar = ...,
         **kwargs,
     ) -> np_1darray: ...
-
-class OffsetSeries(_SeriesSubclassBase[BaseOffset, np.object_]):
-    @overload  # type: ignore[override]
-    def __radd__(self, other: Period) -> Series[Period]: ...
-    @overload
-    def __radd__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: BaseOffset
-    ) -> OffsetSeries: ...
-
-class IntervalSeries(
-    _SeriesSubclassBase[Interval[_OrderableT], np.object_], Generic[_OrderableT]
-):
-    @property
-    def array(self) -> IntervalArray: ...
-    def diff(self, periods: int = ...) -> Never: ...  # pyrefly: ignore

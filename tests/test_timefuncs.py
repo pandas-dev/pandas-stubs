@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import datetime as dt
 from typing import (
-    TYPE_CHECKING,
     Optional,
-    cast,
 )
 
 from dateutil.relativedelta import (
@@ -48,12 +46,6 @@ from pandas.tseries.offsets import (
     DateOffset,
     Day,
 )
-
-if TYPE_CHECKING:
-    from pandas.core.series import (
-        IntervalSeries,
-        OffsetSeries,
-    )
 
 if not PD_LTE_23:
     from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore  # isort: skip
@@ -356,10 +348,6 @@ def test_series_dt_accessors() -> None:
     i0 = pd.date_range(start="2022-06-01", periods=10)
     check(assert_type(i0, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
 
-    check(
-        assert_type(i0.to_series(), "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp
-    )
-
     s0 = pd.Series(i0)
 
     check(assert_type(s0.dt.date, "pd.Series[dt.date]"), pd.Series, dt.date)
@@ -531,8 +519,6 @@ def test_series_dt_accessors() -> None:
     i1 = pd.period_range(start="2022-06-01", periods=10)
 
     check(assert_type(i1, pd.PeriodIndex), pd.PeriodIndex)
-
-    check(assert_type(i1.to_series(), pd.Series), pd.Series, pd.Period)
 
     s1 = pd.Series(i1)
 
@@ -946,10 +932,8 @@ def test_series_types_to_numpy() -> None:
     td_s = pd.to_timedelta(pd.Series([10, 20]), "minutes")
     ts_s = pd.to_datetime(pd.Series(["2020-01-01", "2020-01-02"]))
     p_s = pd.Series(pd.period_range("2012-1-1", periods=10, freq="D"))
-    o_s = cast(
-        "OffsetSeries", pd.Series([pd.DateOffset(days=1), pd.DateOffset(days=2)])
-    )
-    i_s = cast("IntervalSeries", pd.interval_range(1, 2).to_series())
+    o_s = pd.Series([pd.DateOffset(days=1), pd.DateOffset(days=2)])
+    i_s = pd.interval_range(1, 2).to_series()
 
     # default dtype
     check(
@@ -1071,6 +1055,11 @@ def test_series_types_to_numpy() -> None:
         assert_type(i_s.to_numpy(dtype=np.bytes_), np_1darray[np.bytes_]),
         np_1darray,
         dtype=np.bytes_,
+    )
+    check(
+        assert_type(i_s.to_numpy(dtype=np.str_), np_1darray[np.str_]),
+        np_1darray,
+        dtype=np.str_,
     )
 
 

@@ -20,6 +20,7 @@ from pandas import (
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
+from pandas.core.indexes.accessors import ArrayDescriptor
 from typing_extensions import Self
 
 from pandas._typing import (
@@ -69,8 +70,7 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
     def nbytes(self) -> int: ...
     @property
     def size(self) -> int: ...
-    @property
-    def array(self) -> ExtensionArray: ...
+    array = ArrayDescriptor()
     @overload
     def to_numpy(
         self,
