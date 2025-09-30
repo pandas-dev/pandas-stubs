@@ -364,6 +364,15 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
+        data: Sequence[BaseOffset],
+        index: AxesData | None = ...,
+        dtype: PeriodDtype = ...,
+        name: Hashable = ...,
+        copy: bool = ...,
+    ) -> Series[BaseOffset]: ...
+    @overload
+    def __new__(
+        cls,
         data: (
             TimedeltaIndex
             | Sequence[np.timedelta64 | timedelta]
@@ -4683,22 +4692,6 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def to_numpy(
         self: Series[BaseOffset],
-        dtype: type[np.bytes_],
-        copy: bool = False,
-        na_value: Scalar = ...,
-        **kwargs,
-    ) -> np_1darray[np.bytes_]: ...
-    @overload
-    def to_numpy(
-        self: Series[DateOffset],
-        dtype: None = None,
-        copy: bool = False,
-        na_value: Scalar = ...,
-        **kwargs,
-    ) -> np_1darray[np.object_]: ...
-    @overload
-    def to_numpy(
-        self: Series[DateOffset],
         dtype: type[np.bytes_],
         copy: bool = False,
         na_value: Scalar = ...,
