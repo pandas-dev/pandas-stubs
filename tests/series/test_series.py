@@ -2914,8 +2914,6 @@ def test_astype_categorical(cast_arg: CategoryDtypeArg, target_type: type) -> No
         # pandas category
         assert_type(s.astype(pd.CategoricalDtype()), "pd.Series[pd.CategoricalDtype]")
         assert_type(s.astype(cast_arg), "pd.Series[pd.CategoricalDtype]")
-        # pyarrow dictionary
-        # assert_type(s.astype("dictionary[pyarrow]"), "pd.Series[Categorical]")
 
 
 @pytest.mark.parametrize("cast_arg, target_type", ASTYPE_OBJECT_ARGS, ids=repr)

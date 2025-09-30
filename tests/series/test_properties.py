@@ -53,7 +53,6 @@ def test_dt_property() -> None:
 
 def test_array_property() -> None:
     """Test that Series.array returns ExtensionArray and its subclasses"""
-    # casting due to pandas-dev/pandas-stubs#1383
     check(
         assert_type(
             pd.Series([1], dtype="category").array,
