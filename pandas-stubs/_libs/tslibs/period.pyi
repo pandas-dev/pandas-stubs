@@ -21,6 +21,7 @@ from pandas._libs.tslibs import NaTType
 from pandas._libs.tslibs.offsets import BaseOffset
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
+    Frequency,
     ShapeT,
     np_1darray,
     np_ndarray,
@@ -65,7 +66,7 @@ class Period(PeriodMixin):
         value: (
             Period | str | datetime.datetime | datetime.date | Timestamp | None
         ) = ...,
-        freq: str | BaseOffset | None = ...,
+        freq: Frequency | None = ...,
         ordinal: int | None = ...,
         year: int | None = ...,
         month: int | None = ...,
@@ -229,12 +230,12 @@ class Period(PeriodMixin):
     def day_of_year(self) -> int: ...
     @property
     def day_of_week(self) -> int: ...
-    def asfreq(self, freq: str | BaseOffset, how: _PeriodFreqHow = "end") -> Period: ...
+    def asfreq(self, freq: Frequency, how: _PeriodFreqHow = "end") -> Period: ...
     @classmethod
-    def now(cls, freq: str | BaseOffset = ...) -> Period: ...
+    def now(cls, freq: Frequency = ...) -> Period: ...
     def strftime(self, fmt: str) -> str: ...
     def to_timestamp(
         self,
-        freq: str | BaseOffset | None = ...,
+        freq: Frequency | None = ...,
         how: _PeriodToTimestampHow = "S",
     ) -> Timestamp: ...

@@ -33,10 +33,10 @@ from pandas.core.series import (
 from typing_extensions import Never
 
 from pandas._libs.tslibs import BaseOffset
-from pandas._libs.tslibs.offsets import DateOffset
 from pandas._libs.tslibs.period import Period
 from pandas._typing import (
     S1,
+    Frequency,
     TimeAmbiguous,
     TimeNonexistent,
     TimestampConvention,
@@ -174,7 +174,7 @@ _DTTimestampTimedeltaReturnType = TypeVar(
 class _DatetimeRoundingMethods(Generic[_DTTimestampTimedeltaReturnType]):
     def round(
         self,
-        freq: str | BaseOffset | None,
+        freq: Frequency | None,
         ambiguous: Literal["raise", "infer", "NaT"] | bool | np_ndarray_bool = ...,
         nonexistent: (
             Literal["shift_forward", "shift_backward", "NaT", "raise"]
@@ -184,7 +184,7 @@ class _DatetimeRoundingMethods(Generic[_DTTimestampTimedeltaReturnType]):
     ) -> _DTTimestampTimedeltaReturnType: ...
     def floor(
         self,
-        freq: str | BaseOffset | None,
+        freq: Frequency | None,
         ambiguous: Literal["raise", "infer", "NaT"] | bool | np_ndarray_bool = ...,
         nonexistent: (
             Literal["shift_forward", "shift_backward", "NaT", "raise"]
@@ -194,7 +194,7 @@ class _DatetimeRoundingMethods(Generic[_DTTimestampTimedeltaReturnType]):
     ) -> _DTTimestampTimedeltaReturnType: ...
     def ceil(
         self,
-        freq: str | BaseOffset | None,
+        freq: Frequency | None,
         ambiguous: Literal["raise", "infer", "NaT"] | bool | np_ndarray_bool = ...,
         nonexistent: (
             Literal["shift_forward", "shift_backward", "NaT", "raise"]
@@ -220,9 +220,7 @@ class _DatetimeLikeNoTZMethods(
         _DTToPeriodReturnType,
     ],
 ):
-    def to_period(
-        self, freq: str | BaseOffset | None = ...
-    ) -> _DTToPeriodReturnType: ...
+    def to_period(self, freq: Frequency | None = ...) -> _DTToPeriodReturnType: ...
     def tz_localize(
         self,
         tz: TimeZones,
@@ -353,12 +351,12 @@ class _PeriodProperties(
     def strftime(self, date_format: str) -> _PeriodStrReturnTypes: ...
     def to_timestamp(
         self,
-        freq: str | DateOffset | None = ...,
+        freq: Frequency | None = ...,
         how: TimestampConvention = ...,
     ) -> _PeriodDTAReturnTypes: ...
     def asfreq(
         self,
-        freq: str | DateOffset | None = ...,
+        freq: Frequency | None = ...,
         how: Literal["E", "END", "FINISH", "S", "START", "BEGIN"] = ...,
     ) -> _PeriodPAReturnTypes: ...
 
@@ -453,7 +451,7 @@ class _dtDescriptor(CombinedDatetimelikeProperties, Generic[S1]):
     ) -> CombinedDatetimelikeProperties: ...
     def round(
         self,
-        freq: str | BaseOffset | None,
+        freq: Frequency | None,
         ambiguous: Literal["raise", "infer", "NaT"] | bool | np_ndarray_bool = ...,
         nonexistent: (
             Literal["shift_forward", "shift_backward", "NaT", "raise"]
@@ -463,7 +461,7 @@ class _dtDescriptor(CombinedDatetimelikeProperties, Generic[S1]):
     ) -> Series[S1]: ...
     def floor(
         self,
-        freq: str | BaseOffset | None,
+        freq: Frequency | None,
         ambiguous: Literal["raise", "infer", "NaT"] | bool | np_ndarray_bool = ...,
         nonexistent: (
             Literal["shift_forward", "shift_backward", "NaT", "raise"]
@@ -473,7 +471,7 @@ class _dtDescriptor(CombinedDatetimelikeProperties, Generic[S1]):
     ) -> Series[S1]: ...
     def ceil(
         self,
-        freq: str | BaseOffset | None,
+        freq: Frequency | None,
         ambiguous: Literal["raise", "infer", "NaT"] | bool | np_ndarray_bool = ...,
         nonexistent: (
             Literal["shift_forward", "shift_backward", "NaT", "raise"]

@@ -11,7 +11,6 @@ from typing import (
 
 import numpy as np
 from pandas import (
-    DateOffset,
     Index,
     Period,
 )
@@ -23,9 +22,9 @@ from pandas.core.series import Series
 from typing_extensions import Self
 
 from pandas._libs import Timedelta
-from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     AxesData,
+    Frequency,
     TimedeltaConvertibleTypes,
     np_ndarray_td,
     num,
@@ -39,7 +38,7 @@ class TimedeltaIndex(
         data: (
             Sequence[dt.timedelta | Timedelta | np.timedelta64 | float] | AxesData
         ) = ...,
-        freq: str | BaseOffset = ...,
+        freq: Frequency = ...,
         closed: object = ...,
         dtype: Literal["<m8[ns]"] = ...,
         copy: bool = ...,
@@ -86,14 +85,16 @@ class TimedeltaIndex(
     def inferred_type(self) -> str: ...
     @final
     def to_series(self, index=..., name: Hashable = ...) -> Series[Timedelta]: ...
-    def shift(self, periods: int = 1, freq=...) -> Self: ...
+    def shift(
+        self, periods: int = 1, freq: Frequency | dt.timedelta | None = None
+    ) -> Self: ...
 
 @overload
 def timedelta_range(
     start: TimedeltaConvertibleTypes,
     end: TimedeltaConvertibleTypes,
     *,
-    freq: str | DateOffset | Timedelta | dt.timedelta | None = None,
+    freq: Frequency | Timedelta | dt.timedelta | None = None,
     name: Hashable | None = None,
     closed: Literal["left", "right"] | None = None,
     unit: None | str = ...,
@@ -103,7 +104,7 @@ def timedelta_range(
     *,
     end: TimedeltaConvertibleTypes,
     periods: int,
-    freq: str | DateOffset | Timedelta | dt.timedelta | None = None,
+    freq: Frequency | Timedelta | dt.timedelta | None = None,
     name: Hashable | None = None,
     closed: Literal["left", "right"] | None = None,
     unit: None | str = ...,
@@ -113,7 +114,7 @@ def timedelta_range(
     start: TimedeltaConvertibleTypes,
     *,
     periods: int,
-    freq: str | DateOffset | Timedelta | dt.timedelta | None = None,
+    freq: Frequency | Timedelta | dt.timedelta | None = None,
     name: Hashable | None = None,
     closed: Literal["left", "right"] | None = None,
     unit: None | str = ...,

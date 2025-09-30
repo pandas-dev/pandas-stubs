@@ -106,6 +106,7 @@ from pandas._typing import (
     FillnaOptions,
     FloatFormatType,
     FormattersType,
+    Frequency,
     GroupByObjectNonScalar,
     HashableT,
     HashableT1,
@@ -2341,7 +2342,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def rolling(
         self,
-        window: int | str | dt.timedelta | BaseOffset | BaseIndexer,
+        window: int | Frequency | dt.timedelta | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         on: Hashable | None = ...,
@@ -2355,7 +2356,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def rolling(
         self,
-        window: int | str | dt.timedelta | BaseOffset | BaseIndexer,
+        window: int | Frequency | dt.timedelta | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         on: Hashable | None = ...,

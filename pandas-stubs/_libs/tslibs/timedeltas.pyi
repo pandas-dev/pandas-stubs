@@ -23,12 +23,12 @@ from typing_extensions import (
 )
 
 from pandas._libs.tslibs import (
-    BaseOffset,
     NaTType,
 )
 from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
+    Frequency,
     ShapeT,
     TimeUnit,
     np_1darray,
@@ -130,9 +130,9 @@ class Timedelta(timedelta):
     @property
     def asm8(self) -> np.timedelta64: ...
     # TODO: round/floor/ceil could return NaT?
-    def round(self, freq: str | BaseOffset) -> Self: ...
-    def floor(self, freq: str | BaseOffset) -> Self: ...
-    def ceil(self, freq: str | BaseOffset) -> Self: ...
+    def round(self, freq: Frequency) -> Self: ...
+    def floor(self, freq: Frequency) -> Self: ...
+    def ceil(self, freq: Frequency) -> Self: ...
     @property
     def resolution_string(self) -> str: ...
     # Override due to more types supported than dt.timedelta

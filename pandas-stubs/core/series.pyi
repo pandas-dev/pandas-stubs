@@ -142,6 +142,7 @@ from pandas._typing import (
     FillnaOptions,
     FloatDtypeArg,
     FloatFormatType,
+    Frequency,
     GenericT,
     GenericT_co,
     GroupByObjectNonScalar,
@@ -4520,7 +4521,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def rolling(
         self,
-        window: int | _str | timedelta | BaseOffset | BaseIndexer,
+        window: int | Frequency | timedelta | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         on: _str | None = ...,
@@ -4533,7 +4534,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def rolling(
         self,
-        window: int | _str | timedelta | BaseOffset | BaseIndexer,
+        window: int | Frequency | timedelta | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         on: _str | None = ...,
