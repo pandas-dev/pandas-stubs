@@ -52,7 +52,6 @@ from pandas.tseries.offsets import (
 if TYPE_CHECKING:
     from pandas.core.series import (
         IntervalSeries,
-        OffsetSeries,
     )
 
 if not PD_LTE_23:
@@ -946,9 +945,7 @@ def test_series_types_to_numpy() -> None:
     td_s = pd.to_timedelta(pd.Series([10, 20]), "minutes")
     ts_s = pd.to_datetime(pd.Series(["2020-01-01", "2020-01-02"]))
     p_s = pd.Series(pd.period_range("2012-1-1", periods=10, freq="D"))
-    o_s = cast(
-        "OffsetSeries", pd.Series([pd.DateOffset(days=1), pd.DateOffset(days=2)])
-    )
+    o_s = pd.Series([pd.DateOffset(days=1), pd.DateOffset(days=2)])
     i_s = cast("IntervalSeries", pd.interval_range(1, 2).to_series())
 
     # default dtype
