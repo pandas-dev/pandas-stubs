@@ -50,7 +50,7 @@ from pandas._typing import (
     Scalar,
 )
 
-from pandas.core.dtypes.dtypes import CategoricalDtype
+from pandas.core.dtypes.dtypes import CategoricalDtype  # noqa F401
 
 from tests import (
     PD_LTE_23,
