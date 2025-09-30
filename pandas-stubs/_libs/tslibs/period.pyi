@@ -12,7 +12,6 @@ from pandas import (
     Timedelta,
     TimedeltaIndex,
 )
-from pandas.core.series import OffsetSeries
 from typing_extensions import TypeAlias
 
 from pandas._libs.tslibs import NaTType
@@ -95,7 +94,7 @@ class Period(PeriodMixin):
     def __add__(self, other: Index) -> PeriodIndex: ...
     @overload
     def __add__(
-        self, other: OffsetSeries | Series[Timedelta]
+        self, other: Series[BaseOffset] | Series[Timedelta]
     ) -> Series[Period]: ...  # pyrefly: ignore[bad-specialization]
     #  ignore[misc] here because we know all other comparisons
     #  are False, so we use Literal[False]
