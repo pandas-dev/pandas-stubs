@@ -1,6 +1,5 @@
 from typing import (
     TYPE_CHECKING,
-    cast,
 )
 
 import numpy as np
@@ -54,12 +53,9 @@ def test_dt_property() -> None:
 
 def test_array_property() -> None:
     """Test that Series.array returns ExtensionArray and its subclasses"""
-    # casting due to pandas-dev/pandas-stubs#1383
     check(
         assert_type(
-            cast(
-                "pd.Series[pd.CategoricalDtype]", pd.Series([1], dtype="category")
-            ).array,
+            pd.Series([1], dtype="category").array,
             pd.Categorical,
         ),
         pd.Categorical,
