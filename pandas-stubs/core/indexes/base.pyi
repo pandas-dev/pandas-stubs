@@ -42,6 +42,7 @@ from pandas.core.base import (
     NumListLike,
     _ListLike,
 )
+from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.strings.accessor import StringMethods
 from typing_extensions import (
     Never,
@@ -58,6 +59,7 @@ from pandas._typing import (
     AnyAll,
     ArrayLike,
     AxesData,
+    CategoryDtypeArg,
     DropKeep,
     Dtype,
     DtypeArg,
@@ -228,6 +230,16 @@ class Index(IndexOpsMixin[S1]):
         name: Hashable = ...,
         tupleize_cols: bool = ...,
     ) -> TimedeltaIndex: ...
+    @overload
+    def __new__(
+        cls,
+        data: AxesData,
+        *,
+        dtype: CategoryDtypeArg,
+        copy: bool = ...,
+        name: Hashable = ...,
+        tupleize_cols: bool = ...,
+    ) -> CategoricalIndex: ...
     @overload
     def __new__(
         cls,

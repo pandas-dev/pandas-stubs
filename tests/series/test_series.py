@@ -50,6 +50,8 @@ from pandas._typing import (
     Scalar,
 )
 
+from pandas.core.dtypes.dtypes import CategoricalDtype
+
 from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
@@ -1823,6 +1825,10 @@ def test_categorical_codes():
     # GH-111
     cat = pd.Categorical(["a", "b", "a"])
     check(assert_type(cat.codes, np_1darray[np.signedinteger]), np_1darray[np.int8])
+
+    # GH1383
+    sr = pd.Series([1], dtype="category")
+    check(assert_type(sr, "pd.Series[CategoricalDtype]"), pd.Series, np.integer)
 
 
 def test_relops() -> None:

@@ -15,6 +15,7 @@ import pandas as pd
 from pandas.core.arrays import DatetimeArray
 from pandas.core.arrays.categorical import Categorical
 from pandas.core.indexes.base import Index
+from pandas.core.indexes.category import CategoricalIndex
 from typing_extensions import (
     Never,
     assert_type,
@@ -1364,6 +1365,12 @@ def test_index_factorize() -> None:
     )
     check(assert_type(codes, np_1darray), np_1darray)
     check(assert_type(idx_uniques, np_1darray | Index | Categorical), pd.Index)
+
+
+def test_index_categorical() -> None:
+    """Test creating an index with Categorical type GH1383."""
+    sr = pd.Index([1], dtype="category")
+    check(assert_type(sr, CategoricalIndex), CategoricalIndex)
 
 
 def test_disallow_empty_index() -> None:

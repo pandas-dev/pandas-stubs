@@ -355,6 +355,16 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
+        data: _ListLike,
+        index: AxesData | None = ...,
+        *,
+        dtype: CategoryDtypeArg,
+        name: Hashable = ...,
+        copy: bool = ...,
+    ) -> Series[CategoricalDtype]: ...
+    @overload
+    def __new__(
+        cls,
         data: PeriodIndex | Sequence[Period],
         index: AxesData | None = ...,
         dtype: PeriodDtype = ...,
