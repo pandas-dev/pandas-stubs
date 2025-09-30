@@ -113,6 +113,7 @@ _DTypeKind: TypeAlias = Literal[
 def test_types_init() -> None:
     pd.Series(1)
     pd.Series((1, 2, 3))
+    pd.Series(iter((1, 2, 3)))
     pd.Series(np.array([1, 2, 3]))
     pd.Series(pd.NaT)
     pd.Series(pd.NA)
@@ -143,6 +144,11 @@ def test_types_init() -> None:
     )
     check(
         assert_type(pd.Series([1.0], pd.Index([1]), float, "f"), "pd.Series[float]"),
+        pd.Series,
+        float,
+    )
+    check(
+        assert_type(pd.Series(iter([1.0])), "pd.Series[float]"),
         pd.Series,
         float,
     )
