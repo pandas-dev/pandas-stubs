@@ -21,6 +21,7 @@ from typing import (
     TypedDict,
     TypeVar,
     Union,
+    cast,
 )
 
 import numpy as np
@@ -40,7 +41,6 @@ from typing_extensions import (
     Never,
     Self,
     TypeAlias,
-    assert_never,
     assert_type,
 )
 import xarray as xr
@@ -3500,47 +3500,51 @@ def test_diff() -> None:
             BaseOffset,
             index_to_check_for_type=-1,
         )
-    # bool -> object
+    # bool -> Any
     check(
         assert_type(
-            pd.Series([True, True, False, False, True]).diff(),
-            "pd.Series[type[object]]",
+            pd.Series([True, True, False, False, True]).diff(), "pd.Series[Any]"
         ),
         pd.Series,
-        object,
+        bool,
+        index_to_check_for_type=-1,
     )
-    # object -> object
+    # nullable bool -> nullable bool
+    # casting due to pandas-dev/pandas-stubs#1395
     check(
-        assert_type(s.astype(object).diff(), "pd.Series[type[object]]"),
+        assert_type(
+            cast(
+                "pd.Series[pd.BooleanDtype]",
+                pd.Series([True, True, False, False, True], dtype="boolean").diff(),
+            ),
+            "pd.Series[pd.BooleanDtype]",
+        ),
         pd.Series,
-        object,
+        np.bool_,
+        index_to_check_for_type=-1,
     )
+    # Any -> float
+    s_o = s.astype(object)
+    assert_type(s_o, "pd.Series[Any]")
+    check(assert_type(s_o.diff(), "pd.Series[float]"), pd.Series, float)
     # complex -> complex
     check(
         assert_type(s.astype(complex).diff(), "pd.Series[complex]"), pd.Series, complex
     )
-    if TYPE_CHECKING_INVALID_USAGE:
-        # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
-        assert_never(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff())
 
-
-def test_diff_never1() -> None:
-    s = pd.Series([1, 1, 2, 3, 5, 8])
     if TYPE_CHECKING_INVALID_USAGE:
         # bytes -> numpy.core._exceptions._UFuncNoLoopError: ufunc 'subtract' did not contain a loop with signature matching types (dtype('S21'), dtype('S21')) -> None
-        assert_never(s.astype(bytes).diff())
+        pd.Series([1, 1, 2, 3, 5, 8]).astype(bytes).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 
-
-def test_diff_never2() -> None:
-    if TYPE_CHECKING_INVALID_USAGE:
         # dtype -> TypeError: unsupported operand type(s) for -: 'type' and 'type'
-        assert_never(pd.Series([str, int, bool]).diff())
+        pd.Series([str, int, bool]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 
-
-def test_diff_never3() -> None:
-    if TYPE_CHECKING_INVALID_USAGE:
         # str -> TypeError: unsupported operand type(s) for -: 'str' and 'str'
-        assert_never(pd.Series(["a", "b"]).diff())
+        pd.Series(["a", "b"]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
+
+    def _diff_invalid0():  # pyright: ignore[reportUnusedFunction]
+        # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
+        assert_type(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff(), Never)
 
 
 def test_operator_constistency() -> None:

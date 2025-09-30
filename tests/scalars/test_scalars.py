@@ -287,6 +287,16 @@ def test_interval_math() -> None:
         pd.Interval,
     )
 
+    if TYPE_CHECKING_INVALID_USAGE:
+        _i = interval_i - pd.Interval(1, 2)  # type: ignore[type-var] # pyright: ignore[reportOperatorIssue]
+        _f = interval_f - pd.Interval(1.0, 2.0)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _ts = interval_ts - pd.Interval(  # type: ignore[operator]
+            pd.Timestamp(2025, 9, 29), pd.Timestamp(2025, 9, 30), closed="both"
+        )  # pyright: ignore[reportOperatorIssue]
+        _td = interval_td - pd.Interval(  # type: ignore[operator]
+            pd.Timedelta(1, "ns"), pd.Timedelta(2, "ns")
+        )  # pyright: ignore[reportOperatorIssue]
+
 
 def test_interval_cmp():
     interval_i = pd.Interval(0, 1, closed="left")
