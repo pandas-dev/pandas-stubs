@@ -72,8 +72,6 @@ from pandas.tseries.offsets import (
 )
 
 if TYPE_CHECKING:
-    from pandas.core.series import OffsetSeries
-
     from tests import (
         BooleanDtypeArg,
         BytesDtypeArg,
@@ -88,9 +86,6 @@ if TYPE_CHECKING:
         UIntDtypeArg,
         VoidDtypeArg,
     )
-
-else:
-    OffsetSeries: TypeAlias = pd.Series
 
 if not PD_LTE_23:
     from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore  # isort: skip
@@ -3487,7 +3482,7 @@ def test_diff() -> None:
                     pd.Series(
                         pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
                     ).diff(),
-                    "OffsetSeries",
+                    "pd.Series[BaseOffset]",
                 ),
                 pd.Series,
                 BaseOffset,
@@ -3499,7 +3494,7 @@ def test_diff() -> None:
                 pd.Series(
                     pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
                 ).diff(),
-                "OffsetSeries",
+                "pd.Series[BaseOffset]",
             ),
             pd.Series,
             BaseOffset,
@@ -3672,7 +3667,9 @@ def test_apply_dateoffset() -> None:
     months = [1, 2, 3]
     s = pd.Series(months)
     check(
-        assert_type(s.apply(lambda x: pd.DateOffset(months=x)), "OffsetSeries"),
+        assert_type(
+            s.apply(lambda x: pd.DateOffset(months=x)), "pd.Series[BaseOffset]"
+        ),
         pd.Series,
         pd.DateOffset,
     )

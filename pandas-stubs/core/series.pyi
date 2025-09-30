@@ -848,7 +848,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def diff(self: Series[Timedelta], periods: int = ...) -> Series[Timedelta]: ...  # type: ignore[overload-overlap]
     @overload
-    def diff(self: Series[Period], periods: int = ...) -> OffsetSeries: ...  # type: ignore[overload-overlap]
+    def diff(self: Series[Period], periods: int = ...) -> Series[BaseOffset]: ...  # type: ignore[overload-overlap]
     @overload
     def diff(self, periods: int = ...) -> Series[float]: ...
     def autocorr(self, lag: int = 1) -> float: ...
@@ -1061,7 +1061,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         convertDType: _bool = ...,
         args: tuple = ...,
         **kwargs: Any,
-    ) -> OffsetSeries: ...
+    ) -> Series[BaseOffset]: ...
     @overload
     def apply(
         self,
@@ -2013,6 +2013,10 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self: Series[_str],
         other: _str | Sequence[_str] | np_ndarray_str | Index[_str] | Series[_str],
     ) -> Series[_str]: ...
+    @overload
+    def __radd__(self: Series[BaseOffset], other: Period) -> Series[Period]: ...
+    @overload
+    def __radd__(self: Series[BaseOffset], other: BaseOffset) -> Series[BaseOffset]: ...
     @overload
     def radd(
         self: Series[Never],
@@ -4669,6 +4673,22 @@ class Series(IndexOpsMixin[S1], NDFrame):
         **kwargs,
     ) -> np_1darray[np.int64]: ...
     @overload
+    def to_numpy(
+        self: Series[BaseOffset],
+        dtype: None = None,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np_1darray[np.object_]: ...
+    @overload
+    def to_numpy(
+        self: Series[BaseOffset],
+        dtype: type[np.bytes_],
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs,
+    ) -> np_1darray[np.bytes_]: ...
+    @overload
     def to_numpy(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         dtype: DTypeLike | None = None,
@@ -4761,14 +4781,6 @@ class _SeriesSubclassBase(Series[S1], Generic[S1, GenericT_co]):
         na_value: Scalar = ...,
         **kwargs,
     ) -> np_1darray: ...
-
-class OffsetSeries(_SeriesSubclassBase[BaseOffset, np.object_]):
-    @overload  # type: ignore[override]
-    def __radd__(self, other: Period) -> Series[Period]: ...
-    @overload
-    def __radd__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: BaseOffset
-    ) -> OffsetSeries: ...
 
 class IntervalSeries(
     _SeriesSubclassBase[Interval[_OrderableT], np.object_], Generic[_OrderableT]
