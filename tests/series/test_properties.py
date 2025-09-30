@@ -63,7 +63,7 @@ def test_array_property() -> None:
             pd.Categorical,
         ),
         pd.Categorical,
-        np.int64,
+        int,
     )
     check(
         assert_type(pd.Series(pd.interval_range(0, 1)).array, IntervalArray),
