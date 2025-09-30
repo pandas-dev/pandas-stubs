@@ -1524,8 +1524,15 @@ def test_period_index_asof_locs() -> None:
 
 def test_array_property() -> None:
     """Test that Index.array and semantic Index.array return ExtensionArray and its subclasses"""
-    # pandas-dev/pandas-stubs#1383
-    # check(assert_type(Index([1], dtype="category").array, pd.Categorical), pd.Categorical, np.int64)
+    # casting due to pandas-dev/pandas-stubs#1383
+    check(
+        assert_type(
+            cast("Index[pd.CategoricalDtype]", Index([1], dtype="category")).array,
+            pd.Categorical,
+        ),
+        pd.Categorical,
+        np.int64,
+    )
     check(
         assert_type(pd.interval_range(0, 1).array, IntervalArray),
         IntervalArray,

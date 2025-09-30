@@ -21,6 +21,7 @@ from typing import (
     TypedDict,
     TypeVar,
     Union,
+    cast,
 )
 
 import numpy as np
@@ -3514,21 +3515,19 @@ def test_diff() -> None:
         index_to_check_for_type=-1,
     )
     # nullable bool -> nullable bool
-    with pytest_warns_bounded(
-        UserWarning,
-        r"Instantiating BooleanDtype without any arguments.Pass a BooleanDtype instance to silence this warning.",
-    ):
-        check(
-            assert_type(
-                pd.Series(
-                    [True, True, False, False, True], dtype=pd.BooleanDtype
-                ).diff(),
+    # casting due to pandas-dev/pandas-stubs#1395
+    check(
+        assert_type(
+            cast(
                 "pd.Series[pd.BooleanDtype]",
+                pd.Series([True, True, False, False, True], dtype="boolean").diff(),
             ),
-            pd.Series,
-            np.bool_,
-            index_to_check_for_type=-1,
-        )
+            "pd.Series[pd.BooleanDtype]",
+        ),
+        pd.Series,
+        np.bool_,
+        index_to_check_for_type=-1,
+    )
     # Any -> float
     s_o = s.astype(object)
     assert_type(s_o, "pd.Series[Any]")
