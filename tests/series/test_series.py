@@ -21,6 +21,7 @@ from typing import (
     TypedDict,
     TypeVar,
     Union,
+    cast,
 )
 
 import numpy as np
@@ -40,7 +41,6 @@ from typing_extensions import (
     Never,
     Self,
     TypeAlias,
-    assert_never,
     assert_type,
 )
 import xarray as xr
@@ -49,6 +49,8 @@ from pandas._typing import (
     DtypeObj,
     Scalar,
 )
+
+from pandas.core.dtypes.dtypes import CategoricalDtype  # noqa F401
 
 from tests import (
     PD_LTE_23,
@@ -72,8 +74,6 @@ from pandas.tseries.offsets import (
 )
 
 if TYPE_CHECKING:
-    from pandas.core.series import OffsetSeries
-
     from tests import (
         BooleanDtypeArg,
         BytesDtypeArg,
@@ -88,9 +88,6 @@ if TYPE_CHECKING:
         UIntDtypeArg,
         VoidDtypeArg,
     )
-
-else:
-    OffsetSeries: TypeAlias = pd.Series
 
 if not PD_LTE_23:
     from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore  # isort: skip
@@ -1824,6 +1821,10 @@ def test_categorical_codes():
     cat = pd.Categorical(["a", "b", "a"])
     check(assert_type(cat.codes, np_1darray[np.signedinteger]), np_1darray[np.int8])
 
+    # GH1383
+    sr = pd.Series([1], dtype="category")
+    check(assert_type(sr, "pd.Series[CategoricalDtype]"), pd.Series, np.integer)
+
 
 def test_relops() -> None:
     # GH 175
@@ -2913,8 +2914,6 @@ def test_astype_categorical(cast_arg: CategoryDtypeArg, target_type: type) -> No
         # pandas category
         assert_type(s.astype(pd.CategoricalDtype()), "pd.Series[pd.CategoricalDtype]")
         assert_type(s.astype(cast_arg), "pd.Series[pd.CategoricalDtype]")
-        # pyarrow dictionary
-        # assert_type(s.astype("dictionary[pyarrow]"), "pd.Series[Categorical]")
 
 
 @pytest.mark.parametrize("cast_arg, target_type", ASTYPE_OBJECT_ARGS, ids=repr)
@@ -3487,7 +3486,7 @@ def test_diff() -> None:
                     pd.Series(
                         pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
                     ).diff(),
-                    "OffsetSeries",
+                    "pd.Series[BaseOffset]",
                 ),
                 pd.Series,
                 BaseOffset,
@@ -3499,53 +3498,57 @@ def test_diff() -> None:
                 pd.Series(
                     pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
                 ).diff(),
-                "OffsetSeries",
+                "pd.Series[BaseOffset]",
             ),
             pd.Series,
             BaseOffset,
             index_to_check_for_type=-1,
         )
-    # bool -> object
+    # bool -> Any
     check(
         assert_type(
-            pd.Series([True, True, False, False, True]).diff(),
-            "pd.Series[type[object]]",
+            pd.Series([True, True, False, False, True]).diff(), "pd.Series[Any]"
         ),
         pd.Series,
-        object,
+        bool,
+        index_to_check_for_type=-1,
     )
-    # object -> object
+    # nullable bool -> nullable bool
+    # casting due to pandas-dev/pandas-stubs#1395
     check(
-        assert_type(s.astype(object).diff(), "pd.Series[type[object]]"),
+        assert_type(
+            cast(
+                "pd.Series[pd.BooleanDtype]",
+                pd.Series([True, True, False, False, True], dtype="boolean").diff(),
+            ),
+            "pd.Series[pd.BooleanDtype]",
+        ),
         pd.Series,
-        object,
+        np.bool_,
+        index_to_check_for_type=-1,
     )
+    # Any -> float
+    s_o = s.astype(object)
+    assert_type(s_o, "pd.Series[Any]")
+    check(assert_type(s_o.diff(), "pd.Series[float]"), pd.Series, float)
     # complex -> complex
     check(
         assert_type(s.astype(complex).diff(), "pd.Series[complex]"), pd.Series, complex
     )
-    if TYPE_CHECKING_INVALID_USAGE:
-        # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
-        assert_never(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff())
 
-
-def test_diff_never1() -> None:
-    s = pd.Series([1, 1, 2, 3, 5, 8])
     if TYPE_CHECKING_INVALID_USAGE:
         # bytes -> numpy.core._exceptions._UFuncNoLoopError: ufunc 'subtract' did not contain a loop with signature matching types (dtype('S21'), dtype('S21')) -> None
-        assert_never(s.astype(bytes).diff())
+        pd.Series([1, 1, 2, 3, 5, 8]).astype(bytes).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 
-
-def test_diff_never2() -> None:
-    if TYPE_CHECKING_INVALID_USAGE:
         # dtype -> TypeError: unsupported operand type(s) for -: 'type' and 'type'
-        assert_never(pd.Series([str, int, bool]).diff())
+        pd.Series([str, int, bool]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 
-
-def test_diff_never3() -> None:
-    if TYPE_CHECKING_INVALID_USAGE:
         # str -> TypeError: unsupported operand type(s) for -: 'str' and 'str'
-        assert_never(pd.Series(["a", "b"]).diff())
+        pd.Series(["a", "b"]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
+
+    def _diff_invalid0():  # pyright: ignore[reportUnusedFunction]
+        # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
+        assert_type(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff(), Never)
 
 
 def test_operator_constistency() -> None:
@@ -3672,7 +3675,9 @@ def test_apply_dateoffset() -> None:
     months = [1, 2, 3]
     s = pd.Series(months)
     check(
-        assert_type(s.apply(lambda x: pd.DateOffset(months=x)), "OffsetSeries"),
+        assert_type(
+            s.apply(lambda x: pd.DateOffset(months=x)), "pd.Series[BaseOffset]"
+        ),
         pd.Series,
         pd.DateOffset,
     )

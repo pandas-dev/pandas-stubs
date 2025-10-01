@@ -36,12 +36,12 @@ from pandas import (
     Series,
     TimedeltaIndex,
 )
-from pandas.core.arrays import ExtensionArray
 from pandas.core.base import (
     IndexOpsMixin,
     NumListLike,
     _ListLike,
 )
+from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.strings.accessor import StringMethods
 from typing_extensions import (
     Never,
@@ -58,6 +58,7 @@ from pandas._typing import (
     AnyAll,
     ArrayLike,
     AxesData,
+    CategoryDtypeArg,
     DropKeep,
     Dtype,
     DtypeArg,
@@ -231,6 +232,16 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(
         cls,
+        data: AxesData,
+        *,
+        dtype: CategoryDtypeArg,
+        copy: bool = ...,
+        name: Hashable = ...,
+        tupleize_cols: bool = ...,
+    ) -> CategoricalIndex: ...
+    @overload
+    def __new__(
+        cls,
         data: Sequence[Interval[_OrderableT]] | IndexOpsMixin[Interval[_OrderableT]],
         *,
         dtype: Literal["Interval"] = ...,
@@ -324,7 +335,9 @@ class Index(IndexOpsMixin[S1]):
         self, name: bool = ..., formatter: Callable | None = ..., na_rep: _str = ...
     ) -> list[_str]: ...
     def to_flat_index(self): ...
-    def to_series(self, index=..., name: Hashable = ...) -> Series: ...
+    def to_series(
+        self, index: Index | None = None, name: Hashable | None = None
+    ) -> Series[S1]: ...
     def to_frame(self, index: bool = True, name=...) -> DataFrame: ...
     @property
     def name(self) -> Hashable | None: ...
@@ -413,8 +426,6 @@ class Index(IndexOpsMixin[S1]):
     ): ...
     @property
     def values(self) -> np_1darray: ...
-    @property
-    def array(self) -> ExtensionArray: ...
     def memory_usage(self, deep: bool = False): ...
     def where(self, cond, other: Scalar | ArrayLike | None = None): ...
     def __contains__(self, key) -> bool: ...
