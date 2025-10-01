@@ -1241,7 +1241,9 @@ class Series(IndexOpsMixin[S1], NDFrame):
         how: ToTimestampHow = "start",
         copy: _bool = True,
     ) -> Series[S1]: ...
-    def to_period(self, freq: _str | None = None, copy: _bool = True) -> DataFrame: ...
+    def to_period(
+        self, freq: _str | DateOffset | None = None, copy: _bool = True
+    ) -> DataFrame: ...
     @property
     def str(
         self,

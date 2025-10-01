@@ -225,7 +225,9 @@ class _DatetimeLikeNoTZMethods(
         _DTToPeriodReturnType,
     ],
 ):
-    def to_period(self, freq: Frequency | None = ...) -> _DTToPeriodReturnType: ...
+    def to_period(
+        self, freq: str | DateOffset | None = ...
+    ) -> _DTToPeriodReturnType: ...
     def tz_localize(
         self,
         tz: TimeZones,

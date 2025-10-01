@@ -1691,7 +1691,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def to_period(
         self,
-        freq: Frequency | None = None,
+        freq: str | DateOffset | None = None,
         axis: Axis = 0,
         copy: _bool = True,
     ) -> Self: ...
