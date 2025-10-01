@@ -90,7 +90,7 @@ def test_mul_numpy_array(left: "pd.Index[float]") -> None:
 
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__rmul__` cannot override. At runtime, they return
-    # `Series` with the correct element type.
+    # `Index` with the correct element type.
     check(assert_type(b * left, "npt.NDArray[np.bool_]"), pd.Index, np.floating)
     check(assert_type(i * left, "npt.NDArray[np.int64]"), pd.Index, np.floating)
     check(assert_type(f * left, "npt.NDArray[np.float64]"), pd.Index, np.floating)

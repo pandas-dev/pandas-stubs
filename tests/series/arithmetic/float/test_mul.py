@@ -52,7 +52,7 @@ def test_mul_py_scalar(left: "pd.Series[float]") -> None:
     check(assert_type(left.mul(f), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.mul(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _25 = left.mul(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.mul(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.mul(d), "pd.Series[pd.Timedelta]"), pd.Series, timedelta)
 
     check(assert_type(left.rmul(b), "pd.Series[float]"), pd.Series, np.floating)
@@ -62,7 +62,7 @@ def test_mul_py_scalar(left: "pd.Series[float]") -> None:
         assert_type(left.rmul(c), "pd.Series[complex]"), pd.Series, np.complexfloating
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        _35 = left.rmul(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rmul(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rmul(d), "pd.Series[pd.Timedelta]"), pd.Series, timedelta)
 
 
@@ -93,7 +93,7 @@ def test_mul_py_sequence(left: "pd.Series[float]") -> None:
     check(assert_type(left.mul(f), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.mul(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _25 = left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.mul(d), "pd.Series[pd.Timedelta]"), pd.Series, timedelta)
 
     check(assert_type(left.rmul(b), "pd.Series[float]"), pd.Series, np.floating)
@@ -103,7 +103,7 @@ def test_mul_py_sequence(left: "pd.Series[float]") -> None:
         assert_type(left.rmul(c), "pd.Series[complex]"), pd.Series, np.complexfloating
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        _35 = left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rmul(d), "pd.Series[pd.Timedelta]"), pd.Series, timedelta)
 
 
@@ -144,7 +144,7 @@ def test_mul_numpy_array(left: "pd.Series[float]") -> None:
     check(assert_type(left.mul(f), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.mul(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _25 = left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.mul(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
     check(assert_type(left.rmul(b), "pd.Series[float]"), pd.Series, np.floating)
@@ -154,7 +154,7 @@ def test_mul_numpy_array(left: "pd.Series[float]") -> None:
         assert_type(left.rmul(c), "pd.Series[complex]"), pd.Series, np.complexfloating
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        _35 = left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rmul(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
@@ -188,7 +188,7 @@ def test_mul_pd_index(left: "pd.Series[float]") -> None:
     check(assert_type(left.mul(f), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.mul(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _25 = left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.mul(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
     check(assert_type(left.rmul(b), "pd.Series[float]"), pd.Series, np.floating)
@@ -198,7 +198,7 @@ def test_mul_pd_index(left: "pd.Series[float]") -> None:
         assert_type(left.rmul(c), "pd.Series[complex]"), pd.Series, np.complexfloating
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        _35 = left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rmul(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
@@ -232,7 +232,7 @@ def test_mul_pd_series(left: "pd.Series[float]") -> None:
     check(assert_type(left.mul(f), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.mul(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _25 = left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.mul(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
     check(assert_type(left.rmul(b), "pd.Series[float]"), pd.Series, np.floating)
@@ -242,5 +242,5 @@ def test_mul_pd_series(left: "pd.Series[float]") -> None:
         assert_type(left.rmul(c), "pd.Series[complex]"), pd.Series, np.complexfloating
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        _35 = left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rmul(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
