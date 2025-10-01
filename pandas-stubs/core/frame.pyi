@@ -1684,14 +1684,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def to_timestamp(
         self,
-        freq=...,
+        freq: Frequency | None = None,
         how: ToTimestampHow = ...,
         axis: Axis = 0,
         copy: _bool = True,
     ) -> Self: ...
     def to_period(
         self,
-        freq: _str | None = None,
+        freq: Frequency | None = None,
         axis: Axis = 0,
         copy: _bool = True,
     ) -> Self: ...
