@@ -1684,7 +1684,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def to_timestamp(
         self,
-        freq: Frequency | None = None,
+        freq: str | DateOffset | None = None,
         how: ToTimestampHow = ...,
         axis: Axis = 0,
         copy: _bool = True,

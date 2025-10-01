@@ -34,6 +34,7 @@ from typing_extensions import Never
 
 from pandas._libs.interval import Interval
 from pandas._libs.tslibs import BaseOffset
+from pandas._libs.tslibs.offsets import DateOffset
 from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._libs.tslibs.timestamps import Timestamp
@@ -355,12 +356,12 @@ class _PeriodProperties(
     def strftime(self, date_format: str) -> _PeriodStrReturnTypes: ...
     def to_timestamp(
         self,
-        freq: Frequency | None = ...,
+        freq: str | DateOffset | None = ...,
         how: TimestampConvention = ...,
     ) -> _PeriodDTAReturnTypes: ...
     def asfreq(
         self,
-        freq: Frequency | None = ...,
+        freq: str | DateOffset | None = ...,
         how: Literal["E", "END", "FINISH", "S", "START", "BEGIN"] = ...,
     ) -> _PeriodPAReturnTypes: ...
 
