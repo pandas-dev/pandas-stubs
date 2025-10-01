@@ -25,7 +25,7 @@ def left() -> "pd.Index[pd.Timedelta]":
 
 
 def test_mul_py_scalar(left: "pd.Index[pd.Timedelta]") -> None:
-    """Test pd.Series[pd.Timedelta] * Python native scalars"""
+    """Test pd.Index[pd.Timedelta] * Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
 
     # pandas-dev/pandas#62316
@@ -45,7 +45,7 @@ def test_mul_py_scalar(left: "pd.Index[pd.Timedelta]") -> None:
 
 
 def test_mul_py_sequence(left: "pd.Index[pd.Timedelta]") -> None:
-    """Test pd.Series[pd.Timedelta] * Python native sequences"""
+    """Test pd.Index[pd.Timedelta] * Python native sequences"""
     b, i, f, c = [True], [2], [1.5], [1.7j]
 
     # pandas-dev/pandas#62316
@@ -65,7 +65,7 @@ def test_mul_py_sequence(left: "pd.Index[pd.Timedelta]") -> None:
 
 
 def test_mul_numpy_array(left: "pd.Index[pd.Timedelta]") -> None:
-    """Test pd.Series[pd.Timedelta] * numpy arrays"""
+    """Test pd.Index[pd.Timedelta] * numpy arrays"""
     b = np.array([True], np.bool_)
     i = np.array([2], np.int64)
     f = np.array([1.5], np.float64)
@@ -92,7 +92,7 @@ def test_mul_numpy_array(left: "pd.Index[pd.Timedelta]") -> None:
 
 
 def test_mul_pd_index(left: "pd.Index[pd.Timedelta]") -> None:
-    """Test pd.Series[pd.Timedelta] * pandas Indexes"""
+    """Test pd.Index[pd.Timedelta] * pandas Indexes"""
     b = pd.Index([True])
     i = pd.Index([2])
     f = pd.Index([1.5])
