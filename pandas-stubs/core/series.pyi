@@ -1237,7 +1237,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     def to_timestamp(
         self,
-        freq: Frequency | None = None,
+        freq: str | DateOffset | None = None,
         how: ToTimestampHow = "start",
         copy: _bool = True,
     ) -> Series[S1]: ...

@@ -15,7 +15,10 @@ from pandas import (
 from typing_extensions import TypeAlias
 
 from pandas._libs.tslibs import NaTType
-from pandas._libs.tslibs.offsets import BaseOffset
+from pandas._libs.tslibs.offsets import (
+    BaseOffset,
+    DateOffset,
+)
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     Frequency,
@@ -233,6 +236,6 @@ class Period(PeriodMixin):
     def strftime(self, fmt: str) -> str: ...
     def to_timestamp(
         self,
-        freq: Frequency | None = ...,
+        freq: str | DateOffset | None = ...,
         how: _PeriodToTimestampHow = "S",
     ) -> Timestamp: ...
