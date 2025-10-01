@@ -20,7 +20,10 @@ from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.series import Series
-from typing_extensions import Self
+from typing_extensions import (
+    Never,
+    Self,
+)
 
 from pandas._libs import Timedelta
 from pandas._libs.tslibs import BaseOffset
@@ -29,6 +32,7 @@ from pandas._typing import (
     TimedeltaConvertibleTypes,
     np_ndarray_anyint,
     np_ndarray_bool,
+    np_ndarray_complex,
     np_ndarray_dt,
     np_ndarray_float,
     np_ndarray_td,
@@ -78,9 +82,12 @@ class TimedeltaIndex(
     def __rsub__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: dt.datetime | np.datetime64 | np_ndarray_dt | DatetimeIndex
     ) -> DatetimeIndex: ...
-    def __mul__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    @overload  # type: ignore[override]
+    def __mul__(self, other: np_ndarray_complex) -> Never: ...
+    @overload
+    def __mul__(
         self,
-        other: (  # type: ignore[override]
+        other: (
             float
             | Sequence[float]
             | np_ndarray_bool
@@ -91,9 +98,12 @@ class TimedeltaIndex(
             | Index[float]
         ),
     ) -> Self: ...
-    def __rmul__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    @overload  # type: ignore[override]
+    def __rmul__(self, other: np_ndarray_complex) -> Never: ...
+    @overload
+    def __rmul__(
         self,
-        other: (  # type: ignore[override]
+        other: (
             float
             | Sequence[float]
             | np_ndarray_bool

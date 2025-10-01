@@ -763,6 +763,22 @@ class Index(IndexOpsMixin[S1]):
         other: timedelta | Sequence[Timedelta] | np.timedelta64 | np_ndarray_td,
     ) -> TimedeltaIndex: ...
     @overload
+    def __mul__(self: Index[Timedelta], other: np_ndarray_complex) -> Never: ...
+    @overload
+    def __mul__(
+        self: Index[Timedelta],
+        other: (
+            float
+            | Sequence[float]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Index[bool]
+            | Index[int]
+            | Index[float]
+        ),
+    ) -> Index[Timedelta]: ...
+    @overload
     def __mul__(self: Index[T_INT], other: bool | Sequence[bool]) -> Index[T_INT]: ...
     @overload
     def __mul__(self: Index[float], other: int | Sequence[int]) -> Index[float]: ...
@@ -817,6 +833,22 @@ class Index(IndexOpsMixin[S1]):
         self: Index[bool] | Index[int] | Index[float],
         other: timedelta | Sequence[Timedelta] | np.timedelta64 | np_ndarray_td,
     ) -> TimedeltaIndex: ...
+    @overload
+    def __rmul__(self: Index[Timedelta], other: np_ndarray_complex) -> Never: ...
+    @overload
+    def __rmul__(
+        self: Index[Timedelta],
+        other: (
+            float
+            | Sequence[float]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Index[bool]
+            | Index[int]
+            | Index[float]
+        ),
+    ) -> Index[Timedelta]: ...
     @overload
     def __rmul__(self: Index[T_INT], other: bool | Sequence[bool]) -> Index[T_INT]: ...
     @overload

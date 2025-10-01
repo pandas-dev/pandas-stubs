@@ -7,6 +7,7 @@ from typing import Any
 import numpy as np
 from numpy import typing as npt  # noqa: F401
 import pandas as pd
+import pytest
 from typing_extensions import (
     Never,
     assert_type,
@@ -17,10 +18,15 @@ from tests import (
     check,
 )
 
-left = pd.Index([1.0, 2.0, 3.0])  # left operand
+
+@pytest.fixture
+def left() -> "pd.Index[float]":
+    """left operand"""
+    lo = pd.Index([1.0, 2.0, 3.0])
+    return check(assert_type(lo, "pd.Index[float]"), pd.Index, np.floating)
 
 
-def test_mul_py_scalar() -> None:
+def test_mul_py_scalar(left: "pd.Index[float]") -> None:
     """Test pd.Index[float] * Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
     s, d = datetime(2025, 9, 30), timedelta(seconds=1)
@@ -42,7 +48,7 @@ def test_mul_py_scalar() -> None:
     check(assert_type(d * left, "pd.TimedeltaIndex"), pd.TimedeltaIndex, timedelta)
 
 
-def test_mul_py_sequence() -> None:
+def test_mul_py_sequence(left: "pd.Index[float]") -> None:
     """Test pd.Index[float] * Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
     s = [datetime(2025, 9, d) for d in (27, 28, 29)]
@@ -65,7 +71,7 @@ def test_mul_py_sequence() -> None:
     check(assert_type(d * left, "pd.Index[pd.Timedelta]"), pd.Index, timedelta)
 
 
-def test_mul_numpy_array() -> None:
+def test_mul_numpy_array(left: "pd.Index[float]") -> None:
     """Test pd.Index[float] * numpy arrays"""
     b = np.array([True, False, True], np.bool_)
     i = np.array([2, 3, 5], np.int64)
@@ -102,7 +108,7 @@ def test_mul_numpy_array() -> None:
     )
 
 
-def test_mul_pd_index() -> None:
+def test_mul_pd_index(left: "pd.Index[float]") -> None:
     """Test pd.Index[float] * pandas Indexes"""
     b = pd.Index([True, False, True])
     i = pd.Index([2, 3, 5])

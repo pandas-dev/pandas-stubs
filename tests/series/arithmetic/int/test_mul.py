@@ -7,6 +7,7 @@ from typing import Any
 import numpy as np
 from numpy import typing as npt  # noqa: F401
 import pandas as pd
+import pytest
 from typing_extensions import (
     Never,
     assert_type,
@@ -17,10 +18,15 @@ from tests import (
     check,
 )
 
-left = pd.Series([1, 2, 3])  # left operand
+
+@pytest.fixture
+def left() -> "pd.Series[int]":
+    """left operand"""
+    lo = pd.Series([1, 2, 3])
+    return check(assert_type(lo, "pd.Series[int]"), pd.Series, np.integer)
 
 
-def test_mul_py_scalar() -> None:
+def test_mul_py_scalar(left: "pd.Series[int]") -> None:
     """Test pd.Series[int] * Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
     s, d = datetime(2025, 9, 27), timedelta(seconds=1)
@@ -60,7 +66,7 @@ def test_mul_py_scalar() -> None:
     check(assert_type(left.rmul(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
-def test_mul_py_sequence() -> None:
+def test_mul_py_sequence(left: "pd.Series[int]") -> None:
     """Test pd.Series[int] * Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
     s = [datetime(2025, 9, d) for d in (27, 28, 29)]
@@ -101,7 +107,7 @@ def test_mul_py_sequence() -> None:
     check(assert_type(left.rmul(d), "pd.Series[pd.Timedelta]"), pd.Series, timedelta)
 
 
-def test_mul_numpy_array() -> None:
+def test_mul_numpy_array(left: "pd.Series[int]") -> None:
     """Test pd.Series[int] * numpy arrays"""
     b = np.array([True, False, True], np.bool_)
     i = np.array([2, 3, 5], np.int64)
@@ -152,7 +158,7 @@ def test_mul_numpy_array() -> None:
     check(assert_type(left.rmul(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
-def test_mul_pd_index() -> None:
+def test_mul_pd_index(left: "pd.Series[int]") -> None:
     """Test pd.Series[int] * pandas Indexes"""
     b = pd.Index([True, False, True])
     i = pd.Index([2, 3, 5])
@@ -196,7 +202,7 @@ def test_mul_pd_index() -> None:
     check(assert_type(left.rmul(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
-def test_mul_pd_series() -> None:
+def test_mul_pd_series(left: "pd.Series[int]") -> None:
     """Test pd.Series[int] * pandas Series"""
     b = pd.Series([True, False, True])
     i = pd.Series([2, 3, 5])
