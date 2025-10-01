@@ -56,6 +56,19 @@ from pandas.core.dtypes.dtypes import (
 )
 
 from pandas.io.formats.format import EngFormatter
+from pandas.tseries.offsets import (
+    Day,
+    Hour,
+    Micro,
+    Milli,
+    Minute,
+    MonthEnd,
+    Nano,
+    QuarterEnd,
+    Second,
+    Week,
+    YearEnd,
+)
 
 P = ParamSpec("P")
 
@@ -162,6 +175,20 @@ Suffixes: TypeAlias = tuple[str | None, str | None] | list[str | None]
 Ordered: TypeAlias = bool | None
 JSONSerializable: TypeAlias = PythonScalar | list | dict
 Frequency: TypeAlias = str | BaseOffset
+PeriodFrequency: TypeAlias = (
+    str
+    | Day
+    | Hour
+    | Minute
+    | Second
+    | Milli
+    | Micro
+    | Nano
+    | YearEnd
+    | QuarterEnd
+    | MonthEnd
+    | Week
+)
 Axes: TypeAlias = ListLike
 
 RandomState: TypeAlias = (

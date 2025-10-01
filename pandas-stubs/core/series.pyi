@@ -108,7 +108,6 @@ from pandas._libs.lib import _NoDefaultDoNotUse
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.nattype import NaTType
-from pandas._libs.tslibs.offsets import DateOffset
 from pandas._typing import (
     S1,
     S1_CO,
@@ -167,6 +166,7 @@ from pandas._typing import (
     NaPosition,
     NsmallestNlargestKeep,
     ObjectDtypeArg,
+    PeriodFrequency,
     QuantileInterpolation,
     RandomState,
     ReindexMethod,
@@ -1237,12 +1237,12 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     def to_timestamp(
         self,
-        freq: str | DateOffset | None = None,
+        freq: PeriodFrequency | None = None,
         how: ToTimestampHow = "start",
         copy: _bool = True,
     ) -> Series[S1]: ...
     def to_period(
-        self, freq: _str | DateOffset | None = None, copy: _bool = True
+        self, freq: PeriodFrequency | None = None, copy: _bool = True
     ) -> DataFrame: ...
     @property
     def str(
@@ -1496,7 +1496,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @final
     def asfreq(
         self,
-        freq: DateOffset | _str,
+        freq: Frequency,
         method: FillnaOptions | None = None,
         how: Literal["start", "end"] | None = None,
         normalize: _bool = False,
@@ -1646,7 +1646,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self,
         periods: int = 1,
         fill_method: None = None,
-        freq: DateOffset | timedelta | _str | None = None,
+        freq: Frequency | timedelta | None = None,
     ) -> Series[float]: ...
     @final
     def first_valid_index(self) -> Scalar: ...

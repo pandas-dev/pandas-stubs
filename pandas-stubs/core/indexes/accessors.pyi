@@ -34,12 +34,12 @@ from typing_extensions import Never
 
 from pandas._libs.interval import Interval
 from pandas._libs.tslibs import BaseOffset
-from pandas._libs.tslibs.offsets import DateOffset
 from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     Frequency,
+    PeriodFrequency,
     TimeAmbiguous,
     TimeNonexistent,
     TimestampConvention,
@@ -226,7 +226,7 @@ class _DatetimeLikeNoTZMethods(
     ],
 ):
     def to_period(
-        self, freq: str | DateOffset | None = ...
+        self, freq: PeriodFrequency | None = None
     ) -> _DTToPeriodReturnType: ...
     def tz_localize(
         self,
@@ -358,12 +358,12 @@ class _PeriodProperties(
     def strftime(self, date_format: str) -> _PeriodStrReturnTypes: ...
     def to_timestamp(
         self,
-        freq: str | DateOffset | None = ...,
+        freq: PeriodFrequency | None = None,
         how: TimestampConvention = ...,
     ) -> _PeriodDTAReturnTypes: ...
     def asfreq(
         self,
-        freq: str | DateOffset | None = ...,
+        freq: PeriodFrequency | None = None,
         how: Literal["E", "END", "FINISH", "S", "START", "BEGIN"] = ...,
     ) -> _PeriodPAReturnTypes: ...
 
