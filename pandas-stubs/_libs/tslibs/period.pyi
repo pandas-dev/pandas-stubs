@@ -21,7 +21,6 @@ from pandas._libs.tslibs.offsets import (
 )
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
-    Frequency,
     ShapeT,
     np_1darray,
     np_ndarray,
@@ -232,7 +231,7 @@ class Period(PeriodMixin):
     def day_of_week(self) -> int: ...
     def asfreq(self, freq: str | DateOffset, how: _PeriodFreqHow = "end") -> Period: ...
     @classmethod
-    def now(cls, freq: Frequency = ...) -> Period: ...
+    def now(cls, freq: str | DateOffset | None = None) -> Period: ...
     def strftime(self, fmt: str) -> str: ...
     def to_timestamp(
         self,
