@@ -1,6 +1,7 @@
 from collections.abc import Iterator
 from typing import (
     Any,
+    Literal,
     overload,
 )
 
@@ -68,7 +69,13 @@ class ExtensionArray:
     def _reduce(
         self, name: str, *, skipna: bool = ..., keepdims: bool = ..., **kwargs
     ) -> object: ...
-    def _accumulate(self, name: str, *, skipna: bool = ..., **kwargs) -> Self: ...
+    def _accumulate(
+        self,
+        name: Literal["cummin", "cummax", "cumsum", "cumprod"],
+        *,
+        skipna: bool = True,
+        **kwargs,
+    ) -> Self: ...
 
 class ExtensionOpsMixin:
     @classmethod
