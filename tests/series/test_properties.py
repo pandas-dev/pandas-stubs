@@ -1,16 +1,11 @@
 from typing import (
     TYPE_CHECKING,
-    cast,
 )
 
 import numpy as np
 from pandas.core.arrays import DatetimeArray
 from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
-from pandas.core.arrays.integer import (
-    Int64Dtype,
-    IntegerArray,
-)
 from pandas.core.arrays.interval import IntervalArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.frame import DataFrame
@@ -26,7 +21,6 @@ from pandas.core.series import Series
 from typing_extensions import assert_type
 
 from pandas._libs.interval import Interval
-from pandas._libs.missing import NA
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._libs.tslibs.timestamps import Timestamp
 
@@ -69,14 +63,6 @@ def test_property_array() -> None:
     """Test that Series.array returns ExtensionArray and its subclasses"""
     check(
         assert_type(Series([1], dtype="category").array, Categorical), Categorical, int
-    )
-    # cast will be removed if pandas-dev/pandas-stubs#1395 is resolved
-    check(
-        assert_type(
-            cast("Series[Int64Dtype]", Series([1, NA], dtype="Int64")).array,
-            IntegerArray,
-        ),
-        IntegerArray,
     )
     check(
         assert_type(Series(interval_range(0, 1)).array, IntervalArray),

@@ -17,10 +17,6 @@ from pandas.core.accessor import PandasDelegate
 from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
 from pandas.core.arrays.datetimes import DatetimeArray
-from pandas.core.arrays.integer import (
-    Int64Dtype,
-    IntegerArray,
-)
 from pandas.core.arrays.interval import IntervalArray
 from pandas.core.arrays.period import PeriodArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
@@ -467,10 +463,6 @@ class ArrayDescriptor:
     def __get__(
         self, instance: IndexOpsMixin[Never], owner: type[IndexOpsMixin]
     ) -> ExtensionArray: ...
-    @overload
-    def __get__(
-        self, instance: IndexOpsMixin[Int64Dtype], owner: type[IndexOpsMixin]
-    ) -> IntegerArray: ...
     @overload
     def __get__(
         self, instance: IndexOpsMixin[CategoricalDtype], owner: type[IndexOpsMixin]
