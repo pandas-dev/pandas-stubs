@@ -18,9 +18,7 @@ from pandas import (
     Series,
     TimedeltaIndex,
 )
-from typing_extensions import (
-    Self,
-)
+from typing_extensions import Self
 
 from pandas._libs.tslibs import (
     BaseOffset,

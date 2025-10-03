@@ -9,9 +9,7 @@ from pandas.core.arrays.base import (
     ExtensionArray,
     ExtensionOpsMixin,
 )
-from typing_extensions import (
-    Self,
-)
+from typing_extensions import Self
 
 from pandas._libs import (
     NaT as NaT,

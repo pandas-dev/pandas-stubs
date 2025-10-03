@@ -19,9 +19,7 @@ from pandas import (
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.core.groupby.grouper import Grouper
-from typing_extensions import (
-    Self,
-)
+from typing_extensions import Self
 
 from pandas._typing import (
     S1,

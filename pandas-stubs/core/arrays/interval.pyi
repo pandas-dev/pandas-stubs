@@ -9,9 +9,7 @@ from pandas import (
     Series,
 )
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
-from typing_extensions import (
-    Self,
-)
+from typing_extensions import Self
 
 from pandas._libs.interval import (
     Interval as Interval,
