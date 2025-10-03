@@ -240,7 +240,6 @@ enableTypeIgnoreComments = false    # use pyright-specific ignores
 # disable subset of strict
 reportMissingParameterType = false
 reportMissingTypeArgument = false
-reportMissingTypeStubs = false
 reportUnnecessaryTypeIgnoreComment = true
 reportUnknownArgumentType = false
 reportUnknownLambdaType = false

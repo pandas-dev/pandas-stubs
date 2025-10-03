@@ -20,7 +20,7 @@ from pandas.core.arrays import (
     BooleanArray,
     IntegerArray,
 )
-import pyarrow as pa
+import pyarrow as pa  # pyright: ignore[reportMissingTypeStubs]
 from typing_extensions import assert_type
 
 from pandas._typing import Scalar
