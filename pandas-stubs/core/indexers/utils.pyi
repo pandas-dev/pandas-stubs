@@ -6,6 +6,7 @@ from pandas._typing import (
     np_ndarray_int,
 )
 
+# Docs may not be right. See pandas-dev/pandas#62562
 @overload
 def check_array_indexer(array: AnyArrayLike, indexer: int) -> int: ...
 @overload

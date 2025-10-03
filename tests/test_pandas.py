@@ -678,7 +678,7 @@ def test_crosstab() -> None:
 def test_arrow_dtype() -> None:
     pytest.importorskip("pyarrow")
 
-    import pyarrow as pa  # pyright: ignore[reportMissingTypeStubs]
+    import pyarrow as pa
 
     check(
         assert_type(

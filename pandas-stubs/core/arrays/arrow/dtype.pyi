@@ -1,4 +1,4 @@
-import pyarrow as pa  # pyright: ignore[reportMissingTypeStubs]
+import pyarrow as pa
 
 from pandas._libs.missing import NAType
 
