@@ -14,6 +14,7 @@ import sqlite3
 from typing import (
     Any,
     ClassVar,
+    Concatenate,
     Literal,
     final,
     overload,
@@ -28,7 +29,7 @@ from pandas.core.series import (
 )
 import sqlalchemy.engine
 from typing_extensions import (
-    Concatenate,
+    Never,
     Self,
 )
 
@@ -314,6 +315,42 @@ class NDFrame(indexing.IndexingMixin):
     ) -> _str: ...
     @final
     def __delitem__(self, idx: Hashable) -> None: ...
+    @overload
+    def drop(
+        self,
+        labels=...,
+        *,
+        axis=...,
+        index: None,
+        columns=...,
+        level=...,
+        inplace=...,
+        errors=...,
+    ) -> Never: ...
+    @overload
+    def drop(
+        self,
+        labels=...,
+        *,
+        axis=...,
+        index=...,
+        columns: None,
+        level=...,
+        inplace=...,
+        errors=...,
+    ) -> Never: ...
+    @overload
+    def drop(
+        self,
+        labels: None,
+        *,
+        axis=...,
+        index=...,
+        columns=...,
+        level=...,
+        inplace=...,
+        errors=...,
+    ) -> Never: ...
     @overload
     def drop(
         self,

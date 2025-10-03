@@ -5,7 +5,7 @@ import datetime as dt
 from typing import (
     Any,
     Literal,
-    Optional,
+    TypeAlias,
 )
 
 import dateutil.tz
@@ -15,7 +15,6 @@ import pandas as pd
 from pandas.api.typing import NaTType
 import pytz
 from typing_extensions import (
-    TypeAlias,
     assert_type,
 )
 
@@ -599,14 +598,14 @@ def test_timedelta_add_sub() -> None:
     # TypeError: as_period, as_timestamp, as_datetime, as_date, as_datetime64,
     #            as_period_index, as_datetime_index, as_ndarray_dt64
     if TYPE_CHECKING_INVALID_USAGE:
-        td - as_period  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        td - as_timestamp  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        td - as_datetime  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        td - as_date  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        td - as_datetime64  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        td - as_period_index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        td - as_datetime_index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        td - as_ndarray_dt64  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _0 = td - as_period  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _1 = td - as_timestamp  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _2 = td - as_datetime  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _3 = td - as_date  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _4 = td - as_datetime64  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _5 = td - as_period_index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _6 = td - as_datetime_index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _7 = td - as_ndarray_dt64  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(td - td, pd.Timedelta), pd.Timedelta)
     check(assert_type(td - as_dt_timedelta, pd.Timedelta), pd.Timedelta)
@@ -778,14 +777,14 @@ def test_timedelta_mul_div() -> None:
     # TypeError: md_int, md_float, md_ndarray_intp, md_ndarray_float, mp_series_int,
     #            mp_series_float, md_int64_index, md_float_index
     if TYPE_CHECKING_INVALID_USAGE:
-        md_int // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        md_float // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        md_ndarray_intp // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        md_ndarray_float // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        mp_series_int // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        md_series_float // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        md_int64_index // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        md_float_index // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _00 = md_int // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _01 = md_float // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _02 = md_ndarray_intp // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _03 = md_ndarray_float // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = mp_series_int // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _05 = md_series_float // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _06 = md_int64_index // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _07 = md_float_index // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(td / td, float), float)
     check(assert_type(td / pd.NaT, float), float)
@@ -820,14 +819,14 @@ def test_timedelta_mul_div() -> None:
     # TypeError: md_int, md_float, md_ndarray_intp, md_ndarray_float, mp_series_int,
     #            mp_series_float, md_int64_index, md_float_index
     if TYPE_CHECKING_INVALID_USAGE:
-        md_int / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        md_float / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        md_ndarray_intp / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        md_ndarray_float / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        mp_series_int / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        md_series_float / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        md_int64_index / td,  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        md_float_index / td,  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _10 = md_int / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _11 = md_float / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _12 = md_ndarray_intp / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _13 = md_ndarray_float / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = mp_series_int / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _15 = md_series_float / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _16 = (md_int64_index / td,)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _17 = (md_float_index / td,)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_timedelta_mod_abs_unary() -> None:
@@ -1160,7 +1159,7 @@ def test_timestamp_properties() -> None:
     check(assert_type(ts.is_year_end, bool), bool)
     check(assert_type(ts.is_year_start, bool), bool)
     check(assert_type(ts.quarter, int), int)
-    check(assert_type(ts.tz, Optional[dt.tzinfo]), type(None))
+    check(assert_type(ts.tz, dt.tzinfo | None), type(None))
     check(assert_type(ts.week, int), int)
     check(assert_type(ts.weekofyear, int), int)
     check(assert_type(ts.day, int), int)
@@ -1171,7 +1170,7 @@ def test_timestamp_properties() -> None:
     check(assert_type(ts.month, int), int)
     check(assert_type(ts.nanosecond, int), int)
     check(assert_type(ts.second, int), int)
-    check(assert_type(ts.tzinfo, Optional[dt.tzinfo]), type(None))
+    check(assert_type(ts.tzinfo, dt.tzinfo | None), type(None))
     check(assert_type(ts.value, int), int)
     check(assert_type(ts.year, int), int)
     check(assert_type(ts.unit, TimeUnit), str)
@@ -2109,5 +2108,5 @@ def test_period_methods() -> None:
 
 def test_nattype_hashable() -> None:
     # GH 827
-    aset = {pd.NaT}
+    _aset = {pd.NaT}
     check(assert_type(pd.NaT.__hash__(), int), int)

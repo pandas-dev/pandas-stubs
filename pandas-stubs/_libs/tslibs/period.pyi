@@ -1,6 +1,7 @@
 import datetime
 from typing import (
     Literal,
+    TypeAlias,
     overload,
 )
 
@@ -12,7 +13,6 @@ from pandas import (
     Timedelta,
     TimedeltaIndex,
 )
-from typing_extensions import TypeAlias
 
 from pandas._libs.tslibs import NaTType
 from pandas._libs.tslibs.offsets import BaseOffset

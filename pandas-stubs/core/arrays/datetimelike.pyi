@@ -1,15 +1,15 @@
 from collections.abc import Sequence
-from typing import overload
+from typing import (
+    TypeAlias,
+    overload,
+)
 
 import numpy as np
 from pandas.core.arrays.base import (
     ExtensionArray,
     ExtensionOpsMixin,
 )
-from typing_extensions import (
-    Self,
-    TypeAlias,
-)
+from typing_extensions import Self
 
 from pandas._libs import (
     NaT as NaT,

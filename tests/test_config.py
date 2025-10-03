@@ -1,9 +1,8 @@
+from collections.abc import Callable
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     Literal,
-    Optional,
 )
 
 import pandas as pd
@@ -43,7 +42,7 @@ def test_specific_option():
 
 def test_display_float_format():
     check(
-        assert_type(pd.options.display.float_format, Optional[Callable[[float], str]]),
+        assert_type(pd.options.display.float_format, Callable[[float], str] | None),
         type(None),
     )
     formatter = "{,.2f}".format
@@ -54,13 +53,13 @@ def test_display_float_format():
 def test_display_types_none_allowed_get_options():
     # GH 1230
     # Initial values
-    check(assert_type(pd.options.display.chop_threshold, Optional[float]), type(None))
-    check(assert_type(pd.options.display.max_columns, Optional[int]), int)
-    check(assert_type(pd.options.display.max_colwidth, Optional[int]), int)
-    check(assert_type(pd.options.display.max_dir_items, Optional[int]), int)
-    check(assert_type(pd.options.display.max_rows, Optional[int]), int)
-    check(assert_type(pd.options.display.max_seq_items, Optional[int]), int)
-    check(assert_type(pd.options.display.min_rows, Optional[int]), int)
+    check(assert_type(pd.options.display.chop_threshold, float | None), type(None))
+    check(assert_type(pd.options.display.max_columns, int | None), int)
+    check(assert_type(pd.options.display.max_colwidth, int | None), int)
+    check(assert_type(pd.options.display.max_dir_items, int | None), int)
+    check(assert_type(pd.options.display.max_rows, int | None), int)
+    check(assert_type(pd.options.display.max_seq_items, int | None), int)
+    check(assert_type(pd.options.display.min_rows, int | None), int)
 
 
 def test_display_types_none_allowed_set_options():
@@ -100,7 +99,7 @@ def test_display_types_literal_constraints():
     check(assert_type(pd.options.display.large_repr, Literal["info"]), str)
 
     # Test memory_usage with allowed values
-    assert_type(pd.options.display.memory_usage, Optional[Literal[True, False, "deep"]])
+    assert_type(pd.options.display.memory_usage, Literal[True, False, "deep"] | None)
     pd.options.display.memory_usage = True
     check(assert_type(pd.options.display.memory_usage, Literal[True]), bool)
     pd.options.display.memory_usage = False

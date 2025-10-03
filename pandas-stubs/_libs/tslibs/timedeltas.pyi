@@ -5,6 +5,7 @@ from typing import (
     ClassVar,
     Literal,
     NamedTuple,
+    TypeAlias,
     overload,
 )
 
@@ -17,10 +18,7 @@ from pandas import (
     Series,
     TimedeltaIndex,
 )
-from typing_extensions import (
-    Self,
-    TypeAlias,
-)
+from typing_extensions import Self
 
 from pandas._libs.tslibs import (
     BaseOffset,

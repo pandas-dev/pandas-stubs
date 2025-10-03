@@ -1289,10 +1289,10 @@ def test_timedelta_div() -> None:
     check(assert_type([delta] // index, "pd.Index[int]"), pd.Index, np.signedinteger)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        1 / index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        [1] / index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        1 // index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        [1] // index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _0 = 1 / index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _1 = [1] / index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _2 = 1 // index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _3 = [1] // index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_datetime_operators_builtin() -> None:
@@ -1310,22 +1310,20 @@ def test_datetime_operators_builtin() -> None:
 def test_get_loc() -> None:
     unique_index = pd.Index(list("abc"))
     check(
-        assert_type(unique_index.get_loc("b"), Union[int, slice, np_1darray[np.bool]]),
+        assert_type(unique_index.get_loc("b"), int | slice | np_1darray[np.bool]),
         int,
     )
 
     monotonic_index = pd.Index(list("abbc"))
     check(
-        assert_type(
-            monotonic_index.get_loc("b"), Union[int, slice, np_1darray[np.bool]]
-        ),
+        assert_type(monotonic_index.get_loc("b"), int | slice | np_1darray[np.bool]),
         slice,
     )
 
     non_monotonic_index = pd.Index(list("abcb"))
     check(
         assert_type(
-            non_monotonic_index.get_loc("b"), Union[int, slice, np_1darray[np.bool]]
+            non_monotonic_index.get_loc("b"), int | slice | np_1darray[np.bool]
         ),
         np_1darray[np.bool],
     )
@@ -1334,14 +1332,14 @@ def test_get_loc() -> None:
     unique_interval_index = pd.IntervalIndex([i1, i2])
     check(
         assert_type(
-            unique_interval_index.get_loc(i1), Union[int, slice, np_1darray[np.bool]]
+            unique_interval_index.get_loc(i1), int | slice | np_1darray[np.bool]
         ),
         np.int64,
     )
     overlap_interval_index = pd.IntervalIndex([i1, i2, i3])
     check(
         assert_type(
-            overlap_interval_index.get_loc(1), Union[int, slice, np_1darray[np.bool]]
+            overlap_interval_index.get_loc(1), int | slice | np_1darray[np.bool]
         ),
         np_1darray[np.bool],
     )
@@ -1379,7 +1377,7 @@ def test_index_categorical() -> None:
 def test_disallow_empty_index() -> None:
     # From GH 826
     if TYPE_CHECKING_INVALID_USAGE:
-        i0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        _0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
 
 
 def test_datetime_index_max_min_reductions() -> None:

@@ -2,13 +2,11 @@ from enum import Enum
 from typing import (
     Final,
     Literal,
-)
-
-import numpy as np
-from typing_extensions import (
     TypeAlias,
     TypeGuard,
 )
+
+import numpy as np
 
 class _NoDefault(Enum):
     no_default = ...

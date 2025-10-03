@@ -14,14 +14,7 @@ repos:
     rev: v0.13.3
     hooks:
     -   id: ruff-check
-        args: [
-          --exit-non-zero-on-fix,
-          --target-version, py39,
-          --extend-select, "PYI,UP,RUF100",
-          --ignore, "E501,E731,F841,PYI042",
-          --per-file-ignores, "_*.pyi:PYI001",
-          --fix
-        ]
+        args: [--exit-non-zero-on-fix]
 -   repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
     hooks:

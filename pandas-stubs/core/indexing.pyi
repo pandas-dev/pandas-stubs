@@ -1,7 +1,9 @@
-from typing import TypeVar
+from typing import (
+    TypeAlias,
+    TypeVar,
+)
 
 from pandas.core.indexes.api import Index
-from typing_extensions import TypeAlias
 
 from pandas._libs.indexing import _NDFrameIndexerBase
 from pandas._typing import (

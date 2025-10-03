@@ -1,6 +1,7 @@
+from typing import TypeAlias
+
 import pandas as pd
 from pandas.api.extensions import ExtensionDtype
-from typing_extensions import TypeAlias
 
 from pandas._typing import (
     ArrayLike,

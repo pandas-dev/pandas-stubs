@@ -1,11 +1,8 @@
 from collections import deque
+from collections.abc import Callable
 from dataclasses import dataclass
 import sys
 import time
-from typing import (
-    Callable,
-    Optional,
-)
 
 from loguru import logger
 
@@ -14,7 +11,7 @@ from loguru import logger
 class Step:
     name: str
     run: Callable[[], None]
-    rollback: Optional[Callable[[], None]] = None
+    rollback: Callable[[], None] | None = None
 
 
 def __rollback_job(steps: deque[Step]):

@@ -280,7 +280,7 @@ def test_string_accessors_list_series():
     # rsplit doesn't accept compiled pattern
     # it doesn't raise at runtime but produces a nan
     if TYPE_CHECKING_INVALID_USAGE:
-        bad_rsplit_result = s.str.rsplit(
+        _bad_rsplit_result = s.str.rsplit(
             re.compile(r"a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
         )
 
@@ -300,7 +300,7 @@ def test_string_accessors_list_index():
     # rsplit doesn't accept compiled pattern
     # it doesn't raise at runtime but produces a nan
     if TYPE_CHECKING_INVALID_USAGE:
-        bad_rsplit_result = idx.str.rsplit(
+        _bad_rsplit_result = idx.str.rsplit(
             re.compile(r"a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
         )
 
