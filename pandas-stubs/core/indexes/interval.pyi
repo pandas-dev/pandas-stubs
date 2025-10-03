@@ -5,6 +5,7 @@ from collections.abc import (
 import datetime as dt
 from typing import (
     Literal,
+    TypeAlias,
     final,
     overload,
 )
@@ -13,7 +14,6 @@ import numpy as np
 import pandas as pd
 from pandas import Index
 from pandas.core.indexes.extension import ExtensionIndex
-from typing_extensions import TypeAlias
 
 from pandas._libs.interval import (
     Interval as Interval,

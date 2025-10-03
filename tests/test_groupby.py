@@ -5,7 +5,6 @@ import datetime as dt
 from typing import (
     TYPE_CHECKING,
     Literal,
-    Union,
     cast,
 )
 
@@ -380,37 +379,35 @@ def test_series_groupby_resample() -> None:
         upper="2.99",
     ):
         check(
-            assert_type(
-                GB_S.resample("ME").aggregate(np.sum), Union[DataFrame, Series]
-            ),
+            assert_type(GB_S.resample("ME").aggregate(np.sum), DataFrame | Series),
             Series,
         )
         check(
-            assert_type(GB_S.resample("ME").agg(np.sum), Union[DataFrame, Series]),
+            assert_type(GB_S.resample("ME").agg(np.sum), DataFrame | Series),
             Series,
         )
         check(
-            assert_type(GB_S.resample("ME").apply(np.sum), Union[DataFrame, Series]),
+            assert_type(GB_S.resample("ME").apply(np.sum), DataFrame | Series),
             Series,
         )
         check(
             assert_type(
                 GB_S.resample("ME").aggregate([np.sum, np.mean]),
-                Union[DataFrame, Series],
+                DataFrame | Series,
             ),
             DataFrame,
         )
         check(
             assert_type(
                 GB_S.resample("ME").aggregate(["sum", np.mean]),
-                Union[DataFrame, Series],
+                DataFrame | Series,
             ),
             DataFrame,
         )
         check(
             assert_type(
                 GB_S.resample("ME").aggregate({"col1": "sum", "col2": np.mean}),
-                Union[DataFrame, Series],
+                DataFrame | Series,
             ),
             DataFrame,
         )
@@ -418,9 +415,7 @@ def test_series_groupby_resample() -> None:
     def f(val: Series) -> float:
         return val.mean()
 
-    check(
-        assert_type(GB_S.resample("ME").aggregate(f), Union[DataFrame, Series]), Series
-    )
+    check(assert_type(GB_S.resample("ME").aggregate(f), DataFrame | Series), Series)
 
     # asfreq
     check(assert_type(GB_S.resample("ME").asfreq(-1.0), "Series[float]"), Series, float)
@@ -499,7 +494,7 @@ def test_frame_groupby_rolling() -> None:
 
     # props
     check(assert_type(GB_DF.rolling(1).obj, DataFrame), DataFrame)
-    check(assert_type(GB_DF.rolling(1).on, Union[str, Index, None]), type(None))
+    check(assert_type(GB_DF.rolling(1).on, str | Index | None), type(None))
     check(assert_type(GB_DF.rolling(1).method, Literal["single", "table"]), str)
     if PD_LTE_23:
         check(assert_type(GB_DF.rolling(1).axis, int), int)
@@ -694,7 +689,7 @@ def test_frame_groupby_expanding() -> None:
 
     # props
     check(assert_type(GB_DF.expanding(1).obj, DataFrame), DataFrame)
-    check(assert_type(GB_DF.expanding(1).on, Union[str, Index, None]), type(None))
+    check(assert_type(GB_DF.expanding(1).on, str | Index | None), type(None))
     check(assert_type(GB_DF.expanding(1).method, Literal["single", "table"]), str)
     if PD_LTE_23:
         check(assert_type(GB_DF.expanding(1).axis, int), int)
@@ -893,7 +888,7 @@ def test_frame_groupby_ewm() -> None:
 
     # props
     check(assert_type(GB_DF.ewm(1).obj, DataFrame), DataFrame)
-    check(assert_type(GB_DF.ewm(1).on, Union[str, Index, None]), type(None))
+    check(assert_type(GB_DF.ewm(1).on, str | Index | None), type(None))
     check(assert_type(GB_DF.ewm(1).method, Literal["single", "table"]), str)
     if PD_LTE_23:
         check(assert_type(GB_DF.ewm(1).axis, int), int)

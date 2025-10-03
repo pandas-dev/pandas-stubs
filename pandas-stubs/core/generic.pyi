@@ -14,6 +14,7 @@ import sqlite3
 from typing import (
     Any,
     ClassVar,
+    Concatenate,
     Literal,
     final,
     overload,
@@ -23,12 +24,10 @@ import numpy as np
 from pandas import Index
 import pandas.core.indexing as indexing
 from pandas.core.resample import DatetimeIndexResampler
-from pandas.core.series import (
-    Series,
-)
+from pandas.core.series import Series
 import sqlalchemy.engine
 from typing_extensions import (
-    Concatenate,
+    Never,
     Self,
 )
 
@@ -314,6 +313,42 @@ class NDFrame(indexing.IndexingMixin):
     ) -> _str: ...
     @final
     def __delitem__(self, idx: Hashable) -> None: ...
+    @overload
+    def drop(
+        self,
+        labels=...,
+        *,
+        axis=...,
+        index: None,
+        columns=...,
+        level=...,
+        inplace=...,
+        errors=...,
+    ) -> Never: ...
+    @overload
+    def drop(
+        self,
+        labels=...,
+        *,
+        axis=...,
+        index=...,
+        columns: None,
+        level=...,
+        inplace=...,
+        errors=...,
+    ) -> Never: ...
+    @overload
+    def drop(
+        self,
+        labels: None,
+        *,
+        axis=...,
+        index=...,
+        columns=...,
+        level=...,
+        inplace=...,
+        errors=...,
+    ) -> Never: ...
     @overload
     def drop(
         self,

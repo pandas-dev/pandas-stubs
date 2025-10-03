@@ -193,3 +193,13 @@ def test_invalid_column_name() -> None:
 def test_categorical_conversion_warning() -> None:
     with pytest.warns(errors.CategoricalConversionWarning):
         warnings.warn("", errors.CategoricalConversionWarning)
+
+
+def test_invalid_version() -> None:
+    with pytest.raises(errors.InvalidVersion):
+        raise errors.InvalidVersion()
+
+
+def test_no_buffer_present() -> None:
+    with pytest.raises(errors.NoBufferPresent):
+        raise errors.NoBufferPresent()

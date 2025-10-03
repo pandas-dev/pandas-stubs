@@ -19,6 +19,7 @@ from typing import (
     Literal,
     Protocol,
     SupportsIndex,
+    TypeAlias,
     TypedDict,
     Union,
     overload,
@@ -36,7 +37,6 @@ from pandas.core.series import Series
 from pandas.core.tools.datetimes import FulldatetimeDict
 from typing_extensions import (
     ParamSpec,
-    TypeAlias,
     TypeVar,
     override,
 )

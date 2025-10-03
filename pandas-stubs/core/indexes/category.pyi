@@ -2,9 +2,7 @@ from collections.abc import (
     Hashable,
     Iterable,
 )
-from typing import (
-    final,
-)
+from typing import final
 
 import numpy as np
 from pandas.core import accessor

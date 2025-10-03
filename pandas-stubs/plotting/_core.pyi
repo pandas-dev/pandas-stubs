@@ -8,6 +8,7 @@ from typing import (
     Any,
     Literal,
     NamedTuple,
+    TypeAlias,
     overload,
 )
 
@@ -19,7 +20,6 @@ import pandas as pd
 from pandas import Series
 from pandas.core.frame import DataFrame
 from scipy.stats import gaussian_kde
-from typing_extensions import TypeAlias
 
 from pandas._typing import (
     ArrayLike,

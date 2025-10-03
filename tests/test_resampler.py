@@ -2,7 +2,6 @@ from collections.abc import (
     Hashable,
     Iterator,
 )
-from typing import Union
 
 import numpy as np
 import pandas as pd
@@ -31,7 +30,7 @@ S = DF_.iloc[:, 0]
 DF = DataFrame({"col1": S, "col2": S})
 
 
-_AggRetType = Union[DataFrame, Series]
+_AggRetType = DataFrame | Series
 
 
 def test_props() -> None:

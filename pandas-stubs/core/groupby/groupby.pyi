@@ -8,8 +8,10 @@ from collections.abc import (
 import datetime as dt
 from typing import (
     Any,
+    Concatenate,
     Generic,
     Literal,
+    TypeAlias,
     TypeVar,
     final,
     overload,
@@ -18,9 +20,7 @@ from typing import (
 import numpy as np
 from pandas.core.base import SelectionMixin
 from pandas.core.frame import DataFrame
-from pandas.core.groupby import (
-    generic,
-)
+from pandas.core.groupby import generic
 from pandas.core.groupby.indexing import (
     GroupByIndexingMixin,
     GroupByNthSelector,
@@ -38,11 +38,7 @@ from pandas.core.window import (
     ExponentialMovingWindowGroupby,
     RollingGroupby,
 )
-from typing_extensions import (
-    Concatenate,
-    Self,
-    TypeAlias,
-)
+from typing_extensions import Self
 
 from pandas._libs.lib import _NoDefaultDoNotUse
 from pandas._libs.tslibs import BaseOffset

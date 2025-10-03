@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime as dt
+from typing import TypeAlias
 
 from dateutil.relativedelta import (
     FR,
@@ -17,7 +18,6 @@ from pandas.api.typing import NaTType
 from pandas.core.tools.datetimes import FulldatetimeDict
 import pytz
 from typing_extensions import (
-    TypeAlias,
     assert_never,
     assert_type,
 )
@@ -1662,9 +1662,9 @@ def test_timedelta64_and_arithmatic_operator() -> None:
     td = np.timedelta64(1, "D")
     check(assert_type((s3 / td), "pd.Series[float]"), pd.Series, float)
     if TYPE_CHECKING_INVALID_USAGE:
-        r1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        r2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        r3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_timedeltaseries_add_timestampseries() -> None:
@@ -1900,7 +1900,7 @@ def test_timestamp_to_list_add() -> None:
     check(assert_type(tslist, list[pd.Timestamp]), list, pd.Timestamp)
     sseries = pd.Series(tslist)
     with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", lower="2.3.99"):
-        sseries + pd.Timedelta(1, "d")
+        _0 = sseries + pd.Timedelta(1, "d")
 
     check(
         assert_type(sseries + pd.Timedelta(1, "D"), "pd.Series[pd.Timestamp]"),

@@ -18,9 +18,9 @@ from typing import (
     Any,
     Generic,
     Literal,
+    TypeAlias,
     TypedDict,
     TypeVar,
-    Union,
     cast,
 )
 
@@ -40,7 +40,6 @@ import pytest
 from typing_extensions import (
     Never,
     Self,
-    TypeAlias,
     assert_type,
 )
 import xarray as xr
@@ -310,16 +309,20 @@ def test_types_drop() -> None:
 
 def test_arguments_drop() -> None:
     # GH 950
+    s = pd.Series([0, 1, 2])
     if TYPE_CHECKING_INVALID_USAGE:
-        s = pd.Series([0, 1, 2])
-        res1 = s.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        res2 = s.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
-        res3 = s.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
-        # These should also fail, but `None` is Hasheable and i do not know how
-        # to type hint a non-None hashable.
-        # res4 = s.drop(columns=None)
-        # res5 = s.drop(index=None)
-        # res6 = s.drop(None)
+        _res1 = s.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        _res2 = s.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        _res3 = s.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+
+    def _never_checker0() -> None:  # pyright: ignore[reportUnusedFunction]
+        assert_type(s.drop(columns=None), Never)
+
+    def _never_checker1() -> None:  # pyright: ignore[reportUnusedFunction]
+        assert_type(s.drop(index=None), Never)
+
+    def _never_checker2() -> None:  # pyright: ignore[reportUnusedFunction]
+        assert_type(s.drop(None), Never)
 
 
 def test_types_drop_multilevel() -> None:
@@ -817,14 +820,14 @@ def test_types_element_wise_arithmetic() -> None:
         assert_type(s.div(s2, fill_value=0), "pd.Series[float]"), pd.Series, np.float64
     )
 
-    res_floordiv: pd.Series = s // s2
-    res_floordiv2: pd.Series = s.floordiv(s2, fill_value=0)
+    _res_floordiv: pd.Series = s // s2
+    _res_floordiv2: pd.Series = s.floordiv(s2, fill_value=0)
 
-    res_mod: pd.Series = s % s2
-    res_mod2: pd.Series = s.mod(s2, fill_value=0)
+    _res_mod: pd.Series = s % s2
+    _res_mod2: pd.Series = s.mod(s2, fill_value=0)
 
-    res_pow: pd.Series = s ** s2.abs()
-    res_pow2: pd.Series = s.pow(s2.abs(), fill_value=0)
+    _res_pow: pd.Series = s ** s2.abs()
+    _res_pow2: pd.Series = s.pow(s2.abs(), fill_value=0)
 
     check(assert_type(divmod(s, s2), tuple["pd.Series[int]", "pd.Series[int]"]), tuple)
 
@@ -847,16 +850,16 @@ def test_types_scalar_arithmetic() -> None:
         assert_type(s.div(2, fill_value=0), "pd.Series[float]"), pd.Series, np.floating
     )
 
-    res_floordiv: pd.Series = s // 2
-    res_floordiv2: pd.Series = s.floordiv(2, fill_value=0)
+    _res_floordiv: pd.Series = s // 2
+    _res_floordiv2: pd.Series = s.floordiv(2, fill_value=0)
 
-    res_mod: pd.Series = s % 2
-    res_mod2: pd.Series = s.mod(2, fill_value=0)
+    _res_mod: pd.Series = s % 2
+    _res_mod2: pd.Series = s.mod(2, fill_value=0)
 
-    res_pow: pd.Series = s**2
-    res_pow1: pd.Series = s**0
-    res_pow2: pd.Series = s**0.213
-    res_pow3: pd.Series = s.pow(0.5)
+    _res_pow: pd.Series = s**2
+    _res_pow1: pd.Series = s**0
+    _res_pow2: pd.Series = s**0.213
+    _res_pow3: pd.Series = s.pow(0.5)
 
 
 def test_types_groupby() -> None:
@@ -945,13 +948,13 @@ def test_groupby_result() -> None:
     check(assert_type(value4, "pd.Series[int]"), pd.Series, np.integer)
 
     # Want to make sure these cases are differentiated
-    for (k1, k2), g in s.groupby(["a", "b"]):
+    for (_k1, _k2), _g in s.groupby(["a", "b"]):
         pass
 
-    for kk, g in s.groupby("a"):
+    for _kk, _g in s.groupby("a"):
         pass
 
-    for (k1, k2), g in s.groupby(multi_index):
+    for (_k1, _k2), _g in s.groupby(multi_index):
         pass
 
 
@@ -1009,16 +1012,16 @@ def test_groupby_result_for_scalar_indexes() -> None:
     check(assert_type(index4, "pd.Interval[pd.Timestamp]"), pd.Interval)
     check(assert_type(value4, "pd.Series[int]"), pd.Series, np.integer)
 
-    for p, g in s.groupby(period_index):
+    for _p, _g in s.groupby(period_index):
         pass
 
-    for dt, g in s.groupby(dt_index):
+    for _dt, _g in s.groupby(dt_index):
         pass
 
-    for tdelta, g in s.groupby(tdelta_index):
+    for _tdelta, _g in s.groupby(tdelta_index):
         pass
 
-    for interval, g in s.groupby(interval_index):
+    for _interval, _g in s.groupby(interval_index):
         pass
 
 
@@ -1405,7 +1408,7 @@ def test_types_rename_axis() -> None:
 
 def test_types_values() -> None:
     check(
-        assert_type(pd.Series([1, 2, 3]).values, Union[ExtensionArray, np.ndarray]),
+        assert_type(pd.Series([1, 2, 3]).values, ExtensionArray | np.ndarray),
         np.ndarray,
     )
     valresult_type: type[np.ndarray | ExtensionArray]
@@ -1414,20 +1417,20 @@ def test_types_values() -> None:
     else:
         valresult_type = ExtensionArray
     check(
-        assert_type(pd.Series(list("aabc")).values, Union[np.ndarray, ExtensionArray]),
+        assert_type(pd.Series(list("aabc")).values, np.ndarray | ExtensionArray),
         valresult_type,
     )
     check(
         assert_type(
             pd.Series(list("aabc")).astype("category").values,
-            Union[np.ndarray, ExtensionArray],
+            np.ndarray | ExtensionArray,
         ),
         pd.Categorical,
     )
     check(
         assert_type(
             pd.Series(pd.date_range("20130101", periods=3, tz="US/Eastern")).values,
-            Union[np.ndarray, ExtensionArray],
+            np.ndarray | ExtensionArray,
         ),
         np.ndarray,
     )
@@ -1478,7 +1481,7 @@ def test_types_rename() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType]
+        _s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType]
 
 
 def test_types_ne() -> None:
@@ -1606,7 +1609,7 @@ def test_series_multiindex_getitem() -> None:
     s = pd.Series(
         [1, 2, 3, 4], index=pd.MultiIndex.from_product([["a", "b"], ["x", "y"]])
     )
-    s1: pd.Series = s["a", :]
+    _s1: pd.Series = s["a", :]
 
 
 def test_reset_index() -> None:
@@ -1800,7 +1803,7 @@ def test_iloc_setitem_ndarray() -> None:
 
 def test_types_iter() -> None:
     s = pd.Series([1, 2, 3], dtype=int)
-    iterable: Iterable[int] = s
+    _iterable: Iterable[int] = s
     check(assert_type(iter(s), Iterator[int]), Iterator, int)
     check(assert_type(next(iter(s)), int), int)
 
@@ -1931,12 +1934,12 @@ def test_resample() -> None:
 def test_squeeze() -> None:
     s1 = pd.Series([1, 2, 3])
     check(
-        assert_type(s1.squeeze(), Union["pd.Series[int]", Scalar]),
+        assert_type(s1.squeeze(), "pd.Series[int] | Scalar"),
         pd.Series,
         np.integer,
     )
     s2 = pd.Series([1])
-    check(assert_type(s2.squeeze(), Union["pd.Series[int]", Scalar]), np.integer)
+    check(assert_type(s2.squeeze(), "pd.Series[int] | Scalar"), np.integer)
 
 
 def test_to_xarray():
@@ -3114,7 +3117,7 @@ def test_to_json_mode() -> None:
     check(assert_type(result2, str), str)
     check(assert_type(result4, str), str)
     if TYPE_CHECKING_INVALID_USAGE:
-        result3 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        _result3 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
 def test_groupby_diff() -> None:
@@ -3231,21 +3234,21 @@ def test_round() -> None:
 def test_get() -> None:
     s_int = pd.Series([1, 2, 3], index=[1, 2, 3])
 
-    check(assert_type(s_int.get(1), Union[int, None]), np.int64)
-    check(assert_type(s_int.get(99), Union[int, None]), type(None))
-    check(assert_type(s_int.get(1, default=None), Union[int, None]), np.int64)
-    check(assert_type(s_int.get(99, default=None), Union[int, None]), type(None))
+    check(assert_type(s_int.get(1), int | None), np.int64)
+    check(assert_type(s_int.get(99), int | None), type(None))
+    check(assert_type(s_int.get(1, default=None), int | None), np.int64)
+    check(assert_type(s_int.get(99, default=None), int | None), type(None))
     check(assert_type(s_int.get(1, default=2), int), np.int64)
-    check(assert_type(s_int.get(99, default="a"), Union[int, str]), str)
+    check(assert_type(s_int.get(99, default="a"), int | str), str)
 
     s_str = pd.Series(list("abc"), index=list("abc"))
 
-    check(assert_type(s_str.get("a"), Union[str, None]), str)
-    check(assert_type(s_str.get("z"), Union[str, None]), type(None))
-    check(assert_type(s_str.get("a", default=None), Union[str, None]), str)
-    check(assert_type(s_str.get("z", default=None), Union[str, None]), type(None))
+    check(assert_type(s_str.get("a"), str | None), str)
+    check(assert_type(s_str.get("z"), str | None), type(None))
+    check(assert_type(s_str.get("a", default=None), str | None), str)
+    check(assert_type(s_str.get("z", default=None), str | None), type(None))
     check(assert_type(s_str.get("a", default="b"), str), str)
-    check(assert_type(s_str.get("z", default=True), Union[str, bool]), bool)
+    check(assert_type(s_str.get("z", default=True), str | bool), bool)
 
 
 def test_series_new_empty() -> None:
@@ -3706,7 +3709,7 @@ def test_series_bool_fails() -> None:
         # mypy doesn't seem to figure that out, but pyright does
         if s == "foo":  # pyright: ignore[reportGeneralTypeIssues]
             # Next line is unreachable.
-            a = s[0]
+            _a = s[0]
             assert False
     except ValueError:
         pass
@@ -3855,11 +3858,10 @@ def test_cumsum_timedelta() -> None:
 def test_series_unstack() -> None:
     df = pd.DataFrame([[1, 3, 5], [2, 4, 6]])
     s = df.transpose().stack([*range(df.index.nlevels)])
-    check(assert_type(s, Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(s, pd.Series | pd.DataFrame), pd.Series)
     check(
         assert_type(
-            s.unstack([*range(s.index.nlevels // 2)]),
-            Union[pd.Series, pd.DataFrame],
+            s.unstack([*range(s.index.nlevels // 2)]), pd.Series | pd.DataFrame
         ),
         pd.DataFrame,
     )
@@ -3881,7 +3883,7 @@ def test_series_index_type() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        t = pd.Series([1, 2], index="ab")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        _t = pd.Series([1, 2], index="ab")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
 
 
 def test_timedelta_index_cumprod() -> None:

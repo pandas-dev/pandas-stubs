@@ -27,6 +27,7 @@ from typing import (
     Literal,
     NoReturn,
     Protocol,
+    TypeAlias,
     TypeVar,
     final,
     overload,
@@ -98,7 +99,6 @@ from pandas.core.window.rolling import (
 from typing_extensions import (
     Never,
     Self,
-    TypeAlias,
 )
 import xarray as xr
 

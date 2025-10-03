@@ -1,5 +1,7 @@
 """Test module for classes in pandas.api.typing."""
 
+from typing import TypeAlias
+
 import numpy as np
 import pandas as pd
 from pandas import read_json
@@ -25,7 +27,6 @@ from pandas.api.typing import (
 )
 import pytest
 from typing_extensions import (
-    TypeAlias,
     assert_type,
 )
 
