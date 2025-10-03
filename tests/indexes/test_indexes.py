@@ -1379,7 +1379,7 @@ def test_index_categorical() -> None:
 def test_disallow_empty_index() -> None:
     # From GH 826
     if TYPE_CHECKING_INVALID_USAGE:
-        i0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        _0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
 
 
 def test_datetime_index_max_min_reductions() -> None:

@@ -310,16 +310,20 @@ def test_types_drop() -> None:
 
 def test_arguments_drop() -> None:
     # GH 950
+    s = pd.Series([0, 1, 2])
     if TYPE_CHECKING_INVALID_USAGE:
-        s = pd.Series([0, 1, 2])
-        res1 = s.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        res2 = s.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
-        res3 = s.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
-        # These should also fail, but `None` is Hasheable and i do not know how
-        # to type hint a non-None hashable.
-        # res4 = s.drop(columns=None)
-        # res5 = s.drop(index=None)
-        # res6 = s.drop(None)
+        _res1 = s.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        _res2 = s.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        _res3 = s.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+
+    def _never_checker0() -> None:  # pyright: ignore[reportUnusedFunction]
+        assert_type(s.drop(columns=None), Never)
+
+    def _never_checker1() -> None:  # pyright: ignore[reportUnusedFunction]
+        assert_type(s.drop(index=None), Never)
+
+    def _never_checker2() -> None:  # pyright: ignore[reportUnusedFunction]
+        assert_type(s.drop(None), Never)
 
 
 def test_types_drop_multilevel() -> None:
@@ -817,14 +821,14 @@ def test_types_element_wise_arithmetic() -> None:
         assert_type(s.div(s2, fill_value=0), "pd.Series[float]"), pd.Series, np.float64
     )
 
-    res_floordiv: pd.Series = s // s2
-    res_floordiv2: pd.Series = s.floordiv(s2, fill_value=0)
+    _res_floordiv: pd.Series = s // s2
+    _res_floordiv2: pd.Series = s.floordiv(s2, fill_value=0)
 
-    res_mod: pd.Series = s % s2
-    res_mod2: pd.Series = s.mod(s2, fill_value=0)
+    _res_mod: pd.Series = s % s2
+    _res_mod2: pd.Series = s.mod(s2, fill_value=0)
 
-    res_pow: pd.Series = s ** s2.abs()
-    res_pow2: pd.Series = s.pow(s2.abs(), fill_value=0)
+    _res_pow: pd.Series = s ** s2.abs()
+    _res_pow2: pd.Series = s.pow(s2.abs(), fill_value=0)
 
     check(assert_type(divmod(s, s2), tuple["pd.Series[int]", "pd.Series[int]"]), tuple)
 
@@ -847,16 +851,16 @@ def test_types_scalar_arithmetic() -> None:
         assert_type(s.div(2, fill_value=0), "pd.Series[float]"), pd.Series, np.floating
     )
 
-    res_floordiv: pd.Series = s // 2
-    res_floordiv2: pd.Series = s.floordiv(2, fill_value=0)
+    _res_floordiv: pd.Series = s // 2
+    _res_floordiv2: pd.Series = s.floordiv(2, fill_value=0)
 
-    res_mod: pd.Series = s % 2
-    res_mod2: pd.Series = s.mod(2, fill_value=0)
+    _res_mod: pd.Series = s % 2
+    _res_mod2: pd.Series = s.mod(2, fill_value=0)
 
-    res_pow: pd.Series = s**2
-    res_pow1: pd.Series = s**0
-    res_pow2: pd.Series = s**0.213
-    res_pow3: pd.Series = s.pow(0.5)
+    _res_pow: pd.Series = s**2
+    _res_pow1: pd.Series = s**0
+    _res_pow2: pd.Series = s**0.213
+    _res_pow3: pd.Series = s.pow(0.5)
 
 
 def test_types_groupby() -> None:
@@ -1478,7 +1482,7 @@ def test_types_rename() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType]
+        _s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType]
 
 
 def test_types_ne() -> None:
@@ -1606,7 +1610,7 @@ def test_series_multiindex_getitem() -> None:
     s = pd.Series(
         [1, 2, 3, 4], index=pd.MultiIndex.from_product([["a", "b"], ["x", "y"]])
     )
-    s1: pd.Series = s["a", :]
+    _s1: pd.Series = s["a", :]
 
 
 def test_reset_index() -> None:
@@ -1800,7 +1804,7 @@ def test_iloc_setitem_ndarray() -> None:
 
 def test_types_iter() -> None:
     s = pd.Series([1, 2, 3], dtype=int)
-    iterable: Iterable[int] = s
+    _iterable: Iterable[int] = s
     check(assert_type(iter(s), Iterator[int]), Iterator, int)
     check(assert_type(next(iter(s)), int), int)
 
@@ -3114,7 +3118,7 @@ def test_to_json_mode() -> None:
     check(assert_type(result2, str), str)
     check(assert_type(result4, str), str)
     if TYPE_CHECKING_INVALID_USAGE:
-        result3 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        _result3 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
 def test_groupby_diff() -> None:
@@ -3730,7 +3734,7 @@ def test_series_bool_fails() -> None:
         # mypy doesn't seem to figure that out, but pyright does
         if s == "foo":  # pyright: ignore[reportGeneralTypeIssues]
             # Next line is unreachable.
-            a = s[0]
+            _a = s[0]
             assert False
     except ValueError:
         pass
@@ -3905,7 +3909,7 @@ def test_series_index_type() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        t = pd.Series([1, 2], index="ab")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        _t = pd.Series([1, 2], index="ab")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
 
 
 def test_timedelta_index_cumprod() -> None:

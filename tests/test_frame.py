@@ -177,22 +177,22 @@ def test_types_append() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame({"col1": [10, 20], "col2": [30, 40]})
     if TYPE_CHECKING_INVALID_USAGE:
-        res1: pd.DataFrame = df.append(df2)  # type: ignore[operator] # pyright: ignore[reportCallIssue]
-        res2: pd.DataFrame = df.append([1, 2, 3])  # type: ignore[operator] # pyright: ignore[reportCallIssue]
-        res3: pd.DataFrame = df.append([[1, 2, 3]])  # type: ignore[operator] # pyright: ignore[reportCallIssue]
-        res4: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        _res1: pd.DataFrame = df.append(df2)  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        _res2: pd.DataFrame = df.append([1, 2, 3])  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        _res3: pd.DataFrame = df.append([[1, 2, 3]])  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        _res4: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
             {("a", 1): [1, 2, 3], "b": df2}, ignore_index=True
         )
-        res5: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        _res5: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
             {1: [1, 2, 3]}, ignore_index=True
         )
-        res6: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        _res6: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
             {1: [1, 2, 3], "col2": [1, 2, 3]}, ignore_index=True
         )
-        res7: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        _res7: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
             pd.Series([5, 6]), ignore_index=True
         )
-        res8: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        _res8: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
             pd.Series([5, 6], index=["col1", "col2"]), ignore_index=True
         )
 
@@ -478,16 +478,20 @@ def test_types_drop() -> None:
 
 def test_arguments_drop() -> None:
     # GH 950
+    df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     if TYPE_CHECKING_INVALID_USAGE:
-        df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
-        res1 = df.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        res2 = df.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
-        res3 = df.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
-        # These should also fail, but `None` is Hasheable and i do not know how
-        # to type hint a non-None hashable.
-        # res4 = df.drop(columns=None)
-        # res5 = df.drop(index=None)
-        # res6 = df.drop(None)
+        _res1 = df.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        _res2 = df.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        _res3 = df.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+
+    def _never_checker0() -> None:  # pyright: ignore[reportUnusedFunction]
+        assert_type(df.drop(columns=None), Never)
+
+    def _never_checker1() -> None:  # pyright: ignore[reportUnusedFunction]
+        assert_type(df.drop(index=None), Never)
+
+    def _never_checker2() -> None:  # pyright: ignore[reportUnusedFunction]
+        assert_type(df.drop(None), Never)
 
 
 def test_types_dropna() -> None:
@@ -4404,7 +4408,7 @@ def test_to_json_mode() -> None:
     check(assert_type(result2, str), str)
     check(assert_type(result4, str), str)
     if TYPE_CHECKING_INVALID_USAGE:
-        result3 = df.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        _result3 = df.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
 def test_interpolate_inplace() -> None:
@@ -4547,7 +4551,7 @@ def test_frame_bool_fails() -> None:
         # mypy doesn't seem to figure that out, but pyright does
         if df == "foo":  # pyright: ignore[reportGeneralTypeIssues]
             # Next line is unreachable.
-            s = df["a"]
+            _s = df["a"]
     except ValueError:
         pass
 
