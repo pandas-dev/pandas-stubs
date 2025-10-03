@@ -19,11 +19,11 @@ from pandas._libs.interval import (
     Interval as Interval,
     IntervalMixin,
 )
-from pandas._libs.tslibs.offsets import BaseOffset
 from pandas._typing import (
     DatetimeLike,
     DtypeArg,
     FillnaOptions,
+    Frequency,
     IntervalClosedType,
     IntervalT,
     Label,
@@ -328,7 +328,7 @@ def interval_range(
     start: _TimestampLike,
     end: _TimestampLike | None = ...,
     periods: int | None = ...,
-    freq: str | BaseOffset | pd.Timedelta | dt.timedelta | None = ...,
+    freq: Frequency | dt.timedelta | None = ...,
     name: Hashable = ...,
     closed: IntervalClosedType = ...,
 ) -> IntervalIndex[Interval[pd.Timestamp]]: ...
@@ -338,7 +338,7 @@ def interval_range(
     start: None = ...,
     end: _TimestampLike,
     periods: int | None = ...,
-    freq: str | BaseOffset | pd.Timedelta | dt.timedelta | None = ...,
+    freq: Frequency | dt.timedelta | None = ...,
     name: Hashable = ...,
     closed: IntervalClosedType = ...,
 ) -> IntervalIndex[Interval[pd.Timestamp]]: ...
@@ -347,7 +347,7 @@ def interval_range(
     start: _TimedeltaLike,
     end: _TimedeltaLike | None = ...,
     periods: int | None = ...,
-    freq: str | BaseOffset | pd.Timedelta | dt.timedelta | None = ...,
+    freq: Frequency | dt.timedelta | None = ...,
     name: Hashable = ...,
     closed: IntervalClosedType = ...,
 ) -> IntervalIndex[Interval[pd.Timedelta]]: ...
@@ -357,7 +357,7 @@ def interval_range(
     start: None = ...,
     end: _TimedeltaLike,
     periods: int | None = ...,
-    freq: str | BaseOffset | pd.Timedelta | dt.timedelta | None = ...,
+    freq: Frequency | dt.timedelta | None = ...,
     name: Hashable = ...,
     closed: IntervalClosedType = ...,
 ) -> IntervalIndex[Interval[pd.Timedelta]]: ...

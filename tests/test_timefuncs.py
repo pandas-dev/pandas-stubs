@@ -1911,7 +1911,7 @@ def test_DatetimeIndex_sub_timedelta() -> None:
 
 def test_to_offset() -> None:
     check(assert_type(to_offset(None), None), type(None))
-    check(assert_type(to_offset("1D"), DateOffset), DateOffset)
+    check(assert_type(to_offset("1D"), BaseOffset), BaseOffset)
 
 
 def test_timestamp_sub_series() -> None:
