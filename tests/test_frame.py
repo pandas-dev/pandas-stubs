@@ -25,9 +25,9 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Generic,
+    TypeAlias,
     TypedDict,
     TypeVar,
-    Union,
     cast,
 )
 
@@ -42,7 +42,6 @@ from pandas.core.resample import (
 import pytest
 from typing_extensions import (
     Never,
-    TypeAlias,
     assert_never,
     assert_type,
 )
@@ -2809,7 +2808,7 @@ def test_groupby_series_methods() -> None:
     check(assert_type(gb.min(), pd.Series), pd.Series)
     check(assert_type(gb.nlargest(), pd.Series), pd.Series)
     check(assert_type(gb.nsmallest(), pd.Series), pd.Series)
-    check(assert_type(gb.nth(0), Union[pd.DataFrame, pd.Series]), pd.Series)
+    check(assert_type(gb.nth(0), pd.DataFrame | pd.Series), pd.Series)
 
 
 def test_dataframe_pct_change() -> None:
@@ -3198,13 +3197,13 @@ def test_frame_stack() -> None:
         upper="2.3.99",
     ):
         check(
-            assert_type(df_multi_level_cols2.stack(0), Union[pd.DataFrame, pd.Series]),
+            assert_type(df_multi_level_cols2.stack(0), pd.DataFrame | pd.Series),
             pd.DataFrame,
         )
         check(
             assert_type(
                 df_multi_level_cols2.stack([0, 1]),
-                Union[pd.DataFrame, pd.Series],
+                pd.DataFrame | pd.Series,
             ),
             pd.Series,
         )
@@ -3212,14 +3211,14 @@ def test_frame_stack() -> None:
             check(
                 assert_type(
                     df_multi_level_cols2.stack(0, future_stack=False),
-                    Union[pd.DataFrame, pd.Series],
+                    pd.DataFrame | pd.Series,
                 ),
                 pd.DataFrame,
             )
             check(
                 assert_type(
                     df_multi_level_cols2.stack(0, dropna=True, sort=True),
-                    Union[pd.DataFrame, pd.Series],
+                    pd.DataFrame | pd.Series,
                 ),
                 pd.DataFrame,
             )
@@ -3350,16 +3349,16 @@ def test_frame_scalars_slice() -> None:
 
     # Note: bool_ cannot be tested since the index is object and pandas does not
     # support boolean access using loc except when the index is boolean
-    check(assert_type(df.loc[str_], Union[pd.Series, pd.DataFrame]), pd.Series)
-    check(assert_type(df.loc[bytes_], Union[pd.Series, pd.DataFrame]), pd.Series)
-    check(assert_type(df.loc[date], Union[pd.Series, pd.DataFrame]), pd.Series)
-    check(assert_type(df.loc[datetime_], Union[pd.Series, pd.DataFrame]), pd.Series)
-    check(assert_type(df.loc[timedelta], Union[pd.Series, pd.DataFrame]), pd.Series)
-    check(assert_type(df.loc[int_], Union[pd.Series, pd.DataFrame]), pd.Series)
-    check(assert_type(df.loc[float_], Union[pd.Series, pd.DataFrame]), pd.Series)
-    check(assert_type(df.loc[complex_], Union[pd.Series, pd.DataFrame]), pd.Series)
-    check(assert_type(df.loc[timestamp], Union[pd.Series, pd.DataFrame]), pd.Series)
-    check(assert_type(df.loc[pd_timedelta], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[str_], pd.Series | pd.DataFrame), pd.Series)
+    check(assert_type(df.loc[bytes_], pd.Series | pd.DataFrame), pd.Series)
+    check(assert_type(df.loc[date], pd.Series | pd.DataFrame), pd.Series)
+    check(assert_type(df.loc[datetime_], pd.Series | pd.DataFrame), pd.Series)
+    check(assert_type(df.loc[timedelta], pd.Series | pd.DataFrame), pd.Series)
+    check(assert_type(df.loc[int_], pd.Series | pd.DataFrame), pd.Series)
+    check(assert_type(df.loc[float_], pd.Series | pd.DataFrame), pd.Series)
+    check(assert_type(df.loc[complex_], pd.Series | pd.DataFrame), pd.Series)
+    check(assert_type(df.loc[timestamp], pd.Series | pd.DataFrame), pd.Series)
+    check(assert_type(df.loc[pd_timedelta], pd.Series | pd.DataFrame), pd.Series)
     check(assert_type(df.loc[none], pd.Series), pd.Series)
 
     check(assert_type(df.loc[:, str_], pd.Series), pd.Series)
@@ -3378,10 +3377,10 @@ def test_frame_scalars_slice() -> None:
 
     multi_idx = pd.MultiIndex.from_product([["a", "b"], [1, 2]], names=["alpha", "num"])
     df2 = pd.DataFrame({"col1": range(4)}, index=multi_idx)
-    check(assert_type(df2.loc[str_], Union[pd.Series, pd.DataFrame]), pd.DataFrame)
+    check(assert_type(df2.loc[str_], pd.Series | pd.DataFrame), pd.DataFrame)
 
     df3 = pd.DataFrame({"x": range(2)}, index=pd.Index(["a", "b"]))
-    check(assert_type(df3.loc[str_], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df3.loc[str_], pd.Series | pd.DataFrame), pd.Series)
 
     # https://github.com/microsoft/python-type-stubs/issues/62
     df7 = pd.DataFrame({"x": [1, 2, 3]}, index=pd.Index(["a", "b", "c"]))
@@ -3392,7 +3391,7 @@ def test_frame_scalars_slice() -> None:
 def test_boolean_loc() -> None:
     # Booleans can only be used in loc when the index is boolean
     df = pd.DataFrame([[0, 1], [1, 0]], columns=[True, False], index=[True, False])
-    check(assert_type(df.loc[True], Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df.loc[True], pd.Series | pd.DataFrame), pd.Series)
     check(assert_type(df.loc[:, False], pd.Series), pd.Series)
 
 
@@ -3431,13 +3430,13 @@ def test_groupby_result() -> None:
     check(assert_type(value3, pd.DataFrame), pd.DataFrame)
 
     # Want to make sure these cases are differentiated
-    for (k1, k2), g in df.groupby(["a", "b"]):
+    for (_k1, _k2), _g in df.groupby(["a", "b"]):
         pass
 
-    for kk, g in df.groupby("a"):
+    for _kk, _g in df.groupby("a"):
         pass
 
-    for (k1, k2), g in df.groupby(multi_index):
+    for (_k1, _k2), _g in df.groupby(multi_index):
         pass
 
 
@@ -3485,16 +3484,16 @@ def test_groupby_result_for_scalar_indexes() -> None:
     check(assert_type(index4, "pd.Interval[pd.Timestamp]"), pd.Interval)
     check(assert_type(value4, pd.DataFrame), pd.DataFrame)
 
-    for p, g in df.groupby(period_index):
+    for _p, _g in df.groupby(period_index):
         pass
 
-    for dt, g in df.groupby(dt_index):
+    for _dt, _g in df.groupby(dt_index):
         pass
 
-    for tdelta, g in df.groupby(tdelta_index):
+    for _tdelta, _g in df.groupby(tdelta_index):
         pass
 
-    for interval, g in df.groupby(interval_index):
+    for _interval, _g in df.groupby(interval_index):
         pass
 
 
@@ -3661,21 +3660,17 @@ def test_resample() -> None:
 
 def test_squeeze() -> None:
     df1 = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
-    check(
-        assert_type(df1.squeeze(), Union[pd.DataFrame, pd.Series, Scalar]), pd.DataFrame
-    )
+    check(assert_type(df1.squeeze(), pd.DataFrame | pd.Series | Scalar), pd.DataFrame)
     df2 = pd.DataFrame({"a": [1, 2]})
-    check(assert_type(df2.squeeze(), Union[pd.DataFrame, pd.Series, Scalar]), pd.Series)
+    check(assert_type(df2.squeeze(), pd.DataFrame | pd.Series | Scalar), pd.Series)
     df3 = pd.DataFrame({"a": [1], "b": [2]})
     check(
-        assert_type(df3.squeeze(), Union[pd.DataFrame, pd.Series, Scalar]),
+        assert_type(df3.squeeze(), pd.DataFrame | pd.Series | Scalar),
         pd.Series,
         np.integer,
     )
     df4 = pd.DataFrame({"a": [1]})
-    check(
-        assert_type(df4.squeeze(), Union[pd.DataFrame, pd.Series, Scalar]), np.integer
-    )
+    check(assert_type(df4.squeeze(), pd.DataFrame | pd.Series | Scalar), np.integer)
 
 
 def test_loc_set() -> None:
@@ -3847,9 +3842,7 @@ def test_xs_key() -> None:
     # GH 214
     mi = pd.MultiIndex.from_product([[0, 1], [0, 1]], names=["foo", "bar"])
     df = pd.DataFrame({"x": [10, 20, 30, 40], "y": [50, 60, 70, 80]}, index=mi)
-    check(
-        assert_type(df.xs(0, level="foo"), Union[pd.DataFrame, pd.Series]), pd.DataFrame
-    )
+    check(assert_type(df.xs(0, level="foo"), pd.DataFrame | pd.Series), pd.DataFrame)
 
 
 def test_loc_slice() -> None:
@@ -3859,7 +3852,7 @@ def test_loc_slice() -> None:
         {"x": [1, 2, 3, 4]},
         index=pd.MultiIndex.from_product([[1, 2], ["a", "b"]], names=["num", "let"]),
     )
-    check(assert_type(df1.loc[1, :], Union[pd.Series, pd.DataFrame]), pd.DataFrame)
+    check(assert_type(df1.loc[1, :], pd.Series | pd.DataFrame), pd.DataFrame)
     check(assert_type(df1[::-1], pd.DataFrame), pd.DataFrame)
 
     # GH1299
@@ -4235,8 +4228,8 @@ def test_xs_frame_new() -> None:
     df = df.set_index(["class", "animal", "locomotion"])
     s1 = df.xs("mammal", axis=0)
     s2 = df.xs("num_wings", axis=1)
-    check(assert_type(s1, Union[pd.Series, pd.DataFrame]), pd.DataFrame)
-    check(assert_type(s2, Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(s1, pd.Series | pd.DataFrame), pd.DataFrame)
+    check(assert_type(s2, pd.Series | pd.DataFrame), pd.Series)
 
 
 def test_align() -> None:
@@ -4283,7 +4276,7 @@ def test_align() -> None:
 def test_loc_returns_series() -> None:
     df1 = pd.DataFrame({"x": [1, 2, 3, 4]}, index=[10, 20, 30, 40])
     df2 = df1.loc[10, :]
-    check(assert_type(df2, Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(df2, pd.Series | pd.DataFrame), pd.Series)
 
 
 def test_to_dict_index() -> None:
@@ -4466,35 +4459,31 @@ def test_get() -> None:
     df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6], "c": [7, 8, 9]})
 
     # Get single column
-    check(assert_type(df.get("a"), Union[pd.Series, None]), pd.Series, np.int64)
-    check(assert_type(df.get("z"), Union[pd.Series, None]), type(None))
+    check(assert_type(df.get("a"), pd.Series | None), pd.Series, np.int64)
+    check(assert_type(df.get("z"), pd.Series | None), type(None))
     check(
-        assert_type(df.get("a", default=None), Union[pd.Series, None]),
+        assert_type(df.get("a", default=None), pd.Series | None),
         pd.Series,
         np.int64,
     )
-    check(assert_type(df.get("z", default=None), Union[pd.Series, None]), type(None))
-    check(
-        assert_type(df.get("a", default=1), Union[pd.Series, int]), pd.Series, np.int64
-    )
-    check(assert_type(df.get("z", default=1), Union[pd.Series, int]), int)
+    check(assert_type(df.get("z", default=None), pd.Series | None), type(None))
+    check(assert_type(df.get("a", default=1), pd.Series | int), pd.Series, np.int64)
+    check(assert_type(df.get("z", default=1), pd.Series | int), int)
 
     # Get multiple columns
-    check(assert_type(df.get(["a"]), Union[pd.DataFrame, None]), pd.DataFrame)
-    check(assert_type(df.get(["a", "b"]), Union[pd.DataFrame, None]), pd.DataFrame)
-    check(assert_type(df.get(["z"]), Union[pd.DataFrame, None]), type(None))
+    check(assert_type(df.get(["a"]), pd.DataFrame | None), pd.DataFrame)
+    check(assert_type(df.get(["a", "b"]), pd.DataFrame | None), pd.DataFrame)
+    check(assert_type(df.get(["z"]), pd.DataFrame | None), type(None))
     check(
-        assert_type(df.get(["a", "b"], default=None), Union[pd.DataFrame, None]),
+        assert_type(df.get(["a", "b"], default=None), pd.DataFrame | None),
         pd.DataFrame,
     )
+    check(assert_type(df.get(["z"], default=None), pd.DataFrame | None), type(None))
     check(
-        assert_type(df.get(["z"], default=None), Union[pd.DataFrame, None]), type(None)
-    )
-    check(
-        assert_type(df.get(["a", "b"], default=1), Union[pd.DataFrame, int]),
+        assert_type(df.get(["a", "b"], default=1), pd.DataFrame | int),
         pd.DataFrame,
     )
-    check(assert_type(df.get(["z"], default=1), Union[pd.DataFrame, int]), int)
+    check(assert_type(df.get(["z"], default=1), pd.DataFrame | int), int)
 
 
 def test_info() -> None:

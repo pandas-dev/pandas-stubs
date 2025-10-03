@@ -5,6 +5,7 @@ from typing import (
     ClassVar,
     Literal,
     NamedTuple,
+    TypeAlias,
     overload,
 )
 
@@ -19,7 +20,6 @@ from pandas import (
 )
 from typing_extensions import (
     Self,
-    TypeAlias,
 )
 
 from pandas._libs.tslibs import (

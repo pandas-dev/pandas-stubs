@@ -5,6 +5,7 @@ from collections.abc import (
 from typing import (
     Any,
     Literal,
+    TypeAlias,
 )
 
 from matplotlib.axes import Axes
@@ -14,7 +15,6 @@ from matplotlib.table import Table
 import numpy as np
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
-from typing_extensions import TypeAlias
 
 from pandas._typing import (
     HashableT,

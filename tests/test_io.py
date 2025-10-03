@@ -11,7 +11,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Literal,
-    Union,
 )
 
 import numpy as np
@@ -300,7 +299,7 @@ def test_sas_bdat() -> None:
     path = pathlib.Path(CWD, "data", "airline.sas7bdat")
     check(assert_type(read_sas(path), DataFrame), DataFrame)
     with check(
-        assert_type(read_sas(path, iterator=True), Union[SAS7BDATReader, XportReader]),
+        assert_type(read_sas(path, iterator=True), SAS7BDATReader | XportReader),
         SAS7BDATReader,
     ):
         pass
@@ -310,7 +309,7 @@ def test_sas_bdat() -> None:
     ):
         pass
     with check(
-        assert_type(read_sas(path, chunksize=1), Union[SAS7BDATReader, XportReader]),
+        assert_type(read_sas(path, chunksize=1), SAS7BDATReader | XportReader),
         SAS7BDATReader,
     ):
         pass
@@ -325,7 +324,7 @@ def test_sas_xport() -> None:
     path = pathlib.Path(CWD, "data", "SSHSV1_A.xpt")
     check(assert_type(read_sas(path), DataFrame), DataFrame)
     with check(
-        assert_type(read_sas(path, iterator=True), Union[SAS7BDATReader, XportReader]),
+        assert_type(read_sas(path, iterator=True), SAS7BDATReader | XportReader),
         XportReader,
     ):
         pass
@@ -335,7 +334,7 @@ def test_sas_xport() -> None:
     ):
         pass
     with check(
-        assert_type(read_sas(path, chunksize=1), Union[SAS7BDATReader, XportReader]),
+        assert_type(read_sas(path, chunksize=1), SAS7BDATReader | XportReader),
         XportReader,
     ):
         pass
@@ -350,7 +349,7 @@ def test_sas_xport() -> None:
 def test_hdf():
     with ensure_clean() as path:
         check(assert_type(DF.to_hdf(path, key="df"), None), type(None))
-        check(assert_type(read_hdf(path), Union[DataFrame, Series]), DataFrame)
+        check(assert_type(read_hdf(path), DataFrame | Series), DataFrame)
 
 
 @pytest.mark.skipif(NUMPY20, reason="numpy 2.0 not compatible with Pytables")
@@ -363,35 +362,35 @@ def test_hdfstore() -> None:
         check(assert_type(store.keys(), list[str]), list)
         check(assert_type(store.info(), str), str)
         check(
-            assert_type(store.select("df", start=0, stop=1), Union[DataFrame, Series]),
+            assert_type(store.select("df", start=0, stop=1), DataFrame | Series),
             DataFrame,
         )
         check(
-            assert_type(store.select("df", where="index>=1"), Union[DataFrame, Series]),
+            assert_type(store.select("df", where="index>=1"), DataFrame | Series),
             DataFrame,
         )
         check(
             assert_type(
                 store.select("df", where=Term("index>=1")),
-                Union[DataFrame, Series],
+                DataFrame | Series,
             ),
             DataFrame,
         )
         check(
             assert_type(
                 store.select("df", where=[Term("index>=1")]),
-                Union[DataFrame, Series],
+                DataFrame | Series,
             ),
             DataFrame,
         )
-        check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
+        check(assert_type(store.get("df"), DataFrame | Series), DataFrame)
         for key in store:
             check(assert_type(key, str), str)
         check(assert_type(store.close(), None), type(None))
 
         store = HDFStore(path, model="r")
         check(
-            assert_type(read_hdf(store, "df"), Union[DataFrame, Series]),
+            assert_type(read_hdf(store, "df"), DataFrame | Series),
             DataFrame,
         )
         store.close()
@@ -418,7 +417,7 @@ def test_hdf_context_manager() -> None:
         check(assert_type(DF.to_hdf(path, key="df", format="table"), None), type(None))
         with HDFStore(path, mode="r") as store:
             check(assert_type(store.is_open, bool), bool)
-            check(assert_type(store.get("df"), Union[DataFrame, Series]), DataFrame)
+            check(assert_type(store.get("df"), DataFrame | Series), DataFrame)
 
 
 @pytest.mark.skipif(NUMPY20, reason="numpy 2.0 not compatible with Pytables")
@@ -426,7 +425,7 @@ def test_hdf_series():
     s = DF["a"]
     with ensure_clean() as path:
         check(assert_type(s.to_hdf(path, key="s"), None), type(None))
-        check(assert_type(read_hdf(path, "s"), Union[DataFrame, Series]), Series)
+        check(assert_type(read_hdf(path, "s"), DataFrame | Series), Series)
 
 
 def test_spss():
@@ -987,7 +986,7 @@ def test_read_excel() -> None:
         check(
             assert_type(
                 pd.read_excel(path, sheet_name=[0, "Sheet1"]),
-                dict[Union[int, str], pd.DataFrame],
+                dict[int | str, pd.DataFrame],
             ),
             dict,
         )
@@ -1166,7 +1165,7 @@ def test_excel_writer():
         check(assert_type(read_excel(ef), DataFrame), DataFrame)
         check(assert_type(ef.parse(sheet_name=0), DataFrame), DataFrame)
         check(
-            assert_type(ef.parse(sheet_name=[0]), dict[Union[str, int], DataFrame]),
+            assert_type(ef.parse(sheet_name=[0]), dict[str | int, DataFrame]),
             dict,
         )
         check(assert_type(ef.close(), None), type(None))
@@ -1238,7 +1237,7 @@ def test_to_string():
 def test_read_sql():
     with ensure_clean() as path:
         con = sqlite3.connect(path)
-        check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
+        check(assert_type(DF.to_sql("test", con=con), int | None), int)
         check(
             assert_type(read_sql("select * from test", con=con), DataFrame), DataFrame
         )
@@ -1251,7 +1250,7 @@ def test_read_sql_via_sqlalchemy_connection():
         engine = sqlalchemy.create_engine(db_uri)
 
         with engine.connect() as conn:
-            check(assert_type(DF.to_sql("test", con=conn), Union[int, None]), int)
+            check(assert_type(DF.to_sql("test", con=conn), int | None), int)
             check(
                 assert_type(read_sql("select * from test", con=conn), DataFrame),
                 DataFrame,
@@ -1264,7 +1263,7 @@ def test_read_sql_via_sqlalchemy_engine():
         db_uri = "sqlite:///" + path
         engine = sqlalchemy.create_engine(db_uri)
 
-        check(assert_type(DF.to_sql("test", con=engine), Union[int, None]), int)
+        check(assert_type(DF.to_sql("test", con=engine), int | None), int)
         check(
             assert_type(read_sql("select * from test", con=engine), DataFrame),
             DataFrame,
@@ -1277,7 +1276,7 @@ def test_read_sql_via_sqlalchemy_engine_with_params():
         db_uri = "sqlite:///" + path
         engine = sqlalchemy.create_engine(db_uri)
 
-        check(assert_type(DF.to_sql("test", con=engine), Union[int, None]), int)
+        check(assert_type(DF.to_sql("test", con=engine), int | None), int)
         check(
             assert_type(
                 read_sql(
@@ -1295,7 +1294,7 @@ def test_read_sql_via_sqlalchemy_engine_with_params():
 def test_read_sql_generator():
     with ensure_clean() as path:
         con = sqlite3.connect(path)
-        check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
+        check(assert_type(DF.to_sql("test", con=con), int | None), int)
 
         check(
             assert_type(
@@ -1313,7 +1312,7 @@ def test_read_sql_table():
         # Could only run in pytest if SQLAlchemy was installed
         with ensure_clean() as path:
             con = sqlite3.connect(path)
-            assert_type(DF.to_sql("test", con=con), Union[int, None])
+            assert_type(DF.to_sql("test", con=con), int | None)
             assert_type(read_sql_table("test", con=con), DataFrame)
             assert_type(
                 read_sql_table("test", con=con, chunksize=1),
@@ -1325,7 +1324,7 @@ def test_read_sql_table():
 def test_read_sql_query():
     with ensure_clean() as path:
         con = sqlite3.connect(path)
-        check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
+        check(assert_type(DF.to_sql("test", con=con), int | None), int)
         check(
             assert_type(
                 read_sql_query("select * from test", con=con, index_col="index"),
@@ -1339,7 +1338,7 @@ def test_read_sql_query():
 def test_read_sql_query_generator():
     with ensure_clean() as path:
         con = sqlite3.connect(path)
-        check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
+        check(assert_type(DF.to_sql("test", con=con), int | None), int)
 
         check(
             assert_type(
@@ -1356,7 +1355,7 @@ def test_read_sql_query_via_sqlalchemy_engine_with_params():
         db_uri = "sqlite:///" + path
         engine = sqlalchemy.create_engine(db_uri)
 
-        check(assert_type(DF.to_sql("test", con=engine), Union[int, None]), int)
+        check(assert_type(DF.to_sql("test", con=engine), int | None), int)
         check(
             assert_type(
                 read_sql_query(
@@ -1454,7 +1453,7 @@ def test_sqlalchemy_text() -> None:
         engine = sqlalchemy.create_engine(db_uri)
         sql_select = sqlalchemy.text("select * from test")
         with engine.connect() as conn:
-            check(assert_type(DF.to_sql("test", con=conn), Union[int, None]), int)
+            check(assert_type(DF.to_sql("test", con=conn), int | None), int)
             check(
                 assert_type(read_sql(sql_select, con=conn), DataFrame),
                 DataFrame,
@@ -1469,7 +1468,7 @@ def test_read_sql_dtype() -> None:
             data=[[0, "10/11/12"], [1, "12/11/10"]],
             columns=["int_column", "date_column"],
         )
-        check(assert_type(df.to_sql("test_data", con=conn), Union[int, None]), int)
+        check(assert_type(df.to_sql("test_data", con=conn), int | None), int)
         check(
             assert_type(
                 pd.read_sql(
@@ -1492,7 +1491,7 @@ def test_read_sql_dtype() -> None:
             ),
             pd.DataFrame,
         )
-        check(assert_type(DF.to_sql("test", con=conn), Union[int, None]), int)
+        check(assert_type(DF.to_sql("test", con=conn), int | None), int)
 
         check(
             assert_type(
@@ -1507,7 +1506,7 @@ def test_read_sql_dtype() -> None:
 def test_read_sql_dtype_backend() -> None:
     with ensure_clean() as path:
         conn2 = sqlite3.connect(path)
-        check(assert_type(DF.to_sql("test", con=conn2), Union[int, None]), int)
+        check(assert_type(DF.to_sql("test", con=conn2), int | None), int)
         check(
             assert_type(
                 read_sql("select * from test", con=conn2, dtype_backend="pyarrow"),
@@ -1549,7 +1548,7 @@ def test_all_read_without_lxml_dtype_backend() -> None:
 
     with ensure_clean() as path:
         con = sqlite3.connect(path)
-        check(assert_type(DF.to_sql("test", con=con), Union[int, None]), int)
+        check(assert_type(DF.to_sql("test", con=con), int | None), int)
         check(
             assert_type(
                 read_sql_query(
@@ -1600,7 +1599,7 @@ def test_all_read_without_lxml_dtype_backend() -> None:
         # Could only run in pytest if SQLAlchemy was installed
         with ensure_clean() as path:
             co1 = sqlite3.connect(path)
-            assert_type(DF.to_sql("test", con=co1), Union[int, None])
+            assert_type(DF.to_sql("test", con=co1), int | None)
             assert_type(
                 read_sql_table("test", con=co1, dtype_backend="numpy_nullable"),
                 DataFrame,
@@ -1628,7 +1627,7 @@ def test_read_sql_dict_str_value_dtype() -> None:
     # GH 676
     with ensure_clean() as path:
         con = sqlite3.connect(path)
-        check(assert_type(DF.to_sql("test", con), Union[int, None]), int)
+        check(assert_type(DF.to_sql("test", con), int | None), int)
         check(
             assert_type(
                 read_sql_query(

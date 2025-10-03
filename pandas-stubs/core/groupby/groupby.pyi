@@ -8,8 +8,10 @@ from collections.abc import (
 import datetime as dt
 from typing import (
     Any,
+    Concatenate,
     Generic,
     Literal,
+    TypeAlias,
     TypeVar,
     final,
     overload,
@@ -39,9 +41,7 @@ from pandas.core.window import (
     RollingGroupby,
 )
 from typing_extensions import (
-    Concatenate,
     Self,
-    TypeAlias,
 )
 
 from pandas._libs.lib import _NoDefaultDoNotUse

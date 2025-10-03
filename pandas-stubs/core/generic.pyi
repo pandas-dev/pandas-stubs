@@ -14,6 +14,7 @@ import sqlite3
 from typing import (
     Any,
     ClassVar,
+    Concatenate,
     Literal,
     final,
     overload,
@@ -28,7 +29,6 @@ from pandas.core.series import (
 )
 import sqlalchemy.engine
 from typing_extensions import (
-    Concatenate,
     Never,
     Self,
 )

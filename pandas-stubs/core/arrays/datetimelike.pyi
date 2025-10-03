@@ -1,5 +1,8 @@
 from collections.abc import Sequence
-from typing import overload
+from typing import (
+    TypeAlias,
+    overload,
+)
 
 import numpy as np
 from pandas.core.arrays.base import (
@@ -8,7 +11,6 @@ from pandas.core.arrays.base import (
 )
 from typing_extensions import (
     Self,
-    TypeAlias,
 )
 
 from pandas._libs import (

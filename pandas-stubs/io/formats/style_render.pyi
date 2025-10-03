@@ -5,6 +5,7 @@ from collections.abc import (
 from typing import (
     Any,
     Literal,
+    TypeAlias,
     TypedDict,
 )
 
@@ -17,7 +18,6 @@ from pandas import Index
 from pandas.core.indexing import _IndexSlice
 from typing_extensions import (
     Self,
-    TypeAlias,
 )
 
 from pandas._typing import (

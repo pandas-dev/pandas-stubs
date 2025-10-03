@@ -2,7 +2,6 @@ import io
 import itertools
 from typing import (
     Any,
-    Union,
 )
 
 from matplotlib.axes import Axes
@@ -670,7 +669,7 @@ def test_grouped_dataframe_boxplot_single(close_figures):
         )
 
     # not a literal bool
-    check(assert_type(grouped.boxplot(subplots=bool(0.5)), Union[Axes, Series]), Series)
+    check(assert_type(grouped.boxplot(subplots=bool(0.5)), Axes | Series), Series)
 
 
 def test_grouped_dataframe_hist(close_figures):

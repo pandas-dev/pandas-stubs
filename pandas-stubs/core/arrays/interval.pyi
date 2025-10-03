@@ -1,4 +1,7 @@
-from typing import overload
+from typing import (
+    TypeAlias,
+    overload,
+)
 
 import numpy as np
 from pandas import (
@@ -8,7 +11,6 @@ from pandas import (
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
 from typing_extensions import (
     Self,
-    TypeAlias,
 )
 
 from pandas._libs.interval import (

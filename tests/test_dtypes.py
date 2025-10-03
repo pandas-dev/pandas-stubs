@@ -7,8 +7,6 @@ from datetime import (
 )
 from typing import (
     Literal,
-    Optional,
-    Union,
 )
 
 import numpy as np
@@ -113,7 +111,7 @@ def test_categorical_dtype() -> None:
         pd.CategoricalDtype,
     )
     check(assert_type(cdt.categories, pd.Index), pd.Index)
-    check(assert_type(cdt.ordered, Optional[bool]), bool)
+    check(assert_type(cdt.ordered, bool | None), bool)
 
 
 def test_sparse_dtype() -> None:
@@ -129,7 +127,7 @@ def test_sparse_dtype() -> None:
     check(assert_type(pd.SparseDtype(np.timedelta64), pd.SparseDtype), pd.SparseDtype)
     check(assert_type(pd.SparseDtype("datetime64"), pd.SparseDtype), pd.SparseDtype)
     check(assert_type(pd.SparseDtype(), pd.SparseDtype), pd.SparseDtype)
-    check(assert_type(s_dt.fill_value, Union[Scalar, None]), int)
+    check(assert_type(s_dt.fill_value, Scalar | None), int)
 
 
 def test_string_dtype() -> None:

@@ -138,7 +138,7 @@ args = [
 
 
 [tool.black]
-target-version = ['py39']
+target-version = ["py310"]
 
 [tool.isort]
 known_pre_libs = "pandas._config"
@@ -170,12 +170,12 @@ skip_glob = "env"
 
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py310"
 fix = true
 
 
 [tool.ruff.lint]
-extend-select = ["PYI", "UP", "RUF100"]
+extend-select = ["B007", "B018", "PYI", "UP", "RUF100", "RUF059"]
 ignore = [
   "E501",   # https://docs.astral.sh/ruff/rules/line-too-long/
   "E731",   # https://docs.astral.sh/ruff/rules/lambda-assignment/
@@ -243,12 +243,10 @@ reportMissingTypeArgument = false
 reportMissingTypeStubs = false
 reportUnnecessaryTypeIgnoreComment = true
 reportUnknownArgumentType = false
-reportUnusedExpression = false
 reportUnknownLambdaType = false
 reportUnknownMemberType = false
 reportUnknownParameterType = false
 reportUnknownVariableType = false
-reportUnusedVariable = false
 reportPrivateUsage = false
 # enable optional checks
 reportMissingModuleSource = true

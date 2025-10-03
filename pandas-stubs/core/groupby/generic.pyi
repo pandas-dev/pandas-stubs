@@ -12,6 +12,7 @@ from typing import (
     Literal,
     NamedTuple,
     Protocol,
+    TypeAlias,
     TypeVar,
     final,
     overload,
@@ -28,7 +29,6 @@ from pandas.core.groupby.groupby import (
 from pandas.core.series import Series
 from typing_extensions import (
     Self,
-    TypeAlias,
 )
 
 from pandas._libs.tslibs.timestamps import Timestamp

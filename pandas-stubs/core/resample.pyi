@@ -5,6 +5,7 @@ from collections.abc import (
 )
 from typing import (
     Literal,
+    TypeAlias,
     final,
     overload,
 )
@@ -20,7 +21,6 @@ from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.core.groupby.grouper import Grouper
 from typing_extensions import (
     Self,
-    TypeAlias,
 )
 
 from pandas._typing import (

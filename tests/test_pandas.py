@@ -5,7 +5,6 @@ import random
 from typing import (
     TYPE_CHECKING,
     Any,
-    Union,
 )
 
 import numpy as np
@@ -515,9 +514,9 @@ def test_isna() -> None:
     if not pd.isna(nullable1):
         check(assert_type(nullable1, str), str)
     if pd.isna(nullable1):
-        assert_type(nullable1, Union[NaTType, NAType, None])
+        assert_type(nullable1, NaTType | NAType | None)
     if not pd.notna(nullable1):
-        assert_type(nullable1, Union[NaTType, NAType, None])
+        assert_type(nullable1, NaTType | NAType | None)
 
     nullable2: int | None = random.choice([2, None])
     if pd.notna(nullable2):
@@ -535,9 +534,9 @@ def test_isna() -> None:
     if not pd.isna(nullable3):
         check(assert_type(nullable3, bool), bool)
     if pd.isna(nullable3):
-        assert_type(nullable3, Union[NAType, None])
+        assert_type(nullable3, NAType | None)
     if not pd.notna(nullable3):
-        assert_type(nullable3, Union[NAType, None])
+        assert_type(nullable3, NAType | None)
 
 
 # GH 55
@@ -557,23 +556,19 @@ def test_read_xml() -> None:
 def test_unique() -> None:
     # Taken from the docs
     check(
-        assert_type(
-            pd.unique(pd.Series([2, 1, 3, 3])), Union[np.ndarray, ExtensionArray]
-        ),
+        assert_type(pd.unique(pd.Series([2, 1, 3, 3])), np.ndarray | ExtensionArray),
         np.ndarray,
     )
 
     check(
-        assert_type(
-            pd.unique(pd.Series([2] + [1] * 5)), Union[np.ndarray, ExtensionArray]
-        ),
+        assert_type(pd.unique(pd.Series([2] + [1] * 5)), np.ndarray | ExtensionArray),
         np.ndarray,
     )
 
     check(
         assert_type(
             pd.unique(pd.Series([pd.Timestamp("20160101"), pd.Timestamp("20160101")])),
-            Union[np.ndarray, ExtensionArray],
+            np.ndarray | ExtensionArray,
         ),
         np.ndarray,
     )
@@ -588,7 +583,7 @@ def test_unique() -> None:
                     ]
                 )
             ),
-            Union[np.ndarray, ExtensionArray],
+            np.ndarray | ExtensionArray,
         ),
         pd.arrays.DatetimeArray,
     )
@@ -612,14 +607,14 @@ def test_unique() -> None:
     check(
         assert_type(
             pd.unique(pd.Series(pd.Categorical(list("baabc")))),
-            Union[np.ndarray, ExtensionArray],
+            np.ndarray | ExtensionArray,
         ),
         pd.Categorical,
     )
     check(
         assert_type(
             pd.unique(pd.Series(pd.Categorical(list("baabc"), categories=list("abc")))),
-            Union[np.ndarray, ExtensionArray],
+            np.ndarray | ExtensionArray,
         ),
         pd.Categorical,
     )
@@ -630,7 +625,7 @@ def test_unique() -> None:
                     pd.Categorical(list("baabc"), categories=list("abc"), ordered=True)
                 )
             ),
-            Union[np.ndarray, ExtensionArray],
+            np.ndarray | ExtensionArray,
         ),
         pd.Categorical,
     )
@@ -726,7 +721,7 @@ def test_eval():
     check(
         assert_type(
             pd.eval("double_age = df.age * 2", target=df),
-            Union[npt.NDArray, Scalar, pd.DataFrame, pd.Series, None],
+            npt.NDArray | Scalar | pd.DataFrame | pd.Series | None,
         ),
         pd.DataFrame,
     )
