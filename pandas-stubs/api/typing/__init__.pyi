@@ -2,7 +2,6 @@ from pandas.core.groupby import (
     DataFrameGroupBy as DataFrameGroupBy,
     SeriesGroupBy as SeriesGroupBy,
 )
-from pandas.core.indexes.frozen import FrozenList as FrozenList
 from pandas.core.resample import (
     DatetimeIndexResamplerGroupby as DatetimeIndexResamplerGroupby,
     PeriodIndexResamplerGroupby as PeriodIndexResamplerGroupby,
