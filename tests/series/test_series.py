@@ -3549,7 +3549,7 @@ def test_diff() -> None:
         # str -> TypeError: unsupported operand type(s) for -: 'str' and 'str'
         pd.Series(["a", "b"]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 
-    def _diff_invalid0():  # pyright: ignore[reportUnusedFunction]
+    def _diff_invalid0() -> None:  # pyright: ignore[reportUnusedFunction]
         # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
         assert_type(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff(), Never)
 

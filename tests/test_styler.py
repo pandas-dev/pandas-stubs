@@ -40,7 +40,7 @@ else:
 
 
 @pytest.fixture(autouse=True)
-def reset_style():
+def reset_style() -> None:
     DF.style.clear()
 
 
@@ -255,10 +255,4 @@ def test_styler_map() -> None:
 
     df = DataFrame(np.random.randn(5, 2), columns=["A", "B"])
 
-    check(
-        assert_type(
-            df.style.map(color_negative, color="red"),
-            Styler,
-        ),
-        Styler,
-    )
+    check(assert_type(df.style.map(color_negative, color="red"), Styler), Styler)

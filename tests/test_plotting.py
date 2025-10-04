@@ -27,12 +27,12 @@ from pandas.plotting import (
 
 
 @pytest.fixture(autouse=True)
-def autouse_mpl_cleanup(mpl_cleanup):
+def autouse_mpl_cleanup(mpl_cleanup) -> None:
     pass
 
 
 @pytest.fixture
-def close_figures():
+def close_figures() -> None:
     plt.close("all")
 
 

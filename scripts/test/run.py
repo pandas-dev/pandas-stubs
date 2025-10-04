@@ -5,32 +5,32 @@ import subprocess
 import sys
 
 
-def mypy_src():
+def mypy_src() -> None:
     cmd = ["mypy", "pandas-stubs", "tests", "--no-incremental"]
     subprocess.run(cmd, check=True)
 
 
-def pyright_src():
+def pyright_src() -> None:
     cmd = ["pyright"]
     subprocess.run(cmd, check=True)
 
 
-def pyright_src_strict():
+def pyright_src_strict() -> None:
     cmd = ["pyright", "--project", "pyrightconfig-strict.json"]
     subprocess.run(cmd, check=True)
 
 
-def pytest():
+def pytest() -> None:
     cmd = ["pytest", "--cache-clear"]
     subprocess.run(cmd, check=True)
 
 
-def style():
+def style() -> None:
     cmd = ["pre-commit", "run", "--all-files", "--verbose"]
     subprocess.run(cmd, check=True)
 
 
-def stubtest(allowlist: str = "", check_missing: bool = False):
+def stubtest(allowlist: str = "", check_missing: bool = False) -> None:
     cmd = [
         sys.executable,
         "-m",
@@ -47,47 +47,47 @@ def stubtest(allowlist: str = "", check_missing: bool = False):
     subprocess.run(cmd, check=True)
 
 
-def build_dist():
+def build_dist() -> None:
     cmd = ["poetry", "build", "-f", "wheel"]
     subprocess.run(cmd, check=True)
 
 
-def install_dist():
+def install_dist() -> None:
     path = sorted(Path("dist/").glob("pandas_stubs-*.whl"))[-1]
     cmd = [sys.executable, "-m", "pip", "install", "--force-reinstall", str(path)]
     subprocess.run(cmd, check=True)
 
 
-def rename_src():
+def rename_src() -> None:
     if Path(r"pandas-stubs").exists():
         Path(r"pandas-stubs").rename("_pandas-stubs")
     else:
         raise FileNotFoundError("'pandas-stubs' folder does not exists.")
 
 
-def mypy_dist():
+def mypy_dist() -> None:
     cmd = ["mypy", "tests", "--no-incremental"]
     subprocess.run(cmd, check=True)
 
 
-def pyright_dist():
+def pyright_dist() -> None:
     cmd = ["pyright", "tests"]
     subprocess.run(cmd, check=True)
 
 
-def uninstall_dist():
+def uninstall_dist() -> None:
     cmd = [sys.executable, "-m", "pip", "uninstall", "-y", "pandas-stubs"]
     subprocess.run(cmd, check=True)
 
 
-def restore_src():
+def restore_src() -> None:
     if Path(r"_pandas-stubs").exists():
         Path(r"_pandas-stubs").rename("pandas-stubs")
     else:
         raise FileNotFoundError("'_pandas-stubs' folder does not exists.")
 
 
-def nightly_pandas():
+def nightly_pandas() -> None:
     cmd = [
         sys.executable,
         "-m",
@@ -110,13 +110,13 @@ def _get_version_from_pyproject(program: str) -> str:
     return version_line.split('"')[1]
 
 
-def released_pandas():
+def released_pandas() -> None:
     version = _get_version_from_pyproject("pandas")
     cmd = [sys.executable, "-m", "pip", "install", f"pandas=={version}"]
     subprocess.run(cmd, check=True)
 
 
-def nightly_mypy():
+def nightly_mypy() -> None:
     cmd = [
         sys.executable,
         "-m",
@@ -138,7 +138,7 @@ def nightly_mypy():
     )
 
 
-def released_mypy():
+def released_mypy() -> None:
     version = _get_version_from_pyproject("mypy")
     cmd = [sys.executable, "-m", "pip", "install", f"mypy=={version}"]
     subprocess.run(cmd, check=True)
@@ -152,7 +152,7 @@ def released_mypy():
     )
 
 
-def ty():
+def ty() -> None:
     cmd = [
         "ty",
         "check",
@@ -163,6 +163,6 @@ def ty():
     subprocess.run(cmd, check=True)
 
 
-def pyrefly():
+def pyrefly() -> None:
     cmd = ["pyrefly", "check", "pandas-stubs"]
     subprocess.run(cmd, check=True)
