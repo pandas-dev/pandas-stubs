@@ -23,9 +23,7 @@ from pandas.core.arrays import (
 )
 from pandas.core.indexers import check_array_indexer
 
-from pandas._typing import (
-    TakeIndexer,
-)
+from pandas._typing import TakeIndexer
 
 from pandas.core.dtypes.base import ExtensionDtype
 from pandas.core.dtypes.common import (

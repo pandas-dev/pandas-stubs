@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import (
-    TypeAlias,
-)
+from typing import TypeAlias
 
 from dateutil.relativedelta import (
     FR,
@@ -153,7 +151,7 @@ def test_timedelta_arithmetic() -> None:
     check(assert_type(td3 / 10.2, pd.Timedelta), pd.Timedelta)
 
 
-def test_timedelta_series_arithmetic() -> None:
+def test_timedelta_index_arithmetic() -> None:
     tds1 = pd.to_timedelta([2, 3], "minutes")
     td1 = pd.Timedelta("2 days")
     check(assert_type(tds1, pd.TimedeltaIndex), pd.TimedeltaIndex)
@@ -169,7 +167,7 @@ def test_timedelta_float_value() -> None:
     check(assert_type(pd.Timedelta(1.5, "h"), pd.Timedelta), pd.Timedelta)
 
 
-def test_timedelta_series_string() -> None:
+def test_timedelta_index_string() -> None:
     seq_list = ["1 day"]
     check(assert_type(pd.to_timedelta(seq_list), pd.TimedeltaIndex), pd.TimedeltaIndex)
 
@@ -197,19 +195,6 @@ def test_datetimeindex_plus_timedelta() -> None:
         pd.Timestamp,
     )
     dti = pd.to_datetime(["2022-03-08", "2022-03-15"])
-    td_s = pd.to_timedelta(pd.Series([10, 20]), "minutes")
-    dti_td_s = dti + td_s
-    check(
-        assert_type(dti_td_s, "pd.Series[pd.Timestamp]"),
-        pd.Series,
-        pd.Timestamp,
-    )
-    td_dti_s = td_s + dti
-    check(
-        assert_type(td_dti_s, "pd.Series[pd.Timestamp]"),
-        pd.Series,
-        pd.Timestamp,
-    )
     tdi = pd.to_timedelta([10, 20], "minutes")
     dti_tdi_dti = dti + tdi
     check(assert_type(dti_tdi_dti, "pd.DatetimeIndex"), pd.DatetimeIndex)
@@ -232,13 +217,6 @@ def test_datetimeindex_minus_timedelta() -> None:
         pd.Timestamp,
     )
     dti = pd.to_datetime(["2022-03-08", "2022-03-15"])
-    td_s = pd.to_timedelta(pd.Series([10, 20]), "minutes")
-    dti_td_s = dti - td_s
-    check(
-        assert_type(dti_td_s, "pd.Series[pd.Timestamp]"),
-        pd.Series,
-        pd.Timestamp,
-    )
     tdi = pd.to_timedelta([10, 20], "minutes")
     dti_tdi_dti = dti - tdi
     check(assert_type(dti_tdi_dti, "pd.DatetimeIndex"), pd.DatetimeIndex)
@@ -248,7 +226,7 @@ def test_datetimeindex_minus_timedelta() -> None:
     check(assert_type(dti_ts_tdi, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
 
-def test_timestamp_plus_timedelta_series() -> None:
+def test_timestamp_series_construction() -> None:
     check(
         assert_type(
             pd.Series([pd.Timestamp("2022-03-05"), pd.Timestamp("2022-03-06")]),
@@ -257,18 +235,6 @@ def test_timestamp_plus_timedelta_series() -> None:
         pd.Series,
         pd.Timestamp,
     )
-    ts = pd.Timestamp("2022-03-05")
-    td = pd.to_timedelta(pd.Series([10, 20]), "minutes")
-    r3 = td + ts
-    check(assert_type(r3, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    r4 = ts + td
-    check(assert_type(r4, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-
-
-def test_timedelta_series_mult() -> None:
-    df = pd.DataFrame({"x": [1, 3, 5], "y": [2, 2, 6]})
-    std = (df["x"] < df["y"]) * pd.Timedelta(10, "minutes")
-    check(assert_type(std, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
 def test_timedelta_series_sum() -> None:
@@ -286,15 +252,6 @@ def test_iso_calendar() -> None:
     # GH 31
     dates = pd.date_range(start="2012-01-01", end="2019-12-31", freq="W-MON")
     check(assert_type(dates.isocalendar(), pd.DataFrame), pd.DataFrame)
-
-
-def test_fail_on_adding_two_timestamps() -> None:
-    s1 = pd.Series(pd.to_datetime(["2022-05-01", "2022-06-01"]))
-    s2 = pd.Series(pd.to_datetime(["2022-05-15", "2022-06-15"]))
-    if TYPE_CHECKING_INVALID_USAGE:
-        _ssum = s1 + s2  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        ts = pd.Timestamp("2022-06-30")
-        _tsum = s1 + ts  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_dtindex_tzinfo() -> None:

@@ -47,9 +47,7 @@ from typing_extensions import (
 )
 import xarray as xr
 
-from pandas._typing import (
-    Scalar,
-)
+from pandas._typing import Scalar
 
 from tests import (
     PD_LTE_23,

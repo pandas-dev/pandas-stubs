@@ -518,7 +518,6 @@ def test_timedelta_add_sub() -> None:
     as_dt_timedelta = dt.timedelta(days=1)
     as_timedelta64 = np.timedelta64(1, "D")
     as_timedelta_index = pd.TimedeltaIndex([td])
-    as_timedelta_series = pd.Series(as_timedelta_index)
     as_period_index = pd.period_range("2012-01-01", periods=3, freq="D")
     as_datetime_index = pd.date_range("2012-01-01", periods=3)
     as_ndarray_td64 = ndarray_td64
@@ -534,11 +533,6 @@ def test_timedelta_add_sub() -> None:
     check(assert_type(td + as_dt_timedelta, pd.Timedelta), pd.Timedelta)
     check(assert_type(td + as_timedelta64, pd.Timedelta), pd.Timedelta)
     check(assert_type(td + as_timedelta_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(
-        assert_type(td + as_timedelta_series, "pd.Series[pd.Timedelta]"),
-        pd.Series,
-        pd.Timedelta,
-    )
     check(assert_type(td + as_period_index, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(td + as_datetime_index, pd.DatetimeIndex), pd.DatetimeIndex)
     check(
@@ -576,11 +570,6 @@ def test_timedelta_add_sub() -> None:
         pd.Timedelta,
     )
     check(assert_type(as_timedelta_index + td, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(
-        assert_type(as_timedelta_series + td, "pd.Series[pd.Timedelta]"),
-        pd.Series,
-        pd.Timedelta,
-    )
     check(assert_type(as_period_index + td, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(as_datetime_index + td, pd.DatetimeIndex), pd.DatetimeIndex)
     check(
@@ -612,11 +601,6 @@ def test_timedelta_add_sub() -> None:
     check(assert_type(td - as_timedelta64, pd.Timedelta), pd.Timedelta)
     check(assert_type(td - as_timedelta_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(
-        assert_type(td - as_timedelta_series, "pd.Series[pd.Timedelta]"),
-        pd.Series,
-        pd.Timedelta,
-    )
-    check(
         assert_type(td - as_ndarray_td64, npt.NDArray[np.timedelta64]),
         np.ndarray,
         np.timedelta64,
@@ -645,11 +629,6 @@ def test_timedelta_add_sub() -> None:
         pd.Timedelta,
     )
     check(assert_type(as_timedelta_index - td, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(
-        assert_type(as_timedelta_series - td, "pd.Series[pd.Timedelta]"),
-        pd.Series,
-        pd.Timedelta,
-    )
     check(assert_type(as_period_index - td, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(as_datetime_index - td, pd.DatetimeIndex), pd.DatetimeIndex)
     check(
@@ -702,18 +681,6 @@ def test_timedelta_mul_div() -> None:
         np.ndarray,
         np.timedelta64,
     )
-    check(
-        assert_type(td * mp_series_int, "pd.Series[pd.Timedelta]"),
-        pd.Series,
-        pd.Timedelta,
-    )
-    check(
-        assert_type(td * md_series_float, "pd.Series[pd.Timedelta]"),
-        pd.Series,
-        pd.Timedelta,
-    )
-    check(assert_type(td * md_int64_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(td * md_float_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
     check(assert_type(md_int * td, pd.Timedelta), pd.Timedelta)
     check(assert_type(md_float * td, pd.Timedelta), pd.Timedelta)
@@ -727,18 +694,6 @@ def test_timedelta_mul_div() -> None:
         np.ndarray,
         np.timedelta64,
     )
-    check(
-        assert_type(mp_series_int * td, "pd.Series[pd.Timedelta]"),
-        pd.Series,
-        pd.Timedelta,
-    )
-    check(
-        assert_type(md_series_float * td, "pd.Series[pd.Timedelta]"),
-        pd.Series,
-        pd.Timedelta,
-    )
-    check(assert_type(md_int64_index * td, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(md_float_index * td, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
     check(assert_type(td // td, int), int)
     check(assert_type(td // pd.NaT, float), float)

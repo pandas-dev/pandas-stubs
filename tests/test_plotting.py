@@ -1,8 +1,6 @@
 import io
 import itertools
-from typing import (
-    Any,
-)
+from typing import Any
 
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure

@@ -173,7 +173,8 @@ RandomState: TypeAlias = (
 )
 
 # dtypes
-NpDtype: TypeAlias = str | np.dtype[np.generic] | type[str | complex | bool | object]
+NpDtypeNoStr: TypeAlias = np.dtype[np.generic] | type[complex | bool | object]
+NpDtype: TypeAlias = str | NpDtypeNoStr | type[str]
 Dtype: TypeAlias = ExtensionDtype | NpDtype
 
 # AstypeArg is more carefully defined here as compared to pandas
@@ -847,19 +848,21 @@ MaskType: TypeAlias = Series[bool] | np_ndarray_bool | list[bool]
 
 T_INT = TypeVar("T_INT", bound=int)
 T_COMPLEX = TypeVar("T_COMPLEX", bound=complex)
-SeriesDTypeNoDateTime: TypeAlias = (
-    str
-    | bytes
+SeriesDTypeNoStrDateTime: TypeAlias = (
+    bytes
     | bool
     | int
     | float
     | complex
-    | Dtype
+    | NpDtypeNoStr
+    | ExtensionDtype
     | Period
     | Interval
     | CategoricalDtype
     | BaseOffset
-    | list[str]
+)
+SeriesDTypeNoDateTime: TypeAlias = (
+    str | SeriesDTypeNoStrDateTime | type[str] | list[str]
 )
 SeriesDType: TypeAlias = (
     SeriesDTypeNoDateTime
@@ -869,6 +872,9 @@ SeriesDType: TypeAlias = (
     | datetime.timedelta  # includes pd.Timedelta
 )
 S1 = TypeVar("S1", bound=SeriesDType, default=Any)
+S1_CO_NSDT = TypeVar(
+    "S1_CO_NSDT", bound=SeriesDTypeNoStrDateTime, default=Any, covariant=True
+)
 S1_CT_NDT = TypeVar(
     "S1_CT_NDT", bound=SeriesDTypeNoDateTime, default=Any, contravariant=True
 )

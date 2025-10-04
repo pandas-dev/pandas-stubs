@@ -60,9 +60,7 @@ from pandas.core.reshape.pivot import (
     _PivotTableIndexTypes,
     _PivotTableValuesTypes,
 )
-from pandas.core.series import (
-    Series,
-)
+from pandas.core.series import Series
 from pandas.core.window import (
     Expanding,
     ExponentialMovingWindow,
