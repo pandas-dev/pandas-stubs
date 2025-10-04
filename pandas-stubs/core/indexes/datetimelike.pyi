@@ -1,3 +1,5 @@
+from typing import Any
+
 import numpy as np
 from pandas.core.indexes.extension import ExtensionIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
@@ -19,16 +21,32 @@ class DatetimeIndexOpsMixin(ExtensionIndex[S1, GenericT_co]):
     @property
     def is_all_dates(self) -> bool: ...
     def min(
-        self, axis: AxisIndex | None = None, skipna: bool = True, *args, **kwargs
+        self,
+        axis: AxisIndex | None = None,
+        skipna: bool = True,
+        *args: Any,
+        **kwargs: Any,
     ) -> S1: ...
     def argmin(
-        self, axis: AxisIndex | None = None, skipna: bool = True, *args, **kwargs
+        self,
+        axis: AxisIndex | None = None,
+        skipna: bool = True,
+        *args: Any,
+        **kwargs: Any,
     ) -> np.int64: ...
     def max(
-        self, axis: AxisIndex | None = None, skipna: bool = True, *args, **kwargs
+        self,
+        axis: AxisIndex | None = None,
+        skipna: bool = True,
+        *args: Any,
+        **kwargs: Any,
     ) -> S1: ...
     def argmax(
-        self, axis: AxisIndex | None = None, skipna: bool = True, *args, **kwargs
+        self,
+        axis: AxisIndex | None = None,
+        skipna: bool = True,
+        *args: Any,
+        **kwargs: Any,
     ) -> np.int64: ...
     def __rsub__(  # type: ignore[misc,override] # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: DatetimeIndexOpsMixin

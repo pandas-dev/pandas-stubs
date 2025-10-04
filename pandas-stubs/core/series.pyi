@@ -4640,7 +4640,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         dtype: DTypeLike | None = None,
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray: ...
     @overload
     def to_numpy(  # pyrefly: ignore[bad-override]
@@ -4648,7 +4648,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         dtype: type[np.datetime64] | None = None,
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray[np.datetime64]: ...
     @overload
     def to_numpy(
@@ -4656,7 +4656,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         dtype: np.dtype[GenericT] | SupportsDType[GenericT] | type[GenericT],
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray[GenericT]: ...
     @overload
     def to_numpy(  # pyrefly: ignore[bad-override]
@@ -4664,7 +4664,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         dtype: type[np.timedelta64] | None = None,
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray[np.timedelta64]: ...
     @overload
     def to_numpy(
@@ -4672,7 +4672,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         dtype: np.dtype[GenericT] | SupportsDType[GenericT] | type[GenericT],
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray[GenericT]: ...
     @overload
     def to_numpy(
@@ -4680,7 +4680,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         dtype: None = None,
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray[np.object_]: ...
     @overload
     def to_numpy(
@@ -4688,7 +4688,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         dtype: type[np.int64],
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray[np.int64]: ...
     @overload
     def to_numpy(
@@ -4696,7 +4696,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         dtype: None = None,
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray[np.object_]: ...
     @overload
     def to_numpy(
@@ -4704,7 +4704,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         dtype: type[np.bytes_],
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray[np.bytes_]: ...
     @overload
     def to_numpy(
@@ -4712,7 +4712,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         dtype: type[np.object_] | None = None,
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray[np.object_]: ...
     @overload
     def to_numpy(
@@ -4720,7 +4720,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         dtype: type[_T_INTERVAL_NP],
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray[_T_INTERVAL_NP]: ...
     @overload
     def to_numpy(  # pyright: ignore[reportIncompatibleMethodOverride]
@@ -4728,7 +4728,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         dtype: DTypeLike | None = None,
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray: ...
     def tolist(self) -> list[S1]: ...
     def var(
@@ -4797,7 +4797,7 @@ class _SeriesSubclassBase(Series[S1], Generic[S1, GenericT_co]):
         dtype: None = None,
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray[GenericT_co]: ...
     @overload
     def to_numpy(
@@ -4805,7 +4805,7 @@ class _SeriesSubclassBase(Series[S1], Generic[S1, GenericT_co]):
         dtype: np.dtype[GenericT] | SupportsDType[GenericT] | type[GenericT],
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray[GenericT]: ...
     @overload
     def to_numpy(  # pyright: ignore[reportIncompatibleMethodOverride]
@@ -4813,5 +4813,5 @@ class _SeriesSubclassBase(Series[S1], Generic[S1, GenericT_co]):
         dtype: DTypeLike,
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray: ...

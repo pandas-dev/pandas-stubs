@@ -4,6 +4,7 @@ from builtins import type as type_t
 import decimal
 import numbers
 import sys
+from typing import Any
 
 import numpy as np
 from pandas.api.extensions import (
@@ -126,7 +127,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
             result = np.asarray([round(x, decimals) for x in result])
         return result
 
-    def __array_ufunc__(self, ufunc: np.ufunc, method: str, *inputs, **kwargs):
+    def __array_ufunc__(self, ufunc: np.ufunc, method: str, *inputs, **kwargs: Any):
         #
         if not all(
             isinstance(t, self._HANDLED_TYPES + (DecimalArray,)) for t in inputs
@@ -237,7 +238,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
     def _concat_same_type(cls, to_concat):
         return cls(np.concatenate([x._data for x in to_concat]))
 
-    def _reduce(self, name: str, *, skipna: bool = True, **kwargs):
+    def _reduce(self, name: str, *, skipna: bool = True, **kwargs: Any):
         if skipna:
             # If we don't have any NAs, we can ignore skipna
             if self.isna().any():
