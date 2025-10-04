@@ -2583,6 +2583,23 @@ class Series(IndexOpsMixin[S1], NDFrame):
         ),
     ) -> Series[Timedelta]: ...
     @overload
+    def __mul__(
+        self: Series[_str],
+        other: np_ndarray_float | np_ndarray_complex | np_ndarray_dt | np_ndarray_td,
+    ) -> Never: ...
+    @overload
+    def __mul__(
+        self: Series[_str],
+        other: (
+            int
+            | Sequence[int]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | Index[T_INT]
+            | Series[T_INT]
+        ),
+    ) -> Series[_str]: ...
+    @overload
     def __mul__(self: Series[T_INT], other: bool | Sequence[bool]) -> Series[T_INT]: ...
     @overload
     def __mul__(self: Series[float], other: int | Sequence[int]) -> Series[float]: ...
@@ -2674,6 +2691,21 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[Timedelta]: ...
+    @overload
+    def mul(
+        self: Series[_str],
+        other: (
+            int
+            | Sequence[int]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | Index[T_INT]
+            | Series[T_INT]
+        ),
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[_str]: ...
     @overload
     def mul(
         self: Series[T_INT],
@@ -2801,6 +2833,23 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[Timedelta]: ...
     @overload
     def __rmul__(
+        self: Series[_str],
+        other: np_ndarray_float | np_ndarray_complex | np_ndarray_dt | np_ndarray_td,
+    ) -> Never: ...
+    @overload
+    def __rmul__(
+        self: Series[_str],
+        other: (
+            int
+            | Sequence[int]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | Index[T_INT]
+            | Series[T_INT]
+        ),
+    ) -> Series[_str]: ...
+    @overload
+    def __rmul__(
         self: Series[T_INT], other: bool | Sequence[bool]
     ) -> Series[T_INT]: ...
     @overload
@@ -2893,6 +2942,21 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[Timedelta]: ...
+    @overload
+    def rmul(
+        self: Series[_str],
+        other: (
+            int
+            | Sequence[int]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | Index[T_INT]
+            | Series[T_INT]
+        ),
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[_str]: ...
     @overload
     def rmul(
         self: Series[T_INT],
