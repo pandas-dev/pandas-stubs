@@ -2128,7 +2128,7 @@ def test_pandera_generic() -> None:
     T = TypeVar("T")
 
     class MySeries(pd.Series, Generic[T]):
-        def __new__(cls, *args, **kwargs) -> Self:
+        def __new__(cls, *args: Any, **kwargs: Any) -> Self:
             return object.__new__(cls)
 
     def func() -> MySeries[float]:

@@ -68,6 +68,7 @@ types-python-dateutil = ">=2.8.19"
 beautifulsoup4 = ">=4.14.2"
 html5lib = ">=1.1"
 python-calamine = ">=0.2.0"
+pyarrow-stubs = { version = ">=20.0.0.20250928", python = "<4" }
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -240,7 +241,6 @@ enableTypeIgnoreComments = false    # use pyright-specific ignores
 # disable subset of strict
 reportMissingParameterType = false
 reportMissingTypeArgument = false
-reportMissingTypeStubs = false
 reportUnnecessaryTypeIgnoreComment = true
 reportUnknownArgumentType = false
 reportUnknownLambdaType = false

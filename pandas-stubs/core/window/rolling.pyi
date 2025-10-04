@@ -97,7 +97,7 @@ class RollingAndExpandingMixin(BaseWindow[NDFrameT]):
     def max(
         self,
         numeric_only: bool = ...,
-        *args,
+        *args: Any,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
     ) -> NDFrameT: ...

@@ -1,4 +1,5 @@
 from typing import (
+    Any,
     TypeAlias,
     overload,
 )
@@ -83,7 +84,7 @@ class IntervalArray(IntervalMixin, ExtensionArray):
         allow_fill: bool = ...,
         fill_value=...,
         axis=...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Self: ...
     def value_counts(self, dropna: bool = True): ...
     @property
