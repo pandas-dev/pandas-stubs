@@ -6,6 +6,5 @@
   "reportUnnecessaryTypeIgnoreComment": true,
   "reportMissingModuleSource": true,
   "useLibraryCodeForTypes": false,
-  "reportPrivateUsage": false,
   "reportUnknownLambdaType": false
 }
