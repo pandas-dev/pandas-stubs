@@ -1,3 +1,5 @@
+from typing import Any
+
 import numpy as np
 
 def check_array_indexer(arrayArrayLike, indexer): ...
@@ -7,7 +9,7 @@ class BaseIndexer:
         self,
         index_array: np.ndarray | None = ...,
         window_size: int = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> None: ...
     def get_window_bounds(
         self,
@@ -24,7 +26,7 @@ class VariableOffsetWindowIndexer(BaseIndexer):
         window_size: int = ...,
         index=...,
         offset=...,
-        **kwargs,
+        **kwargs: Any,
     ) -> None: ...
     def get_window_bounds(
         self,
