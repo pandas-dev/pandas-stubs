@@ -40,11 +40,11 @@ else:
 
 
 @pytest.fixture(autouse=True)
-def reset_style():
+def reset_style() -> None:
     DF.style.clear()
 
 
-def test_apply():
+def test_apply() -> None:
     def f(s: Series) -> Series:
         return s
 
@@ -188,7 +188,7 @@ def test_set() -> None:
     check(assert_type(DF.style.set_uuid("r4nd0mc44r4c73r5"), Styler), Styler)
 
 
-def test_styler_templates():
+def test_styler_templates() -> None:
     check(assert_type(DF.style.template_html, Template), Template)
     check(assert_type(DF.style.template_html_style, Template), Template)
     check(assert_type(DF.style.template_html_table, Template), Template)
@@ -255,10 +255,4 @@ def test_styler_map() -> None:
 
     df = DataFrame(np.random.randn(5, 2), columns=["A", "B"])
 
-    check(
-        assert_type(
-            df.style.map(color_negative, color="red"),
-            Styler,
-        ),
-        Styler,
-    )
+    check(assert_type(df.style.map(color_negative, color="red"), Styler), Styler)

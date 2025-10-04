@@ -1674,7 +1674,7 @@ def test_timedeltaseries_add_timestampseries() -> None:
     check(assert_type(plus, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
 
-def test_timestamp_strptime_fails():
+def test_timestamp_strptime_fails() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         assert_never(
             pd.Timestamp.strptime(
@@ -1684,7 +1684,7 @@ def test_timestamp_strptime_fails():
         )
 
 
-def test_weekofmonth_init():
+def test_weekofmonth_init() -> None:
     # GH 629
     check(
         assert_type(
@@ -1731,7 +1731,7 @@ def test_dateoffset_weekday() -> None:
     )
 
 
-def test_date_range_unit():
+def test_date_range_unit() -> None:
     check(
         assert_type(pd.date_range("1/1/2022", "2/1/2022", unit="s"), pd.DatetimeIndex),
         pd.DatetimeIndex,

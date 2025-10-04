@@ -25,12 +25,12 @@ from pandas.plotting import (
 
 
 @pytest.fixture(autouse=True)
-def autouse_mpl_cleanup(mpl_cleanup):
+def autouse_mpl_cleanup(mpl_cleanup) -> None:
     pass
 
 
 @pytest.fixture
-def close_figures():
+def close_figures() -> None:
     plt.close("all")
 
 
@@ -282,7 +282,7 @@ def test_table(close_figures) -> None:
     check(assert_type(pd.plotting.table(ax, df), Table), Table)
 
 
-def test_plot_line():
+def test_plot_line() -> None:
     check(assert_type(IRIS_DF.plot(), Axes), Axes)
     check(assert_type(IRIS_DF.plot.line(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="line"), Axes), Axes)
@@ -509,7 +509,7 @@ def test_plot_scatter(close_figures) -> None:
     )
 
 
-def test_plot_keywords(close_figures):
+def test_plot_keywords(close_figures) -> None:
     _, ax = plt.subplots(1, 1)
     df = IRIS_DF.iloc[:, :3].abs()
     check(
@@ -593,7 +593,7 @@ def test_plot_subplot_changes_150() -> None:
     )
 
 
-def test_grouped_dataframe_boxplot(close_figures):
+def test_grouped_dataframe_boxplot(close_figures) -> None:
     tuples = [t for t in itertools.product(range(10), range(2))]
     index = pd.MultiIndex.from_tuples(tuples, names=["lvl0", "lvl1"])
     df = pd.DataFrame(
@@ -622,7 +622,7 @@ def test_grouped_dataframe_boxplot(close_figures):
         )
 
 
-def test_grouped_dataframe_boxplot_single(close_figures):
+def test_grouped_dataframe_boxplot_single(close_figures) -> None:
     """
     Test with pandas 2.2.3 separated to make it pass.
 
@@ -670,7 +670,7 @@ def test_grouped_dataframe_boxplot_single(close_figures):
     check(assert_type(grouped.boxplot(subplots=bool(0.5)), Axes | Series), Series)
 
 
-def test_grouped_dataframe_hist(close_figures):
+def test_grouped_dataframe_hist(close_figures) -> None:
     df = IRIS_DF.iloc[:50]
     grouped = df.groupby("Name")
     check(assert_type(grouped.hist(), Series), Series)
@@ -694,7 +694,7 @@ def test_grouped_dataframe_hist(close_figures):
     )
 
 
-def test_grouped_dataframe_hist_str(close_figures):
+def test_grouped_dataframe_hist_str(close_figures) -> None:
     df = IRIS_DF.iloc[:50]
     grouped = df.groupby("Name")
     check(assert_type(grouped.hist(), Series), Series)
@@ -718,7 +718,7 @@ def test_grouped_dataframe_hist_str(close_figures):
     )
 
 
-def test_grouped_series_hist(close_figures):
+def test_grouped_series_hist(close_figures) -> None:
     multi_index = pd.MultiIndex.from_tuples([(0, 0), (0, 1), (1, 0)], names=["a", "b"])
     s = pd.Series([0, 1, 2], index=multi_index, dtype=int)
     grouped = s.groupby(level=0)

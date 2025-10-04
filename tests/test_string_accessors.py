@@ -31,7 +31,7 @@ def test_string_accessors_type_preserving_index() -> None:
     check(assert_type(idx_bytes.str.slice(0, 4, 2), "pd.Index[bytes]"), pd.Index, bytes)
 
 
-def test_string_accessors_boolean_series():
+def test_string_accessors_boolean_series() -> None:
     s = pd.Series(DATA)
     _check = functools.partial(check, klass=pd.Series, dtype=np.bool_)
     _check(assert_type(s.str.startswith("a"), "pd.Series[bool]"))
@@ -69,7 +69,7 @@ def test_string_accessors_boolean_series():
         _check(assert_type(s.str.match(re.compile(r"pp")), "pd.Series[bool]"))
 
 
-def test_string_accessors_boolean_index():
+def test_string_accessors_boolean_index() -> None:
     idx = pd.Index(DATA)
     _check = functools.partial(check, klass=np_1darray[np.bool])
     _check(assert_type(idx.str.startswith("a"), np_1darray[np.bool]))
@@ -109,7 +109,7 @@ def test_string_accessors_boolean_index():
         _check(assert_type(idx.str.match(re.compile(r"pp")), np_1darray[np.bool]))
 
 
-def test_string_accessors_integer_series():
+def test_string_accessors_integer_series() -> None:
     s = pd.Series(DATA)
     _check = functools.partial(check, klass=pd.Series, dtype=np.integer)
     _check(assert_type(s.str.find("p"), "pd.Series[int]"))
@@ -124,7 +124,7 @@ def test_string_accessors_integer_series():
         s.str.find(re.compile(r"p"))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
-def test_string_accessors_integer_index():
+def test_string_accessors_integer_index() -> None:
     idx = pd.Index(DATA)
     _check = functools.partial(check, klass=pd.Index, dtype=np.integer)
     _check(assert_type(idx.str.find("p"), "pd.Index[int]"))
@@ -139,7 +139,7 @@ def test_string_accessors_integer_index():
         idx.str.find(re.compile(r"p"))  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
-def test_string_accessors_string_series():
+def test_string_accessors_string_series() -> None:
     s = pd.Series(DATA)
     _check = functools.partial(check, klass=pd.Series, dtype=str)
     _check(assert_type(s.str.capitalize(), "pd.Series[str]"))
@@ -197,7 +197,7 @@ def test_string_accessors_string_series():
         s.str.wrap(80, False)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
 
 
-def test_string_accessors_string_index():
+def test_string_accessors_string_index() -> None:
     idx = pd.Index(DATA)
     _check = functools.partial(check, klass=pd.Index, dtype=str)
     _check(assert_type(idx.str.capitalize(), "pd.Index[str]"))
@@ -255,17 +255,17 @@ def test_string_accessors_string_index():
         idx.str.wrap(80, False)  # type: ignore[misc] # pyright: ignore[reportCallIssue]
 
 
-def test_string_accessors_bytes_series():
+def test_string_accessors_bytes_series() -> None:
     s = pd.Series(["a1", "b2", "c3"])
     check(assert_type(s.str.encode("latin-1"), "pd.Series[bytes]"), pd.Series, bytes)
 
 
-def test_string_accessors_bytes_index():
+def test_string_accessors_bytes_index() -> None:
     s = pd.Index(["a1", "b2", "c3"])
     check(assert_type(s.str.encode("latin-1"), "pd.Index[bytes]"), pd.Index, bytes)
 
 
-def test_string_accessors_list_series():
+def test_string_accessors_list_series() -> None:
     s = pd.Series(DATA)
     _check = functools.partial(check, klass=pd.Series, dtype=list)
     _check(assert_type(s.str.findall("pp"), "pd.Series[list[str]]"))
@@ -285,7 +285,7 @@ def test_string_accessors_list_series():
         )
 
 
-def test_string_accessors_list_index():
+def test_string_accessors_list_index() -> None:
     idx = pd.Index(DATA)
     _check = functools.partial(check, klass=pd.Index, dtype=list)
     _check(assert_type(idx.str.findall("pp"), "pd.Index[list[str]]"))
@@ -305,7 +305,7 @@ def test_string_accessors_list_index():
         )
 
 
-def test_string_accessors_expanding_series():
+def test_string_accessors_expanding_series() -> None:
     s = pd.Series(["a1", "b2", "c3"])
     _check = functools.partial(check, klass=pd.DataFrame)
     _check(assert_type(s.str.extract(r"([ab])?(\d)"), pd.DataFrame))
@@ -319,7 +319,7 @@ def test_string_accessors_expanding_series():
     _check(assert_type(s.str.split("a", expand=True), pd.DataFrame))
 
 
-def test_string_accessors_expanding_index():
+def test_string_accessors_expanding_index() -> None:
     idx = pd.Index(["a1", "b2", "c3"])
     _check = functools.partial(check, klass=pd.MultiIndex)
     _check(assert_type(idx.str.get_dummies(), pd.MultiIndex))
@@ -341,7 +341,7 @@ def test_string_accessors_expanding_index():
     )
 
 
-def test_series_overloads_partition():
+def test_series_overloads_partition() -> None:
     s = pd.Series(
         [
             "ap;pl;ep",
@@ -380,7 +380,7 @@ def test_series_overloads_partition():
     check(assert_type(s.str.rpartition(expand=False), pd.Series), pd.Series, object)
 
 
-def test_index_overloads_partition():
+def test_index_overloads_partition() -> None:
     idx = pd.Index(
         [
             "ap;pl;ep",
@@ -415,7 +415,7 @@ def test_index_overloads_partition():
     )
 
 
-def test_series_overloads_cat():
+def test_series_overloads_cat() -> None:
     s = pd.Series(DATA)
     check(assert_type(s.str.cat(sep=";"), str), str)
     check(assert_type(s.str.cat(None, sep=";"), str), str)
@@ -445,7 +445,7 @@ def test_series_overloads_cat():
     )
 
 
-def test_index_overloads_cat():
+def test_index_overloads_cat() -> None:
     idx = pd.Index(DATA)
     check(assert_type(idx.str.cat(sep=";"), str), str)
     check(assert_type(idx.str.cat(None, sep=";"), str), str)
@@ -479,7 +479,7 @@ def test_index_overloads_cat():
     )
 
 
-def test_series_overloads_extract():
+def test_series_overloads_extract() -> None:
     s = pd.Series(DATA)
     check(assert_type(s.str.extract(r"[ab](\d)"), pd.DataFrame), pd.DataFrame)
     check(
@@ -497,7 +497,7 @@ def test_series_overloads_extract():
     )
 
 
-def test_index_overloads_extract():
+def test_index_overloads_extract() -> None:
     idx = pd.Index(DATA)
     check(assert_type(idx.str.extract(r"[ab](\d)"), pd.DataFrame), pd.DataFrame)
     check(

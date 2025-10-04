@@ -297,7 +297,7 @@ def test_interval_math() -> None:
         )  # pyright: ignore[reportOperatorIssue]
 
 
-def test_interval_cmp():
+def test_interval_cmp() -> None:
     interval_i = pd.Interval(0, 1, closed="left")
     interval_f = pd.Interval(0.0, 1.0, closed="right")
     interval_ts = pd.Interval(

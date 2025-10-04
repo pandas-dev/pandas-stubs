@@ -25,7 +25,7 @@ def test(
     src: bool = False,
     dist: bool = False,
     type_checker: Literal["", "mypy", "pyright"] = "",
-):
+) -> None:
     steps = []
     if src:
         steps.extend(_SRC_STEPS)
