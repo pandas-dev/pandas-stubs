@@ -6,7 +6,6 @@ import numbers
 import sys
 
 import numpy as np
-import pandas as pd
 from pandas.api.extensions import (
     no_default,
     register_extension_dtype,
@@ -165,7 +164,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
             return self._data[item]
         else:
             # array, slice.
-            item = pd.api.indexers.check_array_indexer(self, item)
+            item = check_array_indexer(self, item)
             return type(self)(self._data[item])
 
     def take(
