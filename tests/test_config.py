@@ -21,7 +21,7 @@ else:
     Display = Options = Any
 
 
-def test_option_tools():
+def test_option_tools() -> None:
     check(assert_type(pd.reset_option("display.width"), None), type(None))
     check(assert_type(pd.set_option("display.width", 80), None), type(None))
     check(assert_type(pd.describe_option("display.width", False), str), str)
@@ -33,14 +33,14 @@ def test_option_tools():
         assert pd.get_option("display.width") == 120
 
 
-def test_specific_option():
+def test_specific_option() -> None:
     # GH 294
     check(assert_type(pd.options.plotting.backend, str), str)
     # Just check assignment
     pd.options.plotting.backend = "matplotlib"
 
 
-def test_display_float_format():
+def test_display_float_format() -> None:
     check(
         assert_type(pd.options.display.float_format, Callable[[float], str] | None),
         type(None),
@@ -50,7 +50,7 @@ def test_display_float_format():
         assert pd.get_option("display.float_format") == formatter
 
 
-def test_display_types_none_allowed_get_options():
+def test_display_types_none_allowed_get_options() -> None:
     # GH 1230
     # Initial values
     check(assert_type(pd.options.display.chop_threshold, float | None), type(None))
@@ -62,7 +62,7 @@ def test_display_types_none_allowed_get_options():
     check(assert_type(pd.options.display.min_rows, int | None), int)
 
 
-def test_display_types_none_allowed_set_options():
+def test_display_types_none_allowed_set_options() -> None:
     # GH 1230
     # Test setting each option as None and then to a specific value
     pd.options.display.chop_threshold = None
@@ -81,7 +81,7 @@ def test_display_types_none_allowed_set_options():
     pd.options.display.min_rows = 100
 
 
-def test_display_types_literal_constraints():
+def test_display_types_literal_constraints() -> None:
     # GH 1230
     # Various display options have specific allowed values
     # Test colheader_justify with allowed values

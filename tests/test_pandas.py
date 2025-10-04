@@ -688,7 +688,7 @@ def test_arrow_dtype() -> None:
     )
 
 
-def test_hashing():
+def test_hashing() -> None:
     a = np.array([1, 2, 3])
     check(assert_type(pdutil.hash_array(a), npt.NDArray[np.uint64]), np.ndarray)
     check(
@@ -716,7 +716,7 @@ def test_hashing():
     )
 
 
-def test_eval():
+def test_eval() -> None:
     df = pd.DataFrame({"animal": ["dog", "pig"], "age": [10, 20]})
     check(
         assert_type(
@@ -821,7 +821,7 @@ def test_to_numeric_array_series() -> None:
     )
 
 
-def test_wide_to_long():
+def test_wide_to_long() -> None:
     df = pd.DataFrame(
         {
             "A1970": {0: "a", 1: "b", 2: "c"},
@@ -845,7 +845,7 @@ def test_wide_to_long():
     )
 
 
-def test_melt():
+def test_melt() -> None:
     df = pd.DataFrame(
         {
             "A": {0: "a", 1: "b", 2: "c"},

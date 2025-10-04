@@ -1512,7 +1512,7 @@ def test_types_pivot_table() -> None:
     )
 
 
-def test_pivot_table_sort():
+def test_pivot_table_sort() -> None:
     df = pd.DataFrame({"a": [1, 2], "b": [3, 4], "c": [5, 6], "d": [7, 8]})
 
     check(
@@ -2822,7 +2822,7 @@ def test_dataframe_pct_change() -> None:
     check(assert_type(df.pct_change(fill_value=0), pd.DataFrame), pd.DataFrame)
 
 
-def test_indexslice_setitem():
+def test_indexslice_setitem() -> None:
     df = pd.DataFrame(
         {"x": [1, 2, 2, 3], "y": [1, 2, 3, 4], "z": [10, 20, 30, 40]}
     ).set_index(["x", "y"])
@@ -2833,7 +2833,7 @@ def test_indexslice_setitem():
     df.loc[pd.IndexSlice[pd.Index([2, 3]), :], "z"] = 99
 
 
-def test_indexslice_getitem():
+def test_indexslice_getitem() -> None:
     # GH 300
     df = (
         pd.DataFrame({"x": [1, 2, 2, 3, 4], "y": [10, 20, 30, 40, 10]})
@@ -2865,7 +2865,7 @@ def test_indexslice_getitem():
     )
 
 
-def test_compute_values():
+def test_compute_values() -> None:
     df = pd.DataFrame({"x": [1, 2, 3, 4]})
     s: pd.Series = pd.Series([10, 20, 30, 40])
     check(assert_type(df["x"] + s.values, pd.Series), pd.Series, np.int64)
@@ -3295,7 +3295,7 @@ def test_not_hashable() -> None:
     check(assert_type(pd.Index.__hash__, None), type(None))
     check(assert_type(pd.Index([]).__hash__, None), type(None))
 
-    def test_func(_: Hashable):
+    def test_func(_: Hashable) -> None:
         pass
 
     if TYPE_CHECKING_INVALID_USAGE:
@@ -3527,7 +3527,7 @@ def test_groupby_result_for_ambiguous_indexes() -> None:
         check(assert_type(value2, pd.DataFrame), pd.DataFrame)
 
 
-def test_setitem_list():
+def test_setitem_list() -> None:
     # GH 153
     lst1: list[str] = ["a", "b", "c"]
     lst2: list[int] = [1, 2, 3]

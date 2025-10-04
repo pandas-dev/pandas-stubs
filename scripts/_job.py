@@ -14,7 +14,7 @@ class Step:
     rollback: Callable[[], None] | None = None
 
 
-def __rollback_job(steps: deque[Step]):
+def __rollback_job(steps: deque[Step]) -> None:
     """
     Responsible to run rollback of steps.
     """
