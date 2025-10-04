@@ -57,7 +57,7 @@ class NamedAgg(NamedTuple):
 
 class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     @overload
-    def aggregate(  # pyrefly: ignore
+    def aggregate(
         self,
         func: Callable[Concatenate[Series[S2], P], S3],
         /,
