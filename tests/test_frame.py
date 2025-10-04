@@ -25,6 +25,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Generic,
+    Protocol,
     TypeAlias,
     TypedDict,
     TypeVar,
@@ -82,7 +83,7 @@ else:
 DF = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
 
-def getCols(k) -> str:
+def getCols(k: int) -> str:
     return string.ascii_uppercase[:k]
 
 
@@ -90,7 +91,7 @@ def makeStringIndex(k: int = 10) -> pd.Index:
     return pd.Index(rands_array(nchars=10, size=k), name=None)
 
 
-def rands_array(nchars, size: int) -> np.ndarray:
+def rands_array(nchars: int, size: int) -> npt.NDArray[Any]:
     chars = np.array(list(string.ascii_letters + string.digits), dtype=(np.str_, 1))
     retval = (
         np.random.default_rng(2)
@@ -1712,7 +1713,12 @@ def test_types_groupby_agg() -> None:
     agg_dict1 = {"col2": "min", "col3": "max", 0: "sum"}
     check(assert_type(df.groupby("col1").agg(agg_dict1), pd.DataFrame), pd.DataFrame)
 
-    def wrapped_min(x: Any) -> Any:
+    T_co = TypeVar("T_co", covariant=True)
+
+    class SupportsMin(Protocol[T_co]):
+        def min(self) -> T_co: ...
+
+    def wrapped_min(x: SupportsMin[T_co]) -> T_co:
         return x.min()
 
     with pytest_warns_bounded(
@@ -2142,7 +2148,7 @@ def test_dataframe_to_string_float_fmt() -> None:
     )
     check(assert_type(df.to_string(), str), str)
 
-    def _formatter(x) -> str:
+    def _formatter(x: float) -> str:
         return f"{x:.2f}"
 
     check(assert_type(df.to_string(float_format=_formatter), str), str)

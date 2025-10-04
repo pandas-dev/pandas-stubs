@@ -1,5 +1,3 @@
-from typing import Any
-
 import numpy as np
 from numpy.lib.mixins import NDArrayOperatorsMixin
 from pandas.core.arrays.base import (
@@ -15,5 +13,4 @@ class PandasDtype(ExtensionDtype):
     @property
     def itemsize(self) -> int: ...
 
-class PandasArray(ExtensionArray, ExtensionOpsMixin, NDArrayOperatorsMixin):
-    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs: Any): ...
+class PandasArray(ExtensionArray, ExtensionOpsMixin, NDArrayOperatorsMixin): ...

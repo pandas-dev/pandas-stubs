@@ -13,6 +13,7 @@ from typing_extensions import Self
 from pandas._typing import (
     S1,
     DtypeArg,
+    np_1darray,
 )
 
 class CategoricalIndex(ExtensionIndex[S1], accessor.PandasDelegate):
@@ -35,7 +36,7 @@ class CategoricalIndex(ExtensionIndex[S1], accessor.PandasDelegate):
     def __contains__(self, key) -> bool: ...
     def __array__(
         self, dtype: DtypeArg = ..., copy: bool | None = ...
-    ) -> np.ndarray: ...
+    ) -> np_1darray: ...
     @property
     def is_unique(self) -> bool: ...
     @property
