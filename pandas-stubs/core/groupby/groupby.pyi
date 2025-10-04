@@ -79,7 +79,7 @@ _ResamplerGroupBy: TypeAlias = (
 
 class GroupBy(BaseGroupBy[NDFrameT]):
     def __getattr__(self, attr: str) -> Any: ...
-    def apply(self, func: Callable | str, *args, **kwargs) -> NDFrameT: ...
+    def apply(self, func: Callable | str, *args: Any, **kwargs: Any) -> NDFrameT: ...
     @final
     @overload
     def any(self: GroupBy[Series], skipna: bool = ...) -> Series[bool]: ...
@@ -207,7 +207,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         origin: TimeGrouperOrigin | TimestampConvertibleTypes = ...,
         offset: TimedeltaConvertibleTypes | None = ...,
         group_keys: bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> _ResamplerGroupBy[NDFrameT]: ...
     @final
     def rolling(
@@ -278,25 +278,25 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     ) -> NDFrameT: ...
     @final
     def cumprod(
-        self, axis: Axis | _NoDefaultDoNotUse = ..., *args, **kwargs
+        self, axis: Axis | _NoDefaultDoNotUse = ..., *args: Any, **kwargs: Any
     ) -> NDFrameT: ...
     @final
     def cumsum(
-        self, axis: Axis | _NoDefaultDoNotUse = ..., *args, **kwargs
+        self, axis: Axis | _NoDefaultDoNotUse = ..., *args: Any, **kwargs: Any
     ) -> NDFrameT: ...
     @final
     def cummin(
         self,
         axis: AxisInt | _NoDefaultDoNotUse = ...,
         numeric_only: bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> NDFrameT: ...
     @final
     def cummax(
         self,
         axis: AxisInt | _NoDefaultDoNotUse = ...,
         numeric_only: bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> NDFrameT: ...
     @final
     def shift(
@@ -343,7 +343,7 @@ _GroupByT = TypeVar("_GroupByT", bound=GroupBy)
 class GroupByPlot(PlotAccessor, Generic[_GroupByT]):
     def __init__(self, groupby: _GroupByT) -> None: ...
     # The following methods are inherited from the fake parent class PlotAccessor
-    # def __call__(self, *args, **kwargs): ...
+    # def __call__(self, *args: Any, **kwargs: Any): ...
     # def __getattr__(self, name: str): ...
 
 class BaseGroupBy(SelectionMixin[NDFrameT], GroupByIndexingMixin):
