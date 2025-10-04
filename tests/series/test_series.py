@@ -1819,7 +1819,7 @@ def test_types_to_dict() -> None:
     assert_type(s.to_dict(), dict[Any, str])
 
 
-def test_categorical_codes():
+def test_categorical_codes() -> None:
     # GH-111
     cat = pd.Categorical(["a", "b", "a"])
     check(assert_type(cat.codes, np_1darray[np.signedinteger]), np_1darray[np.int8])
@@ -1942,7 +1942,7 @@ def test_squeeze() -> None:
     check(assert_type(s2.squeeze(), "pd.Series[int] | Scalar"), np.integer)
 
 
-def test_to_xarray():
+def test_to_xarray() -> None:
     s = pd.Series([1, 2])
     check(assert_type(s.to_xarray(), xr.DataArray), xr.DataArray)
 

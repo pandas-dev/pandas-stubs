@@ -42,7 +42,7 @@ ResamplerGroupBy: TypeAlias = (
 )
 
 
-def test_dataframegroupby():
+def test_dataframegroupby() -> None:
     df = pd.DataFrame({"a": [1, 2, 3]})
     group = df.groupby("a")
 
@@ -52,7 +52,7 @@ def test_dataframegroupby():
     f1(group)
 
 
-def test_seriesgroupby():
+def test_seriesgroupby() -> None:
     sr = pd.Series([1, 2, 3], index=pd.Index(["a", "b", "a"]))
 
     def f1(gb: SeriesGroupBy):

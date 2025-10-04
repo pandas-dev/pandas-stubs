@@ -223,7 +223,7 @@ def test_index_rename_inplace() -> None:
     assert ind2 is None
 
 
-def test_index_dropna():
+def test_index_dropna() -> None:
     idx = pd.Index([1, 2])
 
     check(assert_type(idx.dropna(how="all"), "pd.Index[int]"), pd.Index)
@@ -235,7 +235,7 @@ def test_index_dropna():
     check(assert_type(midx.dropna(how="any"), pd.MultiIndex), pd.MultiIndex)
 
 
-def test_index_neg():
+def test_index_neg() -> None:
     # GH 253
     idx = pd.Index([1, 2])
     check(assert_type(-idx, "pd.Index[int]"), pd.Index)
@@ -306,7 +306,7 @@ def test_index_relops() -> None:
     check(assert_type(ind > 2, np_1darray[np.bool]), np_1darray[np.bool])
 
 
-def test_range_index_union():
+def test_range_index_union() -> None:
     check(
         assert_type(
             pd.RangeIndex(0, 10).union(pd.RangeIndex(10, 20)),
@@ -342,14 +342,14 @@ def test_index_union_sort() -> None:
     )
 
 
-def test_range_index_start_stop_step():
+def test_range_index_start_stop_step() -> None:
     idx = pd.RangeIndex(3)
     check(assert_type(idx.start, int), int)
     check(assert_type(idx.stop, int), int)
     check(assert_type(idx.step, int), int)
 
 
-def test_interval_range():
+def test_interval_range() -> None:
     check(
         assert_type(pd.interval_range(0, 10), "pd.IntervalIndex[pd.Interval[int]]"),
         pd.IntervalIndex,
@@ -502,7 +502,7 @@ def test_interval_range():
     )
 
 
-def test_interval_index_breaks():
+def test_interval_index_breaks() -> None:
     check(
         assert_type(
             pd.IntervalIndex.from_breaks([1, 2, 3, 4]),
@@ -632,7 +632,7 @@ def test_interval_index_breaks():
     )
 
 
-def test_interval_index_arrays():
+def test_interval_index_arrays() -> None:
     check(
         assert_type(
             pd.IntervalIndex.from_arrays([1, 2, 3, 4], [2, 3, 4, 5]),
@@ -761,7 +761,7 @@ def test_interval_index_arrays():
     )
 
 
-def test_interval_index_tuples():
+def test_interval_index_tuples() -> None:
     check(
         assert_type(
             pd.IntervalIndex.from_tuples([(1, 2), (2, 3)]),
@@ -1082,13 +1082,13 @@ def test_range_index_range() -> None:
     check(assert_type(iri, pd.RangeIndex), pd.RangeIndex, int)
 
 
-def test_multiindex_dtypes():
+def test_multiindex_dtypes() -> None:
     # GH-597
     mi = pd.MultiIndex.from_tuples([(1, 2.0), (2, 3.0)], names=["foo", "bar"])
     check(assert_type(mi.dtypes, "pd.Series[Dtype]"), pd.Series)
 
 
-def test_index_constructors():
+def test_index_constructors() -> None:
     # See if we can pick up the different index types in 2.0
     # Eventually should be using a generic index
     ilist = [1, 2, 3]

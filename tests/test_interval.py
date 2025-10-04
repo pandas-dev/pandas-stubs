@@ -121,7 +121,7 @@ def test_interval_length() -> None:
         _21 = i3 + pd.Timedelta(seconds=20)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
-def test_interval_array_contains():
+def test_interval_array_contains() -> None:
     df = pd.DataFrame({"A": range(1, 10)})
     obj = pd.Interval(1, 4)
     ser = pd.Series(obj, index=df.index)

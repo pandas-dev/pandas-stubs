@@ -69,14 +69,14 @@ CWD = os.path.split(os.path.abspath(__file__))[0]
 
 
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
-def test_orc():
+def test_orc() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_orc(path), None), type(None))
         check(assert_type(read_orc(path), DataFrame), DataFrame)
 
 
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
-def test_orc_path():
+def test_orc_path() -> None:
     with ensure_clean() as path:
         pathlib_path = Path(path)
         check(assert_type(DF.to_orc(pathlib_path), None), type(None))
@@ -84,7 +84,7 @@ def test_orc_path():
 
 
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
-def test_orc_buffer():
+def test_orc_buffer() -> None:
     with ensure_clean() as path:
         with open(path, "wb") as file_w:
             check(assert_type(DF.to_orc(file_w), None), type(None))
@@ -94,18 +94,18 @@ def test_orc_buffer():
 
 
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
-def test_orc_columns():
+def test_orc_columns() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_orc(path, index=False), None), type(None))
         check(assert_type(read_orc(path, columns=["a"]), DataFrame), DataFrame)
 
 
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
-def test_orc_bytes():
+def test_orc_bytes() -> None:
     check(assert_type(DF.to_orc(index=False), bytes), bytes)
 
 
-def test_xml():
+def test_xml() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_xml(path), None), type(None))
         check(assert_type(read_xml(path), DataFrame), DataFrame)
@@ -113,38 +113,38 @@ def test_xml():
             check(assert_type(read_xml(f), DataFrame), DataFrame)
 
 
-def test_xml_str():
+def test_xml_str() -> None:
     with ensure_clean():
         out = check(assert_type(DF.to_xml(), str), str)
         check(assert_type(read_xml(io.StringIO(out)), DataFrame), DataFrame)
 
 
-def test_pickle():
+def test_pickle() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_pickle(path), None), type(None))
         check(assert_type(read_pickle(path), Any), DataFrame)
 
 
-def test_pickle_file_handle():
+def test_pickle_file_handle() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_pickle(path), None), type(None))
         with open(path, "rb") as file:
             check(assert_type(read_pickle(file), Any), DataFrame)
 
 
-def test_pickle_path():
+def test_pickle_path() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_pickle(path), None), type(None))
         check(assert_type(read_pickle(Path(path)), Any), DataFrame)
 
 
-def test_pickle_protocol():
+def test_pickle_protocol() -> None:
     with ensure_clean() as path:
         DF.to_pickle(path, protocol=3)
         check(assert_type(read_pickle(path), Any), DataFrame)
 
 
-def test_pickle_compression():
+def test_pickle_compression() -> None:
     with ensure_clean() as path:
         DF.to_pickle(path, compression="gzip")
         check(
@@ -158,7 +158,7 @@ def test_pickle_compression():
         )
 
 
-def test_pickle_storage_options():
+def test_pickle_storage_options() -> None:
     with ensure_clean() as path:
         DF.to_pickle(path, storage_options={})
 
@@ -168,20 +168,20 @@ def test_pickle_storage_options():
         )
 
 
-def test_to_pickle_series():
+def test_to_pickle_series() -> None:
     s: Series = DF["a"]
     with ensure_clean() as path:
         check(assert_type(s.to_pickle(path), None), type(None))
         check(assert_type(read_pickle(path), Any), Series)
 
 
-def test_read_stata_df():
+def test_read_stata_df() -> None:
     with ensure_clean() as path:
         DF.to_stata(path)
         check(assert_type(read_stata(path), pd.DataFrame), pd.DataFrame)
 
 
-def test_read_stata_iterator():
+def test_read_stata_iterator() -> None:
     with ensure_clean() as path:
         str_path = str(path)
         DF.to_stata(str_path)
@@ -204,7 +204,7 @@ def _true_if_first_param_is_head(t: tuple[str, int]) -> bool:
     return t[0] == "head"
 
 
-def test_clipboard():
+def test_clipboard() -> None:
     try:
         DF.to_clipboard()
     except errors.PyperclipException:
@@ -278,7 +278,7 @@ def test_clipboard():
         pd.read_clipboard(usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
-def test_clipboard_iterator():
+def test_clipboard_iterator() -> None:
     try:
         DF.to_clipboard()
     except errors.PyperclipException:
@@ -346,7 +346,7 @@ def test_sas_xport() -> None:
 
 
 @pytest.mark.skipif(NUMPY20, reason="numpy 2.0 not compatible with Pytables")
-def test_hdf():
+def test_hdf() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_hdf(path, key="df"), None), type(None))
         check(assert_type(read_hdf(path), DataFrame | Series), DataFrame)
@@ -421,14 +421,14 @@ def test_hdf_context_manager() -> None:
 
 
 @pytest.mark.skipif(NUMPY20, reason="numpy 2.0 not compatible with Pytables")
-def test_hdf_series():
+def test_hdf_series() -> None:
     s = DF["a"]
     with ensure_clean() as path:
         check(assert_type(s.to_hdf(path, key="s"), None), type(None))
         check(assert_type(read_hdf(path, "s"), DataFrame | Series), Series)
 
 
-def test_spss():
+def test_spss() -> None:
     path = Path(CWD, "data", "labelled-num.sav")
     check(
         assert_type(read_spss(path, convert_categoricals=True), DataFrame),
@@ -440,7 +440,7 @@ def test_spss():
     )
 
 
-def test_json():
+def test_json() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_json(path), None), type(None))
         check(assert_type(read_json(path), DataFrame), DataFrame)
@@ -450,7 +450,7 @@ def test_json():
     check(assert_type(read_json(bin_json), DataFrame), DataFrame)
 
 
-def test_json_dataframe_bytes():
+def test_json_dataframe_bytes() -> None:
     """Test DataFrame.to_json with bytesIO buffer."""
     buffer = io.BytesIO()
     df = pd.DataFrame()
@@ -458,7 +458,7 @@ def test_json_dataframe_bytes():
     check(assert_type(df.to_json(buffer), None), type(None))
 
 
-def test_json_series_bytes():
+def test_json_series_bytes() -> None:
     """Test Series.to_json with bytesIO buffer."""
     buffer = io.BytesIO()
     sr = pd.Series()
@@ -466,7 +466,7 @@ def test_json_series_bytes():
     check(assert_type(sr.to_json(buffer), None), type(None))
 
 
-def test_json_series():
+def test_json_series() -> None:
     s = DF["a"]
     with ensure_clean() as path:
         check(assert_type(s.to_json(path), None), type(None))
@@ -517,7 +517,7 @@ def test_json_series():
     )
 
 
-def test_json_chunk():
+def test_json_chunk() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_json(path), None), type(None))
         json_reader = read_json(path, chunksize=1, lines=True)
@@ -527,14 +527,14 @@ def test_json_chunk():
     check(assert_type(DF.to_json(), str), str)
 
 
-def test_parquet():
+def test_parquet() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_parquet(path), None), type(None))
         check(assert_type(DF.to_parquet(), bytes), bytes)
         check(assert_type(read_parquet(path), DataFrame), DataFrame)
 
 
-def test_parquet_options():
+def test_parquet_options() -> None:
     with ensure_clean(".parquet") as path:
         check(
             assert_type(DF.to_parquet(path, compression=None, index=True), None),
@@ -547,7 +547,7 @@ def test_parquet_options():
         check(assert_type(read_parquet(path, filters=sel), DataFrame), DataFrame)
 
 
-def test_feather():
+def test_feather() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_feather(path), None), type(None))
         check(assert_type(read_feather(path), DataFrame), DataFrame)
@@ -558,7 +558,7 @@ def test_feather():
         check(assert_type(read_feather(bio), DataFrame), DataFrame)
 
 
-def test_read_csv():
+def test_read_csv() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_csv(path), None), type(None))
         check(assert_type(read_csv(path), DataFrame), DataFrame)
@@ -580,7 +580,7 @@ def test_read_csv():
         pd.read_csv(path, usecols=cols)
 
 
-def test_read_csv_iterator():
+def test_read_csv_iterator() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_csv(path), None), type(None))
         tfr = read_csv(path, iterator=True)
@@ -782,7 +782,7 @@ def test_types_read_csv() -> None:
         )
 
 
-def test_read_table():
+def test_read_table() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_csv(path, sep="\t"), None), type(None))
         check(assert_type(read_table(path), DataFrame), DataFrame)
@@ -889,7 +889,7 @@ def test_read_table():
             pd.read_table(path, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
-def test_read_table_iterator():
+def test_read_table_iterator() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_csv(path, sep="\t"), None), type(None))
         tfr = read_table(path, iterator=True)
@@ -900,7 +900,7 @@ def test_read_table_iterator():
         tfr2.close()
 
 
-def test_types_read_table():
+def test_types_read_table() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
     with ensure_clean() as path:
@@ -911,7 +911,7 @@ def test_types_read_table():
         )
 
 
-def test_btest_read_fwf():
+def test_btest_read_fwf() -> None:
     with ensure_clean() as path:
         DF.to_string(path, index=False)
         check(assert_type(read_fwf(path), DataFrame), DataFrame)
@@ -934,7 +934,7 @@ def test_btest_read_fwf():
             check(assert_type(fwf_iterator2, TextFileReader), TextFileReader)
 
 
-def test_text_file_reader():
+def test_text_file_reader() -> None:
     with ensure_clean() as path:
         DF.to_string(path, index=False)
         tfr = TextFileReader(path, engine="python")
@@ -950,7 +950,7 @@ def test_text_file_reader():
                 check(df_iter, DataFrame)
 
 
-def test_to_csv_series():
+def test_to_csv_series() -> None:
     s = DF.iloc[:, 0]
     check(assert_type(s.to_csv(), str), str)
     with ensure_clean() as path:
@@ -1103,7 +1103,7 @@ def test_read_excel_io_types() -> None:
             check(assert_type(pd.read_excel(as_file), pd.DataFrame), pd.DataFrame)
 
 
-def test_read_excel_basic():
+def test_read_excel_basic() -> None:
     with ensure_clean(".xlsx") as path:
         check(assert_type(DF.to_excel(path), None), type(None))
         check(assert_type(read_excel(path), DataFrame), DataFrame)
@@ -1111,7 +1111,7 @@ def test_read_excel_basic():
         check(assert_type(read_excel(path, sheet_name=0), DataFrame), DataFrame)
 
 
-def test_read_excel_list():
+def test_read_excel_list() -> None:
     with ensure_clean(".xlsx") as path:
         check(assert_type(DF.to_excel(path), None), type(None))
         check(
@@ -1127,7 +1127,7 @@ def test_read_excel_list():
         )
 
 
-def test_read_excel_dtypes():
+def test_read_excel_dtypes() -> None:
     # GH 440
     df = pd.DataFrame({"a": [1, 2, 3], "b": ["x", "y", "z"], "c": [10.0, 20.0, 30.3]})
     with ensure_clean(".xlsx") as path:
@@ -1136,7 +1136,7 @@ def test_read_excel_dtypes():
         check(assert_type(read_excel(path, dtype=dtypes), pd.DataFrame), pd.DataFrame)
 
 
-def test_excel_reader():
+def test_excel_reader() -> None:
     with ensure_clean(".xlsx") as path:
         check(assert_type(DF.to_excel(path), None), type(None))
         with pd.ExcelFile(path, engine="calamine") as ef:
@@ -1152,7 +1152,7 @@ def test_excel_reader():
             check(assert_type(pd.read_excel(ef), pd.DataFrame), pd.DataFrame)
 
 
-def test_excel_writer():
+def test_excel_writer() -> None:
     with ensure_clean(".xlsx") as path:
         with pd.ExcelWriter(path) as ew:
             check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
@@ -1171,7 +1171,7 @@ def test_excel_writer():
         check(assert_type(ef.close(), None), type(None))
 
 
-def test_excel_writer_io():
+def test_excel_writer_io() -> None:
     buffer = io.BytesIO()
     with pd.ExcelWriter(buffer) as writer:
         DF.to_excel(writer, sheet_name="A")
@@ -1181,7 +1181,7 @@ def test_excel_writer_io():
     check(assert_type(read_excel(ef, sheet_name="A"), DataFrame), DataFrame)
 
 
-def test_excel_writer_engine():
+def test_excel_writer_engine() -> None:
     with ensure_clean(".xlsx") as path:
         with pd.ExcelWriter(path, engine="auto") as ew:
             check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
@@ -1215,7 +1215,7 @@ def test_excel_writer_engine():
             )
 
 
-def test_excel_writer_append_mode():
+def test_excel_writer_append_mode() -> None:
     with ensure_clean(".xlsx") as path:
         with pd.ExcelWriter(path, mode="w") as ew:
             DF.to_excel(ew, sheet_name="A")
@@ -1223,7 +1223,7 @@ def test_excel_writer_append_mode():
             DF.to_excel(ew, sheet_name="B")
 
 
-def test_to_string():
+def test_to_string() -> None:
     check(assert_type(DF.to_string(), str), str)
     with ensure_clean() as path:
         check(assert_type(DF.to_string(path), None), type(None))
@@ -1234,7 +1234,7 @@ def test_to_string():
         check(assert_type(DF.to_string(sio), None), type(None))
 
 
-def test_read_sql():
+def test_read_sql() -> None:
     with ensure_clean() as path:
         con = sqlite3.connect(path)
         check(assert_type(DF.to_sql("test", con=con), int | None), int)
@@ -1244,7 +1244,7 @@ def test_read_sql():
         con.close()
 
 
-def test_read_sql_via_sqlalchemy_connection():
+def test_read_sql_via_sqlalchemy_connection() -> None:
     with ensure_clean() as path:
         db_uri = "sqlite:///" + path
         engine = sqlalchemy.create_engine(db_uri)
@@ -1258,7 +1258,7 @@ def test_read_sql_via_sqlalchemy_connection():
         engine.dispose()
 
 
-def test_read_sql_via_sqlalchemy_engine():
+def test_read_sql_via_sqlalchemy_engine() -> None:
     with ensure_clean() as path:
         db_uri = "sqlite:///" + path
         engine = sqlalchemy.create_engine(db_uri)
@@ -1271,7 +1271,7 @@ def test_read_sql_via_sqlalchemy_engine():
         engine.dispose()
 
 
-def test_read_sql_via_sqlalchemy_engine_with_params():
+def test_read_sql_via_sqlalchemy_engine_with_params() -> None:
     with ensure_clean() as path:
         db_uri = "sqlite:///" + path
         engine = sqlalchemy.create_engine(db_uri)
@@ -1291,7 +1291,7 @@ def test_read_sql_via_sqlalchemy_engine_with_params():
         engine.dispose()
 
 
-def test_read_sql_generator():
+def test_read_sql_generator() -> None:
     with ensure_clean() as path:
         con = sqlite3.connect(path)
         check(assert_type(DF.to_sql("test", con=con), int | None), int)
@@ -1306,7 +1306,7 @@ def test_read_sql_generator():
         con.close()
 
 
-def test_read_sql_table():
+def test_read_sql_table() -> None:
     if TYPE_CHECKING:
         # sqlite3 doesn't support read_table, which is required for this function
         # Could only run in pytest if SQLAlchemy was installed
@@ -1321,7 +1321,7 @@ def test_read_sql_table():
             con.close()
 
 
-def test_read_sql_query():
+def test_read_sql_query() -> None:
     with ensure_clean() as path:
         con = sqlite3.connect(path)
         check(assert_type(DF.to_sql("test", con=con), int | None), int)
@@ -1335,7 +1335,7 @@ def test_read_sql_query():
         con.close()
 
 
-def test_read_sql_query_generator():
+def test_read_sql_query_generator() -> None:
     with ensure_clean() as path:
         con = sqlite3.connect(path)
         check(assert_type(DF.to_sql("test", con=con), int | None), int)
@@ -1350,7 +1350,7 @@ def test_read_sql_query_generator():
         con.close()
 
 
-def test_read_sql_query_via_sqlalchemy_engine_with_params():
+def test_read_sql_query_via_sqlalchemy_engine_with_params() -> None:
     with ensure_clean() as path:
         db_uri = "sqlite:///" + path
         engine = sqlalchemy.create_engine(db_uri)
@@ -1373,7 +1373,7 @@ def test_read_sql_query_via_sqlalchemy_engine_with_params():
 @pytest.mark.skip(
     reason="Only works in Postgres (and MySQL, but with different query syntax)"
 )
-def test_read_sql_query_via_sqlalchemy_engine_with_tuple_valued_params():
+def test_read_sql_query_via_sqlalchemy_engine_with_tuple_valued_params() -> None:
     with ensure_clean():
         db_uri = "postgresql+psycopg2://postgres@localhost:5432/postgres"
         engine = sqlalchemy.create_engine(db_uri)
@@ -1403,7 +1403,7 @@ def test_read_sql_query_via_sqlalchemy_engine_with_tuple_valued_params():
         engine.dispose()
 
 
-def test_read_html():
+def test_read_html() -> None:
     check(assert_type(DF.to_html(), str), str)
     with ensure_clean() as path:
         check(assert_type(DF.to_html(path), None), type(None))
@@ -1416,7 +1416,7 @@ def test_read_html():
         )
 
 
-def test_csv_quoting():
+def test_csv_quoting() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_csv(path, quoting=csv.QUOTE_ALL), None), type(None))
         check(assert_type(DF.to_csv(path, quoting=csv.QUOTE_NONE), None), type(None))
