@@ -2585,18 +2585,23 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __mul__(
         self: Series[_str],
-        other: np_ndarray_float | np_ndarray_complex | np_ndarray_dt | np_ndarray_td,
+        other: (
+            np_ndarray_bool
+            | np_ndarray_float
+            | np_ndarray_complex
+            | np_ndarray_dt
+            | np_ndarray_td
+        ),
     ) -> Never: ...
     @overload
     def __mul__(
         self: Series[_str],
         other: (
-            int
-            | Sequence[int]
-            | np_ndarray_bool
+            Just[int]
+            | Sequence[Just[int]]
             | np_ndarray_anyint
-            | Index[T_INT]
-            | Series[T_INT]
+            | Index[int]
+            | Series[int]
         ),
     ) -> Series[_str]: ...
     @overload
@@ -2695,12 +2700,11 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def mul(
         self: Series[_str],
         other: (
-            int
-            | Sequence[int]
-            | np_ndarray_bool
+            Just[int]
+            | Sequence[Just[int]]
             | np_ndarray_anyint
-            | Index[T_INT]
-            | Series[T_INT]
+            | Index[int]
+            | Series[int]
         ),
         level: Level | None = None,
         fill_value: float | None = None,
@@ -2834,18 +2838,23 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __rmul__(
         self: Series[_str],
-        other: np_ndarray_float | np_ndarray_complex | np_ndarray_dt | np_ndarray_td,
+        other: (
+            np_ndarray_bool
+            | np_ndarray_float
+            | np_ndarray_complex
+            | np_ndarray_dt
+            | np_ndarray_td
+        ),
     ) -> Never: ...
     @overload
     def __rmul__(
         self: Series[_str],
         other: (
-            int
-            | Sequence[int]
-            | np_ndarray_bool
+            Just[int]
+            | Sequence[Just[int]]
             | np_ndarray_anyint
-            | Index[T_INT]
-            | Series[T_INT]
+            | Index[int]
+            | Series[int]
         ),
     ) -> Series[_str]: ...
     @overload
@@ -2946,12 +2955,11 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def rmul(
         self: Series[_str],
         other: (
-            int
-            | Sequence[int]
-            | np_ndarray_bool
+            Just[int]
+            | Sequence[Just[int]]
             | np_ndarray_anyint
-            | Index[T_INT]
-            | Series[T_INT]
+            | Index[int]
+            | Series[int]
         ),
         level: Level | None = None,
         fill_value: float | None = None,

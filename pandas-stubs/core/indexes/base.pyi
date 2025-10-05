@@ -784,12 +784,18 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __mul__(
         self: Index[_str],
-        other: np_ndarray_float | np_ndarray_complex | np_ndarray_dt | np_ndarray_td,
+        other: (
+            np_ndarray_bool
+            | np_ndarray_float
+            | np_ndarray_complex
+            | np_ndarray_dt
+            | np_ndarray_td
+        ),
     ) -> Never: ...
     @overload
     def __mul__(
         self: Index[_str],
-        other: int | Sequence[int] | np_ndarray_bool | np_ndarray_anyint | Index[T_INT],
+        other: Just[int] | Sequence[Just[int]] | np_ndarray_anyint | Index[int],
     ) -> Index[_str]: ...
     @overload
     def __mul__(self: Index[T_INT], other: bool | Sequence[bool]) -> Index[T_INT]: ...
@@ -868,12 +874,18 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __rmul__(
         self: Index[_str],
-        other: np_ndarray_float | np_ndarray_complex | np_ndarray_dt | np_ndarray_td,
+        other: (
+            np_ndarray_bool
+            | np_ndarray_float
+            | np_ndarray_complex
+            | np_ndarray_dt
+            | np_ndarray_td
+        ),
     ) -> Never: ...
     @overload
     def __rmul__(
         self: Index[_str],
-        other: int | Sequence[int] | np_ndarray_bool | np_ndarray_anyint | Index[T_INT],
+        other: Just[int] | Sequence[Just[int]] | np_ndarray_anyint | Index[int],
     ) -> Index[_str]: ...
     @overload
     def __rmul__(self: Index[T_INT], other: bool | Sequence[bool]) -> Index[T_INT]: ...

@@ -31,7 +31,8 @@ def test_mul_py_scalar(left: "pd.Index[str]") -> None:
     b, i, f, c = True, 1, 1.0, 1j
     s, d = datetime(2025, 9, 27), timedelta(seconds=1)
 
-    check(assert_type(left * b, "pd.Index[str]"), pd.Index, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left * i, "pd.Index[str]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
         _03 = left * f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
@@ -39,7 +40,8 @@ def test_mul_py_scalar(left: "pd.Index[str]") -> None:
         _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _06 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-    check(assert_type(b * left, "pd.Index[str]"), pd.Index, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(i * left, "pd.Index[str]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
         _13 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
@@ -54,7 +56,8 @@ def test_mul_py_sequence(left: "pd.Index[str]") -> None:
     s = [datetime(2025, 9, d) for d in (27, 28, 29)]
     d = [timedelta(seconds=s + 1) for s in range(3)]
 
-    check(assert_type(left * b, "pd.Index[str]"), pd.Index, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left * i, "pd.Index[str]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
         _03 = left * f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
@@ -62,7 +65,8 @@ def test_mul_py_sequence(left: "pd.Index[str]") -> None:
         _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _06 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-    check(assert_type(b * left, "pd.Index[str]"), pd.Index, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(i * left, "pd.Index[str]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
         _13 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
@@ -80,7 +84,8 @@ def test_mul_numpy_array(left: "pd.Index[str]") -> None:
     s = np.array([np.datetime64(f"2025-09-{d}") for d in (27, 28, 29)], np.datetime64)
     d = np.array([np.timedelta64(s + 1, "s") for s in range(3)], np.timedelta64)
 
-    check(assert_type(left * b, "pd.Index[str]"), pd.Index, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(left * b, Never)
     check(assert_type(left * i, "pd.Index[str]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(left * f, Never)
@@ -91,7 +96,8 @@ def test_mul_numpy_array(left: "pd.Index[str]") -> None:
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__rmul__` cannot override. At runtime, they return
     # `Index` with the correct element type.
-    check(assert_type(b * left, "npt.NDArray[np.bool_]"), pd.Index, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(b * left, "npt.NDArray[np.bool_]")
     check(assert_type(i * left, "npt.NDArray[np.int64]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(f * left, "npt.NDArray[np.float64]")
@@ -109,7 +115,8 @@ def test_mul_pd_index(left: "pd.Index[str]") -> None:
     s = pd.Index([datetime(2025, 9, d) for d in (27, 28, 29)])
     d = pd.Index([timedelta(seconds=s + 1) for s in range(3)])
 
-    check(assert_type(left * b, "pd.Index[str]"), pd.Index, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left * i, "pd.Index[str]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
         _03 = left * f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
@@ -117,7 +124,8 @@ def test_mul_pd_index(left: "pd.Index[str]") -> None:
         _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _06 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-    check(assert_type(b * left, "pd.Index[str]"), pd.Index, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(i * left, "pd.Index[str]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
         _13 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]

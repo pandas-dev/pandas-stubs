@@ -14,6 +14,7 @@ from typing_extensions import (
 )
 
 from tests import (
+    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
@@ -86,7 +87,10 @@ def test_mul_numpy_array(left: "pd.Index[bool]") -> None:
     check(assert_type(left * c, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(left * s, Never)
-    check(assert_type(left * d, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
+    if PD_LTE_23:
+        # pandas-dev/pandas#62316: both timedelta * bool
+        # and np.timedelta64 * bool works, so pandas probably also should work
+        check(assert_type(left * d, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
 
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__rmul__` cannot override. At runtime, they return
@@ -101,11 +105,14 @@ def test_mul_numpy_array(left: "pd.Index[bool]") -> None:
     )
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(s * left, Any)
-    check(
-        assert_type(d * left, "npt.NDArray[np.timedelta64]"),
-        pd.TimedeltaIndex,
-        pd.Timedelta,
-    )
+    if PD_LTE_23:
+        # pandas-dev/pandas#62316: both timedelta * bool
+        # and np.timedelta64 * bool works, so pandas probably also should work
+        check(
+            assert_type(d * left, "npt.NDArray[np.timedelta64]"),
+            pd.TimedeltaIndex,
+            pd.Timedelta,
+        )
 
 
 def test_mul_pd_index(left: "pd.Index[bool]") -> None:
@@ -123,7 +130,10 @@ def test_mul_pd_index(left: "pd.Index[bool]") -> None:
     check(assert_type(left * c, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-    check(assert_type(left * d, pd.TimedeltaIndex), pd.Index, timedelta)
+    if PD_LTE_23:
+        # pandas-dev/pandas#62316: both timedelta * bool
+        # and np.timedelta64 * bool works, so pandas probably also should work
+        check(assert_type(left * d, pd.TimedeltaIndex), pd.Index, timedelta)
 
     check(assert_type(b * left, "pd.Index[bool]"), pd.Index, np.bool_)
     check(assert_type(i * left, "pd.Index[int]"), pd.Index, np.integer)
@@ -131,4 +141,7 @@ def test_mul_pd_index(left: "pd.Index[bool]") -> None:
     check(assert_type(c * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         _15 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-    check(assert_type(d * left, pd.TimedeltaIndex), pd.Index, timedelta)
+    if PD_LTE_23:
+        # pandas-dev/pandas#62316: both timedelta * bool
+        # and np.timedelta64 * bool works, so pandas probably also should work
+        check(assert_type(d * left, pd.TimedeltaIndex), pd.Index, timedelta)
