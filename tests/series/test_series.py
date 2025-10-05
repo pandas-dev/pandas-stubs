@@ -3485,9 +3485,7 @@ def test_diff() -> None:
         )
     # bool -> Any
     check(
-        assert_type(
-            pd.Series([True, True, False, False, True]).diff(), "pd.Series[Any]"
-        ),
+        assert_type(pd.Series([True, True, False, False, True]).diff(), pd.Series),
         pd.Series,
         bool,
         index_to_check_for_type=-1,
@@ -3508,7 +3506,7 @@ def test_diff() -> None:
     )
     # Any -> float
     s_o = s.astype(object)
-    assert_type(s_o, "pd.Series[Any]")
+    assert_type(s_o, pd.Series)
     check(assert_type(s_o.diff(), "pd.Series[float]"), pd.Series, float)
     # complex -> complex
     check(

@@ -12,13 +12,13 @@ from tests import (
 
 
 @pytest.fixture
-def left_i() -> "pd.Series[Any]":
+def left_i() -> pd.Series:
     """left operand"""
     lo = pd.DataFrame({"a": [1, 2, 3]})["a"]
     return check(assert_type(lo, pd.Series), pd.Series)
 
 
-def test_mul_py_scalar(left_i: "pd.Series[Any]") -> None:
+def test_mul_py_scalar(left_i: pd.Series) -> None:
     """Test pd.Series[Any] (int) * Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
 
@@ -43,7 +43,7 @@ def test_mul_py_scalar(left_i: "pd.Series[Any]") -> None:
     check(assert_type(left_i.rmul(c), pd.Series), pd.Series)
 
 
-def test_mul_py_sequence(left_i: "pd.Series[Any]") -> None:
+def test_mul_py_sequence(left_i: pd.Series) -> None:
     """Test pd.Series[Any] (int) * Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
@@ -68,7 +68,7 @@ def test_mul_py_sequence(left_i: "pd.Series[Any]") -> None:
     check(assert_type(left_i.rmul(c), pd.Series), pd.Series)
 
 
-def test_mul_numpy_array(left_i: "pd.Series[Any]") -> None:
+def test_mul_numpy_array(left_i: pd.Series) -> None:
     """Test pd.Series[Any] (int) * numpy arrays"""
     b = np.array([True, False, True], np.bool_)
     i = np.array([2, 3, 5], np.int64)
@@ -112,7 +112,7 @@ def test_mul_numpy_array(left_i: "pd.Series[Any]") -> None:
     check(assert_type(left_i.rmul(c), pd.Series), pd.Series)
 
 
-def test_mul_pd_index(left_i: "pd.Series[Any]") -> None:
+def test_mul_pd_index(left_i: pd.Series) -> None:
     """Test pd.Series[Any] (int) * pandas Indexes"""
     a = pd.MultiIndex.from_tuples([(1,), (2,), (3,)]).levels[0]
     b = pd.Index([True, False, True])
@@ -145,7 +145,7 @@ def test_mul_pd_index(left_i: "pd.Series[Any]") -> None:
     check(assert_type(left_i.rmul(c), pd.Series), pd.Series)
 
 
-def test_mul_pd_series(left_i: "pd.Series[Any]") -> None:
+def test_mul_pd_series(left_i: pd.Series) -> None:
     """Test pd.Series[Any] (int) * pandas Series"""
     a = pd.DataFrame({"a": [1, 2, 3]})["a"]
     b = pd.Series([True, False, True])
@@ -178,7 +178,7 @@ def test_mul_pd_series(left_i: "pd.Series[Any]") -> None:
     check(assert_type(left_i.rmul(c), pd.Series), pd.Series)
 
 
-def test_mul_str_py_str(left_i: "pd.Series[Any]") -> None:
+def test_mul_str_py_str(left_i: pd.Series) -> None:
     """Test pd.Series[Any] (int) * Python str"""
     s = "abc"
 
