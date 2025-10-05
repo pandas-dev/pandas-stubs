@@ -2,14 +2,6 @@ minimum_pre_commit_version: 2.15.0
 ci:
     autofix_prs: false
 repos:
--   repo: https://github.com/psf/black
-    rev: 25.9.0
-    hooks:
-    -   id: black
--   repo: https://github.com/PyCQA/isort
-    rev: 6.0.1
-    hooks:
-    -   id: isort
 -   repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.13.3
     hooks:
@@ -21,3 +13,11 @@ repos:
     - id: codespell
       additional_dependencies: [ tomli ]
       args: [-L, "THIRDPARTY"]
+-   repo: https://github.com/PyCQA/isort
+    rev: 6.0.1
+    hooks:
+    -   id: isort
+-   repo: https://github.com/psf/black
+    rev: 25.9.0
+    hooks:
+    -   id: black

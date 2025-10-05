@@ -176,16 +176,48 @@ fix = true
 
 
 [tool.ruff.lint]
-extend-select = ["B007", "B018", "PYI", "UP", "RUF100", "RUF059"]
+extend-select = ["ALL"]
 ignore = [
-  "E501",   # https://docs.astral.sh/ruff/rules/line-too-long/
-  "E731",   # https://docs.astral.sh/ruff/rules/lambda-assignment/
-  "PYI042", # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
+  # The following rules are ignored permanently for good reasons
+  "COM",     # https://docs.astral.sh/ruff/rules/#flake8-commas-com
+  "D",       # https://docs.astral.sh/ruff/rules/#pydocstyle-d
+  "E501",    # handled by black https://docs.astral.sh/ruff/rules/line-too-long/
+  "EM",      # https://docs.astral.sh/ruff/rules/#flake8-errmsg-em
+  "FBT",     # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt
+  "I",       # handled by isort
 ]
 
 
 [tool.ruff.lint.per-file-ignores]
-"_*.pyi" = ["PYI001"]
+"*.pyi" = [
+  # The following rules are ignored permanently for good reasons
+  "A001",    # https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/
+  "A002",    # https://docs.astral.sh/ruff/rules/builtin-argument-shadowing/
+  "A004",    # https://docs.astral.sh/ruff/rules/builtin-import-shadowing/
+  "N",       # https://docs.astral.sh/ruff/rules/#pep8-naming-n
+  "PYI001",  # https://docs.astral.sh/ruff/rules/unprefixed-type-param/
+  "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
+  "TD002",   # https://docs.astral.sh/ruff/rules/missing-todo-author/
+  # The following rules are ignored temporarily. Either fix them or move to the permanent list above.
+  "ERA", "S", "ANN", "FIX002", "TD003", "TD004", "PLR0402", "PLC0105"
+  ]
+"scripts/*" = [
+  # The following rules are ignored permanently for good reasons
+  "S603",    # https://docs.astral.sh/ruff/rules/subprocess-without-shell-equals-true/
+  # The following rules are ignored temporarily. Either fix them or move to the permanent list above.
+  "TRY", "PT", "BLE"
+]
+"tests/*" = [
+  # The following rules are ignored permanently for good reasons
+  "E731",    # https://docs.astral.sh/ruff/rules/lambda-assignment/
+  "PD",      # Pandas is here
+  "PLC0415", # https://docs.astral.sh/ruff/rules/import-outside-top-level/
+  "S101",    # https://docs.astral.sh/ruff/rules/assert/
+  "S301",    # https://docs.astral.sh/ruff/rules/suspicious-pickle-usage/
+  "SLF001",  # https://docs.astral.sh/ruff/rules/private-member-access/
+  # The following rules are ignored temporarily. Either fix them or move to the permanent list above.
+  "ANN", "ARG", "ERA", "RUF", "SIM", "TRY", "PT", "NPY", "N", "DTZ", "PLR", "TC", "PGH", "PTH", "S311", "C901", "FIX", "TD", "A001", "PYI042", "ANN201"
+]
 
 
 [tool.mypy]
