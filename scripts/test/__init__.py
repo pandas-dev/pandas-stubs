@@ -51,7 +51,7 @@ def stubtest(allowlist: str, check_missing: bool, nightly: bool) -> None:
     steps = _DIST_STEPS[:2]
     if nightly:
         steps.append(_step.nightly)
-    run_job(steps + [stubtest])
+    run_job([*steps, stubtest])
 
 
 def pytest(nightly: bool) -> None:
@@ -59,9 +59,9 @@ def pytest(nightly: bool) -> None:
     pytest_step = _step.pytest
     if nightly:
         setup_steps = [_step.nightly]
-    run_job(setup_steps + [pytest_step])
+    run_job([*setup_steps, pytest_step])
 
 
 def mypy_src(mypy_nightly: bool) -> None:
     steps = [_step.mypy_nightly] if mypy_nightly else []
-    run_job(steps + [_step.mypy_src])
+    run_job([*steps, _step.mypy_src])

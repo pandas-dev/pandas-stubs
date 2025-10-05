@@ -241,9 +241,7 @@ def test_types_concat() -> None:
     check(assert_type(pd.concat({1: df, None: df2}), pd.DataFrame), pd.DataFrame)
 
     check(
-        assert_type(
-            pd.concat(map(lambda _: s2, ["some_value", 3]), axis=1), pd.DataFrame
-        ),
+        assert_type(pd.concat((s2 for _ in ["some_value", 3]), axis=1), pd.DataFrame),
         pd.DataFrame,
     )
     adict = {"a": df, 2: df2}

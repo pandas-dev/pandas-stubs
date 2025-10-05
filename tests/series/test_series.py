@@ -1910,7 +1910,7 @@ def test_resample() -> None:
     # GH 181
     N = 10
     index = pd.date_range("1/1/2000", periods=N, freq="min")
-    x = [x for x in range(N)]
+    x = list(range(N))
     s = pd.Series(x, index=index, dtype=float)
     check(assert_type(s.resample("2min").std(), "pd.Series[float]"), pd.Series, float)
     check(assert_type(s.resample("2min").var(), "pd.Series[float]"), pd.Series, float)
@@ -2976,7 +2976,7 @@ def test_astype_other() -> None:
 
 def test_all_astype_args_tested() -> None:
     """Check that all relevant numpy type aliases are tested."""
-    NUMPY_ALIASES: set[str] = {k for k in np.sctypeDict}
+    NUMPY_ALIASES: set[str] = set(np.sctypeDict)
     EXCLUDED_ALIASES = {
         "datetime64",
         "m",
@@ -3631,7 +3631,7 @@ def test_series_unique_timedelta() -> None:
 def test_slice_timestamp() -> None:
     dti = pd.date_range("1/1/2025", "2/28/2025")
 
-    s = pd.Series([i for i in range(len(dti))], index=dti)
+    s = pd.Series(list(range(len(dti))), index=dti)
 
     # For `s1`, see discussion in GH 397.  Needs mypy fix.
     # s1 = s.loc["2025-01-15":"2025-01-20"]
@@ -3708,7 +3708,7 @@ def test_series_bool_fails() -> None:
         if s == "foo":  # pyright: ignore[reportGeneralTypeIssues]
             # Next line is unreachable.
             _a = s[0]
-            assert False
+            raise AssertionError
     except ValueError:
         pass
 

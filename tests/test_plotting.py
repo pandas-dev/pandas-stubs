@@ -594,7 +594,7 @@ def test_plot_subplot_changes_150() -> None:
 
 
 def test_grouped_dataframe_boxplot(close_figures) -> None:
-    tuples = [t for t in itertools.product(range(10), range(2))]
+    tuples = list(itertools.product(range(10), range(2)))
     index = pd.MultiIndex.from_tuples(tuples, names=["lvl0", "lvl1"])
     df = pd.DataFrame(
         data=np.random.randn(len(index), 2), columns=["A", "B"], index=index
@@ -630,7 +630,7 @@ def test_grouped_dataframe_boxplot_single(close_figures) -> None:
     is put separately to  make sure that we have no Axes already created.
     It will fail with `orientation="horizontal"`.
     """
-    tuples = [t for t in itertools.product(range(10), range(2))]
+    tuples = list(itertools.product(range(10), range(2)))
     index = pd.MultiIndex.from_tuples(tuples, names=["lvl0", "lvl1"])
     df = pd.DataFrame(
         data=np.random.randn(len(index), 2), columns=["A", "B"], index=index
