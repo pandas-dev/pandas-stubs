@@ -754,7 +754,8 @@ class Index(IndexOpsMixin[S1]):
     def __mul__(self, other: np_ndarray_dt) -> Never: ...
     @overload
     def __mul__(self: Index[complex], other: np_ndarray_td) -> Never: ...
-    # pandas-dev/pandas#62524
+    # pandas-dev/pandas#62524: An index of Python native timedeltas can be
+    # produced, instead of a TimedeltaIndex, hence the overload
     @overload
     def __mul__(  # type: ignore[overload-overlap]
         self: Index[bool] | Index[int] | Index[float], other: Sequence[timedelta]
@@ -837,7 +838,8 @@ class Index(IndexOpsMixin[S1]):
     def __rmul__(self, other: np_ndarray_dt) -> Never: ...
     @overload
     def __rmul__(self: Index[complex], other: np_ndarray_td) -> Never: ...
-    # pandas-dev/pandas#62524
+    # pandas-dev/pandas#62524: An index of Python native timedeltas can be
+    # produced, instead of a TimedeltaIndex, hence the overload
     @overload
     def __rmul__(  # type: ignore[overload-overlap]
         self: Index[bool] | Index[int] | Index[float], other: Sequence[timedelta]

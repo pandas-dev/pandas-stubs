@@ -19,7 +19,8 @@ from tests import (
 @pytest.fixture
 def left() -> "pd.Index[pd.Timedelta]":
     """left operand"""
-    # pandas-dev/pandas#62524
+    # pandas-dev/pandas#62524: An index of Python native timedeltas can be
+    # produced, instead of a TimedeltaIndex, hence this test file
     lo = pd.Index([1]) * [timedelta(seconds=1)]  # left operand
     return check(assert_type(lo, "pd.Index[pd.Timedelta]"), pd.Index, timedelta)
 
