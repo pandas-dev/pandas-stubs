@@ -3894,7 +3894,7 @@ def test_mask() -> None:
 def test_setitem_loc() -> None:
     # GH 254
     df = pd.DataFrame.from_dict(
-        {view: (True, True, True) for view in ["A", "B", "C"]}, orient="index"
+        dict.fromkeys(["A", "B", "C"], (True, True, True)), orient="index"
     )
     df.loc[["A", "C"]] = False
     my_arr = ["A", "C"]

@@ -828,7 +828,7 @@ def test_wide_to_long() -> None:
             "A1980": {0: "d", 1: "e", 2: "f"},
             "B1970": {0: 2.5, 1: 1.2, 2: 0.7},
             "B1980": {0: 3.2, 1: 1.3, 2: 0.1},
-            "X": dict(zip(range(3), np.random.randn(3))),
+            "X": dict(zip(range(3), np.random.randn(3), strict=False)),
         }
     )
     df["id"] = df.index

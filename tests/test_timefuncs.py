@@ -1186,7 +1186,7 @@ def test_to_timedelta_index() -> None:
     ]
     arg2 = tuple(arg0)
     arg3 = tuple(arg1)
-    arg4 = range(0, 10)
+    arg4 = range(10)
     arg5 = np.arange(10)
     arg6 = pd.Index(arg5)
     check(
