@@ -36,7 +36,7 @@ def test_mul_py_scalar(left: "pd.Series[int]") -> None:
     check(assert_type(left * f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left * c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left * d, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
     check(assert_type(b * left, "pd.Series[int]"), pd.Series, np.integer)
@@ -44,7 +44,7 @@ def test_mul_py_scalar(left: "pd.Series[int]") -> None:
     check(assert_type(f * left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _15 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(d * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
     check(assert_type(left.mul(b), "pd.Series[int]"), pd.Series, np.integer)
@@ -77,7 +77,7 @@ def test_mul_py_sequence(left: "pd.Series[int]") -> None:
     check(assert_type(left * f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left * c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left * d, "pd.Series[pd.Timedelta]"), pd.Series, timedelta)
 
     check(assert_type(b * left, "pd.Series[int]"), pd.Series, np.integer)
@@ -85,7 +85,7 @@ def test_mul_py_sequence(left: "pd.Series[int]") -> None:
     check(assert_type(f * left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _15 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(d * left, "pd.Series[pd.Timedelta]"), pd.Series, timedelta)
 
     check(assert_type(left.mul(b), "pd.Series[int]"), pd.Series, np.integer)
@@ -172,7 +172,7 @@ def test_mul_pd_index(left: "pd.Series[int]") -> None:
     check(assert_type(left * f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left * c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left * d, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
     check(assert_type(b * left, "pd.Series[int]"), pd.Series, np.integer)
@@ -180,7 +180,7 @@ def test_mul_pd_index(left: "pd.Series[int]") -> None:
     check(assert_type(f * left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _15 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(d * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
     check(assert_type(left.mul(b), "pd.Series[int]"), pd.Series, np.integer)
@@ -216,7 +216,7 @@ def test_mul_pd_series(left: "pd.Series[int]") -> None:
     check(assert_type(left * f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left * c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left * d, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
     check(assert_type(b * left, "pd.Series[int]"), pd.Series, np.integer)
@@ -224,7 +224,7 @@ def test_mul_pd_series(left: "pd.Series[int]") -> None:
     check(assert_type(f * left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _15 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(d * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
     check(assert_type(left.mul(b), "pd.Series[int]"), pd.Series, np.integer)

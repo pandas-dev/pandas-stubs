@@ -35,19 +35,19 @@ def test_mul_py_scalar(left: "pd.Index[str]") -> None:
         _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left * i, "pd.Index[str]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _03 = left * f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _04 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _06 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _02 = left * f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     if TYPE_CHECKING_INVALID_USAGE:
         _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(i * left, "pd.Index[str]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _13 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _14 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _15 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _16 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _12 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_mul_py_sequence(left: "pd.Index[str]") -> None:
@@ -60,19 +60,19 @@ def test_mul_py_sequence(left: "pd.Index[str]") -> None:
         _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left * i, "pd.Index[str]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _03 = left * f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _04 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _06 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _02 = left * f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     if TYPE_CHECKING_INVALID_USAGE:
         _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(i * left, "pd.Index[str]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _13 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _14 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _15 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _16 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _12 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_mul_numpy_array(left: "pd.Index[str]") -> None:
@@ -119,16 +119,16 @@ def test_mul_pd_index(left: "pd.Index[str]") -> None:
         _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left * i, "pd.Index[str]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _03 = left * f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _04 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _06 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _02 = left * f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _03 = left * c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     if TYPE_CHECKING_INVALID_USAGE:
         _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(i * left, "pd.Index[str]"), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _13 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _14 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _15 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _16 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _12 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]

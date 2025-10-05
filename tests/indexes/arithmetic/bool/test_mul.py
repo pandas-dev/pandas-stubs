@@ -37,7 +37,7 @@ def test_mul_py_scalar(left: "pd.Index[bool]") -> None:
     check(assert_type(left * f, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(left * c, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left * d, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
 
     check(assert_type(b * left, "pd.Index[bool]"), pd.Index, np.bool_)
@@ -45,7 +45,7 @@ def test_mul_py_scalar(left: "pd.Index[bool]") -> None:
     check(assert_type(f * left, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(c * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _15 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(d * left, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
 
 
@@ -60,7 +60,7 @@ def test_mul_py_sequence(left: "pd.Index[bool]") -> None:
     check(assert_type(left * f, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(left * c, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left * d, "pd.Index[pd.Timedelta]"), pd.Index, timedelta)
 
     check(assert_type(b * left, "pd.Index[bool]"), pd.Index, np.bool_)
@@ -68,7 +68,7 @@ def test_mul_py_sequence(left: "pd.Index[bool]") -> None:
     check(assert_type(f * left, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(c * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _15 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(d * left, "pd.Index[pd.Timedelta]"), pd.Index, timedelta)
 
 
@@ -129,7 +129,7 @@ def test_mul_pd_index(left: "pd.Index[bool]") -> None:
     check(assert_type(left * f, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(left * c, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     if PD_LTE_23:
         # pandas-dev/pandas#62316: both timedelta * bool
         # and np.timedelta64 * bool works, so pandas probably also should work
@@ -140,7 +140,7 @@ def test_mul_pd_index(left: "pd.Index[bool]") -> None:
     check(assert_type(f * left, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(c * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _15 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     if PD_LTE_23:
         # pandas-dev/pandas#62316: both timedelta * bool
         # and np.timedelta64 * bool works, so pandas probably also should work

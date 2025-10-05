@@ -36,16 +36,16 @@ def test_mul_py_scalar(left: "pd.Series[complex]") -> None:
     check(assert_type(left * f, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(left * c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _06 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(b * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(i * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(f * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(c * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _15 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _16 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(left.mul(b), "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(left.mul(i), "pd.Series[complex]"), pd.Series, np.complexfloating)
@@ -83,16 +83,16 @@ def test_mul_py_sequence(left: "pd.Series[complex]") -> None:
     check(assert_type(left * f, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(left * c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _06 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(b * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(i * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(f * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(c * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _15 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _16 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(left.mul(b), "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(left.mul(i), "pd.Series[complex]"), pd.Series, np.complexfloating)
@@ -192,16 +192,16 @@ def test_mul_pd_index(left: "pd.Series[complex]") -> None:
     check(assert_type(left * f, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(left * c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _06 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(b * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(i * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(f * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(c * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _15 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _16 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(left.mul(b), "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(left.mul(i), "pd.Series[complex]"), pd.Series, np.complexfloating)
@@ -242,16 +242,16 @@ def test_mul_pd_series(left: "pd.Series[complex]") -> None:
     check(assert_type(left * f, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(left * c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _06 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(b * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(i * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(f * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(c * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _15 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _16 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(left.mul(b), "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(left.mul(i), "pd.Series[complex]"), pd.Series, np.complexfloating)

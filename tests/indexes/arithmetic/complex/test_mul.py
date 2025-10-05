@@ -36,16 +36,16 @@ def test_mul_py_scalar(left: "pd.Index[complex]") -> None:
     check(assert_type(left * f, "pd.Index[complex]"), pd.Index, np.complexfloating)
     check(assert_type(left * c, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _06 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(b * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     check(assert_type(i * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     check(assert_type(f * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     check(assert_type(c * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _15 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _16 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_mul_py_sequence(left: "pd.Index[complex]") -> None:
@@ -59,16 +59,16 @@ def test_mul_py_sequence(left: "pd.Index[complex]") -> None:
     check(assert_type(left * f, "pd.Index[complex]"), pd.Index, np.complexfloating)
     check(assert_type(left * c, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _06 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(b * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     check(assert_type(i * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     check(assert_type(f * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     check(assert_type(c * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _15 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _16 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_mul_numpy_array(left: "pd.Index[complex]") -> None:
@@ -120,13 +120,13 @@ def test_mul_pd_index(left: "pd.Index[complex]") -> None:
     check(assert_type(left * f, "pd.Index[complex]"), pd.Index, np.complexfloating)
     check(assert_type(left * c, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _05 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _06 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(b * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     check(assert_type(i * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     check(assert_type(f * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     check(assert_type(c * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _15 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _16 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
