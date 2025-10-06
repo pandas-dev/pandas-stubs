@@ -3285,30 +3285,6 @@ def test_series_mapping() -> None:
     )
 
 
-def test_timedeltaseries_operators() -> None:
-    series = pd.Series([pd.Timedelta(days=1)])
-    check(
-        assert_type(series + datetime.datetime.now(), "pd.Series[pd.Timestamp]"),
-        pd.Series,
-        pd.Timestamp,
-    )
-    check(
-        assert_type(series + datetime.timedelta(1), "pd.Series[pd.Timedelta]"),
-        pd.Series,
-        pd.Timedelta,
-    )
-    check(
-        assert_type(datetime.datetime.now() + series, "pd.Series[pd.Timestamp]"),
-        pd.Series,
-        pd.Timestamp,
-    )
-    check(
-        assert_type(series - datetime.timedelta(1), "pd.Series[pd.Timedelta]"),
-        pd.Series,
-        pd.Timedelta,
-    )
-
-
 def test_timestamp_series() -> None:
     series = pd.Series([pd.Timestamp(2024, 4, 4)])
     check(
@@ -3509,9 +3485,7 @@ def test_diff() -> None:
         )
     # bool -> Any
     check(
-        assert_type(
-            pd.Series([True, True, False, False, True]).diff(), "pd.Series[Any]"
-        ),
+        assert_type(pd.Series([True, True, False, False, True]).diff(), pd.Series),
         pd.Series,
         bool,
         index_to_check_for_type=-1,
@@ -3532,7 +3506,7 @@ def test_diff() -> None:
     )
     # Any -> float
     s_o = s.astype(object)
-    assert_type(s_o, "pd.Series[Any]")
+    assert_type(s_o, pd.Series)
     check(assert_type(s_o.diff(), "pd.Series[float]"), pd.Series, float)
     # complex -> complex
     check(
@@ -3830,7 +3804,8 @@ def test_info() -> None:
     check(assert_type(s.info(memory_usage="deep"), None), type(None))
     check(assert_type(s.info(memory_usage=None), None), type(None))
     check(assert_type(s.info(show_counts=True), None), type(None))
-    check(assert_type(s.info(show_counts=False), None), type(None))
+    if PD_LTE_23:  # pandas-dev/pandas#62590
+        check(assert_type(s.info(show_counts=False), None), type(None))
     check(assert_type(s.info(show_counts=None), None), type(None))
 
 

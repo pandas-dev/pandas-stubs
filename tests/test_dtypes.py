@@ -5,9 +5,7 @@ from datetime import (
     timedelta,
     timezone,
 )
-from typing import (
-    Literal,
-)
+from typing import Literal
 
 import numpy as np
 import pandas as pd

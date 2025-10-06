@@ -20,9 +20,7 @@ from typing import (
 import numpy as np
 from pandas.core.base import SelectionMixin
 from pandas.core.frame import DataFrame
-from pandas.core.groupby import (
-    generic,
-)
+from pandas.core.groupby import generic
 from pandas.core.groupby.indexing import (
     GroupByIndexingMixin,
     GroupByNthSelector,
