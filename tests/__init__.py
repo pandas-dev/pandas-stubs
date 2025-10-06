@@ -87,7 +87,7 @@ def check(
             and get_origin(shape_type) is tuple
             and (tuple_args := get_args(shape_type))
             and ... not in tuple_args  # fixed-length tuple
-            and (arr_ndim := actual.ndim) != (expected_ndim := len(tuple_args))
+            and (arr_ndim := actual.ndim) != (expected_ndim := len(tuple_args))  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue]
         ):
             raise RuntimeError(
                 f"Array has wrong dimension {arr_ndim}, expected {expected_ndim}"
@@ -99,7 +99,7 @@ def check(
             and (dtype_args := get_args(dtype_type))
             and isinstance((expected_dtype := dtype_args[0]), type)
             and issubclass(expected_dtype, np.generic)
-            and (arr_dtype := actual.dtype) != expected_dtype
+            and (arr_dtype := actual.dtype) != expected_dtype  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue]
         ):
             raise RuntimeError(
                 f"Array has wrong dtype {arr_dtype}, expected {expected_dtype.__name__}"
