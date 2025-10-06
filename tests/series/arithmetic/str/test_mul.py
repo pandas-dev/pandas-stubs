@@ -58,7 +58,7 @@ def test_mul_py_scalar(left: "pd.Series[str]") -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(f)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         left.mul(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.mul(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
         left.mul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
     if PD_LTE_23:
@@ -67,7 +67,7 @@ def test_mul_py_scalar(left: "pd.Series[str]") -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         left.rmul(f)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         left.rmul(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rmul(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
         left.rmul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
