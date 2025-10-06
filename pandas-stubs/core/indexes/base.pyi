@@ -784,18 +784,21 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __mul__(
         self: Index[_str],
-        other: (
-            np_ndarray_bool
-            | np_ndarray_float
-            | np_ndarray_complex
-            | np_ndarray_dt
-            | np_ndarray_td
-        ),
+        other: np_ndarray_float | np_ndarray_complex | np_ndarray_dt | np_ndarray_td,
     ) -> Never: ...
+    # pandas-dev/pandas#62595: we may want to support Series[str] * bool
+    # also in 3.x
     @overload
     def __mul__(
         self: Index[_str],
-        other: Just[int] | Sequence[Just[int]] | np_ndarray_anyint | Index[int],
+        other: (
+            int
+            | Sequence[int]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | Index[bool]
+            | Index[int]
+        ),
     ) -> Index[_str]: ...
     @overload
     def __mul__(self: Index[T_INT], other: bool | Sequence[bool]) -> Index[T_INT]: ...
@@ -874,18 +877,21 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __rmul__(
         self: Index[_str],
-        other: (
-            np_ndarray_bool
-            | np_ndarray_float
-            | np_ndarray_complex
-            | np_ndarray_dt
-            | np_ndarray_td
-        ),
+        other: np_ndarray_float | np_ndarray_complex | np_ndarray_dt | np_ndarray_td,
     ) -> Never: ...
+    # pandas-dev/pandas#62595: we may want to support Series[str] * bool
+    # also in 3.x
     @overload
     def __rmul__(
         self: Index[_str],
-        other: Just[int] | Sequence[Just[int]] | np_ndarray_anyint | Index[int],
+        other: (
+            int
+            | Sequence[int]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | Index[bool]
+            | Index[int]
+        ),
     ) -> Index[_str]: ...
     @overload
     def __rmul__(self: Index[T_INT], other: bool | Sequence[bool]) -> Index[T_INT]: ...

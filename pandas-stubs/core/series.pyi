@@ -2585,22 +2585,21 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __mul__(
         self: Series[_str],
-        other: (
-            np_ndarray_bool
-            | np_ndarray_float
-            | np_ndarray_complex
-            | np_ndarray_dt
-            | np_ndarray_td
-        ),
+        other: np_ndarray_float | np_ndarray_complex | np_ndarray_dt | np_ndarray_td,
     ) -> Never: ...
+    # pandas-dev/pandas#62595: we may want to support Series[str] * bool
+    # also in 3.x
     @overload
     def __mul__(
         self: Series[_str],
         other: (
-            Just[int]
-            | Sequence[Just[int]]
+            int
+            | Sequence[int]
+            | np_ndarray_bool
             | np_ndarray_anyint
+            | Index[bool]
             | Index[int]
+            | Series[bool]
             | Series[int]
         ),
     ) -> Series[_str]: ...
@@ -2696,14 +2695,19 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[Timedelta]: ...
+    # pandas-dev/pandas#62595: we may want to support Series[str] * bool
+    # also in 3.x
     @overload
     def mul(
         self: Series[_str],
         other: (
-            Just[int]
-            | Sequence[Just[int]]
+            int
+            | Sequence[int]
+            | np_ndarray_bool
             | np_ndarray_anyint
+            | Index[bool]
             | Index[int]
+            | Series[bool]
             | Series[int]
         ),
         level: Level | None = None,
@@ -2838,22 +2842,21 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __rmul__(
         self: Series[_str],
-        other: (
-            np_ndarray_bool
-            | np_ndarray_float
-            | np_ndarray_complex
-            | np_ndarray_dt
-            | np_ndarray_td
-        ),
+        other: np_ndarray_float | np_ndarray_complex | np_ndarray_dt | np_ndarray_td,
     ) -> Never: ...
+    # pandas-dev/pandas#62595: we may want to support Series[str] * bool
+    # also in 3.x
     @overload
     def __rmul__(
         self: Series[_str],
         other: (
-            Just[int]
-            | Sequence[Just[int]]
+            int
+            | Sequence[int]
+            | np_ndarray_bool
             | np_ndarray_anyint
+            | Index[bool]
             | Index[int]
+            | Series[bool]
             | Series[int]
         ),
     ) -> Series[_str]: ...
@@ -2951,14 +2954,19 @@ class Series(IndexOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[Timedelta]: ...
+    # pandas-dev/pandas#62595: we may want to support Series[str] * bool
+    # also in 3.x
     @overload
     def rmul(
         self: Series[_str],
         other: (
-            Just[int]
-            | Sequence[Just[int]]
+            int
+            | Sequence[int]
+            | np_ndarray_bool
             | np_ndarray_anyint
+            | Index[bool]
             | Index[int]
+            | Series[bool]
             | Series[int]
         ),
         level: Level | None = None,
