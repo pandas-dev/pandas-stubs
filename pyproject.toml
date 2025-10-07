@@ -214,10 +214,13 @@ ignore = [
   "PD",      # Pandas is here
   "PLC0415", # https://docs.astral.sh/ruff/rules/import-outside-top-level/
   "S101",    # https://docs.astral.sh/ruff/rules/assert/
-  "S301",    # https://docs.astral.sh/ruff/rules/suspicious-pickle-usage/
   # The following rules are ignored temporarily. Either fix them or move to the permanent list above.
   "SLF001",  # https://docs.astral.sh/ruff/rules/private-member-access/
   "ANN", "ARG", "ERA", "RUF", "SIM", "TRY", "PT", "NPY", "N", "DTZ", "PLR", "TC", "PGH", "PTH", "S311", "C901", "FIX", "TD", "A001", "PYI042", "ANN201"
+]
+"tests/test_io.py" = [
+  # The following rules are ignored permanently for good reasons
+  "S301",    # https://docs.astral.sh/ruff/rules/suspicious-pickle-usage/
 ]
 
 
