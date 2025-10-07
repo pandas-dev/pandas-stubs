@@ -234,13 +234,11 @@ class SupportsTruedivInt(Protocol[_T_co]):
 class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     # get item
     @overload
-    # pyrefly: ignore  # bad-param-name-override
     def __getitem__(self, idx: IndexingInt) -> S1: ...
     @overload
     def __getitem__(self, idx: Index | slice | np_ndarray_anyint) -> Series[S1]: ...
     # set item
     @overload
-    # pyrefly: ignore  # bad-param-name-override
     def __setitem__(self, idx: int, value: S1 | None) -> None: ...
     @overload
     def __setitem__(
@@ -274,7 +272,6 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
         # be s.loc[1, :], or s.loc[pd.IndexSlice[1, :]]
     ) -> Series[S1]: ...
     @overload
-    # pyrefly: ignore  # bad-param-name-override
     def __setitem__(
         self,
         idx: Index | MaskType | slice,

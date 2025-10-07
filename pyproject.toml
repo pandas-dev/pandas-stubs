@@ -36,7 +36,7 @@ types-pytz = ">= 2022.1.1"
 numpy = ">= 1.23.5"
 
 [tool.poetry.group.dev.dependencies]
-mypy = "1.18.2"
+mypy = ">=1.18.2"
 pandas = "2.3.2"
 pyarrow = ">=10.0.1"
 pytest = ">=8.4.2"
@@ -294,6 +294,9 @@ reportPrivateUsage = false
 # enable optional checks
 reportMissingModuleSource = true
 useLibraryCodeForTypes = false
+
+[tool.pyrefly.errors]
+bad-param-name-override = false  # TODO: report to pyrefly https://github.com/pandas-dev/pandas-stubs/pull/1412#pullrequestreview-3310645279
 
 [tool.codespell]
 ignore-words-list = "indext, mose, sav, ser"

@@ -172,7 +172,6 @@ _T_MUTABLE_MAPPING = TypeVar("_T_MUTABLE_MAPPING", bound=MutableMapping, covaria
 
 class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
     @overload
-    # pyrefly: ignore  # bad-param-name-override
     def __getitem__(self, idx: tuple[int, int]) -> Scalar: ...
     @overload
     def __getitem__(self, idx: IndexingInt) -> Series: ...
@@ -190,7 +189,6 @@ class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
             | tuple[slice]
         ),
     ) -> _T: ...
-    # pyrefly: ignore  # bad-param-name-override
     def __setitem__(
         self,
         idx: (
@@ -215,7 +213,6 @@ class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
 
 class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     @overload
-    # pyrefly: ignore  # bad-param-name-override
     def __getitem__(self, idx: Scalar) -> Series | _T: ...
     @overload
     def __getitem__(  # type: ignore[overload-overlap]
@@ -269,7 +266,6 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     @overload
     def __getitem__(self, idx: tuple[Scalar, slice]) -> Series | _T: ...
     @overload
-    # pyrefly: ignore  # bad-param-name-override
     def __setitem__(
         self,
         idx: (
@@ -295,9 +291,7 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     ) -> None: ...
 
 class _iAtIndexerFrame(_iAtIndexer):
-    # pyrefly: ignore  # bad-param-name-override
     def __getitem__(self, idx: tuple[int, int]) -> Scalar: ...
-    # pyrefly: ignore  # bad-param-name-override
     def __setitem__(
         self,
         idx: tuple[int, int],
@@ -305,7 +299,6 @@ class _iAtIndexerFrame(_iAtIndexer):
     ) -> None: ...
 
 class _AtIndexerFrame(_AtIndexer):
-    # pyrefly: ignore  # bad-param-name-override
     def __getitem__(
         self,
         idx: tuple[
@@ -317,7 +310,6 @@ class _AtIndexerFrame(_AtIndexer):
             int | StrLike | tuple[Scalar, ...],
         ],
     ) -> Scalar: ...
-    # pyrefly: ignore  # bad-param-name-override
     def __setitem__(
         self,
         idx: (
