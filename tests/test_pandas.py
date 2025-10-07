@@ -18,7 +18,7 @@ from pandas.api.typing import (
 )
 import pandas.util as pdutil
 
-# TODO: github.com/pandas-dev/pandas/issues/55023
+# TODO: pandas-dev/pandas#55023
 import pytest
 from typing_extensions import (
     Never,
