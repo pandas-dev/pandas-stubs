@@ -209,6 +209,7 @@ ignore = [
 ]
 "tests/*" = [
   # The following rules are ignored permanently for good reasons
+  "B905",    # https://docs.astral.sh/ruff/rules/zip-without-explicit-strict/
   "E731",    # https://docs.astral.sh/ruff/rules/lambda-assignment/
   "PD",      # Pandas is here
   "PLC0415", # https://docs.astral.sh/ruff/rules/import-outside-top-level/

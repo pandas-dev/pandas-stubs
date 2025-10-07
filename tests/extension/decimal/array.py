@@ -266,7 +266,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
 
         # If the operator is not defined for the underlying objects,
         # a TypeError should be raised
-        res = [op(a, b) for (a, b) in zip(lvalues, rvalues, strict=False)]
+        res = [op(a, b) for (a, b) in zip(lvalues, rvalues)]
 
         return np.asarray(res, dtype=bool)
 

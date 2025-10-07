@@ -120,9 +120,7 @@ def test_multiindex_constructors() -> None:
         pd.MultiIndex,
     )
     check(
-        assert_type(
-            pd.MultiIndex.from_tuples(zip([1, 2], [3, 4], strict=False)), pd.MultiIndex
-        ),
+        assert_type(pd.MultiIndex.from_tuples(zip([1, 2], [3, 4])), pd.MultiIndex),
         pd.MultiIndex,
     )
     check(
