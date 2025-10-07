@@ -199,7 +199,7 @@ ignore = [
   "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
   "TD002",   # https://docs.astral.sh/ruff/rules/missing-todo-author/
   # The following rules are ignored temporarily. Either fix them or move to the permanent list above.
-  "ERA", "S", "ANN", "FIX002", "TD003", "TD004", "PLR0402", "PLC0105"
+  "ERA", "S", "ANN", "FIX002", "TD003", "PLR0402", "PLC0105"
   ]
 "scripts/*" = [
   # The following rules are ignored permanently for good reasons
