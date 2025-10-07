@@ -239,6 +239,7 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     @property
     def length(self) -> Index: ...
     @overload  # type: ignore[override]
+    # pyrefly: ignore  # bad-override
     def __getitem__(
         self,
         idx: (

@@ -56,6 +56,7 @@ class TimedeltaIndex(
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
     @overload  # type: ignore[override]
+    # pyrefly: ignore  # bad-override
     def __add__(self, other: Period) -> PeriodIndex: ...
     @overload
     def __add__(self, other: dt.datetime | DatetimeIndex) -> DatetimeIndex: ...
@@ -64,6 +65,7 @@ class TimedeltaIndex(
         self, other: dt.timedelta | Self
     ) -> Self: ...
     @overload  # type: ignore[override]
+    # pyrefly: ignore  # bad-override
     def __radd__(self, other: Period) -> PeriodIndex: ...
     @overload
     def __radd__(self, other: dt.datetime | DatetimeIndex) -> DatetimeIndex: ...
@@ -75,6 +77,7 @@ class TimedeltaIndex(
         self, other: dt.timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self
     ) -> Self: ...
     @overload  # type: ignore[override]
+    # pyrefly: ignore  # bad-override
     def __rsub__(
         self, other: dt.timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self
     ) -> Self: ...
@@ -115,6 +118,7 @@ class TimedeltaIndex(
         ),
     ) -> Self: ...
     @overload  # type: ignore[override]
+    # pyrefly: ignore  # bad-override
     def __truediv__(self, other: float | Sequence[float]) -> Self: ...
     @overload
     def __truediv__(  # pyright: ignore[reportIncompatibleMethodOverride]
@@ -122,6 +126,7 @@ class TimedeltaIndex(
     ) -> Index[float]: ...
     def __rtruediv__(self, other: dt.timedelta | Sequence[dt.timedelta]) -> Index[float]: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
     @overload  # type: ignore[override]
+    # pyrefly: ignore  # bad-override
     def __floordiv__(self, other: num | Sequence[float]) -> Self: ...
     @overload
     def __floordiv__(  # pyright: ignore[reportIncompatibleMethodOverride]

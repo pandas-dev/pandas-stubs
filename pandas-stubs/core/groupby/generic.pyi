@@ -204,6 +204,7 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     def unique(self) -> Series: ...
     # Overrides that provide more precise return types over the GroupBy class
     @final  # type: ignore[misc]
+    # pyrefly: ignore  # bad-override
     def __iter__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
     ) -> Iterator[tuple[ByT, Series[S2]]]: ...
@@ -448,9 +449,11 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     ) -> Series: ...  # Series[Axes] but this is not allowed
     @property
     def dtypes(self) -> Series: ...
+    # pyrefly: ignore  # bad-param-name-override
     def __getattr__(self, name: str) -> SeriesGroupBy[Any, ByT]: ...
     # Overrides that provide more precise return types over the GroupBy class
     @final  # type: ignore[misc]
+    # pyrefly: ignore  # bad-override
     def __iter__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
     ) -> Iterator[tuple[ByT, DataFrame]]: ...
