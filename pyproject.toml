@@ -223,7 +223,7 @@ ignore = [
   "A001",    # https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/
   "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
   "SLF001",  # https://docs.astral.sh/ruff/rules/private-member-access/
-  "ANN", "ARG", "ERA", "RUF", "SIM", "TRY", "PT", "NPY", "N", "DTZ", "PLR", "TC", "PGH", "PTH", "S311", "C901", "ANN201"
+  "ANN001", "ANN002", "ANN201", "ANN202", "ANN204", "ANN206", "ANN401", "ARG", "ERA", "RUF", "SIM", "TRY", "PT", "NPY", "N", "DTZ", "PLR", "TC", "PGH", "PTH", "S311", "C901"
 ]
 "tests/test_io.py" = [
   # The following rules are ignored permanently for good reasons
