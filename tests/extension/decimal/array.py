@@ -27,10 +27,7 @@ from pandas.core.arrays import (
 )
 from pandas.core.indexers import check_array_indexer
 
-from pandas._typing import (
-    TakeIndexer,
-    np_1darray,
-)
+from pandas._typing import TakeIndexer
 
 from pandas.core.dtypes.base import ExtensionDtype
 from pandas.core.dtypes.common import (
@@ -260,7 +257,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
             ) from err
         return op(axis=0)
 
-    def _cmp_method(self, other, op) -> np_1darray[np.bool_]:
+    def _cmp_method(self, other, op) -> np.ndarray[tuple[int], np.dtype[np.bool_]]:
         # For use with OpsMixin
         def convert_values(param) -> ExtensionArray | list[Any]:
             if isinstance(param, ExtensionArray) or is_list_like(param):
@@ -277,7 +274,9 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         # a TypeError should be raised
         res = [op(a, b) for (a, b) in zip(lvalues, rvalues)]
 
-        return cast("np_1darray[np.bool_]", np.asarray(res, dtype=bool))
+        return cast(
+            np.ndarray[tuple[int], np.dtype[np.bool_]], np.asarray(res, dtype=bool)
+        )
 
     def value_counts(self, dropna: bool = True):
         from pandas.core.algorithms import value_counts
