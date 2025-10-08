@@ -5,7 +5,10 @@ from collections.abc import Callable
 import decimal
 import numbers
 import sys
-from typing import Any
+from typing import (
+    Any,
+    cast,
+)
 
 import numpy as np
 from pandas.api.extensions import (
@@ -274,7 +277,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         # a TypeError should be raised
         res = [op(a, b) for (a, b) in zip(lvalues, rvalues)]
 
-        return np.asarray(res, dtype=bool)
+        return cast("np_1darray[np.bool_]", np.asarray(res, dtype=bool))
 
     def value_counts(self, dropna: bool = True):
         from pandas.core.algorithms import value_counts
