@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from builtins import type as type_t
+from collections.abc import Callable
 import decimal
 import numbers
 import sys
@@ -23,7 +24,10 @@ from pandas.core.arrays import (
 )
 from pandas.core.indexers import check_array_indexer
 
-from pandas._typing import TakeIndexer
+from pandas._typing import (
+    TakeIndexer,
+    np_1darray,
+)
 
 from pandas.core.dtypes.base import ExtensionDtype
 from pandas.core.dtypes.common import (
@@ -149,7 +153,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
             if result is not NotImplemented:
                 return result
 
-        def reconstruct(x):
+        def reconstruct(x) -> decimal.Decimal | numbers.Number | DecimalArray:
             if isinstance(x, (decimal.Decimal, numbers.Number)):
                 return x
             return DecimalArray._from_sequence(x)
@@ -222,10 +226,10 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         return np.array([x.is_nan() for x in self._data], dtype=bool)
 
     @property
-    def _na_value(self):
+    def _na_value(self) -> decimal.Decimal:
         return decimal.Decimal("NaN")
 
-    def _formatter(self, boxed=False):
+    def _formatter(self, boxed=False) -> Callable[..., str]:
         if boxed:
             return "Decimal: {}".format
         return repr
@@ -234,7 +238,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
     def _concat_same_type(cls, to_concat):
         return cls(np.concatenate([x._data for x in to_concat]))
 
-    def _reduce(self, name: str, *, skipna: bool = True, **kwargs: Any):
+    def _reduce(self, name: str, *, skipna: bool = True, **kwargs: Any) -> Any:
         if skipna:
             # If we don't have any NAs, we can ignore skipna
             if self.isna().any():
@@ -253,9 +257,9 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
             ) from err
         return op(axis=0)
 
-    def _cmp_method(self, other, op):
+    def _cmp_method(self, other, op) -> np_1darray[np.bool_]:
         # For use with OpsMixin
-        def convert_values(param):
+        def convert_values(param) -> ExtensionArray | list[Any]:
             if isinstance(param, ExtensionArray) or is_list_like(param):
                 ovalues = param
             else:
