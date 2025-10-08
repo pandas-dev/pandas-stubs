@@ -1080,6 +1080,7 @@ Incomplete: TypeAlias = Any
 class Just(Protocol, Generic[T]):
     @property  # type: ignore[override]
     @override
+    # pyrefly: ignore  # bad-override
     def __class__(self, /) -> type[T]: ...
     @__class__.setter
     @override

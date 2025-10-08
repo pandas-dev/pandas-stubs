@@ -85,6 +85,7 @@ class RangeIndex(_IndexSubclassBase[int, np.int64]):
         self, other: list[HashableT] | Index, sort: bool | None = None
     ) -> Index | Index[int] | RangeIndex: ...
     @overload  # type: ignore[override]
+    # pyrefly: ignore  # bad-override
     def __getitem__(
         self,
         idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType,

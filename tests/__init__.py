@@ -87,7 +87,7 @@ def check(
             and get_origin(shape_type) is tuple
             and (tuple_args := get_args(shape_type))
             and ... not in tuple_args  # fixed-length tuple
-            and (arr_ndim := getattr(actual, "ndim"))
+            and (arr_ndim := getattr(actual, "ndim"))  # noqa: B009
             != (expected_ndim := len(tuple_args))
         ):
             raise RuntimeError(
@@ -100,7 +100,7 @@ def check(
             and (dtype_args := get_args(dtype_type))
             and isinstance((expected_dtype := dtype_args[0]), type)
             and issubclass(expected_dtype, np.generic)
-            and (arr_dtype := getattr(actual, "dtype")) != expected_dtype
+            and (arr_dtype := getattr(actual, "dtype")) != expected_dtype  # noqa: B009
         ):
             raise RuntimeError(
                 f"Array has wrong dtype {arr_dtype}, expected {expected_dtype.__name__}"
@@ -208,8 +208,6 @@ def pytest_warns_bounded(
         current = Version(version_str)
     if lb < current < ub:
         return pytest.warns(warning, match=match)
-    else:
-        if upper_exception is None:
-            return nullcontext()
-        else:
-            return suppress(upper_exception)
+    if upper_exception is None:
+        return nullcontext()
+    return suppress(upper_exception)

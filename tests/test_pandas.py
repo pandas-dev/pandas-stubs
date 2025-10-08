@@ -18,7 +18,7 @@ from pandas.api.typing import (
 )
 import pandas.util as pdutil
 
-# TODO: github.com/pandas-dev/pandas/issues/55023
+# TODO: pandas-dev/pandas#55023
 import pytest
 from typing_extensions import (
     Never,
@@ -242,7 +242,8 @@ def test_types_concat() -> None:
 
     check(
         assert_type(
-            pd.concat(map(lambda _: s2, ["some_value", 3]), axis=1), pd.DataFrame
+            pd.concat(map(lambda _: s2, ["some_value", 3]), axis=1),  # noqa: C417
+            pd.DataFrame,
         ),
         pd.DataFrame,
     )

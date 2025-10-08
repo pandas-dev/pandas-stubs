@@ -123,6 +123,7 @@ class MultiIndex(Index):
     def levshape(self): ...
     def __reduce__(self): ...
     @overload  # type: ignore[override]
+    # pyrefly: ignore  # bad-override
     def __getitem__(
         self,
         idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType,

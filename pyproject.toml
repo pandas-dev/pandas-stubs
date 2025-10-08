@@ -36,13 +36,13 @@ types-pytz = ">= 2022.1.1"
 numpy = ">= 1.23.5"
 
 [tool.poetry.group.dev.dependencies]
-mypy = "1.18.2"
+mypy = ">=1.18.2"
 pandas = "2.3.2"
 pyarrow = ">=10.0.1"
 pytest = ">=8.4.2"
 pyright = ">=1.1.406"
 ty = ">=0.0.1a21"
-pyrefly = ">=0.35.0"
+pyrefly = ">=0.36.1"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
 typing-extensions = ">=4.4.0"
@@ -176,16 +176,59 @@ fix = true
 
 
 [tool.ruff.lint]
-extend-select = ["B007", "B018", "PYI", "UP", "RUF100", "RUF059"]
+extend-select = ["ALL"]
 ignore = [
-  "E501",   # https://docs.astral.sh/ruff/rules/line-too-long/
-  "E731",   # https://docs.astral.sh/ruff/rules/lambda-assignment/
-  "PYI042", # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
+  # The following rules are ignored permanently for good reasons
+  "COM",     # https://docs.astral.sh/ruff/rules/#flake8-commas-com
+  "D",       # https://docs.astral.sh/ruff/rules/#pydocstyle-d
+  "E501",    # handled by black https://docs.astral.sh/ruff/rules/line-too-long/
+  "FBT",     # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt
+  "I",       # handled by isort
 ]
 
 
 [tool.ruff.lint.per-file-ignores]
-"_*.pyi" = ["PYI001"]
+"*.pyi" = [
+  # The following rules are ignored permanently for good reasons
+  "A002",    # https://docs.astral.sh/ruff/rules/builtin-argument-shadowing/
+  "FIX002",  # https://docs.astral.sh/ruff/rules/line-contains-todo/
+  "N",       # https://docs.astral.sh/ruff/rules/#pep8-naming-n
+  "TD002",   # https://docs.astral.sh/ruff/rules/missing-todo-author/
+  # The following rules are ignored temporarily. Either fix them or move to the permanent list above.
+  "A001",    # https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/
+  "A004",    # https://docs.astral.sh/ruff/rules/builtin-import-shadowing/
+  "PYI001",  # https://docs.astral.sh/ruff/rules/unprefixed-type-param/
+  "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
+  "TD003",   # https://docs.astral.sh/ruff/rules/missing-todo-link/
+  "ERA001", "ANN", "PLR0402", "PLC0105"
+  ]
+"scripts/*" = [
+  # The following rules are ignored permanently for good reasons
+  "EM",      # https://docs.astral.sh/ruff/rules/#flake8-errmsg-em
+  "S603",    # https://docs.astral.sh/ruff/rules/subprocess-without-shell-equals-true/
+  # The following rules are ignored temporarily. Either fix them or move to the permanent list above.
+  "TRY", "PT", "BLE"
+]
+"tests/*" = [
+  # The following rules are ignored permanently for good reasons
+  "B905",    # https://docs.astral.sh/ruff/rules/zip-without-explicit-strict/
+  "E731",    # https://docs.astral.sh/ruff/rules/lambda-assignment/
+  "EM",      # https://docs.astral.sh/ruff/rules/#flake8-errmsg-em
+  "FIX002",  # https://docs.astral.sh/ruff/rules/line-contains-todo/
+  "PD",      # Pandas is here
+  "PLC0415", # https://docs.astral.sh/ruff/rules/import-outside-top-level/
+  "S101",    # https://docs.astral.sh/ruff/rules/assert/
+  "TD002",   # https://docs.astral.sh/ruff/rules/missing-todo-author/
+  # The following rules are ignored temporarily. Either fix them or move to the permanent list above.
+  "A001",    # https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/
+  "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
+  "SLF001",  # https://docs.astral.sh/ruff/rules/private-member-access/
+  "ANN001", "ANN002", "ANN201", "ANN202", "ANN204", "ANN206", "ANN401", "ARG", "ERA", "RUF", "SIM", "TRY", "PT", "NPY", "N", "DTZ", "PLR", "TC", "PGH", "PTH", "S311", "C901"
+]
+"tests/test_io.py" = [
+  # The following rules are ignored permanently for good reasons
+  "S301",    # https://docs.astral.sh/ruff/rules/suspicious-pickle-usage/
+]
 
 
 [tool.mypy]
@@ -251,6 +294,9 @@ reportPrivateUsage = false
 # enable optional checks
 reportMissingModuleSource = true
 useLibraryCodeForTypes = false
+
+[tool.pyrefly.errors]
+bad-param-name-override = false  # TODO: report to pyrefly https://github.com/pandas-dev/pandas-stubs/pull/1412#pullrequestreview-3310645279
 
 [tool.codespell]
 ignore-words-list = "indext, mose, sav, ser"

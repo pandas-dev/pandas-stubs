@@ -150,21 +150,18 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         def reconstruct(x):
             if isinstance(x, (decimal.Decimal, numbers.Number)):
                 return x
-            else:
-                return DecimalArray._from_sequence(x)
+            return DecimalArray._from_sequence(x)
 
         if ufunc.nout > 1:
             return tuple(reconstruct(x) for x in result)
-        else:
-            return reconstruct(result)
+        return reconstruct(result)
 
     def __getitem__(self, item):
         if isinstance(item, numbers.Integral):
             return self._data[item]
-        else:
-            # array, slice.
-            item = check_array_indexer(self, item)
-            return type(self)(self._data[item])
+        # array, slice.
+        item = check_array_indexer(self, item)
+        return type(self)(self._data[item])
 
     def take(
         self, indexer: TakeIndexer, *, allow_fill: bool = False, fill_value=None
@@ -208,10 +205,9 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
     def __contains__(self, item) -> bool | np.bool_:
         if not isinstance(item, decimal.Decimal):
             return False
-        elif item.is_nan():
+        if item.is_nan():
             return self.isna().any()
-        else:
-            return super().__contains__(item)
+        return super().__contains__(item)
 
     @property
     def nbytes(self) -> int:

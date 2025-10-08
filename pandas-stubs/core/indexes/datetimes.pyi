@@ -68,6 +68,7 @@ class DatetimeIndex(
         self, other: timedelta | BaseOffset
     ) -> Self: ...
     @overload  # type: ignore[override]
+    # pyrefly: ignore  # bad-override
     def __sub__(
         self, other: datetime | np.datetime64 | np_ndarray_dt | Self
     ) -> TimedeltaIndex: ...

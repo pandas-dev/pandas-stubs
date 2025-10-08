@@ -437,7 +437,7 @@ def test_types_filter() -> None:
     check(assert_type(df.filter(like="1"), pd.DataFrame), pd.DataFrame)
     # GH964 Docs state `items` is `list-like`
     check(
-        assert_type(df.filter(items=("col2", "col2", 1, tuple([4]))), pd.DataFrame),
+        assert_type(df.filter(items=("col2", "col2", 1, (4,))), pd.DataFrame),
         pd.DataFrame,
     )
 
@@ -3637,9 +3637,9 @@ def test_groupby_apply() -> None:
 def test_resample() -> None:
     # GH 181
     N = 10
-    x = [x for x in range(N)]
+    x = list(range(N))
     index = pd.date_range("1/1/2000", periods=N, freq="min")
-    x = [x for x in range(N)]
+    x = list(range(N))
     df = pd.DataFrame({"a": x, "b": x, "c": x}, index=index)
     check(assert_type(df.resample("2min").std(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.resample("2min").var(), pd.DataFrame), pd.DataFrame)
@@ -3894,7 +3894,7 @@ def test_mask() -> None:
 def test_setitem_loc() -> None:
     # GH 254
     df = pd.DataFrame.from_dict(
-        {view: (True, True, True) for view in ["A", "B", "C"]}, orient="index"
+        dict.fromkeys(["A", "B", "C"], (True, True, True)), orient="index"
     )
     df.loc[["A", "C"]] = False
     my_arr = ["A", "C"]
@@ -4129,11 +4129,10 @@ def test_loc_callable() -> None:
 def test_npint_loc_indexer() -> None:
     # GH 508
 
-    df = pd.DataFrame(dict(x=[1, 2, 3]), index=np.array([10, 20, 30], dtype="uint64"))
+    df = pd.DataFrame({"x": [1, 2, 3]}, index=np.array([10, 20, 30], dtype="uint64"))
 
     def get_NDArray(df: pd.DataFrame, key: npt.NDArray[np.uint64]) -> pd.DataFrame:
-        df2 = df.loc[key]
-        return df2
+        return df.loc[key]
 
     a: npt.NDArray[np.uint64] = np.array([10, 30], dtype="uint64")
     check(assert_type(get_NDArray(df, a), pd.DataFrame), pd.DataFrame)
