@@ -25,7 +25,7 @@ def __rollback_job(steps: deque[Step]) -> None:
             logger.warning(f"Undoing: {step.name}")
             try:
                 step.rollback()
-            except Exception:
+            except Exception:  # noqa: BLE001
                 logger.error(
                     f"Rollback of Step: '{step.name}' failed! The project could be in a unstable mode."
                 )
@@ -47,7 +47,7 @@ def run_job(steps: list[Step]) -> None:
             rollback_steps.append(step)
             step.run()
 
-        except Exception:
+        except Exception:  # noqa: BLE001
             logger.error(f"Step: '{step.name}' failed!")
             __rollback_job(rollback_steps)
             failed = True
