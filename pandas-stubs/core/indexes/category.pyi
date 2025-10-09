@@ -27,7 +27,7 @@ class CategoricalArrayDescriptor:
 class CategoricalIndex(ExtensionIndex[S1], accessor.PandasDelegate):
     codes: np.ndarray = ...
     categories: Index = ...
-    array = CategoricalArrayDescriptor()
+    array = CategoricalArrayDescriptor()  # pyrefly: ignore[bad-override]
     def __new__(
         cls,
         data: Iterable[S1] = ...,
