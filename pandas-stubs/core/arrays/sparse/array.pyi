@@ -12,8 +12,10 @@ from pandas.core.arrays import (
 from typing_extensions import Self
 
 from pandas._typing import (
+    NpDtype,
     ScalarIndexer,
     SequenceIndexer,
+    np_1darray,
 )
 
 @final
@@ -32,6 +34,9 @@ class SparseArray(ExtensionArray, ExtensionOpsMixin):
     ) -> None: ...
     @classmethod
     def from_spmatrix(cls, data): ...
+    def __array__(
+        self, dtype: NpDtype | None = None, copy: bool | None = None
+    ) -> np_1darray: ...
     def __setitem__(self, key, value) -> None: ...
     @property
     def sp_index(self): ...

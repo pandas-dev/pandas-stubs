@@ -18,6 +18,7 @@ from pandas._libs.interval import (
 )
 from pandas._typing import (
     Axis,
+    NpDtype,
     Scalar,
     ScalarIndexer,
     SequenceIndexer,
@@ -57,7 +58,9 @@ class IntervalArray(IntervalMixin, ExtensionArray):
         copy: bool = False,
         dtype=None,
     ): ...
-    def __iter__(self): ...
+    def __array__(
+        self, dtype: NpDtype | None = None, copy: bool | None = None
+    ) -> np_1darray: ...
     @overload
     def __getitem__(self, key: ScalarIndexer) -> IntervalOrNA: ...
     @overload
