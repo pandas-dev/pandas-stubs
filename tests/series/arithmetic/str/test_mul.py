@@ -14,7 +14,6 @@ from typing_extensions import (
 )
 
 from tests import (
-    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
@@ -32,10 +31,8 @@ def test_mul_py_scalar(left: "pd.Series[str]") -> None:
     b, i, f, c = True, 1, 1.0, 1j
     s, d = datetime(2025, 9, 27), timedelta(seconds=1)
 
-    # pandas-dev/pandas#62595: we may want to support Series[str] * bool
-    # also in 3.x
-    if PD_LTE_23:
-        check(assert_type(left * b, "pd.Series[str]"), pd.Series, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left * i, "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         _02 = left * f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
@@ -43,8 +40,8 @@ def test_mul_py_scalar(left: "pd.Series[str]") -> None:
         _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-    if PD_LTE_23:
-        check(assert_type(b * left, "pd.Series[str]"), pd.Series, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(i * left, "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         _12 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
@@ -52,22 +49,22 @@ def test_mul_py_scalar(left: "pd.Series[str]") -> None:
         _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-    if PD_LTE_23:
-        check(assert_type(left.mul(b), "pd.Series[str]"), pd.Series, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.mul(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.mul(i), "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(f)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         left.mul(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.mul(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         left.mul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
-    if PD_LTE_23:
-        check(assert_type(left.rmul(b), "pd.Series[str]"), pd.Series, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.rmul(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rmul(i), "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         left.rmul(f)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         left.rmul(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.rmul(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         left.rmul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
@@ -77,10 +74,8 @@ def test_mul_py_sequence(left: "pd.Series[str]") -> None:
     s = [datetime(2025, 9, d) for d in (27, 28, 29)]
     d = [timedelta(seconds=s + 1) for s in range(3)]
 
-    # pandas-dev/pandas#62595: we may want to support Series[str] * bool
-    # also in 3.x
-    if PD_LTE_23:
-        check(assert_type(left * b, "pd.Series[str]"), pd.Series, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left * i, "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         _02 = left * f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
@@ -88,8 +83,8 @@ def test_mul_py_sequence(left: "pd.Series[str]") -> None:
         _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-    if PD_LTE_23:
-        check(assert_type(b * left, "pd.Series[str]"), pd.Series, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(i * left, "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         _12 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
@@ -97,8 +92,8 @@ def test_mul_py_sequence(left: "pd.Series[str]") -> None:
         _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-    if PD_LTE_23:
-        check(assert_type(left.mul(b), "pd.Series[str]"), pd.Series, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.mul(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.mul(i), "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(f)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
@@ -106,8 +101,8 @@ def test_mul_py_sequence(left: "pd.Series[str]") -> None:
         left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         left.mul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
-    if PD_LTE_23:
-        check(assert_type(left.rmul(b), "pd.Series[str]"), pd.Series, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.rmul(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rmul(i), "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         left.rmul(f)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
@@ -125,10 +120,8 @@ def test_mul_numpy_array(left: "pd.Series[str]") -> None:
     s = np.array([np.datetime64(f"2025-09-{d}") for d in (27, 28, 29)], np.datetime64)
     d = np.array([np.timedelta64(s + 1, "s") for s in range(3)], np.timedelta64)
 
-    # pandas-dev/pandas#62595: we may want to support Series[str] * bool
-    # also in 3.x
-    if PD_LTE_23:
-        check(assert_type(left * b, "pd.Series[str]"), pd.Series, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(left * b, Never)
     check(assert_type(left * i, "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(left * f, Never)
@@ -139,8 +132,8 @@ def test_mul_numpy_array(left: "pd.Series[str]") -> None:
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__rmul__` cannot override. At runtime, they return
     # `Series` with the correct element type.
-    if PD_LTE_23:
-        check(assert_type(b * left, "npt.NDArray[np.bool_]"), pd.Series, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        assert_type(b * left, "npt.NDArray[np.bool_]")
     check(assert_type(i * left, "npt.NDArray[np.int64]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(f * left, "npt.NDArray[np.float64]")
@@ -148,8 +141,8 @@ def test_mul_numpy_array(left: "pd.Series[str]") -> None:
         assert_type(s * left, Any)
         assert_type(d * left, "npt.NDArray[np.timedelta64]")
 
-    if PD_LTE_23:
-        check(assert_type(left.mul(b), "pd.Series[str]"), pd.Series, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.mul(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.mul(i), "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(f)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
@@ -157,8 +150,8 @@ def test_mul_numpy_array(left: "pd.Series[str]") -> None:
         left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         left.mul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
-    if PD_LTE_23:
-        check(assert_type(left.rmul(b), "pd.Series[str]"), pd.Series, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.rmul(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rmul(i), "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         left.rmul(f)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
@@ -176,10 +169,8 @@ def test_mul_pd_index(left: "pd.Series[str]") -> None:
     s = pd.Index([datetime(2025, 9, d) for d in (27, 28, 29)])
     d = pd.Index([timedelta(seconds=s + 1) for s in range(3)])
 
-    # pandas-dev/pandas#62595: we may want to support Series[str] * bool
-    # also in 3.x
     if TYPE_CHECKING_INVALID_USAGE:
-        check(assert_type(left * b, "pd.Series[str]"), pd.Series, str)
+        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left * i, "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         _02 = left * f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
@@ -188,7 +179,7 @@ def test_mul_pd_index(left: "pd.Series[str]") -> None:
         _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        check(assert_type(b * left, "pd.Series[str]"), pd.Series, str)
+        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(i * left, "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         _12 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
@@ -197,7 +188,7 @@ def test_mul_pd_index(left: "pd.Series[str]") -> None:
         _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        check(assert_type(left.mul(b), "pd.Series[str]"), pd.Series, str)
+        left.mul(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.mul(i), "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(f)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
@@ -205,8 +196,8 @@ def test_mul_pd_index(left: "pd.Series[str]") -> None:
         left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         left.mul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
-    if PD_LTE_23:
-        check(assert_type(left.rmul(b), "pd.Series[str]"), pd.Series, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.rmul(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rmul(i), "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         left.rmul(f)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
@@ -224,10 +215,8 @@ def test_mul_pd_series(left: "pd.Series[str]") -> None:
     s = pd.Series([datetime(2025, 9, d) for d in (27, 28, 29)])
     d = pd.Series([timedelta(seconds=s + 1) for s in range(3)])
 
-    # pandas-dev/pandas#62595: we may want to support Series[str] * bool
-    # also in 3.x
-    if PD_LTE_23:
-        check(assert_type(left * b, "pd.Series[str]"), pd.Series, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _00 = left * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left * i, "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         _02 = left * f  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
@@ -235,8 +224,8 @@ def test_mul_pd_series(left: "pd.Series[str]") -> None:
         _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-    if PD_LTE_23:
-        check(assert_type(b * left, "pd.Series[str]"), pd.Series, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(i * left, "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         _12 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
@@ -244,8 +233,8 @@ def test_mul_pd_series(left: "pd.Series[str]") -> None:
         _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
-    if PD_LTE_23:
-        check(assert_type(left.mul(b), "pd.Series[str]"), pd.Series, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.mul(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.mul(i), "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(f)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
@@ -253,8 +242,8 @@ def test_mul_pd_series(left: "pd.Series[str]") -> None:
         left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         left.mul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
-    if PD_LTE_23:
-        check(assert_type(left.rmul(b), "pd.Series[str]"), pd.Series, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.rmul(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rmul(i), "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         left.rmul(f)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
