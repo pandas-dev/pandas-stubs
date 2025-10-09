@@ -8,6 +8,7 @@ from typing import (
     ClassVar,
     Literal,
     NamedTuple,
+    Never,
     TypeAlias,
     overload,
 )
@@ -209,11 +210,15 @@ class Timedelta(timedelta):
     def __abs__(self) -> Self: ...
     # Override due to more types supported than timedelta
     @overload  # type: ignore[override]
+    def __mul__(self, other: bool) -> Never: ...
+    @overload
     def __mul__(self, other: float) -> Self: ...
     @overload
     def __mul__(
         self, other: np_ndarray[ShapeT, np.bool_ | np.integer | np.floating]
     ) -> np_ndarray[ShapeT, np.timedelta64]: ...
+    @overload
+    def __rmul__(self, other: bool) -> Never: ...
     @overload
     def __rmul__(self, other: float) -> Self: ...
     @overload
