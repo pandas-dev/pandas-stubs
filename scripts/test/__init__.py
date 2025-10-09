@@ -21,10 +21,10 @@ _DIST_STEPS = [
 ]
 
 
-def test(
-    src: bool = False,  # noqa: PT028
-    dist: bool = False,  # noqa: PT028
-    type_checker: Literal["", "mypy", "pyright"] = "",  # noqa: PT028
+def run_tests(
+    src: bool = False,
+    dist: bool = False,
+    type_checker: Literal["", "mypy", "pyright"] = "",
 ) -> None:
     steps = []
     if src:

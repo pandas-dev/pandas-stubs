@@ -76,15 +76,15 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks.test_all]
 help = "Run all tests"
-script = "scripts.test:test(src=True, dist=True)"
+script = "scripts.test:run_tests(src=True, dist=True)"
 
 [tool.poe.tasks.test]
 help = "Run local tests (includes 'mypy', 'pyright', 'pytest', and 'style')"
-script = "scripts.test:test(src=True)"
+script = "scripts.test:run_tests(src=True)"
 
 [tool.poe.tasks.test_dist]
 help = "Run tests on the installed stubs (includes 'mypy_dist' and 'pyright_dist')"
-script = "scripts.test:test(dist=True)"
+script = "scripts.test:run_tests(dist=True)"
 
 [tool.poe.tasks.pytest]
 help = "Run pytest"
@@ -106,7 +106,7 @@ script = "scripts.test:mypy_src(mypy_nightly)"
 
 [tool.poe.tasks.mypy_dist]
 help = "Run mypy on 'tests' using the installed stubs"
-script = "scripts.test:test(dist=True, type_checker='mypy')"
+script = "scripts.test:run_tests(dist=True, type_checker='mypy')"
 
 [tool.poe.tasks.ty]
 help = "Run ty on pandas-stubs"
@@ -126,7 +126,7 @@ script = "scripts.test.run:pyright_src_strict"
 
 [tool.poe.tasks.pyright_dist]
 help = "Run pyright on 'tests' using the installed stubs"
-script = "scripts.test:test(dist=True, type_checker='pyright')"
+script = "scripts.test:run_tests(dist=True, type_checker='pyright')"
 
 [tool.poe.tasks.stubtest]
 script = "scripts.test:stubtest(allowlist, check_missing, nightly)"
