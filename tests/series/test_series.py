@@ -73,8 +73,6 @@ from pandas.tseries.offsets import (
 )
 
 if TYPE_CHECKING:
-    from _typeshed import SupportsMul
-
     from tests import (
         BooleanDtypeArg,
         BytesDtypeArg,
@@ -3182,7 +3180,7 @@ def test_types_mask() -> None:
     check(assert_type(s.mask(cond, 10), "pd.Series[int]"), pd.Series, np.integer)
 
     # Test case with a boolean condition and a callable
-    def double(x: SupportsMul[int, T_co]) -> T_co:
+    def double(x: int) -> int:
         return x * 2
 
     check(assert_type(s.mask(s > 3, double), "pd.Series[int]"), pd.Series, np.integer)
