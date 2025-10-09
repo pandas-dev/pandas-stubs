@@ -8,7 +8,6 @@ from typing import (
     ClassVar,
     Literal,
     NamedTuple,
-    Never,
     TypeAlias,
     overload,
 )
@@ -22,7 +21,10 @@ from pandas import (
     Series,
     TimedeltaIndex,
 )
-from typing_extensions import Self
+from typing_extensions import (
+    Never,
+    Self,
+)
 
 from pandas._libs.tslibs import (
     BaseOffset,
