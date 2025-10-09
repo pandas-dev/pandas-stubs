@@ -829,9 +829,7 @@ def test_dataframe_clip() -> None:
         df.clip(lower=pd.Series([1, 2]), upper=pd.Series([4, 5]), axis=None)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
         df.copy().clip(lower=pd.Series([1, 2]), upper=None, axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
         df.copy().clip(lower=None, upper=pd.Series([1, 2]), axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
-        df.copy().clip(
-            lower=pd.Series([4, 5]), upper=pd.Series([1, 2]), axis=None, inplace=True
-        )  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        df.copy().clip(lower=pd.Series([4, 5]), upper=pd.Series([1, 2]), axis=None, inplace=True)  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
 
     check(
         assert_type(df.clip(lower=None, upper=None, axis=None), pd.DataFrame),
@@ -4311,24 +4309,10 @@ def test_to_dict_index() -> None:
         assert_type(df.to_dict(orient="split", index=False), dict[str, list]), dict, str
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        check(
-            assert_type(
-                df.to_dict(orient="records", index=False), list[dict[Hashable, Any]]
-            ),
-            list,
-        )  # type: ignore[assert-type, call-overload] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]
-        check(
-            assert_type(df.to_dict(orient="dict", index=False), dict[Hashable, Any]),
-            dict,
-        )  # type: ignore[assert-type, call-overload] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]
-        check(
-            assert_type(df.to_dict(orient="series", index=False), dict[Hashable, Any]),
-            dict,
-        )  # type: ignore[assert-type, call-overload] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]
-        check(
-            assert_type(df.to_dict(orient="index", index=False), dict[Hashable, Any]),
-            dict,
-        )  # type: ignore[assert-type, call-overload] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]
+        check(assert_type(df.to_dict(orient="records", index=False), list[dict[Hashable, Any]]), list)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]
+        check(assert_type(df.to_dict(orient="dict", index=False), dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]
+        check(assert_type(df.to_dict(orient="series", index=False), dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]
+        check(assert_type(df.to_dict(orient="index", index=False), dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]
 
 
 def test_suffix_prefix_index() -> None:
@@ -4432,9 +4416,7 @@ def test_interpolate_inplace() -> None:
 
 def test_getitem_generator() -> None:
     # GH 685
-    check(
-        assert_type(DF[(f"col{i + 1}" for i in range(2))], pd.DataFrame), pd.DataFrame
-    )
+    check(assert_type(DF[(f"col{i+1}" for i in range(2))], pd.DataFrame), pd.DataFrame)
 
 
 def test_getitem_dict_keys() -> None:
@@ -4580,6 +4562,7 @@ def test_hashable_args() -> None:
     test = ["test"]
 
     with ensure_clean() as path:
+
         df.to_stata(path, version=117, convert_strl=test)
         df.to_stata(path, version=117, convert_strl=["test"])
 
@@ -4704,6 +4687,7 @@ def test_unstack() -> None:
 
 
 def test_from_records() -> None:
+
     # test with np.ndarray
     arr = np.array([[1, "a"], [2, "b"]], dtype=object).reshape(2, 2)
     check(assert_type(pd.DataFrame.from_records(arr), pd.DataFrame), pd.DataFrame)
