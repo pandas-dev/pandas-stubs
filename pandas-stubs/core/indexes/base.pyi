@@ -245,6 +245,7 @@ class Index(IndexOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
+        # ) -> Index[CategoricalDtype]: ...
     ) -> CategoricalIndex: ...
     @overload
     def __new__(

@@ -1532,7 +1532,7 @@ def test_array_property() -> None:
     # casting due to pandas-dev/pandas-stubs#1383
     check(
         assert_type(
-            cast("Index[pd.CategoricalDtype]", Index([1], dtype="category")).array,
+            Index([1], dtype="category").array,
             pd.Categorical,
         ),
         pd.Categorical,
