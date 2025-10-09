@@ -29,6 +29,7 @@ from pandas._libs import Timedelta
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     AxesData,
+    Just,
     TimedeltaConvertibleTypes,
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -86,33 +87,33 @@ class TimedeltaIndex(
         self, other: dt.datetime | np.datetime64 | np_ndarray_dt | DatetimeIndex
     ) -> DatetimeIndex: ...
     @overload  # type: ignore[override]
-    def __mul__(self, other: np_ndarray_complex) -> Never: ...
+    def __mul__(self, other: np_ndarray_bool | np_ndarray_complex) -> Never: ...
     @overload
     def __mul__(
         self,
         other: (
-            float
-            | Sequence[float]
-            | np_ndarray_bool
+            Just[int]
+            | Just[float]
+            | Sequence[Just[int]]
+            | Sequence[Just[float]]
             | np_ndarray_anyint
             | np_ndarray_float
-            | Index[bool]
             | Index[int]
             | Index[float]
         ),
     ) -> Self: ...
     @overload  # type: ignore[override]
-    def __rmul__(self, other: np_ndarray_complex) -> Never: ...
+    def __rmul__(self, other: np_ndarray_bool | np_ndarray_complex) -> Never: ...
     @overload
     def __rmul__(
         self,
         other: (
-            float
-            | Sequence[float]
-            | np_ndarray_bool
+            Just[int]
+            | Just[float]
+            | Sequence[Just[int]]
+            | Sequence[Just[float]]
             | np_ndarray_anyint
             | np_ndarray_float
-            | Index[bool]
             | Index[int]
             | Index[float]
         ),

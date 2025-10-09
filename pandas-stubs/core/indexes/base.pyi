@@ -56,8 +56,9 @@ from pandas._typing import (
     C2,
     S1,
     S1_CO,
-    S1_CO_NSDT,
     S1_CT,
+    S2_CO_NSDT,
+    S2_CT,
     T_COMPLEX,
     T_INT,
     AnyAll,
@@ -753,30 +754,32 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __mul__(self, other: np_ndarray_dt) -> Never: ...
     @overload
-    def __mul__(self: Index[complex], other: np_ndarray_td) -> Never: ...
+    def __mul__(self: Index[bool] | Index[complex], other: np_ndarray_td) -> Never: ...
     # pandas-dev/pandas#62524: An index of Python native timedeltas can be
     # produced, instead of a TimedeltaIndex, hence the overload
     @overload
     def __mul__(  # type: ignore[overload-overlap]
-        self: Index[bool] | Index[int] | Index[float], other: Sequence[timedelta]
+        self: Index[int] | Index[float], other: Sequence[timedelta]
     ) -> Index[Timedelta]: ...
     @overload
     def __mul__(
-        self: Index[bool] | Index[int] | Index[float],
+        self: Index[int] | Index[float],
         other: timedelta | Sequence[Timedelta] | np.timedelta64 | np_ndarray_td,
     ) -> TimedeltaIndex: ...
     @overload
-    def __mul__(self: Index[Timedelta], other: np_ndarray_complex) -> Never: ...
+    def __mul__(
+        self: Index[Timedelta], other: np_ndarray_bool | np_ndarray_complex
+    ) -> Never: ...
     @overload
     def __mul__(
         self: Index[Timedelta],
         other: (
-            float
-            | Sequence[float]
-            | np_ndarray_bool
+            Just[int]
+            | Just[float]
+            | Sequence[Just[int]]
+            | Sequence[Just[float]]
             | np_ndarray_anyint
             | np_ndarray_float
-            | Index[bool]
             | Index[int]
             | Index[float]
         ),
@@ -807,11 +810,11 @@ class Index(IndexOpsMixin[S1]):
     ) -> Index[complex]: ...
     @overload
     def __mul__(
-        self: Index[S1_CT],
+        self: Index[S2_CT],
         other: (
-            SupportsRMul[S1_CT, S1_CO_NSDT] | Sequence[SupportsRMul[S1_CT, S1_CO_NSDT]]
+            SupportsRMul[S2_CT, S2_CO_NSDT] | Sequence[SupportsRMul[S2_CT, S2_CO_NSDT]]
         ),
-    ) -> Index[S1_CO_NSDT]: ...
+    ) -> Index[S2_CO_NSDT]: ...
     @overload
     def __mul__(
         self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool]
@@ -843,30 +846,32 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __rmul__(self, other: np_ndarray_dt) -> Never: ...
     @overload
-    def __rmul__(self: Index[complex], other: np_ndarray_td) -> Never: ...
+    def __rmul__(self: Index[bool] | Index[complex], other: np_ndarray_td) -> Never: ...
     # pandas-dev/pandas#62524: An index of Python native timedeltas can be
     # produced, instead of a TimedeltaIndex, hence the overload
     @overload
     def __rmul__(  # type: ignore[overload-overlap]
-        self: Index[bool] | Index[int] | Index[float], other: Sequence[timedelta]
+        self: Index[int] | Index[float], other: Sequence[timedelta]
     ) -> Index[Timedelta]: ...
     @overload
     def __rmul__(
-        self: Index[bool] | Index[int] | Index[float],
+        self: Index[int] | Index[float],
         other: timedelta | Sequence[Timedelta] | np.timedelta64 | np_ndarray_td,
     ) -> TimedeltaIndex: ...
     @overload
-    def __rmul__(self: Index[Timedelta], other: np_ndarray_complex) -> Never: ...
+    def __rmul__(
+        self: Index[Timedelta], other: np_ndarray_bool | np_ndarray_complex
+    ) -> Never: ...
     @overload
     def __rmul__(
         self: Index[Timedelta],
         other: (
-            float
-            | Sequence[float]
-            | np_ndarray_bool
+            Just[int]
+            | Just[float]
+            | Sequence[Just[int]]
+            | Sequence[Just[float]]
             | np_ndarray_anyint
             | np_ndarray_float
-            | Index[bool]
             | Index[int]
             | Index[float]
         ),
@@ -897,11 +902,11 @@ class Index(IndexOpsMixin[S1]):
     ) -> Index[complex]: ...
     @overload
     def __rmul__(
-        self: Index[S1_CT],
+        self: Index[S2_CT],
         other: (
-            SupportsMul[S1_CT, S1_CO_NSDT] | Sequence[SupportsMul[S1_CT, S1_CO_NSDT]]
+            SupportsMul[S2_CT, S2_CO_NSDT] | Sequence[SupportsMul[S2_CT, S2_CO_NSDT]]
         ),
-    ) -> Index[S1_CO_NSDT]: ...
+    ) -> Index[S2_CO_NSDT]: ...
     @overload
     def __rmul__(
         self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool]
