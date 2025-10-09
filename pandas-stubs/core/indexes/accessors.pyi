@@ -468,7 +468,6 @@ class ArrayDescriptor:
         self, instance: IndexOpsMixin[CategoricalDtype], owner: type[IndexOpsMixin]
     ) -> Categorical: ...
     @overload
-    @overload
     def __get__(
         self, instance: IndexOpsMixin[Interval], owner: type[IndexOpsMixin]
     ) -> IntervalArray: ...
