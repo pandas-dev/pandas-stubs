@@ -19,6 +19,7 @@ from pandas.core.arrays.interval import IntervalArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.category import CategoricalIndex
+from pandas.core.indexes.datetimes import DatetimeIndex
 from typing_extensions import (
     Never,
     assert_type,
@@ -1608,3 +1609,18 @@ def test_to_series() -> None:
         np.complexfloating,
     )
     check(assert_type(Index(["1"]).to_series(), "pd.Series[str]"), pd.Series, str)
+
+
+def test_index_where() -> None:
+    """Test Index.where with multiple types of other GH1419."""
+    datetime_index = pd.DatetimeIndex(
+        pd.date_range(start="2025-01-01", freq="h", periods=48)
+    )
+    mask = np.ones(48, dtype=bool)
+    val_idx = datetime_index.where(mask, datetime_index - pd.Timedelta(days=1))
+    check(assert_type(val_idx, DatetimeIndex), DatetimeIndex)
+
+    val_sr = datetime_index.where(
+        mask, (datetime_index - pd.Timedelta(days=1)).to_series()
+    )
+    check(assert_type(val_sr, DatetimeIndex), DatetimeIndex)
