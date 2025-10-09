@@ -11,9 +11,11 @@ from pandas.core.arrays import (
 from typing_extensions import Self
 
 from pandas._typing import (
+    NpDtype,
     Scalar,
     ScalarIndexer,
     SequenceIndexer,
+    np_1darray,
     npt,
 )
 
@@ -31,6 +33,9 @@ class BaseMaskedArray(ExtensionArray, ExtensionOpsMixin):
         na_value: Scalar = ...,
     ) -> np.ndarray: ...
     __array_priority__: int = ...
+    def __array__(
+        self, dtype: NpDtype | None = None, copy: bool | None = None
+    ) -> np_1darray: ...
     def __arrow_array__(self, type=...): ...
     def isna(self): ...
     @property
