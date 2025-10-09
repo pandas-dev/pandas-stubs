@@ -15,6 +15,7 @@ from typing import (
 import numpy as np
 from pandas.core.accessor import PandasDelegate
 from pandas.core.arrays.base import ExtensionArray
+from pandas.core.arrays.categorical import Categorical
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.interval import IntervalArray
 from pandas.core.arrays.period import PeriodArray
@@ -46,6 +47,8 @@ from pandas._typing import (
     np_1darray,
     np_ndarray_bool,
 )
+
+from pandas.core.dtypes.dtypes import CategoricalDtype
 
 class Properties(PandasDelegate, NoNewAttributesMixin): ...
 
@@ -460,6 +463,11 @@ class ArrayDescriptor:
     def __get__(
         self, instance: IndexOpsMixin[Never], owner: type[IndexOpsMixin]
     ) -> ExtensionArray: ...
+    @overload
+    def __get__(
+        self, instance: IndexOpsMixin[CategoricalDtype], owner: type[IndexOpsMixin]
+    ) -> Categorical: ...
+    @overload
     @overload
     def __get__(
         self, instance: IndexOpsMixin[Interval], owner: type[IndexOpsMixin]
