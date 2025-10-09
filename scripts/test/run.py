@@ -62,9 +62,7 @@ def rename_src() -> None:
     if Path(r"pandas-stubs").exists():
         Path(r"pandas-stubs").rename("_pandas-stubs")
     else:
-        raise FileNotFoundError(  # noqa: TRY003
-            "'pandas-stubs' folder does not exists."
-        )
+        raise FileNotFoundError("'pandas-stubs' folder does not exists.")
 
 
 def mypy_dist() -> None:
@@ -86,9 +84,7 @@ def restore_src() -> None:
     if Path(r"_pandas-stubs").exists():
         Path(r"_pandas-stubs").rename("pandas-stubs")
     else:
-        raise FileNotFoundError(  # noqa: TRY003
-            "'_pandas-stubs' folder does not exists."
-        )
+        raise FileNotFoundError("'_pandas-stubs' folder does not exists.")
 
 
 def nightly_pandas() -> None:
