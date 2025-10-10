@@ -6,6 +6,7 @@ from typing import final
 
 import numpy as np
 from pandas.core import accessor
+from pandas.core.arrays.categorical import Categorical
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.extension import ExtensionIndex
 from typing_extensions import Self
@@ -18,6 +19,8 @@ from pandas._typing import (
 class CategoricalIndex(ExtensionIndex[S1], accessor.PandasDelegate):
     codes: np.ndarray = ...
     categories: Index = ...
+    @property
+    def array(self) -> Categorical: ...  # type: ignore[override] # pyrefly: ignore[bad-override]
     def __new__(
         cls,
         data: Iterable[S1] = ...,

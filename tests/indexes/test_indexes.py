@@ -1531,10 +1531,7 @@ def test_array_property() -> None:
     """Test that Index.array and semantic Index.array return ExtensionArray and its subclasses"""
     # casting due to pandas-dev/pandas-stubs#1383
     check(
-        assert_type(
-            cast("Index[pd.CategoricalDtype]", Index([1], dtype="category")).array,
-            pd.Categorical,
-        ),
+        assert_type(Index([1], dtype="category").array, pd.Categorical),
         pd.Categorical,
         int,
     )
