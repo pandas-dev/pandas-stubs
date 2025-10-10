@@ -79,7 +79,6 @@ from pandas._libs.lib import _NoDefaultDoNotUse
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.nattype import NaTType
-from pandas._libs.tslibs.offsets import DateOffset
 from pandas._typing import (
     S2,
     AggFuncTypeBase,
@@ -104,6 +103,7 @@ from pandas._typing import (
     FillnaOptions,
     FloatFormatType,
     FormattersType,
+    Frequency,
     GroupByObjectNonScalar,
     HashableT,
     HashableT1,
@@ -133,6 +133,7 @@ from pandas._typing import (
     NDFrameT,
     NsmallestNlargestKeep,
     ParquetEngine,
+    PeriodFrequency,
     QuantileInterpolation,
     RandomState,
     ReadBuffer,
@@ -1681,14 +1682,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def to_timestamp(
         self,
-        freq=...,
+        freq: PeriodFrequency | None = None,
         how: ToTimestampHow = ...,
         axis: Axis = 0,
         copy: _bool = True,
     ) -> Self: ...
     def to_period(
         self,
-        freq: _str | None = None,
+        freq: PeriodFrequency | None = None,
         axis: Axis = 0,
         copy: _bool = True,
     ) -> Self: ...
@@ -2222,7 +2223,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         periods: int = 1,
         fill_method: None = None,
-        freq: DateOffset | dt.timedelta | _str | None = ...,
+        freq: Frequency | dt.timedelta | None = ...,
         fill_value: Scalar | NAType | None = ...,
     ) -> Self: ...
     def pop(self, item: _str) -> Series: ...
@@ -2339,7 +2340,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def rolling(
         self,
-        window: int | str | dt.timedelta | BaseOffset | BaseIndexer,
+        window: int | Frequency | dt.timedelta | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         on: Hashable | None = ...,
@@ -2353,7 +2354,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def rolling(
         self,
-        window: int | str | dt.timedelta | BaseOffset | BaseIndexer,
+        window: int | Frequency | dt.timedelta | BaseIndexer,
         min_periods: int | None = ...,
         center: _bool = ...,
         on: Hashable | None = ...,
