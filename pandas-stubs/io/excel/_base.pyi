@@ -12,10 +12,10 @@ from typing import (
     overload,
 )
 
-from odf.opendocument import OpenDocument
+from odf.opendocument import OpenDocument  # pyright: ignore[reportMissingTypeStubs]
 from openpyxl.workbook.workbook import Workbook
 from pandas.core.frame import DataFrame
-import pyxlsb.workbook
+import pyxlsb.workbook  # pyright: ignore[reportMissingTypeStubs]
 from typing_extensions import Self
 from xlrd.book import Book
 

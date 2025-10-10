@@ -12,6 +12,7 @@ from typing import (
     Literal,
     NamedTuple,
     Protocol,
+    TypeAlias,
     TypeVar,
     final,
     overload,
@@ -26,10 +27,7 @@ from pandas.core.groupby.groupby import (
     GroupByPlot,
 )
 from pandas.core.series import Series
-from typing_extensions import (
-    Self,
-    TypeAlias,
-)
+from typing_extensions import Self
 
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
@@ -59,43 +57,43 @@ class NamedAgg(NamedTuple):
 
 class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     @overload
-    def aggregate(  # pyrefly: ignore
+    def aggregate(
         self,
         func: Callable[Concatenate[Series[S2], P], S3],
         /,
-        *args,
+        *args: Any,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series[S3]: ...
     @overload
     def aggregate(
         self,
         func: Callable[[Series], S3],
-        *args,
+        *args: Any,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series[S3]: ...
     @overload
     def aggregate(
         self,
         func: list[AggFuncTypeBase],
         /,
-        *args,
+        *args: Any,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> DataFrame: ...
     @overload
     def aggregate(
         self,
         func: AggFuncTypeBase | None = ...,
         /,
-        *args,
+        *args: Any,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series: ...
     agg = aggregate
     @overload
@@ -117,10 +115,10 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     ) -> Series: ...
     @overload
     def transform(
-        self, func: TransformReductionListType, *args, **kwargs
+        self, func: TransformReductionListType, *args: Any, **kwargs: Any
     ) -> Series: ...
     def filter(
-        self, func: Callable | str, dropna: bool = ..., *args, **kwargs
+        self, func: Callable | str, dropna: bool = ..., *args: Any, **kwargs: Any
     ) -> Series: ...
     def nunique(self, dropna: bool = ...) -> Series[int]: ...
     # describe delegates to super() method but here it has keyword-only parameters
@@ -152,13 +150,13 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     def take(
         self,
         indices: TakeIndexer,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series[S2]: ...
     def skew(
         self,
         skipna: bool = True,
         numeric_only: bool = False,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series: ...
     @property
     def plot(self) -> GroupByPlot[Self]: ...
@@ -199,13 +197,14 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
         bins: int | Sequence[int] = 10,
         backend: str | None = None,
         legend: bool = False,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series: ...  # Series[Axes] but this is not allowed
     @property
     def dtype(self) -> Series: ...
     def unique(self) -> Series: ...
     # Overrides that provide more precise return types over the GroupBy class
     @final  # type: ignore[misc]
+    # pyrefly: ignore  # bad-override
     def __iter__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
     ) -> Iterator[tuple[ByT, Series[S2]]]: ...
@@ -259,17 +258,17 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     def aggregate(
         self,
         func: AggFuncTypeFrame | None = ...,
-        *args,
+        *args: Any,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> DataFrame: ...
     @overload
     def aggregate(
         self,
         func: AggFuncTypeFrame | None = None,
         /,
-        **kwargs,
+        **kwargs: Any,
     ) -> DataFrame: ...
     agg = aggregate
     @overload
@@ -290,10 +289,10 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     ) -> DataFrame: ...
     @overload
     def transform(
-        self, func: TransformReductionListType, *args, **kwargs
+        self, func: TransformReductionListType, *args: Any, **kwargs: Any
     ) -> DataFrame: ...
     def filter(
-        self, func: Callable, dropna: bool = ..., *args, **kwargs
+        self, func: Callable, dropna: bool = ..., *args: Any, **kwargs: Any
     ) -> DataFrame: ...
     @overload
     def __getitem__(self, key: Scalar) -> SeriesGroupBy[Any, ByT]: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
@@ -326,7 +325,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         sharex: bool = ...,
         sharey: bool = ...,
         backend: str | None = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series: ...  # Series[PlotAxes] but this is not allowed
     @overload
     def boxplot(
@@ -342,7 +341,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         sharex: bool = ...,
         sharey: bool = ...,
         backend: str | None = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> PlotAxes: ...
     @overload
     def boxplot(
@@ -358,7 +357,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         sharex: bool = ...,
         sharey: bool = ...,
         backend: str | None = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> PlotAxes | Series: ...  # Series[PlotAxes]
     @overload
     def value_counts(
@@ -396,7 +395,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         ascending: bool = ...,
         dropna: bool = ...,
     ) -> DataFrame: ...
-    def take(self, indices: TakeIndexer, **kwargs) -> DataFrame: ...
+    def take(self, indices: TakeIndexer, **kwargs: Any) -> DataFrame: ...
     @overload
     def skew(
         self,
@@ -404,7 +403,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         numeric_only: bool = ...,
         *,
         level: Level,
-        **kwargs,
+        **kwargs: Any,
     ) -> DataFrame: ...
     @overload
     def skew(
@@ -413,7 +412,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         numeric_only: bool = ...,
         *,
         level: None = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series: ...
     @property
     def plot(self) -> GroupByPlot[Self]: ...
@@ -446,13 +445,14 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         bins: int | Sequence[int] = 10,
         backend: str | None = None,
         legend: bool = False,
-        **kwargs,
+        **kwargs: Any,
     ) -> Series: ...  # Series[Axes] but this is not allowed
     @property
     def dtypes(self) -> Series: ...
     def __getattr__(self, name: str) -> SeriesGroupBy[Any, ByT]: ...
     # Overrides that provide more precise return types over the GroupBy class
     @final  # type: ignore[misc]
+    # pyrefly: ignore  # bad-override
     def __iter__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
     ) -> Iterator[tuple[ByT, DataFrame]]: ...

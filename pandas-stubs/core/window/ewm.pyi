@@ -1,3 +1,5 @@
+from typing import Any
+
 from pandas import (
     DataFrame,
     Series,
@@ -48,8 +50,8 @@ class ExponentialMovingWindowGroupby(
 
 class OnlineExponentialMovingWindow(ExponentialMovingWindow[NDFrameT]):
     def reset(self) -> None: ...
-    def aggregate(self, func, *args, **kwargs): ...
-    def std(self, bias: bool = False, *args, **kwargs): ...  # pyrefly: ignore
+    def aggregate(self, func, *args: Any, **kwargs: Any): ...
+    def std(self, bias: bool = False, *args: Any, **kwargs: Any): ...
     def corr(
         self,
         other: DataFrame | Series | None = None,
@@ -64,6 +66,10 @@ class OnlineExponentialMovingWindow(ExponentialMovingWindow[NDFrameT]):
         numeric_only: bool = False,
     ): ...
     def var(self, bias: bool = False, numeric_only: bool = False): ...
-    def mean(  # pyrefly: ignore
-        self, *args, update: NDFrameT | None = ..., update_times: None = ..., **kwargs
+    def mean(
+        self,
+        *args: Any,
+        update: NDFrameT | None = ...,
+        update_times: None = ...,
+        **kwargs: Any,
     ) -> NDFrameT: ...

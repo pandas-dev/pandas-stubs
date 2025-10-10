@@ -1,6 +1,4 @@
-from typing import (
-    Literal,
-)
+from typing import Literal
 
 import pandas as pd
 from pandas.api.typing import NAType

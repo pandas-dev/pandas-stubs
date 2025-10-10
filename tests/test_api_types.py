@@ -373,7 +373,7 @@ def test_union_categoricals() -> None:
 
 def test_check_extension_dtypes() -> None:
     # GH 315
-    def check_ext_dtype(etype: type[ExtensionDtype]):
+    def check_ext_dtype(etype: type[ExtensionDtype]) -> None:
         assert issubclass(etype, ExtensionDtype)
 
     check_ext_dtype(pd.Int64Dtype)

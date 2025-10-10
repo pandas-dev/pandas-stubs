@@ -4,13 +4,13 @@ from datetime import (
     timedelta,
     tzinfo as _tzinfo,
 )
-from typing import Literal
-
-import numpy as np
-from typing_extensions import (
-    Self,
+from typing import (
+    Literal,
     TypeAlias,
 )
+
+import numpy as np
+from typing_extensions import Self
 
 from pandas._libs.tslibs.period import Period
 from pandas._typing import (

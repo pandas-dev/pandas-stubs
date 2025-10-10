@@ -160,7 +160,7 @@ def concat(
 #     verify_integrity: bool = ...,
 #     sort: bool = ...,
 #     copy: bool = ...,
-# ) -> Union[DataFrame, Series]: ...
+# ) -> DataFrame | Series: ...
 
 # @overload
 # def concat(
@@ -176,4 +176,4 @@ def concat(
 #     verify_integrity: bool = ...,
 #     sort: bool = ...,
 #     copy: bool = ...,
-# ) -> Union[DataFrame, Series]: ...
+# ) -> DataFrame | Series: ...

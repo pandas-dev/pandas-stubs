@@ -5,6 +5,7 @@ from collections.abc import (
 )
 from contextlib import contextmanager
 from typing import (
+    Any,
     Literal,
     overload,
 )
@@ -38,7 +39,7 @@ def assert_almost_equal(
     check_dtype: bool | Literal["equiv"] = "equiv",
     rtol: float = 1e-5,
     atol: float = 1e-8,
-    **kwargs,
+    **kwargs: Any,
 ) -> None: ...
 def assert_dict_equal(left: dict, right: dict, compare_keys: bool = True) -> None: ...
 def assert_index_equal(
@@ -172,10 +173,10 @@ def assert_frame_equal(
     atol: float = 1e-8,
     obj: str = "DataFrame",
 ) -> None: ...
-def assert_equal(left, right, **kwargs) -> None: ...
+def assert_equal(left, right, **kwargs: Any) -> None: ...
 def assert_sp_array_equal(left: SparseArray, right: SparseArray) -> None: ...
 def assert_contains_all(iterable: Iterable[T], dic: Container[T]) -> None: ...
-def assert_copy(iter1: Iterable[T], iter2: Iterable[T], **eql_kwargs) -> None: ...
+def assert_copy(iter1: Iterable[T], iter2: Iterable[T], **eql_kwargs: Any) -> None: ...
 @contextmanager
 def assert_produces_warning(
     expected_warning: (

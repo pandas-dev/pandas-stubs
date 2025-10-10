@@ -1,6 +1,7 @@
 from collections.abc import Iterator
 from typing import (
     Any,
+    Literal,
     overload,
 )
 
@@ -20,6 +21,9 @@ from pandas._typing import (
 from pandas.core.dtypes.dtypes import ExtensionDtype as ExtensionDtype
 
 class ExtensionArray:
+    def __array_ufunc__(
+        self, ufunc: np.ufunc, method: str, *inputs: Any, **kwargs: Any
+    ) -> Any: ...
     @overload
     def __getitem__(self, item: ScalarIndexer) -> Any: ...
     @overload
@@ -45,7 +49,7 @@ class ExtensionArray:
     def astype(self, dtype, copy: bool = True): ...
     def isna(self) -> ArrayLike: ...
     def argsort(
-        self, *, ascending: bool = ..., kind: str = ..., **kwargs
+        self, *, ascending: bool = ..., kind: str = ..., **kwargs: Any
     ) -> np_1darray: ...
     def fillna(self, value=..., method=None, limit=None): ...
     def dropna(self): ...
@@ -66,9 +70,15 @@ class ExtensionArray:
     def ravel(self, order="C") -> Self: ...
     def tolist(self) -> list: ...
     def _reduce(
-        self, name: str, *, skipna: bool = ..., keepdims: bool = ..., **kwargs
+        self, name: str, *, skipna: bool = ..., keepdims: bool = ..., **kwargs: Any
     ) -> object: ...
-    def _accumulate(self, name: str, *, skipna: bool = ..., **kwargs) -> Self: ...
+    def _accumulate(
+        self,
+        name: Literal["cummin", "cummax", "cumsum", "cumprod"],
+        *,
+        skipna: bool = True,
+        **kwargs: Any,
+    ) -> Self: ...
 
 class ExtensionOpsMixin:
     @classmethod

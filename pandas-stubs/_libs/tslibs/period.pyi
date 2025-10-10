@@ -1,6 +1,7 @@
 import datetime
 from typing import (
     Literal,
+    TypeAlias,
     overload,
 )
 
@@ -12,7 +13,7 @@ from pandas import (
     Timedelta,
     TimedeltaIndex,
 )
-from typing_extensions import TypeAlias
+from typing_extensions import Self
 
 from pandas._libs.tslibs import NaTType
 from pandas._libs.tslibs.offsets import (
@@ -90,15 +91,23 @@ class Period(PeriodMixin):
     @overload
     def __sub__(self, other: TimedeltaIndex) -> PeriodIndex: ...
     @overload
-    def __add__(self, other: _PeriodAddSub) -> Period: ...
+    def __add__(self, other: _PeriodAddSub) -> Self: ...
     @overload
     def __add__(self, other: NaTType) -> NaTType: ...
     @overload
     def __add__(self, other: Index) -> PeriodIndex: ...
+    # Ignored due to indecipherable error from mypy:
+    # Forward operator "__add__" is not callable  [misc]
     @overload
-    def __add__(
-        self, other: Series[BaseOffset] | Series[Timedelta]
-    ) -> Series[Period]: ...  # pyrefly: ignore[bad-specialization]
+    def __radd__(self, other: _PeriodAddSub) -> Self: ...  # type: ignore[misc]
+    @overload
+    def __radd__(self, other: NaTType) -> NaTType: ...
+    # Real signature is -> PeriodIndex, but conflicts with Index.__add__
+    # Changing Index is very hard due to Index inheritance
+    #   Signatures of "__radd__" of "Period" and "__add__" of "Index"
+    #   are unsafely overlapping
+    @overload
+    def __radd__(self, other: Index) -> PeriodIndex: ...
     #  ignore[misc] here because we know all other comparisons
     #  are False, so we use Literal[False]
     @overload
@@ -171,18 +180,6 @@ class Period(PeriodMixin):
     def __ne__(self, other: np_ndarray[ShapeT, np.object_]) -> np_ndarray[ShapeT, np.bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: object) -> Literal[True]: ...
-    # Ignored due to indecipherable error from mypy:
-    # Forward operator "__add__" is not callable  [misc]
-    @overload
-    def __radd__(self, other: _PeriodAddSub) -> Period: ...  # type: ignore[misc]
-    # Real signature is -> PeriodIndex, but conflicts with Index.__add__
-    # Changing Index is very hard due to Index inheritance
-    #   Signatures of "__radd__" of "Period" and "__add__" of "Index"
-    #   are unsafely overlapping
-    @overload
-    def __radd__(self, other: Index) -> Index: ...
-    @overload
-    def __radd__(self, other: NaTType) -> NaTType: ...
     @property
     def day(self) -> int: ...
     @property

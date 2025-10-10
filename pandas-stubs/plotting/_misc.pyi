@@ -5,6 +5,7 @@ from collections.abc import (
 from typing import (
     Any,
     Literal,
+    TypeAlias,
 )
 
 from matplotlib.axes import Axes
@@ -14,7 +15,6 @@ from matplotlib.table import Table
 import numpy as np
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
-from typing_extensions import TypeAlias
 
 from pandas._typing import (
     HashableT,
@@ -26,7 +26,7 @@ _Color: TypeAlias = str | Sequence[float]
 def table(
     ax: Axes,
     data: DataFrame | Series,
-    **kwargs,
+    **kwargs: Any,
 ) -> Table: ...
 def register() -> None: ...
 def deregister() -> None: ...
@@ -41,7 +41,7 @@ def scatter_matrix(
     density_kwds: dict[str, Any] | None = None,
     hist_kwds: dict[str, Any] | None = None,
     range_padding: float = 0.05,
-    **kwargs,
+    **kwargs: Any,
 ) -> npt.NDArray[np.object_]: ...
 def radviz(
     frame: DataFrame,
@@ -49,7 +49,7 @@ def radviz(
     ax: Axes | None = None,
     color: _Color | Sequence[_Color] | None = None,
     colormap: str | Colormap | None = None,
-    **kwds,
+    **kwds: Any,
 ) -> Axes: ...
 def andrews_curves(
     frame: DataFrame,
@@ -58,14 +58,14 @@ def andrews_curves(
     samples: int = 200,
     color: _Color | Sequence[_Color] | None = None,
     colormap: str | Colormap | None = None,
-    **kwargs,
+    **kwargs: Any,
 ) -> Axes: ...
 def bootstrap_plot(
     series: Series,
     fig: Figure | None = None,
     size: int = 50,
     samples: int = 500,
-    **kwds,
+    **kwds: Any,
 ) -> Figure: ...
 def parallel_coordinates(
     frame: DataFrame,
@@ -79,9 +79,13 @@ def parallel_coordinates(
     axvlines: bool = True,
     axvlines_kwds: dict[str, Any] | None = None,
     sort_labels: bool = False,
-    **kwargs,
+    **kwargs: Any,
 ) -> Axes: ...
-def lag_plot(series: Series, lag: int = 1, ax: Axes | None = None, **kwds) -> Axes: ...
-def autocorrelation_plot(series: Series, ax: Axes | None = None, **kwargs) -> Axes: ...
+def lag_plot(
+    series: Series, lag: int = 1, ax: Axes | None = None, **kwds: Any
+) -> Axes: ...
+def autocorrelation_plot(
+    series: Series, ax: Axes | None = None, **kwargs: Any
+) -> Axes: ...
 
 plot_params: dict[str, Any]

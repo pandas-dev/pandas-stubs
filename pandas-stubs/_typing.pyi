@@ -19,6 +19,7 @@ from typing import (
     Literal,
     Protocol,
     SupportsIndex,
+    TypeAlias,
     TypedDict,
     Union,
     overload,
@@ -36,7 +37,6 @@ from pandas.core.series import Series
 from pandas.core.tools.datetimes import FulldatetimeDict
 from typing_extensions import (
     ParamSpec,
-    TypeAlias,
     TypeVar,
     override,
 )
@@ -200,7 +200,8 @@ RandomState: TypeAlias = (
 )
 
 # dtypes
-NpDtype: TypeAlias = str | np.dtype[np.generic] | type[str | complex | bool | object]
+NpDtypeNoStr: TypeAlias = np.dtype[np.generic] | type[complex | bool | object]
+NpDtype: TypeAlias = str | NpDtypeNoStr | type[str]
 Dtype: TypeAlias = ExtensionDtype | NpDtype
 
 # AstypeArg is more carefully defined here as compared to pandas
@@ -874,19 +875,21 @@ MaskType: TypeAlias = Series[bool] | np_ndarray_bool | list[bool]
 
 T_INT = TypeVar("T_INT", bound=int)
 T_COMPLEX = TypeVar("T_COMPLEX", bound=complex)
-SeriesDTypeNoDateTime: TypeAlias = (
-    str
-    | bytes
+SeriesDTypeNoStrDateTime: TypeAlias = (
+    bytes
     | bool
     | int
     | float
     | complex
-    | Dtype
+    | NpDtypeNoStr
+    | ExtensionDtype
     | Period
     | Interval
     | CategoricalDtype
     | BaseOffset
-    | list[str]
+)
+SeriesDTypeNoDateTime: TypeAlias = (
+    str | SeriesDTypeNoStrDateTime | type[str] | list[str]
 )
 SeriesDType: TypeAlias = (
     SeriesDTypeNoDateTime
@@ -896,6 +899,9 @@ SeriesDType: TypeAlias = (
     | datetime.timedelta  # includes pd.Timedelta
 )
 S1 = TypeVar("S1", bound=SeriesDType, default=Any)
+S1_CO_NSDT = TypeVar(
+    "S1_CO_NSDT", bound=SeriesDTypeNoStrDateTime, default=Any, covariant=True
+)
 S1_CT_NDT = TypeVar(
     "S1_CT_NDT", bound=SeriesDTypeNoDateTime, default=Any, contravariant=True
 )
@@ -1101,6 +1107,7 @@ Incomplete: TypeAlias = Any
 class Just(Protocol, Generic[T]):
     @property  # type: ignore[override]
     @override
+    # pyrefly: ignore  # bad-override
     def __class__(self, /) -> type[T]: ...
     @__class__.setter
     @override

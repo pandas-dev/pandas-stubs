@@ -7,6 +7,7 @@ from collections.abc import (
 import datetime
 from typing import (
     Literal,
+    TypeAlias,
     overload,
 )
 
@@ -16,7 +17,6 @@ from pandas.core.frame import DataFrame
 from pandas.core.groupby.grouper import Grouper
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
-from typing_extensions import TypeAlias
 
 from pandas._typing import (
     AnyArrayLike,
