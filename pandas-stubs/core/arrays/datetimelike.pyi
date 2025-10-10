@@ -18,12 +18,14 @@ from pandas._libs import (
 )
 from pandas._typing import (
     DatetimeLikeScalar,
+    NpDtype,
     PositionalIndexerTuple,
     ScalarIndexer,
     SequenceIndexer,
     TimeAmbiguous,
     TimeNonexistent,
     TimeUnit,
+    np_1darray,
 )
 
 DTScalarOrNaT: TypeAlias = DatetimeLikeScalar | NaTType
@@ -66,10 +68,11 @@ class DatetimeLikeArrayMixin(ExtensionOpsMixin, ExtensionArray):
     def asi8(self) -> np.ndarray: ...
     @property
     def nbytes(self): ...
-    def __array__(self, dtype=...) -> np.ndarray: ...
+    def __array__(
+        self, dtype: NpDtype | None = None, copy: bool | None = None
+    ) -> np_1darray: ...
     @property
     def size(self) -> int: ...
-    def __len__(self) -> int: ...
     @overload
     def __getitem__(self, key: ScalarIndexer) -> DTScalarOrNaT: ...
     @overload

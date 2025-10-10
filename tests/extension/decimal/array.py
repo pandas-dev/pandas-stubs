@@ -1,10 +1,14 @@
 from __future__ import annotations
 
 from builtins import type as type_t
+from collections.abc import Callable
 import decimal
 import numbers
 import sys
-from typing import Any
+from typing import (
+    Any,
+    cast,
+)
 
 import numpy as np
 from pandas.api.extensions import (
@@ -125,7 +129,9 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
             result = np.asarray([round(x, decimals) for x in result])
         return result
 
-    def __array_ufunc__(self, ufunc: np.ufunc, method: str, *inputs, **kwargs: Any):
+    def __array_ufunc__(
+        self, ufunc: np.ufunc, method: str, *inputs: Any, **kwargs: Any
+    ):
         #
         if not all(
             isinstance(t, self._HANDLED_TYPES + (DecimalArray,)) for t in inputs
@@ -147,7 +153,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
             if result is not NotImplemented:
                 return result
 
-        def reconstruct(x):
+        def reconstruct(x) -> decimal.Decimal | numbers.Number | DecimalArray:
             if isinstance(x, (decimal.Decimal, numbers.Number)):
                 return x
             return DecimalArray._from_sequence(x)
@@ -220,10 +226,10 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         return np.array([x.is_nan() for x in self._data], dtype=bool)
 
     @property
-    def _na_value(self):
+    def _na_value(self) -> decimal.Decimal:
         return decimal.Decimal("NaN")
 
-    def _formatter(self, boxed=False):
+    def _formatter(self, boxed=False) -> Callable[..., str]:
         if boxed:
             return "Decimal: {}".format
         return repr
@@ -232,7 +238,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
     def _concat_same_type(cls, to_concat):
         return cls(np.concatenate([x._data for x in to_concat]))
 
-    def _reduce(self, name: str, *, skipna: bool = True, **kwargs: Any):
+    def _reduce(self, name: str, *, skipna: bool = True, **kwargs: Any) -> Any:
         if skipna:
             # If we don't have any NAs, we can ignore skipna
             if self.isna().any():
@@ -251,9 +257,9 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
             ) from err
         return op(axis=0)
 
-    def _cmp_method(self, other, op):
+    def _cmp_method(self, other, op) -> np.ndarray[tuple[int], np.dtype[np.bool_]]:
         # For use with OpsMixin
-        def convert_values(param):
+        def convert_values(param) -> ExtensionArray | list[Any]:
             if isinstance(param, ExtensionArray) or is_list_like(param):
                 ovalues = param
             else:
@@ -268,7 +274,9 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         # a TypeError should be raised
         res = [op(a, b) for (a, b) in zip(lvalues, rvalues)]
 
-        return np.asarray(res, dtype=bool)
+        return cast(
+            np.ndarray[tuple[int], np.dtype[np.bool_]], np.asarray(res, dtype=bool)
+        )
 
     def value_counts(self, dropna: bool = True):
         from pandas.core.algorithms import value_counts

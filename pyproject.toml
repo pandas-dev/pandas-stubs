@@ -76,15 +76,15 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks.test_all]
 help = "Run all tests"
-script = "scripts.test:test(src=True, dist=True)"
+script = "scripts.test:run_tests(src=True, dist=True)"
 
 [tool.poe.tasks.test]
 help = "Run local tests (includes 'mypy', 'pyright', 'pytest', and 'style')"
-script = "scripts.test:test(src=True)"
+script = "scripts.test:run_tests(src=True)"
 
 [tool.poe.tasks.test_dist]
 help = "Run tests on the installed stubs (includes 'mypy_dist' and 'pyright_dist')"
-script = "scripts.test:test(dist=True)"
+script = "scripts.test:run_tests(dist=True)"
 
 [tool.poe.tasks.pytest]
 help = "Run pytest"
@@ -106,7 +106,7 @@ script = "scripts.test:mypy_src(mypy_nightly)"
 
 [tool.poe.tasks.mypy_dist]
 help = "Run mypy on 'tests' using the installed stubs"
-script = "scripts.test:test(dist=True, type_checker='mypy')"
+script = "scripts.test:run_tests(dist=True, type_checker='mypy')"
 
 [tool.poe.tasks.ty]
 help = "Run ty on pandas-stubs"
@@ -126,7 +126,7 @@ script = "scripts.test.run:pyright_src_strict"
 
 [tool.poe.tasks.pyright_dist]
 help = "Run pyright on 'tests' using the installed stubs"
-script = "scripts.test:test(dist=True, type_checker='pyright')"
+script = "scripts.test:run_tests(dist=True, type_checker='pyright')"
 
 [tool.poe.tasks.stubtest]
 script = "scripts.test:stubtest(allowlist, check_missing, nightly)"
@@ -178,12 +178,12 @@ fix = true
 [tool.ruff.lint]
 extend-select = ["ALL"]
 ignore = [
-  # The following rules are ignored permanently for good reasons
   "COM",     # https://docs.astral.sh/ruff/rules/#flake8-commas-com
   "D",       # https://docs.astral.sh/ruff/rules/#pydocstyle-d
   "E501",    # handled by black https://docs.astral.sh/ruff/rules/line-too-long/
   "FBT",     # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt
   "I",       # handled by isort
+  "TRY003",  # https://docs.astral.sh/ruff/rules/raise-vanilla-args/
 ]
 
 
@@ -200,14 +200,11 @@ ignore = [
   "PYI001",  # https://docs.astral.sh/ruff/rules/unprefixed-type-param/
   "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
   "TD003",   # https://docs.astral.sh/ruff/rules/missing-todo-link/
-  "ERA001", "ANN", "PLR0402", "PLC0105"
+  "ERA001", "ANN001", "ANN201", "ANN204", "ANN206", "ANN401", "PLR0402", "PLC0105"
   ]
 "scripts/*" = [
-  # The following rules are ignored permanently for good reasons
   "EM",      # https://docs.astral.sh/ruff/rules/#flake8-errmsg-em
   "S603",    # https://docs.astral.sh/ruff/rules/subprocess-without-shell-equals-true/
-  # The following rules are ignored temporarily. Either fix them or move to the permanent list above.
-  "TRY", "PT", "BLE"
 ]
 "tests/*" = [
   # The following rules are ignored permanently for good reasons
@@ -223,7 +220,7 @@ ignore = [
   "A001",    # https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/
   "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
   "SLF001",  # https://docs.astral.sh/ruff/rules/private-member-access/
-  "ANN001", "ANN002", "ANN201", "ANN202", "ANN204", "ANN206", "ANN401", "ARG", "ERA", "RUF", "SIM", "TRY", "PT", "NPY", "N", "DTZ", "PLR", "TC", "PGH", "PTH", "S311", "C901"
+  "ANN001", "ANN201", "ANN204", "ANN206", "ANN401", "ARG", "ERA", "RUF", "SIM", "TRY", "PT", "NPY", "N", "DTZ", "PLR", "TC", "PGH", "PTH", "S311", "C901"
 ]
 "tests/test_io.py" = [
   # The following rules are ignored permanently for good reasons

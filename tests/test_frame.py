@@ -71,6 +71,8 @@ from pandas.tseries.offsets import (
 
 if TYPE_CHECKING:
     from pandas.core.frame import _PandasNamedTuple
+
+    from pandas._typing import S1
 else:
     _PandasNamedTuple: TypeAlias = tuple
 
@@ -82,7 +84,7 @@ else:
 DF = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
 
-def getCols(k) -> str:
+def getCols(k: int) -> str:
     return string.ascii_uppercase[:k]
 
 
@@ -90,7 +92,7 @@ def makeStringIndex(k: int = 10) -> pd.Index:
     return pd.Index(rands_array(nchars=10, size=k), name=None)
 
 
-def rands_array(nchars, size: int) -> np.ndarray:
+def rands_array(nchars: int, size: int) -> npt.NDArray[Any]:
     chars = np.array(list(string.ascii_letters + string.digits), dtype=(np.str_, 1))
     retval = (
         np.random.default_rng(2)
@@ -1712,7 +1714,7 @@ def test_types_groupby_agg() -> None:
     agg_dict1 = {"col2": "min", "col3": "max", 0: "sum"}
     check(assert_type(df.groupby("col1").agg(agg_dict1), pd.DataFrame), pd.DataFrame)
 
-    def wrapped_min(x: Any) -> Any:
+    def wrapped_min(x: pd.Series[S1]) -> S1:
         return x.min()
 
     with pytest_warns_bounded(
@@ -2142,7 +2144,7 @@ def test_dataframe_to_string_float_fmt() -> None:
     )
     check(assert_type(df.to_string(), str), str)
 
-    def _formatter(x) -> str:
+    def _formatter(x: float) -> str:
         return f"{x:.2f}"
 
     check(assert_type(df.to_string(float_format=_formatter), str), str)

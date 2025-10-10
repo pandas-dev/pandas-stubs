@@ -21,7 +21,7 @@ _DIST_STEPS = [
 ]
 
 
-def test(
+def run_tests(
     src: bool = False,
     dist: bool = False,
     type_checker: Literal["", "mypy", "pyright"] = "",

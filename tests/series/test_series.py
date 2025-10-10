@@ -110,6 +110,9 @@ _DTypeKind: TypeAlias = Literal[
     "T",  # unicode-string (variable-width)
 ]
 
+T = TypeVar("T")
+T_co = TypeVar("T_co", covariant=True)
+
 
 def test_types_init() -> None:
     pd.Series(1)
@@ -2125,7 +2128,6 @@ def test_AnyArrayLike_and_clip() -> None:
 
 def test_pandera_generic() -> None:
     # GH 471
-    T = TypeVar("T")
 
     class MySeries(pd.Series, Generic[T]):
         def __new__(cls, *args: Any, **kwargs: Any) -> Self:
@@ -3151,7 +3153,7 @@ def test_series_to_string_float_fmt() -> None:
     )
     check(assert_type(sr.to_string(), str), str)
 
-    def _formatter(x) -> str:
+    def _formatter(x: float) -> str:
         return f"{x:.2f}"
 
     check(assert_type(sr.to_string(float_format=_formatter), str), str)
@@ -3178,7 +3180,7 @@ def test_types_mask() -> None:
     check(assert_type(s.mask(cond, 10), "pd.Series[int]"), pd.Series, np.integer)
 
     # Test case with a boolean condition and a callable
-    def double(x):
+    def double(x: int) -> int:
         return x * 2
 
     check(assert_type(s.mask(s > 3, double), "pd.Series[int]"), pd.Series, np.integer)

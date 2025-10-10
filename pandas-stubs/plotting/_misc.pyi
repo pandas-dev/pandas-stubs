@@ -49,7 +49,7 @@ def radviz(
     ax: Axes | None = None,
     color: _Color | Sequence[_Color] | None = None,
     colormap: str | Colormap | None = None,
-    **kwds,
+    **kwds: Any,
 ) -> Axes: ...
 def andrews_curves(
     frame: DataFrame,
@@ -65,7 +65,7 @@ def bootstrap_plot(
     fig: Figure | None = None,
     size: int = 50,
     samples: int = 500,
-    **kwds,
+    **kwds: Any,
 ) -> Figure: ...
 def parallel_coordinates(
     frame: DataFrame,
@@ -81,7 +81,9 @@ def parallel_coordinates(
     sort_labels: bool = False,
     **kwargs: Any,
 ) -> Axes: ...
-def lag_plot(series: Series, lag: int = 1, ax: Axes | None = None, **kwds) -> Axes: ...
+def lag_plot(
+    series: Series, lag: int = 1, ax: Axes | None = None, **kwds: Any
+) -> Axes: ...
 def autocorrelation_plot(
     series: Series, ax: Axes | None = None, **kwargs: Any
 ) -> Axes: ...
