@@ -1613,6 +1613,17 @@ def test_to_series() -> None:
 
 def test_index_where() -> None:
     """Test Index.where with multiple types of other GH1419."""
+    idx = pd.Index(range(48))
+    mask = np.ones(48, dtype=bool)
+    val_idx = idx.where(mask, idx)
+    check(assert_type(val_idx, "pd.Index[int]"), pd.Index, np.integer)
+
+    val_sr = idx.where(mask, (idx).to_series())
+    check(assert_type(val_sr, "pd.Index[int]"), pd.Index, np.integer)
+
+
+def test_datetimeindex_where() -> None:
+    """Test DatetimeIndex.where with multiple types of other GH1419."""
     datetime_index = pd.DatetimeIndex(
         pd.date_range(start="2025-01-01", freq="h", periods=48)
     )
