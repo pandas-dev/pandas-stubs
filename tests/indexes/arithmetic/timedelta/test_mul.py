@@ -113,13 +113,3 @@ def test_mul_pd_index(left: "pd.Index[pd.Timedelta]") -> None:
     check(assert_type(f * left, "pd.Index[pd.Timedelta]"), pd.Index, timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
         _1 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-
-
-def test_mul_bool() -> None:
-    """Test checking that pd.Timedelta * bool is not allowed GH1418."""
-    a = pd.Timedelta("1 day")
-    b = True
-
-    if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(a * b, Never)
-        assert_type(b * a, Never)

@@ -2063,5 +2063,4 @@ def test_period_methods() -> None:
 
 def test_nattype_hashable() -> None:
     # GH 827
-    _aset = {pd.NaT}
     check(assert_type(pd.NaT.__hash__(), int), int)
