@@ -1624,9 +1624,7 @@ def test_index_where() -> None:
 
 def test_datetimeindex_where() -> None:
     """Test DatetimeIndex.where with multiple types of other GH1419."""
-    datetime_index = pd.DatetimeIndex(
-        pd.date_range(start="2025-01-01", freq="h", periods=48)
-    )
+    datetime_index = pd.date_range(start="2025-01-01", freq="h", periods=48)
     mask = np.ones(48, dtype=bool)
     val_idx = datetime_index.where(mask, datetime_index - pd.Timedelta(days=1))
     check(assert_type(val_idx, DatetimeIndex), DatetimeIndex)
