@@ -2798,7 +2798,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     ) -> Series[complex]: ...
     @overload
     def __rmul__(  # type: ignore[overload-overlap]
-        self: Series[Never], other: complex | _ListLike | Index | Series
+        self: Series[Never], other: complex | NumListLike | Index | Series
     ) -> Series: ...
     @overload
     def __rmul__(self, other: Index[Never] | Series[Never]) -> Series: ...  # type: ignore[misc]
