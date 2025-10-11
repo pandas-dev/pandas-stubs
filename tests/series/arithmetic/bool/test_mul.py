@@ -14,7 +14,6 @@ from typing_extensions import (
 )
 
 from tests import (
-    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
@@ -38,7 +37,7 @@ def test_mul_py_scalar(left: "pd.Series[bool]") -> None:
     check(assert_type(left * c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-    check(assert_type(left * d, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+        _05 = left * d  # type: ignore[type-var] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(b * left, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(i * left, "pd.Series[int]"), pd.Series, np.integer)
@@ -46,7 +45,7 @@ def test_mul_py_scalar(left: "pd.Series[bool]") -> None:
     check(assert_type(c * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-    check(assert_type(d * left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(left.mul(b), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left.mul(i), "pd.Series[int]"), pd.Series, np.integer)
@@ -54,7 +53,7 @@ def test_mul_py_scalar(left: "pd.Series[bool]") -> None:
     check(assert_type(left.mul(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-    check(assert_type(left.mul(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+        left.mul(d)  # type: ignore[type-var] # pyright: ignore[reportArgumentType,reportCallIssue]
 
     check(assert_type(left.rmul(b), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left.rmul(i), "pd.Series[int]"), pd.Series, np.integer)
@@ -64,7 +63,7 @@ def test_mul_py_scalar(left: "pd.Series[bool]") -> None:
     )
     if TYPE_CHECKING_INVALID_USAGE:
         left.rmul(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-    check(assert_type(left.rmul(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+        left.rmul(d)  # type: ignore[type-var] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
 def test_mul_py_sequence(left: "pd.Series[bool]") -> None:
@@ -79,10 +78,7 @@ def test_mul_py_sequence(left: "pd.Series[bool]") -> None:
     check(assert_type(left * c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-    if PD_LTE_23:
-        # pandas-dev/pandas#62316: both timedelta * bool
-        # and np.timedelta64 * bool works, so pandas probably also should work
-        check(assert_type(left * d, "pd.Series[pd.Timedelta]"), pd.Series, timedelta)
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(b * left, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(i * left, "pd.Series[int]"), pd.Series, np.integer)
@@ -90,10 +86,7 @@ def test_mul_py_sequence(left: "pd.Series[bool]") -> None:
     check(assert_type(c * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-    if PD_LTE_23:
-        # pandas-dev/pandas#62316: both timedelta * bool
-        # and np.timedelta64 * bool works, so pandas probably also should work
-        check(assert_type(d * left, "pd.Series[pd.Timedelta]"), pd.Series, timedelta)
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(left.mul(b), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left.mul(i), "pd.Series[int]"), pd.Series, np.integer)
@@ -101,10 +94,7 @@ def test_mul_py_sequence(left: "pd.Series[bool]") -> None:
     check(assert_type(left.mul(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-    if PD_LTE_23:
-        # pandas-dev/pandas#62316: both timedelta * bool
-        # and np.timedelta64 * bool works, so pandas probably also should work
-        check(assert_type(left.mul(d), "pd.Series[pd.Timedelta]"), pd.Series, timedelta)
+        left.mul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
     check(assert_type(left.rmul(b), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left.rmul(i), "pd.Series[int]"), pd.Series, np.integer)
@@ -114,12 +104,7 @@ def test_mul_py_sequence(left: "pd.Series[bool]") -> None:
     )
     if TYPE_CHECKING_INVALID_USAGE:
         left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-    if PD_LTE_23:
-        # pandas-dev/pandas#62316: both timedelta * bool
-        # and np.timedelta64 * bool works, so pandas probably also should work
-        check(
-            assert_type(left.rmul(d), "pd.Series[pd.Timedelta]"), pd.Series, timedelta
-        )
+        left.rmul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
 def test_mul_numpy_array(left: "pd.Series[bool]") -> None:
@@ -137,10 +122,7 @@ def test_mul_numpy_array(left: "pd.Series[bool]") -> None:
     check(assert_type(left * c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(left * s, Never)
-    if PD_LTE_23:
-        # pandas-dev/pandas#62316: both timedelta * bool
-        # and np.timedelta64 * bool works, so pandas probably also should work
-        check(assert_type(left * d, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+        assert_type(left * d, Never)
 
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__rmul__` cannot override. At runtime, they return
@@ -155,14 +137,7 @@ def test_mul_numpy_array(left: "pd.Series[bool]") -> None:
     )
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(s * left, Any)
-    if PD_LTE_23:
-        # pandas-dev/pandas#62316: both timedelta * bool
-        # and np.timedelta64 * bool works, so pandas probably also should work
-        check(
-            assert_type(d * left, "npt.NDArray[np.timedelta64]"),
-            pd.Series,
-            pd.Timedelta,
-        )
+        assert_type(d * left, "npt.NDArray[np.timedelta64]")
 
     check(assert_type(left.mul(b), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left.mul(i), "pd.Series[int]"), pd.Series, np.integer)
@@ -170,12 +145,7 @@ def test_mul_numpy_array(left: "pd.Series[bool]") -> None:
     check(assert_type(left.mul(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-    if PD_LTE_23:
-        # pandas-dev/pandas#62316: both timedelta * bool
-        # and np.timedelta64 * bool works, so pandas probably also should work
-        check(
-            assert_type(left.mul(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta
-        )
+        left.mul(d)  # type: ignore[type-var] # pyright: ignore[reportArgumentType,reportCallIssue]
 
     check(assert_type(left.rmul(b), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left.rmul(i), "pd.Series[int]"), pd.Series, np.integer)
@@ -185,14 +155,7 @@ def test_mul_numpy_array(left: "pd.Series[bool]") -> None:
     )
     if TYPE_CHECKING_INVALID_USAGE:
         left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-    if PD_LTE_23:
-        # pandas-dev/pandas#62316: both timedelta * bool
-        # and np.timedelta64 * bool works, so pandas probably also should work
-        check(
-            assert_type(left.rmul(d), "pd.Series[pd.Timedelta]"),
-            pd.Series,
-            pd.Timedelta,
-        )
+        left.rmul(d)  # type: ignore[type-var] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
 def test_mul_pd_index(left: "pd.Series[bool]") -> None:
@@ -210,10 +173,7 @@ def test_mul_pd_index(left: "pd.Series[bool]") -> None:
     check(assert_type(left * c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-    if PD_LTE_23:
-        # pandas-dev/pandas#62316: both timedelta * bool
-        # and np.timedelta64 * bool works, so pandas probably also should work
-        check(assert_type(left * d, "pd.Series[pd.Timedelta]"), pd.Series, timedelta)
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(b * left, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(i * left, "pd.Series[int]"), pd.Series, np.integer)
@@ -221,10 +181,7 @@ def test_mul_pd_index(left: "pd.Series[bool]") -> None:
     check(assert_type(c * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-    if PD_LTE_23:
-        # pandas-dev/pandas#62316: both timedelta * bool
-        # and np.timedelta64 * bool works, so pandas probably also should work
-        check(assert_type(d * left, "pd.Series[pd.Timedelta]"), pd.Series, timedelta)
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(left.mul(b), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left.mul(i), "pd.Series[int]"), pd.Series, np.integer)
@@ -232,10 +189,7 @@ def test_mul_pd_index(left: "pd.Series[bool]") -> None:
     check(assert_type(left.mul(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-    if PD_LTE_23:
-        # pandas-dev/pandas#62316: both timedelta * bool
-        # and np.timedelta64 * bool works, so pandas probably also should work
-        check(assert_type(left.mul(d), "pd.Series[pd.Timedelta]"), pd.Series, timedelta)
+        left.mul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
     check(assert_type(left.rmul(b), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left.rmul(i), "pd.Series[int]"), pd.Series, np.integer)
@@ -245,12 +199,7 @@ def test_mul_pd_index(left: "pd.Series[bool]") -> None:
     )
     if TYPE_CHECKING_INVALID_USAGE:
         left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-    if PD_LTE_23:
-        # pandas-dev/pandas#62316: both timedelta * bool
-        # and np.timedelta64 * bool works, so pandas probably also should work
-        check(
-            assert_type(left.rmul(d), "pd.Series[pd.Timedelta]"), pd.Series, timedelta
-        )
+        left.rmul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
 def test_mul_pd_series(left: "pd.Series[bool]") -> None:
@@ -268,10 +217,7 @@ def test_mul_pd_series(left: "pd.Series[bool]") -> None:
     check(assert_type(left * c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-    if PD_LTE_23:
-        # pandas-dev/pandas#62316: both timedelta * bool
-        # and np.timedelta64 * bool works, so pandas probably also should work
-        check(assert_type(left * d, "pd.Series[pd.Timedelta]"), pd.Series, timedelta)
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(b * left, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(i * left, "pd.Series[int]"), pd.Series, np.integer)
@@ -279,10 +225,7 @@ def test_mul_pd_series(left: "pd.Series[bool]") -> None:
     check(assert_type(c * left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-    if PD_LTE_23:
-        # pandas-dev/pandas#62316: both timedelta * bool
-        # and np.timedelta64 * bool works, so pandas probably also should work
-        check(assert_type(d * left, "pd.Series[pd.Timedelta]"), pd.Series, timedelta)
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(left.mul(b), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left.mul(i), "pd.Series[int]"), pd.Series, np.integer)
@@ -290,10 +233,7 @@ def test_mul_pd_series(left: "pd.Series[bool]") -> None:
     check(assert_type(left.mul(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         left.mul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-    if PD_LTE_23:
-        # pandas-dev/pandas#62316: both timedelta * bool
-        # and np.timedelta64 * bool works, so pandas probably also should work
-        check(assert_type(left.mul(d), "pd.Series[pd.Timedelta]"), pd.Series, timedelta)
+        left.mul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
     check(assert_type(left.rmul(b), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(left.rmul(i), "pd.Series[int]"), pd.Series, np.integer)
@@ -303,9 +243,4 @@ def test_mul_pd_series(left: "pd.Series[bool]") -> None:
     )
     if TYPE_CHECKING_INVALID_USAGE:
         left.rmul(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-    if PD_LTE_23:
-        # pandas-dev/pandas#62316: both timedelta * bool
-        # and np.timedelta64 * bool works, so pandas probably also should work
-        check(
-            assert_type(left.rmul(d), "pd.Series[pd.Timedelta]"), pd.Series, timedelta
-        )
+        left.rmul(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
