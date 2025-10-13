@@ -315,7 +315,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         periods: int = ...,
         fill_method: Literal["bfill", "ffill"] | None | _NoDefaultDoNotUse = ...,
         limit: int | None | _NoDefaultDoNotUse = ...,
-        freq=...,
+        freq: Frequency | None = None,
         axis: Axis | _NoDefaultDoNotUse = ...,
     ) -> NDFrameT: ...
     @final

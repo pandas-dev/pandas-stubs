@@ -16,7 +16,6 @@ import numpy as np
 from pandas import (
     DataFrame,
     Index,
-    Timedelta,
     TimedeltaIndex,
     Timestamp,
 )
@@ -25,7 +24,6 @@ from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.series import Series
 from typing_extensions import Self
 
-from pandas._libs.tslibs.offsets import DateOffset
 from pandas._typing import (
     AxesData,
     DateAndDatetimeLike,
@@ -99,14 +97,14 @@ class DatetimeIndex(
     @property
     def dtype(self) -> np.dtype | DatetimeTZDtype: ...
     def shift(
-        self, periods: int = 1, freq: DateOffset | Timedelta | str | None = None
+        self, periods: int = 1, freq: Frequency | timedelta | None = None
     ) -> Self: ...
 
 @overload
 def date_range(
     start: str | DateAndDatetimeLike,
     end: str | DateAndDatetimeLike,
-    freq: str | timedelta | Timedelta | BaseOffset | None = None,
+    freq: Frequency | timedelta | None = None,
     tz: TimeZones = None,
     normalize: bool = False,
     name: Hashable | None = None,
@@ -129,7 +127,7 @@ def date_range(
     start: str | DateAndDatetimeLike,
     *,
     periods: int,
-    freq: str | timedelta | Timedelta | BaseOffset | None = None,
+    freq: Frequency | timedelta | None = None,
     tz: TimeZones = None,
     normalize: bool = False,
     name: Hashable | None = None,
@@ -141,7 +139,7 @@ def date_range(
     *,
     end: str | DateAndDatetimeLike,
     periods: int,
-    freq: str | timedelta | Timedelta | BaseOffset | None = None,
+    freq: Frequency | timedelta | None = None,
     tz: TimeZones = None,
     normalize: bool = False,
     name: Hashable | None = None,
@@ -153,7 +151,7 @@ def bdate_range(
     start: str | DateAndDatetimeLike | None = ...,
     end: str | DateAndDatetimeLike | None = ...,
     periods: int | None = ...,
-    freq: str | timedelta | Timedelta | BaseOffset = ...,
+    freq: Frequency | timedelta = ...,
     tz: TimeZones = ...,
     normalize: bool = ...,
     name: Hashable | None = ...,
@@ -167,7 +165,7 @@ def bdate_range(
     end: str | DateAndDatetimeLike | None = ...,
     periods: int | None = ...,
     *,
-    freq: str | timedelta | Timedelta | BaseOffset,
+    freq: Frequency | timedelta,
     tz: TimeZones = ...,
     normalize: bool = ...,
     name: Hashable | None = ...,

@@ -14,7 +14,7 @@ from pandas.core.window import (
 )
 from typing_extensions import assert_type
 
-from pandas._libs.tslibs.offsets import DateOffset
+from pandas._libs.tslibs.offsets import BaseOffset
 
 from tests import (
     PD_LTE_23,
@@ -58,7 +58,7 @@ def test_rolling_basic_math() -> None:
 
 def test_rolling_datetime_index() -> None:
     offset_1d = to_offset("1D")
-    check(assert_type(offset_1d, DateOffset), DateOffset)
+    check(assert_type(offset_1d, BaseOffset), BaseOffset)
 
     check(assert_type(DF_DTI.rolling("1D"), "Rolling[DataFrame]"), Rolling, DataFrame)
     check(
