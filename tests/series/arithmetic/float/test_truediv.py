@@ -3,7 +3,10 @@ from numpy import typing as npt  # noqa: F401
 import pandas as pd
 from typing_extensions import assert_type
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 left = pd.Series([1.0, 2.0, 3.0])  # left operand
 
@@ -151,6 +154,39 @@ def test_truediv_numpy_array() -> None:
     check(
         assert_type(left.rdiv(c), "pd.Series[complex]"), pd.Series, np.complexfloating
     )
+
+
+def test_truediv_pd_scalar() -> None:
+    """Test pd.Series[float] / pandas scalars"""
+    s, d = pd.Timestamp(2025, 9, 24), pd.Timedelta(seconds=1)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _00 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _01 = left / d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _10 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+    check(assert_type(d / left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.truediv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.truediv(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.div(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.div(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.rtruediv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(
+        assert_type(left.rtruediv(d), "pd.Series[pd.Timedelta]"),
+        pd.Series,
+        pd.Timedelta,
+    )
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.rdiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.rdiv(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
 def test_truediv_pd_index() -> None:

@@ -26,20 +26,20 @@ def test_truediv_py_scalar() -> None:
     s, d = datetime(2025, 9, 24), timedelta(seconds=1)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left / b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _00 = left / b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left / i, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left / f, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = left / c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _2 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _03 = left / c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left / d, "pd.Series[float]"), pd.Series, np.floating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _3 = b / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _4 = i / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _5 = f / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _6 = c / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _7 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _10 = b / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _11 = i / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _12 = f / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _13 = c / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(d / left, "pd.Series[float]"), pd.Series, np.floating)
 
     if TYPE_CHECKING_INVALID_USAGE:
@@ -87,20 +87,20 @@ def test_truediv_py_sequence() -> None:
     s, d = [datetime(2025, 9, 24)], [timedelta(seconds=1)]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left / b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _00 = left / b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left / i, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left / f, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = left / c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _2 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _03 = left / c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left / d, "pd.Series[float]"), pd.Series, float)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _3 = b / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _4 = i / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _5 = f / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _6 = c / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _7 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _10 = b / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _11 = i / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _12 = f / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _13 = c / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(d / left, "pd.Series[float]"), pd.Series, np.floating)
 
     if TYPE_CHECKING_INVALID_USAGE:
@@ -248,20 +248,20 @@ def test_truediv_pd_index() -> None:
     s, d = pd.Index([datetime(2025, 9, 24)]), pd.Index([timedelta(seconds=1)])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left / b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _00 = left / b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left / i, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left / f, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = left / c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _2 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _03 = left / c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left / d, "pd.Series[float]"), pd.Series, np.floating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _3 = b / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _4 = i / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _5 = f / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _6 = c / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _7 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _10 = b / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _11 = i / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _12 = f / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _13 = c / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(d / left, "pd.Series[float]"), pd.Series, np.floating)
 
     if TYPE_CHECKING_INVALID_USAGE:
@@ -312,20 +312,20 @@ def test_truediv_pd_series() -> None:
     s, d = pd.Series([datetime(2025, 9, 24)]), pd.Series([timedelta(seconds=1)])
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left / b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _00 = left / b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left / i, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left / f, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = left / c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _2 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _03 = left / c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left / d, "pd.Series[float]"), pd.Series, np.floating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _3 = b / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _4 = i / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _5 = f / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _6 = c / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _7 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _10 = b / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _11 = i / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _12 = f / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _13 = c / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(d / left, "pd.Series[float]"), pd.Series, np.floating)
 
     if TYPE_CHECKING_INVALID_USAGE:

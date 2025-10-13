@@ -3,6 +3,7 @@ from collections.abc import (
     Iterator,
     Sequence,
 )
+from datetime import timedelta
 from typing import (
     Any,
     Generic,
@@ -269,6 +270,38 @@ class ElementOpsMixin(Generic[S2]):
     def _proto_rmul(
         self: ElementOpsMixin[str], other: Just[int] | np.integer
     ) -> ElementOpsMixin[str]: ...
+    @overload
+    def _proto_truediv(
+        self: ElementOpsMixin[int], other: int | np.integer
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_truediv(
+        self: ElementOpsMixin[float], other: float | np.floating
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_truediv(
+        self: ElementOpsMixin[complex], other: complex | np.complexfloating
+    ) -> ElementOpsMixin[complex]: ...
+    @overload
+    def _proto_truediv(
+        self: ElementOpsMixin[Timedelta], other: timedelta | Timedelta | np.timedelta64
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_rtruediv(
+        self: ElementOpsMixin[int], other: int | np.integer
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_rtruediv(
+        self: ElementOpsMixin[float], other: float | np.floating
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_rtruediv(
+        self: ElementOpsMixin[complex], other: complex | np.complexfloating
+    ) -> ElementOpsMixin[complex]: ...
+    @overload
+    def _proto_rtruediv(
+        self: ElementOpsMixin[Timedelta], other: timedelta | Timedelta | np.timedelta64
+    ) -> ElementOpsMixin[float]: ...
 
 @type_check_only
 class Supports_ProtoAdd(Protocol[_T_contra, S2]):
@@ -285,3 +318,11 @@ class Supports_ProtoMul(Protocol[_T_contra, S2]):
 @type_check_only
 class Supports_ProtoRMul(Protocol[_T_contra, S2]):
     def _proto_rmul(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ProtoTrueDiv(Protocol[_T_contra, S2]):
+    def _proto_truediv(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ProtoRTrueDiv(Protocol[_T_contra, S2]):
+    def _proto_rtruediv(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...

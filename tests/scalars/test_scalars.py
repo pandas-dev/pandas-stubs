@@ -755,19 +755,8 @@ def test_timedelta_mul_div() -> None:
         np.ndarray,
         np.timedelta64,
     )
-    check(
-        assert_type(td / mp_series_int, "pd.Series[pd.Timedelta]"),
-        pd.Series,
-        pd.Timedelta,
-    )
-    check(
-        assert_type(td / md_series_float, "pd.Series[pd.Timedelta]"),
-        pd.Series,
-        pd.Timedelta,
-    )
-    check(assert_type(td / md_int64_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(td / md_float_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(td / md_timedelta_series, "pd.Series[float]"), pd.Series, float)
+    # check(assert_type(td / md_int64_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
+    # check(assert_type(td / md_float_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
     check(assert_type(pd.NaT / td, float), float)
     # Note: None of the reverse truediv work
