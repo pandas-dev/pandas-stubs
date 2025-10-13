@@ -8,6 +8,7 @@ import sqlite3
 from typing import (
     Any,
     Literal,
+    TypeAlias,
     overload,
 )
 
@@ -15,7 +16,6 @@ from pandas.core.frame import DataFrame
 import sqlalchemy.engine
 from sqlalchemy.orm import FromStatement
 import sqlalchemy.sql.expression
-from typing_extensions import TypeAlias
 
 from pandas._libs.lib import _NoDefaultDoNotUse
 from pandas._typing import (

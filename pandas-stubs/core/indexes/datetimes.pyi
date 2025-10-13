@@ -60,20 +60,20 @@ class DatetimeIndex(
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
     def __add__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: timedelta | TimedeltaIndex | BaseOffset
-    ) -> DatetimeIndex: ...
-    def __radd__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: timedelta | TimedeltaIndex | BaseOffset
-    ) -> DatetimeIndex: ...
+        self, other: timedelta | BaseOffset
+    ) -> Self: ...
+    def __radd__(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, other: timedelta | BaseOffset
+    ) -> Self: ...
     @overload  # type: ignore[override]
+    # pyrefly: ignore  # bad-override
     def __sub__(
-        self,
-        other: timedelta | np.timedelta64 | np_ndarray_td | TimedeltaIndex | BaseOffset,
-    ) -> DatetimeIndex: ...
+        self, other: datetime | np.datetime64 | np_ndarray_dt | Self
+    ) -> TimedeltaIndex: ...
     @overload
     def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: datetime | np.datetime64 | np_ndarray_dt | DatetimeIndex
-    ) -> TimedeltaIndex: ...
+        self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset
+    ) -> Self: ...
     @final
     def to_series(
         self, index: Index | None = None, name: Hashable | None = None

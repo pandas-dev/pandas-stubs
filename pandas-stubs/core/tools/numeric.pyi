@@ -1,11 +1,11 @@
 from typing import (
     Literal,
+    TypeAlias,
     overload,
 )
 
 import numpy as np
 import pandas as pd
-from typing_extensions import TypeAlias
 
 from pandas._libs.lib import _NoDefaultDoNotUse
 from pandas._typing import (

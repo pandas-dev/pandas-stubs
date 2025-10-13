@@ -5,7 +5,6 @@ import random
 from typing import (
     TYPE_CHECKING,
     Any,
-    Union,
 )
 
 import numpy as np
@@ -19,7 +18,7 @@ from pandas.api.typing import (
 )
 import pandas.util as pdutil
 
-# TODO: github.com/pandas-dev/pandas/issues/55023
+# TODO: pandas-dev/pandas#55023
 import pytest
 from typing_extensions import (
     Never,
@@ -243,7 +242,8 @@ def test_types_concat() -> None:
 
     check(
         assert_type(
-            pd.concat(map(lambda _: s2, ["some_value", 3]), axis=1), pd.DataFrame
+            pd.concat(map(lambda _: s2, ["some_value", 3]), axis=1),  # noqa: C417
+            pd.DataFrame,
         ),
         pd.DataFrame,
     )
@@ -515,9 +515,9 @@ def test_isna() -> None:
     if not pd.isna(nullable1):
         check(assert_type(nullable1, str), str)
     if pd.isna(nullable1):
-        assert_type(nullable1, Union[NaTType, NAType, None])
+        assert_type(nullable1, NaTType | NAType | None)
     if not pd.notna(nullable1):
-        assert_type(nullable1, Union[NaTType, NAType, None])
+        assert_type(nullable1, NaTType | NAType | None)
 
     nullable2: int | None = random.choice([2, None])
     if pd.notna(nullable2):
@@ -535,9 +535,9 @@ def test_isna() -> None:
     if not pd.isna(nullable3):
         check(assert_type(nullable3, bool), bool)
     if pd.isna(nullable3):
-        assert_type(nullable3, Union[NAType, None])
+        assert_type(nullable3, NAType | None)
     if not pd.notna(nullable3):
-        assert_type(nullable3, Union[NAType, None])
+        assert_type(nullable3, NAType | None)
 
 
 # GH 55
@@ -557,23 +557,19 @@ def test_read_xml() -> None:
 def test_unique() -> None:
     # Taken from the docs
     check(
-        assert_type(
-            pd.unique(pd.Series([2, 1, 3, 3])), Union[np.ndarray, ExtensionArray]
-        ),
+        assert_type(pd.unique(pd.Series([2, 1, 3, 3])), np.ndarray | ExtensionArray),
         np.ndarray,
     )
 
     check(
-        assert_type(
-            pd.unique(pd.Series([2] + [1] * 5)), Union[np.ndarray, ExtensionArray]
-        ),
+        assert_type(pd.unique(pd.Series([2] + [1] * 5)), np.ndarray | ExtensionArray),
         np.ndarray,
     )
 
     check(
         assert_type(
             pd.unique(pd.Series([pd.Timestamp("20160101"), pd.Timestamp("20160101")])),
-            Union[np.ndarray, ExtensionArray],
+            np.ndarray | ExtensionArray,
         ),
         np.ndarray,
     )
@@ -588,7 +584,7 @@ def test_unique() -> None:
                     ]
                 )
             ),
-            Union[np.ndarray, ExtensionArray],
+            np.ndarray | ExtensionArray,
         ),
         pd.arrays.DatetimeArray,
     )
@@ -612,14 +608,14 @@ def test_unique() -> None:
     check(
         assert_type(
             pd.unique(pd.Series(pd.Categorical(list("baabc")))),
-            Union[np.ndarray, ExtensionArray],
+            np.ndarray | ExtensionArray,
         ),
         pd.Categorical,
     )
     check(
         assert_type(
             pd.unique(pd.Series(pd.Categorical(list("baabc"), categories=list("abc")))),
-            Union[np.ndarray, ExtensionArray],
+            np.ndarray | ExtensionArray,
         ),
         pd.Categorical,
     )
@@ -630,7 +626,7 @@ def test_unique() -> None:
                     pd.Categorical(list("baabc"), categories=list("abc"), ordered=True)
                 )
             ),
-            Union[np.ndarray, ExtensionArray],
+            np.ndarray | ExtensionArray,
         ),
         pd.Categorical,
     )
@@ -693,7 +689,7 @@ def test_arrow_dtype() -> None:
     )
 
 
-def test_hashing():
+def test_hashing() -> None:
     a = np.array([1, 2, 3])
     check(assert_type(pdutil.hash_array(a), npt.NDArray[np.uint64]), np.ndarray)
     check(
@@ -721,12 +717,12 @@ def test_hashing():
     )
 
 
-def test_eval():
+def test_eval() -> None:
     df = pd.DataFrame({"animal": ["dog", "pig"], "age": [10, 20]})
     check(
         assert_type(
             pd.eval("double_age = df.age * 2", target=df),
-            Union[npt.NDArray, Scalar, pd.DataFrame, pd.Series, None],
+            npt.NDArray | Scalar | pd.DataFrame | pd.Series | None,
         ),
         pd.DataFrame,
     )
@@ -826,7 +822,7 @@ def test_to_numeric_array_series() -> None:
     )
 
 
-def test_wide_to_long():
+def test_wide_to_long() -> None:
     df = pd.DataFrame(
         {
             "A1970": {0: "a", 1: "b", 2: "c"},
@@ -850,7 +846,7 @@ def test_wide_to_long():
     )
 
 
-def test_melt():
+def test_melt() -> None:
     df = pd.DataFrame(
         {
             "A": {0: "a", 1: "b", 2: "c"},

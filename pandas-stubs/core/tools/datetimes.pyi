@@ -5,6 +5,7 @@ from datetime import (
 )
 from typing import (
     Literal,
+    TypeAlias,
     TypedDict,
     overload,
 )
@@ -17,7 +18,6 @@ from pandas import (
 from pandas.core.arrays import ExtensionArray
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.series import Series
-from typing_extensions import TypeAlias
 
 from pandas._libs.tslibs import NaTType
 from pandas._typing import (

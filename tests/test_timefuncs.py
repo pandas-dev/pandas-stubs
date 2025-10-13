@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import (
-    Optional,
-)
+from typing import TypeAlias
 
 from dateutil.relativedelta import (
     FR,
@@ -20,7 +18,6 @@ from pandas.api.typing import NaTType
 from pandas.core.tools.datetimes import FulldatetimeDict
 import pytz
 from typing_extensions import (
-    TypeAlias,
     assert_never,
     assert_type,
 )
@@ -154,7 +151,7 @@ def test_timedelta_arithmetic() -> None:
     check(assert_type(td3 / 10.2, pd.Timedelta), pd.Timedelta)
 
 
-def test_timedelta_series_arithmetic() -> None:
+def test_timedelta_index_arithmetic() -> None:
     tds1 = pd.to_timedelta([2, 3], "minutes")
     td1 = pd.Timedelta("2 days")
     check(assert_type(tds1, pd.TimedeltaIndex), pd.TimedeltaIndex)
@@ -170,7 +167,7 @@ def test_timedelta_float_value() -> None:
     check(assert_type(pd.Timedelta(1.5, "h"), pd.Timedelta), pd.Timedelta)
 
 
-def test_timedelta_series_string() -> None:
+def test_timedelta_index_string() -> None:
     seq_list = ["1 day"]
     check(assert_type(pd.to_timedelta(seq_list), pd.TimedeltaIndex), pd.TimedeltaIndex)
 
@@ -198,19 +195,6 @@ def test_datetimeindex_plus_timedelta() -> None:
         pd.Timestamp,
     )
     dti = pd.to_datetime(["2022-03-08", "2022-03-15"])
-    td_s = pd.to_timedelta(pd.Series([10, 20]), "minutes")
-    dti_td_s = dti + td_s
-    check(
-        assert_type(dti_td_s, "pd.Series[pd.Timestamp]"),
-        pd.Series,
-        pd.Timestamp,
-    )
-    td_dti_s = td_s + dti
-    check(
-        assert_type(td_dti_s, "pd.Series[pd.Timestamp]"),
-        pd.Series,
-        pd.Timestamp,
-    )
     tdi = pd.to_timedelta([10, 20], "minutes")
     dti_tdi_dti = dti + tdi
     check(assert_type(dti_tdi_dti, "pd.DatetimeIndex"), pd.DatetimeIndex)
@@ -233,13 +217,6 @@ def test_datetimeindex_minus_timedelta() -> None:
         pd.Timestamp,
     )
     dti = pd.to_datetime(["2022-03-08", "2022-03-15"])
-    td_s = pd.to_timedelta(pd.Series([10, 20]), "minutes")
-    dti_td_s = dti - td_s
-    check(
-        assert_type(dti_td_s, "pd.Series[pd.Timestamp]"),
-        pd.Series,
-        pd.Timestamp,
-    )
     tdi = pd.to_timedelta([10, 20], "minutes")
     dti_tdi_dti = dti - tdi
     check(assert_type(dti_tdi_dti, "pd.DatetimeIndex"), pd.DatetimeIndex)
@@ -249,7 +226,7 @@ def test_datetimeindex_minus_timedelta() -> None:
     check(assert_type(dti_ts_tdi, pd.TimedeltaIndex), pd.TimedeltaIndex)
 
 
-def test_timestamp_plus_timedelta_series() -> None:
+def test_timestamp_series_construction() -> None:
     check(
         assert_type(
             pd.Series([pd.Timestamp("2022-03-05"), pd.Timestamp("2022-03-06")]),
@@ -258,18 +235,6 @@ def test_timestamp_plus_timedelta_series() -> None:
         pd.Series,
         pd.Timestamp,
     )
-    ts = pd.Timestamp("2022-03-05")
-    td = pd.to_timedelta(pd.Series([10, 20]), "minutes")
-    r3 = td + ts
-    check(assert_type(r3, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-    r4 = ts + td
-    check(assert_type(r4, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
-
-
-def test_timedelta_series_mult() -> None:
-    df = pd.DataFrame({"x": [1, 3, 5], "y": [2, 2, 6]})
-    std = (df["x"] < df["y"]) * pd.Timedelta(10, "minutes")
-    check(assert_type(std, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
 def test_timedelta_series_sum() -> None:
@@ -289,19 +254,10 @@ def test_iso_calendar() -> None:
     check(assert_type(dates.isocalendar(), pd.DataFrame), pd.DataFrame)
 
 
-def test_fail_on_adding_two_timestamps() -> None:
-    s1 = pd.Series(pd.to_datetime(["2022-05-01", "2022-06-01"]))
-    s2 = pd.Series(pd.to_datetime(["2022-05-15", "2022-06-15"]))
-    if TYPE_CHECKING_INVALID_USAGE:
-        ssum = s1 + s2  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        ts = pd.Timestamp("2022-06-30")
-        tsum = s1 + ts  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-
-
 def test_dtindex_tzinfo() -> None:
     # GH 71
     dti = pd.date_range("2000-1-1", periods=10)
-    check(assert_type(dti.tzinfo, Optional[dt.tzinfo]), type(None))
+    check(assert_type(dti.tzinfo, dt.tzinfo | None), type(None))
 
 
 def test_todatetime_fromnumpy() -> None:
@@ -376,8 +332,8 @@ def test_series_dt_accessors() -> None:
     check(assert_type(s0.dt.is_leap_year, "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(s0.dt.daysinmonth, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(s0.dt.days_in_month, "pd.Series[int]"), pd.Series, np.integer)
-    check(assert_type(s0.dt.tz, Optional[dt.tzinfo]), type(None))
-    check(assert_type(s0.dt.freq, Optional[str]), str)
+    check(assert_type(s0.dt.tz, dt.tzinfo | None), type(None))
+    check(assert_type(s0.dt.freq, str | None), str)
     check(assert_type(s0.dt.isocalendar(), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(s0.dt.to_period("D"), "pd.Series[pd.Period]"), pd.Series, pd.Period
@@ -448,8 +404,8 @@ def test_series_dt_accessors() -> None:
         pd.Series,
         pd.Timestamp,
     )
-    check(assert_type(s0.dt.tz, Optional[dt.tzinfo]), type(None))
-    check(assert_type(s0_local.dt.tz, Optional[dt.tzinfo]), dt.tzinfo)
+    check(assert_type(s0.dt.tz, dt.tzinfo | None), type(None))
+    check(assert_type(s0_local.dt.tz, dt.tzinfo | None), dt.tzinfo)
     check(
         assert_type(s0.dt.normalize(), "pd.Series[pd.Timestamp]"),
         pd.Series,
@@ -676,8 +632,8 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.is_leap_year, np_1darray[np.bool]), np_1darray[np.bool])
     check(assert_type(i0.daysinmonth, "pd.Index[int]"), pd.Index, np.int32)
     check(assert_type(i0.days_in_month, "pd.Index[int]"), pd.Index, np.int32)
-    check(assert_type(i0.tz, Optional[dt.tzinfo]), type(None))
-    check(assert_type(i0.freq, Optional[BaseOffset]), BaseOffset)
+    check(assert_type(i0.tz, dt.tzinfo | None), type(None))
+    check(assert_type(i0.freq, BaseOffset | None), BaseOffset)
     check(assert_type(i0.isocalendar(), pd.DataFrame), pd.DataFrame)
     check(assert_type(i0.to_period("D"), pd.PeriodIndex), pd.PeriodIndex, pd.Period)
     check(
@@ -698,7 +654,7 @@ def test_datetimeindex_accessors() -> None:
         assert_type(ilocal.tz_convert(pytz.timezone("US/Pacific")), pd.DatetimeIndex),
         pd.DatetimeIndex,
     )
-    check(assert_type(ilocal.tz, Optional[dt.tzinfo]), dt.tzinfo)
+    check(assert_type(ilocal.tz, dt.tzinfo | None), dt.tzinfo)
     check(assert_type(i0.normalize(), pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
     check(assert_type(i0.strftime("%Y"), pd.Index), pd.Index, str)
     check(assert_type(i0.round("D"), pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
@@ -763,7 +719,7 @@ def test_periodindex_accessors() -> None:
     check(assert_type(i0.quarter, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(i0.daysinmonth, "pd.Index[int]"), pd.Index, np.integer)
     check(assert_type(i0.days_in_month, "pd.Index[int]"), pd.Index, np.integer)
-    check(assert_type(i0.freq, Optional[BaseOffset]), BaseOffset)
+    check(assert_type(i0.freq, BaseOffset | None), BaseOffset)
     check(assert_type(i0.strftime("%Y"), pd.Index), pd.Index, str)
     check(assert_type(i0.asfreq("D"), pd.PeriodIndex), pd.PeriodIndex, pd.Period)
     check(assert_type(i0.end_time, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
@@ -1230,7 +1186,7 @@ def test_to_timedelta_index() -> None:
     ]
     arg2 = tuple(arg0)
     arg3 = tuple(arg1)
-    arg4 = range(0, 10)
+    arg4 = range(10)
     arg5 = np.arange(10)
     arg6 = pd.Index(arg5)
     check(
@@ -1706,9 +1662,9 @@ def test_timedelta64_and_arithmatic_operator() -> None:
     td = np.timedelta64(1, "D")
     check(assert_type((s3 / td), "pd.Series[float]"), pd.Series, float)
     if TYPE_CHECKING_INVALID_USAGE:
-        r1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        r2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        r3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_timedeltaseries_add_timestampseries() -> None:
@@ -1718,7 +1674,7 @@ def test_timedeltaseries_add_timestampseries() -> None:
     check(assert_type(plus, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
 
 
-def test_timestamp_strptime_fails():
+def test_timestamp_strptime_fails() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         assert_never(
             pd.Timestamp.strptime(
@@ -1728,7 +1684,7 @@ def test_timestamp_strptime_fails():
         )
 
 
-def test_weekofmonth_init():
+def test_weekofmonth_init() -> None:
     # GH 629
     check(
         assert_type(
@@ -1775,7 +1731,7 @@ def test_dateoffset_weekday() -> None:
     )
 
 
-def test_date_range_unit():
+def test_date_range_unit() -> None:
     check(
         assert_type(pd.date_range("1/1/2022", "2/1/2022", unit="s"), pd.DatetimeIndex),
         pd.DatetimeIndex,
@@ -1944,7 +1900,7 @@ def test_timestamp_to_list_add() -> None:
     check(assert_type(tslist, list[pd.Timestamp]), list, pd.Timestamp)
     sseries = pd.Series(tslist)
     with pytest_warns_bounded(Pandas4Warning, "'d' is deprecated", lower="2.3.99"):
-        sseries + pd.Timedelta(1, "d")
+        _0 = sseries + pd.Timedelta(1, "d")
 
     check(
         assert_type(sseries + pd.Timedelta(1, "D"), "pd.Series[pd.Timestamp]"),

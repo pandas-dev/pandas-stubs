@@ -3,6 +3,7 @@ from collections.abc import (
     Iterator,
 )
 from typing import (
+    Any,
     final,
     overload,
 )
@@ -47,7 +48,7 @@ class Grouper:
         dropna: bool = ...,
     ) -> Self: ...
     @overload
-    def __new__(cls, *args, freq: Frequency, **kwargs) -> TimeGrouper: ...
+    def __new__(cls, *args: Any, freq: Frequency, **kwargs: Any) -> TimeGrouper: ...
     @final
     def __repr__(self) -> str: ...  # noqa: PYI029 __repr__ here is final
 

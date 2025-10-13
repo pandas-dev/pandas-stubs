@@ -1,4 +1,8 @@
-from typing import overload
+from typing import (
+    Any,
+    TypeAlias,
+    overload,
+)
 
 import numpy as np
 from pandas import (
@@ -6,10 +10,7 @@ from pandas import (
     Series,
 )
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
-from typing_extensions import (
-    Self,
-    TypeAlias,
-)
+from typing_extensions import Self
 
 from pandas._libs.interval import (
     Interval as Interval,
@@ -17,6 +18,7 @@ from pandas._libs.interval import (
 )
 from pandas._typing import (
     Axis,
+    NpDtype,
     Scalar,
     ScalarIndexer,
     SequenceIndexer,
@@ -56,8 +58,9 @@ class IntervalArray(IntervalMixin, ExtensionArray):
         copy: bool = False,
         dtype=None,
     ): ...
-    def __iter__(self): ...
-    def __len__(self) -> int: ...
+    def __array__(
+        self, dtype: NpDtype | None = None, copy: bool | None = None
+    ) -> np_1darray: ...
     @overload
     def __getitem__(self, key: ScalarIndexer) -> IntervalOrNA: ...
     @overload
@@ -83,7 +86,7 @@ class IntervalArray(IntervalMixin, ExtensionArray):
         allow_fill: bool = ...,
         fill_value=...,
         axis=...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Self: ...
     def value_counts(self, dropna: bool = True): ...
     @property
@@ -99,7 +102,6 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def mid(self) -> Index: ...
     @property
     def is_non_overlapping_monotonic(self) -> bool: ...
-    def __array__(self, dtype=...) -> np_1darray: ...
     def __arrow_array__(self, type=...): ...
     def to_tuples(self, na_tuple: bool = True): ...
     def repeat(self, repeats, axis: Axis | None = ...): ...

@@ -94,7 +94,6 @@ from pandas._config import (
 )
 
 from pandas.util._print_versions import show_versions as show_versions
-from pandas.util._tester import test as test
 
 from pandas.io.api import (
     ExcelFile as ExcelFile,

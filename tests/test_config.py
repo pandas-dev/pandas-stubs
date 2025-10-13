@@ -1,9 +1,8 @@
+from collections.abc import Callable
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     Literal,
-    Optional,
 )
 
 import pandas as pd
@@ -22,7 +21,7 @@ else:
     Display = Options = Any
 
 
-def test_option_tools():
+def test_option_tools() -> None:
     check(assert_type(pd.reset_option("display.width"), None), type(None))
     check(assert_type(pd.set_option("display.width", 80), None), type(None))
     check(assert_type(pd.describe_option("display.width", False), str), str)
@@ -34,16 +33,16 @@ def test_option_tools():
         assert pd.get_option("display.width") == 120
 
 
-def test_specific_option():
+def test_specific_option() -> None:
     # GH 294
     check(assert_type(pd.options.plotting.backend, str), str)
     # Just check assignment
     pd.options.plotting.backend = "matplotlib"
 
 
-def test_display_float_format():
+def test_display_float_format() -> None:
     check(
-        assert_type(pd.options.display.float_format, Optional[Callable[[float], str]]),
+        assert_type(pd.options.display.float_format, Callable[[float], str] | None),
         type(None),
     )
     formatter = "{,.2f}".format
@@ -51,19 +50,19 @@ def test_display_float_format():
         assert pd.get_option("display.float_format") == formatter
 
 
-def test_display_types_none_allowed_get_options():
+def test_display_types_none_allowed_get_options() -> None:
     # GH 1230
     # Initial values
-    check(assert_type(pd.options.display.chop_threshold, Optional[float]), type(None))
-    check(assert_type(pd.options.display.max_columns, Optional[int]), int)
-    check(assert_type(pd.options.display.max_colwidth, Optional[int]), int)
-    check(assert_type(pd.options.display.max_dir_items, Optional[int]), int)
-    check(assert_type(pd.options.display.max_rows, Optional[int]), int)
-    check(assert_type(pd.options.display.max_seq_items, Optional[int]), int)
-    check(assert_type(pd.options.display.min_rows, Optional[int]), int)
+    check(assert_type(pd.options.display.chop_threshold, float | None), type(None))
+    check(assert_type(pd.options.display.max_columns, int | None), int)
+    check(assert_type(pd.options.display.max_colwidth, int | None), int)
+    check(assert_type(pd.options.display.max_dir_items, int | None), int)
+    check(assert_type(pd.options.display.max_rows, int | None), int)
+    check(assert_type(pd.options.display.max_seq_items, int | None), int)
+    check(assert_type(pd.options.display.min_rows, int | None), int)
 
 
-def test_display_types_none_allowed_set_options():
+def test_display_types_none_allowed_set_options() -> None:
     # GH 1230
     # Test setting each option as None and then to a specific value
     pd.options.display.chop_threshold = None
@@ -82,7 +81,7 @@ def test_display_types_none_allowed_set_options():
     pd.options.display.min_rows = 100
 
 
-def test_display_types_literal_constraints():
+def test_display_types_literal_constraints() -> None:
     # GH 1230
     # Various display options have specific allowed values
     # Test colheader_justify with allowed values
@@ -100,7 +99,7 @@ def test_display_types_literal_constraints():
     check(assert_type(pd.options.display.large_repr, Literal["info"]), str)
 
     # Test memory_usage with allowed values
-    assert_type(pd.options.display.memory_usage, Optional[Literal[True, False, "deep"]])
+    assert_type(pd.options.display.memory_usage, Literal[True, False, "deep"] | None)
     pd.options.display.memory_usage = True
     check(assert_type(pd.options.display.memory_usage, Literal[True]), bool)
     pd.options.display.memory_usage = False

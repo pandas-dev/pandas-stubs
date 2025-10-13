@@ -13,6 +13,7 @@ from typing import (
     ClassVar,
     Literal,
     SupportsIndex,
+    TypeAlias,
     overload,
 )
 
@@ -26,7 +27,6 @@ from pandas.core.series import Series
 from typing_extensions import (
     Never,
     Self,
-    TypeAlias,
 )
 
 from pandas._libs.tslibs import (

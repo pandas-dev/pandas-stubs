@@ -152,10 +152,10 @@ def test_column_contains() -> None:
     # https://github.com/microsoft/python-type-stubs/issues/199
     df = pd.DataFrame({"A": [1, 2], "B": ["c", "d"], "E": [3, 4]})
 
-    collist = [column for column in df.columns]
+    collist = list(df.columns)
     check(assert_type(collist, list[str]), list, str)
 
-    collist2 = [column for column in df.columns[df.columns.str.contains("A|B")]]
+    collist2 = list(df.columns[df.columns.str.contains("A|B")])
     check(assert_type(collist2, list[str]), list, str)
 
     length = len(df.columns[df.columns.str.contains("A|B")])
@@ -223,7 +223,7 @@ def test_index_rename_inplace() -> None:
     assert ind2 is None
 
 
-def test_index_dropna():
+def test_index_dropna() -> None:
     idx = pd.Index([1, 2])
 
     check(assert_type(idx.dropna(how="all"), "pd.Index[int]"), pd.Index)
@@ -235,7 +235,7 @@ def test_index_dropna():
     check(assert_type(midx.dropna(how="any"), pd.MultiIndex), pd.MultiIndex)
 
 
-def test_index_neg():
+def test_index_neg() -> None:
     # GH 253
     idx = pd.Index([1, 2])
     check(assert_type(-idx, "pd.Index[int]"), pd.Index)
@@ -306,7 +306,7 @@ def test_index_relops() -> None:
     check(assert_type(ind > 2, np_1darray[np.bool]), np_1darray[np.bool])
 
 
-def test_range_index_union():
+def test_range_index_union() -> None:
     check(
         assert_type(
             pd.RangeIndex(0, 10).union(pd.RangeIndex(10, 20)),
@@ -342,14 +342,14 @@ def test_index_union_sort() -> None:
     )
 
 
-def test_range_index_start_stop_step():
+def test_range_index_start_stop_step() -> None:
     idx = pd.RangeIndex(3)
     check(assert_type(idx.start, int), int)
     check(assert_type(idx.stop, int), int)
     check(assert_type(idx.step, int), int)
 
 
-def test_interval_range():
+def test_interval_range() -> None:
     check(
         assert_type(pd.interval_range(0, 10), "pd.IntervalIndex[pd.Interval[int]]"),
         pd.IntervalIndex,
@@ -502,7 +502,7 @@ def test_interval_range():
     )
 
 
-def test_interval_index_breaks():
+def test_interval_index_breaks() -> None:
     check(
         assert_type(
             pd.IntervalIndex.from_breaks([1, 2, 3, 4]),
@@ -632,7 +632,7 @@ def test_interval_index_breaks():
     )
 
 
-def test_interval_index_arrays():
+def test_interval_index_arrays() -> None:
     check(
         assert_type(
             pd.IntervalIndex.from_arrays([1, 2, 3, 4], [2, 3, 4, 5]),
@@ -761,7 +761,7 @@ def test_interval_index_arrays():
     )
 
 
-def test_interval_index_tuples():
+def test_interval_index_tuples() -> None:
     check(
         assert_type(
             pd.IntervalIndex.from_tuples([(1, 2), (2, 3)]),
@@ -1082,13 +1082,13 @@ def test_range_index_range() -> None:
     check(assert_type(iri, pd.RangeIndex), pd.RangeIndex, int)
 
 
-def test_multiindex_dtypes():
+def test_multiindex_dtypes() -> None:
     # GH-597
     mi = pd.MultiIndex.from_tuples([(1, 2.0), (2, 3.0)], names=["foo", "bar"])
     check(assert_type(mi.dtypes, "pd.Series[Dtype]"), pd.Series)
 
 
-def test_index_constructors():
+def test_index_constructors() -> None:
     # See if we can pick up the different index types in 2.0
     # Eventually should be using a generic index
     ilist = [1, 2, 3]
@@ -1289,10 +1289,10 @@ def test_timedelta_div() -> None:
     check(assert_type([delta] // index, "pd.Index[int]"), pd.Index, np.signedinteger)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        1 / index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        [1] / index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        1 // index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        [1] // index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _0 = 1 / index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _1 = [1] / index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _2 = 1 // index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _3 = [1] // index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_datetime_operators_builtin() -> None:
@@ -1310,22 +1310,20 @@ def test_datetime_operators_builtin() -> None:
 def test_get_loc() -> None:
     unique_index = pd.Index(list("abc"))
     check(
-        assert_type(unique_index.get_loc("b"), Union[int, slice, np_1darray[np.bool]]),
+        assert_type(unique_index.get_loc("b"), int | slice | np_1darray[np.bool]),
         int,
     )
 
     monotonic_index = pd.Index(list("abbc"))
     check(
-        assert_type(
-            monotonic_index.get_loc("b"), Union[int, slice, np_1darray[np.bool]]
-        ),
+        assert_type(monotonic_index.get_loc("b"), int | slice | np_1darray[np.bool]),
         slice,
     )
 
     non_monotonic_index = pd.Index(list("abcb"))
     check(
         assert_type(
-            non_monotonic_index.get_loc("b"), Union[int, slice, np_1darray[np.bool]]
+            non_monotonic_index.get_loc("b"), int | slice | np_1darray[np.bool]
         ),
         np_1darray[np.bool],
     )
@@ -1334,14 +1332,14 @@ def test_get_loc() -> None:
     unique_interval_index = pd.IntervalIndex([i1, i2])
     check(
         assert_type(
-            unique_interval_index.get_loc(i1), Union[int, slice, np_1darray[np.bool]]
+            unique_interval_index.get_loc(i1), int | slice | np_1darray[np.bool]
         ),
         np.int64,
     )
     overlap_interval_index = pd.IntervalIndex([i1, i2, i3])
     check(
         assert_type(
-            overlap_interval_index.get_loc(1), Union[int, slice, np_1darray[np.bool]]
+            overlap_interval_index.get_loc(1), int | slice | np_1darray[np.bool]
         ),
         np_1darray[np.bool],
     )
@@ -1379,7 +1377,7 @@ def test_index_categorical() -> None:
 def test_disallow_empty_index() -> None:
     # From GH 826
     if TYPE_CHECKING_INVALID_USAGE:
-        i0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        _0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
 
 
 def test_datetime_index_max_min_reductions() -> None:
@@ -1533,10 +1531,7 @@ def test_array_property() -> None:
     """Test that Index.array and semantic Index.array return ExtensionArray and its subclasses"""
     # casting due to pandas-dev/pandas-stubs#1383
     check(
-        assert_type(
-            cast("Index[pd.CategoricalDtype]", Index([1], dtype="category")).array,
-            pd.Categorical,
-        ),
+        assert_type(Index([1], dtype="category").array, pd.Categorical),
         pd.Categorical,
         int,
     )
