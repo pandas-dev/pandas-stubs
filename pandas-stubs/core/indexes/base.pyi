@@ -61,7 +61,7 @@ from pandas._typing import (
     S1,
     S1_CO,
     S1_CT,
-    S2_CO,
+    S2,
     S2_CO_NSDT,
     S2_CT,
     T_COMPLEX,
@@ -512,9 +512,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __add__(self, other: Index[Never]) -> Index: ...
     @overload
     def __add__(
-        self: Supports_ElementAdd[_T_contra, S2_CO],
-        other: _T_contra | Sequence[_T_contra],
-    ) -> Index[S2_CO]: ...
+        self: Supports_ElementAdd[_T_contra, S2], other: _T_contra | Sequence[_T_contra]
+    ) -> Index[S2]: ...
     @overload
     def __add__(
         self: Index[S1_CT],
@@ -561,9 +560,9 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __radd__(self: Index[Never], other: complex | _ListLike | Index) -> Index: ...
     @overload
     def __radd__(
-        self: Supports_ElementRAdd[_T_contra, S2_CO],
+        self: Supports_ElementRAdd[_T_contra, S2],
         other: _T_contra | Sequence[_T_contra],
-    ) -> Index[S2_CO]: ...
+    ) -> Index[S2]: ...
     @overload
     def __radd__(
         self: Index[S1_CT],

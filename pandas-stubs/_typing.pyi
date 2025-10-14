@@ -879,7 +879,6 @@ S1_CT_NDT = TypeVar(
 )
 # Like S1, but without `default=Any`.
 S2 = TypeVar("S2", bound=SeriesDType)
-S2_CO = TypeVar("S2_CO", bound=SeriesDType, covariant=True)
 S2_CO_NSDT = TypeVar("S2_CO_NSDT", bound=SeriesDTypeNoStrDateTime, covariant=True)
 S2_CT = TypeVar("S2_CT", bound=SeriesDType, contravariant=True)
 S3 = TypeVar("S3", bound=SeriesDType)
