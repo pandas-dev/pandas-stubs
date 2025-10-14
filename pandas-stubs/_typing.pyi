@@ -82,14 +82,6 @@ HashableT3 = TypeVar("HashableT3", bound=Hashable)
 HashableT4 = TypeVar("HashableT4", bound=Hashable)
 HashableT5 = TypeVar("HashableT5", bound=Hashable)
 
-# array-like
-
-ArrayLike: TypeAlias = ExtensionArray | np.ndarray
-AnyArrayLike: TypeAlias = ArrayLike | Index | Series
-AnyArrayLikeInt: TypeAlias = (
-    IntegerArray | Index[int] | Series[int] | np_1darray[np.integer]
-)
-
 # list-like
 
 _T_co = TypeVar("_T_co", covariant=True)
@@ -866,6 +858,14 @@ np_ndarray: TypeAlias = np.ndarray[ShapeT, np.dtype[GenericT]]
 # Numpy arrays with known shape (Do not use as argument types, only as return types)
 np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[GenericT]]
 np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[GenericT]]
+
+# array-like
+
+ArrayLike: TypeAlias = ExtensionArray | np.ndarray
+AnyArrayLike: TypeAlias = ArrayLike | Index | Series
+AnyArrayLikeInt: TypeAlias = (
+    IntegerArray | Index[int] | Series[int] | np_1darray[np.integer]
+)
 
 class SupportsDType(Protocol[GenericT_co]):
     @property
