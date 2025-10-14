@@ -24,6 +24,7 @@ from pandas.core.indexes.base import Index
 from pandas.core.series import Series
 from typing_extensions import Self
 
+from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
     S1,
     S2,
@@ -33,6 +34,7 @@ from pandas._typing import (
     DTypeLike,
     GenericT,
     GenericT_co,
+    Just,
     NDFrameT,
     Scalar,
     SequenceNotStr,
@@ -217,6 +219,56 @@ class ElementOpsMixin(Generic[S2]):
     ) -> ElementOpsMixin[complex]: ...
     @overload
     def _radd(self: ElementOpsMixin[str], other: str) -> ElementOpsMixin[str]: ...
+    @overload
+    def _mul(
+        self: ElementOpsMixin[bool], other: bool | np.bool_
+    ) -> ElementOpsMixin[bool]: ...
+    @overload
+    def _mul(
+        self: ElementOpsMixin[int], other: bool | np.bool_
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _mul(
+        self: ElementOpsMixin[float], other: int | np.integer
+    ) -> Series[float]: ...
+    @overload
+    def _mul(
+        self: ElementOpsMixin[complex], other: float | np.floating
+    ) -> Series[complex]: ...
+    @overload
+    def _mul(
+        self: ElementOpsMixin[Timedelta],
+        other: Just[int] | Just[float] | np.integer | np.floating,
+    ) -> Series[Timedelta]: ...
+    @overload
+    def _mul(
+        self: ElementOpsMixin[str], other: Just[int] | np.integer
+    ) -> Series[str]: ...
+    @overload
+    def _rmul(
+        self: ElementOpsMixin[bool], other: bool | np.bool_
+    ) -> ElementOpsMixin[bool]: ...
+    @overload
+    def _rmul(
+        self: ElementOpsMixin[int], other: bool | np.bool_
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _rmul(
+        self: ElementOpsMixin[float], other: int | np.integer
+    ) -> Series[float]: ...
+    @overload
+    def _rmul(
+        self: ElementOpsMixin[complex], other: float | np.floating
+    ) -> Series[complex]: ...
+    @overload
+    def _rmul(
+        self: ElementOpsMixin[Timedelta],
+        other: Just[int] | Just[float] | np.integer | np.floating,
+    ) -> Series[Timedelta]: ...
+    @overload
+    def _rmul(
+        self: ElementOpsMixin[str], other: Just[int] | np.integer
+    ) -> Series[str]: ...
 
 @type_check_only
 class Supports_ElementAdd(Protocol[_T_contra, S2]):
@@ -225,3 +277,11 @@ class Supports_ElementAdd(Protocol[_T_contra, S2]):
 @type_check_only
 class Supports_ElementRAdd(Protocol[_T_contra, S2]):
     def _radd(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ElementMul(Protocol[_T_contra, S2]):
+    def _mul(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ElementRMul(Protocol[_T_contra, S2]):
+    def _rmul(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
