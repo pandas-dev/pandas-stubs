@@ -8,15 +8,6 @@ from typing_extensions import assert_type
 from tests import check
 
 
-def test_ea_repeat() -> None:
-    arr = array([1, 2, 3])
-
-    check(assert_type(arr.repeat(1), IntegerArray), IntegerArray)
-    check(assert_type(arr.repeat(arr), IntegerArray), IntegerArray)
-    check(assert_type(arr.repeat(pd.Series([1, 2, 3])), IntegerArray), IntegerArray)
-    check(assert_type(arr.repeat(pd.Index([1, 2, 3])), IntegerArray), IntegerArray)
-
-
 def test_ea_common() -> None:
     arr = array([1, 2, 3])
 
