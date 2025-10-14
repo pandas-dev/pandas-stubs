@@ -9,6 +9,7 @@ from tests import check
 
 
 def test_ea_common() -> None:
+    # Note: `ExtensionArray` is abstract, so we use `IntegerArray` for the tests.
     arr = array([1, 2, 3])
 
     check(assert_type(arr.repeat(1), IntegerArray), IntegerArray)
@@ -18,6 +19,7 @@ def test_ea_common() -> None:
         IntegerArray,
     )
     check(assert_type(arr.repeat(pd.Index([1, 2, 3])), IntegerArray), IntegerArray)
+    check(assert_type(arr.repeat([1, 2, 3]), IntegerArray), IntegerArray)
 
     check(assert_type(arr.unique(), IntegerArray), IntegerArray)
     check(assert_type(arr.dropna(), IntegerArray), IntegerArray)
