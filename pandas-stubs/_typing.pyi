@@ -872,15 +872,11 @@ SeriesDType: TypeAlias = (
     | datetime.timedelta  # includes pd.Timedelta
 )
 S1 = TypeVar("S1", bound=SeriesDType, default=Any)
-S1_CO = TypeVar("S1_CO", bound=SeriesDType, default=Any, covariant=True)
-S1_CT = TypeVar("S1_CT", bound=SeriesDType, default=Any, contravariant=True)
-S1_CT_NDT = TypeVar(
-    "S1_CT_NDT", bound=SeriesDTypeNoDateTime, default=Any, contravariant=True
-)
 # Like S1, but without `default=Any`.
 S2 = TypeVar("S2", bound=SeriesDType)
-S2_CO_NSDT = TypeVar("S2_CO_NSDT", bound=SeriesDTypeNoStrDateTime, covariant=True)
 S2_CT = TypeVar("S2_CT", bound=SeriesDType, contravariant=True)
+S2_CT_NDT = TypeVar("S2_CT_NDT", bound=SeriesDTypeNoDateTime, contravariant=True)
+S2_NSDT = TypeVar("S2_NSDT", bound=SeriesDTypeNoStrDateTime)
 S3 = TypeVar("S3", bound=SeriesDType)
 
 # Constraint, instead of bound

@@ -44,7 +44,9 @@ from pandas.core.base import (
     IndexOpsMixin,
     NumListLike,
     Supports_ElementAdd,
+    Supports_ElementMul,
     Supports_ElementRAdd,
+    Supports_ElementRMul,
     _ListLike,
 )
 from pandas.core.indexes.category import CategoricalIndex
@@ -59,13 +61,10 @@ from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
     C2,
     S1,
-    S1_CO,
-    S1_CT,
     S2,
-    S2_CO_NSDT,
     S2_CT,
+    S2_NSDT,
     T_COMPLEX,
-    T_INT,
     AnyAll,
     ArrayLike,
     AxesData,
@@ -516,9 +515,9 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[S2]: ...
     @overload
     def __add__(
-        self: Index[S1_CT],
-        other: SupportsRAdd[S1_CT, S1_CO] | Sequence[SupportsRAdd[S1_CT, S1_CO]],
-    ) -> Index[S1_CO]: ...
+        self: Index[S2_CT],
+        other: SupportsRAdd[S2_CT, S2] | Sequence[SupportsRAdd[S2_CT, S2]],
+    ) -> Index[S2]: ...
     @overload
     def __add__(
         self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool]
@@ -565,9 +564,9 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[S2]: ...
     @overload
     def __radd__(
-        self: Index[S1_CT],
-        other: SupportsAdd[S1_CT, S1_CO] | Sequence[SupportsAdd[S1_CT, S1_CO]],
-    ) -> Index[S1_CO]: ...
+        self: Index[S2_CT],
+        other: SupportsAdd[S2_CT, S2] | Sequence[SupportsAdd[S2_CT, S2]],
+    ) -> Index[S2]: ...
     @overload
     def __radd__(
         self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool]
@@ -767,16 +766,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __mul__(
         self: Index[Timedelta],
-        other: (
-            Just[int]
-            | Just[float]
-            | Sequence[Just[int]]
-            | Sequence[Just[float]]
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[int]
-            | Index[float]
-        ),
+        other: np_ndarray_anyint | np_ndarray_float | Index[int] | Index[float],
     ) -> Index[Timedelta]: ...
     @overload
     def __mul__(
@@ -791,24 +781,17 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Never: ...
     @overload
     def __mul__(
-        self: Index[_str],
-        other: Just[int] | Sequence[Just[int]] | np_ndarray_anyint | Index[int],
+        self: Index[_str], other: np_ndarray_anyint | Index[int]
     ) -> Index[_str]: ...
     @overload
-    def __mul__(self: Index[T_INT], other: bool | Sequence[bool]) -> Index[T_INT]: ...
-    @overload
-    def __mul__(self: Index[float], other: int | Sequence[int]) -> Index[float]: ...
-    @overload
     def __mul__(
-        self: Index[complex], other: float | Sequence[float]
-    ) -> Index[complex]: ...
+        self: Supports_ElementMul[_T_contra, S2], other: _T_contra | Sequence[_T_contra]
+    ) -> Index[S2]: ...
     @overload
     def __mul__(
         self: Index[S2_CT],
-        other: (
-            SupportsRMul[S2_CT, S2_CO_NSDT] | Sequence[SupportsRMul[S2_CT, S2_CO_NSDT]]
-        ),
-    ) -> Index[S2_CO_NSDT]: ...
+        other: SupportsRMul[S2_CT, S2_NSDT] | Sequence[SupportsRMul[S2_CT, S2_NSDT]],
+    ) -> Index[S2_NSDT]: ...
     @overload
     def __mul__(
         self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool]
@@ -859,16 +842,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __rmul__(
         self: Index[Timedelta],
-        other: (
-            Just[int]
-            | Just[float]
-            | Sequence[Just[int]]
-            | Sequence[Just[float]]
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[int]
-            | Index[float]
-        ),
+        other: np_ndarray_anyint | np_ndarray_float | Index[int] | Index[float],
     ) -> Index[Timedelta]: ...
     @overload
     def __rmul__(
@@ -883,24 +857,18 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Never: ...
     @overload
     def __rmul__(
-        self: Index[_str],
-        other: Just[int] | Sequence[Just[int]] | np_ndarray_anyint | Index[int],
+        self: Index[_str], other: np_ndarray_anyint | Index[int]
     ) -> Index[_str]: ...
     @overload
-    def __rmul__(self: Index[T_INT], other: bool | Sequence[bool]) -> Index[T_INT]: ...
-    @overload
-    def __rmul__(self: Index[float], other: int | Sequence[int]) -> Index[float]: ...
-    @overload
     def __rmul__(
-        self: Index[complex], other: float | Sequence[float]
-    ) -> Index[complex]: ...
+        self: Supports_ElementRMul[_T_contra, S2],
+        other: _T_contra | Sequence[_T_contra],
+    ) -> Index[S2]: ...
     @overload
     def __rmul__(
         self: Index[S2_CT],
-        other: (
-            SupportsMul[S2_CT, S2_CO_NSDT] | Sequence[SupportsMul[S2_CT, S2_CO_NSDT]]
-        ),
-    ) -> Index[S2_CO_NSDT]: ...
+        other: SupportsMul[S2_CT, S2_NSDT] | Sequence[SupportsMul[S2_CT, S2_NSDT]],
+    ) -> Index[S2_NSDT]: ...
     @overload
     def __rmul__(
         self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool]

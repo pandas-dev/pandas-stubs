@@ -119,12 +119,10 @@ from pandas._libs.tslibs.nattype import NaTType
 from pandas._libs.tslibs.offsets import DateOffset
 from pandas._typing import (
     S1,
-    S1_CO,
-    S1_CT,
-    S1_CT_NDT,
     S2,
-    S2_CO_NSDT,
     S2_CT,
+    S2_CT_NDT,
+    S2_NSDT,
     T_COMPLEX,
     T_INT,
     AggFuncTypeBase,
@@ -880,8 +878,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def diff(self: Series[Interval], periods: int = ...) -> Never: ...
     @overload
     def diff(
-        self: SupportsGetItem[Scalar, SupportsSelfSub[S1_CO]], periods: int = ...
-    ) -> Series[S1_CO]: ...
+        self: SupportsGetItem[Scalar, SupportsSelfSub[S2]], periods: int = ...
+    ) -> Series[S2]: ...
     def autocorr(self, lag: int = 1) -> float: ...
     @overload
     def dot(self, other: Series[S1]) -> Scalar: ...
@@ -1728,14 +1726,12 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Supports_ElementAdd[_T_contra, S2], other: _T_contra | Sequence[_T_contra]
     ) -> Series[S2]: ...
     @overload
-    def __add__(
-        self: Series[S1_CT], other: SupportsRAdd[S1_CT, S1_CO]
-    ) -> Series[S1_CO]: ...
+    def __add__(self: Series[S2_CT], other: SupportsRAdd[S2_CT, S2]) -> Series[S2]: ...
     # pandas-dev/pandas#62353
     @overload
     def __add__(
-        self: Series[S1_CT_NDT], other: Sequence[SupportsRAdd[S1_CT_NDT, S1_CO]]
-    ) -> Series[S1_CO]: ...
+        self: Series[S2_CT_NDT], other: Sequence[SupportsRAdd[S2_CT_NDT, S2]]
+    ) -> Series[S2]: ...
     @overload
     def __add__(
         self: Series[T_COMPLEX], other: np_ndarray_bool | Index[bool] | Series[bool]
@@ -1845,12 +1841,12 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[S2]: ...
     @overload
     def add(
-        self: Series[S1_CT],
-        other: SupportsRAdd[S1_CT, S1_CO] | Sequence[SupportsRAdd[S1_CT, S1_CO]],
+        self: Series[S2_CT],
+        other: SupportsRAdd[S2_CT, S2] | Sequence[SupportsRAdd[S2_CT, S2]],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
-    ) -> Series[S1_CO]: ...
+    ) -> Series[S2]: ...
     @overload
     def add(
         self: Series[T_COMPLEX],
@@ -1960,14 +1956,12 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         other: _T_contra | Sequence[_T_contra],
     ) -> Series[S2]: ...
     @overload
-    def __radd__(
-        self: Series[S1_CT], other: SupportsAdd[S1_CT, S1_CO]
-    ) -> Series[S1_CO]: ...
+    def __radd__(self: Series[S2_CT], other: SupportsAdd[S2_CT, S2]) -> Series[S2]: ...
     # pandas-dev/pandas#62353
     @overload
     def __radd__(
-        self: Series[S1_CT_NDT], other: Sequence[SupportsAdd[S1_CT_NDT, S1_CO]]
-    ) -> Series[S1_CO]: ...
+        self: Series[S2_CT_NDT], other: Sequence[SupportsAdd[S2_CT_NDT, S2]]
+    ) -> Series[S2]: ...
     @overload
     def __radd__(
         self: Series[T_COMPLEX], other: np_ndarray_bool | Index[bool] | Series[bool]
@@ -2081,12 +2075,12 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[S2]: ...
     @overload
     def radd(
-        self: Series[S1_CT],
-        other: SupportsAdd[S1_CT, S1_CO] | Sequence[SupportsAdd[S1_CT, S1_CO]],
+        self: Series[S2_CT],
+        other: SupportsAdd[S2_CT, S2] | Sequence[SupportsAdd[S2_CT, S2]],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
-    ) -> Series[S1_CO]: ...
+    ) -> Series[S2]: ...
     @overload
     def radd(
         self: Series[T_COMPLEX],
@@ -2540,10 +2534,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def __mul__(
         self: Series[S2_CT],
-        other: (
-            SupportsRMul[S2_CT, S2_CO_NSDT] | Sequence[SupportsRMul[S2_CT, S2_CO_NSDT]]
-        ),
-    ) -> Series[S2_CO_NSDT]: ...
+        other: SupportsRMul[S2_CT, S2_NSDT] | Sequence[SupportsRMul[S2_CT, S2_NSDT]],
+    ) -> Series[S2_NSDT]: ...
     @overload
     def __mul__(
         self: Series[T_COMPLEX], other: np_ndarray_bool | Index[bool] | Series[bool]
@@ -2635,13 +2627,11 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def mul(
         self: Series[S2_CT],
-        other: (
-            SupportsRMul[S2_CT, S2_CO_NSDT] | Sequence[SupportsRMul[S2_CT, S2_CO_NSDT]]
-        ),
+        other: SupportsRMul[S2_CT, S2_NSDT] | Sequence[SupportsRMul[S2_CT, S2_NSDT]],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
-    ) -> Series[S2_CO_NSDT]: ...
+    ) -> Series[S2_NSDT]: ...
     @overload
     def mul(
         self: Series[T_COMPLEX],
@@ -2755,10 +2745,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def __rmul__(
         self: Series[S2_CT],
-        other: (
-            SupportsMul[S2_CT, S2_CO_NSDT] | Sequence[SupportsMul[S2_CT, S2_CO_NSDT]]
-        ),
-    ) -> Series[S2_CO_NSDT]: ...
+        other: SupportsMul[S2_CT, S2_NSDT] | Sequence[SupportsMul[S2_CT, S2_NSDT]],
+    ) -> Series[S2_NSDT]: ...
     @overload
     def __rmul__(
         self: Series[T_COMPLEX], other: np_ndarray_bool | Index[bool] | Series[bool]
@@ -2850,13 +2838,11 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def rmul(
         self: Series[S2_CT],
-        other: (
-            SupportsMul[S2_CT, S2_CO_NSDT] | Sequence[SupportsMul[S2_CT, S2_CO_NSDT]]
-        ),
+        other: SupportsMul[S2_CT, S2_NSDT] | Sequence[SupportsMul[S2_CT, S2_NSDT]],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
-    ) -> Series[S2_CO_NSDT]: ...
+    ) -> Series[S2_NSDT]: ...
     @overload
     def rmul(
         self: Series[T_COMPLEX],
