@@ -7,24 +7,26 @@ from typing import (
     Any,
     Generic,
     Literal,
+    Protocol,
     TypeAlias,
     final,
     overload,
+    type_check_only,
 )
 
+from _typeshed import _T_contra
 import numpy as np
-from pandas import (
-    Index,
-    Series,
-)
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
 from pandas.core.indexes.accessors import ArrayDescriptor
+from pandas.core.indexes.base import Index
+from pandas.core.series import Series
 from typing_extensions import Self
 
 from pandas._typing import (
     S1,
+    S2,
     ArrayLike,
     AxisIndex,
     DropKeep,
@@ -176,3 +178,50 @@ NumListLike: TypeAlias = (
     | Sequence[complex]
     | IndexOpsMixin[complex]
 )
+
+@type_check_only
+class ElementOpsMixin(Generic[S2]):
+    @overload
+    def _add(
+        self: ElementOpsMixin[bool], other: bool | np.bool_
+    ) -> ElementOpsMixin[bool]: ...
+    @overload
+    def _add(
+        self: ElementOpsMixin[int], other: bool | np.bool_
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _add(
+        self: ElementOpsMixin[float], other: int | np.integer
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _add(
+        self: ElementOpsMixin[complex], other: float | np.floating
+    ) -> ElementOpsMixin[complex]: ...
+    @overload
+    def _add(self: ElementOpsMixin[str], other: str) -> ElementOpsMixin[str]: ...
+    @overload
+    def _radd(
+        self: ElementOpsMixin[bool], other: bool | np.bool_
+    ) -> ElementOpsMixin[bool]: ...
+    @overload
+    def _radd(
+        self: ElementOpsMixin[int], other: bool | np.bool_
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _radd(
+        self: ElementOpsMixin[float], other: int | np.integer
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _radd(
+        self: ElementOpsMixin[complex], other: float | np.floating
+    ) -> ElementOpsMixin[complex]: ...
+    @overload
+    def _radd(self: ElementOpsMixin[str], other: str) -> ElementOpsMixin[str]: ...
+
+@type_check_only
+class Supports_ElementAdd(Protocol[_T_contra, S2]):
+    def _add(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ElementRAdd(Protocol[_T_contra, S2]):
+    def _radd(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...

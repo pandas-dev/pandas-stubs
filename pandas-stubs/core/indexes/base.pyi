@@ -24,6 +24,7 @@ from _typeshed import (
     SupportsMul,
     SupportsRAdd,
     SupportsRMul,
+    _T_contra,
 )
 import numpy as np
 from pandas import (
@@ -39,8 +40,11 @@ from pandas import (
     TimedeltaIndex,
 )
 from pandas.core.base import (
+    ElementOpsMixin,
     IndexOpsMixin,
     NumListLike,
+    Supports_ElementAdd,
+    Supports_ElementRAdd,
     _ListLike,
 )
 from pandas.core.indexes.category import CategoricalIndex
@@ -57,6 +61,7 @@ from pandas._typing import (
     S1,
     S1_CO,
     S1_CT,
+    S2_CO,
     S2_CO_NSDT,
     S2_CT,
     T_COMPLEX,
@@ -99,8 +104,8 @@ from pandas._typing import (
 
 class InvalidIndexError(Exception): ...
 
-class Index(IndexOpsMixin[S1]):
-    __hash__: ClassVar[None]  # type: ignore[assignment]
+class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
+    __hash__: ClassVar[None]  # type: ignore[assignment]  # pyright: ignore[reportIncompatibleMethodOverride]
     # overloads with additional dtypes
     @overload
     def __new__(  # pyright: ignore[reportOverlappingOverload]
@@ -506,15 +511,10 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __add__(self, other: Index[Never]) -> Index: ...
     @overload
-    def __add__(self: Index[bool], other: bool | Sequence[bool]) -> Index[bool]: ...
-    @overload
-    def __add__(self: Index[int], other: bool | Sequence[bool]) -> Index[int]: ...
-    @overload
-    def __add__(self: Index[float], other: int | Sequence[int]) -> Index[float]: ...
-    @overload
     def __add__(
-        self: Index[complex], other: float | Sequence[float]
-    ) -> Index[complex]: ...
+        self: Supports_ElementAdd[_T_contra, S2_CO],
+        other: _T_contra | Sequence[_T_contra],
+    ) -> Index[S2_CO]: ...
     @overload
     def __add__(
         self: Index[S1_CT],
@@ -553,22 +553,17 @@ class Index(IndexOpsMixin[S1]):
     ) -> Never: ...
     @overload
     def __add__(
-        self: Index[_str], other: _str | Sequence[_str] | np_ndarray_str | Index[_str]
+        self: Index[_str], other: np_ndarray_str | Index[_str]
     ) -> Index[_str]: ...
     @overload
     def __radd__(self: Index[Never], other: _str) -> Never: ...
     @overload
     def __radd__(self: Index[Never], other: complex | _ListLike | Index) -> Index: ...
     @overload
-    def __radd__(self: Index[bool], other: bool | Sequence[bool]) -> Index[bool]: ...
-    @overload
-    def __radd__(self: Index[int], other: bool | Sequence[bool]) -> Index[int]: ...
-    @overload
-    def __radd__(self: Index[float], other: int | Sequence[int]) -> Index[float]: ...
-    @overload
     def __radd__(
-        self: Index[complex], other: float | Sequence[float]
-    ) -> Index[complex]: ...
+        self: Supports_ElementRAdd[_T_contra, S2_CO],
+        other: _T_contra | Sequence[_T_contra],
+    ) -> Index[S2_CO]: ...
     @overload
     def __radd__(
         self: Index[S1_CT],
@@ -607,7 +602,7 @@ class Index(IndexOpsMixin[S1]):
     ) -> Never: ...
     @overload
     def __radd__(
-        self: Index[_str], other: _str | Sequence[_str] | np_ndarray_str | Index[_str]
+        self: Index[_str], other: np_ndarray_str | Index[_str]
     ) -> Index[_str]: ...
     @overload
     def __sub__(self: Index[Never], other: DatetimeIndex) -> Never: ...
