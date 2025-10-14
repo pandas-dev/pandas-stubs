@@ -28,7 +28,10 @@ from typing import (
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
-from pandas.core.arrays import ExtensionArray
+from pandas.core.arrays import (
+    ExtensionArray,
+    IntegerArray,
+)
 from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
 from pandas.core.groupby.grouper import Grouper
@@ -83,6 +86,9 @@ HashableT5 = TypeVar("HashableT5", bound=Hashable)
 
 ArrayLike: TypeAlias = ExtensionArray | np.ndarray
 AnyArrayLike: TypeAlias = ArrayLike | Index | Series
+AnyArrayLikeInt: TypeAlias = (
+    IntegerArray | Index[int] | Series[int] | np_1darray[np.integer]
+)
 
 # list-like
 
@@ -870,6 +876,10 @@ DTypeLike: TypeAlias = type[Any] | tuple[Any, Any] | list[Any] | str
 
 IndexType: TypeAlias = slice | np_ndarray_anyint | Index | list[int] | Series[int]
 MaskType: TypeAlias = Series[bool] | np_ndarray_bool | list[bool]
+
+ArrayLikeInt: TypeAlias = (
+    Index[int] | Series[int] | Sequence[int] | np_1darray[np.integer]
+)
 
 # Scratch types for generics
 
