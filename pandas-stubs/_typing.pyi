@@ -878,10 +878,6 @@ DTypeLike: TypeAlias = type[Any] | tuple[Any, Any] | list[Any] | str
 IndexType: TypeAlias = slice | np_ndarray_anyint | Index | list[int] | Series[int]
 MaskType: TypeAlias = Series[bool] | np_ndarray_bool | list[bool]
 
-ArrayLikeInt: TypeAlias = (
-    Index[int] | Series[int] | Sequence[int] | np_1darray[np.integer]
-)
-
 # Scratch types for generics
 
 T_INT = TypeVar("T_INT", bound=int)
