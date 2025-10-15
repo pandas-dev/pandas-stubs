@@ -25,7 +25,7 @@ from typing_extensions import Self
 
 from pandas._typing import (
     S1,
-    ArrayLike,
+    AnyArrayLike,
     AxisIndex,
     DropKeep,
     DTypeLike,
@@ -42,8 +42,6 @@ from pandas._typing import (
     np_ndarray_float,
 )
 from pandas.util._decorators import cache_readonly
-
-_ListLike: TypeAlias = ArrayLike | dict[str, np.ndarray] | SequenceNotStr[S1]
 
 class NoNewAttributesMixin:
     def __setattr__(self, key: str, value: Any) -> None: ...
@@ -153,16 +151,16 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
     @overload
     def searchsorted(
         self,
-        value: _ListLike,
+        value: AnyArrayLike | SequenceNotStr,
         side: Literal["left", "right"] = ...,
-        sorter: _ListLike | None = ...,
+        sorter: AnyArrayLike | SequenceNotStr | None = ...,
     ) -> np_1darray[np.intp]: ...
     @overload
     def searchsorted(
         self,
         value: Scalar,
         side: Literal["left", "right"] = ...,
-        sorter: _ListLike | None = ...,
+        sorter: AnyArrayLike | SequenceNotStr | None = ...,
     ) -> np.intp: ...
     def drop_duplicates(self, *, keep: DropKeep = ...) -> Self: ...
 
