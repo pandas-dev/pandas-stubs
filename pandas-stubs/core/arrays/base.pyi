@@ -1,4 +1,7 @@
-from collections.abc import Iterator
+from collections.abc import (
+    Iterator,
+    Sequence,
+)
 from typing import (
     Any,
     Literal,
@@ -58,7 +61,9 @@ class ExtensionArray:
     def unique(self) -> Self: ...
     def searchsorted(self, value, side: str = ..., sorter=...): ...
     def factorize(self, use_na_sentinel: bool = True) -> tuple[np_1darray, Self]: ...
-    def repeat(self, repeats: int | AnyArrayLikeInt, axis: None = None) -> Self: ...
+    def repeat(
+        self, repeats: int | AnyArrayLikeInt | Sequence[int], axis: None = None
+    ) -> Self: ...
     def take(
         self,
         indexer: TakeIndexer,
