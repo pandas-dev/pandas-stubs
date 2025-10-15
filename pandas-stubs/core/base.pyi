@@ -179,7 +179,6 @@ NumListLike: TypeAlias = (
     | np_ndarray_complex
     | dict[str, np.ndarray]
     | Sequence[complex]
-    | IndexOpsMixin[complex]
 )
 
 @type_check_only

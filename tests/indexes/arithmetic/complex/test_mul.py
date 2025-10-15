@@ -21,7 +21,7 @@ from tests import (
 
 @pytest.fixture
 def left() -> "pd.Index[complex]":
-    """left operand"""
+    """Left operand"""
     lo = pd.Index([1j, 2j, 3j])
     return check(assert_type(lo, "pd.Index[complex]"), pd.Index, np.complexfloating)
 
