@@ -43,10 +43,10 @@ from pandas.core.base import (
     ElementOpsMixin,
     IndexOpsMixin,
     NumListLike,
-    Supports_ElementAdd,
-    Supports_ElementMul,
-    Supports_ElementRAdd,
-    Supports_ElementRMul,
+    Supports_ProtoAdd,
+    Supports_ProtoMul,
+    Supports_ProtoRAdd,
+    Supports_ProtoRMul,
     _ListLike,
 )
 from pandas.core.indexes.category import CategoricalIndex
@@ -511,7 +511,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __add__(self, other: Index[Never]) -> Index: ...
     @overload
     def __add__(
-        self: Supports_ElementAdd[_T_contra, S2], other: _T_contra | Sequence[_T_contra]
+        self: Supports_ProtoAdd[_T_contra, S2], other: _T_contra | Sequence[_T_contra]
     ) -> Index[S2]: ...
     @overload
     def __add__(
@@ -559,7 +559,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __radd__(self: Index[Never], other: complex | _ListLike | Index) -> Index: ...
     @overload
     def __radd__(
-        self: Supports_ElementRAdd[_T_contra, S2],
+        self: Supports_ProtoRAdd[_T_contra, S2],
         other: _T_contra | Sequence[_T_contra],
     ) -> Index[S2]: ...
     @overload
@@ -785,7 +785,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[_str]: ...
     @overload
     def __mul__(
-        self: Supports_ElementMul[_T_contra, S2], other: _T_contra | Sequence[_T_contra]
+        self: Supports_ProtoMul[_T_contra, S2], other: _T_contra | Sequence[_T_contra]
     ) -> Index[S2]: ...
     @overload
     def __mul__(
@@ -861,7 +861,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[_str]: ...
     @overload
     def __rmul__(
-        self: Supports_ElementRMul[_T_contra, S2],
+        self: Supports_ProtoRMul[_T_contra, S2],
         other: _T_contra | Sequence[_T_contra],
     ) -> Index[S2]: ...
     @overload
