@@ -189,15 +189,15 @@ class ElementOpsMixin(Generic[S2]):
     ) -> ElementOpsMixin[bool]: ...
     @overload
     def _proto_add(
-        self: ElementOpsMixin[int], other: bool | np.bool_
+        self: ElementOpsMixin[int], other: int | np.integer
     ) -> ElementOpsMixin[int]: ...
     @overload
     def _proto_add(
-        self: ElementOpsMixin[float], other: int | np.integer
+        self: ElementOpsMixin[float], other: float | np.floating
     ) -> ElementOpsMixin[float]: ...
     @overload
     def _proto_add(
-        self: ElementOpsMixin[complex], other: float | np.floating
+        self: ElementOpsMixin[complex], other: complex | np.complexfloating
     ) -> ElementOpsMixin[complex]: ...
     @overload
     def _proto_add(self: ElementOpsMixin[str], other: str) -> ElementOpsMixin[str]: ...
@@ -207,15 +207,15 @@ class ElementOpsMixin(Generic[S2]):
     ) -> ElementOpsMixin[bool]: ...
     @overload
     def _proto_radd(
-        self: ElementOpsMixin[int], other: bool | np.bool_
+        self: ElementOpsMixin[int], other: int | np.integer
     ) -> ElementOpsMixin[int]: ...
     @overload
     def _proto_radd(
-        self: ElementOpsMixin[float], other: int | np.integer
+        self: ElementOpsMixin[float], other: float | np.floating
     ) -> ElementOpsMixin[float]: ...
     @overload
     def _proto_radd(
-        self: ElementOpsMixin[complex], other: float | np.floating
+        self: ElementOpsMixin[complex], other: complex | np.complexfloating
     ) -> ElementOpsMixin[complex]: ...
     @overload
     def _proto_radd(self: ElementOpsMixin[str], other: str) -> ElementOpsMixin[str]: ...
@@ -225,15 +225,15 @@ class ElementOpsMixin(Generic[S2]):
     ) -> ElementOpsMixin[bool]: ...
     @overload
     def _proto_mul(
-        self: ElementOpsMixin[int], other: bool | np.bool_
+        self: ElementOpsMixin[int], other: int | np.integer
     ) -> ElementOpsMixin[int]: ...
     @overload
     def _proto_mul(
-        self: ElementOpsMixin[float], other: int | np.integer
+        self: ElementOpsMixin[float], other: float | np.floating
     ) -> ElementOpsMixin[float]: ...
     @overload
     def _proto_mul(
-        self: ElementOpsMixin[complex], other: float | np.floating
+        self: ElementOpsMixin[complex], other: complex | np.complexfloating
     ) -> ElementOpsMixin[complex]: ...
     @overload
     def _proto_mul(
@@ -250,15 +250,15 @@ class ElementOpsMixin(Generic[S2]):
     ) -> ElementOpsMixin[bool]: ...
     @overload
     def _proto_rmul(
-        self: ElementOpsMixin[int], other: bool | np.bool_
+        self: ElementOpsMixin[int], other: int | np.integer
     ) -> ElementOpsMixin[int]: ...
     @overload
     def _proto_rmul(
-        self: ElementOpsMixin[float], other: int | np.integer
+        self: ElementOpsMixin[float], other: float | np.floating
     ) -> ElementOpsMixin[float]: ...
     @overload
     def _proto_rmul(
-        self: ElementOpsMixin[complex], other: float | np.floating
+        self: ElementOpsMixin[complex], other: complex | np.complexfloating
     ) -> ElementOpsMixin[complex]: ...
     @overload
     def _proto_rmul(

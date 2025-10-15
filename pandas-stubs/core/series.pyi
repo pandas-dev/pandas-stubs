@@ -1723,7 +1723,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[Timedelta]: ...
     @overload
     def __add__(
-        self: Supports_ProtoAdd[_T_contra, S2], other: _T_contra | Sequence[_T_contra]
+        self: Supports_ProtoAdd[S2_CT, S2], other: S2_CT | Sequence[S2_CT]
     ) -> Series[S2]: ...
     @overload
     def __add__(self: Series[S2_CT], other: SupportsRAdd[S2_CT, S2]) -> Series[S2]: ...
@@ -1833,8 +1833,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[Timedelta]: ...
     @overload
     def add(
-        self: Supports_ProtoAdd[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoAdd[S2_CT, S2],
+        other: S2_CT | Sequence[S2_CT],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -1952,8 +1952,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # pyright is unhappy without the above 3 overloads
     @overload
     def __radd__(
-        self: Supports_ProtoRAdd[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoRAdd[S2_CT, S2], other: S2_CT | Sequence[S2_CT]
     ) -> Series[S2]: ...
     @overload
     def __radd__(self: Series[S2_CT], other: SupportsAdd[S2_CT, S2]) -> Series[S2]: ...
@@ -2067,8 +2066,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[Timedelta]: ...
     @overload
     def radd(
-        self: Supports_ProtoRAdd[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoRAdd[S2_CT, S2],
+        other: S2_CT | Sequence[S2_CT],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -2739,8 +2738,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[_str]: ...
     @overload
     def __rmul__(
-        self: Supports_ProtoRMul[_T_contra, S2],
-        other: _T_contra | Sequence[_T_contra],
+        self: Supports_ProtoRMul[_T_contra, S2], other: _T_contra | Sequence[_T_contra]
     ) -> Series[S2]: ...
     @overload
     def __rmul__(
