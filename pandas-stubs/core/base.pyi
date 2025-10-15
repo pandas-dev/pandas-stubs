@@ -7,30 +7,34 @@ from typing import (
     Any,
     Generic,
     Literal,
+    Protocol,
     TypeAlias,
     final,
     overload,
+    type_check_only,
 )
 
+from _typeshed import _T_contra
 import numpy as np
-from pandas import (
-    Index,
-    Series,
-)
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
 from pandas.core.indexes.accessors import ArrayDescriptor
+from pandas.core.indexes.base import Index
+from pandas.core.series import Series
 from typing_extensions import Self
 
+from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
     S1,
+    S2,
     ArrayLike,
     AxisIndex,
     DropKeep,
     DTypeLike,
     GenericT,
     GenericT_co,
+    Just,
     NDFrameT,
     Scalar,
     SequenceNotStr,
@@ -176,3 +180,108 @@ NumListLike: TypeAlias = (
     | Sequence[complex]
     | IndexOpsMixin[complex]
 )
+
+@type_check_only
+class ElementOpsMixin(Generic[S2]):
+    @overload
+    def _proto_add(
+        self: ElementOpsMixin[bool], other: bool | np.bool_
+    ) -> ElementOpsMixin[bool]: ...
+    @overload
+    def _proto_add(
+        self: ElementOpsMixin[int], other: int | np.integer
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_add(
+        self: ElementOpsMixin[float], other: float | np.floating
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_add(
+        self: ElementOpsMixin[complex], other: complex | np.complexfloating
+    ) -> ElementOpsMixin[complex]: ...
+    @overload
+    def _proto_add(self: ElementOpsMixin[str], other: str) -> ElementOpsMixin[str]: ...
+    @overload
+    def _proto_radd(
+        self: ElementOpsMixin[bool], other: bool | np.bool_
+    ) -> ElementOpsMixin[bool]: ...
+    @overload
+    def _proto_radd(
+        self: ElementOpsMixin[int], other: int | np.integer
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_radd(
+        self: ElementOpsMixin[float], other: float | np.floating
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_radd(
+        self: ElementOpsMixin[complex], other: complex | np.complexfloating
+    ) -> ElementOpsMixin[complex]: ...
+    @overload
+    def _proto_radd(self: ElementOpsMixin[str], other: str) -> ElementOpsMixin[str]: ...
+    @overload
+    def _proto_mul(
+        self: ElementOpsMixin[bool], other: bool | np.bool_
+    ) -> ElementOpsMixin[bool]: ...
+    @overload
+    def _proto_mul(
+        self: ElementOpsMixin[int], other: int | np.integer
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_mul(
+        self: ElementOpsMixin[float], other: float | np.floating
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_mul(
+        self: ElementOpsMixin[complex], other: complex | np.complexfloating
+    ) -> ElementOpsMixin[complex]: ...
+    @overload
+    def _proto_mul(
+        self: ElementOpsMixin[Timedelta],
+        other: Just[int] | Just[float] | np.integer | np.floating,
+    ) -> ElementOpsMixin[Timedelta]: ...
+    @overload
+    def _proto_mul(
+        self: ElementOpsMixin[str], other: Just[int] | np.integer
+    ) -> ElementOpsMixin[str]: ...
+    @overload
+    def _proto_rmul(
+        self: ElementOpsMixin[bool], other: bool | np.bool_
+    ) -> ElementOpsMixin[bool]: ...
+    @overload
+    def _proto_rmul(
+        self: ElementOpsMixin[int], other: int | np.integer
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_rmul(
+        self: ElementOpsMixin[float], other: float | np.floating
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_rmul(
+        self: ElementOpsMixin[complex], other: complex | np.complexfloating
+    ) -> ElementOpsMixin[complex]: ...
+    @overload
+    def _proto_rmul(
+        self: ElementOpsMixin[Timedelta],
+        other: Just[int] | Just[float] | np.integer | np.floating,
+    ) -> ElementOpsMixin[Timedelta]: ...
+    @overload
+    def _proto_rmul(
+        self: ElementOpsMixin[str], other: Just[int] | np.integer
+    ) -> ElementOpsMixin[str]: ...
+
+@type_check_only
+class Supports_ProtoAdd(Protocol[_T_contra, S2]):
+    def _proto_add(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ProtoRAdd(Protocol[_T_contra, S2]):
+    def _proto_radd(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ProtoMul(Protocol[_T_contra, S2]):
+    def _proto_mul(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ProtoRMul(Protocol[_T_contra, S2]):
+    def _proto_rmul(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...

@@ -179,11 +179,11 @@ def test_mul_pd_index(left: "pd.Series[str]") -> None:
         _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _10 = b * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _10 = b * left  # type: ignore[operator,type-var,unused-ignore] # pyright: ignore[reportOperatorIssue] # mypy gives different errors for mypy and test_dist
     check(assert_type(i * left, "pd.Series[str]"), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _12 = f * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _13 = c * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _12 = f * left  # type: ignore[operator,type-var,unused-ignore] # pyright: ignore[reportOperatorIssue] # mypy gives different errors for mypy and test_dist
+        _13 = c * left  # type: ignore[operator,type-var,unused-ignore] # pyright: ignore[reportOperatorIssue] # mypy gives different errors for mypy and test_dist
         _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
