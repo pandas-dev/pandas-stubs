@@ -25,7 +25,6 @@ from typing_extensions import Self
 
 from pandas._typing import (
     S1,
-    AnyArrayLike,
     AxisIndex,
     DropKeep,
     DTypeLike,
@@ -34,7 +33,6 @@ from pandas._typing import (
     ListLike,
     NDFrameT,
     Scalar,
-    SequenceNotStr,
     SupportsDType,
     np_1darray,
     np_ndarray_anyint,
@@ -154,14 +152,14 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
         self,
         value: ListLike,
         side: Literal["left", "right"] = ...,
-        sorter: AnyArrayLike | SequenceNotStr | None = ...,
+        sorter: ListLike | None = None,
     ) -> np_1darray[np.intp]: ...
     @overload
     def searchsorted(
         self,
         value: Scalar,
         side: Literal["left", "right"] = ...,
-        sorter: AnyArrayLike | SequenceNotStr | None = ...,
+        sorter: ListLike | None = None,
     ) -> np.intp: ...
     def drop_duplicates(self, *, keep: DropKeep = ...) -> Self: ...
 

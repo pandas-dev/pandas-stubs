@@ -905,14 +905,14 @@ class Series(IndexOpsMixin[S1], NDFrame):
         self,
         value: ListLike,
         side: Literal["left", "right"] = ...,
-        sorter: AnyArrayLike | SequenceNotStr | None = ...,
+        sorter: ListLike | None = None,
     ) -> np_1darray[np.intp]: ...
     @overload
     def searchsorted(
         self,
         value: Scalar,
         side: Literal["left", "right"] = ...,
-        sorter: AnyArrayLike | SequenceNotStr | None = ...,
+        sorter: ListLike | None = None,
     ) -> np.intp: ...
     @overload
     def compare(

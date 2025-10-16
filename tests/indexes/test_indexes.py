@@ -1509,6 +1509,7 @@ def test_index_searchsorted() -> None:
     )
     check(assert_type(idx.searchsorted(1, side="left"), np.intp), np.intp)
     check(assert_type(idx.searchsorted(1, sorter=[1, 0, 2]), np.intp), np.intp)
+    check(assert_type(idx.searchsorted(1, sorter=range(3)), np.intp), np.intp)
 
 
 def test_period_index_constructor() -> None:
