@@ -6,19 +6,17 @@ from typing import (
 )
 
 import numpy as np
-from pandas import (
-    Index,
-    PeriodIndex,
-    Series,
-    Timedelta,
-    TimedeltaIndex,
-)
+from pandas.core.indexes.base import Index
+from pandas.core.indexes.period import PeriodIndex
+from pandas.core.indexes.timedeltas import TimedeltaIndex
+from pandas.core.series import Series
 from typing_extensions import Self
 
 from pandas._libs.tslibs import NaTType
 from pandas._libs.tslibs.offsets import (
     BaseOffset,
 )
+from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     PeriodFrequency,
@@ -79,7 +77,7 @@ class Period(PeriodMixin):
     @overload
     def __sub__(self, other: _PeriodAddSub) -> Period: ...
     @overload
-    def __sub__(self, other: Period) -> BaseOffset: ...
+    def __sub__(self, other: Self) -> BaseOffset: ...
     @overload
     def __sub__(self, other: NaTType) -> NaTType: ...
     @overload
@@ -95,23 +93,13 @@ class Period(PeriodMixin):
     @overload
     def __add__(self, other: NaTType) -> NaTType: ...
     @overload
-    def __add__(self, other: Index) -> PeriodIndex: ...
-    # Ignored due to indecipherable error from mypy:
-    # Forward operator "__add__" is not callable  [misc]
-    @overload
     def __radd__(self, other: _PeriodAddSub) -> Self: ...
     @overload
     def __radd__(self, other: NaTType) -> NaTType: ...
-    # Real signature is -> PeriodIndex, but conflicts with Index.__add__
-    # Changing Index is very hard due to Index inheritance
-    #   Signatures of "__radd__" of "Period" and "__add__" of "Index"
-    #   are unsafely overlapping
-    @overload
-    def __radd__(self, other: Index) -> PeriodIndex: ...
     #  ignore[misc] here because we know all other comparisons
     #  are False, so we use Literal[False]
     @overload
-    def __eq__(self, other: Period) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __eq__(self, other: Self) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __eq__(self, other: Index) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
     @overload
@@ -121,7 +109,7 @@ class Period(PeriodMixin):
     @overload
     def __eq__(self, other: object) -> Literal[False]: ...
     @overload
-    def __ge__(self, other: Period) -> bool: ...
+    def __ge__(self, other: Self) -> bool: ...
     @overload
     def __ge__(self, other: PeriodIndex) -> np_1darray[np.bool]: ...
     @overload
@@ -133,7 +121,7 @@ class Period(PeriodMixin):
         self, other: np_ndarray[ShapeT, np.object_]
     ) -> np_ndarray[ShapeT, np.bool]: ...
     @overload
-    def __gt__(self, other: Period) -> bool: ...
+    def __gt__(self, other: Self) -> bool: ...
     @overload
     def __gt__(self, other: PeriodIndex) -> np_1darray[np.bool]: ...
     @overload
@@ -145,7 +133,7 @@ class Period(PeriodMixin):
         self, other: np_ndarray[ShapeT, np.object_]
     ) -> np_ndarray[ShapeT, np.bool]: ...
     @overload
-    def __le__(self, other: Period) -> bool: ...
+    def __le__(self, other: Self) -> bool: ...
     @overload
     def __le__(self, other: PeriodIndex) -> np_1darray[np.bool]: ...
     @overload
@@ -157,7 +145,7 @@ class Period(PeriodMixin):
         self, other: np_ndarray[ShapeT, np.object_]
     ) -> np_ndarray[ShapeT, np.bool]: ...
     @overload
-    def __lt__(self, other: Period) -> bool: ...
+    def __lt__(self, other: Self) -> bool: ...
     @overload
     def __lt__(self, other: PeriodIndex) -> np_1darray[np.bool]: ...
     @overload
@@ -171,7 +159,7 @@ class Period(PeriodMixin):
     #  ignore[misc] here because we know all other comparisons
     #  are False, so we use Literal[False]
     @overload
-    def __ne__(self, other: Period) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __ne__(self, other: Self) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __ne__(self, other: Index) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
     @overload
