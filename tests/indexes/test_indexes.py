@@ -1500,6 +1500,7 @@ def test_index_searchsorted() -> None:
     idx = pd.Index([1, 2, 3])
     check(assert_type(idx.searchsorted(1), np.intp), np.intp)
     check(assert_type(idx.searchsorted([1]), "np_1darray[np.intp]"), np_1darray)
+    check(assert_type(idx.searchsorted(range(1, 2)), "np_1darray[np.intp]"), np_1darray)
     check(
         assert_type(idx.searchsorted(pd.Series([1])), "np_1darray[np.intp]"), np_1darray
     )

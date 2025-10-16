@@ -31,6 +31,7 @@ from pandas._typing import (
     DTypeLike,
     GenericT,
     GenericT_co,
+    ListLike,
     NDFrameT,
     Scalar,
     SequenceNotStr,
@@ -151,7 +152,7 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
     @overload
     def searchsorted(
         self,
-        value: AnyArrayLike | SequenceNotStr,
+        value: ListLike,
         side: Literal["left", "right"] = ...,
         sorter: AnyArrayLike | SequenceNotStr | None = ...,
     ) -> np_1darray[np.intp]: ...
