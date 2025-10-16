@@ -108,12 +108,21 @@ class TimedeltaIndex(
     @overload
     def __rmul__(self, other: _NUM_FACTORS) -> Self: ...
     @overload  # type: ignore[override]
+    def __truediv__(  # pyrefly: ignore[bad-override]
+        self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt
+    ) -> Never: ...
+    @overload
     def __truediv__(self, other: _NUM_FACTORS) -> Self: ...
     @overload
     def __truediv__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: _DT_FACTORS | Self
     ) -> Index[float]: ...
-    def __rtruediv__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    @overload  # type: ignore[override]
+    def __rtruediv__(  # pyrefly: ignore[bad-override]
+        self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt
+    ) -> Never: ...
+    @overload
+    def __rtruediv__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: _DT_FACTORS | Self
     ) -> Index[float]: ...
     @overload  # type: ignore[override]
