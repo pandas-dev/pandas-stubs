@@ -99,7 +99,7 @@ class Period(PeriodMixin):
     # Ignored due to indecipherable error from mypy:
     # Forward operator "__add__" is not callable  [misc]
     @overload
-    def __radd__(self, other: _PeriodAddSub) -> Self: ...  # type: ignore[misc]
+    def __radd__(self, other: _PeriodAddSub) -> Self: ...
     @overload
     def __radd__(self, other: NaTType) -> NaTType: ...
     # Real signature is -> PeriodIndex, but conflicts with Index.__add__

@@ -1,6 +1,7 @@
 import numpy as np
 from numpy import typing as npt  # noqa: F401
 import pandas as pd
+import pytest
 from typing_extensions import assert_type
 
 from tests import (
@@ -8,10 +9,15 @@ from tests import (
     check,
 )
 
-left = pd.Series([1.0, 2.0, 3.0])  # left operand
+
+@pytest.fixture
+def left() -> "pd.Series[float]":
+    """Left operand"""
+    lo = pd.Series([1.0, 2.0, 3.0])
+    return check(assert_type(lo, "pd.Series[float]"), pd.Series, np.floating)
 
 
-def test_truediv_py_scalar() -> None:
+def test_truediv_py_scalar(left: "pd.Series[float]") -> None:
     """Test pd.Series[float] / Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
 
@@ -56,7 +62,7 @@ def test_truediv_py_scalar() -> None:
     )
 
 
-def test_truediv_py_sequence() -> None:
+def test_truediv_py_sequence(left: "pd.Series[float]") -> None:
     """Test pd.Series[float] / Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
@@ -101,7 +107,7 @@ def test_truediv_py_sequence() -> None:
     )
 
 
-def test_truediv_numpy_array() -> None:
+def test_truediv_numpy_array(left: "pd.Series[float]") -> None:
     """Test pd.Series[float] / numpy arrays"""
     b = np.array([True, False, True], np.bool_)
     i = np.array([2, 3, 5], np.int64)
@@ -156,7 +162,7 @@ def test_truediv_numpy_array() -> None:
     )
 
 
-def test_truediv_pd_scalar() -> None:
+def test_truediv_pd_scalar(left: "pd.Series[float]") -> None:
     """Test pd.Series[float] / pandas scalars"""
     s, d = pd.Timestamp(2025, 9, 24), pd.Timedelta(seconds=1)
 
@@ -189,7 +195,7 @@ def test_truediv_pd_scalar() -> None:
     check(assert_type(left.rdiv(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
-def test_truediv_pd_index() -> None:
+def test_truediv_pd_index(left: "pd.Series[float]") -> None:
     """Test pd.Series[float] / pandas Indexes"""
     b = pd.Index([True, False, True])
     i = pd.Index([2, 3, 5])
@@ -237,7 +243,7 @@ def test_truediv_pd_index() -> None:
     )
 
 
-def test_truediv_pd_series() -> None:
+def test_truediv_pd_series(left: "pd.Series[float]") -> None:
     """Test pd.Series[float] / pandas Series"""
     b = pd.Series([True, False, True])
     i = pd.Series([2, 3, 5])
