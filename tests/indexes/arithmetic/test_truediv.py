@@ -114,8 +114,7 @@ def test_truediv_paths(tmp_path: Path) -> None:
 
     check(assert_type(folders / fpath, pd.Index), pd.Index, Path)
 
-    # mypy thinks it's `Path`, in contrast to Index.__rtruediv__(self, other: Path) -> Index: ...
-    check(assert_type(tmp_path / fpaths, pd.Index), pd.Index, Path)  # type: ignore[assert-type]
+    check(assert_type(tmp_path / fpaths, pd.Index), pd.Index, Path)
 
 
 def test_truediv_path(tmp_path: Path) -> None:
