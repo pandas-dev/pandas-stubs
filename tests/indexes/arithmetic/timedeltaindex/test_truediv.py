@@ -22,11 +22,8 @@ from tests import (
 @pytest.fixture
 def left() -> pd.TimedeltaIndex:
     """Left operand"""
-    return check(
-        assert_type(pd.to_timedelta(["1 second"]), pd.TimedeltaIndex),
-        pd.TimedeltaIndex,
-        pd.Timedelta,
-    )
+    lo = pd.to_timedelta(["1 second"])
+    return check(assert_type(lo, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
 
 
 def test_truediv_py_scalar(left: pd.TimedeltaIndex) -> None:

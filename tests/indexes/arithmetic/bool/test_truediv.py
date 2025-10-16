@@ -16,9 +16,8 @@ from tests import (
 @pytest.fixture
 def left() -> "pd.Index[bool]":
     """Left operand"""
-    return check(
-        assert_type(pd.Index([True, False, True]), "pd.Index[bool]"), pd.Index, np.bool_
-    )
+    lo = pd.Index([True, False, True])
+    return check(assert_type(lo, "pd.Index[bool]"), pd.Index, np.bool_)
 
 
 def test_truediv_py_scalar(left: "pd.Index[bool]") -> None:

@@ -16,11 +16,8 @@ from tests import (
 @pytest.fixture
 def left() -> "pd.Series[bool]":
     """Left operand"""
-    return check(
-        assert_type(pd.Series([True, False, True]), "pd.Series[bool]"),
-        pd.Series,
-        np.bool_,
-    )
+    lo = pd.Series([True, False, True])
+    return check(assert_type(lo, "pd.Series[bool]"), pd.Series, np.bool_)
 
 
 def test_truediv_py_scalar(left: "pd.Series[bool]") -> None:
