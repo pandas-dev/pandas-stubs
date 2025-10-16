@@ -199,7 +199,6 @@ ignore = [
   "A004",    # https://docs.astral.sh/ruff/rules/builtin-import-shadowing/
   "PYI001",  # https://docs.astral.sh/ruff/rules/unprefixed-type-param/
   "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
-  "TD003",   # https://docs.astral.sh/ruff/rules/missing-todo-link/
   "ERA001", "ANN001", "ANN201", "ANN204", "ANN206", "ANN401", "PLR0402", "PLC0105"
   ]
 "scripts/*" = [
