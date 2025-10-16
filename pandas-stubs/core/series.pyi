@@ -292,7 +292,10 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
         value: S1 | ArrayLike | Series[S1] | None,
     ) -> None: ...
 
-_ListLikeS1: TypeAlias = (
+_DataLike: TypeAlias = (
+    ArrayLike | dict[_str, np.ndarray] | Sequence[S1] | IndexOpsMixin[S1]
+)
+_DataLikeS1: TypeAlias = (
     ArrayLike | dict[_str, np.ndarray] | Sequence[S1] | IndexOpsMixin[S1]
 )
 
@@ -356,7 +359,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: _ListLike,
+        data: _DataLike,
         index: AxesData | None = ...,
         *,
         dtype: TimestampDtypeArg,
@@ -366,7 +369,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: _ListLike,
+        data: _DataLike,
         index: AxesData | None = ...,
         *,
         dtype: CategoryDtypeArg,
@@ -423,7 +426,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     @overload
     def __new__(  # type: ignore[overload-overlap]
         cls,
-        data: Scalar | _ListLike | dict[HashableT1, Any] | None,
+        data: Scalar | _DataLike | dict[HashableT1, Any] | None,
         index: AxesData | None = ...,
         *,
         dtype: type[S1],
@@ -470,7 +473,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
     def __new__(
         cls,
         data: (
-            S1 | _ListLikeS1[S1] | dict[HashableT1, S1] | KeysView[S1] | ValuesView[S1]
+            S1 | _DataLikeS1[S1] | dict[HashableT1, S1] | KeysView[S1] | ValuesView[S1]
         ),
         index: AxesData | None = ...,
         dtype: Dtype = ...,
@@ -482,7 +485,7 @@ class Series(IndexOpsMixin[S1], NDFrame):
         cls,
         data: (
             Scalar
-            | _ListLike
+            | _DataLike
             | Mapping[HashableT1, Any]
             | BaseGroupBy
             | NaTType
