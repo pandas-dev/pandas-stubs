@@ -86,6 +86,9 @@ HashableT5 = TypeVar("HashableT5", bound=Hashable)
 
 ArrayLike: TypeAlias = ExtensionArray | np.ndarray
 AnyArrayLike: TypeAlias = ArrayLike | Index | Series
+AnyArrayLikeInt: TypeAlias = (
+    IntegerArray | Index[int] | Series[int] | npt.NDArray[np.integer]
+)
 
 # list-like
 
@@ -864,10 +867,6 @@ np_ndarray: TypeAlias = np.ndarray[ShapeT, np.dtype[GenericT]]
 np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[GenericT]]
 np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[GenericT]]
 
-AnyArrayLikeInt: TypeAlias = (
-    IntegerArray | Index[int] | Series[int] | np_1darray[np.integer] | Sequence[int]
-)
-
 class SupportsDType(Protocol[GenericT_co]):
     @property
     def dtype(self) -> np.dtype[GenericT_co]: ...
@@ -906,15 +905,11 @@ SeriesDType: TypeAlias = (
     | datetime.timedelta  # includes pd.Timedelta
 )
 S1 = TypeVar("S1", bound=SeriesDType, default=Any)
-S1_CT_NDT = TypeVar(
-    "S1_CT_NDT", bound=SeriesDTypeNoDateTime, default=Any, contravariant=True
-)
-S1_CO = TypeVar("S1_CO", bound=SeriesDType, default=Any, covariant=True)
-S1_CT = TypeVar("S1_CT", bound=SeriesDType, default=Any, contravariant=True)
 # Like S1, but without `default=Any`.
 S2 = TypeVar("S2", bound=SeriesDType)
 S2_CT = TypeVar("S2_CT", bound=SeriesDType, contravariant=True)
-S2_CO_NSDT = TypeVar("S2_CO_NSDT", bound=SeriesDTypeNoStrDateTime, covariant=True)
+S2_CT_NDT = TypeVar("S2_CT_NDT", bound=SeriesDTypeNoDateTime, contravariant=True)
+S2_NSDT = TypeVar("S2_NSDT", bound=SeriesDTypeNoStrDateTime)
 S3 = TypeVar("S3", bound=SeriesDType)
 
 # Constraint, instead of bound
