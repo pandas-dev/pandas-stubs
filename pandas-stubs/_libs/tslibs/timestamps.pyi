@@ -17,11 +17,9 @@ from typing import (
 )
 
 import numpy as np
-from pandas import (
-    DatetimeIndex,
-    TimedeltaIndex,
-)
 from pandas.core.indexes.base import Index
+from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
 from typing_extensions import (
     Never,
