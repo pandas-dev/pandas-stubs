@@ -7,6 +7,7 @@ from datetime import (
     tzinfo as _tzinfo,
 )
 from datetime import _IsoCalendarDate  # pyright: ignore[reportPrivateUsage]
+import sys
 from time import struct_time
 from typing import (
     ClassVar,
@@ -96,10 +97,15 @@ class Timestamp(datetime, SupportsIndex):
     def tz(self) -> _tzinfo | None: ...
     @property
     def fold(self) -> int: ...
-    @classmethod
-    def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride]
-        cls, t: float, tz: _tzinfo | str | None = ...
-    ) -> Self: ...
+    if sys.version_info >= (3, 12):
+        @classmethod
+        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride]
+            cls, t: float, tz: _tzinfo | str | None = ...
+        ) -> Self: ...
+    else:
+        @classmethod
+        def fromtimestamp(cls, t: float, tz: _tzinfo | str | None = ...) -> Self: ...
+
     @classmethod
     def utcfromtimestamp(cls, ts: float) -> Self: ...
     @classmethod
