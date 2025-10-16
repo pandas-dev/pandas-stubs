@@ -291,9 +291,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
         value: S1 | ArrayLike | Series[S1] | None,
     ) -> None: ...
 
-_DataLike: TypeAlias = (
-    ArrayLike | dict[_str, np.ndarray] | Sequence[S1] | IndexOpsMixin[S1]
-)
+_DataLike: TypeAlias = ArrayLike | dict[str, np.ndarray] | SequenceNotStr[S1]
 _DataLikeS1: TypeAlias = (
     ArrayLike | dict[_str, np.ndarray] | Sequence[S1] | IndexOpsMixin[S1]
 )
