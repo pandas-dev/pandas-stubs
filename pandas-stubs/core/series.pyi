@@ -1687,9 +1687,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # just failed to generate these so I couldn't match
     # them up.
     @overload
-    def __add__(
-        self: Series[Never], other: complex | ListLike | Index | Series
-    ) -> Series: ...
+    def __add__(self: Series[Never], other: complex | ListLike) -> Series: ...
     @overload
     def __add__(self, other: Index[Never] | Series[Never]) -> Series: ...
     @overload
@@ -1775,7 +1773,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def add(
         self: Series[Never],
-        other: complex | ListLike | Index | Series,
+        other: complex | ListLike,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -1906,9 +1904,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         axis: int = 0,
     ) -> Series[_str]: ...
     @overload
-    def __radd__(
-        self: Series[Never], other: complex | ListLike | Index | Series
-    ) -> Series: ...
+    def __radd__(self: Series[Never], other: complex | ListLike) -> Series: ...
     @overload
     def __radd__(self, other: Index[Never] | Series[Never]) -> Series: ...
     @overload
@@ -2008,7 +2004,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def radd(
         self: Series[Never],
-        other: complex | ListLike | Index | Series,
+        other: complex | ListLike,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -2474,7 +2470,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[_bool]: ...
     @overload
     def __mul__(  # type: ignore[overload-overlap]
-        self: Series[Never], other: complex | NumListLike | Index | Series
+        self: Series[Never], other: complex | NumListLike
     ) -> Series: ...
     @overload
     def __mul__(self, other: Index[Never] | Series[Never]) -> Series: ...
@@ -2567,7 +2563,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def mul(
         self: Series[Never],
-        other: complex | ListLike | Index | Series,
+        other: complex | ListLike,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -2684,7 +2680,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[complex]: ...
     @overload
     def __rmul__(  # type: ignore[overload-overlap]
-        self: Series[Never], other: complex | NumListLike | Index | Series
+        self: Series[Never], other: complex | NumListLike
     ) -> Series: ...
     @overload
     def __rmul__(self, other: Index[Never] | Series[Never]) -> Series: ...  # type: ignore[misc]
@@ -2777,7 +2773,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def rmul(
         self: Series[Never],
-        other: complex | ListLike | Index | Series,
+        other: complex | ListLike,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -3564,7 +3560,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[BaseOffset]: ...
     @overload
     def __truediv__(  # type: ignore[overload-overlap]
-        self: Series[Never], other: complex | NumListLike | Index | Series
+        self: Series[Never], other: complex | NumListLike
     ) -> Series: ...
     @overload
     def __truediv__(self, other: Index[Never] | Series[Never]) -> Series: ...
@@ -3683,7 +3679,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def truediv(
         self: Series[Never],
-        other: complex | ListLike | Index | Series,
+        other: complex | ListLike,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
@@ -3841,7 +3837,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     div = truediv
     @overload
     def __rtruediv__(  # type: ignore[overload-overlap]
-        self: Series[Never], other: complex | NumListLike | Index | Series
+        self: Series[Never], other: complex | NumListLike
     ) -> Series: ...
     @overload
     def __rtruediv__(self, other: Index[Never] | Series[Never]) -> Series: ...
@@ -3946,7 +3942,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def rtruediv(
         self: Series[Never],
-        other: complex | ListLike | Index | Series,
+        other: complex | ListLike,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
