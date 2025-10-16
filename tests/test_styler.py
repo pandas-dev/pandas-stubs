@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import os
-import pathlib
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from jinja2.environment import (
@@ -31,7 +30,7 @@ from pandas.io.formats.style import Styler
 
 DF = DataFrame({"a": [1, 2, 3], "b": [3.14, 2.72, 1.61]})
 
-PWD = pathlib.Path(os.path.split(os.path.abspath(__file__))[0])
+PWD = Path(__file__).parent.resolve()
 
 if TYPE_CHECKING:
     from pandas.io.formats.style_render import StyleExportDict
