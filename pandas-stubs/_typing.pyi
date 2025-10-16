@@ -867,6 +867,9 @@ np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[GenericT]]
 AnyArrayLikeInt: TypeAlias = (
     IntegerArray | Index[int] | Series[int] | np_1darray[np.integer] | Sequence[int]
 )
+AnyArrayLikeFloat: TypeAlias = (
+    IntegerArray | Index[int] | Series[int] | np_1darray[np.integer] | Sequence[int]
+)
 
 class SupportsDType(Protocol[GenericT_co]):
     @property
