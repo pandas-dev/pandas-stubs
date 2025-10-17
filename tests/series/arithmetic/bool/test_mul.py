@@ -21,7 +21,7 @@ from tests import (
 
 @pytest.fixture
 def left() -> "pd.Series[bool]":
-    """left operand"""
+    """Left operand"""
     lo = pd.Series([True, True, False])
     return check(assert_type(lo, "pd.Series[bool]"), pd.Series, np.bool_)
 

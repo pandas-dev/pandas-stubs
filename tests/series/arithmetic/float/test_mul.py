@@ -21,7 +21,7 @@ from tests import (
 
 @pytest.fixture
 def left() -> "pd.Series[float]":
-    """left operand"""
+    """Left operand"""
     lo = pd.Series([1.0, 2.0, 3.0])
     return check(assert_type(lo, "pd.Series[float]"), pd.Series, np.floating)
 

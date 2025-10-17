@@ -15,7 +15,7 @@ from tests import (
 
 @pytest.fixture
 def left() -> pd.TimedeltaIndex:
-    """left operand"""
+    """Left operand"""
     lo = pd.Index([pd.Timedelta(1, "s")])  # left operand
     return check(assert_type(lo, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
 

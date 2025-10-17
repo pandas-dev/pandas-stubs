@@ -21,7 +21,7 @@ from tests import (
 
 @pytest.fixture
 def left() -> "pd.Series[complex]":
-    """left operand"""
+    """Left operand"""
     lo = pd.Series([1j, 2j, 3j])
     return check(assert_type(lo, "pd.Series[complex]"), pd.Series, np.complexfloating)
 

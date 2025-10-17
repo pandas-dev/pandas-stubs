@@ -21,7 +21,7 @@ from tests import (
 
 @pytest.fixture
 def left() -> "pd.Index[int]":
-    """left operand"""
+    """Left operand"""
     lo = pd.Index([1, 2, 3])
     return check(assert_type(lo, "pd.Index[int]"), pd.Index, np.integer)
 

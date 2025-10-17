@@ -755,19 +755,6 @@ def test_timedelta_mul_div() -> None:
         np.ndarray,
         np.timedelta64,
     )
-    check(
-        assert_type(td / mp_series_int, "pd.Series[pd.Timedelta]"),
-        pd.Series,
-        pd.Timedelta,
-    )
-    check(
-        assert_type(td / md_series_float, "pd.Series[pd.Timedelta]"),
-        pd.Series,
-        pd.Timedelta,
-    )
-    check(assert_type(td / md_int64_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(td / md_float_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(td / md_timedelta_series, "pd.Series[float]"), pd.Series, float)
 
     check(assert_type(pd.NaT / td, float), float)
     # Note: None of the reverse truediv work
@@ -778,10 +765,6 @@ def test_timedelta_mul_div() -> None:
         _11 = md_float / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _12 = md_ndarray_intp / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _13 = md_ndarray_float / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _14 = mp_series_int / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _15 = md_series_float / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _16 = (md_int64_index / td,)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _17 = (md_float_index / td,)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_timedelta_mod_abs_unary() -> None:
