@@ -3806,8 +3806,7 @@ def test_info() -> None:
     check(assert_type(s.info(memory_usage="deep"), None), type(None))
     check(assert_type(s.info(memory_usage=None), None), type(None))
     check(assert_type(s.info(show_counts=True), None), type(None))
-    if PD_LTE_23:  # pandas-dev/pandas#62590
-        check(assert_type(s.info(show_counts=False), None), type(None))
+    check(assert_type(s.info(show_counts=False), None), type(None))
     check(assert_type(s.info(show_counts=None), None), type(None))
 
 
