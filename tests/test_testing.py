@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import os.path
+from pathlib import Path
 
 import pandas as pd
 from pandas.testing import (
@@ -62,4 +62,4 @@ def test_ensure_clean() -> None:
     with ensure_clean() as path:
         check(assert_type(path, str), str)
         pd.DataFrame({"x": [1, 2, 3]}).to_csv(path)
-    assert not os.path.exists(path)
+    assert not Path(path).exists()

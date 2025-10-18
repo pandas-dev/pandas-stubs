@@ -1992,7 +1992,7 @@ def test_types_to_feather() -> None:
         # See https://pandas.pydata.org/docs/whatsnew/v1.0.0.html
         # Docstring and type were updated in 1.2.0.
         # https://github.com/pandas-dev/pandas/pull/35408
-        with open(path, mode="wb") as file:
+        with Path(path).open("wb") as file:
             df.to_feather(file)
 
 
