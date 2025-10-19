@@ -29,37 +29,38 @@ from _typeshed import (
     _T_contra,
 )
 import numpy as np
-from pandas import (
-    DataFrame,
-    DatetimeIndex,
-    Interval,
-    IntervalIndex,
-    MultiIndex,
-    Period,
-    PeriodDtype,
-    PeriodIndex,
-    Series,
-    TimedeltaIndex,
-)
 from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.base import (
     ElementOpsMixin,
     IndexOpsMixin,
     Supports_ProtoAdd,
+    Supports_ProtoFloorDiv,
     Supports_ProtoMul,
     Supports_ProtoRAdd,
+    Supports_ProtoRFloorDiv,
     Supports_ProtoRMul,
     Supports_ProtoRTrueDiv,
     Supports_ProtoTrueDiv,
 )
+from pandas.core.frame import DataFrame
 from pandas.core.indexes.category import CategoricalIndex
+from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.indexes.interval import IntervalIndex
+from pandas.core.indexes.multi import MultiIndex
+from pandas.core.indexes.period import PeriodIndex
+from pandas.core.indexes.timedeltas import TimedeltaIndex
+from pandas.core.series import Series
 from pandas.core.strings.accessor import StringMethods
 from typing_extensions import (
     Never,
     Self,
 )
 
-from pandas._libs.interval import _OrderableT
+from pandas._libs.interval import (
+    Interval,
+    _OrderableT,
+)
+from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
     C2,
@@ -97,6 +98,7 @@ from pandas._typing import (
     TimedeltaDtypeArg,
     TimestampDtypeArg,
     np_1darray,
+    np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_complex,
@@ -106,6 +108,8 @@ from pandas._typing import (
     np_ndarray_td,
     type_t,
 )
+
+from pandas.core.dtypes.dtypes import PeriodDtype
 
 class InvalidIndexError(Exception): ...
 
@@ -942,14 +946,17 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __truediv__(self: Index[bool], other: np_ndarray_bool) -> Never: ...
     @overload
+    def __truediv__(self, other: np_ndarray_dt) -> Never: ...
+    @overload
+    def __truediv__(self: Index[T_COMPLEX], other: np_ndarray_td) -> Never: ...
+    @overload
     def __truediv__(
         self: Supports_ProtoTrueDiv[_T_contra, S2],
         other: _T_contra | Sequence[_T_contra],
     ) -> Index[S2]: ...
     @overload
     def __truediv__(
-        self: Index[int],
-        other: np_ndarray_bool | Index[bool],
+        self: Index[int], other: np_ndarray_bool | Index[bool]
     ) -> Index[float]: ...
     @overload
     def __truediv__(
@@ -993,9 +1000,11 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index
     ) -> Index: ...
     @overload
-    def __rtruediv__(self, other: Index[Never]) -> Index: ...
+    def __rtruediv__(self, other: Index[Never]) -> Index: ...  # type: ignore[overload-overlap]
     @overload
     def __rtruediv__(self: Index[bool], other: np_ndarray_bool) -> Never: ...
+    @overload
+    def __rtruediv__(self, other: np_ndarray_dt) -> Never: ...
     @overload
     def __rtruediv__(
         self: Supports_ProtoRTrueDiv[_T_contra, S2],
@@ -1041,13 +1050,91 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         ),
     ) -> Index[complex]: ...
     @overload
+    def __rtruediv__(
+        self: Index[int] | Index[float],
+        other: timedelta | np.timedelta64 | np_ndarray_td | TimedeltaIndex,
+    ) -> TimedeltaIndex: ...
+    @overload
     def __rtruediv__(self, other: Path) -> Index: ...
+    @overload
+    def __floordiv__(self, other: Index[Never]) -> Index: ...
+    @overload
     def __floordiv__(
-        self, other: float | Sequence[float] | Index[int] | Index[float]
-    ) -> Self: ...
+        self: Index[int] | Index[float],
+        other: np_ndarray_complex | np_ndarray_dt | np_ndarray_td,
+    ) -> Never: ...
+    @overload
+    def __floordiv__(
+        self: Index[bool] | Index[complex], other: np_ndarray
+    ) -> Never: ...
+    @overload
+    def __floordiv__(
+        self: Supports_ProtoFloorDiv[_T_contra, S2],
+        other: _T_contra | Sequence[_T_contra],
+    ) -> Index[S2]: ...
+    @overload
+    def __floordiv__(
+        self: Index[int], other: np_ndarray_bool | Index[bool]
+    ) -> Index[int]: ...
+    @overload
+    def __floordiv__(
+        self: Index[float], other: np_ndarray_bool | Index[bool]
+    ) -> Index[float]: ...
+    @overload
+    def __floordiv__(
+        self: Index[bool] | Index[int], other: np_ndarray_anyint | Index[int]
+    ) -> Index[int]: ...
+    @overload
+    def __floordiv__(
+        self: Index[float], other: np_ndarray_anyint | Index[int]
+    ) -> Index[float]: ...
+    @overload
+    def __floordiv__(
+        self: Index[int] | Index[float],
+        other: float | Sequence[float] | np_ndarray_float | Index[float],
+    ) -> Index[float]: ...
+    @overload
+    def __rfloordiv__(self, other: Index[Never]) -> Index: ...  # type: ignore[overload-overlap]
+    @overload
     def __rfloordiv__(
-        self, other: float | Sequence[float] | Index[int] | Index[float]
-    ) -> Self: ...
+        self: Index[int] | Index[float],
+        other: np_ndarray_complex | np_ndarray_dt | np_ndarray_td,
+    ) -> Never: ...
+    @overload
+    def __rfloordiv__(
+        self: Index[bool] | Index[complex], other: np_ndarray
+    ) -> Never: ...
+    @overload
+    def __rfloordiv__(
+        self: Supports_ProtoRFloorDiv[_T_contra, S2],
+        other: _T_contra | Sequence[_T_contra],
+    ) -> Index[S2]: ...
+    @overload
+    def __rfloordiv__(
+        self: Index[int], other: np_ndarray_bool | Index[bool]
+    ) -> Index[int]: ...
+    @overload
+    def __rfloordiv__(
+        self: Index[float], other: np_ndarray_bool | Index[bool]
+    ) -> Index[float]: ...
+    @overload
+    def __rfloordiv__(
+        self: Index[bool] | Index[int], other: np_ndarray_anyint | Index[int]
+    ) -> Index[int]: ...
+    @overload
+    def __rfloordiv__(
+        self: Index[float], other: np_ndarray_anyint | Index[int]
+    ) -> Index[float]: ...
+    @overload
+    def __rfloordiv__(
+        self: Index[int] | Index[float],
+        other: float | Sequence[float] | np_ndarray_float | Index[float],
+    ) -> Index[float]: ...
+    @overload
+    def __rfloordiv__(
+        self: Index[int] | Index[float],
+        other: timedelta | np_ndarray_td | TimedeltaIndex,
+    ) -> TimedeltaIndex: ...
     def infer_objects(self, copy: bool = True) -> Self: ...
 
 @type_check_only

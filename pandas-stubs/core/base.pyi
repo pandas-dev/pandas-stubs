@@ -29,6 +29,7 @@ from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
     S1,
     S2,
+    S3,
     AxisIndex,
     DropKeep,
     DTypeLike,
@@ -280,7 +281,7 @@ class ElementOpsMixin(Generic[S2]):
     ) -> ElementOpsMixin[complex]: ...
     @overload
     def _proto_truediv(
-        self: ElementOpsMixin[Timedelta], other: timedelta | Timedelta | np.timedelta64
+        self: ElementOpsMixin[Timedelta], other: timedelta | np.timedelta64 | Timedelta
     ) -> ElementOpsMixin[float]: ...
     @overload
     def _proto_rtruediv(
@@ -296,8 +297,56 @@ class ElementOpsMixin(Generic[S2]):
     ) -> ElementOpsMixin[complex]: ...
     @overload
     def _proto_rtruediv(
-        self: ElementOpsMixin[Timedelta], other: timedelta | Timedelta | np.timedelta64
+        self: ElementOpsMixin[Timedelta], other: timedelta | np.timedelta64 | Timedelta
     ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_floordiv(
+        self: ElementOpsMixin[int], other: int | np.integer
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_floordiv(
+        self: ElementOpsMixin[float], other: float | np.floating
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_floordiv(
+        self: ElementOpsMixin[Timedelta], other: timedelta | np.timedelta64 | Timedelta
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_rfloordiv(
+        self: ElementOpsMixin[int], other: int | np.integer
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_rfloordiv(
+        self: ElementOpsMixin[float], other: float | np.floating
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_rfloordiv(
+        self: ElementOpsMixin[Timedelta], other: timedelta | np.timedelta64 | Timedelta
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_mod(
+        self: ElementOpsMixin[int], other: int | np.integer
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_mod(
+        self: ElementOpsMixin[float], other: float | np.floating
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_mod(
+        self: ElementOpsMixin[Timedelta], other: timedelta | np.timedelta64 | Timedelta
+    ) -> ElementOpsMixin[Timedelta]: ...
+    @overload
+    def _proto_rmod(
+        self: ElementOpsMixin[int], other: int | np.integer
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_rmod(
+        self: ElementOpsMixin[float], other: float | np.floating
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_rmod(
+        self: ElementOpsMixin[Timedelta], other: timedelta | np.timedelta64 | Timedelta
+    ) -> ElementOpsMixin[Timedelta]: ...
 
 @type_check_only
 class Supports_ProtoAdd(Protocol[_T_contra, S2]):
@@ -322,3 +371,29 @@ class Supports_ProtoTrueDiv(Protocol[_T_contra, S2]):
 @type_check_only
 class Supports_ProtoRTrueDiv(Protocol[_T_contra, S2]):
     def _proto_rtruediv(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ProtoFloorDiv(Protocol[_T_contra, S2]):
+    def _proto_floordiv(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ProtoRFloorDiv(Protocol[_T_contra, S2]):
+    def _proto_rfloordiv(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ProtoMod(Protocol[_T_contra, S2]):
+    def _proto_mod(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ProtoRMod(Protocol[_T_contra, S2]):
+    def _proto_rmod(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ProtoDivMod(Protocol[_T_contra, S2, S3]):
+    def _proto_floordiv(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+    def _proto_mod(self, other: _T_contra, /) -> ElementOpsMixin[S3]: ...
+
+@type_check_only
+class Supports_ProtoRDivMod(Protocol[_T_contra, S2, S3]):
+    def _proto_rfloordiv(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+    def _proto_rmod(self, other: _T_contra, /) -> ElementOpsMixin[S3]: ...

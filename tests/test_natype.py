@@ -83,11 +83,8 @@ def test_arithmetic() -> None:
     # __divmod__
     # bug upstream: https://github.com/pandas-dev/pandas/issues/62196
     # check(
-    #     assert_type(
-    #         divmod(na, s_int),
-    #         tuple[pd.Series, pd.Series],
-    #     ),
-    #     tuple,
+    assert_type(divmod(na, s_int), tuple[pd.Series, pd.Series])
+    #     , tuple
     # )
     # check(
     #     assert_type(
@@ -110,13 +107,13 @@ def test_arithmetic() -> None:
     # __rdivmod__
     # bug upstream: https://github.com/pandas-dev/pandas/issues/62196
     # check(
-    #     assert_type(divmod(s_int, na), tuple[pd.Series, pd.Series]),
-    #     tuple,
+    assert_type(divmod(s_int, na), "tuple[pd.Series[int], pd.Series[int]]")
+    #     , tuple,
     # )
-    # https://github.com/pandas-dev/pandas-stubs/issues/1347
+    # bug upstream: https://github.com/pandas-dev/pandas/issues/62196
     # check(
-    #     assert_type(divmod(idx_int, na), tuple[pd.Index, pd.Index]),
-    #     tuple,
+    assert_type(divmod(idx_int, na), "tuple[pd.Index[int], pd.Index[int]]")
+    #     , tuple,
     # )
     check(assert_type(divmod(1, na), tuple[NAType, NAType]), tuple)
 

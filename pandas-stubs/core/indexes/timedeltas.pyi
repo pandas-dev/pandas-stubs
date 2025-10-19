@@ -2,7 +2,10 @@ from collections.abc import (
     Hashable,
     Sequence,
 )
-import datetime as dt
+from datetime import (
+    datetime,
+    timedelta,
+)
 from typing import (
     Literal,
     TypeAlias,
@@ -36,7 +39,6 @@ from pandas._typing import (
     np_ndarray_dt,
     np_ndarray_float,
     np_ndarray_td,
-    num,
 )
 
 _NUM_FACTOR: TypeAlias = Just[int] | Just[float] | np.integer | np.floating
@@ -48,7 +50,7 @@ _NUM_FACTOR_SEQ: TypeAlias = (
     | Index[int]
     | Index[float]
 )
-_DT_FACTOR: TypeAlias = dt.timedelta | np.timedelta64 | Timedelta
+_DT_FACTOR: TypeAlias = timedelta | np.timedelta64 | Timedelta
 _DT_FACTOR_SEQ: TypeAlias = _DT_FACTOR | Sequence[_DT_FACTOR] | np_ndarray_td
 
 class TimedeltaIndex(
@@ -56,9 +58,7 @@ class TimedeltaIndex(
 ):
     def __new__(
         cls,
-        data: (
-            Sequence[dt.timedelta | Timedelta | np.timedelta64 | float] | AxesData
-        ) = ...,
+        data: Sequence[timedelta | Timedelta | np.timedelta64 | float] | AxesData = ...,
         freq: Frequency = ...,
         closed: object = ...,
         dtype: Literal["<m8[ns]"] = ...,
@@ -71,31 +71,31 @@ class TimedeltaIndex(
     # pyrefly: ignore  # bad-override
     def __add__(self, other: Period) -> PeriodIndex: ...
     @overload
-    def __add__(self, other: dt.datetime | DatetimeIndex) -> DatetimeIndex: ...
+    def __add__(self, other: datetime | DatetimeIndex) -> DatetimeIndex: ...
     @overload
     def __add__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: dt.timedelta | Self
+        self, other: timedelta | Self
     ) -> Self: ...
     @overload  # type: ignore[override]
     # pyrefly: ignore  # bad-override
     def __radd__(self, other: Period) -> PeriodIndex: ...
     @overload
-    def __radd__(self, other: dt.datetime | DatetimeIndex) -> DatetimeIndex: ...
+    def __radd__(self, other: datetime | DatetimeIndex) -> DatetimeIndex: ...
     @overload
     def __radd__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: dt.timedelta | Self
+        self, other: timedelta | Self
     ) -> Self: ...
     def __sub__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: dt.timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self
+        self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self
     ) -> Self: ...
     @overload  # type: ignore[override]
     # pyrefly: ignore  # bad-override
     def __rsub__(
-        self, other: dt.timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self
+        self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset | Self
     ) -> Self: ...
     @overload
     def __rsub__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: dt.datetime | np.datetime64 | np_ndarray_dt | DatetimeIndex
+        self, other: datetime | np.datetime64 | np_ndarray_dt | DatetimeIndex
     ) -> DatetimeIndex: ...
     @overload  # type: ignore[override]
     def __mul__(self, other: np_ndarray_bool | np_ndarray_complex) -> Never: ...
@@ -124,13 +124,30 @@ class TimedeltaIndex(
         self, other: _DT_FACTOR_SEQ | Self
     ) -> Index[float]: ...
     @overload  # type: ignore[override]
-    # pyrefly: ignore  # bad-override
-    def __floordiv__(self, other: num | Sequence[float]) -> Self: ...
+    def __floordiv__(  # pyrefly: ignore [bad-override]
+        self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt
+    ) -> Never: ...
+    @overload
+    def __floordiv__(self, other: _NUM_FACTOR_SEQ) -> Self: ...
     @overload
     def __floordiv__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: dt.timedelta | Sequence[dt.timedelta]
+        self, other: _DT_FACTOR_SEQ | Self
     ) -> Index[int]: ...
-    def __rfloordiv__(self, other: dt.timedelta | Sequence[dt.timedelta]) -> Index[int]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    @overload  # type: ignore[override]
+    def __rfloordiv__(  # pyrefly: ignore[bad-override]
+        self,
+        other: (
+            np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | np_ndarray_complex
+            | np_ndarray_dt
+        ),
+    ) -> Never: ...
+    @overload
+    def __rfloordiv__(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, other: _DT_FACTOR_SEQ | Self
+    ) -> Index[int]: ...
     @property
     def inferred_type(self) -> str: ...
     @final
@@ -138,7 +155,7 @@ class TimedeltaIndex(
         self, index: Index | None = None, name: Hashable | None = None
     ) -> Series[Timedelta]: ...
     def shift(
-        self, periods: int = 1, freq: Frequency | dt.timedelta | None = None
+        self, periods: int = 1, freq: Frequency | timedelta | None = None
     ) -> Self: ...
 
 @overload
@@ -146,7 +163,7 @@ def timedelta_range(
     start: TimedeltaConvertibleTypes,
     end: TimedeltaConvertibleTypes,
     *,
-    freq: Frequency | Timedelta | dt.timedelta | None = None,
+    freq: Frequency | Timedelta | timedelta | None = None,
     name: Hashable | None = None,
     closed: Literal["left", "right"] | None = None,
     unit: None | str = ...,
@@ -156,7 +173,7 @@ def timedelta_range(
     *,
     end: TimedeltaConvertibleTypes,
     periods: int,
-    freq: Frequency | Timedelta | dt.timedelta | None = None,
+    freq: Frequency | Timedelta | timedelta | None = None,
     name: Hashable | None = None,
     closed: Literal["left", "right"] | None = None,
     unit: None | str = ...,
@@ -166,7 +183,7 @@ def timedelta_range(
     start: TimedeltaConvertibleTypes,
     *,
     periods: int,
-    freq: Frequency | Timedelta | dt.timedelta | None = None,
+    freq: Frequency | Timedelta | timedelta | None = None,
     name: Hashable | None = None,
     closed: Literal["left", "right"] | None = None,
     unit: None | str = ...,

@@ -1,3 +1,8 @@
+from datetime import (
+    datetime,
+    timedelta,
+)
+
 import numpy as np
 from numpy import typing as npt  # noqa: F401
 import pandas as pd
@@ -20,16 +25,23 @@ def left() -> "pd.Series[int]":
 def test_truediv_py_scalar(left: "pd.Series[int]") -> None:
     """Test pd.Series[int] / Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
+    s, d = datetime(2025, 9, 27), timedelta(seconds=1)
 
     check(assert_type(left / b, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / i, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / c, "pd.Series[complex]"), pd.Series, np.complexfloating)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _04 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _05 = left / d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(b / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(i / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(f / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _14 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+    check(assert_type(d / left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
     check(assert_type(left.truediv(b), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.truediv(i), "pd.Series[float]"), pd.Series, np.floating)
@@ -39,11 +51,17 @@ def test_truediv_py_scalar(left: "pd.Series[int]") -> None:
         pd.Series,
         np.complexfloating,
     )
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.truediv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.truediv(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
     check(assert_type(left.div(b), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.div(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.div(f), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.div(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.div(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.div(d)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
 
     check(assert_type(left.rtruediv(b), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.rtruediv(i), "pd.Series[float]"), pd.Series, np.floating)
@@ -53,6 +71,13 @@ def test_truediv_py_scalar(left: "pd.Series[int]") -> None:
         pd.Series,
         np.complexfloating,
     )
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.rtruediv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(
+        assert_type(left.rtruediv(d), "pd.Series[pd.Timedelta]"),
+        pd.Series,
+        pd.Timedelta,
+    )
 
     check(assert_type(left.rdiv(b), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.rdiv(i), "pd.Series[float]"), pd.Series, np.floating)
@@ -60,6 +85,9 @@ def test_truediv_py_scalar(left: "pd.Series[int]") -> None:
     check(
         assert_type(left.rdiv(c), "pd.Series[complex]"), pd.Series, np.complexfloating
     )
+    if TYPE_CHECKING_INVALID_USAGE:
+        left.rdiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+    check(assert_type(left.rdiv(d), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
 
 def test_truediv_py_sequence(left: "pd.Series[int]") -> None:
