@@ -28,16 +28,15 @@ from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
     S1,
     S2,
-    ArrayLike,
     AxisIndex,
     DropKeep,
     DTypeLike,
     GenericT,
     GenericT_co,
     Just,
+    ListLike,
     NDFrameT,
     Scalar,
-    SequenceNotStr,
     SupportsDType,
     np_1darray,
     np_ndarray_anyint,
@@ -46,8 +45,6 @@ from pandas._typing import (
     np_ndarray_float,
 )
 from pandas.util._decorators import cache_readonly
-
-_ListLike: TypeAlias = ArrayLike | dict[str, np.ndarray] | SequenceNotStr[S1]
 
 class NoNewAttributesMixin:
     def __setattr__(self, key: str, value: Any) -> None: ...
@@ -157,16 +154,16 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
     @overload
     def searchsorted(
         self,
-        value: _ListLike,
+        value: ListLike,
         side: Literal["left", "right"] = ...,
-        sorter: _ListLike | None = ...,
+        sorter: ListLike | None = None,
     ) -> np_1darray[np.intp]: ...
     @overload
     def searchsorted(
         self,
         value: Scalar,
         side: Literal["left", "right"] = ...,
-        sorter: _ListLike | None = ...,
+        sorter: ListLike | None = None,
     ) -> np.intp: ...
     def drop_duplicates(self, *, keep: DropKeep = ...) -> Self: ...
 

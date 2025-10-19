@@ -72,7 +72,6 @@ from pandas.core.base import (
     Supports_ProtoMul,
     Supports_ProtoRAdd,
     Supports_ProtoRMul,
-    _ListLike,
 )
 from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
@@ -296,7 +295,8 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
         value: S1 | ArrayLike | Series[S1] | None,
     ) -> None: ...
 
-_ListLikeS1: TypeAlias = (
+_DataLike: TypeAlias = ArrayLike | dict[str, np.ndarray] | SequenceNotStr[S1]
+_DataLikeS1: TypeAlias = (
     ArrayLike | dict[_str, np.ndarray] | Sequence[S1] | IndexOpsMixin[S1]
 )
 
@@ -360,7 +360,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: _ListLike,
+        data: _DataLike,
         index: AxesData | None = ...,
         *,
         dtype: TimestampDtypeArg,
@@ -370,7 +370,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: _ListLike,
+        data: _DataLike,
         index: AxesData | None = ...,
         *,
         dtype: CategoryDtypeArg,
@@ -427,7 +427,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def __new__(  # type: ignore[overload-overlap]
         cls,
-        data: Scalar | _ListLike | dict[HashableT1, Any] | None,
+        data: Scalar | _DataLike | dict[HashableT1, Any] | None,
         index: AxesData | None = ...,
         *,
         dtype: type[S1],
@@ -474,7 +474,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __new__(
         cls,
         data: (
-            S1 | _ListLikeS1[S1] | dict[HashableT1, S1] | KeysView[S1] | ValuesView[S1]
+            S1 | _DataLikeS1[S1] | dict[HashableT1, S1] | KeysView[S1] | ValuesView[S1]
         ),
         index: AxesData | None = ...,
         dtype: Dtype = ...,
@@ -486,7 +486,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         cls,
         data: (
             Scalar
-            | _ListLike
+            | _DataLike
             | Mapping[HashableT1, Any]
             | BaseGroupBy
             | NaTType
@@ -853,7 +853,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def quantile(
         self,
-        q: _ListLike,
+        q: ListLike,
         interpolation: QuantileInterpolation = ...,
     ) -> Series[S1]: ...
     def corr(
@@ -905,16 +905,16 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def searchsorted(
         self,
-        value: _ListLike,
+        value: ListLike,
         side: Literal["left", "right"] = ...,
-        sorter: _ListLike | None = ...,
+        sorter: ListLike | None = None,
     ) -> np_1darray[np.intp]: ...
     @overload
     def searchsorted(
         self,
         value: Scalar,
         side: Literal["left", "right"] = ...,
-        sorter: _ListLike | None = ...,
+        sorter: ListLike | None = None,
     ) -> np.intp: ...
     @overload
     def compare(
@@ -1311,7 +1311,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     def filter(
         self,
-        items: _ListLike | None = None,
+        items: ListLike | None = None,
         like: _str | None = None,
         regex: _str | None = None,
         axis: AxisIndex | None = None,
@@ -1326,7 +1326,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         n: int | None = None,
         frac: float | None = None,
         replace: _bool = False,
-        weights: _str | _ListLike | np.ndarray | None = None,
+        weights: _str | ListLike | np.ndarray | None = None,
         random_state: RandomState | None = None,
         axis: AxisIndex | None = None,
         ignore_index: _bool = False,
@@ -1687,9 +1687,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # just failed to generate these so I couldn't match
     # them up.
     @overload
-    def __add__(
-        self: Series[Never], other: complex | _ListLike | Index | Series
-    ) -> Series: ...
+    def __add__(self: Series[Never], other: complex | ListLike) -> Series: ...
     @overload
     def __add__(self, other: Index[Never] | Series[Never]) -> Series: ...
     @overload
@@ -1775,7 +1773,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def add(
         self: Series[Never],
-        other: complex | _ListLike | Index | Series,
+        other: complex | ListLike,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -1906,9 +1904,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         axis: int = 0,
     ) -> Series[_str]: ...
     @overload
-    def __radd__(
-        self: Series[Never], other: complex | _ListLike | Index | Series
-    ) -> Series: ...
+    def __radd__(self: Series[Never], other: complex | ListLike) -> Series: ...
     @overload
     def __radd__(self, other: Index[Never] | Series[Never]) -> Series: ...
     @overload
@@ -2008,7 +2004,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def radd(
         self: Series[Never],
-        other: complex | _ListLike | Index | Series,
+        other: complex | ListLike,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -2461,16 +2457,16 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         axis: AxisIndex = ...,
     ) -> Series[int]: ...
     def __ge__(  # type: ignore[override]
-        self, other: S1 | _ListLike | Series[S1] | datetime | timedelta | date
+        self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
     def __gt__(  # type: ignore[override]
-        self, other: S1 | _ListLike | Series[S1] | datetime | timedelta | date
+        self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
     def __le__(  # type: ignore[override]
-        self, other: S1 | _ListLike | Series[S1] | datetime | timedelta | date
+        self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
     def __lt__(  # type: ignore[override]
-        self, other: S1 | _ListLike | Series[S1] | datetime | timedelta | date
+        self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
     @overload
     def __mul__(  # type: ignore[overload-overlap]
@@ -2567,7 +2563,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def mul(
         self: Series[Never],
-        other: complex | _ListLike | Index | Series,
+        other: complex | ListLike,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -2777,7 +2773,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def rmul(
         self: Series[Never],
-        other: complex | _ListLike | Index | Series,
+        other: complex | ListLike,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -2892,9 +2888,9 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: int = 0,
     ) -> Series[complex]: ...
-    def __mod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
+    def __mod__(self, other: num | ListLike | Series[S1]) -> Series[S1]: ...
     def __ne__(self, other: object) -> Series[_bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __pow__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
+    def __pow__(self, other: num | ListLike | Series[S1]) -> Series[S1]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     # pyrefly: ignore  # bad-override
@@ -2911,9 +2907,9 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[bool]: ...
     @overload
     def __rand__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
-    def __rdivmod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __rmod__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
-    def __rpow__(self, other: num | _ListLike | Series[S1]) -> Series[S1]: ...
+    def __rdivmod__(self, other: num | ListLike | Series[S1]) -> Series[S1]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __rmod__(self, other: num | ListLike | Series[S1]) -> Series[S1]: ...
+    def __rpow__(self, other: num | ListLike | Series[S1]) -> Series[S1]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
     # pyrefly: ignore  # bad-override
@@ -3683,7 +3679,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def truediv(
         self: Series[Never],
-        other: complex | _ListLike | Index | Series,
+        other: complex | ListLike,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
@@ -3946,7 +3942,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def rtruediv(
         self: Series[Never],
-        other: complex | _ListLike | Index | Series,
+        other: complex | ListLike,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
@@ -4165,7 +4161,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     def divmod(
         self,
-        other: num | _ListLike | Series[S1],
+        other: num | ListLike | Series[S1],
         level: Level | None = ...,
         fill_value: float | None = None,
         axis: AxisIndex = ...,
@@ -4323,7 +4319,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> S1: ...
     def mod(
         self,
-        other: num | _ListLike | Series[S1],
+        other: num | ListLike | Series[S1],
         level: Level | None = ...,
         fill_value: float | None = None,
         axis: AxisIndex | None = 0,
@@ -4339,7 +4335,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def nunique(self, dropna: _bool = True) -> int: ...
     def pow(
         self,
-        other: num | _ListLike | Series[S1],
+        other: num | ListLike | Series[S1],
         level: Level | None = ...,
         fill_value: float | None = None,
         axis: AxisIndex | None = 0,
