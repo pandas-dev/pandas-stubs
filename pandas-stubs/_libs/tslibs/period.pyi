@@ -1,4 +1,5 @@
 import datetime
+import sys
 from typing import (
     Literal,
     TypeAlias,
@@ -94,8 +95,13 @@ class Period(PeriodMixin):
     def __add__(self, other: Index) -> PeriodIndex: ...
     # Ignored due to indecipherable error from mypy:
     # Forward operator "__add__" is not callable  [misc]
-    @overload
-    def __radd__(self, other: _PeriodAddSub) -> Self: ...
+    if sys.version_info >= (3, 11):
+        @overload
+        def __radd__(self, other: _PeriodAddSub) -> Self: ...
+    else:
+        @overload
+        def __radd__(self, other: _PeriodAddSub) -> Self: ...  # type: ignore[misc]
+
     @overload
     def __radd__(self, other: NaTType) -> NaTType: ...
     # Real signature is -> PeriodIndex, but conflicts with Index.__add__
