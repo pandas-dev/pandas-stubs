@@ -1488,8 +1488,16 @@ def test_index_searchsorted() -> None:
     idx = pd.Index([1, 2, 3])
     check(assert_type(idx.searchsorted(1), np.intp), np.intp)
     check(assert_type(idx.searchsorted([1]), "np_1darray[np.intp]"), np_1darray)
+    check(assert_type(idx.searchsorted(range(1, 2)), "np_1darray[np.intp]"), np_1darray)
+    check(
+        assert_type(idx.searchsorted(pd.Series([1])), "np_1darray[np.intp]"), np_1darray
+    )
+    check(
+        assert_type(idx.searchsorted(np.array([1])), "np_1darray[np.intp]"), np_1darray
+    )
     check(assert_type(idx.searchsorted(1, side="left"), np.intp), np.intp)
     check(assert_type(idx.searchsorted(1, sorter=[1, 0, 2]), np.intp), np.intp)
+    check(assert_type(idx.searchsorted(1, sorter=range(3)), np.intp), np.intp)
 
 
 def test_period_index_constructor() -> None:
