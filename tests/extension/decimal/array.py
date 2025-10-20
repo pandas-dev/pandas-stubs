@@ -32,6 +32,7 @@ from pandas._typing import (
     ArrayLike,
     AstypeArg,
     TakeIndexer,
+    np_1darray,
 )
 
 from pandas.core.dtypes.base import ExtensionDtype
@@ -190,7 +191,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         return type(self)(self._data.copy(), dtype=self.dtype)
 
     @overload
-    def astype(self, dtype: np.dtype, copy: bool = True) -> np.ndarray: ...
+    def astype(self, dtype: np.dtype, copy: bool = True) -> np_1darray: ...
     @overload
     def astype(self, dtype: ExtensionDtype, copy: bool = True) -> ExtensionArray: ...
     @overload

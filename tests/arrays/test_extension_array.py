@@ -40,7 +40,7 @@ def test_ea_common() -> None:
     )
     check(assert_type(arr.ravel(), IntegerArray), IntegerArray)
 
-    check(assert_type(arr.astype(np.dtype("int64")), np.ndarray), np.ndarray)
+    check(assert_type(arr.astype(np.dtype("int64")), np_1darray), np_1darray)
     check(assert_type(arr.astype(Int32Dtype()), ExtensionArray), ExtensionArray)
     check(assert_type(arr.astype("Int64"), ArrayLike), ExtensionArray)
 
