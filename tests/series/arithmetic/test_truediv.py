@@ -7,7 +7,6 @@ import pytest
 from typing_extensions import assert_type
 
 from tests import (
-    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
@@ -257,16 +256,14 @@ def test_truediv_path(tmp_path: Path) -> None:
     Also GH 682."""
     fnames = pd.Series(["a.png", "b.gz", "c.txt"])
 
-    if PD_LTE_23:
-        # Bug in 3.0 https://github.com/pandas-dev/pandas/issues/61940 (pyarrow.lib.ArrowInvalid)
-        check(assert_type(fnames / tmp_path, pd.Series), pd.Series, Path)
-        check(assert_type(tmp_path / fnames, pd.Series), pd.Series, Path)
+    check(assert_type(fnames / tmp_path, pd.Series), pd.Series, Path)
+    check(assert_type(tmp_path / fnames, pd.Series), pd.Series, Path)
 
-        check(assert_type(fnames.truediv(tmp_path), pd.Series), pd.Series, Path)
-        check(assert_type(fnames.div(tmp_path), pd.Series), pd.Series, Path)
+    check(assert_type(fnames.truediv(tmp_path), pd.Series), pd.Series, Path)
+    check(assert_type(fnames.div(tmp_path), pd.Series), pd.Series, Path)
 
-        check(assert_type(fnames.rtruediv(tmp_path), pd.Series), pd.Series, Path)
-        check(assert_type(fnames.rdiv(tmp_path), pd.Series), pd.Series, Path)
+    check(assert_type(fnames.rtruediv(tmp_path), pd.Series), pd.Series, Path)
+    check(assert_type(fnames.rdiv(tmp_path), pd.Series), pd.Series, Path)
 
 
 def test_truediv_str_py_str(left_i: pd.Series) -> None:
