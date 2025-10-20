@@ -21,9 +21,7 @@ from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
 from typing_extensions import Self
 
-from pandas._libs.tslibs import (
-    NaTType,
-)
+from pandas._libs.tslibs import NaTType
 from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
@@ -128,7 +126,7 @@ class Timedelta(timedelta):
     def to_timedelta64(self) -> np.timedelta64: ...
     @property
     def asm8(self) -> np.timedelta64: ...
-    # TODO: round/floor/ceil could return NaT?
+    # TODO: pandas-dev/pandas-stubs#1432 round/floor/ceil could return NaT?
     def round(self, freq: Frequency) -> Self: ...
     def floor(self, freq: Frequency) -> Self: ...
     def ceil(self, freq: Frequency) -> Self: ...
@@ -314,8 +312,6 @@ class Timedelta(timedelta):
         self, other: Series[int] | Series[float] | Series[Timedelta]
     ) -> Series[Timedelta]: ...
     def __divmod__(self, other: timedelta) -> tuple[int, Timedelta]: ...
-    # Mypy complains Forward operator "<inequality op>" is not callable, so ignore misc
-    # for le, lt ge and gt
     # Override due to more types supported than timedelta
     @overload  # type: ignore[override]
     def __le__(self, other: timedelta | np.timedelta64 | Self) -> bool: ...

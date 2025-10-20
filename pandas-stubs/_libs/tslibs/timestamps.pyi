@@ -228,7 +228,7 @@ class Timestamp(datetime, SupportsIndex):
     def __radd__(
         self, other: np_ndarray[ShapeT, np.timedelta64]
     ) -> np_ndarray[ShapeT, np.datetime64]: ...
-    # TODO: test dt64
+    # TODO: pandas-dev/pandas-stubs#1432 test dt64
     @overload  # type: ignore[override]
     def __sub__(self, other: datetime | np.datetime64) -> Timedelta: ...
     @overload
@@ -284,7 +284,7 @@ class Timestamp(datetime, SupportsIndex):
     @property
     def asm8(self) -> np.datetime64: ...
     def tz_convert(self, tz: TimeZones) -> Self: ...
-    # TODO: could return NaT?
+    # TODO: pandas-dev/pandas-stubs#1432 could return NaT?
     def tz_localize(
         self,
         tz: TimeZones,
@@ -292,7 +292,7 @@ class Timestamp(datetime, SupportsIndex):
         nonexistent: TimestampNonexistent = "raise",
     ) -> Self: ...
     def normalize(self) -> Self: ...
-    # TODO: round/floor/ceil could return NaT?
+    # TODO: pandas-dev/pandas-stubs#1432 round/floor/ceil could return NaT?
     def round(
         self,
         freq: str,
