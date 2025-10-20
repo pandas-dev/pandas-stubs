@@ -8,6 +8,7 @@ import sys
 from typing import (
     Any,
     cast,
+    overload,
 )
 
 import numpy as np
@@ -27,7 +28,11 @@ from pandas.core.arrays import (
 )
 from pandas.core.indexers import check_array_indexer
 
-from pandas._typing import TakeIndexer
+from pandas._typing import (
+    ArrayLike,
+    AstypeArg,
+    TakeIndexer,
+)
 
 from pandas.core.dtypes.base import ExtensionDtype
 from pandas.core.dtypes.common import (
@@ -35,6 +40,8 @@ from pandas.core.dtypes.common import (
     is_float,
     pandas_dtype,
 )
+
+from tests import np_1darray
 
 
 @register_extension_dtype
@@ -183,6 +190,13 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
 
     def copy(self) -> DecimalArray:
         return type(self)(self._data.copy(), dtype=self.dtype)
+
+    @overload
+    def astype(self, dtype: np.dtype, copy: bool = True) -> np_1darray: ...
+    @overload
+    def astype(self, dtype: ExtensionDtype, copy: bool = True) -> ExtensionArray: ...
+    @overload
+    def astype(self, dtype: AstypeArg, copy: bool = True) -> ArrayLike: ...
 
     def astype(self, dtype, copy=True):
         if is_dtype_equal(dtype, self._dtype):
