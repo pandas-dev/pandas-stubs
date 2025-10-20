@@ -40,7 +40,7 @@ from pandas._typing import (
 )
 
 _NUM_FACTOR: TypeAlias = Just[int] | Just[float] | np.integer | np.floating
-_NUM_FACTORS: TypeAlias = (
+_NUM_FACTOR_SEQ: TypeAlias = (
     _NUM_FACTOR
     | Sequence[_NUM_FACTOR]
     | np_ndarray_anyint
@@ -49,7 +49,7 @@ _NUM_FACTORS: TypeAlias = (
     | Index[float]
 )
 _DT_FACTOR: TypeAlias = dt.timedelta | np.timedelta64 | Timedelta
-_DT_FACTORS: TypeAlias = (
+_DT_FACTOR_SEQ: TypeAlias = (
     _DT_FACTOR | Sequence[_DT_FACTOR] | np_ndarray_td | Index[Timedelta]
 )
 
@@ -102,20 +102,20 @@ class TimedeltaIndex(
     @overload  # type: ignore[override]
     def __mul__(self, other: np_ndarray_bool | np_ndarray_complex) -> Never: ...
     @overload
-    def __mul__(self, other: _NUM_FACTORS) -> Self: ...
+    def __mul__(self, other: _NUM_FACTOR_SEQ) -> Self: ...
     @overload  # type: ignore[override]
     def __rmul__(self, other: np_ndarray_bool | np_ndarray_complex) -> Never: ...
     @overload
-    def __rmul__(self, other: _NUM_FACTORS) -> Self: ...
+    def __rmul__(self, other: _NUM_FACTOR_SEQ) -> Self: ...
     @overload  # type: ignore[override]
     def __truediv__(  # pyrefly: ignore[bad-override]
         self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt
     ) -> Never: ...
     @overload
-    def __truediv__(self, other: _NUM_FACTORS) -> Self: ...
+    def __truediv__(self, other: _NUM_FACTOR_SEQ) -> Self: ...
     @overload
     def __truediv__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: _DT_FACTORS | Self
+        self, other: _DT_FACTOR_SEQ | Self
     ) -> Index[float]: ...
     @overload  # type: ignore[override]
     def __rtruediv__(  # pyrefly: ignore[bad-override]
@@ -123,7 +123,7 @@ class TimedeltaIndex(
     ) -> Never: ...
     @overload
     def __rtruediv__(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, other: _DT_FACTORS | Self
+        self, other: _DT_FACTOR_SEQ | Self
     ) -> Index[float]: ...
     @overload  # type: ignore[override]
     # pyrefly: ignore  # bad-override
