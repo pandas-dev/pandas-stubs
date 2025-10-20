@@ -175,7 +175,7 @@ class Timestamp(datetime, SupportsIndex):
     # Mypy complains Forward operator "<inequality op>" is not callable, so ignore misc
     # for le, lt ge and gt
     @overload  # type: ignore[override]
-    def __le__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
+    def __le__(self, other: datetime | np.datetime64 | Self) -> bool: ...
     @overload
     def __le__(self, other: DatetimeIndex) -> np_1darray[np.bool]: ...
     @overload
@@ -185,7 +185,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __le__(self, other: Series[Timestamp]) -> Series[bool]: ...
     @overload  # type: ignore[override]
-    def __lt__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
+    def __lt__(self, other: datetime | np.datetime64 | Self) -> bool: ...
     @overload
     def __lt__(self, other: DatetimeIndex) -> np_1darray[np.bool]: ...
     @overload
@@ -195,7 +195,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __lt__(self, other: Series[Timestamp]) -> Series[bool]: ...
     @overload  # type: ignore[override]
-    def __ge__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
+    def __ge__(self, other: datetime | np.datetime64 | Self) -> bool: ...
     @overload
     def __ge__(self, other: DatetimeIndex) -> np_1darray[np.bool]: ...
     @overload
@@ -205,7 +205,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __ge__(self, other: Series[Timestamp]) -> Series[bool]: ...
     @overload  # type: ignore[override]
-    def __gt__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
+    def __gt__(self, other: datetime | np.datetime64 | Self) -> bool: ...
     @overload
     def __gt__(self, other: DatetimeIndex) -> np_1darray[np.bool]: ...
     @overload
@@ -231,7 +231,7 @@ class Timestamp(datetime, SupportsIndex):
     def __radd__(
         self, other: np_ndarray[ShapeT, np.timedelta64]
     ) -> np_ndarray[ShapeT, np.datetime64]: ...
-    # TODO: test dt64
+    # TODO: pandas-dev/pandas-stubs#1432 test dt64
     @overload  # type: ignore[override]
     def __sub__(self, other: datetime | np.datetime64) -> Timedelta: ...
     @overload
@@ -243,7 +243,7 @@ class Timestamp(datetime, SupportsIndex):
         self, other: np_ndarray[ShapeT, np.timedelta64]
     ) -> np_ndarray[ShapeT, np.datetime64]: ...
     @overload
-    def __eq__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __eq__(self, other: datetime | np.datetime64 | Self) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __eq__(self, other: Series[Timestamp]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
@@ -253,7 +253,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __eq__(self, other: object) -> Literal[False]: ...
     @overload
-    def __ne__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __ne__(self, other: datetime | np.datetime64 | Self) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __ne__(self, other: Series[Timestamp]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
@@ -287,7 +287,7 @@ class Timestamp(datetime, SupportsIndex):
     @property
     def asm8(self) -> np.datetime64: ...
     def tz_convert(self, tz: TimeZones) -> Self: ...
-    # TODO: could return NaT?
+    # TODO: pandas-dev/pandas-stubs#1432 could return NaT?
     def tz_localize(
         self,
         tz: TimeZones,
@@ -295,7 +295,7 @@ class Timestamp(datetime, SupportsIndex):
         nonexistent: TimestampNonexistent = "raise",
     ) -> Self: ...
     def normalize(self) -> Self: ...
-    # TODO: round/floor/ceil could return NaT?
+    # TODO: pandas-dev/pandas-stubs#1432 round/floor/ceil could return NaT?
     def round(
         self,
         freq: str,

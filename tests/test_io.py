@@ -3,7 +3,6 @@ from collections.abc import Generator
 import csv
 from functools import partial
 import io
-import os.path
 import pathlib
 from pathlib import Path
 import sqlite3
@@ -65,7 +64,7 @@ from pandas.io.sas.sas_xport import XportReader
 from pandas.io.stata import StataReader
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
-CWD = os.path.split(os.path.abspath(__file__))[0]
+CWD = Path(__file__).parent.resolve()
 
 
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
@@ -86,10 +85,10 @@ def test_orc_path() -> None:
 @pytest.mark.skipif(WINDOWS, reason="ORC not available on windows")
 def test_orc_buffer() -> None:
     with ensure_clean() as path:
-        with open(path, "wb") as file_w:
+        with Path(path).open("wb") as file_w:
             check(assert_type(DF.to_orc(file_w), None), type(None))
 
-        with open(path, "rb") as file_r:
+        with Path(path).open("rb") as file_r:
             check(assert_type(read_orc(file_r), DataFrame), DataFrame)
 
 
@@ -109,7 +108,7 @@ def test_xml() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_xml(path), None), type(None))
         check(assert_type(read_xml(path), DataFrame), DataFrame)
-        with open(path, "rb") as f:
+        with Path(path).open("rb") as f:
             check(assert_type(read_xml(f), DataFrame), DataFrame)
 
 
@@ -128,7 +127,7 @@ def test_pickle() -> None:
 def test_pickle_file_handle() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_pickle(path), None), type(None))
-        with open(path, "rb") as file:
+        with Path(path).open("rb") as file:
             check(assert_type(read_pickle(file), Any), DataFrame)
 
 
@@ -562,9 +561,9 @@ def test_read_csv() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_csv(path), None), type(None))
         check(assert_type(read_csv(path), DataFrame), DataFrame)
-        with open(path) as csv_file:
+        with Path(path).open() as csv_file:
             check(assert_type(read_csv(csv_file), DataFrame), DataFrame)
-        with open(path) as csv_file:
+        with Path(path).open() as csv_file:
             sio = io.StringIO(csv_file.read())
             check(assert_type(read_csv(sio), DataFrame), DataFrame)
         check(assert_type(read_csv(path, iterator=False), DataFrame), DataFrame)
@@ -917,15 +916,15 @@ def test_btest_read_fwf() -> None:
         check(assert_type(read_fwf(path), DataFrame), DataFrame)
         check(assert_type(read_fwf(pathlib.Path(path)), DataFrame), DataFrame)
 
-        with open(path) as fwf_file:
+        with Path(path).open() as fwf_file:
             check(
                 assert_type(read_fwf(fwf_file), DataFrame),
                 DataFrame,
             )
-        with open(path) as fwf_file:
+        with Path(path).open() as fwf_file:
             sio = io.StringIO(fwf_file.read())
             check(assert_type(read_fwf(sio), DataFrame), DataFrame)
-        with open(path, "rb") as fwf_file:
+        with Path(path).open("rb") as fwf_file:
             bio = io.BytesIO(fwf_file.read())
             check(assert_type(read_fwf(bio), DataFrame), DataFrame)
         with read_fwf(path, iterator=True) as fwf_iterator:
@@ -1228,7 +1227,7 @@ def test_to_string() -> None:
     with ensure_clean() as path:
         check(assert_type(DF.to_string(path), None), type(None))
         check(assert_type(DF.to_string(pathlib.Path(path)), None), type(None))
-        with open(path, "w") as df_string:
+        with Path(path).open("w") as df_string:
             check(assert_type(DF.to_string(df_string), None), type(None))
         sio = io.StringIO()
         check(assert_type(DF.to_string(sio), None), type(None))
