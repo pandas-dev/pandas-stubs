@@ -32,7 +32,6 @@ from pandas._typing import (
     ArrayLike,
     AstypeArg,
     TakeIndexer,
-    np_1darray,
 )
 
 from pandas.core.dtypes.base import ExtensionDtype
@@ -41,6 +40,8 @@ from pandas.core.dtypes.common import (
     is_float,
     pandas_dtype,
 )
+
+from tests import np_1darray
 
 
 @register_extension_dtype
