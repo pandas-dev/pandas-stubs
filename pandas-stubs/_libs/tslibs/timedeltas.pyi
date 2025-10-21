@@ -13,6 +13,7 @@ from typing import (
 )
 
 import numpy as np
+from numpy import typing as npt
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.period import PeriodIndex
@@ -30,7 +31,6 @@ from pandas._typing import (
     TimeUnit,
     np_1darray,
     np_ndarray,
-    npt,
 )
 
 class Components(NamedTuple):
@@ -250,22 +250,24 @@ class Timedelta(timedelta):
     ) -> np_ndarray[ShapeT, np.int_]: ...
     # Override due to more types supported than timedelta
     @overload  # type: ignore[override]
-    def __truediv__(self, other: timedelta | Timedelta | NaTType) -> float: ...
+    # pyrefly: ignore[bad-override]
+    def __truediv__(self, other: Just[int] | Just[float]) -> Self: ...
     @overload
-    def __truediv__(self, other: float) -> Self: ...
+    def __truediv__(self, other: Self | NaTType) -> float: ...
     @overload
     def __truediv__(
         self, other: np_ndarray[ShapeT, np.integer | np.floating]
     ) -> np_ndarray[ShapeT, np.timedelta64]: ...
     @overload
-    def __truediv__(self, other: Series[Timedelta]) -> Series[float]: ...
+    def __truediv__(
+        self, other: np_ndarray[ShapeT, np.timedelta64]
+    ) -> np_ndarray[ShapeT, np.floating]: ...
     @overload
-    def __truediv__(self, other: Series[int]) -> Series[Timedelta]: ...
+    def __rtruediv__(self, other: Self | NaTType) -> float: ...
     @overload
-    def __truediv__(self, other: Series[float]) -> Series[Timedelta]: ...
-    @overload
-    def __truediv__(self, other: Index[int] | Index[float]) -> TimedeltaIndex: ...
-    def __rtruediv__(self, other: timedelta | Timedelta | NaTType) -> float: ...
+    def __rtruediv__(
+        self, other: np_ndarray[ShapeT, np.timedelta64]
+    ) -> np_ndarray[ShapeT, np.floating]: ...
     # Override due to more types supported than timedelta
     @overload
     def __eq__(self, other: timedelta | np.timedelta64 | Self) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]

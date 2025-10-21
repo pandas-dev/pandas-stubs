@@ -15,7 +15,7 @@ from tests import (
 
 @pytest.fixture
 def left() -> "pd.Series[pd.Timedelta]":
-    """left operand"""
+    """Left operand"""
     lo = pd.Series([pd.Timedelta(1, "s")])  # left operand
     return check(assert_type(lo, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 

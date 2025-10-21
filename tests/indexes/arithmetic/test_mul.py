@@ -13,7 +13,7 @@ from tests import (
 
 @pytest.fixture
 def left_i() -> pd.Index:
-    """left operand"""
+    """Left operand"""
     lo = pd.MultiIndex.from_tuples([(1,), (2,), (3,)]).levels[0]
     return check(assert_type(lo, pd.Index), pd.Index)
 

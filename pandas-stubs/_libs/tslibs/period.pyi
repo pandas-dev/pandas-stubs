@@ -91,8 +91,6 @@ class Period(PeriodMixin):
     def __add__(self, other: _PeriodAddSub) -> Self: ...
     @overload
     def __add__(self, other: NaTType) -> NaTType: ...
-    @overload
-    def __add__(self, other: Index) -> PeriodIndex: ...
     # Ignored due to indecipherable error from mypy:
     # Forward operator "__add__" is not callable  [misc]
     if sys.version_info >= (3, 11):
@@ -104,12 +102,6 @@ class Period(PeriodMixin):
 
     @overload
     def __radd__(self, other: NaTType) -> NaTType: ...
-    # Real signature is -> PeriodIndex, but conflicts with Index.__add__
-    # Changing Index is very hard due to Index inheritance
-    #   Signatures of "__radd__" of "Period" and "__add__" of "Index"
-    #   are unsafely overlapping
-    @overload
-    def __radd__(self, other: Index) -> PeriodIndex: ...
     #  ignore[misc] here because we know all other comparisons
     #  are False, so we use Literal[False]
     @overload

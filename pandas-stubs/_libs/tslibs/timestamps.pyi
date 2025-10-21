@@ -18,11 +18,9 @@ from typing import (
 )
 
 import numpy as np
-from pandas import (
-    DatetimeIndex,
-    TimedeltaIndex,
-)
 from pandas.core.indexes.base import Index
+from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
 from typing_extensions import (
     Never,
@@ -99,10 +97,9 @@ class Timestamp(datetime, SupportsIndex):
     def tz(self) -> _tzinfo | None: ...
     @property
     def fold(self) -> int: ...
-
     if sys.version_info >= (3, 12):
         @classmethod
-        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore
+        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride]
             cls, t: float, tz: _tzinfo | str | None = ...
         ) -> Self: ...
     else:

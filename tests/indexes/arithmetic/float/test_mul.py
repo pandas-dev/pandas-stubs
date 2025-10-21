@@ -21,7 +21,7 @@ from tests import (
 
 @pytest.fixture
 def left() -> "pd.Index[float]":
-    """left operand"""
+    """Left operand"""
     lo = pd.Index([1.0, 2.0, 3.0])
     return check(assert_type(lo, "pd.Index[float]"), pd.Index, np.floating)
 
@@ -60,7 +60,7 @@ def test_mul_py_sequence(left: "pd.Index[float]") -> None:
     check(assert_type(left * c, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-    check(assert_type(left * d, "pd.Index[pd.Timedelta]"), pd.Index, timedelta)
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(b * left, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(i * left, "pd.Index[float]"), pd.Index, np.floating)
@@ -68,7 +68,7 @@ def test_mul_py_sequence(left: "pd.Index[float]") -> None:
     check(assert_type(c * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-    check(assert_type(d * left, "pd.Index[pd.Timedelta]"), pd.Index, timedelta)
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_mul_numpy_array(left: "pd.Index[float]") -> None:
