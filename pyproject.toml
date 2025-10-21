@@ -211,6 +211,7 @@ ignore = [
 "tests/*" = [
   # The following rules are ignored permanently for good reasons
   "ANN401",  # https://docs.astral.sh/ruff/rules/any-type/
+  "ARG",     # https://docs.astral.sh/ruff/rules/#flake8-unused-arguments-arg
   "B905",    # https://docs.astral.sh/ruff/rules/zip-without-explicit-strict/
   "E731",    # https://docs.astral.sh/ruff/rules/lambda-assignment/
   "EM",      # https://docs.astral.sh/ruff/rules/#flake8-errmsg-em
@@ -223,7 +224,7 @@ ignore = [
   "A001",    # https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/
   "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
   "SLF001",  # https://docs.astral.sh/ruff/rules/private-member-access/
-  "ARG", "ERA", "RUF", "SIM", "TRY", "PT", "NPY", "N", "DTZ", "PLR", "TC", "PGH", "S311", "C901"
+  "ERA", "RUF", "SIM", "TRY", "PT", "NPY", "N", "DTZ", "PLR", "TC", "PGH", "S311", "C901"
 ]
 "tests/test_io.py" = [
   # The following rules are ignored permanently for good reasons
