@@ -82,7 +82,7 @@ def test_truediv_pd_scalar(left: "pd.Index[float]") -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         _10 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-    check(assert_type(d / left, "pd.Index[pd.Timedelta]"), pd.Index, pd.Timedelta)
+        _11 = d / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_truediv_pd_index(left: "pd.Index[float]") -> None:

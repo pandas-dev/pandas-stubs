@@ -763,26 +763,11 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __mul__(self, other: np_ndarray_dt) -> Never: ...
     @overload
     def __mul__(self: Index[bool] | Index[complex], other: np_ndarray_td) -> Never: ...
-    # pandas-dev/pandas#62524: An index of Python native timedeltas can be
-    # produced, instead of a TimedeltaIndex, hence the overload
-    @overload
-    def __mul__(  # type: ignore[overload-overlap]
-        self: Index[int] | Index[float], other: Sequence[timedelta]
-    ) -> Index[Timedelta]: ...
     @overload
     def __mul__(
         self: Index[int] | Index[float],
         other: timedelta | Sequence[Timedelta] | np.timedelta64 | np_ndarray_td,
     ) -> TimedeltaIndex: ...
-    @overload
-    def __mul__(
-        self: Index[Timedelta], other: np_ndarray_bool | np_ndarray_complex
-    ) -> Never: ...
-    @overload
-    def __mul__(
-        self: Index[Timedelta],
-        other: np_ndarray_anyint | np_ndarray_float | Index[int] | Index[float],
-    ) -> Index[Timedelta]: ...
     @overload
     def __mul__(
         self: Index[_str],
@@ -841,26 +826,11 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __rmul__(self, other: np_ndarray_dt) -> Never: ...
     @overload
     def __rmul__(self: Index[bool] | Index[complex], other: np_ndarray_td) -> Never: ...
-    # pandas-dev/pandas#62524: An index of Python native timedeltas can be
-    # produced, instead of a TimedeltaIndex, hence the overload
-    @overload
-    def __rmul__(  # type: ignore[overload-overlap]
-        self: Index[int] | Index[float], other: Sequence[timedelta]
-    ) -> Index[Timedelta]: ...
     @overload
     def __rmul__(
         self: Index[int] | Index[float],
         other: timedelta | Sequence[Timedelta] | np.timedelta64 | np_ndarray_td,
     ) -> TimedeltaIndex: ...
-    @overload
-    def __rmul__(
-        self: Index[Timedelta], other: np_ndarray_bool | np_ndarray_complex
-    ) -> Never: ...
-    @overload
-    def __rmul__(
-        self: Index[Timedelta],
-        other: np_ndarray_anyint | np_ndarray_float | Index[int] | Index[float],
-    ) -> Index[Timedelta]: ...
     @overload
     def __rmul__(
         self: Index[_str],
@@ -920,11 +890,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __truediv__(self: Index[bool], other: np_ndarray_bool) -> Never: ...
     @overload
     def __truediv__(
-        self: Index[Timedelta],
-        other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt,
-    ) -> Never: ...
-    @overload
-    def __truediv__(
         self: Supports_ProtoTrueDiv[_T_contra, S2],
         other: _T_contra | Sequence[_T_contra],
     ) -> Index[S2]: ...
@@ -969,25 +934,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         ),
     ) -> Index[complex]: ...
     @overload
-    def __truediv__(
-        self: Index[Timedelta],
-        other: (
-            Just[int]
-            | Just[float]
-            | Sequence[Just[int]]
-            | Sequence[Just[float]]
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[int]
-            | Index[float]
-        ),
-    ) -> Index[Timedelta]: ...
-    @overload
-    def __truediv__(
-        self: Index[Timedelta],
-        other: np_ndarray_td | TimedeltaIndex | Index[Timedelta],
-    ) -> Index[float]: ...
-    @overload
     def __truediv__(self, other: Path) -> Index: ...
     @overload
     def __rtruediv__(
@@ -997,11 +943,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __rtruediv__(self, other: Index[Never]) -> Index: ...
     @overload
     def __rtruediv__(self: Index[bool], other: np_ndarray_bool) -> Never: ...
-    @overload
-    def __rtruediv__(
-        self: Index[Timedelta],
-        other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt,
-    ) -> Never: ...
     @overload
     def __rtruediv__(
         self: Supports_ProtoRTrueDiv[_T_contra, S2],
@@ -1046,22 +987,6 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
             | Index[complex]
         ),
     ) -> Index[complex]: ...
-    @overload
-    def __rtruediv__(
-        self: Index[Timedelta],
-        other: np_ndarray_td | TimedeltaIndex | Index[Timedelta],
-    ) -> Index[float]: ...
-    @overload
-    def __rtruediv__(
-        self: Index[int] | Index[float],
-        other: (
-            timedelta
-            | Sequence[timedelta]
-            | np_ndarray_td
-            | TimedeltaIndex
-            | Index[Timedelta]
-        ),
-    ) -> Index[Timedelta]: ...
     @overload
     def __rtruediv__(self, other: Path) -> Index: ...
     def __floordiv__(
