@@ -36,7 +36,6 @@ from typing_extensions import Self
 from pandas._typing import (
     ArrayLike,
     AstypeArg,
-    Dtype,
     ScalarIndexer,
     SequenceIndexer,
     SequenceNotStr,
