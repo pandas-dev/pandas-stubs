@@ -275,37 +275,6 @@ def test_index_arithmetic() -> None:
     check(assert_type(3 // idx, "pd.Index[float]"), pd.Index, np.float64)
 
 
-def test_index_relops() -> None:
-    # GH 265
-    data = pd.date_range("2022-01-01", "2022-01-31", freq="D")
-    x = pd.Timestamp("2022-01-17")
-    idx = pd.Index(data, name="date")
-    check(assert_type(data[x <= idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[x < idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[x >= idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[x > idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[idx < x], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[idx >= x], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[idx > x], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[idx <= x], pd.DatetimeIndex), pd.DatetimeIndex)
-
-    dt_idx = pd.DatetimeIndex(data, name="date")
-    check(assert_type(data[x <= dt_idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[x >= dt_idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[x < dt_idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[x > dt_idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[dt_idx <= x], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[dt_idx >= x], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[dt_idx < x], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[dt_idx > x], pd.DatetimeIndex), pd.DatetimeIndex)
-
-    ind = pd.Index([1, 2, 3])
-    check(assert_type(ind <= 2, np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type(ind >= 2, np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type(ind < 2, np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type(ind > 2, np_1darray[np.bool]), np_1darray[np.bool])
-
-
 def test_range_index_union() -> None:
     check(
         assert_type(
@@ -1167,33 +1136,6 @@ def test_index_constructors() -> None:
         pd.Index(flist, dtype=np.float16)
 
 
-def test_datetime_index_constructor() -> None:
-    check(assert_type(pd.DatetimeIndex(["2020"]), pd.DatetimeIndex), pd.DatetimeIndex)
-    check(
-        assert_type(pd.DatetimeIndex(["2020"], name="ts"), pd.DatetimeIndex),
-        pd.DatetimeIndex,
-    )
-    check(
-        assert_type(pd.DatetimeIndex(["2020"], freq="D"), pd.DatetimeIndex),
-        pd.DatetimeIndex,
-    )
-    check(
-        assert_type(pd.DatetimeIndex(["2020"], tz="Asia/Kathmandu"), pd.DatetimeIndex),
-        pd.DatetimeIndex,
-    )
-
-    # https://github.com/microsoft/python-type-stubs/issues/115
-    df = pd.DataFrame({"A": [1, 2, 3], "B": [5, 6, 7]})
-
-    check(
-        assert_type(
-            pd.DatetimeIndex(data=df["A"], tz=None, ambiguous="NaT", copy=True),
-            pd.DatetimeIndex,
-        ),
-        pd.DatetimeIndex,
-    )
-
-
 def test_iter() -> None:
     # GH 723
     with pytest_warns_bounded(
@@ -1205,16 +1147,6 @@ def test_iter() -> None:
     ):
         for ts in pd.date_range(start="1/1/2023", end="1/08/2023", freq="6H"):
             check(assert_type(ts, pd.Timestamp), pd.Timestamp)
-
-
-def test_intersection() -> None:
-    # GH 744
-    index = pd.DatetimeIndex(["2022-01-01"])
-    check(assert_type(index.intersection(index), pd.DatetimeIndex), pd.DatetimeIndex)
-    check(
-        assert_type(index.intersection([pd.Timestamp("1/1/2023")]), pd.DatetimeIndex),
-        pd.DatetimeIndex,
-    )
 
 
 def test_annotate() -> None:
@@ -1368,22 +1300,9 @@ def test_disallow_empty_index() -> None:
         _0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
 
 
-def test_datetime_index_max_min_reductions() -> None:
-    dtidx = pd.DatetimeIndex(["2020-01-01", "2020-01-02"])
-    check(assert_type(dtidx.argmax(), np.int64), np.int64)
-    check(assert_type(dtidx.argmin(), np.int64), np.int64)
-    check(assert_type(dtidx.max(), pd.Timestamp), pd.Timestamp)
-    check(assert_type(dtidx.min(), pd.Timestamp), pd.Timestamp)
-
-
 def test_periodindex_shift() -> None:
     ind = pd.period_range(start="2022-06-01", periods=10)
     check(assert_type(ind.shift(1), pd.PeriodIndex), pd.PeriodIndex)
-
-
-def test_datetimeindex_shift() -> None:
-    ind = pd.date_range("2023-01-01", "2023-02-01")
-    check(assert_type(ind.shift(1), pd.DatetimeIndex), pd.DatetimeIndex)
 
 
 def test_timedeltaindex_shift() -> None:
