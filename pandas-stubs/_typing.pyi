@@ -25,6 +25,7 @@ from typing import (
     overload,
 )
 
+from _typeshed import _T_contra
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
@@ -860,6 +861,9 @@ np_ndarray_td: TypeAlias = npt.NDArray[np.timedelta64]
 # Define shape and generic type variables with defaults similar to numpy
 GenericT = TypeVar("GenericT", bound=np.generic, default=Any)
 GenericT_co = TypeVar("GenericT_co", bound=np.generic, default=Any, covariant=True)
+GenericT_contra = TypeVar(
+    "GenericT_contra", bound=np.generic, default=Any, contravariant=True
+)
 ShapeT = TypeVar("ShapeT", bound=tuple[int, ...], default=tuple[Any, ...])
 # Numpy ndarray with more ergonomic typevar
 np_ndarray: TypeAlias = np.ndarray[ShapeT, np.dtype[GenericT]]
@@ -1114,5 +1118,11 @@ class Just(Protocol, Generic[T]):
     @__class__.setter
     @override
     def __class__(self, t: type[T], /) -> None: ...
+
+class SupportsTrueDiv(Protocol[_T_contra, _T_co]):
+    def __truediv__(self, x: _T_contra, /) -> _T_co: ...
+
+class SupportsRTrueDiv(Protocol[_T_contra, _T_co]):
+    def __rtruediv__(self, x: _T_contra, /) -> _T_co: ...
 
 __all__ = ["npt", "type_t"]

@@ -13,7 +13,7 @@ from tests import (
 
 @pytest.fixture
 def left_i() -> pd.Series:
-    """left operand"""
+    """Left operand"""
     lo = pd.DataFrame({"a": [1, 2, 3]})["a"]
     return check(assert_type(lo, pd.Series), pd.Series)
 

@@ -1,14 +1,20 @@
 import numpy as np
 from numpy import typing as npt  # noqa: F401
 import pandas as pd
+import pytest
 from typing_extensions import assert_type
 
 from tests import check
 
-left = pd.Series([1j, 2j, 3j])  # left operand
+
+@pytest.fixture
+def left() -> "pd.Series[complex]":
+    """Left operand"""
+    lo = pd.Series([1j, 2j, 3j])
+    return check(assert_type(lo, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
 
-def test_truediv_py_scalar() -> None:
+def test_truediv_py_scalar(left: "pd.Series[complex]") -> None:
     """Test pd.Series[complex] / Python native scalars"""
     b, i, f, c = True, 1, 1.0, 1j
 
@@ -83,7 +89,7 @@ def test_truediv_py_scalar() -> None:
     )
 
 
-def test_truediv_py_sequence() -> None:
+def test_truediv_py_sequence(left: "pd.Series[complex]") -> None:
     """Test pd.Series[complex] / Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
@@ -158,7 +164,7 @@ def test_truediv_py_sequence() -> None:
     )
 
 
-def test_truediv_numpy_array() -> None:
+def test_truediv_numpy_array(left: "pd.Series[complex]") -> None:
     """Test pd.Series[complex] / numpy arrays"""
     b = np.array([True, False, True], np.bool_)
     i = np.array([2, 3, 5], np.int64)
@@ -249,7 +255,7 @@ def test_truediv_numpy_array() -> None:
     )
 
 
-def test_truediv_pd_index() -> None:
+def test_truediv_pd_index(left: "pd.Series[complex]") -> None:
     """Test pd.Series[complex] / pandas Indexes"""
     b = pd.Index([True, False, True])
     i = pd.Index([2, 3, 5])
@@ -327,7 +333,7 @@ def test_truediv_pd_index() -> None:
     )
 
 
-def test_truediv_pd_series() -> None:
+def test_truediv_pd_series(left: "pd.Series[complex]") -> None:
     """Test pd.Series[complex] / pandas Series"""
     b = pd.Series([True, False, True])
     i = pd.Series([2, 3, 5])

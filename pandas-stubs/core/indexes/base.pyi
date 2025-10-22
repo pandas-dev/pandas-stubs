@@ -9,6 +9,7 @@ from datetime import (
     datetime,
     timedelta,
 )
+from pathlib import Path
 from typing import (
     Any,
     ClassVar,
@@ -42,11 +43,12 @@ from pandas import (
 from pandas.core.base import (
     ElementOpsMixin,
     IndexOpsMixin,
-    NumListLike,
     Supports_ProtoAdd,
     Supports_ProtoMul,
     Supports_ProtoRAdd,
     Supports_ProtoRMul,
+    Supports_ProtoRTrueDiv,
+    Supports_ProtoTrueDiv,
 )
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.strings.accessor import StringMethods
@@ -511,6 +513,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __add__(self, other: Index[Never]) -> Index: ...
     @overload
+    def __add__(self: Index[Never], other: Period) -> PeriodIndex: ...
+    @overload
     def __add__(
         self: Supports_ProtoAdd[_T_contra, S2], other: _T_contra | Sequence[_T_contra]
     ) -> Index[S2]: ...
@@ -560,6 +564,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __radd__(
         self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index
     ) -> Index: ...
+    @overload
+    def __radd__(self: Index[Never], other: Period) -> PeriodIndex: ...
     @overload
     def __radd__(
         self: Supports_ProtoRAdd[_T_contra, S2],
@@ -679,7 +685,9 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __rsub__(self: Index[Never], other: DatetimeIndex) -> Never: ...  # type: ignore[misc]
     @overload
-    def __rsub__(self: Index[Never], other: complex | NumListLike | Index) -> Index: ...
+    def __rsub__(
+        self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index
+    ) -> Index: ...
     @overload
     def __rsub__(self, other: Index[Never]) -> Index: ...
     @overload
@@ -755,26 +763,11 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __mul__(self, other: np_ndarray_dt) -> Never: ...
     @overload
     def __mul__(self: Index[bool] | Index[complex], other: np_ndarray_td) -> Never: ...
-    # pandas-dev/pandas#62524: An index of Python native timedeltas can be
-    # produced, instead of a TimedeltaIndex, hence the overload
-    @overload
-    def __mul__(  # type: ignore[overload-overlap]
-        self: Index[int] | Index[float], other: Sequence[timedelta]
-    ) -> Index[Timedelta]: ...
     @overload
     def __mul__(
         self: Index[int] | Index[float],
         other: timedelta | Sequence[Timedelta] | np.timedelta64 | np_ndarray_td,
     ) -> TimedeltaIndex: ...
-    @overload
-    def __mul__(
-        self: Index[Timedelta], other: np_ndarray_bool | np_ndarray_complex
-    ) -> Never: ...
-    @overload
-    def __mul__(
-        self: Index[Timedelta],
-        other: np_ndarray_anyint | np_ndarray_float | Index[int] | Index[float],
-    ) -> Index[Timedelta]: ...
     @overload
     def __mul__(
         self: Index[_str],
@@ -833,26 +826,11 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __rmul__(self, other: np_ndarray_dt) -> Never: ...
     @overload
     def __rmul__(self: Index[bool] | Index[complex], other: np_ndarray_td) -> Never: ...
-    # pandas-dev/pandas#62524: An index of Python native timedeltas can be
-    # produced, instead of a TimedeltaIndex, hence the overload
-    @overload
-    def __rmul__(  # type: ignore[overload-overlap]
-        self: Index[int] | Index[float], other: Sequence[timedelta]
-    ) -> Index[Timedelta]: ...
     @overload
     def __rmul__(
         self: Index[int] | Index[float],
         other: timedelta | Sequence[Timedelta] | np.timedelta64 | np_ndarray_td,
     ) -> TimedeltaIndex: ...
-    @overload
-    def __rmul__(
-        self: Index[Timedelta], other: np_ndarray_bool | np_ndarray_complex
-    ) -> Never: ...
-    @overload
-    def __rmul__(
-        self: Index[Timedelta],
-        other: np_ndarray_anyint | np_ndarray_float | Index[int] | Index[float],
-    ) -> Index[Timedelta]: ...
     @overload
     def __rmul__(
         self: Index[_str],
@@ -902,16 +880,119 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __rmul__(
         self: Index[T_COMPLEX], other: np_ndarray_complex | Index[complex]
     ) -> Index[complex]: ...
+    @overload
+    def __truediv__(
+        self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index
+    ) -> Index: ...
+    @overload
+    def __truediv__(self, other: Index[Never]) -> Index: ...
+    @overload
+    def __truediv__(self: Index[bool], other: np_ndarray_bool) -> Never: ...
+    @overload
+    def __truediv__(
+        self: Supports_ProtoTrueDiv[_T_contra, S2],
+        other: _T_contra | Sequence[_T_contra],
+    ) -> Index[S2]: ...
+    @overload
+    def __truediv__(
+        self: Index[int],
+        other: np_ndarray_bool | Index[bool],
+    ) -> Index[float]: ...
+    @overload
+    def __truediv__(
+        self: Index[bool] | Index[int],
+        other: Just[int] | Sequence[int] | np_ndarray_anyint | Index[int],
+    ) -> Index[float]: ...
+    @overload
+    def __truediv__(
+        self: Index[float],
+        other: np_ndarray_bool | np_ndarray_anyint | Index[bool] | Index[int],
+    ) -> Index[float]: ...
+    @overload
+    def __truediv__(
+        self: Index[complex],
+        other: np_ndarray_bool | np_ndarray_anyint | Index[bool] | Index[int],
+    ) -> Index[complex]: ...
+    @overload
+    def __truediv__(
+        self: Index[bool] | Index[int],
+        other: Just[float] | Sequence[Just[float]] | np_ndarray_float | Index[float],
+    ) -> Index[float]: ...
+    @overload
+    def __truediv__(
+        self: Index[T_COMPLEX],
+        other: Just[float] | Sequence[Just[float]] | np_ndarray_float | Index[float],
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __truediv__(
+        self: Index[T_COMPLEX],
+        other: (
+            Just[complex]
+            | Sequence[Just[complex]]
+            | np_ndarray_complex
+            | Index[complex]
+        ),
+    ) -> Index[complex]: ...
+    @overload
+    def __truediv__(self, other: Path) -> Index: ...
+    @overload
+    def __rtruediv__(
+        self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index
+    ) -> Index: ...
+    @overload
+    def __rtruediv__(self, other: Index[Never]) -> Index: ...
+    @overload
+    def __rtruediv__(self: Index[bool], other: np_ndarray_bool) -> Never: ...
+    @overload
+    def __rtruediv__(
+        self: Supports_ProtoRTrueDiv[_T_contra, S2],
+        other: _T_contra | Sequence[_T_contra],
+    ) -> Index[S2]: ...
+    @overload
+    def __rtruediv__(
+        self: Index[int], other: np_ndarray_bool | Index[bool]
+    ) -> Index[float]: ...
+    @overload
+    def __rtruediv__(
+        self: Index[bool] | Index[int],
+        other: Just[int] | Sequence[int] | np_ndarray_anyint | Index[int],
+    ) -> Index[float]: ...
+    @overload
+    def __rtruediv__(  # type: ignore[misc]
+        self: Index[float],
+        other: np_ndarray_bool | np_ndarray_anyint | Index[bool] | Index[int],
+    ) -> Index[float]: ...
+    @overload
+    def __rtruediv__(
+        self: Index[complex],
+        other: np_ndarray_bool | np_ndarray_anyint | Index[bool] | Index[int],
+    ) -> Index[complex]: ...
+    @overload
+    def __rtruediv__(
+        self: Index[bool] | Index[int],
+        other: Just[float] | Sequence[Just[float]] | np_ndarray_float | Index[float],
+    ) -> Index[float]: ...
+    @overload
+    def __rtruediv__(
+        self: Index[T_COMPLEX],
+        other: Just[float] | Sequence[Just[float]] | np_ndarray_float | Index[float],
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __rtruediv__(
+        self: Index[T_COMPLEX],
+        other: (
+            Just[complex]
+            | Sequence[Just[complex]]
+            | np_ndarray_complex
+            | Index[complex]
+        ),
+    ) -> Index[complex]: ...
+    @overload
+    def __rtruediv__(self, other: Path) -> Index: ...
     def __floordiv__(
         self, other: float | Sequence[float] | Index[int] | Index[float]
     ) -> Self: ...
     def __rfloordiv__(
-        self, other: float | Sequence[float] | Index[int] | Index[float]
-    ) -> Self: ...
-    def __truediv__(
-        self, other: float | Sequence[float] | Index[int] | Index[float]
-    ) -> Self: ...
-    def __rtruediv__(
         self, other: float | Sequence[float] | Index[int] | Index[float]
     ) -> Self: ...
     def infer_objects(self, copy: bool = True) -> Self: ...
