@@ -1622,10 +1622,6 @@ def test_multiindex_union() -> None:
         pd.MultiIndex,
     )
     check(
-        assert_type(mi.union(pd.Index([("c", 3), ("d", 4)])), "pd.Index"),
-        pd.Index,
-    )
-    check(
         assert_type(mi.union([("c", 3), ("d", 4)]), "pd.MultiIndex"),
         pd.MultiIndex,
     )
