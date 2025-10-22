@@ -163,15 +163,8 @@ class MultiIndex(Index):
     def insert(self, loc, item): ...
     def delete(self, loc): ...
     def isin(self, values, level=...) -> np_1darray[np.bool]: ...
-    @overload
     def union(
         self,
-        other: Self | list[tuple[Hashable, ...]],
+        other: Self | Index | list[HashableT],
         sort: bool | None = ...,
     ) -> Self: ...
-    @overload
-    def union(
-        self,
-        other: Index | list[HashableT],
-        sort: bool | None = ...,
-    ) -> Index: ...
