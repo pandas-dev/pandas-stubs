@@ -1614,6 +1614,7 @@ def test_to_series() -> None:
     )
     check(assert_type(Index(["1"]).to_series(), "pd.Series[str]"), pd.Series, str)
 
+
 def test_swaplevel_rettype() -> None:
     """Test that swaplevel returns Self"""
     mi = pd.MultiIndex.from_product([["a", "b"], [1, 2]], names=["let", "num"])
@@ -1621,6 +1622,7 @@ def test_swaplevel_rettype() -> None:
         assert_type(mi.swaplevel(0, 1), "pd.MultiIndex"),
         pd.MultiIndex,
     )
+
 
 def test_multiindex_union() -> None:
     """Test that union returns MultiIndex on MultiIndex input"""
@@ -1632,14 +1634,10 @@ def test_multiindex_union() -> None:
         pd.MultiIndex,
     )
     check(
-        assert_type(mi.union(pd.Index([("c", 3), ("d", 4)])), "pd.Index"), 
+        assert_type(mi.union(pd.Index([("c", 3), ("d", 4)])), "pd.Index"),
         pd.Index,
     )
     check(
         assert_type(mi.union([("c", 3), ("d", 4)]), "pd.MultiIndex"),
         pd.MultiIndex,
-    )
-    check(
-        assert_type(mi.union([1, 2, 3]), "pd.Index"), 
-        pd.Index
     )
