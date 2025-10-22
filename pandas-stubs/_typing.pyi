@@ -905,9 +905,7 @@ SeriesDType: TypeAlias = (
     | datetime.timedelta  # includes pd.Timedelta
 )
 
-IndexKey: TypeAlias = SeriesDType | tuple[Hashable, ...] # to support Indexes of tuples for MultiIndex unions
-
-S1 = TypeVar("S1", bound=IndexKey, default=Any)
+S1 = TypeVar("S1", bound=SeriesDType, default=Any)
 # Like S1, but without `default=Any`.
 S2 = TypeVar("S2", bound=SeriesDType)
 S2_CT = TypeVar("S2_CT", bound=SeriesDType, contravariant=True)
