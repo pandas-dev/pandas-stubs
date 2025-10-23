@@ -92,16 +92,6 @@ def assert_timedelta_array_equal(
     obj: str = "TimedeltaArray",
     check_freq: bool = True,
 ) -> None: ...
-def assert_numpy_array_equal(
-    left,
-    right,
-    strict_nan: bool = False,
-    check_dtype: bool | Literal["equiv"] = True,
-    err_msg: str | None = None,
-    check_same: Literal["copy", "same"] | None = None,
-    obj: str = "numpy array",
-    index_values: Index | np.ndarray | None = None,
-) -> None: ...
 def assert_extension_array_equal(
     left: ExtensionArray,
     right: ExtensionArray,
@@ -173,7 +163,6 @@ def assert_frame_equal(
     atol: float = 1e-8,
     obj: str = "DataFrame",
 ) -> None: ...
-def assert_equal(left, right, **kwargs: Any) -> None: ...
 def assert_sp_array_equal(left: SparseArray, right: SparseArray) -> None: ...
 def assert_contains_all(iterable: Iterable[T], dic: Container[T]) -> None: ...
 def assert_copy(iter1: Iterable[T], iter2: Iterable[T], **eql_kwargs: Any) -> None: ...

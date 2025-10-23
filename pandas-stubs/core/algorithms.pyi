@@ -1,4 +1,5 @@
 from typing import (
+    Any,
     Literal,
     overload,
 )
@@ -72,9 +73,9 @@ def value_counts(
     dropna: bool = True,
 ) -> Series: ...
 def take(
-    arr,
+    arr: np.ndarray | ExtensionArray | Index | Series,
     indices: TakeIndexer,
     axis: Literal[0, 1] = 0,
     allow_fill: bool = False,
-    fill_value=None,
-): ...
+    fill_value: Any = None,
+) -> np_1darray | ExtensionArray: ...
