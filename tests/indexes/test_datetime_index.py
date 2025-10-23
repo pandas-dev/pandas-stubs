@@ -35,6 +35,8 @@ def test_index_relops() -> None:
     check(assert_type(data[idx >= x], pd.DatetimeIndex), pd.DatetimeIndex)
     check(assert_type(data[idx > x], pd.DatetimeIndex), pd.DatetimeIndex)
 
+    # TODO: https://github.com/pandas-dev/pandas-stubs/pull/1438#discussion_r2451864012
+    # Can this be de-duplicated?
     dt_idx = pd.DatetimeIndex(data, name="date")
     check(assert_type(data[x <= dt_idx], pd.DatetimeIndex), pd.DatetimeIndex)
     check(assert_type(data[x < dt_idx], pd.DatetimeIndex), pd.DatetimeIndex)
