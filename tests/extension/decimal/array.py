@@ -9,6 +9,7 @@ import decimal
 import numbers
 import sys
 from typing import (
+    TYPE_CHECKING,
     Any,
     cast,
     overload,
@@ -40,7 +41,6 @@ from pandas._typing import (
     SequenceIndexer,
     SequenceNotStr,
     TakeIndexer,
-    np_1darray,
 )
 
 from pandas.core.dtypes.base import ExtensionDtype
@@ -49,6 +49,9 @@ from pandas.core.dtypes.common import (
     is_float,
     pandas_dtype,
 )
+
+if TYPE_CHECKING:
+    from pandas._typing import np_1darray
 
 
 @register_extension_dtype
@@ -200,7 +203,8 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
             return self._data[item]
         # array, slice.
         item = check_array_indexer(
-            self, item  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+            self,
+            item,  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         )
         return type(self)(self._data[item])
 
@@ -270,7 +274,9 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         return 0
 
     def isna(self) -> np_1darray[np.bool_]:
-        return np.array([x.is_nan() for x in self._data], dtype=bool)
+        if sys.version_info < (3, 11):
+            return np.array([x.is_nan() for x in self._data], bool)  # type: ignore[return-value] # pyright: ignore[reportReturnType]
+        return np.array([x.is_nan() for x in self._data], bool)
 
     @property
     def _na_value(self) -> decimal.Decimal:
