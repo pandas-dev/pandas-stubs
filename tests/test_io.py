@@ -428,7 +428,10 @@ def test_hdf_series() -> None:
         check(assert_type(read_hdf(path, "s"), DataFrame | Series), Series)
 
 
-@pytest.mark.xfail(sys.version_info >= (3, 11), reason="pyreadstat 1.3.1 does not support py314 Roche/pyreadstat#310")
+@pytest.mark.xfail(
+    sys.version_info >= (3, 14),
+    reason="pyreadstat 1.3.1 does not support py314 Roche/pyreadstat#310",
+)
 def test_spss() -> None:
     path = Path(CWD, "data", "labelled-num.sav")
     check(
