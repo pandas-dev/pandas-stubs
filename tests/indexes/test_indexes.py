@@ -333,12 +333,16 @@ def test_range_index_union() -> None:
 def test_index_union_sort() -> None:
     """Test sort argument in pd.Index.union GH1264."""
     check(
-        assert_type(pd.Index(["e", "f"]).union(["a", "b", "c"], sort=True), pd.Index),
-        pd.Index,
+        assert_type(
+            pd.Index(["e", "f"]).union(["a", "b", "c"], sort=True), pd.Index[str]
+        ),
+        pd.Index[str],
     )
     check(
-        assert_type(pd.Index(["e", "f"]).union(["a", "b", "c"], sort=False), pd.Index),
-        pd.Index,
+        assert_type(
+            pd.Index(["e", "f"]).union(["a", "b", "c"], sort=False), pd.Index[str]
+        ),
+        pd.Index[str],
     )
 
 
