@@ -14,6 +14,8 @@ from typing import (
     cast,
 )
 
+from typing_extensions import Self
+
 class DlpackDeviceType(enum.IntEnum):
     CPU = cast(int, ...)
     CUDA = cast(int, ...)
@@ -58,7 +60,7 @@ class Buffer(ABC, metaclass=abc.ABCMeta):
     @abstractmethod
     def ptr(self) -> int: ...
     @abstractmethod
-    def __dlpack__(self): ...
+    def __dlpack__(self) -> Any: ...
     @abstractmethod
     def __dlpack_device__(self) -> tuple[DlpackDeviceType, int | None]: ...
 
@@ -94,7 +96,9 @@ class Column(ABC, metaclass=abc.ABCMeta):
 class DataFrame(ABC, metaclass=abc.ABCMeta):
     version: int
     @abstractmethod
-    def __dataframe__(self, nan_as_null: bool = ..., allow_copy: bool = ...): ...
+    def __dataframe__(
+        self, nan_as_null: bool = ..., allow_copy: bool = ...
+    ) -> Self: ...
     @property
     @abstractmethod
     def metadata(self) -> dict[str, Any]: ...
