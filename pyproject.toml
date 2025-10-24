@@ -54,7 +54,7 @@ isort = ">=6.0.1"
 openpyxl = ">=3.0.10"
 numexpr = ">=2.13.1"
 lxml = ">=4.9.1"
-pyreadstat = ">=1.2.0"
+pyreadstat = { version = ">=1.2.0", python = "<3.14" }
 xlrd = ">=2.0.1"
 xlsxwriter = ">=3.0.3"
 pyxlsb = ">=1.0.10"
