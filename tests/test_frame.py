@@ -2555,8 +2555,10 @@ def test_types_rename() -> None:
     )
 
     df_multiindex = pd.DataFrame(columns=[("a", 1), ("a", 2)])
-    check(assert_type(df_multiindex.rename(columns={(1, 2): ("b", "a")}), pd.DataFrame), pd.DataFrame)
-
+    check(
+        assert_type(df_multiindex.rename(columns={(1, 2): ("b", "a")}), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_types_rename_axis() -> None:
