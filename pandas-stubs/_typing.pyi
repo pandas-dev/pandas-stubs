@@ -908,7 +908,6 @@ SeriesDType: TypeAlias = (
     | datetime.datetime  # includes pd.Timestamp
     | datetime.timedelta  # includes pd.Timedelta
 )
-
 S1 = TypeVar("S1", bound=SeriesDType, default=Any)
 # Like S1, but without `default=Any`.
 S2 = TypeVar("S2", bound=SeriesDType)
