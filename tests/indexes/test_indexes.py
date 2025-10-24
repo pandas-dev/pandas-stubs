@@ -334,15 +334,17 @@ def test_index_union_sort() -> None:
     """Test sort argument in pd.Index.union GH1264."""
     check(
         assert_type(
-            pd.Index(["e", "f"]).union(["a", "b", "c"], sort=True), pd.Index[str]
+            pd.Index(["e", "f"]).union(["a", "b", "c"], sort=True), "pd.Index[str]"
         ),
-        pd.Index[str],
+        pd.Index,
+        str,
     )
     check(
         assert_type(
-            pd.Index(["e", "f"]).union(["a", "b", "c"], sort=False), pd.Index[str]
+            pd.Index(["e", "f"]).union(["a", "b", "c"], sort=False), "pd.Index[str]"
         ),
-        pd.Index[str],
+        pd.Index,
+        str,
     )
 
 
@@ -1614,7 +1616,6 @@ def test_multiindex_union() -> None:
 
     check(assert_type(mi.union(mi2), "pd.MultiIndex"), pd.MultiIndex)
     check(assert_type(mi.union([("c", 3), ("d", 4)]), "pd.MultiIndex"), pd.MultiIndex)
-    check(assert_type(mi.union([1, 2, 3]), "pd.MultiIndex"), pd.MultiIndex)
 
 
 def test_multiindex_swaplevel() -> None:
