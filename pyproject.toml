@@ -192,6 +192,7 @@ ignore = [
 "*.pyi" = [
   # The following rules are ignored permanently for good reasons
   "A002",    # https://docs.astral.sh/ruff/rules/builtin-argument-shadowing/
+  "ANN401",  # https://docs.astral.sh/ruff/rules/any-type/
   "FIX002",  # https://docs.astral.sh/ruff/rules/line-contains-todo/
   "N",       # https://docs.astral.sh/ruff/rules/#pep8-naming-n
   "TD002",   # https://docs.astral.sh/ruff/rules/missing-todo-author/
@@ -200,7 +201,7 @@ ignore = [
   "A004",    # https://docs.astral.sh/ruff/rules/builtin-import-shadowing/
   "PYI001",  # https://docs.astral.sh/ruff/rules/unprefixed-type-param/
   "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
-  "ERA001", "ANN401", "PLR0402", "PLC0105"
+  "ERA001", "PLR0402", "PLC0105"
 ]
 "*range.pyi" = [
   # TODO: remove when pandas-dev/pandas-stubs#1442 is resolved
@@ -261,6 +262,8 @@ ignore = [
 ]
 "tests/*" = [
   # The following rules are ignored permanently for good reasons
+  "ANN401",  # https://docs.astral.sh/ruff/rules/any-type/
+  "ARG",     # https://docs.astral.sh/ruff/rules/#flake8-unused-arguments-arg
   "B905",    # https://docs.astral.sh/ruff/rules/zip-without-explicit-strict/
   "E731",    # https://docs.astral.sh/ruff/rules/lambda-assignment/
   "EM",      # https://docs.astral.sh/ruff/rules/#flake8-errmsg-em
@@ -273,7 +276,7 @@ ignore = [
   "A001",    # https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/
   "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
   "SLF001",  # https://docs.astral.sh/ruff/rules/private-member-access/
-  "ANN001", "ANN201", "ANN204", "ANN206", "ANN401", "ARG", "ERA", "RUF", "SIM", "TRY", "PT", "NPY", "N", "DTZ", "PLR", "TC", "PGH", "S311", "C901"
+  "ERA", "RUF", "SIM", "TRY", "PT", "NPY", "N", "DTZ", "PLR", "TC", "PGH", "S311", "C901"
 ]
 "tests/test_io.py" = [
   # The following rules are ignored permanently for good reasons

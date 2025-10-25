@@ -3,7 +3,7 @@ ci:
     autofix_prs: false
 repos:
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.0
+    rev: v0.14.1
     hooks:
     -   id: ruff-check
         args: [--exit-non-zero-on-fix]

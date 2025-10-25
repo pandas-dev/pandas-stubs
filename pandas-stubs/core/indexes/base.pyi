@@ -63,7 +63,6 @@ from pandas._typing import (
     C2,
     S1,
     S2,
-    S2_CT,
     S2_NSDT,
     T_COMPLEX,
     AnyAll,
@@ -85,6 +84,7 @@ from pandas._typing import (
     MaskType,
     NaPosition,
     ReindexMethod,
+    S2_contra,
     Scalar,
     SequenceNotStr,
     SliceType,
@@ -520,8 +520,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[S2]: ...
     @overload
     def __add__(
-        self: Index[S2_CT],
-        other: SupportsRAdd[S2_CT, S2] | Sequence[SupportsRAdd[S2_CT, S2]],
+        self: Index[S2_contra],
+        other: SupportsRAdd[S2_contra, S2] | Sequence[SupportsRAdd[S2_contra, S2]],
     ) -> Index[S2]: ...
     @overload
     def __add__(
@@ -573,8 +573,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[S2]: ...
     @overload
     def __radd__(
-        self: Index[S2_CT],
-        other: SupportsAdd[S2_CT, S2] | Sequence[SupportsAdd[S2_CT, S2]],
+        self: Index[S2_contra],
+        other: SupportsAdd[S2_contra, S2] | Sequence[SupportsAdd[S2_contra, S2]],
     ) -> Index[S2]: ...
     @overload
     def __radd__(
@@ -789,8 +789,11 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[S2]: ...
     @overload
     def __mul__(
-        self: Index[S2_CT],
-        other: SupportsRMul[S2_CT, S2_NSDT] | Sequence[SupportsRMul[S2_CT, S2_NSDT]],
+        self: Index[S2_contra],
+        other: (
+            SupportsRMul[S2_contra, S2_NSDT]
+            | Sequence[SupportsRMul[S2_contra, S2_NSDT]]
+        ),
     ) -> Index[S2_NSDT]: ...
     @overload
     def __mul__(
@@ -853,8 +856,10 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[S2]: ...
     @overload
     def __rmul__(
-        self: Index[S2_CT],
-        other: SupportsMul[S2_CT, S2_NSDT] | Sequence[SupportsMul[S2_CT, S2_NSDT]],
+        self: Index[S2_contra],
+        other: (
+            SupportsMul[S2_contra, S2_NSDT] | Sequence[SupportsMul[S2_contra, S2_NSDT]]
+        ),
     ) -> Index[S2_NSDT]: ...
     @overload
     def __rmul__(
