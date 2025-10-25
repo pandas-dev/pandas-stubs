@@ -1,5 +1,6 @@
-from pandas import Series
 from pandas.core.accessor import PandasDelegate
+from pandas.core.series import Series
+from typing_extensions import Self
 
 class BaseAccessor:
     def __init__(self, data=...) -> None: ...
@@ -12,7 +13,7 @@ class SparseAccessor(BaseAccessor, PandasDelegate):
 
 class SparseFrameAccessor(BaseAccessor, PandasDelegate):
     @classmethod
-    def from_spmatrix(cls, data, index=..., columns=...): ...
+    def from_spmatrix(cls, data, index=..., columns=...) -> Self: ...
     def to_dense(self): ...
     def to_coo(self): ...
     @property

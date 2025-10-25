@@ -120,8 +120,6 @@ from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     S1,
     S2,
-    S2_CT,
-    S2_CT_NDT,
     S2_NSDT,
     T_COMPLEX,
     AggFuncTypeBase,
@@ -180,6 +178,8 @@ from pandas._typing import (
     ReindexMethod,
     Renamer,
     ReplaceValue,
+    S2_contra,
+    S2_NDT_contra,
     Scalar,
     ScalarT,
     SequenceNotStr,
@@ -1725,14 +1725,16 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[Timedelta]: ...
     @overload
     def __add__(
-        self: Supports_ProtoAdd[S2_CT, S2], other: S2_CT | Sequence[S2_CT]
+        self: Supports_ProtoAdd[S2_contra, S2], other: S2_contra | Sequence[S2_contra]
     ) -> Series[S2]: ...
     @overload
-    def __add__(self: Series[S2_CT], other: SupportsRAdd[S2_CT, S2]) -> Series[S2]: ...
+    def __add__(
+        self: Series[S2_contra], other: SupportsRAdd[S2_contra, S2]
+    ) -> Series[S2]: ...
     # pandas-dev/pandas#62353
     @overload
     def __add__(
-        self: Series[S2_CT_NDT], other: Sequence[SupportsRAdd[S2_CT_NDT, S2]]
+        self: Series[S2_NDT_contra], other: Sequence[SupportsRAdd[S2_NDT_contra, S2]]
     ) -> Series[S2]: ...
     @overload
     def __add__(
@@ -1835,16 +1837,16 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[Timedelta]: ...
     @overload
     def add(
-        self: Supports_ProtoAdd[S2_CT, S2],
-        other: S2_CT | Sequence[S2_CT],
+        self: Supports_ProtoAdd[S2_contra, S2],
+        other: S2_contra | Sequence[S2_contra],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
     ) -> Series[S2]: ...
     @overload
     def add(
-        self: Series[S2_CT],
-        other: SupportsRAdd[S2_CT, S2] | Sequence[SupportsRAdd[S2_CT, S2]],
+        self: Series[S2_contra],
+        other: SupportsRAdd[S2_contra, S2] | Sequence[SupportsRAdd[S2_contra, S2]],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -1952,14 +1954,16 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # pyright is unhappy without the above 3 overloads
     @overload
     def __radd__(
-        self: Supports_ProtoRAdd[S2_CT, S2], other: S2_CT | Sequence[S2_CT]
+        self: Supports_ProtoRAdd[S2_contra, S2], other: S2_contra | Sequence[S2_contra]
     ) -> Series[S2]: ...
     @overload
-    def __radd__(self: Series[S2_CT], other: SupportsAdd[S2_CT, S2]) -> Series[S2]: ...
+    def __radd__(
+        self: Series[S2_contra], other: SupportsAdd[S2_contra, S2]
+    ) -> Series[S2]: ...
     # pandas-dev/pandas#62353
     @overload
     def __radd__(
-        self: Series[S2_CT_NDT], other: Sequence[SupportsAdd[S2_CT_NDT, S2]]
+        self: Series[S2_NDT_contra], other: Sequence[SupportsAdd[S2_NDT_contra, S2]]
     ) -> Series[S2]: ...
     @overload
     def __radd__(
@@ -2066,16 +2070,16 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[Timedelta]: ...
     @overload
     def radd(
-        self: Supports_ProtoRAdd[S2_CT, S2],
-        other: S2_CT | Sequence[S2_CT],
+        self: Supports_ProtoRAdd[S2_contra, S2],
+        other: S2_contra | Sequence[S2_contra],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
     ) -> Series[S2]: ...
     @overload
     def radd(
-        self: Series[S2_CT],
-        other: SupportsAdd[S2_CT, S2] | Sequence[SupportsAdd[S2_CT, S2]],
+        self: Series[S2_contra],
+        other: SupportsAdd[S2_contra, S2] | Sequence[SupportsAdd[S2_contra, S2]],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -2532,8 +2536,11 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[S2]: ...
     @overload
     def __mul__(
-        self: Series[S2_CT],
-        other: SupportsRMul[S2_CT, S2_NSDT] | Sequence[SupportsRMul[S2_CT, S2_NSDT]],
+        self: Series[S2_contra],
+        other: (
+            SupportsRMul[S2_contra, S2_NSDT]
+            | Sequence[SupportsRMul[S2_contra, S2_NSDT]]
+        ),
     ) -> Series[S2_NSDT]: ...
     @overload
     def __mul__(
@@ -2625,8 +2632,11 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[S2]: ...
     @overload
     def mul(
-        self: Series[S2_CT],
-        other: SupportsRMul[S2_CT, S2_NSDT] | Sequence[SupportsRMul[S2_CT, S2_NSDT]],
+        self: Series[S2_contra],
+        other: (
+            SupportsRMul[S2_contra, S2_NSDT]
+            | Sequence[SupportsRMul[S2_contra, S2_NSDT]]
+        ),
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,
@@ -2742,8 +2752,10 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[S2]: ...
     @overload
     def __rmul__(
-        self: Series[S2_CT],
-        other: SupportsMul[S2_CT, S2_NSDT] | Sequence[SupportsMul[S2_CT, S2_NSDT]],
+        self: Series[S2_contra],
+        other: (
+            SupportsMul[S2_contra, S2_NSDT] | Sequence[SupportsMul[S2_contra, S2_NSDT]]
+        ),
     ) -> Series[S2_NSDT]: ...
     @overload
     def __rmul__(
@@ -2835,8 +2847,10 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[S2]: ...
     @overload
     def rmul(
-        self: Series[S2_CT],
-        other: SupportsMul[S2_CT, S2_NSDT] | Sequence[SupportsMul[S2_CT, S2_NSDT]],
+        self: Series[S2_contra],
+        other: (
+            SupportsMul[S2_contra, S2_NSDT] | Sequence[SupportsMul[S2_contra, S2_NSDT]]
+        ),
         level: Level | None = None,
         fill_value: float | None = None,
         axis: int = 0,

@@ -13,6 +13,7 @@ from pandas.core.indexes.base import (
     Index,
     _IndexSubclassBase,
 )
+from typing_extensions import Self
 
 from pandas._typing import (
     HashableT,
@@ -32,7 +33,7 @@ class RangeIndex(_IndexSubclassBase[int, np.int64]):
         name: Hashable = ...,
     ): ...
     @classmethod
-    def from_range(cls, data, name: Hashable = ..., dtype=...): ...
+    def from_range(cls, data, name: Hashable = ..., dtype=...) -> Self: ...
     def __reduce__(self): ...
     @property
     def start(self) -> int: ...
