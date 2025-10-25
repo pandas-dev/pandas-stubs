@@ -2553,9 +2553,14 @@ def test_types_rename() -> None:
     # Apparently all of these calls are accepted by pandas
     check(assert_type(df.rename(columns={None: "b"}), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.rename(columns={"": "b"}), pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.rename(columns={(2, 1): "b"}), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(df.rename(columns=lambda s: s.upper()), pd.DataFrame), pd.DataFrame
+    )
+
+    df_multiindex = pd.DataFrame(columns=[("a", 1), ("a", 2)])
+    check(
+        assert_type(df_multiindex.rename(columns={(1, 2): ("b", "a")}), pd.DataFrame),
+        pd.DataFrame,
     )
 
 
