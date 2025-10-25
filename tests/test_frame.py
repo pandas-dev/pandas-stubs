@@ -2826,7 +2826,6 @@ def test_dataframe_pct_change() -> None:
     check(assert_type(df.pct_change(axis="index"), pd.DataFrame), pd.DataFrame)
 
 
-
 def test_indexslice_setitem() -> None:
     df = pd.DataFrame(
         {"x": [1, 2, 2, 3], "y": [1, 2, 3, 4], "z": [10, 20, 30, 40]}
