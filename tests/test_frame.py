@@ -381,6 +381,9 @@ def test_types_assign() -> None:
     check(assert_type(df.assign(a=[], b=()), pd.DataFrame), pd.DataFrame)
 
 
+@pytest.mark.xfail(
+    sys.version_info >= (3, 14), reason="sys.getrefcount pandas-dev/pandas#61368"
+)
 def test_assign() -> None:
     df = pd.DataFrame({"a": [1, 2, 3], 1: [4, 5, 6]})
 
@@ -2833,6 +2836,9 @@ def test_indexslice_setitem() -> None:
     df.loc[pd.IndexSlice[pd.Index([2, 3]), :], "z"] = 99
 
 
+@pytest.mark.xfail(
+    sys.version_info >= (3, 14), reason="sys.getrefcount pandas-dev/pandas#61368"
+)
 def test_indexslice_getitem() -> None:
     # GH 300
     df = (
@@ -4426,6 +4432,9 @@ def test_getitem_dict_keys() -> None:
     check(assert_type(df[some_columns.keys()], pd.DataFrame), pd.DataFrame)
 
 
+@pytest.mark.xfail(
+    sys.version_info >= (3, 14), reason="sys.getrefcount pandas-dev/pandas#61368"
+)
 def test_frame_setitem_na() -> None:
     # GH 743
     df = pd.DataFrame(
@@ -4556,6 +4565,9 @@ def test_frame_subclass() -> None:
     check(assert_type(df[["a", "b"]], MyClass), MyClass)
 
 
+@pytest.mark.xfail(
+    sys.version_info >= (3, 14), reason="sys.getrefcount pandas-dev/pandas#61368"
+)
 def test_hashable_args() -> None:
     # GH 1104
     df = pd.DataFrame([["abc"]], columns=["test"], index=["ind"])

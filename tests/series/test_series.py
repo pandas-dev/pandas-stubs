@@ -13,6 +13,7 @@ import io
 from pathlib import Path
 import platform
 import re
+import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -3196,6 +3197,9 @@ def test_rank() -> None:
     )
 
 
+@pytest.mark.xfail(
+    sys.version_info >= (3, 14), reason="sys.getrefcount pandas-dev/pandas#61368"
+)
 def test_series_setitem_multiindex() -> None:
     # GH 767
     df = (
