@@ -4,6 +4,8 @@ from builtins import type as type_t
 from collections.abc import (
     Callable,
     Iterable,
+    MutableSequence,
+    Sequence,
 )
 import decimal
 import numbers
@@ -37,6 +39,7 @@ from typing_extensions import Self
 from pandas._typing import (
     ArrayLike,
     AstypeArg,
+    ListLike,
     ScalarIndexer,
     SequenceIndexer,
     SequenceNotStr,
@@ -91,7 +94,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
 
     def __init__(
         self,
-        values: list[decimal.Decimal | float] | np.ndarray,
+        values: MutableSequence[decimal._DecimalNew] | np.ndarray | ExtensionArray,
         dtype: DecimalDtype | None = None,
         copy: bool = False,
         context: decimal.Context | None = None,
@@ -123,7 +126,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
     @classmethod
     def _from_sequence(
         cls,
-        scalars: list[decimal.Decimal | float] | np.ndarray,
+        scalars: list[decimal._DecimalNew] | np.ndarray | ExtensionArray,
         dtype: DecimalDtype | None = None,
         copy: bool = False,
     ) -> Self:
@@ -140,7 +143,9 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
 
     @classmethod
     def _from_factorized(
-        cls, values: list[decimal.Decimal | float] | np.ndarray, original: Any
+        cls,
+        values: list[decimal._DecimalNew] | np.ndarray | ExtensionArray,
+        original: Any,
     ) -> Self:
         return cls(values)
 
@@ -186,7 +191,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
             x: (
                 decimal.Decimal
                 | numbers.Number
-                | list[decimal.Decimal | float]
+                | list[decimal._DecimalNew]
                 | np.ndarray
             ),
         ) -> decimal.Decimal | numbers.Number | DecimalArray:
@@ -240,21 +245,24 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
 
         return super().astype(dtype, copy=copy)
 
-    def __setitem__(self, key: object, value: decimal._DecimalNew) -> None:
+    def __setitem__(
+        self,
+        key: int | slice[Any, Any, Any] | ListLike,
+        value: decimal._DecimalNew | Sequence[decimal._DecimalNew],
+    ) -> None:
         if is_list_like(value):
+            assert isinstance(value, Iterable)
             if is_scalar(key):
                 raise ValueError("setting an array element with a sequence.")
-            value = [  # type: ignore[assignment]
-                decimal.Decimal(v)  # type: ignore[arg-type]
-                for v in value  # type: ignore[union-attr] # pyright: ignore[reportAssignmentType,reportGeneralTypeIssues]
+            value = [
+                decimal.Decimal(v)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+                for v in value
             ]
         else:
-            value = decimal.Decimal(value)
+            value = decimal.Decimal(value)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
-        key = check_array_indexer(  # type: ignore[call-overload]
-            self, key  # pyright: ignore[reportArgumentType,reportCallIssue]
-        )
-        self._data[key] = value  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        key = check_array_indexer(self, key)
+        self._data[key] = value
 
     def __len__(self) -> int:
         return len(self._data)
