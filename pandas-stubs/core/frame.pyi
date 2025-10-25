@@ -169,7 +169,9 @@ from pandas._typing import (
 from pandas.io.formats.style import Styler
 from pandas.plotting import PlotAccessor
 
-_T_MUTABLE_MAPPING = TypeVar("_T_MUTABLE_MAPPING", bound=MutableMapping, covariant=True)
+_T_MUTABLE_MAPPING_co = TypeVar(
+    "_T_MUTABLE_MAPPING_co", bound=MutableMapping, covariant=True
+)
 
 class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
     @overload
@@ -463,9 +465,9 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["records"],
         *,
-        into: _T_MUTABLE_MAPPING | type[_T_MUTABLE_MAPPING],
+        into: _T_MUTABLE_MAPPING_co | type[_T_MUTABLE_MAPPING_co],
         index: Literal[True] = ...,
-    ) -> list[_T_MUTABLE_MAPPING]: ...
+    ) -> list[_T_MUTABLE_MAPPING_co]: ...
     @overload
     def to_dict(
         self,
@@ -511,9 +513,9 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["dict", "list", "series"] = ...,
         *,
-        into: _T_MUTABLE_MAPPING | type[_T_MUTABLE_MAPPING],
+        into: _T_MUTABLE_MAPPING_co | type[_T_MUTABLE_MAPPING_co],
         index: Literal[True] = ...,
-    ) -> _T_MUTABLE_MAPPING: ...
+    ) -> _T_MUTABLE_MAPPING_co: ...
     @overload
     def to_dict(
         self,
