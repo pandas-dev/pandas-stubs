@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import numpy as np
 import pandas as pd
 from typing_extensions import (
     assert_type,
@@ -7,6 +8,7 @@ from typing_extensions import (
 
 from tests import (
     check,
+    np_1darray,
 )
 
 
@@ -39,8 +41,16 @@ def test_rangeindex_equals() -> None:
 
 
 def test_rangeindex_tolist() -> None:
-    ri = pd.RangeIndex(3)
+    ri = pd.RangeIndex.from_range(range(3))
     check(
         assert_type(ri.tolist(), list[int]),
         list[int],
+    )
+
+
+def test_rangeindex_get_indexer() -> None:
+    ri = pd.RangeIndex.from_range(range(3))
+    check(
+        assert_type(ri.get_indexer(ri), np_1darray[np.intp]),
+        np_1darray[np.intp],
     )

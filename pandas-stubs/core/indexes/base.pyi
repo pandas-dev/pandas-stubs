@@ -66,6 +66,7 @@ from pandas._typing import (
     S2_NSDT,
     T_COMPLEX,
     AnyAll,
+    AnyArrayLike,
     ArrayLike,
     AxesData,
     CategoryDtypeArg,
@@ -418,8 +419,12 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Self: ...
     def get_loc(self, key: Label) -> int | slice | np_1darray[np.bool]: ...
     def get_indexer(
-        self, target, method: ReindexMethod | None = ..., limit=..., tolerance=...
-    ): ...
+        self,
+        target: Index,
+        method: ReindexMethod | None = None,
+        limit: int | None = None,
+        tolerance: Scalar | AnyArrayLike | Sequence[Scalar] | None = None,
+    ) -> np_1darray[np.intp]: ...
     def reindex(
         self,
         target,
