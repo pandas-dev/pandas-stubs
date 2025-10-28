@@ -54,3 +54,11 @@ def test_rangeindex_get_indexer() -> None:
         assert_type(ri.get_indexer(ri), np_1darray[np.intp]),
         np_1darray[np.intp],
     )
+
+
+def test_rangeindex_argsort() -> None:
+    ri = pd.RangeIndex.from_range(range(3))
+    check(
+        assert_type(ri.argsort(), np_1darray[np.intp]),
+        np_1darray[np.intp],
+    )
