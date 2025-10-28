@@ -62,3 +62,18 @@ def test_rangeindex_argsort() -> None:
         assert_type(ri.argsort(), np_1darray[np.intp]),
         np_1darray[np.intp],
     )
+
+
+def test_rangeindex_join() -> None:
+    ri = pd.RangeIndex.from_range(range(3))
+    check(
+        assert_type(ri.join(ri), pd.Index),
+        pd.Index,
+    )
+    check(
+        assert_type(
+            ri.join(ri, return_indexers=True),
+            tuple[pd.Index, np_1darray[np.intp] | None, np_1darray[np.intp] | None],
+        ),
+        tuple[pd.Index, np_1darray[np.intp] | None, np_1darray[np.intp] | None],
+    )

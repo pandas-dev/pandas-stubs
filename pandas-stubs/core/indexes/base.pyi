@@ -79,6 +79,7 @@ from pandas._typing import (
     GenericT_co,
     HashableT,
     IgnoreRaise,
+    JoinHow,
     Just,
     Label,
     Level,
@@ -433,15 +434,26 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         limit=...,
         tolerance=...,
     ): ...
+    @overload
     def join(
         self,
-        other,
+        other: Index,
         *,
-        how: _str = ...,
-        level=...,
-        return_indexers: bool = ...,
-        sort: bool = ...,
-    ): ...
+        how: JoinHow = "left",
+        level: Level | None = None,
+        return_indexers: Literal[True],
+        sort: bool = False,
+    ) -> tuple[Index, np_1darray[np.intp] | None, np_1darray[np.intp] | None]: ...
+    @overload
+    def join(
+        self,
+        other: Index,
+        *,
+        how: JoinHow = "left",
+        level: Level | None = None,
+        return_indexers: Literal[False] = ...,
+        sort: bool = False,
+    ) -> Index: ...
     @property
     def values(self) -> np_1darray: ...
     def memory_usage(self, deep: bool = False): ...
