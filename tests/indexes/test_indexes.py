@@ -1566,3 +1566,15 @@ def test_datetimeindex_where() -> None:
         mask, (datetime_index - pd.Timedelta(days=1)).to_series()
     )
     check(assert_type(val_sr, DatetimeIndex), DatetimeIndex)
+
+    val_idx_scalar = datetime_index.where(mask, pd.Index([0, 1]))
+    check(assert_type(val_idx_scalar, pd.Index), pd.Index)
+
+    val_sr_scalar = datetime_index.where(mask, pd.Series([0, 1]))
+    check(assert_type(val_sr_scalar, pd.Index), pd.Index)
+
+    val_scalar = datetime_index.where(mask, 1)
+    check(assert_type(val_scalar, pd.Index), pd.Index)
+
+    val_range = pd.RangeIndex(2).where(pd.Series([True, False]), 3)
+    check(assert_type(val_range, pd.RangeIndex), pd.RangeIndex)
