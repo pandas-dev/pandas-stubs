@@ -228,14 +228,6 @@ ignore = [
   # TODO: remove when computations are fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
-"*plotting*" = [
-  # TODO: remove when plottings are fully typed
-  "ANN001", "ANN201", "ANN204", "ANN206",
-]
-"*io*" = [
-  # TODO: remove when io is fully typed
-  "ANN001", "ANN201", "ANN204", "ANN206",
-]
 "*window*" = [
   # TODO: remove when window is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",

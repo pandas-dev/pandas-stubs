@@ -19,6 +19,7 @@ from pandas.core.generic import NDFrame
 from typing_extensions import Self
 
 from pandas._typing import (
+    BaseBuffer,
     FilePath,
     HashableT,
     HashableT1,
@@ -101,7 +102,7 @@ def read_hdf(
 class HDFStore:
     def __init__(
         self,
-        path,
+        path: FilePath | BaseBuffer,
         mode: Literal["a", "w", "r", "r+"] = ...,
         complevel: int | None = ...,
         complib: HDFCompLib | None = ...,
@@ -122,7 +123,7 @@ class HDFStore:
         exc_value: BaseException | None,
         traceback: TracebackType | None,
     ) -> None: ...
-    def keys(self, include="pandas") -> list[str]: ...
+    def keys(self, include: Literal["pandas", "native"] = "pandas") -> list[str]: ...
     def __iter__(self) -> Iterator[str]: ...
     def close(self) -> None: ...
     @property

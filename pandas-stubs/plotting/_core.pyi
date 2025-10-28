@@ -17,8 +17,8 @@ from matplotlib.colors import Colormap
 from matplotlib.lines import Line2D
 import numpy as np
 import pandas as pd
-from pandas import Series
 from pandas.core.frame import DataFrame
+from pandas.core.series import Series
 from scipy.stats import gaussian_kde
 
 from pandas._typing import (
@@ -85,7 +85,7 @@ def boxplot(
 ) -> _BoxPlotT: ...
 
 class PlotAccessor:
-    def __init__(self, data) -> None: ...
+    def __init__(self, data: Series | DataFrame) -> None: ...
     @overload
     def __call__(
         self,

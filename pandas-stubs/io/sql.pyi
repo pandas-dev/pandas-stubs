@@ -22,6 +22,7 @@ from pandas._typing import (
     DtypeArg,
     DtypeBackend,
     Scalar,
+    SequenceNotStr,
     npt,
 )
 
@@ -147,12 +148,12 @@ class PandasSQL:
         self,
         frame: DataFrame,
         name: str,
-        if_exists: Literal["fail", "replace", "append"] = ...,
-        index: bool = ...,
-        index_label=...,
-        schema: str | None = ...,
-        chunksize=...,
-        dtype: DtypeArg | None = ...,
+        if_exists: Literal["fail", "replace", "append"] = "fail",
+        index: bool = True,
+        index_label: str | SequenceNotStr[str] | None = None,
+        schema: str | None = None,
+        chunksize: int | None = None,
+        dtype: DtypeArg | None = None,
         method: (
             Literal["multi"]
             | Callable[[SQLTable, Any, list[str], Iterable], int | None]

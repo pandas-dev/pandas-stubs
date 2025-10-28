@@ -3,6 +3,7 @@ from abc import (
     abstractmethod,
 )
 from collections.abc import Hashable
+from types import TracebackType
 from typing import (
     Literal,
     overload,
@@ -26,7 +27,12 @@ class ReaderBase(metaclass=ABCMeta):
     @abstractmethod
     def close(self) -> None: ...
     def __enter__(self) -> Self: ...
-    def __exit__(self, exc_type, exc_value, traceback) -> None: ...
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> None: ...
 
 @overload
 def read_sas(
