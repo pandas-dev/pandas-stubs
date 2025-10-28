@@ -1057,7 +1057,23 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __rtruediv__(self, other: Path) -> Index: ...
     @overload
-    def __floordiv__(self, other: Index[Never]) -> Index: ...
+    def __floordiv__(
+        self: Index[Never],
+        other: (
+            float
+            | Sequence[float]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Index[bool]
+            | Index[int]
+            | Index[float]
+        ),
+    ) -> Index: ...
+    @overload
+    def __floordiv__(
+        self: Index[bool] | Index[int] | Index[float], other: Index[Never]
+    ) -> Index: ...
     @overload
     def __floordiv__(
         self: Index[int] | Index[float],
@@ -1094,7 +1110,21 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         other: float | Sequence[float] | np_ndarray_float | Index[float],
     ) -> Index[float]: ...
     @overload
-    def __rfloordiv__(self, other: Index[Never]) -> Index: ...  # type: ignore[overload-overlap]
+    def __rfloordiv__(
+        self: Index[Never],
+        other: (
+            float
+            | Sequence[float]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Index[bool]
+            | Index[int]
+            | Index[float]
+        ),
+    ) -> Index: ...
+    @overload
+    def __rfloordiv__(self: Index[bool] | Index[int] | Index[float], other: Index[Never]) -> Index: ...  # type: ignore[overload-overlap]
     @overload
     def __rfloordiv__(
         self: Index[int] | Index[float],

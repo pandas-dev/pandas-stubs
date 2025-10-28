@@ -2151,6 +2151,19 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __and__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
     def __eq__(self, other: object) -> Series[_bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     @overload
+    def __floordiv__(
+        self: Series[Never],
+        other: (
+            float
+            | Sequence[float]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Index
+            | Series
+        ),
+    ) -> Series: ...
+    @overload
     def __floordiv__(self, other: Index[Never] | Series[Never]) -> Series: ...
     @overload
     def __floordiv__(
@@ -2299,6 +2312,19 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[int]: ...
+    @overload
+    def __rfloordiv__(
+        self: Series[Never],
+        other: (
+            float
+            | Sequence[float]
+            | np_ndarray_bool
+            | np_ndarray_anyint
+            | np_ndarray_float
+            | Index
+            | Series
+        ),
+    ) -> Series: ...
     @overload
     def __rfloordiv__(self, other: Index[Never] | Series[Never]) -> Series: ...
     @overload
