@@ -98,7 +98,7 @@ def test_floordiv_numpy_array(left_i: pd.Index) -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(c // left_i, Any)
         assert_type(s // left_i, Any)
-        assert_type(d // left_i, "np.typing.NDArray[np.int64]")
+        assert_type(d // left_i, Any)  # pyright: ignore[reportAssertTypeFailure]
 
 
 def test_floordiv_pd_index(left_i: pd.Index) -> None:

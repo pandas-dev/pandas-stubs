@@ -133,7 +133,7 @@ class TimedeltaIndex(
     def __floordiv__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: _DT_FACTOR_SEQ | Self
     ) -> Index[int]: ...
-    @overload  # type: ignore[override]
+    @overload
     def __rfloordiv__(  # pyrefly: ignore[bad-override]
         self,
         other: (

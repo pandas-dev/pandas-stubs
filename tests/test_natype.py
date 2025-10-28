@@ -116,6 +116,7 @@ def test_arithmetic() -> None:
     # https://github.com/pandas-dev/pandas-stubs/issues/1347
     # check(
     #     assert_type(divmod(idx_int, na), tuple[pd.Index, pd.Index]),
+    #     tuple,
     # )
     check(assert_type(divmod(1, na), tuple[NAType, NAType]), tuple)
 

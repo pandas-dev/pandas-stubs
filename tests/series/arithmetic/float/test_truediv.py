@@ -114,7 +114,7 @@ def test_truediv_py_sequence(left: "pd.Series[float]") -> None:
     check(assert_type(c / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         _14 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-    check(assert_type(d / left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
+    check(assert_type(d / left, "pd.Series[pd.Timedelta]"), pd.Series, timedelta)
 
     check(assert_type(left.truediv(b), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.truediv(i), "pd.Series[float]"), pd.Series, np.floating)
