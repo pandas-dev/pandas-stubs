@@ -3,6 +3,7 @@ from collections.abc import (
     Callable,
     Hashable,
     Iterable,
+    MutableMapping,
     Sequence,
 )
 from datetime import (
@@ -346,7 +347,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @final
     def __copy__(self, **kwargs: Any): ...
     @final
-    def __deepcopy__(self, memo=...): ...
+    def __deepcopy__(self, memo: MutableMapping[int, Any] | None = None) -> Self: ...
     def format(
         self, name: bool = ..., formatter: Callable | None = ..., na_rep: _str = ...
     ) -> list[_str]: ...

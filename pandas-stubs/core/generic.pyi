@@ -7,6 +7,7 @@ from collections.abc import (
     Hashable,
     Iterable,
     Mapping,
+    MutableMapping,
     Sequence,
 )
 import datetime as dt
@@ -162,12 +163,13 @@ class NDFrame(indexing.IndexingMixin):
         self,
         name: _str,
         con: str | sqlalchemy.engine.Connectable | sqlite3.Connection,
-        schema: _str | None = ...,
-        if_exists: Literal["fail", "replace", "append"] = "fail",
+        *,
+        schema: _str | None = None,
+        if_exists: Literal["fail", "replace", "append", "delete_rows"] = "fail",
         index: _bool = True,
         index_label: IndexLabel = None,
-        chunksize: int | None = ...,
-        dtype: DtypeArg | None = ...,
+        chunksize: int | None = None,
+        dtype: DtypeArg | None = None,
         method: (
             Literal["multi"]
             | Callable[
@@ -175,7 +177,7 @@ class NDFrame(indexing.IndexingMixin):
                 int | None,
             ]
             | None
-        ) = ...,
+        ) = None,
     ) -> int | None: ...
     @final
     def to_pickle(
@@ -442,7 +444,7 @@ class NDFrame(indexing.IndexingMixin):
     @final
     def __copy__(self, deep: _bool = ...) -> Self: ...
     @final
-    def __deepcopy__(self, memo=...) -> Self: ...
+    def __deepcopy__(self, memo: MutableMapping[int, Any] | None = None) -> Self: ...
     @final
     def convert_dtypes(
         self,
