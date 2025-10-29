@@ -66,6 +66,7 @@ from pandas._typing import (
     S2_NSDT,
     T_COMPLEX,
     AnyAll,
+    AnyArrayLike,
     ArrayLike,
     AxesData,
     CategoryDtypeArg,
@@ -78,6 +79,7 @@ from pandas._typing import (
     GenericT_co,
     HashableT,
     IgnoreRaise,
+    JoinHow,
     Just,
     Label,
     Level,
@@ -418,8 +420,12 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Self: ...
     def get_loc(self, key: Label) -> int | slice | np_1darray[np.bool]: ...
     def get_indexer(
-        self, target, method: ReindexMethod | None = ..., limit=..., tolerance=...
-    ): ...
+        self,
+        target: Index,
+        method: ReindexMethod | None = None,
+        limit: int | None = None,
+        tolerance: Scalar | AnyArrayLike | Sequence[Scalar] | None = None,
+    ) -> np_1darray[np.intp]: ...
     def reindex(
         self,
         target,
@@ -428,15 +434,26 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         limit=...,
         tolerance=...,
     ): ...
+    @overload
     def join(
         self,
-        other,
+        other: Index,
         *,
-        how: _str = ...,
-        level=...,
-        return_indexers: bool = ...,
-        sort: bool = ...,
-    ): ...
+        how: JoinHow = "left",
+        level: Level | None = None,
+        return_indexers: Literal[True],
+        sort: bool = False,
+    ) -> tuple[Index, np_1darray[np.intp] | None, np_1darray[np.intp] | None]: ...
+    @overload
+    def join(
+        self,
+        other: Index,
+        *,
+        how: JoinHow = "left",
+        level: Level | None = None,
+        return_indexers: Literal[False] = False,
+        sort: bool = False,
+    ) -> Index: ...
     @property
     def values(self) -> np_1darray: ...
     def memory_usage(self, deep: bool = False): ...
@@ -474,7 +491,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ): ...
     @final
     def sort(self, *args: Any, **kwargs: Any) -> None: ...
-    def argsort(self, *args: Any, **kwargs: Any): ...
+    def argsort(self, *args: Any, **kwargs: Any) -> np_1darray[np.intp]: ...
     def get_indexer_non_unique(self, target): ...
     @final
     def get_indexer_for(self, target, **kwargs: Any): ...
