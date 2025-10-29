@@ -187,7 +187,9 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Sequence[np.datetime64 | datetime] | IndexOpsMixin[datetime],
+        data: (
+            Sequence[np.datetime64 | datetime] | IndexOpsMixin[datetime] | DatetimeIndex
+        ),
         *,
         dtype: TimestampDtypeArg = ...,
         copy: bool = ...,
