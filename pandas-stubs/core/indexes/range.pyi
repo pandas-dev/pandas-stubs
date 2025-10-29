@@ -67,16 +67,15 @@ class RangeIndex(_IndexSubclassBase[int, np.int64]):
     def size(self) -> int: ...
     def all(self, *args: Any, **kwargs: Any) -> bool: ...
     def any(self, *args: Any, **kwargs: Any) -> bool: ...
-    @overload
-    def union(  # type: ignore[override]
+    @overload  # type: ignore[override]
+    def union(
         self, other: Sequence[int] | Index[int] | Self, sort: bool | None = None
     ) -> Index[int] | Self: ...
     @overload
-    def union(  # type: ignore[override]
+    def union(
         self, other: Sequence[HashableT] | Index, sort: bool | None = None
     ) -> Index: ...
-    @overload  # type: ignore[override]
-    # pyrefly: ignore  # bad-override
+    @overload  # type: ignore[override] # pyrefly: ignore[bad-override]
     def __getitem__(
         self,
         idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType,
