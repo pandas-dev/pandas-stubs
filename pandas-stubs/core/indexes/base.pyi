@@ -451,7 +451,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         *,
         how: JoinHow = "left",
         level: Level | None = None,
-        return_indexers: Literal[False] = ...,
+        return_indexers: Literal[False] = False,
         sort: bool = False,
     ) -> Index: ...
     @property
