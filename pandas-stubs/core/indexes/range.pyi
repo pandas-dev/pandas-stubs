@@ -4,7 +4,6 @@ from collections.abc import (
 )
 from typing import (
     Any,
-    final,
     overload,
 )
 
@@ -66,16 +65,16 @@ class RangeIndex(_IndexSubclassBase[int, np.int64]):
     ) -> tuple[np_1darray[np.intp], RangeIndex]: ...
     @property
     def size(self) -> int: ...
-    # Base class returns `Self`, but for `RangeIndex` that's not true.
-    def __floordiv__(  # type: ignore[override]
-        self, other: float | Sequence[float] | Index[int] | Index[float]
-    ) -> Index[int]: ...
     def all(self, *args: Any, **kwargs: Any) -> bool: ...
     def any(self, *args: Any, **kwargs: Any) -> bool: ...
-    @final
+    @overload
     def union(  # type: ignore[override]
-        self, other: list[HashableT] | Index, sort: bool | None = None
-    ) -> Index | Index[int] | RangeIndex: ...
+        self, other: Sequence[int] | Index[int] | Self, sort: bool | None = None
+    ) -> Index[int] | Self: ...
+    @overload
+    def union(  # type: ignore[override]
+        self, other: Sequence[HashableT] | Index, sort: bool | None = None
+    ) -> Index: ...
     @overload  # type: ignore[override]
     # pyrefly: ignore  # bad-override
     def __getitem__(

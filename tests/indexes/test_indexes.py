@@ -5,7 +5,6 @@ import datetime as dt
 from typing import (
     TYPE_CHECKING,
     Any,
-    Union,
     cast,
 )
 
@@ -269,23 +268,21 @@ def test_range_index_union() -> None:
     check(
         assert_type(
             pd.RangeIndex(0, 10).union(pd.RangeIndex(10, 20)),
-            Union[pd.Index, "pd.Index[int]", pd.RangeIndex],
+            "pd.Index[int] | pd.RangeIndex",
         ),
         pd.RangeIndex,
     )
     check(
         assert_type(
-            pd.RangeIndex(0, 10).union([11, 12, 13]),
-            Union[pd.Index, "pd.Index[int]", pd.RangeIndex],
+            pd.RangeIndex(0, 10).union([11, 12, 13]), "pd.Index[int] | pd.RangeIndex"
         ),
         pd.Index,
+        int,
     )
     check(
-        assert_type(
-            pd.RangeIndex(0, 10).union(["a", "b", "c"]),
-            Union[pd.Index, "pd.Index[int]", pd.RangeIndex],
-        ),
+        assert_type(pd.RangeIndex(0, 10).union(["a", "b", "c"]), pd.Index),
         pd.Index,
+        str,
     )
 
 
