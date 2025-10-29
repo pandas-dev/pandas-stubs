@@ -277,7 +277,7 @@ def test_range_index_union() -> None:
             pd.RangeIndex(0, 10).union([11, 12, 13]), "pd.Index[int] | pd.RangeIndex"
         ),
         pd.Index,
-        int,
+        np.integer,
     )
     check(assert_type(pd.RangeIndex(0, 10).union(["a", "b", "c"]), pd.Index), pd.Index)
 
