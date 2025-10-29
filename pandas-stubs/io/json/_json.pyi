@@ -143,7 +143,7 @@ def read_json(
         | None
     ) = ...,
     lines: bool = ...,
-    chunksize: None = ...,
+    chunksize: None = None,
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
@@ -168,7 +168,7 @@ def read_json(
         | None
     ) = ...,
     lines: Literal[True],
-    chunksize: None = ...,
+    chunksize: None = None,
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
@@ -193,7 +193,7 @@ def read_json(
         | None
     ) = ...,
     lines: bool = ...,
-    chunksize: None = ...,
+    chunksize: None = None,
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,
@@ -218,7 +218,7 @@ def read_json(
         | None
     ) = ...,
     lines: Literal[True],
-    chunksize: None = ...,
+    chunksize: None = None,
     compression: CompressionOptions = ...,
     nrows: int | None = ...,
     storage_options: StorageOptions = ...,

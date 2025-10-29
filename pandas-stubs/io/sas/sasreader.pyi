@@ -54,7 +54,7 @@ def read_sas(
 def read_sas(
     filepath_or_buffer: FilePath | ReadBuffer[bytes],
     *,
-    format: None = ...,
+    format: None = None,
     index: Hashable | None = ...,
     encoding: str | None = ...,
     chunksize: int,
@@ -87,7 +87,7 @@ def read_sas(
 def read_sas(
     filepath_or_buffer: FilePath | ReadBuffer[bytes],
     *,
-    format: None = ...,
+    format: None = None,
     index: Hashable | None = ...,
     encoding: str | None = ...,
     chunksize: int | None = ...,
@@ -101,7 +101,7 @@ def read_sas(
     format: Literal["xport", "sas7bdat"] | None = ...,
     index: Hashable | None = ...,
     encoding: str | None = ...,
-    chunksize: None = ...,
-    iterator: Literal[False] = ...,
+    chunksize: None = None,
+    iterator: Literal[False] = False,
     compression: CompressionOptions = ...,
 ) -> DataFrame: ...

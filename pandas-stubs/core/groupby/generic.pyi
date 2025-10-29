@@ -132,7 +132,7 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     @overload
     def value_counts(
         self,
-        normalize: Literal[False] = ...,
+        normalize: Literal[False] = False,
         sort: bool = ...,
         ascending: bool = ...,
         bins: int | Sequence[int] | None = ...,
@@ -314,7 +314,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def boxplot(
         self,
-        subplots: Literal[True] = ...,
+        subplots: Literal[True] = True,
         column: IndexLabel | None = ...,
         fontsize: float | str | None = ...,
         rot: float = ...,
@@ -363,7 +363,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     def value_counts(
         self: DataFrameGroupBy[ByT, Literal[True]],
         subset: ListLike | None = ...,
-        normalize: Literal[False] = ...,
+        normalize: Literal[False] = False,
         sort: bool = ...,
         ascending: bool = ...,
         dropna: bool = ...,
@@ -381,7 +381,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     def value_counts(
         self: DataFrameGroupBy[ByT, Literal[False]],
         subset: ListLike | None = ...,
-        normalize: Literal[False] = ...,
+        normalize: Literal[False] = False,
         sort: bool = ...,
         ascending: bool = ...,
         dropna: bool = ...,
@@ -411,7 +411,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         skipna: bool = ...,
         numeric_only: bool = ...,
         *,
-        level: None = ...,
+        level: None = None,
         **kwargs: Any,
     ) -> Series: ...
     @property

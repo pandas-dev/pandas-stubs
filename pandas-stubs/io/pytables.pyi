@@ -93,8 +93,8 @@ def read_hdf(
     start: int | None = ...,
     stop: int | None = ...,
     columns: list[HashableT] | None = ...,
-    iterator: Literal[False] = ...,
-    chunksize: None = ...,
+    iterator: Literal[False] = False,
+    chunksize: None = None,
     **kwargs: Any,
 ) -> DataFrame | Series: ...
 
@@ -162,8 +162,8 @@ class HDFStore:
         start: int | None = ...,
         stop: int | None = ...,
         columns: list[HashableT] | None = ...,
-        iterator: Literal[False] = ...,
-        chunksize: None = ...,
+        iterator: Literal[False] = False,
+        chunksize: None = None,
         auto_close: bool = ...,
     ) -> DataFrame | Series: ...
     def put(

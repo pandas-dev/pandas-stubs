@@ -67,8 +67,8 @@ def read_stata(
     preserve_dtypes: bool = ...,
     columns: list[HashableT] | None = ...,
     order_categoricals: bool = ...,
-    chunksize: None = ...,
-    iterator: Literal[False] = ...,
+    chunksize: None = None,
+    iterator: Literal[False] = False,
     compression: CompressionOptions = ...,
     storage_options: StorageOptions = ...,
 ) -> DataFrame: ...
