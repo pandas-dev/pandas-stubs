@@ -33,7 +33,7 @@ exclude = [ "pandas-stubs/__init__.py" ]
 
 [tool.poetry.dependencies]
 python = ">=3.10"
-types-pytz = ">= 2022.1.1"
+types-pytz = ">=2022.1.1"
 numpy = ">=1.23.5"
 
 [tool.poetry.group.dev.dependencies]
@@ -54,7 +54,7 @@ isort = ">=6.0.1"
 openpyxl = ">=3.0.10"
 numexpr = ">=2.13.1"
 lxml = ">=4.9.1"
-pyreadstat = { version = ">=1.2.0", python = "<3.14" }  # TODO: Roche/pyreadstat#310
+pyreadstat = ">=1.2.0"
 xlrd = ">=2.0.1"
 xlsxwriter = ">=3.0.3"
 pyxlsb = ">=1.0.10"
