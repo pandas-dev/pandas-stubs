@@ -2828,6 +2828,10 @@ def test_dataframe_pct_change() -> None:
         pd.DataFrame,
     )
     check(assert_type(df.pct_change(fill_value=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.pct_change(axis=0), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.pct_change(axis=1), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.pct_change(axis="columns"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.pct_change(axis="index"), pd.DataFrame), pd.DataFrame)
 
 
 def test_indexslice_setitem() -> None:

@@ -2227,6 +2227,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         fill_method: None = None,
         freq: Frequency | dt.timedelta | None = ...,
         fill_value: Scalar | NAType | None = ...,
+        axis: Axis | None = ...,
     ) -> Self: ...
     def pop(self, item: _str) -> Series: ...
     def pow(
