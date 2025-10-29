@@ -40,6 +40,7 @@ from pandas import (
     Series,
     TimedeltaIndex,
 )
+from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.base import (
     ElementOpsMixin,
     IndexOpsMixin,
@@ -457,7 +458,18 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @property
     def values(self) -> np_1darray: ...
     def memory_usage(self, deep: bool = False): ...
-    def where(self, cond, other: Scalar | ArrayLike | None = None): ...
+    @overload
+    def where(
+        self,
+        cond: Sequence[bool] | np_ndarray_bool | BooleanArray | IndexOpsMixin[bool],
+        other: S1 | Series[S1] | Self,
+    ) -> Self: ...
+    @overload
+    def where(
+        self,
+        cond: Sequence[bool] | np_ndarray_bool | BooleanArray | IndexOpsMixin[bool],
+        other: Scalar | AnyArrayLike | None = None,
+    ) -> Index: ...
     def __contains__(self, key) -> bool: ...
     @final
     def __setitem__(self, key, value) -> None: ...

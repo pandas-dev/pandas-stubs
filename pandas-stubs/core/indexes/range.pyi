@@ -9,6 +9,8 @@ from typing import (
 )
 
 import numpy as np
+from pandas.core.arrays.boolean import BooleanArray
+from pandas.core.base import IndexOpsMixin
 from pandas.core.indexes.base import (
     Index,
     _IndexSubclassBase,
@@ -16,11 +18,14 @@ from pandas.core.indexes.base import (
 from typing_extensions import Self
 
 from pandas._typing import (
+    AnyArrayLike,
     Dtype,
     HashableT,
     MaskType,
+    Scalar,
     np_1darray,
     np_ndarray_anyint,
+    np_ndarray_bool,
 )
 
 class RangeIndex(_IndexSubclassBase[int, np.int64]):
@@ -82,3 +87,8 @@ class RangeIndex(_IndexSubclassBase[int, np.int64]):
     def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, idx: int
     ) -> int: ...
+    def where(  # type: ignore[override]
+        self,
+        cond: Sequence[bool] | np_ndarray_bool | BooleanArray | IndexOpsMixin[bool],
+        other: Scalar | AnyArrayLike | None = None,
+    ) -> Index: ...
