@@ -20,6 +20,7 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Topic :: Scientific/Engineering",
   "Typing :: Stubs Only",
 ]
@@ -33,16 +34,16 @@ exclude = [ "pandas-stubs/__init__.py" ]
 [tool.poetry.dependencies]
 python = ">=3.10"
 types-pytz = ">= 2022.1.1"
-numpy = ">= 1.23.5"
+numpy = ">=1.23.5"
 
 [tool.poetry.group.dev.dependencies]
 mypy = ">=1.18.2"
-pandas = "2.3.2"
+pandas = "2.3.3"
 pyarrow = ">=10.0.1"
 pytest = ">=8.4.2"
-pyright = ">=1.1.406"
-ty = ">=0.0.1a21"
-pyrefly = ">=0.36.1"
+pyright = ">=1.1.407"
+ty = ">=0.0.1a24"
+pyrefly = ">=0.38.2"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
 typing-extensions = ">=4.4.0"
@@ -51,9 +52,9 @@ pre-commit = ">=2.19.0"
 black = ">=25.9.0"
 isort = ">=6.0.1"
 openpyxl = ">=3.0.10"
-tables = { version = ">=3.10.1", python = "<4" }
+numexpr = ">=2.13.1"
 lxml = ">=4.9.1"
-pyreadstat = ">=1.2.0"
+pyreadstat = { version = ">=1.2.0", python = "<3.14" }  # TODO: Roche/pyreadstat#310
 xlrd = ">=2.0.1"
 xlsxwriter = ">=3.0.3"
 pyxlsb = ">=1.0.10"
@@ -61,7 +62,7 @@ odfpy = ">=1.4.1"
 xarray = ">=22.6.0"
 tabulate = ">=0.8.10"
 jinja2 = ">=3.1"
-scipy = { version = ">=1.9.1", python = "<3.14" }
+scipy = ">=1.9.1"
 scipy-stubs = ">=1.15.3.0"
 SQLAlchemy = ">=2.0.39"
 types-python-dateutil = ">=2.8.19"
@@ -192,6 +193,7 @@ ignore = [
 "*.pyi" = [
   # The following rules are ignored permanently for good reasons
   "A002",    # https://docs.astral.sh/ruff/rules/builtin-argument-shadowing/
+  "ANN401",  # https://docs.astral.sh/ruff/rules/any-type/
   "FIX002",  # https://docs.astral.sh/ruff/rules/line-contains-todo/
   "N",       # https://docs.astral.sh/ruff/rules/#pep8-naming-n
   "TD002",   # https://docs.astral.sh/ruff/rules/missing-todo-author/
@@ -200,8 +202,56 @@ ignore = [
   "A004",    # https://docs.astral.sh/ruff/rules/builtin-import-shadowing/
   "PYI001",  # https://docs.astral.sh/ruff/rules/unprefixed-type-param/
   "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
-  "ERA001", "ANN001", "ANN201", "ANN204", "ANN206", "ANN401", "PLR0402", "PLC0105"
-  ]
+  "ERA001", "PLR0402", "PLC0105"
+]
+"*category.pyi" = [
+  # TODO: remove when pandas-dev/pandas-stubs#1443 is resolved
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*series.pyi" = [
+  # TODO: remove when pandas-dev/pandas-stubs#1444 is resolved
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*frame.pyi" = [
+  # TODO: remove when pandas-dev/pandas-stubs#1446 is resolved
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*index*" = [
+  # TODO: remove when indexes are fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*computation*" = [
+  # TODO: remove when computations are fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*plotting*" = [
+  # TODO: remove when plottings are fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*io*" = [
+  # TODO: remove when io is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*window*" = [
+  # TODO: remove when window is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*generic.pyi" = [
+  # TODO: remove when generic.pyi is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*array*" = [
+  # TODO: remove when array is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*_libs*" = [
+  # TODO: remove when _libs is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*base.pyi" = [
+  # TODO: remove when base.pyi's are fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
 "scripts/*" = [
   # The following rules are ignored permanently for good reasons
   "EM",      # https://docs.astral.sh/ruff/rules/#flake8-errmsg-em
@@ -209,6 +259,8 @@ ignore = [
 ]
 "tests/*" = [
   # The following rules are ignored permanently for good reasons
+  "ANN401",  # https://docs.astral.sh/ruff/rules/any-type/
+  "ARG",     # https://docs.astral.sh/ruff/rules/#flake8-unused-arguments-arg
   "B905",    # https://docs.astral.sh/ruff/rules/zip-without-explicit-strict/
   "E731",    # https://docs.astral.sh/ruff/rules/lambda-assignment/
   "EM",      # https://docs.astral.sh/ruff/rules/#flake8-errmsg-em
@@ -221,7 +273,7 @@ ignore = [
   "A001",    # https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/
   "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
   "SLF001",  # https://docs.astral.sh/ruff/rules/private-member-access/
-  "ANN001", "ANN201", "ANN204", "ANN206", "ANN401", "ARG", "ERA", "RUF", "SIM", "TRY", "PT", "NPY", "N", "DTZ", "PLR", "TC", "PGH", "S311", "C901"
+  "ERA", "RUF", "SIM", "TRY", "PT", "NPY", "N", "DTZ", "PLR", "TC", "PGH", "S311", "C901"
 ]
 "tests/test_io.py" = [
   # The following rules are ignored permanently for good reasons

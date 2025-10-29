@@ -15,9 +15,11 @@ from pandas.core.indexes.base import (
     Index,
     _IndexSubclassBase,
 )
+from typing_extensions import Self
 
 from pandas._typing import (
     AnyArrayLike,
+    Dtype,
     HashableT,
     MaskType,
     Scalar,
@@ -29,16 +31,17 @@ from pandas._typing import (
 class RangeIndex(_IndexSubclassBase[int, np.int64]):
     def __new__(
         cls,
-        start: int | RangeIndex | range = ...,
-        stop: int = ...,
-        step: int = ...,
-        dtype=...,
-        copy: bool = ...,
-        name: Hashable = ...,
+        start: int | RangeIndex | range | None = None,
+        stop: int | None = None,
+        step: int | None = None,
+        dtype: Dtype | None = None,
+        copy: bool = False,
+        name: Hashable | None = None,
     ): ...
     @classmethod
-    def from_range(cls, data, name: Hashable = ..., dtype=...): ...
-    def __reduce__(self): ...
+    def from_range(
+        cls, data: range, name: Hashable | None = None, dtype: Dtype | None = None
+    ) -> Self: ...
     @property
     def start(self) -> int: ...
     @property
@@ -59,29 +62,15 @@ class RangeIndex(_IndexSubclassBase[int, np.int64]):
     @property
     def has_duplicates(self) -> bool: ...
     def __contains__(self, key: int | np.integer) -> bool: ...
-    @final
-    def get_indexer(self, target, method=..., limit=..., tolerance=...): ...
-    def tolist(self): ...
-    def min(self, axis=..., skipna: bool = ..., *args: Any, **kwargs: Any): ...
-    def max(self, axis=..., skipna: bool = ..., *args: Any, **kwargs: Any): ...
-    def argsort(self, *args: Any, **kwargs: Any): ...
     def factorize(
         self, sort: bool = False, use_na_sentinel: bool = True
     ) -> tuple[np_1darray[np.intp], RangeIndex]: ...
-    def equals(self, other): ...
-    @final
-    def join(
-        self,
-        other,
-        *,
-        how: str = ...,
-        level=...,
-        return_indexers: bool = ...,
-        sort: bool = ...,
-    ): ...
     @property
     def size(self) -> int: ...
-    def __floordiv__(self, other): ...
+    # Base class returns `Self`, but for `RangeIndex` that's not true.
+    def __floordiv__(  # type: ignore[override]
+        self, other: float | Sequence[float] | Index[int] | Index[float]
+    ) -> Index[int]: ...
     def all(self, *args: Any, **kwargs: Any) -> bool: ...
     def any(self, *args: Any, **kwargs: Any) -> bool: ...
     @final
