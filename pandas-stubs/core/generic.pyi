@@ -7,6 +7,7 @@ from collections.abc import (
     Hashable,
     Iterable,
     Mapping,
+    MutableMapping,
     Sequence,
 )
 import datetime as dt
@@ -443,7 +444,7 @@ class NDFrame(indexing.IndexingMixin):
     @final
     def __copy__(self, deep: _bool = ...) -> Self: ...
     @final
-    def __deepcopy__(self, memo: dict[int, Any] | None = None) -> Self: ...
+    def __deepcopy__(self, memo: MutableMapping[int, Any] | None = None) -> Self: ...
     @final
     def convert_dtypes(
         self,
