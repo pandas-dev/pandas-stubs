@@ -1577,4 +1577,4 @@ def test_datetimeindex_where() -> None:
     check(assert_type(val_scalar, pd.Index), pd.Index)
 
     val_range = pd.RangeIndex(2).where(pd.Series([True, False]), 3)
-    check(assert_type(val_range, pd.RangeIndex), pd.RangeIndex)
+    check(assert_type(val_range, pd.Index), pd.RangeIndex)
