@@ -19,6 +19,7 @@ from pandas.core.arrays.interval import IntervalArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.category import CategoricalIndex
+from pandas.core.indexes.datetimes import DatetimeIndex
 from typing_extensions import (
     Never,
     assert_type,
@@ -1541,3 +1542,39 @@ def test_multiindex_swaplevel() -> None:
     """Test that MultiIndex.swaplevel returns MultiIndex"""
     mi = pd.MultiIndex.from_product([["a", "b"], [1, 2]], names=["let", "num"])
     check(assert_type(mi.swaplevel(0, 1), "pd.MultiIndex"), pd.MultiIndex)
+
+
+def test_index_where() -> None:
+    """Test Index.where with multiple types of other GH1419."""
+    idx = pd.Index(range(48))
+    mask = np.ones(48, dtype=bool)
+    val_idx = idx.where(mask, idx)
+    check(assert_type(val_idx, "pd.Index[int]"), pd.Index, int)
+
+    val_sr = idx.where(mask, (idx).to_series())
+    check(assert_type(val_sr, "pd.Index[int]"), pd.Index, int)
+
+
+def test_datetimeindex_where() -> None:
+    """Test DatetimeIndex.where with multiple types of other GH1419."""
+    datetime_index = pd.date_range(start="2025-01-01", freq="h", periods=48)
+    mask = np.ones(48, dtype=bool)
+    val_idx = datetime_index.where(mask, datetime_index - pd.Timedelta(days=1))
+    check(assert_type(val_idx, DatetimeIndex), DatetimeIndex)
+
+    val_sr = datetime_index.where(
+        mask, (datetime_index - pd.Timedelta(days=1)).to_series()
+    )
+    check(assert_type(val_sr, DatetimeIndex), DatetimeIndex)
+
+    val_idx_scalar = datetime_index.where(mask, pd.Index([0, 1]))
+    check(assert_type(val_idx_scalar, pd.Index), pd.Index)
+
+    val_sr_scalar = datetime_index.where(mask, pd.Series([0, 1]))
+    check(assert_type(val_sr_scalar, pd.Index), pd.Index)
+
+    val_scalar = datetime_index.where(mask, 1)
+    check(assert_type(val_scalar, pd.Index), pd.Index)
+
+    val_range = pd.RangeIndex(2).where(pd.Series([True, False]), 3)
+    check(assert_type(val_range, pd.Index), pd.RangeIndex)
