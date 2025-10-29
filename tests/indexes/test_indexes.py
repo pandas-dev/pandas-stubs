@@ -279,11 +279,7 @@ def test_range_index_union() -> None:
         pd.Index,
         int,
     )
-    check(
-        assert_type(pd.RangeIndex(0, 10).union(["a", "b", "c"]), pd.Index),
-        pd.Index,
-        str,
-    )
+    check(assert_type(pd.RangeIndex(0, 10).union(["a", "b", "c"]), pd.Index), pd.Index)
 
 
 def test_index_union_sort() -> None:
