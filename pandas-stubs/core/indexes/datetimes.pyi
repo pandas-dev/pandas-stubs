@@ -158,7 +158,7 @@ def bdate_range(
     normalize: bool = ...,
     name: Hashable | None = ...,
     weekmask: str | None = ...,
-    holidays: None = ...,
+    holidays: None = None,
     inclusive: IntervalClosedType = ...,
 ) -> DatetimeIndex: ...
 @overload

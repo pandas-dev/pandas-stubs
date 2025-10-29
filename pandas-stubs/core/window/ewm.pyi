@@ -70,6 +70,6 @@ class OnlineExponentialMovingWindow(ExponentialMovingWindow[NDFrameT]):
         self,
         *args: Any,
         update: NDFrameT | None = ...,
-        update_times: None = ...,
+        update_times: None = None,
         **kwargs: Any,
     ) -> NDFrameT: ...

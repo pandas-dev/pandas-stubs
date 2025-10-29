@@ -121,7 +121,7 @@ def assert_series_equal(
     obj: str = ...,
     *,
     check_index: Literal[False],
-    check_like: Literal[False] = ...,
+    check_like: Literal[False] = False,
 ) -> None: ...
 @overload
 def assert_series_equal(
@@ -141,7 +141,7 @@ def assert_series_equal(
     atol: float = ...,
     obj: str = ...,
     *,
-    check_index: Literal[True] = ...,
+    check_index: Literal[True] = True,
     check_like: bool = ...,
 ) -> None: ...
 def assert_frame_equal(

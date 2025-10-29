@@ -58,7 +58,7 @@ class Holiday:
         self,
         start_date: np.integer | float | str | _date | datetime | np.datetime64 | None,
         end_date: np.integer | float | str | _date | datetime | np.datetime64 | None,
-        return_name: Literal[True] = ...,
+        return_name: Literal[True] = True,
     ) -> Series: ...
 
 holiday_calendars: dict[str, type[AbstractHolidayCalendar]]
@@ -86,7 +86,7 @@ class AbstractHolidayCalendar:
         self,
         start: datetime | None = ...,
         end: datetime | None = ...,
-        return_name: Literal[False] = ...,
+        return_name: Literal[False] = False,
     ) -> DatetimeIndex: ...
     @staticmethod
     def merge_class(
@@ -103,7 +103,7 @@ class AbstractHolidayCalendar:
     def merge(
         self,
         other: AbstractHolidayCalendar | type[AbstractHolidayCalendar],
-        inplace: Literal[False] = ...,
+        inplace: Literal[False] = False,
     ) -> list[Holiday]: ...
 
 USMemorialDay: Holiday

@@ -336,7 +336,7 @@ def interval_range(
 @overload
 def interval_range(
     *,
-    start: None = ...,
+    start: None = None,
     end: _TimestampLike,
     periods: int | None = ...,
     freq: Frequency | dt.timedelta | None = ...,
@@ -355,7 +355,7 @@ def interval_range(
 @overload
 def interval_range(
     *,
-    start: None = ...,
+    start: None = None,
     end: _TimedeltaLike,
     periods: int | None = ...,
     freq: Frequency | dt.timedelta | None = ...,
