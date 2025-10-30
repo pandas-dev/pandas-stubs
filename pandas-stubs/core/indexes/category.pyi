@@ -2,7 +2,6 @@ from collections.abc import (
     Hashable,
     Iterable,
 )
-from typing import final
 
 import numpy as np
 from pandas.core import accessor
@@ -11,7 +10,10 @@ from pandas.core.indexes.base import Index
 from pandas.core.indexes.extension import ExtensionIndex
 from typing_extensions import Self
 
-from pandas._typing import S1
+from pandas._typing import (
+    S1,
+    Dtype,
+)
 
 class CategoricalIndex(ExtensionIndex[S1], accessor.PandasDelegate):
     codes: np.ndarray = ...
@@ -22,27 +24,17 @@ class CategoricalIndex(ExtensionIndex[S1], accessor.PandasDelegate):
         cls,
         data: Iterable[S1] = ...,
         categories=...,
-        ordered=...,
-        dtype=...,
-        copy: bool = ...,
-        name: Hashable = ...,
+        ordered: bool | None = None,
+        dtype: Dtype | None = None,
+        copy: bool = False,
+        name: Hashable | None = None,
     ) -> Self: ...
-    def equals(self, other): ...
     @property
     def inferred_type(self) -> str: ...
-    @property
-    def values(self): ...
-    def __contains__(self, key) -> bool: ...
     @property
     def is_unique(self) -> bool: ...
     @property
     def is_monotonic_increasing(self) -> bool: ...
     @property
     def is_monotonic_decreasing(self) -> bool: ...
-    def unique(self, level=...): ...
     def reindex(self, target, method=..., level=..., limit=..., tolerance=...): ...
-    @final
-    def get_indexer(self, target, method=..., limit=..., tolerance=...): ...
-    def get_indexer_non_unique(self, target): ...
-    def delete(self, loc): ...
-    def insert(self, loc, item): ...
