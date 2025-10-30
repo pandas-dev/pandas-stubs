@@ -85,13 +85,10 @@ HashableT5 = TypeVar("HashableT5", bound=Hashable)
 
 # array-like
 
-ArrayLike: TypeAlias = ExtensionArray | np.ndarray[tuple[int], np.dtype[Any]]
+ArrayLike: TypeAlias = ExtensionArray | npt.NDArray[Any]
 AnyArrayLike: TypeAlias = ArrayLike | Index | Series
 AnyArrayLikeInt: TypeAlias = (
-    IntegerArray
-    | Index[int]
-    | Series[int]
-    | np.ndarray[tuple[int], np.dtype[np.integer]]
+    IntegerArray | Index[int] | Series[int] | npt.NDArray[np.integer]
 )
 
 # list-like
