@@ -24,7 +24,7 @@ def test_index_relops() -> None:
     )
     x = pd.Timestamp("2022-01-17")
     idx = check(
-        assert_type(pd.Index(data, name="date"), "pd.Index[pd.Timestamp]"), pd.Index
+        assert_type(pd.Index(data, name="date"), pd.DatetimeIndex), pd.DatetimeIndex
     )
     check(assert_type(data[x <= idx], pd.DatetimeIndex), pd.DatetimeIndex)
     check(assert_type(data[x < idx], pd.DatetimeIndex), pd.DatetimeIndex)

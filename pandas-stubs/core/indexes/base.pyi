@@ -189,7 +189,9 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Sequence[np.datetime64 | datetime] | IndexOpsMixin[datetime],
+        data: (
+            Sequence[np.datetime64 | datetime] | IndexOpsMixin[datetime] | DatetimeIndex
+        ),
         *,
         dtype: TimestampDtypeArg = ...,
         copy: bool = ...,
@@ -276,6 +278,16 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         name: Hashable = ...,
         tupleize_cols: bool = ...,
     ) -> IntervalIndex[Interval[Any]]: ...
+    @overload
+    def __new__(
+        cls,
+        data: DatetimeIndex,
+        *,
+        dtype: TimestampDtypeArg | None = ...,
+        copy: bool = ...,
+        name: Hashable = ...,
+        tupleize_cols: bool = ...,
+    ) -> DatetimeIndex: ...
     # generic overloads
     @overload
     def __new__(
