@@ -6,7 +6,6 @@ import datetime as dt
 from typing import (
     Literal,
     TypeAlias,
-    final,
     overload,
 )
 
@@ -22,7 +21,6 @@ from pandas._libs.interval import (
 from pandas._typing import (
     DatetimeLike,
     DtypeArg,
-    FillnaOptions,
     Frequency,
     IntervalClosedType,
     IntervalT,
@@ -219,14 +217,6 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     @property
     def is_overlapping(self) -> bool: ...
     def get_loc(self, key: Label) -> int | slice | np_1darray[np.bool]: ...
-    @final
-    def get_indexer(
-        self,
-        target: Index,
-        method: FillnaOptions | Literal["nearest"] | None = ...,
-        limit: int | None = ...,
-        tolerance=...,
-    ) -> np_1darray[np.intp]: ...
     def get_indexer_non_unique(
         self, target: Index
     ) -> tuple[npt.NDArray[np.intp], npt.NDArray[np.intp]]: ...

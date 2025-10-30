@@ -216,8 +216,16 @@ ignore = [
   # TODO: remove when pandas-dev/pandas-stubs#1446 is resolved
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
-"*index*" = [
-  # TODO: remove when indexes are fully typed
+"indexers.pyi" = [
+  # TODO: remove when indexers.pyi is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"multi.pyi" = [
+  # TODO: remove when multi.pyi is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"indexing.pyi" = [
+  # TODO: remove when indexing.pyi is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
 "*computation*" = [
