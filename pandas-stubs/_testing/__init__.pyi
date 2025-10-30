@@ -12,7 +12,7 @@ from typing import (
 import warnings
 
 from matplotlib.artist import Artist
-import numpy as np
+from numpy import typing as npt
 from pandas import (
     Categorical,
     DataFrame,
@@ -61,7 +61,7 @@ def assert_attr_equal(
     attr: str, left: object, right: object, obj: str = "Attributes"
 ) -> None: ...
 def assert_is_valid_plot_return_object(
-    objs: Series | np.ndarray | Artist | tuple | dict,
+    objs: Series | npt.NDArray[Any] | Artist | tuple | dict,
 ) -> None: ...
 def assert_is_sorted(seq: AnyArrayLike) -> None: ...
 def assert_categorical_equal(
@@ -96,7 +96,7 @@ def assert_extension_array_equal(
     left: ExtensionArray,
     right: ExtensionArray,
     check_dtype: bool | Literal["equiv"] = True,
-    index_values: Index | np.ndarray | None = None,
+    index_values: Index | npt.NDArray[Any] | None = None,
     check_exact: bool = False,
     rtol: float = 1e-5,
     atol: float = 1e-8,

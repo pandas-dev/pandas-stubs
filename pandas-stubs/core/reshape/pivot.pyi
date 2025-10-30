@@ -6,6 +6,7 @@ from collections.abc import (
 )
 import datetime
 from typing import (
+    Any,
     Literal,
     TypeAlias,
     overload,
@@ -85,7 +86,7 @@ def pivot_table(
     values: _PivotTableValuesTypes = ...,
     *,
     index: Grouper,
-    columns: _PivotTableColumnsTypes | Index | npt.NDArray = ...,
+    columns: _PivotTableColumnsTypes | Index | npt.NDArray[Any] = ...,
     aggfunc: (
         _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
     ) = ...,
@@ -100,7 +101,7 @@ def pivot_table(
 def pivot_table(
     data: DataFrame,
     values: _PivotTableValuesTypes = ...,
-    index: _PivotTableIndexTypes | Index | npt.NDArray = ...,
+    index: _PivotTableIndexTypes | Index | npt.NDArray[Any] = ...,
     *,
     columns: Grouper,
     aggfunc: (

@@ -85,10 +85,13 @@ HashableT5 = TypeVar("HashableT5", bound=Hashable)
 
 # array-like
 
-ArrayLike: TypeAlias = ExtensionArray | np.ndarray
+ArrayLike: TypeAlias = ExtensionArray | np.ndarray[tuple[int], np.dtype[Any]]
 AnyArrayLike: TypeAlias = ArrayLike | Index | Series
 AnyArrayLikeInt: TypeAlias = (
-    IntegerArray | Index[int] | Series[int] | npt.NDArray[np.integer]
+    IntegerArray
+    | Index[int]
+    | Series[int]
+    | np.ndarray[tuple[int], np.dtype[np.integer]]
 )
 
 # list-like
@@ -166,6 +169,7 @@ ToTimestampHow: TypeAlias = Literal["s", "e", "start", "end"]
 NDFrameT = TypeVar("NDFrameT", bound=NDFrame)
 
 IndexT = TypeVar("IndexT", bound=Index)
+T_EXTENSION_ARRAY = TypeVar("T_EXTENSION_ARRAY", bound=ExtensionArray)
 
 # From _typing.py, not used here:
 # FreqIndexT = TypeVar("FreqIndexT", "DatetimeIndex", "PeriodIndex", "TimedeltaIndex")
@@ -697,11 +701,11 @@ InterpolateOptions: TypeAlias = Literal[
 # Using List[int] here rather than Sequence[int] to disallow tuples.
 
 ScalarIndexer: TypeAlias = int | np.integer
-SequenceIndexer: TypeAlias = slice | list[int] | np.ndarray
+SequenceIndexer: TypeAlias = slice | list[int] | npt.NDArray[np.integer | np.bool]
 PositionalIndexer: TypeAlias = ScalarIndexer | SequenceIndexer
 PositionalIndexerTuple: TypeAlias = tuple[PositionalIndexer, PositionalIndexer]
 # PositionalIndexer2D = Union[PositionalIndexer, PositionalIndexerTuple] Not used in stubs
-TakeIndexer: TypeAlias = Sequence[int] | Sequence[np.integer] | npt.NDArray[np.integer]
+TakeIndexer: TypeAlias = Sequence[int | np.integer] | npt.NDArray[np.integer | np.bool]
 
 # Shared by functions such as drop and astype
 IgnoreRaise: TypeAlias = Literal["ignore", "raise"]
@@ -832,18 +836,6 @@ SliceType: TypeAlias = Hashable | None
 ## All types below this point are only used in pandas-stubs
 ######
 
-num: TypeAlias = complex
-
-DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
-KeysArgType: TypeAlias = Any
-ListLikeT = TypeVar("ListLikeT", bound=ListLike)
-ListLikeExceptSeriesAndStr: TypeAlias = (
-    MutableSequence[Any] | np.ndarray | tuple[Any, ...] | Index
-)
-ListLikeU: TypeAlias = Sequence | np.ndarray | Series | Index
-ListLikeHashable: TypeAlias = (
-    MutableSequence[HashableT] | np.ndarray | tuple[HashableT, ...] | range
-)
 StrLike: TypeAlias = str | np.str_
 
 ScalarT = TypeVar("ScalarT", bound=Scalar)
@@ -870,6 +862,17 @@ np_ndarray: TypeAlias = np.ndarray[ShapeT, np.dtype[GenericT]]
 # Numpy arrays with known shape (Do not use as argument types, only as return types)
 np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[GenericT]]
 np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[GenericT]]
+
+DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
+KeysArgType: TypeAlias = Any
+ListLikeT = TypeVar("ListLikeT", bound=ListLike)
+ListLikeExceptSeriesAndStr: TypeAlias = (
+    MutableSequence[Any] | np_1darray[Any] | tuple[Any, ...] | Index
+)
+ListLikeU: TypeAlias = Sequence | np_1darray[Any] | Series | Index
+ListLikeHashable: TypeAlias = (
+    MutableSequence[HashableT] | np_1darray[Any] | tuple[HashableT, ...] | range
+)
 
 class SupportsDType(Protocol[GenericT_co]):
     @property

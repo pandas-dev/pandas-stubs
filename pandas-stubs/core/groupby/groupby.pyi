@@ -240,7 +240,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         adjust: bool = ...,
         ignore_na: bool = ...,
         axis: Axis = ...,
-        times: str | np.ndarray | Series | np.timedelta64 | None = ...,
+        times: str | npt.NDArray[Any] | Series | np.timedelta64 | None = ...,
         method: CalculationMethod = ...,
         *,
         selection: IndexLabel | None = ...,

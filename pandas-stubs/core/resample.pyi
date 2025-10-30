@@ -12,16 +12,14 @@ from typing import (
 )
 
 import numpy as np
-from pandas import (
-    DataFrame,
-    Series,
-    Timedelta,
-)
+from pandas.core.frame import DataFrame
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.core.groupby.grouper import Grouper
+from pandas.core.series import Series
 from typing_extensions import Self
 
+from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
     S1,
     Axis,
@@ -30,7 +28,7 @@ from pandas._typing import (
     Scalar,
     TimeGrouperOrigin,
     TimestampConvention,
-    npt,
+    np_1darray,
 )
 
 _FrameGroupByFunc: TypeAlias = (
@@ -167,7 +165,7 @@ class Resampler(BaseGroupBy[NDFrameT]):
     @final
     def quantile(
         self,
-        q: float | list[float] | npt.NDArray[np.double] | Series[float] = 0.5,
+        q: float | list[float] | np_1darray[np.double] | Series[float] = 0.5,
         **kwargs: Any,
     ) -> NDFrameT: ...
 

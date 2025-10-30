@@ -5,6 +5,7 @@ from typing import (
 )
 
 import numpy as np
+from numpy import typing as npt
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
@@ -105,6 +106,6 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def contains(self, other: Series) -> Series[bool]: ...
     @overload
     def contains(
-        self, other: Scalar | ExtensionArray | Index | np.ndarray
+        self, other: Scalar | ExtensionArray | Index | npt.NDArray[Any]
     ) -> np_1darray[np.bool]: ...
     def overlaps(self, other: Interval) -> bool: ...

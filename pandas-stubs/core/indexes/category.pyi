@@ -2,9 +2,12 @@ from collections.abc import (
     Hashable,
     Iterable,
 )
-from typing import final
+from typing import (
+    Any,
+    final,
+)
 
-import numpy as np
+from numpy import typing as npt
 from pandas.core import accessor
 from pandas.core.arrays.categorical import Categorical
 from pandas.core.indexes.base import Index
@@ -14,7 +17,7 @@ from typing_extensions import Self
 from pandas._typing import S1
 
 class CategoricalIndex(ExtensionIndex[S1], accessor.PandasDelegate):
-    codes: np.ndarray = ...
+    codes: npt.NDArray[Any] = ...
     categories: Index = ...
     @property
     def array(self) -> Categorical: ...  # type: ignore[override] # pyrefly: ignore[bad-override]
