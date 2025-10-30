@@ -13,6 +13,7 @@ from typing_extensions import Self
 from pandas._typing import (
     S1,
     Dtype,
+    ListLike,
 )
 
 class CategoricalIndex(ExtensionIndex[S1], accessor.PandasDelegate):
@@ -23,7 +24,7 @@ class CategoricalIndex(ExtensionIndex[S1], accessor.PandasDelegate):
     def __new__(
         cls,
         data: Iterable[S1] = ...,
-        categories=...,
+        categories: ListLike | None = None,
         ordered: bool | None = None,
         dtype: Dtype | None = None,
         copy: bool = False,
