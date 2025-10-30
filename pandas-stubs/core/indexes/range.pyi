@@ -37,7 +37,7 @@ class RangeIndex(_IndexSubclassBase[int, np.int64]):
         dtype: Dtype | None = None,
         copy: bool = False,
         name: Hashable | None = None,
-    ): ...
+    ) -> Self: ...
     @classmethod
     def from_range(
         cls, data: range, name: Hashable | None = None, dtype: Dtype | None = None
