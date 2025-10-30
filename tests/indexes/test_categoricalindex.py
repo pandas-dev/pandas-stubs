@@ -22,9 +22,10 @@ def test_categoricalindex_unique() -> None:
 
 def test_categoricalindex_reindex() -> None:
     ci = pd.CategoricalIndex(["a", "b"])
-    reindexed = ci.reindex(["b", "c"])
-    check(assert_type(reindexed[0], pd.Index), pd.Index)
-    check(assert_type(reindexed[1], np_1darray[np.intp] | None), np_1darray)
+    check(
+        assert_type(ci.reindex([0, 1]), tuple[pd.Index, np_1darray[np.intp] | None]),
+        tuple,
+    )
 
 
 def test_categoricalindex_delete() -> None:
