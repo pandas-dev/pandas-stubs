@@ -431,12 +431,12 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> np_1darray[np.intp]: ...
     def reindex(
         self,
-        target,
-        method: ReindexMethod | None = ...,
-        level=...,
-        limit=...,
-        tolerance=...,
-    ): ...
+        target: Iterable[Any],
+        method: ReindexMethod | None = None,
+        level: int | None = None,
+        limit: int | None = None,
+        tolerance: Scalar | AnyArrayLike | Sequence[Scalar] | None = None,
+    ) -> tuple[Index, np_1darray[np.intp] | None]: ...
     @overload
     def join(
         self,
