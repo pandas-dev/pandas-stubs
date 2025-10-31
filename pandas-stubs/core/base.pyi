@@ -17,6 +17,7 @@ from typing import (
 
 from _typeshed import _T_contra
 import numpy as np
+from numpy import typing as npt
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
@@ -174,7 +175,7 @@ NumListLike: TypeAlias = (
     | np_ndarray_anyint
     | np_ndarray_float
     | np_ndarray_complex
-    | dict[str, np_1darray[Any]]
+    | dict[str, npt.NDArray[Any]]
     | Sequence[complex]
 )
 
