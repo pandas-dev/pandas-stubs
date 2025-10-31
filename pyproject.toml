@@ -204,10 +204,6 @@ ignore = [
   "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
   "ERA001", "PLR0402", "PLC0105"
 ]
-"*category.pyi" = [
-  # TODO: remove when pandas-dev/pandas-stubs#1443 is resolved
-  "ANN001", "ANN201", "ANN204", "ANN206",
-]
 "*series.pyi" = [
   # TODO: remove when pandas-dev/pandas-stubs#1444 is resolved
   "ANN001", "ANN201", "ANN204", "ANN206",
