@@ -36,7 +36,6 @@ from pandas._typing import (
     np_ndarray_dt,
     np_ndarray_float,
     np_ndarray_td,
-    num,
 )
 
 _NUM_FACTOR: TypeAlias = Just[int] | Just[float] | np.integer | np.floating
@@ -125,7 +124,7 @@ class TimedeltaIndex(
     ) -> Index[float]: ...
     @overload  # type: ignore[override]
     # pyrefly: ignore  # bad-override
-    def __floordiv__(self, other: num | Sequence[float]) -> Self: ...
+    def __floordiv__(self, other: float | Sequence[float]) -> Self: ...
     @overload
     def __floordiv__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: dt.timedelta | Sequence[dt.timedelta]

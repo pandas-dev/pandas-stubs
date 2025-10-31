@@ -5,7 +5,6 @@ from typing import (
     overload,
 )
 
-import numpy as np
 from pandas.core.arrays.base import (
     ExtensionArray,
     ExtensionOpsMixin,
@@ -65,7 +64,7 @@ class DatetimeLikeArrayMixin(ExtensionOpsMixin, ExtensionArray):
     def ravel(self, *args: Any, **kwargs: Any): ...
     def __iter__(self): ...
     @property
-    def asi8(self) -> np.ndarray: ...
+    def asi8(self) -> np_1darray[Any]: ...
     @property
     def nbytes(self): ...
     def __array__(

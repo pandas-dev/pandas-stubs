@@ -30,6 +30,8 @@ from pandas._typing import (
 )
 from pandas.util._decorators import cache_readonly
 
+from pandas.io.formats.printing import PrettyDict
+
 class Grouper:
     key: KeysArgType | None
     level: Level | ListLikeHashable[Level] | None
@@ -73,3 +75,5 @@ class Grouping:
     def result_index(self) -> Index: ...
     @cache_readonly
     def group_index(self) -> Index: ...
+    @cache_readonly
+    def groups(self) -> PrettyDict[Hashable, Index]: ...

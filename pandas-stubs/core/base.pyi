@@ -17,6 +17,7 @@ from typing import (
 
 from _typeshed import _T_contra
 import numpy as np
+from numpy import typing as npt
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
@@ -151,7 +152,7 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
     def is_monotonic_increasing(self) -> bool: ...
     def factorize(
         self, sort: bool = False, use_na_sentinel: bool = True
-    ) -> tuple[np_1darray, np_1darray | Index | Categorical]: ...
+    ) -> tuple[np_1darray[Any], np_1darray | Index | Categorical]: ...
     @overload
     def searchsorted(
         self,
@@ -174,7 +175,7 @@ NumListLike: TypeAlias = (
     | np_ndarray_anyint
     | np_ndarray_float
     | np_ndarray_complex
-    | dict[str, np.ndarray]
+    | dict[str, npt.NDArray[Any]]
     | Sequence[complex]
 )
 

@@ -26,6 +26,7 @@ from typing import (
 )
 
 import numpy as np
+from numpy import typing as npt
 import pandas as pd
 from pandas.api.extensions import (
     ExtensionArray,
@@ -33,6 +34,7 @@ from pandas.api.extensions import (
 )
 from pandas.api.typing import NAType
 from pandas.core.arrays.datetimes import DatetimeArray
+from pandas.core.arrays.string_ import StringArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.window import ExponentialMovingWindow
 from pandas.core.window.expanding import Expanding
@@ -771,7 +773,7 @@ def test_types_value_counts() -> None:
 
 def test_types_unique() -> None:
     s = pd.Series([-10, 2, 2, 3, 10, 10])
-    check(assert_type(s.unique(), np.ndarray), np.ndarray)
+    check(assert_type(s.unique(), np_1darray[Any]), np_1darray[Any])
 
 
 def test_types_apply() -> None:
@@ -1412,31 +1414,41 @@ def test_types_rename_axis() -> None:
 
 def test_types_values() -> None:
     check(
-        assert_type(pd.Series([1, 2, 3]).values, ExtensionArray | np.ndarray),
-        np.ndarray,
+        assert_type(
+            pd.Series([1, 2, 3]).values,
+            np_1darray[Any] | ExtensionArray | pd.Categorical,
+        ),
+        np_1darray,
+        np.integer,
     )
-    valresult_type: type[np.ndarray | ExtensionArray]
+    valresult_type: type[np_1darray[Any] | ExtensionArray | pd.Categorical]
     if PD_LTE_23:
-        valresult_type = np.ndarray
+        valresult_type = np_1darray[Any]
     else:
-        valresult_type = ExtensionArray
+        valresult_type = StringArray
     check(
-        assert_type(pd.Series(list("aabc")).values, np.ndarray | ExtensionArray),
+        assert_type(
+            pd.Series(list("aabc")).values,
+            np_1darray[Any] | ExtensionArray | pd.Categorical,
+        ),
         valresult_type,
+        str,
     )
     check(
         assert_type(
             pd.Series(list("aabc")).astype("category").values,
-            np.ndarray | ExtensionArray,
+            np_1darray[Any] | ExtensionArray | pd.Categorical,
         ),
         pd.Categorical,
+        str,
     )
     check(
         assert_type(
             pd.Series(pd.date_range("20130101", periods=3, tz="US/Eastern")).values,
-            np.ndarray | ExtensionArray,
+            np_1darray[Any] | ExtensionArray | pd.Categorical,
         ),
-        np.ndarray,
+        np_1darray,
+        np.datetime64,
     )
 
 
@@ -1572,8 +1584,8 @@ def test_types_dot() -> None:
     check(assert_type(s1 @ s2, Scalar), np.int64)
     check(assert_type(s1.dot(df1), "pd.Series[int]"), pd.Series, np.int64)
     check(assert_type(s1 @ df1, pd.Series), pd.Series)
-    check(assert_type(s1.dot(n1), np.ndarray), np.ndarray)
-    check(assert_type(s1 @ n1, np.ndarray), np.ndarray)
+    check(assert_type(s1.dot(n1), npt.NDArray[Any]), npt.NDArray[Any])
+    check(assert_type(s1 @ n1, npt.NDArray[Any]), npt.NDArray[Any])
 
 
 def test_series_loc_setitem() -> None:

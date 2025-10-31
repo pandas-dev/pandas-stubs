@@ -54,6 +54,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     ensure_clean,
+    np_1darray,
     np_2darray,
     pytest_warns_bounded,
 )
@@ -630,7 +631,8 @@ def test_types_eval() -> None:
     check(assert_type(df.eval("C = col1 % col2 == 0", inplace=True), None), type(None))
     check(
         assert_type(
-            df.eval("E = col1 > col2"), Scalar | np.ndarray | pd.DataFrame | pd.Series
+            df.eval("E = col1 > col2"),
+            Scalar | npt.NDArray[Any] | pd.DataFrame | pd.Series,
         ),
         pd.DataFrame,
     )
@@ -1086,7 +1088,7 @@ def test_types_value_counts() -> None:
 def test_types_unique() -> None:
     # This is really more for of a Series test
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [1, 4]})
-    check(assert_type(df["col1"].unique(), np.ndarray), np.ndarray)
+    check(assert_type(df["col1"].unique(), np_1darray[Any]), np_1darray[Any])
 
 
 def test_types_apply() -> None:

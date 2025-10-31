@@ -19,7 +19,7 @@ from typing import (
 )
 
 from matplotlib.axes import Axes as PlotAxes
-import numpy as np
+from numpy import typing as npt
 from pandas.core.frame import DataFrame
 from pandas.core.groupby.base import TransformReductionListType
 from pandas.core.groupby.groupby import (
@@ -418,7 +418,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     def plot(self) -> GroupByPlot[Self]: ...
     def corr(
         self,
-        method: str | Callable[[np.ndarray, np.ndarray], float] = ...,
+        method: str | Callable[[npt.NDArray[Any], npt.NDArray[Any]], float] = ...,
         min_periods: int = ...,
         numeric_only: bool = False,
     ) -> DataFrame: ...

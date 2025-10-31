@@ -52,7 +52,7 @@ class _SeriesFunc(Protocol):
 class _DataFrameFunc(Protocol):
     def __call__(
         self, series: DataFrame, /, *args: Any, **kwargs: Any
-    ) -> npt.NDArray | DataFrame: ...
+    ) -> npt.NDArray[Any] | DataFrame: ...
 
 class _MapCallable(Protocol):
     def __call__(
@@ -238,7 +238,7 @@ class Styler(StylerRenderer):
     @overload
     def apply(
         self,
-        func: _DataFrameFunc | Callable[[DataFrame], npt.NDArray | DataFrame],
+        func: _DataFrameFunc | Callable[[DataFrame], npt.NDArray[Any] | DataFrame],
         axis: None,
         subset: Subset | None = ...,
         **kwargs: Any,
@@ -295,7 +295,7 @@ class Styler(StylerRenderer):
         gmap: (
             Sequence[float]
             | Sequence[Sequence[float]]
-            | npt.NDArray
+            | npt.NDArray[Any]
             | DataFrame
             | Series
             | None
@@ -313,7 +313,7 @@ class Styler(StylerRenderer):
         gmap: (
             Sequence[float]
             | Sequence[Sequence[float]]
-            | npt.NDArray
+            | npt.NDArray[Any]
             | DataFrame
             | Series
             | None
@@ -334,7 +334,7 @@ class Styler(StylerRenderer):
         align: (
             Literal["left", "right", "zero", "mid", "mean"]
             | float
-            | Callable[[Series | npt.NDArray | DataFrame], float]
+            | Callable[[Series | npt.NDArray[Any] | DataFrame], float]
         ) = "mid",
         vmin: float | None = None,
         vmax: float | None = None,

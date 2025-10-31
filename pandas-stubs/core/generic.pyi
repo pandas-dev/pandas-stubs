@@ -21,7 +21,7 @@ from typing import (
     overload,
 )
 
-import numpy as np
+from numpy import typing as npt
 from pandas import Index
 import pandas.core.indexing as indexing
 from pandas.core.resample import DatetimeIndexResampler
@@ -100,7 +100,7 @@ class NDFrame(indexing.IndexingMixin):
     @property
     def empty(self) -> _bool: ...
     __array_priority__: int = ...
-    def __array__(self, dtype=...) -> np.ndarray: ...
+    def __array__(self, dtype=...) -> npt.NDArray[Any]: ...
     @final
     def to_excel(
         self,

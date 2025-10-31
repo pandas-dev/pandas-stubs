@@ -1,10 +1,12 @@
 from typing import Any
 
-import numpy as np
 from pandas.core.arrays.masked import BaseMaskedArray as BaseMaskedArray
 
 from pandas._libs.missing import NAType
-from pandas._typing import type_t
+from pandas._typing import (
+    np_ndarray_bool,
+    type_t,
+)
 
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
 
@@ -16,7 +18,7 @@ class BooleanDtype(ExtensionDtype):
 
 class BooleanArray(BaseMaskedArray):
     def __init__(
-        self, values: np.ndarray, mask: np.ndarray, copy: bool = ...
+        self, values: np_ndarray_bool, mask: np_ndarray_bool, copy: bool = ...
     ) -> None: ...
     @property
     def dtype(self): ...

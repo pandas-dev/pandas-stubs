@@ -6,6 +6,7 @@ from typing import (
 )
 
 import numpy as np
+from numpy import typing as npt
 import pandas as pd
 from pandas import Index
 from pandas.core.indexes.accessors import PeriodIndexFieldOps
@@ -67,7 +68,7 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period, np.object_], PeriodIndexField
     def asof_locs(
         self,
         where: pd.DatetimeIndex | PeriodIndex,
-        mask: np_1darray[np.bool_],
+        mask: npt.NDArray[np.bool_],
     ) -> np_1darray[np.intp]: ...
     @property
     def is_full(self) -> bool: ...

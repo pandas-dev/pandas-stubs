@@ -1,13 +1,16 @@
 from typing import Any
 
-import numpy as np
-from pandas import DatetimeIndex
+from numpy import typing as npt
+from pandas.core.indexes.datetimes import DatetimeIndex
 
 from pandas._libs.tslibs import BaseOffset
 
 class BaseIndexer:
     def __init__(
-        self, index_array: np.ndarray | None = None, window_size: int = 0, **kwargs: Any
+        self,
+        index_array: npt.NDArray[Any] | None = None,
+        window_size: int = 0,
+        **kwargs: Any,
     ) -> None: ...
     def get_window_bounds(
         self,
@@ -16,14 +19,14 @@ class BaseIndexer:
         center: bool | None,
         closed: str | None = None,
         step: int | None = None,
-    ) -> tuple[np.ndarray, np.ndarray]: ...
+    ) -> tuple[npt.NDArray[Any], npt.NDArray[Any]]: ...
 
 class FixedForwardWindowIndexer(BaseIndexer): ...
 
 class VariableOffsetWindowIndexer(BaseIndexer):
     def __init__(
         self,
-        index_array: np.ndarray | None = None,
+        index_array: npt.NDArray[Any] | None = None,
         window_size: int = 0,
         index: DatetimeIndex | None = None,
         offset: BaseOffset | None = None,

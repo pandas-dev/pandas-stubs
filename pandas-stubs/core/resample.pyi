@@ -12,16 +12,15 @@ from typing import (
 )
 
 import numpy as np
-from pandas import (
-    DataFrame,
-    Series,
-    Timedelta,
-)
+from numpy import typing as npt
+from pandas.core.frame import DataFrame
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.core.groupby.grouper import Grouper
+from pandas.core.series import Series
 from typing_extensions import Self
 
+from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
     S1,
     Axis,
@@ -30,7 +29,6 @@ from pandas._typing import (
     Scalar,
     TimeGrouperOrigin,
     TimestampConvention,
-    npt,
 )
 
 _FrameGroupByFunc: TypeAlias = (
