@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime as dt
 import random
+import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -822,6 +823,9 @@ def test_to_numeric_array_series() -> None:
     )
 
 
+@pytest.mark.xfail(
+    sys.version_info >= (3, 14), reason="sys.getrefcount pandas-dev/pandas#61368"
+)
 def test_wide_to_long() -> None:
     df = pd.DataFrame(
         {
@@ -1145,6 +1149,9 @@ def test_qcut() -> None:
     check(assert_type(j1, npt.NDArray[np.double]), np.ndarray)
 
 
+@pytest.mark.xfail(
+    sys.version_info >= (3, 14), reason="sys.getrefcount pandas-dev/pandas#61368"
+)
 def test_merge() -> None:
     ls = pd.Series([1, 2, 3, 4], index=[1, 2, 3, 4], name="left")
     rs = pd.Series([3, 4, 5, 6], index=[3, 4, 5, 6], name="right")
@@ -1307,6 +1314,9 @@ def test_merge() -> None:
     )
 
 
+@pytest.mark.xfail(
+    sys.version_info >= (3, 14), reason="sys.getrefcount pandas-dev/pandas#61368"
+)
 def test_merge_ordered() -> None:
     ls = pd.Series([1, 2, 3, 4], index=[1, 2, 3, 4], name="left")
     rs = pd.Series([3, 4, 5, 6], index=[3, 4, 5, 6], name="right")

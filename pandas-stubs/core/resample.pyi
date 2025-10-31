@@ -113,7 +113,7 @@ class Resampler(BaseGroupBy[NDFrameT]):
         *,
         axis: Axis = ...,
         limit: int | None = ...,
-        inplace: Literal[False] = ...,
+        inplace: Literal[False] = False,
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
         **kwargs: Any,
@@ -175,7 +175,7 @@ class Resampler(BaseGroupBy[NDFrameT]):
 # attributes via setattr
 class _GroupByMixin(Resampler[NDFrameT]):
     key: str | list[str] | None
-    def __getitem__(self, key) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __getitem__(self, key: str | list[str] | None) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
 
 class DatetimeIndexResampler(Resampler[NDFrameT]): ...
 

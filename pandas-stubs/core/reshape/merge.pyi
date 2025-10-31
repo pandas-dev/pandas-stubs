@@ -54,8 +54,8 @@ def merge_ordered(
     on: Label | list[HashableT] | None = ...,
     left_on: Label | list[HashableT] | None = ...,
     right_on: Label | list[HashableT] | None = ...,
-    left_by: None = ...,
-    right_by: None = ...,
+    left_by: None = None,
+    right_by: None = None,
     fill_method: Literal["ffill"] | None = ...,
     suffixes: (
         list[str | None] | tuple[str, str] | tuple[None, str] | tuple[str, None]
@@ -69,8 +69,8 @@ def merge_ordered(
     on: Label | list[HashableT] | None = ...,
     left_on: Label | list[HashableT] | None = ...,
     right_on: Label | list[HashableT] | None = ...,
-    left_by: None = ...,
-    right_by: None = ...,
+    left_by: None = None,
+    right_by: None = None,
     fill_method: Literal["ffill"] | None = ...,
     suffixes: Suffixes = ...,
     how: JoinHow = ...,

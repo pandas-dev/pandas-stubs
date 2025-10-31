@@ -4,6 +4,7 @@ from collections.abc import (
 )
 from datetime import (
     datetime,
+    time,
     timedelta,
     tzinfo as _tzinfo,
 )
@@ -32,6 +33,7 @@ from pandas._typing import (
     IntervalClosedType,
     TimeUnit,
     TimeZones,
+    np_1darray,
     np_ndarray_dt,
     np_ndarray_td,
 )
@@ -55,7 +57,6 @@ class DatetimeIndex(
         copy: bool = ...,
         name: Hashable = ...,
     ) -> Self: ...
-    def __reduce__(self): ...
 
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
@@ -78,18 +79,19 @@ class DatetimeIndex(
     def to_series(
         self, index: Index | None = None, name: Hashable | None = None
     ) -> Series[Timestamp]: ...
-    def snap(self, freq: str = ...): ...
-    def slice_indexer(self, start=..., end=..., step=...): ...
+    def snap(self, freq: Frequency = "S") -> Self: ...
     @property
     def inferred_type(self) -> str: ...
-    def indexer_at_time(self, time, asof: bool = ...): ...
+    def indexer_at_time(
+        self, time: str | time, asof: bool = False
+    ) -> np_1darray[np.intp]: ...
     def indexer_between_time(
         self,
-        start_time: datetime | str,
-        end_time: datetime | str,
+        start_time: time | str,
+        end_time: time | str,
         include_start: bool = True,
         include_end: bool = True,
-    ): ...
+    ) -> np_1darray[np.intp]: ...
     def to_julian_date(self) -> Index[float]: ...
     def isocalendar(self) -> DataFrame: ...
     @property
@@ -156,7 +158,7 @@ def bdate_range(
     normalize: bool = ...,
     name: Hashable | None = ...,
     weekmask: str | None = ...,
-    holidays: None = ...,
+    holidays: None = None,
     inclusive: IntervalClosedType = ...,
 ) -> DatetimeIndex: ...
 @overload

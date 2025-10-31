@@ -3,6 +3,7 @@ from abc import (
     abstractmethod,
 )
 from collections.abc import Hashable
+from types import TracebackType
 from typing import (
     Literal,
     overload,
@@ -26,7 +27,12 @@ class ReaderBase(metaclass=ABCMeta):
     @abstractmethod
     def close(self) -> None: ...
     def __enter__(self) -> Self: ...
-    def __exit__(self, exc_type, exc_value, traceback) -> None: ...
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> None: ...
 
 @overload
 def read_sas(
@@ -54,7 +60,7 @@ def read_sas(
 def read_sas(
     filepath_or_buffer: FilePath | ReadBuffer[bytes],
     *,
-    format: None = ...,
+    format: None = None,
     index: Hashable | None = ...,
     encoding: str | None = ...,
     chunksize: int,
@@ -87,7 +93,7 @@ def read_sas(
 def read_sas(
     filepath_or_buffer: FilePath | ReadBuffer[bytes],
     *,
-    format: None = ...,
+    format: None = None,
     index: Hashable | None = ...,
     encoding: str | None = ...,
     chunksize: int | None = ...,
@@ -101,7 +107,7 @@ def read_sas(
     format: Literal["xport", "sas7bdat"] | None = ...,
     index: Hashable | None = ...,
     encoding: str | None = ...,
-    chunksize: None = ...,
-    iterator: Literal[False] = ...,
+    chunksize: None = None,
+    iterator: Literal[False] = False,
     compression: CompressionOptions = ...,
 ) -> DataFrame: ...

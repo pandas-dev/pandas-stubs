@@ -302,7 +302,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         periods: int | Sequence[int] = 1,
         freq: Frequency | None = ...,
         axis: Axis | _NoDefaultDoNotUse = 0,
-        fill_value=...,
+        fill_value: Scalar | None = None,
         suffix: str | None = ...,
     ) -> NDFrameT: ...
     @final
@@ -373,7 +373,7 @@ class BaseGroupBy(SelectionMixin[NDFrameT], GroupByIndexingMixin):
         **kwargs: Any,
     ) -> T: ...
     @final
-    def get_group(self, name) -> NDFrameT: ...
+    def get_group(self, name: Hashable) -> NDFrameT: ...
     @final
     def __iter__(self) -> Iterator[tuple[Hashable, NDFrameT]]: ...
     @overload

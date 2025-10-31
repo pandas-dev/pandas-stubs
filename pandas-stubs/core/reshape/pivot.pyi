@@ -138,10 +138,10 @@ def crosstab(
 def crosstab(
     index: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
     columns: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
-    values: None = ...,
+    values: None = None,
     rownames: list[HashableT1] | None = ...,
     colnames: list[HashableT2] | None = ...,
-    aggfunc: None = ...,
+    aggfunc: None = None,
     margins: bool = ...,
     margins_name: str = ...,
     dropna: bool = ...,

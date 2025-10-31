@@ -1,5 +1,6 @@
 from collections.abc import (
     Callable,
+    MutableMapping,
     Sequence,
 )
 from typing import (
@@ -142,7 +143,7 @@ class Styler(StylerRenderer):
     @overload
     def to_latex(
         self,
-        buf: None = ...,
+        buf: None = None,
         *,
         column_format: str | None = ...,
         position: str | None = ...,
@@ -183,7 +184,7 @@ class Styler(StylerRenderer):
     @overload
     def to_html(
         self,
-        buf: None = ...,
+        buf: None = None,
         *,
         table_uuid: str | None = ...,
         table_attributes: str | None = ...,
@@ -213,7 +214,7 @@ class Styler(StylerRenderer):
     @overload
     def to_string(
         self,
-        buf: None = ...,
+        buf: None = None,
         *,
         encoding: str | None = ...,
         sparse_index: bool | None = ...,
@@ -224,7 +225,7 @@ class Styler(StylerRenderer):
     ) -> str: ...
     def set_td_classes(self, classes: DataFrame) -> Styler: ...
     def __copy__(self) -> Styler: ...
-    def __deepcopy__(self, memo) -> Styler: ...
+    def __deepcopy__(self, memo: MutableMapping[int, Any] | None) -> Styler: ...
     def clear(self) -> None: ...
     @overload
     def apply(
