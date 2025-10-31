@@ -416,6 +416,10 @@ def test_assign() -> None:
     check(assert_type(df.assign(c=my_named_func_1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=my_named_func_2), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.assign(c=None), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.assign(foo=lambda df: df.get("abc", None)), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_types_sample() -> None:
