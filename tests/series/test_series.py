@@ -1192,10 +1192,7 @@ def test_types_groupby_iter() -> None:
     s = pd.Series([1, 1, 2], dtype=int)
     series_groupby = pd.Series([True, True, False], dtype=bool)
     first_group = next(iter(s.groupby(series_groupby)))
-    check(
-        assert_type(first_group[0], bool),
-        bool,
-    )
+    check(assert_type(first_group[0], bool), bool)
     check(assert_type(first_group[1], "pd.Series[int]"), pd.Series, np.integer)
 
 

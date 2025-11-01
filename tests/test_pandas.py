@@ -609,12 +609,12 @@ def test_unique() -> None:
                     ]
                 )
             ),
-            np.ndarray,
+            np_1darray[np.datetime64],
         ),
         pd.DatetimeIndex,
     )
 
-    check(assert_type(pd.unique(np.array(list("baabc"))), np.ndarray), np.ndarray)
+    check(assert_type(pd.unique(np.array(list("baabc"))), np_1darray), np.ndarray)
 
     check(
         assert_type(
@@ -642,12 +642,12 @@ def test_unique() -> None:
         pd.Categorical,
     )
     check(
-        assert_type(pd.unique(pd.Index(["a", "b", "c", "a"])), np.ndarray),
+        assert_type(pd.unique(pd.Index(["a", "b", "c", "a"])), np_1darray),
         np.ndarray if PD_LTE_23 else pd.Index,
     )
     check(
-        assert_type(pd.unique(pd.RangeIndex(0, 10)), np.ndarray),
-        np.ndarray if PD_LTE_23 else pd.Index,
+        assert_type(pd.unique(pd.RangeIndex(0, 10)), np_1darray[np.int64]),
+        np_1darray if PD_LTE_23 else pd.Index,
     )
     check(
         assert_type(pd.unique(pd.Categorical(["a", "b", "c", "a"])), pd.Categorical),
@@ -663,9 +663,9 @@ def test_unique() -> None:
     check(
         assert_type(
             pd.unique(pd.timedelta_range(start="1 day", periods=4)),
-            np.ndarray,
+            np_1darray[np.timedelta64],
         ),
-        np.ndarray if PD_LTE_23 else pd.Index,
+        np_1darray[np.timedelta64] if PD_LTE_23 else pd.Index,
     )
 
 
@@ -984,17 +984,22 @@ def test_index_unqiue() -> None:
     mi = pd.MultiIndex.from_product([["a", "b"], ["apple", "banana"]])
     interval_i = pd.interval_range(1, 10, periods=10)
 
-    check(assert_type(pd.unique(ci), pd.CategoricalIndex), pd.CategoricalIndex)
+    check(assert_type(pd.unique(ci), pd.CategoricalIndex[str]), pd.CategoricalIndex)
     check(
-        assert_type(pd.unique(dti), np.ndarray), np.ndarray if PD_LTE_23 else pd.Index
+        assert_type(pd.unique(dti), np_1darray[np.datetime64]),
+        np.ndarray if PD_LTE_23 else pd.Index,
     )
-    check(assert_type(pd.unique(i), np.ndarray), np.ndarray if PD_LTE_23 else pd.Index)
+    check(assert_type(pd.unique(i), np_1darray), np.ndarray if PD_LTE_23 else pd.Index)
     check(assert_type(pd.unique(pi), pd.PeriodIndex), pd.PeriodIndex)
-    check(assert_type(pd.unique(ri), np.ndarray), np.ndarray if PD_LTE_23 else pd.Index)
     check(
-        assert_type(pd.unique(tdi), np.ndarray), np.ndarray if PD_LTE_23 else pd.Index
+        assert_type(pd.unique(ri), np_1darray[np.int64]),
+        np.ndarray if PD_LTE_23 else pd.Index,
     )
-    check(assert_type(pd.unique(mi), np.ndarray), np.ndarray if PD_LTE_23 else pd.Index)
+    check(
+        assert_type(pd.unique(tdi), np_1darray[np.timedelta64]),
+        np.ndarray if PD_LTE_23 else pd.Index,
+    )
+    check(assert_type(pd.unique(mi), np_1darray), np.ndarray if PD_LTE_23 else pd.Index)
     check(
         assert_type(pd.unique(interval_i), "pd.IntervalIndex[pd.Interval[int]]"),
         pd.IntervalIndex,

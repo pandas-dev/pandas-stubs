@@ -122,6 +122,7 @@ from pandas._typing import (
     S2,
     S2_NSDT,
     T_COMPLEX,
+    A1_co,
     AggFuncTypeBase,
     AggFuncTypeDictFrame,
     AggFuncTypeSeriesToFrame,
@@ -310,7 +311,7 @@ _DataLikeS1: TypeAlias = (
     ArrayLike | dict[_str, np.ndarray] | Sequence[S1] | IndexOpsMixin[S1]
 )
 
-class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
+class Series(IndexOpsMixin[S1, A1_co, GenericT_co], ElementOpsMixin[S1], NDFrame):
     # Define __index__ because mypy thinks Series follows protocol `SupportsIndex` https://github.com/pandas-dev/pandas-stubs/pull/1332#discussion_r2285648790
     __index__: ClassVar[None]
     __hash__: ClassVar[None]  # pyright: ignore[reportIncompatibleMethodOverride]
@@ -860,7 +861,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def count(self) -> int: ...
     def mode(self, dropna: bool = True) -> Series[S1]: ...
     @overload
-    def unique(self: Series[Never]) -> np.ndarray: ...  # type: ignore[overload-overlap]
+    def unique(self: Series[Never]) -> np.ndarray: ...
     @overload
     def unique(self: Series[Timestamp]) -> DatetimeArray: ...  # type: ignore[overload-overlap]
     @overload
@@ -882,7 +883,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         keep: DropKeep = ...,
         inplace: Literal[False] = False,
         ignore_index: _bool = ...,
-    ) -> Series[S1]: ...
+    ) -> Self: ...
     def duplicated(self, keep: DropKeep = "first") -> Series[_bool]: ...
     def idxmax(
         self,
@@ -898,7 +899,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         *args: Any,
         **kwargs: Any,
     ) -> int | _str: ...
-    def round(self, decimals: int = 0, *args: Any, **kwargs: Any) -> Series[S1]: ...
+    def round(self, decimals: int = 0, *args: Any, **kwargs: Any) -> Self: ...
     @overload
     def quantile(
         self,
@@ -921,7 +922,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self, other: Series[S1], min_periods: int | None = None, ddof: int = 1
     ) -> float: ...
     @overload
-    def diff(  # type: ignore[overload-overlap]
+    def diff(
         self: Series[Never] | Series[int], periods: int = ...
     ) -> Series[float]: ...
     @overload
@@ -2524,7 +2525,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
     @overload
-    def __mul__(  # type: ignore[overload-overlap]
+    def __mul__(
         self: Series[Never], other: complex | NumListLike | Index | Series
     ) -> Series: ...
     @overload
@@ -2740,7 +2741,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         axis: int = 0,
     ) -> Series[complex]: ...
     @overload
-    def __rmul__(  # type: ignore[overload-overlap]
+    def __rmul__(
         self: Series[Never], other: complex | NumListLike | Index | Series
     ) -> Series: ...
     @overload
@@ -2748,7 +2749,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def __rmul__(self, other: np_ndarray_dt) -> Never: ...
     @overload
-    def __rmul__(  # type: ignore[overload-overlap]
+    def __rmul__(
         self: Series[int] | Series[float],
         other: (
             timedelta
@@ -3880,7 +3881,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series: ...
     div = truediv
     @overload
-    def __rtruediv__(  # type: ignore[overload-overlap]
+    def __rtruediv__(
         self: Series[Never], other: complex | NumListLike | Index | Series
     ) -> Series: ...
     @overload

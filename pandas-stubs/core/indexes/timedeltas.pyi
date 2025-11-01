@@ -26,6 +26,7 @@ from pandas._libs import Timedelta
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.period import Period
 from pandas._typing import (
+    A1_co,
     AxesData,
     Frequency,
     Just,
@@ -52,7 +53,7 @@ _DT_FACTOR: TypeAlias = dt.timedelta | np.timedelta64 | Timedelta
 _DT_FACTOR_SEQ: TypeAlias = _DT_FACTOR | Sequence[_DT_FACTOR] | np_ndarray_td
 
 class TimedeltaIndex(
-    DatetimeTimedeltaMixin[Timedelta, np.timedelta64], TimedeltaIndexProperties
+    DatetimeTimedeltaMixin[Timedelta, A1_co, np.timedelta64], TimedeltaIndexProperties
 ):
     def __new__(
         cls,

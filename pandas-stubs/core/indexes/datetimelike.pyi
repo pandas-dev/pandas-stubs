@@ -10,13 +10,14 @@ from typing_extensions import (
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
     S1,
+    A1_co,
     AxisIndex,
     GenericT_co,
     TimeUnit,
     np_ndarray_complex,
 )
 
-class DatetimeIndexOpsMixin(ExtensionIndex[S1, GenericT_co]):
+class DatetimeIndexOpsMixin(ExtensionIndex[S1, A1_co, GenericT_co]):
     @property
     def freq(self) -> BaseOffset | None: ...
     @property
@@ -58,7 +59,7 @@ class DatetimeIndexOpsMixin(ExtensionIndex[S1, GenericT_co]):
         self, other: np_ndarray_complex
     ) -> Never: ...
 
-class DatetimeTimedeltaMixin(DatetimeIndexOpsMixin[S1, GenericT_co]):
+class DatetimeTimedeltaMixin(DatetimeIndexOpsMixin[S1, A1_co, GenericT_co]):
     @property
     def unit(self) -> TimeUnit: ...
     def as_unit(self, unit: TimeUnit) -> Self: ...

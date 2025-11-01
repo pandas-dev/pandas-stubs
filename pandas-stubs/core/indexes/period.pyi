@@ -25,7 +25,9 @@ from pandas._typing import (
     np_1darray,
 )
 
-class PeriodIndex(DatetimeIndexOpsMixin[pd.Period, np.object_], PeriodIndexFieldOps):
+class PeriodIndex(
+    DatetimeIndexOpsMixin[pd.Period, np_1darray, np.object_], PeriodIndexFieldOps
+):
     def __new__(
         cls,
         data: AxesData[Any] | None = None,

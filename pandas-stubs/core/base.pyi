@@ -29,6 +29,7 @@ from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
     S1,
     S2,
+    A1_co,
     AxisIndex,
     DropKeep,
     DTypeLike,
@@ -59,7 +60,7 @@ class SelectionMixin(Generic[NDFrameT]):
     def __getitem__(self, key): ...
     def aggregate(self, func, *args: Any, **kwargs: Any): ...
 
-class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
+class IndexOpsMixin(OpsMixin, Generic[S1, A1_co, GenericT_co]):
     __array_priority__: int = ...
     @property
     def T(self) -> Self: ...

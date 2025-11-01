@@ -14,7 +14,6 @@ from pathlib import Path
 from typing import (
     Any,
     ClassVar,
-    Generic,
     Literal,
     final,
     overload,
@@ -67,6 +66,7 @@ from pandas._typing import (
     S2,
     S2_NSDT,
     T_COMPLEX,
+    A1_co,
     AnyAll,
     AnyArrayLike,
     AnyArrayLikeInt,
@@ -109,7 +109,7 @@ from pandas._typing import (
 
 class InvalidIndexError(Exception): ...
 
-class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
+class Index(IndexOpsMixin[S1, A1_co, GenericT_co], ElementOpsMixin[S1]):
     __hash__: ClassVar[None]  # type: ignore[assignment]  # pyright: ignore[reportIncompatibleMethodOverride]
     # overloads with additional dtypes
     @overload
@@ -475,15 +475,19 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def where(
         self,
-        cond: Sequence[bool] | np_ndarray_bool | BooleanArray | IndexOpsMixin[bool],
-        other: S1 | Series[S1] | Self,
+        cond: (
+            Sequence[bool] | np_ndarray_bool | BooleanArray | IndexOpsMixin[bool, A1_co]
+        ),
+        other: S1 | Series[S1, A1_co] | Self,
     ) -> Self: ...
     @overload
     def where(
         self,
-        cond: Sequence[bool] | np_ndarray_bool | BooleanArray | IndexOpsMixin[bool],
+        cond: (
+            Sequence[bool] | np_ndarray_bool | BooleanArray | IndexOpsMixin[bool, A1_co]
+        ),
         other: Scalar | AnyArrayLike | None = None,
-    ) -> Index: ...
+    ) -> Index[Any, A1_co]: ...
     def __contains__(self, key: Hashable) -> bool: ...
     @final
     def __setitem__(self, key, value) -> None: ...
@@ -541,7 +545,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def insert(self, loc: int, item: S1) -> Self: ...
     @overload
-    def insert(self, loc: int, item: object) -> Index: ...
+    def insert(self, loc: int, item: Any) -> Index[Any, A1_co]: ...
     def drop(self, labels, errors: IgnoreRaise = "raise") -> Self: ...
     @property
     def shape(self) -> tuple[int, ...]: ...
@@ -731,7 +735,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         ),
     ) -> Index[complex]: ...
     @overload
-    def __rsub__(self: Index[Never], other: DatetimeIndex) -> Never: ...  # type: ignore[misc]
+    def __rsub__(self: Index[Never], other: DatetimeIndex) -> Never: ...
     @overload
     def __rsub__(
         self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index
@@ -1051,7 +1055,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def infer_objects(self, copy: bool = True) -> Self: ...
 
 @type_check_only
-class _IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):
+class _IndexSubclassBase(Index[S1, A1_co, GenericT_co]):
     @overload
     def to_numpy(
         self,

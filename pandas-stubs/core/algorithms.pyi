@@ -5,18 +5,19 @@ from typing import (
 )
 
 import numpy as np
-from pandas import (
-    Categorical,
-    CategoricalIndex,
-    Index,
-    IntervalIndex,
-    PeriodIndex,
-    Series,
-)
+from numpy import typing as npt
 from pandas.api.extensions import ExtensionArray
+from pandas.core.arrays.categorical import Categorical
+from pandas.core.indexes.base import Index
+from pandas.core.indexes.category import CategoricalIndex
+from pandas.core.indexes.interval import IntervalIndex
+from pandas.core.indexes.period import PeriodIndex
+from pandas.core.series import Series
 
 from pandas._typing import (
+    S1,
     AnyArrayLike,
+    GenericT_co,
     IntervalT,
     TakeIndexer,
     np_1darray,
@@ -26,21 +27,21 @@ from pandas._typing import (
 # with extension types return the same type while standard type return ndarray
 
 @overload
-def unique(  # pyright: ignore[reportOverlappingOverload]
-    values: PeriodIndex,
-) -> PeriodIndex: ...
+def unique(values: PeriodIndex) -> PeriodIndex: ...
 @overload
-def unique(values: CategoricalIndex) -> CategoricalIndex: ...  # type: ignore[overload-overlap]
+def unique(
+    values: CategoricalIndex[S1, GenericT_co],
+) -> CategoricalIndex[S1, GenericT_co]: ...
 @overload
 def unique(values: IntervalIndex[IntervalT]) -> IntervalIndex[IntervalT]: ...
 @overload
-def unique(values: Index) -> np.ndarray: ...
+def unique(values: Index[S1, np_1darray, GenericT_co]) -> np_1darray[GenericT_co]: ...
 @overload
 def unique(values: Categorical) -> Categorical: ...
 @overload
 def unique(values: Series) -> np.ndarray | ExtensionArray: ...
 @overload
-def unique(values: np.ndarray) -> np.ndarray: ...
+def unique(values: npt.NDArray[GenericT_co]) -> np_1darray[GenericT_co]: ...
 @overload
 def unique(values: ExtensionArray) -> ExtensionArray: ...
 @overload

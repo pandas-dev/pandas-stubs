@@ -938,6 +938,8 @@ C2 = TypeVar(
     BaseOffset,
 )
 
+A1_co = TypeVar("A1_co", default=Any, covariant=True)
+
 IndexingInt: TypeAlias = (
     int | np.int_ | np.integer | np.unsignedinteger | np.signedinteger | np.int8
 )
