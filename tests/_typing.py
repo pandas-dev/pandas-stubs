@@ -1,3 +1,4 @@
+# ruff: noqa: PLC0414
 # This file serves as a stub file for static type checkers
 # (pyright does not like it if I call the file tests/_typing.pyi).
 # It can only import from pandas._typing.
