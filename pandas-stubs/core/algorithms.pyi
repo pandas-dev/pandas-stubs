@@ -10,8 +10,10 @@ from pandas.api.extensions import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.category import CategoricalIndex
+from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.interval import IntervalIndex
 from pandas.core.indexes.period import PeriodIndex
+from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
 
 from pandas._typing import (
@@ -37,7 +39,11 @@ def unique(
 @overload
 def unique(values: IntervalIndex[IntervalT]) -> IntervalIndex[IntervalT]: ...
 @overload
-def unique(values: Index[S1, np_1darray, GenericT_co]) -> np_1darray[GenericT_co]: ...
+def unique(values: DatetimeIndex) -> DatetimeIndex | np_1darray[np.datetime64]: ...
+@overload
+def unique(values: TimedeltaIndex) -> TimedeltaIndex | np_1darray[np.timedelta64]: ...
+@overload
+def unique(values: Index[S1, Any, GenericT_co]) -> np_1darray[GenericT_co]: ...
 @overload
 def unique(values: Categorical) -> Categorical: ...
 @overload

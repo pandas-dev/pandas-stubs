@@ -609,7 +609,7 @@ def test_unique() -> None:
                     ]
                 )
             ),
-            np_1darray[np.datetime64],
+            pd.DatetimeIndex | np_1darray[np.datetime64],
         ),
         pd.DatetimeIndex,
     )
@@ -663,9 +663,9 @@ def test_unique() -> None:
     check(
         assert_type(
             pd.unique(pd.timedelta_range(start="1 day", periods=4)),
-            np_1darray[np.timedelta64],
+            pd.TimedeltaIndex | np_1darray[np.timedelta64],
         ),
-        np_1darray if PD_LTE_23 else pd.Index,
+        np_1darray if PD_LTE_23 else pd.TimedeltaIndex,
         np.timedelta64 if PD_LTE_23 else pd.Timedelta,
     )
 
@@ -987,8 +987,8 @@ def test_index_unqiue() -> None:
 
     check(assert_type(pd.unique(ci), "pd.CategoricalIndex[str]"), pd.CategoricalIndex)
     check(
-        assert_type(pd.unique(dti), np_1darray[np.datetime64]),
-        np.ndarray if PD_LTE_23 else pd.Index,
+        assert_type(pd.unique(dti), pd.DatetimeIndex | np_1darray[np.datetime64]),
+        np.ndarray if PD_LTE_23 else pd.DatetimeIndex,
         np.datetime64 if PD_LTE_23 else pd.Timestamp,
     )
     check(assert_type(pd.unique(i), np_1darray), np.ndarray if PD_LTE_23 else pd.Index)
@@ -998,8 +998,9 @@ def test_index_unqiue() -> None:
         np.ndarray if PD_LTE_23 else pd.Index,
     )
     check(
-        assert_type(pd.unique(tdi), np_1darray[np.timedelta64]),
-        np.ndarray if PD_LTE_23 else pd.Index,
+        assert_type(pd.unique(tdi), pd.TimedeltaIndex | np_1darray[np.timedelta64]),
+        np_1darray if PD_LTE_23 else pd.TimedeltaIndex,
+        np.timedelta64 if PD_LTE_23 else pd.Timedelta,
     )
     check(assert_type(pd.unique(mi), np_1darray), np.ndarray if PD_LTE_23 else pd.Index)
     check(

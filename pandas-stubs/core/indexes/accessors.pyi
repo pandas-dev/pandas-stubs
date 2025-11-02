@@ -5,6 +5,7 @@ from datetime import (
     tzinfo as _tzinfo,
 )
 from typing import (
+    Any,
     Generic,
     Literal,
     TypeVar,
@@ -486,5 +487,5 @@ class ArrayDescriptor:
     ) -> TimedeltaArray: ...
     @overload
     def __get__(
-        self, instance: IndexOpsMixin[int, Never], owner: type[IndexOpsMixin]
+        self, instance: IndexOpsMixin[Any, Never], owner: type[IndexOpsMixin]
     ) -> NumpyExtensionArray: ...
