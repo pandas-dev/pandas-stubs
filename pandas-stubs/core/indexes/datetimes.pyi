@@ -20,13 +20,13 @@ from pandas import (
     TimedeltaIndex,
     Timestamp,
 )
+from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.indexes.accessors import DatetimeIndexProperties
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
 from pandas.core.series import Series
 from typing_extensions import Self
 
 from pandas._typing import (
-    A1_co,
     AxesData,
     DateAndDatetimeLike,
     Dtype,
@@ -44,7 +44,8 @@ from pandas.core.dtypes.dtypes import DatetimeTZDtype
 from pandas.tseries.offsets import BaseOffset
 
 class DatetimeIndex(
-    DatetimeTimedeltaMixin[Timestamp, A1_co, np.datetime64], DatetimeIndexProperties
+    DatetimeTimedeltaMixin[Timestamp, DatetimeArray, np.datetime64],
+    DatetimeIndexProperties,
 ):
     def __new__(
         cls,

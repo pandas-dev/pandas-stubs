@@ -25,6 +25,7 @@ from pandas._typing import (
     Frequency,
     IntervalClosedType,
     IntervalT,
+    Just,
     Label,
     MaskType,
     np_1darray,
@@ -44,7 +45,7 @@ _EdgesInt: TypeAlias = (
     | Index[int]
 )
 _EdgesFloat: TypeAlias = (
-    Sequence[float] | npt.NDArray[np.float64] | pd.Series[float] | Index[float]
+    Sequence[Just[float]] | npt.NDArray[np.float64] | pd.Series[float] | Index[float]
 )
 _EdgesTimestamp: TypeAlias = (
     Sequence[DatetimeLike]
@@ -77,7 +78,7 @@ class IntervalIndex(
     ) -> IntervalIndex[IntervalT]: ...
     @overload
     @classmethod
-    def from_breaks(  # pyright: ignore[reportOverlappingOverload]
+    def from_breaks(
         cls,
         breaks: _EdgesInt,
         closed: IntervalClosedType = ...,
@@ -117,7 +118,7 @@ class IntervalIndex(
     ) -> IntervalIndex[Interval[pd.Timedelta]]: ...
     @overload
     @classmethod
-    def from_arrays(  # pyright: ignore[reportOverlappingOverload]
+    def from_arrays(
         cls,
         left: _EdgesInt,
         right: _EdgesInt,

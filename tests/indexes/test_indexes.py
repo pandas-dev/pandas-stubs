@@ -1555,7 +1555,7 @@ def test_index_where() -> None:
     val_idx = idx.where(mask, idx)
     check(assert_type(val_idx, "pd.Index[int]"), pd.Index, int)
 
-    val_sr = idx.where(mask, (idx).to_series())
+    val_sr = idx.where(mask, idx.to_series())
     check(assert_type(val_sr, "pd.Index[int]"), pd.Index, int)
 
 

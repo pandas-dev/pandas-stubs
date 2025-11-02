@@ -475,19 +475,15 @@ class Index(IndexOpsMixin[S1, A1_co, GenericT_co], ElementOpsMixin[S1]):
     @overload
     def where(
         self,
-        cond: (
-            Sequence[bool] | np_ndarray_bool | BooleanArray | IndexOpsMixin[bool, A1_co]
-        ),
-        other: S1 | Series[S1, A1_co] | Self,
+        cond: Sequence[bool] | np_ndarray_bool | BooleanArray | IndexOpsMixin[bool],
+        other: S1 | Series[S1] | Self,
     ) -> Self: ...
     @overload
     def where(
         self,
-        cond: (
-            Sequence[bool] | np_ndarray_bool | BooleanArray | IndexOpsMixin[bool, A1_co]
-        ),
+        cond: Sequence[bool] | np_ndarray_bool | BooleanArray | IndexOpsMixin[bool],
         other: Scalar | AnyArrayLike | None = None,
-    ) -> Index[Any, A1_co]: ...
+    ) -> Index: ...
     def __contains__(self, key: Hashable) -> bool: ...
     @final
     def __setitem__(self, key, value) -> None: ...
