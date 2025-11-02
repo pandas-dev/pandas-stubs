@@ -665,7 +665,8 @@ def test_unique() -> None:
             pd.unique(pd.timedelta_range(start="1 day", periods=4)),
             np_1darray[np.timedelta64],
         ),
-        np_1darray[np.timedelta64] if PD_LTE_23 else pd.Index,
+        np_1darray if PD_LTE_23 else pd.Index,
+        np.timedelta64 if PD_LTE_23 else pd.Timedelta,
     )
 
 
@@ -984,10 +985,11 @@ def test_index_unqiue() -> None:
     mi = pd.MultiIndex.from_product([["a", "b"], ["apple", "banana"]])
     interval_i = pd.interval_range(1, 10, periods=10)
 
-    check(assert_type(pd.unique(ci), pd.CategoricalIndex[str]), pd.CategoricalIndex)
+    check(assert_type(pd.unique(ci), "pd.CategoricalIndex[str]"), pd.CategoricalIndex)
     check(
         assert_type(pd.unique(dti), np_1darray[np.datetime64]),
         np.ndarray if PD_LTE_23 else pd.Index,
+        np.datetime64 if PD_LTE_23 else pd.Timestamp,
     )
     check(assert_type(pd.unique(i), np_1darray), np.ndarray if PD_LTE_23 else pd.Index)
     check(assert_type(pd.unique(pi), pd.PeriodIndex), pd.PeriodIndex)
@@ -1030,13 +1032,9 @@ def test_cut() -> None:
     g = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), 4, precision=1, duplicates="drop")
     h = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), 4, labels=False, duplicates="raise")
     i = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), 4, labels=["1", "2", "3", "4"])
-    check(assert_type(g, pd.Series[Any, pd.Categorical]), pd.Series, pd.Interval[float])
-    check(assert_type(h, pd.Series[Any, pd.Categorical]), pd.Series, pd.Interval[float])
-    check(
-        assert_type(i, pd.Series[Any, pd.Categorical]),
-        pd.Series,
-        pd.Interval[float],
-    )
+    check(assert_type(g, "pd.Series[Any, pd.Categorical]"), pd.Series, pd.Interval)
+    check(assert_type(h, "pd.Series[Any, pd.Categorical]"), pd.Series, np.integer)
+    check(assert_type(i, "pd.Series[Any, pd.Categorical]"), pd.Series, str)
 
     j0, j1 = pd.cut(
         pd.Series([1, 2, 3, 4, 5, 6, 7, 8]),
@@ -1063,13 +1061,13 @@ def test_cut() -> None:
         intval_idx,
         retbins=True,
     )
-    check(assert_type(j0, pd.Series[Any, pd.Categorical]), pd.Series)
+    check(assert_type(j0, "pd.Series[Any, pd.Categorical]"), pd.Series)
     check(assert_type(j1, npt.NDArray), np.ndarray)
-    check(assert_type(k0, pd.Series[Any, pd.Categorical]), pd.Series)
+    check(assert_type(k0, "pd.Series[Any, pd.Categorical]"), pd.Series)
     check(assert_type(k1, npt.NDArray), np.ndarray)
-    check(assert_type(l0, pd.Series[Any, pd.Categorical]), pd.Series)
+    check(assert_type(l0, "pd.Series[Any, pd.Categorical]"), pd.Series)
     check(assert_type(l1, npt.NDArray), np.ndarray)
-    check(assert_type(m0, pd.Series[Any, pd.Categorical]), pd.Series)
+    check(assert_type(m0, "pd.Series[Any, pd.Categorical]"), pd.Series)
     check(assert_type(m1, pd.IntervalIndex), pd.IntervalIndex)
 
     n0, n1 = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], intval_idx, retbins=True)
@@ -1083,21 +1081,21 @@ def test_cut() -> None:
             "pd.Series[Any, pd.Categorical]",
         ),
         pd.Series,
-        pd.Interval[pd.Timestamp],
+        float,
     )
     check(
-        assert_type(pd.cut(s1, bins=10), pd.Series[Any, pd.Categorical]),
+        assert_type(pd.cut(s1, bins=10), "pd.Series[Any, pd.Categorical]"),
         pd.Series,
         pd.Interval,
     )
     s0r, s1r = pd.cut(s1, bins=10, retbins=True)
-    check(assert_type(s0r, pd.Series[Any, pd.Categorical]), pd.Series, pd.Interval)
+    check(assert_type(s0r, "pd.Series[Any, pd.Categorical]"), pd.Series, pd.Interval)
     check(assert_type(s1r, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
     s0rlf, s1rlf = pd.cut(s1, bins=10, labels=False, retbins=True)
-    check(assert_type(s0rlf, pd.Series[Any, pd.Categorical]), pd.Series, np.integer)
+    check(assert_type(s0rlf, "pd.Series[Any, pd.Categorical]"), pd.Series, np.integer)
     check(assert_type(s1rlf, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
     s0rls, s1rls = pd.cut(s1, bins=4, labels=["1", "2", "3", "4"], retbins=True)
-    check(assert_type(s0rls, pd.Series[Any, pd.Categorical]), pd.Series, str)
+    check(assert_type(s0rls, "pd.Series[Any, pd.Categorical]"), pd.Series, str)
     check(assert_type(s1rls, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
 
 
