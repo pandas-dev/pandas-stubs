@@ -1,5 +1,6 @@
 from collections.abc import Sequence
 from typing import (
+    Any,
     Literal,
     overload,
 )
@@ -7,15 +8,14 @@ from typing import (
 import numpy as np
 from pandas import (
     Categorical,
-    CategoricalDtype,
     DatetimeIndex,
     Index,
-    Interval,
     IntervalIndex,
     Timestamp,
 )
 from pandas.core.series import Series
 
+from pandas._libs.interval import Interval
 from pandas._typing import (
     IntervalT,
     Label,
@@ -49,7 +49,7 @@ def cut(
     ordered: bool = ...,
 ) -> tuple[npt.NDArray[np.intp], IntervalIndex[IntervalT]]: ...
 @overload
-def cut(  # pyright: ignore[reportOverlappingOverload]
+def cut(
     x: Series[Timestamp],
     bins: (
         int
@@ -66,7 +66,7 @@ def cut(  # pyright: ignore[reportOverlappingOverload]
     include_lowest: bool = ...,
     duplicates: Literal["raise", "drop"] = ...,
     ordered: bool = ...,
-) -> tuple[Series, DatetimeIndex]: ...
+) -> tuple[Series[Any, Categorical], DatetimeIndex]: ...
 @overload
 def cut(
     x: Series[Timestamp],
@@ -79,10 +79,10 @@ def cut(
     include_lowest: bool = ...,
     duplicates: Literal["raise", "drop"] = ...,
     ordered: bool = ...,
-) -> tuple[Series, DatetimeIndex]: ...
+) -> tuple[Series[Any, Categorical], DatetimeIndex]: ...
 @overload
 def cut(
-    x: Series,
+    x: Series[int] | Series[float],
     bins: int | Series | Index[int] | Index[float] | Sequence[int] | Sequence[float],
     right: bool = ...,
     labels: Literal[False] | Sequence[Label] | None = ...,
@@ -92,10 +92,10 @@ def cut(
     include_lowest: bool = ...,
     duplicates: Literal["raise", "drop"] = ...,
     ordered: bool = ...,
-) -> tuple[Series, npt.NDArray]: ...
+) -> tuple[Series[Any, Categorical], npt.NDArray]: ...
 @overload
 def cut(
-    x: Series,
+    x: Series[int] | Series[float],
     bins: IntervalIndex[Interval[int]] | IntervalIndex[Interval[float]],
     right: bool = ...,
     labels: Sequence[Label] | None = ...,
@@ -105,7 +105,7 @@ def cut(
     include_lowest: bool = ...,
     duplicates: Literal["raise", "drop"] = ...,
     ordered: bool = ...,
-) -> tuple[Series, IntervalIndex]: ...
+) -> tuple[Series[Any, Categorical], IntervalIndex]: ...
 @overload
 def cut(
     x: Index | npt.NDArray | Sequence[int] | Sequence[float],
@@ -158,11 +158,10 @@ def cut(
     x: Series[Timestamp],
     bins: (
         int
-        | Series[Timestamp]
+        | Sequence[np.datetime64 | Timestamp]
         | DatetimeIndex
-        | Sequence[Timestamp]
-        | Sequence[np.datetime64]
         | IntervalIndex[Interval[Timestamp]]
+        | Series[Timestamp]
     ),
     right: bool = ...,
     labels: Literal[False] | Sequence[Label] | None = ...,
@@ -171,19 +170,11 @@ def cut(
     include_lowest: bool = ...,
     duplicates: Literal["raise", "drop"] = ...,
     ordered: bool = ...,
-) -> Series[CategoricalDtype]: ...
+) -> Series[Any, Categorical]: ...
 @overload
 def cut(
-    x: Series,
-    bins: (
-        int
-        | Series
-        | Index[int]
-        | Index[float]
-        | Sequence[int]
-        | Sequence[float]
-        | IntervalIndex
-    ),
+    x: Series[int] | Series[float],
+    bins: int | Sequence[float] | Index[int] | Index[float] | IntervalIndex | Series,
     right: bool = ...,
     labels: Literal[False] | Sequence[Label] | None = ...,
     retbins: Literal[False] = False,
@@ -191,7 +182,7 @@ def cut(
     include_lowest: bool = ...,
     duplicates: Literal["raise", "drop"] = ...,
     ordered: bool = ...,
-) -> Series: ...
+) -> Series[Any, Categorical]: ...
 @overload
 def cut(
     x: Index | npt.NDArray | Sequence[int] | Sequence[float],

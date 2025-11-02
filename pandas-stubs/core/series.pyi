@@ -47,13 +47,6 @@ from matplotlib.axes import (
     SubplotBase,
 )
 import numpy as np
-from pandas import (
-    Index,
-    Period,
-    PeriodDtype,
-    Timedelta,
-    Timestamp,
-)
 from pandas.core.api import (
     Int8Dtype as Int8Dtype,
     Int16Dtype as Int16Dtype,
@@ -61,7 +54,10 @@ from pandas.core.api import (
     Int64Dtype as Int64Dtype,
 )
 from pandas.core.arrays.boolean import BooleanDtype
-from pandas.core.arrays.categorical import CategoricalAccessor
+from pandas.core.arrays.categorical import (
+    Categorical,
+    CategoricalAccessor,
+)
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.base import (
@@ -81,6 +77,7 @@ from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.core.indexers import BaseIndexer
 from pandas.core.indexes.accessors import DtDescriptor
+from pandas.core.indexes.base import Index
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.interval import IntervalIndex
@@ -117,6 +114,9 @@ from pandas._libs.lib import _NoDefaultDoNotUse
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.nattype import NaTType
+from pandas._libs.tslibs.period import Period
+from pandas._libs.tslibs.timedeltas import Timedelta
+from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     S1,
     S2,
@@ -216,7 +216,7 @@ from pandas._typing import (
 )
 
 from pandas.core.dtypes.base import ExtensionDtype
-from pandas.core.dtypes.dtypes import CategoricalDtype
+from pandas.core.dtypes.dtypes import PeriodDtype
 
 from pandas.plotting import PlotAccessor
 
@@ -387,7 +387,7 @@ class Series(IndexOpsMixin[S1, A1_co, GenericT_co], ElementOpsMixin[S1], NDFrame
         dtype: CategoryDtypeArg,
         name: Hashable = ...,
         copy: bool = ...,
-    ) -> Series[CategoricalDtype]: ...
+    ) -> Series[Any, Categorical]: ...
     @overload
     def __new__(
         cls,
@@ -863,9 +863,9 @@ class Series(IndexOpsMixin[S1, A1_co, GenericT_co], ElementOpsMixin[S1], NDFrame
     @overload
     def unique(self: Series[Never]) -> np.ndarray: ...
     @overload
-    def unique(self: Series[Timestamp]) -> DatetimeArray: ...  # type: ignore[overload-overlap]
+    def unique(self: Series[Timestamp]) -> DatetimeArray: ...
     @overload
-    def unique(self: Series[Timedelta]) -> TimedeltaArray: ...  # type: ignore[overload-overlap]
+    def unique(self: Series[Timedelta]) -> TimedeltaArray: ...
     @overload
     def unique(self) -> np.ndarray: ...
     @overload
@@ -1449,7 +1449,7 @@ class Series(IndexOpsMixin[S1, A1_co, GenericT_co], ElementOpsMixin[S1], NDFrame
         dtype: CategoryDtypeArg,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
-    ) -> Series[CategoricalDtype]: ...
+    ) -> Series[S1, Categorical]: ...
     @overload
     def astype(
         self,
@@ -3625,7 +3625,7 @@ class Series(IndexOpsMixin[S1, A1_co, GenericT_co], ElementOpsMixin[S1], NDFrame
         axis: int = 0,
     ) -> Series[BaseOffset]: ...
     @overload
-    def __truediv__(  # type: ignore[overload-overlap]
+    def __truediv__(
         self: Series[Never], other: complex | NumListLike | Index | Series
     ) -> Series: ...
     @overload

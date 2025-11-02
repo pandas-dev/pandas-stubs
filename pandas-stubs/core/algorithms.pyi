@@ -27,7 +27,9 @@ from pandas._typing import (
 # with extension types return the same type while standard type return ndarray
 
 @overload
-def unique(values: PeriodIndex) -> PeriodIndex: ...
+def unique(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    values: PeriodIndex,
+) -> PeriodIndex: ...
 @overload
 def unique(
     values: CategoricalIndex[S1, GenericT_co],

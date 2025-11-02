@@ -50,8 +50,6 @@ from pandas._typing import (
     Scalar,
 )
 
-from pandas.core.dtypes.dtypes import CategoricalDtype  # noqa F401
-
 from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
@@ -1827,7 +1825,7 @@ def test_categorical_codes() -> None:
 
     # GH1383
     sr = pd.Series([1], dtype="category")
-    check(assert_type(sr, "pd.Series[CategoricalDtype]"), pd.Series, np.integer)
+    check(assert_type(sr, "pd.Series[Any, pd.Categorical]"), pd.Series, np.integer)
 
 
 def test_relops() -> None:
@@ -2915,8 +2913,8 @@ def test_astype_categorical(cast_arg: CategoryDtypeArg, target_type: type) -> No
 
     if TYPE_CHECKING:
         # pandas category
-        assert_type(s.astype(pd.CategoricalDtype()), "pd.Series[pd.CategoricalDtype]")
-        assert_type(s.astype(cast_arg), "pd.Series[pd.CategoricalDtype]")
+        assert_type(s.astype(pd.CategoricalDtype()), "pd.Series[str, pd.Categorical]")
+        assert_type(s.astype(cast_arg), "pd.Series[str, pd.Categorical]")
 
 
 @pytest.mark.parametrize("cast_arg, target_type", ASTYPE_OBJECT_ARGS, ids=repr)
