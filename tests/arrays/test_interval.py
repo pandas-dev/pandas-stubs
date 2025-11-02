@@ -20,6 +20,23 @@ from tests._typing import (
 )
 
 
+def test_construction_sequence() -> None:
+    itv = pd.Interval(0, 1)
+    check(assert_type(pd.array([itv]), IntervalArray), IntervalArray)
+    check(assert_type(pd.array([itv, None]), IntervalArray), IntervalArray)
+
+
+def test_construction_array_like() -> None:
+    itv = pd.Interval(0, 1)
+    check(assert_type(pd.array(pd.array([itv])), IntervalArray), IntervalArray)
+    check(assert_type(pd.array(pd.Index([itv])), IntervalArray), IntervalArray)
+    check(assert_type(pd.array(pd.Series([itv])), IntervalArray), IntervalArray)
+
+
+def test_construction_dtype() -> None:
+    check(assert_type(pd.array([], IntervalDtype()), IntervalArray), IntervalArray)
+
+
 def test_constructor() -> None:
     """Test constructor method for IntervalArray."""
     intervals = [Interval(0, 1), Interval(1, 2), Interval(2, 3)]

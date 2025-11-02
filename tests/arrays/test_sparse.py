@@ -26,6 +26,30 @@ from tests._typing import (
 )
 
 
+def test_construction_array_like() -> None:
+    check(assert_type(pd.array(SparseArray([1])), SparseArray), SparseArray)
+
+
+def test_construction_dtype() -> None:
+    check(assert_type(pd.array([], SparseDtype(int, 0)), SparseArray), SparseArray)
+    check(
+        assert_type(pd.array(np.array([1]), SparseDtype(int, 0)), SparseArray),
+        SparseArray,
+    )
+    check(
+        assert_type(pd.array(pd.array([1]), SparseDtype(int, 0)), SparseArray),
+        SparseArray,
+    )
+    check(
+        assert_type(pd.array(pd.Index([1]), SparseDtype(int, 0)), SparseArray),
+        SparseArray,
+    )
+    check(
+        assert_type(pd.array(pd.Series([1]), SparseDtype(int, 0)), SparseArray),
+        SparseArray,
+    )
+
+
 def test_constructor() -> None:
     """Test __new__ method for SparseArray."""
     arr = SparseArray([1, 0, 0, 2, 3])

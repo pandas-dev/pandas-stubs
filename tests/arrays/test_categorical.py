@@ -19,6 +19,31 @@ from tests._typing import (
 )
 
 
+def test_construction_array_like() -> None:
+    check(assert_type(pd.array(pd.Categorical([1])), Categorical), Categorical)
+    check(assert_type(pd.array(pd.CategoricalIndex([1])), Categorical), Categorical)
+
+
+def test_construction_dtype() -> None:
+    check(assert_type(pd.array([], pd.CategoricalDtype()), Categorical), Categorical)
+    check(
+        assert_type(pd.array(np.array([1]), pd.CategoricalDtype()), Categorical),
+        Categorical,
+    )
+    check(
+        assert_type(pd.array(pd.array([1]), pd.CategoricalDtype()), Categorical),
+        Categorical,
+    )
+    check(
+        assert_type(pd.array(pd.Index([1]), pd.CategoricalDtype()), Categorical),
+        Categorical,
+    )
+    check(
+        assert_type(pd.array(pd.Series([1]), pd.CategoricalDtype()), Categorical),
+        Categorical,
+    )
+
+
 def test_constructor() -> None:
     """Test init method for Categorical."""
     cat = Categorical(["a", "b", "c", "a"])
