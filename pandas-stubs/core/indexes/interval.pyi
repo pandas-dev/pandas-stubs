@@ -11,6 +11,7 @@ from typing import (
 
 import numpy as np
 import pandas as pd
+from pandas.core.arrays.interval import IntervalArray
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.extension import ExtensionIndex
 
@@ -61,7 +62,7 @@ _TimestampLike: TypeAlias = pd.Timestamp | np.datetime64 | dt.datetime
 _TimedeltaLike: TypeAlias = pd.Timedelta | np.timedelta64 | dt.timedelta
 
 class IntervalIndex(
-    ExtensionIndex[IntervalT, IntervalIndex, np.object_], IntervalMixin
+    ExtensionIndex[IntervalT, IntervalArray, np.object_], IntervalMixin
 ):
     closed: IntervalClosedType
 

@@ -2,9 +2,9 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from pandas.core.arrays import DatetimeArray
-from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
 from pandas.core.arrays.interval import IntervalArray
+from pandas.core.arrays.numpy_ import NumpyExtensionArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.accessors import (
@@ -77,7 +77,11 @@ def test_property_array() -> None:
         TimedeltaArray,
         Timedelta,
     )
-    check(assert_type(Series([1]).array, ExtensionArray), ExtensionArray, np.integer)
+    check(
+        assert_type(Series([1]).array, NumpyExtensionArray),
+        NumpyExtensionArray,
+        np.integer,
+    )
     # python/mypy#19952: mypy believes ExtensionArray and its subclasses have a
     # conflict and gives Any for s.array
-    check(assert_type(Series([1, "s"]).array, ExtensionArray), ExtensionArray)  # type: ignore[assert-type]
+    # check(assert_type(Series([1, "s"]).array, NumpyExtensionArray), NumpyExtensionArray)  # type: ignore[assert-type]

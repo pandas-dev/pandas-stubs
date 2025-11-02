@@ -14,10 +14,10 @@ from typing import (
 
 import numpy as np
 from pandas.core.accessor import PandasDelegate
-from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.interval import IntervalArray
+from pandas.core.arrays.numpy_ import NumpyExtensionArray
 from pandas.core.arrays.period import PeriodArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.base import (
@@ -48,8 +48,6 @@ from pandas._typing import (
     np_1darray,
     np_ndarray_bool,
 )
-
-from pandas.core.dtypes.dtypes import CategoricalDtype
 
 class Properties(PandasDelegate, NoNewAttributesMixin): ...
 
@@ -462,26 +460,31 @@ class DtDescriptor:
 class ArrayDescriptor:
     @overload
     def __get__(
-        self, instance: IndexOpsMixin[Never], owner: type[IndexOpsMixin]
-    ) -> ExtensionArray: ...
+        self, instance: IndexOpsMixin[Never, Never], owner: type[IndexOpsMixin]
+    ) -> NumpyExtensionArray: ...
     @overload
     def __get__(
-        self, instance: IndexOpsMixin[CategoricalDtype], owner: type[IndexOpsMixin]
+        self, instance: IndexOpsMixin[Never, Categorical], owner: type[IndexOpsMixin]
     ) -> Categorical: ...
     @overload
     def __get__(
-        self, instance: IndexOpsMixin[Interval], owner: type[IndexOpsMixin]
+        self,
+        instance: IndexOpsMixin[Interval, IntervalArray],
+        owner: type[IndexOpsMixin],
     ) -> IntervalArray: ...
     @overload
     def __get__(
-        self, instance: IndexOpsMixin[Timestamp], owner: type[IndexOpsMixin]
+        self,
+        instance: IndexOpsMixin[Timestamp, DatetimeArray],
+        owner: type[IndexOpsMixin],
     ) -> DatetimeArray: ...
     @overload
     def __get__(
-        self, instance: IndexOpsMixin[Timedelta], owner: type[IndexOpsMixin]
+        self,
+        instance: IndexOpsMixin[Timedelta, TimedeltaArray],
+        owner: type[IndexOpsMixin],
     ) -> TimedeltaArray: ...
-    # should be NumpyExtensionArray
     @overload
     def __get__(
-        self, instance: IndexOpsMixin, owner: type[IndexOpsMixin]
-    ) -> ExtensionArray: ...
+        self, instance: IndexOpsMixin[int, Never], owner: type[IndexOpsMixin]
+    ) -> NumpyExtensionArray: ...

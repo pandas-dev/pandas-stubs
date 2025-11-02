@@ -12,10 +12,10 @@ from typing import (
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
-from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.interval import IntervalArray
+from pandas.core.arrays.numpy_ import NumpyExtensionArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.category import CategoricalIndex
@@ -1476,7 +1476,11 @@ def test_array_property() -> None:
         TimedeltaArray,
         pd.Timedelta,
     )
-    check(assert_type(Index([1]).array, ExtensionArray), ExtensionArray, np.integer)
+    check(
+        assert_type(Index([1]).array, NumpyExtensionArray),
+        NumpyExtensionArray,
+        np.integer,
+    )
 
 
 def test_to_series() -> None:
