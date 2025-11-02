@@ -1,7 +1,5 @@
 from collections.abc import Iterator
 from datetime import tzinfo as _tzinfo
-import sys
-from typing import Any
 
 import numpy as np
 from pandas.core.arrays.datetimelike import (
@@ -10,16 +8,15 @@ from pandas.core.arrays.datetimelike import (
     TimelikeOps,
 )
 from pandas.core.arrays.period import PeriodArray
-from pandas.core.indexes.base import Index
+from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.series import Series
-from typing_extensions import (
-    Self,
-)
+from typing_extensions import Self
 
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
-    DtypeArg,
     Frequency,
+    NumpyTimestampDtypeArg,
+    PandasTimestampDtypeArg,
     TimeAmbiguous,
     TimeNonexistent,
     TimeZones,
@@ -27,27 +24,28 @@ from pandas._typing import (
     np_1darray_float,
     np_1darray_object,
     np_ndarray,
+    np_ndarray_dt,
 )
 
 from pandas.core.dtypes.dtypes import DatetimeTZDtype as DatetimeTZDtype
 
 class DatetimeArray(DatetimeLikeArrayMixin, TimelikeOps, DatelikeOps):
     __array_priority__: int = ...
-    def __init__(
-        self,
-        values: Series | Index | DatetimeArray | np_ndarray,
-        dtype: DtypeArg | None = None,
-        freq: Frequency | None = None,
+    def __new__(
+        cls,
+        values: np_ndarray_dt | DatetimeIndex | Series[Timestamp] | Self,
+        dtype: (
+            np.dtypes.DateTime64DType
+            | NumpyTimestampDtypeArg
+            | PandasTimestampDtypeArg
+            | None
+        ) = None,
         copy: bool = False,
-    ) -> None: ...
-    # ignore in dtype() is from the pandas source
-    if sys.version_info >= (3, 11):
-        @property
-        def dtype(self) -> np.dtype | DatetimeTZDtype: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    else:
-        @property
-        def dtype(self) -> np.dtype[Any] | DatetimeTZDtype: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
-
+    ) -> Self: ...
+    @property
+    def dtype(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+        self,
+    ) -> np.dtypes.DateTime64DType | DatetimeTZDtype: ...
     @property
     def tz(self) -> _tzinfo | None: ...
     @property
