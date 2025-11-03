@@ -255,7 +255,7 @@ class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     def __setitem__(
         self,
         idx: Index | slice | np_ndarray_anyint | list[int],
-        value: S1 | Series[S1] | None,
+        value: S1 | IndexOpsMixin[S1] | None,
     ) -> None: ...
 
 class _LocIndexerSeries(_LocIndexer, Generic[S1]):
@@ -289,8 +289,8 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     @overload
     def __setitem__(
         self,
-        idx: Index | MaskType | slice,
-        value: S1 | ArrayLike | Series[S1] | None,
+        idx: IndexOpsMixin[S1] | MaskType | slice,
+        value: S1 | ArrayLike | IndexOpsMixin[S1] | None,
     ) -> None: ...
     @overload
     def __setitem__(
@@ -302,7 +302,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     def __setitem__(
         self,
         idx: MaskType | StrLike | _IndexSliceTuple | list[ScalarT],
-        value: S1 | ArrayLike | Series[S1] | None,
+        value: S1 | ArrayLike | IndexOpsMixin[S1] | None,
     ) -> None: ...
 
 _DataLike: TypeAlias = ArrayLike | dict[str, np.ndarray] | SequenceNotStr[S1]
@@ -573,14 +573,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __setitem__(
         self,
         idx: Index | slice | np_ndarray_anyint | list[int],
-        value: S1 | Series[S1] | None,
+        value: S1 | IndexOpsMixin[S1] | None,
     ) -> None: ...
     # Keep in sync with `_LocIndexerSeries.__setitem__`
     @overload
     def __setitem__(
         self,
         idx: Index | MaskType | slice,
-        value: S1 | ArrayLike | Series[S1] | None,
+        value: S1 | ArrayLike | IndexOpsMixin[S1] | None,
     ) -> None: ...
     @overload
     def __setitem__(
@@ -592,7 +592,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __setitem__(
         self,
         idx: MaskType | StrLike | _IndexSliceTuple | list[ScalarT],
-        value: S1 | ArrayLike | Series[S1] | None,
+        value: S1 | ArrayLike | IndexOpsMixin[S1] | None,
     ) -> None: ...
     @overload
     def get(self, key: Hashable, default: None = None) -> S1 | None: ...
