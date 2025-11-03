@@ -29,7 +29,7 @@ from pandas._typing import (
 # with extension types return the same type while standard type return ndarray
 
 @overload
-def unique(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+def unique(  # pyright: ignore[reportOverlappingOverload]
     values: PeriodIndex,
 ) -> PeriodIndex: ...
 @overload
