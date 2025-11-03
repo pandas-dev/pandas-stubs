@@ -107,14 +107,20 @@ def test_types_concat_none() -> None:
     series = pd.Series([7, -5, 10])
     df = pd.DataFrame({"a": [7, -5, 10]})
 
-    check(assert_type(pd.concat([None, series]), pd.Series), pd.Series)
+    check(
+        assert_type(pd.concat([None, series]), "pd.Series[int]"), pd.Series, np.integer
+    )
     check(assert_type(pd.concat([None, df]), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(pd.concat([None, series, df], axis=1), pd.DataFrame), pd.DataFrame
     )
     check(assert_type(pd.concat([None, series, df]), pd.DataFrame), pd.DataFrame)
 
-    check(assert_type(pd.concat({"a": None, "b": series}), pd.Series), pd.Series)
+    check(
+        assert_type(pd.concat({"a": None, "b": series}), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
     check(assert_type(pd.concat({"a": None, "b": df}), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(pd.concat({"a": None, "b": series, "c": df}, axis=1), pd.DataFrame),
@@ -163,18 +169,22 @@ def test_types_concat() -> None:
 
     # Depends on the axis
     check(
-        assert_type(pd.concat({"a": s, "b": s2}), pd.Series),
+        assert_type(pd.concat({"a": s, "b": s2}), "pd.Series[int]"),
         pd.Series,
+        np.integer,
     )
     check(
         assert_type(pd.concat({"a": s, "b": s2}, axis=1), pd.DataFrame),
         pd.DataFrame,
     )
-    check(assert_type(pd.concat({1: s, 2: s2}), pd.Series), pd.Series)
+    check(
+        assert_type(pd.concat({1: s, 2: s2}), "pd.Series[int]"), pd.Series, np.integer
+    )
     check(assert_type(pd.concat({1: s, 2: s2}, axis=1), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(pd.concat({1: s, None: s2}), pd.Series),
+        assert_type(pd.concat({1: s, None: s2}), "pd.Series[int]"),
         pd.Series,
+        np.integer,
     )
 
     # https://github.com/microsoft/python-type-stubs/issues/69
