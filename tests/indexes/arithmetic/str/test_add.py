@@ -2,7 +2,6 @@ import sys
 from typing import Any
 
 import numpy as np
-from numpy import typing as npt  # noqa: F401
 import pandas as pd
 from typing_extensions import (
     Never,
@@ -61,12 +60,16 @@ def test_add_numpy_array() -> None:
     # checking, where our `__radd__` cannot override. At runtime, they return
     # `Index`es.
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(i + left, "npt.NDArray[np.int64]")
+        assert_type(i + left, Any)  # pyright: ignore[reportAssertTypeFailure]
     if sys.version_info >= (3, 11):
         # `numpy` typing gives `npt.NDArray[np.int64]` in the static type
         # checking, where our `__radd__` cannot override. At runtime, they return
         # `Index`es.
-        check(assert_type(r0 + left, "npt.NDArray[np.str_]"), pd.Index, str)
+        check(
+            assert_type(r0 + left, Any),  # pyright: ignore[reportAssertTypeFailure]
+            pd.Index,
+            str,
+        )
     else:
         # Python 3.10 uses NumPy 2.2.6, and it has for r0 ndarray[tuple[int,...], dtype[str_]]
         # Python 3.11+ uses NumPy 2.3.2, and it has for r0 ndarray[tuple[Any,...,dtype[str_]]

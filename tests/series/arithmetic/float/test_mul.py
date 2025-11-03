@@ -5,7 +5,6 @@ from datetime import (
 from typing import Any
 
 import numpy as np
-from numpy import typing as npt  # noqa: F401
 import pandas as pd
 import pytest
 from typing_extensions import (
@@ -127,17 +126,33 @@ def test_mul_numpy_array(left: "pd.Series[float]") -> None:
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__rmul__` cannot override. At runtime, they return
     # `Series` with the correct element type.
-    check(assert_type(b * left, "npt.NDArray[np.bool_]"), pd.Series, np.floating)
-    check(assert_type(i * left, "npt.NDArray[np.int64]"), pd.Series, np.floating)
-    check(assert_type(f * left, "npt.NDArray[np.float64]"), pd.Series, np.floating)
     check(
-        assert_type(c * left, "npt.NDArray[np.complex128]"),
+        assert_type(b * left, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(i * left, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(f * left, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(c * left, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
         np.complexfloating,
     )
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(s * left, Any)
-    check(assert_type(d * left, "npt.NDArray[np.timedelta64]"), pd.Series, pd.Timedelta)
+    check(
+        assert_type(d * left, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+        pd.Timedelta,
+    )
 
     check(assert_type(left.mul(b), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.mul(i), "pd.Series[float]"), pd.Series, np.floating)

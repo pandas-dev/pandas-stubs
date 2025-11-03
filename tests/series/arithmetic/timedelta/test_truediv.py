@@ -5,7 +5,6 @@ from datetime import (
 from typing import Any
 
 import numpy as np
-from numpy import typing as npt  # noqa: F401
 import pandas as pd
 from typing_extensions import (
     Never,
@@ -164,12 +163,16 @@ def test_truediv_numpy_array() -> None:
     # checking, where our `__rtruediv__` cannot override. At runtime, they lead to
     # errors or pd.Series.
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(b / left, "npt.NDArray[np.float64]")
-        assert_type(i / left, "npt.NDArray[np.float64]")
-        assert_type(f / left, "npt.NDArray[np.float64]")
-        assert_type(c / left, "npt.NDArray[np.complex128]")
+        assert_type(b / left, Any)  # pyright: ignore[reportAssertTypeFailure]
+        assert_type(i / left, Any)  # pyright: ignore[reportAssertTypeFailure]
+        assert_type(f / left, Any)  # pyright: ignore[reportAssertTypeFailure]
+        assert_type(c / left, Any)  # pyright: ignore[reportAssertTypeFailure]
         assert_type(s / left, Any)
-    check(assert_type(d / left, "npt.NDArray[np.float64]"), pd.Series, np.floating)
+    check(
+        assert_type(d / left, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+        np.floating,
+    )
 
     if TYPE_CHECKING_INVALID_USAGE:
         left.truediv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]

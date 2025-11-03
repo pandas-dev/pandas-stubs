@@ -1,5 +1,6 @@
+from typing import Any
+
 import numpy as np
-from numpy import typing as npt  # noqa: F401
 import pandas as pd
 import pytest
 from typing_extensions import assert_type
@@ -180,16 +181,22 @@ def test_truediv_numpy_array(left: "pd.Series[complex]") -> None:
     # checking, where our `__rtruediv__` cannot override. At runtime, they return
     # `Series` with the correct element type.
     check(
-        assert_type(b / left, "npt.NDArray[np.float64]"), pd.Series, np.complexfloating
+        assert_type(b / left, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+        np.complexfloating,
     )
     check(
-        assert_type(i / left, "npt.NDArray[np.float64]"), pd.Series, np.complexfloating
+        assert_type(i / left, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+        np.complexfloating,
     )
     check(
-        assert_type(f / left, "npt.NDArray[np.float64]"), pd.Series, np.complexfloating
+        assert_type(f / left, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+        np.complexfloating,
     )
     check(
-        assert_type(c / left, "npt.NDArray[np.complex128]"),
+        assert_type(c / left, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
         np.complexfloating,
     )

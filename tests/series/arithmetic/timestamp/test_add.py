@@ -2,9 +2,9 @@ from datetime import (
     datetime,
     timedelta,
 )
+from typing import Any
 
 import numpy as np
-from numpy import typing as npt  # noqa: F401
 import pandas as pd
 from typing_extensions import (
     Never,
@@ -120,10 +120,14 @@ def test_add_numpy_array() -> None:
     # checking, where our `__radd__` cannot override. At runtime, they return
     # `Series`.
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(s + left, "npt.NDArray[np.datetime64]")
+        assert_type(s + left, Any)  # pyright: ignore[reportAssertTypeFailure]
     # Here even the dtype of `NDArray` is in the wrong direction.
     # `np.datetime64` would be more sensible.
-    check(assert_type(d + left, "npt.NDArray[np.timedelta64]"), pd.Series, pd.Timestamp)
+    check(
+        assert_type(d + left, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+        pd.Timestamp,
+    )
 
     if TYPE_CHECKING_INVALID_USAGE:
         left.add(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]

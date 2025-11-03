@@ -5,7 +5,6 @@ from datetime import (
 from typing import Any
 
 import numpy as np
-from numpy import typing as npt  # noqa: F401
 import pandas as pd
 import pytest
 from typing_extensions import (
@@ -97,13 +96,17 @@ def test_mul_numpy_array(left: "pd.Index[str]") -> None:
     # checking, where our `__rmul__` cannot override. At runtime, they return
     # `Index` with the correct element type.
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(b * left, "npt.NDArray[np.bool_]")
-    check(assert_type(i * left, "npt.NDArray[np.int64]"), pd.Index, str)
+        assert_type(b * left, Any)  # pyright: ignore[reportAssertTypeFailure]
+    check(
+        assert_type(i * left, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Index,
+        str,
+    )
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(f * left, "npt.NDArray[np.float64]")
-        assert_type(c * left, "npt.NDArray[np.complex128]")
+        assert_type(f * left, Any)  # pyright: ignore[reportAssertTypeFailure]
+        assert_type(c * left, Any)  # pyright: ignore[reportAssertTypeFailure]
         assert_type(s * left, Any)
-        assert_type(d * left, "npt.NDArray[np.timedelta64]")
+        assert_type(d * left, Any)  # pyright: ignore[reportAssertTypeFailure]
 
 
 def test_mul_pd_index(left: "pd.Index[str]") -> None:

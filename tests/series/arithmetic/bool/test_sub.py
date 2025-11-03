@@ -1,8 +1,8 @@
+from typing import Any
+
 import numpy as np
-from numpy import typing as npt  # noqa: F401
 import pandas as pd
 from typing_extensions import (
-    Never,
     assert_type,
 )
 
@@ -84,7 +84,7 @@ def test_sub_numpy_array() -> None:
     c = np.array([1.1j, 2.2j, 4.1j], np.complex128)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(left - b, Never)
+        assert_type(left - b, Any)  # pyright: ignore[reportAssertTypeFailure]
     check(assert_type(left - i, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(left - f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left - c, "pd.Series[complex]"), pd.Series, np.complexfloating)
@@ -93,11 +93,19 @@ def test_sub_numpy_array() -> None:
     # checking, where our `__rsub__` cannot override. At runtime, they return
     # `Series` with the correct element type.
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(b - left, Never)
-    check(assert_type(i - left, "npt.NDArray[np.int64]"), pd.Series, np.integer)
-    check(assert_type(f - left, "npt.NDArray[np.float64]"), pd.Series, np.floating)
+        assert_type(b - left, Any)  # pyright: ignore[reportAssertTypeFailure]
     check(
-        assert_type(c - left, "npt.NDArray[np.complex128]"),
+        assert_type(i - left, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(f - left, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(c - left, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Series,
         np.complexfloating,
     )

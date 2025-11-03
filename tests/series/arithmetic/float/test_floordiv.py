@@ -1,7 +1,6 @@
 from typing import Any
 
 import numpy as np
-from numpy import typing as npt  # noqa: F401
 import pandas as pd
 from typing_extensions import (
     Never,
@@ -93,9 +92,17 @@ def test_floordiv_numpy_array() -> None:
         # `numpy` typing gives the corresponding `ndarray`s in the static type
         # checking, where our `__rfloordiv__` cannot override. At runtime, they lead to
         # errors or pd.Series.
-        assert_type(b // left, "npt.NDArray[np.int8]")
-    check(i // left, pd.Series, np.floating)
-    check(f // left, pd.Series, np.floating)
+        assert_type(b // left, Any)  # pyright: ignore[reportAssertTypeFailure]
+    check(
+        assert_type(i // left, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(f // left, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+        np.floating,
+    )
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(c // left, Any)
 

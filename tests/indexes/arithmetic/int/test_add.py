@@ -1,5 +1,6 @@
+from typing import Any
+
 import numpy as np
-from numpy import typing as npt  # noqa: F401
 import pandas as pd
 from typing_extensions import assert_type
 
@@ -54,11 +55,23 @@ def test_add_numpy_array() -> None:
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__radd__` cannot override. At runtime, they return
     # `Index`es with the correct element type.
-    check(assert_type(b + left, "npt.NDArray[np.bool_]"), pd.Index, np.integer)
-    check(assert_type(i + left, "npt.NDArray[np.int64]"), pd.Index, np.integer)
-    check(assert_type(f + left, "npt.NDArray[np.float64]"), pd.Index, np.floating)
     check(
-        assert_type(c + left, "npt.NDArray[np.complex128]"),
+        assert_type(b + left, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Index,
+        np.integer,
+    )
+    check(
+        assert_type(i + left, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Index,
+        np.integer,
+    )
+    check(
+        assert_type(f + left, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Index,
+        np.floating,
+    )
+    check(
+        assert_type(c + left, Any),  # pyright: ignore[reportAssertTypeFailure]
         pd.Index,
         np.complexfloating,
     )

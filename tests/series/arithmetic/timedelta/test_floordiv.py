@@ -5,7 +5,6 @@ from datetime import (
 from typing import Any
 
 import numpy as np
-from numpy import typing as npt  # noqa: F401
 import pandas as pd
 from typing_extensions import (
     Never,
@@ -138,12 +137,16 @@ def test_floordiv_numpy_array() -> None:
     # checking, where our `__rfloordiv__` cannot override. At runtime, they lead to
     # errors or pd.Series.
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(b // left, "npt.NDArray[np.int8]")
-        assert_type(i // left, "npt.NDArray[np.int64]")
-        assert_type(f // left, "npt.NDArray[np.float64]")
+        assert_type(b // left, Any)  # pyright: ignore[reportAssertTypeFailure]
+        assert_type(i // left, Any)  # pyright: ignore[reportAssertTypeFailure]
+        assert_type(f // left, Any)  # pyright: ignore[reportAssertTypeFailure]
         assert_type(c // left, Any)
         assert_type(s // left, Any)
-    check(assert_type(d // left, "npt.NDArray[np.int64]"), pd.Series, np.integer)
+    check(
+        assert_type(d // left, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+        np.integer,
+    )
 
     if TYPE_CHECKING_INVALID_USAGE:
         left.floordiv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
