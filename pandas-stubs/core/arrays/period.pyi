@@ -1,3 +1,5 @@
+from collections.abc import Sequence
+
 from pandas import PeriodDtype
 from pandas.core.arrays.datetimelike import (
     DatelikeOps,
@@ -5,8 +7,13 @@ from pandas.core.arrays.datetimelike import (
 )
 
 from pandas._libs.tslibs import Timestamp
+from pandas._libs.tslibs.offsets import (
+    BaseOffset,
+    Tick,
+)
 from pandas._libs.tslibs.period import Period
 from pandas._typing import (
+    AnyArrayLike,
     NpDtype,
     PeriodFrequency,
     np_1darray,
@@ -47,3 +54,9 @@ class PeriodArray(DatetimeLikeArrayMixin, DatelikeOps):
         self, freq: PeriodFrequency | None = None, how: str = ...
     ) -> Timestamp: ...
     def asfreq(self, freq: str | None = ..., how: str = "E") -> Period: ...
+
+def period_array(
+    data: Sequence[Period | str | None] | AnyArrayLike,
+    freq: str | Tick | BaseOffset | None = None,
+    copy: bool = False,
+) -> PeriodArray: ...
