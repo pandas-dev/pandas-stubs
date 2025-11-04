@@ -1600,7 +1600,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Callable[[Series[S1]], Series[bool]]
             | Callable[[S1], bool]
         ),
-        other: S1 | Self | Callable[..., S1 | Self] | _NoDefaultDoNotUse = ...,
+        other: S1 | Self | Callable[..., S1 | Self] = ...,
         *,
         inplace: Literal[True],
         axis: AxisIndex | None = 0,
@@ -1616,7 +1616,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Callable[[Series[S1]], Series[bool]]
             | Callable[[S1], bool]
         ),
-        other: Scalar | Self | Callable[..., Scalar | Self] | _NoDefaultDoNotUse = ...,
+        other: Scalar | Self | Callable[..., Scalar | Self] = ...,
         *,
         inplace: Literal[False] = False,
         axis: AxisIndex | None = 0,
