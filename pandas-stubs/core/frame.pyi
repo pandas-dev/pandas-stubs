@@ -54,7 +54,6 @@ from pandas.core.indexing import (
     _IndexSliceTuple,
     _LocIndexer,
 )
-from pandas.core.interchange.dataframe_protocol import DataFrame as DataFrameXchg
 from pandas.core.reshape.pivot import (
     _PivotTableColumnsTypes,
     _PivotTableIndexTypes,
@@ -382,11 +381,11 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | dict[Any, Any]
             | Iterable[ListLikeU | tuple[Hashable, ListLikeU] | dict[Any, Any]]
             | None
-        ) = ...,
-        index: Axes | None = ...,
-        columns: Axes | None = ...,
-        dtype=...,
-        copy: _bool = ...,
+        ) = None,
+        index: Axes | None = None,
+        columns: Axes | None = None,
+        dtype: Dtype | None = None,
+        copy: _bool | None = None,
     ) -> Self: ...
     @overload
     def __new__(
@@ -394,12 +393,9 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         data: Scalar,
         index: Axes,
         columns: Axes,
-        dtype=...,
-        copy: _bool = ...,
+        dtype: Dtype | None = None,
+        copy: _bool | None = None,
     ) -> Self: ...
-    def __dataframe__(
-        self, nan_as_null: bool = ..., allow_copy: bool = ...
-    ) -> DataFrameXchg: ...
     def __arrow_c_stream__(self, requested_schema: object | None = None) -> object: ...
     @property
     def axes(self) -> list[Index]: ...
@@ -1852,7 +1848,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @final
     def asfreq(
         self,
-        freq,
+        freq: Frequency,
         method: FillnaOptions | None = None,
         how: Literal["start", "end"] | None = ...,
         normalize: _bool = False,
@@ -2069,8 +2065,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis | None = None,
     ) -> Self: ...
     @final
-    def first(self, offset) -> Self: ...
-    @final
     def first_valid_index(self) -> Scalar: ...
     def floordiv(
         self,
@@ -2132,8 +2126,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         numeric_only: _bool = False,
         **kwargs: Any,
     ) -> Series: ...
-    @final
-    def last(self, offset) -> Self: ...
     @final
     def last_valid_index(self) -> Scalar: ...
     def le(self, other, axis: Axis = "columns", level: Level | None = ...) -> Self: ...
@@ -2605,7 +2597,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
-        other=...,
+        other: Scalar | Self | Callable[..., Scalar | Self] = ...,
         *,
         inplace: Literal[True],
         axis: Axis | None = ...,
@@ -2621,7 +2613,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
-        other=...,
+        other: Scalar | Self | Callable[..., Scalar | Self] = ...,
         *,
         inplace: Literal[False] = False,
         axis: Axis | None = ...,
