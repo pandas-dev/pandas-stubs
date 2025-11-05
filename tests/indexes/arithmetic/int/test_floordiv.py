@@ -92,13 +92,19 @@ def test_floordiv_numpy_array(left: "pd.Index[int]") -> None:
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__rfloordiv__` cannot override. At runtime, they lead to
     # errors or pd.Index.
-    check(b // left, pd.Index, np.integer)
-    check(i // left, pd.Index, np.integer)
-    check(f // left, pd.Index, np.floating)
+    check(assert_type(b // left, "np.typing.NDArray[np.int8]"), pd.Index, np.integer)
+    check(assert_type(i // left, "np.typing.NDArray[np.int64]"), pd.Index, np.integer)
+    check(
+        assert_type(f // left, "np.typing.NDArray[np.float64]"), pd.Index, np.floating
+    )
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(c // left, Any)
         assert_type(s // left, Any)
-        assert_type(d // left, "np.typing.NDArray[np.int64]")
+    check(
+        assert_type(d // left, "np.typing.NDArray[np.int64]"),
+        pd.TimedeltaIndex,
+        pd.Timedelta,
+    )
 
 
 def test_floordiv_pd_index(left: "pd.Index[int]") -> None:
