@@ -45,7 +45,7 @@ def test_truediv_py_scalar(left_i: pd.Series) -> None:
     check(assert_type(c / left_i, pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
         _14 = s / left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        assert_type(d / left_i, Never)
+    check(assert_type(d / left_i, pd.Series), pd.Series)
 
     check(assert_type(left_i.truediv(b), pd.Series), pd.Series)
     check(assert_type(left_i.truediv(i), pd.Series), pd.Series)
@@ -69,9 +69,7 @@ def test_truediv_py_scalar(left_i: pd.Series) -> None:
     check(assert_type(left_i.rtruediv(c), pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
         left_i.rtruediv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-
-    def _45() -> None:  # pyright: ignore[reportUnusedFunction]
-        assert_type(left_i.rtruediv(d), Never)
+    check(assert_type(left_i.rtruediv(d), pd.Series), pd.Series)
 
     check(assert_type(left_i.rdiv(b), pd.Series), pd.Series)
     check(assert_type(left_i.rdiv(i), pd.Series), pd.Series)
@@ -79,9 +77,7 @@ def test_truediv_py_scalar(left_i: pd.Series) -> None:
     check(assert_type(left_i.rdiv(c), pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
         left_i.rdiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-
-    def _55() -> None:  # pyright: ignore[reportUnusedFunction]
-        assert_type(left_i.rdiv(d), Never)
+    check(assert_type(left_i.rdiv(d), pd.Series), pd.Series)
 
 
 def test_truediv_py_sequence(left_i: pd.Series) -> None:
@@ -104,7 +100,7 @@ def test_truediv_py_sequence(left_i: pd.Series) -> None:
     check(assert_type(c / left_i, pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
         _14 = s / left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        assert_type(d / left_i, Never)
+    check(assert_type(d / left_i, pd.Series), pd.Series)
 
     check(assert_type(left_i.truediv(b), pd.Series), pd.Series)
     check(assert_type(left_i.truediv(i), pd.Series), pd.Series)
@@ -128,9 +124,7 @@ def test_truediv_py_sequence(left_i: pd.Series) -> None:
     check(assert_type(left_i.rtruediv(c), pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
         left_i.rtruediv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-
-    def _45() -> None:  # pyright: ignore[reportUnusedFunction]
-        assert_type(left_i.rtruediv(d), Never)
+    check(assert_type(left_i.rtruediv(d), pd.Series), pd.Series)
 
     check(assert_type(left_i.rdiv(b), pd.Series), pd.Series)
     check(assert_type(left_i.rdiv(i), pd.Series), pd.Series)
@@ -138,9 +132,7 @@ def test_truediv_py_sequence(left_i: pd.Series) -> None:
     check(assert_type(left_i.rdiv(c), pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
         left_i.rdiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-
-    def _55() -> None:  # pyright: ignore[reportUnusedFunction]
-        assert_type(left_i.rdiv(d), Never)
+    check(assert_type(left_i.rdiv(d), pd.Series), pd.Series)
 
 
 def test_truediv_numpy_array(left_i: pd.Series) -> None:
@@ -212,9 +204,7 @@ def test_truediv_numpy_array(left_i: pd.Series) -> None:
     check(assert_type(left_i.rtruediv(c), pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
         left_i.rtruediv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-
-    def _45() -> None:  # pyright: ignore[reportUnusedFunction]
-        assert_type(left_i.rtruediv(d), Never)
+    check(assert_type(left_i.rtruediv(d), pd.Series), pd.Series)
 
     check(assert_type(left_i.rdiv(b), pd.Series), pd.Series)
     check(assert_type(left_i.rdiv(i), pd.Series), pd.Series)
@@ -222,9 +212,7 @@ def test_truediv_numpy_array(left_i: pd.Series) -> None:
     check(assert_type(left_i.rdiv(c), pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
         left_i.rdiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-
-    def _55() -> None:  # pyright: ignore[reportUnusedFunction]
-        assert_type(left_i.rdiv(d), Never)
+    check(assert_type(left_i.rdiv(d), pd.Series), pd.Series)
 
 
 def test_truediv_pd_index(left_i: pd.Series) -> None:
@@ -253,7 +241,7 @@ def test_truediv_pd_index(left_i: pd.Series) -> None:
     check(assert_type(c / left_i, pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
         _15 = s / left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        assert_type(d / left_i, Never)
+    check(assert_type(d / left_i, pd.Series), pd.Series)
 
     check(assert_type(left_i.truediv(a), pd.Series), pd.Series)
     check(assert_type(left_i.truediv(b), pd.Series), pd.Series)
@@ -284,9 +272,7 @@ def test_truediv_pd_index(left_i: pd.Series) -> None:
     check(assert_type(left_i.rtruediv(c), pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
         left_i.rtruediv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-
-    def _46() -> None:  # pyright: ignore[reportUnusedFunction]
-        assert_type(left_i.rtruediv(d), Never)
+    check(assert_type(left_i.rtruediv(d), pd.Series), pd.Series)
 
     check(assert_type(left_i.rdiv(a), pd.Series), pd.Series)
     check(assert_type(left_i.rdiv(b), pd.Series), pd.Series)
@@ -295,9 +281,7 @@ def test_truediv_pd_index(left_i: pd.Series) -> None:
     check(assert_type(left_i.rdiv(c), pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
         left_i.rdiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-
-    def _56() -> None:  # pyright: ignore[reportUnusedFunction]
-        assert_type(left_i.rdiv(d), Never)
+    check(assert_type(left_i.rdiv(d), pd.Series), pd.Series)
 
 
 def test_truediv_pd_series(left_i: pd.Series) -> None:
@@ -308,7 +292,7 @@ def test_truediv_pd_series(left_i: pd.Series) -> None:
     f = pd.Series([1.0, 2.0, 3.0])
     c = pd.Series([1.1j, 2.2j, 4.1j])
     s = pd.Series([datetime(2025, 11, 1 + d) for d in range(3)])
-    # d = pd.Series([timedelta(seconds=s) for s in range(3)])
+    d = pd.Series([timedelta(seconds=s) for s in range(3)])
 
     check(assert_type(left_i / a, pd.Series), pd.Series)
     check(assert_type(left_i / b, pd.Series), pd.Series)
@@ -316,8 +300,8 @@ def test_truediv_pd_series(left_i: pd.Series) -> None:
     check(assert_type(left_i / f, pd.Series), pd.Series)
     check(assert_type(left_i / c, pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
-        _05 = left_i / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        # left_i / d  # This invalid one cannot be detected by static type checking
+        _04 = left_i / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        # _05 = left_i / d  # This invalid one cannot be detected by static type checking
 
     check(assert_type(a / left_i, pd.Series), pd.Series)
     check(assert_type(b / left_i, pd.Series), pd.Series)
@@ -325,8 +309,8 @@ def test_truediv_pd_series(left_i: pd.Series) -> None:
     check(assert_type(f / left_i, pd.Series), pd.Series)
     check(assert_type(c / left_i, pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
-        _15 = s / left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        # d / left_i  # This invalid one cannot be detected by static type checking
+        _14 = s / left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+    check(assert_type(d / left_i, pd.Series), pd.Series)
 
     check(assert_type(left_i.truediv(a), pd.Series), pd.Series)
     check(assert_type(left_i.truediv(b), pd.Series), pd.Series)
@@ -353,7 +337,7 @@ def test_truediv_pd_series(left_i: pd.Series) -> None:
     check(assert_type(left_i.rtruediv(c), pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
         left_i.rtruediv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        # left_i.rtruediv(d)  # This invalid one cannot be detected by static type checking
+    check(assert_type(left_i.rtruediv(d), pd.Series), pd.Series)
 
     check(assert_type(left_i.rdiv(a), pd.Series), pd.Series)
     check(assert_type(left_i.rdiv(b), pd.Series), pd.Series)
@@ -362,7 +346,7 @@ def test_truediv_pd_series(left_i: pd.Series) -> None:
     check(assert_type(left_i.rdiv(c), pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
         left_i.rdiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        # left_i.rdiv(d)  # This invalid one cannot be detected by static type checking
+    check(assert_type(left_i.rdiv(d), pd.Series), pd.Series)
 
 
 def test_truediv_paths(tmp_path: Path) -> None:
@@ -404,7 +388,7 @@ def test_truediv_str_py_str(left_i: pd.Series) -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         _00 = left_i / s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
-        _01 = s / left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
+        _01: pd.Series = s / left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
 
         left_i.truediv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         left_i.div(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]

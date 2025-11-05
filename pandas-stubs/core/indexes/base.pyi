@@ -16,6 +16,7 @@ from typing import (
     ClassVar,
     Generic,
     Literal,
+    TypeAlias,
     final,
     overload,
     type_check_only,
@@ -29,7 +30,9 @@ from _typeshed import (
     _T_contra,
 )
 import numpy as np
+from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.boolean import BooleanArray
+from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.base import (
     ElementOpsMixin,
     IndexOpsMixin,
@@ -110,6 +113,32 @@ from pandas._typing import (
 )
 
 from pandas.core.dtypes.dtypes import PeriodDtype
+
+NumpyRealScalar: TypeAlias = np.bool | np.integer | np.floating
+IndexReal: TypeAlias = Index[bool] | Index[int] | Index[float]  # ty: ignore[unresolved-reference]
+ScalarArrayIndexReal: TypeAlias = (
+    float
+    | Sequence[float | NumpyRealScalar]
+    | NumpyRealScalar
+    | np_ndarray[tuple[int, ...], NumpyRealScalar]
+    | ExtensionArray  # TODO: NumpyExtensionArray after pandas-dev/pandas-stubs#1469
+    | IndexReal
+)
+NumpyComplexScalar: TypeAlias = NumpyRealScalar | np.complexfloating
+IndexComplex: TypeAlias = IndexReal | Index[complex]  # ty: ignore[unresolved-reference]
+ScalarArrayIndexComplex: TypeAlias = (
+    complex
+    | Sequence[complex | NumpyComplexScalar]
+    | NumpyComplexScalar
+    | np_ndarray[tuple[int, ...], NumpyComplexScalar]
+    | ExtensionArray  # TODO: NumpyExtensionArray after pandas-dev/pandas-stubs#1469
+    | IndexComplex
+)
+
+ArrayIndexTimedeltaNoSeq: TypeAlias = np_ndarray_td | TimedeltaArray | TimedeltaIndex
+ScalarArrayIndexTimedelta: TypeAlias = (
+    timedelta | Sequence[timedelta | np.timedelta64] | ArrayIndexTimedeltaNoSeq
+)
 
 class InvalidIndexError(Exception): ...
 
@@ -1124,7 +1153,9 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         ),
     ) -> Index: ...
     @overload
-    def __rfloordiv__(self: Index[bool] | Index[int] | Index[float], other: Index[Never]) -> Index: ...  # type: ignore[overload-overlap]
+    def __rfloordiv__(  # type: ignore[overload-overlap]
+        self: Index[bool] | Index[int] | Index[float], other: Index[Never]
+    ) -> Index: ...
     @overload
     def __rfloordiv__(
         self: Index[int] | Index[float],
