@@ -293,19 +293,19 @@ def test_truediv_pd_index(left: "pd.Series[pd.Timedelta]") -> None:
     check(assert_type(left.div(d), "pd.Series[float]"), pd.Series, np.floating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.rtruediv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.rtruediv(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.rtruediv(f)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.rtruediv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.rtruediv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rtruediv(b)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rtruediv(i)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rtruediv(f)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rtruediv(c)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rtruediv(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rtruediv(d), "pd.Series[float]"), pd.Series, np.floating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.rdiv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.rdiv(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.rdiv(f)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.rdiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        left.rdiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rdiv(b)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rdiv(i)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rdiv(f)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rdiv(c)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rdiv(s)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rdiv(d), "pd.Series[float]"), pd.Series, np.floating)
 
 

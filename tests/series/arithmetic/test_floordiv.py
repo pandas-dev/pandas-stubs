@@ -124,9 +124,14 @@ def test_floordiv_numpy_array(left_i: pd.Series) -> None:
     check(assert_type(left_i // b, pd.Series), pd.Series, np.integer)
     check(assert_type(left_i // i, pd.Series), pd.Series, np.integer)
     check(assert_type(left_i // f, pd.Series), pd.Series, np.floating)
-    if TYPE_CHECKING_INVALID_USAGE:
+
+    def _03() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(left_i // c, Never)
+
+    def _04() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(left_i // s, Never)
+
+    def _05() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(left_i // d, Never)
 
     # `numpy` typing gives the corresponding `ndarray`s in the static type
@@ -143,17 +148,26 @@ def test_floordiv_numpy_array(left_i: pd.Series) -> None:
     check(assert_type(left_i.floordiv(b), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.floordiv(i), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.floordiv(f), pd.Series), pd.Series, np.floating)
-    if TYPE_CHECKING_INVALID_USAGE:
+
+    def _23() -> None:  # pyright: ignore[reportUnusedFunction]
         left_i.floordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+
+    def _24() -> None:  # pyright: ignore[reportUnusedFunction]
         left_i.floordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        # left_i.floordiv(d)  # This invalid one cannot be detected by static type checking
+
+    def _25() -> None:  # pyright: ignore[reportUnusedFunction]
+        assert_type(left_i.floordiv(d), Never)
 
     check(assert_type(left_i.rfloordiv(b), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.rfloordiv(i), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.rfloordiv(f), pd.Series), pd.Series, np.floating)
-    if TYPE_CHECKING_INVALID_USAGE:
+
+    def _33() -> None:  # pyright: ignore[reportUnusedFunction]
         left_i.rfloordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+
+    def _34() -> None:  # pyright: ignore[reportUnusedFunction]
         left_i.rfloordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+
     check(
         assert_type(left_i.rfloordiv(d), "pd.Series[pd.Timedelta]"),
         pd.Series,
@@ -176,7 +190,9 @@ def test_floordiv_pd_index(left_i: pd.Series) -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         _03 = left_i // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _04 = left_i // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        # _05 = left_i // d  # This invalid one cannot be detected by static type checking
+
+    def _05() -> None:  # pyright: ignore[reportUnusedFunction]
+        assert_type(left_i // d, Never)
 
     check(assert_type(b // left_i, pd.Series), pd.Series, np.integer)
     check(assert_type(i // left_i, pd.Series), pd.Series, np.integer)
@@ -192,7 +208,9 @@ def test_floordiv_pd_index(left_i: pd.Series) -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         left_i.floordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         left_i.floordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        # left_i.floordiv(d)  # This invalid one cannot be detected by static type checking
+
+    def _25() -> None:  # pyright: ignore[reportUnusedFunction]
+        assert_type(left_i.floordiv(d), Never)
 
     check(assert_type(left_i.rfloordiv(b), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.rfloordiv(i), pd.Series), pd.Series, np.integer)
@@ -222,7 +240,7 @@ def test_floordiv_pd_series(left_i: pd.Series) -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         _03 = left_i // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _04 = left_i // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        # _05 = left_i // d  # This invalid one cannot be detected by static type checking
+        # left_i // d  # This invalid one cannot be detected by static type checking
 
     check(assert_type(b // left_i, pd.Series), pd.Series, np.integer)
     check(assert_type(i // left_i, pd.Series), pd.Series, np.integer)
@@ -235,8 +253,11 @@ def test_floordiv_pd_series(left_i: pd.Series) -> None:
     check(assert_type(left_i.floordiv(b), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.floordiv(i), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.floordiv(f), pd.Series), pd.Series, np.floating)
-    if TYPE_CHECKING_INVALID_USAGE:
+
+    def _23() -> None:  # pyright: ignore[reportUnusedFunction]
         left_i.floordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+
+    if TYPE_CHECKING_INVALID_USAGE:
         left_i.floordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         # left_i.floordiv(d)  # This invalid one cannot be detected by static type checking
 
@@ -246,6 +267,7 @@ def test_floordiv_pd_series(left_i: pd.Series) -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         left_i.rfloordiv(c)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         left_i.rfloordiv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+
     check(
         assert_type(left_i.rfloordiv(d), "pd.Series[pd.Timedelta]"),
         pd.Series,
