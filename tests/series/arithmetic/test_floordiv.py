@@ -87,7 +87,7 @@ def test_floordiv_py_sequence(left_i: pd.Series) -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         _13 = c // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _14 = s // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _15 = d // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+    check(assert_type(d // left_i, pd.Series), pd.Series, timedelta)
 
     check(assert_type(left_i.floordiv(b), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.floordiv(i), pd.Series), pd.Series, np.integer)

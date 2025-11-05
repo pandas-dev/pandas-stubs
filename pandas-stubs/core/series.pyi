@@ -309,11 +309,17 @@ _DataLikeS1: TypeAlias = (
     ArrayLike | dict[_str, np.ndarray] | Sequence[S1] | IndexOpsMixin[S1]
 )
 
-SeriesReal: TypeAlias = Series[bool] | Series[int] | Series[float]  # ty: ignore[unresolved-reference]
+SeriesReal: TypeAlias = (
+    Series[bool] | Series[int] | Series[float]  # ty: ignore[unresolved-reference]
+)
 ScalarArrayIndexSeriesReal: TypeAlias = ScalarArrayIndexReal | SeriesReal
-SeriesComplex: TypeAlias = SeriesReal | Series[complex]  # ty: ignore[unresolved-reference]
+SeriesComplex: TypeAlias = (
+    SeriesReal | Series[complex]  # ty: ignore[unresolved-reference]
+)
 ScalarArrayIndexSeriesComplex: TypeAlias = ScalarArrayIndexComplex | SeriesComplex
-ArrayIndexSeriesTimedeltaNoSeq: TypeAlias = ArrayIndexTimedeltaNoSeq | Series[Timedelta]  # ty: ignore[unresolved-reference]
+ArrayIndexSeriesTimedeltaNoSeq: TypeAlias = (
+    ArrayIndexTimedeltaNoSeq | Series[Timedelta]  # ty: ignore[unresolved-reference]
+)
 ScalarArrayIndexSeriesTimedelta: TypeAlias = (
     ScalarArrayIndexTimedelta | Series[Timedelta]  # ty: ignore[unresolved-reference]
 )
@@ -2405,6 +2411,11 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[Timedelta]: ...
     @overload
     def __rfloordiv__(
+        self: Series[int] | Series[float],
+        other: Sequence[timedelta | np.timedelta64],
+    ) -> Series: ...
+    @overload
+    def __rfloordiv__(
         self: Series[Timedelta], other: ArrayIndexSeriesTimedeltaNoSeq
     ) -> Series[int]: ...
     @overload
@@ -2476,13 +2487,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def rfloordiv(
         self: Series[int] | Series[float],
-        other: (
-            timedelta
-            | Sequence[timedelta]
-            | np_ndarray_td
-            | TimedeltaIndex
-            | Series[Timedelta]
-        ),
+        other: ScalarArrayIndexSeriesTimedelta,
         level: Level | None = ...,
         fill_value: float | None = None,
         axis: AxisIndex = ...,
@@ -2490,7 +2495,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def rfloordiv(
         self: Series[Timedelta],
-        other: ArrayIndexSeriesTimedeltaNoSeq,
+        other: timedelta | np.timedelta64 | ArrayIndexSeriesTimedeltaNoSeq,
         level: Level | None = ...,
         fill_value: float | None = None,
         axis: AxisIndex = ...,
@@ -3967,14 +3972,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[float]: ...
     @overload
     def __rtruediv__(
-        self: Series[int] | Series[float],
-        other: (
-            timedelta
-            | Sequence[timedelta]
-            | np_ndarray_td
-            | TimedeltaIndex
-            | Series[Timedelta]
-        ),
+        self: Series[int] | Series[float], other: ScalarArrayIndexSeriesTimedelta
     ) -> Series[Timedelta]: ...
     @overload
     def __rtruediv__(self: Series[_str], other: Path) -> Series: ...
@@ -4101,13 +4099,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def rtruediv(
         self: Series[bool] | Series[int] | Series[float],
-        other: (
-            timedelta
-            | Sequence[timedelta]
-            | np_ndarray_td
-            | TimedeltaIndex
-            | Series[Timedelta]
-        ),
+        other: ScalarArrayIndexSeriesTimedelta,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,

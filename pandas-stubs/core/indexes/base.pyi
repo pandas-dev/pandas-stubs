@@ -115,7 +115,9 @@ from pandas._typing import (
 from pandas.core.dtypes.dtypes import PeriodDtype
 
 NumpyRealScalar: TypeAlias = np.bool | np.integer | np.floating
-IndexReal: TypeAlias = Index[bool] | Index[int] | Index[float]  # ty: ignore[unresolved-reference]
+IndexReal: TypeAlias = (
+    Index[bool] | Index[int] | Index[float]  # ty: ignore[unresolved-reference]
+)
 ScalarArrayIndexReal: TypeAlias = (
     float
     | Sequence[float | NumpyRealScalar]
@@ -1086,19 +1088,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __rtruediv__(self, other: Path) -> Index: ...
     @overload
-    def __floordiv__(
-        self: Index[Never],
-        other: (
-            float
-            | Sequence[float]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[bool]
-            | Index[int]
-            | Index[float]
-        ),
-    ) -> Index: ...
+    def __floordiv__(self: Index[Never], other: ScalarArrayIndexReal) -> Index: ...
     @overload
     def __floordiv__(
         self: Index[bool] | Index[int] | Index[float], other: Index[Never]
@@ -1139,19 +1129,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         other: float | Sequence[float] | np_ndarray_float | Index[float],
     ) -> Index[float]: ...
     @overload
-    def __rfloordiv__(
-        self: Index[Never],
-        other: (
-            float
-            | Sequence[float]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[bool]
-            | Index[int]
-            | Index[float]
-        ),
-    ) -> Index: ...
+    def __rfloordiv__(self: Index[Never], other: ScalarArrayIndexReal) -> Index: ...
     @overload
     def __rfloordiv__(  # type: ignore[overload-overlap]
         self: Index[bool] | Index[int] | Index[float], other: Index[Never]
