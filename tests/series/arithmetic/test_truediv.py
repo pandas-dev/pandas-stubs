@@ -103,7 +103,7 @@ def test_truediv_py_sequence(left_i: pd.Series) -> None:
     check(assert_type(f / left_i, pd.Series), pd.Series)
     check(assert_type(c / left_i, pd.Series), pd.Series)
     if TYPE_CHECKING_INVALID_USAGE:
-        _14 = s / left_i  # type: ignore[var-annotated] # pyright: ignore[reportOperatorIssue]
+        _14 = s / left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         assert_type(d / left_i, Never)
 
     check(assert_type(left_i.truediv(b), pd.Series), pd.Series)
@@ -404,7 +404,7 @@ def test_truediv_str_py_str(left_i: pd.Series) -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         _00 = left_i / s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
-        _01 = s / left_i  # type: ignore[var-annotated] # pyright:ignore[reportOperatorIssue]
+        _01 = s / left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
 
         left_i.truediv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         left_i.div(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
