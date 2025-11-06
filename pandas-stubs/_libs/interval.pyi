@@ -19,6 +19,7 @@ from pandas._typing import (
     IntervalClosedType,
     IntervalT,
     np_1darray,
+    np_ndarray,
 )
 
 VALID_CLOSED: frozenset[str]
@@ -37,6 +38,7 @@ class _LengthDescriptor:
     def __get__(
         self, instance: Interval[_OrderableTimesT], owner: Any
     ) -> Timedelta: ...
+    def __get__(self, instance: IntervalMixin, owner: Any) -> np_ndarray: ...
 
 @type_check_only
 class _MidDescriptor:
@@ -46,6 +48,7 @@ class _MidDescriptor:
     def __get__(
         self, instance: Interval[_OrderableTimesT], owner: Any
     ) -> _OrderableTimesT: ...
+    def __get__(self, instance: IntervalMixin, owner: Any) -> np_ndarray: ...
 
 class IntervalMixin:
     @property
@@ -220,5 +223,3 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     def __ne__(self, other: Series[_OrderableT]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: object) -> Literal[True]: ...
-
-class IntervalTree(IntervalMixin): ...
