@@ -143,7 +143,11 @@ def test_floordiv_numpy_array(left_i: pd.Series) -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(c // left_i, Any)
         assert_type(s // left_i, Any)
-    check(assert_type(d // left_i, Any), pd.Series, pd.Timedelta)  # pyright: ignore[reportAssertTypeFailure]
+    check(
+        assert_type(d // left_i, Any),  # pyright: ignore[reportAssertTypeFailure]
+        pd.Series,
+        pd.Timedelta,
+    )
 
     check(assert_type(left_i.floordiv(b), pd.Series), pd.Series, np.integer)
     check(assert_type(left_i.floordiv(i), pd.Series), pd.Series, np.integer)
