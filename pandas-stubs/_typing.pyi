@@ -854,6 +854,9 @@ np_ndarray_anyint: TypeAlias = npt.NDArray[np.integer]
 np_ndarray_float: TypeAlias = npt.NDArray[np.floating]
 np_ndarray_complex: TypeAlias = npt.NDArray[np.complexfloating]
 np_ndarray_bool: TypeAlias = npt.NDArray[np.bool_]
+np_ndarray_num: TypeAlias = npt.NDArray[
+    np.bool | np.integer | np.floating | np.complexfloating
+]
 np_ndarray_str: TypeAlias = npt.NDArray[np.str_]
 np_ndarray_dt: TypeAlias = npt.NDArray[np.datetime64]
 np_ndarray_td: TypeAlias = npt.NDArray[np.timedelta64]
