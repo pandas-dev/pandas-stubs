@@ -43,7 +43,6 @@ from pandas._typing import (
     Scalar,
     SupportsDType,
     np_1darray,
-    np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_complex,
@@ -181,7 +180,7 @@ ScalarArrayIndexJustInt: TypeAlias = (
     | IntegerArray
     | Index[int]
 )
-ScalarArraySeriesJustInt: TypeAlias = ScalarArrayIndexJustInt | Series[int]
+ScalarArrayIndexSeriesJustInt: TypeAlias = ScalarArrayIndexJustInt | Series[int]
 ScalarArrayIndexJustFloat: TypeAlias = (
     Just[float]
     | np.floating
@@ -190,7 +189,7 @@ ScalarArrayIndexJustFloat: TypeAlias = (
     # | FloatingArray  # TODO: after pandas-dev/pandas-stubs#1469
     | Index[float]
 )
-ScalarArraySeriesJustFloat: TypeAlias = ScalarArrayIndexJustFloat | Series[float]
+ScalarArrayIndexSeriesJustFloat: TypeAlias = ScalarArrayIndexJustFloat | Series[float]
 ScalarArrayIndexJustComplex: TypeAlias = (
     Just[complex]
     | np.complexfloating
@@ -198,7 +197,9 @@ ScalarArrayIndexJustComplex: TypeAlias = (
     | np_ndarray_complex
     | Index[complex]
 )
-ScalarArraySeriesJustComplex: TypeAlias = ScalarArrayIndexJustComplex | Series[complex]
+ScalarArrayIndexSeriesJustComplex: TypeAlias = (
+    ScalarArrayIndexJustComplex | Series[complex]
+)
 
 ScalarArrayIndexIntNoBool: TypeAlias = (
     Just[int]
@@ -208,7 +209,7 @@ ScalarArrayIndexIntNoBool: TypeAlias = (
     | IntegerArray
     | Index[int]
 )
-ScalarArraySeriesIntNoBool: TypeAlias = ScalarArrayIndexIntNoBool | Series[int]
+ScalarArrayIndexSeriesIntNoBool: TypeAlias = ScalarArrayIndexIntNoBool | Series[int]
 
 NumpyRealScalar: TypeAlias = np.bool | np.integer | np.floating
 IndexReal: TypeAlias = Index[bool] | Index[int] | Index[float]
@@ -216,7 +217,7 @@ ScalarArrayIndexReal: TypeAlias = (
     float
     | Sequence[float | NumpyRealScalar]
     | NumpyRealScalar
-    | np_ndarray[tuple[int, ...], NumpyRealScalar]
+    | np.typing.NDArray[NumpyRealScalar]
     | ExtensionArray
     | IndexReal
 )
@@ -229,7 +230,7 @@ ScalarArrayIndexComplex: TypeAlias = (
     complex
     | Sequence[complex | NumpyComplexScalar]
     | NumpyComplexScalar
-    | np_ndarray[tuple[int, ...], NumpyComplexScalar]
+    | np.typing.NDArray[NumpyComplexScalar]
     | ExtensionArray
     | IndexComplex
 )

@@ -76,10 +76,10 @@ class DatetimeIndex(
     def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset
     ) -> Self: ...
-    def __truediv__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def __truediv__(  # type: ignore[override] # pyrefly: ignore[bad-override]
         self, other: np_ndarray
     ) -> Never: ...
-    def __rtruediv__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def __rtruediv__(  # type: ignore[override] # pyrefly: ignore[bad-override]
         self, other: np_ndarray
     ) -> Never: ...
     @final

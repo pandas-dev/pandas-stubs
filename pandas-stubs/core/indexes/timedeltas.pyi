@@ -38,6 +38,7 @@ from pandas._typing import (
     np_ndarray_complex,
     np_ndarray_dt,
     np_ndarray_float,
+    np_ndarray_num,
     np_ndarray_td,
 )
 
@@ -106,6 +107,10 @@ class TimedeltaIndex(
     @overload
     def __rmul__(self, other: _NUM_FACTOR_SEQ) -> Self: ...
     @overload  # type: ignore[override]
+    def __truediv__(  # type: ignore[overload-overlap]
+        self, other: Index[Never]
+    ) -> Index: ...
+    @overload
     def __truediv__(  # pyrefly: ignore[bad-override]
         self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt
     ) -> Never: ...
@@ -135,14 +140,7 @@ class TimedeltaIndex(
     ) -> Index[int]: ...
     @overload
     def __rfloordiv__(  # pyrefly: ignore[bad-override]
-        self,
-        other: (
-            np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | np_ndarray_complex
-            | np_ndarray_dt
-        ),
+        self, other: np_ndarray_num | np_ndarray_dt
     ) -> Never: ...
     @overload
     def __rfloordiv__(  # pyright: ignore[reportIncompatibleMethodOverride]

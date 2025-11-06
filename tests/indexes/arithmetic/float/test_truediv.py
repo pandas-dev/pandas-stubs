@@ -68,7 +68,7 @@ def test_truediv_py_sequence(left: "pd.Index[float]") -> None:
     check(assert_type(c / left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
         _14 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _15 = d / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+    check(assert_type(d / left, pd.Index), pd.Index, timedelta)
 
 
 def test_truediv_numpy_array(left: "pd.Index[float]") -> None:

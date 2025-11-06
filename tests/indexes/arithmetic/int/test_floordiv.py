@@ -67,7 +67,7 @@ def test_floordiv_py_sequence(left: "pd.Index[int]") -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         _13 = c // left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _14 = s // left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _15 = d // left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+    check(assert_type(d // left, pd.Index), pd.Index, timedelta)
 
 
 def test_floordiv_numpy_array(left: "pd.Index[int]") -> None:
