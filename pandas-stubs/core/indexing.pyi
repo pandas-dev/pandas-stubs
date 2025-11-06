@@ -3,7 +3,7 @@ from typing import (
     TypeVar,
 )
 
-from pandas.core.indexes.api import Index
+from pandas.core.base import IndexOpsMixin
 
 from pandas._libs.indexing import _NDFrameIndexerBase
 from pandas._typing import (
@@ -13,7 +13,7 @@ from pandas._typing import (
 )
 
 _IndexSliceTuple: TypeAlias = tuple[
-    Index | MaskType | Scalar | list[ScalarT] | slice | tuple[Scalar, ...], ...
+    IndexOpsMixin | MaskType | Scalar | list[ScalarT] | slice | tuple[Scalar, ...], ...
 ]
 
 _IndexSliceUnion: TypeAlias = slice | _IndexSliceTuple

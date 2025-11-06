@@ -816,6 +816,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         value: (
             Scalar
             | IndexOpsMixin
+            | Sequence[Scalar]
             | DataFrame
             | np.ndarray
             | NAType
@@ -837,6 +838,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | NaTType
             | ArrayLike
             | IndexOpsMixin
+            | Sequence[Scalar]
             | DataFrame
             | list
             | Mapping[Hashable, Scalar | NAType | NaTType]
@@ -848,7 +850,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         idx: tuple[_IndexSliceTuple, Hashable],
         value: (
-            Scalar | NAType | NaTType | ArrayLike | IndexOpsMixin | list | dict | None
+            Scalar
+            | NAType
+            | NaTType
+            | ArrayLike
+            | IndexOpsMixin
+            | Sequence[Scalar]
+            | dict
+            | None
         ),
     ) -> None: ...
     @overload
