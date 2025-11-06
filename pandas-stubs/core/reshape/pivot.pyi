@@ -6,6 +6,7 @@ from collections.abc import (
 )
 import datetime
 from typing import (
+    Any,
     Literal,
     TypeAlias,
     overload,
@@ -69,11 +70,11 @@ def pivot_table(
     columns: _PivotTableColumnsTypes = None,
     aggfunc: (
         _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
-    ) = ...,
+    ) = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
     dropna: bool = True,
-    margins_name: Hashable = "all",
+    margins_name: Hashable = "All",
     observed: bool = True,
     sort: bool = True,
 ) -> DataFrame: ...
@@ -85,14 +86,14 @@ def pivot_table(
     values: _PivotTableValuesTypes = None,
     *,
     index: Grouper,
-    columns: _PivotTableColumnsTypes | Index | npt.NDArray = None,
+    columns: _PivotTableColumnsTypes | npt.NDArray[Any] | Index = None,
     aggfunc: (
         _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
     ) = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
     dropna: bool = True,
-    margins_name: Hashable = "all",
+    margins_name: Hashable = "All",
     observed: bool = True,
     sort: bool = True,
 ) -> DataFrame: ...
@@ -100,7 +101,7 @@ def pivot_table(
 def pivot_table(
     data: DataFrame,
     values: _PivotTableValuesTypes = None,
-    index: _PivotTableIndexTypes | Index | npt.NDArray = None,
+    index: _PivotTableIndexTypes | npt.NDArray[Any] | Index = None,
     *,
     columns: Grouper,
     aggfunc: (
@@ -109,7 +110,7 @@ def pivot_table(
     fill_value: Scalar | None = None,
     margins: bool = False,
     dropna: bool = True,
-    margins_name: Hashable = "all",
+    margins_name: Hashable = "All",
     observed: bool = True,
     sort: bool = True,
 ) -> DataFrame: ...

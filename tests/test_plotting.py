@@ -316,10 +316,7 @@ def test_boxplot(close_figures: None) -> None:
         Series,
     )
     check(
-        assert_type(
-            df.boxplot(column=["Col1"], return_type="both", by="Col4"),
-            Series,
-        ),
+        assert_type(df.boxplot(column=["Col1"], return_type="both", by="Col4"), Series),
         Series,
     )
 
