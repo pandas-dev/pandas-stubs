@@ -106,6 +106,7 @@ from pandas.core.window.rolling import (
 from typing_extensions import (
     Never,
     Self,
+    override,
 )
 import xarray as xr
 
@@ -2190,13 +2191,17 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         axis: int = 0,
     ) -> Series[_str]: ...
     # ignore needed for mypy as we want different results based on the arguments
-    @overload  # type: ignore[override]
+    @overload
+    @override
     # pyrefly: ignore  # bad-override
-    def __and__(  # pyright: ignore[reportOverlappingOverload]
+    def __and__(
         self, other: bool | list[int] | MaskType
     ) -> Series[bool]: ...
     @overload
-    def __and__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
+    def __and__(  # pyright: ignore[reportOverlappingOverload]
+        self, other: int | np_ndarray_anyint | Series[int]
+    ) -> Series[int]: ...
+    @override
     def __eq__(self, other: object) -> Series[_bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     @overload
     def __floordiv__(self, other: Index[Never] | Series[Never]) -> Series: ...
