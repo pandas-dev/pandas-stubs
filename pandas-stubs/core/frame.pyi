@@ -1844,7 +1844,11 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         **kwargs: Any,
     ) -> Series[_bool]: ...
     @final
-    def asof(self, where, subset: _str | list[_str] | None = None) -> Self: ...
+    def asof(
+        self,
+        where: Scalar | AnyArrayLike | Sequence[Scalar],
+        subset: Hashable | list[Hashable] | None = None,
+    ) -> Self: ...
     @final
     def asfreq(
         self,

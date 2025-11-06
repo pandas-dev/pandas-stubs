@@ -1523,8 +1523,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @final
     def asof(
         self,
-        where: Scalar | Sequence[Scalar],
-        subset: _str | Sequence[_str] | None = None,
+        where: Scalar | AnyArrayLike | Sequence[Scalar],
+        subset: None = None,
     ) -> Scalar | Series[S1]: ...
     @overload
     def clip(  # pyright: ignore[reportOverlappingOverload]
