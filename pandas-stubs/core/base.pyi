@@ -20,8 +20,11 @@ import numpy as np
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
+from pandas.core.arrays.integer import IntegerArray
+from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.indexes.accessors import ArrayDescriptor
 from pandas.core.indexes.base import Index
+from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
 from typing_extensions import Self
 
@@ -40,10 +43,12 @@ from pandas._typing import (
     Scalar,
     SupportsDType,
     np_1darray,
+    np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_complex,
     np_ndarray_float,
+    np_ndarray_td,
 )
 from pandas.util._decorators import cache_readonly
 
@@ -168,7 +173,82 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
     ) -> np.intp: ...
     def drop_duplicates(self, *, keep: DropKeep = ...) -> Self: ...
 
-NumListLike: TypeAlias = (
+ScalarArrayIndexJustInt: TypeAlias = (
+    Just[int]
+    | np.integer
+    | Sequence[Just[int] | np.integer]
+    | np_ndarray_anyint
+    | IntegerArray
+    | Index[int]
+)
+ScalarArraySeriesJustInt: TypeAlias = ScalarArrayIndexJustInt | Series[int]
+ScalarArrayIndexJustFloat: TypeAlias = (
+    Just[float]
+    | np.floating
+    | Sequence[Just[float] | np.floating]
+    | np_ndarray_float
+    # | FloatingArray  # TODO: after pandas-dev/pandas-stubs#1469
+    | Index[float]
+)
+ScalarArraySeriesJustFloat: TypeAlias = ScalarArrayIndexJustFloat | Series[float]
+ScalarArrayIndexJustComplex: TypeAlias = (
+    Just[complex]
+    | np.complexfloating
+    | Sequence[Just[complex] | np.complexfloating]
+    | np_ndarray_complex
+    | Index[complex]
+)
+ScalarArraySeriesJustComplex: TypeAlias = ScalarArrayIndexJustComplex | Series[complex]
+
+ScalarArrayIndexIntNoBool: TypeAlias = (
+    Just[int]
+    | np.integer
+    | Sequence[int | np.integer]
+    | np_ndarray_anyint
+    | IntegerArray
+    | Index[int]
+)
+ScalarArraySeriesIntNoBool: TypeAlias = ScalarArrayIndexIntNoBool | Series[int]
+
+NumpyRealScalar: TypeAlias = np.bool | np.integer | np.floating
+IndexReal: TypeAlias = Index[bool] | Index[int] | Index[float]
+ScalarArrayIndexReal: TypeAlias = (
+    float
+    | Sequence[float | NumpyRealScalar]
+    | NumpyRealScalar
+    | np_ndarray[tuple[int, ...], NumpyRealScalar]
+    | ExtensionArray
+    | IndexReal
+)
+SeriesReal: TypeAlias = Series[bool] | Series[int] | Series[float]
+ScalarArrayIndexSeriesReal: TypeAlias = ScalarArrayIndexReal | SeriesReal
+
+NumpyComplexScalar: TypeAlias = NumpyRealScalar | np.complexfloating
+IndexComplex: TypeAlias = IndexReal | Index[complex]
+ScalarArrayIndexComplex: TypeAlias = (
+    complex
+    | Sequence[complex | NumpyComplexScalar]
+    | NumpyComplexScalar
+    | np_ndarray[tuple[int, ...], NumpyComplexScalar]
+    | ExtensionArray
+    | IndexComplex
+)
+SeriesComplex: TypeAlias = SeriesReal | Series[complex]
+ScalarArrayIndexSeriesComplex: TypeAlias = ScalarArrayIndexComplex | SeriesComplex
+
+ArrayIndexTimedeltaNoSeq: TypeAlias = np_ndarray_td | TimedeltaArray | TimedeltaIndex
+ScalarArrayIndexTimedelta: TypeAlias = (
+    timedelta
+    | np.timedelta64
+    | Sequence[timedelta | np.timedelta64]
+    | ArrayIndexTimedeltaNoSeq
+)
+ArrayIndexSeriesTimedeltaNoSeq: TypeAlias = ArrayIndexTimedeltaNoSeq | Series[Timedelta]
+ScalarArrayIndexSeriesTimedelta: TypeAlias = (
+    ScalarArrayIndexTimedelta | Series[Timedelta]
+)
+
+NumListLike: TypeAlias = (  # deprecated, do not use
     ExtensionArray
     | np_ndarray_bool
     | np_ndarray_anyint

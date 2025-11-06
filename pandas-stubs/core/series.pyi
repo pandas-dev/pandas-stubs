@@ -65,9 +65,19 @@ from pandas.core.arrays.categorical import CategoricalAccessor
 from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.base import (
+    ArrayIndexSeriesTimedeltaNoSeq,
+    ArrayIndexTimedeltaNoSeq,
     ElementOpsMixin,
     IndexOpsMixin,
     NumListLike,
+    ScalarArrayIndexSeriesComplex,
+    ScalarArrayIndexSeriesReal,
+    ScalarArrayIndexSeriesTimedelta,
+    ScalarArraySeriesIntNoBool,
+    ScalarArraySeriesJustComplex,
+    ScalarArraySeriesJustFloat,
+    ScalarArraySeriesJustInt,
+    SeriesComplex,
     Supports_ProtoAdd,
     Supports_ProtoFloorDiv,
     Supports_ProtoMul,
@@ -83,12 +93,6 @@ from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.core.indexers import BaseIndexer
 from pandas.core.indexes.accessors import DtDescriptor
-from pandas.core.indexes.base import (
-    ArrayIndexTimedeltaNoSeq,
-    ScalarArrayIndexComplex,
-    ScalarArrayIndexReal,
-    ScalarArrayIndexTimedelta,
-)
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.interval import IntervalIndex
@@ -307,21 +311,6 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
 _DataLike: TypeAlias = ArrayLike | dict[str, np.ndarray] | SequenceNotStr[S1]
 _DataLikeS1: TypeAlias = (
     ArrayLike | dict[_str, np.ndarray] | Sequence[S1] | IndexOpsMixin[S1]
-)
-
-SeriesReal: TypeAlias = (
-    Series[bool] | Series[int] | Series[float]  # ty: ignore[unresolved-reference]
-)
-ScalarArrayIndexSeriesReal: TypeAlias = ScalarArrayIndexReal | SeriesReal
-SeriesComplex: TypeAlias = (
-    SeriesReal | Series[complex]  # ty: ignore[unresolved-reference]
-)
-ScalarArrayIndexSeriesComplex: TypeAlias = ScalarArrayIndexComplex | SeriesComplex
-ArrayIndexSeriesTimedeltaNoSeq: TypeAlias = (
-    ArrayIndexTimedeltaNoSeq | Series[Timedelta]  # ty: ignore[unresolved-reference]
-)
-ScalarArrayIndexSeriesTimedelta: TypeAlias = (
-    ScalarArrayIndexTimedelta | Series[Timedelta]  # ty: ignore[unresolved-reference]
 )
 
 class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
@@ -3641,8 +3630,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[float]: ...
     @overload
     def __truediv__(
-        self: Series[bool] | Series[int],
-        other: Just[int] | Sequence[int] | np_ndarray_anyint | Index[int] | Series[int],
+        self: Series[bool] | Series[int], other: ScalarArraySeriesIntNoBool
     ) -> Series[float]: ...
     @overload
     def __truediv__(
@@ -3670,52 +3658,20 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[complex]: ...
     @overload
     def __truediv__(
-        self: Series[bool] | Series[int],
-        other: (
-            Just[float]
-            | Sequence[Just[float]]
-            | np_ndarray_float
-            | Index[float]
-            | Series[float]
-        ),
+        self: Series[bool] | Series[int], other: ScalarArraySeriesJustFloat
     ) -> Series[float]: ...
     @overload
     def __truediv__(
-        self: Series[T_COMPLEX],
-        other: (
-            Just[float]
-            | Sequence[Just[float]]
-            | np_ndarray_float
-            | Index[float]
-            | Series[float]
-        ),
+        self: Series[T_COMPLEX], other: ScalarArraySeriesJustFloat
     ) -> Series[T_COMPLEX]: ...
     @overload
     def __truediv__(
-        self: SeriesComplex,
-        other: (
-            Just[complex]
-            | Sequence[Just[complex]]
-            | np_ndarray_complex
-            | Index[complex]
-            | Series[complex]
-        ),
+        self: SeriesComplex, other: ScalarArraySeriesJustComplex
     ) -> Series[complex]: ...
     @overload
     def __truediv__(
         self: Series[Timedelta],
-        other: (
-            Just[int]
-            | Just[float]
-            | Sequence[Just[int]]
-            | Sequence[Just[float]]
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[int]
-            | Index[float]
-            | Series[int]
-            | Series[float]
-        ),
+        other: ScalarArraySeriesJustInt | ScalarArraySeriesJustFloat,
     ) -> Series[Timedelta]: ...
     @overload
     def __truediv__(
@@ -3766,7 +3722,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def truediv(
         self: Series[bool] | Series[int],
-        other: Just[int] | Sequence[int] | np_ndarray_anyint | Index[int] | Series[int],
+        other: ScalarArraySeriesIntNoBool,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
@@ -3804,13 +3760,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def truediv(
         self: Series[bool] | Series[int],
-        other: (
-            Just[float]
-            | Sequence[Just[float]]
-            | np_ndarray_float
-            | Index[float]
-            | Series[float]
-        ),
+        other: ScalarArraySeriesJustFloat,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
@@ -3818,13 +3768,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def truediv(
         self: Series[T_COMPLEX],
-        other: (
-            Just[float]
-            | Sequence[Just[float]]
-            | np_ndarray_float
-            | Index[float]
-            | Series[float]
-        ),
+        other: ScalarArraySeriesJustFloat,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
@@ -3832,13 +3776,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def truediv(
         self: SeriesComplex,
-        other: (
-            Just[complex]
-            | Sequence[Just[complex]]
-            | np_ndarray_complex
-            | Index[complex]
-            | Series[complex]
-        ),
+        other: ScalarArraySeriesJustComplex,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
@@ -3846,18 +3784,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def truediv(
         self: Series[Timedelta],
-        other: (
-            Just[int]
-            | Just[float]
-            | Sequence[Just[int]]
-            | Sequence[Just[float]]
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[int]
-            | Index[float]
-            | Series[int]
-            | Series[float]
-        ),
+        other: ScalarArraySeriesJustInt | ScalarArraySeriesJustFloat,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
@@ -3906,8 +3833,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[float]: ...
     @overload
     def __rtruediv__(
-        self: Series[bool] | Series[int],
-        other: Just[int] | Sequence[int] | np_ndarray_anyint | Index[int] | Series[int],
+        self: Series[bool] | Series[int], other: ScalarArraySeriesIntNoBool
     ) -> Series[float]: ...
     @overload
     def __rtruediv__(  # type: ignore[misc]
@@ -3935,36 +3861,15 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[complex]: ...
     @overload
     def __rtruediv__(
-        self: Series[bool] | Series[int],
-        other: (
-            Just[float]
-            | Sequence[Just[float]]
-            | np_ndarray_float
-            | Index[float]
-            | Series[float]
-        ),
+        self: Series[bool] | Series[int], other: ScalarArraySeriesJustFloat
     ) -> Series[float]: ...
     @overload
     def __rtruediv__(
-        self: Series[T_COMPLEX],
-        other: (
-            Just[float]
-            | Sequence[Just[float]]
-            | np_ndarray_float
-            | Index[float]
-            | Series[float]
-        ),
+        self: Series[T_COMPLEX], other: ScalarArraySeriesJustFloat
     ) -> Series[T_COMPLEX]: ...
     @overload
     def __rtruediv__(
-        self: SeriesComplex,
-        other: (
-            Just[complex]
-            | Sequence[Just[complex]]
-            | np_ndarray_complex
-            | Index[complex]
-            | Series[complex]
-        ),
+        self: SeriesComplex, other: ScalarArraySeriesJustComplex
     ) -> Series[complex]: ...
     @overload
     def __rtruediv__(
@@ -4011,7 +3916,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def rtruediv(
         self: Series[bool] | Series[int],
-        other: Just[int] | Sequence[int] | np_ndarray_anyint | Index[int] | Series[int],
+        other: ScalarArraySeriesIntNoBool,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
@@ -4049,13 +3954,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def rtruediv(
         self: Series[bool] | Series[int],
-        other: (
-            Just[float]
-            | Sequence[Just[float]]
-            | np_ndarray_float
-            | Index[float]
-            | Series[float]
-        ),
+        other: ScalarArraySeriesJustFloat,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
@@ -4063,13 +3962,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def rtruediv(
         self: Series[T_COMPLEX],
-        other: (
-            Just[float]
-            | Sequence[Just[float]]
-            | np_ndarray_float
-            | Index[float]
-            | Series[float]
-        ),
+        other: ScalarArraySeriesJustFloat,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
@@ -4077,13 +3970,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def rtruediv(
         self: SeriesComplex,
-        other: (
-            Just[complex]
-            | Sequence[Just[complex]]
-            | np_ndarray_complex
-            | Index[complex]
-            | Series[complex]
-        ),
+        other: ScalarArraySeriesJustComplex,
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
