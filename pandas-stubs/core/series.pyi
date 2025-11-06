@@ -154,7 +154,6 @@ from pandas._typing import (
     FloatFormatType,
     Frequency,
     GenericT,
-    GenericT_co,
     GroupByObjectNonScalar,
     HashableT1,
     IgnoreRaise,
@@ -4618,30 +4617,3 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Self: ...
     @final
     def __bool__(self) -> NoReturn: ...
-
-@type_check_only
-class _SeriesSubclassBase(Series[S1], Generic[S1, GenericT_co]):
-    @overload  # type: ignore[override]
-    def to_numpy(  # pyrefly: ignore
-        self,
-        dtype: None = None,
-        copy: bool = False,
-        na_value: Scalar = ...,
-        **kwargs: Any,
-    ) -> np_1darray[GenericT_co]: ...
-    @overload
-    def to_numpy(
-        self,
-        dtype: np.dtype[GenericT] | SupportsDType[GenericT] | type[GenericT],
-        copy: bool = False,
-        na_value: Scalar = ...,
-        **kwargs: Any,
-    ) -> np_1darray[GenericT]: ...
-    @overload
-    def to_numpy(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self,
-        dtype: DTypeLike,
-        copy: bool = False,
-        na_value: Scalar = ...,
-        **kwargs: Any,
-    ) -> np_1darray: ...

@@ -1,36 +1,21 @@
-from collections.abc import (
-    Hashable,
-    Iterator,
-)
 from typing import (
     Any,
     final,
     overload,
 )
 
-import numpy as np
-from pandas import (
-    DataFrame,
-    Index,
-    Series,
-)
 from pandas.core.resample import TimeGrouper
 from typing_extensions import Self
 
 from pandas._libs.lib import _NoDefaultDoNotUse
 from pandas._typing import (
-    ArrayLike,
     Axis,
     Frequency,
     Incomplete,
     KeysArgType,
     Level,
     ListLikeHashable,
-    npt,
 )
-from pandas.util._decorators import cache_readonly
-
-from pandas.io.formats.printing import PrettyDict
 
 class Grouper:
     key: KeysArgType | None
@@ -53,27 +38,3 @@ class Grouper:
     def __new__(cls, *args: Any, freq: Frequency, **kwargs: Any) -> TimeGrouper: ...
     @final
     def __repr__(self) -> str: ...  # noqa: PYI029 __repr__ here is final
-
-@final
-class Grouping:
-    level: Level | None
-    obj: DataFrame | Series | None
-    in_axis: bool
-    grouping_vector: Incomplete
-    def __iter__(self) -> Iterator[Hashable]: ...
-    @cache_readonly
-    def name(self) -> Hashable: ...
-    @cache_readonly
-    def ngroups(self) -> int: ...
-    @cache_readonly
-    def indices(self) -> dict[Hashable, npt.NDArray[np.intp]]: ...
-    @property
-    def codes(self) -> npt.NDArray[np.signedinteger]: ...
-    @cache_readonly
-    def group_arraylike(self) -> ArrayLike: ...
-    @cache_readonly
-    def result_index(self) -> Index: ...
-    @cache_readonly
-    def group_index(self) -> Index: ...
-    @cache_readonly
-    def groups(self) -> PrettyDict[Hashable, Index]: ...
