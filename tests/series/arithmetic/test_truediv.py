@@ -388,7 +388,7 @@ def test_truediv_str_py_str(left_i: pd.Series) -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         _00 = left_i / s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
-        _01: pd.Series = s / left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
+        _01 = s / left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
 
         left_i.truediv(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
         left_i.div(s)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
