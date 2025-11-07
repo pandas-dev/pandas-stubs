@@ -64,8 +64,8 @@ from pandas._typing import (
     TimestampConvertibleTypes,
     WindowingEngine,
     WindowingEngineKwargs,
+    np_ndarray_dt,
     np_ndarray_int64,
-    npt,
 )
 
 from pandas.plotting import PlotAccessor
@@ -241,7 +241,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         adjust: bool = ...,
         ignore_na: bool = ...,
         axis: Axis = ...,
-        times: str | npt.NDArray[Any] | Series | np.timedelta64 | None = ...,
+        times: str | np_ndarray_dt | Series | np.timedelta64 | None = ...,
         method: CalculationMethod = ...,
         *,
         selection: IndexLabel | None = ...,

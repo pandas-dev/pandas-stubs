@@ -1398,7 +1398,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         n: int | None = None,
         frac: float | None = None,
         replace: _bool = False,
-        weights: _str | ListLike | npt.NDArray[Any] | None = None,
+        weights: _str | ListLike | np_ndarray_float | None = None,
         random_state: RandomState | None = None,
         axis: AxisIndex | None = None,
         ignore_index: _bool = False,
@@ -1613,7 +1613,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         cond: (
             Series[S1]
             | Series[_bool]
-            | npt.NDArray[Any]
+            | np_ndarray_bool
             | Callable[[Series[S1]], Series[bool]]
             | Callable[[S1], bool]
         ),
@@ -1629,7 +1629,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         cond: (
             Series[S1]
             | Series[_bool]
-            | npt.NDArray[Any]
+            | np_ndarray_bool
             | Callable[[Series[S1]], Series[bool]]
             | Callable[[S1], bool]
         ),
@@ -1645,7 +1645,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         cond: (
             Series[S1]
             | Series[_bool]
-            | npt.NDArray[Any]
+            | np_ndarray_bool
             | Callable[[Series[S1]], Series[bool]]
             | Callable[[S1], bool]
         ),
@@ -1661,7 +1661,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         cond: (
             Series[S1]
             | Series[_bool]
-            | npt.NDArray[Any]
+            | np_ndarray_bool
             | Callable[[Series[S1]], Series[bool]]
             | Callable[[S1], bool]
         ),
@@ -4127,7 +4127,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         adjust: _bool = True,
         ignore_na: _bool = False,
         axis: Axis = 0,
-        times: npt.NDArray[Any] | Series | None = None,
+        times: np_ndarray_dt | Series | None = None,
         method: CalculationMethod = "single",
     ) -> ExponentialMovingWindow[Series]: ...
     @final

@@ -164,6 +164,7 @@ from pandas._typing import (
     WriteBuffer,
     XMLParsers,
     np_2darray,
+    np_ndarray_bool,
     np_ndarray_float,
 )
 
@@ -2200,7 +2201,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         cond: (
             Series
             | DataFrame
-            | npt.NDArray[Any]
+            | np_ndarray_bool
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
@@ -2216,7 +2217,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         cond: (
             Series
             | DataFrame
-            | npt.NDArray[Any]
+            | np_ndarray_bool
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
@@ -2643,7 +2644,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         cond: (
             Series
             | DataFrame
-            | npt.NDArray[Any]
+            | np_ndarray_bool
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
@@ -2659,7 +2660,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         cond: (
             Series
             | DataFrame
-            | npt.NDArray[Any]
+            | np_ndarray_bool
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
