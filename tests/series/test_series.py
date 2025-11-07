@@ -773,7 +773,7 @@ def test_types_value_counts() -> None:
 
 def test_types_unique() -> None:
     s = pd.Series([-10, 2, 2, 3, 10, 10])
-    check(assert_type(s.unique(), np_1darray[Any]), np_1darray[Any])
+    check(assert_type(s.unique(), np_1darray), np_1darray)
 
 
 def test_types_apply() -> None:
@@ -1414,20 +1414,20 @@ def test_types_values() -> None:
     check(
         assert_type(
             pd.Series([1, 2, 3]).values,
-            np_1darray[Any] | ExtensionArray | pd.Categorical,
+            np_1darray | ExtensionArray | pd.Categorical,
         ),
         np_1darray,
         np.integer,
     )
-    valresult_type: type[np_1darray[Any] | ExtensionArray | pd.Categorical]
+    valresult_type: type[np_1darray | ExtensionArray | pd.Categorical]
     if PD_LTE_23:
-        valresult_type = np_1darray[Any]
+        valresult_type = np_1darray
     else:
         valresult_type = StringArray
     check(
         assert_type(
             pd.Series(list("aabc")).values,
-            np_1darray[Any] | ExtensionArray | pd.Categorical,
+            np_1darray | ExtensionArray | pd.Categorical,
         ),
         valresult_type,
         str,
@@ -1435,7 +1435,7 @@ def test_types_values() -> None:
     check(
         assert_type(
             pd.Series(list("aabc")).astype("category").values,
-            np_1darray[Any] | ExtensionArray | pd.Categorical,
+            np_1darray | ExtensionArray | pd.Categorical,
         ),
         pd.Categorical,
         str,
@@ -1443,7 +1443,7 @@ def test_types_values() -> None:
     check(
         assert_type(
             pd.Series(pd.date_range("20130101", periods=3, tz="US/Eastern")).values,
-            np_1darray[Any] | ExtensionArray | pd.Categorical,
+            np_1darray | ExtensionArray | pd.Categorical,
         ),
         np_1darray,
         np.datetime64,

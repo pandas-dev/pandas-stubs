@@ -219,6 +219,7 @@ from pandas._typing import (
     WriteBuffer,
     _T_co,
     np_1darray,
+    np_1darray_int64,
     np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -535,8 +536,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @name.setter
     def name(self, value: Hashable | None) -> None: ...
     @property
-    def values(self) -> np_1darray[Any] | ExtensionArray | Categorical: ...
-    def ravel(self, order: _str = ...) -> np_1darray[Any]: ...
+    def values(self) -> np_1darray | ExtensionArray | Categorical: ...
+    def ravel(self, order: _str = ...) -> np_1darray: ...
     def __len__(self) -> int: ...
     def view(self, dtype: Dtype | None = None) -> Series[S1]: ...
     @final
@@ -876,13 +877,13 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def count(self) -> int: ...
     def mode(self, dropna: bool = True) -> Series[S1]: ...
     @overload
-    def unique(self: Series[Never]) -> np_1darray[Any]: ...  # type: ignore[overload-overlap]
+    def unique(self: Series[Never]) -> np_1darray: ...  # type: ignore[overload-overlap]
     @overload
     def unique(self: Series[Timestamp]) -> DatetimeArray: ...  # type: ignore[overload-overlap]
     @overload
     def unique(self: Series[Timedelta]) -> TimedeltaArray: ...  # type: ignore[overload-overlap]
     @overload
-    def unique(self) -> np_1darray[Any]: ...
+    def unique(self) -> np_1darray: ...
     @overload
     def drop_duplicates(
         self,
@@ -4463,7 +4464,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,
-    ) -> np_1darray[np.int64]: ...
+    ) -> np_1darray_int64: ...
     @overload
     def to_numpy(
         self: Series[BaseOffset],

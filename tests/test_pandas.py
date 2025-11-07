@@ -569,23 +569,19 @@ def test_read_xml() -> None:
 def test_unique() -> None:
     # Taken from the docs
     check(
-        assert_type(
-            pd.unique(pd.Series([2, 1, 3, 3])), np_1darray[Any] | ExtensionArray
-        ),
+        assert_type(pd.unique(pd.Series([2, 1, 3, 3])), np_1darray | ExtensionArray),
         np_1darray[np.int64],
     )
 
     check(
-        assert_type(
-            pd.unique(pd.Series([2] + [1] * 5)), np_1darray[Any] | ExtensionArray
-        ),
+        assert_type(pd.unique(pd.Series([2] + [1] * 5)), np_1darray | ExtensionArray),
         np_1darray[np.int64],
     )
 
     check(
         assert_type(
             pd.unique(pd.Series([pd.Timestamp("20160101"), pd.Timestamp("20160101")])),
-            np_1darray[Any] | ExtensionArray,
+            np_1darray | ExtensionArray,
         ),
         np_1darray,
         np.datetime64,
@@ -601,7 +597,7 @@ def test_unique() -> None:
                     ]
                 )
             ),
-            np_1darray[Any] | ExtensionArray,
+            np_1darray | ExtensionArray,
         ),
         pd.arrays.DatetimeArray,
     )
@@ -621,21 +617,21 @@ def test_unique() -> None:
     )
 
     check(
-        assert_type(pd.unique(np.array(list("baabc"))), np_1darray[Any]),
-        np_1darray[Any],
+        assert_type(pd.unique(np.array(list("baabc"))), np_1darray),
+        np_1darray,
     )
 
     check(
         assert_type(
             pd.unique(pd.Series(pd.Categorical(list("baabc")))),
-            np_1darray[Any] | ExtensionArray,
+            np_1darray | ExtensionArray,
         ),
         pd.Categorical,
     )
     check(
         assert_type(
             pd.unique(pd.Series(pd.Categorical(list("baabc"), categories=list("abc")))),
-            np_1darray[Any] | ExtensionArray,
+            np_1darray | ExtensionArray,
         ),
         pd.Categorical,
     )
@@ -646,7 +642,7 @@ def test_unique() -> None:
                     pd.Categorical(list("baabc"), categories=list("abc"), ordered=True)
                 )
             ),
-            np_1darray[Any] | ExtensionArray,
+            np_1darray | ExtensionArray,
         ),
         pd.Categorical,
     )
@@ -949,11 +945,11 @@ def test_lreshape() -> None:
 def test_factorize() -> None:
     codes, uniques = pd.factorize(np.array(["b", "b", "a", "c", "b"]))
     check(assert_type(codes, np_1darray[np.int64]), np_1darray[np.int64])
-    check(assert_type(uniques, np_1darray[Any]), np_1darray[Any])
+    check(assert_type(uniques, np_1darray), np_1darray)
 
     codes, uniques = pd.factorize(np.recarray((1,), dtype=[("x", int)]))
     check(assert_type(codes, np_1darray[np.int64]), np_1darray[np.int64])
-    check(assert_type(uniques, np_1darray[Any]), np_1darray[Any])
+    check(assert_type(uniques, np_1darray), np_1darray)
 
     codes, cat_uniques = pd.factorize(pd.Categorical(["b", "b", "a", "c", "b"]))
     check(assert_type(codes, np_1darray[np.int64]), np_1darray[np.int64])
@@ -969,13 +965,13 @@ def test_factorize() -> None:
 
     codes, uniques = pd.factorize(np.array(list("bbacb")))
     check(assert_type(codes, np_1darray[np.int64]), np_1darray[np.int64])
-    check(assert_type(uniques, np_1darray[Any]), np_1darray[Any])
+    check(assert_type(uniques, np_1darray), np_1darray)
 
     codes, uniques = pd.factorize(
         np.array(["b", "b", "a", "c", "b"]), use_na_sentinel=True, size_hint=10
     )
     check(assert_type(codes, np_1darray[np.int64]), np_1darray[np.int64])
-    check(assert_type(uniques, np_1darray[Any]), np_1darray[Any])
+    check(assert_type(uniques, np_1darray), np_1darray)
 
 
 def test_index_unqiue() -> None:
@@ -998,21 +994,21 @@ def test_index_unqiue() -> None:
         np.datetime64,
     )
     check(
-        assert_type(pd.unique(i), np_1darray[Any] | pd.Index),
-        np_1darray[Any] if PD_LTE_23 else pd.Index,
+        assert_type(pd.unique(i), np_1darray | pd.Index),
+        np_1darray if PD_LTE_23 else pd.Index,
     )
     check(assert_type(pd.unique(pi), pd.PeriodIndex), pd.PeriodIndex)
     check(
-        assert_type(pd.unique(ri), np_1darray[Any] | pd.Index),
-        np_1darray[Any] if PD_LTE_23 else pd.Index,
+        assert_type(pd.unique(ri), np_1darray | pd.Index),
+        np_1darray if PD_LTE_23 else pd.Index,
     )
     check(
-        assert_type(pd.unique(tdi), np_1darray[Any] | pd.Index),
-        np_1darray[Any] if PD_LTE_23 else pd.Index,
+        assert_type(pd.unique(tdi), np_1darray | pd.Index),
+        np_1darray if PD_LTE_23 else pd.Index,
     )
     check(
-        assert_type(pd.unique(mi), np_1darray[Any] | pd.Index),
-        np_1darray[Any] if PD_LTE_23 else pd.Index,
+        assert_type(pd.unique(mi), np_1darray | pd.Index),
+        np_1darray if PD_LTE_23 else pd.Index,
     )
     check(
         assert_type(pd.unique(interval_i), "pd.IntervalIndex[pd.Interval[int]]"),
@@ -1039,14 +1035,14 @@ def test_cut() -> None:
         [1, 2, 3, 4, 5, 6, 7, 8], 4, labels=["1", "2", "3", "4"], retbins=True
     )
     check(assert_type(d0, pd.Categorical), pd.Categorical)
-    check(assert_type(d1, np_1darray_float), np_1darray[Any], np.floating)
+    check(assert_type(d1, np_1darray_float), np_1darray, np.floating)
     check(
         assert_type(e0, np_1darray[np.intp]),
         np_1darray[np.intp],
     )
-    check(assert_type(e1, np_1darray_float), np_1darray[Any], np.floating)
+    check(assert_type(e1, np_1darray_float), np_1darray, np.floating)
     check(assert_type(f0, pd.Categorical), pd.Categorical)
-    check(assert_type(f1, np_1darray_float), np_1darray[Any], np.floating)
+    check(assert_type(f1, np_1darray_float), np_1darray, np.floating)
 
     g = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), 4, precision=1, duplicates="drop")
     h = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), 4, labels=False, duplicates="raise")
@@ -1081,11 +1077,11 @@ def test_cut() -> None:
         retbins=True,
     )
     check(assert_type(j0, pd.Series), pd.Series)
-    check(assert_type(j1, np_1darray_float), np_1darray[Any], np.floating)
+    check(assert_type(j1, np_1darray_float), np_1darray, np.floating)
     check(assert_type(k0, pd.Series), pd.Series)
-    check(assert_type(k1, np_1darray_float), np_1darray[Any], np.floating)
+    check(assert_type(k1, np_1darray_float), np_1darray, np.floating)
     check(assert_type(l0, pd.Series), pd.Series)
-    check(assert_type(l1, np_1darray_float), np_1darray[Any], np.floating)
+    check(assert_type(l1, np_1darray_float), np_1darray, np.floating)
     check(assert_type(m0, pd.Series), pd.Series)
     check(assert_type(m1, pd.IntervalIndex), pd.IntervalIndex)
 
@@ -1158,10 +1154,10 @@ def test_qcut() -> None:
     check(assert_type(c0, pd.Categorical), pd.Categorical)
     check(assert_type(d0, pd.Series), pd.Series)
 
-    check(assert_type(a1, np_1darray_float), np_1darray[Any], np.floating)
-    check(assert_type(b1, np_1darray_float), np_1darray[Any], np.floating)
-    check(assert_type(c1, np_1darray_float), np_1darray[Any], np.floating)
-    check(assert_type(d1, np_1darray_float), np_1darray[Any], np.floating)
+    check(assert_type(a1, np_1darray_float), np_1darray, np.floating)
+    check(assert_type(b1, np_1darray_float), np_1darray, np.floating)
+    check(assert_type(c1, np_1darray_float), np_1darray, np.floating)
+    check(assert_type(d1, np_1darray_float), np_1darray, np.floating)
 
     e0, e1 = pd.qcut(val_list, [0.25, 0.5, 0.75], retbins=True)
     f0, f1 = pd.qcut(val_arr, np.array([0.25, 0.5, 0.75]), retbins=True)
@@ -1179,19 +1175,17 @@ def test_qcut() -> None:
     check(assert_type(h0, pd.Series), pd.Series)
     check(
         assert_type(i0, np_1darray[np.intp | np.double]),
-        np_1darray[Any],  # because of nans
+        np_1darray,  # because of nans
         np.floating,
     )
-    check(
-        assert_type(j0, np_1darray[np.intp | np.double]), np_1darray[Any], np.floating
-    )
+    check(assert_type(j0, np_1darray[np.intp | np.double]), np_1darray, np.floating)
 
-    check(assert_type(e1, np_1darray_float), np_1darray[Any], np.floating)
-    check(assert_type(f1, np_1darray_float), np_1darray[Any], np.floating)
-    check(assert_type(g1, np_1darray_float), np_1darray[Any], np.floating)
-    check(assert_type(h1, np_1darray_float), np_1darray[Any], np.floating)
-    check(assert_type(i1, np_1darray_float), np_1darray[Any], np.floating)
-    check(assert_type(j1, np_1darray_float), np_1darray[Any], np.floating)
+    check(assert_type(e1, np_1darray_float), np_1darray, np.floating)
+    check(assert_type(f1, np_1darray_float), np_1darray, np.floating)
+    check(assert_type(g1, np_1darray_float), np_1darray, np.floating)
+    check(assert_type(h1, np_1darray_float), np_1darray, np.floating)
+    check(assert_type(i1, np_1darray_float), np_1darray, np.floating)
+    check(assert_type(j1, np_1darray_float), np_1darray, np.floating)
 
 
 @pytest.mark.xfail(

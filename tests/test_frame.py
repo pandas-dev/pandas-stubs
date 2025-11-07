@@ -1088,7 +1088,7 @@ def test_types_value_counts() -> None:
 def test_types_unique() -> None:
     # This is really more for of a Series test
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [1, 4]})
-    check(assert_type(df["col1"].unique(), np_1darray[Any]), np_1darray[Any])
+    check(assert_type(df["col1"].unique(), np_1darray), np_1darray)
 
 
 def test_types_apply() -> None:
