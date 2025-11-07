@@ -1,6 +1,9 @@
 import io
 import itertools
-from typing import Any
+from typing import (
+    TYPE_CHECKING,
+    Any,
+)
 
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
@@ -22,6 +25,9 @@ from pandas.plotting import (
     deregister_matplotlib_converters,
     register_matplotlib_converters,
 )
+
+if TYPE_CHECKING:
+    from pandas.plotting._core import _BoxPlotT  # noqa: F401
 
 
 @pytest.fixture(autouse=True)
@@ -204,12 +210,114 @@ def test_bootstrap_plot(close_figures: None) -> None:
     check(assert_type(pd.plotting.bootstrap_plot(s), Figure), Figure)
 
 
+def test_hist(close_figures: None) -> None:
+    df = pd.DataFrame({"Col1": [1, 2], "Col4": [2, 1]})
+    check(assert_type(df.hist(), npt.NDArray[np.object_]), npt.NDArray[np.object_])
+    check(
+        assert_type(df.hist(by="Col4"), npt.NDArray[np.object_]),
+        npt.NDArray[np.object_],
+    )
+
+
 def test_boxplot(close_figures: None) -> None:
     np.random.seed(1234)
     df = pd.DataFrame(np.random.randn(10, 4), columns=["Col1", "Col2", "Col3", "Col4"])
+
+    # Basic usage
+    check(assert_type(pd.plotting.boxplot(df, column=["Col1"]), Axes), Axes)
+    check(assert_type(df.boxplot(column=["Col1"]), Axes), Axes)
+
+    # Default return_type (axes)
     check(
-        assert_type(pd.plotting.boxplot(df, column=["Col1", "Col2", "Col3"]), Axes),
+        assert_type(pd.plotting.boxplot(df, column=["Col1"], return_type="axes"), Axes),
         Axes,
+    )
+    check(
+        assert_type(df.boxplot(column=["Col1"], return_type="axes"), Axes),
+        Axes,
+    )
+
+    # Return type: dict
+    check(
+        assert_type(
+            pd.plotting.boxplot(df, column=["Col1"], return_type="dict"),
+            dict[str, Axes],
+        ),
+        dict,
+    )
+    check(
+        assert_type(
+            df.boxplot(column=["Col1"], return_type="dict"),
+            dict[str, Axes],
+        ),
+        dict,
+    )
+
+    # Return type: both
+    check(
+        assert_type(
+            pd.plotting.boxplot(df, column=["Col1"], return_type="both"), "_BoxPlotT"
+        ),
+        tuple,
+    )
+    check(
+        assert_type(df.boxplot(column=["Col1"], return_type="both"), "_BoxPlotT"),
+        tuple,
+    )
+
+    # Basic by= usage
+    check(
+        assert_type(pd.plotting.boxplot(df, column=["Col1"], by="Col4"), Axes),
+        Axes,
+    )
+    check(
+        assert_type(df.boxplot(column=["Col1"], by="Col4"), Axes),
+        Axes,
+    )
+
+    # Return type: axes with by=
+    check(
+        assert_type(
+            pd.plotting.boxplot(df, column=["Col1"], return_type="axes", by="Col4"),
+            Series,
+        ),
+        Series,
+    )
+    check(
+        assert_type(
+            df.boxplot(column=["Col1"], return_type="axes", by="Col4"),
+            Series,
+        ),
+        Series,
+    )
+
+    # Return type: dict with by=
+    check(
+        assert_type(
+            pd.plotting.boxplot(df, column=["Col1"], return_type="dict", by="Col4"),
+            Series,
+        ),
+        Series,
+    )
+    check(
+        assert_type(
+            df.boxplot(column=["Col1"], return_type="dict", by="Col4"),
+            Series,
+        ),
+        Series,
+    )
+
+    # Return type: both with by=
+    check(
+        assert_type(
+            pd.plotting.boxplot(df, column=["Col1"], return_type="both", by="Col4"),
+            Series,
+        ),
+        Series,
+    )
+    check(
+        assert_type(df.boxplot(column=["Col1"], return_type="both", by="Col4"), Series),
+        Series,
     )
 
 

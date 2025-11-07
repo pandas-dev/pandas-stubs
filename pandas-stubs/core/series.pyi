@@ -241,21 +241,27 @@ class SupportsTruedivInt(Protocol[_T_co]):
 
 class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     # get item
+    # Keep in sync with `Series.__getitem__`
     @overload
     def __getitem__(self, idx: IndexingInt) -> S1: ...
     @overload
-    def __getitem__(self, idx: Index | slice | np_ndarray_anyint) -> Series[S1]: ...
+    def __getitem__(
+        self, idx: Index | Series | slice | np_ndarray_anyint
+    ) -> Series[S1]: ...
+
     # set item
+    # Keep in sync with `Series.__setitem__`
     @overload
     def __setitem__(self, idx: int, value: S1 | None) -> None: ...
     @overload
     def __setitem__(
         self,
         idx: Index | slice | np_ndarray_anyint | list[int],
-        value: S1 | Series[S1] | None,
+        value: S1 | IndexOpsMixin[S1] | None,
     ) -> None: ...
 
 class _LocIndexerSeries(_LocIndexer, Generic[S1]):
+    # Keep in sync with `Series.__getitem__`
     # ignore needed because of mypy.  Overlapping, but we want to distinguish
     # having a tuple of just scalars, versus tuples that include slices or Index
     @overload
@@ -270,6 +276,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
         idx: (
             MaskType
             | Index
+            | Series
             | SequenceNotStr[float | _str | Timestamp]
             | slice
             | _IndexSliceTuple
@@ -279,11 +286,13 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
         # _IndexSliceTuple is when having a tuple that includes a slice.  Could just
         # be s.loc[1, :], or s.loc[pd.IndexSlice[1, :]]
     ) -> Series[S1]: ...
+
+    # Keep in sync with `Series.__setitem__`
     @overload
     def __setitem__(
         self,
-        idx: Index | MaskType | slice,
-        value: S1 | ArrayLike | Series[S1] | None,
+        idx: IndexOpsMixin[S1] | MaskType | slice,
+        value: S1 | ArrayLike | IndexOpsMixin[S1] | None,
     ) -> None: ...
     @overload
     def __setitem__(
@@ -295,7 +304,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     def __setitem__(
         self,
         idx: MaskType | StrLike | _IndexSliceTuple | list[ScalarT],
-        value: S1 | ArrayLike | Series[S1] | None,
+        value: S1 | ArrayLike | IndexOpsMixin[S1] | None,
     ) -> None: ...
 
 _DataLike: TypeAlias = ArrayLike | dict[str, npt.NDArray[Any]] | SequenceNotStr[S1]
@@ -515,11 +524,11 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def values(self) -> np_1darray[Any] | ExtensionArray | Categorical: ...
     def ravel(self, order: _str = ...) -> np_1darray[Any]: ...
     def __len__(self) -> int: ...
-    def view(self, dtype=...) -> Series[S1]: ...
+    def view(self, dtype: Dtype | None = None) -> Series[S1]: ...
     @final
     def __array_ufunc__(
         self, ufunc: Callable, method: _str, *inputs: Any, **kwargs: Any
-    ): ...
+    ) -> Any: ...
     def __array__(
         self, dtype: _str | np.dtype = ..., copy: bool | None = ...
     ) -> np_1darray: ...
@@ -527,21 +536,66 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def axes(self) -> list: ...
     @final
     def __getattr__(self, name: _str) -> S1: ...
+
+    # Keep in sync with `iLocIndexerSeries.__getitem__`
+    @overload
+    def __getitem__(self, idx: IndexingInt) -> S1: ...
+    @overload
+    def __getitem__(
+        self, idx: Index | Series | slice | np_ndarray_anyint
+    ) -> Series[S1]: ...
+    # Keep in sync with `LocIndexerSeries.__getitem__`
+    @overload
+    def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        self,
+        idx: Scalar | tuple[Scalar, ...],
+        # tuple case is for getting a specific element when using a MultiIndex
+    ) -> S1: ...
     @overload
     def __getitem__(
         self,
         idx: (
-            list[_str]
+            MaskType
             | Index
-            | Series[S1]
+            | Series
+            | SequenceNotStr[float | _str | Timestamp]
             | slice
-            | MaskType
-            | tuple[Hashable | slice, ...]
+            | _IndexSliceTuple
+            | Sequence[_IndexSliceTuple]
+            | Callable
         ),
-    ) -> Self: ...
+        # _IndexSliceTuple is when having a tuple that includes a slice.  Could just
+        # be s.loc[1, :], or s.loc[pd.IndexSlice[1, :]]
+    ) -> Series[S1]: ...
+
+    # Keep in sync with `_iLocIndexerSeries.__setitem__`
     @overload
-    def __getitem__(self, idx: Scalar) -> S1: ...
-    def __setitem__(self, key, value) -> None: ...
+    def __setitem__(self, idx: int, value: S1 | None) -> None: ...
+    @overload
+    def __setitem__(
+        self,
+        idx: Index | slice | np_ndarray_anyint | list[int],
+        value: S1 | IndexOpsMixin[S1] | None,
+    ) -> None: ...
+    # Keep in sync with `_LocIndexerSeries.__setitem__`
+    @overload
+    def __setitem__(
+        self,
+        idx: Index | MaskType | slice,
+        value: S1 | ArrayLike | IndexOpsMixin[S1] | None,
+    ) -> None: ...
+    @overload
+    def __setitem__(
+        self,
+        idx: _str,
+        value: S1 | None,
+    ) -> None: ...
+    @overload
+    def __setitem__(
+        self,
+        idx: MaskType | StrLike | _IndexSliceTuple | list[ScalarT],
+        value: S1 | ArrayLike | IndexOpsMixin[S1] | None,
+    ) -> None: ...
     @overload
     def get(self, key: Hashable, default: None = None) -> S1 | None: ...
     @overload
@@ -806,7 +860,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         dropna: _bool = ...,
     ) -> SeriesGroupBy[S1, Any]: ...
     def count(self) -> int: ...
-    def mode(self, dropna=True) -> Series[S1]: ...
+    def mode(self, dropna: bool = True) -> Series[S1]: ...
     @overload
     def unique(self: Series[Never]) -> np_1darray[Any]: ...  # type: ignore[overload-overlap]
     @overload
@@ -1530,10 +1584,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         axis: AxisIndex | None = 0,
     ) -> Series[S1]: ...
     @final
-    def first(self, offset) -> Series[S1]: ...
-    @final
-    def last(self, offset) -> Series[S1]: ...
-    @final
     def rank(
         self,
         axis: AxisIndex = 0,
@@ -1553,7 +1603,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Callable[[Series[S1]], Series[bool]]
             | Callable[[S1], bool]
         ),
-        other=...,
+        other: S1 | Self | Callable[..., S1 | Self] = ...,
         *,
         inplace: Literal[True],
         axis: AxisIndex | None = 0,
@@ -1569,7 +1619,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Callable[[Series[S1]], Series[bool]]
             | Callable[[S1], bool]
         ),
-        other=...,
+        other: Scalar | Self | Callable[..., Scalar | Self] = ...,
         *,
         inplace: Literal[False] = False,
         axis: AxisIndex | None = 0,
@@ -4606,7 +4656,13 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: _bool = ...,
         inplace: Literal[False] = False,
     ) -> Self: ...
-    def set_axis(self, labels, *, axis: Axis = ..., copy: _bool = ...) -> Self: ...
+    def set_axis(
+        self,
+        labels: AxesData,
+        *,
+        axis: Axis = 0,
+        copy: _bool | _NoDefaultDoNotUse = ...,
+    ) -> Self: ...
     @final
     def xs(
         self,

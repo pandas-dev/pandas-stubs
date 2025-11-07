@@ -27,6 +27,7 @@ from pandas._typing import (
     HashableT1,
     HashableT2,
     HashableT3,
+    ListLikeHashable,
     np_ndarray_float,
     npt,
 )
@@ -40,50 +41,87 @@ _SingleColor: TypeAlias = (
 )
 _PlotAccessorColor: TypeAlias = str | list[_SingleColor] | dict[HashableT, _SingleColor]
 
+# Keep in sync with `DataFrame.boxplot`
 @overload
 def boxplot(
     data: DataFrame,
-    column: Hashable | list[HashableT1] | None = ...,
-    by: Hashable | list[HashableT2] | None = ...,
-    ax: Axes | None = ...,
-    fontsize: float | str | None = ...,
-    rot: float = ...,
-    grid: bool = ...,
-    figsize: tuple[float, float] | None = ...,
-    layout: tuple[int, int] | None = ...,
-    return_type: Literal["axes"] | None = ...,
+    column: Hashable | ListLikeHashable,
+    by: None = None,
+    ax: Axes | None = None,
+    fontsize: float | str | None = None,
+    rot: float = 0,
+    grid: bool = True,
+    figsize: tuple[float, float] | None = None,
+    layout: tuple[int, int] | None = None,
+    *,
+    return_type: Literal["axes"] | None = None,
+    backend: str | None = None,
     **kwargs: Any,
 ) -> Axes: ...
 @overload
 def boxplot(
     data: DataFrame,
-    column: Hashable | list[HashableT1] | None = ...,
-    by: Hashable | list[HashableT2] | None = ...,
-    ax: Axes | None = ...,
-    fontsize: float | str | None = ...,
-    rot: float = ...,
-    grid: bool = ...,
-    figsize: tuple[float, float] | None = ...,
-    layout: tuple[int, int] | None = ...,
+    column: Hashable | ListLikeHashable,
+    by: None = None,
+    ax: Axes | None = None,
+    fontsize: float | str | None = None,
+    rot: float = 0,
+    grid: bool = True,
+    figsize: tuple[float, float] | None = None,
+    layout: tuple[int, int] | None = None,
     *,
     return_type: Literal["dict"],
+    backend: str | None = None,
     **kwargs: Any,
-) -> dict[str, list[Line2D]]: ...
+) -> dict[str, Axes]: ...
 @overload
 def boxplot(
     data: DataFrame,
-    column: Hashable | list[HashableT1] | None = ...,
-    by: Hashable | list[HashableT2] | None = ...,
-    ax: Axes | None = ...,
-    fontsize: float | str | None = ...,
-    rot: float = ...,
-    grid: bool = ...,
-    figsize: tuple[float, float] | None = ...,
-    layout: tuple[int, int] | None = ...,
+    column: Hashable | ListLikeHashable,
+    by: None = None,
+    ax: Axes | None = None,
+    fontsize: float | str | None = None,
+    rot: float = 0,
+    grid: bool = True,
+    figsize: tuple[float, float] | None = None,
+    layout: tuple[int, int] | None = None,
     *,
     return_type: Literal["both"],
+    backend: str | None = None,
     **kwargs: Any,
 ) -> _BoxPlotT: ...
+@overload
+def boxplot(
+    data: DataFrame,
+    column: Hashable | ListLikeHashable,
+    by: Hashable | ListLikeHashable,
+    ax: Axes | None = None,
+    fontsize: float | str | None = None,
+    rot: float = 0,
+    grid: bool = True,
+    figsize: tuple[float, float] | None = None,
+    layout: tuple[int, int] | None = None,
+    *,
+    return_type: None = None,
+    backend: str | None = None,
+    **kwargs: Any,
+) -> Axes: ...
+@overload
+def boxplot(
+    data: DataFrame,
+    column: Hashable | ListLikeHashable,
+    by: Hashable | ListLikeHashable,
+    ax: Axes | None = None,
+    fontsize: float | str | None = None,
+    rot: float = 0,
+    grid: bool = True,
+    figsize: tuple[float, float] | None = None,
+    layout: tuple[int, int] | None = None,
+    *,
+    return_type: Literal["axes", "dict", "both"],
+    backend: str | None = None,
+    **kwargs: Any,
+) -> Series: ...
 
 class PlotAccessor:
     def __init__(self, data: Series | DataFrame) -> None: ...

@@ -65,54 +65,54 @@ _ExtendedAnyArrayLike: TypeAlias = AnyArrayLike | ArrayLike
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes = ...,
-    index: _PivotTableIndexTypes = ...,
-    columns: _PivotTableColumnsTypes = ...,
+    values: _PivotTableValuesTypes = None,
+    index: _PivotTableIndexTypes = None,
+    columns: _PivotTableColumnsTypes = None,
     aggfunc: (
         _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
-    ) = ...,
-    fill_value: Scalar | None = ...,
-    margins: bool = ...,
-    dropna: bool = ...,
-    margins_name: str = ...,
-    observed: bool = ...,
-    sort: bool = ...,
+    ) = "mean",
+    fill_value: Scalar | None = None,
+    margins: bool = False,
+    dropna: bool = True,
+    margins_name: Hashable = "All",
+    observed: bool = True,
+    sort: bool = True,
 ) -> DataFrame: ...
 
 # Can only use Index or ndarray when index or columns is a Grouper
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes = ...,
+    values: _PivotTableValuesTypes = None,
     *,
     index: Grouper,
-    columns: _PivotTableColumnsTypes | Index | npt.NDArray[Any] = ...,
+    columns: _PivotTableColumnsTypes | npt.NDArray[Any] | Index[Any] = None,
     aggfunc: (
         _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
-    ) = ...,
-    fill_value: Scalar | None = ...,
-    margins: bool = ...,
-    dropna: bool = ...,
-    margins_name: str = ...,
-    observed: bool = ...,
-    sort: bool = ...,
+    ) = "mean",
+    fill_value: Scalar | None = None,
+    margins: bool = False,
+    dropna: bool = True,
+    margins_name: Hashable = "All",
+    observed: bool = True,
+    sort: bool = True,
 ) -> DataFrame: ...
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes = ...,
-    index: _PivotTableIndexTypes | Index | npt.NDArray[Any] = ...,
+    values: _PivotTableValuesTypes = None,
+    index: _PivotTableIndexTypes | npt.NDArray[Any] | Index[Any] = None,
     *,
     columns: Grouper,
     aggfunc: (
         _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
-    ) = ...,
-    fill_value: Scalar | None = ...,
-    margins: bool = ...,
-    dropna: bool = ...,
-    margins_name: str = ...,
-    observed: bool = ...,
-    sort: bool = ...,
+    ) = "mean",
+    fill_value: Scalar | None = None,
+    margins: bool = False,
+    dropna: bool = True,
+    margins_name: Hashable = "All",
+    observed: bool = True,
+    sort: bool = True,
 ) -> DataFrame: ...
 def pivot(
     data: DataFrame,
