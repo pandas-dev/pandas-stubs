@@ -55,6 +55,7 @@ from pandas.core.indexing import (
     _LocIndexer,
 )
 from pandas.core.reshape.pivot import (
+    _PivotAggFunc,
     _PivotTableColumnsTypes,
     _PivotTableIndexTypes,
     _PivotTableValuesTypes,
@@ -124,6 +125,7 @@ from pandas._typing import (
     Level,
     ListLike,
     ListLikeExceptSeriesAndStr,
+    ListLikeHashable,
     ListLikeU,
     MaskType,
     MergeHow,
@@ -167,6 +169,7 @@ from pandas._typing import (
 
 from pandas.io.formats.style import Styler
 from pandas.plotting import PlotAccessor
+from pandas.plotting._core import _BoxPlotT
 
 _T_MUTABLE_MAPPING_co = TypeVar(
     "_T_MUTABLE_MAPPING_co", bound=MutableMapping, covariant=True
@@ -1361,10 +1364,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def pivot_table(
         self,
-        values: _PivotTableValuesTypes = ...,
-        index: _PivotTableIndexTypes = ...,
-        columns: _PivotTableColumnsTypes = ...,
-        aggfunc="mean",
+        values: _PivotTableValuesTypes = None,
+        index: _PivotTableIndexTypes = None,
+        columns: _PivotTableColumnsTypes = None,
+        aggfunc: (
+            _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
+        ) = "mean",
         fill_value: Scalar | None = None,
         margins: _bool = False,
         dropna: _bool = True,
@@ -1696,8 +1701,9 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def plot(self) -> PlotAccessor: ...
     def hist(
         self,
-        column: _str | list[_str] | None = None,
         by: _str | ListLike | None = None,
+        bins: int | list = 10,
+        *,
         grid: _bool = True,
         xlabelsize: float | str | None = None,
         xrot: float | None = None,
@@ -1708,24 +1714,88 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         sharey: _bool = False,
         figsize: tuple[float, float] | None = None,
         layout: tuple[int, int] | None = None,
-        bins: int | list = 10,
         backend: _str | None = None,
+        legend: bool = False,
         **kwargs: Any,
-    ): ...
+    ) -> npt.NDArray[np.object_]: ...
+
+    # Keep in sync with `pd.plotting.boxplot`
+    @overload
     def boxplot(
         self,
-        column: _str | list[_str] | None = None,
-        by: _str | ListLike | None = None,
+        by: None = None,
         ax: PlotAxes | None = None,
         fontsize: float | _str | None = None,
         rot: float = 0,
         grid: _bool = True,
         figsize: tuple[float, float] | None = None,
         layout: tuple[int, int] | None = None,
-        return_type: Literal["axes", "dict", "both"] | None = None,
+        *,
+        return_type: Literal["axes"] | None = None,
         backend: _str | None = None,
         **kwargs: Any,
-    ): ...
+    ) -> PlotAxes: ...
+    @overload
+    def boxplot(
+        self,
+        by: None = None,
+        ax: PlotAxes | None = None,
+        fontsize: float | _str | None = None,
+        rot: float = 0,
+        grid: _bool = True,
+        figsize: tuple[float, float] | None = None,
+        layout: tuple[int, int] | None = None,
+        *,
+        return_type: Literal["dict"],
+        backend: _str | None = None,
+        **kwargs: Any,
+    ) -> dict[str, PlotAxes]: ...
+    @overload
+    def boxplot(
+        self,
+        by: None = None,
+        ax: PlotAxes | None = None,
+        fontsize: float | _str | None = None,
+        rot: float = 0,
+        grid: _bool = True,
+        figsize: tuple[float, float] | None = None,
+        layout: tuple[int, int] | None = None,
+        *,
+        return_type: Literal["both"],
+        backend: _str | None = None,
+        **kwargs: Any,
+    ) -> _BoxPlotT: ...
+    @overload
+    def boxplot(
+        self,
+        by: Hashable | ListLikeHashable,
+        ax: PlotAxes | None = None,
+        fontsize: float | _str | None = None,
+        rot: float = 0,
+        grid: _bool = True,
+        figsize: tuple[float, float] | None = None,
+        layout: tuple[int, int] | None = None,
+        *,
+        return_type: None = None,
+        backend: _str | None = None,
+        **kwargs: Any,
+    ) -> PlotAxes: ...
+    @overload
+    def boxplot(
+        self,
+        by: Hashable | ListLikeHashable,
+        ax: PlotAxes | None = None,
+        fontsize: float | _str | None = None,
+        rot: float = 0,
+        grid: _bool = True,
+        figsize: tuple[float, float] | None = None,
+        layout: tuple[int, int] | None = None,
+        *,
+        return_type: Literal["axes", "dict", "both"],
+        backend: _str | None = None,
+        **kwargs: Any,
+    ) -> Series: ...
+
     sparse = ...
 
     # The rest of these are remnants from the
