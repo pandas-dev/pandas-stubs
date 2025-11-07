@@ -14,17 +14,18 @@ from typing import (
 )
 
 import numpy as np
-from pandas import (
-    DataFrame,
-    Index,
-    TimedeltaIndex,
-    Timestamp,
-)
+from pandas.core.frame import DataFrame
 from pandas.core.indexes.accessors import DatetimeIndexProperties
+from pandas.core.indexes.base import Index
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
+from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
-from typing_extensions import Self
+from typing_extensions import (
+    Never,
+    Self,
+)
 
+from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     AxesData,
     DateAndDatetimeLike,
@@ -34,6 +35,7 @@ from pandas._typing import (
     TimeUnit,
     TimeZones,
     np_1darray,
+    np_ndarray,
     np_ndarray_dt,
     np_ndarray_td,
 )
@@ -63,18 +65,23 @@ class DatetimeIndex(
     def __add__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: timedelta | BaseOffset
     ) -> Self: ...
-    def __radd__(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __radd__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: timedelta | BaseOffset
     ) -> Self: ...
     @overload  # type: ignore[override]
-    # pyrefly: ignore  # bad-override
-    def __sub__(
+    def __sub__(  # pyrefly: ignore[bad-override]
         self, other: datetime | np.datetime64 | np_ndarray_dt | Self
     ) -> TimedeltaIndex: ...
     @overload
     def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset
     ) -> Self: ...
+    def __truediv__(  # type: ignore[override] # pyrefly: ignore[bad-override]
+        self, other: np_ndarray
+    ) -> Never: ...
+    def __rtruediv__(  # type: ignore[override] # pyrefly: ignore[bad-override]
+        self, other: np_ndarray
+    ) -> Never: ...
     @final
     def to_series(
         self, index: Index | None = None, name: Hashable | None = None

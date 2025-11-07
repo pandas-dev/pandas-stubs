@@ -20,8 +20,11 @@ import numpy as np
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
+from pandas.core.arrays.integer import IntegerArray
+from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.indexes.accessors import ArrayDescriptor
 from pandas.core.indexes.base import Index
+from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
 from typing_extensions import Self
 
@@ -44,6 +47,7 @@ from pandas._typing import (
     np_ndarray_bool,
     np_ndarray_complex,
     np_ndarray_float,
+    np_ndarray_td,
 )
 from pandas.util._decorators import cache_readonly
 
@@ -168,7 +172,84 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
     ) -> np.intp: ...
     def drop_duplicates(self, *, keep: DropKeep = ...) -> Self: ...
 
-NumListLike: TypeAlias = (
+ScalarArrayIndexJustInt: TypeAlias = (
+    Just[int]
+    | np.integer
+    | Sequence[Just[int] | np.integer]
+    | np_ndarray_anyint
+    | IntegerArray
+    | Index[int]
+)
+ScalarArrayIndexSeriesJustInt: TypeAlias = ScalarArrayIndexJustInt | Series[int]
+ScalarArrayIndexJustFloat: TypeAlias = (
+    Just[float]
+    | np.floating
+    | Sequence[Just[float] | np.floating]
+    | np_ndarray_float
+    # | FloatingArray  # TODO: after pandas-dev/pandas-stubs#1469
+    | Index[float]
+)
+ScalarArrayIndexSeriesJustFloat: TypeAlias = ScalarArrayIndexJustFloat | Series[float]
+ScalarArrayIndexJustComplex: TypeAlias = (
+    Just[complex]
+    | np.complexfloating
+    | Sequence[Just[complex] | np.complexfloating]
+    | np_ndarray_complex
+    | Index[complex]
+)
+ScalarArrayIndexSeriesJustComplex: TypeAlias = (
+    ScalarArrayIndexJustComplex | Series[complex]
+)
+
+ScalarArrayIndexIntNoBool: TypeAlias = (
+    Just[int]
+    | np.integer
+    | Sequence[int | np.integer]
+    | np_ndarray_anyint
+    | IntegerArray
+    | Index[int]
+)
+ScalarArrayIndexSeriesIntNoBool: TypeAlias = ScalarArrayIndexIntNoBool | Series[int]
+
+NumpyRealScalar: TypeAlias = np.bool | np.integer | np.floating
+IndexReal: TypeAlias = Index[bool] | Index[int] | Index[float]
+ScalarArrayIndexReal: TypeAlias = (
+    float
+    | Sequence[float | NumpyRealScalar]
+    | NumpyRealScalar
+    | np.typing.NDArray[NumpyRealScalar]
+    | ExtensionArray
+    | IndexReal
+)
+SeriesReal: TypeAlias = Series[bool] | Series[int] | Series[float]
+ScalarArrayIndexSeriesReal: TypeAlias = ScalarArrayIndexReal | SeriesReal
+
+NumpyComplexScalar: TypeAlias = NumpyRealScalar | np.complexfloating
+IndexComplex: TypeAlias = IndexReal | Index[complex]
+ScalarArrayIndexComplex: TypeAlias = (
+    complex
+    | Sequence[complex | NumpyComplexScalar]
+    | NumpyComplexScalar
+    | np.typing.NDArray[NumpyComplexScalar]
+    | ExtensionArray
+    | IndexComplex
+)
+SeriesComplex: TypeAlias = SeriesReal | Series[complex]
+ScalarArrayIndexSeriesComplex: TypeAlias = ScalarArrayIndexComplex | SeriesComplex
+
+ArrayIndexTimedeltaNoSeq: TypeAlias = np_ndarray_td | TimedeltaArray | TimedeltaIndex
+ScalarArrayIndexTimedelta: TypeAlias = (
+    timedelta
+    | np.timedelta64
+    | Sequence[timedelta | np.timedelta64]
+    | ArrayIndexTimedeltaNoSeq
+)
+ArrayIndexSeriesTimedeltaNoSeq: TypeAlias = ArrayIndexTimedeltaNoSeq | Series[Timedelta]
+ScalarArrayIndexSeriesTimedelta: TypeAlias = (
+    ScalarArrayIndexTimedelta | Series[Timedelta]
+)
+
+NumListLike: TypeAlias = (  # TODO: pandas-dev/pandas-stubs#1474 deprecated, do not use
     ExtensionArray
     | np_ndarray_bool
     | np_ndarray_anyint
@@ -280,7 +361,7 @@ class ElementOpsMixin(Generic[S2]):
     ) -> ElementOpsMixin[complex]: ...
     @overload
     def _proto_truediv(
-        self: ElementOpsMixin[Timedelta], other: timedelta | Timedelta | np.timedelta64
+        self: ElementOpsMixin[Timedelta], other: timedelta | np.timedelta64 | Timedelta
     ) -> ElementOpsMixin[float]: ...
     @overload
     def _proto_rtruediv(
@@ -296,8 +377,32 @@ class ElementOpsMixin(Generic[S2]):
     ) -> ElementOpsMixin[complex]: ...
     @overload
     def _proto_rtruediv(
-        self: ElementOpsMixin[Timedelta], other: timedelta | Timedelta | np.timedelta64
+        self: ElementOpsMixin[Timedelta], other: timedelta | np.timedelta64 | Timedelta
     ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_floordiv(
+        self: ElementOpsMixin[int], other: int | np.integer
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_floordiv(
+        self: ElementOpsMixin[float], other: float | np.floating
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_floordiv(
+        self: ElementOpsMixin[Timedelta], other: timedelta | np.timedelta64 | Timedelta
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_rfloordiv(
+        self: ElementOpsMixin[int], other: int | np.integer
+    ) -> ElementOpsMixin[int]: ...
+    @overload
+    def _proto_rfloordiv(
+        self: ElementOpsMixin[float], other: float | np.floating
+    ) -> ElementOpsMixin[float]: ...
+    @overload
+    def _proto_rfloordiv(
+        self: ElementOpsMixin[Timedelta], other: timedelta | np.timedelta64 | Timedelta
+    ) -> ElementOpsMixin[int]: ...
 
 @type_check_only
 class Supports_ProtoAdd(Protocol[_T_contra, S2]):
@@ -322,3 +427,11 @@ class Supports_ProtoTrueDiv(Protocol[_T_contra, S2]):
 @type_check_only
 class Supports_ProtoRTrueDiv(Protocol[_T_contra, S2]):
     def _proto_rtruediv(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ProtoFloorDiv(Protocol[_T_contra, S2]):
+    def _proto_floordiv(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
+
+@type_check_only
+class Supports_ProtoRFloorDiv(Protocol[_T_contra, S2]):
+    def _proto_rfloordiv(self, other: _T_contra, /) -> ElementOpsMixin[S2]: ...
