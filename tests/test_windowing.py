@@ -15,11 +15,11 @@ from pandas.core.window import (
 from typing_extensions import assert_type
 
 from pandas._libs.tslibs.offsets import BaseOffset
-from pandas._typing import np_ndarray
 
 from tests import (
     PD_LTE_23,
     check,
+    np_ndarray,
     pytest_warns_bounded,
 )
 

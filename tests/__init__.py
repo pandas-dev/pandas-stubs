@@ -53,6 +53,7 @@ if TYPE_CHECKING:
         np_ndarray_bool as np_ndarray_bool,
         np_ndarray_dt as np_ndarray_dt,
         np_ndarray_int as np_ndarray_int,
+        np_ndarray_str as np_ndarray_str,
         np_ndarray_td as np_ndarray_td,
     )
 else:
@@ -69,6 +70,7 @@ else:
     np_ndarray_dt: TypeAlias = npt.NDArray[np.datetime64]
     np_ndarray_int: TypeAlias = npt.NDArray[np.signedinteger]
     np_ndarray_int64: TypeAlias = npt.NDArray[np.int64]
+    np_ndarray_str: TypeAlias = npt.NDArray[np.str_]
     np_ndarray_td: TypeAlias = npt.NDArray[np.timedelta64]
 
 TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING

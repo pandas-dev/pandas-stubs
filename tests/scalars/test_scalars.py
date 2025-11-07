@@ -534,9 +534,7 @@ def test_timedelta_add_sub() -> None:
     check(assert_type(td + as_timedelta_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
     check(assert_type(td + as_period_index, pd.PeriodIndex), pd.PeriodIndex)
     check(assert_type(td + as_datetime_index, pd.DatetimeIndex), pd.DatetimeIndex)
-    check(
-        assert_type(td + as_ndarray_td64, np_ndarray_td), np_ndarray_td, np.timedelta64
-    )
+    check(assert_type(td + as_ndarray_td64, np_ndarray_td), np_ndarray, np.timedelta64)
     check(assert_type(td + as_ndarray_dt64, np_ndarray_dt), np_ndarray, np.datetime64)
     check(assert_type(td + as_nat, NaTType), NaTType)
 
@@ -586,9 +584,7 @@ def test_timedelta_add_sub() -> None:
     check(assert_type(td - as_dt_timedelta, pd.Timedelta), pd.Timedelta)
     check(assert_type(td - as_timedelta64, pd.Timedelta), pd.Timedelta)
     check(assert_type(td - as_timedelta_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(
-        assert_type(td - as_ndarray_td64, np_ndarray_td), np_ndarray_td, np.timedelta64
-    )
+    check(assert_type(td - as_ndarray_td64, np_ndarray_td), np_ndarray, np.timedelta64)
     check(assert_type(td - as_nat, NaTType), NaTType)
     check(assert_type(as_period - td, pd.Period), pd.Period)
     check(assert_type(as_timestamp - td, pd.Timestamp), pd.Timestamp)
@@ -1093,14 +1089,10 @@ def test_timestamp_add_sub() -> None:
     )
 
     check(
-        assert_type(ts + as_np_ndarray_td64, np_ndarray_dt),
-        np_ndarray_dt,
-        np.datetime64,
+        assert_type(ts + as_np_ndarray_td64, np_ndarray_dt), np_ndarray, np.datetime64
     )
     check(
-        assert_type(as_np_ndarray_td64 + ts, np_ndarray_dt),
-        np_ndarray_dt,
-        np.datetime64,
+        assert_type(as_np_ndarray_td64 + ts, np_ndarray_dt), np_ndarray, np.datetime64
     )
 
     # Reverse order is not possible for all of these
@@ -1114,9 +1106,7 @@ def test_timestamp_add_sub() -> None:
         pd.Timestamp,
     )
     check(
-        assert_type(ts - as_np_ndarray_td64, np_ndarray_dt),
-        np_ndarray_dt,
-        np.datetime64,
+        assert_type(ts - as_np_ndarray_td64, np_ndarray_dt), np_ndarray, np.datetime64
     )
 
 

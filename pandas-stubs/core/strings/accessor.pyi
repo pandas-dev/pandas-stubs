@@ -15,7 +15,6 @@ from typing import (
 )
 
 import numpy as np
-import numpy.typing as npt
 import pandas as pd
 from pandas import (
     DataFrame,
@@ -32,6 +31,7 @@ from pandas._typing import (
     Scalar,
     T,
     np_1darray,
+    np_ndarray_str,
 )
 
 # Used for the result of str.split with expand=True
@@ -67,9 +67,7 @@ class StringMethods(
     @overload
     def cat(
         self,
-        others: (
-            Series[str] | Index[str] | pd.DataFrame | npt.NDArray[np.str_] | list[str]
-        ),
+        others: list[str] | np_ndarray_str | Series[str] | Index[str] | pd.DataFrame,
         sep: str | None = None,
         na_rep: str | None = None,
         join: AlignJoin = "left",

@@ -11,7 +11,6 @@ from typing import (
 )
 
 from matplotlib.colors import Colormap
-import numpy as np
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
 
@@ -31,6 +30,7 @@ from pandas._typing import (
     T,
     WriteBuffer,
     WriteExcelBuffer,
+    np_ndarray_str,
     npt,
 )
 
@@ -245,7 +245,7 @@ class Styler(StylerRenderer):
     ) -> Styler: ...
     def apply_index(
         self,
-        func: Callable[[Series], npt.NDArray[np.str_] | list[str] | Series[str]],
+        func: Callable[[Series], list[str] | np_ndarray_str | Series[str]],
         axis: Axis = ...,
         level: Level | list[Level] | None = ...,
         **kwargs: Any,

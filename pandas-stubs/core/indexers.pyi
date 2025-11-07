@@ -4,6 +4,7 @@ from numpy import typing as npt
 
 from pandas._typing import (
     AnyArrayLike,
+    np_1darray_bool,
 )
 
 def check_array_indexer(

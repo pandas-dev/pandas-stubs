@@ -64,6 +64,7 @@ from pandas._typing import (
     TimestampConvertibleTypes,
     WindowingEngine,
     WindowingEngineKwargs,
+    np_ndarray_int64,
     npt,
 )
 
@@ -357,7 +358,7 @@ class BaseGroupBy(SelectionMixin[NDFrameT], GroupByIndexingMixin):
     def ngroups(self) -> int: ...
     @final
     @property
-    def indices(self) -> dict[Hashable, Index | npt.NDArray[np.int_] | list[int]]: ...
+    def indices(self) -> dict[Hashable, Index | np_ndarray_int64 | list[int]]: ...
     @overload
     def pipe(
         self,
