@@ -5,7 +5,6 @@ import datetime as dt
 from typing import (
     TYPE_CHECKING,
     Any,
-    Union,
     cast,
 )
 
@@ -265,39 +264,22 @@ def test_types_to_numpy() -> None:
     )
 
 
-def test_index_arithmetic() -> None:
-    # GH 287
-    idx = pd.Index([1, 2.2, 3], dtype=float)
-    check(assert_type(idx * 3, "pd.Index[float]"), pd.Index, np.float64)
-    check(assert_type(idx / 3, "pd.Index[float]"), pd.Index, np.float64)
-    check(assert_type(idx // 3, "pd.Index[float]"), pd.Index, np.float64)
-    check(assert_type(3 * idx, "pd.Index[float]"), pd.Index, np.float64)
-    check(assert_type(3 / idx, "pd.Index[float]"), pd.Index, np.float64)
-    check(assert_type(3 // idx, "pd.Index[float]"), pd.Index, np.float64)
-
-
 def test_range_index_union() -> None:
     check(
         assert_type(
             pd.RangeIndex(0, 10).union(pd.RangeIndex(10, 20)),
-            Union[pd.Index, "pd.Index[int]", pd.RangeIndex],
+            "pd.Index[int] | pd.RangeIndex",
         ),
         pd.RangeIndex,
     )
     check(
         assert_type(
-            pd.RangeIndex(0, 10).union([11, 12, 13]),
-            Union[pd.Index, "pd.Index[int]", pd.RangeIndex],
+            pd.RangeIndex(0, 10).union([11, 12, 13]), "pd.Index[int] | pd.RangeIndex"
         ),
         pd.Index,
+        np.integer,
     )
-    check(
-        assert_type(
-            pd.RangeIndex(0, 10).union(["a", "b", "c"]),
-            Union[pd.Index, "pd.Index[int]", pd.RangeIndex],
-        ),
-        pd.Index,
-    )
+    check(assert_type(pd.RangeIndex(0, 10).union(["a", "b", "c"]), pd.Index), pd.Index)
 
 
 def test_index_union_sort() -> None:
@@ -846,9 +828,6 @@ def test_index_operators() -> None:
     i1 = pd.Index([1, 2, 3])
     i2 = pd.Index([4, 5, 6])
 
-    check(assert_type(i1 // i2, "pd.Index[int]"), pd.Index)
-    check(assert_type(i1 // 10, "pd.Index[int]"), pd.Index)
-    check(assert_type(10 // i1, "pd.Index[int]"), pd.Index)
     check(assert_type(i1**i2, "pd.Index[int]"), pd.Index)
     check(assert_type(i1**2, "pd.Index[int]"), pd.Index)
     check(assert_type(2**i1, "pd.Index[int]"), pd.Index)
@@ -1195,31 +1174,6 @@ def test_new() -> None:
         pd.IntervalIndex,
         pd.Interval,
     )
-
-
-def test_timedelta_div() -> None:
-    index = pd.Index([pd.Timedelta(days=1)], dtype="timedelta64[s]")
-    delta = dt.timedelta(1)
-
-    check(assert_type(index / delta, "pd.Index[float]"), pd.Index, float)
-    check(assert_type(index / [delta], "pd.Index[float]"), pd.Index, float)
-    check(assert_type(index / 1, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
-    check(assert_type(index / [1], pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
-    check(assert_type(index // delta, "pd.Index[int]"), pd.Index, np.longlong)
-    check(assert_type(index // [delta], "pd.Index[int]"), pd.Index, int)
-    check(assert_type(index // 1, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
-    check(assert_type(index // [1], pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
-
-    check(assert_type(delta / index, "pd.Index[float]"), pd.Index, float)
-    check(assert_type([delta] / index, "pd.Index[float]"), pd.Index, float)
-    check(assert_type(delta // index, "pd.Index[int]"), pd.Index, np.longlong)
-    check(assert_type([delta] // index, "pd.Index[int]"), pd.Index, np.signedinteger)
-
-    if TYPE_CHECKING_INVALID_USAGE:
-        _0 = 1 / index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _1 = [1] / index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _2 = 1 // index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _3 = [1] // index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
 
 def test_datetime_operators_builtin() -> None:

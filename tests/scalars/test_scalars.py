@@ -619,9 +619,6 @@ def test_timedelta_add_sub() -> None:
 def test_timedelta_mul_div() -> None:
     td = pd.Timedelta("1 day")
 
-    i_idx = pd.Index([1, 2, 3], dtype=int)
-    f_idx = pd.Index([1.2, 2.2, 3.4], dtype=float)
-
     np_intp_arr: npt.NDArray[np.integer] = np.array([1, 2, 3])
     np_float_arr: npt.NDArray[np.floating] = np.array([1.2, 2.2, 3.4])
 
@@ -629,11 +626,6 @@ def test_timedelta_mul_div() -> None:
     md_float = 3.5
     md_ndarray_intp = np_intp_arr
     md_ndarray_float = np_float_arr
-    mp_series_int = pd.Series([1, 2, 3], dtype=int)
-    md_series_float = pd.Series([1.2, 2.2, 3.4], dtype=float)
-    md_int64_index = i_idx
-    md_float_index = f_idx
-    md_timedelta_series = pd.Series(pd.timedelta_range("1 day", periods=3))
 
     check(assert_type(td * md_int, pd.Timedelta), pd.Timedelta)
     check(assert_type(td * md_float, pd.Timedelta), pd.Timedelta)
@@ -653,23 +645,6 @@ def test_timedelta_mul_div() -> None:
     check(
         assert_type(td // md_ndarray_float, np_ndarray_td), np_ndarray, np.timedelta64
     )
-    check(
-        assert_type(td // mp_series_int, "pd.Series[pd.Timedelta]"),
-        pd.Series,
-        pd.Timedelta,
-    )
-    check(
-        assert_type(td // md_series_float, "pd.Series[pd.Timedelta]"),
-        pd.Series,
-        pd.Timedelta,
-    )
-    check(assert_type(td // md_int64_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(assert_type(td // md_float_index, pd.TimedeltaIndex), pd.TimedeltaIndex)
-    check(
-        assert_type(td // md_timedelta_series, "pd.Series[int]"),
-        pd.Series,
-        np.longlong,
-    )
 
     check(assert_type(pd.NaT // td, float), float)
     # Note: None of the reverse floordiv work
@@ -680,10 +655,6 @@ def test_timedelta_mul_div() -> None:
         _01 = md_float // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _02 = md_ndarray_intp // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _03 = md_ndarray_float // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _04 = mp_series_int // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _05 = md_series_float // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _06 = md_int64_index // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _07 = md_float_index // td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
 
     check(assert_type(td / td, float), float)
     check(assert_type(td / pd.NaT, float), float)

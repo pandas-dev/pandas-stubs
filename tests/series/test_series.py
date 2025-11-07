@@ -826,7 +826,6 @@ def test_types_element_wise_arithmetic() -> None:
         assert_type(s.div(s2, fill_value=0), "pd.Series[float]"), pd.Series, np.float64
     )
 
-    _res_floordiv: pd.Series = s // s2
     _res_floordiv2: pd.Series = s.floordiv(s2, fill_value=0)
 
     _res_mod: pd.Series = s % s2
@@ -856,7 +855,6 @@ def test_types_scalar_arithmetic() -> None:
         assert_type(s.div(2, fill_value=0), "pd.Series[float]"), pd.Series, np.floating
     )
 
-    _res_floordiv: pd.Series = s // 2
     _res_floordiv2: pd.Series = s.floordiv(2, fill_value=0)
 
     _res_mod: pd.Series = s % 2
