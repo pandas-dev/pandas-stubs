@@ -15,6 +15,7 @@ from pandas.core.window import (
 from typing_extensions import assert_type
 
 from pandas._libs.tslibs.offsets import BaseOffset
+from pandas._typing import np_ndarray
 
 from tests import (
     PD_LTE_23,
@@ -88,7 +89,7 @@ def test_rolling_apply() -> None:
 
     check(assert_type(DF.rolling(10).apply(_mean), DataFrame), DataFrame)
 
-    def _mean2(df: DataFrame) -> np.ndarray:
+    def _mean2(df: DataFrame) -> np_ndarray:
         return np.mean(df, axis=0)
 
     check(assert_type(DF.rolling(10).apply(_mean2, raw=True), DataFrame), DataFrame)
@@ -181,7 +182,7 @@ def test_rolling_apply_series() -> None:
 
     check(assert_type(S.rolling(10).apply(_mean), Series), Series)
 
-    def _mean2(df: Series) -> np.ndarray:
+    def _mean2(df: Series) -> np_ndarray:
         return np.mean(df, axis=0)
 
     check(assert_type(S.rolling(10).apply(_mean2, raw=True), Series), Series)
@@ -247,7 +248,7 @@ def test_expanding_apply() -> None:
 
     check(assert_type(DF.expanding(10).apply(_mean), DataFrame), DataFrame)
 
-    def _mean2(df: DataFrame) -> np.ndarray:
+    def _mean2(df: DataFrame) -> np_ndarray:
         return np.mean(df, axis=0)
 
     check(assert_type(DF.expanding(10).apply(_mean2, raw=True), DataFrame), DataFrame)
@@ -306,7 +307,7 @@ def test_expanding_apply_series() -> None:
 
     check(assert_type(S.expanding(10).apply(_mean), Series), Series)
 
-    def _mean2(df: Series) -> np.ndarray:
+    def _mean2(df: Series) -> np_ndarray:
         return np.mean(df, axis=0)
 
     check(assert_type(S.expanding(10).apply(_mean2, raw=True), Series), Series)

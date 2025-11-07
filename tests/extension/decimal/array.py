@@ -11,7 +11,6 @@ import decimal
 import numbers
 import sys
 from typing import (
-    TYPE_CHECKING,
     Any,
     cast,
     overload,
@@ -53,8 +52,11 @@ from pandas.core.dtypes.common import (
     pandas_dtype,
 )
 
-if TYPE_CHECKING:
-    from pandas._typing import np_1darray
+from tests import (
+    np_1darray,
+    np_1darray_bool,
+    np_ndarray,
+)
 
 
 @register_extension_dtype
@@ -94,7 +96,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
 
     def __init__(
         self,
-        values: MutableSequence[decimal._DecimalNew] | np.ndarray | ExtensionArray,
+        values: MutableSequence[decimal._DecimalNew] | np_ndarray | ExtensionArray,
         dtype: DecimalDtype | None = None,
         copy: bool = False,
         context: decimal.Context | None = None,
@@ -126,7 +128,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
     @classmethod
     def _from_sequence(
         cls,
-        scalars: list[decimal._DecimalNew] | np.ndarray | ExtensionArray,
+        scalars: list[decimal._DecimalNew] | np_ndarray | ExtensionArray,
         dtype: DecimalDtype | None = None,
         copy: bool = False,
     ) -> Self:
@@ -144,7 +146,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
     @classmethod
     def _from_factorized(
         cls,
-        values: list[decimal._DecimalNew] | np.ndarray | ExtensionArray,
+        values: list[decimal._DecimalNew] | np_ndarray | ExtensionArray,
         original: Any,
     ) -> Self:
         return cls(values)
@@ -157,7 +159,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         copy: bool = False,
         na_value: object = no_default,
         decimals: int | None = None,
-    ) -> np.ndarray:
+    ) -> np_ndarray:
         result = np.asarray(self, dtype=dtype)
         if decimals is not None:
             result = np.asarray([round(x, decimals) for x in result])
@@ -192,7 +194,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
                 decimal.Decimal
                 | numbers.Number
                 | list[decimal._DecimalNew]
-                | np.ndarray
+                | np_ndarray
             ),
         ) -> decimal.Decimal | numbers.Number | DecimalArray:
             if isinstance(x, (decimal.Decimal, numbers.Number)):
@@ -281,7 +283,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
             return n * sys.getsizeof(self[0])
         return 0
 
-    def isna(self) -> np_1darray[np.bool_]:
+    def isna(self) -> np_1darray_bool:
         if sys.version_info < (3, 11):
             return np.array([x.is_nan() for x in self._data], bool)  # type: ignore[return-value] # pyright: ignore[reportReturnType]
         return np.array([x.is_nan() for x in self._data], bool)
@@ -320,7 +322,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
 
     def _cmp_method(
         self, other: Any, op: Callable[[Self, ExtensionArray | list[Any]], bool]
-    ) -> np_1darray[np.bool_]:
+    ) -> np_1darray_bool:
         # For use with OpsMixin
         def convert_values(param: Any) -> ExtensionArray | list[Any]:
             if isinstance(param, ExtensionArray) or is_list_like(param):
@@ -337,9 +339,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         # a TypeError should be raised
         res = [op(a, b) for (a, b) in zip(lvalues, rvalues)]
 
-        return cast(
-            np.ndarray[tuple[int], np.dtype[np.bool_]], np.asarray(res, dtype=bool)
-        )
+        return cast(np_1darray_bool, np.asarray(res, dtype=bool))
 
     def value_counts(self, dropna: bool = True) -> Series:
         from pandas.core.algorithms import value_counts

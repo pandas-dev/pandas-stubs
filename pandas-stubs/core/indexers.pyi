@@ -1,16 +1,14 @@
 from typing import Any
 
-import numpy as np
 from numpy import typing as npt
 
 from pandas._typing import (
     AnyArrayLike,
-    np_1darray,
 )
 
 def check_array_indexer(
     arrayArrayLike: AnyArrayLike, indexer: AnyArrayLike
-) -> np_1darray[np.bool_]: ...
+) -> np_1darray_bool: ...
 
 class BaseIndexer:
     def __init__(

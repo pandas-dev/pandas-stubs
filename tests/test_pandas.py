@@ -641,14 +641,12 @@ def test_unique() -> None:
         pd.Categorical,
     )
     check(
-        assert_type(
-            pd.unique(pd.Index(["a", "b", "c", "a"])), np_1darray[Any] | pd.Index
-        ),
-        np.ndarray if PD_LTE_23 else pd.Index,
+        assert_type(pd.unique(pd.Index(["a", "b", "c", "a"])), np_1darray | pd.Index),
+        np_1darray if PD_LTE_23 else pd.Index,
     )
     check(
-        assert_type(pd.unique(pd.RangeIndex(0, 10)), np_1darray[Any] | pd.Index),
-        np.ndarray if PD_LTE_23 else pd.Index,
+        assert_type(pd.unique(pd.RangeIndex(0, 10)), np_1darray | pd.Index),
+        np_1darray if PD_LTE_23 else pd.Index,
     )
     check(
         assert_type(pd.unique(pd.Categorical(["a", "b", "c", "a"])), pd.Categorical),
@@ -664,9 +662,9 @@ def test_unique() -> None:
     check(
         assert_type(
             pd.unique(pd.timedelta_range(start="1 day", periods=4)),
-            np_1darray[Any] | pd.Index,
+            np_1darray | pd.Index,
         ),
-        np.ndarray if PD_LTE_23 else pd.Index,
+        np_1darray if PD_LTE_23 else pd.Index,
     )
 
 
