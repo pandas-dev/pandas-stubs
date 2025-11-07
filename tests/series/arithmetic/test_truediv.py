@@ -175,7 +175,7 @@ def test_truediv_numpy_array(left_i: pd.Series) -> None:
         pd.Series,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(s / left_i, Any)
+        assert_type(s / left_i, Any)  # TODO: numpy/numpy#30173 numpy should reject this
         assert_type(d / left_i, Any)  # pyright: ignore[reportAssertTypeFailure]
 
     check(assert_type(left_i.truediv(b), pd.Series), pd.Series)
