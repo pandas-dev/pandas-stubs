@@ -249,7 +249,7 @@ ScalarArrayIndexSeriesTimedelta: TypeAlias = (
     ScalarArrayIndexTimedelta | Series[Timedelta]
 )
 
-NumListLike: TypeAlias = (  # deprecated, do not use
+NumListLike: TypeAlias = (  # TODO: pandas-dev/pandas-stubs#1474 deprecated, do not use
     ExtensionArray
     | np_ndarray_bool
     | np_ndarray_anyint
