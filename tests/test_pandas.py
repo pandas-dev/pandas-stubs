@@ -33,6 +33,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     np_1darray,
+    np_1darray_float,
     np_2darray,
     np_ndarray_bool,
     pytest_warns_bounded,
@@ -1030,14 +1031,14 @@ def test_cut() -> None:
         [1, 2, 3, 4, 5, 6, 7, 8], 4, labels=["1", "2", "3", "4"], retbins=True
     )
     check(assert_type(d0, pd.Categorical), pd.Categorical)
-    check(assert_type(d1, np_1darray[np.double]), np_1darray[np.double])
+    check(assert_type(d1, np_1darray_float), np_1darray[Any], np.floating)
     check(
         assert_type(e0, np_1darray[np.intp]),
         np_1darray[np.intp],
     )
-    check(assert_type(e1, np_1darray[np.double]), np_1darray[np.double])
+    check(assert_type(e1, np_1darray_float), np_1darray[Any], np.floating)
     check(assert_type(f0, pd.Categorical), pd.Categorical)
-    check(assert_type(f1, np_1darray[np.double]), np_1darray[np.double])
+    check(assert_type(f1, np_1darray_float), np_1darray[Any], np.floating)
 
     g = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), 4, precision=1, duplicates="drop")
     h = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), 4, labels=False, duplicates="raise")
@@ -1072,11 +1073,11 @@ def test_cut() -> None:
         retbins=True,
     )
     check(assert_type(j0, pd.Series), pd.Series)
-    check(assert_type(j1, np_1darray[np.double]), np_1darray[np.double])
+    check(assert_type(j1, np_1darray_float), np_1darray[Any], np.floating)
     check(assert_type(k0, pd.Series), pd.Series)
-    check(assert_type(k1, np_1darray[np.double]), np_1darray[np.double])
+    check(assert_type(k1, np_1darray_float), np_1darray[Any], np.floating)
     check(assert_type(l0, pd.Series), pd.Series)
-    check(assert_type(l1, np_1darray[np.double]), np_1darray[np.double])
+    check(assert_type(l1, np_1darray_float), np_1darray[Any], np.floating)
     check(assert_type(m0, pd.Series), pd.Series)
     check(assert_type(m1, pd.IntervalIndex), pd.IntervalIndex)
 
@@ -1149,10 +1150,10 @@ def test_qcut() -> None:
     check(assert_type(c0, pd.Categorical), pd.Categorical)
     check(assert_type(d0, pd.Series), pd.Series)
 
-    check(assert_type(a1, np_1darray[np.double]), np_1darray[np.double])
-    check(assert_type(b1, np_1darray[np.double]), np_1darray[np.double])
-    check(assert_type(c1, np_1darray[np.double]), np_1darray[np.double])
-    check(assert_type(d1, np_1darray[np.double]), np_1darray[np.double])
+    check(assert_type(a1, np_1darray_float), np_1darray[Any], np.floating)
+    check(assert_type(b1, np_1darray_float), np_1darray[Any], np.floating)
+    check(assert_type(c1, np_1darray_float), np_1darray[Any], np.floating)
+    check(assert_type(d1, np_1darray_float), np_1darray[Any], np.floating)
 
     e0, e1 = pd.qcut(val_list, [0.25, 0.5, 0.75], retbins=True)
     f0, f1 = pd.qcut(val_arr, np.array([0.25, 0.5, 0.75]), retbins=True)
@@ -1170,16 +1171,19 @@ def test_qcut() -> None:
     check(assert_type(h0, pd.Series), pd.Series)
     check(
         assert_type(i0, np_1darray[np.intp | np.double]),
-        np_1darray[np.double],  # because of nans
+        np_1darray[Any],  # because of nans
+        np.floating,
     )
-    check(assert_type(j0, np_1darray[np.intp | np.double]), np_1darray[np.double])
+    check(
+        assert_type(j0, np_1darray[np.intp | np.double]), np_1darray[Any], np.floating
+    )
 
-    check(assert_type(e1, np_1darray[np.double]), np_1darray[np.double])
-    check(assert_type(f1, np_1darray[np.double]), np_1darray[np.double])
-    check(assert_type(g1, np_1darray[np.double]), np_1darray[np.double])
-    check(assert_type(h1, np_1darray[np.double]), np_1darray[np.double])
-    check(assert_type(i1, np_1darray[np.double]), np_1darray[np.double])
-    check(assert_type(j1, np_1darray[np.double]), np_1darray[np.double])
+    check(assert_type(e1, np_1darray_float), np_1darray[Any], np.floating)
+    check(assert_type(f1, np_1darray_float), np_1darray[Any], np.floating)
+    check(assert_type(g1, np_1darray_float), np_1darray[Any], np.floating)
+    check(assert_type(h1, np_1darray_float), np_1darray[Any], np.floating)
+    check(assert_type(i1, np_1darray_float), np_1darray[Any], np.floating)
+    check(assert_type(j1, np_1darray_float), np_1darray[Any], np.floating)
 
 
 @pytest.mark.xfail(

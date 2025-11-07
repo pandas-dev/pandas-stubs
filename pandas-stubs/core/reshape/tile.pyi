@@ -6,6 +6,7 @@ from typing import (
 )
 
 import numpy as np
+from numpy import typing as npt
 from pandas import (
     Categorical,
     CategoricalDtype,
@@ -21,9 +22,9 @@ from pandas._typing import (
     IntervalT,
     Label,
     np_1darray,
+    np_1darray_float,
     np_ndarray_anyint,
     np_ndarray_float,
-    npt,
 )
 
 @overload
@@ -38,7 +39,7 @@ def cut(
     include_lowest: bool = ...,
     duplicates: Literal["raise", "drop"] = ...,
     ordered: bool = ...,
-) -> tuple[np_1darray[np.intp], np_1darray[np.double]]: ...
+) -> tuple[np_1darray[np.intp], np_1darray_float]: ...
 @overload
 def cut(
     x: Index | npt.NDArray[Any] | Sequence[int] | Sequence[float],
@@ -96,7 +97,7 @@ def cut(
     include_lowest: bool = ...,
     duplicates: Literal["raise", "drop"] = ...,
     ordered: bool = ...,
-) -> tuple[Series, np_1darray[np.double]]: ...
+) -> tuple[Series, np_1darray_float]: ...
 @overload
 def cut(
     x: Series,
@@ -122,7 +123,7 @@ def cut(
     include_lowest: bool = ...,
     duplicates: Literal["raise", "drop"] = ...,
     ordered: bool = ...,
-) -> tuple[Categorical, np_1darray[np.double]]: ...
+) -> tuple[Categorical, np_1darray_float]: ...
 @overload
 def cut(
     x: Index | npt.NDArray[Any] | Sequence[int] | Sequence[float],
@@ -258,7 +259,7 @@ def qcut(
     precision: int = 3,
     duplicates: Literal["raise", "drop"] = "raise",
     # double when there are nan's
-) -> tuple[np_1darray[np.intp | np.double], np_1darray[np.double]]: ...
+) -> tuple[np_1darray[np.intp | np.double], np_1darray_float]: ...
 @overload
 def qcut(
     x: Series[int] | Series[float],
@@ -268,7 +269,7 @@ def qcut(
     retbins: Literal[True],
     precision: int = 3,
     duplicates: Literal["raise", "drop"] = "raise",
-) -> tuple[Series, np_1darray[np.double]]: ...
+) -> tuple[Series, np_1darray_float]: ...
 @overload
 def qcut(
     x: (
@@ -284,4 +285,4 @@ def qcut(
     retbins: Literal[True],
     precision: int = 3,
     duplicates: Literal["raise", "drop"] = "raise",
-) -> tuple[Categorical, np_1darray[np.double]]: ...
+) -> tuple[Categorical, np_1darray_float]: ...

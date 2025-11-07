@@ -12,7 +12,6 @@ from typing import (
 )
 
 import numpy as np
-from numpy import typing as npt
 from pandas.core.frame import DataFrame
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.groupby.groupby import BaseGroupBy
@@ -29,6 +28,7 @@ from pandas._typing import (
     Scalar,
     TimeGrouperOrigin,
     TimestampConvention,
+    np_ndarray_float,
 )
 
 _FrameGroupByFunc: TypeAlias = (
@@ -165,7 +165,7 @@ class Resampler(BaseGroupBy[NDFrameT]):
     @final
     def quantile(
         self,
-        q: float | list[float] | npt.NDArray[np.double] | Series[float] = 0.5,
+        q: float | list[float] | np_ndarray_float | Series[float] = 0.5,
         **kwargs: Any,
     ) -> NDFrameT: ...
 

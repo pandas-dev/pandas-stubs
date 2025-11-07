@@ -45,6 +45,7 @@ if TYPE_CHECKING:
         UIntDtypeArg as UIntDtypeArg,
         VoidDtypeArg as VoidDtypeArg,
         np_1darray as np_1darray,
+        np_1darray_float as np_1darray_float,
         np_1darray_int64 as np_1darray_int64,
         np_2darray as np_2darray,
         np_ndarray as np_ndarray,
@@ -57,6 +58,7 @@ else:
     # Separately define here so pytest works
     np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[_G]]
     np_1darray_int64: TypeAlias = np_1darray[np.int64]
+    np_1darray_float: TypeAlias = np_1darray[np.floating]
     np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[_G]]
     np_ndarray: TypeAlias = np.ndarray[_S, np.dtype[_G]]
     np_ndarray_bool: TypeAlias = npt.NDArray[np.bool_]
