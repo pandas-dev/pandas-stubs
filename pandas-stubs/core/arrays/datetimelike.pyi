@@ -25,7 +25,7 @@ from pandas._typing import (
     TimeNonexistent,
     TimeUnit,
     np_1darray,
-    np_ndarray_int64,
+    np_1darray_int64,
 )
 
 DTScalarOrNaT: TypeAlias = DatetimeLikeScalar | NaTType
@@ -65,7 +65,7 @@ class DatetimeLikeArrayMixin(ExtensionOpsMixin, ExtensionArray):
     def ravel(self, *args: Any, **kwargs: Any): ...
     def __iter__(self): ...
     @property
-    def asi8(self) -> np_ndarray_int64: ...
+    def asi8(self) -> np_1darray_int64: ...
     @property
     def nbytes(self): ...
     def __array__(

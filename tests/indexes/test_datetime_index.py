@@ -11,6 +11,7 @@ from typing_extensions import (
 from tests import (
     check,
     np_1darray,
+    np_1darray_int64,
 )
 
 
@@ -130,3 +131,8 @@ def test_datetimeindex_snap() -> None:
         ),
         pd.DatetimeIndex,
     )
+
+
+def test_datetimeindex_properties() -> None:
+    dti = pd.date_range("2023-01-01", "2023-02-01")
+    check(assert_type(dti.asi8, np_1darray_int64), np_1darray_int64, np.integer)

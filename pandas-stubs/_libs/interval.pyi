@@ -38,6 +38,7 @@ class _LengthDescriptor:
     def __get__(
         self, instance: Interval[_OrderableTimesT], owner: Any
     ) -> Timedelta: ...
+    @overload
     def __get__(self, instance: IntervalMixin, owner: Any) -> np_ndarray: ...
 
 @type_check_only
@@ -48,6 +49,7 @@ class _MidDescriptor:
     def __get__(
         self, instance: Interval[_OrderableTimesT], owner: Any
     ) -> _OrderableTimesT: ...
+    @overload
     def __get__(self, instance: IntervalMixin, owner: Any) -> np_ndarray: ...
 
 class IntervalMixin:
