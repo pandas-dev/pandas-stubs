@@ -220,6 +220,7 @@ from pandas._typing import (
     _T_co,
     np_1darray,
     np_1darray_int64,
+    np_1darray_intp,
     np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -981,7 +982,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         value: ListLike,
         side: Literal["left", "right"] = ...,
         sorter: ListLike | None = None,
-    ) -> np_1darray[np.intp]: ...
+    ) -> np_1darray_intp: ...
     @overload
     def searchsorted(
         self,

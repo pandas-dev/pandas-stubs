@@ -23,6 +23,7 @@ from pandas._typing import (
     Label,
     np_1darray,
     np_1darray_float,
+    np_1darray_intp,
     np_ndarray_anyint,
     np_ndarray_float,
 )
@@ -39,7 +40,7 @@ def cut(
     include_lowest: bool = ...,
     duplicates: Literal["raise", "drop"] = ...,
     ordered: bool = ...,
-) -> tuple[np_1darray[np.intp], np_1darray_float]: ...
+) -> tuple[np_1darray_intp, np_1darray_float]: ...
 @overload
 def cut(
     x: Index | npt.NDArray[Any] | Sequence[int] | Sequence[float],
@@ -52,7 +53,7 @@ def cut(
     include_lowest: bool = ...,
     duplicates: Literal["raise", "drop"] = ...,
     ordered: bool = ...,
-) -> tuple[np_1darray[np.intp], IntervalIndex[IntervalT]]: ...
+) -> tuple[np_1darray_intp, IntervalIndex[IntervalT]]: ...
 @overload
 def cut(  # pyright: ignore[reportOverlappingOverload]
     x: Series[Timestamp],
@@ -157,7 +158,7 @@ def cut(
     include_lowest: bool = ...,
     duplicates: Literal["raise", "drop"] = ...,
     ordered: bool = ...,
-) -> np_1darray[np.intp]: ...
+) -> np_1darray_intp: ...
 @overload
 def cut(
     x: Series[Timestamp],
@@ -225,7 +226,7 @@ def qcut(
     retbins: Literal[False] = False,
     precision: int = 3,
     duplicates: Literal["raise", "drop"] = "raise",
-) -> np_1darray[np.intp]: ...
+) -> np_1darray_intp: ...
 @overload
 def qcut(
     x: Index | npt.NDArray[Any] | Sequence[int] | Sequence[float],

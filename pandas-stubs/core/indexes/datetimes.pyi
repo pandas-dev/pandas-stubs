@@ -34,7 +34,7 @@ from pandas._typing import (
     IntervalClosedType,
     TimeUnit,
     TimeZones,
-    np_1darray,
+    np_1darray_intp,
     np_ndarray,
     np_ndarray_dt,
     np_ndarray_td,
@@ -91,14 +91,14 @@ class DatetimeIndex(
     def inferred_type(self) -> str: ...
     def indexer_at_time(
         self, time: str | time, asof: bool = False
-    ) -> np_1darray[np.intp]: ...
+    ) -> np_1darray_intp: ...
     def indexer_between_time(
         self,
         start_time: time | str,
         end_time: time | str,
         include_start: bool = True,
         include_end: bool = True,
-    ) -> np_1darray[np.intp]: ...
+    ) -> np_1darray_intp: ...
     def to_julian_date(self) -> Index[float]: ...
     def isocalendar(self) -> DataFrame: ...
     @property

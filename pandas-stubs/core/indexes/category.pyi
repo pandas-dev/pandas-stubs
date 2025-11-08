@@ -3,7 +3,6 @@ from collections.abc import (
     Iterable,
 )
 
-import numpy as np
 from pandas.core.accessor import PandasDelegate
 from pandas.core.arrays.categorical import Categorical
 from pandas.core.indexes.base import Index
@@ -14,11 +13,11 @@ from pandas._typing import (
     S1,
     Dtype,
     ListLike,
-    np_1darray,
+    np_1darray_intp,
 )
 
 class CategoricalIndex(ExtensionIndex[S1], PandasDelegate):
-    codes: np_1darray[np.intp] = ...
+    codes: np_1darray_intp = ...
     categories: Index[S1] = ...
     @property
     def array(self) -> Categorical: ...  # type: ignore[override] # pyrefly: ignore[bad-override]

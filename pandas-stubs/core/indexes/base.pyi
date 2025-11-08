@@ -107,6 +107,7 @@ from pandas._typing import (
     TimedeltaDtypeArg,
     TimestampDtypeArg,
     np_1darray,
+    np_1darray_intp,
     np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -453,7 +454,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         method: ReindexMethod | None = None,
         limit: int | None = None,
         tolerance: Scalar | AnyArrayLike | Sequence[Scalar] | None = None,
-    ) -> np_1darray[np.intp]: ...
+    ) -> np_1darray_intp: ...
     def reindex(
         self,
         target: Iterable[Any],
@@ -461,7 +462,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         level: int | None = None,
         limit: int | None = None,
         tolerance: Scalar | AnyArrayLike | Sequence[Scalar] | None = None,
-    ) -> tuple[Index, np_1darray[np.intp] | None]: ...
+    ) -> tuple[Index, np_1darray_intp | None]: ...
     @overload
     def join(
         self,
@@ -471,7 +472,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         level: Level | None = None,
         return_indexers: Literal[True],
         sort: bool = False,
-    ) -> tuple[Index, np_1darray[np.intp] | None, np_1darray[np.intp] | None]: ...
+    ) -> tuple[Index, np_1darray_intp | None, np_1darray_intp | None]: ...
     @overload
     def join(
         self,
@@ -530,7 +531,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ): ...
     @final
     def sort(self, *args: Any, **kwargs: Any) -> None: ...
-    def argsort(self, *args: Any, **kwargs: Any) -> np_1darray[np.intp]: ...
+    def argsort(self, *args: Any, **kwargs: Any) -> np_1darray_intp: ...
     def get_indexer_non_unique(self, target): ...
     @final
     def get_indexer_for(self, target, **kwargs: Any): ...

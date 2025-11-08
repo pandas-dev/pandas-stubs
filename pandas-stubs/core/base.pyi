@@ -44,6 +44,7 @@ from pandas._typing import (
     Scalar,
     SupportsDType,
     np_1darray,
+    np_1darray_intp,
     np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_complex,
@@ -163,7 +164,7 @@ class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
         value: ListLike,
         side: Literal["left", "right"] = ...,
         sorter: ListLike | None = None,
-    ) -> np_1darray[np.intp]: ...
+    ) -> np_1darray_intp: ...
     @overload
     def searchsorted(
         self,

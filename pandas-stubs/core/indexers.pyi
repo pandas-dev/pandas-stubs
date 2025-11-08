@@ -5,6 +5,8 @@ from numpy import typing as npt
 from pandas._typing import (
     AnyArrayLike,
     np_1darray_bool,
+    np_1darray_intp,
+    np_ndarray_intp,
 )
 
 def check_array_indexer(
@@ -14,7 +16,7 @@ def check_array_indexer(
 class BaseIndexer:
     def __init__(
         self,
-        index_array: npt.NDArray[Any] | None = ...,
+        index_array: np_ndarray_intp | None = ...,
         window_size: int = ...,
         **kwargs: Any,
     ) -> None: ...
@@ -24,12 +26,12 @@ class BaseIndexer:
         min_periods: int | None = ...,
         center: bool | None = ...,
         closed: str | None = ...,
-    ) -> tuple[npt.NDArray[Any], npt.NDArray[Any]]: ...
+    ) -> tuple[np_1darray_intp, np_1darray_intp]: ...
 
 class VariableOffsetWindowIndexer(BaseIndexer):
     def __init__(
         self,
-        index_array: npt.NDArray[Any] | None = ...,
+        index_array: np_ndarray_intp | None = ...,
         window_size: int = ...,
         index=...,
         offset=...,

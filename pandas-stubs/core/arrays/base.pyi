@@ -22,6 +22,7 @@ from pandas._typing import (
     SequenceIndexer,
     TakeIndexer,
     np_1darray,
+    np_1darray_intp,
     npt,
 )
 
@@ -75,7 +76,7 @@ class ExtensionArray:
         value: ListLike,
         side: Literal["left", "right"] = ...,
         sorter: ListLike | None = ...,
-    ) -> np_1darray[np.intp]: ...
+    ) -> np_1darray_intp: ...
     @overload
     def searchsorted(
         self,

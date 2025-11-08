@@ -837,6 +837,7 @@ StrLike: TypeAlias = str | np.str_
 
 ScalarT = TypeVar("ScalarT", bound=Scalar)
 # Refine the definitions below in 3.9 to use the specialized type.
+np_ndarray_intp: TypeAlias = npt.NDArray[np.intp]
 np_ndarray_int64: TypeAlias = npt.NDArray[np.int64]
 np_ndarray_int: TypeAlias = npt.NDArray[np.signedinteger]
 np_ndarray_anyint: TypeAlias = npt.NDArray[np.integer]
@@ -862,6 +863,7 @@ np_ndarray: TypeAlias = np.ndarray[ShapeT, np.dtype[GenericT]]
 # Numpy arrays with known shape (Do not use as argument types, only as return types)
 np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[GenericT]]
 np_1darray_bool: TypeAlias = np_1darray[np.bool]
+np_1darray_intp: TypeAlias = np_1darray[np.intp]
 np_1darray_int64: TypeAlias = np_1darray[np.int64]
 np_1darray_float: TypeAlias = np_1darray[np.floating]
 
