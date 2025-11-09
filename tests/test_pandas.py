@@ -9,7 +9,6 @@ from typing import (
 )
 
 import numpy as np
-from numpy import typing as npt
 import pandas as pd
 from pandas.api.extensions import ExtensionArray
 from pandas.api.typing import (
@@ -26,10 +25,7 @@ from typing_extensions import (
     assert_type,
 )
 
-from pandas._typing import (
-    Scalar,
-    np_1darray_intp,
-)
+from pandas._typing import Scalar
 
 from tests import (
     PD_LTE_23,
@@ -39,6 +35,7 @@ from tests import (
     np_1darray_dt,
     np_1darray_float,
     np_1darray_int64,
+    np_1darray_intp,
     np_1darray_td,
     np_2darray,
     np_ndarray,
@@ -728,17 +725,18 @@ def test_hashing() -> None:
     b = pd.Series(a)
     c = pd.DataFrame({"a": a, "b": a})
     d = pd.Index(b)
-    check(assert_type(pdutil.hash_pandas_object(b), pd.Series), pd.Series)
-    check(assert_type(pdutil.hash_pandas_object(c), pd.Series), pd.Series)
-    check(assert_type(pdutil.hash_pandas_object(d), pd.Series), pd.Series)
+    check(assert_type(pdutil.hash_pandas_object(b), "pd.Series[int]"), pd.Series, int)
+    check(assert_type(pdutil.hash_pandas_object(c), "pd.Series[int]"), pd.Series, int)
+    check(assert_type(pdutil.hash_pandas_object(d), "pd.Series[int]"), pd.Series, int)
     check(
         assert_type(
             pdutil.hash_pandas_object(
                 d, index=True, encoding="latin1", hash_key="apple", categorize=True
             ),
-            pd.Series,
+            "pd.Series[int]",
         ),
         pd.Series,
+        int,
     )
 
 
@@ -747,7 +745,7 @@ def test_eval() -> None:
     check(
         assert_type(
             pd.eval("double_age = df.age * 2", target=df),
-            npt.NDArray[Any] | Scalar | pd.DataFrame | pd.Series | None,
+            Scalar | np_ndarray | pd.DataFrame | pd.Series | None,
         ),
         pd.DataFrame,
     )

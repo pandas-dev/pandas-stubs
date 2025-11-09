@@ -56,6 +56,7 @@ from tests import (
     ensure_clean,
     np_1darray,
     np_2darray,
+    np_ndarray,
     pytest_warns_bounded,
 )
 
@@ -631,8 +632,7 @@ def test_types_eval() -> None:
     check(assert_type(df.eval("C = col1 % col2 == 0", inplace=True), None), type(None))
     check(
         assert_type(
-            df.eval("E = col1 > col2"),
-            Scalar | npt.NDArray[Any] | pd.DataFrame | pd.Series,
+            df.eval("E = col1 > col2"), Scalar | np_ndarray | pd.DataFrame | pd.Series
         ),
         pd.DataFrame,
     )

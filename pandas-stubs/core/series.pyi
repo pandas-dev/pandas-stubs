@@ -20,6 +20,7 @@ from datetime import (
     timedelta,
 )
 from pathlib import Path
+import sys
 from typing import (
     Any,
     ClassVar,
@@ -2372,10 +2373,17 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex | None = 0,
     ) -> Series[int]: ...
-    @overload
-    def __rfloordiv__(  # type: ignore[overload-overlap]
-        self: Series[Never], other: ScalarArrayIndexSeriesReal
-    ) -> Series: ...
+    if sys.version_info >= (3, 11):
+        @overload
+        def __rfloordiv__(  # type: ignore[overload-overlap]
+            self: Series[Never], other: ScalarArrayIndexSeriesReal
+        ) -> Series: ...
+    else:
+        @overload
+        def __rfloordiv__(
+            self: Series[Never], other: ScalarArrayIndexSeriesReal
+        ) -> Series: ...
+
     @overload
     def __rfloordiv__(self, other: np_ndarray_complex | np_ndarray_dt) -> Never: ...
     @overload
