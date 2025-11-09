@@ -19,7 +19,6 @@ from pandas.core.series import Series
 from pandas._typing import (
     IntervalT,
     Label,
-    np_1darray,
     np_1darray_float,
     np_1darray_intp,
     np_ndarray_anyint,
@@ -227,7 +226,7 @@ def qcut(
     precision: int = 3,
     duplicates: Literal["raise", "drop"] = "raise",
     # double when there are nan's
-) -> tuple[np_1darray[np.intp | np.double], np_1darray_float]: ...
+) -> tuple[np_1darray_intp | np_1darray_float, np_1darray_float]: ...
 @overload
 def qcut(
     x: Series[int] | Series[float],

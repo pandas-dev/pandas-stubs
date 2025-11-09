@@ -26,7 +26,10 @@ from typing_extensions import (
     assert_type,
 )
 
-from pandas._typing import Scalar
+from pandas._typing import (
+    Scalar,
+    np_1darray_intp,
+)
 
 from tests import (
     PD_LTE_23,
@@ -1168,17 +1171,11 @@ def test_qcut() -> None:
 
     check(assert_type(e0, pd.Categorical), pd.Categorical)
     check(assert_type(f0, pd.Categorical), pd.Categorical)
-    check(
-        assert_type(g0, np_1darray[np.intp | np.double]),
-        np_1darray[np.intp],
-    )
+    check(assert_type(g0, np_1darray_intp | np_1darray_float), np_1darray_intp)
     check(assert_type(h0, pd.Series), pd.Series)
-    check(
-        assert_type(i0, np_1darray[np.intp | np.double]),
-        np_1darray,  # because of nans
-        np.floating,
-    )
-    check(assert_type(j0, np_1darray[np.intp | np.double]), np_1darray, np.floating)
+    # because of nans
+    check(assert_type(i0, np_1darray_intp | np_1darray_float), np_1darray, np.floating)
+    check(assert_type(j0, np_1darray_intp | np_1darray_float), np_1darray, np.floating)
 
     check(assert_type(e1, np_1darray_float), np_1darray, np.floating)
     check(assert_type(f1, np_1darray_float), np_1darray, np.floating)
