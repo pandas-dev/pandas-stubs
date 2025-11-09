@@ -15,6 +15,7 @@ from pandas.api.typing import (
     NaTType,
     NAType,
 )
+from pandas.core.arrays.integer import IntegerArray
 from pandas.core.groupby.grouper import Grouper
 import pandas.util as pdutil
 
@@ -561,58 +562,43 @@ def test_read_xml() -> None:
 
 def test_unique() -> None:
     # Taken from the docs
+    ints = [2, 1, 3, 3]
     check(
-        assert_type(pd.unique(pd.Series([2, 1, 3, 3])), np_1darray | ExtensionArray),
-        np_1darray[np.int64],
+        assert_type(pd.unique(pd.Series(ints)), np_1darray | ExtensionArray),
+        np_1darray_int64,
+    )
+    check(
+        assert_type(
+            pd.unique(pd.Series(ints, dtype="Int64")), np_1darray | ExtensionArray
+        ),
+        IntegerArray,
+        int,
     )
 
     check(
         assert_type(pd.unique(pd.Series([2] + [1] * 5)), np_1darray | ExtensionArray),
-        np_1darray[np.int64],
+        np_1darray_int64,
     )
 
+    unzoned_timestamps = [pd.Timestamp("20160101"), pd.Timestamp("20160101")]
     check(
         assert_type(
-            pd.unique(pd.Series([pd.Timestamp("20160101"), pd.Timestamp("20160101")])),
-            np_1darray | ExtensionArray,
+            pd.unique(pd.Series(unzoned_timestamps)), np_1darray | ExtensionArray
         ),
         np_1darray,
         np.datetime64,
     )
 
+    zoned_timestamps = [ts.tz_localize("US/Eastern") for ts in unzoned_timestamps]
     check(
         assert_type(
-            pd.unique(
-                pd.Series(
-                    [
-                        pd.Timestamp("20160101", tz="US/Eastern"),
-                        pd.Timestamp("20160101", tz="US/Eastern"),
-                    ]
-                )
-            ),
-            np_1darray | ExtensionArray,
+            pd.unique(pd.Series(zoned_timestamps)), np_1darray | ExtensionArray
         ),
         pd.arrays.DatetimeArray,
-    )
-    check(
-        assert_type(
-            pd.unique(
-                pd.Index(
-                    [
-                        pd.Timestamp("20160101", tz="US/Eastern"),
-                        pd.Timestamp("20160101", tz="US/Eastern"),
-                    ]
-                )
-            ),
-            np_1darray_dt,
-        ),
-        pd.DatetimeIndex,
+        pd.Timestamp,
     )
 
-    check(
-        assert_type(pd.unique(np.array(list("baabc"))), np_1darray),
-        np_1darray,
-    )
+    check(assert_type(pd.unique(np.array(list("baabc"))), np_1darray), np_1darray)
 
     check(
         assert_type(
@@ -638,32 +624,6 @@ def test_unique() -> None:
             np_1darray | ExtensionArray,
         ),
         pd.Categorical,
-    )
-    check(
-        assert_type(pd.unique(pd.Index(["a", "b", "c", "a"])), np_1darray),
-        np_1darray if PD_LTE_23 else pd.Index,
-    )
-    check(
-        assert_type(pd.unique(pd.RangeIndex(0, 10)), np_1darray_int64),
-        np_1darray_int64 if PD_LTE_23 else pd.Index,
-    )
-    check(
-        assert_type(pd.unique(pd.Categorical(["a", "b", "c", "a"])), pd.Categorical),
-        pd.Categorical,
-    )
-    check(
-        assert_type(
-            pd.unique(pd.period_range("2001Q1", periods=10, freq="D")),
-            pd.PeriodIndex,
-        ),
-        pd.PeriodIndex,
-    )
-    check(
-        assert_type(
-            pd.unique(pd.timedelta_range(start="1 day", periods=4)),
-            np_1darray_td,
-        ),
-        np_1darray if PD_LTE_23 else pd.Index,
     )
 
 
@@ -973,8 +933,10 @@ def test_factorize() -> None:
 def test_index_unqiue() -> None:
     ci = pd.CategoricalIndex(["a", "b", "a", "c"])
     dti = pd.DatetimeIndex([pd.Timestamp(2000, 1, 1)])
+    dti_zoned = pd.Index([dt.tz_localize("Europe/Prague") for dt in dti])
 
     i = pd.Index(["a", "b", "c", "a"])
+    ii_pd = pd.Index([1, 2, 3, 3], dtype="Int64")
 
     pi = pd.period_range("2000Q1", periods=2, freq="Q")
     ri = pd.RangeIndex(0, 10)
@@ -985,13 +947,18 @@ def test_index_unqiue() -> None:
 
     check(assert_type(pd.unique(ci), pd.CategoricalIndex), pd.CategoricalIndex)
     check(
-        assert_type(pd.unique(dti), np_1darray_dt),
+        assert_type(pd.unique(dti), np_1darray_dt | pd.DatetimeIndex),
         np_1darray if PD_LTE_23 else pd.DatetimeIndex,
     )
     check(
-        assert_type(pd.unique(i), np_1darray),
+        assert_type(pd.unique(dti_zoned), np_1darray_dt | pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(pd.unique(i), np_1darray | pd.Index),
         np_1darray if PD_LTE_23 else pd.Index,
     )
+    check(assert_type(pd.unique(ii_pd), np_1darray | pd.Index), pd.Index)
     check(assert_type(pd.unique(pi), pd.PeriodIndex), pd.PeriodIndex)
     check(
         assert_type(pd.unique(ri), np_1darray_int64),

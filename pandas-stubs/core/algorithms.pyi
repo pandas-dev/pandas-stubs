@@ -33,29 +33,24 @@ from pandas._typing import (
 # These are type: ignored because the Index types overlap due to inheritance but indices
 # with extension types return the same type while standard type return ndarray
 @overload
-def unique(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-    values: CategoricalIndex,
-) -> CategoricalIndex: ...
+def unique(values: CategoricalIndex) -> CategoricalIndex: ...
 @overload
 def unique(values: IntervalIndex[IntervalT]) -> IntervalIndex[IntervalT]: ...
 @overload
 def unique(values: PeriodIndex) -> PeriodIndex: ...
 @overload
-def unique(
-    values: DatetimeIndex,
-) -> np_1darray_dt: ...  # switch to DatetimeIndex after Pandas 3.0
+# switch to DatetimeIndex after Pandas 3.0
+def unique(values: DatetimeIndex) -> np_1darray_dt | DatetimeIndex: ...
 @overload
-def unique(
-    values: TimedeltaIndex,
-) -> np_1darray_td: ...  # switch to DatetimeIndex after Pandas 3.0
+# switch to DatetimeIndex after Pandas 3.0
+def unique(values: TimedeltaIndex) -> np_1darray_td: ...
 @overload
-def unique(
-    values: RangeIndex,
-) -> np_1darray_int64: ...  # switch to Index[int] after Pandas 3.0
+# switch to Index[int] after Pandas 3.0
+def unique(values: RangeIndex) -> np_1darray_int64: ...
 @overload
 def unique(values: MultiIndex) -> np_ndarray: ...
 @overload
-def unique(values: Index) -> np_1darray: ...  # switch to Index after Pandas 3.0
+def unique(values: Index) -> np_1darray | Index: ...  # switch to Index after Pandas 3.0
 @overload
 def unique(values: Categorical) -> Categorical: ...
 
