@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import (
+    Callable,
     Hashable,
     Iterable,
     Iterator,
@@ -60,6 +61,7 @@ from tests import (
     check,
     ensure_clean,
     np_1darray,
+    np_1darray_bool,
     np_ndarray_num,
     pytest_warns_bounded,
 )
@@ -3623,13 +3625,20 @@ def test_case_when() -> None:
     c = pd.Series([6, 7, 8, 9], name="c")
     a = pd.Series([0, 0, 1, 2])
     b = pd.Series([0, 3, 4, 5])
-    r = c.case_when(
-        caselist=[
-            (a.gt(0), a),
-            (b.gt(0), b),
-        ]
-    )
-    check(assert_type(r, pd.Series), pd.Series)
+
+    c0 = [(a.gt(0), a), (b.gt(0), b)]
+    check(assert_type(c.case_when(c0), pd.Series), pd.Series)
+
+    def foo_factory(
+        thresh: int,
+    ) -> Callable[[pd.Series], pd.Series[bool] | np_1darray_bool]:
+        def foo(s: pd.Series) -> pd.Series[bool] | np_1darray_bool:
+            return s >= thresh
+
+        return foo
+
+    c1 = [(foo_factory(2), a), (foo_factory(0), b)]
+    check(assert_type(c.case_when(c1), pd.Series), pd.Series)
 
 
 def test_series_unique_timestamp() -> None:

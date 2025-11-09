@@ -220,6 +220,7 @@ from pandas._typing import (
     WriteBuffer,
     _T_co,
     np_1darray,
+    np_1darray_bool,
     np_1darray_dt,
     np_1darray_int64,
     np_1darray_intp,
@@ -1678,11 +1679,12 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[S1]: ...
     def case_when(
         self,
-        caselist: list[
+        caselist: Sequence[
             tuple[
                 Sequence[bool]
+                | np_1darray_bool
                 | Series[bool]
-                | Callable[[Series], Series | np_ndarray | Sequence[bool]],
+                | Callable[[Series], Sequence[bool] | np_1darray_bool | Series[bool]],
                 ListLikeU | Scalar | Callable[[Series], Series | np_ndarray],
             ],
         ],
