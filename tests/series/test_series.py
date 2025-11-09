@@ -26,7 +26,6 @@ from typing import (
 )
 
 import numpy as np
-from numpy import typing as npt
 import pandas as pd
 from pandas.api.extensions import (
     ExtensionArray,
@@ -61,6 +60,7 @@ from tests import (
     check,
     ensure_clean,
     np_1darray,
+    np_ndarray_num,
     pytest_warns_bounded,
 )
 from tests.extension.decimal.array import DecimalDtype
@@ -1582,8 +1582,8 @@ def test_types_dot() -> None:
     check(assert_type(s1 @ s2, Scalar), np.int64)
     check(assert_type(s1.dot(df1), "pd.Series[int]"), pd.Series, np.int64)
     check(assert_type(s1 @ df1, pd.Series), pd.Series)
-    check(assert_type(s1.dot(n1), npt.NDArray[Any]), npt.NDArray[Any])
-    check(assert_type(s1 @ n1, npt.NDArray[Any]), npt.NDArray[Any])
+    check(assert_type(s1.dot(n1), np_ndarray_num), np.ndarray)
+    check(assert_type(s1 @ n1, np_ndarray_num), np.ndarray)
 
 
 def test_series_loc_setitem() -> None:

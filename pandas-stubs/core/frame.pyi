@@ -167,6 +167,7 @@ from pandas._typing import (
     np_ndarray,
     np_ndarray_bool,
     np_ndarray_float,
+    np_ndarray_num,
 )
 
 from pandas.io.formats.style import Styler
@@ -428,8 +429,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def __matmul__(self, other: Series) -> Series: ...
     @overload
-    def __matmul__(self, other: np_ndarray) -> Self: ...
-    def __rmatmul__(self, other): ...
+    def __matmul__(self, other: np_ndarray_num) -> Self: ...
+    def __rmatmul__(self, other: np_ndarray_num) -> Self: ...
     @overload
     @classmethod
     def from_dict(

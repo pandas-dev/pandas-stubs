@@ -837,6 +837,7 @@ StrLike: TypeAlias = str | np.str_
 
 ScalarT = TypeVar("ScalarT", bound=Scalar)
 # Refine the definitions below in 3.9 to use the specialized type.
+np_num: TypeAlias = np.bool | np.integer | np.floating | np.complexfloating
 np_ndarray_intp: TypeAlias = npt.NDArray[np.intp]
 np_ndarray_int64: TypeAlias = npt.NDArray[np.int64]
 np_ndarray_int: TypeAlias = npt.NDArray[np.signedinteger]
@@ -844,9 +845,6 @@ np_ndarray_anyint: TypeAlias = npt.NDArray[np.integer]
 np_ndarray_float: TypeAlias = npt.NDArray[np.floating]
 np_ndarray_complex: TypeAlias = npt.NDArray[np.complexfloating]
 np_ndarray_bool: TypeAlias = npt.NDArray[np.bool_]
-np_ndarray_num: TypeAlias = npt.NDArray[
-    np.bool | np.integer | np.floating | np.complexfloating
-]
 np_ndarray_str: TypeAlias = npt.NDArray[np.str_]
 np_ndarray_dt: TypeAlias = npt.NDArray[np.datetime64]
 np_ndarray_td: TypeAlias = npt.NDArray[np.timedelta64]
@@ -857,9 +855,12 @@ GenericT_co = TypeVar("GenericT_co", bound=np.generic, default=Any, covariant=Tr
 GenericT_contra = TypeVar(
     "GenericT_contra", bound=np.generic, default=Any, contravariant=True
 )
+NpNumT = TypeVar("NpNumT", bound=np_num, default=np_num)
 ShapeT = TypeVar("ShapeT", bound=tuple[int, ...], default=tuple[Any, ...])
 # Numpy ndarray with more ergonomic typevar
 np_ndarray: TypeAlias = np.ndarray[ShapeT, np.dtype[GenericT]]
+np_ndarray_num: TypeAlias = np_ndarray[ShapeT, NpNumT]
+
 # Numpy arrays with known shape (Do not use as argument types, only as return types)
 np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[GenericT]]
 np_1darray_bool: TypeAlias = np_1darray[np.bool]
