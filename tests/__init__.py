@@ -46,9 +46,11 @@ if TYPE_CHECKING:
         VoidDtypeArg as VoidDtypeArg,
         np_1darray as np_1darray,
         np_1darray_bool as np_1darray_bool,
+        np_1darray_dt as np_1darray_dt,
         np_1darray_float as np_1darray_float,
         np_1darray_int64 as np_1darray_int64,
         np_1darray_intp as np_1darray_intp,
+        np_1darray_td as np_1darray_td,
         np_2darray as np_2darray,
         np_ndarray as np_ndarray,
         np_ndarray_bool as np_ndarray_bool,
@@ -67,6 +69,8 @@ else:
     np_1darray_intp: TypeAlias = np_1darray[np.intp]
     np_1darray_int64: TypeAlias = np_1darray[np.int64]
     np_1darray_float: TypeAlias = np_1darray[np.floating]
+    np_1darray_dt: TypeAlias = np_1darray[np.datetime64]
+    np_1darray_td: TypeAlias = np_1darray[np.timedelta64]
     np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[_G]]
     np_ndarray: TypeAlias = np.ndarray[_S, np.dtype[_G]]
     np_ndarray_bool: TypeAlias = npt.NDArray[np.bool_]

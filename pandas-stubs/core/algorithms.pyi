@@ -4,7 +4,6 @@ from typing import (
     overload,
 )
 
-import numpy as np
 from numpy import typing as npt
 from pandas.api.extensions import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
@@ -12,7 +11,10 @@ from pandas.core.indexes.base import Index
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
 from pandas.core.indexes.interval import IntervalIndex
+from pandas.core.indexes.multi import MultiIndex
 from pandas.core.indexes.period import PeriodIndex
+from pandas.core.indexes.range import RangeIndex
+from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
 
 from pandas._typing import (
@@ -22,22 +24,38 @@ from pandas._typing import (
     IntervalT,
     TakeIndexer,
     np_1darray,
+    np_1darray_dt,
     np_1darray_int64,
+    np_1darray_td,
     np_ndarray,
 )
 
 # These are type: ignored because the Index types overlap due to inheritance but indices
 # with extension types return the same type while standard type return ndarray
 @overload
-def unique(values: CategoricalIndex) -> CategoricalIndex: ...
+def unique(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    values: CategoricalIndex,
+) -> CategoricalIndex: ...
 @overload
 def unique(values: IntervalIndex[IntervalT]) -> IntervalIndex[IntervalT]: ...
 @overload
 def unique(values: PeriodIndex) -> PeriodIndex: ...
 @overload
-def unique(values: DatetimeIndex) -> np_1darray[np.datetime64] | DatetimeIndex: ...
+def unique(
+    values: DatetimeIndex,
+) -> np_1darray_dt: ...  # switch to DatetimeIndex after Pandas 3.0
 @overload
-def unique(values: Index) -> np_1darray | Index: ...
+def unique(
+    values: TimedeltaIndex,
+) -> np_1darray_td: ...  # switch to DatetimeIndex after Pandas 3.0
+@overload
+def unique(
+    values: RangeIndex,
+) -> np_1darray_int64: ...  # switch to Index[int] after Pandas 3.0
+@overload
+def unique(values: MultiIndex) -> np_ndarray: ...
+@overload
+def unique(values: Index) -> np_1darray: ...  # switch to Index after Pandas 3.0
 @overload
 def unique(values: Categorical) -> Categorical: ...
 

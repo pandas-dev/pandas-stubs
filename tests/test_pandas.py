@@ -33,8 +33,12 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     np_1darray,
+    np_1darray_dt,
     np_1darray_float,
+    np_1darray_int64,
+    np_1darray_td,
     np_2darray,
+    np_ndarray,
     np_ndarray_bool,
     pytest_warns_bounded,
 )
@@ -611,7 +615,7 @@ def test_unique() -> None:
                     ]
                 )
             ),
-            np_1darray[np.datetime64] | pd.DatetimeIndex,
+            np_1darray_dt,
         ),
         pd.DatetimeIndex,
     )
@@ -647,12 +651,12 @@ def test_unique() -> None:
         pd.Categorical,
     )
     check(
-        assert_type(pd.unique(pd.Index(["a", "b", "c", "a"])), np_1darray | pd.Index),
+        assert_type(pd.unique(pd.Index(["a", "b", "c", "a"])), np_1darray),
         np_1darray if PD_LTE_23 else pd.Index,
     )
     check(
-        assert_type(pd.unique(pd.RangeIndex(0, 10)), np_1darray | pd.Index),
-        np_1darray if PD_LTE_23 else pd.Index,
+        assert_type(pd.unique(pd.RangeIndex(0, 10)), np_1darray_int64),
+        np_1darray_int64 if PD_LTE_23 else pd.Index,
     )
     check(
         assert_type(pd.unique(pd.Categorical(["a", "b", "c", "a"])), pd.Categorical),
@@ -668,7 +672,7 @@ def test_unique() -> None:
     check(
         assert_type(
             pd.unique(pd.timedelta_range(start="1 day", periods=4)),
-            np_1darray | pd.Index,
+            np_1darray_td,
         ),
         np_1darray if PD_LTE_23 else pd.Index,
     )
@@ -989,26 +993,25 @@ def test_index_unqiue() -> None:
 
     check(assert_type(pd.unique(ci), pd.CategoricalIndex), pd.CategoricalIndex)
     check(
-        assert_type(pd.unique(dti), np_1darray[np.datetime64] | pd.DatetimeIndex),
+        assert_type(pd.unique(dti), np_1darray_dt),
         np_1darray if PD_LTE_23 else pd.DatetimeIndex,
-        np.datetime64,
     )
     check(
-        assert_type(pd.unique(i), np_1darray | pd.Index),
+        assert_type(pd.unique(i), np_1darray),
         np_1darray if PD_LTE_23 else pd.Index,
     )
     check(assert_type(pd.unique(pi), pd.PeriodIndex), pd.PeriodIndex)
     check(
-        assert_type(pd.unique(ri), np_1darray | pd.Index),
+        assert_type(pd.unique(ri), np_1darray_int64),
+        np_1darray_int64 if PD_LTE_23 else pd.Index,
+    )
+    check(
+        assert_type(pd.unique(tdi), np_1darray_td),
         np_1darray if PD_LTE_23 else pd.Index,
     )
     check(
-        assert_type(pd.unique(tdi), np_1darray | pd.Index),
-        np_1darray if PD_LTE_23 else pd.Index,
-    )
-    check(
-        assert_type(pd.unique(mi), np_1darray | pd.Index),
-        np_1darray if PD_LTE_23 else pd.Index,
+        assert_type(pd.unique(mi), np_ndarray),
+        np_ndarray if PD_LTE_23 else pd.MultiIndex,
     )
     check(
         assert_type(pd.unique(interval_i), "pd.IntervalIndex[pd.Interval[int]]"),
@@ -1036,10 +1039,7 @@ def test_cut() -> None:
     )
     check(assert_type(d0, pd.Categorical), pd.Categorical)
     check(assert_type(d1, np_1darray_float), np_1darray, np.floating)
-    check(
-        assert_type(e0, np_1darray[np.intp]),
-        np_1darray[np.intp],
-    )
+    check(assert_type(e0, np_1darray[np.intp]), np_1darray[np.intp])
     check(assert_type(e1, np_1darray_float), np_1darray, np.floating)
     check(assert_type(f0, pd.Categorical), pd.Categorical)
     check(assert_type(f1, np_1darray_float), np_1darray, np.floating)
