@@ -572,7 +572,7 @@ def test_unique() -> None:
             pd.unique(pd.Series(ints, dtype="Int64")), np_1darray | ExtensionArray
         ),
         IntegerArray,
-        int,
+        np.integer,
     )
 
     check(
