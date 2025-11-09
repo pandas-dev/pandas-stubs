@@ -56,13 +56,7 @@ def cut(
 @overload
 def cut(  # pyright: ignore[reportOverlappingOverload]
     x: Series[Timestamp],
-    bins: (
-        int
-        | Series[Timestamp]
-        | DatetimeIndex
-        | Sequence[Timestamp]
-        | Sequence[np.datetime64]
-    ),
+    bins: int | Series[Timestamp] | DatetimeIndex | Sequence[np.datetime64 | Timestamp],
     right: bool = ...,
     labels: Literal[False] | Sequence[Label] | None = ...,
     *,

@@ -6,7 +6,6 @@ from typing import (
     overload,
 )
 
-import numpy as np
 import pandas as pd
 
 from pandas._libs.lib import _NoDefaultDoNotUse
@@ -15,7 +14,8 @@ from pandas._typing import (
     RaiseCoerce,
     Scalar,
     SequenceNotStr,
-    np_1darray,
+    np_1darray_anyint,
+    np_1darray_float,
     np_ndarray,
 )
 
@@ -34,14 +34,14 @@ def to_numeric(
     errors: RaiseCoerce = "raise",
     downcast: _Downcast = None,
     dtype_backend: DtypeBackend | _NoDefaultDoNotUse = "numpy_nullable",
-) -> np_1darray[np.integer]: ...
+) -> np_1darray_anyint: ...
 @overload
 def to_numeric(
     arg: SequenceNotStr[Any] | np_ndarray,
     errors: RaiseCoerce = "raise",
     downcast: _Downcast = None,
     dtype_backend: DtypeBackend | _NoDefaultDoNotUse = "numpy_nullable",
-) -> np_1darray[np.floating]: ...
+) -> np_1darray_float: ...
 @overload
 def to_numeric(
     arg: pd.Series,

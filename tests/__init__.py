@@ -45,6 +45,7 @@ if TYPE_CHECKING:
         UIntDtypeArg as UIntDtypeArg,
         VoidDtypeArg as VoidDtypeArg,
         np_1darray as np_1darray,
+        np_1darray_anyint as np_1darray_anyint,
         np_1darray_bool as np_1darray_bool,
         np_1darray_dt as np_1darray_dt,
         np_1darray_float as np_1darray_float,
@@ -68,6 +69,7 @@ else:
     np_1darray_bool: TypeAlias = np_1darray[np.bool]
     np_1darray_intp: TypeAlias = np_1darray[np.intp]
     np_1darray_int64: TypeAlias = np_1darray[np.int64]
+    np_1darray_anyint: TypeAlias = np_1darray[np.integer]
     np_1darray_float: TypeAlias = np_1darray[np.floating]
     np_1darray_dt: TypeAlias = np_1darray[np.datetime64]
     np_1darray_td: TypeAlias = np_1darray[np.timedelta64]

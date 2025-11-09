@@ -219,8 +219,10 @@ from pandas._typing import (
     WriteBuffer,
     _T_co,
     np_1darray,
+    np_1darray_dt,
     np_1darray_int64,
     np_1darray_intp,
+    np_1darray_td,
     np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -4425,7 +4427,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,
-    ) -> np_1darray[np.datetime64]: ...
+    ) -> np_1darray_dt: ...
     @overload
     def to_numpy(
         self: Series[Timestamp],
@@ -4441,7 +4443,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,
-    ) -> np_1darray[np.timedelta64]: ...
+    ) -> np_1darray_td: ...
     @overload
     def to_numpy(
         self: Series[Timedelta],

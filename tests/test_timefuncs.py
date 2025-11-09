@@ -29,6 +29,9 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     np_1darray,
+    np_1darray_dt,
+    np_1darray_int64,
+    np_1darray_td,
     pytest_warns_bounded,
 )
 
@@ -892,27 +895,17 @@ def test_series_types_to_numpy() -> None:
     i_s = pd.interval_range(1, 2).to_series()
 
     # default dtype
+    check(assert_type(td_s.to_numpy(), np_1darray_td), np_1darray, np.timedelta64)
     check(
-        assert_type(td_s.to_numpy(), np_1darray[np.timedelta64]),
+        assert_type(td_s.to_numpy(na_value=pd.Timedelta(0)), np_1darray_td),
         np_1darray,
-        dtype=np.timedelta64,
+        np.timedelta64,
     )
+    check(assert_type(ts_s.to_numpy(), np_1darray_dt), np_1darray, np.datetime64)
     check(
-        assert_type(
-            td_s.to_numpy(na_value=pd.Timedelta(0)), np_1darray[np.timedelta64]
-        ),
+        assert_type(ts_s.to_numpy(na_value=pd.Timestamp(1)), np_1darray_dt),
         np_1darray,
-        dtype=np.timedelta64,
-    )
-    check(
-        assert_type(ts_s.to_numpy(), np_1darray[np.datetime64]),
-        np_1darray,
-        dtype=np.datetime64,
-    )
-    check(
-        assert_type(ts_s.to_numpy(na_value=pd.Timestamp(1)), np_1darray[np.datetime64]),
-        np_1darray,
-        dtype=np.datetime64,
+        np.datetime64,
     )
     check(
         assert_type(p_s.to_numpy(), np_1darray[np.object_]),
@@ -978,29 +971,29 @@ def test_series_types_to_numpy() -> None:
 
     # passed dtype-like with statically known generic
     check(
-        assert_type(td_s.to_numpy(dtype=np.int64), np_1darray[np.int64]),
+        assert_type(td_s.to_numpy(dtype=np.int64), np_1darray_int64),
         np_1darray,
-        dtype=np.int64,
+        np.int64,
     )
     check(
-        assert_type(td_s.to_numpy(dtype=np.timedelta64), np_1darray[np.timedelta64]),
+        assert_type(td_s.to_numpy(dtype=np.timedelta64), np_1darray_td),
         np_1darray,
-        dtype=np.timedelta64,
+        np.timedelta64,
     )
     check(
-        assert_type(ts_s.to_numpy(dtype=np.int64), np_1darray[np.int64]),
+        assert_type(ts_s.to_numpy(dtype=np.int64), np_1darray_int64),
         np_1darray,
-        dtype=np.int64,
+        np.int64,
     )
     check(
-        assert_type(ts_s.to_numpy(dtype=np.datetime64), np_1darray[np.datetime64]),
+        assert_type(ts_s.to_numpy(dtype=np.datetime64), np_1darray_dt),
         np_1darray,
-        dtype=np.datetime64,
+        np.datetime64,
     )
     check(
-        assert_type(p_s.to_numpy(dtype=np.int64), np_1darray[np.int64]),
+        assert_type(p_s.to_numpy(dtype=np.int64), np_1darray_int64),
         np_1darray,
-        dtype=np.int64,
+        np.int64,
     )
     check(
         assert_type(o_s.to_numpy(dtype=np.bytes_), np_1darray[np.bytes_]),
@@ -1026,27 +1019,17 @@ def test_index_types_to_numpy() -> None:
     i_i = pd.interval_range(1, 2)
 
     # default dtype
+    check(assert_type(td_i.to_numpy(), np_1darray_td), np_1darray, np.timedelta64)
     check(
-        assert_type(td_i.to_numpy(), np_1darray[np.timedelta64]),
+        assert_type(td_i.to_numpy(na_value=pd.Timedelta(0)), np_1darray_td),
         np_1darray,
-        dtype=np.timedelta64,
+        np.timedelta64,
     )
+    check(assert_type(ts_i.to_numpy(), np_1darray_dt), np_1darray, np.datetime64)
     check(
-        assert_type(
-            td_i.to_numpy(na_value=pd.Timedelta(0)), np_1darray[np.timedelta64]
-        ),
+        assert_type(ts_i.to_numpy(na_value=pd.Timestamp(1)), np_1darray_dt),
         np_1darray,
-        dtype=np.timedelta64,
-    )
-    check(
-        assert_type(ts_i.to_numpy(), np_1darray[np.datetime64]),
-        np_1darray,
-        dtype=np.datetime64,
-    )
-    check(
-        assert_type(ts_i.to_numpy(na_value=pd.Timestamp(1)), np_1darray[np.datetime64]),
-        np_1darray,
-        dtype=np.datetime64,
+        np.datetime64,
     )
     check(
         assert_type(p_i.to_numpy(), np_1darray[np.object_]),
@@ -1095,19 +1078,19 @@ def test_index_types_to_numpy() -> None:
 
     # passed dtype-like with statically known generic
     check(
-        assert_type(td_i.to_numpy(dtype=np.int64), np_1darray[np.int64]),
+        assert_type(td_i.to_numpy(dtype=np.int64), np_1darray_int64),
         np_1darray,
-        dtype=np.int64,
+        np.int64,
     )
     check(
-        assert_type(ts_i.to_numpy(dtype=np.int64), np_1darray[np.int64]),
+        assert_type(ts_i.to_numpy(dtype=np.int64), np_1darray_int64),
         np_1darray,
-        dtype=np.int64,
+        np.int64,
     )
     check(
-        assert_type(p_i.to_numpy(dtype=np.int64), np_1darray[np.int64]),
+        assert_type(p_i.to_numpy(dtype=np.int64), np_1darray_int64),
         np_1darray,
-        dtype=np.int64,
+        np.int64,
     )
     check(
         assert_type(i_i.to_numpy(dtype=np.bytes_), np_1darray[np.bytes_]),
