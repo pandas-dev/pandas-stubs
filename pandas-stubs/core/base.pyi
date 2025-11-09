@@ -17,7 +17,6 @@ from typing import (
 
 from _typeshed import _T_contra
 import numpy as np
-from numpy import typing as npt
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
@@ -45,6 +44,7 @@ from pandas._typing import (
     SupportsDType,
     np_1darray,
     np_1darray_intp,
+    np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_complex,
@@ -257,7 +257,7 @@ NumListLike: TypeAlias = (  # TODO: pandas-dev/pandas-stubs#1474 deprecated, do 
     | np_ndarray_anyint
     | np_ndarray_float
     | np_ndarray_complex
-    | dict[str, npt.NDArray[Any]]
+    | dict[str, np_ndarray]
     | Sequence[complex]
 )
 

@@ -30,8 +30,8 @@ from pandas._typing import (
     T,
     WriteBuffer,
     WriteExcelBuffer,
+    np_ndarray,
     np_ndarray_str,
-    npt,
 )
 
 from pandas.io.excel import ExcelWriter
@@ -52,7 +52,7 @@ class _SeriesFunc(Protocol):
 class _DataFrameFunc(Protocol):
     def __call__(
         self, series: DataFrame, /, *args: Any, **kwargs: Any
-    ) -> npt.NDArray[Any] | DataFrame: ...
+    ) -> np_ndarray | DataFrame: ...
 
 class _MapCallable(Protocol):
     def __call__(
@@ -238,7 +238,7 @@ class Styler(StylerRenderer):
     @overload
     def apply(
         self,
-        func: _DataFrameFunc | Callable[[DataFrame], npt.NDArray[Any] | DataFrame],
+        func: _DataFrameFunc | Callable[[DataFrame], np_ndarray | DataFrame],
         axis: None,
         subset: Subset | None = ...,
         **kwargs: Any,
@@ -295,7 +295,7 @@ class Styler(StylerRenderer):
         gmap: (
             Sequence[float]
             | Sequence[Sequence[float]]
-            | npt.NDArray[Any]
+            | np_ndarray
             | DataFrame
             | Series
             | None
@@ -313,7 +313,7 @@ class Styler(StylerRenderer):
         gmap: (
             Sequence[float]
             | Sequence[Sequence[float]]
-            | npt.NDArray[Any]
+            | np_ndarray
             | DataFrame
             | Series
             | None
@@ -334,7 +334,7 @@ class Styler(StylerRenderer):
         align: (
             Literal["left", "right", "zero", "mid", "mean"]
             | float
-            | Callable[[Series | npt.NDArray[Any] | DataFrame], float]
+            | Callable[[Series | np_ndarray | DataFrame], float]
         ) = "mid",
         vmin: float | None = None,
         vmax: float | None = None,

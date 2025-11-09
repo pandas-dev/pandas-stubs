@@ -29,7 +29,7 @@ from pandas._typing import (
     Just,
     ShapeT,
     TimeUnit,
-    np_1darray,
+    np_1darray_bool,
     np_ndarray,
 )
 
@@ -274,7 +274,7 @@ class Timedelta(timedelta):
     @overload
     def __eq__(self, other: Series[Timedelta]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(self, other: Index) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
+    def __eq__(self, other: Index) -> np_1darray_bool: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(  # type: ignore[overload-overlap]
         self, other: np_ndarray[ShapeT, np.timedelta64]
@@ -287,7 +287,7 @@ class Timedelta(timedelta):
     @overload
     def __ne__(self, other: Series[Timedelta]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(self, other: Index) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
+    def __ne__(self, other: Index) -> np_1darray_bool: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(  # type: ignore[overload-overlap]
         self, other: np_ndarray[ShapeT, np.timedelta64]
@@ -316,7 +316,7 @@ class Timedelta(timedelta):
     @overload  # type: ignore[override]
     def __le__(self, other: timedelta | np.timedelta64 | Self) -> bool: ...
     @overload
-    def __le__(self, other: TimedeltaIndex) -> np_1darray[np.bool]: ...
+    def __le__(self, other: TimedeltaIndex) -> np_1darray_bool: ...
     @overload
     def __le__(
         self, other: np_ndarray[ShapeT, np.timedelta64]
@@ -327,7 +327,7 @@ class Timedelta(timedelta):
     @overload  # type: ignore[override]
     def __lt__(self, other: timedelta | np.timedelta64 | Self) -> bool: ...
     @overload
-    def __lt__(self, other: TimedeltaIndex) -> np_1darray[np.bool]: ...
+    def __lt__(self, other: TimedeltaIndex) -> np_1darray_bool: ...
     @overload
     def __lt__(
         self, other: np_ndarray[ShapeT, np.timedelta64]
@@ -338,7 +338,7 @@ class Timedelta(timedelta):
     @overload  # type: ignore[override]
     def __ge__(self, other: timedelta | np.timedelta64 | Self) -> bool: ...
     @overload
-    def __ge__(self, other: TimedeltaIndex) -> np_1darray[np.bool]: ...
+    def __ge__(self, other: TimedeltaIndex) -> np_1darray_bool: ...
     @overload
     def __ge__(
         self, other: np_ndarray[ShapeT, np.timedelta64]
@@ -349,7 +349,7 @@ class Timedelta(timedelta):
     @overload  # type: ignore[override]
     def __gt__(self, other: timedelta | np.timedelta64 | Self) -> bool: ...
     @overload
-    def __gt__(self, other: TimedeltaIndex) -> np_1darray[np.bool]: ...
+    def __gt__(self, other: TimedeltaIndex) -> np_1darray_bool: ...
     @overload
     def __gt__(
         self, other: np_ndarray[ShapeT, np.timedelta64]

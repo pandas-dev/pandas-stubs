@@ -12,7 +12,7 @@ from pandas.core.computation.ops import BinOp
 
 from pandas._typing import (
     Scalar,
-    npt,
+    np_ndarray,
 )
 
 def eval(
@@ -25,4 +25,4 @@ def eval(
     level: int = 0,
     target: object | None = None,
     inplace: bool = False,
-) -> npt.NDArray[Any] | Scalar | DataFrame | Series | None: ...
+) -> np_ndarray | Scalar | DataFrame | Series | None: ...

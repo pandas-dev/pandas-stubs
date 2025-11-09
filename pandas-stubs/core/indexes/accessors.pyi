@@ -46,6 +46,7 @@ from pandas._typing import (
     TimeUnit,
     TimeZones,
     np_1darray,
+    np_1darray_bool,
     np_ndarray_bool,
 )
 
@@ -96,7 +97,7 @@ class _DatetimeFieldOps(
 ): ...
 
 _DTBoolOpsReturnType = TypeVar(
-    "_DTBoolOpsReturnType", bound=Series[bool] | np_1darray[np.bool]
+    "_DTBoolOpsReturnType", bound=Series[bool] | np_1darray_bool
 )
 
 class _IsLeapYearProperty(Generic[_DTBoolOpsReturnType]):
@@ -415,7 +416,7 @@ class DatetimeIndexProperties(
     Properties,
     _DatetimeNoTZProperties[
         Index[int],
-        np_1darray[np.bool],
+        np_1darray_bool,
         DatetimeIndex,
         np_1darray[np.object_],
         np_1darray[np.object_],

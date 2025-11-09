@@ -164,6 +164,7 @@ from pandas._typing import (
     WriteBuffer,
     XMLParsers,
     np_2darray,
+    np_ndarray,
     np_ndarray_bool,
     np_ndarray_float,
 )
@@ -209,7 +210,7 @@ class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
             Scalar
             | Series
             | DataFrame
-            | npt.NDArray[Any]
+            | np_ndarray
             | NAType
             | NaTType
             | Mapping[Hashable, Scalar | NAType | NaTType]
@@ -427,7 +428,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def __matmul__(self, other: Series) -> Series: ...
     @overload
-    def __matmul__(self, other: npt.NDArray[Any]) -> Self: ...
+    def __matmul__(self, other: np_ndarray) -> Self: ...
     def __rmatmul__(self, other): ...
     @overload
     @classmethod
@@ -832,7 +833,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def eval(
         self, expr: _str, *, inplace: Literal[False] = False, **kwargs: Any
-    ) -> Scalar | npt.NDArray[Any] | Self | Series: ...
+    ) -> Scalar | np_ndarray | Self | Series: ...
     @overload
     def select_dtypes(
         self, include: StrDtypeArg, exclude: _AstypeArgExtList | None = ...
@@ -970,7 +971,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             Label
             | Series
             | Index
-            | npt.NDArray[Any]
+            | np_ndarray
             | Iterator[Hashable]
             | Sequence[Hashable]
         ),
@@ -987,7 +988,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             Label
             | Series
             | Index
-            | npt.NDArray[Any]
+            | np_ndarray
             | Iterator[Hashable]
             | Sequence[Hashable]
         ),
@@ -1404,8 +1405,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self | Series: ...
     def melt(
         self,
-        id_vars: tuple | Sequence | npt.NDArray[Any] | None = ...,
-        value_vars: tuple | Sequence | npt.NDArray[Any] | None = ...,
+        id_vars: tuple | Sequence | np_ndarray | None = ...,
+        value_vars: tuple | Sequence | np_ndarray | None = ...,
         var_name: Scalar | None = None,
         value_name: Scalar = "value",
         col_level: int | _str | None = ...,

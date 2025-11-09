@@ -19,7 +19,6 @@ from typing import (
 )
 
 from matplotlib.axes import Axes as PlotAxes
-from numpy import typing as npt
 from pandas.core.frame import DataFrame
 from pandas.core.groupby.base import TransformReductionListType
 from pandas.core.groupby.groupby import (
@@ -47,6 +46,7 @@ from pandas._typing import (
     TakeIndexer,
     WindowingEngine,
     WindowingEngineKwargs,
+    np_ndarray,
 )
 
 AggScalar: TypeAlias = str | Callable[..., Any]
@@ -418,7 +418,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     def plot(self) -> GroupByPlot[Self]: ...
     def corr(
         self,
-        method: str | Callable[[npt.NDArray[Any], npt.NDArray[Any]], float] = ...,
+        method: str | Callable[[np_ndarray, np_ndarray], float] = ...,
         min_periods: int = ...,
         numeric_only: bool = False,
     ) -> DataFrame: ...

@@ -14,7 +14,6 @@ from typing import (
     overload,
 )
 
-import numpy as np
 import pandas as pd
 from pandas import (
     DataFrame,
@@ -30,7 +29,7 @@ from pandas._typing import (
     DtypeObj,
     Scalar,
     T,
-    np_1darray,
+    np_1darray_bool,
     np_ndarray_str,
 )
 
@@ -39,7 +38,7 @@ _T_EXPANDING = TypeVar("_T_EXPANDING", bound=DataFrame | MultiIndex)
 # Used for the result of str.split with expand=False
 _T_LIST_STR = TypeVar("_T_LIST_STR", bound=Series[list[str]] | Index[list[str]])
 # Used for the result of str.match
-_T_BOOL = TypeVar("_T_BOOL", bound=Series[bool] | np_1darray[np.bool])
+_T_BOOL = TypeVar("_T_BOOL", bound=Series[bool] | np_1darray_bool)
 # Used for the result of str.index / str.find
 _T_INT = TypeVar("_T_INT", bound=Series[int] | Index[int])
 # Used for the result of str.encode

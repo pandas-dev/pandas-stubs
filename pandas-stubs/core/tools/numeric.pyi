@@ -7,7 +7,6 @@ from typing import (
 )
 
 import numpy as np
-from numpy import typing as npt
 import pandas as pd
 
 from pandas._libs.lib import _NoDefaultDoNotUse
@@ -17,6 +16,7 @@ from pandas._typing import (
     Scalar,
     SequenceNotStr,
     np_1darray,
+    np_ndarray,
 )
 
 _Downcast: TypeAlias = Literal["integer", "signed", "unsigned", "float"] | None
@@ -37,7 +37,7 @@ def to_numeric(
 ) -> np_1darray[np.integer]: ...
 @overload
 def to_numeric(
-    arg: SequenceNotStr[Any] | npt.NDArray[Any],
+    arg: SequenceNotStr[Any] | np_ndarray,
     errors: RaiseCoerce = "raise",
     downcast: _Downcast = None,
     dtype_backend: DtypeBackend | _NoDefaultDoNotUse = "numpy_nullable",

@@ -20,7 +20,7 @@ from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     PeriodFrequency,
     ShapeT,
-    np_1darray,
+    np_1darray_bool,
     np_ndarray,
 )
 
@@ -107,7 +107,7 @@ class Period(PeriodMixin):
     @overload
     def __eq__(self, other: Self) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __eq__(self, other: Index) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
+    def __eq__(self, other: Index) -> np_1darray_bool: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: Series[Period]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
@@ -117,7 +117,7 @@ class Period(PeriodMixin):
     @overload
     def __ge__(self, other: Self) -> bool: ...
     @overload
-    def __ge__(self, other: PeriodIndex) -> np_1darray[np.bool]: ...
+    def __ge__(self, other: PeriodIndex) -> np_1darray_bool: ...
     @overload
     def __ge__(
         self, other: Series[Period]  # pyrefly: ignore[bad-specialization]
@@ -129,7 +129,7 @@ class Period(PeriodMixin):
     @overload
     def __gt__(self, other: Self) -> bool: ...
     @overload
-    def __gt__(self, other: PeriodIndex) -> np_1darray[np.bool]: ...
+    def __gt__(self, other: PeriodIndex) -> np_1darray_bool: ...
     @overload
     def __gt__(
         self, other: Series[Period]  # pyrefly: ignore[bad-specialization]
@@ -141,7 +141,7 @@ class Period(PeriodMixin):
     @overload
     def __le__(self, other: Self) -> bool: ...
     @overload
-    def __le__(self, other: PeriodIndex) -> np_1darray[np.bool]: ...
+    def __le__(self, other: PeriodIndex) -> np_1darray_bool: ...
     @overload
     def __le__(
         self, other: Series[Period]  # pyrefly: ignore[bad-specialization]
@@ -153,7 +153,7 @@ class Period(PeriodMixin):
     @overload
     def __lt__(self, other: Self) -> bool: ...
     @overload
-    def __lt__(self, other: PeriodIndex) -> np_1darray[np.bool]: ...
+    def __lt__(self, other: PeriodIndex) -> np_1darray_bool: ...
     @overload
     def __lt__(
         self, other: Series[Period]  # pyrefly: ignore[bad-specialization]
@@ -167,7 +167,7 @@ class Period(PeriodMixin):
     @overload
     def __ne__(self, other: Self) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __ne__(self, other: Index) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
+    def __ne__(self, other: Index) -> np_1darray_bool: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: Series[Period]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload

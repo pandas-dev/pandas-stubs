@@ -323,9 +323,9 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
         value: S1 | ArrayLike | IndexOpsMixin[S1] | None,
     ) -> None: ...
 
-_DataLike: TypeAlias = ArrayLike | dict[str, npt.NDArray[Any]] | SequenceNotStr[S1]
+_DataLike: TypeAlias = ArrayLike | dict[str, np_ndarray] | SequenceNotStr[S1]
 _DataLikeS1: TypeAlias = (
-    ArrayLike | dict[_str, npt.NDArray[Any]] | Sequence[S1] | IndexOpsMixin[S1]
+    ArrayLike | dict[_str, np_ndarray] | Sequence[S1] | IndexOpsMixin[S1]
 )
 
 class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
@@ -962,20 +962,20 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def dot(
         self,
-        other: ArrayLike | dict[_str, npt.NDArray[Any]] | Sequence[S1] | Index[S1],
-    ) -> npt.NDArray[Any]: ...
+        other: ArrayLike | dict[_str, np_ndarray] | Sequence[S1] | Index[S1],
+    ) -> np_ndarray: ...
     @overload
     def __matmul__(self, other: Series) -> Scalar: ...
     @overload
     def __matmul__(self, other: DataFrame) -> Series: ...
     @overload
-    def __matmul__(self, other: npt.NDArray[Any]) -> npt.NDArray[Any]: ...
+    def __matmul__(self, other: np_ndarray) -> np_ndarray: ...
     @overload
     def __rmatmul__(self, other: Series) -> Scalar: ...
     @overload
     def __rmatmul__(self, other: DataFrame) -> Series: ...
     @overload
-    def __rmatmul__(self, other: npt.NDArray[Any]) -> npt.NDArray[Any]: ...
+    def __rmatmul__(self, other: np_ndarray) -> np_ndarray: ...
     @overload
     def searchsorted(
         self,
@@ -1679,8 +1679,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             tuple[
                 Sequence[bool]
                 | Series[bool]
-                | Callable[[Series], Series | npt.NDArray[Any] | Sequence[bool]],
-                ListLikeU | Scalar | Callable[[Series], Series | npt.NDArray[Any]],
+                | Callable[[Series], Series | np_ndarray | Sequence[bool]],
+                ListLikeU | Scalar | Callable[[Series], Series | np_ndarray],
             ],
         ],
     ) -> Series: ...
