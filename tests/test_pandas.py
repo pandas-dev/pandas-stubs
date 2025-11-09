@@ -32,6 +32,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     np_1darray,
+    np_1darray_anyint,
     np_1darray_dt,
     np_1darray_float,
     np_1darray_int64,
@@ -77,23 +78,16 @@ def test_types_to_datetime() -> None:
         pd.DatetimeIndex,
     )
     check(
-        assert_type(
-            pd.to_datetime([1, 2], unit="D", origin=3),
-            pd.DatetimeIndex,
-        ),
+        assert_type(pd.to_datetime([1, 2], unit="D", origin=3), pd.DatetimeIndex),
+        pd.DatetimeIndex,
+    )
+    check(
+        assert_type(pd.to_datetime(["2022-01-03", "2022-02-22"]), pd.DatetimeIndex),
         pd.DatetimeIndex,
     )
     check(
         assert_type(
-            pd.to_datetime(["2022-01-03", "2022-02-22"]),
-            pd.DatetimeIndex,
-        ),
-        pd.DatetimeIndex,
-    )
-    check(
-        assert_type(
-            pd.to_datetime(pd.Index(["2022-01-03", "2022-02-22"])),
-            pd.DatetimeIndex,
+            pd.to_datetime(pd.Index(["2022-01-03", "2022-02-22"])), pd.DatetimeIndex
         ),
         pd.DatetimeIndex,
     )
@@ -136,9 +130,10 @@ def test_types_concat_none() -> None:
         pd.DataFrame,
     )
 
-    if TYPE_CHECKING_INVALID_USAGE:
-        # using assert_type as otherwise the second call would not be type-checked
+    def _0() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(pd.concat({"a": None}), Never)
+
+    def _1() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(pd.concat([None]), Never)
 
 
@@ -201,13 +196,7 @@ def test_types_concat() -> None:
 
     check(assert_type(ts1, "pd.Series[int]"), pd.Series, np.integer)
     check(assert_type(ts2, "pd.Series[int]"), pd.Series, np.integer)
-    check(
-        assert_type(
-            pd.concat({1: s, None: s2}, axis=1),
-            pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
+    check(assert_type(pd.concat({1: s, None: s2}, axis=1), pd.DataFrame), pd.DataFrame)
 
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame(data={"col1": [10, 20], "col2": [30, 40]})
@@ -725,9 +714,21 @@ def test_hashing() -> None:
     b = pd.Series(a)
     c = pd.DataFrame({"a": a, "b": a})
     d = pd.Index(b)
-    check(assert_type(pdutil.hash_pandas_object(b), "pd.Series[int]"), pd.Series, int)
-    check(assert_type(pdutil.hash_pandas_object(c), "pd.Series[int]"), pd.Series, int)
-    check(assert_type(pdutil.hash_pandas_object(d), "pd.Series[int]"), pd.Series, int)
+    check(
+        assert_type(pdutil.hash_pandas_object(b), "pd.Series[int]"),
+        pd.Series,
+        np.uint64,
+    )
+    check(
+        assert_type(pdutil.hash_pandas_object(c), "pd.Series[int]"),
+        pd.Series,
+        np.uint64,
+    )
+    check(
+        assert_type(pdutil.hash_pandas_object(d), "pd.Series[int]"),
+        pd.Series,
+        np.uint64,
+    )
     check(
         assert_type(
             pdutil.hash_pandas_object(
@@ -736,7 +737,7 @@ def test_hashing() -> None:
             "pd.Series[int]",
         ),
         pd.Series,
-        int,
+        np.uint64,
     )
 
 
@@ -763,57 +764,47 @@ def test_to_numeric_scalar() -> None:
 
 def test_to_numeric_array_like() -> None:
     check(
-        assert_type(pd.to_numeric([1, 2, 3]), np_1darray[np.integer]),
-        np_1darray,
-        np.integer,
+        assert_type(pd.to_numeric([1, 2, 3]), np_1darray_anyint), np_1darray, np.integer
     )
     check(
-        assert_type(pd.to_numeric([1.0, 2.0, 3.0]), np_1darray[np.floating]),
+        assert_type(pd.to_numeric([1.0, 2.0, 3.0]), np_1darray_float),
         np_1darray,
         np.floating,
     )
     check(
-        assert_type(pd.to_numeric([1.0, 2.0, "3.0"]), np_1darray[np.floating]),
+        assert_type(pd.to_numeric([1.0, 2.0, "3.0"]), np_1darray_float),
         np_1darray,
         np.floating,
     )
     check(
         assert_type(
             pd.to_numeric(np.array([1.0, 2.0, "3.0"], dtype=object)),
-            np_1darray[np.floating],
+            np_1darray_float,
         ),
         np_1darray,
         np.floating,
     )
     check(
         assert_type(
-            pd.to_numeric([1.0, 2.0, "blerg"], errors="coerce"), np_1darray[np.floating]
+            pd.to_numeric([1.0, 2.0, "blerg"], errors="coerce"), np_1darray_float
         ),
         np_1darray,
         np.floating,
     )
     check(
-        assert_type(pd.to_numeric((1.0, 2.0, 3.0)), np_1darray[np.floating]),
+        assert_type(pd.to_numeric((1.0, 2.0, 3.0)), np_1darray_float),
         np_1darray,
         np.floating,
     )
     check(
-        assert_type(
-            pd.to_numeric([1, 2, 3], downcast="unsigned"), np_1darray[np.integer]
-        ),
+        assert_type(pd.to_numeric([1, 2, 3], downcast="unsigned"), np_1darray_anyint),
         np_1darray,
         np.integer,
     )
 
 
 def test_to_numeric_array_series() -> None:
-    check(
-        assert_type(
-            pd.to_numeric(pd.Series([1, 2, 3])),
-            pd.Series,
-        ),
-        pd.Series,
-    )
+    check(assert_type(pd.to_numeric(pd.Series([1, 2, 3])), pd.Series), pd.Series)
     check(
         assert_type(
             pd.to_numeric(pd.Series([1, 2, "blerg"]), errors="coerce"),
