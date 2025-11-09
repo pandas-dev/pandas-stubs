@@ -1,15 +1,18 @@
+from collections.abc import Sequence
 from typing import Any
 
-from numpy import typing as npt
 from pandas.core.indexes.datetimes import DatetimeIndex
 
 from pandas._libs.tslibs import BaseOffset
-from pandas._typing import np_ndarray_intp
+from pandas._typing import (
+    np_1darray_intp,
+    np_ndarray_intp,
+)
 
 class BaseIndexer:
     def __init__(
         self,
-        index_array: np_ndarray_intp | None = None,
+        index_array: Sequence[float] | np_ndarray_intp | None = None,
         window_size: int = 0,
         **kwargs: Any,
     ) -> None: ...
@@ -20,7 +23,7 @@ class BaseIndexer:
         center: bool | None,
         closed: str | None = None,
         step: int | None = None,
-    ) -> tuple[npt.NDArray[Any], npt.NDArray[Any]]: ...
+    ) -> tuple[np_1darray_intp, np_1darray_intp]: ...
 
 class FixedForwardWindowIndexer(BaseIndexer): ...
 
