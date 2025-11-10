@@ -10,6 +10,7 @@ from typing import (
     Literal,
     TypeAlias,
     overload,
+    Sequence,
 )
 
 from pandas.core.frame import DataFrame
@@ -162,6 +163,15 @@ class PandasSQL:
         engine: str = "auto",
         **engine_kwargs: Any,
     ) -> int | None: ...
+
+def get_schema(
+    frame: DataFrame,
+    name: str,
+    keys: str | Sequence[str] | None = ...,
+    con: _SQLConnection = ...,
+    dtype: DtypeArg | None = ...,
+    schema: str | None = ...,
+) -> str: ...
 
 class SQLTable:
     name: str
