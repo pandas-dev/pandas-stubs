@@ -45,6 +45,7 @@ from typing_extensions import (
 )
 import xarray as xr
 
+from pandas._libs.tslibs.offsets import Day
 from pandas._typing import (
     DtypeObj,
     Scalar,
@@ -1980,14 +1981,90 @@ def test_dtype_type() -> None:
 
 def test_types_to_numpy() -> None:
     s = pd.Series(["a", "b", "c"], dtype=str)
-    check(assert_type(s.to_numpy(), np_1darray), np_1darray)
-    check(assert_type(s.to_numpy(dtype="str", copy=True), np_1darray), np_1darray)
-    check(assert_type(s.to_numpy(na_value=0), np_1darray), np_1darray)
-    check(assert_type(s.to_numpy(na_value=np.int32(4)), np_1darray), np_1darray)
-    check(assert_type(s.to_numpy(na_value=np.float16(4)), np_1darray), np_1darray)
-    check(assert_type(s.to_numpy(na_value=np.complex128(4, 7)), np_1darray), np_1darray)
+    check(assert_type(s.to_numpy(), np_1darray[np.str_]), np_1darray)
+    check(
+        assert_type(s.to_numpy(dtype="str", copy=True), np_1darray[np.str_]), np_1darray
+    )
+    check(assert_type(s.to_numpy(na_value=0), np_1darray[np.str_]), np_1darray)
+    check(
+        assert_type(s.to_numpy(na_value=np.int32(4)), np_1darray[np.str_]), np_1darray
+    )
+    check(
+        assert_type(s.to_numpy(na_value=np.float16(4)), np_1darray[np.str_]), np_1darray
+    )
+    check(
+        assert_type(s.to_numpy(na_value=np.complex128(4, 7)), np_1darray[np.str_]),
+        np_1darray,
+    )
 
     check(assert_type(pd.Series().to_numpy(), np_1darray), np_1darray)
+
+
+def test_to_numpy() -> None:
+    """Test Series.to_numpy for different types."""
+    s1 = pd.Series(["a", "b", "c"], dtype=str)
+    check(assert_type(s1.to_numpy(), np_1darray[np.str_]), np_1darray, str)
+
+    s2 = pd.Series(["a", "b", "c"]).astype(bytes)
+    check(assert_type(s2.to_numpy(), np_1darray[np.bytes_]), np_1darray, np.bytes_)
+
+    s3 = pd.Series([True, False])
+    check(assert_type(s3.to_numpy(), np_1darray[np.bool_]), np_1darray, np.bool_)
+
+    s4 = pd.Series([2, 3, 4])
+    check(assert_type(s4.to_numpy(), np_1darray[np.integer]), np_1darray, np.integer)
+
+    s5 = pd.Series([2.0, 3.54, 4.84])
+    check(assert_type(s5.to_numpy(), np_1darray[np.floating]), np_1darray, np.floating)
+
+    s6 = pd.Series([2.0 + 2j, 3.54 + 4j, 4.84])
+    check(
+        assert_type(s6.to_numpy(), np_1darray[np.complexfloating]),
+        np_1darray,
+        np.complexfloating,
+    )
+
+    dates = pd.Series(
+        [
+            pd.Timestamp("2020-01-01"),
+            pd.Timestamp("2020-01-15"),
+            pd.Timestamp("2020-02-01"),
+        ],
+        dtype="datetime64[ns]",
+    )
+    s7 = pd.Series(pd.PeriodIndex(dates, freq="M"))
+    check(assert_type(s7.to_numpy(), np_1darray[np.object_]), np_1darray, pd.Period)
+
+    s8 = pd.Series(
+        [
+            pd.Interval(date, date + pd.DateOffset(days=1), closed="left")
+            for date in dates
+        ]
+    )
+    check(assert_type(s8.to_numpy(), np_1darray[np.object_]), np_1darray, pd.Interval)
+
+    s9 = (
+        pd.Series(pd.period_range(start="2017-01-01", end="2017-02-01", freq="1D"))
+        .diff()
+        .iloc[1:]
+    )
+    check(assert_type(s9.to_numpy(), np_1darray[np.object_]), np_1darray, Day)
+
+    s10 = pd.Series(pd.date_range(start="2017-01-01", end="2017-02-01"))
+    check(
+        assert_type(s10.to_numpy(), np_1darray[np.datetime64]),
+        np_1darray,
+        np.datetime64,
+    )
+
+    s11 = pd.Series(
+        [datetime.datetime.now().date(), datetime.datetime.now().date()]
+    ).diff()
+    check(
+        assert_type(s11.to_numpy(), np_1darray[np.timedelta64]),
+        np_1darray,
+        np.timedelta64,
+    )
 
 
 def test_where() -> None:

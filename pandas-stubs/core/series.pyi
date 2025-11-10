@@ -4494,6 +4494,54 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         **kwargs: Any,
     ) -> np_1darray[_T_INTERVAL_NP]: ...
     @overload
+    def to_numpy(
+        self: Series[int],
+        dtype: DTypeLike | None = None,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs: Any,
+    ) -> np_1darray[np.integer]: ...
+    @overload
+    def to_numpy(
+        self: Series[float],
+        dtype: DTypeLike | None = None,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs: Any,
+    ) -> np_1darray[np.floating]: ...
+    @overload
+    def to_numpy(
+        self: Series[complex],
+        dtype: DTypeLike | None = None,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs: Any,
+    ) -> np_1darray[np.complexfloating]: ...
+    @overload
+    def to_numpy(
+        self: Series[bool],
+        dtype: DTypeLike | None = None,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs: Any,
+    ) -> np_1darray[np.bool_]: ...
+    @overload
+    def to_numpy(
+        self: Series[_str],
+        dtype: DTypeLike | None = None,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs: Any,
+    ) -> np_1darray[np.str_]: ...
+    @overload
+    def to_numpy(
+        self: Series[bytes],
+        dtype: DTypeLike | None = None,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs: Any,
+    ) -> np_1darray[np.bytes_]: ...
+    @overload
     def to_numpy(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         dtype: DTypeLike | None = None,
