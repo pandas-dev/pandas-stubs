@@ -34,6 +34,7 @@ from tests import (
     check,
     np_1darray,
     np_1darray_anyint,
+    np_1darray_bool,
     np_1darray_dt,
     np_1darray_float,
     np_1darray_int64,
@@ -446,18 +447,18 @@ def test_isna() -> None:
     check(assert_type(pd.notna(df), "pd.DataFrame"), pd.DataFrame)
 
     idx = pd.Index([1, 2, np.nan, float("nan")])
-    check(assert_type(pd.isna(idx), np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type(pd.notna(idx), np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(pd.isna(idx), np_1darray_bool), np_1darray_bool)
+    check(assert_type(pd.notna(idx), np_1darray_bool), np_1darray_bool)
 
     # ExtensionArray
     ext_arr = idx.array
-    check(assert_type(pd.isna(ext_arr), np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type(pd.notna(ext_arr), np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(pd.isna(ext_arr), np_1darray_bool), np_1darray_bool)
+    check(assert_type(pd.notna(ext_arr), np_1darray_bool), np_1darray_bool)
 
     # 1-D numpy array
     arr_1d = idx.to_numpy()
-    check(assert_type(pd.isna(arr_1d), np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type(pd.notna(arr_1d), np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(pd.isna(arr_1d), np_1darray_bool), np_1darray_bool)
+    check(assert_type(pd.notna(arr_1d), np_1darray_bool), np_1darray_bool)
 
     # 2-D numpy array
     arr_2d = idx.to_numpy().reshape(2, 2)
@@ -471,8 +472,8 @@ def test_isna() -> None:
 
     # List of scalars
     l_sca = [1, 2.5, float("nan")]
-    check(assert_type(pd.isna(l_sca), np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type(pd.notna(l_sca), np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(pd.isna(l_sca), np_1darray_bool), np_1darray_bool)
+    check(assert_type(pd.notna(l_sca), np_1darray_bool), np_1darray_bool)
 
     # List of unknown members
     l_any: list[object] = [arr_1d, ext_arr]
@@ -900,33 +901,33 @@ def test_lreshape() -> None:
 
 def test_factorize() -> None:
     codes, uniques = pd.factorize(np.array(["b", "b", "a", "c", "b"]))
-    check(assert_type(codes, np_1darray[np.int64]), np_1darray[np.int64])
+    check(assert_type(codes, np_1darray_int64), np_1darray_int64)
     check(assert_type(uniques, np_1darray), np_1darray)
 
     codes, uniques = pd.factorize(np.recarray((1,), dtype=[("x", int)]))
-    check(assert_type(codes, np_1darray[np.int64]), np_1darray[np.int64])
+    check(assert_type(codes, np_1darray_int64), np_1darray_int64)
     check(assert_type(uniques, np_1darray), np_1darray)
 
     codes, cat_uniques = pd.factorize(pd.Categorical(["b", "b", "a", "c", "b"]))
-    check(assert_type(codes, np_1darray[np.int64]), np_1darray[np.int64])
+    check(assert_type(codes, np_1darray_int64), np_1darray_int64)
     check(assert_type(cat_uniques, pd.Categorical), pd.Categorical)
 
     codes, idx_uniques = pd.factorize(pd.Index(["b", "b", "a", "c", "b"]))
-    check(assert_type(codes, np_1darray[np.int64]), np_1darray[np.int64])
+    check(assert_type(codes, np_1darray_int64), np_1darray_int64)
     check(assert_type(idx_uniques, pd.Index), pd.Index)
 
     codes, idx_uniques = pd.factorize(pd.Series(["b", "b", "a", "c", "b"]))
-    check(assert_type(codes, np_1darray[np.int64]), np_1darray[np.int64])
+    check(assert_type(codes, np_1darray_int64), np_1darray_int64)
     check(assert_type(idx_uniques, pd.Index), pd.Index)
 
     codes, uniques = pd.factorize(np.array(list("bbacb")))
-    check(assert_type(codes, np_1darray[np.int64]), np_1darray[np.int64])
+    check(assert_type(codes, np_1darray_int64), np_1darray_int64)
     check(assert_type(uniques, np_1darray), np_1darray)
 
     codes, uniques = pd.factorize(
         np.array(["b", "b", "a", "c", "b"]), use_na_sentinel=True, size_hint=10
     )
-    check(assert_type(codes, np_1darray[np.int64]), np_1darray[np.int64])
+    check(assert_type(codes, np_1darray_int64), np_1darray_int64)
     check(assert_type(uniques, np_1darray), np_1darray)
 
 
@@ -985,10 +986,7 @@ def test_cut() -> None:
     b = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, labels=False, duplicates="raise")
     c = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, labels=["1", "2", "3", "4"])
     check(assert_type(a, pd.Categorical), pd.Categorical)
-    check(
-        assert_type(b, np_1darray[np.intp]),
-        np_1darray[np.intp],
-    )
+    check(assert_type(b, np_1darray_intp), np_1darray_intp)
     check(assert_type(c, pd.Categorical), pd.Categorical)
 
     d0, d1 = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], 4, retbins=True)
@@ -998,7 +996,7 @@ def test_cut() -> None:
     )
     check(assert_type(d0, pd.Categorical), pd.Categorical)
     check(assert_type(d1, np_1darray_float), np_1darray, np.floating)
-    check(assert_type(e0, np_1darray[np.intp]), np_1darray[np.intp])
+    check(assert_type(e0, np_1darray_intp), np_1darray_intp)
     check(assert_type(e1, np_1darray_float), np_1darray, np.floating)
     check(assert_type(f0, pd.Categorical), pd.Categorical)
     check(assert_type(f1, np_1darray_float), np_1darray, np.floating)
