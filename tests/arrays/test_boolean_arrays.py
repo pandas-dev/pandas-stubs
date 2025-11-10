@@ -11,3 +11,7 @@ def test_construction() -> None:
     check(assert_type(pd.array([True, np.bool(True)]), BooleanArray), BooleanArray)
     check(assert_type(pd.array([True, None]), BooleanArray), BooleanArray)
     check(assert_type(pd.array([True, pd.NA]), BooleanArray), BooleanArray)
+
+    check(assert_type(pd.array(np.array([1], np.bool_)), BooleanArray), BooleanArray)
+
+    check(assert_type(pd.array(pd.array([True])), BooleanArray), BooleanArray)
