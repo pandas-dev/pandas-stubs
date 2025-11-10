@@ -924,16 +924,6 @@ ScalarT = TypeVar("ScalarT", bound=Scalar)
 ScalarT0 = TypeVar("ScalarT0", bound=Scalar, default=Scalar)
 # Refine the definitions below in 3.9 to use the specialized type.
 np_num: TypeAlias = np.bool | np.integer | np.floating | np.complexfloating
-np_ndarray_intp: TypeAlias = npt.NDArray[np.intp]
-np_ndarray_int64: TypeAlias = npt.NDArray[np.int64]
-np_ndarray_int: TypeAlias = npt.NDArray[np.signedinteger]
-np_ndarray_anyint: TypeAlias = npt.NDArray[np.integer]
-np_ndarray_float: TypeAlias = npt.NDArray[np.floating]
-np_ndarray_complex: TypeAlias = npt.NDArray[np.complexfloating]
-np_ndarray_bool: TypeAlias = npt.NDArray[np.bool_]
-np_ndarray_str: TypeAlias = npt.NDArray[np.str_]
-np_ndarray_dt: TypeAlias = npt.NDArray[np.datetime64]
-np_ndarray_td: TypeAlias = npt.NDArray[np.timedelta64]
 
 # Define shape and generic type variables with defaults similar to numpy
 GenericT = TypeVar("GenericT", bound=np.generic, default=Any)
@@ -942,10 +932,24 @@ GenericT_contra = TypeVar(
     "GenericT_contra", bound=np.generic, default=Any, contravariant=True
 )
 NpNumT = TypeVar("NpNumT", bound=np_num, default=np_num)
-ShapeT = TypeVar("ShapeT", bound=tuple[int, ...], default=tuple[Any, ...])
+if sys.version_info >= (3, 11):
+    ShapeT = TypeVar("ShapeT", bound=tuple[int, ...], default=tuple[Any, ...])
+else:
+    ShapeT = TypeVar("ShapeT", bound=tuple[int, ...], default=tuple[int, ...])
 # Numpy ndarray with more ergonomic typevar
 np_ndarray: TypeAlias = np.ndarray[ShapeT, np.dtype[GenericT]]
-np_ndarray_num: TypeAlias = np_ndarray[ShapeT, NpNumT]
+np_ndarray_intp: TypeAlias = np_ndarray[ShapeT, np.intp]
+np_ndarray_int64: TypeAlias = np_ndarray[ShapeT, np.int64]
+np_ndarray_int: TypeAlias = np_ndarray[ShapeT, np.signedinteger]
+np_ndarray_anyint: TypeAlias = np_ndarray[ShapeT, np.integer]
+np_ndarray_float: TypeAlias = np_ndarray[ShapeT, np.floating]
+np_ndarray_complex: TypeAlias = np_ndarray[ShapeT, np.complexfloating]
+np_ndarray_bool: TypeAlias = np_ndarray[ShapeT, np.bool]
+np_ndarray_num: TypeAlias = np_ndarray[ShapeT, np_num]
+np_ndarray_str: TypeAlias = np_ndarray[ShapeT, np.str_]
+np_ndarray_dt: TypeAlias = np_ndarray[ShapeT, np.datetime64]
+np_ndarray_td: TypeAlias = np_ndarray[ShapeT, np.timedelta64]
+np_ndarray_object: TypeAlias = np_ndarray[ShapeT, np.object_]
 
 # Numpy arrays with known shape (Do not use as argument types, only as return types)
 np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[GenericT]]

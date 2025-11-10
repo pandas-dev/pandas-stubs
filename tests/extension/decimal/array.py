@@ -160,10 +160,10 @@ class DecimalArray(OpsMixin, ExtensionArray):
         copy: bool = False,
         na_value: object = no_default,
         decimals: int | None = None,
-    ) -> np_ndarray:
-        result = np.asarray(self, dtype=dtype)
+    ) -> np_1darray:
+        result = cast(np_1darray, np.asarray(self, dtype=dtype))
         if decimals is not None:
-            result = np.asarray([round(x, decimals) for x in result])
+            result = cast(np_1darray, np.asarray([round(x, decimals) for x in result]))
         return result
 
     def __array_ufunc__(

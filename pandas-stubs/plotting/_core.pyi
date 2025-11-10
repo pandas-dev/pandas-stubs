@@ -15,7 +15,6 @@ from typing import (
 from matplotlib.axes import Axes
 from matplotlib.colors import Colormap
 from matplotlib.lines import Line2D
-import numpy as np
 import pandas as pd
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
@@ -29,7 +28,7 @@ from pandas._typing import (
     HashableT3,
     ListLikeHashable,
     np_ndarray_float,
-    npt,
+    np_ndarray_object,
 )
 
 class _BoxPlotT(NamedTuple):
@@ -233,7 +232,7 @@ class PlotAccessor:
         include_bool: bool = ...,
         backend: str = ...,
         **kwargs: Any,
-    ) -> npt.NDArray[np.object_]: ...
+    ) -> np_ndarray_object: ...
     @overload
     def __call__(
         self,
@@ -296,7 +295,7 @@ class PlotAccessor:
         *,
         subplots: Literal[True],
         **kwargs: Any,
-    ) -> npt.NDArray[np.object_]: ...
+    ) -> np_ndarray_object: ...
     @overload
     def bar(
         self,
@@ -316,7 +315,7 @@ class PlotAccessor:
         *,
         subplots: Literal[True],
         **kwargs: Any,
-    ) -> npt.NDArray[np.object_]: ...
+    ) -> np_ndarray_object: ...
     @overload
     def barh(
         self,
@@ -335,7 +334,7 @@ class PlotAccessor:
         *,
         subplots: Literal[True],
         **kwargs: Any,
-    ) -> npt.NDArray[np.object_]: ...
+    ) -> np_ndarray_object: ...
     @overload
     def box(
         self,
@@ -369,7 +368,7 @@ class PlotAccessor:
         *,
         subplots: Literal[True],
         **kwargs: Any,
-    ) -> npt.NDArray[np.object_]: ...
+    ) -> np_ndarray_object: ...
     @overload
     def kde(
         self,
@@ -397,7 +396,7 @@ class PlotAccessor:
         *,
         subplots: Literal[True],
         **kwargs: Any,
-    ) -> npt.NDArray[np.object_]: ...
+    ) -> np_ndarray_object: ...
     @overload
     def area(
         self,
@@ -417,7 +416,7 @@ class PlotAccessor:
         *,
         subplots: Literal[True],
         **kwargs: Any,
-    ) -> npt.NDArray[np.object_]: ...
+    ) -> np_ndarray_object: ...
     @overload
     def pie(
         self, y: Hashable, *, subplots: Literal[False] | None = ..., **kwargs: Any
@@ -425,7 +424,7 @@ class PlotAccessor:
     @overload
     def pie(
         self, y: Hashable, *, subplots: Literal[True], **kwargs: Any
-    ) -> npt.NDArray[np.object_]: ...
+    ) -> np_ndarray_object: ...
     @overload
     def scatter(
         self,
@@ -447,7 +446,7 @@ class PlotAccessor:
         *,
         subplots: Literal[True],
         **kwargs: Any,
-    ) -> npt.NDArray[np.object_]: ...
+    ) -> np_ndarray_object: ...
     @overload
     def hexbin(
         self,
@@ -471,6 +470,6 @@ class PlotAccessor:
         *,
         subplots: Literal[True],
         **kwargs: Any,
-    ) -> npt.NDArray[np.object_]: ...
+    ) -> np_ndarray_object: ...
 
     density = kde
