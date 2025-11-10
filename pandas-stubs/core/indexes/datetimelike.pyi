@@ -13,7 +13,6 @@ from pandas._typing import (
     AxisIndex,
     GenericT_co,
     TimeUnit,
-    np_1darray_int64,
     np_ndarray_complex,
 )
 
@@ -63,5 +62,3 @@ class DatetimeTimedeltaMixin(DatetimeIndexOpsMixin[S1, GenericT_co]):
     @property
     def unit(self) -> TimeUnit: ...
     def as_unit(self, unit: TimeUnit) -> Self: ...
-    @property
-    def asi8(self) -> np_1darray_int64: ...
