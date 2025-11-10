@@ -1,7 +1,10 @@
 from collections.abc import Sequence
+from datetime import (
+    datetime,
+    timedelta,
+)
 from typing import (
     Any,
-    Never,
     overload,
 )
 
@@ -27,6 +30,7 @@ from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.range import RangeIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
+from typing_extensions import Never
 
 from pandas._libs.interval import Interval
 from pandas._libs.missing import NAType
@@ -101,7 +105,8 @@ def array(  # type: ignore[overload-overlap]
 @overload
 def array(  # type: ignore[overload-overlap]
     data: (
-        Sequence[Timestamp | np.datetime64 | NaTType | None]
+        Sequence[datetime | NaTType | None]
+        | Sequence[np.datetime64 | NaTType | None]
         | np_ndarray_dt
         | DatetimeArray
         | DatetimeIndex
@@ -113,7 +118,7 @@ def array(  # type: ignore[overload-overlap]
 @overload
 def array(  # type: ignore[overload-overlap]
     data: (
-        Sequence[Timedelta | np.timedelta64 | NaTType | None]
+        Sequence[timedelta | np.timedelta64 | NaTType | None]
         | np_ndarray_td
         | TimedeltaArray
         | TimedeltaIndex

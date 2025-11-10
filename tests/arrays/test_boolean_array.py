@@ -6,7 +6,7 @@ from typing_extensions import assert_type
 from tests import check
 
 
-def test_construction() -> None:
+def test_constructor() -> None:
     check(assert_type(pd.array([True]), BooleanArray), BooleanArray)
     check(assert_type(pd.array([True, np.bool(True)]), BooleanArray), BooleanArray)
     check(assert_type(pd.array([True, None]), BooleanArray), BooleanArray)
