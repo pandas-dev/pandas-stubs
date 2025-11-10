@@ -11,7 +11,6 @@ from typing import (
 )
 
 from matplotlib.colors import Colormap
-import numpy as np
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
 
@@ -31,7 +30,8 @@ from pandas._typing import (
     T,
     WriteBuffer,
     WriteExcelBuffer,
-    npt,
+    np_ndarray,
+    np_ndarray_str,
 )
 
 from pandas.io.excel import ExcelWriter
@@ -52,7 +52,7 @@ class _SeriesFunc(Protocol):
 class _DataFrameFunc(Protocol):
     def __call__(
         self, series: DataFrame, /, *args: Any, **kwargs: Any
-    ) -> npt.NDArray | DataFrame: ...
+    ) -> np_ndarray | DataFrame: ...
 
 class _MapCallable(Protocol):
     def __call__(
@@ -238,14 +238,14 @@ class Styler(StylerRenderer):
     @overload
     def apply(
         self,
-        func: _DataFrameFunc | Callable[[DataFrame], npt.NDArray | DataFrame],
+        func: _DataFrameFunc | Callable[[DataFrame], np_ndarray | DataFrame],
         axis: None,
         subset: Subset | None = ...,
         **kwargs: Any,
     ) -> Styler: ...
     def apply_index(
         self,
-        func: Callable[[Series], npt.NDArray[np.str_] | list[str] | Series[str]],
+        func: Callable[[Series], list[str] | np_ndarray_str | Series[str]],
         axis: Axis = ...,
         level: Level | list[Level] | None = ...,
         **kwargs: Any,
@@ -295,7 +295,7 @@ class Styler(StylerRenderer):
         gmap: (
             Sequence[float]
             | Sequence[Sequence[float]]
-            | npt.NDArray
+            | np_ndarray
             | DataFrame
             | Series
             | None
@@ -313,7 +313,7 @@ class Styler(StylerRenderer):
         gmap: (
             Sequence[float]
             | Sequence[Sequence[float]]
-            | npt.NDArray
+            | np_ndarray
             | DataFrame
             | Series
             | None
@@ -334,7 +334,7 @@ class Styler(StylerRenderer):
         align: (
             Literal["left", "right", "zero", "mid", "mean"]
             | float
-            | Callable[[Series | npt.NDArray | DataFrame], float]
+            | Callable[[Series | np_ndarray | DataFrame], float]
         ) = "mid",
         vmin: float | None = None,
         vmax: float | None = None,

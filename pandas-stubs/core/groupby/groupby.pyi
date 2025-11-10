@@ -64,7 +64,8 @@ from pandas._typing import (
     TimestampConvertibleTypes,
     WindowingEngine,
     WindowingEngineKwargs,
-    npt,
+    np_ndarray_dt,
+    np_ndarray_int64,
 )
 
 from pandas.plotting import PlotAccessor
@@ -240,7 +241,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         adjust: bool = ...,
         ignore_na: bool = ...,
         axis: Axis = ...,
-        times: str | np.ndarray | Series | np.timedelta64 | None = ...,
+        times: str | np_ndarray_dt | Series | np.timedelta64 | None = ...,
         method: CalculationMethod = ...,
         *,
         selection: IndexLabel | None = ...,
@@ -357,7 +358,7 @@ class BaseGroupBy(SelectionMixin[NDFrameT], GroupByIndexingMixin):
     def ngroups(self) -> int: ...
     @final
     @property
-    def indices(self) -> dict[Hashable, Index | npt.NDArray[np.int_] | list[int]]: ...
+    def indices(self) -> dict[Hashable, Index | np_ndarray_int64 | list[int]]: ...
     @overload
     def pipe(
         self,

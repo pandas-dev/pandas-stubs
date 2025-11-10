@@ -28,7 +28,7 @@ from pandas._typing import (
     Label,
     Scalar,
     ScalarT,
-    npt,
+    np_ndarray,
 )
 
 _PivotAggCallable: TypeAlias = Callable[[Series], ScalarT]
@@ -86,7 +86,7 @@ def pivot_table(
     values: _PivotTableValuesTypes = None,
     *,
     index: Grouper,
-    columns: _PivotTableColumnsTypes | npt.NDArray[Any] | Index = None,
+    columns: _PivotTableColumnsTypes | np_ndarray | Index[Any] = None,
     aggfunc: (
         _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
     ) = "mean",
@@ -101,7 +101,7 @@ def pivot_table(
 def pivot_table(
     data: DataFrame,
     values: _PivotTableValuesTypes = None,
-    index: _PivotTableIndexTypes | npt.NDArray[Any] | Index = None,
+    index: _PivotTableIndexTypes | np_ndarray | Index[Any] = None,
     *,
     columns: Grouper,
     aggfunc: (

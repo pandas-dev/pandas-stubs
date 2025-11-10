@@ -23,6 +23,8 @@ from pandas._typing import (
     Dtype,
     Frequency,
     np_1darray,
+    np_1darray_intp,
+    np_ndarray_bool,
 )
 
 class PeriodIndex(DatetimeIndexOpsMixin[pd.Period, np.object_], PeriodIndexFieldOps):
@@ -65,10 +67,8 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period, np.object_], PeriodIndexField
         self, other: NaTType
     ) -> NaTType: ...
     def asof_locs(
-        self,
-        where: pd.DatetimeIndex | PeriodIndex,
-        mask: np_1darray[np.bool_],
-    ) -> np_1darray[np.intp]: ...
+        self, where: pd.DatetimeIndex | Self, mask: np_ndarray_bool
+    ) -> np_1darray_intp: ...
     @property
     def is_full(self) -> bool: ...
     @property

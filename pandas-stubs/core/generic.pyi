@@ -21,7 +21,6 @@ from typing import (
     overload,
 )
 
-import numpy as np
 from pandas import Index
 import pandas.core.indexing as indexing
 from pandas.core.resample import DatetimeIndexResampler
@@ -58,6 +57,7 @@ from pandas._typing import (
     TimeGrouperOrigin,
     TimestampConvertibleTypes,
     WriteBuffer,
+    np_ndarray,
 )
 
 from pandas.io.pytables import HDFStore
@@ -100,7 +100,7 @@ class NDFrame(indexing.IndexingMixin):
     @property
     def empty(self) -> _bool: ...
     __array_priority__: int = ...
-    def __array__(self, dtype=...) -> np.ndarray: ...
+    def __array__(self, dtype=...) -> np_ndarray: ...
     @final
     def to_excel(
         self,

@@ -107,6 +107,8 @@ from pandas._typing import (
     TimedeltaDtypeArg,
     TimestampDtypeArg,
     np_1darray,
+    np_1darray_bool,
+    np_1darray_intp,
     np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -340,7 +342,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> StringMethods[  # pyrefly: ignore[bad-specialization]
         Self,
         MultiIndex,
-        np_1darray[np.bool],
+        np_1darray_bool,
         Index[list[_str]],
         Index[int],
         Index[bytes],
@@ -422,7 +424,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def dropna(self, how: AnyAll = "any") -> Self: ...
     def unique(self, level: Hashable | None = None) -> Self: ...
     def drop_duplicates(self, *, keep: DropKeep = ...) -> Self: ...
-    def duplicated(self, keep: DropKeep = "first") -> np_1darray[np.bool]: ...
+    def duplicated(self, keep: DropKeep = "first") -> np_1darray_bool: ...
     def __and__(self, other: Never) -> Never: ...
     def __rand__(self, other: Never) -> Never: ...
     def __or__(self, other: Never) -> Never: ...
@@ -446,14 +448,14 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         result_name: Hashable = ...,
         sort: bool | None = None,
     ) -> Self: ...
-    def get_loc(self, key: Label) -> int | slice | np_1darray[np.bool]: ...
+    def get_loc(self, key: Label) -> int | slice | np_1darray_bool: ...
     def get_indexer(
         self,
         target: Index,
         method: ReindexMethod | None = None,
         limit: int | None = None,
         tolerance: Scalar | AnyArrayLike | Sequence[Scalar] | None = None,
-    ) -> np_1darray[np.intp]: ...
+    ) -> np_1darray_intp: ...
     def reindex(
         self,
         target: Iterable[Any],
@@ -461,7 +463,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         level: int | None = None,
         limit: int | None = None,
         tolerance: Scalar | AnyArrayLike | Sequence[Scalar] | None = None,
-    ) -> tuple[Index, np_1darray[np.intp] | None]: ...
+    ) -> tuple[Index, np_1darray_intp | None]: ...
     @overload
     def join(
         self,
@@ -471,7 +473,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         level: Level | None = None,
         return_indexers: Literal[True],
         sort: bool = False,
-    ) -> tuple[Index, np_1darray[np.intp] | None, np_1darray[np.intp] | None]: ...
+    ) -> tuple[Index, np_1darray_intp | None, np_1darray_intp | None]: ...
     @overload
     def join(
         self,
@@ -530,14 +532,12 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ): ...
     @final
     def sort(self, *args: Any, **kwargs: Any) -> None: ...
-    def argsort(self, *args: Any, **kwargs: Any) -> np_1darray[np.intp]: ...
+    def argsort(self, *args: Any, **kwargs: Any) -> np_1darray_intp: ...
     def get_indexer_non_unique(self, target): ...
     @final
     def get_indexer_for(self, target, **kwargs: Any): ...
-    @final
-    def groupby(self, values) -> dict[Hashable, np.ndarray]: ...
     def map(self, mapper, na_action=...) -> Index: ...
-    def isin(self, values, level=...) -> np_1darray[np.bool]: ...
+    def isin(self, values, level=...) -> np_1darray_bool: ...
     def slice_indexer(
         self,
         start: Label | None = None,
@@ -559,12 +559,12 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @property
     def shape(self) -> tuple[int, ...]: ...
     # Extra methods from old stubs
-    def __eq__(self, other: object) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __ne__(self, other: object) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __le__(self, other: Self | S1) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __ge__(self, other: Self | S1) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __lt__(self, other: Self | S1) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __gt__(self, other: Self | S1) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __eq__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __ne__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __le__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __ge__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __lt__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __gt__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     @overload
     def __add__(self: Index[Never], other: _str) -> Never: ...
     @overload
