@@ -1,3 +1,4 @@
+import numpy as np
 from pandas.core.arrays.masked import BaseMaskedArray
 
 from pandas._libs.missing import NAType
@@ -16,8 +17,12 @@ class _IntegerDtype(ExtensionDtype):
 class IntegerArray(BaseMaskedArray):
     @property
     def dtype(self) -> _IntegerDtype: ...
-    def __init__(self, values, mask, copy: bool = ...) -> None: ...
-    def __setitem__(self, key, value) -> None: ...
+    def __init__(
+        self,
+        values: np.typing.NDArray[np.integer],
+        mask: np.typing.NDArray[np.bool],
+        copy: bool = False,
+    ) -> None: ...
 
 class Int8Dtype(_IntegerDtype): ...
 class Int16Dtype(_IntegerDtype): ...
