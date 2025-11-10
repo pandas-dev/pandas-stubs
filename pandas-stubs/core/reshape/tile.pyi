@@ -225,7 +225,7 @@ def qcut(
     retbins: Literal[True],
     precision: int = 3,
     duplicates: Literal["raise", "drop"] = "raise",
-    # double when there are nan's
+    # float when there are nan's
 ) -> tuple[np_1darray_intp | np_1darray_float, np_1darray_float]: ...
 @overload
 def qcut(

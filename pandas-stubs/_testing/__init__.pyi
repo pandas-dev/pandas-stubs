@@ -11,7 +11,6 @@ from typing import (
 )
 import warnings
 
-from matplotlib.artist import Artist
 from pandas import (
     Categorical,
     DataFrame,
@@ -59,9 +58,6 @@ def assert_class_equal(
 ) -> None: ...
 def assert_attr_equal(
     attr: str, left: object, right: object, obj: str = "Attributes"
-) -> None: ...
-def assert_is_valid_plot_return_object(
-    objs: Series | np_ndarray | Artist | tuple | dict,
 ) -> None: ...
 def assert_is_sorted(seq: AnyArrayLike) -> None: ...
 def assert_categorical_equal(

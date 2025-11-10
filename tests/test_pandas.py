@@ -967,7 +967,7 @@ def test_index_unqiue() -> None:
     )
     check(
         assert_type(pd.unique(tdi), np_1darray_td),
-        np_1darray if PD_LTE_23 else pd.Index,
+        np_1darray if PD_LTE_23 else pd.TimedeltaIndex,
     )
     check(
         assert_type(pd.unique(mi), np_ndarray),
