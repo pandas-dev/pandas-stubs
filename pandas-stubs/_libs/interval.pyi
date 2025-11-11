@@ -4,9 +4,9 @@ from typing import (
     Literal,
     TypeVar,
     overload,
+    type_check_only,
 )
 
-import numpy as np
 from pandas import (
     IntervalIndex,
     Series,
@@ -17,8 +17,8 @@ from pandas import (
 from pandas._typing import (
     IntervalClosedType,
     IntervalT,
-    np_1darray,
-    npt,
+    np_1darray_bool,
+    np_ndarray,
 )
 
 VALID_CLOSED: frozenset[str]
@@ -27,6 +27,7 @@ _OrderableScalarT = TypeVar("_OrderableScalarT", bound=int | float)
 _OrderableTimesT = TypeVar("_OrderableTimesT", bound=Timestamp | Timedelta)
 _OrderableT = TypeVar("_OrderableT", bound=int | float | Timestamp | Timedelta)
 
+@type_check_only
 class _LengthDescriptor:
     @overload
     def __get__(
@@ -37,8 +38,9 @@ class _LengthDescriptor:
         self, instance: Interval[_OrderableTimesT], owner: Any
     ) -> Timedelta: ...
     @overload
-    def __get__(self, instance: IntervalTree, owner: Any) -> np.ndarray: ...
+    def __get__(self, instance: IntervalMixin, owner: Any) -> np_ndarray: ...
 
+@type_check_only
 class _MidDescriptor:
     @overload
     def __get__(self, instance: Interval[_OrderableScalarT], owner: Any) -> float: ...
@@ -47,7 +49,7 @@ class _MidDescriptor:
         self, instance: Interval[_OrderableTimesT], owner: Any
     ) -> _OrderableTimesT: ...
     @overload
-    def __get__(self, instance: IntervalTree, owner: Any) -> np.ndarray: ...
+    def __get__(self, instance: IntervalMixin, owner: Any) -> np_ndarray: ...
 
 class IntervalMixin:
     @property
@@ -68,8 +70,8 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     def right(self: Interval[_OrderableT]) -> _OrderableT: ...
     @property
     def closed(self) -> IntervalClosedType: ...
-    mid: _MidDescriptor
-    length: _LengthDescriptor
+    mid = _MidDescriptor()
+    length = _LengthDescriptor()
     def __init__(
         self,
         left: _OrderableT,
@@ -166,9 +168,7 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     @overload
     def __gt__(self, other: Interval[_OrderableT]) -> bool: ...
     @overload
-    def __gt__(
-        self: IntervalT, other: IntervalIndex[IntervalT]
-    ) -> np_1darray[np.bool]: ...
+    def __gt__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_1darray_bool: ...
     @overload
     def __gt__(
         self,
@@ -177,9 +177,7 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     @overload
     def __lt__(self, other: Interval[_OrderableT]) -> bool: ...
     @overload
-    def __lt__(
-        self: IntervalT, other: IntervalIndex[IntervalT]
-    ) -> np_1darray[np.bool]: ...
+    def __lt__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_1darray_bool: ...
     @overload
     def __lt__(
         self,
@@ -188,9 +186,7 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     @overload
     def __ge__(self, other: Interval[_OrderableT]) -> bool: ...
     @overload
-    def __ge__(
-        self: IntervalT, other: IntervalIndex[IntervalT]
-    ) -> np_1darray[np.bool]: ...
+    def __ge__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_1darray_bool: ...
     @overload
     def __ge__(
         self,
@@ -199,15 +195,11 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     @overload
     def __le__(self, other: Interval[_OrderableT]) -> bool: ...
     @overload
-    def __le__(
-        self: IntervalT, other: IntervalIndex[IntervalT]
-    ) -> np_1darray[np.bool]: ...
+    def __le__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_1darray_bool: ...
     @overload
     def __eq__(self, other: Interval[_OrderableT]) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __eq__(
-        self: IntervalT, other: IntervalIndex[IntervalT]
-    ) -> np_1darray[np.bool]: ...
+    def __eq__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_1darray_bool: ...
     @overload
     def __eq__(self, other: Series[_OrderableT]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
@@ -215,29 +207,8 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     @overload
     def __ne__(self, other: Interval[_OrderableT]) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __ne__(
-        self: IntervalT, other: IntervalIndex[IntervalT]
-    ) -> np_1darray[np.bool]: ...
+    def __ne__(self: IntervalT, other: IntervalIndex[IntervalT]) -> np_1darray_bool: ...
     @overload
     def __ne__(self, other: Series[_OrderableT]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: object) -> Literal[True]: ...
-
-class IntervalTree(IntervalMixin):
-    def __init__(
-        self,
-        left: np.ndarray,
-        right: np.ndarray,
-        closed: IntervalClosedType = ...,
-        leaf_size: int = ...,
-    ) -> None: ...
-    def get_indexer(self, target) -> npt.NDArray[np.intp]: ...
-    def get_indexer_non_unique(
-        self, target
-    ) -> tuple[npt.NDArray[np.intp], npt.NDArray[np.intp]]: ...
-    _na_count: int
-    @property
-    def is_overlapping(self) -> bool: ...
-    @property
-    def is_monotonic_increasing(self) -> bool: ...
-    def clear_mapping(self) -> None: ...

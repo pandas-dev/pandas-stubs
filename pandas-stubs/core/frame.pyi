@@ -31,6 +31,7 @@ from typing import (
 
 from matplotlib.axes import Axes as PlotAxes
 import numpy as np
+from numpy import typing as npt
 from pandas import (
     Period,
     Timedelta,
@@ -56,6 +57,7 @@ from pandas.core.indexing import (
     _LocIndexer,
 )
 from pandas.core.reshape.pivot import (
+    _PivotAggFunc,
     _PivotTableColumnsTypes,
     _PivotTableIndexTypes,
     _PivotTableValuesTypes,
@@ -126,6 +128,7 @@ from pandas._typing import (
     Level,
     ListLike,
     ListLikeExceptSeriesAndStr,
+    ListLikeHashable,
     ListLikeU,
     MaskType,
     MergeHow,
@@ -163,12 +166,15 @@ from pandas._typing import (
     WriteBuffer,
     XMLParsers,
     np_2darray,
-    npt,
-    num,
+    np_ndarray,
+    np_ndarray_bool,
+    np_ndarray_float,
+    np_ndarray_num,
 )
 
 from pandas.io.formats.style import Styler
 from pandas.plotting import PlotAccessor
+from pandas.plotting._core import _BoxPlotT
 
 _T_MUTABLE_MAPPING_co = TypeVar(
     "_T_MUTABLE_MAPPING_co", bound=MutableMapping, covariant=True
@@ -209,7 +215,7 @@ class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
             Scalar
             | IndexOpsMixin
             | DataFrame
-            | np.ndarray
+            | np_ndarray
             | NAType
             | NaTType
             | Mapping[Hashable, Scalar | NAType | NaTType]
@@ -429,8 +435,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def __matmul__(self, other: Series) -> Series: ...
     @overload
-    def __matmul__(self, other: np.ndarray) -> Self: ...
-    def __rmatmul__(self, other): ...
+    def __matmul__(self, other: np_ndarray_num) -> Self: ...
+    def __rmatmul__(self, other: np_ndarray_num) -> Self: ...
     @overload
     @classmethod
     def from_dict(
@@ -893,7 +899,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def eval(
         self, expr: _str, *, inplace: Literal[False] = False, **kwargs: Any
-    ) -> Scalar | np.ndarray | Self | Series: ...
+    ) -> Scalar | np_ndarray | Self | Series: ...
     @overload
     def select_dtypes(
         self, include: StrDtypeArg, exclude: _AstypeArgExtList | None = ...
@@ -1031,7 +1037,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             Label
             | Series
             | Index
-            | np.ndarray
+            | np_ndarray
             | Iterator[Hashable]
             | Sequence[Hashable]
         ),
@@ -1048,7 +1054,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             Label
             | Series
             | Index
-            | np.ndarray
+            | np_ndarray
             | Iterator[Hashable]
             | Sequence[Hashable]
         ),
@@ -1426,10 +1432,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def pivot_table(
         self,
-        values: _PivotTableValuesTypes = ...,
-        index: _PivotTableIndexTypes = ...,
-        columns: _PivotTableColumnsTypes = ...,
-        aggfunc="mean",
+        values: _PivotTableValuesTypes = None,
+        index: _PivotTableIndexTypes = None,
+        columns: _PivotTableColumnsTypes = None,
+        aggfunc: (
+            _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
+        ) = "mean",
         fill_value: Scalar | None = None,
         margins: _bool = False,
         dropna: _bool = True,
@@ -1463,8 +1471,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self | Series: ...
     def melt(
         self,
-        id_vars: tuple | Sequence | np.ndarray | None = ...,
-        value_vars: tuple | Sequence | np.ndarray | None = ...,
+        id_vars: tuple | Sequence | np_ndarray | None = ...,
+        value_vars: tuple | Sequence | np_ndarray | None = ...,
         var_name: Scalar | None = None,
         value_name: Scalar = "value",
         col_level: int | _str | None = ...,
@@ -1737,7 +1745,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def quantile(
         self,
-        q: list[float] | np.ndarray,
+        q: Sequence[float] | np_ndarray_float,
         axis: Axis = ...,
         numeric_only: _bool = ...,
         interpolation: QuantileInterpolation = ...,
@@ -1761,8 +1769,9 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def plot(self) -> PlotAccessor: ...
     def hist(
         self,
-        column: _str | list[_str] | None = None,
         by: _str | ListLike | None = None,
+        bins: int | list = 10,
+        *,
         grid: _bool = True,
         xlabelsize: float | str | None = None,
         xrot: float | None = None,
@@ -1773,24 +1782,88 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         sharey: _bool = False,
         figsize: tuple[float, float] | None = None,
         layout: tuple[int, int] | None = None,
-        bins: int | list = 10,
         backend: _str | None = None,
+        legend: bool = False,
         **kwargs: Any,
-    ): ...
+    ) -> npt.NDArray[np.object_]: ...
+
+    # Keep in sync with `pd.plotting.boxplot`
+    @overload
     def boxplot(
         self,
-        column: _str | list[_str] | None = None,
-        by: _str | ListLike | None = None,
+        by: None = None,
         ax: PlotAxes | None = None,
         fontsize: float | _str | None = None,
         rot: float = 0,
         grid: _bool = True,
         figsize: tuple[float, float] | None = None,
         layout: tuple[int, int] | None = None,
-        return_type: Literal["axes", "dict", "both"] | None = None,
+        *,
+        return_type: Literal["axes"] | None = None,
         backend: _str | None = None,
         **kwargs: Any,
-    ): ...
+    ) -> PlotAxes: ...
+    @overload
+    def boxplot(
+        self,
+        by: None = None,
+        ax: PlotAxes | None = None,
+        fontsize: float | _str | None = None,
+        rot: float = 0,
+        grid: _bool = True,
+        figsize: tuple[float, float] | None = None,
+        layout: tuple[int, int] | None = None,
+        *,
+        return_type: Literal["dict"],
+        backend: _str | None = None,
+        **kwargs: Any,
+    ) -> dict[str, PlotAxes]: ...
+    @overload
+    def boxplot(
+        self,
+        by: None = None,
+        ax: PlotAxes | None = None,
+        fontsize: float | _str | None = None,
+        rot: float = 0,
+        grid: _bool = True,
+        figsize: tuple[float, float] | None = None,
+        layout: tuple[int, int] | None = None,
+        *,
+        return_type: Literal["both"],
+        backend: _str | None = None,
+        **kwargs: Any,
+    ) -> _BoxPlotT: ...
+    @overload
+    def boxplot(
+        self,
+        by: Hashable | ListLikeHashable,
+        ax: PlotAxes | None = None,
+        fontsize: float | _str | None = None,
+        rot: float = 0,
+        grid: _bool = True,
+        figsize: tuple[float, float] | None = None,
+        layout: tuple[int, int] | None = None,
+        *,
+        return_type: None = None,
+        backend: _str | None = None,
+        **kwargs: Any,
+    ) -> PlotAxes: ...
+    @overload
+    def boxplot(
+        self,
+        by: Hashable | ListLikeHashable,
+        ax: PlotAxes | None = None,
+        fontsize: float | _str | None = None,
+        rot: float = 0,
+        grid: _bool = True,
+        figsize: tuple[float, float] | None = None,
+        layout: tuple[int, int] | None = None,
+        *,
+        return_type: Literal["axes", "dict", "both"],
+        backend: _str | None = None,
+        **kwargs: Any,
+    ) -> Series: ...
+
     sparse = ...
 
     # The rest of these are remnants from the
@@ -1839,7 +1912,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def __add__(self, other: Any) -> Self: ...
     def add(
         self,
-        other: num | ListLike | DataFrame,
+        other: complex | ListLike | DataFrame,
         axis: Axis | None = "columns",
         level: Level | None = None,
         fill_value: float | None = None,
@@ -1847,7 +1920,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def __radd__(self, other: Any) -> Self: ...
     def radd(
         self,
-        other,
+        other: complex | ListLike | DataFrame,
         axis: Axis = "columns",
         level: Level | None = None,
         fill_value: float | None = None,
@@ -1855,7 +1928,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def __sub__(self, other: Any) -> Self: ...
     def sub(
         self,
-        other: num | ListLike | DataFrame,
+        other: complex | ListLike | DataFrame,
         axis: Axis | None = ...,
         level: Level | None = ...,
         fill_value: float | None = None,
@@ -1863,7 +1936,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def __rsub__(self, other: Any) -> Self: ...
     def rsub(
         self,
-        other,
+        other: complex | ListLike | DataFrame,
         axis: Axis = ...,
         level: Level | None = ...,
         fill_value: float | None = None,
@@ -2070,20 +2143,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         include: Literal["all"] | list[Dtype] | None = ...,
         exclude: list[Dtype] | None = ...,
     ) -> Self: ...
-    def div(
+    def truediv(
         self,
-        other: num | ListLike | DataFrame,
+        other: complex | ListLike | DataFrame,
         axis: Axis | None = ...,
         level: Level | None = ...,
         fill_value: float | None = None,
     ) -> Self: ...
-    def divide(
-        self,
-        other: num | ListLike | DataFrame,
-        axis: Axis | None = ...,
-        level: Level | None = ...,
-        fill_value: float | None = None,
-    ) -> Self: ...
+    div = truediv
     @final
     def droplevel(self, level: Level | list[Level], axis: Axis = 0) -> Self: ...
     def eq(self, other, axis: Axis = "columns", level: Level | None = ...) -> Self: ...
@@ -2137,7 +2204,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def first_valid_index(self) -> Scalar: ...
     def floordiv(
         self,
-        other: num | ListLike | DataFrame,
+        other: float | ListLike | DataFrame,
         axis: Axis | None = ...,
         level: Level | None = ...,
         fill_value: float | None = None,
@@ -2205,7 +2272,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         cond: (
             Series
             | DataFrame
-            | np.ndarray
+            | np_ndarray_bool
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
@@ -2221,7 +2288,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         cond: (
             Series
             | DataFrame
-            | np.ndarray
+            | np_ndarray_bool
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
@@ -2261,21 +2328,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Series: ...
     def mod(
         self,
-        other: num | ListLike | DataFrame,
+        other: float | ListLike | DataFrame,
         axis: Axis | None = ...,
         level: Level | None = ...,
         fill_value: float | None = None,
     ) -> Self: ...
     def mul(
         self,
-        other: num | ListLike | DataFrame,
-        axis: Axis | None = ...,
-        level: Level | None = ...,
-        fill_value: float | None = None,
-    ) -> Self: ...
-    def multiply(
-        self,
-        other: num | ListLike | DataFrame,
+        other: complex | ListLike | DataFrame,
         axis: Axis | None = ...,
         level: Level | None = ...,
         fill_value: float | None = None,
@@ -2293,7 +2353,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def pop(self, item: _str) -> Series: ...
     def pow(
         self,
-        other: num | ListLike | DataFrame,
+        other: complex | ListLike | DataFrame,
         axis: Axis | None = ...,
         level: Level | None = ...,
         fill_value: float | None = None,
@@ -2617,13 +2677,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> _str: ...
     @final
     def to_xarray(self) -> xr.Dataset: ...
-    def truediv(
-        self,
-        other: num | ListLike | DataFrame,
-        axis: Axis | None = "columns",
-        level: Level | None = None,
-        fill_value: float | None = None,
-    ) -> Self: ...
     @final
     def truncate(
         self,
@@ -2664,7 +2717,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         cond: (
             Series
             | DataFrame
-            | np.ndarray
+            | np_ndarray_bool
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
@@ -2680,7 +2733,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         cond: (
             Series
             | DataFrame
-            | np.ndarray
+            | np_ndarray_bool
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),

@@ -14,17 +14,18 @@ from typing import (
 )
 
 import numpy as np
-from pandas import (
-    DataFrame,
-    Index,
-    TimedeltaIndex,
-    Timestamp,
-)
+from pandas.core.frame import DataFrame
 from pandas.core.indexes.accessors import DatetimeIndexProperties
+from pandas.core.indexes.base import Index
 from pandas.core.indexes.datetimelike import DatetimeTimedeltaMixin
+from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
-from typing_extensions import Self
+from typing_extensions import (
+    Never,
+    Self,
+)
 
+from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     AxesData,
     DateAndDatetimeLike,
@@ -33,7 +34,8 @@ from pandas._typing import (
     IntervalClosedType,
     TimeUnit,
     TimeZones,
-    np_1darray,
+    np_1darray_intp,
+    np_ndarray,
     np_ndarray_dt,
     np_ndarray_td,
 )
@@ -63,18 +65,23 @@ class DatetimeIndex(
     def __add__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: timedelta | BaseOffset
     ) -> Self: ...
-    def __radd__(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __radd__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: timedelta | BaseOffset
     ) -> Self: ...
     @overload  # type: ignore[override]
-    # pyrefly: ignore  # bad-override
-    def __sub__(
+    def __sub__(  # pyrefly: ignore[bad-override]
         self, other: datetime | np.datetime64 | np_ndarray_dt | Self
     ) -> TimedeltaIndex: ...
     @overload
     def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: timedelta | np.timedelta64 | np_ndarray_td | BaseOffset
     ) -> Self: ...
+    def __truediv__(  # type: ignore[override] # pyrefly: ignore[bad-override]
+        self, other: np_ndarray
+    ) -> Never: ...
+    def __rtruediv__(  # type: ignore[override] # pyrefly: ignore[bad-override]
+        self, other: np_ndarray
+    ) -> Never: ...
     @final
     def to_series(
         self, index: Index | None = None, name: Hashable | None = None
@@ -84,14 +91,14 @@ class DatetimeIndex(
     def inferred_type(self) -> str: ...
     def indexer_at_time(
         self, time: str | time, asof: bool = False
-    ) -> np_1darray[np.intp]: ...
+    ) -> np_1darray_intp: ...
     def indexer_between_time(
         self,
         start_time: time | str,
         end_time: time | str,
         include_start: bool = True,
         include_end: bool = True,
-    ) -> np_1darray[np.intp]: ...
+    ) -> np_1darray_intp: ...
     def to_julian_date(self) -> Index[float]: ...
     def isocalendar(self) -> DataFrame: ...
     @property

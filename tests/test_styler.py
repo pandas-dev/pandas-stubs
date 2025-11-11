@@ -9,7 +9,6 @@ from jinja2.environment import (
 )
 from jinja2.loaders import PackageLoader
 import numpy as np
-import numpy.typing as npt
 from pandas import (
     DataFrame,
     Index,
@@ -24,6 +23,7 @@ from tests import (
     PD_LTE_23,
     check,
     ensure_clean,
+    np_ndarray_str,
 )
 
 from pandas.io.formats.style import Styler
@@ -64,7 +64,7 @@ def test_apply() -> None:
 
 
 def test_apply_index() -> None:
-    def f(s: Series) -> npt.NDArray[np.str_]:
+    def f(s: Series) -> np_ndarray_str:
         return np.asarray(s, dtype=np.str_)
 
     check(assert_type(DF.style.apply_index(f), Styler), Styler)

@@ -8,6 +8,10 @@ from pandas import (
     Timedelta,
     date_range,
 )
+from pandas.core.indexers.objects import (
+    FixedForwardWindowIndexer,
+    VariableOffsetWindowIndexer,
+)
 from pandas.core.window import (
     Rolling,
     Window,
@@ -19,6 +23,8 @@ from pandas._libs.tslibs.offsets import BaseOffset
 from tests import (
     PD_LTE_23,
     check,
+    np_1darray_intp,
+    np_ndarray,
     pytest_warns_bounded,
 )
 
@@ -88,7 +94,7 @@ def test_rolling_apply() -> None:
 
     check(assert_type(DF.rolling(10).apply(_mean), DataFrame), DataFrame)
 
-    def _mean2(df: DataFrame) -> np.ndarray:
+    def _mean2(df: DataFrame) -> np_ndarray:
         return np.mean(df, axis=0)
 
     check(assert_type(DF.rolling(10).apply(_mean2, raw=True), DataFrame), DataFrame)
@@ -181,7 +187,7 @@ def test_rolling_apply_series() -> None:
 
     check(assert_type(S.rolling(10).apply(_mean), Series), Series)
 
-    def _mean2(df: Series) -> np.ndarray:
+    def _mean2(df: Series) -> np_ndarray:
         return np.mean(df, axis=0)
 
     check(assert_type(S.rolling(10).apply(_mean2, raw=True), Series), Series)
@@ -247,7 +253,7 @@ def test_expanding_apply() -> None:
 
     check(assert_type(DF.expanding(10).apply(_mean), DataFrame), DataFrame)
 
-    def _mean2(df: DataFrame) -> np.ndarray:
+    def _mean2(df: DataFrame) -> np_ndarray:
         return np.mean(df, axis=0)
 
     check(assert_type(DF.expanding(10).apply(_mean2, raw=True), DataFrame), DataFrame)
@@ -306,7 +312,7 @@ def test_expanding_apply_series() -> None:
 
     check(assert_type(S.expanding(10).apply(_mean), Series), Series)
 
-    def _mean2(df: Series) -> np.ndarray:
+    def _mean2(df: Series) -> np_ndarray:
         return np.mean(df, axis=0)
 
     check(assert_type(S.expanding(10).apply(_mean2, raw=True), Series), Series)
@@ -414,7 +420,7 @@ def test_rolling_window() -> None:
         ],
     )
 
-    indexer = pd.api.indexers.FixedForwardWindowIndexer(window_size=2)
+    indexer = FixedForwardWindowIndexer(window_size=2)
     check(
         assert_type(df_time.rolling(window=indexer, min_periods=1).sum(), DataFrame),
         DataFrame,
@@ -423,4 +429,28 @@ def test_rolling_window() -> None:
     check(
         assert_type(s.rolling(window=indexer, min_periods=1).sum(), Series),
         Series,
+    )
+
+
+def test_indexer_variable_offset() -> None:
+    indexer = VariableOffsetWindowIndexer(index=IDX, offset=pd.offsets.BDay(1))
+    check(
+        assert_type(
+            indexer.get_window_bounds(2, None, None),
+            tuple[np_1darray_intp, np_1darray_intp],
+        ),
+        tuple,
+        np.ndarray,
+    )
+
+
+def test_indexer_fixed_forward() -> None:
+    indexer = FixedForwardWindowIndexer([1, float("nan")], 2)
+    check(
+        assert_type(
+            indexer.get_window_bounds(2, None, None),
+            tuple[np_1darray_intp, np_1darray_intp],
+        ),
+        tuple,
+        np.ndarray,
     )

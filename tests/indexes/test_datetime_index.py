@@ -4,9 +4,7 @@ from datetime import time
 
 import numpy as np
 import pandas as pd
-from typing_extensions import (
-    assert_type,
-)
+from typing_extensions import assert_type
 
 from tests import (
     check,
@@ -123,10 +121,4 @@ def test_datetimeindex_indexer_between_time() -> None:
 
 def test_datetimeindex_snap() -> None:
     dti = pd.date_range("2023-01-01", "2023-02-01")
-    check(
-        assert_type(
-            dti.snap("MS"),
-            pd.DatetimeIndex,
-        ),
-        pd.DatetimeIndex,
-    )
+    check(assert_type(dti.snap("MS"), pd.DatetimeIndex), pd.DatetimeIndex)
