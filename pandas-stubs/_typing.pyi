@@ -19,15 +19,20 @@ from typing import (
     Literal,
     Protocol,
     SupportsIndex,
+    TypeAlias,
     TypedDict,
     Union,
     overload,
 )
 
+from _typeshed import _T_contra
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
-from pandas.core.arrays import ExtensionArray
+from pandas.core.arrays import (
+    ExtensionArray,
+    IntegerArray,
+)
 from pandas.core.frame import DataFrame
 from pandas.core.generic import NDFrame
 from pandas.core.groupby.grouper import Grouper
@@ -36,7 +41,6 @@ from pandas.core.series import Series
 from pandas.core.tools.datetimes import FulldatetimeDict
 from typing_extensions import (
     ParamSpec,
-    TypeAlias,
     TypeVar,
     override,
 )
@@ -56,6 +60,19 @@ from pandas.core.dtypes.dtypes import (
 )
 
 from pandas.io.formats.format import EngFormatter
+from pandas.tseries.offsets import (
+    Day,
+    Hour,
+    Micro,
+    Milli,
+    Minute,
+    MonthEnd,
+    Nano,
+    QuarterEnd,
+    Second,
+    Week,
+    YearEnd,
+)
 
 P = ParamSpec("P")
 
@@ -68,8 +85,11 @@ HashableT5 = TypeVar("HashableT5", bound=Hashable)
 
 # array-like
 
-ArrayLike: TypeAlias = ExtensionArray | np.ndarray
+ArrayLike: TypeAlias = ExtensionArray | npt.NDArray[Any]
 AnyArrayLike: TypeAlias = ArrayLike | Index | Series
+AnyArrayLikeInt: TypeAlias = (
+    IntegerArray | Index[int] | Series[int] | npt.NDArray[np.integer]
+)
 
 # list-like
 
@@ -146,6 +166,7 @@ ToTimestampHow: TypeAlias = Literal["s", "e", "start", "end"]
 NDFrameT = TypeVar("NDFrameT", bound=NDFrame)
 
 IndexT = TypeVar("IndexT", bound=Index)
+T_EXTENSION_ARRAY = TypeVar("T_EXTENSION_ARRAY", bound=ExtensionArray)
 
 # From _typing.py, not used here:
 # FreqIndexT = TypeVar("FreqIndexT", "DatetimeIndex", "PeriodIndex", "TimedeltaIndex")
@@ -162,6 +183,20 @@ Suffixes: TypeAlias = tuple[str | None, str | None] | list[str | None]
 Ordered: TypeAlias = bool | None
 JSONSerializable: TypeAlias = PythonScalar | list | dict
 Frequency: TypeAlias = str | BaseOffset
+PeriodFrequency: TypeAlias = (
+    str
+    | Day
+    | Hour
+    | Minute
+    | Second
+    | Milli
+    | Micro
+    | Nano
+    | YearEnd
+    | QuarterEnd
+    | MonthEnd
+    | Week
+)
 Axes: TypeAlias = ListLike
 
 RandomState: TypeAlias = (
@@ -173,7 +208,8 @@ RandomState: TypeAlias = (
 )
 
 # dtypes
-NpDtype: TypeAlias = str | np.dtype[np.generic] | type[str | complex | bool | object]
+NpDtypeNoStr: TypeAlias = np.dtype[np.generic] | type[complex | bool | object]
+NpDtype: TypeAlias = str | NpDtypeNoStr | type[str]
 Dtype: TypeAlias = ExtensionDtype | NpDtype
 
 # AstypeArg is more carefully defined here as compared to pandas
@@ -662,11 +698,11 @@ InterpolateOptions: TypeAlias = Literal[
 # Using List[int] here rather than Sequence[int] to disallow tuples.
 
 ScalarIndexer: TypeAlias = int | np.integer
-SequenceIndexer: TypeAlias = slice | list[int] | np.ndarray
+SequenceIndexer: TypeAlias = slice | list[int] | npt.NDArray[np.integer | np.bool]
 PositionalIndexer: TypeAlias = ScalarIndexer | SequenceIndexer
 PositionalIndexerTuple: TypeAlias = tuple[PositionalIndexer, PositionalIndexer]
 # PositionalIndexer2D = Union[PositionalIndexer, PositionalIndexerTuple] Not used in stubs
-TakeIndexer: TypeAlias = Sequence[int] | Sequence[np.integer] | npt.NDArray[np.integer]
+TakeIndexer: TypeAlias = Sequence[int | np.integer] | npt.NDArray[np.integer | np.bool]
 
 # Shared by functions such as drop and astype
 IgnoreRaise: TypeAlias = Literal["ignore", "raise"]
@@ -748,7 +784,7 @@ TimeNonexistent: TypeAlias = (
 DropKeep: TypeAlias = Literal["first", "last", False]
 CorrelationMethod: TypeAlias = (
     Literal["pearson", "kendall", "spearman"]
-    | Callable[[np.ndarray, np.ndarray], float]
+    | Callable[[np.typing.NDArray[Any], np.typing.NDArray[Any]], float]
 )
 AlignJoin: TypeAlias = Literal["outer", "inner", "left", "right"]
 DtypeBackend: TypeAlias = Literal["pyarrow", "numpy_nullable"]
@@ -797,22 +833,12 @@ SliceType: TypeAlias = Hashable | None
 ## All types below this point are only used in pandas-stubs
 ######
 
-num: TypeAlias = complex
-
-DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
-KeysArgType: TypeAlias = Any
-ListLikeT = TypeVar("ListLikeT", bound=ListLike)
-ListLikeExceptSeriesAndStr: TypeAlias = (
-    MutableSequence[Any] | np.ndarray | tuple[Any, ...] | Index
-)
-ListLikeU: TypeAlias = Sequence | np.ndarray | Series | Index
-ListLikeHashable: TypeAlias = (
-    MutableSequence[HashableT] | np.ndarray | tuple[HashableT, ...] | range
-)
 StrLike: TypeAlias = str | np.str_
 
 ScalarT = TypeVar("ScalarT", bound=Scalar)
 # Refine the definitions below in 3.9 to use the specialized type.
+np_num: TypeAlias = np.bool | np.integer | np.floating | np.complexfloating
+np_ndarray_intp: TypeAlias = npt.NDArray[np.intp]
 np_ndarray_int64: TypeAlias = npt.NDArray[np.int64]
 np_ndarray_int: TypeAlias = npt.NDArray[np.signedinteger]
 np_ndarray_anyint: TypeAlias = npt.NDArray[np.integer]
@@ -826,12 +852,40 @@ np_ndarray_td: TypeAlias = npt.NDArray[np.timedelta64]
 # Define shape and generic type variables with defaults similar to numpy
 GenericT = TypeVar("GenericT", bound=np.generic, default=Any)
 GenericT_co = TypeVar("GenericT_co", bound=np.generic, default=Any, covariant=True)
+GenericT_contra = TypeVar(
+    "GenericT_contra", bound=np.generic, default=Any, contravariant=True
+)
+NpNumT = TypeVar("NpNumT", bound=np_num, default=np_num)
 ShapeT = TypeVar("ShapeT", bound=tuple[int, ...], default=tuple[Any, ...])
 # Numpy ndarray with more ergonomic typevar
 np_ndarray: TypeAlias = np.ndarray[ShapeT, np.dtype[GenericT]]
+np_ndarray_num: TypeAlias = np_ndarray[ShapeT, NpNumT]
+
 # Numpy arrays with known shape (Do not use as argument types, only as return types)
 np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[GenericT]]
+np_1darray_str: TypeAlias = np_1darray[np.str_]
+np_1darray_bytes: TypeAlias = np_1darray[np.bytes_]
+np_1darray_complex: TypeAlias = np_1darray[np.complexfloating]
+np_1darray_object: TypeAlias = np_1darray[np.object_]
+np_1darray_bool: TypeAlias = np_1darray[np.bool]
+np_1darray_intp: TypeAlias = np_1darray[np.intp]
+np_1darray_int64: TypeAlias = np_1darray[np.int64]
+np_1darray_anyint: TypeAlias = np_1darray[np.integer]
+np_1darray_float: TypeAlias = np_1darray[np.floating]
+np_1darray_dt: TypeAlias = np_1darray[np.datetime64]
+np_1darray_td: TypeAlias = np_1darray[np.timedelta64]
 np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[GenericT]]
+
+DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
+KeysArgType: TypeAlias = Any
+ListLikeT = TypeVar("ListLikeT", bound=ListLike)
+ListLikeExceptSeriesAndStr: TypeAlias = (
+    MutableSequence[Any] | np_1darray | tuple[Any, ...] | Index
+)
+ListLikeU: TypeAlias = Sequence | np_1darray | Series | Index
+ListLikeHashable: TypeAlias = (
+    MutableSequence[HashableT] | np_1darray | tuple[HashableT, ...] | range
+)
 
 class SupportsDType(Protocol[GenericT_co]):
     @property
@@ -847,27 +901,37 @@ MaskType: TypeAlias = Series[bool] | np_ndarray_bool | list[bool]
 
 T_INT = TypeVar("T_INT", bound=int)
 T_COMPLEX = TypeVar("T_COMPLEX", bound=complex)
-SeriesDType: TypeAlias = (
-    str
-    | bytes
-    | datetime.date
-    | datetime.time
+SeriesDTypeNoStrDateTime: TypeAlias = (
+    bytes
     | bool
     | int
     | float
     | complex
-    | Dtype
-    | datetime.datetime  # includes pd.Timestamp
-    | datetime.timedelta  # includes pd.Timedelta
+    | NpDtypeNoStr
+    | ExtensionDtype
     | Period
     | Interval
     | CategoricalDtype
     | BaseOffset
-    | list[str]
+)
+SeriesDTypeNoDateTime: TypeAlias = (
+    str | SeriesDTypeNoStrDateTime | type[str] | list[str]
+)
+SeriesDType: TypeAlias = (
+    SeriesDTypeNoDateTime
+    | datetime.date
+    | datetime.time
+    | datetime.datetime  # includes pd.Timestamp
+    | datetime.timedelta  # includes pd.Timedelta
 )
 S1 = TypeVar("S1", bound=SeriesDType, default=Any)
 # Like S1, but without `default=Any`.
 S2 = TypeVar("S2", bound=SeriesDType)
+S2_contra = TypeVar("S2_contra", bound=SeriesDType, contravariant=True)
+S2_NDT_contra = TypeVar(
+    "S2_NDT_contra", bound=SeriesDTypeNoDateTime, contravariant=True
+)
+S2_NSDT = TypeVar("S2_NSDT", bound=SeriesDTypeNoStrDateTime)
 S3 = TypeVar("S3", bound=SeriesDType)
 
 # Constraint, instead of bound
@@ -1042,7 +1106,7 @@ TimeZones: TypeAlias = str | tzinfo | None | int
 IntoColumn: TypeAlias = (
     AnyArrayLike
     | Scalar
-    | Callable[[DataFrame], AnyArrayLike | Scalar | Sequence[Scalar] | range]
+    | Callable[[DataFrame], AnyArrayLike | Scalar | Sequence[Scalar] | range | None]
     | Sequence[Scalar]
     | range
     | None
@@ -1066,9 +1130,15 @@ Incomplete: TypeAlias = Any
 class Just(Protocol, Generic[T]):
     @property  # type: ignore[override]
     @override
-    def __class__(self, /) -> type[T]: ...
+    def __class__(self, /) -> type[T]: ...  # pyrefly: ignore[bad-override]
     @__class__.setter
     @override
     def __class__(self, t: type[T], /) -> None: ...
+
+class SupportsTrueDiv(Protocol[_T_contra, _T_co]):
+    def __truediv__(self, x: _T_contra, /) -> _T_co: ...
+
+class SupportsRTrueDiv(Protocol[_T_contra, _T_co]):
+    def __rtruediv__(self, x: _T_contra, /) -> _T_co: ...
 
 __all__ = ["npt", "type_t"]

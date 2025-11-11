@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import (
+    Callable,
     Hashable,
     Iterable,
     Iterator,
@@ -13,14 +14,16 @@ import io
 from pathlib import Path
 import platform
 import re
+import sys
 from typing import (
     TYPE_CHECKING,
     Any,
     Generic,
     Literal,
+    TypeAlias,
     TypedDict,
     TypeVar,
-    Union,
+    cast,
 )
 
 import numpy as np
@@ -31,6 +34,7 @@ from pandas.api.extensions import (
 )
 from pandas.api.typing import NAType
 from pandas.core.arrays.datetimes import DatetimeArray
+from pandas.core.arrays.string_ import StringArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.window import ExponentialMovingWindow
 from pandas.core.window.expanding import Expanding
@@ -39,16 +43,17 @@ import pytest
 from typing_extensions import (
     Never,
     Self,
-    TypeAlias,
-    assert_never,
     assert_type,
 )
 import xarray as xr
 
+from pandas._libs.tslibs.offsets import Day
 from pandas._typing import (
     DtypeObj,
     Scalar,
 )
+
+from pandas.core.dtypes.dtypes import CategoricalDtype  # noqa F401
 
 from tests import (
     PD_LTE_23,
@@ -57,6 +62,16 @@ from tests import (
     check,
     ensure_clean,
     np_1darray,
+    np_1darray_anyint,
+    np_1darray_bool,
+    np_1darray_bytes,
+    np_1darray_complex,
+    np_1darray_dt,
+    np_1darray_float,
+    np_1darray_object,
+    np_1darray_str,
+    np_1darray_td,
+    np_ndarray_num,
     pytest_warns_bounded,
 )
 from tests.extension.decimal.array import DecimalDtype
@@ -72,11 +87,6 @@ from pandas.tseries.offsets import (
 )
 
 if TYPE_CHECKING:
-    from pandas.core.series import (
-        OffsetSeries,
-        TimedeltaSeries,
-    )
-
     from tests import (
         BooleanDtypeArg,
         BytesDtypeArg,
@@ -91,10 +101,6 @@ if TYPE_CHECKING:
         UIntDtypeArg,
         VoidDtypeArg,
     )
-
-else:
-    TimedeltaSeries: TypeAlias = pd.Series
-    OffsetSeries: TypeAlias = pd.Series
 
 if not PD_LTE_23:
     from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore  # isort: skip
@@ -117,6 +123,9 @@ _DTypeKind: TypeAlias = Literal[
     "V",  # void
     "T",  # unicode-string (variable-width)
 ]
+
+T = TypeVar("T")
+T_co = TypeVar("T_co", covariant=True)
 
 
 def test_types_init() -> None:
@@ -317,16 +326,20 @@ def test_types_drop() -> None:
 
 def test_arguments_drop() -> None:
     # GH 950
+    s = pd.Series([0, 1, 2])
     if TYPE_CHECKING_INVALID_USAGE:
-        s = pd.Series([0, 1, 2])
-        res1 = s.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        res2 = s.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
-        res3 = s.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
-        # These should also fail, but `None` is Hasheable and i do not know how
-        # to type hint a non-None hashable.
-        # res4 = s.drop(columns=None)
-        # res5 = s.drop(index=None)
-        # res6 = s.drop(None)
+        _res1 = s.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        _res2 = s.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        _res3 = s.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+
+    def _never_checker0() -> None:  # pyright: ignore[reportUnusedFunction]
+        assert_type(s.drop(columns=None), Never)
+
+    def _never_checker1() -> None:  # pyright: ignore[reportUnusedFunction]
+        assert_type(s.drop(index=None), Never)
+
+    def _never_checker2() -> None:  # pyright: ignore[reportUnusedFunction]
+        assert_type(s.drop(None), Never)
 
 
 def test_types_drop_multilevel() -> None:
@@ -499,7 +512,6 @@ def test_types_rank() -> None:
 
 def test_types_mean() -> None:
     s = pd.Series([1, 2, 3, np.nan])
-    check(assert_type(s.mean(), float), float)
     check(
         assert_type(s.groupby(level=0).mean(), "pd.Series[float]"),
         pd.Series,
@@ -511,7 +523,6 @@ def test_types_mean() -> None:
 
 def test_types_median() -> None:
     s = pd.Series([1, 2, 3, np.nan])
-    check(assert_type(s.median(), float), float)
     check(
         assert_type(s.groupby(level=0).median(), "pd.Series[float]"),
         pd.Series,
@@ -745,7 +756,6 @@ def test_types_var() -> None:
 
 def test_types_std() -> None:
     s = pd.Series([-10, 2, 3, 10])
-    s.std()
     s.std(axis=0, ddof=1)
     s.std(skipna=True, numeric_only=False)
 
@@ -774,7 +784,7 @@ def test_types_value_counts() -> None:
 
 def test_types_unique() -> None:
     s = pd.Series([-10, 2, 2, 3, 10, 10])
-    check(assert_type(s.unique(), np.ndarray), np.ndarray)
+    check(assert_type(s.unique(), np_1darray), np_1darray)
 
 
 def test_types_apply() -> None:
@@ -827,14 +837,13 @@ def test_types_element_wise_arithmetic() -> None:
         assert_type(s.div(s2, fill_value=0), "pd.Series[float]"), pd.Series, np.float64
     )
 
-    res_floordiv: pd.Series = s // s2
-    res_floordiv2: pd.Series = s.floordiv(s2, fill_value=0)
+    _res_floordiv2: pd.Series = s.floordiv(s2, fill_value=0)
 
-    res_mod: pd.Series = s % s2
-    res_mod2: pd.Series = s.mod(s2, fill_value=0)
+    _res_mod: pd.Series = s % s2
+    _res_mod2: pd.Series = s.mod(s2, fill_value=0)
 
-    res_pow: pd.Series = s ** s2.abs()
-    res_pow2: pd.Series = s.pow(s2.abs(), fill_value=0)
+    _res_pow: pd.Series = s ** s2.abs()
+    _res_pow2: pd.Series = s.pow(s2.abs(), fill_value=0)
 
     check(assert_type(divmod(s, s2), tuple["pd.Series[int]", "pd.Series[int]"]), tuple)
 
@@ -857,16 +866,15 @@ def test_types_scalar_arithmetic() -> None:
         assert_type(s.div(2, fill_value=0), "pd.Series[float]"), pd.Series, np.floating
     )
 
-    res_floordiv: pd.Series = s // 2
-    res_floordiv2: pd.Series = s.floordiv(2, fill_value=0)
+    _res_floordiv2: pd.Series = s.floordiv(2, fill_value=0)
 
-    res_mod: pd.Series = s % 2
-    res_mod2: pd.Series = s.mod(2, fill_value=0)
+    _res_mod: pd.Series = s % 2
+    _res_mod2: pd.Series = s.mod(2, fill_value=0)
 
-    res_pow: pd.Series = s**2
-    res_pow1: pd.Series = s**0
-    res_pow2: pd.Series = s**0.213
-    res_pow3: pd.Series = s.pow(0.5)
+    _res_pow: pd.Series = s**2
+    _res_pow1: pd.Series = s**0
+    _res_pow2: pd.Series = s**0.213
+    _res_pow3: pd.Series = s.pow(0.5)
 
 
 def test_types_groupby() -> None:
@@ -955,13 +963,13 @@ def test_groupby_result() -> None:
     check(assert_type(value4, "pd.Series[int]"), pd.Series, np.integer)
 
     # Want to make sure these cases are differentiated
-    for (k1, k2), g in s.groupby(["a", "b"]):
+    for (_k1, _k2), _g in s.groupby(["a", "b"]):
         pass
 
-    for kk, g in s.groupby("a"):
+    for _kk, _g in s.groupby("a"):
         pass
 
-    for (k1, k2), g in s.groupby(multi_index):
+    for (_k1, _k2), _g in s.groupby(multi_index):
         pass
 
 
@@ -1019,16 +1027,16 @@ def test_groupby_result_for_scalar_indexes() -> None:
     check(assert_type(index4, "pd.Interval[pd.Timestamp]"), pd.Interval)
     check(assert_type(value4, "pd.Series[int]"), pd.Series, np.integer)
 
-    for p, g in s.groupby(period_index):
+    for _p, _g in s.groupby(period_index):
         pass
 
-    for dt, g in s.groupby(dt_index):
+    for _dt, _g in s.groupby(dt_index):
         pass
 
-    for tdelta, g in s.groupby(tdelta_index):
+    for _tdelta, _g in s.groupby(tdelta_index):
         pass
 
-    for interval, g in s.groupby(interval_index):
+    for _interval, _g in s.groupby(interval_index):
         pass
 
 
@@ -1415,31 +1423,41 @@ def test_types_rename_axis() -> None:
 
 def test_types_values() -> None:
     check(
-        assert_type(pd.Series([1, 2, 3]).values, Union[ExtensionArray, np.ndarray]),
-        np.ndarray,
+        assert_type(
+            pd.Series([1, 2, 3]).values,
+            np_1darray | ExtensionArray | pd.Categorical,
+        ),
+        np_1darray,
+        np.integer,
     )
-    valresult_type: type[np.ndarray | ExtensionArray]
+    valresult_type: type[np_1darray | ExtensionArray | pd.Categorical]
     if PD_LTE_23:
-        valresult_type = np.ndarray
+        valresult_type = np_1darray
     else:
-        valresult_type = ExtensionArray
+        valresult_type = StringArray
     check(
-        assert_type(pd.Series(list("aabc")).values, Union[np.ndarray, ExtensionArray]),
+        assert_type(
+            pd.Series(list("aabc")).values,
+            np_1darray | ExtensionArray | pd.Categorical,
+        ),
         valresult_type,
+        str,
     )
     check(
         assert_type(
             pd.Series(list("aabc")).astype("category").values,
-            Union[np.ndarray, ExtensionArray],
+            np_1darray | ExtensionArray | pd.Categorical,
         ),
         pd.Categorical,
+        str,
     )
     check(
         assert_type(
             pd.Series(pd.date_range("20130101", periods=3, tz="US/Eastern")).values,
-            Union[np.ndarray, ExtensionArray],
+            np_1darray | ExtensionArray | pd.Categorical,
         ),
-        np.ndarray,
+        np_1darray,
+        np.datetime64,
     )
 
 
@@ -1488,7 +1506,7 @@ def test_types_rename() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType]
+        _s7 = pd.Series([1, 2, 3]).rename({1: [3, 4, 5]})  # type: ignore[dict-item] # pyright: ignore[reportArgumentType]
 
 
 def test_types_ne() -> None:
@@ -1575,8 +1593,8 @@ def test_types_dot() -> None:
     check(assert_type(s1 @ s2, Scalar), np.int64)
     check(assert_type(s1.dot(df1), "pd.Series[int]"), pd.Series, np.int64)
     check(assert_type(s1 @ df1, pd.Series), pd.Series)
-    check(assert_type(s1.dot(n1), np.ndarray), np.ndarray)
-    check(assert_type(s1 @ n1, np.ndarray), np.ndarray)
+    check(assert_type(s1.dot(n1), np_ndarray_num), np.ndarray)
+    check(assert_type(s1 @ n1, np_ndarray_num), np.ndarray)
 
 
 def test_series_loc_setitem() -> None:
@@ -1616,7 +1634,7 @@ def test_series_multiindex_getitem() -> None:
     s = pd.Series(
         [1, 2, 3, 4], index=pd.MultiIndex.from_product([["a", "b"], ["x", "y"]])
     )
-    s1: pd.Series = s["a", :]
+    _s1: pd.Series = s["a", :]
 
 
 def test_reset_index() -> None:
@@ -1810,7 +1828,7 @@ def test_iloc_setitem_ndarray() -> None:
 
 def test_types_iter() -> None:
     s = pd.Series([1, 2, 3], dtype=int)
-    iterable: Iterable[int] = s
+    _iterable: Iterable[int] = s
     check(assert_type(iter(s), Iterator[int]), Iterator, int)
     check(assert_type(next(iter(s)), int), int)
 
@@ -1826,10 +1844,14 @@ def test_types_to_dict() -> None:
     assert_type(s.to_dict(), dict[Any, str])
 
 
-def test_categorical_codes():
+def test_categorical_codes() -> None:
     # GH-111
     cat = pd.Categorical(["a", "b", "a"])
     check(assert_type(cat.codes, np_1darray[np.signedinteger]), np_1darray[np.int8])
+
+    # GH1383
+    sr = pd.Series([1], dtype="category")
+    check(assert_type(sr, "pd.Series[CategoricalDtype]"), pd.Series, np.integer)
 
 
 def test_relops() -> None:
@@ -1913,7 +1935,7 @@ def test_resample() -> None:
     # GH 181
     N = 10
     index = pd.date_range("1/1/2000", periods=N, freq="min")
-    x = [x for x in range(N)]
+    x = list(range(N))
     s = pd.Series(x, index=index, dtype=float)
     check(assert_type(s.resample("2min").std(), "pd.Series[float]"), pd.Series, float)
     check(assert_type(s.resample("2min").var(), "pd.Series[float]"), pd.Series, float)
@@ -1937,15 +1959,15 @@ def test_resample() -> None:
 def test_squeeze() -> None:
     s1 = pd.Series([1, 2, 3])
     check(
-        assert_type(s1.squeeze(), Union["pd.Series[int]", Scalar]),
+        assert_type(s1.squeeze(), "pd.Series[int] | Scalar"),
         pd.Series,
         np.integer,
     )
     s2 = pd.Series([1])
-    check(assert_type(s2.squeeze(), Union["pd.Series[int]", Scalar]), np.integer)
+    check(assert_type(s2.squeeze(), "pd.Series[int] | Scalar"), np.integer)
 
 
-def test_to_xarray():
+def test_to_xarray() -> None:
     s = pd.Series([1, 2])
     check(assert_type(s.to_xarray(), xr.DataArray), xr.DataArray)
 
@@ -1981,12 +2003,92 @@ def test_dtype_type() -> None:
 
 def test_types_to_numpy() -> None:
     s = pd.Series(["a", "b", "c"], dtype=str)
-    check(assert_type(s.to_numpy(), np_1darray), np_1darray)
-    check(assert_type(s.to_numpy(dtype="str", copy=True), np_1darray), np_1darray)
-    check(assert_type(s.to_numpy(na_value=0), np_1darray), np_1darray)
-    check(assert_type(s.to_numpy(na_value=np.int32(4)), np_1darray), np_1darray)
-    check(assert_type(s.to_numpy(na_value=np.float16(4)), np_1darray), np_1darray)
-    check(assert_type(s.to_numpy(na_value=np.complex128(4, 7)), np_1darray), np_1darray)
+    check(assert_type(s.to_numpy(), np_1darray[np.str_]), np_1darray)
+    check(
+        assert_type(s.to_numpy(dtype="str", copy=True), np_1darray[np.str_]), np_1darray
+    )
+    check(assert_type(s.to_numpy(na_value=0), np_1darray[np.str_]), np_1darray)
+    check(
+        assert_type(s.to_numpy(na_value=np.int32(4)), np_1darray[np.str_]), np_1darray
+    )
+    check(
+        assert_type(s.to_numpy(na_value=np.float16(4)), np_1darray[np.str_]), np_1darray
+    )
+    check(
+        assert_type(s.to_numpy(na_value=np.complex128(4, 7)), np_1darray[np.str_]),
+        np_1darray,
+    )
+
+    check(assert_type(pd.Series().to_numpy(), np_1darray), np_1darray)
+
+
+def test_to_numpy() -> None:
+    """Test Series.to_numpy for different types."""
+    s_str = pd.Series(["a", "b", "c"], dtype=str)
+    check(assert_type(s_str.to_numpy(), np_1darray_str), np_1darray, str)
+
+    s_bytes = pd.Series(["a", "b", "c"]).astype(bytes)
+    check(assert_type(s_bytes.to_numpy(), np_1darray_bytes), np_1darray, np.bytes_)
+
+    s_bool = pd.Series([True, False])
+    check(assert_type(s_bool.to_numpy(), np_1darray_bool), np_1darray, np.bool_)
+
+    s_int = pd.Series([2, 3, 4])
+    check(assert_type(s_int.to_numpy(), np_1darray_anyint), np_1darray, np.integer)
+
+    s_float = pd.Series([2.0, 3.54, 4.84])
+    check(
+        assert_type(s_float.to_numpy(), np_1darray_float),
+        np_1darray,
+        np.floating,
+    )
+
+    s_complex = pd.Series([2.0 + 2j, 3.54 + 4j, 4.84])
+    check(
+        assert_type(s_complex.to_numpy(), np_1darray_complex),
+        np_1darray,
+        np.complexfloating,
+    )
+
+    dates = pd.Series(
+        [
+            pd.Timestamp("2020-01-01"),
+            pd.Timestamp("2020-01-15"),
+            pd.Timestamp("2020-02-01"),
+        ],
+        dtype="datetime64[ns]",
+    )
+    s_period = pd.PeriodIndex(dates, freq="M").to_series()
+    check(assert_type(s_period.to_numpy(), np_1darray_object), np_1darray, pd.Period)
+
+    s_interval = pd.Series(
+        [
+            pd.Interval(date, date + pd.DateOffset(days=1), closed="left")
+            for date in dates
+        ]
+    )
+    check(
+        assert_type(s_interval.to_numpy(), np_1darray_object), np_1darray, pd.Interval
+    )
+
+    s_day = pd.Series([Day(1)])
+    check(assert_type(s_day.to_numpy(), np_1darray_object), np_1darray, Day)
+
+    s_date = pd.Series(pd.date_range(start="2017-01-01", end="2017-02-01"))
+    check(
+        assert_type(s_date.to_numpy(), np_1darray_dt),
+        np_1darray,
+        np.datetime64,
+    )
+
+    s_timedelta = pd.Series(
+        [pd.Timestamp.now().date(), pd.Timestamp.now().date()]
+    ).diff()
+    check(
+        assert_type(s_timedelta.to_numpy(), np_1darray_td),
+        np_1darray,
+        np.timedelta64,
+    )
 
 
 def test_where() -> None:
@@ -2126,10 +2228,9 @@ def test_AnyArrayLike_and_clip() -> None:
 
 def test_pandera_generic() -> None:
     # GH 471
-    T = TypeVar("T")
 
     class MySeries(pd.Series, Generic[T]):
-        def __new__(cls, *args, **kwargs) -> Self:
+        def __new__(cls, *args: Any, **kwargs: Any) -> Self:
             return object.__new__(cls)
 
     def func() -> MySeries[float]:
@@ -2817,58 +2918,58 @@ def test_astype_timestamp(cast_arg: TimestampDtypeArg, target_type: type) -> Non
 @pytest.mark.parametrize("cast_arg, target_type", ASTYPE_TIMEDELTA_ARGS, ids=repr)
 def test_astype_timedelta(cast_arg: TimedeltaDtypeArg, target_type: type) -> None:
     s = pd.Series([1, 2, 3])
-    check(s.astype(cast_arg), TimedeltaSeries, target_type)
+    check(s.astype(cast_arg), pd.Series, target_type)
 
     if TYPE_CHECKING:
-        assert_type(s.astype("timedelta64[Y]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[M]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[W]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[D]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[h]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[m]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[s]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[ms]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[us]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[μs]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[ns]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[ps]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[fs]"), "TimedeltaSeries")
-        assert_type(s.astype("timedelta64[as]"), "TimedeltaSeries")
+        assert_type(s.astype("timedelta64[Y]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[M]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[W]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[D]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[h]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[m]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[s]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[ms]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[us]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[μs]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[ns]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[ps]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[fs]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("timedelta64[as]"), "pd.Series[pd.Timedelta]")
         # numpy timedelta64 type codes
-        assert_type(s.astype("m8[Y]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[M]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[W]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[D]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[h]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[m]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[s]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[ms]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[us]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[μs]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[ns]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[ps]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[fs]"), "TimedeltaSeries")
-        assert_type(s.astype("m8[as]"), "TimedeltaSeries")
+        assert_type(s.astype("m8[Y]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[M]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[W]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[D]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[h]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[m]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[s]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[ms]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[us]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[μs]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[ns]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[ps]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[fs]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("m8[as]"), "pd.Series[pd.Timedelta]")
         # numpy timedelta64 type codes
-        assert_type(s.astype("<m8[Y]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[M]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[W]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[D]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[h]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[m]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[s]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[ms]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[us]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[μs]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[ns]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[ps]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[fs]"), "TimedeltaSeries")
-        assert_type(s.astype("<m8[as]"), "TimedeltaSeries")
+        assert_type(s.astype("<m8[Y]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[M]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[W]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[D]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[h]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[m]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[s]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[ms]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[us]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[μs]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[ns]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[ps]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[fs]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("<m8[as]"), "pd.Series[pd.Timedelta]")
         # pyarrow duration
-        assert_type(s.astype("duration[s][pyarrow]"), "TimedeltaSeries")
-        assert_type(s.astype("duration[ms][pyarrow]"), "TimedeltaSeries")
-        assert_type(s.astype("duration[us][pyarrow]"), "TimedeltaSeries")
-        assert_type(s.astype("duration[ns][pyarrow]"), "TimedeltaSeries")
+        assert_type(s.astype("duration[s][pyarrow]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("duration[ms][pyarrow]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("duration[us][pyarrow]"), "pd.Series[pd.Timedelta]")
+        assert_type(s.astype("duration[ns][pyarrow]"), "pd.Series[pd.Timedelta]")
 
 
 @pytest.mark.parametrize("cast_arg, target_type", ASTYPE_STRING_ARGS, ids=repr)
@@ -2918,8 +3019,6 @@ def test_astype_categorical(cast_arg: CategoryDtypeArg, target_type: type) -> No
         # pandas category
         assert_type(s.astype(pd.CategoricalDtype()), "pd.Series[pd.CategoricalDtype]")
         assert_type(s.astype(cast_arg), "pd.Series[pd.CategoricalDtype]")
-        # pyarrow dictionary
-        # assert_type(s.astype("dictionary[pyarrow]"), "pd.Series[Categorical]")
 
 
 @pytest.mark.parametrize("cast_arg, target_type", ASTYPE_OBJECT_ARGS, ids=repr)
@@ -2979,7 +3078,7 @@ def test_astype_other() -> None:
 
 def test_all_astype_args_tested() -> None:
     """Check that all relevant numpy type aliases are tested."""
-    NUMPY_ALIASES: set[str] = {k for k in np.sctypeDict}
+    NUMPY_ALIASES: set[str] = set(np.sctypeDict)
     EXCLUDED_ALIASES = {
         "datetime64",
         "m",
@@ -3120,7 +3219,7 @@ def test_to_json_mode() -> None:
     check(assert_type(result2, str), str)
     check(assert_type(result4, str), str)
     if TYPE_CHECKING_INVALID_USAGE:
-        result3 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        _result3 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
 def test_groupby_diff() -> None:
@@ -3154,7 +3253,7 @@ def test_series_to_string_float_fmt() -> None:
     )
     check(assert_type(sr.to_string(), str), str)
 
-    def _formatter(x) -> str:
+    def _formatter(x: float) -> str:
         return f"{x:.2f}"
 
     check(assert_type(sr.to_string(float_format=_formatter), str), str)
@@ -3181,7 +3280,7 @@ def test_types_mask() -> None:
     check(assert_type(s.mask(cond, 10), "pd.Series[int]"), pd.Series, np.integer)
 
     # Test case with a boolean condition and a callable
-    def double(x):
+    def double(x: int) -> int:
         return x * 2
 
     check(assert_type(s.mask(s > 3, double), "pd.Series[int]"), pd.Series, np.integer)
@@ -3191,37 +3290,15 @@ def test_types_mask() -> None:
     check(assert_type(s.mask(s > 3, pd.NA), "pd.Series[int]"), pd.Series, np.float64)
 
 
-def test_timedelta_div() -> None:
-    series = pd.Series([pd.Timedelta(days=1)])
-    delta = datetime.timedelta(1)
-
-    check(assert_type(series / delta, "pd.Series[float]"), pd.Series, float)
-    check(assert_type(series / [delta], "pd.Series[float]"), pd.Series, float)
-    check(assert_type(series / 1, "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    check(assert_type(series / [1], "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    check(assert_type(series // delta, "pd.Series[int]"), pd.Series, np.longlong)
-    check(assert_type(series // [delta], "pd.Series[int]"), pd.Series, int)
-    check(assert_type(series // 1, "TimedeltaSeries"), pd.Series, pd.Timedelta)
-    check(assert_type(series // [1], "TimedeltaSeries"), pd.Series, pd.Timedelta)
-
-    check(assert_type(delta / series, "pd.Series[float]"), pd.Series, float)
-    check(assert_type([delta] / series, "pd.Series[float]"), pd.Series, float)
-    check(assert_type(delta // series, "pd.Series[int]"), pd.Series, np.longlong)
-    check(assert_type([delta] // series, "pd.Series[int]"), pd.Series, np.signedinteger)
-
-    if TYPE_CHECKING_INVALID_USAGE:
-        1 / series  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        [1] / series  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        1 // series  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        [1] // series  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-
-
 def test_rank() -> None:
     check(
         assert_type(pd.Series([1, 2]).rank(), "pd.Series[float]"), pd.Series, np.float64
     )
 
 
+@pytest.mark.xfail(
+    sys.version_info >= (3, 14), reason="sys.getrefcount pandas-dev/pandas#61368"
+)
 def test_series_setitem_multiindex() -> None:
     # GH 767
     df = (
@@ -3262,21 +3339,21 @@ def test_round() -> None:
 def test_get() -> None:
     s_int = pd.Series([1, 2, 3], index=[1, 2, 3])
 
-    check(assert_type(s_int.get(1), Union[int, None]), np.int64)
-    check(assert_type(s_int.get(99), Union[int, None]), type(None))
-    check(assert_type(s_int.get(1, default=None), Union[int, None]), np.int64)
-    check(assert_type(s_int.get(99, default=None), Union[int, None]), type(None))
+    check(assert_type(s_int.get(1), int | None), np.int64)
+    check(assert_type(s_int.get(99), int | None), type(None))
+    check(assert_type(s_int.get(1, default=None), int | None), np.int64)
+    check(assert_type(s_int.get(99, default=None), int | None), type(None))
     check(assert_type(s_int.get(1, default=2), int), np.int64)
-    check(assert_type(s_int.get(99, default="a"), Union[int, str]), str)
+    check(assert_type(s_int.get(99, default="a"), int | str), str)
 
     s_str = pd.Series(list("abc"), index=list("abc"))
 
-    check(assert_type(s_str.get("a"), Union[str, None]), str)
-    check(assert_type(s_str.get("z"), Union[str, None]), type(None))
-    check(assert_type(s_str.get("a", default=None), Union[str, None]), str)
-    check(assert_type(s_str.get("z", default=None), Union[str, None]), type(None))
+    check(assert_type(s_str.get("a"), str | None), str)
+    check(assert_type(s_str.get("z"), str | None), type(None))
+    check(assert_type(s_str.get("a", default=None), str | None), str)
+    check(assert_type(s_str.get("z", default=None), str | None), type(None))
     check(assert_type(s_str.get("a", default="b"), str), str)
-    check(assert_type(s_str.get("z", default=True), Union[str, bool]), bool)
+    check(assert_type(s_str.get("z", default=True), str | bool), bool)
 
 
 def test_series_new_empty() -> None:
@@ -3310,30 +3387,6 @@ def test_series_mapping() -> None:
         ),
         pd.Series,
         str,
-    )
-
-
-def test_timedeltaseries_operators() -> None:
-    series = pd.Series([pd.Timedelta(days=1)])
-    check(
-        assert_type(series + datetime.datetime.now(), "pd.Series[pd.Timestamp]"),
-        pd.Series,
-        pd.Timestamp,
-    )
-    check(
-        assert_type(series + datetime.timedelta(1), TimedeltaSeries),
-        pd.Series,
-        pd.Timedelta,
-    )
-    check(
-        assert_type(datetime.datetime.now() + series, "pd.Series[pd.Timestamp]"),
-        pd.Series,
-        pd.Timestamp,
-    )
-    check(
-        assert_type(series - datetime.timedelta(1), TimedeltaSeries),
-        pd.Series,
-        pd.Timedelta,
     )
 
 
@@ -3483,7 +3536,7 @@ def test_diff() -> None:
             pd.Series(
                 [datetime.datetime.now().date(), datetime.datetime.now().date()]
             ).diff(),
-            "TimedeltaSeries",
+            "pd.Series[pd.Timedelta]",
         ),
         pd.Series,
         pd.Timedelta,
@@ -3492,7 +3545,7 @@ def test_diff() -> None:
     # timestamp -> timedelta
     times = pd.Series([pd.Timestamp(0), pd.Timestamp(1)])
     check(
-        assert_type(times.diff(), "TimedeltaSeries"),
+        assert_type(times.diff(), "pd.Series[pd.Timedelta]"),
         pd.Series,
         pd.Timedelta,
         index_to_check_for_type=-1,
@@ -3500,7 +3553,8 @@ def test_diff() -> None:
     # timedelta -> timedelta64
     check(
         assert_type(
-            pd.Series([pd.Timedelta(0), pd.Timedelta(1)]).diff(), "TimedeltaSeries"
+            pd.Series([pd.Timedelta(0), pd.Timedelta(1)]).diff(),
+            "pd.Series[pd.Timedelta]",
         ),
         pd.Series,
         pd.Timedelta,
@@ -3516,7 +3570,7 @@ def test_diff() -> None:
                     pd.Series(
                         pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
                     ).diff(),
-                    "OffsetSeries",
+                    "pd.Series[BaseOffset]",
                 ),
                 pd.Series,
                 BaseOffset,
@@ -3528,75 +3582,77 @@ def test_diff() -> None:
                 pd.Series(
                     pd.period_range(start="2017-01-01", end="2017-02-01", freq="D")
                 ).diff(),
-                "OffsetSeries",
+                "pd.Series[BaseOffset]",
             ),
             pd.Series,
             BaseOffset,
             index_to_check_for_type=-1,
         )
-    # bool -> object
+    # bool -> Any
+    check(
+        assert_type(pd.Series([True, True, False, False, True]).diff(), pd.Series),
+        pd.Series,
+        bool,
+        index_to_check_for_type=-1,
+    )
+    # nullable bool -> nullable bool
+    # casting due to pandas-dev/pandas-stubs#1395
     check(
         assert_type(
-            pd.Series([True, True, False, False, True]).diff(),
-            "pd.Series[type[object]]",
+            cast(
+                "pd.Series[pd.BooleanDtype]",
+                pd.Series([True, True, False, False, True], dtype="boolean").diff(),
+            ),
+            "pd.Series[pd.BooleanDtype]",
         ),
         pd.Series,
-        object,
+        np.bool_,
+        index_to_check_for_type=-1,
     )
-    # object -> object
-    check(
-        assert_type(s.astype(object).diff(), "pd.Series[type[object]]"),
-        pd.Series,
-        object,
-    )
+    # Any -> float
+    s_o = s.astype(object)
+    assert_type(s_o, pd.Series)
+    check(assert_type(s_o.diff(), "pd.Series[float]"), pd.Series, float)
     # complex -> complex
     check(
         assert_type(s.astype(complex).diff(), "pd.Series[complex]"), pd.Series, complex
     )
-    if TYPE_CHECKING_INVALID_USAGE:
-        # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
-        assert_never(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff())
 
-
-def test_diff_never1() -> None:
-    s = pd.Series([1, 1, 2, 3, 5, 8])
     if TYPE_CHECKING_INVALID_USAGE:
         # bytes -> numpy.core._exceptions._UFuncNoLoopError: ufunc 'subtract' did not contain a loop with signature matching types (dtype('S21'), dtype('S21')) -> None
-        assert_never(s.astype(bytes).diff())
+        pd.Series([1, 1, 2, 3, 5, 8]).astype(bytes).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 
-
-def test_diff_never2() -> None:
-    if TYPE_CHECKING_INVALID_USAGE:
         # dtype -> TypeError: unsupported operand type(s) for -: 'type' and 'type'
-        assert_never(pd.Series([str, int, bool]).diff())
+        pd.Series([str, int, bool]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 
-
-def test_diff_never3() -> None:
-    if TYPE_CHECKING_INVALID_USAGE:
         # str -> TypeError: unsupported operand type(s) for -: 'str' and 'str'
-        assert_never(pd.Series(["a", "b"]).diff())
+        pd.Series(["a", "b"]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
+
+    def _diff_invalid0() -> None:  # pyright: ignore[reportUnusedFunction]
+        # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
+        assert_type(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff(), Never)
 
 
 def test_operator_constistency() -> None:
     # created for #748
     s = pd.Series([1, 2, 3])
     check(
-        assert_type(s * np.timedelta64(1, "s"), "TimedeltaSeries"),
+        assert_type(s * np.timedelta64(1, "s"), "pd.Series[pd.Timedelta]"),
         pd.Series,
         pd.Timedelta,
     )
     check(
-        assert_type(np.timedelta64(1, "s") * s, "TimedeltaSeries"),
+        assert_type(np.timedelta64(1, "s") * s, "pd.Series[pd.Timedelta]"),
         pd.Series,
         pd.Timedelta,
     )
     check(
-        assert_type(s.mul(np.timedelta64(1, "s")), "TimedeltaSeries"),
+        assert_type(s.mul(np.timedelta64(1, "s")), "pd.Series[pd.Timedelta]"),
         pd.Series,
         pd.Timedelta,
     )
     check(
-        assert_type(s.rmul(np.timedelta64(1, "s")), "TimedeltaSeries"),
+        assert_type(s.rmul(np.timedelta64(1, "s")), "pd.Series[pd.Timedelta]"),
         pd.Series,
         pd.Timedelta,
     )
@@ -3656,13 +3712,20 @@ def test_case_when() -> None:
     c = pd.Series([6, 7, 8, 9], name="c")
     a = pd.Series([0, 0, 1, 2])
     b = pd.Series([0, 3, 4, 5])
-    r = c.case_when(
-        caselist=[
-            (a.gt(0), a),
-            (b.gt(0), b),
-        ]
-    )
-    check(assert_type(r, pd.Series), pd.Series)
+
+    c0 = [(a.gt(0), a), (b.gt(0), b)]
+    check(assert_type(c.case_when(c0), pd.Series), pd.Series)
+
+    def foo_factory(
+        thresh: int,
+    ) -> Callable[[pd.Series], pd.Series[bool] | np_1darray_bool]:
+        def foo(s: pd.Series) -> pd.Series[bool] | np_1darray_bool:
+            return s >= thresh
+
+        return foo
+
+    c1 = [(foo_factory(2), a), (foo_factory(0), b)]
+    check(assert_type(c.case_when(c1), pd.Series), pd.Series)
 
 
 def test_series_unique_timestamp() -> None:
@@ -3680,7 +3743,7 @@ def test_series_unique_timedelta() -> None:
 def test_slice_timestamp() -> None:
     dti = pd.date_range("1/1/2025", "2/28/2025")
 
-    s = pd.Series([i for i in range(len(dti))], index=dti)
+    s = pd.Series(list(range(len(dti))), index=dti)
 
     # For `s1`, see discussion in GH 397.  Needs mypy fix.
     # s1 = s.loc["2025-01-15":"2025-01-20"]
@@ -3701,7 +3764,9 @@ def test_apply_dateoffset() -> None:
     months = [1, 2, 3]
     s = pd.Series(months)
     check(
-        assert_type(s.apply(lambda x: pd.DateOffset(months=x)), "OffsetSeries"),
+        assert_type(
+            s.apply(lambda x: pd.DateOffset(months=x)), "pd.Series[BaseOffset]"
+        ),
         pd.Series,
         pd.DateOffset,
     )
@@ -3754,8 +3819,8 @@ def test_series_bool_fails() -> None:
         # mypy doesn't seem to figure that out, but pyright does
         if s == "foo":  # pyright: ignore[reportGeneralTypeIssues]
             # Next line is unreachable.
-            a = s[0]
-            assert False
+            _a = s[0]
+            raise AssertionError
     except ValueError:
         pass
 
@@ -3892,7 +3957,7 @@ def test_series_items() -> None:
 
 def test_cumsum_timedelta() -> None:
     s = pd.Series(pd.to_timedelta([1, 2, 3], "h"))
-    check(assert_type(s.cumsum(), "TimedeltaSeries"), pd.Series, pd.Timedelta)
+    check(assert_type(s.cumsum(), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(
         assert_type(pd.Timestamp(0) + s.cumsum(), "pd.Series[pd.Timestamp]"),
         pd.Series,
@@ -3903,11 +3968,10 @@ def test_cumsum_timedelta() -> None:
 def test_series_unstack() -> None:
     df = pd.DataFrame([[1, 3, 5], [2, 4, 6]])
     s = df.transpose().stack([*range(df.index.nlevels)])
-    check(assert_type(s, Union[pd.Series, pd.DataFrame]), pd.Series)
+    check(assert_type(s, pd.Series | pd.DataFrame), pd.Series)
     check(
         assert_type(
-            s.unstack([*range(s.index.nlevels // 2)]),
-            Union[pd.Series, pd.DataFrame],
+            s.unstack([*range(s.index.nlevels // 2)]), pd.Series | pd.DataFrame
         ),
         pd.DataFrame,
     )
@@ -3929,7 +3993,7 @@ def test_series_index_type() -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        t = pd.Series([1, 2], index="ab")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        _t = pd.Series([1, 2], index="ab")  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
 
 
 def test_timedelta_index_cumprod() -> None:

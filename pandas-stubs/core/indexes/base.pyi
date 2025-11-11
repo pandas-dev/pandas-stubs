@@ -3,13 +3,14 @@ from collections.abc import (
     Callable,
     Hashable,
     Iterable,
-    Iterator,
+    MutableMapping,
     Sequence,
 )
 from datetime import (
     datetime,
     timedelta,
 )
+from pathlib import Path
 from typing import (
     Any,
     ClassVar,
@@ -20,40 +21,68 @@ from typing import (
     type_check_only,
 )
 
+from _typeshed import (
+    SupportsAdd,
+    SupportsMul,
+    SupportsRAdd,
+    SupportsRMul,
+    _T_contra,
+)
 import numpy as np
-from pandas import (
-    DataFrame,
-    DatetimeIndex,
-    Interval,
-    IntervalIndex,
-    MultiIndex,
-    Period,
-    PeriodDtype,
-    PeriodIndex,
-    Series,
-    TimedeltaIndex,
-)
-from pandas.core.arrays import ExtensionArray
+from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.base import (
+    ArrayIndexTimedeltaNoSeq,
+    ElementOpsMixin,
+    IndexComplex,
     IndexOpsMixin,
-    NumListLike,
-    _ListLike,
+    IndexReal,
+    ScalarArrayIndexComplex,
+    ScalarArrayIndexIntNoBool,
+    ScalarArrayIndexJustComplex,
+    ScalarArrayIndexJustFloat,
+    ScalarArrayIndexReal,
+    ScalarArrayIndexTimedelta,
+    Supports_ProtoAdd,
+    Supports_ProtoFloorDiv,
+    Supports_ProtoMul,
+    Supports_ProtoRAdd,
+    Supports_ProtoRFloorDiv,
+    Supports_ProtoRMul,
+    Supports_ProtoRTrueDiv,
+    Supports_ProtoTrueDiv,
 )
+from pandas.core.frame import DataFrame
+from pandas.core.indexes.category import CategoricalIndex
+from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.indexes.interval import IntervalIndex
+from pandas.core.indexes.multi import MultiIndex
+from pandas.core.indexes.period import PeriodIndex
+from pandas.core.indexes.timedeltas import TimedeltaIndex
+from pandas.core.series import Series
 from pandas.core.strings.accessor import StringMethods
 from typing_extensions import (
     Never,
     Self,
 )
 
-from pandas._libs.interval import _OrderableT
+from pandas._libs.interval import (
+    Interval,
+    _OrderableT,
+)
+from pandas._libs.tslibs.period import Period
+from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
     C2,
     S1,
+    S2,
+    S2_NSDT,
     T_COMPLEX,
-    T_INT,
     AnyAll,
+    AnyArrayLike,
+    AnyArrayLikeInt,
     ArrayLike,
     AxesData,
+    CategoryDtypeArg,
     DropKeep,
     Dtype,
     DtypeArg,
@@ -63,12 +92,14 @@ from pandas._typing import (
     GenericT_co,
     HashableT,
     IgnoreRaise,
+    JoinHow,
     Just,
     Label,
     Level,
     MaskType,
     NaPosition,
     ReindexMethod,
+    S2_contra,
     Scalar,
     SequenceNotStr,
     SliceType,
@@ -76,18 +107,25 @@ from pandas._typing import (
     TimedeltaDtypeArg,
     TimestampDtypeArg,
     np_1darray,
+    np_1darray_bool,
+    np_1darray_intp,
+    np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_complex,
+    np_ndarray_dt,
     np_ndarray_float,
     np_ndarray_str,
+    np_ndarray_td,
     type_t,
 )
 
+from pandas.core.dtypes.dtypes import PeriodDtype
+
 class InvalidIndexError(Exception): ...
 
-class Index(IndexOpsMixin[S1]):
-    __hash__: ClassVar[None]  # type: ignore[assignment]
+class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
+    __hash__: ClassVar[None]  # type: ignore[assignment]  # pyright: ignore[reportIncompatibleMethodOverride]
     # overloads with additional dtypes
     @overload
     def __new__(  # pyright: ignore[reportOverlappingOverload]
@@ -167,7 +205,9 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Sequence[np.datetime64 | datetime] | IndexOpsMixin[datetime],
+        data: (
+            Sequence[np.datetime64 | datetime] | IndexOpsMixin[datetime] | DatetimeIndex
+        ),
         *,
         dtype: TimestampDtypeArg = ...,
         copy: bool = ...,
@@ -227,6 +267,16 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __new__(
         cls,
+        data: AxesData,
+        *,
+        dtype: CategoryDtypeArg,
+        copy: bool = ...,
+        name: Hashable = ...,
+        tupleize_cols: bool = ...,
+    ) -> CategoricalIndex: ...
+    @overload
+    def __new__(
+        cls,
         data: Sequence[Interval[_OrderableT]] | IndexOpsMixin[Interval[_OrderableT]],
         *,
         dtype: Literal["Interval"] = ...,
@@ -244,6 +294,16 @@ class Index(IndexOpsMixin[S1]):
         name: Hashable = ...,
         tupleize_cols: bool = ...,
     ) -> IntervalIndex[Interval[Any]]: ...
+    @overload
+    def __new__(
+        cls,
+        data: DatetimeIndex,
+        *,
+        dtype: TimestampDtypeArg | None = ...,
+        copy: bool = ...,
+        name: Hashable = ...,
+        tupleize_cols: bool = ...,
+    ) -> DatetimeIndex: ...
     # generic overloads
     @overload
     def __new__(
@@ -282,7 +342,7 @@ class Index(IndexOpsMixin[S1]):
     ) -> StringMethods[  # pyrefly: ignore[bad-specialization]
         Self,
         MultiIndex,
-        np_1darray[np.bool],
+        np_1darray_bool,
         Index[list[_str]],
         Index[int],
         Index[bytes],
@@ -308,19 +368,21 @@ class Index(IndexOpsMixin[S1]):
         axis: int = 0,
         allow_fill: bool = True,
         fill_value: Scalar | None = None,
-        **kwargs,
+        **kwargs: Any,
     ): ...
     def repeat(self, repeats, axis=...): ...
     def copy(self, name: Hashable = ..., deep: bool = False) -> Self: ...
     @final
-    def __copy__(self, **kwargs): ...
+    def __copy__(self, **kwargs: Any): ...
     @final
-    def __deepcopy__(self, memo=...): ...
+    def __deepcopy__(self, memo: MutableMapping[int, Any] | None = None) -> Self: ...
     def format(
         self, name: bool = ..., formatter: Callable | None = ..., na_rep: _str = ...
     ) -> list[_str]: ...
     def to_flat_index(self): ...
-    def to_series(self, index=..., name: Hashable = ...) -> Series: ...
+    def to_series(
+        self, index: Index | None = None, name: Hashable | None = None
+    ) -> Series[S1]: ...
     def to_frame(self, index: bool = True, name=...) -> DataFrame: ...
     @property
     def name(self) -> Hashable | None: ...
@@ -360,9 +422,9 @@ class Index(IndexOpsMixin[S1]):
     notnull = ...
     def fillna(self, value=...): ...
     def dropna(self, how: AnyAll = "any") -> Self: ...
-    def unique(self, level=...) -> Self: ...
+    def unique(self, level: Hashable | None = None) -> Self: ...
     def drop_duplicates(self, *, keep: DropKeep = ...) -> Self: ...
-    def duplicated(self, keep: DropKeep = "first") -> np_1darray[np.bool]: ...
+    def duplicated(self, keep: DropKeep = "first") -> np_1darray_bool: ...
     def __and__(self, other: Never) -> Never: ...
     def __rand__(self, other: Never) -> Never: ...
     def __or__(self, other: Never) -> Never: ...
@@ -375,7 +437,7 @@ class Index(IndexOpsMixin[S1]):
     __bool__ = ...
     def union(
         self, other: list[HashableT] | Self, sort: bool | None = None
-    ) -> Index: ...
+    ) -> Self: ...
     def intersection(
         self, other: list[S1] | Self, sort: bool | None = False
     ) -> Self: ...
@@ -386,34 +448,58 @@ class Index(IndexOpsMixin[S1]):
         result_name: Hashable = ...,
         sort: bool | None = None,
     ) -> Self: ...
-    def get_loc(self, key: Label) -> int | slice | np_1darray[np.bool]: ...
+    def get_loc(self, key: Label) -> int | slice | np_1darray_bool: ...
     def get_indexer(
-        self, target, method: ReindexMethod | None = ..., limit=..., tolerance=...
-    ): ...
+        self,
+        target: Index,
+        method: ReindexMethod | None = None,
+        limit: int | None = None,
+        tolerance: Scalar | AnyArrayLike | Sequence[Scalar] | None = None,
+    ) -> np_1darray_intp: ...
     def reindex(
         self,
-        target,
-        method: ReindexMethod | None = ...,
-        level=...,
-        limit=...,
-        tolerance=...,
-    ): ...
+        target: Iterable[Any],
+        method: ReindexMethod | None = None,
+        level: int | None = None,
+        limit: int | None = None,
+        tolerance: Scalar | AnyArrayLike | Sequence[Scalar] | None = None,
+    ) -> tuple[Index, np_1darray_intp | None]: ...
+    @overload
     def join(
         self,
-        other,
+        other: Index,
         *,
-        how: _str = ...,
-        level=...,
-        return_indexers: bool = ...,
-        sort: bool = ...,
-    ): ...
+        how: JoinHow = "left",
+        level: Level | None = None,
+        return_indexers: Literal[True],
+        sort: bool = False,
+    ) -> tuple[Index, np_1darray_intp | None, np_1darray_intp | None]: ...
+    @overload
+    def join(
+        self,
+        other: Index,
+        *,
+        how: JoinHow = "left",
+        level: Level | None = None,
+        return_indexers: Literal[False] = False,
+        sort: bool = False,
+    ) -> Index: ...
     @property
     def values(self) -> np_1darray: ...
-    @property
-    def array(self) -> ExtensionArray: ...
     def memory_usage(self, deep: bool = False): ...
-    def where(self, cond, other: Scalar | ArrayLike | None = None): ...
-    def __contains__(self, key) -> bool: ...
+    @overload
+    def where(
+        self,
+        cond: Sequence[bool] | np_ndarray_bool | BooleanArray | IndexOpsMixin[bool],
+        other: S1 | Series[S1] | Self,
+    ) -> Self: ...
+    @overload
+    def where(
+        self,
+        cond: Sequence[bool] | np_ndarray_bool | BooleanArray | IndexOpsMixin[bool],
+        other: Scalar | AnyArrayLike | None = None,
+    ) -> Index: ...
+    def __contains__(self, key: Hashable) -> bool: ...
     @final
     def __setitem__(self, key, value) -> None: ...
     @overload
@@ -430,7 +516,7 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def append(self, other: Index | Sequence[Index]) -> Index: ...
     def putmask(self, mask, value): ...
-    def equals(self, other) -> bool: ...
+    def equals(self, other: object) -> bool: ...
     @final
     def identical(self, other) -> bool: ...
     @final
@@ -445,15 +531,13 @@ class Index(IndexOpsMixin[S1]):
         key: Callable[[Index], Index] | None = None,
     ): ...
     @final
-    def sort(self, *args, **kwargs) -> None: ...
-    def argsort(self, *args, **kwargs): ...
+    def sort(self, *args: Any, **kwargs: Any) -> None: ...
+    def argsort(self, *args: Any, **kwargs: Any) -> np_1darray_intp: ...
     def get_indexer_non_unique(self, target): ...
     @final
-    def get_indexer_for(self, target, **kwargs): ...
-    @final
-    def groupby(self, values) -> dict[Hashable, np.ndarray]: ...
+    def get_indexer_for(self, target, **kwargs: Any): ...
     def map(self, mapper, na_action=...) -> Index: ...
-    def isin(self, values, level=...) -> np_1darray[np.bool]: ...
+    def isin(self, values, level=...) -> np_1darray_bool: ...
     def slice_indexer(
         self,
         start: Label | None = None,
@@ -464,86 +548,65 @@ class Index(IndexOpsMixin[S1]):
     def slice_locs(
         self, start: SliceType = None, end: SliceType = None, step: int | None = None
     ): ...
-    def delete(self, loc) -> Self: ...
-    def insert(self, loc, item) -> Self: ...
+    def delete(
+        self, loc: np.integer | int | AnyArrayLikeInt | Sequence[int]
+    ) -> Self: ...
+    @overload
+    def insert(self, loc: int, item: S1) -> Self: ...
+    @overload
+    def insert(self, loc: int, item: object) -> Index: ...
     def drop(self, labels, errors: IgnoreRaise = "raise") -> Self: ...
     @property
     def shape(self) -> tuple[int, ...]: ...
     # Extra methods from old stubs
-    def __eq__(self, other: object) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __iter__(self) -> Iterator[S1]: ...
-    def __ne__(self, other: object) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __le__(self, other: Self | S1) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __ge__(self, other: Self | S1) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __lt__(self, other: Self | S1) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __gt__(self, other: Self | S1) -> np_1darray[np.bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    # overwrite inherited methods from OpsMixin
+    def __eq__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __ne__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __le__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __ge__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __lt__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __gt__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     @overload
     def __add__(self: Index[Never], other: _str) -> Never: ...
     @overload
-    def __add__(self: Index[Never], other: complex | _ListLike | Index) -> Index: ...
+    def __add__(
+        self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index
+    ) -> Index: ...
     @overload
     def __add__(self, other: Index[Never]) -> Index: ...
     @overload
+    def __add__(self: Index[Never], other: Period) -> PeriodIndex: ...
+    @overload
     def __add__(
-        self: Index[bool],
-        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX],
+        self: Supports_ProtoAdd[_T_contra, S2], other: _T_contra | Sequence[_T_contra]
+    ) -> Index[S2]: ...
+    @overload
+    def __add__(
+        self: Index[S2_contra],
+        other: SupportsRAdd[S2_contra, S2] | Sequence[SupportsRAdd[S2_contra, S2]],
+    ) -> Index[S2]: ...
+    @overload
+    def __add__(
+        self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool]
     ) -> Index[T_COMPLEX]: ...
     @overload
-    def __add__(self: Index[bool], other: np_ndarray_bool) -> Index[bool]: ...
-    @overload
-    def __add__(self: Index[bool], other: np_ndarray_anyint) -> Index[int]: ...
-    @overload
-    def __add__(self: Index[bool], other: np_ndarray_float) -> Index[float]: ...
-    @overload
-    def __add__(self: Index[bool], other: np_ndarray_complex) -> Index[complex]: ...
-    @overload
     def __add__(
-        self: Index[int],
-        other: (
-            bool | Sequence[bool] | np_ndarray_bool | np_ndarray_anyint | Index[bool]
-        ),
+        self: Index[bool], other: np_ndarray_anyint | Index[int]
     ) -> Index[int]: ...
     @overload
     def __add__(
-        self: Index[int],
-        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX],
+        self: Index[T_COMPLEX], other: np_ndarray_anyint | Index[int]
     ) -> Index[T_COMPLEX]: ...
     @overload
-    def __add__(self: Index[int], other: np_ndarray_float) -> Index[float]: ...
-    @overload
-    def __add__(self: Index[int], other: np_ndarray_complex) -> Index[complex]: ...
-    @overload
     def __add__(
-        self: Index[float],
-        other: (
-            int
-            | Sequence[int]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[T_INT]
-        ),
+        self: Index[bool] | Index[int], other: np_ndarray_float | Index[float]
     ) -> Index[float]: ...
     @overload
     def __add__(
-        self: Index[float],
-        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX],
+        self: Index[T_COMPLEX], other: np_ndarray_float | Index[float]
     ) -> Index[T_COMPLEX]: ...
     @overload
-    def __add__(self: Index[float], other: np_ndarray_complex) -> Index[complex]: ...
-    @overload
     def __add__(
-        self: Index[complex],
-        other: (
-            T_COMPLEX
-            | Sequence[T_COMPLEX]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | np_ndarray_complex
-            | Index[T_COMPLEX]
-        ),
+        self: Index[T_COMPLEX], other: np_ndarray_complex | Index[complex]
     ) -> Index[complex]: ...
     @overload
     def __add__(
@@ -554,67 +617,49 @@ class Index(IndexOpsMixin[S1]):
     ) -> Never: ...
     @overload
     def __add__(
-        self: Index[_str], other: _str | Sequence[_str] | np_ndarray_str | Index[_str]
+        self: Index[_str], other: np_ndarray_str | Index[_str]
     ) -> Index[_str]: ...
     @overload
     def __radd__(self: Index[Never], other: _str) -> Never: ...
     @overload
-    def __radd__(self: Index[Never], other: complex | _ListLike | Index) -> Index: ...
+    def __radd__(
+        self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index
+    ) -> Index: ...
+    @overload
+    def __radd__(self: Index[Never], other: Period) -> PeriodIndex: ...
     @overload
     def __radd__(
-        self: Index[bool],
-        other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX],
+        self: Supports_ProtoRAdd[_T_contra, S2],
+        other: _T_contra | Sequence[_T_contra],
+    ) -> Index[S2]: ...
+    @overload
+    def __radd__(
+        self: Index[S2_contra],
+        other: SupportsAdd[S2_contra, S2] | Sequence[SupportsAdd[S2_contra, S2]],
+    ) -> Index[S2]: ...
+    @overload
+    def __radd__(
+        self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool]
     ) -> Index[T_COMPLEX]: ...
     @overload
-    def __radd__(self: Index[bool], other: np_ndarray_bool) -> Index[bool]: ...
-    @overload
-    def __radd__(self: Index[bool], other: np_ndarray_anyint) -> Index[int]: ...
-    @overload
-    def __radd__(self: Index[bool], other: np_ndarray_float) -> Index[float]: ...
-    @overload
     def __radd__(
-        self: Index[int],
-        other: (
-            bool | Sequence[bool] | np_ndarray_bool | np_ndarray_anyint | Index[bool]
-        ),
+        self: Index[bool], other: np_ndarray_anyint | Index[int]
     ) -> Index[int]: ...
     @overload
     def __radd__(
-        self: Index[int], other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX]
+        self: Index[T_COMPLEX], other: np_ndarray_anyint | Index[int]
     ) -> Index[T_COMPLEX]: ...
     @overload
-    def __radd__(self: Index[int], other: np_ndarray_float) -> Index[float]: ...
-    @overload
     def __radd__(
-        self: Index[float],
-        other: (
-            int
-            | Sequence[int]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[T_INT]
-        ),
+        self: Index[bool] | Index[int], other: np_ndarray_float | Index[float]
     ) -> Index[float]: ...
     @overload
     def __radd__(
-        self: Index[float], other: T_COMPLEX | Sequence[T_COMPLEX] | Index[T_COMPLEX]
+        self: Index[T_COMPLEX], other: np_ndarray_float | Index[float]
     ) -> Index[T_COMPLEX]: ...
     @overload
     def __radd__(
-        self: Index[complex],
-        other: (
-            T_COMPLEX
-            | Sequence[T_COMPLEX]
-            | np_ndarray_bool
-            | np_ndarray_anyint
-            | np_ndarray_float
-            | Index[T_COMPLEX]
-        ),
-    ) -> Index[complex]: ...
-    @overload
-    def __radd__(
-        self: Index[T_COMPLEX], other: np_ndarray_complex
+        self: Index[T_COMPLEX], other: np_ndarray_complex | Index[complex]
     ) -> Index[complex]: ...
     @overload
     def __radd__(
@@ -625,12 +670,14 @@ class Index(IndexOpsMixin[S1]):
     ) -> Never: ...
     @overload
     def __radd__(
-        self: Index[_str], other: _str | Sequence[_str] | np_ndarray_str | Index[_str]
+        self: Index[_str], other: np_ndarray_str | Index[_str]
     ) -> Index[_str]: ...
     @overload
     def __sub__(self: Index[Never], other: DatetimeIndex) -> Never: ...
     @overload
-    def __sub__(self: Index[Never], other: complex | NumListLike | Index) -> Index: ...
+    def __sub__(
+        self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index
+    ) -> Index: ...
     @overload
     def __sub__(self, other: Index[Never]) -> Index: ...
     @overload
@@ -699,7 +746,9 @@ class Index(IndexOpsMixin[S1]):
     @overload
     def __rsub__(self: Index[Never], other: DatetimeIndex) -> Never: ...  # type: ignore[misc]
     @overload
-    def __rsub__(self: Index[Never], other: complex | NumListLike | Index) -> Index: ...
+    def __rsub__(
+        self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index
+    ) -> Index: ...
     @overload
     def __rsub__(self, other: Index[Never]) -> Index: ...
     @overload
@@ -767,61 +816,348 @@ class Index(IndexOpsMixin[S1]):
     ) -> Index[complex]: ...
     @overload
     def __mul__(
-        self: Index[int] | Index[float], other: timedelta
+        self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index
+    ) -> Index: ...
+    @overload
+    def __mul__(self, other: Index[Never]) -> Index: ...
+    @overload
+    def __mul__(self, other: np_ndarray_dt) -> Never: ...
+    @overload
+    def __mul__(self: Index[bool] | Index[complex], other: np_ndarray_td) -> Never: ...
+    @overload
+    def __mul__(
+        self: Index[int] | Index[float],
+        other: timedelta | Sequence[Timedelta] | np.timedelta64 | np_ndarray_td,
     ) -> TimedeltaIndex: ...
     @overload
-    def __mul__(self, other: Any) -> Self: ...
-    def __floordiv__(
-        self,
+    def __mul__(
+        self: Index[_str],
         other: (
-            float
-            | IndexOpsMixin[int]
-            | IndexOpsMixin[float]
-            | Sequence[int]
-            | Sequence[float]
+            np_ndarray_bool
+            | np_ndarray_float
+            | np_ndarray_complex
+            | np_ndarray_dt
+            | np_ndarray_td
         ),
-    ) -> Self: ...
-    def __rfloordiv__(
-        self,
+    ) -> Never: ...
+    @overload
+    def __mul__(
+        self: Index[_str], other: np_ndarray_anyint | Index[int]
+    ) -> Index[_str]: ...
+    @overload
+    def __mul__(
+        self: Supports_ProtoMul[_T_contra, S2], other: _T_contra | Sequence[_T_contra]
+    ) -> Index[S2]: ...
+    @overload
+    def __mul__(
+        self: Index[S2_contra],
         other: (
-            float
-            | IndexOpsMixin[int]
-            | IndexOpsMixin[float]
-            | Sequence[int]
-            | Sequence[float]
+            SupportsRMul[S2_contra, S2_NSDT]
+            | Sequence[SupportsRMul[S2_contra, S2_NSDT]]
         ),
-    ) -> Self: ...
+    ) -> Index[S2_NSDT]: ...
+    @overload
+    def __mul__(
+        self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool]
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __mul__(
+        self: Index[bool], other: np_ndarray_anyint | Index[int]
+    ) -> Index[int]: ...
+    @overload
+    def __mul__(
+        self: Index[T_COMPLEX], other: np_ndarray_anyint | Index[int]
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __mul__(
+        self: Index[bool] | Index[int], other: np_ndarray_float | Index[float]
+    ) -> Index[float]: ...
+    @overload
+    def __mul__(
+        self: Index[T_COMPLEX], other: np_ndarray_float | Index[float]
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __mul__(
+        self: Index[T_COMPLEX], other: np_ndarray_complex | Index[complex]
+    ) -> Index[complex]: ...
+    @overload
+    def __rmul__(
+        self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index
+    ) -> Index: ...
+    @overload
+    def __rmul__(self, other: Index[Never]) -> Index: ...
+    @overload
+    def __rmul__(self, other: np_ndarray_dt) -> Never: ...
+    @overload
+    def __rmul__(self: Index[bool] | Index[complex], other: np_ndarray_td) -> Never: ...
+    @overload
+    def __rmul__(
+        self: Index[int] | Index[float],
+        other: timedelta | Sequence[Timedelta] | np.timedelta64 | np_ndarray_td,
+    ) -> TimedeltaIndex: ...
+    @overload
+    def __rmul__(
+        self: Index[_str],
+        other: (
+            np_ndarray_bool
+            | np_ndarray_float
+            | np_ndarray_complex
+            | np_ndarray_dt
+            | np_ndarray_td
+        ),
+    ) -> Never: ...
+    @overload
+    def __rmul__(
+        self: Index[_str], other: np_ndarray_anyint | Index[int]
+    ) -> Index[_str]: ...
+    @overload
+    def __rmul__(
+        self: Supports_ProtoRMul[_T_contra, S2],
+        other: _T_contra | Sequence[_T_contra],
+    ) -> Index[S2]: ...
+    @overload
+    def __rmul__(
+        self: Index[S2_contra],
+        other: (
+            SupportsMul[S2_contra, S2_NSDT] | Sequence[SupportsMul[S2_contra, S2_NSDT]]
+        ),
+    ) -> Index[S2_NSDT]: ...
+    @overload
+    def __rmul__(
+        self: Index[T_COMPLEX], other: np_ndarray_bool | Index[bool]
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __rmul__(
+        self: Index[bool], other: np_ndarray_anyint | Index[int]
+    ) -> Index[int]: ...
+    @overload
+    def __rmul__(
+        self: Index[T_COMPLEX], other: np_ndarray_anyint | Index[int]
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __rmul__(
+        self: Index[bool] | Index[int], other: np_ndarray_float | Index[float]
+    ) -> Index[float]: ...
+    @overload
+    def __rmul__(
+        self: Index[T_COMPLEX], other: np_ndarray_float | Index[float]
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __rmul__(
+        self: Index[T_COMPLEX], other: np_ndarray_complex | Index[complex]
+    ) -> Index[complex]: ...
+    @overload
+    def __truediv__(self, other: np_ndarray_dt) -> Never: ...
+    @overload
+    def __truediv__(  # type: ignore[overload-overlap]
+        self: Index[Never], other: ScalarArrayIndexComplex
+    ) -> Index: ...
+    @overload
+    def __truediv__(self: Index[Never], other: ArrayIndexTimedeltaNoSeq) -> Never: ...
+    @overload
+    def __truediv__(self: Index[T_COMPLEX], other: np_ndarray_td) -> Never: ...
+    @overload
+    def __truediv__(self: Index[bool], other: np_ndarray_bool) -> Never: ...
+    @overload
+    def __truediv__(self: IndexComplex, other: Index[Never]) -> Index: ...
+    @overload
     def __truediv__(
-        self,
-        other: (
-            float
-            | IndexOpsMixin[int]
-            | IndexOpsMixin[float]
-            | Sequence[int]
-            | Sequence[float]
-        ),
-    ) -> Self: ...
+        self: Supports_ProtoTrueDiv[_T_contra, S2],
+        other: _T_contra | Sequence[_T_contra],
+    ) -> Index[S2]: ...
+    @overload
+    def __truediv__(
+        self: Index[int], other: np_ndarray_bool | Index[bool]
+    ) -> Index[float]: ...
+    @overload
+    def __truediv__(
+        self: Index[bool] | Index[int], other: ScalarArrayIndexIntNoBool
+    ) -> Index[float]: ...
+    @overload
+    def __truediv__(
+        self: Index[float],
+        other: np_ndarray_bool | np_ndarray_anyint | Index[bool] | Index[int],
+    ) -> Index[float]: ...
+    @overload
+    def __truediv__(
+        self: Index[complex],
+        other: np_ndarray_bool | np_ndarray_anyint | Index[bool] | Index[int],
+    ) -> Index[complex]: ...
+    @overload
+    def __truediv__(
+        self: Index[bool] | Index[int], other: ScalarArrayIndexJustFloat
+    ) -> Index[float]: ...
+    @overload
+    def __truediv__(
+        self: Index[T_COMPLEX], other: ScalarArrayIndexJustFloat
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __truediv__(
+        self: IndexComplex, other: ScalarArrayIndexJustComplex
+    ) -> Index[complex]: ...
+    @overload
+    def __truediv__(self: Index[_str], other: Path) -> Index: ...
+    @overload
+    def __rtruediv__(self, other: np_ndarray_dt) -> Never: ...
+    @overload
+    def __rtruediv__(  # type: ignore[overload-overlap]
+        self: Index[Never], other: ScalarArrayIndexComplex | ScalarArrayIndexTimedelta
+    ) -> Index: ...
+    @overload
+    def __rtruediv__(  # type: ignore[overload-overlap]
+        self: IndexComplex, other: Index[Never]
+    ) -> Index: ...
+    @overload
+    def __rtruediv__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        self: Index[int] | Index[float], other: Sequence[timedelta | np.timedelta64]
+    ) -> Index: ...
+    @overload
     def __rtruediv__(
-        self,
-        other: (
-            float
-            | IndexOpsMixin[int]
-            | IndexOpsMixin[float]
-            | Sequence[int]
-            | Sequence[float]
-        ),
-    ) -> Self: ...
+        self: Supports_ProtoRTrueDiv[_T_contra, S2],
+        other: _T_contra | Sequence[_T_contra],
+    ) -> Index[S2]: ...
+    @overload
+    def __rtruediv__(
+        self: Index[int], other: np_ndarray_bool | Index[bool]
+    ) -> Index[float]: ...
+    @overload
+    def __rtruediv__(
+        self: Index[bool] | Index[int], other: ScalarArrayIndexIntNoBool
+    ) -> Index[float]: ...
+    @overload
+    def __rtruediv__(  # type: ignore[misc]
+        self: Index[float],
+        other: np_ndarray_bool | np_ndarray_anyint | Index[bool] | Index[int],
+    ) -> Index[float]: ...
+    @overload
+    def __rtruediv__(
+        self: Index[complex],
+        other: np_ndarray_bool | np_ndarray_anyint | Index[bool] | Index[int],
+    ) -> Index[complex]: ...
+    @overload
+    def __rtruediv__(
+        self: Index[bool] | Index[int], other: ScalarArrayIndexJustFloat
+    ) -> Index[float]: ...
+    @overload
+    def __rtruediv__(
+        self: Index[T_COMPLEX], other: ScalarArrayIndexJustFloat
+    ) -> Index[T_COMPLEX]: ...
+    @overload
+    def __rtruediv__(
+        self: IndexComplex, other: ScalarArrayIndexJustComplex
+    ) -> Index[complex]: ...
+    @overload
+    def __rtruediv__(
+        self: Index[int] | Index[float], other: ScalarArrayIndexTimedelta
+    ) -> TimedeltaIndex: ...
+    @overload
+    def __rtruediv__(self: Index[_str], other: Path) -> Index: ...
+    @overload
+    def __floordiv__(self, other: np_ndarray_dt) -> Never: ...
+    @overload
+    def __floordiv__(self: Index[Never], other: np_ndarray_td) -> Never: ...
+    @overload
+    def __floordiv__(
+        self: Index[int] | Index[float], other: np_ndarray_complex | np_ndarray_td
+    ) -> Never: ...
+    @overload
+    def __floordiv__(self: Index[Never], other: ScalarArrayIndexReal) -> Index: ...
+    @overload
+    def __floordiv__(self: IndexReal, other: Index[Never]) -> Index: ...
+    @overload
+    def __floordiv__(
+        self: Index[bool] | Index[complex], other: np_ndarray
+    ) -> Never: ...
+    @overload
+    def __floordiv__(
+        self: Supports_ProtoFloorDiv[_T_contra, S2],
+        other: _T_contra | Sequence[_T_contra],
+    ) -> Index[S2]: ...
+    @overload
+    def __floordiv__(
+        self: Index[int], other: np_ndarray_bool | Index[bool]
+    ) -> Index[int]: ...
+    @overload
+    def __floordiv__(
+        self: Index[float], other: np_ndarray_bool | Index[bool]
+    ) -> Index[float]: ...
+    @overload
+    def __floordiv__(
+        self: Index[bool] | Index[int], other: np_ndarray_anyint | Index[int]
+    ) -> Index[int]: ...
+    @overload
+    def __floordiv__(
+        self: Index[float], other: np_ndarray_anyint | Index[int]
+    ) -> Index[float]: ...
+    @overload
+    def __floordiv__(
+        self: Index[int] | Index[float],
+        other: float | Sequence[float] | np_ndarray_float | Index[float],
+    ) -> Index[float]: ...
+    @overload
+    def __rfloordiv__(  # type: ignore[overload-overlap]
+        self: Index[Never], other: ScalarArrayIndexReal
+    ) -> Index: ...
+    @overload
+    def __rfloordiv__(self, other: np_ndarray_complex | np_ndarray_dt) -> Never: ...
+    @overload
+    def __rfloordiv__(
+        self: Index[int] | Index[float], other: np_ndarray_td
+    ) -> Never: ...
+    @overload
+    def __rfloordiv__(
+        self: Index[bool] | Index[complex], other: np_ndarray
+    ) -> Never: ...
+    @overload
+    def __rfloordiv__(  # type: ignore[overload-overlap]
+        self: IndexReal, other: Index[Never]
+    ) -> Index: ...
+    @overload
+    def __rfloordiv__(
+        self: Supports_ProtoRFloorDiv[_T_contra, S2],
+        other: _T_contra | Sequence[_T_contra],
+    ) -> Index[S2]: ...
+    @overload
+    def __rfloordiv__(
+        self: Index[int], other: np_ndarray_bool | Index[bool]
+    ) -> Index[int]: ...
+    @overload
+    def __rfloordiv__(
+        self: Index[float], other: np_ndarray_bool | Index[bool]
+    ) -> Index[float]: ...
+    @overload
+    def __rfloordiv__(
+        self: Index[bool] | Index[int], other: np_ndarray_anyint | Index[int]
+    ) -> Index[int]: ...
+    @overload
+    def __rfloordiv__(
+        self: Index[float], other: np_ndarray_anyint | Index[int]
+    ) -> Index[float]: ...
+    @overload
+    def __rfloordiv__(
+        self: Index[int] | Index[float],
+        other: float | Sequence[float] | np_ndarray_float | Index[float],
+    ) -> Index[float]: ...
+    @overload
+    def __rfloordiv__(
+        self: Index[int] | Index[float],
+        other: timedelta | np.timedelta64 | ArrayIndexTimedeltaNoSeq,
+    ) -> TimedeltaIndex: ...
+    @overload
+    def __rfloordiv__(
+        self: Index[int] | Index[float], other: Sequence[timedelta | np.timedelta64]
+    ) -> Index: ...
     def infer_objects(self, copy: bool = True) -> Self: ...
 
 @type_check_only
 class _IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):
     @overload
-    def to_numpy(  # pyrefly: ignore
+    def to_numpy(
         self,
         dtype: None = None,
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray[GenericT_co]: ...
     @overload
     def to_numpy(
@@ -829,7 +1165,7 @@ class _IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):
         dtype: np.dtype[GenericT] | SupportsDType[GenericT] | type[GenericT],
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray[GenericT]: ...
     @overload
     def to_numpy(
@@ -837,5 +1173,5 @@ class _IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):
         dtype: DTypeLike,
         copy: bool = False,
         na_value: Scalar = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> np_1darray: ...

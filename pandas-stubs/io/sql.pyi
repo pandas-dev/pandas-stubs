@@ -8,6 +8,7 @@ import sqlite3
 from typing import (
     Any,
     Literal,
+    TypeAlias,
     overload,
 )
 
@@ -15,13 +16,13 @@ from pandas.core.frame import DataFrame
 import sqlalchemy.engine
 from sqlalchemy.orm import FromStatement
 import sqlalchemy.sql.expression
-from typing_extensions import TypeAlias
 
 from pandas._libs.lib import _NoDefaultDoNotUse
 from pandas._typing import (
     DtypeArg,
     DtypeBackend,
     Scalar,
+    SequenceNotStr,
     npt,
 )
 
@@ -58,7 +59,7 @@ def read_sql_table(
     coerce_float: bool = ...,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
     columns: list[str] | None = ...,
-    chunksize: None = ...,
+    chunksize: None = None,
     dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
 ) -> DataFrame: ...
 @overload
@@ -96,7 +97,7 @@ def read_sql_query(
         | None
     ) = ...,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
-    chunksize: None = ...,
+    chunksize: None = None,
     dtype: DtypeArg | None = ...,
     dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
 ) -> DataFrame: ...
@@ -137,7 +138,7 @@ def read_sql(
     ) = ...,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
     columns: list[str] | None = ...,
-    chunksize: None = ...,
+    chunksize: None = None,
     dtype: DtypeArg | None = ...,
     dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
 ) -> DataFrame: ...
@@ -147,19 +148,19 @@ class PandasSQL:
         self,
         frame: DataFrame,
         name: str,
-        if_exists: Literal["fail", "replace", "append"] = ...,
-        index: bool = ...,
-        index_label=...,
-        schema: str | None = ...,
-        chunksize=...,
-        dtype: DtypeArg | None = ...,
+        if_exists: Literal["fail", "replace", "append", "delete_rows"] = "fail",
+        index: bool = True,
+        index_label: str | SequenceNotStr[str] | None = None,
+        schema: str | None = None,
+        chunksize: int | None = None,
+        dtype: DtypeArg | None = None,
         method: (
             Literal["multi"]
             | Callable[[SQLTable, Any, list[str], Iterable], int | None]
             | None
-        ) = ...,
-        engine: str = ...,
-        **engine_kwargs: dict[str, Any] | None,
+        ) = None,
+        engine: str = "auto",
+        **engine_kwargs: Any,
     ) -> int | None: ...
 
 class SQLTable:
@@ -169,7 +170,7 @@ class SQLTable:
     frame: DataFrame | None
     index: list[str]
     schema: str
-    if_exists: Literal["fail", "replace", "append"]
+    if_exists: Literal["fail", "replace", "append", "delete_rows"]
     keys: list[str]
     dtype: DtypeArg | None
     table: Any  # sqlalchemy.Table
@@ -177,14 +178,14 @@ class SQLTable:
         self,
         name: str,
         pandas_sql_engine: PandasSQL,
-        frame: DataFrame | None = ...,
-        index: bool | str | list[str] | None = ...,
-        if_exists: Literal["fail", "replace", "append"] = ...,
-        prefix: str = ...,
-        index_label: str | list[str] | None = ...,
-        schema: str | None = ...,
-        keys: str | list[str] | None = ...,
-        dtype: DtypeArg | None = ...,
+        frame: DataFrame | None = None,
+        index: bool | str | list[str] | None = True,
+        if_exists: Literal["fail", "replace", "append", "delete_rows"] = "fail",
+        prefix: str = "pandas",
+        index_label: str | list[str] | None = None,
+        schema: str | None = None,
+        keys: str | list[str] | None = None,
+        dtype: DtypeArg | None = None,
     ) -> None: ...
     def exists(self) -> bool: ...
     def sql_schema(self) -> str: ...

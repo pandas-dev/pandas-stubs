@@ -1,14 +1,19 @@
-from collections.abc import Hashable
+from collections.abc import (
+    Hashable,
+    Sequence,
+)
 
-import numpy as np
 from pandas.core.frame import DataFrame
 
-from pandas._typing import HashableT
+from pandas._typing import (
+    HashableT,
+    np_ndarray,
+)
 
 def melt(
     frame: DataFrame,
-    id_vars: tuple | list | np.ndarray | None = None,
-    value_vars: tuple | list | np.ndarray | None = None,
+    id_vars: Sequence[Hashable] | np_ndarray | None = None,
+    value_vars: Sequence[Hashable] | np_ndarray | None = None,
     var_name: str | None = None,
     value_name: Hashable = "value",
     col_level: int | str | None = None,

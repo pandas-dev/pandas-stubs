@@ -1,6 +1,4 @@
-from typing import (
-    Literal,
-)
+from typing import Literal
 
 import pandas as pd
 from pandas.api.typing import NAType
@@ -43,7 +41,7 @@ def test_arithmetic() -> None:
 
     # __rmul__
     check(assert_type(s_int * na, pd.Series), pd.Series)
-    check(assert_type(idx_int * na, "pd.Index[int]"), pd.Index)
+    check(assert_type(idx_int * na, pd.Index), pd.Index)
     check(assert_type(1 * na, NAType), NAType)
 
     # __matmul__

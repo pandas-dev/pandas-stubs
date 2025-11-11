@@ -1,8 +1,8 @@
 import io
 import itertools
 from typing import (
+    TYPE_CHECKING,
     Any,
-    Union,
 )
 
 from matplotlib.axes import Axes
@@ -26,14 +26,17 @@ from pandas.plotting import (
     register_matplotlib_converters,
 )
 
+if TYPE_CHECKING:
+    from pandas.plotting._core import _BoxPlotT  # noqa: F401
+
 
 @pytest.fixture(autouse=True)
-def autouse_mpl_cleanup(mpl_cleanup):
+def autouse_mpl_cleanup(mpl_cleanup: None) -> None:
     pass
 
 
 @pytest.fixture
-def close_figures():
+def close_figures() -> None:
     plt.close("all")
 
 
@@ -192,43 +195,145 @@ IRIS = """SepalLength,SepalWidth,PetalLength,PetalWidth,Name
 IRIS_DF = pd.read_csv(io.StringIO(IRIS))
 
 
-def test_andrews_curves(close_figures) -> None:
+def test_andrews_curves(close_figures: None) -> None:
     check(assert_type(pd.plotting.andrews_curves(IRIS_DF, "Name"), Axes), Axes)
 
 
-def test_autocorrelation_plot(close_figures) -> None:
+def test_autocorrelation_plot(close_figures: None) -> None:
     spacing = np.linspace(-9 * np.pi, 9 * np.pi, num=1000)
     s = pd.Series(0.7 * np.random.rand(1000) + 0.3 * np.sin(spacing))
     check(assert_type(pd.plotting.autocorrelation_plot(s), Axes), Axes)
 
 
-def test_bootstrap_plot(close_figures) -> None:
+def test_bootstrap_plot(close_figures: None) -> None:
     s = pd.Series(np.random.uniform(size=100))
     check(assert_type(pd.plotting.bootstrap_plot(s), Figure), Figure)
 
 
-def test_boxplot(close_figures) -> None:
-    np.random.seed(1234)
-    df = pd.DataFrame(np.random.randn(10, 4), columns=["Col1", "Col2", "Col3", "Col4"])
+def test_hist(close_figures: None) -> None:
+    df = pd.DataFrame({"Col1": [1, 2], "Col4": [2, 1]})
+    check(assert_type(df.hist(), npt.NDArray[np.object_]), npt.NDArray[np.object_])
     check(
-        assert_type(pd.plotting.boxplot(df, column=["Col1", "Col2", "Col3"]), Axes),
-        Axes,
+        assert_type(df.hist(by="Col4"), npt.NDArray[np.object_]),
+        npt.NDArray[np.object_],
     )
 
 
-def test_reg_dereg(close_figures) -> None:
+def test_boxplot(close_figures: None) -> None:
+    np.random.seed(1234)
+    df = pd.DataFrame(np.random.randn(10, 4), columns=["Col1", "Col2", "Col3", "Col4"])
+
+    # Basic usage
+    check(assert_type(pd.plotting.boxplot(df, column=["Col1"]), Axes), Axes)
+    check(assert_type(df.boxplot(column=["Col1"]), Axes), Axes)
+
+    # Default return_type (axes)
+    check(
+        assert_type(pd.plotting.boxplot(df, column=["Col1"], return_type="axes"), Axes),
+        Axes,
+    )
+    check(
+        assert_type(df.boxplot(column=["Col1"], return_type="axes"), Axes),
+        Axes,
+    )
+
+    # Return type: dict
+    check(
+        assert_type(
+            pd.plotting.boxplot(df, column=["Col1"], return_type="dict"),
+            dict[str, Axes],
+        ),
+        dict,
+    )
+    check(
+        assert_type(
+            df.boxplot(column=["Col1"], return_type="dict"),
+            dict[str, Axes],
+        ),
+        dict,
+    )
+
+    # Return type: both
+    check(
+        assert_type(
+            pd.plotting.boxplot(df, column=["Col1"], return_type="both"), "_BoxPlotT"
+        ),
+        tuple,
+    )
+    check(
+        assert_type(df.boxplot(column=["Col1"], return_type="both"), "_BoxPlotT"),
+        tuple,
+    )
+
+    # Basic by= usage
+    check(
+        assert_type(pd.plotting.boxplot(df, column=["Col1"], by="Col4"), Axes),
+        Axes,
+    )
+    check(
+        assert_type(df.boxplot(column=["Col1"], by="Col4"), Axes),
+        Axes,
+    )
+
+    # Return type: axes with by=
+    check(
+        assert_type(
+            pd.plotting.boxplot(df, column=["Col1"], return_type="axes", by="Col4"),
+            Series,
+        ),
+        Series,
+    )
+    check(
+        assert_type(
+            df.boxplot(column=["Col1"], return_type="axes", by="Col4"),
+            Series,
+        ),
+        Series,
+    )
+
+    # Return type: dict with by=
+    check(
+        assert_type(
+            pd.plotting.boxplot(df, column=["Col1"], return_type="dict", by="Col4"),
+            Series,
+        ),
+        Series,
+    )
+    check(
+        assert_type(
+            df.boxplot(column=["Col1"], return_type="dict", by="Col4"),
+            Series,
+        ),
+        Series,
+    )
+
+    # Return type: both with by=
+    check(
+        assert_type(
+            pd.plotting.boxplot(df, column=["Col1"], return_type="both", by="Col4"),
+            Series,
+        ),
+        Series,
+    )
+    check(
+        assert_type(df.boxplot(column=["Col1"], return_type="both", by="Col4"), Series),
+        Series,
+    )
+
+
+def test_reg_dereg(close_figures: None) -> None:
     check(assert_type(register_matplotlib_converters(), None), type(None))
     check(assert_type(deregister_matplotlib_converters(), None), type(None))
 
 
-def test_lag_plot(close_figures) -> None:
+def test_lag_plot(close_figures: None) -> None:
     np.random.seed(5)
     x = np.cumsum(np.random.normal(loc=1, scale=5, size=50))
     s = pd.Series(x)
     check(assert_type(pd.plotting.lag_plot(s, lag=1), Axes), Axes)
 
 
-def test_plot_parallel_coordinates(close_figures) -> None:
+def test_plot_parallel_coordinates(close_figures: None) -> None:
     check(
         assert_type(
             pd.plotting.parallel_coordinates(
@@ -240,11 +345,11 @@ def test_plot_parallel_coordinates(close_figures) -> None:
     )
 
 
-def test_plot_params(close_figures) -> None:
+def test_plot_params(close_figures: None) -> None:
     check(assert_type(pd.plotting.plot_params, dict[str, Any]), dict)
 
 
-def test_radviz(close_figures) -> None:
+def test_radviz(close_figures: None) -> None:
     df = pd.DataFrame(
         {
             "SepalLength": [6.5, 7.7, 5.1, 5.8, 7.6, 5.0, 5.4, 4.6, 6.7, 4.6],
@@ -268,24 +373,24 @@ def test_radviz(close_figures) -> None:
     check(assert_type(pd.plotting.radviz(df, "Category"), Axes), Axes)
 
 
-def test_scatter_matrix(close_figures) -> None:
+def test_scatter_matrix(close_figures: None) -> None:
     df = pd.DataFrame(np.random.randn(1000, 4), columns=["A", "B", "C", "D"])
     check(
         assert_type(
             pd.plotting.scatter_matrix(df, alpha=0.2),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
 
 
-def test_table(close_figures) -> None:
+def test_table(close_figures: None) -> None:
     df = pd.DataFrame(np.random.randn(1000, 4), columns=["A", "B", "C", "D"])
     _, ax = plt.subplots(1, 1)
     check(assert_type(pd.plotting.table(ax, df), Table), Table)
 
 
-def test_plot_line():
+def test_plot_line() -> None:
     check(assert_type(IRIS_DF.plot(), Axes), Axes)
     check(assert_type(IRIS_DF.plot.line(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="line"), Axes), Axes)
@@ -294,18 +399,18 @@ def test_plot_line():
             IRIS_DF.plot.line(subplots=True),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
     check(
         assert_type(
             IRIS_DF.plot(kind="line", subplots=True),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
 
 
-def test_plot_area(close_figures) -> None:
+def test_plot_area(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.area(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="area"), Axes), Axes)
     check(
@@ -313,18 +418,18 @@ def test_plot_area(close_figures) -> None:
             IRIS_DF.plot.area(subplots=True),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
     check(
         assert_type(
             IRIS_DF.plot(kind="area", subplots=True),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
 
 
-def test_plot_bar(close_figures) -> None:
+def test_plot_bar(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.bar(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="bar"), Axes), Axes)
     check(
@@ -332,18 +437,18 @@ def test_plot_bar(close_figures) -> None:
             IRIS_DF.plot.bar(subplots=True),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
     check(
         assert_type(
             IRIS_DF.plot(kind="bar", subplots=True),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
 
 
-def test_plot_barh(close_figures) -> None:
+def test_plot_barh(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.barh(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="barh"), Axes), Axes)
     check(
@@ -351,18 +456,18 @@ def test_plot_barh(close_figures) -> None:
             IRIS_DF.plot.barh(subplots=True),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
     check(
         assert_type(
             IRIS_DF.plot(kind="barh", subplots=True),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
 
 
-def test_plot_box(close_figures) -> None:
+def test_plot_box(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.box(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="box"), Axes), Axes)
     check(
@@ -381,7 +486,7 @@ def test_plot_box(close_figures) -> None:
     )
 
 
-def test_plot_density(close_figures) -> None:
+def test_plot_density(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.density(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="density"), Axes), Axes)
     check(
@@ -389,18 +494,18 @@ def test_plot_density(close_figures) -> None:
             IRIS_DF.plot.density(subplots=True),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
     check(
         assert_type(
             IRIS_DF.plot(kind="density", subplots=True),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
 
 
-def test_plot_hexbin(close_figures) -> None:
+def test_plot_hexbin(close_figures: None) -> None:
     check(
         assert_type(IRIS_DF.plot.hexbin(x="SepalLength", y="SepalWidth"), Axes),
         Axes,
@@ -414,18 +519,18 @@ def test_plot_hexbin(close_figures) -> None:
             IRIS_DF.plot.hexbin(x="SepalLength", y="SepalWidth", subplots=True),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
     check(
         assert_type(
             IRIS_DF.plot(kind="hexbin", x="SepalLength", y="SepalWidth", subplots=True),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
 
 
-def test_plot_hist(close_figures) -> None:
+def test_plot_hist(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.hist(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="hist"), Axes), Axes)
     check(
@@ -433,18 +538,18 @@ def test_plot_hist(close_figures) -> None:
             IRIS_DF.plot.hist(subplots=True),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
     check(
         assert_type(
             IRIS_DF.plot(subplots=True, kind="hist"),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
 
 
-def test_plot_kde(close_figures) -> None:
+def test_plot_kde(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.kde(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="kde"), Axes), Axes)
     check(
@@ -452,18 +557,18 @@ def test_plot_kde(close_figures) -> None:
             IRIS_DF.plot.kde(subplots=True),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
     check(
         assert_type(
             IRIS_DF.plot(subplots=True, kind="kde"),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
 
 
-def test_plot_pie(close_figures) -> None:
+def test_plot_pie(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.pie(y="SepalLength"), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="pie", y="SepalLength"), Axes), Axes)
     check(
@@ -471,7 +576,7 @@ def test_plot_pie(close_figures) -> None:
             IRIS_DF.plot.pie(y="SepalLength", subplots=True),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
 
     check(
@@ -479,11 +584,11 @@ def test_plot_pie(close_figures) -> None:
             IRIS_DF.plot(kind="pie", y="SepalLength", subplots=True),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
 
 
-def test_plot_scatter(close_figures) -> None:
+def test_plot_scatter(close_figures: None) -> None:
     check(
         assert_type(IRIS_DF.plot.scatter(x="SepalLength", y="SepalWidth"), Axes),
         Axes,
@@ -499,7 +604,7 @@ def test_plot_scatter(close_figures) -> None:
             IRIS_DF.plot.scatter(x="SepalLength", y="SepalWidth", subplots=True),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
     check(
         assert_type(
@@ -508,11 +613,11 @@ def test_plot_scatter(close_figures) -> None:
             ),
             npt.NDArray[np.object_],
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
 
 
-def test_plot_keywords(close_figures):
+def test_plot_keywords(close_figures: None) -> None:
     _, ax = plt.subplots(1, 1)
     df = IRIS_DF.iloc[:, :3].abs()
     check(
@@ -592,12 +697,12 @@ def test_plot_subplot_changes_150() -> None:
         assert_type(
             df.plot(subplots=[("a", "b"), ("c", "d")]), npt.NDArray[np.object_]
         ),
-        np.ndarray,
+        npt.NDArray[np.object_],
     )
 
 
-def test_grouped_dataframe_boxplot(close_figures):
-    tuples = [t for t in itertools.product(range(10), range(2))]
+def test_grouped_dataframe_boxplot(close_figures: None) -> None:
+    tuples = list(itertools.product(range(10), range(2)))
     index = pd.MultiIndex.from_tuples(tuples, names=["lvl0", "lvl1"])
     df = pd.DataFrame(
         data=np.random.randn(len(index), 2), columns=["A", "B"], index=index
@@ -625,7 +730,7 @@ def test_grouped_dataframe_boxplot(close_figures):
         )
 
 
-def test_grouped_dataframe_boxplot_single(close_figures):
+def test_grouped_dataframe_boxplot_single(close_figures: None) -> None:
     """
     Test with pandas 2.2.3 separated to make it pass.
 
@@ -633,7 +738,7 @@ def test_grouped_dataframe_boxplot_single(close_figures):
     is put separately to  make sure that we have no Axes already created.
     It will fail with `orientation="horizontal"`.
     """
-    tuples = [t for t in itertools.product(range(10), range(2))]
+    tuples = list(itertools.product(range(10), range(2)))
     index = pd.MultiIndex.from_tuples(tuples, names=["lvl0", "lvl1"])
     df = pd.DataFrame(
         data=np.random.randn(len(index), 2), columns=["A", "B"], index=index
@@ -670,10 +775,10 @@ def test_grouped_dataframe_boxplot_single(close_figures):
         )
 
     # not a literal bool
-    check(assert_type(grouped.boxplot(subplots=bool(0.5)), Union[Axes, Series]), Series)
+    check(assert_type(grouped.boxplot(subplots=bool(0.5)), Axes | Series), Series)
 
 
-def test_grouped_dataframe_hist(close_figures):
+def test_grouped_dataframe_hist(close_figures: None) -> None:
     df = IRIS_DF.iloc[:50]
     grouped = df.groupby("Name")
     check(assert_type(grouped.hist(), Series), Series)
@@ -697,7 +802,7 @@ def test_grouped_dataframe_hist(close_figures):
     )
 
 
-def test_grouped_dataframe_hist_str(close_figures):
+def test_grouped_dataframe_hist_str(close_figures: None) -> None:
     df = IRIS_DF.iloc[:50]
     grouped = df.groupby("Name")
     check(assert_type(grouped.hist(), Series), Series)
@@ -721,7 +826,7 @@ def test_grouped_dataframe_hist_str(close_figures):
     )
 
 
-def test_grouped_series_hist(close_figures):
+def test_grouped_series_hist(close_figures: None) -> None:
     multi_index = pd.MultiIndex.from_tuples([(0, 0), (0, 1), (1, 0)], names=["a", "b"])
     s = pd.Series([0, 1, 2], index=multi_index, dtype=int)
     grouped = s.groupby(level=0)

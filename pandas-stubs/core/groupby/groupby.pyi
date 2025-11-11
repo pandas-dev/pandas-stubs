@@ -8,8 +8,10 @@ from collections.abc import (
 import datetime as dt
 from typing import (
     Any,
+    Concatenate,
     Generic,
     Literal,
+    TypeAlias,
     TypeVar,
     final,
     overload,
@@ -18,9 +20,7 @@ from typing import (
 import numpy as np
 from pandas.core.base import SelectionMixin
 from pandas.core.frame import DataFrame
-from pandas.core.groupby import (
-    generic,
-)
+from pandas.core.groupby import generic
 from pandas.core.groupby.indexing import (
     GroupByIndexingMixin,
     GroupByNthSelector,
@@ -38,11 +38,7 @@ from pandas.core.window import (
     ExponentialMovingWindowGroupby,
     RollingGroupby,
 )
-from typing_extensions import (
-    Concatenate,
-    Self,
-    TypeAlias,
-)
+from typing_extensions import Self
 
 from pandas._libs.lib import _NoDefaultDoNotUse
 from pandas._libs.tslibs import BaseOffset
@@ -68,7 +64,8 @@ from pandas._typing import (
     TimestampConvertibleTypes,
     WindowingEngine,
     WindowingEngineKwargs,
-    npt,
+    np_ndarray_dt,
+    np_ndarray_int64,
 )
 
 from pandas.plotting import PlotAccessor
@@ -81,7 +78,7 @@ _ResamplerGroupBy: TypeAlias = (
 
 class GroupBy(BaseGroupBy[NDFrameT]):
     def __getattr__(self, attr: str) -> Any: ...
-    def apply(self, func: Callable | str, *args, **kwargs) -> NDFrameT: ...
+    def apply(self, func: Callable | str, *args: Any, **kwargs: Any) -> NDFrameT: ...
     @final
     @overload
     def any(self: GroupBy[Series], skipna: bool = ...) -> Series[bool]: ...
@@ -209,7 +206,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         origin: TimeGrouperOrigin | TimestampConvertibleTypes = ...,
         offset: TimedeltaConvertibleTypes | None = ...,
         group_keys: bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> _ResamplerGroupBy[NDFrameT]: ...
     @final
     def rolling(
@@ -244,7 +241,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         adjust: bool = ...,
         ignore_na: bool = ...,
         axis: Axis = ...,
-        times: str | np.ndarray | Series | np.timedelta64 | None = ...,
+        times: str | np_ndarray_dt | Series | np.timedelta64 | None = ...,
         method: CalculationMethod = ...,
         *,
         selection: IndexLabel | None = ...,
@@ -280,25 +277,25 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     ) -> NDFrameT: ...
     @final
     def cumprod(
-        self, axis: Axis | _NoDefaultDoNotUse = ..., *args, **kwargs
+        self, axis: Axis | _NoDefaultDoNotUse = ..., *args: Any, **kwargs: Any
     ) -> NDFrameT: ...
     @final
     def cumsum(
-        self, axis: Axis | _NoDefaultDoNotUse = ..., *args, **kwargs
+        self, axis: Axis | _NoDefaultDoNotUse = ..., *args: Any, **kwargs: Any
     ) -> NDFrameT: ...
     @final
     def cummin(
         self,
         axis: AxisInt | _NoDefaultDoNotUse = ...,
         numeric_only: bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> NDFrameT: ...
     @final
     def cummax(
         self,
         axis: AxisInt | _NoDefaultDoNotUse = ...,
         numeric_only: bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> NDFrameT: ...
     @final
     def shift(
@@ -306,7 +303,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         periods: int | Sequence[int] = 1,
         freq: Frequency | None = ...,
         axis: Axis | _NoDefaultDoNotUse = 0,
-        fill_value=...,
+        fill_value: Scalar | None = None,
         suffix: str | None = ...,
     ) -> NDFrameT: ...
     @final
@@ -319,7 +316,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         periods: int = ...,
         fill_method: Literal["bfill", "ffill"] | None | _NoDefaultDoNotUse = ...,
         limit: int | None | _NoDefaultDoNotUse = ...,
-        freq=...,
+        freq: Frequency | None = None,
         axis: Axis | _NoDefaultDoNotUse = ...,
     ) -> NDFrameT: ...
     @final
@@ -345,7 +342,7 @@ _GroupByT = TypeVar("_GroupByT", bound=GroupBy)
 class GroupByPlot(PlotAccessor, Generic[_GroupByT]):
     def __init__(self, groupby: _GroupByT) -> None: ...
     # The following methods are inherited from the fake parent class PlotAccessor
-    # def __call__(self, *args, **kwargs): ...
+    # def __call__(self, *args: Any, **kwargs: Any): ...
     # def __getattr__(self, name: str): ...
 
 class BaseGroupBy(SelectionMixin[NDFrameT], GroupByIndexingMixin):
@@ -361,7 +358,7 @@ class BaseGroupBy(SelectionMixin[NDFrameT], GroupByIndexingMixin):
     def ngroups(self) -> int: ...
     @final
     @property
-    def indices(self) -> dict[Hashable, Index | npt.NDArray[np.int_] | list[int]]: ...
+    def indices(self) -> dict[Hashable, Index | np_ndarray_int64 | list[int]]: ...
     @overload
     def pipe(
         self,
@@ -377,7 +374,7 @@ class BaseGroupBy(SelectionMixin[NDFrameT], GroupByIndexingMixin):
         **kwargs: Any,
     ) -> T: ...
     @final
-    def get_group(self, name) -> NDFrameT: ...
+    def get_group(self, name: Hashable) -> NDFrameT: ...
     @final
     def __iter__(self) -> Iterator[tuple[Hashable, NDFrameT]]: ...
     @overload

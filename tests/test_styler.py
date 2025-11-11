@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import os
-import pathlib
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from jinja2.environment import (
@@ -10,7 +9,6 @@ from jinja2.environment import (
 )
 from jinja2.loaders import PackageLoader
 import numpy as np
-import numpy.typing as npt
 from pandas import (
     DataFrame,
     Index,
@@ -25,13 +23,14 @@ from tests import (
     PD_LTE_23,
     check,
     ensure_clean,
+    np_ndarray_str,
 )
 
 from pandas.io.formats.style import Styler
 
 DF = DataFrame({"a": [1, 2, 3], "b": [3.14, 2.72, 1.61]})
 
-PWD = pathlib.Path(os.path.split(os.path.abspath(__file__))[0])
+PWD = Path(__file__).parent.resolve()
 
 if TYPE_CHECKING:
     from pandas.io.formats.style_render import StyleExportDict
@@ -40,11 +39,11 @@ else:
 
 
 @pytest.fixture(autouse=True)
-def reset_style():
+def reset_style() -> None:
     DF.style.clear()
 
 
-def test_apply():
+def test_apply() -> None:
     def f(s: Series) -> Series:
         return s
 
@@ -65,7 +64,7 @@ def test_apply():
 
 
 def test_apply_index() -> None:
-    def f(s: Series) -> npt.NDArray[np.str_]:
+    def f(s: Series) -> np_ndarray_str:
         return np.asarray(s, dtype=np.str_)
 
     check(assert_type(DF.style.apply_index(f), Styler), Styler)
@@ -188,7 +187,7 @@ def test_set() -> None:
     check(assert_type(DF.style.set_uuid("r4nd0mc44r4c73r5"), Styler), Styler)
 
 
-def test_styler_templates():
+def test_styler_templates() -> None:
     check(assert_type(DF.style.template_html, Template), Template)
     check(assert_type(DF.style.template_html_style, Template), Template)
     check(assert_type(DF.style.template_html_table, Template), Template)
@@ -255,10 +254,4 @@ def test_styler_map() -> None:
 
     df = DataFrame(np.random.randn(5, 2), columns=["A", "B"])
 
-    check(
-        assert_type(
-            df.style.map(color_negative, color="red"),
-            Styler,
-        ),
-        Styler,
-    )
+    check(assert_type(df.style.map(color_negative, color="red"), Styler), Styler)

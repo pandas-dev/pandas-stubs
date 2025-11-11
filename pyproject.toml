@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pandas-stubs"
-version = "2.3.2.250827"
+version = "2.3.2.250926"
 description = "Type annotations for pandas"
 authors = ["The Pandas Development Team <pandas-dev@python.org>"]
 license = "BSD-3-Clause"
@@ -20,6 +20,7 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Topic :: Scientific/Engineering",
   "Typing :: Stubs Only",
 ]
@@ -32,26 +33,26 @@ exclude = [ "pandas-stubs/__init__.py" ]
 
 [tool.poetry.dependencies]
 python = ">=3.10"
-types-pytz = ">= 2022.1.1"
-numpy = ">= 1.23.5"
+types-pytz = ">=2022.1.1"
+numpy = ">=1.23.5"
 
 [tool.poetry.group.dev.dependencies]
-mypy = "1.18.1"
-pandas = "2.3.2"
+mypy = ">=1.18.2"
+pandas = "2.3.3"
 pyarrow = ">=10.0.1"
-pytest = ">=7.1.2"
-pyright = ">=1.1.405"
-ty = ">=0.0.1a20"
-pyrefly = ">=0.33.0"
+pytest = ">=8.4.2"
+pyright = ">=1.1.407"
+ty = ">=0.0.1a24"
+pyrefly = ">=0.38.2"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
 typing-extensions = ">=4.4.0"
 matplotlib = ">=3.10.1"
 pre-commit = ">=2.19.0"
-black = ">=25.1.0"
+black = ">=25.9.0"
 isort = ">=6.0.1"
 openpyxl = ">=3.0.10"
-tables = { version = ">=3.10.1", python = "<4" }
+numexpr = ">=2.13.1"
 lxml = ">=4.9.1"
 pyreadstat = ">=1.2.0"
 xlrd = ">=2.0.1"
@@ -61,13 +62,14 @@ odfpy = ">=1.4.1"
 xarray = ">=22.6.0"
 tabulate = ">=0.8.10"
 jinja2 = ">=3.1"
-scipy = { version = ">=1.9.1", python = "<3.14" }
+scipy = ">=1.9.1"
 scipy-stubs = ">=1.15.3.0"
 SQLAlchemy = ">=2.0.39"
 types-python-dateutil = ">=2.8.19"
-beautifulsoup4 = ">=4.12.2"
+beautifulsoup4 = ">=4.14.2"
 html5lib = ">=1.1"
 python-calamine = ">=0.2.0"
+pyarrow-stubs = { version = ">=20.0.0.20250928", python = "<4" }
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -75,15 +77,15 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks.test_all]
 help = "Run all tests"
-script = "scripts.test:test(src=True, dist=True)"
+script = "scripts.test:run_tests(src=True, dist=True)"
 
 [tool.poe.tasks.test]
 help = "Run local tests (includes 'mypy', 'pyright', 'pytest', and 'style')"
-script = "scripts.test:test(src=True)"
+script = "scripts.test:run_tests(src=True)"
 
 [tool.poe.tasks.test_dist]
 help = "Run tests on the installed stubs (includes 'mypy_dist' and 'pyright_dist')"
-script = "scripts.test:test(dist=True)"
+script = "scripts.test:run_tests(dist=True)"
 
 [tool.poe.tasks.pytest]
 help = "Run pytest"
@@ -105,7 +107,7 @@ script = "scripts.test:mypy_src(mypy_nightly)"
 
 [tool.poe.tasks.mypy_dist]
 help = "Run mypy on 'tests' using the installed stubs"
-script = "scripts.test:test(dist=True, type_checker='mypy')"
+script = "scripts.test:run_tests(dist=True, type_checker='mypy')"
 
 [tool.poe.tasks.ty]
 help = "Run ty on pandas-stubs"
@@ -125,7 +127,7 @@ script = "scripts.test.run:pyright_src_strict"
 
 [tool.poe.tasks.pyright_dist]
 help = "Run pyright on 'tests' using the installed stubs"
-script = "scripts.test:test(dist=True, type_checker='pyright')"
+script = "scripts.test:run_tests(dist=True, type_checker='pyright')"
 
 [tool.poe.tasks.stubtest]
 script = "scripts.test:stubtest(allowlist, check_missing, nightly)"
@@ -138,7 +140,7 @@ args = [
 
 
 [tool.black]
-target-version = ['py310']
+target-version = ["py310"]
 
 [tool.isort]
 known_pre_libs = "pandas._config"
@@ -167,6 +169,109 @@ combine_as_imports = true
 force_grid_wrap = 2
 force_sort_within_sections = true
 skip_glob = "env"
+
+
+[tool.ruff]
+target-version = "py310"
+fix = true
+
+
+[tool.ruff.lint]
+extend-select = ["ALL"]
+ignore = [
+  # The following rules are ignored permanently for good reasons
+  "COM",     # https://docs.astral.sh/ruff/rules/#flake8-commas-com
+  "D",       # https://docs.astral.sh/ruff/rules/#pydocstyle-d
+  "E501",    # handled by black https://docs.astral.sh/ruff/rules/line-too-long/
+  "FBT",     # https://docs.astral.sh/ruff/rules/#flake8-boolean-trap-fbt
+  "I",       # handled by isort
+  "TRY003",  # https://docs.astral.sh/ruff/rules/raise-vanilla-args/
+]
+
+
+[tool.ruff.lint.per-file-ignores]
+"*.pyi" = [
+  # The following rules are ignored permanently for good reasons
+  "A002",    # https://docs.astral.sh/ruff/rules/builtin-argument-shadowing/
+  "ANN401",  # https://docs.astral.sh/ruff/rules/any-type/
+  "FIX002",  # https://docs.astral.sh/ruff/rules/line-contains-todo/
+  "N",       # https://docs.astral.sh/ruff/rules/#pep8-naming-n
+  "TD002",   # https://docs.astral.sh/ruff/rules/missing-todo-author/
+  # The following rules are ignored temporarily. Either fix them or move to the permanent list above.
+  "A001",    # https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/
+  "A004",    # https://docs.astral.sh/ruff/rules/builtin-import-shadowing/
+  "PYI001",  # https://docs.astral.sh/ruff/rules/unprefixed-type-param/
+  "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
+  "ERA001", "PLR0402", "PLC0105"
+]
+"*frame.pyi" = [
+  # TODO: remove when pandas-dev/pandas-stubs#1446 is resolved
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"indexers.pyi" = [
+  # TODO: remove when indexers.pyi is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"multi.pyi" = [
+  # TODO: remove when multi.pyi is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"indexing.pyi" = [
+  # TODO: remove when indexing.pyi is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*computation*" = [
+  # TODO: remove when computations are fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*window*" = [
+  # TODO: remove when window is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*generic.pyi" = [
+  # TODO: remove when generic.pyi is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*array*" = [
+  # TODO: remove when array is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*_libs*" = [
+  # TODO: remove when _libs is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*base.pyi" = [
+  # TODO: remove when base.pyi's are fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"scripts/*" = [
+  # The following rules are ignored permanently for good reasons
+  "EM",      # https://docs.astral.sh/ruff/rules/#flake8-errmsg-em
+  "S603",    # https://docs.astral.sh/ruff/rules/subprocess-without-shell-equals-true/
+]
+"tests/*" = [
+  # The following rules are ignored permanently for good reasons
+  "ANN401",  # https://docs.astral.sh/ruff/rules/any-type/
+  "ARG",     # https://docs.astral.sh/ruff/rules/#flake8-unused-arguments-arg
+  "B905",    # https://docs.astral.sh/ruff/rules/zip-without-explicit-strict/
+  "E731",    # https://docs.astral.sh/ruff/rules/lambda-assignment/
+  "EM",      # https://docs.astral.sh/ruff/rules/#flake8-errmsg-em
+  "FIX002",  # https://docs.astral.sh/ruff/rules/line-contains-todo/
+  "PD",      # Pandas is here
+  "PLC0415", # https://docs.astral.sh/ruff/rules/import-outside-top-level/
+  "S101",    # https://docs.astral.sh/ruff/rules/assert/
+  "TD002",   # https://docs.astral.sh/ruff/rules/missing-todo-author/
+  # The following rules are ignored temporarily. Either fix them or move to the permanent list above.
+  "A001",    # https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/
+  "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
+  "SLF001",  # https://docs.astral.sh/ruff/rules/private-member-access/
+  "ERA", "RUF", "SIM", "TRY", "PT", "NPY", "N", "DTZ", "PLR", "TC", "PGH", "S311", "C901"
+]
+"tests/test_io.py" = [
+  # The following rules are ignored permanently for good reasons
+  "S301",    # https://docs.astral.sh/ruff/rules/suspicious-pickle-usage/
+]
+
 
 [tool.mypy]
 # Import discovery
@@ -221,19 +326,19 @@ enableTypeIgnoreComments = false    # use pyright-specific ignores
 # disable subset of strict
 reportMissingParameterType = false
 reportMissingTypeArgument = false
-reportMissingTypeStubs = false
 reportUnnecessaryTypeIgnoreComment = true
 reportUnknownArgumentType = false
-reportUnusedExpression = false
 reportUnknownLambdaType = false
 reportUnknownMemberType = false
 reportUnknownParameterType = false
 reportUnknownVariableType = false
-reportUnusedVariable = false
 reportPrivateUsage = false
 # enable optional checks
 reportMissingModuleSource = true
 useLibraryCodeForTypes = false
+
+[tool.pyrefly.errors]
+bad-param-name-override = false  # TODO: report to pyrefly https://github.com/pandas-dev/pandas-stubs/pull/1412#pullrequestreview-3310645279
 
 [tool.codespell]
 ignore-words-list = "indext, mose, sav, ser"

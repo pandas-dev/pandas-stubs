@@ -5,13 +5,12 @@ from collections.abc import (
 )
 from contextlib import contextmanager
 from typing import (
+    Any,
     Literal,
     overload,
 )
 import warnings
 
-from matplotlib.artist import Artist
-import numpy as np
 from pandas import (
     Categorical,
     DataFrame,
@@ -30,6 +29,7 @@ from pandas.core.arrays.base import ExtensionArray
 from pandas._typing import (
     AnyArrayLike,
     T,
+    np_ndarray,
 )
 
 def assert_almost_equal(
@@ -38,7 +38,7 @@ def assert_almost_equal(
     check_dtype: bool | Literal["equiv"] = "equiv",
     rtol: float = 1e-5,
     atol: float = 1e-8,
-    **kwargs,
+    **kwargs: Any,
 ) -> None: ...
 def assert_dict_equal(left: dict, right: dict, compare_keys: bool = True) -> None: ...
 def assert_index_equal(
@@ -58,9 +58,6 @@ def assert_class_equal(
 ) -> None: ...
 def assert_attr_equal(
     attr: str, left: object, right: object, obj: str = "Attributes"
-) -> None: ...
-def assert_is_valid_plot_return_object(
-    objs: Series | np.ndarray | Artist | tuple | dict,
 ) -> None: ...
 def assert_is_sorted(seq: AnyArrayLike) -> None: ...
 def assert_categorical_equal(
@@ -91,21 +88,11 @@ def assert_timedelta_array_equal(
     obj: str = "TimedeltaArray",
     check_freq: bool = True,
 ) -> None: ...
-def assert_numpy_array_equal(
-    left,
-    right,
-    strict_nan: bool = False,
-    check_dtype: bool | Literal["equiv"] = True,
-    err_msg: str | None = None,
-    check_same: Literal["copy", "same"] | None = None,
-    obj: str = "numpy array",
-    index_values: Index | np.ndarray | None = None,
-) -> None: ...
 def assert_extension_array_equal(
     left: ExtensionArray,
     right: ExtensionArray,
     check_dtype: bool | Literal["equiv"] = True,
-    index_values: Index | np.ndarray | None = None,
+    index_values: Index | np_ndarray | None = None,
     check_exact: bool = False,
     rtol: float = 1e-5,
     atol: float = 1e-8,
@@ -130,7 +117,7 @@ def assert_series_equal(
     obj: str = ...,
     *,
     check_index: Literal[False],
-    check_like: Literal[False] = ...,
+    check_like: Literal[False] = False,
 ) -> None: ...
 @overload
 def assert_series_equal(
@@ -150,7 +137,7 @@ def assert_series_equal(
     atol: float = ...,
     obj: str = ...,
     *,
-    check_index: Literal[True] = ...,
+    check_index: Literal[True] = True,
     check_like: bool = ...,
 ) -> None: ...
 def assert_frame_equal(
@@ -172,10 +159,9 @@ def assert_frame_equal(
     atol: float = 1e-8,
     obj: str = "DataFrame",
 ) -> None: ...
-def assert_equal(left, right, **kwargs) -> None: ...
 def assert_sp_array_equal(left: SparseArray, right: SparseArray) -> None: ...
 def assert_contains_all(iterable: Iterable[T], dic: Container[T]) -> None: ...
-def assert_copy(iter1: Iterable[T], iter2: Iterable[T], **eql_kwargs) -> None: ...
+def assert_copy(iter1: Iterable[T], iter2: Iterable[T], **eql_kwargs: Any) -> None: ...
 @contextmanager
 def assert_produces_warning(
     expected_warning: (

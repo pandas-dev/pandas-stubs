@@ -19,6 +19,7 @@ from pandas.core.generic import NDFrame
 from typing_extensions import Self
 
 from pandas._typing import (
+    BaseBuffer,
     FilePath,
     HashableT,
     HashableT1,
@@ -93,20 +94,20 @@ def read_hdf(
     start: int | None = ...,
     stop: int | None = ...,
     columns: list[HashableT] | None = ...,
-    iterator: Literal[False] = ...,
-    chunksize: None = ...,
+    iterator: Literal[False] = False,
+    chunksize: None = None,
     **kwargs: Any,
 ) -> DataFrame | Series: ...
 
 class HDFStore:
     def __init__(
         self,
-        path,
+        path: FilePath | BaseBuffer,
         mode: Literal["a", "w", "r", "r+"] = ...,
         complevel: int | None = ...,
         complib: HDFCompLib | None = ...,
         fletcher32: bool = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> None: ...
     def __fspath__(self) -> str: ...
     def __getitem__(self, key: str) -> DataFrame | Series: ...
@@ -122,7 +123,7 @@ class HDFStore:
         exc_value: BaseException | None,
         traceback: TracebackType | None,
     ) -> None: ...
-    def keys(self, include="pandas") -> list[str]: ...
+    def keys(self, include: Literal["pandas", "native"] = "pandas") -> list[str]: ...
     def __iter__(self) -> Iterator[str]: ...
     def close(self) -> None: ...
     @property
@@ -162,8 +163,8 @@ class HDFStore:
         start: int | None = ...,
         stop: int | None = ...,
         columns: list[HashableT] | None = ...,
-        iterator: Literal[False] = ...,
-        chunksize: None = ...,
+        iterator: Literal[False] = False,
+        chunksize: None = None,
         auto_close: bool = ...,
     ) -> DataFrame | Series: ...
     def put(

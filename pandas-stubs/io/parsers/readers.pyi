@@ -34,8 +34,6 @@ from pandas._typing import (
     UsecolsArgType,
 )
 
-from pandas.io.common import IOHandles
-
 @overload
 def read_csv(
     filepath_or_buffer: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str],
@@ -207,8 +205,8 @@ def read_csv(
     date_format: dict[Hashable, str] | str | None = ...,
     dayfirst: bool = ...,
     cache_dates: bool = ...,
-    iterator: Literal[False] = ...,
-    chunksize: None = ...,
+    iterator: Literal[False] = False,
+    chunksize: None = None,
     compression: CompressionOptions = ...,
     thousands: str | None = ...,
     decimal: str = ...,
@@ -403,8 +401,8 @@ def read_table(
     date_format: dict[Hashable, str] | str | None = ...,
     dayfirst: bool = ...,
     cache_dates: bool = ...,
-    iterator: Literal[False] = ...,
-    chunksize: None = ...,
+    iterator: Literal[False] = False,
+    chunksize: None = None,
     compression: CompressionOptions = ...,
     thousands: str | None = ...,
     decimal: str = ...,
@@ -461,8 +459,8 @@ def read_fwf(
     infer_nrows: int = ...,
     dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     date_format: dict[Hashable, str] | str | None = ...,
-    iterator: Literal[False] = ...,
-    chunksize: None = ...,
+    iterator: Literal[False] = False,
+    chunksize: None = None,
     **kwds: Any,
 ) -> DataFrame: ...
 
@@ -472,7 +470,6 @@ class TextFileReader(abc.Iterator):
     chunksize: int | None
     nrows: int | None
     squeeze: bool
-    handles: IOHandles | None
     def __init__(
         self,
         f: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str] | list,

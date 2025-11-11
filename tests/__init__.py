@@ -45,20 +45,53 @@ if TYPE_CHECKING:
         UIntDtypeArg as UIntDtypeArg,
         VoidDtypeArg as VoidDtypeArg,
         np_1darray as np_1darray,
+        np_1darray_anyint as np_1darray_anyint,
+        np_1darray_bool as np_1darray_bool,
+        np_1darray_bytes as np_1darray_bytes,
+        np_1darray_complex as np_1darray_complex,
+        np_1darray_dt as np_1darray_dt,
+        np_1darray_float as np_1darray_float,
+        np_1darray_int64 as np_1darray_int64,
+        np_1darray_intp as np_1darray_intp,
+        np_1darray_object as np_1darray_object,
+        np_1darray_str as np_1darray_str,
+        np_1darray_td as np_1darray_td,
         np_2darray as np_2darray,
         np_ndarray as np_ndarray,
         np_ndarray_bool as np_ndarray_bool,
+        np_ndarray_dt as np_ndarray_dt,
         np_ndarray_int as np_ndarray_int,
+        np_ndarray_intp as np_ndarray_intp,
+        np_ndarray_num as np_ndarray_num,
+        np_ndarray_str as np_ndarray_str,
+        np_ndarray_td as np_ndarray_td,
     )
 else:
     _G = TypeVar("_G", bound=np.generic)
     _S = TypeVar("_S", bound=tuple[int, ...])
     # Separately define here so pytest works
     np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[_G]]
+    np_1darray_bool: TypeAlias = np.ndarray[tuple[int], np.bool_]
+    np_1darray_str: TypeAlias = np.ndarray[tuple[int], np.str_]
+    np_1darray_bytes: TypeAlias = np.ndarray[tuple[int], np.bytes_]
+    np_1darray_complex: TypeAlias = np.ndarray[tuple[int], np.complexfloating]
+    np_1darray_object: TypeAlias = np.ndarray[tuple[int], np.object_]
+    np_1darray_intp: TypeAlias = np_1darray[np.intp]
+    np_1darray_int64: TypeAlias = np_1darray[np.int64]
+    np_1darray_anyint: TypeAlias = np_1darray[np.integer]
+    np_1darray_float: TypeAlias = np_1darray[np.floating]
+    np_1darray_dt: TypeAlias = np_1darray[np.datetime64]
+    np_1darray_td: TypeAlias = np_1darray[np.timedelta64]
     np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[_G]]
     np_ndarray: TypeAlias = np.ndarray[_S, np.dtype[_G]]
     np_ndarray_bool: TypeAlias = npt.NDArray[np.bool_]
+    np_ndarray_dt: TypeAlias = npt.NDArray[np.datetime64]
     np_ndarray_int: TypeAlias = npt.NDArray[np.signedinteger]
+    np_ndarray_intp: TypeAlias = npt.NDArray[np.intp]
+    np_ndarray_int64: TypeAlias = npt.NDArray[np.int64]
+    np_ndarray_num: TypeAlias = npt.NDArray[np.number]
+    np_ndarray_str: TypeAlias = npt.NDArray[np.str_]
+    np_ndarray_td: TypeAlias = npt.NDArray[np.timedelta64]
 
 TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 WINDOWS = os.name == "nt" or "cygwin" in platform.system().lower()
@@ -87,7 +120,7 @@ def check(
             and get_origin(shape_type) is tuple
             and (tuple_args := get_args(shape_type))
             and ... not in tuple_args  # fixed-length tuple
-            and (arr_ndim := getattr(actual, "ndim"))
+            and (arr_ndim := getattr(actual, "ndim"))  # noqa: B009
             != (expected_ndim := len(tuple_args))
         ):
             raise RuntimeError(
@@ -100,7 +133,7 @@ def check(
             and (dtype_args := get_args(dtype_type))
             and isinstance((expected_dtype := dtype_args[0]), type)
             and issubclass(expected_dtype, np.generic)
-            and (arr_dtype := getattr(actual, "dtype")) != expected_dtype
+            and (arr_dtype := getattr(actual, "dtype")) != expected_dtype  # noqa: B009
         ):
             raise RuntimeError(
                 f"Array has wrong dtype {arr_dtype}, expected {expected_dtype.__name__}"
@@ -208,8 +241,6 @@ def pytest_warns_bounded(
         current = Version(version_str)
     if lb < current < ub:
         return pytest.warns(warning, match=match)
-    else:
-        if upper_exception is None:
-            return nullcontext()
-        else:
-            return suppress(upper_exception)
+    if upper_exception is None:
+        return nullcontext()
+    return suppress(upper_exception)

@@ -1,15 +1,13 @@
-from typing import overload
-
-import numpy as np
-from pandas import (
-    Index,
-    Series,
-)
-from pandas.core.arrays.base import ExtensionArray as ExtensionArray
-from typing_extensions import (
-    Self,
+from typing import (
+    Any,
     TypeAlias,
+    overload,
 )
+
+from pandas.core.arrays.base import ExtensionArray as ExtensionArray
+from pandas.core.indexes.base import Index
+from pandas.core.series import Series
+from typing_extensions import Self
 
 from pandas._libs.interval import (
     Interval as Interval,
@@ -17,11 +15,14 @@ from pandas._libs.interval import (
 )
 from pandas._typing import (
     Axis,
+    NpDtype,
     Scalar,
     ScalarIndexer,
     SequenceIndexer,
     TakeIndexer,
     np_1darray,
+    np_1darray_bool,
+    np_ndarray,
 )
 
 IntervalOrNA: TypeAlias = Interval | float
@@ -30,7 +31,7 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     can_hold_na: bool = ...
     def __new__(
         cls, data, closed=..., dtype=..., copy: bool = ..., verify_integrity: bool = ...
-    ): ...
+    ) -> Self: ...
     @classmethod
     def from_breaks(
         cls,
@@ -38,7 +39,7 @@ class IntervalArray(IntervalMixin, ExtensionArray):
         closed: str = "right",
         copy: bool = False,
         dtype=None,
-    ): ...
+    ) -> Self: ...
     @classmethod
     def from_arrays(
         cls,
@@ -47,7 +48,7 @@ class IntervalArray(IntervalMixin, ExtensionArray):
         closed: str = "right",
         copy: bool = False,
         dtype=...,
-    ): ...
+    ) -> Self: ...
     @classmethod
     def from_tuples(
         cls,
@@ -55,9 +56,10 @@ class IntervalArray(IntervalMixin, ExtensionArray):
         closed: str = "right",
         copy: bool = False,
         dtype=None,
-    ): ...
-    def __iter__(self): ...
-    def __len__(self) -> int: ...
+    ) -> Self: ...
+    def __array__(
+        self, dtype: NpDtype | None = None, copy: bool | None = None
+    ) -> np_1darray: ...
     @overload
     def __getitem__(self, key: ScalarIndexer) -> IntervalOrNA: ...
     @overload
@@ -65,10 +67,8 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def __setitem__(self, key, value) -> None: ...
     def __eq__(self, other): ...
     def __ne__(self, other): ...
-    def fillna(self, value=..., method=None, limit=None): ...
     @property
     def dtype(self): ...
-    def astype(self, dtype, copy: bool = True): ...
     def copy(self): ...
     def isna(self): ...
     @property
@@ -83,7 +83,7 @@ class IntervalArray(IntervalMixin, ExtensionArray):
         allow_fill: bool = ...,
         fill_value=...,
         axis=...,
-        **kwargs,
+        **kwargs: Any,
     ) -> Self: ...
     def value_counts(self, dropna: bool = True): ...
     @property
@@ -99,7 +99,6 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def mid(self) -> Index: ...
     @property
     def is_non_overlapping_monotonic(self) -> bool: ...
-    def __array__(self, dtype=...) -> np_1darray: ...
     def __arrow_array__(self, type=...): ...
     def to_tuples(self, na_tuple: bool = True): ...
     def repeat(self, repeats, axis: Axis | None = ...): ...
@@ -107,6 +106,6 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def contains(self, other: Series) -> Series[bool]: ...
     @overload
     def contains(
-        self, other: Scalar | ExtensionArray | Index | np.ndarray
-    ) -> np_1darray[np.bool]: ...
+        self, other: Scalar | ExtensionArray | Index | np_ndarray
+    ) -> np_1darray_bool: ...
     def overlaps(self, other: Interval) -> bool: ...

@@ -4,25 +4,22 @@ from collections.abc import (
     Mapping,
 )
 from typing import (
+    Any,
     Literal,
+    TypeAlias,
     final,
     overload,
 )
 
 import numpy as np
-from pandas import (
-    DataFrame,
-    Series,
-    Timedelta,
-)
+from pandas.core.frame import DataFrame
 from pandas.core.groupby.generic import SeriesGroupBy
 from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.core.groupby.grouper import Grouper
-from typing_extensions import (
-    Self,
-    TypeAlias,
-)
+from pandas.core.series import Series
+from typing_extensions import Self
 
+from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
     S1,
     Axis,
@@ -31,7 +28,7 @@ from pandas._typing import (
     Scalar,
     TimeGrouperOrigin,
     TimestampConvention,
-    npt,
+    np_ndarray_float,
 )
 
 _FrameGroupByFunc: TypeAlias = (
@@ -63,25 +60,31 @@ class Resampler(BaseGroupBy[NDFrameT]):
     def aggregate(
         self: Resampler[DataFrame],
         func: _FrameGroupByFuncArgs | None = ...,
-        *args,
-        **kwargs,
+        *args: Any,
+        **kwargs: Any,
     ) -> DataFrame: ...
     @overload
     def aggregate(
         self: Resampler[Series],
         func: _SeriesGroupByFuncArgs | None = ...,
-        *args,
-        **kwargs,
+        *args: Any,
+        **kwargs: Any,
     ) -> Series | DataFrame: ...
     agg = aggregate
     apply = aggregate
     @overload
     def transform(
-        self: Resampler[Series], arg: Callable[[Series], Series[S1]], *args, **kwargs
+        self: Resampler[Series],
+        arg: Callable[[Series], Series[S1]],
+        *args: Any,
+        **kwargs: Any,
     ) -> Series[S1]: ...
     @overload
     def transform(
-        self: Resampler[DataFrame], arg: Callable[[Series], Series[S1]], *args, **kwargs
+        self: Resampler[DataFrame],
+        arg: Callable[[Series], Series[S1]],
+        *args: Any,
+        **kwargs: Any,
     ) -> DataFrame: ...
     @final
     def ffill(self, limit: int | None = ...) -> NDFrameT: ...
@@ -99,7 +102,7 @@ class Resampler(BaseGroupBy[NDFrameT]):
         inplace: Literal[True],
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> None: ...
     @overload
     def interpolate(
@@ -108,10 +111,10 @@ class Resampler(BaseGroupBy[NDFrameT]):
         *,
         axis: Axis = ...,
         limit: int | None = ...,
-        inplace: Literal[False] = ...,
+        inplace: Literal[False] = False,
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
-        **kwargs,
+        **kwargs: Any,
     ) -> NDFrameT: ...
     @final
     def asfreq(self, fill_value: Scalar | None = ...) -> NDFrameT: ...
@@ -162,15 +165,15 @@ class Resampler(BaseGroupBy[NDFrameT]):
     @final
     def quantile(
         self,
-        q: float | list[float] | npt.NDArray[np.double] | Series[float] = 0.5,
-        **kwargs,
+        q: float | list[float] | np_ndarray_float | Series[float] = 0.5,
+        **kwargs: Any,
     ) -> NDFrameT: ...
 
 # We lie about inheriting from Resampler because at runtime inherits all Resampler
 # attributes via setattr
 class _GroupByMixin(Resampler[NDFrameT]):
     key: str | list[str] | None
-    def __getitem__(self, key) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __getitem__(self, key: str | list[str] | None) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
 
 class DatetimeIndexResampler(Resampler[NDFrameT]): ...
 

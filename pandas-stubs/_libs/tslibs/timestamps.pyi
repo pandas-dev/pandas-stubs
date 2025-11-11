@@ -13,36 +13,31 @@ from typing import (
     ClassVar,
     Literal,
     SupportsIndex,
+    TypeAlias,
     overload,
 )
 
 import numpy as np
-from pandas import (
-    DatetimeIndex,
-    TimedeltaIndex,
-)
 from pandas.core.indexes.base import Index
-from pandas.core.series import (
-    Series,
-    TimedeltaSeries,
-)
+from pandas.core.indexes.datetimes import DatetimeIndex
+from pandas.core.indexes.timedeltas import TimedeltaIndex
+from pandas.core.series import Series
 from typing_extensions import (
     Never,
     Self,
-    TypeAlias,
 )
 
 from pandas._libs.tslibs import (
-    BaseOffset,
     Period,
     Tick,
     Timedelta,
 )
 from pandas._typing import (
+    PeriodFrequency,
     ShapeT,
     TimestampNonexistent,
     TimeUnit,
-    np_1darray,
+    np_1darray_bool,
     np_ndarray,
 )
 
@@ -102,10 +97,9 @@ class Timestamp(datetime, SupportsIndex):
     def tz(self) -> _tzinfo | None: ...
     @property
     def fold(self) -> int: ...
-
     if sys.version_info >= (3, 12):
         @classmethod
-        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore
+        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride]
             cls, t: float, tz: _tzinfo | str | None = ...
         ) -> Self: ...
     else:
@@ -178,9 +172,9 @@ class Timestamp(datetime, SupportsIndex):
     # Mypy complains Forward operator "<inequality op>" is not callable, so ignore misc
     # for le, lt ge and gt
     @overload  # type: ignore[override]
-    def __le__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
+    def __le__(self, other: datetime | np.datetime64 | Self) -> bool: ...
     @overload
-    def __le__(self, other: DatetimeIndex) -> np_1darray[np.bool]: ...
+    def __le__(self, other: DatetimeIndex) -> np_1darray_bool: ...
     @overload
     def __le__(
         self, other: np_ndarray[ShapeT, np.datetime64]
@@ -188,9 +182,9 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __le__(self, other: Series[Timestamp]) -> Series[bool]: ...
     @overload  # type: ignore[override]
-    def __lt__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
+    def __lt__(self, other: datetime | np.datetime64 | Self) -> bool: ...
     @overload
-    def __lt__(self, other: DatetimeIndex) -> np_1darray[np.bool]: ...
+    def __lt__(self, other: DatetimeIndex) -> np_1darray_bool: ...
     @overload
     def __lt__(
         self, other: np_ndarray[ShapeT, np.datetime64]
@@ -198,9 +192,9 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __lt__(self, other: Series[Timestamp]) -> Series[bool]: ...
     @overload  # type: ignore[override]
-    def __ge__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
+    def __ge__(self, other: datetime | np.datetime64 | Self) -> bool: ...
     @overload
-    def __ge__(self, other: DatetimeIndex) -> np_1darray[np.bool]: ...
+    def __ge__(self, other: DatetimeIndex) -> np_1darray_bool: ...
     @overload
     def __ge__(
         self, other: np_ndarray[ShapeT, np.datetime64]
@@ -208,9 +202,9 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __ge__(self, other: Series[Timestamp]) -> Series[bool]: ...
     @overload  # type: ignore[override]
-    def __gt__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[misc]
+    def __gt__(self, other: datetime | np.datetime64 | Self) -> bool: ...
     @overload
-    def __gt__(self, other: DatetimeIndex) -> np_1darray[np.bool]: ...
+    def __gt__(self, other: DatetimeIndex) -> np_1darray_bool: ...
     @overload
     def __gt__(
         self, other: np_ndarray[ShapeT, np.datetime64]
@@ -225,8 +219,6 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __add__(self, other: timedelta | np.timedelta64 | Tick) -> Self: ...
     @overload
-    def __add__(self, other: TimedeltaSeries) -> Series[Timestamp]: ...
-    @overload
     def __add__(self, other: TimedeltaIndex) -> DatetimeIndex: ...
     @overload
     def __radd__(self, other: timedelta) -> Self: ...
@@ -236,7 +228,7 @@ class Timestamp(datetime, SupportsIndex):
     def __radd__(
         self, other: np_ndarray[ShapeT, np.timedelta64]
     ) -> np_ndarray[ShapeT, np.datetime64]: ...
-    # TODO: test dt64
+    # TODO: pandas-dev/pandas-stubs#1432 test dt64
     @overload  # type: ignore[override]
     def __sub__(self, other: datetime | np.datetime64) -> Timedelta: ...
     @overload
@@ -244,27 +236,25 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __sub__(self, other: TimedeltaIndex) -> DatetimeIndex: ...
     @overload
-    def __sub__(self, other: TimedeltaSeries) -> Series[Timestamp]: ...
-    @overload
     def __sub__(
         self, other: np_ndarray[ShapeT, np.timedelta64]
     ) -> np_ndarray[ShapeT, np.datetime64]: ...
     @overload
-    def __eq__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __eq__(self, other: datetime | np.datetime64 | Self) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __eq__(self, other: Series[Timestamp]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(self, other: Index) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
+    def __eq__(self, other: Index) -> np_1darray_bool: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: np_ndarray[ShapeT, np.datetime64]) -> np_ndarray[ShapeT, np.bool]: ...  # type: ignore[overload-overlap]
     @overload
     def __eq__(self, other: object) -> Literal[False]: ...
     @overload
-    def __ne__(self, other: Timestamp | datetime | np.datetime64) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __ne__(self, other: datetime | np.datetime64 | Self) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __ne__(self, other: Series[Timestamp]) -> Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(self, other: Index) -> np_1darray[np.bool]: ...  # type: ignore[overload-overlap]
+    def __ne__(self, other: Index) -> np_1darray_bool: ...  # type: ignore[overload-overlap]
     @overload
     def __ne__(self, other: np_ndarray[ShapeT, np.datetime64]) -> np_ndarray[ShapeT, np.bool]: ...  # type: ignore[overload-overlap]
     @overload
@@ -289,12 +279,12 @@ class Timestamp(datetime, SupportsIndex):
     def is_year_end(self) -> bool: ...
     def to_pydatetime(self, warn: bool = ...) -> datetime: ...
     def to_datetime64(self) -> np.datetime64: ...
-    def to_period(self, freq: BaseOffset | str | None = ...) -> Period: ...
+    def to_period(self, freq: PeriodFrequency | None = ...) -> Period: ...
     def to_julian_date(self) -> np.float64: ...
     @property
     def asm8(self) -> np.datetime64: ...
     def tz_convert(self, tz: TimeZones) -> Self: ...
-    # TODO: could return NaT?
+    # TODO: pandas-dev/pandas-stubs#1432 could return NaT?
     def tz_localize(
         self,
         tz: TimeZones,
@@ -302,7 +292,7 @@ class Timestamp(datetime, SupportsIndex):
         nonexistent: TimestampNonexistent = "raise",
     ) -> Self: ...
     def normalize(self) -> Self: ...
-    # TODO: round/floor/ceil could return NaT?
+    # TODO: pandas-dev/pandas-stubs#1432 round/floor/ceil could return NaT?
     def round(
         self,
         freq: str,

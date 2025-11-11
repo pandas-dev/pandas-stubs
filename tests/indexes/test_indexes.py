@@ -5,16 +5,19 @@ import datetime as dt
 from typing import (
     TYPE_CHECKING,
     Any,
-    Union,
     cast,
 )
 
 import numpy as np
-from numpy import typing as npt
 import pandas as pd
-from pandas.core.arrays import DatetimeArray
+from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
+from pandas.core.arrays.datetimes import DatetimeArray
+from pandas.core.arrays.interval import IntervalArray
+from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.indexes.base import Index
+from pandas.core.indexes.category import CategoricalIndex
+from pandas.core.indexes.datetimes import DatetimeIndex
 from typing_extensions import (
     Never,
     assert_type,
@@ -25,6 +28,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     np_1darray,
+    np_ndarray_dt,
     pytest_warns_bounded,
 )
 
@@ -148,10 +152,10 @@ def test_column_contains() -> None:
     # https://github.com/microsoft/python-type-stubs/issues/199
     df = pd.DataFrame({"A": [1, 2], "B": ["c", "d"], "E": [3, 4]})
 
-    collist = [column for column in df.columns]
+    collist = list(df.columns)
     check(assert_type(collist, list[str]), list, str)
 
-    collist2 = [column for column in df.columns[df.columns.str.contains("A|B")]]
+    collist2 = list(df.columns[df.columns.str.contains("A|B")])
     check(assert_type(collist2, list[str]), list, str)
 
     length = len(df.columns[df.columns.str.contains("A|B")])
@@ -219,7 +223,7 @@ def test_index_rename_inplace() -> None:
     assert ind2 is None
 
 
-def test_index_dropna():
+def test_index_dropna() -> None:
     idx = pd.Index([1, 2])
 
     check(assert_type(idx.dropna(how="all"), "pd.Index[int]"), pd.Index)
@@ -231,7 +235,7 @@ def test_index_dropna():
     check(assert_type(midx.dropna(how="any"), pd.MultiIndex), pd.MultiIndex)
 
 
-def test_index_neg():
+def test_index_neg() -> None:
     # GH 253
     idx = pd.Index([1, 2])
     check(assert_type(-idx, "pd.Index[int]"), pd.Index)
@@ -260,92 +264,50 @@ def test_types_to_numpy() -> None:
     )
 
 
-def test_index_arithmetic() -> None:
-    # GH 287
-    idx = pd.Index([1, 2.2, 3], dtype=float)
-    check(assert_type(idx * 3, "pd.Index[float]"), pd.Index, np.float64)
-    check(assert_type(idx / 3, "pd.Index[float]"), pd.Index, np.float64)
-    check(assert_type(idx // 3, "pd.Index[float]"), pd.Index, np.float64)
-    check(assert_type(3 * idx, "pd.Index[float]"), pd.Index, np.float64)
-    check(assert_type(3 / idx, "pd.Index[float]"), pd.Index, np.float64)
-    check(assert_type(3 // idx, "pd.Index[float]"), pd.Index, np.float64)
-
-
-def test_index_relops() -> None:
-    # GH 265
-    data = pd.date_range("2022-01-01", "2022-01-31", freq="D")
-    x = pd.Timestamp("2022-01-17")
-    idx = pd.Index(data, name="date")
-    check(assert_type(data[x <= idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[x < idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[x >= idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[x > idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[idx < x], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[idx >= x], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[idx > x], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[idx <= x], pd.DatetimeIndex), pd.DatetimeIndex)
-
-    dt_idx = pd.DatetimeIndex(data, name="date")
-    check(assert_type(data[x <= dt_idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[x >= dt_idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[x < dt_idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[x > dt_idx], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[dt_idx <= x], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[dt_idx >= x], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[dt_idx < x], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(data[dt_idx > x], pd.DatetimeIndex), pd.DatetimeIndex)
-
-    ind = pd.Index([1, 2, 3])
-    check(assert_type(ind <= 2, np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type(ind >= 2, np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type(ind < 2, np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type(ind > 2, np_1darray[np.bool]), np_1darray[np.bool])
-
-
-def test_range_index_union():
+def test_range_index_union() -> None:
     check(
         assert_type(
             pd.RangeIndex(0, 10).union(pd.RangeIndex(10, 20)),
-            Union[pd.Index, "pd.Index[int]", pd.RangeIndex],
+            "pd.Index[int] | pd.RangeIndex",
         ),
         pd.RangeIndex,
     )
     check(
         assert_type(
-            pd.RangeIndex(0, 10).union([11, 12, 13]),
-            Union[pd.Index, "pd.Index[int]", pd.RangeIndex],
+            pd.RangeIndex(0, 10).union([11, 12, 13]), "pd.Index[int] | pd.RangeIndex"
         ),
         pd.Index,
+        np.integer,
     )
-    check(
-        assert_type(
-            pd.RangeIndex(0, 10).union(["a", "b", "c"]),
-            Union[pd.Index, "pd.Index[int]", pd.RangeIndex],
-        ),
-        pd.Index,
-    )
+    check(assert_type(pd.RangeIndex(0, 10).union(["a", "b", "c"]), pd.Index), pd.Index)
 
 
 def test_index_union_sort() -> None:
     """Test sort argument in pd.Index.union GH1264."""
     check(
-        assert_type(pd.Index(["e", "f"]).union(["a", "b", "c"], sort=True), pd.Index),
+        assert_type(
+            pd.Index(["e", "f"]).union(["a", "b", "c"], sort=True), "pd.Index[str]"
+        ),
         pd.Index,
+        str,
     )
     check(
-        assert_type(pd.Index(["e", "f"]).union(["a", "b", "c"], sort=False), pd.Index),
+        assert_type(
+            pd.Index(["e", "f"]).union(["a", "b", "c"], sort=False), "pd.Index[str]"
+        ),
         pd.Index,
+        str,
     )
 
 
-def test_range_index_start_stop_step():
+def test_range_index_start_stop_step() -> None:
     idx = pd.RangeIndex(3)
     check(assert_type(idx.start, int), int)
     check(assert_type(idx.stop, int), int)
     check(assert_type(idx.step, int), int)
 
 
-def test_interval_range():
+def test_interval_range() -> None:
     check(
         assert_type(pd.interval_range(0, 10), "pd.IntervalIndex[pd.Interval[int]]"),
         pd.IntervalIndex,
@@ -498,7 +460,7 @@ def test_interval_range():
     )
 
 
-def test_interval_index_breaks():
+def test_interval_index_breaks() -> None:
     check(
         assert_type(
             pd.IntervalIndex.from_breaks([1, 2, 3, 4]),
@@ -628,7 +590,7 @@ def test_interval_index_breaks():
     )
 
 
-def test_interval_index_arrays():
+def test_interval_index_arrays() -> None:
     check(
         assert_type(
             pd.IntervalIndex.from_arrays([1, 2, 3, 4], [2, 3, 4, 5]),
@@ -667,7 +629,7 @@ def test_interval_index_arrays():
         pd.IntervalIndex,
         pd.Interval,
     )
-    left_dt64_arr: npt.NDArray[np.datetime64] = np.array(
+    left_dt64_arr: np_ndarray_dt = np.array(
         [
             np.datetime64("2000-01-01"),
             np.datetime64("2001-01-01"),
@@ -676,7 +638,7 @@ def test_interval_index_arrays():
         ],
         dtype="datetime64[ns]",
     )
-    right_dt_arr: npt.NDArray[np.datetime64] = np.array(
+    right_dt_arr: np_ndarray_dt = np.array(
         [
             np.datetime64("2001-01-01"),
             np.datetime64("2002-01-01"),
@@ -757,7 +719,7 @@ def test_interval_index_arrays():
     )
 
 
-def test_interval_index_tuples():
+def test_interval_index_tuples() -> None:
     check(
         assert_type(
             pd.IntervalIndex.from_tuples([(1, 2), (2, 3)]),
@@ -866,21 +828,6 @@ def test_index_operators() -> None:
     i1 = pd.Index([1, 2, 3])
     i2 = pd.Index([4, 5, 6])
 
-    check(assert_type(i1 + i2, "pd.Index[int]"), pd.Index)
-    check(assert_type(i1 + 10, "pd.Index[int]"), pd.Index)
-    check(assert_type(10 + i1, "pd.Index[int]"), pd.Index)
-    check(assert_type(i1 - i2, "pd.Index[int]"), pd.Index)
-    check(assert_type(i1 - 10, "pd.Index[int]"), pd.Index)
-    check(assert_type(10 - i1, "pd.Index[int]"), pd.Index)
-    check(assert_type(i1 * i2, "pd.Index[int]"), pd.Index)
-    check(assert_type(i1 * 10, "pd.Index[int]"), pd.Index)
-    check(assert_type(10 * i1, "pd.Index[int]"), pd.Index)
-    check(assert_type(i1 / i2, "pd.Index[int]"), pd.Index)
-    check(assert_type(i1 / 10, "pd.Index[int]"), pd.Index)
-    check(assert_type(10 / i1, "pd.Index[int]"), pd.Index)
-    check(assert_type(i1 // i2, "pd.Index[int]"), pd.Index)
-    check(assert_type(i1 // 10, "pd.Index[int]"), pd.Index)
-    check(assert_type(10 // i1, "pd.Index[int]"), pd.Index)
     check(assert_type(i1**i2, "pd.Index[int]"), pd.Index)
     check(assert_type(i1**2, "pd.Index[int]"), pd.Index)
     check(assert_type(2**i1, "pd.Index[int]"), pd.Index)
@@ -1078,13 +1025,13 @@ def test_range_index_range() -> None:
     check(assert_type(iri, pd.RangeIndex), pd.RangeIndex, int)
 
 
-def test_multiindex_dtypes():
+def test_multiindex_dtypes() -> None:
     # GH-597
     mi = pd.MultiIndex.from_tuples([(1, 2.0), (2, 3.0)], names=["foo", "bar"])
     check(assert_type(mi.dtypes, "pd.Series[Dtype]"), pd.Series)
 
 
-def test_index_constructors():
+def test_index_constructors() -> None:
     # See if we can pick up the different index types in 2.0
     # Eventually should be using a generic index
     ilist = [1, 2, 3]
@@ -1175,33 +1122,6 @@ def test_index_constructors():
         pd.Index(flist, dtype=np.float16)
 
 
-def test_datetime_index_constructor() -> None:
-    check(assert_type(pd.DatetimeIndex(["2020"]), pd.DatetimeIndex), pd.DatetimeIndex)
-    check(
-        assert_type(pd.DatetimeIndex(["2020"], name="ts"), pd.DatetimeIndex),
-        pd.DatetimeIndex,
-    )
-    check(
-        assert_type(pd.DatetimeIndex(["2020"], freq="D"), pd.DatetimeIndex),
-        pd.DatetimeIndex,
-    )
-    check(
-        assert_type(pd.DatetimeIndex(["2020"], tz="Asia/Kathmandu"), pd.DatetimeIndex),
-        pd.DatetimeIndex,
-    )
-
-    # https://github.com/microsoft/python-type-stubs/issues/115
-    df = pd.DataFrame({"A": [1, 2, 3], "B": [5, 6, 7]})
-
-    check(
-        assert_type(
-            pd.DatetimeIndex(data=df["A"], tz=None, ambiguous="NaT", copy=True),
-            pd.DatetimeIndex,
-        ),
-        pd.DatetimeIndex,
-    )
-
-
 def test_iter() -> None:
     # GH 723
     with pytest_warns_bounded(
@@ -1213,16 +1133,6 @@ def test_iter() -> None:
     ):
         for ts in pd.date_range(start="1/1/2023", end="1/08/2023", freq="6H"):
             check(assert_type(ts, pd.Timestamp), pd.Timestamp)
-
-
-def test_intersection() -> None:
-    # GH 744
-    index = pd.DatetimeIndex(["2022-01-01"])
-    check(assert_type(index.intersection(index), pd.DatetimeIndex), pd.DatetimeIndex)
-    check(
-        assert_type(index.intersection([pd.Timestamp("1/1/2023")]), pd.DatetimeIndex),
-        pd.DatetimeIndex,
-    )
 
 
 def test_annotate() -> None:
@@ -1266,31 +1176,6 @@ def test_new() -> None:
     )
 
 
-def test_timedelta_div() -> None:
-    index = pd.Index([pd.Timedelta(days=1)], dtype="timedelta64[s]")
-    delta = dt.timedelta(1)
-
-    check(assert_type(index / delta, "pd.Index[float]"), pd.Index, float)
-    check(assert_type(index / [delta], "pd.Index[float]"), pd.Index, float)
-    check(assert_type(index / 1, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
-    check(assert_type(index / [1], pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
-    check(assert_type(index // delta, "pd.Index[int]"), pd.Index, np.longlong)
-    check(assert_type(index // [delta], "pd.Index[int]"), pd.Index, int)
-    check(assert_type(index // 1, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
-    check(assert_type(index // [1], pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
-
-    check(assert_type(delta / index, "pd.Index[float]"), pd.Index, float)
-    check(assert_type([delta] / index, "pd.Index[float]"), pd.Index, float)
-    check(assert_type(delta // index, "pd.Index[int]"), pd.Index, np.longlong)
-    check(assert_type([delta] // index, "pd.Index[int]"), pd.Index, np.signedinteger)
-
-    if TYPE_CHECKING_INVALID_USAGE:
-        1 / index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        [1] / index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        1 // index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        [1] // index  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-
-
 def test_datetime_operators_builtin() -> None:
     time = pd.date_range("2022-01-01", "2022-01-31", freq="D")
     check(assert_type(time + dt.timedelta(0), pd.DatetimeIndex), pd.DatetimeIndex)
@@ -1306,22 +1191,20 @@ def test_datetime_operators_builtin() -> None:
 def test_get_loc() -> None:
     unique_index = pd.Index(list("abc"))
     check(
-        assert_type(unique_index.get_loc("b"), Union[int, slice, np_1darray[np.bool]]),
+        assert_type(unique_index.get_loc("b"), int | slice | np_1darray[np.bool]),
         int,
     )
 
     monotonic_index = pd.Index(list("abbc"))
     check(
-        assert_type(
-            monotonic_index.get_loc("b"), Union[int, slice, np_1darray[np.bool]]
-        ),
+        assert_type(monotonic_index.get_loc("b"), int | slice | np_1darray[np.bool]),
         slice,
     )
 
     non_monotonic_index = pd.Index(list("abcb"))
     check(
         assert_type(
-            non_monotonic_index.get_loc("b"), Union[int, slice, np_1darray[np.bool]]
+            non_monotonic_index.get_loc("b"), int | slice | np_1darray[np.bool]
         ),
         np_1darray[np.bool],
     )
@@ -1330,14 +1213,14 @@ def test_get_loc() -> None:
     unique_interval_index = pd.IntervalIndex([i1, i2])
     check(
         assert_type(
-            unique_interval_index.get_loc(i1), Union[int, slice, np_1darray[np.bool]]
+            unique_interval_index.get_loc(i1), int | slice | np_1darray[np.bool]
         ),
         np.int64,
     )
     overlap_interval_index = pd.IntervalIndex([i1, i2, i3])
     check(
         assert_type(
-            overlap_interval_index.get_loc(1), Union[int, slice, np_1darray[np.bool]]
+            overlap_interval_index.get_loc(1), int | slice | np_1darray[np.bool]
         ),
         np_1darray[np.bool],
     )
@@ -1366,28 +1249,21 @@ def test_index_factorize() -> None:
     check(assert_type(idx_uniques, np_1darray | Index | Categorical), pd.Index)
 
 
+def test_index_categorical() -> None:
+    """Test creating an index with Categorical type GH1383."""
+    sr = pd.Index([1], dtype="category")
+    check(assert_type(sr, CategoricalIndex), CategoricalIndex)
+
+
 def test_disallow_empty_index() -> None:
     # From GH 826
     if TYPE_CHECKING_INVALID_USAGE:
-        i0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-
-
-def test_datetime_index_max_min_reductions() -> None:
-    dtidx = pd.DatetimeIndex(["2020-01-01", "2020-01-02"])
-    check(assert_type(dtidx.argmax(), np.int64), np.int64)
-    check(assert_type(dtidx.argmin(), np.int64), np.int64)
-    check(assert_type(dtidx.max(), pd.Timestamp), pd.Timestamp)
-    check(assert_type(dtidx.min(), pd.Timestamp), pd.Timestamp)
+        _0 = pd.Index()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
 
 
 def test_periodindex_shift() -> None:
     ind = pd.period_range(start="2022-06-01", periods=10)
     check(assert_type(ind.shift(1), pd.PeriodIndex), pd.PeriodIndex)
-
-
-def test_datetimeindex_shift() -> None:
-    ind = pd.date_range("2023-01-01", "2023-02-01")
-    check(assert_type(ind.shift(1), pd.DatetimeIndex), pd.DatetimeIndex)
 
 
 def test_timedeltaindex_shift() -> None:
@@ -1492,8 +1368,16 @@ def test_index_searchsorted() -> None:
     idx = pd.Index([1, 2, 3])
     check(assert_type(idx.searchsorted(1), np.intp), np.intp)
     check(assert_type(idx.searchsorted([1]), "np_1darray[np.intp]"), np_1darray)
+    check(assert_type(idx.searchsorted(range(1, 2)), "np_1darray[np.intp]"), np_1darray)
+    check(
+        assert_type(idx.searchsorted(pd.Series([1])), "np_1darray[np.intp]"), np_1darray
+    )
+    check(
+        assert_type(idx.searchsorted(np.array([1])), "np_1darray[np.intp]"), np_1darray
+    )
     check(assert_type(idx.searchsorted(1, side="left"), np.intp), np.intp)
     check(assert_type(idx.searchsorted(1, sorter=[1, 0, 2]), np.intp), np.intp)
+    check(assert_type(idx.searchsorted(1, sorter=range(3)), np.intp), np.intp)
 
 
 def test_period_index_constructor() -> None:
@@ -1519,12 +1403,132 @@ def test_period_index_asof_locs() -> None:
     )
 
 
-def test_datetime_index_array_property() -> None:
-    """Test that DatetimeIndex.array returns DatetimeArray instead of ExtensionArray."""
+def test_array_property() -> None:
+    """Test that Index.array and semantic Index.array return ExtensionArray and its subclasses"""
+    # casting due to pandas-dev/pandas-stubs#1383
+    check(
+        assert_type(Index([1], dtype="category").array, pd.Categorical),
+        pd.Categorical,
+        int,
+    )
+    check(
+        assert_type(pd.interval_range(0, 1).array, IntervalArray),
+        IntervalArray,
+        pd.Interval,
+    )
+
     # Test with pd.to_datetime().array - this is the main issue reported
     arr = pd.to_datetime(["2020-01-01", "2020-01-02"]).array
-    check(assert_type(arr, DatetimeArray), DatetimeArray)
+    check(assert_type(arr, DatetimeArray), DatetimeArray, pd.Timestamp)
 
     # Test with DatetimeIndex constructor directly
     dt_index = pd.DatetimeIndex(["2020-01-01", "2020-01-02"])
-    check(assert_type(dt_index.array, DatetimeArray), DatetimeArray)
+    check(assert_type(dt_index.array, DatetimeArray), DatetimeArray, pd.Timestamp)
+
+    check(
+        assert_type(pd.to_timedelta(["1s"]).array, TimedeltaArray),
+        TimedeltaArray,
+        pd.Timedelta,
+    )
+    check(assert_type(Index([1]).array, ExtensionArray), ExtensionArray, np.integer)
+
+
+def test_to_series() -> None:
+    """Test that Index.to_series return typed Series"""
+    check(
+        assert_type(pd.interval_range(0, 1).to_series(), "pd.Series[pd.Interval[int]]"),
+        pd.Series,
+        pd.Interval,
+    )
+    check(
+        assert_type(
+            pd.date_range(start="2022-06-01", periods=10).to_series(),
+            "pd.Series[pd.Timestamp]",
+        ),
+        pd.Series,
+        pd.Timestamp,
+    )
+
+    check(
+        assert_type(
+            pd.timedelta_range(start="1 day", periods=10).to_series(),
+            "pd.Series[pd.Timedelta]",
+        ),
+        pd.Series,
+        pd.Timedelta,
+    )
+    check(
+        assert_type(
+            pd.period_range(start="2022-06-01", periods=10).to_series(),
+            "pd.Series[pd.Period]",
+        ),
+        pd.Series,
+        pd.Period,
+    )
+
+    check(
+        assert_type(Index([True]).to_series(), "pd.Series[bool]"), pd.Series, np.bool_
+    )
+    check(assert_type(Index([1]).to_series(), "pd.Series[int]"), pd.Series, np.integer)
+    check(
+        assert_type(Index([1.0]).to_series(), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
+    check(
+        assert_type(Index([1j]).to_series(), "pd.Series[complex]"),
+        pd.Series,
+        np.complexfloating,
+    )
+    check(assert_type(Index(["1"]).to_series(), "pd.Series[str]"), pd.Series, str)
+
+
+def test_multiindex_union() -> None:
+    """Test that MultiIndex.union returns MultiIndex"""
+    mi = pd.MultiIndex.from_product([["a", "b"], [1, 2]], names=["let", "num"])
+    mi2 = pd.MultiIndex.from_product([["a", "b"], [3, 4]], names=["let", "num"])
+
+    check(assert_type(mi.union(mi2), "pd.MultiIndex"), pd.MultiIndex)
+    check(assert_type(mi.union([("c", 3), ("d", 4)]), "pd.MultiIndex"), pd.MultiIndex)
+
+
+def test_multiindex_swaplevel() -> None:
+    """Test that MultiIndex.swaplevel returns MultiIndex"""
+    mi = pd.MultiIndex.from_product([["a", "b"], [1, 2]], names=["let", "num"])
+    check(assert_type(mi.swaplevel(0, 1), "pd.MultiIndex"), pd.MultiIndex)
+
+
+def test_index_where() -> None:
+    """Test Index.where with multiple types of other GH1419."""
+    idx = pd.Index(range(48))
+    mask = np.ones(48, dtype=bool)
+    val_idx = idx.where(mask, idx)
+    check(assert_type(val_idx, "pd.Index[int]"), pd.Index, int)
+
+    val_sr = idx.where(mask, (idx).to_series())
+    check(assert_type(val_sr, "pd.Index[int]"), pd.Index, int)
+
+
+def test_datetimeindex_where() -> None:
+    """Test DatetimeIndex.where with multiple types of other GH1419."""
+    datetime_index = pd.date_range(start="2025-01-01", freq="h", periods=48)
+    mask = np.ones(48, dtype=bool)
+    val_idx = datetime_index.where(mask, datetime_index - pd.Timedelta(days=1))
+    check(assert_type(val_idx, DatetimeIndex), DatetimeIndex)
+
+    val_sr = datetime_index.where(
+        mask, (datetime_index - pd.Timedelta(days=1)).to_series()
+    )
+    check(assert_type(val_sr, DatetimeIndex), DatetimeIndex)
+
+    val_idx_scalar = datetime_index.where(mask, pd.Index([0, 1]))
+    check(assert_type(val_idx_scalar, pd.Index), pd.Index)
+
+    val_sr_scalar = datetime_index.where(mask, pd.Series([0, 1]))
+    check(assert_type(val_sr_scalar, pd.Index), pd.Index)
+
+    val_scalar = datetime_index.where(mask, 1)
+    check(assert_type(val_scalar, pd.Index), pd.Index)
+
+    val_range = pd.RangeIndex(2).where(pd.Series([True, False]), 3)
+    check(assert_type(val_range, pd.Index), pd.RangeIndex)
