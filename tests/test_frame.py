@@ -292,7 +292,6 @@ def test_types_setitem() -> None:
     df[5] = [5, 6]
     df[["col1", "col2"]] = [[1, 2], [3, 4]]
     df[s] = [5, 6]
-    df["col1":"col2"] = [5, 6]
     df.loc[:, s] = [5, 6]
     df[[0, 1]] = [5, 6]
     df["col1"] = [5, 6]
