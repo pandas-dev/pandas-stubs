@@ -29,6 +29,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     np_1darray,
+    np_1darray_bool,
     np_1darray_dt,
     np_1darray_int64,
     np_1darray_td,
@@ -48,7 +49,7 @@ from pandas.tseries.offsets import (
 )
 
 if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore  # isort: skip
+    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration]  # isort: skip
 else:
     Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
@@ -273,12 +274,12 @@ def test_comparisons_datetimeindex() -> None:
     # GH 74
     dti = pd.date_range("2000-01-01", "2000-01-10")
     ts = pd.Timestamp("2000-01-05")
-    check(assert_type((dti < ts), np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type((dti > ts), np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type((dti >= ts), np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type((dti <= ts), np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type((dti == ts), np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type((dti != ts), np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type((dti < ts), np_1darray_bool), np_1darray_bool)
+    check(assert_type((dti > ts), np_1darray_bool), np_1darray_bool)
+    check(assert_type((dti >= ts), np_1darray_bool), np_1darray_bool)
+    check(assert_type((dti <= ts), np_1darray_bool), np_1darray_bool)
+    check(assert_type((dti == ts), np_1darray_bool), np_1darray_bool)
+    check(assert_type((dti != ts), np_1darray_bool), np_1darray_bool)
 
 
 def test_to_datetime_nat() -> None:
@@ -626,13 +627,13 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.dayofyear, "pd.Index[int]"), pd.Index, np.int32)
     check(assert_type(i0.day_of_year, "pd.Index[int]"), pd.Index, np.int32)
     check(assert_type(i0.quarter, "pd.Index[int]"), pd.Index, np.int32)
-    check(assert_type(i0.is_month_start, np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type(i0.is_month_end, np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type(i0.is_quarter_start, np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type(i0.is_quarter_end, np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type(i0.is_year_start, np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type(i0.is_year_end, np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type(i0.is_leap_year, np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(i0.is_month_start, np_1darray_bool), np_1darray_bool)
+    check(assert_type(i0.is_month_end, np_1darray_bool), np_1darray_bool)
+    check(assert_type(i0.is_quarter_start, np_1darray_bool), np_1darray_bool)
+    check(assert_type(i0.is_quarter_end, np_1darray_bool), np_1darray_bool)
+    check(assert_type(i0.is_year_start, np_1darray_bool), np_1darray_bool)
+    check(assert_type(i0.is_year_end, np_1darray_bool), np_1darray_bool)
+    check(assert_type(i0.is_leap_year, np_1darray_bool), np_1darray_bool)
     check(assert_type(i0.daysinmonth, "pd.Index[int]"), pd.Index, np.int32)
     check(assert_type(i0.days_in_month, "pd.Index[int]"), pd.Index, np.int32)
     check(assert_type(i0.tz, dt.tzinfo | None), type(None))

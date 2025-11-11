@@ -147,8 +147,8 @@ def test_interpolate() -> None:
 
 
 def test_interpolate_inplace() -> None:
+    # TODO: ValueError: Cannot interpolate inplace on a resampled object. Disable in Pandas 3.0  pandas-dev/pandas#57064
     if PD_LTE_23:
-        # Bug in main see https://github.com/pandas-dev/pandas/issues/58690
         check(
             assert_type(DF.resample("ME").interpolate(inplace=True), None), type(None)
         )
@@ -362,8 +362,8 @@ def test_interpolate_series() -> None:
 
 
 def test_interpolate_inplace_series() -> None:
+    # TODO: ValueError: Cannot interpolate inplace on a resampled object. Disable in Pandas 3.0  pandas-dev/pandas#57064
     if PD_LTE_23:
-        # Bug in main see https://github.com/pandas-dev/pandas/issues/58690
         check(assert_type(S.resample("ME").interpolate(inplace=True), None), type(None))
 
 

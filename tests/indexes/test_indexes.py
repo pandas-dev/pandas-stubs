@@ -28,6 +28,9 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     np_1darray,
+    np_1darray_bool,
+    np_1darray_int64,
+    np_1darray_intp,
     np_ndarray_dt,
     pytest_warns_bounded,
 )
@@ -48,13 +51,13 @@ def test_index_duplicated() -> None:
     df = pd.DataFrame({"x": [1, 2, 3, 4]}, index=pd.Index([1, 2, 3, 2]))
     ind = df.index
     duplicated = ind.duplicated("first")
-    check(assert_type(duplicated, np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(duplicated, np_1darray_bool), np_1darray_bool)
 
 
 def test_index_isin() -> None:
     ind = pd.Index([1, 2, 3, 4, 5])
     isin = ind.isin([2, 4])
-    check(assert_type(isin, np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(isin, np_1darray_bool), np_1darray_bool)
 
 
 def test_index_astype() -> None:
@@ -248,11 +251,8 @@ def test_types_to_numpy() -> None:
     check(assert_type(idx.to_numpy(na_value=0), np_1darray), np_1darray)
 
     r_idx = pd.RangeIndex(2)
-    check(assert_type(r_idx.to_numpy(), np_1darray[np.int64]), np_1darray[np.int64])
-    check(
-        assert_type(r_idx.to_numpy(na_value=0), np_1darray[np.int64]),
-        np_1darray[np.int64],
-    )
+    check(assert_type(r_idx.to_numpy(), np_1darray_int64), np_1darray_int64)
+    check(assert_type(r_idx.to_numpy(na_value=0), np_1darray_int64), np_1darray_int64)
     check(
         assert_type(r_idx.to_numpy(dtype="int", copy=True), np_1darray),
         np_1darray,
@@ -1191,38 +1191,32 @@ def test_datetime_operators_builtin() -> None:
 def test_get_loc() -> None:
     unique_index = pd.Index(list("abc"))
     check(
-        assert_type(unique_index.get_loc("b"), int | slice | np_1darray[np.bool]),
+        assert_type(unique_index.get_loc("b"), int | slice | np_1darray_bool),
         int,
     )
 
     monotonic_index = pd.Index(list("abbc"))
     check(
-        assert_type(monotonic_index.get_loc("b"), int | slice | np_1darray[np.bool]),
+        assert_type(monotonic_index.get_loc("b"), int | slice | np_1darray_bool),
         slice,
     )
 
     non_monotonic_index = pd.Index(list("abcb"))
     check(
-        assert_type(
-            non_monotonic_index.get_loc("b"), int | slice | np_1darray[np.bool]
-        ),
-        np_1darray[np.bool],
+        assert_type(non_monotonic_index.get_loc("b"), int | slice | np_1darray_bool),
+        np_1darray_bool,
     )
 
     i1, i2, i3 = pd.Interval(0, 1), pd.Interval(1, 2), pd.Interval(0, 2)
     unique_interval_index = pd.IntervalIndex([i1, i2])
     check(
-        assert_type(
-            unique_interval_index.get_loc(i1), int | slice | np_1darray[np.bool]
-        ),
+        assert_type(unique_interval_index.get_loc(i1), int | slice | np_1darray_bool),
         np.int64,
     )
     overlap_interval_index = pd.IntervalIndex([i1, i2, i3])
     check(
-        assert_type(
-            overlap_interval_index.get_loc(1), int | slice | np_1darray[np.bool]
-        ),
-        np_1darray[np.bool],
+        assert_type(overlap_interval_index.get_loc(1), int | slice | np_1darray_bool),
+        np_1darray_bool,
     )
 
 
@@ -1367,13 +1361,13 @@ def test_index_naming() -> None:
 def test_index_searchsorted() -> None:
     idx = pd.Index([1, 2, 3])
     check(assert_type(idx.searchsorted(1), np.intp), np.intp)
-    check(assert_type(idx.searchsorted([1]), "np_1darray[np.intp]"), np_1darray)
-    check(assert_type(idx.searchsorted(range(1, 2)), "np_1darray[np.intp]"), np_1darray)
+    check(assert_type(idx.searchsorted([1]), np_1darray_intp), np_1darray_intp)
+    check(assert_type(idx.searchsorted(range(1, 2)), np_1darray_intp), np_1darray_intp)
     check(
-        assert_type(idx.searchsorted(pd.Series([1])), "np_1darray[np.intp]"), np_1darray
+        assert_type(idx.searchsorted(pd.Series([1])), np_1darray_intp), np_1darray_intp
     )
     check(
-        assert_type(idx.searchsorted(np.array([1])), "np_1darray[np.intp]"), np_1darray
+        assert_type(idx.searchsorted(np.array([1])), np_1darray_intp), np_1darray_intp
     )
     check(assert_type(idx.searchsorted(1, side="left"), np.intp), np.intp)
     check(assert_type(idx.searchsorted(1, sorter=[1, 0, 2]), np.intp), np.intp)
@@ -1397,10 +1391,7 @@ def test_period_index_asof_locs() -> None:
     idx = pd.PeriodIndex(["2000", "2001"], freq="D")
     where = pd.DatetimeIndex(["2023-05-30 00:12:00", "2023-06-01 00:00:00"])
     mask = np.ones(2, dtype=bool)
-    check(
-        assert_type(idx.asof_locs(where, mask), np_1darray[np.intp]),
-        np_1darray[np.intp],
-    )
+    check(assert_type(idx.asof_locs(where, mask), np_1darray_intp), np_1darray_intp)
 
 
 def test_array_property() -> None:

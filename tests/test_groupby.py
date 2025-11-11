@@ -438,8 +438,7 @@ def test_series_groupby_resample() -> None:
             Series,
             float,
         )
-        # This fails typing checks, and should work in 3.0, but is a bug in main
-        # https://github.com/pandas-dev/pandas/issues/58690
+        # TODO: This fails typing checks, and should work in 3.0, but is a bug in main pandas-dev/pandas#58690
         # check(
         #     assert_type(
         #         GB_S.apply(lambda x: x.resample("ME").interpolate(inplace=True)), None

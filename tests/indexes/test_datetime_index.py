@@ -8,7 +8,8 @@ from typing_extensions import assert_type
 
 from tests import (
     check,
-    np_1darray,
+    np_1darray_bool,
+    np_1darray_intp,
 )
 
 
@@ -34,10 +35,10 @@ def test_index_relops() -> None:
     check(assert_type(data[idx > x], pd.DatetimeIndex), pd.DatetimeIndex)
 
     ind = pd.Index([1, 2, 3])
-    check(assert_type(ind <= 2, np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type(ind < 2, np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type(ind >= 2, np_1darray[np.bool]), np_1darray[np.bool])
-    check(assert_type(ind > 2, np_1darray[np.bool]), np_1darray[np.bool])
+    check(assert_type(ind <= 2, np_1darray_bool), np_1darray_bool)
+    check(assert_type(ind < 2, np_1darray_bool), np_1darray_bool)
+    check(assert_type(ind >= 2, np_1darray_bool), np_1darray_bool)
+    check(assert_type(ind > 2, np_1darray_bool), np_1darray_bool)
 
 
 def test_datetime_index_constructor() -> None:
@@ -92,14 +93,8 @@ def test_datetimeindex_shift() -> None:
 
 def test_datetimeindex_indexer_at_time() -> None:
     dti = pd.date_range("2023-01-01", "2023-02-01")
-    check(
-        assert_type(dti.indexer_at_time("10:00"), np_1darray[np.intp]),
-        np_1darray[np.intp],
-    )
-    check(
-        assert_type(dti.indexer_at_time(time(10)), np_1darray[np.intp]),
-        np_1darray[np.intp],
-    )
+    check(assert_type(dti.indexer_at_time("10:00"), np_1darray_intp), np_1darray_intp)
+    check(assert_type(dti.indexer_at_time(time(10)), np_1darray_intp), np_1darray_intp)
 
 
 def test_datetimeindex_indexer_between_time() -> None:
@@ -109,13 +104,13 @@ def test_datetimeindex_indexer_between_time() -> None:
             dti.indexer_between_time(
                 "10:00", time(11), include_start=False, include_end=True
             ),
-            np_1darray[np.intp],
+            np_1darray_intp,
         ),
-        np_1darray[np.intp],
+        np_1darray_intp,
     )
     check(
-        assert_type(dti.indexer_between_time(time(10), "11:00"), np_1darray[np.intp]),
-        np_1darray[np.intp],
+        assert_type(dti.indexer_between_time(time(10), "11:00"), np_1darray_intp),
+        np_1darray_intp,
     )
 
 

@@ -34,7 +34,6 @@ from pandas.api.extensions import (
 )
 from pandas.api.typing import NAType
 from pandas.core.arrays.datetimes import DatetimeArray
-from pandas.core.arrays.string_ import StringArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.window import ExponentialMovingWindow
 from pandas.core.window.expanding import Expanding
@@ -94,7 +93,7 @@ if TYPE_CHECKING:
     )
 
 if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore  # isort: skip
+    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration]  # isort: skip
 else:
     Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
@@ -1415,23 +1414,17 @@ def test_types_rename_axis() -> None:
 def test_types_values() -> None:
     check(
         assert_type(
-            pd.Series([1, 2, 3]).values,
-            np_1darray | ExtensionArray | pd.Categorical,
+            pd.Series([1, 2, 3]).values, np_1darray | ExtensionArray | pd.Categorical
         ),
         np_1darray,
         np.integer,
     )
-    valresult_type: type[np_1darray | ExtensionArray | pd.Categorical]
-    if PD_LTE_23:
-        valresult_type = np_1darray
-    else:
-        valresult_type = StringArray
     check(
         assert_type(
-            pd.Series(list("aabc")).values,
-            np_1darray | ExtensionArray | pd.Categorical,
+            pd.Series(list("aabc")).values, np_1darray | ExtensionArray | pd.Categorical
         ),
-        valresult_type,
+        # TODO: ArrowStringArray after pandas-dev/pandas-stubs#1469
+        np_1darray if PD_LTE_23 else ExtensionArray,
         str,
     )
     check(
