@@ -3215,11 +3215,15 @@ def test_to_json_mode() -> None:
 
 def test_interpolate() -> None:
     s = pd.Series(range(3))
-    check(assert_type(s.interpolate(method="linear"), "pd.Series[int]"), pd.Series, int)
+    check(
+        assert_type(s.interpolate(method="linear"), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
     check(
         assert_type(s.interpolate(method="linear", inplace=False), "pd.Series[int]"),
         pd.Series,
-        int,
+        np.integer,
     )
     check(assert_type(s.interpolate(method="linear", inplace=True), None), type(None))
 
