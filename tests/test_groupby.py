@@ -259,25 +259,24 @@ def test_frame_groupby_resample() -> None:
                 ),
                 DataFrame,
             )
-        else:
 
-            def resample_interpolate(x: DataFrame) -> DataFrame:
-                return x.resample("ME").interpolate()
+        def resample_interpolate(x: DataFrame) -> DataFrame:
+            return x.resample("ME").interpolate()
 
-            check(assert_type(GB_DF.apply(resample_interpolate), DataFrame), DataFrame)
+        check(assert_type(GB_DF.apply(resample_interpolate), DataFrame), DataFrame)
 
-            def resample_interpolate_linear(x: DataFrame) -> DataFrame:
-                return x.resample("ME").interpolate(method="linear")
+        def resample_interpolate_linear(x: DataFrame) -> DataFrame:
+            return x.resample("ME").interpolate(method="linear")
 
-            check(
-                assert_type(
-                    GB_DF.apply(
-                        resample_interpolate_linear,
-                    ),
-                    DataFrame,
+        check(
+            assert_type(
+                GB_DF.apply(
+                    resample_interpolate_linear,
                 ),
                 DataFrame,
-            )
+            ),
+            DataFrame,
+        )
 
         # pipe
         def g(val: Resampler[DataFrame]) -> DataFrame:
