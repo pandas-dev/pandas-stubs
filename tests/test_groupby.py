@@ -259,35 +259,24 @@ def test_frame_groupby_resample() -> None:
                 ),
                 DataFrame,
             )
-            check(
-                assert_type(GB_DF.resample("ME").interpolate(inplace=True), None),
-                type(None),
-            )
-        else:
 
-            def resample_interpolate(x: DataFrame) -> DataFrame:
-                return x.resample("ME").interpolate()
+        def resample_interpolate(x: DataFrame) -> DataFrame:
+            return x.resample("ME").interpolate()
 
-            check(
-                assert_type(
-                    GB_DF.apply(resample_interpolate),
-                    DataFrame,
+        check(assert_type(GB_DF.apply(resample_interpolate), DataFrame), DataFrame)
+
+        def resample_interpolate_linear(x: DataFrame) -> DataFrame:
+            return x.resample("ME").interpolate(method="linear")
+
+        check(
+            assert_type(
+                GB_DF.apply(
+                    resample_interpolate_linear,
                 ),
                 DataFrame,
-            )
-
-            def resample_interpolate_linear(x: DataFrame) -> DataFrame:
-                return x.resample("ME").interpolate(method="linear")
-
-            check(
-                assert_type(
-                    GB_DF.apply(
-                        resample_interpolate_linear,
-                    ),
-                    DataFrame,
-                ),
-                DataFrame,
-            )
+            ),
+            DataFrame,
+        )
 
         # pipe
         def g(val: Resampler[DataFrame]) -> DataFrame:
@@ -427,9 +416,6 @@ def test_series_groupby_resample() -> None:
             Series,
             float,
         )
-        check(
-            assert_type(GB_S.resample("ME").interpolate(inplace=True), None), type(None)
-        )
     else:
         check(
             assert_type(
@@ -438,14 +424,6 @@ def test_series_groupby_resample() -> None:
             Series,
             float,
         )
-        # This fails typing checks, and should work in 3.0, but is a bug in main
-        # https://github.com/pandas-dev/pandas/issues/58690
-        # check(
-        #     assert_type(
-        #         GB_S.apply(lambda x: x.resample("ME").interpolate(inplace=True)), None
-        #     ),
-        #     type(None),
-        # )
 
     # pipe
     def g(val: Resampler[Series]) -> float:

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import numpy as np
 import pandas as pd
 from typing_extensions import (
     assert_type,
@@ -8,7 +7,7 @@ from typing_extensions import (
 
 from tests import (
     check,
-    np_1darray,
+    np_1darray_intp,
 )
 
 
@@ -23,7 +22,7 @@ def test_categoricalindex_unique() -> None:
 def test_categoricalindex_reindex() -> None:
     ci = pd.CategoricalIndex(["a", "b"])
     check(
-        assert_type(ci.reindex([0, 1]), tuple[pd.Index, np_1darray[np.intp] | None]),
+        assert_type(ci.reindex([0, 1]), tuple[pd.Index, np_1darray_intp | None]),
         tuple,
     )
 

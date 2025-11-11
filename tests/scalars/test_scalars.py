@@ -25,7 +25,7 @@ from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    np_1darray,
+    np_1darray_bool,
     np_2darray,
     np_ndarray,
     np_ndarray_bool,
@@ -40,7 +40,7 @@ from pandas.tseries.offsets import (
 )
 
 if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore  # isort: skip
+    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration]  # isort: skip
 else:
     Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
@@ -318,55 +318,55 @@ def test_interval_cmp() -> None:
 
     interval_index_int = pd.IntervalIndex([interval_i])
     check(
-        assert_type(interval_index_int >= interval_i, np_1darray[np.bool]),
-        np_1darray[np.bool],
+        assert_type(interval_index_int >= interval_i, np_1darray_bool),
+        np_1darray_bool,
     )
     check(
-        assert_type(interval_index_int < interval_i, np_1darray[np.bool]),
-        np_1darray[np.bool],
+        assert_type(interval_index_int < interval_i, np_1darray_bool),
+        np_1darray_bool,
     )
     check(
-        assert_type(interval_index_int <= interval_i, np_1darray[np.bool]),
-        np_1darray[np.bool],
+        assert_type(interval_index_int <= interval_i, np_1darray_bool),
+        np_1darray_bool,
     )
     check(
-        assert_type(interval_index_int > interval_i, np_1darray[np.bool]),
-        np_1darray[np.bool],
-    )
-
-    check(
-        assert_type(interval_i >= interval_index_int, np_1darray[np.bool]),
-        np_1darray[np.bool],
-    )
-    check(
-        assert_type(interval_i < interval_index_int, np_1darray[np.bool]),
-        np_1darray[np.bool],
-    )
-    check(
-        assert_type(interval_i <= interval_index_int, np_1darray[np.bool]),
-        np_1darray[np.bool],
-    )
-    check(
-        assert_type(interval_i > interval_index_int, np_1darray[np.bool]),
-        np_1darray[np.bool],
+        assert_type(interval_index_int > interval_i, np_1darray_bool),
+        np_1darray_bool,
     )
 
     check(
-        assert_type(interval_index_int == interval_i, np_1darray[np.bool]),
-        np_1darray[np.bool],
+        assert_type(interval_i >= interval_index_int, np_1darray_bool),
+        np_1darray_bool,
     )
     check(
-        assert_type(interval_index_int != interval_i, np_1darray[np.bool]),
-        np_1darray[np.bool],
+        assert_type(interval_i < interval_index_int, np_1darray_bool),
+        np_1darray_bool,
+    )
+    check(
+        assert_type(interval_i <= interval_index_int, np_1darray_bool),
+        np_1darray_bool,
+    )
+    check(
+        assert_type(interval_i > interval_index_int, np_1darray_bool),
+        np_1darray_bool,
     )
 
     check(
-        assert_type(interval_i == interval_index_int, np_1darray[np.bool]),
-        np_1darray[np.bool],
+        assert_type(interval_index_int == interval_i, np_1darray_bool),
+        np_1darray_bool,
     )
     check(
-        assert_type(interval_i != interval_index_int, np_1darray[np.bool]),
-        np_1darray[np.bool],
+        assert_type(interval_index_int != interval_i, np_1darray_bool),
+        np_1darray_bool,
+    )
+
+    check(
+        assert_type(interval_i == interval_index_int, np_1darray_bool),
+        np_1darray_bool,
+    )
+    check(
+        assert_type(interval_i != interval_index_int, np_1darray_bool),
+        np_1darray_bool,
     )
 
 
@@ -817,29 +817,29 @@ def test_timedelta_cmp_index() -> None:
     td_idx = pd.to_timedelta([1, 2, 3], unit="D")  # TimedeltaIndex
 
     # >, <=
-    gt1 = check(assert_type(td > td_idx, np_1darray[np.bool]), np_1darray[np.bool])
-    le1 = check(assert_type(td <= td_idx, np_1darray[np.bool]), np_1darray[np.bool])
+    gt1 = check(assert_type(td > td_idx, np_1darray_bool), np_1darray_bool)
+    le1 = check(assert_type(td <= td_idx, np_1darray_bool), np_1darray_bool)
     assert (gt1 != le1).all()
-    gt2 = check(assert_type(td_idx > td, np_1darray[np.bool]), np_1darray[np.bool])
-    le2 = check(assert_type(td_idx <= td, np_1darray[np.bool]), np_1darray[np.bool])
+    gt2 = check(assert_type(td_idx > td, np_1darray_bool), np_1darray_bool)
+    le2 = check(assert_type(td_idx <= td, np_1darray_bool), np_1darray_bool)
     assert (gt2 != le2).all()
 
     # <, >=
-    lt1 = check(assert_type(td < td_idx, np_1darray[np.bool]), np_1darray[np.bool])
-    ge1 = check(assert_type(td >= td_idx, np_1darray[np.bool]), np_1darray[np.bool])
+    lt1 = check(assert_type(td < td_idx, np_1darray_bool), np_1darray_bool)
+    ge1 = check(assert_type(td >= td_idx, np_1darray_bool), np_1darray_bool)
     assert (lt1 != ge1).all()
-    lt2 = check(assert_type(td_idx < td, np_1darray[np.bool]), np_1darray[np.bool])
-    ge2 = check(assert_type(td_idx >= td, np_1darray[np.bool]), np_1darray[np.bool])
+    lt2 = check(assert_type(td_idx < td, np_1darray_bool), np_1darray_bool)
+    ge2 = check(assert_type(td_idx >= td, np_1darray_bool), np_1darray_bool)
     assert (lt2 != ge2).all()
 
     # ==, !=
-    eq1 = check(assert_type(td == td_idx, np_1darray[np.bool]), np_1darray[np.bool])
-    ne1 = check(assert_type(td != td_idx, np_1darray[np.bool]), np_1darray[np.bool])
+    eq1 = check(assert_type(td == td_idx, np_1darray_bool), np_1darray_bool)
+    ne1 = check(assert_type(td != td_idx, np_1darray_bool), np_1darray_bool)
     assert (eq1 != ne1).all()
 
     # ==, != (td on the rhs, use == and != of lhs)
-    eq_rhs1 = check(assert_type(td_idx == td, np_1darray[np.bool]), np_1darray[np.bool])
-    ne_rhs1 = check(assert_type(td_idx != td, np_1darray[np.bool]), np_1darray[np.bool])
+    eq_rhs1 = check(assert_type(td_idx == td, np_1darray_bool), np_1darray_bool)
+    ne_rhs1 = check(assert_type(td_idx != td, np_1darray_bool), np_1darray_bool)
     assert (eq_rhs1 != ne_rhs1).all()
 
 
@@ -862,11 +862,11 @@ def test_timedelta_cmp_array() -> None:
     gt_2d2 = check(assert_type(arr_2d > td, np_2darray[np.bool]), np_2darray[np.bool])
     le_2d2 = check(assert_type(arr_2d <= td, np_2darray[np.bool]), np_2darray[np.bool])
     assert (gt_2d2 != le_2d2).all()
-    gt_1d1 = check(assert_type(td > arr_1d, np_1darray[np.bool]), np_1darray[np.bool])
-    le_1d1 = check(assert_type(td <= arr_1d, np_1darray[np.bool]), np_1darray[np.bool])
+    gt_1d1 = check(assert_type(td > arr_1d, np_1darray_bool), np_1darray_bool)
+    le_1d1 = check(assert_type(td <= arr_1d, np_1darray_bool), np_1darray_bool)
     assert (gt_1d1 != le_1d1).all()
-    gt_1d2 = check(assert_type(arr_1d > td, np_1darray[np.bool]), np_1darray[np.bool])
-    le_1d2 = check(assert_type(arr_1d <= td, np_1darray[np.bool]), np_1darray[np.bool])
+    gt_1d2 = check(assert_type(arr_1d > td, np_1darray_bool), np_1darray_bool)
+    le_1d2 = check(assert_type(arr_1d <= td, np_1darray_bool), np_1darray_bool)
     assert (gt_1d2 != le_1d2).all()
 
     # <, >=
@@ -882,11 +882,11 @@ def test_timedelta_cmp_array() -> None:
     lt_2d2 = check(assert_type(arr_2d < td, np_2darray[np.bool]), np_2darray[np.bool])
     ge_2d2 = check(assert_type(arr_2d >= td, np_2darray[np.bool]), np_2darray[np.bool])
     assert (lt_2d2 != ge_2d2).all()
-    lt_1d1 = check(assert_type(td < arr_1d, np_1darray[np.bool]), np_1darray[np.bool])
-    ge_1d1 = check(assert_type(td >= arr_1d, np_1darray[np.bool]), np_1darray[np.bool])
+    lt_1d1 = check(assert_type(td < arr_1d, np_1darray_bool), np_1darray_bool)
+    ge_1d1 = check(assert_type(td >= arr_1d, np_1darray_bool), np_1darray_bool)
     assert (lt_1d1 != ge_1d1).all()
-    lt_1d2 = check(assert_type(arr_1d < td, np_1darray[np.bool]), np_1darray[np.bool])
-    ge_1d2 = check(assert_type(arr_1d >= td, np_1darray[np.bool]), np_1darray[np.bool])
+    lt_1d2 = check(assert_type(arr_1d < td, np_1darray_bool), np_1darray_bool)
+    ge_1d2 = check(assert_type(arr_1d >= td, np_1darray_bool), np_1darray_bool)
     assert (lt_1d2 != ge_1d2).all()
 
     # ==, !=
@@ -896,8 +896,8 @@ def test_timedelta_cmp_array() -> None:
     eq_2d1 = check(assert_type(td == arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
     ne_2d1 = check(assert_type(td != arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
     assert (eq_2d1 != ne_2d1).all()
-    eq_1d1 = check(assert_type(td == arr_1d, np_1darray[np.bool]), np_1darray[np.bool])
-    ne_1d1 = check(assert_type(td != arr_1d, np_1darray[np.bool]), np_1darray[np.bool])
+    eq_1d1 = check(assert_type(td == arr_1d, np_1darray_bool), np_1darray_bool)
+    ne_1d1 = check(assert_type(td != arr_1d, np_1darray_bool), np_1darray_bool)
     assert (eq_1d1 != ne_1d1).all()
 
     # ==, != (td on the rhs, use == and != of lhs)
@@ -907,8 +907,8 @@ def test_timedelta_cmp_array() -> None:
     eq_rhs_2d1 = check(assert_type(arr_2d == td, Any), np_2darray[np.bool])
     ne_rhs_2d1 = check(assert_type(arr_2d != td, Any), np_2darray[np.bool])
     assert (eq_rhs_2d1 != ne_rhs_2d1).all()
-    eq_rhs_1d1 = check(assert_type(arr_1d == td, Any), np_1darray[np.bool])
-    ne_rhs_1d1 = check(assert_type(arr_1d != td, Any), np_1darray[np.bool])
+    eq_rhs_1d1 = check(assert_type(arr_1d == td, Any), np_1darray_bool)
+    ne_rhs_1d1 = check(assert_type(arr_1d != td, Any), np_1darray_bool)
     assert (eq_rhs_1d1 != ne_rhs_1d1).all()
 
 
@@ -1186,56 +1186,48 @@ def test_timestamp_cmp_index() -> None:
     un_idx = pd.DataFrame({"a": [1]}, index=dt_idx).index
 
     # >, <=
-    gt_dt1 = check(assert_type(ts > dt_idx, np_1darray[np.bool]), np_1darray[np.bool])
-    le_dt1 = check(assert_type(ts <= dt_idx, np_1darray[np.bool]), np_1darray[np.bool])
+    gt_dt1 = check(assert_type(ts > dt_idx, np_1darray_bool), np_1darray_bool)
+    le_dt1 = check(assert_type(ts <= dt_idx, np_1darray_bool), np_1darray_bool)
     assert (gt_dt1 != le_dt1).all()
-    gt_dt2 = check(assert_type(dt_idx > ts, np_1darray[np.bool]), np_1darray[np.bool])
-    le_dt2 = check(assert_type(dt_idx <= ts, np_1darray[np.bool]), np_1darray[np.bool])
+    gt_dt2 = check(assert_type(dt_idx > ts, np_1darray_bool), np_1darray_bool)
+    le_dt2 = check(assert_type(dt_idx <= ts, np_1darray_bool), np_1darray_bool)
     assert (gt_dt2 != le_dt2).all()
-    gt_un1 = check(assert_type(ts > un_idx, np_1darray[np.bool]), np_1darray[np.bool])
-    le_un1 = check(assert_type(ts <= un_idx, np_1darray[np.bool]), np_1darray[np.bool])
+    gt_un1 = check(assert_type(ts > un_idx, np_1darray_bool), np_1darray_bool)
+    le_un1 = check(assert_type(ts <= un_idx, np_1darray_bool), np_1darray_bool)
     assert (gt_un1 != le_un1).all()
-    gt_un2 = check(assert_type(un_idx > ts, np_1darray[np.bool]), np_1darray[np.bool])
-    le_un2 = check(assert_type(un_idx <= ts, np_1darray[np.bool]), np_1darray[np.bool])
+    gt_un2 = check(assert_type(un_idx > ts, np_1darray_bool), np_1darray_bool)
+    le_un2 = check(assert_type(un_idx <= ts, np_1darray_bool), np_1darray_bool)
     assert (gt_un2 != le_un2).all()
 
     # <, >=
-    lt_dt1 = check(assert_type(ts < dt_idx, np_1darray[np.bool]), np_1darray[np.bool])
-    ge_dt1 = check(assert_type(ts >= dt_idx, np_1darray[np.bool]), np_1darray[np.bool])
+    lt_dt1 = check(assert_type(ts < dt_idx, np_1darray_bool), np_1darray_bool)
+    ge_dt1 = check(assert_type(ts >= dt_idx, np_1darray_bool), np_1darray_bool)
     assert (lt_dt1 != ge_dt1).all()
-    lt_dt2 = check(assert_type(dt_idx < ts, np_1darray[np.bool]), np_1darray[np.bool])
-    ge_dt2 = check(assert_type(dt_idx >= ts, np_1darray[np.bool]), np_1darray[np.bool])
+    lt_dt2 = check(assert_type(dt_idx < ts, np_1darray_bool), np_1darray_bool)
+    ge_dt2 = check(assert_type(dt_idx >= ts, np_1darray_bool), np_1darray_bool)
     assert (lt_dt2 != ge_dt2).all()
-    lt_un1 = check(assert_type(ts < un_idx, np_1darray[np.bool]), np_1darray[np.bool])
-    ge_un1 = check(assert_type(ts >= un_idx, np_1darray[np.bool]), np_1darray[np.bool])
+    lt_un1 = check(assert_type(ts < un_idx, np_1darray_bool), np_1darray_bool)
+    ge_un1 = check(assert_type(ts >= un_idx, np_1darray_bool), np_1darray_bool)
     assert (lt_un1 != ge_un1).all()
-    lt_un2 = check(assert_type(un_idx < ts, np_1darray[np.bool]), np_1darray[np.bool])
-    ge_un2 = check(assert_type(un_idx >= ts, np_1darray[np.bool]), np_1darray[np.bool])
+    lt_un2 = check(assert_type(un_idx < ts, np_1darray_bool), np_1darray_bool)
+    ge_un2 = check(assert_type(un_idx >= ts, np_1darray_bool), np_1darray_bool)
     assert (lt_un2 != ge_un2).all()
 
     # ==, !=
-    eq_dt1 = check(assert_type(ts == dt_idx, np_1darray[np.bool]), np_1darray[np.bool])
-    ne_dt1 = check(assert_type(ts != dt_idx, np_1darray[np.bool]), np_1darray[np.bool])
+    eq_dt1 = check(assert_type(ts == dt_idx, np_1darray_bool), np_1darray_bool)
+    ne_dt1 = check(assert_type(ts != dt_idx, np_1darray_bool), np_1darray_bool)
     assert (eq_dt1 != ne_dt1).all()
     # there is a mypy bug where ts.__eq__(Index) gets revealed as Any and not np_1darray
-    eq_un1 = check(assert_type(ts == un_idx, np_1darray[np.bool]), np_1darray[np.bool])  # type: ignore[assert-type]
-    ne_un1 = check(assert_type(ts != un_idx, np_1darray[np.bool]), np_1darray[np.bool])  # type: ignore[assert-type]
+    eq_un1 = check(assert_type(ts == un_idx, np_1darray_bool), np_1darray_bool)  # type: ignore[assert-type]
+    ne_un1 = check(assert_type(ts != un_idx, np_1darray_bool), np_1darray_bool)  # type: ignore[assert-type]
     assert (eq_un1 != ne_un1).all()
 
     # ==, != (ts on the rhs, use == and != of lhs)
-    eq_rhs_dt1 = check(
-        assert_type(dt_idx == ts, np_1darray[np.bool]), np_1darray[np.bool]
-    )
-    ne_rhs_dt1 = check(
-        assert_type(dt_idx != ts, np_1darray[np.bool]), np_1darray[np.bool]
-    )
+    eq_rhs_dt1 = check(assert_type(dt_idx == ts, np_1darray_bool), np_1darray_bool)
+    ne_rhs_dt1 = check(assert_type(dt_idx != ts, np_1darray_bool), np_1darray_bool)
     assert (eq_rhs_dt1 != ne_rhs_dt1).all()
-    eq_rhs_un1 = check(
-        assert_type(un_idx == ts, np_1darray[np.bool]), np_1darray[np.bool]
-    )
-    ne_rhs_un1 = check(
-        assert_type(un_idx != ts, np_1darray[np.bool]), np_1darray[np.bool]
-    )
+    eq_rhs_un1 = check(assert_type(un_idx == ts, np_1darray_bool), np_1darray_bool)
+    ne_rhs_un1 = check(assert_type(un_idx != ts, np_1darray_bool), np_1darray_bool)
     assert (eq_rhs_un1 != ne_rhs_un1).all()
 
 
@@ -1258,11 +1250,11 @@ def test_timestamp_cmp_array() -> None:
     gt_2d2 = check(assert_type(arr_2d > ts, np_2darray[np.bool]), np_2darray[np.bool])
     le_2d2 = check(assert_type(arr_2d <= ts, np_2darray[np.bool]), np_2darray[np.bool])
     assert (gt_2d2 != le_2d2).all()
-    gt_1d1 = check(assert_type(ts > arr_1d, np_1darray[np.bool]), np_1darray[np.bool])
-    le_1d1 = check(assert_type(ts <= arr_1d, np_1darray[np.bool]), np_1darray[np.bool])
+    gt_1d1 = check(assert_type(ts > arr_1d, np_1darray_bool), np_1darray_bool)
+    le_1d1 = check(assert_type(ts <= arr_1d, np_1darray_bool), np_1darray_bool)
     assert (gt_1d1 != le_1d1).all()
-    gt_1d2 = check(assert_type(arr_1d > ts, np_1darray[np.bool]), np_1darray[np.bool])
-    le_1d2 = check(assert_type(arr_1d <= ts, np_1darray[np.bool]), np_1darray[np.bool])
+    gt_1d2 = check(assert_type(arr_1d > ts, np_1darray_bool), np_1darray_bool)
+    le_1d2 = check(assert_type(arr_1d <= ts, np_1darray_bool), np_1darray_bool)
     assert (gt_1d2 != le_1d2).all()
 
     # <, >=
@@ -1278,11 +1270,11 @@ def test_timestamp_cmp_array() -> None:
     lt_2d2 = check(assert_type(arr_2d < ts, np_2darray[np.bool]), np_2darray[np.bool])
     ge_2d2 = check(assert_type(arr_2d >= ts, np_2darray[np.bool]), np_2darray[np.bool])
     assert (lt_2d2 != ge_2d2).all()
-    lt_1d1 = check(assert_type(ts < arr_1d, np_1darray[np.bool]), np_1darray[np.bool])
-    ge_1d1 = check(assert_type(ts >= arr_1d, np_1darray[np.bool]), np_1darray[np.bool])
+    lt_1d1 = check(assert_type(ts < arr_1d, np_1darray_bool), np_1darray_bool)
+    ge_1d1 = check(assert_type(ts >= arr_1d, np_1darray_bool), np_1darray_bool)
     assert (lt_1d1 != ge_1d1).all()
-    lt_1d2 = check(assert_type(arr_1d < ts, np_1darray[np.bool]), np_1darray[np.bool])
-    ge_1d2 = check(assert_type(arr_1d >= ts, np_1darray[np.bool]), np_1darray[np.bool])
+    lt_1d2 = check(assert_type(arr_1d < ts, np_1darray_bool), np_1darray_bool)
+    ge_1d2 = check(assert_type(arr_1d >= ts, np_1darray_bool), np_1darray_bool)
     assert (lt_1d2 != ge_1d2).all()
 
     # ==, !=
@@ -1292,8 +1284,8 @@ def test_timestamp_cmp_array() -> None:
     eq_2d1 = check(assert_type(ts == arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
     ne_2d1 = check(assert_type(ts != arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
     assert (eq_2d1 != ne_2d1).all()
-    eq_1d1 = check(assert_type(ts == arr_1d, np_1darray[np.bool]), np_1darray[np.bool])
-    ne_1d1 = check(assert_type(ts != arr_1d, np_1darray[np.bool]), np_1darray[np.bool])
+    eq_1d1 = check(assert_type(ts == arr_1d, np_1darray_bool), np_1darray_bool)
+    ne_1d1 = check(assert_type(ts != arr_1d, np_1darray_bool), np_1darray_bool)
     assert (eq_1d1 != ne_1d1).all()
 
     # ==, != (td on the rhs, use == and != of lhs)
@@ -1303,8 +1295,8 @@ def test_timestamp_cmp_array() -> None:
     eq_rhs_2d1 = check(assert_type(arr_2d == ts, Any), np_2darray[np.bool])
     ne_rhs_2d1 = check(assert_type(arr_2d != ts, Any), np_2darray[np.bool])
     assert (eq_rhs_2d1 != ne_rhs_2d1).all()
-    eq_rhs_1d1 = check(assert_type(arr_1d == ts, Any), np_1darray[np.bool])
-    ne_rhs_1d1 = check(assert_type(arr_1d != ts, Any), np_1darray[np.bool])
+    eq_rhs_1d1 = check(assert_type(arr_1d == ts, Any), np_1darray_bool)
+    ne_rhs_1d1 = check(assert_type(arr_1d != ts, Any), np_1darray_bool)
     assert (eq_rhs_1d1 != ne_rhs_1d1).all()
 
 
@@ -1817,29 +1809,29 @@ def test_period_cmp_index() -> None:
     p_idx = pd.period_range("2012-1-1", periods=10, freq="D")
 
     # >, <=
-    gt1 = check(assert_type(p > p_idx, np_1darray[np.bool]), np_1darray[np.bool])
-    le1 = check(assert_type(p <= p_idx, np_1darray[np.bool]), np_1darray[np.bool])
+    gt1 = check(assert_type(p > p_idx, np_1darray_bool), np_1darray_bool)
+    le1 = check(assert_type(p <= p_idx, np_1darray_bool), np_1darray_bool)
     assert (gt1 != le1).all()
-    gt2 = check(assert_type(p_idx > p, np_1darray[np.bool]), np_1darray[np.bool])
-    le2 = check(assert_type(p_idx <= p, np_1darray[np.bool]), np_1darray[np.bool])
+    gt2 = check(assert_type(p_idx > p, np_1darray_bool), np_1darray_bool)
+    le2 = check(assert_type(p_idx <= p, np_1darray_bool), np_1darray_bool)
     assert (gt2 != le2).all()
 
     # <, >=
-    lt1 = check(assert_type(p < p_idx, np_1darray[np.bool]), np_1darray[np.bool])
-    ge1 = check(assert_type(p >= p_idx, np_1darray[np.bool]), np_1darray[np.bool])
+    lt1 = check(assert_type(p < p_idx, np_1darray_bool), np_1darray_bool)
+    ge1 = check(assert_type(p >= p_idx, np_1darray_bool), np_1darray_bool)
     assert (lt1 != ge1).all()
-    lt2 = check(assert_type(p_idx < p, np_1darray[np.bool]), np_1darray[np.bool])
-    ge2 = check(assert_type(p_idx >= p, np_1darray[np.bool]), np_1darray[np.bool])
+    lt2 = check(assert_type(p_idx < p, np_1darray_bool), np_1darray_bool)
+    ge2 = check(assert_type(p_idx >= p, np_1darray_bool), np_1darray_bool)
     assert (lt2 != ge2).all()
 
     # ==, !=
-    eq1 = check(assert_type(p == p_idx, np_1darray[np.bool]), np_1darray[np.bool])
-    ne1 = check(assert_type(p != p_idx, np_1darray[np.bool]), np_1darray[np.bool])
+    eq1 = check(assert_type(p == p_idx, np_1darray_bool), np_1darray_bool)
+    ne1 = check(assert_type(p != p_idx, np_1darray_bool), np_1darray_bool)
     assert (eq1 != ne1).all()
 
     # ==, != (p on the rhs, use == and != of lhs)
-    eq_rhs1 = check(assert_type(p_idx == p, np_1darray[np.bool]), np_1darray[np.bool])
-    ne_rhs1 = check(assert_type(p_idx != p, np_1darray[np.bool]), np_1darray[np.bool])
+    eq_rhs1 = check(assert_type(p_idx == p, np_1darray_bool), np_1darray_bool)
+    ne_rhs1 = check(assert_type(p_idx != p, np_1darray_bool), np_1darray_bool)
     assert (eq_rhs1 != ne_rhs1).all()
 
 
@@ -1856,8 +1848,8 @@ def test_period_cmp_array() -> None:
     gt_2d1 = check(assert_type(p > arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
     le_2d1 = check(assert_type(p <= arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
     assert (gt_2d1 != le_2d1).all()
-    gt_1d1 = check(assert_type(p > arr_1d, np_1darray[np.bool]), np_1darray[np.bool])
-    le_1d1 = check(assert_type(p <= arr_1d, np_1darray[np.bool]), np_1darray[np.bool])
+    gt_1d1 = check(assert_type(p > arr_1d, np_1darray_bool), np_1darray_bool)
+    le_1d1 = check(assert_type(p <= arr_1d, np_1darray_bool), np_1darray_bool)
     assert (gt_1d1 != le_1d1).all()
     # p on the rhs, type depends on np.ndarray > and <= methods
     gt_nd2 = check(assert_type(arr_nd > p, np_ndarray_bool), np_ndarray_bool, np.bool)
@@ -1866,8 +1858,8 @@ def test_period_cmp_array() -> None:
     gt_2d2 = check(assert_type(arr_2d > p, np_ndarray_bool), np_2darray[np.bool])
     le_2d2 = check(assert_type(arr_2d <= p, np_ndarray_bool), np_2darray[np.bool])
     assert (gt_2d2 != le_2d2).all()
-    gt_1d2 = check(assert_type(arr_1d > p, np_ndarray_bool), np_1darray[np.bool])
-    le_1d2 = check(assert_type(arr_1d <= p, np_ndarray_bool), np_1darray[np.bool])
+    gt_1d2 = check(assert_type(arr_1d > p, np_ndarray_bool), np_1darray_bool)
+    le_1d2 = check(assert_type(arr_1d <= p, np_ndarray_bool), np_1darray_bool)
     assert (gt_1d2 != le_1d2).all()
 
     # <, >=
@@ -1877,8 +1869,8 @@ def test_period_cmp_array() -> None:
     lt_2d1 = check(assert_type(p < arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
     ge_2d1 = check(assert_type(p >= arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
     assert (lt_2d1 != ge_2d1).all()
-    lt_1d1 = check(assert_type(p < arr_1d, np_1darray[np.bool]), np_1darray[np.bool])
-    ge_1d1 = check(assert_type(p >= arr_1d, np_1darray[np.bool]), np_1darray[np.bool])
+    lt_1d1 = check(assert_type(p < arr_1d, np_1darray_bool), np_1darray_bool)
+    ge_1d1 = check(assert_type(p >= arr_1d, np_1darray_bool), np_1darray_bool)
     assert (lt_1d1 != ge_1d1).all()
     # p on the rhs, type depends on np.ndarray < and >= methods
     lt_nd2 = check(assert_type(arr_nd < p, np_ndarray_bool), np_ndarray_bool, np.bool)
@@ -1887,8 +1879,8 @@ def test_period_cmp_array() -> None:
     lt_2d2 = check(assert_type(arr_2d < p, np_ndarray_bool), np_2darray[np.bool])
     ge_2d2 = check(assert_type(arr_2d >= p, np_ndarray_bool), np_2darray[np.bool])
     assert (lt_2d2 != ge_2d2).all()
-    lt_1d2 = check(assert_type(arr_1d < p, np_ndarray_bool), np_1darray[np.bool])
-    ge_1d2 = check(assert_type(arr_1d >= p, np_ndarray_bool), np_1darray[np.bool])
+    lt_1d2 = check(assert_type(arr_1d < p, np_ndarray_bool), np_1darray_bool)
+    ge_1d2 = check(assert_type(arr_1d >= p, np_ndarray_bool), np_1darray_bool)
     assert (lt_1d2 != ge_1d2).all()
 
     # ==, !=
@@ -1898,8 +1890,8 @@ def test_period_cmp_array() -> None:
     eq_2d1 = check(assert_type(p == arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
     ne_2d1 = check(assert_type(p != arr_2d, np_2darray[np.bool]), np_2darray[np.bool])
     assert (eq_2d1 != ne_2d1).all()
-    eq_1d1 = check(assert_type(p == arr_1d, np_1darray[np.bool]), np_1darray[np.bool])
-    ne_1d1 = check(assert_type(p != arr_1d, np_1darray[np.bool]), np_1darray[np.bool])
+    eq_1d1 = check(assert_type(p == arr_1d, np_1darray_bool), np_1darray_bool)
+    ne_1d1 = check(assert_type(p != arr_1d, np_1darray_bool), np_1darray_bool)
     assert (eq_1d1 != ne_1d1).all()
 
     # ==, != (td on the rhs, use == and != of lhs)
@@ -1909,8 +1901,8 @@ def test_period_cmp_array() -> None:
     eq_rhs_2d1 = check(assert_type(arr_2d == p, Any), np_2darray[np.bool])
     ne_rhs_2d1 = check(assert_type(arr_2d != p, Any), np_2darray[np.bool])
     assert (eq_rhs_2d1 != ne_rhs_2d1).all()
-    eq_rhs_1d1 = check(assert_type(arr_1d == p, Any), np_1darray[np.bool])
-    ne_rhs_1d1 = check(assert_type(arr_1d != p, Any), np_1darray[np.bool])
+    eq_rhs_1d1 = check(assert_type(arr_1d == p, Any), np_1darray_bool)
+    ne_rhs_1d1 = check(assert_type(arr_1d != p, Any), np_1darray_bool)
     assert (eq_rhs_1d1 != ne_rhs_1d1).all()
 
 

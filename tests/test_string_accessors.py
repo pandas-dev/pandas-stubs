@@ -7,10 +7,9 @@ import pytest
 from typing_extensions import assert_type
 
 from tests import (
-    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    np_1darray,
+    np_1darray_bool,
 )
 
 DATA = ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
@@ -41,19 +40,11 @@ def test_string_accessors_boolean_series() -> None:
     _check(
         assert_type(s.str.contains("a"), "pd.Series[bool]"),
     )
-    if PD_LTE_23:
-        # Bug in pandas 3.0 dev  https://github.com/pandas-dev/pandas/issues/61942
-        _check(
-            assert_type(
-                s.str.contains(re.compile(r"a"), regex=True), "pd.Series[bool]"
-            ),
-        )
+    _check(assert_type(s.str.contains(re.compile(r"a"), regex=True), "pd.Series[bool]"))
     _check(assert_type(s.str.endswith("e"), "pd.Series[bool]"))
     _check(assert_type(s.str.endswith(("e", "f")), "pd.Series[bool]"))
     _check(assert_type(s.str.fullmatch("apple"), "pd.Series[bool]"))
-    if PD_LTE_23:
-        # Bug in 3.0 dev:  https://github.com/pandas-dev/pandas/issues/61952
-        _check(assert_type(s.str.fullmatch(re.compile(r"apple")), "pd.Series[bool]"))
+    _check(assert_type(s.str.fullmatch(re.compile(r"apple")), "pd.Series[bool]"))
     _check(assert_type(s.str.isalnum(), "pd.Series[bool]"))
     _check(assert_type(s.str.isalpha(), "pd.Series[bool]"))
     _check(assert_type(s.str.isdecimal(), "pd.Series[bool]"))
@@ -64,49 +55,33 @@ def test_string_accessors_boolean_series() -> None:
     _check(assert_type(s.str.istitle(), "pd.Series[bool]"))
     _check(assert_type(s.str.isupper(), "pd.Series[bool]"))
     _check(assert_type(s.str.match("pp"), "pd.Series[bool]"))
-    if PD_LTE_23:
-        # Bug in 3.0 dev:  https://github.com/pandas-dev/pandas/issues/61952
-        _check(assert_type(s.str.match(re.compile(r"pp")), "pd.Series[bool]"))
+    _check(assert_type(s.str.match(re.compile(r"pp")), "pd.Series[bool]"))
 
 
 def test_string_accessors_boolean_index() -> None:
     idx = pd.Index(DATA)
-    _check = functools.partial(check, klass=np_1darray[np.bool])
-    _check(assert_type(idx.str.startswith("a"), np_1darray[np.bool]))
+    _check = functools.partial(check, klass=np_1darray_bool)
+    _check(assert_type(idx.str.startswith("a"), np_1darray_bool))
     _check(
-        assert_type(idx.str.startswith(("a", "b")), np_1darray[np.bool]),
+        assert_type(idx.str.startswith(("a", "b")), np_1darray_bool),
     )
-    _check(
-        assert_type(idx.str.contains("a"), np_1darray[np.bool]),
-    )
-    if PD_LTE_23:
-        # Bug in pandas 3.0 dev  https://github.com/pandas-dev/pandas/issues/61942
-        _check(
-            assert_type(
-                idx.str.contains(re.compile(r"a"), regex=True), np_1darray[np.bool]
-            ),
-        )
-    _check(assert_type(idx.str.endswith("e"), np_1darray[np.bool]))
-    _check(assert_type(idx.str.endswith(("e", "f")), np_1darray[np.bool]))
-    _check(assert_type(idx.str.fullmatch("apple"), np_1darray[np.bool]))
-    if PD_LTE_23:
-        # Bug in 3.0 dev:  https://github.com/pandas-dev/pandas/issues/61952
-        _check(
-            assert_type(idx.str.fullmatch(re.compile(r"apple")), np_1darray[np.bool])
-        )
-    _check(assert_type(idx.str.isalnum(), np_1darray[np.bool]))
-    _check(assert_type(idx.str.isalpha(), np_1darray[np.bool]))
-    _check(assert_type(idx.str.isdecimal(), np_1darray[np.bool]))
-    _check(assert_type(idx.str.isdigit(), np_1darray[np.bool]))
-    _check(assert_type(idx.str.isnumeric(), np_1darray[np.bool]))
-    _check(assert_type(idx.str.islower(), np_1darray[np.bool]))
-    _check(assert_type(idx.str.isspace(), np_1darray[np.bool]))
-    _check(assert_type(idx.str.istitle(), np_1darray[np.bool]))
-    _check(assert_type(idx.str.isupper(), np_1darray[np.bool]))
-    _check(assert_type(idx.str.match("pp"), np_1darray[np.bool]))
-    if PD_LTE_23:
-        # Bug in 3.0 dev:  https://github.com/pandas-dev/pandas/issues/61952
-        _check(assert_type(idx.str.match(re.compile(r"pp")), np_1darray[np.bool]))
+    _check(assert_type(idx.str.contains("a"), np_1darray_bool))
+    _check(assert_type(idx.str.contains(re.compile(r"a"), regex=True), np_1darray_bool))
+    _check(assert_type(idx.str.endswith("e"), np_1darray_bool))
+    _check(assert_type(idx.str.endswith(("e", "f")), np_1darray_bool))
+    _check(assert_type(idx.str.fullmatch("apple"), np_1darray_bool))
+    _check(assert_type(idx.str.fullmatch(re.compile(r"apple")), np_1darray_bool))
+    _check(assert_type(idx.str.isalnum(), np_1darray_bool))
+    _check(assert_type(idx.str.isalpha(), np_1darray_bool))
+    _check(assert_type(idx.str.isdecimal(), np_1darray_bool))
+    _check(assert_type(idx.str.isdigit(), np_1darray_bool))
+    _check(assert_type(idx.str.isnumeric(), np_1darray_bool))
+    _check(assert_type(idx.str.islower(), np_1darray_bool))
+    _check(assert_type(idx.str.isspace(), np_1darray_bool))
+    _check(assert_type(idx.str.istitle(), np_1darray_bool))
+    _check(assert_type(idx.str.isupper(), np_1darray_bool))
+    _check(assert_type(idx.str.match("pp"), np_1darray_bool))
+    _check(assert_type(idx.str.match(re.compile(r"pp")), np_1darray_bool))
 
 
 def test_string_accessors_integer_series() -> None:

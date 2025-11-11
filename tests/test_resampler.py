@@ -2,6 +2,7 @@ from collections.abc import (
     Hashable,
     Iterator,
 )
+from typing import TypeAlias
 
 import numpy as np
 import pandas as pd
@@ -23,6 +24,11 @@ from tests import (
     check,
     pytest_warns_bounded,
 )
+
+if not PD_LTE_23:
+    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration]  # isort: skip
+else:
+    Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
 DR = date_range("1999-1-1", periods=365, freq="D")
 DF_ = DataFrame(np.random.standard_normal((365, 1)), index=DR)
@@ -146,12 +152,19 @@ def test_interpolate() -> None:
     )
 
 
+# TODO: remove the whole test function when the warning and ValueError in pandas-dev/pandas#62847 are removed
 def test_interpolate_inplace() -> None:
-    if PD_LTE_23:
-        # Bug in main see https://github.com/pandas-dev/pandas/issues/58690
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        r"The 'inplace' keyword in DatetimeIndexResampler.interpolate is deprecated and will be removed in a future version. resample\(...\).interpolate is never inplace.",
+        lower="2.99",
+    ):
         check(
-            assert_type(DF.resample("ME").interpolate(inplace=True), None), type(None)
+            assert_type(DF.resample("ME").interpolate(inplace=False), DataFrame),
+            DataFrame,
         )
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.resample("ME").interpolate(inplace=True)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
 
 
 def test_pipe() -> None:
@@ -359,12 +372,6 @@ def test_asfreq_series() -> None:
 def test_interpolate_series() -> None:
     check(assert_type(S.resample("ME").interpolate(), Series), Series)
     check(assert_type(S.resample("ME").interpolate(method="time"), Series), Series)
-
-
-def test_interpolate_inplace_series() -> None:
-    if PD_LTE_23:
-        # Bug in main see https://github.com/pandas-dev/pandas/issues/58690
-        check(assert_type(S.resample("ME").interpolate(inplace=True), None), type(None))
 
 
 def test_pipe_series() -> None:

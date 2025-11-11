@@ -34,7 +34,6 @@ from pandas.api.extensions import (
 )
 from pandas.api.typing import NAType
 from pandas.core.arrays.datetimes import DatetimeArray
-from pandas.core.arrays.string_ import StringArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.window import ExponentialMovingWindow
 from pandas.core.window.expanding import Expanding
@@ -103,7 +102,7 @@ if TYPE_CHECKING:
     )
 
 if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore  # isort: skip
+    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration]  # isort: skip
 else:
     Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
@@ -1424,23 +1423,17 @@ def test_types_rename_axis() -> None:
 def test_types_values() -> None:
     check(
         assert_type(
-            pd.Series([1, 2, 3]).values,
-            np_1darray | ExtensionArray | pd.Categorical,
+            pd.Series([1, 2, 3]).values, np_1darray | ExtensionArray | pd.Categorical
         ),
         np_1darray,
         np.integer,
     )
-    valresult_type: type[np_1darray | ExtensionArray | pd.Categorical]
-    if PD_LTE_23:
-        valresult_type = np_1darray
-    else:
-        valresult_type = StringArray
     check(
         assert_type(
-            pd.Series(list("aabc")).values,
-            np_1darray | ExtensionArray | pd.Categorical,
+            pd.Series(list("aabc")).values, np_1darray | ExtensionArray | pd.Categorical
         ),
-        valresult_type,
+        # TODO: BaseStringArray after pandas-dev/pandas-stubs#1469
+        np_1darray if PD_LTE_23 else ExtensionArray,
         str,
     )
     check(
@@ -2003,20 +1996,18 @@ def test_dtype_type() -> None:
 
 def test_types_to_numpy() -> None:
     s = pd.Series(["a", "b", "c"], dtype=str)
-    check(assert_type(s.to_numpy(), np_1darray[np.str_]), np_1darray)
+    check(assert_type(s.to_numpy(), np_1darray_str), np_1darray_str)
     check(
-        assert_type(s.to_numpy(dtype="str", copy=True), np_1darray[np.str_]), np_1darray
+        assert_type(s.to_numpy(dtype="str", copy=True), np_1darray_str), np_1darray_str
     )
-    check(assert_type(s.to_numpy(na_value=0), np_1darray[np.str_]), np_1darray)
+    check(assert_type(s.to_numpy(na_value=0), np_1darray_str), np_1darray_str)
+    check(assert_type(s.to_numpy(na_value=np.int32(4)), np_1darray_str), np_1darray_str)
     check(
-        assert_type(s.to_numpy(na_value=np.int32(4)), np_1darray[np.str_]), np_1darray
-    )
-    check(
-        assert_type(s.to_numpy(na_value=np.float16(4)), np_1darray[np.str_]), np_1darray
+        assert_type(s.to_numpy(na_value=np.float16(4)), np_1darray_str), np_1darray_str
     )
     check(
-        assert_type(s.to_numpy(na_value=np.complex128(4, 7)), np_1darray[np.str_]),
-        np_1darray,
+        assert_type(s.to_numpy(na_value=np.complex128(4, 7)), np_1darray_str),
+        np_1darray_str,
     )
 
     check(assert_type(pd.Series().to_numpy(), np_1darray), np_1darray)
@@ -2025,7 +2016,7 @@ def test_types_to_numpy() -> None:
 def test_to_numpy() -> None:
     """Test Series.to_numpy for different types."""
     s_str = pd.Series(["a", "b", "c"], dtype=str)
-    check(assert_type(s_str.to_numpy(), np_1darray_str), np_1darray, str)
+    check(assert_type(s_str.to_numpy(), np_1darray_str), np_1darray_str)
 
     s_bytes = pd.Series(["a", "b", "c"]).astype(bytes)
     check(assert_type(s_bytes.to_numpy(), np_1darray_bytes), np_1darray, np.bytes_)
@@ -3220,6 +3211,21 @@ def test_to_json_mode() -> None:
     check(assert_type(result4, str), str)
     if TYPE_CHECKING_INVALID_USAGE:
         _result3 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+
+
+def test_interpolate() -> None:
+    s = pd.Series(range(3))
+    check(
+        assert_type(s.interpolate(method="linear"), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(
+        assert_type(s.interpolate(method="linear", inplace=False), "pd.Series[int]"),
+        pd.Series,
+        np.integer,
+    )
+    check(assert_type(s.interpolate(method="linear", inplace=True), None), type(None))
 
 
 def test_groupby_diff() -> None:
