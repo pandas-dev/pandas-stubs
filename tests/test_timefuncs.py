@@ -30,8 +30,11 @@ from tests import (
     check,
     np_1darray,
     np_1darray_bool,
+    np_1darray_bytes,
     np_1darray_dt,
     np_1darray_int64,
+    np_1darray_object,
+    np_1darray_str,
     np_1darray_td,
     pytest_warns_bounded,
 )
@@ -349,8 +352,8 @@ def test_series_dt_accessors() -> None:
         upper="2.3.99",
     ):
         check(
-            assert_type(s0.dt.to_pydatetime(), np_1darray[np.object_]),
-            np_1darray[np.object_] if PD_LTE_23 else pd.Series,
+            assert_type(s0.dt.to_pydatetime(), np_1darray_object),
+            np_1darray_object if PD_LTE_23 else pd.Series,
             dt.datetime,
         )
     s0_local = s0.dt.tz_localize("UTC")
@@ -521,8 +524,8 @@ def test_series_dt_accessors() -> None:
         ),
     ):
         check(
-            assert_type(s2.dt.to_pytimedelta(), np_1darray[np.object_]),
-            np_1darray[np.object_],
+            assert_type(s2.dt.to_pytimedelta(), np_1darray_object),
+            np_1darray_object,
             dt.timedelta,
         )
     check(assert_type(s2.dt.total_seconds(), "pd.Series[float]"), pd.Series, float)
@@ -608,11 +611,9 @@ def test_datetimeindex_accessors() -> None:
     i0 = pd.date_range(start="2022-06-01", periods=10)
     check(assert_type(i0, pd.DatetimeIndex), pd.DatetimeIndex, pd.Timestamp)
 
-    check(assert_type(i0.date, np_1darray[np.object_]), np_1darray[np.object_], dt.date)
-    check(assert_type(i0.time, np_1darray[np.object_]), np_1darray[np.object_], dt.time)
-    check(
-        assert_type(i0.timetz, np_1darray[np.object_]), np_1darray[np.object_], dt.time
-    )
+    check(assert_type(i0.date, np_1darray_object), np_1darray_object, dt.date)
+    check(assert_type(i0.time, np_1darray_object), np_1darray_object, dt.time)
+    check(assert_type(i0.timetz, np_1darray_object), np_1darray_object, dt.time)
     check(assert_type(i0.year, "pd.Index[int]"), pd.Index, np.int32)
     check(assert_type(i0.month, "pd.Index[int]"), pd.Index, np.int32)
     check(assert_type(i0.day, "pd.Index[int]"), pd.Index, np.int32)
@@ -641,8 +642,8 @@ def test_datetimeindex_accessors() -> None:
     check(assert_type(i0.isocalendar(), pd.DataFrame), pd.DataFrame)
     check(assert_type(i0.to_period("D"), pd.PeriodIndex), pd.PeriodIndex, pd.Period)
     check(
-        assert_type(i0.to_pydatetime(), np_1darray[np.object_]),
-        np_1darray[np.object_],
+        assert_type(i0.to_pydatetime(), np_1darray_object),
+        np_1darray_object,
         dt.datetime,
     )
     ilocal = i0.tz_localize("UTC")
@@ -684,8 +685,8 @@ def test_timedeltaindex_accessors() -> None:
     check(assert_type(i0.nanoseconds, pd.Index), pd.Index, np.integer)
     check(assert_type(i0.components, pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(i0.to_pytimedelta(), np_1darray[np.object_]),
-        np_1darray[np.object_],
+        assert_type(i0.to_pytimedelta(), np_1darray_object),
+        np_1darray_object,
         dt.timedelta,
     )
     check(assert_type(i0.total_seconds(), pd.Index), pd.Index, float)
@@ -909,37 +910,33 @@ def test_series_types_to_numpy() -> None:
         np.datetime64,
     )
     check(
-        assert_type(p_s.to_numpy(), np_1darray[np.object_]),
-        np_1darray[np.object_],
+        assert_type(p_s.to_numpy(), np_1darray_object),
+        np_1darray_object,
         dtype=pd.Period,
     )
     check(
-        assert_type(p_s.to_numpy(na_value=pd.Timestamp(1)), np_1darray[np.object_]),
-        np_1darray[np.object_],
+        assert_type(p_s.to_numpy(na_value=pd.Timestamp(1)), np_1darray_object),
+        np_1darray_object,
         dtype=pd.Period,
     )
     check(
-        assert_type(o_s.to_numpy(), np_1darray[np.object_]),
-        np_1darray[np.object_],
+        assert_type(o_s.to_numpy(), np_1darray_object),
+        np_1darray_object,
         dtype=pd.DateOffset,
     )
     check(
-        assert_type(
-            o_s.to_numpy(na_value=pd.Timedelta(days=1)), np_1darray[np.object_]
-        ),
-        np_1darray[np.object_],
+        assert_type(o_s.to_numpy(na_value=pd.Timedelta(days=1)), np_1darray_object),
+        np_1darray_object,
         dtype=pd.DateOffset,
     )
     check(
-        assert_type(i_s.to_numpy(), np_1darray[np.object_]),
-        np_1darray[np.object_],
+        assert_type(i_s.to_numpy(), np_1darray_object),
+        np_1darray_object,
         dtype=pd.Interval,
     )
     check(
-        assert_type(
-            i_s.to_numpy(na_value=pd.Timedelta(days=1)), np_1darray[np.object_]
-        ),
-        np_1darray[np.object_],
+        assert_type(i_s.to_numpy(na_value=pd.Timedelta(days=1)), np_1darray_object),
+        np_1darray_object,
         dtype=pd.Interval,
     )
 
@@ -961,13 +958,11 @@ def test_series_types_to_numpy() -> None:
     )
     check(
         assert_type(o_s.to_numpy(dtype="bytes", copy=True), np_1darray),
-        np_1darray,
-        dtype=np.bytes_,
+        np_1darray_bytes,
     )
     check(
         assert_type(i_s.to_numpy(dtype="bytes", copy=True), np_1darray),
-        np_1darray,
-        dtype=np.bytes_,
+        np_1darray_bytes,
     )
 
     # passed dtype-like with statically known generic
@@ -997,20 +992,12 @@ def test_series_types_to_numpy() -> None:
         np.int64,
     )
     check(
-        assert_type(o_s.to_numpy(dtype=np.bytes_), np_1darray[np.bytes_]),
-        np_1darray,
-        dtype=np.bytes_,
+        assert_type(o_s.to_numpy(dtype=np.bytes_), np_1darray_bytes), np_1darray_bytes
     )
     check(
-        assert_type(i_s.to_numpy(dtype=np.bytes_), np_1darray[np.bytes_]),
-        np_1darray,
-        dtype=np.bytes_,
+        assert_type(i_s.to_numpy(dtype=np.bytes_), np_1darray_bytes), np_1darray_bytes
     )
-    check(
-        assert_type(i_s.to_numpy(dtype=np.str_), np_1darray[np.str_]),
-        np_1darray,
-        dtype=np.str_,
-    )
+    check(assert_type(i_s.to_numpy(dtype=np.str_), np_1darray_str), np_1darray_str)
 
 
 def test_index_types_to_numpy() -> None:
@@ -1033,25 +1020,23 @@ def test_index_types_to_numpy() -> None:
         np.datetime64,
     )
     check(
-        assert_type(p_i.to_numpy(), np_1darray[np.object_]),
-        np_1darray[np.object_],
+        assert_type(p_i.to_numpy(), np_1darray_object),
+        np_1darray_object,
         dtype=pd.Period,
     )
     check(
-        assert_type(p_i.to_numpy(na_value=pd.Timestamp(1)), np_1darray[np.object_]),
-        np_1darray[np.object_],
+        assert_type(p_i.to_numpy(na_value=pd.Timestamp(1)), np_1darray_object),
+        np_1darray_object,
         dtype=pd.Period,
     )
     check(
-        assert_type(i_i.to_numpy(), np_1darray[np.object_]),
-        np_1darray[np.object_],
+        assert_type(i_i.to_numpy(), np_1darray_object),
+        np_1darray_object,
         dtype=pd.Interval,
     )
     check(
-        assert_type(
-            i_i.to_numpy(na_value=pd.Timedelta(days=1)), np_1darray[np.object_]
-        ),
-        np_1darray[np.object_],
+        assert_type(i_i.to_numpy(na_value=pd.Timedelta(days=1)), np_1darray_object),
+        np_1darray_object,
         dtype=pd.Interval,
     )
 
@@ -1073,8 +1058,7 @@ def test_index_types_to_numpy() -> None:
     )
     check(
         assert_type(i_i.to_numpy(dtype="bytes", copy=True), np_1darray),
-        np_1darray,
-        dtype=np.bytes_,
+        np_1darray_bytes,
     )
 
     # passed dtype-like with statically known generic
@@ -1094,9 +1078,7 @@ def test_index_types_to_numpy() -> None:
         np.int64,
     )
     check(
-        assert_type(i_i.to_numpy(dtype=np.bytes_), np_1darray[np.bytes_]),
-        np_1darray,
-        dtype=np.bytes_,
+        assert_type(i_i.to_numpy(dtype=np.bytes_), np_1darray_bytes), np_1darray_bytes
     )
 
 
