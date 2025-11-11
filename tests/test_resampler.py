@@ -2,6 +2,7 @@ from collections.abc import (
     Hashable,
     Iterator,
 )
+from typing import TypeAlias
 
 import numpy as np
 import pandas as pd
@@ -18,10 +19,16 @@ from pandas.core.resample import DatetimeIndexResampler
 from typing_extensions import assert_type
 
 from tests import (
+    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
 )
+
+if not PD_LTE_23:
+    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration]  # isort: skip
+else:
+    Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
 DR = date_range("1999-1-1", periods=365, freq="D")
 DF_ = DataFrame(np.random.standard_normal((365, 1)), index=DR)
@@ -143,6 +150,21 @@ def test_interpolate() -> None:
         assert_type(DF.resample("ME").interpolate(method="time"), DataFrame),
         DataFrame,
     )
+
+
+# TODO: remove the whole test function when the warning and ValueError in pandas-dev/pandas#62847 are removed
+def test_interpolate_inplace() -> None:
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The 'inplace' keyword in DatetimeIndexResampler.interpolate is deprecated and will be removed in a future version. resample(...).interpolate is never inplace.",
+        lower="2.99",
+    ):
+        check(
+            assert_type(DF.resample("ME").interpolate(inplace=False), DataFrame),
+            DataFrame,
+        )
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.resample("ME").interpolate(inplace=True)  # type: ignore[call-arg]  # pyright: ignore[reportArgumentType]
 
 
 def test_pipe() -> None:
