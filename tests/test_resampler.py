@@ -164,7 +164,7 @@ def test_interpolate_inplace() -> None:
             DataFrame,
         )
     if TYPE_CHECKING_INVALID_USAGE:
-        DF.resample("ME").interpolate(inplace=True)  # type: ignore[call-arg]  # pyright: ignore[reportArgumentType]
+        DF.resample("ME").interpolate(inplace=True)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
 
 
 def test_pipe() -> None:
