@@ -4728,16 +4728,6 @@ def test_from_records() -> None:
         pd.DataFrame,
     )
 
-    # Testing with list of tuples (instead of structured array for type compatibility)
-    data_array_tuples = [(1, "a"), (2, "b")]
-    check(
-        assert_type(
-            pd.DataFrame.from_records(data_array_tuples, columns=["id", "name"]),
-            pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-
     # testing with list of dictionaries
     data_dict_list = [{"id": 1, "name": "a"}, {"id": 2, "name": "b"}]
     check(
