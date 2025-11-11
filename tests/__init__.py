@@ -45,6 +45,15 @@ if TYPE_CHECKING:
         UIntDtypeArg as UIntDtypeArg,
         VoidDtypeArg as VoidDtypeArg,
         np_1darray as np_1darray,
+        np_1darray_anyint as np_1darray_anyint,
+        np_1darray_bool as np_1darray_bool,
+        np_1darray_bytes as np_1darray_bytes,
+        np_1darray_complex as np_1darray_complex,
+        np_1darray_datetime as np_1darray_datetime,
+        np_1darray_float as np_1darray_float,
+        np_1darray_object as np_1darray_object,
+        np_1darray_str as np_1darray_str,
+        np_1darray_timedelta as np_1darray_timedelta,
         np_2darray as np_2darray,
         np_ndarray as np_ndarray,
         np_ndarray_bool as np_ndarray_bool,
@@ -55,6 +64,15 @@ else:
     _S = TypeVar("_S", bound=tuple[int, ...])
     # Separately define here so pytest works
     np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[_G]]
+    np_1darray_bool: TypeAlias = np.ndarray[tuple[int], np.bool_]
+    np_1darray_str: TypeAlias = np.ndarray[tuple[int], np.str_]
+    np_1darray_bytes: TypeAlias = np.ndarray[tuple[int], np.bytes_]
+    np_1darray_anyint: TypeAlias = np.ndarray[tuple[int], np.integer]
+    np_1darray_float: TypeAlias = np.ndarray[tuple[int], np.floating]
+    np_1darray_complex: TypeAlias = np.ndarray[tuple[int], np.complexfloating]
+    np_1darray_datetime: TypeAlias = np.ndarray[tuple[int], np.datetime64]
+    np_1darray_timedelta: TypeAlias = np.ndarray[tuple[int], np.timedelta64]
+    np_1darray_object: TypeAlias = np.ndarray[tuple[int], np.object_]
     np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[_G]]
     np_ndarray: TypeAlias = np.ndarray[_S, np.dtype[_G]]
     np_ndarray_bool: TypeAlias = npt.NDArray[np.bool_]

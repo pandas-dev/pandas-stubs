@@ -872,6 +872,15 @@ ShapeT = TypeVar("ShapeT", bound=tuple[int, ...], default=tuple[Any, ...])
 np_ndarray: TypeAlias = np.ndarray[ShapeT, np.dtype[GenericT]]
 # Numpy arrays with known shape (Do not use as argument types, only as return types)
 np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[GenericT]]
+np_1darray_bool: TypeAlias = np_1darray[np.bool_]
+np_1darray_str: TypeAlias = np_1darray[np.str_]
+np_1darray_bytes: TypeAlias = np_1darray[np.bytes_]
+np_1darray_anyint: TypeAlias = np_1darray[np.integer]
+np_1darray_float: TypeAlias = np_1darray[np.floating]
+np_1darray_complex: TypeAlias = np_1darray[np.complexfloating]
+np_1darray_datetime: TypeAlias = np_1darray[np.datetime64]
+np_1darray_timedelta: TypeAlias = np_1darray[np.timedelta64]
+np_1darray_object: TypeAlias = np_1darray[np.object_]
 np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[GenericT]]
 
 class SupportsDType(Protocol[GenericT_co]):

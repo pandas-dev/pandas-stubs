@@ -60,6 +60,15 @@ from tests import (
     check,
     ensure_clean,
     np_1darray,
+    np_1darray_anyint,
+    np_1darray_bool,
+    np_1darray_bytes,
+    np_1darray_complex,
+    np_1darray_datetime,
+    np_1darray_float,
+    np_1darray_object,
+    np_1darray_str,
+    np_1darray_timedelta,
     pytest_warns_bounded,
 )
 from tests.extension.decimal.array import DecimalDtype
@@ -2003,27 +2012,27 @@ def test_types_to_numpy() -> None:
 def test_to_numpy() -> None:
     """Test Series.to_numpy for different types."""
     s_str = pd.Series(["a", "b", "c"], dtype=str)
-    check(assert_type(s_str.to_numpy(), np_1darray[np.str_]), np_1darray, str)
+    check(assert_type(s_str.to_numpy(), np_1darray_str), np_1darray, str)
 
     s_bytes = pd.Series(["a", "b", "c"]).astype(bytes)
-    check(assert_type(s_bytes.to_numpy(), np_1darray[np.bytes_]), np_1darray, np.bytes_)
+    check(assert_type(s_bytes.to_numpy(), np_1darray_bytes), np_1darray, np.bytes_)
 
     s_bool = pd.Series([True, False])
-    check(assert_type(s_bool.to_numpy(), np_1darray[np.bool_]), np_1darray, np.bool_)
+    check(assert_type(s_bool.to_numpy(), np_1darray_bool), np_1darray, np.bool_)
 
     s_int = pd.Series([2, 3, 4])
-    check(assert_type(s_int.to_numpy(), np_1darray[np.integer]), np_1darray, np.integer)
+    check(assert_type(s_int.to_numpy(), np_1darray_anyint), np_1darray, np.integer)
 
     s_float = pd.Series([2.0, 3.54, 4.84])
     check(
-        assert_type(s_float.to_numpy(), np_1darray[np.floating]),
+        assert_type(s_float.to_numpy(), np_1darray_float),
         np_1darray,
         np.floating,
     )
 
     s_complex = pd.Series([2.0 + 2j, 3.54 + 4j, 4.84])
     check(
-        assert_type(s_complex.to_numpy(), np_1darray[np.complexfloating]),
+        assert_type(s_complex.to_numpy(), np_1darray_complex),
         np_1darray,
         np.complexfloating,
     )
@@ -2037,24 +2046,24 @@ def test_to_numpy() -> None:
         dtype="datetime64[ns]",
     )
     s_period = pd.PeriodIndex(dates, freq="M").to_series()
-    check(
-        assert_type(s_period.to_numpy(), np_1darray[np.object_]), np_1darray, pd.Period
-    )
+    check(assert_type(s_period.to_numpy(), np_1darray_object), np_1darray, pd.Period)
 
-    s8 = pd.Series(
+    s_interval = pd.Series(
         [
             pd.Interval(date, date + pd.DateOffset(days=1), closed="left")
             for date in dates
         ]
     )
-    check(assert_type(s8.to_numpy(), np_1darray[np.object_]), np_1darray, pd.Interval)
+    check(
+        assert_type(s_interval.to_numpy(), np_1darray_object), np_1darray, pd.Interval
+    )
 
-    s_interval = pd.Series([Day(1)])
-    check(assert_type(s_interval.to_numpy(), np_1darray[np.object_]), np_1darray, Day)
+    s_day = pd.Series([Day(1)])
+    check(assert_type(s_day.to_numpy(), np_1darray_object), np_1darray, Day)
 
     s_date = pd.Series(pd.date_range(start="2017-01-01", end="2017-02-01"))
     check(
-        assert_type(s_date.to_numpy(), np_1darray[np.datetime64]),
+        assert_type(s_date.to_numpy(), np_1darray_datetime),
         np_1darray,
         np.datetime64,
     )
@@ -2063,7 +2072,7 @@ def test_to_numpy() -> None:
         [pd.Timestamp.now().date(), pd.Timestamp.now().date()]
     ).diff()
     check(
-        assert_type(s_timedelta.to_numpy(), np_1darray[np.timedelta64]),
+        assert_type(s_timedelta.to_numpy(), np_1darray_timedelta),
         np_1darray,
         np.timedelta64,
     )
