@@ -49,6 +49,7 @@ from pandas._typing import (
     StrDtypeArg,
     TimedeltaDtypeArg,
     TimestampDtypeArg,
+    UIntDtypeArg,
     np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -85,7 +86,7 @@ def array(  # type: ignore[overload-overlap]
 @overload
 def array(  # type: ignore[overload-overlap]
     data: Sequence[int | np.integer | NAType | None] | np_ndarray_anyint | IntegerArray,
-    dtype: IntDtypeArg | None = None,
+    dtype: IntDtypeArg | UIntDtypeArg | None = None,
     copy: bool = True,
 ) -> IntegerArray: ...
 @overload
@@ -137,12 +138,8 @@ def array(  # type: ignore[overload-overlap]
 ) -> PeriodArray: ...
 @overload
 def array(  # type: ignore[overload-overlap]
-    data: (
-        Sequence[IntervalT | NAType | None]
-        | IntervalIndex
-        | Series[Interval]
-        | IntervalArray
-    ),
+    # float("nan") also works, but I don't know how to put it in
+    data: Sequence[IntervalT | None] | IntervalArray | IntervalIndex | Series[Interval],
     dtype: IntervalDtype | None = None,
     copy: bool = True,
 ) -> IntervalArray: ...
