@@ -18,7 +18,6 @@ from pandas.core.resample import DatetimeIndexResampler
 from typing_extensions import assert_type
 
 from tests import (
-    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     pytest_warns_bounded,
@@ -147,11 +146,8 @@ def test_interpolate() -> None:
 
 
 def test_interpolate_inplace() -> None:
-    # TODO: ValueError: Cannot interpolate inplace on a resampled object. Disable in Pandas 3.0  pandas-dev/pandas#57064
-    if PD_LTE_23:
-        check(
-            assert_type(DF.resample("ME").interpolate(inplace=True), None), type(None)
-        )
+    if TYPE_CHECKING_INVALID_USAGE:
+        DF.resample("ME").interpolate(inplace=True)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_pipe() -> None:
@@ -362,9 +358,8 @@ def test_interpolate_series() -> None:
 
 
 def test_interpolate_inplace_series() -> None:
-    # TODO: ValueError: Cannot interpolate inplace on a resampled object. Disable in Pandas 3.0  pandas-dev/pandas#57064
-    if PD_LTE_23:
-        check(assert_type(S.resample("ME").interpolate(inplace=True), None), type(None))
+    if TYPE_CHECKING_INVALID_USAGE:
+        S.resample("ME").interpolate(inplace=True)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_pipe_series() -> None:

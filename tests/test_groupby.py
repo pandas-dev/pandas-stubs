@@ -259,22 +259,12 @@ def test_frame_groupby_resample() -> None:
                 ),
                 DataFrame,
             )
-            check(
-                assert_type(GB_DF.resample("ME").interpolate(inplace=True), None),
-                type(None),
-            )
         else:
 
             def resample_interpolate(x: DataFrame) -> DataFrame:
                 return x.resample("ME").interpolate()
 
-            check(
-                assert_type(
-                    GB_DF.apply(resample_interpolate),
-                    DataFrame,
-                ),
-                DataFrame,
-            )
+            check(assert_type(GB_DF.apply(resample_interpolate), DataFrame), DataFrame)
 
             def resample_interpolate_linear(x: DataFrame) -> DataFrame:
                 return x.resample("ME").interpolate(method="linear")
@@ -426,9 +416,6 @@ def test_series_groupby_resample() -> None:
             assert_type(GB_S.resample("ME").interpolate(), "Series[float]"),
             Series,
             float,
-        )
-        check(
-            assert_type(GB_S.resample("ME").interpolate(inplace=True), None), type(None)
         )
     else:
         check(
