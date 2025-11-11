@@ -47,10 +47,14 @@ if TYPE_CHECKING:
         np_1darray as np_1darray,
         np_1darray_anyint as np_1darray_anyint,
         np_1darray_bool as np_1darray_bool,
+        np_1darray_bytes as np_1darray_bytes,
+        np_1darray_complex as np_1darray_complex,
         np_1darray_dt as np_1darray_dt,
         np_1darray_float as np_1darray_float,
         np_1darray_int64 as np_1darray_int64,
         np_1darray_intp as np_1darray_intp,
+        np_1darray_object as np_1darray_object,
+        np_1darray_str as np_1darray_str,
         np_1darray_td as np_1darray_td,
         np_2darray as np_2darray,
         np_ndarray as np_ndarray,
@@ -67,7 +71,11 @@ else:
     _S = TypeVar("_S", bound=tuple[int, ...])
     # Separately define here so pytest works
     np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[_G]]
-    np_1darray_bool: TypeAlias = np_1darray[np.bool]
+    np_1darray_bool: TypeAlias = np.ndarray[tuple[int], np.bool_]
+    np_1darray_str: TypeAlias = np.ndarray[tuple[int], np.str_]
+    np_1darray_bytes: TypeAlias = np.ndarray[tuple[int], np.bytes_]
+    np_1darray_complex: TypeAlias = np.ndarray[tuple[int], np.complexfloating]
+    np_1darray_object: TypeAlias = np.ndarray[tuple[int], np.object_]
     np_1darray_intp: TypeAlias = np_1darray[np.intp]
     np_1darray_int64: TypeAlias = np_1darray[np.int64]
     np_1darray_anyint: TypeAlias = np_1darray[np.integer]

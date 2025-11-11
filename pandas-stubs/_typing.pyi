@@ -863,6 +863,10 @@ np_ndarray_num: TypeAlias = np_ndarray[ShapeT, NpNumT]
 
 # Numpy arrays with known shape (Do not use as argument types, only as return types)
 np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[GenericT]]
+np_1darray_str: TypeAlias = np_1darray[np.str_]
+np_1darray_bytes: TypeAlias = np_1darray[np.bytes_]
+np_1darray_complex: TypeAlias = np_1darray[np.complexfloating]
+np_1darray_object: TypeAlias = np_1darray[np.object_]
 np_1darray_bool: TypeAlias = np_1darray[np.bool]
 np_1darray_intp: TypeAlias = np_1darray[np.intp]
 np_1darray_int64: TypeAlias = np_1darray[np.int64]
@@ -870,7 +874,6 @@ np_1darray_anyint: TypeAlias = np_1darray[np.integer]
 np_1darray_float: TypeAlias = np_1darray[np.floating]
 np_1darray_dt: TypeAlias = np_1darray[np.datetime64]
 np_1darray_td: TypeAlias = np_1darray[np.timedelta64]
-
 np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[GenericT]]
 
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
