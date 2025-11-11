@@ -1432,7 +1432,7 @@ def test_types_values() -> None:
         assert_type(
             pd.Series(list("aabc")).values, np_1darray | ExtensionArray | pd.Categorical
         ),
-        # TODO: ArrowStringArray after pandas-dev/pandas-stubs#1469
+        # TODO: BaseStringArray after pandas-dev/pandas-stubs#1469
         np_1darray if PD_LTE_23 else ExtensionArray,
         str,
     )
