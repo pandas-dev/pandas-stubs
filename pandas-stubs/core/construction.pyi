@@ -98,7 +98,7 @@ def array(  # type: ignore[overload-overlap]
 ) -> FloatingArray: ...
 @overload
 def array(  # type: ignore[overload-overlap]
-    data: (
+    data: (  # TODO: merge the two Sequence's after 3.0 pandas-dev/pandas#57064
         Sequence[datetime | NaTType | None]
         | Sequence[np.datetime64 | NaTType | None]
         | np_ndarray_dt
