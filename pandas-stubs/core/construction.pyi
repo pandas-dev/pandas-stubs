@@ -128,11 +128,13 @@ def array(
     copy: bool = True,
 ) -> StringArray: ...
 @overload
-def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-    data: Sequence[Period | NAType | None] | PeriodArray | PeriodIndex | Series[Period],
+def array(  # type: ignore[overload-overlap]
+    data: (
+        Sequence[Period | NaTType | None] | PeriodArray | PeriodIndex | Series[Period]
+    ),
     dtype: PeriodDtype | None = None,
     copy: bool = True,
-) -> PeriodIndex: ...
+) -> PeriodArray: ...
 @overload
 def array(  # type: ignore[overload-overlap]
     data: (
@@ -157,11 +159,11 @@ def array(
     copy: bool = True,
 ) -> NumpyExtensionArray: ...
 @overload
-def array(  # type: ignore[overload-overlap]
+def array(
     data: SparseArray | SparseIndex,
     dtype: str | np.dtype | ExtensionDtype | None = None,
     copy: bool = True,
-) -> SparseIndex: ...
+) -> SparseArray: ...
 @overload
 def array(
     data: ArrowExtensionArray,
