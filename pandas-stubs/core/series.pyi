@@ -220,10 +220,16 @@ from pandas._typing import (
     WriteBuffer,
     _T_co,
     np_1darray,
+    np_1darray_anyint,
     np_1darray_bool,
+    np_1darray_bytes,
+    np_1darray_complex,
     np_1darray_dt,
+    np_1darray_float,
     np_1darray_int64,
     np_1darray_intp,
+    np_1darray_object,
+    np_1darray_str,
     np_1darray_td,
     np_ndarray,
     np_ndarray_anyint,
@@ -4469,7 +4475,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,
-    ) -> np_1darray[np.object_]: ...
+    ) -> np_1darray_object: ...
     @overload
     def to_numpy(
         self: Series[Period],
@@ -4485,7 +4491,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,
-    ) -> np_1darray[np.object_]: ...
+    ) -> np_1darray_object: ...
     @overload
     def to_numpy(
         self: Series[BaseOffset],
@@ -4493,7 +4499,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,
-    ) -> np_1darray[np.bytes_]: ...
+    ) -> np_1darray_bytes: ...
     @overload
     def to_numpy(
         self: Series[Interval],
@@ -4501,7 +4507,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,
-    ) -> np_1darray[np.object_]: ...
+    ) -> np_1darray_object: ...
     @overload
     def to_numpy(
         self: Series[Interval],
@@ -4517,7 +4523,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,
-    ) -> np_1darray[np.integer]: ...
+    ) -> np_1darray_anyint: ...
     @overload
     def to_numpy(
         self: Series[float],
@@ -4525,7 +4531,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,
-    ) -> np_1darray[np.floating]: ...
+    ) -> np_1darray_float: ...
     @overload
     def to_numpy(
         self: Series[complex],
@@ -4533,7 +4539,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,
-    ) -> np_1darray[np.complexfloating]: ...
+    ) -> np_1darray_complex: ...
     @overload
     def to_numpy(
         self: Series[bool],
@@ -4541,7 +4547,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,
-    ) -> np_1darray[np.bool_]: ...
+    ) -> np_1darray_bool: ...
     @overload
     def to_numpy(
         self: Series[_str],
@@ -4549,7 +4555,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,
-    ) -> np_1darray[np.str_]: ...
+    ) -> np_1darray_str: ...
     @overload
     def to_numpy(
         self: Series[bytes],
@@ -4557,7 +4563,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,
-    ) -> np_1darray[np.bytes_]: ...
+    ) -> np_1darray_bytes: ...
     @overload
     def to_numpy(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
