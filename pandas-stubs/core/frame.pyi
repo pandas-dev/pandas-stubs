@@ -866,6 +866,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | None
         ),
     ) -> None: ...
+    # Extra cases not supported by  `_LocIndexerFrame.__setitem__` /
+    # `_iLocIndexerFrame.__setitem__`.
+    @overload
+    def __setitem__(
+        self,
+        idx: IndexOpsMixin | DataFrame,
+        value: Scalar | NAType | NaTType | ArrayLike | Series | list | dict | None,
+    ): ...
     @overload
     def query(
         self,
