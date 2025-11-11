@@ -425,13 +425,6 @@ def test_series_groupby_resample() -> None:
             Series,
             float,
         )
-        # TODO: This fails typing checks, and should work in 3.0, but is a bug in main pandas-dev/pandas#58690
-        # check(
-        #     assert_type(
-        #         GB_S.apply(lambda x: x.resample("ME").interpolate(inplace=True)), None
-        #     ),
-        #     type(None),
-        # )
 
     # pipe
     def g(val: Resampler[Series]) -> float:

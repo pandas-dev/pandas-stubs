@@ -98,7 +98,6 @@ class Resampler(BaseGroupBy[NDFrameT]):
         *,
         axis: Axis = ...,
         limit: int | None = ...,
-        inplace: Literal[False] = False,
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
         **kwargs: Any,

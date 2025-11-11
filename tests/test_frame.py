@@ -4447,7 +4447,7 @@ def test_to_json_mode() -> None:
         _result3 = df.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
-def test_interpolate_inplace() -> None:
+def test_interpolate() -> None:
     # GH 691
     df = pd.DataFrame({"a": range(3)})
     check(assert_type(df.interpolate(method="linear"), pd.DataFrame), pd.DataFrame)

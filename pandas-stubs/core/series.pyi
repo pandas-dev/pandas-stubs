@@ -1525,6 +1525,19 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
     ) -> Series[S1]: ...
+    @overload
+    def interpolate(
+        self,
+        method: InterpolateOptions = ...,
+        *,
+        axis: AxisIndex | None = 0,
+        limit: int | None = ...,
+        inplace: Literal[True],
+        limit_direction: Literal["forward", "backward", "both"] | None = ...,
+        limit_area: Literal["inside", "outside"] | None = ...,
+        **kwargs: Any,
+    ) -> None: ...
+    @overload
     def interpolate(
         self,
         method: InterpolateOptions = ...,

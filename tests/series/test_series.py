@@ -3213,6 +3213,17 @@ def test_to_json_mode() -> None:
         _result3 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
+def test_interpolate() -> None:
+    s = pd.Series(range(3))
+    check(assert_type(s.interpolate(method="linear"), "pd.Series[int]"), pd.Series, int)
+    check(
+        assert_type(s.interpolate(method="linear", inplace=False), "pd.Series[int]"),
+        pd.Series,
+        int,
+    )
+    check(assert_type(s.interpolate(method="linear", inplace=True), None), type(None))
+
+
 def test_groupby_diff() -> None:
     # GH 658
     s = pd.Series([1.0, 2.0, 3.0, np.nan])

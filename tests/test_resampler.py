@@ -145,11 +145,6 @@ def test_interpolate() -> None:
     )
 
 
-def test_interpolate_inplace() -> None:
-    if TYPE_CHECKING_INVALID_USAGE:
-        DF.resample("ME").interpolate(inplace=True)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-
-
 def test_pipe() -> None:
     def f(val: "DatetimeIndexResampler[DataFrame]") -> DataFrame:
         assert isinstance(val, DatetimeIndexResampler)
@@ -355,11 +350,6 @@ def test_asfreq_series() -> None:
 def test_interpolate_series() -> None:
     check(assert_type(S.resample("ME").interpolate(), Series), Series)
     check(assert_type(S.resample("ME").interpolate(method="time"), Series), Series)
-
-
-def test_interpolate_inplace_series() -> None:
-    if TYPE_CHECKING_INVALID_USAGE:
-        S.resample("ME").interpolate(inplace=True)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_pipe_series() -> None:
