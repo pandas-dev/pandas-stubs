@@ -156,7 +156,7 @@ def test_interpolate() -> None:
 def test_interpolate_inplace() -> None:
     with pytest_warns_bounded(
         Pandas4Warning,
-        "The 'inplace' keyword in DatetimeIndexResampler.interpolate is deprecated and will be removed in a future version. resample(...).interpolate is never inplace.",
+        r"The 'inplace' keyword in DatetimeIndexResampler.interpolate is deprecated and will be removed in a future version. resample\(...\).interpolate is never inplace.",
         lower="2.99",
     ):
         check(
