@@ -292,7 +292,8 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
             | ArrayLike
             | IndexOpsMixin
             | DataFrame
-            | list
+            | Sequence[Scalar]
+            | Sequence[Sequence[Scalar]]
             | Mapping[Hashable, Scalar | NAType | NaTType]
             | None
         ),
@@ -301,7 +302,17 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     def __setitem__(
         self,
         idx: tuple[_IndexSliceTuple, Hashable],
-        value: Scalar | NAType | NaTType | ArrayLike | Series | list | dict | None,
+        value: (
+            Scalar
+            | NAType
+            | NaTType
+            | ArrayLike
+            | Series
+            | Sequence[Scalar]
+            | Sequence[Sequence[Scalar]]
+            | Mapping[Hashable, Scalar | NAType | NaTType]
+            | None
+        ),
     ) -> None: ...
 
 class _iAtIndexerFrame(_iAtIndexer):
@@ -336,7 +347,8 @@ class _AtIndexerFrame(_AtIndexer):
             | ArrayLike
             | IndexOpsMixin
             | DataFrame
-            | list
+            | Sequence[Scalar]
+            | Sequence[Sequence[Scalar]]
             | Mapping[Hashable, Scalar | NAType | NaTType]
             | None
         ),
@@ -824,7 +836,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | IndexOpsMixin
             | Sequence[Scalar]
             | DataFrame
-            | np.ndarray
+            | np_ndarray
             | NAType
             | NaTType
             | Mapping[Hashable, Scalar | NAType | NaTType]
@@ -845,8 +857,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | ArrayLike
             | IndexOpsMixin
             | Sequence[Scalar]
+            | Sequence[Sequence[Scalar]]
             | DataFrame
-            | list
             | Mapping[Hashable, Scalar | NAType | NaTType]
             | None
         ),
@@ -862,7 +874,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | ArrayLike
             | IndexOpsMixin
             | Sequence[Scalar]
-            | dict
+            | Mapping[Hashable, Scalar | NAType | NaTType]
             | None
         ),
     ) -> None: ...
@@ -872,8 +884,18 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def __setitem__(
         self,
         idx: IndexOpsMixin | DataFrame,
-        value: Scalar | NAType | NaTType | ArrayLike | Series | list | dict | None,
-    ): ...
+        value: (
+            Scalar
+            | NAType
+            | NaTType
+            | ArrayLike
+            | Series
+            | Sequence[Scalar]
+            | Sequence[Sequence[Scalar]]
+            | Mapping[Hashable, Scalar | NAType | NaTType]
+            | None
+        ),
+    ) -> None: ...
     @overload
     def query(
         self,
