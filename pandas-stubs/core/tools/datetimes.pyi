@@ -26,7 +26,9 @@ from pandas._typing import (
     IgnoreRaise,
     RaiseCoerce,
     TimestampConvertibleTypes,
-    npt,
+    np_ndarray_dt,
+    np_ndarray_int64,
+    np_ndarray_str,
 )
 
 ArrayConvertible: TypeAlias = list | tuple | AnyArrayLike
@@ -100,9 +102,9 @@ def to_datetime(
         Sequence[float | date]
         | list[str]
         | tuple[float | str | date, ...]
-        | npt.NDArray[np.datetime64]
-        | npt.NDArray[np.str_]
-        | npt.NDArray[np.int_]
+        | np_ndarray_dt
+        | np_ndarray_str
+        | np_ndarray_int64
         | Index
         | ExtensionArray
     ),

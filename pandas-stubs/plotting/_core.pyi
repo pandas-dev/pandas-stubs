@@ -28,6 +28,7 @@ from pandas._typing import (
     HashableT2,
     HashableT3,
     ListLikeHashable,
+    np_ndarray_float,
     npt,
 )
 
@@ -378,7 +379,7 @@ class PlotAccessor:
             | Callable[[gaussian_kde], float]
             | None
         ) = ...,
-        ind: npt.NDArray[np.double] | int | None = ...,
+        ind: np_ndarray_float | int | None = ...,
         *,
         subplots: Literal[False] | None = ...,
         **kwargs: Any,
@@ -392,7 +393,7 @@ class PlotAccessor:
             | Callable[[gaussian_kde], float]
             | None
         ) = ...,
-        ind: npt.NDArray[np.double] | int | None = ...,
+        ind: np_ndarray_float | int | None = ...,
         *,
         subplots: Literal[True],
         **kwargs: Any,

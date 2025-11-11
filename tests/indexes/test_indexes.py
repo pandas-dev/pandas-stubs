@@ -9,7 +9,6 @@ from typing import (
 )
 
 import numpy as np
-from numpy import typing as npt
 import pandas as pd
 from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
@@ -29,6 +28,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     np_1darray,
+    np_ndarray_dt,
     pytest_warns_bounded,
 )
 
@@ -629,7 +629,7 @@ def test_interval_index_arrays() -> None:
         pd.IntervalIndex,
         pd.Interval,
     )
-    left_dt64_arr: npt.NDArray[np.datetime64] = np.array(
+    left_dt64_arr: np_ndarray_dt = np.array(
         [
             np.datetime64("2000-01-01"),
             np.datetime64("2001-01-01"),
@@ -638,7 +638,7 @@ def test_interval_index_arrays() -> None:
         ],
         dtype="datetime64[ns]",
     )
-    right_dt_arr: npt.NDArray[np.datetime64] = np.array(
+    right_dt_arr: np_ndarray_dt = np.array(
         [
             np.datetime64("2001-01-01"),
             np.datetime64("2002-01-01"),

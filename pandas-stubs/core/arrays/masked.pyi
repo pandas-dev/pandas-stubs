@@ -3,7 +3,6 @@ from typing import (
     overload,
 )
 
-import numpy as np
 from pandas.core.arrays import (
     ExtensionArray as ExtensionArray,
     ExtensionOpsMixin,
@@ -31,7 +30,7 @@ class BaseMaskedArray(ExtensionArray, ExtensionOpsMixin):
         dtype: npt.DTypeLike | None = ...,
         copy: bool = False,
         na_value: Scalar = ...,
-    ) -> np.ndarray: ...
+    ) -> np_1darray: ...
     __array_priority__: int = ...
     def __array__(
         self, dtype: NpDtype | None = None, copy: bool | None = None

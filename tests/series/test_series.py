@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import (
+    Callable,
     Hashable,
     Iterable,
     Iterator,
@@ -33,6 +34,7 @@ from pandas.api.extensions import (
 )
 from pandas.api.typing import NAType
 from pandas.core.arrays.datetimes import DatetimeArray
+from pandas.core.arrays.string_ import StringArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.window import ExponentialMovingWindow
 from pandas.core.window.expanding import Expanding
@@ -64,11 +66,12 @@ from tests import (
     np_1darray_bool,
     np_1darray_bytes,
     np_1darray_complex,
-    np_1darray_datetime,
+    np_1darray_dt,
     np_1darray_float,
     np_1darray_object,
     np_1darray_str,
-    np_1darray_timedelta,
+    np_1darray_td,
+    np_ndarray_num,
     pytest_warns_bounded,
 )
 from tests.extension.decimal.array import DecimalDtype
@@ -781,7 +784,7 @@ def test_types_value_counts() -> None:
 
 def test_types_unique() -> None:
     s = pd.Series([-10, 2, 2, 3, 10, 10])
-    check(assert_type(s.unique(), np.ndarray), np.ndarray)
+    check(assert_type(s.unique(), np_1darray), np_1darray)
 
 
 def test_types_apply() -> None:
@@ -1420,31 +1423,41 @@ def test_types_rename_axis() -> None:
 
 def test_types_values() -> None:
     check(
-        assert_type(pd.Series([1, 2, 3]).values, ExtensionArray | np.ndarray),
-        np.ndarray,
+        assert_type(
+            pd.Series([1, 2, 3]).values,
+            np_1darray | ExtensionArray | pd.Categorical,
+        ),
+        np_1darray,
+        np.integer,
     )
-    valresult_type: type[np.ndarray | ExtensionArray]
+    valresult_type: type[np_1darray | ExtensionArray | pd.Categorical]
     if PD_LTE_23:
-        valresult_type = np.ndarray
+        valresult_type = np_1darray
     else:
-        valresult_type = ExtensionArray
+        valresult_type = StringArray
     check(
-        assert_type(pd.Series(list("aabc")).values, np.ndarray | ExtensionArray),
+        assert_type(
+            pd.Series(list("aabc")).values,
+            np_1darray | ExtensionArray | pd.Categorical,
+        ),
         valresult_type,
+        str,
     )
     check(
         assert_type(
             pd.Series(list("aabc")).astype("category").values,
-            np.ndarray | ExtensionArray,
+            np_1darray | ExtensionArray | pd.Categorical,
         ),
         pd.Categorical,
+        str,
     )
     check(
         assert_type(
             pd.Series(pd.date_range("20130101", periods=3, tz="US/Eastern")).values,
-            np.ndarray | ExtensionArray,
+            np_1darray | ExtensionArray | pd.Categorical,
         ),
-        np.ndarray,
+        np_1darray,
+        np.datetime64,
     )
 
 
@@ -1580,8 +1593,8 @@ def test_types_dot() -> None:
     check(assert_type(s1 @ s2, Scalar), np.int64)
     check(assert_type(s1.dot(df1), "pd.Series[int]"), pd.Series, np.int64)
     check(assert_type(s1 @ df1, pd.Series), pd.Series)
-    check(assert_type(s1.dot(n1), np.ndarray), np.ndarray)
-    check(assert_type(s1 @ n1, np.ndarray), np.ndarray)
+    check(assert_type(s1.dot(n1), np_ndarray_num), np.ndarray)
+    check(assert_type(s1 @ n1, np_ndarray_num), np.ndarray)
 
 
 def test_series_loc_setitem() -> None:
@@ -2063,7 +2076,7 @@ def test_to_numpy() -> None:
 
     s_date = pd.Series(pd.date_range(start="2017-01-01", end="2017-02-01"))
     check(
-        assert_type(s_date.to_numpy(), np_1darray_datetime),
+        assert_type(s_date.to_numpy(), np_1darray_dt),
         np_1darray,
         np.datetime64,
     )
@@ -2072,7 +2085,7 @@ def test_to_numpy() -> None:
         [pd.Timestamp.now().date(), pd.Timestamp.now().date()]
     ).diff()
     check(
-        assert_type(s_timedelta.to_numpy(), np_1darray_timedelta),
+        assert_type(s_timedelta.to_numpy(), np_1darray_td),
         np_1darray,
         np.timedelta64,
     )
@@ -3699,13 +3712,20 @@ def test_case_when() -> None:
     c = pd.Series([6, 7, 8, 9], name="c")
     a = pd.Series([0, 0, 1, 2])
     b = pd.Series([0, 3, 4, 5])
-    r = c.case_when(
-        caselist=[
-            (a.gt(0), a),
-            (b.gt(0), b),
-        ]
-    )
-    check(assert_type(r, pd.Series), pd.Series)
+
+    c0 = [(a.gt(0), a), (b.gt(0), b)]
+    check(assert_type(c.case_when(c0), pd.Series), pd.Series)
+
+    def foo_factory(
+        thresh: int,
+    ) -> Callable[[pd.Series], pd.Series[bool] | np_1darray_bool]:
+        def foo(s: pd.Series) -> pd.Series[bool] | np_1darray_bool:
+            return s >= thresh
+
+        return foo
+
+    c1 = [(foo_factory(2), a), (foo_factory(0), b)]
+    check(assert_type(c.case_when(c1), pd.Series), pd.Series)
 
 
 def test_series_unique_timestamp() -> None:

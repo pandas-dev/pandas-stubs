@@ -22,7 +22,7 @@ from pandas._typing import (
     HashableT,
     MaskType,
     Scalar,
-    np_1darray,
+    np_1darray_intp,
     np_ndarray_anyint,
     np_ndarray_bool,
 )
@@ -62,7 +62,7 @@ class RangeIndex(_IndexSubclassBase[int, np.int64]):
     def has_duplicates(self) -> bool: ...
     def factorize(
         self, sort: bool = False, use_na_sentinel: bool = True
-    ) -> tuple[np_1darray[np.intp], RangeIndex]: ...
+    ) -> tuple[np_1darray_intp, RangeIndex]: ...
     @property
     def size(self) -> int: ...
     def all(self, *args: Any, **kwargs: Any) -> bool: ...

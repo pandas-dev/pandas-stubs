@@ -14,10 +14,14 @@ from typing import (
 
 from dateutil.relativedelta import weekday as WeekdayClass
 import numpy as np
+from numpy import typing as npt
 from pandas import Timestamp
 from typing_extensions import Self
 
-from pandas._typing import npt
+from pandas._typing import (
+    ShapeT,
+    np_ndarray,
+)
 
 from pandas.tseries.holiday import AbstractHolidayCalendar
 
@@ -37,7 +41,9 @@ class BaseOffset:
     @property
     def base(self) -> BaseOffset: ...
     @overload
-    def __add__(self, other: npt.NDArray[np.object_]) -> npt.NDArray[np.object_]: ...
+    def __add__(
+        self, other: np_ndarray[ShapeT, np.object_]
+    ) -> np_ndarray[ShapeT, np.object_]: ...
     @overload
     def __add__(self, other: _DatetimeT) -> _DatetimeT: ...  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
     @overload
@@ -47,7 +53,9 @@ class BaseOffset:
     @overload
     def __add__(self, other: _TimedeltaT) -> _TimedeltaT: ...
     @overload
-    def __radd__(self, other: npt.NDArray[np.object_]) -> npt.NDArray[np.object_]: ...
+    def __radd__(
+        self, other: np_ndarray[ShapeT, np.object_]
+    ) -> np_ndarray[ShapeT, np.object_]: ...
     @overload
     def __radd__(self, other: _DatetimeT) -> _DatetimeT: ...  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
     @overload
@@ -68,11 +76,15 @@ class BaseOffset:
     @overload
     def __rsub__(self, other: _TimedeltaT) -> _TimedeltaT: ...
     @overload
-    def __mul__(self, other: np.ndarray) -> np.ndarray: ...
+    def __mul__(
+        self, other: np_ndarray[ShapeT, np.object_]
+    ) -> np_ndarray[ShapeT, np.object_]: ...
     @overload
     def __mul__(self, other: int) -> Self: ...
     @overload
-    def __rmul__(self, other: np.ndarray) -> np.ndarray: ...
+    def __rmul__(
+        self, other: np_ndarray[ShapeT, np.object_]
+    ) -> np_ndarray[ShapeT, np.object_]: ...
     @overload
     def __rmul__(self, other: int) -> Self: ...
     def __neg__(self) -> Self: ...
