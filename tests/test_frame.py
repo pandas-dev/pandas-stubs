@@ -3770,8 +3770,10 @@ def test_to_dict_simple() -> None:
     # orient param accepting "tight" added in 1.4.0 https://pandas.pydata.org/docs/whatsnew/v1.4.0.html
     check(assert_type(data.to_dict("tight"), dict[str, list]), dict, str)
 
-    def _0(mapping: Mapping) -> None:  # pyright: ignore[reportUnusedFunction]
-        data.to_dict(into=mapping)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+    if TYPE_CHECKING_INVALID_USAGE:
+
+        def test(mapping: Mapping) -> None:  # pyright: ignore[reportUnusedFunction]
+            data.to_dict(into=mapping)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
 
     def _1() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(data.to_dict(into=defaultdict), Never)
@@ -4411,7 +4413,6 @@ def test_select_dtypes() -> None:
 
     # include and exclude shall not be both empty
     def _0() -> None:  # pyright: ignore[reportUnusedFunction]
-
         assert_never(df.select_dtypes([], []))
 
     if TYPE_CHECKING_INVALID_USAGE:
