@@ -214,6 +214,7 @@ class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
         value: (
             Scalar
             | IndexOpsMixin
+            | Sequence[Scalar]
             | DataFrame
             | np_ndarray
             | NAType
@@ -291,9 +292,9 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
             | NaTType
             | ArrayLike
             | IndexOpsMixin
-            | DataFrame
             | Sequence[Scalar]
             | Sequence[Sequence[Scalar]]
+            | DataFrame
             | Mapping[Hashable, Scalar | NAType | NaTType]
             | None
         ),
@@ -307,7 +308,7 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
             | NAType
             | NaTType
             | ArrayLike
-            | Series
+            | IndexOpsMixin
             | Sequence[Scalar]
             | Sequence[Sequence[Scalar]]
             | Mapping[Hashable, Scalar | NAType | NaTType]
@@ -874,6 +875,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | ArrayLike
             | IndexOpsMixin
             | Sequence[Scalar]
+            | Sequence[Sequence[Scalar]]
             | Mapping[Hashable, Scalar | NAType | NaTType]
             | None
         ),
