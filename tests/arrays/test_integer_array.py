@@ -13,7 +13,7 @@ def test_constructor() -> None:
     check(assert_type(pd.array([1, pd.NA, None]), IntegerArray), IntegerArray)
 
     check(
-        assert_type(  # type: ignore[assert-type]  # I do not understand
+        assert_type(  # type: ignore[assert-type] # I do not understand
             pd.array(np.array([1], np.int64)), IntegerArray
         ),
         IntegerArray,
