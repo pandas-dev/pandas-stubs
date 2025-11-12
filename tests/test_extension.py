@@ -73,8 +73,8 @@ def test_boolean_array() -> None:
     check(assert_type(arr_bool & pd.NA, BooleanArray), BooleanArray)
     check(assert_type(arr_bool & [True, False], BooleanArray), BooleanArray)
     check(assert_type(arr_bool & [np.bool(True), False], BooleanArray), BooleanArray)
-    # TODO: andas-dev/pandas#63095
-    # check(assert_type(b & [pd.NA, False])  # not working, maybe worthy reporting
+    # TODO: pandas-dev/pandas#63095
+    # check(assert_type(b & [pd.NA, False])
     check(assert_type(arr_bool & np.array([True, False]), BooleanArray), BooleanArray)
     check(assert_type(arr_bool & arr_int, BooleanArray), BooleanArray)
     check(assert_type(arr_bool & arr_bool, BooleanArray), BooleanArray)
