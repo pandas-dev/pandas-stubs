@@ -38,6 +38,7 @@ from pandas import (
     Timestamp,
 )
 from pandas.core.arraylike import OpsMixin
+from pandas.core.base import IndexOpsMixin
 from pandas.core.generic import NDFrame
 from pandas.core.groupby.generic import DataFrameGroupBy
 from pandas.core.indexers import BaseIndexer
@@ -92,6 +93,7 @@ from pandas._typing import (
     ArrayLike,
     AstypeArg,
     Axes,
+    AxesData,
     Axis,
     AxisColumn,
     AxisIndex,
@@ -197,6 +199,8 @@ class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
             | tuple[slice]
         ),
     ) -> _T: ...
+
+    # Keep in sync with `DataFrame.__setitem__`
     def __setitem__(
         self,
         idx: (
@@ -209,7 +213,8 @@ class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
         ),
         value: (
             Scalar
-            | Series
+            | IndexOpsMixin
+            | Sequence[Scalar]
             | DataFrame
             | np_ndarray
             | NAType
@@ -273,6 +278,8 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     ) -> Series: ...
     @overload
     def __getitem__(self, idx: tuple[Scalar, slice]) -> Series | _T: ...
+
+    # Keep in sync with `DataFrame.__setitem__`
     @overload
     def __setitem__(
         self,
@@ -284,9 +291,10 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
             | NAType
             | NaTType
             | ArrayLike
-            | Series
+            | IndexOpsMixin
+            | Sequence[Scalar]
+            | Sequence[Sequence[Scalar]]
             | DataFrame
-            | list
             | Mapping[Hashable, Scalar | NAType | NaTType]
             | None
         ),
@@ -295,7 +303,17 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     def __setitem__(
         self,
         idx: tuple[_IndexSliceTuple, Hashable],
-        value: Scalar | NAType | NaTType | ArrayLike | Series | list | dict | None,
+        value: (
+            Scalar
+            | NAType
+            | NaTType
+            | ArrayLike
+            | IndexOpsMixin
+            | Sequence[Scalar]
+            | Sequence[Sequence[Scalar]]
+            | Mapping[Hashable, Scalar | NAType | NaTType]
+            | None
+        ),
     ) -> None: ...
 
 class _iAtIndexerFrame(_iAtIndexer):
@@ -328,9 +346,10 @@ class _AtIndexerFrame(_AtIndexer):
             | NAType
             | NaTType
             | ArrayLike
-            | Series
+            | IndexOpsMixin
             | DataFrame
-            | list
+            | Sequence[Scalar]
+            | Sequence[Sequence[Scalar]]
             | Mapping[Hashable, Scalar | NAType | NaTType]
             | None
         ),
@@ -800,7 +819,85 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def isetitem(
         self, loc: int | Sequence[int], value: Scalar | ArrayLike | list[Any]
     ) -> None: ...
-    def __setitem__(self, key, value) -> None: ...
+
+    # Keep in sync with `_iLocIndexerFrame.__setitem__`
+    @overload
+    def __setitem__(
+        self,
+        idx: (
+            int
+            | IndexType
+            | tuple[int, int]
+            | tuple[IndexType, int]
+            | tuple[IndexType, IndexType]
+            | tuple[int, IndexType]
+        ),
+        value: (
+            Scalar
+            | IndexOpsMixin
+            | Sequence[Scalar]
+            | DataFrame
+            | np_ndarray
+            | NAType
+            | NaTType
+            | Mapping[Hashable, Scalar | NAType | NaTType]
+            | None
+        ),
+    ) -> None: ...
+    # Keep in sync with `_LocIndexerFrame.__setitem__`
+    @overload
+    def __setitem__(
+        self,
+        idx: (
+            MaskType | StrLike | _IndexSliceTuple | list[ScalarT] | IndexingInt | slice
+        ),
+        value: (
+            Scalar
+            | NAType
+            | NaTType
+            | ArrayLike
+            | IndexOpsMixin
+            | Sequence[Scalar]
+            | Sequence[Sequence[Scalar]]
+            | DataFrame
+            | Mapping[Hashable, Scalar | NAType | NaTType]
+            | None
+        ),
+    ) -> None: ...
+    @overload
+    def __setitem__(
+        self,
+        idx: tuple[_IndexSliceTuple, Hashable],
+        value: (
+            Scalar
+            | NAType
+            | NaTType
+            | ArrayLike
+            | IndexOpsMixin
+            | Sequence[Scalar]
+            | Sequence[Sequence[Scalar]]
+            | Mapping[Hashable, Scalar | NAType | NaTType]
+            | None
+        ),
+    ) -> None: ...
+    # Extra cases not supported by  `_LocIndexerFrame.__setitem__` /
+    # `_iLocIndexerFrame.__setitem__`.
+    @overload
+    def __setitem__(
+        self,
+        idx: IndexOpsMixin | DataFrame,
+        value: (
+            Scalar
+            | NAType
+            | NaTType
+            | ArrayLike
+            | IndexOpsMixin
+            | Sequence[Scalar]
+            | Sequence[Sequence[Scalar]]
+            | Mapping[Hashable, Scalar | NAType | NaTType]
+            | None
+        ),
+    ) -> None: ...
     @overload
     def query(
         self,
@@ -1917,7 +2014,11 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         **kwargs: Any,
     ) -> Series[_bool]: ...
     @final
-    def asof(self, where, subset: _str | list[_str] | None = None) -> Self: ...
+    def asof(
+        self,
+        where: Scalar | AnyArrayLike | Sequence[Scalar],
+        subset: Hashable | list[Hashable] | None = None,
+    ) -> Self: ...
     @final
     def asfreq(
         self,
@@ -2454,7 +2555,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         **kwargs: Any,
     ) -> Series: ...
     # Not actually positional, but used to handle removal of deprecated
-    def set_axis(self, labels, *, axis: Axis = ..., copy: _bool = ...) -> Self: ...
+    def set_axis(self, labels: AxesData, *, axis: Axis = 0) -> Self: ...
     def skew(
         self,
         axis: Axis | None = ...,

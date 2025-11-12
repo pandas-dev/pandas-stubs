@@ -292,6 +292,9 @@ def test_types_setitem() -> None:
     df[5] = [5, 6]
     df[["col1", "col2"]] = [[1, 2], [3, 4]]
     df[s] = [5, 6]
+    df.loc[:, s] = [5, 6]
+    df["col1"] = [5, 6]
+    df[df["col1"] > 1] = [5, 6, 7]
     df[a] = [[1, 2], [3, 4]]
     df[i] = [8, 9]
 

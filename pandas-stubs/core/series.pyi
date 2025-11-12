@@ -563,14 +563,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @final
     def __getattr__(self, name: _str) -> S1: ...
 
-    # Keep in sync with `iLocIndexerSeries.__getitem__`
+    # Keep in sync with `_iLocIndexerSeries.__getitem__`
     @overload
     def __getitem__(self, idx: IndexingInt) -> S1: ...
     @overload
     def __getitem__(
         self, idx: Index | Series | slice | np_ndarray_anyint
     ) -> Series[S1]: ...
-    # Keep in sync with `LocIndexerSeries.__getitem__`
+    # Keep in sync with `_LocIndexerSeries.__getitem__`
     @overload
     def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         self,
@@ -1552,8 +1552,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @final
     def asof(
         self,
-        where: Scalar | Sequence[Scalar],
-        subset: _str | Sequence[_str] | None = None,
+        where: Scalar | AnyArrayLike | Sequence[Scalar],
+        subset: None = None,
     ) -> Scalar | Series[S1]: ...
     @overload
     def clip(  # pyright: ignore[reportOverlappingOverload]
