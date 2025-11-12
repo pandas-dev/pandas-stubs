@@ -151,7 +151,12 @@ def array(
 ) -> Categorical: ...
 @overload
 def array(
-    data: SequenceNotStr[object] | np.typing.NDArray[np.object_] | RangeIndex,
+    data: (
+        SequenceNotStr[object]
+        | np.typing.NDArray[np.object_]
+        | NumpyExtensionArray
+        | RangeIndex
+    ),
     dtype: str | np.dtype | ExtensionDtype | None = None,
     copy: bool = True,
 ) -> NumpyExtensionArray: ...
