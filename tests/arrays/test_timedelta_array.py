@@ -20,7 +20,7 @@ def test_constructor() -> None:
     check(assert_type(pd.array([td, pd.NaT, None]), TimedeltaArray), TimedeltaArray)
 
     check(
-        assert_type(  # type: ignore[assert-type]  # I do not understand
+        assert_type(  # type: ignore[assert-type] # I do not understand
             pd.array(np.array([td], np.timedelta64)), TimedeltaArray
         ),
         TimedeltaArray,

@@ -30,7 +30,6 @@ from pandas.core.indexes.period import PeriodIndex
 from pandas.core.indexes.range import RangeIndex
 from pandas.core.indexes.timedeltas import TimedeltaIndex
 from pandas.core.series import Series
-from typing_extensions import Never
 
 from pandas._libs.interval import Interval
 from pandas._libs.missing import NAType
@@ -66,13 +65,13 @@ from pandas.core.dtypes.dtypes import (
 )
 
 @overload
-def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-    data: Sequence[Never] | Index[Never] | Series[Never],
-    dtype: str | np.dtype | ExtensionDtype | None = None,
-    copy: bool = True,
-) -> ExtensionArray: ...
-@overload
 def array(  # type: ignore[overload-overlap]
+    data: SequenceNotStr[Any] | np_ndarray | ExtensionArray | Index | Series,
+    dtype: CategoryDtypeArg,
+    copy: bool = True,
+) -> Categorical: ...
+@overload
+def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     data: Sequence[NAType | None],
     dtype: str | np.dtype | ExtensionDtype | None = None,
     copy: bool = True,
@@ -143,7 +142,7 @@ def array(  # type: ignore[overload-overlap]
     copy: bool = True,
 ) -> PeriodArray: ...
 @overload
-def array(  # type: ignore[overload-overlap]
+def array(
     # float("nan") also works, but I don't know how to put it in
     data: Sequence[IntervalT | None] | IntervalArray | IntervalIndex | Series[Interval],
     dtype: IntervalDtype | None = None,
@@ -151,13 +150,14 @@ def array(  # type: ignore[overload-overlap]
 ) -> IntervalArray: ...
 @overload
 def array(
+    # TODO: Categorical Series pandas-dev/pandas-stubs#1415
     data: Categorical | CategoricalIndex,
     dtype: CategoryDtypeArg | None = None,
     copy: bool = True,
 ) -> Categorical: ...
 @overload
 def array(
-    data: Sequence[object] | np.typing.NDArray[np.object_] | RangeIndex,
+    data: SequenceNotStr[object] | np.typing.NDArray[np.object_] | RangeIndex,
     dtype: str | np.dtype | ExtensionDtype | None = None,
     copy: bool = True,
 ) -> NumpyExtensionArray: ...
@@ -175,7 +175,7 @@ def array(
 ) -> ArrowExtensionArray: ...
 @overload
 def array(
-    data: Sequence[Any] | np_ndarray | ExtensionArray | Index[Any] | Series[Any],
+    data: SequenceNotStr[Any] | np_ndarray | ExtensionArray | Index | Series,
     dtype: str | np.dtype | ExtensionDtype | None = None,
     copy: bool = True,
 ) -> ExtensionArray: ...
