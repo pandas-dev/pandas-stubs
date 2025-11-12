@@ -547,9 +547,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         cls,
         data: (
             np_2darray
-            | Sequence[SequenceNotStr]
-            | Sequence[Mapping[str, Any]]
-            | Iterator[SequenceNotStr]
+            | Iterator[SequenceNotStr[Any]]
             | Iterator[Mapping[str, Any]]
             | Mapping[str, Any]
             | Mapping[str, SequenceNotStr[Any]]
