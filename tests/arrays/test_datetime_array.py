@@ -25,7 +25,7 @@ def test_constructor() -> None:
     check(assert_type(pd.array(dt_nat), DatetimeArray), DatetimeArray)
 
     check(
-        assert_type(  # type: ignore[assert-type]  # I do not understand
+        assert_type(  # type: ignore[assert-type] # I do not understand
             pd.array(np.array([dt], np.datetime64)), DatetimeArray
         ),
         DatetimeArray,

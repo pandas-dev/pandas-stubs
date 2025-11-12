@@ -8,26 +8,26 @@ from tests import check
 def test_constructor() -> None:
     prd = pd.Period("2023-01-01")
     check(
-        assert_type(  # type: ignore[assert-type]  # I do not understand
+        assert_type(  # type: ignore[assert-type] # I do not understand
             pd.array([prd]), PeriodArray
         ),
         PeriodArray,
     )
     check(
-        assert_type(  # type: ignore[assert-type]  # I do not understand
+        assert_type(  # type: ignore[assert-type] # I do not understand
             pd.array([prd, None]), PeriodArray
         ),
         PeriodArray,
     )
     check(
-        assert_type(  # type: ignore[assert-type]  # I do not understand
+        assert_type(  # type: ignore[assert-type] # I do not understand
             pd.array([prd, pd.NaT, None]), PeriodArray
         ),
         PeriodArray,
     )
 
     check(
-        assert_type(  # type: ignore[assert-type]  # I do not understand
+        assert_type(  # type: ignore[assert-type] # I do not understand
             pd.array(pd.array([prd])), PeriodArray
         ),
         PeriodArray,
