@@ -63,5 +63,5 @@ def test_boolean_array() -> None:
     """Test creation of and operations on BooleanArray GH1411."""
     arr = pd.array([True], dtype="boolean")
     check(assert_type(arr, BooleanArray), BooleanArray)
-    arr_and = arr.__and__(arr)
+    arr_and = arr & arr
     check(assert_type(arr_and, BooleanArray), BooleanArray)
