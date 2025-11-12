@@ -891,7 +891,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | NAType
             | NaTType
             | ArrayLike
-            | Series
+            | IndexOpsMixin
             | Sequence[Scalar]
             | Sequence[Sequence[Scalar]]
             | Mapping[Hashable, Scalar | NAType | NaTType]
