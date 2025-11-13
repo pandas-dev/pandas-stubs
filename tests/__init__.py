@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Generator
 from contextlib import (
     AbstractContextManager,
     nullcontext,
@@ -242,3 +243,14 @@ def exception_on_platform(dtype: type | str | ExtensionDtype) -> type[Exception]
     if (WINDOWS or MAC) and dtype in {"f16", "float128"}:
         return TypeError
     return None
+
+
+def get_dtype(dtype: object) -> Generator[type | str, None, None]:
+    """Extract types and string literals from a Union or Literal type."""
+    if isinstance(dtype, str):
+        yield dtype
+    elif isinstance(dtype, type):
+        yield dtype()
+    else:
+        for arg in get_args(dtype):
+            yield from get_dtype(arg)
