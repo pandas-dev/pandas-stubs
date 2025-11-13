@@ -7,25 +7,10 @@ from tests import check
 
 def test_constructor() -> None:
     itv = pd.Interval(0, 1)
-    check(
-        assert_type(  # type: ignore[assert-type] # I do not understand
-            pd.array([itv]), IntervalArray
-        ),
-        IntervalArray,
-    )
-    check(
-        assert_type(  # type: ignore[assert-type] # I do not understand
-            pd.array([itv, None]), IntervalArray
-        ),
-        IntervalArray,
-    )
+    check(assert_type(pd.array([itv]), IntervalArray), IntervalArray)
+    check(assert_type(pd.array([itv, None]), IntervalArray), IntervalArray)
 
-    check(
-        assert_type(  # type: ignore[assert-type] # I do not understand
-            pd.array(pd.array([itv])), IntervalArray
-        ),
-        IntervalArray,
-    )
+    check(assert_type(pd.array(pd.array([itv])), IntervalArray), IntervalArray)
 
     check(assert_type(pd.array(pd.Index([itv])), IntervalArray), IntervalArray)
 
