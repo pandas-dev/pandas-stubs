@@ -14,6 +14,7 @@ from pandas._typing import ArrayLike
 from tests import (
     check,
     np_1darray,
+    np_1darray_intp,
 )
 
 
@@ -50,6 +51,6 @@ def test_ea_common() -> None:
     check(assert_type(arr.view(), IntegerArray), IntegerArray)
 
     check(assert_type(arr.searchsorted(1), np.intp), np.intp)
-    check(assert_type(arr.searchsorted([1]), "np_1darray[np.intp]"), np_1darray)
+    check(assert_type(arr.searchsorted([1]), np_1darray_intp), np_1darray_intp)
     check(assert_type(arr.searchsorted(1, side="left"), np.intp), np.intp)
     check(assert_type(arr.searchsorted(1, sorter=[1, 0, 2]), np.intp), np.intp)

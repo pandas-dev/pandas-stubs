@@ -92,19 +92,6 @@ class Resampler(BaseGroupBy[NDFrameT]):
     def nearest(self, limit: int | None = ...) -> NDFrameT: ...
     @final
     def bfill(self, limit: int | None = ...) -> NDFrameT: ...
-    @overload
-    def interpolate(
-        self,
-        method: InterpolateOptions = ...,
-        *,
-        axis: Axis = ...,
-        limit: int | None = ...,
-        inplace: Literal[True],
-        limit_direction: Literal["forward", "backward", "both"] = ...,
-        limit_area: Literal["inside", "outside"] | None = ...,
-        **kwargs: Any,
-    ) -> None: ...
-    @overload
     def interpolate(
         self,
         method: InterpolateOptions = ...,

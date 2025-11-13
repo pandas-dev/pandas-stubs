@@ -3,6 +3,7 @@ import decimal
 import numpy as np
 import pandas as pd
 from pandas.arrays import IntegerArray
+from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.indexers import check_array_indexer
 from typing_extensions import assert_type
 
@@ -56,3 +57,24 @@ def test_array_indexer() -> None:
     check(assert_type(check_array_indexer(arr, 1), int), int)
 
     check(assert_type(check_array_indexer(arr, slice(0, 1, 1)), slice), slice)
+
+
+def test_boolean_array() -> None:
+    """Test creation of and operations on BooleanArray GH1411."""
+    arr = pd.array([True], dtype="boolean")
+    arr_bool = pd.array([True, False])
+    arr_int = pd.array([3, 5])
+    check(assert_type(arr, BooleanArray), BooleanArray)
+    arr_and = arr & arr
+    check(assert_type(arr_and, BooleanArray), BooleanArray)
+
+    check(assert_type(arr_bool & True, BooleanArray), BooleanArray)
+    check(assert_type(arr_bool & np.bool(True), BooleanArray), BooleanArray)
+    check(assert_type(arr_bool & pd.NA, BooleanArray), BooleanArray)
+    check(assert_type(arr_bool & [True, False], BooleanArray), BooleanArray)
+    check(assert_type(arr_bool & [np.bool(True), False], BooleanArray), BooleanArray)
+    # TODO: pandas-dev/pandas#63095
+    # check(assert_type(b & [pd.NA, False])
+    check(assert_type(arr_bool & np.array([True, False]), BooleanArray), BooleanArray)
+    check(assert_type(arr_bool & arr_int, BooleanArray), BooleanArray)
+    check(assert_type(arr_bool & arr_bool, BooleanArray), BooleanArray)

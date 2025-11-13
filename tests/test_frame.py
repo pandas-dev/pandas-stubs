@@ -79,7 +79,7 @@ else:
     _PandasNamedTuple: TypeAlias = tuple
 
 if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore  # isort: skip
+    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration]  # isort: skip
 else:
     Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
@@ -292,6 +292,9 @@ def test_types_setitem() -> None:
     df[5] = [5, 6]
     df[["col1", "col2"]] = [[1, 2], [3, 4]]
     df[s] = [5, 6]
+    df.loc[:, s] = [5, 6]
+    df["col1"] = [5, 6]
+    df[df["col1"] > 1] = [5, 6, 7]
     df[a] = [[1, 2], [3, 4]]
     df[i] = [8, 9]
 
@@ -590,10 +593,15 @@ def test_types_set_index() -> None:
     check(assert_type(df.set_index("col1"), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index("col1", drop=False), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index("col1", append=True), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(df.set_index("col1", verify_integrity=True), pd.DataFrame),
-        pd.DataFrame,
-    )
+    with pytest_warns_bounded(
+        Pandas4Warning,
+        "The 'verify_integrity' keyword in DataFrame.set_index is deprecated and will be removed in a future version. Directly check the result.index.is_unique instead.",
+        lower="2.99",
+    ):
+        check(
+            assert_type(df.set_index("col1", verify_integrity=True), pd.DataFrame),
+            pd.DataFrame,
+        )
     check(assert_type(df.set_index(["col1", "col2"]), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.set_index("col1", inplace=True), None), type(None))
     # GH 140
@@ -967,10 +975,7 @@ def test_dataframe_clip() -> None:
         assert_type(df.clip(upper=None, axis="index", inplace=True), pd.DataFrame),
         pd.DataFrame,
     )
-    check(
-        assert_type(df.clip(upper=15, axis="index", inplace=True), None),
-        type(None),
-    )
+    check(assert_type(df.clip(upper=15, axis="index", inplace=True), None), type(None))
     check(
         assert_type(df.clip(upper=pd.Series([1, 2]), axis="index", inplace=True), None),
         type(None),
@@ -3752,10 +3757,7 @@ def test_to_records() -> None:
         np.recarray,
     )
     dtypes = {"col1": np.int8, "col2": np.int16}
-    check(
-        assert_type(DF.to_records(False, dtypes), np.recarray),
-        np.recarray,
-    )
+    check(assert_type(DF.to_records(False, dtypes), np.recarray), np.recarray)
 
 
 def test_to_dict_simple() -> None:
@@ -3776,13 +3778,28 @@ def test_to_dict_simple() -> None:
         def test(mapping: Mapping) -> None:  # pyright: ignore[reportUnusedFunction]
             data.to_dict(into=mapping)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
 
+    def _1() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(data.to_dict(into=defaultdict), Never)
+
+    def _2() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(data.to_dict("records", into=defaultdict), Never)
+
+    def _3() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(data.to_dict("index", into=defaultdict), Never)
+
+    def _4() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(data.to_dict("dict", into=defaultdict), Never)
+
+    def _5() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(data.to_dict("list", into=defaultdict), Never)
+
+    def _6() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(data.to_dict("series", into=defaultdict), Never)
+
+    def _7() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(data.to_dict("split", into=defaultdict), Never)
+
+    def _8() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(data.to_dict("tight", into=defaultdict), Never)
 
 
@@ -4330,10 +4347,10 @@ def test_to_dict_index() -> None:
         assert_type(df.to_dict(orient="split", index=False), dict[str, list]), dict, str
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        check(assert_type(df.to_dict(orient="records", index=False), list[dict[Hashable, Any]]), list)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]
-        check(assert_type(df.to_dict(orient="dict", index=False), dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]
-        check(assert_type(df.to_dict(orient="series", index=False), dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]
-        check(assert_type(df.to_dict(orient="index", index=False), dict[Hashable, Any]), dict)  # type: ignore[assert-type, call-overload] # pyright: ignore[reportArgumentType,reportAssertTypeFailure,reportCallIssue]
+        _0 = df.to_dict(orient="records", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        _1 = df.to_dict(orient="dict", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        _2 = df.to_dict(orient="series", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        _3 = df.to_dict(orient="index", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
 def test_suffix_prefix_index() -> None:
@@ -4396,13 +4413,22 @@ def test_select_dtypes() -> None:
         ),
         pd.DataFrame,
     )
-    if TYPE_CHECKING_INVALID_USAGE:
-        # include and exclude shall not be both empty
+
+    # include and exclude shall not be both empty
+    def _0() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_never(df.select_dtypes([], []))
-        assert_never(df.select_dtypes())
-        # str like dtypes are not allowed
+
+    if TYPE_CHECKING_INVALID_USAGE:
+        _1 = df.select_dtypes()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+
+    # str like dtypes are not allowed
+    def _2() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_never(df.select_dtypes(str))
+
+    def _3() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_never(df.select_dtypes(exclude=str))
+
+    def _4() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_never(df.select_dtypes(None, str))
 
 
@@ -4424,7 +4450,7 @@ def test_to_json_mode() -> None:
         _result3 = df.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
 
 
-def test_interpolate_inplace() -> None:
+def test_interpolate() -> None:
     # GH 691
     df = pd.DataFrame({"a": range(3)})
     check(assert_type(df.interpolate(method="linear"), pd.DataFrame), pd.DataFrame)
@@ -4437,7 +4463,9 @@ def test_interpolate_inplace() -> None:
 
 def test_getitem_generator() -> None:
     # GH 685
-    check(assert_type(DF[(f"col{i+1}" for i in range(2))], pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(DF[(f"col{i + 1}" for i in range(2))], pd.DataFrame), pd.DataFrame
+    )
 
 
 def test_getitem_dict_keys() -> None:
@@ -4589,7 +4617,6 @@ def test_hashable_args() -> None:
     test = ["test"]
 
     with ensure_clean() as path:
-
         df.to_stata(path, version=117, convert_strl=test)
         df.to_stata(path, version=117, convert_strl=["test"])
 
@@ -4714,7 +4741,6 @@ def test_unstack() -> None:
 
 
 def test_from_records() -> None:
-
     # test with np.ndarray
     arr = np.array([[1, "a"], [2, "b"]], dtype=object).reshape(2, 2)
     check(assert_type(pd.DataFrame.from_records(arr), pd.DataFrame), pd.DataFrame)
