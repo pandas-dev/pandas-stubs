@@ -4755,7 +4755,7 @@ def test_from_records() -> None:
         pd.DataFrame,
     )
 
-    # testing with an iterator of tuples
+    # testing with an iterable of tuples
     check(
         assert_type(
             pd.DataFrame.from_records(iter(data_tuples), columns=["id", "name"]),
@@ -4783,7 +4783,7 @@ def test_from_records() -> None:
         pd.DataFrame,
     )
 
-    # test with an iterator of dictionaries
+    # test with an iterable of dictionaries
     check(
         assert_type(
             pd.DataFrame.from_records(iter(data_dict_list), columns=["id", "name"]),
