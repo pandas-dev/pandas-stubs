@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Generator
 from contextlib import (
     AbstractContextManager,
     nullcontext,
@@ -33,6 +34,7 @@ from pandas.core.dtypes.base import ExtensionDtype
 if TYPE_CHECKING:
     from pandas._typing import (
         BooleanDtypeArg as BooleanDtypeArg,
+        BuiltinBooleanDtypeArg as BuiltinBooleanDtypeArg,
         BuiltinDtypeArg as BuiltinDtypeArg,
         BytesDtypeArg as BytesDtypeArg,
         CategoryDtypeArg as CategoryDtypeArg,
@@ -672,3 +674,14 @@ def pytest_warns_bounded(
 
 def is_dtype_invalid_for_platform(dtype: type | str | ExtensionDtype) -> bool:
     return (WINDOWS or MAC_ARM) and dtype in {"f16", "float128"}
+
+
+def get_dtype(dtype: object) -> Generator[type | str, None, None]:
+    """Extract types and string literals from a Union or Literal type."""
+    if isinstance(dtype, str):
+        yield dtype
+    elif isinstance(dtype, type):
+        yield dtype()
+    else:
+        for arg in get_args(dtype):
+            yield from get_dtype(arg)
