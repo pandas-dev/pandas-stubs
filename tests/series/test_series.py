@@ -2222,7 +2222,7 @@ def test_pandera_generic() -> None:
 
     class MySeries(pd.Series, Generic[T]):
         def __new__(cls, *args: Any, **kwargs: Any) -> Self:
-            return super().__new__(cls, *args, **kwargs)
+            return super().__new__(cls)  # type: ignore[return-value] # pyright: ignore[reportReturnType]
 
     def func() -> MySeries[float]:
         return MySeries[float]([1, 2, 3])
