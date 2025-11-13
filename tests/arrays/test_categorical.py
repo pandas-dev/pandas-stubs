@@ -9,9 +9,7 @@ from tests import check
 def test_constructor() -> None:
     check(assert_type(pd.array(["🐼"], dtype="category"), Categorical), Categorical)
     check(
-        assert_type(  # type: ignore[assert-type] # I do not understand
-            pd.array(np.array(["🐼"]), dtype="category"), Categorical
-        ),
+        assert_type(pd.array(np.array(["🐼"]), dtype="category"), Categorical),
         Categorical,
     )
     check(
@@ -32,9 +30,7 @@ def test_constructor() -> None:
         Categorical,
     )
     check(
-        assert_type(  # type: ignore[assert-type] # I do not understand
-            pd.array(pd.Index(["🐼"], dtype="category")), Categorical
-        ),
+        assert_type(pd.array(pd.Index(["🐼"], dtype="category")), Categorical),
         Categorical,
     )
     # TODO: Categorical Series pandas-dev/pandas-stubs#1415
