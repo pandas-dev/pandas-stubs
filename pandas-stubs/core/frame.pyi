@@ -566,10 +566,10 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         cls,
         data: (
             np_2darray
-            | Sequence[SequenceNotStr]
-            | Sequence[Mapping[str, Any]]
-            | Mapping[str, Any]
-            | Mapping[str, SequenceNotStr[Any]]
+            | Iterable[SequenceNotStr[Any]]
+            | Iterable[Mapping[HashableT, Any]]
+            | Mapping[HashableT, Any]
+            | Mapping[HashableT, SequenceNotStr[Any]]
         ),
         index: str | Axes | None = None,
         exclude: ListLike | None = None,

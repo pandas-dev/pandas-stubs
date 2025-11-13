@@ -4755,20 +4755,19 @@ def test_from_records() -> None:
         pd.DataFrame,
     )
 
-    # testing with pd.Index as columns parameter
+    # testing with an iterable of tuples
     check(
         assert_type(
-            pd.DataFrame.from_records(data_tuples, columns=pd.Index(["id", "name"])),
+            pd.DataFrame.from_records(iter(data_tuples), columns=["id", "name"]),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
 
-    # Testing with list of tuples (instead of structured array for type compatibility)
-    data_array_tuples = [(1, "a"), (2, "b")]
+    # testing with pd.Index as columns parameter
     check(
         assert_type(
-            pd.DataFrame.from_records(data_array_tuples, columns=["id", "name"]),
+            pd.DataFrame.from_records(data_tuples, columns=pd.Index(["id", "name"])),
             pd.DataFrame,
         ),
         pd.DataFrame,
@@ -4779,6 +4778,15 @@ def test_from_records() -> None:
     check(
         assert_type(
             pd.DataFrame.from_records(data_dict_list, columns=["id", "name"]),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+
+    # test with an iterable of dictionaries
+    check(
+        assert_type(
+            pd.DataFrame.from_records(iter(data_dict_list), columns=["id", "name"]),
             pd.DataFrame,
         ),
         pd.DataFrame,
