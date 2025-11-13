@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import (
+    Callable,
+    Generator,
+)
 from contextlib import (
     AbstractContextManager,
     nullcontext,
@@ -35,6 +38,7 @@ from pandas.core.dtypes.base import ExtensionDtype
 if TYPE_CHECKING:
     from pandas._typing import (
         BooleanDtypeArg as BooleanDtypeArg,
+        BuiltinBooleanDtypeArg as BuiltinBooleanDtypeArg,
         BuiltinDtypeArg as BuiltinDtypeArg,
         BytesDtypeArg as BytesDtypeArg,
         CategoryDtypeArg as CategoryDtypeArg,
@@ -681,3 +685,14 @@ def skip_platform(
         with pytest.raises(TypeError):
             raise_type_error()
         pytest.skip(f"{system} does not support {dtype}")
+
+
+def get_dtype(dtype: object) -> Generator[type | str, None, None]:
+    """Extract types and string literals from a Union or Literal type."""
+    if isinstance(dtype, str):
+        yield dtype
+    elif isinstance(dtype, type):
+        yield dtype()
+    else:
+        for arg in get_args(dtype):
+            yield from get_dtype(arg)
