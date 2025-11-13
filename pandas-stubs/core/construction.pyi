@@ -21,6 +21,7 @@ from pandas.core.arrays.numpy_ import NumpyExtensionArray
 from pandas.core.arrays.period import PeriodArray
 from pandas.core.arrays.sparse.array import SparseArray
 from pandas.core.arrays.string_ import StringArray
+from pandas.core.arrays.string_arrow import ArrowStringArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.category import CategoricalIndex
@@ -39,16 +40,22 @@ from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
-    BooleanDtypeArg,
+    BuiltinBooleanDtypeArg,
+    BuiltinFloatDtypeArg,
+    BuiltinIntDtypeArg,
+    BuiltinStrDtypeArg,
     CategoryDtypeArg,
-    FloatDtypeArg,
-    IntDtypeArg,
     IntervalT,
+    NumpyDtypeArg,
+    PandasBooleanDtypeArg,
+    PandasFloatDtypeArg,
+    PandasIntDtypeArg,
+    PandasStrDtypeArg,
+    PandasTimestampDtypeArg,
+    PandasUIntDtypeArg,
+    PyArrowNotStrDtypeArg,
+    PyArrowStrDtypeArg,
     SequenceNotStr,
-    StrDtypeArg,
-    TimedeltaDtypeArg,
-    TimestampDtypeArg,
-    UIntDtypeArg,
     np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
@@ -64,6 +71,12 @@ from pandas.core.dtypes.dtypes import (
     PeriodDtype,
 )
 
+# @overload
+# def array(
+#     data: SequenceNotStr[NAType | None],
+#     dtype: None = None,
+#     copy: bool = True
+# ) -> NumpyExtensionArray: ...
 @overload
 def array(  # type: ignore[overload-overlap]
     data: SequenceNotStr[Any] | np_ndarray | ExtensionArray | Index | Series,
@@ -71,21 +84,43 @@ def array(  # type: ignore[overload-overlap]
     copy: bool = True,
 ) -> Categorical: ...
 @overload
-def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
-    data: Sequence[NAType | None],
-    dtype: str | np.dtype | ExtensionDtype | None = None,
+def array(
+    # TODO: Categorical Series pandas-dev/pandas-stubs#1415
+    data: Categorical | CategoricalIndex,
+    dtype: CategoryDtypeArg | None = None,
     copy: bool = True,
-) -> NumpyExtensionArray: ...
+) -> Categorical: ...
+@overload
+def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    data: (
+        Sequence[Period | NaTType | None] | PeriodArray | PeriodIndex | Series[Period]
+    ),
+    dtype: PeriodDtype | None = None,
+    copy: bool = True,
+) -> PeriodArray: ...
 @overload
 def array(  # type: ignore[overload-overlap]
+    # float("nan") also works, but I don't know how to put it in
+    data: Sequence[IntervalT | None] | IntervalArray | IntervalIndex | Series[Interval],
+    dtype: IntervalDtype | None = None,
+    copy: bool = True,
+) -> IntervalArray: ...
+@overload
+def array(
+    data: SparseArray | SparseIndex,
+    dtype: str | np.dtype | ExtensionDtype | None = None,
+    copy: bool = True,
+) -> SparseArray: ...
+@overload
+def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     data: Sequence[bool | np.bool | NAType | None] | np_ndarray_bool | BooleanArray,
-    dtype: BooleanDtypeArg | None = None,
+    dtype: BuiltinBooleanDtypeArg | PandasBooleanDtypeArg | None = None,
     copy: bool = True,
 ) -> BooleanArray: ...
 @overload
 def array(  # type: ignore[overload-overlap]
     data: Sequence[int | np.integer | NAType | None] | np_ndarray_anyint | IntegerArray,
-    dtype: IntDtypeArg | UIntDtypeArg | None = None,
+    dtype: BuiltinIntDtypeArg | PandasIntDtypeArg | PandasUIntDtypeArg | None = None,
     copy: bool = True,
 ) -> IntegerArray: ...
 @overload
@@ -93,7 +128,7 @@ def array(  # type: ignore[overload-overlap]
     data: (
         Sequence[float | np.floating | NAType | None] | np_ndarray_float | FloatingArray
     ),
-    dtype: FloatDtypeArg | None = None,
+    dtype: BuiltinFloatDtypeArg | PandasFloatDtypeArg | None = None,
     copy: bool = True,
 ) -> FloatingArray: ...
 @overload
@@ -106,11 +141,11 @@ def array(  # type: ignore[overload-overlap]
         | DatetimeIndex
         | Series[Timestamp]
     ),
-    dtype: TimestampDtypeArg | None = None,
+    dtype: PandasTimestampDtypeArg | None = None,
     copy: bool = True,
 ) -> DatetimeArray: ...
 @overload
-def array(  # type: ignore[overload-overlap]
+def array(
     data: (
         Sequence[timedelta | np.timedelta64 | NaTType | None]
         | np_ndarray_td
@@ -118,63 +153,42 @@ def array(  # type: ignore[overload-overlap]
         | TimedeltaIndex
         | Series[Timedelta]
     ),
-    dtype: TimedeltaDtypeArg | None = None,
+    dtype: None = None,
     copy: bool = True,
 ) -> TimedeltaArray: ...
 @overload
-def array(
+def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     data: SequenceNotStr[str | np.str_ | NAType | None] | np_ndarray_str | StringArray,
-    dtype: StrDtypeArg | None = None,
+    dtype: BuiltinStrDtypeArg | PandasStrDtypeArg | None = None,
     copy: bool = True,
 ) -> StringArray: ...
 @overload
 def array(  # type: ignore[overload-overlap]
     data: (
-        Sequence[Period | NaTType | None] | PeriodArray | PeriodIndex | Series[Period]
+        SequenceNotStr[str | np.str_ | NAType | None]
+        | np_ndarray_str
+        | StringArray
+        | ArrowStringArray
     ),
-    dtype: PeriodDtype | None = None,
+    dtype: PyArrowStrDtypeArg | None = None,
     copy: bool = True,
-) -> PeriodArray: ...
+) -> ArrowStringArray: ...
 @overload
 def array(
-    # float("nan") also works, but I don't know how to put it in
-    data: Sequence[IntervalT | None] | IntervalArray | IntervalIndex | Series[Interval],
-    dtype: IntervalDtype | None = None,
-    copy: bool = True,
-) -> IntervalArray: ...
-@overload
-def array(
-    # TODO: Categorical Series pandas-dev/pandas-stubs#1415
-    data: Categorical | CategoricalIndex,
-    dtype: CategoryDtypeArg | None = None,
-    copy: bool = True,
-) -> Categorical: ...
-@overload
-def array(
-    data: (
-        SequenceNotStr[object]
-        | np.typing.NDArray[np.object_]
-        | NumpyExtensionArray
-        | RangeIndex
-    ),
-    dtype: str | np.dtype | ExtensionDtype | None = None,
+    data: SequenceNotStr[object] | np_ndarray | NumpyExtensionArray | RangeIndex,
+    dtype: NumpyDtypeArg | None = None,
     copy: bool = True,
 ) -> NumpyExtensionArray: ...
 @overload
 def array(
-    data: SparseArray | SparseIndex,
-    dtype: str | np.dtype | ExtensionDtype | None = None,
-    copy: bool = True,
-) -> SparseArray: ...
-@overload
-def array(
     data: ArrowExtensionArray,
-    dtype: str | np.dtype | ExtensionDtype | None = None,
+    dtype: PyArrowNotStrDtypeArg | None = None,
     copy: bool = True,
 ) -> ArrowExtensionArray: ...
-@overload
-def array(
-    data: SequenceNotStr[Any] | np_ndarray | ExtensionArray | Index | Series,
-    dtype: str | np.dtype | ExtensionDtype | None = None,
-    copy: bool = True,
-) -> ExtensionArray: ...
+
+# @overload
+# def array(
+#     data: SequenceNotStr[Any] | np_ndarray | ExtensionArray | Index | Series,
+#     dtype: str | np.dtype | ExtensionDtype | None = None,
+#     copy: bool = True,
+# ) -> ExtensionArray: ...
