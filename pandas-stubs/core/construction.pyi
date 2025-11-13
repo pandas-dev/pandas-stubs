@@ -40,7 +40,6 @@ from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
-    BuiltinBooleanDtypeArg,
     BuiltinFloatDtypeArg,
     BuiltinIntDtypeArg,
     BuiltinStrDtypeArg,
@@ -120,7 +119,7 @@ def array(  # type: ignore[overload-overlap]
         | Index[bool]
         | Series[int]
     ),
-    dtype: BuiltinBooleanDtypeArg | PandasBooleanDtypeArg | None = None,
+    dtype: PandasBooleanDtypeArg | None = None,
     copy: bool = True,
 ) -> BooleanArray: ...
 @overload
