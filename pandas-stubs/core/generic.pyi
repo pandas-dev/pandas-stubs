@@ -470,3 +470,10 @@ class NDFrame(indexing.IndexingMixin):
     ) -> DatetimeIndexResampler[Self]: ...  # pyrefly: ignore[bad-specialization]
     @final
     def take(self, indices: TakeIndexer, axis: Axis = 0, **kwargs: Any) -> Self: ...
+    def xs(
+        self,
+        key: IndexLabel,
+        axis: Axis = 0,
+        level: IndexLabel | None = None,
+        drop_level: _bool = True,
+    ) -> Self | Series: ...

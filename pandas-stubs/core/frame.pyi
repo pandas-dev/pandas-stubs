@@ -2789,14 +2789,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     # Move from generic because Series is Generic and it returns Series[bool] there
     @final
     def __invert__(self) -> Self: ...
-    @final
-    def xs(
-        self,
-        key: Hashable,
-        axis: Axis = 0,
-        level: Level | None = None,
-        drop_level: _bool = True,
-    ) -> Self | Series: ...
     # floordiv overload
     def __floordiv__(
         self, other: float | DataFrame | Series[int] | Series[float] | Sequence[float]
