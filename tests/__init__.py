@@ -690,7 +690,8 @@ def get_dtype(dtype: object) -> Generator[type | str, None, None]:
     """Extract types and string literals from a Union or Literal type."""
     if isinstance(dtype, str):
         yield dtype
-    elif isinstance(dtype, type):
+    elif isinstance(dtype, type) and not str(dtype).startswith("type["):
+        # isinstance(type[bool], type) in py310, but not in newer versions
         yield dtype() if "pandas" in str(dtype) else dtype
     else:
         for arg in get_args(dtype):
