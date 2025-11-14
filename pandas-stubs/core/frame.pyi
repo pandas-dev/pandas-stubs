@@ -1961,7 +1961,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def sub(
         self,
         other: complex | ListLike | DataFrame,
-        axis: Axis | None = ...,
+        axis: Axis = "columns",
         level: Level | None = None,
         fill_value: float | None = None,
     ) -> Self: ...
@@ -2054,7 +2054,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def bfill(
         self,
         *,
-        axis: Axis | None = ...,
+        axis: Axis | None = None,
         inplace: Literal[True],
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
@@ -2074,7 +2074,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         lower: float | None = ...,
         upper: float | None = ...,
         *,
-        axis: Axis = ...,
+        axis: Axis | None = ...,
         inplace: Literal[False] = False,
         **kwargs: Any,
     ) -> Self: ...
@@ -2104,7 +2104,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         lower: None = None,
         upper: None = None,
         *,
-        axis: Axis = ...,
+        axis: Axis | None = ...,
         inplace: Literal[True],
         **kwargs: Any,
     ) -> Self: ...
@@ -2114,7 +2114,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         lower: float | None = ...,
         upper: float | None = ...,
         *,
-        axis: Axis = ...,
+        axis: Axis | None = ...,
         inplace: Literal[True],
         **kwargs: Any,
     ) -> None: ...
