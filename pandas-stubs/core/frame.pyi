@@ -1965,6 +1965,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: Level | None = None,
         fill_value: float | None = None,
     ) -> Self: ...
+    subtract = sub
     def __rsub__(self, other: Any) -> Self: ...
     def rsub(
         self,
@@ -2183,6 +2184,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         fill_value: float | None = None,
     ) -> Self: ...
     div = truediv
+    divide = truediv
     @final
     def droplevel(self, level: Level | list[Level], axis: Axis = 0) -> Self: ...
     def eq(
@@ -2397,6 +2399,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: Level | None = None,
         fill_value: float | None = None,
     ) -> Self: ...
+    multiply = mul
     def ne(
         self,
         other: complex | ListLike | DataFrame,
@@ -2416,13 +2419,13 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def pow(
         self,
         other: complex | ListLike | DataFrame,
-        axis: Axis | None = ...,
+        axis: Axis | None = "columns",
         level: Level | None = None,
         fill_value: float | None = None,
     ) -> Self: ...
     def prod(
         self,
-        axis: Axis | None = ...,
+        axis: Axis | None = "columns",
         skipna: _bool | None = True,
         numeric_only: _bool = False,
         min_count: int = 0,
@@ -2430,7 +2433,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Series: ...
     def product(
         self,
-        axis: Axis | None = ...,
+        axis: Axis | None = "columns",
         skipna: _bool = True,
         numeric_only: _bool = False,
         min_count: int = 0,
