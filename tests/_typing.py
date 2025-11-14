@@ -8,11 +8,13 @@
 
 from pandas._typing import (
     BooleanDtypeArg,
+    BuiltinDtypeArg,
     BytesDtypeArg,
     CategoryDtypeArg,
     ComplexDtypeArg,
     FloatDtypeArg,
     IntDtypeArg,
+    NumpyNotTimeDtypeArg,
     ObjectDtypeArg,
     PandasAstypeComplexDtypeArg,
     PandasAstypeFloatDtypeArg,
@@ -62,6 +64,8 @@ __all__ = [
     "ComplexDtypeArg",
     "IntDtypeArg",
     "np_ndarray_str",
+    "BuiltinDtypeArg",
+    "NumpyNotTimeDtypeArg",
     "ObjectDtypeArg",
     "PandasAstypeComplexDtypeArg",
     "PandasAstypeTimedeltaDtypeArg",

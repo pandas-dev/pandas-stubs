@@ -24,12 +24,8 @@ def test_constructor() -> None:
     dt_nat = cast(list[np.datetime64 | NaTType], [np_dt, pd.NaT])
     check(assert_type(pd.array(dt_nat), DatetimeArray), DatetimeArray)
 
-    check(
-        assert_type(  # type: ignore[assert-type] # I do not understand
-            pd.array(np.array([dt], np.datetime64)), DatetimeArray
-        ),
-        DatetimeArray,
-    )
+    np_arr = np.array([dt], np.datetime64)
+    check(assert_type(pd.array(np_arr), DatetimeArray), DatetimeArray)
 
     check(assert_type(pd.array(pd.array([dt])), DatetimeArray), DatetimeArray)
 
