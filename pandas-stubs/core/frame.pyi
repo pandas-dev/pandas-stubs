@@ -2429,13 +2429,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         ascending: _bool = True,
         pct: _bool = False,
     ) -> Self: ...
-    def rdiv(
-        self,
-        other: complex | ListLike | DataFrame,
-        axis: Axis = "columns",
-        level: Level | None = None,
-        fill_value: float | None = None,
-    ) -> Self: ...
     @final
     def reindex_like(
         self,
@@ -2548,6 +2541,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         level: Level | None = None,
         fill_value: float | None = None,
     ) -> Self: ...
+    rdiv = rtruediv
     @final
     def sample(
         self,
