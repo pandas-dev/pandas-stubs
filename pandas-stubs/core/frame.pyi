@@ -2074,7 +2074,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         lower: float | None = ...,
         upper: float | None = ...,
         *,
-        axis: Axis | None = None,
+        axis: Axis = ...,
         inplace: Literal[False] = False,
         **kwargs: Any,
     ) -> Self: ...
@@ -2084,7 +2084,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         lower: AnyArrayLike = ...,
         upper: AnyArrayLike | None = ...,
         *,
-        axis: Axis | None = None,
+        axis: Axis = ...,
         inplace: Literal[False] = False,
         **kwargs: Any,
     ) -> Self: ...
@@ -2094,7 +2094,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         lower: AnyArrayLike | None = ...,
         upper: AnyArrayLike = ...,
         *,
-        axis: Axis | None = None,
+        axis: Axis = ...,
         inplace: Literal[False] = False,
         **kwargs: Any,
     ) -> Self: ...
@@ -2104,7 +2104,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         lower: None = None,
         upper: None = None,
         *,
-        axis: Axis | None = None,
+        axis: Axis = ...,
         inplace: Literal[True],
         **kwargs: Any,
     ) -> Self: ...
@@ -2114,7 +2114,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         lower: float | None = ...,
         upper: float | None = ...,
         *,
-        axis: Axis | None = None,
+        axis: Axis = ...,
         inplace: Literal[True],
         **kwargs: Any,
     ) -> None: ...
@@ -2124,7 +2124,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         lower: AnyArrayLike = ...,
         upper: AnyArrayLike | None = ...,
         *,
-        axis: Axis | None = None,
+        axis: Axis = ...,
         inplace: Literal[True],
         **kwargs: Any,
     ) -> None: ...
@@ -2134,7 +2134,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         lower: AnyArrayLike | None = ...,
         upper: AnyArrayLike = ...,
         *,
-        axis: Axis | None = None,
+        axis: Axis = ...,
         inplace: Literal[True],
         **kwargs: Any,
     ) -> None: ...
