@@ -1128,7 +1128,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def dropna(
         self,
         *,
-        axis: Axis = "columns",
+        axis: Axis = 0,
         how: AnyAll = ...,
         thresh: int | None = ...,
         subset: ListLikeU | Scalar | None = ...,
@@ -1139,7 +1139,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def dropna(
         self,
         *,
-        axis: Axis = "columns",
+        axis: Axis = 0,
         how: AnyAll = ...,
         thresh: int | None = ...,
         subset: ListLikeU | Scalar | None = ...,
@@ -1174,7 +1174,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         by: _str | Sequence[_str],
         *,
-        axis: Axis = "columns",
+        axis: Axis = 0,
         ascending: _bool | Sequence[_bool] = ...,
         kind: SortKind = ...,
         na_position: NaPosition = ...,
@@ -1187,7 +1187,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         by: _str | Sequence[_str],
         *,
-        axis: Axis = "columns",
+        axis: Axis = 0,
         ascending: _bool | Sequence[_bool] = ...,
         kind: SortKind = ...,
         na_position: NaPosition = ...,
@@ -1199,7 +1199,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def sort_index(
         self,
         *,
-        axis: Axis = "columns",
+        axis: Axis = 0,
         level: Level | None = None,
         ascending: _bool | Sequence[_bool] = ...,
         kind: SortKind = ...,
@@ -1213,7 +1213,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def sort_index(
         self,
         *,
-        axis: Axis = "columns",
+        axis: Axis = 0,
         level: Level | list[int] | list[_str] | None = ...,
         ascending: _bool | Sequence[_bool] = ...,
         kind: SortKind = ...,
@@ -1515,28 +1515,28 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def agg(  # pyright: ignore[reportOverlappingOverload]
         self,
         func: AggFuncTypeBase | AggFuncTypeDictSeries,
-        axis: Axis = "columns",
+        axis: Axis = 0,
         **kwargs: Any,
     ) -> Series: ...
     @overload
     def agg(
         self,
         func: list[AggFuncTypeBase] | AggFuncTypeDictFrame = ...,
-        axis: Axis = "columns",
+        axis: Axis = 0,
         **kwargs: Any,
     ) -> Self: ...
     @overload
     def aggregate(  # pyright: ignore[reportOverlappingOverload]
         self,
         func: AggFuncTypeBase | AggFuncTypeDictSeries,
-        axis: Axis = "columns",
+        axis: Axis = 0,
         **kwargs: Any,
     ) -> Series: ...
     @overload
     def aggregate(
         self,
         func: list[AggFuncTypeBase] | AggFuncTypeDictFrame,
-        axis: Axis = "columns",
+        axis: Axis = 0,
         **kwargs: Any,
     ) -> Self: ...
     def transform(
@@ -1588,7 +1588,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         # Use S2 (TypeVar without `default=Any`) instead of S1 due to https://github.com/python/mypy/issues/19182.
         f: Callable[..., S2 | NAType],
-        axis: Axis = "columns",
+        axis: Axis = 0,
         raw: _bool = ...,
         args: Any = ...,
         *,
@@ -1599,7 +1599,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def apply(
         self,
         f: Callable[..., ListLikeExceptSeriesAndStr | Series | Mapping[Any, Any]],
-        axis: Axis = "columns",
+        axis: Axis = 0,
         raw: _bool = ...,
         args: Any = ...,
         *,
@@ -1610,7 +1610,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def apply(
         self,
         f: Callable[..., ListLikeExceptSeriesAndStr | Mapping[Any, Any]],
-        axis: Axis = "columns",
+        axis: Axis = 0,
         raw: _bool = ...,
         args: Any = ...,
         *,
@@ -1623,7 +1623,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         f: Callable[
             ..., ListLikeExceptSeriesAndStr | Series | Scalar | Mapping[Any, Any]
         ],
-        axis: Axis = "columns",
+        axis: Axis = 0,
         raw: _bool = ...,
         args: Any = ...,
         *,
@@ -1636,7 +1636,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def apply(
         self,
         f: Callable[..., Series],
-        axis: AxisIndex = ...,
+        axis: AxisIndex = 0,
         raw: _bool = ...,
         args: Any = ...,
         *,
@@ -1769,7 +1769,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def quantile(
         self,
         q: float = ...,
-        axis: Axis = "columns",
+        axis: Axis = 0,
         numeric_only: _bool = ...,
         interpolation: QuantileInterpolation = ...,
         method: CalculationMethod = ...,
@@ -1778,7 +1778,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def quantile(
         self,
         q: Sequence[float] | np_ndarray_float,
-        axis: Axis = "columns",
+        axis: Axis = 0,
         numeric_only: _bool = ...,
         interpolation: QuantileInterpolation = ...,
         method: CalculationMethod = ...,
@@ -1990,7 +1990,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def all(
         self,
-        axis: Axis = "columns",
+        axis: Axis = 0,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
         **kwargs: Any,
@@ -2008,7 +2008,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def any(
         self,
         *,
-        axis: Axis = "columns",
+        axis: Axis = 0,
         bool_only: _bool | None = ...,
         skipna: _bool = ...,
         **kwargs: Any,
@@ -2063,7 +2063,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def bfill(
         self,
         *,
-        axis: Axis | None = ...,
+        axis: Axis | None = None,
         inplace: Literal[False] = False,
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
@@ -2074,7 +2074,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         lower: float | None = ...,
         upper: float | None = ...,
         *,
-        axis: Axis | None = ...,
+        axis: Axis | None = None,
         inplace: Literal[False] = False,
         **kwargs: Any,
     ) -> Self: ...
@@ -2084,7 +2084,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         lower: AnyArrayLike = ...,
         upper: AnyArrayLike | None = ...,
         *,
-        axis: Axis = "columns",
+        axis: Axis | None = None,
         inplace: Literal[False] = False,
         **kwargs: Any,
     ) -> Self: ...
@@ -2094,7 +2094,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         lower: AnyArrayLike | None = ...,
         upper: AnyArrayLike = ...,
         *,
-        axis: Axis = "columns",
+        axis: Axis | None = None,
         inplace: Literal[False] = False,
         **kwargs: Any,
     ) -> Self: ...
@@ -2104,7 +2104,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         lower: None = None,
         upper: None = None,
         *,
-        axis: Axis | None = ...,
+        axis: Axis | None = None,
         inplace: Literal[True],
         **kwargs: Any,
     ) -> Self: ...
@@ -2114,7 +2114,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         lower: float | None = ...,
         upper: float | None = ...,
         *,
-        axis: Axis | None = ...,
+        axis: Axis | None = None,
         inplace: Literal[True],
         **kwargs: Any,
     ) -> None: ...
@@ -2124,7 +2124,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         lower: AnyArrayLike = ...,
         upper: AnyArrayLike | None = ...,
         *,
-        axis: Axis = "columns",
+        axis: Axis | None = None,
         inplace: Literal[True],
         **kwargs: Any,
     ) -> None: ...
@@ -2134,7 +2134,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         lower: AnyArrayLike | None = ...,
         upper: AnyArrayLike = ...,
         *,
-        axis: Axis = "columns",
+        axis: Axis | None = None,
         inplace: Literal[True],
         **kwargs: Any,
     ) -> None: ...
@@ -2275,7 +2275,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         method: InterpolateOptions = ...,
         *,
-        axis: Axis = "columns",
+        axis: Axis = 0,
         limit: int | None = ...,
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
@@ -2287,7 +2287,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         method: InterpolateOptions = ...,
         *,
-        axis: Axis = "columns",
+        axis: Axis = 0,
         limit: int | None = ...,
         limit_direction: Literal["forward", "backward", "both"] = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
@@ -2597,7 +2597,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def squeeze(self, axis: Axis | None = None) -> DataFrame | Series | Scalar: ...
     def std(
         self,
-        axis: Axis = "columns",
+        axis: Axis | None = 0,
         skipna: _bool = True,
         ddof: int = 1,
         numeric_only: _bool = False,
@@ -2605,7 +2605,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Series: ...
     def sum(
         self,
-        axis: Axis = 0,
+        axis: Axis | None = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
         min_count: int = 0,
@@ -2765,7 +2765,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def var(
         self,
-        axis: Axis = "columns",
+        axis: Axis | None = 0,
         skipna: _bool | None = True,
         ddof: int = 1,
         numeric_only: _bool = False,
