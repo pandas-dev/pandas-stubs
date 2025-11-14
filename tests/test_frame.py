@@ -826,6 +826,7 @@ def test_types_max() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(assert_type(df.max(), pd.Series), pd.Series)
     check(assert_type(df.max(axis=0), pd.Series), pd.Series)
+    check(assert_type(df.max(axis=None), Scalar), np.int64)
 
 
 def test_types_quantile() -> None:
