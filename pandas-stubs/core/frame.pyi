@@ -2431,14 +2431,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         min_count: int = 0,
         **kwargs: Any,
     ) -> Series: ...
-    def product(
-        self,
-        axis: Axis | None = "columns",
-        skipna: _bool = True,
-        numeric_only: _bool = False,
-        min_count: int = 0,
-        **kwargs: Any,
-    ) -> Series: ...
+    product = prod
     @final
     def rank(
         self,
