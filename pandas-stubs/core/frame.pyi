@@ -1521,7 +1521,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def aggregate(
         self,
-        func: list[AggFuncTypeBase] | AggFuncTypeDictFrame,
+        func: list[AggFuncTypeBase] | AggFuncTypeDictFrame | None = ...,
         axis: Axis = 0,
         **kwargs: Any,
     ) -> Self: ...
