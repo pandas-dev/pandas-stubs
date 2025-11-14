@@ -4263,6 +4263,13 @@ def test_xs_frame_new() -> None:
     }
     df = pd.DataFrame(data=d)
     df = df.set_index(["class", "animal", "locomotion"])
+    check(
+        assert_type(
+            df.xs(("mammal", "cat"), level=["class", "animal"]),
+            pd.Series | pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
     s1 = df.xs("mammal", axis=0)
     s2 = df.xs("num_wings", axis=1)
     check(assert_type(s1, pd.Series | pd.DataFrame), pd.DataFrame)
