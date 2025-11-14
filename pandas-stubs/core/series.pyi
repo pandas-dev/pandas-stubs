@@ -4630,7 +4630,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def xs(
         self,
         key: Hashable,
-        axis: AxisIndex = 0,
+        axis: AxisIndex = 0,  # type: ignore[override]
         level: Level | None = ...,
         drop_level: _bool = True,
     ) -> Self: ...
