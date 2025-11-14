@@ -1512,20 +1512,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def diff(self, periods: int = 1, axis: Axis = 0) -> Self: ...
     @overload
-    def agg(  # pyright: ignore[reportOverlappingOverload]
-        self,
-        func: AggFuncTypeBase | AggFuncTypeDictSeries,
-        axis: Axis = 0,
-        **kwargs: Any,
-    ) -> Series: ...
-    @overload
-    def agg(
-        self,
-        func: list[AggFuncTypeBase] | AggFuncTypeDictFrame = ...,
-        axis: Axis = 0,
-        **kwargs: Any,
-    ) -> Self: ...
-    @overload
     def aggregate(  # pyright: ignore[reportOverlappingOverload]
         self,
         func: AggFuncTypeBase | AggFuncTypeDictSeries,
@@ -1539,6 +1525,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis = 0,
         **kwargs: Any,
     ) -> Self: ...
+    agg = aggregate
     def transform(
         self,
         func: AggFuncTypeFrame,
