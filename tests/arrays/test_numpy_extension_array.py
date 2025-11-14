@@ -8,6 +8,7 @@ from tests import (
     BuiltinDtypeArg,
     NumpyNotTimeDtypeArg,
     check,
+    exception_on_platform,
     get_dtype,
 )
 
@@ -40,14 +41,19 @@ def test_constructor() -> None:
 
 
 @pytest.mark.parametrize("dtype", get_dtype(BuiltinDtypeArg | NumpyNotTimeDtypeArg))
-def test_constructors_dtype(dtype: BuiltinDtypeArg | NumpyNotTimeDtypeArg):
+def test_constructor_dtype(dtype: BuiltinDtypeArg | NumpyNotTimeDtypeArg):
     if dtype == "V" or "void" in str(dtype):
         check(
             assert_type(pd.array([b"1"], dtype=dtype), NumpyExtensionArray),
             NumpyExtensionArray,
         )
     else:
-        check(
-            assert_type(pd.array([1], dtype=dtype), NumpyExtensionArray),
-            NumpyExtensionArray,
-        )
+        exc = exception_on_platform(dtype)
+        if exc:
+            with pytest.raises(exc):
+                pd.array([1], dtype=dtype)
+        else:
+            check(
+                assert_type(pd.array([1], dtype=dtype), NumpyExtensionArray),
+                NumpyExtensionArray,
+            )
