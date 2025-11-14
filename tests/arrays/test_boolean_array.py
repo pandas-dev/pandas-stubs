@@ -25,5 +25,5 @@ def test_constructor() -> None:
 
 
 @pytest.mark.parametrize("dtype", get_dtype(PandasBooleanDtypeArg))
-def test_constructors_dtype(dtype: PandasBooleanDtypeArg):
+def test_constructor_dtype(dtype: PandasBooleanDtypeArg):
     check(assert_type(pd.array([True], dtype=dtype), BooleanArray), BooleanArray)
