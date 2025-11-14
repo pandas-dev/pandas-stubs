@@ -250,7 +250,7 @@ def get_dtype(dtype: object) -> Generator[type | str, None, None]:
     if isinstance(dtype, str):
         yield dtype
     elif isinstance(dtype, type):
-        yield dtype()
+        yield dtype() if "pandas" in str(dtype) else dtype
     else:
         for arg in get_args(dtype):
             yield from get_dtype(arg)
