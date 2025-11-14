@@ -4627,7 +4627,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: _bool | _NoDefaultDoNotUse = ...,
     ) -> Self: ...
     @final
-    def xs(
+    def xs(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         key: Hashable,
         axis: AxisIndex = 0,  # type: ignore[override]
