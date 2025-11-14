@@ -41,7 +41,6 @@ from pandas.core.window.rolling import Rolling
 import pytest
 from typing_extensions import (
     Never,
-    Self,
     assert_type,
 )
 import xarray as xr
@@ -2221,8 +2220,8 @@ def test_pandera_generic() -> None:
     # GH 471
 
     class MySeries(pd.Series, Generic[T]):
-        def __new__(cls, *args: Any, **kwargs: Any) -> Self:
-            return super().__new__(cls)  # type: ignore[return-value] # pyright: ignore[reportReturnType]
+        def __new__(cls, *args: Any, **kwargs: Any) -> MySeries[T]:
+            return cast(MySeries[T], super().__new__(cls))
 
     def func() -> MySeries[float]:
         return MySeries[float]([1, 2, 3])
