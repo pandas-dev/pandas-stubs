@@ -40,12 +40,12 @@ from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
-    BuiltinFloatDtypeArg,
-    BuiltinIntDtypeArg,
-    BuiltinStrDtypeArg,
+    BuiltinDtypeArg,
     CategoryDtypeArg,
     IntervalT,
-    NumpyDtypeArg,
+    NumpyNotTimeDtypeArg,
+    NumpyTimedeltaDtypeArg,
+    NumpyTimestampDtypeArg,
     PandasBooleanDtypeArg,
     PandasFloatDtypeArg,
     PandasIntDtypeArg,
@@ -119,7 +119,7 @@ def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlapping
 @overload
 def array(  # type: ignore[overload-overlap]
     data: Sequence[int | np.integer | NAType | None] | np_ndarray_anyint | IntegerArray,
-    dtype: BuiltinIntDtypeArg | PandasIntDtypeArg | PandasUIntDtypeArg | None = None,
+    dtype: PandasIntDtypeArg | PandasUIntDtypeArg | None = None,
     copy: bool = True,
 ) -> IntegerArray: ...
 @overload
@@ -127,7 +127,7 @@ def array(  # type: ignore[overload-overlap]
     data: (
         Sequence[float | np.floating | NAType | None] | np_ndarray_float | FloatingArray
     ),
-    dtype: BuiltinFloatDtypeArg | PandasFloatDtypeArg | None = None,
+    dtype: PandasFloatDtypeArg | None = None,
     copy: bool = True,
 ) -> FloatingArray: ...
 @overload
@@ -140,7 +140,7 @@ def array(  # type: ignore[overload-overlap]
         | DatetimeIndex
         | Series[Timestamp]
     ),
-    dtype: PandasTimestampDtypeArg | None = None,
+    dtype: PandasTimestampDtypeArg | NumpyTimestampDtypeArg | None = None,
     copy: bool = True,
 ) -> DatetimeArray: ...
 @overload
@@ -152,13 +152,13 @@ def array(
         | TimedeltaIndex
         | Series[Timedelta]
     ),
-    dtype: None = None,
+    dtype: NumpyTimedeltaDtypeArg | None = None,
     copy: bool = True,
 ) -> TimedeltaArray: ...
 @overload
 def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     data: SequenceNotStr[str | np.str_ | NAType | None] | np_ndarray_str | StringArray,
-    dtype: BuiltinStrDtypeArg | PandasStrDtypeArg | None = None,
+    dtype: PandasStrDtypeArg | None = None,
     copy: bool = True,
 ) -> StringArray: ...
 @overload
@@ -175,7 +175,7 @@ def array(  # type: ignore[overload-overlap]
 @overload
 def array(
     data: SequenceNotStr[object] | np_ndarray | NumpyExtensionArray | RangeIndex,
-    dtype: NumpyDtypeArg | None = None,
+    dtype: BuiltinDtypeArg | NumpyNotTimeDtypeArg | None = None,
     copy: bool = True,
 ) -> NumpyExtensionArray: ...
 @overload
