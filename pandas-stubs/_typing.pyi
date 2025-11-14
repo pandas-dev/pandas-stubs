@@ -506,10 +506,7 @@ PyArrowTimestampDtypeArg: TypeAlias = Literal[
     "timestamp[ns][pyarrow]",
 ]
 TimestampDtypeArg: TypeAlias = (
-    PandasTimestampDtypeArg
-    | PandasAstypeTimestampDtypeArg
-    | NumpyTimestampDtypeArg
-    | PyArrowTimestampDtypeArg
+    PandasTimestampDtypeArg | NumpyTimestampDtypeArg | PyArrowTimestampDtypeArg
 )
 # Builtin str type and its string alias
 BuiltinStrDtypeArg: TypeAlias = type[str] | Literal["str"]
