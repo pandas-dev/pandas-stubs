@@ -2178,7 +2178,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def truediv(
         self,
         other: complex | ListLike | DataFrame,
-        axis: Axis | None = ...,
+        axis: Axis | None = "columns",
         level: Level | None = None,
         fill_value: float | None = None,
     ) -> Self: ...
@@ -2242,7 +2242,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def floordiv(
         self,
         other: float | ListLike | DataFrame,
-        axis: Axis | None = ...,
+        axis: Axis | None = "columns",
         level: Level | None = None,
         fill_value: float | None = None,
     ) -> Self: ...
@@ -2357,28 +2357,28 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def max(
         self,
-        axis: Axis | None = ...,
+        axis: Axis | None = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
         **kwargs: Any,
     ) -> Series: ...
     def mean(
         self,
-        axis: Axis | None = ...,
+        axis: Axis | None = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
         **kwargs: Any,
     ) -> Series: ...
     def median(
         self,
-        axis: Axis | None = ...,
+        axis: Axis | None = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
         **kwargs: Any,
     ) -> Series: ...
     def min(
         self,
-        axis: Axis | None = ...,
+        axis: Axis | None = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
         **kwargs: Any,
@@ -2386,14 +2386,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def mod(
         self,
         other: float | ListLike | DataFrame,
-        axis: Axis | None = ...,
+        axis: Axis | None = "columns",
         level: Level | None = None,
         fill_value: float | None = None,
     ) -> Self: ...
     def mul(
         self,
         other: complex | ListLike | DataFrame,
-        axis: Axis | None = ...,
+        axis: Axis | None = "columns",
         level: Level | None = None,
         fill_value: float | None = None,
     ) -> Self: ...
