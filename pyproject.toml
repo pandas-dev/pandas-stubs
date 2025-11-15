@@ -70,6 +70,7 @@ beautifulsoup4 = ">=4.14.2"
 html5lib = ">=1.1"
 python-calamine = ">=0.2.0"
 pyarrow-stubs = { version = ">=20.0.0.20250928", python = "<4" }
+fsspec = "^2025.10.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
