@@ -578,10 +578,10 @@ def test_types_cumsum() -> None:
 
 def test_types_min() -> None:
     s = pd.Series([1, 2, 3, np.nan])
-    s.min()
-    s.min(axis=0)
-    s.groupby(level=0).min()
-    s.min(skipna=False)
+    check(assert_type(s.min(), float), np.floating)
+    check(assert_type(s.min(axis=0), float), np.floating)
+    check(assert_type(s.groupby(level=0).min(), "pd.Series[float]"), pd.Series, np.floating)
+    check(assert_type(s.min(skipna=False), float), np.floating)
 
 
 def test_types_max() -> None:
