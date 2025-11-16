@@ -580,7 +580,11 @@ def test_types_min() -> None:
     s = pd.Series([1, 2, 3, np.nan])
     check(assert_type(s.min(), float), np.floating)
     check(assert_type(s.min(axis=0), float), np.floating)
-    check(assert_type(s.groupby(level=0).min(), "pd.Series[float]"), pd.Series, np.floating)
+    check(
+        assert_type(s.groupby(level=0).min(), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
     check(assert_type(s.min(skipna=False), float), np.floating)
 
 
