@@ -2344,30 +2344,66 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis | None = ...,
         level: Level | None = None,
     ) -> Self: ...
+    @overload
     def max(
         self,
-        axis: Axis | None = 0,
+        axis: None,
+        skipna: _bool | None = True,
+        numeric_only: _bool = False,
+        **kwargs: Any,
+    ) -> Scalar: ...
+    @overload
+    def max(
+        self,
+        axis: Axis = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
         **kwargs: Any,
     ) -> Series: ...
+    @overload
     def mean(
         self,
-        axis: Axis | None = 0,
+        axis: None,
+        skipna: _bool | None = True,
+        numeric_only: _bool = False,
+        **kwargs: Any,
+    ) -> Scalar: ...
+    @overload
+    def mean(
+        self,
+        axis: Axis = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
         **kwargs: Any,
     ) -> Series: ...
+    @overload
     def median(
         self,
-        axis: Axis | None = 0,
+        axis: None,
+        skipna: _bool | None = True,
+        numeric_only: _bool = False,
+        **kwargs: Any,
+    ) -> Scalar: ...
+    @overload
+    def median(
+        self,
+        axis: Axis = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
         **kwargs: Any,
     ) -> Series: ...
+    @overload
     def min(
         self,
-        axis: Axis | None = 0,
+        axis: None,
+        skipna: _bool | None = True,
+        numeric_only: _bool = False,
+        **kwargs: Any,
+    ) -> Scalar: ...
+    @overload
+    def min(
+        self,
+        axis: Axis = 0,
         skipna: _bool | None = True,
         numeric_only: _bool = False,
         **kwargs: Any,

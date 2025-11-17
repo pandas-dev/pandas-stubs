@@ -713,6 +713,7 @@ def test_types_mean() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(assert_type(df.mean(), pd.Series), pd.Series)
     check(assert_type(df.mean(axis=0), pd.Series), pd.Series)
+    check(assert_type(df.mean(axis=None), Scalar), np.floating)
     check(assert_type(df.groupby(level=0).mean(), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(df.mean(axis=1, skipna=True, numeric_only=False), pd.Series),
@@ -724,6 +725,7 @@ def test_types_median() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(assert_type(df.median(), pd.Series), pd.Series)
     check(assert_type(df.median(axis=0), pd.Series), pd.Series)
+    check(assert_type(df.median(axis=None), Scalar), np.floating)
     check(assert_type(df.groupby(level=0).median(), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(df.median(axis=1, skipna=True, numeric_only=False), pd.Series),
@@ -820,12 +822,14 @@ def test_types_min() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(assert_type(df.min(), pd.Series), pd.Series)
     check(assert_type(df.min(axis=0), pd.Series), pd.Series)
+    check(assert_type(df.min(axis=None), Scalar), np.integer)
 
 
 def test_types_max() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(assert_type(df.max(), pd.Series), pd.Series)
     check(assert_type(df.max(axis=0), pd.Series), pd.Series)
+    check(assert_type(df.max(axis=None), Scalar), np.integer)
 
 
 def test_types_quantile() -> None:
