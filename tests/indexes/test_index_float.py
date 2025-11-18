@@ -10,7 +10,7 @@ from tests import (
     TYPE_FLOAT_NOT_NUMPY16_ARGS,
     PandasAstypeFloatDtypeArg,
     check,
-    skip_platform,
+    is_dtype_invalid_for_platform,
 )
 
 if TYPE_CHECKING:
@@ -52,8 +52,8 @@ def test_constructor() -> None:
 def test_constructor_dtype(
     dtype: "FloatNotNumpy16DtypeArg", target_dtype: type
 ) -> None:
-    if skip_platform(dtype):
-        with pytest.raises(TypeError):
+    if is_dtype_invalid_for_platform(dtype):
+        with pytest.raises(TypeError, match=rf"data type {dtype!r} not understood"):
             assert_type(pd.Index([1.0], dtype=dtype), "pd.Index[float]")
     else:
         check(pd.Index([1.0], dtype=dtype), pd.Index, target_dtype)
@@ -110,8 +110,8 @@ def test_astype_float(
 ) -> None:
     s = pd.Index([1, 2, 3])
 
-    if skip_platform(cast_arg):
-        with pytest.raises(TypeError):
+    if is_dtype_invalid_for_platform(cast_arg):
+        with pytest.raises(TypeError, match=rf"data type {cast_arg!r} not understood"):
             assert_type(s.astype(cast_arg), "pd.Index[float]")
     else:
         check(s.astype(cast_arg), pd.Index, target_type)

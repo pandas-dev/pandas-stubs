@@ -5,7 +5,6 @@ from contextlib import (
     nullcontext,
     suppress,
 )
-import os
 import platform
 import sys
 from typing import (
@@ -464,8 +463,8 @@ else:
     np_ndarray_td: TypeAlias = npt.NDArray[np.timedelta64]
 
 TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
-WINDOWS = os.name == "nt" or "cygwin" in platform.system().lower()
-MAC_ARM = sys.platform == "darwin" and platform.processor() == "arm64"
+WINDOWS = sys.platform in {"win32", "cygwin"}
+MAC_ARM = sys.platform == "darwin" and platform.processor() == "arm"
 PD_LTE_23 = Version(pd.__version__) < Version("2.3.999")
 NUMPY20 = np.lib.NumpyVersion(np.__version__) >= "2.0.0"
 
@@ -671,5 +670,5 @@ def pytest_warns_bounded(
     return suppress(upper_exception)
 
 
-def skip_platform(dtype: type | str | ExtensionDtype) -> bool:
+def is_dtype_invalid_for_platform(dtype: type | str | ExtensionDtype) -> bool:
     return (WINDOWS or MAC_ARM) and dtype in {"f16", "float128"}
