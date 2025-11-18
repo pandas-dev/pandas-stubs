@@ -62,9 +62,7 @@ from pandas.core.api import (
     Int64Dtype as Int64Dtype,
 )
 from pandas.core.arrays.base import ExtensionArray
-from pandas.core.arrays.boolean import (
-    BooleanDtype,
-)
+from pandas.core.arrays.boolean import BooleanDtype
 from pandas.core.arrays.categorical import (
     Categorical,
     CategoricalAccessor,
