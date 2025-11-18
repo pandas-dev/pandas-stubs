@@ -1,0 +1,164 @@
+from typing import TYPE_CHECKING
+
+import numpy as np
+import pandas as pd
+import pytest
+from typing_extensions import assert_type
+
+from tests import (
+    ASTYPE_FLOAT_NOT_NUMPY16_ARGS,
+    TYPE_FLOAT_NOT_NUMPY16_ARGS,
+    PandasAstypeFloatDtypeArg,
+    check,
+    skip_platform,
+)
+
+if TYPE_CHECKING:
+    from pandas.core.indexes.base import FloatNotNumpy16DtypeArg
+
+
+def test_constructor() -> None:
+    check(assert_type(pd.Index([1.0]), "pd.Index[float]"), pd.Index, np.floating)
+    check(
+        assert_type(pd.Index([1.0, np.float64(1)]), "pd.Index[float]"),
+        pd.Index,
+        np.floating,
+    )
+    check(
+        assert_type(  # type: ignore[assert-type] # I do not understand
+            pd.Index(np.array([1.0], np.float64)), "pd.Index[float]"
+        ),
+        pd.Index,
+        np.floating,
+    )
+    check(
+        assert_type(pd.Index(pd.array([1.0])), "pd.Index[float]"),
+        pd.Index,
+        np.floating,
+    )
+    check(
+        assert_type(pd.Index(pd.Index([1.0])), "pd.Index[float]"),
+        pd.Index,
+        np.floating,
+    )
+    check(
+        assert_type(pd.Index(pd.Series([1.0])), "pd.Index[float]"),
+        pd.Index,
+        np.floating,
+    )
+
+
+@pytest.mark.parametrize(("dtype", "target_dtype"), TYPE_FLOAT_NOT_NUMPY16_ARGS.items())
+def test_constructor_dtype(
+    dtype: "FloatNotNumpy16DtypeArg", target_dtype: type
+) -> None:
+    def maker() -> "pd.Index[float]":
+        return assert_type(pd.Index([1.0], dtype=dtype), "pd.Index[float]")
+
+    skip_platform(maker, dtype)
+    if target_dtype is np.float16:
+        reason = r"float16 indexes are not supported"
+        with pytest.raises(NotImplementedError, match=reason):
+            maker()
+        pytest.skip(reason)
+
+    check(maker(), pd.Index, target_dtype)
+
+    if TYPE_CHECKING:
+        # python float
+        assert_type(pd.Index([1.0], dtype=float), "pd.Index[float]")
+        assert_type(pd.Index([1.0], dtype="float"), "pd.Index[float]")
+        # pandas Float32
+        assert_type(pd.Index([1.0], dtype=pd.Float32Dtype()), "pd.Index[float]")
+        assert_type(pd.Index([1.0], dtype="Float32"), "pd.Index[float]")
+        # pandas Float64
+        assert_type(pd.Index([1.0], dtype=pd.Float64Dtype()), "pd.Index[float]")
+        assert_type(pd.Index([1.0], dtype="Float64"), "pd.Index[float]")
+        # numpy float32
+        assert_type(pd.Index([1.0], dtype=np.single), "pd.Index[float]")
+        assert_type(pd.Index([1.0], dtype="single"), "pd.Index[float]")
+        assert_type(pd.Index([1.0], dtype="float32"), "pd.Index[float]")
+        assert_type(pd.Index([1.0], dtype="f"), "pd.Index[float]")
+        assert_type(pd.Index([1.0], dtype="f4"), "pd.Index[float]")
+        # numpy float64
+        assert_type(pd.Index([1.0], dtype=np.double), "pd.Index[float]")
+        assert_type(pd.Index([1.0], dtype="double"), "pd.Index[float]")
+        assert_type(pd.Index([1.0], dtype="float64"), "pd.Index[float]")
+        assert_type(pd.Index([1.0], dtype="d"), "pd.Index[float]")
+        assert_type(pd.Index([1.0], dtype="f8"), "pd.Index[float]")
+        # numpy float128
+        assert_type(pd.Index([1.0], dtype=np.longdouble), "pd.Index[float]")
+        assert_type(pd.Index([1.0], dtype="longdouble"), "pd.Index[float]")
+        assert_type(pd.Index([1.0], dtype="float128"), "pd.Index[float]")
+        assert_type(pd.Index([1.0], dtype="g"), "pd.Index[float]")
+        assert_type(pd.Index([1.0], dtype="f16"), "pd.Index[float]")
+        # pyarrow float32
+        assert_type(pd.Index([1.0], dtype="float32[pyarrow]"), "pd.Index[float]")
+        assert_type(pd.Index([1.0], dtype="float[pyarrow]"), "pd.Index[float]")
+        # pyarrow float64
+        assert_type(pd.Index([1.0], dtype="float64[pyarrow]"), "pd.Index[float]")
+        assert_type(pd.Index([1.0], dtype="double[pyarrow]"), "pd.Index[float]")
+
+    # if TYPE_CHECKING_INVALID_USAGE:
+    #     # numpy float16
+    #     pd.Index([1.0], dtype=np.half)
+    #     pd.Index([1.0], dtype="half")
+    #     pd.Index([1.0], dtype="float16")
+    #     pd.Index([1.0], dtype="e")
+    #     pd.Index([1.0], dtype="f2")
+
+
+@pytest.mark.parametrize(
+    ("cast_arg", "target_type"), ASTYPE_FLOAT_NOT_NUMPY16_ARGS.items(), ids=repr
+)
+def test_astype_float(
+    cast_arg: "FloatNotNumpy16DtypeArg | PandasAstypeFloatDtypeArg", target_type: type
+) -> None:
+    s = pd.Index([1, 2, 3])
+
+    skip_platform(lambda: s.astype(cast_arg), cast_arg)
+
+    check(s.astype(cast_arg), pd.Index, target_type)
+
+    if TYPE_CHECKING:
+        # python float
+        assert_type(s.astype(float), "pd.Index[float]")
+        assert_type(s.astype("float"), "pd.Index[float]")
+        # pandas Float32
+        assert_type(s.astype(pd.Float32Dtype()), "pd.Index[float]")
+        assert_type(s.astype("Float32"), "pd.Index[float]")
+        # pandas Float64
+        assert_type(s.astype(pd.Float64Dtype()), "pd.Index[float]")
+        assert_type(s.astype("Float64"), "pd.Index[float]")
+        # numpy float32
+        assert_type(s.astype(np.single), "pd.Index[float]")
+        assert_type(s.astype("single"), "pd.Index[float]")
+        assert_type(s.astype("float32"), "pd.Index[float]")
+        assert_type(s.astype("f"), "pd.Index[float]")
+        assert_type(s.astype("f4"), "pd.Index[float]")
+        # numpy float64
+        assert_type(s.astype(np.double), "pd.Index[float]")
+        assert_type(s.astype("double"), "pd.Index[float]")
+        assert_type(s.astype("float64"), "pd.Index[float]")
+        assert_type(s.astype("d"), "pd.Index[float]")
+        assert_type(s.astype("f8"), "pd.Index[float]")
+        # numpy float128
+        assert_type(s.astype(np.longdouble), "pd.Index[float]")
+        assert_type(s.astype("longdouble"), "pd.Index[float]")
+        assert_type(s.astype("float128"), "pd.Index[float]")
+        assert_type(s.astype("g"), "pd.Index[float]")
+        assert_type(s.astype("f16"), "pd.Index[float]")
+        # pyarrow float32
+        assert_type(s.astype("float32[pyarrow]"), "pd.Index[float]")
+        assert_type(s.astype("float[pyarrow]"), "pd.Index[float]")
+        # pyarrow float64
+        assert_type(s.astype("float64[pyarrow]"), "pd.Index[float]")
+        assert_type(s.astype("double[pyarrow]"), "pd.Index[float]")
+
+    # if TYPE_CHECKING_INVALID_USAGE:
+    #     # numpy float16
+    #     s.astype(np.half)
+    #     s.astype("half")
+    #     s.astype("float16")
+    #     s.astype("e")
+    #     s.astype("f2")

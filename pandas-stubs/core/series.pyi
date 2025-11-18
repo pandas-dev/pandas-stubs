@@ -48,7 +48,6 @@ from matplotlib.axes import (
     SubplotBase,
 )
 import numpy as np
-from numpy import typing as npt
 from pandas import (
     Index,
     Period,
@@ -63,12 +62,15 @@ from pandas.core.api import (
     Int64Dtype as Int64Dtype,
 )
 from pandas.core.arrays.base import ExtensionArray
-from pandas.core.arrays.boolean import BooleanDtype
+from pandas.core.arrays.boolean import (
+    BooleanDtype,
+)
 from pandas.core.arrays.categorical import (
     Categorical,
     CategoricalAccessor,
 )
 from pandas.core.arrays.datetimes import DatetimeArray
+from pandas.core.arrays.floating import FloatingArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.base import (
     ArrayIndexSeriesTimedeltaNoSeq,
@@ -190,6 +192,10 @@ from pandas._typing import (
     NaPosition,
     NsmallestNlargestKeep,
     ObjectDtypeArg,
+    PandasAstypeComplexDtypeArg,
+    PandasAstypeFloatDtypeArg,
+    PandasAstypeTimedeltaDtypeArg,
+    PandasAstypeTimestampDtypeArg,
     PeriodFrequency,
     QuantileInterpolation,
     RandomState,
@@ -346,38 +352,29 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: npt.NDArray[np.float64],
-        index: AxesData | None = ...,
-        dtype: Dtype = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
-    ) -> Series[float]: ...
-    @overload
-    def __new__(
-        cls,
         data: Sequence[Never],
-        index: AxesData | None = ...,
-        dtype: Dtype = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
+        index: AxesData | None = None,
+        dtype: None = None,
+        name: Hashable = None,
+        copy: bool | None = None,
     ) -> Series: ...
     @overload
     def __new__(
         cls,
         data: Sequence[list[_str]],
-        index: AxesData | None = ...,
-        dtype: Dtype = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
+        index: AxesData | None = None,
+        dtype: None = None,
+        name: Hashable = None,
+        copy: bool | None = None,
     ) -> Series[list[_str]]: ...
     @overload
     def __new__(
         cls,
         data: Sequence[_str],
-        index: AxesData | None = ...,
-        dtype: Dtype = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
+        index: AxesData | None = None,
+        dtype: Dtype | None = None,
+        name: Hashable = None,
+        copy: bool | None = None,
     ) -> Series[_str]: ...
     @overload
     def __new__(
@@ -390,48 +387,48 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | datetime
             | date
         ),
-        index: AxesData | None = ...,
+        index: AxesData | None = None,
         dtype: TimestampDtypeArg = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
+        name: Hashable = None,
+        copy: bool | None = None,
     ) -> Series[Timestamp]: ...
     @overload
     def __new__(
         cls,
-        data: _DataLike,
-        index: AxesData | None = ...,
+        data: Sequence[datetime | np.timedelta64] | np_ndarray_dt | DatetimeArray,
+        index: AxesData | None = None,
         *,
         dtype: TimestampDtypeArg,
-        name: Hashable = ...,
-        copy: bool = ...,
+        name: Hashable = None,
+        copy: bool | None = None,
     ) -> Series[Timestamp]: ...
     @overload
     def __new__(
         cls,
         data: _DataLike,
-        index: AxesData | None = ...,
+        index: AxesData | None = None,
         *,
         dtype: CategoryDtypeArg,
-        name: Hashable = ...,
-        copy: bool = ...,
+        name: Hashable = None,
+        copy: bool | None = None,
     ) -> Series[CategoricalDtype]: ...
     @overload
     def __new__(
         cls,
         data: PeriodIndex | Sequence[Period],
-        index: AxesData | None = ...,
+        index: AxesData | None = None,
         dtype: PeriodDtype = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
+        name: Hashable = None,
+        copy: bool | None = None,
     ) -> Series[Period]: ...
     @overload
     def __new__(
         cls,
         data: Sequence[BaseOffset],
-        index: AxesData | None = ...,
+        index: AxesData | None = None,
         dtype: PeriodDtype = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
+        name: Hashable = None,
+        copy: bool | None = None,
     ) -> Series[BaseOffset]: ...
     @overload
     def __new__(
@@ -443,10 +440,10 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | np.timedelta64
             | timedelta
         ),
-        index: AxesData | None = ...,
+        index: AxesData | None = None,
         dtype: TimedeltaDtypeArg = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
+        name: Hashable = None,
+        copy: bool | None = None,
     ) -> Series[Timedelta]: ...
     @overload
     def __new__(
@@ -457,56 +454,66 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Sequence[Interval[_OrderableT]]
             | dict[HashableT1, Interval[_OrderableT]]
         ),
-        index: AxesData | None = ...,
+        index: AxesData | None = None,
         dtype: Literal["Interval"] = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
+        name: Hashable = None,
+        copy: bool | None = None,
     ) -> Series[Interval[_OrderableT]]: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]
+    def __new__(  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
         cls,
         data: Scalar | _DataLike | dict[HashableT1, Any] | None,
-        index: AxesData | None = ...,
+        index: AxesData | None = None,
         *,
         dtype: type[S1],
-        name: Hashable = ...,
-        copy: bool = ...,
+        name: Hashable = None,
+        copy: bool | None = None,
     ) -> Self: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __new__(  # pyright: ignore[reportOverlappingOverload]
         cls,
-        data: Sequence[bool],
-        index: AxesData | None = ...,
-        dtype: Dtype = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
+        data: Sequence[bool | np.bool],
+        index: AxesData | None = None,
+        dtype: BooleanDtypeArg | None = None,
+        name: Hashable = None,
+        copy: bool | None = None,
     ) -> Series[bool]: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]
+    def __new__(
         cls,
-        data: Sequence[int],
-        index: AxesData | None = ...,
-        dtype: Dtype = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
+        data: Sequence[int | np.integer],
+        index: AxesData | None = None,
+        dtype: IntDtypeArg | UIntDtypeArg | None = None,
+        name: Hashable = None,
+        copy: bool | None = None,
     ) -> Series[int]: ...
     @overload
     def __new__(
         cls,
-        data: Sequence[float],
-        index: AxesData | None = ...,
-        dtype: Dtype = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
+        data: Sequence[float | np.floating] | np_ndarray_float | FloatingArray,
+        index: AxesData | None = None,
+        dtype: None = None,
+        name: Hashable = None,
+        copy: bool | None = None,
     ) -> Series[float]: ...
     @overload
-    def __new__(  # type: ignore[overload-cannot-match] # pyright: ignore[reportOverlappingOverload]
+    def __new__(
         cls,
-        data: Sequence[int | float],
-        index: AxesData | None = ...,
-        dtype: Dtype = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
+        data: AxesData,
+        index: None = None,
+        *,
+        dtype: FloatDtypeArg,
+        name: Hashable = None,
+        copy: bool | None = None,
+    ) -> Series[float]: ...
+    @overload
+    def __new__(
+        cls,
+        data: AxesData,
+        index: AxesData,
+        dtype: FloatDtypeArg,
+        name: Hashable = None,
+        copy: bool | None = None,
     ) -> Series[float]: ...
     @overload
     def __new__(
@@ -514,10 +521,10 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         data: (
             S1 | _DataLikeS1[S1] | dict[HashableT1, S1] | KeysView[S1] | ValuesView[S1]
         ),
-        index: AxesData | None = ...,
-        dtype: Dtype = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
+        index: AxesData | None = None,
+        dtype: Dtype | None = None,
+        name: Hashable = None,
+        copy: bool | None = None,
     ) -> Self: ...
     @overload
     def __new__(
@@ -530,11 +537,11 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | NaTType
             | NAType
             | None
-        ) = ...,
-        index: AxesData | None = ...,
-        dtype: Dtype = ...,
-        name: Hashable = ...,
-        copy: bool = ...,
+        ) = None,
+        index: AxesData | None = None,
+        dtype: Dtype | None = None,
+        name: Hashable = None,
+        copy: bool | None = None,
     ) -> Series: ...
     @property
     def hasnans(self) -> bool: ...
@@ -1446,28 +1453,28 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def astype(
         self,
-        dtype: FloatDtypeArg,
+        dtype: FloatDtypeArg | PandasAstypeFloatDtypeArg,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[float]: ...
     @overload
     def astype(
         self,
-        dtype: ComplexDtypeArg,
+        dtype: ComplexDtypeArg | PandasAstypeComplexDtypeArg,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[complex]: ...
     @overload
     def astype(
         self,
-        dtype: TimedeltaDtypeArg,
+        dtype: TimedeltaDtypeArg | PandasAstypeTimedeltaDtypeArg,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[Timedelta]: ...
     @overload
     def astype(
         self,
-        dtype: TimestampDtypeArg,
+        dtype: TimestampDtypeArg | PandasAstypeTimestampDtypeArg,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[Timestamp]: ...
