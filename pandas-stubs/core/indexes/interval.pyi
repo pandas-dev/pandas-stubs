@@ -322,11 +322,20 @@ def interval_range(
 ) -> IntervalIndex[Interval[pd.Timestamp]]: ...
 @overload
 def interval_range(
-    *,
     start: None = None,
+    *,
     end: _TimestampLike,
     periods: int | None = None,
     freq: Frequency | dt.timedelta | None = None,
+    name: Hashable = None,
+    closed: IntervalClosedType = "right",
+) -> IntervalIndex[Interval[pd.Timestamp]]: ...
+@overload
+def interval_range(
+    start: None,
+    end: _TimestampLike,
+    periods: int,
+    freq: Frequency | dt.timedelta,
     name: Hashable = None,
     closed: IntervalClosedType = "right",
 ) -> IntervalIndex[Interval[pd.Timestamp]]: ...
@@ -341,8 +350,17 @@ def interval_range(
 ) -> IntervalIndex[Interval[pd.Timedelta]]: ...
 @overload
 def interval_range(
-    *,
+    start: None,
+    end: _TimedeltaLike,
+    periods: int,
+    freq: Frequency | dt.timedelta,
+    name: Hashable = None,
+    closed: IntervalClosedType = "right",
+) -> IntervalIndex[Interval[pd.Timedelta]]: ...
+@overload
+def interval_range(
     start: None = None,
+    *,
     end: _TimedeltaLike,
     periods: int | None = None,
     freq: Frequency | dt.timedelta | None = None,

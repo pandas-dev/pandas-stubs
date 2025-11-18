@@ -458,6 +458,25 @@ def test_interval_range() -> None:
         pd.IntervalIndex,
         pd.Interval,
     )
+    check(
+        assert_type(
+            pd.interval_range(None, pd.Timestamp("2020-01-01"), 2, "1D"),
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+
+    check(
+        assert_type(
+            pd.interval_range(
+                None, end=pd.Timestamp("2020-01-01"), periods=2, freq="1D"
+            ),
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
 
 
 def test_interval_index_breaks() -> None:
