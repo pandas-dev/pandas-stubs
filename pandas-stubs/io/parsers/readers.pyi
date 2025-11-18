@@ -61,7 +61,6 @@ def read_csv(
     na_values: Sequence[str] | Mapping[str, Sequence[str]] | None = None,
     keep_default_na: bool = True,
     na_filter: bool = True,
-    verbose: bool = ...,
     skip_blank_lines: bool = True,
     parse_dates: (
         bool
@@ -92,8 +91,7 @@ def read_csv(
     on_bad_lines: (
         Literal["error", "warn", "skip"] | Callable[[list[str]], list[str] | None]
     ) = "error",
-    delim_whitespace: bool = ...,
-    low_memory: bool = ...,
+    low_memory: bool = True,
     memory_map: bool = False,
     float_precision: Literal["high", "legacy", "round_trip"] | None = None,
     storage_options: StorageOptions | None = None,
@@ -126,7 +124,6 @@ def read_csv(
     na_values: Sequence[str] | Mapping[str, Sequence[str]] | None = None,
     keep_default_na: bool = True,
     na_filter: bool = True,
-    verbose: bool = ...,
     skip_blank_lines: bool = True,
     parse_dates: (
         bool
@@ -157,8 +154,7 @@ def read_csv(
     on_bad_lines: (
         Literal["error", "warn", "skip"] | Callable[[list[str]], list[str] | None]
     ) = "error",
-    delim_whitespace: bool = ...,
-    low_memory: bool = ...,
+    low_memory: bool = True,
     memory_map: bool = False,
     float_precision: Literal["high", "legacy", "round_trip"] | None = None,
     storage_options: StorageOptions | None = None,
@@ -191,7 +187,6 @@ def read_csv(
     na_values: Sequence[str] | Mapping[str, Sequence[str]] | None = ...,
     keep_default_na: bool = ...,
     na_filter: bool = ...,
-    verbose: bool = ...,
     skip_blank_lines: bool = ...,
     parse_dates: (
         bool
@@ -222,8 +217,7 @@ def read_csv(
     on_bad_lines: (
         Literal["error", "warn", "skip"] | Callable[[list[str]], list[str] | None]
     ) = ...,
-    delim_whitespace: bool = ...,
-    low_memory: bool = ...,
+    low_memory: bool = True,
     memory_map: bool = ...,
     float_precision: Literal["high", "legacy", "round_trip"] | None = ...,
     storage_options: StorageOptions | None = ...,
@@ -293,6 +287,7 @@ def read_table(
     memory_map: bool = False,
     float_precision: Literal["high", "legacy", "round_trip"] | None = None,
     storage_options: StorageOptions | None = None,
+    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
 ) -> TextFileReader: ...
 @overload
 def read_table(
@@ -358,6 +353,7 @@ def read_table(
     memory_map: bool = False,
     float_precision: Literal["high", "legacy", "round_trip"] | None = None,
     storage_options: StorageOptions | None = None,
+    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
 ) -> TextFileReader: ...
 @overload
 def read_table(
@@ -423,6 +419,7 @@ def read_table(
     memory_map: bool = False,
     float_precision: Literal["high", "legacy", "round_trip"] | None = None,
     storage_options: StorageOptions | None = None,
+    dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
 ) -> DataFrame: ...
 @overload
 def read_fwf(
