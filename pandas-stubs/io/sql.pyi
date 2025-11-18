@@ -3,6 +3,7 @@ from collections.abc import (
     Generator,
     Iterable,
     Mapping,
+    Sequence,
 )
 import sqlite3
 from typing import (
@@ -129,13 +130,12 @@ def read_sql(
     index_col: str | list[str] | None = None,
     coerce_float: bool = True,
     params: (
-        list[Scalar]
-        | tuple[Scalar, ...]
+        Sequence[Scalar]
         | tuple[tuple[Scalar, ...], ...]
         | Mapping[str, Scalar]
         | Mapping[str, tuple[Scalar, ...]]
         | None
-    ) = ...,
+    ) = None,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = None,
     columns: list[str] | None = None,
     chunksize: None = None,
