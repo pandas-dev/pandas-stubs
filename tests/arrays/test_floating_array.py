@@ -32,12 +32,11 @@ def test_constructor() -> None:
 
 @pytest.mark.parametrize(("dtype", "target_dtype"), PANDAS_FLOAT_ARGS.items(), ids=repr)
 def test_constructor_dtype(dtype: PandasFloatDtypeArg, target_dtype: type) -> None:
-    def maker() -> FloatingArray:
-        return assert_type(pd.array([1.0], dtype=dtype), FloatingArray)
-
-    skip_platform(maker, dtype)
-
-    check(maker(), FloatingArray, target_dtype)
+    if skip_platform(dtype):
+        with pytest.raises(TypeError):
+            assert_type(pd.array([1.0], dtype=dtype), FloatingArray)
+    else:
+        check(pd.array([1.0], dtype=dtype), FloatingArray, target_dtype)
 
     if TYPE_CHECKING:
         # pandas Float32

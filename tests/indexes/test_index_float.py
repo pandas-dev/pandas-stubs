@@ -52,17 +52,11 @@ def test_constructor() -> None:
 def test_constructor_dtype(
     dtype: "FloatNotNumpy16DtypeArg", target_dtype: type
 ) -> None:
-    def maker() -> "pd.Index[float]":
-        return assert_type(pd.Index([1.0], dtype=dtype), "pd.Index[float]")
-
-    skip_platform(maker, dtype)
-    if target_dtype is np.float16:
-        reason = r"float16 indexes are not supported"
-        with pytest.raises(NotImplementedError, match=reason):
-            maker()
-        pytest.skip(reason)
-
-    check(maker(), pd.Index, target_dtype)
+    if skip_platform(dtype):
+        with pytest.raises(TypeError):
+            assert_type(pd.Index([1.0], dtype=dtype), "pd.Index[float]")
+    else:
+        check(pd.Index([1.0], dtype=dtype), pd.Index, target_dtype)
 
     if TYPE_CHECKING:
         # python float
@@ -116,9 +110,11 @@ def test_astype_float(
 ) -> None:
     s = pd.Index([1, 2, 3])
 
-    skip_platform(lambda: s.astype(cast_arg), cast_arg)
-
-    check(s.astype(cast_arg), pd.Index, target_type)
+    if skip_platform(cast_arg):
+        with pytest.raises(TypeError):
+            assert_type(s.astype(cast_arg), "pd.Index[float]")
+    else:
+        check(s.astype(cast_arg), pd.Index, target_type)
 
     if TYPE_CHECKING:
         # python float

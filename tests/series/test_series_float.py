@@ -46,12 +46,12 @@ def test_constructor() -> None:
 
 @pytest.mark.parametrize(("dtype", "target_dtype"), TYPE_FLOAT_ARGS.items())
 def test_constructor_dtype(dtype: FloatDtypeArg, target_dtype: type) -> None:
-    def maker() -> "pd.Series[float]":
-        return assert_type(pd.Series([1.0], dtype=dtype), "pd.Series[float]")
+    if skip_platform(dtype):
+        with pytest.raises(TypeError):
+            assert_type(pd.Series([1.0], dtype=dtype), "pd.Series[float]")
+    else:
+        check(pd.Series([1.0], dtype=dtype), pd.Series, target_dtype)
 
-    skip_platform(maker, dtype)
-
-    check(maker(), pd.Series, target_dtype)
     if TYPE_CHECKING:
         # python float
         assert_type(pd.Series([1.0], dtype=float), "pd.Series[float]")
@@ -102,9 +102,11 @@ def test_astype_float(
 ) -> None:
     s = pd.Series([1, 2, 3])
 
-    skip_platform(lambda: s.astype(cast_arg), cast_arg)
-
-    check(s.astype(cast_arg), pd.Series, target_type)
+    if skip_platform(cast_arg):
+        with pytest.raises(TypeError):
+            assert_type(s.astype(cast_arg), "pd.Series[float]")
+    else:
+        check(s.astype(cast_arg), pd.Series, target_type)
 
     if TYPE_CHECKING:
         # python float
