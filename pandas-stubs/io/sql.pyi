@@ -115,7 +115,7 @@ def read_sql(
         | Mapping[str, Scalar]
         | Mapping[str, tuple[Scalar, ...]]
         | None
-    ) = ...,
+    ) = None,
     parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = None,
     columns: list[str] | None = None,
     *,
