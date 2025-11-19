@@ -109,8 +109,7 @@ def read_sql(
     index_col: str | list[str] | None = None,
     coerce_float: bool = True,
     params: (
-        list[Scalar]
-        | tuple[Scalar, ...]
+    Sequence[Scalar]
         | tuple[tuple[Scalar, ...], ...]
         | Mapping[str, Scalar]
         | Mapping[str, tuple[Scalar, ...]]
