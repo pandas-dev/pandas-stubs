@@ -2629,7 +2629,7 @@ def test_astype_int(cast_arg: IntDtypeArg, target_type: type) -> None:
     s_astype = s.astype(cast_arg)
     if (LINUX or MAC) and cast_arg in {np.longlong, "longlong", "q"}:
         # TODO: pandas-dev/pandas#54252 longlong is bugged on Linux and Mac
-        msg = rf"Expected type '{cast_arg}' but got '{type(s_astype.iloc[0])}'"
+        msg = rf"Expected type '{target_type}' but got '{type(s_astype.iloc[0])}'"
         with pytest.raises(RuntimeError, match=msg):
             check(s_astype, pd.Series, target_type)
     else:
