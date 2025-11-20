@@ -5,8 +5,7 @@ from contextlib import (
     nullcontext,
     suppress,
 )
-import os
-import platform
+import sys
 from typing import (
     TYPE_CHECKING,
     Final,
@@ -94,7 +93,9 @@ else:
     np_ndarray_td: TypeAlias = npt.NDArray[np.timedelta64]
 
 TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
-WINDOWS = os.name == "nt" or "cygwin" in platform.system().lower()
+LINUX = sys.platform == "linux"
+WINDOWS = sys.platform in {"win32", "cygwin"}
+MAC = sys.platform == "darwin"
 PD_LTE_23 = Version(pd.__version__) < Version("2.3.999")
 NUMPY20 = np.lib.NumpyVersion(np.__version__) >= "2.0.0"
 

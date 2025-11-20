@@ -54,6 +54,8 @@ from pandas._typing import (
 from pandas.core.dtypes.dtypes import CategoricalDtype  # noqa F401
 
 from tests import (
+    LINUX,
+    MAC,
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     WINDOWS,
@@ -2624,13 +2626,14 @@ def test_astype_bool(cast_arg: BooleanDtypeArg, target_type: type) -> None:
 def test_astype_int(cast_arg: IntDtypeArg, target_type: type) -> None:
     s = pd.Series([1, 2, 3])
 
-    if cast_arg in (np.longlong, "longlong", "q"):
-        pytest.skip(
-            "longlong is bugged, for details, see"
-            "https://github.com/pandas-dev/pandas/issues/54252"
-        )
-
-    check(s.astype(cast_arg), pd.Series, target_type)
+    s_astype = s.astype(cast_arg)
+    if (LINUX or MAC) and cast_arg in {np.longlong, "longlong", "q"}:
+        # TODO: pandas-dev/pandas#54252 longlong is bugged on Linux and Mac
+        msg = rf"Expected type '{target_type}' but got '{type(s_astype.iloc[0])}'"
+        with pytest.raises(RuntimeError, match=msg):
+            check(s_astype, pd.Series, target_type)
+    else:
+        check(s_astype, pd.Series, target_type)
 
     if TYPE_CHECKING:
         # python int
