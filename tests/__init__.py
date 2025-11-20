@@ -5,7 +5,6 @@ from contextlib import (
     nullcontext,
     suppress,
 )
-import platform
 import sys
 from typing import (
     TYPE_CHECKING,
@@ -466,7 +465,6 @@ TYPE_CHECKING_INVALID_USAGE: Final = TYPE_CHECKING
 LINUX = sys.platform == "linux"
 WINDOWS = sys.platform in {"win32", "cygwin"}
 MAC = sys.platform == "darwin"
-MAC_ARM = sys.platform == "darwin" and platform.processor() == "arm64"
 PD_LTE_23 = Version(pd.__version__) < Version("2.3.999")
 NUMPY20 = np.lib.NumpyVersion(np.__version__) >= "2.0.0"
 
@@ -673,6 +671,6 @@ def pytest_warns_bounded(
 
 
 def exception_on_platform(dtype: type | str | ExtensionDtype) -> type[Exception] | None:
-    if (WINDOWS or MAC_ARM) and dtype in {"f16", "float128"}:
+    if (WINDOWS or MAC) and dtype in {"f16", "float128"}:
         return TypeError
     return None
