@@ -672,5 +672,7 @@ def pytest_warns_bounded(
     return suppress(upper_exception)
 
 
-def is_dtype_invalid_for_platform(dtype: type | str | ExtensionDtype) -> bool:
-    return (WINDOWS or MAC_ARM) and dtype in {"f16", "float128"}
+def exception_on_platform(dtype: type | str | ExtensionDtype) -> type[Exception] | None:
+    if (WINDOWS or MAC_ARM) and dtype in {"f16", "float128"}:
+        return TypeError
+    return None

@@ -10,7 +10,7 @@ from tests import (
     PANDAS_FLOAT_ARGS,
     PandasFloatDtypeArg,
     check,
-    is_dtype_invalid_for_platform,
+    exception_on_platform,
 )
 
 
@@ -32,8 +32,9 @@ def test_constructor() -> None:
 
 @pytest.mark.parametrize(("dtype", "target_dtype"), PANDAS_FLOAT_ARGS.items(), ids=repr)
 def test_constructor_dtype(dtype: PandasFloatDtypeArg, target_dtype: type) -> None:
-    if is_dtype_invalid_for_platform(dtype):
-        with pytest.raises(TypeError, match=rf"data type {dtype!r} not understood"):
+    exc = exception_on_platform(dtype)
+    if exc:
+        with pytest.raises(exc, match=rf"data type {dtype!r} not understood"):
             assert_type(pd.array([1.0], dtype=dtype), FloatingArray)
     else:
         check(pd.array([1.0], dtype=dtype), FloatingArray, target_dtype)
