@@ -3,6 +3,7 @@ from collections.abc import (
     Generator,
     Iterable,
     Mapping,
+    Sequence,
 )
 import sqlite3
 from typing import (
@@ -105,18 +106,17 @@ def read_sql_query(
 def read_sql(
     sql: _SQLStatement,
     con: _SQLConnection,
-    index_col: str | list[str] | None = ...,
-    coerce_float: bool = ...,
+    index_col: str | list[str] | None = None,
+    coerce_float: bool = True,
     params: (
-        list[Scalar]
-        | tuple[Scalar, ...]
+        Sequence[Scalar]
         | tuple[tuple[Scalar, ...], ...]
         | Mapping[str, Scalar]
         | Mapping[str, tuple[Scalar, ...]]
         | None
-    ) = ...,
-    parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
-    columns: list[str] | None = ...,
+    ) = None,
+    parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = None,
+    columns: list[str] | None = None,
     *,
     chunksize: int,
     dtype: DtypeArg | None = ...,
@@ -126,20 +126,19 @@ def read_sql(
 def read_sql(
     sql: _SQLStatement,
     con: _SQLConnection,
-    index_col: str | list[str] | None = ...,
-    coerce_float: bool = ...,
+    index_col: str | list[str] | None = None,
+    coerce_float: bool = True,
     params: (
-        list[Scalar]
-        | tuple[Scalar, ...]
+        Sequence[Scalar]
         | tuple[tuple[Scalar, ...], ...]
         | Mapping[str, Scalar]
         | Mapping[str, tuple[Scalar, ...]]
         | None
-    ) = ...,
-    parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = ...,
-    columns: list[str] | None = ...,
+    ) = None,
+    parse_dates: list[str] | dict[str, str] | dict[str, dict[str, Any]] | None = None,
+    columns: list[str] | None = None,
     chunksize: None = None,
-    dtype: DtypeArg | None = ...,
+    dtype: DtypeArg | None = None,
     dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
 ) -> DataFrame: ...
 
