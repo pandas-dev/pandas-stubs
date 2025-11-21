@@ -226,27 +226,6 @@ class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
 
 class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     @overload
-    def __getitem__(self, idx: Scalar) -> Series | _T: ...
-    @overload
-    def __getitem__(  # type: ignore[overload-overlap]
-        self,
-        idx: (
-            IndexType
-            | MaskType
-            | Callable[[DataFrame], IndexType | MaskType | Sequence[Hashable]]
-            | list[HashableT]
-            | tuple[
-                IndexType
-                | MaskType
-                | list[HashableT]
-                | slice
-                | _IndexSliceTuple
-                | Callable,
-                MaskType | list[HashableT] | IndexType | Callable,
-            ]
-        ),
-    ) -> _T: ...
-    @overload
     def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         self,
         idx: tuple[
@@ -277,7 +256,28 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
         ),
     ) -> Series: ...
     @overload
+    def __getitem__(self, idx: Scalar) -> Series | _T: ...
+    @overload
     def __getitem__(self, idx: tuple[Scalar, slice]) -> Series | _T: ...
+    @overload
+    def __getitem__(
+        self,
+        idx: (
+            IndexType
+            | MaskType
+            | Callable[[DataFrame], IndexType | MaskType | Sequence[Hashable]]
+            | list[HashableT]
+            | tuple[
+                IndexType
+                | MaskType
+                | list[HashableT]
+                | slice
+                | _IndexSliceTuple
+                | Callable,
+                MaskType | Iterable[HashableT] | IndexType | Callable,
+            ]
+        ),
+    ) -> _T: ...
 
     # Keep in sync with `DataFrame.__setitem__`
     @overload
