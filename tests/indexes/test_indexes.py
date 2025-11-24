@@ -1523,3 +1523,26 @@ def test_datetimeindex_where() -> None:
 
     val_range = pd.RangeIndex(2).where(pd.Series([True, False]), 3)
     check(assert_type(val_range, pd.Index), pd.RangeIndex)
+
+
+def test_index_set_names() -> None:
+    """Test Index.where with multiple types of other GH1419."""
+    idx = pd.Index([1, 2])
+    check(
+        assert_type(idx.set_names("chinchilla"), "pd.Index[int]"), pd.Index, np.integer
+    )
+    check(assert_type(idx.set_names((0,)), "pd.Index[int]"), pd.Index, np.integer)
+    check(
+        assert_type(idx.set_names(["chinchilla"]), "pd.Index[int]"),
+        pd.Index,
+        np.integer,
+    )
+
+    mi = pd.MultiIndex.from_arrays([[1, 2, 3], [4, 5, 6]], names=["elk", "owl"])
+    check(assert_type(mi.set_names(["beluga", "pig"]), pd.MultiIndex), pd.MultiIndex)
+    check(
+        assert_type(mi.set_names({"elk": "beluga", "owl": "pig"}), pd.MultiIndex),
+        pd.MultiIndex,
+    )
+    mi = cast("pd.MultiIndex", pd.Index([(1,)]))
+    check(assert_type(mi.set_names(1), pd.MultiIndex), pd.MultiIndex, tuple)
