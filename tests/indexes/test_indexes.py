@@ -1544,6 +1544,5 @@ def test_index_set_names() -> None:
         assert_type(mi.set_names({"elk": "beluga", "owl": "pig"}), pd.MultiIndex),
         pd.MultiIndex,
     )
-    check(
-        assert_type(pd.Index([(1,)]).set_names(1), pd.MultiIndex), pd.MultiIndex, tuple
-    )
+    mi = cast("pd.MultiIndex", pd.Index([(1,)]))
+    check(assert_type(mi.set_names(1), pd.MultiIndex), pd.MultiIndex, tuple)
