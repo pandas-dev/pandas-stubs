@@ -2,9 +2,11 @@ from collections.abc import (
     Callable,
     Hashable,
     Iterable,
+    Mapping,
     Sequence,
 )
 from typing import (
+    Any,
     final,
     overload,
 )
@@ -115,7 +117,7 @@ class MultiIndex(Index):
         name: list[HashableT] = ...,
         allow_duplicates: bool = False,
     ) -> pd.DataFrame: ...
-    def to_flat_index(self): ...
+    def to_flat_index(self) -> Index: ...
     def remove_unused_levels(self): ...
     @property
     def nlevels(self) -> int: ...
@@ -163,3 +165,10 @@ class MultiIndex(Index):
     def insert(self, loc, item): ...
     def delete(self, loc): ...
     def isin(self, values, level=...) -> np_1darray_bool: ...
+    def set_names(
+        self,
+        names: Hashable | Sequence[Hashable] | Mapping[Any, Hashable],
+        *,
+        level: Level | Sequence[Level] | None = None,
+        inplace: bool = False,
+    ) -> Self: ...

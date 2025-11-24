@@ -1529,6 +1529,7 @@ def test_index_set_names() -> None:
     """Test Index.where with multiple types of other GH1419."""
     idx = pd.Index([1, 2])
     check(assert_type(idx.set_names("chinchilla"), "pd.Index[int]"), pd.Index, np.int64)
+    check(assert_type(idx.set_names((0,)), "pd.Index[int]"), pd.Index, np.int64)
     check(
         assert_type(idx.set_names(["chinchilla"]), "pd.Index[int]"), pd.Index, np.int64
     )

@@ -3,7 +3,6 @@ from collections.abc import (
     Callable,
     Hashable,
     Iterable,
-    Mapping,
     Sequence,
 )
 from datetime import (
@@ -82,6 +81,7 @@ from pandas._typing import (
     AnyArrayLikeInt,
     ArrayLike,
     AxesData,
+    Axis,
     CategoryDtypeArg,
     DropKeep,
     Dtype,
@@ -365,19 +365,18 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def take(
         self,
         indices: TakeIndexer,
-        axis: int = 0,
+        axis: Axis = 0,
         allow_fill: bool = True,
         fill_value: Scalar | None = None,
         **kwargs: Any,
     ) -> Self: ...
     def repeat(
         self, repeats: int | AnyArrayLikeInt | Sequence[int], axis: None = None
-    ): ...
+    ) -> Self: ...
     def copy(self, name: Hashable = ..., deep: bool = False) -> Self: ...
     def format(
         self, name: bool = ..., formatter: Callable | None = ..., na_rep: _str = ...
     ) -> list[_str]: ...
-    def to_flat_index(self) -> Index: ...
     def to_series(
         self, index: Index | None = None, name: Hashable | None = None
     ) -> Series[S1]: ...
@@ -392,7 +391,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def names(self, names: SequenceNotStr[Hashable | None]) -> None: ...
     def set_names(
         self,
-        names: Hashable | Sequence[Hashable] | Mapping[Any, Hashable],
+        names: Hashable | Sequence[Hashable],
         *,
         level: Level | Sequence[Level] | None = None,
         inplace: bool = False,
