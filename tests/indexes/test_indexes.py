@@ -1526,7 +1526,6 @@ def test_datetimeindex_where() -> None:
 
 
 def test_index_set_names() -> None:
-    """Test Index.where with multiple types of other GH1419."""
     idx = pd.Index([1, 2])
     check(
         assert_type(idx.set_names("chinchilla"), "pd.Index[int]"), pd.Index, np.integer
@@ -1546,3 +1545,15 @@ def test_index_set_names() -> None:
     )
     mi = cast("pd.MultiIndex", pd.Index([(1,)]))
     check(assert_type(mi.set_names(1), pd.MultiIndex), pd.MultiIndex, tuple)
+
+
+def test_index_droplevel() -> None:
+    idx = pd.Index([1, 2])
+    check(assert_type(idx.droplevel([]), "pd.Index[int]"), pd.Index, np.integer)
+    mi = pd.MultiIndex.from_arrays([[1, 2, 3], [4, 5, 6]], names=["elk", "owl"])
+    check(assert_type(mi.droplevel([]), pd.MultiIndex | pd.Index), pd.MultiIndex)
+    check(assert_type(mi.droplevel([0]), pd.MultiIndex | pd.Index), pd.Index)
+    check(assert_type(mi.droplevel((0,)), pd.MultiIndex | pd.Index), pd.Index)
+    check(assert_type(mi.droplevel(["elk"]), pd.MultiIndex | pd.Index), pd.Index)
+    check(assert_type(mi.droplevel(("elk",)), pd.MultiIndex | pd.Index), pd.Index)
+    check(assert_type(mi.droplevel(0), pd.MultiIndex | pd.Index), pd.Index)
