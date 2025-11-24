@@ -1528,12 +1528,13 @@ def test_datetimeindex_where() -> None:
 def test_index_set_names() -> None:
     """Test Index.where with multiple types of other GH1419."""
     idx = pd.Index([1, 2])
-    check(assert_type(idx.set_names("chinchilla"), "pd.Index[int]"), pd.Index, np.int64)
-    check(assert_type(idx.set_names((0,)), "pd.Index[int]"), pd.Index, np.int64)
+    check(assert_type(idx.set_names("chinchilla"), "pd.Index[int]"), pd.Index, np.integer)
+    check(assert_type(idx.set_names((0,)), "pd.Index[int]"), pd.Index, np.integer)
     check(
-        assert_type(idx.set_names(["chinchilla"]), "pd.Index[int]"), pd.Index, np.int64
+        assert_type(idx.set_names(["chinchilla"]), "pd.Index[int]"), pd.Index, np.integer
     )
 
     mi = pd.MultiIndex.from_arrays([[1, 2, 3], [4, 5, 6]], names=["elk", "owl"])
-    mi.set_names(["beluga", "pig"])
-    mi.set_names({"elk": "beluga", "owl": "pig"})
+    check(assert_type(mi.set_names(["beluga", "pig"]), pd.MultiIndex), pd.MultiIndex)
+    check(assert_type(mi.set_names({"elk": "beluga", "owl": "pig"}), pd.MultiIndex), pd.MultiIndex)
+    check(assert_type(pd.Index([(1,)]).set_names(1), pd.MultiIndex), pd.MultiIndex, tuple)
