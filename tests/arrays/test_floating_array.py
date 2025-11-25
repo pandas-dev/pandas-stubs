@@ -20,12 +20,8 @@ def test_constructor() -> None:
     check(assert_type(pd.array([1.0, None]), FloatingArray), FloatingArray)
     check(assert_type(pd.array([1.0, pd.NA, None]), FloatingArray), FloatingArray)
 
-    check(
-        assert_type(  # type: ignore[assert-type] # I do not understand
-            pd.array(np.array([1.0], np.float64)), FloatingArray
-        ),
-        FloatingArray,
-    )
+    nparr = np.array([1.0], np.float64)
+    check(assert_type(pd.array(nparr), FloatingArray), FloatingArray)
 
     check(assert_type(pd.array(pd.array([1.0])), FloatingArray), FloatingArray)
 

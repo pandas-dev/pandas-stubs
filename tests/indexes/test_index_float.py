@@ -24,13 +24,8 @@ def test_constructor() -> None:
         pd.Index,
         np.floating,
     )
-    check(
-        assert_type(  # type: ignore[assert-type] # I do not understand
-            pd.Index(np.array([1.0], np.float64)), "pd.Index[float]"
-        ),
-        pd.Index,
-        np.floating,
-    )
+    nparr = np.array([1.0], np.float64)
+    check(assert_type(pd.Index(nparr), "pd.Index[float]"), pd.Index, np.floating)
     check(
         assert_type(pd.Index(pd.array([1.0])), "pd.Index[float]"),
         pd.Index,
