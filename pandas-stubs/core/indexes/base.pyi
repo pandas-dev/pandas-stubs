@@ -15,6 +15,7 @@ from typing import (
     ClassVar,
     Generic,
     Literal,
+    TypeAlias,
     final,
     overload,
     type_check_only,
@@ -29,6 +30,7 @@ from _typeshed import (
 )
 import numpy as np
 from pandas.core.arrays.boolean import BooleanArray
+from pandas.core.arrays.floating import FloatingArray
 from pandas.core.base import (
     ArrayIndexTimedeltaNoSeq,
     ElementOpsMixin,
@@ -82,6 +84,7 @@ from pandas._typing import (
     ArrayLike,
     AxesData,
     Axis,
+    BuiltinFloatDtypeArg,
     CategoryDtypeArg,
     DropKeep,
     Dtype,
@@ -98,6 +101,10 @@ from pandas._typing import (
     Level,
     MaskType,
     NaPosition,
+    NumpyFloatNot16DtypeArg,
+    PandasAstypeFloatDtypeArg,
+    PandasFloatDtypeArg,
+    PyArrowFloatDtypeArg,
     ReindexMethod,
     S2_contra,
     Scalar,
@@ -122,6 +129,13 @@ from pandas._typing import (
 )
 
 from pandas.core.dtypes.dtypes import PeriodDtype
+
+FloatNotNumpy16DtypeArg: TypeAlias = (
+    BuiltinFloatDtypeArg
+    | PandasFloatDtypeArg
+    | NumpyFloatNot16DtypeArg
+    | PyArrowFloatDtypeArg
+)
 
 class InvalidIndexError(Exception): ...
 
@@ -161,9 +175,8 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Sequence[float | np.floating] | IndexOpsMixin[float] | np_ndarray_float,
-        *,
-        dtype: Literal["float"] | type_t[float | np.floating] = ...,
+        data: Sequence[float | np.floating] | np_ndarray_float | FloatingArray,
+        dtype: None = None,
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
@@ -172,8 +185,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __new__(
         cls,
         data: AxesData,
-        *,
-        dtype: Literal["float"] | type_t[float | np.floating],
+        dtype: FloatNotNumpy16DtypeArg,
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
@@ -361,6 +373,13 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @final
     def ravel(self, order: _str = "C") -> Self: ...
     def view(self, cls=...): ...
+    @overload
+    def astype(
+        self,
+        dtype: FloatNotNumpy16DtypeArg | PandasAstypeFloatDtypeArg,
+        copy: bool = True,
+    ) -> Index[float]: ...
+    @overload
     def astype(self, dtype: DtypeArg, copy: bool = True) -> Index: ...
     def take(
         self,
