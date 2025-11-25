@@ -89,6 +89,7 @@ def test_constructor_dtype(
         assert_type(pd.Index([1.0], dtype="float64[pyarrow]"), "pd.Index[float]")
         assert_type(pd.Index([1.0], dtype="double[pyarrow]"), "pd.Index[float]")
 
+    # TODO: pandas-dev/pandas-stubs#1501
     # if TYPE_CHECKING_INVALID_USAGE:
     #     # numpy float16
     #     pd.Index([1.0], dtype=np.half)
