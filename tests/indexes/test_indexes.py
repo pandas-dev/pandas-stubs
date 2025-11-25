@@ -1557,3 +1557,9 @@ def test_index_droplevel() -> None:
     check(assert_type(mi.droplevel(["elk"]), pd.MultiIndex | pd.Index), pd.Index)
     check(assert_type(mi.droplevel(("elk",)), pd.MultiIndex | pd.Index), pd.Index)
     check(assert_type(mi.droplevel(0), pd.MultiIndex | pd.Index), pd.Index)
+
+
+def test_index_setitem() -> None:
+    idx = pd.Index([1, 2])
+    if TYPE_CHECKING_INVALID_USAGE:
+        idx[0] = 999  # type: ignore[index]  # pyright: ignore[reportIndexIssue]
