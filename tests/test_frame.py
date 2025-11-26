@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections import (
     OrderedDict,
+    UserDict,
     UserList,
     defaultdict,
     deque,
@@ -2948,6 +2949,10 @@ def test_frame_isin() -> None:
     check(assert_type(df.isin(pd.Index([1, 3, 5])), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.isin(df), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.isin({"x": [1, 2]}), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(df.isin(UserDict({"x": iter([1, "2"])})), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_frame_getitem_isin() -> None:

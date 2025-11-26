@@ -1618,6 +1618,7 @@ def test_series_isin() -> None:
         assert_type(s.isin(pd.Series([3, 4])), "pd.Series[bool]"), pd.Series, np.bool_
     )
     check(assert_type(s.isin(pd.Index([3, 4])), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(s.isin(iter([3, "4"])), "pd.Series[bool]"), pd.Series, np.bool_)
 
 
 def test_series_index_isin() -> None:

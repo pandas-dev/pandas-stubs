@@ -60,6 +60,7 @@ def test_index_isin() -> None:
     check(assert_type(ind.isin({2, 4}), np_1darray_bool), np_1darray_bool)
     check(assert_type(ind.isin(pd.Series([2, 4])), np_1darray_bool), np_1darray_bool)
     check(assert_type(ind.isin(pd.Index([2, 4])), np_1darray_bool), np_1darray_bool)
+    check(assert_type(ind.isin(iter([2, "4"])), np_1darray_bool), np_1darray_bool)
 
 
 def test_index_astype() -> None:
