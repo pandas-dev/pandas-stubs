@@ -23,6 +23,8 @@ from typing_extensions import (
     assert_type,
 )
 
+from pandas._typing import Scalar  # noqa: F401
+
 from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
@@ -1582,3 +1584,77 @@ def test_index_setitem() -> None:
     idx = pd.Index([1, 2])
     if TYPE_CHECKING_INVALID_USAGE:
         idx[0] = 999  # type: ignore[index]  # pyright: ignore[reportIndexIssue]
+
+
+def test_index_putmask() -> None:
+    idx = pd.Index([1, 2])
+    check(assert_type(idx.putmask([True, False], 11.4), "pd.Index"), pd.Index)
+    check(assert_type(idx.putmask(np.array([True, False]), 11.4), "pd.Index"), pd.Index)
+    check(
+        assert_type(idx.putmask(pd.Series([True, False]), 11.4), "pd.Index"), pd.Index
+    )
+    check(assert_type(idx.putmask(pd.Index([True, False]), 11.4), "pd.Index"), pd.Index)
+    check(assert_type(idx.putmask(pd.array([True, False]), 11.5), "pd.Index"), pd.Index)
+
+
+def test_index_asof() -> None:
+    check(assert_type(pd.Index([1, 2]).asof(1), "Scalar"), np.integer)
+    check(assert_type(pd.Index(["a", "b", "c"]).asof("c"), "Scalar"), str)
+
+
+def test_index_asof_locs() -> None:
+    idx = pd.DatetimeIndex(["2020-01-01", "2020-01-02", "2020-01-03"])
+    check(
+        assert_type(
+            idx.asof_locs(
+                pd.DatetimeIndex(["2020-01-01 11:00"]), np.array([True, True, True])
+            ),
+            np_1darray_intp,
+        ),
+        np_1darray_intp,
+    )
+
+
+def test_index_sort_values() -> None:
+    idx = pd.DatetimeIndex(["2020-01-01", "2020-01-02", "2020-01-03"])
+    check(assert_type(idx.sort_values(), pd.DatetimeIndex), pd.DatetimeIndex)
+    sorted_index, indexer = idx.sort_values(return_indexer=True)
+    check(assert_type(sorted_index, pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(indexer, np_1darray_intp), np_1darray_intp)
+
+
+def test_index_get_indexer_non_unique() -> None:
+    idx = pd.Index([1, 3])
+    indexer, missing = idx.get_indexer_non_unique(pd.Index([3]))
+    check(assert_type(indexer, np_1darray_intp), np_1darray_intp)
+    check(assert_type(missing, np_1darray_intp), np_1darray_intp)
+
+
+def test_index_get_indexer_for() -> None:
+    idx = pd.Index([1, 3])
+    check(
+        assert_type(idx.get_indexer_for(pd.Index([3])), np_1darray_intp),
+        np_1darray_intp,
+    )
+
+
+def test_index_map() -> None:
+    idx = pd.Index([1, 3])
+    check(assert_type(idx.map(lambda x: str(x)), pd.Index), pd.Index)
+
+
+def test_index_slice_indexer() -> None:
+    idx = pd.Index([1, 3])
+    check(assert_type(idx.slice_indexer(0, 1), slice), slice)
+
+
+def test_index_get_slice_bound() -> None:
+    idx = pd.Index([1, 3])
+    check(assert_type(idx.get_slice_bound(1, side="left"), int), int)
+
+
+def test_index_slice_locs() -> None:
+    idx = pd.Index([1, 3])
+    start, end = idx.slice_locs(0, 1)
+    check(assert_type(start, np.intp | int), np.integer)
+    check(assert_type(end, np.intp | int), int)
