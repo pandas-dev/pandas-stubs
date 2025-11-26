@@ -1589,6 +1589,12 @@ def test_index_setitem() -> None:
 def test_index_putmask() -> None:
     idx = pd.Index([1, 2])
     check(assert_type(idx.putmask([True, False], 11.4), "pd.Index"), pd.Index)
+    check(assert_type(idx.putmask(np.array([True, False]), 11.4), "pd.Index"), pd.Index)
+    check(
+        assert_type(idx.putmask(pd.Series([True, False]), 11.4), "pd.Index"), pd.Index
+    )
+    check(assert_type(idx.putmask(pd.Index([True, False]), 11.4), "pd.Index"), pd.Index)
+    check(assert_type(idx.putmask(pd.array([True, False]), 11.5), "pd.Index"), pd.Index)
 
 
 def test_index_asof() -> None:
