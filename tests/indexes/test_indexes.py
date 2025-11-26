@@ -1625,9 +1625,9 @@ def test_index_sort_values() -> None:
 
 def test_index_get_indexer_non_unique() -> None:
     idx = pd.Index([1, 3])
-    res = idx.get_indexer_non_unique(pd.Index([3]))
-    check(assert_type(res[0], np_1darray_intp), np_1darray_intp)
-    check(assert_type(res[1], np_1darray_intp), np_1darray_intp)
+    indexer, missing = idx.get_indexer_non_unique(pd.Index([3]))
+    check(assert_type(indexer, np_1darray_intp), np_1darray_intp)
+    check(assert_type(missing, np_1darray_intp), np_1darray_intp)
 
 
 def test_index_get_indexer_for() -> None:
@@ -1655,6 +1655,6 @@ def test_index_get_slice_bound() -> None:
 
 def test_index_slice_locs() -> None:
     idx = pd.Index([1, 3])
-    res = idx.slice_locs(0, 1)
-    check(assert_type(res[0], np.intp | int), np.integer)
-    check(assert_type(res[1], np.intp | int), int)
+    start, end = idx.slice_locs(0, 1)
+    check(assert_type(start, np.intp | int), np.integer)
+    check(assert_type(end, np.intp | int), int)
