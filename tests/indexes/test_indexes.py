@@ -1598,8 +1598,8 @@ def test_index_putmask() -> None:
 
 
 def test_index_asof() -> None:
-    idx = pd.Index([1, 2])
-    check(assert_type(idx.asof(1), "Scalar"), np.integer)
+    check(assert_type(pd.Index([1, 2]).asof(1), "Scalar"), np.integer)
+    check(assert_type(pd.Index(["a", "b", "c"]).asof("c"), "Scalar"), str)
 
 
 def test_index_asof_locs() -> None:
