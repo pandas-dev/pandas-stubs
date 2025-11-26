@@ -28,7 +28,6 @@ from _typeshed import (
     _T_contra,
 )
 import numpy as np
-import numpy.typing as npt
 from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.base import (
     ArrayIndexTimedeltaNoSeq,
@@ -567,7 +566,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def get_slice_bound(self, label: Scalar, side: Literal["left", "right"]) -> int: ...
     def slice_locs(
         self, start: SliceType = None, end: SliceType = None, step: int | None = None
-    ) -> tuple[int | np.integer, int | np.integer]: ...
+    ) -> tuple[int | np.intp, int | np.intp]: ...
     def delete(
         self, loc: np.integer | int | AnyArrayLikeInt | Sequence[int]
     ) -> Self: ...

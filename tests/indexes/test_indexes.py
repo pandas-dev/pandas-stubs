@@ -1650,5 +1650,5 @@ def test_index_get_slice_bound() -> None:
 def test_index_slice_locs() -> None:
     idx = pd.Index([1, 3])
     res = idx.slice_locs(0, 1)
-    check(assert_type(res[0], np.integer | int), np.integer)
-    check(assert_type(res[1], np.integer | int), int)
+    check(assert_type(res[0], np.intp | int), np.integer)
+    check(assert_type(res[1], np.intp | int), int)
