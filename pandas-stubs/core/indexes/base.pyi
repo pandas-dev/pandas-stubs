@@ -526,7 +526,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @final
     def asof(self, label: Scalar) -> Scalar: ...
     def asof_locs(
-        self, where: DatetimeIndex, mask: npt.NDArray[np.bool_]
+        self, where: DatetimeIndex, mask: np_ndarray_bool
     ) -> np_1darray_intp: ...
     @overload
     def sort_values(

@@ -1612,9 +1612,9 @@ def test_index_asof_locs() -> None:
 def test_index_sort_values() -> None:
     idx = pd.DatetimeIndex(["2020-01-01", "2020-01-02", "2020-01-03"])
     check(assert_type(idx.sort_values(), pd.DatetimeIndex), pd.DatetimeIndex)
-    sorted_ = idx.sort_values(return_indexer=True)
-    check(assert_type(sorted_[0], pd.DatetimeIndex), pd.DatetimeIndex)
-    check(assert_type(sorted_[1], np_1darray_intp), np_1darray_intp)
+    sorted_index, indexer = idx.sort_values(return_indexer=True)
+    check(assert_type(sorted_index, pd.DatetimeIndex), pd.DatetimeIndex)
+    check(assert_type(indexer, np_1darray_intp), np_1darray_intp)
 
 
 def test_index_get_indexer_non_unique() -> None:
