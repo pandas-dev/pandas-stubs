@@ -2940,6 +2940,16 @@ def test_getmultiindex_columns() -> None:
     check(assert_type(df[li[0]], pd.Series), pd.Series)
 
 
+def test_frame_isin() -> None:
+    df = pd.DataFrame({"x": [1, 2, 3, 4, 5]}, index=[1, 2, 3, 4, 5])
+    check(assert_type(df.isin([1, 3, 5]), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.isin({1, 3, 5}), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.isin(pd.Series([1, 3, 5])), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.isin(pd.Index([1, 3, 5])), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.isin(df), pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.isin({"x": [1, 2]}), pd.DataFrame), pd.DataFrame)
+
+
 def test_frame_getitem_isin() -> None:
     df = pd.DataFrame({"x": [1, 2, 3, 4, 5]}, index=[1, 2, 3, 4, 5])
     check(assert_type(df[df.index.isin([1, 3, 5])], pd.DataFrame), pd.DataFrame)

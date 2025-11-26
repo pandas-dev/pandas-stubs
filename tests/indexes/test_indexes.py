@@ -56,8 +56,10 @@ def test_index_duplicated() -> None:
 
 def test_index_isin() -> None:
     ind = pd.Index([1, 2, 3, 4, 5])
-    isin = ind.isin([2, 4])
-    check(assert_type(isin, np_1darray_bool), np_1darray_bool)
+    check(assert_type(ind.isin([2, 4]), np_1darray_bool), np_1darray_bool)
+    check(assert_type(ind.isin({2, 4}), np_1darray_bool), np_1darray_bool)
+    check(assert_type(ind.isin(pd.Series([2, 4])), np_1darray_bool), np_1darray_bool)
+    check(assert_type(ind.isin(pd.Index([2, 4])), np_1darray_bool), np_1darray_bool)
 
 
 def test_index_astype() -> None:

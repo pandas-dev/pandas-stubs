@@ -1610,6 +1610,16 @@ def test_series_min_max_sub_axis() -> None:
     check(assert_type(df.max(axis=1), pd.Series), pd.Series)
 
 
+def test_series_isin() -> None:
+    s = pd.Series([1, 2, 3, 4, 5])
+    check(assert_type(s.isin([3, 4]), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(s.isin({3, 4}), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(
+        assert_type(s.isin(pd.Series([3, 4])), "pd.Series[bool]"), pd.Series, np.bool_
+    )
+    check(assert_type(s.isin(pd.Index([3, 4])), "pd.Series[bool]"), pd.Series, np.bool_)
+
+
 def test_series_index_isin() -> None:
     s = pd.Series([1, 2, 3, 4, 5], index=[1, 2, 2, 3, 3])
     t1 = s.loc[s.index.isin([1, 3])]
