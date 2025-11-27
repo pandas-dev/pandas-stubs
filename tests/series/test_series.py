@@ -54,9 +54,15 @@ from pandas._typing import (
 from pandas.core.dtypes.dtypes import CategoricalDtype  # noqa F401
 
 from tests import (
+    ASTYPE_FLOAT_ARGS,
+    LINUX,
+    MAC,
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     WINDOWS,
+    PandasAstypeComplexDtypeArg,
+    PandasAstypeTimedeltaDtypeArg,
+    PandasAstypeTimestampDtypeArg,
     check,
     ensure_clean,
     np_1darray,
@@ -90,7 +96,6 @@ if TYPE_CHECKING:
         BytesDtypeArg,
         CategoryDtypeArg,
         ComplexDtypeArg,
-        FloatDtypeArg,
         IntDtypeArg,
         ObjectDtypeArg,
         StrDtypeArg,
@@ -578,10 +583,14 @@ def test_types_cumsum() -> None:
 
 def test_types_min() -> None:
     s = pd.Series([1, 2, 3, np.nan])
-    s.min()
-    s.min(axis=0)
-    s.groupby(level=0).min()
-    s.min(skipna=False)
+    check(assert_type(s.min(), float), np.floating)
+    check(assert_type(s.min(axis=0), float), np.floating)
+    check(
+        assert_type(s.groupby(level=0).min(), "pd.Series[float]"),
+        pd.Series,
+        np.floating,
+    )
+    check(assert_type(s.min(skipna=False), float), np.floating)
 
 
 def test_types_max() -> None:
@@ -2360,50 +2369,10 @@ ASTYPE_UINT_ARGS: list[tuple[UIntDtypeArg, type]] = [
     ("uint64[pyarrow]", int),
 ]
 
-ASTYPE_FLOAT_ARGS: list[tuple[FloatDtypeArg, type]] = [
-    # python float
-    (float, np.floating),
-    ("float", np.floating),
-    # pandas Float32
-    (pd.Float32Dtype(), np.float32),
-    ("Float32", np.float32),
-    # pandas Float64
-    (pd.Float64Dtype(), np.float64),
-    ("Float64", np.float64),
-    # numpy float16
-    (np.half, np.half),
-    ("half", np.half),
-    ("e", np.half),
-    ("float16", np.float16),
-    ("f2", np.float16),
-    # numpy float32
-    (np.single, np.single),
-    ("single", np.single),
-    ("f", np.single),
-    ("float32", np.float32),
-    ("f4", np.float32),
-    # numpy float64
-    (np.double, np.double),
-    ("double", np.double),
-    ("d", np.double),
-    ("float64", np.float64),
-    ("f8", np.float64),
-    # numpy float128
-    (np.longdouble, np.longdouble),
-    ("longdouble", np.longdouble),
-    ("g", np.longdouble),
-    ("f16", np.longdouble),
-    # ("float96", np.longdouble),  # NOTE: unsupported
-    ("float128", np.longdouble),  # NOTE: UNIX ONLY
-    # pyarrow float32
-    ("float32[pyarrow]", float),
-    ("float[pyarrow]", float),
-    # pyarrow float64
-    ("float64[pyarrow]", float),
-    ("double[pyarrow]", float),
-]
 
-ASTYPE_COMPLEX_ARGS: list[tuple[ComplexDtypeArg, type]] = [
+ASTYPE_COMPLEX_ARGS: list[
+    tuple[ComplexDtypeArg | PandasAstypeComplexDtypeArg, type]
+] = [
     # python complex
     (complex, np.complexfloating),
     ("complex", np.complexfloating),
@@ -2429,7 +2398,9 @@ ASTYPE_COMPLEX_ARGS: list[tuple[ComplexDtypeArg, type]] = [
 ]
 
 
-ASTYPE_TIMESTAMP_ARGS: list[tuple[TimestampDtypeArg, type]] = [
+ASTYPE_TIMESTAMP_ARGS: list[
+    tuple[TimestampDtypeArg | PandasAstypeTimestampDtypeArg, type]
+] = [
     # numpy datetime64
     ("datetime64[Y]", datetime.datetime),
     ("datetime64[M]", datetime.datetime),
@@ -2486,7 +2457,9 @@ ASTYPE_TIMESTAMP_ARGS: list[tuple[TimestampDtypeArg, type]] = [
 ]
 
 
-ASTYPE_TIMEDELTA_ARGS: list[tuple[TimedeltaDtypeArg, type]] = [
+ASTYPE_TIMEDELTA_ARGS: list[
+    tuple[TimedeltaDtypeArg | PandasAstypeTimedeltaDtypeArg, type]
+] = [
     # numpy timedelta64
     ("timedelta64[Y]", datetime.timedelta),
     ("timedelta64[M]", datetime.timedelta),
@@ -2620,13 +2593,14 @@ def test_astype_bool(cast_arg: BooleanDtypeArg, target_type: type) -> None:
 def test_astype_int(cast_arg: IntDtypeArg, target_type: type) -> None:
     s = pd.Series([1, 2, 3])
 
-    if cast_arg in (np.longlong, "longlong", "q"):
-        pytest.skip(
-            "longlong is bugged, for details, see"
-            "https://github.com/pandas-dev/pandas/issues/54252"
-        )
-
-    check(s.astype(cast_arg), pd.Series, target_type)
+    s_astype = s.astype(cast_arg)
+    if (LINUX or MAC) and cast_arg in {np.longlong, "longlong", "q"}:
+        # TODO: pandas-dev/pandas#54252 longlong is bugged on Linux and Mac
+        msg = rf"Expected type '{target_type}' but got '{type(s_astype.iloc[0])}'"
+        with pytest.raises(RuntimeError, match=msg):
+            check(s_astype, pd.Series, target_type)
+    else:
+        check(s_astype, pd.Series, target_type)
 
     if TYPE_CHECKING:
         # python int
@@ -2732,68 +2706,6 @@ def test_astype_uint(cast_arg: IntDtypeArg, target_type: type) -> None:
         assert_type(s.astype("uint16[pyarrow]"), "pd.Series[int]")
         assert_type(s.astype("uint32[pyarrow]"), "pd.Series[int]")
         assert_type(s.astype("uint64[pyarrow]"), "pd.Series[int]")
-
-
-@pytest.mark.parametrize("cast_arg, target_type", ASTYPE_FLOAT_ARGS, ids=repr)
-def test_astype_float(cast_arg: FloatDtypeArg, target_type: type) -> None:
-    s = pd.Series([1, 2, 3])
-
-    if platform.system() == "Windows" and cast_arg in ("f16", "float128"):
-        with pytest.raises(TypeError):
-            s.astype(cast_arg)
-        pytest.skip("Windows does not support float128")
-
-    if (
-        platform.system() == "Darwin"
-        and platform.processor() == "arm"
-        and cast_arg in ("f16", "float128")
-    ):
-        with pytest.raises(TypeError):
-            s.astype(cast_arg)
-        pytest.skip("MacOS arm does not support float128")
-
-    check(s.astype(cast_arg), pd.Series, target_type)
-
-    if TYPE_CHECKING:
-        # python float
-        assert_type(s.astype(float), "pd.Series[float]")
-        assert_type(s.astype("float"), "pd.Series[float]")
-        # pandas Float32
-        assert_type(s.astype(pd.Float32Dtype()), "pd.Series[float]")
-        assert_type(s.astype("Float32"), "pd.Series[float]")
-        # pandas Float64
-        assert_type(s.astype(pd.Float64Dtype()), "pd.Series[float]")
-        assert_type(s.astype("Float64"), "pd.Series[float]")
-        # numpy float16
-        assert_type(s.astype(np.half), "pd.Series[float]")
-        assert_type(s.astype("half"), "pd.Series[float]")
-        assert_type(s.astype("float16"), "pd.Series[float]")
-        assert_type(s.astype("e"), "pd.Series[float]")
-        assert_type(s.astype("f2"), "pd.Series[float]")
-        # numpy float32
-        assert_type(s.astype(np.single), "pd.Series[float]")
-        assert_type(s.astype("single"), "pd.Series[float]")
-        assert_type(s.astype("float32"), "pd.Series[float]")
-        assert_type(s.astype("f"), "pd.Series[float]")
-        assert_type(s.astype("f4"), "pd.Series[float]")
-        # numpy float64
-        assert_type(s.astype(np.double), "pd.Series[float]")
-        assert_type(s.astype("double"), "pd.Series[float]")
-        assert_type(s.astype("float64"), "pd.Series[float]")
-        assert_type(s.astype("d"), "pd.Series[float]")
-        assert_type(s.astype("f8"), "pd.Series[float]")
-        # numpy float128
-        assert_type(s.astype(np.longdouble), "pd.Series[float]")
-        assert_type(s.astype("longdouble"), "pd.Series[float]")
-        assert_type(s.astype("float128"), "pd.Series[float]")
-        assert_type(s.astype("g"), "pd.Series[float]")
-        assert_type(s.astype("f16"), "pd.Series[float]")
-        # pyarrow float32
-        assert_type(s.astype("float32[pyarrow]"), "pd.Series[float]")
-        assert_type(s.astype("float[pyarrow]"), "pd.Series[float]")
-        # pyarrow float64
-        assert_type(s.astype("float64[pyarrow]"), "pd.Series[float]")
-        assert_type(s.astype("double[pyarrow]"), "pd.Series[float]")
 
 
 @pytest.mark.parametrize("cast_arg, target_type", ASTYPE_COMPLEX_ARGS, ids=repr)
@@ -3107,7 +3019,7 @@ def test_all_astype_args_tested() -> None:
         ASTYPE_BOOL_ARGS
         + ASTYPE_INT_ARGS
         + ASTYPE_UINT_ARGS
-        + ASTYPE_FLOAT_ARGS
+        + list(ASTYPE_FLOAT_ARGS.items())
         + ASTYPE_COMPLEX_ARGS
         + ASTYPE_TIMEDELTA_ARGS
         + ASTYPE_TIMESTAMP_ARGS

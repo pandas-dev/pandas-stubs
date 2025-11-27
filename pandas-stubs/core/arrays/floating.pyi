@@ -1,4 +1,8 @@
-from pandas.core.arrays.numeric import NumericDtype
+from pandas.core.arrays.numeric import (
+    NumericArray,
+    NumericDtype,
+)
 
 class Float32Dtype(NumericDtype): ...
 class Float64Dtype(NumericDtype): ...
+class FloatingArray(NumericArray): ...

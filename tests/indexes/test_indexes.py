@@ -458,6 +458,25 @@ def test_interval_range() -> None:
         pd.IntervalIndex,
         pd.Interval,
     )
+    check(
+        assert_type(
+            pd.interval_range(None, pd.Timestamp("2020-01-01"), 2, "1D"),
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
+
+    check(
+        assert_type(
+            pd.interval_range(
+                None, end=pd.Timestamp("2020-01-01"), periods=2, freq="1D"
+            ),
+            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
+        ),
+        pd.IntervalIndex,
+        pd.Interval,
+    )
 
 
 def test_interval_index_breaks() -> None:
@@ -1523,3 +1542,43 @@ def test_datetimeindex_where() -> None:
 
     val_range = pd.RangeIndex(2).where(pd.Series([True, False]), 3)
     check(assert_type(val_range, pd.Index), pd.RangeIndex)
+
+
+def test_index_set_names() -> None:
+    idx = pd.Index([1, 2])
+    check(
+        assert_type(idx.set_names("chinchilla"), "pd.Index[int]"), pd.Index, np.integer
+    )
+    check(assert_type(idx.set_names((0,)), "pd.Index[int]"), pd.Index, np.integer)
+    check(
+        assert_type(idx.set_names(["chinchilla"]), "pd.Index[int]"),
+        pd.Index,
+        np.integer,
+    )
+
+    mi = pd.MultiIndex.from_arrays([[1, 2, 3], [4, 5, 6]], names=["elk", "owl"])
+    check(assert_type(mi.set_names(["beluga", "pig"]), pd.MultiIndex), pd.MultiIndex)
+    check(
+        assert_type(mi.set_names({"elk": "beluga", "owl": "pig"}), pd.MultiIndex),
+        pd.MultiIndex,
+    )
+    mi = cast("pd.MultiIndex", pd.Index([(1,)]))
+    check(assert_type(mi.set_names(1), pd.MultiIndex), pd.MultiIndex, tuple)
+
+
+def test_index_droplevel() -> None:
+    idx = pd.Index([1, 2])
+    check(assert_type(idx.droplevel([]), "pd.Index[int]"), pd.Index, np.integer)
+    mi = pd.MultiIndex.from_arrays([[1, 2, 3], [4, 5, 6]], names=["elk", "owl"])
+    check(assert_type(mi.droplevel([]), pd.MultiIndex | pd.Index), pd.MultiIndex)
+    check(assert_type(mi.droplevel([0]), pd.MultiIndex | pd.Index), pd.Index)
+    check(assert_type(mi.droplevel((0,)), pd.MultiIndex | pd.Index), pd.Index)
+    check(assert_type(mi.droplevel(["elk"]), pd.MultiIndex | pd.Index), pd.Index)
+    check(assert_type(mi.droplevel(("elk",)), pd.MultiIndex | pd.Index), pd.Index)
+    check(assert_type(mi.droplevel(0), pd.MultiIndex | pd.Index), pd.Index)
+
+
+def test_index_setitem() -> None:
+    idx = pd.Index([1, 2])
+    if TYPE_CHECKING_INVALID_USAGE:
+        idx[0] = 999  # type: ignore[index]  # pyright: ignore[reportIndexIssue]

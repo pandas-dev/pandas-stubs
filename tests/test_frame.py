@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from collections import (
     OrderedDict,
+    UserList,
     defaultdict,
+    deque,
 )
 from collections.abc import (
     Callable,
@@ -713,6 +715,7 @@ def test_types_mean() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(assert_type(df.mean(), pd.Series), pd.Series)
     check(assert_type(df.mean(axis=0), pd.Series), pd.Series)
+    check(assert_type(df.mean(axis=None), Scalar), np.floating)
     check(assert_type(df.groupby(level=0).mean(), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(df.mean(axis=1, skipna=True, numeric_only=False), pd.Series),
@@ -724,6 +727,7 @@ def test_types_median() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(assert_type(df.median(), pd.Series), pd.Series)
     check(assert_type(df.median(axis=0), pd.Series), pd.Series)
+    check(assert_type(df.median(axis=None), Scalar), np.floating)
     check(assert_type(df.groupby(level=0).median(), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(df.median(axis=1, skipna=True, numeric_only=False), pd.Series),
@@ -820,12 +824,14 @@ def test_types_min() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(assert_type(df.min(), pd.Series), pd.Series)
     check(assert_type(df.min(axis=0), pd.Series), pd.Series)
+    check(assert_type(df.min(axis=None), Scalar), np.integer)
 
 
 def test_types_max() -> None:
     df = pd.DataFrame(data={"col1": [2, 1], "col2": [3, 4]})
     check(assert_type(df.max(), pd.Series), pd.Series)
     check(assert_type(df.max(axis=0), pd.Series), pd.Series)
+    check(assert_type(df.max(axis=None), Scalar), np.integer)
 
 
 def test_types_quantile() -> None:
@@ -3714,12 +3720,28 @@ def test_loc_int_set() -> None:
     df.loc[np.uint64(1)] = [2, 3]
 
 
-def test_loclist() -> None:
-    # GH 189
+@pytest.mark.parametrize("col", [1, None])
+@pytest.mark.parametrize("typ", [list, tuple, deque, UserList, iter])
+def test_loc_iterable(col: Hashable, typ: type) -> None:
+    # GH 189, GH 1410
     df = pd.DataFrame({1: [1, 2], None: 5}, columns=pd.Index([1, None], dtype=object))
+    check(df.loc[:, typ([col])], pd.DataFrame)
 
-    check(assert_type(df.loc[:, [None]], pd.DataFrame), pd.DataFrame)
-    check(assert_type(df.loc[:, [1]], pd.DataFrame), pd.DataFrame)
+    if TYPE_CHECKING:
+        assert_type(df.loc[:, [None]], pd.DataFrame)
+        assert_type(df.loc[:, [1]], pd.DataFrame)
+
+        assert_type(df.loc[:, (None,)], pd.DataFrame)
+        assert_type(df.loc[:, (1,)], pd.DataFrame)
+
+        assert_type(df.loc[:, deque([None])], pd.DataFrame)
+        assert_type(df.loc[:, deque([1])], pd.DataFrame)
+
+        assert_type(df.loc[:, UserList([None])], pd.DataFrame)
+        assert_type(df.loc[:, UserList([1])], pd.DataFrame)
+
+        assert_type(df.loc[:, (None for _ in [0])], pd.DataFrame)
+        assert_type(df.loc[:, (1 for _ in [0])], pd.DataFrame)
 
 
 def test_dict_items() -> None:
