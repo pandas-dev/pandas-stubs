@@ -62,6 +62,11 @@ def test_index_isin() -> None:
     check(assert_type(ind.isin(pd.Index([2, 4])), np_1darray_bool), np_1darray_bool)
     check(assert_type(ind.isin(iter([2, "4"])), np_1darray_bool), np_1darray_bool)
 
+    mi = pd.MultiIndex.from_arrays([[1, 2, 3]])
+    check(assert_type(mi.isin([[3]]), np_1darray_bool), np_1darray_bool)
+    if TYPE_CHECKING_INVALID_USAGE:
+        mi.isin({3})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+
 
 def test_index_astype() -> None:
     indi = pd.Index([1, 2, 3])
