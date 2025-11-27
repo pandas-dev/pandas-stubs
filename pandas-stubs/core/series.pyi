@@ -29,7 +29,6 @@ from typing import (
     NoReturn,
     Protocol,
     TypeAlias,
-    TypeVar,
     final,
     overload,
     type_check_only,
@@ -71,6 +70,7 @@ from pandas.core.arrays.datetimes import DatetimeArray
 from pandas.core.arrays.floating import FloatingArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.base import (
+    T_INTERVAL_NP,
     ArrayIndexSeriesTimedeltaNoSeq,
     ArrayIndexTimedeltaNoSeq,
     ElementOpsMixin,
@@ -189,6 +189,7 @@ from pandas._typing import (
     MaskType,
     NaPosition,
     NsmallestNlargestKeep,
+    NumpyStrDtypeArg,
     ObjectDtypeArg,
     PandasAstypeComplexDtypeArg,
     PandasAstypeFloatDtypeArg,
@@ -250,8 +251,6 @@ from pandas.core.dtypes.base import ExtensionDtype
 from pandas.core.dtypes.dtypes import CategoricalDtype
 
 from pandas.plotting import PlotAccessor
-
-_T_INTERVAL_NP = TypeVar("_T_INTERVAL_NP", bound=np.bytes_ | np.str_)
 
 @type_check_only
 class _SupportsAdd(Protocol[_T_co]):
@@ -4503,7 +4502,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,
-    ) -> np_1darray_bytes: ...
+    ) -> np_1darray: ...
     @overload
     def to_numpy(
         self: Series[Interval],
@@ -4515,11 +4514,11 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def to_numpy(
         self: Series[Interval],
-        dtype: type[_T_INTERVAL_NP],
+        dtype: type[T_INTERVAL_NP],
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,
-    ) -> np_1darray[_T_INTERVAL_NP]: ...
+    ) -> np_1darray: ...
     @overload
     def to_numpy(
         self: Series[int],
@@ -4555,11 +4554,27 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def to_numpy(
         self: Series[_str],
-        dtype: DTypeLike | None = None,
+        dtype: NumpyStrDtypeArg,
         copy: bool = False,
         na_value: Scalar = ...,
         **kwargs: Any,
     ) -> np_1darray_str: ...
+    @overload
+    def to_numpy(
+        self: Series[_str],
+        dtype: DTypeLike,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs: Any,
+    ) -> np_1darray: ...
+    @overload
+    def to_numpy(
+        self: Series[_str],
+        dtype: None = None,
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs: Any,
+    ) -> np_1darray_object: ...
     @overload
     def to_numpy(
         self: Series[bytes],

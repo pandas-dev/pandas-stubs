@@ -8,13 +8,14 @@ from typing_extensions import assert_type
 from tests import (
     ASTYPE_FLOAT_NOT_NUMPY16_ARGS,
     TYPE_FLOAT_NOT_NUMPY16_ARGS,
-    PandasAstypeFloatDtypeArg,
     check,
     exception_on_platform,
 )
 
 if TYPE_CHECKING:
     from pandas.core.indexes.base import FloatNotNumpy16DtypeArg
+
+    from pandas._typing import PandasAstypeFloatDtypeArg
 
 
 def test_constructor() -> None:

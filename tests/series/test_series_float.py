@@ -8,11 +8,15 @@ from typing_extensions import assert_type
 from tests import (
     ASTYPE_FLOAT_ARGS,
     TYPE_FLOAT_ARGS,
-    FloatDtypeArg,
-    PandasAstypeFloatDtypeArg,
     check,
     exception_on_platform,
 )
+
+if TYPE_CHECKING:
+    from pandas._typing import (
+        FloatDtypeArg,
+        PandasAstypeFloatDtypeArg,
+    )
 
 
 def test_constructor() -> None:
@@ -45,7 +49,7 @@ def test_constructor() -> None:
 
 
 @pytest.mark.parametrize(("dtype", "target_dtype"), TYPE_FLOAT_ARGS.items())
-def test_constructor_dtype(dtype: FloatDtypeArg, target_dtype: type) -> None:
+def test_constructor_dtype(dtype: "FloatDtypeArg", target_dtype: type) -> None:
     exc = exception_on_platform(dtype)
     if exc:
         with pytest.raises(exc, match=rf"data type {dtype!r} not understood"):
@@ -99,7 +103,7 @@ def test_constructor_dtype(dtype: FloatDtypeArg, target_dtype: type) -> None:
     ("cast_arg", "target_type"), ASTYPE_FLOAT_ARGS.items(), ids=repr
 )
 def test_astype_float(
-    cast_arg: FloatDtypeArg | PandasAstypeFloatDtypeArg, target_type: type
+    cast_arg: "FloatDtypeArg | PandasAstypeFloatDtypeArg", target_type: type
 ) -> None:
     s = pd.Series([1, 2, 3])
 

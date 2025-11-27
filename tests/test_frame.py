@@ -56,9 +56,6 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     ensure_clean,
-    np_1darray,
-    np_2darray,
-    np_ndarray,
     pytest_warns_bounded,
 )
 
@@ -76,8 +73,19 @@ from pandas.tseries.offsets import (
 if TYPE_CHECKING:
     from pandas.core.frame import _PandasNamedTuple
 
-    from pandas._typing import S1
+    from pandas._typing import (
+        S1,
+        np_1darray,
+        np_2darray,
+        np_ndarray,
+    )
 else:
+    from tests._typing import (
+        np_1darray,
+        np_2darray,
+        np_ndarray,
+    )
+
     _PandasNamedTuple: TypeAlias = tuple
 
 if not PD_LTE_23:

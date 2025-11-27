@@ -60,22 +60,8 @@ from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     WINDOWS,
-    PandasAstypeComplexDtypeArg,
-    PandasAstypeTimedeltaDtypeArg,
-    PandasAstypeTimestampDtypeArg,
     check,
     ensure_clean,
-    np_1darray,
-    np_1darray_anyint,
-    np_1darray_bool,
-    np_1darray_bytes,
-    np_1darray_complex,
-    np_1darray_dt,
-    np_1darray_float,
-    np_1darray_object,
-    np_1darray_str,
-    np_1darray_td,
-    np_ndarray_num,
     pytest_warns_bounded,
 )
 from tests.extension.decimal.array import DecimalDtype
@@ -91,18 +77,58 @@ from pandas.tseries.offsets import (
 )
 
 if TYPE_CHECKING:
-    from tests import (
+    from pandas._typing import (
         BooleanDtypeArg,
         BytesDtypeArg,
         CategoryDtypeArg,
         ComplexDtypeArg,
         IntDtypeArg,
         ObjectDtypeArg,
+        PandasAstypeComplexDtypeArg,
+        PandasAstypeTimedeltaDtypeArg,
+        PandasAstypeTimestampDtypeArg,
         StrDtypeArg,
         TimedeltaDtypeArg,
         TimestampDtypeArg,
         UIntDtypeArg,
         VoidDtypeArg,
+        np_1darray,
+        np_1darray_anyint,
+        np_1darray_bool,
+        np_1darray_bytes,
+        np_1darray_complex,
+        np_1darray_dt,
+        np_1darray_float,
+        np_1darray_object,
+        np_1darray_td,
+        np_ndarray_num,
+    )
+else:
+    from tests._typing import (
+        BooleanDtypeArg,
+        BytesDtypeArg,
+        CategoryDtypeArg,
+        ComplexDtypeArg,
+        IntDtypeArg,
+        ObjectDtypeArg,
+        PandasAstypeComplexDtypeArg,
+        PandasAstypeTimedeltaDtypeArg,
+        PandasAstypeTimestampDtypeArg,
+        StrDtypeArg,
+        TimedeltaDtypeArg,
+        TimestampDtypeArg,
+        UIntDtypeArg,
+        VoidDtypeArg,
+        np_1darray,
+        np_1darray_anyint,
+        np_1darray_bool,
+        np_1darray_bytes,
+        np_1darray_complex,
+        np_1darray_dt,
+        np_1darray_float,
+        np_1darray_object,
+        np_1darray_td,
+        np_ndarray_num,
     )
 
 if not PD_LTE_23:
@@ -2004,18 +2030,22 @@ def test_dtype_type() -> None:
 
 def test_types_to_numpy() -> None:
     s = pd.Series(["a", "b", "c"], dtype=str)
-    check(assert_type(s.to_numpy(), np_1darray_str), np_1darray_str)
-    check(
-        assert_type(s.to_numpy(dtype="str", copy=True), np_1darray_str), np_1darray_str
+    check(assert_type(s.to_numpy(), np_1darray_object), np_1darray_object)
+    check(  # <U1, not str_
+        assert_type(s.to_numpy(dtype="str", copy=True), np_1darray), np_1darray
     )
-    check(assert_type(s.to_numpy(na_value=0), np_1darray_str), np_1darray_str)
-    check(assert_type(s.to_numpy(na_value=np.int32(4)), np_1darray_str), np_1darray_str)
+    check(assert_type(s.to_numpy(na_value=0), np_1darray_object), np_1darray_object)
     check(
-        assert_type(s.to_numpy(na_value=np.float16(4)), np_1darray_str), np_1darray_str
+        assert_type(s.to_numpy(na_value=np.int32(4)), np_1darray_object),
+        np_1darray_object,
     )
     check(
-        assert_type(s.to_numpy(na_value=np.complex128(4, 7)), np_1darray_str),
-        np_1darray_str,
+        assert_type(s.to_numpy(na_value=np.float16(4)), np_1darray_object),
+        np_1darray_object,
+    )
+    check(
+        assert_type(s.to_numpy(na_value=np.complex128(4, 7)), np_1darray_object),
+        np_1darray_object,
     )
 
     check(assert_type(pd.Series().to_numpy(), np_1darray), np_1darray)
@@ -2024,7 +2054,7 @@ def test_types_to_numpy() -> None:
 def test_to_numpy() -> None:
     """Test Series.to_numpy for different types."""
     s_str = pd.Series(["a", "b", "c"], dtype=str)
-    check(assert_type(s_str.to_numpy(), np_1darray_str), np_1darray_str)
+    check(assert_type(s_str.to_numpy(), np_1darray_object), np_1darray_object)
 
     s_bytes = pd.Series(["a", "b", "c"]).astype(bytes)
     check(assert_type(s_bytes.to_numpy(), np_1darray_bytes), np_1darray, np.bytes_)

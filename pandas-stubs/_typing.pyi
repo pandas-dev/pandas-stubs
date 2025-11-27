@@ -14,6 +14,7 @@ from os import PathLike
 from re import Pattern
 import sys
 from typing import (
+    TYPE_CHECKING,
     Any,
     Generic,
     Literal,
@@ -25,7 +26,6 @@ from typing import (
     overload,
 )
 
-from _typeshed import _T_contra
 import numpy as np
 from numpy import typing as npt
 import pandas as pd
@@ -87,13 +87,15 @@ HashableT5 = TypeVar("HashableT5", bound=Hashable)
 
 ArrayLike: TypeAlias = ExtensionArray | npt.NDArray[Any]
 AnyArrayLike: TypeAlias = ArrayLike | Index | Series
-AnyArrayLikeInt: TypeAlias = (
-    IntegerArray | Index[int] | Series[int] | npt.NDArray[np.integer]
-)
+if TYPE_CHECKING:  # noqa: PYI002
+    AnyArrayLikeInt: TypeAlias = (
+        IntegerArray | Index[int] | Series[int] | npt.NDArray[np.integer]
+    )
 
 # list-like
 
 _T_co = TypeVar("_T_co", covariant=True)
+_T_contra = TypeVar("_T_contra", contravariant=True)
 
 class SequenceNotStr(Protocol[_T_co]):
     @overload
@@ -966,8 +968,9 @@ class SupportsDType(Protocol[GenericT_co]):
 # Similar to npt.DTypeLike but leaves out np.dtype and None for use in overloads
 DTypeLike: TypeAlias = type[Any] | tuple[Any, Any] | list[Any] | str
 
-IndexType: TypeAlias = slice | np_ndarray_anyint | Index | list[int] | Series[int]
-MaskType: TypeAlias = Series[bool] | np_ndarray_bool | list[bool]
+if TYPE_CHECKING:  # noqa: PYI002
+    IndexType: TypeAlias = slice | np_ndarray_anyint | Index | list[int] | Series[int]
+    MaskType: TypeAlias = Series[bool] | np_ndarray_bool | list[bool]
 
 # Scratch types for generics
 
@@ -1039,48 +1042,49 @@ Function: TypeAlias = np.ufunc | Callable[..., Any]
 # shared HashableT and HashableT#. This one can be used if the identical
 # type is need in a function that uses GroupByObjectNonScalar
 _HashableTa = TypeVar("_HashableTa", bound=Hashable)
-ByT = TypeVar(
-    "ByT",
-    bound=str
-    | bytes
-    | datetime.date
-    | datetime.datetime
-    | datetime.timedelta
-    | np.datetime64
-    | np.timedelta64
-    | bool
-    | int
-    | float
-    | complex
-    | Scalar
-    | Period
-    | Interval[int | float | Timestamp | Timedelta]
-    | tuple,
-)
-# Use a distinct SeriesByT when using groupby with Series of known dtype.
-# Essentially, an intersection between Series S1 TypeVar, and ByT TypeVar
-SeriesByT = TypeVar(
-    "SeriesByT",
-    bound=str
-    | bytes
-    | datetime.date
-    | bool
-    | int
-    | float
-    | complex
-    | datetime.datetime
-    | datetime.timedelta
-    | Period
-    | Interval[int | float | Timestamp | Timedelta],
-)
+if TYPE_CHECKING:  # noqa: PYI002
+    ByT = TypeVar(
+        "ByT",
+        bound=str
+        | bytes
+        | datetime.date
+        | datetime.datetime
+        | datetime.timedelta
+        | np.datetime64
+        | np.timedelta64
+        | bool
+        | int
+        | float
+        | complex
+        | Scalar
+        | Period
+        | Interval[int | float | Timestamp | Timedelta]
+        | tuple,
+    )
+    # Use a distinct SeriesByT when using groupby with Series of known dtype.
+    # Essentially, an intersection between Series S1 TypeVar, and ByT TypeVar
+    SeriesByT = TypeVar(
+        "SeriesByT",
+        bound=str
+        | bytes
+        | datetime.date
+        | bool
+        | int
+        | float
+        | complex
+        | datetime.datetime
+        | datetime.timedelta
+        | Period
+        | Interval[int | float | Timestamp | Timedelta],
+    )
 GroupByObjectNonScalar: TypeAlias = (
     tuple
     | list[_HashableTa]
     | Function
     | list[Function]
     | list[Series]
-    | np.ndarray
-    | list[np.ndarray]
+    | np_ndarray
+    | list[np_ndarray]
     | Mapping[Label, Any]
     | list[Mapping[Label, Any]]
     | list[Index]

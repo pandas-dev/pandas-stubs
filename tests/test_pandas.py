@@ -32,19 +32,37 @@ from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    np_1darray,
-    np_1darray_anyint,
-    np_1darray_bool,
-    np_1darray_dt,
-    np_1darray_float,
-    np_1darray_int64,
-    np_1darray_intp,
-    np_1darray_td,
-    np_2darray,
-    np_ndarray,
-    np_ndarray_bool,
     pytest_warns_bounded,
 )
+
+if TYPE_CHECKING:
+    from pandas._typing import (
+        np_1darray,
+        np_1darray_anyint,
+        np_1darray_bool,
+        np_1darray_dt,
+        np_1darray_float,
+        np_1darray_int64,
+        np_1darray_intp,
+        np_1darray_td,
+        np_2darray,
+        np_ndarray,
+        np_ndarray_bool,
+    )
+else:
+    from tests._typing import (
+        np_1darray,
+        np_1darray_anyint,
+        np_1darray_bool,
+        np_1darray_dt,
+        np_1darray_float,
+        np_1darray_int64,
+        np_1darray_intp,
+        np_1darray_td,
+        np_2darray,
+        np_ndarray,
+        np_ndarray_bool,
+    )
 
 
 def test_types_to_datetime() -> None:
