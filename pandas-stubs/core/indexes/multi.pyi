@@ -166,7 +166,9 @@ class MultiIndex(Index):
     def insert(self, loc, item): ...
     def delete(self, loc): ...
     @overload  # type: ignore[override]
-    def isin(self, values: Iterable[Any], level: Level) -> np_1darray_bool: ...
+    def isin(
+        self, values: Iterable[Any], level: Level
+    ) -> np_1darray_bool: ...  # pyrefly: ignore[bad-override]
     @overload
     def isin(
         self, values: Iterable[Iterable[Any]], level: None = None
