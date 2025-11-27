@@ -170,9 +170,9 @@ class MultiIndex(Index):
         self, values: Iterable[Any], level: Level
     ) -> np_1darray_bool: ...  # pyrefly: ignore[bad-override]
     @overload
-    def isin(
+    def isin(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, values: Iterable[Iterable[Any]], level: None = None
-    ) -> np_1darray_bool: ...  # pyright: ignore[reportIncompatibleMethodOverride]
+    ) -> np_1darray_bool: ...
     def set_names(
         self,
         names: Hashable | Sequence[Hashable] | Mapping[Any, Hashable],
