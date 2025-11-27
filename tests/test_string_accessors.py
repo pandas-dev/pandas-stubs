@@ -1,5 +1,6 @@
 import functools
 import re
+from typing import TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
@@ -9,8 +10,12 @@ from typing_extensions import assert_type
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    np_1darray_bool,
 )
+
+if TYPE_CHECKING:
+    from pandas._typing import np_1darray_bool
+else:
+    from tests._typing import np_1darray_bool
 
 DATA = ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
 DATA_BYTES = [b"applep", b"bananap"]

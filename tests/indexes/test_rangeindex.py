@@ -1,14 +1,16 @@
 from __future__ import annotations
 
-import pandas as pd
-from typing_extensions import (
-    assert_type,
-)
+from typing import TYPE_CHECKING
 
-from tests import (
-    check,
-    np_1darray_intp,
-)
+import pandas as pd
+from typing_extensions import assert_type
+
+from tests import check
+
+if TYPE_CHECKING:
+    from pandas._typing import np_1darray_intp
+else:
+    from tests._typing import np_1darray_intp
 
 
 def test_rangeindex_floordiv() -> None:

@@ -1,4 +1,5 @@
 import datetime as dt
+from typing import TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
@@ -23,12 +24,21 @@ from pandas._libs.tslibs.offsets import BaseOffset
 from tests import (
     PD_LTE_23,
     check,
-    np_1darray_intp,
-    np_ndarray,
     pytest_warns_bounded,
 )
 
 from pandas.tseries.frequencies import to_offset
+
+if TYPE_CHECKING:
+    from pandas._typing import (
+        np_1darray_intp,
+        np_ndarray,
+    )
+else:
+    from tests._typing import (
+        np_1darray_intp,
+        np_ndarray,
+    )
 
 IDX = date_range("1/1/2000", periods=700, freq="D")
 S = Series(np.random.standard_normal(700))

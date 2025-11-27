@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import TypeAlias
+from typing import (
+    TYPE_CHECKING,
+    TypeAlias,
+)
 
 from dateutil.relativedelta import (
     FR,
@@ -28,14 +31,6 @@ from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    np_1darray,
-    np_1darray_bool,
-    np_1darray_bytes,
-    np_1darray_dt,
-    np_1darray_int64,
-    np_1darray_object,
-    np_1darray_str,
-    np_1darray_td,
     pytest_warns_bounded,
 )
 
@@ -50,6 +45,29 @@ from pandas.tseries.offsets import (
     DateOffset,
     Day,
 )
+
+if TYPE_CHECKING:
+    from pandas._typing import (
+        np_1darray,
+        np_1darray_bool,
+        np_1darray_bytes,
+        np_1darray_dt,
+        np_1darray_int64,
+        np_1darray_object,
+        np_1darray_str,
+        np_1darray_td,
+    )
+else:
+    from tests._typing import (
+        np_1darray,
+        np_1darray_bool,
+        np_1darray_bytes,
+        np_1darray_dt,
+        np_1darray_int64,
+        np_1darray_object,
+        np_1darray_str,
+        np_1darray_td,
+    )
 
 if not PD_LTE_23:
     from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration]  # isort: skip

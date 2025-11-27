@@ -11,6 +11,7 @@ import decimal
 import numbers
 import sys
 from typing import (
+    TYPE_CHECKING,
     Any,
     cast,
     overload,
@@ -52,11 +53,18 @@ from pandas.core.dtypes.common import (
     pandas_dtype,
 )
 
-from tests import (
-    np_1darray,
-    np_1darray_bool,
-    np_ndarray,
-)
+if TYPE_CHECKING:
+    from pandas._typing import (
+        np_1darray,
+        np_1darray_bool,
+        np_ndarray,
+    )
+else:
+    from tests._typing import (
+        np_1darray,
+        np_1darray_bool,
+        np_ndarray,
+    )
 
 
 @register_extension_dtype
