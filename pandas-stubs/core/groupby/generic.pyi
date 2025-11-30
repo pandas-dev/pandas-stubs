@@ -205,7 +205,7 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     # Overrides that provide more precise return types over the GroupBy class
     @final  # type: ignore[misc]
     # pyrefly: ignore  # bad-override
-    def __iter__(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __iter__(  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[override-of-final-method]
         self,
     ) -> Iterator[tuple[ByT, Series[S2]]]: ...
 
@@ -244,7 +244,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         **kwargs: P.kwargs,
     ) -> DataFrame: ...
     @overload
-    def apply(
+    def apply(  # ty: ignore[invalid-method-override]
         self,
         func: DFCallable3[P],
         /,
@@ -297,7 +297,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def __getitem__(self, key: Scalar) -> SeriesGroupBy[Any, ByT]: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
-    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]
         self, key: Iterable[Hashable]
     ) -> DataFrameGroupBy[ByT, _TT]: ...
     def nunique(self, dropna: bool = True) -> DataFrame: ...
@@ -449,11 +449,13 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     ) -> Series: ...  # Series[Axes] but this is not allowed
     @property
     def dtypes(self) -> Series: ...
-    def __getattr__(self, name: str) -> SeriesGroupBy[Any, ByT]: ...
+    def __getattr__(
+        self, name: str
+    ) -> SeriesGroupBy[Any, ByT]: ...  # ty: ignore[invalid-method-override]
     # Overrides that provide more precise return types over the GroupBy class
     @final  # type: ignore[misc]
     # pyrefly: ignore  # bad-override
-    def __iter__(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __iter__(  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[override-of-final-method]
         self,
     ) -> Iterator[tuple[ByT, DataFrame]]: ...
     @overload

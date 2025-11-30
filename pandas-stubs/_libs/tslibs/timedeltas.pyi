@@ -259,7 +259,7 @@ class Timedelta(timedelta):
         self, other: np_ndarray[ShapeT, np.integer | np.floating]
     ) -> np_ndarray[ShapeT, np.timedelta64]: ...
     @overload
-    def __truediv__(
+    def __truediv__(  # ty: ignore[invalid-method-override]
         self, other: np_ndarray[ShapeT, np.timedelta64]
     ) -> np_ndarray[ShapeT, np.floating]: ...
     @overload
