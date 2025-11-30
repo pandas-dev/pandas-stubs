@@ -80,7 +80,6 @@ if TYPE_CHECKING:
 
     from pandas._typing import S1
 else:
-
     _PandasNamedTuple: TypeAlias = tuple
 
 if not PD_LTE_23:

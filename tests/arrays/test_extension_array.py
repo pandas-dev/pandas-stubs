@@ -1,5 +1,4 @@
 # Test common ExtensionArray methods
-
 import numpy as np
 import pandas as pd
 from pandas.core.arrays import ExtensionArray
