@@ -12,6 +12,7 @@ from typing_extensions import (
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    np_ndarray_int64,
 )
 
 left = pd.Index(["1", "23", "456"])  # left operand
@@ -61,7 +62,7 @@ def test_add_numpy_array() -> None:
     # checking, where our `__radd__` cannot override. At runtime, they return
     # `Index`es.
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(i + left, "npt.NDArray[np.int64]")
+        assert_type(i + left, np_ndarray_int64)
     if sys.version_info >= (3, 11):
         # `numpy` typing gives `npt.NDArray[np.int64]` in the static type
         # checking, where our `__radd__` cannot override. At runtime, they return

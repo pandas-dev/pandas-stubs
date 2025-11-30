@@ -10,6 +10,7 @@ from typing_extensions import (
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    np_ndarray_int64,
 )
 
 
@@ -78,9 +79,7 @@ def test_mul_numpy_array(left: pd.TimedeltaIndex) -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         # We made it Never, but numpy takes over
         assert_type(b * left, "npt.NDArray[np.bool_]")
-    check(
-        assert_type(i * left, "npt.NDArray[np.int64]"), pd.TimedeltaIndex, pd.Timedelta
-    )
+    check(assert_type(i * left, np_ndarray_int64), pd.TimedeltaIndex, pd.Timedelta)
     check(
         assert_type(f * left, "npt.NDArray[np.float64]"),
         pd.TimedeltaIndex,

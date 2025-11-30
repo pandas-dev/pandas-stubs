@@ -68,9 +68,12 @@ if TYPE_CHECKING:
         np_1darray_td as np_1darray_td,
         np_2darray as np_2darray,
         np_ndarray as np_ndarray,
+        np_ndarray_anyint as np_ndarray_anyint,
         np_ndarray_bool as np_ndarray_bool,
         np_ndarray_dt as np_ndarray_dt,
+        np_ndarray_float as np_ndarray_float,
         np_ndarray_int as np_ndarray_int,
+        np_ndarray_int64 as np_ndarray_int64,
         np_ndarray_intp as np_ndarray_intp,
         np_ndarray_num as np_ndarray_num,
         np_ndarray_str as np_ndarray_str,
@@ -457,6 +460,8 @@ else:
     np_ndarray_int: TypeAlias = npt.NDArray[np.signedinteger]
     np_ndarray_intp: TypeAlias = npt.NDArray[np.intp]
     np_ndarray_int64: TypeAlias = npt.NDArray[np.int64]
+    np_ndarray_anyint: TypeAlias = npt.NDArray[np.integer]
+    np_ndarray_float: TypeAlias = npt.NDArray[np.floating]
     np_ndarray_num: TypeAlias = npt.NDArray[np.number]
     np_ndarray_str: TypeAlias = npt.NDArray[np.str_]
     np_ndarray_td: TypeAlias = npt.NDArray[np.timedelta64]

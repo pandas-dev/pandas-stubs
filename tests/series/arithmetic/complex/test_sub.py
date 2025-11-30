@@ -5,7 +5,10 @@ from numpy import typing as npt  # noqa: F401
 import pandas as pd
 from typing_extensions import assert_type
 
-from tests import check
+from tests import (
+    check,
+    np_ndarray_int64,
+)
 
 left = pd.Series([1j, 2j, 3j])  # left operand
 
@@ -92,7 +95,7 @@ def test_sub_numpy_array() -> None:
     # checking, where our `__rsub__` cannot override. At runtime, they return
     # `Series` with the correct element type.
     check(assert_type(b - left, NoReturn), pd.Series, np.complexfloating)
-    check(assert_type(i - left, "npt.NDArray[np.int64]"), pd.Series, np.complexfloating)
+    check(assert_type(i - left, np_ndarray_int64), pd.Series, np.complexfloating)
     check(
         assert_type(f - left, "npt.NDArray[np.float64]"), pd.Series, np.complexfloating
     )
