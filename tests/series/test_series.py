@@ -3620,6 +3620,8 @@ def test_map_na() -> None:
     check(
         assert_type(s.map(callable, na_action=None), "pd.Series[str]"), pd.Series, str
     )
+    # na_action defaults to None
+    check(assert_type(s.map(callable), "pd.Series[str]"), pd.Series, str)
 
     series = pd.Series(["a", "b", "c"])
     check(assert_type(s.map(series, na_action=None), "pd.Series[str]"), pd.Series, str)
