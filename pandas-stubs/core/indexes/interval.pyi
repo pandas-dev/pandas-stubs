@@ -239,7 +239,7 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
         ),
     ) -> IntervalIndex[IntervalT]: ...
     @overload
-    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]
         self, idx: int
     ) -> IntervalT: ...
     @overload  # type: ignore[override]
@@ -247,7 +247,7 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
         self, other: IntervalT | IntervalIndex[IntervalT]
     ) -> np_1darray_bool: ...
     @overload
-    def __gt__(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __gt__(  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]
         self, other: pd.Series[IntervalT]
     ) -> pd.Series[bool]: ...
     @overload  # type: ignore[override]
@@ -255,7 +255,7 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
         self, other: IntervalT | IntervalIndex[IntervalT]
     ) -> np_1darray_bool: ...
     @overload
-    def __ge__(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __ge__(  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]
         self, other: pd.Series[IntervalT]
     ) -> pd.Series[bool]: ...
     @overload  # type: ignore[override]
@@ -263,7 +263,7 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
         self, other: IntervalT | IntervalIndex[IntervalT]
     ) -> np_1darray_bool: ...
     @overload
-    def __le__(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __le__(  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]
         self, other: pd.Series[IntervalT]
     ) -> pd.Series[bool]: ...
     @overload  # type: ignore[override]
@@ -271,7 +271,7 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
         self, other: IntervalT | IntervalIndex[IntervalT]
     ) -> np_1darray_bool: ...
     @overload
-    def __lt__(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __lt__(  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]
         self, other: pd.Series[IntervalT]
     ) -> pd.Series[bool]: ...
     @overload  # type: ignore[override]
@@ -279,7 +279,7 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     @overload
     def __eq__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __eq__(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __eq__(  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]
         self, other: object
     ) -> Literal[False]: ...
     @overload  # type: ignore[override]
@@ -287,7 +287,7 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     @overload
     def __ne__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
-    def __ne__(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __ne__(  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]
         self, other: object
     ) -> Literal[True]: ...
 
