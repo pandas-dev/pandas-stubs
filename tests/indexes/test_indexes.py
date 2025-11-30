@@ -3,7 +3,6 @@ from __future__ import annotations
 from collections.abc import Hashable
 import datetime as dt
 from typing import (
-    TYPE_CHECKING,
     Any,
     cast,
 )
@@ -23,22 +22,22 @@ from typing_extensions import (
     assert_type,
 )
 
+from pandas._typing import Dtype  # noqa: F401
 from pandas._typing import Scalar  # noqa: F401
 
 from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
+)
+from tests._typing import (
     np_1darray,
     np_1darray_bool,
     np_1darray_int64,
     np_1darray_intp,
     np_ndarray_dt,
-    pytest_warns_bounded,
 )
-
-if TYPE_CHECKING:
-    from tests import Dtype  # noqa: F401
 
 
 def test_index_unique() -> None:

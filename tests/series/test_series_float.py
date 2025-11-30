@@ -8,10 +8,12 @@ from typing_extensions import assert_type
 from tests import (
     ASTYPE_FLOAT_ARGS,
     TYPE_FLOAT_ARGS,
-    FloatDtypeArg,
-    PandasAstypeFloatDtypeArg,
     check,
     exception_on_platform,
+)
+from tests._typing import (
+    FloatDtypeArg,
+    PandasAstypeFloatDtypeArg,
 )
 
 

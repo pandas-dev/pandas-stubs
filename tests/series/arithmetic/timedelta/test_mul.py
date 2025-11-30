@@ -10,8 +10,8 @@ from typing_extensions import (
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    np_ndarray_int64,
 )
+from tests._typing import np_ndarray_int64
 
 
 @pytest.fixture

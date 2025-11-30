@@ -5,10 +5,8 @@ from typing_extensions import (
     assert_type,
 )
 
-from tests import (
-    check,
-    np_1darray_intp,
-)
+from tests import check
+from tests._typing import np_1darray_intp
 
 
 def test_categoricalindex_unique() -> None:

@@ -5,10 +5,8 @@ from numpy import typing as npt  # noqa: F401
 import pandas as pd
 from typing_extensions import assert_type
 
-from tests import (
-    check,
-    np_ndarray_int64,
-)
+from tests import check
+from tests._typing import np_ndarray_int64
 
 left = pd.Series([1j, 2j, 3j])  # left operand
 

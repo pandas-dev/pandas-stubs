@@ -56,10 +56,12 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
     ensure_clean,
+    pytest_warns_bounded,
+)
+from tests._typing import (
     np_1darray,
     np_2darray,
     np_ndarray,
-    pytest_warns_bounded,
 )
 
 from pandas.io.formats.format import EngFormatter

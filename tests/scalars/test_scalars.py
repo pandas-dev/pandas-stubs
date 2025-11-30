@@ -13,19 +13,18 @@ import numpy as np
 import pandas as pd
 from pandas.api.typing import NaTType
 import pytz
-from typing_extensions import (
-    assert_type,
-)
+from typing_extensions import assert_type
 
 from pandas._libs.tslibs.timedeltas import Components
-from pandas._typing import (
-    TimeUnit,
-)
+from pandas._typing import TimeUnit
 
 from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
+)
+from tests._typing import (
     np_1darray_bool,
     np_2darray,
     np_ndarray,
@@ -34,7 +33,6 @@ from tests import (
     np_ndarray_dt,
     np_ndarray_float,
     np_ndarray_td,
-    pytest_warns_bounded,
 )
 
 from pandas.tseries.offsets import (

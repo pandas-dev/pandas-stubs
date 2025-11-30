@@ -60,11 +60,25 @@ from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     WINDOWS,
+    check,
+    ensure_clean,
+    pytest_warns_bounded,
+)
+from tests._typing import (
+    BooleanDtypeArg,
+    BytesDtypeArg,
+    CategoryDtypeArg,
+    ComplexDtypeArg,
+    IntDtypeArg,
+    ObjectDtypeArg,
     PandasAstypeComplexDtypeArg,
     PandasAstypeTimedeltaDtypeArg,
     PandasAstypeTimestampDtypeArg,
-    check,
-    ensure_clean,
+    StrDtypeArg,
+    TimedeltaDtypeArg,
+    TimestampDtypeArg,
+    UIntDtypeArg,
+    VoidDtypeArg,
     np_1darray,
     np_1darray_anyint,
     np_1darray_bool,
@@ -75,7 +89,6 @@ from tests import (
     np_1darray_object,
     np_1darray_td,
     np_ndarray_num,
-    pytest_warns_bounded,
 )
 from tests.extension.decimal.array import DecimalDtype
 
@@ -88,21 +101,6 @@ from pandas.tseries.offsets import (
     Week,
     YearEnd,
 )
-
-if TYPE_CHECKING:
-    from tests import (
-        BooleanDtypeArg,
-        BytesDtypeArg,
-        CategoryDtypeArg,
-        ComplexDtypeArg,
-        IntDtypeArg,
-        ObjectDtypeArg,
-        StrDtypeArg,
-        TimedeltaDtypeArg,
-        TimestampDtypeArg,
-        UIntDtypeArg,
-        VoidDtypeArg,
-    )
 
 if not PD_LTE_23:
     from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration]  # isort: skip

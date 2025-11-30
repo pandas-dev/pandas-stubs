@@ -28,13 +28,15 @@ from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
+)
+from tests._typing import (
     np_1darray,
     np_1darray_bool,
     np_1darray_dt,
     np_1darray_int64,
     np_1darray_object,
     np_1darray_td,
-    pytest_warns_bounded,
 )
 
 from pandas.tseries.frequencies import to_offset

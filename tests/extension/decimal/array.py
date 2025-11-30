@@ -52,7 +52,7 @@ from pandas.core.dtypes.common import (
     pandas_dtype,
 )
 
-from tests import (
+from tests._typing import (
     np_1darray,
     np_1darray_bool,
     np_ndarray,

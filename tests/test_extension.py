@@ -7,10 +7,8 @@ from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.indexers import check_array_indexer
 from typing_extensions import assert_type
 
-from tests import (
-    check,
-    np_1darray_bool,
-)
+from tests import check
+from tests._typing import np_1darray_bool
 from tests.extension.decimal.array import (
     DecimalArray,
     DecimalDtype,
