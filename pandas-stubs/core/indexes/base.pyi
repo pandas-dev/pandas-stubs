@@ -32,6 +32,7 @@ import numpy as np
 from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.arrays.floating import FloatingArray
 from pandas.core.base import (
+    T_INTERVAL_NP,
     ArrayIndexTimedeltaNoSeq,
     ElementOpsMixin,
     IndexComplex,
@@ -106,6 +107,7 @@ from pandas._typing import (
     PandasFloatDtypeArg,
     PyArrowFloatDtypeArg,
     ReindexMethod,
+    Renamer,
     S2_contra,
     Scalar,
     SequenceNotStr,
@@ -532,39 +534,59 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[C2]: ...
     @overload
     def append(self, other: Index | Sequence[Index]) -> Index: ...
-    def putmask(self, mask, value): ...
+    def putmask(
+        self,
+        mask: Sequence[bool] | np_ndarray_bool | BooleanArray | IndexOpsMixin[bool],
+        value: Scalar,
+    ) -> Index: ...
     def equals(self, other: Any) -> bool: ...
     @final
     def identical(self, other: Any) -> bool: ...
     @final
-    def asof(self, label): ...
-    def asof_locs(self, where, mask): ...
+    def asof(self, label: Scalar) -> Scalar: ...
+    def asof_locs(
+        self, where: DatetimeIndex, mask: np_ndarray_bool
+    ) -> np_1darray_intp: ...
+    @overload
     def sort_values(
         self,
         *,
-        return_indexer: bool = ...,
-        ascending: bool = ...,
-        na_position: NaPosition = ...,
+        return_indexer: Literal[False] = False,
+        ascending: bool = True,
+        na_position: NaPosition = "last",
         key: Callable[[Index], Index] | None = None,
-    ): ...
+    ) -> Self: ...
+    @overload
+    def sort_values(
+        self,
+        *,
+        return_indexer: Literal[True],
+        ascending: bool = True,
+        na_position: NaPosition = "last",
+        key: Callable[[Index], Index] | None = None,
+    ) -> tuple[Self, np_1darray_intp]: ...
     @final
     def sort(self, *args: Any, **kwargs: Any) -> None: ...
     def argsort(self, *args: Any, **kwargs: Any) -> np_1darray_intp: ...
-    def get_indexer_non_unique(self, target): ...
+    def get_indexer_non_unique(
+        self, target: Index
+    ) -> tuple[np_1darray_intp, np_1darray_intp]: ...
     @final
-    def get_indexer_for(self, target, **kwargs: Any): ...
-    def map(self, mapper, na_action=...) -> Index: ...
+    def get_indexer_for(self, target: Index) -> np_1darray_intp: ...
+    def map(
+        self, mapper: Renamer, na_action: Literal["ignore"] | None = None
+    ) -> Index: ...
     def isin(self, values, level=...) -> np_1darray_bool: ...
     def slice_indexer(
         self,
         start: Label | None = None,
         end: Label | None = None,
         step: int | None = None,
-    ): ...
-    def get_slice_bound(self, label, side): ...
+    ) -> slice: ...
+    def get_slice_bound(self, label: Scalar, side: Literal["left", "right"]) -> int: ...
     def slice_locs(
         self, start: SliceType = None, end: SliceType = None, step: int | None = None
-    ): ...
+    ) -> tuple[int | np.intp, int | np.intp]: ...
     def delete(
         self, loc: np.integer | int | AnyArrayLikeInt | Sequence[int]
     ) -> Self: ...
@@ -1170,6 +1192,14 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
 class _IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):
     @overload
     def to_numpy(
+        self: _IndexSubclassBase[Interval],
+        dtype: type[T_INTERVAL_NP],
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs: Any,
+    ) -> np_1darray: ...
+    @overload
+    def to_numpy(
         self,
         dtype: None = None,
         copy: bool = False,
@@ -1185,7 +1215,7 @@ class _IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):
         **kwargs: Any,
     ) -> np_1darray[GenericT]: ...
     @overload
-    def to_numpy(
+    def to_numpy(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         dtype: DTypeLike,
         copy: bool = False,

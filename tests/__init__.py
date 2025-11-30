@@ -439,11 +439,11 @@ else:
     _S = TypeVar("_S", bound=tuple[int, ...])
     # Separately define here so pytest works
     np_1darray: TypeAlias = np.ndarray[tuple[int], np.dtype[_G]]
-    np_1darray_bool: TypeAlias = np.ndarray[tuple[int], np.bool_]
-    np_1darray_str: TypeAlias = np.ndarray[tuple[int], np.str_]
-    np_1darray_bytes: TypeAlias = np.ndarray[tuple[int], np.bytes_]
-    np_1darray_complex: TypeAlias = np.ndarray[tuple[int], np.complexfloating]
-    np_1darray_object: TypeAlias = np.ndarray[tuple[int], np.object_]
+    np_1darray_bool: TypeAlias = np_1darray[np.bool_]
+    np_1darray_str: TypeAlias = np_1darray[np.str_]
+    np_1darray_bytes: TypeAlias = np_1darray[np.bytes_]
+    np_1darray_complex: TypeAlias = np_1darray[np.complexfloating]
+    np_1darray_object: TypeAlias = np_1darray[np.object_]
     np_1darray_intp: TypeAlias = np_1darray[np.intp]
     np_1darray_int64: TypeAlias = np_1darray[np.int64]
     np_1darray_anyint: TypeAlias = np_1darray[np.integer]

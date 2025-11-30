@@ -30,11 +30,9 @@ from tests import (
     check,
     np_1darray,
     np_1darray_bool,
-    np_1darray_bytes,
     np_1darray_dt,
     np_1darray_int64,
     np_1darray_object,
-    np_1darray_str,
     np_1darray_td,
     pytest_warns_bounded,
 )
@@ -956,14 +954,8 @@ def test_series_types_to_numpy() -> None:
         np_1darray,
         dtype=np.integer,
     )
-    check(
-        assert_type(o_s.to_numpy(dtype="bytes", copy=True), np_1darray),
-        np_1darray_bytes,
-    )
-    check(
-        assert_type(i_s.to_numpy(dtype="bytes", copy=True), np_1darray),
-        np_1darray_bytes,
-    )
+    check(assert_type(o_s.to_numpy(dtype="bytes", copy=True), np_1darray), np_1darray)
+    check(assert_type(i_s.to_numpy(dtype="bytes", copy=True), np_1darray), np_1darray)
 
     # passed dtype-like with statically known generic
     check(
@@ -991,13 +983,12 @@ def test_series_types_to_numpy() -> None:
         np_1darray,
         np.int64,
     )
-    check(
-        assert_type(o_s.to_numpy(dtype=np.bytes_), np_1darray_bytes), np_1darray_bytes
-    )
-    check(
-        assert_type(i_s.to_numpy(dtype=np.bytes_), np_1darray_bytes), np_1darray_bytes
-    )
-    check(assert_type(i_s.to_numpy(dtype=np.str_), np_1darray_str), np_1darray_str)
+    # |S20, not bytes_
+    check(assert_type(o_s.to_numpy(dtype=np.bytes_), np_1darray), np_1darray)
+    # |S6, not bytes_
+    check(assert_type(i_s.to_numpy(dtype=np.bytes_), np_1darray), np_1darray)
+    # <U6, not str_
+    check(assert_type(i_s.to_numpy(dtype=np.str_), np_1darray), np_1darray)
 
 
 def test_index_types_to_numpy() -> None:
@@ -1056,10 +1047,8 @@ def test_index_types_to_numpy() -> None:
         np_1darray,
         dtype=np.integer,
     )
-    check(
-        assert_type(i_i.to_numpy(dtype="bytes", copy=True), np_1darray),
-        np_1darray_bytes,
-    )
+    # |S6, not bytes_
+    check(assert_type(i_i.to_numpy(dtype="bytes", copy=True), np_1darray), np_1darray)
 
     # passed dtype-like with statically known generic
     check(
@@ -1077,9 +1066,8 @@ def test_index_types_to_numpy() -> None:
         np_1darray,
         np.int64,
     )
-    check(
-        assert_type(i_i.to_numpy(dtype=np.bytes_), np_1darray_bytes), np_1darray_bytes
-    )
+    # |S6, not bytes_
+    check(assert_type(i_i.to_numpy(dtype=np.bytes_), np_1darray), np_1darray)
 
 
 def test_to_timedelta_units() -> None:
