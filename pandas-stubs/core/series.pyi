@@ -518,10 +518,10 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         cls,
         data: (
             S1
-            | _DataLikeS1[S1]
+            | _DataLikeS1[S1]  # ty: ignore[invalid-type-arguments]
             | dict[HashableT1, S1]
             | KeysView[S1]
-            | ValuesView[S1]  # ty: ignore[invalid-type-arguments]
+            | ValuesView[S1]
         ),
         index: AxesData | None = None,
         dtype: Dtype | None = None,
