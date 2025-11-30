@@ -10,6 +10,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
+from tests._typing import np_ndarray_int64
 
 left = pd.Series([True, True, False])  # left operand
 
@@ -94,7 +95,7 @@ def test_sub_numpy_array() -> None:
     # `Series` with the correct element type.
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(b - left, Never)
-    check(assert_type(i - left, "npt.NDArray[np.int64]"), pd.Series, np.integer)
+    check(assert_type(i - left, np_ndarray_int64), pd.Series, np.integer)
     check(assert_type(f - left, "npt.NDArray[np.float64]"), pd.Series, np.floating)
     check(
         assert_type(c - left, "npt.NDArray[np.complex128]"),
