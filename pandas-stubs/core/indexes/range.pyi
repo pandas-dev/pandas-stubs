@@ -60,7 +60,7 @@ class RangeIndex(_IndexSubclassBase[int, np.int64]):
     def is_monotonic_decreasing(self) -> bool: ...
     @property
     def has_duplicates(self) -> bool: ...
-    def factorize(
+    def factorize(  # ty: ignore[invalid-method-override]
         self, sort: bool = False, use_na_sentinel: bool = True
     ) -> tuple[np_1darray_intp, RangeIndex]: ...
     @property
@@ -81,7 +81,7 @@ class RangeIndex(_IndexSubclassBase[int, np.int64]):
         idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType,
     ) -> Index: ...
     @overload
-    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]
         self, idx: int
     ) -> int: ...
     def where(  # type: ignore[override]
