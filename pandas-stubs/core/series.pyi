@@ -275,7 +275,7 @@ class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     def __getitem__(self, idx: IndexingInt) -> S1: ...
     @overload
     def __getitem__(
-        self, idx: Index | Series | slice | np_ndarray_anyint
+        self, key: Index | Series | slice | np_ndarray_anyint
     ) -> Series[S1]: ...
 
     # set item
@@ -285,7 +285,7 @@ class _iLocIndexerSeries(_iLocIndexer, Generic[S1]):
     @overload
     def __setitem__(
         self,
-        idx: Index | slice | np_ndarray_anyint | list[int],
+        key: Index | slice | np_ndarray_anyint | list[int],
         value: S1 | IndexOpsMixin[S1] | None,
     ) -> None: ...
 
@@ -294,9 +294,9 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     # ignore needed because of mypy.  Overlapping, but we want to distinguish
     # having a tuple of just scalars, versus tuples that include slices or Index
     @overload
-    def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __getitem__(  # type: ignore[overload-overlap]
         self,
-        idx: Scalar | tuple[Scalar, ...],
+        key: Scalar | tuple[Scalar, ...],
         # tuple case is for getting a specific element when using a MultiIndex
     ) -> S1: ...
     @overload
@@ -332,14 +332,11 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     @overload
     def __setitem__(
         self,
-        idx: MaskType | StrLike | _IndexSliceTuple | list[ScalarT],
+        key: MaskType | StrLike | _IndexSliceTuple | list[ScalarT],
         value: S1 | ArrayLike | IndexOpsMixin[S1] | None,
     ) -> None: ...
 
 _DataLike: TypeAlias = ArrayLike | dict[str, np_ndarray] | SequenceNotStr[S1]
-_DataLikeS1: TypeAlias = (
-    ArrayLike | dict[_str, np_ndarray] | Sequence[S1] | IndexOpsMixin[S1]
-)
 
 class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # Define __index__ because mypy thinks Series follows protocol `SupportsIndex` https://github.com/pandas-dev/pandas-stubs/pull/1332#discussion_r2285648790
@@ -516,7 +513,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __new__(
         cls,
         data: (
-            S1 | _DataLikeS1[S1] | dict[HashableT1, S1] | KeysView[S1] | ValuesView[S1]
+            S1
+            | ArrayLike
+            | dict[_str, np_ndarray]
+            | Sequence[S1]
+            | IndexOpsMixin[S1]
+            | dict[HashableT1, S1]
+            | KeysView[S1]
+            | ValuesView[S1]
         ),
         index: AxesData | None = None,
         dtype: Dtype | None = None,
@@ -558,7 +562,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __array_ufunc__(
         self, ufunc: Callable, method: _str, *inputs: Any, **kwargs: Any
     ) -> Any: ...
-    def __array__(
+    def __array__(  # ty: ignore[invalid-method-override]
         self, dtype: _str | np.dtype = ..., copy: bool | None = ...
     ) -> np_1darray: ...
     @property
@@ -4646,7 +4650,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: _bool | _NoDefaultDoNotUse = ...,
     ) -> Self: ...
     @final
-    def xs(  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]
+    def xs(  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]  # ty: ignore[invalid-method-override]
         self,
         key: Hashable,
         axis: AxisIndex = 0,  # type: ignore[override]
