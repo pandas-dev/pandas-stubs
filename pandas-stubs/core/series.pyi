@@ -337,9 +337,6 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
     ) -> None: ...
 
 _DataLike: TypeAlias = ArrayLike | dict[str, np_ndarray] | SequenceNotStr[S1]
-_DataLikeS1: TypeAlias = (
-    ArrayLike | dict[_str, np_ndarray] | Sequence[S1] | IndexOpsMixin[S1]
-)
 
 class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # Define __index__ because mypy thinks Series follows protocol `SupportsIndex` https://github.com/pandas-dev/pandas-stubs/pull/1332#discussion_r2285648790
@@ -517,7 +514,10 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         cls,
         data: (
             S1
-            | _DataLikeS1[S1]  # ty: ignore[invalid-type-arguments]
+            | ArrayLike
+            | dict[_str, np_ndarray]
+            | Sequence[S1]
+            | IndexOpsMixin[S1]
             | dict[HashableT1, S1]
             | KeysView[S1]
             | ValuesView[S1]
