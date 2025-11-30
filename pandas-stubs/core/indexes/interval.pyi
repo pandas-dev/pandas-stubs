@@ -31,6 +31,7 @@ from pandas._typing import (
     np_ndarray_bool,
     np_ndarray_dt,
     np_ndarray_int64,
+    np_ndarray_intp,
     np_ndarray_td,
     npt,
 )
@@ -41,7 +42,7 @@ _EdgesInt: TypeAlias = (
     Sequence[int]
     | np_ndarray_int64
     | npt.NDArray[np.int32]
-    | npt.NDArray[np.intp]
+    | np_ndarray_intp
     | pd.Series[int]
     | Index[int]
 )

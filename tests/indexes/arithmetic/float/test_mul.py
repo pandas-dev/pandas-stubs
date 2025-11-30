@@ -16,6 +16,7 @@ from typing_extensions import (
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    np_ndarray_int64,
 )
 
 
@@ -92,7 +93,7 @@ def test_mul_numpy_array(left: "pd.Index[float]") -> None:
     # checking, where our `__rmul__` cannot override. At runtime, they return
     # `Index` with the correct element type.
     check(assert_type(b * left, "npt.NDArray[np.bool_]"), pd.Index, np.floating)
-    check(assert_type(i * left, "npt.NDArray[np.int64]"), pd.Index, np.floating)
+    check(assert_type(i * left, np_ndarray_int64), pd.Index, np.floating)
     check(assert_type(f * left, "npt.NDArray[np.float64]"), pd.Index, np.floating)
     check(
         assert_type(c * left, "npt.NDArray[np.complex128]"),

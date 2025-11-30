@@ -10,7 +10,6 @@ from typing import (
 
 import dateutil.tz
 import numpy as np
-from numpy import typing as npt
 import pandas as pd
 from pandas.api.typing import NaTType
 import pytz
@@ -19,7 +18,9 @@ from typing_extensions import (
 )
 
 from pandas._libs.tslibs.timedeltas import Components
-from pandas._typing import TimeUnit
+from pandas._typing import (
+    TimeUnit,
+)
 
 from tests import (
     PD_LTE_23,
@@ -28,8 +29,10 @@ from tests import (
     np_1darray_bool,
     np_2darray,
     np_ndarray,
+    np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_dt,
+    np_ndarray_float,
     np_ndarray_td,
     pytest_warns_bounded,
 )
@@ -619,8 +622,8 @@ def test_timedelta_add_sub() -> None:
 def test_timedelta_mul_div() -> None:
     td = pd.Timedelta("1 day")
 
-    np_intp_arr: npt.NDArray[np.integer] = np.array([1, 2, 3])
-    np_float_arr: npt.NDArray[np.floating] = np.array([1.2, 2.2, 3.4])
+    np_intp_arr: np_ndarray_anyint = np.array([1, 2, 3])
+    np_float_arr: np_ndarray_float = np.array([1.2, 2.2, 3.4])
 
     md_int = 3
     md_float = 3.5
