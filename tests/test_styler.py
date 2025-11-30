@@ -24,16 +24,13 @@ from tests import (
     check,
     ensure_clean,
 )
+from tests._typing import np_ndarray_str
 
 from pandas.io.formats.style import Styler
 
 if TYPE_CHECKING:
-    from pandas._typing import np_ndarray_str
-
     from pandas.io.formats.style_render import StyleExportDict
 else:
-    from tests._typing import np_ndarray_str
-
     StyleExportDict = object
 
 

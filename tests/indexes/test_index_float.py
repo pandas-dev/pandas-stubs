@@ -11,11 +11,10 @@ from tests import (
     check,
     exception_on_platform,
 )
+from tests._typing import PandasAstypeFloatDtypeArg
 
 if TYPE_CHECKING:
     from pandas.core.indexes.base import FloatNotNumpy16DtypeArg
-
-    from pandas._typing import PandasAstypeFloatDtypeArg
 
 
 def test_constructor() -> None:

@@ -1,5 +1,4 @@
 import decimal
-from typing import TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
@@ -9,15 +8,11 @@ from pandas.core.indexers import check_array_indexer
 from typing_extensions import assert_type
 
 from tests import check
+from tests._typing import np_1darray_bool
 from tests.extension.decimal.array import (
     DecimalArray,
     DecimalDtype,
 )
-
-if TYPE_CHECKING:
-    from pandas._typing import np_1darray_bool
-else:
-    from tests._typing import np_1darray_bool
 
 
 def test_constructor() -> None:

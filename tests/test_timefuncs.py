@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import datetime as dt
 from typing import (
-    TYPE_CHECKING,
     TypeAlias,
 )
 
@@ -33,6 +32,14 @@ from tests import (
     check,
     pytest_warns_bounded,
 )
+from tests._typing import (
+    np_1darray,
+    np_1darray_bool,
+    np_1darray_dt,
+    np_1darray_int64,
+    np_1darray_object,
+    np_1darray_td,
+)
 
 from pandas.tseries.frequencies import to_offset
 from pandas.tseries.holiday import USFederalHolidayCalendar
@@ -45,25 +52,6 @@ from pandas.tseries.offsets import (
     DateOffset,
     Day,
 )
-
-if TYPE_CHECKING:
-    from pandas._typing import (
-        np_1darray,
-        np_1darray_bool,
-        np_1darray_dt,
-        np_1darray_int64,
-        np_1darray_object,
-        np_1darray_td,
-    )
-else:
-    from tests._typing import (
-        np_1darray,
-        np_1darray_bool,
-        np_1darray_dt,
-        np_1darray_int64,
-        np_1darray_object,
-        np_1darray_td,
-    )
 
 if not PD_LTE_23:
     from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration]  # isort: skip

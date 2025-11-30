@@ -1,5 +1,4 @@
 import datetime as dt
-from typing import TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
@@ -26,19 +25,12 @@ from tests import (
     check,
     pytest_warns_bounded,
 )
+from tests._typing import (
+    np_1darray_intp,
+    np_ndarray,
+)
 
 from pandas.tseries.frequencies import to_offset
-
-if TYPE_CHECKING:
-    from pandas._typing import (
-        np_1darray_intp,
-        np_ndarray,
-    )
-else:
-    from tests._typing import (
-        np_1darray_intp,
-        np_ndarray,
-    )
 
 IDX = date_range("1/1/2000", periods=700, freq="D")
 S = Series(np.random.standard_normal(700))

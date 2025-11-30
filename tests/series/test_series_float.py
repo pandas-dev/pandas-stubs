@@ -11,12 +11,10 @@ from tests import (
     check,
     exception_on_platform,
 )
-
-if TYPE_CHECKING:
-    from pandas._typing import (
-        FloatDtypeArg,
-        PandasAstypeFloatDtypeArg,
-    )
+from tests._typing import (
+    FloatDtypeArg,
+    PandasAstypeFloatDtypeArg,
+)
 
 
 def test_constructor() -> None:

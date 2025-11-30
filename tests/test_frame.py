@@ -58,6 +58,11 @@ from tests import (
     ensure_clean,
     pytest_warns_bounded,
 )
+from tests._typing import (
+    np_1darray,
+    np_2darray,
+    np_ndarray,
+)
 
 from pandas.io.formats.format import EngFormatter
 from pandas.io.formats.style import Styler
@@ -73,18 +78,8 @@ from pandas.tseries.offsets import (
 if TYPE_CHECKING:
     from pandas.core.frame import _PandasNamedTuple
 
-    from pandas._typing import (
-        S1,
-        np_1darray,
-        np_2darray,
-        np_ndarray,
-    )
+    from pandas._typing import S1
 else:
-    from tests._typing import (
-        np_1darray,
-        np_2darray,
-        np_ndarray,
-    )
 
     _PandasNamedTuple: TypeAlias = tuple
 

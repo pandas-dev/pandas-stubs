@@ -64,6 +64,32 @@ from tests import (
     ensure_clean,
     pytest_warns_bounded,
 )
+from tests._typing import (
+    BooleanDtypeArg,
+    BytesDtypeArg,
+    CategoryDtypeArg,
+    ComplexDtypeArg,
+    IntDtypeArg,
+    ObjectDtypeArg,
+    PandasAstypeComplexDtypeArg,
+    PandasAstypeTimedeltaDtypeArg,
+    PandasAstypeTimestampDtypeArg,
+    StrDtypeArg,
+    TimedeltaDtypeArg,
+    TimestampDtypeArg,
+    UIntDtypeArg,
+    VoidDtypeArg,
+    np_1darray,
+    np_1darray_anyint,
+    np_1darray_bool,
+    np_1darray_bytes,
+    np_1darray_complex,
+    np_1darray_dt,
+    np_1darray_float,
+    np_1darray_object,
+    np_1darray_td,
+    np_ndarray_num,
+)
 from tests.extension.decimal.array import DecimalDtype
 
 from pandas.io.formats.format import EngFormatter
@@ -75,61 +101,6 @@ from pandas.tseries.offsets import (
     Week,
     YearEnd,
 )
-
-if TYPE_CHECKING:
-    from pandas._typing import (
-        BooleanDtypeArg,
-        BytesDtypeArg,
-        CategoryDtypeArg,
-        ComplexDtypeArg,
-        IntDtypeArg,
-        ObjectDtypeArg,
-        PandasAstypeComplexDtypeArg,
-        PandasAstypeTimedeltaDtypeArg,
-        PandasAstypeTimestampDtypeArg,
-        StrDtypeArg,
-        TimedeltaDtypeArg,
-        TimestampDtypeArg,
-        UIntDtypeArg,
-        VoidDtypeArg,
-        np_1darray,
-        np_1darray_anyint,
-        np_1darray_bool,
-        np_1darray_bytes,
-        np_1darray_complex,
-        np_1darray_dt,
-        np_1darray_float,
-        np_1darray_object,
-        np_1darray_td,
-        np_ndarray_num,
-    )
-else:
-    from tests._typing import (
-        BooleanDtypeArg,
-        BytesDtypeArg,
-        CategoryDtypeArg,
-        ComplexDtypeArg,
-        IntDtypeArg,
-        ObjectDtypeArg,
-        PandasAstypeComplexDtypeArg,
-        PandasAstypeTimedeltaDtypeArg,
-        PandasAstypeTimestampDtypeArg,
-        StrDtypeArg,
-        TimedeltaDtypeArg,
-        TimestampDtypeArg,
-        UIntDtypeArg,
-        VoidDtypeArg,
-        np_1darray,
-        np_1darray_anyint,
-        np_1darray_bool,
-        np_1darray_bytes,
-        np_1darray_complex,
-        np_1darray_dt,
-        np_1darray_float,
-        np_1darray_object,
-        np_1darray_td,
-        np_ndarray_num,
-    )
 
 if not PD_LTE_23:
     from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration]  # isort: skip

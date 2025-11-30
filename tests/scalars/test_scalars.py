@@ -3,7 +3,6 @@ from __future__ import annotations
 import datetime
 import datetime as dt
 from typing import (
-    TYPE_CHECKING,
     Any,
     Literal,
     TypeAlias,
@@ -15,9 +14,7 @@ from numpy import typing as npt
 import pandas as pd
 from pandas.api.typing import NaTType
 import pytz
-from typing_extensions import (
-    assert_type,
-)
+from typing_extensions import assert_type
 
 from pandas._libs.tslibs.timedeltas import Components
 from pandas._typing import TimeUnit
@@ -28,30 +25,19 @@ from tests import (
     check,
     pytest_warns_bounded,
 )
+from tests._typing import (
+    np_1darray_bool,
+    np_2darray,
+    np_ndarray,
+    np_ndarray_bool,
+    np_ndarray_dt,
+    np_ndarray_td,
+)
 
 from pandas.tseries.offsets import (
     BaseOffset,
     Day,
 )
-
-if TYPE_CHECKING:
-    from pandas._typing import (
-        np_1darray_bool,
-        np_2darray,
-        np_ndarray,
-        np_ndarray_bool,
-        np_ndarray_dt,
-        np_ndarray_td,
-    )
-else:
-    from tests._typing import (
-        np_1darray_bool,
-        np_2darray,
-        np_ndarray,
-        np_ndarray_bool,
-        np_ndarray_dt,
-        np_ndarray_td,
-    )
 
 if not PD_LTE_23:
     from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration]  # isort: skip
