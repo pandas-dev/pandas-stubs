@@ -3584,6 +3584,7 @@ def test_map() -> None:
         pd.Series,
         str,
     )
+    check(assert_type(s.map(mapping), "pd.Series[str]"), pd.Series, str)
 
     def callable(x: int) -> str:
         return str(x)
@@ -3593,16 +3594,29 @@ def test_map() -> None:
         pd.Series,
         str,
     )
+    check(assert_type(s.map(callable), "pd.Series[str]"), pd.Series, str)
 
     series = pd.Series(["a", "b", "c"])
     check(
         assert_type(s.map(series, na_action="ignore"), "pd.Series[str]"), pd.Series, str
     )
+    check(assert_type(s.map(series), "pd.Series[str]"), pd.Series, str)
 
     unknown_series = pd.Series([1, 0, None])
     check(
-        assert_type(unknown_series.map({1: True, 0: False, None: None}), pd.Series),
+        assert_type(
+            unknown_series.map({1: True, 0: False, None: None}), "pd.Series[bool]"
+        ),
         pd.Series,
+        bool,
+    )
+    check(
+        assert_type(
+            unknown_series.map({1: True, 0: False, None: None}, na_action="ignore"),
+            "pd.Series[bool]",
+        ),
+        pd.Series,
+        bool,
     )
 
 
@@ -3625,6 +3639,16 @@ def test_map_na() -> None:
 
     series = pd.Series(["a", "b", "c"])
     check(assert_type(s.map(series, na_action=None), "pd.Series[str]"), pd.Series, str)
+
+    def callable2(x: int | NAType | None) -> str | None:
+        if isinstance(x, int):
+            return str(x)
+        return None
+
+    check(
+        assert_type(s.map(callable2, na_action=None), "pd.Series[str]"), pd.Series, str
+    )
+    check(assert_type(s.map(callable2), "pd.Series[str]"), pd.Series, str)
 
 
 def test_case_when() -> None:
