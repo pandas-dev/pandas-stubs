@@ -956,14 +956,8 @@ def test_series_types_to_numpy() -> None:
         np_1darray,
         dtype=np.integer,
     )
-    check(
-        assert_type(o_s.to_numpy(dtype="bytes", copy=True), np_1darray),
-        np_1darray,
-    )
-    check(
-        assert_type(i_s.to_numpy(dtype="bytes", copy=True), np_1darray),
-        np_1darray,
-    )
+    check(assert_type(o_s.to_numpy(dtype="bytes", copy=True), np_1darray), np_1darray)
+    check(assert_type(i_s.to_numpy(dtype="bytes", copy=True), np_1darray), np_1darray)
 
     # passed dtype-like with statically known generic
     check(
