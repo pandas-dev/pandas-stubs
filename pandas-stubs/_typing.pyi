@@ -827,7 +827,7 @@ TimeNonexistent: TypeAlias = (
 DropKeep: TypeAlias = Literal["first", "last", False]
 CorrelationMethod: TypeAlias = (
     Literal["pearson", "kendall", "spearman"]
-    | Callable[[np.typing.NDArray[Any], np.typing.NDArray[Any]], float]
+    | Callable[[npt.NDArray[Any], npt.NDArray[Any]], float]
 )
 AlignJoin: TypeAlias = Literal["outer", "inner", "left", "right"]
 DtypeBackend: TypeAlias = Literal["pyarrow", "numpy_nullable"]
