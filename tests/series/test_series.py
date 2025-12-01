@@ -784,7 +784,11 @@ def test_types_clip() -> None:
         pd.Series,
         np.integer,
     )
-    check(assert_type(s.clip(lower=0, inplace=True), None), type(None))
+    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
+    if PD_LTE_23:
+        check(assert_type(s.clip(lower=0, inplace=True), None), type(None))
+    else:
+        check(assert_type(s.clip(lower=0, inplace=True), None), pd.Series, np.integer)
     check(
         assert_type(s.clip(lower=None, inplace=True), "pd.Series[int]"),
         pd.Series,
