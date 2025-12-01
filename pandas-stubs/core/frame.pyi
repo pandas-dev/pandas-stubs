@@ -1027,6 +1027,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis | None = ...,
         limit: int = ...,
         inplace: Literal[True],
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def fillna(
@@ -1045,6 +1046,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         *,
         inplace: Literal[True],
         regex: ReplaceValue | Mapping[HashableT3, ReplaceValue] = ...,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def replace(
@@ -2046,6 +2048,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         inplace: Literal[True],
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def bfill(
@@ -2105,6 +2108,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis | None = ...,
         inplace: Literal[True],
         **kwargs: Any,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def clip(
@@ -2115,6 +2119,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis = ...,
         inplace: Literal[True],
         **kwargs: Any,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def clip(
@@ -2125,6 +2130,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis = ...,
         inplace: Literal[True],
         **kwargs: Any,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @final
     def copy(self, deep: _bool = True) -> Self: ...
@@ -2209,6 +2215,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         inplace: Literal[True],
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def ffill(
@@ -2270,6 +2277,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         limit_area: Literal["inside", "outside"] | None = ...,
         inplace: Literal[True],
         **kwargs: Any,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def interpolate(
@@ -2327,6 +2335,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         inplace: Literal[True],
         axis: Axis | None = ...,
         level: Level | None = None,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def mask(
@@ -2799,6 +2808,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         inplace: Literal[True],
         axis: Axis | None = ...,
         level: Level | None = None,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def where(
