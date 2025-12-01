@@ -18,6 +18,7 @@ from typing import (
 
 from _typeshed import _T_contra
 import numpy as np
+import numpy.typing as npt
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
@@ -222,7 +223,7 @@ ScalarArrayIndexReal: TypeAlias = (
     float
     | Sequence[float | NumpyRealScalar]
     | NumpyRealScalar
-    | np.typing.NDArray[NumpyRealScalar]
+    | npt.NDArray[NumpyRealScalar]
     | ExtensionArray
     | IndexReal
 )
@@ -235,7 +236,7 @@ ScalarArrayIndexComplex: TypeAlias = (
     complex
     | Sequence[complex | NumpyComplexScalar]
     | NumpyComplexScalar
-    | np.typing.NDArray[NumpyComplexScalar]
+    | npt.NDArray[NumpyComplexScalar]
     | ExtensionArray
     | IndexComplex
 )

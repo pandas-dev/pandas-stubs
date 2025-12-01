@@ -16,6 +16,9 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
+from tests._typing import (
+    np_ndarray_int64,
+)
 
 
 @pytest.fixture
@@ -138,9 +141,7 @@ def test_floordiv_numpy_array(left: "pd.Series[float]") -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(c // left, Any)
         assert_type(s // left, Any)
-    check(
-        assert_type(d // left, "np.typing.NDArray[np.int64]"), pd.Series, pd.Timedelta
-    )
+    check(assert_type(d // left, np_ndarray_int64), pd.Series, pd.Timedelta)
 
     check(assert_type(left.floordiv(b), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.floordiv(i), "pd.Series[float]"), pd.Series, np.floating)

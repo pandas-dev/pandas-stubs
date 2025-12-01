@@ -4,13 +4,16 @@ from datetime import (
 )
 
 import numpy as np
-from numpy import typing as npt  # noqa: F401
 import pandas as pd
 from typing_extensions import assert_type
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+)
+from tests._typing import (
+    np_ndarray_dt,
+    np_ndarray_td,
 )
 
 left = pd.Series([pd.Timestamp(2025, 8, 20)])  # left operand
@@ -109,9 +112,9 @@ def test_sub_numpy_array() -> None:
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__rsub__` cannot override. At runtime, they return
     # `Series`.
-    check(assert_type(s - left, "npt.NDArray[np.datetime64]"), pd.Series, pd.Timedelta)
+    check(assert_type(s - left, np_ndarray_dt), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(d - left, "npt.NDArray[np.timedelta64]")
+        assert_type(d - left, np_ndarray_td)
 
     check(assert_type(left.sub(s), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left - d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)

@@ -17,7 +17,11 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
-from tests._typing import np_ndarray_int64
+from tests._typing import (
+    np_ndarray_bool,
+    np_ndarray_int64,
+    np_ndarray_td,
+)
 
 
 @pytest.fixture
@@ -140,7 +144,7 @@ def test_mul_numpy_array(left: "pd.Series[complex]") -> None:
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__rmul__` cannot override. At runtime, they return
     # `Series` with the correct element type.
-    check(assert_type(b * left, "npt.NDArray[np.bool_]"), pd.Series, np.complexfloating)
+    check(assert_type(b * left, np_ndarray_bool), pd.Series, np.complexfloating)
     check(assert_type(i * left, np_ndarray_int64), pd.Series, np.complexfloating)
     check(
         assert_type(f * left, "npt.NDArray[np.float64]"), pd.Series, np.complexfloating
@@ -152,7 +156,7 @@ def test_mul_numpy_array(left: "pd.Series[complex]") -> None:
     )
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(s * left, Any)
-        assert_type(d * left, "npt.NDArray[np.timedelta64]")
+        assert_type(d * left, np_ndarray_td)
 
     check(assert_type(left.mul(b), "pd.Series[complex]"), pd.Series, np.complexfloating)
     check(assert_type(left.mul(i), "pd.Series[complex]"), pd.Series, np.complexfloating)

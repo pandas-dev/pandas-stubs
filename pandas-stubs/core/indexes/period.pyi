@@ -22,8 +22,8 @@ from pandas._typing import (
     AxesData,
     Dtype,
     Frequency,
-    np_1darray,
     np_1darray_intp,
+    np_1darray_object,
     np_ndarray_bool,
 )
 
@@ -37,7 +37,7 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period, np.object_], PeriodIndexField
         name: Hashable | None = None,
     ) -> Self: ...
     @property
-    def values(self) -> np_1darray[np.object_]: ...
+    def values(self) -> np_1darray_object: ...
     def __add__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: datetime.timedelta
     ) -> Self: ...

@@ -11,7 +11,10 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
-from tests._typing import np_ndarray_int64
+from tests._typing import (
+    np_ndarray_bool,
+    np_ndarray_int64,
+)
 
 
 @pytest.fixture
@@ -78,7 +81,7 @@ def test_mul_numpy_array(left: pd.TimedeltaIndex) -> None:
     # `Series` with the correct element type.
     if TYPE_CHECKING_INVALID_USAGE:
         # We made it Never, but numpy takes over
-        assert_type(b * left, "npt.NDArray[np.bool_]")
+        assert_type(b * left, np_ndarray_bool)
     check(assert_type(i * left, np_ndarray_int64), pd.TimedeltaIndex, pd.Timedelta)
     check(
         assert_type(f * left, "npt.NDArray[np.float64]"),

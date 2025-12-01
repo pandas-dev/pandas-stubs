@@ -17,7 +17,11 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
-from tests._typing import np_ndarray_int64
+from tests._typing import (
+    np_ndarray_bool,
+    np_ndarray_int64,
+    np_ndarray_td,
+)
 
 
 @pytest.fixture
@@ -98,13 +102,13 @@ def test_mul_numpy_array(left: "pd.Index[str]") -> None:
     # checking, where our `__rmul__` cannot override. At runtime, they return
     # `Index` with the correct element type.
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(b * left, "npt.NDArray[np.bool_]")
+        assert_type(b * left, np_ndarray_bool)
     check(assert_type(i * left, np_ndarray_int64), pd.Index, str)
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(f * left, "npt.NDArray[np.float64]")
         assert_type(c * left, "npt.NDArray[np.complex128]")
         assert_type(s * left, Any)
-        assert_type(d * left, "npt.NDArray[np.timedelta64]")
+        assert_type(d * left, np_ndarray_td)
 
 
 def test_mul_pd_index(left: "pd.Index[str]") -> None:
