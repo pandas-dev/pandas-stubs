@@ -32,6 +32,7 @@ from pandas._libs.tslibs import (
     Tick,
     Timedelta,
 )
+from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     PeriodFrequency,
     ShapeT,
@@ -236,7 +237,7 @@ class Timestamp(datetime, SupportsIndex):
     def __radd__(
         self, other: np_ndarray[ShapeT, np.timedelta64]
     ) -> np_ndarray[ShapeT, np.datetime64]: ...
-    # TODO: pandas-dev/pandas-stubs#1432 test dt64
+    def __rsub__(self, other: datetime | np.datetime64) -> Timedelta: ...
     @overload  # type: ignore[override]
     def __sub__(self, other: datetime | np.datetime64) -> Timedelta: ...
     @overload
@@ -292,7 +293,15 @@ class Timestamp(datetime, SupportsIndex):
     @property
     def asm8(self) -> np.datetime64: ...
     def tz_convert(self, tz: TimeZones) -> Self: ...
-    # TODO: pandas-dev/pandas-stubs#1432 could return NaT?
+    @overload
+    def tz_localize(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        self,
+        tz: TimeZones,
+        ambiguous: _Ambiguous = "raise",
+        *,
+        nonexistent: Literal["NaT"],
+    ) -> Self | NaTType: ...
+    @overload
     def tz_localize(
         self,
         tz: TimeZones,
