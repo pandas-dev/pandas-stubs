@@ -1,6 +1,5 @@
 """Test module for classes in pandas.api.typing."""
 
-import sys
 from typing import TypeAlias
 
 import numpy as np
@@ -205,9 +204,6 @@ def test_window() -> None:
     f1(ser.rolling(2, win_type="gaussian"))
 
 
-@pytest.mark.xfail(
-    sys.version_info >= (3, 14), reason="sys.getrefcount pandas-dev/pandas#61368"
-)
 def test_statereader() -> None:
     df = pd.DataFrame([[1, 2], [3, 4]], columns=["col_1", "col_2"])
     time_stamp = pd.Timestamp(2000, 2, 29, 14, 21)

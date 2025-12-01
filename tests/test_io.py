@@ -6,7 +6,6 @@ import io
 import pathlib
 from pathlib import Path
 import sqlite3
-import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -175,18 +174,12 @@ def test_to_pickle_series() -> None:
         check(assert_type(read_pickle(path), Any), Series)
 
 
-@pytest.mark.xfail(
-    sys.version_info >= (3, 14), reason="sys.getrefcount pandas-dev/pandas#61368"
-)
 def test_read_stata_df() -> None:
     with ensure_clean() as path:
         DF.to_stata(path)
         check(assert_type(read_stata(path), pd.DataFrame), pd.DataFrame)
 
 
-@pytest.mark.xfail(
-    sys.version_info >= (3, 14), reason="sys.getrefcount pandas-dev/pandas#61368"
-)
 def test_read_stata_iterator() -> None:
     with ensure_clean() as path:
         str_path = str(path)
