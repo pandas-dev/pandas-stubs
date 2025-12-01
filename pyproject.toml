@@ -237,7 +237,11 @@ ignore = [
   # TODO: remove when _libs is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
-"*base.pyi" = [
+"*core/base.pyi" = [
+  # TODO: remove when base.pyi's are fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*excel/_base.pyi" = [
   # TODO: remove when base.pyi's are fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]

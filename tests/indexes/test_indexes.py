@@ -22,6 +22,7 @@ from typing_extensions import (
     assert_type,
 )
 
+from pandas._typing import ArrayLike  # noqa: F401
 from pandas._typing import Dtype  # noqa: F401
 from pandas._typing import Scalar  # noqa: F401
 
@@ -1667,3 +1668,28 @@ def test_index_slice_locs() -> None:
     start, end = idx.slice_locs(0, 1)
     check(assert_type(start, np.intp | int), np.integer)
     check(assert_type(end, np.intp | int), int)
+
+
+def test_index_view() -> None:
+    ind = pd.Index([1, 2])
+    check(assert_type(ind.view("int64"), ArrayLike), np_1darray_int64)
+    check(assert_type(ind.view(), "pd.Index[int]"), pd.Index)
+    check(assert_type(ind.view(np.ndarray), np.ndarray), np.ndarray)
+
+    class MyArray(np.ndarray): ...
+
+    check(assert_type(ind.view(MyArray), MyArray), MyArray)
+
+
+def test_index_drop() -> None:
+    ind = pd.Index([1, 2, 3])
+    check(assert_type(ind.drop([1, 2]), "pd.Index[int]"), pd.Index, np.integer)
+    check(
+        assert_type(ind.drop(pd.Index([1, 2])), "pd.Index[int]"), pd.Index, np.integer
+    )
+    check(
+        assert_type(ind.drop(pd.Series([1, 2])), "pd.Index[int]"), pd.Index, np.integer
+    )
+    check(
+        assert_type(ind.drop(np.array([1, 2])), "pd.Index[int]"), pd.Index, np.integer
+    )
