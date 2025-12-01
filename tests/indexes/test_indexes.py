@@ -67,6 +67,7 @@ def test_index_isin() -> None:
     check(assert_type(mi.isin([[3]]), np_1darray_bool), np_1darray_bool)
     if TYPE_CHECKING_INVALID_USAGE:
         mi.isin({3})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        mi.isin(iter({3}))  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
 
 
 def test_index_astype() -> None:

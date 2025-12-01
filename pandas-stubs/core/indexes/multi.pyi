@@ -1,5 +1,6 @@
 from collections.abc import (
     Callable,
+    Collection,
     Hashable,
     Iterable,
     Mapping,
@@ -171,7 +172,7 @@ class MultiIndex(Index):
     ) -> np_1darray_bool: ...
     @overload
     def isin(  # pyright: ignore[reportIncompatibleMethodOverride]
-        self, values: Iterable[Iterable[Any]], level: None = None
+        self, values: Collection[Iterable[Any]], level: None = None
     ) -> np_1darray_bool: ...
     def set_names(
         self,
