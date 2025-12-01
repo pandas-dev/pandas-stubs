@@ -171,7 +171,7 @@ class MultiIndex(Index):
         self, values: Iterable[Any], level: Level
     ) -> np_1darray_bool: ...
     @overload
-    def isin(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def isin(  # ty: ignore[invalid-method-override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, values: Collection[Iterable[Any]], level: None = None
     ) -> np_1darray_bool: ...
     def set_names(
