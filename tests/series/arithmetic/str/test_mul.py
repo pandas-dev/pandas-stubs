@@ -17,6 +17,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
+from tests._typing import np_ndarray_int64
 
 
 @pytest.fixture
@@ -134,7 +135,7 @@ def test_mul_numpy_array(left: "pd.Series[str]") -> None:
     # `Series` with the correct element type.
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(b * left, "npt.NDArray[np.bool_]")
-    check(assert_type(i * left, "npt.NDArray[np.int64]"), pd.Series, str)
+    check(assert_type(i * left, np_ndarray_int64), pd.Series, str)
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(f * left, "npt.NDArray[np.float64]")
         assert_type(c * left, "npt.NDArray[np.complex128]")

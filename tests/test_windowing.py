@@ -23,9 +23,11 @@ from pandas._libs.tslibs.offsets import BaseOffset
 from tests import (
     PD_LTE_23,
     check,
+    pytest_warns_bounded,
+)
+from tests._typing import (
     np_1darray_intp,
     np_ndarray,
-    pytest_warns_bounded,
 )
 
 from pandas.tseries.frequencies import to_offset

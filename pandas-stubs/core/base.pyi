@@ -10,6 +10,7 @@ from typing import (
     Literal,
     Protocol,
     TypeAlias,
+    TypeVar,
     final,
     overload,
     type_check_only,
@@ -52,6 +53,8 @@ from pandas._typing import (
     np_ndarray_td,
 )
 from pandas.util._decorators import cache_readonly
+
+T_INTERVAL_NP = TypeVar("T_INTERVAL_NP", bound=np.bytes_ | np.str_)
 
 class NoNewAttributesMixin:
     def __setattr__(self, key: str, value: Any) -> None: ...

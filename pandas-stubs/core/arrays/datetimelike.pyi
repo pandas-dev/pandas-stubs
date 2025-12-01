@@ -73,9 +73,9 @@ class DatetimeLikeArrayMixin(ExtensionOpsMixin, ExtensionArray):
     @overload
     def __getitem__(self, key: ScalarIndexer) -> DTScalarOrNaT: ...
     @overload
-    def __getitem__(
+    def __getitem__(  # ty: ignore[invalid-method-override]
         self,
-        key: SequenceIndexer | PositionalIndexerTuple,
+        item: SequenceIndexer | PositionalIndexerTuple,
     ) -> Self: ...
     def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self, key: int | Sequence[int] | Sequence[bool] | slice, value

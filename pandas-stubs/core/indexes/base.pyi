@@ -32,6 +32,7 @@ import numpy as np
 from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.arrays.floating import FloatingArray
 from pandas.core.base import (
+    T_INTERVAL_NP,
     ArrayIndexTimedeltaNoSeq,
     ElementOpsMixin,
     IndexComplex,
@@ -1193,6 +1194,14 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
 class _IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):
     @overload
     def to_numpy(
+        self: _IndexSubclassBase[Interval],
+        dtype: type[T_INTERVAL_NP],
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs: Any,
+    ) -> np_1darray: ...
+    @overload
+    def to_numpy(
         self,
         dtype: None = None,
         copy: bool = False,
@@ -1208,7 +1217,7 @@ class _IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):
         **kwargs: Any,
     ) -> np_1darray[GenericT]: ...
     @overload
-    def to_numpy(
+    def to_numpy(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         dtype: DTypeLike,
         copy: bool = False,

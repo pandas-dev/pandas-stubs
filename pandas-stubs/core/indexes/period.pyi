@@ -54,7 +54,7 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period, np.object_], PeriodIndexField
     @overload
     def __sub__(self, other: NaTType) -> NaTType: ...
     @overload
-    def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __sub__(  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]
         self, other: TimedeltaIndex | pd.Timedelta
     ) -> Self: ...
     @overload  # type: ignore[override]
@@ -63,7 +63,7 @@ class PeriodIndex(DatetimeIndexOpsMixin[pd.Period, np.object_], PeriodIndexField
     @overload
     def __rsub__(self, other: Self) -> Index: ...
     @overload
-    def __rsub__(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __rsub__(  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]
         self, other: NaTType
     ) -> NaTType: ...
     def asof_locs(

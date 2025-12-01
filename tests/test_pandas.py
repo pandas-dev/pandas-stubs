@@ -32,6 +32,9 @@ from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
+)
+from tests._typing import (
     np_1darray,
     np_1darray_anyint,
     np_1darray_bool,
@@ -43,7 +46,6 @@ from tests import (
     np_2darray,
     np_ndarray,
     np_ndarray_bool,
-    pytest_warns_bounded,
 )
 
 

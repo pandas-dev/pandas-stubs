@@ -10,13 +10,10 @@ from typing import (
 
 import dateutil.tz
 import numpy as np
-from numpy import typing as npt
 import pandas as pd
 from pandas.api.typing import NaTType
 import pytz
-from typing_extensions import (
-    assert_type,
-)
+from typing_extensions import assert_type
 
 from pandas._libs.tslibs.timedeltas import Components
 from pandas._typing import TimeUnit
@@ -25,13 +22,17 @@ from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
+)
+from tests._typing import (
     np_1darray_bool,
     np_2darray,
     np_ndarray,
+    np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_dt,
+    np_ndarray_float,
     np_ndarray_td,
-    pytest_warns_bounded,
 )
 
 from pandas.tseries.offsets import (
@@ -619,8 +620,8 @@ def test_timedelta_add_sub() -> None:
 def test_timedelta_mul_div() -> None:
     td = pd.Timedelta("1 day")
 
-    np_intp_arr: npt.NDArray[np.integer] = np.array([1, 2, 3])
-    np_float_arr: npt.NDArray[np.floating] = np.array([1.2, 2.2, 3.4])
+    np_intp_arr: np_ndarray_anyint = np.array([1, 2, 3])
+    np_float_arr: np_ndarray_float = np.array([1.2, 2.2, 3.4])
 
     md_int = 3
     md_float = 3.5
@@ -1385,8 +1386,19 @@ def test_timestamp_misc_methods() -> None:
         pd.Timestamp,
     )
     check(
-        assert_type(ts.tz_localize("US/Pacific", nonexistent="NaT"), pd.Timestamp),
+        assert_type(
+            ts.tz_localize("US/Pacific", nonexistent="NaT"), pd.Timestamp | NaTType
+        ),
         pd.Timestamp,
+    )
+    check(
+        assert_type(
+            pd.Timestamp(2025, 3, 9, 2, 30, 0).tz_localize(
+                "US/Eastern", nonexistent="NaT"
+            ),
+            pd.Timestamp | NaTType,
+        ),
+        NaTType,
     )
     check(
         assert_type(ts.tz_localize("US/Pacific", nonexistent="raise"), pd.Timestamp),

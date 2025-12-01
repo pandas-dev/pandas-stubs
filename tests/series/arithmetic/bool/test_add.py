@@ -4,6 +4,7 @@ import pandas as pd
 from typing_extensions import assert_type
 
 from tests import check
+from tests._typing import np_ndarray_int64
 
 left = pd.Series([True, True, False])  # left operand
 
@@ -78,7 +79,7 @@ def test_add_numpy_array() -> None:
     # checking, where our `__radd__` cannot override. At runtime, they return
     # `Series` with the correct element type.
     check(assert_type(b + left, "npt.NDArray[np.bool_]"), pd.Series, np.bool_)
-    check(assert_type(i + left, "npt.NDArray[np.int64]"), pd.Series, np.integer)
+    check(assert_type(i + left, np_ndarray_int64), pd.Series, np.integer)
     check(assert_type(f + left, "npt.NDArray[np.float64]"), pd.Series, np.floating)
     check(
         assert_type(c + left, "npt.NDArray[np.complex128]"),

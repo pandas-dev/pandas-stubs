@@ -11,8 +11,8 @@ from typing_extensions import assert_type
 
 from pandas._typing import ArrayLike
 
-from tests import (
-    check,
+from tests import check
+from tests._typing import (
     np_1darray,
     np_1darray_intp,
 )
