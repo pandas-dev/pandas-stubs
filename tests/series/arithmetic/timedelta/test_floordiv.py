@@ -14,6 +14,7 @@ from typing_extensions import (
 )
 
 from tests import (
+    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
@@ -87,7 +88,12 @@ def test_floordiv_py_sequence(left: "pd.Series[pd.Timedelta]") -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         _03 = left // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _04 = left // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-    check(assert_type(left // d, "pd.Series[int]"), pd.Series, int)
+    # TODO: pandas-dev/pandas#62552 switch to np.integer after Pandas 3.0
+    check(
+        assert_type(left // d, "pd.Series[int]"),
+        pd.Series,
+        int if PD_LTE_23 else np.integer,
+    )
 
     if TYPE_CHECKING_INVALID_USAGE:
         _10 = b // left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]

@@ -77,7 +77,6 @@ from pandas.core.base import (
     IndexOpsMixin,
     NumListLike,
     ScalarArrayIndexSeriesComplex,
-    ScalarArrayIndexSeriesIntNoBool,
     ScalarArrayIndexSeriesJustComplex,
     ScalarArrayIndexSeriesJustFloat,
     ScalarArrayIndexSeriesJustInt,
@@ -1280,6 +1279,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         *,
         regex: ReplaceValue = ...,
         inplace: Literal[True],
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def replace(
@@ -1543,6 +1543,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         limit_direction: Literal["forward", "backward", "both"] | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
         **kwargs: Any,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def interpolate(
@@ -1581,6 +1582,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         axis: AxisIndex | None = 0,
         inplace: Literal[True],
         **kwargs: Any,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def clip(
@@ -3681,7 +3683,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[float]: ...
     @overload
     def __truediv__(
-        self: Series[bool] | Series[int], other: ScalarArrayIndexSeriesIntNoBool
+        self: Series[bool] | Series[int], other: ScalarArrayIndexSeriesJustInt
     ) -> Series[float]: ...
     @overload
     def __truediv__(
@@ -3773,7 +3775,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def truediv(
         self: Series[bool] | Series[int],
-        other: ScalarArrayIndexSeriesIntNoBool,
+        other: ScalarArrayIndexSeriesJustInt | Sequence[bool | np.bool],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
@@ -3883,7 +3885,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[float]: ...
     @overload
     def __rtruediv__(
-        self: Series[bool] | Series[int], other: ScalarArrayIndexSeriesIntNoBool
+        self: Series[bool] | Series[int], other: ScalarArrayIndexSeriesJustInt
     ) -> Series[float]: ...
     @overload
     def __rtruediv__(  # type: ignore[misc]
@@ -3966,7 +3968,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def rtruediv(
         self: Series[bool] | Series[int],
-        other: ScalarArrayIndexSeriesIntNoBool,
+        other: ScalarArrayIndexSeriesJustInt | Sequence[bool | np.bool],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,

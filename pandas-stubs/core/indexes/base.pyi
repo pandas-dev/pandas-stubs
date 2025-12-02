@@ -39,9 +39,9 @@ from pandas.core.base import (
     IndexOpsMixin,
     IndexReal,
     ScalarArrayIndexComplex,
-    ScalarArrayIndexIntNoBool,
     ScalarArrayIndexJustComplex,
     ScalarArrayIndexJustFloat,
+    ScalarArrayIndexJustInt,
     ScalarArrayIndexReal,
     ScalarArrayIndexTimedelta,
     Supports_ProtoAdd,
@@ -1012,7 +1012,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[float]: ...
     @overload
     def __truediv__(
-        self: Index[bool] | Index[int], other: ScalarArrayIndexIntNoBool
+        self: Index[bool] | Index[int], other: ScalarArrayIndexJustInt
     ) -> Index[float]: ...
     @overload
     def __truediv__(
@@ -1063,7 +1063,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[float]: ...
     @overload
     def __rtruediv__(
-        self: Index[bool] | Index[int], other: ScalarArrayIndexIntNoBool
+        self: Index[bool] | Index[int], other: ScalarArrayIndexJustInt
     ) -> Index[float]: ...
     @overload
     def __rtruediv__(  # type: ignore[misc]
