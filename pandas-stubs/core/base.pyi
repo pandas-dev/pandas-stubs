@@ -208,16 +208,6 @@ ScalarArrayIndexSeriesJustComplex: TypeAlias = (
     ScalarArrayIndexJustComplex | Series[complex]
 )
 
-ScalarArrayIndexIntNoBool: TypeAlias = (
-    Just[int]
-    | np.integer
-    | Sequence[Just[int] | np.integer]
-    | np_ndarray_anyint
-    | IntegerArray
-    | Index[int]
-)
-ScalarArrayIndexSeriesIntNoBool: TypeAlias = ScalarArrayIndexIntNoBool | Series[int]
-
 NumpyRealScalar: TypeAlias = np.bool | np.integer | np.floating
 IndexReal: TypeAlias = Index[bool] | Index[int] | Index[float]
 ScalarArrayIndexReal: TypeAlias = (

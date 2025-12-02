@@ -77,7 +77,6 @@ from pandas.core.base import (
     IndexOpsMixin,
     NumListLike,
     ScalarArrayIndexSeriesComplex,
-    ScalarArrayIndexSeriesIntNoBool,
     ScalarArrayIndexSeriesJustComplex,
     ScalarArrayIndexSeriesJustFloat,
     ScalarArrayIndexSeriesJustInt,
@@ -3684,7 +3683,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[float]: ...
     @overload
     def __truediv__(
-        self: Series[bool] | Series[int], other: ScalarArrayIndexSeriesIntNoBool
+        self: Series[bool] | Series[int], other: ScalarArrayIndexSeriesJustInt
     ) -> Series[float]: ...
     @overload
     def __truediv__(
@@ -3776,7 +3775,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def truediv(
         self: Series[bool] | Series[int],
-        other: ScalarArrayIndexSeriesIntNoBool | Sequence[bool | np.bool],
+        other: ScalarArrayIndexSeriesJustInt | Sequence[bool | np.bool],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
@@ -3886,7 +3885,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[float]: ...
     @overload
     def __rtruediv__(
-        self: Series[bool] | Series[int], other: ScalarArrayIndexSeriesIntNoBool
+        self: Series[bool] | Series[int], other: ScalarArrayIndexSeriesJustInt
     ) -> Series[float]: ...
     @overload
     def __rtruediv__(  # type: ignore[misc]
@@ -3969,7 +3968,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def rtruediv(
         self: Series[bool] | Series[int],
-        other: ScalarArrayIndexSeriesIntNoBool | Sequence[bool | np.bool],
+        other: ScalarArrayIndexSeriesJustInt | Sequence[bool | np.bool],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
