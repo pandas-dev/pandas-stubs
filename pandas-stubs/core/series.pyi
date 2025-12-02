@@ -3776,7 +3776,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def truediv(
         self: Series[bool] | Series[int],
-        other: ScalarArrayIndexSeriesIntNoBool,
+        other: ScalarArrayIndexSeriesIntNoBool | Sequence[bool | np.bool],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,
@@ -3969,7 +3969,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def rtruediv(
         self: Series[bool] | Series[int],
-        other: ScalarArrayIndexSeriesIntNoBool,
+        other: ScalarArrayIndexSeriesIntNoBool | Sequence[bool | np.bool],
         level: Level | None = None,
         fill_value: float | None = None,
         axis: AxisIndex = 0,

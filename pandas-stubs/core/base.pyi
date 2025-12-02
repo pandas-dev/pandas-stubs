@@ -22,6 +22,7 @@ import numpy.typing as npt
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
+from pandas.core.arrays.floating import FloatingArray
 from pandas.core.arrays.integer import IntegerArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.indexes.accessors import ArrayDescriptor
@@ -192,7 +193,7 @@ ScalarArrayIndexJustFloat: TypeAlias = (
     | np.floating
     | Sequence[Just[float] | np.floating]
     | np_ndarray_float
-    # | FloatingArray  # TODO: after pandas-dev/pandas-stubs#1469
+    | FloatingArray
     | Index[float]
 )
 ScalarArrayIndexSeriesJustFloat: TypeAlias = ScalarArrayIndexJustFloat | Series[float]
@@ -210,7 +211,7 @@ ScalarArrayIndexSeriesJustComplex: TypeAlias = (
 ScalarArrayIndexIntNoBool: TypeAlias = (
     Just[int]
     | np.integer
-    | Sequence[int | np.integer]
+    | Sequence[Just[int] | np.integer]
     | np_ndarray_anyint
     | IntegerArray
     | Index[int]

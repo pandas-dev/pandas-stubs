@@ -81,12 +81,14 @@ def test_truediv_py_sequence(left: "pd.Series[bool]") -> None:
     """Test pd.Series[bool] / Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
-    check(assert_type(left / b, "pd.Series[float]"), pd.Series, np.floating)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _00 = left / b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(left / i, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / c, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
-    check(assert_type(b / left, "pd.Series[float]"), pd.Series, np.floating)
+    if TYPE_CHECKING_INVALID_USAGE:
+        _10 = b / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
     check(assert_type(i / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(f / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
