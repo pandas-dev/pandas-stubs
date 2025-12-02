@@ -23,7 +23,6 @@ from typing_extensions import (
     assert_type,
 )
 
-from pandas._typing import ArrayLike  # noqa: F401
 from pandas._typing import Dtype  # noqa: F401
 from pandas._typing import Scalar  # noqa: F401
 
@@ -1684,7 +1683,7 @@ def test_index_view() -> None:
         # - pyright: ndarray[tuple[Any, ...], dtype[Any]]
         check(assert_type(ind.view(np.ndarray), np_ndarray), np.ndarray)  # type: ignore[assert-type]
     else:
-        check(assert_type(ind.view(np.ndarray), np_ndarray), np.ndarray)  # type: ignore[assert-type]
+        check(assert_type(ind.view(np.ndarray), np_ndarray), np.ndarray)  # type: ignore[assert-type]  # pyright: ignore[reportAssertTypeFailure]
 
     class MyArray(np.ndarray): ...
 
