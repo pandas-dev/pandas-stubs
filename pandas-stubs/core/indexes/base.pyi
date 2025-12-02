@@ -576,7 +576,9 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def map(
         self, mapper: Renamer, na_action: Literal["ignore"] | None = None
     ) -> Index: ...
-    def isin(self, values, level=...) -> np_1darray_bool: ...
+    def isin(
+        self, values: Iterable[Any], level: Level | None = None
+    ) -> np_1darray_bool: ...
     def slice_indexer(
         self,
         start: Label | None = None,

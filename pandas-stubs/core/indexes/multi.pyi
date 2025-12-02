@@ -1,5 +1,6 @@
 from collections.abc import (
     Callable,
+    Collection,
     Hashable,
     Iterable,
     Mapping,
@@ -165,7 +166,14 @@ class MultiIndex(Index):
     def equal_levels(self, other): ...
     def insert(self, loc, item): ...
     def delete(self, loc): ...
-    def isin(self, values, level=...) -> np_1darray_bool: ...
+    @overload  # type: ignore[override]
+    def isin(  # pyrefly: ignore[bad-override]
+        self, values: Iterable[Any], level: Level
+    ) -> np_1darray_bool: ...
+    @overload
+    def isin(  # ty: ignore[invalid-method-override]  # pyright: ignore[reportIncompatibleMethodOverride]
+        self, values: Collection[Iterable[Any]], level: None = None
+    ) -> np_1darray_bool: ...
     def set_names(
         self,
         names: Hashable | Sequence[Hashable] | Mapping[Any, Hashable],
