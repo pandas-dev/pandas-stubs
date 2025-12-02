@@ -104,6 +104,9 @@ from pandas._typing import (
     NaPosition,
     NDArrayT,
     NumpyFloatNot16DtypeArg,
+    NumpyNotTimeDtypeArg,
+    NumpyTimedeltaDtypeArg,
+    NumpyTimestampDtypeArg,
     PandasAstypeFloatDtypeArg,
     PandasFloatDtypeArg,
     PyArrowFloatDtypeArg,
@@ -380,7 +383,10 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def view(self, cls: type[NDArrayT]) -> NDArrayT: ...
     @overload
-    def view(self, cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg) -> np_1darray: ...
+    def view(
+        self,
+        cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg,
+    ) -> np_1darray: ...
     @overload
     def astype(
         self,
