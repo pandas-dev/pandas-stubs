@@ -238,11 +238,11 @@ ignore = [
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
 "*core/base.pyi" = [
-  # TODO: remove when base.pyi's are fully typed
+  # TODO: remove when core/base.pyi is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
 "*excel/_base.pyi" = [
-  # TODO: remove when base.pyi's are fully typed
+  # TODO: remove when excel/_base.pyi is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
 "scripts/*" = [

@@ -380,7 +380,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def view(self, cls: type[NDArrayT]) -> NDArrayT: ...
     @overload
-    def view(self, cls: Dtype) -> ArrayLike: ...
+    def view(self, cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg) -> np_1darray: ...
     @overload
     def astype(
         self,
@@ -604,7 +604,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def insert(self, loc: int, item: object) -> Index: ...
     def drop(
         self,
-        labels: IndexOpsMixin | np_1darray | Iterable[Hashable],
+        labels: IndexOpsMixin | np_ndarray | Iterable[Hashable],
         errors: IgnoreRaise = "raise",
     ) -> Self: ...
     @property
