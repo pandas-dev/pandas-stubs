@@ -1702,3 +1702,7 @@ def test_index_drop() -> None:
     check(
         assert_type(ind.drop(np.array([1, 2])), "pd.Index[int]"), pd.Index, np.integer
     )
+    check(
+        assert_type(ind.drop(iter([1, 2])), "pd.Index[int]"), pd.Index, np.integer
+Comment view
+    )
