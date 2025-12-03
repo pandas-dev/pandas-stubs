@@ -1861,7 +1861,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def boxplot(
         self,
-        by: Hashable | ListLikeHashable,
+        by: Hashable | ListLikeHashable[Hashable],
         ax: PlotAxes | None = None,
         fontsize: float | _str | None = None,
         rot: float = 0,
@@ -1876,7 +1876,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def boxplot(
         self,
-        by: Hashable | ListLikeHashable,
+        by: Hashable | ListLikeHashable[Hashable],
         ax: PlotAxes | None = None,
         fontsize: float | _str | None = None,
         rot: float = 0,

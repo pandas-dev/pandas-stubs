@@ -109,6 +109,7 @@ from pandas.io.api import (
     ExcelFile as ExcelFile,
     ExcelWriter as ExcelWriter,
     HDFStore as HDFStore,
+    read_csv as read_csv,
     read_feather as read_feather,
     read_fwf as read_fwf,
     read_hdf as read_hdf,
@@ -118,12 +119,10 @@ from pandas.io.api import (
     read_spss as read_spss,
     read_sql_table as read_sql_table,
     read_stata as read_stata,
+    read_table as read_table,
 )
 from pandas.io.api import (
     read_clipboard as read_clipboard,  # pyright: ignore[reportUnknownVariableType]
-)
-from pandas.io.api import (
-    read_csv as read_csv,  # pyright: ignore[reportUnknownVariableType]
 )
 from pandas.io.api import (
     read_excel as read_excel,  # pyright: ignore[reportUnknownVariableType]
@@ -142,9 +141,6 @@ from pandas.io.api import (
 )
 from pandas.io.api import (
     read_sql_query as read_sql_query,  # pyright: ignore[reportUnknownVariableType]
-)
-from pandas.io.api import (
-    read_table as read_table,  # pyright: ignore[reportUnknownVariableType]
 )
 from pandas.io.api import (
     read_xml as read_xml,  # pyright: ignore[reportUnknownVariableType]

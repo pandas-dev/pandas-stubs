@@ -41,10 +41,10 @@ def read_csv(
     sep: str | None = ...,
     delimiter: str | None = None,
     header: int | Sequence[int] | Literal["infer"] | None = "infer",
-    names: ListLikeHashable | None = ...,
+    names: ListLikeHashable[Hashable] | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
     usecols: UsecolsArgType[HashableT] = None,
-    dtype: DtypeArg | defaultdict | None = None,
+    dtype: DtypeArg | defaultdict[Hashable, Any] | None = None,
     engine: CSVEngine | None = None,
     converters: (
         Mapping[int | str, Callable[[str], Any]]
@@ -104,10 +104,10 @@ def read_csv(
     sep: str | None = ...,
     delimiter: str | None = None,
     header: int | Sequence[int] | Literal["infer"] | None = "infer",
-    names: ListLikeHashable | None = ...,
+    names: ListLikeHashable[Hashable] | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
     usecols: UsecolsArgType[HashableT] = None,
-    dtype: DtypeArg | defaultdict | None = None,
+    dtype: DtypeArg | defaultdict[Hashable, Any] | None = None,
     engine: CSVEngine | None = None,
     converters: (
         Mapping[int | str, Callable[[str], Any]]
@@ -167,10 +167,10 @@ def read_csv(
     sep: str | None = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
-    names: ListLikeHashable | None = ...,
+    names: ListLikeHashable[Hashable] | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: UsecolsArgType[HashableT] = ...,
-    dtype: DtypeArg | defaultdict | None = ...,
+    dtype: DtypeArg | defaultdict[Hashable, Any] | None = ...,
     engine: CSVEngine | None = ...,
     converters: (
         Mapping[int | str, Callable[[str], Any]]
@@ -230,10 +230,10 @@ def read_table(
     sep: str | None = ...,
     delimiter: str | None = None,
     header: int | Sequence[int] | Literal["infer"] | None = "infer",
-    names: ListLikeHashable | None = ...,
+    names: ListLikeHashable[Hashable] | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
     usecols: UsecolsArgType[HashableT] = None,
-    dtype: DtypeArg | defaultdict | None = None,
+    dtype: DtypeArg | defaultdict[Hashable, Any] | None = None,
     engine: CSVEngine | None = None,
     converters: (
         Mapping[int | str, Callable[[str], Any]]
@@ -293,10 +293,10 @@ def read_table(
     sep: str | None = ...,
     delimiter: str | None = None,
     header: int | Sequence[int] | Literal["infer"] | None = "infer",
-    names: ListLikeHashable | None = ...,
+    names: ListLikeHashable[Hashable] | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
     usecols: UsecolsArgType[HashableT] = None,
-    dtype: DtypeArg | defaultdict | None = None,
+    dtype: DtypeArg | defaultdict[Hashable, Any] | None = None,
     engine: CSVEngine | None = None,
     converters: (
         Mapping[int | str, Callable[[str], Any]]
@@ -356,10 +356,10 @@ def read_table(
     sep: str | None = ...,
     delimiter: str | None = None,
     header: int | Sequence[int] | Literal["infer"] | None = "infer",
-    names: ListLikeHashable | None = ...,
+    names: ListLikeHashable[Hashable] | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
     usecols: UsecolsArgType[HashableT] = None,
-    dtype: DtypeArg | defaultdict | None = None,
+    dtype: DtypeArg | defaultdict[Hashable, Any] | None = None,
     engine: CSVEngine | None = None,
     converters: (
         Mapping[int | str, Callable[[str], Any]]

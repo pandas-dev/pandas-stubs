@@ -55,10 +55,8 @@ from pandas.io.orc import read_orc  # pyright: ignore[reportUnknownVariableType]
 from pandas.io.parquet import read_parquet  # pyright: ignore[reportUnknownVariableType]
 from pandas.io.parsers import TextFileReader
 from pandas.io.parsers.readers import (
-    read_csv,  # pyright: ignore[reportUnknownVariableType]
-)
-from pandas.io.parsers.readers import (
-    read_table,  # pyright: ignore[reportUnknownVariableType]
+    read_csv,
+    read_table,
 )
 from pandas.io.pytables import (
     TableIterator,

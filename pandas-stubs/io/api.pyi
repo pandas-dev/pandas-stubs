@@ -20,13 +20,9 @@ from pandas.io.parquet import (
     read_parquet as read_parquet,  # pyright: ignore[reportUnknownVariableType]
 )
 from pandas.io.parsers import (
-    read_csv as read_csv,  # pyright: ignore[reportUnknownVariableType]
-)
-from pandas.io.parsers import (
+    read_csv as read_csv,
     read_fwf as read_fwf,
-)
-from pandas.io.parsers import (
-    read_table as read_table,  # pyright: ignore[reportUnknownVariableType]
+    read_table as read_table,
 )
 from pandas.io.pickle import (
     read_pickle as read_pickle,
