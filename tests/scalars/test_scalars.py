@@ -293,6 +293,8 @@ def test_interval_math() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         _i = interval_i - pd.Interval(1, 2)  # type: ignore[type-var] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
         _f = interval_f - pd.Interval(1.0, 2.0)  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        # TODO: psf/black#4880
+        # fmt: off
         _ts = (  # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
             interval_ts
             - pd.Interval(  # type: ignore[operator]
@@ -305,6 +307,7 @@ def test_interval_math() -> None:
                 pd.Timedelta(1, "ns"), pd.Timedelta(2, "ns")
             )
         )
+        # fmt: on
 
 
 def test_interval_cmp() -> None:
