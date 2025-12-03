@@ -157,7 +157,7 @@ def test_rolling_aggregate() -> None:
             DataFrame,
         )
 
-    # func: np.ufunc | Callable | str | list[Callable | str, np.ufunc] | dict[Hashable, Callable | str | np.ufunc| list[Callable | str]]
+    # func: np.ufunc | Callable[..., Any] | str | list[Callable[..., Any] | str, np.ufunc] | dict[Hashable, Callable[..., Any] | str | np.ufunc | list[Callable[..., Any] | str]]
     check(assert_type(DF.rolling(10).agg("sum"), DataFrame), DataFrame)
 
 

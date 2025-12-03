@@ -22,7 +22,6 @@ from typing import (
     SupportsIndex,
     TypeAlias,
     TypedDict,
-    Union,
     overload,
 )
 
@@ -596,8 +595,7 @@ IndexKeyFunc: TypeAlias = Callable[[Index], Index | AnyArrayLike] | None
 
 # types of `func` kwarg for DataFrame.aggregate and Series.aggregate
 # More specific than what is in pandas
-# following Union is here to make it ty compliant https://github.com/astral-sh/ty/issues/591
-AggFuncTypeBase: TypeAlias = Union[Callable, str, np.ufunc]  # noqa: UP007
+AggFuncTypeBase: TypeAlias = Callable[..., Any] | str | np.ufunc
 AggFuncTypeDictSeries: TypeAlias = Mapping[HashableT, AggFuncTypeBase]
 AggFuncTypeDictFrame: TypeAlias = Mapping[
     HashableT, AggFuncTypeBase | list[AggFuncTypeBase]
@@ -694,7 +692,9 @@ CompressionOptions: TypeAlias = (
 
 # types in DataFrameFormatter
 FormattersType: TypeAlias = (
-    list[Callable] | tuple[Callable, ...] | Mapping[str | int, Callable]
+    list[Callable[..., Any]]
+    | tuple[Callable[..., Any], ...]
+    | Mapping[str | int, Callable[..., Any]]
 )
 # ColspaceType = Mapping[Hashable, Union[str, int]] not used in stubs
 FloatFormatType: TypeAlias = str | Callable[[float], str] | EngFormatter

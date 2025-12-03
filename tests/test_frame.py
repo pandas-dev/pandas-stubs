@@ -1882,7 +1882,7 @@ def test_types_groupby_agg() -> None:
         )
 
         # Here, MyPy infers dict[object, object], so it must be explicitly annotated
-        agg_dict3: dict[str | int, str | Callable] = {
+        agg_dict3: dict[str | int, str | Callable[..., Any]] = {
             "col2": min,
             "col3": "max",
             0: wrapped_min,

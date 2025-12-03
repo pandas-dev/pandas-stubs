@@ -118,7 +118,11 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
         self, func: TransformReductionListType, *args: Any, **kwargs: Any
     ) -> Series: ...
     def filter(
-        self, func: Callable | str, dropna: bool = ..., *args: Any, **kwargs: Any
+        self,
+        func: Callable[..., Any] | str,
+        dropna: bool = ...,
+        *args: Any,
+        **kwargs: Any,
     ) -> Series: ...
     def nunique(self, dropna: bool = ...) -> Series[int]: ...
     # describe delegates to super() method but here it has keyword-only parameters
@@ -292,7 +296,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         self, func: TransformReductionListType, *args: Any, **kwargs: Any
     ) -> DataFrame: ...
     def filter(
-        self, func: Callable, dropna: bool = ..., *args: Any, **kwargs: Any
+        self, func: Callable[..., Any], dropna: bool = ..., *args: Any, **kwargs: Any
     ) -> DataFrame: ...
     @overload
     def __getitem__(self, key: Scalar) -> SeriesGroupBy[Any, ByT]: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
