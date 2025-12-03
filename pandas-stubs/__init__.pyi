@@ -120,6 +120,8 @@ from pandas.io.api import (
     read_pickle as read_pickle,
     read_sas as read_sas,
     read_spss as read_spss,
+    read_sql as read_sql,
+    read_sql_query as read_sql_query,
     read_sql_table as read_sql_table,
     read_stata as read_stata,
     read_table as read_table,
@@ -130,12 +132,6 @@ from pandas.io.api import (
 )
 from pandas.io.api import (
     read_orc as read_orc,  # pyright: ignore[reportUnknownVariableType]
-)
-from pandas.io.api import (
-    read_sql as read_sql,  # pyright: ignore[reportUnknownVariableType]
-)
-from pandas.io.api import (
-    read_sql_query as read_sql_query,  # pyright: ignore[reportUnknownVariableType]
 )
 from pandas.io.json._normalize import (
     json_normalize as json_normalize,  # pyright: ignore[reportUnknownVariableType]

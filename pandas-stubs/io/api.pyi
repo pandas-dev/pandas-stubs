@@ -28,12 +28,8 @@ from pandas.io.pytables import (
 from pandas.io.sas import read_sas as read_sas
 from pandas.io.spss import read_spss as read_spss
 from pandas.io.sql import (
-    read_sql as read_sql,  # pyright: ignore[reportUnknownVariableType]
-)
-from pandas.io.sql import (
-    read_sql_query as read_sql_query,  # pyright: ignore[reportUnknownVariableType]
-)
-from pandas.io.sql import (
+    read_sql as read_sql,
+    read_sql_query as read_sql_query,
     read_sql_table as read_sql_table,
 )
 from pandas.io.stata import read_stata as read_stata

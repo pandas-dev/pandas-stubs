@@ -1,6 +1,6 @@
+from collections.abc import Sequence
 from typing import (
     Any,
-    Literal,
     TypeAlias,
 )
 
@@ -14,8 +14,7 @@ from pandas._typing import (
     StorageOptions,
 )
 
-_OP: TypeAlias = Literal["==", "=", ">", ">=", "<", "<=", "!=", "in", "not in"]
-_FILTER: TypeAlias = tuple[str, _OP, Any]
+_Filter: TypeAlias = tuple[str, str, Any]
 
 def read_parquet(
     path: FilePath | ReadBuffer[bytes],
@@ -24,6 +23,6 @@ def read_parquet(
     storage_options: StorageOptions = None,
     dtype_backend: DtypeBackend = "numpy_nullable",
     filesystem: Any = None,
-    filters: list[_FILTER] | list[list[_FILTER]] | None = None,
+    filters: Sequence[_Filter] | Sequence[Sequence[_Filter]] | None = None,
     **kwargs: Any,
 ) -> DataFrame: ...

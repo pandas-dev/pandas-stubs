@@ -48,9 +48,9 @@ from pandas.io.clipboards import read_clipboard
 from pandas.io.excel._base import (
     read_excel,  # pyright: ignore[reportUnknownVariableType]
 )
-from pandas.io.html import read_html  # pyright: ignore[reportUnknownVariableType]
+from pandas.io.html import read_html
 from pandas.io.orc import read_orc  # pyright: ignore[reportUnknownVariableType]
-from pandas.io.parquet import read_parquet  # pyright: ignore[reportUnknownVariableType]
+from pandas.io.parquet import read_parquet
 from pandas.io.parsers import TextFileReader
 from pandas.io.parsers.readers import (
     read_csv,
@@ -62,8 +62,10 @@ from pandas.io.pytables import (
 )
 from pandas.io.sas.sas7bdat import SAS7BDATReader
 from pandas.io.sas.sas_xport import XportReader
-from pandas.io.sql import read_sql  # pyright: ignore[reportUnknownVariableType]
-from pandas.io.sql import read_sql_query  # pyright: ignore[reportUnknownVariableType]
+from pandas.io.sql import (
+    read_sql,
+    read_sql_query,
+)
 from pandas.io.stata import StataReader
 from pandas.io.xml import read_xml
 

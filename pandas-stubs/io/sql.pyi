@@ -33,7 +33,7 @@ _SQLStatement: TypeAlias = (
     str
     | sqlalchemy.sql.expression.Selectable
     | sqlalchemy.sql.expression.TextClause
-    | sqlalchemy.sql.Select
+    | sqlalchemy.sql.Select[Any]
     | FromStatement[Any]
     | sqlalchemy.sql.expression.UpdateBase
 )
