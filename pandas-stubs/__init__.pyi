@@ -1,3 +1,5 @@
+import sys
+
 from pandas import (
     api as api,
     arrays as arrays,
@@ -47,7 +49,6 @@ from pandas.core.api import (
     UInt16Dtype as UInt16Dtype,
     UInt32Dtype as UInt32Dtype,
     UInt64Dtype as UInt64Dtype,
-    array as array,
     bdate_range as bdate_range,
     date_range as date_range,
     factorize as factorize,
@@ -153,5 +154,12 @@ from pandas.io.json._normalize import (
 )
 from pandas.tseries import offsets as offsets
 from pandas.tseries.api import infer_freq as infer_freq
+
+if sys.version_info >= (3, 11):
+    from pandas.core.construction import array as array
+else:
+    from pandas.core.construction import (
+        array as array,  # pyright: ignore[reportUnknownVariableType]
+    )
 
 __version__: str
