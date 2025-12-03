@@ -595,17 +595,25 @@ IndexKeyFunc: TypeAlias = Callable[[Index], Index | AnyArrayLike] | None
 
 # types of `func` kwarg for DataFrame.aggregate and Series.aggregate
 # More specific than what is in pandas
-AggFuncTypeBase: TypeAlias = Callable[..., Any] | str | np.ufunc
-AggFuncTypeDictSeries: TypeAlias = Mapping[HashableT, AggFuncTypeBase]
+AggFuncTypeBase: TypeAlias = Callable[P, Any] | str | np.ufunc
+AggFuncTypeDictSeries: TypeAlias = Mapping[HashableT, AggFuncTypeBase[P]]
 AggFuncTypeDictFrame: TypeAlias = Mapping[
-    HashableT, AggFuncTypeBase | list[AggFuncTypeBase]
+    HashableT, AggFuncTypeBase[P] | Sequence[AggFuncTypeBase[P]]
 ]
-AggFuncTypeSeriesToFrame: TypeAlias = list[AggFuncTypeBase] | AggFuncTypeDictSeries
-AggFuncTypeFrame: TypeAlias = (
-    AggFuncTypeBase | list[AggFuncTypeBase] | AggFuncTypeDictFrame
+AggFuncTypeSeriesToFrame: TypeAlias = (
+    Sequence[AggFuncTypeBase[P]] | AggFuncTypeDictSeries[HashableT, P]
 )
-AggFuncTypeDict: TypeAlias = AggFuncTypeDictSeries | AggFuncTypeDictFrame
-AggFuncType: TypeAlias = AggFuncTypeBase | list[AggFuncTypeBase] | AggFuncTypeDict
+AggFuncTypeFrame: TypeAlias = (
+    AggFuncTypeBase[P]
+    | Sequence[AggFuncTypeBase[P]]
+    | AggFuncTypeDictFrame[HashableT, P]
+)
+AggFuncTypeDict: TypeAlias = (
+    AggFuncTypeDictSeries[HashableT, P] | AggFuncTypeDictFrame[HashableT, P]
+)
+AggFuncType: TypeAlias = (
+    AggFuncTypeBase[P] | Sequence[AggFuncTypeBase[P]] | AggFuncTypeDict
+)
 
 # Not used in stubs
 # AggObjType = Union[

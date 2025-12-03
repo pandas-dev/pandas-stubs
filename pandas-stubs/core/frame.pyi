@@ -273,8 +273,8 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
                 | list[HashableT]
                 | slice
                 | _IndexSliceTuple
-                | Callable,
-                MaskType | Iterable[HashableT] | IndexType | Callable,
+                | Callable[..., Any],
+                MaskType | Iterable[HashableT] | IndexType | Callable[..., Any],
             ]
         ),
     ) -> _T: ...
@@ -1268,7 +1268,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def combine(
         self,
         other: DataFrame,
-        func: Callable,
+        func: Callable[..., Any],
         fill_value: Scalar | None = None,
         overwrite: _bool = True,
     ) -> Self: ...
@@ -1516,21 +1516,21 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def aggregate(  # pyright: ignore[reportOverlappingOverload]
         self,
-        func: AggFuncTypeBase | AggFuncTypeDictSeries,
+        func: AggFuncTypeBase[...] | AggFuncTypeDictSeries[Any, ...],
         axis: Axis = 0,
         **kwargs: Any,
     ) -> Series: ...
     @overload
     def aggregate(
         self,
-        func: list[AggFuncTypeBase] | AggFuncTypeDictFrame | None = ...,
+        func: list[AggFuncTypeBase[...]] | AggFuncTypeDictFrame[Any, ...] | None = ...,
         axis: Axis = 0,
         **kwargs: Any,
     ) -> Self: ...
     agg = aggregate
     def transform(
         self,
-        func: AggFuncTypeFrame,
+        func: AggFuncTypeFrame[..., Any],
         axis: Axis = 0,
         *args: Any,
         **kwargs: Any,

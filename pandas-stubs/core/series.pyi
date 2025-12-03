@@ -309,7 +309,7 @@ class _LocIndexerSeries(_LocIndexer, Generic[S1]):
             | slice
             | _IndexSliceTuple
             | Sequence[_IndexSliceTuple]
-            | Callable
+            | Callable[..., Any]
         ),
         # _IndexSliceTuple is when having a tuple that includes a slice.  Could just
         # be s.loc[1, :], or s.loc[pd.IndexSlice[1, :]]
@@ -594,7 +594,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | slice
             | _IndexSliceTuple
             | Sequence[_IndexSliceTuple]
-            | Callable
+            | Callable[..., Any]
         ),
         # _IndexSliceTuple is when having a tuple that includes a slice.  Could just
         # be s.loc[1, :], or s.loc[pd.IndexSlice[1, :]]
@@ -1135,9 +1135,9 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         **kwargs: Any,
     ) -> float: ...
     @overload
-    def aggregate(
+    def aggregate(  # pyright: ignore[reportOverlappingOverload]
         self,
-        func: AggFuncTypeBase,
+        func: AggFuncTypeBase[...],
         axis: AxisIndex = ...,
         *args: Any,
         **kwargs: Any,
@@ -1145,16 +1145,16 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def aggregate(
         self,
-        func: AggFuncTypeSeriesToFrame = ...,
+        func: AggFuncTypeSeriesToFrame[..., Any] = ...,
         axis: AxisIndex = ...,
         *args: Any,
         **kwargs: Any,
     ) -> Series: ...
     agg = aggregate
     @overload
-    def transform(
+    def transform(  # pyright: ignore[reportOverlappingOverload]
         self,
-        func: AggFuncTypeBase,
+        func: AggFuncTypeBase[...],
         axis: AxisIndex = ...,
         *args: Any,
         **kwargs: Any,
@@ -1162,7 +1162,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def transform(
         self,
-        func: list[AggFuncTypeBase] | AggFuncTypeDictFrame,
+        func: Sequence[AggFuncTypeBase[...]] | AggFuncTypeDictFrame[Hashable, ...],
         axis: AxisIndex = ...,
         *args: Any,
         **kwargs: Any,

@@ -79,7 +79,10 @@ _ResamplerGroupBy: TypeAlias = (
 class GroupBy(BaseGroupBy[NDFrameT]):
     def __getattr__(self, attr: str) -> Any: ...
     def apply(
-        self, func: Callable[..., Any] | str, *args: Any, **kwargs: Any
+        self,
+        func: Callable[Concatenate[NDFrameT, P], Any] | str,
+        *args: P.args,
+        **kwargs: P.kwargs,
     ) -> NDFrameT: ...
     @final
     @overload

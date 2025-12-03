@@ -5,6 +5,7 @@ from collections.abc import (
 )
 from typing import (
     Any,
+    Concatenate,
     Literal,
     Protocol,
     overload,
@@ -13,6 +14,7 @@ from typing import (
 from matplotlib.colors import Colormap
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
+from typing_extensions import Self
 
 from pandas._typing import (
     Axis,
@@ -24,6 +26,7 @@ from pandas._typing import (
     IndexLabel,
     IntervalClosedType,
     Level,
+    P,
     QuantileInterpolation,
     Scalar,
     StorageOptions,
@@ -390,7 +393,10 @@ class Styler(StylerRenderer):
     ) -> type[Styler]: ...
     def pipe(
         self,
-        func: Callable[..., T] | tuple[Callable[..., T], str],
-        *args: Any,
-        **kwargs: Any,
+        func: (
+            Callable[Concatenate[Self, P], T]
+            | tuple[Callable[Concatenate[Self, P], T], str]
+        ),
+        *args: P.args,
+        **kwargs: P.kwargs,
     ) -> T: ...
