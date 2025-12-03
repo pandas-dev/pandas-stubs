@@ -1280,7 +1280,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: DataFrame | Series,
         join: UpdateJoin = "left",
         overwrite: _bool = True,
-        filter_func: Callable | None = ...,
+        filter_func: Callable[..., Any] | None = ...,
         errors: IgnoreRaise = "ignore",
     ) -> None: ...
     @overload
@@ -2334,7 +2334,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
-        other: Scalar | Series | DataFrame | Callable | NAType | None = ...,
+        other: Scalar | Series | DataFrame | Callable[..., Any] | NAType | None = ...,
         *,
         inplace: Literal[True],
         axis: Axis | None = ...,
@@ -2351,7 +2351,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
-        other: Scalar | Series | DataFrame | Callable | NAType | None = ...,
+        other: Scalar | Series | DataFrame | Callable[..., Any] | NAType | None = ...,
         *,
         inplace: Literal[False] = False,
         axis: Axis | None = ...,
@@ -2512,8 +2512,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def rename_axis(
         self,
         *,
-        index: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
-        columns: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
+        index: (
+            _str | Sequence[_str] | dict[_str | int, _str] | Callable[..., Any] | None
+        ) = ...,
+        columns: (
+            _str | Sequence[_str] | dict[_str | int, _str] | Callable[..., Any] | None
+        ) = ...,
         copy: _bool = ...,
         inplace: Literal[True],
     ) -> None: ...
@@ -2522,8 +2526,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def rename_axis(
         self,
         *,
-        index: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
-        columns: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
+        index: (
+            _str | Sequence[_str] | dict[_str | int, _str] | Callable[..., Any] | None
+        ) = ...,
+        columns: (
+            _str | Sequence[_str] | dict[_str | int, _str] | Callable[..., Any] | None
+        ) = ...,
         copy: _bool = ...,
         inplace: Literal[False] = False,
     ) -> Self: ...

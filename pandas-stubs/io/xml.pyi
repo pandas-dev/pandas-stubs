@@ -1,4 +1,7 @@
-from collections.abc import Sequence
+from collections.abc import (
+    Hashable,
+    Sequence,
+)
 
 from pandas.core.frame import DataFrame
 
@@ -25,7 +28,7 @@ def read_xml(
     names: Sequence[str] | None = ...,
     dtype: DtypeArg | None = ...,
     converters: ConvertersArg | None = ...,
-    parse_dates: ParseDatesArg | None = ...,
+    parse_dates: ParseDatesArg[Hashable, Hashable] | None = ...,
     # encoding can not be None for lxml and StringIO input
     encoding: str | None = ...,
     parser: XMLParsers = ...,

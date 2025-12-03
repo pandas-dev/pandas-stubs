@@ -94,7 +94,7 @@ class MultiIndex(Index):
     def format(
         self,
         name: bool | None = ...,
-        formatter: Callable | None = ...,
+        formatter: Callable[..., Any] | None = ...,
         na_rep: str | None = ...,
         names: bool = ...,
         space: int = ...,

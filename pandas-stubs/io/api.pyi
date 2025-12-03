@@ -1,6 +1,4 @@
-from pandas.io.clipboards import (
-    read_clipboard as read_clipboard,  # pyright: ignore[reportUnknownVariableType]
-)
+from pandas.io.clipboards import read_clipboard as read_clipboard
 from pandas.io.excel import (
     ExcelFile as ExcelFile,
     ExcelWriter as ExcelWriter,
@@ -43,6 +41,4 @@ from pandas.io.sql import (
     read_sql_table as read_sql_table,
 )
 from pandas.io.stata import read_stata as read_stata
-from pandas.io.xml import (
-    read_xml as read_xml,  # pyright: ignore[reportUnknownVariableType]
-)
+from pandas.io.xml import read_xml as read_xml

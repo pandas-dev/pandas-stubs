@@ -44,9 +44,7 @@ from tests import (
 )
 from tests import NUMPY20  # See https://github.com/PyTables/PyTables/issues/1172
 
-from pandas.io.clipboards import (
-    read_clipboard,  # pyright: ignore[reportUnknownVariableType]
-)
+from pandas.io.clipboards import read_clipboard
 from pandas.io.excel._base import (
     read_excel,  # pyright: ignore[reportUnknownVariableType]
 )
@@ -67,7 +65,7 @@ from pandas.io.sas.sas_xport import XportReader
 from pandas.io.sql import read_sql  # pyright: ignore[reportUnknownVariableType]
 from pandas.io.sql import read_sql_query  # pyright: ignore[reportUnknownVariableType]
 from pandas.io.stata import StataReader
-from pandas.io.xml import read_xml  # pyright: ignore[reportUnknownVariableType]
+from pandas.io.xml import read_xml
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 CWD = Path(__file__).parent.resolve()
