@@ -133,9 +133,7 @@ from pandas.io.api import (
 from pandas.io.api import (
     read_orc as read_orc,  # pyright: ignore[reportUnknownVariableType]
 )
-from pandas.io.json._normalize import (
-    json_normalize as json_normalize,  # pyright: ignore[reportUnknownVariableType]
-)
+from pandas.io.json._normalize import json_normalize as json_normalize
 from pandas.tseries import offsets as offsets
 from pandas.tseries.api import infer_freq as infer_freq
 
