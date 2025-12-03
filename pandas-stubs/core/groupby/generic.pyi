@@ -261,7 +261,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def aggregate(
         self,
-        func: AggFuncTypeFrame | None = ...,
+        func: AggFuncTypeFrame[Hashable] | None = ...,
         *args: Any,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
@@ -270,11 +270,11 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def aggregate(
         self,
-        func: AggFuncTypeFrame | None = None,
+        func: AggFuncTypeFrame[Hashable] | None = None,
         /,
         **kwargs: Any,
     ) -> DataFrame: ...
-    agg = aggregate  # pyright: ignore[reportUnknownVariableType]
+    agg = aggregate
     @overload
     def transform(
         self,

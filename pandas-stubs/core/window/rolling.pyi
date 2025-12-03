@@ -1,5 +1,6 @@
 from collections.abc import (
     Callable,
+    Hashable,
     Iterator,
 )
 import datetime as dt
@@ -52,18 +53,18 @@ class BaseWindow(SelectionMixin[NDFrameT]):
     @overload
     def aggregate(
         self: BaseWindow[Series],
-        func: AggFuncTypeSeriesToFrame,
+        func: AggFuncTypeSeriesToFrame[Hashable],
         *args: Any,
         **kwargs: Any,
     ) -> DataFrame: ...
     @overload
     def aggregate(
         self: BaseWindow[DataFrame],
-        func: AggFuncTypeFrame,
+        func: AggFuncTypeFrame[Hashable],
         *args: Any,
         **kwargs: Any,
     ) -> DataFrame: ...
-    agg = aggregate  # pyright: ignore[reportUnknownVariableType]
+    agg = aggregate
 
 class BaseWindowGroupby(BaseWindow[NDFrameT]): ...
 

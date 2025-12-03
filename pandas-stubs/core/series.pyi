@@ -1142,12 +1142,12 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def aggregate(
         self,
-        func: AggFuncTypeSeriesToFrame = ...,
+        func: AggFuncTypeSeriesToFrame[Hashable] = ...,
         axis: AxisIndex = ...,
         *args: Any,
         **kwargs: Any,
     ) -> Series: ...
-    agg = aggregate  # pyright: ignore[reportUnknownVariableType]
+    agg = aggregate
     @overload
     def transform(
         self,

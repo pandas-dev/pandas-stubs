@@ -1516,18 +1516,18 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def aggregate(  # pyright: ignore[reportOverlappingOverload]
         self,
-        func: AggFuncTypeBase | AggFuncTypeDictSeries,
+        func: AggFuncTypeBase | AggFuncTypeDictSeries[Hashable],
         axis: Axis = 0,
         **kwargs: Any,
     ) -> Series: ...
     @overload
     def aggregate(
         self,
-        func: list[AggFuncTypeBase] | AggFuncTypeDictFrame | None = ...,
+        func: list[AggFuncTypeBase] | AggFuncTypeDictFrame[Hashable] | None = ...,
         axis: Axis = 0,
         **kwargs: Any,
     ) -> Self: ...
-    agg = aggregate  # pyright: ignore[reportUnknownVariableType]
+    agg = aggregate
     def transform(
         self,
         func: AggFuncTypeFrame,
