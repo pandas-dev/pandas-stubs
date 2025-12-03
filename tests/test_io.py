@@ -14,7 +14,6 @@ from typing import (
 )
 
 import numpy as np
-from odf.opendocument import OpenDocument  # pyright: ignore[reportMissingTypeStubs]
 from openpyxl.workbook.workbook import Workbook as OpenXlWorkbook
 import pandas as pd
 from pandas import (
@@ -24,13 +23,11 @@ from pandas import (
     errors,
     read_clipboard,
     read_csv,
-    read_excel,
     read_feather,
     read_fwf,
     read_hdf,
     read_html,
     read_json,
-    read_orc,
     read_parquet,
     read_pickle,
     read_sas,
@@ -42,15 +39,14 @@ from pandas import (
     read_table,
     read_xml,
 )
+from pandas import read_excel  # pyright: ignore[reportUnknownVariableType]
+from pandas import read_orc  # pyright: ignore[reportUnknownVariableType]
 from pandas.api.typing import JsonReader
 import pytest
 import sqlalchemy
 import sqlalchemy.orm
 import sqlalchemy.orm.decl_api
 from typing_extensions import assert_type
-from xlsxwriter.workbook import (  # pyright: ignore[reportMissingTypeStubs]
-    Workbook as XlsxWorkbook,
-)
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -68,6 +64,14 @@ from pandas.io.pytables import (
 from pandas.io.sas.sas7bdat import SAS7BDATReader
 from pandas.io.sas.sas_xport import XportReader
 from pandas.io.stata import StataReader
+
+from odf.opendocument import (  # pyright: ignore[reportMissingTypeStubs] # isort: skip
+    OpenDocument,  # pyright: ignore[reportUnknownVariableType]
+)
+from xlsxwriter.workbook import (  # pyright: ignore[reportMissingTypeStubs] # isort: skip
+    Workbook as XlsxWorkbook,  # pyright: ignore[reportUnknownVariableType]
+)
+
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 CWD = Path(__file__).parent.resolve()
@@ -1171,7 +1175,7 @@ def test_excel_fspath() -> None:
 
 def test_excel_writer() -> None:
     with ensure_clean(".xlsx") as path:
-        with pd.ExcelWriter(path) as ew:
+        with pd.ExcelWriter(path) as ew:  # pyright: ignore[reportUnknownVariableType]
             check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
             DF.to_excel(ew, sheet_name="A")
         check(assert_type(read_excel(path, sheet_name="A"), DataFrame), DataFrame)
@@ -1190,7 +1194,7 @@ def test_excel_writer() -> None:
 
 def test_excel_writer_io() -> None:
     buffer = io.BytesIO()
-    with pd.ExcelWriter(buffer) as writer:
+    with pd.ExcelWriter(buffer) as writer:  # pyright: ignore[reportUnknownVariableType]
         DF.to_excel(writer, sheet_name="A")
 
     ef = pd.ExcelFile(buffer)
@@ -1200,7 +1204,9 @@ def test_excel_writer_io() -> None:
 
 def test_excel_writer_engine() -> None:
     with ensure_clean(".xlsx") as path:
-        with pd.ExcelWriter(path, engine="auto") as ew:
+        with pd.ExcelWriter(
+            path, engine="auto"
+        ) as ew:  # pyright: ignore[reportUnknownVariableType]
             check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
             DF.to_excel(ew, sheet_name="A")
 
@@ -1217,7 +1223,9 @@ def test_excel_writer_engine() -> None:
             )
 
     with ensure_clean(".ods") as path:
-        with pd.ExcelWriter(path, engine="odf") as ew:
+        with pd.ExcelWriter(
+            path, engine="odf"
+        ) as ew:  # pyright: ignore[reportUnknownVariableType]
             check(
                 assert_type(ew, pd.ExcelWriter[OpenDocument]),
                 pd.ExcelWriter[OpenDocument],
@@ -1229,7 +1237,9 @@ def test_excel_writer_engine() -> None:
             )
 
     with ensure_clean(".xlsx") as path:
-        with pd.ExcelWriter(path, engine="xlsxwriter") as ew:
+        with pd.ExcelWriter(
+            path, engine="xlsxwriter"
+        ) as ew:  # pyright: ignore[reportUnknownVariableType]
             check(
                 assert_type(ew, pd.ExcelWriter[XlsxWorkbook]),
                 pd.ExcelWriter[XlsxWorkbook],
@@ -1243,7 +1253,9 @@ def test_excel_writer_engine() -> None:
 
 def test_excel_writer_append_mode() -> None:
     with ensure_clean(".xlsx") as path:
-        with pd.ExcelWriter(path, mode="w") as ew:
+        with pd.ExcelWriter(
+            path, mode="w"
+        ) as ew:  # pyright: ignore[reportUnknownVariableType]
             DF.to_excel(ew, sheet_name="A")
         with pd.ExcelWriter(path, mode="a", engine="openpyxl") as ew:
             DF.to_excel(ew, sheet_name="B")

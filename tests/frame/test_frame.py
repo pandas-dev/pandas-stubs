@@ -76,7 +76,7 @@ else:
     _PandasNamedTuple: TypeAlias = tuple
 
 if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration] # isort: skip
+    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration,reportUnknownVariableType] # isort: skip
 else:
     Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
@@ -173,22 +173,22 @@ def test_types_append() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     df2 = pd.DataFrame({"col1": [10, 20], "col2": [30, 40]})
     if TYPE_CHECKING_INVALID_USAGE:
-        _res1: pd.DataFrame = df.append(df2)  # type: ignore[operator] # pyright: ignore[reportCallIssue]
-        _res2: pd.DataFrame = df.append([1, 2, 3])  # type: ignore[operator] # pyright: ignore[reportCallIssue]
-        _res3: pd.DataFrame = df.append([[1, 2, 3]])  # type: ignore[operator] # pyright: ignore[reportCallIssue]
-        _res4: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        _res1: pd.DataFrame = df.append(df2)  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        _res2: pd.DataFrame = df.append([1, 2, 3])  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        _res3: pd.DataFrame = df.append([[1, 2, 3]])  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        _res4: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
             {("a", 1): [1, 2, 3], "b": df2}, ignore_index=True
         )
-        _res5: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        _res5: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
             {1: [1, 2, 3]}, ignore_index=True
         )
-        _res6: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        _res6: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
             {1: [1, 2, 3], "col2": [1, 2, 3]}, ignore_index=True
         )
-        _res7: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        _res7: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
             pd.Series([5, 6]), ignore_index=True
         )
-        _res8: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue]
+        _res8: pd.DataFrame = df.append(  # type: ignore[operator] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
             pd.Series([5, 6], index=["col1", "col2"]), ignore_index=True
         )
 
@@ -286,7 +286,9 @@ def test_types_assign() -> None:
 def test_assign() -> None:
     df = pd.DataFrame({"a": [1, 2, 3], 1: [4, 5, 6]})
 
-    my_unnamed_func = lambda df: df["a"] * 2
+    my_unnamed_func = (  # pyright: ignore[reportUnknownVariableType]
+        lambda df: df["a"] * 2
+    )
 
     def my_named_func_1(df: pd.DataFrame) -> pd.Series[str]:
         return df["a"]
@@ -385,9 +387,9 @@ def test_arguments_drop() -> None:
     # GH 950
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     if TYPE_CHECKING_INVALID_USAGE:
-        _res1 = df.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        _res2 = df.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
-        _res3 = df.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        _res1 = df.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        _res2 = df.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType]
+        _res3 = df.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType]
 
     def _never_checker0() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(df.drop(columns=None), Never)
@@ -3499,10 +3501,10 @@ def test_to_dict_index() -> None:
         str,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = df.to_dict(orient="records", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        _1 = df.to_dict(orient="dict", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        _2 = df.to_dict(orient="series", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
-        _3 = df.to_dict(orient="index", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        _0 = df.to_dict(orient="records", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]
+        _1 = df.to_dict(orient="dict", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]
+        _2 = df.to_dict(orient="series", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]
+        _3 = df.to_dict(orient="index", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]
 
 
 def test_suffix_prefix_index() -> None:
@@ -3571,7 +3573,7 @@ def test_select_dtypes() -> None:
         assert_never(df.select_dtypes([], []))
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = df.select_dtypes()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
+        _1 = df.select_dtypes()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
 
     # str like dtypes are not allowed
     def _2() -> None:  # pyright: ignore[reportUnusedFunction]
@@ -3599,7 +3601,7 @@ def test_to_json_mode() -> None:
     check(assert_type(result2, str), str)
     check(assert_type(result4, str), str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _result3 = df.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        _result3 = df.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]
 
 
 def test_interpolate() -> None:
@@ -3759,7 +3761,9 @@ def test_transpose() -> None:
 def test_combine() -> None:
     df1 = pd.DataFrame({"A": [0, 0], "B": [4, 4]})
     df2 = pd.DataFrame({"A": [1, 1], "B": [3, 3]})
-    take_smaller = lambda s1, s2: s1 if s1.sum() < s2.sum() else s2
+    take_smaller = lambda s1, s2: (  # pyright: ignore[reportUnknownVariableType]
+        s1 if s1.sum() < s2.sum() else s2
+    )
     assert_type(
         check(
             df1.combine(df2, take_smaller, fill_value=0, overwrite=False), pd.DataFrame
