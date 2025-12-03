@@ -70,6 +70,7 @@ from pandas.core.computation.api import eval as eval
 from pandas.core.reshape.api import (
     concat as concat,
     crosstab as crosstab,
+    cut as cut,
     from_dummies as from_dummies,
     get_dummies as get_dummies,
     lreshape as lreshape,
@@ -78,14 +79,9 @@ from pandas.core.reshape.api import (
     merge_asof as merge_asof,
     merge_ordered as merge_ordered,
     pivot as pivot,
+    pivot_table as pivot_table,
     qcut as qcut,
     wide_to_long as wide_to_long,
-)
-from pandas.core.reshape.api import (
-    cut as cut,  # pyright: ignore[reportUnknownVariableType]
-)
-from pandas.core.reshape.api import (
-    pivot_table as pivot_table,  # pyright: ignore[reportUnknownVariableType]
 )
 
 from pandas._config import (

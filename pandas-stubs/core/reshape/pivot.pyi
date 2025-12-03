@@ -34,8 +34,8 @@ from pandas._typing import (
 
 _PivotAggCallable: TypeAlias = Callable[[Series], ScalarT]
 
-_PivotAggFunc: TypeAlias = (  # pyright: ignore[reportUnknownVariableType]
-    _PivotAggCallable
+_PivotAggFunc: TypeAlias = (
+    _PivotAggCallable[ScalarT]
     | np.ufunc
     | Literal["mean", "sum", "count", "min", "max", "median", "std", "var"]
 )
@@ -66,11 +66,13 @@ _ExtendedAnyArrayLike: TypeAlias = AnyArrayLike | ArrayLike
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes = None,
-    index: _PivotTableIndexTypes = None,
-    columns: _PivotTableColumnsTypes = None,
+    values: _PivotTableValuesTypes[Hashable] = None,
+    index: _PivotTableIndexTypes[Hashable] = None,
+    columns: _PivotTableColumnsTypes[Hashable] = None,
     aggfunc: (
-        _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
+        _PivotAggFunc[Any]
+        | Sequence[_PivotAggFunc[Any]]
+        | Mapping[Hashable, _PivotAggFunc[Any]]
     ) = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
@@ -84,12 +86,14 @@ def pivot_table(
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes = None,
+    values: _PivotTableValuesTypes[Hashable] = None,
     *,
     index: Grouper,
-    columns: _PivotTableColumnsTypes | np_ndarray | Index[Any] = None,
+    columns: _PivotTableColumnsTypes[Hashable] | np_ndarray | Index[Any] = None,
     aggfunc: (
-        _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
+        _PivotAggFunc[Any]
+        | Sequence[_PivotAggFunc[Any]]
+        | Mapping[Hashable, _PivotAggFunc[Any]]
     ) = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
@@ -101,12 +105,14 @@ def pivot_table(
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes = None,
-    index: _PivotTableIndexTypes | np_ndarray | Index[Any] = None,
+    values: _PivotTableValuesTypes[Hashable] = None,
+    index: _PivotTableIndexTypes[Hashable] | np_ndarray | Index[Any] = None,
     *,
     columns: Grouper,
     aggfunc: (
-        _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
+        _PivotAggFunc[Any]
+        | Sequence[_PivotAggFunc[Any]]
+        | Mapping[Hashable, _PivotAggFunc[Any]]
     ) = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,

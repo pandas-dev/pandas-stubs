@@ -14,17 +14,11 @@ from pandas.core.reshape.merge import (
     merge_ordered as merge_ordered,
 )
 from pandas.core.reshape.pivot import (
-    crosstab as crosstab,  # pyright: ignore[reportUnknownVariableType]
-)
-from pandas.core.reshape.pivot import (
+    crosstab as crosstab,
     pivot as pivot,
-)
-from pandas.core.reshape.pivot import (
-    pivot_table as pivot_table,  # pyright: ignore[reportUnknownVariableType]
+    pivot_table as pivot_table,
 )
 from pandas.core.reshape.tile import (
-    cut as cut,  # pyright: ignore[reportUnknownVariableType]
-)
-from pandas.core.reshape.tile import (
+    cut as cut,
     qcut as qcut,
 )

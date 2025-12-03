@@ -57,9 +57,7 @@ from pandas.core.indexing import (
     _LocIndexer,
 )
 from pandas.core.reshape.pivot import (
-    _PivotAggFunc,  # pyright: ignore[reportUnknownVariableType]
-)
-from pandas.core.reshape.pivot import (
+    _PivotAggFunc,
     _PivotTableColumnsTypes,
     _PivotTableIndexTypes,
     _PivotTableValuesTypes,
