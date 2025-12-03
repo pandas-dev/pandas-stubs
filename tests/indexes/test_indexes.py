@@ -1674,8 +1674,6 @@ def test_index_view() -> None:
     ind = pd.Index([1, 2])
     check(assert_type(ind.view("int64"), np_1darray), np_1darray)
     check(assert_type(ind.view(), "pd.Index[int]"), pd.Index)
-    # on NumPy<1.23, we get:
-    # error: "assert_type" mismatch: expected "ndarray[tuple[Any, ...], dtype[Any]]" but received "ndarray[Unknown, Unknown]" (reportAssertTypeFailure)
     if sys.version_info >= (3, 11):
         # mypy and pyright differ here in what they report:
         # - mypy: ndarray[Any, Any]"
