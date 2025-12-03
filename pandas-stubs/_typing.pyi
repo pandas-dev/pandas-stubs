@@ -963,9 +963,7 @@ ListLikeExceptSeriesAndStr: TypeAlias = (
     MutableSequence[Any] | np_1darray | tuple[Any, ...] | Index
 )
 ListLikeU: TypeAlias = Sequence | np_1darray | Series | Index
-ListLikeHashable: TypeAlias = (
-    MutableSequence[HashableT] | np_1darray | tuple[HashableT, ...] | range
-)
+ListLikeHashable: TypeAlias = SequenceNotStr[HashableT] | np_1darray | range
 
 class SupportsDType(Protocol[GenericT_co]):
     @property

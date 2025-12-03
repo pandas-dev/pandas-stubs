@@ -261,7 +261,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def aggregate(
         self,
-        func: AggFuncTypeFrame[Hashable] | None = ...,
+        func: AggFuncTypeFrame[Any] | None = ...,
         *args: Any,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
@@ -270,7 +270,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def aggregate(
         self,
-        func: AggFuncTypeFrame[Hashable] | None = None,
+        func: AggFuncTypeFrame[Any] | None = None,
         /,
         **kwargs: Any,
     ) -> DataFrame: ...

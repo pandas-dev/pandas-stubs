@@ -1174,7 +1174,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def sort_values(
         self,
-        by: _str | Sequence[_str],
+        by: _str | SequenceNotStr[_str],
         *,
         axis: Axis = 0,
         ascending: _bool | Sequence[_bool] = ...,
@@ -1187,7 +1187,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def sort_values(
         self,
-        by: _str | Sequence[_str],
+        by: _str | SequenceNotStr[_str],
         *,
         axis: Axis = 0,
         ascending: _bool | Sequence[_bool] = ...,
