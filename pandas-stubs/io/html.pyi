@@ -29,7 +29,7 @@ from pandas._typing import (
 def read_html(
     io: FilePath | ReadBuffer[str],
     *,
-    match: str | Pattern = ...,
+    match: str | Pattern[str] = ...,
     flavor: HTMLFlavors | Sequence[HTMLFlavors] | None = ...,
     header: int | Sequence[int] | None = ...,
     index_col: int | Sequence[int] | list[HashableT1] | None = ...,

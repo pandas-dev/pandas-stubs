@@ -21,13 +21,11 @@ from pandas import (
     errors,
     read_clipboard,
     read_csv,
-    read_excel,
     read_feather,
     read_fwf,
     read_hdf,
     read_html,
     read_json,
-    read_orc,
     read_parquet,
     read_pickle,
     read_sas,
@@ -39,6 +37,8 @@ from pandas import (
     read_table,
     read_xml,
 )
+from pandas import read_excel  # pyright: ignore[reportUnknownVariableType]
+from pandas import read_orc  # pyright: ignore[reportUnknownVariableType]
 from pandas.api.typing import JsonReader
 import pytest
 import sqlalchemy
@@ -945,7 +945,7 @@ def test_text_file_reader() -> None:
         with TextFileReader(path, engine="python") as tfr:
             check(assert_type(tfr.__next__(), DataFrame), DataFrame)
             df_iter: DataFrame
-            for df_iter in tfr:
+            for df_iter in tfr:  # pyright: ignore[reportUnknownVariableType]
                 check(df_iter, DataFrame)
 
 

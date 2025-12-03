@@ -1185,7 +1185,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def sort_values(
         self,
-        by: _str | Sequence[_str],
+        by: _str | SequenceNotStr[_str],
         *,
         axis: Axis = 0,
         ascending: _bool | Sequence[_bool] = ...,
@@ -1198,7 +1198,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def sort_values(
         self,
-        by: _str | Sequence[_str],
+        by: _str | SequenceNotStr[_str],
         *,
         axis: Axis = 0,
         ascending: _bool | Sequence[_bool] = ...,
@@ -1405,7 +1405,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def groupby(  # type: ignore[overload-overlap] # pyright: ignore reportOverlappingOverload
         self,
-        by: MultiIndex | GroupByObjectNonScalar | None = ...,
+        by: MultiIndex | GroupByObjectNonScalar[Any] | None = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
@@ -1416,7 +1416,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def groupby(  # type: ignore[overload-overlap]
         self,
-        by: MultiIndex | GroupByObjectNonScalar | None = ...,
+        by: MultiIndex | GroupByObjectNonScalar[Any] | None = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = False,
         sort: _bool = ...,
@@ -1876,7 +1876,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def boxplot(
         self,
-        by: Hashable | ListLikeHashable,
+        by: Hashable | ListLikeHashable[Hashable],
         ax: PlotAxes | None = None,
         fontsize: float | _str | None = None,
         rot: float = 0,
@@ -1891,7 +1891,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def boxplot(
         self,
-        by: Hashable | ListLikeHashable,
+        by: Hashable | ListLikeHashable[Hashable],
         ax: PlotAxes | None = None,
         fontsize: float | _str | None = None,
         rot: float = 0,
