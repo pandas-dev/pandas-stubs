@@ -102,7 +102,11 @@ from pandas._typing import (
     Level,
     MaskType,
     NaPosition,
+    NDArrayT,
     NumpyFloatNot16DtypeArg,
+    NumpyNotTimeDtypeArg,
+    NumpyTimedeltaDtypeArg,
+    NumpyTimestampDtypeArg,
     PandasAstypeFloatDtypeArg,
     PandasFloatDtypeArg,
     PyArrowFloatDtypeArg,
@@ -374,7 +378,15 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def dtype(self) -> DtypeObj: ...
     @final
     def ravel(self, order: _str = "C") -> Self: ...
-    def view(self, cls=...): ...
+    @overload
+    def view(self, cls: None = None) -> Self: ...
+    @overload
+    def view(self, cls: type[NDArrayT]) -> NDArrayT: ...
+    @overload
+    def view(
+        self,
+        cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg,
+    ) -> np_1darray: ...
     @overload
     def astype(
         self,
@@ -596,7 +608,11 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def insert(self, loc: int, item: S1) -> Self: ...
     @overload
     def insert(self, loc: int, item: object) -> Index: ...
-    def drop(self, labels, errors: IgnoreRaise = "raise") -> Self: ...
+    def drop(
+        self,
+        labels: IndexOpsMixin | np_ndarray | Iterable[Hashable],
+        errors: IgnoreRaise = "raise",
+    ) -> Self: ...
     @property
     def shape(self) -> tuple[int, ...]: ...
     # Extra methods from old stubs

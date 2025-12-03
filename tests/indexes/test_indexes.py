@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Hashable
 import datetime as dt
+import sys
 from typing import (
     Any,
     cast,
@@ -1667,3 +1668,35 @@ def test_index_slice_locs() -> None:
     start, end = idx.slice_locs(0, 1)
     check(assert_type(start, np.intp | int), np.integer)
     check(assert_type(end, np.intp | int), int)
+
+
+def test_index_view() -> None:
+    ind = pd.Index([1, 2])
+    check(assert_type(ind.view("int64"), np_1darray), np_1darray)
+    check(assert_type(ind.view(), "pd.Index[int]"), pd.Index)
+    if sys.version_info >= (3, 11):
+        # mypy and pyright differ here in what they report:
+        # - mypy: ndarray[Any, Any]"
+        # - pyright: ndarray[tuple[Any, ...], dtype[Any]]
+        check(assert_type(ind.view(np.ndarray), np.ndarray), np.ndarray)  # type: ignore[assert-type]
+    else:
+        check(assert_type(ind.view(np.ndarray), np.ndarray), np.ndarray)
+
+    class MyArray(np.ndarray): ...
+
+    check(assert_type(ind.view(MyArray), MyArray), MyArray)
+
+
+def test_index_drop() -> None:
+    ind = pd.Index([1, 2, 3])
+    check(assert_type(ind.drop([1, 2]), "pd.Index[int]"), pd.Index, np.integer)
+    check(
+        assert_type(ind.drop(pd.Index([1, 2])), "pd.Index[int]"), pd.Index, np.integer
+    )
+    check(
+        assert_type(ind.drop(pd.Series([1, 2])), "pd.Index[int]"), pd.Index, np.integer
+    )
+    check(
+        assert_type(ind.drop(np.array([1, 2])), "pd.Index[int]"), pd.Index, np.integer
+    )
+    check(assert_type(ind.drop(iter([1, 2])), "pd.Index[int]"), pd.Index, np.integer)
