@@ -28,6 +28,7 @@ from pandas._typing import (
     Label,
     Scalar,
     ScalarT,
+    SequenceNotStr,
     np_ndarray,
 )
 
@@ -121,11 +122,14 @@ def pivot(
     columns: _NonIterableHashable | Sequence[HashableT2] = ...,
     values: _NonIterableHashable | Sequence[HashableT3] = ...,
 ) -> DataFrame: ...
+
+_Values: TypeAlias = SequenceNotStr[Any] | _ExtendedAnyArrayLike
+
 @overload
 def crosstab(
-    index: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
-    columns: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
-    values: list | _ExtendedAnyArrayLike,
+    index: _Values | list[_Values],
+    columns: _Values | list[_Values],
+    values: _Values,
     rownames: list[HashableT1] | None = ...,
     colnames: list[HashableT2] | None = ...,
     *,
@@ -137,8 +141,8 @@ def crosstab(
 ) -> DataFrame: ...
 @overload
 def crosstab(
-    index: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
-    columns: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
+    index: _Values | list[_Values],
+    columns: _Values | list[_Values],
     values: None = None,
     rownames: list[HashableT1] | None = ...,
     colnames: list[HashableT2] | None = ...,

@@ -69,6 +69,7 @@ from pandas.core.arrays.sparse import SparseDtype as SparseDtype
 from pandas.core.computation.api import eval as eval
 from pandas.core.reshape.api import (
     concat as concat,
+    crosstab as crosstab,
     from_dummies as from_dummies,
     get_dummies as get_dummies,
     lreshape as lreshape,
@@ -79,9 +80,6 @@ from pandas.core.reshape.api import (
     pivot as pivot,
     qcut as qcut,
     wide_to_long as wide_to_long,
-)
-from pandas.core.reshape.api import (
-    crosstab as crosstab,  # pyright: ignore[reportUnknownVariableType]
 )
 from pandas.core.reshape.api import (
     cut as cut,  # pyright: ignore[reportUnknownVariableType]

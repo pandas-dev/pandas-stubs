@@ -345,10 +345,12 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
 
     def value_counts(self, dropna: bool = True) -> Series:
         from pandas.core.algorithms import (  # type: ignore[attr-defined] # isort: skip
-            value_counts,  # pyright: ignore[reportAttributeAccessIssue]
+            value_counts,  # pyright: ignore[reportAttributeAccessIssue,reportAttributeAccessIssue]
         )
 
-        return value_counts(self.to_numpy(), dropna=dropna)
+        return value_counts(
+            self.to_numpy(), dropna=dropna
+        )  # pyright: ignore[reportUnknownVariableType]
 
 
 DecimalArray._add_arithmetic_ops()
