@@ -61,15 +61,17 @@ from pandas.core.api import (
     timedelta_range as timedelta_range,
     to_datetime as to_datetime,
     to_numeric as to_numeric,
-    to_timedelta as to_timedelta,
     unique as unique,
 )
+from pandas.core.api import (
+    to_timedelta as to_timedelta,  # pyright: ignore[reportUnknownVariableType]
+)
 from pandas.core.arrays.sparse import SparseDtype as SparseDtype
-from pandas.core.computation.api import eval as eval
+from pandas.core.computation.api import (
+    eval as eval,  # pyright: ignore[reportUnknownVariableType]
+)
 from pandas.core.reshape.api import (
     concat as concat,
-    crosstab as crosstab,
-    cut as cut,
     from_dummies as from_dummies,
     get_dummies as get_dummies,
     lreshape as lreshape,
@@ -78,9 +80,17 @@ from pandas.core.reshape.api import (
     merge_asof as merge_asof,
     merge_ordered as merge_ordered,
     pivot as pivot,
-    pivot_table as pivot_table,
     qcut as qcut,
     wide_to_long as wide_to_long,
+)
+from pandas.core.reshape.api import (
+    crosstab as crosstab,  # pyright: ignore[reportUnknownVariableType]
+)
+from pandas.core.reshape.api import (
+    cut as cut,  # pyright: ignore[reportUnknownVariableType]
+)
+from pandas.core.reshape.api import (
+    pivot_table as pivot_table,  # pyright: ignore[reportUnknownVariableType]
 )
 
 from pandas._config import (
@@ -98,27 +108,49 @@ from pandas.io.api import (
     ExcelFile as ExcelFile,
     ExcelWriter as ExcelWriter,
     HDFStore as HDFStore,
-    read_clipboard as read_clipboard,
-    read_csv as read_csv,
-    read_excel as read_excel,
     read_feather as read_feather,
     read_fwf as read_fwf,
     read_hdf as read_hdf,
-    read_html as read_html,
     read_json as read_json,
-    read_orc as read_orc,
-    read_parquet as read_parquet,
     read_pickle as read_pickle,
     read_sas as read_sas,
     read_spss as read_spss,
-    read_sql as read_sql,
-    read_sql_query as read_sql_query,
     read_sql_table as read_sql_table,
     read_stata as read_stata,
-    read_table as read_table,
-    read_xml as read_xml,
 )
-from pandas.io.json._normalize import json_normalize as json_normalize
+from pandas.io.api import (
+    read_clipboard as read_clipboard,  # pyright: ignore[reportUnknownVariableType]
+)
+from pandas.io.api import (
+    read_csv as read_csv,  # pyright: ignore[reportUnknownVariableType]
+)
+from pandas.io.api import (
+    read_excel as read_excel,  # pyright: ignore[reportUnknownVariableType]
+)
+from pandas.io.api import (
+    read_html as read_html,  # pyright: ignore[reportUnknownVariableType]
+)
+from pandas.io.api import (
+    read_orc as read_orc,  # pyright: ignore[reportUnknownVariableType]
+)
+from pandas.io.api import (
+    read_parquet as read_parquet,  # pyright: ignore[reportUnknownVariableType]
+)
+from pandas.io.api import (
+    read_sql as read_sql,  # pyright: ignore[reportUnknownVariableType]
+)
+from pandas.io.api import (
+    read_sql_query as read_sql_query,  # pyright: ignore[reportUnknownVariableType]
+)
+from pandas.io.api import (
+    read_table as read_table,  # pyright: ignore[reportUnknownVariableType]
+)
+from pandas.io.api import (
+    read_xml as read_xml,  # pyright: ignore[reportUnknownVariableType]
+)
+from pandas.io.json._normalize import (
+    json_normalize as json_normalize,  # pyright: ignore[reportUnknownVariableType]
+)
 from pandas.tseries import offsets as offsets
 from pandas.tseries.api import infer_freq as infer_freq
 

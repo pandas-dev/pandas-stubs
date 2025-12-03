@@ -1,6 +1,8 @@
 from pandas.plotting._core import (
     PlotAccessor as PlotAccessor,
-    boxplot as boxplot,
+)
+from pandas.plotting._core import (
+    boxplot as boxplot,  # pyright: ignore[reportUnknownVariableType]
 )
 from pandas.plotting._misc import (
     andrews_curves as andrews_curves,

@@ -19,25 +19,15 @@ from pandas import (
     HDFStore,
     Series,
     errors,
-    read_clipboard,
-    read_csv,
-    read_excel,
     read_feather,
     read_fwf,
     read_hdf,
-    read_html,
     read_json,
-    read_orc,
-    read_parquet,
     read_pickle,
     read_sas,
     read_spss,
-    read_sql,
-    read_sql_query,
     read_sql_table,
     read_stata,
-    read_table,
-    read_xml,
 )
 from pandas.api.typing import JsonReader
 import pytest
@@ -54,14 +44,32 @@ from tests import (
 )
 from tests import NUMPY20  # See https://github.com/PyTables/PyTables/issues/1172
 
+from pandas.io.clipboards import (
+    read_clipboard,  # pyright: ignore[reportUnknownVariableType]
+)
+from pandas.io.excel._base import (
+    read_excel,  # pyright: ignore[reportUnknownVariableType]
+)
+from pandas.io.html import read_html  # pyright: ignore[reportUnknownVariableType]
+from pandas.io.orc import read_orc  # pyright: ignore[reportUnknownVariableType]
+from pandas.io.parquet import read_parquet  # pyright: ignore[reportUnknownVariableType]
 from pandas.io.parsers import TextFileReader
+from pandas.io.parsers.readers import (
+    read_csv,  # pyright: ignore[reportUnknownVariableType]
+)
+from pandas.io.parsers.readers import (
+    read_table,  # pyright: ignore[reportUnknownVariableType]
+)
 from pandas.io.pytables import (
     TableIterator,
     Term,
 )
 from pandas.io.sas.sas7bdat import SAS7BDATReader
 from pandas.io.sas.sas_xport import XportReader
+from pandas.io.sql import read_sql  # pyright: ignore[reportUnknownVariableType]
+from pandas.io.sql import read_sql_query  # pyright: ignore[reportUnknownVariableType]
 from pandas.io.stata import StataReader
+from pandas.io.xml import read_xml  # pyright: ignore[reportUnknownVariableType]
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 CWD = Path(__file__).parent.resolve()
@@ -945,7 +953,7 @@ def test_text_file_reader() -> None:
         with TextFileReader(path, engine="python") as tfr:
             check(assert_type(tfr.__next__(), DataFrame), DataFrame)
             df_iter: DataFrame
-            for df_iter in tfr:
+            for df_iter in tfr:  # pyright: ignore[reportUnknownVariableType]
                 check(df_iter, DataFrame)
 
 

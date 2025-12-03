@@ -12,7 +12,6 @@ from typing import (
     overload,
 )
 
-from odf.opendocument import OpenDocument  # pyright: ignore[reportMissingTypeStubs]
 from openpyxl.workbook.workbook import Workbook
 from pandas.core.frame import DataFrame
 import pyxlsb.workbook  # pyright: ignore[reportMissingTypeStubs]
@@ -33,6 +32,10 @@ from pandas._typing import (
     StorageOptions,
     UsecolsArgType,
     WriteExcelBuffer,
+)
+
+from odf.opendocument import (  # pyright: ignore[reportMissingTypeStubs] # isort: skip
+    OpenDocument,  # pyright: ignore[reportUnknownVariableType]
 )
 
 @overload

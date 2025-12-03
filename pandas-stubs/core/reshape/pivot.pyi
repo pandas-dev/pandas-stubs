@@ -33,7 +33,7 @@ from pandas._typing import (
 
 _PivotAggCallable: TypeAlias = Callable[[Series], ScalarT]
 
-_PivotAggFunc: TypeAlias = (
+_PivotAggFunc: TypeAlias = (  # pyright: ignore[reportUnknownVariableType]
     _PivotAggCallable
     | np.ufunc
     | Literal["mean", "sum", "count", "min", "max", "median", "std", "var"]

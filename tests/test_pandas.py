@@ -1026,7 +1026,7 @@ def test_cut() -> None:
         labels=["1", "2", "3", "4"],
         retbins=True,
     )
-    m0, m1 = pd.cut(
+    m0, m1 = pd.cut(  # pyright: ignore[reportUnknownVariableType]
         pd.Series([1, 2, 3, 4, 5, 6, 7, 8]),
         intval_idx,
         retbins=True,
@@ -1611,7 +1611,7 @@ def test_merge_asof() -> None:
 
 def test_crosstab_args() -> None:
     a = [1, 2, 3, 4, 1, 2, 3, 4, 1, 2]
-    b: list = [4, 5, 6, 3, 4, 3, 5, 6, 5, 5]
+    b: list[Any] = [4, 5, 6, 3, 4, 3, 5, 6, 5, 5]
     c = [1, 3, 2, 3, 1, 2, 3, 1, 3, 2]
     check(assert_type(pd.crosstab(a, b), pd.DataFrame), pd.DataFrame)
     check(assert_type(pd.crosstab(a, [b, c]), pd.DataFrame), pd.DataFrame)
@@ -1712,8 +1712,8 @@ def test_crosstab_args() -> None:
         assert_type(pd.crosstab(a, b, colnames=["a"], rownames=["b"]), pd.DataFrame),
         pd.DataFrame,
     )
-    rownames: list[tuple] = [("b", 1)]
-    colnames: list[tuple] = [("a",)]
+    rownames = [("b", 1)]
+    colnames = [("a",)]
     check(
         assert_type(
             pd.crosstab(a, b, colnames=colnames, rownames=rownames),

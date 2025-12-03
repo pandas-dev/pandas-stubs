@@ -57,7 +57,9 @@ from pandas.core.indexing import (
     _LocIndexer,
 )
 from pandas.core.reshape.pivot import (
-    _PivotAggFunc,
+    _PivotAggFunc,  # pyright: ignore[reportUnknownVariableType]
+)
+from pandas.core.reshape.pivot import (
     _PivotTableColumnsTypes,
     _PivotTableIndexTypes,
     _PivotTableValuesTypes,
@@ -82,11 +84,12 @@ from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
+    AggFuncTypeFrame,  # pyright: ignore[reportUnknownVariableType]
+)
+from pandas._typing import (
     S2,
-    AggFuncTypeBase,
     AggFuncTypeDictFrame,
     AggFuncTypeDictSeries,
-    AggFuncTypeFrame,
     AlignJoin,
     AnyAll,
     AnyArrayLike,
@@ -171,6 +174,7 @@ from pandas._typing import (
     np_ndarray_float,
     np_ndarray_num,
 )
+from pandas._typing import AggFuncTypeBase  # pyright: ignore[reportUnknownVariableType]
 
 from pandas.io.formats.style import Styler
 from pandas.plotting import PlotAccessor
@@ -1527,7 +1531,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis = 0,
         **kwargs: Any,
     ) -> Self: ...
-    agg = aggregate
+    agg = aggregate  # pyright: ignore[reportUnknownVariableType]
     def transform(
         self,
         func: AggFuncTypeFrame,

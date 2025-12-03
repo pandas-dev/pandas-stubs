@@ -1,6 +1,8 @@
 from typing import Any
 
-from fsspec.spec import AbstractFileSystem  # pyright: ignore[reportMissingTypeStubs]
+from fsspec.spec import (
+    AbstractFileSystem,  # pyright: ignore[reportMissingTypeStubs]; pyright: ignore[reportUnknownVariableType]
+)
 from pandas import DataFrame
 from pyarrow.fs import FileSystem
 

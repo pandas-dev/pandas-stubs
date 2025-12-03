@@ -102,7 +102,7 @@ from pandas.tseries.offsets import (
 )
 
 if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration]  # isort: skip
+    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration,reportUnknownVariableType]  # isort: skip
 else:
     Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
@@ -327,9 +327,9 @@ def test_arguments_drop() -> None:
     # GH 950
     s = pd.Series([0, 1, 2])
     if TYPE_CHECKING_INVALID_USAGE:
-        _res1 = s.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        _res2 = s.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
-        _res3 = s.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        _res1 = s.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        _res2 = s.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType]
+        _res3 = s.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType]
 
     def _never_checker0() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(s.drop(columns=None), Never)
@@ -900,7 +900,7 @@ def test_types_apply() -> None:
 
     check(assert_type(s.apply(retseries).tolist(), list), list)
 
-    def retlist(x: float) -> list:
+    def retlist(x: float) -> list[float]:
         return [x]
 
     check(assert_type(s.apply(retlist), pd.Series), pd.Series, list)
@@ -1014,9 +1014,11 @@ def test_groupby_result() -> None:
     # than one level and test the non-scalar case
     multi_index = pd.MultiIndex.from_tuples([(0, 0), (0, 1), (1, 0)], names=["a", "b"])
     s = pd.Series([0, 1, 2], index=multi_index, dtype=int)
-    iterator = s.groupby(["a", "b"]).__iter__()
+    iterator = s.groupby(  # pyright: ignore[reportUnknownVariableType]
+        ["a", "b"]
+    ).__iter__()
     assert_type(iterator, Iterator[tuple[tuple, "pd.Series[int]"]])
-    index, value = next(iterator)
+    index, value = next(iterator)  # pyright: ignore[reportUnknownVariableType]
     assert_type((index, value), tuple[tuple, "pd.Series[int]"])
 
     if PD_LTE_23:
@@ -1036,9 +1038,11 @@ def test_groupby_result() -> None:
 
     # GH 674
     # grouping by pd.MultiIndex should always resolve to a tuple as well
-    iterator3 = s.groupby(multi_index).__iter__()
+    iterator3 = s.groupby(  # pyright: ignore[reportUnknownVariableType]
+        multi_index
+    ).__iter__()
     assert_type(iterator3, Iterator[tuple[tuple, "pd.Series[int]"]])
-    index3, value3 = next(iterator3)
+    index3, value3 = next(iterator3)  # pyright: ignore[reportUnknownVariableType]
     assert_type((index3, value3), tuple[tuple, "pd.Series[int]"])
 
     check(assert_type(index3, tuple), tuple, int)
@@ -1054,13 +1058,17 @@ def test_groupby_result() -> None:
     check(assert_type(value4, "pd.Series[int]"), pd.Series, np.integer)
 
     # Want to make sure these cases are differentiated
-    for (_k1, _k2), _g in s.groupby(["a", "b"]):
+    for (_k1, _k2), _g in s.groupby(  # pyright: ignore[reportUnknownVariableType]
+        ["a", "b"]
+    ):
         pass
 
     for _kk, _g in s.groupby("a"):
         pass
 
-    for (_k1, _k2), _g in s.groupby(multi_index):
+    for (_k1, _k2), _g in s.groupby(  # pyright: ignore[reportUnknownVariableType]
+        multi_index
+    ):
         pass
 
 
@@ -3230,7 +3238,7 @@ def test_to_json_mode() -> None:
     check(assert_type(result2, str), str)
     check(assert_type(result4, str), str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _result3 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        _result3 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]
 
 
 def test_interpolate() -> None:

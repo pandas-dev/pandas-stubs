@@ -136,13 +136,14 @@ from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
+    AggFuncTypeSeriesToFrame,  # pyright: ignore[reportUnknownVariableType]
+)
+from pandas._typing import (
     S1,
     S2,
     S2_NSDT,
     T_COMPLEX,
-    AggFuncTypeBase,
     AggFuncTypeDictFrame,
-    AggFuncTypeSeriesToFrame,
     AnyAll,
     AnyArrayLike,
     ArrayLike,
@@ -245,6 +246,7 @@ from pandas._typing import (
     np_ndarray_str,
     np_ndarray_td,
 )
+from pandas._typing import AggFuncTypeBase  # pyright: ignore[reportUnknownVariableType]
 
 from pandas.core.dtypes.base import ExtensionDtype
 from pandas.core.dtypes.dtypes import CategoricalDtype
@@ -1147,7 +1149,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         *args: Any,
         **kwargs: Any,
     ) -> Series: ...
-    agg = aggregate
+    agg = aggregate  # pyright: ignore[reportUnknownVariableType]
     @overload
     def transform(
         self,

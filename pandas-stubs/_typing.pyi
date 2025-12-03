@@ -22,7 +22,6 @@ from typing import (
     SupportsIndex,
     TypeAlias,
     TypedDict,
-    Union,
     overload,
 )
 
@@ -596,18 +595,25 @@ IndexKeyFunc: TypeAlias = Callable[[Index], Index | AnyArrayLike] | None
 
 # types of `func` kwarg for DataFrame.aggregate and Series.aggregate
 # More specific than what is in pandas
-# following Union is here to make it ty compliant https://github.com/astral-sh/ty/issues/591
-AggFuncTypeBase: TypeAlias = Union[Callable, str, np.ufunc]  # noqa: UP007
+AggFuncTypeBase: TypeAlias = (  # pyright: ignore[reportUnknownVariableType]
+    Callable | str | np.ufunc
+)
 AggFuncTypeDictSeries: TypeAlias = Mapping[HashableT, AggFuncTypeBase]
 AggFuncTypeDictFrame: TypeAlias = Mapping[
     HashableT, AggFuncTypeBase | list[AggFuncTypeBase]
 ]
-AggFuncTypeSeriesToFrame: TypeAlias = list[AggFuncTypeBase] | AggFuncTypeDictSeries
-AggFuncTypeFrame: TypeAlias = (
+AggFuncTypeSeriesToFrame: TypeAlias = (  # pyright: ignore[reportUnknownVariableType]
+    list[AggFuncTypeBase] | AggFuncTypeDictSeries
+)
+AggFuncTypeFrame: TypeAlias = (  # pyright: ignore[reportUnknownVariableType]
     AggFuncTypeBase | list[AggFuncTypeBase] | AggFuncTypeDictFrame
 )
-AggFuncTypeDict: TypeAlias = AggFuncTypeDictSeries | AggFuncTypeDictFrame
-AggFuncType: TypeAlias = AggFuncTypeBase | list[AggFuncTypeBase] | AggFuncTypeDict
+AggFuncTypeDict: TypeAlias = (  # pyright: ignore[reportUnknownVariableType]
+    AggFuncTypeDictSeries | AggFuncTypeDictFrame
+)
+AggFuncType: TypeAlias = (  # pyright: ignore[reportUnknownVariableType]
+    AggFuncTypeBase | list[AggFuncTypeBase] | AggFuncTypeDict
+)
 
 # Not used in stubs
 # AggObjType = Union[
