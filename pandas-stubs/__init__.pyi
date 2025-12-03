@@ -62,15 +62,11 @@ from pandas.core.api import (
     timedelta_range as timedelta_range,
     to_datetime as to_datetime,
     to_numeric as to_numeric,
+    to_timedelta as to_timedelta,
     unique as unique,
 )
-from pandas.core.api import (
-    to_timedelta as to_timedelta,  # pyright: ignore[reportUnknownVariableType]
-)
 from pandas.core.arrays.sparse import SparseDtype as SparseDtype
-from pandas.core.computation.api import (
-    eval as eval,  # pyright: ignore[reportUnknownVariableType]
-)
+from pandas.core.computation.api import eval as eval
 from pandas.core.reshape.api import (
     concat as concat,
     from_dummies as from_dummies,

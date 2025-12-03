@@ -1,3 +1,1 @@
-from pandas.core.computation.eval import (
-    eval as eval,  # pyright: ignore[reportUnknownVariableType]
-)
+from pandas.core.computation.eval import eval as eval
