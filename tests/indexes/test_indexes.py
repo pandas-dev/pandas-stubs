@@ -1682,9 +1682,7 @@ def test_index_view() -> None:
         # - pyright: ndarray[tuple[Any, ...], dtype[Any]]
         check(assert_type(ind.view(np.ndarray), np.ndarray), np.ndarray)  # type: ignore[assert-type]
     else:
-        check(
-            assert_type(ind.view(np.ndarray), np.ndarray), np.ndarray
-        )  # pyright: ignore[reportAssertTypeFailure]
+        check(assert_type(ind.view(np.ndarray), np.ndarray), np.ndarray)
 
     class MyArray(np.ndarray): ...
 
