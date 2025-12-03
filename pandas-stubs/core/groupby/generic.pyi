@@ -30,11 +30,10 @@ from typing_extensions import Self
 
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
-    AggFuncTypeFrame,  # pyright: ignore[reportUnknownVariableType]
-)
-from pandas._typing import (
     S2,
     S3,
+    AggFuncTypeBase,
+    AggFuncTypeFrame,
     ByT,
     CorrelationMethod,
     Dtype,
@@ -49,7 +48,6 @@ from pandas._typing import (
     WindowingEngineKwargs,
     np_ndarray,
 )
-from pandas._typing import AggFuncTypeBase  # pyright: ignore[reportUnknownVariableType]
 
 AggScalar: TypeAlias = str | Callable[..., Any]
 
@@ -97,7 +95,7 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
         engine_kwargs: WindowingEngineKwargs = ...,
         **kwargs: Any,
     ) -> Series: ...
-    agg = aggregate  # pyright: ignore[reportUnknownVariableType]
+    agg = aggregate
     @overload
     def transform(
         self,

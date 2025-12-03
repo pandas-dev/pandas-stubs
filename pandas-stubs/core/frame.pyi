@@ -84,12 +84,11 @@ from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
-    AggFuncTypeFrame,  # pyright: ignore[reportUnknownVariableType]
-)
-from pandas._typing import (
     S2,
+    AggFuncTypeBase,
     AggFuncTypeDictFrame,
     AggFuncTypeDictSeries,
+    AggFuncTypeFrame,
     AlignJoin,
     AnyAll,
     AnyArrayLike,
@@ -174,7 +173,6 @@ from pandas._typing import (
     np_ndarray_float,
     np_ndarray_num,
 )
-from pandas._typing import AggFuncTypeBase  # pyright: ignore[reportUnknownVariableType]
 
 from pandas.io.formats.style import Styler
 from pandas.plotting import PlotAccessor

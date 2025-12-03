@@ -595,24 +595,22 @@ IndexKeyFunc: TypeAlias = Callable[[Index], Index | AnyArrayLike] | None
 
 # types of `func` kwarg for DataFrame.aggregate and Series.aggregate
 # More specific than what is in pandas
-AggFuncTypeBase: TypeAlias = (  # pyright: ignore[reportUnknownVariableType]
-    Callable | str | np.ufunc
-)
+AggFuncTypeBase: TypeAlias = Callable[..., Any] | str | np.ufunc
 AggFuncTypeDictSeries: TypeAlias = Mapping[HashableT, AggFuncTypeBase]
 AggFuncTypeDictFrame: TypeAlias = Mapping[
     HashableT, AggFuncTypeBase | list[AggFuncTypeBase]
 ]
-AggFuncTypeSeriesToFrame: TypeAlias = (  # pyright: ignore[reportUnknownVariableType]
-    list[AggFuncTypeBase] | AggFuncTypeDictSeries
+AggFuncTypeSeriesToFrame: TypeAlias = (
+    list[AggFuncTypeBase] | AggFuncTypeDictSeries[HashableT]
 )
-AggFuncTypeFrame: TypeAlias = (  # pyright: ignore[reportUnknownVariableType]
-    AggFuncTypeBase | list[AggFuncTypeBase] | AggFuncTypeDictFrame
+AggFuncTypeFrame: TypeAlias = (
+    AggFuncTypeBase | list[AggFuncTypeBase] | AggFuncTypeDictFrame[HashableT]
 )
-AggFuncTypeDict: TypeAlias = (  # pyright: ignore[reportUnknownVariableType]
-    AggFuncTypeDictSeries | AggFuncTypeDictFrame
+AggFuncTypeDict: TypeAlias = (
+    AggFuncTypeDictSeries[HashableT] | AggFuncTypeDictFrame[HashableT]
 )
-AggFuncType: TypeAlias = (  # pyright: ignore[reportUnknownVariableType]
-    AggFuncTypeBase | list[AggFuncTypeBase] | AggFuncTypeDict
+AggFuncType: TypeAlias = (
+    AggFuncTypeBase | list[AggFuncTypeBase] | AggFuncTypeDict[HashableT]
 )
 
 # Not used in stubs

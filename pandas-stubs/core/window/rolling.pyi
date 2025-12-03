@@ -19,12 +19,9 @@ from typing_extensions import Self
 
 from pandas._libs.tslibs import BaseOffset
 from pandas._typing import (
-    AggFuncTypeFrame,  # pyright: ignore[reportUnknownVariableType]
-)
-from pandas._typing import (
-    AggFuncTypeSeriesToFrame,  # pyright: ignore[reportUnknownVariableType]
-)
-from pandas._typing import (
+    AggFuncTypeBase,
+    AggFuncTypeFrame,
+    AggFuncTypeSeriesToFrame,
     AxisInt,
     CalculationMethod,
     IntervalClosedType,
@@ -34,7 +31,6 @@ from pandas._typing import (
     WindowingEngineKwargs,
     WindowingRankType,
 )
-from pandas._typing import AggFuncTypeBase  # pyright: ignore[reportUnknownVariableType]
 
 class BaseWindow(SelectionMixin[NDFrameT]):
     on: str | Index | None
