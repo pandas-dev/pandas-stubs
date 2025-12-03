@@ -1082,7 +1082,7 @@ if TYPE_CHECKING:  # noqa: PYI002
         | Interval[int | float | Timestamp | Timedelta],
     )
 GroupByObjectNonScalar: TypeAlias = (
-    tuple
+    tuple[_HashableTa, ...]
     | list[_HashableTa]
     | Function
     | list[Function]

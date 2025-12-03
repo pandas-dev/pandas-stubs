@@ -1394,25 +1394,25 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def groupby(  # type: ignore[overload-overlap] # pyright: ignore reportOverlappingOverload
         self,
-        by: MultiIndex | GroupByObjectNonScalar | None = ...,
+        by: MultiIndex | GroupByObjectNonScalar[Any] | None = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | _NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[tuple, Literal[True]]: ...
+    ) -> DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]: ...
     @overload
     def groupby(  # type: ignore[overload-overlap]
         self,
-        by: MultiIndex | GroupByObjectNonScalar | None = ...,
+        by: MultiIndex | GroupByObjectNonScalar[Any] | None = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = False,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | _NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[tuple, Literal[False]]: ...
+    ) -> DataFrameGroupBy[tuple[Hashable, ...], Literal[False]]: ...
     @overload
     def groupby(  # pyright: ignore reportOverlappingOverload
         self,

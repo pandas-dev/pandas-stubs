@@ -3592,17 +3592,15 @@ def test_boolean_loc() -> None:
 def test_groupby_result() -> None:
     # GH 142
     df = pd.DataFrame({"a": [0, 1, 2], "b": [4, 5, 6], "c": [7, 8, 9]})
-    iterator = df.groupby(  # pyright: ignore[reportUnknownVariableType]
-        ["a", "b"]
-    ).__iter__()
-    assert_type(iterator, Iterator[tuple[tuple, pd.DataFrame]])
-    index, value = next(iterator)  # pyright: ignore[reportUnknownVariableType]
-    assert_type((index, value), tuple[tuple, pd.DataFrame])
+    iterator = df.groupby(["a", "b"]).__iter__()
+    assert_type(iterator, Iterator[tuple[tuple[Hashable, ...], pd.DataFrame]])
+    index, value = next(iterator)
+    assert_type((index, value), tuple[tuple[Hashable, ...], pd.DataFrame])
 
     if PD_LTE_23:
-        check(assert_type(index, tuple), tuple, np.integer)
+        check(assert_type(index, tuple[Hashable, ...]), tuple, np.integer)
     else:
-        check(assert_type(index, tuple), tuple, int)
+        check(assert_type(index, tuple[Hashable, ...]), tuple, int)
 
     check(assert_type(value, pd.DataFrame), pd.DataFrame)
 
@@ -3617,28 +3615,22 @@ def test_groupby_result() -> None:
     # GH 674
     # grouping by pd.MultiIndex should always resolve to a tuple as well
     multi_index = pd.MultiIndex.from_frame(df[["a", "b"]])
-    iterator3 = df.groupby(  # pyright: ignore[reportUnknownVariableType]
-        multi_index
-    ).__iter__()
-    assert_type(iterator3, Iterator[tuple[tuple, pd.DataFrame]])
-    index3, value3 = next(iterator3)  # pyright: ignore[reportUnknownVariableType]
-    assert_type((index3, value3), tuple[tuple, pd.DataFrame])
+    iterator3 = df.groupby(multi_index).__iter__()
+    assert_type(iterator3, Iterator[tuple[tuple[Hashable, ...], pd.DataFrame]])
+    index3, value3 = next(iterator3)
+    assert_type((index3, value3), tuple[tuple[Hashable, ...], pd.DataFrame])
 
-    check(assert_type(index3, tuple), tuple, int)
+    check(assert_type(index3, tuple[Hashable, ...]), tuple, int)
     check(assert_type(value3, pd.DataFrame), pd.DataFrame)
 
     # Want to make sure these cases are differentiated
-    for (_k1, _k2), _g in df.groupby(  # pyright: ignore[reportUnknownVariableType]
-        ["a", "b"]
-    ):
+    for (_k1, _k2), _g in df.groupby(["a", "b"]):
         pass
 
     for _kk, _g in df.groupby("a"):
         pass
 
-    for (_k1, _k2), _g in df.groupby(  # pyright: ignore[reportUnknownVariableType]
-        multi_index
-    ):
+    for (_k1, _k2), _g in df.groupby(multi_index):
         pass
 
 

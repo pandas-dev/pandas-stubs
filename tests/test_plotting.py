@@ -707,7 +707,7 @@ def test_grouped_dataframe_boxplot(close_figures: None) -> None:
     df = pd.DataFrame(
         data=np.random.randn(len(index), 2), columns=["A", "B"], index=index
     )
-    grouped = df.groupby(level="lvl1")  # pyright: ignore[reportUnknownVariableType]
+    grouped = df.groupby(level="lvl1")
 
     # subplots (default is subplots=True)
     check(assert_type(grouped.boxplot(), Series), Series)
@@ -743,7 +743,7 @@ def test_grouped_dataframe_boxplot_single(close_figures: None) -> None:
     df = pd.DataFrame(
         data=np.random.randn(len(index), 2), columns=["A", "B"], index=index
     )
-    grouped = df.groupby(level="lvl1")  # pyright: ignore[reportUnknownVariableType]
+    grouped = df.groupby(level="lvl1")
 
     # a single plot
     check(

@@ -19,16 +19,26 @@ from pandas import (
     HDFStore,
     Series,
     errors,
+    read_clipboard,
+    read_csv,
     read_feather,
     read_fwf,
     read_hdf,
+    read_html,
     read_json,
+    read_parquet,
     read_pickle,
     read_sas,
     read_spss,
+    read_sql,
+    read_sql_query,
     read_sql_table,
     read_stata,
+    read_table,
+    read_xml,
 )
+from pandas import read_excel  # pyright: ignore[reportUnknownVariableType]
+from pandas import read_orc  # pyright: ignore[reportUnknownVariableType]
 from pandas.api.typing import JsonReader
 import pytest
 import sqlalchemy
@@ -44,30 +54,14 @@ from tests import (
 )
 from tests import NUMPY20  # See https://github.com/PyTables/PyTables/issues/1172
 
-from pandas.io.clipboards import read_clipboard
-from pandas.io.excel._base import (
-    read_excel,  # pyright: ignore[reportUnknownVariableType]
-)
-from pandas.io.html import read_html
-from pandas.io.orc import read_orc  # pyright: ignore[reportUnknownVariableType]
-from pandas.io.parquet import read_parquet
 from pandas.io.parsers import TextFileReader
-from pandas.io.parsers.readers import (
-    read_csv,
-    read_table,
-)
 from pandas.io.pytables import (
     TableIterator,
     Term,
 )
 from pandas.io.sas.sas7bdat import SAS7BDATReader
 from pandas.io.sas.sas_xport import XportReader
-from pandas.io.sql import (
-    read_sql,
-    read_sql_query,
-)
 from pandas.io.stata import StataReader
-from pandas.io.xml import read_xml
 
 DF = DataFrame({"a": [1, 2, 3], "b": [0.0, 0.0, 0.0]})
 CWD = Path(__file__).parent.resolve()
