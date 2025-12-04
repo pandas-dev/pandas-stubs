@@ -19,7 +19,6 @@ from pandas.core.series import Series
 
 from pandas._typing import (
     T_EXTENSION_ARRAY,
-    AnyArrayLike,
     GenericT,
     IntervalT,
     TakeIndexer,
@@ -88,14 +87,6 @@ def factorize(
     use_na_sentinel: bool = ...,
     size_hint: int | None = ...,
 ) -> tuple[np_1darray_int64, Categorical]: ...
-def value_counts(
-    values: AnyArrayLike | list | tuple,
-    sort: bool = True,
-    ascending: bool = False,
-    normalize: bool = False,
-    bins: int | None = None,
-    dropna: bool = True,
-) -> Series: ...
 def take(
     arr: np_ndarray[Any] | ExtensionArray | Index | Series,
     indices: TakeIndexer,
