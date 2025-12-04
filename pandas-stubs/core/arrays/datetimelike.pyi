@@ -72,7 +72,7 @@ class DatetimeLikeArrayMixin(ExtensionOpsMixin, ExtensionArray):
     def size(self) -> int: ...
     @overload
     def __getitem__(  # pyrefly: ignore[bad-override,bad-param-name-override]
-        self, item: ScalarIndexer
+        self, key: ScalarIndexer
     ) -> DTScalarOrNaT: ...
     @overload
     def __getitem__(  # ty: ignore[invalid-method-override]
