@@ -205,10 +205,6 @@ ignore = [
   "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
   "ERA001", "PLR0402", "PLC0105"
 ]
-"indexers.pyi" = [
-  # TODO: remove when indexers.pyi is fully typed
-  "ANN001", "ANN201", "ANN204", "ANN206",
-]
 "multi.pyi" = [
   # TODO: remove when multi.pyi is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
@@ -231,10 +227,6 @@ ignore = [
 ]
 "*array*" = [
   # TODO: remove when array is fully typed
-  "ANN001", "ANN201", "ANN204", "ANN206",
-]
-"*_libs*" = [
-  # TODO: remove when _libs is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
 "*core/base.pyi" = [
