@@ -964,10 +964,7 @@ def test_getitem() -> None:
 
     iints = pd.interval_range(dt.datetime(2000, 1, 1), dt.datetime(2010, 1, 1), 5)
     check(
-        assert_type(
-            iints,
-            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
-        ),
+        assert_type(iints, "pd.IntervalIndex[pd.Interval[pd.Timestamp]]"),
         pd.IntervalIndex,
         pd.Interval,
     )
@@ -980,10 +977,7 @@ def test_getitem() -> None:
 
     iintd = pd.interval_range(pd.Timedelta("1D"), pd.Timedelta("10D"))
     check(
-        assert_type(
-            iintd,
-            "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
-        ),
+        assert_type(iintd, "pd.IntervalIndex[pd.Interval[pd.Timedelta]]"),
         pd.IntervalIndex,
         pd.Interval,
     )
@@ -1005,7 +999,7 @@ def test_getitem() -> None:
 
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
     check(assert_type(mi, pd.MultiIndex), pd.MultiIndex)
-    check(assert_type(mi[0], tuple), tuple)
+    check(assert_type(mi[0], tuple[Hashable, ...]), tuple, str)
     check(assert_type(mi[[0, 2]], pd.MultiIndex), pd.MultiIndex, tuple)
 
     i0 = pd.Index(["a", "b", "c"])

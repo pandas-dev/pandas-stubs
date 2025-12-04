@@ -845,7 +845,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         group_keys: _bool = ...,
         observed: _bool | _NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
-    ) -> SeriesGroupBy[S1, tuple]: ...
+    ) -> SeriesGroupBy[S1, tuple[Hashable, ...]]: ...
     @overload
     def groupby(
         self,
@@ -1171,7 +1171,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             ..., Scalar | Sequence | set | Mapping | NAType | frozenset | None
         ],
         convertDType: _bool = ...,
-        args: tuple = ...,
+        args: tuple[Any, ...] = ...,
         **kwargs: Any,
     ) -> Series: ...
     @overload
