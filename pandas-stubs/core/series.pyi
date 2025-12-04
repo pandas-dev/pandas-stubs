@@ -1179,7 +1179,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         func: Callable[..., BaseOffset],
         convertDType: _bool = ...,
-        args: tuple = ...,
+        args: tuple[Any, ...] = ...,
         **kwargs: Any,
     ) -> Series[BaseOffset]: ...
     @overload
@@ -1187,7 +1187,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self,
         func: Callable[..., Series],
         convertDType: _bool = ...,
-        args: tuple = ...,
+        args: tuple[Any, ...] = ...,
         **kwargs: Any,
     ) -> DataFrame: ...
     @final

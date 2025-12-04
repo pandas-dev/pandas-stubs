@@ -1505,8 +1505,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self | Series: ...
     def melt(
         self,
-        id_vars: tuple | Sequence | np_ndarray | None = ...,
-        value_vars: tuple | Sequence | np_ndarray | None = ...,
+        id_vars: Sequence[Hashable] | np_ndarray | None = ...,
+        value_vars: Sequence[Hashable] | np_ndarray | None = ...,
         var_name: Scalar | None = None,
         value_name: Scalar = "value",
         col_level: int | _str | None = ...,

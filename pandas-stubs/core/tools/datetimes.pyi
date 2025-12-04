@@ -4,6 +4,7 @@ from datetime import (
     datetime,
 )
 from typing import (
+    Any,
     Literal,
     TypeAlias,
     TypedDict,
@@ -31,7 +32,7 @@ from pandas._typing import (
     np_ndarray_str,
 )
 
-ArrayConvertible: TypeAlias = list | tuple | AnyArrayLike
+ArrayConvertible: TypeAlias = list[Any] | tuple[Any, ...] | AnyArrayLike
 Scalar: TypeAlias = float | str
 DatetimeScalar: TypeAlias = Scalar | datetime | np.datetime64 | date
 
