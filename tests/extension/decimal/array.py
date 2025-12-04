@@ -342,7 +342,9 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         return cast(np_1darray_bool, np.asarray(res, dtype=bool))
 
     def value_counts(self, dropna: bool = True) -> Series:
-        from pandas.core.algorithms import value_counts
+        from pandas.core.algorithms import (  # type: ignore[attr-defined] # isort: skip
+            value_counts,  # pyright: ignore[reportAttributeAccessIssue]
+        )
 
         return value_counts(self.to_numpy(), dropna=dropna)
 
