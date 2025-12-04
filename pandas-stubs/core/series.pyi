@@ -453,7 +453,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: bool | None = None,
     ) -> Series[Interval[_OrderableT]]: ...
     @overload
-    def __new__(  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
+    def __new__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         cls,
         data: Scalar | _DataLike | dict[HashableT1, Any] | None,
         index: AxesData | None = None,
@@ -4652,7 +4652,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         copy: _bool | _NoDefaultDoNotUse = ...,
     ) -> Self: ...
     @final
-    def xs(  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]  # ty: ignore[invalid-method-override]
+    def xs(  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override] # ty: ignore[invalid-method-override]
         self,
         key: Hashable,
         axis: AxisIndex = 0,  # type: ignore[override]

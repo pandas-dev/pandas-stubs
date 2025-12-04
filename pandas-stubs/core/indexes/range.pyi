@@ -81,7 +81,7 @@ class RangeIndex(_IndexSubclassBase[int, np.int64]):
         idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType,
     ) -> Index: ...
     @overload
-    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]  # ty: ignore[invalid-method-override]
+    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, idx: int
     ) -> int: ...
     def where(  # type: ignore[override]

@@ -26,7 +26,7 @@ from tests import (
 )
 
 if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration]  # isort: skip
+    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration] # isort: skip
 else:
     Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
@@ -93,7 +93,7 @@ def test_filling() -> None:
 def test_fillna() -> None:
     # deprecated (and removed from stub)
     if TYPE_CHECKING_INVALID_USAGE:
-        DF.resample("ME").fillna("pad")  # type: ignore[operator]  # pyright: ignore
+        DF.resample("ME").fillna("pad")  # type: ignore[operator] # pyright: ignore
 
 
 def test_aggregate() -> None:
@@ -164,7 +164,7 @@ def test_interpolate_inplace() -> None:
             DataFrame,
         )
     if TYPE_CHECKING_INVALID_USAGE:
-        DF.resample("ME").interpolate(inplace=True)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
+        DF.resample("ME").interpolate(inplace=True)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
 
 
 def test_pipe() -> None:
@@ -331,7 +331,7 @@ def test_filling_series() -> None:
 def test_fillna_series() -> None:
     # deprecated (and removed from stub)
     if TYPE_CHECKING_INVALID_USAGE:
-        S.resample("ME").fillna("pad")  # type: ignore[operator]  # pyright: ignore
+        S.resample("ME").fillna("pad")  # type: ignore[operator] # pyright: ignore
 
 
 def test_aggregate_series() -> None:

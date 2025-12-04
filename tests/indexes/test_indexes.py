@@ -68,8 +68,8 @@ def test_index_isin() -> None:
     check(assert_type(mi.isin([[3]]), np_1darray_bool), np_1darray_bool)
     check(assert_type(mi.isin({iter([3])}), np_1darray_bool), np_1darray_bool)
     if TYPE_CHECKING_INVALID_USAGE:
-        mi.isin({3})  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType]
-        mi.isin(iter([[3]]))  # type: ignore[call-overload]  # pyright: ignore[reportArgumentType]
+        mi.isin({3})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        mi.isin(iter([[3]]))  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_index_astype() -> None:
@@ -1593,7 +1593,7 @@ def test_index_droplevel() -> None:
 def test_index_setitem() -> None:
     idx = pd.Index([1, 2])
     if TYPE_CHECKING_INVALID_USAGE:
-        idx[0] = 999  # type: ignore[index]  # pyright: ignore[reportIndexIssue]
+        idx[0] = 999  # type: ignore[index] # pyright: ignore[reportIndexIssue]
 
 
 def test_index_putmask() -> None:

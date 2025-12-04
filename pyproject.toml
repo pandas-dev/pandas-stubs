@@ -338,9 +338,6 @@ reportPrivateUsage = false
 reportMissingModuleSource = true
 useLibraryCodeForTypes = false
 
-[tool.pyrefly.errors]
-bad-param-name-override = false  # TODO: report to pyrefly https://github.com/pandas-dev/pandas-stubs/pull/1412#pullrequestreview-3310645279
-
 [tool.codespell]
 ignore-words-list = "indext, mose, sav, ser"
 
