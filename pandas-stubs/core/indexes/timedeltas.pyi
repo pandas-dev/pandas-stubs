@@ -115,7 +115,7 @@ class TimedeltaIndex(
         self, other: Index[Never]
     ) -> Index: ...
     @overload
-    def __truediv__(  # pyrefly: ignore[bad-override]
+    def __truediv__(
         self, other: np_ndarray_bool | np_ndarray_complex | np_ndarray_dt
     ) -> Never: ...
     @overload

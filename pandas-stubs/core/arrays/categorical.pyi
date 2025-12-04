@@ -113,8 +113,8 @@ class Categorical(ExtensionArray):
     ) -> Categorical: ...
     def __contains__(self, item) -> bool: ...
     @overload
-    def __getitem__(  # pyrefly: ignore[bad-override]
-        self, item: ScalarIndexer
+    def __getitem__(  # pyrefly: ignore[bad-override,bad-param-name-override]
+        self, key: ScalarIndexer
     ) -> Any: ...
     @overload
     def __getitem__(  # ty: ignore[invalid-method-override]
