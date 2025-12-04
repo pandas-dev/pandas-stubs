@@ -612,7 +612,7 @@ AggFuncTypeDict: TypeAlias = (
     AggFuncTypeDictSeries[HashableT, P] | AggFuncTypeDictFrame[HashableT, P]
 )
 AggFuncType: TypeAlias = (
-    AggFuncTypeBase[P] | Sequence[AggFuncTypeBase[P]] | AggFuncTypeDict
+    AggFuncTypeBase[P] | Sequence[AggFuncTypeBase[P]] | AggFuncTypeDict[HashableT, P]
 )
 
 # Not used in stubs
