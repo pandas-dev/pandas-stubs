@@ -77,7 +77,7 @@ from pandas.core.dtypes.dtypes import (
 #     copy: bool = True
 # ) -> NumpyExtensionArray: ...
 @overload
-def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+def array(  # type: ignore[overload-overlap]
     data: SequenceNotStr[Any] | np_ndarray | ExtensionArray | Index | Series,
     dtype: CategoryDtypeArg,
     copy: bool = True,
@@ -111,14 +111,8 @@ def array(
     copy: bool = True,
 ) -> SparseArray: ...
 @overload
-def array(  # type: ignore[overload-overlap]
-    data: (
-        Sequence[bool | np.bool | NAType | None]
-        | np_ndarray_bool
-        | BooleanArray
-        | Index[bool]
-        | Series[int]
-    ),
+def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    data: Sequence[bool | np.bool | NAType | None] | np_ndarray_bool | BooleanArray,
     dtype: PandasBooleanDtypeArg | None = None,
     copy: bool = True,
 ) -> BooleanArray: ...
