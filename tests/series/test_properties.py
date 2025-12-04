@@ -54,7 +54,7 @@ def test_property_dt() -> None:
         # python/mypy#19952: mypy believes Properties and its subclasses have a
         # conflict and gives Any for s.dt
         assert_type(s.dt, Properties)  # type: ignore[assert-type]
-        _1 = Series([1]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue]
+        _1 = Series([1]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue,reportUnknownVariableType]
 
 
 def test_property_array() -> None:

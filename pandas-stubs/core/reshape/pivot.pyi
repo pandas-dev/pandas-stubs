@@ -28,13 +28,14 @@ from pandas._typing import (
     Label,
     Scalar,
     ScalarT,
+    SequenceNotStr,
     np_ndarray,
 )
 
 _PivotAggCallable: TypeAlias = Callable[[Series], ScalarT]
 
 _PivotAggFunc: TypeAlias = (
-    _PivotAggCallable
+    _PivotAggCallable[ScalarT]
     | np.ufunc
     | Literal["mean", "sum", "count", "min", "max", "median", "std", "var"]
 )
@@ -65,11 +66,17 @@ _ExtendedAnyArrayLike: TypeAlias = AnyArrayLike | ArrayLike
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes = None,
-    index: _PivotTableIndexTypes = None,
-    columns: _PivotTableColumnsTypes = None,
+    values: _PivotTableValuesTypes[
+        Hashable  # ty: ignore[invalid-type-arguments]
+    ] = None,
+    index: _PivotTableIndexTypes[Hashable] = None,  # ty: ignore[invalid-type-arguments]
+    columns: _PivotTableColumnsTypes[
+        Hashable  # ty: ignore[invalid-type-arguments]
+    ] = None,
     aggfunc: (
-        _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
+        _PivotAggFunc[Any]
+        | Sequence[_PivotAggFunc[Any]]
+        | Mapping[Hashable, _PivotAggFunc[Any]]
     ) = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
@@ -83,12 +90,20 @@ def pivot_table(
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes = None,
+    values: _PivotTableValuesTypes[
+        Hashable  # ty: ignore[invalid-type-arguments]
+    ] = None,
     *,
     index: Grouper,
-    columns: _PivotTableColumnsTypes | np_ndarray | Index[Any] = None,
+    columns: (
+        _PivotTableColumnsTypes[Hashable]  # ty: ignore[invalid-type-arguments]
+        | np_ndarray
+        | Index[Any]
+    ) = None,
     aggfunc: (
-        _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
+        _PivotAggFunc[Any]
+        | Sequence[_PivotAggFunc[Any]]
+        | Mapping[Hashable, _PivotAggFunc[Any]]
     ) = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
@@ -100,12 +115,20 @@ def pivot_table(
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes = None,
-    index: _PivotTableIndexTypes | np_ndarray | Index[Any] = None,
+    values: _PivotTableValuesTypes[
+        Hashable  # ty: ignore[invalid-type-arguments]
+    ] = None,
+    index: (
+        _PivotTableIndexTypes[Hashable]  # ty: ignore[invalid-type-arguments]
+        | np_ndarray
+        | Index[Any]
+    ) = None,
     *,
     columns: Grouper,
     aggfunc: (
-        _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
+        _PivotAggFunc[Any]
+        | Sequence[_PivotAggFunc[Any]]
+        | Mapping[Hashable, _PivotAggFunc[Any]]
     ) = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
@@ -121,11 +144,14 @@ def pivot(
     columns: _NonIterableHashable | Sequence[HashableT2] = ...,
     values: _NonIterableHashable | Sequence[HashableT3] = ...,
 ) -> DataFrame: ...
+
+_Values: TypeAlias = SequenceNotStr[Any] | _ExtendedAnyArrayLike
+
 @overload
 def crosstab(
-    index: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
-    columns: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
-    values: list | _ExtendedAnyArrayLike,
+    index: _Values | list[_Values],
+    columns: _Values | list[_Values],
+    values: _Values,
     rownames: list[HashableT1] | None = ...,
     colnames: list[HashableT2] | None = ...,
     *,
@@ -137,8 +163,8 @@ def crosstab(
 ) -> DataFrame: ...
 @overload
 def crosstab(
-    index: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
-    columns: list | _ExtendedAnyArrayLike | list[Sequence | _ExtendedAnyArrayLike],
+    index: _Values | list[_Values],
+    columns: _Values | list[_Values],
     values: None = None,
     rownames: list[HashableT1] | None = ...,
     colnames: list[HashableT2] | None = ...,

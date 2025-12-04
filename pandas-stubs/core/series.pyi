@@ -1142,7 +1142,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def aggregate(
         self,
-        func: AggFuncTypeSeriesToFrame = ...,
+        func: AggFuncTypeSeriesToFrame[Hashable] = ...,
         axis: AxisIndex = ...,
         *args: Any,
         **kwargs: Any,
@@ -1670,7 +1670,9 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Callable[[Series[S1]], Series[bool]]
             | Callable[[S1], bool]
         ),
-        other: Scalar | Series[S1] | DataFrame | Callable | NAType | None = ...,
+        other: (
+            Scalar | Series[S1] | DataFrame | Callable[..., Any] | NAType | None
+        ) = ...,
         *,
         inplace: Literal[True],
         axis: AxisIndex | None = 0,
@@ -1686,7 +1688,9 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | Callable[[Series[S1]], Series[bool]]
             | Callable[[S1], bool]
         ),
-        other: Scalar | Series[S1] | DataFrame | Callable | NAType | None = ...,
+        other: (
+            Scalar | Series[S1] | DataFrame | Callable[..., Any] | NAType | None
+        ) = ...,
         *,
         inplace: Literal[False] = False,
         axis: AxisIndex | None = 0,
@@ -4631,7 +4635,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def rename_axis(
         self,
         *,
-        index: Scalar | ListLike | Callable | dict | None = ...,
+        index: Scalar | ListLike | Callable[..., Any] | dict | None = ...,
         copy: _bool = ...,
         inplace: Literal[True],
     ) -> None: ...
@@ -4640,7 +4644,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def rename_axis(
         self,
         *,
-        index: Scalar | ListLike | Callable | dict | None = ...,
+        index: Scalar | ListLike | Callable[..., Any] | dict | None = ...,
         copy: _bool = ...,
         inplace: Literal[False] = False,
     ) -> Self: ...

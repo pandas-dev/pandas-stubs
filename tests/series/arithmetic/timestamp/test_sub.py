@@ -29,7 +29,7 @@ def test_sub_py_scalar() -> None:
 
     check(assert_type(s - left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _ = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _ = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     check(assert_type(left.sub(s), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left - d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
@@ -49,7 +49,7 @@ def test_sub_numpy_scalar() -> None:
 
     check(assert_type(s - left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _ = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _ = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     check(assert_type(left.sub(s), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left - d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
@@ -69,7 +69,7 @@ def test_sub_pd_scalar() -> None:
 
     check(assert_type(s - left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _ = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _ = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     check(assert_type(left.sub(s), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left - d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
@@ -86,12 +86,12 @@ def test_sub_py_sequence() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # Series[Timestamp] - Sequence[timestamp] should work, see pandas-dev/pandas#62353
-        _0 = left - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _0 = left - s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
         # Series[Timestamp] - Sequence[timedelta] should work, see pandas-dev/pandas#62353
-        _a = left - d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _a = left - d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
-        _1 = s - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _b = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _1 = s - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _b = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     left.sub(s)
     left.sub(d)
@@ -134,7 +134,7 @@ def test_sub_pd_index() -> None:
 
     check(assert_type(s - left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _ = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _ = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     check(assert_type(left.sub(s), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left - d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)
@@ -154,7 +154,7 @@ def test_sub_pd_series() -> None:
 
     check(assert_type(s - left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     if TYPE_CHECKING_INVALID_USAGE:
-        _ = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _ = d - left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     check(assert_type(left.sub(s), "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
     check(assert_type(left - d, "pd.Series[pd.Timestamp]"), pd.Series, pd.Timestamp)

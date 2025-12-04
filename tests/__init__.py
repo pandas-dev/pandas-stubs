@@ -8,6 +8,7 @@ from contextlib import (
 import sys
 from typing import (
     TYPE_CHECKING,
+    Any,
     Final,
     Literal,
     get_args,
@@ -134,14 +135,19 @@ def check(
     if dtype is None:
         return actual
 
+    value: Any
     if isinstance(actual, pd.Series):
-        value = actual.iloc[index_to_check_for_type]
+        value = actual.iloc[  # pyright: ignore[reportUnknownVariableType]
+            index_to_check_for_type
+        ]
     elif isinstance(actual, pd.Index):
-        value = actual[index_to_check_for_type]
+        value = actual[  # pyright: ignore[reportUnknownVariableType]
+            index_to_check_for_type
+        ]
     elif isinstance(actual, BaseGroupBy):
-        value = actual.obj
+        value = actual.obj  # pyright: ignore[reportUnknownVariableType]
     elif hasattr(actual, "__iter__"):
-        value = next(
+        value = next(  # pyright: ignore[reportUnknownVariableType]
             iter(actual)  # pyright: ignore[reportArgumentType,reportCallIssue]
         )
     else:
@@ -150,7 +156,7 @@ def check(
 
     if not isinstance(value, dtype):
         raise RuntimeError(f"Expected type '{dtype}' but got '{type(value)}'")
-    return actual
+    return actual  # pyright: ignore[reportUnknownVariableType]
 
 
 def pytest_warns_bounded(
@@ -160,7 +166,7 @@ def pytest_warns_bounded(
     upper: str | None = None,
     version_str: str | None = None,
     upper_exception: type[Exception] | None = None,
-) -> AbstractContextManager:
+) -> AbstractContextManager[Any, bool | None]:
     """
     Version conditional pytest.warns context manager
 

@@ -1,4 +1,6 @@
 # Test common ExtensionArray methods
+import sys
+
 import numpy as np
 import pandas as pd
 from pandas.core.arrays import ExtensionArray
@@ -6,7 +8,6 @@ from pandas.core.arrays.integer import (
     Int32Dtype,
     IntegerArray,
 )
-from pandas.core.construction import array
 from typing_extensions import assert_type
 
 from pandas._typing import ArrayLike
@@ -16,6 +17,13 @@ from tests._typing import (
     np_1darray,
     np_1darray_intp,
 )
+
+if sys.version_info >= (3, 11):
+    from pandas.core.construction import array
+else:
+    from pandas.core.construction import (
+        array,  # pyright: ignore[reportUnknownVariableType]
+    )
 
 
 def test_ea_common() -> None:

@@ -1174,7 +1174,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def sort_values(
         self,
-        by: _str | Sequence[_str],
+        by: _str | SequenceNotStr[_str],
         *,
         axis: Axis = 0,
         ascending: _bool | Sequence[_bool] = ...,
@@ -1187,7 +1187,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def sort_values(
         self,
-        by: _str | Sequence[_str],
+        by: _str | SequenceNotStr[_str],
         *,
         axis: Axis = 0,
         ascending: _bool | Sequence[_bool] = ...,
@@ -1278,7 +1278,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: DataFrame | Series,
         join: UpdateJoin = "left",
         overwrite: _bool = True,
-        filter_func: Callable | None = ...,
+        filter_func: Callable[..., Any] | None = ...,
         errors: IgnoreRaise = "ignore",
     ) -> None: ...
     @overload
@@ -1394,25 +1394,25 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def groupby(  # type: ignore[overload-overlap] # pyright: ignore reportOverlappingOverload
         self,
-        by: MultiIndex | GroupByObjectNonScalar | None = ...,
+        by: MultiIndex | GroupByObjectNonScalar[Any] | None = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | _NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[tuple, Literal[True]]: ...
+    ) -> DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]: ...
     @overload
     def groupby(  # type: ignore[overload-overlap]
         self,
-        by: MultiIndex | GroupByObjectNonScalar | None = ...,
+        by: MultiIndex | GroupByObjectNonScalar[Any] | None = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = False,
         sort: _bool = ...,
         group_keys: _bool = ...,
         observed: _bool | _NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[tuple, Literal[False]]: ...
+    ) -> DataFrameGroupBy[tuple[Hashable, ...], Literal[False]]: ...
     @overload
     def groupby(  # pyright: ignore reportOverlappingOverload
         self,
@@ -1516,14 +1516,14 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def aggregate(  # pyright: ignore[reportOverlappingOverload]
         self,
-        func: AggFuncTypeBase | AggFuncTypeDictSeries,
+        func: AggFuncTypeBase | AggFuncTypeDictSeries[Hashable],
         axis: Axis = 0,
         **kwargs: Any,
     ) -> Series: ...
     @overload
     def aggregate(
         self,
-        func: list[AggFuncTypeBase] | AggFuncTypeDictFrame | None = ...,
+        func: list[AggFuncTypeBase] | AggFuncTypeDictFrame[Hashable] | None = ...,
         axis: Axis = 0,
         **kwargs: Any,
     ) -> Self: ...
@@ -1859,7 +1859,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def boxplot(
         self,
-        by: Hashable | ListLikeHashable,
+        by: Hashable | ListLikeHashable[Hashable],
         ax: PlotAxes | None = None,
         fontsize: float | _str | None = None,
         rot: float = 0,
@@ -1874,7 +1874,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def boxplot(
         self,
-        by: Hashable | ListLikeHashable,
+        by: Hashable | ListLikeHashable[Hashable],
         ax: PlotAxes | None = None,
         fontsize: float | _str | None = None,
         rot: float = 0,
@@ -2332,7 +2332,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
-        other: Scalar | Series | DataFrame | Callable | NAType | None = ...,
+        other: Scalar | Series | DataFrame | Callable[..., Any] | NAType | None = ...,
         *,
         inplace: Literal[True],
         axis: Axis | None = ...,
@@ -2349,7 +2349,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
-        other: Scalar | Series | DataFrame | Callable | NAType | None = ...,
+        other: Scalar | Series | DataFrame | Callable[..., Any] | NAType | None = ...,
         *,
         inplace: Literal[False] = False,
         axis: Axis | None = ...,
@@ -2510,8 +2510,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def rename_axis(
         self,
         *,
-        index: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
-        columns: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
+        index: (
+            _str | Sequence[_str] | dict[_str | int, _str] | Callable[..., Any] | None
+        ) = ...,
+        columns: (
+            _str | Sequence[_str] | dict[_str | int, _str] | Callable[..., Any] | None
+        ) = ...,
         copy: _bool = ...,
         inplace: Literal[True],
     ) -> None: ...
@@ -2520,8 +2524,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def rename_axis(
         self,
         *,
-        index: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
-        columns: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
+        index: (
+            _str | Sequence[_str] | dict[_str | int, _str] | Callable[..., Any] | None
+        ) = ...,
+        columns: (
+            _str | Sequence[_str] | dict[_str | int, _str] | Callable[..., Any] | None
+        ) = ...,
         copy: _bool = ...,
         inplace: Literal[False] = False,
     ) -> Self: ...
