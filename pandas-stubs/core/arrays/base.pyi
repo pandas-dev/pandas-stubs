@@ -87,7 +87,7 @@ class ExtensionArray:
     ) -> np.intp: ...
     def factorize(self, use_na_sentinel: bool = True) -> tuple[np_1darray, Self]: ...
     def repeat(
-        self, repeats: int | AnyArrayLikeInt | Sequence[int], axis: None = None
+        self, repeats: int | Sequence[int] | AnyArrayLikeInt, axis: None = None
     ) -> Self: ...
     def take(
         self,
@@ -113,6 +113,8 @@ class ExtensionArray:
         skipna: bool = True,
         **kwargs: Any,
     ) -> Self: ...
+
+class ExtensionArraySupportsAnyAll(ExtensionArray): ...
 
 class ExtensionOpsMixin:
     @classmethod

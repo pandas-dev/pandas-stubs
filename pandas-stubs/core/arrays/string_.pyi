@@ -1,6 +1,7 @@
 from typing import Literal
 
-from pandas.core.arrays import PandasArray
+from pandas.core.arrays.base import ExtensionArray
+from pandas.core.arrays.numpy_ import NumpyExtensionArray
 
 from pandas._libs.missing import NAType
 
@@ -11,7 +12,9 @@ class StringDtype(ExtensionDtype):
     @property
     def na_value(self) -> NAType: ...
 
-class StringArray(PandasArray):
+class BaseStringArray(ExtensionArray): ...
+
+class StringArray(BaseStringArray, NumpyExtensionArray):
     def __init__(self, values, copy: bool = ...) -> None: ...
     def __arrow_array__(self, type=...): ...
     def __setitem__(self, key, value) -> None: ...
