@@ -78,7 +78,7 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     @overload
     def aggregate(
         self,
-        func: list[AggFuncTypeBase],
+        func: list[AggFuncTypeBase[...]],
         /,
         *args: Any,
         engine: WindowingEngine = ...,
@@ -88,7 +88,7 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     @overload
     def aggregate(
         self,
-        func: AggFuncTypeBase | None = ...,
+        func: AggFuncTypeBase[...] | None = ...,
         /,
         *args: Any,
         engine: WindowingEngine = ...,
@@ -109,16 +109,20 @@ class SeriesGroupBy(GroupBy[Series[S2]], Generic[S2, ByT]):
     @overload
     def transform(
         self,
-        func: Callable,
-        *args: Any,
-        **kwargs: Any,
+        func: Callable[Concatenate[Series, P], Any],
+        *args: P.args,
+        **kwargs: P.kwargs,
     ) -> Series: ...
     @overload
     def transform(
         self, func: TransformReductionListType, *args: Any, **kwargs: Any
     ) -> Series: ...
     def filter(
-        self, func: Callable | str, dropna: bool = ..., *args: Any, **kwargs: Any
+        self,
+        func: Callable[Concatenate[Series, P], Any] | str,
+        dropna: bool = ...,
+        *args: P.args,
+        **kwargs: P.kwargs,
     ) -> Series: ...
     def nunique(self, dropna: bool = ...) -> Series[int]: ...
     # describe delegates to super() method but here it has keyword-only parameters
@@ -257,7 +261,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def aggregate(
         self,
-        func: AggFuncTypeFrame | None = ...,
+        func: AggFuncTypeFrame[..., Any] | None = ...,
         *args: Any,
         engine: WindowingEngine = ...,
         engine_kwargs: WindowingEngineKwargs = ...,
@@ -266,7 +270,7 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def aggregate(
         self,
-        func: AggFuncTypeFrame | None = None,
+        func: AggFuncTypeFrame[..., Any] | None = None,
         /,
         **kwargs: Any,
     ) -> DataFrame: ...
@@ -283,16 +287,20 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
     @overload
     def transform(
         self,
-        func: Callable,
-        *args: Any,
-        **kwargs: Any,
+        func: Callable[Concatenate[DataFrame, P], Any],
+        *args: P.args,
+        **kwargs: P.kwargs,
     ) -> DataFrame: ...
     @overload
     def transform(
         self, func: TransformReductionListType, *args: Any, **kwargs: Any
     ) -> DataFrame: ...
     def filter(
-        self, func: Callable, dropna: bool = ..., *args: Any, **kwargs: Any
+        self,
+        func: Callable[Concatenate[DataFrame, P], Any],
+        dropna: bool = ...,
+        *args: P.args,
+        **kwargs: P.kwargs,
     ) -> DataFrame: ...
     @overload
     def __getitem__(self, key: Scalar) -> SeriesGroupBy[Any, ByT]: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]

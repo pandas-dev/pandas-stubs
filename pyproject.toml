@@ -347,3 +347,5 @@ filterwarnings = [
 
 [tool.ty.rules]
 unresolved-import = "ignore"
+# TODO: report to ty
+invalid-type-arguments = "ignore"

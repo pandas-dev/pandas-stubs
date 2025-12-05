@@ -273,8 +273,8 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
                 | list[HashableT]
                 | slice
                 | _IndexSliceTuple
-                | Callable,
-                MaskType | Iterable[HashableT] | IndexType | Callable,
+                | Callable[..., Any],
+                MaskType | Iterable[HashableT] | IndexType | Callable[..., Any],
             ]
         ),
     ) -> _T: ...
@@ -1268,7 +1268,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def combine(
         self,
         other: DataFrame,
-        func: Callable,
+        func: Callable[..., Any],
         fill_value: Scalar | None = None,
         overwrite: _bool = True,
     ) -> Self: ...
@@ -1278,7 +1278,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: DataFrame | Series,
         join: UpdateJoin = "left",
         overwrite: _bool = True,
-        filter_func: Callable | None = ...,
+        filter_func: Callable[..., Any] | None = ...,
         errors: IgnoreRaise = "ignore",
     ) -> None: ...
     @overload
@@ -1516,21 +1516,21 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def aggregate(  # pyright: ignore[reportOverlappingOverload]
         self,
-        func: AggFuncTypeBase | AggFuncTypeDictSeries,
+        func: AggFuncTypeBase[...] | AggFuncTypeDictSeries[Any, ...],
         axis: Axis = 0,
         **kwargs: Any,
     ) -> Series: ...
     @overload
     def aggregate(
         self,
-        func: list[AggFuncTypeBase] | AggFuncTypeDictFrame | None = ...,
+        func: list[AggFuncTypeBase[...]] | AggFuncTypeDictFrame[Any, ...] | None = ...,
         axis: Axis = 0,
         **kwargs: Any,
     ) -> Self: ...
     agg = aggregate
     def transform(
         self,
-        func: AggFuncTypeFrame,
+        func: AggFuncTypeFrame[..., Any],
         axis: Axis = 0,
         *args: Any,
         **kwargs: Any,
@@ -1684,7 +1684,10 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
 
     # Add spacing between apply() overloads and remaining annotations
     def map(
-        self, func: Callable, na_action: Literal["ignore"] | None = None, **kwargs: Any
+        self,
+        func: Callable[..., Any],
+        na_action: Literal["ignore"] | None = None,
+        **kwargs: Any,
     ) -> Self: ...
     def join(
         self,
@@ -2332,7 +2335,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
-        other: Scalar | Series | DataFrame | Callable | NAType | None = ...,
+        other: Scalar | Series | DataFrame | Callable[..., Any] | NAType | None = ...,
         *,
         inplace: Literal[True],
         axis: Axis | None = ...,
@@ -2349,7 +2352,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
-        other: Scalar | Series | DataFrame | Callable | NAType | None = ...,
+        other: Scalar | Series | DataFrame | Callable[..., Any] | NAType | None = ...,
         *,
         inplace: Literal[False] = False,
         axis: Axis | None = ...,
@@ -2510,8 +2513,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def rename_axis(
         self,
         *,
-        index: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
-        columns: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
+        index: (
+            _str | Sequence[_str] | dict[_str | int, _str] | Callable[..., Any] | None
+        ) = ...,
+        columns: (
+            _str | Sequence[_str] | dict[_str | int, _str] | Callable[..., Any] | None
+        ) = ...,
         copy: _bool = ...,
         inplace: Literal[True],
     ) -> None: ...
@@ -2520,8 +2527,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def rename_axis(
         self,
         *,
-        index: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
-        columns: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
+        index: (
+            _str | Sequence[_str] | dict[_str | int, _str] | Callable[..., Any] | None
+        ) = ...,
+        columns: (
+            _str | Sequence[_str] | dict[_str | int, _str] | Callable[..., Any] | None
+        ) = ...,
         copy: _bool = ...,
         inplace: Literal[False] = False,
     ) -> Self: ...

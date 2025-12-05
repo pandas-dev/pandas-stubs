@@ -22,7 +22,6 @@ from typing import (
     SupportsIndex,
     TypeAlias,
     TypedDict,
-    Union,
     overload,
 )
 
@@ -596,18 +595,25 @@ IndexKeyFunc: TypeAlias = Callable[[Index], Index | AnyArrayLike] | None
 
 # types of `func` kwarg for DataFrame.aggregate and Series.aggregate
 # More specific than what is in pandas
-# following Union is here to make it ty compliant https://github.com/astral-sh/ty/issues/591
-AggFuncTypeBase: TypeAlias = Union[Callable, str, np.ufunc]  # noqa: UP007
-AggFuncTypeDictSeries: TypeAlias = Mapping[HashableT, AggFuncTypeBase]
+AggFuncTypeBase: TypeAlias = Callable[P, Any] | str | np.ufunc
+AggFuncTypeDictSeries: TypeAlias = Mapping[HashableT, AggFuncTypeBase[P]]
 AggFuncTypeDictFrame: TypeAlias = Mapping[
-    HashableT, AggFuncTypeBase | list[AggFuncTypeBase]
+    HashableT, AggFuncTypeBase[P] | Sequence[AggFuncTypeBase[P]]
 ]
-AggFuncTypeSeriesToFrame: TypeAlias = list[AggFuncTypeBase] | AggFuncTypeDictSeries
-AggFuncTypeFrame: TypeAlias = (
-    AggFuncTypeBase | list[AggFuncTypeBase] | AggFuncTypeDictFrame
+AggFuncTypeSeriesToFrame: TypeAlias = (
+    Sequence[AggFuncTypeBase[P]] | AggFuncTypeDictSeries[HashableT, P]
 )
-AggFuncTypeDict: TypeAlias = AggFuncTypeDictSeries | AggFuncTypeDictFrame
-AggFuncType: TypeAlias = AggFuncTypeBase | list[AggFuncTypeBase] | AggFuncTypeDict
+AggFuncTypeFrame: TypeAlias = (
+    AggFuncTypeBase[P]
+    | Sequence[AggFuncTypeBase[P]]
+    | AggFuncTypeDictFrame[HashableT, P]
+)
+AggFuncTypeDict: TypeAlias = (
+    AggFuncTypeDictSeries[HashableT, P] | AggFuncTypeDictFrame[HashableT, P]
+)
+AggFuncType: TypeAlias = (
+    AggFuncTypeBase[P] | Sequence[AggFuncTypeBase[P]] | AggFuncTypeDict[HashableT, P]
+)
 
 # Not used in stubs
 # AggObjType = Union[
@@ -694,7 +700,9 @@ CompressionOptions: TypeAlias = (
 
 # types in DataFrameFormatter
 FormattersType: TypeAlias = (
-    list[Callable] | tuple[Callable, ...] | Mapping[str | int, Callable]
+    list[Callable[..., Any]]
+    | tuple[Callable[..., Any], ...]
+    | Mapping[str | int, Callable[..., Any]]
 )
 # ColspaceType = Mapping[Hashable, Union[str, int]] not used in stubs
 FloatFormatType: TypeAlias = str | Callable[[float], str] | EngFormatter
