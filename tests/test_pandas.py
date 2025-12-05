@@ -1402,7 +1402,7 @@ def test_merge_ordered() -> None:
         pd.DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.merge_ordered(  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
             ls,
             rs,
             left_on="left",
@@ -1410,7 +1410,7 @@ def test_merge_ordered() -> None:
             left_by="left",  # pyright: ignore[reportArgumentType]
             right_by="right",  # pyright: ignore[reportArgumentType]
         )
-        pd.merge_ordered(  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
             ls,
             rf,
             left_on="left",
@@ -1418,7 +1418,7 @@ def test_merge_ordered() -> None:
             left_by="left",  # pyright: ignore[reportArgumentType]
             right_by="b",  # pyright: ignore[reportArgumentType]
         )
-        pd.merge_ordered(  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
             lf,
             rs,
             left_on="a",
