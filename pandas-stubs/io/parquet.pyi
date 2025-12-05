@@ -1,4 +1,8 @@
-from typing import Any
+from collections.abc import Sequence
+from typing import (
+    Any,
+    TypeAlias,
+)
 
 from pandas import DataFrame
 
@@ -10,6 +14,8 @@ from pandas._typing import (
     StorageOptions,
 )
 
+_Filter: TypeAlias = tuple[str, str, Any]
+
 def read_parquet(
     path: FilePath | ReadBuffer[bytes],
     engine: ParquetEngine = "auto",
@@ -17,6 +23,6 @@ def read_parquet(
     storage_options: StorageOptions = None,
     dtype_backend: DtypeBackend = "numpy_nullable",
     filesystem: Any = None,
-    filters: list[tuple] | list[list[tuple]] | None = None,
+    filters: Sequence[_Filter] | Sequence[Sequence[_Filter]] | None = None,
     **kwargs: Any,
 ) -> DataFrame: ...

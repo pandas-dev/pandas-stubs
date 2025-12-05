@@ -1015,14 +1015,14 @@ def test_groupby_result() -> None:
     multi_index = pd.MultiIndex.from_tuples([(0, 0), (0, 1), (1, 0)], names=["a", "b"])
     s = pd.Series([0, 1, 2], index=multi_index, dtype=int)
     iterator = s.groupby(["a", "b"]).__iter__()
-    assert_type(iterator, Iterator[tuple[tuple, "pd.Series[int]"]])
+    assert_type(iterator, Iterator[tuple[tuple[Hashable, ...], "pd.Series[int]"]])
     index, value = next(iterator)
-    assert_type((index, value), tuple[tuple, "pd.Series[int]"])
+    assert_type((index, value), tuple[tuple[Hashable, ...], "pd.Series[int]"])
 
     if PD_LTE_23:
-        check(assert_type(index, tuple), tuple, np.integer)
+        check(assert_type(index, tuple[Hashable, ...]), tuple, np.integer)
     else:
-        check(assert_type(index, tuple), tuple, int)
+        check(assert_type(index, tuple[Hashable, ...]), tuple, int)
 
     check(assert_type(value, "pd.Series[int]"), pd.Series, np.integer)
 
@@ -1037,11 +1037,11 @@ def test_groupby_result() -> None:
     # GH 674
     # grouping by pd.MultiIndex should always resolve to a tuple as well
     iterator3 = s.groupby(multi_index).__iter__()
-    assert_type(iterator3, Iterator[tuple[tuple, "pd.Series[int]"]])
+    assert_type(iterator3, Iterator[tuple[tuple[Hashable, ...], "pd.Series[int]"]])
     index3, value3 = next(iterator3)
-    assert_type((index3, value3), tuple[tuple, "pd.Series[int]"])
+    assert_type((index3, value3), tuple[tuple[Hashable, ...], "pd.Series[int]"])
 
-    check(assert_type(index3, tuple), tuple, int)
+    check(assert_type(index3, tuple[Hashable, ...]), tuple, int)
     check(assert_type(value3, "pd.Series[int]"), pd.Series, np.integer)
 
     # Explicit by=None

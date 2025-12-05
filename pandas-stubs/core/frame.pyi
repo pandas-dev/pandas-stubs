@@ -1401,7 +1401,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         group_keys: _bool = ...,
         observed: _bool | _NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[tuple, Literal[True]]: ...
+    ) -> DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]: ...
     @overload
     def groupby(  # type: ignore[overload-overlap]
         self,
@@ -1412,7 +1412,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         group_keys: _bool = ...,
         observed: _bool | _NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[tuple, Literal[False]]: ...
+    ) -> DataFrameGroupBy[tuple[Hashable, ...], Literal[False]]: ...
     @overload
     def groupby(  # pyright: ignore reportOverlappingOverload
         self,
@@ -1505,8 +1505,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self | Series: ...
     def melt(
         self,
-        id_vars: tuple | Sequence | np_ndarray | None = ...,
-        value_vars: tuple | Sequence | np_ndarray | None = ...,
+        id_vars: Sequence[Hashable] | np_ndarray | None = ...,
+        value_vars: Sequence[Hashable] | np_ndarray | None = ...,
         var_name: Scalar | None = None,
         value_name: Scalar = "value",
         col_level: int | _str | None = ...,
