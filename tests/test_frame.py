@@ -84,7 +84,7 @@ else:
     _PandasNamedTuple: TypeAlias = tuple
 
 if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration]  # isort: skip
+    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration] # isort: skip
 else:
     Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
@@ -2565,21 +2565,21 @@ def test_pipe() -> None:
             argument_2="hi",
             keyword_only=(1,),  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
         )
-        df.pipe(  # type: ignore[call-arg]  # pyright: ignore[reportCallIssue]
+        df.pipe(  # type: ignore[call-arg] # pyright: ignore[reportCallIssue]
             qux,
             1,
             [1.0, 2.0],
             argument_3="hi",  # pyright: ignore[reportCallIssue]
             keyword_only=(1, 2),
         )
-        df.pipe(  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue]
+        df.pipe(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
             qux,
             1,
             [1.0, 2.0],
             11,
             (1, 2),  # pyright: ignore[reportCallIssue]
         )
-        df.pipe(  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue]
+        df.pipe(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
             qux,
             positional_only=1,  # pyright: ignore[reportCallIssue]
             argument_1=[1.0, 2.0],

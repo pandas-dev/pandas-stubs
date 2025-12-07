@@ -45,7 +45,7 @@ class BaseOffset:
         self, other: np_ndarray[ShapeT, np.object_]
     ) -> np_ndarray[ShapeT, np.object_]: ...
     @overload
-    def __add__(self, other: _DatetimeT) -> _DatetimeT: ...  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
+    def __add__(self, other: _DatetimeT) -> _DatetimeT: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __add__(self, other: date) -> Timestamp: ...
     @overload
@@ -57,7 +57,7 @@ class BaseOffset:
         self, other: np_ndarray[ShapeT, np.object_]
     ) -> np_ndarray[ShapeT, np.object_]: ...
     @overload
-    def __radd__(self, other: _DatetimeT) -> _DatetimeT: ...  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
+    def __radd__(self, other: _DatetimeT) -> _DatetimeT: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __radd__(self, other: date) -> Timestamp: ...
     @overload
@@ -68,7 +68,7 @@ class BaseOffset:
     @overload
     def __rsub__(self, other: npt.NDArray[np.object_]) -> npt.NDArray[np.object_]: ...
     @overload
-    def __rsub__(self, other: _DatetimeT) -> _DatetimeT: ...  # type: ignore[overload-overlap]  # pyright: ignore[reportOverlappingOverload]
+    def __rsub__(self, other: _DatetimeT) -> _DatetimeT: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __rsub__(self, other: date) -> Timestamp: ...
     @overload
