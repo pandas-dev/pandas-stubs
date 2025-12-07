@@ -1103,6 +1103,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         fill_value: int | _str | dict | None = None,
         sort: _bool = True,
     ) -> DataFrame: ...
+    @overload
     def map(
         self,
         arg: (
@@ -1112,6 +1113,12 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         ),
         na_action: Literal["ignore"] | None = None,
     ) -> Series[S2]: ...
+    @overload
+    def map(
+        self,
+        arg: Callable[[Any], object] | Mapping[Any, object] | Series[Any],
+        na_action: Literal["ignore"] | None = None,
+    ) -> Series: ...
     @overload
     def aggregate(
         self: Series[int],
