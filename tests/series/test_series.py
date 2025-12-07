@@ -3618,6 +3618,12 @@ def test_map() -> None:
         pd.Series,
         bool,
     )
+    s_mixed = pd.Series([1, "a"])
+    check(
+        assert_type(s_mixed.map({1: 1.0, "a": 2.0}), "pd.Series[float]"),
+        pd.Series,
+        float,
+    )
 
 
 def test_map_na() -> None:
