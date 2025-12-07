@@ -9,8 +9,8 @@ from typing_extensions import assert_type
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    np_1darray_bool,
 )
+from tests._typing import np_1darray_bool
 
 DATA = ["applep", "bananap", "Cherryp", "DATEp", "eGGpLANTp", "123p", "23.45p"]
 DATA_BYTES = [b"applep", b"bananap"]

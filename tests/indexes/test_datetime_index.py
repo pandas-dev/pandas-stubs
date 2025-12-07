@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 from typing_extensions import assert_type
 
-from tests import (
-    check,
+from tests import check
+from tests._typing import (
     np_1darray_bool,
     np_1darray_intp,
 )

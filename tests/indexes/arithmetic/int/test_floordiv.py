@@ -5,6 +5,7 @@ from datetime import (
 from typing import Any
 
 import numpy as np
+import numpy.typing as npt  # noqa:F401
 import pandas as pd
 import pytest
 from typing_extensions import (
@@ -15,6 +16,9 @@ from typing_extensions import (
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
+)
+from tests._typing import (
+    np_ndarray_int64,
 )
 
 
@@ -92,16 +96,14 @@ def test_floordiv_numpy_array(left: "pd.Index[int]") -> None:
     # `numpy` typing gives the corresponding `ndarray`s in the static type
     # checking, where our `__rfloordiv__` cannot override. At runtime, they lead to
     # errors or pd.Index.
-    check(assert_type(b // left, "np.typing.NDArray[np.int8]"), pd.Index, np.integer)
-    check(assert_type(i // left, "np.typing.NDArray[np.int64]"), pd.Index, np.integer)
-    check(
-        assert_type(f // left, "np.typing.NDArray[np.float64]"), pd.Index, np.floating
-    )
+    check(assert_type(b // left, "npt.NDArray[np.int8]"), pd.Index, np.integer)
+    check(assert_type(i // left, np_ndarray_int64), pd.Index, np.integer)
+    check(assert_type(f // left, "npt.NDArray[np.float64]"), pd.Index, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(c // left, Any)
         assert_type(s // left, Any)
     check(
-        assert_type(d // left, "np.typing.NDArray[np.int64]"),
+        assert_type(d // left, np_ndarray_int64),
         pd.TimedeltaIndex,
         pd.Timedelta,
     )

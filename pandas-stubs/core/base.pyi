@@ -10,6 +10,7 @@ from typing import (
     Literal,
     Protocol,
     TypeAlias,
+    TypeVar,
     final,
     overload,
     type_check_only,
@@ -17,9 +18,11 @@ from typing import (
 
 from _typeshed import _T_contra
 import numpy as np
+import numpy.typing as npt
 from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.arrays.categorical import Categorical
+from pandas.core.arrays.floating import FloatingArray
 from pandas.core.arrays.integer import IntegerArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.indexes.accessors import ArrayDescriptor
@@ -52,6 +55,8 @@ from pandas._typing import (
     np_ndarray_td,
 )
 from pandas.util._decorators import cache_readonly
+
+T_INTERVAL_NP = TypeVar("T_INTERVAL_NP", bound=np.bytes_ | np.str_)
 
 class NoNewAttributesMixin:
     def __setattr__(self, key: str, value: Any) -> None: ...
@@ -188,7 +193,7 @@ ScalarArrayIndexJustFloat: TypeAlias = (
     | np.floating
     | Sequence[Just[float] | np.floating]
     | np_ndarray_float
-    # | FloatingArray  # TODO: after pandas-dev/pandas-stubs#1469
+    | FloatingArray
     | Index[float]
 )
 ScalarArrayIndexSeriesJustFloat: TypeAlias = ScalarArrayIndexJustFloat | Series[float]
@@ -203,23 +208,13 @@ ScalarArrayIndexSeriesJustComplex: TypeAlias = (
     ScalarArrayIndexJustComplex | Series[complex]
 )
 
-ScalarArrayIndexIntNoBool: TypeAlias = (
-    Just[int]
-    | np.integer
-    | Sequence[int | np.integer]
-    | np_ndarray_anyint
-    | IntegerArray
-    | Index[int]
-)
-ScalarArrayIndexSeriesIntNoBool: TypeAlias = ScalarArrayIndexIntNoBool | Series[int]
-
 NumpyRealScalar: TypeAlias = np.bool | np.integer | np.floating
 IndexReal: TypeAlias = Index[bool] | Index[int] | Index[float]
 ScalarArrayIndexReal: TypeAlias = (
     float
     | Sequence[float | NumpyRealScalar]
     | NumpyRealScalar
-    | np.typing.NDArray[NumpyRealScalar]
+    | npt.NDArray[NumpyRealScalar]
     | ExtensionArray
     | IndexReal
 )
@@ -232,7 +227,7 @@ ScalarArrayIndexComplex: TypeAlias = (
     complex
     | Sequence[complex | NumpyComplexScalar]
     | NumpyComplexScalar
-    | np.typing.NDArray[NumpyComplexScalar]
+    | npt.NDArray[NumpyComplexScalar]
     | ExtensionArray
     | IndexComplex
 )

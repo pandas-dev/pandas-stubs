@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pandas-stubs"
-version = "2.3.2.250926"
+version = "2.3.3.251201"
 description = "Type annotations for pandas"
 authors = ["The Pandas Development Team <pandas-dev@python.org>"]
 license = "BSD-3-Clause"
@@ -42,7 +42,7 @@ pandas = "2.3.3"
 pyarrow = ">=10.0.1"
 pytest = ">=8.4.2"
 pyright = ">=1.1.407"
-ty = "0.0.1a25"
+ty = ">=0.0.1a28"
 pyrefly = ">=0.39.4"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
@@ -70,6 +70,7 @@ beautifulsoup4 = ">=4.14.2"
 html5lib = ">=1.1"
 python-calamine = ">=0.2.0"
 pyarrow-stubs = { version = ">=20.0.0.20250928", python = "<4" }
+fsspec = "^2025.10.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -204,10 +205,6 @@ ignore = [
   "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
   "ERA001", "PLR0402", "PLC0105"
 ]
-"indexers.pyi" = [
-  # TODO: remove when indexers.pyi is fully typed
-  "ANN001", "ANN201", "ANN204", "ANN206",
-]
 "multi.pyi" = [
   # TODO: remove when multi.pyi is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
@@ -232,12 +229,12 @@ ignore = [
   # TODO: remove when array is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
-"*_libs*" = [
-  # TODO: remove when _libs is fully typed
+"*core/base.pyi" = [
+  # TODO: remove when core/base.pyi is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
-"*base.pyi" = [
-  # TODO: remove when base.pyi's are fully typed
+"*excel/_base.pyi" = [
+  # TODO: remove when excel/_base.pyi is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
 "scripts/*" = [
@@ -333,9 +330,6 @@ reportPrivateUsage = false
 reportMissingModuleSource = true
 useLibraryCodeForTypes = false
 
-[tool.pyrefly.errors]
-bad-param-name-override = false  # TODO: report to pyrefly https://github.com/pandas-dev/pandas-stubs/pull/1412#pullrequestreview-3310645279
-
 [tool.codespell]
 ignore-words-list = "indext, mose, sav, ser"
 
@@ -350,3 +344,5 @@ filterwarnings = [
 
 [tool.ty.rules]
 unresolved-import = "ignore"
+# TODO: report to ty
+invalid-type-arguments = "ignore"

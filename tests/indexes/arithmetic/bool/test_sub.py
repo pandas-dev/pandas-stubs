@@ -10,6 +10,7 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
+from tests._typing import np_ndarray_int64
 
 left = pd.Index([True, True, False])  # left operand
 
@@ -66,7 +67,7 @@ def test_sub_numpy_array() -> None:
     # `Index`es with the correct element type.
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(b - left, Never)
-    check(assert_type(i - left, "npt.NDArray[np.int64]"), pd.Index, np.integer)
+    check(assert_type(i - left, np_ndarray_int64), pd.Index, np.integer)
     check(assert_type(f - left, "npt.NDArray[np.float64]"), pd.Index, np.floating)
     check(
         assert_type(c - left, "npt.NDArray[np.complex128]"),

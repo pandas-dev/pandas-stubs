@@ -14,9 +14,11 @@ from typing_extensions import (
 )
 
 from tests import (
+    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
+from tests._typing import np_ndarray_int64
 
 
 @pytest.fixture
@@ -61,7 +63,12 @@ def test_floordiv_py_sequence(left: pd.TimedeltaIndex) -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         _03 = left // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
         _04 = left // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-    check(assert_type(left // d, "pd.Index[int]"), pd.Index, int)
+    # TODO: pandas-dev/pandas#62552 switch to np.integer after Pandas 3.0
+    check(
+        assert_type(left // d, "pd.Index[int]"),
+        pd.Index,
+        int if PD_LTE_23 else np.integer,
+    )
 
     if TYPE_CHECKING_INVALID_USAGE:
         _10 = b // left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
@@ -95,11 +102,11 @@ def test_floordiv_numpy_array(left: pd.TimedeltaIndex) -> None:
     # errors or pd.Series.
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(b // left, "npt.NDArray[np.int8]")
-        assert_type(i // left, "npt.NDArray[np.int64]")
+        assert_type(i // left, np_ndarray_int64)
         assert_type(f // left, "npt.NDArray[np.float64]")
         assert_type(c // left, Any)
         assert_type(s // left, Any)
-    check(assert_type(d // left, "npt.NDArray[np.int64]"), pd.Index, np.integer)
+    check(assert_type(d // left, np_ndarray_int64), pd.Index, np.integer)
 
 
 def test_floordiv_pd_scalar(left: pd.TimedeltaIndex) -> None:

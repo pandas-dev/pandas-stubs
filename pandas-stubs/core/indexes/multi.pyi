@@ -1,5 +1,6 @@
 from collections.abc import (
     Callable,
+    Collection,
     Hashable,
     Iterable,
     Mapping,
@@ -78,7 +79,7 @@ class MultiIndex(Index):
     @property
     def codes(self): ...
     def set_codes(self, codes, *, level=..., verify_integrity: bool = ...): ...
-    def copy(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore
+    def copy(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore
         self, names: SequenceNotStr[Hashable] = ..., deep: bool = False
     ) -> Self: ...
     def view(self, cls=...): ...
@@ -93,7 +94,7 @@ class MultiIndex(Index):
     def format(
         self,
         name: bool | None = ...,
-        formatter: Callable | None = ...,
+        formatter: Callable[..., Any] | None = ...,
         na_rep: str | None = ...,
         names: bool = ...,
         space: int = ...,
@@ -112,7 +113,7 @@ class MultiIndex(Index):
     def droplevel(self, level: Level | Sequence[Level] = 0) -> MultiIndex | Index: ...  # type: ignore[override]
     def get_level_values(self, level: str | int) -> Index: ...
     def unique(self, level=...): ...
-    def to_frame(  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
+    def to_frame(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         index: bool = True,
         name: list[HashableT] = ...,
@@ -132,9 +133,9 @@ class MultiIndex(Index):
         idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType,
     ) -> Self: ...
     @overload
-    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride]
+    def __getitem__(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override]
         self, key: int
-    ) -> tuple: ...
+    ) -> tuple[Hashable, ...]: ...
     def append(self, other): ...
     def repeat(self, repeats, axis=...): ...
     def drop(self, codes, level: Level | None = None, errors: str = "raise") -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
@@ -165,7 +166,14 @@ class MultiIndex(Index):
     def equal_levels(self, other): ...
     def insert(self, loc, item): ...
     def delete(self, loc): ...
-    def isin(self, values, level=...) -> np_1darray_bool: ...
+    @overload  # type: ignore[override]
+    def isin(  # pyrefly: ignore[bad-override]
+        self, values: Iterable[Any], level: Level
+    ) -> np_1darray_bool: ...
+    @overload
+    def isin(  # ty: ignore[invalid-method-override] # pyright: ignore[reportIncompatibleMethodOverride]
+        self, values: Collection[Iterable[Any]], level: None = None
+    ) -> np_1darray_bool: ...
     def set_names(
         self,
         names: Hashable | Sequence[Hashable] | Mapping[Any, Hashable],

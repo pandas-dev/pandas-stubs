@@ -7,8 +7,8 @@ from typing_extensions import assert_type
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     check,
-    np_1darray_bool,
 )
+from tests._typing import np_1darray_bool
 
 
 def test_interval_init() -> None:

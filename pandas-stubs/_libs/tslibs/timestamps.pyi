@@ -32,6 +32,7 @@ from pandas._libs.tslibs import (
     Tick,
     Timedelta,
 )
+from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     PeriodFrequency,
     ShapeT,
@@ -99,7 +100,7 @@ class Timestamp(datetime, SupportsIndex):
     def fold(self) -> int: ...
     if sys.version_info >= (3, 12):
         @classmethod
-        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride]
+        def fromtimestamp(  # pyright: ignore[reportIncompatibleMethodOverride] # ty: ignore[invalid-method-override] # pyrefly: ignore[bad-param-name-override]
             cls, t: float, tz: _tzinfo | str | None = ...
         ) -> Self: ...
     else:
@@ -180,7 +181,9 @@ class Timestamp(datetime, SupportsIndex):
         self, other: np_ndarray[ShapeT, np.datetime64]
     ) -> np_ndarray[ShapeT, np.bool]: ...
     @overload
-    def __le__(self, other: Series[Timestamp]) -> Series[bool]: ...
+    def __le__(  # ty: ignore[invalid-method-override]
+        self, other: Series[Timestamp]
+    ) -> Series[bool]: ...
     @overload  # type: ignore[override]
     def __lt__(self, other: datetime | np.datetime64 | Self) -> bool: ...
     @overload
@@ -190,7 +193,9 @@ class Timestamp(datetime, SupportsIndex):
         self, other: np_ndarray[ShapeT, np.datetime64]
     ) -> np_ndarray[ShapeT, np.bool]: ...
     @overload
-    def __lt__(self, other: Series[Timestamp]) -> Series[bool]: ...
+    def __lt__(  # ty: ignore[invalid-method-override]
+        self, other: Series[Timestamp]
+    ) -> Series[bool]: ...
     @overload  # type: ignore[override]
     def __ge__(self, other: datetime | np.datetime64 | Self) -> bool: ...
     @overload
@@ -200,7 +205,9 @@ class Timestamp(datetime, SupportsIndex):
         self, other: np_ndarray[ShapeT, np.datetime64]
     ) -> np_ndarray[ShapeT, np.bool]: ...
     @overload
-    def __ge__(self, other: Series[Timestamp]) -> Series[bool]: ...
+    def __ge__(  # ty: ignore[invalid-method-override]
+        self, other: Series[Timestamp]
+    ) -> Series[bool]: ...
     @overload  # type: ignore[override]
     def __gt__(self, other: datetime | np.datetime64 | Self) -> bool: ...
     @overload
@@ -210,7 +217,9 @@ class Timestamp(datetime, SupportsIndex):
         self, other: np_ndarray[ShapeT, np.datetime64]
     ) -> np_ndarray[ShapeT, np.bool]: ...
     @overload
-    def __gt__(self, other: Series[Timestamp]) -> Series[bool]: ...
+    def __gt__(  # ty: ignore[invalid-method-override]
+        self, other: Series[Timestamp]
+    ) -> Series[bool]: ...
     # error: Signature of "__add__" incompatible with supertype "date"/"datetime"
     @overload  # type: ignore[override]
     def __add__(
@@ -228,7 +237,7 @@ class Timestamp(datetime, SupportsIndex):
     def __radd__(
         self, other: np_ndarray[ShapeT, np.timedelta64]
     ) -> np_ndarray[ShapeT, np.datetime64]: ...
-    # TODO: pandas-dev/pandas-stubs#1432 test dt64
+    def __rsub__(self, other: datetime | np.datetime64) -> Timedelta: ...
     @overload  # type: ignore[override]
     def __sub__(self, other: datetime | np.datetime64) -> Timedelta: ...
     @overload
@@ -236,7 +245,7 @@ class Timestamp(datetime, SupportsIndex):
     @overload
     def __sub__(self, other: TimedeltaIndex) -> DatetimeIndex: ...
     @overload
-    def __sub__(
+    def __sub__(  # ty: ignore[invalid-method-override]
         self, other: np_ndarray[ShapeT, np.timedelta64]
     ) -> np_ndarray[ShapeT, np.datetime64]: ...
     @overload
@@ -284,7 +293,15 @@ class Timestamp(datetime, SupportsIndex):
     @property
     def asm8(self) -> np.datetime64: ...
     def tz_convert(self, tz: TimeZones) -> Self: ...
-    # TODO: pandas-dev/pandas-stubs#1432 could return NaT?
+    @overload
+    def tz_localize(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+        self,
+        tz: TimeZones,
+        ambiguous: _Ambiguous = "raise",
+        *,
+        nonexistent: Literal["NaT"],
+    ) -> Self | NaTType: ...
+    @overload
     def tz_localize(
         self,
         tz: TimeZones,

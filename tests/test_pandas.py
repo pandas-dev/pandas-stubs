@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import datetime as dt
 import random
-import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -32,6 +31,9 @@ from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
+)
+from tests._typing import (
     np_1darray,
     np_1darray_anyint,
     np_1darray_bool,
@@ -43,7 +45,6 @@ from tests import (
     np_2darray,
     np_ndarray,
     np_ndarray_bool,
-    pytest_warns_bounded,
 )
 
 
@@ -793,9 +794,6 @@ def test_to_numeric_array_series() -> None:
     )
 
 
-@pytest.mark.xfail(
-    sys.version_info >= (3, 14), reason="sys.getrefcount pandas-dev/pandas#61368"
-)
 def test_wide_to_long() -> None:
     df = pd.DataFrame(
         {
@@ -1139,9 +1137,6 @@ def test_qcut() -> None:
     check(assert_type(j1, np_1darray_float), np_1darray, np.floating)
 
 
-@pytest.mark.xfail(
-    sys.version_info >= (3, 14), reason="sys.getrefcount pandas-dev/pandas#61368"
-)
 def test_merge() -> None:
     ls = pd.Series([1, 2, 3, 4], index=[1, 2, 3, 4], name="left")
     rs = pd.Series([3, 4, 5, 6], index=[3, 4, 5, 6], name="right")
@@ -1304,9 +1299,6 @@ def test_merge() -> None:
     )
 
 
-@pytest.mark.xfail(
-    sys.version_info >= (3, 14), reason="sys.getrefcount pandas-dev/pandas#61368"
-)
 def test_merge_ordered() -> None:
     ls = pd.Series([1, 2, 3, 4], index=[1, 2, 3, 4], name="left")
     rs = pd.Series([3, 4, 5, 6], index=[3, 4, 5, 6], name="right")
@@ -1410,7 +1402,7 @@ def test_merge_ordered() -> None:
         pd.DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.merge_ordered(  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
             ls,
             rs,
             left_on="left",
@@ -1418,7 +1410,7 @@ def test_merge_ordered() -> None:
             left_by="left",  # pyright: ignore[reportArgumentType]
             right_by="right",  # pyright: ignore[reportArgumentType]
         )
-        pd.merge_ordered(  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
             ls,
             rf,
             left_on="left",
@@ -1426,7 +1418,7 @@ def test_merge_ordered() -> None:
             left_by="left",  # pyright: ignore[reportArgumentType]
             right_by="b",  # pyright: ignore[reportArgumentType]
         )
-        pd.merge_ordered(  # type: ignore[call-overload]  # pyright: ignore[reportCallIssue]
+        pd.merge_ordered(  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
             lf,
             rs,
             left_on="a",
@@ -1720,8 +1712,8 @@ def test_crosstab_args() -> None:
         assert_type(pd.crosstab(a, b, colnames=["a"], rownames=["b"]), pd.DataFrame),
         pd.DataFrame,
     )
-    rownames: list[tuple] = [("b", 1)]
-    colnames: list[tuple] = [("a",)]
+    rownames: list[tuple[str, int]] = [("b", 1)]
+    colnames: list[tuple[str]] = [("a",)]
     check(
         assert_type(
             pd.crosstab(a, b, colnames=colnames, rownames=rownames),

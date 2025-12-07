@@ -14,7 +14,6 @@ import io
 from pathlib import Path
 import platform
 import re
-import sys
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -60,11 +59,25 @@ from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     WINDOWS,
+    check,
+    ensure_clean,
+    pytest_warns_bounded,
+)
+from tests._typing import (
+    BooleanDtypeArg,
+    BytesDtypeArg,
+    CategoryDtypeArg,
+    ComplexDtypeArg,
+    IntDtypeArg,
+    ObjectDtypeArg,
     PandasAstypeComplexDtypeArg,
     PandasAstypeTimedeltaDtypeArg,
     PandasAstypeTimestampDtypeArg,
-    check,
-    ensure_clean,
+    StrDtypeArg,
+    TimedeltaDtypeArg,
+    TimestampDtypeArg,
+    UIntDtypeArg,
+    VoidDtypeArg,
     np_1darray,
     np_1darray_anyint,
     np_1darray_bool,
@@ -73,10 +86,8 @@ from tests import (
     np_1darray_dt,
     np_1darray_float,
     np_1darray_object,
-    np_1darray_str,
     np_1darray_td,
     np_ndarray_num,
-    pytest_warns_bounded,
 )
 from tests.extension.decimal.array import DecimalDtype
 
@@ -90,23 +101,8 @@ from pandas.tseries.offsets import (
     YearEnd,
 )
 
-if TYPE_CHECKING:
-    from tests import (
-        BooleanDtypeArg,
-        BytesDtypeArg,
-        CategoryDtypeArg,
-        ComplexDtypeArg,
-        IntDtypeArg,
-        ObjectDtypeArg,
-        StrDtypeArg,
-        TimedeltaDtypeArg,
-        TimestampDtypeArg,
-        UIntDtypeArg,
-        VoidDtypeArg,
-    )
-
 if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration]  # isort: skip
+    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration] # isort: skip
 else:
     Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
@@ -398,7 +394,11 @@ def test_types_fillna() -> None:
         pd.Series,
         float,
     )
-    assert assert_type(s.fillna(0, inplace=True), None) is None
+    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
+    if PD_LTE_23:
+        assert assert_type(s.fillna(0, inplace=True), None) is None
+    else:
+        check(assert_type(s.fillna(0, inplace=True), None), pd.Series, np.floating)
     check(assert_type(s.fillna(0), "pd.Series[float]"), pd.Series, float)
     check(
         assert_type(s.fillna(0, limit=1), "pd.Series[float]"),
@@ -473,11 +473,7 @@ def test_types_shift() -> None:
     """Test shift operator on series with different arguments."""
     s = pd.Series([1, 2, 3], index=pd.date_range("2020", periods=3))
     check(assert_type(s.shift(), pd.Series), pd.Series, np.floating)
-    check(
-        assert_type(s.shift(axis=0, periods=1), pd.Series),
-        pd.Series,
-        np.floating,
-    )
+    check(assert_type(s.shift(axis=0, periods=1), pd.Series), pd.Series, np.floating)
     check(assert_type(s.shift(-1, fill_value=0), pd.Series), pd.Series, np.integer)
     check(assert_type(s.shift(freq="1D"), pd.Series), pd.Series, np.integer)
     check(assert_type(s.shift(freq=BDay(1)), pd.Series), pd.Series, np.integer)
@@ -650,17 +646,38 @@ def test_types_clip() -> None:
         pd.Series,
         np.integer,
     )
-    check(assert_type(s.clip(lower=0, upper=5, inplace=True), None), type(None))
-    check(assert_type(s.clip(lower=0, upper=None, inplace=True), None), type(None))
+    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
+    if PD_LTE_23:
+        check(assert_type(s.clip(lower=0, upper=5, inplace=True), None), type(None))
+        check(assert_type(s.clip(lower=0, upper=None, inplace=True), None), type(None))
+    else:
+        check(
+            assert_type(s.clip(lower=0, upper=5, inplace=True), None),
+            pd.Series,
+            np.integer,
+        )
+        check(
+            assert_type(s.clip(lower=0, upper=None, inplace=True), None),
+            pd.Series,
+            np.integer,
+        )
     check(
         assert_type(s.clip(lower=None, upper=None, inplace=True), "pd.Series[int]"),
         pd.Series,
         np.integer,
     )
-    check(
-        assert_type(s.clip(lower=None, upper=5, inplace=True), None),
-        type(None),
-    )
+    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
+    if PD_LTE_23:
+        check(
+            assert_type(s.clip(lower=None, upper=5, inplace=True), None),
+            type(None),
+        )
+    else:
+        check(
+            assert_type(s.clip(lower=None, upper=5, inplace=True), None),
+            pd.Series,
+            np.integer,
+        )
     check(
         assert_type(s.clip(lower=lower, upper=upper), "pd.Series[int]"),
         pd.Series,
@@ -676,15 +693,40 @@ def test_types_clip() -> None:
         pd.Series,
         np.integer,
     )
-    check(assert_type(s.clip(lower=lower, upper=upper, inplace=True), None), type(None))
-    check(
-        assert_type(s.clip(lower=lower, upper=upper, axis=0, inplace=True), None),
-        type(None),
-    )
-    check(
-        assert_type(s.clip(lower=lower, upper=upper, axis="index", inplace=True), None),
-        type(None),
-    )
+    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
+    if PD_LTE_23:
+        check(
+            assert_type(s.clip(lower=lower, upper=upper, inplace=True), None),
+            type(None),
+        )
+        check(
+            assert_type(s.clip(lower=lower, upper=upper, axis=0, inplace=True), None),
+            type(None),
+        )
+        check(
+            assert_type(
+                s.clip(lower=lower, upper=upper, axis="index", inplace=True), None
+            ),
+            type(None),
+        )
+    else:
+        check(
+            assert_type(s.clip(lower=lower, upper=upper, inplace=True), None),
+            pd.Series,
+            np.integer,
+        )
+        check(
+            assert_type(s.clip(lower=lower, upper=upper, axis=0, inplace=True), None),
+            pd.Series,
+            np.integer,
+        )
+        check(
+            assert_type(
+                s.clip(lower=lower, upper=upper, axis="index", inplace=True), None
+            ),
+            pd.Series,
+            np.integer,
+        )
 
     # without lower
     check(assert_type(s.clip(upper=None), "pd.Series[int]"), pd.Series, np.integer)
@@ -694,7 +736,11 @@ def test_types_clip() -> None:
         pd.Series,
         np.integer,
     )
-    check(assert_type(s.clip(upper=5, inplace=True), None), type(None))
+    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
+    if PD_LTE_23:
+        check(assert_type(s.clip(upper=5, inplace=True), None), type(None))
+    else:
+        check(assert_type(s.clip(upper=5, inplace=True), None), pd.Series, np.integer)
     check(assert_type(s.clip(upper=upper), "pd.Series[int]"), pd.Series, np.integer)
     check(
         assert_type(s.clip(upper=upper, axis=0), "pd.Series[int]"),
@@ -706,11 +752,28 @@ def test_types_clip() -> None:
         pd.Series,
         np.integer,
     )
-    check(assert_type(s.clip(upper=upper, inplace=True), None), type(None))
-    check(assert_type(s.clip(upper=upper, axis=0, inplace=True), None), type(None))
-    check(
-        assert_type(s.clip(upper=upper, axis="index", inplace=True), None), type(None)
-    )
+    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
+    if PD_LTE_23:
+        check(assert_type(s.clip(upper=upper, inplace=True), None), type(None))
+        check(assert_type(s.clip(upper=upper, axis=0, inplace=True), None), type(None))
+        check(
+            assert_type(s.clip(upper=upper, axis="index", inplace=True), None),
+            type(None),
+        )
+    else:
+        check(
+            assert_type(s.clip(upper=upper, inplace=True), None), pd.Series, np.integer
+        )
+        check(
+            assert_type(s.clip(upper=upper, axis=0, inplace=True), None),
+            pd.Series,
+            np.integer,
+        )
+        check(
+            assert_type(s.clip(upper=upper, axis="index", inplace=True), None),
+            pd.Series,
+            np.integer,
+        )
 
     # without upper
     check(assert_type(s.clip(lower=None), "pd.Series[int]"), pd.Series, np.integer)
@@ -721,7 +784,11 @@ def test_types_clip() -> None:
         pd.Series,
         np.integer,
     )
-    check(assert_type(s.clip(lower=0, inplace=True), None), type(None))
+    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
+    if PD_LTE_23:
+        check(assert_type(s.clip(lower=0, inplace=True), None), type(None))
+    else:
+        check(assert_type(s.clip(lower=0, inplace=True), None), pd.Series, np.integer)
     check(
         assert_type(s.clip(lower=None, inplace=True), "pd.Series[int]"),
         pd.Series,
@@ -738,11 +805,28 @@ def test_types_clip() -> None:
         pd.Series,
         np.integer,
     )
-    check(assert_type(s.clip(lower=lower, inplace=True), None), type(None))
-    check(assert_type(s.clip(lower=lower, axis=0, inplace=True), None), type(None))
-    check(
-        assert_type(s.clip(lower=lower, axis="index", inplace=True), None), type(None)
-    )
+    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
+    if PD_LTE_23:
+        check(assert_type(s.clip(lower=lower, inplace=True), None), type(None))
+        check(assert_type(s.clip(lower=lower, axis=0, inplace=True), None), type(None))
+        check(
+            assert_type(s.clip(lower=lower, axis="index", inplace=True), None),
+            type(None),
+        )
+    else:
+        check(
+            assert_type(s.clip(lower=lower, inplace=True), None), pd.Series, np.integer
+        )
+        check(
+            assert_type(s.clip(lower=lower, axis=0, inplace=True), None),
+            pd.Series,
+            np.integer,
+        )
+        check(
+            assert_type(s.clip(lower=lower, axis="index", inplace=True), None),
+            pd.Series,
+            np.integer,
+        )
 
     if TYPE_CHECKING_INVALID_USAGE:
         s.clip(lower=lower, axis=1)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
@@ -931,14 +1015,14 @@ def test_groupby_result() -> None:
     multi_index = pd.MultiIndex.from_tuples([(0, 0), (0, 1), (1, 0)], names=["a", "b"])
     s = pd.Series([0, 1, 2], index=multi_index, dtype=int)
     iterator = s.groupby(["a", "b"]).__iter__()
-    assert_type(iterator, Iterator[tuple[tuple, "pd.Series[int]"]])
+    assert_type(iterator, Iterator[tuple[tuple[Hashable, ...], "pd.Series[int]"]])
     index, value = next(iterator)
-    assert_type((index, value), tuple[tuple, "pd.Series[int]"])
+    assert_type((index, value), tuple[tuple[Hashable, ...], "pd.Series[int]"])
 
     if PD_LTE_23:
-        check(assert_type(index, tuple), tuple, np.integer)
+        check(assert_type(index, tuple[Hashable, ...]), tuple, np.integer)
     else:
-        check(assert_type(index, tuple), tuple, int)
+        check(assert_type(index, tuple[Hashable, ...]), tuple, int)
 
     check(assert_type(value, "pd.Series[int]"), pd.Series, np.integer)
 
@@ -953,11 +1037,11 @@ def test_groupby_result() -> None:
     # GH 674
     # grouping by pd.MultiIndex should always resolve to a tuple as well
     iterator3 = s.groupby(multi_index).__iter__()
-    assert_type(iterator3, Iterator[tuple[tuple, "pd.Series[int]"]])
+    assert_type(iterator3, Iterator[tuple[tuple[Hashable, ...], "pd.Series[int]"]])
     index3, value3 = next(iterator3)
-    assert_type((index3, value3), tuple[tuple, "pd.Series[int]"])
+    assert_type((index3, value3), tuple[tuple[Hashable, ...], "pd.Series[int]"])
 
-    check(assert_type(index3, tuple), tuple, int)
+    check(assert_type(index3, tuple[Hashable, ...]), tuple, int)
     check(assert_type(value3, "pd.Series[int]"), pd.Series, np.integer)
 
     # Explicit by=None
@@ -1326,11 +1410,7 @@ def test_types_agg() -> None:
 def test_types_aggregate() -> None:
     s = pd.Series([1, 2, 3], index=["col1", "col2", "col3"])
     check(assert_type(s.aggregate("min"), int), np.integer)
-    check(
-        assert_type(s.aggregate(["min", "max"]), pd.Series),
-        pd.Series,
-        np.integer,
-    )
+    check(assert_type(s.aggregate(["min", "max"]), pd.Series), pd.Series, np.integer)
     check(assert_type(s.aggregate({"a": "min"}), pd.Series), pd.Series, np.integer)
     with pytest_warns_bounded(
         FutureWarning,
@@ -1338,11 +1418,7 @@ def test_types_aggregate() -> None:
         upper="2.3.99",
     ):
         check(assert_type(s.aggregate(min), int), np.integer if PD_LTE_23 else int)
-        check(
-            assert_type(s.aggregate([min, max]), pd.Series),
-            pd.Series,
-            np.integer,
-        )
+        check(assert_type(s.aggregate([min, max]), pd.Series), pd.Series, np.integer)
         check(assert_type(s.aggregate({0: min}), pd.Series), pd.Series, np.integer)
 
 
@@ -1525,8 +1601,17 @@ def test_types_bfill() -> None:
         pd.Series,
         np.integer,
     )
-    assert assert_type(s1.bfill(inplace=True), None) is None
-    assert assert_type(s1.bfill(inplace=True, limit_area="outside"), None) is None
+    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
+    if PD_LTE_23:
+        assert assert_type(s1.bfill(inplace=True), None) is None
+        assert assert_type(s1.bfill(inplace=True, limit_area="outside"), None) is None
+    else:
+        check(assert_type(s1.bfill(inplace=True), None), pd.Series, np.integer)
+        check(
+            assert_type(s1.bfill(inplace=True, limit_area="outside"), None),
+            pd.Series,
+            np.integer,
+        )
 
 
 def test_types_ewm() -> None:
@@ -1575,8 +1660,17 @@ def test_types_ffill() -> None:
         pd.Series,
         np.integer,
     )
-    assert assert_type(s1.ffill(inplace=True), None) is None
-    assert assert_type(s1.ffill(inplace=True, limit_area="outside"), None) is None
+    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
+    if PD_LTE_23:
+        assert assert_type(s1.ffill(inplace=True), None) is None
+        assert assert_type(s1.ffill(inplace=True, limit_area="outside"), None) is None
+    else:
+        check(assert_type(s1.ffill(inplace=True), None), pd.Series, np.integer)
+        check(
+            assert_type(s1.ffill(inplace=True, limit_area="outside"), None),
+            pd.Series,
+            np.integer,
+        )
 
 
 def test_types_as_type() -> None:
@@ -1608,6 +1702,17 @@ def test_series_min_max_sub_axis() -> None:
     df = pd.DataFrame({"x": [1, 2, 3, 4, 5], "y": [5, 4, 3, 2, 1]})
     check(assert_type(df.min(axis=1), pd.Series), pd.Series)
     check(assert_type(df.max(axis=1), pd.Series), pd.Series)
+
+
+def test_series_isin() -> None:
+    s = pd.Series([1, 2, 3, 4, 5])
+    check(assert_type(s.isin([3, 4]), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(s.isin({3, 4}), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(
+        assert_type(s.isin(pd.Series([3, 4])), "pd.Series[bool]"), pd.Series, np.bool_
+    )
+    check(assert_type(s.isin(pd.Index([3, 4])), "pd.Series[bool]"), pd.Series, np.bool_)
+    check(assert_type(s.isin(iter([3, "4"])), "pd.Series[bool]"), pd.Series, np.bool_)
 
 
 def test_series_index_isin() -> None:
@@ -1672,7 +1777,11 @@ def test_types_replace() -> None:
         pd.Series,
         np.integer,
     )
-    assert assert_type(s.replace(1, 2, inplace=True), None) is None
+    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
+    if PD_LTE_23:
+        assert assert_type(s.replace(1, 2, inplace=True), None) is None
+    else:
+        check(assert_type(s.replace(1, 2, inplace=True), None), pd.Series, np.integer)
 
 
 def test_series_replace() -> None:
@@ -1959,11 +2068,7 @@ def test_resample() -> None:
 
 def test_squeeze() -> None:
     s1 = pd.Series([1, 2, 3])
-    check(
-        assert_type(s1.squeeze(), "pd.Series[int] | Scalar"),
-        pd.Series,
-        np.integer,
-    )
+    check(assert_type(s1.squeeze(), "pd.Series[int] | Scalar"), pd.Series, np.integer)
     s2 = pd.Series([1])
     check(assert_type(s2.squeeze(), "pd.Series[int] | Scalar"), np.integer)
 
@@ -2004,18 +2109,22 @@ def test_dtype_type() -> None:
 
 def test_types_to_numpy() -> None:
     s = pd.Series(["a", "b", "c"], dtype=str)
-    check(assert_type(s.to_numpy(), np_1darray_str), np_1darray_str)
-    check(
-        assert_type(s.to_numpy(dtype="str", copy=True), np_1darray_str), np_1darray_str
+    check(assert_type(s.to_numpy(), np_1darray_object), np_1darray_object)
+    check(  # <U1, not str_
+        assert_type(s.to_numpy(dtype="str", copy=True), np_1darray), np_1darray
     )
-    check(assert_type(s.to_numpy(na_value=0), np_1darray_str), np_1darray_str)
-    check(assert_type(s.to_numpy(na_value=np.int32(4)), np_1darray_str), np_1darray_str)
+    check(assert_type(s.to_numpy(na_value=0), np_1darray_object), np_1darray_object)
     check(
-        assert_type(s.to_numpy(na_value=np.float16(4)), np_1darray_str), np_1darray_str
+        assert_type(s.to_numpy(na_value=np.int32(4)), np_1darray_object),
+        np_1darray_object,
     )
     check(
-        assert_type(s.to_numpy(na_value=np.complex128(4, 7)), np_1darray_str),
-        np_1darray_str,
+        assert_type(s.to_numpy(na_value=np.float16(4)), np_1darray_object),
+        np_1darray_object,
+    )
+    check(
+        assert_type(s.to_numpy(na_value=np.complex128(4, 7)), np_1darray_object),
+        np_1darray_object,
     )
 
     check(assert_type(pd.Series().to_numpy(), np_1darray), np_1darray)
@@ -2024,7 +2133,7 @@ def test_types_to_numpy() -> None:
 def test_to_numpy() -> None:
     """Test Series.to_numpy for different types."""
     s_str = pd.Series(["a", "b", "c"], dtype=str)
-    check(assert_type(s_str.to_numpy(), np_1darray_str), np_1darray_str)
+    check(assert_type(s_str.to_numpy(), np_1darray_object), np_1darray_object)
 
     s_bytes = pd.Series(["a", "b", "c"]).astype(bytes)
     check(assert_type(s_bytes.to_numpy(), np_1darray_bytes), np_1darray, np.bytes_)
@@ -3136,7 +3245,17 @@ def test_interpolate() -> None:
         pd.Series,
         np.integer,
     )
-    check(assert_type(s.interpolate(method="linear", inplace=True), None), type(None))
+    # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
+    if PD_LTE_23:
+        check(
+            assert_type(s.interpolate(method="linear", inplace=True), None), type(None)
+        )
+    else:
+        check(
+            assert_type(s.interpolate(method="linear", inplace=True), None),
+            pd.Series,
+            np.integer,
+        )
 
 
 def test_groupby_diff() -> None:
@@ -3213,9 +3332,6 @@ def test_rank() -> None:
     )
 
 
-@pytest.mark.xfail(
-    sys.version_info >= (3, 14), reason="sys.getrefcount pandas-dev/pandas#61368"
-)
 def test_series_setitem_multiindex() -> None:
     # GH 767
     df = (

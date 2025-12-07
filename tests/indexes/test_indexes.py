@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from collections.abc import Hashable
 import datetime as dt
+import sys
 from typing import (
-    TYPE_CHECKING,
     Any,
     cast,
 )
@@ -23,22 +23,22 @@ from typing_extensions import (
     assert_type,
 )
 
+from pandas._typing import Dtype  # noqa: F401
 from pandas._typing import Scalar  # noqa: F401
 
 from tests import (
     PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
+    pytest_warns_bounded,
+)
+from tests._typing import (
     np_1darray,
     np_1darray_bool,
     np_1darray_int64,
     np_1darray_intp,
     np_ndarray_dt,
-    pytest_warns_bounded,
 )
-
-if TYPE_CHECKING:
-    from tests import Dtype  # noqa: F401
 
 
 def test_index_unique() -> None:
@@ -58,8 +58,18 @@ def test_index_duplicated() -> None:
 
 def test_index_isin() -> None:
     ind = pd.Index([1, 2, 3, 4, 5])
-    isin = ind.isin([2, 4])
-    check(assert_type(isin, np_1darray_bool), np_1darray_bool)
+    check(assert_type(ind.isin([2, 4]), np_1darray_bool), np_1darray_bool)
+    check(assert_type(ind.isin({2, 4}), np_1darray_bool), np_1darray_bool)
+    check(assert_type(ind.isin(pd.Series([2, 4])), np_1darray_bool), np_1darray_bool)
+    check(assert_type(ind.isin(pd.Index([2, 4])), np_1darray_bool), np_1darray_bool)
+    check(assert_type(ind.isin(iter([2, "4"])), np_1darray_bool), np_1darray_bool)
+
+    mi = pd.MultiIndex.from_arrays([[1, 2, 3]])
+    check(assert_type(mi.isin([[3]]), np_1darray_bool), np_1darray_bool)
+    check(assert_type(mi.isin({iter([3])}), np_1darray_bool), np_1darray_bool)
+    if TYPE_CHECKING_INVALID_USAGE:
+        mi.isin({3})  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
+        mi.isin(iter([[3]]))  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_index_astype() -> None:
@@ -954,10 +964,7 @@ def test_getitem() -> None:
 
     iints = pd.interval_range(dt.datetime(2000, 1, 1), dt.datetime(2010, 1, 1), 5)
     check(
-        assert_type(
-            iints,
-            "pd.IntervalIndex[pd.Interval[pd.Timestamp]]",
-        ),
+        assert_type(iints, "pd.IntervalIndex[pd.Interval[pd.Timestamp]]"),
         pd.IntervalIndex,
         pd.Interval,
     )
@@ -970,10 +977,7 @@ def test_getitem() -> None:
 
     iintd = pd.interval_range(pd.Timedelta("1D"), pd.Timedelta("10D"))
     check(
-        assert_type(
-            iintd,
-            "pd.IntervalIndex[pd.Interval[pd.Timedelta]]",
-        ),
+        assert_type(iintd, "pd.IntervalIndex[pd.Interval[pd.Timedelta]]"),
         pd.IntervalIndex,
         pd.Interval,
     )
@@ -995,7 +999,7 @@ def test_getitem() -> None:
 
     mi = pd.MultiIndex.from_product([["a", "b"], ["c", "d"]], names=["ab", "cd"])
     check(assert_type(mi, pd.MultiIndex), pd.MultiIndex)
-    check(assert_type(mi[0], tuple), tuple)
+    check(assert_type(mi[0], tuple[Hashable, ...]), tuple, str)
     check(assert_type(mi[[0, 2]], pd.MultiIndex), pd.MultiIndex, tuple)
 
     i0 = pd.Index(["a", "b", "c"])
@@ -1583,7 +1587,7 @@ def test_index_droplevel() -> None:
 def test_index_setitem() -> None:
     idx = pd.Index([1, 2])
     if TYPE_CHECKING_INVALID_USAGE:
-        idx[0] = 999  # type: ignore[index]  # pyright: ignore[reportIndexIssue]
+        idx[0] = 999  # type: ignore[index] # pyright: ignore[reportIndexIssue]
 
 
 def test_index_putmask() -> None:
@@ -1658,3 +1662,35 @@ def test_index_slice_locs() -> None:
     start, end = idx.slice_locs(0, 1)
     check(assert_type(start, np.intp | int), np.integer)
     check(assert_type(end, np.intp | int), int)
+
+
+def test_index_view() -> None:
+    ind = pd.Index([1, 2])
+    check(assert_type(ind.view("int64"), np_1darray), np_1darray)
+    check(assert_type(ind.view(), "pd.Index[int]"), pd.Index)
+    if sys.version_info >= (3, 11):
+        # mypy and pyright differ here in what they report:
+        # - mypy: ndarray[Any, Any]"
+        # - pyright: ndarray[tuple[Any, ...], dtype[Any]]
+        check(assert_type(ind.view(np.ndarray), np.ndarray), np.ndarray)  # type: ignore[assert-type]
+    else:
+        check(assert_type(ind.view(np.ndarray), np.ndarray), np.ndarray)
+
+    class MyArray(np.ndarray): ...
+
+    check(assert_type(ind.view(MyArray), MyArray), MyArray)
+
+
+def test_index_drop() -> None:
+    ind = pd.Index([1, 2, 3])
+    check(assert_type(ind.drop([1, 2]), "pd.Index[int]"), pd.Index, np.integer)
+    check(
+        assert_type(ind.drop(pd.Index([1, 2])), "pd.Index[int]"), pd.Index, np.integer
+    )
+    check(
+        assert_type(ind.drop(pd.Series([1, 2])), "pd.Index[int]"), pd.Index, np.integer
+    )
+    check(
+        assert_type(ind.drop(np.array([1, 2])), "pd.Index[int]"), pd.Index, np.integer
+    )
+    check(assert_type(ind.drop(iter([1, 2])), "pd.Index[int]"), pd.Index, np.integer)

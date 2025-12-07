@@ -8,10 +8,10 @@ from typing_extensions import assert_type
 
 from tests import (
     PANDAS_FLOAT_ARGS,
-    PandasFloatDtypeArg,
     check,
     exception_on_platform,
 )
+from tests._typing import PandasFloatDtypeArg
 
 
 def test_constructor() -> None:

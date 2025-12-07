@@ -71,13 +71,3 @@ class DatetimeArray(DatetimeLikeArrayMixin, TimelikeOps, DatelikeOps):
     is_year_end = ...
     is_leap_year = ...
     def to_julian_date(self): ...
-
-def objects_to_datetime64ns(
-    data,
-    dayfirst,
-    yearfirst,
-    utc: bool = ...,
-    errors: str = ...,
-    require_iso8601: bool = ...,
-    allow_object: bool = ...,
-): ...

@@ -46,20 +46,23 @@ class BaseWindow(SelectionMixin[NDFrameT]):
     def __getattr__(self, attr: str) -> Self: ...
     def __iter__(self) -> Iterator[NDFrameT]: ...
     @overload
-    def aggregate(
-        self: BaseWindow[Series], func: AggFuncTypeBase, *args: Any, **kwargs: Any
+    def aggregate(  # pyright: ignore[reportOverlappingOverload]
+        self: BaseWindow[Series],
+        func: AggFuncTypeBase[...],
+        *args: Any,
+        **kwargs: Any,
     ) -> Series: ...
     @overload
     def aggregate(
         self: BaseWindow[Series],
-        func: AggFuncTypeSeriesToFrame,
+        func: AggFuncTypeSeriesToFrame[..., Any],
         *args: Any,
         **kwargs: Any,
     ) -> DataFrame: ...
     @overload
     def aggregate(
         self: BaseWindow[DataFrame],
-        func: AggFuncTypeFrame,
+        func: AggFuncTypeFrame[..., Any],
         *args: Any,
         **kwargs: Any,
     ) -> DataFrame: ...

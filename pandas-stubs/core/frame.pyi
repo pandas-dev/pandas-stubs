@@ -182,17 +182,17 @@ _T_MUTABLE_MAPPING_co = TypeVar(
 
 class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
     @overload
-    def __getitem__(self, idx: tuple[int, int]) -> Scalar: ...
+    def __getitem__(self, key: tuple[int, int]) -> Scalar: ...
     @overload
-    def __getitem__(self, idx: IndexingInt) -> Series: ...
+    def __getitem__(self, key: IndexingInt) -> Series: ...
     @overload
-    def __getitem__(self, idx: tuple[IndexType | MaskType, int]) -> Series: ...
+    def __getitem__(self, key: tuple[IndexType | MaskType, int]) -> Series: ...
     @overload
-    def __getitem__(self, idx: tuple[int, IndexType | MaskType]) -> Series: ...
+    def __getitem__(self, key: tuple[int, IndexType | MaskType]) -> Series: ...
     @overload
     def __getitem__(
         self,
-        idx: (
+        key: (
             IndexType
             | MaskType
             | tuple[IndexType | MaskType, IndexType | MaskType]
@@ -203,7 +203,7 @@ class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
     # Keep in sync with `DataFrame.__setitem__`
     def __setitem__(
         self,
-        idx: (
+        key: (
             int
             | IndexType
             | tuple[int, int]
@@ -262,7 +262,7 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     @overload
     def __getitem__(
         self,
-        idx: (
+        key: (
             IndexType
             | MaskType
             | Callable[[DataFrame], IndexType | MaskType | Sequence[Hashable]]
@@ -273,8 +273,8 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
                 | list[HashableT]
                 | slice
                 | _IndexSliceTuple
-                | Callable,
-                MaskType | Iterable[HashableT] | IndexType | Callable,
+                | Callable[..., Any],
+                MaskType | Iterable[HashableT] | IndexType | Callable[..., Any],
             ]
         ),
     ) -> _T: ...
@@ -283,7 +283,7 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     @overload
     def __setitem__(
         self,
-        idx: (
+        key: (
             MaskType | StrLike | _IndexSliceTuple | list[ScalarT] | IndexingInt | slice
         ),
         value: (
@@ -302,7 +302,7 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     @overload
     def __setitem__(
         self,
-        idx: tuple[_IndexSliceTuple, Hashable],
+        key: tuple[_IndexSliceTuple, Hashable],
         value: (
             Scalar
             | NAType
@@ -317,17 +317,17 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     ) -> None: ...
 
 class _iAtIndexerFrame(_iAtIndexer):
-    def __getitem__(self, idx: tuple[int, int]) -> Scalar: ...
+    def __getitem__(self, key: tuple[int, int]) -> Scalar: ...
     def __setitem__(
         self,
-        idx: tuple[int, int],
+        key: tuple[int, int],
         value: Scalar | NAType | NaTType | None,
     ) -> None: ...
 
 class _AtIndexerFrame(_AtIndexer):
     def __getitem__(
         self,
-        idx: tuple[
+        key: tuple[
             int
             | StrLike
             | Timestamp
@@ -338,7 +338,7 @@ class _AtIndexerFrame(_AtIndexer):
     ) -> Scalar: ...
     def __setitem__(
         self,
-        idx: (
+        key: (
             MaskType | StrLike | _IndexSliceTuple | list[ScalarT] | IndexingInt | slice
         ),
         value: (
@@ -1027,6 +1027,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis | None = ...,
         limit: int = ...,
         inplace: Literal[True],
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def fillna(
@@ -1045,6 +1046,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         *,
         inplace: Literal[True],
         regex: ReplaceValue | Mapping[HashableT3, ReplaceValue] = ...,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def replace(
@@ -1266,7 +1268,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def combine(
         self,
         other: DataFrame,
-        func: Callable,
+        func: Callable[..., Any],
         fill_value: Scalar | None = None,
         overwrite: _bool = True,
     ) -> Self: ...
@@ -1276,7 +1278,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         other: DataFrame | Series,
         join: UpdateJoin = "left",
         overwrite: _bool = True,
-        filter_func: Callable | None = ...,
+        filter_func: Callable[..., Any] | None = ...,
         errors: IgnoreRaise = "ignore",
     ) -> None: ...
     @overload
@@ -1399,7 +1401,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         group_keys: _bool = ...,
         observed: _bool | _NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[tuple, Literal[True]]: ...
+    ) -> DataFrameGroupBy[tuple[Hashable, ...], Literal[True]]: ...
     @overload
     def groupby(  # type: ignore[overload-overlap]
         self,
@@ -1410,7 +1412,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         group_keys: _bool = ...,
         observed: _bool | _NoDefaultDoNotUse = ...,
         dropna: _bool = ...,
-    ) -> DataFrameGroupBy[tuple, Literal[False]]: ...
+    ) -> DataFrameGroupBy[tuple[Hashable, ...], Literal[False]]: ...
     @overload
     def groupby(  # pyright: ignore reportOverlappingOverload
         self,
@@ -1503,8 +1505,8 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self | Series: ...
     def melt(
         self,
-        id_vars: tuple | Sequence | np_ndarray | None = ...,
-        value_vars: tuple | Sequence | np_ndarray | None = ...,
+        id_vars: Sequence[Hashable] | np_ndarray | None = ...,
+        value_vars: Sequence[Hashable] | np_ndarray | None = ...,
         var_name: Scalar | None = None,
         value_name: Scalar = "value",
         col_level: int | _str | None = ...,
@@ -1514,21 +1516,21 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def aggregate(  # pyright: ignore[reportOverlappingOverload]
         self,
-        func: AggFuncTypeBase | AggFuncTypeDictSeries,
+        func: AggFuncTypeBase[...] | AggFuncTypeDictSeries[Any, ...],
         axis: Axis = 0,
         **kwargs: Any,
     ) -> Series: ...
     @overload
     def aggregate(
         self,
-        func: list[AggFuncTypeBase] | AggFuncTypeDictFrame | None = ...,
+        func: list[AggFuncTypeBase[...]] | AggFuncTypeDictFrame[Any, ...] | None = ...,
         axis: Axis = 0,
         **kwargs: Any,
     ) -> Self: ...
     agg = aggregate
     def transform(
         self,
-        func: AggFuncTypeFrame,
+        func: AggFuncTypeFrame[..., Any],
         axis: Axis = 0,
         *args: Any,
         **kwargs: Any,
@@ -1682,7 +1684,10 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
 
     # Add spacing between apply() overloads and remaining annotations
     def map(
-        self, func: Callable, na_action: Literal["ignore"] | None = None, **kwargs: Any
+        self,
+        func: Callable[..., Any],
+        na_action: Literal["ignore"] | None = None,
+        **kwargs: Any,
     ) -> Self: ...
     def join(
         self,
@@ -1783,7 +1788,9 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis = 0,
         copy: _bool = True,
     ) -> Self: ...
-    def isin(self, values: Iterable | Series | DataFrame | dict) -> Self: ...
+    def isin(
+        self, values: Iterable[Any] | Mapping[Hashable, Iterable[Any]] | DataFrame
+    ) -> Self: ...
     @property
     def plot(self) -> PlotAccessor: ...
     def hist(
@@ -2046,6 +2053,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         inplace: Literal[True],
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def bfill(
@@ -2105,6 +2113,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis | None = ...,
         inplace: Literal[True],
         **kwargs: Any,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def clip(
@@ -2115,6 +2124,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis = ...,
         inplace: Literal[True],
         **kwargs: Any,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def clip(
@@ -2125,6 +2135,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         axis: Axis = ...,
         inplace: Literal[True],
         **kwargs: Any,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @final
     def copy(self, deep: _bool = True) -> Self: ...
@@ -2209,6 +2220,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         inplace: Literal[True],
         limit: int | None = ...,
         limit_area: Literal["inside", "outside"] | None = ...,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def ffill(
@@ -2270,6 +2282,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         limit_area: Literal["inside", "outside"] | None = ...,
         inplace: Literal[True],
         **kwargs: Any,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def interpolate(
@@ -2322,11 +2335,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
-        other: Scalar | Series | DataFrame | Callable | NAType | None = ...,
+        other: Scalar | Series | DataFrame | Callable[..., Any] | NAType | None = ...,
         *,
         inplace: Literal[True],
         axis: Axis | None = ...,
         level: Level | None = None,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def mask(
@@ -2338,7 +2352,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Callable[[DataFrame], DataFrame]
             | Callable[[Any], _bool]
         ),
-        other: Scalar | Series | DataFrame | Callable | NAType | None = ...,
+        other: Scalar | Series | DataFrame | Callable[..., Any] | NAType | None = ...,
         *,
         inplace: Literal[False] = False,
         axis: Axis | None = ...,
@@ -2499,8 +2513,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def rename_axis(
         self,
         *,
-        index: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
-        columns: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
+        index: (
+            _str | Sequence[_str] | dict[_str | int, _str] | Callable[..., Any] | None
+        ) = ...,
+        columns: (
+            _str | Sequence[_str] | dict[_str | int, _str] | Callable[..., Any] | None
+        ) = ...,
         copy: _bool = ...,
         inplace: Literal[True],
     ) -> None: ...
@@ -2509,8 +2527,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def rename_axis(
         self,
         *,
-        index: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
-        columns: _str | Sequence[_str] | dict[_str | int, _str] | Callable | None = ...,
+        index: (
+            _str | Sequence[_str] | dict[_str | int, _str] | Callable[..., Any] | None
+        ) = ...,
+        columns: (
+            _str | Sequence[_str] | dict[_str | int, _str] | Callable[..., Any] | None
+        ) = ...,
         copy: _bool = ...,
         inplace: Literal[False] = False,
     ) -> Self: ...
@@ -2799,6 +2821,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         inplace: Literal[True],
         axis: Axis | None = ...,
         level: Level | None = None,
+        # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def where(

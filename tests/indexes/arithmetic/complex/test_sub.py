@@ -6,6 +6,7 @@ import pandas as pd
 from typing_extensions import assert_type
 
 from tests import check
+from tests._typing import np_ndarray_int64
 
 # left operand
 left = pd.Index([1j, 2j, 3j])
@@ -57,7 +58,7 @@ def test_sub_numpy_array() -> None:
     # checking, where our `__rsub__` cannot override. At runtime, they return
     # `Index`es with the correct element type.
     check(assert_type(b - left, NoReturn), pd.Index, np.complexfloating)
-    check(assert_type(i - left, "npt.NDArray[np.int64]"), pd.Index, np.complexfloating)
+    check(assert_type(i - left, np_ndarray_int64), pd.Index, np.complexfloating)
     check(
         assert_type(f - left, "npt.NDArray[np.float64]"), pd.Index, np.complexfloating
     )

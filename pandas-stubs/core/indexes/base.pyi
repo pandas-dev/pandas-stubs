@@ -32,15 +32,16 @@ import numpy as np
 from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.arrays.floating import FloatingArray
 from pandas.core.base import (
+    T_INTERVAL_NP,
     ArrayIndexTimedeltaNoSeq,
     ElementOpsMixin,
     IndexComplex,
     IndexOpsMixin,
     IndexReal,
     ScalarArrayIndexComplex,
-    ScalarArrayIndexIntNoBool,
     ScalarArrayIndexJustComplex,
     ScalarArrayIndexJustFloat,
+    ScalarArrayIndexJustInt,
     ScalarArrayIndexReal,
     ScalarArrayIndexTimedelta,
     Supports_ProtoAdd,
@@ -101,7 +102,11 @@ from pandas._typing import (
     Level,
     MaskType,
     NaPosition,
+    NDArrayT,
     NumpyFloatNot16DtypeArg,
+    NumpyNotTimeDtypeArg,
+    NumpyTimedeltaDtypeArg,
+    NumpyTimestampDtypeArg,
     PandasAstypeFloatDtypeArg,
     PandasFloatDtypeArg,
     PyArrowFloatDtypeArg,
@@ -141,7 +146,7 @@ FloatNotNumpy16DtypeArg: TypeAlias = (
 class InvalidIndexError(Exception): ...
 
 class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
-    __hash__: ClassVar[None]  # type: ignore[assignment]  # pyright: ignore[reportIncompatibleMethodOverride]
+    __hash__: ClassVar[None]  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]
     # overloads with additional dtypes
     @overload
     def __new__(  # pyright: ignore[reportOverlappingOverload]
@@ -373,7 +378,15 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def dtype(self) -> DtypeObj: ...
     @final
     def ravel(self, order: _str = "C") -> Self: ...
-    def view(self, cls=...): ...
+    @overload
+    def view(self, cls: None = None) -> Self: ...
+    @overload
+    def view(self, cls: type[NDArrayT]) -> NDArrayT: ...
+    @overload
+    def view(
+        self,
+        cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg,
+    ) -> np_1darray: ...
     @overload
     def astype(
         self,
@@ -395,7 +408,10 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Self: ...
     def copy(self, name: Hashable = ..., deep: bool = False) -> Self: ...
     def format(
-        self, name: bool = ..., formatter: Callable | None = ..., na_rep: _str = ...
+        self,
+        name: bool = ...,
+        formatter: Callable[..., Any] | None = ...,
+        na_rep: _str = ...,
     ) -> list[_str]: ...
     def to_series(
         self, index: Index | None = None, name: Hashable | None = None
@@ -575,7 +591,9 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def map(
         self, mapper: Renamer, na_action: Literal["ignore"] | None = None
     ) -> Index: ...
-    def isin(self, values, level=...) -> np_1darray_bool: ...
+    def isin(
+        self, values: Iterable[Any], level: Level | None = None
+    ) -> np_1darray_bool: ...
     def slice_indexer(
         self,
         start: Label | None = None,
@@ -593,7 +611,11 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def insert(self, loc: int, item: S1) -> Self: ...
     @overload
     def insert(self, loc: int, item: object) -> Index: ...
-    def drop(self, labels, errors: IgnoreRaise = "raise") -> Self: ...
+    def drop(
+        self,
+        labels: IndexOpsMixin | np_ndarray | Iterable[Hashable],
+        errors: IgnoreRaise = "raise",
+    ) -> Self: ...
     @property
     def shape(self) -> tuple[int, ...]: ...
     # Extra methods from old stubs
@@ -1009,7 +1031,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[float]: ...
     @overload
     def __truediv__(
-        self: Index[bool] | Index[int], other: ScalarArrayIndexIntNoBool
+        self: Index[bool] | Index[int], other: ScalarArrayIndexJustInt
     ) -> Index[float]: ...
     @overload
     def __truediv__(
@@ -1060,7 +1082,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     ) -> Index[float]: ...
     @overload
     def __rtruediv__(
-        self: Index[bool] | Index[int], other: ScalarArrayIndexIntNoBool
+        self: Index[bool] | Index[int], other: ScalarArrayIndexJustInt
     ) -> Index[float]: ...
     @overload
     def __rtruediv__(  # type: ignore[misc]
@@ -1191,6 +1213,14 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
 class _IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):
     @overload
     def to_numpy(
+        self: _IndexSubclassBase[Interval],
+        dtype: type[T_INTERVAL_NP],
+        copy: bool = False,
+        na_value: Scalar = ...,
+        **kwargs: Any,
+    ) -> np_1darray: ...
+    @overload
+    def to_numpy(
         self,
         dtype: None = None,
         copy: bool = False,
@@ -1206,7 +1236,7 @@ class _IndexSubclassBase(Index[S1], Generic[S1, GenericT_co]):
         **kwargs: Any,
     ) -> np_1darray[GenericT]: ...
     @overload
-    def to_numpy(
+    def to_numpy(  # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         dtype: DTypeLike,
         copy: bool = False,

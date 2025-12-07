@@ -81,12 +81,16 @@ def test_truediv_py_sequence(left: "pd.Series[bool]") -> None:
     """Test pd.Series[bool] / Python native sequences"""
     b, i, f, c = [True, False, True], [2, 3, 5], [1.0, 2.0, 3.0], [1j, 1j, 4j]
 
-    check(assert_type(left / b, "pd.Series[float]"), pd.Series, np.floating)
+    if TYPE_CHECKING_INVALID_USAGE:
+        # TODO: python/mypy#20061
+        _00 = left / b  # pyright: ignore[reportOperatorIssue]
     check(assert_type(left / i, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / c, "pd.Series[complex]"), pd.Series, np.complexfloating)
 
-    check(assert_type(b / left, "pd.Series[float]"), pd.Series, np.floating)
+    if TYPE_CHECKING_INVALID_USAGE:
+        # TODO: python/mypy#20061
+        _10 = b / left  # pyright: ignore[reportOperatorIssue]
     check(assert_type(i / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(f / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
@@ -149,7 +153,7 @@ def test_truediv_numpy_array(left: "pd.Series[bool]") -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.truediv(b)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.truediv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.truediv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.truediv(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
@@ -159,13 +163,13 @@ def test_truediv_numpy_array(left: "pd.Series[bool]") -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.div(b)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.div(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.div(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.div(f), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.div(c), "pd.Series[complex]"), pd.Series, np.complexfloating)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.rtruediv(b)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rtruediv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rtruediv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.rtruediv(f), "pd.Series[float]"), pd.Series, np.floating)
     check(
@@ -175,7 +179,7 @@ def test_truediv_numpy_array(left: "pd.Series[bool]") -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        left.rdiv(b)  # type: ignore[arg-type]  # pyright: ignore[reportArgumentType,reportCallIssue]
+        left.rdiv(b)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
     check(assert_type(left.rdiv(i), "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left.rdiv(f), "pd.Series[float]"), pd.Series, np.floating)
     check(

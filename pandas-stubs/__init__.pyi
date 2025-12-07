@@ -63,7 +63,6 @@ from pandas.core.api import (
     to_numeric as to_numeric,
     to_timedelta as to_timedelta,
     unique as unique,
-    value_counts as value_counts,
 )
 from pandas.core.arrays.sparse import SparseDtype as SparseDtype
 from pandas.core.computation.api import eval as eval

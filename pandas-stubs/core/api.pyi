@@ -1,7 +1,6 @@
 from pandas.core.algorithms import (
     factorize as factorize,
     unique as unique,
-    value_counts as value_counts,
 )
 from pandas.core.arrays import Categorical as Categorical
 from pandas.core.arrays.arrow.dtype import ArrowDtype as ArrowDtype

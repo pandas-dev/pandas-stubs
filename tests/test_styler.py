@@ -23,19 +23,20 @@ from tests import (
     PD_LTE_23,
     check,
     ensure_clean,
-    np_ndarray_str,
 )
+from tests._typing import np_ndarray_str
 
 from pandas.io.formats.style import Styler
-
-DF = DataFrame({"a": [1, 2, 3], "b": [3.14, 2.72, 1.61]})
-
-PWD = Path(__file__).parent.resolve()
 
 if TYPE_CHECKING:
     from pandas.io.formats.style_render import StyleExportDict
 else:
     StyleExportDict = object
+
+
+DF = DataFrame({"a": [1, 2, 3], "b": [3.14, 2.72, 1.61]})
+
+PWD = Path(__file__).parent.resolve()
 
 
 @pytest.fixture(autouse=True)
