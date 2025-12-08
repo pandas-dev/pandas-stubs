@@ -446,7 +446,7 @@ class DtDescriptor:
     @overload
     def __get__(
         self, instance: Series[Never], owner: type[Series]
-    ) -> TimestampProperties | TimedeltaProperties | PeriodProperties: ...
+    ) -> CombinedDatetimelikeProperties: ...
     @overload
     def __get__(
         self, instance: Series[Timestamp], owner: type[Series]

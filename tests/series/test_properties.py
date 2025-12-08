@@ -8,6 +8,7 @@ from pandas.core.arrays.interval import IntervalArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.accessors import (
+    CombinedDatetimelikeProperties,
     DatetimeProperties,
     PeriodProperties,
     TimedeltaProperties,
@@ -52,15 +53,28 @@ def test_property_dt() -> None:
     # python/mypy#19952: mypy gives Any
     check(
         assert_type(  # type: ignore[assert-type]
-            df["ts"].dt, "TimestampProperties | TimedeltaProperties | PeriodProperties"
+            df["ts"].dt, CombinedDatetimelikeProperties
         ),
         DatetimeProperties,
     )
     check(
         assert_type(  # type: ignore[assert-type]
-            df["td"].dt, "TimestampProperties | TimedeltaProperties | PeriodProperties"
+            df["td"].dt, CombinedDatetimelikeProperties
         ),
         TimedeltaProperties,
+    )
+
+    check(
+        assert_type(df["ts"].dt.year, "Series[int]"),  # type: ignore[assert-type]
+        Series,
+        np.integer,
+    )
+    check(
+        assert_type(  # type: ignore[assert-type]
+            df["td"].dt.total_seconds(), "Series[float]"
+        ),
+        Series,
+        np.floating,
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
