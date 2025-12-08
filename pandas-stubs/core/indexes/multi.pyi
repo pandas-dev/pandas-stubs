@@ -1,5 +1,4 @@
 from collections.abc import (
-    Callable,
     Collection,
     Hashable,
     Iterable,
@@ -91,16 +90,6 @@ class MultiIndex(Index):
     def memory_usage(self, deep: bool = False) -> int: ...
     @property
     def nbytes(self) -> int: ...
-    def format(
-        self,
-        name: bool | None = ...,
-        formatter: Callable[..., Any] | None = ...,
-        na_rep: str | None = ...,
-        names: bool = ...,
-        space: int = ...,
-        sparsify: bool | None = ...,
-        adjoin: bool = ...,
-    ) -> list: ...
     def __len__(self) -> int: ...
     @property
     def values(self): ...

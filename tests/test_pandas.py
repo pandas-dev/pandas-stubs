@@ -1611,7 +1611,7 @@ def test_merge_asof() -> None:
 
 def test_crosstab_args() -> None:
     a = [1, 2, 3, 4, 1, 2, 3, 4, 1, 2]
-    b: list = [4, 5, 6, 3, 4, 3, 5, 6, 5, 5]
+    b: list[Any] = [4, 5, 6, 3, 4, 3, 5, 6, 5, 5]
     c = [1, 3, 2, 3, 1, 2, 3, 1, 3, 2]
     check(assert_type(pd.crosstab(a, b), pd.DataFrame), pd.DataFrame)
     check(assert_type(pd.crosstab(a, [b, c]), pd.DataFrame), pd.DataFrame)

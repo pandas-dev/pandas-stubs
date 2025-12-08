@@ -182,7 +182,7 @@ Level: TypeAlias = Hashable
 Shape: TypeAlias = tuple[int, ...]
 Suffixes: TypeAlias = tuple[str | None, str | None] | list[str | None]
 Ordered: TypeAlias = bool | None
-JSONSerializable: TypeAlias = PythonScalar | list | dict
+JSONSerializable: TypeAlias = PythonScalar | list[Any] | dict
 Frequency: TypeAlias = str | BaseOffset
 PeriodFrequency: TypeAlias = (
     str

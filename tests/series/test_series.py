@@ -900,7 +900,7 @@ def test_types_apply() -> None:
 
     check(assert_type(s.apply(retseries).tolist(), list), list)
 
-    def retlist(x: float) -> list:
+    def retlist(x: float) -> list[float]:
         return [x]
 
     check(assert_type(s.apply(retlist), pd.Series), pd.Series, list)

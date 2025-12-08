@@ -50,7 +50,7 @@ from pandas.io.formats.style_render import (
 class _SeriesFunc(Protocol):
     def __call__(
         self, series: Series, /, *args: Any, **kwargs: Any
-    ) -> list | Series: ...
+    ) -> list[Any] | Series: ...
 
 class _DataFrameFunc(Protocol):
     def __call__(
@@ -233,7 +233,7 @@ class Styler(StylerRenderer):
     @overload
     def apply(
         self,
-        func: _SeriesFunc | Callable[[Series], list | Series],
+        func: _SeriesFunc | Callable[[Series], list[Any] | Series],
         axis: Axis = ...,
         subset: Subset | None = ...,
         **kwargs: Any,
