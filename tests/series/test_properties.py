@@ -8,9 +8,9 @@ from pandas.core.arrays.interval import IntervalArray
 from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.accessors import (
+    CombinedDatetimelikeProperties,
     DatetimeProperties,
     PeriodProperties,
-    Properties,
     TimedeltaProperties,
 )
 from pandas.core.indexes.interval import interval_range
@@ -49,12 +49,37 @@ def test_property_dt() -> None:
         PeriodProperties,
     )
 
+    df = DataFrame({"ts": [Timestamp(2025, 12, 6)], "td": [Timedelta(1, "s")]})
+    # python/mypy#19952: mypy gives Any
+    check(
+        assert_type(  # type: ignore[assert-type]
+            df["ts"].dt, CombinedDatetimelikeProperties
+        ),
+        DatetimeProperties,
+    )
+    check(
+        assert_type(  # type: ignore[assert-type]
+            df["td"].dt, CombinedDatetimelikeProperties
+        ),
+        TimedeltaProperties,
+    )
+
+    check(
+        assert_type(df["ts"].dt.year, "Series[int]"),  # type: ignore[assert-type]
+        Series,
+        np.integer,
+    )
+    check(
+        assert_type(  # type: ignore[assert-type]
+            df["td"].dt.total_seconds(), "Series[float]"
+        ),
+        Series,
+        np.floating,
+    )
+
     if TYPE_CHECKING_INVALID_USAGE:
-        s = DataFrame({"a": [1]})["a"]
-        # python/mypy#19952: mypy believes Properties and its subclasses have a
-        # conflict and gives Any for s.dt
-        assert_type(s.dt, Properties)  # type: ignore[assert-type]
-        _1 = Series([1]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue]
+        _0 = Series([1]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue]
+        _1 = Series(["2025-01-01"]).dt  # type: ignore[arg-type] # pyright: ignore[reportAttributeAccessIssue]
 
 
 def test_property_array() -> None:
