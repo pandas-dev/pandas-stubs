@@ -290,11 +290,16 @@ def test_slice_setitem() -> None:
 
 def test_types_setitem() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4], 5: [6, 7]})
+    h = cast(Hashable, "col1")
     i = pd.Index(["col1", "col2"])
     s = pd.Series(["col1", "col2"])
     a = np.array(["col1", "col2"])
     df["col1"] = [1, 2]
-    df[5] = [5, 6]
+    df[h] = [5, 6]
+    df[iter([h])] = [[5], [6]]
+    df.loc[:, h] = [5, 6]
+    df.loc[:, UserList([h])] = [[5], [6]]
+    df.loc[:, iter([h])] = [[5], [6]]
     df[["col1", "col2"]] = [[1, 2], [3, 4]]
     df[s] = [5, 6]
     df.loc[:, s] = [5, 6]
