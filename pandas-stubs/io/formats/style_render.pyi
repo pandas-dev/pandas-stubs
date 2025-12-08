@@ -1,5 +1,6 @@
 from collections.abc import (
     Callable,
+    Hashable,
     Sequence,
 )
 from typing import (
@@ -57,7 +58,7 @@ class StylerRenderer:
     def format(
         self,
         formatter: ExtFormatter | None = None,
-        subset: Subset | None = None,
+        subset: Subset[Hashable] | None = None,
         na_rep: str | None = None,
         precision: int | None = None,
         decimal: str = ".",
