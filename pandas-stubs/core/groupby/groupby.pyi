@@ -334,7 +334,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         n: int | None = None,
         frac: float | None = None,
         replace: bool = False,
-        weights: Sequence | Series | None = ...,
+        weights: Sequence[float] | Series | None = ...,
         random_state: RandomState | None = ...,
     ) -> NDFrameT: ...
 

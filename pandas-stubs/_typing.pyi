@@ -966,7 +966,7 @@ ListLikeT = TypeVar("ListLikeT", bound=ListLike)
 ListLikeExceptSeriesAndStr: TypeAlias = (
     MutableSequence[Any] | np_1darray | tuple[Any, ...] | Index
 )
-ListLikeU: TypeAlias = Sequence | np_1darray | Series | Index
+ListLikeU: TypeAlias = Sequence[Any] | np_1darray | Series | Index
 ListLikeHashable: TypeAlias = (
     MutableSequence[HashableT] | np_1darray | tuple[HashableT, ...] | range
 )
