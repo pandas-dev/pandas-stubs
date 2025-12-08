@@ -345,16 +345,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: AxesData,
-        index: None = None,
-        *,
-        dtype: type[np.float64],
-        name: Hashable = None,
-        copy: bool | None = None,
-    ) -> Series[float]: ...
-    @overload
-    def __new__(
-        cls,
         data: Sequence[Never],
         index: AxesData | None = None,
         dtype: None = None,
