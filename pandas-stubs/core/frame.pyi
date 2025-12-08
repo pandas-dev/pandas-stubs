@@ -502,7 +502,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["index"],
         *,
-        into: defaultdict,
+        into: defaultdict[Hashable, Any],
         index: Literal[True] = True,
     ) -> defaultdict[Hashable, dict[Hashable, Any]]: ...
     @overload
@@ -1022,7 +1022,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def fillna(
         self,
-        value: Scalar | NAType | dict | Series | DataFrame | None = ...,
+        value: Scalar | NAType | dict[Hashable, Any] | Series | DataFrame | None = ...,
         *,
         axis: Axis | None = ...,
         limit: int = ...,
@@ -1032,7 +1032,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def fillna(
         self,
-        value: Scalar | NAType | dict | Series | DataFrame | None = ...,
+        value: Scalar | NAType | dict[Hashable, Any] | Series | DataFrame | None = ...,
         *,
         axis: Axis | None = ...,
         limit: int = ...,
@@ -1715,7 +1715,10 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         validate: MergeValidate | None = None,
     ) -> Self: ...
     def round(
-        self, decimals: int | dict | Series = ..., *args: Any, **kwargs: Any
+        self,
+        decimals: int | dict[Hashable, Any] | Series = ...,
+        *args: Any,
+        **kwargs: Any,
     ) -> Self: ...
     def corr(
         self,
@@ -2665,7 +2668,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         compression: CompressionOptions = ...,
         index: _bool | None = ...,
         indent: int | None = ...,
-        storage_options: dict | None = ...,
+        storage_options: dict[Hashable, Any] | None = ...,
         mode: Literal["a"],
     ) -> None: ...
     @overload
@@ -2683,7 +2686,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         compression: CompressionOptions = ...,
         index: _bool | None = ...,
         indent: int | None = ...,
-        storage_options: dict | None = ...,
+        storage_options: dict[Hashable, Any] | None = ...,
         mode: Literal["a"],
     ) -> _str: ...
     @overload
@@ -2701,7 +2704,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         compression: CompressionOptions = ...,
         index: _bool | None = ...,
         indent: int | None = ...,
-        storage_options: dict | None = ...,
+        storage_options: dict[Hashable, Any] | None = ...,
         mode: Literal["w"] = ...,
     ) -> _str: ...
     @overload
@@ -2719,7 +2722,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         compression: CompressionOptions = ...,
         index: _bool | None = ...,
         indent: int | None = ...,
-        storage_options: dict | None = ...,
+        storage_options: dict[Hashable, Any] | None = ...,
         mode: Literal["w"] = ...,
     ) -> None: ...
     @overload

@@ -44,7 +44,7 @@ def read_csv(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
     usecols: UsecolsArgType[HashableT] = None,
-    dtype: DtypeArg | defaultdict | None = None,
+    dtype: DtypeArg | defaultdict[Hashable, Any] | None = None,
     engine: CSVEngine | None = None,
     converters: (
         Mapping[int | str, Callable[[str], Any]]
@@ -107,7 +107,7 @@ def read_csv(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
     usecols: UsecolsArgType[HashableT] = None,
-    dtype: DtypeArg | defaultdict | None = None,
+    dtype: DtypeArg | defaultdict[Hashable, Any] | None = None,
     engine: CSVEngine | None = None,
     converters: (
         Mapping[int | str, Callable[[str], Any]]
@@ -170,7 +170,7 @@ def read_csv(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: UsecolsArgType[HashableT] = ...,
-    dtype: DtypeArg | defaultdict | None = ...,
+    dtype: DtypeArg | defaultdict[Hashable, Any] | None = ...,
     engine: CSVEngine | None = ...,
     converters: (
         Mapping[int | str, Callable[[str], Any]]
@@ -233,7 +233,7 @@ def read_table(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
     usecols: UsecolsArgType[HashableT] = None,
-    dtype: DtypeArg | defaultdict | None = None,
+    dtype: DtypeArg | defaultdict[Hashable, Any] | None = None,
     engine: CSVEngine | None = None,
     converters: (
         Mapping[int | str, Callable[[str], Any]]
@@ -296,7 +296,7 @@ def read_table(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
     usecols: UsecolsArgType[HashableT] = None,
-    dtype: DtypeArg | defaultdict | None = None,
+    dtype: DtypeArg | defaultdict[Hashable, Any] | None = None,
     engine: CSVEngine | None = None,
     converters: (
         Mapping[int | str, Callable[[str], Any]]
@@ -359,7 +359,7 @@ def read_table(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = None,
     usecols: UsecolsArgType[HashableT] = None,
-    dtype: DtypeArg | defaultdict | None = None,
+    dtype: DtypeArg | defaultdict[Hashable, Any] | None = None,
     engine: CSVEngine | None = None,
     converters: (
         Mapping[int | str, Callable[[str], Any]]

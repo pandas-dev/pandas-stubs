@@ -1104,7 +1104,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def unstack(
         self,
         level: IndexLabel = -1,
-        fill_value: int | _str | dict | None = None,
+        fill_value: int | _str | dict[Hashable, Any] | None = None,
         sort: _bool = True,
     ) -> DataFrame: ...
     @overload
@@ -1258,7 +1258,9 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def fillna(
         self,
-        value: Scalar | NAType | dict | Series[S1] | DataFrame | None = ...,
+        value: (
+            Scalar | NAType | dict[Hashable, Any] | Series[S1] | DataFrame | None
+        ) = ...,
         *,
         axis: AxisIndex = ...,
         limit: int | None = ...,
@@ -1267,7 +1269,9 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def fillna(
         self,
-        value: Scalar | NAType | dict | Series[S1] | DataFrame | None = ...,
+        value: (
+            Scalar | NAType | dict[Hashable, Any] | Series[S1] | DataFrame | None
+        ) = ...,
         *,
         axis: AxisIndex = ...,
         limit: int | None = ...,
@@ -4637,7 +4641,9 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def rename_axis(
         self,
         *,
-        index: Scalar | ListLike | Callable[..., Any] | dict | None = ...,
+        index: (
+            Scalar | ListLike | Callable[..., Any] | dict[Hashable, Any] | None
+        ) = ...,
         copy: _bool = ...,
         inplace: Literal[True],
     ) -> None: ...
@@ -4646,7 +4652,9 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def rename_axis(
         self,
         *,
-        index: Scalar | ListLike | Callable[..., Any] | dict | None = ...,
+        index: (
+            Scalar | ListLike | Callable[..., Any] | dict[Hashable, Any] | None
+        ) = ...,
         copy: _bool = ...,
         inplace: Literal[False] = False,
     ) -> Self: ...

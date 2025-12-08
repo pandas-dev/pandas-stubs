@@ -219,7 +219,7 @@ _TT = TypeVar("_TT", bound=Literal[True, False])
 class DFCallable1(Protocol[P]):  # ty: ignore[invalid-argument-type]
     def __call__(
         self, df: DataFrame, /, *args: P.args, **kwargs: P.kwargs
-    ) -> Scalar | list[Any] | dict: ...
+    ) -> Scalar | list[Any] | dict[Hashable, Any]: ...
 
 class DFCallable2(Protocol[P]):  # ty: ignore[invalid-argument-type]
     def __call__(
