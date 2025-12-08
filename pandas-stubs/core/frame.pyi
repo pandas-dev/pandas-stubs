@@ -552,7 +552,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         *,
         into: MutableMapping | type[MutableMapping],
         index: bool = ...,
-    ) -> MutableMapping[str, list]: ...
+    ) -> MutableMapping[str, list[Any]]: ...
     @overload
     def to_dict(
         self,
@@ -560,7 +560,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         *,
         into: type[dict] = ...,
         index: bool = ...,
-    ) -> dict[str, list]: ...
+    ) -> dict[str, list[Any]]: ...
     @classmethod
     def from_records(
         cls,
@@ -1256,7 +1256,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         keep: NsmallestNlargestKeep = "first",
     ) -> Self: ...
     def swaplevel(self, i: Level = ..., j: Level = ..., axis: Axis = 0) -> Self: ...
-    def reorder_levels(self, order: list, axis: Axis = 0) -> Self: ...
+    def reorder_levels(self, order: list[int] | list[str], axis: Axis = 0) -> Self: ...
     def compare(
         self,
         other: DataFrame,
@@ -1796,7 +1796,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def hist(
         self,
         by: _str | ListLike | None = None,
-        bins: int | list = 10,
+        bins: int | Sequence[int] = 10,
         *,
         grid: _bool = True,
         xlabelsize: float | str | None = None,

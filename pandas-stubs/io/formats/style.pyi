@@ -1,5 +1,6 @@
 from collections.abc import (
     Callable,
+    Hashable,
     MutableMapping,
     Sequence,
 )
@@ -50,7 +51,7 @@ from pandas.io.formats.style_render import (
 class _SeriesFunc(Protocol):
     def __call__(
         self, series: Series, /, *args: Any, **kwargs: Any
-    ) -> list | Series: ...
+    ) -> list[Any] | Series: ...
 
 class _DataFrameFunc(Protocol):
     def __call__(
@@ -84,13 +85,13 @@ class Styler(StylerRenderer):
     def map(
         self,
         func: Callable[[Scalar], str | None],
-        subset: Subset | None = ...,
+        subset: Subset[Hashable] | None = ...,
     ) -> Styler: ...
     @overload
     def map(
         self,
         func: _MapCallable,
-        subset: Subset | None = ...,
+        subset: Subset[Hashable] | None = ...,
         **kwargs: Any,
     ) -> Styler: ...
     def set_tooltips(
@@ -233,9 +234,9 @@ class Styler(StylerRenderer):
     @overload
     def apply(
         self,
-        func: _SeriesFunc | Callable[[Series], list | Series],
+        func: _SeriesFunc | Callable[[Series], list[Any] | Series],
         axis: Axis = ...,
-        subset: Subset | None = ...,
+        subset: Subset[Hashable] | None = ...,
         **kwargs: Any,
     ) -> Styler: ...
     @overload
@@ -243,7 +244,7 @@ class Styler(StylerRenderer):
         self,
         func: _DataFrameFunc | Callable[[DataFrame], np_ndarray | DataFrame],
         axis: None,
-        subset: Subset | None = ...,
+        subset: Subset[Hashable] | None = ...,
         **kwargs: Any,
     ) -> Styler: ...
     def apply_index(
@@ -280,7 +281,7 @@ class Styler(StylerRenderer):
     ) -> Styler: ...
     def hide(
         self,
-        subset: Subset | None = ...,
+        subset: Subset[Hashable] | None = ...,
         axis: Axis = ...,
         level: Level | list[Level] | None = ...,
         names: bool = ...,
@@ -291,7 +292,7 @@ class Styler(StylerRenderer):
         low: float = 0,
         high: float = 0,
         axis: Axis | None = 0,
-        subset: Subset | None = None,
+        subset: Subset[Hashable] | None = None,
         text_color_threshold: float = 0.408,
         vmin: float | None = None,
         vmax: float | None = None,
@@ -310,7 +311,7 @@ class Styler(StylerRenderer):
         low: float = 0,
         high: float = 0,
         axis: Axis | None = 0,
-        subset: Subset | None = None,
+        subset: Subset[Hashable] | None = None,
         vmin: float | None = None,
         vmax: float | None = None,
         gmap: (
@@ -323,11 +324,11 @@ class Styler(StylerRenderer):
         ) = None,
     ) -> Styler: ...
     def set_properties(
-        self, subset: Subset | None = ..., **kwargs: str | int
+        self, subset: Subset[Hashable] | None = ..., **kwargs: str | int
     ) -> Styler: ...
     def bar(
         self,
-        subset: Subset | None = None,
+        subset: Subset[Hashable] | None = None,
         axis: Axis | None = 0,
         *,
         color: str | list[str] | tuple[str, str] | None = None,
@@ -346,26 +347,26 @@ class Styler(StylerRenderer):
     def highlight_null(
         self,
         color: str | None = "red",
-        subset: Subset | None = None,
+        subset: Subset[Hashable] | None = None,
         props: str | None = None,
     ) -> Styler: ...
     def highlight_max(
         self,
-        subset: Subset | None = None,
+        subset: Subset[Hashable] | None = None,
         color: str = "yellow",
         axis: Axis | None = 0,
         props: str | None = None,
     ) -> Styler: ...
     def highlight_min(
         self,
-        subset: Subset | None = None,
+        subset: Subset[Hashable] | None = None,
         color: str = "yellow",
         axis: Axis | None = 0,
         props: str | None = None,
     ) -> Styler: ...
     def highlight_between(
         self,
-        subset: Subset | None = None,
+        subset: Subset[Hashable] | None = None,
         color: str = "yellow",
         axis: Axis | None = 0,
         left: Scalar | list[Scalar] | None = None,
@@ -375,7 +376,7 @@ class Styler(StylerRenderer):
     ) -> Styler: ...
     def highlight_quantile(
         self,
-        subset: Subset | None = None,
+        subset: Subset[Hashable] | None = None,
         color: str = "yellow",
         axis: Axis | None = 0,
         q_left: float = 0,
