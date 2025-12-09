@@ -1,5 +1,4 @@
 from collections.abc import (
-    Hashable,
     Mapping,
     MutableSequence,
 )
@@ -25,7 +24,7 @@ def eval(
     engine: Literal["python", "numexpr"] | None = ...,
     local_dict: dict[str, Any] | None = None,
     global_dict: dict[str, Any] | None = None,
-    resolvers: MutableSequence[Mapping[Hashable, Any]] | None = ...,
+    resolvers: MutableSequence[Mapping[Any, Any]] | None = ...,
     level: int = 0,
     target: object | None = None,
     inplace: bool = False,

@@ -503,7 +503,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["index"],
         *,
-        into: defaultdict[Hashable, Any],
+        into: defaultdict[Any, Any],
         index: Literal[True] = True,
     ) -> defaultdict[Hashable, dict[Hashable, Any]]: ...
     @overload
@@ -551,7 +551,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["split", "tight"],
         *,
-        into: MutableMapping[Hashable, Any] | type[MutableMapping],
+        into: MutableMapping[Any, Any] | type[MutableMapping],
         index: bool = ...,
     ) -> MutableMapping[str, list[Any]]: ...
     @overload
@@ -908,7 +908,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         engine: Literal["python", "numexpr"] | None = ...,
         local_dict: dict[_str, Any] | None = ...,
         global_dict: dict[_str, Any] | None = ...,
-        resolvers: MutableSequence[Mapping[Hashable, Any]] | None = ...,
+        resolvers: MutableSequence[Mapping[Any, Any]] | None = ...,
         level: int = ...,
         target: object | None = ...,
         inplace: Literal[True],
@@ -923,7 +923,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         engine: Literal["python", "numexpr"] | None = ...,
         local_dict: dict[_str, Any] | None = ...,
         global_dict: dict[_str, Any] | None = ...,
-        resolvers: MutableSequence[Mapping[Hashable, Any]] | None = ...,
+        resolvers: MutableSequence[Mapping[Any, Any]] | None = ...,
         level: int = ...,
         target: object | None = ...,
     ) -> Self: ...
@@ -1023,7 +1023,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def fillna(
         self,
-        value: Scalar | NAType | dict[Hashable, Any] | Series | DataFrame | None = ...,
+        value: Scalar | NAType | dict[Any, Any] | Series | DataFrame | None = ...,
         *,
         axis: Axis | None = ...,
         limit: int = ...,
@@ -1033,7 +1033,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def fillna(
         self,
-        value: Scalar | NAType | dict[Hashable, Any] | Series | DataFrame | None = ...,
+        value: Scalar | NAType | dict[Any, Any] | Series | DataFrame | None = ...,
         *,
         axis: Axis | None = ...,
         limit: int = ...,
@@ -1717,7 +1717,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def round(
         self,
-        decimals: int | dict[Hashable, Any] | Series = ...,
+        decimals: int | dict[Any, Any] | Series = ...,
         *args: Any,
         **kwargs: Any,
     ) -> Self: ...
@@ -2669,7 +2669,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         compression: CompressionOptions = ...,
         index: _bool | None = ...,
         indent: int | None = ...,
-        storage_options: dict[Hashable, Any] | None = ...,
+        storage_options: dict[Any, Any] | None = ...,
         mode: Literal["a"],
     ) -> None: ...
     @overload
@@ -2687,7 +2687,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         compression: CompressionOptions = ...,
         index: _bool | None = ...,
         indent: int | None = ...,
-        storage_options: dict[Hashable, Any] | None = ...,
+        storage_options: dict[Any, Any] | None = ...,
         mode: Literal["a"],
     ) -> _str: ...
     @overload
@@ -2705,7 +2705,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         compression: CompressionOptions = ...,
         index: _bool | None = ...,
         indent: int | None = ...,
-        storage_options: dict[Hashable, Any] | None = ...,
+        storage_options: dict[Any, Any] | None = ...,
         mode: Literal["w"] = ...,
     ) -> _str: ...
     @overload
@@ -2723,7 +2723,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         compression: CompressionOptions = ...,
         index: _bool | None = ...,
         indent: int | None = ...,
-        storage_options: dict[Hashable, Any] | None = ...,
+        storage_options: dict[Any, Any] | None = ...,
         mode: Literal["w"] = ...,
     ) -> None: ...
     @overload

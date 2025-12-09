@@ -1,7 +1,6 @@
 from collections import defaultdict
 from collections.abc import (
     Callable,
-    Hashable,
     Sequence,
 )
 import csv
@@ -37,7 +36,7 @@ def read_clipboard(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: UsecolsArgType = ...,
-    dtype: DtypeArg | defaultdict[Hashable, Any] | None = ...,
+    dtype: DtypeArg | defaultdict[Any, Any] | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
@@ -96,7 +95,7 @@ def read_clipboard(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: UsecolsArgType = ...,
-    dtype: DtypeArg | defaultdict[Hashable, Any] | None = ...,
+    dtype: DtypeArg | defaultdict[Any, Any] | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,
@@ -155,7 +154,7 @@ def read_clipboard(
     names: ListLikeHashable | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
     usecols: UsecolsArgType = ...,
-    dtype: DtypeArg | defaultdict[Hashable, Any] | None = ...,
+    dtype: DtypeArg | defaultdict[Any, Any] | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
     true_values: list[str] = ...,

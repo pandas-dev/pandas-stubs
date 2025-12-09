@@ -77,7 +77,7 @@ def pivot_table(
     aggfunc: (
         _PivotAggFunc[Scalar]
         | Sequence[_PivotAggFunc[Scalar]]
-        | Mapping[Hashable, _PivotAggFunc[Scalar]]
+        | Mapping[Any, _PivotAggFunc[Scalar]]
     ) = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
@@ -104,7 +104,7 @@ def pivot_table(
     aggfunc: (
         _PivotAggFunc[Scalar]
         | Sequence[_PivotAggFunc[Scalar]]
-        | Mapping[Hashable, _PivotAggFunc[Scalar]]
+        | Mapping[Any, _PivotAggFunc[Scalar]]
     ) = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
@@ -129,7 +129,7 @@ def pivot_table(
     aggfunc: (
         _PivotAggFunc[Scalar]
         | Sequence[_PivotAggFunc[Scalar]]
-        | Mapping[Hashable, _PivotAggFunc[Scalar]]
+        | Mapping[Any, _PivotAggFunc[Scalar]]
     ) = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
