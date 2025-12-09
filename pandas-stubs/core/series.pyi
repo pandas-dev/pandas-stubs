@@ -11,6 +11,7 @@ from collections.abc import (
     Mapping,
     MutableMapping,
     Sequence,
+    Set as AbstractSet,
     ValuesView,
 )
 from datetime import (
@@ -564,8 +565,6 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __array__(  # ty: ignore[invalid-method-override]
         self, dtype: _str | np.dtype = ..., copy: bool | None = ...
     ) -> np_1darray: ...
-    @property
-    def axes(self) -> list: ...
     @final
     def __getattr__(self, name: _str) -> S1: ...
 
@@ -1171,7 +1170,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def apply(
         self,
         func: Callable[
-            ..., Scalar | Sequence | set | Mapping | NAType | frozenset | None
+            ..., Scalar | Sequence[Any] | AbstractSet[Any] | Mapping | NAType | None
         ],
         convertDType: _bool = ...,
         args: tuple[Any, ...] = ...,
@@ -1373,7 +1372,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         ylabelsize: float | _str | None = None,
         yrot: float | None = None,
         figsize: tuple[float, float] | None = None,
-        bins: int | Sequence = 10,
+        bins: int | Sequence[int] = 10,
         backend: _str | None = None,
         legend: _bool = False,
         **kwargs: Any,

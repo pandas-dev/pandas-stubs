@@ -460,7 +460,7 @@ class TextFileReader(abc.Iterator):
     squeeze: bool
     def __init__(
         self,
-        f: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str] | list,
+        f: FilePath | ReadCsvBuffer[bytes] | ReadCsvBuffer[str] | list[str],
         engine: CSVEngine | None = ...,
         **kwds: Any,
     ) -> None: ...

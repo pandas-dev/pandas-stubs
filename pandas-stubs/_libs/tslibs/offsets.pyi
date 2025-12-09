@@ -205,7 +205,7 @@ class _CustomBusinessMonth(SingleConstructorOffset):
         n: int = ...,
         normalize: bool = ...,
         offset: timedelta = ...,
-        holidays: list | None = ...,
+        holidays: list[Any] | None = ...,
     ) -> None: ...
 
 class CustomBusinessDay(BusinessDay):
@@ -213,7 +213,7 @@ class CustomBusinessDay(BusinessDay):
         self,
         n: int = ...,
         normalize: bool = ...,
-        holidays: list = ...,
+        holidays: list[Any] = ...,
         calendar: AbstractHolidayCalendar | np.busdaycalendar = ...,
     ) -> None: ...
 
@@ -225,7 +225,7 @@ class CustomBusinessHour(BusinessHour):
         start: str | time | Collection[str | time] = ...,
         end: str | time | Collection[str | time] = ...,
         offset: timedelta = ...,
-        holidays: list | None = ...,
+        holidays: list[Any] | None = ...,
     ) -> None: ...
 
 class CustomBusinessMonthEnd(_CustomBusinessMonth): ...
