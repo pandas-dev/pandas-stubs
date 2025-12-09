@@ -3991,10 +3991,10 @@ def test_to_dict_into_defaultdict() -> None:
     """Test DataFrame.to_dict with `into` is an instance of defaultdict[Any, list]"""
 
     data = pd.DataFrame({("str", "rts"): [[1, 2, 4], [2, 3], [3]]})
-    target: defaultdict[Any, list] = defaultdict(list)
+    target: defaultdict[Hashable, list[Any]] = defaultdict(list)
 
     check(
-        assert_type(data.to_dict(into=target), defaultdict[Any, list]),
+        assert_type(data.to_dict(into=target), defaultdict[Hashable, list[Any]]),
         defaultdict,
         tuple,
     )
@@ -4011,7 +4011,9 @@ def test_to_dict_into_defaultdict() -> None:
         str,
     )
     check(
-        assert_type(data.to_dict("records", into=target), list[defaultdict[Any, list]]),
+        assert_type(
+            data.to_dict("records", into=target), list[defaultdict[Hashable, list[Any]]]
+        ),
         list,
         defaultdict,
     )

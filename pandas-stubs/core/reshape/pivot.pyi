@@ -35,7 +35,7 @@ from pandas._typing import (
 _PivotAggCallable: TypeAlias = Callable[[Series], ScalarT]
 
 _PivotAggFunc: TypeAlias = (
-    _PivotAggCallable
+    _PivotAggCallable[ScalarT]
     | np.ufunc
     | Literal["mean", "sum", "count", "min", "max", "median", "std", "var"]
 )
@@ -67,11 +67,17 @@ _Values: TypeAlias = SequenceNotStr[Any] | _ExtendedAnyArrayLike
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes = None,
-    index: _PivotTableIndexTypes = None,
-    columns: _PivotTableColumnsTypes = None,
+    values: _PivotTableValuesTypes[
+        Hashable  # ty: ignore[invalid-type-arguments]
+    ] = None,
+    index: _PivotTableIndexTypes[Hashable] = None,  # ty: ignore[invalid-type-arguments]
+    columns: _PivotTableColumnsTypes[
+        Hashable  # ty: ignore[invalid-type-arguments]
+    ] = None,
     aggfunc: (
-        _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
+        _PivotAggFunc[Scalar]
+        | Sequence[_PivotAggFunc[Scalar]]
+        | Mapping[Hashable, _PivotAggFunc[Scalar]]
     ) = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
@@ -85,12 +91,20 @@ def pivot_table(
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes = None,
+    values: _PivotTableValuesTypes[
+        Hashable  # ty: ignore[invalid-type-arguments]
+    ] = None,
     *,
     index: Grouper,
-    columns: _PivotTableColumnsTypes | np_ndarray | Index[Any] = None,
+    columns: (
+        _PivotTableColumnsTypes[Hashable]  # ty: ignore[invalid-type-arguments]
+        | np_ndarray
+        | Index[Any]
+    ) = None,
     aggfunc: (
-        _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
+        _PivotAggFunc[Scalar]
+        | Sequence[_PivotAggFunc[Scalar]]
+        | Mapping[Hashable, _PivotAggFunc[Scalar]]
     ) = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
@@ -102,12 +116,20 @@ def pivot_table(
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes = None,
-    index: _PivotTableIndexTypes | np_ndarray | Index[Any] = None,
+    values: _PivotTableValuesTypes[
+        Hashable  # ty: ignore[invalid-type-arguments]
+    ] = None,
+    index: (
+        _PivotTableIndexTypes[Hashable]  # ty: ignore[invalid-type-arguments]
+        | np_ndarray
+        | Index[Any]
+    ) = None,
     *,
     columns: Grouper,
     aggfunc: (
-        _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
+        _PivotAggFunc[Scalar]
+        | Sequence[_PivotAggFunc[Scalar]]
+        | Mapping[Hashable, _PivotAggFunc[Scalar]]
     ) = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
