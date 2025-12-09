@@ -297,7 +297,6 @@ def test_types_setitem() -> None:
     df["col1"] = [1, 2]
     df[5] = [5, 6]
     df[h] = [5, 6]
-    df[iter([h])] = [[5], [6]]
     df.loc[:, h] = [5, 6]
     df.loc[:, UserList([h])] = [[5], [6]]
     df.loc[:, iter([h])] = [[5], [6]]

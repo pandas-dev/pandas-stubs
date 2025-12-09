@@ -300,7 +300,12 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     def __setitem__(
         self,
         key: (
-            MaskType | Hashable | _IndexSliceTuple | list[ScalarT] | IndexingInt | slice
+            MaskType
+            | Hashable
+            | _IndexSliceTuple
+            | Iterable[Scalar]
+            | IndexingInt
+            | slice
         ),
         value: (
             Scalar
