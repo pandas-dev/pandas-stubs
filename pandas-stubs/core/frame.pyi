@@ -283,8 +283,29 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     @overload
     def __setitem__(
         self,
+        key: tuple[_IndexSliceTuple, Hashable],
+        value: (
+            Scalar
+            | NAType
+            | NaTType
+            | ArrayLike
+            | IndexOpsMixin
+            | Sequence[Scalar]
+            | Sequence[Sequence[Scalar]]
+            | Mapping[Hashable, Scalar | NAType | NaTType]
+            | None
+        ),
+    ) -> None: ...
+    @overload
+    def __setitem__(
+        self,
         key: (
-            MaskType | StrLike | _IndexSliceTuple | list[ScalarT] | IndexingInt | slice
+            MaskType
+            | Hashable
+            | _IndexSliceTuple
+            | Iterable[Scalar]
+            | IndexingInt
+            | slice
         ),
         value: (
             Scalar
@@ -295,22 +316,6 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
             | Sequence[Scalar]
             | Sequence[Sequence[Scalar]]
             | DataFrame
-            | Mapping[Hashable, Scalar | NAType | NaTType]
-            | None
-        ),
-    ) -> None: ...
-    @overload
-    def __setitem__(
-        self,
-        key: tuple[_IndexSliceTuple, Hashable],
-        value: (
-            Scalar
-            | NAType
-            | NaTType
-            | ArrayLike
-            | IndexOpsMixin
-            | Sequence[Scalar]
-            | Sequence[Sequence[Scalar]]
             | Mapping[Hashable, Scalar | NAType | NaTType]
             | None
         ),
@@ -848,8 +853,29 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def __setitem__(
         self,
+        idx: tuple[_IndexSliceTuple, Hashable],
+        value: (
+            Scalar
+            | NAType
+            | NaTType
+            | ArrayLike
+            | IndexOpsMixin
+            | Sequence[Scalar]
+            | Sequence[Sequence[Scalar]]
+            | Mapping[Hashable, Scalar | NAType | NaTType]
+            | None
+        ),
+    ) -> None: ...
+    @overload
+    def __setitem__(
+        self,
         idx: (
-            MaskType | StrLike | _IndexSliceTuple | list[ScalarT] | IndexingInt | slice
+            MaskType
+            | Hashable
+            | _IndexSliceTuple
+            | Iterable[Scalar]
+            | IndexingInt
+            | slice
         ),
         value: (
             Scalar
@@ -860,22 +886,6 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
             | Sequence[Scalar]
             | Sequence[Sequence[Scalar]]
             | DataFrame
-            | Mapping[Hashable, Scalar | NAType | NaTType]
-            | None
-        ),
-    ) -> None: ...
-    @overload
-    def __setitem__(
-        self,
-        idx: tuple[_IndexSliceTuple, Hashable],
-        value: (
-            Scalar
-            | NAType
-            | NaTType
-            | ArrayLike
-            | IndexOpsMixin
-            | Sequence[Scalar]
-            | Sequence[Sequence[Scalar]]
             | Mapping[Hashable, Scalar | NAType | NaTType]
             | None
         ),
