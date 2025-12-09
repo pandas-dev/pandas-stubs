@@ -40,7 +40,6 @@ def assert_almost_equal(
     atol: float = 1e-8,
     **kwargs: Any,
 ) -> None: ...
-def assert_dict_equal(left: dict, right: dict, compare_keys: bool = True) -> None: ...
 def assert_index_equal(
     left: Index,
     right: Index,

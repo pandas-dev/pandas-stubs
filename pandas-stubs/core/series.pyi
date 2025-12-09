@@ -1170,7 +1170,13 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def apply(
         self,
         func: Callable[
-            ..., Scalar | Sequence[Any] | AbstractSet[Any] | Mapping | NAType | None
+            ...,
+            Scalar
+            | Sequence[Any]
+            | AbstractSet[Any]
+            | Mapping[Hashable, Any]
+            | NAType
+            | None,
         ],
         convertDType: _bool = ...,
         args: tuple[Any, ...] = ...,

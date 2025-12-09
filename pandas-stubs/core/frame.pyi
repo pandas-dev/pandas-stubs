@@ -13,6 +13,7 @@ from collections.abc import (
     Iterator,
     Mapping,
     MutableMapping,
+    MutableSequence,
     Sequence,
 )
 import datetime as dt
@@ -550,7 +551,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["split", "tight"],
         *,
-        into: MutableMapping | type[MutableMapping],
+        into: MutableMapping[Hashable, Any] | type[MutableMapping],
         index: bool = ...,
     ) -> MutableMapping[str, list[Any]]: ...
     @overload
@@ -907,7 +908,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         engine: Literal["python", "numexpr"] | None = ...,
         local_dict: dict[_str, Any] | None = ...,
         global_dict: dict[_str, Any] | None = ...,
-        resolvers: list[Mapping] | None = ...,
+        resolvers: MutableSequence[Mapping[Hashable, Any]] | None = ...,
         level: int = ...,
         target: object | None = ...,
         inplace: Literal[True],
@@ -922,7 +923,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         engine: Literal["python", "numexpr"] | None = ...,
         local_dict: dict[_str, Any] | None = ...,
         global_dict: dict[_str, Any] | None = ...,
-        resolvers: list[Mapping] | None = ...,
+        resolvers: MutableSequence[Mapping[Hashable, Any]] | None = ...,
         level: int = ...,
         target: object | None = ...,
     ) -> Self: ...
