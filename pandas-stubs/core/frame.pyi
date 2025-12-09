@@ -870,7 +870,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def __setitem__(
         self,
         idx: (
-            MaskType | Hashable | _IndexSliceTuple | list[ScalarT] | IndexingInt | slice
+            MaskType
+            | Hashable
+            | _IndexSliceTuple
+            | Iterable[Scalar]
+            | IndexingInt
+            | slice
         ),
         value: (
             Scalar
