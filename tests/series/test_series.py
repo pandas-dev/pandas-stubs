@@ -4087,4 +4087,4 @@ def test_series_add_str() -> None:
     df = pd.DataFrame({0: ["a", "b"]})
     sr = df[0]
 
-    check(assert_type(sr.__add__("c1"), pd.Series), pd.Series, str)
+    check(assert_type(sr + "c1", pd.Series), pd.Series, str)
