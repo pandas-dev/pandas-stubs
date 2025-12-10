@@ -776,7 +776,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def to_dict(self, *, into: type[dict] = ...) -> dict[Any, S1]: ...
     @overload
     def to_dict(
-        self, *, into: type[MutableMapping] | MutableMapping
+        self, *, into: type[MutableMapping] | MutableMapping[Any, Any]
     ) -> MutableMapping[Hashable, S1]: ...
     def to_frame(self, name: object | None = ...) -> DataFrame: ...
     @overload
@@ -1104,7 +1104,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def unstack(
         self,
         level: IndexLabel = -1,
-        fill_value: int | _str | dict | None = None,
+        fill_value: int | _str | dict[Any, Any] | None = None,
         sort: _bool = True,
     ) -> DataFrame: ...
     @overload
@@ -1170,7 +1170,13 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def apply(
         self,
         func: Callable[
-            ..., Scalar | Sequence[Any] | AbstractSet[Any] | Mapping | NAType | None
+            ...,
+            Scalar
+            | Sequence[Any]
+            | AbstractSet[Any]
+            | Mapping[Any, Any]
+            | NAType
+            | None,
         ],
         convertDType: _bool = ...,
         args: tuple[Any, ...] = ...,
@@ -1258,7 +1264,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def fillna(
         self,
-        value: Scalar | NAType | dict | Series[S1] | DataFrame | None = ...,
+        value: Scalar | NAType | dict[Any, Any] | Series[S1] | DataFrame | None = ...,
         *,
         axis: AxisIndex = ...,
         limit: int | None = ...,
@@ -1267,7 +1273,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def fillna(
         self,
-        value: Scalar | NAType | dict | Series[S1] | DataFrame | None = ...,
+        value: Scalar | NAType | dict[Any, Any] | Series[S1] | DataFrame | None = ...,
         *,
         axis: AxisIndex = ...,
         limit: int | None = ...,
@@ -4637,7 +4643,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def rename_axis(
         self,
         *,
-        index: Scalar | ListLike | Callable[..., Any] | dict | None = ...,
+        index: Scalar | ListLike | Callable[..., Any] | dict[Any, Any] | None = ...,
         copy: _bool = ...,
         inplace: Literal[True],
     ) -> None: ...
@@ -4646,7 +4652,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def rename_axis(
         self,
         *,
-        index: Scalar | ListLike | Callable[..., Any] | dict | None = ...,
+        index: Scalar | ListLike | Callable[..., Any] | dict[Any, Any] | None = ...,
         copy: _bool = ...,
         inplace: Literal[False] = False,
     ) -> Self: ...

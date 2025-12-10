@@ -13,6 +13,7 @@ from collections.abc import (
     Iterator,
     Mapping,
     MutableMapping,
+    MutableSequence,
     Sequence,
 )
 import datetime as dt
@@ -507,7 +508,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["index"],
         *,
-        into: defaultdict,
+        into: defaultdict[Any, Any],
         index: Literal[True] = True,
     ) -> defaultdict[Hashable, dict[Hashable, Any]]: ...
     @overload
@@ -555,7 +556,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["split", "tight"],
         *,
-        into: MutableMapping | type[MutableMapping],
+        into: MutableMapping[Any, Any] | type[MutableMapping],
         index: bool = ...,
     ) -> MutableMapping[str, list[Any]]: ...
     @overload
@@ -917,7 +918,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         engine: Literal["python", "numexpr"] | None = ...,
         local_dict: dict[_str, Any] | None = ...,
         global_dict: dict[_str, Any] | None = ...,
-        resolvers: list[Mapping] | None = ...,
+        resolvers: MutableSequence[Mapping[Any, Any]] | None = ...,
         level: int = ...,
         target: object | None = ...,
         inplace: Literal[True],
@@ -932,7 +933,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         engine: Literal["python", "numexpr"] | None = ...,
         local_dict: dict[_str, Any] | None = ...,
         global_dict: dict[_str, Any] | None = ...,
-        resolvers: list[Mapping] | None = ...,
+        resolvers: MutableSequence[Mapping[Any, Any]] | None = ...,
         level: int = ...,
         target: object | None = ...,
     ) -> Self: ...
@@ -1032,7 +1033,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def fillna(
         self,
-        value: Scalar | NAType | dict | Series | DataFrame | None = ...,
+        value: Scalar | NAType | dict[Any, Any] | Series | DataFrame | None = ...,
         *,
         axis: Axis | None = ...,
         limit: int = ...,
@@ -1042,7 +1043,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def fillna(
         self,
-        value: Scalar | NAType | dict | Series | DataFrame | None = ...,
+        value: Scalar | NAType | dict[Any, Any] | Series | DataFrame | None = ...,
         *,
         axis: Axis | None = ...,
         limit: int = ...,
@@ -1725,7 +1726,10 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         validate: MergeValidate | None = None,
     ) -> Self: ...
     def round(
-        self, decimals: int | dict | Series = ..., *args: Any, **kwargs: Any
+        self,
+        decimals: int | dict[Any, Any] | Series = ...,
+        *args: Any,
+        **kwargs: Any,
     ) -> Self: ...
     def corr(
         self,
@@ -2675,7 +2679,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         compression: CompressionOptions = ...,
         index: _bool | None = ...,
         indent: int | None = ...,
-        storage_options: dict | None = ...,
+        storage_options: dict[Any, Any] | None = ...,
         mode: Literal["a"],
     ) -> None: ...
     @overload
@@ -2693,7 +2697,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         compression: CompressionOptions = ...,
         index: _bool | None = ...,
         indent: int | None = ...,
-        storage_options: dict | None = ...,
+        storage_options: dict[Any, Any] | None = ...,
         mode: Literal["a"],
     ) -> _str: ...
     @overload
@@ -2711,7 +2715,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         compression: CompressionOptions = ...,
         index: _bool | None = ...,
         indent: int | None = ...,
-        storage_options: dict | None = ...,
+        storage_options: dict[Any, Any] | None = ...,
         mode: Literal["w"] = ...,
     ) -> _str: ...
     @overload
@@ -2729,7 +2733,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         compression: CompressionOptions = ...,
         index: _bool | None = ...,
         indent: int | None = ...,
-        storage_options: dict | None = ...,
+        storage_options: dict[Any, Any] | None = ...,
         mode: Literal["w"] = ...,
     ) -> None: ...
     @overload
