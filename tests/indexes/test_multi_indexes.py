@@ -9,6 +9,7 @@ from tests import (
     check,
 )
 from tests._typing import (
+    np_1darray_bool,
     np_1darray_int8,
     np_1darray_intp,
 )
@@ -88,3 +89,10 @@ def test_multiindex_equal_levels() -> None:
     mi2 = pd.MultiIndex.from_arrays([[1, 2, 3, 1], [4, 5, 6, 4]])
     eq = mi.equal_levels(mi2)
     check(assert_type(eq, bool), bool)
+
+
+def test_multiindex_get_loc_level() -> None:
+    mi = pd.MultiIndex.from_arrays([[1, 2, 3, 1], [4, 5, 6, 4]])
+    res_0, res_1 = mi.get_loc_level(1, level=0)
+    check(assert_type(res_0, int | slice | np_1darray_bool), np_1darray_bool)
+    check(assert_type(res_1, pd.Index), pd.Index)
