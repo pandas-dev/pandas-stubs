@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import (
     UserDict,
     UserList,
+    deque,
 )
 from collections.abc import (
     Hashable,
@@ -12,12 +13,15 @@ import datetime
 from enum import Enum
 import itertools
 from typing import (
+    TYPE_CHECKING,
     Any,
     cast,
 )
 
 import numpy as np
+from numpy import typing as npt
 import pandas as pd
+import pytest
 from typing_extensions import assert_type
 
 from pandas._typing import Scalar
@@ -417,3 +421,174 @@ def test_frame_setitem_na() -> None:
     df["x"] = cast("pd.Series[pd.Timestamp]", df["y"]) + pd.Timedelta(days=3)
     df.loc[ind, :] = pd.NaT
     df.iloc[[0, 2], :] = pd.NaT
+
+
+def test_loc_set() -> None:
+    df = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
+    df.loc["a"] = [3, 4]
+
+
+def test_loc_int_set() -> None:
+    df = pd.DataFrame({1: [1, 2], 2: [3, 4]})
+    df.loc[1] = [3, 4]
+    df.loc[np.int_(1)] = pd.Series([1, 2])
+    df.loc[np.uint(1)] = pd.Series([1, 2])
+    df.loc[np.int8(1)] = pd.Series([1, 2])
+    df.loc[np.int32(1)] = [2, 3]
+    df.loc[np.uint64(1)] = [2, 3]
+
+
+@pytest.mark.parametrize("col", [1, None])
+@pytest.mark.parametrize("typ", [list, tuple, deque, UserList, iter])
+def test_loc_iterable(col: Hashable, typ: type) -> None:
+    # GH 189, GH 1410
+    df = pd.DataFrame({1: [1, 2], None: 5}, columns=pd.Index([1, None], dtype=object))
+    check(df.loc[:, typ([col])], pd.DataFrame)
+
+    if TYPE_CHECKING:
+        assert_type(df.loc[:, [None]], pd.DataFrame)
+        assert_type(df.loc[:, [1]], pd.DataFrame)
+
+        assert_type(df.loc[:, (None,)], pd.DataFrame)
+        assert_type(df.loc[:, (1,)], pd.DataFrame)
+
+        assert_type(df.loc[:, deque([None])], pd.DataFrame)
+        assert_type(df.loc[:, deque([1])], pd.DataFrame)
+
+        assert_type(df.loc[:, UserList([None])], pd.DataFrame)
+        assert_type(df.loc[:, UserList([1])], pd.DataFrame)
+
+        assert_type(df.loc[:, (None for _ in [0])], pd.DataFrame)
+        assert_type(df.loc[:, (1 for _ in [0])], pd.DataFrame)
+
+
+def test_loc_slice() -> None:
+    """Test DataFrame.loc with a slice, Index, Series."""
+    # GH277
+    df1 = pd.DataFrame(
+        {"x": [1, 2, 3, 4]},
+        index=pd.MultiIndex.from_product([[1, 2], ["a", "b"]], names=["num", "let"]),
+    )
+    check(assert_type(df1.loc[1, :], pd.Series | pd.DataFrame), pd.DataFrame)
+    check(assert_type(df1[::-1], pd.DataFrame), pd.DataFrame)
+
+    # GH1299
+    ind = pd.Index(["a", "b"])
+    mask = pd.Series([True, False])
+    mask_col = pd.Series([True, False], index=pd.Index(["a", "b"]))
+    df = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
+
+    # loc with index for columns
+    check(assert_type(df.loc[mask, ind], pd.DataFrame), pd.DataFrame)
+    # loc with index for columns
+    check(assert_type(df.loc[mask, mask_col], pd.DataFrame), pd.DataFrame)
+
+
+def test_loc_callable() -> None:
+    # GH 256
+    df = pd.DataFrame({"x": [1, 2, 3], "y": [4, 5, 6]})
+
+    def select1(df: pd.DataFrame) -> pd.Series:
+        return df["x"] > 2.0
+
+    check(assert_type(df.loc[select1], pd.DataFrame), pd.DataFrame)
+    check(assert_type(df.loc[select1, :], pd.DataFrame), pd.DataFrame)
+
+    def select2(df: pd.DataFrame) -> list[Hashable]:
+        return [i for i in df.index if cast(int, i) % 2 == 1]
+
+    check(assert_type(df.loc[select2, "x"], pd.Series), pd.Series)
+
+    def select3(_: pd.DataFrame) -> int:
+        return 1
+
+    check(assert_type(df.loc[select3, "x"], Scalar), np.integer)
+
+    check(
+        assert_type(df.loc[:, lambda df: df.columns.str.startswith("x")], pd.DataFrame),
+        pd.DataFrame,
+    )
+
+
+def test_npint_loc_indexer() -> None:
+    # GH 508
+
+    df = pd.DataFrame({"x": [1, 2, 3]}, index=np.array([10, 20, 30], dtype="uint64"))
+
+    def get_NDArray(df: pd.DataFrame, key: npt.NDArray[np.uint64]) -> pd.DataFrame:
+        return df.loc[key]
+
+    a: npt.NDArray[np.uint64] = np.array([10, 30], dtype="uint64")
+    check(assert_type(get_NDArray(df, a), pd.DataFrame), pd.DataFrame)
+
+
+def test_loc_list_str() -> None:
+    # GH 1162 (PR)
+    df = pd.DataFrame(
+        [[1, 2], [4, 5], [7, 8]],
+        index=["cobra", "viper", "sidewinder"],
+        columns=["max_speed", "shield"],
+    )
+
+    result = df.loc[["viper", "sidewinder"]]
+    check(assert_type(result, pd.DataFrame), pd.DataFrame)
+
+
+def test_loc_returns_series() -> None:
+    df1 = pd.DataFrame({"x": [1, 2, 3, 4]}, index=[10, 20, 30, 40])
+    df2 = df1.loc[10, :]
+    check(assert_type(df2, pd.Series | pd.DataFrame), pd.Series)
+
+
+def test_frame_single_slice() -> None:
+    # GH 572
+    df = pd.DataFrame([1, 2, 3])
+    check(assert_type(df.loc[:], pd.DataFrame), pd.DataFrame)
+
+    df.loc[:] = 1 + df
+
+
+def test_frame_index_timestamp() -> None:
+    # GH 620
+    dt1 = pd.to_datetime("2023-05-01")
+    dt2 = pd.to_datetime("2023-05-02")
+    s = pd.Series([1, 2], index=[dt1, dt2])
+    df = pd.DataFrame(s)
+    # Next result is Series or DataFrame because the index could be a MultiIndex
+    check(assert_type(df.loc[dt1, :], pd.Series | pd.DataFrame), pd.Series)
+    check(assert_type(df.loc[[dt1], :], pd.DataFrame), pd.DataFrame)
+    df2 = pd.DataFrame({"x": s})
+    check(assert_type(df2.loc[dt1, "x"], Scalar), np.integer)
+    check(assert_type(df2.loc[[dt1], "x"], pd.Series), pd.Series, np.integer)
+
+
+def test_df_loc_dict() -> None:
+    """Test that we can set a dict to a df.loc result GH1203."""
+    df = pd.DataFrame(columns=["X"])
+    df.loc[0] = {"X": 0}
+    check(assert_type(df, pd.DataFrame), pd.DataFrame)
+
+    df.iloc[0] = {"X": 0}
+    check(assert_type(df, pd.DataFrame), pd.DataFrame)
+
+
+def test_iloc_npint() -> None:
+    # GH 69
+    df = pd.DataFrame({"a": [10, 20, 30], "b": [20, 40, 60], "c": [30, 60, 90]})
+    iloc = np.argmin(np.random.standard_normal(3))
+    df.iloc[iloc]
+
+
+# https://github.com/pandas-dev/pandas-stubs/issues/143
+def test_iloc_tuple() -> None:
+    df = pd.DataFrame({"Char": ["A", "B", "C"], "Number": [1, 2, 3]})
+    df = df.iloc[0:2,]
+
+
+def test_frame_ndarray_assignmment() -> None:
+    # GH 100
+    df_a = pd.DataFrame({"a": [0.0] * 10})
+    df_a.iloc[:, :] = np.array([[-1.0]] * 10)
+
+    df_b = pd.DataFrame({"a": [0.0] * 10, "b": [1.0] * 10})
+    df_b.iloc[:, :] = np.array([[-1.0, np.inf]] * 10)
