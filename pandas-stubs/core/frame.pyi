@@ -178,7 +178,7 @@ from pandas.plotting import PlotAccessor
 from pandas.plotting._core import _BoxPlotT
 
 _T_MUTABLE_MAPPING_co = TypeVar(
-    "_T_MUTABLE_MAPPING_co", bound=MutableMapping, covariant=True
+    "_T_MUTABLE_MAPPING_co", bound=MutableMapping[Any, Any], covariant=True
 )
 
 class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
@@ -484,7 +484,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: str = ...,
         *,
-        into: type[defaultdict],
+        into: type[defaultdict[Any, Any]],
         index: Literal[True] = True,
     ) -> Never: ...
     @overload
@@ -500,7 +500,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["records"],
         *,
-        into: type[dict] = ...,
+        into: type[dict[Any, Any]] = ...,
         index: Literal[True] = True,
     ) -> list[dict[Hashable, Any]]: ...
     @overload
@@ -516,7 +516,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["index"],
         *,
-        into: OrderedDict | type[OrderedDict],
+        into: OrderedDict[Any, Any] | type[OrderedDict[Any, Any]],
         index: Literal[True] = True,
     ) -> OrderedDict[Hashable, dict[Hashable, Any]]: ...
     @overload
@@ -524,7 +524,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["index"],
         *,
-        into: type[MutableMapping],
+        into: type[MutableMapping[Any, Any]],
         index: Literal[True] = True,
     ) -> MutableMapping[Hashable, dict[Hashable, Any]]: ...
     @overload
@@ -532,7 +532,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["index"],
         *,
-        into: type[dict] = ...,
+        into: type[dict[Any, Any]] = ...,
         index: Literal[True] = True,
     ) -> dict[Hashable, dict[Hashable, Any]]: ...
     @overload
@@ -548,7 +548,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["dict", "list", "series"] = ...,
         *,
-        into: type[dict] = ...,
+        into: type[dict[Any, Any]] = ...,
         index: Literal[True] = True,
     ) -> dict[Hashable, Any]: ...
     @overload
@@ -556,7 +556,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["split", "tight"],
         *,
-        into: MutableMapping[Any, Any] | type[MutableMapping],
+        into: MutableMapping[Any, Any] | type[MutableMapping[Any, Any]],
         index: bool = ...,
     ) -> MutableMapping[str, list[Any]]: ...
     @overload
@@ -564,7 +564,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["split", "tight"],
         *,
-        into: type[dict] = ...,
+        into: type[dict[Any, Any]] = ...,
         index: bool = ...,
     ) -> dict[str, list[Any]]: ...
     @classmethod
@@ -583,16 +583,29 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         coerce_float: bool = False,
         nrows: int | None = None,
     ) -> Self: ...
-    def to_records(
-        self,
-        index: _bool = True,
-        column_dtypes: (
-            _str | npt.DTypeLike | Mapping[HashableT1, npt.DTypeLike] | None
-        ) = None,
-        index_dtypes: (
-            _str | npt.DTypeLike | Mapping[HashableT2, npt.DTypeLike] | None
-        ) = None,
-    ) -> np.recarray: ...
+    if sys.version_info >= (3, 11):
+        def to_records(
+            self,
+            index: _bool = True,
+            column_dtypes: (
+                _str | npt.DTypeLike | Mapping[HashableT1, npt.DTypeLike] | None
+            ) = None,
+            index_dtypes: (
+                _str | npt.DTypeLike | Mapping[HashableT2, npt.DTypeLike] | None
+            ) = None,
+        ) -> np.recarray: ...
+    else:
+        def to_records(
+            self,
+            index: _bool = True,
+            column_dtypes: (
+                _str | npt.DTypeLike | Mapping[HashableT1, npt.DTypeLike] | None
+            ) = None,
+            index_dtypes: (
+                _str | npt.DTypeLike | Mapping[HashableT2, npt.DTypeLike] | None
+            ) = None,
+        ) -> np.recarray[Any, Any]: ...
+
     @overload
     def to_stata(
         self,
@@ -1052,21 +1065,33 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def replace(
         self,
-        to_replace: ReplaceValue | Mapping[HashableT2, ReplaceValue] = ...,
-        value: ReplaceValue | Mapping[HashableT3, ReplaceValue] = ...,
+        to_replace: (
+            ReplaceValue[Any, Any] | Mapping[HashableT2, ReplaceValue[Any, Any]]
+        ) = ...,
+        value: (
+            ReplaceValue[Any, Any] | Mapping[HashableT3, ReplaceValue[Any, Any]]
+        ) = ...,
         *,
         inplace: Literal[True],
-        regex: ReplaceValue | Mapping[HashableT3, ReplaceValue] = ...,
+        regex: (
+            ReplaceValue[Any, Any] | Mapping[HashableT3, ReplaceValue[Any, Any]]
+        ) = ...,
         # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def replace(
         self,
-        to_replace: ReplaceValue | Mapping[HashableT2, ReplaceValue] = ...,
-        value: ReplaceValue | Mapping[HashableT3, ReplaceValue] = ...,
+        to_replace: (
+            ReplaceValue[Any, Any] | Mapping[HashableT2, ReplaceValue[Any, Any]]
+        ) = ...,
+        value: (
+            ReplaceValue[Any, Any] | Mapping[HashableT3, ReplaceValue[Any, Any]]
+        ) = ...,
         *,
         inplace: Literal[False] = False,
-        regex: ReplaceValue | Mapping[HashableT3, ReplaceValue] = ...,
+        regex: (
+            ReplaceValue[Any, Any] | Mapping[HashableT3, ReplaceValue[Any, Any]]
+        ) = ...,
     ) -> Self: ...
     def shift(
         self,
@@ -1381,7 +1406,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         dropna: _bool = ...,
     ) -> DataFrameGroupBy[Period, Literal[False]]: ...
     @overload
-    def groupby(  # pyright: ignore reportOverlappingOverload
+    def groupby(
         self,
         by: IntervalIndex[IntervalT],
         level: IndexLabel | None = ...,
@@ -1394,7 +1419,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def groupby(
         self,
-        by: IntervalIndex[IntervalT],
+        by: IntervalIndex,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = False,
         sort: _bool = ...,
@@ -1405,7 +1430,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def groupby(  # type: ignore[overload-overlap] # pyright: ignore reportOverlappingOverload
         self,
-        by: MultiIndex | GroupByObjectNonScalar | None = ...,
+        by: MultiIndex | GroupByObjectNonScalar[Any] | None = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[True] = True,
         sort: _bool = ...,
@@ -1416,7 +1441,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def groupby(  # type: ignore[overload-overlap]
         self,
-        by: MultiIndex | GroupByObjectNonScalar | None = ...,
+        by: MultiIndex | GroupByObjectNonScalar[Any] | None = ...,
         level: IndexLabel | None = ...,
         as_index: Literal[False] = False,
         sort: _bool = ...,
@@ -1477,11 +1502,17 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> Self: ...
     def pivot_table(
         self,
-        values: _PivotTableValuesTypes = None,
-        index: _PivotTableIndexTypes = None,
-        columns: _PivotTableColumnsTypes = None,
+        values: _PivotTableValuesTypes[
+            Any  # ty: ignore[invalid-type-arguments]
+        ] = None,
+        index: _PivotTableIndexTypes[Any] = None,  # ty: ignore[invalid-type-arguments]
+        columns: _PivotTableColumnsTypes[
+            Any  # ty: ignore[invalid-type-arguments]
+        ] = None,
         aggfunc: (
-            _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
+            _PivotAggFunc[Any]
+            | Sequence[_PivotAggFunc[Any]]
+            | Mapping[Hashable, _PivotAggFunc[Any]]
         ) = "mean",
         fill_value: Scalar | None = None,
         margins: _bool = False,
@@ -1876,7 +1907,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def boxplot(
         self,
-        by: Hashable | ListLikeHashable,
+        by: Hashable | ListLikeHashable[Any],
         ax: PlotAxes | None = None,
         fontsize: float | _str | None = None,
         rot: float = 0,
@@ -1891,7 +1922,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @overload
     def boxplot(
         self,
-        by: Hashable | ListLikeHashable,
+        by: Hashable | ListLikeHashable[Any],
         ax: PlotAxes | None = None,
         fontsize: float | _str | None = None,
         rot: float = 0,
@@ -2634,7 +2665,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         **kwargs: Any,
     ) -> Series: ...
     # Not actually positional, but used to handle removal of deprecated
-    def set_axis(self, labels: AxesData, *, axis: Axis = 0) -> Self: ...
+    def set_axis(self, labels: AxesData[Any], *, axis: Axis = 0) -> Self: ...
     def skew(
         self,
         axis: Axis | None = ...,
@@ -2863,8 +2894,12 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     def __rfloordiv__(
         self, other: float | DataFrame | Series[int] | Series[float] | Sequence[float]
     ) -> Self: ...
-    def __truediv__(self, other: float | DataFrame | Series | Sequence) -> Self: ...
-    def __rtruediv__(self, other: float | DataFrame | Series | Sequence) -> Self: ...
+    def __truediv__(
+        self, other: float | DataFrame | Series | Sequence[Any]
+    ) -> Self: ...
+    def __rtruediv__(
+        self, other: float | DataFrame | Series | Sequence[Any]
+    ) -> Self: ...
     @final
     def __bool__(self) -> NoReturn: ...
 

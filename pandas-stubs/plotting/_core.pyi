@@ -45,7 +45,7 @@ _PlotAccessorColor: TypeAlias = str | list[_SingleColor] | dict[HashableT, _Sing
 @overload
 def boxplot(
     data: DataFrame,
-    column: Hashable | ListLikeHashable,
+    column: Hashable | ListLikeHashable[Any],
     by: None = None,
     ax: Axes | None = None,
     fontsize: float | str | None = None,
@@ -61,7 +61,7 @@ def boxplot(
 @overload
 def boxplot(
     data: DataFrame,
-    column: Hashable | ListLikeHashable,
+    column: Hashable | ListLikeHashable[Any],
     by: None = None,
     ax: Axes | None = None,
     fontsize: float | str | None = None,
@@ -77,7 +77,7 @@ def boxplot(
 @overload
 def boxplot(
     data: DataFrame,
-    column: Hashable | ListLikeHashable,
+    column: Hashable | ListLikeHashable[Any],
     by: None = None,
     ax: Axes | None = None,
     fontsize: float | str | None = None,
@@ -93,8 +93,8 @@ def boxplot(
 @overload
 def boxplot(
     data: DataFrame,
-    column: Hashable | ListLikeHashable,
-    by: Hashable | ListLikeHashable,
+    column: Hashable | ListLikeHashable[Any],
+    by: Hashable | ListLikeHashable[Any],
     ax: Axes | None = None,
     fontsize: float | str | None = None,
     rot: float = 0,
@@ -109,8 +109,8 @@ def boxplot(
 @overload
 def boxplot(
     data: DataFrame,
-    column: Hashable | ListLikeHashable,
-    by: Hashable | ListLikeHashable,
+    column: Hashable | ListLikeHashable[Any],
+    by: Hashable | ListLikeHashable[Any],
     ax: Axes | None = None,
     fontsize: float | str | None = None,
     rot: float = 0,
@@ -282,7 +282,7 @@ class PlotAccessor:
         self,
         x: Hashable = ...,
         y: Hashable = ...,
-        color: _PlotAccessorColor = ...,
+        color: _PlotAccessorColor[Any] = ...,
         *,
         subplots: Literal[False] | None = ...,
         **kwargs: Any,
@@ -292,7 +292,7 @@ class PlotAccessor:
         self,
         x: Hashable = ...,
         y: Hashable = ...,
-        color: _PlotAccessorColor = ...,
+        color: _PlotAccessorColor[Any] = ...,
         *,
         subplots: Literal[True],
         **kwargs: Any,
@@ -302,7 +302,7 @@ class PlotAccessor:
         self,
         x: Hashable = ...,
         y: Hashable = ...,
-        color: _PlotAccessorColor = ...,
+        color: _PlotAccessorColor[Any] = ...,
         *,
         subplots: Literal[False] | None = ...,
         **kwargs: Any,
@@ -312,7 +312,7 @@ class PlotAccessor:
         self,
         x: Hashable = ...,
         y: Hashable = ...,
-        color: _PlotAccessorColor = ...,
+        color: _PlotAccessorColor[Any] = ...,
         *,
         subplots: Literal[True],
         **kwargs: Any,
@@ -322,7 +322,7 @@ class PlotAccessor:
         self,
         x: Hashable = ...,
         y: Hashable = ...,
-        color: _PlotAccessorColor = ...,
+        color: _PlotAccessorColor[Any] = ...,
         subplots: Literal[False] | None = ...,
         **kwargs: Any,
     ) -> Axes: ...
@@ -331,7 +331,7 @@ class PlotAccessor:
         self,
         x: Hashable = ...,
         y: Hashable = ...,
-        color: _PlotAccessorColor = ...,
+        color: _PlotAccessorColor[Any] = ...,
         *,
         subplots: Literal[True],
         **kwargs: Any,

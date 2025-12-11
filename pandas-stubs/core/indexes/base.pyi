@@ -10,6 +10,7 @@ from datetime import (
     timedelta,
 )
 from pathlib import Path
+import sys
 from typing import (
     Any,
     ClassVar,
@@ -171,7 +172,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: AxesData,
+        data: AxesData[Any],
         *,
         dtype: Literal["int"] | type_t[int | np.integer],
         copy: bool = ...,
@@ -190,7 +191,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: AxesData,
+        data: AxesData[Any],
         dtype: FloatNotNumpy16DtypeArg,
         copy: bool = ...,
         name: Hashable = ...,
@@ -213,7 +214,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: AxesData,
+        data: AxesData[Any],
         *,
         dtype: Literal["complex"] | type_t[complex | np.complexfloating],
         copy: bool = ...,
@@ -236,7 +237,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: AxesData,
+        data: AxesData[Any],
         *,
         dtype: TimestampDtypeArg,
         copy: bool = ...,
@@ -256,7 +257,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: AxesData,
+        data: AxesData[Any],
         *,
         dtype: PeriodDtype,
         copy: bool = ...,
@@ -276,7 +277,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: AxesData,
+        data: AxesData[Any],
         *,
         dtype: TimedeltaDtypeArg,
         copy: bool = ...,
@@ -286,7 +287,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: AxesData,
+        data: AxesData[Any],
         *,
         dtype: CategoryDtypeArg,
         copy: bool = ...,
@@ -306,13 +307,13 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: AxesData,
+        data: AxesData[Any],
         *,
         dtype: Literal["Interval"],
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-    ) -> IntervalIndex[Interval[Any]]: ...
+    ) -> IntervalIndex[Interval[_OrderableT]]: ...
     @overload
     def __new__(
         cls,
@@ -337,7 +338,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: AxesData = ...,
+        data: AxesData[Any] = ...,
         *,
         dtype: type[S1],
         copy: bool = ...,
@@ -348,7 +349,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: AxesData,
+        data: AxesData[Any],
         *,
         dtype: Dtype = ...,
         copy: bool = ...,
@@ -371,9 +372,15 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @final
     def is_(self, other: Any) -> bool: ...
     def __len__(self) -> int: ...
-    def __array__(
-        self, dtype: _str | np.dtype = ..., copy: bool | None = ...
-    ) -> np_1darray: ...
+    if sys.version_info >= (3, 11):
+        def __array__(
+            self, dtype: _str | np.dtype = ..., copy: bool | None = ...
+        ) -> np_1darray: ...
+    else:
+        def __array__(
+            self, dtype: _str | np.dtype[Any] = ..., copy: bool | None = ...
+        ) -> np_1darray: ...
+
     @property
     def dtype(self) -> DtypeObj: ...
     @final

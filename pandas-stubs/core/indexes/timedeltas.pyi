@@ -7,6 +7,7 @@ from datetime import (
     timedelta,
 )
 from typing import (
+    Any,
     Literal,
     TypeAlias,
     final,
@@ -59,7 +60,9 @@ class TimedeltaIndex(
 ):
     def __new__(
         cls,
-        data: Sequence[timedelta | Timedelta | np.timedelta64 | float] | AxesData = ...,
+        data: (
+            Sequence[timedelta | Timedelta | np.timedelta64 | float] | AxesData[Any]
+        ) = ...,
         freq: Frequency = ...,
         closed: object = ...,
         dtype: Literal["<m8[ns]"] = ...,

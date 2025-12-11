@@ -8,6 +8,7 @@ from contextlib import (
 import sys
 from typing import (
     TYPE_CHECKING,
+    Any,
     Final,
     Literal,
     get_args,
@@ -160,7 +161,7 @@ def pytest_warns_bounded(
     upper: str | None = None,
     version_str: str | None = None,
     upper_exception: type[Exception] | None = None,
-) -> AbstractContextManager:
+) -> AbstractContextManager[Any]:
     """
     Version conditional pytest.warns context manager
 

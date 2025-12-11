@@ -230,8 +230,15 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
     def copy(self) -> DecimalArray:
         return type(self)(self._data.copy(), dtype=self.dtype)
 
-    @overload
-    def astype(self, dtype: np.dtype, copy: bool = True) -> np_1darray: ...
+    if sys.version_info >= (3, 11):
+
+        @overload
+        def astype(self, dtype: np.dtype, copy: bool = True) -> np_1darray: ...
+
+    else:
+
+        @overload
+        def astype(self, dtype: np.dtype[Any], copy: bool = True) -> np_1darray: ...
     @overload
     def astype(self, dtype: ExtensionDtype, copy: bool = True) -> ExtensionArray: ...
     @overload

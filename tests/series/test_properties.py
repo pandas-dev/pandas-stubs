@@ -1,4 +1,7 @@
-from typing import TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+)
+from typing import Any  # noqa: F401
 
 import numpy as np
 from pandas.core.arrays import DatetimeArray
@@ -44,7 +47,7 @@ def test_property_dt() -> None:
     check(
         assert_type(
             period_range(start="2022-06-01", periods=10).to_series().dt,
-            PeriodProperties,
+            "PeriodProperties[Any]",
         ),
         PeriodProperties,
     )
