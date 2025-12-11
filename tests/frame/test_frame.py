@@ -72,7 +72,6 @@ from pandas.tseries.offsets import (
 
 if TYPE_CHECKING:
     from pandas.core.frame import _PandasNamedTuple
-
 else:
     _PandasNamedTuple: TypeAlias = tuple
 
