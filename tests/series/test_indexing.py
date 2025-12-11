@@ -220,6 +220,10 @@ def test_series_setitem_na() -> None:
     s2.loc[ind] = pd.NaT
     s2.iloc[[0, 2]] = pd.NaT
 
+    sb = pd.Series([1, 2, 3], dtype=int)
+    sb.loc["y"] = None
+    sb.iloc[0] = None
+
 
 def test_slice_timestamp() -> None:
     dti = pd.date_range("1/1/2025", "2/28/2025")

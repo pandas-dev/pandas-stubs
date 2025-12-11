@@ -81,7 +81,6 @@ import xarray as xr
 from pandas._libs.lib import _NoDefaultDoNotUse
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
-from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
     S2,
     AggFuncTypeBase,
@@ -146,6 +145,7 @@ from pandas._typing import (
     Renamer,
     ReplaceValue,
     Scalar,
+    ScalarOrNA,
     ScalarT,
     SequenceNotStr,
     SeriesByT,
@@ -181,6 +181,26 @@ _T_MUTABLE_MAPPING_co = TypeVar(
     "_T_MUTABLE_MAPPING_co", bound=MutableMapping, covariant=True
 )
 
+_iLocSetItemKey: TypeAlias = (
+    int
+    | IndexType
+    | tuple[int, int]
+    | tuple[IndexType, int]
+    | tuple[IndexType, IndexType]
+    | tuple[int, IndexType]
+)
+_LocSetItemKey: TypeAlias = (
+    MaskType | Hashable | _IndexSliceTuple | Iterable[Scalar] | IndexingInt | slice
+)
+_SetItemValueNotDataFrame: TypeAlias = (
+    ScalarOrNA
+    | Sequence[ScalarOrNA]
+    | Sequence[Sequence[ScalarOrNA]]
+    | Mapping[Any, ScalarOrNA]
+    | ArrayLike
+    | IndexOpsMixin
+)
+
 class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
     @overload
     def __getitem__(self, key: tuple[int, int]) -> Scalar: ...
@@ -203,26 +223,7 @@ class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
 
     # Keep in sync with `DataFrame.__setitem__`
     def __setitem__(
-        self,
-        key: (
-            int
-            | IndexType
-            | tuple[int, int]
-            | tuple[IndexType, int]
-            | tuple[IndexType, IndexType]
-            | tuple[int, IndexType]
-        ),
-        value: (
-            Scalar
-            | IndexOpsMixin
-            | Sequence[Scalar]
-            | DataFrame
-            | np_ndarray
-            | NAType
-            | NaTType
-            | Mapping[Hashable, Scalar | NAType | NaTType]
-            | None
-        ),
+        self, key: _iLocSetItemKey, value: _SetItemValueNotDataFrame | DataFrame
     ) -> None: ...
 
 class _LocIndexerFrame(_LocIndexer, Generic[_T]):
@@ -283,52 +284,16 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     # Keep in sync with `DataFrame.__setitem__`
     @overload
     def __setitem__(
-        self,
-        key: tuple[_IndexSliceTuple, Hashable],
-        value: (
-            Scalar
-            | NAType
-            | NaTType
-            | ArrayLike
-            | IndexOpsMixin
-            | Sequence[Scalar]
-            | Sequence[Sequence[Scalar]]
-            | Mapping[Hashable, Scalar | NAType | NaTType]
-            | None
-        ),
+        self, key: tuple[_IndexSliceTuple, Hashable], value: _SetItemValueNotDataFrame
     ) -> None: ...
     @overload
     def __setitem__(
-        self,
-        key: (
-            MaskType
-            | Hashable
-            | _IndexSliceTuple
-            | Iterable[Scalar]
-            | IndexingInt
-            | slice
-        ),
-        value: (
-            Scalar
-            | NAType
-            | NaTType
-            | ArrayLike
-            | IndexOpsMixin
-            | Sequence[Scalar]
-            | Sequence[Sequence[Scalar]]
-            | DataFrame
-            | Mapping[Hashable, Scalar | NAType | NaTType]
-            | None
-        ),
+        self, key: _LocSetItemKey, value: _SetItemValueNotDataFrame | DataFrame
     ) -> None: ...
 
 class _iAtIndexerFrame(_iAtIndexer):
     def __getitem__(self, key: tuple[int, int]) -> Scalar: ...
-    def __setitem__(
-        self,
-        key: tuple[int, int],
-        value: Scalar | NAType | NaTType | None,
-    ) -> None: ...
+    def __setitem__(self, key: tuple[int, int], value: ScalarOrNA) -> None: ...
 
 class _AtIndexerFrame(_AtIndexer):
     def __getitem__(
@@ -347,42 +312,26 @@ class _AtIndexerFrame(_AtIndexer):
         key: (
             MaskType | StrLike | _IndexSliceTuple | list[ScalarT] | IndexingInt | slice
         ),
-        value: (
-            Scalar
-            | NAType
-            | NaTType
-            | ArrayLike
-            | IndexOpsMixin
-            | DataFrame
-            | Sequence[Scalar]
-            | Sequence[Sequence[Scalar]]
-            | Mapping[Hashable, Scalar | NAType | NaTType]
-            | None
-        ),
+        value: _SetItemValueNotDataFrame | DataFrame,
     ) -> None: ...
 
-# With mypy 1.14.1 and python 3.12, the second overload needs a type-ignore statement
-if sys.version_info >= (3, 12):
-    class _GetItemHack:
-        @overload
-        def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+# With python 3.12+, the second overload needs a type-ignore statement
+class _GetItemHack:
+    @overload
+    def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    if sys.version_info >= (3, 12):
         @overload
         def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
             self, key: Iterable[Hashable] | slice
         ) -> Self: ...
-        @overload
-        def __getitem__(self, key: Hashable) -> Series: ...
-
-else:
-    class _GetItemHack:
-        @overload
-        def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    else:
         @overload
         def __getitem__(  # pyright: ignore[reportOverlappingOverload]
             self, key: Iterable[Hashable] | slice
         ) -> Self: ...
-        @overload
-        def __getitem__(self, key: Hashable) -> Series: ...
+
+    @overload
+    def __getitem__(self, key: Hashable) -> Series: ...
 
 _AstypeArgExt: TypeAlias = (
     AstypeArg
@@ -829,85 +778,22 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     # Keep in sync with `_iLocIndexerFrame.__setitem__`
     @overload
     def __setitem__(
-        self,
-        idx: (
-            int
-            | IndexType
-            | tuple[int, int]
-            | tuple[IndexType, int]
-            | tuple[IndexType, IndexType]
-            | tuple[int, IndexType]
-        ),
-        value: (
-            Scalar
-            | IndexOpsMixin
-            | Sequence[Scalar]
-            | DataFrame
-            | np_ndarray
-            | NAType
-            | NaTType
-            | Mapping[Hashable, Scalar | NAType | NaTType]
-            | None
-        ),
+        self, idx: _iLocSetItemKey, value: _SetItemValueNotDataFrame | DataFrame
     ) -> None: ...
     # Keep in sync with `_LocIndexerFrame.__setitem__`
     @overload
     def __setitem__(
-        self,
-        idx: tuple[_IndexSliceTuple, Hashable],
-        value: (
-            Scalar
-            | NAType
-            | NaTType
-            | ArrayLike
-            | IndexOpsMixin
-            | Sequence[Scalar]
-            | Sequence[Sequence[Scalar]]
-            | Mapping[Hashable, Scalar | NAType | NaTType]
-            | None
-        ),
+        self, idx: tuple[_IndexSliceTuple, Hashable], value: _SetItemValueNotDataFrame
     ) -> None: ...
     @overload
     def __setitem__(
-        self,
-        idx: (
-            MaskType
-            | Hashable
-            | _IndexSliceTuple
-            | Iterable[Scalar]
-            | IndexingInt
-            | slice
-        ),
-        value: (
-            Scalar
-            | NAType
-            | NaTType
-            | ArrayLike
-            | IndexOpsMixin
-            | Sequence[Scalar]
-            | Sequence[Sequence[Scalar]]
-            | DataFrame
-            | Mapping[Hashable, Scalar | NAType | NaTType]
-            | None
-        ),
+        self, idx: _LocSetItemKey, value: _SetItemValueNotDataFrame | DataFrame
     ) -> None: ...
     # Extra cases not supported by  `_LocIndexerFrame.__setitem__` /
     # `_iLocIndexerFrame.__setitem__`.
     @overload
     def __setitem__(
-        self,
-        idx: IndexOpsMixin | DataFrame,
-        value: (
-            Scalar
-            | NAType
-            | NaTType
-            | ArrayLike
-            | IndexOpsMixin
-            | Sequence[Scalar]
-            | Sequence[Sequence[Scalar]]
-            | Mapping[Hashable, Scalar | NAType | NaTType]
-            | None
-        ),
+        self, idx: IndexOpsMixin | DataFrame, value: _SetItemValueNotDataFrame
     ) -> None: ...
     @overload
     def query(

@@ -365,17 +365,6 @@ def test_isetframe() -> None:
     check(assert_type(frame.isetitem([0], [10, 12]), None), type(None))
 
 
-def test_setitem_none() -> None:
-    df = pd.DataFrame(
-        {"A": [1, 2, 3], "B": ["abc", "def", "ghi"]}, index=["x", "y", "z"]
-    )
-    df.loc["x", "B"] = None
-    df.iloc[2, 0] = None
-    sb = pd.Series([1, 2, 3], dtype=int)
-    sb.loc["y"] = None
-    sb.iloc[0] = None
-
-
 def test_getsetitem_multiindex() -> None:
     # GH 466
     rows = pd.Index(["project A", "project B", "project C"])
@@ -421,6 +410,14 @@ def test_frame_setitem_na() -> None:
     df["x"] = cast("pd.Series[pd.Timestamp]", df["y"]) + pd.Timedelta(days=3)
     df.loc[ind, :] = pd.NaT
     df.iloc[[0, 2], :] = pd.NaT
+
+    df.loc["a", "x"] = None
+    df.iloc[2, 0] = None
+
+    df.loc[:, "x"] = [None, pd.NA, pd.NaT]
+    df.iloc[:, 0] = [None, pd.NA, pd.NaT]
+    df.loc[:, ["x"]] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
+    df.iloc[:, [0]] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment]
 
 
 def test_loc_set() -> None:
@@ -570,6 +567,9 @@ def test_df_loc_dict() -> None:
 
     df.iloc[0] = {"X": 0}
     check(assert_type(df, pd.DataFrame), pd.DataFrame)
+
+    df.loc[0] = {None: None, pd.NA: pd.NA, pd.NaT: pd.NaT}
+    df.iloc[0] = {None: None, pd.NA: pd.NA, pd.NaT: pd.NaT}
 
 
 def test_iloc_npint() -> None:

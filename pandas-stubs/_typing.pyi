@@ -52,6 +52,7 @@ from pandas._libs.tslibs import (
     Timedelta,
     Timestamp,
 )
+from pandas._libs.tslibs.nattype import NaTType
 
 from pandas.core.dtypes.dtypes import (
     CategoricalDtype,
@@ -134,6 +135,7 @@ _IndexIterScalar: TypeAlias = (
 Scalar: TypeAlias = (
     _IndexIterScalar | complex | np.integer | np.floating | np.complexfloating
 )
+ScalarOrNA: TypeAlias = Scalar | NAType | NaTType | None
 IntStrT = TypeVar("IntStrT", int, str)
 
 # timestamp and timedelta convertible types
