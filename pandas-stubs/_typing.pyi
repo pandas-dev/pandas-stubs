@@ -980,7 +980,7 @@ ListLikeExceptSeriesAndStr: TypeAlias = (
 )
 ListLikeU: TypeAlias = Sequence[Any] | np_1darray | Series | Index
 ListLikeHashable: TypeAlias = (
-    MutableSequence[HashableT] | np_1darray | tuple[HashableT, ...] | range
+    MutableSequence[HashableT0] | np_1darray | tuple[HashableT0, ...] | range
 )
 
 class SupportsDType(Protocol[GenericT_co]):
@@ -1100,21 +1100,23 @@ if TYPE_CHECKING:  # noqa: PYI002
         | Period
         | Interval[int | float | Timestamp | Timedelta],
     )
-GroupByObjectNonScalar: TypeAlias = (
-    tuple[_HashableTa, ...]
-    | list[_HashableTa]
-    | Function
-    | list[Function]
-    | list[Series]
-    | np_ndarray
-    | list[np_ndarray]
-    | Mapping[Label, Any]
-    | list[Mapping[Label, Any]]
-    | list[Index]
-    | Grouper
-    | list[Grouper]
-)
-GroupByObject: TypeAlias = Scalar | Index | GroupByObjectNonScalar | Series
+    GroupByObjectNonScalar: TypeAlias = (
+        tuple[_HashableTa, ...]
+        | list[_HashableTa]
+        | Function
+        | list[Function]
+        | list[Series]
+        | np_ndarray
+        | list[np_ndarray]
+        | Mapping[Label, Any]
+        | list[Mapping[Label, Any]]
+        | list[Index]
+        | Grouper
+        | list[Grouper]
+    )
+    GroupByObject: TypeAlias = (
+        Scalar | Index | GroupByObjectNonScalar[_HashableTa] | Series
+    )
 
 StataDateFormat: TypeAlias = Literal[
     "tc",

@@ -298,7 +298,6 @@ include = ["tests", "pandas-stubs"]
 enableTypeIgnoreComments = false    # use pyright-specific ignores
 # disable subset of strict
 reportMissingParameterType = false
-reportMissingTypeArgument = false
 reportUnnecessaryTypeIgnoreComment = true
 reportUnknownArgumentType = false
 reportUnknownLambdaType = false

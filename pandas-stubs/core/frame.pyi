@@ -58,7 +58,7 @@ from pandas.core.indexing import (
     _LocIndexer,
 )
 from pandas.core.reshape.pivot import (
-    _PivotAggFunc,
+    _PivotAggFuncTypes,
     _PivotTableColumnsTypes,
     _PivotTableIndexTypes,
     _PivotTableValuesTypes,
@@ -178,7 +178,7 @@ from pandas.plotting import PlotAccessor
 from pandas.plotting._core import _BoxPlotT
 
 _T_MUTABLE_MAPPING_co = TypeVar(
-    "_T_MUTABLE_MAPPING_co", bound=MutableMapping, covariant=True
+    "_T_MUTABLE_MAPPING_co", bound=MutableMapping[Any, Any], covariant=True
 )
 
 _iLocSetItemKey: TypeAlias = (
@@ -1378,9 +1378,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         values: _PivotTableValuesTypes = None,
         index: _PivotTableIndexTypes = None,
         columns: _PivotTableColumnsTypes = None,
-        aggfunc: (
-            _PivotAggFunc | Sequence[_PivotAggFunc] | Mapping[Hashable, _PivotAggFunc]
-        ) = "mean",
+        aggfunc: _PivotAggFuncTypes[Scalar] = "mean",
         fill_value: Scalar | None = None,
         margins: _bool = False,
         dropna: _bool = True,
