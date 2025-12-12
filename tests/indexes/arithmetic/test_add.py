@@ -3,7 +3,6 @@ from typing import Any
 import numpy as np
 import pandas as pd
 from typing_extensions import (
-    Never,
     assert_type,
 )
 
@@ -107,5 +106,6 @@ def test_add_i_py_str() -> None:
     s = "abc"
 
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(left_i + s, Never)
-        assert_type(s + left_i, Never)
+        # relaxing typing, won't work at runtime though
+        assert_type(left_i + s, "pd.Index[str]")
+        assert_type(s + left_i, "pd.Index[str]")
