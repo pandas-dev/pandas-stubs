@@ -71,8 +71,8 @@ def pivot_table(
         Hashable  # ty: ignore[invalid-type-arguments]
     ] = None,
     index: _PivotTableIndexTypes[  # ty: ignore[non-subscriptable]
-        Hashable
-    ] = None,  # ty: ignore[invalid-type-arguments]
+        Hashable  # ty: ignore[invalid-type-arguments]
+    ] = None,
     columns: _PivotTableColumnsTypes[  # ty: ignore[non-subscriptable]
         Hashable  # ty: ignore[invalid-type-arguments]
     ] = None,
@@ -100,8 +100,8 @@ def pivot_table(
     index: Grouper,
     columns: (
         _PivotTableColumnsTypes[  # ty: ignore[non-subscriptable]
-            Hashable
-        ]  # ty: ignore[invalid-type-arguments]
+            Hashable  # ty: ignore[invalid-type-arguments]
+        ]
         | np_ndarray
         | Index[Any]
     ) = None,
@@ -124,8 +124,8 @@ def pivot_table(
         Hashable  # ty: ignore[invalid-type-arguments]
     ] = None,
     index: (
-        _PivotTableIndexTypes[  # ty: ignore[invalid-type-arguments,non-subscriptable]
-            Hashable
+        _PivotTableIndexTypes[  # ty: ignore[non-subscriptable]
+            Hashable  # ty: ignore[invalid-type-arguments]
         ]
         | np_ndarray
         | Index[Any]
