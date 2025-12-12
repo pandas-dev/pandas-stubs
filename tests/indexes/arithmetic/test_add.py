@@ -7,6 +7,7 @@ from typing_extensions import (
 )
 
 from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
     check,
 )
 
@@ -104,5 +105,7 @@ def test_add_i_py_str() -> None:
     """Test pd.Index[Any] (int) + Python str"""
     s = "abc"
 
-    check(assert_type(left_i + s, "pd.Index[str]"), pd.Index, str)
-    check(assert_type(s + left_i, "pd.Index[str]"), pd.Index, str)
+    if TYPE_CHECKING_INVALID_USAGE:
+        # relaxing typing, won't work at runtime though
+        assert_type(left_i + s, "pd.Index[str]")
+        assert_type(s + left_i, "pd.Index[str]")
