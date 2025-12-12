@@ -25,11 +25,15 @@ from pandas._typing import (
     Level,
     MaskType,
     NaPosition,
+    NumpyNotTimeDtypeArg,
+    NumpyTimedeltaDtypeArg,
+    NumpyTimestampDtypeArg,
     SequenceNotStr,
     Shape,
     np_1darray_bool,
     np_1darray_int8,
     np_1darray_intp,
+    np_ndarray,
     np_ndarray_anyint,
 )
 
@@ -111,7 +115,7 @@ class MultiIndex(Index):
     def copy(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore
         self, names: SequenceNotStr[Hashable] = ..., deep: bool = False
     ) -> Self: ...
-    def view(self, cls: Any = None) -> MultiIndex: ...  # type: ignore[override] # pyrefly: ignore[bad-override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def view(self, cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg | type[np_ndarray] | None = None) -> MultiIndex: ...  # type: ignore[override] # pyrefly: ignore[bad-override] # pyright: ignore[reportIncompatibleMethodOverride]
     @property
     def dtype(self) -> np.dtype: ...
     @property
@@ -185,7 +189,6 @@ class MultiIndex(Index):
     def truncate(
         self, before: IndexLabel | None = None, after: IndexLabel | None = None
     ) -> MultiIndex: ...
-    def equal_levels(self, other: MultiIndex) -> bool: ...
     @overload  # type: ignore[override]
     def isin(  # pyrefly: ignore[bad-override]
         self, values: Iterable[Any], level: Level

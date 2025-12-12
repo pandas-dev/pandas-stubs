@@ -84,13 +84,6 @@ def test_multiindex_get_locs() -> None:
     check(assert_type(locs, np_1darray_intp), np_1darray_intp)
 
 
-def test_multiindex_equal_levels() -> None:
-    mi = pd.MultiIndex.from_arrays([[1, 2, 3, 1], [4, 5, 6, 4]])
-    mi2 = pd.MultiIndex.from_arrays([[1, 2, 3, 1], [4, 5, 6, 4]])
-    eq = mi.equal_levels(mi2)
-    check(assert_type(eq, bool), bool)
-
-
 def test_multiindex_get_loc_level() -> None:
     mi = pd.MultiIndex.from_arrays([[1, 2, 3, 1], [4, 5, 6, 4]])
     res_0, res_1 = mi.get_loc_level(1, level=0)
