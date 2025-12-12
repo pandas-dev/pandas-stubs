@@ -67,11 +67,13 @@ _Values: TypeAlias = SequenceNotStr[Any] | _ExtendedAnyArrayLike
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes[
+    values: _PivotTableValuesTypes[  # ty: ignore[non-subscriptable]
         Hashable  # ty: ignore[invalid-type-arguments]
     ] = None,
-    index: _PivotTableIndexTypes[Hashable] = None,  # ty: ignore[invalid-type-arguments]
-    columns: _PivotTableColumnsTypes[
+    index: _PivotTableIndexTypes[  # ty: ignore[non-subscriptable]
+        Hashable
+    ] = None,  # ty: ignore[invalid-type-arguments]
+    columns: _PivotTableColumnsTypes[  # ty: ignore[non-subscriptable]
         Hashable  # ty: ignore[invalid-type-arguments]
     ] = None,
     aggfunc: (
@@ -91,13 +93,15 @@ def pivot_table(
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes[
+    values: _PivotTableValuesTypes[  # ty: ignore[non-subscriptable]
         Hashable  # ty: ignore[invalid-type-arguments]
     ] = None,
     *,
     index: Grouper,
     columns: (
-        _PivotTableColumnsTypes[Hashable]  # ty: ignore[invalid-type-arguments]
+        _PivotTableColumnsTypes[  # ty: ignore[non-subscriptable]
+            Hashable
+        ]  # ty: ignore[invalid-type-arguments]
         | np_ndarray
         | Index[Any]
     ) = None,
@@ -116,11 +120,13 @@ def pivot_table(
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes[
+    values: _PivotTableValuesTypes[  # ty: ignore[non-subscriptable]
         Hashable  # ty: ignore[invalid-type-arguments]
     ] = None,
     index: (
-        _PivotTableIndexTypes[Hashable]  # ty: ignore[invalid-type-arguments]
+        _PivotTableIndexTypes[  # ty: ignore[invalid-type-arguments,non-subscriptable]
+            Hashable
+        ]
         | np_ndarray
         | Index[Any]
     ) = None,
