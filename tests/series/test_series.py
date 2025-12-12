@@ -4080,11 +4080,3 @@ def test_series_index_setter() -> None:
     check(assert_type(sr.index, pd.Index), pd.Index)
     sr.index = [2, 3]
     check(assert_type(sr.index, pd.Index), pd.Index)
-
-
-def test_series_add_str() -> None:
-    """Test Series.__add__ with Series[Any]."""
-    df = pd.DataFrame({0: ["a", "b"]})
-    sr = df[0]
-
-    check(assert_type(sr + "c1", pd.Series), pd.Series, str)

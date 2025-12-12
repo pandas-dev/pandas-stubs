@@ -145,3 +145,12 @@ def test_add_pd_series() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         left.radd(i)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType, reportCallIssue]
     check(assert_type(left.radd(r0), "pd.Series[str]"), pd.Series, str)
+
+
+def test_series_add_str() -> None:
+    """Test Series.__add__ with Series[Any]."""
+    df = pd.DataFrame({0: ["a", "b"]})
+    sr = df[0]
+
+    check(assert_type(sr + "c1", "pd.Series[str]"), pd.Series, str)
+    check(assert_type("c1" + sr, "pd.Series[str]"), pd.Series, str)
