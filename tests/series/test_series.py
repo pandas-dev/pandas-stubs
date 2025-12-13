@@ -780,9 +780,9 @@ def test_types_abs() -> None:
 
 def test_types_var() -> None:
     s = pd.Series([-10, 2, 3, 10])
-    s.var()
-    s.var(axis=0, ddof=1)
-    s.var(skipna=True, numeric_only=False)
+    check(assert_type(s.var(), float), np.float64)
+    check(assert_type(s.var(axis=0, ddof=1), float), np.float64)
+    check(assert_type(s.var(skipna=True, numeric_only=False), float), np.float64)
 
 
 def test_types_std() -> None:

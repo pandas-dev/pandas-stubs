@@ -14,6 +14,7 @@ def test_agg_any_float() -> None:
     check(assert_type(series.mean(), float), np.float64)
     check(assert_type(series.median(), float), np.float64)
     check(assert_type(series.std(), float), np.float64)
+    check(assert_type(series.var(), float), np.float64)
 
 
 def test_agg_bool() -> None:
@@ -21,6 +22,7 @@ def test_agg_bool() -> None:
     check(assert_type(series.mean(), float), np.float64)
     check(assert_type(series.median(), float), np.float64)
     check(assert_type(series.std(), float), np.float64)
+    check(assert_type(series.var(), float), np.float64)
 
 
 def test_agg_int() -> None:
@@ -28,6 +30,7 @@ def test_agg_int() -> None:
     check(assert_type(series.mean(), float), np.float64)
     check(assert_type(series.median(), float), np.float64)
     check(assert_type(series.std(), float), np.float64)
+    check(assert_type(series.var(), float), np.float64)
 
 
 def test_agg_float() -> None:
@@ -35,6 +38,7 @@ def test_agg_float() -> None:
     check(assert_type(series.mean(), float), np.float64)
     check(assert_type(series.median(), float), np.float64)
     check(assert_type(series.std(), float), np.float64)
+    check(assert_type(series.var(), float), np.float64)
 
 
 def test_agg_complex() -> None:
@@ -57,6 +61,11 @@ def test_agg_complex() -> None:
         ),
     ):
         check(assert_type(series.std(), np.float64), np.float64)
+    with pytest_warns_bounded(
+        np.exceptions.ComplexWarning,
+        r"Casting complex values to real discards the imaginary part",
+    ):
+        check(assert_type(series.var(), np.float64), np.float64)
 
 
 def test_agg_str() -> None:
@@ -65,6 +74,7 @@ def test_agg_str() -> None:
         series.mean()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
         series.median()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
         series.std()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
+        series.var()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 
 
 def test_agg_ts() -> None:
@@ -83,3 +93,4 @@ def test_agg_td() -> None:
     check(assert_type(series.mean(), pd.Timedelta), pd.Timedelta)
     check(assert_type(series.median(), pd.Timedelta), pd.Timedelta)
     check(assert_type(series.std(), pd.Timedelta), pd.Timedelta)
+    # Note: var() is not supported for Timedelta series at runtime
