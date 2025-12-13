@@ -2,6 +2,7 @@ from collections import abc
 from collections.abc import Mapping
 from types import TracebackType
 from typing import (
+    Any,
     Generic,
     Literal,
     overload,
@@ -226,7 +227,7 @@ def read_json(
     engine: Literal["pyarrow"],
 ) -> DataFrame: ...
 
-class JsonReader(abc.Iterator, Generic[NDFrameT]):
+class JsonReader(abc.Iterator[Any], Generic[NDFrameT]):
     def read(self) -> NDFrameT: ...
     def close(self) -> None: ...
     def __iter__(self) -> JsonReader[NDFrameT]: ...

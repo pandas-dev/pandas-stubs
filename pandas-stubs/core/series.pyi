@@ -347,7 +347,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __new__(
         cls,
         data: Sequence[Never],
-        index: AxesData | None = None,
+        index: AxesData[Any] | None = None,
         dtype: None = None,
         name: Hashable = None,
         copy: bool | None = None,
@@ -356,7 +356,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __new__(
         cls,
         data: Sequence[list[_str]],
-        index: AxesData | None = None,
+        index: AxesData[Any] | None = None,
         dtype: None = None,
         name: Hashable = None,
         copy: bool | None = None,
@@ -365,7 +365,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __new__(
         cls,
         data: Sequence[_str],
-        index: AxesData | None = None,
+        index: AxesData[Any] | None = None,
         dtype: Dtype | None = None,
         name: Hashable = None,
         copy: bool | None = None,
@@ -381,7 +381,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | datetime
             | date
         ),
-        index: AxesData | None = None,
+        index: AxesData[Any] | None = None,
         dtype: TimestampDtypeArg = ...,
         name: Hashable = None,
         copy: bool | None = None,
@@ -390,7 +390,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __new__(
         cls,
         data: Sequence[datetime | np.timedelta64] | np_ndarray_dt | DatetimeArray,
-        index: AxesData | None = None,
+        index: AxesData[Any] | None = None,
         *,
         dtype: TimestampDtypeArg,
         name: Hashable = None,
@@ -400,7 +400,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __new__(
         cls,
         data: _DataLike,
-        index: AxesData | None = None,
+        index: AxesData[Any] | None = None,
         *,
         dtype: CategoryDtypeArg,
         name: Hashable = None,
@@ -410,7 +410,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __new__(
         cls,
         data: PeriodIndex | Sequence[Period],
-        index: AxesData | None = None,
+        index: AxesData[Any] | None = None,
         dtype: PeriodDtype = ...,
         name: Hashable = None,
         copy: bool | None = None,
@@ -419,7 +419,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __new__(
         cls,
         data: Sequence[BaseOffset],
-        index: AxesData | None = None,
+        index: AxesData[Any] | None = None,
         dtype: PeriodDtype = ...,
         name: Hashable = None,
         copy: bool | None = None,
@@ -434,7 +434,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | np.timedelta64
             | timedelta
         ),
-        index: AxesData | None = None,
+        index: AxesData[Any] | None = None,
         dtype: TimedeltaDtypeArg = ...,
         name: Hashable = None,
         copy: bool | None = None,
@@ -446,9 +446,9 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             IntervalIndex[Interval[_OrderableT]]
             | Interval[_OrderableT]
             | Sequence[Interval[_OrderableT]]
-            | dict[HashableT1, Interval[_OrderableT]]
+            | dict[Hashable, Interval[_OrderableT]]
         ),
-        index: AxesData | None = None,
+        index: AxesData[Any] | None = None,
         dtype: Literal["Interval"] = ...,
         name: Hashable = None,
         copy: bool | None = None,
@@ -457,7 +457,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __new__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         cls,
         data: Scalar | _DataLike | dict[HashableT1, Any] | None,
-        index: AxesData | None = None,
+        index: AxesData[Any] | None = None,
         *,
         dtype: type[S1],
         name: Hashable = None,
@@ -467,7 +467,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __new__(  # pyright: ignore[reportOverlappingOverload]
         cls,
         data: Sequence[bool | np.bool],
-        index: AxesData | None = None,
+        index: AxesData[Any] | None = None,
         dtype: BooleanDtypeArg | None = None,
         name: Hashable = None,
         copy: bool | None = None,
@@ -476,7 +476,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __new__(
         cls,
         data: Sequence[int | np.integer],
-        index: AxesData | None = None,
+        index: AxesData[Any] | None = None,
         dtype: IntDtypeArg | UIntDtypeArg | None = None,
         name: Hashable = None,
         copy: bool | None = None,
@@ -485,7 +485,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __new__(
         cls,
         data: Sequence[float | np.floating] | np_ndarray_float | FloatingArray,
-        index: AxesData | None = None,
+        index: AxesData[Any] | None = None,
         dtype: None = None,
         name: Hashable = None,
         copy: bool | None = None,
@@ -493,7 +493,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: AxesData,
+        data: AxesData[Any],
         index: None = None,
         *,
         dtype: FloatDtypeArg,
@@ -503,8 +503,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def __new__(
         cls,
-        data: AxesData,
-        index: AxesData,
+        data: AxesData[Any],
+        index: AxesData[Any],
         dtype: FloatDtypeArg,
         name: Hashable = None,
         copy: bool | None = None,
@@ -522,7 +522,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             | KeysView[S1]
             | ValuesView[S1]
         ),
-        index: AxesData | None = None,
+        index: AxesData[Any] | None = None,
         dtype: Dtype | None = None,
         name: Hashable = None,
         copy: bool | None = None,
@@ -534,12 +534,12 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             Scalar
             | _DataLike
             | Mapping[HashableT1, Any]
-            | BaseGroupBy
+            | BaseGroupBy[Any]
             | NaTType
             | NAType
             | None
         ) = None,
-        index: AxesData | None = None,
+        index: AxesData[Any] | None = None,
         dtype: Dtype | None = None,
         name: Hashable = None,
         copy: bool | None = None,
@@ -562,9 +562,15 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __array_ufunc__(
         self, ufunc: Callable[..., Any], method: _str, *inputs: Any, **kwargs: Any
     ) -> Any: ...
-    def __array__(  # ty: ignore[invalid-method-override]
-        self, dtype: _str | np.dtype = ..., copy: bool | None = ...
-    ) -> np_1darray: ...
+    if sys.version_info >= (3, 11):
+        def __array__(  # ty: ignore[invalid-method-override]
+            self, dtype: _str | np.dtype = ..., copy: bool | None = ...
+        ) -> np_1darray: ...
+    else:
+        def __array__(  # ty: ignore[invalid-method-override]
+            self, dtype: _str | np.dtype[Any] = ..., copy: bool | None = ...
+        ) -> np_1darray: ...
+
     @final
     def __getattr__(self, name: _str) -> S1: ...
 
@@ -773,10 +779,10 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def items(self) -> Iterator[tuple[Hashable, S1]]: ...
     def keys(self) -> Index: ...
     @overload
-    def to_dict(self, *, into: type[dict] = ...) -> dict[Any, S1]: ...
+    def to_dict(self, *, into: type[dict[Any, Any]] = ...) -> dict[Hashable, S1]: ...
     @overload
     def to_dict(
-        self, *, into: type[MutableMapping] | MutableMapping[Any, Any]
+        self, *, into: type[MutableMapping[Any, Any]] | MutableMapping[Any, Any]
     ) -> MutableMapping[Hashable, S1]: ...
     def to_frame(self, name: object | None = ...) -> DataFrame: ...
     @overload
@@ -837,7 +843,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def groupby(
         self,
-        by: MultiIndex | GroupByObjectNonScalar,
+        by: MultiIndex | GroupByObjectNonScalar[Any],
         level: IndexLabel | None = ...,
         as_index: _bool = ...,
         sort: _bool = ...,
@@ -964,7 +970,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self: Series[BooleanDtype], periods: int = ...
     ) -> Series[BooleanDtype]: ...
     @overload
-    def diff(self: Series[Interval], periods: int = ...) -> Never: ...
+    def diff(self: Series[Interval[_OrderableT]], periods: int = ...) -> Never: ...
     @overload
     def diff(
         self: SupportsGetItem[Scalar, SupportsSelfSub[S2]], periods: int = ...
@@ -1099,7 +1105,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def swaplevel(
         self, i: Level = -2, j: Level = -1, copy: _bool = True
     ) -> Series[S1]: ...
-    def reorder_levels(self, order: list) -> Series[S1]: ...
+    def reorder_levels(self, order: Sequence[int | np.integer]) -> Series[S1]: ...
     def explode(self, ignore_index: _bool = ...) -> Series[S1]: ...
     def unstack(
         self,
@@ -1282,20 +1288,20 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def replace(
         self,
-        to_replace: ReplaceValue = ...,
-        value: ReplaceValue = ...,
+        to_replace: ReplaceValue[Any, Any] = ...,
+        value: ReplaceValue[Any, Any] = ...,
         *,
-        regex: ReplaceValue = ...,
+        regex: ReplaceValue[Any, Any] = ...,
         inplace: Literal[True],
         # TODO: pandas-dev/pandas#63195 return Self after Pandas 3.0
     ) -> None: ...
     @overload
     def replace(
         self,
-        to_replace: ReplaceValue = ...,
-        value: ReplaceValue = ...,
+        to_replace: ReplaceValue[Any, Any] = ...,
+        value: ReplaceValue[Any, Any] = ...,
         *,
-        regex: ReplaceValue = ...,
+        regex: ReplaceValue[Any, Any] = ...,
         inplace: Literal[False] = False,
     ) -> Series[S1]: ...
     def shift(
@@ -4658,7 +4664,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Self: ...
     def set_axis(
         self,
-        labels: AxesData,
+        labels: AxesData[Any],
         *,
         axis: Axis = 0,
         copy: _bool | _NoDefaultDoNotUse = ...,

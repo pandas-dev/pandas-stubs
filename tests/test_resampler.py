@@ -2,20 +2,20 @@ from collections.abc import (
     Hashable,
     Iterator,
 )
-from typing import TypeAlias
+from typing import (
+    TypeAlias,
+)
+from typing import Any  # noqa: F401
 
 import numpy as np
-import pandas as pd
-from pandas import (
-    DataFrame,
-    Series,
-    date_range,
-)
+from pandas.core.frame import DataFrame
 from pandas.core.groupby.generic import (
     DataFrameGroupBy,
     SeriesGroupBy,
 )
+from pandas.core.indexes.datetimes import date_range
 from pandas.core.resample import DatetimeIndexResampler
+from pandas.core.series import Series
 from typing_extensions import assert_type
 
 from tests import (
@@ -141,7 +141,7 @@ def test_asfreq() -> None:
 
 
 def test_getattr() -> None:
-    check(assert_type(DF.resample("ME").col1, SeriesGroupBy), SeriesGroupBy)
+    check(assert_type(DF.resample("ME").col1, "SeriesGroupBy[Any, Any]"), SeriesGroupBy)
 
 
 def test_interpolate() -> None:
@@ -403,7 +403,7 @@ def test_transform_series() -> None:
 
 def test_aggregate_series_combinations() -> None:
     def s2series(val: Series) -> Series:
-        return pd.Series(val)
+        return Series(val)
 
     def s2scalar(val: Series) -> float:
         return float(val.mean())
@@ -425,7 +425,7 @@ def test_aggregate_series_combinations() -> None:
 
 def test_aggregate_frame_combinations() -> None:
     def df2frame(val: DataFrame) -> DataFrame:
-        return pd.DataFrame(val)
+        return DataFrame(val)
 
     def df2series(val: DataFrame) -> Series:
         return val.mean()
@@ -466,8 +466,10 @@ def test_aggregate_frame_combinations() -> None:
 
 
 def test_getitem() -> None:
-    check(assert_type(DF.resample("ME")["col1"], SeriesGroupBy), SeriesGroupBy)
     check(
-        assert_type(DF.resample("ME")[["col1", "col2"]], DataFrameGroupBy),
+        assert_type(DF.resample("ME")["col1"], "SeriesGroupBy[Any, Any]"), SeriesGroupBy
+    )
+    check(
+        assert_type(DF.resample("ME")[["col1", "col2"]], "DataFrameGroupBy[Any, Any]"),
         DataFrameGroupBy,
     )

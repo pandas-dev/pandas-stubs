@@ -774,7 +774,7 @@ XMLParsers: TypeAlias = Literal["lxml", "etree"]
 HTMLFlavors: TypeAlias = Literal["lxml", "html5lib", "bs4"]
 
 # Interval closed type
-IntervalT = TypeVar("IntervalT", bound=Interval)
+IntervalT = TypeVar("IntervalT", bound=Interval, default=Interval)
 IntervalLeftRight: TypeAlias = Literal["left", "right"]
 IntervalClosedType: TypeAlias = IntervalLeftRight | Literal["both", "neither"]
 
@@ -959,7 +959,10 @@ np_1darray_dt: TypeAlias = np_1darray[np.datetime64]
 np_1darray_td: TypeAlias = np_1darray[np.timedelta64]
 np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[GenericT]]
 
-NDArrayT = TypeVar("NDArrayT", bound=np.ndarray)
+if sys.version_info >= (3, 11):
+    NDArrayT = TypeVar("NDArrayT", bound=np.ndarray)
+else:
+    NDArrayT = TypeVar("NDArrayT", bound=np.ndarray[Any, Any])
 
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
 KeysArgType: TypeAlias = Any
@@ -1070,7 +1073,7 @@ if TYPE_CHECKING:  # noqa: PYI002
         | Scalar
         | Period
         | Interval[int | float | Timestamp | Timedelta]
-        | tuple,
+        | tuple[Any, ...],
     )
     # Use a distinct SeriesByT when using groupby with Series of known dtype.
     # Essentially, an intersection between Series S1 TypeVar, and ByT TypeVar
@@ -1102,7 +1105,7 @@ GroupByObjectNonScalar: TypeAlias = (
     | Grouper
     | list[Grouper]
 )
-GroupByObject: TypeAlias = Scalar | Index | GroupByObjectNonScalar | Series
+GroupByObject: TypeAlias = Scalar | Index | GroupByObjectNonScalar[_HashableTa] | Series
 
 StataDateFormat: TypeAlias = Literal[
     "tc",
@@ -1125,9 +1128,9 @@ StataDateFormat: TypeAlias = Literal[
 # `DataFrame.replace` also accepts mappings of these.
 ReplaceValue: TypeAlias = (
     Scalar
-    | Pattern
+    | Pattern[Any]
     | NAType
-    | Sequence[Scalar | Pattern]
+    | Sequence[Scalar | Pattern[Any]]
     | Mapping[HashableT, ScalarT]
     | Series
     | None

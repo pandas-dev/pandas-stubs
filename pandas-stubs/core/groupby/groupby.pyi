@@ -7,6 +7,7 @@ from collections.abc import (
 )
 import datetime as dt
 from typing import (
+    TYPE_CHECKING,
     Any,
     Concatenate,
     Generic,
@@ -70,11 +71,12 @@ from pandas._typing import (
 
 from pandas.plotting import PlotAccessor
 
-_ResamplerGroupBy: TypeAlias = (
-    DatetimeIndexResamplerGroupby[NDFrameT]  # ty: ignore[invalid-argument-type]
-    | PeriodIndexResamplerGroupby[NDFrameT]  # ty: ignore[invalid-argument-type]
-    | TimedeltaIndexResamplerGroupby[NDFrameT]  # ty: ignore[invalid-argument-type]
-)
+if TYPE_CHECKING:  # noqa: PYI002
+    _ResamplerGroupBy: TypeAlias = (
+        DatetimeIndexResamplerGroupby[NDFrameT]  # ty: ignore[invalid-argument-type]
+        | PeriodIndexResamplerGroupby[NDFrameT]  # ty: ignore[invalid-argument-type]
+        | TimedeltaIndexResamplerGroupby[NDFrameT]  # ty: ignore[invalid-argument-type]
+    )
 
 class GroupBy(BaseGroupBy[NDFrameT]):
     def __getattr__(self, attr: str) -> Any: ...
@@ -338,7 +340,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         random_state: RandomState | None = ...,
     ) -> NDFrameT: ...
 
-_GroupByT = TypeVar("_GroupByT", bound=GroupBy)
+_GroupByT = TypeVar("_GroupByT", bound=GroupBy[Any])
 
 # GroupByPlot does not really inherit from PlotAccessor but it delegates
 # to it using __call__ and __getattr__. We lie here to avoid repeating the
@@ -383,15 +385,15 @@ class BaseGroupBy(SelectionMixin[NDFrameT], GroupByIndexingMixin):
     @final
     def __iter__(self) -> Iterator[tuple[Hashable, NDFrameT]]: ...
     @overload
-    def __getitem__(self: BaseGroupBy[DataFrame], key: Scalar) -> generic.SeriesGroupBy: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __getitem__(self: BaseGroupBy[DataFrame], key: Scalar) -> generic.SeriesGroupBy[Any, Any]: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __getitem__(
         self: BaseGroupBy[DataFrame], key: Iterable[Hashable]
-    ) -> generic.DataFrameGroupBy: ...
+    ) -> generic.DataFrameGroupBy[Any, Any]: ...
     @overload
     def __getitem__(
         self: BaseGroupBy[Series[S1]],
         idx: list[str] | Index | Series[S1] | MaskType | tuple[Hashable | slice, ...],
-    ) -> generic.SeriesGroupBy: ...
+    ) -> generic.SeriesGroupBy[Any, Any]: ...
     @overload
     def __getitem__(self: BaseGroupBy[Series[S1]], idx: Scalar) -> S1: ...

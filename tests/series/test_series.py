@@ -838,7 +838,7 @@ def test_types_apply() -> None:
     def retseries(x: float) -> float:
         return x
 
-    check(assert_type(s.apply(retseries).tolist(), list), list)
+    check(assert_type(s.apply(retseries).tolist(), list[Any]), list)
 
     def retlist(x: float) -> list[float]:
         return [x]
@@ -1780,7 +1780,7 @@ def test_types_to_list() -> None:
 
 def test_types_to_dict() -> None:
     s = pd.Series(["a", "b", "c"], dtype=str)
-    assert_type(s.to_dict(), dict[Any, str])
+    assert_type(s.to_dict(), dict[Hashable, str])
 
 
 def test_categorical_codes() -> None:
@@ -2182,7 +2182,7 @@ def test_change_to_dict_return_type() -> None:
     value = ["a", "b", "c"]
     df = pd.DataFrame(zip(id, value), columns=["id", "value"])
     fd = df.set_index("id")["value"].to_dict()
-    check(assert_type(fd, dict[Any, Any]), dict)
+    check(assert_type(fd, dict[Hashable, Any]), dict)
 
 
 ASTYPE_BOOL_ARGS: list[tuple[BooleanDtypeArg, type]] = [

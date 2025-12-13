@@ -1,4 +1,5 @@
 import decimal
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -29,9 +30,9 @@ def test_tolist() -> None:
     s1 = pd.Series(data1)
     # python/mypy#19952: mypy believes ExtensionArray and its subclasses have a
     # conflict and gives Any for s.array
-    check(assert_type(s.array.tolist(), list), list)  # type: ignore[assert-type]
-    check(assert_type(s1.array.tolist(), list), list)
-    check(assert_type(pd.array([1, 2, 3]).tolist(), list), list)
+    check(assert_type(s.array.tolist(), list[Any]), list)  # type: ignore[assert-type]
+    check(assert_type(s1.array.tolist(), list[Any]), list)
+    check(assert_type(pd.array([1, 2, 3]).tolist(), list[Any]), list)
 
 
 def test_ExtensionArray_reduce_accumulate() -> None:
