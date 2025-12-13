@@ -45,7 +45,7 @@ _PlotAccessorColor: TypeAlias = str | list[_SingleColor] | dict[HashableT, _Sing
 @overload
 def boxplot(
     data: DataFrame,
-    column: Hashable | ListLikeHashable,
+    column: Hashable | ListLikeHashable[Hashable],
     by: None = None,
     ax: Axes | None = None,
     fontsize: float | str | None = None,
@@ -61,7 +61,7 @@ def boxplot(
 @overload
 def boxplot(
     data: DataFrame,
-    column: Hashable | ListLikeHashable,
+    column: Hashable | ListLikeHashable[Hashable],
     by: None = None,
     ax: Axes | None = None,
     fontsize: float | str | None = None,
@@ -77,7 +77,7 @@ def boxplot(
 @overload
 def boxplot(
     data: DataFrame,
-    column: Hashable | ListLikeHashable,
+    column: Hashable | ListLikeHashable[Hashable],
     by: None = None,
     ax: Axes | None = None,
     fontsize: float | str | None = None,
@@ -93,8 +93,8 @@ def boxplot(
 @overload
 def boxplot(
     data: DataFrame,
-    column: Hashable | ListLikeHashable,
-    by: Hashable | ListLikeHashable,
+    column: Hashable | ListLikeHashable[Hashable],
+    by: Hashable | ListLikeHashable[Hashable],
     ax: Axes | None = None,
     fontsize: float | str | None = None,
     rot: float = 0,
@@ -109,8 +109,8 @@ def boxplot(
 @overload
 def boxplot(
     data: DataFrame,
-    column: Hashable | ListLikeHashable,
-    by: Hashable | ListLikeHashable,
+    column: Hashable | ListLikeHashable[Hashable],
+    by: Hashable | ListLikeHashable[Hashable],
     ax: Axes | None = None,
     fontsize: float | str | None = None,
     rot: float = 0,

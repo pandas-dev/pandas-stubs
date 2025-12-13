@@ -1,5 +1,6 @@
 from collections.abc import Sequence
 from typing import (
+    Any,
     Literal,
     overload,
 )
@@ -102,7 +103,7 @@ def cut(
     include_lowest: bool = ...,
     duplicates: Literal["raise", "drop"] = ...,
     ordered: bool = ...,
-) -> tuple[Series, IntervalIndex]: ...
+) -> tuple[Series, IntervalIndex[Any]]: ...
 @overload
 def cut(
     x: Sequence[float] | np_ndarray_anyint | np_ndarray_float | Index,
@@ -132,7 +133,9 @@ def cut(
 @overload
 def cut(
     x: Sequence[float] | np_ndarray_anyint | np_ndarray_float | Index,
-    bins: int | Sequence[float] | Index[int] | Index[float] | IntervalIndex | Series,
+    bins: (
+        int | Sequence[float] | Index[int] | Index[float] | IntervalIndex[Any] | Series
+    ),
     right: bool = ...,
     *,
     labels: Literal[False],
@@ -163,7 +166,9 @@ def cut(
 @overload
 def cut(
     x: Series,
-    bins: int | Sequence[float] | Index[int] | Index[float] | IntervalIndex | Series,
+    bins: (
+        int | Sequence[float] | Index[int] | Index[float] | IntervalIndex[Any] | Series
+    ),
     right: bool = ...,
     labels: Literal[False] | Sequence[Label] | None = ...,
     retbins: Literal[False] = False,
@@ -175,7 +180,9 @@ def cut(
 @overload
 def cut(
     x: Sequence[float] | np_ndarray_anyint | np_ndarray_float | Index,
-    bins: int | Sequence[float] | Index[int] | Index[float] | IntervalIndex | Series,
+    bins: (
+        int | Sequence[float] | Index[int] | Index[float] | IntervalIndex[Any] | Series
+    ),
     right: bool = ...,
     labels: Sequence[Label] | None = ...,
     retbins: Literal[False] = False,

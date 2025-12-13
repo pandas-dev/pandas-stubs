@@ -12,7 +12,6 @@ from typing import (
     overload,
 )
 
-from odf.opendocument import OpenDocument  # pyright: ignore[reportMissingTypeStubs]
 from openpyxl.workbook.workbook import Workbook
 from pandas.core.frame import DataFrame
 import pyxlsb.workbook  # pyright: ignore[reportMissingTypeStubs]
@@ -35,6 +34,10 @@ from pandas._typing import (
     WriteExcelBuffer,
 )
 
+from odf.opendocument import (  # pyright: ignore[reportMissingTypeStubs] # isort: skip
+    OpenDocument,  # pyright: ignore[reportUnknownVariableType]
+)
+
 @overload
 def read_excel(
     io: (
@@ -49,9 +52,9 @@ def read_excel(
     sheet_name: list[IntStrT],
     *,
     header: int | Sequence[int] | None = ...,
-    names: ListLikeHashable | None = ...,
+    names: ListLikeHashable[Hashable] | None = ...,
     index_col: int | Sequence[int] | str | None = ...,
-    usecols: str | UsecolsArgType = ...,
+    usecols: str | UsecolsArgType[Any] = ...,
     dtype: str | Dtype | Mapping[str, str | Dtype] | None = ...,
     engine: ExcelReadEngine | None = ...,
     converters: Mapping[int | str, Callable[[Any], Any]] | None = ...,
@@ -92,9 +95,9 @@ def read_excel(
     sheet_name: None,
     *,
     header: int | Sequence[int] | None = ...,
-    names: ListLikeHashable | None = ...,
+    names: ListLikeHashable[Hashable] | None = ...,
     index_col: int | Sequence[int] | str | None = ...,
-    usecols: str | UsecolsArgType = ...,
+    usecols: str | UsecolsArgType[Any] = ...,
     dtype: str | Dtype | Mapping[str, str | Dtype] | None = ...,
     engine: ExcelReadEngine | None = ...,
     converters: Mapping[int | str, Callable[[Any], Any]] | None = ...,
@@ -136,9 +139,9 @@ def read_excel(  # type: ignore[overload-cannot-match]
     sheet_name: list[int | str],
     *,
     header: int | Sequence[int] | None = ...,
-    names: ListLikeHashable | None = ...,
+    names: ListLikeHashable[Hashable] | None = ...,
     index_col: int | Sequence[int] | str | None = ...,
-    usecols: str | UsecolsArgType = ...,
+    usecols: str | UsecolsArgType[Any] = ...,
     dtype: str | Dtype | Mapping[str, str | Dtype] | None = ...,
     engine: ExcelReadEngine | None = ...,
     converters: Mapping[int | str, Callable[[Any], Any]] | None = ...,
@@ -179,9 +182,9 @@ def read_excel(
     sheet_name: int | str = ...,
     *,
     header: int | Sequence[int] | None = ...,
-    names: ListLikeHashable | None = ...,
+    names: ListLikeHashable[Hashable] | None = ...,
     index_col: int | Sequence[int] | str | None = ...,
-    usecols: str | UsecolsArgType = ...,
+    usecols: str | UsecolsArgType[Any] = ...,
     dtype: str | Dtype | Mapping[str, str | Dtype] | None = ...,
     engine: ExcelReadEngine | None = ...,
     converters: Mapping[int | str, Callable[[Any], Any]] | None = ...,
@@ -261,9 +264,9 @@ class ExcelFile:
         self,
         sheet_name: list[int | str] | None,
         header: int | Sequence[int] | None = ...,
-        names: ListLikeHashable | None = ...,
+        names: ListLikeHashable[Hashable] | None = ...,
         index_col: int | Sequence[int] | None = ...,
-        usecols: str | UsecolsArgType = ...,
+        usecols: str | UsecolsArgType[Any] = ...,
         converters: dict[int | str, Callable[[Any], Any]] | None = ...,
         true_values: Iterable[Hashable] | None = ...,
         false_values: Iterable[Hashable] | None = ...,
@@ -289,9 +292,9 @@ class ExcelFile:
         self,
         sheet_name: int | str,
         header: int | Sequence[int] | None = ...,
-        names: ListLikeHashable | None = ...,
+        names: ListLikeHashable[Hashable] | None = ...,
         index_col: int | Sequence[int] | None = ...,
-        usecols: str | UsecolsArgType = ...,
+        usecols: str | UsecolsArgType[Any] = ...,
         converters: dict[int | str, Callable[[Any], Any]] | None = ...,
         true_values: Iterable[Hashable] | None = ...,
         false_values: Iterable[Hashable] | None = ...,

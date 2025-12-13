@@ -175,7 +175,7 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
             return NotImplemented
 
         if "out" in kwargs:
-            return arraylike.dispatch_ufunc_with_out(  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
+            return arraylike.dispatch_ufunc_with_out(  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownVariableType]
                 self, ufunc, method, *inputs, **kwargs
             )
 
@@ -183,11 +183,11 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         result = getattr(ufunc, method)(*inputs, **kwargs)
 
         if method == "reduce":
-            result = arraylike.dispatch_reduction_ufunc(  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
+            result = arraylike.dispatch_reduction_ufunc(  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownVariableType]
                 self, ufunc, method, *inputs, **kwargs
             )
             if result is not NotImplemented:
-                return result
+                return result  # pyright: ignore[reportUnknownVariableType]
 
         def reconstruct(
             x: (
@@ -202,16 +202,18 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
             return DecimalArray._from_sequence(x)
 
         if ufunc.nout > 1:
-            return tuple(reconstruct(x) for x in result)
+            return tuple(
+                reconstruct(x)
+                for x in result  # pyright: ignore[reportUnknownVariableType]
+            )
         return reconstruct(result)
 
     def __getitem__(self, item: ScalarIndexer | SequenceIndexer) -> Any:
         if isinstance(item, numbers.Integral):
             return self._data[item]
         # array, slice.
-        item = check_array_indexer(
-            self,
-            item,  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
+        item = check_array_indexer(  # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+            self, item  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
         )
         return type(self)(self._data[item])
 
@@ -343,10 +345,12 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
 
     def value_counts(self, dropna: bool = True) -> Series:
         from pandas.core.algorithms import (  # type: ignore[attr-defined] # isort: skip
-            value_counts,  # pyright: ignore[reportAttributeAccessIssue]
+            value_counts,  # pyright: ignore[reportAttributeAccessIssue,reportAttributeAccessIssue,reportUnknownVariableType]
         )
 
-        return value_counts(self.to_numpy(), dropna=dropna)
+        return value_counts(
+            self.to_numpy(), dropna=dropna
+        )  # pyright: ignore[reportUnknownVariableType]
 
 
 DecimalArray._add_arithmetic_ops()

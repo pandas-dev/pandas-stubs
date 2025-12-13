@@ -1,6 +1,7 @@
 from collections import defaultdict
 from collections.abc import (
     Callable,
+    Hashable,
     Sequence,
 )
 import csv
@@ -33,9 +34,9 @@ def read_clipboard(
     dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
-    names: ListLikeHashable | None = ...,
+    names: ListLikeHashable[Hashable] | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
-    usecols: UsecolsArgType = ...,
+    usecols: UsecolsArgType[Any] = ...,
     dtype: DtypeArg | defaultdict[Any, Any] | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
@@ -92,9 +93,9 @@ def read_clipboard(
     dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
-    names: ListLikeHashable | None = ...,
+    names: ListLikeHashable[Hashable] | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
-    usecols: UsecolsArgType = ...,
+    usecols: UsecolsArgType[Any] = ...,
     dtype: DtypeArg | defaultdict[Any, Any] | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
@@ -151,9 +152,9 @@ def read_clipboard(
     dtype_backend: DtypeBackend | _NoDefaultDoNotUse = ...,
     delimiter: str | None = ...,
     header: int | Sequence[int] | Literal["infer"] | None = ...,
-    names: ListLikeHashable | None = ...,
+    names: ListLikeHashable[Hashable] | None = ...,
     index_col: int | str | Sequence[str | int] | Literal[False] | None = ...,
-    usecols: UsecolsArgType = ...,
+    usecols: UsecolsArgType[Any] = ...,
     dtype: DtypeArg | defaultdict[Any, Any] | None = ...,
     engine: CSVEngine | None = ...,
     converters: dict[int | str, Callable[[str], Any]] = ...,
