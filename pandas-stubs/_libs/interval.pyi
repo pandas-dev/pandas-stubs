@@ -7,6 +7,7 @@ from typing import (
     type_check_only,
 )
 
+import numpy as np
 from pandas import (
     IntervalIndex,
     Series,
@@ -79,6 +80,9 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
         closed: IntervalClosedType = ...,
     ) -> None: ...
     def __hash__(self) -> int: ...
+    @overload
+    def __contains__(self: Interval[int], key: float | np.floating) -> bool: ...
+    @overload
     def __contains__(self, key: _OrderableT) -> bool: ...
     @overload
     def __add__(self: Interval[Timestamp], y: Timedelta) -> Interval[Timestamp]: ...
