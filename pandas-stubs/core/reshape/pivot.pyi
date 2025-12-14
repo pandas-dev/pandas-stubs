@@ -35,7 +35,7 @@ _PivotAggFunc: TypeAlias = (
     | np.ufunc
     | Literal["mean", "sum", "count", "min", "max", "median", "std", "var"]
 )
-_AggFuncTypes: TypeAlias = (
+_PivotAggFuncTypes: TypeAlias = (
     _PivotAggFunc[ScalarT]
     | Sequence[_PivotAggFunc[ScalarT]]
     | Mapping[Any, _PivotAggFunc[ScalarT]]
@@ -69,7 +69,7 @@ def pivot_table(
     values: _PivotTableValuesTypes = None,
     index: _PivotTableIndexTypes = None,
     columns: _PivotTableColumnsTypes = None,
-    aggfunc: _AggFuncTypes[Scalar] = "mean",
+    aggfunc: _PivotAggFuncTypes[Scalar] = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
     dropna: bool = True,
@@ -86,7 +86,7 @@ def pivot_table(
     *,
     index: Grouper,
     columns: _PivotTableColumnsTypes | np_ndarray | Index[Any] = None,
-    aggfunc: _AggFuncTypes[Scalar] = "mean",
+    aggfunc: _PivotAggFuncTypes[Scalar] = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
     dropna: bool = True,
@@ -101,7 +101,7 @@ def pivot_table(
     index: _PivotTableIndexTypes | np_ndarray | Index[Any] = None,
     *,
     columns: Grouper,
-    aggfunc: _AggFuncTypes[Scalar] = "mean",
+    aggfunc: _PivotAggFuncTypes[Scalar] = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
     dropna: bool = True,
