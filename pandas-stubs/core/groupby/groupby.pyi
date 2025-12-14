@@ -71,9 +71,9 @@ from pandas._typing import (
 from pandas.plotting import PlotAccessor
 
 _ResamplerGroupBy: TypeAlias = (
-    DatetimeIndexResamplerGroupby[NDFrameT]  # ty: ignore[invalid-argument-type]
-    | PeriodIndexResamplerGroupby[NDFrameT]  # ty: ignore[invalid-argument-type]
-    | TimedeltaIndexResamplerGroupby[NDFrameT]  # ty: ignore[invalid-argument-type]
+    DatetimeIndexResamplerGroupby[NDFrameT]
+    | PeriodIndexResamplerGroupby[NDFrameT]
+    | TimedeltaIndexResamplerGroupby[NDFrameT]
 )
 
 class GroupBy(BaseGroupBy[NDFrameT]):
