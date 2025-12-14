@@ -70,7 +70,7 @@ class _LengthDescriptor:
         self,
         instance: IntervalIndex[Interval[_OrderableScalarT]],
         owner: type[IntervalIndex],
-    ) -> Index[Interval[_OrderableScalarT]]: ...
+    ) -> Index[_OrderableScalarT]: ...
     @overload
     def __get__(
         self,
@@ -83,15 +83,15 @@ class _MidDescriptor:
     @overload
     def __get__(
         self,
-        instance: IntervalIndex[Interval[_OrderableScalarT]],
+        instance: IntervalIndex[Interval[int]],
         owner: type[IntervalIndex],
     ) -> Index[float]: ...
     @overload
     def __get__(
         self,
-        instance: IntervalIndex[Interval[_OrderableTimesT]],
+        instance: IntervalIndex[Interval[_OrderableT]],
         owner: type[IntervalIndex],
-    ) -> Index[Timedelta]: ...
+    ) -> Index[_OrderableT]: ...
 
 class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     closed: IntervalClosedType
