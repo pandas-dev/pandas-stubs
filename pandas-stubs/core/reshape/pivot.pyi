@@ -22,9 +22,6 @@ from pandas.core.series import Series
 from pandas._typing import (
     AnyArrayLike,
     ArrayLike,
-    HashableT1,
-    HashableT2,
-    HashableT3,
     Label,
     Scalar,
     ScalarT,
@@ -33,11 +30,15 @@ from pandas._typing import (
 )
 
 _PivotAggCallable: TypeAlias = Callable[[Series], ScalarT]
-
 _PivotAggFunc: TypeAlias = (
     _PivotAggCallable[ScalarT]
     | np.ufunc
     | Literal["mean", "sum", "count", "min", "max", "median", "std", "var"]
+)
+_AggFuncTypes: TypeAlias = (
+    _PivotAggFunc[ScalarT]
+    | Sequence[_PivotAggFunc[ScalarT]]
+    | Mapping[Any, _PivotAggFunc[ScalarT]]
 )
 
 _NonIterableHashable: TypeAlias = (
@@ -53,13 +54,11 @@ _NonIterableHashable: TypeAlias = (
     | pd.Timedelta
 )
 
-_PivotTableIndexTypes: TypeAlias = (
-    Label | Sequence[HashableT1] | Series | Grouper | None
-)
+_PivotTableIndexTypes: TypeAlias = Label | Sequence[Hashable] | Series | Grouper | None
 _PivotTableColumnsTypes: TypeAlias = (
-    Label | Sequence[HashableT2] | Series | Grouper | None
+    Label | Sequence[Hashable] | Series | Grouper | None
 )
-_PivotTableValuesTypes: TypeAlias = Label | Sequence[HashableT3] | None
+_PivotTableValuesTypes: TypeAlias = Label | Sequence[Hashable] | None
 
 _ExtendedAnyArrayLike: TypeAlias = AnyArrayLike | ArrayLike
 _Values: TypeAlias = SequenceNotStr[Any] | _ExtendedAnyArrayLike
@@ -67,14 +66,10 @@ _Values: TypeAlias = SequenceNotStr[Any] | _ExtendedAnyArrayLike
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes[Hashable] = None,  # ty: ignore[non-subscriptable]
-    index: _PivotTableIndexTypes[Hashable] = None,  # ty: ignore[non-subscriptable]
-    columns: _PivotTableColumnsTypes[Hashable] = None,  # ty: ignore[non-subscriptable]
-    aggfunc: (
-        _PivotAggFunc[Scalar]
-        | Sequence[_PivotAggFunc[Scalar]]
-        | Mapping[Any, _PivotAggFunc[Scalar]]
-    ) = "mean",
+    values: _PivotTableValuesTypes = None,
+    index: _PivotTableIndexTypes = None,
+    columns: _PivotTableColumnsTypes = None,
+    aggfunc: _AggFuncTypes[Scalar] = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
     dropna: bool = True,
@@ -87,19 +82,11 @@ def pivot_table(
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes[Hashable] = None,  # ty: ignore[non-subscriptable]
+    values: _PivotTableValuesTypes = None,
     *,
     index: Grouper,
-    columns: (
-        _PivotTableColumnsTypes[Hashable]  # ty: ignore[non-subscriptable]
-        | np_ndarray
-        | Index[Any]
-    ) = None,
-    aggfunc: (
-        _PivotAggFunc[Scalar]
-        | Sequence[_PivotAggFunc[Scalar]]
-        | Mapping[Any, _PivotAggFunc[Scalar]]
-    ) = "mean",
+    columns: _PivotTableColumnsTypes | np_ndarray | Index[Any] = None,
+    aggfunc: _AggFuncTypes[Scalar] = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
     dropna: bool = True,
@@ -110,19 +97,11 @@ def pivot_table(
 @overload
 def pivot_table(
     data: DataFrame,
-    values: _PivotTableValuesTypes[Hashable] = None,  # ty: ignore[non-subscriptable]
-    index: (
-        _PivotTableIndexTypes[Hashable]  # ty: ignore[non-subscriptable]
-        | np_ndarray
-        | Index[Any]
-    ) = None,
+    values: _PivotTableValuesTypes = None,
+    index: _PivotTableIndexTypes | np_ndarray | Index[Any] = None,
     *,
     columns: Grouper,
-    aggfunc: (
-        _PivotAggFunc[Scalar]
-        | Sequence[_PivotAggFunc[Scalar]]
-        | Mapping[Any, _PivotAggFunc[Scalar]]
-    ) = "mean",
+    aggfunc: _AggFuncTypes[Scalar] = "mean",
     fill_value: Scalar | None = None,
     margins: bool = False,
     dropna: bool = True,
@@ -133,17 +112,17 @@ def pivot_table(
 def pivot(
     data: DataFrame,
     *,
-    index: _NonIterableHashable | Sequence[HashableT1] = ...,
-    columns: _NonIterableHashable | Sequence[HashableT2] = ...,
-    values: _NonIterableHashable | Sequence[HashableT3] = ...,
+    index: _NonIterableHashable | Sequence[Hashable] = ...,
+    columns: _NonIterableHashable | Sequence[Hashable] = ...,
+    values: _NonIterableHashable | Sequence[Hashable] = ...,
 ) -> DataFrame: ...
 @overload
 def crosstab(
     index: _Values | list[_Values],
     columns: _Values | list[_Values],
     values: _Values,
-    rownames: list[HashableT1] | None = ...,
-    colnames: list[HashableT2] | None = ...,
+    rownames: SequenceNotStr[Hashable] | None = ...,
+    colnames: SequenceNotStr[Hashable] | None = ...,
     *,
     aggfunc: str | np.ufunc | Callable[[Series], float],
     margins: bool = ...,
@@ -156,8 +135,8 @@ def crosstab(
     index: _Values | list[_Values],
     columns: _Values | list[_Values],
     values: None = None,
-    rownames: list[HashableT1] | None = ...,
-    colnames: list[HashableT2] | None = ...,
+    rownames: SequenceNotStr[Hashable] | None = ...,
+    colnames: SequenceNotStr[Hashable] | None = ...,
     aggfunc: None = None,
     margins: bool = ...,
     margins_name: str = ...,
