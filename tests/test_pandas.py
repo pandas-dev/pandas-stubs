@@ -1716,8 +1716,7 @@ def test_crosstab_args() -> None:
     colnames: list[tuple[str]] = [("a",)]
     check(
         assert_type(
-            pd.crosstab(a, b, colnames=colnames, rownames=rownames),
-            pd.DataFrame,
+            pd.crosstab(a, b, colnames=colnames, rownames=rownames), pd.DataFrame
         ),
         pd.DataFrame,
     )
