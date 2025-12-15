@@ -5,6 +5,7 @@ from collections.abc import (
     Mapping,
     Sequence,
 )
+import sys
 from typing import (
     Any,
     overload,
@@ -116,8 +117,13 @@ class MultiIndex(Index):
         self, names: SequenceNotStr[Hashable] = ..., deep: bool = False
     ) -> Self: ...
     def view(self, cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg | type[np_ndarray] | None = None) -> MultiIndex: ...  # type: ignore[override] # pyrefly: ignore[bad-override] # pyright: ignore[reportIncompatibleMethodOverride]
-    @property
-    def dtype(self) -> np.dtype: ...
+    if sys.version_info >= (3, 11):
+        @property
+        def dtype(self) -> np.dtype: ...
+    else:
+        @property
+        def dtype(self) -> np.dtype[Any]: ...
+
     @property
     def dtypes(self) -> pd.Series[Dtype]: ...
     def memory_usage(self, deep: bool = False) -> int: ...
