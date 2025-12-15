@@ -626,7 +626,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     def __lt__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def __gt__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     @overload
-    def __add__(self: Index[Never], other: _str) -> Never: ...
+    def __add__(self: Index[Never], other: _str) -> Index[_str]: ...
     @overload
     def __add__(
         self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index
@@ -680,7 +680,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         self: Index[_str], other: np_ndarray_str | Index[_str]
     ) -> Index[_str]: ...
     @overload
-    def __radd__(self: Index[Never], other: _str) -> Never: ...
+    def __radd__(self: Index[Never], other: _str) -> Index[_str]: ...
     @overload
     def __radd__(
         self: Index[Never], other: complex | ArrayLike | SequenceNotStr[S1] | Index
