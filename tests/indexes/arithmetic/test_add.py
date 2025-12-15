@@ -102,6 +102,11 @@ def test_add_i_pd_index() -> None:
 def test_add_i_py_str() -> None:
     """Test pd.Index[Any] (int) + Python str"""
     s = "abc"
+    midx = pd.MultiIndex.from_tuples([("a",)])
+    idx = midx.levels[0]
+
+    check(assert_type(idx + "c1", "pd.Index[str]"), pd.Index, str)
+    check(assert_type("c1" + idx, "pd.Index[str]"), pd.Index, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
         # GH1541 relaxing typing, won't work at runtime though
