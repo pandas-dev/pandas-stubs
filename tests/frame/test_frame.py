@@ -3959,3 +3959,19 @@ def test_frame_index_setter() -> None:
     check(assert_type(df.index, pd.Index), pd.Index)
     df.index = [2, 3]
     check(assert_type(df.index, pd.Index), pd.Index)
+
+
+def test_frame_at() -> None:
+    df = pd.DataFrame(data={"col1": [1.6, 2], "col2": [3, 4]})
+
+    check(assert_type(df.at[0, "col1"], Scalar), float)
+    df.at[0, "col1"] = 999
+    df.at[0, "col1"] = float("nan")
+
+
+def test_frame_iat() -> None:
+    df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
+
+    check(assert_type(df.iat[0, 0], Scalar), np.integer)
+    df.iat[0, 0] = 999
+    df.iat[0, 0] = float("nan")

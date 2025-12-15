@@ -31,8 +31,10 @@ def test_types_iloc_iat() -> None:
     s2 = pd.Series(data=[1, 2])
     s.loc["row1"]
     s.iat[0]
+    s.iat[0] = 999
     s2.loc[0]
     s2.iat[0]
+    s2.iat[0] = None
 
 
 def test_types_loc_at() -> None:
@@ -40,8 +42,10 @@ def test_types_loc_at() -> None:
     s2 = pd.Series(data=[1, 2])
     s.loc["row1"]
     s.at["row1"]
+    s.at["row1"] = 9
     s2.loc[1]
     s2.at[1]
+    s2.at[1] = 99
 
 
 def test_types_getitem() -> None:
