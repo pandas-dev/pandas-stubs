@@ -222,6 +222,11 @@ class _iLocIndexerFrame(_iLocIndexer, Generic[_T]):
     ) -> _T: ...
 
     # Keep in sync with `DataFrame.__setitem__`
+    @overload
+    def __setitem__(
+        self, key: tuple[slice, Hashable], value: _SetItemValueNotDataFrame
+    ) -> None: ...
+    @overload
     def __setitem__(
         self, key: _iLocSetItemKey, value: _SetItemValueNotDataFrame | DataFrame
     ) -> None: ...
@@ -776,6 +781,10 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     ) -> None: ...
 
     # Keep in sync with `_iLocIndexerFrame.__setitem__`
+    @overload
+    def __setitem__(
+        self, idex: tuple[slice, Hashable], value: _SetItemValueNotDataFrame
+    ) -> None: ...
     @overload
     def __setitem__(
         self, idx: _iLocSetItemKey, value: _SetItemValueNotDataFrame | DataFrame

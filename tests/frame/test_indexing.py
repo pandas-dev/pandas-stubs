@@ -90,6 +90,10 @@ def test_types_setitem() -> None:
     df[a] = [[1, 2], [3, 4]]
     df[i] = [8, 9]
 
+    df["col1"] = [None, pd.NaT]
+    df[["col1"]] = [[None], [pd.NA]]  # type: ignore[assignment,list-item]
+    df[iter(["col1"])] = [[None], [pd.NA]]  # type: ignore[assignment]
+
 
 def test_types_setitem_mask() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4], 5: [6, 7]})
@@ -404,20 +408,30 @@ def test_frame_setitem_na() -> None:
 
     df.loc[ind, :] = pd.NA
     df.iloc[[0, 2], :] = pd.NA
+    df.at["a", "x"] = pd.NA
+    df.iat[0, 0] = pd.NA
 
     # reveal_type(df["y"]) gives Series[Any], so we have to cast to tell the
     # type checker what kind of type it is when adding to a Timedelta
     df["x"] = cast("pd.Series[pd.Timestamp]", df["y"]) + pd.Timedelta(days=3)
     df.loc[ind, :] = pd.NaT
     df.iloc[[0, 2], :] = pd.NaT
+    df.at["a", "y"] = pd.NaT
+    df.iat[0, 0] = pd.NaT
 
     df.loc["a", "x"] = None
     df.iloc[2, 0] = None
+    df.at["a", "y"] = None
+    df.iat[0, 0] = None
 
     df.loc[:, "x"] = [None, pd.NA, pd.NaT]
     df.iloc[:, 0] = [None, pd.NA, pd.NaT]
+
     df.loc[:, ["x"]] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
-    df.iloc[:, [0]] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment]
+    df.iloc[:, [0]] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
+
+    df.loc[:, iter(["x"])] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
+    df.iloc[:, iter([0])] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
 
 
 def test_loc_set() -> None:
