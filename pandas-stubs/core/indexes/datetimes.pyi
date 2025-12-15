@@ -52,12 +52,12 @@ class DatetimeIndex(
         data: AxesData,
         freq: Frequency = ...,
         tz: TimeZones = ...,
-        ambiguous: str = ...,
-        dayfirst: bool = ...,
-        yearfirst: bool = ...,
+        ambiguous: str = "ambiguous",
+        dayfirst: bool = False,
+        yearfirst: bool = False,
         dtype: Dtype = ...,
-        copy: bool = ...,
-        name: Hashable = ...,
+        copy: bool = False,
+        name: Hashable = None,
     ) -> Self: ...
 
     # various ignores needed for mypy, as we do want to restrict what can be used in
@@ -157,28 +157,28 @@ def date_range(
 ) -> DatetimeIndex: ...
 @overload
 def bdate_range(
-    start: str | DateAndDatetimeLike | None = ...,
-    end: str | DateAndDatetimeLike | None = ...,
-    periods: int | None = ...,
-    freq: Frequency | timedelta = ...,
-    tz: TimeZones = ...,
-    normalize: bool = ...,
-    name: Hashable | None = ...,
-    weekmask: str | None = ...,
+    start: str | DateAndDatetimeLike | None = None,
+    end: str | DateAndDatetimeLike | None = None,
+    periods: int | None = None,
+    freq: Frequency | timedelta = "B",
+    tz: TimeZones = None,
+    normalize: bool = True,
+    name: Hashable | None = None,
+    weekmask: str | None = None,
     holidays: None = None,
-    inclusive: IntervalClosedType = ...,
+    inclusive: IntervalClosedType = "both",
 ) -> DatetimeIndex: ...
 @overload
 def bdate_range(
-    start: str | DateAndDatetimeLike | None = ...,
-    end: str | DateAndDatetimeLike | None = ...,
-    periods: int | None = ...,
+    start: str | DateAndDatetimeLike | None = None,
+    end: str | DateAndDatetimeLike | None = None,
+    periods: int | None = None,
     *,
     freq: Frequency | timedelta,
-    tz: TimeZones = ...,
-    normalize: bool = ...,
-    name: Hashable | None = ...,
-    weekmask: str | None = ...,
+    tz: TimeZones = None,
+    normalize: bool = True,
+    name: Hashable | None = None,
+    weekmask: str | None = None,
     holidays: Sequence[str | DateAndDatetimeLike],
-    inclusive: IntervalClosedType = ...,
+    inclusive: IntervalClosedType = "both",
 ) -> DatetimeIndex: ...
