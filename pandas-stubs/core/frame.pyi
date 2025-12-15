@@ -484,7 +484,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: str = ...,
         *,
-        into: type[defaultdict],
+        into: type[defaultdict[Any, Any]],
         index: Literal[True] = True,
     ) -> Never: ...
     @overload
@@ -500,7 +500,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["records"],
         *,
-        into: type[dict] = ...,
+        into: type[dict[Any, Any]] = ...,
         index: Literal[True] = True,
     ) -> list[dict[Hashable, Any]]: ...
     @overload
@@ -516,7 +516,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["index"],
         *,
-        into: OrderedDict | type[OrderedDict],
+        into: OrderedDict[Any, Any] | type[OrderedDict[Any, Any]],
         index: Literal[True] = True,
     ) -> OrderedDict[Hashable, dict[Hashable, Any]]: ...
     @overload
@@ -524,7 +524,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["index"],
         *,
-        into: type[MutableMapping],
+        into: type[MutableMapping[Any, Any]],
         index: Literal[True] = True,
     ) -> MutableMapping[Hashable, dict[Hashable, Any]]: ...
     @overload
@@ -532,7 +532,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["index"],
         *,
-        into: type[dict] = ...,
+        into: type[dict[Any, Any]] = ...,
         index: Literal[True] = True,
     ) -> dict[Hashable, dict[Hashable, Any]]: ...
     @overload
@@ -548,7 +548,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["dict", "list", "series"] = ...,
         *,
-        into: type[dict] = ...,
+        into: type[dict[Any, Any]] = ...,
         index: Literal[True] = True,
     ) -> dict[Hashable, Any]: ...
     @overload
@@ -556,7 +556,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["split", "tight"],
         *,
-        into: MutableMapping[Any, Any] | type[MutableMapping],
+        into: MutableMapping[Any, Any] | type[MutableMapping[Any, Any]],
         index: bool = ...,
     ) -> MutableMapping[str, list[Any]]: ...
     @overload
@@ -564,7 +564,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["split", "tight"],
         *,
-        into: type[dict] = ...,
+        into: type[dict[Any, Any]] = ...,
         index: bool = ...,
     ) -> dict[str, list[Any]]: ...
     @classmethod

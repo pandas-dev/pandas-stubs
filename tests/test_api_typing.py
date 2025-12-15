@@ -1,6 +1,10 @@
 """Test module for classes in pandas.api.typing."""
 
-from typing import TypeAlias
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    TypeAlias,
+)
 
 import numpy as np
 import pandas as pd
@@ -26,27 +30,32 @@ from pandas.api.typing import (
     Window,
 )
 import pytest
-from typing_extensions import (
-    assert_type,
-)
+from typing_extensions import assert_type
 
 from tests import (
     check,
     ensure_clean,
 )
 
-ResamplerGroupBy: TypeAlias = (
-    DatetimeIndexResamplerGroupby
-    | PeriodIndexResamplerGroupby
-    | TimedeltaIndexResamplerGroupby
-)
+if TYPE_CHECKING:
+    ResamplerGroupBy: TypeAlias = (
+        DatetimeIndexResamplerGroupby[Any]
+        | PeriodIndexResamplerGroupby[Any]
+        | TimedeltaIndexResamplerGroupby[Any]
+    )
+else:
+    ResamplerGroupBy: TypeAlias = (
+        DatetimeIndexResamplerGroupby
+        | PeriodIndexResamplerGroupby
+        | TimedeltaIndexResamplerGroupby
+    )
 
 
 def test_dataframegroupby() -> None:
     df = pd.DataFrame({"a": [1, 2, 3]})
     group = df.groupby("a")
 
-    def f1(gb: DataFrameGroupBy) -> None:
+    def f1(gb: "DataFrameGroupBy[Any, Any]") -> None:
         check(gb, DataFrameGroupBy)
 
     f1(group)
@@ -55,7 +64,7 @@ def test_dataframegroupby() -> None:
 def test_seriesgroupby() -> None:
     sr = pd.Series([1, 2, 3], index=pd.Index(["a", "b", "a"]))
 
-    def f1(gb: SeriesGroupBy) -> None:
+    def f1(gb: "SeriesGroupBy[Any, Any]") -> None:
         check(gb, SeriesGroupBy)
 
     f1(sr.groupby(level=0))
@@ -113,7 +122,7 @@ def test_nattype() -> None:
 def test_expanding() -> None:
     df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
 
-    def f1(gb: Expanding) -> None:
+    def f1(gb: "Expanding[Any]") -> None:
         check(gb, Expanding)
 
     f1(df.expanding())
@@ -122,7 +131,7 @@ def test_expanding() -> None:
 def test_expanding_groubpy() -> None:
     df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
 
-    def f1(gb: ExpandingGroupby) -> None:
+    def f1(gb: "ExpandingGroupby[Any]") -> None:
         check(gb, ExpandingGroupby)
 
     f1(df.groupby("B").expanding())
@@ -131,7 +140,7 @@ def test_expanding_groubpy() -> None:
 def test_ewm() -> None:
     df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
 
-    def f1(gb: ExponentialMovingWindow) -> None:
+    def f1(gb: "ExponentialMovingWindow[Any]") -> None:
         check(gb, ExponentialMovingWindow)
 
     f1(df.ewm(2))
@@ -140,7 +149,7 @@ def test_ewm() -> None:
 def test_ewm_groubpy() -> None:
     df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
 
-    def f1(gb: ExponentialMovingWindowGroupby) -> None:
+    def f1(gb: "ExponentialMovingWindowGroupby[Any]") -> None:
         check(gb, ExponentialMovingWindowGroupby)
 
     f1(df.groupby("B").ewm(2))
@@ -149,7 +158,7 @@ def test_ewm_groubpy() -> None:
 def test_json_reader() -> None:
     df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
 
-    def f1(gb: JsonReader) -> None:
+    def f1(gb: JsonReader[Any]) -> None:
         check(gb, JsonReader)
 
     with ensure_clean() as path:
@@ -162,7 +171,7 @@ def test_json_reader() -> None:
 def test_resampler() -> None:
     s = pd.Series([1, 2, 3, 4, 5], index=pd.date_range("20130101", periods=5, freq="s"))
 
-    def f1(gb: Resampler) -> None:
+    def f1(gb: "Resampler[Any]") -> None:
         check(gb, Resampler)
 
     f1(s.resample("3min"))
@@ -171,7 +180,7 @@ def test_resampler() -> None:
 def test_rolling() -> None:
     df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
 
-    def f1(gb: Rolling) -> None:
+    def f1(gb: "Rolling[Any]") -> None:
         check(gb, Rolling)
 
     f1(df.rolling(2))
@@ -180,7 +189,7 @@ def test_rolling() -> None:
 def test_rolling_groupby() -> None:
     df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
 
-    def f1(gb: RollingGroupby) -> None:
+    def f1(gb: "RollingGroupby[Any]") -> None:
         check(gb, RollingGroupby)
 
     f1(df.groupby("B").rolling(2))
@@ -198,7 +207,7 @@ def test_timegrouper() -> None:
 def test_window() -> None:
     ser = pd.Series([0, 1, 5, 2, 8])
 
-    def f1(gb: Window) -> None:
+    def f1(gb: "Window[Any]") -> None:
         check(gb, Window)
 
     f1(ser.rolling(2, win_type="gaussian"))
