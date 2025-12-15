@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import (
-    TypeAlias,
-)
+from typing import TypeAlias
 
 from dateutil.relativedelta import (
     FR,

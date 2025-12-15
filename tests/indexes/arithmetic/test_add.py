@@ -2,9 +2,7 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
-from typing_extensions import (
-    assert_type,
-)
+from typing_extensions import assert_type
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -106,6 +104,6 @@ def test_add_i_py_str() -> None:
     s = "abc"
 
     if TYPE_CHECKING_INVALID_USAGE:
-        # relaxing typing, won't work at runtime though
+        # GH1541 relaxing typing, won't work at runtime though
         assert_type(left_i + s, "pd.Index[str]")
         assert_type(s + left_i, "pd.Index[str]")

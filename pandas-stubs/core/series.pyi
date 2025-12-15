@@ -1879,6 +1879,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def add(
         self: Series[Never],
+        other: _str,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[_str]: ...
+    @overload
+    def add(
+        self: Series[Never],
         other: complex | ListLike,
         level: Level | None = None,
         fill_value: float | None = None,
@@ -2111,6 +2119,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __radd__(self: Series[BaseOffset], other: Period) -> Series[Period]: ...
     @overload
     def __radd__(self: Series[BaseOffset], other: BaseOffset) -> Series[BaseOffset]: ...
+    @overload
+    def radd(
+        self: Series[Never],
+        other: _str,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[_str]: ...
     @overload
     def radd(
         self: Series[Never],
