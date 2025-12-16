@@ -1719,7 +1719,13 @@ def test_index_view() -> None:
         # - pyright: ndarray[tuple[Any, ...], dtype[Any]]
         check(assert_type(ind.view(np.ndarray), np.ndarray), np.ndarray)  # type: ignore[assert-type]
     else:
-        check(assert_type(ind.view(np.ndarray), np.ndarray[Any, Any]), np.ndarray)
+        check(
+            assert_type(
+                ind.view(np.ndarray),  # pyright: ignore[reportUnknownArgumentType]
+                np.ndarray[Any, Any],
+            ),
+            np.ndarray,
+        )
 
     if sys.version_info >= (3, 11):
 

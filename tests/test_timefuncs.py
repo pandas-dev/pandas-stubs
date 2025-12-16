@@ -52,7 +52,7 @@ from pandas.tseries.offsets import (
 )
 
 if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration] # isort: skip
+    from pandas.errors import Pandas4Warning  # pyright: ignore[reportRedeclaration]
 else:
     Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
@@ -1646,7 +1646,7 @@ def test_timedeltaseries_add_timestampseries() -> None:
 def test_timestamp_strptime_fails() -> None:
     if TYPE_CHECKING_INVALID_USAGE:
         assert_never(
-            pd.Timestamp.strptime(
+            pd.Timestamp.strptime(  # pyright: ignore[reportUnknownArgumentType]
                 "2023-02-16",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
                 "%Y-%M-%D",  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
             )
