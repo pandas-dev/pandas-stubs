@@ -562,9 +562,15 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __array_ufunc__(
         self, ufunc: Callable[..., Any], method: _str, *inputs: Any, **kwargs: Any
     ) -> Any: ...
-    def __array__(  # ty: ignore[invalid-method-override]
-        self, dtype: _str | np.dtype = ..., copy: bool | None = ...
-    ) -> np_1darray: ...
+    if sys.version_info >= (3, 11):
+        def __array__(  # ty: ignore[invalid-method-override]
+            self, dtype: _str | np.dtype = ..., copy: bool | None = ...
+        ) -> np_1darray: ...
+    else:
+        def __array__(  # ty: ignore[invalid-method-override]
+            self, dtype: _str | np.dtype[Any] = ..., copy: bool | None = ...
+        ) -> np_1darray: ...
+
     @final
     def __getattr__(self, name: _str) -> S1: ...
 
@@ -1789,6 +1795,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     # just failed to generate these so I couldn't match
     # them up.
     @overload
+    def __add__(self: Series[Never], other: _str) -> Series[_str]: ...
+    @overload
     def __add__(self: Series[Never], other: complex | ListLike) -> Series: ...
     @overload
     def __add__(self, other: Index[Never] | Series[Never]) -> Series: ...
@@ -1873,6 +1881,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def __add__(
         self: Series[_str], other: np_ndarray_str | Index[_str] | Series[_str]
+    ) -> Series[_str]: ...
+    @overload
+    def add(
+        self: Series[Never],
+        other: _str,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
     ) -> Series[_str]: ...
     @overload
     def add(
@@ -2008,6 +2024,8 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         axis: int = 0,
     ) -> Series[_str]: ...
     @overload
+    def __radd__(self: Series[Never], other: _str) -> Series[_str]: ...
+    @overload
     def __radd__(self: Series[Never], other: complex | ListLike) -> Series: ...
     @overload
     def __radd__(self, other: Index[Never] | Series[Never]) -> Series: ...
@@ -2107,6 +2125,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __radd__(self: Series[BaseOffset], other: Period) -> Series[Period]: ...
     @overload
     def __radd__(self: Series[BaseOffset], other: BaseOffset) -> Series[BaseOffset]: ...
+    @overload
+    def radd(
+        self: Series[Never],
+        other: _str,
+        level: Level | None = None,
+        fill_value: float | None = None,
+        axis: int = 0,
+    ) -> Series[_str]: ...
     @overload
     def radd(
         self: Series[Never],

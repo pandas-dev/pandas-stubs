@@ -4,6 +4,7 @@ from collections.abc import Hashable
 import datetime as dt
 import sys
 from typing import (
+    TYPE_CHECKING,
     Any,
     cast,
 )
@@ -18,6 +19,7 @@ from pandas.core.arrays.timedeltas import TimedeltaArray
 from pandas.core.indexes.base import Index
 from pandas.core.indexes.category import CategoricalIndex
 from pandas.core.indexes.datetimes import DatetimeIndex
+import pytest
 from typing_extensions import (
     Never,
     assert_type,
@@ -845,6 +847,49 @@ def test_interval_index_tuples() -> None:
         pd.IntervalIndex,
         pd.Interval,
     )
+
+
+dt_l, dt_r = dt.datetime(2025, 12, 14), dt.datetime(2025, 12, 15)
+td_l, td_r = dt.timedelta(seconds=1), dt.timedelta(seconds=2)
+
+
+@pytest.mark.parametrize(
+    ("itv_idx", "typ_left", "typ_mid", "typ_length"),
+    [
+        (pd.interval_range(0, 10), np.integer, np.floating, np.integer),
+        (pd.interval_range(0.0, 10), np.floating, np.floating, np.floating),
+        (pd.interval_range(dt_l, dt_r), pd.Timestamp, pd.Timestamp, pd.Timedelta),
+        (pd.interval_range(td_l, td_r, 2), pd.Timedelta, pd.Timedelta, pd.Timedelta),
+    ],
+)
+def test_interval_properties(
+    itv_idx: pd.IntervalIndex[Any], typ_left: type, typ_mid: type, typ_length: type
+) -> None:
+    check(itv_idx.left, pd.Index, typ_left)
+    check(itv_idx.right, pd.Index, typ_left)
+    check(itv_idx.mid, pd.Index, typ_mid)
+    check(itv_idx.length, pd.Index, typ_length)
+
+    if TYPE_CHECKING:
+        assert_type(pd.interval_range(0, 10).left, "pd.Index[int]")
+        assert_type(pd.interval_range(0, 10).right, "pd.Index[int]")
+        assert_type(pd.interval_range(0, 10).mid, "pd.Index[float]")
+        assert_type(pd.interval_range(0, 10).length, "pd.Index[int]")
+
+        assert_type(pd.interval_range(0.0, 10).left, "pd.Index[float]")
+        assert_type(pd.interval_range(0.0, 10).right, "pd.Index[float]")
+        assert_type(pd.interval_range(0.0, 10).mid, "pd.Index[float]")
+        assert_type(pd.interval_range(0.0, 10).length, "pd.Index[float]")
+
+        assert_type(pd.interval_range(dt_l, dt_r).left, "pd.Index[pd.Timestamp]")
+        assert_type(pd.interval_range(dt_l, dt_r).right, "pd.Index[pd.Timestamp]")
+        assert_type(pd.interval_range(dt_l, dt_r).mid, "pd.Index[pd.Timestamp]")
+        assert_type(pd.interval_range(dt_l, dt_r).length, "pd.Index[pd.Timedelta]")
+
+        assert_type(pd.interval_range(td_l, td_r).left, "pd.Index[pd.Timedelta]")
+        assert_type(pd.interval_range(td_l, td_r).right, "pd.Index[pd.Timedelta]")
+        assert_type(pd.interval_range(td_l, td_r).mid, "pd.Index[pd.Timedelta]")
+        assert_type(pd.interval_range(td_l, td_r, 2).length, "pd.Index[pd.Timedelta]")
 
 
 def test_sorted_and_list() -> None:
