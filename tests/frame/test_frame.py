@@ -3968,6 +3968,13 @@ def test_frame_at() -> None:
     df.at[0, "col1"] = 999
     df.at[0, "col1"] = float("nan")
 
+    mi = pd.MultiIndex.from_arrays([[2, 3], [4, 5]])
+    df = pd.DataFrame(data={"col1": [1.6, 2], "col2": [3, 4]}, index=mi)
+
+    check(assert_type(df.at[(2, 4), "col1"], Scalar), float)
+    df.at[(2, 4), "col1"] = 999
+    df.at[(2, 4), "col1"] = float("nan")
+
 
 def test_frame_iat() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
