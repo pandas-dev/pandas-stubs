@@ -22,7 +22,6 @@ from typing import (
 )
 
 from pandas import Index
-import pandas.core.indexing as indexing
 from pandas.core.resample import DatetimeIndexResampler
 from pandas.core.series import Series
 import sqlalchemy.engine
@@ -63,7 +62,7 @@ from pandas._typing import (
 from pandas.io.pytables import HDFStore
 from pandas.io.sql import SQLTable
 
-class NDFrame(indexing.IndexingMixin):
+class NDFrame:
     __hash__: ClassVar[None]  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]
 
     @final

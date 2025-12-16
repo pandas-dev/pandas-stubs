@@ -323,42 +323,21 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     ) -> None: ...
 
 class _iAtIndexerFrame(_iAtIndexer):
-    def __getitem__(self, key: tuple[int, int]) -> Scalar: ...
-    def __setitem__(
+    def __getitem__(self, key: tuple[int, int]) -> Scalar: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         key: tuple[int, int],
         value: Scalar | NAType | NaTType | None,
     ) -> None: ...
 
 class _AtIndexerFrame(_AtIndexer):
-    def __getitem__(
-        self,
-        key: tuple[
-            int
-            | StrLike
-            | Timestamp
-            | tuple[Scalar, ...]
-            | Callable[[DataFrame], ScalarT],
-            int | StrLike | tuple[Scalar, ...],
-        ],
+    def __getitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+        self, key: tuple[Hashable, Hashable]
     ) -> Scalar: ...
-    def __setitem__(
+    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
-        key: (
-            MaskType | StrLike | _IndexSliceTuple | list[ScalarT] | IndexingInt | slice
-        ),
-        value: (
-            Scalar
-            | NAType
-            | NaTType
-            | ArrayLike
-            | IndexOpsMixin
-            | DataFrame
-            | Sequence[Scalar]
-            | Sequence[Sequence[Scalar]]
-            | Mapping[Hashable, Scalar | NAType | NaTType]
-            | None
-        ),
+        key: tuple[Hashable, Hashable],
+        value: Scalar | NAType | NaTType | None,
     ) -> None: ...
 
 # With mypy 1.14.1 and python 3.12, the second overload needs a type-ignore statement
