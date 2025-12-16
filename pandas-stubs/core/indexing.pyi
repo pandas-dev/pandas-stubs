@@ -35,16 +35,6 @@ class _IndexSlice:
 
 IndexSlice: _IndexSlice
 
-class IndexingMixin:
-    @property
-    def iloc(self) -> _iLocIndexer: ...
-    @property
-    def loc(self) -> _LocIndexer: ...
-    @property
-    def at(self) -> _AtIndexer: ...
-    @property
-    def iat(self) -> _iAtIndexer: ...
-
 class _NDFrameIndexer(_NDFrameIndexerBase):
     axis: AxisInt | None = None
     def __call__(self, axis: Axis | None = None) -> Self: ...
