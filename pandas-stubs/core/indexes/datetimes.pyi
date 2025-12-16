@@ -118,7 +118,7 @@ def date_range(
     freq: Frequency | timedelta | None = None,
     tz: TimeZones = None,
     normalize: bool = False,
-    name: Hashable | None = None,
+    name: Hashable = None,
     inclusive: IntervalClosedType = "both",
     unit: TimeUnit | None = None,
 ) -> DatetimeIndex: ...
@@ -129,7 +129,7 @@ def date_range(
     periods: int,
     tz: TimeZones = None,
     normalize: bool = False,
-    name: Hashable | None = None,
+    name: Hashable = None,
     inclusive: IntervalClosedType = "both",
     unit: TimeUnit | None = None,
 ) -> DatetimeIndex: ...
@@ -141,7 +141,7 @@ def date_range(
     freq: Frequency | timedelta | None = None,
     tz: TimeZones = None,
     normalize: bool = False,
-    name: Hashable | None = None,
+    name: Hashable = None,
     inclusive: IntervalClosedType = "both",
     unit: TimeUnit | None = None,
 ) -> DatetimeIndex: ...
@@ -153,7 +153,7 @@ def date_range(
     freq: Frequency | timedelta | None = None,
     tz: TimeZones = None,
     normalize: bool = False,
-    name: Hashable | None = None,
+    name: Hashable = None,
     inclusive: IntervalClosedType = "both",
     unit: TimeUnit | None = None,
 ) -> DatetimeIndex: ...
@@ -165,7 +165,7 @@ def bdate_range(
     freq: Frequency | timedelta = "B",
     tz: TimeZones = None,
     normalize: bool = False,
-    name: Hashable | None = None,
+    name: Hashable = None,
     weekmask: str | None = None,
     holidays: None = None,
     inclusive: IntervalClosedType = "both",
@@ -179,7 +179,7 @@ def bdate_range(
     freq: Frequency | timedelta,
     tz: TimeZones = None,
     normalize: bool = False,
-    name: Hashable | None = None,
+    name: Hashable = None,
     weekmask: str | None = None,
     holidays: Sequence[str | DateAndDatetimeLike],
     inclusive: IntervalClosedType = "both",
