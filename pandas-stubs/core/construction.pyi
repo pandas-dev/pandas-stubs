@@ -1,5 +1,9 @@
 from collections.abc import Sequence
-from typing import overload
+import sys
+from typing import (
+    Any,
+    overload,
+)
 
 import numpy as np
 from pandas.core.arrays.base import ExtensionArray
@@ -40,9 +44,19 @@ def array(
     dtype: PandasFloatDtypeArg | None = None,
     copy: bool = True,
 ) -> FloatingArray: ...
-@overload
-def array(
-    data: Sequence[object],
-    dtype: str | np.dtype | ExtensionDtype | None = None,
-    copy: bool = True,
-) -> ExtensionArray: ...
+
+if sys.version_info >= (3, 11):
+    @overload
+    def array(
+        data: Sequence[object],
+        dtype: str | np.dtype | ExtensionDtype | None = None,
+        copy: bool = True,
+    ) -> ExtensionArray: ...
+
+else:
+    @overload
+    def array(
+        data: Sequence[object],
+        dtype: str | np.dtype[Any] | ExtensionDtype | None = None,
+        copy: bool = True,
+    ) -> ExtensionArray: ...

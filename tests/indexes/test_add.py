@@ -2,10 +2,7 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
-from typing_extensions import (
-    Never,
-    assert_type,
-)
+from typing_extensions import assert_type
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -105,7 +102,13 @@ def test_add_i_pd_index() -> None:
 def test_add_i_py_str() -> None:
     """Test pd.Index[Any] (int) + Python str"""
     s = "abc"
+    midx = pd.MultiIndex.from_tuples([("a",)])
+    idx = midx.levels[0]
+
+    check(assert_type(idx + "c1", "pd.Index[str]"), pd.Index, str)
+    check(assert_type("c1" + idx, "pd.Index[str]"), pd.Index, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(left_i + s, Never)
-        assert_type(s + left_i, Never)
+        # GH1541 relaxing typing, won't work at runtime though
+        assert_type(left_i + s, "pd.Index[str]")
+        assert_type(s + left_i, "pd.Index[str]")
