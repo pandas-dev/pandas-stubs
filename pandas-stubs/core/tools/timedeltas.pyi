@@ -16,18 +16,18 @@ from pandas._typing import (
 @overload
 def to_timedelta(
     arg: str | float | timedelta,
-    unit: TimeDeltaUnitChoices | None = ...,
-    errors: RaiseCoerce = ...,
+    unit: TimeDeltaUnitChoices | None = None,
+    errors: RaiseCoerce = "raise",
 ) -> Timedelta: ...
 @overload
 def to_timedelta(
     arg: Series,
-    unit: TimeDeltaUnitChoices | None = ...,
-    errors: RaiseCoerce = ...,
+    unit: TimeDeltaUnitChoices | None = None,
+    errors: RaiseCoerce = "raise",
 ) -> Series[Timedelta]: ...
 @overload
 def to_timedelta(
     arg: SequenceNotStr[str | float | timedelta] | range | ArrayLike | Index,
-    unit: TimeDeltaUnitChoices | None = ...,
-    errors: RaiseCoerce = ...,
+    unit: TimeDeltaUnitChoices | None = None,
+    errors: RaiseCoerce = "raise",
 ) -> TimedeltaIndex: ...
