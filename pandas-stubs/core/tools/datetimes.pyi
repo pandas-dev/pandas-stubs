@@ -24,7 +24,6 @@ from pandas._libs.tslibs import NaTType
 from pandas._typing import (
     AnyArrayLike,
     DictConvertible,
-    IgnoreRaise,
     RaiseCoerce,
     TimestampConvertibleTypes,
     np_ndarray_dt,
@@ -61,13 +60,13 @@ class FulldatetimeDict(YearMonthDayDict, total=False):
 @overload
 def to_datetime(
     arg: DatetimeScalar,
-    errors: IgnoreRaise = "raise",
+    errors: Literal["raise"] = "raise",
     dayfirst: bool = False,
     yearfirst: bool = False,
     utc: bool = False,
     format: str | None = None,
     exact: bool = True,
-    unit: str | None = None,
+    unit: Literal["D", "s", "ms", "us", "ns"] | None = None,
     origin: Literal["julian", "unix"] | TimestampConvertibleTypes = "unix",
     cache: bool = True,
 ) -> Timestamp: ...
@@ -80,7 +79,7 @@ def to_datetime(
     utc: bool = False,
     format: str | None = None,
     exact: bool = True,
-    unit: str | None = None,
+    unit: Literal["D", "s", "ms", "us", "ns"] | None = None,
     origin: Literal["julian", "unix"] | TimestampConvertibleTypes = "unix",
     cache: bool = True,
 ) -> Timestamp | NaTType: ...
@@ -93,7 +92,7 @@ def to_datetime(
     utc: bool = False,
     format: str | None = None,
     exact: bool = True,
-    unit: str | None = None,
+    unit: Literal["D", "s", "ms", "us", "ns"] | None = None,
     origin: Literal["julian", "unix"] | TimestampConvertibleTypes = "unix",
     cache: bool = True,
 ) -> Series[Timestamp]: ...
@@ -115,7 +114,7 @@ def to_datetime(
     utc: bool = False,
     format: str | None = None,
     exact: bool = True,
-    unit: str | None = None,
+    unit: Literal["D", "s", "ms", "us", "ns"] | None = None,
     origin: Literal["julian", "unix"] | TimestampConvertibleTypes = "unix",
     cache: bool = True,
 ) -> DatetimeIndex: ...

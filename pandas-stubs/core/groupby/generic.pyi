@@ -363,9 +363,9 @@ class DataFrameGroupBy(GroupBy[DataFrame], Generic[ByT, _TT]):
         ax: PlotAxes | None = None,
         figsize: tuple[float, float] | None = ...,
         layout: tuple[int, int] | None = ...,
-        sharex: bool = ...,
-        sharey: bool = ...,
-        backend: str | None = ...,
+        sharex: bool = False,
+        sharey: bool = True,
+        backend: str | None = None,
         **kwargs: Any,
     ) -> PlotAxes | Series: ...  # Series[PlotAxes]
     @overload

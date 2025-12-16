@@ -9,11 +9,13 @@ from datetime import (
     tzinfo as _tzinfo,
 )
 from typing import (
+    Literal,
     final,
     overload,
 )
 
 import numpy as np
+import pandas as pd
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.accessors import DatetimeIndexProperties
 from pandas.core.indexes.base import Index
@@ -29,13 +31,13 @@ from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     AxesData,
     DateAndDatetimeLike,
-    Dtype,
     Frequency,
     IntervalClosedType,
     TimeUnit,
     TimeZones,
     np_1darray_intp,
     np_ndarray,
+    np_ndarray_bool,
     np_ndarray_dt,
     np_ndarray_td,
 )
@@ -52,10 +54,10 @@ class DatetimeIndex(
         data: AxesData,
         freq: Frequency = ...,
         tz: TimeZones = ...,
-        ambiguous: str = "ambiguous",
+        ambiguous: Literal["infer", "NaT", "raise"] | np_ndarray_bool = "raise",
         dayfirst: bool = False,
         yearfirst: bool = False,
-        dtype: Dtype = ...,
+        dtype: np.dtype[np.datetime64] | pd.DatetimeTZDtype | str | None = None,
         copy: bool = False,
         name: Hashable = None,
     ) -> Self: ...
@@ -162,7 +164,7 @@ def bdate_range(
     periods: int | None = None,
     freq: Frequency | timedelta = "B",
     tz: TimeZones = None,
-    normalize: bool = True,
+    normalize: bool = False,
     name: Hashable | None = None,
     weekmask: str | None = None,
     holidays: None = None,
@@ -176,7 +178,7 @@ def bdate_range(
     *,
     freq: Frequency | timedelta,
     tz: TimeZones = None,
-    normalize: bool = True,
+    normalize: bool = False,
     name: Hashable | None = None,
     weekmask: str | None = None,
     holidays: Sequence[str | DateAndDatetimeLike],
