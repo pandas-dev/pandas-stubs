@@ -146,7 +146,7 @@ class MultiIndex(Index):
         self, level: Level
     ) -> (
         Index
-    ): ...  # ty: ignore[invalid-method-override] # pyrefly: ignore[bad-override]
+    ): ...  # ty: ignore[invalid-method-override]
     def to_frame(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         index: bool = True,
@@ -174,7 +174,7 @@ class MultiIndex(Index):
     @overload
     def append(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: Index | Sequence[Index]
-    ) -> Index: ...  # pyrefly: ignore[bad-override]
+    ) -> Index: ...
     def drop(self, codes: Level | Sequence[Level], level: Level | None = None, errors: str = "raise") -> MultiIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     def swaplevel(self, i: int = -2, j: int = -1) -> Self: ...
     def reorder_levels(self, order: Sequence[Level]) -> MultiIndex: ...
