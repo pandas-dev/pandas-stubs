@@ -1,8 +1,8 @@
+# pyright: reportMissingTypeArgument=false
 from collections.abc import (
     Hashable,
     Iterator,
 )
-from typing import Any  # noqa: F401
 from typing import TypeAlias
 
 import numpy as np
@@ -142,7 +142,7 @@ def test_asfreq() -> None:
 
 
 def test_getattr() -> None:
-    check(assert_type(DF.resample("ME").col1, "SeriesGroupBy[Any, Any]"), SeriesGroupBy)
+    check(assert_type(DF.resample("ME").col1, SeriesGroupBy), SeriesGroupBy)
 
 
 def test_interpolate() -> None:
@@ -467,10 +467,8 @@ def test_aggregate_frame_combinations() -> None:
 
 
 def test_getitem() -> None:
+    check(assert_type(DF.resample("ME")["col1"], SeriesGroupBy), SeriesGroupBy)
     check(
-        assert_type(DF.resample("ME")["col1"], "SeriesGroupBy[Any, Any]"), SeriesGroupBy
-    )
-    check(
-        assert_type(DF.resample("ME")[["col1", "col2"]], "DataFrameGroupBy[Any, Any]"),
+        assert_type(DF.resample("ME")[["col1", "col2"]], DataFrameGroupBy),
         DataFrameGroupBy,
     )
