@@ -26,7 +26,10 @@ from typing_extensions import assert_type
 
 from pandas._typing import Scalar
 
-from tests import check
+from tests import (
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 
 def test_types_getitem() -> None:
@@ -592,3 +595,28 @@ def test_frame_ndarray_assignmment() -> None:
 
     df_b = pd.DataFrame({"a": [0.0] * 10, "b": [1.0] * 10})
     df_b.iloc[:, :] = np.array([[-1.0, np.inf]] * 10)
+
+
+def test_frame_at() -> None:
+    df = pd.DataFrame(data={"col1": [1.6, 2], "col2": [3, 4]})
+
+    check(assert_type(df.at[0, "col1"], Scalar), float)
+    df.at[0, "col1"] = 999
+    df.at[0, "col1"] = float("nan")
+
+    mi = pd.MultiIndex.from_arrays([[2, 3], [4, 5]])
+    df = pd.DataFrame(data={"col1": [1.6, 2], "col2": [3, 4]}, index=mi)
+
+    check(assert_type(df.at[(2, 4), "col1"], Scalar), float)
+    df.at[(2, 4), "col1"] = 999
+    df.at[(2, 4), "col1"] = float("nan")
+
+
+def test_frame_iat() -> None:
+    df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
+
+    check(assert_type(df.iat[0, 0], Scalar), np.integer)
+    df.iat[0, 0] = 999
+    df.iat[0, 0] = float("nan")
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.iat[(0,), 0] = 999  # type: ignore[index]  # pyright: ignore[reportArgumentType]
