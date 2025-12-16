@@ -64,8 +64,9 @@ def test_agg_complex() -> None:
     with pytest_warns_bounded(
         np.exceptions.ComplexWarning,
         r"Casting complex values to real discards the imaginary part",
+        upper="2.3.99",
     ):
-        check(assert_type(series.var(), np.float64), np.float64)
+        check(assert_type(series.var(), float), np.float64)
 
 
 def test_agg_str() -> None:
@@ -93,4 +94,5 @@ def test_agg_td() -> None:
     check(assert_type(series.mean(), pd.Timedelta), pd.Timedelta)
     check(assert_type(series.median(), pd.Timedelta), pd.Timedelta)
     check(assert_type(series.std(), pd.Timedelta), pd.Timedelta)
-    # Note: var() is not supported for Timedelta series at runtime
+    if TYPE_CHECKING_INVALID_USAGE:
+        series.var()  # type: ignore[misc]

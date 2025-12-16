@@ -4621,13 +4621,22 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> float: ...
     @overload
     def var(
+        self: Series[Timedelta],
+        axis: AxisIndex | None = 0,
+        skipna: _bool | None = True,
+        ddof: int = 1,
+        numeric_only: _bool = False,
+        **kwargs: Any,
+    ) -> Never: ...
+    @overload
+    def var(
         self: Series[complex],
         axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         ddof: int = 1,
         numeric_only: _bool = False,
         **kwargs: Any,
-    ) -> np.float64: ...
+    ) -> float: ...
     @overload
     def var(
         self: SupportsGetItem[Scalar, SupportsTruedivInt[S2]],
