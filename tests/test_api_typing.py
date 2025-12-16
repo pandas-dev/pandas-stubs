@@ -1,11 +1,7 @@
 # pyright: reportMissingTypeArgument=false
 """Test module for classes in pandas.api.typing."""
 
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    TypeAlias,
-)
+from typing import TypeAlias
 
 import numpy as np
 import pandas as pd
@@ -38,18 +34,11 @@ from tests import (
     ensure_clean,
 )
 
-if TYPE_CHECKING:
-    ResamplerGroupBy: TypeAlias = (
-        DatetimeIndexResamplerGroupby[Any]
-        | PeriodIndexResamplerGroupby[Any]
-        | TimedeltaIndexResamplerGroupby[Any]
-    )
-else:
-    ResamplerGroupBy: TypeAlias = (
-        DatetimeIndexResamplerGroupby
-        | PeriodIndexResamplerGroupby
-        | TimedeltaIndexResamplerGroupby
-    )
+ResamplerGroupBy: TypeAlias = (
+    DatetimeIndexResamplerGroupby
+    | PeriodIndexResamplerGroupby
+    | TimedeltaIndexResamplerGroupby
+)
 
 
 def test_dataframegroupby() -> None:
@@ -159,7 +148,7 @@ def test_ewm_groubpy() -> None:
 def test_json_reader() -> None:
     df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
 
-    def f1(gb: JsonReader[Any]) -> None:
+    def f1(gb: JsonReader) -> None:
         check(gb, JsonReader)
 
     with ensure_clean() as path:
