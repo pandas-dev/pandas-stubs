@@ -1,3 +1,4 @@
+# pyright: reportMissingTypeArgument=false
 from collections.abc import (
     Hashable,
     Iterator,
