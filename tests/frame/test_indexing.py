@@ -91,6 +91,7 @@ def test_types_setitem() -> None:
     df[i] = [8, 9]
 
     df["col1"] = [None, pd.NaT]
+    # TODO: mypy bug, remove after python/mypy#20420 has been resolved
     df[["col1"]] = [[None], [pd.NA]]  # type: ignore[assignment,list-item]
     df[iter(["col1"])] = [[None], [pd.NA]]  # type: ignore[assignment]
 
@@ -427,9 +428,11 @@ def test_frame_setitem_na() -> None:
     df.loc[:, "x"] = [None, pd.NA, pd.NaT]
     df.iloc[:, 0] = [None, pd.NA, pd.NaT]
 
+    # TODO: mypy bug, remove after python/mypy#20420 has been resolved
     df.loc[:, ["x"]] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
     df.iloc[:, [0]] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
 
+    # TODO: mypy bug, remove after python/mypy#20420 has been resolved
     df.loc[:, iter(["x"])] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
     df.iloc[:, iter([0])] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
 
