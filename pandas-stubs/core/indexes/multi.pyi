@@ -144,9 +144,7 @@ class MultiIndex(Index):
     @overload
     def unique(  # ty: ignore[invalid-method-override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, level: Level
-    ) -> (
-        Index
-    ): ...  # ty: ignore[invalid-method-override]
+    ) -> Index: ...
     def to_frame(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         index: bool = True,
