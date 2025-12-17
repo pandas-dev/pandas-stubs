@@ -48,6 +48,7 @@ from pandas._typing import (
     IgnoreRaise,
     IndexLabel,
     Level,
+    ListLike,
     NpDtype,
     OpenFileErrors,
     P,
@@ -321,7 +322,7 @@ class NDFrame:
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] | Index | None = None,
+        labels: Hashable | ListLike | None = None,
         *,
         axis: Axis = 0,
         index: None,
@@ -333,7 +334,7 @@ class NDFrame:
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] | Index | None = None,
+        labels: Hashable | ListLike | None = None,
         *,
         axis: Axis = 0,
         index: Hashable | Sequence[Hashable] | Index | None = None,
@@ -381,7 +382,7 @@ class NDFrame:
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] | Index,
+        labels: Hashable | ListLike,
         *,
         axis: Axis = 0,
         index: None = None,
@@ -417,7 +418,7 @@ class NDFrame:
     @overload
     def drop(
         self,
-        labels: Hashable | Sequence[Hashable] | Index,
+        labels: Hashable | ListLike,
         *,
         axis: Axis = 0,
         index: None = None,
