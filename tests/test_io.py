@@ -13,6 +13,8 @@ from typing import (
 )
 
 import numpy as np
+from odf.opendocument import OpenDocument  # pyright: ignore[reportMissingTypeStubs]
+from openpyxl.workbook.workbook import Workbook as OpenXlWorkbook
 import pandas as pd
 from pandas import (
     DataFrame,
@@ -45,6 +47,9 @@ import sqlalchemy
 import sqlalchemy.orm
 import sqlalchemy.orm.decl_api
 from typing_extensions import assert_type
+from xlsxwriter.workbook import (  # pyright: ignore[reportMissingTypeStubs]
+    Workbook as XlsxWorkbook,
+)
 
 from tests import (
     TYPE_CHECKING_INVALID_USAGE,
@@ -1188,7 +1193,10 @@ def test_excel_writer_engine() -> None:
 
     with ensure_clean(".xlsx") as path:
         with pd.ExcelWriter(path, engine="openpyxl") as ew:
-            check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
+            check(
+                assert_type(ew, pd.ExcelWriter[OpenXlWorkbook]),
+                pd.ExcelWriter[OpenXlWorkbook],
+            )
             DF.to_excel(ew, sheet_name="A")
             check(
                 assert_type(ew.engine, Literal["openpyxl", "odf", "xlsxwriter"]),
@@ -1197,7 +1205,10 @@ def test_excel_writer_engine() -> None:
 
     with ensure_clean(".ods") as path:
         with pd.ExcelWriter(path, engine="odf") as ew:
-            check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
+            check(
+                assert_type(ew, pd.ExcelWriter[OpenDocument]),
+                pd.ExcelWriter[OpenDocument],
+            )
             DF.to_excel(ew, sheet_name="A")
             check(
                 assert_type(ew.engine, Literal["openpyxl", "odf", "xlsxwriter"]),
@@ -1206,7 +1217,10 @@ def test_excel_writer_engine() -> None:
 
     with ensure_clean(".xlsx") as path:
         with pd.ExcelWriter(path, engine="xlsxwriter") as ew:
-            check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
+            check(
+                assert_type(ew, pd.ExcelWriter[XlsxWorkbook]),
+                pd.ExcelWriter[XlsxWorkbook],
+            )
             DF.to_excel(ew, sheet_name="A")
             check(
                 assert_type(ew.engine, Literal["openpyxl", "odf", "xlsxwriter"]),

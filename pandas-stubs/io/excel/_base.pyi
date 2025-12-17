@@ -8,7 +8,9 @@ from collections.abc import (
 from types import TracebackType
 from typing import (
     Any,
+    Generic,
     Literal,
+    TypeAlias,
     overload,
 )
 
@@ -16,8 +18,14 @@ from odf.opendocument import OpenDocument  # pyright: ignore[reportMissingTypeSt
 from openpyxl.workbook.workbook import Workbook
 from pandas.core.frame import DataFrame
 import pyxlsb.workbook  # pyright: ignore[reportMissingTypeStubs]
-from typing_extensions import Self
+from typing_extensions import (
+    Self,
+    TypeVar,
+)
 from xlrd.book import Book
+from xlsxwriter.workbook import (  # pyright: ignore[reportMissingTypeStubs]
+    Workbook as XlsxWorkbook,
+)
 
 from pandas._libs.lib import _NoDefaultDoNotUse
 from pandas._typing import (
@@ -209,11 +217,52 @@ def read_excel(
     engine_kwargs: dict[str, Any] | None = ...,
 ) -> DataFrame: ...
 
-class ExcelWriter:
+ExcelWriteWorkbook: TypeAlias = Workbook | OpenDocument | XlsxWorkbook
+
+_WorkbookT = TypeVar("_WorkbookT", default=ExcelWriteWorkbook, bound=ExcelWriteWorkbook)
+
+class ExcelWriter(Generic[_WorkbookT]):
+    @overload
     def __init__(
-        self,
+        self: ExcelWriter,
         path: FilePath | WriteExcelBuffer | ExcelWriter,
-        engine: ExcelWriteEngine | Literal["auto"] | None = ...,
+        engine: Literal["auto"] | None = ...,
+        date_format: str | None = ...,
+        datetime_format: str | None = ...,
+        mode: Literal["w", "a"] = ...,
+        storage_options: StorageOptions = ...,
+        if_sheet_exists: ExcelWriterIfSheetExists | None = ...,
+        engine_kwargs: dict[str, Any] | None = ...,
+    ) -> None: ...
+    @overload
+    def __init__(
+        self: ExcelWriter[Workbook],
+        path: FilePath | WriteExcelBuffer | ExcelWriter[Workbook],
+        engine: Literal["openpyxl"] = ...,
+        date_format: str | None = ...,
+        datetime_format: str | None = ...,
+        mode: Literal["w", "a"] = ...,
+        storage_options: StorageOptions = ...,
+        if_sheet_exists: ExcelWriterIfSheetExists | None = ...,
+        engine_kwargs: dict[str, Any] | None = ...,
+    ) -> None: ...
+    @overload
+    def __init__(
+        self: ExcelWriter[OpenDocument],
+        path: FilePath | WriteExcelBuffer | ExcelWriter[OpenDocument],
+        engine: Literal["odf"] = ...,
+        date_format: str | None = ...,
+        datetime_format: str | None = ...,
+        mode: Literal["w", "a"] = ...,
+        storage_options: StorageOptions = ...,
+        if_sheet_exists: ExcelWriterIfSheetExists | None = ...,
+        engine_kwargs: dict[str, Any] | None = ...,
+    ) -> None: ...
+    @overload
+    def __init__(
+        self: ExcelWriter[XlsxWorkbook],
+        path: FilePath | WriteExcelBuffer | ExcelWriter[XlsxWorkbook],
+        engine: Literal["xlsxwriter"] = ...,
         date_format: str | None = ...,
         datetime_format: str | None = ...,
         mode: Literal["w", "a"] = ...,
@@ -228,7 +277,7 @@ class ExcelWriter:
     @property
     def sheets(self) -> dict[str, Any]: ...
     @property
-    def book(self) -> Workbook | OpenDocument: ...
+    def book(self) -> _WorkbookT: ...
     @property
     def date_format(self) -> str: ...
     @property
