@@ -209,7 +209,11 @@ RandomState: TypeAlias = (
 )
 
 # dtypes
-NpDtypeNoStr: TypeAlias = np.dtype[np.generic] | type[complex | bool | object]
+if sys.version_info >= (3, 11):
+    NpDtypeNoStr: TypeAlias = np.dtype | type[complex | bool | object]
+else:
+    NpDtypeNoStr: TypeAlias = np.dtype[Any] | type[complex | bool | object]
+
 NpDtype: TypeAlias = str | NpDtypeNoStr | type[str]
 Dtype: TypeAlias = ExtensionDtype | NpDtype
 
