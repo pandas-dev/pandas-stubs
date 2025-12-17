@@ -11,6 +11,7 @@ from collections.abc import (
 )
 import datetime as dt
 import sqlite3
+import sys
 from typing import (
     Any,
     ClassVar,
@@ -20,6 +21,7 @@ from typing import (
     overload,
 )
 
+import numpy as np
 from pandas import Index
 from pandas.core.resample import DatetimeIndexResampler
 from pandas.core.series import Series
@@ -49,7 +51,6 @@ from pandas._typing import (
     IndexLabel,
     Level,
     ListLike,
-    NpDtype,
     OpenFileErrors,
     P,
     StorageOptions,
@@ -60,7 +61,7 @@ from pandas._typing import (
     TimestampConvertibleTypes,
     WriteBuffer,
     WriteExcelBuffer,
-    np_ndarray,
+    np_1darray,
 )
 
 from pandas.io.excel import ExcelWriter
@@ -104,9 +105,15 @@ class NDFrame:
     @property
     def empty(self) -> _bool: ...
     __array_priority__: int = ...
-    def __array__(
-        self, dtype: NpDtype | None = None, copy: _bool | None = None
-    ) -> np_ndarray: ...
+    if sys.version_info >= (3, 11):
+        def __array__(
+            self, dtype: _str | np.dtype = ..., copy: bool | None = ...
+        ) -> np_1darray: ...
+    else:
+        def __array__(
+            self, dtype: _str | np.dtype[Any] = ..., copy: bool | None = ...
+        ) -> np_1darray: ...
+
     @final
     def to_excel(
         self,
