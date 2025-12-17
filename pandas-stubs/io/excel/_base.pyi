@@ -250,7 +250,7 @@ class ExcelWriter(Generic[_WorkbookT]):
     def __init__(
         self: ExcelWriter[OpenDocument],
         path: FilePath | WriteExcelBuffer | ExcelWriter[OpenDocument],
-        engine: Literal["odf"] = ...,
+        engine: Literal["odf"],
         date_format: str | None = ...,
         datetime_format: str | None = ...,
         mode: Literal["w", "a"] = ...,
