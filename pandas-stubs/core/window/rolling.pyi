@@ -1,6 +1,8 @@
 from collections.abc import (
     Callable,
+    Hashable,
     Iterator,
+    Sequence,
 )
 import datetime as dt
 from typing import (
@@ -42,7 +44,7 @@ class BaseWindow(SelectionMixin[NDFrameT]):
     win_type: str | None
     axis: AxisInt
     method: CalculationMethod
-    def __getitem__(self, key) -> Self: ...
+    def __getitem__(self, key: Hashable | Sequence[Hashable]) -> Self: ...
     def __getattr__(self, attr: str) -> Self: ...
     def __iter__(self) -> Iterator[NDFrameT]: ...
     @overload
