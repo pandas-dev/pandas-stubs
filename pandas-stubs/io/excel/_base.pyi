@@ -238,7 +238,7 @@ class ExcelWriter(Generic[_WorkbookT]):
     def __init__(
         self: ExcelWriter[Workbook],
         path: FilePath | WriteExcelBuffer | ExcelWriter[Workbook],
-        engine: Literal["openpyxl"] = ...,
+        engine: Literal["openpyxl"],
         date_format: str | None = ...,
         datetime_format: str | None = ...,
         mode: Literal["w", "a"] = ...,
