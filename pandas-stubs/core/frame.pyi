@@ -340,28 +340,23 @@ class _AtIndexerFrame(_AtIndexer):
         value: Scalar | NAType | NaTType | None,
     ) -> None: ...
 
-# With mypy 1.14.1 and python 3.12, the second overload needs a type-ignore statement
-if sys.version_info >= (3, 12):
-    class _GetItemHack:
-        @overload
-        def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+class _GetItemHack:
+    @overload
+    def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    # With python 3.12+, the second overload needs a type-ignore statement
+    if sys.version_info >= (3, 12):
         @overload
         def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
             self, key: Iterable[Hashable] | slice
         ) -> Self: ...
-        @overload
-        def __getitem__(self, key: Hashable) -> Series: ...
-
-else:
-    class _GetItemHack:
-        @overload
-        def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    else:
         @overload
         def __getitem__(  # pyright: ignore[reportOverlappingOverload]
             self, key: Iterable[Hashable] | slice
         ) -> Self: ...
-        @overload
-        def __getitem__(self, key: Hashable) -> Series: ...
+
+    @overload
+    def __getitem__(self, key: Hashable) -> Series: ...
 
 _AstypeArgExt: TypeAlias = (
     AstypeArg
@@ -562,16 +557,29 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         coerce_float: bool = False,
         nrows: int | None = None,
     ) -> Self: ...
-    def to_records(
-        self,
-        index: _bool = True,
-        column_dtypes: (
-            _str | npt.DTypeLike | Mapping[HashableT1, npt.DTypeLike] | None
-        ) = None,
-        index_dtypes: (
-            _str | npt.DTypeLike | Mapping[HashableT2, npt.DTypeLike] | None
-        ) = None,
-    ) -> np.recarray: ...
+    if sys.version_info >= (3, 11):
+        def to_records(
+            self,
+            index: _bool = True,
+            column_dtypes: (
+                _str | npt.DTypeLike | Mapping[HashableT1, npt.DTypeLike] | None
+            ) = None,
+            index_dtypes: (
+                _str | npt.DTypeLike | Mapping[HashableT2, npt.DTypeLike] | None
+            ) = None,
+        ) -> np.recarray: ...
+    else:
+        def to_records(
+            self,
+            index: _bool = True,
+            column_dtypes: (
+                _str | npt.DTypeLike | Mapping[HashableT1, npt.DTypeLike] | None
+            ) = None,
+            index_dtypes: (
+                _str | npt.DTypeLike | Mapping[HashableT2, npt.DTypeLike] | None
+            ) = None,
+        ) -> np.recarray[Any, Any]: ...
+
     @overload
     def to_stata(
         self,
