@@ -225,7 +225,7 @@ class ExcelWriter(Generic[_WorkbookT]):
     @overload
     def __init__(
         self,
-        path: FilePath | WriteExcelBuffer | ExcelWriter,
+        path: FilePath | BinaryIO,
         engine: Literal["auto"] | None = ...,
         date_format: str | None = ...,
         datetime_format: str | None = ...,
