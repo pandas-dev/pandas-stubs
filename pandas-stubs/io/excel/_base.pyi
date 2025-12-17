@@ -224,7 +224,7 @@ _WorkbookT = TypeVar("_WorkbookT", default=ExcelWriteWorkbook, bound=ExcelWriteW
 class ExcelWriter(Generic[_WorkbookT]):
     @overload
     def __init__(
-        self: ExcelWriter,
+        self,
         path: FilePath | WriteExcelBuffer | ExcelWriter,
         engine: Literal["auto"] | None = ...,
         date_format: str | None = ...,
