@@ -262,7 +262,7 @@ class ExcelWriter(Generic[_WorkbookT]):
     def __init__(
         self: ExcelWriter[XlsxWorkbook],
         path: FilePath | WriteExcelBuffer | ExcelWriter[XlsxWorkbook],
-        engine: Literal["xlsxwriter"] = ...,
+        engine: Literal["xlsxwriter"],
         date_format: str | None = ...,
         datetime_format: str | None = ...,
         mode: Literal["w", "a"] = ...,
