@@ -8,6 +8,7 @@ from collections.abc import (
 from types import TracebackType
 from typing import (
     Any,
+    BinaryIO,
     Generic,
     Literal,
     TypeAlias,
@@ -40,7 +41,6 @@ from pandas._typing import (
     ReadBuffer,
     StorageOptions,
     UsecolsArgType,
-    WriteExcelBuffer,
 )
 
 @overload
@@ -237,7 +237,7 @@ class ExcelWriter(Generic[_WorkbookT]):
     @overload
     def __init__(
         self: ExcelWriter[Workbook],
-        path: FilePath | WriteExcelBuffer | ExcelWriter[Workbook],
+        path: FilePath | BinaryIO,
         engine: Literal["openpyxl"],
         date_format: str | None = ...,
         datetime_format: str | None = ...,
@@ -249,7 +249,7 @@ class ExcelWriter(Generic[_WorkbookT]):
     @overload
     def __init__(
         self: ExcelWriter[OpenDocument],
-        path: FilePath | WriteExcelBuffer | ExcelWriter[OpenDocument],
+        path: FilePath | BinaryIO,
         engine: Literal["odf"],
         date_format: str | None = ...,
         datetime_format: str | None = ...,
@@ -261,7 +261,7 @@ class ExcelWriter(Generic[_WorkbookT]):
     @overload
     def __init__(
         self: ExcelWriter[XlsxWorkbook],
-        path: FilePath | WriteExcelBuffer | ExcelWriter[XlsxWorkbook],
+        path: FilePath | BinaryIO,
         engine: Literal["xlsxwriter"],
         date_format: str | None = ...,
         datetime_format: str | None = ...,
