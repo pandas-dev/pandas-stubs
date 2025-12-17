@@ -7,7 +7,6 @@ from collections.abc import (
     Hashable,
     Iterable,
     Mapping,
-    MutableMapping,
     Sequence,
 )
 import datetime as dt
@@ -40,6 +39,8 @@ from pandas._typing import (
     ExcelWriterMergeCells,
     FilePath,
     FileWriteMode,
+    FloatFormatType,
+    FormattersType,
     Frequency,
     HashableT1,
     HashableT2,
@@ -47,6 +48,7 @@ from pandas._typing import (
     IgnoreRaise,
     IndexLabel,
     Level,
+    NpDtype,
     OpenFileErrors,
     P,
     StorageOptions,
@@ -56,9 +58,11 @@ from pandas._typing import (
     TimeGrouperOrigin,
     TimestampConvertibleTypes,
     WriteBuffer,
+    WriteExcelBuffer,
     np_ndarray,
 )
 
+from pandas.io.excel import ExcelWriter
 from pandas.io.pytables import HDFStore
 from pandas.io.sql import SQLTable
 
@@ -95,15 +99,17 @@ class NDFrame:
     @final
     def __round__(self, decimals: int = ...) -> Self: ...
     @final
-    def __contains__(self, key) -> _bool: ...
+    def __contains__(self, key: Any) -> _bool: ...
     @property
     def empty(self) -> _bool: ...
     __array_priority__: int = ...
-    def __array__(self, dtype=...) -> np_ndarray: ...
+    def __array__(
+        self, dtype: NpDtype | None = None, copy: _bool | None = None
+    ) -> np_ndarray: ...
     @final
     def to_excel(
         self,
-        excel_writer,
+        excel_writer: FilePath | WriteExcelBuffer | ExcelWriter,
         sheet_name: _str = "Sheet1",
         na_rep: _str = "",
         float_format: _str | None = ...,
@@ -220,8 +226,8 @@ class NDFrame:
         header: _bool | list[_str] = ...,
         index: _bool = ...,
         na_rep: _str = ...,
-        formatters=...,
-        float_format=...,
+        formatters: FormattersType | None = None,
+        float_format: FloatFormatType | None = None,
         sparsify: _bool | None = ...,
         index_names: _bool = ...,
         bold_rows: _bool = ...,
@@ -245,8 +251,8 @@ class NDFrame:
         header: _bool | list[_str] = ...,
         index: _bool = ...,
         na_rep: _str = ...,
-        formatters=...,
-        float_format=...,
+        formatters: FormattersType | None = None,
+        float_format: FloatFormatType | None = None,
         sparsify: _bool | None = ...,
         index_names: _bool = ...,
         bold_rows: _bool = ...,
@@ -312,115 +318,113 @@ class NDFrame:
         errors: OpenFileErrors = ...,
         storage_options: StorageOptions = ...,
     ) -> _str: ...
-    @final
-    def __delitem__(self, idx: Hashable) -> None: ...
     @overload
     def drop(
         self,
-        labels=...,
+        labels: Hashable | Sequence[Hashable] | Index | None = None,
         *,
-        axis=...,
+        axis: Axis = 0,
         index: None,
-        columns=...,
-        level=...,
-        inplace=...,
-        errors=...,
+        columns: Hashable | Iterable[Hashable] | None = None,
+        level: Level | None = None,
+        inplace: Literal[False] = False,
+        errors: IgnoreRaise = "raise",
     ) -> Never: ...
     @overload
     def drop(
         self,
-        labels=...,
+        labels: Hashable | Sequence[Hashable] | Index | None = None,
         *,
-        axis=...,
-        index=...,
+        axis: Axis = 0,
+        index: Hashable | Sequence[Hashable] | Index | None = None,
         columns: None,
-        level=...,
-        inplace=...,
-        errors=...,
+        level: Level | None = None,
+        inplace: Literal[False] = False,
+        errors: IgnoreRaise = "raise",
     ) -> Never: ...
     @overload
     def drop(
         self,
         labels: None,
         *,
-        axis=...,
-        index=...,
-        columns=...,
-        level=...,
-        inplace=...,
-        errors=...,
+        axis: Axis = 0,
+        index: Hashable | Sequence[Hashable] | Index | None = None,
+        columns: Hashable | Iterable[Hashable] | None = None,
+        level: Level | None = None,
+        inplace: Literal[False] = False,
+        errors: IgnoreRaise = "raise",
     ) -> Never: ...
     @overload
     def drop(
         self,
         labels: None = None,
         *,
-        axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] | Index = ...,
+        axis: Axis = 0,
+        index: Hashable | Sequence[Hashable] | Index | None = None,
         columns: Hashable | Iterable[Hashable],
-        level: Level | None = ...,
+        level: Level | None = None,
         inplace: Literal[True],
-        errors: IgnoreRaise = ...,
+        errors: IgnoreRaise = "raise",
     ) -> None: ...
     @overload
     def drop(
         self,
         labels: None = None,
         *,
-        axis: Axis = ...,
+        axis: Axis = 0,
         index: Hashable | Sequence[Hashable] | Index,
-        columns: Hashable | Iterable[Hashable] = ...,
-        level: Level | None = ...,
+        columns: Hashable | Iterable[Hashable] | None = None,
+        level: Level | None = None,
         inplace: Literal[True],
-        errors: IgnoreRaise = ...,
+        errors: IgnoreRaise = "raise",
     ) -> None: ...
     @overload
     def drop(
         self,
         labels: Hashable | Sequence[Hashable] | Index,
         *,
-        axis: Axis = ...,
+        axis: Axis = 0,
         index: None = None,
         columns: None = None,
-        level: Level | None = ...,
+        level: Level | None = None,
         inplace: Literal[True],
-        errors: IgnoreRaise = ...,
+        errors: IgnoreRaise = "raise",
     ) -> None: ...
     @overload
     def drop(
         self,
         labels: None = None,
         *,
-        axis: Axis = ...,
-        index: Hashable | Sequence[Hashable] | Index = ...,
+        axis: Axis = 0,
+        index: Hashable | Sequence[Hashable] | Index | None = None,
         columns: Hashable | Iterable[Hashable],
-        level: Level | None = ...,
+        level: Level | None = None,
         inplace: Literal[False] = False,
-        errors: IgnoreRaise = ...,
+        errors: IgnoreRaise = "raise",
     ) -> Self: ...
     @overload
     def drop(
         self,
         labels: None = None,
         *,
-        axis: Axis = ...,
+        axis: Axis = 0,
         index: Hashable | Sequence[Hashable] | Index,
-        columns: Hashable | Iterable[Hashable] = ...,
-        level: Level | None = ...,
+        columns: Hashable | Iterable[Hashable] | None = None,
+        level: Level | None = None,
         inplace: Literal[False] = False,
-        errors: IgnoreRaise = ...,
+        errors: IgnoreRaise = "raise",
     ) -> Self: ...
     @overload
     def drop(
         self,
         labels: Hashable | Sequence[Hashable] | Index,
         *,
-        axis: Axis = ...,
+        axis: Axis = 0,
         index: None = None,
         columns: None = None,
-        level: Level | None = ...,
+        level: Level | None = None,
         inplace: Literal[False] = False,
-        errors: IgnoreRaise = ...,
+        errors: IgnoreRaise = "raise",
     ) -> Self: ...
     @overload
     def pipe(
@@ -436,14 +440,6 @@ class NDFrame:
         *args: Any,
         **kwargs: Any,
     ) -> T: ...
-    @final
-    def __finalize__(self, other, method=..., **kwargs: Any) -> Self: ...
-    @final
-    def __setattr__(self, name: _str, value) -> None: ...
-    @final
-    def __copy__(self, deep: _bool = ...) -> Self: ...
-    @final
-    def __deepcopy__(self, memo: MutableMapping[int, Any] | None = None) -> Self: ...
     @final
     def convert_dtypes(
         self,

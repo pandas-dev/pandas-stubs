@@ -188,6 +188,7 @@ from pandas._typing import (
     ListLikeU,
     MaskType,
     NaPosition,
+    NpDtype,
     NsmallestNlargestKeep,
     NumpyStrDtypeArg,
     ObjectDtypeArg,
@@ -562,15 +563,9 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __array_ufunc__(
         self, ufunc: Callable[..., Any], method: _str, *inputs: Any, **kwargs: Any
     ) -> Any: ...
-    if sys.version_info >= (3, 11):
-        def __array__(
-            self, dtype: _str | np.dtype = ..., copy: bool | None = ...
-        ) -> np_1darray: ...
-    else:
-        def __array__(
-            self, dtype: _str | np.dtype[Any] = ..., copy: bool | None = ...
-        ) -> np_1darray: ...
-
+    def __array__(
+        self, dtype: NpDtype | None = None, copy: bool | None = None
+    ) -> np_1darray: ...
     @final
     def __getattr__(self, name: _str) -> S1: ...
 
