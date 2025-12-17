@@ -223,53 +223,53 @@ _WorkbookT = TypeVar("_WorkbookT", default=ExcelWriteWorkbook, bound=ExcelWriteW
 
 class ExcelWriter(Generic[_WorkbookT]):
     @overload
-    def __init__(
-        self,
-        path: FilePath | BinaryIO,
-        engine: Literal["auto"] | None = ...,
-        date_format: str | None = ...,
-        datetime_format: str | None = ...,
-        mode: Literal["w", "a"] = ...,
-        storage_options: StorageOptions = ...,
-        if_sheet_exists: ExcelWriterIfSheetExists | None = ...,
-        engine_kwargs: dict[str, Any] | None = ...,
-    ) -> None: ...
-    @overload
-    def __init__(
-        self: ExcelWriter[Workbook],
+    def __new__(
+        cls,
         path: FilePath | BinaryIO,
         engine: Literal["openpyxl"],
-        date_format: str | None = ...,
-        datetime_format: str | None = ...,
-        mode: Literal["w", "a"] = ...,
-        storage_options: StorageOptions = ...,
-        if_sheet_exists: ExcelWriterIfSheetExists | None = ...,
-        engine_kwargs: dict[str, Any] | None = ...,
-    ) -> None: ...
+        date_format: str | None = None,
+        datetime_format: str | None = None,
+        mode: Literal["w", "a"] = "w",
+        storage_options: StorageOptions = None,
+        if_sheet_exists: ExcelWriterIfSheetExists | None = None,
+        engine_kwargs: Mapping[str, Any] | None = None,
+    ) -> ExcelWriter[Workbook]: ...
     @overload
-    def __init__(
-        self: ExcelWriter[OpenDocument],
+    def __new__(
+        cls,
         path: FilePath | BinaryIO,
         engine: Literal["odf"],
-        date_format: str | None = ...,
-        datetime_format: str | None = ...,
-        mode: Literal["w", "a"] = ...,
-        storage_options: StorageOptions = ...,
-        if_sheet_exists: ExcelWriterIfSheetExists | None = ...,
-        engine_kwargs: dict[str, Any] | None = ...,
-    ) -> None: ...
+        date_format: str | None = None,
+        datetime_format: str | None = None,
+        mode: Literal["w", "a"] = "w",
+        storage_options: StorageOptions = None,
+        if_sheet_exists: ExcelWriterIfSheetExists | None = None,
+        engine_kwargs: Mapping[str, Any] | None = None,
+    ) -> ExcelWriter[OpenDocument]: ...
     @overload
-    def __init__(
-        self: ExcelWriter[XlsxWorkbook],
+    def __new__(
+        cls,
         path: FilePath | BinaryIO,
         engine: Literal["xlsxwriter"],
-        date_format: str | None = ...,
-        datetime_format: str | None = ...,
-        mode: Literal["w", "a"] = ...,
-        storage_options: StorageOptions = ...,
-        if_sheet_exists: ExcelWriterIfSheetExists | None = ...,
-        engine_kwargs: dict[str, Any] | None = ...,
-    ) -> None: ...
+        date_format: str | None = None,
+        datetime_format: str | None = None,
+        mode: Literal["w", "a"] = "w",
+        storage_options: StorageOptions = None,
+        if_sheet_exists: ExcelWriterIfSheetExists | None = None,
+        engine_kwargs: Mapping[str, Any] | None = None,
+    ) -> ExcelWriter[XlsxWorkbook]: ...
+    @overload
+    def __new__(
+        cls,
+        path: FilePath | BinaryIO,
+        engine: Literal["auto"] | None = None,
+        date_format: str | None = None,
+        datetime_format: str | None = None,
+        mode: Literal["w", "a"] = "w",
+        storage_options: StorageOptions = None,
+        if_sheet_exists: ExcelWriterIfSheetExists | None = None,
+        engine_kwargs: Mapping[str, Any] | None = None,
+    ) -> ExcelWriter[ExcelWriteWorkbook]: ...
     @property
     def supported_extensions(self) -> tuple[str, ...]: ...
     @property
