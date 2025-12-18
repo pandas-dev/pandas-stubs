@@ -205,8 +205,8 @@ ignore = [
   "PYI042",  # https://docs.astral.sh/ruff/rules/snake-case-type-alias/
   "ERA001", "PLR0402", "PLC0105"
 ]
-"*computation*" = [
-  # TODO: remove when computations are fully typed
+"*window*" = [
+  # TODO: remove when window is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
 "*generic.pyi" = [
