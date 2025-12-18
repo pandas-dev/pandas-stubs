@@ -31,6 +31,7 @@ from pandas._typing import (
     ScalarIndexer,
     SequenceIndexer,
     np_1darray,
+    np_1darray_anyint,
     np_1darray_bool,
 )
 
@@ -106,7 +107,7 @@ class Categorical(ExtensionArray):
     else:
         def argsort(
             self, *, ascending: bool = ..., kind: str = ..., **kwargs: Any
-        ) -> np_1darray: ...
+        ) -> np_1darray_anyint: ...
 
     def sort_values(
         self, *, inplace: bool = ..., ascending: bool = ..., na_position: str = ...
