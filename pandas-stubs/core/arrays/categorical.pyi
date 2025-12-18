@@ -4,6 +4,7 @@ from collections.abc import (
     Hashable,
     Sequence,
 )
+import sys
 from typing import (
     Any,
     overload,
@@ -98,9 +99,15 @@ class Categorical(ExtensionArray):
     def notnull(self) -> np_1darray_bool: ...
     def value_counts(self, dropna: bool = True) -> Series: ...
     def check_for_ordered(self, op: Any) -> None: ...
-    def argsort(
-        self, *, ascending: bool = ..., kind: str = ..., **kwargs: Any
-    ) -> npt.NDArray[np.intp]: ...
+    if sys.version_info >= (3, 11):
+        def argsort(
+            self, *, ascending: bool = ..., kind: str = ..., **kwargs: Any
+        ) -> npt.NDArray[np.intp]: ...
+    else:
+        def argsort(
+            self, *, ascending: bool = ..., kind: str = ..., **kwargs: Any
+        ) -> np.ndarray[tuple[int], dtype[Any]]: ...
+
     def sort_values(
         self, *, inplace: bool = ..., ascending: bool = ..., na_position: str = ...
     ) -> Self: ...
