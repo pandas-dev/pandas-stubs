@@ -7,6 +7,7 @@ from collections.abc import (
 import datetime as dt
 from typing import (
     Any,
+    Generic,
     overload,
 )
 
@@ -15,7 +16,6 @@ from pandas import (
     Index,
     Series,
 )
-from pandas.core.base import SelectionMixin
 from pandas.core.indexers import BaseIndexer
 from typing_extensions import Self
 
@@ -34,7 +34,7 @@ from pandas._typing import (
     WindowingRankType,
 )
 
-class BaseWindow(SelectionMixin[NDFrameT]):
+class BaseWindow(Generic[NDFrameT]):
     on: str | Index | None
     closed: IntervalClosedType | None
     step: int | None
