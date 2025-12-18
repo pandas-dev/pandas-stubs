@@ -1,4 +1,5 @@
 import datetime as dt
+import sys
 from typing import (
     Any,
     Literal,
@@ -59,7 +60,12 @@ class PeriodDtype(PandasExtensionDtype):
 
 class IntervalDtype(PandasExtensionDtype):
     def __init__(self, subtype: str | npt.DTypeLike | None = ...) -> None: ...
-    @property
-    def subtype(self) -> np.dtype | None: ...
+
+    if sys.version_info >= (3, 11):
+        @property
+        def subtype(self) -> np.dtype | None: ...
+    else:
+        @property
+        def subtype(self) -> np.dtype[Any] | None: ...
 
 class SparseDtype(ExtensionDtype): ...

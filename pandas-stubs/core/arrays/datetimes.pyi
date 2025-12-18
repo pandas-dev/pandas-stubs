@@ -1,4 +1,6 @@
 from datetime import tzinfo as _tzinfo
+import sys
+from typing import Any
 
 import numpy as np
 import numpy.typing as npt
@@ -33,8 +35,13 @@ class DatetimeArray(DatetimeLikeArrayMixin, TimelikeOps, DatelikeOps):
         copy: bool = False,
     ) -> None: ...
     # ignore in dtype() is from the pandas source
-    @property
-    def dtype(self) -> np.dtype | DatetimeTZDtype: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    if sys.version_info >= (3, 11):
+        @property
+        def dtype(self) -> np.dtype | DatetimeTZDtype: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    else:
+        @property
+        def dtype(self) -> np.dtype[Any] | DatetimeTZDtype: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+
     @property
     def tzinfo(self) -> _tzinfo | None: ...
     @property

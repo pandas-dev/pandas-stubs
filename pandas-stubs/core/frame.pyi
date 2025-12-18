@@ -323,66 +323,40 @@ class _LocIndexerFrame(_LocIndexer, Generic[_T]):
     ) -> None: ...
 
 class _iAtIndexerFrame(_iAtIndexer):
-    def __getitem__(self, key: tuple[int, int]) -> Scalar: ...
-    def __setitem__(
+    def __getitem__(self, key: tuple[int, int]) -> Scalar: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
         key: tuple[int, int],
         value: Scalar | NAType | NaTType | None,
     ) -> None: ...
 
 class _AtIndexerFrame(_AtIndexer):
-    def __getitem__(
-        self,
-        key: tuple[
-            int
-            | StrLike
-            | Timestamp
-            | tuple[Scalar, ...]
-            | Callable[[DataFrame], ScalarT],
-            int | StrLike | tuple[Scalar, ...],
-        ],
+    def __getitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+        self, key: tuple[Hashable, Hashable]
     ) -> Scalar: ...
-    def __setitem__(
+    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
         self,
-        key: (
-            MaskType | StrLike | _IndexSliceTuple | list[ScalarT] | IndexingInt | slice
-        ),
-        value: (
-            Scalar
-            | NAType
-            | NaTType
-            | ArrayLike
-            | IndexOpsMixin
-            | DataFrame
-            | Sequence[Scalar]
-            | Sequence[Sequence[Scalar]]
-            | Mapping[Hashable, Scalar | NAType | NaTType]
-            | None
-        ),
+        key: tuple[Hashable, Hashable],
+        value: Scalar | NAType | NaTType | None,
     ) -> None: ...
 
-# With mypy 1.14.1 and python 3.12, the second overload needs a type-ignore statement
-if sys.version_info >= (3, 12):
-    class _GetItemHack:
-        @overload
-        def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+class _GetItemHack:
+    @overload
+    def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    # With python 3.12+, the second overload needs a type-ignore statement
+    if sys.version_info >= (3, 12):
         @overload
         def __getitem__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
             self, key: Iterable[Hashable] | slice
         ) -> Self: ...
-        @overload
-        def __getitem__(self, key: Hashable) -> Series: ...
-
-else:
-    class _GetItemHack:
-        @overload
-        def __getitem__(self, key: Scalar | tuple[Hashable, ...]) -> Series: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    else:
         @overload
         def __getitem__(  # pyright: ignore[reportOverlappingOverload]
             self, key: Iterable[Hashable] | slice
         ) -> Self: ...
-        @overload
-        def __getitem__(self, key: Hashable) -> Series: ...
+
+    @overload
+    def __getitem__(self, key: Hashable) -> Series: ...
 
 _AstypeArgExt: TypeAlias = (
     AstypeArg
@@ -484,7 +458,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: str = ...,
         *,
-        into: type[defaultdict],
+        into: type[defaultdict[Any, Any]],
         index: Literal[True] = True,
     ) -> Never: ...
     @overload
@@ -500,7 +474,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["records"],
         *,
-        into: type[dict] = ...,
+        into: type[dict[Any, Any]] = ...,
         index: Literal[True] = True,
     ) -> list[dict[Hashable, Any]]: ...
     @overload
@@ -516,7 +490,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["index"],
         *,
-        into: OrderedDict | type[OrderedDict],
+        into: OrderedDict[Any, Any] | type[OrderedDict[Any, Any]],
         index: Literal[True] = True,
     ) -> OrderedDict[Hashable, dict[Hashable, Any]]: ...
     @overload
@@ -524,7 +498,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["index"],
         *,
-        into: type[MutableMapping],
+        into: type[MutableMapping[Any, Any]],
         index: Literal[True] = True,
     ) -> MutableMapping[Hashable, dict[Hashable, Any]]: ...
     @overload
@@ -532,7 +506,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["index"],
         *,
-        into: type[dict] = ...,
+        into: type[dict[Any, Any]] = ...,
         index: Literal[True] = True,
     ) -> dict[Hashable, dict[Hashable, Any]]: ...
     @overload
@@ -548,7 +522,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["dict", "list", "series"] = ...,
         *,
-        into: type[dict] = ...,
+        into: type[dict[Any, Any]] = ...,
         index: Literal[True] = True,
     ) -> dict[Hashable, Any]: ...
     @overload
@@ -556,7 +530,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["split", "tight"],
         *,
-        into: MutableMapping[Any, Any] | type[MutableMapping],
+        into: MutableMapping[Any, Any] | type[MutableMapping[Any, Any]],
         index: bool = ...,
     ) -> MutableMapping[str, list[Any]]: ...
     @overload
@@ -564,7 +538,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         self,
         orient: Literal["split", "tight"],
         *,
-        into: type[dict] = ...,
+        into: type[dict[Any, Any]] = ...,
         index: bool = ...,
     ) -> dict[str, list[Any]]: ...
     @classmethod
@@ -583,16 +557,29 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         coerce_float: bool = False,
         nrows: int | None = None,
     ) -> Self: ...
-    def to_records(
-        self,
-        index: _bool = True,
-        column_dtypes: (
-            _str | npt.DTypeLike | Mapping[HashableT1, npt.DTypeLike] | None
-        ) = None,
-        index_dtypes: (
-            _str | npt.DTypeLike | Mapping[HashableT2, npt.DTypeLike] | None
-        ) = None,
-    ) -> np.recarray: ...
+    if sys.version_info >= (3, 11):
+        def to_records(
+            self,
+            index: _bool = True,
+            column_dtypes: (
+                _str | npt.DTypeLike | Mapping[HashableT1, npt.DTypeLike] | None
+            ) = None,
+            index_dtypes: (
+                _str | npt.DTypeLike | Mapping[HashableT2, npt.DTypeLike] | None
+            ) = None,
+        ) -> np.recarray: ...
+    else:
+        def to_records(
+            self,
+            index: _bool = True,
+            column_dtypes: (
+                _str | npt.DTypeLike | Mapping[HashableT1, npt.DTypeLike] | None
+            ) = None,
+            index_dtypes: (
+                _str | npt.DTypeLike | Mapping[HashableT2, npt.DTypeLike] | None
+            ) = None,
+        ) -> np.recarray[Any, Any]: ...
+
     @overload
     def to_stata(
         self,

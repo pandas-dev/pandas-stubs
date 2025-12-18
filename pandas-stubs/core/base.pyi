@@ -1,5 +1,4 @@
 from collections.abc import (
-    Hashable,
     Iterator,
     Sequence,
 )
@@ -11,7 +10,6 @@ from typing import (
     Protocol,
     TypeAlias,
     TypeVar,
-    final,
     overload,
     type_check_only,
 )
@@ -42,7 +40,6 @@ from pandas._typing import (
     GenericT_co,
     Just,
     ListLike,
-    NDFrameT,
     Scalar,
     SupportsDType,
     np_1darray,
@@ -54,7 +51,6 @@ from pandas._typing import (
     np_ndarray_float,
     np_ndarray_td,
 )
-from pandas.util._decorators import cache_readonly
 
 T_INTERVAL_NP = TypeVar("T_INTERVAL_NP", bound=np.bytes_ | np.str_)
 

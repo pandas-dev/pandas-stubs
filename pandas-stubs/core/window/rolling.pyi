@@ -1,10 +1,13 @@
 from collections.abc import (
     Callable,
+    Hashable,
     Iterator,
+    Sequence,
 )
 import datetime as dt
 from typing import (
     Any,
+    Generic,
     overload,
 )
 
@@ -13,7 +16,6 @@ from pandas import (
     Index,
     Series,
 )
-from pandas.core.base import SelectionMixin
 from pandas.core.indexers import BaseIndexer
 from typing_extensions import Self
 
@@ -32,7 +34,7 @@ from pandas._typing import (
     WindowingRankType,
 )
 
-class BaseWindow(SelectionMixin[NDFrameT]):
+class BaseWindow(Generic[NDFrameT]):
     on: str | Index | None
     closed: IntervalClosedType | None
     step: int | None
@@ -42,7 +44,7 @@ class BaseWindow(SelectionMixin[NDFrameT]):
     win_type: str | None
     axis: AxisInt
     method: CalculationMethod
-    def __getitem__(self, key) -> Self: ...
+    def __getitem__(self, key: Hashable | Sequence[Hashable]) -> Self: ...
     def __getattr__(self, attr: str) -> Self: ...
     def __iter__(self) -> Iterator[NDFrameT]: ...
     @overload
