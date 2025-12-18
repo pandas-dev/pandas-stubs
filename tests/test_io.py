@@ -47,8 +47,8 @@ import sqlalchemy
 import sqlalchemy.orm
 import sqlalchemy.orm.decl_api
 from typing_extensions import assert_type
-from xlsxwriter.workbook import (
-    Workbook as XlsxWorkbook,  # pyright: ignore[reportMissingTypeStubs]
+from xlsxwriter.workbook import (  # pyright: ignore[reportMissingTypeStubs]
+    Workbook as XlsxWorkbook,
 )
 
 from tests import (

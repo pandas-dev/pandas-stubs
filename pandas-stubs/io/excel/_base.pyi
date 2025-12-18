@@ -24,8 +24,8 @@ from typing_extensions import (
     TypeVar,
 )
 from xlrd.book import Book
-from xlsxwriter.workbook import (
-    Workbook as XlsxWorkbook,  # pyright: ignore[reportMissingTypeStubs]
+from xlsxwriter.workbook import (  # pyright: ignore[reportMissingTypeStubs]
+    Workbook as XlsxWorkbook,
 )
 
 from pandas._libs.lib import _NoDefaultDoNotUse
