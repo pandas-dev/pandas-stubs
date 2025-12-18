@@ -221,18 +221,6 @@ ignore = [
   # TODO: remove when generic.pyi is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
-"*array*" = [
-  # TODO: remove when array is fully typed
-  "ANN001", "ANN201", "ANN204", "ANN206",
-]
-"*core/base.pyi" = [
-  # TODO: remove when core/base.pyi is fully typed
-  "ANN001", "ANN201", "ANN204", "ANN206",
-]
-"*excel/_base.pyi" = [
-  # TODO: remove when excel/_base.pyi is fully typed
-  "ANN001", "ANN201", "ANN204", "ANN206",
-]
 "scripts/*" = [
   # The following rules are ignored permanently for good reasons
   "EM",      # https://docs.astral.sh/ruff/rules/#flake8-errmsg-em

@@ -14,7 +14,10 @@ from pandas._libs.interval import (
     IntervalMixin as IntervalMixin,
 )
 from pandas._typing import (
+    AnyArrayLike,
     Axis,
+    DtypeArg,
+    IntervalClosedType,
     NpDtype,
     Scalar,
     ScalarIndexer,
@@ -30,32 +33,37 @@ IntervalOrNA: TypeAlias = Interval | float
 class IntervalArray(IntervalMixin, ExtensionArray):
     can_hold_na: bool = ...
     def __new__(
-        cls, data, closed=..., dtype=..., copy: bool = ..., verify_integrity: bool = ...
+        cls,
+        data: AnyArrayLike,
+        closed: IntervalClosedType = "right",
+        dtype: DtypeArg | None = None,
+        copy: bool = False,
+        verify_integrity: bool = True,
     ) -> Self: ...
     @classmethod
     def from_breaks(
         cls,
-        breaks,
+        breaks: AnyArrayLike,
         closed: str = "right",
         copy: bool = False,
-        dtype=None,
+        dtype: DtypeArg | None = None,
     ) -> Self: ...
     @classmethod
     def from_arrays(
         cls,
-        left,
-        right,
+        left: AnyArrayLike,
+        right: AnyArrayLike,
         closed: str = "right",
         copy: bool = False,
-        dtype=...,
+        dtype: DtypeArg | None = None,
     ) -> Self: ...
     @classmethod
     def from_tuples(
         cls,
-        data,
+        data: AnyArrayLike,
         closed: str = "right",
         copy: bool = False,
-        dtype=None,
+        dtype: DtypeArg | None = None,
     ) -> Self: ...
     def __array__(
         self, dtype: NpDtype | None = None, copy: bool | None = None
@@ -64,13 +72,6 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def __getitem__(self, item: ScalarIndexer) -> IntervalOrNA: ...
     @overload
     def __getitem__(self, item: SequenceIndexer) -> Self: ...
-    def __setitem__(self, key, value) -> None: ...
-    def __eq__(self, other): ...
-    def __ne__(self, other): ...
-    @property
-    def dtype(self): ...
-    def copy(self): ...
-    def isna(self): ...
     @property
     def nbytes(self) -> int: ...
     @property
@@ -81,27 +82,22 @@ class IntervalArray(IntervalMixin, ExtensionArray):
         indices: TakeIndexer,
         *,
         allow_fill: bool = ...,
-        fill_value=...,
-        axis=...,
+        fill_value: Interval | None = None,
+        axis: Axis | None = None,
         **kwargs: Any,
     ) -> Self: ...
-    def value_counts(self, dropna: bool = True): ...
     @property
     def left(self) -> Index: ...
     @property
     def right(self) -> Index: ...
     @property
     def closed(self) -> bool: ...
-    def set_closed(self, closed): ...
     @property
     def length(self) -> Index: ...
     @property
     def mid(self) -> Index: ...
     @property
     def is_non_overlapping_monotonic(self) -> bool: ...
-    def __arrow_array__(self, type=...): ...
-    def to_tuples(self, na_tuple: bool = True): ...
-    def repeat(self, repeats, axis: Axis | None = ...): ...
     @overload
     def contains(self, other: Series) -> Series[bool]: ...
     @overload

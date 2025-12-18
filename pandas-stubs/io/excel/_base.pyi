@@ -255,7 +255,6 @@ class ExcelFile:
         storage_options: StorageOptions = ...,
         engine_kwargs: dict[str, Any] | None = ...,
     ) -> None: ...
-    def __fspath__(self): ...
     @overload
     def parse(
         self,
