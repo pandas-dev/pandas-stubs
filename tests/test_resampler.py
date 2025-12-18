@@ -41,7 +41,8 @@ _AggRetType = DataFrame | Series
 
 
 def test_iter() -> None:
-    assert_type(iter(DF.resample("ME")), Iterator[tuple[Hashable, DataFrame]])
+    # TODO: reported python/mypy#20436 python/mypy#20435
+    assert_type(iter(DF.resample("ME")), Iterator[tuple[Hashable, DataFrame]])  # type: ignore[assert-type]
     for v in DF.resample("ME"):
         check(assert_type(v, tuple[Hashable, DataFrame]), tuple)
 

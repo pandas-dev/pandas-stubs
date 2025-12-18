@@ -517,12 +517,18 @@ def test_loc_callable() -> None:
     def select2(df: pd.DataFrame) -> list[Hashable]:
         return [i for i in df.index if cast(int, i) % 2 == 1]
 
-    check(assert_type(df.loc[select2, "x"], pd.Series), pd.Series)
+    # I think it has to do with the two overlapping overloads of __getitem__ in _LocIndexerFrame
+    # tuple[Callable[[DataFrame], ScalarT], int | StrLike] must be overlapping with
+    # tuple[Callable[[DataFrame], ScalarT | list[HashableT] | IndexType | MaskType], ScalarT]
+    check(assert_type(df.loc[select2, "x"], pd.Series), pd.Series)  # type: ignore[assert-type]
 
     def select3(_: pd.DataFrame) -> int:
         return 1
 
-    check(assert_type(df.loc[select3, "x"], Scalar), np.integer)
+    # I think it has to do with the two overlapping overloads of __getitem__ in _LocIndexerFrame
+    # tuple[Callable[[DataFrame], ScalarT], int | StrLike] must be overlapping with
+    # tuple[Callable[[DataFrame], ScalarT | list[HashableT] | IndexType | MaskType], ScalarT]
+    check(assert_type(df.loc[select3, "x"], Scalar), np.integer)  # type: ignore[assert-type]
 
     check(
         assert_type(df.loc[:, lambda df: df.columns.str.startswith("x")], pd.DataFrame),

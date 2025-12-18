@@ -3157,7 +3157,14 @@ def test_rank() -> None:
 
 def test_round() -> None:
     # GH 791
-    check(assert_type(round(pd.DataFrame([])), pd.DataFrame), pd.DataFrame)
+    # TODO: microsoft/pyright#11179
+    check(
+        assert_type(
+            round(pd.DataFrame([])),  # pyright: ignore[reportAssertTypeFailure]
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
     check(assert_type(round(pd.Series([1], dtype=int)), "pd.Series[int]"), pd.Series)
 
 

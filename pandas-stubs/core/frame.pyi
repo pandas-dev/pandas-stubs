@@ -116,6 +116,8 @@ from pandas._typing import (
     IndexingInt,
     IndexKeyFunc,
     IndexLabel,
+    IndexStrT0,
+    IndexT0,
     IndexType,
     InterpolateOptions,
     IntervalClosedType,
@@ -343,10 +345,18 @@ _AstypeArgExt: TypeAlias = (
 )
 _AstypeArgExtList: TypeAlias = _AstypeArgExt | list[_AstypeArgExt]
 
-class DataFrame(NDFrame, OpsMixin, _GetItemHack):
-
+class DataFrame(NDFrame, OpsMixin, _GetItemHack, Generic[IndexT0, IndexStrT0]):
     __hash__: ClassVar[None]  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]
 
+    @overload
+    def __new__(
+        cls,
+        data: DataFrame[IndexT0, IndexStrT0],
+        index: None = None,
+        columns: None = None,
+        dtype: Dtype | None = None,
+        copy: _bool | None = None,
+    ) -> DataFrame[IndexT0, IndexStrT0]: ...
     @overload
     def __new__(
         cls,
@@ -362,6 +372,15 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         dtype: Dtype | None = None,
         copy: _bool | None = None,
     ) -> Self: ...
+    @overload
+    def __new__(
+        cls,
+        data: Scalar,
+        index: IndexT0,
+        columns: IndexStrT0,
+        dtype: Dtype | None = None,
+        copy: _bool | None = None,
+    ) -> DataFrame[IndexT0, IndexStrT0]: ...
     @overload
     def __new__(
         cls,
@@ -1817,7 +1836,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @property
     def at(self) -> _AtIndexerFrame: ...
     @property
-    def columns(self) -> Index[str]: ...
+    def columns(self) -> IndexStrT0: ...
     @columns.setter  # setter needs to be right next to getter; otherwise mypy complains
     def columns(
         self, cols: AnyArrayLike | SequenceNotStr[Hashable] | tuple[Hashable, ...]
@@ -1831,7 +1850,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
     @property
     def iloc(self) -> _iLocIndexerFrame[Self]: ...
     @property
-    def index(self) -> Index: ...
+    def index(self) -> IndexT0: ...
     @index.setter
     def index(
         self, idx: AnyArrayLike | SequenceNotStr[Hashable] | tuple[Hashable, ...]
@@ -2208,7 +2227,7 @@ class DataFrame(NDFrame, OpsMixin, _GetItemHack):
         inplace: Literal[False] = False,
         **kwargs: Any,
     ) -> Self: ...
-    def keys(self) -> Index: ...
+    def keys(self) -> IndexStrT0: ...
     def kurt(
         self,
         axis: Axis | None = ...,

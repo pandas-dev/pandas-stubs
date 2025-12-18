@@ -576,8 +576,9 @@ def test_frame_groupby_rolling() -> None:
 
     # iter
     iterator = iter(GB_DF.rolling(1))
-    check(assert_type(iterator, Iterator[DataFrame]), Iterator)
-    check(assert_type(next(iterator), DataFrame), DataFrame)
+    # TODO: reported python/mypy#20436 python/mypy#20435
+    check(assert_type(iterator, Iterator[DataFrame]), Iterator)  # type: ignore[assert-type]
+    check(assert_type(next(iterator), DataFrame), DataFrame)  # type: ignore[assert-type]
     check(assert_type(list(GB_DF.rolling(1)), list[DataFrame]), list, DataFrame)
 
 
@@ -771,8 +772,9 @@ def test_frame_groupby_expanding() -> None:
 
     # iter
     iterator = iter(GB_DF.expanding(1))
-    check(assert_type(iterator, Iterator[DataFrame]), Iterator)
-    check(assert_type(next(iterator), DataFrame), DataFrame)
+    # TODO: reported python/mypy#20436 python/mypy#20435
+    check(assert_type(iterator, Iterator[DataFrame]), Iterator)  # type: ignore[assert-type]
+    check(assert_type(next(iterator), DataFrame), DataFrame)  # type: ignore[assert-type]
     check(assert_type(list(GB_DF.expanding(1)), list[DataFrame]), list, DataFrame)
 
 
@@ -945,8 +947,9 @@ def test_frame_groupby_ewm() -> None:
 
     # iter
     iterator = iter(GB_DF.ewm(1))
-    check(assert_type(iterator, Iterator[DataFrame]), Iterator)
-    check(assert_type(next(iterator), DataFrame), DataFrame)
+    # TODO: reported python/mypy#20436 python/mypy#20435
+    check(assert_type(iterator, Iterator[DataFrame]), Iterator)  # type: ignore[assert-type]
+    check(assert_type(next(iterator), DataFrame), DataFrame)  # type: ignore[assert-type]
     check(assert_type(list(GB_DF.ewm(1)), list[DataFrame]), list, DataFrame)
 
 
