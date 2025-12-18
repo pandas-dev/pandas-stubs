@@ -199,7 +199,7 @@ def test_pipe() -> None:
         kw: tuple[int],
     ) -> DataFrame:
         assert isinstance(res, DatetimeIndexResampler)
-        return res.obj  # type: ignore[return-value]  # pyright: ignore[reportReturnType]
+        return DataFrame({"a": [1, 2, 3]})
 
     check(
         assert_type(DF.resample("ME").pipe(j, 1, [1.0], arg2="hi", kw=(1,)), DataFrame),
@@ -259,7 +259,7 @@ def test_pipe() -> None:
 
     def k(x: int, t: "DatetimeIndexResampler[DataFrame]") -> DataFrame:
         assert isinstance(x, int)
-        return t.obj  # type: ignore[return-value] # pyright: ignore[reportReturnType]
+        return DataFrame({"a": [1, 2, 3]})
 
     check(assert_type(DF.resample("ME").pipe((k, "t"), 1), DataFrame), DataFrame)
 
