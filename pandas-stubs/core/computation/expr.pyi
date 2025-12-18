@@ -1,6 +1,5 @@
 import ast
 
-from pandas.core.computation.ops import Term as Term
 from pandas.core.computation.scope import Scope as Scope
 
 class BaseExprVisitor(ast.NodeVisitor):

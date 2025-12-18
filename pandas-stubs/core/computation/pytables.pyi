@@ -3,18 +3,9 @@ from typing import Any
 from pandas.core.computation import (
     expr as expr,
     ops as ops,
-    scope as _scope,
 )
 from pandas.core.computation.expr import BaseExprVisitor as BaseExprVisitor
 from pandas.core.indexes.base import Index
-
-class PyTablesScope(_scope.Scope):
-    queryables: dict[str, Any]
-
-class Term(ops.Term):
-    env = ...
-
-class Constant(Term): ...
 
 class BinOp(ops.BinOp):
     op: str
