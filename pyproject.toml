@@ -37,16 +37,16 @@ types-pytz = ">=2022.1.1"
 numpy = ">=1.23.5, <= 2.3.5"
 
 [tool.poetry.group.dev.dependencies]
-mypy = ">=1.18.2"
+mypy = ">=1.19.1"
 pandas = "2.3.3"
 pyarrow = ">=10.0.1"
 pytest = ">=8.4.2"
 pyright = ">=1.1.407"
-ty = ">=0.0.1a28"
-pyrefly = ">=0.39.4"
+ty = ">=0.0.2"
+pyrefly = ">=0.46.0"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
-typing-extensions = ">=4.4.0"
+typing-extensions = ">=4.5.0"
 matplotlib = ">=3.10.1"
 pre-commit = ">=4.3.0"
 black = ">=25.9.0"
@@ -209,10 +209,6 @@ ignore = [
   # TODO: remove when computations are fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
-"*window*" = [
-  # TODO: remove when window is fully typed
-  "ANN001", "ANN201", "ANN204", "ANN206",
-]
 "*generic.pyi" = [
   # TODO: remove when generic.pyi is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
@@ -339,4 +335,4 @@ python-platform = "all"
 python-version = "3.10"
 
 [tool.ty.rules]
-unresolved-import = "ignore"
+possibly-unresolved-reference = "error"

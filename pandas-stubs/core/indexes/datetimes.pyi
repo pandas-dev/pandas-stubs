@@ -11,11 +11,13 @@ from datetime import (
 import sys
 from typing import (
     Any,
+    Literal,
     final,
     overload,
 )
 
 import numpy as np
+import pandas as pd
 from pandas.core.frame import DataFrame
 from pandas.core.indexes.accessors import DatetimeIndexProperties
 from pandas.core.indexes.base import Index
@@ -31,13 +33,13 @@ from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
     AxesData,
     DateAndDatetimeLike,
-    Dtype,
     Frequency,
     IntervalClosedType,
     TimeUnit,
     TimeZones,
     np_1darray_intp,
     np_ndarray,
+    np_ndarray_bool,
     np_ndarray_dt,
     np_ndarray_td,
 )
@@ -54,12 +56,12 @@ class DatetimeIndex(
         data: AxesData,
         freq: Frequency = ...,
         tz: TimeZones = ...,
-        ambiguous: str = ...,
-        dayfirst: bool = ...,
-        yearfirst: bool = ...,
-        dtype: Dtype = ...,
-        copy: bool = ...,
-        name: Hashable = ...,
+        ambiguous: Literal["infer", "NaT", "raise"] | np_ndarray_bool = "raise",
+        dayfirst: bool = False,
+        yearfirst: bool = False,
+        dtype: np.dtype[np.datetime64] | pd.DatetimeTZDtype | str | None = None,
+        copy: bool = False,
+        name: Hashable = None,
     ) -> Self: ...
 
     # various ignores needed for mypy, as we do want to restrict what can be used in
@@ -123,7 +125,7 @@ def date_range(
     freq: Frequency | timedelta | None = None,
     tz: TimeZones = None,
     normalize: bool = False,
-    name: Hashable | None = None,
+    name: Hashable = None,
     inclusive: IntervalClosedType = "both",
     unit: TimeUnit | None = None,
 ) -> DatetimeIndex: ...
@@ -134,7 +136,7 @@ def date_range(
     periods: int,
     tz: TimeZones = None,
     normalize: bool = False,
-    name: Hashable | None = None,
+    name: Hashable = None,
     inclusive: IntervalClosedType = "both",
     unit: TimeUnit | None = None,
 ) -> DatetimeIndex: ...
@@ -146,7 +148,7 @@ def date_range(
     freq: Frequency | timedelta | None = None,
     tz: TimeZones = None,
     normalize: bool = False,
-    name: Hashable | None = None,
+    name: Hashable = None,
     inclusive: IntervalClosedType = "both",
     unit: TimeUnit | None = None,
 ) -> DatetimeIndex: ...
@@ -158,34 +160,34 @@ def date_range(
     freq: Frequency | timedelta | None = None,
     tz: TimeZones = None,
     normalize: bool = False,
-    name: Hashable | None = None,
+    name: Hashable = None,
     inclusive: IntervalClosedType = "both",
     unit: TimeUnit | None = None,
 ) -> DatetimeIndex: ...
 @overload
 def bdate_range(
-    start: str | DateAndDatetimeLike | None = ...,
-    end: str | DateAndDatetimeLike | None = ...,
-    periods: int | None = ...,
-    freq: Frequency | timedelta = ...,
-    tz: TimeZones = ...,
-    normalize: bool = ...,
-    name: Hashable | None = ...,
-    weekmask: str | None = ...,
+    start: str | DateAndDatetimeLike | None = None,
+    end: str | DateAndDatetimeLike | None = None,
+    periods: int | None = None,
+    freq: Frequency | timedelta = "B",
+    tz: TimeZones = None,
+    normalize: bool = False,
+    name: Hashable = None,
+    weekmask: str | None = None,
     holidays: None = None,
-    inclusive: IntervalClosedType = ...,
+    inclusive: IntervalClosedType = "both",
 ) -> DatetimeIndex: ...
 @overload
 def bdate_range(
-    start: str | DateAndDatetimeLike | None = ...,
-    end: str | DateAndDatetimeLike | None = ...,
-    periods: int | None = ...,
+    start: str | DateAndDatetimeLike | None = None,
+    end: str | DateAndDatetimeLike | None = None,
+    periods: int | None = None,
     *,
     freq: Frequency | timedelta,
-    tz: TimeZones = ...,
-    normalize: bool = ...,
-    name: Hashable | None = ...,
-    weekmask: str | None = ...,
+    tz: TimeZones = None,
+    normalize: bool = False,
+    name: Hashable = None,
+    weekmask: str | None = None,
     holidays: Sequence[str | DateAndDatetimeLike],
-    inclusive: IntervalClosedType = ...,
+    inclusive: IntervalClosedType = "both",
 ) -> DatetimeIndex: ...

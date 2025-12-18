@@ -2998,19 +2998,42 @@ def test_to_xarray() -> None:
 
 def test_to_records() -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
-    check(assert_type(df.to_records(False, "int8"), np.recarray), np.recarray)
-    check(
-        assert_type(df.to_records(False, index_dtypes=np.int8), np.recarray),
-        np.recarray,
-    )
-    check(
-        assert_type(
-            df.to_records(False, {"col1": np.int8, "col2": np.int16}), np.recarray
-        ),
-        np.recarray,
-    )
     dtypes = {"col1": np.int8, "col2": np.int16}
-    check(assert_type(df.to_records(False, dtypes), np.recarray), np.recarray)
+    if sys.version_info >= (3, 11):
+        check(assert_type(df.to_records(False, "int8"), np.recarray), np.recarray)
+        check(
+            assert_type(df.to_records(False, index_dtypes=np.int8), np.recarray),
+            np.recarray,
+        )
+        check(
+            assert_type(
+                df.to_records(False, {"col1": np.int8, "col2": np.int16}), np.recarray
+            ),
+            np.recarray,
+        )
+        check(assert_type(df.to_records(False, dtypes), np.recarray), np.recarray)
+    else:
+        check(
+            assert_type(df.to_records(False, "int8"), np.recarray[Any, Any]),
+            np.recarray,
+        )
+        check(
+            assert_type(
+                df.to_records(False, index_dtypes=np.int8), np.recarray[Any, Any]
+            ),
+            np.recarray,
+        )
+        check(
+            assert_type(
+                df.to_records(False, {"col1": np.int8, "col2": np.int16}),
+                np.recarray[Any, Any],
+            ),
+            np.recarray,
+        )
+        check(
+            assert_type(df.to_records(False, dtypes), np.recarray[Any, Any]),
+            np.recarray,
+        )
 
 
 def test_to_dict_simple() -> None:
@@ -3021,10 +3044,10 @@ def test_to_dict_simple() -> None:
     check(assert_type(data.to_dict("dict"), dict[Hashable, Any]), dict)
     check(assert_type(data.to_dict("list"), dict[Hashable, Any]), dict)
     check(assert_type(data.to_dict("series"), dict[Hashable, Any]), dict)
-    check(assert_type(data.to_dict("split"), dict[str, list]), dict, str)
+    check(assert_type(data.to_dict("split"), dict[str, list[Any]]), dict, str)
 
     # orient param accepting "tight" added in 1.4.0 https://pandas.pydata.org/docs/whatsnew/v1.4.0.html
-    check(assert_type(data.to_dict("tight"), dict[str, list]), dict, str)
+    check(assert_type(data.to_dict("tight"), dict[str, list[Any]]), dict, str)
 
     if TYPE_CHECKING_INVALID_USAGE:
 
@@ -3075,7 +3098,7 @@ def test_to_dict_into_defaultdict() -> None:
         defaultdict,
     )
     check(
-        assert_type(data.to_dict("tight", into=target), MutableMapping[str, list]),
+        assert_type(data.to_dict("tight", into=target), MutableMapping[str, list[Any]]),
         defaultdict,
         str,
     )
@@ -3093,7 +3116,11 @@ def test_to_dict_into_ordered_dict() -> None:
 
     data = pd.DataFrame({("str", "rts"): [[1, 2, 4], [2, 3], [3]]})
 
-    check(assert_type(data.to_dict(into=OrderedDict), OrderedDict), OrderedDict, tuple)
+    check(
+        assert_type(data.to_dict(into=OrderedDict), OrderedDict[Any, Any]),
+        OrderedDict,
+        tuple,
+    )
     check(
         assert_type(
             data.to_dict("index", into=OrderedDict),
@@ -3102,12 +3129,16 @@ def test_to_dict_into_ordered_dict() -> None:
         OrderedDict,
     )
     check(
-        assert_type(data.to_dict("tight", into=OrderedDict), MutableMapping[str, list]),
+        assert_type(
+            data.to_dict("tight", into=OrderedDict), MutableMapping[str, list[Any]]
+        ),
         OrderedDict,
         str,
     )
     check(
-        assert_type(data.to_dict("records", into=OrderedDict), list[OrderedDict]),
+        assert_type(
+            data.to_dict("records", into=OrderedDict), list[OrderedDict[Any, Any]]
+        ),
         list,
         OrderedDict,
     )
@@ -3446,16 +3477,24 @@ def test_to_dict_index() -> None:
         dict,
     )
     check(
-        assert_type(df.to_dict(orient="split", index=True), dict[str, list]), dict, str
+        assert_type(df.to_dict(orient="split", index=True), dict[str, list[Any]]),
+        dict,
+        str,
     )
     check(
-        assert_type(df.to_dict(orient="tight", index=True), dict[str, list]), dict, str
+        assert_type(df.to_dict(orient="tight", index=True), dict[str, list[Any]]),
+        dict,
+        str,
     )
     check(
-        assert_type(df.to_dict(orient="tight", index=False), dict[str, list]), dict, str
+        assert_type(df.to_dict(orient="tight", index=False), dict[str, list[Any]]),
+        dict,
+        str,
     )
     check(
-        assert_type(df.to_dict(orient="split", index=False), dict[str, list]), dict, str
+        assert_type(df.to_dict(orient="split", index=False), dict[str, list[Any]]),
+        dict,
+        str,
     )
     if TYPE_CHECKING_INVALID_USAGE:
         _0 = df.to_dict(orient="records", index=False)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]

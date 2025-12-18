@@ -1,3 +1,4 @@
+# pyright: reportMissingTypeArgument=false
 """Test module for classes in pandas.api.typing."""
 
 from typing import TypeAlias
@@ -26,9 +27,7 @@ from pandas.api.typing import (
     Window,
 )
 import pytest
-from typing_extensions import (
-    assert_type,
-)
+from typing_extensions import assert_type
 
 from tests import (
     check,
