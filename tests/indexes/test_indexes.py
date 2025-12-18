@@ -1719,9 +1719,15 @@ def test_index_view() -> None:
         # - pyright: ndarray[tuple[Any, ...], dtype[Any]]
         check(assert_type(ind.view(np.ndarray), np.ndarray), np.ndarray)  # type: ignore[assert-type]
     else:
-        check(assert_type(ind.view(np.ndarray), np.ndarray), np.ndarray)
+        check(assert_type(ind.view(np.ndarray), np.ndarray[Any, Any]), np.ndarray)
 
-    class MyArray(np.ndarray): ...
+    if sys.version_info >= (3, 11):
+
+        class MyArray(np.ndarray): ...
+
+    else:
+
+        class MyArray(np.ndarray[Any, Any]): ...
 
     check(assert_type(ind.view(MyArray), MyArray), MyArray)
 

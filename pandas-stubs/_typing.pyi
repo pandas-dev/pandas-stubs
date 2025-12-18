@@ -959,7 +959,10 @@ np_1darray_dt: TypeAlias = np_1darray[np.datetime64]
 np_1darray_td: TypeAlias = np_1darray[np.timedelta64]
 np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[GenericT]]
 
-NDArrayT = TypeVar("NDArrayT", bound=np.ndarray)
+if sys.version_info >= (3, 11):
+    NDArrayT = TypeVar("NDArrayT", bound=np.ndarray)
+else:
+    NDArrayT = TypeVar("NDArrayT", bound=np.ndarray[Any, Any])
 
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
 KeysArgType: TypeAlias = Any
