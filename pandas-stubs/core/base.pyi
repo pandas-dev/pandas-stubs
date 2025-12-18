@@ -1,6 +1,4 @@
 from collections.abc import (
-    Callable,
-    Hashable,
     Iterator,
     Sequence,
 )
@@ -12,7 +10,6 @@ from typing import (
     Protocol,
     TypeAlias,
     TypeVar,
-    final,
     overload,
     type_check_only,
 )
@@ -43,7 +40,6 @@ from pandas._typing import (
     GenericT_co,
     Just,
     ListLike,
-    NDFrameT,
     Scalar,
     SupportsDType,
     np_1darray,
@@ -55,21 +51,11 @@ from pandas._typing import (
     np_ndarray_float,
     np_ndarray_td,
 )
-from pandas.util._decorators import cache_readonly
 
 T_INTERVAL_NP = TypeVar("T_INTERVAL_NP", bound=np.bytes_ | np.str_)
 
 class NoNewAttributesMixin:
     def __setattr__(self, key: str, value: Any) -> None: ...
-
-class SelectionMixin(Generic[NDFrameT]):
-    obj: NDFrameT
-    exclusions: frozenset[Hashable]
-    @final
-    @cache_readonly
-    def ndim(self) -> int: ...
-    def __getitem__(self, key: Any) -> Any: ...
-    def aggregate(self, func: Callable[..., Any], *args: Any, **kwargs: Any) -> Any: ...
 
 class IndexOpsMixin(OpsMixin, Generic[S1, GenericT_co]):
     __array_priority__: int = ...

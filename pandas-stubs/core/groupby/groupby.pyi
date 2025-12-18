@@ -18,7 +18,6 @@ from typing import (
 )
 
 import numpy as np
-from pandas.core.base import SelectionMixin
 from pandas.core.frame import DataFrame
 from pandas.core.groupby import generic
 from pandas.core.groupby.indexing import (
@@ -350,7 +349,7 @@ class GroupByPlot(PlotAccessor, Generic[_GroupByT]):
     # def __call__(self, *args: Any, **kwargs: Any): ...
     # def __getattr__(self, name: str): ...
 
-class BaseGroupBy(SelectionMixin[NDFrameT], GroupByIndexingMixin):
+class BaseGroupBy(GroupByIndexingMixin, Generic[NDFrameT]):
     @final
     def __len__(self) -> int: ...
     @final
