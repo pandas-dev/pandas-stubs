@@ -27,11 +27,11 @@ class BaseMaskedArray(ExtensionArray, ExtensionOpsMixin):
     def __invert__(self): ...
     def to_numpy(
         self,
-        dtype: npt.DTypeLike | None = ...,
+        dtype: npt.DTypeLike | None = None,
         copy: bool = False,
         na_value: Scalar = ...,
     ) -> np_1darray: ...
-    __array_priority__: int = ...
+    __array_priority__: int = 1000
     def __array__(
         self, dtype: NpDtype | None = None, copy: bool | None = None
     ) -> np_1darray: ...

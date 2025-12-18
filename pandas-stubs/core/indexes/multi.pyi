@@ -41,41 +41,41 @@ from pandas._typing import (
 class MultiIndex(Index):
     def __new__(
         cls,
-        levels: Sequence[SequenceNotStr[Hashable]] = ...,
-        codes: Sequence[Sequence[int]] = ...,
-        sortorder: int | None = ...,
-        names: SequenceNotStr[Hashable] = ...,
-        copy: bool = ...,
-        name: SequenceNotStr[Hashable] = ...,
-        verify_integrity: bool = ...,
+        levels: Sequence[SequenceNotStr[Hashable]] | None = None,
+        codes: Sequence[Sequence[int]] | None = None,
+        sortorder: int | None = None,
+        names: SequenceNotStr[Hashable] | None = None,
+        copy: bool = False,
+        name: SequenceNotStr[Hashable] | None = None,
+        verify_integrity: bool = True,
     ) -> Self: ...
     @classmethod
     def from_arrays(
         cls,
         arrays: Sequence[Axes],
-        sortorder: int | None = ...,
-        names: SequenceNotStr[Hashable] = ...,
+        sortorder: int | None = None,
+        names: SequenceNotStr[Hashable] | None = None,
     ) -> Self: ...
     @classmethod
     def from_tuples(
         cls,
         tuples: Iterable[tuple[Hashable, ...]],
-        sortorder: int | None = ...,
-        names: SequenceNotStr[Hashable] = ...,
+        sortorder: int | None = None,
+        names: SequenceNotStr[Hashable] | None = None,
     ) -> Self: ...
     @classmethod
     def from_product(
         cls,
         iterables: Sequence[SequenceNotStr[Hashable] | pd.Series | pd.Index | range],
-        sortorder: int | None = ...,
-        names: SequenceNotStr[Hashable] = ...,
+        sortorder: int | None = None,
+        names: SequenceNotStr[Hashable] | None = None,
     ) -> Self: ...
     @classmethod
     def from_frame(
         cls,
         df: pd.DataFrame,
-        sortorder: int | None = ...,
-        names: SequenceNotStr[Hashable] = ...,
+        sortorder: int | None = None,
+        names: SequenceNotStr[Hashable] | None = None,
     ) -> Self: ...
     @property  # Should be read-only
     def levels(self) -> list[Index]: ...
@@ -114,7 +114,7 @@ class MultiIndex(Index):
         verify_integrity: bool = True,
     ) -> MultiIndex: ...
     def copy(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore
-        self, names: SequenceNotStr[Hashable] = ..., deep: bool = False
+        self, names: SequenceNotStr[Hashable] | None = None, deep: bool = False
     ) -> Self: ...
     def view(self, cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg | type[np_ndarray] | None = None) -> MultiIndex: ...  # type: ignore[override] # pyrefly: ignore[bad-override] # pyright: ignore[reportIncompatibleMethodOverride]
     if sys.version_info >= (3, 11):
