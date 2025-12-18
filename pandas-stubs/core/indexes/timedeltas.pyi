@@ -26,6 +26,7 @@ from typing_extensions import (
 )
 
 from pandas._libs import Timedelta
+from pandas._libs.lib import _NoDefaultDoNotUse
 from pandas._libs.tslibs import BaseOffset
 from pandas._libs.tslibs.period import Period
 from pandas._typing import (
@@ -59,12 +60,13 @@ class TimedeltaIndex(
 ):
     def __new__(
         cls,
-        data: Sequence[timedelta | Timedelta | np.timedelta64 | float] | AxesData = ...,
-        freq: Frequency = ...,
-        closed: object = ...,
-        dtype: Literal["<m8[ns]"] = ...,
-        copy: bool = ...,
-        name: str = ...,
+        data: (
+            Sequence[timedelta | Timedelta | np.timedelta64 | float] | AxesData | None
+        ),
+        freq: Frequency | _NoDefaultDoNotUse = ...,
+        dtype: Literal["<m8[ns]"] | None = None,
+        copy: bool | None = None,
+        name: str | None = None,
     ) -> Self: ...
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
@@ -168,7 +170,7 @@ def timedelta_range(
     freq: Frequency | Timedelta | timedelta | None = None,
     name: Hashable | None = None,
     closed: Literal["left", "right"] | None = None,
-    unit: None | str = ...,
+    unit: None | str = None,
 ) -> TimedeltaIndex: ...
 @overload
 def timedelta_range(
@@ -178,7 +180,7 @@ def timedelta_range(
     freq: Frequency | Timedelta | timedelta | None = None,
     name: Hashable | None = None,
     closed: Literal["left", "right"] | None = None,
-    unit: None | str = ...,
+    unit: None | str = None,
 ) -> TimedeltaIndex: ...
 @overload
 def timedelta_range(
@@ -188,7 +190,7 @@ def timedelta_range(
     freq: Frequency | Timedelta | timedelta | None = None,
     name: Hashable | None = None,
     closed: Literal["left", "right"] | None = None,
-    unit: None | str = ...,
+    unit: None | str = None,
 ) -> TimedeltaIndex: ...
 @overload
 def timedelta_range(
@@ -198,5 +200,5 @@ def timedelta_range(
     *,
     name: Hashable | None = None,
     closed: Literal["left", "right"] | None = None,
-    unit: None | str = ...,
+    unit: None | str = None,
 ) -> TimedeltaIndex: ...

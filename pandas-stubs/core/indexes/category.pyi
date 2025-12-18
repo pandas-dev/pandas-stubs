@@ -23,7 +23,7 @@ class CategoricalIndex(ExtensionIndex[S1], PandasDelegate):
     def array(self) -> Categorical: ...  # type: ignore[override] # pyrefly: ignore[bad-override]
     def __new__(
         cls,
-        data: Iterable[S1] = ...,
+        data: Iterable[S1],
         categories: ListLike | None = None,
         ordered: bool | None = None,
         dtype: Dtype | None = None,
