@@ -90,7 +90,8 @@ def test_agg_ts() -> None:
     check(assert_type(series.std(), pd.Timedelta), pd.Timedelta)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        assert_type(series.var(), Never)
+        def _0() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(series.var(), Never)
 
 
 def test_agg_td() -> None:
