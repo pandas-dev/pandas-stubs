@@ -4621,7 +4621,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> float: ...
     @overload
     def var(
-        self: Series[Timedelta],
+        self: Series[Timedelta] | Series[Timestamp],
         axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         ddof: int = 1,
