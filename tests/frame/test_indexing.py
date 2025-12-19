@@ -27,6 +27,7 @@ from typing_extensions import assert_type
 from pandas._typing import Scalar
 
 from tests import (
+    PD_LTE_23,
     TYPE_CHECKING_INVALID_USAGE,
     check,
 )
@@ -428,16 +429,18 @@ def test_frame_setitem_na() -> None:
     df.at["a", "y"] = None
     df.iat[0, 0] = None
 
-    df.loc[:, "x"] = [None, pd.NA, pd.NaT]
-    df.iloc[:, 0] = [None, pd.NA, pd.NaT]
+    if PD_LTE_23:
+        # TODO: pandas-dev/pandas#63420, this is failing on latest build, should work
+        df.loc[:, "x"] = [None, pd.NA, pd.NaT]
+        df.iloc[:, 0] = [None, pd.NA, pd.NaT]
 
-    # TODO: mypy bug, remove after python/mypy#20420 has been resolved
-    df.loc[:, ["x"]] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
-    df.iloc[:, [0]] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
+        # TODO: mypy bug, remove after python/mypy#20420 has been resolved
+        df.loc[:, ["x"]] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
+        df.iloc[:, [0]] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
 
-    # TODO: mypy bug, remove after python/mypy#20420 has been resolved
-    df.loc[:, iter(["x"])] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
-    df.iloc[:, iter([0])] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
+        # TODO: mypy bug, remove after python/mypy#20420 has been resolved
+        df.loc[:, iter(["x"])] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
+        df.iloc[:, iter([0])] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
 
 
 def test_loc_set() -> None:
