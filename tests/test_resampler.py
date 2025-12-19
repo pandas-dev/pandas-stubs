@@ -1,3 +1,4 @@
+# pyright: reportMissingTypeArgument=false
 from collections.abc import (
     Hashable,
     Iterator,
@@ -37,10 +38,6 @@ DF = DataFrame({"col1": S, "col2": S})
 
 
 _AggRetType = DataFrame | Series
-
-
-def test_props() -> None:
-    check(assert_type(DF.resample("ME").obj, DataFrame), DataFrame)
 
 
 def test_iter() -> None:
@@ -202,7 +199,7 @@ def test_pipe() -> None:
         kw: tuple[int],
     ) -> DataFrame:
         assert isinstance(res, DatetimeIndexResampler)
-        return res.obj
+        return DataFrame({"a": [1, 2, 3]})
 
     check(
         assert_type(DF.resample("ME").pipe(j, 1, [1.0], arg2="hi", kw=(1,)), DataFrame),
@@ -262,7 +259,7 @@ def test_pipe() -> None:
 
     def k(x: int, t: "DatetimeIndexResampler[DataFrame]") -> DataFrame:
         assert isinstance(x, int)
-        return t.obj
+        return DataFrame({"a": [1, 2, 3]})
 
     check(assert_type(DF.resample("ME").pipe((k, "t"), 1), DataFrame), DataFrame)
 
@@ -278,10 +275,6 @@ def test_transform() -> None:
         return -1 * val
 
     check(assert_type(DF.resample("ME").transform(f), DataFrame), DataFrame)
-
-
-def test_props_series() -> None:
-    check(assert_type(S.resample("ME").obj, Series), Series)
 
 
 def test_iter_series() -> None:

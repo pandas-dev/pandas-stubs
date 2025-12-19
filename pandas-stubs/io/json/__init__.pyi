@@ -1,6 +1,4 @@
-from pandas.io.json._json import (
-    read_json as read_json,
-)
+from pandas.io.json._json import read_json as read_json
 
 # below are untyped imports so commented out
 # to_json as to_json,; ujson_dumps as ujson_dumps,; ujson_loads as ujson_loads,

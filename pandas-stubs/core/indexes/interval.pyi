@@ -7,6 +7,7 @@ from typing import (
     Literal,
     TypeAlias,
     overload,
+    type_check_only,
 )
 
 import numpy as np
@@ -17,7 +18,11 @@ from pandas.core.indexes.extension import ExtensionIndex
 from pandas._libs.interval import (
     Interval as Interval,
     IntervalMixin,
+    _OrderableScalarT,
+    _OrderableT,
+    _OrderableTimesT,
 )
+from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
     DatetimeLike,
     DtypeArg,
@@ -57,6 +62,36 @@ _EdgesTimedelta: TypeAlias = (
 )
 _TimestampLike: TypeAlias = pd.Timestamp | np.datetime64 | dt.datetime
 _TimedeltaLike: TypeAlias = pd.Timedelta | np.timedelta64 | dt.timedelta
+
+@type_check_only
+class _LengthDescriptor:
+    @overload
+    def __get__(
+        self,
+        instance: IntervalIndex[Interval[_OrderableScalarT]],
+        owner: type[IntervalIndex],
+    ) -> Index[_OrderableScalarT]: ...
+    @overload
+    def __get__(
+        self,
+        instance: IntervalIndex[Interval[_OrderableTimesT]],
+        owner: type[IntervalIndex],
+    ) -> Index[Timedelta]: ...
+
+@type_check_only
+class _MidDescriptor:
+    @overload
+    def __get__(
+        self,
+        instance: IntervalIndex[Interval[int]],
+        owner: type[IntervalIndex],
+    ) -> Index[float]: ...
+    @overload
+    def __get__(
+        self,
+        instance: IntervalIndex[Interval[_OrderableT]],
+        owner: type[IntervalIndex],
+    ) -> Index[_OrderableT]: ...
 
 class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     closed: IntervalClosedType
@@ -216,16 +251,13 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     def is_overlapping(self) -> bool: ...
     def get_loc(self, key: Label) -> int | slice | np_1darray_bool: ...
     @property
-    def left(self) -> Index: ...
+    def left(self: IntervalIndex[Interval[_OrderableT]]) -> Index[_OrderableT]: ...
     @property
-    def right(self) -> Index: ...
-    @property
-    def mid(self) -> Index: ...
-    @property
-    def length(self) -> Index: ...
+    def right(self: IntervalIndex[Interval[_OrderableT]]) -> Index[_OrderableT]: ...
+    mid = _MidDescriptor()
+    length = _LengthDescriptor()
     @overload  # type: ignore[override]
-    # pyrefly: ignore  # bad-override
-    def __getitem__(
+    def __getitem__(  # pyrefly: ignore[bad-override]
         self,
         idx: (
             slice

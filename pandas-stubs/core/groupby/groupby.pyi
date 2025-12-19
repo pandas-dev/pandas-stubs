@@ -18,7 +18,6 @@ from typing import (
 )
 
 import numpy as np
-from pandas.core.base import SelectionMixin
 from pandas.core.frame import DataFrame
 from pandas.core.groupby import generic
 from pandas.core.groupby.indexing import (
@@ -71,9 +70,9 @@ from pandas._typing import (
 from pandas.plotting import PlotAccessor
 
 _ResamplerGroupBy: TypeAlias = (
-    DatetimeIndexResamplerGroupby[NDFrameT]  # ty: ignore[invalid-argument-type]
-    | PeriodIndexResamplerGroupby[NDFrameT]  # ty: ignore[invalid-argument-type]
-    | TimedeltaIndexResamplerGroupby[NDFrameT]  # ty: ignore[invalid-argument-type]
+    DatetimeIndexResamplerGroupby[NDFrameT]
+    | PeriodIndexResamplerGroupby[NDFrameT]
+    | TimedeltaIndexResamplerGroupby[NDFrameT]
 )
 
 class GroupBy(BaseGroupBy[NDFrameT]):
@@ -338,7 +337,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         random_state: RandomState | None = ...,
     ) -> NDFrameT: ...
 
-_GroupByT = TypeVar("_GroupByT", bound=GroupBy)
+_GroupByT = TypeVar("_GroupByT", bound=GroupBy[Any])
 
 # GroupByPlot does not really inherit from PlotAccessor but it delegates
 # to it using __call__ and __getattr__. We lie here to avoid repeating the
@@ -350,7 +349,7 @@ class GroupByPlot(PlotAccessor, Generic[_GroupByT]):
     # def __call__(self, *args: Any, **kwargs: Any): ...
     # def __getattr__(self, name: str): ...
 
-class BaseGroupBy(SelectionMixin[NDFrameT], GroupByIndexingMixin):
+class BaseGroupBy(GroupByIndexingMixin, Generic[NDFrameT]):
     @final
     def __len__(self) -> int: ...
     @final
@@ -383,15 +382,15 @@ class BaseGroupBy(SelectionMixin[NDFrameT], GroupByIndexingMixin):
     @final
     def __iter__(self) -> Iterator[tuple[Hashable, NDFrameT]]: ...
     @overload
-    def __getitem__(self: BaseGroupBy[DataFrame], key: Scalar) -> generic.SeriesGroupBy: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __getitem__(self: BaseGroupBy[DataFrame], key: Scalar) -> generic.SeriesGroupBy[Any, Any]: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __getitem__(
         self: BaseGroupBy[DataFrame], key: Iterable[Hashable]
-    ) -> generic.DataFrameGroupBy: ...
+    ) -> generic.DataFrameGroupBy[Any, Any]: ...
     @overload
     def __getitem__(
         self: BaseGroupBy[Series[S1]],
         idx: list[str] | Index | Series[S1] | MaskType | tuple[Hashable | slice, ...],
-    ) -> generic.SeriesGroupBy: ...
+    ) -> generic.SeriesGroupBy[Any, Any]: ...
     @overload
     def __getitem__(self: BaseGroupBy[Series[S1]], idx: Scalar) -> S1: ...

@@ -26,7 +26,11 @@ from typing_extensions import assert_type
 
 from pandas._typing import Scalar
 
-from tests import check
+from tests import (
+    PD_LTE_23,
+    TYPE_CHECKING_INVALID_USAGE,
+    check,
+)
 
 
 def test_types_getitem() -> None:
@@ -89,6 +93,11 @@ def test_types_setitem() -> None:
     df[df["col1"] > 1] = [5, 6, 7]
     df[a] = [[1, 2], [3, 4]]
     df[i] = [8, 9]
+
+    df["col1"] = [None, pd.NaT]
+    # TODO: mypy bug, remove after python/mypy#20420 has been resolved
+    df[["col1"]] = [[None], [pd.NA]]  # type: ignore[assignment,list-item]
+    df[iter(["col1"])] = [[None], [pd.NA]]  # type: ignore[assignment]
 
 
 def test_types_setitem_mask() -> None:
@@ -365,17 +374,6 @@ def test_isetframe() -> None:
     check(assert_type(frame.isetitem([0], [10, 12]), None), type(None))
 
 
-def test_setitem_none() -> None:
-    df = pd.DataFrame(
-        {"A": [1, 2, 3], "B": ["abc", "def", "ghi"]}, index=["x", "y", "z"]
-    )
-    df.loc["x", "B"] = None
-    df.iloc[2, 0] = None
-    sb = pd.Series([1, 2, 3], dtype=int)
-    sb.loc["y"] = None
-    sb.iloc[0] = None
-
-
 def test_getsetitem_multiindex() -> None:
     # GH 466
     rows = pd.Index(["project A", "project B", "project C"])
@@ -415,12 +413,34 @@ def test_frame_setitem_na() -> None:
 
     df.loc[ind, :] = pd.NA
     df.iloc[[0, 2], :] = pd.NA
+    df.at["a", "x"] = pd.NA
+    df.iat[0, 0] = pd.NA
 
     # reveal_type(df["y"]) gives Series[Any], so we have to cast to tell the
     # type checker what kind of type it is when adding to a Timedelta
     df["x"] = cast("pd.Series[pd.Timestamp]", df["y"]) + pd.Timedelta(days=3)
     df.loc[ind, :] = pd.NaT
     df.iloc[[0, 2], :] = pd.NaT
+    df.at["a", "y"] = pd.NaT
+    df.iat[0, 0] = pd.NaT
+
+    df.loc["a", "x"] = None
+    df.iloc[2, 0] = None
+    df.at["a", "y"] = None
+    df.iat[0, 0] = None
+
+    if PD_LTE_23:
+        # TODO: pandas-dev/pandas#63420, this is failing on latest build, should work
+        df.loc[:, "x"] = [None, pd.NA, pd.NaT]
+        df.iloc[:, 0] = [None, pd.NA, pd.NaT]
+
+        # TODO: mypy bug, remove after python/mypy#20420 has been resolved
+        df.loc[:, ["x"]] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
+        df.iloc[:, [0]] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
+
+        # TODO: mypy bug, remove after python/mypy#20420 has been resolved
+        df.loc[:, iter(["x"])] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
+        df.iloc[:, iter([0])] = [[None], [pd.NA], [pd.NaT]]  # type: ignore[assignment,index]
 
 
 def test_loc_set() -> None:
@@ -571,6 +591,9 @@ def test_df_loc_dict() -> None:
     df.iloc[0] = {"X": 0}
     check(assert_type(df, pd.DataFrame), pd.DataFrame)
 
+    df.loc[0] = {None: None, pd.NA: pd.NA, pd.NaT: pd.NaT}
+    df.iloc[0] = {None: None, pd.NA: pd.NA, pd.NaT: pd.NaT}
+
 
 def test_iloc_npint() -> None:
     # GH 69
@@ -592,3 +615,28 @@ def test_frame_ndarray_assignmment() -> None:
 
     df_b = pd.DataFrame({"a": [0.0] * 10, "b": [1.0] * 10})
     df_b.iloc[:, :] = np.array([[-1.0, np.inf]] * 10)
+
+
+def test_frame_at() -> None:
+    df = pd.DataFrame(data={"col1": [1.6, 2], "col2": [3, 4]})
+
+    check(assert_type(df.at[0, "col1"], Scalar), float)
+    df.at[0, "col1"] = 999
+    df.at[0, "col1"] = float("nan")
+
+    mi = pd.MultiIndex.from_arrays([[2, 3], [4, 5]])
+    df = pd.DataFrame(data={"col1": [1.6, 2], "col2": [3, 4]}, index=mi)
+
+    check(assert_type(df.at[(2, 4), "col1"], Scalar), float)
+    df.at[(2, 4), "col1"] = 999
+    df.at[(2, 4), "col1"] = float("nan")
+
+
+def test_frame_iat() -> None:
+    df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
+
+    check(assert_type(df.iat[0, 0], Scalar), np.integer)
+    df.iat[0, 0] = 999
+    df.iat[0, 0] = float("nan")
+    if TYPE_CHECKING_INVALID_USAGE:
+        df.iat[(0,), 0] = 999  # type: ignore[index]  # pyright: ignore[reportArgumentType]

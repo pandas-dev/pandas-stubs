@@ -2,6 +2,7 @@ from collections.abc import (
     Hashable,
     Sequence,
 )
+import sys
 from typing import (
     Any,
     overload,
@@ -50,8 +51,13 @@ class RangeIndex(_IndexSubclassBase[int, np.int64]):
     @property
     def nbytes(self) -> int: ...
     def memory_usage(self, deep: bool = ...) -> int: ...
-    @property
-    def dtype(self) -> np.dtype: ...
+    if sys.version_info >= (3, 11):
+        @property
+        def dtype(self) -> np.dtype: ...
+    else:
+        @property
+        def dtype(self) -> np.dtype[Any]: ...
+
     @property
     def is_unique(self) -> bool: ...
     @property
@@ -60,7 +66,7 @@ class RangeIndex(_IndexSubclassBase[int, np.int64]):
     def is_monotonic_decreasing(self) -> bool: ...
     @property
     def has_duplicates(self) -> bool: ...
-    def factorize(  # ty: ignore[invalid-method-override]
+    def factorize(
         self, sort: bool = False, use_na_sentinel: bool = True
     ) -> tuple[np_1darray_intp, RangeIndex]: ...
     @property

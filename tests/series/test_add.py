@@ -181,3 +181,14 @@ def test_add_i_pd_series() -> None:
     check(assert_type(left_i.radd(i), pd.Series), pd.Series)
     check(assert_type(left_i.radd(f), pd.Series), pd.Series)
     check(assert_type(left_i.radd(c), pd.Series), pd.Series)
+
+
+def test_series_add_str() -> None:
+    """Test Series.__add__ with Series[Any]."""
+    df = pd.DataFrame({0: ["a", "b"]})
+    sr = df[0]
+
+    check(assert_type(sr + "c1", "pd.Series[str]"), pd.Series, str)
+    check(assert_type("c1" + sr, "pd.Series[str]"), pd.Series, str)
+    check(assert_type(sr.add("c1"), "pd.Series[str]"), pd.Series, str)
+    check(assert_type(sr.radd("c1"), "pd.Series[str]"), pd.Series, str)

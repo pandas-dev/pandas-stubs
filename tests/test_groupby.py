@@ -70,9 +70,6 @@ def test_frame_groupby_resample() -> None:
         DataFrame,
     )
 
-    # props
-    check(assert_type(GB_DF.resample("ME").obj, DataFrame), DataFrame)
-
     # agg funcs
     with pytest_warns_bounded(
         FutureWarning,
@@ -312,9 +309,6 @@ def test_series_groupby_resample() -> None:
         Series,
     )
 
-    # props
-    check(assert_type(GB_S.resample("ME").obj, "Series[float]"), Series, float)
-
     # agg funcs
     check(assert_type(GB_S.resample("ME").sum(), "Series[float]"), Series, float)
     check(assert_type(GB_S.resample("ME").prod(), "Series[float]"), Series, float)
@@ -471,7 +465,6 @@ def test_frame_groupby_rolling() -> None:
     )
 
     # props
-    check(assert_type(GB_DF.rolling(1).obj, DataFrame), DataFrame)
     check(assert_type(GB_DF.rolling(1).on, str | Index | None), type(None))
     check(assert_type(GB_DF.rolling(1).method, Literal["single", "table"]), str)
     if PD_LTE_23:
@@ -596,9 +589,6 @@ def test_series_groupby_rolling() -> None:
         Series,
     )
 
-    # props
-    check(assert_type(GB_S.rolling(1).obj, "Series[float]"), Series, float)
-
     # agg funcs
     check(assert_type(GB_S.rolling(1).sum(), "Series[float]"), Series, float)
     check(assert_type(GB_S.rolling(1).min(), "Series[float]"), Series, float)
@@ -666,7 +656,6 @@ def test_frame_groupby_expanding() -> None:
     )
 
     # props
-    check(assert_type(GB_DF.expanding(1).obj, DataFrame), DataFrame)
     check(assert_type(GB_DF.expanding(1).on, str | Index | None), type(None))
     check(assert_type(GB_DF.expanding(1).method, Literal["single", "table"]), str)
     if PD_LTE_23:
@@ -795,9 +784,6 @@ def test_series_groupby_expanding() -> None:
         Series,
     )
 
-    # props
-    check(assert_type(GB_S.expanding(1).obj, "Series[float]"), Series, float)
-
     # agg funcs
     check(assert_type(GB_S.expanding(1).sum(), "Series[float]"), Series, float)
     check(assert_type(GB_S.expanding(1).min(), "Series[float]"), Series, float)
@@ -865,7 +851,6 @@ def test_frame_groupby_ewm() -> None:
     )
 
     # props
-    check(assert_type(GB_DF.ewm(1).obj, DataFrame), DataFrame)
     check(assert_type(GB_DF.ewm(1).on, str | Index | None), type(None))
     check(assert_type(GB_DF.ewm(1).method, Literal["single", "table"]), str)
     if PD_LTE_23:
@@ -972,9 +957,6 @@ def test_series_groupby_ewm() -> None:
         ExponentialMovingWindowGroupby,
         Series,
     )
-
-    # props
-    check(assert_type(GB_S.ewm(1).obj, "Series[float]"), Series, float)
 
     # agg funcs
     check(assert_type(GB_S.ewm(1).sum(), "Series[float]"), Series, float)
