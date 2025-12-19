@@ -5,6 +5,7 @@ from pandas.core.arrays.datetimelike import (
     DatetimeLikeArrayMixin,
     TimelikeOps,
 )
+from typing_extensions import Self
 
 from pandas._typing import (
     AnyArrayLike,
@@ -14,14 +15,13 @@ from pandas._typing import (
 
 class TimedeltaArray(DatetimeLikeArrayMixin, TimelikeOps):
     __array_priority__: int = ...
-    def __init__(
-        self,
+    def __new__(
+        cls,
         values: AnyArrayLike,
         dtype: DtypeArg | None = None,
         freq: Frequency | None = None,
         copy: bool = False,
-    ) -> None: ...
-    __rmul__ = ...
+    ) -> Self: ...
     def total_seconds(self) -> int: ...
     def to_pytimedelta(self) -> Sequence[timedelta]: ...
     days: int = ...

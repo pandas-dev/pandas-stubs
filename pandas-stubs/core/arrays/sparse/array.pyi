@@ -1,4 +1,5 @@
 from enum import Enum
+import sys
 from typing import (
     Any,
     final,
@@ -29,15 +30,39 @@ class ellipsis(Enum):
     Ellipsis = "..."
 
 class SparseArray(ExtensionArray, ExtensionOpsMixin):
-    def __init__(
-        self,
-        data: AnyArrayLike | Scalar,
-        sparse_index: SparseIndex | None = None,
-        fill_value: Scalar | None = None,
-        kind: str = "integer",
-        dtype: np.dtype | SparseDtype | None = ...,
-        copy: bool = ...,
-    ) -> None: ...
+    if sys.version_info >= (3, 11):
+        def __new__(
+            cls,
+            data: AnyArrayLike | Scalar,
+            sparse_index: SparseIndex | None = None,
+            fill_value: Scalar | None = None,
+            kind: str = "integer",
+            dtype: np.dtype | SparseDtype | None = ...,
+            copy: bool = ...,
+        ) -> Self: ...
+    else:
+        def __new__(
+            cls,
+            data: AnyArrayLike | Scalar,
+            sparse_index: SparseIndex | None = None,
+            fill_value: Scalar | None = None,
+            kind: str = "integer",
+            dtype: np.dtype[Any] | SparseDtype | None = ...,
+            copy: bool = ...,
+        ) -> Self: ...
+
+    @classmethod
+    def from_spmatrix(cls, data: Any) -> Self: ...
+    @property
+    def sp_index(self) -> SparseIndex: ...
+    @property
+    def sp_values(self) -> np.ndarray: ...
+    @property
+    def dtype(self) -> SparseDtype: ...
+    @property
+    def fill_value(self) -> Any: ...
+    @fill_value.setter
+    def fill_value(self, value: Any) -> None: ...
     def __array__(
         self, dtype: NpDtype | None = None, copy: bool | None = None
     ) -> np_1darray: ...
@@ -45,6 +70,8 @@ class SparseArray(ExtensionArray, ExtensionOpsMixin):
     def kind(self) -> str: ...
     @property
     def nbytes(self) -> int: ...
+    @property
+    def density(self) -> float: ...
     @property
     def npoints(self) -> int: ...
     @overload

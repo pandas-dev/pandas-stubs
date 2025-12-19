@@ -1,5 +1,7 @@
-import numpy as np
-import numpy.typing as npt
+from typing import (
+    Any,
+)
+
 from pandas import PeriodDtype
 from pandas.core.arrays.datetimelike import (
     DatelikeOps,
@@ -7,30 +9,34 @@ from pandas.core.arrays.datetimelike import (
 )
 from pandas.core.indexes.period import PeriodIndex
 from pandas.core.series import Series
+from typing_extensions import Self
 
 from pandas._libs.tslibs import Timestamp
 from pandas._libs.tslibs.period import Period
 from pandas._typing import (
+    DtypeArg,
     Frequency,
     NpDtype,
     PeriodFrequency,
     np_1darray,
+    np_ndarray_anyint,
 )
 
 class PeriodArray(DatetimeLikeArrayMixin, DatelikeOps):
     __array_priority__: int = ...
-    def __init__(
-        self,
-        values: Series[PeriodDtype] | npt.NDArray[np.integer] | PeriodIndex,
+    def __new__(
+        cls,
+        values: np_ndarray_anyint | PeriodArray | PeriodIndex | Series[Period],
         freq: Frequency | None = None,
         dtype: PeriodDtype | None = None,
         copy: bool = ...,
-    ) -> None: ...
+    ) -> Self: ...
     @property
     def dtype(self) -> PeriodDtype: ...
     def __array__(
         self, dtype: NpDtype | None = None, copy: bool | None = None
     ) -> np_1darray: ...
+    def __arrow_array__(self, type: DtypeArg | None = None) -> Any: ...
     year: int = ...
     month: int = ...
     day: int = ...
