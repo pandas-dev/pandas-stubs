@@ -1,12 +1,14 @@
 from typing import (
     TYPE_CHECKING,
-    Never,
 )
 
 import numpy as np
 import pandas as pd
 import pytest
-from typing_extensions import assert_type
+from typing_extensions import (
+    Never,
+    assert_type,
+)
 
 from tests import (
     ASTYPE_FLOAT_NOT_NUMPY16_ARGS,
@@ -157,6 +159,7 @@ def test_astype_float(
 def test_new_astype_float16() -> None:
     """Test that a series cannot be built or cast to a float16 type."""
     s = pd.Index([1, 2, 3])
+
     if TYPE_CHECKING_INVALID_USAGE:
         assert_type(s.astype(np.half), Never)
 
