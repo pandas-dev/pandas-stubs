@@ -104,6 +104,7 @@ from pandas._typing import (
     MaskType,
     NaPosition,
     NDArrayT,
+    NumpyFloat16DtypeArg,
     NumpyFloatNot16DtypeArg,
     NumpyNotTimeDtypeArg,
     NumpyTimedeltaDtypeArg,
@@ -188,6 +189,16 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         name: Hashable = ...,
         tupleize_cols: bool = ...,
     ) -> Index[float]: ...
+    @overload
+    def __new__(
+        cls,
+        data: AxesData = ...,
+        *,
+        dtype: NumpyFloat16DtypeArg,
+        copy: bool = ...,
+        name: Hashable = ...,
+        tupleize_cols: bool = ...,
+    ) -> Never: ...
     @overload
     def __new__(
         cls,
@@ -394,6 +405,12 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         self,
         cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg,
     ) -> np_1darray: ...
+    @overload
+    def astype(
+        self,
+        dtype: NumpyFloat16DtypeArg,
+        copy: bool = True,
+    ) -> Never: ...
     @overload
     def astype(
         self,
