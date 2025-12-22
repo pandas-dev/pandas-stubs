@@ -313,7 +313,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-    ) -> IntervalIndex[Interval[Any]]: ...
+    ) -> IntervalIndex[Interval]: ...
     @overload
     def __new__(
         cls,

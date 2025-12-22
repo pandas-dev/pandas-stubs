@@ -26,7 +26,9 @@ VALID_CLOSED: frozenset[str]
 
 _OrderableScalarT = TypeVar("_OrderableScalarT", bound=int | float)
 _OrderableTimesT = TypeVar("_OrderableTimesT", bound=Timestamp | Timedelta)
-_OrderableT = TypeVar("_OrderableT", bound=int | float | Timestamp | Timedelta)
+_OrderableT = TypeVar(
+    "_OrderableT", bound=int | float | Timestamp | Timedelta, default=Any
+)
 
 @type_check_only
 class _LengthDescriptor:

@@ -61,7 +61,7 @@ _PivotTableColumnsTypes: TypeAlias = (
 _PivotTableValuesTypes: TypeAlias = Label | Sequence[Hashable] | None
 
 _ExtendedAnyArrayLike: TypeAlias = AnyArrayLike | ArrayLike
-_Values: TypeAlias = SequenceNotStr[Any] | _ExtendedAnyArrayLike
+_CrossTabValues: TypeAlias = SequenceNotStr[Any] | _ExtendedAnyArrayLike
 
 @overload
 def pivot_table(
@@ -118,9 +118,9 @@ def pivot(
 ) -> DataFrame: ...
 @overload
 def crosstab(
-    index: _Values | list[_Values],
-    columns: _Values | list[_Values],
-    values: _Values,
+    index: _CrossTabValues | list[_CrossTabValues],
+    columns: _CrossTabValues | list[_CrossTabValues],
+    values: _CrossTabValues,
     rownames: SequenceNotStr[Hashable] | None = None,
     colnames: SequenceNotStr[Hashable] | None = None,
     *,
@@ -132,8 +132,8 @@ def crosstab(
 ) -> DataFrame: ...
 @overload
 def crosstab(
-    index: _Values | list[_Values],
-    columns: _Values | list[_Values],
+    index: _CrossTabValues | list[_CrossTabValues],
+    columns: _CrossTabValues | list[_CrossTabValues],
     values: None = None,
     rownames: SequenceNotStr[Hashable] | None = None,
     colnames: SequenceNotStr[Hashable] | None = None,
