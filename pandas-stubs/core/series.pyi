@@ -4636,14 +4636,42 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         **kwargs: Any,
     ) -> np_1darray: ...
     def tolist(self) -> list[S1]: ...
+    @overload
     def var(
-        self,
+        self: Series[Never],
         axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         ddof: int = 1,
         numeric_only: _bool = False,
         **kwargs: Any,
-    ) -> Scalar: ...
+    ) -> float: ...
+    @overload
+    def var(
+        self: Series[Timedelta] | Series[Timestamp],
+        axis: AxisIndex | None = 0,
+        skipna: _bool | None = True,
+        ddof: int = 1,
+        numeric_only: _bool = False,
+        **kwargs: Any,
+    ) -> Never: ...
+    @overload
+    def var(
+        self: Series[complex],
+        axis: AxisIndex | None = 0,
+        skipna: _bool | None = True,
+        ddof: int = 1,
+        numeric_only: _bool = False,
+        **kwargs: Any,
+    ) -> float: ...
+    @overload
+    def var(
+        self: SupportsGetItem[Scalar, SupportsTruedivInt[S2]],
+        axis: AxisIndex | None = 0,
+        skipna: _bool | None = True,
+        ddof: int = 1,
+        numeric_only: _bool = False,
+        **kwargs: Any,
+    ) -> S2: ...
     # Rename axis with `mapper`, `axis`, and `inplace=True`
     @overload
     def rename_axis(
