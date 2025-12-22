@@ -5,10 +5,7 @@ from typing import (
     overload,
 )
 
-from pandas.core.arrays import (
-    ExtensionArray,
-    ExtensionOpsMixin,
-)
+from pandas.core.arrays import ExtensionArray
 from typing_extensions import Self
 
 from pandas._typing import (
@@ -22,7 +19,7 @@ from pandas._typing import (
 class ellipsis(Enum):
     Ellipsis = "..."
 
-class SparseArray(ExtensionArray, ExtensionOpsMixin):
+class SparseArray(ExtensionArray):
     def __init__(
         self,
         data,
