@@ -5,10 +5,7 @@ from typing import (
     overload,
 )
 
-from pandas.core.arrays.base import (
-    ExtensionArray,
-    ExtensionOpsMixin,
-)
+from pandas.core.arrays.base import ExtensionArray
 from typing_extensions import Self
 
 from pandas._libs import (
@@ -55,7 +52,7 @@ class TimelikeOps:
         nonexistent: TimeNonexistent = "raise",
     ): ...
 
-class DatetimeLikeArrayMixin(ExtensionOpsMixin, ExtensionArray):
+class DatetimeLikeArrayMixin(ExtensionArray):
     @property
     def ndim(self) -> int: ...
     @property
