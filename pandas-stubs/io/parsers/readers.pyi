@@ -452,7 +452,7 @@ def read_fwf(
     **kwds: Any,
 ) -> DataFrame: ...
 
-class TextFileReader(abc.Iterator):
+class TextFileReader(abc.Iterator[Any]):
     engine: CSVEngine
     orig_options: Mapping[str, Any]
     chunksize: int | None
