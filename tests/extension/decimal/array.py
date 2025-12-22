@@ -351,3 +351,6 @@ class DecimalArray(OpsMixin, ExtensionArray):
         )
 
         return value_counts(self.to_numpy(), dropna=dropna)
+
+
+DecimalArray._add_arithmetic_ops()  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue]
