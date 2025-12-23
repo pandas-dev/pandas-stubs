@@ -115,6 +115,8 @@ class NDFrame:
         ) -> np_1darray: ...
 
     @final
+    def __delitem__(self, key: Hashable) -> None: ...
+    @final
     def to_excel(
         self,
         excel_writer: FilePath | WriteExcelBuffer | ExcelWriter,
