@@ -327,6 +327,18 @@ project-includes = ["pandas-stubs", "tests"]
 enabled-ignores = ["pyrefly"]
 python-version = "3.10"
 
+[tool.pyrefly.errors]
+implicit-abstract-class = true
+implicitly-defined-attribute = true
+open-unpacking = true
+unannotated-attribute = true
+# TODO: enable
+# implicit-any = true
+# missing-source = true
+# missing-override-decorator = true
+# unannotated-parameter = true
+# unannotated-return = true
+
 [tool.ty.environment]
 python-platform = "all"
 python-version = "3.10"
