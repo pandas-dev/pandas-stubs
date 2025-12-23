@@ -68,10 +68,7 @@ from typing_extensions import (
     Self,
 )
 
-from pandas._libs.interval import (
-    Interval,
-    _OrderableT,
-)
+from pandas._libs.interval import Interval
 from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
@@ -97,6 +94,7 @@ from pandas._typing import (
     GenericT_co,
     HashableT,
     IgnoreRaise,
+    IntervalT,
     JoinHow,
     Just,
     Label,
@@ -297,13 +295,13 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Sequence[Interval[_OrderableT]] | IndexOpsMixin[Interval[_OrderableT]],
+        data: Sequence[IntervalT] | IndexOpsMixin[IntervalT],
         *,
         dtype: Literal["Interval"] = ...,
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-    ) -> IntervalIndex[Interval[_OrderableT]]: ...
+    ) -> IntervalIndex[IntervalT]: ...
     @overload
     def __new__(
         cls,
