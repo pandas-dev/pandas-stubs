@@ -14,6 +14,7 @@ from pandas import (
     Timedelta,
     Timestamp,
 )
+from typing_extensions import Self
 
 from pandas._typing import (
     IntervalClosedType,
@@ -75,12 +76,12 @@ class Interval(IntervalMixin, Generic[_OrderableT]):
     def closed(self) -> IntervalClosedType: ...
     mid = _MidDescriptor()
     length = _LengthDescriptor()
-    def __init__(
-        self,
+    def __new__(
+        cls,
         left: _OrderableT,
         right: _OrderableT,
         closed: IntervalClosedType = ...,
-    ) -> None: ...
+    ) -> Self: ...
     def __hash__(self) -> int: ...
     @overload
     def __contains__(self: Interval[int], key: float | np.floating) -> bool: ...

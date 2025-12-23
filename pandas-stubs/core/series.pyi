@@ -128,7 +128,10 @@ from typing_extensions import (
 )
 import xarray as xr
 
-from pandas._libs.interval import Interval
+from pandas._libs.interval import (
+    Interval,
+    _OrderableT,
+)
 from pandas._libs.lib import _NoDefaultDoNotUse
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs import BaseOffset
@@ -440,16 +443,16 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def __new__(
         cls,
         data: (
-            IntervalIndex[IntervalT]
-            | IntervalT
-            | Sequence[IntervalT]
-            | dict[Hashable, IntervalT]
+            IntervalIndex[Interval[_OrderableT]]
+            | Interval[_OrderableT]
+            | Sequence[Interval[_OrderableT]]
+            | dict[Hashable, Interval[_OrderableT]]
         ),
         index: AxesData | None = None,
         dtype: Literal["Interval"] = ...,
         name: Hashable = None,
         copy: bool | None = None,
-    ) -> Series[IntervalT]: ...
+    ) -> Series[Interval[_OrderableT]]: ...
     @overload
     def __new__(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
         cls,

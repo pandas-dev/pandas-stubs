@@ -68,7 +68,10 @@ from typing_extensions import (
     Self,
 )
 
-from pandas._libs.interval import Interval
+from pandas._libs.interval import (
+    Interval,
+    _OrderableT,
+)
 from pandas._libs.tslibs.period import Period
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._typing import (
@@ -94,7 +97,6 @@ from pandas._typing import (
     GenericT_co,
     HashableT,
     IgnoreRaise,
-    IntervalT,
     JoinHow,
     Just,
     Label,
@@ -102,6 +104,7 @@ from pandas._typing import (
     MaskType,
     NaPosition,
     NDArrayT,
+    NumpyFloat16DtypeArg,
     NumpyFloatNot16DtypeArg,
     NumpyNotTimeDtypeArg,
     NumpyTimedeltaDtypeArg,
@@ -186,6 +189,16 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         name: Hashable = ...,
         tupleize_cols: bool = ...,
     ) -> Index[float]: ...
+    @overload
+    def __new__(
+        cls,
+        data: AxesData = ...,
+        *,
+        dtype: NumpyFloat16DtypeArg,
+        copy: bool = ...,
+        name: Hashable = ...,
+        tupleize_cols: bool = ...,
+    ) -> Never: ...
     @overload
     def __new__(
         cls,
@@ -295,13 +308,13 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def __new__(
         cls,
-        data: Sequence[IntervalT] | IndexOpsMixin[IntervalT],
+        data: Sequence[Interval[_OrderableT]] | IndexOpsMixin[Interval[_OrderableT]],
         *,
         dtype: Literal["Interval"] = ...,
         copy: bool = ...,
         name: Hashable = ...,
         tupleize_cols: bool = ...,
-    ) -> IntervalIndex[IntervalT]: ...
+    ) -> IntervalIndex[Interval[_OrderableT]]: ...
     @overload
     def __new__(
         cls,
@@ -392,6 +405,12 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         self,
         cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg,
     ) -> np_1darray: ...
+    @overload
+    def astype(
+        self,
+        dtype: NumpyFloat16DtypeArg,
+        copy: bool = True,
+    ) -> Never: ...
     @overload
     def astype(
         self,
