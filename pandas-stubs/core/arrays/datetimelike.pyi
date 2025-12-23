@@ -5,10 +5,7 @@ from typing import (
     overload,
 )
 
-from pandas.core.arrays.base import (
-    ExtensionArray,
-    ExtensionOpsMixin,
-)
+from pandas.core.arrays.base import ExtensionArray
 from typing_extensions import Self
 
 from pandas._libs import (
@@ -55,7 +52,7 @@ class TimelikeOps:
         nonexistent: TimeNonexistent = "raise",
     ): ...
 
-class DatetimeLikeArrayMixin(ExtensionOpsMixin, ExtensionArray):
+class DatetimeLikeArrayMixin(ExtensionArray):
     @property
     def ndim(self) -> int: ...
     @property
@@ -71,14 +68,14 @@ class DatetimeLikeArrayMixin(ExtensionOpsMixin, ExtensionArray):
     @property
     def size(self) -> int: ...
     @overload
-    def __getitem__(  # pyrefly: ignore[bad-override,bad-param-name-override]
+    def __getitem__(  # pyrefly: ignore[bad-param-name-override]
         self, key: ScalarIndexer
     ) -> DTScalarOrNaT: ...
     @overload
     def __getitem__(  # ty: ignore[invalid-method-override]
         self, key: SequenceIndexer | PositionalIndexerTuple
     ) -> Self: ...
-    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __setitem__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
         self, key: int | Sequence[int] | Sequence[bool] | slice, value
     ) -> None: ...
     def view(self, dtype=...): ...

@@ -66,10 +66,10 @@ class DatetimeIndex(
 
     # various ignores needed for mypy, as we do want to restrict what can be used in
     # arithmetic for these types
-    def __add__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __add__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
         self, other: timedelta | BaseOffset
     ) -> Self: ...
-    def __radd__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __radd__(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
         self, other: timedelta | BaseOffset
     ) -> Self: ...
     @overload  # type: ignore[override]

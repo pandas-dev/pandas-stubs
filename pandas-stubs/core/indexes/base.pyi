@@ -104,6 +104,7 @@ from pandas._typing import (
     MaskType,
     NaPosition,
     NDArrayT,
+    NumpyFloat16DtypeArg,
     NumpyFloatNot16DtypeArg,
     NumpyNotTimeDtypeArg,
     NumpyTimedeltaDtypeArg,
@@ -188,6 +189,16 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         name: Hashable = None,
         tupleize_cols: bool = True,
     ) -> Index[float]: ...
+    @overload
+    def __new__(
+        cls,
+        data: AxesData = ...,
+        *,
+        dtype: NumpyFloat16DtypeArg,
+        copy: bool = ...,
+        name: Hashable = ...,
+        tupleize_cols: bool = ...,
+    ) -> Never: ...
     @overload
     def __new__(
         cls,
@@ -384,6 +395,12 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         self,
         cls: NumpyNotTimeDtypeArg | NumpyTimedeltaDtypeArg | NumpyTimestampDtypeArg,
     ) -> np_1darray: ...
+    @overload
+    def astype(
+        self,
+        dtype: NumpyFloat16DtypeArg,
+        copy: bool = True,
+    ) -> Never: ...
     @overload
     def astype(
         self,
@@ -616,12 +633,12 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @property
     def shape(self) -> tuple[int, ...]: ...
     # Extra methods from old stubs
-    def __eq__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __ne__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __le__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __ge__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __lt__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __gt__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __eq__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def __ne__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def __le__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def __ge__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def __lt__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def __gt__(self, other: Self | S1) -> np_1darray_bool: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
     @overload
     def __add__(self: Index[Never], other: _str) -> Index[_str]: ...
     @overload

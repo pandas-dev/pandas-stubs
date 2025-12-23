@@ -243,7 +243,7 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
     def __contains__(self, key: IntervalT) -> bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     @overload
     def __contains__(self, key: object) -> Literal[False]: ...
-    def astype(self, dtype: DtypeArg, copy: bool = True) -> IntervalIndex: ...
+    def astype(self, dtype: DtypeArg, copy: bool = True) -> IntervalIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
     @property
     def inferred_type(self) -> str: ...
     def memory_usage(self, deep: bool = False) -> int: ...
@@ -305,7 +305,7 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
         self, other: pd.Series[IntervalT]
     ) -> pd.Series[bool]: ...
     @overload  # type: ignore[override]
-    def __eq__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_1darray_bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __eq__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_1darray_bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
     @overload
     def __eq__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[overload-overlap]
     @overload
@@ -313,7 +313,7 @@ class IntervalIndex(ExtensionIndex[IntervalT, np.object_], IntervalMixin):
         self, other: object
     ) -> Literal[False]: ...
     @overload  # type: ignore[override]
-    def __ne__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_1darray_bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    def __ne__(self, other: IntervalT | IntervalIndex[IntervalT]) -> np_1darray_bool: ...  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload] # pyrefly: ignore[bad-override]
     @overload
     def __ne__(self, other: pd.Series[IntervalT]) -> pd.Series[bool]: ...  # type: ignore[overload-overlap]
     @overload

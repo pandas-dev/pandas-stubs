@@ -27,10 +27,7 @@ from pandas.api.types import (
 )
 from pandas.core import arraylike
 from pandas.core.arraylike import OpsMixin
-from pandas.core.arrays import (
-    ExtensionArray,
-    ExtensionScalarOpsMixin,
-)
+from pandas.core.arrays import ExtensionArray
 from pandas.core.indexers import check_array_indexer
 from pandas.core.series import Series
 from typing_extensions import Self
@@ -91,7 +88,7 @@ class DecimalDtype(ExtensionDtype):
         return True
 
 
-class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
+class DecimalArray(OpsMixin, ExtensionArray):
     __array_priority__ = 1000
 
     def __init__(
@@ -354,6 +351,13 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         )
 
         return value_counts(self.to_numpy(), dropna=dropna)
+
+    @classmethod
+    def _add_arithmetic_ops(cls) -> None: ...
+    @classmethod
+    def _add_comparison_ops(cls) -> None: ...
+    @classmethod
+    def _add_logical_ops(cls) -> None: ...
 
 
 DecimalArray._add_arithmetic_ops()

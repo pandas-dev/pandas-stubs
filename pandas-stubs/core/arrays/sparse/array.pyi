@@ -5,10 +5,7 @@ from typing import (
     overload,
 )
 
-from pandas.core.arrays import (
-    ExtensionArray,
-    ExtensionOpsMixin,
-)
+from pandas.core.arrays import ExtensionArray
 from typing_extensions import Self
 
 from pandas._typing import (
@@ -24,7 +21,7 @@ from pandas._typing import (
 class ellipsis(Enum):
     Ellipsis = "..."
 
-class SparseArray(ExtensionArray, ExtensionOpsMixin):
+class SparseArray(ExtensionArray):
     def __init__(
         self,
         data,
@@ -63,7 +60,7 @@ class SparseArray(ExtensionArray, ExtensionOpsMixin):
     def unique(self): ...
     def value_counts(self, dropna: bool = True): ...
     @overload
-    def __getitem__(  # pyrefly: ignore[bad-override,bad-param-name-override]
+    def __getitem__(  # pyrefly: ignore[bad-param-name-override]
         self, key: ScalarIndexer
     ) -> Any: ...
     @overload

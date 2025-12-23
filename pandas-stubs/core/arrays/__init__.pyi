@@ -1,8 +1,4 @@
-from pandas.core.arrays.base import (
-    ExtensionArray as ExtensionArray,
-    ExtensionOpsMixin as ExtensionOpsMixin,
-    ExtensionScalarOpsMixin as ExtensionScalarOpsMixin,
-)
+from pandas.core.arrays.base import ExtensionArray as ExtensionArray
 from pandas.core.arrays.boolean import BooleanArray as BooleanArray
 from pandas.core.arrays.categorical import Categorical as Categorical
 from pandas.core.arrays.datetimes import DatetimeArray as DatetimeArray

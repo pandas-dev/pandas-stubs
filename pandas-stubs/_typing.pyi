@@ -52,6 +52,7 @@ from pandas._libs.tslibs import (
     Timedelta,
     Timestamp,
 )
+from pandas._libs.tslibs.nattype import NaTType
 
 from pandas.core.dtypes.dtypes import (
     CategoricalDtype,
@@ -134,6 +135,7 @@ _IndexIterScalar: TypeAlias = (
 Scalar: TypeAlias = (
     _IndexIterScalar | complex | np.integer | np.floating | np.complexfloating
 )
+ScalarOrNA: TypeAlias = Scalar | NAType | NaTType | None
 IntStrT = TypeVar("IntStrT", int, str)
 
 # timestamp and timedelta convertible types
@@ -959,7 +961,10 @@ np_1darray_dt: TypeAlias = np_1darray[np.datetime64]
 np_1darray_td: TypeAlias = np_1darray[np.timedelta64]
 np_2darray: TypeAlias = np.ndarray[tuple[int, int], np.dtype[GenericT]]
 
-NDArrayT = TypeVar("NDArrayT", bound=np.ndarray)
+if sys.version_info >= (3, 11):
+    NDArrayT = TypeVar("NDArrayT", bound=np.ndarray)
+else:
+    NDArrayT = TypeVar("NDArrayT", bound=np.ndarray[Any, Any])
 
 DtypeNp = TypeVar("DtypeNp", bound=np.dtype[np.generic])
 KeysArgType: TypeAlias = Any

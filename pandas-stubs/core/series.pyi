@@ -563,11 +563,11 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         self, ufunc: Callable[..., Any], method: _str, *inputs: Any, **kwargs: Any
     ) -> Any: ...
     if sys.version_info >= (3, 11):
-        def __array__(  # ty: ignore[invalid-method-override]
+        def __array__(
             self, dtype: _str | np.dtype = ..., copy: bool | None = ...
         ) -> np_1darray: ...
     else:
-        def __array__(  # ty: ignore[invalid-method-override]
+        def __array__(
             self, dtype: _str | np.dtype[Any] = ..., copy: bool | None = ...
         ) -> np_1darray: ...
 
@@ -2273,7 +2273,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[bool]: ...
     @overload
     def __and__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
-    def __eq__(self, other: object) -> Series[_bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __eq__(self, other: object) -> Series[_bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
     @overload
     def __floordiv__(self, other: np_ndarray_dt) -> Never: ...
     @overload
@@ -2580,16 +2580,16 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         fill_value: float | None = None,
         axis: AxisIndex = ...,
     ) -> Series[int]: ...
-    def __ge__(  # type: ignore[override]
+    def __ge__(  # type: ignore[override] # pyrefly: ignore[bad-override]
         self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
-    def __gt__(  # type: ignore[override]
+    def __gt__(  # type: ignore[override] # pyrefly: ignore[bad-override]
         self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
-    def __le__(  # type: ignore[override]
+    def __le__(  # type: ignore[override] # pyrefly: ignore[bad-override]
         self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
-    def __lt__(  # type: ignore[override]
+    def __lt__(  # type: ignore[override] # pyrefly: ignore[bad-override]
         self, other: S1 | ListLike | Series[S1] | datetime | timedelta | date
     ) -> Series[_bool]: ...
     @overload
@@ -3023,7 +3023,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         axis: int = 0,
     ) -> Series[complex]: ...
     def __mod__(self, other: float | ListLike | Series[S1]) -> Series[S1]: ...
-    def __ne__(self, other: object) -> Series[_bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __ne__(self, other: object) -> Series[_bool]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
     def __pow__(self, other: complex | ListLike | Series[S1]) -> Series[S1]: ...
     # ignore needed for mypy as we want different results based on the arguments
     @overload  # type: ignore[override]
@@ -3039,7 +3039,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     ) -> Series[bool]: ...
     @overload
     def __rand__(self, other: int | np_ndarray_anyint | Series[int]) -> Series[int]: ...
-    def __rdivmod__(self, other: float | ListLike | Series[S1]) -> Series[S1]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __rdivmod__(self, other: float | ListLike | Series[S1]) -> Series[S1]: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
     def __rmod__(self, other: float | ListLike | Series[S1]) -> Series[S1]: ...
     def __rpow__(self, other: complex | ListLike | Series[S1]) -> Series[S1]: ...
     # ignore needed for mypy as we want different results based on the arguments
@@ -4636,14 +4636,42 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
         **kwargs: Any,
     ) -> np_1darray: ...
     def tolist(self) -> list[S1]: ...
+    @overload
     def var(
-        self,
+        self: Series[Never],
         axis: AxisIndex | None = 0,
         skipna: _bool | None = True,
         ddof: int = 1,
         numeric_only: _bool = False,
         **kwargs: Any,
-    ) -> Scalar: ...
+    ) -> float: ...
+    @overload
+    def var(
+        self: Series[Timedelta] | Series[Timestamp],
+        axis: AxisIndex | None = 0,
+        skipna: _bool | None = True,
+        ddof: int = 1,
+        numeric_only: _bool = False,
+        **kwargs: Any,
+    ) -> Never: ...
+    @overload
+    def var(
+        self: Series[complex],
+        axis: AxisIndex | None = 0,
+        skipna: _bool | None = True,
+        ddof: int = 1,
+        numeric_only: _bool = False,
+        **kwargs: Any,
+    ) -> float: ...
+    @overload
+    def var(
+        self: SupportsGetItem[Scalar, SupportsTruedivInt[S2]],
+        axis: AxisIndex | None = 0,
+        skipna: _bool | None = True,
+        ddof: int = 1,
+        numeric_only: _bool = False,
+        **kwargs: Any,
+    ) -> S2: ...
     # Rename axis with `mapper`, `axis`, and `inplace=True`
     @overload
     def rename_axis(

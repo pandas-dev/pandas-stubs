@@ -139,7 +139,7 @@ def check(
     elif isinstance(actual, pd.Index):
         value = actual[index_to_check_for_type]
     elif isinstance(actual, BaseGroupBy):
-        value = actual.obj
+        value = actual.obj  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue]
     elif hasattr(actual, "__iter__"):
         value = next(
             iter(actual)  # pyright: ignore[reportArgumentType,reportCallIssue]

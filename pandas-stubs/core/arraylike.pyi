@@ -3,8 +3,8 @@ from typing import Any
 from typing_extensions import Self
 
 class OpsMixin:
-    def __eq__(self, other: object) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
-    def __ne__(self, other: object) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def __eq__(self, other: object) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
+    def __ne__(self, other: object) -> Self: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
     def __lt__(self, other: Any) -> Self: ...
     def __le__(self, other: Any) -> Self: ...
     def __gt__(self, other: Any) -> Self: ...

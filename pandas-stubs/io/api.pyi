@@ -14,9 +14,7 @@ from pandas.io.parsers import (
     read_fwf as read_fwf,
     read_table as read_table,
 )
-from pandas.io.pickle import (
-    read_pickle as read_pickle,
-)
+from pandas.io.pickle import read_pickle as read_pickle
 from pandas.io.pytables import (
     HDFStore as HDFStore,
     read_hdf as read_hdf,

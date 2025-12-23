@@ -3,10 +3,7 @@ from typing import Any
 
 import numpy as np
 from numpy.lib.mixins import NDArrayOperatorsMixin
-from pandas.core.arrays.base import (
-    ExtensionArray,
-    ExtensionOpsMixin,
-)
+from pandas.core.arrays.base import ExtensionArray
 
 from pandas.core.dtypes.dtypes import ExtensionDtype
 
@@ -21,4 +18,4 @@ class PandasDtype(ExtensionDtype):
     @property
     def itemsize(self) -> int: ...
 
-class PandasArray(ExtensionArray, ExtensionOpsMixin, NDArrayOperatorsMixin): ...
+class PandasArray(ExtensionArray, NDArrayOperatorsMixin): ...
