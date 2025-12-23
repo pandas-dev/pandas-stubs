@@ -77,6 +77,7 @@ from pandas.tseries.offsets import (
 P = ParamSpec("P")
 
 HashableT = TypeVar("HashableT", bound=Hashable)
+HashableT0 = TypeVar("HashableT0", bound=Hashable, default=Any)
 HashableT1 = TypeVar("HashableT1", bound=Hashable)
 HashableT2 = TypeVar("HashableT2", bound=Hashable)
 HashableT3 = TypeVar("HashableT3", bound=Hashable)
@@ -776,7 +777,7 @@ XMLParsers: TypeAlias = Literal["lxml", "etree"]
 HTMLFlavors: TypeAlias = Literal["lxml", "html5lib", "bs4"]
 
 # Interval closed type
-IntervalT = TypeVar("IntervalT", bound=Interval)
+IntervalT = TypeVar("IntervalT", bound=Interval, default=Interval)
 IntervalLeftRight: TypeAlias = Literal["left", "right"]
 IntervalClosedType: TypeAlias = IntervalLeftRight | Literal["both", "neither"]
 
@@ -874,7 +875,11 @@ ExcelWriterMergeCells: TypeAlias = bool | Literal["columns"]
 
 # read_csv: usecols
 UsecolsArgType: TypeAlias = (
-    SequenceNotStr[Hashable] | range | AnyArrayLike | Callable[[HashableT], bool] | None
+    SequenceNotStr[Hashable]
+    | range
+    | AnyArrayLike
+    | Callable[[HashableT0], bool]
+    | None
 )
 
 # maintain the sub-type of any hashable sequence
@@ -920,6 +925,7 @@ PyArrowNotStrDtypeArg: TypeAlias = (
 StrLike: TypeAlias = str | np.str_
 
 ScalarT = TypeVar("ScalarT", bound=Scalar)
+ScalarT0 = TypeVar("ScalarT0", bound=Scalar, default=Scalar)
 # Refine the definitions below in 3.9 to use the specialized type.
 np_num: TypeAlias = np.bool | np.integer | np.floating | np.complexfloating
 np_ndarray_intp: TypeAlias = npt.NDArray[np.intp]
@@ -1015,8 +1021,9 @@ SeriesDType: TypeAlias = (
     | datetime.datetime  # includes pd.Timestamp
     | datetime.timedelta  # includes pd.Timedelta
 )
+S0 = TypeVar("S0", bound=SeriesDType, default=Any)
 S1 = TypeVar("S1", bound=SeriesDType, default=Any)
-# Like S1, but without `default=Any`.
+# Like S0 and S1, but without `default=Any`.
 S2 = TypeVar("S2", bound=SeriesDType)
 S2_contra = TypeVar("S2_contra", bound=SeriesDType, contravariant=True)
 S2_NDT_contra = TypeVar(
@@ -1050,14 +1057,14 @@ IndexingInt: TypeAlias = (
 )
 
 # AxesData is used for data for Index
-AxesData: TypeAlias = Mapping[S3, Any] | Axes | KeysView[S3]
+AxesData: TypeAlias = Mapping[S0, Any] | Axes | KeysView[S0]
 
 # Any plain Python or numpy function
 Function: TypeAlias = np.ufunc | Callable[..., Any]
 # Use a distinct HashableT in shared types to avoid conflicts with
 # shared HashableT and HashableT#. This one can be used if the identical
 # type is need in a function that uses GroupByObjectNonScalar
-_HashableTa = TypeVar("_HashableTa", bound=Hashable)
+_HashableTa = TypeVar("_HashableTa", bound=Hashable, default=Any)
 if TYPE_CHECKING:  # noqa: PYI002
     ByT = TypeVar(
         "ByT",
@@ -1075,7 +1082,7 @@ if TYPE_CHECKING:  # noqa: PYI002
         | Scalar
         | Period
         | Interval[int | float | Timestamp | Timedelta]
-        | tuple,
+        | tuple[Any, ...],
     )
     # Use a distinct SeriesByT when using groupby with Series of known dtype.
     # Essentially, an intersection between Series S1 TypeVar, and ByT TypeVar
@@ -1130,10 +1137,10 @@ StataDateFormat: TypeAlias = Literal[
 # `DataFrame.replace` also accepts mappings of these.
 ReplaceValue: TypeAlias = (
     Scalar
-    | Pattern
+    | Pattern[str]
     | NAType
-    | Sequence[Scalar | Pattern]
-    | Mapping[HashableT, ScalarT]
+    | Sequence[Scalar | Pattern[str]]
+    | Mapping[HashableT0, ScalarT0]
     | Series
     | None
 )

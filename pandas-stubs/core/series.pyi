@@ -446,7 +446,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             IntervalIndex[Interval[_OrderableT]]
             | Interval[_OrderableT]
             | Sequence[Interval[_OrderableT]]
-            | dict[HashableT1, Interval[_OrderableT]]
+            | dict[Hashable, Interval[_OrderableT]]
         ),
         index: AxesData | None = None,
         dtype: Literal["Interval"] = ...,
