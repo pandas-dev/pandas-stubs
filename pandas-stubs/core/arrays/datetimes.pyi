@@ -26,7 +26,7 @@ class DatetimeArray(DatetimeLikeArrayMixin, TimelikeOps, DatelikeOps):
         def dtype(self) -> np.dtype | DatetimeTZDtype: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
     else:
         @property
-        def dtype(self) -> np.dtype[Any] | DatetimeTZDtype: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+        def dtype(self) -> np.dtype[Any] | DatetimeTZDtype: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
 
     @property
     def tz(self): ...

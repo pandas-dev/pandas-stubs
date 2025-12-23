@@ -322,6 +322,11 @@ filterwarnings = [
 # Next line needed to avoid poetry complaint
 [tool.setuptools_scm]
 
+[tool.pyrefly]
+project-includes = ["pandas-stubs", "tests"]
+enabled-ignores = ["pyrefly"]
+python-version = "3.10"
+
 [tool.ty.environment]
 python-platform = "all"
 python-version = "3.10"
