@@ -162,3 +162,25 @@ def test_astype_float(
         # pyarrow float64
         assert_type(s.astype("float64[pyarrow]"), "pd.Index[float]")
         assert_type(s.astype("double[pyarrow]"), "pd.Index[float]")
+
+
+def test_new_astype_float16() -> None:
+    """Test that a series cannot be built or cast to a float16 type."""
+    s = pd.Index([1, 2, 3])
+
+    if TYPE_CHECKING_INVALID_USAGE:
+
+        def _0() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(s.astype(np.half), Never)
+
+        def _1() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(s.astype("half"), Never)
+
+        def _2() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(s.astype("float16"), Never)
+
+        def _3() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(s.astype("e"), Never)
+
+        def _4() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(s.astype("f2"), Never)
