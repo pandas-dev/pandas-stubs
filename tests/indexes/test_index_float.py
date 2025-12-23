@@ -1,12 +1,18 @@
-from typing import TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+)
 
 import numpy as np
 import pandas as pd
 import pytest
-from typing_extensions import assert_type
+from typing_extensions import (
+    Never,
+    assert_type,
+)
 
 from tests import (
     ASTYPE_FLOAT_NOT_NUMPY16_ARGS,
+    TYPE_CHECKING_INVALID_USAGE,
     TYPE_FLOAT_NOT_NUMPY16_ARGS,
     check,
     exception_on_platform,
@@ -89,14 +95,22 @@ def test_constructor_dtype(
         assert_type(pd.Index([1.0], dtype="float64[pyarrow]"), "pd.Index[float]")
         assert_type(pd.Index([1.0], dtype="double[pyarrow]"), "pd.Index[float]")
 
-    # TODO: pandas-dev/pandas-stubs#1501
-    # if TYPE_CHECKING_INVALID_USAGE:
-    #     # numpy float16
-    #     pd.Index([1.0], dtype=np.half)
-    #     pd.Index([1.0], dtype="half")
-    #     pd.Index([1.0], dtype="float16")
-    #     pd.Index([1.0], dtype="e")
-    #     pd.Index([1.0], dtype="f2")
+    if TYPE_CHECKING_INVALID_USAGE:
+        # numpy float16
+        def _0() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(pd.Index([1.0], dtype=np.half), Never)
+
+        def _1() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(pd.Index([1.0], dtype="half"), Never)
+
+        def _2() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(pd.Index([1.0], dtype="float16"), Never)
+
+        def _3() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(pd.Index([1.0], dtype="e"), Never)
+
+        def _4() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(pd.Index([1.0], dtype="f2"), Never)
 
 
 @pytest.mark.parametrize(
@@ -149,10 +163,24 @@ def test_astype_float(
         assert_type(s.astype("float64[pyarrow]"), "pd.Index[float]")
         assert_type(s.astype("double[pyarrow]"), "pd.Index[float]")
 
-    # if TYPE_CHECKING_INVALID_USAGE:
-    #     # numpy float16
-    #     s.astype(np.half)
-    #     s.astype("half")
-    #     s.astype("float16")
-    #     s.astype("e")
-    #     s.astype("f2")
+
+def test_new_astype_float16() -> None:
+    """Test that a series cannot be built or cast to a float16 type."""
+    s = pd.Index([1, 2, 3])
+
+    if TYPE_CHECKING_INVALID_USAGE:
+
+        def _0() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(s.astype(np.half), Never)
+
+        def _1() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(s.astype("half"), Never)
+
+        def _2() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(s.astype("float16"), Never)
+
+        def _3() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(s.astype("e"), Never)
+
+        def _4() -> None:  # pyright: ignore[reportUnusedFunction]
+            assert_type(s.astype("f2"), Never)
