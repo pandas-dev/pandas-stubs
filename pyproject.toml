@@ -214,11 +214,11 @@ ignore = [
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
 "*arrays/boolean.pyi" = [
-  # TODO: remove when array is fully typed
+  # TODO: remove when boolean array is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
 "*arrays/categorical.pyi" = [
-  # TODO: remove when array is fully typed
+  # TODO: remove when categorical array is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
 "*arrays/datetimelike.pyi" = [
@@ -226,19 +226,19 @@ ignore = [
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
 "*arrays/datetimes.pyi" = [
-  # TODO: remove when array is fully typed
+  # TODO: remove when datetime array is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
 "*arrays/interval.pyi" = [
-  # TODO: remove when array is fully typed
+  # TODO: remove when interval array is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
 "*arrays/period.pyi" = [
-  # TODO: remove when array is fully typed
+  # TODO: remove when period array is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
 "*arrays/timedeltas.pyi" = [
-  # TODO: remove when array is fully typed
+  # TODO: remove when timedelta array is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
 
