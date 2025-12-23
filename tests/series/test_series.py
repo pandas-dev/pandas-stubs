@@ -3840,7 +3840,7 @@ def test_series_index_setter() -> None:
 
 def test_series_delitem() -> None:
     """Test deleting elements in a series with __delitem__."""
-    sr = pd.Series( [1, 2, 3])
+    sr = pd.Series([1, 2, 3])
 
     check(assert_type(sr.__delitem__(0), None), type(None))
     del sr[1]
