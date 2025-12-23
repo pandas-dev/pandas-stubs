@@ -5,8 +5,7 @@ from pandas.core.arrays.masked import BaseMaskedArray
 from pandas._libs.missing import NAType
 from pandas._typing import (
     AnyArrayLike,
-    np_1darray_bool,
-    np_ndarray,
+    np_ndarray_bool,
 )
 
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
@@ -23,18 +22,12 @@ class _IntegerDtype(ExtensionDtype):
 class IntegerArray(BaseMaskedArray):
     @property
     def dtype(self) -> _IntegerDtype: ...
-
-    if sys.version_info >= (3, 11):
-        def __init__(
-            self, values: AnyArrayLike, mask: np_1darray_bool, copy: bool = False
-        ) -> None: ...
-    else:
-        def __init__(
-            self,
-            values: AnyArrayLike,
-            mask: np_ndarray,
-            copy: bool = False,
-        ) -> None: ...
+    def __init__(
+        self,
+        values: AnyArrayLike,
+        mask: np_ndarray_bool,
+        copy: bool = False,
+    ) -> None: ...
 
 class Int8Dtype(_IntegerDtype): ...
 class Int16Dtype(_IntegerDtype): ...
