@@ -3,6 +3,7 @@ from collections.abc import Generator
 import csv
 from functools import partial
 import io
+import os
 import pathlib
 from pathlib import Path
 import sqlite3
@@ -1154,6 +1155,18 @@ def test_excel_reader() -> None:
         ) as ef:
             check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
             check(assert_type(pd.read_excel(ef), pd.DataFrame), pd.DataFrame)
+
+
+def test_excel_fspath() -> None:
+    """Test ExcelFile.__fspath__ type."""
+    with ensure_clean(".xlsx") as path:
+        check(assert_type(DF.to_excel(path), None), type(None))
+        with pd.ExcelFile(
+            path_or_buffer=path,
+            engine="openpyxl",
+            engine_kwargs={"data_only": True},
+        ) as ef:
+            check(assert_type(os.fspath(ef), str), str)
 
 
 def test_excel_writer() -> None:
