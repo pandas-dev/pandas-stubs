@@ -3051,7 +3051,9 @@ def test_to_dict_simple() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
 
-        def test(mapping: Mapping) -> None:  # pyright: ignore[reportUnusedFunction]
+        def test(  # pyright: ignore[reportUnusedFunction]
+            mapping: Mapping[Any, Any],
+        ) -> None:
             data.to_dict(into=mapping)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
 
     def _1() -> None:  # pyright: ignore[reportUnusedFunction]

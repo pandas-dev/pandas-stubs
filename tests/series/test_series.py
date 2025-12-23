@@ -163,6 +163,14 @@ def test_types_init() -> None:
         pd.Series,
         float,
     )
+    check(
+        assert_type(
+            pd.Series([pd.Interval(pd.Timestamp(0), pd.Timestamp(1))]),
+            "pd.Series[pd.Interval[pd.Timestamp]]",
+        ),
+        pd.Series,
+        pd.Interval,
+    )
 
 
 def test_types_any() -> None:
@@ -3453,9 +3461,9 @@ def test_diff() -> None:
         # str -> TypeError: unsupported operand type(s) for -: 'str' and 'str'
         pd.Series(["a", "b"]).diff()  # type: ignore[misc] # pyright: ignore[reportAttributeAccessIssue]
 
-    def _diff_invalid0() -> None:  # pyright: ignore[reportUnusedFunction]
-        # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
-        assert_type(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff(), Never)
+        def _diff_invalid0() -> None:  # pyright: ignore[reportUnusedFunction]
+            # interval -> TypeError: IntervalArray has no 'diff' method. Convert to a suitable dtype prior to calling 'diff'.
+            assert_type(pd.Series([pd.Interval(0, 2), pd.Interval(1, 4)]).diff(), Never)
 
 
 def test_operator_constistency() -> None:
