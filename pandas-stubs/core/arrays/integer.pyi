@@ -1,12 +1,12 @@
 import sys
 
-import numpy as np
 from pandas.core.arrays.masked import BaseMaskedArray
 
 from pandas._libs.missing import NAType
 from pandas._typing import (
     AnyArrayLike,
     np_1darray_bool,
+    np_ndarray,
 )
 
 from pandas.core.dtypes.base import ExtensionDtype as ExtensionDtype
@@ -32,7 +32,7 @@ class IntegerArray(BaseMaskedArray):
         def __init__(
             self,
             values: AnyArrayLike,
-            mask: np.ndarray[tuple[int], bool],
+            mask: np_ndarray,
             copy: bool = False,
         ) -> None: ...
 
