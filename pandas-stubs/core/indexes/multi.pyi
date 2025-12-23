@@ -135,7 +135,7 @@ class MultiIndex(Index):
     @property
     def is_monotonic_decreasing(self) -> bool: ...
     def dropna(self, how: AnyAll = "any") -> Self: ...
-    def droplevel(self, level: Level | Sequence[Level] = 0) -> MultiIndex | Index: ...  # type: ignore[override]
+    def droplevel(self, level: Level | Sequence[Level] = 0) -> MultiIndex | Index: ...  # type: ignore[override] # pyrefly: ignore[bad-override]
     def get_level_values(self, level: str | int) -> Index: ...
     @overload  # type: ignore[override]
     def unique(  # pyrefly: ignore[bad-override]
@@ -145,7 +145,7 @@ class MultiIndex(Index):
     def unique(  # ty: ignore[invalid-method-override]  # pyright: ignore[reportIncompatibleMethodOverride]
         self, level: Level
     ) -> Index: ...
-    def to_frame(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def to_frame(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-override]
         self,
         index: bool = True,
         name: list[HashableT] = ...,
@@ -158,8 +158,7 @@ class MultiIndex(Index):
     @property
     def levshape(self) -> Shape: ...
     @overload  # type: ignore[override]
-    # pyrefly: ignore  # bad-override
-    def __getitem__(
+    def __getitem__(  # pyrefly: ignore[bad-override]
         self,
         idx: slice | np_ndarray_anyint | Sequence[int] | Index | MaskType,
     ) -> Self: ...
@@ -173,7 +172,7 @@ class MultiIndex(Index):
     def append(  # pyright: ignore[reportIncompatibleMethodOverride]
         self, other: Index | Sequence[Index]
     ) -> Index: ...
-    def drop(self, codes: Level | Sequence[Level], level: Level | None = None, errors: str = "raise") -> MultiIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def drop(self, codes: Level | Sequence[Level], level: Level | None = None, errors: str = "raise") -> MultiIndex: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-param-name-override]
     def swaplevel(self, i: int = -2, j: int = -1) -> Self: ...
     def reorder_levels(self, order: Sequence[Level]) -> MultiIndex: ...
     def sortlevel(
