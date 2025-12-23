@@ -1,7 +1,6 @@
 from datetime import (
     date,
     time,
-    timedelta,
     tzinfo as _tzinfo,
 )
 from typing import (
@@ -46,7 +45,6 @@ from pandas._typing import (
     TimeZones,
     np_1darray_bool,
     np_1darray_object,
-    np_ndarray_bool,
 )
 
 from pandas.core.dtypes.dtypes import CategoricalDtype
@@ -180,32 +178,20 @@ class _DatetimeRoundingMethods(Generic[_DTTimestampTimedeltaReturnType]):
     def round(
         self,
         freq: Frequency | None,
-        ambiguous: Literal["raise", "infer", "NaT"] | bool | np_ndarray_bool = "raise",
-        nonexistent: (
-            Literal["shift_forward", "shift_backward", "NaT", "raise"]
-            | timedelta
-            | Timedelta
-        ) = "raise",
+        ambiguous: TimeAmbiguous = "raise",
+        nonexistent: TimeNonexistent = "raise",
     ) -> _DTTimestampTimedeltaReturnType: ...
     def floor(
         self,
         freq: Frequency | None,
-        ambiguous: Literal["raise", "infer", "NaT"] | bool | np_ndarray_bool = "raise",
-        nonexistent: (
-            Literal["shift_forward", "shift_backward", "NaT", "raise"]
-            | timedelta
-            | Timedelta
-        ) = "raise",
+        ambiguous: TimeAmbiguous = "raise",
+        nonexistent: TimeNonexistent = "raise",
     ) -> _DTTimestampTimedeltaReturnType: ...
     def ceil(
         self,
         freq: Frequency | None,
-        ambiguous: Literal["raise", "infer", "NaT"] | bool | np_ndarray_bool = "raise",
-        nonexistent: (
-            Literal["shift_forward", "shift_backward", "NaT", "raise"]
-            | timedelta
-            | Timedelta
-        ) = "raise",
+        ambiguous: TimeAmbiguous = "raise",
+        nonexistent: TimeNonexistent = "raise",
     ) -> _DTTimestampTimedeltaReturnType: ...
 
 _DTNormalizeReturnType = TypeVar(
@@ -432,7 +418,11 @@ class DatetimeIndexProperties(
     def tzinfo(self) -> _tzinfo | None: ...
     def to_pydatetime(self) -> np_1darray_object: ...
     def std(
-        self, axis: int | None = None, ddof: int = 1, skipna: bool = True
+        self,
+        axis: int | None = None,
+        ddof: int = 1,
+        keepdims: bool | None = False,
+        skipna: bool = True,
     ) -> Timedelta: ...
 
 class TimedeltaIndexProperties(

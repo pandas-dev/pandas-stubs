@@ -46,7 +46,7 @@ class MultiIndex(Index):
         sortorder: int | None = None,
         names: SequenceNotStr[Hashable] | None = None,
         copy: bool = False,
-        name: SequenceNotStr[Hashable] | None = None,
+        name: None = None,
         verify_integrity: bool = True,
     ) -> Self: ...
     @classmethod
