@@ -6,17 +6,14 @@ from collections.abc import (
 from typing import TypeAlias
 
 import numpy as np
-import pandas as pd
-from pandas import (
-    DataFrame,
-    Series,
-    date_range,
-)
+from pandas.core.frame import DataFrame
 from pandas.core.groupby.generic import (
     DataFrameGroupBy,
     SeriesGroupBy,
 )
+from pandas.core.indexes.datetimes import date_range
 from pandas.core.resample import DatetimeIndexResampler
+from pandas.core.series import Series
 from typing_extensions import assert_type
 
 from tests import (
@@ -396,7 +393,7 @@ def test_transform_series() -> None:
 
 def test_aggregate_series_combinations() -> None:
     def s2series(val: Series) -> Series:
-        return pd.Series(val)
+        return Series(val)
 
     def s2scalar(val: Series) -> float:
         return float(val.mean())
@@ -418,7 +415,7 @@ def test_aggregate_series_combinations() -> None:
 
 def test_aggregate_frame_combinations() -> None:
     def df2frame(val: DataFrame) -> DataFrame:
-        return pd.DataFrame(val)
+        return DataFrame(val)
 
     def df2series(val: DataFrame) -> Series:
         return val.mean()
