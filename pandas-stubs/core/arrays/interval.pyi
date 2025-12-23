@@ -76,7 +76,7 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     @property
     def size(self) -> int: ...
     def shift(self, periods: int = 1, fill_value: object = ...) -> IntervalArray: ...
-    def take(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+    def take(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-param-name-override]
         self: Self,
         indices: TakeIndexer,
         *,
