@@ -1,5 +1,3 @@
-import sys
-
 from pandas.core.arrays.masked import BaseMaskedArray
 
 from pandas._libs.missing import NAType
