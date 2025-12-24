@@ -8,6 +8,7 @@ from typing import (
     Any,
     Literal,
     Protocol,
+    TypeAlias,
     final,
     overload,
     type_check_only,
@@ -28,11 +29,13 @@ from pandas._typing import (
     ScalarIndexer,
     SequenceIndexer,
     np_1darray,
+    np_1darray_intp,
     np_ndarray,
-    np_ndarray_int,
 )
 
 from pandas.core.dtypes.dtypes import SparseDtype
+
+SparseIndexKind: TypeAlias = Literal["integer", "block"]
 
 @type_check_only
 class _SparseMatrixLike(Protocol):
@@ -50,7 +53,7 @@ class SparseArray(ExtensionArray):
             data: AnyArrayLike | Scalar,
             sparse_index: SparseIndex | None = None,
             fill_value: Scalar | None = None,
-            kind: str = "integer",
+            kind: SparseIndexKind = "integer",
             dtype: np.dtype | SparseDtype | None = ...,
             copy: bool = ...,
         ) -> Self: ...
@@ -60,7 +63,7 @@ class SparseArray(ExtensionArray):
             data: AnyArrayLike | Scalar,
             sparse_index: SparseIndex | None = None,
             fill_value: Scalar | None = None,
-            kind: str = "integer",
+            kind: SparseIndexKind = "integer",
             dtype: np.dtype[Any] | SparseDtype | None = ...,
             copy: bool = ...,
         ) -> Self: ...
@@ -81,7 +84,7 @@ class SparseArray(ExtensionArray):
     @fill_value.setter
     def fill_value(self, value: Any) -> None: ...
     @property
-    def kind(self) -> Literal["integer", "block"]: ...
+    def kind(self) -> SparseIndexKind: ...
     @property
     def nbytes(self) -> int: ...
     @property
@@ -104,8 +107,8 @@ class SparseArray(ExtensionArray):
     def map(
         self, mapper: dict[Any, Any] | Series[Any] | Callable[..., Any]
     ) -> Self: ...
-    def to_dense(self) -> np_ndarray: ...
-    def nonzero(self) -> tuple[np_ndarray_int]: ...
+    def to_dense(self) -> np_1darray: ...
+    def nonzero(self) -> tuple[np_1darray_intp]: ...
     def all(self, axis: Axis | None = None, *args: Any, **kwargs: Any) -> bool: ...
     def any(self, axis: AxisInt = 0, *args: Any, **kwargs: Any) -> bool: ...
     def sum(
