@@ -109,7 +109,7 @@ def test_multiindex_get_level_values() -> None:
 def test_multiindex_constructors() -> None:
     check(
         assert_type(
-            pd.MultiIndex([[1], [4]], codes=[[0], [0]], name=["a", "b"]), pd.MultiIndex
+            pd.MultiIndex([[1], [4]], codes=[[0], [0]], names=["a", "b"]), pd.MultiIndex
         ),
         pd.MultiIndex,
     )

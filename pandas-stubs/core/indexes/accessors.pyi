@@ -1,7 +1,6 @@
 from datetime import (
     date,
     time,
-    timedelta,
     tzinfo as _tzinfo,
 )
 from typing import (
@@ -47,7 +46,6 @@ from pandas._typing import (
     TimeZones,
     np_1darray_bool,
     np_1darray_object,
-    np_ndarray_bool,
 )
 
 from pandas.core.dtypes.dtypes import CategoricalDtype
@@ -181,32 +179,20 @@ class _DatetimeRoundingMethods(Generic[_DTTimestampTimedeltaReturnType]):
     def round(
         self,
         freq: Frequency | None,
-        ambiguous: Literal["raise", "infer", "NaT"] | bool | np_ndarray_bool = ...,
-        nonexistent: (
-            Literal["shift_forward", "shift_backward", "NaT", "raise"]
-            | timedelta
-            | Timedelta
-        ) = ...,
+        ambiguous: TimeAmbiguous = "raise",
+        nonexistent: TimeNonexistent = "raise",
     ) -> _DTTimestampTimedeltaReturnType: ...
     def floor(
         self,
         freq: Frequency | None,
-        ambiguous: Literal["raise", "infer", "NaT"] | bool | np_ndarray_bool = ...,
-        nonexistent: (
-            Literal["shift_forward", "shift_backward", "NaT", "raise"]
-            | timedelta
-            | Timedelta
-        ) = ...,
+        ambiguous: TimeAmbiguous = "raise",
+        nonexistent: TimeNonexistent = "raise",
     ) -> _DTTimestampTimedeltaReturnType: ...
     def ceil(
         self,
         freq: Frequency | None,
-        ambiguous: Literal["raise", "infer", "NaT"] | bool | np_ndarray_bool = ...,
-        nonexistent: (
-            Literal["shift_forward", "shift_backward", "NaT", "raise"]
-            | timedelta
-            | Timedelta
-        ) = ...,
+        ambiguous: TimeAmbiguous = "raise",
+        nonexistent: TimeNonexistent = "raise",
     ) -> _DTTimestampTimedeltaReturnType: ...
 
 _DTNormalizeReturnType = TypeVar(
@@ -232,14 +218,14 @@ class _DatetimeLikeNoTZMethods(
     def tz_localize(
         self,
         tz: TimeZones,
-        ambiguous: TimeAmbiguous = ...,
-        nonexistent: TimeNonexistent = ...,
+        ambiguous: TimeAmbiguous = "raise",
+        nonexistent: TimeNonexistent = "raise",
     ) -> _DTNormalizeReturnType: ...
     def tz_convert(self, tz: TimeZones) -> _DTNormalizeReturnType: ...
     def normalize(self) -> _DTNormalizeReturnType: ...
     def strftime(self, date_format: str) -> _DTStrKindReturnType: ...
-    def month_name(self, locale: str | None = ...) -> _DTStrKindReturnType: ...
-    def day_name(self, locale: str | None = ...) -> _DTStrKindReturnType: ...
+    def month_name(self, locale: str | None = None) -> _DTStrKindReturnType: ...
+    def day_name(self, locale: str | None = None) -> _DTStrKindReturnType: ...
 
 class _DatetimeNoTZProperties(
     _DatetimeLikeOps[
@@ -360,12 +346,12 @@ class _PeriodProperties(
     def to_timestamp(
         self,
         freq: PeriodFrequency | None = None,
-        how: TimestampConvention = ...,
+        how: TimestampConvention = "start",
     ) -> _PeriodDTAReturnTypes: ...
     def asfreq(
         self,
         freq: PeriodFrequency | None = None,
-        how: Literal["E", "END", "FINISH", "S", "START", "BEGIN"] = ...,
+        how: Literal["E", "END", "FINISH", "S", "START", "BEGIN"] = "E",
     ) -> _PeriodPAReturnTypes: ...
 
 class PeriodIndexFieldOps(
@@ -435,7 +421,11 @@ class DatetimeIndexProperties(
     def tzinfo(self) -> _tzinfo | None: ...
     def to_pydatetime(self) -> np_1darray_object: ...
     def std(
-        self, axis: int | None = ..., ddof: int = ..., skipna: bool = ...
+        self,
+        axis: int | None = None,
+        ddof: int = 1,
+        keepdims: bool | None = False,
+        skipna: bool = True,
     ) -> Timedelta: ...
 
 class TimedeltaIndexProperties(

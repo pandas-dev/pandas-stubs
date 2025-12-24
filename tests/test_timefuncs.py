@@ -440,7 +440,7 @@ def test_series_dt_accessors() -> None:
         pd.Timestamp,
     )
     check(
-        assert_type(s0.dt.round("D", ambiguous=False), "pd.Series[pd.Timestamp]"),
+        assert_type(s0.dt.round("D", ambiguous="infer"), "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
     )
@@ -452,7 +452,7 @@ def test_series_dt_accessors() -> None:
         pd.Timestamp,
     )
     check(
-        assert_type(s0.dt.floor("D", ambiguous=False), "pd.Series[pd.Timestamp]"),
+        assert_type(s0.dt.floor("D", ambiguous="raise"), "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
     )
@@ -464,7 +464,7 @@ def test_series_dt_accessors() -> None:
         pd.Timestamp,
     )
     check(
-        assert_type(s0.dt.ceil("D", ambiguous=False), "pd.Series[pd.Timestamp]"),
+        assert_type(s0.dt.ceil("D", ambiguous="NaT"), "pd.Series[pd.Timestamp]"),
         pd.Series,
         pd.Timestamp,
     )
