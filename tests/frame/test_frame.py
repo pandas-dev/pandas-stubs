@@ -3051,7 +3051,9 @@ def test_to_dict_simple() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
 
-        def test(mapping: Mapping) -> None:  # pyright: ignore[reportUnusedFunction]
+        def test(  # pyright: ignore[reportUnusedFunction]
+            mapping: Mapping[Any, Any],
+        ) -> None:
             data.to_dict(into=mapping)  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
 
     def _1() -> None:  # pyright: ignore[reportUnusedFunction]
@@ -3998,3 +4000,11 @@ def test_frame_index_setter() -> None:
     check(assert_type(df.index, pd.Index), pd.Index)
     df.index = [2, 3]
     check(assert_type(df.index, pd.Index), pd.Index)
+
+
+def test_frame_delitem() -> None:
+    """Test deleting the first column."""
+    df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+
+    check(assert_type(df.__delitem__("A"), None), type(None))
+    del df["B"]

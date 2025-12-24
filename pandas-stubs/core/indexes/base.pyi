@@ -324,7 +324,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
         copy: bool = False,
         name: Hashable = None,
         tupleize_cols: bool = True,
-    ) -> IntervalIndex[Interval[Any]]: ...
+    ) -> IntervalIndex[Interval]: ...
     # generic overloads
     @overload
     def __new__(

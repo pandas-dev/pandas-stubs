@@ -4,6 +4,7 @@ from datetime import (
     tzinfo as _tzinfo,
 )
 from typing import (
+    Any,
     Generic,
     Literal,
     TypeVar,
@@ -363,7 +364,7 @@ class PeriodProperties(
         Series[Timestamp], Series[int], Series[str], DatetimeArray, PeriodArray
     ],
     _DatetimeFieldOps[Series[int]],
-    _IsLeapYearProperty,
+    _IsLeapYearProperty[_DTBoolOpsReturnType],
     _FreqProperty[BaseOffset],
 ): ...
 class CombinedDatetimelikeProperties(
@@ -379,7 +380,9 @@ class CombinedDatetimelikeProperties(
         Series[Period],
     ],
     _TimedeltaPropertiesNoRounding[Series[int], Series[float]],
-    _PeriodProperties,
+    _PeriodProperties[
+        Series[Timestamp], Series[int], Series[str], DatetimeArray, PeriodArray
+    ],
 ): ...
 
 @type_check_only
@@ -448,7 +451,7 @@ class DtDescriptor:
     @overload
     def __get__(
         self, instance: Series[Period], owner: type[Series]
-    ) -> PeriodProperties: ...
+    ) -> PeriodProperties[Any]: ...
 
 @type_check_only
 class ArrayDescriptor:

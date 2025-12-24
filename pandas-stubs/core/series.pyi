@@ -446,7 +446,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             IntervalIndex[Interval[_OrderableT]]
             | Interval[_OrderableT]
             | Sequence[Interval[_OrderableT]]
-            | dict[HashableT1, Interval[_OrderableT]]
+            | dict[Hashable, Interval[_OrderableT]]
         ),
         index: AxesData | None = None,
         dtype: Literal["Interval"] = ...,
@@ -534,7 +534,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
             Scalar
             | _DataLike
             | Mapping[HashableT1, Any]
-            | BaseGroupBy
+            | BaseGroupBy[Any]
             | NaTType
             | NAType
             | None
@@ -1105,7 +1105,7 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     def swaplevel(
         self, i: Level = -2, j: Level = -1, copy: _bool = True
     ) -> Series[S1]: ...
-    def reorder_levels(self, order: list[Any]) -> Series[S1]: ...
+    def reorder_levels(self, order: Sequence[int | np.integer]) -> Series[S1]: ...
     def explode(self, ignore_index: _bool = ...) -> Series[S1]: ...
     def unstack(
         self,

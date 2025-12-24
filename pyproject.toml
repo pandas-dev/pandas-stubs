@@ -209,14 +209,39 @@ ignore = [
   # TODO: remove when window is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
-"*array*" = [
+"*arrays/sparse/*" = [
   # TODO: remove when array is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
-"*excel/_base.pyi" = [
-  # TODO: remove when excel/_base.pyi is fully typed
+"*arrays/boolean.pyi" = [
+  # TODO: remove when boolean array is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
+"*arrays/categorical.pyi" = [
+  # TODO: remove when categorical array is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*arrays/datetimelike.pyi" = [
+  # TODO: remove when array is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*arrays/datetimes.pyi" = [
+  # TODO: remove when datetime array is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*arrays/interval.pyi" = [
+  # TODO: remove when interval array is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*arrays/period.pyi" = [
+  # TODO: remove when period array is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+"*arrays/timedeltas.pyi" = [
+  # TODO: remove when timedelta array is fully typed
+  "ANN001", "ANN201", "ANN204", "ANN206",
+]
+
 "scripts/*" = [
   # The following rules are ignored permanently for good reasons
   "EM",      # https://docs.astral.sh/ruff/rules/#flake8-errmsg-em
@@ -298,7 +323,6 @@ include = ["tests", "pandas-stubs"]
 enableTypeIgnoreComments = false    # use pyright-specific ignores
 # disable subset of strict
 reportMissingParameterType = false
-reportMissingTypeArgument = false
 reportUnnecessaryTypeIgnoreComment = true
 reportUnknownArgumentType = false
 reportUnknownLambdaType = false

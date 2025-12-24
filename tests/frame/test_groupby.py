@@ -531,7 +531,7 @@ def test_groupby_apply() -> None:
     ):
         check(assert_type(df.groupby("col1").apply(lfunc), pd.Series), pd.Series)
 
-    def sum_to_list(x: pd.DataFrame) -> list:
+    def sum_to_list(x: pd.DataFrame) -> list[Any]:
         return x.sum().tolist()
 
     with pytest_warns_bounded(

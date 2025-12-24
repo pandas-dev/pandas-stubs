@@ -24,7 +24,7 @@ from pandas._typing import (
     DtypeBackend,
     Scalar,
     SequenceNotStr,
-    npt,
+    np_ndarray,
 )
 
 _SQLConnection: TypeAlias = str | sqlalchemy.engine.Connectable | sqlite3.Connection
@@ -33,8 +33,8 @@ _SQLStatement: TypeAlias = (
     str
     | sqlalchemy.sql.expression.Selectable
     | sqlalchemy.sql.expression.TextClause
-    | sqlalchemy.sql.Select
-    | FromStatement
+    | sqlalchemy.sql.Select[Any]
+    | FromStatement[Any]
     | sqlalchemy.sql.expression.UpdateBase
 )
 
@@ -155,7 +155,7 @@ class PandasSQL:
         dtype: DtypeArg | None = None,
         method: (
             Literal["multi"]
-            | Callable[[SQLTable, Any, list[str], Iterable], int | None]
+            | Callable[[SQLTable, Any, list[str], Iterable[Any]], int | None]
             | None
         ) = None,
         engine: str = "auto",
@@ -189,7 +189,7 @@ class SQLTable:
     def exists(self) -> bool: ...
     def sql_schema(self) -> str: ...
     def create(self) -> None: ...
-    def insert_data(self) -> tuple[list[str], list[npt.NDArray]]: ...
+    def insert_data(self) -> tuple[list[str], list[np_ndarray]]: ...
     def insert(
         self, chunksize: int | None = ..., method: str | None = ...
     ) -> int | None: ...

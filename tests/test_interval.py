@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
+from pandas.core.arrays.interval import IntervalArray
 from typing_extensions import assert_type
 
 from tests import (
@@ -125,6 +126,6 @@ def test_interval_array_contains() -> None:
     df = pd.DataFrame({"A": range(1, 10)})
     obj = pd.Interval(1, 4)
     ser = pd.Series(obj, index=df.index)
-    arr = ser.array
+    arr = check(assert_type(ser.array, IntervalArray), IntervalArray)
     check(assert_type(arr.contains(df["A"]), "pd.Series[bool]"), pd.Series, np.bool_)
     check(assert_type(arr.contains(3), np_1darray_bool), np_1darray_bool)

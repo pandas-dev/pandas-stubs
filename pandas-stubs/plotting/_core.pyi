@@ -39,7 +39,7 @@ class _BoxPlotT(NamedTuple):
 _SingleColor: TypeAlias = (
     str | list[float] | tuple[float, float, float] | tuple[float, float, float, float]
 )
-_PlotAccessorColor: TypeAlias = str | list[_SingleColor] | dict[HashableT, _SingleColor]
+_PlotAccessorColor: TypeAlias = str | list[_SingleColor] | dict[Any, _SingleColor]
 
 # Keep in sync with `DataFrame.boxplot`
 @overload
