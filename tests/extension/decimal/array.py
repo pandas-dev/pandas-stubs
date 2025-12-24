@@ -35,6 +35,7 @@ from typing_extensions import Self
 from pandas._typing import (
     ArrayLike,
     AstypeArg,
+    Dtype,
     ListLike,
     ScalarIndexer,
     SequenceIndexer,
@@ -199,8 +200,11 @@ class DecimalArray(OpsMixin, ExtensionArray):
             return DecimalArray._from_sequence(x)
 
         if ufunc.nout > 1:
-            return tuple(reconstruct(x) for x in result)
-        return reconstruct(result)
+            return tuple(
+                reconstruct(x)  # pyright: ignore[reportUnknownArgumentType]
+                for x in result
+            )
+        return reconstruct(result)  # pyright: ignore[reportUnknownArgumentType]
 
     def __getitem__(self, item: ScalarIndexer | SequenceIndexer) -> Any:
         if isinstance(item, numbers.Integral):
@@ -241,7 +245,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
     @overload
     def astype(self, dtype: AstypeArg, copy: bool = True) -> ArrayLike: ...
 
-    def astype(self, dtype, copy=True):
+    def astype(self, dtype: Dtype, copy: bool = True):
         if is_dtype_equal(dtype, self._dtype):
             if not copy:
                 return self

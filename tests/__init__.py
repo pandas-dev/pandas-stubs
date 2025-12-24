@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from contextlib import (
     AbstractContextManager,
     nullcontext,
@@ -11,6 +12,7 @@ from typing import (
     Any,
     Final,
     Literal,
+    cast,
     get_args,
     get_origin,
 )
@@ -140,17 +142,17 @@ def check(
     elif isinstance(actual, pd.Index):
         value = actual[index_to_check_for_type]
     elif isinstance(actual, BaseGroupBy):
-        value = actual.obj  # type: ignore[attr-defined]  # pyright: ignore[reportAttributeAccessIssue]
-    elif hasattr(actual, "__iter__"):
-        value = next(
-            iter(actual)  # pyright: ignore[reportArgumentType,reportCallIssue]
-        )
+        value = actual.obj  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
+    elif isinstance(actual, Iterable):
+        value = next(iter(cast("Iterable[Any]", actual)))
     else:
         assert hasattr(actual, attr)
         value = getattr(actual, attr)
 
     if not isinstance(value, dtype):
-        raise RuntimeError(f"Expected type '{dtype}' but got '{type(value)}'")
+        raise RuntimeError(
+            f"Expected type '{dtype}' but got '{type(value)}'"  # pyright: ignore[reportUnknownArgumentType]
+        )
     return actual
 
 
