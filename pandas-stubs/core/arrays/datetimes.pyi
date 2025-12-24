@@ -1,9 +1,7 @@
 from collections.abc import Iterator
 from datetime import tzinfo as _tzinfo
 import sys
-from typing import (
-    Any,
-)
+from typing import Any
 
 import numpy as np
 from pandas.core.arrays.datetimelike import (
