@@ -53,8 +53,8 @@ class SparseArray(ExtensionArray):
             sparse_index: SparseIndex | None = None,
             fill_value: Scalar | None = None,
             kind: SparseIndexKind = "integer",
-            dtype: np.dtype | SparseDtype | None = ...,
-            copy: bool = ...,
+            dtype: np.dtype | SparseDtype | None = None,
+            copy: bool = False,
         ) -> Self: ...
     else:
         def __new__(
@@ -63,8 +63,8 @@ class SparseArray(ExtensionArray):
             sparse_index: SparseIndex | None = None,
             fill_value: Scalar | None = None,
             kind: SparseIndexKind = "integer",
-            dtype: np.dtype[Any] | SparseDtype | None = ...,
-            copy: bool = ...,
+            dtype: np.dtype[Any] | SparseDtype | None = None,
+            copy: bool = False,
         ) -> Self: ...
 
     @classmethod

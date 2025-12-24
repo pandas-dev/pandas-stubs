@@ -109,7 +109,7 @@ def test_multiindex_get_level_values() -> None:
 def test_multiindex_constructors() -> None:
     check(
         assert_type(
-            pd.MultiIndex([[1], [4]], codes=[[0], [0]], name=["a", "b"]), pd.MultiIndex
+            pd.MultiIndex([[1], [4]], codes=[[0], [0]], names=["a", "b"]), pd.MultiIndex
         ),
         pd.MultiIndex,
     )
@@ -1719,7 +1719,13 @@ def test_index_view() -> None:
         # - pyright: ndarray[tuple[Any, ...], dtype[Any]]
         check(assert_type(ind.view(np.ndarray), np.ndarray), np.ndarray)  # type: ignore[assert-type]
     else:
-        check(assert_type(ind.view(np.ndarray), np.ndarray[Any, Any]), np.ndarray)
+        check(
+            assert_type(
+                ind.view(np.ndarray),  # pyright: ignore[reportUnknownArgumentType]
+                np.ndarray[Any, Any],
+            ),
+            np.ndarray,
+        )
 
     if sys.version_info >= (3, 11):
 
