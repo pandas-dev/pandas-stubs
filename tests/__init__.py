@@ -139,13 +139,9 @@ def check(
 
     value: Any
     if isinstance(actual, pd.Series):
-        value = actual.iloc[  # pyright: ignore[reportUnknownVariableType]
-            index_to_check_for_type
-        ]
+        value = cast(pd.Series, actual).iloc[index_to_check_for_type]
     elif isinstance(actual, pd.Index):
-        value = actual[  # pyright: ignore[reportUnknownVariableType]
-            index_to_check_for_type
-        ]
+        value = cast(pd.Index, actual)[index_to_check_for_type]
     elif isinstance(actual, BaseGroupBy):
         value = actual.obj  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownVariableType]
     elif isinstance(actual, Iterable):
