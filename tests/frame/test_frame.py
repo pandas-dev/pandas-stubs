@@ -1,3 +1,4 @@
+# pyright: reportUnknownArgumentType=false
 from __future__ import annotations
 
 from collections import (
@@ -76,7 +77,7 @@ else:
     _PandasNamedTuple: TypeAlias = tuple
 
 if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration,reportUnknownVariableType] # isort: skip
+    from pandas.errors import Pandas4Warning  # pyright: ignore[reportRedeclaration]
 else:
     Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
@@ -2317,8 +2318,7 @@ def test_types_rename_axis() -> None:
     check(
         assert_type(
             df.rename_axis(
-                index=lambda name: name.upper(),
-                columns=lambda name: name.upper(),
+                index=lambda name: name.upper(), columns=lambda name: name.upper()
             ),
             pd.DataFrame,
         ),

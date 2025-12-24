@@ -1,3 +1,4 @@
+# pyright: reportUnknownArgumentType=false
 from __future__ import annotations
 
 from collections.abc import (
@@ -102,7 +103,7 @@ from pandas.tseries.offsets import (
 )
 
 if not PD_LTE_23:
-    from pandas.errors import Pandas4Warning  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportRedeclaration,reportUnknownVariableType] # isort: skip
+    from pandas.errors import Pandas4Warning  # pyright: ignore[reportRedeclaration]
 else:
     Pandas4Warning: TypeAlias = FutureWarning  # type: ignore[no-redef]
 
@@ -1160,20 +1161,8 @@ def test_types_groupby_transform() -> None:
         pd.Series,
         float,
     )
-    check(
-        assert_type(
-            s.groupby(lambda x: x).transform("mean"),
-            "pd.Series",
-        ),
-        pd.Series,
-    )
-    check(
-        assert_type(
-            s.groupby(lambda x: x).transform("first"),
-            "pd.Series",
-        ),
-        pd.Series,
-    )
+    check(assert_type(s.groupby(lambda x: x).transform("mean"), pd.Series), pd.Series)
+    check(assert_type(s.groupby(lambda x: x).transform("first"), pd.Series), pd.Series)
 
 
 def test_types_groupby_aggregate() -> None:
@@ -3254,11 +3243,7 @@ def test_pipe() -> None:
     check(
         assert_type(
             ser.pipe(
-                first_arg_series,
-                1,
-                [1.0, 2.0],
-                argument_2="hi",
-                keyword_only=(1, 2),
+                first_arg_series, 1, [1.0, 2.0], argument_2="hi", keyword_only=(1, 2)
             ),
             pd.Series,
         ),
@@ -3319,16 +3304,7 @@ def test_pipe() -> None:
     def first_arg_not_series(argument_1: int, ser: pd.Series) -> pd.Series:
         return ser
 
-    check(
-        assert_type(
-            ser.pipe(
-                (first_arg_not_series, "ser"),
-                1,
-            ),
-            pd.Series,
-        ),
-        pd.Series,
-    )
+    check(assert_type(ser.pipe((first_arg_not_series, "ser"), 1), pd.Series), pd.Series)
 
     if TYPE_CHECKING_INVALID_USAGE:
         ser.pipe(

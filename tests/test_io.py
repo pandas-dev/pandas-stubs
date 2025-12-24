@@ -1176,7 +1176,12 @@ def test_excel_fspath() -> None:
 def test_excel_writer() -> None:
     with ensure_clean(".xlsx") as path:
         with pd.ExcelWriter(path) as ew:  # pyright: ignore[reportUnknownVariableType]
-            check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
+            check(
+                assert_type(
+                    ew, pd.ExcelWriter  # pyright: ignore[reportUnknownArgumentType]
+                ),
+                pd.ExcelWriter,
+            )
             DF.to_excel(ew, sheet_name="A")
         check(assert_type(read_excel(path, sheet_name="A"), DataFrame), DataFrame)
         check(assert_type(read_excel(path), DataFrame), DataFrame)
@@ -1207,7 +1212,13 @@ def test_excel_writer_engine() -> None:
         with pd.ExcelWriter(
             path, engine="auto"
         ) as ew:  # pyright: ignore[reportUnknownVariableType]
-            check(assert_type(ew, pd.ExcelWriter), pd.ExcelWriter)
+            check(
+                assert_type(
+                    ew,
+                    pd.ExcelWriter,  # pyright: ignore[reportUnknownArgumentType]
+                ),
+                pd.ExcelWriter,
+            )
             DF.to_excel(ew, sheet_name="A")
 
     with ensure_clean(".xlsx") as path:
@@ -1227,7 +1238,12 @@ def test_excel_writer_engine() -> None:
             path, engine="odf"
         ) as ew:  # pyright: ignore[reportUnknownVariableType]
             check(
-                assert_type(ew, pd.ExcelWriter[OpenDocument]),
+                assert_type(
+                    ew,
+                    pd.ExcelWriter[
+                        OpenDocument
+                    ],  # pyright: ignore[reportUnknownArgumentType]
+                ),
                 pd.ExcelWriter[OpenDocument],
             )
             DF.to_excel(ew, sheet_name="A")
@@ -1241,7 +1257,9 @@ def test_excel_writer_engine() -> None:
             path, engine="xlsxwriter"
         ) as ew:  # pyright: ignore[reportUnknownVariableType]
             check(
-                assert_type(ew, pd.ExcelWriter[XlsxWorkbook]),
+                assert_type(
+                    ew, pd.ExcelWriter[XlsxWorkbook]
+                ),  # pyright: ignore[reportUnknownArgumentType]
                 pd.ExcelWriter[XlsxWorkbook],
             )
             DF.to_excel(ew, sheet_name="A")

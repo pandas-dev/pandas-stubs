@@ -98,7 +98,7 @@ def test_arithmetic() -> None:
     # )
     # https://github.com/microsoft/pyright/issues/10899.
     check(
-        assert_type(
+        assert_type(  # pyright: ignore[reportUnknownArgumentType]
             divmod(  # pyright: ignore[reportCallIssue, reportAssertTypeFailure]
                 na, 1  # pyright: ignore[reportArgumentType]
             ),

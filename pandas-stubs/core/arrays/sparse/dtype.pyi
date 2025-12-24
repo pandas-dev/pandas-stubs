@@ -11,7 +11,9 @@ from pandas.core.dtypes.dtypes import (
 
 class SparseDtype(ExtensionDtype):
     def __init__(
-        self, dtype: Dtype | npt.DTypeLike = ..., fill_value: Scalar | None = ...
+        self,
+        dtype: Dtype | npt.DTypeLike = ...,
+        fill_value: Scalar | None = None,
     ) -> None: ...
     @property
     def fill_value(self) -> Scalar | None: ...

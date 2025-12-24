@@ -324,7 +324,6 @@ enableTypeIgnoreComments = false    # use pyright-specific ignores
 # disable subset of strict
 reportMissingParameterType = false
 reportUnnecessaryTypeIgnoreComment = true
-reportUnknownArgumentType = false
 reportUnknownLambdaType = false
 reportUnknownMemberType = false
 reportUnknownParameterType = false
@@ -361,6 +360,7 @@ unannotated-attribute = true
 # missing-override-decorator = true
 # unannotated-parameter = true
 # unannotated-return = true
+untyped-import = false
 
 [tool.ty.environment]
 python-platform = "all"

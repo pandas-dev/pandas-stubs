@@ -285,8 +285,7 @@ def test_concat_series_mixed_numeric() -> None:
     )
     check(
         assert_type(
-            pd.concat([s, s2], keys=["first", "second"], names=None),
-            pd.Series,
+            pd.concat([s, s2], keys=["first", "second"], names=None), pd.Series
         ),
         pd.Series,
         np.floating,
@@ -527,7 +526,7 @@ def test_isna() -> None:
     if not pd.notna(nullable1):
         assert_type(nullable1, NaTType | NAType | None)
 
-    nullable2: int | None = random.choice([2, None])
+    nullable2 = random.choice([2, None])
     if pd.notna(nullable2):
         check(assert_type(nullable2, int), int)
     if not pd.isna(nullable2):
@@ -1961,7 +1960,7 @@ def test_pivot_table() -> None:
     )
 
     def g(x: pd.Series) -> int:
-        return int(np.round(x.sum()))
+        return int(np.round(x.sum()))  # pyright: ignore[reportUnknownArgumentType]
 
     check(
         assert_type(
