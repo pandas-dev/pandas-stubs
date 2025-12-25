@@ -17,6 +17,7 @@ from pandas._libs.tslibs import NaTType
 from pandas._typing import (
     Scalar,
     ScalarT,
+    ScalarT0,
     ShapeT,
     np_1darray_bool,
     np_ndarray,
@@ -54,6 +55,6 @@ def notna(obj: np_ndarray[ShapeT]) -> np_ndarray[ShapeT, np.bool]: ...
 @overload
 def notna(obj: list[Any]) -> np_ndarray_bool: ...
 @overload
-def notna(obj: ScalarT | NaTType | NAType | None) -> TypeIs[ScalarT]: ...
+def notna(obj: ScalarT0 | NaTType | NAType | None) -> TypeIs[ScalarT0]: ...
 
 notnull = notna

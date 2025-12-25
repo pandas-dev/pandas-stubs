@@ -470,20 +470,8 @@ def test_plot_barh(close_figures: None) -> None:
 def test_plot_box(close_figures: None) -> None:
     check(assert_type(IRIS_DF.plot.box(), Axes), Axes)
     check(assert_type(IRIS_DF.plot(kind="box"), Axes), Axes)
-    check(
-        assert_type(
-            IRIS_DF.plot.box(subplots=True),
-            pd.Series,
-        ),
-        pd.Series,
-    )
-    check(
-        assert_type(
-            IRIS_DF.plot(kind="box", subplots=True),
-            pd.Series,
-        ),
-        pd.Series,
-    )
+    check(assert_type(IRIS_DF.plot.box(subplots=True), pd.Series), pd.Series)
+    check(assert_type(IRIS_DF.plot(kind="box", subplots=True), pd.Series), pd.Series)
 
 
 def test_plot_density(close_figures: None) -> None:

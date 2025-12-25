@@ -35,6 +35,7 @@ from typing_extensions import Self
 from pandas._typing import (
     ArrayLike,
     AstypeArg,
+    Dtype,
     ListLike,
     ScalarIndexer,
     SequenceIndexer,
@@ -199,12 +200,15 @@ class DecimalArray(OpsMixin, ExtensionArray):
             return DecimalArray._from_sequence(x)
 
         if ufunc.nout > 1:
-            return tuple(reconstruct(x) for x in result)
-        return reconstruct(result)
+            return tuple(
+                reconstruct(x)  # pyright: ignore[reportUnknownArgumentType]
+                for x in result
+            )
+        return reconstruct(result)  # pyright: ignore[reportUnknownArgumentType]
 
     def __getitem__(self, item: ScalarIndexer | SequenceIndexer) -> Any:
         if isinstance(item, numbers.Integral):
-            return self._data[item]
+            return self._data[item]  # type: ignore[unreachable]
         # array, slice.
         item = check_array_indexer(
             self,
@@ -241,7 +245,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
     @overload
     def astype(self, dtype: AstypeArg, copy: bool = True) -> ArrayLike: ...
 
-    def astype(self, dtype, copy=True):
+    def astype(self, dtype: Dtype, copy: bool = True):
         if is_dtype_equal(dtype, self._dtype):
             if not copy:
                 return self
@@ -288,9 +292,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
         return 0
 
     def isna(self) -> np_1darray_bool:
-        if sys.version_info < (3, 11):
-            return np.array([x.is_nan() for x in self._data], bool)  # type: ignore[return-value] # pyright: ignore[reportReturnType]
-        return np.array([x.is_nan() for x in self._data], bool)
+        return cast(np_1darray_bool, np.array([x.is_nan() for x in self._data], bool))
 
     @property
     def _na_value(self) -> decimal.Decimal:
