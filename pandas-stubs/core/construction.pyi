@@ -1,29 +1,35 @@
 from collections.abc import Sequence
-import sys
-from typing import (
-    Any,
-    overload,
-)
+from typing import overload
 
 import numpy as np
-from pandas.core.arrays.base import ExtensionArray
 from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.arrays.floating import FloatingArray
 from pandas.core.arrays.integer import IntegerArray
+from pandas.core.arrays.numpy_ import NumpyExtensionArray
+from pandas.core.indexes.range import RangeIndex
 
 from pandas._libs.missing import NAType
+from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
+    BuiltinDtypeArg,
+    NumpyNotTimeDtypeArg,
     PandasBooleanDtypeArg,
     PandasFloatDtypeArg,
     PandasIntDtypeArg,
     PandasUIntDtypeArg,
+    SequenceNotStr,
+    np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_float,
 )
 
-from pandas.core.dtypes.dtypes import ExtensionDtype
-
+@overload
+def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
+    data: Sequence[NAType | NaTType | None],
+    dtype: BuiltinDtypeArg | NumpyNotTimeDtypeArg | None = None,
+    copy: bool = True,
+) -> NumpyExtensionArray: ...
 @overload
 def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     data: Sequence[bool | np.bool | NAType | None] | np_ndarray_bool | BooleanArray,
@@ -44,19 +50,9 @@ def array(
     dtype: PandasFloatDtypeArg | None = None,
     copy: bool = True,
 ) -> FloatingArray: ...
-
-if sys.version_info >= (3, 11):
-    @overload
-    def array(
-        data: Sequence[object],
-        dtype: str | np.dtype | ExtensionDtype | None = None,
-        copy: bool = True,
-    ) -> ExtensionArray: ...
-
-else:
-    @overload
-    def array(
-        data: Sequence[object],
-        dtype: str | np.dtype[Any] | ExtensionDtype | None = None,
-        copy: bool = True,
-    ) -> ExtensionArray: ...
+@overload
+def array(
+    data: SequenceNotStr[object] | np_ndarray | NumpyExtensionArray | RangeIndex,
+    dtype: BuiltinDtypeArg | NumpyNotTimeDtypeArg | None = None,
+    copy: bool = True,
+) -> NumpyExtensionArray: ...
