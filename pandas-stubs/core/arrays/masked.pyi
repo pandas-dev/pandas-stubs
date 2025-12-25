@@ -1,6 +1,7 @@
 from collections.abc import Iterator
 from typing import (
     Any,
+    Literal,
     overload,
 )
 
@@ -8,7 +9,9 @@ from pandas.core.arrays import ExtensionArray as ExtensionArray
 from pandas.core.series import Series
 from typing_extensions import Self
 
+from pandas._libs.missing import NAType
 from pandas._typing import (
+    AxisInt,
     DtypeArg,
     NpDtype,
     Scalar,
@@ -42,3 +45,19 @@ class BaseMaskedArray(ExtensionArray):
     def isna(self) -> np_1darray_bool: ...
     @property
     def nbytes(self) -> int: ...
+    @overload
+    def any(
+        self, *, skipna: Literal[True] = True, axis: AxisInt | None = 0, **kwargs: Any
+    ) -> bool: ...
+    @overload
+    def any(
+        self, *, skipna: bool, axis: AxisInt | None = 0, **kwargs: Any
+    ) -> bool | NAType: ...
+    @overload
+    def all(
+        self, *, skipna: Literal[True] = True, axis: AxisInt | None = 0, **kwargs: Any
+    ) -> bool: ...
+    @overload
+    def all(
+        self, *, skipna: bool, axis: AxisInt | None = 0, **kwargs: Any
+    ) -> bool | NAType: ...

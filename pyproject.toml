@@ -43,7 +43,7 @@ pyarrow = ">=10.0.1"
 pytest = ">=8.4.2"
 pyright = ">=1.1.407"
 ty = ">=0.0.2"
-pyrefly = ">=0.46.0"
+pyrefly = "0.46.0"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
 typing-extensions = ">=4.5.0"
@@ -207,14 +207,6 @@ ignore = [
 ]
 "*window*" = [
   # TODO: remove when window is fully typed
-  "ANN001", "ANN201", "ANN204", "ANN206",
-]
-"*arrays/sparse/*" = [
-  # TODO: remove when array is fully typed
-  "ANN001", "ANN201", "ANN204", "ANN206",
-]
-"*arrays/boolean.pyi" = [
-  # TODO: remove when boolean array is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
 "*arrays/categorical.pyi" = [
