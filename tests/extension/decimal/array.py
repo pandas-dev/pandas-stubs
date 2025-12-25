@@ -12,6 +12,7 @@ import numbers
 import sys
 from typing import (
     Any,
+    Concatenate,
     cast,
     overload,
 )
@@ -165,15 +166,14 @@ class DecimalArray(OpsMixin, ExtensionArray):
 
     def __array_ufunc__(
         self, ufunc: np.ufunc, method: str, *inputs: Any, **kwargs: Any
-    ) -> arraylike.dispatch_ufunc_with_out:  # type: ignore[name-defined] # pyright: ignore[reportAttributeAccessIssue]
-        #
+    ) -> Any:
         if not all(
             isinstance(t, self._HANDLED_TYPES + (DecimalArray,)) for t in inputs
         ):
             return NotImplemented
 
         if "out" in kwargs:
-            return arraylike.dispatch_ufunc_with_out(  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownVariableType]
+            return cast("Callable[Concatenate[Any, np.ufunc, str, ...], Any]", arraylike.dispatch_ufunc_with_out)(  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
                 self, ufunc, method, *inputs, **kwargs
             )
 
@@ -181,11 +181,11 @@ class DecimalArray(OpsMixin, ExtensionArray):
         result = getattr(ufunc, method)(*inputs, **kwargs)
 
         if method == "reduce":
-            result = arraylike.dispatch_reduction_ufunc(  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownVariableType]
+            result = cast("Callable[Concatenate[Any, np.ufunc, str, ...], Any]", arraylike.dispatch_reduction_ufunc)(  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
                 self, ufunc, method, *inputs, **kwargs
             )
             if result is not NotImplemented:
-                return result  # pyright: ignore[reportUnknownVariableType]
+                return result
 
         def reconstruct(
             x: (
@@ -200,11 +200,8 @@ class DecimalArray(OpsMixin, ExtensionArray):
             return DecimalArray._from_sequence(x)
 
         if ufunc.nout > 1:
-            return tuple(
-                reconstruct(x)  # pyright: ignore[reportUnknownArgumentType]
-                for x in result  # pyright: ignore[reportUnknownVariableType]
-            )
-        return reconstruct(result)  # pyright: ignore[reportUnknownArgumentType]
+            return tuple(reconstruct(x) for x in result)
+        return reconstruct(result)
 
     def __getitem__(self, item: ScalarIndexer | SequenceIndexer) -> Any:
         if isinstance(item, numbers.Integral):
