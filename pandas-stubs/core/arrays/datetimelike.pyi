@@ -4,13 +4,11 @@ from collections.abc import (
 )
 from typing import (
     Any,
-    Literal,
     TypeAlias,
     overload,
 )
 
 from pandas.core.arrays.base import ExtensionArray
-from pandas.core.series import Series
 from typing_extensions import Self
 
 from pandas._libs import (
@@ -20,20 +18,17 @@ from pandas._libs import (
 from pandas._libs.tslibs.timedeltas import Timedelta
 from pandas._libs.tslibs.timestamps import Timestamp
 from pandas._typing import (
-    AnyArrayLikeInt,
     AxisInt,
     DatetimeLikeScalar,
     Frequency,
     NpDtype,
     PositionalIndexerTuple,
-    Renamer,
     ScalarIndexer,
     SequenceIndexer,
     TimeAmbiguous,
     TimeNonexistent,
     TimeUnit,
     np_1darray,
-    np_1darray_bool,
     np_1darray_str,
 )
 
@@ -71,7 +66,6 @@ class DatetimeLikeArrayMixin(ExtensionArray):
     @property
     def shape(self) -> tuple[int]: ...
     def reshape(self, *args: Any, **kwargs: Any) -> Self: ...
-    def ravel(self, *args: Any, **kwargs: Any) -> Self: ...
     def __iter__(self) -> Iterator[Any]: ...
     @property
     def nbytes(self) -> int: ...
@@ -93,21 +87,6 @@ class DatetimeLikeArrayMixin(ExtensionArray):
     ) -> None: ...
     # TODO: pandas-dev/pandas-stubs#1589 import testing
     # def view(self, dtype: DtypeArg | None = None) -> np_ndarray: ...
-    def unique(self) -> Self: ...
-    def copy(self) -> Self: ...
-    def shift(self, periods: int = 1, fill_value: object | None = None) -> Self: ...
-    def repeat(
-        self,
-        repeats: int | AnyArrayLikeInt | Sequence[int],
-        axis: AxisInt | None = None,
-    ) -> Self: ...
-    def value_counts(
-        self, dropna: bool = True
-    ) -> Series[int]: ...  # probably to put in base class
-    def map(
-        self, mapper: Renamer, na_action: Literal["ignore"] | None = None
-    ) -> Self: ...
-    def isna(self) -> np_1darray_bool: ...
     @property
     def freq(self) -> Frequency | None: ...
     @freq.setter
