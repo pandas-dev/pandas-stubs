@@ -208,7 +208,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
 
     def __getitem__(self, item: ScalarIndexer | SequenceIndexer) -> Any:
         if isinstance(item, numbers.Integral):
-            return self._data[item]
+            return self._data[item]  # type: ignore[unreachable]
         # array, slice.
         item = check_array_indexer(
             self,
