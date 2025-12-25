@@ -10,19 +10,23 @@ from typing import (
 )
 
 import numpy as np
+from pandas.core.series import Series
 from typing_extensions import Self
 
 from pandas._typing import (
     AnyArrayLikeInt,
     ArrayLike,
     AstypeArg,
+    AxisInt,
     Dtype,
     ListLike,
+    Renamer,
     Scalar,
     ScalarIndexer,
     SequenceIndexer,
     TakeIndexer,
     np_1darray,
+    np_1darray_bool,
     np_1darray_intp,
     np_ndarray,
     npt,
@@ -67,7 +71,7 @@ class ExtensionArray:
     def astype(self, dtype: ExtensionDtype, copy: bool = True) -> ExtensionArray: ...
     @overload
     def astype(self, dtype: AstypeArg, copy: bool = True) -> ArrayLike: ...
-    def isna(self) -> ArrayLike: ...
+    def isna(self) -> np_1darray_bool: ...
     def argsort(
         self, *, ascending: bool = ..., kind: str = ..., **kwargs: Any
     ) -> np_1darray: ...
@@ -75,7 +79,7 @@ class ExtensionArray:
         self, value: object | ArrayLike, limit: int | None = None, copy: bool = True
     ) -> Self: ...
     def dropna(self) -> Self: ...
-    def shift(self, periods: int = 1, fill_value: object = ...) -> Self: ...
+    def shift(self, periods: int = 1, fill_value: object | None = None) -> Self: ...
     def unique(self) -> Self: ...
     @overload
     def searchsorted(
@@ -93,7 +97,9 @@ class ExtensionArray:
     ) -> np.intp: ...
     def factorize(self, use_na_sentinel: bool = True) -> tuple[np_1darray, Self]: ...
     def repeat(
-        self, repeats: int | AnyArrayLikeInt | Sequence[int], axis: None = None
+        self,
+        repeats: int | AnyArrayLikeInt | Sequence[int],
+        axis: AxisInt | None = None,
     ) -> Self: ...
     def take(
         self,
@@ -118,4 +124,10 @@ class ExtensionArray:
         *,
         skipna: bool = True,
         **kwargs: Any,
+    ) -> Self: ...
+    def value_counts(
+        self, dropna: bool = True
+    ) -> Series[int]: ...  # probably to put in base class
+    def map(
+        self, mapper: Renamer, na_action: Literal["ignore"] | None = None
     ) -> Self: ...
