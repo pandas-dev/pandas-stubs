@@ -876,15 +876,15 @@ SliceType: TypeAlias = Hashable | None
 ## All types below this point are only used in pandas-stubs
 ######
 
-BuiltinNotStrDtypeArg: TypeAlias = (
+BuiltinDtypeArg: TypeAlias = (
     BuiltinBooleanDtypeArg
     | BuiltinIntDtypeArg
     | BuiltinFloatDtypeArg
     | BuiltinComplexDtypeArg
+    | BuiltinStrDtypeArg
     | BuiltinBytesDtypeArg
     | BuiltinObjectDtypeArg
 )
-BuiltinDtypeArg: TypeAlias = BuiltinNotStrDtypeArg | BuiltinStrDtypeArg
 NumpyNotTimeDtypeArg: TypeAlias = (
     NumpyBooleanDtypeArg
     | NumpyIntDtypeArg
@@ -923,6 +923,7 @@ np_ndarray_bool: TypeAlias = npt.NDArray[np.bool_]
 np_ndarray_str: TypeAlias = npt.NDArray[np.str_]
 np_ndarray_dt: TypeAlias = npt.NDArray[np.datetime64]
 np_ndarray_td: TypeAlias = npt.NDArray[np.timedelta64]
+np_ndarray_object: TypeAlias = npt.NDArray[np.object_]
 
 # Define shape and generic type variables with defaults similar to numpy
 GenericT = TypeVar("GenericT", bound=np.generic, default=Any)
