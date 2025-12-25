@@ -42,8 +42,8 @@ pandas = "2.3.3"
 pyarrow = ">=10.0.1"
 pytest = ">=8.4.2"
 pyright = ">=1.1.407"
-ty = ">=0.0.2"
-pyrefly = "0.46.0"
+ty = ">=0.0.5"
+pyrefly = ">=0.46.1"
 poethepoet = ">=0.16.5"
 loguru = ">=0.6.0"
 typing-extensions = ">=4.5.0"
@@ -343,6 +343,9 @@ enabled-ignores = ["pyrefly"]
 python-version = "3.10"
 
 [tool.pyrefly.errors]
+# Import discovery
+untyped-import = false
+# enable optional checks
 implicit-abstract-class = true
 implicitly-defined-attribute = true
 open-unpacking = true
