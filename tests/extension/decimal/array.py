@@ -208,7 +208,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
 
     def __getitem__(self, item: ScalarIndexer | SequenceIndexer) -> Any:
         if isinstance(item, numbers.Integral):
-            return self._data[item]
+            return self._data[item]  # type: ignore[unreachable]
         # array, slice.
         item = check_array_indexer(
             self,
@@ -292,9 +292,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
         return 0
 
     def isna(self) -> np_1darray_bool:
-        if sys.version_info < (3, 11):
-            return np.array([x.is_nan() for x in self._data], bool)  # type: ignore[return-value] # pyright: ignore[reportReturnType]
-        return np.array([x.is_nan() for x in self._data], bool)
+        return cast(np_1darray_bool, np.array([x.is_nan() for x in self._data], bool))
 
     @property
     def _na_value(self) -> decimal.Decimal:
