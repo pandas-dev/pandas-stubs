@@ -350,9 +350,9 @@ class DecimalArray(OpsMixin, ExtensionArray):
             value_counts,  # pyright: ignore[reportAttributeAccessIssue,reportAttributeAccessIssue,reportUnknownVariableType]
         )
 
-        return value_counts(
-            self.to_numpy(), dropna=dropna
-        )  # pyright: ignore[reportUnknownVariableType]
+        return cast(
+            "Callable[Concatenate[np_ndarray, ...], Series[int]]", value_counts
+        )(self.to_numpy(), dropna=dropna)
 
     @classmethod
     def _add_arithmetic_ops(cls) -> None: ...
