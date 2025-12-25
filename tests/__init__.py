@@ -139,21 +139,27 @@ def check(
 
     value: Any
     if isinstance(actual, pd.Series):
+        # TODO: pyright ignore may lift by microsoft/pyright#11191
         value = cast(pd.Series, actual).iloc[index_to_check_for_type]
     elif isinstance(actual, pd.Index):
+        # TODO: pyright ignore may lift by microsoft/pyright#11191
         value = cast(pd.Index, actual)[index_to_check_for_type]
     elif isinstance(actual, BaseGroupBy):
+        # `BaseGroupBy.obj` is internal and untyped
         value = actual.obj  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownVariableType]
     elif isinstance(actual, Iterable):
+        # T_co in Iterable[T_co] does not have a default value and `actual` is Iterable[Unknown] by pyright
         value = next(iter(cast("Iterable[Any]", actual)))
     else:
         assert hasattr(actual, attr)
         value = getattr(actual, attr)
 
     if not isinstance(value, dtype):
+        # TODO: pyright ignore may lift by microsoft/pyright#11191
         raise RuntimeError(
             f"Expected type '{dtype}' but got '{type(value)}'"  # pyright: ignore[reportUnknownArgumentType]
         )
+    # pyright ignore is by design microsoft/pyright#11190
     return actual  # pyright: ignore[reportUnknownVariableType]
 
 
