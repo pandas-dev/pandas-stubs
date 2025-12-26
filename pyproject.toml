@@ -213,10 +213,6 @@ ignore = [
   # TODO: remove when categorical array is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
-"*arrays/interval.pyi" = [
-  # TODO: remove when interval array is fully typed
-  "ANN001", "ANN201", "ANN204", "ANN206",
-]
 "*arrays/period.pyi" = [
   # TODO: remove when period array is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
