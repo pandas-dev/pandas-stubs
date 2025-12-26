@@ -12,7 +12,6 @@ import numbers
 import sys
 from typing import (
     Any,
-    Concatenate,
     cast,
     overload,
 )
@@ -26,8 +25,12 @@ from pandas.api.types import (
     is_list_like,
     is_scalar,
 )
-from pandas.core import arraylike
-from pandas.core.arraylike import OpsMixin
+from pandas.core.algorithms import value_counts
+from pandas.core.arraylike import (
+    OpsMixin,
+    dispatch_reduction_ufunc,
+    dispatch_ufunc_with_out,
+)
 from pandas.core.arrays import ExtensionArray
 from pandas.core.indexers import check_array_indexer
 from pandas.core.series import Series
@@ -173,17 +176,13 @@ class DecimalArray(OpsMixin, ExtensionArray):
             return NotImplemented
 
         if "out" in kwargs:
-            return cast("Callable[Concatenate[Any, np.ufunc, str, ...], Any]", arraylike.dispatch_ufunc_with_out)(  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
-                self, ufunc, method, *inputs, **kwargs
-            )
+            return dispatch_ufunc_with_out(self, ufunc, method, *inputs, **kwargs)
 
         inputs = tuple(x._data if isinstance(x, DecimalArray) else x for x in inputs)
         result = getattr(ufunc, method)(*inputs, **kwargs)
 
         if method == "reduce":
-            result = cast("Callable[Concatenate[Any, np.ufunc, str, ...], Any]", arraylike.dispatch_reduction_ufunc)(  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
-                self, ufunc, method, *inputs, **kwargs
-            )
+            result = dispatch_reduction_ufunc(self, ufunc, method, *inputs, **kwargs)
             if result is not NotImplemented:
                 return result
 
@@ -345,14 +344,8 @@ class DecimalArray(OpsMixin, ExtensionArray):
 
         return cast(np_1darray_bool, np.asarray(res, dtype=bool))
 
-    def value_counts(self, dropna: bool = True) -> Series:
-        from pandas.core.algorithms import (  # type: ignore[attr-defined] # isort: skip
-            value_counts,  # pyright: ignore[reportAttributeAccessIssue,reportAttributeAccessIssue,reportUnknownVariableType]
-        )
-
-        return cast(
-            "Callable[Concatenate[np_ndarray, ...], Series[int]]", value_counts
-        )(self.to_numpy(), dropna=dropna)
+    def value_counts(self, dropna: bool = True) -> Series[int]:
+        return value_counts(self.to_numpy(), dropna=dropna)
 
     @classmethod
     def _add_arithmetic_ops(cls) -> None: ...
