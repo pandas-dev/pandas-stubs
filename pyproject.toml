@@ -219,6 +219,8 @@ ignore = [
 ]
 "*arrays/timedeltas.pyi" = [
   # TODO: remove when timedelta array is fully typed
+"*arrays/period.pyi" = [
+  # TODO: remove when period array is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
 
