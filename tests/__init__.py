@@ -139,10 +139,10 @@ def check(
 
     value: Any
     if isinstance(actual, pd.Series):
-        # TODO: pyright ignore may lift by microsoft/pyright#11191
+        # pyright ignore is by design microsoft/pyright#11191
         value = cast(pd.Series, actual).iloc[index_to_check_for_type]
     elif isinstance(actual, pd.Index):
-        # TODO: pyright ignore may lift by microsoft/pyright#11191
+        # pyright ignore is by design microsoft/pyright#11191
         value = cast(pd.Index, actual)[index_to_check_for_type]
     elif isinstance(actual, BaseGroupBy):
         # `BaseGroupBy.obj` is internal and untyped
@@ -155,7 +155,7 @@ def check(
         value = getattr(actual, attr)
 
     if not isinstance(value, dtype):
-        # TODO: pyright ignore may lift by microsoft/pyright#11191
+        # pyright ignore is by design microsoft/pyright#11191
         raise RuntimeError(
             f"Expected type '{dtype}' but got '{type(value)}'"  # pyright: ignore[reportUnknownArgumentType]
         )
