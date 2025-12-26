@@ -5,6 +5,7 @@ from typing import (
 
 from pandas.core.arrays import PandasArray
 from pandas.core.series import Series
+from typing_extensions import Self
 
 from pandas._libs.missing import NAType
 from pandas._typing import (
@@ -15,9 +16,15 @@ from pandas._typing import (
 from pandas.core.dtypes.base import ExtensionDtype
 
 class StringDtype(ExtensionDtype):
-    def __init__(self, storage: Literal["python", "pyarrow"] | None = None) -> None: ...
+    def __new__(
+        cls,
+        storage: Literal["python", "pyarrow"] | None = None,
+        na_value: NAType | float = ...,
+    ) -> Self: ...
     @property
-    def na_value(self) -> NAType: ...
+    def storage(self) -> Literal["python", "pyarrow"]: ...
+    @property
+    def na_value(self) -> NAType | float: ...
 
 class StringArray(PandasArray):
     def __init__(self, values: AnyArrayLike, copy: bool = False) -> None: ...
