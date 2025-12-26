@@ -7,7 +7,6 @@ from typing_extensions import assert_type
 
 from tests import (
     ASTYPE_FLOAT_ARGS,
-    TYPE_FLOAT_ARGS,
     check,
     exception_on_platform,
 )
@@ -46,7 +45,7 @@ def test_constructor() -> None:
     )
 
 
-@pytest.mark.parametrize(("dtype", "target_dtype"), TYPE_FLOAT_ARGS.items())
+@pytest.mark.parametrize(("dtype", "target_dtype"), ASTYPE_FLOAT_ARGS.items())
 def test_constructor_dtype(dtype: FloatDtypeArg, target_dtype: type) -> None:
     exc = exception_on_platform(dtype)
     if exc:

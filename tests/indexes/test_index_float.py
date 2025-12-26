@@ -13,7 +13,6 @@ from typing_extensions import (
 from tests import (
     ASTYPE_FLOAT_NOT_NUMPY16_ARGS,
     TYPE_CHECKING_INVALID_USAGE,
-    TYPE_FLOAT_NOT_NUMPY16_ARGS,
     check,
     exception_on_platform,
 )
@@ -49,7 +48,9 @@ def test_constructor() -> None:
     )
 
 
-@pytest.mark.parametrize(("dtype", "target_dtype"), TYPE_FLOAT_NOT_NUMPY16_ARGS.items())
+@pytest.mark.parametrize(
+    ("dtype", "target_dtype"), ASTYPE_FLOAT_NOT_NUMPY16_ARGS.items()
+)
 def test_constructor_dtype(
     dtype: "FloatNotNumpy16DtypeArg", target_dtype: type
 ) -> None:

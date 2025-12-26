@@ -360,7 +360,7 @@ BuiltinComplexDtypeArg: TypeAlias = type[complex] | Literal["complex"]
 PandasAstypeComplexDtypeArg: TypeAlias = (
     Literal["singlecomplex"]  # noqa: PYI030
     | Literal["cfloat", "complex_"]
-    | Literal["c32", "complex256", "clongfloat", "longcomplex"]
+    | Literal["clongfloat", "longcomplex"]
 )
 # Numpy complex types and their aliases
 NumpyComplexDtypeArg: TypeAlias = (
@@ -373,7 +373,7 @@ NumpyComplexDtypeArg: TypeAlias = (
     #  https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.clongdouble
     # NOTE: Alias np.complex256 only on Linux x86_64, use np.clongdouble instead
     | type[np.clongdouble]
-    | Literal["G", "clongdouble"]
+    | Literal["G", "c32", "complex256", "clongdouble"]
 )
 ComplexDtypeArg: TypeAlias = BuiltinComplexDtypeArg | NumpyComplexDtypeArg
 PandasAstypeTimedeltaDtypeArg: TypeAlias = Literal[
@@ -538,8 +538,7 @@ CategoryDtypeArg: TypeAlias = CategoricalDtype | Literal["category"]
 BuiltinObjectDtypeArg: TypeAlias = type[object] | Literal["object"]
 # Numpy object type and its string alias
 # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.object_
-# NOTE: "object_" not assigned
-NumpyObjectDtypeArg: TypeAlias = type[np.object_] | Literal["O"]
+NumpyObjectDtypeArg: TypeAlias = type[np.object_] | Literal["object_", "O"]
 
 ObjectDtypeArg: TypeAlias = BuiltinObjectDtypeArg | NumpyObjectDtypeArg
 
