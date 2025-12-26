@@ -523,8 +523,8 @@ def test_frame_groupby_rolling() -> None:
 
     # aggregate combinations
     def df2series(val: DataFrame) -> Series:
-        assert isinstance(val, Series)
-        return val.mean()
+        assert isinstance(val, Series)  # type: ignore[unreachable]
+        return val.mean()  # type: ignore[unreachable]
 
     def df2scalar(val: DataFrame) -> float:
         return float(val.mean().mean())
@@ -716,8 +716,8 @@ def test_frame_groupby_expanding() -> None:
 
     # aggregate combinations
     def df2series(val: DataFrame) -> Series:
-        assert isinstance(val, Series)
-        return val.mean()
+        assert isinstance(val, Series)  # type: ignore[unreachable]
+        return val.mean()  # type: ignore[unreachable]
 
     def df2scalar(val: DataFrame) -> float:
         return float(val.mean().mean())
