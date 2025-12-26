@@ -25,7 +25,6 @@ from pandas.api.types import (
     is_list_like,
     is_scalar,
 )
-from pandas.core.algorithms import value_counts
 from pandas.core.arraylike import (
     OpsMixin,
     dispatch_reduction_ufunc,
@@ -341,6 +340,8 @@ class DecimalArray(OpsMixin, ExtensionArray):
         return cast(np_1darray_bool, np.asarray(res, dtype=bool))
 
     def value_counts(self, dropna: bool = True) -> Series[int]:
+        from pandas.core.algorithms import value_counts
+
         return value_counts(self.to_numpy(), dropna=dropna)
 
     @classmethod
