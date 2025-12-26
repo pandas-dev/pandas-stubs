@@ -86,7 +86,7 @@ def test_constructor_dtype(dtype: FloatDtypeArg, target_dtype: type) -> None:
         assert_type(pd.Series([1.0], dtype="float128"), "pd.Series[float]")
         assert_type(pd.Series([1.0], dtype="g"), "pd.Series[float]")
         assert_type(pd.Series([1.0], dtype="f16"), "pd.Series[float]")
-        # pyarrow float32
+        # pyarrow float16
         assert_type(pd.Series([1.0], dtype="float16[pyarrow]"), "pd.Series[float]")
         # pyarrow float32
         assert_type(pd.Series([1.0], dtype="float32[pyarrow]"), "pd.Series[float]")

@@ -88,7 +88,7 @@ def test_constructor_dtype(
         assert_type(pd.Index([1.0], dtype="float128"), "pd.Index[float]")
         assert_type(pd.Index([1.0], dtype="g"), "pd.Index[float]")
         assert_type(pd.Index([1.0], dtype="f16"), "pd.Index[float]")
-        # pyarrow float32
+        # pyarrow float16
         assert_type(pd.Index([1.0], dtype="float16[pyarrow]"), "pd.Index[float]")
         # pyarrow float32
         assert_type(pd.Index([1.0], dtype="float32[pyarrow]"), "pd.Index[float]")
