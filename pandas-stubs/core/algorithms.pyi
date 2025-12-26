@@ -87,6 +87,16 @@ def factorize(
     use_na_sentinel: bool = True,
     size_hint: int | None = None,
 ) -> tuple[np_1darray_int64, Categorical]: ...
+
+# The following unpublished function is added to reduce type checking ignores
+def value_counts(
+    values: np_ndarray,
+    sort: bool = True,
+    ascending: bool = False,
+    normalize: bool = False,
+    bins: int | None = None,
+    dropna: bool = True,
+) -> Series[int]: ...
 def take(
     arr: np_ndarray[Any] | ExtensionArray | Index | Series,
     indices: TakeIndexer,

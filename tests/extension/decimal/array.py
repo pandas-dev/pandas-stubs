@@ -25,8 +25,12 @@ from pandas.api.types import (
     is_list_like,
     is_scalar,
 )
-from pandas.core import arraylike
-from pandas.core.arraylike import OpsMixin
+from pandas.core.algorithms import value_counts
+from pandas.core.arraylike import (
+    OpsMixin,
+    dispatch_reduction_ufunc,
+    dispatch_ufunc_with_out,
+)
 from pandas.core.arrays import ExtensionArray
 from pandas.core.indexers import check_array_indexer
 from pandas.core.series import Series
@@ -165,25 +169,20 @@ class DecimalArray(OpsMixin, ExtensionArray):
 
     def __array_ufunc__(
         self, ufunc: np.ufunc, method: str, *inputs: Any, **kwargs: Any
-    ) -> arraylike.dispatch_ufunc_with_out:  # type: ignore[name-defined] # pyright: ignore[reportAttributeAccessIssue]
-        #
+    ) -> Any:
         if not all(
             isinstance(t, self._HANDLED_TYPES + (DecimalArray,)) for t in inputs
         ):
             return NotImplemented
 
         if "out" in kwargs:
-            return arraylike.dispatch_ufunc_with_out(  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
-                self, ufunc, method, *inputs, **kwargs
-            )
+            return dispatch_ufunc_with_out(self, ufunc, method, *inputs, **kwargs)
 
         inputs = tuple(x._data if isinstance(x, DecimalArray) else x for x in inputs)
         result = getattr(ufunc, method)(*inputs, **kwargs)
 
         if method == "reduce":
-            result = arraylike.dispatch_reduction_ufunc(  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
-                self, ufunc, method, *inputs, **kwargs
-            )
+            result = dispatch_reduction_ufunc(self, ufunc, method, *inputs, **kwargs)
             if result is not NotImplemented:
                 return result
 
@@ -200,20 +199,14 @@ class DecimalArray(OpsMixin, ExtensionArray):
             return DecimalArray._from_sequence(x)
 
         if ufunc.nout > 1:
-            return tuple(
-                reconstruct(x)  # pyright: ignore[reportUnknownArgumentType]
-                for x in result
-            )
-        return reconstruct(result)  # pyright: ignore[reportUnknownArgumentType]
+            return tuple(reconstruct(x) for x in result)
+        return reconstruct(result)
 
     def __getitem__(self, item: ScalarIndexer | SequenceIndexer) -> Any:
         if isinstance(item, numbers.Integral):
             return self._data[item]  # type: ignore[unreachable]
         # array, slice.
-        item = check_array_indexer(
-            self,
-            item,  # type: ignore[arg-type] # pyright: ignore[reportArgumentType,reportCallIssue]
-        )
+        item = check_array_indexer(self, item)
         return type(self)(self._data[item])
 
     def take(
@@ -347,11 +340,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
 
         return cast(np_1darray_bool, np.asarray(res, dtype=bool))
 
-    def value_counts(self, dropna: bool = True) -> Series:
-        from pandas.core.algorithms import (  # type: ignore[attr-defined] # isort: skip
-            value_counts,  # pyright: ignore[reportAttributeAccessIssue]
-        )
-
+    def value_counts(self, dropna: bool = True) -> Series[int]:
         return value_counts(self.to_numpy(), dropna=dropna)
 
     @classmethod

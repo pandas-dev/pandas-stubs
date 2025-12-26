@@ -1025,11 +1025,7 @@ def test_cut() -> None:
         labels=["1", "2", "3", "4"],
         retbins=True,
     )
-    m0, m1 = pd.cut(
-        pd.Series([1, 2, 3, 4, 5, 6, 7, 8]),
-        intval_idx,
-        retbins=True,
-    )
+    m0, m1 = pd.cut(pd.Series([1, 2, 3, 4, 5, 6, 7, 8]), intval_idx, retbins=True)
     check(assert_type(j0, pd.Series), pd.Series)
     check(assert_type(j1, np_1darray_float), np_1darray, np.floating)
     check(assert_type(k0, pd.Series), pd.Series)
@@ -1037,7 +1033,7 @@ def test_cut() -> None:
     check(assert_type(l0, pd.Series), pd.Series)
     check(assert_type(l1, np_1darray_float), np_1darray, np.floating)
     check(assert_type(m0, pd.Series), pd.Series)
-    check(assert_type(m1, pd.IntervalIndex), pd.IntervalIndex)
+    check(assert_type(m1, pd.IntervalIndex), pd.IntervalIndex, pd.Interval)
 
     n0, n1 = pd.cut([1, 2, 3, 4, 5, 6, 7, 8], intval_idx, retbins=True)
     check(assert_type(n0, pd.Categorical), pd.Categorical)

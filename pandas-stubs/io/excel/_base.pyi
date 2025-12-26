@@ -15,7 +15,6 @@ from typing import (
     overload,
 )
 
-from odf.opendocument import OpenDocument  # pyright: ignore[reportMissingTypeStubs]
 from openpyxl.workbook.workbook import Workbook
 from pandas.core.frame import DataFrame
 import pyxlsb.workbook  # pyright: ignore[reportMissingTypeStubs]
@@ -24,9 +23,6 @@ from typing_extensions import (
     TypeVar,
 )
 from xlrd.book import Book
-from xlsxwriter.workbook import (  # pyright: ignore[reportMissingTypeStubs]
-    Workbook as XlsxWorkbook,
-)
 
 from pandas._libs.lib import _NoDefaultDoNotUse
 from pandas._typing import (
@@ -41,6 +37,14 @@ from pandas._typing import (
     ReadBuffer,
     StorageOptions,
     UsecolsArgType,
+)
+
+from xlsxwriter.workbook import (  # pyright: ignore[reportMissingTypeStubs] # isort: skip
+    Workbook as XlsxWorkbook,  # pyright: ignore[reportUnknownVariableType]
+)
+
+from odf.opendocument import (  # pyright: ignore[reportMissingTypeStubs] # isort: skip
+    OpenDocument,  # pyright: ignore[reportUnknownVariableType]
 )
 
 @overload
@@ -217,7 +221,9 @@ def read_excel(
     engine_kwargs: dict[str, Any] | None = ...,
 ) -> DataFrame: ...
 
-ExcelWriteWorkbook: TypeAlias = Workbook | OpenDocument | XlsxWorkbook
+ExcelWriteWorkbook: TypeAlias = (  # pyright: ignore[reportUnknownVariableType]
+    Workbook | OpenDocument | XlsxWorkbook
+)
 
 _WorkbookT = TypeVar("_WorkbookT", default=ExcelWriteWorkbook, bound=ExcelWriteWorkbook)
 

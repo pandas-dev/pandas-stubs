@@ -24,7 +24,7 @@ def test_mul() -> None:
 
     if TYPE_CHECKING_INVALID_USAGE:
         # pd.Timedelta * bool is not allowed, see GH1418
-        _0 = a * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _1 = b * a  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _2 = a * e  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _3 = e * a  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _0 = a * b  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _1 = b * a  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _2 = a * e  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _3 = e * a  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
