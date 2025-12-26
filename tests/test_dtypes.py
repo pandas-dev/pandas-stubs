@@ -19,6 +19,7 @@ from pandas.core.arrays import (
     IntegerArray,
 )
 import pyarrow as pa
+import pytest
 from typing_extensions import assert_type
 
 from pandas._typing import Scalar
@@ -128,12 +129,22 @@ def test_sparse_dtype() -> None:
     check(assert_type(s_dt.fill_value, Scalar | None), int)
 
 
-def test_string_dtype() -> None:
-    s_dt = pd.StringDtype("pyarrow")
-    check(assert_type(pd.StringDtype(), pd.StringDtype), pd.StringDtype)
-    check(assert_type(pd.StringDtype("pyarrow"), pd.StringDtype), pd.StringDtype)
-    check(assert_type(pd.StringDtype("python"), pd.StringDtype), pd.StringDtype)
-    check(assert_type(s_dt.na_value, NAType), NAType)
+@pytest.mark.parametrize("storage", ["python", "pyarrow", None])
+@pytest.mark.parametrize("na_value", [pd.NA, float("nan")])
+def test_string_dtype(
+    storage: Literal["python", "pyarrow"] | None, na_value: NAType | float
+) -> None:
+    s_dts = [pd.StringDtype(storage, na_value)]
+    if storage is None:
+        s_dts.append(pd.StringDtype(na_value=na_value))
+        if na_value is pd.NA:
+            s_dts.append(pd.StringDtype())
+    if na_value is pd.NA:
+        s_dts.append(pd.StringDtype(storage))
+    for s_dt in s_dts:
+        check(assert_type(s_dt, pd.StringDtype), pd.StringDtype)
+        check(assert_type(s_dt.storage, Literal["python", "pyarrow"]), str)
+        check(assert_type(s_dt.na_value, NAType | float), type(na_value))
 
 
 def test_boolean_dtype() -> None:
