@@ -74,8 +74,8 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def __getitem__(self, item: ScalarIndexer) -> IntervalOrNA: ...
     @overload
     def __getitem__(self, item: SequenceIndexer) -> Self: ...
-    def __eq__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-param-name-override]
-    def __ne__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-param-name-override]
+    def __eq__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]
+    def __ne__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]
     @property
     def dtype(self) -> IntervalDtype: ...
     @property

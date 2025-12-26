@@ -8,6 +8,7 @@ from scripts.test import _step
 _SRC_STEPS = [
     _step.mypy_src,
     _step.ty_src,
+    _step.pyrefly_src,
     _step.pyright_src,
     _step.pytest,
     _step.style,
