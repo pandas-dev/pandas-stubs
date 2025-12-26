@@ -119,7 +119,9 @@ class NDFrame:
     @final
     def to_excel(
         self,
-        excel_writer: FilePath | WriteExcelBuffer | ExcelWriter,
+        excel_writer: (  # pyright: ignore[reportUnknownParameterType]
+            FilePath | WriteExcelBuffer | ExcelWriter
+        ),
         sheet_name: _str = "Sheet1",
         na_rep: _str = "",
         float_format: _str | None = ...,

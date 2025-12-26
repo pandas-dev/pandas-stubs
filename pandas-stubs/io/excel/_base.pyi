@@ -49,7 +49,7 @@ from odf.opendocument import (  # pyright: ignore[reportMissingTypeStubs] # isor
 
 @overload
 def read_excel(
-    io: (
+    io: (  # pyright: ignore[reportUnknownParameterType]
         FilePath
         | ReadBuffer[bytes]
         | ExcelFile
@@ -92,7 +92,7 @@ def read_excel(
 ) -> dict[IntStrT, DataFrame]: ...
 @overload
 def read_excel(
-    io: (
+    io: (  # pyright: ignore[reportUnknownParameterType]
         FilePath
         | ReadBuffer[bytes]
         | ExcelFile
@@ -136,7 +136,7 @@ def read_excel(
 @overload
 # mypy says this won't be matched
 def read_excel(  # type: ignore[overload-cannot-match]
-    io: (
+    io: (  # pyright: ignore[reportUnknownParameterType]
         FilePath
         | ReadBuffer[bytes]
         | ExcelFile
@@ -179,7 +179,7 @@ def read_excel(  # type: ignore[overload-cannot-match]
 ) -> dict[int | str, DataFrame]: ...
 @overload
 def read_excel(
-    io: (
+    io: (  # pyright: ignore[reportUnknownParameterType]
         FilePath
         | ReadBuffer[bytes]
         | ExcelFile

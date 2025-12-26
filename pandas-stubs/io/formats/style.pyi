@@ -108,7 +108,7 @@ class Styler(StylerRenderer):
     ) -> Styler: ...
     def to_excel(
         self,
-        excel_writer: (
+        excel_writer: (  # pyright: ignore[reportUnknownParameterType]
             FilePath | WriteExcelBuffer | ExcelWriter[OpenXlWorkbook | XlsxWorkbook]
         ),
         sheet_name: str = "Sheet1",

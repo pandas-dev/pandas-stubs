@@ -1,4 +1,4 @@
-# pyright: reportMissingTypeArgument=false, reportUnknownArgumentType=false
+# pyright: reportMissingTypeArgument=false,reportUnknownArgumentType=false,reportUnknownParameterType=false
 """Test module for classes in pandas.api.typing."""
 
 from pathlib import Path
