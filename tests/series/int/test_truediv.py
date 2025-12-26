@@ -36,15 +36,15 @@ def test_truediv_py_scalar(left: "pd.Series[int]") -> None:
     check(assert_type(left / f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _04 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _05 = left / d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _05 = left / d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     check(assert_type(b / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(i / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(f / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _14 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(d / left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
     check(assert_type(left.truediv(b), "pd.Series[float]"), pd.Series, np.floating)
@@ -105,15 +105,15 @@ def test_truediv_py_sequence(left: "pd.Series[int]") -> None:
     check(assert_type(left / f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _04 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _05 = left / d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _05 = left / d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     check(assert_type(b / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(i / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(f / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _14 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(d / left, pd.Series), pd.Series, timedelta)  # dtype object
 
     check(assert_type(left.truediv(b), "pd.Series[float]"), pd.Series, np.floating)
@@ -253,11 +253,11 @@ def test_truediv_pd_scalar(left: "pd.Series[int]") -> None:
     s, d = pd.Timestamp(2025, 9, 24), pd.Timedelta(seconds=1)
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _00 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _01 = left / d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _00 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _01 = left / d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _10 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _10 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(d / left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
     if TYPE_CHECKING_INVALID_USAGE:
@@ -295,15 +295,15 @@ def test_truediv_pd_index(left: "pd.Series[int]") -> None:
     check(assert_type(left / f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _04 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _05 = left / d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _05 = left / d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     check(assert_type(b / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(i / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(f / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _14 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(d / left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
     check(assert_type(left.truediv(b), "pd.Series[float]"), pd.Series, np.floating)
@@ -367,15 +367,15 @@ def test_truediv_pd_series(left: "pd.Series[int]") -> None:
     check(assert_type(left / f, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(left / c, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _04 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _05 = left / d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left / s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _05 = left / d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     check(assert_type(b / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(i / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(f / left, "pd.Series[float]"), pd.Series, np.floating)
     check(assert_type(c / left, "pd.Series[complex]"), pd.Series, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _14 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s / left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(d / left, "pd.Series[pd.Timedelta]"), pd.Series, pd.Timedelta)
 
     check(assert_type(left.truediv(b), "pd.Series[float]"), pd.Series, np.floating)

@@ -1631,9 +1631,9 @@ def test_timedelta64_and_arithmatic_operator() -> None:
     td = np.timedelta64(1, "D")
     check(assert_type((s3 / td), "pd.Series[float]"), pd.Series, float)
     if TYPE_CHECKING_INVALID_USAGE:
-        _1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _1 = s1 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _2 = s1 / td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _3 = s3 * td  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
 
 def test_timedeltaseries_add_timestampseries() -> None:

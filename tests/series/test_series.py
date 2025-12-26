@@ -276,9 +276,9 @@ def test_arguments_drop() -> None:
     # GH 950
     s = pd.Series([0, 1, 2])
     if TYPE_CHECKING_INVALID_USAGE:
-        _res1 = s.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue]
-        _res2 = s.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
-        _res3 = s.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue, reportArgumentType]
+        _res1 = s.drop()  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportUnknownVariableType]
+        _res2 = s.drop([0], columns=["col1"])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType]
+        _res3 = s.drop([0], index=[0])  # type: ignore[call-overload] # pyright: ignore[reportCallIssue,reportArgumentType,reportUnknownVariableType]
 
     def _never_checker0() -> None:  # pyright: ignore[reportUnusedFunction]
         assert_type(s.drop(columns=None), Never)
@@ -3050,7 +3050,7 @@ def test_to_json_mode() -> None:
     check(assert_type(result2, str), str)
     check(assert_type(result4, str), str)
     if TYPE_CHECKING_INVALID_USAGE:
-        _result3 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue]
+        _result3 = s.to_json(orient="records", lines=False, mode="a")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType,reportCallIssue,reportUnknownVariableType]
 
 
 def test_interpolate() -> None:

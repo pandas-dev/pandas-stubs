@@ -137,23 +137,30 @@ def check(
     if dtype is None:
         return actual
 
+    value: Any
     if isinstance(actual, pd.Series):
-        value = actual.iloc[index_to_check_for_type]
+        # pyright ignore is by design microsoft/pyright#11191
+        value = cast(pd.Series, actual).iloc[index_to_check_for_type]
     elif isinstance(actual, pd.Index):
-        value = actual[index_to_check_for_type]
+        # pyright ignore is by design microsoft/pyright#11191
+        value = cast(pd.Index, actual)[index_to_check_for_type]
     elif isinstance(actual, BaseGroupBy):
-        value = actual.obj  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
+        # `BaseGroupBy.obj` is internal and untyped
+        value = actual.obj  # type: ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue,reportUnknownVariableType]
     elif isinstance(actual, Iterable):
+        # T_co in Iterable[T_co] does not have a default value and `actual` is Iterable[Unknown] by pyright
         value = next(iter(cast("Iterable[Any]", actual)))
     else:
         assert hasattr(actual, attr)
         value = getattr(actual, attr)
 
     if not isinstance(value, dtype):
+        # pyright ignore is by design microsoft/pyright#11191
         raise RuntimeError(
             f"Expected type '{dtype}' but got '{type(value)}'"  # pyright: ignore[reportUnknownArgumentType]
         )
-    return actual
+    # pyright ignore is by design microsoft/pyright#11190
+    return actual  # pyright: ignore[reportUnknownVariableType]
 
 
 def pytest_warns_bounded(
