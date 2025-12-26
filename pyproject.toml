@@ -221,10 +221,6 @@ ignore = [
   # TODO: remove when period array is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
-"*arrays/timedeltas.pyi" = [
-  # TODO: remove when timedelta array is fully typed
-  "ANN001", "ANN201", "ANN204", "ANN206",
-]
 
 "scripts/*" = [
   # The following rules are ignored permanently for good reasons
