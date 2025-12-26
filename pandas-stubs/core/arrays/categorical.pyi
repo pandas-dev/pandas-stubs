@@ -41,7 +41,7 @@ class Categorical(ExtensionArray):
     __array_priority__: int = ...
     def __init__(
         self,
-        values: ListLike,
+        values: SequenceNotStr[Hashable] | AnyArrayLike,
         categories: SequenceNotStr[Hashable] | AnyArrayLike | None = None,
         ordered: bool | None = None,
         dtype: CategoricalDtype | None = None,
