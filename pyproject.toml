@@ -209,10 +209,6 @@ ignore = [
   # TODO: remove when window is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
 ]
-"*arrays/categorical.pyi" = [
-  # TODO: remove when categorical array is fully typed
-  "ANN001", "ANN201", "ANN204", "ANN206",
-]
 "*arrays/interval.pyi" = [
   # TODO: remove when interval array is fully typed
   "ANN001", "ANN201", "ANN204", "ANN206",
