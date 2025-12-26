@@ -2,25 +2,23 @@ from collections.abc import Sequence
 from datetime import timedelta
 from typing import Any
 
+import numpy as np
 from pandas.core.arrays.datetimelike import (
     DatetimeLikeArrayMixin,
     TimelikeOps,
 )
-from typing_extensions import (
-    Self,
-)
+from typing_extensions import Self
 
 from pandas._typing import (
     AnyArrayLike,
     DtypeArg,
     Frequency,
-    np_1darray_td,
 )
 
 class TimedeltaArray(DatetimeLikeArrayMixin, TimelikeOps):
     __array_priority__: int = ...
     @property
-    def dtype(self) -> np_1darray_td: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]
+    def dtype(self) -> np.dtypes.TimeDelta64DType: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]
     def __init__(
         self,
         values: AnyArrayLike,
@@ -59,8 +57,8 @@ class TimedeltaArray(DatetimeLikeArrayMixin, TimelikeOps):
     #     keepdims: bool = ...,
     #     skipna: bool = ...,
     # ): ...
-    def __mul__(self, other: object) -> Self: ...
-    __rmul__ = ...
+    def __mul__(self, other: Any) -> Self: ...
+    __rmul__ = __mul__
     def __truediv__(self, other: Any) -> Any: ...
     def __rtruediv__(self, other: Any) -> Any: ...
     def __floordiv__(self, other: Any) -> Any: ...
