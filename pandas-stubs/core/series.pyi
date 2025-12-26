@@ -191,8 +191,6 @@ from pandas._typing import (
     NsmallestNlargestKeep,
     NumpyStrDtypeArg,
     ObjectDtypeArg,
-    PandasAstypeComplexDtypeArg,
-    PandasAstypeFloatDtypeArg,
     PandasAstypeTimedeltaDtypeArg,
     PandasAstypeTimestampDtypeArg,
     PeriodFrequency,
@@ -1467,14 +1465,14 @@ class Series(IndexOpsMixin[S1], ElementOpsMixin[S1], NDFrame):
     @overload
     def astype(
         self,
-        dtype: FloatDtypeArg | PandasAstypeFloatDtypeArg,
+        dtype: FloatDtypeArg,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[float]: ...
     @overload
     def astype(
         self,
-        dtype: ComplexDtypeArg | PandasAstypeComplexDtypeArg,
+        dtype: ComplexDtypeArg,
         copy: _bool = ...,
         errors: IgnoreRaise = ...,
     ) -> Series[complex]: ...

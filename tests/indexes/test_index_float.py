@@ -16,7 +16,6 @@ from tests import (
     check,
     exception_on_platform,
 )
-from tests._typing import PandasAstypeFloatDtypeArg
 
 if TYPE_CHECKING:
     from pandas.core.indexes.base import FloatNotNumpy16DtypeArg
@@ -90,6 +89,8 @@ def test_constructor_dtype(
         assert_type(pd.Index([1.0], dtype="g"), "pd.Index[float]")
         assert_type(pd.Index([1.0], dtype="f16"), "pd.Index[float]")
         # pyarrow float32
+        assert_type(pd.Index([1.0], dtype="float16[pyarrow]"), "pd.Index[float]")
+        # pyarrow float32
         assert_type(pd.Index([1.0], dtype="float32[pyarrow]"), "pd.Index[float]")
         assert_type(pd.Index([1.0], dtype="float[pyarrow]"), "pd.Index[float]")
         # pyarrow float64
@@ -117,9 +118,7 @@ def test_constructor_dtype(
 @pytest.mark.parametrize(
     ("cast_arg", "target_type"), ASTYPE_FLOAT_NOT_NUMPY16_ARGS.items(), ids=repr
 )
-def test_astype_float(
-    cast_arg: "FloatNotNumpy16DtypeArg | PandasAstypeFloatDtypeArg", target_type: type
-) -> None:
+def test_astype_float(cast_arg: "FloatNotNumpy16DtypeArg", target_type: type) -> None:
     s = pd.Index([1, 2, 3])
 
     exc = exception_on_platform(cast_arg)
@@ -157,17 +156,14 @@ def test_astype_float(
         assert_type(s.astype("float128"), "pd.Index[float]")
         assert_type(s.astype("g"), "pd.Index[float]")
         assert_type(s.astype("f16"), "pd.Index[float]")
+        # pyarrow float16
+        assert_type(s.astype("float16[pyarrow]"), "pd.Index[float]")
         # pyarrow float32
         assert_type(s.astype("float32[pyarrow]"), "pd.Index[float]")
         assert_type(s.astype("float[pyarrow]"), "pd.Index[float]")
         # pyarrow float64
         assert_type(s.astype("float64[pyarrow]"), "pd.Index[float]")
         assert_type(s.astype("double[pyarrow]"), "pd.Index[float]")
-
-
-def test_new_astype_float16() -> None:
-    """Test that a series cannot be built or cast to a float16 type."""
-    s = pd.Index([1, 2, 3])
 
     if TYPE_CHECKING_INVALID_USAGE:
 

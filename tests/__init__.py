@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import (
+    Generator,
+    Iterable,
+)
 from contextlib import (
     AbstractContextManager,
     nullcontext,
@@ -10,6 +13,7 @@ from datetime import (
     date,
     datetime,
     timedelta,
+    timezone,
 )
 import sys
 from typing import (
@@ -46,7 +50,7 @@ NUMPY20 = np.lib.NumpyVersion(np.__version__) >= "2.0.0"
 
 PYTHON_BOOL_ARGS = {bool: np.bool_, "bool": np.bool_}
 PANDAS_BOOL_ARGS = {pd.BooleanDtype(): np.bool_, "boolean": np.bool_}
-NUMPY_BOOL_ARGS = {np.bool_: np.bool_, "bool_": np.bool_, "?": np.bool_, "b1": np.bool_}
+NUMPY_BOOL_ARGS = {np.bool_: np.bool_, "?": np.bool_, "b1": np.bool_, "bool_": np.bool_}
 PYARROW_BOOL_ARGS = {"bool[pyarrow]": bool, "boolean[pyarrow]": bool}
 ASTYPE_BOOL_ARGS = (
     PYTHON_BOOL_ARGS | PANDAS_BOOL_ARGS | NUMPY_BOOL_ARGS | PYARROW_BOOL_ARGS
@@ -86,6 +90,9 @@ NUMPY_INT_ARGS = {
     "i": np.intc,
     "int32": np.int32,
     "i4": np.int32,
+    # numpy long
+    "l": np.long,
+    "long": np.long,
     # numpy int64
     np.int_: np.int_,
     "int_": np.int_,
@@ -141,6 +148,9 @@ NUMPY_UINT_ARGS = {
     "I": np.uintc,
     "uint32": np.uint32,
     "u4": np.uint32,
+    # numpy ulong
+    "L": np.ulong,
+    "ulong": np.ulong,
     # numpy uint64
     np.uint: np.uint,
     "uint": np.uint,
@@ -164,12 +174,21 @@ PYARROW_UINT_ARGS = {
 ASTYPE_UINT_ARGS = PANDAS_UINT_ARGS | NUMPY_UINT_ARGS | PYARROW_UINT_ARGS
 
 PYTHON_FLOAT_ARGS = {float: np.floating, "float": np.floating}
+PANDAS_FLOAT_ARGS = {
+    # pandas Float32
+    pd.Float32Dtype(): np.float32,
+    "Float32": np.float32,
+    # pandas Float64
+    pd.Float64Dtype(): np.float64,
+    "Float64": np.float64,
+}
 NUMPY_FLOAT16_ARGS = {
     np.half: np.half,
     "half": np.half,
     "e": np.half,
     "float16": np.float16,
     "f2": np.float16,
+    "<f2": np.float16,
 }
 NUMPY_FLOAT_NOT16_ARGS = {
     # numpy float32
@@ -193,6 +212,8 @@ NUMPY_FLOAT_NOT16_ARGS = {
     "float128": np.longdouble,  # NOTE: UNIX ONLY
 }
 PYARROW_FLOAT_ARGS = {
+    # pyarrow float16
+    "float16[pyarrow]": float,
     # pyarrow float32
     "float32[pyarrow]": float,
     "float[pyarrow]": float,
@@ -200,18 +221,14 @@ PYARROW_FLOAT_ARGS = {
     "float64[pyarrow]": float,
     "double[pyarrow]": float,
 }
-PANDAS_FLOAT_ARGS = {
-    # pandas Float32
-    pd.Float32Dtype(): np.float32,
-    "Float32": np.float32,
-    # pandas Float64
-    pd.Float64Dtype(): np.float64,
-    "Float64": np.float64,
-}
 ASTYPE_FLOAT_NOT_NUMPY16_ARGS = (
-    PYTHON_FLOAT_ARGS | NUMPY_FLOAT_NOT16_ARGS | PYARROW_FLOAT_ARGS | PANDAS_FLOAT_ARGS
+    PYTHON_FLOAT_ARGS | PANDAS_FLOAT_ARGS | NUMPY_FLOAT_NOT16_ARGS | PYARROW_FLOAT_ARGS
 )
-ASTYPE_FLOAT_ARGS = ASTYPE_FLOAT_NOT_NUMPY16_ARGS | NUMPY_FLOAT16_ARGS
+ASTYPE_FLOAT_ARGS = (
+    (PYTHON_FLOAT_ARGS | PANDAS_FLOAT_ARGS)
+    | (NUMPY_FLOAT16_ARGS | NUMPY_FLOAT_NOT16_ARGS)
+    | PYARROW_FLOAT_ARGS
+)
 
 PYTHON_COMPLEX_ARGS = {complex: np.complexfloating, "complex": np.complexfloating}
 NUMPY_COMPLEX_ARGS = {
@@ -239,17 +256,37 @@ ASTYPE_COMPLEX_ARGS = PYTHON_COMPLEX_ARGS | NUMPY_COMPLEX_ARGS
 
 NUMPY_TIMESTAMP_ARGS = {
     # numpy datetime64
+    "datetime64[s]": datetime,
+    "datetime64[ms]": datetime,
+    "datetime64[us]": datetime,
+    "datetime64[ns]": datetime,
+    # numpy datetime64 type codes
+    "M8[s]": datetime,
+    "M8[ms]": datetime,
+    "M8[us]": datetime,
+    "M8[ns]": datetime,
+    # little endian
+    "<M8[s]": datetime,
+    "<M8[ms]": datetime,
+    "<M8[us]": datetime,
+    "<M8[ns]": datetime,
+}
+PANDAS_TIMESTAMP_ARGS = {
+    pd.DatetimeTZDtype(tz=timezone.utc): datetime,
+    "datetime64[s, UTC]": datetime,
+    "datetime64[ms, UTC]": datetime,
+    "datetime64[us, UTC]": datetime,
+    "datetime64[ns, UTC]": datetime,
+}
+PANDAS_ASTYPE_TIMESTAMP_ARGS = {
+    # numpy datetime64
     "datetime64[Y]": datetime,
     "datetime64[M]": datetime,
     "datetime64[W]": datetime,
     "datetime64[D]": datetime,
     "datetime64[h]": datetime,
     "datetime64[m]": datetime,
-    "datetime64[s]": datetime,
-    "datetime64[ms]": datetime,
-    "datetime64[us]": datetime,
     "datetime64[μs]": datetime,
-    "datetime64[ns]": datetime,
     "datetime64[ps]": datetime,
     "datetime64[fs]": datetime,
     "datetime64[as]": datetime,
@@ -260,11 +297,7 @@ NUMPY_TIMESTAMP_ARGS = {
     "M8[D]": datetime,
     "M8[h]": datetime,
     "M8[m]": datetime,
-    "M8[s]": datetime,
-    "M8[ms]": datetime,
-    "M8[us]": datetime,
     "M8[μs]": datetime,
-    "M8[ns]": datetime,
     "M8[ps]": datetime,
     "M8[fs]": datetime,
     "M8[as]": datetime,
@@ -275,11 +308,7 @@ NUMPY_TIMESTAMP_ARGS = {
     "<M8[D]": datetime,
     "<M8[h]": datetime,
     "<M8[m]": datetime,
-    "<M8[s]": datetime,
-    "<M8[ms]": datetime,
-    "<M8[us]": datetime,
     "<M8[μs]": datetime,
-    "<M8[ns]": datetime,
     "<M8[ps]": datetime,
     "<M8[fs]": datetime,
     "<M8[as]": datetime,
@@ -294,9 +323,29 @@ PYARROW_TIMESTAMP_ARGS = {
     "date32[pyarrow]": date,
     "date64[pyarrow]": date,
 }
-ASTYPE_TIMESTAMP_ARGS = NUMPY_TIMESTAMP_ARGS | PYARROW_TIMESTAMP_ARGS
+TYPE_TIMESTAMP_ARGS = (
+    NUMPY_TIMESTAMP_ARGS | PANDAS_TIMESTAMP_ARGS | PYARROW_TIMESTAMP_ARGS
+)
+ASTYPE_TIMESTAMP_ARGS = TYPE_TIMESTAMP_ARGS | PANDAS_ASTYPE_TIMESTAMP_ARGS
 
 NUMPY_TIMEDELTA_ARGS = {
+    # numpy timedelta64
+    "timedelta64[s]": timedelta,
+    "timedelta64[ms]": timedelta,
+    "timedelta64[us]": timedelta,
+    "timedelta64[ns]": timedelta,
+    # numpy timedelta64 type codes
+    "m8[s]": timedelta,
+    "m8[ms]": timedelta,
+    "m8[us]": timedelta,
+    "m8[ns]": timedelta,
+    # little endian
+    "<m8[s]": timedelta,
+    "<m8[ms]": timedelta,
+    "<m8[us]": timedelta,
+    "<m8[ns]": timedelta,
+}
+PANDAS_ASTYPE_TIMEDELTA_ARGS = {
     # numpy timedelta64
     "timedelta64[Y]": timedelta,
     "timedelta64[M]": timedelta,
@@ -304,11 +353,7 @@ NUMPY_TIMEDELTA_ARGS = {
     "timedelta64[D]": timedelta,
     "timedelta64[h]": timedelta,
     "timedelta64[m]": timedelta,
-    "timedelta64[s]": timedelta,
-    "timedelta64[ms]": timedelta,
-    "timedelta64[us]": timedelta,
     "timedelta64[μs]": timedelta,
-    "timedelta64[ns]": timedelta,
     "timedelta64[ps]": timedelta,
     "timedelta64[fs]": timedelta,
     "timedelta64[as]": timedelta,
@@ -319,11 +364,7 @@ NUMPY_TIMEDELTA_ARGS = {
     "m8[D]": timedelta,
     "m8[h]": timedelta,
     "m8[m]": timedelta,
-    "m8[s]": timedelta,
-    "m8[ms]": timedelta,
-    "m8[us]": timedelta,
     "m8[μs]": timedelta,
-    "m8[ns]": timedelta,
     "m8[ps]": timedelta,
     "m8[fs]": timedelta,
     "m8[as]": timedelta,
@@ -334,11 +375,7 @@ NUMPY_TIMEDELTA_ARGS = {
     "<m8[D]": timedelta,
     "<m8[h]": timedelta,
     "<m8[m]": timedelta,
-    "<m8[s]": timedelta,
-    "<m8[ms]": timedelta,
-    "<m8[us]": timedelta,
     "<m8[μs]": timedelta,
-    "<m8[ns]": timedelta,
     "<m8[ps]": timedelta,
     "<m8[fs]": timedelta,
     "<m8[as]": timedelta,
@@ -350,10 +387,11 @@ PYARROW_TIMEDELTA_ARGS = {
     "duration[us][pyarrow]": timedelta,
     "duration[ns][pyarrow]": timedelta,
 }
-ASTYPE_TIMEDELTA_ARGS = NUMPY_TIMEDELTA_ARGS | PYARROW_TIMEDELTA_ARGS
+TYPE_TIMEDELTA_ARGS = NUMPY_TIMEDELTA_ARGS | PYARROW_TIMEDELTA_ARGS
+ASTYPE_TIMEDELTA_ARGS = TYPE_TIMEDELTA_ARGS | PANDAS_ASTYPE_TIMEDELTA_ARGS
 
 PYTHON_STRING_ARGS = {str: str, "str": str}
-PANDAS_STRING_ARGS = {pd.StringDtype(): str}
+PANDAS_STRING_ARGS = {pd.StringDtype(): str, "string": str}
 NUMPY_STRING_ARGS = {np.str_: str, "str_": str, "unicode": str, "U": str}
 PYARROW_STRING_ARGS = {"string[pyarrow]": str}
 ASTYPE_STRING_ARGS = (
@@ -361,7 +399,7 @@ ASTYPE_STRING_ARGS = (
 )
 
 PYTHON_BYTES_ARGS = {bytes: bytes, "bytes": bytes}
-NUMPY_BYTES_ARGS = {np.bytes_: np.bytes_, "bytes_": np.bytes_, "S": np.bytes_}
+NUMPY_BYTES_ARGS = {np.bytes_: np.bytes_, "S": np.bytes_, "bytes_": np.bytes_}
 PYARROW_BYTES_ARGS = {"binary[pyarrow]": bytes}
 ASTYPE_BYTES_ARGS = PYTHON_BYTES_ARGS | NUMPY_BYTES_ARGS | PYARROW_BYTES_ARGS
 
@@ -380,7 +418,7 @@ ASTYPE_OBJECT_ARGS = PYTHON_OBJECT_ARGS | NUMPY_OBJECT_ARGS
 NUMPY_VOID_ARGS = {np.void: np.void, "void": np.void, "V": np.void}
 ASTYPE_VOID_ARGS = NUMPY_VOID_ARGS
 
-PYTHON_NOT_DATETIME_DTYPE_ARGS = (
+PYTHON_DTYPE_ARGS = (
     PYTHON_BOOL_ARGS
     | PYTHON_INT_ARGS
     | PYTHON_FLOAT_ARGS
@@ -401,6 +439,120 @@ NUMPY_NOT_DATETIMELIKE_DTYPE_ARGS = (
     | NUMPY_OBJECT_ARGS
     | NUMPY_VOID_ARGS
 )
+
+
+def get_dtype_arg_alias_maps() -> dict[Any, dict[Any, Any]]:
+    """Get mapping of DtypeArgs to their alias maps.
+
+    tests/_typing.py is regenerated after test starts,
+    so this wrapper function is needed.
+
+    Compare the list of import in tests/_typing.py
+    and the definitions in pandas-stubs/_typing.pyi.
+    """
+    from tests._typing import (
+        BooleanDtypeArg,
+        BuiltinBooleanDtypeArg,
+        BuiltinBytesDtypeArg,
+        BuiltinComplexDtypeArg,
+        BuiltinDtypeArg,
+        BuiltinFloatDtypeArg,
+        BuiltinIntDtypeArg,
+        BuiltinObjectDtypeArg,
+        BuiltinStrDtypeArg,
+        BytesDtypeArg,
+        CategoryDtypeArg,
+        ComplexDtypeArg,
+        FloatDtypeArg,
+        IntDtypeArg,
+        NumpyBooleanDtypeArg,
+        NumpyBytesDtypeArg,
+        NumpyComplexDtypeArg,
+        NumpyFloat16DtypeArg,
+        NumpyFloatNot16DtypeArg,
+        NumpyIntDtypeArg,
+        NumpyNotTimeDtypeArg,
+        NumpyObjectDtypeArg,
+        NumpyStrDtypeArg,
+        NumpyTimedeltaDtypeArg,
+        NumpyTimestampDtypeArg,
+        NumpyUIntDtypeArg,
+        NumpyVoidDtypeArg,
+        ObjectDtypeArg,
+        PandasAstypeTimedeltaDtypeArg,
+        PandasAstypeTimestampDtypeArg,
+        PandasBooleanDtypeArg,
+        PandasFloatDtypeArg,
+        PandasIntDtypeArg,
+        PandasStrDtypeArg,
+        PandasTimestampDtypeArg,
+        PandasUIntDtypeArg,
+        PyArrowBooleanDtypeArg,
+        PyArrowBytesDtypeArg,
+        PyArrowFloatDtypeArg,
+        PyArrowIntDtypeArg,
+        PyArrowStrDtypeArg,
+        PyArrowTimedeltaDtypeArg,
+        PyArrowTimestampDtypeArg,
+        PyArrowUIntDtypeArg,
+        StrDtypeArg,
+        TimedeltaDtypeArg,
+        TimestampDtypeArg,
+        UIntDtypeArg,
+        VoidDtypeArg,
+    )
+
+    return {
+        BooleanDtypeArg: ASTYPE_BOOL_ARGS,
+        BuiltinBooleanDtypeArg: PYTHON_BOOL_ARGS,
+        BuiltinBytesDtypeArg: PYTHON_BYTES_ARGS,
+        BuiltinComplexDtypeArg: PYTHON_COMPLEX_ARGS,
+        BuiltinDtypeArg: PYTHON_DTYPE_ARGS,
+        BuiltinFloatDtypeArg: PYTHON_FLOAT_ARGS,
+        BuiltinIntDtypeArg: PYTHON_INT_ARGS,
+        BuiltinObjectDtypeArg: PYTHON_OBJECT_ARGS,
+        BuiltinStrDtypeArg: PYTHON_STRING_ARGS,
+        BytesDtypeArg: ASTYPE_BYTES_ARGS,
+        CategoryDtypeArg: ASTYPE_CATEGORICAL_ARGS,
+        ComplexDtypeArg: ASTYPE_COMPLEX_ARGS,
+        FloatDtypeArg: ASTYPE_FLOAT_ARGS,
+        IntDtypeArg: ASTYPE_INT_ARGS,
+        NumpyBooleanDtypeArg: NUMPY_BOOL_ARGS,
+        NumpyBytesDtypeArg: NUMPY_BYTES_ARGS,
+        NumpyComplexDtypeArg: NUMPY_COMPLEX_ARGS,
+        NumpyFloat16DtypeArg: NUMPY_FLOAT16_ARGS,
+        NumpyFloatNot16DtypeArg: NUMPY_FLOAT_NOT16_ARGS,
+        NumpyIntDtypeArg: NUMPY_INT_ARGS,
+        NumpyNotTimeDtypeArg: NUMPY_NOT_DATETIMELIKE_DTYPE_ARGS,
+        NumpyObjectDtypeArg: NUMPY_OBJECT_ARGS,
+        NumpyStrDtypeArg: NUMPY_STRING_ARGS,
+        NumpyTimedeltaDtypeArg: NUMPY_TIMEDELTA_ARGS,
+        NumpyTimestampDtypeArg: NUMPY_TIMESTAMP_ARGS,
+        NumpyUIntDtypeArg: NUMPY_UINT_ARGS,
+        NumpyVoidDtypeArg: NUMPY_VOID_ARGS,
+        ObjectDtypeArg: ASTYPE_OBJECT_ARGS,
+        PandasAstypeTimedeltaDtypeArg: PANDAS_ASTYPE_TIMEDELTA_ARGS,
+        PandasAstypeTimestampDtypeArg: PANDAS_ASTYPE_TIMESTAMP_ARGS,
+        PandasBooleanDtypeArg: PANDAS_BOOL_ARGS,
+        PandasFloatDtypeArg: PANDAS_FLOAT_ARGS,
+        PandasIntDtypeArg: PANDAS_INT_ARGS,
+        PandasStrDtypeArg: PANDAS_STRING_ARGS,
+        PandasTimestampDtypeArg: PANDAS_TIMESTAMP_ARGS,
+        PandasUIntDtypeArg: PANDAS_UINT_ARGS,
+        PyArrowBooleanDtypeArg: PYARROW_BOOL_ARGS,
+        PyArrowBytesDtypeArg: PYARROW_BYTES_ARGS,
+        PyArrowFloatDtypeArg: PYARROW_FLOAT_ARGS,
+        PyArrowIntDtypeArg: PYARROW_INT_ARGS,
+        PyArrowStrDtypeArg: PYARROW_STRING_ARGS,
+        PyArrowTimedeltaDtypeArg: PYARROW_TIMEDELTA_ARGS,
+        PyArrowTimestampDtypeArg: PYARROW_TIMESTAMP_ARGS,
+        PyArrowUIntDtypeArg: PYARROW_UINT_ARGS,
+        StrDtypeArg: ASTYPE_STRING_ARGS,
+        TimedeltaDtypeArg: TYPE_TIMEDELTA_ARGS,
+        TimestampDtypeArg: TYPE_TIMESTAMP_ARGS,
+        UIntDtypeArg: ASTYPE_UINT_ARGS,
+        VoidDtypeArg: ASTYPE_VOID_ARGS,
+    }
 
 
 def check(
@@ -554,3 +706,20 @@ def exception_on_platform(dtype: type | str | ExtensionDtype) -> type[Exception]
     if (WINDOWS or MAC) and dtype in {"f16", "float128", "c32", "complex256"}:
         return TypeError
     return None
+
+
+def get_dtype(dtype: object) -> Generator[Any, None, None]:
+    """Extract types and string literals from a Union or Literal type."""
+    if isinstance(dtype, str):
+        yield dtype
+    # isinstance(type[bool], type) is True in py310, but not in newer versions
+    elif isinstance(dtype, type) and not str(dtype).startswith("type["):
+        if dtype is pd.DatetimeTZDtype:
+            yield dtype(tz=timezone.utc)
+        elif "pandas" in str(dtype):
+            yield dtype()
+        else:
+            yield dtype
+    else:
+        for arg in get_args(dtype):
+            yield from get_dtype(arg)

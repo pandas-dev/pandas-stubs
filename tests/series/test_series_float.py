@@ -10,10 +10,7 @@ from tests import (
     check,
     exception_on_platform,
 )
-from tests._typing import (
-    FloatDtypeArg,
-    PandasAstypeFloatDtypeArg,
-)
+from tests._typing import FloatDtypeArg
 
 
 def test_constructor() -> None:
@@ -70,6 +67,7 @@ def test_constructor_dtype(dtype: FloatDtypeArg, target_dtype: type) -> None:
         assert_type(pd.Series([1.0], dtype="float16"), "pd.Series[float]")
         assert_type(pd.Series([1.0], dtype="e"), "pd.Series[float]")
         assert_type(pd.Series([1.0], dtype="f2"), "pd.Series[float]")
+        assert_type(pd.Series([1.0], dtype="<f2"), "pd.Series[float]")
         # numpy float32
         assert_type(pd.Series([1.0], dtype=np.single), "pd.Series[float]")
         assert_type(pd.Series([1.0], dtype="single"), "pd.Series[float]")
@@ -89,6 +87,8 @@ def test_constructor_dtype(dtype: FloatDtypeArg, target_dtype: type) -> None:
         assert_type(pd.Series([1.0], dtype="g"), "pd.Series[float]")
         assert_type(pd.Series([1.0], dtype="f16"), "pd.Series[float]")
         # pyarrow float32
+        assert_type(pd.Series([1.0], dtype="float16[pyarrow]"), "pd.Series[float]")
+        # pyarrow float32
         assert_type(pd.Series([1.0], dtype="float32[pyarrow]"), "pd.Series[float]")
         assert_type(pd.Series([1.0], dtype="float[pyarrow]"), "pd.Series[float]")
         # pyarrow float64
@@ -99,9 +99,7 @@ def test_constructor_dtype(dtype: FloatDtypeArg, target_dtype: type) -> None:
 @pytest.mark.parametrize(
     ("cast_arg", "target_type"), ASTYPE_FLOAT_ARGS.items(), ids=repr
 )
-def test_astype_float(
-    cast_arg: FloatDtypeArg | PandasAstypeFloatDtypeArg, target_type: type
-) -> None:
+def test_astype_float(cast_arg: FloatDtypeArg, target_type: type) -> None:
     s = pd.Series([1, 2, 3])
 
     if exception_on_platform(cast_arg):
@@ -126,6 +124,7 @@ def test_astype_float(
         assert_type(s.astype("float16"), "pd.Series[float]")
         assert_type(s.astype("e"), "pd.Series[float]")
         assert_type(s.astype("f2"), "pd.Series[float]")
+        assert_type(s.astype("<f2"), "pd.Series[float]")
         # numpy float32
         assert_type(s.astype(np.single), "pd.Series[float]")
         assert_type(s.astype("single"), "pd.Series[float]")
@@ -144,6 +143,8 @@ def test_astype_float(
         assert_type(s.astype("float128"), "pd.Series[float]")
         assert_type(s.astype("g"), "pd.Series[float]")
         assert_type(s.astype("f16"), "pd.Series[float]")
+        # pyarrow float16
+        assert_type(s.astype("float16[pyarrow]"), "pd.Series[float]")
         # pyarrow float32
         assert_type(s.astype("float32[pyarrow]"), "pd.Series[float]")
         assert_type(s.astype("float[pyarrow]"), "pd.Series[float]")
