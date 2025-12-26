@@ -20,7 +20,7 @@ from pandas._typing import (
 class TimedeltaArray(DatetimeLikeArrayMixin, TimelikeOps):
     __array_priority__: int = ...
     @property
-    def dtype(self) -> np_1darray_td: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]
+    def dtype(self) -> np_1darray_td: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-override]
     def __init__(
         self,
         values: AnyArrayLike,
