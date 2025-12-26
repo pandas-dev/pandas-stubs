@@ -7,6 +7,7 @@ from typing import (
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
 from pandas.core.indexes.base import Index
 from pandas.core.series import Series
+import pyarrow as pa
 from typing_extensions import Self
 
 from pandas._libs.interval import (
@@ -22,8 +23,8 @@ from pandas._typing import (
     ScalarIndexer,
     SequenceIndexer,
     TakeIndexer,
-    np_1darray,
     np_1darray_bool,
+    np_1darray_object,
     np_ndarray,
 )
 
@@ -68,13 +69,13 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     ) -> Self: ...
     def __array__(
         self, dtype: NpDtype | None = None, copy: bool | None = None
-    ) -> np_1darray: ...
+    ) -> np_1darray_object: ...
     @overload
     def __getitem__(self, item: ScalarIndexer) -> IntervalOrNA: ...
     @overload
     def __getitem__(self, item: SequenceIndexer) -> Self: ...
-    def __eq__(self, other: object) -> bool: ...
-    def __ne__(self, other: object) -> bool: ...
+    def __eq__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-param-name-override]
+    def __ne__(self, other: object) -> np_1darray_bool: ...  # type: ignore[override]  # pyright: ignore[reportIncompatibleMethodOverride]  # pyrefly: ignore[bad-param-name-override]
     @property
     def dtype(self) -> IntervalDtype: ...
     @property
@@ -83,7 +84,7 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def size(self) -> int: ...
     def shift(self, periods: int = 1, fill_value: object = ...) -> IntervalArray: ...
     def take(  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride] # pyrefly: ignore[bad-param-name-override]
-        self: Self,
+        self,
         indices: TakeIndexer,
         *,
         allow_fill: bool = False,
@@ -104,8 +105,10 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     def mid(self) -> Index: ...
     @property
     def is_non_overlapping_monotonic(self) -> bool: ...
-    def __arrow_array__(self, type: DtypeArg | None = None) -> Any: ...
-    def to_tuples(self, na_tuple: bool = True) -> np_1darray: ...
+    def __arrow_array__(
+        self, type: DtypeArg | None = None
+    ) -> pa.ExtensionArray[Any]: ...
+    def to_tuples(self, na_tuple: bool = True) -> np_1darray_object: ...
     @overload
     def contains(self, other: Series) -> Series[bool]: ...
     @overload
