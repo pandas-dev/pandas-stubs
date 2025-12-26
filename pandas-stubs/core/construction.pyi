@@ -6,28 +6,31 @@ from pandas.core.arrays.boolean import BooleanArray
 from pandas.core.arrays.floating import FloatingArray
 from pandas.core.arrays.integer import IntegerArray
 from pandas.core.arrays.numpy_ import NumpyExtensionArray
+from pandas.core.arrays.string_ import StringArray
 from pandas.core.indexes.range import RangeIndex
 
 from pandas._libs.missing import NAType
 from pandas._libs.tslibs.nattype import NaTType
 from pandas._typing import (
-    BuiltinDtypeArg,
+    BuiltinNotStrDtypeArg,
     NumpyNotTimeDtypeArg,
     PandasBooleanDtypeArg,
     PandasFloatDtypeArg,
     PandasIntDtypeArg,
+    PandasStrDtypeArg,
     PandasUIntDtypeArg,
     SequenceNotStr,
     np_ndarray,
     np_ndarray_anyint,
     np_ndarray_bool,
     np_ndarray_float,
+    np_ndarray_str,
 )
 
 @overload
 def array(  # type: ignore[overload-overlap] # pyright: ignore[reportOverlappingOverload]
     data: Sequence[NAType | NaTType | None],
-    dtype: BuiltinDtypeArg | NumpyNotTimeDtypeArg | None = None,
+    dtype: BuiltinNotStrDtypeArg | NumpyNotTimeDtypeArg | None = None,
     copy: bool = True,
 ) -> NumpyExtensionArray: ...
 @overload
@@ -52,7 +55,13 @@ def array(
 ) -> FloatingArray: ...
 @overload
 def array(
+    data: SequenceNotStr[str | np.str_ | NAType | None] | np_ndarray_str | StringArray,
+    dtype: PandasStrDtypeArg | None = None,
+    copy: bool = True,
+) -> StringArray: ...
+@overload
+def array(
     data: SequenceNotStr[object] | np_ndarray | NumpyExtensionArray | RangeIndex,
-    dtype: BuiltinDtypeArg | NumpyNotTimeDtypeArg | None = None,
+    dtype: BuiltinNotStrDtypeArg | NumpyNotTimeDtypeArg | None = None,
     copy: bool = True,
 ) -> NumpyExtensionArray: ...
