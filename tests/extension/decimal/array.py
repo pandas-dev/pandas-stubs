@@ -206,9 +206,7 @@ class DecimalArray(OpsMixin, ExtensionArray):
         if isinstance(item, numbers.Integral):
             return self._data[item]
         # array, slice.
-        item = check_array_indexer(  # pyright: ignore[reportCallIssue,reportUnknownVariableType]
-            self, item  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-        )
+        item = check_array_indexer(self, item)
         return type(self)(self._data[item])
 
     def take(
