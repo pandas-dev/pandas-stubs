@@ -3,8 +3,7 @@ from typing import (
     Literal,
 )
 
-from pandas.core.arrays import PandasArray
-from pandas.core.series import Series
+from pandas.core.arrays.numpy_ import NumpyExtensionArray
 from typing_extensions import Self
 
 from pandas._libs.missing import NAType
@@ -26,8 +25,7 @@ class StringDtype(ExtensionDtype):
     @property
     def na_value(self) -> NAType | float: ...
 
-class StringArray(PandasArray):
+class StringArray(NumpyExtensionArray):
     def __init__(self, values: AnyArrayLike, copy: bool = False) -> None: ...
     def __arrow_array__(self, type: DtypeArg | None = None) -> Any: ...
     def __setitem__(self, key: Any, value: Any) -> None: ...
-    def value_counts(self, dropna: bool = True) -> Series[int]: ...
