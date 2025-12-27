@@ -200,20 +200,20 @@ def test_text_gradient() -> None:
 
 
 def test_to_excel(tmp_path: Path) -> None:
-    path = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
-    check(assert_type(DF.style.to_excel(path), None), type(None))
+    path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
+    check(assert_type(DF.style.to_excel(path_str), None), type(None))
 
 
 def test_to_html(tmp_path: Path) -> None:
     check(assert_type(DF.style.to_html(), str), str)
-    path = str(tmp_path / f"{uuid.uuid4()}test.html")
-    check(assert_type(DF.style.to_html(path), None), type(None))
+    path_str = str(tmp_path / f"{uuid.uuid4()}test.html")
+    check(assert_type(DF.style.to_html(path_str), None), type(None))
 
 
 def test_to_latex(tmp_path: Path) -> None:
     check(assert_type(DF.style.to_latex(), str), str)
-    path = str(tmp_path / f"{uuid.uuid4()}test.tex")
-    check(assert_type(DF.style.to_latex(path), None), type(None))
+    path_str = str(tmp_path / f"{uuid.uuid4()}test.tex")
+    check(assert_type(DF.style.to_latex(path_str), None), type(None))
 
 
 def test_export_use() -> None:

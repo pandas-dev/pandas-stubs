@@ -150,9 +150,9 @@ def test_json_reader(tmp_path: Path) -> None:
     def f1(gb: JsonReader) -> None:
         check(gb, JsonReader)
 
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(df.to_json(path), None), type(None))
-    json_reader = read_json(path, chunksize=1, lines=True)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(df.to_json(path_str), None), type(None))
+    json_reader = read_json(path_str, chunksize=1, lines=True)
     f1(json_reader)
     json_reader.close()
 
@@ -206,13 +206,13 @@ def test_statereader(tmp_path: Path) -> None:
     df = pd.DataFrame([[1, 2], [3, 4]], columns=["col_1", "col_2"])
     time_stamp = pd.Timestamp(2000, 2, 29, 14, 21)
     variable_labels = {"col_1": "This is an example"}
-    path = str(tmp_path / str(uuid.uuid4()))
+    path_str = str(tmp_path / str(uuid.uuid4()))
     df.to_stata(
-        path, time_stamp=time_stamp, variable_labels=variable_labels, version=None
+        path_str, time_stamp=time_stamp, variable_labels=variable_labels, version=None
     )
 
     def f1(gb: StataReader) -> None:
         check(gb, StataReader)
 
-    with StataReader(path) as reader:
+    with StataReader(path_str) as reader:
         f1(reader)

@@ -4,7 +4,6 @@ import csv
 from functools import partial
 import io
 import os
-import pathlib
 from pathlib import Path
 import sqlite3
 from typing import (
@@ -78,9 +77,9 @@ CWD = Path(__file__).parent.resolve()
 
 
 def test_orc(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_orc(path), None), type(None))
-    check(assert_type(read_orc(path), DataFrame), DataFrame)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(DF.to_orc(path_str), None), type(None))
+    check(assert_type(read_orc(path_str), DataFrame), DataFrame)
 
 
 def test_orc_path(tmp_path: Path) -> None:
@@ -99,9 +98,9 @@ def test_orc_buffer(tmp_path: Path) -> None:
 
 
 def test_orc_columns(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_orc(path, index=False), None), type(None))
-    check(assert_type(read_orc(path, columns=["a"]), DataFrame), DataFrame)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(DF.to_orc(path_str, index=False), None), type(None))
+    check(assert_type(read_orc(path_str, columns=["a"]), DataFrame), DataFrame)
 
 
 def test_orc_bytes() -> None:
@@ -109,10 +108,11 @@ def test_orc_bytes() -> None:
 
 
 def test_xml(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_xml(path), None), type(None))
-    check(assert_type(read_xml(path), DataFrame), DataFrame)
-    with Path(path).open("rb") as f:
+    path = tmp_path / str(uuid.uuid4())
+    path_str = str(path)
+    check(assert_type(DF.to_xml(path_str), None), type(None))
+    check(assert_type(read_xml(path_str), DataFrame), DataFrame)
+    with path.open("rb") as f:
         check(assert_type(read_xml(f), DataFrame), DataFrame)
 
 
@@ -122,9 +122,9 @@ def test_xml_str() -> None:
 
 
 def test_pickle(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_pickle(path), None), type(None))
-    check(assert_type(read_pickle(path), Any), DataFrame)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(DF.to_pickle(path_str), None), type(None))
+    check(assert_type(read_pickle(path_str), Any), DataFrame)
 
 
 def test_pickle_file_handle(tmp_path: Path) -> None:
@@ -135,59 +135,51 @@ def test_pickle_file_handle(tmp_path: Path) -> None:
 
 
 def test_pickle_path(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_pickle(path), None), type(None))
-    check(assert_type(read_pickle(Path(path)), Any), DataFrame)
-
-
-def test_pickle_protocol(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    DF.to_pickle(path, protocol=3)
+    path = tmp_path / str(uuid.uuid4())
+    path_str = str(path)
+    check(assert_type(DF.to_pickle(path_str), None), type(None))
     check(assert_type(read_pickle(path), Any), DataFrame)
 
 
-def test_pickle_compression(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    DF.to_pickle(path, compression="gzip")
-    check(
-        assert_type(read_pickle(path, compression="gzip"), Any),
-        DataFrame,
-    )
+def test_pickle_protocol(tmp_path: Path) -> None:
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    DF.to_pickle(path_str, protocol=3)
+    check(assert_type(read_pickle(path_str), Any), DataFrame)
 
-    check(
-        assert_type(read_pickle(path, compression="gzip"), Any),
-        DataFrame,
-    )
+
+def test_pickle_compression(tmp_path: Path) -> None:
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    DF.to_pickle(path_str, compression="gzip")
+    check(assert_type(read_pickle(path_str, compression="gzip"), Any), DataFrame)
+
+    check(assert_type(read_pickle(path_str, compression="gzip"), Any), DataFrame)
 
 
 def test_pickle_storage_options(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    DF.to_pickle(path, storage_options={})
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    DF.to_pickle(path_str, storage_options={})
 
-    check(
-        assert_type(read_pickle(path, storage_options={}), Any),
-        DataFrame,
-    )
+    check(assert_type(read_pickle(path_str, storage_options={}), Any), DataFrame)
 
 
 def test_to_pickle_series(tmp_path: Path) -> None:
     s: Series = DF["a"]
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(s.to_pickle(path), None), type(None))
-    check(assert_type(read_pickle(path), Any), Series)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(s.to_pickle(path_str), None), type(None))
+    check(assert_type(read_pickle(path_str), Any), Series)
 
 
 def test_read_stata_df(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    DF.to_stata(path)
-    check(assert_type(read_stata(path), pd.DataFrame), pd.DataFrame)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    DF.to_stata(path_str)
+    check(assert_type(read_stata(path_str), pd.DataFrame), pd.DataFrame)
 
 
 def test_read_stata_iterator(tmp_path: Path) -> None:
-    str_path = str(tmp_path / str(uuid.uuid4()))
-    DF.to_stata(str_path)
-    check(assert_type(read_stata(str_path, iterator=True), StataReader), StataReader)
-    reader = read_stata(str_path, chunksize=1)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    DF.to_stata(path_str)
+    check(assert_type(read_stata(path_str, iterator=True), StataReader), StataReader)
+    reader = read_stata(path_str, chunksize=1)
     check(assert_type(reader, StataReader), StataReader)
 
 
@@ -295,7 +287,7 @@ def test_clipboard_iterator() -> None:
 
 
 def test_sas_bdat() -> None:
-    path = pathlib.Path(CWD, "data", "airline.sas7bdat")
+    path = Path(CWD, "data", "airline.sas7bdat")
     check(assert_type(read_sas(path), DataFrame), DataFrame)
     with check(
         assert_type(read_sas(path, iterator=True), SAS7BDATReader | XportReader),
@@ -320,7 +312,7 @@ def test_sas_bdat() -> None:
 
 
 def test_sas_xport() -> None:
-    path = pathlib.Path(CWD, "data", "SSHSV1_A.xpt")
+    path = Path(CWD, "data", "SSHSV1_A.xpt")
     check(assert_type(read_sas(path), DataFrame), DataFrame)
     with check(
         assert_type(read_sas(path, iterator=True), SAS7BDATReader | XportReader),
@@ -346,15 +338,15 @@ def test_sas_xport() -> None:
 
 @pytest.mark.skipif(NUMPY20, reason="numpy 2.0 not compatible with Pytables")
 def test_hdf(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_hdf(path, key="df"), None), type(None))
-    check(assert_type(read_hdf(path), DataFrame | Series), DataFrame)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(DF.to_hdf(path_str, key="df"), None), type(None))
+    check(assert_type(read_hdf(path_str), DataFrame | Series), DataFrame)
 
 
 @pytest.mark.skipif(NUMPY20, reason="numpy 2.0 not compatible with Pytables")
 def test_hdfstore(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    store = HDFStore(path, model="w")
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    store = HDFStore(path_str, model="w")
     check(assert_type(store, HDFStore), HDFStore)
     check(assert_type(store.put("df", DF, "table"), None), type(None))
     check(assert_type(store.append("df2", DF, "table"), None), type(None))
@@ -381,23 +373,20 @@ def test_hdfstore(tmp_path: Path) -> None:
         check(assert_type(key, str), str)
     check(assert_type(store.close(), None), type(None))
 
-    store = HDFStore(path, model="r")
-    check(
-        assert_type(read_hdf(store, "df"), DataFrame | Series),
-        DataFrame,
-    )
+    store = HDFStore(path_str, model="r")
+    check(assert_type(read_hdf(store, "df"), DataFrame | Series), DataFrame)
     store.close()
 
 
 @pytest.mark.skipif(NUMPY20, reason="numpy 2.0 not compatible with Pytables")
 def test_read_hdf_iterator(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_hdf(path, key="df", format="table"), None), type(None))
-    ti = read_hdf(path, chunksize=1)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(DF.to_hdf(path_str, key="df", format="table"), None), type(None))
+    ti = read_hdf(path_str, chunksize=1)
     check(assert_type(ti, TableIterator), TableIterator)
     ti.close()
 
-    ti = read_hdf(path, "df", iterator=True)
+    ti = read_hdf(path_str, "df", iterator=True)
     check(assert_type(ti, TableIterator), TableIterator)
     for _ in ti:
         pass
@@ -406,9 +395,9 @@ def test_read_hdf_iterator(tmp_path: Path) -> None:
 
 @pytest.mark.skipif(NUMPY20, reason="numpy 2.0 not compatible with Pytables")
 def test_hdf_context_manager(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_hdf(path, key="df", format="table"), None), type(None))
-    with HDFStore(path, mode="r") as store:
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(DF.to_hdf(path_str, key="df", format="table"), None), type(None))
+    with HDFStore(path_str, mode="r") as store:
         check(assert_type(store.is_open, bool), bool)
         check(assert_type(store.get("df"), DataFrame | Series), DataFrame)
 
@@ -416,27 +405,27 @@ def test_hdf_context_manager(tmp_path: Path) -> None:
 @pytest.mark.skipif(NUMPY20, reason="numpy 2.0 not compatible with Pytables")
 def test_hdf_series(tmp_path: Path) -> None:
     s = DF["a"]
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(s.to_hdf(path, key="s"), None), type(None))
-    check(assert_type(read_hdf(path, "s"), DataFrame | Series), Series)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(s.to_hdf(path_str, key="s"), None), type(None))
+    check(assert_type(read_hdf(path_str, "s"), DataFrame | Series), Series)
 
 
 def test_spss() -> None:
-    path = Path(CWD, "data", "labelled-num.sav")
+    path_str = Path(CWD, "data", "labelled-num.sav")
     check(
-        assert_type(read_spss(path, convert_categoricals=True), DataFrame),
+        assert_type(read_spss(path_str, convert_categoricals=True), DataFrame),
         DataFrame,
     )
     check(
-        assert_type(read_spss(str(path), usecols=["VAR00002"]), DataFrame),
+        assert_type(read_spss(str(path_str), usecols=["VAR00002"]), DataFrame),
         DataFrame,
     )
 
 
 def test_json(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_json(path), None), type(None))
-    check(assert_type(read_json(path), DataFrame), DataFrame)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(DF.to_json(path_str), None), type(None))
+    check(assert_type(read_json(path_str), DataFrame), DataFrame)
     json_str = DF.to_json()
     check(assert_type(json_str, str), str)
     bin_json = io.StringIO(json_str)
@@ -461,9 +450,9 @@ def test_json_series_bytes() -> None:
 
 def test_json_series(tmp_path: Path) -> None:
     s = DF["a"]
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(s.to_json(path), None), type(None))
-    check(assert_type(read_json(path, typ="series"), Series), Series)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(s.to_json(path_str), None), type(None))
+    check(assert_type(read_json(path_str, typ="series"), Series), Series)
     check(assert_type(DF.to_json(), str), str)
     check(
         assert_type(
@@ -511,9 +500,9 @@ def test_json_series(tmp_path: Path) -> None:
 
 
 def test_json_chunk(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_json(path), None), type(None))
-    json_reader = read_json(path, chunksize=1, lines=True)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(DF.to_json(path_str), None), type(None))
+    json_reader = read_json(path_str, chunksize=1, lines=True)
     check(assert_type(json_reader, "JsonReader[DataFrame]"), JsonReader)
     for sub_df in json_reader:
         check(assert_type(sub_df, DataFrame), DataFrame)
@@ -521,30 +510,30 @@ def test_json_chunk(tmp_path: Path) -> None:
 
 
 def test_parquet(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_parquet(path), None), type(None))
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(DF.to_parquet(path_str), None), type(None))
     check(assert_type(DF.to_parquet(), bytes), bytes)
-    check(assert_type(read_parquet(path), DataFrame), DataFrame)
+    check(assert_type(read_parquet(path_str), DataFrame), DataFrame)
 
 
 def test_parquet_options(tmp_path: Path) -> None:
-    path = str(tmp_path / f"{uuid.uuid4()}test.parquet")
+    path_str = str(tmp_path / f"{uuid.uuid4()}test.parquet")
     check(
-        assert_type(DF.to_parquet(path, compression=None, index=True), None),
+        assert_type(DF.to_parquet(path_str, compression=None, index=True), None),
         type(None),
     )
-    check(assert_type(read_parquet(path), DataFrame), DataFrame)
-    check(assert_type(read_parquet(path), DataFrame), DataFrame)
+    check(assert_type(read_parquet(path_str), DataFrame), DataFrame)
+    check(assert_type(read_parquet(path_str), DataFrame), DataFrame)
 
     sel = [("a", ">", 2)]
-    check(assert_type(read_parquet(path, filters=sel), DataFrame), DataFrame)
+    check(assert_type(read_parquet(path_str, filters=sel), DataFrame), DataFrame)
 
 
 def test_feather(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_feather(path), None), type(None))
-    check(assert_type(read_feather(path), DataFrame), DataFrame)
-    check(assert_type(read_feather(path, columns=["a"]), DataFrame), DataFrame)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(DF.to_feather(path_str), None), type(None))
+    check(assert_type(read_feather(path_str), DataFrame), DataFrame)
+    check(assert_type(read_feather(path_str, columns=["a"]), DataFrame), DataFrame)
     with io.BytesIO() as bio:
         check(assert_type(DF.to_feather(bio), None), type(None))
         bio.seek(0)
@@ -552,38 +541,37 @@ def test_feather(tmp_path: Path) -> None:
 
 
 def test_read_csv(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_csv(path), None), type(None))
-    check(assert_type(read_csv(path), DataFrame), DataFrame)
-    with Path(path).open() as csv_file:
+    path = tmp_path / str(uuid.uuid4())
+    path_str = str(path)
+    check(assert_type(DF.to_csv(path_str), None), type(None))
+    check(assert_type(read_csv(path_str), DataFrame), DataFrame)
+    with path.open() as csv_file:
         check(assert_type(read_csv(csv_file), DataFrame), DataFrame)
-    with Path(path).open() as csv_file:
+    with path.open() as csv_file:
         sio = io.StringIO(csv_file.read())
         check(assert_type(read_csv(sio), DataFrame), DataFrame)
-    check(assert_type(read_csv(path, iterator=False), DataFrame), DataFrame)
-    check(assert_type(read_csv(path, chunksize=None), DataFrame), DataFrame)
+    check(assert_type(read_csv(path_str, iterator=False), DataFrame), DataFrame)
+    check(assert_type(read_csv(path_str, chunksize=None), DataFrame), DataFrame)
     check(
-        assert_type(read_csv(path, dtype=defaultdict(lambda: "f8")), DataFrame),
+        assert_type(read_csv(path_str, dtype=defaultdict(lambda: "f8")), DataFrame),
         DataFrame,
     )
 
     def cols(x: str) -> bool:
         return x in ["a", "b"]
 
-    pd.read_csv(path, usecols=cols)
+    pd.read_csv(path_str, usecols=cols)
 
 
 def test_read_csv_iterator(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_csv(path), None), type(None))
-    tfr = read_csv(path, iterator=True)
+    path = tmp_path / str(uuid.uuid4())
+    path_str = str(path)
+    check(assert_type(DF.to_csv(path_str), None), type(None))
+    tfr = read_csv(path_str, iterator=True)
     check(assert_type(tfr, TextFileReader), TextFileReader)
     tfr.close()
-    tfr2 = read_csv(pathlib.Path(path), chunksize=1)
-    check(
-        assert_type(tfr2, TextFileReader),
-        TextFileReader,
-    )
+    tfr2 = read_csv(path, chunksize=1)
+    check(assert_type(tfr2, TextFileReader), TextFileReader)
     tfr2.close()
 
 
@@ -595,15 +583,18 @@ def test_types_read_csv_num(tmp_path: Path) -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
     check(assert_type(df.to_csv(), str), str)
 
-    path = str(tmp_path / str(uuid.uuid4()))
-    df.to_csv(path)
-    check(assert_type(pd.read_csv(path), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.read_csv(path, sep="a"), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.read_csv(path, header=None), pd.DataFrame), pd.DataFrame)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    df.to_csv(path_str)
+    check(assert_type(pd.read_csv(path_str), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.read_csv(path_str, sep="a"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.read_csv(path_str, header=None), pd.DataFrame), pd.DataFrame)
     check(
         assert_type(
             pd.read_csv(
-                path, engine="python", true_values=["no", "No", "NO"], na_filter=False
+                path_str,
+                engine="python",
+                true_values=["no", "No", "NO"],
+                na_filter=False,
             ),
             pd.DataFrame,
         ),
@@ -612,7 +603,7 @@ def test_types_read_csv_num(tmp_path: Path) -> None:
     check(
         assert_type(
             pd.read_csv(
-                path,
+                path_str,
                 skiprows=lambda x: x in [0, 2],
                 skip_blank_lines=True,
                 dayfirst=False,
@@ -621,58 +612,69 @@ def test_types_read_csv_num(tmp_path: Path) -> None:
         ),
         pd.DataFrame,
     )
-    check(assert_type(pd.read_csv(path, nrows=2), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.read_csv(path_str, nrows=2), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(pd.read_csv(path, dtype={"a": float, "b": int}), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(assert_type(pd.read_csv(path, usecols=["col1"]), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.read_csv(path, usecols=[0]), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(pd.read_csv(path, usecols=np.array([0])), pd.DataFrame),
+        assert_type(pd.read_csv(path_str, dtype={"a": float, "b": int}), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_csv(path, usecols=("col1",)), pd.DataFrame),
+        assert_type(pd.read_csv(path_str, usecols=["col1"]), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(pd.read_csv(path_str, usecols=[0]), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.read_csv(path_str, usecols=np.array([0])), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_csv(path, usecols=pd.Series(data=["col1"])), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(assert_type(pd.read_csv(path, converters=None), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(
-            pd.read_csv(path, names=("first", "second"), header=0), pd.DataFrame
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(pd.read_csv(path, names=range(2), header=0), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(pd.read_csv(path, names=(1, "two"), header=0), pd.DataFrame),
+        assert_type(pd.read_csv(path_str, usecols=("col1",)), pd.DataFrame),
         pd.DataFrame,
     )
     check(
         assert_type(
-            pd.read_csv(path, names=(("first", 1), ("last", 2)), header=0), pd.DataFrame
+            pd.read_csv(path_str, usecols=pd.Series(data=["col1"])), pd.DataFrame
         ),
         pd.DataFrame,
     )
-    check(assert_type(pd.read_csv(path, usecols=None), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.read_csv(path, usecols=["col1"]), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.read_csv(path, usecols=(0,)), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.read_csv(path, usecols=range(1)), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(pd.read_csv(path, usecols=_true_if_col1), pd.DataFrame),
+        assert_type(pd.read_csv(path_str, converters=None), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(
+            pd.read_csv(path_str, names=("first", "second"), header=0), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.read_csv(path_str, names=range(2), header=0), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.read_csv(path_str, names=(1, "two"), header=0), pd.DataFrame),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.read_csv(path_str, names=(("first", 1), ("last", 2)), header=0),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(assert_type(pd.read_csv(path_str, usecols=None), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.read_csv(path_str, usecols=["col1"]), pd.DataFrame), pd.DataFrame
+    )
+    check(assert_type(pd.read_csv(path_str, usecols=(0,)), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.read_csv(path_str, usecols=range(1)), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(pd.read_csv(path_str, usecols=_true_if_col1), pd.DataFrame),
         pd.DataFrame,
     )
     check(
         assert_type(
             pd.read_csv(
-                path,
+                path_str,
                 names=[1, 2],
                 usecols=_true_if_greater_than_0,
                 header=0,
@@ -685,7 +687,7 @@ def test_types_read_csv_num(tmp_path: Path) -> None:
     check(
         assert_type(
             pd.read_csv(
-                path,
+                path_str,
                 names=(("head", 1), ("tail", 2)),
                 usecols=_true_if_first_param_is_head,
                 header=0,
@@ -697,27 +699,27 @@ def test_types_read_csv_num(tmp_path: Path) -> None:
     )
 
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_csv(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
-        pd.read_csv(path, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        pd.read_csv(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        pd.read_csv(path_str, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
         def cols2(x: set[float]) -> bool:
             return sum(x) < 1.0
 
         pd.read_csv("file.csv", usecols=cols2)  # type: ignore[type-var] # pyright: ignore[reportArgumentType]
 
-    tfr1 = pd.read_csv(path, nrows=2, iterator=True, chunksize=3)
+    tfr1 = pd.read_csv(path_str, nrows=2, iterator=True, chunksize=3)
     check(assert_type(tfr1, TextFileReader), TextFileReader)
     tfr1.close()
 
-    tfr2 = pd.read_csv(path, nrows=2, chunksize=1)
+    tfr2 = pd.read_csv(path_str, nrows=2, chunksize=1)
     check(assert_type(tfr2, TextFileReader), TextFileReader)
     tfr2.close()
 
-    tfr3 = pd.read_csv(path, nrows=2, iterator=False, chunksize=1)
+    tfr3 = pd.read_csv(path_str, nrows=2, iterator=False, chunksize=1)
     check(assert_type(tfr3, TextFileReader), TextFileReader)
     tfr3.close()
 
-    tfr4 = pd.read_csv(path, nrows=2, iterator=True)
+    tfr4 = pd.read_csv(path_str, nrows=2, iterator=True)
     check(assert_type(tfr4, TextFileReader), TextFileReader)
     tfr4.close()
 
@@ -725,26 +727,28 @@ def test_types_read_csv_num(tmp_path: Path) -> None:
 def test_types_read_csv_date(tmp_path: Path) -> None:
     df_dates = pd.DataFrame(data={"col1": ["2023-03-15", "2023-04-20"]})
 
-    path = str(tmp_path / str(uuid.uuid4()))
-    df_dates.to_csv(path)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    df_dates.to_csv(path_str)
 
     check(
         assert_type(
-            pd.read_csv(path, parse_dates=["col1"], date_format="%Y-%m-%d"),
+            pd.read_csv(path_str, parse_dates=["col1"], date_format="%Y-%m-%d"),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     check(
         assert_type(
-            pd.read_csv(path, parse_dates=["col1"], date_format={"col1": "%Y-%m-%d"}),
+            pd.read_csv(
+                path_str, parse_dates=["col1"], date_format={"col1": "%Y-%m-%d"}
+            ),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     check(
         assert_type(
-            pd.read_csv(path, parse_dates=["col1"], date_format={1: "%Y-%m-%d"}),
+            pd.read_csv(path_str, parse_dates=["col1"], date_format={1: "%Y-%m-%d"}),
             pd.DataFrame,
         ),
         pd.DataFrame,
@@ -752,45 +756,47 @@ def test_types_read_csv_date(tmp_path: Path) -> None:
 
 
 def test_read_table(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_csv(path, sep="\t"), None), type(None))
-    check(assert_type(read_table(path), DataFrame), DataFrame)
-    check(assert_type(read_table(path, iterator=False), DataFrame), DataFrame)
-    check(assert_type(read_table(path, chunksize=None), DataFrame), DataFrame)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(DF.to_csv(path_str, sep="\t"), None), type(None))
+    check(assert_type(read_table(path_str), DataFrame), DataFrame)
+    check(assert_type(read_table(path_str, iterator=False), DataFrame), DataFrame)
+    check(assert_type(read_table(path_str, chunksize=None), DataFrame), DataFrame)
     check(
-        assert_type(read_table(path, dtype=defaultdict(lambda: "f8")), DataFrame),
-        DataFrame,
-    )
-    check(
-        assert_type(read_table(path, names=("first", "second"), header=0), DataFrame),
-        DataFrame,
-    )
-    check(
-        assert_type(read_table(path, names=range(2), header=0), DataFrame),
-        DataFrame,
-    )
-    check(
-        assert_type(read_table(path, names=(1, "two"), header=0), DataFrame),
+        assert_type(read_table(path_str, dtype=defaultdict(lambda: "f8")), DataFrame),
         DataFrame,
     )
     check(
         assert_type(
-            read_table(path, names=(("first", 1), ("last", 2)), header=0), DataFrame
+            read_table(path_str, names=("first", "second"), header=0), DataFrame
         ),
         DataFrame,
     )
     check(
-        assert_type(read_table(path, usecols=None), DataFrame),
+        assert_type(read_table(path_str, names=range(2), header=0), DataFrame),
         DataFrame,
     )
-    check(assert_type(read_table(path, usecols=["a"]), DataFrame), DataFrame)
-    check(assert_type(read_table(path, usecols=(0,)), DataFrame), DataFrame)
-    check(assert_type(read_table(path, usecols=range(1)), DataFrame), DataFrame)
-    check(assert_type(read_table(path, usecols=_true_if_b), DataFrame), DataFrame)
+    check(
+        assert_type(read_table(path_str, names=(1, "two"), header=0), DataFrame),
+        DataFrame,
+    )
+    check(
+        assert_type(
+            read_table(path_str, names=(("first", 1), ("last", 2)), header=0), DataFrame
+        ),
+        DataFrame,
+    )
+    check(
+        assert_type(read_table(path_str, usecols=None), DataFrame),
+        DataFrame,
+    )
+    check(assert_type(read_table(path_str, usecols=["a"]), DataFrame), DataFrame)
+    check(assert_type(read_table(path_str, usecols=(0,)), DataFrame), DataFrame)
+    check(assert_type(read_table(path_str, usecols=range(1)), DataFrame), DataFrame)
+    check(assert_type(read_table(path_str, usecols=_true_if_b), DataFrame), DataFrame)
     check(
         assert_type(
             read_table(
-                path,
+                path_str,
                 names=[1, 2],
                 usecols=_true_if_greater_than_0,
                 header=0,
@@ -803,7 +809,7 @@ def test_read_table(tmp_path: Path) -> None:
     check(
         assert_type(
             read_table(
-                path,
+                path_str,
                 names=(("head", 1), ("tail", 2)),
                 usecols=_true_if_first_param_is_head,
                 header=0,
@@ -814,17 +820,17 @@ def test_read_table(tmp_path: Path) -> None:
         DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_table(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
-        pd.read_table(path, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        pd.read_table(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        pd.read_table(path_str, usecols="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_read_table_iterator(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_csv(path, sep="\t"), None), type(None))
-    tfr = read_table(path, iterator=True)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(DF.to_csv(path_str, sep="\t"), None), type(None))
+    tfr = read_table(path_str, iterator=True)
     check(assert_type(tfr, TextFileReader), TextFileReader)
     tfr.close()
-    tfr2 = read_table(path, chunksize=1)
+    tfr2 = read_table(path_str, chunksize=1)
     check(assert_type(tfr2, TextFileReader), TextFileReader)
     tfr2.close()
 
@@ -832,47 +838,48 @@ def test_read_table_iterator(tmp_path: Path) -> None:
 def test_types_read_table(tmp_path: Path) -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
-    path = str(tmp_path / str(uuid.uuid4()))
-    df.to_csv(path)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    df.to_csv(path_str)
     check(
-        assert_type(pd.read_table(path, sep=",", converters=None), pd.DataFrame),
+        assert_type(pd.read_table(path_str, sep=",", converters=None), pd.DataFrame),
         pd.DataFrame,
     )
 
 
 def test_btest_read_fwf(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    DF.to_string(path, index=False)
+    path = tmp_path / str(uuid.uuid4())
+    path_str = str(path)
+    DF.to_string(path_str, index=False)
+    check(assert_type(read_fwf(path_str), DataFrame), DataFrame)
     check(assert_type(read_fwf(path), DataFrame), DataFrame)
-    check(assert_type(read_fwf(pathlib.Path(path)), DataFrame), DataFrame)
 
-    with Path(path).open() as fwf_file:
+    with path.open() as fwf_file:
         check(
             assert_type(read_fwf(fwf_file), DataFrame),
             DataFrame,
         )
-    with Path(path).open() as fwf_file:
+    with path.open() as fwf_file:
         sio = io.StringIO(fwf_file.read())
         check(assert_type(read_fwf(sio), DataFrame), DataFrame)
-    with Path(path).open("rb") as fwf_file:
+    with path.open("rb") as fwf_file:
         bio = io.BytesIO(fwf_file.read())
         check(assert_type(read_fwf(bio), DataFrame), DataFrame)
-    with read_fwf(path, iterator=True) as fwf_iterator:
+    with read_fwf(path_str, iterator=True) as fwf_iterator:
         check(assert_type(fwf_iterator, TextFileReader), TextFileReader)
-    with read_fwf(path, chunksize=1) as fwf_iterator2:
+    with read_fwf(path_str, chunksize=1) as fwf_iterator2:
         check(assert_type(fwf_iterator2, TextFileReader), TextFileReader)
 
 
 def test_text_file_reader(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    DF.to_string(path, index=False)
-    tfr = TextFileReader(path, engine="python")
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    DF.to_string(path_str, index=False)
+    tfr = TextFileReader(path_str, engine="python")
     check(assert_type(tfr, TextFileReader), TextFileReader)
     check(assert_type(tfr.read(1), DataFrame), DataFrame)
     check(assert_type(tfr.close(), None), type(None))
-    with TextFileReader(path, engine="python") as tfr:
+    with TextFileReader(path_str, engine="python") as tfr:
         check(assert_type(tfr.read(1), DataFrame), DataFrame)
-    with TextFileReader(path, engine="python") as tfr:
+    with TextFileReader(path_str, engine="python") as tfr:
         check(assert_type(tfr.__next__(), DataFrame), DataFrame)
         df_iter: DataFrame
         for df_iter in tfr:
@@ -882,85 +889,90 @@ def test_text_file_reader(tmp_path: Path) -> None:
 def test_to_csv_series(tmp_path: Path) -> None:
     s = DF.iloc[:, 0]
     check(assert_type(s.to_csv(), str), str)
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(s.to_csv(path), None), type(None))
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(s.to_csv(path_str), None), type(None))
 
 
 def test_read_excel(tmp_path: Path) -> None:
-    path = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
+    path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
     # https://github.com/pandas-dev/pandas-stubs/pull/33
-    check(assert_type(pd.DataFrame({"A": [1, 2, 3]}).to_excel(path), None), type(None))
-    check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(pd.read_excel(path, sheet_name="Sheet1"), pd.DataFrame),
+        assert_type(pd.DataFrame({"A": [1, 2, 3]}).to_excel(path_str), None), type(None)
+    )
+    check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.read_excel(path_str, sheet_name="Sheet1"), pd.DataFrame),
         pd.DataFrame,
     )
     check(
         assert_type(
-            pd.read_excel(path, sheet_name=["Sheet1"]),
-            dict[str, pd.DataFrame],
+            pd.read_excel(path_str, sheet_name=["Sheet1"]), dict[str, pd.DataFrame]
         ),
         dict,
     )
     # GH 98
-    check(assert_type(pd.read_excel(path, sheet_name=0), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(pd.read_excel(path, sheet_name=[0]), dict[int, pd.DataFrame]),
+        assert_type(pd.read_excel(path_str, sheet_name=0), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(pd.read_excel(path_str, sheet_name=[0]), dict[int, pd.DataFrame]),
         dict,
     )
     check(
         assert_type(
-            pd.read_excel(path, sheet_name=[0, "Sheet1"]), dict[int | str, pd.DataFrame]
+            pd.read_excel(path_str, sheet_name=[0, "Sheet1"]),
+            dict[int | str, pd.DataFrame],
         ),
         dict,
     )
     # GH 641
     check(
-        assert_type(pd.read_excel(path, sheet_name=None), dict[str, pd.DataFrame]),
+        assert_type(pd.read_excel(path_str, sheet_name=None), dict[str, pd.DataFrame]),
         dict,
     )
     check(
-        assert_type(pd.read_excel(path, names=("test",), header=0), pd.DataFrame),
+        assert_type(pd.read_excel(path_str, names=("test",), header=0), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_excel(path, names=(1,), header=0), pd.DataFrame),
+        assert_type(pd.read_excel(path_str, names=(1,), header=0), pd.DataFrame),
         pd.DataFrame,
     )
     check(
         assert_type(
-            pd.read_excel(path, names=(("higher", "lower"),), header=0), pd.DataFrame
+            pd.read_excel(path_str, names=(("higher", "lower"),), header=0),
+            pd.DataFrame,
         ),
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_excel(path, names=range(1), header=0), pd.DataFrame),
+        assert_type(pd.read_excel(path_str, names=range(1), header=0), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_excel(path, usecols=None), pd.DataFrame),
+        assert_type(pd.read_excel(path_str, usecols=None), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_excel(path, usecols=["A"]), pd.DataFrame),
+        assert_type(pd.read_excel(path_str, usecols=["A"]), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_excel(path, usecols=(0,)), pd.DataFrame),
+        assert_type(pd.read_excel(path_str, usecols=(0,)), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_excel(path, usecols=range(1)), pd.DataFrame),
+        assert_type(pd.read_excel(path_str, usecols=range(1)), pd.DataFrame),
         pd.DataFrame,
     )
     check(
-        assert_type(pd.read_excel(path, usecols=_true_if_b), pd.DataFrame),
+        assert_type(pd.read_excel(path_str, usecols=_true_if_b), pd.DataFrame),
         pd.DataFrame,
     )
     check(
         assert_type(
             pd.read_excel(
-                path,
+                path_str,
                 names=[1, 2],
                 usecols=_true_if_greater_than_0,
                 header=0,
@@ -973,7 +985,7 @@ def test_read_excel(tmp_path: Path) -> None:
     check(
         assert_type(
             pd.read_excel(
-                path,
+                path_str,
                 names=(("head", 1), ("tail", 2)),
                 usecols=_true_if_first_param_is_head,
                 header=0,
@@ -983,12 +995,13 @@ def test_read_excel(tmp_path: Path) -> None:
         ),
         pd.DataFrame,
     )
-    check(assert_type(pd.read_excel(path, usecols="A"), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.read_excel(path_str, usecols="A"), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(pd.read_excel(path, engine="calamine"), pd.DataFrame), pd.DataFrame
+        assert_type(pd.read_excel(path_str, engine="calamine"), pd.DataFrame),
+        pd.DataFrame,
     )
     if TYPE_CHECKING_INVALID_USAGE:
-        pd.read_excel(path, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
+        pd.read_excel(path_str, names="abcd")  # type: ignore[call-overload] # pyright: ignore[reportArgumentType]
 
 
 def test_read_excel_io_types(tmp_path: Path) -> None:
@@ -1007,42 +1020,41 @@ def test_read_excel_io_types(tmp_path: Path) -> None:
 
 
 def test_read_excel_basic(tmp_path: Path) -> None:
-    path = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
-    check(assert_type(DF.to_excel(path), None), type(None))
-    check(assert_type(read_excel(path), DataFrame), DataFrame)
-    check(assert_type(read_excel(path, sheet_name="Sheet1"), DataFrame), DataFrame)
-    check(assert_type(read_excel(path, sheet_name=0), DataFrame), DataFrame)
+    path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
+    check(assert_type(DF.to_excel(path_str), None), type(None))
+    check(assert_type(read_excel(path_str), DataFrame), DataFrame)
+    check(assert_type(read_excel(path_str, sheet_name="Sheet1"), DataFrame), DataFrame)
+    check(assert_type(read_excel(path_str, sheet_name=0), DataFrame), DataFrame)
 
 
 def test_read_excel_list(tmp_path: Path) -> None:
-    path = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
-    check(assert_type(DF.to_excel(path), None), type(None))
+    path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
+    check(assert_type(DF.to_excel(path_str), None), type(None))
     check(
-        assert_type(read_excel(path, sheet_name=["Sheet1"]), dict[str, DataFrame]), dict
+        assert_type(read_excel(path_str, sheet_name=["Sheet1"]), dict[str, DataFrame]),
+        dict,
     )
-    check(assert_type(read_excel(path, sheet_name=[0]), dict[int, DataFrame]), dict)
+    check(assert_type(read_excel(path_str, sheet_name=[0]), dict[int, DataFrame]), dict)
 
 
 def test_read_excel_dtypes(tmp_path: Path) -> None:
     # GH 440
     df = pd.DataFrame({"a": [1, 2, 3], "b": ["x", "y", "z"], "c": [10.0, 20.0, 30.3]})
-    path = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
-    check(assert_type(df.to_excel(path), None), type(None))
+    path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
+    check(assert_type(df.to_excel(path_str), None), type(None))
     dtypes = {"a": np.int64, "b": str, "c": np.float64}
-    check(assert_type(read_excel(path, dtype=dtypes), pd.DataFrame), pd.DataFrame)
+    check(assert_type(read_excel(path_str, dtype=dtypes), pd.DataFrame), pd.DataFrame)
 
 
 def test_excel_reader(tmp_path: Path) -> None:
-    path = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
-    check(assert_type(DF.to_excel(path), None), type(None))
-    with pd.ExcelFile(path, engine="calamine") as ef:
+    path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
+    check(assert_type(DF.to_excel(path_str), None), type(None))
+    with pd.ExcelFile(path_str, engine="calamine") as ef:
         check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
         check(assert_type(pd.read_excel(ef), pd.DataFrame), pd.DataFrame)
 
     with pd.ExcelFile(
-        path_or_buffer=path,
-        engine="openpyxl",
-        engine_kwargs={"data_only": True},
+        path_or_buffer=path_str, engine="openpyxl", engine_kwargs={"data_only": True}
     ) as ef:
         check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
         check(assert_type(pd.read_excel(ef), pd.DataFrame), pd.DataFrame)
@@ -1050,19 +1062,17 @@ def test_excel_reader(tmp_path: Path) -> None:
 
 def test_excel_fspath(tmp_path: Path) -> None:
     """Test ExcelFile.__fspath__ type."""
-    path = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
-    check(assert_type(DF.to_excel(path), None), type(None))
+    path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
+    check(assert_type(DF.to_excel(path_str), None), type(None))
     with pd.ExcelFile(
-        path_or_buffer=path,
-        engine="openpyxl",
-        engine_kwargs={"data_only": True},
+        path_or_buffer=path_str, engine="openpyxl", engine_kwargs={"data_only": True}
     ) as ef:
         check(assert_type(os.fspath(ef), str), str)
 
 
 def test_excel_writer(tmp_path: Path) -> None:
-    path = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
-    with pd.ExcelWriter(path) as ew:  # pyright: ignore[reportUnknownVariableType]
+    path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
+    with pd.ExcelWriter(path_str) as ew:  # pyright: ignore[reportUnknownVariableType]
         check(
             assert_type(
                 ew, pd.ExcelWriter  # pyright: ignore[reportUnknownArgumentType]
@@ -1070,9 +1080,9 @@ def test_excel_writer(tmp_path: Path) -> None:
             pd.ExcelWriter,
         )
         DF.to_excel(ew, sheet_name="A")
-    check(assert_type(read_excel(path, sheet_name="A"), DataFrame), DataFrame)
-    check(assert_type(read_excel(path), DataFrame), DataFrame)
-    ef = pd.ExcelFile(path)
+    check(assert_type(read_excel(path_str, sheet_name="A"), DataFrame), DataFrame)
+    check(assert_type(read_excel(path_str), DataFrame), DataFrame)
+    ef = pd.ExcelFile(path_str)
     check(assert_type(ef, pd.ExcelFile), pd.ExcelFile)
     check(assert_type(read_excel(ef, sheet_name="A"), DataFrame), DataFrame)
     check(assert_type(read_excel(ef), DataFrame), DataFrame)
@@ -1095,9 +1105,9 @@ def test_excel_writer_io() -> None:
 
 
 def test_excel_writer_engine(tmp_path: Path) -> None:
-    path = str(tmp_path / f"{uuid.uuid4()}test0.xlsx")
+    path_str = str(tmp_path / f"{uuid.uuid4()}test0.xlsx")
     with pd.ExcelWriter(
-        path, engine="auto"
+        path_str, engine="auto"
     ) as ew:  # pyright: ignore[reportUnknownVariableType]
         check(
             assert_type(
@@ -1108,8 +1118,8 @@ def test_excel_writer_engine(tmp_path: Path) -> None:
         )
         DF.to_excel(ew, sheet_name="A")
 
-    path = str(tmp_path / f"{uuid.uuid4()}test1.xlsx")
-    with pd.ExcelWriter(path, engine="openpyxl") as ew:
+    path_str = str(tmp_path / f"{uuid.uuid4()}test1.xlsx")
+    with pd.ExcelWriter(path_str, engine="openpyxl") as ew:
         check(
             assert_type(ew, pd.ExcelWriter[OpenXlWorkbook]),
             pd.ExcelWriter[OpenXlWorkbook],
@@ -1120,9 +1130,9 @@ def test_excel_writer_engine(tmp_path: Path) -> None:
             str,
         )
 
-    path = str(tmp_path / f"{uuid.uuid4()}test2.ods")
+    path_str = str(tmp_path / f"{uuid.uuid4()}test2.ods")
     with pd.ExcelWriter(
-        path, engine="odf"
+        path_str, engine="odf"
     ) as ew:  # pyright: ignore[reportUnknownVariableType]
         check(
             assert_type(
@@ -1139,9 +1149,9 @@ def test_excel_writer_engine(tmp_path: Path) -> None:
             str,
         )
 
-    path = str(tmp_path / f"{uuid.uuid4()}test3.xlsx")
+    path_str = str(tmp_path / f"{uuid.uuid4()}test3.xlsx")
     with pd.ExcelWriter(
-        path, engine="xlsxwriter"
+        path_str, engine="xlsxwriter"
     ) as ew:  # pyright: ignore[reportUnknownVariableType]
         check(
             assert_type(
@@ -1157,37 +1167,38 @@ def test_excel_writer_engine(tmp_path: Path) -> None:
 
 
 def test_excel_writer_append_mode(tmp_path: Path) -> None:
-    path = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
+    path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
     with pd.ExcelWriter(
-        path, mode="w"
+        path_str, mode="w"
     ) as ew:  # pyright: ignore[reportUnknownVariableType]
         DF.to_excel(ew, sheet_name="A")
-    with pd.ExcelWriter(path, mode="a", engine="openpyxl") as ew:
+    with pd.ExcelWriter(path_str, mode="a", engine="openpyxl") as ew:
         DF.to_excel(ew, sheet_name="B")
 
 
 def test_to_string(tmp_path: Path) -> None:
     check(assert_type(DF.to_string(), str), str)
-    path = str(tmp_path / str(uuid.uuid4()))
+    path = tmp_path / str(uuid.uuid4())
+    path_str = str(path)
+    check(assert_type(DF.to_string(path_str), None), type(None))
     check(assert_type(DF.to_string(path), None), type(None))
-    check(assert_type(DF.to_string(pathlib.Path(path)), None), type(None))
-    with Path(path).open("w") as df_string:
+    with path.open("w") as df_string:
         check(assert_type(DF.to_string(df_string), None), type(None))
     sio = io.StringIO()
     check(assert_type(DF.to_string(sio), None), type(None))
 
 
 def test_read_sql(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    con = sqlite3.connect(path)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    con = sqlite3.connect(path_str)
     check(assert_type(DF.to_sql("test", con=con), int | None), int)
     check(assert_type(read_sql("select * from test", con=con), DataFrame), DataFrame)
     con.close()
 
 
 def test_read_sql_via_sqlalchemy_connection(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    db_uri = "sqlite:///" + path
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    db_uri = "sqlite:///" + path_str
     engine = sqlalchemy.create_engine(db_uri)
 
     with engine.connect() as conn:
@@ -1200,8 +1211,8 @@ def test_read_sql_via_sqlalchemy_connection(tmp_path: Path) -> None:
 
 
 def test_read_sql_via_sqlalchemy_engine(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    db_uri = "sqlite:///" + path
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    db_uri = "sqlite:///" + path_str
     engine = sqlalchemy.create_engine(db_uri)
 
     check(assert_type(DF.to_sql("test", con=engine), int | None), int)
@@ -1213,8 +1224,8 @@ def test_read_sql_via_sqlalchemy_engine(tmp_path: Path) -> None:
 
 
 def test_read_sql_via_sqlalchemy_engine_with_params(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    db_uri = "sqlite:///" + path
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    db_uri = "sqlite:///" + path_str
     engine = sqlalchemy.create_engine(db_uri)
 
     check(assert_type(DF.to_sql("test", con=engine), int | None), int)
@@ -1233,8 +1244,8 @@ def test_read_sql_via_sqlalchemy_engine_with_params(tmp_path: Path) -> None:
 
 
 def test_read_sql_generator(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    con = sqlite3.connect(path)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    con = sqlite3.connect(path_str)
     check(assert_type(DF.to_sql("test", con=con), int | None), int)
 
     check(
@@ -1248,23 +1259,23 @@ def test_read_sql_generator(tmp_path: Path) -> None:
 
 
 def test_read_sql_table(tmp_path: Path) -> None:
+    # sqlite3 doesn't support read_table, which is required for this function
+    # Could only run in pytest if SQLAlchemy was installed
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    con = sqlite3.connect(path_str)
+    check(assert_type(DF.to_sql("test", con=con), int | None), int)
     if TYPE_CHECKING:
-        # sqlite3 doesn't support read_table, which is required for this function
-        # Could only run in pytest if SQLAlchemy was installed
-        path = str(tmp_path / str(uuid.uuid4()))
-        con = sqlite3.connect(path)
-        assert_type(DF.to_sql("test", con=con), int | None)
         assert_type(read_sql_table("test", con=con), DataFrame)
         assert_type(
             read_sql_table("test", con=con, chunksize=1),
             Generator[DataFrame, None, None],
         )
-        con.close()
+    con.close()
 
 
 def test_read_sql_query(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    con = sqlite3.connect(path)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    con = sqlite3.connect(path_str)
     check(assert_type(DF.to_sql("test", con=con), int | None), int)
     check(
         assert_type(
@@ -1277,8 +1288,8 @@ def test_read_sql_query(tmp_path: Path) -> None:
 
 
 def test_read_sql_query_generator(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    con = sqlite3.connect(path)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    con = sqlite3.connect(path_str)
     check(assert_type(DF.to_sql("test", con=con), int | None), int)
 
     check(
@@ -1292,8 +1303,8 @@ def test_read_sql_query_generator(tmp_path: Path) -> None:
 
 
 def test_read_sql_query_via_sqlalchemy_engine_with_params(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    db_uri = "sqlite:///" + path
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    db_uri = "sqlite:///" + path_str
     engine = sqlalchemy.create_engine(db_uri)
 
     check(assert_type(DF.to_sql("test", con=engine), int | None), int)
@@ -1341,26 +1352,30 @@ def test_read_sql_query_via_sqlalchemy_engine_with_tuple_valued_params() -> None
 
 def test_read_html(tmp_path: Path) -> None:
     check(assert_type(DF.to_html(), str), str)
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_html(path), None), type(None))
-    check(assert_type(read_html(path), list[DataFrame]), list)
-    check(assert_type(read_html(path, flavor=None), list[DataFrame]), list)
-    check(assert_type(read_html(path, flavor="bs4"), list[DataFrame]), list)
-    check(assert_type(read_html(path, flavor=["bs4"]), list[DataFrame]), list)
-    check(assert_type(read_html(path, flavor=["bs4", "lxml"]), list[DataFrame]), list)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(DF.to_html(path_str), None), type(None))
+    check(assert_type(read_html(path_str), list[DataFrame]), list)
+    check(assert_type(read_html(path_str, flavor=None), list[DataFrame]), list)
+    check(assert_type(read_html(path_str, flavor="bs4"), list[DataFrame]), list)
+    check(assert_type(read_html(path_str, flavor=["bs4"]), list[DataFrame]), list)
+    check(
+        assert_type(read_html(path_str, flavor=["bs4", "lxml"]), list[DataFrame]), list
+    )
 
 
 def test_csv_quoting(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_csv(path, quoting=csv.QUOTE_ALL), None), type(None))
-    check(assert_type(DF.to_csv(path, quoting=csv.QUOTE_NONE), None), type(None))
-    check(assert_type(DF.to_csv(path, quoting=csv.QUOTE_NONNUMERIC), None), type(None))
-    check(assert_type(DF.to_csv(path, quoting=csv.QUOTE_MINIMAL), None), type(None))
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(DF.to_csv(path_str, quoting=csv.QUOTE_ALL), None), type(None))
+    check(assert_type(DF.to_csv(path_str, quoting=csv.QUOTE_NONE), None), type(None))
+    check(
+        assert_type(DF.to_csv(path_str, quoting=csv.QUOTE_NONNUMERIC), None), type(None)
+    )
+    check(assert_type(DF.to_csv(path_str, quoting=csv.QUOTE_MINIMAL), None), type(None))
 
 
 def test_sqlalchemy_selectable(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    db_uri = "sqlite:///" + path
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    db_uri = "sqlite:///" + path_str
     engine = sqlalchemy.create_engine(db_uri)
 
     if TYPE_CHECKING:
@@ -1378,22 +1393,19 @@ def test_sqlalchemy_selectable(tmp_path: Path) -> None:
 
 
 def test_sqlalchemy_text(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    db_uri = "sqlite:///" + path
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    db_uri = "sqlite:///" + path_str
     engine = sqlalchemy.create_engine(db_uri)
     sql_select = sqlalchemy.text("select * from test")
     with engine.connect() as conn:
         check(assert_type(DF.to_sql("test", con=conn), int | None), int)
-        check(
-            assert_type(read_sql(sql_select, con=conn), DataFrame),
-            DataFrame,
-        )
+        check(assert_type(read_sql(sql_select, con=conn), DataFrame), DataFrame)
     engine.dispose()
 
 
 def test_read_sql_dtype(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    conn = sqlite3.connect(path)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    conn = sqlite3.connect(path_str)
     df = pd.DataFrame(
         data=[[0, "10/11/12"], [1, "12/11/10"]],
         columns=["int_column", "date_column"],
@@ -1429,8 +1441,8 @@ def test_read_sql_dtype(tmp_path: Path) -> None:
 
 
 def test_read_sql_dtype_backend(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    conn2 = sqlite3.connect(path)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    conn2 = sqlite3.connect(path_str)
     check(assert_type(DF.to_sql("test", con=conn2), int | None), int)
     check(
         assert_type(
@@ -1450,21 +1462,27 @@ def test_read_sql_dtype_backend(tmp_path: Path) -> None:
 
 
 def test_all_read_without_lxml_dtype_backend(tmp_path: Path) -> None:
-    path = str(tmp_path / f"{uuid.uuid4()}test0.csv")
-    check(assert_type(DF.to_csv(path), None), type(None))
-    s1 = read_csv(path, iterator=True, dtype_backend="pyarrow")
+    path_str = str(tmp_path / f"{uuid.uuid4()}test0.csv")
+    check(assert_type(DF.to_csv(path_str), None), type(None))
+    s1 = read_csv(path_str, iterator=True, dtype_backend="pyarrow")
     check(assert_type(s1, TextFileReader), TextFileReader)
     s1.close()
 
-    DF.to_string(path, index=False)
-    check(assert_type(read_fwf(path, dtype_backend="pyarrow"), DataFrame), DataFrame)
+    DF.to_string(path_str, index=False)
+    check(
+        assert_type(read_fwf(path_str, dtype_backend="pyarrow"), DataFrame), DataFrame
+    )
 
-    check(assert_type(DF.to_json(path), None), type(None))
-    check(assert_type(read_json(path, dtype_backend="pyarrow"), DataFrame), DataFrame)
-    check(assert_type(read_json(path, dtype={"MatchID": str}), DataFrame), DataFrame)
+    check(assert_type(DF.to_json(path_str), None), type(None))
+    check(
+        assert_type(read_json(path_str, dtype_backend="pyarrow"), DataFrame), DataFrame
+    )
+    check(
+        assert_type(read_json(path_str, dtype={"MatchID": str}), DataFrame), DataFrame
+    )
 
-    path = str(tmp_path / str(uuid.uuid4()))
-    con = sqlite3.connect(path)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    con = sqlite3.connect(path_str)
     check(assert_type(DF.to_sql("test", con=con), int | None), int)
     check(
         assert_type(
@@ -1481,20 +1499,20 @@ def test_all_read_without_lxml_dtype_backend(tmp_path: Path) -> None:
     con.close()
 
     if not WINDOWS:
-        check(assert_type(DF.to_orc(path), None), type(None))
+        check(assert_type(DF.to_orc(path_str), None), type(None))
         check(
-            assert_type(read_orc(path, dtype_backend="numpy_nullable"), DataFrame),
+            assert_type(read_orc(path_str, dtype_backend="numpy_nullable"), DataFrame),
             DataFrame,
         )
-    check(assert_type(DF.to_feather(path), None), type(None))
+    check(assert_type(DF.to_feather(path_str), None), type(None))
     check(
-        assert_type(read_feather(path, dtype_backend="pyarrow"), DataFrame),
+        assert_type(read_feather(path_str, dtype_backend="pyarrow"), DataFrame),
         DataFrame,
     )
 
-    path = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
-    as_str: str = path
-    DF.to_excel(path)
+    path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
+    as_str: str = path_str
+    DF.to_excel(path_str)
     check(
         assert_type(pd.read_excel(as_str, dtype_backend="pyarrow"), pd.DataFrame),
         pd.DataFrame,
@@ -1514,8 +1532,8 @@ def test_all_read_without_lxml_dtype_backend(tmp_path: Path) -> None:
     if TYPE_CHECKING:
         # sqlite3 doesn't support read_table, which is required for this function
         # Could only run in pytest if SQLAlchemy was installed
-        path = str(tmp_path / str(uuid.uuid4()))
-        co1 = sqlite3.connect(path)
+        path_str = str(tmp_path / str(uuid.uuid4()))
+        co1 = sqlite3.connect(path_str)
         assert_type(DF.to_sql("test", con=co1), int | None)
         assert_type(
             read_sql_table("test", con=co1, dtype_backend="numpy_nullable"),
@@ -1525,21 +1543,25 @@ def test_all_read_without_lxml_dtype_backend(tmp_path: Path) -> None:
 
 
 def test_read_with_lxml_dtype_backend(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    check(assert_type(DF.to_html(path), None), type(None))
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(DF.to_html(path_str), None), type(None))
     check(
-        assert_type(read_html(path, dtype_backend="numpy_nullable"), list[DataFrame]),
+        assert_type(
+            read_html(path_str, dtype_backend="numpy_nullable"), list[DataFrame]
+        ),
         list,
     )
 
-    check(assert_type(DF.to_xml(path), None), type(None))
-    check(assert_type(read_xml(path, dtype_backend="pyarrow"), DataFrame), DataFrame)
+    check(assert_type(DF.to_xml(path_str), None), type(None))
+    check(
+        assert_type(read_xml(path_str, dtype_backend="pyarrow"), DataFrame), DataFrame
+    )
 
 
 def test_read_sql_dict_str_value_dtype(tmp_path: Path) -> None:
     # GH 676
-    path = str(tmp_path / str(uuid.uuid4()))
-    con = sqlite3.connect(path)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    con = sqlite3.connect(path_str)
     check(assert_type(DF.to_sql("test", con), int | None), int)
     check(
         assert_type(
@@ -1554,21 +1576,14 @@ def test_read_sql_dict_str_value_dtype(tmp_path: Path) -> None:
 
 
 def test_added_date_format(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
+    path_str = str(tmp_path / str(uuid.uuid4()))
     df_dates = pd.DataFrame(data={"col1": ["2023-03-15", "2023-04-20"]})
-    df_dates.to_csv(path)
+    df_dates.to_csv(path_str)
 
     check(
         assert_type(
-            pd.read_table(path, sep=",", parse_dates=["col1"], date_format="%Y-%m-%d"),
-            pd.DataFrame,
-        ),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(
             pd.read_table(
-                path, sep=",", parse_dates=["col1"], date_format={"col1": "%Y-%m-%d"}
+                path_str, sep=",", parse_dates=["col1"], date_format="%Y-%m-%d"
             ),
             pd.DataFrame,
         ),
@@ -1577,7 +1592,19 @@ def test_added_date_format(tmp_path: Path) -> None:
     check(
         assert_type(
             pd.read_table(
-                path, sep=",", parse_dates=["col1"], date_format={0: "%Y-%m-%d"}
+                path_str,
+                sep=",",
+                parse_dates=["col1"],
+                date_format={"col1": "%Y-%m-%d"},
+            ),
+            pd.DataFrame,
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(
+            pd.read_table(
+                path_str, sep=",", parse_dates=["col1"], date_format={0: "%Y-%m-%d"}
             ),
             pd.DataFrame,
         ),
@@ -1585,42 +1612,48 @@ def test_added_date_format(tmp_path: Path) -> None:
     )
 
     check(
-        assert_type(pd.read_fwf(path, date_format="%Y-%m-%d"), pd.DataFrame),
+        assert_type(pd.read_fwf(path_str, date_format="%Y-%m-%d"), pd.DataFrame),
         pd.DataFrame,
     )
-    check(
-        assert_type(pd.read_fwf(path, date_format={"col1": "%Y-%m-%d"}), pd.DataFrame),
-        pd.DataFrame,
-    )
-    check(
-        assert_type(pd.read_fwf(path, date_format={0: "%Y-%m-%d"}), pd.DataFrame),
-        pd.DataFrame,
-    )
-    path = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
     check(
         assert_type(
-            pd.DataFrame(data={"col1": ["2023-03-15", "2023-04-20"]}).to_excel(path),
+            pd.read_fwf(path_str, date_format={"col1": "%Y-%m-%d"}), pd.DataFrame
+        ),
+        pd.DataFrame,
+    )
+    check(
+        assert_type(pd.read_fwf(path_str, date_format={0: "%Y-%m-%d"}), pd.DataFrame),
+        pd.DataFrame,
+    )
+    path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
+    check(
+        assert_type(
+            pd.DataFrame(data={"col1": ["2023-03-15", "2023-04-20"]}).to_excel(
+                path_str
+            ),
             None,
         ),
         type(None),
     )
     check(
         assert_type(
-            pd.read_excel(path, parse_dates=["col1"], date_format={0: "%Y-%m-%d"}),
+            pd.read_excel(path_str, parse_dates=["col1"], date_format={0: "%Y-%m-%d"}),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     check(
         assert_type(
-            pd.read_excel(path, parse_dates=["col1"], date_format={"col1": "%Y-%m-%d"}),
+            pd.read_excel(
+                path_str, parse_dates=["col1"], date_format={"col1": "%Y-%m-%d"}
+            ),
             pd.DataFrame,
         ),
         pd.DataFrame,
     )
     check(
         assert_type(
-            pd.read_excel(path, parse_dates=["col1"], date_format="%Y-%m-%d"),
+            pd.read_excel(path_str, parse_dates=["col1"], date_format="%Y-%m-%d"),
             pd.DataFrame,
         ),
         pd.DataFrame,
@@ -1628,10 +1661,13 @@ def test_added_date_format(tmp_path: Path) -> None:
 
 
 def test_read_excel_index_col(tmp_path: Path) -> None:
-    path = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
-    pd.DataFrame(data={"foo": [1, 3], "bar": [2, 4]}).to_excel(path)
+    path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
+    pd.DataFrame(data={"foo": [1, 3], "bar": [2, 4]}).to_excel(path_str)
 
-    check(assert_type(pd.read_excel(path, index_col="bar"), pd.DataFrame), pd.DataFrame)
+    check(
+        assert_type(pd.read_excel(path_str, index_col="bar"), pd.DataFrame),
+        pd.DataFrame,
+    )
 
 
 def test_read_json_engine() -> None:
@@ -1668,8 +1704,8 @@ def test_converters_partial(tmp_path: Path) -> None:
     df = pd.DataFrame({"field_1": ["2020-01-01", "not a date"]})
     partial_func = partial(pd.to_datetime, errors="coerce")
 
-    path = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
-    check(assert_type(df.to_excel(path, index=False), None), type(None))
+    path_str = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
+    check(assert_type(df.to_excel(path_str, index=False), None), type(None))
 
-    result = pd.read_excel(path, converters={"field_1": partial_func})
+    result = pd.read_excel(path_str, converters={"field_1": partial_func})
     check(assert_type(result, pd.DataFrame), pd.DataFrame)

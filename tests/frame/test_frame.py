@@ -1699,9 +1699,10 @@ def test_to_markdown(tmp_path: Path) -> None:
     check(assert_type(df.to_markdown(buf=None, mode="wt"), str), str)
     # index param was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
     check(assert_type(df.to_markdown(index=False), str), str)
-    path = str(tmp_path / str(uuid.uuid4()))
+    path = tmp_path / str(uuid.uuid4())
+    path_str = str(path)
+    check(assert_type(df.to_markdown(path_str), None), type(None))
     check(assert_type(df.to_markdown(path), None), type(None))
-    check(assert_type(df.to_markdown(Path(path)), None), type(None))
     sio = io.StringIO()
     check(assert_type(df.to_markdown(sio), None), type(None))
 
@@ -1709,16 +1710,17 @@ def test_to_markdown(tmp_path: Path) -> None:
 def test_types_to_feather(tmp_path: Path) -> None:
     pytest.importorskip("pyarrow")
     df = pd.DataFrame(data={"col1": [1, 1, 2], "col2": [3, 4, 5]})
-    path = str(tmp_path / f"{uuid.uuid4()}.feather")
-    df.to_feather(path)
+    path = tmp_path / f"{uuid.uuid4()}.feather"
+    path_str = str(path)
+    df.to_feather(path_str)
     # kwargs for pyarrow.feather.write_feather added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    df.to_feather(path, compression="zstd", compression_level=3, chunksize=2)
+    df.to_feather(path_str, compression="zstd", compression_level=3, chunksize=2)
 
     # to_feather has been able to accept a buffer since pandas 1.0.0
     # See https://pandas.pydata.org/docs/whatsnew/v1.0.0.html
     # Docstring and type were updated in 1.2.0.
     # https://github.com/pandas-dev/pandas/pull/35408
-    with Path(path).open("wb") as file:
+    with path.open("wb") as file:
         df.to_feather(file)
 
 
@@ -2234,8 +2236,8 @@ def test_types_to_parquet(tmp_path: Path) -> None:
     df = pd.DataFrame([[1, 2], [8, 9]], columns=["A", "B"]).set_flags(
         allows_duplicate_labels=False
     )
-    path = str(tmp_path / str(uuid.uuid4()))
-    df.to_parquet(Path(path))
+    path = tmp_path / str(uuid.uuid4())
+    df.to_parquet(path)
     # to_parquet() returns bytes when no path given since 1.2.0 https://pandas.pydata.org/docs/whatsnew/v1.2.0.html
     check(assert_type(df.to_parquet(), bytes), bytes)
 
@@ -2354,65 +2356,72 @@ def test_types_dot() -> None:
 
 
 def test_read_csv(tmp_path: Path) -> None:
-    path = str(tmp_path / str(uuid.uuid4()))
-    Path(path).write_text("A,B\n1,2")
-    check(assert_type(pd.read_csv(path), pd.DataFrame), pd.DataFrame)
-    check(assert_type(pd.read_csv(path, iterator=False), pd.DataFrame), pd.DataFrame)
+    path = tmp_path / str(uuid.uuid4())
+    path_str = str(path)
+    path.write_text("A,B\n1,2")
+    check(assert_type(pd.read_csv(path_str), pd.DataFrame), pd.DataFrame)
     check(
-        assert_type(pd.read_csv(path, iterator=False, chunksize=None), pd.DataFrame),
+        assert_type(pd.read_csv(path_str, iterator=False), pd.DataFrame), pd.DataFrame
+    )
+    check(
+        assert_type(
+            pd.read_csv(path_str, iterator=False, chunksize=None), pd.DataFrame
+        ),
         pd.DataFrame,
     )
 
     with check(
-        assert_type(pd.read_csv(path, chunksize=1), TextFileReader), TextFileReader
+        assert_type(pd.read_csv(path_str, chunksize=1), TextFileReader), TextFileReader
     ):
         pass
     with check(
-        assert_type(pd.read_csv(path, iterator=False, chunksize=1), TextFileReader),
+        assert_type(pd.read_csv(path_str, iterator=False, chunksize=1), TextFileReader),
         TextFileReader,
     ):
         pass
     with check(
-        assert_type(pd.read_csv(path, iterator=True), TextFileReader),
+        assert_type(pd.read_csv(path_str, iterator=True), TextFileReader),
         TextFileReader,
     ):
         pass
     with check(
-        assert_type(pd.read_csv(path, iterator=True, chunksize=None), TextFileReader),
+        assert_type(
+            pd.read_csv(path_str, iterator=True, chunksize=None), TextFileReader
+        ),
         TextFileReader,
     ):
         pass
     with check(
-        assert_type(pd.read_csv(path, iterator=True, chunksize=1), TextFileReader),
+        assert_type(pd.read_csv(path_str, iterator=True, chunksize=1), TextFileReader),
         TextFileReader,
     ):
         pass
 
     # https://github.com/microsoft/python-type-stubs/issues/118
     check(
-        assert_type(pd.read_csv(path, storage_options=None), pd.DataFrame),
+        assert_type(pd.read_csv(path_str, storage_options=None), pd.DataFrame),
         pd.DataFrame,
     )
 
     # Allow a variety of dict types for the converters parameter
     converters1 = {"A": str, "B": str}
     check(
-        assert_type(pd.read_csv(path, converters=converters1), pd.DataFrame),
+        assert_type(pd.read_csv(path_str, converters=converters1), pd.DataFrame),
         pd.DataFrame,
     )
     converters2 = {"A": str, "B": float}
     check(
-        assert_type(pd.read_csv(path, converters=converters2), pd.DataFrame),
+        assert_type(pd.read_csv(path_str, converters=converters2), pd.DataFrame),
         pd.DataFrame,
     )
     converters3 = {0: str, 1: str}
     check(
-        assert_type(pd.read_csv(path, converters=converters3), pd.DataFrame),
+        assert_type(pd.read_csv(path_str, converters=converters3), pd.DataFrame),
         pd.DataFrame,
     )
     converters4 = {0: str, 1: float}
     check(
-        assert_type(pd.read_csv(path, converters=converters4), pd.DataFrame),
+        assert_type(pd.read_csv(path_str, converters=converters4), pd.DataFrame),
         pd.DataFrame,
     )
     converters5: dict[int | str, Callable[[str], Any]] = {
@@ -2420,7 +2429,7 @@ def test_read_csv(tmp_path: Path) -> None:
         "A": float,
     }
     check(
-        assert_type(pd.read_csv(path, converters=converters5), pd.DataFrame),
+        assert_type(pd.read_csv(path_str, converters=converters5), pd.DataFrame),
         pd.DataFrame,
     )
 
@@ -2430,40 +2439,41 @@ def test_read_csv(tmp_path: Path) -> None:
     read_csv_kwargs: ReadCsvKwargs = {"converters": {0: int}}
 
     check(
-        assert_type(pd.read_csv(path, **read_csv_kwargs), pd.DataFrame),
+        assert_type(pd.read_csv(path_str, **read_csv_kwargs), pd.DataFrame),
         pd.DataFrame,
     )
 
     # Check value covariance for various other parameters too (these only accept a str key)
     na_values = {"A": ["1"], "B": ["1"]}
     check(
-        assert_type(pd.read_csv(path, na_values=na_values), pd.DataFrame),
+        assert_type(pd.read_csv(path_str, na_values=na_values), pd.DataFrame),
         pd.DataFrame,
     )
 
     # There are several possible inputs for parse_dates
-    path = str(tmp_path / str(uuid.uuid4()))
-    Path(path).write_text("Date,Year,Month,Day\n20221125,2022,11,25")
+    path = tmp_path / str(uuid.uuid4())
+    path_str = str(path)
+    path.write_text("Date,Year,Month,Day\n20221125,2022,11,25")
     parse_dates_1 = ["Date"]
     check(
-        assert_type(pd.read_csv(path, parse_dates=parse_dates_1), pd.DataFrame),
+        assert_type(pd.read_csv(path_str, parse_dates=parse_dates_1), pd.DataFrame),
         pd.DataFrame,
     )
     check(
         assert_type(
-            pd.read_csv(path, index_col="Date", parse_dates=True), pd.DataFrame
+            pd.read_csv(path_str, index_col="Date", parse_dates=True), pd.DataFrame
         ),
         pd.DataFrame,
     )
     if PD_LTE_23:
         parse_dates_2 = {"combined_date": ["Year", "Month", "Day"]}
         with pytest_warns_bounded(
-            FutureWarning,
-            "Support for nested sequences",
-            lower="2.1.99",
+            FutureWarning, "Support for nested sequences", lower="2.1.99"
         ):
             check(
-                assert_type(pd.read_csv(path, parse_dates=parse_dates_2), pd.DataFrame),
+                assert_type(
+                    pd.read_csv(path_str, parse_dates=parse_dates_2), pd.DataFrame
+                ),
                 pd.DataFrame,
             )
         parse_dates_3 = {"combined_date": [1, 2, 3]}
@@ -2471,7 +2481,9 @@ def test_read_csv(tmp_path: Path) -> None:
             FutureWarning, "Support for nested sequences", lower="2.1.99"
         ):
             check(
-                assert_type(pd.read_csv(path, parse_dates=parse_dates_3), pd.DataFrame),
+                assert_type(
+                    pd.read_csv(path_str, parse_dates=parse_dates_3), pd.DataFrame
+                ),
                 pd.DataFrame,
             )
         # MyPy calls this Dict[str, object] by default which necessitates the explicit annotation (Pyright does not)
@@ -2480,23 +2492,25 @@ def test_read_csv(tmp_path: Path) -> None:
             FutureWarning, "Support for nested sequences", lower="2.1.99"
         ):
             check(
-                assert_type(pd.read_csv(path, parse_dates=parse_dates_4), pd.DataFrame),
+                assert_type(
+                    pd.read_csv(path_str, parse_dates=parse_dates_4), pd.DataFrame
+                ),
                 pd.DataFrame,
             )
 
         parse_dates_6 = [[1, 2, 3]]
         with pytest_warns_bounded(
-            FutureWarning,
-            "Support for nested sequences",
-            lower="2.1.99",
+            FutureWarning, "Support for nested sequences", lower="2.1.99"
         ):
             check(
-                assert_type(pd.read_csv(path, parse_dates=parse_dates_6), pd.DataFrame),
+                assert_type(
+                    pd.read_csv(path_str, parse_dates=parse_dates_6), pd.DataFrame
+                ),
                 pd.DataFrame,
             )
     parse_dates_5 = [0]
     check(
-        assert_type(pd.read_csv(path, parse_dates=parse_dates_5), pd.DataFrame),
+        assert_type(pd.read_csv(path_str, parse_dates=parse_dates_5), pd.DataFrame),
         pd.DataFrame,
     )
 
@@ -2505,10 +2519,7 @@ def test_dataframe_pct_change() -> None:
     df = pd.DataFrame({"x": [1, 2, 2, 3, 3], "y": [10, 20, 30, 40, 50]})
     check(assert_type(df.pct_change(), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(fill_method=None), pd.DataFrame), pd.DataFrame)
-    check(
-        assert_type(df.pct_change(periods=-1), pd.DataFrame),
-        pd.DataFrame,
-    )
+    check(assert_type(df.pct_change(periods=-1), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(fill_value=0), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(axis=0), pd.DataFrame), pd.DataFrame)
     check(assert_type(df.pct_change(axis=1), pd.DataFrame), pd.DataFrame)
@@ -2538,24 +2549,24 @@ def test_sum_get_add() -> None:
 def test_to_excel(tmp_path: Path) -> None:
     df = pd.DataFrame(data={"col1": [1, 2], "col2": [3, 4]})
 
-    path = str(tmp_path / str(uuid.uuid4()))
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    df.to_excel(path_str, engine="openpyxl")
+    check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
+    path = tmp_path / str(uuid.uuid4())
     df.to_excel(path, engine="openpyxl")
-    check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
-    path = str(tmp_path / str(uuid.uuid4()))
-    df.to_excel(Path(path), engine="openpyxl")
-    check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
-    path = str(tmp_path / str(uuid.uuid4()))
-    df.to_excel(path, engine="openpyxl", startrow=1, startcol=1, header=False)
-    check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
-    path = str(tmp_path / str(uuid.uuid4()))
-    df.to_excel(path, engine="openpyxl", sheet_name="sheet", index=False)
-    check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
-    path = str(tmp_path / str(uuid.uuid4()))
-    df.to_excel(path, engine="openpyxl", header=["x", "y"])
-    check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
-    path = str(tmp_path / str(uuid.uuid4()))
-    df.to_excel(path, engine="openpyxl", columns=["col1"])
-    check(assert_type(pd.read_excel(path), pd.DataFrame), pd.DataFrame)
+    check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    df.to_excel(path_str, engine="openpyxl", startrow=1, startcol=1, header=False)
+    check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    df.to_excel(path_str, engine="openpyxl", sheet_name="sheet", index=False)
+    check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    df.to_excel(path_str, engine="openpyxl", header=["x", "y"])
+    check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    df.to_excel(path_str, engine="openpyxl", columns=["col1"])
+    check(assert_type(pd.read_excel(path_str), pd.DataFrame), pd.DataFrame)
 
 
 def test_join() -> None:
@@ -3700,26 +3711,26 @@ def test_hashable_args(tmp_path: Path) -> None:
     df = pd.DataFrame([["abc"]], columns=["test"], index=["ind"])
     test = ["test"]
 
-    path = str(tmp_path / str(uuid.uuid4()))
-    df.to_stata(path, version=117, convert_strl=test)
-    df.to_stata(path, version=117, convert_strl=["test"])
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    df.to_stata(path_str, version=117, convert_strl=test)
+    df.to_stata(path_str, version=117, convert_strl=["test"])
 
-    df.to_html(path, columns=test)
-    df.to_html(path, columns=["test"])
+    df.to_html(path_str, columns=test)
+    df.to_html(path_str, columns=["test"])
 
-    df.to_xml(path, attr_cols=test)
-    df.to_xml(path, attr_cols=["test"])
+    df.to_xml(path_str, attr_cols=test)
+    df.to_xml(path_str, attr_cols=["test"])
 
-    df.to_xml(path, elem_cols=test)
-    df.to_xml(path, elem_cols=["test"])
+    df.to_xml(path_str, elem_cols=test)
+    df.to_xml(path_str, elem_cols=["test"])
 
     df.columns = test
     df.columns = ["test"]
 
     testDict = {"test": 1}
-    path = str(tmp_path / str(uuid.uuid4()))
-    df.to_string(path, col_space=testDict)
-    df.to_string(path, col_space={"test": 1})
+    path_str = str(tmp_path / str(uuid.uuid4()))
+    df.to_string(path_str, col_space=testDict)
+    df.to_string(path_str, col_space={"test": 1})
 
 
 # GH 906
