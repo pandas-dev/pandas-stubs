@@ -22,7 +22,6 @@ import pandas as pd
 
 # Next set of imports is to keep the private imports needed for testing
 # in one place
-from pandas._testing import ensure_clean as ensure_clean
 from pandas.core.groupby.groupby import BaseGroupBy
 from pandas.util.version import Version
 import pytest

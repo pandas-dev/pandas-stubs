@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import TYPE_CHECKING
+import uuid
 
 from jinja2.environment import (
     Environment,
@@ -22,7 +23,6 @@ from pandas._typing import Scalar
 from tests import (
     PD_LTE_23,
     check,
-    ensure_clean,
 )
 from tests._typing import np_ndarray_str
 
@@ -199,21 +199,21 @@ def test_text_gradient() -> None:
     check(assert_type(DF.style.text_gradient(), Styler), Styler)
 
 
-def test_to_excel() -> None:
-    with ensure_clean("test.xlsx") as path:
-        check(assert_type(DF.style.to_excel(path), None), type(None))
+def test_to_excel(tmp_path: Path) -> None:
+    path = str(tmp_path / f"{uuid.uuid4()}test.xlsx")
+    check(assert_type(DF.style.to_excel(path), None), type(None))
 
 
-def test_to_html() -> None:
+def test_to_html(tmp_path: Path) -> None:
     check(assert_type(DF.style.to_html(), str), str)
-    with ensure_clean("test.html") as path:
-        check(assert_type(DF.style.to_html(path), None), type(None))
+    path = str(tmp_path / f"{uuid.uuid4()}test.html")
+    check(assert_type(DF.style.to_html(path), None), type(None))
 
 
-def test_to_latex() -> None:
+def test_to_latex(tmp_path: Path) -> None:
     check(assert_type(DF.style.to_latex(), str), str)
-    with ensure_clean("test.tex") as path:
-        check(assert_type(DF.style.to_latex(path), None), type(None))
+    path = str(tmp_path / f"{uuid.uuid4()}test.tex")
+    check(assert_type(DF.style.to_latex(path), None), type(None))
 
 
 def test_export_use() -> None:

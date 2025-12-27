@@ -1,7 +1,9 @@
 # pyright: reportMissingTypeArgument=false, reportUnknownArgumentType=false
 """Test module for classes in pandas.api.typing."""
 
+from pathlib import Path
 from typing import TypeAlias
+import uuid
 
 import numpy as np
 import pandas as pd
@@ -29,10 +31,7 @@ from pandas.api.typing import (
 import pytest
 from typing_extensions import assert_type
 
-from tests import (
-    check,
-    ensure_clean,
-)
+from tests import check
 
 ResamplerGroupBy: TypeAlias = (
     DatetimeIndexResamplerGroupby
@@ -145,17 +144,17 @@ def test_ewm_groubpy() -> None:
     f1(df.groupby("B").ewm(2))
 
 
-def test_json_reader() -> None:
+def test_json_reader(tmp_path: Path) -> None:
     df = pd.DataFrame({"B": [0, 1, 2, np.nan, 4]})
 
     def f1(gb: JsonReader) -> None:
         check(gb, JsonReader)
 
-    with ensure_clean() as path:
-        check(assert_type(df.to_json(path), None), type(None))
-        json_reader = read_json(path, chunksize=1, lines=True)
-        f1(json_reader)
-        json_reader.close()
+    path = str(tmp_path / str(uuid.uuid4()))
+    check(assert_type(df.to_json(path), None), type(None))
+    json_reader = read_json(path, chunksize=1, lines=True)
+    f1(json_reader)
+    json_reader.close()
 
 
 def test_resampler() -> None:
@@ -203,17 +202,17 @@ def test_window() -> None:
     f1(ser.rolling(2, win_type="gaussian"))
 
 
-def test_statereader() -> None:
+def test_statereader(tmp_path: Path) -> None:
     df = pd.DataFrame([[1, 2], [3, 4]], columns=["col_1", "col_2"])
     time_stamp = pd.Timestamp(2000, 2, 29, 14, 21)
     variable_labels = {"col_1": "This is an example"}
-    with ensure_clean() as path:
-        df.to_stata(
-            path, time_stamp=time_stamp, variable_labels=variable_labels, version=None
-        )
+    path = str(tmp_path / str(uuid.uuid4()))
+    df.to_stata(
+        path, time_stamp=time_stamp, variable_labels=variable_labels, version=None
+    )
 
-        def f1(gb: StataReader) -> None:
-            check(gb, StataReader)
+    def f1(gb: StataReader) -> None:
+        check(gb, StataReader)
 
-        with StataReader(path) as reader:
-            f1(reader)
+    with StataReader(path) as reader:
+        f1(reader)
