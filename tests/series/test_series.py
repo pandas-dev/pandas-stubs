@@ -54,18 +54,6 @@ from pandas._typing import (
 from pandas.core.dtypes.dtypes import CategoricalDtype  # noqa F401
 
 from tests import (
-    ASTYPE_BOOL_ARGS,
-    ASTYPE_BYTES_ARGS,
-    ASTYPE_CATEGORICAL_ARGS,
-    ASTYPE_COMPLEX_ARGS,
-    ASTYPE_FLOAT_ARGS,
-    ASTYPE_INT_ARGS,
-    ASTYPE_OBJECT_ARGS,
-    ASTYPE_STRING_ARGS,
-    ASTYPE_TIMEDELTA_ARGS,
-    ASTYPE_TIMESTAMP_ARGS,
-    ASTYPE_UINT_ARGS,
-    ASTYPE_VOID_ARGS,
     LINUX,
     MAC,
     PD_LTE_23,
@@ -96,6 +84,20 @@ from tests._typing import (
     np_1darray_object,
     np_1darray_td,
     np_ndarray_num,
+)
+from tests.dtypes import (
+    ASTYPE_BOOL_ARGS,
+    ASTYPE_BYTES_ARGS,
+    ASTYPE_CATEGORICAL_ARGS,
+    ASTYPE_COMPLEX_ARGS,
+    ASTYPE_FLOAT_ARGS,
+    ASTYPE_INT_ARGS,
+    ASTYPE_OBJECT_ARGS,
+    ASTYPE_STRING_ARGS,
+    ASTYPE_TIMEDELTA_ARGS,
+    ASTYPE_TIMESTAMP_ARGS,
+    ASTYPE_UINT_ARGS,
+    ASTYPE_VOID_ARGS,
 )
 from tests.extension.decimal.array import DecimalDtype
 

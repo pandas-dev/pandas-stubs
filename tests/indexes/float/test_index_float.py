@@ -11,11 +11,11 @@ from typing_extensions import (
 )
 
 from tests import (
-    ASTYPE_FLOAT_NOT_NUMPY16_ARGS,
     TYPE_CHECKING_INVALID_USAGE,
     check,
     exception_on_platform,
 )
+from tests.dtypes import ASTYPE_FLOAT_NOT_NUMPY16_ARGS
 
 if TYPE_CHECKING:
     from pandas.core.indexes.base import FloatNotNumpy16DtypeArg

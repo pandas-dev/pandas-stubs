@@ -6,11 +6,11 @@ import pytest
 from typing_extensions import assert_type
 
 from tests import (
-    ASTYPE_FLOAT_ARGS,
     check,
     exception_on_platform,
 )
 from tests._typing import FloatDtypeArg
+from tests.dtypes import ASTYPE_FLOAT_ARGS
 
 
 def test_constructor() -> None:
