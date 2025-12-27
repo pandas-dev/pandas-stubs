@@ -7,7 +7,6 @@ from typing import (
 
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
 from pandas.core.indexes.base import Index
-from pandas.core.indexes.interval import IntervalIndex
 from pandas.core.series import Series
 import pyarrow as pa
 from typing_extensions import Self
@@ -83,13 +82,7 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     @classmethod
     def from_tuples(
         cls,
-        data: (
-            Sequence[tuple[_OrderableT, _OrderableT]]
-            | np_ndarray
-            | Self
-            | IntervalIndex[Interval[_OrderableT]]
-            | Series[Interval[_OrderableT]]
-        ),
+        data: Sequence[tuple[_OrderableT, _OrderableT]] | np_ndarray,
         closed: IntervalClosedType = "right",
         copy: bool = False,
         dtype: DtypeArg | None = None,
