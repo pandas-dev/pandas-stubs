@@ -1,8 +1,5 @@
 from collections import UserList
-from typing import (
-    TYPE_CHECKING,
-    cast,
-)
+from typing import cast
 
 import numpy as np
 import pandas as pd
@@ -11,14 +8,11 @@ from typing_extensions import assert_type
 
 from tests import check
 
-if TYPE_CHECKING:
-    from numpy._typing import _8Bit
-
 
 def test_construction_sequence() -> None:
-    data = cast(
-        "list[int | np.signedinteger[_8Bit]]", [1, np.int8(1)]
-    )  # pyright: ignore[reportUnnecessaryCast]
+    data = cast(  # pyright: ignore[reportUnnecessaryCast]
+        "list[int | np.int8]", [1, np.int8(1)]
+    )
 
     check(assert_type(pd.array(data), IntegerArray), IntegerArray)
     check(assert_type(pd.array([*data, None]), IntegerArray), IntegerArray)
@@ -30,9 +24,9 @@ def test_construction_sequence() -> None:
 
 
 def test_construction_array_like() -> None:
-    data = cast(
-        "list[int | np.signedinteger[_8Bit]]", [1, np.int8(1)]
-    )  # pyright: ignore[reportUnnecessaryCast]
+    data = cast(  # pyright: ignore[reportUnnecessaryCast]
+        "list[int | np.int8]", [1, np.int8(1)]
+    )
     np_arr = np.array(data, np.int8)
 
     check(assert_type(pd.array(np_arr), IntegerArray), IntegerArray)
