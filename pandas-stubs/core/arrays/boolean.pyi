@@ -3,6 +3,8 @@ from collections.abc import Sequence
 import numpy as np
 from pandas.core.arrays.integer import IntegerArray
 from pandas.core.arrays.masked import BaseMaskedArray as BaseMaskedArray
+from pandas.core.indexes.base import Index
+from pandas.core.series import Series
 from typing_extensions import Self
 
 from pandas._libs.missing import NAType
@@ -21,7 +23,16 @@ class BooleanDtype(ExtensionDtype):
 
 class BooleanArray(BaseMaskedArray):
     def __init__(
-        self, values: np_ndarray_bool, mask: np_ndarray_bool, copy: bool = False
+        self,
+        values: (
+            Sequence[bool | np.bool]
+            | np_ndarray_bool
+            | Index[bool]
+            | Series[bool]
+            | Self
+        ),
+        mask: np_ndarray_bool,
+        copy: bool = False,
     ) -> None: ...
     @property
     def dtype(self) -> BooleanDtype: ...

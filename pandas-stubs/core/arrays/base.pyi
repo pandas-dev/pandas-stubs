@@ -10,7 +10,6 @@ from typing import (
 )
 
 import numpy as np
-from pandas.core.series import Series
 from typing_extensions import Self
 
 from pandas._typing import (
@@ -98,7 +97,7 @@ class ExtensionArray:
     def factorize(self, use_na_sentinel: bool = True) -> tuple[np_1darray, Self]: ...
     def repeat(
         self,
-        repeats: int | AnyArrayLikeInt | Sequence[int],
+        repeats: int | Sequence[int] | AnyArrayLikeInt,
         axis: AxisInt | None = None,
     ) -> Self: ...
     def take(
@@ -125,9 +124,10 @@ class ExtensionArray:
         skipna: bool = True,
         **kwargs: Any,
     ) -> Self: ...
-    def value_counts(
-        self, dropna: bool = True
-    ) -> Series[int]: ...  # probably to put in base class
     def map(
         self, mapper: Renamer, na_action: Literal["ignore"] | None = None
     ) -> Self: ...
+
+class ExtensionArraySupportsAnyAll(ExtensionArray):
+    def any(self, *, skipna: bool = True) -> bool: ...
+    def all(self, *, skipna: bool = True) -> bool: ...
