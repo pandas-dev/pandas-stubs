@@ -1,29 +1,60 @@
-from typing import TYPE_CHECKING
+from collections import UserList
+from typing import (
+    TYPE_CHECKING,
+    cast,
+)
 
 import numpy as np
 import pandas as pd
 from pandas.core.arrays.floating import FloatingArray
+from pandas.core.arrays.numpy_ import NumpyExtensionArray
 import pytest
 from typing_extensions import assert_type
 
 from tests import (
     PANDAS_FLOAT_ARGS,
+    PD_LTE_23,
     check,
     exception_on_platform,
 )
 from tests._typing import PandasFloatDtypeArg
 
 
-def test_constructor() -> None:
-    check(assert_type(pd.array([1.0]), FloatingArray), FloatingArray)
-    check(assert_type(pd.array([1.0, np.float64(1)]), FloatingArray), FloatingArray)
-    check(assert_type(pd.array([1.0, None]), FloatingArray), FloatingArray)
-    check(assert_type(pd.array([1.0, pd.NA, None]), FloatingArray), FloatingArray)
+def test_constructor_sequence() -> None:
+    data = cast(  # pyright: ignore[reportUnnecessaryCast]
+        "list[float | np.float32]", [1.0, np.float32(1)]
+    )
 
-    nparr = np.array([1.0], np.float64)
-    check(assert_type(pd.array(nparr), FloatingArray), FloatingArray)
+    if PD_LTE_23:
+        check(assert_type(pd.array([float("nan")]), FloatingArray), NumpyExtensionArray)
+    else:
+        check(assert_type(pd.array([float("nan")]), FloatingArray), FloatingArray)
 
-    check(assert_type(pd.array(pd.array([1.0])), FloatingArray), FloatingArray)
+    check(assert_type(pd.array(data), FloatingArray), FloatingArray)
+    check(assert_type(pd.array([*data, np.nan]), FloatingArray), FloatingArray)
+    check(assert_type(pd.array([*data, None]), FloatingArray), FloatingArray)
+    check(assert_type(pd.array([*data, pd.NA]), FloatingArray), FloatingArray)
+    check(assert_type(pd.array([*data, None, pd.NA]), FloatingArray), FloatingArray)
+    check(assert_type(pd.array([*data, np.nan, pd.NA]), FloatingArray), FloatingArray)
+    check(assert_type(pd.array([*data, np.nan, None]), FloatingArray), FloatingArray)
+    check(
+        assert_type(pd.array([*data, np.nan, None, pd.NA]), FloatingArray),
+        FloatingArray,
+    )
+
+    check(assert_type(pd.array(tuple(data)), FloatingArray), FloatingArray)
+    check(assert_type(pd.array(UserList(data)), FloatingArray), FloatingArray)
+
+
+def test_constructor_array_like() -> None:
+    data = cast(  # pyright: ignore[reportUnnecessaryCast]
+        "list[float | np.float32]", [1.0, np.float32(1)]
+    )
+    np_arr = np.array(data, np.float32)
+
+    check(assert_type(pd.array(np_arr), FloatingArray), FloatingArray)
+
+    check(assert_type(pd.array(pd.array(data)), FloatingArray), FloatingArray)
 
 
 @pytest.mark.parametrize(("dtype", "target_dtype"), PANDAS_FLOAT_ARGS.items(), ids=repr)
