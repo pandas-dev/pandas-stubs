@@ -100,13 +100,11 @@ from pandas.io.api import (
     HDFStore as HDFStore,
     read_clipboard as read_clipboard,
     read_csv as read_csv,
-    read_excel as read_excel,
     read_feather as read_feather,
     read_fwf as read_fwf,
     read_hdf as read_hdf,
     read_html as read_html,
     read_json as read_json,
-    read_orc as read_orc,
     read_parquet as read_parquet,
     read_pickle as read_pickle,
     read_sas as read_sas,
@@ -117,6 +115,12 @@ from pandas.io.api import (
     read_stata as read_stata,
     read_table as read_table,
     read_xml as read_xml,
+)
+from pandas.io.api import (
+    read_excel as read_excel,  # pyright: ignore[reportUnknownVariableType]
+)
+from pandas.io.api import (
+    read_orc as read_orc,  # pyright: ignore[reportUnknownVariableType]
 )
 from pandas.io.json._normalize import json_normalize as json_normalize
 from pandas.tseries import offsets as offsets

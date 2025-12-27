@@ -41,7 +41,7 @@ def test_mul_py_scalar(left: "pd.Index[float]") -> None:
     check(assert_type(left * f, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(left * c, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left * d, "pd.TimedeltaIndex"), pd.TimedeltaIndex, timedelta)
 
     check(assert_type(b * left, "pd.Index[float]"), pd.Index, np.floating)
@@ -49,7 +49,7 @@ def test_mul_py_scalar(left: "pd.Index[float]") -> None:
     check(assert_type(f * left, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(c * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(d * left, "pd.TimedeltaIndex"), pd.TimedeltaIndex, timedelta)
 
 
@@ -64,16 +64,16 @@ def test_mul_py_sequence(left: "pd.Index[float]") -> None:
     check(assert_type(left * f, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(left * c, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _05 = left * d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     check(assert_type(b * left, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(i * left, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(f * left, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(c * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _15 = d * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
 
 def test_mul_numpy_array(left: "pd.Index[float]") -> None:
@@ -127,7 +127,7 @@ def test_mul_pd_index(left: "pd.Index[float]") -> None:
     check(assert_type(left * f, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(left * c, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _04 = left * s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(left * d, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
 
     check(assert_type(b * left, "pd.Index[float]"), pd.Index, np.floating)
@@ -135,5 +135,5 @@ def test_mul_pd_index(left: "pd.Index[float]") -> None:
     check(assert_type(f * left, "pd.Index[float]"), pd.Index, np.floating)
     check(assert_type(c * left, "pd.Index[complex]"), pd.Index, np.complexfloating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _14 = s * left  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(d * left, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)

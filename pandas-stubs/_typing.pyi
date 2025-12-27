@@ -247,32 +247,28 @@ BooleanDtypeArg: TypeAlias = (
 BuiltinIntDtypeArg: TypeAlias = type[int] | Literal["int"]
 # Pandas nullable integer types and their string aliases
 PandasIntDtypeArg: TypeAlias = (
-    pd.Int8Dtype
-    | pd.Int16Dtype
-    | pd.Int32Dtype
-    | pd.Int64Dtype
-    | Literal["Int8", "Int16", "Int32", "Int64"]
+    (pd.Int8Dtype | Literal["Int8"])  # noqa: PYI030
+    | (pd.Int16Dtype | Literal["Int16"])
+    | (pd.Int32Dtype | Literal["Int32"])
+    | (pd.Int64Dtype | Literal["Int64"])
 )
 # Numpy signed integer types and their string aliases
 NumpyIntDtypeArg: TypeAlias = (
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.byte
-    type[np.byte]  # noqa: PYI030
-    | Literal["b", "i1", "int8", "byte"]
+    (type[np.byte] | Literal["b", "i1", "int8", "byte"])  # noqa: PYI030
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.short
-    | type[np.short]
-    | Literal["h", "i2", "int16", "short"]
+    | (type[np.short] | Literal["h", "i2", "int16", "short"])
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.intc
-    | type[np.intc]
-    | Literal["i", "i4", "int32", "intc"]
+    | (type[np.intc] | Literal["i", "i4", "int32", "intc"])
+    # l and long correspond to np.long
+    | Literal["l", "long"]
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int_
-    | type[np.int_]
-    | Literal["l", "i8", "int64", "int_", "long"]
+    | (type[np.int_] | Literal["l", "i8", "int64", "int_", "long"])
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.longlong
-    | type[np.longlong]
-    | Literal["q", "longlong"]  # NOTE: int128 not assigned
+    | (type[np.longlong] | Literal["q", "longlong"])  # NOTE: int128 not assigned
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.intp
-    | type[np.intp]  # signed pointer (=`intptr_t`, platform dependent)
-    | Literal["p", "intp"]
+    # signed pointer (=`intptr_t`, platform dependent)
+    | (type[np.intp] | Literal["p", "intp"])
 )
 # PyArrow integer types and their string aliases
 PyArrowIntDtypeArg: TypeAlias = Literal[
@@ -283,32 +279,28 @@ IntDtypeArg: TypeAlias = (
 )
 # Pandas nullable unsigned integer types and their string aliases
 PandasUIntDtypeArg: TypeAlias = (
-    pd.UInt8Dtype
-    | pd.UInt16Dtype
-    | pd.UInt32Dtype
-    | pd.UInt64Dtype
-    | Literal["UInt8", "UInt16", "UInt32", "UInt64"]
+    (pd.UInt8Dtype | Literal["UInt8"])  # noqa: PYI030
+    | (pd.UInt16Dtype | Literal["UInt16"])
+    | (pd.UInt32Dtype | Literal["UInt32"])
+    | (pd.UInt64Dtype | Literal["UInt64"])
 )
 # Numpy unsigned integer types and their string aliases
 NumpyUIntDtypeArg: TypeAlias = (
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.ubyte
-    type[np.ubyte]  # noqa: PYI030
-    | Literal["B", "u1", "uint8", "ubyte"]
+    (type[np.ubyte] | Literal["B", "u1", "uint8", "ubyte"])  # noqa: PYI030
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.ushort
-    | type[np.ushort]
-    | Literal["H", "u2", "uint16", "ushort"]
+    | (type[np.ushort] | Literal["H", "u2", "uint16", "ushort"])
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.uintc
-    | type[np.uintc]
-    | Literal["I", "u4", "uint32", "uintc"]
+    | (type[np.uintc] | Literal["I", "u4", "uint32", "uintc"])
+    # L and ulong correspond to np.ulong
+    | Literal["L", "ulong"]
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.uint
-    | type[np.uint]
-    | Literal["L", "u8", "uint", "ulong", "uint64"]
+    | (type[np.uint] | Literal["L", "u8", "uint", "ulong", "uint64"])
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.ulonglong
-    | type[np.ulonglong]
-    | Literal["Q", "ulonglong"]  # NOTE: uint128 not assigned
+    | (type[np.ulonglong] | Literal["Q", "ulonglong"])  # NOTE: uint128 not assigned
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.uintp
-    | type[np.uintp]  # unsigned pointer (=`uintptr_t`, platform dependent)
-    | Literal["P", "uintp"]
+    # unsigned pointer (=`uintptr_t`, platform dependent)
+    | (type[np.uintp] | Literal["P", "uintp"])
 )
 # PyArrow unsigned integer types and their string aliases
 PyArrowUIntDtypeArg: TypeAlias = Literal[
@@ -321,7 +313,6 @@ BuiltinFloatDtypeArg: TypeAlias = type[float] | Literal["float"]
 PandasFloatDtypeArg: TypeAlias = (
     pd.Float32Dtype | pd.Float64Dtype | Literal["Float32", "Float64"]
 )
-PandasAstypeFloatDtypeArg: TypeAlias = Literal["float_", "longfloat"]
 # Numpy float types and their string aliases
 NumpyFloat16DtypeArg: TypeAlias = (
     # NOTE: Alias np.float16 only on Linux x86_64, use np.half instead
@@ -357,11 +348,6 @@ FloatDtypeArg: TypeAlias = (
 )
 # Builtin complex type and its string alias
 BuiltinComplexDtypeArg: TypeAlias = type[complex] | Literal["complex"]
-PandasAstypeComplexDtypeArg: TypeAlias = (
-    Literal["singlecomplex"]  # noqa: PYI030
-    | Literal["cfloat", "complex_"]
-    | Literal["c32", "complex256", "clongfloat", "longcomplex"]
-)
 # Numpy complex types and their aliases
 NumpyComplexDtypeArg: TypeAlias = (
     # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.csingle
@@ -373,7 +359,7 @@ NumpyComplexDtypeArg: TypeAlias = (
     #  https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.clongdouble
     # NOTE: Alias np.complex256 only on Linux x86_64, use np.clongdouble instead
     | type[np.clongdouble]
-    | Literal["G", "clongdouble"]
+    | Literal["G", "c32", "complex256", "clongdouble"]
 )
 ComplexDtypeArg: TypeAlias = BuiltinComplexDtypeArg | NumpyComplexDtypeArg
 PandasAstypeTimedeltaDtypeArg: TypeAlias = Literal[
@@ -538,8 +524,7 @@ CategoryDtypeArg: TypeAlias = CategoricalDtype | Literal["category"]
 BuiltinObjectDtypeArg: TypeAlias = type[object] | Literal["object"]
 # Numpy object type and its string alias
 # https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.object_
-# NOTE: "object_" not assigned
-NumpyObjectDtypeArg: TypeAlias = type[np.object_] | Literal["O"]
+NumpyObjectDtypeArg: TypeAlias = type[np.object_] | Literal["object_", "O"]
 
 ObjectDtypeArg: TypeAlias = BuiltinObjectDtypeArg | NumpyObjectDtypeArg
 

@@ -131,5 +131,5 @@ def test_truediv_str_py_str(left_i: pd.Index) -> None:
     s = "abc"
 
     if TYPE_CHECKING_INVALID_USAGE:
-        _0 = left_i / s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
-        _1 = s / left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue]
+        _0 = left_i / s  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]
+        _1 = s / left_i  # type: ignore[operator] # pyright:ignore[reportOperatorIssue,reportUnknownVariableType]

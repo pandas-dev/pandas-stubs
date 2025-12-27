@@ -16,12 +16,12 @@ import pytest
 from typing_extensions import assert_type
 
 from tests import (
-    PANDAS_FLOAT_ARGS,
     PD_LTE_23,
     check,
     exception_on_platform,
 )
 from tests._typing import PandasFloatDtypeArg
+from tests.dtypes import PANDAS_FLOAT_ARGS
 from tests.utils import powerset
 
 

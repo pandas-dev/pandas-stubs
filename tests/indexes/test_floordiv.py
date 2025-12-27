@@ -34,16 +34,16 @@ def test_floordiv_py_scalar(left_i: pd.Index) -> None:
     check(assert_type(left_i // i, pd.Index), pd.Index, np.integer)
     check(assert_type(left_i // f, pd.Index), pd.Index, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _03 = left_i // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _04 = left_i // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _05 = left_i // d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _03 = left_i // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _04 = left_i // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _05 = left_i // d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     check(assert_type(b // left_i, pd.Index), pd.Index, np.integer)
     check(assert_type(i // left_i, pd.Index), pd.Index, np.integer)
     check(assert_type(f // left_i, pd.Index), pd.Index, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _13 = c // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _14 = s // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _13 = c // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _14 = s // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(d // left_i, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
 
 
@@ -57,16 +57,16 @@ def test_floordiv_py_sequence(left_i: pd.Index) -> None:
     check(assert_type(left_i // i, pd.Index), pd.Index, np.integer)
     check(assert_type(left_i // f, pd.Index), pd.Index, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _03 = left_i // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _04 = left_i // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _05 = left_i // d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _03 = left_i // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _04 = left_i // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _05 = left_i // d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     check(assert_type(b // left_i, pd.Index), pd.Index, np.integer)
     check(assert_type(i // left_i, pd.Index), pd.Index, np.integer)
     check(assert_type(f // left_i, pd.Index), pd.Index, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _13 = c // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _14 = s // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _13 = c // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _14 = s // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(d // left_i, pd.Index), pd.Index, timedelta)
 
 
@@ -130,14 +130,14 @@ def test_floordiv_pd_index(left_i: pd.Index) -> None:
     check(assert_type(left_i // i, pd.Index), pd.Index, np.integer)
     check(assert_type(left_i // f, pd.Index), pd.Index, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _03 = left_i // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _04 = left_i // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _05 = left_i // d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _03 = left_i // c  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _04 = left_i // s  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _05 = left_i // d  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
 
     check(assert_type(b // left_i, pd.Index), pd.Index, np.integer)
     check(assert_type(i // left_i, pd.Index), pd.Index, np.integer)
     check(assert_type(f // left_i, pd.Index), pd.Index, np.floating)
     if TYPE_CHECKING_INVALID_USAGE:
-        _13 = c // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
-        _14 = s // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue]
+        _13 = c // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
+        _14 = s // left_i  # type: ignore[operator] # pyright: ignore[reportOperatorIssue,reportUnknownVariableType]
     check(assert_type(d // left_i, pd.TimedeltaIndex), pd.TimedeltaIndex, pd.Timedelta)
