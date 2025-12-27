@@ -19,6 +19,8 @@ def read_orc(
     path: FilePath | ReadBuffer[bytes],
     columns: list[HashableT] | None = None,
     dtype_backend: DtypeBackend | _NoDefaultDoNotUse = "numpy_nullable",
-    filesystem: FileSystem | AbstractFileSystem | None = None,
+    filesystem: (  # pyright: ignore[reportUnknownParameterType]
+        FileSystem | AbstractFileSystem | None
+    ) = None,
     **kwargs: Any,
 ) -> DataFrame: ...
