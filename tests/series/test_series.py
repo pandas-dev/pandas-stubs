@@ -25,6 +25,7 @@ from typing import (
     TypeVar,
     cast,
 )
+import uuid
 
 import numpy as np
 import pandas as pd
@@ -61,7 +62,6 @@ from tests import (
     TYPE_CHECKING_INVALID_USAGE,
     WINDOWS,
     check,
-    ensure_clean,
     pytest_warns_bounded,
 )
 from tests._typing import (
@@ -186,22 +186,22 @@ def test_types_all() -> None:
     check(assert_type(pd.Series([np.nan]).all(skipna=False), np.bool), np.bool)
 
 
-def test_types_csv() -> None:
+def test_types_csv(tmp_path: Path) -> None:
     s = pd.Series(data=[1, 2, 3])
     check(assert_type(s.to_csv(), str), str)
 
-    with ensure_clean() as path:
-        s.to_csv(path)
-        check(assert_type(pd.read_csv(path), pd.DataFrame), pd.DataFrame)
+    path_str = str(tmp_path / f"{uuid.uuid4()}test0.csv")
+    s.to_csv(path_str)
+    check(assert_type(pd.read_csv(path_str), pd.DataFrame), pd.DataFrame)
 
-    with ensure_clean() as path:
-        s.to_csv(Path(path))
-        check(assert_type(pd.read_csv(Path(path)), pd.DataFrame), pd.DataFrame)
+    path = tmp_path / f"{uuid.uuid4()}test1.csv"
+    s.to_csv(path)
+    check(assert_type(pd.read_csv(path), pd.DataFrame), pd.DataFrame)
 
     # This keyword was added in 1.1.0 https://pandas.pydata.org/docs/whatsnew/v1.1.0.html
-    with ensure_clean() as path:
-        s.to_csv(path, errors="replace")
-        check(assert_type(pd.read_csv(path), pd.DataFrame), pd.DataFrame)
+    path_str = str(tmp_path / f"{uuid.uuid4()}test2.csv")
+    s.to_csv(path_str, errors="replace")
+    check(assert_type(pd.read_csv(path_str), pd.DataFrame), pd.DataFrame)
 
 
 def test_types_copy() -> None:
