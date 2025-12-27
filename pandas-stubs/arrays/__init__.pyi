@@ -4,7 +4,7 @@ from pandas.core.arrays import (
     DatetimeArray as DatetimeArray,
     IntegerArray as IntegerArray,
     IntervalArray as IntervalArray,
-    PandasArray as PandasArray,
+    NumpyExtensionArray as NumpyExtensionArray,
     PeriodArray as PeriodArray,
     SparseArray as SparseArray,
     StringArray as StringArray,

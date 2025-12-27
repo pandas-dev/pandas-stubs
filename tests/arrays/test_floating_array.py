@@ -15,7 +15,8 @@ from tests.dtypes import PANDAS_FLOAT_ARGS
 
 
 def test_constructor() -> None:
-    check(assert_type(pd.array([1.0]), FloatingArray), FloatingArray)
+    data = [1.0]
+    check(assert_type(pd.array(data), FloatingArray), FloatingArray)
     check(assert_type(pd.array([1.0, np.float64(1)]), FloatingArray), FloatingArray)
     check(assert_type(pd.array([1.0, None]), FloatingArray), FloatingArray)
     check(assert_type(pd.array([1.0, pd.NA, None]), FloatingArray), FloatingArray)
