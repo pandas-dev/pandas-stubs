@@ -71,6 +71,7 @@ html5lib = ">=1.1"
 python-calamine = ">=0.2.0"
 pyarrow-stubs = { version = ">=20.0.0.20250928", python = "<4" }
 fsspec = "^2025.10.0"
+tables = { version = ">=3.10.2", python = ">=3.11,<3.14" }
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
