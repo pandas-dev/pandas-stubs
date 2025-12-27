@@ -39,7 +39,7 @@ def array(  # empty data, [float("nan")]
 ) -> FloatingArray: ...
 @overload
 def array(
-    data: Sequence[float | NAType | NaTType | None],
+    data: SequenceNotStr[Any],
     dtype: BuiltinNotStrDtypeArg | NumpyNotTimeDtypeArg,
     copy: bool = True,
 ) -> NumpyExtensionArray: ...
