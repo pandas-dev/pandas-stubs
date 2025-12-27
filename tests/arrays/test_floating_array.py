@@ -7,11 +7,11 @@ import pytest
 from typing_extensions import assert_type
 
 from tests import (
-    PANDAS_FLOAT_ARGS,
     check,
     exception_on_platform,
 )
 from tests._typing import PandasFloatDtypeArg
+from tests.dtypes import PANDAS_FLOAT_ARGS
 
 
 def test_constructor() -> None:

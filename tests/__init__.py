@@ -1,11 +1,15 @@
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import (
+    Generator,
+    Iterable,
+)
 from contextlib import (
     AbstractContextManager,
     nullcontext,
     suppress,
 )
+from datetime import timezone
 import sys
 from typing import (
     TYPE_CHECKING,
@@ -37,60 +41,6 @@ WINDOWS = sys.platform in {"win32", "cygwin"}
 MAC = sys.platform == "darwin"
 PD_LTE_23 = Version(pd.__version__) < Version("2.3.999")
 NUMPY20 = np.lib.NumpyVersion(np.__version__) >= "2.0.0"
-
-NATIVE_FLOAT_ARGS = {float: np.floating, "float": np.floating}
-NUMPY_FLOAT16_ARGS = {
-    np.half: np.half,
-    "half": np.half,
-    "e": np.half,
-    "float16": np.float16,
-    "f2": np.float16,
-}
-NUMPY_FLOAT_NOT16_ARGS = {
-    # numpy float32
-    np.single: np.single,
-    "single": np.single,
-    "f": np.single,
-    "float32": np.float32,
-    "f4": np.float32,
-    # numpy float64
-    np.double: np.double,
-    "double": np.double,
-    "d": np.double,
-    "float64": np.float64,
-    "f8": np.float64,
-    # numpy float128
-    np.longdouble: np.longdouble,
-    "g": np.longdouble,
-}
-PYARROW_FLOAT_ARGS = {
-    # pyarrow float32
-    "float32[pyarrow]": float,
-    "float[pyarrow]": float,
-    # pyarrow float64
-    "float64[pyarrow]": float,
-    "double[pyarrow]": float,
-}
-PANDAS_FLOAT_ARGS = {
-    # pandas Float32
-    pd.Float32Dtype(): np.float32,
-    "Float32": np.float32,
-    # pandas Float64
-    pd.Float64Dtype(): np.float64,
-    "Float64": np.float64,
-}
-TYPE_FLOAT_NOT_NUMPY16_ARGS = (
-    NATIVE_FLOAT_ARGS | NUMPY_FLOAT_NOT16_ARGS | PYARROW_FLOAT_ARGS | PANDAS_FLOAT_ARGS
-)
-TYPE_FLOAT_ARGS = TYPE_FLOAT_NOT_NUMPY16_ARGS | NUMPY_FLOAT16_ARGS
-ASTYPE_FLOAT_NOT_NUMPY16_ARGS = {
-    **TYPE_FLOAT_NOT_NUMPY16_ARGS,
-    "longdouble": np.longdouble,
-    "f16": np.longdouble,
-    # "float96": np.longdouble,  # NOTE: unsupported
-    "float128": np.longdouble,  # NOTE: UNIX ONLY
-}
-ASTYPE_FLOAT_ARGS = ASTYPE_FLOAT_NOT_NUMPY16_ARGS | NUMPY_FLOAT16_ARGS
 
 
 def check(
@@ -248,6 +198,23 @@ def pytest_warns_bounded(
 
 
 def exception_on_platform(dtype: type | str | ExtensionDtype) -> type[Exception] | None:
-    if (WINDOWS or MAC) and dtype in {"f16", "float128"}:
+    if (WINDOWS or MAC) and dtype in {"f16", "float128", "c32", "complex256"}:
         return TypeError
     return None
+
+
+def get_dtype(dtype: object) -> Generator[Any, None, None]:
+    """Extract types and string literals from a Union or Literal type."""
+    if isinstance(dtype, str):
+        yield dtype
+    # isinstance(type[bool], type) is True in py310, but not in newer versions
+    elif isinstance(dtype, type) and not str(dtype).startswith("type["):
+        if dtype is pd.DatetimeTZDtype:
+            yield dtype(tz=timezone.utc)
+        elif "pandas" in str(dtype):
+            yield dtype()
+        else:
+            yield dtype
+    else:
+        for arg in get_args(dtype):
+            yield from get_dtype(arg)

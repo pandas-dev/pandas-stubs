@@ -109,7 +109,6 @@ from pandas._typing import (
     NumpyNotTimeDtypeArg,
     NumpyTimedeltaDtypeArg,
     NumpyTimestampDtypeArg,
-    PandasAstypeFloatDtypeArg,
     PandasFloatDtypeArg,
     PyArrowFloatDtypeArg,
     ReindexMethod,
@@ -404,7 +403,7 @@ class Index(IndexOpsMixin[S1], ElementOpsMixin[S1]):
     @overload
     def astype(
         self,
-        dtype: FloatNotNumpy16DtypeArg | PandasAstypeFloatDtypeArg,
+        dtype: FloatNotNumpy16DtypeArg,
         copy: bool = True,
     ) -> Index[float]: ...
     @overload
