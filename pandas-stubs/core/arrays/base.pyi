@@ -10,7 +10,6 @@ from typing import (
 )
 
 import numpy as np
-from pandas.core.series import Series
 from typing_extensions import Self
 
 from pandas._typing import (
@@ -55,7 +54,7 @@ class ExtensionArray:
     @property
     def dtype(self) -> ExtensionDtype: ...
     @property
-    def shape(self) -> tuple[int, ...]: ...
+    def shape(self) -> tuple[int]: ...
     @property
     def ndim(self) -> int: ...
     @property
@@ -125,9 +124,6 @@ class ExtensionArray:
         skipna: bool = True,
         **kwargs: Any,
     ) -> Self: ...
-    def value_counts(
-        self, dropna: bool = True
-    ) -> Series[int]: ...  # probably to put in base class
     def map(
         self, mapper: Renamer, na_action: Literal["ignore"] | None = None
     ) -> Self: ...

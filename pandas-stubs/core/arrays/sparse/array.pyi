@@ -11,6 +11,7 @@ from typing import (
 )
 
 import numpy as np
+from pandas.core.arraylike import OpsMixin
 from pandas.core.arrays import ExtensionArray
 from pandas.core.series import Series
 from typing_extensions import Self
@@ -42,7 +43,7 @@ class _SparseMatrixLike(Protocol):
 class ellipsis(Enum):
     Ellipsis = "..."
 
-class SparseArray(ExtensionArray):
+class SparseArray(OpsMixin, ExtensionArray):
     if sys.version_info >= (3, 11):
         def __new__(
             cls,
