@@ -1,6 +1,11 @@
 from collections import UserList
+from collections.abc import (
+    Callable,
+    Sequence,
+)
 from typing import (
     TYPE_CHECKING,
+    Any,
     cast,
 )
 
@@ -18,35 +23,60 @@ from tests import (
     exception_on_platform,
 )
 from tests._typing import PandasFloatDtypeArg
+from tests.utils import powerset
 
 
-def test_constructor_sequence() -> None:
-    data = cast(  # pyright: ignore[reportUnnecessaryCast]
-        "list[float | np.float32]", [1.0, np.float32(1)]
+@pytest.mark.parametrize("typ", [list, tuple, UserList])
+@pytest.mark.parametrize("nums", powerset([1.0, np.float32(1)], 1))
+@pytest.mark.parametrize("missing_values", powerset([np.nan, None, pd.NA]))
+def test_construction_sequence(
+    nums: tuple[float | np.floating, ...],
+    missing_values: tuple[Any, ...],
+    typ: Callable[[Sequence[Any]], Sequence[Any]],
+) -> None:
+    check(pd.array(typ([*nums, *missing_values])), FloatingArray)
+
+    if TYPE_CHECKING:
+        data = cast(  # pyright: ignore[reportUnnecessaryCast]
+            "list[float | np.float32]", [1.0, np.float32(1)]
+        )
+
+        assert_type(pd.array(data), FloatingArray)
+        assert_type(pd.array([*data, np.nan]), FloatingArray)
+        assert_type(pd.array([*data, None]), FloatingArray)
+        assert_type(pd.array([*data, pd.NA]), FloatingArray)
+        assert_type(pd.array([*data, None, pd.NA]), FloatingArray)
+        assert_type(pd.array([*data, np.nan, pd.NA]), FloatingArray)
+        assert_type(pd.array([*data, np.nan, None]), FloatingArray)
+        assert_type(pd.array([*data, np.nan, None, pd.NA]), FloatingArray)
+
+        assert_type(pd.array(tuple(data)), FloatingArray)
+        assert_type(pd.array(UserList(data)), FloatingArray)
+
+
+@pytest.mark.parametrize("typ", [list, tuple, UserList])
+@pytest.mark.parametrize("data", [(), (np.nan,)])
+def test_construction_sequence_nan(
+    data: tuple[Any, ...],
+    typ: Callable[[Sequence[Any]], Sequence[Any]],
+) -> None:
+    expected_type = (
+        NumpyExtensionArray if data == (np.nan,) and PD_LTE_23 else FloatingArray
     )
+    check(pd.array(typ(data)), expected_type)
 
-    if PD_LTE_23:
-        check(assert_type(pd.array([float("nan")]), FloatingArray), NumpyExtensionArray)
-    else:
-        check(assert_type(pd.array([float("nan")]), FloatingArray), FloatingArray)
+    if TYPE_CHECKING:
+        assert_type(pd.array([]), FloatingArray)
+        assert_type(pd.array([np.nan]), FloatingArray)
 
-    check(assert_type(pd.array(data), FloatingArray), FloatingArray)
-    check(assert_type(pd.array([*data, np.nan]), FloatingArray), FloatingArray)
-    check(assert_type(pd.array([*data, None]), FloatingArray), FloatingArray)
-    check(assert_type(pd.array([*data, pd.NA]), FloatingArray), FloatingArray)
-    check(assert_type(pd.array([*data, None, pd.NA]), FloatingArray), FloatingArray)
-    check(assert_type(pd.array([*data, np.nan, pd.NA]), FloatingArray), FloatingArray)
-    check(assert_type(pd.array([*data, np.nan, None]), FloatingArray), FloatingArray)
-    check(
-        assert_type(pd.array([*data, np.nan, None, pd.NA]), FloatingArray),
-        FloatingArray,
-    )
+        assert_type(pd.array(()), FloatingArray)
+        assert_type(pd.array((np.nan,)), FloatingArray)
 
-    check(assert_type(pd.array(tuple(data)), FloatingArray), FloatingArray)
-    check(assert_type(pd.array(UserList(data)), FloatingArray), FloatingArray)
+        assert_type(pd.array(UserList()), FloatingArray)
+        assert_type(pd.array(UserList([np.nan])), FloatingArray)
 
 
-def test_constructor_array_like() -> None:
+def test_construction_array_like() -> None:
     data = cast(  # pyright: ignore[reportUnnecessaryCast]
         "list[float | np.float32]", [1.0, np.float32(1)]
     )
@@ -58,7 +88,7 @@ def test_constructor_array_like() -> None:
 
 
 @pytest.mark.parametrize(("dtype", "target_dtype"), PANDAS_FLOAT_ARGS.items(), ids=repr)
-def test_constructor_dtype(dtype: PandasFloatDtypeArg, target_dtype: type) -> None:
+def test_construction_dtype(dtype: PandasFloatDtypeArg, target_dtype: type) -> None:
     exc = exception_on_platform(dtype)
     if exc:
         with pytest.raises(exc, match=rf"data type {dtype!r} not understood"):

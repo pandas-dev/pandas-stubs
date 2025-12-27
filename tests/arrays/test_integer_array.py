@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from numpy._typing import _8Bit
 
 
-def test_constructor_sequence() -> None:
+def test_construction_sequence() -> None:
     data = cast(
         "list[int | np.signedinteger[_8Bit]]", [1, np.int8(1)]
     )  # pyright: ignore[reportUnnecessaryCast]
@@ -29,7 +29,7 @@ def test_constructor_sequence() -> None:
     check(assert_type(pd.array(UserList(data)), IntegerArray), IntegerArray)
 
 
-def test_constructor_array_like() -> None:
+def test_construction_array_like() -> None:
     data = cast(
         "list[int | np.signedinteger[_8Bit]]", [1, np.int8(1)]
     )  # pyright: ignore[reportUnnecessaryCast]
@@ -40,5 +40,5 @@ def test_constructor_array_like() -> None:
     check(assert_type(pd.array(pd.array(data)), IntegerArray), IntegerArray)
 
 
-def test_constructor_dtype_na() -> None:
+def test_construction_dtype_na() -> None:
     check(assert_type(pd.array([np.nan], "Int8"), IntegerArray), IntegerArray)

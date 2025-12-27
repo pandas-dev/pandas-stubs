@@ -9,7 +9,7 @@ from typing_extensions import assert_type
 from tests import check
 
 
-def test_constructor_sequence() -> None:
+def test_construction_sequence() -> None:
     data = cast(  # pyright: ignore[reportUnnecessaryCast]
         "list[str | np.str_]", ["1", np.str_("1")]
     )
@@ -23,7 +23,7 @@ def test_constructor_sequence() -> None:
     check(assert_type(pd.array(UserList(data)), StringArray), StringArray)
 
 
-def test_constructor_array_like() -> None:
+def test_construction_array_like() -> None:
     data = cast(  # pyright: ignore[reportUnnecessaryCast]
         "list[str | np.str_]", ["1", np.str_("1")]
     )
@@ -34,5 +34,5 @@ def test_constructor_array_like() -> None:
     check(assert_type(pd.array(pd.array(data)), StringArray), StringArray)
 
 
-def test_constructor_dtype_na() -> None:
+def test_construction_dtype_na() -> None:
     check(assert_type(pd.array([np.nan], "string"), StringArray), StringArray)

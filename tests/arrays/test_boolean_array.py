@@ -12,7 +12,7 @@ from typing_extensions import assert_type
 from tests import check
 
 
-def test_constructor_sequence() -> None:
+def test_construction_sequence() -> None:
     data = cast(  # pyright: ignore[reportUnnecessaryCast]
         "list[bool | np.bool[Literal[True]]]", [True, np.bool_(True)]
     )
@@ -26,7 +26,7 @@ def test_constructor_sequence() -> None:
     check(assert_type(pd.array(UserList(data)), BooleanArray), BooleanArray)
 
 
-def test_constructor_array_like() -> None:
+def test_construction_array_like() -> None:
     data = cast(  # pyright: ignore[reportUnnecessaryCast]
         "list[bool | np.bool[Literal[True]]]", [True, np.bool_(True)]
     )
@@ -37,5 +37,5 @@ def test_constructor_array_like() -> None:
     check(assert_type(pd.array(pd.array(data)), BooleanArray), BooleanArray)
 
 
-def test_constructor_dtype_na() -> None:
+def test_construction_dtype_na() -> None:
     check(assert_type(pd.array([np.nan], "boolean"), BooleanArray), BooleanArray)

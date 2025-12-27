@@ -20,6 +20,7 @@ from tests import (
     PD_LTE_23,
     check,
 )
+from tests.utils import powerset
 
 if TYPE_CHECKING:
     from pandas._libs.missing import NAType
@@ -27,30 +28,17 @@ if TYPE_CHECKING:
 
 
 @pytest.mark.parametrize("typ", [list, tuple, UserList])
-@pytest.mark.parametrize(
-    "data",
-    [
-        [None],
-        [pd.NA],
-        [pd.NaT],
-        [np.nan, pd.NaT],
-        [None, pd.NA],
-        [None, pd.NaT],
-        [pd.NA, pd.NaT],
-        [np.nan, None, pd.NaT],
-        [np.nan, pd.NA, pd.NaT],
-        [None, pd.NA, pd.NaT],
-        [np.nan, None, pd.NA, pd.NaT],
-    ],
-)
-def test_constructor_sequence(
-    data: Sequence[Any], typ: Callable[[Sequence[Any]], Sequence[Any]]
+@pytest.mark.parametrize("missing_values", powerset([None, pd.NA, pd.NaT], 1))
+def test_construction_sequence(
+    missing_values: tuple[Any, ...], typ: Callable[[Sequence[Any]], Sequence[Any]]
 ) -> None:
     # `pd.NaT in [pd.NA, pd.NaT]` leads to an exception
-    if data[-1] is pd.NaT and PD_LTE_23:
-        check(pd.array(typ(data)), DatetimeArray)
+    if missing_values[-1] is pd.NaT:
+        expected_type = DatetimeArray if PD_LTE_23 else NumpyExtensionArray
+        check(pd.array(typ(missing_values)), expected_type)
+        check(pd.array(typ((np.nan, *missing_values))), expected_type)
     else:
-        check(pd.array(typ(data)), NumpyExtensionArray)
+        check(pd.array(typ(missing_values)), NumpyExtensionArray)
 
     if TYPE_CHECKING:
         assert_type(pd.array([None]), NumpyExtensionArray)
@@ -79,7 +67,7 @@ def test_constructor_sequence(
         assert_type(pd.array(_41), NumpyExtensionArray)
 
 
-def test_constructor_array_like() -> None:
+def test_construction_array_like() -> None:
     data = [1, "🐼"]
     np_arr = np.array(data, np.object_)
 
@@ -97,7 +85,7 @@ def test_constructor_array_like() -> None:
     )
 
 
-def test_constructor_dtype_nan() -> None:
+def test_construction_dtype_nan() -> None:
     check(
         assert_type(pd.array([np.nan], float), NumpyExtensionArray),
         NumpyExtensionArray,

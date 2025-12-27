@@ -32,6 +32,12 @@ from pandas._typing import (
 )
 
 @overload
+def array(  # empty data, [float("nan")]
+    data: Sequence[Just[float]],
+    dtype: PandasFloatDtypeArg | None = None,
+    copy: bool = True,
+) -> FloatingArray: ...
+@overload
 def array(
     data: Sequence[float | NAType | NaTType | None],
     dtype: BuiltinNotStrDtypeArg | NumpyNotTimeDtypeArg,
