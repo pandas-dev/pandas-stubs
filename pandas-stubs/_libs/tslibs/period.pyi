@@ -62,16 +62,16 @@ class Period(PeriodMixin):
         self,
         value: (
             Period | str | datetime.datetime | datetime.date | Timestamp | None
-        ) = ...,
+        ) = None,
         freq: PeriodFrequency | None = None,
-        ordinal: int | None = ...,
-        year: int | None = ...,
-        month: int | None = ...,
-        quarter: int | None = ...,
-        day: int | None = ...,
-        hour: int | None = ...,
-        minute: int | None = ...,
-        second: int | None = ...,
+        ordinal: int | None = None,
+        year: int | None = None,
+        month: int | None = None,
+        quarter: int | None = None,
+        day: int | None = None,
+        hour: int | None = None,
+        minute: int | None = None,
+        second: int | None = None,
     ) -> None: ...
     @overload
     def __sub__(self, other: _PeriodAddSub) -> Period: ...
