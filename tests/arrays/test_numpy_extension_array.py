@@ -6,7 +6,6 @@ from collections.abc import (
 from typing import (
     TYPE_CHECKING,
     Any,
-    cast,
 )
 
 import numpy as np
@@ -21,10 +20,6 @@ from tests import (
     check,
 )
 from tests.utils import powerset
-
-if TYPE_CHECKING:
-    from pandas._libs.missing import NAType
-    from pandas._libs.tslibs.nattype import NaTType
 
 
 @pytest.mark.parametrize("typ", [list, tuple, UserList])
@@ -45,6 +40,7 @@ def test_construction_sequence(
         assert_type(pd.array([pd.NA]), NumpyExtensionArray)
         assert_type(pd.array([pd.NaT]), NumpyExtensionArray)
 
+        # mypy does not like the literal version pd.array([np.nan, pd.NaT])
         _10 = [np.nan, pd.NaT]
         assert_type(pd.array(_10), NumpyExtensionArray)
         assert_type(pd.array([None, pd.NA]), NumpyExtensionArray)
@@ -60,11 +56,10 @@ def test_construction_sequence(
         _30 = [np.nan, None, pd.NA, pd.NaT]
         assert_type(pd.array(_30), NumpyExtensionArray)
 
-        assert_type(pd.array(tuple(_30)), NumpyExtensionArray)
-        _41 = cast(  # pyright: ignore[reportUnnecessaryCast]
-            "UserList[float | NAType | NaTType | None]", UserList(_30)
-        )
-        assert_type(pd.array(_41), NumpyExtensionArray)
+        assert_type(pd.array((np.nan, None, pd.NA, pd.NaT)), NumpyExtensionArray)
+
+        _50 = UserList([np.nan, pd.NA, pd.NaT])
+        assert_type(pd.array(_50), NumpyExtensionArray)
 
 
 def test_construction_array_like() -> None:

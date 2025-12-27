@@ -6,7 +6,6 @@ from collections.abc import (
 from typing import (
     TYPE_CHECKING,
     Any,
-    cast,
 )
 
 import numpy as np
@@ -27,38 +26,38 @@ from tests.utils import powerset
 
 
 @pytest.mark.parametrize("typ", [list, tuple, UserList])
-@pytest.mark.parametrize("nums", powerset([1.0, np.float32(1)], 1))
+@pytest.mark.parametrize("data", powerset([1.0, np.float32(1)], 1))
 @pytest.mark.parametrize("missing_values", powerset([np.nan, None, pd.NA]))
 def test_construction_sequence(
-    nums: tuple[float | np.floating, ...],
+    data: tuple[float | np.floating, ...],
     missing_values: tuple[Any, ...],
     typ: Callable[[Sequence[Any]], Sequence[Any]],
 ) -> None:
-    check(pd.array(typ([*nums, *missing_values])), FloatingArray)
+    check(pd.array(typ([*data, *missing_values])), FloatingArray)
 
     if TYPE_CHECKING:
-        data = cast(  # pyright: ignore[reportUnnecessaryCast]
-            "list[float | np.float32]", [1.0, np.float32(1)]
-        )
+        assert_type(pd.array([1.0, np.float16(1)]), FloatingArray)
 
-        assert_type(pd.array(data), FloatingArray)
-        assert_type(pd.array([*data, np.nan]), FloatingArray)
-        assert_type(pd.array([*data, None]), FloatingArray)
-        assert_type(pd.array([*data, pd.NA]), FloatingArray)
-        assert_type(pd.array([*data, None, pd.NA]), FloatingArray)
-        assert_type(pd.array([*data, np.nan, pd.NA]), FloatingArray)
-        assert_type(pd.array([*data, np.nan, None]), FloatingArray)
-        assert_type(pd.array([*data, np.nan, None, pd.NA]), FloatingArray)
+        assert_type(pd.array([1.0, np.float32(1), np.nan]), FloatingArray)
+        assert_type(pd.array([1.0, np.float64(1), None]), FloatingArray)
+        assert_type(pd.array([1.0, np.float16(1), pd.NA]), FloatingArray)
 
-        assert_type(pd.array(tuple(data)), FloatingArray)
-        assert_type(pd.array(UserList(data)), FloatingArray)
+        assert_type(pd.array([1.0, np.float32(1), None, pd.NA]), FloatingArray)
+        assert_type(pd.array([1.0, np.float64(1), np.nan, pd.NA]), FloatingArray)
+        assert_type(pd.array([1.0, np.float16(1), np.nan, None]), FloatingArray)
+
+        assert_type(pd.array([1.0, np.float32(1), np.nan, None, pd.NA]), FloatingArray)
+
+        assert_type(pd.array((1.0, np.float64(1))), FloatingArray)
+        assert_type(pd.array((1.0, np.float64(1), pd.NA)), FloatingArray)
+
+        assert_type(pd.array(UserList([1.0, np.float32(1)])), FloatingArray)
 
 
 @pytest.mark.parametrize("typ", [list, tuple, UserList])
 @pytest.mark.parametrize("data", [(), (np.nan,)])
 def test_construction_sequence_nan(
-    data: tuple[Any, ...],
-    typ: Callable[[Sequence[Any]], Sequence[Any]],
+    data: tuple[Any, ...], typ: Callable[[Sequence[Any]], Sequence[Any]]
 ) -> None:
     expected_type = (
         NumpyExtensionArray if data == (np.nan,) and PD_LTE_23 else FloatingArray
@@ -77,14 +76,13 @@ def test_construction_sequence_nan(
 
 
 def test_construction_array_like() -> None:
-    data = cast(  # pyright: ignore[reportUnnecessaryCast]
-        "list[float | np.float32]", [1.0, np.float32(1)]
-    )
-    np_arr = np.array(data, np.float32)
-
+    np_arr = np.array([1.0, np.float16(1)], np.float32)
     check(assert_type(pd.array(np_arr), FloatingArray), FloatingArray)
 
-    check(assert_type(pd.array(pd.array(data)), FloatingArray), FloatingArray)
+    check(
+        assert_type(pd.array(pd.array([1.0, np.float32(1)])), FloatingArray),
+        FloatingArray,
+    )
 
 
 @pytest.mark.parametrize(("dtype", "target_dtype"), PANDAS_FLOAT_ARGS.items(), ids=repr)
