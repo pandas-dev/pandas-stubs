@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from typing import (
     Any,
     TypeAlias,
@@ -6,6 +7,7 @@ from typing import (
 
 from pandas.core.arrays.base import ExtensionArray as ExtensionArray
 from pandas.core.indexes.base import Index
+from pandas.core.indexes.interval import IntervalIndex
 from pandas.core.series import Series
 import pyarrow as pa
 from typing_extensions import Self
@@ -13,6 +15,7 @@ from typing_extensions import Self
 from pandas._libs.interval import (
     Interval as Interval,
     IntervalMixin as IntervalMixin,
+    _OrderableT,
 )
 from pandas._typing import (
     AnyArrayLike,
@@ -36,7 +39,7 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     can_hold_na: bool = True
     def __new__(
         cls,
-        data: AnyArrayLike,
+        data: Sequence[Interval[_OrderableT]] | AnyArrayLike,
         closed: IntervalClosedType | None = None,
         dtype: DtypeArg | None = None,
         copy: bool = False,
@@ -45,7 +48,13 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     @classmethod
     def from_breaks(
         cls,
-        breaks: AnyArrayLike,
+        breaks: (
+            Sequence[_OrderableT]
+            | np_ndarray
+            | ExtensionArray
+            | Index[_OrderableT]
+            | Series[_OrderableT]
+        ),
         closed: str = "right",
         copy: bool = False,
         dtype: DtypeArg | None = None,
@@ -53,8 +62,20 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     @classmethod
     def from_arrays(
         cls,
-        left: AnyArrayLike,
-        right: AnyArrayLike,
+        left: (
+            Sequence[_OrderableT]
+            | np_ndarray
+            | ExtensionArray
+            | Index[_OrderableT]
+            | Series[_OrderableT]
+        ),
+        right: (
+            Sequence[_OrderableT]
+            | np_ndarray
+            | ExtensionArray
+            | Index[_OrderableT]
+            | Series[_OrderableT]
+        ),
         closed: IntervalClosedType = "right",
         copy: bool = False,
         dtype: DtypeArg | None = None,
@@ -62,7 +83,13 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     @classmethod
     def from_tuples(
         cls,
-        data: AnyArrayLike,
+        data: (
+            Sequence[tuple[_OrderableT, _OrderableT]]
+            | np_ndarray
+            | Self
+            | IntervalIndex[Interval[_OrderableT]]
+            | Series[Interval[_OrderableT]]
+        ),
         closed: IntervalClosedType = "right",
         copy: bool = False,
         dtype: DtypeArg | None = None,
