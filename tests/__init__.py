@@ -40,7 +40,6 @@ LINUX = sys.platform == "linux"
 WINDOWS = sys.platform in {"win32", "cygwin"}
 MAC = sys.platform == "darwin"
 PD_LTE_23 = Version(pd.__version__) < Version("2.3.999")
-NUMPY20 = np.lib.NumpyVersion(np.__version__) >= "2.0.0"
 
 
 def check(

@@ -28,7 +28,6 @@ from pandas.api.typing import (
     TimeGrouper,
     Window,
 )
-import pytest
 from typing_extensions import assert_type
 
 from tests import check
@@ -85,7 +84,6 @@ def test_timedeltaindexresamplergroupby() -> None:
     f1(gb_df.resample("1D"))
 
 
-@pytest.mark.skip("Resampling with a PeriodIndex is deprecated.")
 def test_periodindexresamplergroupby() -> None:
     idx = pd.period_range("2020-01-28 09:00", periods=4, freq="D")
     df = pd.DataFrame(data=4 * [range(2)], index=idx, columns=["a", "b"])
